@@ -1,0 +1,11 @@
+Libgta is a portable library that implements the Generic Tagged Array (GTA) file
+format. This file format has the following features:
+
+* GTAs can store any kind of data in multidimensional arrays
+* GTAs can optionally use simple tags to store rich metadata
+* GTAs are streamable, which allows direct reading from and writing to pipes,
+  network sockets, and other non-seekable media
+* GTA files allow easy out-of-core data access for very large
+  arrays
+
+See https://marlam.de/gta for more information.

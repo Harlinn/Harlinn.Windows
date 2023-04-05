@@ -1,0 +1,240 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="include">
+      <UniqueIdentifier>{d97eff3b-74a8-41b6-a283-7b93bec83436}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\kml">
+      <UniqueIdentifier>{84445baa-f6f6-4ca5-9f31-26955b9d4d8e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\kml\engine">
+      <UniqueIdentifier>{33fa743e-ead2-42a5-9340-92bacc9fd7f4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{e0ed26ef-7fcc-4b01-9523-7db3bb5c205a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Readme">
+      <UniqueIdentifier>{aa99772b-da8f-4500-8ac5-424395e6b9b1}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="dllmain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\clone.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\entity_mapper.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\feature_balloon.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\feature_view.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\feature_visitor.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\find.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\find_xml_namespaces.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\get_link_parents.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\get_links.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\href.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\id_mapper.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\kml_cache.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\kml_file.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\kml_stream.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\kml_uri.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\kmz_cache.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\kmz_file.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\link_util.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\location_util.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\merge.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\parse_old_schema.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\style_inliner.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\style_merger.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\style_resolver.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\style_splitter.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\update.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\update_processor.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\kml\engine\bbox.h">
+      <Filter>include\kml\engine</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\engine\clone.h">
+      <Filter>include\kml\engine</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\engine\engine_constants.h">
+      <Filter>include\kml\engine</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\engine\engine_types.h">
+      <Filter>include\kml\engine</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\engine\entity_mapper.h">
+      <Filter>include\kml\engine</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\engine\feature_balloon.h">
+      <Filter>include\kml\engine</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\engine\feature_view.h">
+      <Filter>include\kml\engine</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\engine\feature_visitor.h">
+      <Filter>include\kml\engine</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\engine\find.h">
+      <Filter>include\kml\engine</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\engine\find_xml_namespaces.h">
+      <Filter>include\kml\engine</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\engine\get_link_parents.h">
+      <Filter>include\kml\engine</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\engine\get_links.h">
+      <Filter>include\kml\engine</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\engine\href.h">
+      <Filter>include\kml\engine</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\engine\id_mapper.h">
+      <Filter>include\kml\engine</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\engine\id_mapper_internal.h">
+      <Filter>include\kml\engine</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\engine\kml_cache.h">
+      <Filter>include\kml\engine</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\engine\kml_file.h">
+      <Filter>include\kml\engine</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\engine\kml_stream.h">
+      <Filter>include\kml\engine</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\engine\kml_uri.h">
+      <Filter>include\kml\engine</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\engine\kml_uri_internal.h">
+      <Filter>include\kml\engine</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\engine\kmz_cache.h">
+      <Filter>include\kml\engine</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\engine\kmz_file.h">
+      <Filter>include\kml\engine</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\engine\link_util.h">
+      <Filter>include\kml\engine</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\engine\location_util.h">
+      <Filter>include\kml\engine</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\engine\merge.h">
+      <Filter>include\kml\engine</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\engine\object_id_parser_observer.h">
+      <Filter>include\kml\engine</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\engine\old_schema_parser_observer.h">
+      <Filter>include\kml\engine</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\engine\parse_old_schema.h">
+      <Filter>include\kml\engine</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\engine\schema_parser_observer.h">
+      <Filter>include\kml\engine</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\engine\shared_style_parser_observer.h">
+      <Filter>include\kml\engine</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\engine\style_inliner.h">
+      <Filter>include\kml\engine</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\engine\style_inliner_internal.h">
+      <Filter>include\kml\engine</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\engine\style_merger.h">
+      <Filter>include\kml\engine</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\engine\style_resolver.h">
+      <Filter>include\kml\engine</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\engine\style_splitter.h">
+      <Filter>include\kml\engine</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\engine\style_splitter_internal.h">
+      <Filter>include\kml\engine</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\engine\update.h">
+      <Filter>include\kml\engine</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\engine\update_processor.h">
+      <Filter>include\kml\engine</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\engine.h">
+      <Filter>include\kml</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\engine\kmlenginedef.h">
+      <Filter>include\kml\engine</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

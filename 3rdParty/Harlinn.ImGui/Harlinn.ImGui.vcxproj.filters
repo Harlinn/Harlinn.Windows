@@ -1,0 +1,184 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Backends">
+      <UniqueIdentifier>{cf9225b1-a513-456b-aa81-b01e87c6c690}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Readme">
+      <UniqueIdentifier>{e314e093-4a3a-48c6-91c9-8faa6dd14806}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="misc">
+      <UniqueIdentifier>{47a51f24-47a8-4203-b395-308138c328ad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="misc\freetype">
+      <UniqueIdentifier>{a7730977-e0ab-4602-a9b9-e732f3d48d12}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="misc\cpp">
+      <UniqueIdentifier>{7ce8cf1d-6082-45e5-88e7-cdbd15094f47}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="pch.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui_export.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="imconfig.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui_internal.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="imstb_rectpack.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="imstb_textedit.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="imstb_truetype.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="backends\imgui_impl_dx12.h">
+      <Filter>Backends</Filter>
+    </ClInclude>
+    <ClInclude Include="backends\imgui_impl_win32.h">
+      <Filter>Backends</Filter>
+    </ClInclude>
+    <ClInclude Include="implot.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="implot_internal.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="misc\freetype\imgui_freetype.h">
+      <Filter>misc\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="misc\cpp\imgui_stdlib.h">
+      <Filter>misc\cpp</Filter>
+    </ClInclude>
+    <ClInclude Include="backends\imgui_impl_dx9.h">
+      <Filter>Backends</Filter>
+    </ClInclude>
+    <ClInclude Include="backends\imgui_impl_dx10.h">
+      <Filter>Backends</Filter>
+    </ClInclude>
+    <ClInclude Include="backends\imgui_impl_dx11.h">
+      <Filter>Backends</Filter>
+    </ClInclude>
+    <ClInclude Include="backends\imgui_impl_opengl2.h">
+      <Filter>Backends</Filter>
+    </ClInclude>
+    <ClInclude Include="backends\imgui_impl_opengl3.h">
+      <Filter>Backends</Filter>
+    </ClInclude>
+    <ClInclude Include="backends\imgui_impl_opengl3_loader.h">
+      <Filter>Backends</Filter>
+    </ClInclude>
+    <ClInclude Include="backends\imgui_impl_vulkan.h">
+      <Filter>Backends</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="dllmain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="pch.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui_demo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui_draw.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui_tables.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui_widgets.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="backends\imgui_impl_dx12.cpp">
+      <Filter>Backends</Filter>
+    </ClCompile>
+    <ClCompile Include="backends\imgui_impl_win32.cpp">
+      <Filter>Backends</Filter>
+    </ClCompile>
+    <ClCompile Include="implot.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="implot_demo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="implot_items.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="misc\freetype\imgui_freetype.cpp">
+      <Filter>misc\freetype</Filter>
+    </ClCompile>
+    <ClCompile Include="misc\cpp\imgui_stdlib.cpp">
+      <Filter>misc\cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="backends\imgui_impl_dx9.cpp">
+      <Filter>Backends</Filter>
+    </ClCompile>
+    <ClCompile Include="backends\imgui_impl_dx10.cpp">
+      <Filter>Backends</Filter>
+    </ClCompile>
+    <ClCompile Include="backends\imgui_impl_dx11.cpp">
+      <Filter>Backends</Filter>
+    </ClCompile>
+    <ClCompile Include="backends\imgui_impl_opengl2.cpp">
+      <Filter>Backends</Filter>
+    </ClCompile>
+    <ClCompile Include="backends\imgui_impl_opengl3.cpp">
+      <Filter>Backends</Filter>
+    </ClCompile>
+    <ClCompile Include="backends\imgui_impl_vulkan.cpp">
+      <Filter>Backends</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="misc\cpp\README.txt">
+      <Filter>misc\cpp</Filter>
+    </Text>
+    <Text Include="Readme\ImGui-LICENSE.txt">
+      <Filter>Readme</Filter>
+    </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Readme\ImGui-FONTS.md">
+      <Filter>Readme</Filter>
+    </None>
+    <None Include="Readme\ImGui-README.md">
+      <Filter>Readme</Filter>
+    </None>
+    <None Include="Readme\ImPlot-LICENSE">
+      <Filter>Readme</Filter>
+    </None>
+    <None Include="Readme\ImPlot-README.md">
+      <Filter>Readme</Filter>
+    </None>
+    <None Include="misc\freetype\README.md">
+      <Filter>misc\freetype</Filter>
+    </None>
+  </ItemGroup>
+</Project>

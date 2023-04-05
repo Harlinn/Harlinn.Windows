@@ -1,0 +1,78 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="include">
+      <UniqueIdentifier>{4f5490fb-aee5-4747-8f63-60f548fdc7db}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\gflags">
+      <UniqueIdentifier>{1943f4ce-f4d2-4332-bd70-3a5ddba86b73}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{b50ace81-a382-4dbc-a208-2ab13e5955df}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Readme">
+      <UniqueIdentifier>{488d2f08-b5f2-44ff-b8a3-894bf3a63c62}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="dllmain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\gflags.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\gflags_completions.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\gflags_reporting.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\windows_port.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\gflags\defines.h">
+      <Filter>include\gflags</Filter>
+    </ClInclude>
+    <ClInclude Include="include\gflags\gflags.h">
+      <Filter>include\gflags</Filter>
+    </ClInclude>
+    <ClInclude Include="include\gflags\gflags_completions.h">
+      <Filter>include\gflags</Filter>
+    </ClInclude>
+    <ClInclude Include="include\gflags\gflags_declare.h">
+      <Filter>include\gflags</Filter>
+    </ClInclude>
+    <ClInclude Include="include\gflags\gflags_gflags.h">
+      <Filter>include\gflags</Filter>
+    </ClInclude>
+    <ClInclude Include="src\config.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\mutex.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\windows_port.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="include\gflags\gflagsdef.h">
+      <Filter>include\gflags</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,446 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="include">
+      <UniqueIdentifier>{a0c0c37f-0f69-4e56-a46b-a865bc1b4ef0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\proton">
+      <UniqueIdentifier>{c04eed6b-5331-47f0-8ba8-89b8b0931286}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{96bc01fc-1c22-493d-b4f3-e4b5c759bf46}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\compiler">
+      <UniqueIdentifier>{6f04e41c-d819-4024-98a2-d510a2932b07}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\core">
+      <UniqueIdentifier>{40d81491-86f7-46a3-92bd-f1d643c8d432}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\extra">
+      <UniqueIdentifier>{fcacd009-b541-4439-a051-f13cd3e92f42}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\handlers">
+      <UniqueIdentifier>{839f4397-d1c5-43e6-af2a-4931db67a663}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\messenger">
+      <UniqueIdentifier>{d94d3175-5c0a-4969-8836-73bb767cef78}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\platform">
+      <UniqueIdentifier>{3f026c6c-1654-4076-af88-af600affd743}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\proactor">
+      <UniqueIdentifier>{1563ed23-4f9d-4e86-81d8-b96f7ce7e371}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\reactor">
+      <UniqueIdentifier>{f4955650-8f2c-4dff-955b-6e85dfd693df}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\sasl">
+      <UniqueIdentifier>{e59b087b-1dbf-4358-b178-b55f4fd8783e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\ssl">
+      <UniqueIdentifier>{14681613-4143-4725-981e-33659ce810b6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\compiler\msvc">
+      <UniqueIdentifier>{1cf3ccc2-1628-41ed-9306-be2f360190e6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\core\object">
+      <UniqueIdentifier>{32c25267-cb48-4503-bf59-7b6188c298ce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\reactor\io">
+      <UniqueIdentifier>{2fbc0b2a-bc84-463b-a044-515dd204ab13}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\reactor\io\windows">
+      <UniqueIdentifier>{9342a4d1-e8db-4218-b391-7ac5fd54ce14}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\proton\internal">
+      <UniqueIdentifier>{73df18ea-8427-40c4-ba52-b3c586b7aedc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Readme">
+      <UniqueIdentifier>{90f9c6ad-5905-42b5-800f-bd88ec01a661}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\compiler\msvc\start.c">
+      <Filter>src\compiler\msvc</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\object\iterator.c">
+      <Filter>src\core\object</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\object\list.c">
+      <Filter>src\core\object</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\object\map.c">
+      <Filter>src\core\object</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\object\object.c">
+      <Filter>src\core\object</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\object\record.c">
+      <Filter>src\core\object</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\object\string.c">
+      <Filter>src\core\object</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\autodetect.c">
+      <Filter>src\core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\buffer.c">
+      <Filter>src\core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\codec.c">
+      <Filter>src\core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\connection_driver.c">
+      <Filter>src\core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\decoder.c">
+      <Filter>src\core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\dispatcher.c">
+      <Filter>src\core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\encoder.c">
+      <Filter>src\core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\engine.c">
+      <Filter>src\core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\error.c">
+      <Filter>src\core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\event.c">
+      <Filter>src\core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\framing.c">
+      <Filter>src\core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\init.c">
+      <Filter>src\core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\log.c">
+      <Filter>src\core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\logger.c">
+      <Filter>src\core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\memory.c">
+      <Filter>src\core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\message.c">
+      <Filter>src\core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\transport.c">
+      <Filter>src\core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\types.c">
+      <Filter>src\core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\util.c">
+      <Filter>src\core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\extra\url.c">
+      <Filter>src\extra</Filter>
+    </ClCompile>
+    <ClCompile Include="src\handlers\flowcontroller.c">
+      <Filter>src\handlers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\handlers\handshaker.c">
+      <Filter>src\handlers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\handlers\iohandler.c">
+      <Filter>src\handlers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\messenger\messenger.c">
+      <Filter>src\messenger</Filter>
+    </ClCompile>
+    <ClCompile Include="src\messenger\store.c">
+      <Filter>src\messenger</Filter>
+    </ClCompile>
+    <ClCompile Include="src\messenger\subscription.c">
+      <Filter>src\messenger</Filter>
+    </ClCompile>
+    <ClCompile Include="src\messenger\transform.c">
+      <Filter>src\messenger</Filter>
+    </ClCompile>
+    <ClCompile Include="src\platform\platform.c">
+      <Filter>src\platform</Filter>
+    </ClCompile>
+    <ClCompile Include="src\proactor\netaddr-internal.c">
+      <Filter>src\proactor</Filter>
+    </ClCompile>
+    <ClCompile Include="src\proactor\proactor-internal.c">
+      <Filter>src\proactor</Filter>
+    </ClCompile>
+    <ClCompile Include="src\proactor\raw_connection.c">
+      <Filter>src\proactor</Filter>
+    </ClCompile>
+    <ClCompile Include="src\proactor\win_iocp.cpp">
+      <Filter>src\proactor</Filter>
+    </ClCompile>
+    <ClCompile Include="src\reactor\io\windows\io.c">
+      <Filter>src\reactor\io\windows</Filter>
+    </ClCompile>
+    <ClCompile Include="src\reactor\io\windows\iocp.c">
+      <Filter>src\reactor\io\windows</Filter>
+    </ClCompile>
+    <ClCompile Include="src\reactor\io\windows\selector.c">
+      <Filter>src\reactor\io\windows</Filter>
+    </ClCompile>
+    <ClCompile Include="src\reactor\io\windows\write_pipeline.c">
+      <Filter>src\reactor\io\windows</Filter>
+    </ClCompile>
+    <ClCompile Include="src\reactor\acceptor.c">
+      <Filter>src\reactor</Filter>
+    </ClCompile>
+    <ClCompile Include="src\reactor\connection.c">
+      <Filter>src\reactor</Filter>
+    </ClCompile>
+    <ClCompile Include="src\reactor\handler.c">
+      <Filter>src\reactor</Filter>
+    </ClCompile>
+    <ClCompile Include="src\reactor\reactor.c">
+      <Filter>src\reactor</Filter>
+    </ClCompile>
+    <ClCompile Include="src\reactor\selectable.c">
+      <Filter>src\reactor</Filter>
+    </ClCompile>
+    <ClCompile Include="src\reactor\timer.c">
+      <Filter>src\reactor</Filter>
+    </ClCompile>
+    <ClCompile Include="src\sasl\sasl.c">
+      <Filter>src\sasl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ssl\schannel.cpp">
+      <Filter>src\ssl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\sasl\cyrus_stub.c">
+      <Filter>src\sasl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\sasl\default_sasl.c">
+      <Filter>src\sasl</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\proton\cid.h">
+      <Filter>include\proton</Filter>
+    </ClInclude>
+    <ClInclude Include="include\proton\codec.h">
+      <Filter>include\proton</Filter>
+    </ClInclude>
+    <ClInclude Include="include\proton\condition.h">
+      <Filter>include\proton</Filter>
+    </ClInclude>
+    <ClInclude Include="include\proton\connection.h">
+      <Filter>include\proton</Filter>
+    </ClInclude>
+    <ClInclude Include="include\proton\connection_driver.h">
+      <Filter>include\proton</Filter>
+    </ClInclude>
+    <ClInclude Include="include\proton\delivery.h">
+      <Filter>include\proton</Filter>
+    </ClInclude>
+    <ClInclude Include="include\proton\disposition.h">
+      <Filter>include\proton</Filter>
+    </ClInclude>
+    <ClInclude Include="include\proton\engine.h">
+      <Filter>include\proton</Filter>
+    </ClInclude>
+    <ClInclude Include="include\proton\error.h">
+      <Filter>include\proton</Filter>
+    </ClInclude>
+    <ClInclude Include="include\proton\event.h">
+      <Filter>include\proton</Filter>
+    </ClInclude>
+    <ClInclude Include="include\proton\handlers.h">
+      <Filter>include\proton</Filter>
+    </ClInclude>
+    <ClInclude Include="include\proton\import_export.h">
+      <Filter>include\proton</Filter>
+    </ClInclude>
+    <ClInclude Include="include\proton\link.h">
+      <Filter>include\proton</Filter>
+    </ClInclude>
+    <ClInclude Include="include\proton\listener.h">
+      <Filter>include\proton</Filter>
+    </ClInclude>
+    <ClInclude Include="include\proton\log.h">
+      <Filter>include\proton</Filter>
+    </ClInclude>
+    <ClInclude Include="include\proton\logger.h">
+      <Filter>include\proton</Filter>
+    </ClInclude>
+    <ClInclude Include="include\proton\message.h">
+      <Filter>include\proton</Filter>
+    </ClInclude>
+    <ClInclude Include="include\proton\messenger.h">
+      <Filter>include\proton</Filter>
+    </ClInclude>
+    <ClInclude Include="include\proton\netaddr.h">
+      <Filter>include\proton</Filter>
+    </ClInclude>
+    <ClInclude Include="include\proton\object.h">
+      <Filter>include\proton</Filter>
+    </ClInclude>
+    <ClInclude Include="include\proton\proactor.h">
+      <Filter>include\proton</Filter>
+    </ClInclude>
+    <ClInclude Include="include\proton\raw_connection.h">
+      <Filter>include\proton</Filter>
+    </ClInclude>
+    <ClInclude Include="include\proton\reactor.h">
+      <Filter>include\proton</Filter>
+    </ClInclude>
+    <ClInclude Include="include\proton\sasl.h">
+      <Filter>include\proton</Filter>
+    </ClInclude>
+    <ClInclude Include="include\proton\sasl_plugin.h">
+      <Filter>include\proton</Filter>
+    </ClInclude>
+    <ClInclude Include="include\proton\selectable.h">
+      <Filter>include\proton</Filter>
+    </ClInclude>
+    <ClInclude Include="include\proton\session.h">
+      <Filter>include\proton</Filter>
+    </ClInclude>
+    <ClInclude Include="include\proton\ssl.h">
+      <Filter>include\proton</Filter>
+    </ClInclude>
+    <ClInclude Include="include\proton\terminus.h">
+      <Filter>include\proton</Filter>
+    </ClInclude>
+    <ClInclude Include="include\proton\transport.h">
+      <Filter>include\proton</Filter>
+    </ClInclude>
+    <ClInclude Include="include\proton\type_compat.h">
+      <Filter>include\proton</Filter>
+    </ClInclude>
+    <ClInclude Include="include\proton\types.h">
+      <Filter>include\proton</Filter>
+    </ClInclude>
+    <ClInclude Include="include\proton\url.h">
+      <Filter>include\proton</Filter>
+    </ClInclude>
+    <ClInclude Include="include\proton\version.h">
+      <Filter>include\proton</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\autodetect.h">
+      <Filter>src\core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\buffer.h">
+      <Filter>src\core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\config.h">
+      <Filter>src\core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\data.h">
+      <Filter>src\core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\decoder.h">
+      <Filter>src\core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\dispatch_actions.h">
+      <Filter>src\core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\dispatcher.h">
+      <Filter>src\core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\encoder.h">
+      <Filter>src\core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\engine-internal.h">
+      <Filter>src\core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\framing.h">
+      <Filter>src\core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\init.h">
+      <Filter>src\core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\log_private.h">
+      <Filter>src\core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\logger_private.h">
+      <Filter>src\core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\max_align.h">
+      <Filter>src\core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\memory.h">
+      <Filter>src\core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\transport.h">
+      <Filter>src\core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\util.h">
+      <Filter>src\core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\messenger\messenger.h">
+      <Filter>src\messenger</Filter>
+    </ClInclude>
+    <ClInclude Include="src\messenger\store.h">
+      <Filter>src\messenger</Filter>
+    </ClInclude>
+    <ClInclude Include="src\messenger\subscription.h">
+      <Filter>src\messenger</Filter>
+    </ClInclude>
+    <ClInclude Include="src\messenger\transform.h">
+      <Filter>src\messenger</Filter>
+    </ClInclude>
+    <ClInclude Include="src\platform\platform.h">
+      <Filter>src\platform</Filter>
+    </ClInclude>
+    <ClInclude Include="src\platform\platform_fmt.h">
+      <Filter>src\platform</Filter>
+    </ClInclude>
+    <ClInclude Include="src\proactor\netaddr-internal.h">
+      <Filter>src\proactor</Filter>
+    </ClInclude>
+    <ClInclude Include="src\proactor\proactor-internal.h">
+      <Filter>src\proactor</Filter>
+    </ClInclude>
+    <ClInclude Include="src\proactor\raw_connection-internal.h">
+      <Filter>src\proactor</Filter>
+    </ClInclude>
+    <ClInclude Include="src\reactor\io\windows\iocp.h">
+      <Filter>src\reactor\io\windows</Filter>
+    </ClInclude>
+    <ClInclude Include="src\reactor\io.h">
+      <Filter>src\reactor</Filter>
+    </ClInclude>
+    <ClInclude Include="src\reactor\reactor.h">
+      <Filter>src\reactor</Filter>
+    </ClInclude>
+    <ClInclude Include="src\reactor\selectable.h">
+      <Filter>src\reactor</Filter>
+    </ClInclude>
+    <ClInclude Include="src\reactor\selector.h">
+      <Filter>src\reactor</Filter>
+    </ClInclude>
+    <ClInclude Include="src\sasl\sasl-internal.h">
+      <Filter>src\sasl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ssl\ssl-internal.h">
+      <Filter>src\ssl</Filter>
+    </ClInclude>
+    <ClInclude Include="include\proton\internal\message-internal.h">
+      <Filter>include\proton\internal</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="include\proton\cproton.i">
+      <Filter>include\proton</Filter>
+    </None>
+  </ItemGroup>
+</Project>

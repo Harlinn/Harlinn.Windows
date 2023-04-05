@@ -1,0 +1,9 @@
+
+
+$(OutDir)protoc.exe -I$(SolutionDir)3rdParty\Harlinn.protobuf\include\ -I$(ProjectDir)%(RelativeDir) --grpc_out=$(ProjectDir)%(RelativeDir) --plugin=protoc-gen-grpc=$(OutDir)grpc_cpp_plugin.exe %(Filename).proto
+$(OutDir)protoc.exe -I$(SolutionDir)3rdParty\Harlinn.protobuf\include\ -I$(ProjectDir)%(RelativeDir) --cpp_out=$(ProjectDir)%(RelativeDir) %(Filename).proto
+
+$(ProjectDir)%(RelativeDir)%(Filename).grpc.pb.cc
+$(ProjectDir)%(RelativeDir)%(Filename).grpc.pb.h
+$(ProjectDir)%(RelativeDir)%(Filename).pb.cc
+$(ProjectDir)%(RelativeDir)%(Filename).pb.h

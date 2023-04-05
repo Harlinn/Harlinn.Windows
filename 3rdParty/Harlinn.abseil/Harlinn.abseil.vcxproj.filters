@@ -1,0 +1,1451 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="include">
+      <UniqueIdentifier>{77b2cdf5-977c-4c2f-958e-ad442727e29c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{319f1713-202e-44cf-871b-aec95be4cd03}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\absl">
+      <UniqueIdentifier>{ddc4d6a7-41ca-4dd3-ba63-437bb699c59c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\absl\algorithm">
+      <UniqueIdentifier>{d64a2a7e-a2f0-4fc2-ab35-3b678a19a493}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\absl\base">
+      <UniqueIdentifier>{689bbaca-03c2-4c29-b533-b03a5c610757}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\absl\cleanup">
+      <UniqueIdentifier>{ff4e6e44-5652-4285-b644-eba80ef72ee7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\absl\container">
+      <UniqueIdentifier>{e75b7ace-2fda-46dd-b330-c55623c03220}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\absl\debugging">
+      <UniqueIdentifier>{2b152dee-37f4-420d-a95a-114ebd30b30f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\absl\flags">
+      <UniqueIdentifier>{e268635a-cc71-4225-a95e-82c4cb4a23b9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\absl\functional">
+      <UniqueIdentifier>{c8b512f4-a680-4e8f-8d30-4c776685b906}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\absl\hash">
+      <UniqueIdentifier>{464fd7da-2e21-409e-993a-e6dbad4d9e93}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\absl\memory">
+      <UniqueIdentifier>{5a8981ee-797e-4fc1-8088-b3c335e2aefa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\absl\meta">
+      <UniqueIdentifier>{c2fa1fe7-19d8-495a-be80-03e307bcf9c9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\absl\numeric">
+      <UniqueIdentifier>{9080b175-05e0-41e9-8399-bac31518184f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\absl\random">
+      <UniqueIdentifier>{e539e1ba-9200-49de-95b8-55792e11e348}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\absl\status">
+      <UniqueIdentifier>{b967e8f2-0979-4ad0-8df6-7d2f95d15b82}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\absl\strings">
+      <UniqueIdentifier>{2014df40-e3cc-495e-a046-4ee0189cf81d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\absl\synchronization">
+      <UniqueIdentifier>{343702e4-d59a-4df4-a6cb-db874c8aebb2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\absl\time">
+      <UniqueIdentifier>{7826073a-6b11-4900-8a53-c7a8ba0cdec5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\absl\types">
+      <UniqueIdentifier>{72bfb3bf-ac2b-41fd-b571-e830b2d24ed3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\absl\utility">
+      <UniqueIdentifier>{acfcc159-4695-4b9b-82a1-a89dca59e32c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\absl\base\internal">
+      <UniqueIdentifier>{83bc2b85-7bef-45c4-a5f8-f3c71461823a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\absl\cleanup\internal">
+      <UniqueIdentifier>{b02ddad3-25e9-4adb-b8c1-38e90e4c27d4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\absl\container\internal">
+      <UniqueIdentifier>{8626072e-be59-409c-8257-5cc7aaa8adc6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\absl\debugging\internal">
+      <UniqueIdentifier>{c9a7dd4f-034d-4c3c-b83c-82cdabe649e6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\absl\flags\internal">
+      <UniqueIdentifier>{5160cd81-f3b3-4268-a200-84ae2a1d01a5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\absl\functional\internal">
+      <UniqueIdentifier>{49a5f930-bde8-45bd-9a82-cd676de2fdd9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\absl\hash\internal">
+      <UniqueIdentifier>{f5e3de12-95e0-49fa-bf6e-dd2fe130f09e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\absl\numeric\internal">
+      <UniqueIdentifier>{ec019398-5790-4077-ab94-c33a98b0b5da}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\absl\random\internal">
+      <UniqueIdentifier>{73803cb0-53f5-4e9f-ad23-86a5448e1edf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\absl\status\internal">
+      <UniqueIdentifier>{2afa2525-d647-4fd6-b972-da61c675a790}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\absl\strings\internal">
+      <UniqueIdentifier>{312025f3-1c33-4269-ab7e-39d4f6dac46f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\absl\synchronization\internal">
+      <UniqueIdentifier>{d53fa46c-a79b-4303-87b4-9834abc50a38}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\absl\time\internal">
+      <UniqueIdentifier>{ce9b8a8d-6312-4d33-bc32-a46949c9a592}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\absl\types\internal">
+      <UniqueIdentifier>{79f06cb8-9fd8-47a8-81d3-ab002c1f72e3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\base">
+      <UniqueIdentifier>{393c6db2-6ae0-4399-b197-381e4ee31a69}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\container">
+      <UniqueIdentifier>{64fdadae-b6d3-4e7f-a23a-21464dcddb2e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\debugging">
+      <UniqueIdentifier>{8e5c18c8-1546-4817-98c1-52bc6b935ea3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\flags">
+      <UniqueIdentifier>{72cbb950-2e5c-4f77-844a-09bbc9753f5e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\hash">
+      <UniqueIdentifier>{1025d376-8178-4f71-a633-f144e9a9b8c5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\numeric">
+      <UniqueIdentifier>{a9a7cffc-3a72-4813-ac86-cc8bd3008f17}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\random">
+      <UniqueIdentifier>{6dc386fe-c090-45d1-94c2-83e6afc7f65a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\status">
+      <UniqueIdentifier>{2b161702-09cd-4850-9a10-9815f07701c2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\strings">
+      <UniqueIdentifier>{ac1c7f89-e78e-41fa-8228-92fd14d0a275}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\synchronization">
+      <UniqueIdentifier>{d82b3c45-e1ff-47df-9385-ba75668451c9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\time">
+      <UniqueIdentifier>{6b285db8-3e44-423b-bbdd-0e5fb297ae68}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\types">
+      <UniqueIdentifier>{245e7b6a-9213-4342-9a0d-fc504c7ca277}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\base\internal">
+      <UniqueIdentifier>{336a76dc-a5ed-49b6-9ab6-79f14ea2ce5c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\container\internal">
+      <UniqueIdentifier>{c4fe9ba5-27b5-4b51-ae33-db24efa48bd0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\debugging\internal">
+      <UniqueIdentifier>{30658f71-e56d-46d8-96dd-07e22c96eba5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\flags\internal">
+      <UniqueIdentifier>{53b98e40-8e9c-4a1b-b029-f8c0b46e985e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\hash\internal">
+      <UniqueIdentifier>{adaded40-462e-464e-a0f2-d1da86e59721}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\random\internal">
+      <UniqueIdentifier>{3ea9cda5-9b56-4ff9-8300-c96167c6818d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\strings\internal">
+      <UniqueIdentifier>{6008e7d8-6275-4e3d-8e2b-577e6defa71b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\strings\internal\str_format">
+      <UniqueIdentifier>{3d935ee5-b54f-4251-8e89-819588dfa540}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\synchronization\internal">
+      <UniqueIdentifier>{9c0a6032-4375-4cb8-a40c-0a382678a62c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\time\internal">
+      <UniqueIdentifier>{572b8343-04aa-492b-9b6c-b52f4bc140b5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\time\internal\cctz">
+      <UniqueIdentifier>{924b6f0e-d8f3-4bd1-b55c-8a697bf064bb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\time\internal\cctz\src">
+      <UniqueIdentifier>{ca83b002-9092-480b-a6cd-aba4f1f1b8ed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\absl\strings\internal\str_format">
+      <UniqueIdentifier>{18148dff-04aa-482c-be76-f54d80d1b1ee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\absl\time\internal\cctz">
+      <UniqueIdentifier>{ee153edb-296c-416c-840c-b81d2fd74b6a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\absl\time\internal\cctz\include">
+      <UniqueIdentifier>{2f98764b-0b94-4abd-8b06-2077ccaf8a07}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\absl\time\internal\cctz\include\cctz">
+      <UniqueIdentifier>{50d58bc6-714f-48b4-9f60-7f9feeb51b32}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Readme">
+      <UniqueIdentifier>{c1caca74-b58b-4ea1-b7dd-422805d301ae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\absl\profiling">
+      <UniqueIdentifier>{2b1a492b-61c3-4eed-af20-7b6bd438b897}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\absl\profiling\internal">
+      <UniqueIdentifier>{ffdb03fd-a400-47d7-83d5-d87520b70660}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\profiling">
+      <UniqueIdentifier>{44888149-c5b3-495d-841c-6a9c36641d79}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\profiling\internal">
+      <UniqueIdentifier>{39b8fda9-c3fb-42bf-9c1e-5ecac0579e80}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="dllmain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\base\internal\cycleclock.cc">
+      <Filter>src\base\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\base\internal\low_level_alloc.cc">
+      <Filter>src\base\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\base\internal\raw_logging.cc">
+      <Filter>src\base\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\base\internal\scoped_set_env.cc">
+      <Filter>src\base\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\base\internal\spinlock.cc">
+      <Filter>src\base\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\base\internal\spinlock_wait.cc">
+      <Filter>src\base\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\base\internal\strerror.cc">
+      <Filter>src\base\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\base\internal\sysinfo.cc">
+      <Filter>src\base\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\base\internal\thread_identity.cc">
+      <Filter>src\base\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\base\internal\throw_delegate.cc">
+      <Filter>src\base\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\base\internal\unscaledcycleclock.cc">
+      <Filter>src\base\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\base\log_severity.cc">
+      <Filter>src\base</Filter>
+    </ClCompile>
+    <ClCompile Include="src\container\internal\hashtablez_sampler.cc">
+      <Filter>src\container\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\container\internal\hashtablez_sampler_force_weak_definition.cc">
+      <Filter>src\container\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\container\internal\raw_hash_set.cc">
+      <Filter>src\container\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\debugging\internal\address_is_readable.cc">
+      <Filter>src\debugging\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\debugging\internal\demangle.cc">
+      <Filter>src\debugging\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\debugging\internal\elf_mem_image.cc">
+      <Filter>src\debugging\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\debugging\internal\examine_stack.cc">
+      <Filter>src\debugging\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\debugging\internal\stack_consumption.cc">
+      <Filter>src\debugging\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\debugging\internal\vdso_support.cc">
+      <Filter>src\debugging\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\debugging\failure_signal_handler.cc">
+      <Filter>src\debugging</Filter>
+    </ClCompile>
+    <ClCompile Include="src\debugging\leak_check.cc">
+      <Filter>src\debugging</Filter>
+    </ClCompile>
+    <ClCompile Include="src\debugging\stacktrace.cc">
+      <Filter>src\debugging</Filter>
+    </ClCompile>
+    <ClCompile Include="src\flags\internal\fi_commandlineflag.cc">
+      <Filter>src\flags\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\flags\internal\fi_flag.cc">
+      <Filter>src\flags\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\flags\internal\fi_private_handle_accessor.cc">
+      <Filter>src\flags\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\flags\internal\fi_program_name.cc">
+      <Filter>src\flags\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\flags\internal\fi_usage.cc">
+      <Filter>src\flags\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\flags\commandlineflag.cc">
+      <Filter>src\flags</Filter>
+    </ClCompile>
+    <ClCompile Include="src\flags\flag.cc">
+      <Filter>src\flags</Filter>
+    </ClCompile>
+    <ClCompile Include="src\flags\marshalling.cc">
+      <Filter>src\flags</Filter>
+    </ClCompile>
+    <ClCompile Include="src\flags\parse.cc">
+      <Filter>src\flags</Filter>
+    </ClCompile>
+    <ClCompile Include="src\flags\reflection.cc">
+      <Filter>src\flags</Filter>
+    </ClCompile>
+    <ClCompile Include="src\flags\usage.cc">
+      <Filter>src\flags</Filter>
+    </ClCompile>
+    <ClCompile Include="src\flags\usage_config.cc">
+      <Filter>src\flags</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hash\internal\city.cc">
+      <Filter>src\hash\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hash\internal\hash.cc">
+      <Filter>src\hash\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\numeric\int128.cc">
+      <Filter>src\numeric</Filter>
+    </ClCompile>
+    <ClCompile Include="src\random\internal\chi_square.cc">
+      <Filter>src\random\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\random\internal\pool_urbg.cc">
+      <Filter>src\random\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\random\internal\randen.cc">
+      <Filter>src\random\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\random\internal\randen_detect.cc">
+      <Filter>src\random\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\random\internal\randen_hwaes.cc">
+      <Filter>src\random\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\random\internal\randen_round_keys.cc">
+      <Filter>src\random\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\random\internal\randen_slow.cc">
+      <Filter>src\random\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\random\internal\seed_material.cc">
+      <Filter>src\random\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\random\discrete_distribution.cc">
+      <Filter>src\random</Filter>
+    </ClCompile>
+    <ClCompile Include="src\random\gaussian_distribution.cc">
+      <Filter>src\random</Filter>
+    </ClCompile>
+    <ClCompile Include="src\random\seed_gen_exception.cc">
+      <Filter>src\random</Filter>
+    </ClCompile>
+    <ClCompile Include="src\random\seed_sequences.cc">
+      <Filter>src\random</Filter>
+    </ClCompile>
+    <ClCompile Include="src\status\status.cc">
+      <Filter>src\status</Filter>
+    </ClCompile>
+    <ClCompile Include="src\status\status_payload_printer.cc">
+      <Filter>src\status</Filter>
+    </ClCompile>
+    <ClCompile Include="src\status\statusor.cc">
+      <Filter>src\status</Filter>
+    </ClCompile>
+    <ClCompile Include="src\strings\internal\str_format\arg.cc">
+      <Filter>src\strings\internal\str_format</Filter>
+    </ClCompile>
+    <ClCompile Include="src\strings\internal\str_format\bind.cc">
+      <Filter>src\strings\internal\str_format</Filter>
+    </ClCompile>
+    <ClCompile Include="src\strings\internal\str_format\extension.cc">
+      <Filter>src\strings\internal\str_format</Filter>
+    </ClCompile>
+    <ClCompile Include="src\strings\internal\str_format\float_conversion.cc">
+      <Filter>src\strings\internal\str_format</Filter>
+    </ClCompile>
+    <ClCompile Include="src\strings\internal\str_format\output.cc">
+      <Filter>src\strings\internal\str_format</Filter>
+    </ClCompile>
+    <ClCompile Include="src\strings\internal\str_format\parser.cc">
+      <Filter>src\strings\internal\str_format</Filter>
+    </ClCompile>
+    <ClCompile Include="src\strings\internal\charconv_bigint.cc">
+      <Filter>src\strings\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\strings\internal\charconv_parse.cc">
+      <Filter>src\strings\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\strings\internal\cord_internal.cc">
+      <Filter>src\strings\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\strings\internal\cord_rep_ring.cc">
+      <Filter>src\strings\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\strings\internal\si_escaping.cc">
+      <Filter>src\strings\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\strings\internal\memutil.cc">
+      <Filter>src\strings\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\strings\internal\ostringstream.cc">
+      <Filter>src\strings\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\strings\internal\pow10_helper.cc">
+      <Filter>src\strings\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\strings\internal\utf8.cc">
+      <Filter>src\strings\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\strings\ascii.cc">
+      <Filter>src\strings</Filter>
+    </ClCompile>
+    <ClCompile Include="src\strings\charconv.cc">
+      <Filter>src\strings</Filter>
+    </ClCompile>
+    <ClCompile Include="src\strings\cord.cc">
+      <Filter>src\strings</Filter>
+    </ClCompile>
+    <ClCompile Include="src\strings\escaping.cc">
+      <Filter>src\strings</Filter>
+    </ClCompile>
+    <ClCompile Include="src\strings\match.cc">
+      <Filter>src\strings</Filter>
+    </ClCompile>
+    <ClCompile Include="src\strings\numbers.cc">
+      <Filter>src\strings</Filter>
+    </ClCompile>
+    <ClCompile Include="src\strings\str_cat.cc">
+      <Filter>src\strings</Filter>
+    </ClCompile>
+    <ClCompile Include="src\strings\str_replace.cc">
+      <Filter>src\strings</Filter>
+    </ClCompile>
+    <ClCompile Include="src\strings\str_split.cc">
+      <Filter>src\strings</Filter>
+    </ClCompile>
+    <ClCompile Include="src\strings\string_view.cc">
+      <Filter>src\strings</Filter>
+    </ClCompile>
+    <ClCompile Include="src\strings\substitute.cc">
+      <Filter>src\strings</Filter>
+    </ClCompile>
+    <ClCompile Include="src\synchronization\internal\create_thread_identity.cc">
+      <Filter>src\synchronization\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\synchronization\internal\graphcycles.cc">
+      <Filter>src\synchronization\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\synchronization\internal\per_thread_sem.cc">
+      <Filter>src\synchronization\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\synchronization\internal\waiter.cc">
+      <Filter>src\synchronization\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\synchronization\barrier.cc">
+      <Filter>src\synchronization</Filter>
+    </ClCompile>
+    <ClCompile Include="src\synchronization\blocking_counter.cc">
+      <Filter>src\synchronization</Filter>
+    </ClCompile>
+    <ClCompile Include="src\synchronization\mutex.cc">
+      <Filter>src\synchronization</Filter>
+    </ClCompile>
+    <ClCompile Include="src\synchronization\notification.cc">
+      <Filter>src\synchronization</Filter>
+    </ClCompile>
+    <ClCompile Include="src\time\internal\cctz\src\civil_time_detail.cc">
+      <Filter>src\time\internal\cctz\src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\time\internal\cctz\src\time_zone_fixed.cc">
+      <Filter>src\time\internal\cctz\src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\time\internal\cctz\src\time_zone_format.cc">
+      <Filter>src\time\internal\cctz\src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\time\internal\cctz\src\time_zone_if.cc">
+      <Filter>src\time\internal\cctz\src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\time\internal\cctz\src\time_zone_impl.cc">
+      <Filter>src\time\internal\cctz\src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\time\internal\cctz\src\time_zone_info.cc">
+      <Filter>src\time\internal\cctz\src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\time\internal\cctz\src\time_zone_libc.cc">
+      <Filter>src\time\internal\cctz\src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\time\internal\cctz\src\time_zone_lookup.cc">
+      <Filter>src\time\internal\cctz\src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\time\internal\cctz\src\time_zone_posix.cc">
+      <Filter>src\time\internal\cctz\src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\time\internal\cctz\src\zone_info_source.cc">
+      <Filter>src\time\internal\cctz\src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\time\civil_time.cc">
+      <Filter>src\time</Filter>
+    </ClCompile>
+    <ClCompile Include="src\time\clock.cc">
+      <Filter>src\time</Filter>
+    </ClCompile>
+    <ClCompile Include="src\time\duration.cc">
+      <Filter>src\time</Filter>
+    </ClCompile>
+    <ClCompile Include="src\time\format.cc">
+      <Filter>src\time</Filter>
+    </ClCompile>
+    <ClCompile Include="src\time\time.cc">
+      <Filter>src\time</Filter>
+    </ClCompile>
+    <ClCompile Include="src\types\bad_any_cast.cc">
+      <Filter>src\types</Filter>
+    </ClCompile>
+    <ClCompile Include="src\types\bad_optional_access.cc">
+      <Filter>src\types</Filter>
+    </ClCompile>
+    <ClCompile Include="src\types\bad_variant_access.cc">
+      <Filter>src\types</Filter>
+    </ClCompile>
+    <ClCompile Include="src\random\internal\distribution_test_util.cc">
+      <Filter>src\random\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hash\internal\low_level_hash.cc">
+      <Filter>src\hash\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hash\internal\print_hash_of.cc">
+      <Filter>src\hash\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\profiling\internal\exponential_biased.cc">
+      <Filter>src\profiling\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\profiling\internal\periodic_sampler.cc">
+      <Filter>src\profiling\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\strings\internal\cord_rep_btree.cc">
+      <Filter>src\strings\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\strings\internal\cord_rep_btree_navigator.cc">
+      <Filter>src\strings\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\strings\internal\cord_rep_btree_reader.cc">
+      <Filter>src\strings\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\strings\internal\cord_rep_consume.cc">
+      <Filter>src\strings\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\strings\internal\cord_rep_crc.cc">
+      <Filter>src\strings\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\strings\internal\cordz_functions.cc">
+      <Filter>src\strings\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\strings\internal\cordz_handle.cc">
+      <Filter>src\strings\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\strings\internal\cordz_info.cc">
+      <Filter>src\strings\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\strings\internal\cordz_sample_token.cc">
+      <Filter>src\strings\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\strings\cord_analysis.cc">
+      <Filter>src\strings</Filter>
+    </ClCompile>
+    <ClCompile Include="src\strings\cord_buffer.cc">
+      <Filter>src\strings</Filter>
+    </ClCompile>
+    <ClCompile Include="src\debugging\symbolize.cc">
+      <Filter>src\debugging</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\absl\algorithm\algorithm.h">
+      <Filter>include\absl\algorithm</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\algorithm\container.h">
+      <Filter>include\absl\algorithm</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\base\internal\atomic_hook.h">
+      <Filter>include\absl\base\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\base\internal\cycleclock.h">
+      <Filter>include\absl\base\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\base\internal\direct_mmap.h">
+      <Filter>include\absl\base\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\base\internal\dynamic_annotations.h">
+      <Filter>include\absl\base\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\base\internal\endian.h">
+      <Filter>include\absl\base\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\base\internal\errno_saver.h">
+      <Filter>include\absl\base\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\base\internal\fast_type_id.h">
+      <Filter>include\absl\base\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\base\internal\hide_ptr.h">
+      <Filter>include\absl\base\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\base\internal\identity.h">
+      <Filter>include\absl\base\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\base\internal\inline_variable.h">
+      <Filter>include\absl\base\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\base\internal\invoke.h">
+      <Filter>include\absl\base\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\base\internal\low_level_alloc.h">
+      <Filter>include\absl\base\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\base\internal\low_level_scheduling.h">
+      <Filter>include\absl\base\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\base\internal\per_thread_tls.h">
+      <Filter>include\absl\base\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\base\internal\pretty_function.h">
+      <Filter>include\absl\base\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\base\internal\raw_logging.h">
+      <Filter>include\absl\base\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\base\internal\scheduling_mode.h">
+      <Filter>include\absl\base\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\base\internal\scoped_set_env.h">
+      <Filter>include\absl\base\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\base\internal\spinlock.h">
+      <Filter>include\absl\base\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\base\internal\spinlock_wait.h">
+      <Filter>include\absl\base\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\base\internal\strerror.h">
+      <Filter>include\absl\base\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\base\internal\sysinfo.h">
+      <Filter>include\absl\base\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\base\internal\thread_annotations.h">
+      <Filter>include\absl\base\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\base\internal\thread_identity.h">
+      <Filter>include\absl\base\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\base\internal\throw_delegate.h">
+      <Filter>include\absl\base\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\base\internal\tsan_mutex_interface.h">
+      <Filter>include\absl\base\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\base\internal\unaligned_access.h">
+      <Filter>include\absl\base\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\base\internal\unscaledcycleclock.h">
+      <Filter>include\absl\base\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\base\attributes.h">
+      <Filter>include\absl\base</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\base\call_once.h">
+      <Filter>include\absl\base</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\base\casts.h">
+      <Filter>include\absl\base</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\base\config.h">
+      <Filter>include\absl\base</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\base\const_init.h">
+      <Filter>include\absl\base</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\base\dynamic_annotations.h">
+      <Filter>include\absl\base</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\base\log_severity.h">
+      <Filter>include\absl\base</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\base\macros.h">
+      <Filter>include\absl\base</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\base\optimization.h">
+      <Filter>include\absl\base</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\base\options.h">
+      <Filter>include\absl\base</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\base\policy_checks.h">
+      <Filter>include\absl\base</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\base\port.h">
+      <Filter>include\absl\base</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\base\thread_annotations.h">
+      <Filter>include\absl\base</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\cleanup\internal\cleanup.h">
+      <Filter>include\absl\cleanup\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\cleanup\cleanup.h">
+      <Filter>include\absl\cleanup</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\container\btree_map.h">
+      <Filter>include\absl\container</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\container\btree_set.h">
+      <Filter>include\absl\container</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\container\fixed_array.h">
+      <Filter>include\absl\container</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\container\flat_hash_map.h">
+      <Filter>include\absl\container</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\container\flat_hash_set.h">
+      <Filter>include\absl\container</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\container\inlined_vector.h">
+      <Filter>include\absl\container</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\container\node_hash_map.h">
+      <Filter>include\absl\container</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\container\node_hash_set.h">
+      <Filter>include\absl\container</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\container\internal\btree.h">
+      <Filter>include\absl\container\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\container\internal\btree_container.h">
+      <Filter>include\absl\container\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\container\internal\common.h">
+      <Filter>include\absl\container\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\container\internal\compressed_tuple.h">
+      <Filter>include\absl\container\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\container\internal\container_memory.h">
+      <Filter>include\absl\container\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\container\internal\counting_allocator.h">
+      <Filter>include\absl\container\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\container\internal\hash_function_defaults.h">
+      <Filter>include\absl\container\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\container\internal\hash_policy_traits.h">
+      <Filter>include\absl\container\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\container\internal\hashtable_debug.h">
+      <Filter>include\absl\container\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\container\internal\hashtable_debug_hooks.h">
+      <Filter>include\absl\container\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\container\internal\hashtablez_sampler.h">
+      <Filter>include\absl\container\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\container\internal\inlined_vector.h">
+      <Filter>include\absl\container\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\container\internal\layout.h">
+      <Filter>include\absl\container\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\container\internal\raw_hash_map.h">
+      <Filter>include\absl\container\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\container\internal\raw_hash_set.h">
+      <Filter>include\absl\container\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\container\internal\test_instance_tracker.h">
+      <Filter>include\absl\container\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\container\internal\tracked.h">
+      <Filter>include\absl\container\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\debugging\internal\address_is_readable.h">
+      <Filter>include\absl\debugging\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\debugging\internal\demangle.h">
+      <Filter>include\absl\debugging\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\debugging\internal\elf_mem_image.h">
+      <Filter>include\absl\debugging\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\debugging\internal\examine_stack.h">
+      <Filter>include\absl\debugging\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\debugging\internal\stack_consumption.h">
+      <Filter>include\absl\debugging\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\debugging\internal\stacktrace_config.h">
+      <Filter>include\absl\debugging\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\debugging\internal\symbolize.h">
+      <Filter>include\absl\debugging\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\debugging\internal\vdso_support.h">
+      <Filter>include\absl\debugging\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\debugging\failure_signal_handler.h">
+      <Filter>include\absl\debugging</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\debugging\leak_check.h">
+      <Filter>include\absl\debugging</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\debugging\stacktrace.h">
+      <Filter>include\absl\debugging</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\debugging\symbolize.h">
+      <Filter>include\absl\debugging</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\flags\internal\commandlineflag.h">
+      <Filter>include\absl\flags\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\flags\internal\flag.h">
+      <Filter>include\absl\flags\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\flags\internal\parse.h">
+      <Filter>include\absl\flags\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\flags\internal\path_util.h">
+      <Filter>include\absl\flags\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\flags\internal\private_handle_accessor.h">
+      <Filter>include\absl\flags\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\flags\internal\program_name.h">
+      <Filter>include\absl\flags\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\flags\internal\registry.h">
+      <Filter>include\absl\flags\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\flags\internal\sequence_lock.h">
+      <Filter>include\absl\flags\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\flags\internal\usage.h">
+      <Filter>include\absl\flags\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\flags\commandlineflag.h">
+      <Filter>include\absl\flags</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\flags\config.h">
+      <Filter>include\absl\flags</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\flags\declare.h">
+      <Filter>include\absl\flags</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\flags\flag.h">
+      <Filter>include\absl\flags</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\flags\marshalling.h">
+      <Filter>include\absl\flags</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\flags\parse.h">
+      <Filter>include\absl\flags</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\flags\reflection.h">
+      <Filter>include\absl\flags</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\flags\usage.h">
+      <Filter>include\absl\flags</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\flags\usage_config.h">
+      <Filter>include\absl\flags</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\functional\bind_front.h">
+      <Filter>include\absl\functional</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\functional\function_ref.h">
+      <Filter>include\absl\functional</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\functional\internal\front_binder.h">
+      <Filter>include\absl\functional\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\functional\internal\function_ref.h">
+      <Filter>include\absl\functional\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\hash\internal\city.h">
+      <Filter>include\absl\hash\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\hash\internal\hash.h">
+      <Filter>include\absl\hash\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\hash\internal\spy_hash_state.h">
+      <Filter>include\absl\hash\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\hash\hash.h">
+      <Filter>include\absl\hash</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\memory\memory.h">
+      <Filter>include\absl\memory</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\meta\type_traits.h">
+      <Filter>include\absl\meta</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\numeric\internal\bits.h">
+      <Filter>include\absl\numeric\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\numeric\internal\representation.h">
+      <Filter>include\absl\numeric\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\numeric\bits.h">
+      <Filter>include\absl\numeric</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\numeric\int128.h">
+      <Filter>include\absl\numeric</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\random\internal\chi_square.h">
+      <Filter>include\absl\random\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\random\internal\distribution_caller.h">
+      <Filter>include\absl\random\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\random\internal\explicit_seed_seq.h">
+      <Filter>include\absl\random\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\random\internal\fast_uniform_bits.h">
+      <Filter>include\absl\random\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\random\internal\fastmath.h">
+      <Filter>include\absl\random\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\random\internal\generate_real.h">
+      <Filter>include\absl\random\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\random\internal\iostream_state_saver.h">
+      <Filter>include\absl\random\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\random\internal\nonsecure_base.h">
+      <Filter>include\absl\random\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\random\internal\pcg_engine.h">
+      <Filter>include\absl\random\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\random\internal\platform.h">
+      <Filter>include\absl\random\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\random\internal\pool_urbg.h">
+      <Filter>include\absl\random\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\random\internal\randen.h">
+      <Filter>include\absl\random\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\random\internal\randen_detect.h">
+      <Filter>include\absl\random\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\random\internal\randen_engine.h">
+      <Filter>include\absl\random\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\random\internal\randen_hwaes.h">
+      <Filter>include\absl\random\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\random\internal\randen_slow.h">
+      <Filter>include\absl\random\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\random\internal\randen_traits.h">
+      <Filter>include\absl\random\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\random\internal\salted_seed_seq.h">
+      <Filter>include\absl\random\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\random\internal\seed_material.h">
+      <Filter>include\absl\random\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\random\internal\sequence_urbg.h">
+      <Filter>include\absl\random\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\random\internal\traits.h">
+      <Filter>include\absl\random\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\random\internal\uniform_helper.h">
+      <Filter>include\absl\random\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\random\internal\wide_multiply.h">
+      <Filter>include\absl\random\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\random\bernoulli_distribution.h">
+      <Filter>include\absl\random</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\random\beta_distribution.h">
+      <Filter>include\absl\random</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\random\bit_gen_ref.h">
+      <Filter>include\absl\random</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\random\discrete_distribution.h">
+      <Filter>include\absl\random</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\random\distributions.h">
+      <Filter>include\absl\random</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\random\exponential_distribution.h">
+      <Filter>include\absl\random</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\random\gaussian_distribution.h">
+      <Filter>include\absl\random</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\random\log_uniform_int_distribution.h">
+      <Filter>include\absl\random</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\random\poisson_distribution.h">
+      <Filter>include\absl\random</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\random\random.h">
+      <Filter>include\absl\random</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\random\seed_gen_exception.h">
+      <Filter>include\absl\random</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\random\seed_sequences.h">
+      <Filter>include\absl\random</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\random\uniform_int_distribution.h">
+      <Filter>include\absl\random</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\random\uniform_real_distribution.h">
+      <Filter>include\absl\random</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\random\zipf_distribution.h">
+      <Filter>include\absl\random</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\status\internal\status_internal.h">
+      <Filter>include\absl\status\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\status\internal\statusor_internal.h">
+      <Filter>include\absl\status\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\status\status.h">
+      <Filter>include\absl\status</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\status\status_payload_printer.h">
+      <Filter>include\absl\status</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\status\statusor.h">
+      <Filter>include\absl\status</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\strings\internal\char_map.h">
+      <Filter>include\absl\strings\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\strings\internal\charconv_bigint.h">
+      <Filter>include\absl\strings\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\strings\internal\charconv_parse.h">
+      <Filter>include\absl\strings\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\strings\internal\cord_internal.h">
+      <Filter>include\absl\strings\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\strings\internal\cord_rep_flat.h">
+      <Filter>include\absl\strings\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\strings\internal\cord_rep_ring.h">
+      <Filter>include\absl\strings\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\strings\internal\cord_rep_ring_reader.h">
+      <Filter>include\absl\strings\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\strings\internal\escaping.h">
+      <Filter>include\absl\strings\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\strings\internal\memutil.h">
+      <Filter>include\absl\strings\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\strings\internal\ostringstream.h">
+      <Filter>include\absl\strings\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\strings\internal\pow10_helper.h">
+      <Filter>include\absl\strings\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\strings\internal\resize_uninitialized.h">
+      <Filter>include\absl\strings\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\strings\internal\stl_type_traits.h">
+      <Filter>include\absl\strings\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\strings\internal\str_join_internal.h">
+      <Filter>include\absl\strings\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\strings\internal\str_split_internal.h">
+      <Filter>include\absl\strings\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\strings\internal\string_constant.h">
+      <Filter>include\absl\strings\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\strings\internal\utf8.h">
+      <Filter>include\absl\strings\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\strings\internal\str_format\arg.h">
+      <Filter>include\absl\strings\internal\str_format</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\strings\internal\str_format\bind.h">
+      <Filter>include\absl\strings\internal\str_format</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\strings\internal\str_format\checker.h">
+      <Filter>include\absl\strings\internal\str_format</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\strings\internal\str_format\extension.h">
+      <Filter>include\absl\strings\internal\str_format</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\strings\internal\str_format\float_conversion.h">
+      <Filter>include\absl\strings\internal\str_format</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\strings\internal\str_format\output.h">
+      <Filter>include\absl\strings\internal\str_format</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\strings\internal\str_format\parser.h">
+      <Filter>include\absl\strings\internal\str_format</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\strings\ascii.h">
+      <Filter>include\absl\strings</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\strings\charconv.h">
+      <Filter>include\absl\strings</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\strings\cord.h">
+      <Filter>include\absl\strings</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\strings\escaping.h">
+      <Filter>include\absl\strings</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\strings\match.h">
+      <Filter>include\absl\strings</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\strings\numbers.h">
+      <Filter>include\absl\strings</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\strings\str_cat.h">
+      <Filter>include\absl\strings</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\strings\str_format.h">
+      <Filter>include\absl\strings</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\strings\str_join.h">
+      <Filter>include\absl\strings</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\strings\str_replace.h">
+      <Filter>include\absl\strings</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\strings\str_split.h">
+      <Filter>include\absl\strings</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\strings\string_view.h">
+      <Filter>include\absl\strings</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\strings\strip.h">
+      <Filter>include\absl\strings</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\strings\substitute.h">
+      <Filter>include\absl\strings</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\synchronization\internal\create_thread_identity.h">
+      <Filter>include\absl\synchronization\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\synchronization\internal\futex.h">
+      <Filter>include\absl\synchronization\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\synchronization\internal\graphcycles.h">
+      <Filter>include\absl\synchronization\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\synchronization\internal\kernel_timeout.h">
+      <Filter>include\absl\synchronization\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\synchronization\internal\per_thread_sem.h">
+      <Filter>include\absl\synchronization\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\synchronization\internal\thread_pool.h">
+      <Filter>include\absl\synchronization\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\synchronization\internal\waiter.h">
+      <Filter>include\absl\synchronization\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\synchronization\barrier.h">
+      <Filter>include\absl\synchronization</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\synchronization\blocking_counter.h">
+      <Filter>include\absl\synchronization</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\synchronization\mutex.h">
+      <Filter>include\absl\synchronization</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\synchronization\notification.h">
+      <Filter>include\absl\synchronization</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\time\internal\cctz\include\cctz\civil_time.h">
+      <Filter>include\absl\time\internal\cctz\include\cctz</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\time\internal\cctz\include\cctz\civil_time_detail.h">
+      <Filter>include\absl\time\internal\cctz\include\cctz</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\time\internal\cctz\include\cctz\time_zone.h">
+      <Filter>include\absl\time\internal\cctz\include\cctz</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\time\internal\cctz\include\cctz\zone_info_source.h">
+      <Filter>include\absl\time\internal\cctz\include\cctz</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\time\civil_time.h">
+      <Filter>include\absl\time</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\time\clock.h">
+      <Filter>include\absl\time</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\time\time.h">
+      <Filter>include\absl\time</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\types\any.h">
+      <Filter>include\absl\types</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\types\bad_any_cast.h">
+      <Filter>include\absl\types</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\types\bad_optional_access.h">
+      <Filter>include\absl\types</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\types\bad_variant_access.h">
+      <Filter>include\absl\types</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\types\compare.h">
+      <Filter>include\absl\types</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\types\optional.h">
+      <Filter>include\absl\types</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\types\span.h">
+      <Filter>include\absl\types</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\types\variant.h">
+      <Filter>include\absl\types</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\types\internal\conformance_aliases.h">
+      <Filter>include\absl\types\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\types\internal\conformance_archetype.h">
+      <Filter>include\absl\types\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\types\internal\conformance_profile.h">
+      <Filter>include\absl\types\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\types\internal\optional.h">
+      <Filter>include\absl\types\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\types\internal\parentheses.h">
+      <Filter>include\absl\types\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\types\internal\span.h">
+      <Filter>include\absl\types\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\types\internal\transform_args.h">
+      <Filter>include\absl\types\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\types\internal\variant.h">
+      <Filter>include\absl\types\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\utility\utility.h">
+      <Filter>include\absl\utility</Filter>
+    </ClInclude>
+    <ClInclude Include="src\time\internal\cctz\src\time_zone_fixed.h">
+      <Filter>src\time\internal\cctz\src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\time\internal\cctz\src\time_zone_if.h">
+      <Filter>src\time\internal\cctz\src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\time\internal\cctz\src\time_zone_impl.h">
+      <Filter>src\time\internal\cctz\src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\time\internal\cctz\src\time_zone_info.h">
+      <Filter>src\time\internal\cctz\src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\time\internal\cctz\src\time_zone_libc.h">
+      <Filter>src\time\internal\cctz\src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\time\internal\cctz\src\time_zone_posix.h">
+      <Filter>src\time\internal\cctz\src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\time\internal\cctz\src\tzfile.h">
+      <Filter>src\time\internal\cctz\src</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\random\internal\distribution_test_util.h">
+      <Filter>include\absl\random\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\base\internal\prefetch.h">
+      <Filter>include\absl\base\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\base\absl_export.h">
+      <Filter>include\absl\base</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\container\internal\node_slot_policy.h">
+      <Filter>include\absl\container\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\functional\internal\any_invocable.h">
+      <Filter>include\absl\functional\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\functional\any_invocable.h">
+      <Filter>include\absl\functional</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\hash\internal\low_level_hash.h">
+      <Filter>include\absl\hash\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\profiling\internal\exponential_biased.h">
+      <Filter>include\absl\profiling\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\profiling\internal\periodic_sampler.h">
+      <Filter>include\absl\profiling\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\profiling\internal\sample_recorder.h">
+      <Filter>include\absl\profiling\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\strings\internal\cord_data_edge.h">
+      <Filter>include\absl\strings\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\strings\internal\cord_rep_btree.h">
+      <Filter>include\absl\strings\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\strings\internal\cord_rep_btree_navigator.h">
+      <Filter>include\absl\strings\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\strings\internal\cord_rep_btree_reader.h">
+      <Filter>include\absl\strings\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\strings\internal\cord_rep_consume.h">
+      <Filter>include\absl\strings\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\strings\internal\cord_rep_crc.h">
+      <Filter>include\absl\strings\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\strings\internal\cordz_functions.h">
+      <Filter>include\absl\strings\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\strings\internal\cordz_handle.h">
+      <Filter>include\absl\strings\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\strings\internal\cordz_info.h">
+      <Filter>include\absl\strings\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\strings\internal\cordz_sample_token.h">
+      <Filter>include\absl\strings\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\strings\internal\cordz_statistics.h">
+      <Filter>include\absl\strings\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\strings\internal\cordz_update_scope.h">
+      <Filter>include\absl\strings\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\strings\internal\cordz_update_tracker.h">
+      <Filter>include\absl\strings\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\strings\cord_analysis.h">
+      <Filter>include\absl\strings</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\strings\cord_buffer.h">
+      <Filter>include\absl\strings</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\base\internal\exception_testing.h">
+      <Filter>include\absl\base\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\base\internal\inline_variable_testing.h">
+      <Filter>include\absl\base\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\random\internal\nanobenchmark.h">
+      <Filter>include\absl\random\internal</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="include\absl\base\internal\spinlock_win32.inc">
+      <Filter>include\absl\base\internal</Filter>
+    </None>
+    <None Include="include\absl\debugging\internal\stacktrace_arm-inl.inc">
+      <Filter>include\absl\debugging\internal</Filter>
+    </None>
+    <None Include="include\absl\debugging\internal\stacktrace_generic-inl.inc">
+      <Filter>include\absl\debugging\internal</Filter>
+    </None>
+    <None Include="include\absl\debugging\internal\stacktrace_powerpc-inl.inc">
+      <Filter>include\absl\debugging\internal</Filter>
+    </None>
+    <None Include="include\absl\debugging\internal\stacktrace_unimplemented-inl.inc">
+      <Filter>include\absl\debugging\internal</Filter>
+    </None>
+    <None Include="include\absl\debugging\internal\stacktrace_win32-inl.inc">
+      <Filter>include\absl\debugging\internal</Filter>
+    </None>
+    <None Include="include\absl\debugging\internal\stacktrace_x86-inl.inc">
+      <Filter>include\absl\debugging\internal</Filter>
+    </None>
+    <None Include="include\absl\debugging\internal\stacktrace_aarch64-inl.inc">
+      <Filter>include\absl\debugging\internal</Filter>
+    </None>
+    <None Include="include\absl\debugging\symbolize_win32.inc">
+      <Filter>include\absl\debugging</Filter>
+    </None>
+    <None Include="include\absl\numeric\int128_have_intrinsic.inc">
+      <Filter>include\absl\numeric</Filter>
+    </None>
+    <None Include="include\absl\numeric\int128_no_intrinsic.inc">
+      <Filter>include\absl\numeric</Filter>
+    </None>
+    <None Include="include\absl\time\internal\get_current_time_chrono.inc">
+      <Filter>include\absl\time\internal</Filter>
+    </None>
+    <None Include="include\absl\time\internal\get_current_time_posix.inc">
+      <Filter>include\absl\time\internal</Filter>
+    </None>
+    <None Include="include\absl\time\internal\zoneinfo.inc">
+      <Filter>include\absl\time\internal</Filter>
+    </None>
+    <None Include="Readme\CONTRIBUTING.md">
+      <Filter>Readme</Filter>
+    </None>
+    <None Include="Readme\LICENSE">
+      <Filter>Readme</Filter>
+    </None>
+    <None Include="Readme\README.md">
+      <Filter>Readme</Filter>
+    </None>
+    <None Include="Readme\UPGRADES.md">
+      <Filter>Readme</Filter>
+    </None>
+    <None Include="include\absl\flags\internal\flag_msvc.inc">
+      <Filter>include\absl\flags\internal</Filter>
+    </None>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,161 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="include">
+      <UniqueIdentifier>{5a26d40c-aec9-4b0e-a93c-b54fd352b35a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\grpc">
+      <UniqueIdentifier>{0338bb77-668b-436a-be07-cab2d4d7618f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\grpc\compiler">
+      <UniqueIdentifier>{cf5e465e-8d6a-4c8c-aadc-185836b104e8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{f802c251-0c02-4f82-9a59-1a785ff1f5ca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\compiler">
+      <UniqueIdentifier>{19a67860-1807-4156-850c-661567fa6756}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="dllmain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\compiler\cpp_generator.cc">
+      <Filter>src\compiler</Filter>
+    </ClCompile>
+    <ClCompile Include="src\compiler\cpp_plugin.cc">
+      <Filter>src\compiler</Filter>
+    </ClCompile>
+    <ClCompile Include="src\compiler\csharp_generator.cc">
+      <Filter>src\compiler</Filter>
+    </ClCompile>
+    <ClCompile Include="src\compiler\csharp_plugin.cc">
+      <Filter>src\compiler</Filter>
+    </ClCompile>
+    <ClCompile Include="src\compiler\node_generator.cc">
+      <Filter>src\compiler</Filter>
+    </ClCompile>
+    <ClCompile Include="src\compiler\node_plugin.cc">
+      <Filter>src\compiler</Filter>
+    </ClCompile>
+    <ClCompile Include="src\compiler\objective_c_generator.cc">
+      <Filter>src\compiler</Filter>
+    </ClCompile>
+    <ClCompile Include="src\compiler\objective_c_plugin.cc">
+      <Filter>src\compiler</Filter>
+    </ClCompile>
+    <ClCompile Include="src\compiler\php_generator.cc">
+      <Filter>src\compiler</Filter>
+    </ClCompile>
+    <ClCompile Include="src\compiler\php_plugin.cc">
+      <Filter>src\compiler</Filter>
+    </ClCompile>
+    <ClCompile Include="src\compiler\python_generator.cc">
+      <Filter>src\compiler</Filter>
+    </ClCompile>
+    <ClCompile Include="src\compiler\python_plugin.cc">
+      <Filter>src\compiler</Filter>
+    </ClCompile>
+    <ClCompile Include="src\compiler\ruby_generator.cc">
+      <Filter>src\compiler</Filter>
+    </ClCompile>
+    <ClCompile Include="src\compiler\ruby_plugin.cc">
+      <Filter>src\compiler</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\grpc\compiler\config.h">
+      <Filter>include\grpc\compiler</Filter>
+    </ClInclude>
+    <ClInclude Include="include\grpc\compiler\config_protobuf.h">
+      <Filter>include\grpc\compiler</Filter>
+    </ClInclude>
+    <ClInclude Include="include\grpc\compiler\cpp_generator.h">
+      <Filter>include\grpc\compiler</Filter>
+    </ClInclude>
+    <ClInclude Include="include\grpc\compiler\cpp_generator_helpers.h">
+      <Filter>include\grpc\compiler</Filter>
+    </ClInclude>
+    <ClInclude Include="include\grpc\compiler\cpp_plugin.h">
+      <Filter>include\grpc\compiler</Filter>
+    </ClInclude>
+    <ClInclude Include="include\grpc\compiler\csharp_generator.h">
+      <Filter>include\grpc\compiler</Filter>
+    </ClInclude>
+    <ClInclude Include="include\grpc\compiler\csharp_generator_helpers.h">
+      <Filter>include\grpc\compiler</Filter>
+    </ClInclude>
+    <ClInclude Include="include\grpc\compiler\generator_helpers.h">
+      <Filter>include\grpc\compiler</Filter>
+    </ClInclude>
+    <ClInclude Include="include\grpc\compiler\node_generator.h">
+      <Filter>include\grpc\compiler</Filter>
+    </ClInclude>
+    <ClInclude Include="include\grpc\compiler\node_generator_helpers.h">
+      <Filter>include\grpc\compiler</Filter>
+    </ClInclude>
+    <ClInclude Include="include\grpc\compiler\objective_c_generator.h">
+      <Filter>include\grpc\compiler</Filter>
+    </ClInclude>
+    <ClInclude Include="include\grpc\compiler\objective_c_generator_helpers.h">
+      <Filter>include\grpc\compiler</Filter>
+    </ClInclude>
+    <ClInclude Include="include\grpc\compiler\php_generator.h">
+      <Filter>include\grpc\compiler</Filter>
+    </ClInclude>
+    <ClInclude Include="include\grpc\compiler\php_generator_helpers.h">
+      <Filter>include\grpc\compiler</Filter>
+    </ClInclude>
+    <ClInclude Include="include\grpc\compiler\protobuf_plugin.h">
+      <Filter>include\grpc\compiler</Filter>
+    </ClInclude>
+    <ClInclude Include="include\grpc\compiler\python_generator.h">
+      <Filter>include\grpc\compiler</Filter>
+    </ClInclude>
+    <ClInclude Include="include\grpc\compiler\python_generator_helpers.h">
+      <Filter>include\grpc\compiler</Filter>
+    </ClInclude>
+    <ClInclude Include="include\grpc\compiler\python_private_generator.h">
+      <Filter>include\grpc\compiler</Filter>
+    </ClInclude>
+    <ClInclude Include="include\grpc\compiler\ruby_generator.h">
+      <Filter>include\grpc\compiler</Filter>
+    </ClInclude>
+    <ClInclude Include="include\grpc\compiler\ruby_generator_helpers-inl.h">
+      <Filter>include\grpc\compiler</Filter>
+    </ClInclude>
+    <ClInclude Include="include\grpc\compiler\ruby_generator_map-inl.h">
+      <Filter>include\grpc\compiler</Filter>
+    </ClInclude>
+    <ClInclude Include="include\grpc\compiler\ruby_generator_string-inl.h">
+      <Filter>include\grpc\compiler</Filter>
+    </ClInclude>
+    <ClInclude Include="include\grpc\compiler\schema_interface.h">
+      <Filter>include\grpc\compiler</Filter>
+    </ClInclude>
+    <ClInclude Include="include\grpc\compiler\plugins.h">
+      <Filter>include\grpc\compiler</Filter>
+    </ClInclude>
+    <ClInclude Include="include\grpc\compiler\grpc_compiler_export.h">
+      <Filter>include\grpc\compiler</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="src\compiler\README.md">
+      <Filter>src\compiler</Filter>
+    </None>
+  </ItemGroup>
+</Project>

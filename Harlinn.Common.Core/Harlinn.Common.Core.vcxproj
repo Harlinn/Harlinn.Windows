@@ -1,0 +1,379 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{b47470e4-2b24-4119-bac1-4e8bc52fb19d}</ProjectGuid>
+    <RootNamespace>HarlinnCommonCore</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Label="Vcpkg">
+    <VcpkgEnabled>false</VcpkgEnabled>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>BUILDING_HARLINN_COMMON_CORE=1;FMT_EXPORT=1;_CRT_SECURE_NO_WARNINGS=1;WIN32;_DEBUG;HARLINNCOMMONCORE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)3rdParty\Harlinn.LMDB;$(BOOST_ROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+      <AdditionalDependencies>Secur32.lib;OneCore.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(OutDir)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>BUILDING_HARLINN_COMMON_CORE=1;FMT_EXPORT=1;_CRT_SECURE_NO_WARNINGS=1;WIN32;NDEBUG;HARLINNCOMMONCORE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)3rdParty\Harlinn.LMDB;$(BOOST_ROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+      <AdditionalDependencies>Secur32.lib;OneCore.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(OutDir)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>BUILDING_HARLINN_COMMON_CORE=1;FMT_EXPORT=1;_CRT_SECURE_NO_WARNINGS=1;_DEBUG;HARLINNCOMMONCORE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)3rdParty\Harlinn.LMDB;$(BOOST_ROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+      <AdditionalDependencies>Secur32.lib;OneCore.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(OutDir)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>BUILDING_HARLINN_COMMON_CORE=1;FMT_EXPORT=1;_CRT_SECURE_NO_WARNINGS=1;NDEBUG;HARLINNCOMMONCORE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)3rdParty\Harlinn.LMDB;$(BOOST_ROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+      <AdditionalDependencies>Secur32.lib;OneCore.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(OutDir)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="fmt\args.h" />
+    <ClInclude Include="fmt\chrono.h" />
+    <ClInclude Include="fmt\color.h" />
+    <ClInclude Include="fmt\compile.h" />
+    <ClInclude Include="fmt\core.h" />
+    <ClInclude Include="fmt\format-inl.h" />
+    <ClInclude Include="fmt\format.h" />
+    <ClInclude Include="fmt\os.h" />
+    <ClInclude Include="fmt\ostream.h" />
+    <ClInclude Include="fmt\printf.h" />
+    <ClInclude Include="fmt\ranges.h" />
+    <ClInclude Include="fmt\std.h" />
+    <ClInclude Include="fmt\xchar.h" />
+    <ClInclude Include="HCC7BitEncoding.h" />
+    <ClInclude Include="HCCActiveObject.h" />
+    <ClInclude Include="HCCApplication.h" />
+    <ClInclude Include="HCCApplicationOptions.h" />
+    <ClInclude Include="HCCArray.h" />
+    <ClInclude Include="HCCBinaryReader.h" />
+    <ClInclude Include="HCCBinaryWriter.h" />
+    <ClInclude Include="HCCBitConverter.h" />
+    <ClInclude Include="HCCBits.h" />
+    <ClInclude Include="HCCBlocks.h" />
+    <ClInclude Include="HCCBuffer.h" />
+    <ClInclude Include="HCCComImpl.h" />
+    <ClInclude Include="HCCComInterfaces.h" />
+    <ClInclude Include="HCCConcurrentQueue.h" />
+    <ClInclude Include="HCCDataSource.h" />
+    <ClInclude Include="HCCDirectoryUtils.h" />
+    <ClInclude Include="HCCIOBufferStream.h" />
+    <ClInclude Include="HCCCom.h" />
+    <ClInclude Include="HCCConsole.h" />
+    <ClInclude Include="HCCCrypto.h" />
+    <ClInclude Include="HCCIOBase.h" />
+    <ClInclude Include="HCCIOCompletionPort.h" />
+    <ClInclude Include="HCCIORequest.h" />
+    <ClInclude Include="HCCIStreamOnStreamImpl.h" />
+    <ClInclude Include="HCCList.h" />
+    <ClInclude Include="HCCLMDBEx.h" />
+    <ClInclude Include="HCCLocationAPI.h" />
+    <ClInclude Include="HCCLogger.h" />
+    <ClInclude Include="HCCLoggerBackend.h" />
+    <ClInclude Include="HCCLoggerBackendBuffer.h" />
+    <ClInclude Include="HCCLoggerBackendOptions.h" />
+    <ClInclude Include="HCCLoggerBackendDataTypes.h" />
+    <ClInclude Include="HCCLib.h" />
+    <ClInclude Include="HCCConverters.h" />
+    <ClInclude Include="HCCCRC.h" />
+    <ClInclude Include="HCCCurrency.h" />
+    <ClInclude Include="HCCDateTime.h" />
+    <ClInclude Include="HCCDef.h" />
+    <ClInclude Include="HCCEnvironment.h" />
+    <ClInclude Include="HCCEse.h" />
+    <ClInclude Include="HCCEseResult.h" />
+    <ClInclude Include="HCCException.h" />
+    <ClInclude Include="HCCGuid.h" />
+    <ClInclude Include="HCCHandle.h" />
+    <ClInclude Include="HCCHTTP.h" />
+    <ClInclude Include="HCCHTTPServer.h" />
+    <ClInclude Include="HCCIO.h" />
+    <ClInclude Include="HCCIOContext.h" />
+    <ClInclude Include="HCCLinkedList.h" />
+    <ClInclude Include="HCCLMDB.h" />
+    <ClInclude Include="HCCLoggerLevel.h" />
+    <ClInclude Include="HCCLoggerLMDBSink.h" />
+    <ClInclude Include="HCCLoggerLMDBSinkOptions.h" />
+    <ClInclude Include="HCCLoggerLMDBSinkStorage.h" />
+    <ClInclude Include="HCCLogging.h" />
+    <ClInclude Include="HCCMath.h" />
+    <ClInclude Include="HCCMatrix.h" />
+    <ClInclude Include="HCCMeta.h" />
+    <ClInclude Include="HCCMemory.h" />
+    <ClInclude Include="HCCObj.h" />
+    <ClInclude Include="HCCObjBase.h" />
+    <ClInclude Include="HCCObservable.h" />
+    <ClInclude Include="HCCPersistent.h" />
+    <ClInclude Include="HCCPersistentDecoder.h" />
+    <ClInclude Include="HCCPipe.h" />
+    <ClInclude Include="HCCPortableDeviceTypes.h" />
+    <ClInclude Include="HCCProcess.h" />
+    <ClInclude Include="HCCPropSys.h" />
+    <ClInclude Include="HCCRdtscConverter.h" />
+    <ClInclude Include="HCCReference.h" />
+    <ClInclude Include="HCCRtWorkQ.h" />
+    <ClInclude Include="HCCSecurity.h" />
+    <ClInclude Include="HCCCommDevice.h" />
+    <ClInclude Include="HCCSensorsAPI.h" />
+    <ClInclude Include="HCCSerializationDataReader.h" />
+    <ClInclude Include="HCCSerializationDataType.h" />
+    <ClInclude Include="HCCSerializationDataWriter.h" />
+    <ClInclude Include="HCCService.h" />
+    <ClInclude Include="HCCShell.h" />
+    <ClInclude Include="HCCSIMD.h" />
+    <ClInclude Include="HCCSocket.h" />
+    <ClInclude Include="HCCSocketServer.h" />
+    <ClInclude Include="HCCString.h" />
+    <ClInclude Include="HCCSync.h" />
+    <ClInclude Include="HCCTcpClient.h" />
+    <ClInclude Include="HCCTcpServer.h" />
+    <ClInclude Include="HCCThread.h" />
+    <ClInclude Include="HCCThreadpools.h" />
+    <ClInclude Include="HCCTimeseriesMath.h" />
+    <ClInclude Include="HCCTraits.h" />
+    <ClInclude Include="HCCTuple.h" />
+    <ClInclude Include="HCCTypeDescriptorCursor.h" />
+    <ClInclude Include="HCCUdpClient.h" />
+    <ClInclude Include="HCCUdpServer.h" />
+    <ClInclude Include="HCCVariant.h" />
+    <ClInclude Include="HCCVector.h" />
+    <ClInclude Include="HCCwbem.h" />
+    <ClInclude Include="HCCWinError.h" />
+    <ClInclude Include="HCCXml.h" />
+    <ClInclude Include="pch.h" />
+    <ClInclude Include="xxh3.h" />
+    <ClInclude Include="xxhash.h" />
+    <ClInclude Include="xxhash_cx.h" />
+    <ClInclude Include="xxh_x86dispatch.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="format.cc">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="HCCApplication.cpp" />
+    <ClCompile Include="HCCBlocks.cpp" />
+    <ClCompile Include="HCCCom.cpp" />
+    <ClCompile Include="HCCCRC32.cpp" />
+    <ClCompile Include="HCCCurrency.cpp" />
+    <ClCompile Include="HCCDateTime.cpp" />
+    <ClCompile Include="HCCEnvironment.cpp" />
+    <ClCompile Include="HCCEse.cpp" />
+    <ClCompile Include="HCCException.cpp" />
+    <ClCompile Include="HCCGuid.cpp" />
+    <ClCompile Include="HCCIO.cpp" />
+    <ClCompile Include="HCCIOContext.cpp" />
+    <ClCompile Include="HCCIStreamOnStreamImpl.cpp" />
+    <ClCompile Include="HCCLMDB.cpp" />
+    <ClCompile Include="HCCLocationAPI.cpp" />
+    <ClCompile Include="HCCLoggerBackend.cpp" />
+    <ClCompile Include="HCCLoggerBackendDataTypes.cpp" />
+    <ClCompile Include="HCCLoggerLMDBSink.cpp" />
+    <ClCompile Include="HCCMemory.cpp" />
+    <ClCompile Include="HCCPipe.cpp" />
+    <ClCompile Include="HCCPortableDeviceTypes.cpp" />
+    <ClCompile Include="HCCProcess.cpp" />
+    <ClCompile Include="HCCSecurity.cpp" />
+    <ClCompile Include="HCCCommDevice.cpp" />
+    <ClCompile Include="HCCSensorsAPI.cpp" />
+    <ClCompile Include="HCCSocket.cpp" />
+    <ClCompile Include="HCCString.cpp" />
+    <ClCompile Include="HCCVariant.cpp" />
+    <ClCompile Include="HCCwbem.cpp" />
+    <ClCompile Include="os.cc">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="pch.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="TestIds.cpp" />
+    <ClCompile Include="xxhash.c">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="xxh_x86dispatch.c">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">XXH_X86DISPATCH_ALLOW_AVX=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">XXH_X86DISPATCH_ALLOW_AVX=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">XXH_X86DISPATCH_ALLOW_AVX=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">XXH_X86DISPATCH_ALLOW_AVX=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Natvis Include="Debug\hcc.natvis" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="HCCComInterfaces.xm" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

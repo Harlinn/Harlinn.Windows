@@ -1,0 +1,44 @@
+#pragma once
+
+#include <HCCApplication.h>
+#include <HCCArray.h>
+#include <HCCBinaryReader.h>
+#include <HCCBinaryWriter.h>
+#include <HCCBits.h>
+#include <HCCBlocks.h>
+#include <HCCComImpl.h>
+#include <HCCComInterfaces.h>
+#include <HCCCommDevice.h>
+#include <HCCConverters.h>
+#include <HCCCrypto.h>
+#include <HCCGuid.h>
+#include <HCCCurrency.h>
+#include <HCCDateTime.h>
+#include <HCCEnvironment.h>
+#include <HCCEse.h>
+#include <HCCIO.h>
+#include <HCCIOContext.h>
+#include <HCCLib.h>
+#include <HCCLMDB.h>
+#include <HCCLoggerLMDBSinkStorage.h>
+#include <HCCMath.h>
+#include <HCCMatrix.h>
+#include <HCCObj.h>
+#include <HCCProcess.h>
+#include <HCCSecurity.h>
+#include <HCCSocket.h>
+#include <HCCString.h>
+#include <HCCSync.h>
+#include <HCCTcpClient.h>
+#include <HCCTcpServer.h>
+#include <HCCThread.h>
+#include <HCCTraits.h>
+#include <HCCTuple.h>
+#include <HCCTypeDescriptorCursor.h>
+#include <HCCVariant.h>
+#include <HCCVector.h>
+#include <HCCXml.h>
+
+#define BOOST_TEST_DYN_LINK
+#include <boost/test/unit_test.hpp>
+

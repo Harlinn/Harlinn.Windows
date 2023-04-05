@@ -1,0 +1,90 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="include">
+      <UniqueIdentifier>{6cc53f07-e60a-40c8-b133-c3b69cc7e4e8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\stb">
+      <UniqueIdentifier>{eed29e9f-f295-4eaa-8fd3-4bb85040d0b7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Readme">
+      <UniqueIdentifier>{aa9e3471-fe6d-4705-baea-7d3f6bf5a6e0}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\stb\stb_c_lexer.h">
+      <Filter>include\stb</Filter>
+    </ClInclude>
+    <ClInclude Include="include\stb\stb_connected_components.h">
+      <Filter>include\stb</Filter>
+    </ClInclude>
+    <ClInclude Include="include\stb\stb_divide.h">
+      <Filter>include\stb</Filter>
+    </ClInclude>
+    <ClInclude Include="include\stb\stb_ds.h">
+      <Filter>include\stb</Filter>
+    </ClInclude>
+    <ClInclude Include="include\stb\stb_dxt.h">
+      <Filter>include\stb</Filter>
+    </ClInclude>
+    <ClInclude Include="include\stb\stb_easy_font.h">
+      <Filter>include\stb</Filter>
+    </ClInclude>
+    <ClInclude Include="include\stb\stb_herringbone_wang_tile.h">
+      <Filter>include\stb</Filter>
+    </ClInclude>
+    <ClInclude Include="include\stb\stb_hexwave.h">
+      <Filter>include\stb</Filter>
+    </ClInclude>
+    <ClInclude Include="include\stb\stb_image.h">
+      <Filter>include\stb</Filter>
+    </ClInclude>
+    <ClInclude Include="include\stb\stb_image_resize.h">
+      <Filter>include\stb</Filter>
+    </ClInclude>
+    <ClInclude Include="include\stb\stb_image_write.h">
+      <Filter>include\stb</Filter>
+    </ClInclude>
+    <ClInclude Include="include\stb\stb_include.h">
+      <Filter>include\stb</Filter>
+    </ClInclude>
+    <ClInclude Include="include\stb\stb_leakcheck.h">
+      <Filter>include\stb</Filter>
+    </ClInclude>
+    <ClInclude Include="include\stb\stb_rect_pack.h">
+      <Filter>include\stb</Filter>
+    </ClInclude>
+    <ClInclude Include="include\stb\stb_sprintf.h">
+      <Filter>include\stb</Filter>
+    </ClInclude>
+    <ClInclude Include="include\stb\stb_textedit.h">
+      <Filter>include\stb</Filter>
+    </ClInclude>
+    <ClInclude Include="include\stb\stb_tilemap_editor.h">
+      <Filter>include\stb</Filter>
+    </ClInclude>
+    <ClInclude Include="include\stb\stb_truetype.h">
+      <Filter>include\stb</Filter>
+    </ClInclude>
+    <ClInclude Include="include\stb\stb_voxel_render.h">
+      <Filter>include\stb</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="include\stb\stb_vorbis.c">
+      <Filter>include\stb</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

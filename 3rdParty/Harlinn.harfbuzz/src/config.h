@@ -1,0 +1,26 @@
+#pragma once
+
+#define HAVE_FREETYPE 1
+
+#define HAVE_FT_DONE_MM_VAR 1
+
+#define HAVE_FT_GET_VAR_BLEND_COORDINATES 1
+
+#define HAVE_FT_SET_VAR_BLEND_COORDINATES 1
+
+#define HAVE_ICU 1
+
+#define HAVE_UNISCRIBE 1
+
+#define HAVE_DIRECTWRITE 1
+
+#define HAVE_GDI 1
+
+#define HAVE_ISATTY 1
+
+#define HAVE_STDBOOL_H 1
+
+#define PACKAGE_NAME "HarfBuzz"
+
+#define PACKAGE_VERSION "3.0.0"
+

@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{c2e30d4f-75e3-4768-8188-ce7f96836429}</ProjectGuid>
+    <RootNamespace>Harlinnscintilla</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Label="Vcpkg">
+    <VcpkgEnabled>false</VcpkgEnabled>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>BUILDING_HARLINN_SCINTILLA=1;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES=1;_CRT_SECURE_NO_DEPRECATE=1;_SCL_SECURE_NO_WARNINGS=1;WIN32;_DEBUG;HARLINNSCINTILLA_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)src\win32;$(ProjectDir)src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+      <AdditionalDependencies>Imm32.lib;Msimg32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>BUILDING_HARLINN_SCINTILLA=1;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES=1;_CRT_SECURE_NO_DEPRECATE=1;_SCL_SECURE_NO_WARNINGS=1;WIN32;NDEBUG;HARLINNSCINTILLA_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)src\win32;$(ProjectDir)src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+      <AdditionalDependencies>Imm32.lib;Msimg32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>BUILDING_HARLINN_SCINTILLA=1;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES=1;_CRT_SECURE_NO_DEPRECATE=1;_SCL_SECURE_NO_WARNINGS=1;_DEBUG;HARLINNSCINTILLA_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)src\win32;$(ProjectDir)src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+      <AdditionalDependencies>Imm32.lib;Msimg32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>BUILDING_HARLINN_SCINTILLA=1;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES=1;_CRT_SECURE_NO_DEPRECATE=1;_SCL_SECURE_NO_WARNINGS=1;NDEBUG;HARLINNSCINTILLA_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)src\win32;$(ProjectDir)src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+      <AdditionalDependencies>Imm32.lib;Msimg32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="src\AutoComplete.cxx" />
+    <ClCompile Include="src\CallTip.cxx" />
+    <ClCompile Include="src\CaseConvert.cxx" />
+    <ClCompile Include="src\CaseFolder.cxx" />
+    <ClCompile Include="src\CellBuffer.cxx" />
+    <ClCompile Include="src\CharacterCategoryMap.cxx" />
+    <ClCompile Include="src\CharacterType.cxx" />
+    <ClCompile Include="src\CharClassify.cxx" />
+    <ClCompile Include="src\ContractionState.cxx" />
+    <ClCompile Include="src\DBCS.cxx" />
+    <ClCompile Include="src\Decoration.cxx" />
+    <ClCompile Include="src\Document.cxx" />
+    <ClCompile Include="src\EditModel.cxx" />
+    <ClCompile Include="src\Editor.cxx" />
+    <ClCompile Include="src\EditView.cxx" />
+    <ClCompile Include="src\Geometry.cxx" />
+    <ClCompile Include="src\Indicator.cxx" />
+    <ClCompile Include="src\KeyMap.cxx" />
+    <ClCompile Include="src\LineMarker.cxx" />
+    <ClCompile Include="src\MarginView.cxx" />
+    <ClCompile Include="src\PerLine.cxx" />
+    <ClCompile Include="src\PositionCache.cxx" />
+    <ClCompile Include="src\RESearch.cxx" />
+    <ClCompile Include="src\RunStyles.cxx" />
+    <ClCompile Include="src\ScintillaBase.cxx" />
+    <ClCompile Include="src\Selection.cxx" />
+    <ClCompile Include="src\Style.cxx" />
+    <ClCompile Include="src\UniConversion.cxx" />
+    <ClCompile Include="src\UniqueString.cxx" />
+    <ClCompile Include="src\ViewStyle.cxx" />
+    <ClCompile Include="src\win32\HanjaDic.cxx" />
+    <ClCompile Include="src\win32\PlatWin.cxx" />
+    <ClCompile Include="src\win32\ScintillaDLL.cxx" />
+    <ClCompile Include="src\win32\ScintillaWin.cxx" />
+    <ClCompile Include="src\XPM.cxx" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\scintilla\ILexer.h" />
+    <ClInclude Include="include\scintilla\ILoader.h" />
+    <ClInclude Include="include\scintilla\Scintilla.h" />
+    <ClInclude Include="include\scintilla\ScintillaCall.h" />
+    <ClInclude Include="include\scintilla\ScintillaMessages.h" />
+    <ClInclude Include="include\scintilla\ScintillaStructures.h" />
+    <ClInclude Include="include\scintilla\ScintillaTypes.h" />
+    <ClInclude Include="include\scintilla\ScintillaWidget.h" />
+    <ClInclude Include="include\scintilla\scintilla_export.h" />
+    <ClInclude Include="include\scintilla\Sci_Position.h" />
+    <ClInclude Include="src\AutoComplete.h" />
+    <ClInclude Include="src\CallTip.h" />
+    <ClInclude Include="src\CaseConvert.h" />
+    <ClInclude Include="src\CaseFolder.h" />
+    <ClInclude Include="src\CellBuffer.h" />
+    <ClInclude Include="src\CharacterCategoryMap.h" />
+    <ClInclude Include="src\CharacterType.h" />
+    <ClInclude Include="src\CharClassify.h" />
+    <ClInclude Include="src\ContractionState.h" />
+    <ClInclude Include="src\DBCS.h" />
+    <ClInclude Include="src\Debugging.h" />
+    <ClInclude Include="src\Decoration.h" />
+    <ClInclude Include="src\Document.h" />
+    <ClInclude Include="src\EditModel.h" />
+    <ClInclude Include="src\Editor.h" />
+    <ClInclude Include="src\EditView.h" />
+    <ClInclude Include="src\ElapsedPeriod.h" />
+    <ClInclude Include="src\Geometry.h" />
+    <ClInclude Include="src\Indicator.h" />
+    <ClInclude Include="src\KeyMap.h" />
+    <ClInclude Include="src\LineMarker.h" />
+    <ClInclude Include="src\MarginView.h" />
+    <ClInclude Include="src\Partitioning.h" />
+    <ClInclude Include="src\PerLine.h" />
+    <ClInclude Include="src\Platform.h" />
+    <ClInclude Include="src\Position.h" />
+    <ClInclude Include="src\PositionCache.h" />
+    <ClInclude Include="src\RESearch.h" />
+    <ClInclude Include="src\RunStyles.h" />
+    <ClInclude Include="src\ScintillaBase.h" />
+    <ClInclude Include="src\Selection.h" />
+    <ClInclude Include="src\SparseVector.h" />
+    <ClInclude Include="src\SplitVector.h" />
+    <ClInclude Include="src\Style.h" />
+    <ClInclude Include="src\UniConversion.h" />
+    <ClInclude Include="src\UniqueString.h" />
+    <ClInclude Include="src\ViewStyle.h" />
+    <ClInclude Include="src\win32\HanjaDic.h" />
+    <ClInclude Include="src\win32\PlatWin.h" />
+    <ClInclude Include="src\win32\ScintillaWin.h" />
+    <ClInclude Include="src\XPM.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="include\scintilla\Scintilla.iface" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="src\win32\ScintRes.rc" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

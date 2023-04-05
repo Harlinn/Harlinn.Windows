@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{0c15e000-21e9-4bd9-bf07-ff4b4643361e}</ProjectGuid>
+    <RootNamespace>Harlinnlibxml2</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Label="Vcpkg">
+    <VcpkgEnabled>false</VcpkgEnabled>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS=1;_WINSOCK_DEPRECATED_NO_WARNINGS=1;WIN32;_DEBUG;HARLINNLIBXML2_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.zlib;$(SolutionDir)3rdParty\Harlinn.liblzma\liblzma\api;$(ProjectDir)include;$(ICU4C_HOME)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+      <AdditionalLibraryDirectories>$(OutDir);$(ICU4C_HOME)\lib64</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS=1;_WINSOCK_DEPRECATED_NO_WARNINGS=1;WIN32;NDEBUG;HARLINNLIBXML2_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.zlib;$(SolutionDir)3rdParty\Harlinn.liblzma\liblzma\api;$(ProjectDir)include;$(ICU4C_HOME)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+      <AdditionalLibraryDirectories>$(OutDir);$(ICU4C_HOME)\lib64</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS=1;_WINSOCK_DEPRECATED_NO_WARNINGS=1;_DEBUG;HARLINNLIBXML2_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.zlib;$(SolutionDir)3rdParty\Harlinn.liblzma\liblzma\api;$(ProjectDir)include;$(ICU4C_HOME)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+      <AdditionalLibraryDirectories>$(OutDir);$(ICU4C_HOME)\lib64</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS=1;_WINSOCK_DEPRECATED_NO_WARNINGS=1;NDEBUG;HARLINNLIBXML2_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.zlib;$(SolutionDir)3rdParty\Harlinn.liblzma\liblzma\api;$(ProjectDir)include;$(ICU4C_HOME)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+      <AdditionalLibraryDirectories>$(OutDir);$(ICU4C_HOME)\lib64</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="src\buf.c" />
+    <ClCompile Include="src\c14n.c" />
+    <ClCompile Include="src\catalog.c" />
+    <ClCompile Include="src\chvalid.c" />
+    <ClCompile Include="src\debugXML.c" />
+    <ClCompile Include="src\dict.c" />
+    <ClCompile Include="src\DOCBparser.c" />
+    <ClCompile Include="src\encoding.c" />
+    <ClCompile Include="src\entities.c" />
+    <ClCompile Include="src\error.c" />
+    <ClCompile Include="src\globals.c" />
+    <ClCompile Include="src\hash.c" />
+    <ClCompile Include="src\HTMLparser.c" />
+    <ClCompile Include="src\HTMLtree.c" />
+    <ClCompile Include="src\legacy.c" />
+    <ClCompile Include="src\list.c" />
+    <ClCompile Include="src\nanoftp.c" />
+    <ClCompile Include="src\nanohttp.c" />
+    <ClCompile Include="src\parser.c" />
+    <ClCompile Include="src\parserInternals.c" />
+    <ClCompile Include="src\pattern.c" />
+    <ClCompile Include="src\relaxng.c" />
+    <ClCompile Include="src\SAX.c" />
+    <ClCompile Include="src\SAX2.c" />
+    <ClCompile Include="src\schematron.c" />
+    <ClCompile Include="src\threads.c" />
+    <ClCompile Include="src\tree.c" />
+    <ClCompile Include="src\trio.c" />
+    <ClCompile Include="src\trionan.c" />
+    <ClCompile Include="src\triostr.c" />
+    <ClCompile Include="src\uri.c" />
+    <ClCompile Include="src\valid.c" />
+    <ClCompile Include="src\xinclude.c" />
+    <ClCompile Include="src\xlink.c" />
+    <ClCompile Include="src\xmlIO.c" />
+    <ClCompile Include="src\xmlmemory.c" />
+    <ClCompile Include="src\xmlmodule.c" />
+    <ClCompile Include="src\xmlreader.c" />
+    <ClCompile Include="src\xmlregexp.c" />
+    <ClCompile Include="src\xmlsave.c" />
+    <ClCompile Include="src\xmlschemas.c" />
+    <ClCompile Include="src\xmlschemastypes.c" />
+    <ClCompile Include="src\xmlstring.c" />
+    <ClCompile Include="src\xmlunicode.c" />
+    <ClCompile Include="src\xmlwriter.c" />
+    <ClCompile Include="src\xpath.c" />
+    <ClCompile Include="src\xpointer.c" />
+    <ClCompile Include="src\xzlib.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\libxml\c14n.h" />
+    <ClInclude Include="include\libxml\catalog.h" />
+    <ClInclude Include="include\libxml\chvalid.h" />
+    <ClInclude Include="include\libxml\debugXML.h" />
+    <ClInclude Include="include\libxml\dict.h" />
+    <ClInclude Include="include\libxml\DOCBparser.h" />
+    <ClInclude Include="include\libxml\encoding.h" />
+    <ClInclude Include="include\libxml\entities.h" />
+    <ClInclude Include="include\libxml\globals.h" />
+    <ClInclude Include="include\libxml\hash.h" />
+    <ClInclude Include="include\libxml\HTMLparser.h" />
+    <ClInclude Include="include\libxml\HTMLtree.h" />
+    <ClInclude Include="include\libxml\list.h" />
+    <ClInclude Include="include\libxml\nanoftp.h" />
+    <ClInclude Include="include\libxml\nanohttp.h" />
+    <ClInclude Include="include\libxml\parser.h" />
+    <ClInclude Include="include\libxml\parserInternals.h" />
+    <ClInclude Include="include\libxml\pattern.h" />
+    <ClInclude Include="include\libxml\relaxng.h" />
+    <ClInclude Include="include\libxml\SAX.h" />
+    <ClInclude Include="include\libxml\SAX2.h" />
+    <ClInclude Include="include\libxml\schemasInternals.h" />
+    <ClInclude Include="include\libxml\schematron.h" />
+    <ClInclude Include="include\libxml\threads.h" />
+    <ClInclude Include="include\libxml\tree.h" />
+    <ClInclude Include="include\libxml\uri.h" />
+    <ClInclude Include="include\libxml\valid.h" />
+    <ClInclude Include="include\libxml\xinclude.h" />
+    <ClInclude Include="include\libxml\xlink.h" />
+    <ClInclude Include="include\libxml\xmlautomata.h" />
+    <ClInclude Include="include\libxml\xmlerror.h" />
+    <ClInclude Include="include\libxml\xmlexports.h" />
+    <ClInclude Include="include\libxml\xmlIO.h" />
+    <ClInclude Include="include\libxml\xmlmemory.h" />
+    <ClInclude Include="include\libxml\xmlmodule.h" />
+    <ClInclude Include="include\libxml\xmlreader.h" />
+    <ClInclude Include="include\libxml\xmlregexp.h" />
+    <ClInclude Include="include\libxml\xmlsave.h" />
+    <ClInclude Include="include\libxml\xmlschemas.h" />
+    <ClInclude Include="include\libxml\xmlschemastypes.h" />
+    <ClInclude Include="include\libxml\xmlstring.h" />
+    <ClInclude Include="include\libxml\xmlunicode.h" />
+    <ClInclude Include="include\libxml\xmlversion.h" />
+    <ClInclude Include="include\libxml\xmlwin32version.h" />
+    <ClInclude Include="include\libxml\xmlwriter.h" />
+    <ClInclude Include="include\libxml\xpath.h" />
+    <ClInclude Include="include\libxml\xpathInternals.h" />
+    <ClInclude Include="include\libxml\xpointer.h" />
+    <ClInclude Include="include\wsockcompat.h" />
+    <ClInclude Include="src\buf.h" />
+    <ClInclude Include="src\config.h" />
+    <ClInclude Include="src\elfgcchack.h" />
+    <ClInclude Include="src\enc.h" />
+    <ClInclude Include="src\libxml.h" />
+    <ClInclude Include="src\save.h" />
+    <ClInclude Include="src\timsort.h" />
+    <ClInclude Include="src\trio.h" />
+    <ClInclude Include="src\triodef.h" />
+    <ClInclude Include="src\trionan.h" />
+    <ClInclude Include="src\triop.h" />
+    <ClInclude Include="src\triostr.h" />
+    <ClInclude Include="src\xzlib.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\chvalid.def" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

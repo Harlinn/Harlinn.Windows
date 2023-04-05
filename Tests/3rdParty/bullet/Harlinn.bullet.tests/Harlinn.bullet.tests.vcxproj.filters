@@ -1,0 +1,198 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="bullet2">
+      <UniqueIdentifier>{f6afe499-d06b-436f-a8eb-69c29b115212}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="vectormath">
+      <UniqueIdentifier>{5b146379-86b0-46ff-8ca1-0a1b578190d8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="vectormath\neon">
+      <UniqueIdentifier>{6bdb9307-5087-4f1e-bde7-90f2871a8f25}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="vectormath\scalar">
+      <UniqueIdentifier>{eb8d73b1-3c9e-43a3-9bb7-559233bb82e3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="vectormath\sse">
+      <UniqueIdentifier>{c189067b-9788-476a-a072-22876ec3f160}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Harlinn.bullet.tests.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="b3DynamicBvhBroadphaseTests.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Bullet2\Test_3x3getRot.cpp">
+      <Filter>bullet2</Filter>
+    </ClCompile>
+    <ClCompile Include="Bullet2\Utils.cpp">
+      <Filter>bullet2</Filter>
+    </ClCompile>
+    <ClCompile Include="Bullet2\Test_3x3mulM.cpp">
+      <Filter>bullet2</Filter>
+    </ClCompile>
+    <ClCompile Include="Bullet2\Test_3x3mulM1M2.cpp">
+      <Filter>bullet2</Filter>
+    </ClCompile>
+    <ClCompile Include="Bullet2\Test_3x3mulMV.cpp">
+      <Filter>bullet2</Filter>
+    </ClCompile>
+    <ClCompile Include="Bullet2\Test_3x3mulVM.cpp">
+      <Filter>bullet2</Filter>
+    </ClCompile>
+    <ClCompile Include="Bullet2\Test_3x3setRot.cpp">
+      <Filter>bullet2</Filter>
+    </ClCompile>
+    <ClCompile Include="Bullet2\Test_3x3timesTranspose.cpp">
+      <Filter>bullet2</Filter>
+    </ClCompile>
+    <ClCompile Include="Bullet2\Test_3x3transpose.cpp">
+      <Filter>bullet2</Filter>
+    </ClCompile>
+    <ClCompile Include="Bullet2\Test_3x3transposeTimes.cpp">
+      <Filter>bullet2</Filter>
+    </ClCompile>
+    <ClCompile Include="Bullet2\Test_btDbvt.cpp">
+      <Filter>bullet2</Filter>
+    </ClCompile>
+    <ClCompile Include="Bullet2\Test_dot3.cpp">
+      <Filter>bullet2</Filter>
+    </ClCompile>
+    <ClCompile Include="Bullet2\Test_maxdot.cpp">
+      <Filter>bullet2</Filter>
+    </ClCompile>
+    <ClCompile Include="Bullet2\Test_mindot.cpp">
+      <Filter>bullet2</Filter>
+    </ClCompile>
+    <ClCompile Include="Bullet2\Test_qtdot.cpp">
+      <Filter>bullet2</Filter>
+    </ClCompile>
+    <ClCompile Include="Bullet2\Test_qtmul.cpp">
+      <Filter>bullet2</Filter>
+    </ClCompile>
+    <ClCompile Include="Bullet2\Test_qtmulQV3.cpp">
+      <Filter>bullet2</Filter>
+    </ClCompile>
+    <ClCompile Include="Bullet2\Test_qtmulV3Q.cpp">
+      <Filter>bullet2</Filter>
+    </ClCompile>
+    <ClCompile Include="Bullet2\Test_qtnorm.cpp">
+      <Filter>bullet2</Filter>
+    </ClCompile>
+    <ClCompile Include="Bullet2\Test_quat_aos_neon.cpp">
+      <Filter>bullet2</Filter>
+    </ClCompile>
+    <ClCompile Include="Bullet2\Test_v3cross.cpp">
+      <Filter>bullet2</Filter>
+    </ClCompile>
+    <ClCompile Include="Bullet2\Test_v3div.cpp">
+      <Filter>bullet2</Filter>
+    </ClCompile>
+    <ClCompile Include="Bullet2\Test_v3dot.cpp">
+      <Filter>bullet2</Filter>
+    </ClCompile>
+    <ClCompile Include="Bullet2\Test_v3interp.cpp">
+      <Filter>bullet2</Filter>
+    </ClCompile>
+    <ClCompile Include="Bullet2\Test_v3lerp.cpp">
+      <Filter>bullet2</Filter>
+    </ClCompile>
+    <ClCompile Include="Bullet2\Test_v3norm.cpp">
+      <Filter>bullet2</Filter>
+    </ClCompile>
+    <ClCompile Include="Bullet2\Test_v3rotate.cpp">
+      <Filter>bullet2</Filter>
+    </ClCompile>
+    <ClCompile Include="Bullet2\Test_v3sdiv.cpp">
+      <Filter>bullet2</Filter>
+    </ClCompile>
+    <ClCompile Include="Bullet2\Test_v3skew.cpp">
+      <Filter>bullet2</Filter>
+    </ClCompile>
+    <ClCompile Include="Bullet2\Test_v3triple.cpp">
+      <Filter>bullet2</Filter>
+    </ClCompile>
+    <ClCompile Include="Bullet2\btKinematicCharacterControllerTests.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Bullet2\Utils.h">
+      <Filter>bullet2</Filter>
+    </ClInclude>
+    <ClInclude Include="vectormath\neon\boolInVec.h">
+      <Filter>vectormath\neon</Filter>
+    </ClInclude>
+    <ClInclude Include="vectormath\neon\floatInVec.h">
+      <Filter>vectormath\neon</Filter>
+    </ClInclude>
+    <ClInclude Include="vectormath\neon\mat_aos.h">
+      <Filter>vectormath\neon</Filter>
+    </ClInclude>
+    <ClInclude Include="vectormath\neon\quat_aos.h">
+      <Filter>vectormath\neon</Filter>
+    </ClInclude>
+    <ClInclude Include="vectormath\neon\vec_aos.h">
+      <Filter>vectormath\neon</Filter>
+    </ClInclude>
+    <ClInclude Include="vectormath\neon\vectormath_aos.h">
+      <Filter>vectormath\neon</Filter>
+    </ClInclude>
+    <ClInclude Include="vectormath\sse\boolInVec.h">
+      <Filter>vectormath\sse</Filter>
+    </ClInclude>
+    <ClInclude Include="vectormath\sse\floatInVec.h">
+      <Filter>vectormath\sse</Filter>
+    </ClInclude>
+    <ClInclude Include="vectormath\sse\mat_aos.h">
+      <Filter>vectormath\sse</Filter>
+    </ClInclude>
+    <ClInclude Include="vectormath\sse\quat_aos.h">
+      <Filter>vectormath\sse</Filter>
+    </ClInclude>
+    <ClInclude Include="vectormath\sse\vec_aos.h">
+      <Filter>vectormath\sse</Filter>
+    </ClInclude>
+    <ClInclude Include="vectormath\sse\vecidx_aos.h">
+      <Filter>vectormath\sse</Filter>
+    </ClInclude>
+    <ClInclude Include="vectormath\sse\vectormath_aos.h">
+      <Filter>vectormath\sse</Filter>
+    </ClInclude>
+    <ClInclude Include="vectormath\scalar\boolInVec.h">
+      <Filter>vectormath\scalar</Filter>
+    </ClInclude>
+    <ClInclude Include="vectormath\scalar\floatInVec.h">
+      <Filter>vectormath\scalar</Filter>
+    </ClInclude>
+    <ClInclude Include="vectormath\scalar\mat_aos.h">
+      <Filter>vectormath\scalar</Filter>
+    </ClInclude>
+    <ClInclude Include="vectormath\scalar\quat_aos.h">
+      <Filter>vectormath\scalar</Filter>
+    </ClInclude>
+    <ClInclude Include="vectormath\scalar\vec_aos.h">
+      <Filter>vectormath\scalar</Filter>
+    </ClInclude>
+    <ClInclude Include="vectormath\scalar\vectormath_aos.h">
+      <Filter>vectormath\scalar</Filter>
+    </ClInclude>
+    <ClInclude Include="vectormath\vmInclude.h">
+      <Filter>vectormath</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,102 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="include">
+      <UniqueIdentifier>{c5159ee6-39e4-4c26-89a7-e70e4c7cd736}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\piex">
+      <UniqueIdentifier>{3cc5dbd5-5920-44f9-87a9-2175ba3172c2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{97997884-b839-4ba5-bc6e-966819e45efb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\piex\binary_parse">
+      <UniqueIdentifier>{8bcb7ac7-b232-47be-bfba-b6618006c5f8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\piex\image_type_recognition">
+      <UniqueIdentifier>{1404ee09-6017-4b59-b00b-17420e7c4c2d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\piex\tiff_directory">
+      <UniqueIdentifier>{52a676ec-756c-4075-8903-088484fd4508}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\tiff_directory">
+      <UniqueIdentifier>{d2be521e-78d6-4137-85f3-d4ac2b111392}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\image_type_recognition">
+      <UniqueIdentifier>{b965b01a-3570-4634-88b9-3298a000f4cf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\binary_parse">
+      <UniqueIdentifier>{cfa069e7-5040-4512-9c6e-a99ecf0f221b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Readme">
+      <UniqueIdentifier>{a8a16282-52ed-424d-b40d-ff659c1f9285}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="dllmain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\binary_parse\cached_paged_byte_array.cc">
+      <Filter>src\image_type_recognition</Filter>
+    </ClCompile>
+    <ClCompile Include="src\binary_parse\range_checked_byte_ptr.cc">
+      <Filter>src\image_type_recognition</Filter>
+    </ClCompile>
+    <ClCompile Include="src\image_type_recognition\image_type_recognition_lite.cc">
+      <Filter>src\binary_parse</Filter>
+    </ClCompile>
+    <ClCompile Include="src\tiff_directory\tiff_directory.cc">
+      <Filter>src\tiff_directory</Filter>
+    </ClCompile>
+    <ClCompile Include="src\piex.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\piex_cr3.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\tiff_parser.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\piex\binary_parse\cached_paged_byte_array.h">
+      <Filter>include\piex\binary_parse</Filter>
+    </ClInclude>
+    <ClInclude Include="include\piex\binary_parse\range_checked_byte_ptr.h">
+      <Filter>include\piex\binary_parse</Filter>
+    </ClInclude>
+    <ClInclude Include="include\piex\image_type_recognition\image_type_recognition_lite.h">
+      <Filter>include\piex\image_type_recognition</Filter>
+    </ClInclude>
+    <ClInclude Include="include\piex\tiff_directory\tiff_directory.h">
+      <Filter>include\piex\tiff_directory</Filter>
+    </ClInclude>
+    <ClInclude Include="include\piex\piex.h">
+      <Filter>include\piex</Filter>
+    </ClInclude>
+    <ClInclude Include="include\piex\piex_cr3.h">
+      <Filter>include\piex</Filter>
+    </ClInclude>
+    <ClInclude Include="include\piex\piex_types.h">
+      <Filter>include\piex</Filter>
+    </ClInclude>
+    <ClInclude Include="include\piex\tiff_parser.h">
+      <Filter>include\piex</Filter>
+    </ClInclude>
+    <ClInclude Include="include\piex\piexdef.h">
+      <Filter>include\piex</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

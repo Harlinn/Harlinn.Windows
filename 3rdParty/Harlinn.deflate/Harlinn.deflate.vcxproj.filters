@@ -1,0 +1,143 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="include">
+      <UniqueIdentifier>{249eed1f-1f5d-4bc0-95f1-a06ef8142ab2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="common">
+      <UniqueIdentifier>{11ba84d7-da52-4b12-8fe3-30e8a6766cfb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="x86">
+      <UniqueIdentifier>{5688c8dd-8ce4-4d5b-9312-6e44dbfd8695}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Readme">
+      <UniqueIdentifier>{9a2fa45b-0359-4641-a1e2-96bf87ab638e}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="dllmain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="x86\cpu_features.c">
+      <Filter>x86</Filter>
+    </ClCompile>
+    <ClCompile Include="adler32.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="crc32.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="deflate_compress.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="deflate_decompress.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="gzip_compress.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="gzip_decompress.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="utils.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zlib_compress.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zlib_decompress.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\libdeflate.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="common\common_defs.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\compiler_msc.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="x86\adler32_impl.h">
+      <Filter>x86</Filter>
+    </ClInclude>
+    <ClInclude Include="x86\cpu_features.h">
+      <Filter>x86</Filter>
+    </ClInclude>
+    <ClInclude Include="x86\crc32_impl.h">
+      <Filter>x86</Filter>
+    </ClInclude>
+    <ClInclude Include="x86\crc32_pclmul_template.h">
+      <Filter>x86</Filter>
+    </ClInclude>
+    <ClInclude Include="x86\decompress_impl.h">
+      <Filter>x86</Filter>
+    </ClInclude>
+    <ClInclude Include="x86\matchfinder_impl.h">
+      <Filter>x86</Filter>
+    </ClInclude>
+    <ClInclude Include="adler32_vec_template.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="bt_matchfinder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="cpu_features_common.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="crc32_table.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="crc32_vec_template.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="decompress_template.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="deflate_compress.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="deflate_constants.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="gzip_constants.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="hc_matchfinder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="lib_common.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="matchfinder_common.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="unaligned.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zlib_constants.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Readme\COPYING">
+      <Filter>Readme</Filter>
+    </None>
+    <None Include="Readme\README.md">
+      <Filter>Readme</Filter>
+    </None>
+  </ItemGroup>
+</Project>

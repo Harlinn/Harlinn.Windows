@@ -1,0 +1,137 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="include">
+      <UniqueIdentifier>{4469eb24-d815-44f5-9f40-04b40f504ba0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\OpenEXRUtil">
+      <UniqueIdentifier>{1ea76780-b94b-4b96-8346-32886fcff13b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{b73c425d-c196-475b-8cfa-a854f9140774}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Readme">
+      <UniqueIdentifier>{b8bddb86-5993-4862-9a9a-3d960ded2106}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="dllmain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ImfCheckFile.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ImfDeepImage.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ImfDeepImageChannel.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ImfDeepImageIO.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ImfDeepImageLevel.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ImfFlatImage.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ImfFlatImageChannel.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ImfFlatImageIO.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ImfFlatImageLevel.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ImfImage.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ImfImageChannel.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ImfImageDataWindow.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ImfImageIO.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ImfImageLevel.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ImfSampleCountChannel.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\OpenEXRUtil\ImfCheckFile.h">
+      <Filter>include\OpenEXRUtil</Filter>
+    </ClInclude>
+    <ClInclude Include="include\OpenEXRUtil\ImfDeepImage.h">
+      <Filter>include\OpenEXRUtil</Filter>
+    </ClInclude>
+    <ClInclude Include="include\OpenEXRUtil\ImfDeepImageChannel.h">
+      <Filter>include\OpenEXRUtil</Filter>
+    </ClInclude>
+    <ClInclude Include="include\OpenEXRUtil\ImfDeepImageIO.h">
+      <Filter>include\OpenEXRUtil</Filter>
+    </ClInclude>
+    <ClInclude Include="include\OpenEXRUtil\ImfDeepImageLevel.h">
+      <Filter>include\OpenEXRUtil</Filter>
+    </ClInclude>
+    <ClInclude Include="include\OpenEXRUtil\ImfFlatImage.h">
+      <Filter>include\OpenEXRUtil</Filter>
+    </ClInclude>
+    <ClInclude Include="include\OpenEXRUtil\ImfFlatImageChannel.h">
+      <Filter>include\OpenEXRUtil</Filter>
+    </ClInclude>
+    <ClInclude Include="include\OpenEXRUtil\ImfFlatImageIO.h">
+      <Filter>include\OpenEXRUtil</Filter>
+    </ClInclude>
+    <ClInclude Include="include\OpenEXRUtil\ImfFlatImageLevel.h">
+      <Filter>include\OpenEXRUtil</Filter>
+    </ClInclude>
+    <ClInclude Include="include\OpenEXRUtil\ImfImage.h">
+      <Filter>include\OpenEXRUtil</Filter>
+    </ClInclude>
+    <ClInclude Include="include\OpenEXRUtil\ImfImageChannel.h">
+      <Filter>include\OpenEXRUtil</Filter>
+    </ClInclude>
+    <ClInclude Include="include\OpenEXRUtil\ImfImageChannelRenaming.h">
+      <Filter>include\OpenEXRUtil</Filter>
+    </ClInclude>
+    <ClInclude Include="include\OpenEXRUtil\ImfImageDataWindow.h">
+      <Filter>include\OpenEXRUtil</Filter>
+    </ClInclude>
+    <ClInclude Include="include\OpenEXRUtil\ImfImageIO.h">
+      <Filter>include\OpenEXRUtil</Filter>
+    </ClInclude>
+    <ClInclude Include="include\OpenEXRUtil\ImfImageLevel.h">
+      <Filter>include\OpenEXRUtil</Filter>
+    </ClInclude>
+    <ClInclude Include="include\OpenEXRUtil\ImfSampleCountChannel.h">
+      <Filter>include\OpenEXRUtil</Filter>
+    </ClInclude>
+    <ClInclude Include="include\OpenEXRUtil\ImfUtilExport.h">
+      <Filter>include\OpenEXRUtil</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="src\README">
+      <Filter>src</Filter>
+    </None>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,101 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="include">
+      <UniqueIdentifier>{02109b62-e5dd-4a0d-b554-f0f01b994599}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\enet">
+      <UniqueIdentifier>{0edb215f-f023-4052-b369-e6a1f890619b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{3fa93bd1-e985-4fb0-9976-0e1083a9df2a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Readme">
+      <UniqueIdentifier>{c2546428-e39f-45c4-8967-f86ad5048311}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="dllmain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\callbacks.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\compress.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\host.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\list.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\packet.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\peer.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\protocol.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\unix.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\win32.c">
+      <Filter>src</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\enet\callbacks.h">
+      <Filter>include\enet</Filter>
+    </ClInclude>
+    <ClInclude Include="include\enet\enet.h">
+      <Filter>include\enet</Filter>
+    </ClInclude>
+    <ClInclude Include="include\enet\list.h">
+      <Filter>include\enet</Filter>
+    </ClInclude>
+    <ClInclude Include="include\enet\protocol.h">
+      <Filter>include\enet</Filter>
+    </ClInclude>
+    <ClInclude Include="include\enet\time.h">
+      <Filter>include\enet</Filter>
+    </ClInclude>
+    <ClInclude Include="include\enet\types.h">
+      <Filter>include\enet</Filter>
+    </ClInclude>
+    <ClInclude Include="include\enet\unix.h">
+      <Filter>include\enet</Filter>
+    </ClInclude>
+    <ClInclude Include="include\enet\utility.h">
+      <Filter>include\enet</Filter>
+    </ClInclude>
+    <ClInclude Include="include\enet\win32.h">
+      <Filter>include\enet</Filter>
+    </ClInclude>
+    <ClInclude Include="include\enet\enet_export.h">
+      <Filter>include\enet</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Readme\LICENSE">
+      <Filter>Readme</Filter>
+    </None>
+    <None Include="Readme\README">
+      <Filter>Readme</Filter>
+    </None>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,389 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{a110d8b5-38f3-4e6b-aa05-f625b4db7e1d}</ProjectGuid>
+    <RootNamespace>Harlinnsuperlu</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+    <UseIntelMKL>Sequential</UseIntelMKL>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+    <UseIntelMKL>Sequential</UseIntelMKL>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+    <UseIntelMKL>Sequential</UseIntelMKL>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+    <UseIntelMKL>Sequential</UseIntelMKL>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Label="Vcpkg">
+    <VcpkgEnabled>false</VcpkgEnabled>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>BUILDING_HARLINN_SUPERLU=1;_CRT_SECURE_NO_WARNINGS=1;USE_VENDOR_BLAS=1;WIN32;_DEBUG;HARLINNSUPERLU_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalIncludeDirectories>$(ONEAPI_ROOT)mkl\latest\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+      <AdditionalLibraryDirectories>$(ONEAPI_ROOT)mkl\latest\lib\intel64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>mkl_core_dll.lib;mkl_intel_lp64_dll.lib;mkl_sequential_dll.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>BUILDING_HARLINN_SUPERLU=1;_CRT_SECURE_NO_WARNINGS=1;USE_VENDOR_BLAS=1;WIN32;NDEBUG;HARLINNSUPERLU_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalIncludeDirectories>$(ONEAPI_ROOT)mkl\latest\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+      <AdditionalLibraryDirectories>$(ONEAPI_ROOT)mkl\latest\lib\intel64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>mkl_core_dll.lib;mkl_intel_lp64_dll.lib;mkl_sequential_dll.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>BUILDING_HARLINN_SUPERLU=1;_CRT_SECURE_NO_WARNINGS=1;USE_VENDOR_BLAS=1;_DEBUG;HARLINNSUPERLU_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalIncludeDirectories>$(ONEAPI_ROOT)mkl\latest\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+      <AdditionalLibraryDirectories>$(ONEAPI_ROOT)mkl\latest\lib\intel64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>mkl_core_dll.lib;mkl_intel_lp64_dll.lib;mkl_sequential_dll.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>BUILDING_HARLINN_SUPERLU=1;_CRT_SECURE_NO_WARNINGS=1;USE_VENDOR_BLAS=1;NDEBUG;HARLINNSUPERLU_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalIncludeDirectories>$(ONEAPI_ROOT)mkl\latest\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+      <AdditionalLibraryDirectories>$(ONEAPI_ROOT)mkl\latest\lib\intel64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>mkl_core_dll.lib;mkl_intel_lp64_dll.lib;mkl_sequential_dll.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="ccolumn_bmod.c" />
+    <ClCompile Include="ccolumn_dfs.c" />
+    <ClCompile Include="ccopy_to_ucol.c" />
+    <ClCompile Include="cdiagonal.c" />
+    <ClCompile Include="cgscon.c" />
+    <ClCompile Include="cgsequ.c" />
+    <ClCompile Include="cgsisx.c" />
+    <ClCompile Include="cgsitrf.c" />
+    <ClCompile Include="cgsrfs.c" />
+    <ClCompile Include="cgssv.c" />
+    <ClCompile Include="cgssvx.c" />
+    <ClCompile Include="cgstrf.c" />
+    <ClCompile Include="cgstrs.c" />
+    <ClCompile Include="clacon2.c" />
+    <ClCompile Include="clangs.c" />
+    <ClCompile Include="claqgs.c" />
+    <ClCompile Include="cldperm.c" />
+    <ClCompile Include="cmemory.c" />
+    <ClCompile Include="cmyblas2.c" />
+    <ClCompile Include="colamd.c" />
+    <ClCompile Include="cpanel_bmod.c" />
+    <ClCompile Include="cpanel_dfs.c" />
+    <ClCompile Include="cpivotgrowth.c" />
+    <ClCompile Include="cpivotL.c" />
+    <ClCompile Include="cpruneL.c" />
+    <ClCompile Include="creadhb.c" />
+    <ClCompile Include="creadMM.c" />
+    <ClCompile Include="creadrb.c" />
+    <ClCompile Include="creadtriple.c" />
+    <ClCompile Include="csnode_bmod.c" />
+    <ClCompile Include="csnode_dfs.c" />
+    <ClCompile Include="csp_blas2.c" />
+    <ClCompile Include="csp_blas3.c" />
+    <ClCompile Include="cutil.c" />
+    <ClCompile Include="dcolumn_bmod.c" />
+    <ClCompile Include="dcolumn_dfs.c" />
+    <ClCompile Include="dcomplex.c" />
+    <ClCompile Include="dcopy_to_ucol.c" />
+    <ClCompile Include="ddiagonal.c" />
+    <ClCompile Include="dGetDiagU.c" />
+    <ClCompile Include="dgscon.c" />
+    <ClCompile Include="dgsequ.c" />
+    <ClCompile Include="dgsisx.c" />
+    <ClCompile Include="dgsitrf.c" />
+    <ClCompile Include="dgsrfs.c" />
+    <ClCompile Include="dgssv.c" />
+    <ClCompile Include="dgssvx.c" />
+    <ClCompile Include="dgstrf.c" />
+    <ClCompile Include="dgstrs.c" />
+    <ClCompile Include="dlacon2.c" />
+    <ClCompile Include="dlangs.c" />
+    <ClCompile Include="dlaqgs.c" />
+    <ClCompile Include="dldperm.c" />
+    <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="dmach.c" />
+    <ClCompile Include="dmemory.c" />
+    <ClCompile Include="dmyblas2.c" />
+    <ClCompile Include="dpanel_bmod.c" />
+    <ClCompile Include="dpanel_dfs.c" />
+    <ClCompile Include="dpivotgrowth.c" />
+    <ClCompile Include="dpivotL.c" />
+    <ClCompile Include="dpruneL.c" />
+    <ClCompile Include="dreadhb.c" />
+    <ClCompile Include="dreadMM.c" />
+    <ClCompile Include="dreadrb.c" />
+    <ClCompile Include="dreadtriple.c" />
+    <ClCompile Include="dsnode_bmod.c" />
+    <ClCompile Include="dsnode_dfs.c" />
+    <ClCompile Include="dsp_blas2.c" />
+    <ClCompile Include="dsp_blas3.c" />
+    <ClCompile Include="dutil.c" />
+    <ClCompile Include="dzsum1.c" />
+    <ClCompile Include="get_perm_c.c" />
+    <ClCompile Include="heap_relax_snode.c" />
+    <ClCompile Include="icmax1.c" />
+    <ClCompile Include="ilu_ccolumn_dfs.c" />
+    <ClCompile Include="ilu_ccopy_to_ucol.c" />
+    <ClCompile Include="ilu_cdrop_row.c" />
+    <ClCompile Include="ilu_cpanel_dfs.c" />
+    <ClCompile Include="ilu_cpivotL.c" />
+    <ClCompile Include="ilu_csnode_dfs.c" />
+    <ClCompile Include="ilu_dcolumn_dfs.c" />
+    <ClCompile Include="ilu_dcopy_to_ucol.c" />
+    <ClCompile Include="ilu_ddrop_row.c" />
+    <ClCompile Include="ilu_dpanel_dfs.c" />
+    <ClCompile Include="ilu_dpivotL.c" />
+    <ClCompile Include="ilu_dsnode_dfs.c" />
+    <ClCompile Include="ilu_heap_relax_snode.c" />
+    <ClCompile Include="ilu_relax_snode.c" />
+    <ClCompile Include="ilu_scolumn_dfs.c" />
+    <ClCompile Include="ilu_scopy_to_ucol.c" />
+    <ClCompile Include="ilu_sdrop_row.c" />
+    <ClCompile Include="ilu_spanel_dfs.c" />
+    <ClCompile Include="ilu_spivotL.c" />
+    <ClCompile Include="ilu_ssnode_dfs.c" />
+    <ClCompile Include="ilu_zcolumn_dfs.c" />
+    <ClCompile Include="ilu_zcopy_to_ucol.c" />
+    <ClCompile Include="ilu_zdrop_row.c" />
+    <ClCompile Include="ilu_zpanel_dfs.c" />
+    <ClCompile Include="ilu_zpivotL.c" />
+    <ClCompile Include="ilu_zsnode_dfs.c" />
+    <ClCompile Include="input_error.c" />
+    <ClCompile Include="izmax1.c" />
+    <ClCompile Include="mark_relax.c" />
+    <ClCompile Include="mc64ad.c" />
+    <ClCompile Include="memory.c" />
+    <ClCompile Include="mmd.c" />
+    <ClCompile Include="qselect.c" />
+    <ClCompile Include="relax_snode.c" />
+    <ClCompile Include="scolumn_bmod.c" />
+    <ClCompile Include="scolumn_dfs.c" />
+    <ClCompile Include="scomplex.c" />
+    <ClCompile Include="scopy_to_ucol.c" />
+    <ClCompile Include="scsum1.c" />
+    <ClCompile Include="sdiagonal.c" />
+    <ClCompile Include="sgscon.c" />
+    <ClCompile Include="sgsequ.c" />
+    <ClCompile Include="sgsisx.c" />
+    <ClCompile Include="sgsitrf.c" />
+    <ClCompile Include="sgsrfs.c" />
+    <ClCompile Include="sgssv.c" />
+    <ClCompile Include="sgssvx.c" />
+    <ClCompile Include="sgstrf.c" />
+    <ClCompile Include="sgstrs.c" />
+    <ClCompile Include="slacon2.c" />
+    <ClCompile Include="slangs.c" />
+    <ClCompile Include="slaqgs.c" />
+    <ClCompile Include="sldperm.c" />
+    <ClCompile Include="smach.c" />
+    <ClCompile Include="smemory.c" />
+    <ClCompile Include="smyblas2.c" />
+    <ClCompile Include="spanel_bmod.c" />
+    <ClCompile Include="spanel_dfs.c" />
+    <ClCompile Include="spivotgrowth.c" />
+    <ClCompile Include="spivotL.c" />
+    <ClCompile Include="spruneL.c" />
+    <ClCompile Include="sp_coletree.c" />
+    <ClCompile Include="sp_ienv.c" />
+    <ClCompile Include="sp_preorder.c" />
+    <ClCompile Include="sreadhb.c" />
+    <ClCompile Include="sreadMM.c" />
+    <ClCompile Include="sreadrb.c" />
+    <ClCompile Include="sreadtriple.c" />
+    <ClCompile Include="ssnode_bmod.c" />
+    <ClCompile Include="ssnode_dfs.c" />
+    <ClCompile Include="ssp_blas2.c" />
+    <ClCompile Include="ssp_blas3.c" />
+    <ClCompile Include="superlu_timer.c" />
+    <ClCompile Include="sutil.c" />
+    <ClCompile Include="util.c" />
+    <ClCompile Include="zcolumn_bmod.c" />
+    <ClCompile Include="zcolumn_dfs.c" />
+    <ClCompile Include="zcopy_to_ucol.c" />
+    <ClCompile Include="zdiagonal.c" />
+    <ClCompile Include="zgscon.c" />
+    <ClCompile Include="zgsequ.c" />
+    <ClCompile Include="zgsisx.c" />
+    <ClCompile Include="zgsitrf.c" />
+    <ClCompile Include="zgsrfs.c" />
+    <ClCompile Include="zgssv.c" />
+    <ClCompile Include="zgssvx.c" />
+    <ClCompile Include="zgstrf.c" />
+    <ClCompile Include="zgstrs.c" />
+    <ClCompile Include="zlacon2.c" />
+    <ClCompile Include="zlangs.c" />
+    <ClCompile Include="zlaqgs.c" />
+    <ClCompile Include="zldperm.c" />
+    <ClCompile Include="zmemory.c" />
+    <ClCompile Include="zmyblas2.c" />
+    <ClCompile Include="zpanel_bmod.c" />
+    <ClCompile Include="zpanel_dfs.c" />
+    <ClCompile Include="zpivotgrowth.c" />
+    <ClCompile Include="zpivotL.c" />
+    <ClCompile Include="zpruneL.c" />
+    <ClCompile Include="zreadhb.c" />
+    <ClCompile Include="zreadMM.c" />
+    <ClCompile Include="zreadrb.c" />
+    <ClCompile Include="zreadtriple.c" />
+    <ClCompile Include="zsnode_bmod.c" />
+    <ClCompile Include="zsnode_dfs.c" />
+    <ClCompile Include="zsp_blas2.c" />
+    <ClCompile Include="zsp_blas3.c" />
+    <ClCompile Include="zutil.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="colamd.h" />
+    <ClInclude Include="html_mainpage.h" />
+    <ClInclude Include="slu_cdefs.h" />
+    <ClInclude Include="slu_Cnames.h" />
+    <ClInclude Include="slu_dcomplex.h" />
+    <ClInclude Include="slu_ddefs.h" />
+    <ClInclude Include="slu_def.h" />
+    <ClInclude Include="slu_scomplex.h" />
+    <ClInclude Include="slu_sdefs.h" />
+    <ClInclude Include="slu_util.h" />
+    <ClInclude Include="slu_zdefs.h" />
+    <ClInclude Include="superlu_enum_consts.h" />
+    <ClInclude Include="supermatrix.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

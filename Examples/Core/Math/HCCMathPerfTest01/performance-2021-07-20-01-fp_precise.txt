@@ -1,0 +1,239 @@
+SimpleOverheadDoubleTest: Duration=0.9663372, Accumulated=503141590973.86835
+SimpleOverheadFloatTest: Duration=0.9706784, Accumulated=503141590978.63367
+OverheadDoubleTest: Outer 1, Inner 1000000000
+        Math: Duration=0.9619642, Accumulated=503141590973.86835
+        std:  Duration=0.9539013, Accumulated=503141590973.86835
+
+OverheadFloatTest: Outer 1, Inner 1000000000
+        Math: Duration=0.9575732, Accumulated=536870900
+        std:  Duration=0.9525629, Accumulated=536870900
+
+IsNaNDoubleTest: Outer 1, Inner 1000000000
+        Math: Duration=0.9594197, Accumulated=0
+        std:  Duration=1.0866751, Accumulated=0
+
+IsNaNFloatTest: Outer 1, Inner 1000000000
+        Math: Duration=0.9591368, Accumulated=0
+        std:  Duration=1.0885494, Accumulated=0
+
+IsInfDoubleTest: Outer 1, Inner 1000000000
+        Math: Duration=0.9636564, Accumulated=0
+        std:  Duration=3.0038573, Accumulated=0
+
+IsInfFloatTest: Outer 1, Inner 1000000000
+        Math: Duration=0.9683667, Accumulated=0
+        std:  Duration=3.0219891, Accumulated=0
+
+AbsDoubleTest: Outer 1, Inner 1000000000
+        Math: Duration=0.969423, Accumulated=503141590973.86835
+        std:  Duration=0.9576771, Accumulated=503141590973.86835
+
+AbsFloatTest: Outer 1, Inner 1000000000
+        Math: Duration=0.9524237, Accumulated=536870900
+        std:  Duration=0.9539455, Accumulated=536870900
+
+SignBitDoubleTest: Outer 1, Inner 1000000000
+        Math: Duration=1.0119458, Accumulated=0
+        std:  Duration=1.5452021, Accumulated=0
+
+SignBitFloatTest: Outer 1, Inner 1000000000
+        Math: Duration=0.9596892, Accumulated=0
+        std:  Duration=1.3061542, Accumulated=0
+
+FRExpDoubleTest: Outer 1, Inner 1000000000
+        Math: Duration=2.3380101, Accumulated 1=745120329.5878271, Accumulated 2=9005132735
+        std:  Duration=15.5665536, Accumulated 1=745120329.5878271, Accumulated 2=9005132735
+
+FRExpFloatTest: Outer 1, Inner 1000000000
+        Math: Duration=2.3956464, Accumulated 1=16777216, Accumulated 2=134217730
+        std:  Duration=15.6399744, Accumulated 1=16777216, Accumulated 2=134217730
+
+ModFDoubleTest: Outer 1, Inner 1000000000
+        Math: Duration=1.9643664, Accumulated 1=499999993.8677668, Accumulated 2=502641590980
+        std:  Duration=3.8725375, Accumulated 1=499999993.8677668, Accumulated 2=502641590980
+
+ModFFloatTest: Outer 1, Inner 1000000000
+        Math: Duration=1.9550729, Accumulated 1=11010047, Accumulated 2=536870900
+        std:  Duration=3.1116475, Accumulated 1=11010047, Accumulated 2=536870900
+
+MinDoubleTest: Outer 1, Inner 1000000000
+        Math: Duration=0.9591335, Accumulated=503141590973.86835
+        std:  Duration=0.9585625, Accumulated=503141590973.86835
+
+MinFloatTest: Outer 1, Inner 1000000000
+        Math: Duration=0.9539169, Accumulated=536870900
+        std:  Duration=0.9546767, Accumulated=536870900
+
+MaxDoubleTest: Outer 1, Inner 1000000000
+        Math: Duration=0.9541453, Accumulated=503141590973.86835
+        std:  Duration=0.9581388, Accumulated=503141590973.86835
+
+MaxFloatTest: Outer 1, Inner 1000000000
+        Math: Duration=0.9601936, Accumulated=536870900
+        std:  Duration=0.9588905, Accumulated=536870900
+
+FloorDoubleTest: Outer 1, Inner 1000000000
+        Math: Duration=0.9593986, Accumulated=502641590980
+        std:  Duration=1.1456949, Accumulated=502641590980
+
+FloorFloatTest: Outer 1, Inner 1000000000
+        Math: Duration=0.957949, Accumulated=536870900
+        std:  Duration=1.1537976, Accumulated=536870900
+
+CeilDoubleTest: Outer 1, Inner 1000000000
+        Math: Duration=0.9572644, Accumulated=503641590980
+        std:  Duration=1.1470391, Accumulated=503641590980
+
+CeilFloatTest: Outer 1, Inner 1000000000
+        Math: Duration=0.9580742, Accumulated=536870900
+        std:  Duration=1.148856, Accumulated=536870900
+
+TruncDoubleTest: Outer 1, Inner 1000000000
+        Math: Duration=0.9606487, Accumulated=502641590980
+        std:  Duration=7.4909641, Accumulated=502641590980
+
+TruncFloatTest: Outer 1, Inner 1000000000
+        Math: Duration=0.9541968, Accumulated=536870900
+        std:  Duration=1.1524305, Accumulated=536870900
+
+RoundDoubleTest: Outer 1, Inner 1000000000
+        Math: Duration=0.9544753, Accumulated=503141590980
+        std:  Duration=10.5900614, Accumulated=503141590980
+
+RoundFloatTest: Outer 1, Inner 1000000000
+        Math: Duration=0.957139, Accumulated=536870900
+        std:  Duration=10.0471861, Accumulated=536870900
+
+ClampDoubleTest: Outer 1, Inner 1000000000
+        Math: Duration=1.0642963, Accumulated=503141590973.86835
+        std:  Duration=1.2453695, Accumulated=503141590973.86835
+
+ClampFloatTest: Outer 1, Inner 1000000000
+        Math: Duration=1.0841158, Accumulated=536870900
+        std:  Duration=1.259497, Accumulated=536870900
+
+LerpDoubleTest: Outer 1, Inner 1000000000
+        Math: Duration=1.1558037, Accumulated=505497785458.538
+        std:  Duration=2.0203481, Accumulated=505497785458.538
+
+LerpFloatTest: Outer 1, Inner 1000000000
+        Math: Duration=1.1740311, Accumulated=536870900
+        std:  Duration=2.2383204, Accumulated=536870900
+
+CopySignDoubleTest: Outer 1, Inner 1000000000
+        Math: Duration=0.9697114, Accumulated=-503141590973.86835
+        std:  Duration=5.5264708, Accumulated=-503141590973.86835
+
+CopySignFloatTest: Outer 1, Inner 1000000000
+        Math: Duration=0.9571192, Accumulated=-536870900
+        std:  Duration=5.5998802, Accumulated=-536870900
+
+ScaleByNDoubleTest: Outer 1, Inner 1000000000
+        Math: Duration=2.2214179, Accumulated=1.6658946543001458e+38
+        std:  Duration=9.3667698, Accumulated=1.6658946543001458e+38
+
+ScaleByNFloatTest: Outer 1, Inner 1000000000
+        Math: Duration=1.7898736, Accumulated=1.3899781e+38
+        std:  Duration=9.7631462, Accumulated=1.3899781e+38
+
+SinDoubleTest: Outer 1, Inner 1000000000
+        Math: Duration=6.4354941, Accumulated=463375.4415525004
+        std:  Duration=6.4403891, Accumulated=463375.4415525004
+
+SinFloatTest: Outer 1, Inner 1000000000
+        Math: Duration=4.9866233, Accumulated=16777216
+        std:  Duration=5.8781487, Accumulated=16777216
+
+CosDoubleTest: Outer 1, Inner 1000000000
+        Math: Duration=6.3042937, Accumulated=812724.4462835883
+        std:  Duration=6.1584509, Accumulated=812724.4462835883
+
+CosFloatTest: Outer 1, Inner 1000000000
+        Math: Duration=5.2597787, Accumulated=16777216
+        std:  Duration=6.2363037, Accumulated=16777216
+
+TanDoubleTest: Outer 1, Inner 1000000000
+        Math: Duration=10.153532, Accumulated=6435908926.834679
+        std:  Duration=9.9800531, Accumulated=6435908926.834679
+
+TanFloatTest: Outer 1, Inner 1000000000
+        Math: Duration=6.0598536, Accumulated=-39712564
+        std:  Duration=5.864267, Accumulated=-39712564
+
+SqrtDoubleTest: Outer 1, Inner 1000000000
+        Math: Duration=1.4410179, Accumulated=21177562677.907993
+        std:  Duration=1.434366, Accumulated=21177562677.907993
+
+SqrtFloatTest: Outer 1, Inner 1000000000
+        Math: Duration=1.0588966, Accumulated=134217730
+        std:  Duration=1.0159526, Accumulated=134217730
+
+ASinDoubleTest: Outer 1, Inner 1000000000
+        Math: Duration=6.9621135, Accumulated=570796325.6249679
+        std:  Duration=10.1362223, Accumulated=570796325.6249679
+
+ASinFloatTest: Outer 1, Inner 1000000000
+        Math: Duration=2.0026373, Accumulated=1048576
+        std:  Duration=4.2223733, Accumulated=1048576
+
+ACosDoubleTest: Outer 1, Inner 1000000000
+        Math: Duration=5.7637547, Accumulated=1000000001.1699724
+        std:  Duration=10.3192542, Accumulated=1000000001.1699724
+
+ACosFloatTest: Outer 1, Inner 1000000000
+        Math: Duration=2.8850341, Accumulated=33554432
+        std:  Duration=5.0702421, Accumulated=33554432
+
+ATanDoubleTest: Outer 1, Inner 1000000000
+        Math: Duration=7.0967428, Accumulated=438824574.1665145
+        std:  Duration=6.2704603, Accumulated=438824574.1665145
+
+ATanFloatTest: Outer 1, Inner 1000000000
+        Math: Duration=2.8643458, Accumulated=524288
+        std:  Duration=3.9867273, Accumulated=524288
+
+ATan2DoubleTest: Outer 1, Inner 1000000000
+        Math: Duration=15.6768789, Accumulated=785398158.123596
+        std:  Duration=15.7051794, Accumulated=785398158.123596
+
+ATan2FloatTest: Outer 1, Inner 1000000000
+        Math: Duration=9.9826961, Accumulated=16777216
+        std:  Duration=10.1245406, Accumulated=16777216
+
+NextAfterDoubleTest: Outer 1, Inner 1000000000
+        Math: Duration=4.7933259, Accumulated=2.4703282295377952e-306
+        std:  Duration=42.518449, Accumulated=2.4703282295377952e-306
+
+NextAfterFloatTest: Outer 1, Inner 1000000000
+        Math: Duration=2.8377504, Accumulated=56010
+        std:  Duration=9.2805688, Accumulated=56010
+
+NextUpDoubleTest: Outer 1, Inner 1000000000
+        Math: Duration=0.9545241, Accumulated=2.4703282295377952e-306
+        std: Duration=43.2110765, Accumulated=2.4703282295377952e-306
+
+NextUpFloatTest: Outer 1, Inner 1000000000
+        Math: Duration=0.9508535, Accumulated=56010
+        std: Duration=9.7281478, Accumulated=56010
+
+NextDownDoubleTest: Outer 1, Inner 1000000000
+        Math: Duration=0.951725, Accumulated=-2.4703282295377952e-306
+        std: Duration=43.5886858, Accumulated=-2.4703282295377952e-306
+
+NextDownFloatTest: Outer 1, Inner 1000000000
+        Math: Duration=0.9556778, Accumulated=-56010
+        std: Duration=9.7676444, Accumulated=-56010
+
+FModDoubleTest: Outer 1, Inner 1000000000
+        Math: Duration=6.7390822, Accumulated=2353341560.634282
+        std: Duration=9.2736785, Accumulated=2353341560.634282
+FModFloatTest: Outer 1, Inner 1000000000
+        Math: Duration=2.4748075, Accumulated=63669730
+        std: Duration=4.659792, Accumulated=63669730
+ExpDoubleTest: Outer 1, Inner 1000000000
+        Math: Duration=7.5290433, Accumulated=inf
+        std:  Duration=18.4063127, Accumulated=inf
+
+ExpFloatTest: Outer 1, Inner 1000000000
+        Math: Duration=7.2795017, Accumulated=2.3611832e+21
+        std:  Duration=4.3567676, Accumulated=2.3611832e+21

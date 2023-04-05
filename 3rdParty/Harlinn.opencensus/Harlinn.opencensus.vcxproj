@@ -1,0 +1,316 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{6ed61300-d2da-4085-b345-b869e0b63840}</ProjectGuid>
+    <RootNamespace>Harlinnopencensus</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Label="Vcpkg">
+    <VcpkgEnabled>false</VcpkgEnabled>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>BUILDING_HARLINN_OPENCENSUS=1;WIN32;_DEBUG;HARLINNOPENCENSUS_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.abseil\include;$(ProjectDir)include;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+      <AdditionalLibraryDirectories>$(OutDir)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>BUILDING_HARLINN_OPENCENSUS=1;WIN32;NDEBUG;HARLINNOPENCENSUS_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.abseil\include;$(ProjectDir)include;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+      <AdditionalLibraryDirectories>$(OutDir)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>BUILDING_HARLINN_OPENCENSUS=1;_DEBUG;HARLINNOPENCENSUS_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.abseil\include;$(ProjectDir)include;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+      <AdditionalLibraryDirectories>$(OutDir)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>BUILDING_HARLINN_OPENCENSUS=1;NDEBUG;HARLINNOPENCENSUS_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.abseil\include;$(ProjectDir)include;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+      <AdditionalLibraryDirectories>$(OutDir)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="src\common\random.cc" />
+    <ClCompile Include="src\context\context.cc" />
+    <ClCompile Include="src\context\with_context.cc" />
+    <ClCompile Include="src\exporters\stats\stdout\stats_stdout_exporter.cc" />
+    <ClCompile Include="src\exporters\trace\stdout\trace_stdout_exporter.cc" />
+    <ClCompile Include="src\stats\aggregation.cc" />
+    <ClCompile Include="src\stats\aggregation_window.cc" />
+    <ClCompile Include="src\stats\bucket_boundaries.cc" />
+    <ClCompile Include="src\stats\delta_producer.cc" />
+    <ClCompile Include="src\stats\distribution.cc" />
+    <ClCompile Include="src\stats\measure.cc" />
+    <ClCompile Include="src\stats\measure_data.cc" />
+    <ClCompile Include="src\stats\measure_descriptor.cc" />
+    <ClCompile Include="src\stats\measure_registry.cc" />
+    <ClCompile Include="src\stats\measure_registry_impl.cc" />
+    <ClCompile Include="src\stats\recording.cc" />
+    <ClCompile Include="src\stats\set_aggregation_window.cc" />
+    <ClCompile Include="src\stats\stats_exporter.cc" />
+    <ClCompile Include="src\stats\stats_manager.cc" />
+    <ClCompile Include="src\stats\view.cc" />
+    <ClCompile Include="src\stats\view_data.cc" />
+    <ClCompile Include="src\stats\view_data_impl.cc" />
+    <ClCompile Include="src\stats\view_descriptor.cc" />
+    <ClCompile Include="src\tags\tags_context_util.cc" />
+    <ClCompile Include="src\tags\tag_key.cc" />
+    <ClCompile Include="src\tags\tag_map.cc" />
+    <ClCompile Include="src\tags\with_tag_map.cc" />
+    <ClCompile Include="src\trace\annotation.cc" />
+    <ClCompile Include="src\trace\attribute_list.cc" />
+    <ClCompile Include="src\trace\attribute_value.cc" />
+    <ClCompile Include="src\trace\attribute_value_ref.cc" />
+    <ClCompile Include="src\trace\cloud_trace_context.cc" />
+    <ClCompile Include="src\trace\trace_context_util.cc" />
+    <ClCompile Include="src\trace\grpc_trace_bin.cc" />
+    <ClCompile Include="src\trace\link.cc" />
+    <ClCompile Include="src\trace\local_span_store.cc" />
+    <ClCompile Include="src\trace\local_span_store_impl.cc" />
+    <ClCompile Include="src\trace\message_event.cc" />
+    <ClCompile Include="src\trace\running_span_store.cc" />
+    <ClCompile Include="src\trace\running_span_store_impl.cc" />
+    <ClCompile Include="src\trace\sampler.cc" />
+    <ClCompile Include="src\trace\span.cc" />
+    <ClCompile Include="src\trace\span_context.cc" />
+    <ClCompile Include="src\trace\span_data.cc" />
+    <ClCompile Include="src\trace\span_exporter.cc" />
+    <ClCompile Include="src\trace\span_exporter_impl.cc" />
+    <ClCompile Include="src\trace\span_id.cc" />
+    <ClCompile Include="src\trace\span_impl.cc" />
+    <ClCompile Include="src\trace\status.cc" />
+    <ClCompile Include="src\trace\trace_config.cc" />
+    <ClCompile Include="src\trace\trace_config_impl.cc" />
+    <ClCompile Include="src\trace\trace_context.cc" />
+    <ClCompile Include="src\trace\trace_id.cc" />
+    <ClCompile Include="src\trace\trace_options.cc" />
+    <ClCompile Include="src\trace\with_span.cc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\opencensus\common\internal\hash_mix.h" />
+    <ClInclude Include="include\opencensus\common\internal\random.h" />
+    <ClInclude Include="include\opencensus\common\internal\stats_object.h" />
+    <ClInclude Include="include\opencensus\common\internal\string_vector_hash.h" />
+    <ClInclude Include="include\opencensus\common\version.h" />
+    <ClInclude Include="include\opencensus\context\context.h" />
+    <ClInclude Include="include\opencensus\context\with_context.h" />
+    <ClInclude Include="include\opencensus\exporters\stats\stdout\stdout_exporter.h" />
+    <ClInclude Include="include\opencensus\exporters\trace\stdout\stdout_exporter.h" />
+    <ClInclude Include="include\opencensus\opencensus_export.h" />
+    <ClInclude Include="include\opencensus\stats\aggregation.h" />
+    <ClInclude Include="include\opencensus\stats\bucket_boundaries.h" />
+    <ClInclude Include="include\opencensus\stats\distribution.h" />
+    <ClInclude Include="include\opencensus\stats\internal\aggregation_window.h" />
+    <ClInclude Include="include\opencensus\stats\internal\delta_producer.h" />
+    <ClInclude Include="include\opencensus\stats\internal\measure_data.h" />
+    <ClInclude Include="include\opencensus\stats\internal\measure_registry_impl.h" />
+    <ClInclude Include="include\opencensus\stats\internal\set_aggregation_window.h" />
+    <ClInclude Include="include\opencensus\stats\internal\stats_manager.h" />
+    <ClInclude Include="include\opencensus\stats\internal\view_data_impl.h" />
+    <ClInclude Include="include\opencensus\stats\measure.h" />
+    <ClInclude Include="include\opencensus\stats\measure_descriptor.h" />
+    <ClInclude Include="include\opencensus\stats\measure_registry.h" />
+    <ClInclude Include="include\opencensus\stats\recording.h" />
+    <ClInclude Include="include\opencensus\stats\stats.h" />
+    <ClInclude Include="include\opencensus\stats\stats_exporter.h" />
+    <ClInclude Include="include\opencensus\stats\tag_key.h" />
+    <ClInclude Include="include\opencensus\stats\tag_set.h" />
+    <ClInclude Include="include\opencensus\stats\view.h" />
+    <ClInclude Include="include\opencensus\stats\view_data.h" />
+    <ClInclude Include="include\opencensus\stats\view_descriptor.h" />
+    <ClInclude Include="include\opencensus\tags\context_util.h" />
+    <ClInclude Include="include\opencensus\tags\tag_key.h" />
+    <ClInclude Include="include\opencensus\tags\tag_map.h" />
+    <ClInclude Include="include\opencensus\tags\with_tag_map.h" />
+    <ClInclude Include="include\opencensus\trace\attribute_value_ref.h" />
+    <ClInclude Include="include\opencensus\trace\context_util.h" />
+    <ClInclude Include="include\opencensus\trace\exporter\annotation.h" />
+    <ClInclude Include="include\opencensus\trace\exporter\attribute_value.h" />
+    <ClInclude Include="include\opencensus\trace\exporter\link.h" />
+    <ClInclude Include="include\opencensus\trace\exporter\message_event.h" />
+    <ClInclude Include="include\opencensus\trace\exporter\span_data.h" />
+    <ClInclude Include="include\opencensus\trace\exporter\span_exporter.h" />
+    <ClInclude Include="include\opencensus\trace\exporter\status.h" />
+    <ClInclude Include="include\opencensus\trace\propagation\cloud_trace_context.h" />
+    <ClInclude Include="include\opencensus\trace\propagation\grpc_trace_bin.h" />
+    <ClInclude Include="include\opencensus\trace\propagation\trace_context.h" />
+    <ClInclude Include="include\opencensus\trace\sampler.h" />
+    <ClInclude Include="include\opencensus\trace\span.h" />
+    <ClInclude Include="include\opencensus\trace\span_context.h" />
+    <ClInclude Include="include\opencensus\trace\span_id.h" />
+    <ClInclude Include="include\opencensus\trace\status_code.h" />
+    <ClInclude Include="include\opencensus\trace\trace_config.h" />
+    <ClInclude Include="include\opencensus\trace\trace_id.h" />
+    <ClInclude Include="include\opencensus\trace\trace_options.h" />
+    <ClInclude Include="include\opencensus\trace\trace_params.h" />
+    <ClInclude Include="include\opencensus\trace\with_span.h" />
+    <ClInclude Include="src\stats\stats_exporter_impl.h" />
+    <ClInclude Include="src\trace\attribute_list.h" />
+    <ClInclude Include="src\trace\event_with_time.h" />
+    <ClInclude Include="src\trace\local_span_store.h" />
+    <ClInclude Include="src\trace\local_span_store_impl.h" />
+    <ClInclude Include="src\trace\running_span_store.h" />
+    <ClInclude Include="src\trace\running_span_store_impl.h" />
+    <ClInclude Include="src\trace\span_exporter_impl.h" />
+    <ClInclude Include="src\trace\span_impl.h" />
+    <ClInclude Include="src\trace\trace_config_impl.h" />
+    <ClInclude Include="src\trace\trace_events.h" />
+    <ClInclude Include="src\trace\trace_params_impl.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="src\context\README.md" />
+    <None Include="src\stats\README.md" />
+    <None Include="src\tags\README.md" />
+    <None Include="src\trace\README.md" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

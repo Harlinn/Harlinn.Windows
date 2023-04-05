@@ -1,0 +1,482 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="include">
+      <UniqueIdentifier>{cfe21fc8-7e32-4348-9293-82e903a3b6ce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\hdf4">
+      <UniqueIdentifier>{a95123aa-3c36-4651-8e34-fa37cf52e239}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{f2d4f029-4463-4736-ac44-fdbd9c7a8ff9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\hdf">
+      <UniqueIdentifier>{ce40f4ef-465a-4e27-a3a3-9a33d7a4c806}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\mfhdf">
+      <UniqueIdentifier>{e43b5988-bb0d-4538-9583-44b55c4cb2d3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\xdr">
+      <UniqueIdentifier>{4b08ffaa-3505-4d18-a770-f03d178f28bd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\mfhdf">
+      <UniqueIdentifier>{6eedda0f-838c-472e-93da-1c01ef5e85a8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\xdr">
+      <UniqueIdentifier>{ab0bd825-d3ce-437b-bed7-7b771c6a5f35}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Readme">
+      <UniqueIdentifier>{ab214661-8b55-4775-bded-6fbc569d39de}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="dllmain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hdf\atom.c">
+      <Filter>src\hdf</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hdf\bitvect.c">
+      <Filter>src\hdf</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hdf\cdeflate.c">
+      <Filter>src\hdf</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hdf\cnbit.c">
+      <Filter>src\hdf</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hdf\cnone.c">
+      <Filter>src\hdf</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hdf\crle.c">
+      <Filter>src\hdf</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hdf\cskphuff.c">
+      <Filter>src\hdf</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hdf\cszip.c">
+      <Filter>src\hdf</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hdf\df24.c">
+      <Filter>src\hdf</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hdf\dfan.c">
+      <Filter>src\hdf</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hdf\dfcomp.c">
+      <Filter>src\hdf</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hdf\dfconv.c">
+      <Filter>src\hdf</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hdf\dfgr.c">
+      <Filter>src\hdf</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hdf\dfgroup.c">
+      <Filter>src\hdf</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hdf\dfimcomp.c">
+      <Filter>src\hdf</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hdf\dfjpeg.c">
+      <Filter>src\hdf</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hdf\dfknat.c">
+      <Filter>src\hdf</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hdf\dfkswap.c">
+      <Filter>src\hdf</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hdf\dfp.c">
+      <Filter>src\hdf</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hdf\dfr8.c">
+      <Filter>src\hdf</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hdf\dfrle.c">
+      <Filter>src\hdf</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hdf\dfsd.c">
+      <Filter>src\hdf</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hdf\dfstubs.c">
+      <Filter>src\hdf</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hdf\dfufp2i.c">
+      <Filter>src\hdf</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hdf\dfunjpeg.c">
+      <Filter>src\hdf</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hdf\dfutil.c">
+      <Filter>src\hdf</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hdf\dfutilf.c">
+      <Filter>src\hdf</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hdf\dynarray.c">
+      <Filter>src\hdf</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hdf\glist.c">
+      <Filter>src\hdf</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hdf\hbitio.c">
+      <Filter>src\hdf</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hdf\hblocks.c">
+      <Filter>src\hdf</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hdf\hbuffer.c">
+      <Filter>src\hdf</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hdf\hchunks.c">
+      <Filter>src\hdf</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hdf\hcomp.c">
+      <Filter>src\hdf</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hdf\hcompri.c">
+      <Filter>src\hdf</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hdf\hdatainfo.c">
+      <Filter>src\hdf</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hdf\hdfalloc.c">
+      <Filter>src\hdf</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hdf\herr.c">
+      <Filter>src\hdf</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hdf\hextelt.c">
+      <Filter>src\hdf</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hdf\hfile.c">
+      <Filter>src\hdf</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hdf\hfiledd.c">
+      <Filter>src\hdf</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hdf\hkit.c">
+      <Filter>src\hdf</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hdf\linklist.c">
+      <Filter>src\hdf</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hdf\mcache.c">
+      <Filter>src\hdf</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hdf\mfan.c">
+      <Filter>src\hdf</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hdf\mfgr.c">
+      <Filter>src\hdf</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hdf\mstdio.c">
+      <Filter>src\hdf</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hdf\tbbt.c">
+      <Filter>src\hdf</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hdf\vattr.c">
+      <Filter>src\hdf</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hdf\vconv.c">
+      <Filter>src\hdf</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hdf\vg.c">
+      <Filter>src\hdf</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hdf\vgp.c">
+      <Filter>src\hdf</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hdf\vhi.c">
+      <Filter>src\hdf</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hdf\vio.c">
+      <Filter>src\hdf</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hdf\vparse.c">
+      <Filter>src\hdf</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hdf\vrw.c">
+      <Filter>src\hdf</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hdf\vsfld.c">
+      <Filter>src\hdf</Filter>
+    </ClCompile>
+    <ClCompile Include="src\mfhdf\array.c">
+      <Filter>src\mfhdf</Filter>
+    </ClCompile>
+    <ClCompile Include="src\mfhdf\attr.c">
+      <Filter>src\mfhdf</Filter>
+    </ClCompile>
+    <ClCompile Include="src\mfhdf\cdf.c">
+      <Filter>src\mfhdf</Filter>
+    </ClCompile>
+    <ClCompile Include="src\mfhdf\dim.c">
+      <Filter>src\mfhdf</Filter>
+    </ClCompile>
+    <ClCompile Include="src\mfhdf\error.c">
+      <Filter>src\mfhdf</Filter>
+    </ClCompile>
+    <ClCompile Include="src\mfhdf\file.c">
+      <Filter>src\mfhdf</Filter>
+    </ClCompile>
+    <ClCompile Include="src\mfhdf\globdef.c">
+      <Filter>src\mfhdf</Filter>
+    </ClCompile>
+    <ClCompile Include="src\mfhdf\hdfsds.c">
+      <Filter>src\mfhdf</Filter>
+    </ClCompile>
+    <ClCompile Include="src\mfhdf\iarray.c">
+      <Filter>src\mfhdf</Filter>
+    </ClCompile>
+    <ClCompile Include="src\mfhdf\mfdatainfo.c">
+      <Filter>src\mfhdf</Filter>
+    </ClCompile>
+    <ClCompile Include="src\mfhdf\mfsd.c">
+      <Filter>src\mfhdf</Filter>
+    </ClCompile>
+    <ClCompile Include="src\mfhdf\nssdc.c">
+      <Filter>src\mfhdf</Filter>
+    </ClCompile>
+    <ClCompile Include="src\mfhdf\putget.c">
+      <Filter>src\mfhdf</Filter>
+    </ClCompile>
+    <ClCompile Include="src\mfhdf\putgetg.c">
+      <Filter>src\mfhdf</Filter>
+    </ClCompile>
+    <ClCompile Include="src\mfhdf\sharray.c">
+      <Filter>src\mfhdf</Filter>
+    </ClCompile>
+    <ClCompile Include="src\mfhdf\string.c">
+      <Filter>src\mfhdf</Filter>
+    </ClCompile>
+    <ClCompile Include="src\mfhdf\var.c">
+      <Filter>src\mfhdf</Filter>
+    </ClCompile>
+    <ClCompile Include="src\mfhdf\xdrposix.c">
+      <Filter>src\mfhdf</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xdr\xdr.c">
+      <Filter>src\xdr</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xdr\xdrarray.c">
+      <Filter>src\xdr</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xdr\xdrfloat.c">
+      <Filter>src\xdr</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xdr\xdrstdio.c">
+      <Filter>src\xdr</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\hdf4\atom.h">
+      <Filter>include\hdf4</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf4\bitvect.h">
+      <Filter>include\hdf4</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf4\cdeflate.h">
+      <Filter>include\hdf4</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf4\cnbit.h">
+      <Filter>include\hdf4</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf4\cnone.h">
+      <Filter>include\hdf4</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf4\crle.h">
+      <Filter>include\hdf4</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf4\cskphuff.h">
+      <Filter>include\hdf4</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf4\cszip.h">
+      <Filter>include\hdf4</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf4\df.h">
+      <Filter>include\hdf4</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf4\dfan.h">
+      <Filter>include\hdf4</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf4\dfconvrt.h">
+      <Filter>include\hdf4</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf4\dfgr.h">
+      <Filter>include\hdf4</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf4\dfi.h">
+      <Filter>include\hdf4</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf4\dfrig.h">
+      <Filter>include\hdf4</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf4\dfsd.h">
+      <Filter>include\hdf4</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf4\dfstubs.h">
+      <Filter>include\hdf4</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf4\dfufp2i.h">
+      <Filter>include\hdf4</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf4\dynarray.h">
+      <Filter>include\hdf4</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf4\glist.h">
+      <Filter>include\hdf4</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf4\H4api_adpt.h">
+      <Filter>include\hdf4</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf4\h4config.h">
+      <Filter>include\hdf4</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf4\hbitio.h">
+      <Filter>include\hdf4</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf4\hchunks.h">
+      <Filter>include\hdf4</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf4\hcomp.h">
+      <Filter>include\hdf4</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf4\hcompi.h">
+      <Filter>include\hdf4</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf4\hconv.h">
+      <Filter>include\hdf4</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf4\hdatainfo.h">
+      <Filter>include\hdf4</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf4\hdf.h">
+      <Filter>include\hdf4</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf4\hdfi.h">
+      <Filter>include\hdf4</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf4\herr.h">
+      <Filter>include\hdf4</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf4\hfile.h">
+      <Filter>include\hdf4</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf4\hkit.h">
+      <Filter>include\hdf4</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf4\hlimits.h">
+      <Filter>include\hdf4</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf4\hntdefs.h">
+      <Filter>include\hdf4</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf4\hproto.h">
+      <Filter>include\hdf4</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf4\hproto_fortran.h">
+      <Filter>include\hdf4</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf4\hqueue.h">
+      <Filter>include\hdf4</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf4\htags.h">
+      <Filter>include\hdf4</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf4\linklist.h">
+      <Filter>include\hdf4</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf4\maldebug.h">
+      <Filter>include\hdf4</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf4\mcache.h">
+      <Filter>include\hdf4</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf4\mfan.h">
+      <Filter>include\hdf4</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf4\mfgr.h">
+      <Filter>include\hdf4</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf4\mstdio.h">
+      <Filter>include\hdf4</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf4\netcdf.h">
+      <Filter>include\hdf4</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf4\patchlevel.h">
+      <Filter>include\hdf4</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf4\tbbt.h">
+      <Filter>include\hdf4</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf4\trace.h">
+      <Filter>include\hdf4</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf4\vattr.h">
+      <Filter>include\hdf4</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf4\vg.h">
+      <Filter>include\hdf4</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf4\vgint.h">
+      <Filter>include\hdf4</Filter>
+    </ClInclude>
+    <ClInclude Include="include\mfhdf\alloc.h">
+      <Filter>include\mfhdf</Filter>
+    </ClInclude>
+    <ClInclude Include="include\mfhdf\error.h">
+      <Filter>include\mfhdf</Filter>
+    </ClInclude>
+    <ClInclude Include="include\mfhdf\hdf2netcdf.h">
+      <Filter>include\mfhdf</Filter>
+    </ClInclude>
+    <ClInclude Include="include\mfhdf\local_nc.h">
+      <Filter>include\mfhdf</Filter>
+    </ClInclude>
+    <ClInclude Include="include\mfhdf\mfdatainfo.h">
+      <Filter>include\mfhdf</Filter>
+    </ClInclude>
+    <ClInclude Include="include\mfhdf\mfhdf.h">
+      <Filter>include\mfhdf</Filter>
+    </ClInclude>
+    <ClInclude Include="include\mfhdf\mfhdfi.h">
+      <Filter>include\mfhdf</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xdr\types.h">
+      <Filter>include\xdr</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xdr\xdr.h">
+      <Filter>include\xdr</Filter>
+    </ClInclude>
+    <ClInclude Include="src\mfhdf\mfprivate.h">
+      <Filter>src\mfhdf</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="include\hdf4\dffunc.inc">
+      <Filter>include\hdf4</Filter>
+    </None>
+    <None Include="include\hdf4\hdf.inc">
+      <Filter>include\hdf4</Filter>
+    </None>
+    <None Include="include\hdf4\src.inc">
+      <Filter>include\hdf4</Filter>
+    </None>
+  </ItemGroup>
+</Project>

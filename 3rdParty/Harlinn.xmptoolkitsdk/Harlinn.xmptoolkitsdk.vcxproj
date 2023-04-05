@@ -1,0 +1,695 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{aad30920-8b03-4c73-8705-a24f511866bd}</ProjectGuid>
+    <RootNamespace>Harlinnxmptoolkitsdk</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Label="Vcpkg">
+    <VcpkgEnabled>false</VcpkgEnabled>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>BUILDING_HARLINN_XMPTOOLKITSDK=1;XMP_DynamicBuild=1;BUILDING_XMPCOMMON_LIB=1;BUILDING_XMPCOMMON_AS_DYNAMIC=1;BUILDING_XMPCORE_LIB=1;BUILDING_XMPCORE_AS_DYNAMIC=1;_CRT_SECURE_NO_WARNINGS=1;NOMINMAX=1;XMP_COMPONENT_INT_NAMESPACE=AdobeXMPCore_Int;WIN32;_DEBUG;HARLINNXMPTOOLKITSDK_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)src;$(SolutionDir)3rdParty\Harlinn.expat;$(SolutionDir)3rdParty\Harlinn.zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+      <AdditionalLibraryDirectories>$(OutDir)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>BUILDING_HARLINN_XMPTOOLKITSDK=1;XMP_DynamicBuild=1;BUILDING_XMPCOMMON_LIB=1;BUILDING_XMPCOMMON_AS_DYNAMIC=1;BUILDING_XMPCORE_LIB=1;BUILDING_XMPCORE_AS_DYNAMIC=1;_CRT_SECURE_NO_WARNINGS=1;NOMINMAX=1;XMP_COMPONENT_INT_NAMESPACE=AdobeXMPCore_Int;WIN32;NDEBUG;HARLINNXMPTOOLKITSDK_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)src;$(SolutionDir)3rdParty\Harlinn.expat;$(SolutionDir)3rdParty\Harlinn.zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+      <AdditionalLibraryDirectories>$(OutDir)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>BUILDING_HARLINN_XMPTOOLKITSDK=1;XMP_DynamicBuild=1;BUILDING_XMPCOMMON_LIB=1;BUILDING_XMPCOMMON_AS_DYNAMIC=1;BUILDING_XMPCORE_LIB=1;BUILDING_XMPCORE_AS_DYNAMIC=1;_CRT_SECURE_NO_WARNINGS=1;NOMINMAX=1;XMP_COMPONENT_INT_NAMESPACE=AdobeXMPCore_Int;_DEBUG;HARLINNXMPTOOLKITSDK_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)src;$(SolutionDir)3rdParty\Harlinn.expat;$(SolutionDir)3rdParty\Harlinn.zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+      <AdditionalLibraryDirectories>$(OutDir)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>BUILDING_HARLINN_XMPTOOLKITSDK=1;XMP_DynamicBuild=1;BUILDING_XMPCOMMON_LIB=1;BUILDING_XMPCOMMON_AS_DYNAMIC=1;BUILDING_XMPCORE_LIB=1;BUILDING_XMPCORE_AS_DYNAMIC=1;_CRT_SECURE_NO_WARNINGS=1;NOMINMAX=1;XMP_COMPONENT_INT_NAMESPACE=AdobeXMPCore_Int;NDEBUG;HARLINNXMPTOOLKITSDK_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)src;$(SolutionDir)3rdParty\Harlinn.expat;$(SolutionDir)3rdParty\Harlinn.zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+      <AdditionalLibraryDirectories>$(OutDir)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="src\source\Host_IO-POSIX.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\source\Host_IO-Win.cpp" />
+    <ClCompile Include="src\source\IOUtils.cpp" />
+    <ClCompile Include="src\source\PerfUtils.cpp" />
+    <ClCompile Include="src\source\SafeStringAPIs.cpp" />
+    <ClCompile Include="src\source\UnicodeConversions.cpp" />
+    <ClCompile Include="src\source\XIO.cpp" />
+    <ClCompile Include="src\source\XML_Node.cpp" />
+    <ClCompile Include="src\source\XMPFiles_IO.cpp" />
+    <ClCompile Include="src\source\XMP_LibUtils.cpp" />
+    <ClCompile Include="src\source\XMP_ProgressTracker.cpp" />
+    <ClCompile Include="src\third-party\zuid\interfaces\MD5.cpp" />
+    <ClCompile Include="src\XMPCommon\source\AutoSharedLock.cpp" />
+    <ClCompile Include="src\XMPCommon\source\ConfigurableImpl.cpp" />
+    <ClCompile Include="src\XMPCommon\source\ConfigurationManagerImpl.cpp" />
+    <ClCompile Include="src\XMPCommon\source\DefaultErrorNotifierImpl.cpp" />
+    <ClCompile Include="src\XMPCommon\source\ErrorImpl.cpp" />
+    <ClCompile Include="src\XMPCommon\source\ErrorNotifierWrapperImpl.cpp" />
+    <ClCompile Include="src\XMPCommon\source\IConfigurable.cpp" />
+    <ClCompile Include="src\XMPCommon\source\IConfigurable_I.cpp" />
+    <ClCompile Include="src\XMPCommon\source\IConfigurationManager.cpp" />
+    <ClCompile Include="src\XMPCommon\source\IConfigurationManager_I.cpp" />
+    <ClCompile Include="src\XMPCommon\source\IError.cpp" />
+    <ClCompile Include="src\XMPCommon\source\IErrorNotifier.cpp" />
+    <ClCompile Include="src\XMPCommon\source\IErrorNotifier_I.cpp" />
+    <ClCompile Include="src\XMPCommon\source\IError_I.cpp" />
+    <ClCompile Include="src\XMPCommon\source\IMemoryAllocator_I.cpp" />
+    <ClCompile Include="src\XMPCommon\source\IUTF8String.cpp" />
+    <ClCompile Include="src\XMPCommon\source\IUTF8StringComparator.cpp" />
+    <ClCompile Include="src\XMPCommon\source\IUTF8String_I.cpp" />
+    <ClCompile Include="src\XMPCommon\source\MemoryAllocatorWrapperImpl.cpp" />
+    <ClCompile Include="src\XMPCommon\source\MemoryManagedObject.cpp" />
+    <ClCompile Include="src\XMPCommon\source\SharedMutexImpl.cpp" />
+    <ClCompile Include="src\XMPCommon\source\SharedObjectImpl.cpp" />
+    <ClCompile Include="src\XMPCommon\source\ThreadSafeImpl.cpp" />
+    <ClCompile Include="src\XMPCommon\source\UTF8StringImpl.cpp" />
+    <ClCompile Include="src\XMPCommon\source\XMPCommon.cpp" />
+    <ClCompile Include="src\XMPCore\source\ArrayNodeImpl.cpp" />
+    <ClCompile Include="src\XMPCore\source\ClientDOMParserWrapperImpl.cpp" />
+    <ClCompile Include="src\XMPCore\source\ClientDOMSerializerWrapperImpl.cpp" />
+    <ClCompile Include="src\XMPCore\source\CompositeNodeImpl.cpp" />
+    <ClCompile Include="src\XMPCore\source\CoreConfigurationManagerImpl.cpp" />
+    <ClCompile Include="src\XMPCore\source\CoreObjectFactoryImpl.cpp" />
+    <ClCompile Include="src\XMPCore\source\DOMImplementationRegistryImpl.cpp" />
+    <ClCompile Include="src\XMPCore\source\DOMParserImpl.cpp" />
+    <ClCompile Include="src\XMPCore\source\DOMSerializerImpl.cpp" />
+    <ClCompile Include="src\XMPCore\source\ExpatAdapter.cpp" />
+    <ClCompile Include="src\XMPCore\source\IArrayNode.cpp" />
+    <ClCompile Include="src\XMPCore\source\IArrayNode_I.cpp" />
+    <ClCompile Include="src\XMPCore\source\IClientDOMParser.cpp" />
+    <ClCompile Include="src\XMPCore\source\IClientDOMSerializer.cpp" />
+    <ClCompile Include="src\XMPCore\source\ICompositeNode.cpp" />
+    <ClCompile Include="src\XMPCore\source\ICompositeNode_I.cpp" />
+    <ClCompile Include="src\XMPCore\source\ICoreConfigurationManager.cpp" />
+    <ClCompile Include="src\XMPCore\source\ICoreConfigurationManager_I.cpp" />
+    <ClCompile Include="src\XMPCore\source\ICoreObjectFactory.cpp" />
+    <ClCompile Include="src\XMPCore\source\ICoreObjectFactory_I.cpp" />
+    <ClCompile Include="src\XMPCore\source\IDOMImplementationRegistry.cpp" />
+    <ClCompile Include="src\XMPCore\source\IDOMImplementationRegistry_I.cpp" />
+    <ClCompile Include="src\XMPCore\source\IDOMParser.cpp" />
+    <ClCompile Include="src\XMPCore\source\IDOMParser_I.cpp" />
+    <ClCompile Include="src\XMPCore\source\IDOMSerializer.cpp" />
+    <ClCompile Include="src\XMPCore\source\IDOMSerializer_I.cpp" />
+    <ClCompile Include="src\XMPCore\source\IMetadata.cpp" />
+    <ClCompile Include="src\XMPCore\source\IMetadataConverterUtils.cpp" />
+    <ClCompile Include="src\XMPCore\source\IMetadataConverterUtils_I.cpp" />
+    <ClCompile Include="src\XMPCore\source\IMetadata_I.cpp" />
+    <ClCompile Include="src\XMPCore\source\INameSpacePrefixMap.cpp" />
+    <ClCompile Include="src\XMPCore\source\INameSpacePrefixMap_I.cpp" />
+    <ClCompile Include="src\XMPCore\source\INode.cpp" />
+    <ClCompile Include="src\XMPCore\source\INodeIterator.cpp" />
+    <ClCompile Include="src\XMPCore\source\INodeIterator_I.cpp" />
+    <ClCompile Include="src\XMPCore\source\INode_I.cpp" />
+    <ClCompile Include="src\XMPCore\source\IPath.cpp" />
+    <ClCompile Include="src\XMPCore\source\IPathSegment.cpp" />
+    <ClCompile Include="src\XMPCore\source\IPathSegment_I.cpp" />
+    <ClCompile Include="src\XMPCore\source\IPath_I.cpp" />
+    <ClCompile Include="src\XMPCore\source\ISimpleNode.cpp" />
+    <ClCompile Include="src\XMPCore\source\ISimpleNode_I.cpp" />
+    <ClCompile Include="src\XMPCore\source\IStructureNode.cpp" />
+    <ClCompile Include="src\XMPCore\source\IStructureNode_I.cpp" />
+    <ClCompile Include="src\XMPCore\source\MetadataConverterUtilsImpl.cpp" />
+    <ClCompile Include="src\XMPCore\source\MetadataImpl.cpp" />
+    <ClCompile Include="src\XMPCore\source\NameSpacePrefixMapImpl.cpp" />
+    <ClCompile Include="src\XMPCore\source\NodeImpl.cpp" />
+    <ClCompile Include="src\XMPCore\source\ParseRDF.cpp" />
+    <ClCompile Include="src\XMPCore\source\PathImpl.cpp" />
+    <ClCompile Include="src\XMPCore\source\PathSegmentImpl.cpp" />
+    <ClCompile Include="src\XMPCore\source\RDFDOMParserImpl.cpp" />
+    <ClCompile Include="src\XMPCore\source\RDFDOMSerializerImpl.cpp" />
+    <ClCompile Include="src\XMPCore\source\SimpleNodeImpl.cpp" />
+    <ClCompile Include="src\XMPCore\source\StructureNodeImpl.cpp" />
+    <ClCompile Include="src\XMPCore\source\WXMPIterator.cpp" />
+    <ClCompile Include="src\XMPCore\source\WXMPMeta.cpp" />
+    <ClCompile Include="src\XMPCore\source\WXMPUtils.cpp" />
+    <ClCompile Include="src\XMPCore\source\XMPCore_Impl.cpp" />
+    <ClCompile Include="src\XMPCore\source\XMPIterator.cpp" />
+    <ClCompile Include="src\XMPCore\source\XMPIterator2.cpp" />
+    <ClCompile Include="src\XMPCore\source\XMPMeta-GetSet.cpp" />
+    <ClCompile Include="src\XMPCore\source\XMPMeta-Parse.cpp" />
+    <ClCompile Include="src\XMPCore\source\XMPMeta-Serialize.cpp" />
+    <ClCompile Include="src\XMPCore\source\XMPMeta.cpp" />
+    <ClCompile Include="src\XMPCore\source\XMPMeta2-GetSet.cpp" />
+    <ClCompile Include="src\XMPCore\source\XMPUtils-FileInfo.cpp" />
+    <ClCompile Include="src\XMPCore\source\XMPUtils.cpp" />
+    <ClCompile Include="src\XMPCore\source\XMPUtils2.cpp" />
+    <ClCompile Include="src\XMPFilesPlugins\api\source\HostAPIAccess.cpp" />
+    <ClCompile Include="src\XMPFilesPlugins\api\source\PluginAPIImpl.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\XMPFilesPlugins\api\source\PluginBase.cpp" />
+    <ClCompile Include="src\XMPFilesPlugins\api\source\PluginRegistry.cpp" />
+    <ClCompile Include="src\XMPFilesPlugins\api\source\PluginUtils.cpp" />
+    <ClCompile Include="src\XMPFiles\source\FileHandlers\AIFF_Handler.cpp" />
+    <ClCompile Include="src\XMPFiles\source\FileHandlers\ASF_Handler.cpp" />
+    <ClCompile Include="src\XMPFiles\source\FileHandlers\AVCHD_Handler.cpp" />
+    <ClCompile Include="src\XMPFiles\source\FileHandlers\Basic_Handler.cpp" />
+    <ClCompile Include="src\XMPFiles\source\FileHandlers\FLV_Handler.cpp" />
+    <ClCompile Include="src\XMPFiles\source\FileHandlers\GIF_Handler.cpp" />
+    <ClCompile Include="src\XMPFiles\source\FileHandlers\InDesign_Handler.cpp" />
+    <ClCompile Include="src\XMPFiles\source\FileHandlers\JPEG_Handler.cpp" />
+    <ClCompile Include="src\XMPFiles\source\FileHandlers\MP3_Handler.cpp" />
+    <ClCompile Include="src\XMPFiles\source\FileHandlers\MPEG2_Handler.cpp" />
+    <ClCompile Include="src\XMPFiles\source\FileHandlers\MPEG4_Handler.cpp" />
+    <ClCompile Include="src\XMPFiles\source\FileHandlers\P2_Handler.cpp" />
+    <ClCompile Include="src\XMPFiles\source\FileHandlers\PNG_Handler.cpp" />
+    <ClCompile Include="src\XMPFiles\source\FileHandlers\PostScript_Handler.cpp" />
+    <ClCompile Include="src\XMPFiles\source\FileHandlers\PSD_Handler.cpp" />
+    <ClCompile Include="src\XMPFiles\source\FileHandlers\RIFF_Handler.cpp" />
+    <ClCompile Include="src\XMPFiles\source\FileHandlers\Scanner_Handler.cpp" />
+    <ClCompile Include="src\XMPFiles\source\FileHandlers\SonyHDV_Handler.cpp" />
+    <ClCompile Include="src\XMPFiles\source\FileHandlers\SVG_Handler.cpp" />
+    <ClCompile Include="src\XMPFiles\source\FileHandlers\SWF_Handler.cpp" />
+    <ClCompile Include="src\XMPFiles\source\FileHandlers\TIFF_Handler.cpp" />
+    <ClCompile Include="src\XMPFiles\source\FileHandlers\Trivial_Handler.cpp" />
+    <ClCompile Include="src\XMPFiles\source\FileHandlers\UCF_Handler.cpp" />
+    <ClCompile Include="src\XMPFiles\source\FileHandlers\WAVE_Handler.cpp" />
+    <ClCompile Include="src\XMPFiles\source\FileHandlers\XDCAMEX_Handler.cpp" />
+    <ClCompile Include="src\XMPFiles\source\FileHandlers\XDCAMFAM_Handler.cpp" />
+    <ClCompile Include="src\XMPFiles\source\FileHandlers\XDCAMSAM_Handler.cpp" />
+    <ClCompile Include="src\XMPFiles\source\FileHandlers\XDCAM_Handler.cpp" />
+    <ClCompile Include="src\XMPFiles\source\FormatSupport\AIFF\AIFFBehavior.cpp" />
+    <ClCompile Include="src\XMPFiles\source\FormatSupport\AIFF\AIFFMetadata.cpp" />
+    <ClCompile Include="src\XMPFiles\source\FormatSupport\AIFF\AIFFReconcile.cpp" />
+    <ClCompile Include="src\XMPFiles\source\FormatSupport\ASF_Support.cpp" />
+    <ClCompile Include="src\XMPFiles\source\FormatSupport\ID3_Support.cpp" />
+    <ClCompile Include="src\XMPFiles\source\FormatSupport\IFF\Chunk.cpp" />
+    <ClCompile Include="src\XMPFiles\source\FormatSupport\IFF\ChunkController.cpp" />
+    <ClCompile Include="src\XMPFiles\source\FormatSupport\IFF\ChunkPath.cpp" />
+    <ClCompile Include="src\XMPFiles\source\FormatSupport\IFF\IChunkBehavior.cpp" />
+    <ClCompile Include="src\XMPFiles\source\FormatSupport\IPTC_Support.cpp" />
+    <ClCompile Include="src\XMPFiles\source\FormatSupport\ISOBaseMedia_Support.cpp" />
+    <ClCompile Include="src\XMPFiles\source\FormatSupport\META_Support.cpp" />
+    <ClCompile Include="src\XMPFiles\source\FormatSupport\MOOV_Support.cpp" />
+    <ClCompile Include="src\XMPFiles\source\FormatSupport\P2_Support.cpp" />
+    <ClCompile Include="src\XMPFiles\source\FormatSupport\PackageFormat_Support.cpp" />
+    <ClCompile Include="src\XMPFiles\source\FormatSupport\PNG_Support.cpp" />
+    <ClCompile Include="src\XMPFiles\source\FormatSupport\PostScript_Support.cpp" />
+    <ClCompile Include="src\XMPFiles\source\FormatSupport\PSIR_FileWriter.cpp" />
+    <ClCompile Include="src\XMPFiles\source\FormatSupport\PSIR_MemoryReader.cpp" />
+    <ClCompile Include="src\XMPFiles\source\FormatSupport\QuickTime_Support.cpp" />
+    <ClCompile Include="src\XMPFiles\source\FormatSupport\ReconcileIPTC.cpp" />
+    <ClCompile Include="src\XMPFiles\source\FormatSupport\ReconcileLegacy.cpp" />
+    <ClCompile Include="src\XMPFiles\source\FormatSupport\ReconcileTIFF.cpp" />
+    <ClCompile Include="src\XMPFiles\source\FormatSupport\Reconcile_Impl.cpp" />
+    <ClCompile Include="src\XMPFiles\source\FormatSupport\RIFF.cpp" />
+    <ClCompile Include="src\XMPFiles\source\FormatSupport\RIFF_Support.cpp" />
+    <ClCompile Include="src\XMPFiles\source\FormatSupport\SVG_Adapter.cpp" />
+    <ClCompile Include="src\XMPFiles\source\FormatSupport\SWF_Support.cpp" />
+    <ClCompile Include="src\XMPFiles\source\FormatSupport\TIFF_FileWriter.cpp" />
+    <ClCompile Include="src\XMPFiles\source\FormatSupport\TIFF_MemoryReader.cpp" />
+    <ClCompile Include="src\XMPFiles\source\FormatSupport\TIFF_Support.cpp" />
+    <ClCompile Include="src\XMPFiles\source\FormatSupport\TimeConversionUtils.cpp" />
+    <ClCompile Include="src\XMPFiles\source\FormatSupport\WAVE\BEXTMetadata.cpp" />
+    <ClCompile Include="src\XMPFiles\source\FormatSupport\WAVE\CartMetadata.cpp" />
+    <ClCompile Include="src\XMPFiles\source\FormatSupport\WAVE\Cr8rMetadata.cpp" />
+    <ClCompile Include="src\XMPFiles\source\FormatSupport\WAVE\DISPMetadata.cpp" />
+    <ClCompile Include="src\XMPFiles\source\FormatSupport\WAVE\INFOMetadata.cpp" />
+    <ClCompile Include="src\XMPFiles\source\FormatSupport\WAVE\iXMLMetadata.cpp" />
+    <ClCompile Include="src\XMPFiles\source\FormatSupport\WAVE\PrmLMetadata.cpp" />
+    <ClCompile Include="src\XMPFiles\source\FormatSupport\WAVE\WAVEBehavior.cpp" />
+    <ClCompile Include="src\XMPFiles\source\FormatSupport\WAVE\WAVEReconcile.cpp" />
+    <ClCompile Include="src\XMPFiles\source\FormatSupport\XDCAM_Support.cpp" />
+    <ClCompile Include="src\XMPFiles\source\FormatSupport\XMPScanner.cpp" />
+    <ClCompile Include="src\XMPFiles\source\HandlerRegistry.cpp" />
+    <ClCompile Include="src\XMPFiles\source\NativeMetadataSupport\IMetadata_nms.cpp" />
+    <ClCompile Include="src\XMPFiles\source\NativeMetadataSupport\IReconcile.cpp" />
+    <ClCompile Include="src\XMPFiles\source\NativeMetadataSupport\MetadataSet.cpp" />
+    <ClCompile Include="src\XMPFiles\source\PluginHandler\FileHandlerInstance.cpp" />
+    <ClCompile Include="src\XMPFiles\source\PluginHandler\HostAPIImpl.cpp" />
+    <ClCompile Include="src\XMPFiles\source\PluginHandler\Module.cpp" />
+    <ClCompile Include="src\XMPFiles\source\PluginHandler\OS_Utils_Android.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\XMPFiles\source\PluginHandler\OS_Utils_Linux.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\XMPFiles\source\PluginHandler\OS_Utils_Mac.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\XMPFiles\source\PluginHandler\OS_Utils_WIN.cpp" />
+    <ClCompile Include="src\XMPFiles\source\PluginHandler\PluginManager.cpp" />
+    <ClCompile Include="src\XMPFiles\source\PluginHandler\XMPAtoms.cpp" />
+    <ClCompile Include="src\XMPFiles\source\WXMPFiles.cpp" />
+    <ClCompile Include="src\XMPFiles\source\XMPFiles.cpp" />
+    <ClCompile Include="src\XMPFiles\source\XMPFiles_Impl.cpp" />
+    <ClInclude Include="include\xmp\client-glue\WXMPFiles.hpp" />
+    <ClInclude Include="include\xmp\client-glue\WXMPIterator.hpp" />
+    <ClInclude Include="include\xmp\client-glue\WXMPMeta.hpp" />
+    <ClInclude Include="include\xmp\client-glue\WXMPUtils.hpp" />
+    <ClInclude Include="include\xmp\client-glue\WXMP_Common.hpp" />
+    <ClInclude Include="include\xmp\TXMPFiles.hpp" />
+    <ClInclude Include="include\xmp\TXMPIterator.hpp" />
+    <ClInclude Include="include\xmp\TXMPMeta.hpp" />
+    <ClInclude Include="include\xmp\TXMPUtils.hpp" />
+    <ClInclude Include="include\xmp\XMP.hpp" />
+    <ClInclude Include="include\xmp\XMPCommon\Interfaces\BaseInterfaces\IConfigurable.h" />
+    <ClInclude Include="include\xmp\XMPCommon\Interfaces\BaseInterfaces\ISharedObject.h" />
+    <ClInclude Include="include\xmp\XMPCommon\Interfaces\BaseInterfaces\IThreadSafe.h" />
+    <ClInclude Include="include\xmp\XMPCommon\Interfaces\BaseInterfaces\IVersionable.h" />
+    <ClInclude Include="include\xmp\XMPCommon\Interfaces\IConfigurationManager.h" />
+    <ClInclude Include="include\xmp\XMPCommon\Interfaces\IError.h" />
+    <ClInclude Include="include\xmp\XMPCommon\Interfaces\IErrorNotifier.h" />
+    <ClInclude Include="include\xmp\XMPCommon\Interfaces\IMemoryAllocator.h" />
+    <ClInclude Include="include\xmp\XMPCommon\Interfaces\IObjectFactory.h" />
+    <ClInclude Include="include\xmp\XMPCommon\Interfaces\IUTF8String.h" />
+    <ClInclude Include="include\xmp\XMPCommon\Utilities\TWrapperFunctions.h" />
+    <ClInclude Include="include\xmp\XMPCommon\Utilities\TWrapperFunctions2.h" />
+    <ClInclude Include="include\xmp\XMPCommon\XMPCommonDefines.h" />
+    <ClInclude Include="include\xmp\XMPCommon\XMPCommonErrorCodes.h" />
+    <ClInclude Include="include\xmp\XMPCommon\XMPCommonFwdDeclarations.h" />
+    <ClInclude Include="include\xmp\XMPCommon\XMPCommonLatestInterfaceVersions.h" />
+    <ClInclude Include="include\xmp\XMPCore\Interfaces\IArrayNode.h" />
+    <ClInclude Include="include\xmp\XMPCore\Interfaces\IClientDOMParser.h" />
+    <ClInclude Include="include\xmp\XMPCore\Interfaces\IClientDOMSerializer.h" />
+    <ClInclude Include="include\xmp\XMPCore\Interfaces\ICompositeNode.h" />
+    <ClInclude Include="include\xmp\XMPCore\Interfaces\ICoreConfigurationManager.h" />
+    <ClInclude Include="include\xmp\XMPCore\Interfaces\ICoreObjectFactory.h" />
+    <ClInclude Include="include\xmp\XMPCore\Interfaces\IDOMImplementationRegistry.h" />
+    <ClInclude Include="include\xmp\XMPCore\Interfaces\IDOMParser.h" />
+    <ClInclude Include="include\xmp\XMPCore\Interfaces\IDOMSerializer.h" />
+    <ClInclude Include="include\xmp\XMPCore\Interfaces\IMetadata.h" />
+    <ClInclude Include="include\xmp\XMPCore\Interfaces\IMetadataConverterUtils.h" />
+    <ClInclude Include="include\xmp\XMPCore\Interfaces\INameSpacePrefixMap.h" />
+    <ClInclude Include="include\xmp\XMPCore\Interfaces\INode.h" />
+    <ClInclude Include="include\xmp\XMPCore\Interfaces\INodeIterator.h" />
+    <ClInclude Include="include\xmp\XMPCore\Interfaces\IPath.h" />
+    <ClInclude Include="include\xmp\XMPCore\Interfaces\IPathSegment.h" />
+    <ClInclude Include="include\xmp\XMPCore\Interfaces\ISimpleNode.h" />
+    <ClInclude Include="include\xmp\XMPCore\Interfaces\IStructureNode.h" />
+    <ClInclude Include="include\xmp\XMPCore\XMPCoreDefines.h" />
+    <ClInclude Include="include\xmp\XMPCore\XMPCoreErrorCodes.h" />
+    <ClInclude Include="include\xmp\XMPCore\XMPCoreFwdDeclarations.h" />
+    <ClInclude Include="include\xmp\XMPCore\XMPCoreLatestInterfaceVersions.h" />
+    <ClInclude Include="include\xmp\xmpdef.h" />
+    <ClInclude Include="include\xmp\XMP_Const.h" />
+    <ClInclude Include="include\xmp\XMP_Environment.h" />
+    <ClInclude Include="include\xmp\XMP_IO.hpp" />
+    <ClInclude Include="include\xmp\XMP_Version.h" />
+    <ClInclude Include="src\source\Endian.h" />
+    <ClInclude Include="src\source\EndianUtils.hpp" />
+    <ClInclude Include="src\source\ExpatAdapter.hpp" />
+    <ClInclude Include="src\source\Host_IO.hpp" />
+    <ClInclude Include="src\source\IOUtils.hpp" />
+    <ClInclude Include="src\source\PerfUtils.hpp" />
+    <ClInclude Include="src\source\SafeStringAPIs.h" />
+    <ClInclude Include="src\source\SafeTypes.h" />
+    <ClInclude Include="src\source\SuppressSAL.h" />
+    <ClInclude Include="src\source\UnicodeConversions.hpp" />
+    <ClInclude Include="src\source\XIO.hpp" />
+    <ClInclude Include="src\source\XMLParserAdapter.hpp" />
+    <ClInclude Include="src\source\XMPFiles_IO.hpp" />
+    <ClInclude Include="src\source\XMP_LibUtils.hpp" />
+    <ClInclude Include="src\source\XMP_ProgressTracker.hpp" />
+    <ClInclude Include="src\third-party\zuid\interfaces\MD5.h" />
+    <ClInclude Include="src\XMPCommon\BaseClasses\MemoryManagedObject.h" />
+    <ClInclude Include="src\XMPCommon\BaseClasses\TSingleton.h" />
+    <ClInclude Include="src\XMPCommon\ImplHeaders\ConfigurableImpl.h" />
+    <ClInclude Include="src\XMPCommon\ImplHeaders\ConfigurationManagerImpl.h" />
+    <ClInclude Include="src\XMPCommon\ImplHeaders\DefaultErrorNotifierImpl.h" />
+    <ClInclude Include="src\XMPCommon\ImplHeaders\ErrorImpl.h" />
+    <ClInclude Include="src\XMPCommon\ImplHeaders\ErrorNotifierWrapperImpl.h" />
+    <ClInclude Include="src\XMPCommon\ImplHeaders\MemoryAllocatorWrapperImpl.h" />
+    <ClInclude Include="src\XMPCommon\ImplHeaders\SharedMutexImpl.h" />
+    <ClInclude Include="src\XMPCommon\ImplHeaders\SharedObjectImpl.h" />
+    <ClInclude Include="src\XMPCommon\ImplHeaders\ThreadSafeImpl.h" />
+    <ClInclude Include="src\XMPCommon\ImplHeaders\UTF8StringImpl.h" />
+    <ClInclude Include="src\XMPCommon\Interfaces\BaseInterfaces\IConfigurable_I.h" />
+    <ClInclude Include="src\XMPCommon\Interfaces\BaseInterfaces\ISharedObject_I.h" />
+    <ClInclude Include="src\XMPCommon\Interfaces\BaseInterfaces\IThreadSafe_I.h" />
+    <ClInclude Include="src\XMPCommon\Interfaces\IConfigurationManager_I.h" />
+    <ClInclude Include="src\XMPCommon\Interfaces\IErrorNotifier_I.h" />
+    <ClInclude Include="src\XMPCommon\Interfaces\IError_I.h" />
+    <ClInclude Include="src\XMPCommon\Interfaces\IMemoryAllocator_I.h" />
+    <ClInclude Include="src\XMPCommon\Interfaces\ISharedMutex.h" />
+    <ClInclude Include="src\XMPCommon\Interfaces\IUTF8String_I.h" />
+    <ClInclude Include="src\XMPCommon\Utilities\AutoSharedLock.h" />
+    <ClInclude Include="src\XMPCommon\Utilities\IUTF8StringComparator.h" />
+    <ClInclude Include="src\XMPCommon\Utilities\TAllocator.h" />
+    <ClInclude Include="src\XMPCommon\Utilities\TAtomicTypes.h" />
+    <ClInclude Include="src\XMPCommon\Utilities\TAtomicTypes_Android.h" />
+    <ClInclude Include="src\XMPCommon\Utilities\TAtomicTypes_Linux.h" />
+    <ClInclude Include="src\XMPCommon\Utilities\TAtomicTypes_Mac.h" />
+    <ClInclude Include="src\XMPCommon\Utilities\TAtomicTypes_Win.h" />
+    <ClInclude Include="src\XMPCommon\Utilities\TSmartPointers_I.h" />
+    <ClInclude Include="src\XMPCommon\Utilities\TWrapperFunctions2_I.h" />
+    <ClInclude Include="src\XMPCommon\Utilities\TWrapperFunctions_I.h" />
+    <ClInclude Include="src\XMPCommon\Utilities\UTF8String.h" />
+    <ClInclude Include="src\XMPCommon\XMPCommonDefines_I.h" />
+    <ClInclude Include="src\XMPCommon\XMPCommonErrorCodes_I.h" />
+    <ClInclude Include="src\XMPCommon\XMPCommonFwdDeclarations_I.h" />
+    <ClInclude Include="src\XMPCommon\XMPCommon_I.h" />
+    <ClInclude Include="src\XMPCore\ImplHeaders\ArrayNodeImpl.h" />
+    <ClInclude Include="src\XMPCore\ImplHeaders\ClientDOMParserWrapperImpl.h" />
+    <ClInclude Include="src\XMPCore\ImplHeaders\ClientDOMSerializerWrapperImpl.h" />
+    <ClInclude Include="src\XMPCore\ImplHeaders\CompositeNodeImpl.h" />
+    <ClInclude Include="src\XMPCore\ImplHeaders\CoreConfigurationManagerImpl.h" />
+    <ClInclude Include="src\XMPCore\ImplHeaders\CoreObjectFactoryImpl.h" />
+    <ClInclude Include="src\XMPCore\ImplHeaders\DOMImplementationRegistryImpl.h" />
+    <ClInclude Include="src\XMPCore\ImplHeaders\DOMParserImpl.h" />
+    <ClInclude Include="src\XMPCore\ImplHeaders\DOMSerializerImpl.h" />
+    <ClInclude Include="src\XMPCore\ImplHeaders\MetadataConverterUtilsImpl.h" />
+    <ClInclude Include="src\XMPCore\ImplHeaders\MetadataImpl.h" />
+    <ClInclude Include="src\XMPCore\ImplHeaders\NameSpacePrefixMapImpl.h" />
+    <ClInclude Include="src\XMPCore\ImplHeaders\NodeImpl.h" />
+    <ClInclude Include="src\XMPCore\ImplHeaders\PathImpl.h" />
+    <ClInclude Include="src\XMPCore\ImplHeaders\PathSegmentImpl.h" />
+    <ClInclude Include="src\XMPCore\ImplHeaders\RDFDOMParserImpl.h" />
+    <ClInclude Include="src\XMPCore\ImplHeaders\RDFDOMSerializerImpl.h" />
+    <ClInclude Include="src\XMPCore\ImplHeaders\SimpleNodeImpl.h" />
+    <ClInclude Include="src\XMPCore\ImplHeaders\StructureNodeImpl.h" />
+    <ClInclude Include="src\XMPCore\ImplHeaders\TNodeIteratorImpl.h" />
+    <ClInclude Include="src\XMPCore\Interfaces\IArrayNode_I.h" />
+    <ClInclude Include="src\XMPCore\Interfaces\ICompositeNode_I.h" />
+    <ClInclude Include="src\XMPCore\Interfaces\ICoreConfigurationManager_I.h" />
+    <ClInclude Include="src\XMPCore\Interfaces\ICoreObjectFactory_I.h" />
+    <ClInclude Include="src\XMPCore\Interfaces\IDOMImplementationRegistry_I.h" />
+    <ClInclude Include="src\XMPCore\Interfaces\IDOMParser_I.h" />
+    <ClInclude Include="src\XMPCore\Interfaces\IDOMSerializer_I.h" />
+    <ClInclude Include="src\XMPCore\Interfaces\IMetadataConverterUtils_I.h" />
+    <ClInclude Include="src\XMPCore\Interfaces\IMetadata_I.h" />
+    <ClInclude Include="src\XMPCore\Interfaces\INameSpacePrefixMap_I.h" />
+    <ClInclude Include="src\XMPCore\Interfaces\INodeIterator_I.h" />
+    <ClInclude Include="src\XMPCore\Interfaces\INode_I.h" />
+    <ClInclude Include="src\XMPCore\Interfaces\IPathSegment_I.h" />
+    <ClInclude Include="src\XMPCore\Interfaces\IPath_I.h" />
+    <ClInclude Include="src\XMPCore\Interfaces\ISimpleNode_I.h" />
+    <ClInclude Include="src\XMPCore\Interfaces\IStructureNode_I.h" />
+    <ClInclude Include="src\XMPCore\Interfaces\IXMPLanguageAlternative_I.h" />
+    <ClInclude Include="src\XMPCore\resource\win\expat_config.h" />
+    <ClInclude Include="src\XMPCore\source\XMPCore_Impl.hpp" />
+    <ClInclude Include="src\XMPCore\source\XMPIterator.hpp" />
+    <ClInclude Include="src\XMPCore\source\XMPIterator2.hpp" />
+    <ClInclude Include="src\XMPCore\source\XMPMeta.hpp" />
+    <ClInclude Include="src\XMPCore\source\XMPMeta2.hpp" />
+    <ClInclude Include="src\XMPCore\source\XMPUtils.hpp" />
+    <ClInclude Include="src\XMPCore\XMPCoreDefines_I.h" />
+    <ClInclude Include="src\XMPCore\XMPCoreFwdDeclarations_I.h" />
+    <ClInclude Include="src\XMPFilesPlugins\api\source\HostAPI.h" />
+    <ClInclude Include="src\XMPFilesPlugins\api\source\HostAPIAccess.h" />
+    <ClInclude Include="src\XMPFilesPlugins\api\source\PluginBase.h" />
+    <ClInclude Include="src\XMPFilesPlugins\api\source\PluginConst.h" />
+    <ClInclude Include="src\XMPFilesPlugins\api\source\PluginHandler.h" />
+    <ClInclude Include="src\XMPFilesPlugins\api\source\PluginRegistry.h" />
+    <ClInclude Include="src\XMPFilesPlugins\api\source\PluginUtils.h" />
+    <ClInclude Include="src\XMPFiles\resource\win\expat_config.h" />
+    <ClInclude Include="src\XMPFiles\source\FileHandlers\AIFF_Handler.hpp" />
+    <ClInclude Include="src\XMPFiles\source\FileHandlers\ASF_Handler.hpp" />
+    <ClInclude Include="src\XMPFiles\source\FileHandlers\AVCHD_Handler.hpp" />
+    <ClInclude Include="src\XMPFiles\source\FileHandlers\Basic_Handler.hpp" />
+    <ClInclude Include="src\XMPFiles\source\FileHandlers\FLV_Handler.hpp" />
+    <ClInclude Include="src\XMPFiles\source\FileHandlers\GIF_Handler.hpp" />
+    <ClInclude Include="src\XMPFiles\source\FileHandlers\InDesign_Handler.hpp" />
+    <ClInclude Include="src\XMPFiles\source\FileHandlers\JPEG_Handler.hpp" />
+    <ClInclude Include="src\XMPFiles\source\FileHandlers\MP3_Handler.hpp" />
+    <ClInclude Include="src\XMPFiles\source\FileHandlers\MPEG2_Handler.hpp" />
+    <ClInclude Include="src\XMPFiles\source\FileHandlers\MPEG4_Handler.hpp" />
+    <ClInclude Include="src\XMPFiles\source\FileHandlers\P2_Handler.hpp" />
+    <ClInclude Include="src\XMPFiles\source\FileHandlers\PNG_Handler.hpp" />
+    <ClInclude Include="src\XMPFiles\source\FileHandlers\PostScript_Handler.hpp" />
+    <ClInclude Include="src\XMPFiles\source\FileHandlers\PSD_Handler.hpp" />
+    <ClInclude Include="src\XMPFiles\source\FileHandlers\RIFF_Handler.hpp" />
+    <ClInclude Include="src\XMPFiles\source\FileHandlers\Scanner_Handler.hpp" />
+    <ClInclude Include="src\XMPFiles\source\FileHandlers\SonyHDV_Handler.hpp" />
+    <ClInclude Include="src\XMPFiles\source\FileHandlers\SVG_Handler.hpp" />
+    <ClInclude Include="src\XMPFiles\source\FileHandlers\SWF_Handler.hpp" />
+    <ClInclude Include="src\XMPFiles\source\FileHandlers\TIFF_Handler.hpp" />
+    <ClInclude Include="src\XMPFiles\source\FileHandlers\Trivial_Handler.hpp" />
+    <ClInclude Include="src\XMPFiles\source\FileHandlers\UCF_Handler.hpp" />
+    <ClInclude Include="src\XMPFiles\source\FileHandlers\WAVE_Handler.hpp" />
+    <ClInclude Include="src\XMPFiles\source\FileHandlers\XDCAMEX_Handler.hpp" />
+    <ClInclude Include="src\XMPFiles\source\FileHandlers\XDCAMFAM_Handler.hpp" />
+    <ClInclude Include="src\XMPFiles\source\FileHandlers\XDCAMSAM_Handler.hpp" />
+    <ClInclude Include="src\XMPFiles\source\FileHandlers\XDCAM_Handler.hpp" />
+    <ClInclude Include="src\XMPFiles\source\FormatSupport\AIFF\AIFFBehavior.h" />
+    <ClInclude Include="src\XMPFiles\source\FormatSupport\AIFF\AIFFMetadata.h" />
+    <ClInclude Include="src\XMPFiles\source\FormatSupport\AIFF\AIFFReconcile.h" />
+    <ClInclude Include="src\XMPFiles\source\FormatSupport\ASF_Support.hpp" />
+    <ClInclude Include="src\XMPFiles\source\FormatSupport\ID3_Support.hpp" />
+    <ClInclude Include="src\XMPFiles\source\FormatSupport\IFF\Chunk.h" />
+    <ClInclude Include="src\XMPFiles\source\FormatSupport\IFF\ChunkController.h" />
+    <ClInclude Include="src\XMPFiles\source\FormatSupport\IFF\ChunkPath.h" />
+    <ClInclude Include="src\XMPFiles\source\FormatSupport\IFF\IChunkBehavior.h" />
+    <ClInclude Include="src\XMPFiles\source\FormatSupport\IFF\IChunkContainer.h" />
+    <ClInclude Include="src\XMPFiles\source\FormatSupport\IFF\IChunkData.h" />
+    <ClInclude Include="src\XMPFiles\source\FormatSupport\IPTC_Support.hpp" />
+    <ClInclude Include="src\XMPFiles\source\FormatSupport\ISOBaseMedia_Support.hpp" />
+    <ClInclude Include="src\XMPFiles\source\FormatSupport\MacScriptExtracts.h" />
+    <ClInclude Include="src\XMPFiles\source\FormatSupport\META_Support.hpp" />
+    <ClInclude Include="src\XMPFiles\source\FormatSupport\MOOV_Support.hpp" />
+    <ClInclude Include="src\XMPFiles\source\FormatSupport\P2_Support.hpp" />
+    <ClInclude Include="src\XMPFiles\source\FormatSupport\PackageFormat_Support.hpp" />
+    <ClInclude Include="src\XMPFiles\source\FormatSupport\PNG_Support.hpp" />
+    <ClInclude Include="src\XMPFiles\source\FormatSupport\PostScript_Support.hpp" />
+    <ClInclude Include="src\XMPFiles\source\FormatSupport\PSIR_Support.hpp" />
+    <ClInclude Include="src\XMPFiles\source\FormatSupport\QuickTime_Support.hpp" />
+    <ClInclude Include="src\XMPFiles\source\FormatSupport\ReconcileLegacy.hpp" />
+    <ClInclude Include="src\XMPFiles\source\FormatSupport\Reconcile_Impl.hpp" />
+    <ClInclude Include="src\XMPFiles\source\FormatSupport\RIFF.hpp" />
+    <ClInclude Include="src\XMPFiles\source\FormatSupport\RIFF_Support.hpp" />
+    <ClInclude Include="src\XMPFiles\source\FormatSupport\SVG_Adapter.hpp" />
+    <ClInclude Include="src\XMPFiles\source\FormatSupport\SWF_Support.hpp" />
+    <ClInclude Include="src\XMPFiles\source\FormatSupport\TIFF_Support.hpp" />
+    <ClInclude Include="src\XMPFiles\source\FormatSupport\TimeConversionUtils.hpp" />
+    <ClInclude Include="src\XMPFiles\source\FormatSupport\WAVE\BEXTMetadata.h" />
+    <ClInclude Include="src\XMPFiles\source\FormatSupport\WAVE\CartMetadata.h" />
+    <ClInclude Include="src\XMPFiles\source\FormatSupport\WAVE\Cr8rMetadata.h" />
+    <ClInclude Include="src\XMPFiles\source\FormatSupport\WAVE\DISPMetadata.h" />
+    <ClInclude Include="src\XMPFiles\source\FormatSupport\WAVE\INFOMetadata.h" />
+    <ClInclude Include="src\XMPFiles\source\FormatSupport\WAVE\iXMLMetadata.h" />
+    <ClInclude Include="src\XMPFiles\source\FormatSupport\WAVE\PrmLMetadata.h" />
+    <ClInclude Include="src\XMPFiles\source\FormatSupport\WAVE\WAVEBehavior.h" />
+    <ClInclude Include="src\XMPFiles\source\FormatSupport\WAVE\WAVEReconcile.h" />
+    <ClInclude Include="src\XMPFiles\source\FormatSupport\XDCAM_Support.hpp" />
+    <ClInclude Include="src\XMPFiles\source\FormatSupport\XMPScanner.hpp" />
+    <ClInclude Include="src\XMPFiles\source\HandlerRegistry.h" />
+    <ClInclude Include="src\XMPFiles\source\NativeMetadataSupport\IMetadata.h" />
+    <ClInclude Include="src\XMPFiles\source\NativeMetadataSupport\IReconcile.h" />
+    <ClInclude Include="src\XMPFiles\source\NativeMetadataSupport\MetadataSet.h" />
+    <ClInclude Include="src\XMPFiles\source\NativeMetadataSupport\ValueObject.h" />
+    <ClInclude Include="src\XMPFiles\source\PluginHandler\FileHandler.h" />
+    <ClInclude Include="src\XMPFiles\source\PluginHandler\FileHandlerInstance.h" />
+    <ClInclude Include="src\XMPFiles\source\PluginHandler\Module.h" />
+    <ClInclude Include="src\XMPFiles\source\PluginHandler\ModuleUtils.h" />
+    <ClInclude Include="src\XMPFiles\source\PluginHandler\PluginManager.h" />
+    <ClInclude Include="src\XMPFiles\source\PluginHandler\XMPAtoms.h" />
+    <ClInclude Include="src\XMPFiles\source\XMPFiles.hpp" />
+    <ClInclude Include="src\XMPFiles\source\XMPFiles_Impl.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="include\xmp\client-glue\TXMPFiles.incl_cpp" />
+    <None Include="include\xmp\client-glue\TXMPIterator.incl_cpp" />
+    <None Include="include\xmp\client-glue\TXMPMeta.incl_cpp" />
+    <None Include="include\xmp\client-glue\TXMPUtils.incl_cpp" />
+    <None Include="include\xmp\XMP.incl_cpp" />
+    <None Include="include\xmp\XMPCommon\inl\IConfigurable.inl" />
+    <None Include="include\xmp\XMPCommon\inl\IConfigurationManager.inl" />
+    <None Include="include\xmp\XMPCommon\inl\IError.inl" />
+    <None Include="include\xmp\XMPCommon\inl\IErrorNotifier.inl" />
+    <None Include="include\xmp\XMPCommon\inl\IUTF8String.inl" />
+    <None Include="include\xmp\XMPCore\inl\IArrayNode.inl" />
+    <None Include="include\xmp\XMPCore\inl\IClientDOMParser.inl" />
+    <None Include="include\xmp\XMPCore\inl\IClientDOMSerializer.inl" />
+    <None Include="include\xmp\XMPCore\inl\ICompositeNode.inl" />
+    <None Include="include\xmp\XMPCore\inl\ICoreConfigurationManager.inl" />
+    <None Include="include\xmp\XMPCore\inl\IDOMImplementationRegistry.inl" />
+    <None Include="include\xmp\XMPCore\inl\IDOMParser.inl" />
+    <None Include="include\xmp\XMPCore\inl\IDOMSerializer.inl" />
+    <None Include="include\xmp\XMPCore\inl\IMetadata.inl" />
+    <None Include="include\xmp\XMPCore\inl\IMetadataConverterUtils.inl" />
+    <None Include="include\xmp\XMPCore\inl\INameSpacePrefixMap.inl" />
+    <None Include="include\xmp\XMPCore\inl\INode.inl" />
+    <None Include="include\xmp\XMPCore\inl\INodeIterator.inl" />
+    <None Include="include\xmp\XMPCore\inl\IPath.inl" />
+    <None Include="include\xmp\XMPCore\inl\IPathSegment.inl" />
+    <None Include="include\xmp\XMPCore\inl\ISimpleNode.inl" />
+    <None Include="include\xmp\XMPCore\inl\IStructureNode.inl" />
+    <None Include="src\source\UnicodeInlines.incl_cpp" />
+    <None Include="src\XMPCore\resource\win\XMPCore.def" />
+    <None Include="src\XMPFiles\resource\win\XMPFiles.def" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="src\XMPCore\resource\win\XMPCore.rc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ResourceCompile>
+    <ResourceCompile Include="src\XMPFiles\resource\win\XMPFiles.rc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ResourceCompile>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

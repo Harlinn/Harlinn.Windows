@@ -1,0 +1,109 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Harlinn::Common::Core::Examples::Database" Collapsed="true">
+    <Position X="8.75" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAIAAEAAAAAAAAABAAAAAAAAABAQAAAgAQCEAAA=</HashCode>
+      <FileName>C:\Src\Harlinn.Windows\Examples\Core\ESE\include\HExDatabase.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Harlinn::Common::Core::Examples::OwnedTable&lt;DerivedT&gt;" Collapsed="true">
+    <Position X="12" Y="0.75" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAACAgCIAAAAIAAAAAACAAQAAAAIAAAAQASARAAAIEA=</HashCode>
+      <FileName>C:\Src\Harlinn.Windows\Examples\Core\ESE\include\HExDatabase.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Harlinn::Common::Core::Examples::SensorTable" Collapsed="true">
+    <Position X="11" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAABACAAAAAAAoAAAAAQAAAAAAAQkABAA=</HashCode>
+      <FileName>C:\Src\Harlinn.Windows\Examples\Core\ESE\include\HExDatabase.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Harlinn::Common::Core::Examples::CatalogItemTable" Collapsed="true">
+    <Position X="13.5" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAgEAAAAAAAACAAAACAAoAAAAAAACAAGAAQEAByA=</HashCode>
+      <FileName>C:\Src\Harlinn.Windows\Examples\Core\ESE\include\HExDatabase.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Harlinn::Common::Core::Examples::Engine" Collapsed="true">
+    <Position X="7" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAgIFAAAAAAAAACAAFAAgAARAAAAABAAEA=</HashCode>
+      <FileName>C:\Src\Harlinn.Windows\Examples\Core\ESE\include\HExEngine.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Harlinn::Common::Core::Examples::Session" Collapsed="true">
+    <Position X="7.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAIBIABAAYAAQAAAIgQQAAAEgAAAAIAgAAmAAgA=</HashCode>
+      <FileName>C:\Src\Harlinn.Windows\Examples\Core\ESE\include\HExEngine.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Harlinn::Common::Core::Examples::SensorValueTable" Collapsed="true">
+    <Position X="16.25" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAFoAAAQAAUgAAAAAiKQCoAREIgAAIABCgAQFAAAA=</HashCode>
+      <FileName>C:\Src\Harlinn.Windows\Examples\Core\ESE\include\HExDatabase.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Struct Name="Harlinn::Common::Core::Examples::Named" Collapsed="true">
+    <Position X="3.75" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAQAAAAAAAAAAEAAAAAAAAA=</HashCode>
+      <FileName>C:\Src\Harlinn.Windows\Examples\Core\include\HExTypes.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="Harlinn::Common::Core::Examples::Owned" Collapsed="true">
+    <Position X="3.75" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAA=</HashCode>
+      <FileName>C:\Src\Harlinn.Windows\Examples\Core\include\HExTypes.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="Harlinn::Common::Core::Examples::CatalogItemBase" Collapsed="true">
+    <Position X="2.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAQAAAAAAAAA=</HashCode>
+      <FileName>C:\Src\Harlinn.Windows\Examples\Core\include\HExTypes.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="Harlinn::Common::Core::Examples::Catalog" Collapsed="true">
+    <Position X="1.75" Y="5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>C:\Src\Harlinn.Windows\Examples\Core\include\HExTypes.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="Harlinn::Common::Core::Examples::Asset" Collapsed="true">
+    <Position X="3.75" Y="5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>C:\Src\Harlinn.Windows\Examples\Core\include\HExTypes.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="Harlinn::Common::Core::Examples::Sensor" Collapsed="true">
+    <Position X="4.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>C:\Src\Harlinn.Windows\Examples\Core\include\HExTypes.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="Harlinn::Common::Core::Examples::SensorPoint">
+    <Position X="19" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAABAAAAAAAAAAAAAACAAAAAAAAAAAAAAAgAAAAAAA=</HashCode>
+      <FileName>C:\Src\Harlinn.Windows\Examples\Core\include\HExTypes.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="Harlinn::Common::Core::Examples::SensorValue">
+    <Position X="17" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAABAAAAQAAAAAAAAACAAAAAAAAAAAAAAAgAAAAAAA=</HashCode>
+      <FileName>C:\Src\Harlinn.Windows\Examples\Core\include\HExTypes.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

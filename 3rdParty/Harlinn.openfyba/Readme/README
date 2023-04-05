@@ -1,0 +1,100 @@
+== INTRODUCTION ==
+
+OpenFYBA is the source code release of the FYBA library, distributed by the 
+National Mapping Authority of Norway (Statens kartverk) to read and write 
+files in the National geodata standard format SOSI. 
+
+The original library has a long history, and was originally developed for 
+systems as diverse as DOS, OS/2-16, OS/2-32, Win16, Win32, and various UNIX 
+variants (POSIX, HPUX, Silicon graphics). In Norwegian. It shows in the 
+source code. OpenFYBA has been tested to run at least on Windows and Linux 
+environments. 
+
+We welcome any contributions towards internationalization of the library. 
+In the meantime, if you do not happen to speak Norwegian, google translate 
+can help you with the documentation. 
+
+Do send feedback if you think you can help to improve this documentation. 
+
+_______________________________________________________________________
+
+Send feedback to: Thomas Hirsch <thomas.hirsch@statkart.no>
+
+== INSTALLATION ==
+
+The FYBA library depends on two helper libraries, GM for geometry routines
+and UT for utilities. The general procedure is therefore:
+- Compile libfybagm and libfybaut using the provided make scripts (or Visual 
+  Studio project files).
+- Compile libfyba using the provided make script.
+- Optionally build and run the unit tests in the tests folder.
+ 
+** Linux **
+
+./configure
+make 
+make install
+
+If the first step does not work right away, try to rebuild the configure 
+file for your system with autotools first:
+
+autoreconf --force --install 
+
+** Mac OS X **
+
+See issue #12. Replace any include of vfs.h with mount.h, then proceed with as per the Linux instructions. 
+Patches welcome.
+
+** Windows **
+
+On Windows all three libs of the FYBA library (GM.lib, UT.lib, and FYBA.lib) 
+have to be build individually.
+
+For building FYBA on Windows project files for MS Visual Studio Express 2012 
+are provided in the folders fyba/src/GM, fyba/src/UT and fyba/src/FYBA.
+Using these project files the individual libs are built in a subfolder within 
+the project directory and then copied to the fyba/Lib folder.
+Therefore the fyba/Lib folder has to be created before running the build process.
+
+When GM.lib, UT.lib and FYBA.lib are built you may want to use the libs for 
+activating the SOSI-driver in GDAL. For building GDAL with SOSI-support on Windows
+see: http://trac.osgeo.org/gdal/wiki/SOSI
+
+** Other **
+
+Do send feedback if you manage to compile the library on any other system! 
+
+== USAGE ==
+
+Please refer to the extensive, but Norwegian documentation in docs/no_NB. 
+Take a moment to enjoy the pleasant International mix of method names. 
+Most methods have a few lines of example code to help you getting started. 
+
+If you do not speak Norwegian, try google translating the document. 
+
+I personally would also suggest to take a look at the  
+SOSI driver for the GDAL/OGR library for more usage examples.
+
+== LICENSE ==
+
+/******************************************************************************
+ * Permission is hereby granted, free of charge, to any person obtaining a
+ * copy of this software and associated documentation files (the "Software"),
+ * to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense,
+ * and/or sell copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included
+ * in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+ * OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+ * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+ * DEALINGS IN THE SOFTWARE.
+ ****************************************************************************/
+
+

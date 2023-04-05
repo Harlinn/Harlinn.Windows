@@ -1,0 +1,147 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="include">
+      <UniqueIdentifier>{a064e4fa-0a7f-45eb-9651-d549dced8fe6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\libheif">
+      <UniqueIdentifier>{71da6cc6-be43-4a00-b7b9-8951cba21eae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{7864c37a-edee-493c-b6ca-9da84f0823f6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Readme">
+      <UniqueIdentifier>{097654d7-9071-4e1b-8f8d-a12c752c1b1d}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="dllmain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\bitstream.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\box.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\error.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\heif.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\heif_avif.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\heif_colorconversion.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\heif_context.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\heif_decoder_aom.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\heif_decoder_libde265.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\heif_encoder_aom.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\heif_file.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\heif_hevc.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\heif_image.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\heif_plugin.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\heif_plugin_registry.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\nclx.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\libheif\bitstream.h">
+      <Filter>include\libheif</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libheif\box.h">
+      <Filter>include\libheif</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libheif\error.h">
+      <Filter>include\libheif</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libheif\heif.h">
+      <Filter>include\libheif</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libheif\heif_api_structs.h">
+      <Filter>include\libheif</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libheif\heif_avif.h">
+      <Filter>include\libheif</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libheif\heif_colorconversion.h">
+      <Filter>include\libheif</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libheif\heif_context.h">
+      <Filter>include\libheif</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libheif\heif_cxx.h">
+      <Filter>include\libheif</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libheif\heif_decoder_aom.h">
+      <Filter>include\libheif</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libheif\heif_decoder_libde265.h">
+      <Filter>include\libheif</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libheif\heif_encoder_aom.h">
+      <Filter>include\libheif</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libheif\heif_file.h">
+      <Filter>include\libheif</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libheif\heif_hevc.h">
+      <Filter>include\libheif</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libheif\heif_image.h">
+      <Filter>include\libheif</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libheif\heif_limits.h">
+      <Filter>include\libheif</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libheif\heif_plugin.h">
+      <Filter>include\libheif</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libheif\heif_plugin_registry.h">
+      <Filter>include\libheif</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libheif\heif_version.h">
+      <Filter>include\libheif</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libheif\logging.h">
+      <Filter>include\libheif</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libheif\nclx.h">
+      <Filter>include\libheif</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

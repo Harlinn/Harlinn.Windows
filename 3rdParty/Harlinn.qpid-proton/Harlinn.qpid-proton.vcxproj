@@ -1,0 +1,305 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{a316e059-0e35-441f-a8d3-3732623991fd}</ProjectGuid>
+    <RootNamespace>Harlinnqpidproton</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Label="Vcpkg">
+    <VcpkgEnabled>false</VcpkgEnabled>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>BUILDING_HARLINN_QPIDPROTON=1;PN_WINAPI=1;USE_WIN_FILETIME=1;_CRT_SECURE_NO_WARNINGS=1;WIN32;_DEBUG;HARLINNQPIDPROTON_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+      <AdditionalDependencies>Ws2_32.lib;Secur32.lib;Crypt32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>BUILDING_HARLINN_QPIDPROTON=1;PN_WINAPI=1;USE_WIN_FILETIME=1;_CRT_SECURE_NO_WARNINGS=1;WIN32;NDEBUG;HARLINNQPIDPROTON_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+      <AdditionalDependencies>Ws2_32.lib;Secur32.lib;Crypt32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>BUILDING_HARLINN_QPIDPROTON=1;PN_WINAPI=1;USE_WIN_FILETIME=1;_CRT_SECURE_NO_WARNINGS=1;_DEBUG;HARLINNQPIDPROTON_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+      <AdditionalDependencies>Ws2_32.lib;Secur32.lib;Crypt32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>BUILDING_HARLINN_QPIDPROTON=1;PN_WINAPI=1;USE_WIN_FILETIME=1;_CRT_SECURE_NO_WARNINGS=1;NDEBUG;HARLINNQPIDPROTON_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+      <AdditionalDependencies>Ws2_32.lib;Secur32.lib;Crypt32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="src\compiler\msvc\start.c" />
+    <ClCompile Include="src\core\autodetect.c" />
+    <ClCompile Include="src\core\buffer.c" />
+    <ClCompile Include="src\core\codec.c" />
+    <ClCompile Include="src\core\connection_driver.c" />
+    <ClCompile Include="src\core\decoder.c" />
+    <ClCompile Include="src\core\dispatcher.c" />
+    <ClCompile Include="src\core\encoder.c" />
+    <ClCompile Include="src\core\engine.c" />
+    <ClCompile Include="src\core\error.c" />
+    <ClCompile Include="src\core\event.c" />
+    <ClCompile Include="src\core\framing.c" />
+    <ClCompile Include="src\core\init.c" />
+    <ClCompile Include="src\core\log.c" />
+    <ClCompile Include="src\core\logger.c" />
+    <ClCompile Include="src\core\memory.c" />
+    <ClCompile Include="src\core\message.c" />
+    <ClCompile Include="src\core\object\iterator.c" />
+    <ClCompile Include="src\core\object\list.c" />
+    <ClCompile Include="src\core\object\map.c" />
+    <ClCompile Include="src\core\object\object.c" />
+    <ClCompile Include="src\core\object\record.c" />
+    <ClCompile Include="src\core\object\string.c" />
+    <ClCompile Include="src\core\transport.c" />
+    <ClCompile Include="src\core\types.c" />
+    <ClCompile Include="src\core\util.c" />
+    <ClCompile Include="src\extra\url.c" />
+    <ClCompile Include="src\handlers\flowcontroller.c" />
+    <ClCompile Include="src\handlers\handshaker.c" />
+    <ClCompile Include="src\handlers\iohandler.c" />
+    <ClCompile Include="src\messenger\messenger.c" />
+    <ClCompile Include="src\messenger\store.c" />
+    <ClCompile Include="src\messenger\subscription.c" />
+    <ClCompile Include="src\messenger\transform.c" />
+    <ClCompile Include="src\platform\platform.c" />
+    <ClCompile Include="src\proactor\netaddr-internal.c" />
+    <ClCompile Include="src\proactor\proactor-internal.c" />
+    <ClCompile Include="src\proactor\raw_connection.c" />
+    <ClCompile Include="src\proactor\win_iocp.cpp" />
+    <ClCompile Include="src\reactor\acceptor.c" />
+    <ClCompile Include="src\reactor\connection.c" />
+    <ClCompile Include="src\reactor\handler.c" />
+    <ClCompile Include="src\reactor\io\windows\io.c" />
+    <ClCompile Include="src\reactor\io\windows\iocp.c" />
+    <ClCompile Include="src\reactor\io\windows\selector.c" />
+    <ClCompile Include="src\reactor\io\windows\write_pipeline.c" />
+    <ClCompile Include="src\reactor\reactor.c" />
+    <ClCompile Include="src\reactor\selectable.c" />
+    <ClCompile Include="src\reactor\timer.c" />
+    <ClCompile Include="src\sasl\cyrus_stub.c" />
+    <ClCompile Include="src\sasl\default_sasl.c" />
+    <ClCompile Include="src\sasl\sasl.c" />
+    <ClCompile Include="src\ssl\schannel.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\proton\cid.h" />
+    <ClInclude Include="include\proton\codec.h" />
+    <ClInclude Include="include\proton\condition.h" />
+    <ClInclude Include="include\proton\connection.h" />
+    <ClInclude Include="include\proton\connection_driver.h" />
+    <ClInclude Include="include\proton\delivery.h" />
+    <ClInclude Include="include\proton\disposition.h" />
+    <ClInclude Include="include\proton\engine.h" />
+    <ClInclude Include="include\proton\error.h" />
+    <ClInclude Include="include\proton\event.h" />
+    <ClInclude Include="include\proton\handlers.h" />
+    <ClInclude Include="include\proton\import_export.h" />
+    <ClInclude Include="include\proton\internal\message-internal.h" />
+    <ClInclude Include="include\proton\link.h" />
+    <ClInclude Include="include\proton\listener.h" />
+    <ClInclude Include="include\proton\log.h" />
+    <ClInclude Include="include\proton\logger.h" />
+    <ClInclude Include="include\proton\message.h" />
+    <ClInclude Include="include\proton\messenger.h" />
+    <ClInclude Include="include\proton\netaddr.h" />
+    <ClInclude Include="include\proton\object.h" />
+    <ClInclude Include="include\proton\proactor.h" />
+    <ClInclude Include="include\proton\raw_connection.h" />
+    <ClInclude Include="include\proton\reactor.h" />
+    <ClInclude Include="include\proton\sasl.h" />
+    <ClInclude Include="include\proton\sasl_plugin.h" />
+    <ClInclude Include="include\proton\selectable.h" />
+    <ClInclude Include="include\proton\session.h" />
+    <ClInclude Include="include\proton\ssl.h" />
+    <ClInclude Include="include\proton\terminus.h" />
+    <ClInclude Include="include\proton\transport.h" />
+    <ClInclude Include="include\proton\types.h" />
+    <ClInclude Include="include\proton\type_compat.h" />
+    <ClInclude Include="include\proton\url.h" />
+    <ClInclude Include="include\proton\version.h" />
+    <ClInclude Include="src\core\autodetect.h" />
+    <ClInclude Include="src\core\buffer.h" />
+    <ClInclude Include="src\core\config.h" />
+    <ClInclude Include="src\core\data.h" />
+    <ClInclude Include="src\core\decoder.h" />
+    <ClInclude Include="src\core\dispatcher.h" />
+    <ClInclude Include="src\core\dispatch_actions.h" />
+    <ClInclude Include="src\core\encoder.h" />
+    <ClInclude Include="src\core\engine-internal.h" />
+    <ClInclude Include="src\core\framing.h" />
+    <ClInclude Include="src\core\init.h" />
+    <ClInclude Include="src\core\logger_private.h" />
+    <ClInclude Include="src\core\log_private.h" />
+    <ClInclude Include="src\core\max_align.h" />
+    <ClInclude Include="src\core\memory.h" />
+    <ClInclude Include="src\core\transport.h" />
+    <ClInclude Include="src\core\util.h" />
+    <ClInclude Include="src\messenger\messenger.h" />
+    <ClInclude Include="src\messenger\store.h" />
+    <ClInclude Include="src\messenger\subscription.h" />
+    <ClInclude Include="src\messenger\transform.h" />
+    <ClInclude Include="src\platform\platform.h" />
+    <ClInclude Include="src\platform\platform_fmt.h" />
+    <ClInclude Include="src\proactor\netaddr-internal.h" />
+    <ClInclude Include="src\proactor\proactor-internal.h" />
+    <ClInclude Include="src\proactor\raw_connection-internal.h" />
+    <ClInclude Include="src\reactor\io.h" />
+    <ClInclude Include="src\reactor\io\windows\iocp.h" />
+    <ClInclude Include="src\reactor\reactor.h" />
+    <ClInclude Include="src\reactor\selectable.h" />
+    <ClInclude Include="src\reactor\selector.h" />
+    <ClInclude Include="src\sasl\sasl-internal.h" />
+    <ClInclude Include="src\ssl\ssl-internal.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="include\proton\cproton.i" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

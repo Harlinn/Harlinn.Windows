@@ -1,0 +1,246 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Net">
+      <UniqueIdentifier>{9cb4b56f-8ece-4b7a-89a1-35eaff601732}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Xop">
+      <UniqueIdentifier>{96428de4-3952-470f-bc56-98fe19492838}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="3rdPart">
+      <UniqueIdentifier>{f408647e-4fe5-443a-9ac6-d8fc5c8dd93a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="3rdPart\md5">
+      <UniqueIdentifier>{3b21d3a7-340d-46c8-bfe9-0d4dcccd8202}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="net\Acceptor.h">
+      <Filter>Net</Filter>
+    </ClInclude>
+    <ClInclude Include="net\BufferReader.h">
+      <Filter>Net</Filter>
+    </ClInclude>
+    <ClInclude Include="net\BufferWriter.h">
+      <Filter>Net</Filter>
+    </ClInclude>
+    <ClInclude Include="net\Channel.h">
+      <Filter>Net</Filter>
+    </ClInclude>
+    <ClInclude Include="net\EpollTaskScheduler.h">
+      <Filter>Net</Filter>
+    </ClInclude>
+    <ClInclude Include="net\EventLoop.h">
+      <Filter>Net</Filter>
+    </ClInclude>
+    <ClInclude Include="net\log.h">
+      <Filter>Net</Filter>
+    </ClInclude>
+    <ClInclude Include="net\Logger.h">
+      <Filter>Net</Filter>
+    </ClInclude>
+    <ClInclude Include="net\MemoryManager.h">
+      <Filter>Net</Filter>
+    </ClInclude>
+    <ClInclude Include="net\NetInterface.h">
+      <Filter>Net</Filter>
+    </ClInclude>
+    <ClInclude Include="net\Pipe.h">
+      <Filter>Net</Filter>
+    </ClInclude>
+    <ClInclude Include="net\RingBuffer.h">
+      <Filter>Net</Filter>
+    </ClInclude>
+    <ClInclude Include="net\SelectTaskScheduler.h">
+      <Filter>Net</Filter>
+    </ClInclude>
+    <ClInclude Include="net\Socket.h">
+      <Filter>Net</Filter>
+    </ClInclude>
+    <ClInclude Include="net\SocketUtil.h">
+      <Filter>Net</Filter>
+    </ClInclude>
+    <ClInclude Include="net\TaskScheduler.h">
+      <Filter>Net</Filter>
+    </ClInclude>
+    <ClInclude Include="net\TcpConnection.h">
+      <Filter>Net</Filter>
+    </ClInclude>
+    <ClInclude Include="net\TcpServer.h">
+      <Filter>Net</Filter>
+    </ClInclude>
+    <ClInclude Include="net\TcpSocket.h">
+      <Filter>Net</Filter>
+    </ClInclude>
+    <ClInclude Include="net\Timer.h">
+      <Filter>Net</Filter>
+    </ClInclude>
+    <ClInclude Include="net\Timestamp.h">
+      <Filter>Net</Filter>
+    </ClInclude>
+    <ClInclude Include="xop\AACSource.h">
+      <Filter>Xop</Filter>
+    </ClInclude>
+    <ClInclude Include="xop\DigestAuthentication.h">
+      <Filter>Xop</Filter>
+    </ClInclude>
+    <ClInclude Include="xop\G711ASource.h">
+      <Filter>Xop</Filter>
+    </ClInclude>
+    <ClInclude Include="xop\H264Parser.h">
+      <Filter>Xop</Filter>
+    </ClInclude>
+    <ClInclude Include="xop\H264Source.h">
+      <Filter>Xop</Filter>
+    </ClInclude>
+    <ClInclude Include="xop\H265Source.h">
+      <Filter>Xop</Filter>
+    </ClInclude>
+    <ClInclude Include="xop\media.h">
+      <Filter>Xop</Filter>
+    </ClInclude>
+    <ClInclude Include="xop\MediaSession.h">
+      <Filter>Xop</Filter>
+    </ClInclude>
+    <ClInclude Include="xop\MediaSource.h">
+      <Filter>Xop</Filter>
+    </ClInclude>
+    <ClInclude Include="xop\rtp.h">
+      <Filter>Xop</Filter>
+    </ClInclude>
+    <ClInclude Include="xop\RtpConnection.h">
+      <Filter>Xop</Filter>
+    </ClInclude>
+    <ClInclude Include="xop\rtsp.h">
+      <Filter>Xop</Filter>
+    </ClInclude>
+    <ClInclude Include="xop\RtspConnection.h">
+      <Filter>Xop</Filter>
+    </ClInclude>
+    <ClInclude Include="xop\RtspMessage.h">
+      <Filter>Xop</Filter>
+    </ClInclude>
+    <ClInclude Include="xop\RtspPusher.h">
+      <Filter>Xop</Filter>
+    </ClInclude>
+    <ClInclude Include="xop\RtspServer.h">
+      <Filter>Xop</Filter>
+    </ClInclude>
+    <ClInclude Include="xop\VP8Source.h">
+      <Filter>Xop</Filter>
+    </ClInclude>
+    <ClInclude Include="3rdpart\md5\md5.hpp">
+      <Filter>3rdPart\md5</Filter>
+    </ClInclude>
+    <ClInclude Include="xop\RtspServerDef.h">
+      <Filter>Xop</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="dllmain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="net\Acceptor.cpp">
+      <Filter>Net</Filter>
+    </ClCompile>
+    <ClCompile Include="net\BufferReader.cpp">
+      <Filter>Net</Filter>
+    </ClCompile>
+    <ClCompile Include="net\BufferWriter.cpp">
+      <Filter>Net</Filter>
+    </ClCompile>
+    <ClCompile Include="net\EpollTaskScheduler.cpp">
+      <Filter>Net</Filter>
+    </ClCompile>
+    <ClCompile Include="net\EventLoop.cpp">
+      <Filter>Net</Filter>
+    </ClCompile>
+    <ClCompile Include="net\Logger.cpp">
+      <Filter>Net</Filter>
+    </ClCompile>
+    <ClCompile Include="net\MemoryManager.cpp">
+      <Filter>Net</Filter>
+    </ClCompile>
+    <ClCompile Include="net\NetInterface.cpp">
+      <Filter>Net</Filter>
+    </ClCompile>
+    <ClCompile Include="net\Pipe.cpp">
+      <Filter>Net</Filter>
+    </ClCompile>
+    <ClCompile Include="net\SelectTaskScheduler.cpp">
+      <Filter>Net</Filter>
+    </ClCompile>
+    <ClCompile Include="net\SocketUtil.cpp">
+      <Filter>Net</Filter>
+    </ClCompile>
+    <ClCompile Include="net\TaskScheduler.cpp">
+      <Filter>Net</Filter>
+    </ClCompile>
+    <ClCompile Include="net\TcpConnection.cpp">
+      <Filter>Net</Filter>
+    </ClCompile>
+    <ClCompile Include="net\TcpServer.cpp">
+      <Filter>Net</Filter>
+    </ClCompile>
+    <ClCompile Include="net\TcpSocket.cpp">
+      <Filter>Net</Filter>
+    </ClCompile>
+    <ClCompile Include="net\Timer.cpp">
+      <Filter>Net</Filter>
+    </ClCompile>
+    <ClCompile Include="net\Timestamp.cpp">
+      <Filter>Net</Filter>
+    </ClCompile>
+    <ClCompile Include="xop\AACSource.cpp">
+      <Filter>Xop</Filter>
+    </ClCompile>
+    <ClCompile Include="xop\DigestAuthentication.cpp">
+      <Filter>Xop</Filter>
+    </ClCompile>
+    <ClCompile Include="xop\G711ASource.cpp">
+      <Filter>Xop</Filter>
+    </ClCompile>
+    <ClCompile Include="xop\H264Parser.cpp">
+      <Filter>Xop</Filter>
+    </ClCompile>
+    <ClCompile Include="xop\H264Source.cpp">
+      <Filter>Xop</Filter>
+    </ClCompile>
+    <ClCompile Include="xop\H265Source.cpp">
+      <Filter>Xop</Filter>
+    </ClCompile>
+    <ClCompile Include="xop\MediaSession.cpp">
+      <Filter>Xop</Filter>
+    </ClCompile>
+    <ClCompile Include="xop\RtpConnection.cpp">
+      <Filter>Xop</Filter>
+    </ClCompile>
+    <ClCompile Include="xop\RtspConnection.cpp">
+      <Filter>Xop</Filter>
+    </ClCompile>
+    <ClCompile Include="xop\RtspMessage.cpp">
+      <Filter>Xop</Filter>
+    </ClCompile>
+    <ClCompile Include="xop\RtspPusher.cpp">
+      <Filter>Xop</Filter>
+    </ClCompile>
+    <ClCompile Include="xop\RtspServer.cpp">
+      <Filter>Xop</Filter>
+    </ClCompile>
+    <ClCompile Include="xop\VP8Source.cpp">
+      <Filter>Xop</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

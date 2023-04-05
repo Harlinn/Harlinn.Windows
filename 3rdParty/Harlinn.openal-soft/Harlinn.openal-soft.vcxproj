@@ -1,0 +1,456 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{7b4eebf3-7f32-41e9-ae89-13d4644602f0}</ProjectGuid>
+    <RootNamespace>Harlinnopenalsoft</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Label="Vcpkg">
+    <VcpkgEnabled>false</VcpkgEnabled>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>BUILDING_HARLINN_OPENAL_SOFT=1;WIN32;AL_BUILD_LIBRARY;AL_ALEXT_PROTOTYPES;_WIN32;RESTRICT=__restrict;_CRT_SECURE_NO_WARNINGS;NOMINMAX;WIN32;_DEBUG;HARLINNOPENALSOFT_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.libmysofa\include;$(SolutionDir)3rdParty\Harlinn.zlib;$(SolutionDir)3rdParty\Harlinn.SDL2\include;$(ProjectDir)include;$(ProjectDir)src;$(ProjectDir)src\alc;$(ProjectDir)src\common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+      <AdditionalLibraryDirectories>$(OutDir)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>BUILDING_HARLINN_OPENAL_SOFT=1;WIN32;AL_BUILD_LIBRARY;AL_ALEXT_PROTOTYPES;_WIN32;RESTRICT=__restrict;_CRT_SECURE_NO_WARNINGS;NOMINMAX;WIN32;NDEBUG;HARLINNOPENALSOFT_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.libmysofa\include;$(SolutionDir)3rdParty\Harlinn.zlib;$(SolutionDir)3rdParty\Harlinn.SDL2\include;$(ProjectDir)include;$(ProjectDir)src;$(ProjectDir)src\alc;$(ProjectDir)src\common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+      <AdditionalLibraryDirectories>$(OutDir)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>BUILDING_HARLINN_OPENAL_SOFT=1;WIN32;AL_BUILD_LIBRARY;AL_ALEXT_PROTOTYPES;_WIN32;RESTRICT=__restrict;_CRT_SECURE_NO_WARNINGS;NOMINMAX;_DEBUG;HARLINNOPENALSOFT_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.libmysofa\include;$(SolutionDir)3rdParty\Harlinn.zlib;$(SolutionDir)3rdParty\Harlinn.SDL2\include;$(ProjectDir)include;$(ProjectDir)src;$(ProjectDir)src\alc;$(ProjectDir)src\common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+      <AdditionalLibraryDirectories>$(OutDir)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>BUILDING_HARLINN_OPENAL_SOFT=1;WIN32;AL_BUILD_LIBRARY;AL_ALEXT_PROTOTYPES;_WIN32;RESTRICT=__restrict;_CRT_SECURE_NO_WARNINGS;NOMINMAX;NDEBUG;HARLINNOPENALSOFT_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.libmysofa\include;$(SolutionDir)3rdParty\Harlinn.zlib;$(SolutionDir)3rdParty\Harlinn.SDL2\include;$(ProjectDir)include;$(ProjectDir)src;$(ProjectDir)src\alc;$(ProjectDir)src\common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+      <AdditionalLibraryDirectories>$(OutDir)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="src\alc\alc.cpp" />
+    <ClCompile Include="src\alc\alconfig.cpp" />
+    <ClCompile Include="src\alc\alu.cpp" />
+    <ClCompile Include="src\alc\backends\alcb_alsa.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\alc\backends\alcb_base.cpp" />
+    <ClCompile Include="src\alc\backends\alcb_coreaudio.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\alc\backends\alcb_dsound.cpp" />
+    <ClCompile Include="src\alc\backends\alcb_jack.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\alc\backends\alcb_loopback.cpp" />
+    <ClCompile Include="src\alc\backends\alcb_null.cpp" />
+    <ClCompile Include="src\alc\backends\alcb_oboe.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\alc\backends\alcb_opensl.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\alc\backends\alcb_oss.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\alc\backends\alcb_portaudio.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\alc\backends\alcb_pulseaudio.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\alc\backends\alcb_sdl2.cpp" />
+    <ClCompile Include="src\alc\backends\alcb_sndio.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\alc\backends\alcb_solaris.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\alc\backends\alcb_wasapi.cpp" />
+    <ClCompile Include="src\alc\backends\alcb_wave.cpp" />
+    <ClCompile Include="src\alc\backends\alcb_winmm.cpp" />
+    <ClCompile Include="src\alc\bformatdec.cpp" />
+    <ClCompile Include="src\alc\buffer_storage.cpp" />
+    <ClCompile Include="src\alc\converter.cpp" />
+    <ClCompile Include="src\alc\effectslot.cpp" />
+    <ClCompile Include="src\alc\effects\alce_autowah.cpp" />
+    <ClCompile Include="src\alc\effects\alce_chorus.cpp" />
+    <ClCompile Include="src\alc\effects\alce_compressor.cpp" />
+    <ClCompile Include="src\alc\effects\alce_convolution.cpp" />
+    <ClCompile Include="src\alc\effects\alce_dedicated.cpp" />
+    <ClCompile Include="src\alc\effects\alce_distortion.cpp" />
+    <ClCompile Include="src\alc\effects\alce_echo.cpp" />
+    <ClCompile Include="src\alc\effects\alce_equalizer.cpp" />
+    <ClCompile Include="src\alc\effects\alce_fshifter.cpp" />
+    <ClCompile Include="src\alc\effects\alce_modulator.cpp" />
+    <ClCompile Include="src\alc\effects\alce_null.cpp" />
+    <ClCompile Include="src\alc\effects\alce_pshifter.cpp" />
+    <ClCompile Include="src\alc\effects\alce_reverb.cpp" />
+    <ClCompile Include="src\alc\effects\alce_vmorpher.cpp" />
+    <ClCompile Include="src\alc\helpers.cpp" />
+    <ClCompile Include="src\alc\hrtf.cpp" />
+    <ClCompile Include="src\alc\panning.cpp" />
+    <ClCompile Include="src\alc\uiddefs.cpp" />
+    <ClCompile Include="src\alc\voice.cpp" />
+    <ClCompile Include="src\al\auxeffectslot.cpp" />
+    <ClCompile Include="src\al\buffer.cpp" />
+    <ClCompile Include="src\al\effect.cpp" />
+    <ClCompile Include="src\al\effects\autowah.cpp" />
+    <ClCompile Include="src\al\effects\chorus.cpp" />
+    <ClCompile Include="src\al\effects\compressor.cpp" />
+    <ClCompile Include="src\al\effects\convolution.cpp" />
+    <ClCompile Include="src\al\effects\dedicated.cpp" />
+    <ClCompile Include="src\al\effects\distortion.cpp" />
+    <ClCompile Include="src\al\effects\echo.cpp" />
+    <ClCompile Include="src\al\effects\equalizer.cpp" />
+    <ClCompile Include="src\al\effects\fshifter.cpp" />
+    <ClCompile Include="src\al\effects\modulator.cpp" />
+    <ClCompile Include="src\al\effects\null.cpp" />
+    <ClCompile Include="src\al\effects\pshifter.cpp" />
+    <ClCompile Include="src\al\effects\reverb.cpp" />
+    <ClCompile Include="src\al\effects\vmorpher.cpp" />
+    <ClCompile Include="src\al\error.cpp" />
+    <ClCompile Include="src\al\event.cpp" />
+    <ClCompile Include="src\al\extension.cpp" />
+    <ClCompile Include="src\al\filter.cpp" />
+    <ClCompile Include="src\al\listener.cpp" />
+    <ClCompile Include="src\al\source.cpp" />
+    <ClCompile Include="src\al\state.cpp" />
+    <ClCompile Include="src\common\alcomplex.cpp" />
+    <ClCompile Include="src\common\alfstream.cpp" />
+    <ClCompile Include="src\common\almalloc.cpp" />
+    <ClCompile Include="src\common\alstring.cpp" />
+    <ClCompile Include="src\common\dynload.cpp" />
+    <ClCompile Include="src\common\polyphase_resampler.cpp" />
+    <ClCompile Include="src\common\ringbuffer.cpp" />
+    <ClCompile Include="src\common\strutils.cpp" />
+    <ClCompile Include="src\common\threads.cpp" />
+    <ClCompile Include="src\core\ambdec.cpp" />
+    <ClCompile Include="src\core\bs2b.cpp" />
+    <ClCompile Include="src\core\bsinc_tables.cpp" />
+    <ClCompile Include="src\core\cpu_caps.cpp" />
+    <ClCompile Include="src\core\devformat.cpp" />
+    <ClCompile Include="src\core\except.cpp" />
+    <ClCompile Include="src\core\filters\biquad.cpp" />
+    <ClCompile Include="src\core\filters\nfc.cpp" />
+    <ClCompile Include="src\core\filters\splitter.cpp" />
+    <ClCompile Include="src\core\fmt_traits.cpp" />
+    <ClCompile Include="src\core\fpu_ctrl.cpp" />
+    <ClCompile Include="src\core\logging.cpp" />
+    <ClCompile Include="src\core\mastering.cpp" />
+    <ClCompile Include="src\core\mixer\mixer_c.cpp" />
+    <ClCompile Include="src\core\mixer\mixer_neon.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\core\mixer\mixer_sse.cpp" />
+    <ClCompile Include="src\core\mixer\mixer_sse2.cpp" />
+    <ClCompile Include="src\core\mixer\mixer_sse3.cpp" />
+    <ClCompile Include="src\core\mixer\mixer_sse41.cpp" />
+    <ClCompile Include="src\core\uhjfilter.cpp" />
+    <ClCompile Include="src\router\router_al.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\router\router_alc.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\router\router.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\utils\sofa-support.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\AL\al.h" />
+    <ClInclude Include="include\AL\alc.h" />
+    <ClInclude Include="include\AL\alext.h" />
+    <ClInclude Include="include\AL\efx-creative.h" />
+    <ClInclude Include="include\AL\efx-presets.h" />
+    <ClInclude Include="include\AL\efx.h" />
+    <ClInclude Include="src\alc\alcmain.h" />
+    <ClInclude Include="src\alc\alconfig.h" />
+    <ClInclude Include="src\alc\alcontext.h" />
+    <ClInclude Include="src\alc\alu.h" />
+    <ClInclude Include="src\alc\async_event.h" />
+    <ClInclude Include="src\alc\backends\alsa.h" />
+    <ClInclude Include="src\alc\backends\base.h" />
+    <ClInclude Include="src\alc\backends\coreaudio.h" />
+    <ClInclude Include="src\alc\backends\dsound.h" />
+    <ClInclude Include="src\alc\backends\jack.h" />
+    <ClInclude Include="src\alc\backends\loopback.h" />
+    <ClInclude Include="src\alc\backends\null.h" />
+    <ClInclude Include="src\alc\backends\oboe.h" />
+    <ClInclude Include="src\alc\backends\opensl.h" />
+    <ClInclude Include="src\alc\backends\oss.h" />
+    <ClInclude Include="src\alc\backends\portaudio.h" />
+    <ClInclude Include="src\alc\backends\pulseaudio.h" />
+    <ClInclude Include="src\alc\backends\sdl2.h" />
+    <ClInclude Include="src\alc\backends\sndio.h" />
+    <ClInclude Include="src\alc\backends\solaris.h" />
+    <ClInclude Include="src\alc\backends\wasapi.h" />
+    <ClInclude Include="src\alc\backends\wave.h" />
+    <ClInclude Include="src\alc\backends\winmm.h" />
+    <ClInclude Include="src\alc\bformatdec.h" />
+    <ClInclude Include="src\alc\buffer_storage.h" />
+    <ClInclude Include="src\alc\compat.h" />
+    <ClInclude Include="src\alc\converter.h" />
+    <ClInclude Include="src\alc\effectslot.h" />
+    <ClInclude Include="src\alc\effects\base.h" />
+    <ClInclude Include="src\alc\front_stablizer.h" />
+    <ClInclude Include="src\alc\hrtf.h" />
+    <ClInclude Include="src\alc\inprogext.h" />
+    <ClInclude Include="src\alc\voice.h" />
+    <ClInclude Include="src\alc\voice_change.h" />
+    <ClInclude Include="src\al\auxeffectslot.h" />
+    <ClInclude Include="src\al\buffer.h" />
+    <ClInclude Include="src\al\effect.h" />
+    <ClInclude Include="src\al\effects\effects.h" />
+    <ClInclude Include="src\al\event.h" />
+    <ClInclude Include="src\al\filter.h" />
+    <ClInclude Include="src\al\listener.h" />
+    <ClInclude Include="src\al\source.h" />
+    <ClInclude Include="src\common\albit.h" />
+    <ClInclude Include="src\common\albyte.h" />
+    <ClInclude Include="src\common\alcomplex.h" />
+    <ClInclude Include="src\common\aldeque.h" />
+    <ClInclude Include="src\common\alfstream.h" />
+    <ClInclude Include="src\common\almalloc.h" />
+    <ClInclude Include="src\common\alnumeric.h" />
+    <ClInclude Include="src\common\aloptional.h" />
+    <ClInclude Include="src\common\alspan.h" />
+    <ClInclude Include="src\common\alstring.h" />
+    <ClInclude Include="src\common\atomic.h" />
+    <ClInclude Include="src\common\dynload.h" />
+    <ClInclude Include="src\common\intrusive_ptr.h" />
+    <ClInclude Include="src\common\math_defs.h" />
+    <ClInclude Include="src\common\opthelpers.h" />
+    <ClInclude Include="src\common\polyphase_resampler.h" />
+    <ClInclude Include="src\common\pragmadefs.h" />
+    <ClInclude Include="src\common\ringbuffer.h" />
+    <ClInclude Include="src\common\strutils.h" />
+    <ClInclude Include="src\common\threads.h" />
+    <ClInclude Include="src\common\vecmat.h" />
+    <ClInclude Include="src\common\vector.h" />
+    <ClInclude Include="src\common\win_main_utf8.h" />
+    <ClInclude Include="src\config.h" />
+    <ClInclude Include="src\core\ambdec.h" />
+    <ClInclude Include="src\core\ambidefs.h" />
+    <ClInclude Include="src\core\bs2b.h" />
+    <ClInclude Include="src\core\bsinc_defs.h" />
+    <ClInclude Include="src\core\bsinc_tables.h" />
+    <ClInclude Include="src\core\bufferline.h" />
+    <ClInclude Include="src\core\cpu_caps.h" />
+    <ClInclude Include="src\core\devformat.h" />
+    <ClInclude Include="src\core\except.h" />
+    <ClInclude Include="src\core\filters\biquad.h" />
+    <ClInclude Include="src\core\filters\nfc.h" />
+    <ClInclude Include="src\core\filters\splitter.h" />
+    <ClInclude Include="src\core\fmt_traits.h" />
+    <ClInclude Include="src\core\fpu_ctrl.h" />
+    <ClInclude Include="src\core\logging.h" />
+    <ClInclude Include="src\core\mastering.h" />
+    <ClInclude Include="src\core\mixer\defs.h" />
+    <ClInclude Include="src\core\mixer\hrtfbase.h" />
+    <ClInclude Include="src\core\mixer\hrtfdefs.h" />
+    <ClInclude Include="src\core\uhjfilter.h" />
+    <ClInclude Include="src\hrtf_default.h" />
+    <ClInclude Include="src\router\router.h" />
+    <ClInclude Include="src\utils\sofa-support.h" />
+    <ClInclude Include="src\version.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

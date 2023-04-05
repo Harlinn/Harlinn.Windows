@@ -1,0 +1,485 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Header Files\include">
+      <UniqueIdentifier>{c67dea4b-04c9-456f-86b3-3143616f0320}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\include\dngsdk">
+      <UniqueIdentifier>{f31e9134-9e04-4485-aa88-bac3271d255e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Readme">
+      <UniqueIdentifier>{ad7d6f6d-58c9-4b3d-823e-1fa9da289c4d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{62367fab-41d4-4851-adb3-3b3b1b92bfe9}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="dllmain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dng_1d_function.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dng_1d_table.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dng_abort_sniffer.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dng_area_task.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dng_bad_pixels.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dng_big_table.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dng_bottlenecks.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dng_camera_profile.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dng_color_space.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dng_color_spec.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dng_date_time.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dng_exceptions.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dng_exif.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dng_file_stream.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dng_filter_task.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dng_fingerprint.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dng_gain_map.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dng_globals.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dng_host.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dng_hue_sat_map.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dng_ifd.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dng_image.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dng_image_writer.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dng_info.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dng_iptc.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dng_jpeg_image.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dng_lens_correction.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dng_linearization_info.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dng_local_string.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dng_lossless_jpeg.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dng_matrix.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dng_memory.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dng_memory_stream.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dng_misc_opcodes.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dng_mosaic_info.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dng_mutex.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dng_negative.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dng_opcode_list.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dng_opcodes.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dng_orientation.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dng_parse_utils.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dng_pixel_buffer.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dng_point.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dng_preview.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dng_pthread.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dng_rational.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dng_read_image.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dng_rect.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dng_ref_counted_block.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dng_reference.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dng_render.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dng_resample.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dng_safe_arithmetic.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dng_shared.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dng_simple_image.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dng_spline.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dng_stream.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dng_string.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dng_string_list.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dng_tag_types.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dng_temperature.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dng_tile_iterator.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dng_tone_curve.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dng_utils.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dng_validate.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dng_xmp.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dng_xmp_sdk.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dng_xy_coord.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Readme\License.txt">
+      <Filter>Readme</Filter>
+    </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\dngsdk\dng_1d_function.h">
+      <Filter>Header Files\include\dngsdk</Filter>
+    </ClInclude>
+    <ClInclude Include="include\dngsdk\dng_1d_table.h">
+      <Filter>Header Files\include\dngsdk</Filter>
+    </ClInclude>
+    <ClInclude Include="include\dngsdk\dng_abort_sniffer.h">
+      <Filter>Header Files\include\dngsdk</Filter>
+    </ClInclude>
+    <ClInclude Include="include\dngsdk\dng_area_task.h">
+      <Filter>Header Files\include\dngsdk</Filter>
+    </ClInclude>
+    <ClInclude Include="include\dngsdk\dng_assertions.h">
+      <Filter>Header Files\include\dngsdk</Filter>
+    </ClInclude>
+    <ClInclude Include="include\dngsdk\dng_auto_ptr.h">
+      <Filter>Header Files\include\dngsdk</Filter>
+    </ClInclude>
+    <ClInclude Include="include\dngsdk\dng_bad_pixels.h">
+      <Filter>Header Files\include\dngsdk</Filter>
+    </ClInclude>
+    <ClInclude Include="include\dngsdk\dng_big_table.h">
+      <Filter>Header Files\include\dngsdk</Filter>
+    </ClInclude>
+    <ClInclude Include="include\dngsdk\dng_bottlenecks.h">
+      <Filter>Header Files\include\dngsdk</Filter>
+    </ClInclude>
+    <ClInclude Include="include\dngsdk\dng_camera_profile.h">
+      <Filter>Header Files\include\dngsdk</Filter>
+    </ClInclude>
+    <ClInclude Include="include\dngsdk\dng_classes.h">
+      <Filter>Header Files\include\dngsdk</Filter>
+    </ClInclude>
+    <ClInclude Include="include\dngsdk\dng_color_space.h">
+      <Filter>Header Files\include\dngsdk</Filter>
+    </ClInclude>
+    <ClInclude Include="include\dngsdk\dng_color_spec.h">
+      <Filter>Header Files\include\dngsdk</Filter>
+    </ClInclude>
+    <ClInclude Include="include\dngsdk\dng_date_time.h">
+      <Filter>Header Files\include\dngsdk</Filter>
+    </ClInclude>
+    <ClInclude Include="include\dngsdk\dng_errors.h">
+      <Filter>Header Files\include\dngsdk</Filter>
+    </ClInclude>
+    <ClInclude Include="include\dngsdk\dng_exceptions.h">
+      <Filter>Header Files\include\dngsdk</Filter>
+    </ClInclude>
+    <ClInclude Include="include\dngsdk\dng_exif.h">
+      <Filter>Header Files\include\dngsdk</Filter>
+    </ClInclude>
+    <ClInclude Include="include\dngsdk\dng_fast_module.h">
+      <Filter>Header Files\include\dngsdk</Filter>
+    </ClInclude>
+    <ClInclude Include="include\dngsdk\dng_file_stream.h">
+      <Filter>Header Files\include\dngsdk</Filter>
+    </ClInclude>
+    <ClInclude Include="include\dngsdk\dng_filter_task.h">
+      <Filter>Header Files\include\dngsdk</Filter>
+    </ClInclude>
+    <ClInclude Include="include\dngsdk\dng_fingerprint.h">
+      <Filter>Header Files\include\dngsdk</Filter>
+    </ClInclude>
+    <ClInclude Include="include\dngsdk\dng_flags.h">
+      <Filter>Header Files\include\dngsdk</Filter>
+    </ClInclude>
+    <ClInclude Include="include\dngsdk\dng_gain_map.h">
+      <Filter>Header Files\include\dngsdk</Filter>
+    </ClInclude>
+    <ClInclude Include="include\dngsdk\dng_globals.h">
+      <Filter>Header Files\include\dngsdk</Filter>
+    </ClInclude>
+    <ClInclude Include="include\dngsdk\dng_host.h">
+      <Filter>Header Files\include\dngsdk</Filter>
+    </ClInclude>
+    <ClInclude Include="include\dngsdk\dng_hue_sat_map.h">
+      <Filter>Header Files\include\dngsdk</Filter>
+    </ClInclude>
+    <ClInclude Include="include\dngsdk\dng_ifd.h">
+      <Filter>Header Files\include\dngsdk</Filter>
+    </ClInclude>
+    <ClInclude Include="include\dngsdk\dng_image.h">
+      <Filter>Header Files\include\dngsdk</Filter>
+    </ClInclude>
+    <ClInclude Include="include\dngsdk\dng_image_writer.h">
+      <Filter>Header Files\include\dngsdk</Filter>
+    </ClInclude>
+    <ClInclude Include="include\dngsdk\dng_info.h">
+      <Filter>Header Files\include\dngsdk</Filter>
+    </ClInclude>
+    <ClInclude Include="include\dngsdk\dng_iptc.h">
+      <Filter>Header Files\include\dngsdk</Filter>
+    </ClInclude>
+    <ClInclude Include="include\dngsdk\dng_jpeg_image.h">
+      <Filter>Header Files\include\dngsdk</Filter>
+    </ClInclude>
+    <ClInclude Include="include\dngsdk\dng_lens_correction.h">
+      <Filter>Header Files\include\dngsdk</Filter>
+    </ClInclude>
+    <ClInclude Include="include\dngsdk\dng_linearization_info.h">
+      <Filter>Header Files\include\dngsdk</Filter>
+    </ClInclude>
+    <ClInclude Include="include\dngsdk\dng_local_string.h">
+      <Filter>Header Files\include\dngsdk</Filter>
+    </ClInclude>
+    <ClInclude Include="include\dngsdk\dng_lossless_jpeg.h">
+      <Filter>Header Files\include\dngsdk</Filter>
+    </ClInclude>
+    <ClInclude Include="include\dngsdk\dng_matrix.h">
+      <Filter>Header Files\include\dngsdk</Filter>
+    </ClInclude>
+    <ClInclude Include="include\dngsdk\dng_memory.h">
+      <Filter>Header Files\include\dngsdk</Filter>
+    </ClInclude>
+    <ClInclude Include="include\dngsdk\dng_memory_stream.h">
+      <Filter>Header Files\include\dngsdk</Filter>
+    </ClInclude>
+    <ClInclude Include="include\dngsdk\dng_misc_opcodes.h">
+      <Filter>Header Files\include\dngsdk</Filter>
+    </ClInclude>
+    <ClInclude Include="include\dngsdk\dng_mosaic_info.h">
+      <Filter>Header Files\include\dngsdk</Filter>
+    </ClInclude>
+    <ClInclude Include="include\dngsdk\dng_mutex.h">
+      <Filter>Header Files\include\dngsdk</Filter>
+    </ClInclude>
+    <ClInclude Include="include\dngsdk\dng_negative.h">
+      <Filter>Header Files\include\dngsdk</Filter>
+    </ClInclude>
+    <ClInclude Include="include\dngsdk\dng_opcode_list.h">
+      <Filter>Header Files\include\dngsdk</Filter>
+    </ClInclude>
+    <ClInclude Include="include\dngsdk\dng_opcodes.h">
+      <Filter>Header Files\include\dngsdk</Filter>
+    </ClInclude>
+    <ClInclude Include="include\dngsdk\dng_orientation.h">
+      <Filter>Header Files\include\dngsdk</Filter>
+    </ClInclude>
+    <ClInclude Include="include\dngsdk\dng_parse_utils.h">
+      <Filter>Header Files\include\dngsdk</Filter>
+    </ClInclude>
+    <ClInclude Include="include\dngsdk\dng_pixel_buffer.h">
+      <Filter>Header Files\include\dngsdk</Filter>
+    </ClInclude>
+    <ClInclude Include="include\dngsdk\dng_point.h">
+      <Filter>Header Files\include\dngsdk</Filter>
+    </ClInclude>
+    <ClInclude Include="include\dngsdk\dng_preview.h">
+      <Filter>Header Files\include\dngsdk</Filter>
+    </ClInclude>
+    <ClInclude Include="include\dngsdk\dng_pthread.h">
+      <Filter>Header Files\include\dngsdk</Filter>
+    </ClInclude>
+    <ClInclude Include="include\dngsdk\dng_rational.h">
+      <Filter>Header Files\include\dngsdk</Filter>
+    </ClInclude>
+    <ClInclude Include="include\dngsdk\dng_read_image.h">
+      <Filter>Header Files\include\dngsdk</Filter>
+    </ClInclude>
+    <ClInclude Include="include\dngsdk\dng_rect.h">
+      <Filter>Header Files\include\dngsdk</Filter>
+    </ClInclude>
+    <ClInclude Include="include\dngsdk\dng_ref_counted_block.h">
+      <Filter>Header Files\include\dngsdk</Filter>
+    </ClInclude>
+    <ClInclude Include="include\dngsdk\dng_reference.h">
+      <Filter>Header Files\include\dngsdk</Filter>
+    </ClInclude>
+    <ClInclude Include="include\dngsdk\dng_render.h">
+      <Filter>Header Files\include\dngsdk</Filter>
+    </ClInclude>
+    <ClInclude Include="include\dngsdk\dng_resample.h">
+      <Filter>Header Files\include\dngsdk</Filter>
+    </ClInclude>
+    <ClInclude Include="include\dngsdk\dng_safe_arithmetic.h">
+      <Filter>Header Files\include\dngsdk</Filter>
+    </ClInclude>
+    <ClInclude Include="include\dngsdk\dng_sdk_limits.h">
+      <Filter>Header Files\include\dngsdk</Filter>
+    </ClInclude>
+    <ClInclude Include="include\dngsdk\dng_shared.h">
+      <Filter>Header Files\include\dngsdk</Filter>
+    </ClInclude>
+    <ClInclude Include="include\dngsdk\dng_simd_type.h">
+      <Filter>Header Files\include\dngsdk</Filter>
+    </ClInclude>
+    <ClInclude Include="include\dngsdk\dng_simple_image.h">
+      <Filter>Header Files\include\dngsdk</Filter>
+    </ClInclude>
+    <ClInclude Include="include\dngsdk\dng_spline.h">
+      <Filter>Header Files\include\dngsdk</Filter>
+    </ClInclude>
+    <ClInclude Include="include\dngsdk\dng_stream.h">
+      <Filter>Header Files\include\dngsdk</Filter>
+    </ClInclude>
+    <ClInclude Include="include\dngsdk\dng_string.h">
+      <Filter>Header Files\include\dngsdk</Filter>
+    </ClInclude>
+    <ClInclude Include="include\dngsdk\dng_string_list.h">
+      <Filter>Header Files\include\dngsdk</Filter>
+    </ClInclude>
+    <ClInclude Include="include\dngsdk\dng_tag_codes.h">
+      <Filter>Header Files\include\dngsdk</Filter>
+    </ClInclude>
+    <ClInclude Include="include\dngsdk\dng_tag_types.h">
+      <Filter>Header Files\include\dngsdk</Filter>
+    </ClInclude>
+    <ClInclude Include="include\dngsdk\dng_tag_values.h">
+      <Filter>Header Files\include\dngsdk</Filter>
+    </ClInclude>
+    <ClInclude Include="include\dngsdk\dng_temperature.h">
+      <Filter>Header Files\include\dngsdk</Filter>
+    </ClInclude>
+    <ClInclude Include="include\dngsdk\dng_tile_iterator.h">
+      <Filter>Header Files\include\dngsdk</Filter>
+    </ClInclude>
+    <ClInclude Include="include\dngsdk\dng_tone_curve.h">
+      <Filter>Header Files\include\dngsdk</Filter>
+    </ClInclude>
+    <ClInclude Include="include\dngsdk\dng_types.h">
+      <Filter>Header Files\include\dngsdk</Filter>
+    </ClInclude>
+    <ClInclude Include="include\dngsdk\dng_uncopyable.h">
+      <Filter>Header Files\include\dngsdk</Filter>
+    </ClInclude>
+    <ClInclude Include="include\dngsdk\dng_utils.h">
+      <Filter>Header Files\include\dngsdk</Filter>
+    </ClInclude>
+    <ClInclude Include="include\dngsdk\dng_xmp.h">
+      <Filter>Header Files\include\dngsdk</Filter>
+    </ClInclude>
+    <ClInclude Include="include\dngsdk\dng_xmp_sdk.h">
+      <Filter>Header Files\include\dngsdk</Filter>
+    </ClInclude>
+    <ClInclude Include="include\dngsdk\dng_xy_coord.h">
+      <Filter>Header Files\include\dngsdk</Filter>
+    </ClInclude>
+    <ClInclude Include="include\dngsdk\dng_export.h">
+      <Filter>Header Files\include\dngsdk</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,20 @@
+#include <HCCApplication.h>
+#define BOOST_TEST_MODULE Harlinn.Julia.Tests
+#define BOOST_TEST_DYN_LINK
+#define BOOST_TEST_NO_MAIN
+#include <boost/test/unit_test.hpp>
+
+#include <HJulia.h>
+
+int main( int argc, char* argv[], char* envp[] )
+{
+    Harlinn::Common::Core::ApplicationOptions options;
+    options.Load( );
+    Harlinn::Common::Core::Application application( options );
+    application.Start( );
+    Harlinn::Julia::Init( );
+    auto result = boost::unit_test::unit_test_main( &init_unit_test, argc, argv );
+    Harlinn::Julia::Finalize( 0 );
+    application.Stop( );
+    return result;
+}

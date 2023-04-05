@@ -1,0 +1,117 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="include">
+      <UniqueIdentifier>{c7d48a43-e093-4d5b-846f-eb9c301d0e1a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\kml">
+      <UniqueIdentifier>{d6dd0c83-0a16-4a84-b339-cadff0c21720}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\kml\convenience">
+      <UniqueIdentifier>{0d501575-24a4-4541-9858-00bc3110b1c4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{78e44815-6a3c-47ec-9e6f-2ae6392fbfdb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Readme">
+      <UniqueIdentifier>{da2e50bc-196e-4aa8-88b7-a0e15fd5bf43}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="dllmain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\atom_util.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\convenience.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\csv_file.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\csv_parser.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\feature_list.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\google_doc_list.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\google_maps_data.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\google_picasa_web.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\google_spreadsheets.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\http_client.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\kmz_check_links.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\kml\convenience\atom_util.h">
+      <Filter>include\kml\convenience</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\convenience\convenience.h">
+      <Filter>include\kml\convenience</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\convenience\csv_file.h">
+      <Filter>include\kml\convenience</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\convenience\csv_parser.h">
+      <Filter>include\kml\convenience</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\convenience\element_counter.h">
+      <Filter>include\kml\convenience</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\convenience\feature_list.h">
+      <Filter>include\kml\convenience</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\convenience\google_doc_list.h">
+      <Filter>include\kml\convenience</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\convenience\google_maps_data.h">
+      <Filter>include\kml\convenience</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\convenience\google_picasa_web.h">
+      <Filter>include\kml\convenience</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\convenience\google_spreadsheets.h">
+      <Filter>include\kml\convenience</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\convenience\gpx_trk_pt_handler.h">
+      <Filter>include\kml\convenience</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\convenience\http_client.h">
+      <Filter>include\kml\convenience</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\convenience\kml_feature_list_saver.h">
+      <Filter>include\kml\convenience</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\convenience\kmz_check_links.h">
+      <Filter>include\kml\convenience</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\convenience\kmlconveniencedef.h">
+      <Filter>include\kml\convenience</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

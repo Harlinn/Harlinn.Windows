@@ -1,0 +1,335 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{de1ce45e-7f75-4231-a399-6bf75065577b}</ProjectGuid>
+    <RootNamespace>Harlinnhdf4</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Label="Vcpkg">
+    <VcpkgEnabled>false</VcpkgEnabled>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>BUILDING_HARLINN_HDF4=1;WIN32;_WINDOWS;HAVE_CONFIG_H;_BIND_TO_CURRENT_VCLIBS_VERSION=1;_CRT_SECURE_NO_WARNINGS=1;HDF=1;WIN32;_DEBUG;HARLINNHDF4_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.aec\include;$(SolutionDir)3rdParty\Harlinn.jpeg;$(SolutionDir)3rdParty\Harlinn.zlib;$(ProjectDir)include\hdf4;$(ProjectDir)include\mfhdf;$(ProjectDir)include\xdr;$(ProjectDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+      <AdditionalLibraryDirectories>$(OutDir)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>BUILDING_HARLINN_HDF4=1;WIN32;_WINDOWS;HAVE_CONFIG_H;_BIND_TO_CURRENT_VCLIBS_VERSION=1;_CRT_SECURE_NO_WARNINGS=1;HDF=1;WIN32;NDEBUG;HARLINNHDF4_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.aec\include;$(SolutionDir)3rdParty\Harlinn.jpeg;$(SolutionDir)3rdParty\Harlinn.zlib;$(ProjectDir)include\hdf4;$(ProjectDir)include\mfhdf;$(ProjectDir)include\xdr;$(ProjectDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+      <AdditionalLibraryDirectories>$(OutDir)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>BUILDING_HARLINN_HDF4=1;WIN32;_WINDOWS;HAVE_CONFIG_H;_BIND_TO_CURRENT_VCLIBS_VERSION=1;_CRT_SECURE_NO_WARNINGS=1;HDF=1;_DEBUG;HARLINNHDF4_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.aec\include;$(SolutionDir)3rdParty\Harlinn.jpeg;$(SolutionDir)3rdParty\Harlinn.zlib;$(ProjectDir)include\hdf4;$(ProjectDir)include\mfhdf;$(ProjectDir)include\xdr;$(ProjectDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+      <AdditionalLibraryDirectories>$(OutDir)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>BUILDING_HARLINN_HDF4=1;WIN32;_WINDOWS;HAVE_CONFIG_H;_BIND_TO_CURRENT_VCLIBS_VERSION=1;_CRT_SECURE_NO_WARNINGS=1;HDF=1;NDEBUG;HARLINNHDF4_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.aec\include;$(SolutionDir)3rdParty\Harlinn.jpeg;$(SolutionDir)3rdParty\Harlinn.zlib;$(ProjectDir)include\hdf4;$(ProjectDir)include\mfhdf;$(ProjectDir)include\xdr;$(ProjectDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+      <AdditionalLibraryDirectories>$(OutDir)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="src\hdf\atom.c" />
+    <ClCompile Include="src\hdf\bitvect.c" />
+    <ClCompile Include="src\hdf\cdeflate.c" />
+    <ClCompile Include="src\hdf\cnbit.c" />
+    <ClCompile Include="src\hdf\cnone.c" />
+    <ClCompile Include="src\hdf\crle.c" />
+    <ClCompile Include="src\hdf\cskphuff.c" />
+    <ClCompile Include="src\hdf\cszip.c" />
+    <ClCompile Include="src\hdf\df24.c" />
+    <ClCompile Include="src\hdf\dfan.c" />
+    <ClCompile Include="src\hdf\dfcomp.c" />
+    <ClCompile Include="src\hdf\dfconv.c" />
+    <ClCompile Include="src\hdf\dfgr.c" />
+    <ClCompile Include="src\hdf\dfgroup.c" />
+    <ClCompile Include="src\hdf\dfimcomp.c" />
+    <ClCompile Include="src\hdf\dfjpeg.c" />
+    <ClCompile Include="src\hdf\dfknat.c" />
+    <ClCompile Include="src\hdf\dfkswap.c" />
+    <ClCompile Include="src\hdf\dfp.c" />
+    <ClCompile Include="src\hdf\dfr8.c" />
+    <ClCompile Include="src\hdf\dfrle.c" />
+    <ClCompile Include="src\hdf\dfsd.c" />
+    <ClCompile Include="src\hdf\dfstubs.c" />
+    <ClCompile Include="src\hdf\dfufp2i.c" />
+    <ClCompile Include="src\hdf\dfunjpeg.c" />
+    <ClCompile Include="src\hdf\dfutil.c" />
+    <ClCompile Include="src\hdf\dfutilf.c" />
+    <ClCompile Include="src\hdf\dynarray.c" />
+    <ClCompile Include="src\hdf\glist.c" />
+    <ClCompile Include="src\hdf\hbitio.c" />
+    <ClCompile Include="src\hdf\hblocks.c" />
+    <ClCompile Include="src\hdf\hbuffer.c" />
+    <ClCompile Include="src\hdf\hchunks.c" />
+    <ClCompile Include="src\hdf\hcomp.c" />
+    <ClCompile Include="src\hdf\hcompri.c" />
+    <ClCompile Include="src\hdf\hdatainfo.c" />
+    <ClCompile Include="src\hdf\hdfalloc.c" />
+    <ClCompile Include="src\hdf\herr.c" />
+    <ClCompile Include="src\hdf\hextelt.c" />
+    <ClCompile Include="src\hdf\hfile.c" />
+    <ClCompile Include="src\hdf\hfiledd.c" />
+    <ClCompile Include="src\hdf\hkit.c" />
+    <ClCompile Include="src\hdf\linklist.c" />
+    <ClCompile Include="src\hdf\mcache.c" />
+    <ClCompile Include="src\hdf\mfan.c" />
+    <ClCompile Include="src\hdf\mfgr.c" />
+    <ClCompile Include="src\hdf\mstdio.c" />
+    <ClCompile Include="src\hdf\tbbt.c" />
+    <ClCompile Include="src\hdf\vattr.c" />
+    <ClCompile Include="src\hdf\vconv.c" />
+    <ClCompile Include="src\hdf\vg.c" />
+    <ClCompile Include="src\hdf\vgp.c" />
+    <ClCompile Include="src\hdf\vhi.c" />
+    <ClCompile Include="src\hdf\vio.c" />
+    <ClCompile Include="src\hdf\vparse.c" />
+    <ClCompile Include="src\hdf\vrw.c" />
+    <ClCompile Include="src\hdf\vsfld.c" />
+    <ClCompile Include="src\mfhdf\array.c" />
+    <ClCompile Include="src\mfhdf\attr.c" />
+    <ClCompile Include="src\mfhdf\cdf.c" />
+    <ClCompile Include="src\mfhdf\dim.c" />
+    <ClCompile Include="src\mfhdf\error.c" />
+    <ClCompile Include="src\mfhdf\file.c" />
+    <ClCompile Include="src\mfhdf\globdef.c" />
+    <ClCompile Include="src\mfhdf\hdfsds.c" />
+    <ClCompile Include="src\mfhdf\iarray.c" />
+    <ClCompile Include="src\mfhdf\mfdatainfo.c" />
+    <ClCompile Include="src\mfhdf\mfsd.c" />
+    <ClCompile Include="src\mfhdf\nssdc.c" />
+    <ClCompile Include="src\mfhdf\putget.c" />
+    <ClCompile Include="src\mfhdf\putgetg.c" />
+    <ClCompile Include="src\mfhdf\sharray.c" />
+    <ClCompile Include="src\mfhdf\string.c" />
+    <ClCompile Include="src\mfhdf\var.c" />
+    <ClCompile Include="src\mfhdf\xdrposix.c" />
+    <ClCompile Include="src\xdr\xdr.c" />
+    <ClCompile Include="src\xdr\xdrarray.c" />
+    <ClCompile Include="src\xdr\xdrfloat.c" />
+    <ClCompile Include="src\xdr\xdrstdio.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\hdf4\atom.h" />
+    <ClInclude Include="include\hdf4\bitvect.h" />
+    <ClInclude Include="include\hdf4\cdeflate.h" />
+    <ClInclude Include="include\hdf4\cnbit.h" />
+    <ClInclude Include="include\hdf4\cnone.h" />
+    <ClInclude Include="include\hdf4\crle.h" />
+    <ClInclude Include="include\hdf4\cskphuff.h" />
+    <ClInclude Include="include\hdf4\cszip.h" />
+    <ClInclude Include="include\hdf4\df.h" />
+    <ClInclude Include="include\hdf4\dfan.h" />
+    <ClInclude Include="include\hdf4\dfconvrt.h" />
+    <ClInclude Include="include\hdf4\dfgr.h" />
+    <ClInclude Include="include\hdf4\dfi.h" />
+    <ClInclude Include="include\hdf4\dfrig.h" />
+    <ClInclude Include="include\hdf4\dfsd.h" />
+    <ClInclude Include="include\hdf4\dfstubs.h" />
+    <ClInclude Include="include\hdf4\dfufp2i.h" />
+    <ClInclude Include="include\hdf4\dynarray.h" />
+    <ClInclude Include="include\hdf4\glist.h" />
+    <ClInclude Include="include\hdf4\H4api_adpt.h" />
+    <ClInclude Include="include\hdf4\h4config.h" />
+    <ClInclude Include="include\hdf4\hbitio.h" />
+    <ClInclude Include="include\hdf4\hchunks.h" />
+    <ClInclude Include="include\hdf4\hcomp.h" />
+    <ClInclude Include="include\hdf4\hcompi.h" />
+    <ClInclude Include="include\hdf4\hconv.h" />
+    <ClInclude Include="include\hdf4\hdatainfo.h" />
+    <ClInclude Include="include\hdf4\hdf.h" />
+    <ClInclude Include="include\hdf4\hdfi.h" />
+    <ClInclude Include="include\hdf4\herr.h" />
+    <ClInclude Include="include\hdf4\hfile.h" />
+    <ClInclude Include="include\hdf4\hkit.h" />
+    <ClInclude Include="include\hdf4\hlimits.h" />
+    <ClInclude Include="include\hdf4\hntdefs.h" />
+    <ClInclude Include="include\hdf4\hproto.h" />
+    <ClInclude Include="include\hdf4\hproto_fortran.h" />
+    <ClInclude Include="include\hdf4\hqueue.h" />
+    <ClInclude Include="include\hdf4\htags.h" />
+    <ClInclude Include="include\hdf4\linklist.h" />
+    <ClInclude Include="include\hdf4\maldebug.h" />
+    <ClInclude Include="include\hdf4\mcache.h" />
+    <ClInclude Include="include\hdf4\mfan.h" />
+    <ClInclude Include="include\hdf4\mfgr.h" />
+    <ClInclude Include="include\hdf4\mstdio.h" />
+    <ClInclude Include="include\hdf4\netcdf.h" />
+    <ClInclude Include="include\hdf4\patchlevel.h" />
+    <ClInclude Include="include\hdf4\tbbt.h" />
+    <ClInclude Include="include\hdf4\trace.h" />
+    <ClInclude Include="include\hdf4\vattr.h" />
+    <ClInclude Include="include\hdf4\vg.h" />
+    <ClInclude Include="include\hdf4\vgint.h" />
+    <ClInclude Include="include\mfhdf\alloc.h" />
+    <ClInclude Include="include\mfhdf\error.h" />
+    <ClInclude Include="include\mfhdf\hdf2netcdf.h" />
+    <ClInclude Include="include\mfhdf\local_nc.h" />
+    <ClInclude Include="include\mfhdf\mfdatainfo.h" />
+    <ClInclude Include="include\mfhdf\mfhdf.h" />
+    <ClInclude Include="include\mfhdf\mfhdfi.h" />
+    <ClInclude Include="include\xdr\types.h" />
+    <ClInclude Include="include\xdr\xdr.h" />
+    <ClInclude Include="src\mfhdf\mfprivate.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="include\hdf4\dffunc.inc" />
+    <None Include="include\hdf4\hdf.inc" />
+    <None Include="include\hdf4\src.inc" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

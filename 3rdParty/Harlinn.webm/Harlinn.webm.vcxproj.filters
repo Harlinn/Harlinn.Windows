@@ -1,0 +1,189 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="include">
+      <UniqueIdentifier>{278449ba-9a69-4071-a519-473da441da41}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{facb45d3-14c0-4253-b29c-ff8edd0a02b1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\libwebm">
+      <UniqueIdentifier>{cffbce14-a3d4-4f8e-bfc0-81380b75d572}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\libwebm\common">
+      <UniqueIdentifier>{01b6ecad-49ab-4e3c-af56-de7834fe7325}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\libwebm\mkvmuxer">
+      <UniqueIdentifier>{93f401de-fcaf-4706-b78d-b9864b6cd18b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\libwebm\mkvparser">
+      <UniqueIdentifier>{9bdb80d6-2ca9-46aa-9030-ffc60a4cea74}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\common">
+      <UniqueIdentifier>{cda17154-ef02-4e62-9852-8d2ed35bd472}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\mkvmuxer">
+      <UniqueIdentifier>{06889d70-4147-4aff-8a52-4104dbe817ae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\mkvparser">
+      <UniqueIdentifier>{851b1762-bee3-4efc-ac5c-cbe496767bd3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\libwebm\m2ts">
+      <UniqueIdentifier>{137076e5-2537-48f8-9981-c51dc40cac06}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\libwebm\webvtt">
+      <UniqueIdentifier>{2fd6d1a5-2db9-4898-bf65-a60d87a0116f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\m2ts">
+      <UniqueIdentifier>{bc327e0e-c62d-4966-925f-e126d18abad8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\webvtt">
+      <UniqueIdentifier>{9da4d943-eb07-40df-8eac-3e37ab23e3df}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Readme">
+      <UniqueIdentifier>{0c3c41bd-4e69-4d2b-a031-203e748fc22f}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="dllmain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\common\file_util.cc">
+      <Filter>src\common</Filter>
+    </ClCompile>
+    <ClCompile Include="src\common\hdr_util.cc">
+      <Filter>src\common</Filter>
+    </ClCompile>
+    <ClCompile Include="src\common\libwebm_util.cc">
+      <Filter>src\common</Filter>
+    </ClCompile>
+    <ClCompile Include="src\common\video_frame.cc">
+      <Filter>src\common</Filter>
+    </ClCompile>
+    <ClCompile Include="src\mkvmuxer\mkvmuxer.cc">
+      <Filter>src\mkvmuxer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\mkvmuxer\mkvmuxerutil.cc">
+      <Filter>src\mkvmuxer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\mkvmuxer\mkvwriter.cc">
+      <Filter>src\mkvmuxer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\mkvparser\mkvparser.cc">
+      <Filter>src\mkvparser</Filter>
+    </ClCompile>
+    <ClCompile Include="src\mkvparser\mkvreader.cc">
+      <Filter>src\mkvparser</Filter>
+    </ClCompile>
+    <ClCompile Include="src\m2ts\vpxpes_parser.cc">
+      <Filter>src\m2ts</Filter>
+    </ClCompile>
+    <ClCompile Include="src\m2ts\vpxpes2ts.cc">
+      <Filter>src\m2ts</Filter>
+    </ClCompile>
+    <ClCompile Include="src\m2ts\webm2pes.cc">
+      <Filter>src\m2ts</Filter>
+    </ClCompile>
+    <ClCompile Include="src\webvtt\vttreader.cc">
+      <Filter>src\webvtt</Filter>
+    </ClCompile>
+    <ClCompile Include="src\webvtt\webvttparser.cc">
+      <Filter>src\webvtt</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\libwebm\common\file_util.h">
+      <Filter>include\libwebm\common</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libwebm\common\hdr_util.h">
+      <Filter>include\libwebm\common</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libwebm\common\libwebm_util.h">
+      <Filter>include\libwebm\common</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libwebm\common\video_frame.h">
+      <Filter>include\libwebm\common</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libwebm\common\webmids.h">
+      <Filter>include\libwebm\common</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libwebm\mkvmuxer\mkvmuxer.h">
+      <Filter>include\libwebm\mkvmuxer</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libwebm\mkvmuxer\mkvmuxertypes.h">
+      <Filter>include\libwebm\mkvmuxer</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libwebm\mkvmuxer\mkvmuxerutil.h">
+      <Filter>include\libwebm\mkvmuxer</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libwebm\mkvmuxer\mkvwriter.h">
+      <Filter>include\libwebm\mkvmuxer</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libwebm\mkvparser\mkvparser.h">
+      <Filter>include\libwebm\mkvparser</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libwebm\mkvparser\mkvreader.h">
+      <Filter>include\libwebm\mkvparser</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libwebm\m2ts\vpxpes_parser.h">
+      <Filter>include\libwebm\m2ts</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libwebm\m2ts\vpxpes2ts.h">
+      <Filter>include\libwebm\m2ts</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libwebm\m2ts\webm2pes.h">
+      <Filter>include\libwebm\m2ts</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libwebm\webvtt\vttreader.h">
+      <Filter>include\libwebm\webvtt</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libwebm\webvtt\webvttparser.h">
+      <Filter>include\libwebm\webvtt</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libwebm\hdr_util.hpp">
+      <Filter>include\libwebm</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libwebm\mkvmuxer.hpp">
+      <Filter>include\libwebm</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libwebm\mkvmuxertypes.hpp">
+      <Filter>include\libwebm</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libwebm\mkvmuxerutil.hpp">
+      <Filter>include\libwebm</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libwebm\mkvparser.hpp">
+      <Filter>include\libwebm</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libwebm\mkvreader.hpp">
+      <Filter>include\libwebm</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libwebm\mkvwriter.hpp">
+      <Filter>include\libwebm</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libwebm\vttreader.h">
+      <Filter>include\libwebm</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libwebm\webmids.hpp">
+      <Filter>include\libwebm</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libwebm\webvttparser.h">
+      <Filter>include\libwebm</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libwebm\hwebmdef.h">
+      <Filter>include\libwebm</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

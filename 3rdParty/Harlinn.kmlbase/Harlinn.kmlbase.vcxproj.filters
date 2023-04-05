@@ -1,0 +1,165 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{a5cb83ac-852d-41e7-b665-7181d4c348be}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include">
+      <UniqueIdentifier>{fa28c37d-4f36-4bd8-bcc0-232cf9c04cf1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\kml">
+      <UniqueIdentifier>{144f1838-9540-465e-9311-ca9d72e3e926}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\kml\base">
+      <UniqueIdentifier>{1eb27042-314d-4b76-a1a5-b9bc98b7575e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Readme">
+      <UniqueIdentifier>{37e15375-6fc0-423c-a940-3784ca4ddefd}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="dllmain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\attributes.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\csv_splitter.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\date_time.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\expat_handler_ns.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\expat_parser.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\file.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\file_win32.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\math_util.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\mimetypes.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\referent.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\string_util.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\time_util.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\uri_parser.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\version.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xml_namespaces.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zip_file.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\kml\base\attributes.h">
+      <Filter>include\kml\base</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\base\color32.h">
+      <Filter>include\kml\base</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\base\csv_splitter.h">
+      <Filter>include\kml\base</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\base\date_time.h">
+      <Filter>include\kml\base</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\base\expat_handler.h">
+      <Filter>include\kml\base</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\base\expat_handler_ns.h">
+      <Filter>include\kml\base</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\base\expat_parser.h">
+      <Filter>include\kml\base</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\base\file.h">
+      <Filter>include\kml\base</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\base\math_util.h">
+      <Filter>include\kml\base</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\base\memory_file.h">
+      <Filter>include\kml\base</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\base\mimetypes.h">
+      <Filter>include\kml\base</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\base\net_cache.h">
+      <Filter>include\kml\base</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\base\referent.h">
+      <Filter>include\kml\base</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\base\string_util.h">
+      <Filter>include\kml\base</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\base\tempfile.h">
+      <Filter>include\kml\base</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\base\time_util.h">
+      <Filter>include\kml\base</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\base\uri_parser.h">
+      <Filter>include\kml\base</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\base\util.h">
+      <Filter>include\kml\base</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\base\vec3.h">
+      <Filter>include\kml\base</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\base\version.h">
+      <Filter>include\kml\base</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\base\xml_element.h">
+      <Filter>include\kml\base</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\base\xml_file.h">
+      <Filter>include\kml\base</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\base\xml_namespaces.h">
+      <Filter>include\kml\base</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\base\xmlns.h">
+      <Filter>include\kml\base</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\base\zip_file.h">
+      <Filter>include\kml\base</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\base\kmlbasedef.h">
+      <Filter>include\kml\base</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,257 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="include">
+      <UniqueIdentifier>{932a5646-8b21-4dd5-991c-16fa16437236}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\vorbis">
+      <UniqueIdentifier>{c94aec4b-ba2a-4fcf-88ae-99e649395d26}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{fe28d4d5-b268-42a3-a7f4-8669b22e5c1a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\modes">
+      <UniqueIdentifier>{402bf3af-48ad-4c4e-a9e9-226ab90fcaa2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\books">
+      <UniqueIdentifier>{fc0ec3a1-9156-488f-99ed-7ee3941912e3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\books\coupled">
+      <UniqueIdentifier>{f222a85a-448f-4231-99ec-db83773db681}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\books\floor">
+      <UniqueIdentifier>{e9cc4c3b-7001-4d7e-8924-c9efd04b543a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\books\uncoupled">
+      <UniqueIdentifier>{4950f08c-b9a3-4435-b178-b49b8312d52a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Readme">
+      <UniqueIdentifier>{29dc3337-ff8d-4faa-aa41-709ffcdee954}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="dllmain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\analysis.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\bitrate.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\block.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\codebook.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\envelope.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\floor0.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\floor1.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\info.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lookup.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lpc.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lsp.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\mapping0.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\mdct.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\psy.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\registry.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\res0.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\sharedbook.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\smallft.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\synthesis.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\vorbisenc.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\vorbisfile.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\window.c">
+      <Filter>src</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\bitrate.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\codebook.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\codec_internal.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\envelope.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lookup.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lookup_data.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lpc.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lsp.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\mdct.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\misc.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\os.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\psy.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\registry.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scales.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\smallft.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\window.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="include\vorbis\codec.h">
+      <Filter>include\vorbis</Filter>
+    </ClInclude>
+    <ClInclude Include="include\vorbis\vorbisenc.h">
+      <Filter>include\vorbis</Filter>
+    </ClInclude>
+    <ClInclude Include="include\vorbis\vorbisfile.h">
+      <Filter>include\vorbis</Filter>
+    </ClInclude>
+    <ClInclude Include="src\backends.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\highlevel.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\masking.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\modes\floor_all.h">
+      <Filter>src\modes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\modes\psych_8.h">
+      <Filter>src\modes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\modes\psych_11.h">
+      <Filter>src\modes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\modes\psych_16.h">
+      <Filter>src\modes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\modes\psych_44.h">
+      <Filter>src\modes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\modes\residue_8.h">
+      <Filter>src\modes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\modes\residue_16.h">
+      <Filter>src\modes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\modes\residue_44.h">
+      <Filter>src\modes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\modes\residue_44p51.h">
+      <Filter>src\modes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\modes\residue_44u.h">
+      <Filter>src\modes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\modes\setup_8.h">
+      <Filter>src\modes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\modes\setup_11.h">
+      <Filter>src\modes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\modes\setup_16.h">
+      <Filter>src\modes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\modes\setup_22.h">
+      <Filter>src\modes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\modes\setup_32.h">
+      <Filter>src\modes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\modes\setup_44.h">
+      <Filter>src\modes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\modes\setup_44p51.h">
+      <Filter>src\modes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\modes\setup_44u.h">
+      <Filter>src\modes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\modes\setup_X.h">
+      <Filter>src\modes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\books\coupled\res_books_51.h">
+      <Filter>src\books\coupled</Filter>
+    </ClInclude>
+    <ClInclude Include="src\books\coupled\res_books_stereo.h">
+      <Filter>src\books\coupled</Filter>
+    </ClInclude>
+    <ClInclude Include="src\books\floor\floor_books.h">
+      <Filter>src\books\floor</Filter>
+    </ClInclude>
+    <ClInclude Include="src\books\uncoupled\res_books_uncoupled.h">
+      <Filter>src\books\uncoupled</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="src\vorbis.def">
+      <Filter>src</Filter>
+    </None>
+  </ItemGroup>
+</Project>

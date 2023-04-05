@@ -1,0 +1,168 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="include">
+      <UniqueIdentifier>{8ae0b9c2-bd8d-4028-8609-3092e7d6ea27}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{c8e89b46-ca34-4bc8-acf4-4d99555992dc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\fyba">
+      <UniqueIdentifier>{22c931c1-1b0a-4ba9-803c-43fa4ffd8b14}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\gm">
+      <UniqueIdentifier>{9377ebbf-f7fd-40b9-a7c1-ffa963bdcd1c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\ut">
+      <UniqueIdentifier>{688a68fa-f1ca-448e-997c-60190b0f38b6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Readme">
+      <UniqueIdentifier>{6be7229e-5b37-46f8-b607-7b51d867273f}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="dllmain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\FYBA\FYBA.cpp">
+      <Filter>src\fyba</Filter>
+    </ClCompile>
+    <ClCompile Include="src\FYBA\Fyba_Callback.cpp">
+      <Filter>src\fyba</Filter>
+    </ClCompile>
+    <ClCompile Include="src\FYBA\Fyba_melding.cpp">
+      <Filter>src\fyba</Filter>
+    </ClCompile>
+    <ClCompile Include="src\FYBA\FYHO.cpp">
+      <Filter>src\fyba</Filter>
+    </ClCompile>
+    <ClCompile Include="src\FYBA\FYLB.cpp">
+      <Filter>src\fyba</Filter>
+    </ClCompile>
+    <ClCompile Include="src\FYBA\FYLD.cpp">
+      <Filter>src\fyba</Filter>
+    </ClCompile>
+    <ClCompile Include="src\FYBA\FYLE.cpp">
+      <Filter>src\fyba</Filter>
+    </ClCompile>
+    <ClCompile Include="src\FYBA\FYLH.cpp">
+      <Filter>src\fyba</Filter>
+    </ClCompile>
+    <ClCompile Include="src\FYBA\FYLI.cpp">
+      <Filter>src\fyba</Filter>
+    </ClCompile>
+    <ClCompile Include="src\FYBA\fyln.cpp">
+      <Filter>src\fyba</Filter>
+    </ClCompile>
+    <ClCompile Include="src\FYBA\FYLO.cpp">
+      <Filter>src\fyba</Filter>
+    </ClCompile>
+    <ClCompile Include="src\FYBA\FYLP.cpp">
+      <Filter>src\fyba</Filter>
+    </ClCompile>
+    <ClCompile Include="src\FYBA\FYLR.cpp">
+      <Filter>src\fyba</Filter>
+    </ClCompile>
+    <ClCompile Include="src\FYBA\FYLS.cpp">
+      <Filter>src\fyba</Filter>
+    </ClCompile>
+    <ClCompile Include="src\FYBA\FYLU.cpp">
+      <Filter>src\fyba</Filter>
+    </ClCompile>
+    <ClCompile Include="src\FYBA\FYLX.cpp">
+      <Filter>src\fyba</Filter>
+    </ClCompile>
+    <ClCompile Include="src\FYBA\FYTA.cpp">
+      <Filter>src\fyba</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GM\GM.cpp">
+      <Filter>src\gm</Filter>
+    </ClCompile>
+    <ClCompile Include="src\UT\ANFORSEL.cpp">
+      <Filter>src\ut</Filter>
+    </ClCompile>
+    <ClCompile Include="src\UT\CopyFile.cpp">
+      <Filter>src\ut</Filter>
+    </ClCompile>
+    <ClCompile Include="src\UT\CREDIR.cpp">
+      <Filter>src\ut</Filter>
+    </ClCompile>
+    <ClCompile Include="src\UT\DELDIR.cpp">
+      <Filter>src\ut</Filter>
+    </ClCompile>
+    <ClCompile Include="src\UT\DELFILE.cpp">
+      <Filter>src\ut</Filter>
+    </ClCompile>
+    <ClCompile Include="src\UT\DISKINFO.cpp">
+      <Filter>src\ut</Filter>
+    </ClCompile>
+    <ClCompile Include="src\UT\FILNACMP.cpp">
+      <Filter>src\ut</Filter>
+    </ClCompile>
+    <ClCompile Include="src\UT\FULLPATH.cpp">
+      <Filter>src\ut</Filter>
+    </ClCompile>
+    <ClCompile Include="src\UT\INQSIZE.cpp">
+      <Filter>src\ut</Filter>
+    </ClCompile>
+    <ClCompile Include="src\UT\INQTID.cpp">
+      <Filter>src\ut</Filter>
+    </ClCompile>
+    <ClCompile Include="src\UT\MAKEPATH.cpp">
+      <Filter>src\ut</Filter>
+    </ClCompile>
+    <ClCompile Include="src\UT\SETSIZE.cpp">
+      <Filter>src\ut</Filter>
+    </ClCompile>
+    <ClCompile Include="src\UT\SPLITPTH.cpp">
+      <Filter>src\ut</Filter>
+    </ClCompile>
+    <ClCompile Include="src\UT\StrtPros.cpp">
+      <Filter>src\ut</Filter>
+    </ClCompile>
+    <ClCompile Include="src\UT\UT1.cpp">
+      <Filter>src\ut</Filter>
+    </ClCompile>
+    <ClCompile Include="src\UT\UT2.cpp">
+      <Filter>src\ut</Filter>
+    </ClCompile>
+    <ClCompile Include="src\UT\UT3.cpp">
+      <Filter>src\ut</Filter>
+    </ClCompile>
+    <ClCompile Include="src\UT\UT4.cpp">
+      <Filter>src\ut</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\fyba.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\fygm.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\fyut.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="src\FYBA\fyba_strings.h">
+      <Filter>src\fyba</Filter>
+    </ClInclude>
+    <ClInclude Include="src\FYBA\fybax.h">
+      <Filter>src\fyba</Filter>
+    </ClInclude>
+    <ClInclude Include="include\fybadef.h">
+      <Filter>include</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

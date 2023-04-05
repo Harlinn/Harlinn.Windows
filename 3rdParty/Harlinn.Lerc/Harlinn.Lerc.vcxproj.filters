@@ -1,0 +1,99 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Lerc1Decode">
+      <UniqueIdentifier>{ea3b3c6e-0bad-4a30-b2d2-dc2e82696401}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include">
+      <UniqueIdentifier>{f2df1ac4-04e6-43bf-be07-46920d24cae0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Readme">
+      <UniqueIdentifier>{a2d54c11-25dc-4556-8be0-8addd17bbf20}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="dllmain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="BitMask.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="BitStuffer2.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Huffman.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Lerc.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Lerc_c_api_impl.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Lerc2.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="RLE.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Lerc1Decode\BitStuffer.cpp">
+      <Filter>Lerc1Decode</Filter>
+    </ClCompile>
+    <ClCompile Include="Lerc1Decode\CntZImage.cpp">
+      <Filter>Lerc1Decode</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="BitMask.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BitStuffer2.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Defines.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Huffman.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Lerc.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Lerc2.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RLE.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Lerc_c_api.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Lerc_types.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="Lerc1Decode\BitStuffer.h">
+      <Filter>Lerc1Decode</Filter>
+    </ClInclude>
+    <ClInclude Include="Lerc1Decode\CntZImage.h">
+      <Filter>Lerc1Decode</Filter>
+    </ClInclude>
+    <ClInclude Include="Lerc1Decode\Image.h">
+      <Filter>Lerc1Decode</Filter>
+    </ClInclude>
+    <ClInclude Include="Lerc1Decode\TImage.hpp">
+      <Filter>Lerc1Decode</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

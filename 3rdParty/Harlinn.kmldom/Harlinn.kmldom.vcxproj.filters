@@ -1,0 +1,356 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="include">
+      <UniqueIdentifier>{20b7dc81-1507-46e1-b676-44bf8ed5fe9a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\kml">
+      <UniqueIdentifier>{4310a257-d2e2-494c-8a3d-fe2e323086d5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\kml\dom">
+      <UniqueIdentifier>{f8bb4813-c909-41ba-8db4-4ccd138f51b8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{bf04226f-68e1-4950-bfa6-ca313a68f08f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Readme">
+      <UniqueIdentifier>{92f2a3fb-11ba-4448-a000-e116514dcfcc}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="dllmain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\abstractlatlonbox.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\abstractview.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\atom.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\balloonstyle.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\colorstyle.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\container.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\document.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\element.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\extendeddata.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\feature.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\folder.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\geometry.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\gx_timeprimitive.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\gx_tour.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hotspot.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\iconstyle.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\kml.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\kml_cast.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\kml_factory.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\kml_handler.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\kml_handler_ns.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\labelstyle.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\linestyle.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\link.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\liststyle.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\model.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\networklink.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\networklinkcontrol.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\object.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\overlay.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\parser.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\placemark.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\polystyle.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\region.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\schema.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\serializer.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\snippet.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\style.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\stylemap.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\styleselector.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\substyle.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\timeprimitive.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\vec2.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\visitor.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\visitor_driver.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xal.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xml_serializer.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xsd.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\kml\dom\abstractlatlonbox.h">
+      <Filter>include\kml\dom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\dom\abstractview.h">
+      <Filter>include\kml\dom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\dom\atom.h">
+      <Filter>include\kml\dom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\dom\balloonstyle.h">
+      <Filter>include\kml\dom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\dom\colorstyle.h">
+      <Filter>include\kml\dom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\dom\container.h">
+      <Filter>include\kml\dom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\dom\document.h">
+      <Filter>include\kml\dom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\dom\element.h">
+      <Filter>include\kml\dom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\dom\extendeddata.h">
+      <Filter>include\kml\dom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\dom\feature.h">
+      <Filter>include\kml\dom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\dom\folder.h">
+      <Filter>include\kml\dom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\dom\geometry.h">
+      <Filter>include\kml\dom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\dom\gx_timeprimitive.h">
+      <Filter>include\kml\dom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\dom\gx_tour.h">
+      <Filter>include\kml\dom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\dom\hotspot.h">
+      <Filter>include\kml\dom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\dom\iconstyle.h">
+      <Filter>include\kml\dom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\dom\kml.h">
+      <Filter>include\kml\dom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\dom\kml_cast.h">
+      <Filter>include\kml\dom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\dom\kml_factory.h">
+      <Filter>include\kml\dom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\dom\kml_funcs.h">
+      <Filter>include\kml\dom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\dom\kml_handler.h">
+      <Filter>include\kml\dom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\dom\kml_handler_ns.h">
+      <Filter>include\kml\dom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\dom\kml_ptr.h">
+      <Filter>include\kml\dom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\dom\kml22.h">
+      <Filter>include\kml\dom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\dom\kmldom.h">
+      <Filter>include\kml\dom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\dom\labelstyle.h">
+      <Filter>include\kml\dom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\dom\linestyle.h">
+      <Filter>include\kml\dom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\dom\link.h">
+      <Filter>include\kml\dom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\dom\liststyle.h">
+      <Filter>include\kml\dom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\dom\model.h">
+      <Filter>include\kml\dom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\dom\networklink.h">
+      <Filter>include\kml\dom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\dom\networklinkcontrol.h">
+      <Filter>include\kml\dom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\dom\object.h">
+      <Filter>include\kml\dom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\dom\overlay.h">
+      <Filter>include\kml\dom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\dom\parser.h">
+      <Filter>include\kml\dom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\dom\parser_observer.h">
+      <Filter>include\kml\dom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\dom\placemark.h">
+      <Filter>include\kml\dom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\dom\polystyle.h">
+      <Filter>include\kml\dom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\dom\region.h">
+      <Filter>include\kml\dom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\dom\schema.h">
+      <Filter>include\kml\dom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\dom\serializer.h">
+      <Filter>include\kml\dom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\dom\snippet.h">
+      <Filter>include\kml\dom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\dom\stats_serializer.h">
+      <Filter>include\kml\dom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\dom\style.h">
+      <Filter>include\kml\dom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\dom\stylemap.h">
+      <Filter>include\kml\dom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\dom\styleselector.h">
+      <Filter>include\kml\dom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\dom\substyle.h">
+      <Filter>include\kml\dom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\dom\timeprimitive.h">
+      <Filter>include\kml\dom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\dom\vec2.h">
+      <Filter>include\kml\dom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\dom\visitor.h">
+      <Filter>include\kml\dom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\dom\visitor_driver.h">
+      <Filter>include\kml\dom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\dom\xal.h">
+      <Filter>include\kml\dom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\dom\xml_serializer.h">
+      <Filter>include\kml\dom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\dom\xsd.h">
+      <Filter>include\kml\dom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\dom\kmldomdef.h">
+      <Filter>include\kml\dom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kml\dom.h">
+      <Filter>include\kml</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="src\kml22.inl">
+      <Filter>src</Filter>
+    </None>
+  </ItemGroup>
+</Project>

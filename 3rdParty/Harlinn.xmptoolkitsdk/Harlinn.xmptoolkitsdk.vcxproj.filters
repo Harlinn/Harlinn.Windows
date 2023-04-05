@@ -1,0 +1,1576 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="include">
+      <UniqueIdentifier>{996c7a06-727b-42d9-bbfa-3a7fee0cc338}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{a92d994e-f54f-4b40-a187-df78f42db1fb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\source">
+      <UniqueIdentifier>{b3abec59-1846-4562-b9ab-ce7cd66f08ab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\XMPCommon">
+      <UniqueIdentifier>{967f8d5f-52d3-4258-b9fd-d0d191be5f4d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\XMPCore">
+      <UniqueIdentifier>{f3698690-55b4-4bed-bf9f-cb219cdf8a82}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\XMPFiles">
+      <UniqueIdentifier>{de43d527-0f1c-43f7-bbf2-8688f263976b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\XMPFilesPlugins">
+      <UniqueIdentifier>{526bf69d-1f0c-43e7-afa0-024d8e248ef7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\XMPCommon\BaseClasses">
+      <UniqueIdentifier>{97d11fff-6d98-471f-aefe-5a20cb860a9e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\XMPCommon\ImplHeaders">
+      <UniqueIdentifier>{3547ca2e-eed4-4ec6-89b4-14a434df2897}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\XMPCommon\Interfaces">
+      <UniqueIdentifier>{4ff62f1b-f8dd-4d7c-b2f9-f98c15e676c1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\XMPCommon\Interfaces\BaseInterfaces">
+      <UniqueIdentifier>{9922e345-b46a-4e60-943d-86e8b7776368}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\XMPCommon\source">
+      <UniqueIdentifier>{e404e937-f9f3-4016-849c-0928e342442b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\XMPCommon\Utilities">
+      <UniqueIdentifier>{536c5ea3-8c2f-4517-8777-f0a75b2176f7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\XMPCore\ImplHeaders">
+      <UniqueIdentifier>{d73a00ff-8b1f-4b50-bfdf-50510bd1ae4e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\XMPCore\Interfaces">
+      <UniqueIdentifier>{447b06a2-fb95-455a-977b-a333b4ecc7a7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\XMPCore\resource">
+      <UniqueIdentifier>{f1b7962a-317e-4790-9245-3ca835f4c075}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\XMPCore\source">
+      <UniqueIdentifier>{20061caf-ba74-4e6b-9bb2-9f1101a6b0c0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\XMPCore\resource\win">
+      <UniqueIdentifier>{c9328d41-eaef-4393-bfb2-b4213d5a2faa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\XMPFiles\resource">
+      <UniqueIdentifier>{a3f7ec2a-cab2-40a9-a660-9124ea611bb1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\XMPFiles\source">
+      <UniqueIdentifier>{5fdb898a-057a-4490-a96e-eb5c429030ae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\XMPFiles\resource\win">
+      <UniqueIdentifier>{d2e8aca1-ae41-4774-944a-994ce8719cde}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\XMPFiles\source\FileHandlers">
+      <UniqueIdentifier>{fc56921f-bbed-4b86-8355-09fc7df9bdc9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\XMPFiles\source\FormatSupport">
+      <UniqueIdentifier>{2d775c35-3613-436e-9d09-bb93f3fa9cc8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\XMPFiles\source\NativeMetadataSupport">
+      <UniqueIdentifier>{a56406b5-2f3a-4e56-88bd-b8f569624de1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\XMPFiles\source\PluginHandler">
+      <UniqueIdentifier>{55d5f685-6a99-487f-8b89-c6fbe2c78241}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\XMPFiles\source\FormatSupport\AIFF">
+      <UniqueIdentifier>{86e106c9-9988-4a32-9292-db314d6033fe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\XMPFiles\source\FormatSupport\IFF">
+      <UniqueIdentifier>{e3f65c45-3389-4e4c-8d52-4def3a4dc4a3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\XMPFiles\source\FormatSupport\WAVE">
+      <UniqueIdentifier>{92130b80-fa6a-4a11-b97e-5ddbcd3b014f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\XMPFilesPlugins\api">
+      <UniqueIdentifier>{fa20587d-e7de-4bfe-bbb0-7e4d2db21c75}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\XMPFilesPlugins\api\source">
+      <UniqueIdentifier>{286918c5-872f-43cc-b719-376783ff5a68}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\xmp">
+      <UniqueIdentifier>{adac04fa-55e2-4021-98ef-fe34cd3204d5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\xmp\client-glue">
+      <UniqueIdentifier>{86ecd7db-0e46-4a75-9f44-440a44486a7f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\xmp\XMPCommon">
+      <UniqueIdentifier>{f543a806-e932-4db5-99a9-d65acc270b54}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\xmp\XMPCommon\Interfaces">
+      <UniqueIdentifier>{778bb283-635e-4fbb-8281-1f9827b88e0c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\xmp\XMPCommon\Interfaces\BaseInterfaces">
+      <UniqueIdentifier>{14cf703d-16fd-4781-a2bd-f83605c33252}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\xmp\XMPCommon\Utilities">
+      <UniqueIdentifier>{ca96407c-36fd-4925-955e-4c6be95537d4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\xmp\XMPCore">
+      <UniqueIdentifier>{82f8a77c-2bf2-4191-92f0-54c471883d02}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\xmp\XMPCore\Interfaces">
+      <UniqueIdentifier>{23bb971c-9672-4e55-a038-7e578d3d821e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\third-party">
+      <UniqueIdentifier>{63e84e7b-e82e-4044-957e-1c521b5ad9d8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\third-party\zuid">
+      <UniqueIdentifier>{e239d28f-b215-44f4-b10c-3b81dc21ccff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\third-party\zuid\interfaces">
+      <UniqueIdentifier>{bade2195-fb76-4332-ba7e-86653bc55857}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\xmp\XMPCommon\inl">
+      <UniqueIdentifier>{fdb2f707-345c-4fe8-9ab1-fb86f6d0d9da}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\xmp\XMPCore\inl">
+      <UniqueIdentifier>{6914cf1d-e250-4868-a74b-64d0350451a8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Readme">
+      <UniqueIdentifier>{a98fa8a5-c85e-4451-b898-664fd827a412}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="dllmain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\source\Host_IO-POSIX.cpp">
+      <Filter>src\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\source\Host_IO-Win.cpp">
+      <Filter>src\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\source\IOUtils.cpp">
+      <Filter>src\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\source\PerfUtils.cpp">
+      <Filter>src\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\source\SafeStringAPIs.cpp">
+      <Filter>src\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\source\UnicodeConversions.cpp">
+      <Filter>src\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\source\XIO.cpp">
+      <Filter>src\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\source\XML_Node.cpp">
+      <Filter>src\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\source\XMP_LibUtils.cpp">
+      <Filter>src\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\source\XMP_ProgressTracker.cpp">
+      <Filter>src\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\source\XMPFiles_IO.cpp">
+      <Filter>src\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPCommon\source\AutoSharedLock.cpp">
+      <Filter>src\XMPCommon\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPCommon\source\ConfigurableImpl.cpp">
+      <Filter>src\XMPCommon\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPCommon\source\ConfigurationManagerImpl.cpp">
+      <Filter>src\XMPCommon\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPCommon\source\DefaultErrorNotifierImpl.cpp">
+      <Filter>src\XMPCommon\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPCommon\source\ErrorImpl.cpp">
+      <Filter>src\XMPCommon\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPCommon\source\ErrorNotifierWrapperImpl.cpp">
+      <Filter>src\XMPCommon\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPCommon\source\IConfigurable_I.cpp">
+      <Filter>src\XMPCommon\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPCommon\source\IConfigurationManager_I.cpp">
+      <Filter>src\XMPCommon\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPCommon\source\IError_I.cpp">
+      <Filter>src\XMPCommon\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPCommon\source\IErrorNotifier_I.cpp">
+      <Filter>src\XMPCommon\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPCommon\source\IMemoryAllocator_I.cpp">
+      <Filter>src\XMPCommon\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPCommon\source\IUTF8String_I.cpp">
+      <Filter>src\XMPCommon\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPCommon\source\IUTF8StringComparator.cpp">
+      <Filter>src\XMPCommon\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPCommon\source\MemoryAllocatorWrapperImpl.cpp">
+      <Filter>src\XMPCommon\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPCommon\source\MemoryManagedObject.cpp">
+      <Filter>src\XMPCommon\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPCommon\source\SharedMutexImpl.cpp">
+      <Filter>src\XMPCommon\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPCommon\source\SharedObjectImpl.cpp">
+      <Filter>src\XMPCommon\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPCommon\source\ThreadSafeImpl.cpp">
+      <Filter>src\XMPCommon\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPCommon\source\UTF8StringImpl.cpp">
+      <Filter>src\XMPCommon\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPCommon\source\XMPCommon.cpp">
+      <Filter>src\XMPCommon\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPCore\source\ArrayNodeImpl.cpp">
+      <Filter>src\XMPCore\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPCore\source\ClientDOMParserWrapperImpl.cpp">
+      <Filter>src\XMPCore\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPCore\source\ClientDOMSerializerWrapperImpl.cpp">
+      <Filter>src\XMPCore\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPCore\source\CompositeNodeImpl.cpp">
+      <Filter>src\XMPCore\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPCore\source\CoreConfigurationManagerImpl.cpp">
+      <Filter>src\XMPCore\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPCore\source\CoreObjectFactoryImpl.cpp">
+      <Filter>src\XMPCore\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPCore\source\DOMImplementationRegistryImpl.cpp">
+      <Filter>src\XMPCore\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPCore\source\DOMParserImpl.cpp">
+      <Filter>src\XMPCore\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPCore\source\DOMSerializerImpl.cpp">
+      <Filter>src\XMPCore\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPCore\source\ExpatAdapter.cpp">
+      <Filter>src\XMPCore\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPCore\source\IArrayNode_I.cpp">
+      <Filter>src\XMPCore\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPCore\source\ICompositeNode_I.cpp">
+      <Filter>src\XMPCore\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPCore\source\ICoreConfigurationManager_I.cpp">
+      <Filter>src\XMPCore\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPCore\source\ICoreObjectFactory_I.cpp">
+      <Filter>src\XMPCore\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPCore\source\IDOMImplementationRegistry_I.cpp">
+      <Filter>src\XMPCore\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPCore\source\IDOMParser_I.cpp">
+      <Filter>src\XMPCore\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPCore\source\IDOMSerializer_I.cpp">
+      <Filter>src\XMPCore\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPCore\source\IMetadata_I.cpp">
+      <Filter>src\XMPCore\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPCore\source\IMetadataConverterUtils_I.cpp">
+      <Filter>src\XMPCore\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPCore\source\INameSpacePrefixMap_I.cpp">
+      <Filter>src\XMPCore\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPCore\source\INode_I.cpp">
+      <Filter>src\XMPCore\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPCore\source\INodeIterator_I.cpp">
+      <Filter>src\XMPCore\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPCore\source\IPath_I.cpp">
+      <Filter>src\XMPCore\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPCore\source\IPathSegment_I.cpp">
+      <Filter>src\XMPCore\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPCore\source\ISimpleNode_I.cpp">
+      <Filter>src\XMPCore\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPCore\source\IStructureNode_I.cpp">
+      <Filter>src\XMPCore\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPCore\source\MetadataConverterUtilsImpl.cpp">
+      <Filter>src\XMPCore\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPCore\source\MetadataImpl.cpp">
+      <Filter>src\XMPCore\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPCore\source\NameSpacePrefixMapImpl.cpp">
+      <Filter>src\XMPCore\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPCore\source\NodeImpl.cpp">
+      <Filter>src\XMPCore\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPCore\source\ParseRDF.cpp">
+      <Filter>src\XMPCore\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPCore\source\PathImpl.cpp">
+      <Filter>src\XMPCore\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPCore\source\PathSegmentImpl.cpp">
+      <Filter>src\XMPCore\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPCore\source\RDFDOMParserImpl.cpp">
+      <Filter>src\XMPCore\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPCore\source\RDFDOMSerializerImpl.cpp">
+      <Filter>src\XMPCore\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPCore\source\SimpleNodeImpl.cpp">
+      <Filter>src\XMPCore\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPCore\source\StructureNodeImpl.cpp">
+      <Filter>src\XMPCore\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPCore\source\WXMPIterator.cpp">
+      <Filter>src\XMPCore\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPCore\source\WXMPMeta.cpp">
+      <Filter>src\XMPCore\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPCore\source\WXMPUtils.cpp">
+      <Filter>src\XMPCore\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPCore\source\XMPCore_Impl.cpp">
+      <Filter>src\XMPCore\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPCore\source\XMPIterator.cpp">
+      <Filter>src\XMPCore\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPCore\source\XMPIterator2.cpp">
+      <Filter>src\XMPCore\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPCore\source\XMPMeta.cpp">
+      <Filter>src\XMPCore\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPCore\source\XMPMeta2-GetSet.cpp">
+      <Filter>src\XMPCore\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPCore\source\XMPMeta-GetSet.cpp">
+      <Filter>src\XMPCore\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPCore\source\XMPMeta-Parse.cpp">
+      <Filter>src\XMPCore\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPCore\source\XMPMeta-Serialize.cpp">
+      <Filter>src\XMPCore\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPCore\source\XMPUtils.cpp">
+      <Filter>src\XMPCore\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPCore\source\XMPUtils2.cpp">
+      <Filter>src\XMPCore\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPCore\source\XMPUtils-FileInfo.cpp">
+      <Filter>src\XMPCore\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPFiles\source\FileHandlers\AIFF_Handler.cpp">
+      <Filter>src\XMPFiles\source\FileHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPFiles\source\FileHandlers\ASF_Handler.cpp">
+      <Filter>src\XMPFiles\source\FileHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPFiles\source\FileHandlers\AVCHD_Handler.cpp">
+      <Filter>src\XMPFiles\source\FileHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPFiles\source\FileHandlers\Basic_Handler.cpp">
+      <Filter>src\XMPFiles\source\FileHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPFiles\source\FileHandlers\FLV_Handler.cpp">
+      <Filter>src\XMPFiles\source\FileHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPFiles\source\FileHandlers\GIF_Handler.cpp">
+      <Filter>src\XMPFiles\source\FileHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPFiles\source\FileHandlers\InDesign_Handler.cpp">
+      <Filter>src\XMPFiles\source\FileHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPFiles\source\FileHandlers\JPEG_Handler.cpp">
+      <Filter>src\XMPFiles\source\FileHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPFiles\source\FileHandlers\MP3_Handler.cpp">
+      <Filter>src\XMPFiles\source\FileHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPFiles\source\FileHandlers\MPEG2_Handler.cpp">
+      <Filter>src\XMPFiles\source\FileHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPFiles\source\FileHandlers\MPEG4_Handler.cpp">
+      <Filter>src\XMPFiles\source\FileHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPFiles\source\FileHandlers\P2_Handler.cpp">
+      <Filter>src\XMPFiles\source\FileHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPFiles\source\FileHandlers\PNG_Handler.cpp">
+      <Filter>src\XMPFiles\source\FileHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPFiles\source\FileHandlers\PostScript_Handler.cpp">
+      <Filter>src\XMPFiles\source\FileHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPFiles\source\FileHandlers\PSD_Handler.cpp">
+      <Filter>src\XMPFiles\source\FileHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPFiles\source\FileHandlers\RIFF_Handler.cpp">
+      <Filter>src\XMPFiles\source\FileHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPFiles\source\FileHandlers\Scanner_Handler.cpp">
+      <Filter>src\XMPFiles\source\FileHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPFiles\source\FileHandlers\SonyHDV_Handler.cpp">
+      <Filter>src\XMPFiles\source\FileHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPFiles\source\FileHandlers\SVG_Handler.cpp">
+      <Filter>src\XMPFiles\source\FileHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPFiles\source\FileHandlers\SWF_Handler.cpp">
+      <Filter>src\XMPFiles\source\FileHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPFiles\source\FileHandlers\TIFF_Handler.cpp">
+      <Filter>src\XMPFiles\source\FileHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPFiles\source\FileHandlers\Trivial_Handler.cpp">
+      <Filter>src\XMPFiles\source\FileHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPFiles\source\FileHandlers\UCF_Handler.cpp">
+      <Filter>src\XMPFiles\source\FileHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPFiles\source\FileHandlers\WAVE_Handler.cpp">
+      <Filter>src\XMPFiles\source\FileHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPFiles\source\FileHandlers\XDCAM_Handler.cpp">
+      <Filter>src\XMPFiles\source\FileHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPFiles\source\FileHandlers\XDCAMEX_Handler.cpp">
+      <Filter>src\XMPFiles\source\FileHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPFiles\source\FileHandlers\XDCAMFAM_Handler.cpp">
+      <Filter>src\XMPFiles\source\FileHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPFiles\source\FileHandlers\XDCAMSAM_Handler.cpp">
+      <Filter>src\XMPFiles\source\FileHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPFiles\source\FormatSupport\AIFF\AIFFBehavior.cpp">
+      <Filter>src\XMPFiles\source\FormatSupport\AIFF</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPFiles\source\FormatSupport\AIFF\AIFFMetadata.cpp">
+      <Filter>src\XMPFiles\source\FormatSupport\AIFF</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPFiles\source\FormatSupport\AIFF\AIFFReconcile.cpp">
+      <Filter>src\XMPFiles\source\FormatSupport\AIFF</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPFiles\source\FormatSupport\IFF\Chunk.cpp">
+      <Filter>src\XMPFiles\source\FormatSupport\IFF</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPFiles\source\FormatSupport\IFF\ChunkController.cpp">
+      <Filter>src\XMPFiles\source\FormatSupport\IFF</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPFiles\source\FormatSupport\IFF\ChunkPath.cpp">
+      <Filter>src\XMPFiles\source\FormatSupport\IFF</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPFiles\source\FormatSupport\IFF\IChunkBehavior.cpp">
+      <Filter>src\XMPFiles\source\FormatSupport\IFF</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPFiles\source\FormatSupport\WAVE\BEXTMetadata.cpp">
+      <Filter>src\XMPFiles\source\FormatSupport\WAVE</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPFiles\source\FormatSupport\WAVE\CartMetadata.cpp">
+      <Filter>src\XMPFiles\source\FormatSupport\WAVE</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPFiles\source\FormatSupport\WAVE\Cr8rMetadata.cpp">
+      <Filter>src\XMPFiles\source\FormatSupport\WAVE</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPFiles\source\FormatSupport\WAVE\DISPMetadata.cpp">
+      <Filter>src\XMPFiles\source\FormatSupport\WAVE</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPFiles\source\FormatSupport\WAVE\INFOMetadata.cpp">
+      <Filter>src\XMPFiles\source\FormatSupport\WAVE</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPFiles\source\FormatSupport\WAVE\iXMLMetadata.cpp">
+      <Filter>src\XMPFiles\source\FormatSupport\WAVE</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPFiles\source\FormatSupport\WAVE\PrmLMetadata.cpp">
+      <Filter>src\XMPFiles\source\FormatSupport\WAVE</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPFiles\source\FormatSupport\WAVE\WAVEBehavior.cpp">
+      <Filter>src\XMPFiles\source\FormatSupport\WAVE</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPFiles\source\FormatSupport\WAVE\WAVEReconcile.cpp">
+      <Filter>src\XMPFiles\source\FormatSupport\WAVE</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPFiles\source\FormatSupport\ASF_Support.cpp">
+      <Filter>src\XMPFiles\source\FormatSupport</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPFiles\source\FormatSupport\ID3_Support.cpp">
+      <Filter>src\XMPFiles\source\FormatSupport</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPFiles\source\FormatSupport\IPTC_Support.cpp">
+      <Filter>src\XMPFiles\source\FormatSupport</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPFiles\source\FormatSupport\ISOBaseMedia_Support.cpp">
+      <Filter>src\XMPFiles\source\FormatSupport</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPFiles\source\FormatSupport\META_Support.cpp">
+      <Filter>src\XMPFiles\source\FormatSupport</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPFiles\source\FormatSupport\MOOV_Support.cpp">
+      <Filter>src\XMPFiles\source\FormatSupport</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPFiles\source\FormatSupport\P2_Support.cpp">
+      <Filter>src\XMPFiles\source\FormatSupport</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPFiles\source\FormatSupport\PackageFormat_Support.cpp">
+      <Filter>src\XMPFiles\source\FormatSupport</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPFiles\source\FormatSupport\PNG_Support.cpp">
+      <Filter>src\XMPFiles\source\FormatSupport</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPFiles\source\FormatSupport\PostScript_Support.cpp">
+      <Filter>src\XMPFiles\source\FormatSupport</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPFiles\source\FormatSupport\PSIR_FileWriter.cpp">
+      <Filter>src\XMPFiles\source\FormatSupport</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPFiles\source\FormatSupport\PSIR_MemoryReader.cpp">
+      <Filter>src\XMPFiles\source\FormatSupport</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPFiles\source\FormatSupport\QuickTime_Support.cpp">
+      <Filter>src\XMPFiles\source\FormatSupport</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPFiles\source\FormatSupport\Reconcile_Impl.cpp">
+      <Filter>src\XMPFiles\source\FormatSupport</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPFiles\source\FormatSupport\ReconcileIPTC.cpp">
+      <Filter>src\XMPFiles\source\FormatSupport</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPFiles\source\FormatSupport\ReconcileLegacy.cpp">
+      <Filter>src\XMPFiles\source\FormatSupport</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPFiles\source\FormatSupport\ReconcileTIFF.cpp">
+      <Filter>src\XMPFiles\source\FormatSupport</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPFiles\source\FormatSupport\RIFF.cpp">
+      <Filter>src\XMPFiles\source\FormatSupport</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPFiles\source\FormatSupport\RIFF_Support.cpp">
+      <Filter>src\XMPFiles\source\FormatSupport</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPFiles\source\FormatSupport\SVG_Adapter.cpp">
+      <Filter>src\XMPFiles\source\FormatSupport</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPFiles\source\FormatSupport\SWF_Support.cpp">
+      <Filter>src\XMPFiles\source\FormatSupport</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPFiles\source\FormatSupport\TIFF_FileWriter.cpp">
+      <Filter>src\XMPFiles\source\FormatSupport</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPFiles\source\FormatSupport\TIFF_MemoryReader.cpp">
+      <Filter>src\XMPFiles\source\FormatSupport</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPFiles\source\FormatSupport\TIFF_Support.cpp">
+      <Filter>src\XMPFiles\source\FormatSupport</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPFiles\source\FormatSupport\TimeConversionUtils.cpp">
+      <Filter>src\XMPFiles\source\FormatSupport</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPFiles\source\FormatSupport\XDCAM_Support.cpp">
+      <Filter>src\XMPFiles\source\FormatSupport</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPFiles\source\FormatSupport\XMPScanner.cpp">
+      <Filter>src\XMPFiles\source\FormatSupport</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPFiles\source\NativeMetadataSupport\IMetadata_nms.cpp">
+      <Filter>src\XMPFiles\source\NativeMetadataSupport</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPFiles\source\NativeMetadataSupport\IReconcile.cpp">
+      <Filter>src\XMPFiles\source\NativeMetadataSupport</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPFiles\source\NativeMetadataSupport\MetadataSet.cpp">
+      <Filter>src\XMPFiles\source\NativeMetadataSupport</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPFiles\source\PluginHandler\FileHandlerInstance.cpp">
+      <Filter>src\XMPFiles\source\PluginHandler</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPFiles\source\PluginHandler\HostAPIImpl.cpp">
+      <Filter>src\XMPFiles\source\PluginHandler</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPFiles\source\PluginHandler\Module.cpp">
+      <Filter>src\XMPFiles\source\PluginHandler</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPFiles\source\PluginHandler\OS_Utils_Android.cpp">
+      <Filter>src\XMPFiles\source\PluginHandler</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPFiles\source\PluginHandler\OS_Utils_Linux.cpp">
+      <Filter>src\XMPFiles\source\PluginHandler</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPFiles\source\PluginHandler\OS_Utils_Mac.cpp">
+      <Filter>src\XMPFiles\source\PluginHandler</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPFiles\source\PluginHandler\OS_Utils_WIN.cpp">
+      <Filter>src\XMPFiles\source\PluginHandler</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPFiles\source\PluginHandler\PluginManager.cpp">
+      <Filter>src\XMPFiles\source\PluginHandler</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPFiles\source\PluginHandler\XMPAtoms.cpp">
+      <Filter>src\XMPFiles\source\PluginHandler</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPFiles\source\HandlerRegistry.cpp">
+      <Filter>src\XMPFiles\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPFiles\source\WXMPFiles.cpp">
+      <Filter>src\XMPFiles\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPFiles\source\XMPFiles.cpp">
+      <Filter>src\XMPFiles\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPFiles\source\XMPFiles_Impl.cpp">
+      <Filter>src\XMPFiles\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPFilesPlugins\api\source\HostAPIAccess.cpp">
+      <Filter>src\XMPFilesPlugins\api\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPFilesPlugins\api\source\PluginAPIImpl.cpp">
+      <Filter>src\XMPFilesPlugins\api\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPFilesPlugins\api\source\PluginBase.cpp">
+      <Filter>src\XMPFilesPlugins\api\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPFilesPlugins\api\source\PluginRegistry.cpp">
+      <Filter>src\XMPFilesPlugins\api\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPFilesPlugins\api\source\PluginUtils.cpp">
+      <Filter>src\XMPFilesPlugins\api\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\third-party\zuid\interfaces\MD5.cpp">
+      <Filter>src\third-party\zuid\interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPCommon\source\IConfigurable.cpp">
+      <Filter>src\XMPCommon\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPCommon\source\IConfigurationManager.cpp">
+      <Filter>src\XMPCommon\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPCommon\source\IError.cpp">
+      <Filter>src\XMPCommon\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPCommon\source\IErrorNotifier.cpp">
+      <Filter>src\XMPCommon\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPCommon\source\IUTF8String.cpp">
+      <Filter>src\XMPCommon\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPCore\source\IArrayNode.cpp">
+      <Filter>src\XMPCore\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPCore\source\IClientDOMParser.cpp">
+      <Filter>src\XMPCore\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPCore\source\IClientDOMSerializer.cpp">
+      <Filter>src\XMPCore\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPCore\source\ICompositeNode.cpp">
+      <Filter>src\XMPCore\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPCore\source\ICoreConfigurationManager.cpp">
+      <Filter>src\XMPCore\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPCore\source\ICoreObjectFactory.cpp">
+      <Filter>src\XMPCore\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPCore\source\IDOMImplementationRegistry.cpp">
+      <Filter>src\XMPCore\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPCore\source\IDOMParser.cpp">
+      <Filter>src\XMPCore\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPCore\source\IDOMSerializer.cpp">
+      <Filter>src\XMPCore\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPCore\source\IMetadata.cpp">
+      <Filter>src\XMPCore\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPCore\source\IMetadataConverterUtils.cpp">
+      <Filter>src\XMPCore\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPCore\source\INameSpacePrefixMap.cpp">
+      <Filter>src\XMPCore\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPCore\source\INode.cpp">
+      <Filter>src\XMPCore\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPCore\source\INodeIterator.cpp">
+      <Filter>src\XMPCore\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPCore\source\IPath.cpp">
+      <Filter>src\XMPCore\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPCore\source\IPathSegment.cpp">
+      <Filter>src\XMPCore\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPCore\source\ISimpleNode.cpp">
+      <Filter>src\XMPCore\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XMPCore\source\IStructureNode.cpp">
+      <Filter>src\XMPCore\source</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="src\source\UnicodeInlines.incl_cpp">
+      <Filter>src\source</Filter>
+    </None>
+    <None Include="src\XMPCore\resource\win\XMPCore.def">
+      <Filter>src\XMPCore\resource\win</Filter>
+    </None>
+    <None Include="src\XMPFiles\resource\win\XMPFiles.def">
+      <Filter>src\XMPFiles\resource\win</Filter>
+    </None>
+    <None Include="include\xmp\client-glue\TXMPFiles.incl_cpp">
+      <Filter>include\xmp\client-glue</Filter>
+    </None>
+    <None Include="include\xmp\client-glue\TXMPIterator.incl_cpp">
+      <Filter>include\xmp\client-glue</Filter>
+    </None>
+    <None Include="include\xmp\client-glue\TXMPMeta.incl_cpp">
+      <Filter>include\xmp\client-glue</Filter>
+    </None>
+    <None Include="include\xmp\client-glue\TXMPUtils.incl_cpp">
+      <Filter>include\xmp\client-glue</Filter>
+    </None>
+    <None Include="include\xmp\XMP.incl_cpp">
+      <Filter>include\xmp</Filter>
+    </None>
+    <None Include="include\xmp\XMPCommon\inl\IConfigurable.inl">
+      <Filter>include\xmp\XMPCommon\inl</Filter>
+    </None>
+    <None Include="include\xmp\XMPCommon\inl\IConfigurationManager.inl">
+      <Filter>include\xmp\XMPCommon\inl</Filter>
+    </None>
+    <None Include="include\xmp\XMPCommon\inl\IError.inl">
+      <Filter>include\xmp\XMPCommon\inl</Filter>
+    </None>
+    <None Include="include\xmp\XMPCommon\inl\IErrorNotifier.inl">
+      <Filter>include\xmp\XMPCommon\inl</Filter>
+    </None>
+    <None Include="include\xmp\XMPCommon\inl\IUTF8String.inl">
+      <Filter>include\xmp\XMPCommon\inl</Filter>
+    </None>
+    <None Include="include\xmp\XMPCore\inl\IArrayNode.inl">
+      <Filter>include\xmp\XMPCore\inl</Filter>
+    </None>
+    <None Include="include\xmp\XMPCore\inl\IClientDOMParser.inl">
+      <Filter>include\xmp\XMPCore\inl</Filter>
+    </None>
+    <None Include="include\xmp\XMPCore\inl\IClientDOMSerializer.inl">
+      <Filter>include\xmp\XMPCore\inl</Filter>
+    </None>
+    <None Include="include\xmp\XMPCore\inl\ICompositeNode.inl">
+      <Filter>include\xmp\XMPCore\inl</Filter>
+    </None>
+    <None Include="include\xmp\XMPCore\inl\ICoreConfigurationManager.inl">
+      <Filter>include\xmp\XMPCore\inl</Filter>
+    </None>
+    <None Include="include\xmp\XMPCore\inl\IDOMImplementationRegistry.inl">
+      <Filter>include\xmp\XMPCore\inl</Filter>
+    </None>
+    <None Include="include\xmp\XMPCore\inl\IDOMParser.inl">
+      <Filter>include\xmp\XMPCore\inl</Filter>
+    </None>
+    <None Include="include\xmp\XMPCore\inl\IDOMSerializer.inl">
+      <Filter>include\xmp\XMPCore\inl</Filter>
+    </None>
+    <None Include="include\xmp\XMPCore\inl\IMetadata.inl">
+      <Filter>include\xmp\XMPCore\inl</Filter>
+    </None>
+    <None Include="include\xmp\XMPCore\inl\IMetadataConverterUtils.inl">
+      <Filter>include\xmp\XMPCore\inl</Filter>
+    </None>
+    <None Include="include\xmp\XMPCore\inl\INameSpacePrefixMap.inl">
+      <Filter>include\xmp\XMPCore\inl</Filter>
+    </None>
+    <None Include="include\xmp\XMPCore\inl\INode.inl">
+      <Filter>include\xmp\XMPCore\inl</Filter>
+    </None>
+    <None Include="include\xmp\XMPCore\inl\INodeIterator.inl">
+      <Filter>include\xmp\XMPCore\inl</Filter>
+    </None>
+    <None Include="include\xmp\XMPCore\inl\IPath.inl">
+      <Filter>include\xmp\XMPCore\inl</Filter>
+    </None>
+    <None Include="include\xmp\XMPCore\inl\IPathSegment.inl">
+      <Filter>include\xmp\XMPCore\inl</Filter>
+    </None>
+    <None Include="include\xmp\XMPCore\inl\ISimpleNode.inl">
+      <Filter>include\xmp\XMPCore\inl</Filter>
+    </None>
+    <None Include="include\xmp\XMPCore\inl\IStructureNode.inl">
+      <Filter>include\xmp\XMPCore\inl</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\source\Endian.h">
+      <Filter>src\source</Filter>
+    </ClInclude>
+    <ClInclude Include="src\source\EndianUtils.hpp">
+      <Filter>src\source</Filter>
+    </ClInclude>
+    <ClInclude Include="src\source\ExpatAdapter.hpp">
+      <Filter>src\source</Filter>
+    </ClInclude>
+    <ClInclude Include="src\source\Host_IO.hpp">
+      <Filter>src\source</Filter>
+    </ClInclude>
+    <ClInclude Include="src\source\IOUtils.hpp">
+      <Filter>src\source</Filter>
+    </ClInclude>
+    <ClInclude Include="src\source\PerfUtils.hpp">
+      <Filter>src\source</Filter>
+    </ClInclude>
+    <ClInclude Include="src\source\SafeStringAPIs.h">
+      <Filter>src\source</Filter>
+    </ClInclude>
+    <ClInclude Include="src\source\SafeTypes.h">
+      <Filter>src\source</Filter>
+    </ClInclude>
+    <ClInclude Include="src\source\SuppressSAL.h">
+      <Filter>src\source</Filter>
+    </ClInclude>
+    <ClInclude Include="src\source\UnicodeConversions.hpp">
+      <Filter>src\source</Filter>
+    </ClInclude>
+    <ClInclude Include="src\source\XIO.hpp">
+      <Filter>src\source</Filter>
+    </ClInclude>
+    <ClInclude Include="src\source\XMLParserAdapter.hpp">
+      <Filter>src\source</Filter>
+    </ClInclude>
+    <ClInclude Include="src\source\XMP_LibUtils.hpp">
+      <Filter>src\source</Filter>
+    </ClInclude>
+    <ClInclude Include="src\source\XMP_ProgressTracker.hpp">
+      <Filter>src\source</Filter>
+    </ClInclude>
+    <ClInclude Include="src\source\XMPFiles_IO.hpp">
+      <Filter>src\source</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPCommon\BaseClasses\MemoryManagedObject.h">
+      <Filter>src\XMPCommon\BaseClasses</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPCommon\BaseClasses\TSingleton.h">
+      <Filter>src\XMPCommon\BaseClasses</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPCommon\ImplHeaders\ConfigurableImpl.h">
+      <Filter>src\XMPCommon\ImplHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPCommon\ImplHeaders\ConfigurationManagerImpl.h">
+      <Filter>src\XMPCommon\ImplHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPCommon\ImplHeaders\DefaultErrorNotifierImpl.h">
+      <Filter>src\XMPCommon\ImplHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPCommon\ImplHeaders\ErrorImpl.h">
+      <Filter>src\XMPCommon\ImplHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPCommon\ImplHeaders\ErrorNotifierWrapperImpl.h">
+      <Filter>src\XMPCommon\ImplHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPCommon\ImplHeaders\MemoryAllocatorWrapperImpl.h">
+      <Filter>src\XMPCommon\ImplHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPCommon\ImplHeaders\SharedMutexImpl.h">
+      <Filter>src\XMPCommon\ImplHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPCommon\ImplHeaders\SharedObjectImpl.h">
+      <Filter>src\XMPCommon\ImplHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPCommon\ImplHeaders\ThreadSafeImpl.h">
+      <Filter>src\XMPCommon\ImplHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPCommon\ImplHeaders\UTF8StringImpl.h">
+      <Filter>src\XMPCommon\ImplHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPCommon\Interfaces\BaseInterfaces\IConfigurable_I.h">
+      <Filter>src\XMPCommon\Interfaces\BaseInterfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPCommon\Interfaces\BaseInterfaces\ISharedObject_I.h">
+      <Filter>src\XMPCommon\Interfaces\BaseInterfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPCommon\Interfaces\BaseInterfaces\IThreadSafe_I.h">
+      <Filter>src\XMPCommon\Interfaces\BaseInterfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPCommon\Interfaces\IConfigurationManager_I.h">
+      <Filter>src\XMPCommon\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPCommon\Interfaces\IError_I.h">
+      <Filter>src\XMPCommon\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPCommon\Interfaces\IErrorNotifier_I.h">
+      <Filter>src\XMPCommon\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPCommon\Interfaces\IMemoryAllocator_I.h">
+      <Filter>src\XMPCommon\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPCommon\Interfaces\ISharedMutex.h">
+      <Filter>src\XMPCommon\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPCommon\Interfaces\IUTF8String_I.h">
+      <Filter>src\XMPCommon\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPCommon\Utilities\AutoSharedLock.h">
+      <Filter>src\XMPCommon\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPCommon\Utilities\IUTF8StringComparator.h">
+      <Filter>src\XMPCommon\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPCommon\Utilities\TAllocator.h">
+      <Filter>src\XMPCommon\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPCommon\Utilities\TAtomicTypes.h">
+      <Filter>src\XMPCommon\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPCommon\Utilities\TAtomicTypes_Android.h">
+      <Filter>src\XMPCommon\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPCommon\Utilities\TAtomicTypes_Linux.h">
+      <Filter>src\XMPCommon\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPCommon\Utilities\TAtomicTypes_Mac.h">
+      <Filter>src\XMPCommon\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPCommon\Utilities\TAtomicTypes_Win.h">
+      <Filter>src\XMPCommon\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPCommon\Utilities\TSmartPointers_I.h">
+      <Filter>src\XMPCommon\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPCommon\Utilities\TWrapperFunctions_I.h">
+      <Filter>src\XMPCommon\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPCommon\Utilities\TWrapperFunctions2_I.h">
+      <Filter>src\XMPCommon\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPCommon\Utilities\UTF8String.h">
+      <Filter>src\XMPCommon\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPCommon\XMPCommon_I.h">
+      <Filter>src\XMPCommon</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPCommon\XMPCommonDefines_I.h">
+      <Filter>src\XMPCommon</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPCommon\XMPCommonErrorCodes_I.h">
+      <Filter>src\XMPCommon</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPCommon\XMPCommonFwdDeclarations_I.h">
+      <Filter>src\XMPCommon</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPCore\ImplHeaders\ArrayNodeImpl.h">
+      <Filter>src\XMPCore\ImplHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPCore\ImplHeaders\ClientDOMParserWrapperImpl.h">
+      <Filter>src\XMPCore\ImplHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPCore\ImplHeaders\ClientDOMSerializerWrapperImpl.h">
+      <Filter>src\XMPCore\ImplHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPCore\ImplHeaders\CompositeNodeImpl.h">
+      <Filter>src\XMPCore\ImplHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPCore\ImplHeaders\CoreConfigurationManagerImpl.h">
+      <Filter>src\XMPCore\ImplHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPCore\ImplHeaders\CoreObjectFactoryImpl.h">
+      <Filter>src\XMPCore\ImplHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPCore\ImplHeaders\DOMImplementationRegistryImpl.h">
+      <Filter>src\XMPCore\ImplHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPCore\ImplHeaders\DOMParserImpl.h">
+      <Filter>src\XMPCore\ImplHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPCore\ImplHeaders\DOMSerializerImpl.h">
+      <Filter>src\XMPCore\ImplHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPCore\ImplHeaders\MetadataConverterUtilsImpl.h">
+      <Filter>src\XMPCore\ImplHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPCore\ImplHeaders\MetadataImpl.h">
+      <Filter>src\XMPCore\ImplHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPCore\ImplHeaders\NameSpacePrefixMapImpl.h">
+      <Filter>src\XMPCore\ImplHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPCore\ImplHeaders\NodeImpl.h">
+      <Filter>src\XMPCore\ImplHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPCore\ImplHeaders\PathImpl.h">
+      <Filter>src\XMPCore\ImplHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPCore\ImplHeaders\PathSegmentImpl.h">
+      <Filter>src\XMPCore\ImplHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPCore\ImplHeaders\RDFDOMParserImpl.h">
+      <Filter>src\XMPCore\ImplHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPCore\ImplHeaders\RDFDOMSerializerImpl.h">
+      <Filter>src\XMPCore\ImplHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPCore\ImplHeaders\SimpleNodeImpl.h">
+      <Filter>src\XMPCore\ImplHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPCore\ImplHeaders\StructureNodeImpl.h">
+      <Filter>src\XMPCore\ImplHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPCore\ImplHeaders\TNodeIteratorImpl.h">
+      <Filter>src\XMPCore\ImplHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPCore\Interfaces\IArrayNode_I.h">
+      <Filter>src\XMPCore\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPCore\Interfaces\ICompositeNode_I.h">
+      <Filter>src\XMPCore\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPCore\Interfaces\ICoreConfigurationManager_I.h">
+      <Filter>src\XMPCore\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPCore\Interfaces\ICoreObjectFactory_I.h">
+      <Filter>src\XMPCore\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPCore\Interfaces\IDOMImplementationRegistry_I.h">
+      <Filter>src\XMPCore\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPCore\Interfaces\IDOMParser_I.h">
+      <Filter>src\XMPCore\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPCore\Interfaces\IDOMSerializer_I.h">
+      <Filter>src\XMPCore\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPCore\Interfaces\IMetadata_I.h">
+      <Filter>src\XMPCore\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPCore\Interfaces\IMetadataConverterUtils_I.h">
+      <Filter>src\XMPCore\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPCore\Interfaces\INameSpacePrefixMap_I.h">
+      <Filter>src\XMPCore\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPCore\Interfaces\INode_I.h">
+      <Filter>src\XMPCore\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPCore\Interfaces\INodeIterator_I.h">
+      <Filter>src\XMPCore\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPCore\Interfaces\IPath_I.h">
+      <Filter>src\XMPCore\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPCore\Interfaces\IPathSegment_I.h">
+      <Filter>src\XMPCore\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPCore\Interfaces\ISimpleNode_I.h">
+      <Filter>src\XMPCore\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPCore\Interfaces\IStructureNode_I.h">
+      <Filter>src\XMPCore\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPCore\Interfaces\IXMPLanguageAlternative_I.h">
+      <Filter>src\XMPCore\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPCore\source\XMPCore_Impl.hpp">
+      <Filter>src\XMPCore\source</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPCore\source\XMPIterator.hpp">
+      <Filter>src\XMPCore\source</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPCore\source\XMPIterator2.hpp">
+      <Filter>src\XMPCore\source</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPCore\source\XMPMeta.hpp">
+      <Filter>src\XMPCore\source</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPCore\source\XMPMeta2.hpp">
+      <Filter>src\XMPCore\source</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPCore\source\XMPUtils.hpp">
+      <Filter>src\XMPCore\source</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPCore\resource\win\expat_config.h">
+      <Filter>src\XMPCore\resource\win</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPCore\XMPCoreDefines_I.h">
+      <Filter>src\XMPCore</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPCore\XMPCoreFwdDeclarations_I.h">
+      <Filter>src\XMPCore</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPFiles\source\FileHandlers\AIFF_Handler.hpp">
+      <Filter>src\XMPFiles\source\FileHandlers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPFiles\source\FileHandlers\ASF_Handler.hpp">
+      <Filter>src\XMPFiles\source\FileHandlers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPFiles\source\FileHandlers\AVCHD_Handler.hpp">
+      <Filter>src\XMPFiles\source\FileHandlers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPFiles\source\FileHandlers\Basic_Handler.hpp">
+      <Filter>src\XMPFiles\source\FileHandlers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPFiles\source\FileHandlers\FLV_Handler.hpp">
+      <Filter>src\XMPFiles\source\FileHandlers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPFiles\source\FileHandlers\GIF_Handler.hpp">
+      <Filter>src\XMPFiles\source\FileHandlers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPFiles\source\FileHandlers\InDesign_Handler.hpp">
+      <Filter>src\XMPFiles\source\FileHandlers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPFiles\source\FileHandlers\JPEG_Handler.hpp">
+      <Filter>src\XMPFiles\source\FileHandlers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPFiles\source\FileHandlers\MP3_Handler.hpp">
+      <Filter>src\XMPFiles\source\FileHandlers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPFiles\source\FileHandlers\MPEG2_Handler.hpp">
+      <Filter>src\XMPFiles\source\FileHandlers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPFiles\source\FileHandlers\MPEG4_Handler.hpp">
+      <Filter>src\XMPFiles\source\FileHandlers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPFiles\source\FileHandlers\P2_Handler.hpp">
+      <Filter>src\XMPFiles\source\FileHandlers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPFiles\source\FileHandlers\PNG_Handler.hpp">
+      <Filter>src\XMPFiles\source\FileHandlers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPFiles\source\FileHandlers\PostScript_Handler.hpp">
+      <Filter>src\XMPFiles\source\FileHandlers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPFiles\source\FileHandlers\PSD_Handler.hpp">
+      <Filter>src\XMPFiles\source\FileHandlers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPFiles\source\FileHandlers\RIFF_Handler.hpp">
+      <Filter>src\XMPFiles\source\FileHandlers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPFiles\source\FileHandlers\Scanner_Handler.hpp">
+      <Filter>src\XMPFiles\source\FileHandlers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPFiles\source\FileHandlers\SonyHDV_Handler.hpp">
+      <Filter>src\XMPFiles\source\FileHandlers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPFiles\source\FileHandlers\SVG_Handler.hpp">
+      <Filter>src\XMPFiles\source\FileHandlers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPFiles\source\FileHandlers\SWF_Handler.hpp">
+      <Filter>src\XMPFiles\source\FileHandlers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPFiles\source\FileHandlers\TIFF_Handler.hpp">
+      <Filter>src\XMPFiles\source\FileHandlers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPFiles\source\FileHandlers\Trivial_Handler.hpp">
+      <Filter>src\XMPFiles\source\FileHandlers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPFiles\source\FileHandlers\UCF_Handler.hpp">
+      <Filter>src\XMPFiles\source\FileHandlers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPFiles\source\FileHandlers\WAVE_Handler.hpp">
+      <Filter>src\XMPFiles\source\FileHandlers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPFiles\source\FileHandlers\XDCAM_Handler.hpp">
+      <Filter>src\XMPFiles\source\FileHandlers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPFiles\source\FileHandlers\XDCAMEX_Handler.hpp">
+      <Filter>src\XMPFiles\source\FileHandlers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPFiles\source\FileHandlers\XDCAMFAM_Handler.hpp">
+      <Filter>src\XMPFiles\source\FileHandlers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPFiles\source\FileHandlers\XDCAMSAM_Handler.hpp">
+      <Filter>src\XMPFiles\source\FileHandlers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPFiles\source\FormatSupport\AIFF\AIFFBehavior.h">
+      <Filter>src\XMPFiles\source\FormatSupport\AIFF</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPFiles\source\FormatSupport\AIFF\AIFFMetadata.h">
+      <Filter>src\XMPFiles\source\FormatSupport\AIFF</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPFiles\source\FormatSupport\AIFF\AIFFReconcile.h">
+      <Filter>src\XMPFiles\source\FormatSupport\AIFF</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPFiles\source\FormatSupport\IFF\Chunk.h">
+      <Filter>src\XMPFiles\source\FormatSupport\IFF</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPFiles\source\FormatSupport\IFF\ChunkController.h">
+      <Filter>src\XMPFiles\source\FormatSupport\IFF</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPFiles\source\FormatSupport\IFF\ChunkPath.h">
+      <Filter>src\XMPFiles\source\FormatSupport\IFF</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPFiles\source\FormatSupport\IFF\IChunkBehavior.h">
+      <Filter>src\XMPFiles\source\FormatSupport\IFF</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPFiles\source\FormatSupport\IFF\IChunkContainer.h">
+      <Filter>src\XMPFiles\source\FormatSupport\IFF</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPFiles\source\FormatSupport\IFF\IChunkData.h">
+      <Filter>src\XMPFiles\source\FormatSupport\IFF</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPFiles\source\FormatSupport\WAVE\BEXTMetadata.h">
+      <Filter>src\XMPFiles\source\FormatSupport\WAVE</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPFiles\source\FormatSupport\WAVE\CartMetadata.h">
+      <Filter>src\XMPFiles\source\FormatSupport\WAVE</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPFiles\source\FormatSupport\WAVE\Cr8rMetadata.h">
+      <Filter>src\XMPFiles\source\FormatSupport\WAVE</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPFiles\source\FormatSupport\WAVE\DISPMetadata.h">
+      <Filter>src\XMPFiles\source\FormatSupport\WAVE</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPFiles\source\FormatSupport\WAVE\INFOMetadata.h">
+      <Filter>src\XMPFiles\source\FormatSupport\WAVE</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPFiles\source\FormatSupport\WAVE\iXMLMetadata.h">
+      <Filter>src\XMPFiles\source\FormatSupport\WAVE</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPFiles\source\FormatSupport\WAVE\PrmLMetadata.h">
+      <Filter>src\XMPFiles\source\FormatSupport\WAVE</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPFiles\source\FormatSupport\WAVE\WAVEBehavior.h">
+      <Filter>src\XMPFiles\source\FormatSupport\WAVE</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPFiles\source\FormatSupport\WAVE\WAVEReconcile.h">
+      <Filter>src\XMPFiles\source\FormatSupport\WAVE</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPFiles\source\FormatSupport\ASF_Support.hpp">
+      <Filter>src\XMPFiles\source\FormatSupport</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPFiles\source\FormatSupport\ID3_Support.hpp">
+      <Filter>src\XMPFiles\source\FormatSupport</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPFiles\source\FormatSupport\IPTC_Support.hpp">
+      <Filter>src\XMPFiles\source\FormatSupport</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPFiles\source\FormatSupport\ISOBaseMedia_Support.hpp">
+      <Filter>src\XMPFiles\source\FormatSupport</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPFiles\source\FormatSupport\MacScriptExtracts.h">
+      <Filter>src\XMPFiles\source\FormatSupport</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPFiles\source\FormatSupport\META_Support.hpp">
+      <Filter>src\XMPFiles\source\FormatSupport</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPFiles\source\FormatSupport\MOOV_Support.hpp">
+      <Filter>src\XMPFiles\source\FormatSupport</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPFiles\source\FormatSupport\P2_Support.hpp">
+      <Filter>src\XMPFiles\source\FormatSupport</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPFiles\source\FormatSupport\PackageFormat_Support.hpp">
+      <Filter>src\XMPFiles\source\FormatSupport</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPFiles\source\FormatSupport\PNG_Support.hpp">
+      <Filter>src\XMPFiles\source\FormatSupport</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPFiles\source\FormatSupport\PostScript_Support.hpp">
+      <Filter>src\XMPFiles\source\FormatSupport</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPFiles\source\FormatSupport\PSIR_Support.hpp">
+      <Filter>src\XMPFiles\source\FormatSupport</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPFiles\source\FormatSupport\QuickTime_Support.hpp">
+      <Filter>src\XMPFiles\source\FormatSupport</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPFiles\source\FormatSupport\Reconcile_Impl.hpp">
+      <Filter>src\XMPFiles\source\FormatSupport</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPFiles\source\FormatSupport\ReconcileLegacy.hpp">
+      <Filter>src\XMPFiles\source\FormatSupport</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPFiles\source\FormatSupport\RIFF.hpp">
+      <Filter>src\XMPFiles\source\FormatSupport</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPFiles\source\FormatSupport\RIFF_Support.hpp">
+      <Filter>src\XMPFiles\source\FormatSupport</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPFiles\source\FormatSupport\SVG_Adapter.hpp">
+      <Filter>src\XMPFiles\source\FormatSupport</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPFiles\source\FormatSupport\SWF_Support.hpp">
+      <Filter>src\XMPFiles\source\FormatSupport</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPFiles\source\FormatSupport\TIFF_Support.hpp">
+      <Filter>src\XMPFiles\source\FormatSupport</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPFiles\source\FormatSupport\TimeConversionUtils.hpp">
+      <Filter>src\XMPFiles\source\FormatSupport</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPFiles\source\FormatSupport\XDCAM_Support.hpp">
+      <Filter>src\XMPFiles\source\FormatSupport</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPFiles\source\FormatSupport\XMPScanner.hpp">
+      <Filter>src\XMPFiles\source\FormatSupport</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPFiles\source\NativeMetadataSupport\IMetadata.h">
+      <Filter>src\XMPFiles\source\NativeMetadataSupport</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPFiles\source\NativeMetadataSupport\IReconcile.h">
+      <Filter>src\XMPFiles\source\NativeMetadataSupport</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPFiles\source\NativeMetadataSupport\MetadataSet.h">
+      <Filter>src\XMPFiles\source\NativeMetadataSupport</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPFiles\source\NativeMetadataSupport\ValueObject.h">
+      <Filter>src\XMPFiles\source\NativeMetadataSupport</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPFiles\source\PluginHandler\FileHandler.h">
+      <Filter>src\XMPFiles\source\PluginHandler</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPFiles\source\PluginHandler\FileHandlerInstance.h">
+      <Filter>src\XMPFiles\source\PluginHandler</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPFiles\source\PluginHandler\Module.h">
+      <Filter>src\XMPFiles\source\PluginHandler</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPFiles\source\PluginHandler\ModuleUtils.h">
+      <Filter>src\XMPFiles\source\PluginHandler</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPFiles\source\PluginHandler\PluginManager.h">
+      <Filter>src\XMPFiles\source\PluginHandler</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPFiles\source\PluginHandler\XMPAtoms.h">
+      <Filter>src\XMPFiles\source\PluginHandler</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPFiles\source\HandlerRegistry.h">
+      <Filter>src\XMPFiles\source</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPFiles\source\XMPFiles.hpp">
+      <Filter>src\XMPFiles\source</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPFiles\source\XMPFiles_Impl.hpp">
+      <Filter>src\XMPFiles\source</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPFiles\resource\win\expat_config.h">
+      <Filter>src\XMPFiles\resource\win</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPFilesPlugins\api\source\HostAPI.h">
+      <Filter>src\XMPFilesPlugins\api\source</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPFilesPlugins\api\source\HostAPIAccess.h">
+      <Filter>src\XMPFilesPlugins\api\source</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPFilesPlugins\api\source\PluginBase.h">
+      <Filter>src\XMPFilesPlugins\api\source</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPFilesPlugins\api\source\PluginConst.h">
+      <Filter>src\XMPFilesPlugins\api\source</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPFilesPlugins\api\source\PluginHandler.h">
+      <Filter>src\XMPFilesPlugins\api\source</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPFilesPlugins\api\source\PluginRegistry.h">
+      <Filter>src\XMPFilesPlugins\api\source</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMPFilesPlugins\api\source\PluginUtils.h">
+      <Filter>src\XMPFilesPlugins\api\source</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xmp\client-glue\WXMP_Common.hpp">
+      <Filter>include\xmp\client-glue</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xmp\client-glue\WXMPFiles.hpp">
+      <Filter>include\xmp\client-glue</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xmp\client-glue\WXMPIterator.hpp">
+      <Filter>include\xmp\client-glue</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xmp\client-glue\WXMPMeta.hpp">
+      <Filter>include\xmp\client-glue</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xmp\client-glue\WXMPUtils.hpp">
+      <Filter>include\xmp\client-glue</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xmp\XMPCommon\Interfaces\BaseInterfaces\IConfigurable.h">
+      <Filter>include\xmp\XMPCommon\Interfaces\BaseInterfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xmp\XMPCommon\Interfaces\BaseInterfaces\ISharedObject.h">
+      <Filter>include\xmp\XMPCommon\Interfaces\BaseInterfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xmp\XMPCommon\Interfaces\BaseInterfaces\IThreadSafe.h">
+      <Filter>include\xmp\XMPCommon\Interfaces\BaseInterfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xmp\XMPCommon\Interfaces\BaseInterfaces\IVersionable.h">
+      <Filter>include\xmp\XMPCommon\Interfaces\BaseInterfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xmp\XMPCommon\Interfaces\IConfigurationManager.h">
+      <Filter>include\xmp\XMPCommon\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xmp\XMPCommon\Interfaces\IError.h">
+      <Filter>include\xmp\XMPCommon\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xmp\XMPCommon\Interfaces\IErrorNotifier.h">
+      <Filter>include\xmp\XMPCommon\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xmp\XMPCommon\Interfaces\IMemoryAllocator.h">
+      <Filter>include\xmp\XMPCommon\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xmp\XMPCommon\Interfaces\IObjectFactory.h">
+      <Filter>include\xmp\XMPCommon\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xmp\XMPCommon\Interfaces\IUTF8String.h">
+      <Filter>include\xmp\XMPCommon\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xmp\XMPCommon\Utilities\TWrapperFunctions.h">
+      <Filter>include\xmp\XMPCommon\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xmp\XMPCommon\Utilities\TWrapperFunctions2.h">
+      <Filter>include\xmp\XMPCommon\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xmp\XMPCommon\XMPCommonDefines.h">
+      <Filter>include\xmp\XMPCommon</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xmp\XMPCommon\XMPCommonErrorCodes.h">
+      <Filter>include\xmp\XMPCommon</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xmp\XMPCommon\XMPCommonFwdDeclarations.h">
+      <Filter>include\xmp\XMPCommon</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xmp\XMPCommon\XMPCommonLatestInterfaceVersions.h">
+      <Filter>include\xmp\XMPCommon</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xmp\XMPCore\Interfaces\IArrayNode.h">
+      <Filter>include\xmp\XMPCore\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xmp\XMPCore\Interfaces\IClientDOMParser.h">
+      <Filter>include\xmp\XMPCore\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xmp\XMPCore\Interfaces\IClientDOMSerializer.h">
+      <Filter>include\xmp\XMPCore\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xmp\XMPCore\Interfaces\ICompositeNode.h">
+      <Filter>include\xmp\XMPCore\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xmp\XMPCore\Interfaces\ICoreConfigurationManager.h">
+      <Filter>include\xmp\XMPCore\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xmp\XMPCore\Interfaces\ICoreObjectFactory.h">
+      <Filter>include\xmp\XMPCore\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xmp\XMPCore\Interfaces\IDOMImplementationRegistry.h">
+      <Filter>include\xmp\XMPCore\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xmp\XMPCore\Interfaces\IDOMParser.h">
+      <Filter>include\xmp\XMPCore\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xmp\XMPCore\Interfaces\IDOMSerializer.h">
+      <Filter>include\xmp\XMPCore\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xmp\XMPCore\Interfaces\IMetadata.h">
+      <Filter>include\xmp\XMPCore\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xmp\XMPCore\Interfaces\IMetadataConverterUtils.h">
+      <Filter>include\xmp\XMPCore\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xmp\XMPCore\Interfaces\INameSpacePrefixMap.h">
+      <Filter>include\xmp\XMPCore\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xmp\XMPCore\Interfaces\INode.h">
+      <Filter>include\xmp\XMPCore\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xmp\XMPCore\Interfaces\INodeIterator.h">
+      <Filter>include\xmp\XMPCore\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xmp\XMPCore\Interfaces\IPath.h">
+      <Filter>include\xmp\XMPCore\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xmp\XMPCore\Interfaces\IPathSegment.h">
+      <Filter>include\xmp\XMPCore\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xmp\XMPCore\Interfaces\ISimpleNode.h">
+      <Filter>include\xmp\XMPCore\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xmp\XMPCore\Interfaces\IStructureNode.h">
+      <Filter>include\xmp\XMPCore\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xmp\XMPCore\XMPCoreDefines.h">
+      <Filter>include\xmp\XMPCore</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xmp\XMPCore\XMPCoreErrorCodes.h">
+      <Filter>include\xmp\XMPCore</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xmp\XMPCore\XMPCoreFwdDeclarations.h">
+      <Filter>include\xmp\XMPCore</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xmp\XMPCore\XMPCoreLatestInterfaceVersions.h">
+      <Filter>include\xmp\XMPCore</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xmp\TXMPFiles.hpp">
+      <Filter>include\xmp</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xmp\TXMPIterator.hpp">
+      <Filter>include\xmp</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xmp\TXMPMeta.hpp">
+      <Filter>include\xmp</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xmp\TXMPUtils.hpp">
+      <Filter>include\xmp</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xmp\XMP.hpp">
+      <Filter>include\xmp</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xmp\XMP_Const.h">
+      <Filter>include\xmp</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xmp\XMP_Environment.h">
+      <Filter>include\xmp</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xmp\XMP_IO.hpp">
+      <Filter>include\xmp</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xmp\XMP_Version.h">
+      <Filter>include\xmp</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xmp\xmpdef.h">
+      <Filter>include\xmp</Filter>
+    </ClInclude>
+    <ClInclude Include="src\third-party\zuid\interfaces\MD5.h">
+      <Filter>src\third-party\zuid\interfaces</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="src\XMPCore\resource\win\XMPCore.rc">
+      <Filter>src\XMPCore\resource\win</Filter>
+    </ResourceCompile>
+    <ResourceCompile Include="src\XMPFiles\resource\win\XMPFiles.rc">
+      <Filter>src\XMPFiles\resource\win</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>

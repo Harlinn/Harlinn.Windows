@@ -1,0 +1,301 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="include">
+      <UniqueIdentifier>{3ca209b0-ffbf-40dd-bd4b-e134c6b56b9a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\scintilla">
+      <UniqueIdentifier>{69c559fc-4125-49ff-8ca3-b057189c5eb2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{6a8dee86-4c84-4654-b458-b597876ffee1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\win32">
+      <UniqueIdentifier>{4b1e5a93-ddca-4f62-9fb5-381bf67c2ffa}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\win32\HanjaDic.cxx">
+      <Filter>src\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="src\win32\PlatWin.cxx">
+      <Filter>src\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="src\win32\ScintillaDLL.cxx">
+      <Filter>src\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="src\win32\ScintillaWin.cxx">
+      <Filter>src\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AutoComplete.cxx">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CallTip.cxx">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CaseConvert.cxx">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CaseFolder.cxx">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CellBuffer.cxx">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CharacterCategoryMap.cxx">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CharacterType.cxx">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CharClassify.cxx">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ContractionState.cxx">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DBCS.cxx">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Decoration.cxx">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Document.cxx">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\EditModel.cxx">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Editor.cxx">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\EditView.cxx">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Geometry.cxx">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Indicator.cxx">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\KeyMap.cxx">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\LineMarker.cxx">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\MarginView.cxx">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\PerLine.cxx">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\PositionCache.cxx">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RESearch.cxx">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RunStyles.cxx">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ScintillaBase.cxx">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Selection.cxx">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Style.cxx">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\UniConversion.cxx">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\UniqueString.cxx">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ViewStyle.cxx">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XPM.cxx">
+      <Filter>src</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\scintilla\ILexer.h">
+      <Filter>include\scintilla</Filter>
+    </ClInclude>
+    <ClInclude Include="include\scintilla\ILoader.h">
+      <Filter>include\scintilla</Filter>
+    </ClInclude>
+    <ClInclude Include="include\scintilla\Sci_Position.h">
+      <Filter>include\scintilla</Filter>
+    </ClInclude>
+    <ClInclude Include="include\scintilla\Scintilla.h">
+      <Filter>include\scintilla</Filter>
+    </ClInclude>
+    <ClInclude Include="include\scintilla\ScintillaCall.h">
+      <Filter>include\scintilla</Filter>
+    </ClInclude>
+    <ClInclude Include="include\scintilla\ScintillaMessages.h">
+      <Filter>include\scintilla</Filter>
+    </ClInclude>
+    <ClInclude Include="include\scintilla\ScintillaStructures.h">
+      <Filter>include\scintilla</Filter>
+    </ClInclude>
+    <ClInclude Include="include\scintilla\ScintillaTypes.h">
+      <Filter>include\scintilla</Filter>
+    </ClInclude>
+    <ClInclude Include="include\scintilla\ScintillaWidget.h">
+      <Filter>include\scintilla</Filter>
+    </ClInclude>
+    <ClInclude Include="src\win32\HanjaDic.h">
+      <Filter>src\win32</Filter>
+    </ClInclude>
+    <ClInclude Include="src\win32\PlatWin.h">
+      <Filter>src\win32</Filter>
+    </ClInclude>
+    <ClInclude Include="src\win32\ScintillaWin.h">
+      <Filter>src\win32</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AutoComplete.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\CallTip.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\CaseConvert.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\CaseFolder.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\CellBuffer.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\CharacterCategoryMap.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\CharacterType.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\CharClassify.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ContractionState.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\DBCS.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Debugging.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Decoration.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Document.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\EditModel.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Editor.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\EditView.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ElapsedPeriod.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Geometry.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Indicator.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\KeyMap.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\LineMarker.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\MarginView.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Partitioning.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\PerLine.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Platform.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Position.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\PositionCache.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RESearch.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RunStyles.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ScintillaBase.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Selection.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SparseVector.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SplitVector.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Style.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\UniConversion.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\UniqueString.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ViewStyle.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XPM.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="include\scintilla\scintilla_export.h">
+      <Filter>include\scintilla</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="include\scintilla\Scintilla.iface">
+      <Filter>include\scintilla</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="src\win32\ScintRes.rc">
+      <Filter>src\win32</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>

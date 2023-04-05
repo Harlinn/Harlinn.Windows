@@ -1,0 +1,2523 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="include">
+      <UniqueIdentifier>{add99e6e-1aff-4936-995e-4216abbb803d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\xercesc">
+      <UniqueIdentifier>{10d67a4c-3577-4811-8d1e-1e2db0a5a502}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\xercesc\dom">
+      <UniqueIdentifier>{56931b60-eea9-4145-9c04-ae8a93ac5068}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\xercesc\framework">
+      <UniqueIdentifier>{5f3799eb-72a5-4e64-a448-da6097ff148c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\xercesc\parsers">
+      <UniqueIdentifier>{dccbb3f2-dd7e-4ee0-9ae6-61991714fc8b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\xercesc\sax">
+      <UniqueIdentifier>{86e8c567-9f5b-43c1-ac6c-abc4a4731a6d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\xercesc\sax2">
+      <UniqueIdentifier>{616d89eb-b439-4fa5-971c-daf4b757096b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\xercesc\util">
+      <UniqueIdentifier>{766fd268-9f93-4ed2-b4b5-024faafdb009}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\xercesc\validators">
+      <UniqueIdentifier>{d8d44cc8-fc8b-4bd6-8765-fd227d848e11}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\xercesc\framework\psvi">
+      <UniqueIdentifier>{374efe2b-713c-4ba1-a305-5a97f25cf6f4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\xercesc\util\FileManagers">
+      <UniqueIdentifier>{3f0e9066-dfc6-46ac-a76d-5280311f14d5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\xercesc\util\MsgLoaders">
+      <UniqueIdentifier>{52eaf9f4-a28f-4291-9c20-c21d1d687489}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\xercesc\util\MutexManagers">
+      <UniqueIdentifier>{97f4f32d-3764-4496-9958-3e69dc2cc9d4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\xercesc\util\NetAccessors">
+      <UniqueIdentifier>{54081af2-c9f6-443c-88ca-9b98799708ac}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\xercesc\util\regx">
+      <UniqueIdentifier>{36feb960-c0c6-40e4-b95e-2c05763a041e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\xercesc\util\Transcoders">
+      <UniqueIdentifier>{681111fd-81f3-426d-abc4-15c610e8e065}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\xercesc\util\MsgLoaders\InMemory">
+      <UniqueIdentifier>{110d4106-9e31-4b61-aeb7-ae74c0b9dc20}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\xercesc\util\NetAccessors\WinSock">
+      <UniqueIdentifier>{249c4311-d629-4d09-88b3-2bedb1935c90}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\xercesc\util\Transcoders\Win32">
+      <UniqueIdentifier>{70b37497-648e-47c6-a8ea-ff0a7aecbc18}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\xercesc\validators\common">
+      <UniqueIdentifier>{ca942439-98ae-4041-97ea-96c92d1be7e2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\xercesc\validators\datatype">
+      <UniqueIdentifier>{a0846348-822a-407b-9be8-4dac147236af}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\xercesc\validators\DTD">
+      <UniqueIdentifier>{139a74ad-b82c-4774-af5f-840ed34405e8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\xercesc\validators\schema">
+      <UniqueIdentifier>{99c6d6d2-120c-4a4e-931b-ab75bf502e47}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\xercesc\validators\schema\identity">
+      <UniqueIdentifier>{791d672c-1477-4cac-b3a8-a7339acc6d53}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{03687304-37fb-480d-ae54-1cdda2bef91f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\xercesc">
+      <UniqueIdentifier>{d4b9c83b-b691-47f8-babe-aa3765e67e19}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\xercesc\dom">
+      <UniqueIdentifier>{b717a91e-9d0f-48f9-8059-2bf4164fa922}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\xercesc\dom\impl">
+      <UniqueIdentifier>{63e05704-3f15-40ee-9e60-107020408002}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\xercesc\framework">
+      <UniqueIdentifier>{46d4ed92-1a62-4ea1-98f9-6e98e657cd82}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\xercesc\internal">
+      <UniqueIdentifier>{62f47be6-c008-47a2-b3c0-1cdb8c17d26f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\xercesc\NLS">
+      <UniqueIdentifier>{d1ed6030-6019-4d90-856e-c7011d1ffdaf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\xercesc\parsers">
+      <UniqueIdentifier>{33e713bc-775e-4106-b857-f8dcf2224bc1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\xercesc\sax">
+      <UniqueIdentifier>{20501d5f-8235-4f70-a01c-cb590cf00ad7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\xercesc\sax2">
+      <UniqueIdentifier>{e605c11d-eaeb-4c5f-9b00-605fe34edb38}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\xercesc\util">
+      <UniqueIdentifier>{69fee175-7904-4e69-88a5-aa41f463b06a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\xercesc\validators">
+      <UniqueIdentifier>{c1558c86-c73b-4f53-98ae-956f3c78c54f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\xercesc\xinclude">
+      <UniqueIdentifier>{ae90744e-bf54-4c81-aa00-6b5c7818547e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\xercesc\xinclude">
+      <UniqueIdentifier>{12542e30-87ff-4c30-bf4f-e3110617b4af}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\xercesc\framework\psvi">
+      <UniqueIdentifier>{b26bfeb0-e48a-42fd-a78c-a480495f1b73}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\xercesc\NLS\EN_US">
+      <UniqueIdentifier>{fa2a344c-98eb-452b-8b41-630695efb340}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\xercesc\util\FileManagers">
+      <UniqueIdentifier>{9e4cda80-2280-476a-85e7-1c816f598240}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\xercesc\util\MsgLoaders">
+      <UniqueIdentifier>{83e00773-f642-4f04-a499-6d01b803e728}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\xercesc\util\MutexManagers">
+      <UniqueIdentifier>{ce3cb7c2-845a-47bc-adbe-1d75693fe13c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\xercesc\util\NetAccessors">
+      <UniqueIdentifier>{8450571a-4b8f-45b1-b82f-245b8d37058b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\xercesc\util\regx">
+      <UniqueIdentifier>{15a849d1-469c-4c04-bc69-63b0a1c64b8d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\xercesc\util\Transcoders">
+      <UniqueIdentifier>{989d709b-5c7f-4250-bb4f-9cdd02a4b76d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\xercesc\validators\common">
+      <UniqueIdentifier>{e5e8c8aa-2680-452a-a4d0-1fd4074afc12}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\xercesc\validators\datatype">
+      <UniqueIdentifier>{5a961536-aece-45e0-8980-06d16f0b1d66}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\xercesc\validators\DTD">
+      <UniqueIdentifier>{d82f668e-6f5b-4f92-92d0-b0561a79d5ec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\xercesc\validators\schema">
+      <UniqueIdentifier>{214c85e8-205b-4352-b792-f6266a7521ab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\xercesc\util\MsgLoaders\InMemory">
+      <UniqueIdentifier>{d27a42bf-327a-4aed-a03d-13ba96338f24}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\xercesc\util\NetAccessors\WinSock">
+      <UniqueIdentifier>{27e1df8f-35b5-48ce-a6d9-120084b383e1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\xercesc\util\Transcoders\Win32">
+      <UniqueIdentifier>{6bf50d54-42a2-4be2-ae7c-bd4f4231a7ee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\xercesc\validators\schema\identity">
+      <UniqueIdentifier>{1ae327d0-45d3-4af7-a3f6-15657ddd6dca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\xercesc\internal">
+      <UniqueIdentifier>{5de4437a-a075-4bf0-8e29-311c8d646887}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Readme">
+      <UniqueIdentifier>{b869ad8e-0f0e-4d2a-84d6-b175ef324eee}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="dllmain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\towlower.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\towupper.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\dom\DOMException.cpp">
+      <Filter>src\xercesc\dom</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\dom\DOMLSException.cpp">
+      <Filter>src\xercesc\dom</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\dom\DOMRangeException.cpp">
+      <Filter>src\xercesc\dom</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\dom\DOMXPathException.cpp">
+      <Filter>src\xercesc\dom</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\dom\impl\DOMAttrImpl.cpp">
+      <Filter>src\xercesc\dom\impl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\dom\impl\DOMAttrMapImpl.cpp">
+      <Filter>src\xercesc\dom\impl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\dom\impl\DOMAttrNSImpl.cpp">
+      <Filter>src\xercesc\dom\impl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\dom\impl\DOMCDATASectionImpl.cpp">
+      <Filter>src\xercesc\dom\impl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\dom\impl\DOMCharacterDataImpl.cpp">
+      <Filter>src\xercesc\dom\impl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\dom\impl\DOMChildNode.cpp">
+      <Filter>src\xercesc\dom\impl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\dom\impl\DOMCommentImpl.cpp">
+      <Filter>src\xercesc\dom\impl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\dom\impl\DOMConfigurationImpl.cpp">
+      <Filter>src\xercesc\dom\impl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\dom\impl\DOMDeepNodeListImpl.cpp">
+      <Filter>src\xercesc\dom\impl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\dom\impl\DOMDocumentFragmentImpl.cpp">
+      <Filter>src\xercesc\dom\impl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\dom\impl\DOMDocumentImpl.cpp">
+      <Filter>src\xercesc\dom\impl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\dom\impl\DOMDocumentTypeImpl.cpp">
+      <Filter>src\xercesc\dom\impl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\dom\impl\DOMElementImpl.cpp">
+      <Filter>src\xercesc\dom\impl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\dom\impl\DOMElementNSImpl.cpp">
+      <Filter>src\xercesc\dom\impl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\dom\impl\DOMEntityImpl.cpp">
+      <Filter>src\xercesc\dom\impl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\dom\impl\DOMEntityReferenceImpl.cpp">
+      <Filter>src\xercesc\dom\impl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\dom\impl\DOMErrorImpl.cpp">
+      <Filter>src\xercesc\dom\impl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\dom\impl\DOMImplementationImpl.cpp">
+      <Filter>src\xercesc\dom\impl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\dom\impl\DOMImplementationListImpl.cpp">
+      <Filter>src\xercesc\dom\impl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\dom\impl\DOMImplementationRegistry.cpp">
+      <Filter>src\xercesc\dom\impl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\dom\impl\DOMLocatorImpl.cpp">
+      <Filter>src\xercesc\dom\impl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\dom\impl\DOMLSInputImpl.cpp">
+      <Filter>src\xercesc\dom\impl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\dom\impl\DOMLSOutputImpl.cpp">
+      <Filter>src\xercesc\dom\impl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\dom\impl\DOMLSSerializerImpl.cpp">
+      <Filter>src\xercesc\dom\impl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\dom\impl\DOMNamedNodeMapImpl.cpp">
+      <Filter>src\xercesc\dom\impl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\dom\impl\DOMNodeIDMap.cpp">
+      <Filter>src\xercesc\dom\impl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\dom\impl\DOMNodeImpl.cpp">
+      <Filter>src\xercesc\dom\impl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\dom\impl\DOMNodeIteratorImpl.cpp">
+      <Filter>src\xercesc\dom\impl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\dom\impl\DOMNodeListImpl.cpp">
+      <Filter>src\xercesc\dom\impl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\dom\impl\DOMNodeVector.cpp">
+      <Filter>src\xercesc\dom\impl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\dom\impl\DOMNormalizer.cpp">
+      <Filter>src\xercesc\dom\impl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\dom\impl\DOMNotationImpl.cpp">
+      <Filter>src\xercesc\dom\impl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\dom\impl\DOMParentNode.cpp">
+      <Filter>src\xercesc\dom\impl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\dom\impl\DOMProcessingInstructionImpl.cpp">
+      <Filter>src\xercesc\dom\impl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\dom\impl\DOMRangeImpl.cpp">
+      <Filter>src\xercesc\dom\impl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\dom\impl\DOMStringListImpl.cpp">
+      <Filter>src\xercesc\dom\impl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\dom\impl\DOMStringPool.cpp">
+      <Filter>src\xercesc\dom\impl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\dom\impl\DOMTextImpl.cpp">
+      <Filter>src\xercesc\dom\impl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\dom\impl\DOMTreeWalkerImpl.cpp">
+      <Filter>src\xercesc\dom\impl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\dom\impl\DOMTypeInfoImpl.cpp">
+      <Filter>src\xercesc\dom\impl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\dom\impl\DOMXPathExpressionImpl.cpp">
+      <Filter>src\xercesc\dom\impl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\dom\impl\DOMXPathNSResolverImpl.cpp">
+      <Filter>src\xercesc\dom\impl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\dom\impl\DOMXPathResultImpl.cpp">
+      <Filter>src\xercesc\dom\impl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\dom\impl\XSDElementNSImpl.cpp">
+      <Filter>src\xercesc\dom\impl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\framework\BinOutputStream.cpp">
+      <Filter>src\xercesc\framework</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\framework\LocalFileFormatTarget.cpp">
+      <Filter>src\xercesc\framework</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\framework\LocalFileInputSource.cpp">
+      <Filter>src\xercesc\framework</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\framework\MemBufFormatTarget.cpp">
+      <Filter>src\xercesc\framework</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\framework\MemBufInputSource.cpp">
+      <Filter>src\xercesc\framework</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\framework\StdInInputSource.cpp">
+      <Filter>src\xercesc\framework</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\framework\StdOutFormatTarget.cpp">
+      <Filter>src\xercesc\framework</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\framework\URLInputSource.cpp">
+      <Filter>src\xercesc\framework</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\framework\Wrapper4DOMLSInput.cpp">
+      <Filter>src\xercesc\framework</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\framework\Wrapper4InputSource.cpp">
+      <Filter>src\xercesc\framework</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\framework\XMLAttDef.cpp">
+      <Filter>src\xercesc\framework</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\framework\XMLAttDefList.cpp">
+      <Filter>src\xercesc\framework</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\framework\XMLAttr.cpp">
+      <Filter>src\xercesc\framework</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\framework\XMLBuffer.cpp">
+      <Filter>src\xercesc\framework</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\framework\XMLBufferMgr.cpp">
+      <Filter>src\xercesc\framework</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\framework\XMLContentModel.cpp">
+      <Filter>src\xercesc\framework</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\framework\XMLDTDDescription.cpp">
+      <Filter>src\xercesc\framework</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\framework\XMLElementDecl.cpp">
+      <Filter>src\xercesc\framework</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\framework\XMLEntityDecl.cpp">
+      <Filter>src\xercesc\framework</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\framework\XMLFormatter.cpp">
+      <Filter>src\xercesc\framework</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\framework\XMLGrammarDescription.cpp">
+      <Filter>src\xercesc\framework</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\framework\XMLGrammarPoolImpl.cpp">
+      <Filter>src\xercesc\framework</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\framework\XMLNotationDecl.cpp">
+      <Filter>src\xercesc\framework</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\framework\XMLRecognizer.cpp">
+      <Filter>src\xercesc\framework</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\framework\XMLRefInfo.cpp">
+      <Filter>src\xercesc\framework</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\framework\XMLSchemaDescription.cpp">
+      <Filter>src\xercesc\framework</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\framework\XMLValidator.cpp">
+      <Filter>src\xercesc\framework</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\framework\psvi\PSVIAttribute.cpp">
+      <Filter>src\xercesc\framework\psvi</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\framework\psvi\PSVIAttributeList.cpp">
+      <Filter>src\xercesc\framework\psvi</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\framework\psvi\PSVIElement.cpp">
+      <Filter>src\xercesc\framework\psvi</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\framework\psvi\PSVIItem.cpp">
+      <Filter>src\xercesc\framework\psvi</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\framework\psvi\XSAnnotation.cpp">
+      <Filter>src\xercesc\framework\psvi</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\framework\psvi\XSAttributeDeclaration.cpp">
+      <Filter>src\xercesc\framework\psvi</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\framework\psvi\XSAttributeGroupDefinition.cpp">
+      <Filter>src\xercesc\framework\psvi</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\framework\psvi\XSAttributeUse.cpp">
+      <Filter>src\xercesc\framework\psvi</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\framework\psvi\XSComplexTypeDefinition.cpp">
+      <Filter>src\xercesc\framework\psvi</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\framework\psvi\XSElementDeclaration.cpp">
+      <Filter>src\xercesc\framework\psvi</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\framework\psvi\XSFacet.cpp">
+      <Filter>src\xercesc\framework\psvi</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\framework\psvi\XSIDCDefinition.cpp">
+      <Filter>src\xercesc\framework\psvi</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\framework\psvi\XSModel.cpp">
+      <Filter>src\xercesc\framework\psvi</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\framework\psvi\XSModelGroup.cpp">
+      <Filter>src\xercesc\framework\psvi</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\framework\psvi\XSModelGroupDefinition.cpp">
+      <Filter>src\xercesc\framework\psvi</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\framework\psvi\XSMultiValueFacet.cpp">
+      <Filter>src\xercesc\framework\psvi</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\framework\psvi\XSNamespaceItem.cpp">
+      <Filter>src\xercesc\framework\psvi</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\framework\psvi\XSNotationDeclaration.cpp">
+      <Filter>src\xercesc\framework\psvi</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\framework\psvi\XSObject.cpp">
+      <Filter>src\xercesc\framework\psvi</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\framework\psvi\XSParticle.cpp">
+      <Filter>src\xercesc\framework\psvi</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\framework\psvi\XSSimpleTypeDefinition.cpp">
+      <Filter>src\xercesc\framework\psvi</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\framework\psvi\XSTypeDefinition.cpp">
+      <Filter>src\xercesc\framework\psvi</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\framework\psvi\XSValue.cpp">
+      <Filter>src\xercesc\framework\psvi</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\framework\psvi\XSWildcard.cpp">
+      <Filter>src\xercesc\framework\psvi</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\internal\BinFileOutputStream.cpp">
+      <Filter>src\xercesc\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\internal\BinMemOutputStream.cpp">
+      <Filter>src\xercesc\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\internal\DGXMLScanner.cpp">
+      <Filter>src\xercesc\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\internal\ElemStack.cpp">
+      <Filter>src\xercesc\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\internal\IGXMLScanner.cpp">
+      <Filter>src\xercesc\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\internal\IGXMLScanner2.cpp">
+      <Filter>src\xercesc\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\internal\MemoryManagerImpl.cpp">
+      <Filter>src\xercesc\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\internal\ReaderMgr.cpp">
+      <Filter>src\xercesc\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\internal\SGXMLScanner.cpp">
+      <Filter>src\xercesc\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\internal\ValidationContextImpl.cpp">
+      <Filter>src\xercesc\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\internal\VecAttributesImpl.cpp">
+      <Filter>src\xercesc\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\internal\VecAttrListImpl.cpp">
+      <Filter>src\xercesc\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\internal\WFXMLScanner.cpp">
+      <Filter>src\xercesc\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\internal\XMLReader.cpp">
+      <Filter>src\xercesc\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\internal\XMLScanner.cpp">
+      <Filter>src\xercesc\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\internal\XMLScannerResolver.cpp">
+      <Filter>src\xercesc\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\internal\XProtoType.cpp">
+      <Filter>src\xercesc\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\internal\XSAXMLScanner.cpp">
+      <Filter>src\xercesc\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\internal\XSerializeEngine.cpp">
+      <Filter>src\xercesc\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\internal\XSObjectFactory.cpp">
+      <Filter>src\xercesc\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\internal\XTemplateSerializer.cpp">
+      <Filter>src\xercesc\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\xinclude\XIncludeDOMDocumentProcessor.cpp">
+      <Filter>src\xercesc\xinclude</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\xinclude\XIncludeLocation.cpp">
+      <Filter>src\xercesc\xinclude</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\xinclude\XIncludeUtils.cpp">
+      <Filter>src\xercesc\xinclude</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\validators\common\AllContentModel.cpp">
+      <Filter>src\xercesc\validators\common</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\validators\common\CMAny.cpp">
+      <Filter>src\xercesc\validators\common</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\validators\common\CMBinaryOp.cpp">
+      <Filter>src\xercesc\validators\common</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\validators\common\CMUnaryOp.cpp">
+      <Filter>src\xercesc\validators\common</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\validators\common\ContentLeafNameTypeVector.cpp">
+      <Filter>src\xercesc\validators\common</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\validators\common\ContentSpecNode.cpp">
+      <Filter>src\xercesc\validators\common</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\validators\common\DFAContentModel.cpp">
+      <Filter>src\xercesc\validators\common</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\validators\common\Grammar.cpp">
+      <Filter>src\xercesc\validators\common</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\validators\common\GrammarResolver.cpp">
+      <Filter>src\xercesc\validators\common</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\validators\common\MixedContentModel.cpp">
+      <Filter>src\xercesc\validators\common</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\validators\common\SimpleContentModel.cpp">
+      <Filter>src\xercesc\validators\common</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\validators\datatype\AbstractNumericFacetValidator.cpp">
+      <Filter>src\xercesc\validators\datatype</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\validators\datatype\AbstractNumericValidator.cpp">
+      <Filter>src\xercesc\validators\datatype</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\validators\datatype\AbstractStringValidator.cpp">
+      <Filter>src\xercesc\validators\datatype</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\validators\datatype\AnySimpleTypeDatatypeValidator.cpp">
+      <Filter>src\xercesc\validators\datatype</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\validators\datatype\AnyURIDatatypeValidator.cpp">
+      <Filter>src\xercesc\validators\datatype</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\validators\datatype\Base64BinaryDatatypeValidator.cpp">
+      <Filter>src\xercesc\validators\datatype</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\validators\datatype\BooleanDatatypeValidator.cpp">
+      <Filter>src\xercesc\validators\datatype</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\validators\datatype\DatatypeValidator.cpp">
+      <Filter>src\xercesc\validators\datatype</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\validators\datatype\DatatypeValidatorFactory.cpp">
+      <Filter>src\xercesc\validators\datatype</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\validators\datatype\DateDatatypeValidator.cpp">
+      <Filter>src\xercesc\validators\datatype</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\validators\datatype\DateTimeDatatypeValidator.cpp">
+      <Filter>src\xercesc\validators\datatype</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\validators\datatype\DateTimeValidator.cpp">
+      <Filter>src\xercesc\validators\datatype</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\validators\datatype\DayDatatypeValidator.cpp">
+      <Filter>src\xercesc\validators\datatype</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\validators\datatype\DecimalDatatypeValidator.cpp">
+      <Filter>src\xercesc\validators\datatype</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\validators\datatype\DoubleDatatypeValidator.cpp">
+      <Filter>src\xercesc\validators\datatype</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\validators\datatype\DurationDatatypeValidator.cpp">
+      <Filter>src\xercesc\validators\datatype</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\validators\datatype\ENTITYDatatypeValidator.cpp">
+      <Filter>src\xercesc\validators\datatype</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\validators\datatype\FloatDatatypeValidator.cpp">
+      <Filter>src\xercesc\validators\datatype</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\validators\datatype\HexBinaryDatatypeValidator.cpp">
+      <Filter>src\xercesc\validators\datatype</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\validators\datatype\IDDatatypeValidator.cpp">
+      <Filter>src\xercesc\validators\datatype</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\validators\datatype\IDREFDatatypeValidator.cpp">
+      <Filter>src\xercesc\validators\datatype</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\validators\datatype\ListDatatypeValidator.cpp">
+      <Filter>src\xercesc\validators\datatype</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\validators\datatype\MonthDatatypeValidator.cpp">
+      <Filter>src\xercesc\validators\datatype</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\validators\datatype\MonthDayDatatypeValidator.cpp">
+      <Filter>src\xercesc\validators\datatype</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\validators\datatype\NameDatatypeValidator.cpp">
+      <Filter>src\xercesc\validators\datatype</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\validators\datatype\NCNameDatatypeValidator.cpp">
+      <Filter>src\xercesc\validators\datatype</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\validators\datatype\NOTATIONDatatypeValidator.cpp">
+      <Filter>src\xercesc\validators\datatype</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\validators\datatype\QNameDatatypeValidator.cpp">
+      <Filter>src\xercesc\validators\datatype</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\validators\datatype\StringDatatypeValidator.cpp">
+      <Filter>src\xercesc\validators\datatype</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\validators\datatype\TimeDatatypeValidator.cpp">
+      <Filter>src\xercesc\validators\datatype</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\validators\datatype\UnionDatatypeValidator.cpp">
+      <Filter>src\xercesc\validators\datatype</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\validators\datatype\XMLCanRepGroup.cpp">
+      <Filter>src\xercesc\validators\datatype</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\validators\datatype\YearDatatypeValidator.cpp">
+      <Filter>src\xercesc\validators\datatype</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\validators\datatype\YearMonthDatatypeValidator.cpp">
+      <Filter>src\xercesc\validators\datatype</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\validators\DTD\DTDAttDef.cpp">
+      <Filter>src\xercesc\validators\DTD</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\validators\DTD\DTDAttDefList.cpp">
+      <Filter>src\xercesc\validators\DTD</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\validators\DTD\DTDElementDecl.cpp">
+      <Filter>src\xercesc\validators\DTD</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\validators\DTD\DTDEntityDecl.cpp">
+      <Filter>src\xercesc\validators\DTD</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\validators\DTD\DTDGrammar.cpp">
+      <Filter>src\xercesc\validators\DTD</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\validators\DTD\DTDScanner.cpp">
+      <Filter>src\xercesc\validators\DTD</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\validators\DTD\DTDValidator.cpp">
+      <Filter>src\xercesc\validators\DTD</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\validators\DTD\XMLDTDDescriptionImpl.cpp">
+      <Filter>src\xercesc\validators\DTD</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\validators\schema\ComplexTypeInfo.cpp">
+      <Filter>src\xercesc\validators\schema</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\validators\schema\GeneralAttributeCheck.cpp">
+      <Filter>src\xercesc\validators\schema</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\validators\schema\NamespaceScope.cpp">
+      <Filter>src\xercesc\validators\schema</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\validators\schema\SchemaAttDef.cpp">
+      <Filter>src\xercesc\validators\schema</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\validators\schema\SchemaAttDefList.cpp">
+      <Filter>src\xercesc\validators\schema</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\validators\schema\SchemaElementDecl.cpp">
+      <Filter>src\xercesc\validators\schema</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\validators\schema\SchemaGrammar.cpp">
+      <Filter>src\xercesc\validators\schema</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\validators\schema\SchemaInfo.cpp">
+      <Filter>src\xercesc\validators\schema</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\validators\schema\SchemaSymbols.cpp">
+      <Filter>src\xercesc\validators\schema</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\validators\schema\SchemaValidator.cpp">
+      <Filter>src\xercesc\validators\schema</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\validators\schema\SubstitutionGroupComparator.cpp">
+      <Filter>src\xercesc\validators\schema</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\validators\schema\TraverseSchema.cpp">
+      <Filter>src\xercesc\validators\schema</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\validators\schema\XercesAttGroupInfo.cpp">
+      <Filter>src\xercesc\validators\schema</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\validators\schema\XercesElementWildcard.cpp">
+      <Filter>src\xercesc\validators\schema</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\validators\schema\XercesGroupInfo.cpp">
+      <Filter>src\xercesc\validators\schema</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\validators\schema\XMLSchemaDescriptionImpl.cpp">
+      <Filter>src\xercesc\validators\schema</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\validators\schema\XSDDOMParser.cpp">
+      <Filter>src\xercesc\validators\schema</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\validators\schema\XSDErrorReporter.cpp">
+      <Filter>src\xercesc\validators\schema</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\validators\schema\XSDLocator.cpp">
+      <Filter>src\xercesc\validators\schema</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\validators\schema\XUtil.cpp">
+      <Filter>src\xercesc\validators\schema</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\validators\schema\identity\FieldActivator.cpp">
+      <Filter>src\xercesc\validators\schema\identity</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\validators\schema\identity\FieldValueMap.cpp">
+      <Filter>src\xercesc\validators\schema\identity</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\validators\schema\identity\IC_Field.cpp">
+      <Filter>src\xercesc\validators\schema\identity</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\validators\schema\identity\IC_Key.cpp">
+      <Filter>src\xercesc\validators\schema\identity</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\validators\schema\identity\IC_KeyRef.cpp">
+      <Filter>src\xercesc\validators\schema\identity</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\validators\schema\identity\IC_Selector.cpp">
+      <Filter>src\xercesc\validators\schema\identity</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\validators\schema\identity\IC_Unique.cpp">
+      <Filter>src\xercesc\validators\schema\identity</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\validators\schema\identity\IdentityConstraint.cpp">
+      <Filter>src\xercesc\validators\schema\identity</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\validators\schema\identity\IdentityConstraintHandler.cpp">
+      <Filter>src\xercesc\validators\schema\identity</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\validators\schema\identity\ValueStore.cpp">
+      <Filter>src\xercesc\validators\schema\identity</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\validators\schema\identity\ValueStoreCache.cpp">
+      <Filter>src\xercesc\validators\schema\identity</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\validators\schema\identity\XercesXPath.cpp">
+      <Filter>src\xercesc\validators\schema\identity</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\validators\schema\identity\XPathMatcher.cpp">
+      <Filter>src\xercesc\validators\schema\identity</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\validators\schema\identity\XPathMatcherStack.cpp">
+      <Filter>src\xercesc\validators\schema\identity</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\validators\schema\identity\XPathSymbols.cpp">
+      <Filter>src\xercesc\validators\schema\identity</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\util\FileManagers\WindowsFileMgr.cpp">
+      <Filter>src\xercesc\util\FileManagers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\util\MsgLoaders\InMemory\InMemMsgLoader.cpp">
+      <Filter>src\xercesc\util\MsgLoaders\InMemory</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\util\MutexManagers\StdMutexMgr.cpp">
+      <Filter>src\xercesc\util\MutexManagers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\util\NetAccessors\BinHTTPInputStreamCommon.cpp">
+      <Filter>src\xercesc\util\NetAccessors</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\util\NetAccessors\WinSock\BinHTTPURLInputStream.cpp">
+      <Filter>src\xercesc\util\NetAccessors\WinSock</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\util\NetAccessors\WinSock\WinSockNetAccessor.cpp">
+      <Filter>src\xercesc\util\NetAccessors\WinSock</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\util\Transcoders\Win32\Win32TransService.cpp">
+      <Filter>src\xercesc\util\Transcoders\Win32</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\util\regx\ASCIIRangeFactory.cpp">
+      <Filter>src\xercesc\util\regx</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\util\regx\BlockRangeFactory.cpp">
+      <Filter>src\xercesc\util\regx</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\util\regx\BMPattern.cpp">
+      <Filter>src\xercesc\util\regx</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\util\regx\CharToken.cpp">
+      <Filter>src\xercesc\util\regx</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\util\regx\ClosureToken.cpp">
+      <Filter>src\xercesc\util\regx</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\util\regx\ConcatToken.cpp">
+      <Filter>src\xercesc\util\regx</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\util\regx\Match.cpp">
+      <Filter>src\xercesc\util\regx</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\util\regx\Op.cpp">
+      <Filter>src\xercesc\util\regx</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\util\regx\OpFactory.cpp">
+      <Filter>src\xercesc\util\regx</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\util\regx\ParenToken.cpp">
+      <Filter>src\xercesc\util\regx</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\util\regx\ParserForXMLSchema.cpp">
+      <Filter>src\xercesc\util\regx</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\util\regx\RangeFactory.cpp">
+      <Filter>src\xercesc\util\regx</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\util\regx\RangeToken.cpp">
+      <Filter>src\xercesc\util\regx</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\util\regx\RangeTokenMap.cpp">
+      <Filter>src\xercesc\util\regx</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\util\regx\RegularExpression.cpp">
+      <Filter>src\xercesc\util\regx</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\util\regx\RegxParser.cpp">
+      <Filter>src\xercesc\util\regx</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\util\regx\RegxUtil.cpp">
+      <Filter>src\xercesc\util\regx</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\util\regx\StringToken.cpp">
+      <Filter>src\xercesc\util\regx</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\util\regx\Token.cpp">
+      <Filter>src\xercesc\util\regx</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\util\regx\TokenFactory.cpp">
+      <Filter>src\xercesc\util\regx</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\util\regx\UnicodeRangeFactory.cpp">
+      <Filter>src\xercesc\util\regx</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\util\regx\UnionToken.cpp">
+      <Filter>src\xercesc\util\regx</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\util\regx\XMLRangeFactory.cpp">
+      <Filter>src\xercesc\util\regx</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\util\regx\XMLUniCharacter.cpp">
+      <Filter>src\xercesc\util\regx</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\util\Base64.cpp">
+      <Filter>src\xercesc\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\util\BinFileInputStream.cpp">
+      <Filter>src\xercesc\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\util\BinInputStream.cpp">
+      <Filter>src\xercesc\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\util\BinMemInputStream.cpp">
+      <Filter>src\xercesc\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\util\BitSet.cpp">
+      <Filter>src\xercesc\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\util\DefaultPanicHandler.cpp">
+      <Filter>src\xercesc\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\util\EncodingValidator.cpp">
+      <Filter>src\xercesc\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\util\HeaderDummy.cpp">
+      <Filter>src\xercesc\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\util\HexBin.cpp">
+      <Filter>src\xercesc\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\util\JanitorExports.cpp">
+      <Filter>src\xercesc\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\util\KVStringPair.cpp">
+      <Filter>src\xercesc\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\util\Mutexes.cpp">
+      <Filter>src\xercesc\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\util\PanicHandler.cpp">
+      <Filter>src\xercesc\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\util\PlatformUtils.cpp">
+      <Filter>src\xercesc\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\util\PSVIUni.cpp">
+      <Filter>src\xercesc\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\util\QName.cpp">
+      <Filter>src\xercesc\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\util\StringPool.cpp">
+      <Filter>src\xercesc\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\util\SynchronizedStringPool.cpp">
+      <Filter>src\xercesc\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\util\TransService.cpp">
+      <Filter>src\xercesc\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\util\XMemory.cpp">
+      <Filter>src\xercesc\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\util\XML256TableTranscoder.cpp">
+      <Filter>src\xercesc\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\util\XML88591Transcoder.cpp">
+      <Filter>src\xercesc\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\util\XMLAbstractDoubleFloat.cpp">
+      <Filter>src\xercesc\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\util\XMLASCIITranscoder.cpp">
+      <Filter>src\xercesc\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\util\XMLBigDecimal.cpp">
+      <Filter>src\xercesc\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\util\XMLBigInteger.cpp">
+      <Filter>src\xercesc\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\util\XMLChar.cpp">
+      <Filter>src\xercesc\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\util\XMLChTranscoder.cpp">
+      <Filter>src\xercesc\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\util\XMLDateTime.cpp">
+      <Filter>src\xercesc\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\util\XMLDouble.cpp">
+      <Filter>src\xercesc\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\util\XMLEBCDICTranscoder.cpp">
+      <Filter>src\xercesc\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\util\XMLException.cpp">
+      <Filter>src\xercesc\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\util\XMLFloat.cpp">
+      <Filter>src\xercesc\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\util\XMLIBM1047Transcoder.cpp">
+      <Filter>src\xercesc\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\util\XMLIBM1140Transcoder.cpp">
+      <Filter>src\xercesc\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\util\XMLInitializer.cpp">
+      <Filter>src\xercesc\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\util\XMLMsgLoader.cpp">
+      <Filter>src\xercesc\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\util\XMLNumber.cpp">
+      <Filter>src\xercesc\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\util\XMLString.cpp">
+      <Filter>src\xercesc\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\util\XMLStringTokenizer.cpp">
+      <Filter>src\xercesc\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\util\XMLUCS4Transcoder.cpp">
+      <Filter>src\xercesc\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\util\XMLUni.cpp">
+      <Filter>src\xercesc\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\util\XMLUri.cpp">
+      <Filter>src\xercesc\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\util\XMLURL.cpp">
+      <Filter>src\xercesc\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\util\XMLUTF8Transcoder.cpp">
+      <Filter>src\xercesc\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\util\XMLUTF16Transcoder.cpp">
+      <Filter>src\xercesc\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\util\XMLWin1252Transcoder.cpp">
+      <Filter>src\xercesc\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\sax2\sax2Dummy.cpp">
+      <Filter>src\xercesc\sax2</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\sax\Dummy.cpp">
+      <Filter>src\xercesc\sax</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\sax\InputSource.cpp">
+      <Filter>src\xercesc\sax</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\sax\SAXException.cpp">
+      <Filter>src\xercesc\sax</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\sax\SAXParseException.cpp">
+      <Filter>src\xercesc\sax</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\parsers\AbstractDOMParser.cpp">
+      <Filter>src\xercesc\parsers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\parsers\DOMLSParserImpl.cpp">
+      <Filter>src\xercesc\parsers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\parsers\SAX2XMLFilterImpl.cpp">
+      <Filter>src\xercesc\parsers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\parsers\SAX2XMLReaderImpl.cpp">
+      <Filter>src\xercesc\parsers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\parsers\SAXParser.cpp">
+      <Filter>src\xercesc\parsers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xercesc\parsers\XercesDOMParser.cpp">
+      <Filter>src\xercesc\parsers</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="config.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\dom\DOM.hpp">
+      <Filter>include\xercesc\dom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\dom\DOMAttr.hpp">
+      <Filter>include\xercesc\dom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\dom\DOMCDATASection.hpp">
+      <Filter>include\xercesc\dom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\dom\DOMCharacterData.hpp">
+      <Filter>include\xercesc\dom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\dom\DOMComment.hpp">
+      <Filter>include\xercesc\dom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\dom\DOMConfiguration.hpp">
+      <Filter>include\xercesc\dom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\dom\DOMDocument.hpp">
+      <Filter>include\xercesc\dom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\dom\DOMDocumentFragment.hpp">
+      <Filter>include\xercesc\dom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\dom\DOMDocumentRange.hpp">
+      <Filter>include\xercesc\dom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\dom\DOMDocumentTraversal.hpp">
+      <Filter>include\xercesc\dom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\dom\DOMDocumentType.hpp">
+      <Filter>include\xercesc\dom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\dom\DOMElement.hpp">
+      <Filter>include\xercesc\dom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\dom\DOMEntity.hpp">
+      <Filter>include\xercesc\dom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\dom\DOMEntityReference.hpp">
+      <Filter>include\xercesc\dom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\dom\DOMError.hpp">
+      <Filter>include\xercesc\dom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\dom\DOMErrorHandler.hpp">
+      <Filter>include\xercesc\dom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\dom\DOMException.hpp">
+      <Filter>include\xercesc\dom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\dom\DOMImplementation.hpp">
+      <Filter>include\xercesc\dom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\dom\DOMImplementationList.hpp">
+      <Filter>include\xercesc\dom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\dom\DOMImplementationLS.hpp">
+      <Filter>include\xercesc\dom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\dom\DOMImplementationRegistry.hpp">
+      <Filter>include\xercesc\dom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\dom\DOMImplementationSource.hpp">
+      <Filter>include\xercesc\dom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\dom\DOMLocator.hpp">
+      <Filter>include\xercesc\dom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\dom\DOMLSException.hpp">
+      <Filter>include\xercesc\dom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\dom\DOMLSInput.hpp">
+      <Filter>include\xercesc\dom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\dom\DOMLSOutput.hpp">
+      <Filter>include\xercesc\dom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\dom\DOMLSParser.hpp">
+      <Filter>include\xercesc\dom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\dom\DOMLSParserFilter.hpp">
+      <Filter>include\xercesc\dom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\dom\DOMLSResourceResolver.hpp">
+      <Filter>include\xercesc\dom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\dom\DOMLSSerializer.hpp">
+      <Filter>include\xercesc\dom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\dom\DOMLSSerializerFilter.hpp">
+      <Filter>include\xercesc\dom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\dom\DOMMemoryManager.hpp">
+      <Filter>include\xercesc\dom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\dom\DOMNamedNodeMap.hpp">
+      <Filter>include\xercesc\dom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\dom\DOMNode.hpp">
+      <Filter>include\xercesc\dom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\dom\DOMNodeFilter.hpp">
+      <Filter>include\xercesc\dom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\dom\DOMNodeIterator.hpp">
+      <Filter>include\xercesc\dom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\dom\DOMNodeList.hpp">
+      <Filter>include\xercesc\dom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\dom\DOMNotation.hpp">
+      <Filter>include\xercesc\dom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\dom\DOMProcessingInstruction.hpp">
+      <Filter>include\xercesc\dom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\dom\DOMPSVITypeInfo.hpp">
+      <Filter>include\xercesc\dom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\dom\DOMRange.hpp">
+      <Filter>include\xercesc\dom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\dom\DOMRangeException.hpp">
+      <Filter>include\xercesc\dom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\dom\DOMStringList.hpp">
+      <Filter>include\xercesc\dom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\dom\DOMText.hpp">
+      <Filter>include\xercesc\dom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\dom\DOMTreeWalker.hpp">
+      <Filter>include\xercesc\dom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\dom\DOMTypeInfo.hpp">
+      <Filter>include\xercesc\dom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\dom\DOMUserDataHandler.hpp">
+      <Filter>include\xercesc\dom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\dom\DOMXPathEvaluator.hpp">
+      <Filter>include\xercesc\dom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\dom\DOMXPathException.hpp">
+      <Filter>include\xercesc\dom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\dom\DOMXPathExpression.hpp">
+      <Filter>include\xercesc\dom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\dom\DOMXPathNamespace.hpp">
+      <Filter>include\xercesc\dom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\dom\DOMXPathNSResolver.hpp">
+      <Filter>include\xercesc\dom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\dom\DOMXPathResult.hpp">
+      <Filter>include\xercesc\dom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\dom\StDOMNode.hpp">
+      <Filter>include\xercesc\dom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\framework\psvi\PSVIAttribute.hpp">
+      <Filter>include\xercesc\framework\psvi</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\framework\psvi\PSVIAttributeList.hpp">
+      <Filter>include\xercesc\framework\psvi</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\framework\psvi\PSVIElement.hpp">
+      <Filter>include\xercesc\framework\psvi</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\framework\psvi\PSVIHandler.hpp">
+      <Filter>include\xercesc\framework\psvi</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\framework\psvi\PSVIItem.hpp">
+      <Filter>include\xercesc\framework\psvi</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\framework\psvi\XSAnnotation.hpp">
+      <Filter>include\xercesc\framework\psvi</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\framework\psvi\XSAttributeDeclaration.hpp">
+      <Filter>include\xercesc\framework\psvi</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\framework\psvi\XSAttributeGroupDefinition.hpp">
+      <Filter>include\xercesc\framework\psvi</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\framework\psvi\XSAttributeUse.hpp">
+      <Filter>include\xercesc\framework\psvi</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\framework\psvi\XSComplexTypeDefinition.hpp">
+      <Filter>include\xercesc\framework\psvi</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\framework\psvi\XSConstants.hpp">
+      <Filter>include\xercesc\framework\psvi</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\framework\psvi\XSElementDeclaration.hpp">
+      <Filter>include\xercesc\framework\psvi</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\framework\psvi\XSFacet.hpp">
+      <Filter>include\xercesc\framework\psvi</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\framework\psvi\XSIDCDefinition.hpp">
+      <Filter>include\xercesc\framework\psvi</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\framework\psvi\XSModel.hpp">
+      <Filter>include\xercesc\framework\psvi</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\framework\psvi\XSModelGroup.hpp">
+      <Filter>include\xercesc\framework\psvi</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\framework\psvi\XSModelGroupDefinition.hpp">
+      <Filter>include\xercesc\framework\psvi</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\framework\psvi\XSMultiValueFacet.hpp">
+      <Filter>include\xercesc\framework\psvi</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\framework\psvi\XSNamedMap.hpp">
+      <Filter>include\xercesc\framework\psvi</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\framework\psvi\XSNamespaceItem.hpp">
+      <Filter>include\xercesc\framework\psvi</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\framework\psvi\XSNotationDeclaration.hpp">
+      <Filter>include\xercesc\framework\psvi</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\framework\psvi\XSObject.hpp">
+      <Filter>include\xercesc\framework\psvi</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\framework\psvi\XSParticle.hpp">
+      <Filter>include\xercesc\framework\psvi</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\framework\psvi\XSSimpleTypeDefinition.hpp">
+      <Filter>include\xercesc\framework\psvi</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\framework\psvi\XSTypeDefinition.hpp">
+      <Filter>include\xercesc\framework\psvi</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\framework\psvi\XSValue.hpp">
+      <Filter>include\xercesc\framework\psvi</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\framework\psvi\XSWildcard.hpp">
+      <Filter>include\xercesc\framework\psvi</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\framework\BinOutputStream.hpp">
+      <Filter>include\xercesc\framework</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\framework\LocalFileFormatTarget.hpp">
+      <Filter>include\xercesc\framework</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\framework\LocalFileInputSource.hpp">
+      <Filter>include\xercesc\framework</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\framework\MemBufFormatTarget.hpp">
+      <Filter>include\xercesc\framework</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\framework\MemBufInputSource.hpp">
+      <Filter>include\xercesc\framework</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\framework\MemoryManager.hpp">
+      <Filter>include\xercesc\framework</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\framework\StdInInputSource.hpp">
+      <Filter>include\xercesc\framework</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\framework\StdOutFormatTarget.hpp">
+      <Filter>include\xercesc\framework</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\framework\URLInputSource.hpp">
+      <Filter>include\xercesc\framework</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\framework\ValidationContext.hpp">
+      <Filter>include\xercesc\framework</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\framework\Wrapper4DOMLSInput.hpp">
+      <Filter>include\xercesc\framework</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\framework\Wrapper4InputSource.hpp">
+      <Filter>include\xercesc\framework</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\framework\XMLAttDef.hpp">
+      <Filter>include\xercesc\framework</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\framework\XMLAttDefList.hpp">
+      <Filter>include\xercesc\framework</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\framework\XMLAttr.hpp">
+      <Filter>include\xercesc\framework</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\framework\XMLBuffer.hpp">
+      <Filter>include\xercesc\framework</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\framework\XMLBufferMgr.hpp">
+      <Filter>include\xercesc\framework</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\framework\XMLContentModel.hpp">
+      <Filter>include\xercesc\framework</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\framework\XMLDocumentHandler.hpp">
+      <Filter>include\xercesc\framework</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\framework\XMLDTDDescription.hpp">
+      <Filter>include\xercesc\framework</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\framework\XMLElementDecl.hpp">
+      <Filter>include\xercesc\framework</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\framework\XMLEntityDecl.hpp">
+      <Filter>include\xercesc\framework</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\framework\XMLEntityHandler.hpp">
+      <Filter>include\xercesc\framework</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\framework\XMLErrorCodes.hpp">
+      <Filter>include\xercesc\framework</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\framework\XMLErrorReporter.hpp">
+      <Filter>include\xercesc\framework</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\framework\XMLFormatter.hpp">
+      <Filter>include\xercesc\framework</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\framework\XMLGrammarDescription.hpp">
+      <Filter>include\xercesc\framework</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\framework\XMLGrammarPool.hpp">
+      <Filter>include\xercesc\framework</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\framework\XMLGrammarPoolImpl.hpp">
+      <Filter>include\xercesc\framework</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\framework\XMLNotationDecl.hpp">
+      <Filter>include\xercesc\framework</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\framework\XMLPScanToken.hpp">
+      <Filter>include\xercesc\framework</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\framework\XMLRecognizer.hpp">
+      <Filter>include\xercesc\framework</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\framework\XMLRefInfo.hpp">
+      <Filter>include\xercesc\framework</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\framework\XMLSchemaDescription.hpp">
+      <Filter>include\xercesc\framework</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\framework\XMLValidator.hpp">
+      <Filter>include\xercesc\framework</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\framework\XMLValidityCodes.hpp">
+      <Filter>include\xercesc\framework</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\xinclude\XIncludeDOMDocumentProcessor.hpp">
+      <Filter>include\xercesc\xinclude</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\xinclude\XIncludeLocation.hpp">
+      <Filter>include\xercesc\xinclude</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\xinclude\XIncludeUtils.hpp">
+      <Filter>include\xercesc\xinclude</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\validators\common\AllContentModel.hpp">
+      <Filter>include\xercesc\validators\common</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\validators\common\CMAny.hpp">
+      <Filter>include\xercesc\validators\common</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\validators\common\CMBinaryOp.hpp">
+      <Filter>include\xercesc\validators\common</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\validators\common\CMLeaf.hpp">
+      <Filter>include\xercesc\validators\common</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\validators\common\CMNode.hpp">
+      <Filter>include\xercesc\validators\common</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\validators\common\CMRepeatingLeaf.hpp">
+      <Filter>include\xercesc\validators\common</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\validators\common\CMStateSet.hpp">
+      <Filter>include\xercesc\validators\common</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\validators\common\CMUnaryOp.hpp">
+      <Filter>include\xercesc\validators\common</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\validators\common\ContentLeafNameTypeVector.hpp">
+      <Filter>include\xercesc\validators\common</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\validators\common\ContentSpecNode.hpp">
+      <Filter>include\xercesc\validators\common</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\validators\common\DFAContentModel.hpp">
+      <Filter>include\xercesc\validators\common</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\validators\common\Grammar.hpp">
+      <Filter>include\xercesc\validators\common</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\validators\common\GrammarResolver.hpp">
+      <Filter>include\xercesc\validators\common</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\validators\common\MixedContentModel.hpp">
+      <Filter>include\xercesc\validators\common</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\validators\common\SimpleContentModel.hpp">
+      <Filter>include\xercesc\validators\common</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\validators\datatype\AbstractNumericFacetValidator.hpp">
+      <Filter>include\xercesc\validators\datatype</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\validators\datatype\AbstractNumericValidator.hpp">
+      <Filter>include\xercesc\validators\datatype</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\validators\datatype\AbstractStringValidator.hpp">
+      <Filter>include\xercesc\validators\datatype</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\validators\datatype\AnySimpleTypeDatatypeValidator.hpp">
+      <Filter>include\xercesc\validators\datatype</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\validators\datatype\AnyURIDatatypeValidator.hpp">
+      <Filter>include\xercesc\validators\datatype</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\validators\datatype\Base64BinaryDatatypeValidator.hpp">
+      <Filter>include\xercesc\validators\datatype</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\validators\datatype\BooleanDatatypeValidator.hpp">
+      <Filter>include\xercesc\validators\datatype</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\validators\datatype\DatatypeValidator.hpp">
+      <Filter>include\xercesc\validators\datatype</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\validators\datatype\DatatypeValidatorFactory.hpp">
+      <Filter>include\xercesc\validators\datatype</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\validators\datatype\DateDatatypeValidator.hpp">
+      <Filter>include\xercesc\validators\datatype</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\validators\datatype\DateTimeDatatypeValidator.hpp">
+      <Filter>include\xercesc\validators\datatype</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\validators\datatype\DateTimeValidator.hpp">
+      <Filter>include\xercesc\validators\datatype</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\validators\datatype\DayDatatypeValidator.hpp">
+      <Filter>include\xercesc\validators\datatype</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\validators\datatype\DecimalDatatypeValidator.hpp">
+      <Filter>include\xercesc\validators\datatype</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\validators\datatype\DoubleDatatypeValidator.hpp">
+      <Filter>include\xercesc\validators\datatype</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\validators\datatype\DurationDatatypeValidator.hpp">
+      <Filter>include\xercesc\validators\datatype</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\validators\datatype\ENTITYDatatypeValidator.hpp">
+      <Filter>include\xercesc\validators\datatype</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\validators\datatype\FloatDatatypeValidator.hpp">
+      <Filter>include\xercesc\validators\datatype</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\validators\datatype\HexBinaryDatatypeValidator.hpp">
+      <Filter>include\xercesc\validators\datatype</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\validators\datatype\IDDatatypeValidator.hpp">
+      <Filter>include\xercesc\validators\datatype</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\validators\datatype\IDREFDatatypeValidator.hpp">
+      <Filter>include\xercesc\validators\datatype</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\validators\datatype\InvalidDatatypeFacetException.hpp">
+      <Filter>include\xercesc\validators\datatype</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\validators\datatype\InvalidDatatypeValueException.hpp">
+      <Filter>include\xercesc\validators\datatype</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\validators\datatype\ListDatatypeValidator.hpp">
+      <Filter>include\xercesc\validators\datatype</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\validators\datatype\MonthDatatypeValidator.hpp">
+      <Filter>include\xercesc\validators\datatype</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\validators\datatype\MonthDayDatatypeValidator.hpp">
+      <Filter>include\xercesc\validators\datatype</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\validators\datatype\NameDatatypeValidator.hpp">
+      <Filter>include\xercesc\validators\datatype</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\validators\datatype\NCNameDatatypeValidator.hpp">
+      <Filter>include\xercesc\validators\datatype</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\validators\datatype\NOTATIONDatatypeValidator.hpp">
+      <Filter>include\xercesc\validators\datatype</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\validators\datatype\QNameDatatypeValidator.hpp">
+      <Filter>include\xercesc\validators\datatype</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\validators\datatype\StringDatatypeValidator.hpp">
+      <Filter>include\xercesc\validators\datatype</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\validators\datatype\TimeDatatypeValidator.hpp">
+      <Filter>include\xercesc\validators\datatype</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\validators\datatype\UnionDatatypeValidator.hpp">
+      <Filter>include\xercesc\validators\datatype</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\validators\datatype\XMLCanRepGroup.hpp">
+      <Filter>include\xercesc\validators\datatype</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\validators\datatype\YearDatatypeValidator.hpp">
+      <Filter>include\xercesc\validators\datatype</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\validators\datatype\YearMonthDatatypeValidator.hpp">
+      <Filter>include\xercesc\validators\datatype</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\validators\DTD\DocTypeHandler.hpp">
+      <Filter>include\xercesc\validators\DTD</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\validators\DTD\DTDAttDef.hpp">
+      <Filter>include\xercesc\validators\DTD</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\validators\DTD\DTDAttDefList.hpp">
+      <Filter>include\xercesc\validators\DTD</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\validators\DTD\DTDElementDecl.hpp">
+      <Filter>include\xercesc\validators\DTD</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\validators\DTD\DTDEntityDecl.hpp">
+      <Filter>include\xercesc\validators\DTD</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\validators\DTD\DTDGrammar.hpp">
+      <Filter>include\xercesc\validators\DTD</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\validators\DTD\DTDScanner.hpp">
+      <Filter>include\xercesc\validators\DTD</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\validators\DTD\DTDValidator.hpp">
+      <Filter>include\xercesc\validators\DTD</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\validators\DTD\XMLDTDDescriptionImpl.hpp">
+      <Filter>include\xercesc\validators\DTD</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\validators\schema\ComplexTypeInfo.hpp">
+      <Filter>include\xercesc\validators\schema</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\validators\schema\GeneralAttributeCheck.hpp">
+      <Filter>include\xercesc\validators\schema</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\validators\schema\NamespaceScope.hpp">
+      <Filter>include\xercesc\validators\schema</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\validators\schema\PSVIDefs.hpp">
+      <Filter>include\xercesc\validators\schema</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\validators\schema\SchemaAttDef.hpp">
+      <Filter>include\xercesc\validators\schema</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\validators\schema\SchemaAttDefList.hpp">
+      <Filter>include\xercesc\validators\schema</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\validators\schema\SchemaElementDecl.hpp">
+      <Filter>include\xercesc\validators\schema</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\validators\schema\SchemaGrammar.hpp">
+      <Filter>include\xercesc\validators\schema</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\validators\schema\SchemaInfo.hpp">
+      <Filter>include\xercesc\validators\schema</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\validators\schema\SchemaSymbols.hpp">
+      <Filter>include\xercesc\validators\schema</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\validators\schema\SchemaValidator.hpp">
+      <Filter>include\xercesc\validators\schema</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\validators\schema\SubstitutionGroupComparator.hpp">
+      <Filter>include\xercesc\validators\schema</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\validators\schema\TraverseSchema.hpp">
+      <Filter>include\xercesc\validators\schema</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\validators\schema\XercesAttGroupInfo.hpp">
+      <Filter>include\xercesc\validators\schema</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\validators\schema\XercesElementWildcard.hpp">
+      <Filter>include\xercesc\validators\schema</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\validators\schema\XercesGroupInfo.hpp">
+      <Filter>include\xercesc\validators\schema</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\validators\schema\XMLSchemaDescriptionImpl.hpp">
+      <Filter>include\xercesc\validators\schema</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\validators\schema\XSDDOMParser.hpp">
+      <Filter>include\xercesc\validators\schema</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\validators\schema\XSDErrorReporter.hpp">
+      <Filter>include\xercesc\validators\schema</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\validators\schema\XSDLocator.hpp">
+      <Filter>include\xercesc\validators\schema</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\validators\schema\XUtil.hpp">
+      <Filter>include\xercesc\validators\schema</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\validators\schema\identity\FieldActivator.hpp">
+      <Filter>include\xercesc\validators\schema\identity</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\validators\schema\identity\FieldValueMap.hpp">
+      <Filter>include\xercesc\validators\schema\identity</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\validators\schema\identity\IC_Field.hpp">
+      <Filter>include\xercesc\validators\schema\identity</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\validators\schema\identity\IC_Key.hpp">
+      <Filter>include\xercesc\validators\schema\identity</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\validators\schema\identity\IC_KeyRef.hpp">
+      <Filter>include\xercesc\validators\schema\identity</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\validators\schema\identity\IC_Selector.hpp">
+      <Filter>include\xercesc\validators\schema\identity</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\validators\schema\identity\IC_Unique.hpp">
+      <Filter>include\xercesc\validators\schema\identity</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\validators\schema\identity\IdentityConstraint.hpp">
+      <Filter>include\xercesc\validators\schema\identity</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\validators\schema\identity\IdentityConstraintHandler.hpp">
+      <Filter>include\xercesc\validators\schema\identity</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\validators\schema\identity\ValueStore.hpp">
+      <Filter>include\xercesc\validators\schema\identity</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\validators\schema\identity\ValueStoreCache.hpp">
+      <Filter>include\xercesc\validators\schema\identity</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\validators\schema\identity\XercesXPath.hpp">
+      <Filter>include\xercesc\validators\schema\identity</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\validators\schema\identity\XPathException.hpp">
+      <Filter>include\xercesc\validators\schema\identity</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\validators\schema\identity\XPathMatcher.hpp">
+      <Filter>include\xercesc\validators\schema\identity</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\validators\schema\identity\XPathMatcherStack.hpp">
+      <Filter>include\xercesc\validators\schema\identity</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\validators\schema\identity\XPathSymbols.hpp">
+      <Filter>include\xercesc\validators\schema\identity</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\FileManagers\WindowsFileMgr.hpp">
+      <Filter>include\xercesc\util\FileManagers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\MsgLoaders\InMemory\InMemMsgLoader.hpp">
+      <Filter>include\xercesc\util\MsgLoaders\InMemory</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\MutexManagers\StdMutexMgr.hpp">
+      <Filter>include\xercesc\util\MutexManagers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\NetAccessors\BinHTTPInputStreamCommon.hpp">
+      <Filter>include\xercesc\util\NetAccessors</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\NetAccessors\WinSock\BinHTTPURLInputStream.hpp">
+      <Filter>include\xercesc\util\NetAccessors\WinSock</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\NetAccessors\WinSock\WinSockNetAccessor.hpp">
+      <Filter>include\xercesc\util\NetAccessors\WinSock</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\regx\ASCIIRangeFactory.hpp">
+      <Filter>include\xercesc\util\regx</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\regx\BlockRangeFactory.hpp">
+      <Filter>include\xercesc\util\regx</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\regx\BMPattern.hpp">
+      <Filter>include\xercesc\util\regx</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\regx\CharToken.hpp">
+      <Filter>include\xercesc\util\regx</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\regx\ClosureToken.hpp">
+      <Filter>include\xercesc\util\regx</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\regx\ConcatToken.hpp">
+      <Filter>include\xercesc\util\regx</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\regx\Match.hpp">
+      <Filter>include\xercesc\util\regx</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\regx\Op.hpp">
+      <Filter>include\xercesc\util\regx</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\regx\OpFactory.hpp">
+      <Filter>include\xercesc\util\regx</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\regx\ParenToken.hpp">
+      <Filter>include\xercesc\util\regx</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\regx\ParserForXMLSchema.hpp">
+      <Filter>include\xercesc\util\regx</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\regx\RangeFactory.hpp">
+      <Filter>include\xercesc\util\regx</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\regx\RangeToken.hpp">
+      <Filter>include\xercesc\util\regx</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\regx\RangeTokenMap.hpp">
+      <Filter>include\xercesc\util\regx</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\regx\RegularExpression.hpp">
+      <Filter>include\xercesc\util\regx</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\regx\RegxDefs.hpp">
+      <Filter>include\xercesc\util\regx</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\regx\RegxParser.hpp">
+      <Filter>include\xercesc\util\regx</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\regx\RegxUtil.hpp">
+      <Filter>include\xercesc\util\regx</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\regx\StringToken.hpp">
+      <Filter>include\xercesc\util\regx</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\regx\Token.hpp">
+      <Filter>include\xercesc\util\regx</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\regx\TokenFactory.hpp">
+      <Filter>include\xercesc\util\regx</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\regx\TokenInc.hpp">
+      <Filter>include\xercesc\util\regx</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\regx\UniCharTable.hpp">
+      <Filter>include\xercesc\util\regx</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\regx\UnicodeRangeFactory.hpp">
+      <Filter>include\xercesc\util\regx</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\regx\UnionToken.hpp">
+      <Filter>include\xercesc\util\regx</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\regx\XMLRangeFactory.hpp">
+      <Filter>include\xercesc\util\regx</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\regx\XMLUniCharacter.hpp">
+      <Filter>include\xercesc\util\regx</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\ArrayIndexOutOfBoundsException.hpp">
+      <Filter>include\xercesc\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\Base64.hpp">
+      <Filter>include\xercesc\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\BaseRefVectorOf.hpp">
+      <Filter>include\xercesc\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\BinFileInputStream.hpp">
+      <Filter>include\xercesc\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\BinInputStream.hpp">
+      <Filter>include\xercesc\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\BinMemInputStream.hpp">
+      <Filter>include\xercesc\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\BitOps.hpp">
+      <Filter>include\xercesc\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\BitSet.hpp">
+      <Filter>include\xercesc\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\CountedPointer.hpp">
+      <Filter>include\xercesc\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\DefaultPanicHandler.hpp">
+      <Filter>include\xercesc\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\EmptyStackException.hpp">
+      <Filter>include\xercesc\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\EncodingValidator.hpp">
+      <Filter>include\xercesc\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\FlagJanitor.hpp">
+      <Filter>include\xercesc\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\Hash2KeysSetOf.hpp">
+      <Filter>include\xercesc\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\Hashers.hpp">
+      <Filter>include\xercesc\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\HexBin.hpp">
+      <Filter>include\xercesc\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\IllegalArgumentException.hpp">
+      <Filter>include\xercesc\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\InvalidCastException.hpp">
+      <Filter>include\xercesc\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\IOException.hpp">
+      <Filter>include\xercesc\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\Janitor.hpp">
+      <Filter>include\xercesc\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\KeyRefPair.hpp">
+      <Filter>include\xercesc\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\KeyValuePair.hpp">
+      <Filter>include\xercesc\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\KVStringPair.hpp">
+      <Filter>include\xercesc\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\Mutexes.hpp">
+      <Filter>include\xercesc\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\NameIdPool.hpp">
+      <Filter>include\xercesc\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\NoSuchElementException.hpp">
+      <Filter>include\xercesc\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\NullPointerException.hpp">
+      <Filter>include\xercesc\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\NumberFormatException.hpp">
+      <Filter>include\xercesc\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\OutOfMemoryException.hpp">
+      <Filter>include\xercesc\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\PanicHandler.hpp">
+      <Filter>include\xercesc\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\ParseException.hpp">
+      <Filter>include\xercesc\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\PlatformUtils.hpp">
+      <Filter>include\xercesc\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\PSVIUni.hpp">
+      <Filter>include\xercesc\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\QName.hpp">
+      <Filter>include\xercesc\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\RefArrayOf.hpp">
+      <Filter>include\xercesc\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\RefArrayVectorOf.hpp">
+      <Filter>include\xercesc\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\RefHash2KeysTableOf.hpp">
+      <Filter>include\xercesc\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\RefHash3KeysIdPool.hpp">
+      <Filter>include\xercesc\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\RefHashTableOf.hpp">
+      <Filter>include\xercesc\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\RefStackOf.hpp">
+      <Filter>include\xercesc\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\RefVectorOf.hpp">
+      <Filter>include\xercesc\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\RuntimeException.hpp">
+      <Filter>include\xercesc\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\SchemaDateTimeException.hpp">
+      <Filter>include\xercesc\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\SecurityManager.hpp">
+      <Filter>include\xercesc\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\StringPool.hpp">
+      <Filter>include\xercesc\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\SynchronizedStringPool.hpp">
+      <Filter>include\xercesc\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\TranscodingException.hpp">
+      <Filter>include\xercesc\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\TransENameMap.hpp">
+      <Filter>include\xercesc\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\TransService.hpp">
+      <Filter>include\xercesc\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\UnexpectedEOFException.hpp">
+      <Filter>include\xercesc\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\UnsupportedEncodingException.hpp">
+      <Filter>include\xercesc\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\UTFDataFormatException.hpp">
+      <Filter>include\xercesc\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\ValueArrayOf.hpp">
+      <Filter>include\xercesc\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\ValueHashTableOf.hpp">
+      <Filter>include\xercesc\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\ValueStackOf.hpp">
+      <Filter>include\xercesc\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\ValueVectorOf.hpp">
+      <Filter>include\xercesc\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\Xerces_autoconf_config.hpp">
+      <Filter>include\xercesc\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\XercesDefs.hpp">
+      <Filter>include\xercesc\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\XercesVersion.hpp">
+      <Filter>include\xercesc\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\XMemory.hpp">
+      <Filter>include\xercesc\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\XML256TableTranscoder.hpp">
+      <Filter>include\xercesc\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\XML88591Transcoder.hpp">
+      <Filter>include\xercesc\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\XMLAbstractDoubleFloat.hpp">
+      <Filter>include\xercesc\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\XMLASCIITranscoder.hpp">
+      <Filter>include\xercesc\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\XMLBigDecimal.hpp">
+      <Filter>include\xercesc\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\XMLBigInteger.hpp">
+      <Filter>include\xercesc\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\XMLChar.hpp">
+      <Filter>include\xercesc\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\XMLChTranscoder.hpp">
+      <Filter>include\xercesc\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\XMLDateTime.hpp">
+      <Filter>include\xercesc\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\XMLDOMMsg.hpp">
+      <Filter>include\xercesc\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\XMLDouble.hpp">
+      <Filter>include\xercesc\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\XMLEBCDICTranscoder.hpp">
+      <Filter>include\xercesc\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\XMLEntityResolver.hpp">
+      <Filter>include\xercesc\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\XMLEnumerator.hpp">
+      <Filter>include\xercesc\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\XMLException.hpp">
+      <Filter>include\xercesc\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\XMLExceptMsgs.hpp">
+      <Filter>include\xercesc\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\XMLFileMgr.hpp">
+      <Filter>include\xercesc\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\XMLFloat.hpp">
+      <Filter>include\xercesc\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\XMLIBM1047Transcoder.hpp">
+      <Filter>include\xercesc\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\XMLIBM1140Transcoder.hpp">
+      <Filter>include\xercesc\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\XMLInitializer.hpp">
+      <Filter>include\xercesc\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\XMLInteger.hpp">
+      <Filter>include\xercesc\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\XMLMsgLoader.hpp">
+      <Filter>include\xercesc\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\XMLMutexMgr.hpp">
+      <Filter>include\xercesc\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\XMLNetAccessor.hpp">
+      <Filter>include\xercesc\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\XMLNumber.hpp">
+      <Filter>include\xercesc\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\XMLResourceIdentifier.hpp">
+      <Filter>include\xercesc\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\XMLString.hpp">
+      <Filter>include\xercesc\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\XMLStringTokenizer.hpp">
+      <Filter>include\xercesc\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\XMLUCS4Transcoder.hpp">
+      <Filter>include\xercesc\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\XMLUni.hpp">
+      <Filter>include\xercesc\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\XMLUniDefs.hpp">
+      <Filter>include\xercesc\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\XMLUri.hpp">
+      <Filter>include\xercesc\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\XMLURL.hpp">
+      <Filter>include\xercesc\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\XMLUTF8Transcoder.hpp">
+      <Filter>include\xercesc\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\XMLUTF16Transcoder.hpp">
+      <Filter>include\xercesc\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\util\XMLWin1252Transcoder.hpp">
+      <Filter>include\xercesc\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\sax2\Attributes.hpp">
+      <Filter>include\xercesc\sax2</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\sax2\ContentHandler.hpp">
+      <Filter>include\xercesc\sax2</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\sax2\DeclHandler.hpp">
+      <Filter>include\xercesc\sax2</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\sax2\DefaultHandler.hpp">
+      <Filter>include\xercesc\sax2</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\sax2\LexicalHandler.hpp">
+      <Filter>include\xercesc\sax2</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\sax2\SAX2XMLFilter.hpp">
+      <Filter>include\xercesc\sax2</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\sax2\SAX2XMLReader.hpp">
+      <Filter>include\xercesc\sax2</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\sax2\XMLReaderFactory.hpp">
+      <Filter>include\xercesc\sax2</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\sax\AttributeList.hpp">
+      <Filter>include\xercesc\sax</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\sax\DocumentHandler.hpp">
+      <Filter>include\xercesc\sax</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\sax\DTDHandler.hpp">
+      <Filter>include\xercesc\sax</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\sax\EntityResolver.hpp">
+      <Filter>include\xercesc\sax</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\sax\ErrorHandler.hpp">
+      <Filter>include\xercesc\sax</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\sax\HandlerBase.hpp">
+      <Filter>include\xercesc\sax</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\sax\InputSource.hpp">
+      <Filter>include\xercesc\sax</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\sax\Locator.hpp">
+      <Filter>include\xercesc\sax</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\sax\Parser.hpp">
+      <Filter>include\xercesc\sax</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\sax\SAXException.hpp">
+      <Filter>include\xercesc\sax</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\sax\SAXParseException.hpp">
+      <Filter>include\xercesc\sax</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\parsers\AbstractDOMParser.hpp">
+      <Filter>include\xercesc\parsers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\parsers\DOMLSParserImpl.hpp">
+      <Filter>include\xercesc\parsers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\parsers\SAX2XMLFilterImpl.hpp">
+      <Filter>include\xercesc\parsers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\parsers\SAX2XMLReaderImpl.hpp">
+      <Filter>include\xercesc\parsers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\parsers\SAXParser.hpp">
+      <Filter>include\xercesc\parsers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\parsers\XercesDOMParser.hpp">
+      <Filter>include\xercesc\parsers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\towlower.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\towupper.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\xercesc\dom\impl\DOMAttrImpl.hpp">
+      <Filter>src\xercesc\dom\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\xercesc\dom\impl\DOMAttrMapImpl.hpp">
+      <Filter>src\xercesc\dom\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\xercesc\dom\impl\DOMAttrNSImpl.hpp">
+      <Filter>src\xercesc\dom\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\xercesc\dom\impl\DOMCasts.hpp">
+      <Filter>src\xercesc\dom\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\xercesc\dom\impl\DOMCDATASectionImpl.hpp">
+      <Filter>src\xercesc\dom\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\xercesc\dom\impl\DOMCharacterDataImpl.hpp">
+      <Filter>src\xercesc\dom\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\xercesc\dom\impl\DOMChildNode.hpp">
+      <Filter>src\xercesc\dom\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\xercesc\dom\impl\DOMCommentImpl.hpp">
+      <Filter>src\xercesc\dom\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\xercesc\dom\impl\DOMConfigurationImpl.hpp">
+      <Filter>src\xercesc\dom\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\xercesc\dom\impl\DOMDeepNodeListImpl.hpp">
+      <Filter>src\xercesc\dom\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\xercesc\dom\impl\DOMDeepNodeListPool.hpp">
+      <Filter>src\xercesc\dom\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\xercesc\dom\impl\DOMDocumentFragmentImpl.hpp">
+      <Filter>src\xercesc\dom\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\xercesc\dom\impl\DOMDocumentImpl.hpp">
+      <Filter>src\xercesc\dom\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\xercesc\dom\impl\DOMDocumentTypeImpl.hpp">
+      <Filter>src\xercesc\dom\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\xercesc\dom\impl\DOMElementImpl.hpp">
+      <Filter>src\xercesc\dom\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\xercesc\dom\impl\DOMElementNSImpl.hpp">
+      <Filter>src\xercesc\dom\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\xercesc\dom\impl\DOMEntityImpl.hpp">
+      <Filter>src\xercesc\dom\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\xercesc\dom\impl\DOMEntityReferenceImpl.hpp">
+      <Filter>src\xercesc\dom\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\xercesc\dom\impl\DOMErrorImpl.hpp">
+      <Filter>src\xercesc\dom\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\xercesc\dom\impl\DOMImplementationImpl.hpp">
+      <Filter>src\xercesc\dom\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\xercesc\dom\impl\DOMImplementationListImpl.hpp">
+      <Filter>src\xercesc\dom\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\xercesc\dom\impl\DOMLocatorImpl.hpp">
+      <Filter>src\xercesc\dom\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\xercesc\dom\impl\DOMLSInputImpl.hpp">
+      <Filter>src\xercesc\dom\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\xercesc\dom\impl\DOMLSOutputImpl.hpp">
+      <Filter>src\xercesc\dom\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\xercesc\dom\impl\DOMLSSerializerImpl.hpp">
+      <Filter>src\xercesc\dom\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\xercesc\dom\impl\DOMNamedNodeMapImpl.hpp">
+      <Filter>src\xercesc\dom\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\xercesc\dom\impl\DOMNodeBase.hpp">
+      <Filter>src\xercesc\dom\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\xercesc\dom\impl\DOMNodeIDMap.hpp">
+      <Filter>src\xercesc\dom\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\xercesc\dom\impl\DOMNodeImpl.hpp">
+      <Filter>src\xercesc\dom\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\xercesc\dom\impl\DOMNodeIteratorImpl.hpp">
+      <Filter>src\xercesc\dom\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\xercesc\dom\impl\DOMNodeListImpl.hpp">
+      <Filter>src\xercesc\dom\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\xercesc\dom\impl\DOMNodeVector.hpp">
+      <Filter>src\xercesc\dom\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\xercesc\dom\impl\DOMNormalizer.hpp">
+      <Filter>src\xercesc\dom\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\xercesc\dom\impl\DOMNotationImpl.hpp">
+      <Filter>src\xercesc\dom\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\xercesc\dom\impl\DOMParentNode.hpp">
+      <Filter>src\xercesc\dom\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\xercesc\dom\impl\DOMProcessingInstructionImpl.hpp">
+      <Filter>src\xercesc\dom\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\xercesc\dom\impl\DOMRangeImpl.hpp">
+      <Filter>src\xercesc\dom\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\xercesc\dom\impl\DOMStringListImpl.hpp">
+      <Filter>src\xercesc\dom\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\xercesc\dom\impl\DOMStringPool.hpp">
+      <Filter>src\xercesc\dom\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\xercesc\dom\impl\DOMTextImpl.hpp">
+      <Filter>src\xercesc\dom\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\xercesc\dom\impl\DOMTreeWalkerImpl.hpp">
+      <Filter>src\xercesc\dom\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\xercesc\dom\impl\DOMTypeInfoImpl.hpp">
+      <Filter>src\xercesc\dom\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\xercesc\dom\impl\DOMXPathExpressionImpl.hpp">
+      <Filter>src\xercesc\dom\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\xercesc\dom\impl\DOMXPathNSResolverImpl.hpp">
+      <Filter>src\xercesc\dom\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\xercesc\dom\impl\DOMXPathResultImpl.hpp">
+      <Filter>src\xercesc\dom\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\xercesc\dom\impl\XSDElementNSImpl.hpp">
+      <Filter>src\xercesc\dom\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\xercesc\util\MsgLoaders\InMemory\XercesMessages_en_US.hpp">
+      <Filter>src\xercesc\util\MsgLoaders\InMemory</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\internal\BinFileOutputStream.hpp">
+      <Filter>include\xercesc\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\internal\BinMemOutputStream.hpp">
+      <Filter>include\xercesc\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\internal\CharTypeTables.hpp">
+      <Filter>include\xercesc\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\internal\DGXMLScanner.hpp">
+      <Filter>include\xercesc\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\internal\ElemStack.hpp">
+      <Filter>include\xercesc\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\internal\EndOfEntityException.hpp">
+      <Filter>include\xercesc\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\internal\IANAEncodings.hpp">
+      <Filter>include\xercesc\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\internal\IGXMLScanner.hpp">
+      <Filter>include\xercesc\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\internal\MemoryManagerImpl.hpp">
+      <Filter>include\xercesc\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\internal\ReaderMgr.hpp">
+      <Filter>include\xercesc\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\internal\SGXMLScanner.hpp">
+      <Filter>include\xercesc\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\internal\ValidationContextImpl.hpp">
+      <Filter>include\xercesc\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\internal\VecAttributesImpl.hpp">
+      <Filter>include\xercesc\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\internal\VecAttrListImpl.hpp">
+      <Filter>include\xercesc\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\internal\WFXMLScanner.hpp">
+      <Filter>include\xercesc\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\internal\XMLInternalErrorHandler.hpp">
+      <Filter>include\xercesc\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\internal\XMLReader.hpp">
+      <Filter>include\xercesc\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\internal\XMLScanner.hpp">
+      <Filter>include\xercesc\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\internal\XMLScannerResolver.hpp">
+      <Filter>include\xercesc\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\internal\XProtoType.hpp">
+      <Filter>include\xercesc\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\internal\XSAXMLScanner.hpp">
+      <Filter>include\xercesc\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\internal\XSerializable.hpp">
+      <Filter>include\xercesc\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\internal\XSerializationException.hpp">
+      <Filter>include\xercesc\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\internal\XSerializeEngine.hpp">
+      <Filter>include\xercesc\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\internal\XSObjectFactory.hpp">
+      <Filter>include\xercesc\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xercesc\internal\XTemplateSerializer.hpp">
+      <Filter>include\xercesc\internal</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="version.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="src\xercesc\NLS\XMLErrList.dtd">
+      <Filter>src\xercesc\NLS</Filter>
+    </None>
+    <None Include="include\xercesc\util\Janitor.inl">
+      <Filter>include\xercesc\util</Filter>
+    </None>
+    <None Include="include\xercesc\util\KeyRefPair.inl">
+      <Filter>include\xercesc\util</Filter>
+    </None>
+    <None Include="include\xercesc\util\KeyValuePair.inl">
+      <Filter>include\xercesc\util</Filter>
+    </None>
+    <None Include="include\xercesc\util\LogicalPath.inl">
+      <Filter>include\xercesc\util</Filter>
+    </None>
+    <None Include="include\xercesc\util\NameIdPool.inl">
+      <Filter>include\xercesc\util</Filter>
+    </None>
+    <None Include="include\xercesc\util\RefArrayOf.inl">
+      <Filter>include\xercesc\util</Filter>
+    </None>
+    <None Include="include\xercesc\util\RefArrayVectorOf.inl">
+      <Filter>include\xercesc\util</Filter>
+    </None>
+    <None Include="include\xercesc\util\RefHash2KeysTableOf.inl">
+      <Filter>include\xercesc\util</Filter>
+    </None>
+    <None Include="include\xercesc\util\RefHash3KeysIdPool.inl">
+      <Filter>include\xercesc\util</Filter>
+    </None>
+    <None Include="include\xercesc\util\RefHashTableOf.inl">
+      <Filter>include\xercesc\util</Filter>
+    </None>
+    <None Include="include\xercesc\util\RefStackOf.inl">
+      <Filter>include\xercesc\util</Filter>
+    </None>
+    <None Include="include\xercesc\util\RefVectorOf.inl">
+      <Filter>include\xercesc\util</Filter>
+    </None>
+    <None Include="include\xercesc\util\TransENameMap.inl">
+      <Filter>include\xercesc\util</Filter>
+    </None>
+    <None Include="include\xercesc\util\ValueArrayOf.inl">
+      <Filter>include\xercesc\util</Filter>
+    </None>
+    <None Include="include\xercesc\util\ValueStackOf.inl">
+      <Filter>include\xercesc\util</Filter>
+    </None>
+    <None Include="include\xercesc\util\ValueVectorOf.inl">
+      <Filter>include\xercesc\util</Filter>
+    </None>
+    <None Include="include\xercesc\util\ValueHashTableOf.inl">
+      <Filter>include\xercesc\util</Filter>
+    </None>
+    <None Include="include\xercesc\util\BaseRefVectorOf.inl">
+      <Filter>include\xercesc\util</Filter>
+    </None>
+    <None Include="src\xercesc\dom\impl\DOMDeepNodeListPool.inl">
+      <Filter>src\xercesc\dom\impl</Filter>
+    </None>
+    <None Include="include\xercesc\util\CountedPointer.inl">
+      <Filter>include\xercesc\util</Filter>
+    </None>
+    <None Include="include\xercesc\util\FlagJanitor.inl">
+      <Filter>include\xercesc\util</Filter>
+    </None>
+    <None Include="include\xercesc\util\Hash2KeysSetOf.inl">
+      <Filter>include\xercesc\util</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="src\xercesc\NLS\EN_US\XMLErrList_EN_US.Xml">
+      <Filter>src\xercesc\NLS\EN_US</Filter>
+    </Xml>
+  </ItemGroup>
+</Project>

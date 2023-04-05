@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Configuration>
+	<Database>
+		<Metadata Filename="D:\Data\Seasurveillance\metadata.dat"  />
+		<Tablespace Name="Tablespace1" Filename="D:\Data\Seasurveillance\data1.dat"  />
+		<Tablespace Name="Tablespace2" Filename="D:\Data\Seasurveillance\data2.dat"  />
+		<Tablespace Name="Tablespace3" Filename="D:\Data\Seasurveillance\data3.dat"  />
+	</Database>
+	<Servers>
+		<Server Name="Server1" Host="server1.domain.com">
+			<AMQP>
+				<Topic Name="Topic1"/>
+				<Queue Name="Queue1"/>
+			</AMQP>
+		</Server>
+	</Servers>
+	<Subscriptions>
+		<Subscription Server="Server1" Persistent="true"/>
+	</Subscriptions>
+</Configuration>

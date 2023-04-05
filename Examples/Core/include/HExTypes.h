@@ -1,0 +1,175 @@
+#pragma once
+#ifndef __HEXSENSOR_H__
+#define __HEXSENSOR_H__
+
+#include <HCCGuid.h>
+#include <HCCDateTime.h>
+
+#include <variant>
+
+namespace Harlinn::Common::Core::Examples
+{
+    struct SensorPoint
+    {
+        DateTime Timestamp;
+        Int64 Flags = 0;
+        Double Value = 0.0;
+
+        template<typename T>
+        void Read( T& reader )
+        {
+            reader.Read( Timestamp );
+            reader.Read( Flags );
+            reader.Read( Value );
+        }
+
+        template<typename T>
+        void Write( T& writer ) const
+        {
+            writer.Write( Timestamp );
+            writer.Write( Flags );
+            writer.Write( Value );
+        }
+
+
+    };
+
+    struct SensorValue
+    {
+        Guid Sensor;
+        DateTime Timestamp;
+        Int64 Flags = 0;
+        Double Value = 0.0;
+
+        template<typename T>
+        void Read( T& reader )
+        {
+            reader.Read( Sensor );
+            reader.Read( Timestamp );
+            reader.Read( Flags );
+            reader.Read( Value );
+        }
+
+        template<typename T>
+        void Write( T& writer ) const
+        {
+            writer.Write( Sensor );
+            writer.Write( Timestamp );
+            writer.Write( Flags );
+            writer.Write( Value );
+        }
+
+    };
+
+    struct Named
+    {
+        Guid Id;
+        std::string Name;
+        Named( )
+        {
+        }
+
+        template<typename T>
+        void Read( T& reader )
+        {
+            reader.Read( Id );
+            reader.Read( Name );
+        }
+
+        template<typename T>
+        void Write( T& writer ) const
+        {
+            writer.Write( Id );
+            writer.Write( Name );
+        }
+
+    };
+
+    struct Owned : Named
+    {
+        using Base = Named;
+        Guid Owner;
+        Owned( )
+        {
+        }
+
+        template<typename T>
+        void Read( T& reader )
+        {
+            Base::Read( reader );
+            reader.Read( Owner );
+        }
+
+        template<typename T>
+        void Write( T& writer ) const
+        {
+            Base::Write( writer );
+            writer.Write( Owner );
+        }
+
+    };
+
+
+    enum class CatalogItemType : Int16 
+    { 
+        Unknown, Catalog, Asset 
+    };
+
+    struct CatalogItemBase : Owned 
+    { 
+        using Base = Owned;
+        CatalogItemType Type = CatalogItemType::Unknown; 
+
+        CatalogItemBase( )
+        {
+        }
+        CatalogItemBase( CatalogItemType type )
+            : Type( type )
+        {
+        }
+
+        template<typename T>
+        static CatalogItemType Read( T& reader )
+        {
+            auto kind = reader.ReadInt16( );
+            return static_cast<CatalogItemType>( kind );
+        }
+
+        template<typename T>
+        void Write( T& writer ) const
+        {
+            writer.Write( static_cast<Int16>( Type ) );
+            Base::Write( writer );
+        }
+
+    };
+
+    struct Catalog : CatalogItemBase
+    {
+        using Base = CatalogItemBase;
+        Catalog( )
+            : Base( CatalogItemType::Catalog )
+        {
+        }
+
+    };
+
+    struct Asset : CatalogItemBase
+    {
+        using Base = CatalogItemBase;
+        Asset( )
+            : Base( CatalogItemType::Asset )
+        {
+        }
+    };
+
+    using CatalogItem = std::variant<Catalog, Asset>;
+
+    struct Sensor : Owned
+    {
+        using Base = Owned;
+    };
+
+}
+
+#endif

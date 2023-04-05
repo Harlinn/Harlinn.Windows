@@ -1,0 +1,192 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="include">
+      <UniqueIdentifier>{d6c16f6c-473a-4da4-b04e-bfdf4dd40d60}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\netcdf">
+      <UniqueIdentifier>{24b6b060-f845-4109-85b4-9ade257ba07f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{ad8c0264-2cf7-4c6d-bd5f-bc9ead16efc2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Readme">
+      <UniqueIdentifier>{30040eb3-7fc3-4efe-a9d9-086836fa5cbe}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="dllmain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\netcdf\ceconstraints.h">
+      <Filter>include\netcdf</Filter>
+    </ClInclude>
+    <ClInclude Include="include\netcdf\err_macros.h">
+      <Filter>include\netcdf</Filter>
+    </ClInclude>
+    <ClInclude Include="include\netcdf\fbits.h">
+      <Filter>include\netcdf</Filter>
+    </ClInclude>
+    <ClInclude Include="include\netcdf\hdf4dispatch.h">
+      <Filter>include\netcdf</Filter>
+    </ClInclude>
+    <ClInclude Include="include\netcdf\hdf5dispatch.h">
+      <Filter>include\netcdf</Filter>
+    </ClInclude>
+    <ClInclude Include="include\netcdf\hdf5internal.h">
+      <Filter>include\netcdf</Filter>
+    </ClInclude>
+    <ClInclude Include="include\netcdf\isnan.h">
+      <Filter>include\netcdf</Filter>
+    </ClInclude>
+    <ClInclude Include="include\netcdf\nc.h">
+      <Filter>include\netcdf</Filter>
+    </ClInclude>
+    <ClInclude Include="include\netcdf\nc_hashmap.h">
+      <Filter>include\netcdf</Filter>
+    </ClInclude>
+    <ClInclude Include="include\netcdf\nc_logging.h">
+      <Filter>include\netcdf</Filter>
+    </ClInclude>
+    <ClInclude Include="include\netcdf\nc_provenance.h">
+      <Filter>include\netcdf</Filter>
+    </ClInclude>
+    <ClInclude Include="include\netcdf\nc_tests.h">
+      <Filter>include\netcdf</Filter>
+    </ClInclude>
+    <ClInclude Include="include\netcdf\nc3dispatch.h">
+      <Filter>include\netcdf</Filter>
+    </ClInclude>
+    <ClInclude Include="include\netcdf\nc3internal.h">
+      <Filter>include\netcdf</Filter>
+    </ClInclude>
+    <ClInclude Include="include\netcdf\nc4dispatch.h">
+      <Filter>include\netcdf</Filter>
+    </ClInclude>
+    <ClInclude Include="include\netcdf\nc4internal.h">
+      <Filter>include\netcdf</Filter>
+    </ClInclude>
+    <ClInclude Include="include\netcdf\ncauth.h">
+      <Filter>include\netcdf</Filter>
+    </ClInclude>
+    <ClInclude Include="include\netcdf\ncbytes.h">
+      <Filter>include\netcdf</Filter>
+    </ClInclude>
+    <ClInclude Include="include\netcdf\ncconfigure.h">
+      <Filter>include\netcdf</Filter>
+    </ClInclude>
+    <ClInclude Include="include\netcdf\nccrc.h">
+      <Filter>include\netcdf</Filter>
+    </ClInclude>
+    <ClInclude Include="include\netcdf\ncdap.h">
+      <Filter>include\netcdf</Filter>
+    </ClInclude>
+    <ClInclude Include="include\netcdf\ncdimscale.h">
+      <Filter>include\netcdf</Filter>
+    </ClInclude>
+    <ClInclude Include="include\netcdf\ncdispatch.h">
+      <Filter>include\netcdf</Filter>
+    </ClInclude>
+    <ClInclude Include="include\netcdf\ncexhash.h">
+      <Filter>include\netcdf</Filter>
+    </ClInclude>
+    <ClInclude Include="include\netcdf\ncexternl.h">
+      <Filter>include\netcdf</Filter>
+    </ClInclude>
+    <ClInclude Include="include\netcdf\ncfilter.h">
+      <Filter>include\netcdf</Filter>
+    </ClInclude>
+    <ClInclude Include="include\netcdf\nchashmap.h">
+      <Filter>include\netcdf</Filter>
+    </ClInclude>
+    <ClInclude Include="include\netcdf\nchttp.h">
+      <Filter>include\netcdf</Filter>
+    </ClInclude>
+    <ClInclude Include="include\netcdf\ncindex.h">
+      <Filter>include\netcdf</Filter>
+    </ClInclude>
+    <ClInclude Include="include\netcdf\nclist.h">
+      <Filter>include\netcdf</Filter>
+    </ClInclude>
+    <ClInclude Include="include\netcdf\nclog.h">
+      <Filter>include\netcdf</Filter>
+    </ClInclude>
+    <ClInclude Include="include\netcdf\ncmodel.h">
+      <Filter>include\netcdf</Filter>
+    </ClInclude>
+    <ClInclude Include="include\netcdf\ncoffsets.h">
+      <Filter>include\netcdf</Filter>
+    </ClInclude>
+    <ClInclude Include="include\netcdf\ncpathmgr.h">
+      <Filter>include\netcdf</Filter>
+    </ClInclude>
+    <ClInclude Include="include\netcdf\ncrc.h">
+      <Filter>include\netcdf</Filter>
+    </ClInclude>
+    <ClInclude Include="include\netcdf\nctestserver.h">
+      <Filter>include\netcdf</Filter>
+    </ClInclude>
+    <ClInclude Include="include\netcdf\nctime.h">
+      <Filter>include\netcdf</Filter>
+    </ClInclude>
+    <ClInclude Include="include\netcdf\ncuri.h">
+      <Filter>include\netcdf</Filter>
+    </ClInclude>
+    <ClInclude Include="include\netcdf\ncurlmodel.h">
+      <Filter>include\netcdf</Filter>
+    </ClInclude>
+    <ClInclude Include="include\netcdf\ncutf8.h">
+      <Filter>include\netcdf</Filter>
+    </ClInclude>
+    <ClInclude Include="include\netcdf\ncxcache.h">
+      <Filter>include\netcdf</Filter>
+    </ClInclude>
+    <ClInclude Include="include\netcdf\netcdf.h">
+      <Filter>include\netcdf</Filter>
+    </ClInclude>
+    <ClInclude Include="include\netcdf\netcdf_aux.h">
+      <Filter>include\netcdf</Filter>
+    </ClInclude>
+    <ClInclude Include="include\netcdf\netcdf_dispatch.h">
+      <Filter>include\netcdf</Filter>
+    </ClInclude>
+    <ClInclude Include="include\netcdf\netcdf_f.h">
+      <Filter>include\netcdf</Filter>
+    </ClInclude>
+    <ClInclude Include="include\netcdf\netcdf_filter.h">
+      <Filter>include\netcdf</Filter>
+    </ClInclude>
+    <ClInclude Include="include\netcdf\netcdf_mem.h">
+      <Filter>include\netcdf</Filter>
+    </ClInclude>
+    <ClInclude Include="include\netcdf\netcdf_meta.h">
+      <Filter>include\netcdf</Filter>
+    </ClInclude>
+    <ClInclude Include="include\netcdf\netcdf_par.h">
+      <Filter>include\netcdf</Filter>
+    </ClInclude>
+    <ClInclude Include="include\netcdf\onstack.h">
+      <Filter>include\netcdf</Filter>
+    </ClInclude>
+    <ClInclude Include="include\netcdf\rnd.h">
+      <Filter>include\netcdf</Filter>
+    </ClInclude>
+    <ClInclude Include="include\netcdf\XGetopt.h">
+      <Filter>include\netcdf</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

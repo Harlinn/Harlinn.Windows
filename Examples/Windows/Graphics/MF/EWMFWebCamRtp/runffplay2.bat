@@ -1,0 +1,1 @@
+ffplay -i test2.sdp -x 640 -y 480 -profile:v baseline -protocol_whitelist "file,rtp,udp"

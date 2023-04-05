@@ -1,0 +1,50 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="include">
+      <UniqueIdentifier>{925ec6b3-30eb-4fc4-9f1b-51f62885fd3c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\VulkanMemoryAllocator">
+      <UniqueIdentifier>{1467c606-3727-4e72-a0d4-a25eba04e6e1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{faabead4-e7b8-4bb2-a7d3-74a31cd1228a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Readme">
+      <UniqueIdentifier>{8d0a6847-ca4f-422c-ba59-f4f2b03e133c}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="dllmain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\VmaUsage.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\VulkanMemoryAllocator\vk_mem_alloc.h">
+      <Filter>include\VulkanMemoryAllocator</Filter>
+    </ClInclude>
+    <ClInclude Include="include\VulkanMemoryAllocator\VmaUsage.h">
+      <Filter>include\VulkanMemoryAllocator</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Natvis Include="include\VulkanMemoryAllocator\vk_mem_alloc.natvis">
+      <Filter>include\VulkanMemoryAllocator</Filter>
+    </Natvis>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,138 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="include">
+      <UniqueIdentifier>{84de3410-b1c9-4255-9850-9d0dda8ca844}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{c4a2777f-7100-43b0-bbe5-329ff37e3979}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\mysofa">
+      <UniqueIdentifier>{21815e8e-647f-467a-b373-2b0729acacd5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\mysofa\hdf">
+      <UniqueIdentifier>{53bc355b-055c-42f1-b82f-3ec93ac6e5a4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\mysofa\hrtf">
+      <UniqueIdentifier>{8669849f-9c41-40c0-9b10-848bd692ea2f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\mysofa\resampler">
+      <UniqueIdentifier>{679edef6-0769-4324-8f05-d0060005191a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\hdf">
+      <UniqueIdentifier>{b75327ba-ce2a-4e36-a7e7-3d9dfbeaa7b5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\hrtf">
+      <UniqueIdentifier>{4c5bae09-d208-4ee6-a23e-b7b8b447b517}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\resampler">
+      <UniqueIdentifier>{eefa497d-2682-4099-bfbf-70ebf7088001}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Readme">
+      <UniqueIdentifier>{b7322f3e-6bd3-4dc7-95c8-3f2e2d90c669}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="dllmain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hdf\btree.c">
+      <Filter>src\hdf</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hdf\dataobject.c">
+      <Filter>src\hdf</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hdf\fractalhead.c">
+      <Filter>src\hdf</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hdf\gcol.c">
+      <Filter>src\hdf</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hdf\gunzip.c">
+      <Filter>src\hdf</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hdf\superblock.c">
+      <Filter>src\hdf</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hrtf\cache.c">
+      <Filter>src\hrtf</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hrtf\check.c">
+      <Filter>src\hrtf</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hrtf\easy.c">
+      <Filter>src\hrtf</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hrtf\interpolate.c">
+      <Filter>src\hrtf</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hrtf\kdtree.c">
+      <Filter>src\hrtf</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hrtf\lookup.c">
+      <Filter>src\hrtf</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hrtf\loudness.c">
+      <Filter>src\hrtf</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hrtf\minphase.c">
+      <Filter>src\hrtf</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hrtf\neighbors.c">
+      <Filter>src\hrtf</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hrtf\reader.c">
+      <Filter>src\hrtf</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hrtf\resample.c">
+      <Filter>src\hrtf</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hrtf\spherical.c">
+      <Filter>src\hrtf</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hrtf\tools.c">
+      <Filter>src\hrtf</Filter>
+    </ClCompile>
+    <ClCompile Include="src\resampler\speex_resampler.c">
+      <Filter>src\resampler</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\mysofa\hdf\reader.h">
+      <Filter>include\mysofa\hdf</Filter>
+    </ClInclude>
+    <ClInclude Include="include\mysofa\hrtf\kdtree.h">
+      <Filter>include\mysofa\hrtf</Filter>
+    </ClInclude>
+    <ClInclude Include="include\mysofa\hrtf\mysofa.h">
+      <Filter>include\mysofa\hrtf</Filter>
+    </ClInclude>
+    <ClInclude Include="include\mysofa\hrtf\mysofa_export.h">
+      <Filter>include\mysofa\hrtf</Filter>
+    </ClInclude>
+    <ClInclude Include="include\mysofa\hrtf\tools.h">
+      <Filter>include\mysofa\hrtf</Filter>
+    </ClInclude>
+    <ClInclude Include="include\mysofa\resampler\arch.h">
+      <Filter>include\mysofa\resampler</Filter>
+    </ClInclude>
+    <ClInclude Include="include\mysofa\resampler\speex_resampler.h">
+      <Filter>include\mysofa\resampler</Filter>
+    </ClInclude>
+    <ClInclude Include="include\mysofa\resampler\stack_alloc.h">
+      <Filter>include\mysofa\resampler</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

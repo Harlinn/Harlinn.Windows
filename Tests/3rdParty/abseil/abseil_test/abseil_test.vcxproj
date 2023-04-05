@@ -1,0 +1,375 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{54dd55e9-569e-441b-a74a-21eb988671c0}</ProjectGuid>
+    <RootNamespace>abseiltest</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Label="Vcpkg">
+    <VcpkgEnabled>false</VcpkgEnabled>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS=1;NOMINMAX=1;_ENABLE_EXTENDED_ALIGNED_STORAGE=1;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalOptions>/Zc:__cplusplus -utf-8 /bigobj %(AdditionalOptions)</AdditionalOptions>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.gtest\include;$(SolutionDir)3rdParty\Harlinn.abseil\include;$(ProjectDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(OutDir)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS=1;NOMINMAX=1;_ENABLE_EXTENDED_ALIGNED_STORAGE=1;WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalOptions>/Zc:__cplusplus -utf-8 /bigobj %(AdditionalOptions)</AdditionalOptions>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.gtest\include;$(SolutionDir)3rdParty\Harlinn.abseil\include;$(ProjectDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(OutDir)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS=1;NOMINMAX=1;_ENABLE_EXTENDED_ALIGNED_STORAGE=1;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalOptions>/Zc:__cplusplus -utf-8 /bigobj %(AdditionalOptions)</AdditionalOptions>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.gtest\include;$(SolutionDir)3rdParty\Harlinn.abseil\include;$(ProjectDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(OutDir)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS=1;NOMINMAX=1;_ENABLE_EXTENDED_ALIGNED_STORAGE=1;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalOptions>/Zc:__cplusplus -utf-8 /bigobj %(AdditionalOptions)</AdditionalOptions>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.gtest\include;$(SolutionDir)3rdParty\Harlinn.abseil\include;$(ProjectDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(OutDir)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="abseil_test.cpp" />
+    <ClCompile Include="algorithm\algorithm_test.cc" />
+    <ClCompile Include="algorithm\container_test.cc" />
+    <ClCompile Include="base\bit_cast_test.cc" />
+    <ClCompile Include="base\call_once_test.cc" />
+    <ClCompile Include="base\config_test.cc" />
+    <ClCompile Include="base\exception_safety_testing_test.cc" />
+    <ClCompile Include="base\inline_variable_test.cc" />
+    <ClCompile Include="base\inline_variable_test_a.cc" />
+    <ClCompile Include="base\inline_variable_test_b.cc" />
+    <ClCompile Include="base\internal\atomic_hook_test.cc" />
+    <ClCompile Include="base\internal\atomic_hook_test_helper.cc" />
+    <ClCompile Include="base\internal\endian_test.cc" />
+    <ClCompile Include="base\internal\errno_saver_test.cc" />
+    <ClCompile Include="base\internal\exception_safety_testing.cc" />
+    <ClCompile Include="base\internal\fast_type_id_test.cc" />
+    <ClCompile Include="base\internal\low_level_alloc_test.cc" />
+    <ClCompile Include="base\internal\prefetch_test.cc" />
+    <ClCompile Include="base\internal\scoped_set_env_test.cc" />
+    <ClCompile Include="base\internal\strerror_test.cc" />
+    <ClCompile Include="base\internal\sysinfo_test.cc" />
+    <ClCompile Include="base\internal\thread_identity_test.cc" />
+    <ClCompile Include="base\internal\unique_small_name_test.cc" />
+    <ClCompile Include="base\invoke_test.cc" />
+    <ClCompile Include="base\log_severity_test.cc" />
+    <ClCompile Include="base\optimization_test.cc" />
+    <ClCompile Include="base\raw_logging_test.cc" />
+    <ClCompile Include="base\throw_delegate_test.cc" />
+    <ClCompile Include="cleanup\cleanup_test.cc" />
+    <ClCompile Include="container\btree_test.cc" />
+    <ClCompile Include="container\fixed_array_exception_safety_test.cc" />
+    <ClCompile Include="container\fixed_array_test.cc" />
+    <ClCompile Include="container\flat_hash_map_test.cc" />
+    <ClCompile Include="container\flat_hash_set_test.cc" />
+    <ClCompile Include="container\inlined_vector_exception_safety_test.cc" />
+    <ClCompile Include="container\inlined_vector_test.cc" />
+    <ClCompile Include="container\internal\compressed_tuple_test.cc" />
+    <ClCompile Include="container\internal\container_memory_test.cc" />
+    <ClCompile Include="container\internal\hashtablez_sampler_test.cc" />
+    <ClCompile Include="container\internal\hash_function_defaults_test.cc" />
+    <ClCompile Include="container\internal\hash_generator_testing.cc" />
+    <ClCompile Include="container\internal\hash_policy_testing_test.cc" />
+    <ClCompile Include="container\internal\hash_policy_traits_test.cc" />
+    <ClCompile Include="container\internal\layout_test.cc" />
+    <ClCompile Include="container\internal\node_slot_policy_test.cc" />
+    <ClCompile Include="container\internal\raw_hash_set_allocator_test.cc" />
+    <ClCompile Include="container\internal\raw_hash_set_test.cc" />
+    <ClCompile Include="container\internal\test_instance_tracker.cc" />
+    <ClCompile Include="container\internal\test_instance_tracker_test.cc" />
+    <ClCompile Include="container\internal\unordered_map_test.cc" />
+    <ClCompile Include="container\internal\unordered_set_test.cc" />
+    <ClCompile Include="container\node_hash_map_test.cc" />
+    <ClCompile Include="container\node_hash_set_test.cc" />
+    <ClCompile Include="container\sample_element_size_test.cc" />
+    <ClCompile Include="debugging\failure_signal_handler_test.cc" />
+    <ClCompile Include="debugging\internal\demangle_test.cc" />
+    <ClCompile Include="debugging\internal\stack_consumption_test.cc" />
+    <ClCompile Include="debugging\leak_check_fail_test.cc" />
+    <ClCompile Include="debugging\leak_check_test.cc" />
+    <ClCompile Include="debugging\symbolize_test.cc" />
+    <ClCompile Include="flags\commandlineflag_test.cc" />
+    <ClCompile Include="flags\fl_config_test.cc" />
+    <ClCompile Include="flags\flag_test.cc" />
+    <ClCompile Include="flags\flag_test_defs.cc" />
+    <ClCompile Include="flags\internal\path_util_test.cc" />
+    <ClCompile Include="flags\internal\program_name_test.cc" />
+    <ClCompile Include="flags\internal\sequence_lock_test.cc" />
+    <ClCompile Include="flags\internal\usage_test.cc" />
+    <ClCompile Include="flags\marshalling_test.cc" />
+    <ClCompile Include="flags\parse_test.cc" />
+    <ClCompile Include="flags\reflection_test.cc" />
+    <ClCompile Include="flags\usage_config_test.cc" />
+    <ClCompile Include="functional\any_invocable_test.cc" />
+    <ClCompile Include="functional\bind_front_test.cc" />
+    <ClCompile Include="functional\function_ref_test.cc" />
+    <ClCompile Include="hash\hash_test.cc" />
+    <ClCompile Include="hash\internal\city_test.cc" />
+    <ClCompile Include="hash\internal\low_level_hash_test.cc" />
+    <ClCompile Include="memory\memory_exception_safety_test.cc" />
+    <ClCompile Include="memory\memory_test.cc" />
+    <ClCompile Include="meta\type_traits_test.cc" />
+    <ClCompile Include="numeric\bits_test.cc" />
+    <ClCompile Include="numeric\int128_stream_test.cc" />
+    <ClCompile Include="numeric\int128_test.cc" />
+    <ClCompile Include="profiling\internal\exponential_biased_test.cc" />
+    <ClCompile Include="profiling\internal\periodic_sampler_test.cc" />
+    <ClCompile Include="profiling\internal\sample_recorder_test.cc" />
+    <ClCompile Include="random\bernoulli_distribution_test.cc" />
+    <ClCompile Include="random\beta_distribution_test.cc" />
+    <ClCompile Include="random\bit_gen_ref_test.cc" />
+    <ClCompile Include="random\discrete_distribution_test.cc" />
+    <ClCompile Include="random\distributions_test.cc" />
+    <ClCompile Include="random\examples_test.cc" />
+    <ClCompile Include="random\exponential_distribution_test.cc" />
+    <ClCompile Include="random\gaussian_distribution_test.cc" />
+    <ClCompile Include="random\internal\chi_square_test.cc" />
+    <ClCompile Include="random\internal\distribution_test_util_test.cc" />
+    <ClCompile Include="random\internal\explicit_seed_seq_test.cc" />
+    <ClCompile Include="random\internal\fastmath_test.cc" />
+    <ClCompile Include="random\internal\fast_uniform_bits_test.cc" />
+    <ClCompile Include="random\internal\generate_real_test.cc" />
+    <ClCompile Include="random\internal\iostream_state_saver_test.cc" />
+    <ClCompile Include="random\internal\nanobenchmark_test.cc" />
+    <ClCompile Include="random\internal\nonsecure_base_test.cc" />
+    <ClCompile Include="random\internal\pcg_engine_test.cc" />
+    <ClCompile Include="random\internal\pool_urbg_test.cc" />
+    <ClCompile Include="random\internal\randen_engine_test.cc" />
+    <ClCompile Include="random\internal\randen_hwaes_test.cc" />
+    <ClCompile Include="random\internal\randen_slow_test.cc" />
+    <ClCompile Include="random\internal\randen_test.cc" />
+    <ClCompile Include="random\internal\salted_seed_seq_test.cc" />
+    <ClCompile Include="random\internal\seed_material_test.cc" />
+    <ClCompile Include="random\internal\traits_test.cc" />
+    <ClCompile Include="random\internal\uniform_helper_test.cc" />
+    <ClCompile Include="random\internal\wide_multiply_test.cc" />
+    <ClCompile Include="random\log_uniform_int_distribution_test.cc" />
+    <ClCompile Include="random\mocking_bit_gen_test.cc" />
+    <ClCompile Include="random\mock_distributions_test.cc" />
+    <ClCompile Include="random\poisson_distribution_test.cc" />
+    <ClCompile Include="random\seed_sequences_test.cc" />
+    <ClCompile Include="random\uniform_int_distribution_test.cc" />
+    <ClCompile Include="random\uniform_real_distribution_test.cc" />
+    <ClCompile Include="random\zipf_distribution_test.cc" />
+    <ClCompile Include="status\statusor_test.cc" />
+    <ClCompile Include="status\status_test.cc" />
+    <ClCompile Include="strings\ascii_test.cc" />
+    <ClCompile Include="strings\charconv_test.cc" />
+    <ClCompile Include="strings\cordz_test.cc" />
+    <ClCompile Include="strings\cord_buffer_test.cc" />
+    <ClCompile Include="strings\cord_ring_reader_test.cc" />
+    <ClCompile Include="strings\cord_ring_test.cc" />
+    <ClCompile Include="strings\cord_test.cc" />
+    <ClCompile Include="strings\escaping_test.cc" />
+    <ClCompile Include="strings\internal\charconv_bigint_test.cc" />
+    <ClCompile Include="strings\internal\charconv_parse_test.cc" />
+    <ClCompile Include="strings\internal\char_map_test.cc" />
+    <ClCompile Include="strings\internal\cordz_functions_test.cc" />
+    <ClCompile Include="strings\internal\cordz_handle_test.cc" />
+    <ClCompile Include="strings\internal\cordz_info_statistics_test.cc" />
+    <ClCompile Include="strings\internal\cordz_sample_token_test.cc" />
+    <ClCompile Include="strings\internal\cordz_update_scope_test.cc" />
+    <ClCompile Include="strings\internal\cordz_update_tracker_test.cc" />
+    <ClCompile Include="strings\internal\cord_data_edge_test.cc" />
+    <ClCompile Include="strings\internal\cord_rep_btree_navigator_test.cc" />
+    <ClCompile Include="strings\internal\cord_rep_btree_reader_test.cc" />
+    <ClCompile Include="strings\internal\cord_rep_btree_test.cc" />
+    <ClCompile Include="strings\internal\cord_rep_crc_test.cc" />
+    <ClCompile Include="strings\internal\memutil_test.cc" />
+    <ClCompile Include="strings\internal\ostringstream_test.cc" />
+    <ClCompile Include="strings\internal\pow10_helper_test.cc" />
+    <ClCompile Include="strings\internal\resize_uninitialized_test.cc" />
+    <ClCompile Include="strings\internal\string_constant_test.cc" />
+    <ClCompile Include="strings\internal\str_format\arg_test.cc" />
+    <ClCompile Include="strings\internal\str_format\bind_test.cc" />
+    <ClCompile Include="strings\internal\str_format\checker_test.cc" />
+    <ClCompile Include="strings\internal\str_format\convert_test.cc" />
+    <ClCompile Include="strings\internal\str_format\extension_test.cc" />
+    <ClCompile Include="strings\internal\str_format\output_test.cc" />
+    <ClCompile Include="strings\internal\str_format\parser_test.cc" />
+    <ClCompile Include="strings\internal\utf8_test.cc" />
+    <ClCompile Include="strings\match_test.cc" />
+    <ClCompile Include="strings\numbers_test.cc" />
+    <ClCompile Include="strings\string_view_test.cc" />
+    <ClCompile Include="strings\strip_test.cc" />
+    <ClCompile Include="strings\str_cat_test.cc" />
+    <ClCompile Include="strings\str_format_test.cc" />
+    <ClCompile Include="strings\str_join_test.cc" />
+    <ClCompile Include="strings\str_replace_test.cc" />
+    <ClCompile Include="strings\str_split_test.cc" />
+    <ClCompile Include="strings\substitute_test.cc" />
+    <ClCompile Include="synchronization\barrier_test.cc" />
+    <ClCompile Include="synchronization\blocking_counter_test.cc" />
+    <ClCompile Include="synchronization\internal\graphcycles_test.cc" />
+    <ClCompile Include="synchronization\internal\per_thread_sem_test.cc" />
+    <ClCompile Include="synchronization\lifetime_test.cc" />
+    <ClCompile Include="synchronization\mutex_test.cc" />
+    <ClCompile Include="synchronization\notification_test.cc" />
+    <ClCompile Include="time\civil_time_test.cc" />
+    <ClCompile Include="time\clock_test.cc" />
+    <ClCompile Include="time\duration_test.cc" />
+    <ClCompile Include="time\format_test.cc" />
+    <ClCompile Include="time\internal\cctz\src\cctz_civil_time_test.cc" />
+    <ClCompile Include="time\internal\cctz\src\time_zone_format_test.cc" />
+    <ClCompile Include="time\internal\cctz\src\time_zone_lookup_test.cc" />
+    <ClCompile Include="time\internal\test_util.cc" />
+    <ClCompile Include="time\time_test.cc" />
+    <ClCompile Include="time\time_zone_test.cc" />
+    <ClCompile Include="types\any_exception_safety_test.cc" />
+    <ClCompile Include="types\any_test.cc" />
+    <ClCompile Include="types\compare_test.cc" />
+    <ClCompile Include="types\internal\conformance_testing_test.cc" />
+    <ClCompile Include="types\optional_exception_safety_test.cc" />
+    <ClCompile Include="types\optional_test.cc" />
+    <ClCompile Include="types\span_test.cc" />
+    <ClCompile Include="types\variant_exception_safety_test.cc" />
+    <ClCompile Include="types\variant_test.cc" />
+    <ClCompile Include="utility\utility_test.cc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="time\internal\test_util.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

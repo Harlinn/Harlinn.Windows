@@ -1,0 +1,426 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="include">
+      <UniqueIdentifier>{df9a92ce-1eb6-46b9-8060-37cea04fafc7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\libde265">
+      <UniqueIdentifier>{8a2cdb7a-f22c-47ce-a70b-d56710ca5fe7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\libde265\encoder">
+      <UniqueIdentifier>{7b533d57-855a-40cf-82b1-11f5e65b999a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\libde265\encoder\algo">
+      <UniqueIdentifier>{19ebdec2-3117-4ddd-b421-d4113ad8976f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\libde265\x86">
+      <UniqueIdentifier>{b8021289-6d65-41cc-bac7-01ecf43c7791}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{ce85ccc4-9c15-4080-aa48-c0fed7043b30}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\encoder">
+      <UniqueIdentifier>{51595990-1e1a-4137-b4f2-ccc7d76c9a7e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\encoder\algo">
+      <UniqueIdentifier>{45c46881-06a0-48d1-aaf6-cd9a00d5d7b9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\x86">
+      <UniqueIdentifier>{4a3e341e-0764-4f41-9d8e-cf8c6025e528}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Readme">
+      <UniqueIdentifier>{c1bc4c25-1504-4c08-928c-10bcaff70549}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="dllmain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\encoder\algo\algo.cc">
+      <Filter>src\encoder\algo</Filter>
+    </ClCompile>
+    <ClCompile Include="src\encoder\algo\cb-interpartmode.cc">
+      <Filter>src\encoder\algo</Filter>
+    </ClCompile>
+    <ClCompile Include="src\encoder\algo\cb-intra-inter.cc">
+      <Filter>src\encoder\algo</Filter>
+    </ClCompile>
+    <ClCompile Include="src\encoder\algo\cb-intrapartmode.cc">
+      <Filter>src\encoder\algo</Filter>
+    </ClCompile>
+    <ClCompile Include="src\encoder\algo\cb-mergeindex.cc">
+      <Filter>src\encoder\algo</Filter>
+    </ClCompile>
+    <ClCompile Include="src\encoder\algo\cb-skip.cc">
+      <Filter>src\encoder\algo</Filter>
+    </ClCompile>
+    <ClCompile Include="src\encoder\algo\cb-split.cc">
+      <Filter>src\encoder\algo</Filter>
+    </ClCompile>
+    <ClCompile Include="src\encoder\algo\coding-options.cc">
+      <Filter>src\encoder\algo</Filter>
+    </ClCompile>
+    <ClCompile Include="src\encoder\algo\ctb-qscale.cc">
+      <Filter>src\encoder\algo</Filter>
+    </ClCompile>
+    <ClCompile Include="src\encoder\algo\pb-mv.cc">
+      <Filter>src\encoder\algo</Filter>
+    </ClCompile>
+    <ClCompile Include="src\encoder\algo\tb-intrapredmode.cc">
+      <Filter>src\encoder\algo</Filter>
+    </ClCompile>
+    <ClCompile Include="src\encoder\algo\tb-rateestim.cc">
+      <Filter>src\encoder\algo</Filter>
+    </ClCompile>
+    <ClCompile Include="src\encoder\algo\tb-split.cc">
+      <Filter>src\encoder\algo</Filter>
+    </ClCompile>
+    <ClCompile Include="src\encoder\algo\tb-transform.cc">
+      <Filter>src\encoder\algo</Filter>
+    </ClCompile>
+    <ClCompile Include="src\encoder\encoder-context.cc">
+      <Filter>src\encoder</Filter>
+    </ClCompile>
+    <ClCompile Include="src\encoder\encoder-core.cc">
+      <Filter>src\encoder</Filter>
+    </ClCompile>
+    <ClCompile Include="src\encoder\encoder-intrapred.cc">
+      <Filter>src\encoder</Filter>
+    </ClCompile>
+    <ClCompile Include="src\encoder\encoder-motion.cc">
+      <Filter>src\encoder</Filter>
+    </ClCompile>
+    <ClCompile Include="src\encoder\encoder-params.cc">
+      <Filter>src\encoder</Filter>
+    </ClCompile>
+    <ClCompile Include="src\encoder\encoder-syntax.cc">
+      <Filter>src\encoder</Filter>
+    </ClCompile>
+    <ClCompile Include="src\encoder\encoder-types.cc">
+      <Filter>src\encoder</Filter>
+    </ClCompile>
+    <ClCompile Include="src\encoder\encpicbuf.cc">
+      <Filter>src\encoder</Filter>
+    </ClCompile>
+    <ClCompile Include="src\encoder\sop.cc">
+      <Filter>src\encoder</Filter>
+    </ClCompile>
+    <ClCompile Include="src\x86\sse.cc">
+      <Filter>src\x86</Filter>
+    </ClCompile>
+    <ClCompile Include="src\x86\sse-dct.cc">
+      <Filter>src\x86</Filter>
+    </ClCompile>
+    <ClCompile Include="src\x86\sse-motion.cc">
+      <Filter>src\x86</Filter>
+    </ClCompile>
+    <ClCompile Include="src\alloc_pool.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\bitstream.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cabac.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\configparam.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\contextmodel.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\de265.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\deblock.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\decctx.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dpb.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\en265.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fallback.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fallback-dct.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fallback-motion.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\image.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\image-io.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\intrapred.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\md5.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\motion.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\nal.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\nal-parser.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pps.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\quality.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\refpic.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\sao.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\scan.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\sei.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\slice.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\sps.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\threads.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\transform.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\visualize.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\vps.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\vui.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\win32cond.c">
+      <Filter>src</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\libde265\encoder\algo\algo.h">
+      <Filter>include\libde265\encoder\algo</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libde265\encoder\algo\cb-interpartmode.h">
+      <Filter>include\libde265\encoder\algo</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libde265\encoder\algo\cb-intra-inter.h">
+      <Filter>include\libde265\encoder\algo</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libde265\encoder\algo\cb-intrapartmode.h">
+      <Filter>include\libde265\encoder\algo</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libde265\encoder\algo\cb-mergeindex.h">
+      <Filter>include\libde265\encoder\algo</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libde265\encoder\algo\cb-skip.h">
+      <Filter>include\libde265\encoder\algo</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libde265\encoder\algo\cb-split.h">
+      <Filter>include\libde265\encoder\algo</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libde265\encoder\algo\coding-options.h">
+      <Filter>include\libde265\encoder\algo</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libde265\encoder\algo\ctb-qscale.h">
+      <Filter>include\libde265\encoder\algo</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libde265\encoder\algo\pb-mv.h">
+      <Filter>include\libde265\encoder\algo</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libde265\encoder\algo\tb-intrapredmode.h">
+      <Filter>include\libde265\encoder\algo</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libde265\encoder\algo\tb-rateestim.h">
+      <Filter>include\libde265\encoder\algo</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libde265\encoder\algo\tb-split.h">
+      <Filter>include\libde265\encoder\algo</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libde265\encoder\algo\tb-transform.h">
+      <Filter>include\libde265\encoder\algo</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libde265\encoder\encoder-context.h">
+      <Filter>include\libde265\encoder</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libde265\encoder\encoder-core.h">
+      <Filter>include\libde265\encoder</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libde265\encoder\encoder-intrapred.h">
+      <Filter>include\libde265\encoder</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libde265\encoder\encoder-motion.h">
+      <Filter>include\libde265\encoder</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libde265\encoder\encoder-params.h">
+      <Filter>include\libde265\encoder</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libde265\encoder\encoder-syntax.h">
+      <Filter>include\libde265\encoder</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libde265\encoder\encoder-types.h">
+      <Filter>include\libde265\encoder</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libde265\encoder\encpicbuf.h">
+      <Filter>include\libde265\encoder</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libde265\encoder\sop.h">
+      <Filter>include\libde265\encoder</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libde265\x86\sse.h">
+      <Filter>include\libde265\x86</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libde265\x86\sse-dct.h">
+      <Filter>include\libde265\x86</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libde265\x86\sse-motion.h">
+      <Filter>include\libde265\x86</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libde265\acceleration.h">
+      <Filter>include\libde265</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libde265\alloc_pool.h">
+      <Filter>include\libde265</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libde265\bitstream.h">
+      <Filter>include\libde265</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libde265\cabac.h">
+      <Filter>include\libde265</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libde265\configparam.h">
+      <Filter>include\libde265</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libde265\contextmodel.h">
+      <Filter>include\libde265</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libde265\de265.h">
+      <Filter>include\libde265</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libde265\de265-version.h">
+      <Filter>include\libde265</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libde265\deblock.h">
+      <Filter>include\libde265</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libde265\decctx.h">
+      <Filter>include\libde265</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libde265\dpb.h">
+      <Filter>include\libde265</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libde265\en265.h">
+      <Filter>include\libde265</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libde265\fallback.h">
+      <Filter>include\libde265</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libde265\fallback-dct.h">
+      <Filter>include\libde265</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libde265\fallback-motion.h">
+      <Filter>include\libde265</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libde265\image.h">
+      <Filter>include\libde265</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libde265\image-io.h">
+      <Filter>include\libde265</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libde265\intrapred.h">
+      <Filter>include\libde265</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libde265\md5.h">
+      <Filter>include\libde265</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libde265\motion.h">
+      <Filter>include\libde265</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libde265\nal.h">
+      <Filter>include\libde265</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libde265\nal-parser.h">
+      <Filter>include\libde265</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libde265\pps.h">
+      <Filter>include\libde265</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libde265\quality.h">
+      <Filter>include\libde265</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libde265\refpic.h">
+      <Filter>include\libde265</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libde265\sao.h">
+      <Filter>include\libde265</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libde265\scan.h">
+      <Filter>include\libde265</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libde265\sei.h">
+      <Filter>include\libde265</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libde265\slice.h">
+      <Filter>include\libde265</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libde265\sps.h">
+      <Filter>include\libde265</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libde265\threads.h">
+      <Filter>include\libde265</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libde265\transform.h">
+      <Filter>include\libde265</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libde265\util.h">
+      <Filter>include\libde265</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libde265\visualize.h">
+      <Filter>include\libde265</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libde265\vps.h">
+      <Filter>include\libde265</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libde265\vui.h">
+      <Filter>include\libde265</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libde265\win32cond.h">
+      <Filter>include\libde265</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

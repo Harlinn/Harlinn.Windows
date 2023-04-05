@@ -1,0 +1,469 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{3c631af4-ca09-4466-a27c-17133d8984b1}</ProjectGuid>
+    <RootNamespace>Harlinnjpegturbo</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Label="Vcpkg">
+    <VcpkgEnabled>false</VcpkgEnabled>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>BUILDING_HARLINN_JPEG_TURBO=1;_CRT_SECURE_NO_WARNINGS=1;_CRT_NONSTDC_NO_WARNINGS=1;BMP_SUPPORTED=1;PPM_SUPPORTED=1;DLLDEFINE=1;WIN32;WIN32;_DEBUG;HARLINNJPEGTURBO_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <AdditionalIncludeDirectories>$(ProjectDir)include\jpeg_turbo;$(ProjectDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+      <ModuleDefinitionFile>$(ProjectDir)src\jpeg62-memsrcdst.def</ModuleDefinitionFile>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>BUILDING_HARLINN_JPEG_TURBO=1;_CRT_SECURE_NO_WARNINGS=1;_CRT_NONSTDC_NO_WARNINGS=1;BMP_SUPPORTED=1;PPM_SUPPORTED=1;DLLDEFINE=1;WIN32;WIN32;NDEBUG;HARLINNJPEGTURBO_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <AdditionalIncludeDirectories>$(ProjectDir)include\jpeg_turbo;$(ProjectDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+      <ModuleDefinitionFile>$(ProjectDir)src\jpeg62-memsrcdst.def</ModuleDefinitionFile>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>BUILDING_HARLINN_JPEG_TURBO=1;_CRT_SECURE_NO_WARNINGS=1;_CRT_NONSTDC_NO_WARNINGS=1;BMP_SUPPORTED=1;PPM_SUPPORTED=1;DLLDEFINE=1;WIN32;_DEBUG;HARLINNJPEGTURBO_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <AdditionalIncludeDirectories>$(ProjectDir)include\jpeg_turbo;$(ProjectDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+      <ModuleDefinitionFile>$(ProjectDir)src\jpeg62-memsrcdst.def</ModuleDefinitionFile>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>BUILDING_HARLINN_JPEG_TURBO=1;_CRT_SECURE_NO_WARNINGS=1;_CRT_NONSTDC_NO_WARNINGS=1;BMP_SUPPORTED=1;PPM_SUPPORTED=1;DLLDEFINE=1;WIN32;NDEBUG;HARLINNJPEGTURBO_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <AdditionalIncludeDirectories>$(ProjectDir)include\jpeg_turbo;$(ProjectDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+      <ModuleDefinitionFile>$(ProjectDir)src\jpeg62-memsrcdst.def</ModuleDefinitionFile>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="src\asm\x86_64\jsimd.c" />
+    <ClCompile Include="src\jaricom.c" />
+    <ClCompile Include="src\jcapimin.c" />
+    <ClCompile Include="src\jcapistd.c" />
+    <ClCompile Include="src\jcarith.c" />
+    <ClCompile Include="src\jccoefct.c" />
+    <ClCompile Include="src\jccolor.c" />
+    <ClCompile Include="src\jcdctmgr.c" />
+    <ClCompile Include="src\jchuff.c" />
+    <ClCompile Include="src\jcicc.c" />
+    <ClCompile Include="src\jcinit.c" />
+    <ClCompile Include="src\jcmainct.c" />
+    <ClCompile Include="src\jcmarker.c" />
+    <ClCompile Include="src\jcmaster.c" />
+    <ClCompile Include="src\jcomapi.c" />
+    <ClCompile Include="src\jcparam.c" />
+    <ClCompile Include="src\jcphuff.c" />
+    <ClCompile Include="src\jcprepct.c" />
+    <ClCompile Include="src\jcsample.c" />
+    <ClCompile Include="src\jctrans.c" />
+    <ClCompile Include="src\jdapimin.c" />
+    <ClCompile Include="src\jdapistd.c" />
+    <ClCompile Include="src\jdarith.c" />
+    <ClCompile Include="src\jdatadst-tj.c" />
+    <ClCompile Include="src\jdatadst.c" />
+    <ClCompile Include="src\jdatasrc-tj.c" />
+    <ClCompile Include="src\jdatasrc.c" />
+    <ClCompile Include="src\jdcoefct.c" />
+    <ClCompile Include="src\jdcolor.c" />
+    <ClCompile Include="src\jddctmgr.c" />
+    <ClCompile Include="src\jdhuff.c" />
+    <ClCompile Include="src\jdicc.c" />
+    <ClCompile Include="src\jdinput.c" />
+    <ClCompile Include="src\jdmainct.c" />
+    <ClCompile Include="src\jdmarker.c" />
+    <ClCompile Include="src\jdmaster.c" />
+    <ClCompile Include="src\jdmerge.c" />
+    <ClCompile Include="src\jdphuff.c" />
+    <ClCompile Include="src\jdpostct.c" />
+    <ClCompile Include="src\jdsample.c" />
+    <ClCompile Include="src\jdtrans.c" />
+    <ClCompile Include="src\jerror.c" />
+    <ClCompile Include="src\jfdctflt.c" />
+    <ClCompile Include="src\jfdctfst.c" />
+    <ClCompile Include="src\jfdctint.c" />
+    <ClCompile Include="src\jidctflt.c" />
+    <ClCompile Include="src\jidctfst.c" />
+    <ClCompile Include="src\jidctint.c" />
+    <ClCompile Include="src\jidctred.c" />
+    <ClCompile Include="src\jmemmgr.c" />
+    <ClCompile Include="src\jmemnobs.c" />
+    <ClCompile Include="src\jquant1.c" />
+    <ClCompile Include="src\jquant2.c" />
+    <ClCompile Include="src\jutils.c" />
+    <ClCompile Include="src\rdbmp.c" />
+    <ClCompile Include="src\rdppm.c" />
+    <ClCompile Include="src\transupp.c" />
+    <ClCompile Include="src\turbojpeg.c" />
+    <ClCompile Include="src\wrbmp.c" />
+    <ClCompile Include="src\wrppm.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\jpeg_turbo\cderror.h" />
+    <ClInclude Include="include\jpeg_turbo\cdjpeg.h" />
+    <ClInclude Include="include\jpeg_turbo\cmyk.h" />
+    <ClInclude Include="include\jpeg_turbo\jchuff.h" />
+    <ClInclude Include="include\jpeg_turbo\jconfig.h" />
+    <ClInclude Include="include\jpeg_turbo\jconfigint.h" />
+    <ClInclude Include="include\jpeg_turbo\jdcoefct.h" />
+    <ClInclude Include="include\jpeg_turbo\jdct.h" />
+    <ClInclude Include="include\jpeg_turbo\jdhuff.h" />
+    <ClInclude Include="include\jpeg_turbo\jdmainct.h" />
+    <ClInclude Include="include\jpeg_turbo\jdmaster.h" />
+    <ClInclude Include="include\jpeg_turbo\jdmerge.h" />
+    <ClInclude Include="include\jpeg_turbo\jdsample.h" />
+    <ClInclude Include="include\jpeg_turbo\jerror.h" />
+    <ClInclude Include="include\jpeg_turbo\jinclude.h" />
+    <ClInclude Include="include\jpeg_turbo\jmemsys.h" />
+    <ClInclude Include="include\jpeg_turbo\jmorecfg.h" />
+    <ClInclude Include="include\jpeg_turbo\jpegcomp.h" />
+    <ClInclude Include="include\jpeg_turbo\jpegint.h" />
+    <ClInclude Include="include\jpeg_turbo\jpeglib.h" />
+    <ClInclude Include="include\jpeg_turbo\jpeg_nbits_table.h" />
+    <ClInclude Include="include\jpeg_turbo\jsimd.h" />
+    <ClInclude Include="include\jpeg_turbo\jsimddct.h" />
+    <ClInclude Include="include\jpeg_turbo\jversion.h" />
+    <ClInclude Include="include\jpeg_turbo\tjutil.h" />
+    <ClInclude Include="include\jpeg_turbo\transupp.h" />
+    <ClInclude Include="include\jpeg_turbo\turbojpeg.h" />
+    <ClInclude Include="src\asm\jsimd.h" />
+    <ClInclude Include="src\asm\nasm\jsimdcfg.inc.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="src\asm\nasm\jcolsamp.inc" />
+    <None Include="src\asm\nasm\jdct.inc" />
+    <None Include="src\asm\nasm\jsimdcfg.inc" />
+    <None Include="src\asm\nasm\jsimdext.inc" />
+    <CustomBuild Include="src\asm\x86_64\jccolor-avx2.asm">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">nasm -f win64 -DWIN64 -D__x86_64__ -I$(ProjectDir)src\asm\nasm -I$(ProjectDir)src\asm\x86_64 -o $(IntDirFullPath)%(Filename).obj %(FullPath)</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDirFullPath)%(Filename).obj</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">nasm -f win64 -DWIN64 -D__x86_64__ -I$(ProjectDir)src\asm\nasm -I$(ProjectDir)src\asm\x86_64 -o $(IntDirFullPath)%(Filename).obj %(FullPath)</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDirFullPath)%(Filename).obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="src\asm\x86_64\jccolor-sse2.asm">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">nasm -f win64 -DWIN64 -D__x86_64__ -I$(ProjectDir)src\asm\nasm -I$(ProjectDir)src\asm\x86_64 -o $(IntDirFullPath)%(Filename).obj %(FullPath)</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDirFullPath)%(Filename).obj</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">nasm -f win64 -DWIN64 -D__x86_64__ -I$(ProjectDir)src\asm\nasm -I$(ProjectDir)src\asm\x86_64 -o $(IntDirFullPath)%(Filename).obj %(FullPath)</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDirFullPath)%(Filename).obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="src\asm\x86_64\jcgray-avx2.asm">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">nasm -f win64 -DWIN64 -D__x86_64__ -I$(ProjectDir)src\asm\nasm -I$(ProjectDir)src\asm\x86_64 -o $(IntDirFullPath)%(Filename).obj %(FullPath)</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDirFullPath)%(Filename).obj</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">nasm -f win64 -DWIN64 -D__x86_64__ -I$(ProjectDir)src\asm\nasm -I$(ProjectDir)src\asm\x86_64 -o $(IntDirFullPath)%(Filename).obj %(FullPath)</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDirFullPath)%(Filename).obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="src\asm\x86_64\jcgray-sse2.asm">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">nasm -f win64 -DWIN64 -D__x86_64__ -I$(ProjectDir)src\asm\nasm -I$(ProjectDir)src\asm\x86_64 -o $(IntDirFullPath)%(Filename).obj %(FullPath)</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDirFullPath)%(Filename).obj</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">nasm -f win64 -DWIN64 -D__x86_64__ -I$(ProjectDir)src\asm\nasm -I$(ProjectDir)src\asm\x86_64 -o $(IntDirFullPath)%(Filename).obj %(FullPath)</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDirFullPath)%(Filename).obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="src\asm\x86_64\jchuff-sse2.asm">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">nasm -f win64 -DWIN64 -D__x86_64__ -I$(ProjectDir)src\asm\nasm -I$(ProjectDir)src\asm\x86_64 -o $(IntDirFullPath)%(Filename).obj %(FullPath)</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDirFullPath)%(Filename).obj</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">nasm -f win64 -DWIN64 -D__x86_64__ -I$(ProjectDir)src\asm\nasm -I$(ProjectDir)src\asm\x86_64 -o $(IntDirFullPath)%(Filename).obj %(FullPath)</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDirFullPath)%(Filename).obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="src\asm\x86_64\jcphuff-sse2.asm">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">nasm -f win64 -DWIN64 -D__x86_64__ -I$(ProjectDir)src\asm\nasm -I$(ProjectDir)src\asm\x86_64 -o $(IntDirFullPath)%(Filename).obj %(FullPath)</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDirFullPath)%(Filename).obj</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">nasm -f win64 -DWIN64 -D__x86_64__ -I$(ProjectDir)src\asm\nasm -I$(ProjectDir)src\asm\x86_64 -o $(IntDirFullPath)%(Filename).obj %(FullPath)</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDirFullPath)%(Filename).obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="src\asm\x86_64\jcsample-avx2.asm">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">nasm -f win64 -DWIN64 -D__x86_64__ -I$(ProjectDir)src\asm\nasm -I$(ProjectDir)src\asm\x86_64 -o $(IntDirFullPath)%(Filename).obj %(FullPath)</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDirFullPath)%(Filename).obj</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">nasm -f win64 -DWIN64 -D__x86_64__ -I$(ProjectDir)src\asm\nasm -I$(ProjectDir)src\asm\x86_64 -o $(IntDirFullPath)%(Filename).obj %(FullPath)</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDirFullPath)%(Filename).obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="src\asm\x86_64\jcsample-sse2.asm">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">nasm -f win64 -DWIN64 -D__x86_64__ -I$(ProjectDir)src\asm\nasm -I$(ProjectDir)src\asm\x86_64 -o $(IntDirFullPath)%(Filename).obj %(FullPath)</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDirFullPath)%(Filename).obj</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">nasm -f win64 -DWIN64 -D__x86_64__ -I$(ProjectDir)src\asm\nasm -I$(ProjectDir)src\asm\x86_64 -o $(IntDirFullPath)%(Filename).obj %(FullPath)</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDirFullPath)%(Filename).obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="src\asm\x86_64\jdcolor-avx2.asm">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">nasm -f win64 -DWIN64 -D__x86_64__ -I$(ProjectDir)src\asm\nasm -I$(ProjectDir)src\asm\x86_64 -o $(IntDirFullPath)%(Filename).obj %(FullPath)</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDirFullPath)%(Filename).obj</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">nasm -f win64 -DWIN64 -D__x86_64__ -I$(ProjectDir)src\asm\nasm -I$(ProjectDir)src\asm\x86_64 -o $(IntDirFullPath)%(Filename).obj %(FullPath)</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDirFullPath)%(Filename).obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="src\asm\x86_64\jdcolor-sse2.asm">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">nasm -f win64 -DWIN64 -D__x86_64__ -I$(ProjectDir)src\asm\nasm -I$(ProjectDir)src\asm\x86_64 -o $(IntDirFullPath)%(Filename).obj %(FullPath)</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDirFullPath)%(Filename).obj</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">nasm -f win64 -DWIN64 -D__x86_64__ -I$(ProjectDir)src\asm\nasm -I$(ProjectDir)src\asm\x86_64 -o $(IntDirFullPath)%(Filename).obj %(FullPath)</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDirFullPath)%(Filename).obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="src\asm\x86_64\jdmerge-avx2.asm">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">nasm -f win64 -DWIN64 -D__x86_64__ -I$(ProjectDir)src\asm\nasm -I$(ProjectDir)src\asm\x86_64 -o $(IntDirFullPath)%(Filename).obj %(FullPath)</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDirFullPath)%(Filename).obj</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">nasm -f win64 -DWIN64 -D__x86_64__ -I$(ProjectDir)src\asm\nasm -I$(ProjectDir)src\asm\x86_64 -o $(IntDirFullPath)%(Filename).obj %(FullPath)</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDirFullPath)%(Filename).obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="src\asm\x86_64\jdmerge-sse2.asm">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">nasm -f win64 -DWIN64 -D__x86_64__ -I$(ProjectDir)src\asm\nasm -I$(ProjectDir)src\asm\x86_64 -o $(IntDirFullPath)%(Filename).obj %(FullPath)</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDirFullPath)%(Filename).obj</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">nasm -f win64 -DWIN64 -D__x86_64__ -I$(ProjectDir)src\asm\nasm -I$(ProjectDir)src\asm\x86_64 -o $(IntDirFullPath)%(Filename).obj %(FullPath)</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDirFullPath)%(Filename).obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="src\asm\x86_64\jdsample-avx2.asm">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">nasm -f win64 -DWIN64 -D__x86_64__ -I$(ProjectDir)src\asm\nasm -I$(ProjectDir)src\asm\x86_64 -o $(IntDirFullPath)%(Filename).obj %(FullPath)</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDirFullPath)%(Filename).obj</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">nasm -f win64 -DWIN64 -D__x86_64__ -I$(ProjectDir)src\asm\nasm -I$(ProjectDir)src\asm\x86_64 -o $(IntDirFullPath)%(Filename).obj %(FullPath)</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDirFullPath)%(Filename).obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="src\asm\x86_64\jdsample-sse2.asm">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">nasm -f win64 -DWIN64 -D__x86_64__ -I$(ProjectDir)src\asm\nasm -I$(ProjectDir)src\asm\x86_64 -o $(IntDirFullPath)%(Filename).obj %(FullPath)</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDirFullPath)%(Filename).obj</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">nasm -f win64 -DWIN64 -D__x86_64__ -I$(ProjectDir)src\asm\nasm -I$(ProjectDir)src\asm\x86_64 -o $(IntDirFullPath)%(Filename).obj %(FullPath)</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDirFullPath)%(Filename).obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="src\asm\x86_64\jfdctflt-sse.asm">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">nasm -f win64 -DWIN64 -D__x86_64__ -I$(ProjectDir)src\asm\nasm -I$(ProjectDir)src\asm\x86_64 -o $(IntDirFullPath)%(Filename).obj %(FullPath)</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDirFullPath)%(Filename).obj</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">nasm -f win64 -DWIN64 -D__x86_64__ -I$(ProjectDir)src\asm\nasm -I$(ProjectDir)src\asm\x86_64 -o $(IntDirFullPath)%(Filename).obj %(FullPath)</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDirFullPath)%(Filename).obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="src\asm\x86_64\jfdctfst-sse2.asm">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">nasm -f win64 -DWIN64 -D__x86_64__ -I$(ProjectDir)src\asm\nasm -I$(ProjectDir)src\asm\x86_64 -o $(IntDirFullPath)%(Filename).obj %(FullPath)</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDirFullPath)%(Filename).obj</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">nasm -f win64 -DWIN64 -D__x86_64__ -I$(ProjectDir)src\asm\nasm -I$(ProjectDir)src\asm\x86_64 -o $(IntDirFullPath)%(Filename).obj %(FullPath)</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDirFullPath)%(Filename).obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="src\asm\x86_64\jfdctint-avx2.asm">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">nasm -f win64 -DWIN64 -D__x86_64__ -I$(ProjectDir)src\asm\nasm -I$(ProjectDir)src\asm\x86_64 -o $(IntDirFullPath)%(Filename).obj %(FullPath)</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDirFullPath)%(Filename).obj</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">nasm -f win64 -DWIN64 -D__x86_64__ -I$(ProjectDir)src\asm\nasm -I$(ProjectDir)src\asm\x86_64 -o $(IntDirFullPath)%(Filename).obj %(FullPath)</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDirFullPath)%(Filename).obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="src\asm\x86_64\jfdctint-sse2.asm">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">nasm -f win64 -DWIN64 -D__x86_64__ -I$(ProjectDir)src\asm\nasm -I$(ProjectDir)src\asm\x86_64 -o $(IntDirFullPath)%(Filename).obj %(FullPath)</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDirFullPath)%(Filename).obj</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">nasm -f win64 -DWIN64 -D__x86_64__ -I$(ProjectDir)src\asm\nasm -I$(ProjectDir)src\asm\x86_64 -o $(IntDirFullPath)%(Filename).obj %(FullPath)</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDirFullPath)%(Filename).obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="src\asm\x86_64\jidctflt-sse2.asm">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">nasm -f win64 -DWIN64 -D__x86_64__ -I$(ProjectDir)src\asm\nasm -I$(ProjectDir)src\asm\x86_64 -o $(IntDirFullPath)%(Filename).obj %(FullPath)</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDirFullPath)%(Filename).obj</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">nasm -f win64 -DWIN64 -D__x86_64__ -I$(ProjectDir)src\asm\nasm -I$(ProjectDir)src\asm\x86_64 -o $(IntDirFullPath)%(Filename).obj %(FullPath)</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDirFullPath)%(Filename).obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="src\asm\x86_64\jidctfst-sse2.asm">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">nasm -f win64 -DWIN64 -D__x86_64__ -I$(ProjectDir)src\asm\nasm -I$(ProjectDir)src\asm\x86_64 -o $(IntDirFullPath)%(Filename).obj %(FullPath)</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDirFullPath)%(Filename).obj</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">nasm -f win64 -DWIN64 -D__x86_64__ -I$(ProjectDir)src\asm\nasm -I$(ProjectDir)src\asm\x86_64 -o $(IntDirFullPath)%(Filename).obj %(FullPath)</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDirFullPath)%(Filename).obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="src\asm\x86_64\jidctint-avx2.asm">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">nasm -f win64 -DWIN64 -D__x86_64__ -I$(ProjectDir)src\asm\nasm -I$(ProjectDir)src\asm\x86_64 -o $(IntDirFullPath)%(Filename).obj %(FullPath)</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDirFullPath)%(Filename).obj</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">nasm -f win64 -DWIN64 -D__x86_64__ -I$(ProjectDir)src\asm\nasm -I$(ProjectDir)src\asm\x86_64 -o $(IntDirFullPath)%(Filename).obj %(FullPath)</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDirFullPath)%(Filename).obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="src\asm\x86_64\jidctint-sse2.asm">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">nasm -f win64 -DWIN64 -D__x86_64__ -I$(ProjectDir)src\asm\nasm -I$(ProjectDir)src\asm\x86_64 -o $(IntDirFullPath)%(Filename).obj %(FullPath)</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDirFullPath)%(Filename).obj</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">nasm -f win64 -DWIN64 -D__x86_64__ -I$(ProjectDir)src\asm\nasm -I$(ProjectDir)src\asm\x86_64 -o $(IntDirFullPath)%(Filename).obj %(FullPath)</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDirFullPath)%(Filename).obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="src\asm\x86_64\jidctred-sse2.asm">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">nasm -f win64 -DWIN64 -D__x86_64__ -I$(ProjectDir)src\asm\nasm -I$(ProjectDir)src\asm\x86_64 -o $(IntDirFullPath)%(Filename).obj %(FullPath)</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDirFullPath)%(Filename).obj</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">nasm -f win64 -DWIN64 -D__x86_64__ -I$(ProjectDir)src\asm\nasm -I$(ProjectDir)src\asm\x86_64 -o $(IntDirFullPath)%(Filename).obj %(FullPath)</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDirFullPath)%(Filename).obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="src\asm\x86_64\jquantf-sse2.asm">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">nasm -f win64 -DWIN64 -D__x86_64__ -I$(ProjectDir)src\asm\nasm -I$(ProjectDir)src\asm\x86_64 -o $(IntDirFullPath)%(Filename).obj %(FullPath)</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDirFullPath)%(Filename).obj</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">nasm -f win64 -DWIN64 -D__x86_64__ -I$(ProjectDir)src\asm\nasm -I$(ProjectDir)src\asm\x86_64 -o $(IntDirFullPath)%(Filename).obj %(FullPath)</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDirFullPath)%(Filename).obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="src\asm\x86_64\jquanti-avx2.asm">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">nasm -f win64 -DWIN64 -D__x86_64__ -I$(ProjectDir)src\asm\nasm -I$(ProjectDir)src\asm\x86_64 -o $(IntDirFullPath)%(Filename).obj %(FullPath)</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDirFullPath)%(Filename).obj</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">nasm -f win64 -DWIN64 -D__x86_64__ -I$(ProjectDir)src\asm\nasm -I$(ProjectDir)src\asm\x86_64 -o $(IntDirFullPath)%(Filename).obj %(FullPath)</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDirFullPath)%(Filename).obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="src\asm\x86_64\jquanti-sse2.asm">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">nasm -f win64 -DWIN64 -D__x86_64__ -I$(ProjectDir)src\asm\nasm -I$(ProjectDir)src\asm\x86_64 -o $(IntDirFullPath)%(Filename).obj %(FullPath)</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDirFullPath)%(Filename).obj</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">nasm -f win64 -DWIN64 -D__x86_64__ -I$(ProjectDir)src\asm\nasm -I$(ProjectDir)src\asm\x86_64 -o $(IntDirFullPath)%(Filename).obj %(FullPath)</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDirFullPath)%(Filename).obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="src\asm\x86_64\jsimdcpu.asm">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">nasm -f win64 -DWIN64 -D__x86_64__ -I$(ProjectDir)src\asm\nasm -I$(ProjectDir)src\asm\x86_64 -o $(IntDirFullPath)%(Filename).obj %(FullPath)</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDirFullPath)%(Filename).obj</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">nasm -f win64 -DWIN64 -D__x86_64__ -I$(ProjectDir)src\asm\nasm -I$(ProjectDir)src\asm\x86_64 -o $(IntDirFullPath)%(Filename).obj %(FullPath)</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDirFullPath)%(Filename).obj</Outputs>
+    </CustomBuild>
+    <None Include="src\jccolext.inl" />
+    <None Include="src\jdcol565.inl" />
+    <None Include="src\jdcolext.inl" />
+    <None Include="src\jdmrg565.inl" />
+    <None Include="src\jdmrgext.inl" />
+    <None Include="src\jpeg62-memsrcdst.def" />
+    <None Include="src\jstdhuff.inl" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

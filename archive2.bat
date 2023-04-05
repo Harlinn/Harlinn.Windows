@@ -1,0 +1,1 @@
+7z a -tzip -mx=9 Harlinn.Windows-2022-01-26.zip * -xr@archive.exclude

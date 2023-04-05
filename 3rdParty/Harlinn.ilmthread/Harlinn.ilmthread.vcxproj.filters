@@ -1,0 +1,72 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="include">
+      <UniqueIdentifier>{ed520331-4f34-4c6b-9a5c-eae6ddac98f3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\IlmThread">
+      <UniqueIdentifier>{265ced69-a53f-4da1-b1e2-c89ef620e09e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{6a00d94a-6651-4f8c-b2e7-1507055c2dd8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Readme">
+      <UniqueIdentifier>{88cf2afc-e121-40c2-8156-93cb42ae3bd3}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="dllmain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\IlmThread.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\IlmThreadPool.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\IlmThreadSemaphore.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\IlmThreadSemaphoreWin32.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\IlmThread\IlmThread.h">
+      <Filter>include\IlmThread</Filter>
+    </ClInclude>
+    <ClInclude Include="include\IlmThread\IlmThreadConfig.h">
+      <Filter>include\IlmThread</Filter>
+    </ClInclude>
+    <ClInclude Include="include\IlmThread\IlmThreadExport.h">
+      <Filter>include\IlmThread</Filter>
+    </ClInclude>
+    <ClInclude Include="include\IlmThread\IlmThreadForward.h">
+      <Filter>include\IlmThread</Filter>
+    </ClInclude>
+    <ClInclude Include="include\IlmThread\IlmThreadMutex.h">
+      <Filter>include\IlmThread</Filter>
+    </ClInclude>
+    <ClInclude Include="include\IlmThread\IlmThreadNamespace.h">
+      <Filter>include\IlmThread</Filter>
+    </ClInclude>
+    <ClInclude Include="include\IlmThread\IlmThreadPool.h">
+      <Filter>include\IlmThread</Filter>
+    </ClInclude>
+    <ClInclude Include="include\IlmThread\IlmThreadSemaphore.h">
+      <Filter>include\IlmThread</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

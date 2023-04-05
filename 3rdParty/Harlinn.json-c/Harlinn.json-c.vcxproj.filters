@@ -1,0 +1,144 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="build">
+      <UniqueIdentifier>{c876b67a-2734-4b79-aa0f-fe34ba5b256f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Readme">
+      <UniqueIdentifier>{7f3a701f-257f-46d2-b4c9-4a8799d85e05}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="dllmain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="arraylist.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="debug.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="json_c_version.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="json_object.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="json_object_iterator.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="json_pointer.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="json_tokener.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="json_util.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="json_visit.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="linkhash.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="printbuf.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="random_seed.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="strerror_override.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="build\config.h">
+      <Filter>build</Filter>
+    </ClInclude>
+    <ClInclude Include="arraylist.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="debug.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="json.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="json_c_version.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="json_config.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="json_inttypes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="json_object.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="json_object_iterator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="json_object_private.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="json_pointer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="json_tokener.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="json_types.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="json_util.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="json_visit.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="linkhash.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="math_compat.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="random_seed.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="snprintf_compat.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="strdup_compat.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="strerror_override.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="strerror_override_private.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="vasprintf_compat.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="json_def.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="printbuf.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

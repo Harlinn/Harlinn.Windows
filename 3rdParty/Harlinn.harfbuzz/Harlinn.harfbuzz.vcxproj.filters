@@ -1,0 +1,741 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="include">
+      <UniqueIdentifier>{5f69b4d5-570e-4c58-ae01-c104a184f4c5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\harfbuzz">
+      <UniqueIdentifier>{eb7d3f2f-d424-4fb3-83f5-675bcd585dda}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{b89e34bf-3b78-4b09-a0ee-c502efbb9e19}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Readme">
+      <UniqueIdentifier>{3b82d10e-30c6-4998-b027-d2a511038868}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="dllmain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hb-blob.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hb-buffer.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hb-buffer-serialize.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hb-common.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hb-directwrite.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hb-draw.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hb-face.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hb-fallback-shape.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hb-font.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hb-ft.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hb-gdi.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hb-icu.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hb-map.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hb-ms-feature-ranges.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hb-number.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hb-ot-cff1-table.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hb-ot-cff2-table.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hb-ot-color.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hb-ot-face.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hb-ot-font.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hb-ot-layout.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hb-ot-map.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hb-ot-math.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hb-ot-meta.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hb-ot-metrics.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hb-ot-name.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hb-ot-shape.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hb-ot-shape-complex-arabic.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hb-ot-shape-complex-default.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hb-ot-shape-complex-hangul.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hb-ot-shape-complex-hebrew.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hb-ot-shape-complex-indic.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hb-ot-shape-complex-indic-table.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hb-ot-shape-complex-khmer.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hb-ot-shape-complex-myanmar.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hb-ot-shape-complex-syllabic.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hb-ot-shape-complex-thai.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hb-ot-shape-complex-use.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hb-ot-shape-complex-vowel-constraints.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hb-ot-shape-fallback.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hb-ot-shape-normalize.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hb-ot-tag.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hb-ot-var.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hb-set.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hb-shape.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hb-shape-plan.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hb-shaper.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hb-static.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hb-style.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hb-ucd.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hb-unicode.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hb-uniscribe.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hb-aat-layout.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hb-aat-map.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hb-subset.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hb-subset-cff1.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hb-subset-cff2.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hb-subset-cff-common.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hb-subset-input.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hb-subset-plan.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\harfbuzz\hb.h">
+      <Filter>include\harfbuzz</Filter>
+    </ClInclude>
+    <ClInclude Include="include\harfbuzz\hb-blob.h">
+      <Filter>include\harfbuzz</Filter>
+    </ClInclude>
+    <ClInclude Include="include\harfbuzz\hb-buffer.h">
+      <Filter>include\harfbuzz</Filter>
+    </ClInclude>
+    <ClInclude Include="include\harfbuzz\hb-common.h">
+      <Filter>include\harfbuzz</Filter>
+    </ClInclude>
+    <ClInclude Include="include\harfbuzz\hb-deprecated.h">
+      <Filter>include\harfbuzz</Filter>
+    </ClInclude>
+    <ClInclude Include="include\harfbuzz\hb-directwrite.h">
+      <Filter>include\harfbuzz</Filter>
+    </ClInclude>
+    <ClInclude Include="include\harfbuzz\hb-draw.h">
+      <Filter>include\harfbuzz</Filter>
+    </ClInclude>
+    <ClInclude Include="include\harfbuzz\hb-face.h">
+      <Filter>include\harfbuzz</Filter>
+    </ClInclude>
+    <ClInclude Include="include\harfbuzz\hb-font.h">
+      <Filter>include\harfbuzz</Filter>
+    </ClInclude>
+    <ClInclude Include="include\harfbuzz\hb-ft.h">
+      <Filter>include\harfbuzz</Filter>
+    </ClInclude>
+    <ClInclude Include="include\harfbuzz\hb-gdi.h">
+      <Filter>include\harfbuzz</Filter>
+    </ClInclude>
+    <ClInclude Include="include\harfbuzz\hb-icu.h">
+      <Filter>include\harfbuzz</Filter>
+    </ClInclude>
+    <ClInclude Include="include\harfbuzz\hb-map.h">
+      <Filter>include\harfbuzz</Filter>
+    </ClInclude>
+    <ClInclude Include="include\harfbuzz\hb-ot.h">
+      <Filter>include\harfbuzz</Filter>
+    </ClInclude>
+    <ClInclude Include="include\harfbuzz\hb-ot-color.h">
+      <Filter>include\harfbuzz</Filter>
+    </ClInclude>
+    <ClInclude Include="include\harfbuzz\hb-ot-deprecated.h">
+      <Filter>include\harfbuzz</Filter>
+    </ClInclude>
+    <ClInclude Include="include\harfbuzz\hb-ot-font.h">
+      <Filter>include\harfbuzz</Filter>
+    </ClInclude>
+    <ClInclude Include="include\harfbuzz\hb-ot-layout.h">
+      <Filter>include\harfbuzz</Filter>
+    </ClInclude>
+    <ClInclude Include="include\harfbuzz\hb-ot-math.h">
+      <Filter>include\harfbuzz</Filter>
+    </ClInclude>
+    <ClInclude Include="include\harfbuzz\hb-ot-meta.h">
+      <Filter>include\harfbuzz</Filter>
+    </ClInclude>
+    <ClInclude Include="include\harfbuzz\hb-ot-metrics.h">
+      <Filter>include\harfbuzz</Filter>
+    </ClInclude>
+    <ClInclude Include="include\harfbuzz\hb-ot-name.h">
+      <Filter>include\harfbuzz</Filter>
+    </ClInclude>
+    <ClInclude Include="include\harfbuzz\hb-ot-shape.h">
+      <Filter>include\harfbuzz</Filter>
+    </ClInclude>
+    <ClInclude Include="include\harfbuzz\hb-ot-var.h">
+      <Filter>include\harfbuzz</Filter>
+    </ClInclude>
+    <ClInclude Include="include\harfbuzz\hb-set.h">
+      <Filter>include\harfbuzz</Filter>
+    </ClInclude>
+    <ClInclude Include="include\harfbuzz\hb-shape.h">
+      <Filter>include\harfbuzz</Filter>
+    </ClInclude>
+    <ClInclude Include="include\harfbuzz\hb-shape-plan.h">
+      <Filter>include\harfbuzz</Filter>
+    </ClInclude>
+    <ClInclude Include="include\harfbuzz\hb-style.h">
+      <Filter>include\harfbuzz</Filter>
+    </ClInclude>
+    <ClInclude Include="include\harfbuzz\hb-unicode.h">
+      <Filter>include\harfbuzz</Filter>
+    </ClInclude>
+    <ClInclude Include="include\harfbuzz\hb-uniscribe.h">
+      <Filter>include\harfbuzz</Filter>
+    </ClInclude>
+    <ClInclude Include="include\harfbuzz\hb-version.h">
+      <Filter>include\harfbuzz</Filter>
+    </ClInclude>
+    <ClInclude Include="include\harfbuzz\hb-aat.h">
+      <Filter>include\harfbuzz</Filter>
+    </ClInclude>
+    <ClInclude Include="include\harfbuzz\hb-aat-layout.h">
+      <Filter>include\harfbuzz</Filter>
+    </ClInclude>
+    <ClInclude Include="src\config.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-algs.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-array.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-atomic.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-bimap.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-bit-page.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-blob.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-buffer.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-buffer-deserialize-json.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-buffer-deserialize-text.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-cache.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-cff1-interp-cs.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-cff2-interp-cs.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-cff-interp-common.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-cff-interp-cs-common.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-cff-interp-dict-common.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-config.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-debug.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-dispatch.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-draw.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-face.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-font.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-iter.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-kern.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-machinery.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-map.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-meta.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-ms-feature-ranges.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-mutex.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-null.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-number.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-number-parser.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-object.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-open-file.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-open-type.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-ot-cff1-std-str.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-ot-cff1-table.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-ot-cff2-table.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-ot-cff-common.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-ot-cmap-table.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-ot-color-cbdt-table.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-ot-color-colr-table.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-ot-color-cpal-table.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-ot-color-sbix-table.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-ot-color-svg-table.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-ot-face.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-ot-face-table-list.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-ot-gasp-table.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-ot-glyf-table.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-ot-hdmx-table.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-ot-head-table.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-ot-hhea-table.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-ot-hmtx-table.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-ot-kern-table.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-ot-layout.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-ot-layout-base-table.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-ot-layout-common.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-ot-layout-gdef-table.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-ot-layout-gpos-table.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-ot-layout-gsubgpos.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-ot-layout-gsub-table.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-ot-layout-jstf-table.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-ot-map.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-ot-math-table.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-ot-maxp-table.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-ot-meta-table.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-ot-metrics.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-ot-name-language.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-ot-name-language-static.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-ot-name-table.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-ot-os2-table.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-ot-os2-unicode-ranges.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-ot-post-macroman.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-ot-post-table.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-ot-shape.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-ot-shape-complex.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-ot-shape-complex-arabic.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-ot-shape-complex-arabic-fallback.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-ot-shape-complex-arabic-joining-list.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-ot-shape-complex-arabic-table.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-ot-shape-complex-arabic-win1256.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-ot-shape-complex-indic.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-ot-shape-complex-indic-machine.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-ot-shape-complex-khmer.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-ot-shape-complex-khmer-machine.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-ot-shape-complex-myanmar.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-ot-shape-complex-myanmar-machine.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-ot-shape-complex-syllabic.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-ot-shape-complex-use-machine.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-ot-shape-complex-use-table.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-ot-shape-complex-vowel-constraints.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-ot-shape-fallback.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-ot-shape-normalize.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-ot-stat-table.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-ot-tag-table.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-ot-var-avar-table.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-ot-var-fvar-table.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-ot-var-gvar-table.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-ot-var-hvar-table.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-ot-var-mvar-table.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-ot-vorg-table.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-pool.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-sanitize.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-serialize.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-set.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-set-digest.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-shape-plan.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-shaper.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-shaper-impl.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-shaper-list.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-string-array.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-ucd-table.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-unicode.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-unicode-emoji-table.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-utf.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-vector.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-aat-layout.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-aat-layout-ankr-table.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-aat-layout-bsln-table.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-aat-layout-common.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-aat-layout-feat-table.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-aat-layout-just-table.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-aat-layout-kerx-table.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-aat-layout-morx-table.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-aat-layout-opbd-table.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-aat-layout-trak-table.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-aat-ltag-table.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-aat-map.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="include\harfbuzz\hb-subset.h">
+      <Filter>include\harfbuzz</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-subset.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-subset-cff1.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-subset-cff2.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-subset-cff-common.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-subset-input.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-subset-plan.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-bit-set-invertible.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-bit-set.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-ot-color-colrv1-closure.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-ot-post-table-v2subset.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-repacker.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hb-priority-queue.hh">
+      <Filter>src</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

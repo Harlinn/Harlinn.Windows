@@ -1,0 +1,369 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="include">
+      <UniqueIdentifier>{30e3ea63-b9a5-4e4c-9c86-f21581cfea0e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\libxml">
+      <UniqueIdentifier>{35d94dd8-b6cf-4ea1-9cbf-7cdf44d5653f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{546e9700-f563-441b-986e-1248b628f7fd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Readme">
+      <UniqueIdentifier>{b520cfc4-58e1-4b95-87da-cf94dfc7cf80}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="dllmain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\buf.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\c14n.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\catalog.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\chvalid.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\debugXML.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dict.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DOCBparser.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\encoding.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\entities.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\error.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\globals.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hash.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\HTMLparser.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\HTMLtree.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\legacy.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\list.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\nanoftp.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\nanohttp.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\parser.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\parserInternals.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pattern.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\relaxng.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SAX.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SAX2.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\schematron.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\threads.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\tree.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\trio.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\trionan.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\triostr.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\uri.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\valid.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xinclude.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xlink.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xmlIO.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xmlmemory.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xmlmodule.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xmlreader.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xmlregexp.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xmlsave.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xmlschemas.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xmlschemastypes.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xmlstring.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xmlunicode.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xmlwriter.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xpath.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xpointer.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xzlib.c">
+      <Filter>src</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\libxml\c14n.h">
+      <Filter>include\libxml</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libxml\catalog.h">
+      <Filter>include\libxml</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libxml\chvalid.h">
+      <Filter>include\libxml</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libxml\debugXML.h">
+      <Filter>include\libxml</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libxml\dict.h">
+      <Filter>include\libxml</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libxml\DOCBparser.h">
+      <Filter>include\libxml</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libxml\encoding.h">
+      <Filter>include\libxml</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libxml\entities.h">
+      <Filter>include\libxml</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libxml\globals.h">
+      <Filter>include\libxml</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libxml\hash.h">
+      <Filter>include\libxml</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libxml\HTMLparser.h">
+      <Filter>include\libxml</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libxml\HTMLtree.h">
+      <Filter>include\libxml</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libxml\list.h">
+      <Filter>include\libxml</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libxml\nanoftp.h">
+      <Filter>include\libxml</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libxml\nanohttp.h">
+      <Filter>include\libxml</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libxml\parser.h">
+      <Filter>include\libxml</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libxml\parserInternals.h">
+      <Filter>include\libxml</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libxml\pattern.h">
+      <Filter>include\libxml</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libxml\relaxng.h">
+      <Filter>include\libxml</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libxml\SAX.h">
+      <Filter>include\libxml</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libxml\SAX2.h">
+      <Filter>include\libxml</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libxml\schemasInternals.h">
+      <Filter>include\libxml</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libxml\schematron.h">
+      <Filter>include\libxml</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libxml\threads.h">
+      <Filter>include\libxml</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libxml\tree.h">
+      <Filter>include\libxml</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libxml\uri.h">
+      <Filter>include\libxml</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libxml\valid.h">
+      <Filter>include\libxml</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libxml\xinclude.h">
+      <Filter>include\libxml</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libxml\xlink.h">
+      <Filter>include\libxml</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libxml\xmlautomata.h">
+      <Filter>include\libxml</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libxml\xmlerror.h">
+      <Filter>include\libxml</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libxml\xmlexports.h">
+      <Filter>include\libxml</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libxml\xmlIO.h">
+      <Filter>include\libxml</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libxml\xmlmemory.h">
+      <Filter>include\libxml</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libxml\xmlmodule.h">
+      <Filter>include\libxml</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libxml\xmlreader.h">
+      <Filter>include\libxml</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libxml\xmlregexp.h">
+      <Filter>include\libxml</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libxml\xmlsave.h">
+      <Filter>include\libxml</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libxml\xmlschemas.h">
+      <Filter>include\libxml</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libxml\xmlschemastypes.h">
+      <Filter>include\libxml</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libxml\xmlstring.h">
+      <Filter>include\libxml</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libxml\xmlunicode.h">
+      <Filter>include\libxml</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libxml\xmlwin32version.h">
+      <Filter>include\libxml</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libxml\xmlwriter.h">
+      <Filter>include\libxml</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libxml\xpath.h">
+      <Filter>include\libxml</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libxml\xpathInternals.h">
+      <Filter>include\libxml</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libxml\xpointer.h">
+      <Filter>include\libxml</Filter>
+    </ClInclude>
+    <ClInclude Include="src\buf.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\elfgcchack.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\libxml.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\save.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\timsort.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\trio.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\triodef.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\trionan.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\triop.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\triostr.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\xzlib.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\chvalid.def">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libxml\xmlversion.h">
+      <Filter>include\libxml</Filter>
+    </ClInclude>
+    <ClInclude Include="src\config.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\enc.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wsockcompat.h">
+      <Filter>include</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

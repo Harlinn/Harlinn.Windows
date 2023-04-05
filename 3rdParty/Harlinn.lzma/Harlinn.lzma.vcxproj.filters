@@ -1,0 +1,336 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="asm">
+      <UniqueIdentifier>{c0284ee0-ad07-47a9-94a7-2505e504b3d4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="asm\x86">
+      <UniqueIdentifier>{32312ea7-966c-467d-840d-c5102aac35b0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="c">
+      <UniqueIdentifier>{1e107149-5005-40de-bbbb-a85ab77814ad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cpp">
+      <UniqueIdentifier>{f2d5222a-56df-4fde-81b8-bc4379442c52}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Readme">
+      <UniqueIdentifier>{6ea6ecf4-597e-4069-9c26-c3a9b3cf170f}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="dllmain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="c\7zAlloc.c">
+      <Filter>c</Filter>
+    </ClCompile>
+    <ClCompile Include="c\7zArcIn.c">
+      <Filter>c</Filter>
+    </ClCompile>
+    <ClCompile Include="c\7zBuf.c">
+      <Filter>c</Filter>
+    </ClCompile>
+    <ClCompile Include="c\7zBuf2.c">
+      <Filter>c</Filter>
+    </ClCompile>
+    <ClCompile Include="c\7zCrc.c">
+      <Filter>c</Filter>
+    </ClCompile>
+    <ClCompile Include="c\7zCrcOpt.c">
+      <Filter>c</Filter>
+    </ClCompile>
+    <ClCompile Include="c\7zDec.c">
+      <Filter>c</Filter>
+    </ClCompile>
+    <ClCompile Include="c\7zFile.c">
+      <Filter>c</Filter>
+    </ClCompile>
+    <ClCompile Include="c\7zStream.c">
+      <Filter>c</Filter>
+    </ClCompile>
+    <ClCompile Include="c\Aes.c">
+      <Filter>c</Filter>
+    </ClCompile>
+    <ClCompile Include="c\AesOpt.c">
+      <Filter>c</Filter>
+    </ClCompile>
+    <ClCompile Include="c\Alloc.c">
+      <Filter>c</Filter>
+    </ClCompile>
+    <ClCompile Include="c\Bcj2.c">
+      <Filter>c</Filter>
+    </ClCompile>
+    <ClCompile Include="c\Bcj2Enc.c">
+      <Filter>c</Filter>
+    </ClCompile>
+    <ClCompile Include="c\Bra.c">
+      <Filter>c</Filter>
+    </ClCompile>
+    <ClCompile Include="c\Bra86.c">
+      <Filter>c</Filter>
+    </ClCompile>
+    <ClCompile Include="c\BraIA64.c">
+      <Filter>c</Filter>
+    </ClCompile>
+    <ClCompile Include="c\CpuArch.c">
+      <Filter>c</Filter>
+    </ClCompile>
+    <ClCompile Include="c\Delta.c">
+      <Filter>c</Filter>
+    </ClCompile>
+    <ClCompile Include="c\DllSecur.c">
+      <Filter>c</Filter>
+    </ClCompile>
+    <ClCompile Include="c\LzFind.c">
+      <Filter>c</Filter>
+    </ClCompile>
+    <ClCompile Include="c\LzFindMt.c">
+      <Filter>c</Filter>
+    </ClCompile>
+    <ClCompile Include="c\Lzma2Dec.c">
+      <Filter>c</Filter>
+    </ClCompile>
+    <ClCompile Include="c\Lzma2DecMt.c">
+      <Filter>c</Filter>
+    </ClCompile>
+    <ClCompile Include="c\Lzma2Enc.c">
+      <Filter>c</Filter>
+    </ClCompile>
+    <ClCompile Include="c\Lzma86Dec.c">
+      <Filter>c</Filter>
+    </ClCompile>
+    <ClCompile Include="c\Lzma86Enc.c">
+      <Filter>c</Filter>
+    </ClCompile>
+    <ClCompile Include="c\LzmaDec.c">
+      <Filter>c</Filter>
+    </ClCompile>
+    <ClCompile Include="c\LzmaEnc.c">
+      <Filter>c</Filter>
+    </ClCompile>
+    <ClCompile Include="c\LzmaLib.c">
+      <Filter>c</Filter>
+    </ClCompile>
+    <ClCompile Include="c\MtCoder.c">
+      <Filter>c</Filter>
+    </ClCompile>
+    <ClCompile Include="c\MtDec.c">
+      <Filter>c</Filter>
+    </ClCompile>
+    <ClCompile Include="c\Ppmd7.c">
+      <Filter>c</Filter>
+    </ClCompile>
+    <ClCompile Include="c\Ppmd7Dec.c">
+      <Filter>c</Filter>
+    </ClCompile>
+    <ClCompile Include="c\Ppmd7Enc.c">
+      <Filter>c</Filter>
+    </ClCompile>
+    <ClCompile Include="c\Sha256.c">
+      <Filter>c</Filter>
+    </ClCompile>
+    <ClCompile Include="c\Sha256Opt.c">
+      <Filter>c</Filter>
+    </ClCompile>
+    <ClCompile Include="c\Sort.c">
+      <Filter>c</Filter>
+    </ClCompile>
+    <ClCompile Include="c\Threads.c">
+      <Filter>c</Filter>
+    </ClCompile>
+    <ClCompile Include="c\Xz.c">
+      <Filter>c</Filter>
+    </ClCompile>
+    <ClCompile Include="c\XzCrc64.c">
+      <Filter>c</Filter>
+    </ClCompile>
+    <ClCompile Include="c\XzCrc64Opt.c">
+      <Filter>c</Filter>
+    </ClCompile>
+    <ClCompile Include="c\XzDec.c">
+      <Filter>c</Filter>
+    </ClCompile>
+    <ClCompile Include="c\XzEnc.c">
+      <Filter>c</Filter>
+    </ClCompile>
+    <ClCompile Include="c\XzIn.c">
+      <Filter>c</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <MASM Include="asm\x86\AesOpt.asm">
+      <Filter>asm\x86</Filter>
+    </MASM>
+    <MASM Include="asm\x86\LzFindOpt.asm">
+      <Filter>asm\x86</Filter>
+    </MASM>
+    <MASM Include="asm\x86\LzmaDecOpt.asm">
+      <Filter>asm\x86</Filter>
+    </MASM>
+    <MASM Include="asm\x86\Sha256Opt.asm">
+      <Filter>asm\x86</Filter>
+    </MASM>
+    <MASM Include="asm\x86\XzCrc64Opt.asm">
+      <Filter>asm\x86</Filter>
+    </MASM>
+    <MASM Include="asm\x86\7zCrcOpt.asm">
+      <Filter>asm\x86</Filter>
+    </MASM>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="c\7z.h">
+      <Filter>c</Filter>
+    </ClInclude>
+    <ClInclude Include="c\7zAlloc.h">
+      <Filter>c</Filter>
+    </ClInclude>
+    <ClInclude Include="c\7zBuf.h">
+      <Filter>c</Filter>
+    </ClInclude>
+    <ClInclude Include="c\7zCrc.h">
+      <Filter>c</Filter>
+    </ClInclude>
+    <ClInclude Include="c\7zFile.h">
+      <Filter>c</Filter>
+    </ClInclude>
+    <ClInclude Include="c\7zTypes.h">
+      <Filter>c</Filter>
+    </ClInclude>
+    <ClInclude Include="c\7zVersion.h">
+      <Filter>c</Filter>
+    </ClInclude>
+    <ClInclude Include="c\Aes.h">
+      <Filter>c</Filter>
+    </ClInclude>
+    <ClInclude Include="c\Alloc.h">
+      <Filter>c</Filter>
+    </ClInclude>
+    <ClInclude Include="c\Bcj2.h">
+      <Filter>c</Filter>
+    </ClInclude>
+    <ClInclude Include="c\Bra.h">
+      <Filter>c</Filter>
+    </ClInclude>
+    <ClInclude Include="c\Compiler.h">
+      <Filter>c</Filter>
+    </ClInclude>
+    <ClInclude Include="c\CpuArch.h">
+      <Filter>c</Filter>
+    </ClInclude>
+    <ClInclude Include="c\Delta.h">
+      <Filter>c</Filter>
+    </ClInclude>
+    <ClInclude Include="c\DllSecur.h">
+      <Filter>c</Filter>
+    </ClInclude>
+    <ClInclude Include="c\LzFind.h">
+      <Filter>c</Filter>
+    </ClInclude>
+    <ClInclude Include="c\LzFindMt.h">
+      <Filter>c</Filter>
+    </ClInclude>
+    <ClInclude Include="c\LzHash.h">
+      <Filter>c</Filter>
+    </ClInclude>
+    <ClInclude Include="c\Lzma2Dec.h">
+      <Filter>c</Filter>
+    </ClInclude>
+    <ClInclude Include="c\Lzma2DecMt.h">
+      <Filter>c</Filter>
+    </ClInclude>
+    <ClInclude Include="c\Lzma2Enc.h">
+      <Filter>c</Filter>
+    </ClInclude>
+    <ClInclude Include="c\Lzma86.h">
+      <Filter>c</Filter>
+    </ClInclude>
+    <ClInclude Include="c\LzmaDec.h">
+      <Filter>c</Filter>
+    </ClInclude>
+    <ClInclude Include="c\LzmaEnc.h">
+      <Filter>c</Filter>
+    </ClInclude>
+    <ClInclude Include="c\LzmaLib.h">
+      <Filter>c</Filter>
+    </ClInclude>
+    <ClInclude Include="c\MtCoder.h">
+      <Filter>c</Filter>
+    </ClInclude>
+    <ClInclude Include="c\MtDec.h">
+      <Filter>c</Filter>
+    </ClInclude>
+    <ClInclude Include="c\Ppmd.h">
+      <Filter>c</Filter>
+    </ClInclude>
+    <ClInclude Include="c\Ppmd7.h">
+      <Filter>c</Filter>
+    </ClInclude>
+    <ClInclude Include="c\Precomp.h">
+      <Filter>c</Filter>
+    </ClInclude>
+    <ClInclude Include="c\RotateDefs.h">
+      <Filter>c</Filter>
+    </ClInclude>
+    <ClInclude Include="c\Sha256.h">
+      <Filter>c</Filter>
+    </ClInclude>
+    <ClInclude Include="c\Sort.h">
+      <Filter>c</Filter>
+    </ClInclude>
+    <ClInclude Include="c\Threads.h">
+      <Filter>c</Filter>
+    </ClInclude>
+    <ClInclude Include="c\Xz.h">
+      <Filter>c</Filter>
+    </ClInclude>
+    <ClInclude Include="c\XzCrc64.h">
+      <Filter>c</Filter>
+    </ClInclude>
+    <ClInclude Include="c\XzEnc.h">
+      <Filter>c</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="c\7zVersion.rc">
+      <Filter>c</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Readme\7zC.txt">
+      <Filter>Readme</Filter>
+    </Text>
+    <Text Include="Readme\7zFormat.txt">
+      <Filter>Readme</Filter>
+    </Text>
+    <Text Include="Readme\installer.txt">
+      <Filter>Readme</Filter>
+    </Text>
+    <Text Include="Readme\lzma.txt">
+      <Filter>Readme</Filter>
+    </Text>
+    <Text Include="Readme\lzma-history.txt">
+      <Filter>Readme</Filter>
+    </Text>
+    <Text Include="Readme\lzma-sdk.txt">
+      <Filter>Readme</Filter>
+    </Text>
+    <Text Include="Readme\lzma-specification.txt">
+      <Filter>Readme</Filter>
+    </Text>
+    <Text Include="Readme\Methods.txt">
+      <Filter>Readme</Filter>
+    </Text>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,789 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{59aa0550-fc9d-4ec4-8dc6-d24f94c67f38}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="lib">
+      <UniqueIdentifier>{bc7db60d-dfa7-42f9-a6ca-74addc03b744}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Windows">
+      <UniqueIdentifier>{a6a12b21-c27b-40c8-a17c-363198c9916b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="lib\bitset">
+      <UniqueIdentifier>{2d67daba-beab-4021-b42f-8f06d7032d82}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="lib\glthread">
+      <UniqueIdentifier>{fa6758dd-46b9-4975-8b93-c8473071e564}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="lib\unistr">
+      <UniqueIdentifier>{8b3f8435-a58c-4f0d-b37c-dbed21f0f214}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="lib\uniwidth">
+      <UniqueIdentifier>{2d7ef87c-e08f-436d-a4da-0f5e5fb8921d}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="COPYING" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\AnnotationList.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\assoc.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\closure.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\complain.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\conflicts.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\counterexample.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\derivation.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\derives.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\files.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fixits.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\getargs.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\glyphs.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\gram.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphviz.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\i18n-strings.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ielr.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\InadequacyList.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lalr.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\location.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lr0.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lssi.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\main.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\muscle-tab.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\named-ref.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\nullable.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\output.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\parse-gram.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\parse-simulation.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\print.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\print-graph.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\print-xml.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\reader.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\reduce.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\relation.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Sbitset.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\scan-code-c.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\scan-gram-c.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\scan-skel-c.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\state.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\state-item.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\strversion.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\symlist.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\symtab.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\tables.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\uniqstr.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lib\bitset\array.c">
+      <Filter>lib\bitset</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lib\bitset\list.c">
+      <Filter>lib\bitset</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lib\bitset\stats.c">
+      <Filter>lib\bitset</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lib\bitset\table.c">
+      <Filter>lib\bitset</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lib\bitset\vector.c">
+      <Filter>lib\bitset</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lib\bitrotate.c">
+      <Filter>lib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lib\bitset.c">
+      <Filter>lib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lib\bitsetv.c">
+      <Filter>lib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lib\c-ctype.c">
+      <Filter>lib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lib\obstack.c">
+      <Filter>lib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lib\gl_linked_list.c">
+      <Filter>lib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lib\gl_list.c">
+      <Filter>lib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lib\error.c">
+      <Filter>lib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lib\gl_xlist.c">
+      <Filter>lib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lib\hash.c">
+      <Filter>lib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lib\dirname.c">
+      <Filter>lib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lib\quotearg.c">
+      <Filter>lib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lib\get-errno.c">
+      <Filter>lib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lib\gl_array_list.c">
+      <Filter>lib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lib\relocatable.c">
+      <Filter>lib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lib\xstrndup.c">
+      <Filter>lib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lib\argmatch.c">
+      <Filter>lib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lib\mbswidth.c">
+      <Filter>lib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lib\basename-lgpl.c">
+      <Filter>lib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lib\c-strcasecmp.c">
+      <Filter>lib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lib\c-strncasecmp.c">
+      <Filter>lib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lib\closeout.c">
+      <Filter>lib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lib\exitfail.c">
+      <Filter>lib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lib\fstrcmp.c">
+      <Filter>lib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lib\getprogname.c">
+      <Filter>lib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lib\gl_rbtreehash_list.c">
+      <Filter>lib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lib\close-stream.c">
+      <Filter>lib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lib\glthread\lock.c">
+      <Filter>lib\glthread</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lib\glthread\threadlib.c">
+      <Filter>lib\glthread</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lib\glthread\tls.c">
+      <Filter>lib\glthread</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lib\unistr\u8-mbtoucr.c">
+      <Filter>lib\uniwidth</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lib\unistr\u8-uctomb.c">
+      <Filter>lib\uniwidth</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lib\unistr\u8-uctomb-aux.c">
+      <Filter>lib\uniwidth</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lib\uniwidth\width.c">
+      <Filter>lib\unistr</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lib\progname.c">
+      <Filter>lib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lib\obstack_printf.c">
+      <Filter>lib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lib\gethrxtime.c">
+      <Filter>lib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lib\getline.c">
+      <Filter>lib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lib\getopt.c">
+      <Filter>lib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lib\getopt1.c">
+      <Filter>lib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lib\fpending.c">
+      <Filter>lib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lib\gl_rbtree_oset.c">
+      <Filter>lib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lib\timevar.c">
+      <Filter>lib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lib\vasnprintf.c">
+      <Filter>lib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lib\vasprintf.c">
+      <Filter>lib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lib\unicodeio.c">
+      <Filter>lib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lib\xsize.c">
+      <Filter>lib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lib\gl_oset.c">
+      <Filter>lib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lib\printf-parse.c">
+      <Filter>lib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lib\xtime.c">
+      <Filter>lib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lib\localcharset.c">
+      <Filter>lib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lib\mbfile.c">
+      <Filter>lib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lib\path-join.c">
+      <Filter>lib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lib\printf-args.c">
+      <Filter>lib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lib\mbchar.c">
+      <Filter>lib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lib\concat-filename.c">
+      <Filter>lib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lib\xmemdup0.c">
+      <Filter>lib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lib\wait-process.c">
+      <Filter>lib</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\AnnotationList.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\assoc.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\closure.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\complain.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\conflicts.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\counterexample.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\derivation.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\derives.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\files.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\fixits.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\flex-scanner.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\getargs.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\glyphs.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\gram.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphviz.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ielr.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\InadequacyList.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lalr.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\location.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lr0.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lssi.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\muscle-tab.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\named-ref.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\nullable.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\output.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\parse-gram.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\parse-simulation.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\print.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\print-graph.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\print-xml.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\reader.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\reduce.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\relation.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Sbitset.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scan-code.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scan-gram.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scan-skel.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\state.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\state-item.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\strversion.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\symlist.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\symtab.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\system.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\tables.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\uniqstr.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\config.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Windows\unistd.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\bitset\array.h">
+      <Filter>lib\bitset</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\bitset\base.h">
+      <Filter>lib\bitset</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\bitset\list.h">
+      <Filter>lib\bitset</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\bitset\stats.h">
+      <Filter>lib\bitset</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\bitset\table.h">
+      <Filter>lib\bitset</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\bitset\vector.h">
+      <Filter>lib\bitset</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\bitrotate.h">
+      <Filter>lib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\bitset.h">
+      <Filter>lib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\bitsetv.h">
+      <Filter>lib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\unlocked-io.h">
+      <Filter>lib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\verify.h">
+      <Filter>lib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\xalloc.h">
+      <Filter>lib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\c-ctype.h">
+      <Filter>lib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\xalloc-oversized.h">
+      <Filter>lib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\attribute.h">
+      <Filter>lib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\obstack.h">
+      <Filter>lib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\gl_linked_list.h">
+      <Filter>lib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\gl_list.h">
+      <Filter>lib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Windows\gettext.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\assure.h">
+      <Filter>lib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\error.h">
+      <Filter>lib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\gl_xlist.h">
+      <Filter>lib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\hash.h">
+      <Filter>lib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\dirname.h">
+      <Filter>lib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\alignof.h">
+      <Filter>lib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\filename.h">
+      <Filter>lib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\quotearg.h">
+      <Filter>lib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\get-errno.h">
+      <Filter>lib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\gl_array_list.h">
+      <Filter>lib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\quote.h">
+      <Filter>lib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\relocatable.h">
+      <Filter>lib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\xstrndup.h">
+      <Filter>lib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\argmatch.h">
+      <Filter>lib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\mbswidth.h">
+      <Filter>lib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\basename-lgpl.h">
+      <Filter>lib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\c-strcase.h">
+      <Filter>lib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\c-strcaseeq.h">
+      <Filter>lib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\closeout.h">
+      <Filter>lib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\exitfail.h">
+      <Filter>lib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\fstrcmp.h">
+      <Filter>lib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\getprogname.h">
+      <Filter>lib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\gl_anylinked_list1.h">
+      <Filter>lib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\gl_rbtreehash_list.h">
+      <Filter>lib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\close-stream.h">
+      <Filter>lib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\glthread\lock.h">
+      <Filter>lib\glthread</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\glthread\tls.h">
+      <Filter>lib\glthread</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\uniwidth\cjk.h">
+      <Filter>lib\unistr</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\progname.h">
+      <Filter>lib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\textstyle.h">
+      <Filter>lib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\gethrxtime.h">
+      <Filter>lib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\getopt.h">
+      <Filter>lib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\getopt_int.h">
+      <Filter>lib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\fpending.h">
+      <Filter>lib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\gl_anylinked_list2.h">
+      <Filter>lib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\gl_rbtree_oset.h">
+      <Filter>lib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\timevar.h">
+      <Filter>lib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\timevar.def">
+      <Filter>lib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\vasnprintf.h">
+      <Filter>lib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\unicodeio.h">
+      <Filter>lib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\xsize.h">
+      <Filter>lib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\gl_oset.h">
+      <Filter>lib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\printf-parse.h">
+      <Filter>lib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\intprops.h">
+      <Filter>lib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\alloca.h">
+      <Filter>lib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\xtime.h">
+      <Filter>lib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\unistr.h">
+      <Filter>lib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\gl_anyhash1.h">
+      <Filter>lib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\gl_rbtree_ordered.h">
+      <Filter>lib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\localcharset.h">
+      <Filter>lib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\mbfile.h">
+      <Filter>lib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\path-join.h">
+      <Filter>lib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\printf-args.h">
+      <Filter>lib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\unitypes.h">
+      <Filter>lib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\uniwidth.h">
+      <Filter>lib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\stdio-impl.h">
+      <Filter>lib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\mbchar.h">
+      <Filter>lib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\gl_anyrbtree_list1.h">
+      <Filter>lib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\gl_anytree_oset.h">
+      <Filter>lib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\gl_anyhash2.h">
+      <Filter>lib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\concat-filename.h">
+      <Filter>lib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\unused-parameter.h">
+      <Filter>lib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\gl_anyhash_primes.h">
+      <Filter>lib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\streq.h">
+      <Filter>lib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\xmemdup0.h">
+      <Filter>lib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scan-code.inl">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scan-skel.inl">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scan-gram.inl">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\wait-process.h">
+      <Filter>lib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\gl_anytree_list1.h">
+      <Filter>lib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\gl_anytreehash_list1.h">
+      <Filter>lib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\gl_anyrbtree_list2.h">
+      <Filter>lib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\gl_anytreehash_list2.h">
+      <Filter>lib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\gl_anytree_list2.h">
+      <Filter>lib</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

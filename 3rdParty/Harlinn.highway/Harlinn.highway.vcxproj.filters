@@ -1,0 +1,105 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="include">
+      <UniqueIdentifier>{51d0078b-bd86-4826-a04c-acb7b5cf2e7c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{941c83a7-d849-403d-840c-526f8689429c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\hwy">
+      <UniqueIdentifier>{4615d87b-4db4-479b-b529-7bf73f987282}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\hwy\ops">
+      <UniqueIdentifier>{bccbe7b8-7e31-4ca7-80f5-eb4366173d19}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Readme">
+      <UniqueIdentifier>{6f09ee42-4368-47b9-b38a-77393b4a1f95}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="dllmain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\aligned_allocator.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\targets.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\hwy\ops\arm_neon-inl.h">
+      <Filter>include\hwy\ops</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hwy\ops\arm_sve-inl.h">
+      <Filter>include\hwy\ops</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hwy\ops\generic_ops-inl.h">
+      <Filter>include\hwy\ops</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hwy\ops\rvv-inl.h">
+      <Filter>include\hwy\ops</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hwy\ops\scalar-inl.h">
+      <Filter>include\hwy\ops</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hwy\ops\set_macros-inl.h">
+      <Filter>include\hwy\ops</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hwy\ops\shared-inl.h">
+      <Filter>include\hwy\ops</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hwy\ops\wasm_128-inl.h">
+      <Filter>include\hwy\ops</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hwy\ops\x86_128-inl.h">
+      <Filter>include\hwy\ops</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hwy\ops\x86_256-inl.h">
+      <Filter>include\hwy\ops</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hwy\ops\x86_512-inl.h">
+      <Filter>include\hwy\ops</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hwy\aligned_allocator.h">
+      <Filter>include\hwy</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hwy\base.h">
+      <Filter>include\hwy</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hwy\cache_control.h">
+      <Filter>include\hwy</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hwy\detect_compiler_arch.h">
+      <Filter>include\hwy</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hwy\detect_targets.h">
+      <Filter>include\hwy</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hwy\foreach_target.h">
+      <Filter>include\hwy</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hwy\highway.h">
+      <Filter>include\hwy</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hwy\targets.h">
+      <Filter>include\hwy</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hwy\highwaydef.h">
+      <Filter>include\hwy</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

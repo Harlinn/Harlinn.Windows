@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="include">
+      <UniqueIdentifier>{2adbfc92-31b7-488e-804f-2cd660dcc78a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\jwt-cpp">
+      <UniqueIdentifier>{7d82126e-f5df-4c25-99d3-511d35dc9abc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\picojson">
+      <UniqueIdentifier>{0205e19c-a7e7-4cb4-ac94-2ca3414a1c23}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\jwt-cpp\base.h">
+      <Filter>include\jwt-cpp</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\jwt-cpp\jwt.h">
+      <Filter>include\jwt-cpp</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\picojson\picojson.h">
+      <Filter>include\picojson</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

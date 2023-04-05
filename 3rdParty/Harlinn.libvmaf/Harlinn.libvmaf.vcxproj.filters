@@ -1,0 +1,518 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="include">
+      <UniqueIdentifier>{c0097d3f-9d64-4383-96f7-447fd6caa1d4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\libvmaf">
+      <UniqueIdentifier>{a759f102-76f9-4abb-a2ec-cff8a48b41ec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{c79e0c30-7302-46f0-a0bb-656a5f4e2822}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\compat">
+      <UniqueIdentifier>{460d901d-de4a-4c64-8c15-9932d25a6d65}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\compat\gcc">
+      <UniqueIdentifier>{853e5965-a872-4bf7-b10d-4a7d5b8be833}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\compat\msvc">
+      <UniqueIdentifier>{ec0b8e28-f6b9-44ad-8f62-79c3e7eb572a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\ext">
+      <UniqueIdentifier>{49a29854-c1d3-4076-8e73-c2431a2aa2ed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\ext\x86">
+      <UniqueIdentifier>{8055cb00-6397-4394-b04d-d725270b252f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\feature">
+      <UniqueIdentifier>{b0d12341-b5a1-4551-bd13-1295601d3964}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\feature\common">
+      <UniqueIdentifier>{910c9a52-0fbb-47b2-9e07-c9d53bd6d41b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\feature\iqa">
+      <UniqueIdentifier>{c7873edc-5a36-4072-b7e5-e64f4227d100}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\feature\third_party">
+      <UniqueIdentifier>{1e78fda2-7371-4041-8534-69c2a4656e83}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\feature\third_party\xiph">
+      <UniqueIdentifier>{14bd195c-fc83-4180-b16e-b983e72c5a01}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\feature\x86">
+      <UniqueIdentifier>{5cfa2046-4d72-4167-b0a7-ee42a09156f2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\x86">
+      <UniqueIdentifier>{017b95f1-59f9-4536-9481-b8825ca54f0a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Readme">
+      <UniqueIdentifier>{6b328918-16f7-4fe8-8a93-9565672c5412}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="dllmain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\feature\common\alignment.c">
+      <Filter>src\feature\common</Filter>
+    </ClCompile>
+    <ClCompile Include="src\feature\common\blur_array.c">
+      <Filter>src\feature\common</Filter>
+    </ClCompile>
+    <ClCompile Include="src\feature\common\convolution.c">
+      <Filter>src\feature\common</Filter>
+    </ClCompile>
+    <ClCompile Include="src\feature\common\convolution_avx.c">
+      <Filter>src\feature\common</Filter>
+    </ClCompile>
+    <ClCompile Include="src\feature\iqa\convolve.c">
+      <Filter>src\feature\iqa</Filter>
+    </ClCompile>
+    <ClCompile Include="src\feature\iqa\decimate.c">
+      <Filter>src\feature\iqa</Filter>
+    </ClCompile>
+    <ClCompile Include="src\feature\iqa\math_utils.c">
+      <Filter>src\feature\iqa</Filter>
+    </ClCompile>
+    <ClCompile Include="src\feature\iqa\ssim_tools.c">
+      <Filter>src\feature\iqa</Filter>
+    </ClCompile>
+    <ClCompile Include="src\feature\x86\adm_avx2.c">
+      <Filter>src\feature\x86</Filter>
+    </ClCompile>
+    <ClCompile Include="src\feature\x86\motion_avx2.c">
+      <Filter>src\feature\x86</Filter>
+    </ClCompile>
+    <ClCompile Include="src\feature\x86\motion_avx512.c">
+      <Filter>src\feature\x86</Filter>
+    </ClCompile>
+    <ClCompile Include="src\feature\x86\vif_avx2.c">
+      <Filter>src\feature\x86</Filter>
+    </ClCompile>
+    <ClCompile Include="src\feature\x86\vif_avx512.c">
+      <Filter>src\feature\x86</Filter>
+    </ClCompile>
+    <ClCompile Include="src\feature\third_party\xiph\psnr_hvs.c">
+      <Filter>src\feature\third_party\xiph</Filter>
+    </ClCompile>
+    <ClCompile Include="src\feature\adm.c">
+      <Filter>src\feature</Filter>
+    </ClCompile>
+    <ClCompile Include="src\feature\adm_tools.c">
+      <Filter>src\feature</Filter>
+    </ClCompile>
+    <ClCompile Include="src\feature\alias.c">
+      <Filter>src\feature</Filter>
+    </ClCompile>
+    <ClCompile Include="src\feature\all.c">
+      <Filter>src\feature</Filter>
+    </ClCompile>
+    <ClCompile Include="src\feature\ansnr.c">
+      <Filter>src\feature</Filter>
+    </ClCompile>
+    <ClCompile Include="src\feature\ansnr_tools.c">
+      <Filter>src\feature</Filter>
+    </ClCompile>
+    <ClCompile Include="src\feature\ciede.c">
+      <Filter>src\feature</Filter>
+    </ClCompile>
+    <ClCompile Include="src\feature\feature_collector.c">
+      <Filter>src\feature</Filter>
+    </ClCompile>
+    <ClCompile Include="src\feature\feature_extractor.c">
+      <Filter>src\feature</Filter>
+    </ClCompile>
+    <ClCompile Include="src\feature\feature_name.c">
+      <Filter>src\feature</Filter>
+    </ClCompile>
+    <ClCompile Include="src\feature\float_adm.c">
+      <Filter>src\feature</Filter>
+    </ClCompile>
+    <ClCompile Include="src\feature\float_ansnr.c">
+      <Filter>src\feature</Filter>
+    </ClCompile>
+    <ClCompile Include="src\feature\float_moment.c">
+      <Filter>src\feature</Filter>
+    </ClCompile>
+    <ClCompile Include="src\feature\float_motion.c">
+      <Filter>src\feature</Filter>
+    </ClCompile>
+    <ClCompile Include="src\feature\float_ms_ssim.c">
+      <Filter>src\feature</Filter>
+    </ClCompile>
+    <ClCompile Include="src\feature\float_psnr.c">
+      <Filter>src\feature</Filter>
+    </ClCompile>
+    <ClCompile Include="src\feature\float_ssim.c">
+      <Filter>src\feature</Filter>
+    </ClCompile>
+    <ClCompile Include="src\feature\float_vif.c">
+      <Filter>src\feature</Filter>
+    </ClCompile>
+    <ClCompile Include="src\feature\integer_adm.c">
+      <Filter>src\feature</Filter>
+    </ClCompile>
+    <ClCompile Include="src\feature\integer_motion.c">
+      <Filter>src\feature</Filter>
+    </ClCompile>
+    <ClCompile Include="src\feature\integer_psnr.c">
+      <Filter>src\feature</Filter>
+    </ClCompile>
+    <ClCompile Include="src\feature\integer_ssim.c">
+      <Filter>src\feature</Filter>
+    </ClCompile>
+    <ClCompile Include="src\feature\integer_vif.c">
+      <Filter>src\feature</Filter>
+    </ClCompile>
+    <ClCompile Include="src\feature\moment.c">
+      <Filter>src\feature</Filter>
+    </ClCompile>
+    <ClCompile Include="src\feature\motion.c">
+      <Filter>src\feature</Filter>
+    </ClCompile>
+    <ClCompile Include="src\feature\ms_ssim.c">
+      <Filter>src\feature</Filter>
+    </ClCompile>
+    <ClCompile Include="src\feature\offset.c">
+      <Filter>src\feature</Filter>
+    </ClCompile>
+    <ClCompile Include="src\feature\picture_copy.c">
+      <Filter>src\feature</Filter>
+    </ClCompile>
+    <ClCompile Include="src\feature\psnr.c">
+      <Filter>src\feature</Filter>
+    </ClCompile>
+    <ClCompile Include="src\feature\psnr_tools.c">
+      <Filter>src\feature</Filter>
+    </ClCompile>
+    <ClCompile Include="src\feature\ssim.c">
+      <Filter>src\feature</Filter>
+    </ClCompile>
+    <ClCompile Include="src\feature\vif.c">
+      <Filter>src\feature</Filter>
+    </ClCompile>
+    <ClCompile Include="src\feature\vif_tools.c">
+      <Filter>src\feature</Filter>
+    </ClCompile>
+    <ClCompile Include="src\x86\x86cpu.c">
+      <Filter>src\x86</Filter>
+    </ClCompile>
+    <ClCompile Include="src\compute_vmaf.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cpu.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cpu_info.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\darray.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dict.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fex_ctx_vector.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libvmaf.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libvmaf.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\log.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\mem.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\model.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\opt.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\output.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pdjson.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\picture.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\predict.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\read_json_model.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ref.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\svm.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\thread_pool.c">
+      <Filter>src</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\libvmaf\compute_vmaf.h">
+      <Filter>include\libvmaf</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libvmaf\feature.h">
+      <Filter>include\libvmaf</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libvmaf\libvmaf.h">
+      <Filter>include\libvmaf</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libvmaf\model.h">
+      <Filter>include\libvmaf</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libvmaf\picture.h">
+      <Filter>include\libvmaf</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libvmaf\version.h">
+      <Filter>include\libvmaf</Filter>
+    </ClInclude>
+    <ClInclude Include="src\compat\gcc\stdatomic.h">
+      <Filter>src\compat\gcc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\compat\msvc\stdatomic.h">
+      <Filter>src\compat\msvc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\feature\common\alignment.h">
+      <Filter>src\feature\common</Filter>
+    </ClInclude>
+    <ClInclude Include="src\feature\common\blur_array.h">
+      <Filter>src\feature\common</Filter>
+    </ClInclude>
+    <ClInclude Include="src\feature\common\convolution.h">
+      <Filter>src\feature\common</Filter>
+    </ClInclude>
+    <ClInclude Include="src\feature\common\convolution_internal.h">
+      <Filter>src\feature\common</Filter>
+    </ClInclude>
+    <ClInclude Include="src\feature\common\macros.h">
+      <Filter>src\feature\common</Filter>
+    </ClInclude>
+    <ClInclude Include="src\feature\iqa\convolve.h">
+      <Filter>src\feature\iqa</Filter>
+    </ClInclude>
+    <ClInclude Include="src\feature\iqa\decimate.h">
+      <Filter>src\feature\iqa</Filter>
+    </ClInclude>
+    <ClInclude Include="src\feature\iqa\iqa.h">
+      <Filter>src\feature\iqa</Filter>
+    </ClInclude>
+    <ClInclude Include="src\feature\iqa\iqa_options.h">
+      <Filter>src\feature\iqa</Filter>
+    </ClInclude>
+    <ClInclude Include="src\feature\iqa\iqa_os.h">
+      <Filter>src\feature\iqa</Filter>
+    </ClInclude>
+    <ClInclude Include="src\feature\iqa\math_utils.h">
+      <Filter>src\feature\iqa</Filter>
+    </ClInclude>
+    <ClInclude Include="src\feature\iqa\ssim_tools.h">
+      <Filter>src\feature\iqa</Filter>
+    </ClInclude>
+    <ClInclude Include="src\feature\x86\adm_avx2.h">
+      <Filter>src\feature\x86</Filter>
+    </ClInclude>
+    <ClInclude Include="src\feature\x86\motion_avx2.h">
+      <Filter>src\feature\x86</Filter>
+    </ClInclude>
+    <ClInclude Include="src\feature\x86\motion_avx512.h">
+      <Filter>src\feature\x86</Filter>
+    </ClInclude>
+    <ClInclude Include="src\feature\x86\vif_avx2.h">
+      <Filter>src\feature\x86</Filter>
+    </ClInclude>
+    <ClInclude Include="src\feature\x86\vif_avx512.h">
+      <Filter>src\feature\x86</Filter>
+    </ClInclude>
+    <ClInclude Include="src\feature\adm.h">
+      <Filter>src\feature</Filter>
+    </ClInclude>
+    <ClInclude Include="src\feature\adm_options.h">
+      <Filter>src\feature</Filter>
+    </ClInclude>
+    <ClInclude Include="src\feature\adm_tools.h">
+      <Filter>src\feature</Filter>
+    </ClInclude>
+    <ClInclude Include="src\feature\alias.h">
+      <Filter>src\feature</Filter>
+    </ClInclude>
+    <ClInclude Include="src\feature\ansnr.h">
+      <Filter>src\feature</Filter>
+    </ClInclude>
+    <ClInclude Include="src\feature\ansnr_options.h">
+      <Filter>src\feature</Filter>
+    </ClInclude>
+    <ClInclude Include="src\feature\ansnr_tools.h">
+      <Filter>src\feature</Filter>
+    </ClInclude>
+    <ClInclude Include="src\feature\feature_collector.h">
+      <Filter>src\feature</Filter>
+    </ClInclude>
+    <ClInclude Include="src\feature\feature_extractor.h">
+      <Filter>src\feature</Filter>
+    </ClInclude>
+    <ClInclude Include="src\feature\feature_name.h">
+      <Filter>src\feature</Filter>
+    </ClInclude>
+    <ClInclude Include="src\feature\integer_adm.h">
+      <Filter>src\feature</Filter>
+    </ClInclude>
+    <ClInclude Include="src\feature\integer_motion.h">
+      <Filter>src\feature</Filter>
+    </ClInclude>
+    <ClInclude Include="src\feature\integer_vif.h">
+      <Filter>src\feature</Filter>
+    </ClInclude>
+    <ClInclude Include="src\feature\moment.h">
+      <Filter>src\feature</Filter>
+    </ClInclude>
+    <ClInclude Include="src\feature\moment_options.h">
+      <Filter>src\feature</Filter>
+    </ClInclude>
+    <ClInclude Include="src\feature\motion.h">
+      <Filter>src\feature</Filter>
+    </ClInclude>
+    <ClInclude Include="src\feature\motion_options.h">
+      <Filter>src\feature</Filter>
+    </ClInclude>
+    <ClInclude Include="src\feature\motion_tools.h">
+      <Filter>src\feature</Filter>
+    </ClInclude>
+    <ClInclude Include="src\feature\ms_ssim.h">
+      <Filter>src\feature</Filter>
+    </ClInclude>
+    <ClInclude Include="src\feature\offset.h">
+      <Filter>src\feature</Filter>
+    </ClInclude>
+    <ClInclude Include="src\feature\picture_copy.h">
+      <Filter>src\feature</Filter>
+    </ClInclude>
+    <ClInclude Include="src\feature\psnr.h">
+      <Filter>src\feature</Filter>
+    </ClInclude>
+    <ClInclude Include="src\feature\psnr_options.h">
+      <Filter>src\feature</Filter>
+    </ClInclude>
+    <ClInclude Include="src\feature\psnr_tools.h">
+      <Filter>src\feature</Filter>
+    </ClInclude>
+    <ClInclude Include="src\feature\ssim.h">
+      <Filter>src\feature</Filter>
+    </ClInclude>
+    <ClInclude Include="src\feature\vif.h">
+      <Filter>src\feature</Filter>
+    </ClInclude>
+    <ClInclude Include="src\feature\vif_options.h">
+      <Filter>src\feature</Filter>
+    </ClInclude>
+    <ClInclude Include="src\feature\vif_tools.h">
+      <Filter>src\feature</Filter>
+    </ClInclude>
+    <ClInclude Include="src\x86\cpu.h">
+      <Filter>src\x86</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cpu.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cpu_info.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\darray.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\debug.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\dict.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\fex_ctx_vector.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\log.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\mem.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\model.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\opt.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\output.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\pdjson.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\picture.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\predict.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\read_json_model.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ref.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\svm.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\thread_pool.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\timer.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\unpickle.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\vcs_version.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\config.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\compat\msvc\unistd.h">
+      <Filter>src\compat\msvc</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libvmaf\libvmafdef.h">
+      <Filter>include\libvmaf</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="src\ext\x86\x86inc.asm">
+      <Filter>src\ext\x86</Filter>
+    </None>
+    <None Include="src\x86\cpuid.asm">
+      <Filter>src\x86</Filter>
+    </None>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,216 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="arch">
+      <UniqueIdentifier>{5c3774a5-4f85-451f-b32a-d9883ac60359}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="arch\x86">
+      <UniqueIdentifier>{76851f95-f365-441c-9c4b-04adc71867ee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Readme">
+      <UniqueIdentifier>{f212121f-14bc-4ff9-bab2-fbcf8d0b5461}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="dllmain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="arch\x86\adler32_avx.c">
+      <Filter>arch\x86</Filter>
+    </ClCompile>
+    <ClCompile Include="arch\x86\adler32_ssse3.c">
+      <Filter>arch\x86</Filter>
+    </ClCompile>
+    <ClCompile Include="arch\x86\chunkset_avx.c">
+      <Filter>arch\x86</Filter>
+    </ClCompile>
+    <ClCompile Include="arch\x86\chunkset_sse.c">
+      <Filter>arch\x86</Filter>
+    </ClCompile>
+    <ClCompile Include="arch\x86\compare258_avx.c">
+      <Filter>arch\x86</Filter>
+    </ClCompile>
+    <ClCompile Include="arch\x86\compare258_sse.c">
+      <Filter>arch\x86</Filter>
+    </ClCompile>
+    <ClCompile Include="arch\x86\crc_folding.c">
+      <Filter>arch\x86</Filter>
+    </ClCompile>
+    <ClCompile Include="arch\x86\insert_string_sse.c">
+      <Filter>arch\x86</Filter>
+    </ClCompile>
+    <ClCompile Include="arch\x86\slide_avx.c">
+      <Filter>arch\x86</Filter>
+    </ClCompile>
+    <ClCompile Include="arch\x86\slide_sse.c">
+      <Filter>arch\x86</Filter>
+    </ClCompile>
+    <ClCompile Include="arch\x86\x86.c">
+      <Filter>arch\x86</Filter>
+    </ClCompile>
+    <ClCompile Include="adler32.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="chunkset.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="compare258.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="compress.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="crc32.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="crc32_comb.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="deflate.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="deflate_fast.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="deflate_medium.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="deflate_quick.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="deflate_slow.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="functable.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="infback.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="inffast.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="inflate.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="inftrees.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="insert_string.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="trees.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="uncompr.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zutil.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="arch\x86\crc_folding.h">
+      <Filter>arch\x86</Filter>
+    </ClInclude>
+    <ClInclude Include="arch\x86\x86.h">
+      <Filter>arch\x86</Filter>
+    </ClInclude>
+    <ClInclude Include="adler32_p.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="chunkset_tpl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="crc32_comb_tbl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="crc32_p.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="crc32_tbl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="deflate.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="deflate_p.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="fallback_builtins.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="functable.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="inffast.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="inffixed_tbl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="inflate.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="inflate_p.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="inftrees.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="insert_string_tpl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="match_tpl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="trees.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="trees_emit.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="trees_tbl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zbuild.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zconf.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zconf-ng.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zendian.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zlib.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zlib-ng.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zutil.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zutil_p.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zlibngdef.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

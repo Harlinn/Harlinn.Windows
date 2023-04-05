@@ -1,0 +1,2558 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="include">
+      <UniqueIdentifier>{92402ad6-f887-4b12-b59a-c5bcd8db6e59}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\rocksdb">
+      <UniqueIdentifier>{385765fe-5619-4c3c-966c-302a2fedbeab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\rocksdb\utilities">
+      <UniqueIdentifier>{1ee78a40-dadb-4b0d-9d07-5d55a9fa2d05}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\rocksdb\utilities\lua">
+      <UniqueIdentifier>{04252997-f089-4f90-817a-05e748714949}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{eb1c6cc5-49e3-454f-88aa-ebc1fe83f2ec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\build">
+      <UniqueIdentifier>{3f92b4ea-fbd0-48e7-8a3c-86546f4bd756}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\cache">
+      <UniqueIdentifier>{12eed5cb-4fa8-4184-a522-578f7d13b645}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\db">
+      <UniqueIdentifier>{4cb40d89-d53b-42ee-80da-853233296a34}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\env">
+      <UniqueIdentifier>{86de08f6-0826-4b81-b382-237baa18399e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\file">
+      <UniqueIdentifier>{41679dc9-6ab4-4407-b6de-5aa4cd457c8f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\logging">
+      <UniqueIdentifier>{e396cecd-63d0-4140-93fb-98839d1b8287}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\memory">
+      <UniqueIdentifier>{89efbfc0-d2e0-4d0a-aa3a-f707bca4f559}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\memtable">
+      <UniqueIdentifier>{2594cdac-4c38-4112-884f-79a2a4454c7d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\monitoring">
+      <UniqueIdentifier>{fcd04794-94d5-40d2-a22e-2dde78246bff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\options">
+      <UniqueIdentifier>{da6f77a7-0f08-48b9-b87e-2efca1024677}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\port">
+      <UniqueIdentifier>{dff6ae4c-74f2-4ee0-9568-77f12d9b389f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\table">
+      <UniqueIdentifier>{b6e21c8e-889b-41a7-97ed-cecf23ca3df6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\test_util">
+      <UniqueIdentifier>{fd34dbd4-5e82-4272-9400-ad2662d7e1b3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\tools">
+      <UniqueIdentifier>{2143915e-3feb-4fc0-95aa-c802372a713d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\trace_replay">
+      <UniqueIdentifier>{d9a8d68b-1bd8-47e3-8e2f-ee68100570aa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\util">
+      <UniqueIdentifier>{43a9bd14-4be9-40e6-8e36-24ff40a1ec3d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\utilities">
+      <UniqueIdentifier>{d914e6a0-c800-40e4-a495-cb7afde9baba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\db\blob">
+      <UniqueIdentifier>{563b4cda-1bce-42d3-9dee-6eb821bd8660}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\db\compaction">
+      <UniqueIdentifier>{b909481a-7bb6-4603-a34c-618a5437ed99}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\db\db_impl">
+      <UniqueIdentifier>{b9da50b4-1be2-423e-b0a8-5f4032577074}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\port\win">
+      <UniqueIdentifier>{c3592806-ffa0-46c5-8dfa-4232dea1b5fe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\table\adaptive">
+      <UniqueIdentifier>{5c85fb9d-9a30-4ae2-b089-293f3017885a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\table\block_based">
+      <UniqueIdentifier>{d9f16035-1206-47b2-ac9b-0c9889d70f53}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\table\cuckoo">
+      <UniqueIdentifier>{7f6cb433-5e82-4844-9264-bb48f83503c4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\table\plain">
+      <UniqueIdentifier>{8321090f-9b60-4edc-8443-e910a8cee067}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\tools\block_cache_analyzer">
+      <UniqueIdentifier>{10aee1a1-daee-4e7d-9bdf-1ee362f90844}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\tools\dump">
+      <UniqueIdentifier>{3f605d31-c056-4ccc-85a3-64fd04d3d1ee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\utilities\backupable">
+      <UniqueIdentifier>{be40288c-3246-40c0-8c64-d2f2d48679b0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\utilities\blob_db">
+      <UniqueIdentifier>{609e9332-244a-4464-9462-d14b092763e7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\utilities\cassandra">
+      <UniqueIdentifier>{ab37be17-ab4b-4d0a-a01f-250e98899193}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\utilities\checkpoint">
+      <UniqueIdentifier>{0937b840-3511-45d7-9498-be2ae56242fc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\utilities\compaction_filters">
+      <UniqueIdentifier>{367c47da-853d-45d9-89b6-f9bdf0bd33e5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\utilities\leveldb_options">
+      <UniqueIdentifier>{b6f54d47-c416-44d1-a020-95b07ad38b6d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\utilities\memory">
+      <UniqueIdentifier>{47f4d4b8-3d59-4e87-bad0-b92126922d24}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\utilities\merge_operators">
+      <UniqueIdentifier>{90196741-096f-4b9e-a6cf-c91f47e7cc9e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\utilities\option_change_migration">
+      <UniqueIdentifier>{c5f162c8-397a-40d8-a161-bdc6d9326a4e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\utilities\options">
+      <UniqueIdentifier>{842faa7c-1e25-492b-bbd6-e0560132b896}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\utilities\persistent_cache">
+      <UniqueIdentifier>{48f9fdd8-0004-4868-b9c0-9d43036c68a2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\utilities\simulator_cache">
+      <UniqueIdentifier>{f8395314-de0f-49ad-b0f3-3cb07c82984a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\utilities\table_properties_collectors">
+      <UniqueIdentifier>{f346d5a8-3aa0-402b-88c1-01e48211eb04}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\utilities\trace">
+      <UniqueIdentifier>{79d4ac86-2305-41f5-a883-4ea7290f7b42}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\utilities\transactions">
+      <UniqueIdentifier>{fb8e20dc-7553-4357-9705-54578145c49a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\utilities\ttl">
+      <UniqueIdentifier>{60610c4b-f5c5-475b-a7c5-90f7ea46d83d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\utilities\write_batch_with_index">
+      <UniqueIdentifier>{9f6f0dd2-de15-4f8e-a4eb-d1c6727e2aaa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\utilities\merge_operators\string_append">
+      <UniqueIdentifier>{68b203a7-086c-44ab-858d-da1d487f4842}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\utilities\transactions\lock">
+      <UniqueIdentifier>{e810cbd2-7d08-4511-874c-240fe1b9ab12}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\utilities\transactions\lock\point">
+      <UniqueIdentifier>{5c4bb12b-a200-4e96-9ed0-3412248a338a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\utilities\transactions\lock\range">
+      <UniqueIdentifier>{b237ebef-1381-4b61-b0ee-f99b45e364b3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\utilities\transactions\lock\range\range_tree">
+      <UniqueIdentifier>{3cf4ef14-c092-4ff8-bfe4-7773b6ce2336}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\utilities\transactions\lock\range\range_tree\lib">
+      <UniqueIdentifier>{a1aa4a3f-583d-4c36-b0e6-0e4191d802a1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\utilities\transactions\lock\range\range_tree\lib\ft">
+      <UniqueIdentifier>{e06921ff-fce1-4135-b2ab-b505fb1c5ec9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\utilities\transactions\lock\range\range_tree\lib\locktree">
+      <UniqueIdentifier>{d0f4eb99-0677-44dc-b19e-1333c004712b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\utilities\transactions\lock\range\range_tree\lib\portability">
+      <UniqueIdentifier>{7ae17cab-97f1-4c32-b734-b431192e4033}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\utilities\transactions\lock\range\range_tree\lib\util">
+      <UniqueIdentifier>{7a8a68cc-88ad-4b62-8f0a-7f84c0a9ffb3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\hdfs">
+      <UniqueIdentifier>{7cb2435e-7a92-444c-80f8-4acb7aeed495}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Readme">
+      <UniqueIdentifier>{d7cb5aff-b8c8-4e50-a3a3-86b1390d343f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\utilities\convenience">
+      <UniqueIdentifier>{735b0c22-49d0-4e7f-8965-e2f8a19c09c5}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="dllmain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\build\build_version.cc">
+      <Filter>src\build</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cache\cache.cc">
+      <Filter>src\cache</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cache\cache_entry_roles.cc">
+      <Filter>src\cache</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cache\clock_cache.cc">
+      <Filter>src\cache</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cache\lru_cache.cc">
+      <Filter>src\cache</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cache\sharded_cache.cc">
+      <Filter>src\cache</Filter>
+    </ClCompile>
+    <ClCompile Include="src\db\blob\blob_fetcher.cc">
+      <Filter>src\db\blob</Filter>
+    </ClCompile>
+    <ClCompile Include="src\db\blob\blob_file_addition.cc">
+      <Filter>src\db\blob</Filter>
+    </ClCompile>
+    <ClCompile Include="src\db\blob\blob_file_builder.cc">
+      <Filter>src\db\blob</Filter>
+    </ClCompile>
+    <ClCompile Include="src\db\blob\blob_file_cache.cc">
+      <Filter>src\db\blob</Filter>
+    </ClCompile>
+    <ClCompile Include="src\db\blob\blob_file_garbage.cc">
+      <Filter>src\db\blob</Filter>
+    </ClCompile>
+    <ClCompile Include="src\db\blob\blob_file_meta.cc">
+      <Filter>src\db\blob</Filter>
+    </ClCompile>
+    <ClCompile Include="src\db\blob\blob_file_reader.cc">
+      <Filter>src\db\blob</Filter>
+    </ClCompile>
+    <ClCompile Include="src\db\blob\blob_log_format.cc">
+      <Filter>src\db\blob</Filter>
+    </ClCompile>
+    <ClCompile Include="src\db\blob\blob_log_sequential_reader.cc">
+      <Filter>src\db\blob</Filter>
+    </ClCompile>
+    <ClCompile Include="src\db\blob\blob_log_writer.cc">
+      <Filter>src\db\blob</Filter>
+    </ClCompile>
+    <ClCompile Include="src\db\compaction\compaction.cc">
+      <Filter>src\db\compaction</Filter>
+    </ClCompile>
+    <ClCompile Include="src\db\compaction\compaction_iterator.cc">
+      <Filter>src\db\compaction</Filter>
+    </ClCompile>
+    <ClCompile Include="src\db\compaction\compaction_job.cc">
+      <Filter>src\db\compaction</Filter>
+    </ClCompile>
+    <ClCompile Include="src\db\compaction\compaction_picker.cc">
+      <Filter>src\db\compaction</Filter>
+    </ClCompile>
+    <ClCompile Include="src\db\compaction\compaction_picker_fifo.cc">
+      <Filter>src\db\compaction</Filter>
+    </ClCompile>
+    <ClCompile Include="src\db\compaction\compaction_picker_level.cc">
+      <Filter>src\db\compaction</Filter>
+    </ClCompile>
+    <ClCompile Include="src\db\compaction\compaction_picker_universal.cc">
+      <Filter>src\db\compaction</Filter>
+    </ClCompile>
+    <ClCompile Include="src\db\compaction\sst_partitioner.cc">
+      <Filter>src\db\compaction</Filter>
+    </ClCompile>
+    <ClCompile Include="src\db\db_impl\compacted_db_impl.cc">
+      <Filter>src\db\db_impl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\db\db_impl\db_impl.cc">
+      <Filter>src\db\db_impl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\db\db_impl\db_impl_compaction_flush.cc">
+      <Filter>src\db\db_impl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\db\db_impl\db_impl_debug.cc">
+      <Filter>src\db\db_impl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\db\db_impl\db_impl_experimental.cc">
+      <Filter>src\db\db_impl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\db\db_impl\db_impl_files.cc">
+      <Filter>src\db\db_impl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\db\db_impl\db_impl_open.cc">
+      <Filter>src\db\db_impl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\db\db_impl\db_impl_readonly.cc">
+      <Filter>src\db\db_impl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\db\db_impl\db_impl_secondary.cc">
+      <Filter>src\db\db_impl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\db\db_impl\db_impl_write.cc">
+      <Filter>src\db\db_impl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\db\arena_wrapped_db_iter.cc">
+      <Filter>src\db</Filter>
+    </ClCompile>
+    <ClCompile Include="src\db\builder.cc">
+      <Filter>src\db</Filter>
+    </ClCompile>
+    <ClCompile Include="src\db\c.cc">
+      <Filter>src\db</Filter>
+    </ClCompile>
+    <ClCompile Include="src\db\column_family.cc">
+      <Filter>src\db</Filter>
+    </ClCompile>
+    <ClCompile Include="src\db\convenience.cc">
+      <Filter>src\db</Filter>
+    </ClCompile>
+    <ClCompile Include="src\db\db_filesnapshot.cc">
+      <Filter>src\db</Filter>
+    </ClCompile>
+    <ClCompile Include="src\db\db_info_dumper.cc">
+      <Filter>src\db</Filter>
+    </ClCompile>
+    <ClCompile Include="src\db\db_iter.cc">
+      <Filter>src\db</Filter>
+    </ClCompile>
+    <ClCompile Include="src\db\dbformat.cc">
+      <Filter>src\db</Filter>
+    </ClCompile>
+    <ClCompile Include="src\db\error_handler.cc">
+      <Filter>src\db</Filter>
+    </ClCompile>
+    <ClCompile Include="src\db\event_helpers.cc">
+      <Filter>src\db</Filter>
+    </ClCompile>
+    <ClCompile Include="src\db\experimental.cc">
+      <Filter>src\db</Filter>
+    </ClCompile>
+    <ClCompile Include="src\db\external_sst_file_ingestion_job.cc">
+      <Filter>src\db</Filter>
+    </ClCompile>
+    <ClCompile Include="src\db\file_indexer.cc">
+      <Filter>src\db</Filter>
+    </ClCompile>
+    <ClCompile Include="src\db\flush_job.cc">
+      <Filter>src\db</Filter>
+    </ClCompile>
+    <ClCompile Include="src\db\flush_scheduler.cc">
+      <Filter>src\db</Filter>
+    </ClCompile>
+    <ClCompile Include="src\db\forward_iterator.cc">
+      <Filter>src\db</Filter>
+    </ClCompile>
+    <ClCompile Include="src\db\import_column_family_job.cc">
+      <Filter>src\db</Filter>
+    </ClCompile>
+    <ClCompile Include="src\db\internal_stats.cc">
+      <Filter>src\db</Filter>
+    </ClCompile>
+    <ClCompile Include="src\db\log_reader.cc">
+      <Filter>src\db</Filter>
+    </ClCompile>
+    <ClCompile Include="src\db\log_writer.cc">
+      <Filter>src\db</Filter>
+    </ClCompile>
+    <ClCompile Include="src\db\logs_with_prep_tracker.cc">
+      <Filter>src\db</Filter>
+    </ClCompile>
+    <ClCompile Include="src\db\malloc_stats.cc">
+      <Filter>src\db</Filter>
+    </ClCompile>
+    <ClCompile Include="src\db\memtable.cc">
+      <Filter>src\db</Filter>
+    </ClCompile>
+    <ClCompile Include="src\db\memtable_list.cc">
+      <Filter>src\db</Filter>
+    </ClCompile>
+    <ClCompile Include="src\db\merge_helper.cc">
+      <Filter>src\db</Filter>
+    </ClCompile>
+    <ClCompile Include="src\db\merge_operator.cc">
+      <Filter>src\db</Filter>
+    </ClCompile>
+    <ClCompile Include="src\db\output_validator.cc">
+      <Filter>src\db</Filter>
+    </ClCompile>
+    <ClCompile Include="src\db\periodic_work_scheduler.cc">
+      <Filter>src\db</Filter>
+    </ClCompile>
+    <ClCompile Include="src\db\range_del_aggregator.cc">
+      <Filter>src\db</Filter>
+    </ClCompile>
+    <ClCompile Include="src\db\range_tombstone_fragmenter.cc">
+      <Filter>src\db</Filter>
+    </ClCompile>
+    <ClCompile Include="src\db\repair.cc">
+      <Filter>src\db</Filter>
+    </ClCompile>
+    <ClCompile Include="src\db\snapshot_impl.cc">
+      <Filter>src\db</Filter>
+    </ClCompile>
+    <ClCompile Include="src\db\table_cache.cc">
+      <Filter>src\db</Filter>
+    </ClCompile>
+    <ClCompile Include="src\db\table_properties_collector.cc">
+      <Filter>src\db</Filter>
+    </ClCompile>
+    <ClCompile Include="src\db\transaction_log_impl.cc">
+      <Filter>src\db</Filter>
+    </ClCompile>
+    <ClCompile Include="src\db\trim_history_scheduler.cc">
+      <Filter>src\db</Filter>
+    </ClCompile>
+    <ClCompile Include="src\db\version_builder.cc">
+      <Filter>src\db</Filter>
+    </ClCompile>
+    <ClCompile Include="src\db\version_edit.cc">
+      <Filter>src\db</Filter>
+    </ClCompile>
+    <ClCompile Include="src\db\version_edit_handler.cc">
+      <Filter>src\db</Filter>
+    </ClCompile>
+    <ClCompile Include="src\db\version_set.cc">
+      <Filter>src\db</Filter>
+    </ClCompile>
+    <ClCompile Include="src\db\wal_edit.cc">
+      <Filter>src\db</Filter>
+    </ClCompile>
+    <ClCompile Include="src\db\wal_manager.cc">
+      <Filter>src\db</Filter>
+    </ClCompile>
+    <ClCompile Include="src\db\write_batch.cc">
+      <Filter>src\db</Filter>
+    </ClCompile>
+    <ClCompile Include="src\db\write_batch_base.cc">
+      <Filter>src\db</Filter>
+    </ClCompile>
+    <ClCompile Include="src\db\write_controller.cc">
+      <Filter>src\db</Filter>
+    </ClCompile>
+    <ClCompile Include="src\db\write_thread.cc">
+      <Filter>src\db</Filter>
+    </ClCompile>
+    <ClCompile Include="src\env\composite_env.cc">
+      <Filter>src\env</Filter>
+    </ClCompile>
+    <ClCompile Include="src\env\env.cc">
+      <Filter>src\env</Filter>
+    </ClCompile>
+    <ClCompile Include="src\env\env_chroot.cc">
+      <Filter>src\env</Filter>
+    </ClCompile>
+    <ClCompile Include="src\env\env_encryption.cc">
+      <Filter>src\env</Filter>
+    </ClCompile>
+    <ClCompile Include="src\env\env_hdfs.cc">
+      <Filter>src\env</Filter>
+    </ClCompile>
+    <ClCompile Include="src\env\file_system.cc">
+      <Filter>src\env</Filter>
+    </ClCompile>
+    <ClCompile Include="src\env\file_system_tracer.cc">
+      <Filter>src\env</Filter>
+    </ClCompile>
+    <ClCompile Include="src\env\fs_remap.cc">
+      <Filter>src\env</Filter>
+    </ClCompile>
+    <ClCompile Include="src\env\mock_env.cc">
+      <Filter>src\env</Filter>
+    </ClCompile>
+    <ClCompile Include="src\file\delete_scheduler.cc">
+      <Filter>src\file</Filter>
+    </ClCompile>
+    <ClCompile Include="src\file\file_prefetch_buffer.cc">
+      <Filter>src\file</Filter>
+    </ClCompile>
+    <ClCompile Include="src\file\file_util.cc">
+      <Filter>src\file</Filter>
+    </ClCompile>
+    <ClCompile Include="src\file\filename.cc">
+      <Filter>src\file</Filter>
+    </ClCompile>
+    <ClCompile Include="src\file\line_file_reader.cc">
+      <Filter>src\file</Filter>
+    </ClCompile>
+    <ClCompile Include="src\file\random_access_file_reader.cc">
+      <Filter>src\file</Filter>
+    </ClCompile>
+    <ClCompile Include="src\file\read_write_util.cc">
+      <Filter>src\file</Filter>
+    </ClCompile>
+    <ClCompile Include="src\file\readahead_raf.cc">
+      <Filter>src\file</Filter>
+    </ClCompile>
+    <ClCompile Include="src\file\sequence_file_reader.cc">
+      <Filter>src\file</Filter>
+    </ClCompile>
+    <ClCompile Include="src\file\sst_file_manager_impl.cc">
+      <Filter>src\file</Filter>
+    </ClCompile>
+    <ClCompile Include="src\file\writable_file_writer.cc">
+      <Filter>src\file</Filter>
+    </ClCompile>
+    <ClCompile Include="src\logging\auto_roll_logger.cc">
+      <Filter>src\logging</Filter>
+    </ClCompile>
+    <ClCompile Include="src\logging\event_logger.cc">
+      <Filter>src\logging</Filter>
+    </ClCompile>
+    <ClCompile Include="src\logging\log_buffer.cc">
+      <Filter>src\logging</Filter>
+    </ClCompile>
+    <ClCompile Include="src\memory\arena.cc">
+      <Filter>src\memory</Filter>
+    </ClCompile>
+    <ClCompile Include="src\memory\concurrent_arena.cc">
+      <Filter>src\memory</Filter>
+    </ClCompile>
+    <ClCompile Include="src\memory\jemalloc_nodump_allocator.cc">
+      <Filter>src\memory</Filter>
+    </ClCompile>
+    <ClCompile Include="src\memory\memkind_kmem_allocator.cc">
+      <Filter>src\memory</Filter>
+    </ClCompile>
+    <ClCompile Include="src\monitoring\histogram.cc">
+      <Filter>src\monitoring</Filter>
+    </ClCompile>
+    <ClCompile Include="src\monitoring\histogram_windowing.cc">
+      <Filter>src\monitoring</Filter>
+    </ClCompile>
+    <ClCompile Include="src\monitoring\in_memory_stats_history.cc">
+      <Filter>src\monitoring</Filter>
+    </ClCompile>
+    <ClCompile Include="src\monitoring\instrumented_mutex.cc">
+      <Filter>src\monitoring</Filter>
+    </ClCompile>
+    <ClCompile Include="src\monitoring\iostats_context.cc">
+      <Filter>src\monitoring</Filter>
+    </ClCompile>
+    <ClCompile Include="src\monitoring\perf_context.cc">
+      <Filter>src\monitoring</Filter>
+    </ClCompile>
+    <ClCompile Include="src\monitoring\perf_level.cc">
+      <Filter>src\monitoring</Filter>
+    </ClCompile>
+    <ClCompile Include="src\monitoring\persistent_stats_history.cc">
+      <Filter>src\monitoring</Filter>
+    </ClCompile>
+    <ClCompile Include="src\monitoring\statistics.cc">
+      <Filter>src\monitoring</Filter>
+    </ClCompile>
+    <ClCompile Include="src\monitoring\thread_status_impl.cc">
+      <Filter>src\monitoring</Filter>
+    </ClCompile>
+    <ClCompile Include="src\monitoring\thread_status_updater.cc">
+      <Filter>src\monitoring</Filter>
+    </ClCompile>
+    <ClCompile Include="src\monitoring\thread_status_updater_debug.cc">
+      <Filter>src\monitoring</Filter>
+    </ClCompile>
+    <ClCompile Include="src\monitoring\thread_status_util.cc">
+      <Filter>src\monitoring</Filter>
+    </ClCompile>
+    <ClCompile Include="src\monitoring\thread_status_util_debug.cc">
+      <Filter>src\monitoring</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utilities\backupable\backupable_db.cc">
+      <Filter>src\utilities\backupable</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utilities\blob_db\blob_compaction_filter.cc">
+      <Filter>src\utilities\blob_db</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utilities\blob_db\blob_db.cc">
+      <Filter>src\utilities\blob_db</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utilities\blob_db\blob_db_impl.cc">
+      <Filter>src\utilities\blob_db</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utilities\blob_db\blob_db_impl_filesnapshot.cc">
+      <Filter>src\utilities\blob_db</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utilities\blob_db\blob_dump_tool.cc">
+      <Filter>src\utilities\blob_db</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utilities\blob_db\blob_file.cc">
+      <Filter>src\utilities\blob_db</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utilities\checkpoint\checkpoint_impl.cc">
+      <Filter>src\utilities\checkpoint</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utilities\compaction_filters\remove_emptyvalue_compactionfilter.cc">
+      <Filter>src\utilities\compaction_filters</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utilities\leveldb_options\leveldb_options.cc">
+      <Filter>src\utilities\leveldb_options</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utilities\memory\memory_util.cc">
+      <Filter>src\utilities\memory</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utilities\merge_operators\string_append\stringappend.cc">
+      <Filter>src\utilities\merge_operators\string_append</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utilities\merge_operators\string_append\stringappend2.cc">
+      <Filter>src\utilities\merge_operators\string_append</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utilities\merge_operators\bytesxor.cc">
+      <Filter>src\utilities\merge_operators</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utilities\merge_operators\max.cc">
+      <Filter>src\utilities\merge_operators</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utilities\merge_operators\put.cc">
+      <Filter>src\utilities\merge_operators</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utilities\merge_operators\sortlist.cc">
+      <Filter>src\utilities\merge_operators</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utilities\merge_operators\uint64add.cc">
+      <Filter>src\utilities\merge_operators</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utilities\write_batch_with_index\write_batch_with_index.cc">
+      <Filter>src\utilities\write_batch_with_index</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utilities\write_batch_with_index\write_batch_with_index_internal.cc">
+      <Filter>src\utilities\write_batch_with_index</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utilities\ttl\db_ttl_impl.cc">
+      <Filter>src\utilities\ttl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utilities\trace\file_trace_reader_writer.cc">
+      <Filter>src\utilities\trace</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utilities\table_properties_collectors\compact_on_deletion_collector.cc">
+      <Filter>src\utilities\table_properties_collectors</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utilities\simulator_cache\cache_simulator.cc">
+      <Filter>src\utilities\simulator_cache</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utilities\simulator_cache\sim_cache.cc">
+      <Filter>src\utilities\simulator_cache</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utilities\persistent_cache\block_cache_tier.cc">
+      <Filter>src\utilities\persistent_cache</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utilities\persistent_cache\block_cache_tier_file.cc">
+      <Filter>src\utilities\persistent_cache</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utilities\persistent_cache\block_cache_tier_metadata.cc">
+      <Filter>src\utilities\persistent_cache</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utilities\persistent_cache\persistent_cache_tier.cc">
+      <Filter>src\utilities\persistent_cache</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utilities\persistent_cache\volatile_tier_impl.cc">
+      <Filter>src\utilities\persistent_cache</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utilities\options\options_util.cc">
+      <Filter>src\utilities\options</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utilities\option_change_migration\option_change_migration.cc">
+      <Filter>src\utilities\option_change_migration</Filter>
+    </ClCompile>
+    <ClCompile Include="src\tools\block_cache_analyzer\block_cache_trace_analyzer.cc">
+      <Filter>src\tools\block_cache_analyzer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\tools\dump\db_dump_tool.cc">
+      <Filter>src\tools\dump</Filter>
+    </ClCompile>
+    <ClCompile Include="src\tools\io_tracer_parser_tool.cc">
+      <Filter>src\tools</Filter>
+    </ClCompile>
+    <ClCompile Include="src\tools\ldb_cmd.cc">
+      <Filter>src\tools</Filter>
+    </ClCompile>
+    <ClCompile Include="src\tools\ldb_tool.cc">
+      <Filter>src\tools</Filter>
+    </ClCompile>
+    <ClCompile Include="src\tools\sst_dump_tool.cc">
+      <Filter>src\tools</Filter>
+    </ClCompile>
+    <ClCompile Include="src\tools\trace_analyzer_tool.cc">
+      <Filter>src\tools</Filter>
+    </ClCompile>
+    <ClCompile Include="src\test_util\sync_point.cc">
+      <Filter>src\test_util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\test_util\sync_point_impl.cc">
+      <Filter>src\test_util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\test_util\testutil.cc">
+      <Filter>src\test_util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\test_util\transaction_test_util.cc">
+      <Filter>src\test_util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\table\adaptive\adaptive_table_factory.cc">
+      <Filter>src\table\adaptive</Filter>
+    </ClCompile>
+    <ClCompile Include="src\table\block_based\binary_search_index_reader.cc">
+      <Filter>src\table\block_based</Filter>
+    </ClCompile>
+    <ClCompile Include="src\table\block_based\block.cc">
+      <Filter>src\table\block_based</Filter>
+    </ClCompile>
+    <ClCompile Include="src\table\block_based\block_based_filter_block.cc">
+      <Filter>src\table\block_based</Filter>
+    </ClCompile>
+    <ClCompile Include="src\table\block_based\block_based_table_builder.cc">
+      <Filter>src\table\block_based</Filter>
+    </ClCompile>
+    <ClCompile Include="src\table\block_based\block_based_table_factory.cc">
+      <Filter>src\table\block_based</Filter>
+    </ClCompile>
+    <ClCompile Include="src\table\block_based\block_based_table_iterator.cc">
+      <Filter>src\table\block_based</Filter>
+    </ClCompile>
+    <ClCompile Include="src\table\block_based\block_based_table_reader.cc">
+      <Filter>src\table\block_based</Filter>
+    </ClCompile>
+    <ClCompile Include="src\table\block_based\block_builder.cc">
+      <Filter>src\table\block_based</Filter>
+    </ClCompile>
+    <ClCompile Include="src\table\block_based\block_prefetcher.cc">
+      <Filter>src\table\block_based</Filter>
+    </ClCompile>
+    <ClCompile Include="src\table\block_based\block_prefix_index.cc">
+      <Filter>src\table\block_based</Filter>
+    </ClCompile>
+    <ClCompile Include="src\table\block_based\data_block_footer.cc">
+      <Filter>src\table\block_based</Filter>
+    </ClCompile>
+    <ClCompile Include="src\table\block_based\data_block_hash_index.cc">
+      <Filter>src\table\block_based</Filter>
+    </ClCompile>
+    <ClCompile Include="src\table\block_based\filter_block_reader_common.cc">
+      <Filter>src\table\block_based</Filter>
+    </ClCompile>
+    <ClCompile Include="src\table\block_based\filter_policy.cc">
+      <Filter>src\table\block_based</Filter>
+    </ClCompile>
+    <ClCompile Include="src\table\block_based\flush_block_policy.cc">
+      <Filter>src\table\block_based</Filter>
+    </ClCompile>
+    <ClCompile Include="src\table\block_based\full_filter_block.cc">
+      <Filter>src\table\block_based</Filter>
+    </ClCompile>
+    <ClCompile Include="src\table\block_based\hash_index_reader.cc">
+      <Filter>src\table\block_based</Filter>
+    </ClCompile>
+    <ClCompile Include="src\table\block_based\index_builder.cc">
+      <Filter>src\table\block_based</Filter>
+    </ClCompile>
+    <ClCompile Include="src\table\block_based\index_reader_common.cc">
+      <Filter>src\table\block_based</Filter>
+    </ClCompile>
+    <ClCompile Include="src\table\block_based\parsed_full_filter_block.cc">
+      <Filter>src\table\block_based</Filter>
+    </ClCompile>
+    <ClCompile Include="src\table\block_based\partitioned_filter_block.cc">
+      <Filter>src\table\block_based</Filter>
+    </ClCompile>
+    <ClCompile Include="src\table\block_based\partitioned_index_iterator.cc">
+      <Filter>src\table\block_based</Filter>
+    </ClCompile>
+    <ClCompile Include="src\table\block_based\partitioned_index_reader.cc">
+      <Filter>src\table\block_based</Filter>
+    </ClCompile>
+    <ClCompile Include="src\table\block_based\reader_common.cc">
+      <Filter>src\table\block_based</Filter>
+    </ClCompile>
+    <ClCompile Include="src\table\block_based\uncompression_dict_reader.cc">
+      <Filter>src\table\block_based</Filter>
+    </ClCompile>
+    <ClCompile Include="src\table\cuckoo\cuckoo_table_builder.cc">
+      <Filter>src\table\cuckoo</Filter>
+    </ClCompile>
+    <ClCompile Include="src\table\cuckoo\cuckoo_table_factory.cc">
+      <Filter>src\table\cuckoo</Filter>
+    </ClCompile>
+    <ClCompile Include="src\table\cuckoo\cuckoo_table_reader.cc">
+      <Filter>src\table\cuckoo</Filter>
+    </ClCompile>
+    <ClCompile Include="src\table\plain\plain_table_bloom.cc">
+      <Filter>src\table\plain</Filter>
+    </ClCompile>
+    <ClCompile Include="src\table\plain\plain_table_builder.cc">
+      <Filter>src\table\plain</Filter>
+    </ClCompile>
+    <ClCompile Include="src\table\plain\plain_table_factory.cc">
+      <Filter>src\table\plain</Filter>
+    </ClCompile>
+    <ClCompile Include="src\table\plain\plain_table_index.cc">
+      <Filter>src\table\plain</Filter>
+    </ClCompile>
+    <ClCompile Include="src\table\plain\plain_table_key_coding.cc">
+      <Filter>src\table\plain</Filter>
+    </ClCompile>
+    <ClCompile Include="src\table\plain\plain_table_reader.cc">
+      <Filter>src\table\plain</Filter>
+    </ClCompile>
+    <ClCompile Include="src\port\win\env_default.cc">
+      <Filter>src\port\win</Filter>
+    </ClCompile>
+    <ClCompile Include="src\port\win\env_win.cc">
+      <Filter>src\port\win</Filter>
+    </ClCompile>
+    <ClCompile Include="src\port\win\io_win.cc">
+      <Filter>src\port\win</Filter>
+    </ClCompile>
+    <ClCompile Include="src\port\win\port_win.cc">
+      <Filter>src\port\win</Filter>
+    </ClCompile>
+    <ClCompile Include="src\port\win\win_logger.cc">
+      <Filter>src\port\win</Filter>
+    </ClCompile>
+    <ClCompile Include="src\port\win\win_thread.cc">
+      <Filter>src\port\win</Filter>
+    </ClCompile>
+    <ClCompile Include="src\port\stack_trace.cc">
+      <Filter>src\port</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cache\cache_reservation_manager.cc">
+      <Filter>src\cache</Filter>
+    </ClCompile>
+    <ClCompile Include="src\db\blob\blob_garbage_meter.cc">
+      <Filter>src\db\blob</Filter>
+    </ClCompile>
+    <ClCompile Include="src\db\db_test_util.cc">
+      <Filter>src\db</Filter>
+    </ClCompile>
+    <ClCompile Include="src\env\unique_id_gen.cc">
+      <Filter>src\env</Filter>
+    </ClCompile>
+    <ClCompile Include="src\memtable\alloc_tracker.cc">
+      <Filter>src\memtable</Filter>
+    </ClCompile>
+    <ClCompile Include="src\memtable\hash_linklist_rep.cc">
+      <Filter>src\memtable</Filter>
+    </ClCompile>
+    <ClCompile Include="src\memtable\hash_skiplist_rep.cc">
+      <Filter>src\memtable</Filter>
+    </ClCompile>
+    <ClCompile Include="src\memtable\skiplistrep.cc">
+      <Filter>src\memtable</Filter>
+    </ClCompile>
+    <ClCompile Include="src\memtable\vectorrep.cc">
+      <Filter>src\memtable</Filter>
+    </ClCompile>
+    <ClCompile Include="src\memtable\write_buffer_manager.cc">
+      <Filter>src\memtable</Filter>
+    </ClCompile>
+    <ClCompile Include="src\options\cf_options.cc">
+      <Filter>src\options</Filter>
+    </ClCompile>
+    <ClCompile Include="src\options\configurable.cc">
+      <Filter>src\options</Filter>
+    </ClCompile>
+    <ClCompile Include="src\options\customizable.cc">
+      <Filter>src\options</Filter>
+    </ClCompile>
+    <ClCompile Include="src\options\db_options.cc">
+      <Filter>src\options</Filter>
+    </ClCompile>
+    <ClCompile Include="src\options\options.cc">
+      <Filter>src\options</Filter>
+    </ClCompile>
+    <ClCompile Include="src\options\options_helper.cc">
+      <Filter>src\options</Filter>
+    </ClCompile>
+    <ClCompile Include="src\options\options_parser.cc">
+      <Filter>src\options</Filter>
+    </ClCompile>
+    <ClCompile Include="src\table\block_fetcher.cc">
+      <Filter>src\table</Filter>
+    </ClCompile>
+    <ClCompile Include="src\table\format.cc">
+      <Filter>src\table</Filter>
+    </ClCompile>
+    <ClCompile Include="src\table\get_context.cc">
+      <Filter>src\table</Filter>
+    </ClCompile>
+    <ClCompile Include="src\table\iterator.cc">
+      <Filter>src\table</Filter>
+    </ClCompile>
+    <ClCompile Include="src\table\merging_iterator.cc">
+      <Filter>src\table</Filter>
+    </ClCompile>
+    <ClCompile Include="src\table\meta_blocks.cc">
+      <Filter>src\table</Filter>
+    </ClCompile>
+    <ClCompile Include="src\table\mock_table.cc">
+      <Filter>src\table</Filter>
+    </ClCompile>
+    <ClCompile Include="src\table\persistent_cache_helper.cc">
+      <Filter>src\table</Filter>
+    </ClCompile>
+    <ClCompile Include="src\table\sst_file_dumper.cc">
+      <Filter>src\table</Filter>
+    </ClCompile>
+    <ClCompile Include="src\table\sst_file_reader.cc">
+      <Filter>src\table</Filter>
+    </ClCompile>
+    <ClCompile Include="src\table\sst_file_writer.cc">
+      <Filter>src\table</Filter>
+    </ClCompile>
+    <ClCompile Include="src\table\table_factory.cc">
+      <Filter>src\table</Filter>
+    </ClCompile>
+    <ClCompile Include="src\table\table_properties.cc">
+      <Filter>src\table</Filter>
+    </ClCompile>
+    <ClCompile Include="src\table\two_level_iterator.cc">
+      <Filter>src\table</Filter>
+    </ClCompile>
+    <ClCompile Include="src\table\unique_id.cc">
+      <Filter>src\table</Filter>
+    </ClCompile>
+    <ClCompile Include="src\tools\db_bench_tool.cc">
+      <Filter>src\tools</Filter>
+    </ClCompile>
+    <ClCompile Include="src\trace_replay\block_cache_tracer.cc">
+      <Filter>src\trace_replay</Filter>
+    </ClCompile>
+    <ClCompile Include="src\trace_replay\io_tracer.cc">
+      <Filter>src\trace_replay</Filter>
+    </ClCompile>
+    <ClCompile Include="src\trace_replay\trace_record.cc">
+      <Filter>src\trace_replay</Filter>
+    </ClCompile>
+    <ClCompile Include="src\trace_replay\trace_record_handler.cc">
+      <Filter>src\trace_replay</Filter>
+    </ClCompile>
+    <ClCompile Include="src\trace_replay\trace_record_result.cc">
+      <Filter>src\trace_replay</Filter>
+    </ClCompile>
+    <ClCompile Include="src\trace_replay\trace_replay.cc">
+      <Filter>src\trace_replay</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\coding.cc">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\compaction_job_stats_impl.cc">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\comparator.cc">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\compression_context_cache.cc">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\concurrent_task_limiter_impl.cc">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\crc32c.cc">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\dynamic_bloom.cc">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\file_checksum_helper.cc">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\hash.cc">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\hash_test.cc">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\murmurhash.cc">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\random.cc">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\rate_limiter.cc">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\regex.cc">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\ribbon_config.cc">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\slice.cc">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\status.cc">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\string_util.cc">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\thread_local.cc">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\threadpool_imp.cc">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\xxhash.cc">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utilities\cassandra\cassandra_compaction_filter.cc">
+      <Filter>src\utilities\cassandra</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utilities\cassandra\cassandra_format.cc">
+      <Filter>src\utilities\cassandra</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utilities\cassandra\cassandra_merge_operator.cc">
+      <Filter>src\utilities\cassandra</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utilities\convenience\info_log_finder.cc">
+      <Filter>src\utilities\convenience</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utilities\trace\replayer_impl.cc">
+      <Filter>src\utilities\trace</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utilities\transactions\lock\point\point_lock_manager.cc">
+      <Filter>src\utilities\transactions\lock\point</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utilities\transactions\lock\point\point_lock_tracker.cc">
+      <Filter>src\utilities\transactions\lock\point</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utilities\transactions\lock\range\range_tree\lib\locktree\concurrent_tree.cc">
+      <Filter>src\utilities\transactions\lock\range\range_tree\lib\locktree</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utilities\transactions\lock\range\range_tree\lib\locktree\keyrange.cc">
+      <Filter>src\utilities\transactions\lock\range\range_tree\lib\locktree</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utilities\transactions\lock\range\range_tree\lib\locktree\lock_request.cc">
+      <Filter>src\utilities\transactions\lock\range\range_tree\lib\locktree</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utilities\transactions\lock\range\range_tree\lib\locktree\locktree.cc">
+      <Filter>src\utilities\transactions\lock\range\range_tree\lib\locktree</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utilities\transactions\lock\range\range_tree\lib\locktree\manager.cc">
+      <Filter>src\utilities\transactions\lock\range\range_tree\lib\locktree</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utilities\transactions\lock\range\range_tree\lib\locktree\range_buffer.cc">
+      <Filter>src\utilities\transactions\lock\range\range_tree\lib\locktree</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utilities\transactions\lock\range\range_tree\lib\locktree\treenode.cc">
+      <Filter>src\utilities\transactions\lock\range\range_tree\lib\locktree</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utilities\transactions\lock\range\range_tree\lib\locktree\txnid_set.cc">
+      <Filter>src\utilities\transactions\lock\range\range_tree\lib\locktree</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utilities\transactions\lock\range\range_tree\lib\locktree\wfg.cc">
+      <Filter>src\utilities\transactions\lock\range\range_tree\lib\locktree</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utilities\transactions\lock\range\range_tree\lib\util\dbt.cc">
+      <Filter>src\utilities\transactions\lock\range\range_tree\lib\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utilities\transactions\lock\range\range_tree\lib\util\memarena.cc">
+      <Filter>src\utilities\transactions\lock\range\range_tree\lib\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utilities\transactions\lock\range\range_tree\lib\standalone_port.cc">
+      <Filter>src\utilities\transactions\lock\range\range_tree\lib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utilities\transactions\lock\range\range_tree\range_tree_lock_manager.cc">
+      <Filter>src\utilities\transactions\lock\range\range_tree</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utilities\transactions\lock\range\range_tree\range_tree_lock_tracker.cc">
+      <Filter>src\utilities\transactions\lock\range\range_tree</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utilities\transactions\lock\lock_manager.cc">
+      <Filter>src\utilities\transactions\lock</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utilities\transactions\optimistic_transaction.cc">
+      <Filter>src\utilities\transactions</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utilities\transactions\optimistic_transaction_db_impl.cc">
+      <Filter>src\utilities\transactions</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utilities\transactions\pessimistic_transaction.cc">
+      <Filter>src\utilities\transactions</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utilities\transactions\pessimistic_transaction_db.cc">
+      <Filter>src\utilities\transactions</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utilities\transactions\snapshot_checker.cc">
+      <Filter>src\utilities\transactions</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utilities\transactions\transaction_base.cc">
+      <Filter>src\utilities\transactions</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utilities\transactions\transaction_db_mutex_impl.cc">
+      <Filter>src\utilities\transactions</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utilities\transactions\transaction_util.cc">
+      <Filter>src\utilities\transactions</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utilities\transactions\write_prepared_txn.cc">
+      <Filter>src\utilities\transactions</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utilities\transactions\write_prepared_txn_db.cc">
+      <Filter>src\utilities\transactions</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utilities\transactions\write_unprepared_txn.cc">
+      <Filter>src\utilities\transactions</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utilities\transactions\write_unprepared_txn_db.cc">
+      <Filter>src\utilities\transactions</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utilities\cache_dump_load.cc">
+      <Filter>src\utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utilities\cache_dump_load_impl.cc">
+      <Filter>src\utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utilities\compaction_filters.cc">
+      <Filter>src\utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utilities\debug.cc">
+      <Filter>src\utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utilities\env_mirror.cc">
+      <Filter>src\utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utilities\env_timed.cc">
+      <Filter>src\utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utilities\fault_injection_env.cc">
+      <Filter>src\utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utilities\fault_injection_fs.cc">
+      <Filter>src\utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utilities\merge_operators.cc">
+      <Filter>src\utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utilities\object_registry.cc">
+      <Filter>src\utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utilities\wal_filter.cc">
+      <Filter>src\utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="src\test_util\mock_time_env.cc">
+      <Filter>src\test_util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\test_util\testharness.cc">
+      <Filter>src\test_util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\tools\simulated_hybrid_file_system.cc">
+      <Filter>src\tools</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\crc32c_arm64.cc">
+      <Filter>src\util</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\rocksdb\utilities\lua\rocks_lua_custom_library.h">
+      <Filter>include\rocksdb\utilities\lua</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rocksdb\utilities\lua\rocks_lua_util.h">
+      <Filter>include\rocksdb\utilities\lua</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rocksdb\utilities\backup_engine.h">
+      <Filter>include\rocksdb\utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rocksdb\utilities\backupable_db.h">
+      <Filter>include\rocksdb\utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rocksdb\utilities\checkpoint.h">
+      <Filter>include\rocksdb\utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rocksdb\utilities\convenience.h">
+      <Filter>include\rocksdb\utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rocksdb\utilities\db_ttl.h">
+      <Filter>include\rocksdb\utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rocksdb\utilities\debug.h">
+      <Filter>include\rocksdb\utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rocksdb\utilities\env_mirror.h">
+      <Filter>include\rocksdb\utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rocksdb\utilities\info_log_finder.h">
+      <Filter>include\rocksdb\utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rocksdb\utilities\ldb_cmd.h">
+      <Filter>include\rocksdb\utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rocksdb\utilities\ldb_cmd_execute_result.h">
+      <Filter>include\rocksdb\utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rocksdb\utilities\leveldb_options.h">
+      <Filter>include\rocksdb\utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rocksdb\utilities\memory_util.h">
+      <Filter>include\rocksdb\utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rocksdb\utilities\object_registry.h">
+      <Filter>include\rocksdb\utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rocksdb\utilities\optimistic_transaction_db.h">
+      <Filter>include\rocksdb\utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rocksdb\utilities\option_change_migration.h">
+      <Filter>include\rocksdb\utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rocksdb\utilities\options_type.h">
+      <Filter>include\rocksdb\utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rocksdb\utilities\options_util.h">
+      <Filter>include\rocksdb\utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rocksdb\utilities\sim_cache.h">
+      <Filter>include\rocksdb\utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rocksdb\utilities\stackable_db.h">
+      <Filter>include\rocksdb\utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rocksdb\utilities\table_properties_collectors.h">
+      <Filter>include\rocksdb\utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rocksdb\utilities\transaction.h">
+      <Filter>include\rocksdb\utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rocksdb\utilities\transaction_db.h">
+      <Filter>include\rocksdb\utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rocksdb\utilities\transaction_db_mutex.h">
+      <Filter>include\rocksdb\utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rocksdb\utilities\utility_db.h">
+      <Filter>include\rocksdb\utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rocksdb\utilities\write_batch_with_index.h">
+      <Filter>include\rocksdb\utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rocksdb\advanced_options.h">
+      <Filter>include\rocksdb</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rocksdb\c.h">
+      <Filter>include\rocksdb</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rocksdb\cache.h">
+      <Filter>include\rocksdb</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rocksdb\cache_bench_tool.h">
+      <Filter>include\rocksdb</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rocksdb\cleanable.h">
+      <Filter>include\rocksdb</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rocksdb\compaction_filter.h">
+      <Filter>include\rocksdb</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rocksdb\compaction_job_stats.h">
+      <Filter>include\rocksdb</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rocksdb\comparator.h">
+      <Filter>include\rocksdb</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rocksdb\compression_type.h">
+      <Filter>include\rocksdb</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rocksdb\concurrent_task_limiter.h">
+      <Filter>include\rocksdb</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rocksdb\configurable.h">
+      <Filter>include\rocksdb</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rocksdb\convenience.h">
+      <Filter>include\rocksdb</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rocksdb\customizable.h">
+      <Filter>include\rocksdb</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rocksdb\data_structure.h">
+      <Filter>include\rocksdb</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rocksdb\db.h">
+      <Filter>include\rocksdb</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rocksdb\db_bench_tool.h">
+      <Filter>include\rocksdb</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rocksdb\db_dump_tool.h">
+      <Filter>include\rocksdb</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rocksdb\db_stress_tool.h">
+      <Filter>include\rocksdb</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rocksdb\env.h">
+      <Filter>include\rocksdb</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rocksdb\env_encryption.h">
+      <Filter>include\rocksdb</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rocksdb\experimental.h">
+      <Filter>include\rocksdb</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rocksdb\file_checksum.h">
+      <Filter>include\rocksdb</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rocksdb\file_system.h">
+      <Filter>include\rocksdb</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rocksdb\filter_policy.h">
+      <Filter>include\rocksdb</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rocksdb\flush_block_policy.h">
+      <Filter>include\rocksdb</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rocksdb\functor_wrapper.h">
+      <Filter>include\rocksdb</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rocksdb\io_status.h">
+      <Filter>include\rocksdb</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rocksdb\iostats_context.h">
+      <Filter>include\rocksdb</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rocksdb\iterator.h">
+      <Filter>include\rocksdb</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rocksdb\ldb_tool.h">
+      <Filter>include\rocksdb</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rocksdb\listener.h">
+      <Filter>include\rocksdb</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rocksdb\memory_allocator.h">
+      <Filter>include\rocksdb</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rocksdb\memtablerep.h">
+      <Filter>include\rocksdb</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rocksdb\merge_operator.h">
+      <Filter>include\rocksdb</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rocksdb\metadata.h">
+      <Filter>include\rocksdb</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rocksdb\options.h">
+      <Filter>include\rocksdb</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rocksdb\perf_context.h">
+      <Filter>include\rocksdb</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rocksdb\perf_level.h">
+      <Filter>include\rocksdb</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rocksdb\persistent_cache.h">
+      <Filter>include\rocksdb</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rocksdb\rate_limiter.h">
+      <Filter>include\rocksdb</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rocksdb\rocksdb_namespace.h">
+      <Filter>include\rocksdb</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rocksdb\secondary_cache.h">
+      <Filter>include\rocksdb</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rocksdb\slice.h">
+      <Filter>include\rocksdb</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rocksdb\slice_transform.h">
+      <Filter>include\rocksdb</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rocksdb\snapshot.h">
+      <Filter>include\rocksdb</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rocksdb\sst_dump_tool.h">
+      <Filter>include\rocksdb</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rocksdb\sst_file_manager.h">
+      <Filter>include\rocksdb</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rocksdb\sst_file_reader.h">
+      <Filter>include\rocksdb</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rocksdb\sst_file_writer.h">
+      <Filter>include\rocksdb</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rocksdb\sst_partitioner.h">
+      <Filter>include\rocksdb</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rocksdb\statistics.h">
+      <Filter>include\rocksdb</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rocksdb\stats_history.h">
+      <Filter>include\rocksdb</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rocksdb\status.h">
+      <Filter>include\rocksdb</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rocksdb\system_clock.h">
+      <Filter>include\rocksdb</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rocksdb\table.h">
+      <Filter>include\rocksdb</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rocksdb\table_properties.h">
+      <Filter>include\rocksdb</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rocksdb\thread_status.h">
+      <Filter>include\rocksdb</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rocksdb\threadpool.h">
+      <Filter>include\rocksdb</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rocksdb\trace_reader_writer.h">
+      <Filter>include\rocksdb</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rocksdb\transaction_log.h">
+      <Filter>include\rocksdb</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rocksdb\types.h">
+      <Filter>include\rocksdb</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rocksdb\universal_compaction.h">
+      <Filter>include\rocksdb</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rocksdb\version.h">
+      <Filter>include\rocksdb</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rocksdb\wal_filter.h">
+      <Filter>include\rocksdb</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rocksdb\write_batch.h">
+      <Filter>include\rocksdb</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rocksdb\write_batch_base.h">
+      <Filter>include\rocksdb</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rocksdb\write_buffer_manager.h">
+      <Filter>include\rocksdb</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cache\cache_entry_roles.h">
+      <Filter>src\cache</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cache\cache_entry_stats.h">
+      <Filter>src\cache</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cache\cache_helpers.h">
+      <Filter>src\cache</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cache\clock_cache.h">
+      <Filter>src\cache</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cache\lru_cache.h">
+      <Filter>src\cache</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cache\sharded_cache.h">
+      <Filter>src\cache</Filter>
+    </ClInclude>
+    <ClInclude Include="src\db\blob\blob_constants.h">
+      <Filter>src\db\blob</Filter>
+    </ClInclude>
+    <ClInclude Include="src\db\blob\blob_fetcher.h">
+      <Filter>src\db\blob</Filter>
+    </ClInclude>
+    <ClInclude Include="src\db\blob\blob_file_addition.h">
+      <Filter>src\db\blob</Filter>
+    </ClInclude>
+    <ClInclude Include="src\db\blob\blob_file_builder.h">
+      <Filter>src\db\blob</Filter>
+    </ClInclude>
+    <ClInclude Include="src\db\blob\blob_file_cache.h">
+      <Filter>src\db\blob</Filter>
+    </ClInclude>
+    <ClInclude Include="src\db\blob\blob_file_completion_callback.h">
+      <Filter>src\db\blob</Filter>
+    </ClInclude>
+    <ClInclude Include="src\db\blob\blob_file_garbage.h">
+      <Filter>src\db\blob</Filter>
+    </ClInclude>
+    <ClInclude Include="src\db\blob\blob_file_meta.h">
+      <Filter>src\db\blob</Filter>
+    </ClInclude>
+    <ClInclude Include="src\db\blob\blob_file_reader.h">
+      <Filter>src\db\blob</Filter>
+    </ClInclude>
+    <ClInclude Include="src\db\blob\blob_index.h">
+      <Filter>src\db\blob</Filter>
+    </ClInclude>
+    <ClInclude Include="src\db\blob\blob_log_format.h">
+      <Filter>src\db\blob</Filter>
+    </ClInclude>
+    <ClInclude Include="src\db\blob\blob_log_sequential_reader.h">
+      <Filter>src\db\blob</Filter>
+    </ClInclude>
+    <ClInclude Include="src\db\blob\blob_log_writer.h">
+      <Filter>src\db\blob</Filter>
+    </ClInclude>
+    <ClInclude Include="src\db\compaction\clipping_iterator.h">
+      <Filter>src\db\compaction</Filter>
+    </ClInclude>
+    <ClInclude Include="src\db\compaction\compaction.h">
+      <Filter>src\db\compaction</Filter>
+    </ClInclude>
+    <ClInclude Include="src\db\compaction\compaction_iteration_stats.h">
+      <Filter>src\db\compaction</Filter>
+    </ClInclude>
+    <ClInclude Include="src\db\compaction\compaction_iterator.h">
+      <Filter>src\db\compaction</Filter>
+    </ClInclude>
+    <ClInclude Include="src\db\compaction\compaction_job.h">
+      <Filter>src\db\compaction</Filter>
+    </ClInclude>
+    <ClInclude Include="src\db\compaction\compaction_picker.h">
+      <Filter>src\db\compaction</Filter>
+    </ClInclude>
+    <ClInclude Include="src\db\compaction\compaction_picker_fifo.h">
+      <Filter>src\db\compaction</Filter>
+    </ClInclude>
+    <ClInclude Include="src\db\compaction\compaction_picker_level.h">
+      <Filter>src\db\compaction</Filter>
+    </ClInclude>
+    <ClInclude Include="src\db\compaction\compaction_picker_universal.h">
+      <Filter>src\db\compaction</Filter>
+    </ClInclude>
+    <ClInclude Include="src\db\db_impl\compacted_db_impl.h">
+      <Filter>src\db\db_impl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\db\db_impl\db_impl.h">
+      <Filter>src\db\db_impl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\db\db_impl\db_impl_readonly.h">
+      <Filter>src\db\db_impl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\db\db_impl\db_impl_secondary.h">
+      <Filter>src\db\db_impl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\db\arena_wrapped_db_iter.h">
+      <Filter>src\db</Filter>
+    </ClInclude>
+    <ClInclude Include="src\db\builder.h">
+      <Filter>src\db</Filter>
+    </ClInclude>
+    <ClInclude Include="src\db\column_family.h">
+      <Filter>src\db</Filter>
+    </ClInclude>
+    <ClInclude Include="src\db\db_info_dumper.h">
+      <Filter>src\db</Filter>
+    </ClInclude>
+    <ClInclude Include="src\db\db_iter.h">
+      <Filter>src\db</Filter>
+    </ClInclude>
+    <ClInclude Include="src\db\dbformat.h">
+      <Filter>src\db</Filter>
+    </ClInclude>
+    <ClInclude Include="src\db\error_handler.h">
+      <Filter>src\db</Filter>
+    </ClInclude>
+    <ClInclude Include="src\db\event_helpers.h">
+      <Filter>src\db</Filter>
+    </ClInclude>
+    <ClInclude Include="src\db\external_sst_file_ingestion_job.h">
+      <Filter>src\db</Filter>
+    </ClInclude>
+    <ClInclude Include="src\db\file_indexer.h">
+      <Filter>src\db</Filter>
+    </ClInclude>
+    <ClInclude Include="src\db\flush_job.h">
+      <Filter>src\db</Filter>
+    </ClInclude>
+    <ClInclude Include="src\db\flush_scheduler.h">
+      <Filter>src\db</Filter>
+    </ClInclude>
+    <ClInclude Include="src\db\forward_iterator.h">
+      <Filter>src\db</Filter>
+    </ClInclude>
+    <ClInclude Include="src\db\import_column_family_job.h">
+      <Filter>src\db</Filter>
+    </ClInclude>
+    <ClInclude Include="src\db\internal_stats.h">
+      <Filter>src\db</Filter>
+    </ClInclude>
+    <ClInclude Include="src\db\job_context.h">
+      <Filter>src\db</Filter>
+    </ClInclude>
+    <ClInclude Include="src\db\kv_checksum.h">
+      <Filter>src\db</Filter>
+    </ClInclude>
+    <ClInclude Include="src\db\log_format.h">
+      <Filter>src\db</Filter>
+    </ClInclude>
+    <ClInclude Include="src\db\log_reader.h">
+      <Filter>src\db</Filter>
+    </ClInclude>
+    <ClInclude Include="src\db\log_writer.h">
+      <Filter>src\db</Filter>
+    </ClInclude>
+    <ClInclude Include="src\db\logs_with_prep_tracker.h">
+      <Filter>src\db</Filter>
+    </ClInclude>
+    <ClInclude Include="src\db\lookup_key.h">
+      <Filter>src\db</Filter>
+    </ClInclude>
+    <ClInclude Include="src\db\malloc_stats.h">
+      <Filter>src\db</Filter>
+    </ClInclude>
+    <ClInclude Include="src\db\memtable.h">
+      <Filter>src\db</Filter>
+    </ClInclude>
+    <ClInclude Include="src\db\memtable_list.h">
+      <Filter>src\db</Filter>
+    </ClInclude>
+    <ClInclude Include="src\db\merge_context.h">
+      <Filter>src\db</Filter>
+    </ClInclude>
+    <ClInclude Include="src\db\merge_helper.h">
+      <Filter>src\db</Filter>
+    </ClInclude>
+    <ClInclude Include="src\db\output_validator.h">
+      <Filter>src\db</Filter>
+    </ClInclude>
+    <ClInclude Include="src\db\periodic_work_scheduler.h">
+      <Filter>src\db</Filter>
+    </ClInclude>
+    <ClInclude Include="src\db\pinned_iterators_manager.h">
+      <Filter>src\db</Filter>
+    </ClInclude>
+    <ClInclude Include="src\db\pre_release_callback.h">
+      <Filter>src\db</Filter>
+    </ClInclude>
+    <ClInclude Include="src\db\range_del_aggregator.h">
+      <Filter>src\db</Filter>
+    </ClInclude>
+    <ClInclude Include="src\db\range_tombstone_fragmenter.h">
+      <Filter>src\db</Filter>
+    </ClInclude>
+    <ClInclude Include="src\db\read_callback.h">
+      <Filter>src\db</Filter>
+    </ClInclude>
+    <ClInclude Include="src\db\snapshot_checker.h">
+      <Filter>src\db</Filter>
+    </ClInclude>
+    <ClInclude Include="src\db\snapshot_impl.h">
+      <Filter>src\db</Filter>
+    </ClInclude>
+    <ClInclude Include="src\db\table_cache.h">
+      <Filter>src\db</Filter>
+    </ClInclude>
+    <ClInclude Include="src\db\table_properties_collector.h">
+      <Filter>src\db</Filter>
+    </ClInclude>
+    <ClInclude Include="src\db\transaction_log_impl.h">
+      <Filter>src\db</Filter>
+    </ClInclude>
+    <ClInclude Include="src\db\trim_history_scheduler.h">
+      <Filter>src\db</Filter>
+    </ClInclude>
+    <ClInclude Include="src\db\version_builder.h">
+      <Filter>src\db</Filter>
+    </ClInclude>
+    <ClInclude Include="src\db\version_edit.h">
+      <Filter>src\db</Filter>
+    </ClInclude>
+    <ClInclude Include="src\db\version_edit_handler.h">
+      <Filter>src\db</Filter>
+    </ClInclude>
+    <ClInclude Include="src\db\version_set.h">
+      <Filter>src\db</Filter>
+    </ClInclude>
+    <ClInclude Include="src\db\wal_edit.h">
+      <Filter>src\db</Filter>
+    </ClInclude>
+    <ClInclude Include="src\db\wal_manager.h">
+      <Filter>src\db</Filter>
+    </ClInclude>
+    <ClInclude Include="src\db\write_batch_internal.h">
+      <Filter>src\db</Filter>
+    </ClInclude>
+    <ClInclude Include="src\db\write_callback.h">
+      <Filter>src\db</Filter>
+    </ClInclude>
+    <ClInclude Include="src\db\write_controller.h">
+      <Filter>src\db</Filter>
+    </ClInclude>
+    <ClInclude Include="src\db\write_thread.h">
+      <Filter>src\db</Filter>
+    </ClInclude>
+    <ClInclude Include="src\env\composite_env_wrapper.h">
+      <Filter>src\env</Filter>
+    </ClInclude>
+    <ClInclude Include="src\env\env_chroot.h">
+      <Filter>src\env</Filter>
+    </ClInclude>
+    <ClInclude Include="src\env\env_encryption_ctr.h">
+      <Filter>src\env</Filter>
+    </ClInclude>
+    <ClInclude Include="src\env\file_system_tracer.h">
+      <Filter>src\env</Filter>
+    </ClInclude>
+    <ClInclude Include="src\env\fs_readonly.h">
+      <Filter>src\env</Filter>
+    </ClInclude>
+    <ClInclude Include="src\env\fs_remap.h">
+      <Filter>src\env</Filter>
+    </ClInclude>
+    <ClInclude Include="src\env\mock_env.h">
+      <Filter>src\env</Filter>
+    </ClInclude>
+    <ClInclude Include="src\file\delete_scheduler.h">
+      <Filter>src\file</Filter>
+    </ClInclude>
+    <ClInclude Include="src\file\file_prefetch_buffer.h">
+      <Filter>src\file</Filter>
+    </ClInclude>
+    <ClInclude Include="src\file\file_util.h">
+      <Filter>src\file</Filter>
+    </ClInclude>
+    <ClInclude Include="src\file\filename.h">
+      <Filter>src\file</Filter>
+    </ClInclude>
+    <ClInclude Include="src\file\line_file_reader.h">
+      <Filter>src\file</Filter>
+    </ClInclude>
+    <ClInclude Include="src\file\random_access_file_reader.h">
+      <Filter>src\file</Filter>
+    </ClInclude>
+    <ClInclude Include="src\file\read_write_util.h">
+      <Filter>src\file</Filter>
+    </ClInclude>
+    <ClInclude Include="src\file\readahead_raf.h">
+      <Filter>src\file</Filter>
+    </ClInclude>
+    <ClInclude Include="src\file\sequence_file_reader.h">
+      <Filter>src\file</Filter>
+    </ClInclude>
+    <ClInclude Include="src\file\sst_file_manager_impl.h">
+      <Filter>src\file</Filter>
+    </ClInclude>
+    <ClInclude Include="src\file\writable_file_writer.h">
+      <Filter>src\file</Filter>
+    </ClInclude>
+    <ClInclude Include="src\logging\auto_roll_logger.h">
+      <Filter>src\logging</Filter>
+    </ClInclude>
+    <ClInclude Include="src\logging\env_logger.h">
+      <Filter>src\logging</Filter>
+    </ClInclude>
+    <ClInclude Include="src\logging\event_logger.h">
+      <Filter>src\logging</Filter>
+    </ClInclude>
+    <ClInclude Include="src\logging\log_buffer.h">
+      <Filter>src\logging</Filter>
+    </ClInclude>
+    <ClInclude Include="src\logging\logging.h">
+      <Filter>src\logging</Filter>
+    </ClInclude>
+    <ClInclude Include="src\logging\posix_logger.h">
+      <Filter>src\logging</Filter>
+    </ClInclude>
+    <ClInclude Include="src\memory\allocator.h">
+      <Filter>src\memory</Filter>
+    </ClInclude>
+    <ClInclude Include="src\memory\arena.h">
+      <Filter>src\memory</Filter>
+    </ClInclude>
+    <ClInclude Include="src\memory\concurrent_arena.h">
+      <Filter>src\memory</Filter>
+    </ClInclude>
+    <ClInclude Include="src\memory\jemalloc_nodump_allocator.h">
+      <Filter>src\memory</Filter>
+    </ClInclude>
+    <ClInclude Include="src\memory\memkind_kmem_allocator.h">
+      <Filter>src\memory</Filter>
+    </ClInclude>
+    <ClInclude Include="src\memory\memory_allocator.h">
+      <Filter>src\memory</Filter>
+    </ClInclude>
+    <ClInclude Include="src\memory\memory_usage.h">
+      <Filter>src\memory</Filter>
+    </ClInclude>
+    <ClInclude Include="src\monitoring\file_read_sample.h">
+      <Filter>src\monitoring</Filter>
+    </ClInclude>
+    <ClInclude Include="src\monitoring\histogram.h">
+      <Filter>src\monitoring</Filter>
+    </ClInclude>
+    <ClInclude Include="src\monitoring\histogram_windowing.h">
+      <Filter>src\monitoring</Filter>
+    </ClInclude>
+    <ClInclude Include="src\monitoring\in_memory_stats_history.h">
+      <Filter>src\monitoring</Filter>
+    </ClInclude>
+    <ClInclude Include="src\monitoring\instrumented_mutex.h">
+      <Filter>src\monitoring</Filter>
+    </ClInclude>
+    <ClInclude Include="src\monitoring\iostats_context_imp.h">
+      <Filter>src\monitoring</Filter>
+    </ClInclude>
+    <ClInclude Include="src\monitoring\perf_context_imp.h">
+      <Filter>src\monitoring</Filter>
+    </ClInclude>
+    <ClInclude Include="src\monitoring\perf_level_imp.h">
+      <Filter>src\monitoring</Filter>
+    </ClInclude>
+    <ClInclude Include="src\monitoring\perf_step_timer.h">
+      <Filter>src\monitoring</Filter>
+    </ClInclude>
+    <ClInclude Include="src\monitoring\persistent_stats_history.h">
+      <Filter>src\monitoring</Filter>
+    </ClInclude>
+    <ClInclude Include="src\monitoring\statistics.h">
+      <Filter>src\monitoring</Filter>
+    </ClInclude>
+    <ClInclude Include="src\monitoring\thread_status_updater.h">
+      <Filter>src\monitoring</Filter>
+    </ClInclude>
+    <ClInclude Include="src\monitoring\thread_status_util.h">
+      <Filter>src\monitoring</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utilities\backupable\backupable_db_impl.h">
+      <Filter>src\utilities\backupable</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utilities\blob_db\blob_compaction_filter.h">
+      <Filter>src\utilities\blob_db</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utilities\blob_db\blob_db.h">
+      <Filter>src\utilities\blob_db</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utilities\blob_db\blob_db_gc_stats.h">
+      <Filter>src\utilities\blob_db</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utilities\blob_db\blob_db_impl.h">
+      <Filter>src\utilities\blob_db</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utilities\blob_db\blob_db_iterator.h">
+      <Filter>src\utilities\blob_db</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utilities\blob_db\blob_db_listener.h">
+      <Filter>src\utilities\blob_db</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utilities\blob_db\blob_dump_tool.h">
+      <Filter>src\utilities\blob_db</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utilities\blob_db\blob_file.h">
+      <Filter>src\utilities\blob_db</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utilities\checkpoint\checkpoint_impl.h">
+      <Filter>src\utilities\checkpoint</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utilities\compaction_filters\layered_compaction_filter_base.h">
+      <Filter>src\utilities\compaction_filters</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utilities\compaction_filters\remove_emptyvalue_compactionfilter.h">
+      <Filter>src\utilities\compaction_filters</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utilities\merge_operators\string_append\stringappend.h">
+      <Filter>src\utilities\merge_operators\string_append</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utilities\merge_operators\string_append\stringappend2.h">
+      <Filter>src\utilities\merge_operators\string_append</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utilities\merge_operators\bytesxor.h">
+      <Filter>src\utilities\merge_operators</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utilities\merge_operators\sortlist.h">
+      <Filter>src\utilities\merge_operators</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utilities\write_batch_with_index\write_batch_with_index_internal.h">
+      <Filter>src\utilities\write_batch_with_index</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utilities\ttl\db_ttl_impl.h">
+      <Filter>src\utilities\ttl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utilities\trace\file_trace_reader_writer.h">
+      <Filter>src\utilities\trace</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utilities\table_properties_collectors\compact_on_deletion_collector.h">
+      <Filter>src\utilities\table_properties_collectors</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utilities\simulator_cache\cache_simulator.h">
+      <Filter>src\utilities\simulator_cache</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utilities\persistent_cache\block_cache_tier.h">
+      <Filter>src\utilities\persistent_cache</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utilities\persistent_cache\block_cache_tier_file.h">
+      <Filter>src\utilities\persistent_cache</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utilities\persistent_cache\block_cache_tier_file_buffer.h">
+      <Filter>src\utilities\persistent_cache</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utilities\persistent_cache\block_cache_tier_metadata.h">
+      <Filter>src\utilities\persistent_cache</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utilities\persistent_cache\hash_table.h">
+      <Filter>src\utilities\persistent_cache</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utilities\persistent_cache\hash_table_evictable.h">
+      <Filter>src\utilities\persistent_cache</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utilities\persistent_cache\lrulist.h">
+      <Filter>src\utilities\persistent_cache</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utilities\persistent_cache\persistent_cache_tier.h">
+      <Filter>src\utilities\persistent_cache</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utilities\persistent_cache\persistent_cache_util.h">
+      <Filter>src\utilities\persistent_cache</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utilities\persistent_cache\volatile_tier_impl.h">
+      <Filter>src\utilities\persistent_cache</Filter>
+    </ClInclude>
+    <ClInclude Include="src\tools\block_cache_analyzer\block_cache_trace_analyzer.h">
+      <Filter>src\tools\block_cache_analyzer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\tools\io_tracer_parser_tool.h">
+      <Filter>src\tools</Filter>
+    </ClInclude>
+    <ClInclude Include="src\tools\ldb_cmd_impl.h">
+      <Filter>src\tools</Filter>
+    </ClInclude>
+    <ClInclude Include="src\tools\trace_analyzer_tool.h">
+      <Filter>src\tools</Filter>
+    </ClInclude>
+    <ClInclude Include="src\test_util\sync_point.h">
+      <Filter>src\test_util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\test_util\sync_point_impl.h">
+      <Filter>src\test_util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\test_util\testutil.h">
+      <Filter>src\test_util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\test_util\transaction_test_util.h">
+      <Filter>src\test_util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\table\adaptive\adaptive_table_factory.h">
+      <Filter>src\table\adaptive</Filter>
+    </ClInclude>
+    <ClInclude Include="src\table\block_based\binary_search_index_reader.h">
+      <Filter>src\table\block_based</Filter>
+    </ClInclude>
+    <ClInclude Include="src\table\block_based\block.h">
+      <Filter>src\table\block_based</Filter>
+    </ClInclude>
+    <ClInclude Include="src\table\block_based\block_based_filter_block.h">
+      <Filter>src\table\block_based</Filter>
+    </ClInclude>
+    <ClInclude Include="src\table\block_based\block_based_table_builder.h">
+      <Filter>src\table\block_based</Filter>
+    </ClInclude>
+    <ClInclude Include="src\table\block_based\block_based_table_factory.h">
+      <Filter>src\table\block_based</Filter>
+    </ClInclude>
+    <ClInclude Include="src\table\block_based\block_based_table_iterator.h">
+      <Filter>src\table\block_based</Filter>
+    </ClInclude>
+    <ClInclude Include="src\table\block_based\block_based_table_reader.h">
+      <Filter>src\table\block_based</Filter>
+    </ClInclude>
+    <ClInclude Include="src\table\block_based\block_based_table_reader_impl.h">
+      <Filter>src\table\block_based</Filter>
+    </ClInclude>
+    <ClInclude Include="src\table\block_based\block_builder.h">
+      <Filter>src\table\block_based</Filter>
+    </ClInclude>
+    <ClInclude Include="src\table\block_based\block_like_traits.h">
+      <Filter>src\table\block_based</Filter>
+    </ClInclude>
+    <ClInclude Include="src\table\block_based\block_prefetcher.h">
+      <Filter>src\table\block_based</Filter>
+    </ClInclude>
+    <ClInclude Include="src\table\block_based\block_prefix_index.h">
+      <Filter>src\table\block_based</Filter>
+    </ClInclude>
+    <ClInclude Include="src\table\block_based\block_type.h">
+      <Filter>src\table\block_based</Filter>
+    </ClInclude>
+    <ClInclude Include="src\table\block_based\cachable_entry.h">
+      <Filter>src\table\block_based</Filter>
+    </ClInclude>
+    <ClInclude Include="src\table\block_based\data_block_footer.h">
+      <Filter>src\table\block_based</Filter>
+    </ClInclude>
+    <ClInclude Include="src\table\block_based\data_block_hash_index.h">
+      <Filter>src\table\block_based</Filter>
+    </ClInclude>
+    <ClInclude Include="src\table\block_based\filter_block.h">
+      <Filter>src\table\block_based</Filter>
+    </ClInclude>
+    <ClInclude Include="src\table\block_based\filter_block_reader_common.h">
+      <Filter>src\table\block_based</Filter>
+    </ClInclude>
+    <ClInclude Include="src\table\block_based\filter_policy_internal.h">
+      <Filter>src\table\block_based</Filter>
+    </ClInclude>
+    <ClInclude Include="src\table\block_based\flush_block_policy.h">
+      <Filter>src\table\block_based</Filter>
+    </ClInclude>
+    <ClInclude Include="src\table\block_based\full_filter_block.h">
+      <Filter>src\table\block_based</Filter>
+    </ClInclude>
+    <ClInclude Include="src\table\block_based\hash_index_reader.h">
+      <Filter>src\table\block_based</Filter>
+    </ClInclude>
+    <ClInclude Include="src\table\block_based\index_builder.h">
+      <Filter>src\table\block_based</Filter>
+    </ClInclude>
+    <ClInclude Include="src\table\block_based\index_reader_common.h">
+      <Filter>src\table\block_based</Filter>
+    </ClInclude>
+    <ClInclude Include="src\table\block_based\mock_block_based_table.h">
+      <Filter>src\table\block_based</Filter>
+    </ClInclude>
+    <ClInclude Include="src\table\block_based\parsed_full_filter_block.h">
+      <Filter>src\table\block_based</Filter>
+    </ClInclude>
+    <ClInclude Include="src\table\block_based\partitioned_filter_block.h">
+      <Filter>src\table\block_based</Filter>
+    </ClInclude>
+    <ClInclude Include="src\table\block_based\partitioned_index_iterator.h">
+      <Filter>src\table\block_based</Filter>
+    </ClInclude>
+    <ClInclude Include="src\table\block_based\partitioned_index_reader.h">
+      <Filter>src\table\block_based</Filter>
+    </ClInclude>
+    <ClInclude Include="src\table\block_based\reader_common.h">
+      <Filter>src\table\block_based</Filter>
+    </ClInclude>
+    <ClInclude Include="src\table\block_based\uncompression_dict_reader.h">
+      <Filter>src\table\block_based</Filter>
+    </ClInclude>
+    <ClInclude Include="src\table\cuckoo\cuckoo_table_builder.h">
+      <Filter>src\table\cuckoo</Filter>
+    </ClInclude>
+    <ClInclude Include="src\table\cuckoo\cuckoo_table_factory.h">
+      <Filter>src\table\cuckoo</Filter>
+    </ClInclude>
+    <ClInclude Include="src\table\cuckoo\cuckoo_table_reader.h">
+      <Filter>src\table\cuckoo</Filter>
+    </ClInclude>
+    <ClInclude Include="src\table\plain\plain_table_bloom.h">
+      <Filter>src\table\plain</Filter>
+    </ClInclude>
+    <ClInclude Include="src\table\plain\plain_table_builder.h">
+      <Filter>src\table\plain</Filter>
+    </ClInclude>
+    <ClInclude Include="src\table\plain\plain_table_factory.h">
+      <Filter>src\table\plain</Filter>
+    </ClInclude>
+    <ClInclude Include="src\table\plain\plain_table_index.h">
+      <Filter>src\table\plain</Filter>
+    </ClInclude>
+    <ClInclude Include="src\table\plain\plain_table_key_coding.h">
+      <Filter>src\table\plain</Filter>
+    </ClInclude>
+    <ClInclude Include="src\table\plain\plain_table_reader.h">
+      <Filter>src\table\plain</Filter>
+    </ClInclude>
+    <ClInclude Include="src\port\win\env_win.h">
+      <Filter>src\port\win</Filter>
+    </ClInclude>
+    <ClInclude Include="src\port\win\io_win.h">
+      <Filter>src\port\win</Filter>
+    </ClInclude>
+    <ClInclude Include="src\port\win\port_win.h">
+      <Filter>src\port\win</Filter>
+    </ClInclude>
+    <ClInclude Include="src\port\win\win_logger.h">
+      <Filter>src\port\win</Filter>
+    </ClInclude>
+    <ClInclude Include="src\port\win\win_thread.h">
+      <Filter>src\port\win</Filter>
+    </ClInclude>
+    <ClInclude Include="src\port\jemalloc_helper.h">
+      <Filter>src\port</Filter>
+    </ClInclude>
+    <ClInclude Include="src\port\lang.h">
+      <Filter>src\port</Filter>
+    </ClInclude>
+    <ClInclude Include="src\port\likely.h">
+      <Filter>src\port</Filter>
+    </ClInclude>
+    <ClInclude Include="src\port\malloc.h">
+      <Filter>src\port</Filter>
+    </ClInclude>
+    <ClInclude Include="src\port\port.h">
+      <Filter>src\port</Filter>
+    </ClInclude>
+    <ClInclude Include="src\port\port_dirent.h">
+      <Filter>src\port</Filter>
+    </ClInclude>
+    <ClInclude Include="src\port\stack_trace.h">
+      <Filter>src\port</Filter>
+    </ClInclude>
+    <ClInclude Include="src\port\sys_time.h">
+      <Filter>src\port</Filter>
+    </ClInclude>
+    <ClInclude Include="src\port\util_logger.h">
+      <Filter>src\port</Filter>
+    </ClInclude>
+    <ClInclude Include="src\port\xpress.h">
+      <Filter>src\port</Filter>
+    </ClInclude>
+    <ClInclude Include="src\db\db_test_util.h">
+      <Filter>src\db</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hdfs\env_hdfs.h">
+      <Filter>src\hdfs</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cache\cache_reservation_manager.h">
+      <Filter>src\cache</Filter>
+    </ClInclude>
+    <ClInclude Include="src\db\blob\blob_counting_iterator.h">
+      <Filter>src\db\blob</Filter>
+    </ClInclude>
+    <ClInclude Include="src\db\blob\blob_garbage_meter.h">
+      <Filter>src\db\blob</Filter>
+    </ClInclude>
+    <ClInclude Include="src\env\emulated_clock.h">
+      <Filter>src\env</Filter>
+    </ClInclude>
+    <ClInclude Include="src\env\unique_id_gen.h">
+      <Filter>src\env</Filter>
+    </ClInclude>
+    <ClInclude Include="src\memtable\inlineskiplist.h">
+      <Filter>src\memtable</Filter>
+    </ClInclude>
+    <ClInclude Include="src\memtable\skiplist.h">
+      <Filter>src\memtable</Filter>
+    </ClInclude>
+    <ClInclude Include="src\memtable\stl_wrappers.h">
+      <Filter>src\memtable</Filter>
+    </ClInclude>
+    <ClInclude Include="src\options\cf_options.h">
+      <Filter>src\options</Filter>
+    </ClInclude>
+    <ClInclude Include="src\options\configurable_helper.h">
+      <Filter>src\options</Filter>
+    </ClInclude>
+    <ClInclude Include="src\options\db_options.h">
+      <Filter>src\options</Filter>
+    </ClInclude>
+    <ClInclude Include="src\options\options_helper.h">
+      <Filter>src\options</Filter>
+    </ClInclude>
+    <ClInclude Include="src\options\options_parser.h">
+      <Filter>src\options</Filter>
+    </ClInclude>
+    <ClInclude Include="src\table\block_fetcher.h">
+      <Filter>src\table</Filter>
+    </ClInclude>
+    <ClInclude Include="src\table\format.h">
+      <Filter>src\table</Filter>
+    </ClInclude>
+    <ClInclude Include="src\table\get_context.h">
+      <Filter>src\table</Filter>
+    </ClInclude>
+    <ClInclude Include="src\table\internal_iterator.h">
+      <Filter>src\table</Filter>
+    </ClInclude>
+    <ClInclude Include="src\table\iter_heap.h">
+      <Filter>src\table</Filter>
+    </ClInclude>
+    <ClInclude Include="src\table\iterator_wrapper.h">
+      <Filter>src\table</Filter>
+    </ClInclude>
+    <ClInclude Include="src\table\merging_iterator.h">
+      <Filter>src\table</Filter>
+    </ClInclude>
+    <ClInclude Include="src\table\meta_blocks.h">
+      <Filter>src\table</Filter>
+    </ClInclude>
+    <ClInclude Include="src\table\mock_table.h">
+      <Filter>src\table</Filter>
+    </ClInclude>
+    <ClInclude Include="src\table\multiget_context.h">
+      <Filter>src\table</Filter>
+    </ClInclude>
+    <ClInclude Include="src\table\persistent_cache_helper.h">
+      <Filter>src\table</Filter>
+    </ClInclude>
+    <ClInclude Include="src\table\persistent_cache_options.h">
+      <Filter>src\table</Filter>
+    </ClInclude>
+    <ClInclude Include="src\table\scoped_arena_iterator.h">
+      <Filter>src\table</Filter>
+    </ClInclude>
+    <ClInclude Include="src\table\sst_file_dumper.h">
+      <Filter>src\table</Filter>
+    </ClInclude>
+    <ClInclude Include="src\table\sst_file_writer_collectors.h">
+      <Filter>src\table</Filter>
+    </ClInclude>
+    <ClInclude Include="src\table\table_builder.h">
+      <Filter>src\table</Filter>
+    </ClInclude>
+    <ClInclude Include="src\table\table_properties_internal.h">
+      <Filter>src\table</Filter>
+    </ClInclude>
+    <ClInclude Include="src\table\table_reader.h">
+      <Filter>src\table</Filter>
+    </ClInclude>
+    <ClInclude Include="src\table\table_reader_caller.h">
+      <Filter>src\table</Filter>
+    </ClInclude>
+    <ClInclude Include="src\table\two_level_iterator.h">
+      <Filter>src\table</Filter>
+    </ClInclude>
+    <ClInclude Include="src\table\unique_id_impl.h">
+      <Filter>src\table</Filter>
+    </ClInclude>
+    <ClInclude Include="src\trace_replay\block_cache_tracer.h">
+      <Filter>src\trace_replay</Filter>
+    </ClInclude>
+    <ClInclude Include="src\trace_replay\io_tracer.h">
+      <Filter>src\trace_replay</Filter>
+    </ClInclude>
+    <ClInclude Include="src\trace_replay\trace_record_handler.h">
+      <Filter>src\trace_replay</Filter>
+    </ClInclude>
+    <ClInclude Include="src\trace_replay\trace_replay.h">
+      <Filter>src\trace_replay</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util\aligned_buffer.h">
+      <Filter>src\util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util\autovector.h">
+      <Filter>src\util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util\bloom_impl.h">
+      <Filter>src\util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util\cast_util.h">
+      <Filter>src\util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util\channel.h">
+      <Filter>src\util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util\coding.h">
+      <Filter>src\util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util\coding_lean.h">
+      <Filter>src\util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util\compression.h">
+      <Filter>src\util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util\compression_context_cache.h">
+      <Filter>src\util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util\concurrent_task_limiter_impl.h">
+      <Filter>src\util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util\core_local.h">
+      <Filter>src\util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util\crc32c.h">
+      <Filter>src\util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util\defer.h">
+      <Filter>src\util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util\duplicate_detector.h">
+      <Filter>src\util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util\dynamic_bloom.h">
+      <Filter>src\util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util\fastrange.h">
+      <Filter>src\util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util\file_checksum_helper.h">
+      <Filter>src\util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util\gflags_compat.h">
+      <Filter>src\util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util\hash.h">
+      <Filter>src\util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util\hash_map.h">
+      <Filter>src\util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util\hash128.h">
+      <Filter>src\util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util\heap.h">
+      <Filter>src\util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util\kv_map.h">
+      <Filter>src\util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util\math.h">
+      <Filter>src\util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util\math128.h">
+      <Filter>src\util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util\murmurhash.h">
+      <Filter>src\util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util\mutexlock.h">
+      <Filter>src\util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util\ppc-opcode.h">
+      <Filter>src\util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util\random.h">
+      <Filter>src\util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util\rate_limiter.h">
+      <Filter>src\util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util\repeatable_thread.h">
+      <Filter>src\util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util\ribbon_alg.h">
+      <Filter>src\util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util\ribbon_config.h">
+      <Filter>src\util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util\ribbon_impl.h">
+      <Filter>src\util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util\set_comparator.h">
+      <Filter>src\util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util\stderr_logger.h">
+      <Filter>src\util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util\stop_watch.h">
+      <Filter>src\util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util\string_util.h">
+      <Filter>src\util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util\thread_guard.h">
+      <Filter>src\util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util\thread_local.h">
+      <Filter>src\util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util\thread_operation.h">
+      <Filter>src\util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util\threadpool_imp.h">
+      <Filter>src\util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util\timer.h">
+      <Filter>src\util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util\timer_queue.h">
+      <Filter>src\util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util\user_comparator_wrapper.h">
+      <Filter>src\util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util\vector_iterator.h">
+      <Filter>src\util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util\work_queue.h">
+      <Filter>src\util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util\xxhash.h">
+      <Filter>src\util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util\xxph3.h">
+      <Filter>src\util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utilities\cassandra\cassandra_compaction_filter.h">
+      <Filter>src\utilities\cassandra</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utilities\cassandra\cassandra_options.h">
+      <Filter>src\utilities\cassandra</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utilities\cassandra\format.h">
+      <Filter>src\utilities\cassandra</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utilities\cassandra\merge_operator.h">
+      <Filter>src\utilities\cassandra</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utilities\cassandra\serialize.h">
+      <Filter>src\utilities\cassandra</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utilities\trace\replayer_impl.h">
+      <Filter>src\utilities\trace</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utilities\transactions\lock\point\point_lock_manager.h">
+      <Filter>src\utilities\transactions\lock\point</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utilities\transactions\lock\point\point_lock_tracker.h">
+      <Filter>src\utilities\transactions\lock\point</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utilities\transactions\lock\range\range_tree\lib\ft\comparator.h">
+      <Filter>src\utilities\transactions\lock\range\range_tree\lib\ft</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utilities\transactions\lock\range\range_tree\lib\ft\ft-status.h">
+      <Filter>src\utilities\transactions\lock\range\range_tree\lib\ft</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utilities\transactions\lock\range\range_tree\lib\locktree\concurrent_tree.h">
+      <Filter>src\utilities\transactions\lock\range\range_tree\lib\locktree</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utilities\transactions\lock\range\range_tree\lib\locktree\keyrange.h">
+      <Filter>src\utilities\transactions\lock\range\range_tree\lib\locktree</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utilities\transactions\lock\range\range_tree\lib\locktree\lock_request.h">
+      <Filter>src\utilities\transactions\lock\range\range_tree\lib\locktree</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utilities\transactions\lock\range\range_tree\lib\locktree\locktree.h">
+      <Filter>src\utilities\transactions\lock\range\range_tree\lib\locktree</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utilities\transactions\lock\range\range_tree\lib\locktree\range_buffer.h">
+      <Filter>src\utilities\transactions\lock\range\range_tree\lib\locktree</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utilities\transactions\lock\range\range_tree\lib\locktree\treenode.h">
+      <Filter>src\utilities\transactions\lock\range\range_tree\lib\locktree</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utilities\transactions\lock\range\range_tree\lib\locktree\txnid_set.h">
+      <Filter>src\utilities\transactions\lock\range\range_tree\lib\locktree</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utilities\transactions\lock\range\range_tree\lib\locktree\wfg.h">
+      <Filter>src\utilities\transactions\lock\range\range_tree\lib\locktree</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utilities\transactions\lock\range\range_tree\lib\portability\memory.h">
+      <Filter>src\utilities\transactions\lock\range\range_tree\lib\portability</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utilities\transactions\lock\range\range_tree\lib\portability\toku_assert_subst.h">
+      <Filter>src\utilities\transactions\lock\range\range_tree\lib\portability</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utilities\transactions\lock\range\range_tree\lib\portability\toku_atomic.h">
+      <Filter>src\utilities\transactions\lock\range\range_tree\lib\portability</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utilities\transactions\lock\range\range_tree\lib\portability\toku_external_pthread.h">
+      <Filter>src\utilities\transactions\lock\range\range_tree\lib\portability</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utilities\transactions\lock\range\range_tree\lib\portability\toku_instrumentation.h">
+      <Filter>src\utilities\transactions\lock\range\range_tree\lib\portability</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utilities\transactions\lock\range\range_tree\lib\portability\toku_portability.h">
+      <Filter>src\utilities\transactions\lock\range\range_tree\lib\portability</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utilities\transactions\lock\range\range_tree\lib\portability\toku_pthread.h">
+      <Filter>src\utilities\transactions\lock\range\range_tree\lib\portability</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utilities\transactions\lock\range\range_tree\lib\portability\toku_race_tools.h">
+      <Filter>src\utilities\transactions\lock\range\range_tree\lib\portability</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utilities\transactions\lock\range\range_tree\lib\portability\toku_time.h">
+      <Filter>src\utilities\transactions\lock\range\range_tree\lib\portability</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utilities\transactions\lock\range\range_tree\lib\portability\txn_subst.h">
+      <Filter>src\utilities\transactions\lock\range\range_tree\lib\portability</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utilities\transactions\lock\range\range_tree\lib\util\dbt.h">
+      <Filter>src\utilities\transactions\lock\range\range_tree\lib\util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utilities\transactions\lock\range\range_tree\lib\util\growable_array.h">
+      <Filter>src\utilities\transactions\lock\range\range_tree\lib\util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utilities\transactions\lock\range\range_tree\lib\util\memarena.h">
+      <Filter>src\utilities\transactions\lock\range\range_tree\lib\util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utilities\transactions\lock\range\range_tree\lib\util\omt.h">
+      <Filter>src\utilities\transactions\lock\range\range_tree\lib\util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utilities\transactions\lock\range\range_tree\lib\util\omt_impl.h">
+      <Filter>src\utilities\transactions\lock\range\range_tree\lib\util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utilities\transactions\lock\range\range_tree\lib\util\partitioned_counter.h">
+      <Filter>src\utilities\transactions\lock\range\range_tree\lib\util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utilities\transactions\lock\range\range_tree\lib\util\status.h">
+      <Filter>src\utilities\transactions\lock\range\range_tree\lib\util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utilities\transactions\lock\range\range_tree\lib\db.h">
+      <Filter>src\utilities\transactions\lock\range\range_tree\lib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utilities\transactions\lock\range\range_tree\range_tree_lock_manager.h">
+      <Filter>src\utilities\transactions\lock\range\range_tree</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utilities\transactions\lock\range\range_tree\range_tree_lock_tracker.h">
+      <Filter>src\utilities\transactions\lock\range\range_tree</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utilities\transactions\lock\range\range_lock_manager.h">
+      <Filter>src\utilities\transactions\lock\range</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utilities\transactions\lock\lock_manager.h">
+      <Filter>src\utilities\transactions\lock</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utilities\transactions\lock\lock_tracker.h">
+      <Filter>src\utilities\transactions\lock</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utilities\transactions\optimistic_transaction.h">
+      <Filter>src\utilities\transactions</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utilities\transactions\optimistic_transaction_db_impl.h">
+      <Filter>src\utilities\transactions</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utilities\transactions\pessimistic_transaction.h">
+      <Filter>src\utilities\transactions</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utilities\transactions\pessimistic_transaction_db.h">
+      <Filter>src\utilities\transactions</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utilities\transactions\transaction_base.h">
+      <Filter>src\utilities\transactions</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utilities\transactions\transaction_db_mutex_impl.h">
+      <Filter>src\utilities\transactions</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utilities\transactions\transaction_util.h">
+      <Filter>src\utilities\transactions</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utilities\transactions\write_prepared_txn.h">
+      <Filter>src\utilities\transactions</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utilities\transactions\write_prepared_txn_db.h">
+      <Filter>src\utilities\transactions</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utilities\transactions\write_unprepared_txn.h">
+      <Filter>src\utilities\transactions</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utilities\transactions\write_unprepared_txn_db.h">
+      <Filter>src\utilities\transactions</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utilities\cache_dump_load_impl.h">
+      <Filter>src\utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utilities\fault_injection_env.h">
+      <Filter>src\utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utilities\fault_injection_fs.h">
+      <Filter>src\utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utilities\merge_operators.h">
+      <Filter>src\utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="src\test_util\mock_time_env.h">
+      <Filter>src\test_util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\test_util\testharness.h">
+      <Filter>src\test_util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\tools\simulated_hybrid_file_system.h">
+      <Filter>src\tools</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util\crc32c_arm64.h">
+      <Filter>src\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rocksdb\rocksdb_export.h">
+      <Filter>include\rocksdb</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="src\util\build_version.cc.in">
+      <Filter>src\util</Filter>
+    </None>
+  </ItemGroup>
+</Project>

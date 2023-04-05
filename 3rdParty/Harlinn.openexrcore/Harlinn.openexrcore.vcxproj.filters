@@ -1,0 +1,225 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="include">
+      <UniqueIdentifier>{37279dd6-fcf4-4cde-b734-865ff6523d22}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\openexrcore">
+      <UniqueIdentifier>{150cfe8c-3592-48b7-be87-21685fd0c8aa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{6ccae29b-baf6-460d-a080-bdaba48bbc37}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Readme">
+      <UniqueIdentifier>{8ab658c9-ccc6-4844-b2a7-8bc86a30a9d4}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="dllmain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\attributes.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\base.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\channel_list.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\chunk.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\coding.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\context.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\debug.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\decoding.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\encoding.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\float_vector.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\internal_b44.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\internal_b44_table.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\internal_dwa.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\internal_huf.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\internal_piz.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\internal_pxr24.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\internal_rle.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\internal_structs.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\internal_zip.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\memory.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\opaque.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pack.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\parse_header.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\part.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\part_attr.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\preview.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\std_attr.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\string.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\string_vector.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\unpack.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\validation.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\write_header.c">
+      <Filter>src</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\openexrcore\openexr.h">
+      <Filter>include\openexrcore</Filter>
+    </ClInclude>
+    <ClInclude Include="include\openexrcore\openexr_attr.h">
+      <Filter>include\openexrcore</Filter>
+    </ClInclude>
+    <ClInclude Include="include\openexrcore\openexr_base.h">
+      <Filter>include\openexrcore</Filter>
+    </ClInclude>
+    <ClInclude Include="include\openexrcore\openexr_chunkio.h">
+      <Filter>include\openexrcore</Filter>
+    </ClInclude>
+    <ClInclude Include="include\openexrcore\openexr_coding.h">
+      <Filter>include\openexrcore</Filter>
+    </ClInclude>
+    <ClInclude Include="include\openexrcore\openexr_conf.h">
+      <Filter>include\openexrcore</Filter>
+    </ClInclude>
+    <ClInclude Include="include\openexrcore\openexr_context.h">
+      <Filter>include\openexrcore</Filter>
+    </ClInclude>
+    <ClInclude Include="include\openexrcore\openexr_debug.h">
+      <Filter>include\openexrcore</Filter>
+    </ClInclude>
+    <ClInclude Include="include\openexrcore\openexr_decode.h">
+      <Filter>include\openexrcore</Filter>
+    </ClInclude>
+    <ClInclude Include="include\openexrcore\openexr_encode.h">
+      <Filter>include\openexrcore</Filter>
+    </ClInclude>
+    <ClInclude Include="include\openexrcore\openexr_errors.h">
+      <Filter>include\openexrcore</Filter>
+    </ClInclude>
+    <ClInclude Include="include\openexrcore\openexr_part.h">
+      <Filter>include\openexrcore</Filter>
+    </ClInclude>
+    <ClInclude Include="include\openexrcore\openexr_std_attr.h">
+      <Filter>include\openexrcore</Filter>
+    </ClInclude>
+    <ClInclude Include="src\internal_attr.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\internal_channel_list.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\internal_coding.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\internal_compress.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\internal_constants.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\internal_decompress.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\internal_file.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\internal_float_vector.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\internal_huf.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\internal_memory.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\internal_opaque.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\internal_posix_file_impl.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\internal_preview.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\internal_string.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\internal_string_vector.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\internal_structs.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\internal_win32_file_impl.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\internal_xdr.h">
+      <Filter>src</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

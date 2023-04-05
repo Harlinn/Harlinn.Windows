@@ -1,0 +1,591 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{f2f6c316-38dc-4afb-b64f-7d64fb3ed264}</ProjectGuid>
+    <RootNamespace>Harlinnabseil</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Label="Vcpkg">
+    <VcpkgEnabled>false</VcpkgEnabled>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>BUILDING_HARLINN_ABSEIL=1;NOMINMAX=1;_CRT_SECURE_NO_WARNINGS=1;WIN32;_DEBUG;HARLINNABSEIL_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>BUILDING_HARLINN_ABSEIL=1;NOMINMAX=1;_CRT_SECURE_NO_WARNINGS=1;WIN32;NDEBUG;HARLINNABSEIL_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>BUILDING_HARLINN_ABSEIL=1;NOMINMAX=1;_CRT_SECURE_NO_WARNINGS=1;_DEBUG;HARLINNABSEIL_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>BUILDING_HARLINN_ABSEIL=1;NOMINMAX=1;_CRT_SECURE_NO_WARNINGS=1;NDEBUG;HARLINNABSEIL_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="src\base\internal\cycleclock.cc" />
+    <ClCompile Include="src\base\internal\low_level_alloc.cc" />
+    <ClCompile Include="src\base\internal\raw_logging.cc" />
+    <ClCompile Include="src\base\internal\scoped_set_env.cc" />
+    <ClCompile Include="src\base\internal\spinlock.cc" />
+    <ClCompile Include="src\base\internal\spinlock_wait.cc" />
+    <ClCompile Include="src\base\internal\strerror.cc" />
+    <ClCompile Include="src\base\internal\sysinfo.cc" />
+    <ClCompile Include="src\base\internal\thread_identity.cc" />
+    <ClCompile Include="src\base\internal\throw_delegate.cc" />
+    <ClCompile Include="src\base\internal\unscaledcycleclock.cc" />
+    <ClCompile Include="src\base\log_severity.cc" />
+    <ClCompile Include="src\container\internal\hashtablez_sampler.cc" />
+    <ClCompile Include="src\container\internal\hashtablez_sampler_force_weak_definition.cc" />
+    <ClCompile Include="src\container\internal\raw_hash_set.cc" />
+    <ClCompile Include="src\debugging\failure_signal_handler.cc" />
+    <ClCompile Include="src\debugging\internal\address_is_readable.cc" />
+    <ClCompile Include="src\debugging\internal\demangle.cc" />
+    <ClCompile Include="src\debugging\internal\elf_mem_image.cc" />
+    <ClCompile Include="src\debugging\internal\examine_stack.cc" />
+    <ClCompile Include="src\debugging\internal\stack_consumption.cc" />
+    <ClCompile Include="src\debugging\internal\vdso_support.cc" />
+    <ClCompile Include="src\debugging\leak_check.cc" />
+    <ClCompile Include="src\debugging\stacktrace.cc" />
+    <ClCompile Include="src\debugging\symbolize.cc" />
+    <ClCompile Include="src\flags\commandlineflag.cc" />
+    <ClCompile Include="src\flags\flag.cc" />
+    <ClCompile Include="src\flags\internal\fi_commandlineflag.cc" />
+    <ClCompile Include="src\flags\internal\fi_flag.cc" />
+    <ClCompile Include="src\flags\internal\fi_private_handle_accessor.cc" />
+    <ClCompile Include="src\flags\internal\fi_program_name.cc" />
+    <ClCompile Include="src\flags\internal\fi_usage.cc" />
+    <ClCompile Include="src\flags\marshalling.cc" />
+    <ClCompile Include="src\flags\parse.cc" />
+    <ClCompile Include="src\flags\reflection.cc" />
+    <ClCompile Include="src\flags\usage.cc" />
+    <ClCompile Include="src\flags\usage_config.cc" />
+    <ClCompile Include="src\hash\internal\city.cc" />
+    <ClCompile Include="src\hash\internal\hash.cc" />
+    <ClCompile Include="src\hash\internal\low_level_hash.cc" />
+    <ClCompile Include="src\hash\internal\print_hash_of.cc" />
+    <ClCompile Include="src\numeric\int128.cc" />
+    <ClCompile Include="src\profiling\internal\exponential_biased.cc" />
+    <ClCompile Include="src\profiling\internal\periodic_sampler.cc" />
+    <ClCompile Include="src\random\discrete_distribution.cc" />
+    <ClCompile Include="src\random\gaussian_distribution.cc" />
+    <ClCompile Include="src\random\internal\chi_square.cc" />
+    <ClCompile Include="src\random\internal\distribution_test_util.cc" />
+    <ClCompile Include="src\random\internal\pool_urbg.cc" />
+    <ClCompile Include="src\random\internal\randen.cc" />
+    <ClCompile Include="src\random\internal\randen_detect.cc" />
+    <ClCompile Include="src\random\internal\randen_hwaes.cc" />
+    <ClCompile Include="src\random\internal\randen_round_keys.cc" />
+    <ClCompile Include="src\random\internal\randen_slow.cc" />
+    <ClCompile Include="src\random\internal\seed_material.cc" />
+    <ClCompile Include="src\random\seed_gen_exception.cc" />
+    <ClCompile Include="src\random\seed_sequences.cc" />
+    <ClCompile Include="src\status\status.cc" />
+    <ClCompile Include="src\status\statusor.cc" />
+    <ClCompile Include="src\status\status_payload_printer.cc" />
+    <ClCompile Include="src\strings\ascii.cc" />
+    <ClCompile Include="src\strings\charconv.cc" />
+    <ClCompile Include="src\strings\cord.cc" />
+    <ClCompile Include="src\strings\cord_analysis.cc" />
+    <ClCompile Include="src\strings\cord_buffer.cc" />
+    <ClCompile Include="src\strings\escaping.cc" />
+    <ClCompile Include="src\strings\internal\charconv_bigint.cc" />
+    <ClCompile Include="src\strings\internal\charconv_parse.cc" />
+    <ClCompile Include="src\strings\internal\cordz_functions.cc" />
+    <ClCompile Include="src\strings\internal\cordz_handle.cc" />
+    <ClCompile Include="src\strings\internal\cordz_info.cc" />
+    <ClCompile Include="src\strings\internal\cordz_sample_token.cc" />
+    <ClCompile Include="src\strings\internal\cord_internal.cc" />
+    <ClCompile Include="src\strings\internal\cord_rep_btree.cc" />
+    <ClCompile Include="src\strings\internal\cord_rep_btree_navigator.cc" />
+    <ClCompile Include="src\strings\internal\cord_rep_btree_reader.cc" />
+    <ClCompile Include="src\strings\internal\cord_rep_consume.cc" />
+    <ClCompile Include="src\strings\internal\cord_rep_crc.cc" />
+    <ClCompile Include="src\strings\internal\cord_rep_ring.cc" />
+    <ClCompile Include="src\strings\internal\si_escaping.cc" />
+    <ClCompile Include="src\strings\internal\memutil.cc" />
+    <ClCompile Include="src\strings\internal\ostringstream.cc" />
+    <ClCompile Include="src\strings\internal\pow10_helper.cc" />
+    <ClCompile Include="src\strings\internal\str_format\arg.cc" />
+    <ClCompile Include="src\strings\internal\str_format\bind.cc" />
+    <ClCompile Include="src\strings\internal\str_format\extension.cc" />
+    <ClCompile Include="src\strings\internal\str_format\float_conversion.cc" />
+    <ClCompile Include="src\strings\internal\str_format\output.cc" />
+    <ClCompile Include="src\strings\internal\str_format\parser.cc" />
+    <ClCompile Include="src\strings\internal\utf8.cc" />
+    <ClCompile Include="src\strings\match.cc" />
+    <ClCompile Include="src\strings\numbers.cc" />
+    <ClCompile Include="src\strings\string_view.cc" />
+    <ClCompile Include="src\strings\str_cat.cc" />
+    <ClCompile Include="src\strings\str_replace.cc" />
+    <ClCompile Include="src\strings\str_split.cc" />
+    <ClCompile Include="src\strings\substitute.cc" />
+    <ClCompile Include="src\synchronization\barrier.cc" />
+    <ClCompile Include="src\synchronization\blocking_counter.cc" />
+    <ClCompile Include="src\synchronization\internal\create_thread_identity.cc" />
+    <ClCompile Include="src\synchronization\internal\graphcycles.cc" />
+    <ClCompile Include="src\synchronization\internal\per_thread_sem.cc" />
+    <ClCompile Include="src\synchronization\internal\waiter.cc" />
+    <ClCompile Include="src\synchronization\mutex.cc" />
+    <ClCompile Include="src\synchronization\notification.cc" />
+    <ClCompile Include="src\time\civil_time.cc" />
+    <ClCompile Include="src\time\clock.cc" />
+    <ClCompile Include="src\time\duration.cc" />
+    <ClCompile Include="src\time\format.cc" />
+    <ClCompile Include="src\time\internal\cctz\src\civil_time_detail.cc" />
+    <ClCompile Include="src\time\internal\cctz\src\time_zone_fixed.cc" />
+    <ClCompile Include="src\time\internal\cctz\src\time_zone_format.cc" />
+    <ClCompile Include="src\time\internal\cctz\src\time_zone_if.cc" />
+    <ClCompile Include="src\time\internal\cctz\src\time_zone_impl.cc" />
+    <ClCompile Include="src\time\internal\cctz\src\time_zone_info.cc" />
+    <ClCompile Include="src\time\internal\cctz\src\time_zone_libc.cc" />
+    <ClCompile Include="src\time\internal\cctz\src\time_zone_lookup.cc" />
+    <ClCompile Include="src\time\internal\cctz\src\time_zone_posix.cc" />
+    <ClCompile Include="src\time\internal\cctz\src\zone_info_source.cc" />
+    <ClCompile Include="src\time\time.cc" />
+    <ClCompile Include="src\types\bad_any_cast.cc" />
+    <ClCompile Include="src\types\bad_optional_access.cc" />
+    <ClCompile Include="src\types\bad_variant_access.cc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\absl\algorithm\algorithm.h" />
+    <ClInclude Include="include\absl\algorithm\container.h" />
+    <ClInclude Include="include\absl\base\absl_export.h" />
+    <ClInclude Include="include\absl\base\attributes.h" />
+    <ClInclude Include="include\absl\base\call_once.h" />
+    <ClInclude Include="include\absl\base\casts.h" />
+    <ClInclude Include="include\absl\base\config.h" />
+    <ClInclude Include="include\absl\base\const_init.h" />
+    <ClInclude Include="include\absl\base\dynamic_annotations.h" />
+    <ClInclude Include="include\absl\base\internal\atomic_hook.h" />
+    <ClInclude Include="include\absl\base\internal\cycleclock.h" />
+    <ClInclude Include="include\absl\base\internal\direct_mmap.h" />
+    <ClInclude Include="include\absl\base\internal\dynamic_annotations.h" />
+    <ClInclude Include="include\absl\base\internal\endian.h" />
+    <ClInclude Include="include\absl\base\internal\errno_saver.h" />
+    <ClInclude Include="include\absl\base\internal\exception_testing.h" />
+    <ClInclude Include="include\absl\base\internal\fast_type_id.h" />
+    <ClInclude Include="include\absl\base\internal\hide_ptr.h" />
+    <ClInclude Include="include\absl\base\internal\identity.h" />
+    <ClInclude Include="include\absl\base\internal\inline_variable.h" />
+    <ClInclude Include="include\absl\base\internal\inline_variable_testing.h" />
+    <ClInclude Include="include\absl\base\internal\invoke.h" />
+    <ClInclude Include="include\absl\base\internal\low_level_alloc.h" />
+    <ClInclude Include="include\absl\base\internal\low_level_scheduling.h" />
+    <ClInclude Include="include\absl\base\internal\per_thread_tls.h" />
+    <ClInclude Include="include\absl\base\internal\prefetch.h" />
+    <ClInclude Include="include\absl\base\internal\pretty_function.h" />
+    <ClInclude Include="include\absl\base\internal\raw_logging.h" />
+    <ClInclude Include="include\absl\base\internal\scheduling_mode.h" />
+    <ClInclude Include="include\absl\base\internal\scoped_set_env.h" />
+    <ClInclude Include="include\absl\base\internal\spinlock.h" />
+    <ClInclude Include="include\absl\base\internal\spinlock_wait.h" />
+    <ClInclude Include="include\absl\base\internal\strerror.h" />
+    <ClInclude Include="include\absl\base\internal\sysinfo.h" />
+    <ClInclude Include="include\absl\base\internal\thread_annotations.h" />
+    <ClInclude Include="include\absl\base\internal\thread_identity.h" />
+    <ClInclude Include="include\absl\base\internal\throw_delegate.h" />
+    <ClInclude Include="include\absl\base\internal\tsan_mutex_interface.h" />
+    <ClInclude Include="include\absl\base\internal\unaligned_access.h" />
+    <ClInclude Include="include\absl\base\internal\unscaledcycleclock.h" />
+    <ClInclude Include="include\absl\base\log_severity.h" />
+    <ClInclude Include="include\absl\base\macros.h" />
+    <ClInclude Include="include\absl\base\optimization.h" />
+    <ClInclude Include="include\absl\base\options.h" />
+    <ClInclude Include="include\absl\base\policy_checks.h" />
+    <ClInclude Include="include\absl\base\port.h" />
+    <ClInclude Include="include\absl\base\thread_annotations.h" />
+    <ClInclude Include="include\absl\cleanup\cleanup.h" />
+    <ClInclude Include="include\absl\cleanup\internal\cleanup.h" />
+    <ClInclude Include="include\absl\container\btree_map.h" />
+    <ClInclude Include="include\absl\container\btree_set.h" />
+    <ClInclude Include="include\absl\container\fixed_array.h" />
+    <ClInclude Include="include\absl\container\flat_hash_map.h" />
+    <ClInclude Include="include\absl\container\flat_hash_set.h" />
+    <ClInclude Include="include\absl\container\inlined_vector.h" />
+    <ClInclude Include="include\absl\container\internal\btree.h" />
+    <ClInclude Include="include\absl\container\internal\btree_container.h" />
+    <ClInclude Include="include\absl\container\internal\common.h" />
+    <ClInclude Include="include\absl\container\internal\compressed_tuple.h" />
+    <ClInclude Include="include\absl\container\internal\container_memory.h" />
+    <ClInclude Include="include\absl\container\internal\counting_allocator.h" />
+    <ClInclude Include="include\absl\container\internal\hashtablez_sampler.h" />
+    <ClInclude Include="include\absl\container\internal\hashtable_debug.h" />
+    <ClInclude Include="include\absl\container\internal\hashtable_debug_hooks.h" />
+    <ClInclude Include="include\absl\container\internal\hash_function_defaults.h" />
+    <ClInclude Include="include\absl\container\internal\hash_policy_traits.h" />
+    <ClInclude Include="include\absl\container\internal\inlined_vector.h" />
+    <ClInclude Include="include\absl\container\internal\layout.h" />
+    <ClInclude Include="include\absl\container\internal\node_slot_policy.h" />
+    <ClInclude Include="include\absl\container\internal\raw_hash_map.h" />
+    <ClInclude Include="include\absl\container\internal\raw_hash_set.h" />
+    <ClInclude Include="include\absl\container\internal\test_instance_tracker.h" />
+    <ClInclude Include="include\absl\container\internal\tracked.h" />
+    <ClInclude Include="include\absl\container\node_hash_map.h" />
+    <ClInclude Include="include\absl\container\node_hash_set.h" />
+    <ClInclude Include="include\absl\debugging\failure_signal_handler.h" />
+    <ClInclude Include="include\absl\debugging\internal\address_is_readable.h" />
+    <ClInclude Include="include\absl\debugging\internal\demangle.h" />
+    <ClInclude Include="include\absl\debugging\internal\elf_mem_image.h" />
+    <ClInclude Include="include\absl\debugging\internal\examine_stack.h" />
+    <ClInclude Include="include\absl\debugging\internal\stacktrace_config.h" />
+    <ClInclude Include="include\absl\debugging\internal\stack_consumption.h" />
+    <ClInclude Include="include\absl\debugging\internal\symbolize.h" />
+    <ClInclude Include="include\absl\debugging\internal\vdso_support.h" />
+    <ClInclude Include="include\absl\debugging\leak_check.h" />
+    <ClInclude Include="include\absl\debugging\stacktrace.h" />
+    <ClInclude Include="include\absl\debugging\symbolize.h" />
+    <ClInclude Include="include\absl\flags\commandlineflag.h" />
+    <ClInclude Include="include\absl\flags\config.h" />
+    <ClInclude Include="include\absl\flags\declare.h" />
+    <ClInclude Include="include\absl\flags\flag.h" />
+    <ClInclude Include="include\absl\flags\internal\commandlineflag.h" />
+    <ClInclude Include="include\absl\flags\internal\flag.h" />
+    <ClInclude Include="include\absl\flags\internal\parse.h" />
+    <ClInclude Include="include\absl\flags\internal\path_util.h" />
+    <ClInclude Include="include\absl\flags\internal\private_handle_accessor.h" />
+    <ClInclude Include="include\absl\flags\internal\program_name.h" />
+    <ClInclude Include="include\absl\flags\internal\registry.h" />
+    <ClInclude Include="include\absl\flags\internal\sequence_lock.h" />
+    <ClInclude Include="include\absl\flags\internal\usage.h" />
+    <ClInclude Include="include\absl\flags\marshalling.h" />
+    <ClInclude Include="include\absl\flags\parse.h" />
+    <ClInclude Include="include\absl\flags\reflection.h" />
+    <ClInclude Include="include\absl\flags\usage.h" />
+    <ClInclude Include="include\absl\flags\usage_config.h" />
+    <ClInclude Include="include\absl\functional\any_invocable.h" />
+    <ClInclude Include="include\absl\functional\bind_front.h" />
+    <ClInclude Include="include\absl\functional\function_ref.h" />
+    <ClInclude Include="include\absl\functional\internal\any_invocable.h" />
+    <ClInclude Include="include\absl\functional\internal\front_binder.h" />
+    <ClInclude Include="include\absl\functional\internal\function_ref.h" />
+    <ClInclude Include="include\absl\hash\hash.h" />
+    <ClInclude Include="include\absl\hash\internal\city.h" />
+    <ClInclude Include="include\absl\hash\internal\hash.h" />
+    <ClInclude Include="include\absl\hash\internal\low_level_hash.h" />
+    <ClInclude Include="include\absl\hash\internal\spy_hash_state.h" />
+    <ClInclude Include="include\absl\memory\memory.h" />
+    <ClInclude Include="include\absl\meta\type_traits.h" />
+    <ClInclude Include="include\absl\numeric\bits.h" />
+    <ClInclude Include="include\absl\numeric\int128.h" />
+    <ClInclude Include="include\absl\numeric\internal\bits.h" />
+    <ClInclude Include="include\absl\numeric\internal\representation.h" />
+    <ClInclude Include="include\absl\profiling\internal\exponential_biased.h" />
+    <ClInclude Include="include\absl\profiling\internal\periodic_sampler.h" />
+    <ClInclude Include="include\absl\profiling\internal\sample_recorder.h" />
+    <ClInclude Include="include\absl\random\bernoulli_distribution.h" />
+    <ClInclude Include="include\absl\random\beta_distribution.h" />
+    <ClInclude Include="include\absl\random\bit_gen_ref.h" />
+    <ClInclude Include="include\absl\random\discrete_distribution.h" />
+    <ClInclude Include="include\absl\random\distributions.h" />
+    <ClInclude Include="include\absl\random\exponential_distribution.h" />
+    <ClInclude Include="include\absl\random\gaussian_distribution.h" />
+    <ClInclude Include="include\absl\random\internal\chi_square.h" />
+    <ClInclude Include="include\absl\random\internal\distribution_caller.h" />
+    <ClInclude Include="include\absl\random\internal\distribution_test_util.h" />
+    <ClInclude Include="include\absl\random\internal\explicit_seed_seq.h" />
+    <ClInclude Include="include\absl\random\internal\fastmath.h" />
+    <ClInclude Include="include\absl\random\internal\fast_uniform_bits.h" />
+    <ClInclude Include="include\absl\random\internal\generate_real.h" />
+    <ClInclude Include="include\absl\random\internal\iostream_state_saver.h" />
+    <ClInclude Include="include\absl\random\internal\nanobenchmark.h" />
+    <ClInclude Include="include\absl\random\internal\nonsecure_base.h" />
+    <ClInclude Include="include\absl\random\internal\pcg_engine.h" />
+    <ClInclude Include="include\absl\random\internal\platform.h" />
+    <ClInclude Include="include\absl\random\internal\pool_urbg.h" />
+    <ClInclude Include="include\absl\random\internal\randen.h" />
+    <ClInclude Include="include\absl\random\internal\randen_detect.h" />
+    <ClInclude Include="include\absl\random\internal\randen_engine.h" />
+    <ClInclude Include="include\absl\random\internal\randen_hwaes.h" />
+    <ClInclude Include="include\absl\random\internal\randen_slow.h" />
+    <ClInclude Include="include\absl\random\internal\randen_traits.h" />
+    <ClInclude Include="include\absl\random\internal\salted_seed_seq.h" />
+    <ClInclude Include="include\absl\random\internal\seed_material.h" />
+    <ClInclude Include="include\absl\random\internal\sequence_urbg.h" />
+    <ClInclude Include="include\absl\random\internal\traits.h" />
+    <ClInclude Include="include\absl\random\internal\uniform_helper.h" />
+    <ClInclude Include="include\absl\random\internal\wide_multiply.h" />
+    <ClInclude Include="include\absl\random\log_uniform_int_distribution.h" />
+    <ClInclude Include="include\absl\random\poisson_distribution.h" />
+    <ClInclude Include="include\absl\random\random.h" />
+    <ClInclude Include="include\absl\random\seed_gen_exception.h" />
+    <ClInclude Include="include\absl\random\seed_sequences.h" />
+    <ClInclude Include="include\absl\random\uniform_int_distribution.h" />
+    <ClInclude Include="include\absl\random\uniform_real_distribution.h" />
+    <ClInclude Include="include\absl\random\zipf_distribution.h" />
+    <ClInclude Include="include\absl\status\internal\statusor_internal.h" />
+    <ClInclude Include="include\absl\status\internal\status_internal.h" />
+    <ClInclude Include="include\absl\status\status.h" />
+    <ClInclude Include="include\absl\status\statusor.h" />
+    <ClInclude Include="include\absl\status\status_payload_printer.h" />
+    <ClInclude Include="include\absl\strings\ascii.h" />
+    <ClInclude Include="include\absl\strings\charconv.h" />
+    <ClInclude Include="include\absl\strings\cord.h" />
+    <ClInclude Include="include\absl\strings\cord_analysis.h" />
+    <ClInclude Include="include\absl\strings\cord_buffer.h" />
+    <ClInclude Include="include\absl\strings\escaping.h" />
+    <ClInclude Include="include\absl\strings\internal\charconv_bigint.h" />
+    <ClInclude Include="include\absl\strings\internal\charconv_parse.h" />
+    <ClInclude Include="include\absl\strings\internal\char_map.h" />
+    <ClInclude Include="include\absl\strings\internal\cordz_functions.h" />
+    <ClInclude Include="include\absl\strings\internal\cordz_handle.h" />
+    <ClInclude Include="include\absl\strings\internal\cordz_info.h" />
+    <ClInclude Include="include\absl\strings\internal\cordz_sample_token.h" />
+    <ClInclude Include="include\absl\strings\internal\cordz_statistics.h" />
+    <ClInclude Include="include\absl\strings\internal\cordz_update_scope.h" />
+    <ClInclude Include="include\absl\strings\internal\cordz_update_tracker.h" />
+    <ClInclude Include="include\absl\strings\internal\cord_data_edge.h" />
+    <ClInclude Include="include\absl\strings\internal\cord_internal.h" />
+    <ClInclude Include="include\absl\strings\internal\cord_rep_btree.h" />
+    <ClInclude Include="include\absl\strings\internal\cord_rep_btree_navigator.h" />
+    <ClInclude Include="include\absl\strings\internal\cord_rep_btree_reader.h" />
+    <ClInclude Include="include\absl\strings\internal\cord_rep_consume.h" />
+    <ClInclude Include="include\absl\strings\internal\cord_rep_crc.h" />
+    <ClInclude Include="include\absl\strings\internal\cord_rep_flat.h" />
+    <ClInclude Include="include\absl\strings\internal\cord_rep_ring.h" />
+    <ClInclude Include="include\absl\strings\internal\cord_rep_ring_reader.h" />
+    <ClInclude Include="include\absl\strings\internal\escaping.h" />
+    <ClInclude Include="include\absl\strings\internal\memutil.h" />
+    <ClInclude Include="include\absl\strings\internal\ostringstream.h" />
+    <ClInclude Include="include\absl\strings\internal\pow10_helper.h" />
+    <ClInclude Include="include\absl\strings\internal\resize_uninitialized.h" />
+    <ClInclude Include="include\absl\strings\internal\stl_type_traits.h" />
+    <ClInclude Include="include\absl\strings\internal\string_constant.h" />
+    <ClInclude Include="include\absl\strings\internal\str_format\arg.h" />
+    <ClInclude Include="include\absl\strings\internal\str_format\bind.h" />
+    <ClInclude Include="include\absl\strings\internal\str_format\checker.h" />
+    <ClInclude Include="include\absl\strings\internal\str_format\extension.h" />
+    <ClInclude Include="include\absl\strings\internal\str_format\float_conversion.h" />
+    <ClInclude Include="include\absl\strings\internal\str_format\output.h" />
+    <ClInclude Include="include\absl\strings\internal\str_format\parser.h" />
+    <ClInclude Include="include\absl\strings\internal\str_join_internal.h" />
+    <ClInclude Include="include\absl\strings\internal\str_split_internal.h" />
+    <ClInclude Include="include\absl\strings\internal\utf8.h" />
+    <ClInclude Include="include\absl\strings\match.h" />
+    <ClInclude Include="include\absl\strings\numbers.h" />
+    <ClInclude Include="include\absl\strings\string_view.h" />
+    <ClInclude Include="include\absl\strings\strip.h" />
+    <ClInclude Include="include\absl\strings\str_cat.h" />
+    <ClInclude Include="include\absl\strings\str_format.h" />
+    <ClInclude Include="include\absl\strings\str_join.h" />
+    <ClInclude Include="include\absl\strings\str_replace.h" />
+    <ClInclude Include="include\absl\strings\str_split.h" />
+    <ClInclude Include="include\absl\strings\substitute.h" />
+    <ClInclude Include="include\absl\synchronization\barrier.h" />
+    <ClInclude Include="include\absl\synchronization\blocking_counter.h" />
+    <ClInclude Include="include\absl\synchronization\internal\create_thread_identity.h" />
+    <ClInclude Include="include\absl\synchronization\internal\futex.h" />
+    <ClInclude Include="include\absl\synchronization\internal\graphcycles.h" />
+    <ClInclude Include="include\absl\synchronization\internal\kernel_timeout.h" />
+    <ClInclude Include="include\absl\synchronization\internal\per_thread_sem.h" />
+    <ClInclude Include="include\absl\synchronization\internal\thread_pool.h" />
+    <ClInclude Include="include\absl\synchronization\internal\waiter.h" />
+    <ClInclude Include="include\absl\synchronization\mutex.h" />
+    <ClInclude Include="include\absl\synchronization\notification.h" />
+    <ClInclude Include="include\absl\time\civil_time.h" />
+    <ClInclude Include="include\absl\time\clock.h" />
+    <ClInclude Include="include\absl\time\internal\cctz\include\cctz\civil_time.h" />
+    <ClInclude Include="include\absl\time\internal\cctz\include\cctz\civil_time_detail.h" />
+    <ClInclude Include="include\absl\time\internal\cctz\include\cctz\time_zone.h" />
+    <ClInclude Include="include\absl\time\internal\cctz\include\cctz\zone_info_source.h" />
+    <ClInclude Include="include\absl\time\time.h" />
+    <ClInclude Include="include\absl\types\any.h" />
+    <ClInclude Include="include\absl\types\bad_any_cast.h" />
+    <ClInclude Include="include\absl\types\bad_optional_access.h" />
+    <ClInclude Include="include\absl\types\bad_variant_access.h" />
+    <ClInclude Include="include\absl\types\compare.h" />
+    <ClInclude Include="include\absl\types\internal\conformance_aliases.h" />
+    <ClInclude Include="include\absl\types\internal\conformance_archetype.h" />
+    <ClInclude Include="include\absl\types\internal\conformance_profile.h" />
+    <ClInclude Include="include\absl\types\internal\optional.h" />
+    <ClInclude Include="include\absl\types\internal\parentheses.h" />
+    <ClInclude Include="include\absl\types\internal\span.h" />
+    <ClInclude Include="include\absl\types\internal\transform_args.h" />
+    <ClInclude Include="include\absl\types\internal\variant.h" />
+    <ClInclude Include="include\absl\types\optional.h" />
+    <ClInclude Include="include\absl\types\span.h" />
+    <ClInclude Include="include\absl\types\variant.h" />
+    <ClInclude Include="include\absl\utility\utility.h" />
+    <ClInclude Include="src\time\internal\cctz\src\time_zone_fixed.h" />
+    <ClInclude Include="src\time\internal\cctz\src\time_zone_if.h" />
+    <ClInclude Include="src\time\internal\cctz\src\time_zone_impl.h" />
+    <ClInclude Include="src\time\internal\cctz\src\time_zone_info.h" />
+    <ClInclude Include="src\time\internal\cctz\src\time_zone_libc.h" />
+    <ClInclude Include="src\time\internal\cctz\src\time_zone_posix.h" />
+    <ClInclude Include="src\time\internal\cctz\src\tzfile.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="include\absl\base\internal\spinlock_win32.inc" />
+    <None Include="include\absl\debugging\internal\stacktrace_aarch64-inl.inc" />
+    <None Include="include\absl\debugging\internal\stacktrace_arm-inl.inc" />
+    <None Include="include\absl\debugging\internal\stacktrace_generic-inl.inc" />
+    <None Include="include\absl\debugging\internal\stacktrace_powerpc-inl.inc" />
+    <None Include="include\absl\debugging\internal\stacktrace_unimplemented-inl.inc" />
+    <None Include="include\absl\debugging\internal\stacktrace_win32-inl.inc" />
+    <None Include="include\absl\debugging\internal\stacktrace_x86-inl.inc" />
+    <None Include="include\absl\debugging\symbolize_win32.inc" />
+    <None Include="include\absl\flags\internal\flag_msvc.inc" />
+    <None Include="include\absl\numeric\int128_have_intrinsic.inc" />
+    <None Include="include\absl\numeric\int128_no_intrinsic.inc" />
+    <None Include="include\absl\time\internal\get_current_time_chrono.inc" />
+    <None Include="include\absl\time\internal\get_current_time_posix.inc" />
+    <None Include="include\absl\time\internal\zoneinfo.inc" />
+    <None Include="Readme\CONTRIBUTING.md" />
+    <None Include="Readme\LICENSE" />
+    <None Include="Readme\README.md" />
+    <None Include="Readme\UPGRADES.md" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

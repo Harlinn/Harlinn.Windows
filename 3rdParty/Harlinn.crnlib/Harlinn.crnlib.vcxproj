@@ -1,0 +1,373 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{969345f9-46e1-4c82-a119-ce02bdcd2594}</ProjectGuid>
+    <RootNamespace>Harlinncrnlib</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Label="Vcpkg">
+    <VcpkgEnabled>false</VcpkgEnabled>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>BUILDING_HARLINN_CRNLIB=1;WIN32;_DEBUG;HARLINNCRNLIB_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <AdditionalIncludeDirectories>$(ProjectDir)crnlib;$(ProjectDir)inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>BUILDING_HARLINN_CRNLIB=1;WIN32;NDEBUG;HARLINNCRNLIB_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <AdditionalIncludeDirectories>$(ProjectDir)crnlib;$(ProjectDir)inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>BUILDING_HARLINN_CRNLIB=1;_DEBUG;HARLINNCRNLIB_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <AdditionalIncludeDirectories>$(ProjectDir)crnlib;$(ProjectDir)inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>BUILDING_HARLINN_CRNLIB=1;NDEBUG;HARLINNCRNLIB_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <AdditionalIncludeDirectories>$(ProjectDir)crnlib;$(ProjectDir)inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="crnlib\crnlib.cpp" />
+    <ClCompile Include="crnlib\crn_arealist.cpp" />
+    <ClCompile Include="crnlib\crn_assert.cpp" />
+    <ClCompile Include="crnlib\crn_checksum.cpp" />
+    <ClCompile Include="crnlib\crn_colorized_console.cpp" />
+    <ClCompile Include="crnlib\crn_command_line_params.cpp" />
+    <ClCompile Include="crnlib\crn_comp.cpp" />
+    <ClCompile Include="crnlib\crn_console.cpp" />
+    <ClCompile Include="crnlib\crn_core.cpp" />
+    <ClCompile Include="crnlib\crn_data_stream.cpp" />
+    <ClCompile Include="crnlib\crn_dds_comp.cpp" />
+    <ClCompile Include="crnlib\crn_decomp.cpp" />
+    <ClCompile Include="crnlib\crn_dxt.cpp" />
+    <ClCompile Include="crnlib\crn_dxt1.cpp" />
+    <ClCompile Include="crnlib\crn_dxt5a.cpp" />
+    <ClCompile Include="crnlib\crn_dxt_endpoint_refiner.cpp" />
+    <ClCompile Include="crnlib\crn_dxt_fast.cpp" />
+    <ClCompile Include="crnlib\crn_dxt_hc.cpp" />
+    <ClCompile Include="crnlib\crn_dxt_hc_common.cpp" />
+    <ClCompile Include="crnlib\crn_dxt_image.cpp" />
+    <ClCompile Include="crnlib\crn_dynamic_string.cpp" />
+    <ClCompile Include="crnlib\crn_etc.cpp" />
+    <ClCompile Include="crnlib\crn_file_utils.cpp" />
+    <ClCompile Include="crnlib\crn_find_files.cpp" />
+    <ClCompile Include="crnlib\crn_hash.cpp" />
+    <ClCompile Include="crnlib\crn_hash_map.cpp" />
+    <ClCompile Include="crnlib\crn_huffman_codes.cpp" />
+    <ClCompile Include="crnlib\crn_image_utils.cpp" />
+    <ClCompile Include="crnlib\crn_jpgd.cpp" />
+    <ClCompile Include="crnlib\crn_jpge.cpp" />
+    <ClCompile Include="crnlib\crn_ktx_texture.cpp" />
+    <ClCompile Include="crnlib\crn_lzma_codec.cpp" />
+    <ClCompile Include="crnlib\crn_math.cpp" />
+    <ClCompile Include="crnlib\crn_mem.cpp" />
+    <ClCompile Include="crnlib\crn_miniz.cpp" />
+    <ClCompile Include="crnlib\crn_mipmapped_texture.cpp" />
+    <ClCompile Include="crnlib\crn_pixel_format.cpp" />
+    <ClCompile Include="crnlib\crn_platform.cpp" />
+    <ClCompile Include="crnlib\crn_prefix_coding.cpp" />
+    <ClCompile Include="crnlib\crn_qdxt1.cpp" />
+    <ClCompile Include="crnlib\crn_qdxt5.cpp" />
+    <ClCompile Include="crnlib\crn_rand.cpp" />
+    <ClCompile Include="crnlib\crn_resampler.cpp" />
+    <ClCompile Include="crnlib\crn_resample_filters.cpp" />
+    <ClCompile Include="crnlib\crn_rg_etc1.cpp" />
+    <ClCompile Include="crnlib\crn_ryg_dxt.cpp" />
+    <ClCompile Include="crnlib\crn_sparse_bit_array.cpp" />
+    <ClCompile Include="crnlib\crn_stb_image.cpp" />
+    <ClCompile Include="crnlib\crn_strutils.cpp" />
+    <ClCompile Include="crnlib\crn_symbol_codec.cpp" />
+    <ClCompile Include="crnlib\crn_texture_comp.cpp" />
+    <ClCompile Include="crnlib\crn_texture_conversion.cpp" />
+    <ClCompile Include="crnlib\crn_texture_file_types.cpp" />
+    <ClCompile Include="crnlib\crn_threaded_resampler.cpp" />
+    <ClCompile Include="crnlib\crn_threading_win32.cpp" />
+    <ClCompile Include="crnlib\crn_timer.cpp" />
+    <ClCompile Include="crnlib\crn_utils.cpp" />
+    <ClCompile Include="crnlib\crn_value.cpp" />
+    <ClCompile Include="crnlib\crn_vector.cpp" />
+    <ClCompile Include="crnlib\crn_zeng.cpp" />
+    <ClCompile Include="crnlib\lzma_7zBuf.cpp" />
+    <ClCompile Include="crnlib\lzma_7zBuf2.cpp" />
+    <ClCompile Include="crnlib\lzma_7zCrc.cpp" />
+    <ClCompile Include="crnlib\lzma_7zFile.cpp" />
+    <ClCompile Include="crnlib\lzma_7zStream.cpp" />
+    <ClCompile Include="crnlib\lzma_Alloc.cpp" />
+    <ClCompile Include="crnlib\lzma_Bcj2.cpp" />
+    <ClCompile Include="crnlib\lzma_Bra.cpp" />
+    <ClCompile Include="crnlib\lzma_Bra86.cpp" />
+    <ClCompile Include="crnlib\lzma_BraIA64.cpp" />
+    <ClCompile Include="crnlib\lzma_LzFind.cpp" />
+    <ClCompile Include="crnlib\lzma_LzFindMt.cpp" />
+    <ClCompile Include="crnlib\lzma_LzmaDec.cpp" />
+    <ClCompile Include="crnlib\lzma_LzmaEnc.cpp" />
+    <ClCompile Include="crnlib\lzma_LzmaLib.cpp" />
+    <ClCompile Include="crnlib\lzma_Threads.cpp" />
+    <ClCompile Include="dllmain.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="crnlib\crn_arealist.h" />
+    <ClInclude Include="crnlib\crn_assert.h" />
+    <ClInclude Include="crnlib\crn_atomics.h" />
+    <ClInclude Include="crnlib\crn_buffer_stream.h" />
+    <ClInclude Include="crnlib\crn_cfile_stream.h" />
+    <ClInclude Include="crnlib\crn_checksum.h" />
+    <ClInclude Include="crnlib\crn_clusterizer.h" />
+    <ClInclude Include="crnlib\crn_color.h" />
+    <ClInclude Include="crnlib\crn_colorized_console.h" />
+    <ClInclude Include="crnlib\crn_command_line_params.h" />
+    <ClInclude Include="crnlib\crn_comp.h" />
+    <ClInclude Include="crnlib\crn_console.h" />
+    <ClInclude Include="crnlib\crn_core.h" />
+    <ClInclude Include="crnlib\crn_data_stream.h" />
+    <ClInclude Include="crnlib\crn_data_stream_serializer.h" />
+    <ClInclude Include="crnlib\crn_dds_comp.h" />
+    <ClInclude Include="crnlib\crn_dxt.h" />
+    <ClInclude Include="crnlib\crn_dxt1.h" />
+    <ClInclude Include="crnlib\crn_dxt5a.h" />
+    <ClInclude Include="crnlib\crn_dxt_endpoint_refiner.h" />
+    <ClInclude Include="crnlib\crn_dxt_fast.h" />
+    <ClInclude Include="crnlib\crn_dxt_hc.h" />
+    <ClInclude Include="crnlib\crn_dxt_hc_common.h" />
+    <ClInclude Include="crnlib\crn_dxt_image.h" />
+    <ClInclude Include="crnlib\crn_dynamic_stream.h" />
+    <ClInclude Include="crnlib\crn_dynamic_string.h" />
+    <ClInclude Include="crnlib\crn_etc.h" />
+    <ClInclude Include="crnlib\crn_file_utils.h" />
+    <ClInclude Include="crnlib\crn_find_files.h" />
+    <ClInclude Include="crnlib\crn_hash.h" />
+    <ClInclude Include="crnlib\crn_hash_map.h" />
+    <ClInclude Include="crnlib\crn_helpers.h" />
+    <ClInclude Include="crnlib\crn_huffman_codes.h" />
+    <ClInclude Include="crnlib\crn_image.h" />
+    <ClInclude Include="crnlib\crn_image_utils.h" />
+    <ClInclude Include="crnlib\crn_intersect.h" />
+    <ClInclude Include="crnlib\crn_jpgd.h" />
+    <ClInclude Include="crnlib\crn_jpge.h" />
+    <ClInclude Include="crnlib\crn_ktx_texture.h" />
+    <ClInclude Include="crnlib\crn_lzma_codec.h" />
+    <ClInclude Include="crnlib\crn_math.h" />
+    <ClInclude Include="crnlib\crn_matrix.h" />
+    <ClInclude Include="crnlib\crn_mem.h" />
+    <ClInclude Include="crnlib\crn_miniz.h" />
+    <ClInclude Include="crnlib\crn_mipmapped_texture.h" />
+    <ClInclude Include="crnlib\crn_packed_uint.h" />
+    <ClInclude Include="crnlib\crn_pixel_format.h" />
+    <ClInclude Include="crnlib\crn_platform.h" />
+    <ClInclude Include="crnlib\crn_prefix_coding.h" />
+    <ClInclude Include="crnlib\crn_qdxt1.h" />
+    <ClInclude Include="crnlib\crn_qdxt5.h" />
+    <ClInclude Include="crnlib\crn_radix_sort.h" />
+    <ClInclude Include="crnlib\crn_rand.h" />
+    <ClInclude Include="crnlib\crn_ray.h" />
+    <ClInclude Include="crnlib\crn_rect.h" />
+    <ClInclude Include="crnlib\crn_resampler.h" />
+    <ClInclude Include="crnlib\crn_resample_filters.h" />
+    <ClInclude Include="crnlib\crn_rg_etc1.h" />
+    <ClInclude Include="crnlib\crn_ryg_dxt.hpp" />
+    <ClInclude Include="crnlib\crn_ryg_types.hpp" />
+    <ClInclude Include="crnlib\crn_sparse_array.h" />
+    <ClInclude Include="crnlib\crn_sparse_bit_array.h" />
+    <ClInclude Include="crnlib\crn_strutils.h" />
+    <ClInclude Include="crnlib\crn_symbol_codec.h" />
+    <ClInclude Include="crnlib\crn_texture_comp.h" />
+    <ClInclude Include="crnlib\crn_texture_conversion.h" />
+    <ClInclude Include="crnlib\crn_texture_file_types.h" />
+    <ClInclude Include="crnlib\crn_threaded_clusterizer.h" />
+    <ClInclude Include="crnlib\crn_threaded_resampler.h" />
+    <ClInclude Include="crnlib\crn_threading.h" />
+    <ClInclude Include="crnlib\crn_threading_null.h" />
+    <ClInclude Include="crnlib\crn_threading_win32.h" />
+    <ClInclude Include="crnlib\crn_timer.h" />
+    <ClInclude Include="crnlib\crn_traits.h" />
+    <ClInclude Include="crnlib\crn_tree_clusterizer.h" />
+    <ClInclude Include="crnlib\crn_types.h" />
+    <ClInclude Include="crnlib\crn_utils.h" />
+    <ClInclude Include="crnlib\crn_value.h" />
+    <ClInclude Include="crnlib\crn_vec.h" />
+    <ClInclude Include="crnlib\crn_vector.h" />
+    <ClInclude Include="crnlib\crn_vector2d.h" />
+    <ClInclude Include="crnlib\crn_vec_interval.h" />
+    <ClInclude Include="crnlib\crn_winhdr.h" />
+    <ClInclude Include="crnlib\crn_zeng.h" />
+    <ClInclude Include="crnlib\lzma_7zBuf.h" />
+    <ClInclude Include="crnlib\lzma_7zCrc.h" />
+    <ClInclude Include="crnlib\lzma_7zFile.h" />
+    <ClInclude Include="crnlib\lzma_7zVersion.h" />
+    <ClInclude Include="crnlib\lzma_Alloc.h" />
+    <ClInclude Include="crnlib\lzma_Bcj2.h" />
+    <ClInclude Include="crnlib\lzma_Bra.h" />
+    <ClInclude Include="crnlib\lzma_CpuArch.h" />
+    <ClInclude Include="crnlib\lzma_LzFind.h" />
+    <ClInclude Include="crnlib\lzma_LzFindMt.h" />
+    <ClInclude Include="crnlib\lzma_LzHash.h" />
+    <ClInclude Include="crnlib\lzma_LzmaDec.h" />
+    <ClInclude Include="crnlib\lzma_LzmaEnc.h" />
+    <ClInclude Include="crnlib\lzma_LzmaLib.h" />
+    <ClInclude Include="crnlib\lzma_MyVersion.h" />
+    <ClInclude Include="crnlib\lzma_Threads.h" />
+    <ClInclude Include="crnlib\lzma_Types.h" />
+    <ClInclude Include="inc\crnlib.h" />
+    <ClInclude Include="inc\crnlibdef.h" />
+    <ClInclude Include="inc\crn_decomp.h" />
+    <ClInclude Include="inc\dds_defs.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Readme\license.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Readme\README.md" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

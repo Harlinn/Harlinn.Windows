@@ -1,0 +1,159 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{6f0e2682-3f0a-4150-9589-9b2d5e58821f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include">
+      <UniqueIdentifier>{09a91127-0897-43de-ad48-61b2b184effc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\imath">
+      <UniqueIdentifier>{6633a1ea-a52a-4cae-9622-32b7020bd226}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Readme">
+      <UniqueIdentifier>{0c392bc8-5e3b-4424-8de0-aae0a86a8c3a}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="dllmain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\half.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ImathColorAlgo.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ImathFun.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ImathMatrixAlgo.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ImathRandom.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\toFloat.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\imath\half.h">
+      <Filter>include\imath</Filter>
+    </ClInclude>
+    <ClInclude Include="include\imath\halfFunction.h">
+      <Filter>include\imath</Filter>
+    </ClInclude>
+    <ClInclude Include="include\imath\halfLimits.h">
+      <Filter>include\imath</Filter>
+    </ClInclude>
+    <ClInclude Include="include\imath\ImathBox.h">
+      <Filter>include\imath</Filter>
+    </ClInclude>
+    <ClInclude Include="include\imath\ImathBoxAlgo.h">
+      <Filter>include\imath</Filter>
+    </ClInclude>
+    <ClInclude Include="include\imath\ImathColor.h">
+      <Filter>include\imath</Filter>
+    </ClInclude>
+    <ClInclude Include="include\imath\ImathColorAlgo.h">
+      <Filter>include\imath</Filter>
+    </ClInclude>
+    <ClInclude Include="include\imath\ImathEuler.h">
+      <Filter>include\imath</Filter>
+    </ClInclude>
+    <ClInclude Include="include\imath\ImathExport.h">
+      <Filter>include\imath</Filter>
+    </ClInclude>
+    <ClInclude Include="include\imath\ImathForward.h">
+      <Filter>include\imath</Filter>
+    </ClInclude>
+    <ClInclude Include="include\imath\ImathFrame.h">
+      <Filter>include\imath</Filter>
+    </ClInclude>
+    <ClInclude Include="include\imath\ImathFrustum.h">
+      <Filter>include\imath</Filter>
+    </ClInclude>
+    <ClInclude Include="include\imath\ImathFrustumTest.h">
+      <Filter>include\imath</Filter>
+    </ClInclude>
+    <ClInclude Include="include\imath\ImathFun.h">
+      <Filter>include\imath</Filter>
+    </ClInclude>
+    <ClInclude Include="include\imath\ImathGL.h">
+      <Filter>include\imath</Filter>
+    </ClInclude>
+    <ClInclude Include="include\imath\ImathGLU.h">
+      <Filter>include\imath</Filter>
+    </ClInclude>
+    <ClInclude Include="include\imath\ImathInt64.h">
+      <Filter>include\imath</Filter>
+    </ClInclude>
+    <ClInclude Include="include\imath\ImathInterval.h">
+      <Filter>include\imath</Filter>
+    </ClInclude>
+    <ClInclude Include="include\imath\ImathLine.h">
+      <Filter>include\imath</Filter>
+    </ClInclude>
+    <ClInclude Include="include\imath\ImathLineAlgo.h">
+      <Filter>include\imath</Filter>
+    </ClInclude>
+    <ClInclude Include="include\imath\ImathMath.h">
+      <Filter>include\imath</Filter>
+    </ClInclude>
+    <ClInclude Include="include\imath\ImathMatrix.h">
+      <Filter>include\imath</Filter>
+    </ClInclude>
+    <ClInclude Include="include\imath\ImathMatrixAlgo.h">
+      <Filter>include\imath</Filter>
+    </ClInclude>
+    <ClInclude Include="include\imath\ImathNamespace.h">
+      <Filter>include\imath</Filter>
+    </ClInclude>
+    <ClInclude Include="include\imath\ImathPlane.h">
+      <Filter>include\imath</Filter>
+    </ClInclude>
+    <ClInclude Include="include\imath\ImathPlatform.h">
+      <Filter>include\imath</Filter>
+    </ClInclude>
+    <ClInclude Include="include\imath\ImathQuat.h">
+      <Filter>include\imath</Filter>
+    </ClInclude>
+    <ClInclude Include="include\imath\ImathRandom.h">
+      <Filter>include\imath</Filter>
+    </ClInclude>
+    <ClInclude Include="include\imath\ImathRoots.h">
+      <Filter>include\imath</Filter>
+    </ClInclude>
+    <ClInclude Include="include\imath\ImathShear.h">
+      <Filter>include\imath</Filter>
+    </ClInclude>
+    <ClInclude Include="include\imath\ImathSphere.h">
+      <Filter>include\imath</Filter>
+    </ClInclude>
+    <ClInclude Include="include\imath\ImathTypeTraits.h">
+      <Filter>include\imath</Filter>
+    </ClInclude>
+    <ClInclude Include="include\imath\ImathVec.h">
+      <Filter>include\imath</Filter>
+    </ClInclude>
+    <ClInclude Include="include\imath\ImathVecAlgo.h">
+      <Filter>include\imath</Filter>
+    </ClInclude>
+    <ClInclude Include="include\imath\toFloat.h">
+      <Filter>include\imath</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

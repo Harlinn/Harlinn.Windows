@@ -1,0 +1,129 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="include">
+      <UniqueIdentifier>{7eb093f1-1313-4c80-a172-b5dd91cdd9bb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\spirv">
+      <UniqueIdentifier>{f87fdb23-6e18-4b9c-941f-be4105d03274}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\spirv\1.0">
+      <UniqueIdentifier>{34f249be-5478-4c7b-aec5-4306191e6d26}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\spirv\1.1">
+      <UniqueIdentifier>{2b5dc21f-e2b5-48bf-882c-0419e6c83c94}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\spirv\1.2">
+      <UniqueIdentifier>{f3985316-c752-4f45-866c-622d74fc6050}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\spirv\unified1">
+      <UniqueIdentifier>{60142639-d4d6-4f29-a3ee-3bc595e7bfdf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Readme">
+      <UniqueIdentifier>{9c887444-f8a5-4c19-9d29-34825b34c922}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\spirv\1.0\GLSL.std.450.h">
+      <Filter>include\spirv\1.0</Filter>
+    </ClInclude>
+    <ClInclude Include="include\spirv\1.0\OpenCL.std.h">
+      <Filter>include\spirv\1.0</Filter>
+    </ClInclude>
+    <ClInclude Include="include\spirv\1.0\spirv.h">
+      <Filter>include\spirv\1.0</Filter>
+    </ClInclude>
+    <ClInclude Include="include\spirv\1.0\spirv.hpp">
+      <Filter>include\spirv\1.0</Filter>
+    </ClInclude>
+    <ClInclude Include="include\spirv\1.1\GLSL.std.450.h">
+      <Filter>include\spirv\1.1</Filter>
+    </ClInclude>
+    <ClInclude Include="include\spirv\1.1\OpenCL.std.h">
+      <Filter>include\spirv\1.1</Filter>
+    </ClInclude>
+    <ClInclude Include="include\spirv\1.1\spirv.h">
+      <Filter>include\spirv\1.1</Filter>
+    </ClInclude>
+    <ClInclude Include="include\spirv\1.1\spirv.hpp">
+      <Filter>include\spirv\1.1</Filter>
+    </ClInclude>
+    <ClInclude Include="include\spirv\1.2\GLSL.std.450.h">
+      <Filter>include\spirv\1.2</Filter>
+    </ClInclude>
+    <ClInclude Include="include\spirv\1.2\OpenCL.std.h">
+      <Filter>include\spirv\1.2</Filter>
+    </ClInclude>
+    <ClInclude Include="include\spirv\1.2\spirv.h">
+      <Filter>include\spirv\1.2</Filter>
+    </ClInclude>
+    <ClInclude Include="include\spirv\1.2\spirv.hpp">
+      <Filter>include\spirv\1.2</Filter>
+    </ClInclude>
+    <ClInclude Include="include\spirv\unified1\AMD_gcn_shader.h">
+      <Filter>include\spirv\unified1</Filter>
+    </ClInclude>
+    <ClInclude Include="include\spirv\unified1\AMD_shader_ballot.h">
+      <Filter>include\spirv\unified1</Filter>
+    </ClInclude>
+    <ClInclude Include="include\spirv\unified1\AMD_shader_explicit_vertex_parameter.h">
+      <Filter>include\spirv\unified1</Filter>
+    </ClInclude>
+    <ClInclude Include="include\spirv\unified1\AMD_shader_trinary_minmax.h">
+      <Filter>include\spirv\unified1</Filter>
+    </ClInclude>
+    <ClInclude Include="include\spirv\unified1\DebugInfo.h">
+      <Filter>include\spirv\unified1</Filter>
+    </ClInclude>
+    <ClInclude Include="include\spirv\unified1\GLSL.std.450.h">
+      <Filter>include\spirv\unified1</Filter>
+    </ClInclude>
+    <ClInclude Include="include\spirv\unified1\NonSemanticClspvReflection.h">
+      <Filter>include\spirv\unified1</Filter>
+    </ClInclude>
+    <ClInclude Include="include\spirv\unified1\NonSemanticDebugPrintf.h">
+      <Filter>include\spirv\unified1</Filter>
+    </ClInclude>
+    <ClInclude Include="include\spirv\unified1\NonSemanticShaderDebugInfo100.h">
+      <Filter>include\spirv\unified1</Filter>
+    </ClInclude>
+    <ClInclude Include="include\spirv\unified1\OpenCL.std.h">
+      <Filter>include\spirv\unified1</Filter>
+    </ClInclude>
+    <ClInclude Include="include\spirv\unified1\OpenCLDebugInfo100.h">
+      <Filter>include\spirv\unified1</Filter>
+    </ClInclude>
+    <ClInclude Include="include\spirv\unified1\spirv.h">
+      <Filter>include\spirv\unified1</Filter>
+    </ClInclude>
+    <ClInclude Include="include\spirv\unified1\spirv.hpp">
+      <Filter>include\spirv\unified1</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="include\spirv\1.0\spirv.hpp11">
+      <Filter>include\spirv\1.0</Filter>
+    </None>
+    <None Include="include\spirv\1.1\spirv.hpp11">
+      <Filter>include\spirv\1.1</Filter>
+    </None>
+    <None Include="include\spirv\1.2\spirv.hpp11">
+      <Filter>include\spirv\1.2</Filter>
+    </None>
+    <None Include="include\spirv\unified1\spirv.hpp11">
+      <Filter>include\spirv\unified1</Filter>
+    </None>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,864 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{8792070e-b8ed-4e64-ab77-7bfb6db09f71}</ProjectGuid>
+    <RootNamespace>Harlinnjxl</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Label="Vcpkg">
+    <VcpkgEnabled>false</VcpkgEnabled>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>BUILDING_HARLINN_JXL=1;_CRT_SECURE_NO_WARNINGS=1;WIN32;_DEBUG;HARLINNJXL_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.imath\include;$(SolutionDir)3rdParty\Harlinn.ilmthread\include;$(SolutionDir)3rdParty\Harlinn.iex\include;$(SolutionDir)3rdParty\Harlinn.openexr\include;$(SolutionDir)3rdParty\Harlinn.skcms\include;$(SolutionDir)3rdParty\Harlinn.sjpeg\include;$(SolutionDir)3rdParty\Harlinn.lodepng\include;$(SolutionDir)3rdParty\Harlinn.lcms2\include;$(SolutionDir)3rdParty\Harlinn.highway\include;$(SolutionDir)3rdParty\Harlinn.brotli\include;$(ProjectDir)include;$(ProjectDir)src;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+      <AdditionalLibraryDirectories>$(OutDir)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>BUILDING_HARLINN_JXL=1;_CRT_SECURE_NO_WARNINGS=1;WIN32;NDEBUG;HARLINNJXL_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.imath\include;$(SolutionDir)3rdParty\Harlinn.ilmthread\include;$(SolutionDir)3rdParty\Harlinn.iex\include;$(SolutionDir)3rdParty\Harlinn.openexr\include;$(SolutionDir)3rdParty\Harlinn.skcms\include;$(SolutionDir)3rdParty\Harlinn.sjpeg\include;$(SolutionDir)3rdParty\Harlinn.lodepng\include;$(SolutionDir)3rdParty\Harlinn.lcms2\include;$(SolutionDir)3rdParty\Harlinn.highway\include;$(SolutionDir)3rdParty\Harlinn.brotli\include;$(ProjectDir)include;$(ProjectDir)src;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+      <AdditionalLibraryDirectories>$(OutDir)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>BUILDING_HARLINN_JXL=1;_CRT_SECURE_NO_WARNINGS=1;_DEBUG;HARLINNJXL_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.imath\include;$(SolutionDir)3rdParty\Harlinn.ilmthread\include;$(SolutionDir)3rdParty\Harlinn.iex\include;$(SolutionDir)3rdParty\Harlinn.openexr\include;$(SolutionDir)3rdParty\Harlinn.skcms\include;$(SolutionDir)3rdParty\Harlinn.sjpeg\include;$(SolutionDir)3rdParty\Harlinn.lodepng\include;$(SolutionDir)3rdParty\Harlinn.lcms2\include;$(SolutionDir)3rdParty\Harlinn.highway\include;$(SolutionDir)3rdParty\Harlinn.brotli\include;$(ProjectDir)include;$(ProjectDir)src;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+      <AdditionalLibraryDirectories>$(OutDir)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>BUILDING_HARLINN_JXL=1;_CRT_SECURE_NO_WARNINGS=1;NDEBUG;HARLINNJXL_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.imath\include;$(SolutionDir)3rdParty\Harlinn.ilmthread\include;$(SolutionDir)3rdParty\Harlinn.iex\include;$(SolutionDir)3rdParty\Harlinn.openexr\include;$(SolutionDir)3rdParty\Harlinn.skcms\include;$(SolutionDir)3rdParty\Harlinn.sjpeg\include;$(SolutionDir)3rdParty\Harlinn.lodepng\include;$(SolutionDir)3rdParty\Harlinn.lcms2\include;$(SolutionDir)3rdParty\Harlinn.highway\include;$(SolutionDir)3rdParty\Harlinn.brotli\include;$(ProjectDir)include;$(ProjectDir)src;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+      <AdditionalLibraryDirectories>$(OutDir)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="src\lib\jxl\ac_strategy.cc" />
+    <ClCompile Include="src\lib\jxl\ac_strategy_test.cc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\lib\jxl\adaptive_reconstruction_test.cc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\lib\jxl\alpha.cc" />
+    <ClCompile Include="src\lib\jxl\alpha_test.cc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\lib\jxl\ans_common.cc" />
+    <ClCompile Include="src\lib\jxl\ans_common_test.cc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\lib\jxl\ans_test.cc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\lib\jxl\aux_out.cc" />
+    <ClCompile Include="src\lib\jxl\base\cache_aligned.cc" />
+    <ClCompile Include="src\lib\jxl\base\data_parallel.cc" />
+    <ClCompile Include="src\lib\jxl\base\descriptive_statistics.cc" />
+    <ClCompile Include="src\lib\jxl\base\padded_bytes.cc" />
+    <ClCompile Include="src\lib\jxl\base\status.cc" />
+    <ClCompile Include="src\lib\jxl\bits_test.cc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\lib\jxl\bit_reader_test.cc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\lib\jxl\blending.cc" />
+    <ClCompile Include="src\lib\jxl\blending_test.cc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\lib\jxl\butteraugli\butteraugli.cc" />
+    <ClCompile Include="src\lib\jxl\butteraugli_test.cc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\lib\jxl\butteraugli_wrapper.cc" />
+    <ClCompile Include="src\lib\jxl\byte_order_test.cc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\lib\jxl\chroma_from_luma.cc" />
+    <ClCompile Include="src\lib\jxl\coeff_order.cc" />
+    <ClCompile Include="src\lib\jxl\coeff_order_test.cc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\lib\jxl\color_encoding_internal.cc" />
+    <ClCompile Include="src\lib\jxl\color_encoding_internal_test.cc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\lib\jxl\color_management.cc" />
+    <ClCompile Include="src\lib\jxl\color_management_test.cc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\lib\jxl\compressed_dc.cc" />
+    <ClCompile Include="src\lib\jxl\compressed_image_test.cc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\lib\jxl\convolve.cc" />
+    <ClCompile Include="src\lib\jxl\convolve_test.cc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\lib\jxl\data_parallel_test.cc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\lib\jxl\dct_scales.cc" />
+    <ClCompile Include="src\lib\jxl\dct_test.cc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\lib\jxl\decode.cc" />
+    <ClCompile Include="src\lib\jxl\decode_test.cc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\lib\jxl\decode_to_jpeg.cc" />
+    <ClCompile Include="src\lib\jxl\dec_ans.cc" />
+    <ClCompile Include="src\lib\jxl\dec_cache.cc" />
+    <ClCompile Include="src\lib\jxl\dec_context_map.cc" />
+    <ClCompile Include="src\lib\jxl\dec_external_image.cc" />
+    <ClCompile Include="src\lib\jxl\dec_external_image_gbench.cc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\lib\jxl\dec_file.cc" />
+    <ClCompile Include="src\lib\jxl\dec_frame.cc" />
+    <ClCompile Include="src\lib\jxl\dec_group.cc" />
+    <ClCompile Include="src\lib\jxl\dec_group_border.cc" />
+    <ClCompile Include="src\lib\jxl\dec_huffman.cc" />
+    <ClCompile Include="src\lib\jxl\dec_modular.cc" />
+    <ClCompile Include="src\lib\jxl\dec_noise.cc" />
+    <ClCompile Include="src\lib\jxl\dec_patch_dictionary.cc" />
+    <ClCompile Include="src\lib\jxl\dec_reconstruct.cc" />
+    <ClCompile Include="src\lib\jxl\dec_transforms_testonly.cc" />
+    <ClCompile Include="src\lib\jxl\dec_upsample.cc" />
+    <ClCompile Include="src\lib\jxl\dec_xyb.cc" />
+    <ClCompile Include="src\lib\jxl\descriptive_statistics_test.cc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\lib\jxl\encode.cc" />
+    <ClCompile Include="src\lib\jxl\encode_test.cc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\lib\jxl\enc_ac_strategy.cc" />
+    <ClCompile Include="src\lib\jxl\enc_adaptive_quantization.cc" />
+    <ClCompile Include="src\lib\jxl\enc_ans.cc" />
+    <ClCompile Include="src\lib\jxl\enc_ar_control_field.cc" />
+    <ClCompile Include="src\lib\jxl\enc_bit_writer.cc" />
+    <ClCompile Include="src\lib\jxl\enc_butteraugli_comparator.cc" />
+    <ClCompile Include="src\lib\jxl\enc_butteraugli_pnorm.cc" />
+    <ClCompile Include="src\lib\jxl\enc_cache.cc" />
+    <ClCompile Include="src\lib\jxl\enc_chroma_from_luma.cc" />
+    <ClCompile Include="src\lib\jxl\enc_cluster.cc" />
+    <ClCompile Include="src\lib\jxl\enc_coeff_order.cc" />
+    <ClCompile Include="src\lib\jxl\enc_color_management.cc" />
+    <ClCompile Include="src\lib\jxl\enc_comparator.cc" />
+    <ClCompile Include="src\lib\jxl\enc_context_map.cc" />
+    <ClCompile Include="src\lib\jxl\enc_detect_dots.cc" />
+    <ClCompile Include="src\lib\jxl\enc_dot_dictionary.cc" />
+    <ClCompile Include="src\lib\jxl\enc_entropy_coder.cc" />
+    <ClCompile Include="src\lib\jxl\enc_external_image.cc" />
+    <ClCompile Include="src\lib\jxl\enc_external_image_gbench.cc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\lib\jxl\enc_external_image_test.cc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\lib\jxl\enc_fast_heuristics.cc" />
+    <ClCompile Include="src\lib\jxl\enc_file.cc" />
+    <ClCompile Include="src\lib\jxl\enc_frame.cc" />
+    <ClCompile Include="src\lib\jxl\enc_group.cc" />
+    <ClCompile Include="src\lib\jxl\enc_heuristics.cc" />
+    <ClCompile Include="src\lib\jxl\enc_huffman.cc" />
+    <ClCompile Include="src\lib\jxl\enc_icc_codec.cc" />
+    <ClCompile Include="src\lib\jxl\enc_image_bundle.cc" />
+    <ClCompile Include="src\lib\jxl\enc_modular.cc" />
+    <ClCompile Include="src\lib\jxl\enc_noise.cc" />
+    <ClCompile Include="src\lib\jxl\enc_patch_dictionary.cc" />
+    <ClCompile Include="src\lib\jxl\enc_photon_noise.cc" />
+    <ClCompile Include="src\lib\jxl\enc_photon_noise_test.cc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\lib\jxl\enc_quant_weights.cc" />
+    <ClCompile Include="src\lib\jxl\enc_splines.cc" />
+    <ClCompile Include="src\lib\jxl\enc_toc.cc" />
+    <ClCompile Include="src\lib\jxl\enc_transforms.cc" />
+    <ClCompile Include="src\lib\jxl\enc_xyb.cc" />
+    <ClCompile Include="src\lib\jxl\entropy_coder.cc" />
+    <ClCompile Include="src\lib\jxl\entropy_coder_test.cc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\lib\jxl\epf.cc" />
+    <ClCompile Include="src\lib\jxl\fast_math_test.cc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\lib\jxl\fields.cc" />
+    <ClCompile Include="src\lib\jxl\fields_test.cc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\lib\jxl\filters.cc" />
+    <ClCompile Include="src\lib\jxl\filters_internal_test.cc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\lib\jxl\frame_header.cc" />
+    <ClCompile Include="src\lib\jxl\gaborish.cc" />
+    <ClCompile Include="src\lib\jxl\gaborish_test.cc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\lib\jxl\gamma_correct_test.cc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\lib\jxl\gauss_blur.cc" />
+    <ClCompile Include="src\lib\jxl\gauss_blur_test.cc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\lib\jxl\gradient_test.cc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\lib\jxl\headers.cc" />
+    <ClCompile Include="src\lib\jxl\huffman_table.cc" />
+    <ClCompile Include="src\lib\jxl\huffman_tree.cc" />
+    <ClCompile Include="src\lib\jxl\iaca_test.cc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\lib\jxl\icc_codec.cc" />
+    <ClCompile Include="src\lib\jxl\icc_codec_common.cc" />
+    <ClCompile Include="src\lib\jxl\icc_codec_test.cc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\lib\jxl\image.cc" />
+    <ClCompile Include="src\lib\jxl\image_bundle.cc" />
+    <ClCompile Include="src\lib\jxl\image_bundle_test.cc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\lib\jxl\image_metadata.cc" />
+    <ClCompile Include="src\lib\jxl\image_ops_test.cc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\lib\jxl\jpeg\dec_jpeg_data.cc" />
+    <ClCompile Include="src\lib\jxl\jpeg\dec_jpeg_data_writer.cc" />
+    <ClCompile Include="src\lib\jxl\jpeg\enc_jpeg_data.cc" />
+    <ClCompile Include="src\lib\jxl\jpeg\enc_jpeg_data_reader.cc" />
+    <ClCompile Include="src\lib\jxl\jpeg\enc_jpeg_huffman_decode.cc" />
+    <ClCompile Include="src\lib\jxl\jpeg\jpeg_data.cc" />
+    <ClCompile Include="src\lib\jxl\jxl_test.cc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\lib\jxl\lehmer_code_test.cc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\lib\jxl\linalg.cc" />
+    <ClCompile Include="src\lib\jxl\linalg_test.cc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\lib\jxl\loop_filter.cc" />
+    <ClCompile Include="src\lib\jxl\luminance.cc" />
+    <ClCompile Include="src\lib\jxl\memory_manager_internal.cc" />
+    <ClCompile Include="src\lib\jxl\modular\encoding\dec_ma.cc" />
+    <ClCompile Include="src\lib\jxl\modular\encoding\encoding.cc" />
+    <ClCompile Include="src\lib\jxl\modular\encoding\enc_encoding.cc" />
+    <ClCompile Include="src\lib\jxl\modular\encoding\enc_ma.cc" />
+    <ClCompile Include="src\lib\jxl\modular\modular_image.cc" />
+    <ClCompile Include="src\lib\jxl\modular\transform\enc_palette.cc" />
+    <ClCompile Include="src\lib\jxl\modular\transform\enc_rct.cc" />
+    <ClCompile Include="src\lib\jxl\modular\transform\enc_squeeze.cc" />
+    <ClCompile Include="src\lib\jxl\modular\transform\enc_transform.cc" />
+    <ClCompile Include="src\lib\jxl\modular\transform\squeeze.cc" />
+    <ClCompile Include="src\lib\jxl\modular\transform\transform.cc" />
+    <ClCompile Include="src\lib\jxl\modular_test.cc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\lib\jxl\opsin_image_test.cc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\lib\jxl\opsin_inverse_test.cc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\lib\jxl\opsin_params.cc" />
+    <ClCompile Include="src\lib\jxl\optimize.cc" />
+    <ClCompile Include="src\lib\jxl\optimize_test.cc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\lib\jxl\padded_bytes_test.cc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\lib\jxl\passes_state.cc" />
+    <ClCompile Include="src\lib\jxl\passes_test.cc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\lib\jxl\patch_dictionary_test.cc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\lib\jxl\preview_test.cc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\lib\jxl\progressive_split.cc" />
+    <ClCompile Include="src\lib\jxl\quantizer.cc" />
+    <ClCompile Include="src\lib\jxl\quantizer_test.cc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\lib\jxl\quant_weights.cc" />
+    <ClCompile Include="src\lib\jxl\quant_weights_test.cc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\lib\jxl\rational_polynomial_test.cc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\lib\jxl\robust_statistics_test.cc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\lib\jxl\roundtrip_test.cc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\lib\jxl\speed_tier_test.cc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\lib\jxl\splines.cc" />
+    <ClCompile Include="src\lib\jxl\splines_gbench.cc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\lib\jxl\splines_test.cc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\lib\jxl\tf_gbench.cc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\lib\jxl\toc.cc" />
+    <ClCompile Include="src\lib\jxl\toc_test.cc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\lib\jxl\xorshift128plus_test.cc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\lib\profiler\profiler.cc" />
+    <ClCompile Include="src\lib\threads\resizable_parallel_runner.cc" />
+    <ClCompile Include="src\lib\threads\thread_parallel_runner.cc" />
+    <ClCompile Include="src\lib\threads\thread_parallel_runner_internal.cc" />
+    <ClCompile Include="src\lib\threads\thread_parallel_runner_test.cc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\jxl\butteraugli.h" />
+    <ClInclude Include="include\jxl\butteraugli_cxx.h" />
+    <ClInclude Include="include\jxl\codestream_header.h" />
+    <ClInclude Include="include\jxl\color_encoding.h" />
+    <ClInclude Include="include\jxl\decode.h" />
+    <ClInclude Include="include\jxl\decode_cxx.h" />
+    <ClInclude Include="include\jxl\encode.h" />
+    <ClInclude Include="include\jxl\encode_cxx.h" />
+    <ClInclude Include="include\jxl\jxl_export.h" />
+    <ClInclude Include="include\jxl\jxl_threads_export.h" />
+    <ClInclude Include="include\jxl\memory_manager.h" />
+    <ClInclude Include="include\jxl\parallel_runner.h" />
+    <ClInclude Include="include\jxl\resizable_parallel_runner.h" />
+    <ClInclude Include="include\jxl\resizable_parallel_runner_cxx.h" />
+    <ClInclude Include="include\jxl\thread_parallel_runner.h" />
+    <ClInclude Include="include\jxl\thread_parallel_runner_cxx.h" />
+    <ClInclude Include="include\jxl\types.h" />
+    <ClInclude Include="src\lib\jxl\ac_context.h" />
+    <ClInclude Include="src\lib\jxl\ac_strategy.h" />
+    <ClInclude Include="src\lib\jxl\alpha.h" />
+    <ClInclude Include="src\lib\jxl\ans_common.h" />
+    <ClInclude Include="src\lib\jxl\ans_params.h" />
+    <ClInclude Include="src\lib\jxl\aux_out.h" />
+    <ClInclude Include="src\lib\jxl\aux_out_fwd.h" />
+    <ClInclude Include="src\lib\jxl\base\arch_macros.h" />
+    <ClInclude Include="src\lib\jxl\base\bits.h" />
+    <ClInclude Include="src\lib\jxl\base\byte_order.h" />
+    <ClInclude Include="src\lib\jxl\base\cache_aligned.h" />
+    <ClInclude Include="src\lib\jxl\base\compiler_specific.h" />
+    <ClInclude Include="src\lib\jxl\base\data_parallel.h" />
+    <ClInclude Include="src\lib\jxl\base\descriptive_statistics.h" />
+    <ClInclude Include="src\lib\jxl\base\file_io.h" />
+    <ClInclude Include="src\lib\jxl\base\iaca.h" />
+    <ClInclude Include="src\lib\jxl\base\os_macros.h" />
+    <ClInclude Include="src\lib\jxl\base\override.h" />
+    <ClInclude Include="src\lib\jxl\base\padded_bytes.h" />
+    <ClInclude Include="src\lib\jxl\base\profiler.h" />
+    <ClInclude Include="src\lib\jxl\base\robust_statistics.h" />
+    <ClInclude Include="src\lib\jxl\base\span.h" />
+    <ClInclude Include="src\lib\jxl\base\status.h" />
+    <ClInclude Include="src\lib\jxl\base\thread_pool_internal.h" />
+    <ClInclude Include="src\lib\jxl\blending.h" />
+    <ClInclude Include="src\lib\jxl\butteraugli\butteraugli.h" />
+    <ClInclude Include="src\lib\jxl\chroma_from_luma.h" />
+    <ClInclude Include="src\lib\jxl\codec_in_out.h" />
+    <ClInclude Include="src\lib\jxl\coeff_order.h" />
+    <ClInclude Include="src\lib\jxl\coeff_order_fwd.h" />
+    <ClInclude Include="src\lib\jxl\color_encoding_internal.h" />
+    <ClInclude Include="src\lib\jxl\color_management.h" />
+    <ClInclude Include="src\lib\jxl\common.h" />
+    <ClInclude Include="src\lib\jxl\compressed_dc.h" />
+    <ClInclude Include="src\lib\jxl\convolve-inl.h" />
+    <ClInclude Include="src\lib\jxl\convolve.h" />
+    <ClInclude Include="src\lib\jxl\dct-inl.h" />
+    <ClInclude Include="src\lib\jxl\dct_block-inl.h" />
+    <ClInclude Include="src\lib\jxl\dct_for_test.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="src\lib\jxl\dct_scales.h" />
+    <ClInclude Include="src\lib\jxl\dct_util.h" />
+    <ClInclude Include="src\lib\jxl\decode_to_jpeg.h" />
+    <ClInclude Include="src\lib\jxl\dec_ans.h" />
+    <ClInclude Include="src\lib\jxl\dec_bit_reader.h" />
+    <ClInclude Include="src\lib\jxl\dec_cache.h" />
+    <ClInclude Include="src\lib\jxl\dec_context_map.h" />
+    <ClInclude Include="src\lib\jxl\dec_external_image.h" />
+    <ClInclude Include="src\lib\jxl\dec_file.h" />
+    <ClInclude Include="src\lib\jxl\dec_frame.h" />
+    <ClInclude Include="src\lib\jxl\dec_group.h" />
+    <ClInclude Include="src\lib\jxl\dec_group_border.h" />
+    <ClInclude Include="src\lib\jxl\dec_huffman.h" />
+    <ClInclude Include="src\lib\jxl\dec_modular.h" />
+    <ClInclude Include="src\lib\jxl\dec_noise.h" />
+    <ClInclude Include="src\lib\jxl\dec_params.h" />
+    <ClInclude Include="src\lib\jxl\dec_patch_dictionary.h" />
+    <ClInclude Include="src\lib\jxl\dec_reconstruct.h" />
+    <ClInclude Include="src\lib\jxl\dec_render_pipeline.h" />
+    <ClInclude Include="src\lib\jxl\dec_transforms-inl.h" />
+    <ClInclude Include="src\lib\jxl\dec_transforms_testonly.h" />
+    <ClInclude Include="src\lib\jxl\dec_upsample.h" />
+    <ClInclude Include="src\lib\jxl\dec_xyb-inl.h" />
+    <ClInclude Include="src\lib\jxl\dec_xyb.h" />
+    <ClInclude Include="src\lib\jxl\encode_internal.h" />
+    <ClInclude Include="src\lib\jxl\enc_ac_strategy.h" />
+    <ClInclude Include="src\lib\jxl\enc_adaptive_quantization.h" />
+    <ClInclude Include="src\lib\jxl\enc_ans.h" />
+    <ClInclude Include="src\lib\jxl\enc_ans_params.h" />
+    <ClInclude Include="src\lib\jxl\enc_ar_control_field.h" />
+    <ClInclude Include="src\lib\jxl\enc_bit_writer.h" />
+    <ClInclude Include="src\lib\jxl\enc_butteraugli_comparator.h" />
+    <ClInclude Include="src\lib\jxl\enc_butteraugli_pnorm.h" />
+    <ClInclude Include="src\lib\jxl\enc_cache.h" />
+    <ClInclude Include="src\lib\jxl\enc_chroma_from_luma.h" />
+    <ClInclude Include="src\lib\jxl\enc_cluster.h" />
+    <ClInclude Include="src\lib\jxl\enc_coeff_order.h" />
+    <ClInclude Include="src\lib\jxl\enc_color_management.h" />
+    <ClInclude Include="src\lib\jxl\enc_comparator.h" />
+    <ClInclude Include="src\lib\jxl\enc_context_map.h" />
+    <ClInclude Include="src\lib\jxl\enc_detect_dots.h" />
+    <ClInclude Include="src\lib\jxl\enc_dot_dictionary.h" />
+    <ClInclude Include="src\lib\jxl\enc_entropy_coder.h" />
+    <ClInclude Include="src\lib\jxl\enc_external_image.h" />
+    <ClInclude Include="src\lib\jxl\enc_file.h" />
+    <ClInclude Include="src\lib\jxl\enc_frame.h" />
+    <ClInclude Include="src\lib\jxl\enc_gamma_correct.h" />
+    <ClInclude Include="src\lib\jxl\enc_group.h" />
+    <ClInclude Include="src\lib\jxl\enc_heuristics.h" />
+    <ClInclude Include="src\lib\jxl\enc_huffman.h" />
+    <ClInclude Include="src\lib\jxl\enc_icc_codec.h" />
+    <ClInclude Include="src\lib\jxl\enc_image_bundle.h" />
+    <ClInclude Include="src\lib\jxl\enc_jxl_skcms.h" />
+    <ClInclude Include="src\lib\jxl\enc_modular.h" />
+    <ClInclude Include="src\lib\jxl\enc_noise.h" />
+    <ClInclude Include="src\lib\jxl\enc_params.h" />
+    <ClInclude Include="src\lib\jxl\enc_patch_dictionary.h" />
+    <ClInclude Include="src\lib\jxl\enc_photon_noise.h" />
+    <ClInclude Include="src\lib\jxl\enc_quant_weights.h" />
+    <ClInclude Include="src\lib\jxl\enc_splines.h" />
+    <ClInclude Include="src\lib\jxl\enc_toc.h" />
+    <ClInclude Include="src\lib\jxl\enc_transforms-inl.h" />
+    <ClInclude Include="src\lib\jxl\enc_transforms.h" />
+    <ClInclude Include="src\lib\jxl\enc_xyb.h" />
+    <ClInclude Include="src\lib\jxl\entropy_coder.h" />
+    <ClInclude Include="src\lib\jxl\epf.h" />
+    <ClInclude Include="src\lib\jxl\fast_math-inl.h" />
+    <ClInclude Include="src\lib\jxl\fields.h" />
+    <ClInclude Include="src\lib\jxl\field_encodings.h" />
+    <ClInclude Include="src\lib\jxl\filters.h" />
+    <ClInclude Include="src\lib\jxl\filters_internal.h" />
+    <ClInclude Include="src\lib\jxl\frame_header.h" />
+    <ClInclude Include="src\lib\jxl\gaborish.h" />
+    <ClInclude Include="src\lib\jxl\gauss_blur.h" />
+    <ClInclude Include="src\lib\jxl\headers.h" />
+    <ClInclude Include="src\lib\jxl\huffman_table.h" />
+    <ClInclude Include="src\lib\jxl\huffman_tree.h" />
+    <ClInclude Include="src\lib\jxl\icc_codec.h" />
+    <ClInclude Include="src\lib\jxl\icc_codec_common.h" />
+    <ClInclude Include="src\lib\jxl\image.h" />
+    <ClInclude Include="src\lib\jxl\image_bundle.h" />
+    <ClInclude Include="src\lib\jxl\image_metadata.h" />
+    <ClInclude Include="src\lib\jxl\image_ops.h" />
+    <ClInclude Include="src\lib\jxl\image_test_utils.h" />
+    <ClInclude Include="src\lib\jxl\jpeg\dec_jpeg_data.h" />
+    <ClInclude Include="src\lib\jxl\jpeg\dec_jpeg_data_writer.h" />
+    <ClInclude Include="src\lib\jxl\jpeg\dec_jpeg_output_chunk.h" />
+    <ClInclude Include="src\lib\jxl\jpeg\dec_jpeg_serialization_state.h" />
+    <ClInclude Include="src\lib\jxl\jpeg\enc_jpeg_data.h" />
+    <ClInclude Include="src\lib\jxl\jpeg\enc_jpeg_data_reader.h" />
+    <ClInclude Include="src\lib\jxl\jpeg\enc_jpeg_huffman_decode.h" />
+    <ClInclude Include="src\lib\jxl\jpeg\jpeg_data.h" />
+    <ClInclude Include="src\lib\jxl\jxl_inspection.h" />
+    <ClInclude Include="src\lib\jxl\lehmer_code.h" />
+    <ClInclude Include="src\lib\jxl\linalg.h" />
+    <ClInclude Include="src\lib\jxl\loop_filter.h" />
+    <ClInclude Include="src\lib\jxl\luminance.h" />
+    <ClInclude Include="src\lib\jxl\memory_manager_internal.h" />
+    <ClInclude Include="src\lib\jxl\modular\encoding\context_predict.h" />
+    <ClInclude Include="src\lib\jxl\modular\encoding\dec_ma.h" />
+    <ClInclude Include="src\lib\jxl\modular\encoding\encoding.h" />
+    <ClInclude Include="src\lib\jxl\modular\encoding\enc_encoding.h" />
+    <ClInclude Include="src\lib\jxl\modular\encoding\enc_ma.h" />
+    <ClInclude Include="src\lib\jxl\modular\encoding\ma_common.h" />
+    <ClInclude Include="src\lib\jxl\modular\modular_image.h" />
+    <ClInclude Include="src\lib\jxl\modular\options.h" />
+    <ClInclude Include="src\lib\jxl\modular\transform\enc_palette.h" />
+    <ClInclude Include="src\lib\jxl\modular\transform\enc_rct.h" />
+    <ClInclude Include="src\lib\jxl\modular\transform\enc_squeeze.h" />
+    <ClInclude Include="src\lib\jxl\modular\transform\enc_transform.h" />
+    <ClInclude Include="src\lib\jxl\modular\transform\palette.h" />
+    <ClInclude Include="src\lib\jxl\modular\transform\rct.h" />
+    <ClInclude Include="src\lib\jxl\modular\transform\squeeze.h" />
+    <ClInclude Include="src\lib\jxl\modular\transform\transform.h" />
+    <ClInclude Include="src\lib\jxl\noise.h" />
+    <ClInclude Include="src\lib\jxl\noise_distributions.h" />
+    <ClInclude Include="src\lib\jxl\opsin_params.h" />
+    <ClInclude Include="src\lib\jxl\optimize.h" />
+    <ClInclude Include="src\lib\jxl\passes_state.h" />
+    <ClInclude Include="src\lib\jxl\patch_dictionary_internal.h" />
+    <ClInclude Include="src\lib\jxl\progressive_split.h" />
+    <ClInclude Include="src\lib\jxl\quantizer-inl.h" />
+    <ClInclude Include="src\lib\jxl\quantizer.h" />
+    <ClInclude Include="src\lib\jxl\quant_weights.h" />
+    <ClInclude Include="src\lib\jxl\rational_polynomial-inl.h" />
+    <ClInclude Include="src\lib\jxl\sanitizers.h" />
+    <ClInclude Include="src\lib\jxl\splines.h" />
+    <ClInclude Include="src\lib\jxl\testdata.h" />
+    <ClInclude Include="src\lib\jxl\test_utils.h" />
+    <ClInclude Include="src\lib\jxl\toc.h" />
+    <ClInclude Include="src\lib\jxl\transfer_functions-inl.h" />
+    <ClInclude Include="src\lib\jxl\transpose-inl.h" />
+    <ClInclude Include="src\lib\jxl\xorshift128plus-inl.h" />
+    <ClInclude Include="src\lib\profiler\profiler.h" />
+    <ClInclude Include="src\lib\profiler\tsc_timer.h" />
+    <ClInclude Include="src\lib\threads\thread_parallel_runner_internal.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="src\lib\jxl\jxl.syms" />
+    <None Include="src\lib\jxl\jxl.version" />
+    <None Include="src\lib\jxl\jxl_osx.syms" />
+    <None Include="src\lib\jxl\libjxl.pc.in" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

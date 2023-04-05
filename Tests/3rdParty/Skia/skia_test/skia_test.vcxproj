@@ -1,0 +1,619 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{16e75285-22ec-4411-a9b0-9357adc89b60}</ProjectGuid>
+    <RootNamespace>skiatest</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Label="Vcpkg">
+    <VcpkgEnabled>false</VcpkgEnabled>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS=1;_SILENCE_CXX20_IS_POD_DEPRECATION_WARNING=1;NOMINMAX=1;__NO_TERMINATING_TESTS=1;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Harlinn.Windows;$(SolutionDir)Harlinn.Common.Core;$(SolutionDir)3rdParty\Harlinn.skia\include;$(SolutionDir)3rdParty\Harlinn.skia;$(SolutionDir)3rdParty\Harlinn.vulkan\include;$(SolutionDir)Examples\Windows\Graphics\Skia\HWSkiaCommon;$(SolutionDir)3rdParty\Harlinn.skcms\include;$(SolutionDir)3rdParty\Harlinn.png;$(SolutionDir)3rdParty\Harlinn.webp\src;$(BOOST_ROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(OutDir)</AdditionalLibraryDirectories>
+      <StackReserveSize>10485760</StackReserveSize>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS=1;_SILENCE_CXX20_IS_POD_DEPRECATION_WARNING=1;NOMINMAX=1;__NO_TERMINATING_TESTS=1;WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Harlinn.Windows;$(SolutionDir)Harlinn.Common.Core;$(SolutionDir)3rdParty\Harlinn.skia\include;$(SolutionDir)3rdParty\Harlinn.skia;$(SolutionDir)3rdParty\Harlinn.vulkan\include;$(SolutionDir)Examples\Windows\Graphics\Skia\HWSkiaCommon;$(SolutionDir)3rdParty\Harlinn.skcms\include;$(SolutionDir)3rdParty\Harlinn.png;$(SolutionDir)3rdParty\Harlinn.webp\src;$(BOOST_ROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(OutDir)</AdditionalLibraryDirectories>
+      <StackReserveSize>10485760</StackReserveSize>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS=1;_SILENCE_CXX20_IS_POD_DEPRECATION_WARNING=1;NOMINMAX=1;__NO_TERMINATING_TESTS=1;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Harlinn.Windows;$(SolutionDir)Harlinn.Common.Core;$(SolutionDir)3rdParty\Harlinn.skia\include;$(SolutionDir)3rdParty\Harlinn.skia;$(SolutionDir)3rdParty\Harlinn.vulkan\include;$(SolutionDir)Examples\Windows\Graphics\Skia\HWSkiaCommon;$(SolutionDir)3rdParty\Harlinn.skcms\include;$(SolutionDir)3rdParty\Harlinn.png;$(SolutionDir)3rdParty\Harlinn.webp\src;$(BOOST_ROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(OutDir)</AdditionalLibraryDirectories>
+      <StackReserveSize>10485760</StackReserveSize>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS=1;_SILENCE_CXX20_IS_POD_DEPRECATION_WARNING=1;NOMINMAX=1;__NO_TERMINATING_TESTS=1;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Harlinn.Windows;$(SolutionDir)Harlinn.Common.Core;$(SolutionDir)3rdParty\Harlinn.skia\include;$(SolutionDir)3rdParty\Harlinn.skia;$(SolutionDir)3rdParty\Harlinn.vulkan\include;$(SolutionDir)Examples\Windows\Graphics\Skia\HWSkiaCommon;$(SolutionDir)3rdParty\Harlinn.skcms\include;$(SolutionDir)3rdParty\Harlinn.png;$(SolutionDir)3rdParty\Harlinn.webp\src;$(BOOST_ROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(OutDir)</AdditionalLibraryDirectories>
+      <StackReserveSize>10485760</StackReserveSize>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="dm\DM.cpp" />
+    <ClCompile Include="dm\DMGpuTestProcs.cpp" />
+    <ClCompile Include="dm\DMJsonWriter.cpp" />
+    <ClCompile Include="dm\DMSrcSink.cpp" />
+    <ClCompile Include="skia_test.cpp" />
+    <ClCompile Include="tests\AAClipTest.cpp" />
+    <ClCompile Include="tests\AdvancedBlendTest.cpp" />
+    <ClCompile Include="tests\AnimatedImageTest.cpp" />
+    <ClCompile Include="tests\AnnotationTest.cpp" />
+    <ClCompile Include="tests\ApplyGammaTest.cpp" />
+    <ClCompile Include="tests\ArenaAllocTest.cpp" />
+    <ClCompile Include="tests\AsADashTest.cpp" />
+    <ClCompile Include="tests\BackendAllocationTest.cpp" />
+    <ClCompile Include="tests\BackendSurfaceMutableStateTest.cpp" />
+    <ClCompile Include="tests\BadIcoTest.cpp" />
+    <ClCompile Include="tests\BitmapCopyTest.cpp" />
+    <ClCompile Include="tests\BitmapGetColorTest.cpp" />
+    <ClCompile Include="tests\BitmapTest.cpp" />
+    <ClCompile Include="tests\BitSetTest.cpp" />
+    <ClCompile Include="tests\BlendTest.cpp" />
+    <ClCompile Include="tests\BlitMaskClip.cpp" />
+    <ClCompile Include="tests\BlurTest.cpp" />
+    <ClCompile Include="tests\BRDTest.cpp" />
+    <ClCompile Include="tests\BulkRectTest.cpp" />
+    <ClCompile Include="tests\CachedDataTest.cpp" />
+    <ClCompile Include="tests\CachedDecodingPixelRefTest.cpp" />
+    <ClCompile Include="tests\CanvasStateHelpers.cpp" />
+    <ClCompile Include="tests\CanvasStateTest.cpp" />
+    <ClCompile Include="tests\CanvasTest.cpp" />
+    <ClCompile Include="tests\ChecksumTest.cpp" />
+    <ClCompile Include="tests\ClearTest.cpp" />
+    <ClCompile Include="tests\ClipCubicTest.cpp" />
+    <ClCompile Include="tests\ClipperTest.cpp" />
+    <ClCompile Include="tests\ClipStackTest.cpp" />
+    <ClCompile Include="tests\CodecAnimTest.cpp" />
+    <ClCompile Include="tests\CodecExactReadTest.cpp" />
+    <ClCompile Include="tests\CodecPartialTest.cpp" />
+    <ClCompile Include="tests\CodecRecommendedTypeTest.cpp" />
+    <ClCompile Include="tests\CodecTest.cpp" />
+    <ClCompile Include="tests\ColorFilterTest.cpp" />
+    <ClCompile Include="tests\ColorMatrixTest.cpp" />
+    <ClCompile Include="tests\ColorPrivTest.cpp" />
+    <ClCompile Include="tests\ColorSpaceTest.cpp" />
+    <ClCompile Include="tests\ColorTest.cpp" />
+    <ClCompile Include="tests\CompressedBackendAllocationTest.cpp" />
+    <ClCompile Include="tests\CopySurfaceTest.cpp" />
+    <ClCompile Include="tests\CTest.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="tests\CubicMapTest.cpp" />
+    <ClCompile Include="tests\CullTestTest.cpp" />
+    <ClCompile Include="tests\DashPathEffectTest.cpp" />
+    <ClCompile Include="tests\DataRefTest.cpp" />
+    <ClCompile Include="tests\DebugLayerManagerTest.cpp" />
+    <ClCompile Include="tests\DefaultPathRendererTest.cpp" />
+    <ClCompile Include="tests\DeferredDisplayListTest.cpp" />
+    <ClCompile Include="tests\DequeTest.cpp" />
+    <ClCompile Include="tests\DescriptorTest.cpp" />
+    <ClCompile Include="tests\DeviceTest.cpp" />
+    <ClCompile Include="tests\DiscardableMemoryPoolTest.cpp" />
+    <ClCompile Include="tests\DiscardableMemoryTest.cpp" />
+    <ClCompile Include="tests\DMSAATest.cpp" />
+    <ClCompile Include="tests\DrawBitmapRectTest.cpp" />
+    <ClCompile Include="tests\DrawOpAtlasTest.cpp" />
+    <ClCompile Include="tests\DrawPathTest.cpp" />
+    <ClCompile Include="tests\DrawTextTest.cpp" />
+    <ClCompile Include="tests\EGLImageTest.cpp" />
+    <ClCompile Include="tests\EmptyPathTest.cpp" />
+    <ClCompile Include="tests\EncodedInfoTest.cpp" />
+    <ClCompile Include="tests\EncodeTest.cpp" />
+    <ClCompile Include="tests\ExifTest.cpp" />
+    <ClCompile Include="tests\ExtendedSkColorTypeTests.cpp" />
+    <ClCompile Include="tests\F16StagesTest.cpp" />
+    <ClCompile Include="tests\FillPathTest.cpp" />
+    <ClCompile Include="tests\FitsInTest.cpp" />
+    <ClCompile Include="tests\FlattenableFactoryToName.cpp" />
+    <ClCompile Include="tests\FlattenableNameToFactory.cpp" />
+    <ClCompile Include="tests\FlattenDrawableTest.cpp" />
+    <ClCompile Include="tests\Float16Test.cpp" />
+    <ClCompile Include="tests\FloatingPointTextureTest.cpp" />
+    <ClCompile Include="tests\FontHostStreamTest.cpp" />
+    <ClCompile Include="tests\FontHostTest.cpp" />
+    <ClCompile Include="tests\FontMgrAndroidParserTest.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="tests\FontMgrFontConfigTest.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="tests\FontMgrTest.cpp" />
+    <ClCompile Include="tests\FontNamesTest.cpp" />
+    <ClCompile Include="tests\FontTest.cpp" />
+    <ClCompile Include="tests\FrontBufferedStreamTest.cpp" />
+    <ClCompile Include="tests\GeometryTest.cpp" />
+    <ClCompile Include="tests\GifTest.cpp" />
+    <ClCompile Include="tests\GLBackendSurfaceTest.cpp" />
+    <ClCompile Include="tests\GlyphRunTest.cpp" />
+    <ClCompile Include="tests\GpuDrawPathTest.cpp" />
+    <ClCompile Include="tests\GpuRectanizerTest.cpp" />
+    <ClCompile Include="tests\GradientTest.cpp" />
+    <ClCompile Include="tests\GrAHardwareBufferTest.cpp" />
+    <ClCompile Include="tests\GrClipStackTest.cpp" />
+    <ClCompile Include="tests\GrContextAbandonTest.cpp" />
+    <ClCompile Include="tests\GrContextFactoryTest.cpp" />
+    <ClCompile Include="tests\GrContextOOM.cpp" />
+    <ClCompile Include="tests\GrDDLImageTest.cpp" />
+    <ClCompile Include="tests\GrFinishedFlushTest.cpp" />
+    <ClCompile Include="tests\GrGLExtensionsTest.cpp" />
+    <ClCompile Include="tests\GrMemoryPoolTest.cpp" />
+    <ClCompile Include="tests\GrMeshTest.cpp" />
+    <ClCompile Include="tests\GrMipMappedTest.cpp" />
+    <ClCompile Include="tests\GrOpListFlushTest.cpp" />
+    <ClCompile Include="tests\GrPathUtilsTest.cpp" />
+    <ClCompile Include="tests\GrPipelineDynamicStateTest.cpp" />
+    <ClCompile Include="tests\GrPorterDuffTest.cpp" />
+    <ClCompile Include="tests\GrQuadBufferTest.cpp" />
+    <ClCompile Include="tests\GrQuadCropTest.cpp" />
+    <ClCompile Include="tests\GrRenderTaskClusterTest.cpp" />
+    <ClCompile Include="tests\GrStyledShapeTest.cpp" />
+    <ClCompile Include="tests\GrSubmittedFlushTest.cpp" />
+    <ClCompile Include="tests\GrSurfaceTest.cpp" />
+    <ClCompile Include="tests\GrTextBlobTest.cpp" />
+    <ClCompile Include="tests\GrTextureMipMapInvalidationTest.cpp" />
+    <ClCompile Include="tests\GrThreadSafeCacheTest.cpp" />
+    <ClCompile Include="tests\GrVxTest.cpp" />
+    <ClCompile Include="tests\HashTest.cpp" />
+    <ClCompile Include="tests\HighContrastFilterTest.cpp" />
+    <ClCompile Include="tests\HSVRoundTripTest.cpp" />
+    <ClCompile Include="tests\ICCTest.cpp" />
+    <ClCompile Include="tests\ImageBitmapTest.cpp" />
+    <ClCompile Include="tests\ImageCacheTest.cpp" />
+    <ClCompile Include="tests\ImageFilterCacheTest.cpp" />
+    <ClCompile Include="tests\ImageFilterTest.cpp" />
+    <ClCompile Include="tests\ImageFrom565Bitmap.cpp" />
+    <ClCompile Include="tests\ImageGeneratorTest.cpp" />
+    <ClCompile Include="tests\ImageIsOpaqueTest.cpp" />
+    <ClCompile Include="tests\ImageNewShaderTest.cpp" />
+    <ClCompile Include="tests\ImageTest.cpp" />
+    <ClCompile Include="tests\IncrTopoSortTest.cpp" />
+    <ClCompile Include="tests\IndexedPngOverflowTest.cpp" />
+    <ClCompile Include="tests\InfRectTest.cpp" />
+    <ClCompile Include="tests\InsetConvexPolyTest.cpp" />
+    <ClCompile Include="tests\InvalidIndexedPngTest.cpp" />
+    <ClCompile Include="tests\IsClosedSingleContourTest.cpp" />
+    <ClCompile Include="tests\JSONTest.cpp" />
+    <ClCompile Include="tests\LazyProxyTest.cpp" />
+    <ClCompile Include="tests\LListTest.cpp" />
+    <ClCompile Include="tests\LRUCacheTest.cpp" />
+    <ClCompile Include="tests\M44Test.cpp" />
+    <ClCompile Include="tests\MallocPixelRefTest.cpp" />
+    <ClCompile Include="tests\MaskCacheTest.cpp" />
+    <ClCompile Include="tests\MathTest.cpp" />
+    <ClCompile Include="tests\MatrixClipCollapseTest.cpp" />
+    <ClCompile Include="tests\MatrixColorFilterTest.cpp" />
+    <ClCompile Include="tests\MatrixTest.cpp" />
+    <ClCompile Include="tests\MD5Test.cpp" />
+    <ClCompile Include="tests\MemoryTest.cpp" />
+    <ClCompile Include="tests\MemsetTest.cpp" />
+    <ClCompile Include="tests\MessageBusTest.cpp" />
+    <ClCompile Include="tests\MetaDataTest.cpp" />
+    <ClCompile Include="tests\MipMapTest.cpp" />
+    <ClCompile Include="tests\MultiPictureDocumentTest.cpp" />
+    <ClCompile Include="tests\NdkDecodeTest.cpp" />
+    <ClCompile Include="tests\NdkEncodeTest.cpp" />
+    <ClCompile Include="tests\NonlinearBlendingTest.cpp" />
+    <ClCompile Include="tests\OffsetSimplePolyTest.cpp" />
+    <ClCompile Include="tests\OnceTest.cpp" />
+    <ClCompile Include="tests\OpChainTest.cpp" />
+    <ClCompile Include="tests\OSPathTest.cpp" />
+    <ClCompile Include="tests\OverAlignedTest.cpp" />
+    <ClCompile Include="tests\PaintTest.cpp" />
+    <ClCompile Include="tests\ParametricStageTest.cpp" />
+    <ClCompile Include="tests\ParseColorTest.cpp" />
+    <ClCompile Include="tests\ParsePathTest.cpp" />
+    <ClCompile Include="tests\PathBuilderTest.cpp" />
+    <ClCompile Include="tests\PathCoverageTest.cpp" />
+    <ClCompile Include="tests\PathMeasureTest.cpp" />
+    <ClCompile Include="tests\PathOpsAngleIdeas.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="tests\PathOpsAngleTest.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="tests\PathOpsAsWindingTest.cpp" />
+    <ClCompile Include="tests\PathOpsBattles.cpp" />
+    <ClCompile Include="tests\PathOpsBoundsTest.cpp" />
+    <ClCompile Include="tests\PathOpsBuilderConicTest.cpp" />
+    <ClCompile Include="tests\PathOpsBuilderTest.cpp" />
+    <ClCompile Include="tests\PathOpsBuildUseTest.cpp" />
+    <ClCompile Include="tests\PathOpsChalkboardTest.cpp" />
+    <ClCompile Include="tests\PathOpsConicIntersectionTest.cpp" />
+    <ClCompile Include="tests\PathOpsConicLineIntersectionTest.cpp" />
+    <ClCompile Include="tests\PathOpsConicQuadIntersectionTest.cpp" />
+    <ClCompile Include="tests\PathOpsCubicConicIntersectionTest.cpp" />
+    <ClCompile Include="tests\PathOpsCubicIntersectionTest.cpp" />
+    <ClCompile Include="tests\PathOpsCubicIntersectionTestData.cpp" />
+    <ClCompile Include="tests\PathOpsCubicLineIntersectionIdeas.cpp" />
+    <ClCompile Include="tests\PathOpsCubicLineIntersectionTest.cpp" />
+    <ClCompile Include="tests\PathOpsCubicQuadIntersectionTest.cpp" />
+    <ClCompile Include="tests\PathOpsCubicReduceOrderTest.cpp" />
+    <ClCompile Include="tests\PathOpsDCubicTest.cpp" />
+    <ClCompile Include="tests\PathOpsDebug.cpp" />
+    <ClCompile Include="tests\PathOpsDLineTest.cpp" />
+    <ClCompile Include="tests\PathOpsDPointTest.cpp" />
+    <ClCompile Include="tests\PathOpsDRectTest.cpp" />
+    <ClCompile Include="tests\PathOpsDVectorTest.cpp" />
+    <ClCompile Include="tests\PathOpsExtendedTest.cpp" />
+    <ClCompile Include="tests\PathOpsFuzz763Test.cpp" />
+    <ClCompile Include="tests\PathOpsInverseTest.cpp" />
+    <ClCompile Include="tests\PathOpsIssue3651.cpp" />
+    <ClCompile Include="tests\PathOpsLineIntersectionTest.cpp" />
+    <ClCompile Include="tests\PathOpsLineParametetersTest.cpp" />
+    <ClCompile Include="tests\PathOpsOpCircleThreadedTest.cpp" />
+    <ClCompile Include="tests\PathOpsOpCubicThreadedTest.cpp" />
+    <ClCompile Include="tests\PathOpsOpLoopThreadedTest.cpp" />
+    <ClCompile Include="tests\PathOpsOpRectThreadedTest.cpp" />
+    <ClCompile Include="tests\PathOpsOpTest.cpp" />
+    <ClCompile Include="tests\PathOpsQuadIntersectionTest.cpp" />
+    <ClCompile Include="tests\PathOpsQuadIntersectionTestData.cpp" />
+    <ClCompile Include="tests\PathOpsQuadLineIntersectionTest.cpp" />
+    <ClCompile Include="tests\PathOpsQuadLineIntersectionThreadedTest.cpp" />
+    <ClCompile Include="tests\PathOpsQuadReduceOrderTest.cpp" />
+    <ClCompile Include="tests\PathOpsSimplifyDegenerateThreadedTest.cpp" />
+    <ClCompile Include="tests\PathOpsSimplifyFailTest.cpp" />
+    <ClCompile Include="tests\PathOpsSimplifyQuadralateralsThreadedTest.cpp" />
+    <ClCompile Include="tests\PathOpsSimplifyQuadThreadedTest.cpp" />
+    <ClCompile Include="tests\PathOpsSimplifyRectThreadedTest.cpp" />
+    <ClCompile Include="tests\PathOpsSimplifyTest.cpp" />
+    <ClCompile Include="tests\PathOpsSimplifyTrianglesThreadedTest.cpp" />
+    <ClCompile Include="tests\PathOpsSkpTest.cpp" />
+    <ClCompile Include="tests\PathOpsTestCommon.cpp" />
+    <ClCompile Include="tests\PathOpsThreadedCommon.cpp" />
+    <ClCompile Include="tests\PathOpsThreeWayTest.cpp" />
+    <ClCompile Include="tests\PathOpsTigerTest.cpp" />
+    <ClCompile Include="tests\PathOpsTightBoundsTest.cpp" />
+    <ClCompile Include="tests\PathOpsTypesTest.cpp" />
+    <ClCompile Include="tests\PathRendererCacheTests.cpp" />
+    <ClCompile Include="tests\PathTest.cpp" />
+    <ClCompile Include="tests\PDFDeflateWStreamTest.cpp" />
+    <ClCompile Include="tests\PDFDocumentTest.cpp" />
+    <ClCompile Include="tests\PDFGlyphsToUnicodeTest.cpp" />
+    <ClCompile Include="tests\PDFJpegEmbedTest.cpp" />
+    <ClCompile Include="tests\PDFMetadataAttributeTest.cpp" />
+    <ClCompile Include="tests\PDFOpaqueSrcModeToSrcOverTest.cpp" />
+    <ClCompile Include="tests\PDFPrimitivesTest.cpp" />
+    <ClCompile Include="tests\PDFTaggedLinkTest.cpp" />
+    <ClCompile Include="tests\PDFTaggedPruningTest.cpp" />
+    <ClCompile Include="tests\PDFTaggedTableTest.cpp" />
+    <ClCompile Include="tests\PDFTaggedTest.cpp" />
+    <ClCompile Include="tests\PictureBBHTest.cpp" />
+    <ClCompile Include="tests\PictureShaderTest.cpp" />
+    <ClCompile Include="tests\PictureTest.cpp" />
+    <ClCompile Include="tests\PinnedImageTest.cpp" />
+    <ClCompile Include="tests\PixelRefTest.cpp" />
+    <ClCompile Include="tests\Point3Test.cpp" />
+    <ClCompile Include="tests\PointTest.cpp" />
+    <ClCompile Include="tests\PolyUtilsTest.cpp" />
+    <ClCompile Include="tests\PremulAlphaRoundTripTest.cpp" />
+    <ClCompile Include="tests\PrimitiveProcessorTest.cpp" />
+    <ClCompile Include="tests\ProcessorTest.cpp" />
+    <ClCompile Include="tests\ProgramsTest.cpp" />
+    <ClCompile Include="tests\PromiseImageTest.cpp" />
+    <ClCompile Include="tests\ProxyConversionTest.cpp" />
+    <ClCompile Include="tests\ProxyRefTest.cpp" />
+    <ClCompile Include="tests\ProxyTest.cpp" />
+    <ClCompile Include="tests\QuickRejectTest.cpp" />
+    <ClCompile Include="tests\RandomTest.cpp" />
+    <ClCompile Include="tests\ReadPixelsTest.cpp" />
+    <ClCompile Include="tests\ReadWritePixelsGpuTest.cpp" />
+    <ClCompile Include="tests\RecordDrawTest.cpp" />
+    <ClCompile Include="tests\RecorderTest.cpp" />
+    <ClCompile Include="tests\RecordingXfermodeTest.cpp" />
+    <ClCompile Include="tests\RecordOptsTest.cpp" />
+    <ClCompile Include="tests\RecordPatternTest.cpp" />
+    <ClCompile Include="tests\RecordTest.cpp" />
+    <ClCompile Include="tests\RectangleTextureTest.cpp" />
+    <ClCompile Include="tests\RectTest.cpp" />
+    <ClCompile Include="tests\RefCntTest.cpp" />
+    <ClCompile Include="tests\RegionTest.cpp" />
+    <ClCompile Include="tests\RepeatedClippedBlurTest.cpp" />
+    <ClCompile Include="tests\ResourceAllocatorTest.cpp" />
+    <ClCompile Include="tests\ResourceCacheTest.cpp" />
+    <ClCompile Include="tests\RoundRectTest.cpp" />
+    <ClCompile Include="tests\RRectInPathTest.cpp" />
+    <ClCompile Include="tests\RTreeTest.cpp" />
+    <ClCompile Include="tests\RuntimeBlendTest.cpp" />
+    <ClCompile Include="tests\SafeMathTest.cpp" />
+    <ClCompile Include="tests\SamplingTest.cpp" />
+    <ClCompile Include="tests\ScalarTest.cpp" />
+    <ClCompile Include="tests\ScaleToSidesTest.cpp" />
+    <ClCompile Include="tests\SerializationTest.cpp" />
+    <ClCompile Include="tests\SerialProcsTest.cpp" />
+    <ClCompile Include="tests\ShaderImageFilterTest.cpp" />
+    <ClCompile Include="tests\ShaderOpacityTest.cpp" />
+    <ClCompile Include="tests\ShaderTest.cpp" />
+    <ClCompile Include="tests\ShadowTest.cpp" />
+    <ClCompile Include="tests\ShaperTest.cpp" />
+    <ClCompile Include="tests\SizeTest.cpp" />
+    <ClCompile Include="tests\SkBase64Test.cpp" />
+    <ClCompile Include="tests\SkBlockAllocatorTest.cpp" />
+    <ClCompile Include="tests\Skbug12214.cpp" />
+    <ClCompile Include="tests\Skbug5221.cpp" />
+    <ClCompile Include="tests\Skbug6389.cpp" />
+    <ClCompile Include="tests\Skbug6653.cpp" />
+    <ClCompile Include="tests\SkColor4fTest.cpp" />
+    <ClCompile Include="tests\SkColorSpaceXformStepsTest.cpp" />
+    <ClCompile Include="tests\SkDOMTest.cpp" />
+    <ClCompile Include="tests\SkDSLRuntimeEffectTest.cpp" />
+    <ClCompile Include="tests\SkFixed15Test.cpp" />
+    <ClCompile Include="tests\SkGaussFilterTest.cpp" />
+    <ClCompile Include="tests\SkGlyphBufferTest.cpp" />
+    <ClCompile Include="tests\SkGlyphTest.cpp" />
+    <ClCompile Include="tests\SkImageTest.cpp" />
+    <ClCompile Include="tests\SkNxTest.cpp" />
+    <ClCompile Include="tests\SkPathRangeIterTest.cpp" />
+    <ClCompile Include="tests\SkRasterPipelineTest.cpp" />
+    <ClCompile Include="tests\SkRemoteGlyphCacheTest.cpp" />
+    <ClCompile Include="tests\SkResourceCacheTest.cpp" />
+    <ClCompile Include="tests\SkRuntimeEffectTest.cpp" />
+    <ClCompile Include="tests\SkScalerCacheTest.cpp" />
+    <ClCompile Include="tests\SkShaperJSONWriterTest.cpp" />
+    <ClCompile Include="tests\SkSharedMutexTest.cpp" />
+    <ClCompile Include="tests\SkSLCross.cpp" />
+    <ClCompile Include="tests\SkSLDSLErrorLineNumbers.cpp" />
+    <ClCompile Include="tests\SkSLDSLOnlyTest.cpp" />
+    <ClCompile Include="tests\SkSLDSLTest.cpp" />
+    <ClCompile Include="tests\SkSLES2ConformanceTest.cpp" />
+    <ClCompile Include="tests\SkSLGLSLTestbed.cpp" />
+    <ClCompile Include="tests\SkSLInterpreterTest.cpp" />
+    <ClCompile Include="tests\SkSLMemoryLayoutTest.cpp" />
+    <ClCompile Include="tests\SkSLMetalTestbed.cpp" />
+    <ClCompile Include="tests\SkSLSPIRVTestbed.cpp" />
+    <ClCompile Include="tests\SkSLTest.cpp" />
+    <ClCompile Include="tests\SkSLTypeTest.cpp" />
+    <ClCompile Include="tests\SkStrikeCacheTest.cpp" />
+    <ClCompile Include="tests\SkStringViewTest.cpp" />
+    <ClCompile Include="tests\SkTBlockListTest.cpp" />
+    <ClCompile Include="tests\SkTOptionalTest.cpp" />
+    <ClCompile Include="tests\SkUTFTest.cpp" />
+    <ClCompile Include="tests\SkVMTest.cpp" />
+    <ClCompile Include="tests\SkVxTest.cpp" />
+    <ClCompile Include="tests\SortTest.cpp" />
+    <ClCompile Include="tests\SpecialImageTest.cpp" />
+    <ClCompile Include="tests\SpecialSurfaceTest.cpp" />
+    <ClCompile Include="tests\SrcOverTest.cpp" />
+    <ClCompile Include="tests\SrcSrcOverBatchTest.cpp" />
+    <ClCompile Include="tests\SRGBReadWritePixelsTest.cpp" />
+    <ClCompile Include="tests\SRGBTest.cpp" />
+    <ClCompile Include="tests\StreamBufferTest.cpp" />
+    <ClCompile Include="tests\StreamTest.cpp" />
+    <ClCompile Include="tests\StringTest.cpp" />
+    <ClCompile Include="tests\StrokerTest.cpp" />
+    <ClCompile Include="tests\StrokeTest.cpp" />
+    <ClCompile Include="tests\SubsetPath.cpp" />
+    <ClCompile Include="tests\SurfaceDrawContextTest.cpp" />
+    <ClCompile Include="tests\SurfaceSemaphoreTest.cpp" />
+    <ClCompile Include="tests\SurfaceTest.cpp" />
+    <ClCompile Include="tests\SVGDeviceTest.cpp" />
+    <ClCompile Include="tests\SwizzlerTest.cpp" />
+    <ClCompile Include="tests\TArrayTest.cpp" />
+    <ClCompile Include="tests\TDPQueueTest.cpp" />
+    <ClCompile Include="tests\TemplatesTest.cpp" />
+    <ClCompile Include="tests\Test.cpp" />
+    <ClCompile Include="tests\TestTest.cpp" />
+    <ClCompile Include="tests\TestUtils.cpp" />
+    <ClCompile Include="tests\TextBlobCacheTest.cpp" />
+    <ClCompile Include="tests\TextBlobTest.cpp" />
+    <ClCompile Include="tests\TextureBindingsResetTest.cpp" />
+    <ClCompile Include="tests\TextureOpTest.cpp" />
+    <ClCompile Include="tests\TextureProxyTest.cpp" />
+    <ClCompile Include="tests\TextureStripAtlasManagerTest.cpp" />
+    <ClCompile Include="tests\Time.cpp" />
+    <ClCompile Include="tests\TLazyTest.cpp" />
+    <ClCompile Include="tests\TopoSortTest.cpp" />
+    <ClCompile Include="tests\TraceMemoryDumpTest.cpp" />
+    <ClCompile Include="tests\TracingTest.cpp" />
+    <ClCompile Include="tests\TransferPixelsTest.cpp" />
+    <ClCompile Include="tests\TriangulatingPathRendererTests.cpp" />
+    <ClCompile Include="tests\TypefaceMacTest.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="tests\TypefaceTest.cpp" />
+    <ClCompile Include="tests\UnicodeTest.cpp" />
+    <ClCompile Include="tests\UtilsTest.cpp" />
+    <ClCompile Include="tests\VerticesTest.cpp" />
+    <ClCompile Include="tests\VkBackendSurfaceTest.cpp" />
+    <ClCompile Include="tests\VkDrawableTest.cpp" />
+    <ClCompile Include="tests\VkHardwareBufferTest.cpp" />
+    <ClCompile Include="tests\VkPriorityExtensionTest.cpp" />
+    <ClCompile Include="tests\VkProtectedContextTest.cpp" />
+    <ClCompile Include="tests\VkWrapTests.cpp" />
+    <ClCompile Include="tests\VkYcbcrSamplerTest.cpp" />
+    <ClCompile Include="tests\VptrTest.cpp" />
+    <ClCompile Include="tests\WangsFormulaTest.cpp" />
+    <ClCompile Include="tests\WebpTest.cpp" />
+    <ClCompile Include="tests\WindowRectanglesTest.cpp" />
+    <ClCompile Include="tests\WrappedSurfaceCopyOnWriteTest.cpp" />
+    <ClCompile Include="tests\WritePixelsTest.cpp" />
+    <ClCompile Include="tests\Writer32Test.cpp" />
+    <ClCompile Include="tests\YUVCacheTest.cpp" />
+    <ClCompile Include="tests\YUVTest.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="dm\DMJsonWriter.h" />
+    <ClInclude Include="dm\DMSrcSink.h" />
+    <ClInclude Include="tests\CanvasStateHelpers.h" />
+    <ClInclude Include="tests\CodecPriv.h" />
+    <ClInclude Include="tests\FakeStreams.h" />
+    <ClInclude Include="tests\PathOpsCubicIntersectionTestData.h" />
+    <ClInclude Include="tests\PathOpsDebug.h" />
+    <ClInclude Include="tests\PathOpsExtendedTest.h" />
+    <ClInclude Include="tests\PathOpsQuadIntersectionTestData.h" />
+    <ClInclude Include="tests\PathOpsTestCommon.h" />
+    <ClInclude Include="tests\PathOpsThreadedCommon.h" />
+    <ClInclude Include="tests\PathOpsTSectDebug.h" />
+    <ClInclude Include="tests\RecordTestUtils.h" />
+    <ClInclude Include="tests\SubsetPath.h" />
+    <ClInclude Include="tests\Test.h" />
+    <ClInclude Include="tests\TestUtils.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="tests\MtlBackendAllocationTest.mm" />
+    <None Include="tests\MtlCopySurfaceTest.mm" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

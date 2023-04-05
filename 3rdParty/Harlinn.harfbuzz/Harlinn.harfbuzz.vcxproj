@@ -1,0 +1,425 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{4f67f478-cf58-4712-8a76-e8109f75e051}</ProjectGuid>
+    <RootNamespace>Harlinnharfbuzz</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Label="Vcpkg">
+    <VcpkgEnabled>false</VcpkgEnabled>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>BUILDING_HARLINN_HARFBUZZ=1;HAVE_CONFIG_H=1;_CRT_SECURE_NO_WARNINGS=1;WIN32;_DEBUG;HARLINNHARFBUZZ_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.freetype\include;$(ProjectDir)include\harfbuzz;$(ProjectDir)src;$(ICU4C_HOME)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+      <AdditionalLibraryDirectories>$(OutDir);$(ICU4C_HOME)\lib64</AdditionalLibraryDirectories>
+      <AdditionalDependencies>icuuc.lib;Dwrite.lib;Usp10.lib;Rpcrt4.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>BUILDING_HARLINN_HARFBUZZ=1;HAVE_CONFIG_H=1;_CRT_SECURE_NO_WARNINGS=1;WIN32;NDEBUG;HARLINNHARFBUZZ_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.freetype\include;$(ProjectDir)include\harfbuzz;$(ProjectDir)src;$(ICU4C_HOME)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+      <AdditionalLibraryDirectories>$(OutDir);$(ICU4C_HOME)\lib64</AdditionalLibraryDirectories>
+      <AdditionalDependencies>icuuc.lib;Dwrite.lib;Usp10.lib;Rpcrt4.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>BUILDING_HARLINN_HARFBUZZ=1;HAVE_CONFIG_H=1;_CRT_SECURE_NO_WARNINGS=1;_DEBUG;HARLINNHARFBUZZ_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.freetype\include;$(ProjectDir)include\harfbuzz;$(ProjectDir)src;$(ICU4C_HOME)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+      <AdditionalLibraryDirectories>$(OutDir);$(ICU4C_HOME)\lib64</AdditionalLibraryDirectories>
+      <AdditionalDependencies>icuuc.lib;Dwrite.lib;Usp10.lib;Rpcrt4.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>BUILDING_HARLINN_HARFBUZZ=1;HAVE_CONFIG_H=1;_CRT_SECURE_NO_WARNINGS=1;NDEBUG;HARLINNHARFBUZZ_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.freetype\include;$(ProjectDir)include\harfbuzz;$(ProjectDir)src;$(ICU4C_HOME)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+      <AdditionalLibraryDirectories>$(OutDir);$(ICU4C_HOME)\lib64</AdditionalLibraryDirectories>
+      <AdditionalDependencies>icuuc.lib;Dwrite.lib;Usp10.lib;Rpcrt4.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="src\hb-aat-layout.cc" />
+    <ClCompile Include="src\hb-aat-map.cc" />
+    <ClCompile Include="src\hb-blob.cc" />
+    <ClCompile Include="src\hb-buffer-serialize.cc" />
+    <ClCompile Include="src\hb-buffer.cc" />
+    <ClCompile Include="src\hb-common.cc" />
+    <ClCompile Include="src\hb-directwrite.cc" />
+    <ClCompile Include="src\hb-draw.cc" />
+    <ClCompile Include="src\hb-face.cc" />
+    <ClCompile Include="src\hb-fallback-shape.cc" />
+    <ClCompile Include="src\hb-font.cc" />
+    <ClCompile Include="src\hb-ft.cc" />
+    <ClCompile Include="src\hb-gdi.cc" />
+    <ClCompile Include="src\hb-icu.cc" />
+    <ClCompile Include="src\hb-map.cc" />
+    <ClCompile Include="src\hb-ms-feature-ranges.cc" />
+    <ClCompile Include="src\hb-number.cc" />
+    <ClCompile Include="src\hb-ot-cff1-table.cc" />
+    <ClCompile Include="src\hb-ot-cff2-table.cc" />
+    <ClCompile Include="src\hb-ot-color.cc" />
+    <ClCompile Include="src\hb-ot-face.cc" />
+    <ClCompile Include="src\hb-ot-font.cc" />
+    <ClCompile Include="src\hb-ot-layout.cc" />
+    <ClCompile Include="src\hb-ot-map.cc" />
+    <ClCompile Include="src\hb-ot-math.cc" />
+    <ClCompile Include="src\hb-ot-meta.cc" />
+    <ClCompile Include="src\hb-ot-metrics.cc" />
+    <ClCompile Include="src\hb-ot-name.cc" />
+    <ClCompile Include="src\hb-ot-shape-complex-arabic.cc" />
+    <ClCompile Include="src\hb-ot-shape-complex-default.cc" />
+    <ClCompile Include="src\hb-ot-shape-complex-hangul.cc" />
+    <ClCompile Include="src\hb-ot-shape-complex-hebrew.cc" />
+    <ClCompile Include="src\hb-ot-shape-complex-indic-table.cc" />
+    <ClCompile Include="src\hb-ot-shape-complex-indic.cc" />
+    <ClCompile Include="src\hb-ot-shape-complex-khmer.cc" />
+    <ClCompile Include="src\hb-ot-shape-complex-myanmar.cc" />
+    <ClCompile Include="src\hb-ot-shape-complex-syllabic.cc" />
+    <ClCompile Include="src\hb-ot-shape-complex-thai.cc" />
+    <ClCompile Include="src\hb-ot-shape-complex-use.cc" />
+    <ClCompile Include="src\hb-ot-shape-complex-vowel-constraints.cc" />
+    <ClCompile Include="src\hb-ot-shape-fallback.cc" />
+    <ClCompile Include="src\hb-ot-shape-normalize.cc" />
+    <ClCompile Include="src\hb-ot-shape.cc" />
+    <ClCompile Include="src\hb-ot-tag.cc" />
+    <ClCompile Include="src\hb-ot-var.cc" />
+    <ClCompile Include="src\hb-set.cc" />
+    <ClCompile Include="src\hb-shape-plan.cc" />
+    <ClCompile Include="src\hb-shape.cc" />
+    <ClCompile Include="src\hb-shaper.cc" />
+    <ClCompile Include="src\hb-static.cc" />
+    <ClCompile Include="src\hb-style.cc" />
+    <ClCompile Include="src\hb-subset-cff-common.cc" />
+    <ClCompile Include="src\hb-subset-cff1.cc" />
+    <ClCompile Include="src\hb-subset-cff2.cc" />
+    <ClCompile Include="src\hb-subset-input.cc" />
+    <ClCompile Include="src\hb-subset-plan.cc" />
+    <ClCompile Include="src\hb-subset.cc" />
+    <ClCompile Include="src\hb-ucd.cc" />
+    <ClCompile Include="src\hb-unicode.cc" />
+    <ClCompile Include="src\hb-uniscribe.cc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\harfbuzz\hb-aat-layout.h" />
+    <ClInclude Include="include\harfbuzz\hb-aat.h" />
+    <ClInclude Include="include\harfbuzz\hb-blob.h" />
+    <ClInclude Include="include\harfbuzz\hb-buffer.h" />
+    <ClInclude Include="include\harfbuzz\hb-common.h" />
+    <ClInclude Include="include\harfbuzz\hb-deprecated.h" />
+    <ClInclude Include="include\harfbuzz\hb-directwrite.h" />
+    <ClInclude Include="include\harfbuzz\hb-draw.h" />
+    <ClInclude Include="include\harfbuzz\hb-face.h" />
+    <ClInclude Include="include\harfbuzz\hb-font.h" />
+    <ClInclude Include="include\harfbuzz\hb-ft.h" />
+    <ClInclude Include="include\harfbuzz\hb-gdi.h" />
+    <ClInclude Include="include\harfbuzz\hb-icu.h" />
+    <ClInclude Include="include\harfbuzz\hb-map.h" />
+    <ClInclude Include="include\harfbuzz\hb-ot-color.h" />
+    <ClInclude Include="include\harfbuzz\hb-ot-deprecated.h" />
+    <ClInclude Include="include\harfbuzz\hb-ot-font.h" />
+    <ClInclude Include="include\harfbuzz\hb-ot-layout.h" />
+    <ClInclude Include="include\harfbuzz\hb-ot-math.h" />
+    <ClInclude Include="include\harfbuzz\hb-ot-meta.h" />
+    <ClInclude Include="include\harfbuzz\hb-ot-metrics.h" />
+    <ClInclude Include="include\harfbuzz\hb-ot-name.h" />
+    <ClInclude Include="include\harfbuzz\hb-ot-shape.h" />
+    <ClInclude Include="include\harfbuzz\hb-ot-var.h" />
+    <ClInclude Include="include\harfbuzz\hb-ot.h" />
+    <ClInclude Include="include\harfbuzz\hb-set.h" />
+    <ClInclude Include="include\harfbuzz\hb-shape-plan.h" />
+    <ClInclude Include="include\harfbuzz\hb-shape.h" />
+    <ClInclude Include="include\harfbuzz\hb-style.h" />
+    <ClInclude Include="include\harfbuzz\hb-subset.h" />
+    <ClInclude Include="include\harfbuzz\hb-unicode.h" />
+    <ClInclude Include="include\harfbuzz\hb-uniscribe.h" />
+    <ClInclude Include="include\harfbuzz\hb-version.h" />
+    <ClInclude Include="include\harfbuzz\hb.h" />
+    <ClInclude Include="src\config.h" />
+    <ClInclude Include="src\hb-aat-layout-ankr-table.hh" />
+    <ClInclude Include="src\hb-aat-layout-bsln-table.hh" />
+    <ClInclude Include="src\hb-aat-layout-common.hh" />
+    <ClInclude Include="src\hb-aat-layout-feat-table.hh" />
+    <ClInclude Include="src\hb-aat-layout-just-table.hh" />
+    <ClInclude Include="src\hb-aat-layout-kerx-table.hh" />
+    <ClInclude Include="src\hb-aat-layout-morx-table.hh" />
+    <ClInclude Include="src\hb-aat-layout-opbd-table.hh" />
+    <ClInclude Include="src\hb-aat-layout-trak-table.hh" />
+    <ClInclude Include="src\hb-aat-layout.hh" />
+    <ClInclude Include="src\hb-aat-ltag-table.hh" />
+    <ClInclude Include="src\hb-aat-map.hh" />
+    <ClInclude Include="src\hb-algs.hh" />
+    <ClInclude Include="src\hb-array.hh" />
+    <ClInclude Include="src\hb-atomic.hh" />
+    <ClInclude Include="src\hb-bimap.hh" />
+    <ClInclude Include="src\hb-bit-page.hh" />
+    <ClInclude Include="src\hb-bit-set-invertible.hh" />
+    <ClInclude Include="src\hb-bit-set.hh" />
+    <ClInclude Include="src\hb-blob.hh" />
+    <ClInclude Include="src\hb-buffer-deserialize-json.hh" />
+    <ClInclude Include="src\hb-buffer-deserialize-text.hh" />
+    <ClInclude Include="src\hb-buffer.hh" />
+    <ClInclude Include="src\hb-cache.hh" />
+    <ClInclude Include="src\hb-cff-interp-common.hh" />
+    <ClInclude Include="src\hb-cff-interp-cs-common.hh" />
+    <ClInclude Include="src\hb-cff-interp-dict-common.hh" />
+    <ClInclude Include="src\hb-cff1-interp-cs.hh" />
+    <ClInclude Include="src\hb-cff2-interp-cs.hh" />
+    <ClInclude Include="src\hb-config.hh" />
+    <ClInclude Include="src\hb-debug.hh" />
+    <ClInclude Include="src\hb-dispatch.hh" />
+    <ClInclude Include="src\hb-draw.hh" />
+    <ClInclude Include="src\hb-face.hh" />
+    <ClInclude Include="src\hb-font.hh" />
+    <ClInclude Include="src\hb-iter.hh" />
+    <ClInclude Include="src\hb-kern.hh" />
+    <ClInclude Include="src\hb-machinery.hh" />
+    <ClInclude Include="src\hb-map.hh" />
+    <ClInclude Include="src\hb-meta.hh" />
+    <ClInclude Include="src\hb-ms-feature-ranges.hh" />
+    <ClInclude Include="src\hb-mutex.hh" />
+    <ClInclude Include="src\hb-null.hh" />
+    <ClInclude Include="src\hb-number-parser.hh" />
+    <ClInclude Include="src\hb-number.hh" />
+    <ClInclude Include="src\hb-object.hh" />
+    <ClInclude Include="src\hb-open-file.hh" />
+    <ClInclude Include="src\hb-open-type.hh" />
+    <ClInclude Include="src\hb-ot-cff-common.hh" />
+    <ClInclude Include="src\hb-ot-cff1-std-str.hh" />
+    <ClInclude Include="src\hb-ot-cff1-table.hh" />
+    <ClInclude Include="src\hb-ot-cff2-table.hh" />
+    <ClInclude Include="src\hb-ot-cmap-table.hh" />
+    <ClInclude Include="src\hb-ot-color-cbdt-table.hh" />
+    <ClInclude Include="src\hb-ot-color-colr-table.hh" />
+    <ClInclude Include="src\hb-ot-color-colrv1-closure.hh" />
+    <ClInclude Include="src\hb-ot-color-cpal-table.hh" />
+    <ClInclude Include="src\hb-ot-color-sbix-table.hh" />
+    <ClInclude Include="src\hb-ot-color-svg-table.hh" />
+    <ClInclude Include="src\hb-ot-face-table-list.hh" />
+    <ClInclude Include="src\hb-ot-face.hh" />
+    <ClInclude Include="src\hb-ot-gasp-table.hh" />
+    <ClInclude Include="src\hb-ot-glyf-table.hh" />
+    <ClInclude Include="src\hb-ot-hdmx-table.hh" />
+    <ClInclude Include="src\hb-ot-head-table.hh" />
+    <ClInclude Include="src\hb-ot-hhea-table.hh" />
+    <ClInclude Include="src\hb-ot-hmtx-table.hh" />
+    <ClInclude Include="src\hb-ot-kern-table.hh" />
+    <ClInclude Include="src\hb-ot-layout-base-table.hh" />
+    <ClInclude Include="src\hb-ot-layout-common.hh" />
+    <ClInclude Include="src\hb-ot-layout-gdef-table.hh" />
+    <ClInclude Include="src\hb-ot-layout-gpos-table.hh" />
+    <ClInclude Include="src\hb-ot-layout-gsub-table.hh" />
+    <ClInclude Include="src\hb-ot-layout-gsubgpos.hh" />
+    <ClInclude Include="src\hb-ot-layout-jstf-table.hh" />
+    <ClInclude Include="src\hb-ot-layout.hh" />
+    <ClInclude Include="src\hb-ot-map.hh" />
+    <ClInclude Include="src\hb-ot-math-table.hh" />
+    <ClInclude Include="src\hb-ot-maxp-table.hh" />
+    <ClInclude Include="src\hb-ot-meta-table.hh" />
+    <ClInclude Include="src\hb-ot-metrics.hh" />
+    <ClInclude Include="src\hb-ot-name-language-static.hh" />
+    <ClInclude Include="src\hb-ot-name-language.hh" />
+    <ClInclude Include="src\hb-ot-name-table.hh" />
+    <ClInclude Include="src\hb-ot-os2-table.hh" />
+    <ClInclude Include="src\hb-ot-os2-unicode-ranges.hh" />
+    <ClInclude Include="src\hb-ot-post-macroman.hh" />
+    <ClInclude Include="src\hb-ot-post-table-v2subset.hh" />
+    <ClInclude Include="src\hb-ot-post-table.hh" />
+    <ClInclude Include="src\hb-ot-shape-complex-arabic-fallback.hh" />
+    <ClInclude Include="src\hb-ot-shape-complex-arabic-joining-list.hh" />
+    <ClInclude Include="src\hb-ot-shape-complex-arabic-table.hh" />
+    <ClInclude Include="src\hb-ot-shape-complex-arabic-win1256.hh" />
+    <ClInclude Include="src\hb-ot-shape-complex-arabic.hh" />
+    <ClInclude Include="src\hb-ot-shape-complex-indic-machine.hh" />
+    <ClInclude Include="src\hb-ot-shape-complex-indic.hh" />
+    <ClInclude Include="src\hb-ot-shape-complex-khmer-machine.hh" />
+    <ClInclude Include="src\hb-ot-shape-complex-khmer.hh" />
+    <ClInclude Include="src\hb-ot-shape-complex-myanmar-machine.hh" />
+    <ClInclude Include="src\hb-ot-shape-complex-myanmar.hh" />
+    <ClInclude Include="src\hb-ot-shape-complex-syllabic.hh" />
+    <ClInclude Include="src\hb-ot-shape-complex-use-machine.hh" />
+    <ClInclude Include="src\hb-ot-shape-complex-use-table.hh" />
+    <ClInclude Include="src\hb-ot-shape-complex-vowel-constraints.hh" />
+    <ClInclude Include="src\hb-ot-shape-complex.hh" />
+    <ClInclude Include="src\hb-ot-shape-fallback.hh" />
+    <ClInclude Include="src\hb-ot-shape-normalize.hh" />
+    <ClInclude Include="src\hb-ot-shape.hh" />
+    <ClInclude Include="src\hb-ot-stat-table.hh" />
+    <ClInclude Include="src\hb-ot-tag-table.hh" />
+    <ClInclude Include="src\hb-ot-var-avar-table.hh" />
+    <ClInclude Include="src\hb-ot-var-fvar-table.hh" />
+    <ClInclude Include="src\hb-ot-var-gvar-table.hh" />
+    <ClInclude Include="src\hb-ot-var-hvar-table.hh" />
+    <ClInclude Include="src\hb-ot-var-mvar-table.hh" />
+    <ClInclude Include="src\hb-ot-vorg-table.hh" />
+    <ClInclude Include="src\hb-pool.hh" />
+    <ClInclude Include="src\hb-priority-queue.hh" />
+    <ClInclude Include="src\hb-repacker.hh" />
+    <ClInclude Include="src\hb-sanitize.hh" />
+    <ClInclude Include="src\hb-serialize.hh" />
+    <ClInclude Include="src\hb-set-digest.hh" />
+    <ClInclude Include="src\hb-set.hh" />
+    <ClInclude Include="src\hb-shape-plan.hh" />
+    <ClInclude Include="src\hb-shaper-impl.hh" />
+    <ClInclude Include="src\hb-shaper-list.hh" />
+    <ClInclude Include="src\hb-shaper.hh" />
+    <ClInclude Include="src\hb-string-array.hh" />
+    <ClInclude Include="src\hb-subset-cff-common.hh" />
+    <ClInclude Include="src\hb-subset-cff1.hh" />
+    <ClInclude Include="src\hb-subset-cff2.hh" />
+    <ClInclude Include="src\hb-subset-input.hh" />
+    <ClInclude Include="src\hb-subset-plan.hh" />
+    <ClInclude Include="src\hb-subset.hh" />
+    <ClInclude Include="src\hb-ucd-table.hh" />
+    <ClInclude Include="src\hb-unicode-emoji-table.hh" />
+    <ClInclude Include="src\hb-unicode.hh" />
+    <ClInclude Include="src\hb-utf.hh" />
+    <ClInclude Include="src\hb-vector.hh" />
+    <ClInclude Include="src\hb.hh" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

@@ -1,0 +1,612 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Readme">
+      <UniqueIdentifier>{6f5cc4c3-1fdf-4556-9bd9-9a1d9911b475}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="dllmain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ccolumn_bmod.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ccolumn_dfs.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ccopy_to_ucol.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="cdiagonal.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="cgscon.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="cgsequ.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="cgsisx.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="cgsitrf.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="cgsrfs.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="cgssv.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="cgssvx.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="cgstrf.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="cgstrs.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="clacon2.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="clangs.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="claqgs.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="cldperm.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="cmemory.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="cmyblas2.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="colamd.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="cpanel_bmod.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="cpanel_dfs.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="cpivotgrowth.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="cpivotL.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="cpruneL.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="creadhb.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="creadMM.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="creadrb.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="creadtriple.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="csnode_bmod.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="csnode_dfs.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="csp_blas2.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="csp_blas3.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="cutil.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="dcolumn_bmod.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="dcolumn_dfs.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="dcomplex.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="dcopy_to_ucol.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ddiagonal.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="dGetDiagU.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="dgscon.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="dgsequ.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="dgsisx.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="dgsitrf.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="dgsrfs.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="dgssv.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="dgssvx.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="dgstrf.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="dgstrs.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="dlacon2.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="dlangs.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="dlaqgs.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="dldperm.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="dmach.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="dmemory.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="dmyblas2.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="dpanel_bmod.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="dpanel_dfs.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="dpivotgrowth.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="dpivotL.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="dpruneL.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="dreadhb.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="dreadMM.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="dreadrb.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="dreadtriple.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="dsnode_bmod.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="dsnode_dfs.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="dsp_blas2.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="dsp_blas3.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="dutil.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="dzsum1.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="get_perm_c.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="heap_relax_snode.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="icmax1.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ilu_ccolumn_dfs.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ilu_ccopy_to_ucol.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ilu_cdrop_row.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ilu_cpanel_dfs.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ilu_cpivotL.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ilu_csnode_dfs.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ilu_dcolumn_dfs.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ilu_dcopy_to_ucol.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ilu_ddrop_row.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ilu_dpanel_dfs.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ilu_dpivotL.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ilu_dsnode_dfs.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ilu_heap_relax_snode.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ilu_relax_snode.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ilu_scolumn_dfs.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ilu_scopy_to_ucol.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ilu_sdrop_row.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ilu_spanel_dfs.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ilu_spivotL.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ilu_ssnode_dfs.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ilu_zcolumn_dfs.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ilu_zcopy_to_ucol.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ilu_zdrop_row.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ilu_zpanel_dfs.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ilu_zpivotL.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ilu_zsnode_dfs.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="input_error.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="izmax1.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="mark_relax.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="mc64ad.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="memory.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="mmd.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="qselect.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="relax_snode.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="scolumn_bmod.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="scolumn_dfs.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="scomplex.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="scopy_to_ucol.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="scsum1.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="sdiagonal.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="sgscon.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="sgsequ.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="sgsisx.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="sgsitrf.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="sgsrfs.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="sgssv.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="sgssvx.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="sgstrf.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="sgstrs.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="slacon2.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="slangs.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="slaqgs.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="sldperm.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="smach.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="smemory.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="smyblas2.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="sp_coletree.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="sp_ienv.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="sp_preorder.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="spanel_bmod.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="spanel_dfs.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="spivotgrowth.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="spivotL.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="spruneL.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="sreadhb.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="sreadMM.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="sreadrb.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="sreadtriple.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ssnode_bmod.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ssnode_dfs.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ssp_blas2.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ssp_blas3.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="superlu_timer.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="sutil.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="util.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zcolumn_bmod.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zcolumn_dfs.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zcopy_to_ucol.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zdiagonal.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zgscon.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zgsequ.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zgsisx.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zgsitrf.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zgsrfs.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zgssv.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zgssvx.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zgstrf.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zgstrs.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zlacon2.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zlangs.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zlaqgs.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zldperm.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zmemory.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zmyblas2.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zpanel_bmod.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zpanel_dfs.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zpivotgrowth.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zpivotL.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zpruneL.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zreadhb.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zreadMM.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zreadrb.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zreadtriple.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zsnode_bmod.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zsnode_dfs.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zsp_blas2.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zsp_blas3.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zutil.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="colamd.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="html_mainpage.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="slu_cdefs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="slu_Cnames.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="slu_dcomplex.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="slu_ddefs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="slu_scomplex.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="slu_sdefs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="slu_util.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="slu_zdefs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="superlu_enum_consts.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="supermatrix.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="slu_def.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

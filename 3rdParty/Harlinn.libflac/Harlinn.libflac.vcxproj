@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{fb31db8e-0325-4668-ab57-6bea2fe44c31}</ProjectGuid>
+    <RootNamespace>Harlinnlibflac</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Label="Vcpkg">
+    <VcpkgEnabled>false</VcpkgEnabled>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>BUILDING_HARLINN_LIBFLAC=1;FLAC_API_EXPORTS=1;FLACPP_API_EXPORTS=1;FLAC__HAS_OGG=1;ENABLE_64_BIT_WORDS=1;FLAC__CPU_X86_64=1;FLAC__HAS_X86INTRIN=1;FLAC__ALIGN_MALLOC_DATA=1;PACKAGE_VERSION="1.3.2";FLaC__INLINE=_inline;_CRT_SECURE_NO_WARNINGS=1;WIN32;_DEBUG;HARLINNLIBFLAC_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.libogg\include;$(ProjectDir)include;$(ProjectDir)src\share\include;$(ProjectDir)src\libflac\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+      <AdditionalLibraryDirectories>$(OutDir)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>BUILDING_HARLINN_LIBFLAC=1;FLAC_API_EXPORTS=1;FLACPP_API_EXPORTS=1;FLAC__HAS_OGG=1;ENABLE_64_BIT_WORDS=1;FLAC__CPU_X86_64=1;FLAC__HAS_X86INTRIN=1;FLAC__ALIGN_MALLOC_DATA=1;PACKAGE_VERSION="1.3.2";FLaC__INLINE=_inline;_CRT_SECURE_NO_WARNINGS=1;WIN32;NDEBUG;HARLINNLIBFLAC_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.libogg\include;$(ProjectDir)include;$(ProjectDir)src\share\include;$(ProjectDir)src\libflac\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+      <AdditionalLibraryDirectories>$(OutDir)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>BUILDING_HARLINN_LIBFLAC=1;FLAC_API_EXPORTS=1;FLACPP_API_EXPORTS=1;FLAC__HAS_OGG=1;ENABLE_64_BIT_WORDS=1;FLAC__CPU_X86_64=1;FLAC__HAS_X86INTRIN=1;FLAC__ALIGN_MALLOC_DATA=1;PACKAGE_VERSION="1.3.2";FLaC__INLINE=_inline;_CRT_SECURE_NO_WARNINGS=1;_DEBUG;HARLINNLIBFLAC_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.libogg\include;$(ProjectDir)include;$(ProjectDir)src\share\include;$(ProjectDir)src\libflac\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+      <AdditionalLibraryDirectories>$(OutDir)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>BUILDING_HARLINN_LIBFLAC=1;FLAC_API_EXPORTS=1;FLACPP_API_EXPORTS=1;FLAC__HAS_OGG=1;ENABLE_64_BIT_WORDS=1;FLAC__CPU_X86_64=1;FLAC__HAS_X86INTRIN=1;FLAC__ALIGN_MALLOC_DATA=1;PACKAGE_VERSION="1.3.2";FLaC__INLINE=_inline;_CRT_SECURE_NO_WARNINGS=1;NDEBUG;HARLINNLIBFLAC_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.libogg\include;$(ProjectDir)include;$(ProjectDir)src\share\include;$(ProjectDir)src\libflac\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+      <AdditionalLibraryDirectories>$(OutDir)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="src\libflac++\metadata.cpp" />
+    <ClCompile Include="src\libflac++\stream_decoder_pp.cpp" />
+    <ClCompile Include="src\libflac++\stream_encoder_pp.cpp" />
+    <ClCompile Include="src\libflac\bitmath.c" />
+    <ClCompile Include="src\libflac\bitreader.c" />
+    <ClCompile Include="src\libflac\bitwriter.c" />
+    <ClCompile Include="src\libflac\cpu.c" />
+    <ClCompile Include="src\libflac\crc.c" />
+    <ClCompile Include="src\libflac\fixed.c" />
+    <ClCompile Include="src\libflac\fixed_intrin_sse2.c" />
+    <ClCompile Include="src\libflac\fixed_intrin_ssse3.c" />
+    <ClCompile Include="src\libflac\float.c" />
+    <ClCompile Include="src\libflac\format.c" />
+    <ClCompile Include="src\libflac\lpc.c" />
+    <ClCompile Include="src\libflac\lpc_intrin_avx2.c" />
+    <ClCompile Include="src\libflac\lpc_intrin_sse.c" />
+    <ClCompile Include="src\libflac\lpc_intrin_sse2.c" />
+    <ClCompile Include="src\libflac\lpc_intrin_sse41.c" />
+    <ClCompile Include="src\libflac\md5.c" />
+    <ClCompile Include="src\libflac\memory.c" />
+    <ClCompile Include="src\libflac\metadata_iterators.c" />
+    <ClCompile Include="src\libflac\metadata_object.c" />
+    <ClCompile Include="src\libflac\ogg_decoder_aspect.c" />
+    <ClCompile Include="src\libflac\ogg_encoder_aspect.c" />
+    <ClCompile Include="src\libflac\ogg_helper.c" />
+    <ClCompile Include="src\libflac\ogg_mapping.c" />
+    <ClCompile Include="src\libflac\stream_decoder.c" />
+    <ClCompile Include="src\libflac\stream_encoder.c" />
+    <ClCompile Include="src\libflac\stream_encoder_framing.c" />
+    <ClCompile Include="src\libflac\stream_encoder_intrin_avx2.c" />
+    <ClCompile Include="src\libflac\stream_encoder_intrin_sse2.c" />
+    <ClCompile Include="src\libflac\stream_encoder_intrin_ssse3.c" />
+    <ClCompile Include="src\libflac\window.c" />
+    <ClCompile Include="src\libflac\windows_unicode_filenames.c" />
+    <ClCompile Include="src\share\grabbag\alloc.c" />
+    <ClCompile Include="src\share\utf8\utf8.c" />
+    <ClCompile Include="src\share\win_utf8_io\win_utf8_io.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\flac++\all.h" />
+    <ClInclude Include="include\flac++\decoder.h" />
+    <ClInclude Include="include\flac++\encoder.h" />
+    <ClInclude Include="include\flac++\export.h" />
+    <ClInclude Include="include\flac++\metadata.h" />
+    <ClInclude Include="include\flac\all.h" />
+    <ClInclude Include="include\flac\assert.h" />
+    <ClInclude Include="include\flac\callback.h" />
+    <ClInclude Include="include\flac\export.h" />
+    <ClInclude Include="include\flac\format.h" />
+    <ClInclude Include="include\flac\metadata.h" />
+    <ClInclude Include="include\flac\ordinals.h" />
+    <ClInclude Include="include\flac\stream_decoder.h" />
+    <ClInclude Include="include\flac\stream_encoder.h" />
+    <ClInclude Include="src\libflac\include\private\all.h" />
+    <ClInclude Include="src\libflac\include\private\bitmath.h" />
+    <ClInclude Include="src\libflac\include\private\bitreader.h" />
+    <ClInclude Include="src\libflac\include\private\bitwriter.h" />
+    <ClInclude Include="src\libflac\include\private\cpu.h" />
+    <ClInclude Include="src\libflac\include\private\crc.h" />
+    <ClInclude Include="src\libflac\include\private\fixed.h" />
+    <ClInclude Include="src\libflac\include\private\float.h" />
+    <ClInclude Include="src\libflac\include\private\format.h" />
+    <ClInclude Include="src\libflac\include\private\lpc.h" />
+    <ClInclude Include="src\libflac\include\private\macros.h" />
+    <ClInclude Include="src\libflac\include\private\md5.h" />
+    <ClInclude Include="src\libflac\include\private\memory.h" />
+    <ClInclude Include="src\libflac\include\private\metadata.h" />
+    <ClInclude Include="src\libflac\include\private\ogg_decoder_aspect.h" />
+    <ClInclude Include="src\libflac\include\private\ogg_encoder_aspect.h" />
+    <ClInclude Include="src\libflac\include\private\ogg_helper.h" />
+    <ClInclude Include="src\libflac\include\private\ogg_mapping.h" />
+    <ClInclude Include="src\libflac\include\private\stream_encoder.h" />
+    <ClInclude Include="src\libflac\include\private\stream_encoder_framing.h" />
+    <ClInclude Include="src\libflac\include\private\window.h" />
+    <ClInclude Include="src\libflac\include\protected\all.h" />
+    <ClInclude Include="src\libflac\include\protected\stream_decoder.h" />
+    <ClInclude Include="src\libflac\include\protected\stream_encoder.h" />
+    <ClInclude Include="src\share\include\share\alloc.h" />
+    <ClInclude Include="src\share\include\share\compat.h" />
+    <ClInclude Include="src\share\include\share\endswap.h" />
+    <ClInclude Include="src\share\include\share\macros.h" />
+    <ClInclude Include="src\share\include\share\private.h" />
+    <ClInclude Include="src\share\include\share\safe_str.h" />
+    <ClInclude Include="src\share\include\share\utf8.h" />
+    <ClInclude Include="src\share\include\share\windows_unicode_filenames.h" />
+    <ClInclude Include="src\share\include\share\win_utf8_io.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

@@ -1,0 +1,1 @@
+7z a -t7z -mx=9 Harlinn.Windows.7z * -xr@archive.exclude

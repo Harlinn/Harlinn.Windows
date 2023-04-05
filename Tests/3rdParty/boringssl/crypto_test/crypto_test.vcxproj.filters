@@ -1,0 +1,378 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="test">
+      <UniqueIdentifier>{76976b44-fd05-47dd-a18b-aab48f1e7ff1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="asn1">
+      <UniqueIdentifier>{9138051f-d15f-4435-9660-2a0b86778839}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="base64">
+      <UniqueIdentifier>{e3385f50-ec36-4c90-9750-1f496161bb3b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="bio">
+      <UniqueIdentifier>{7157b9d5-abf3-4cd8-94be-69ddcc58352b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="blake2">
+      <UniqueIdentifier>{e180c47e-d115-4b1a-a6cd-5b12622b9a77}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="buf">
+      <UniqueIdentifier>{f50ae057-0a16-4244-bf5d-bda6316b7c70}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="bytestring">
+      <UniqueIdentifier>{637e7075-0e55-4ebe-8c6a-cbf0e6ef7b5c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="chacha">
+      <UniqueIdentifier>{6ea213b7-0997-42d5-9940-89d69a188b55}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cipher_extra">
+      <UniqueIdentifier>{e07a2733-5595-4036-a30b-cefdb5d6f29f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cmac">
+      <UniqueIdentifier>{966c8fec-f369-4b56-aa5c-ce93e5779be9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="conf">
+      <UniqueIdentifier>{fdcf69c8-f4a8-401b-a773-7ddd3dfbaacb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="curve25519">
+      <UniqueIdentifier>{b2dd4c0c-dcc1-46b3-b798-efa8cb14ab3d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="dh_extra">
+      <UniqueIdentifier>{625a5233-eaff-4d08-9ff2-b5e6afcba920}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="digest_extra">
+      <UniqueIdentifier>{6d7e13ca-bb9f-4b3a-a2ba-0c8652f42bf5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="dsa">
+      <UniqueIdentifier>{711a2d70-049c-43f3-8bc3-c832c116472a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ecdh_extra">
+      <UniqueIdentifier>{9592d337-47e7-4d1e-8374-79e3f7ba6213}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="err">
+      <UniqueIdentifier>{481d0d5c-24b4-406c-b706-b93cf717e1f4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="evp">
+      <UniqueIdentifier>{a66e9fdb-5530-45f3-920b-5d89696d1e51}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="fipsmodule">
+      <UniqueIdentifier>{595b871f-a142-481c-9e9b-17ad9f01afe9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="fipsmodule\aes">
+      <UniqueIdentifier>{b9936c42-29ed-4b1c-b89a-85e25af951a8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="fipsmodule\bn">
+      <UniqueIdentifier>{cf6f2c10-9e0b-407c-b3bb-2974ce1e3177}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="fipsmodule\ec">
+      <UniqueIdentifier>{6d84eab1-04b6-4cfa-a1e3-edfa48a6047b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="fipsmodule\ecdsa">
+      <UniqueIdentifier>{0df37eee-1d43-4435-a300-f916624a33c4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="fipsmodule\md5">
+      <UniqueIdentifier>{7147898f-bf04-47f7-8395-479aa5f0de23}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="fipsmodule\modes">
+      <UniqueIdentifier>{7a012ba6-e8db-4147-a95d-d974ed9986de}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="fipsmodule\rand">
+      <UniqueIdentifier>{aa7173b5-d8d9-4d0f-99b1-f0ea8c4ba22b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="fipsmodule\sha">
+      <UniqueIdentifier>{85ace2d5-e375-4bea-9204-ab27a7d2c407}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="hkdf">
+      <UniqueIdentifier>{4be63932-2c3d-4779-b204-c3063cf30f2b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="hmac_extra">
+      <UniqueIdentifier>{21dc8f49-ac61-4942-b901-dc2f5bac906b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="hpke">
+      <UniqueIdentifier>{c99caea9-69a5-4d98-9e00-5943d67a0e79}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="hrss">
+      <UniqueIdentifier>{cfd364e6-5d71-4bc8-9922-33aacafdd2e6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="lhash">
+      <UniqueIdentifier>{80e2e815-9f38-42fd-ac37-60246866cca1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="obj">
+      <UniqueIdentifier>{8865ae65-2673-40a9-bfb4-62e24abf2765}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="pem">
+      <UniqueIdentifier>{f577a9cf-4fe5-4e92-9872-4b51fc8c0aa8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="pkcs7">
+      <UniqueIdentifier>{f18510cf-217a-48d4-9bdd-6f8a9857c24d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="pkcs8">
+      <UniqueIdentifier>{9d1ac10b-71d9-4ba2-8e49-5a55f1debd6f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="poly1305">
+      <UniqueIdentifier>{94b9086a-85dc-4305-b7fc-522d34182b43}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="pool">
+      <UniqueIdentifier>{a27f3e97-99bb-4fe2-afcc-bebf25828e8d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="rand_extra">
+      <UniqueIdentifier>{c3da16f2-afbc-4bca-9fc5-a757a5add22c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="rsa_extra">
+      <UniqueIdentifier>{c51d1f67-f60c-4fa3-89ae-cf9684b5f7b8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="siphash">
+      <UniqueIdentifier>{d637eb80-8922-4297-89dc-79b07632f4fc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="stack">
+      <UniqueIdentifier>{782b1888-5f0a-4e36-b1d2-d465cd2f0a17}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="trust_token">
+      <UniqueIdentifier>{4257831d-3510-4b08-bdb3-c14a91cef4c4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="x509">
+      <UniqueIdentifier>{278e02de-61eb-4639-9482-238527b482c9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="x509v3">
+      <UniqueIdentifier>{1ca1d2f9-8cba-4a63-bf7e-b7daad3f6884}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="test\abi_test.cc">
+      <Filter>test</Filter>
+    </ClCompile>
+    <ClCompile Include="test\file_test.cc">
+      <Filter>test</Filter>
+    </ClCompile>
+    <ClCompile Include="test\file_test_gtest.cc">
+      <Filter>test</Filter>
+    </ClCompile>
+    <ClCompile Include="test\gtest_main.cc">
+      <Filter>test</Filter>
+    </ClCompile>
+    <ClCompile Include="test\malloc.cc">
+      <Filter>test</Filter>
+    </ClCompile>
+    <ClCompile Include="test\test_util.cc">
+      <Filter>test</Filter>
+    </ClCompile>
+    <ClCompile Include="test\wycheproof_util.cc">
+      <Filter>test</Filter>
+    </ClCompile>
+    <ClCompile Include="test\crypto_test_data.cc">
+      <Filter>test</Filter>
+    </ClCompile>
+    <ClCompile Include="asn1\asn1_test.cc">
+      <Filter>asn1</Filter>
+    </ClCompile>
+    <ClCompile Include="base64\base64_test.cc">
+      <Filter>base64</Filter>
+    </ClCompile>
+    <ClCompile Include="bio\bio_test.cc">
+      <Filter>bio</Filter>
+    </ClCompile>
+    <ClCompile Include="blake2\blake2_test.cc">
+      <Filter>blake2</Filter>
+    </ClCompile>
+    <ClCompile Include="buf\buf_test.cc">
+      <Filter>buf</Filter>
+    </ClCompile>
+    <ClCompile Include="bytestring\bytestring_test.cc">
+      <Filter>bytestring</Filter>
+    </ClCompile>
+    <ClCompile Include="chacha\chacha_test.cc">
+      <Filter>chacha</Filter>
+    </ClCompile>
+    <ClCompile Include="cipher_extra\aead_test.cc">
+      <Filter>cipher_extra</Filter>
+    </ClCompile>
+    <ClCompile Include="cipher_extra\cipher_test.cc">
+      <Filter>cipher_extra</Filter>
+    </ClCompile>
+    <ClCompile Include="cmac\cmac_test.cc">
+      <Filter>cmac</Filter>
+    </ClCompile>
+    <ClCompile Include="conf\conf_test.cc">
+      <Filter>conf</Filter>
+    </ClCompile>
+    <ClCompile Include="curve25519\ed25519_test.cc">
+      <Filter>curve25519</Filter>
+    </ClCompile>
+    <ClCompile Include="curve25519\spake25519_test.cc">
+      <Filter>curve25519</Filter>
+    </ClCompile>
+    <ClCompile Include="curve25519\x25519_test.cc">
+      <Filter>curve25519</Filter>
+    </ClCompile>
+    <ClCompile Include="dh_extra\dh_test.cc">
+      <Filter>dh_extra</Filter>
+    </ClCompile>
+    <ClCompile Include="digest_extra\digest_test.cc">
+      <Filter>digest_extra</Filter>
+    </ClCompile>
+    <ClCompile Include="dsa\dsa_test.cc">
+      <Filter>dsa</Filter>
+    </ClCompile>
+    <ClCompile Include="ecdh_extra\ecdh_test.cc">
+      <Filter>ecdh_extra</Filter>
+    </ClCompile>
+    <ClCompile Include="err\err_test.cc">
+      <Filter>err</Filter>
+    </ClCompile>
+    <ClCompile Include="evp\evp_extra_test.cc">
+      <Filter>evp</Filter>
+    </ClCompile>
+    <ClCompile Include="evp\evp_test.cc">
+      <Filter>evp</Filter>
+    </ClCompile>
+    <ClCompile Include="evp\pbkdf_test.cc">
+      <Filter>evp</Filter>
+    </ClCompile>
+    <ClCompile Include="evp\scrypt_test.cc">
+      <Filter>evp</Filter>
+    </ClCompile>
+    <ClCompile Include="fipsmodule\aes\aes_test.cc">
+      <Filter>fipsmodule\aes</Filter>
+    </ClCompile>
+    <ClCompile Include="fipsmodule\bn\bn_test.cc">
+      <Filter>fipsmodule\bn</Filter>
+    </ClCompile>
+    <ClCompile Include="fipsmodule\ec\ec_test.cc">
+      <Filter>fipsmodule\ec</Filter>
+    </ClCompile>
+    <ClCompile Include="fipsmodule\ec\p256-x86_64_test.cc">
+      <Filter>fipsmodule\ec</Filter>
+    </ClCompile>
+    <ClCompile Include="fipsmodule\ecdsa\ecdsa_test.cc">
+      <Filter>fipsmodule\ecdsa</Filter>
+    </ClCompile>
+    <ClCompile Include="fipsmodule\md5\md5_test.cc">
+      <Filter>fipsmodule\md5</Filter>
+    </ClCompile>
+    <ClCompile Include="fipsmodule\modes\gcm_test.cc">
+      <Filter>fipsmodule\modes</Filter>
+    </ClCompile>
+    <ClCompile Include="fipsmodule\sha\sha_test.cc">
+      <Filter>fipsmodule\sha</Filter>
+    </ClCompile>
+    <ClCompile Include="fipsmodule\rand\ctrdrbg_test.cc">
+      <Filter>fipsmodule\rand</Filter>
+    </ClCompile>
+    <ClCompile Include="fipsmodule\rand\fork_detect_test.cc">
+      <Filter>fipsmodule\rand</Filter>
+    </ClCompile>
+    <ClCompile Include="hkdf\hkdf_test.cc">
+      <Filter>hkdf</Filter>
+    </ClCompile>
+    <ClCompile Include="hmac_extra\hmac_test.cc">
+      <Filter>hmac_extra</Filter>
+    </ClCompile>
+    <ClCompile Include="hpke\hpke_test.cc">
+      <Filter>hpke</Filter>
+    </ClCompile>
+    <ClCompile Include="hrss\hrss_test.cc">
+      <Filter>hrss</Filter>
+    </ClCompile>
+    <ClCompile Include="lhash\lhash_test.cc">
+      <Filter>lhash</Filter>
+    </ClCompile>
+    <ClCompile Include="obj\obj_test.cc">
+      <Filter>obj</Filter>
+    </ClCompile>
+    <ClCompile Include="pem\pem_test.cc">
+      <Filter>pem</Filter>
+    </ClCompile>
+    <ClCompile Include="pkcs7\pkcs7_test.cc">
+      <Filter>pkcs7</Filter>
+    </ClCompile>
+    <ClCompile Include="pkcs8\pkcs8_test.cc">
+      <Filter>pkcs8</Filter>
+    </ClCompile>
+    <ClCompile Include="pkcs8\pkcs12_test.cc">
+      <Filter>pkcs8</Filter>
+    </ClCompile>
+    <ClCompile Include="poly1305\poly1305_test.cc">
+      <Filter>poly1305</Filter>
+    </ClCompile>
+    <ClCompile Include="pool\pool_test.cc">
+      <Filter>pool</Filter>
+    </ClCompile>
+    <ClCompile Include="rand_extra\rand_test.cc">
+      <Filter>rand_extra</Filter>
+    </ClCompile>
+    <ClCompile Include="rsa_extra\rsa_test.cc">
+      <Filter>rsa_extra</Filter>
+    </ClCompile>
+    <ClCompile Include="siphash\siphash_test.cc">
+      <Filter>siphash</Filter>
+    </ClCompile>
+    <ClCompile Include="stack\stack_test.cc">
+      <Filter>stack</Filter>
+    </ClCompile>
+    <ClCompile Include="trust_token\trust_token_test.cc">
+      <Filter>trust_token</Filter>
+    </ClCompile>
+    <ClCompile Include="x509\x509_test.cc">
+      <Filter>x509</Filter>
+    </ClCompile>
+    <ClCompile Include="x509\x509_time_test.cc">
+      <Filter>x509</Filter>
+    </ClCompile>
+    <ClCompile Include="x509v3\tab_test.cc">
+      <Filter>x509v3</Filter>
+    </ClCompile>
+    <ClCompile Include="x509v3\v3name_test.cc">
+      <Filter>x509v3</Filter>
+    </ClCompile>
+    <ClCompile Include="abi_self_test.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="compiler_test.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="constant_time_test.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="impl_dispatch_test.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="refcount_test.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="self_test.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="thread_test.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="test\gtest_main.h">
+      <Filter>test</Filter>
+    </ClInclude>
+    <ClInclude Include="test\abi_test.h">
+      <Filter>test</Filter>
+    </ClInclude>
+    <ClInclude Include="test\file_test.h">
+      <Filter>test</Filter>
+    </ClInclude>
+    <ClInclude Include="test\test_util.h">
+      <Filter>test</Filter>
+    </ClInclude>
+    <ClInclude Include="test\wycheproof_util.h">
+      <Filter>test</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,526 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="include\Eigen\Cholesky" />
+    <None Include="include\Eigen\CholmodSupport" />
+    <None Include="include\Eigen\Core" />
+    <None Include="include\Eigen\Dense" />
+    <None Include="include\Eigen\Eigen" />
+    <None Include="include\Eigen\Eigenvalues" />
+    <None Include="include\Eigen\Geometry" />
+    <None Include="include\Eigen\Householder" />
+    <None Include="include\Eigen\IterativeLinearSolvers" />
+    <None Include="include\Eigen\Jacobi" />
+    <None Include="include\Eigen\KLUSupport" />
+    <None Include="include\Eigen\LU" />
+    <None Include="include\Eigen\MetisSupport" />
+    <None Include="include\Eigen\OrderingMethods" />
+    <None Include="include\Eigen\PardisoSupport" />
+    <None Include="include\Eigen\PaStiXSupport" />
+    <None Include="include\Eigen\QR" />
+    <None Include="include\Eigen\QtAlignedMalloc" />
+    <None Include="include\Eigen\Sparse" />
+    <None Include="include\Eigen\SparseCholesky" />
+    <None Include="include\Eigen\SparseCore" />
+    <None Include="include\Eigen\SparseLU" />
+    <None Include="include\Eigen\SparseQR" />
+    <None Include="include\Eigen\SPQRSupport" />
+    <None Include="include\Eigen\StdDeque" />
+    <None Include="include\Eigen\StdList" />
+    <None Include="include\Eigen\StdVector" />
+    <None Include="include\Eigen\SuperLUSupport" />
+    <None Include="include\Eigen\SVD" />
+    <None Include="include\Eigen\UmfPackSupport" />
+    <None Include="Readme\COPYING.APACHE" />
+    <None Include="Readme\COPYING.BSD" />
+    <None Include="Readme\COPYING.GPL" />
+    <None Include="Readme\COPYING.LGPL" />
+    <None Include="Readme\COPYING.MINPACK" />
+    <None Include="Readme\COPYING.MPL2" />
+    <None Include="Readme\COPYING.README" />
+    <None Include="Readme\README.md" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\Eigen\src\Cholesky\LDLT.h" />
+    <ClInclude Include="include\Eigen\src\Cholesky\LLT.h" />
+    <ClInclude Include="include\Eigen\src\Cholesky\LLT_LAPACKE.h" />
+    <ClInclude Include="include\Eigen\src\CholmodSupport\CholmodSupport.h" />
+    <ClInclude Include="include\Eigen\src\Core\arch\AltiVec\Complex.h" />
+    <ClInclude Include="include\Eigen\src\Core\arch\AltiVec\MathFunctions.h" />
+    <ClInclude Include="include\Eigen\src\Core\arch\AltiVec\MatrixProduct.h" />
+    <ClInclude Include="include\Eigen\src\Core\arch\AltiVec\MatrixProductCommon.h" />
+    <ClInclude Include="include\Eigen\src\Core\arch\AltiVec\MatrixProductMMA.h" />
+    <ClInclude Include="include\Eigen\src\Core\arch\AltiVec\PacketMath.h" />
+    <ClInclude Include="include\Eigen\src\Core\arch\AVX512\Complex.h" />
+    <ClInclude Include="include\Eigen\src\Core\arch\AVX512\MathFunctions.h" />
+    <ClInclude Include="include\Eigen\src\Core\arch\AVX512\PacketMath.h" />
+    <ClInclude Include="include\Eigen\src\Core\arch\AVX512\TypeCasting.h" />
+    <ClInclude Include="include\Eigen\src\Core\arch\AVX\Complex.h" />
+    <ClInclude Include="include\Eigen\src\Core\arch\AVX\MathFunctions.h" />
+    <ClInclude Include="include\Eigen\src\Core\arch\AVX\PacketMath.h" />
+    <ClInclude Include="include\Eigen\src\Core\arch\AVX\TypeCasting.h" />
+    <ClInclude Include="include\Eigen\src\Core\arch\CUDA\Complex.h" />
+    <ClInclude Include="include\Eigen\src\Core\arch\Default\BFloat16.h" />
+    <ClInclude Include="include\Eigen\src\Core\arch\Default\ConjHelper.h" />
+    <ClInclude Include="include\Eigen\src\Core\arch\Default\GenericPacketMathFunctions.h" />
+    <ClInclude Include="include\Eigen\src\Core\arch\Default\GenericPacketMathFunctionsFwd.h" />
+    <ClInclude Include="include\Eigen\src\Core\arch\Default\Half.h" />
+    <ClInclude Include="include\Eigen\src\Core\arch\Default\Settings.h" />
+    <ClInclude Include="include\Eigen\src\Core\arch\Default\TypeCasting.h" />
+    <ClInclude Include="include\Eigen\src\Core\arch\GPU\MathFunctions.h" />
+    <ClInclude Include="include\Eigen\src\Core\arch\GPU\PacketMath.h" />
+    <ClInclude Include="include\Eigen\src\Core\arch\GPU\TypeCasting.h" />
+    <ClInclude Include="include\Eigen\src\Core\arch\HIP\hcc\math_constants.h" />
+    <ClInclude Include="include\Eigen\src\Core\arch\MSA\Complex.h" />
+    <ClInclude Include="include\Eigen\src\Core\arch\MSA\MathFunctions.h" />
+    <ClInclude Include="include\Eigen\src\Core\arch\MSA\PacketMath.h" />
+    <ClInclude Include="include\Eigen\src\Core\arch\NEON\Complex.h" />
+    <ClInclude Include="include\Eigen\src\Core\arch\NEON\GeneralBlockPanelKernel.h" />
+    <ClInclude Include="include\Eigen\src\Core\arch\NEON\MathFunctions.h" />
+    <ClInclude Include="include\Eigen\src\Core\arch\NEON\PacketMath.h" />
+    <ClInclude Include="include\Eigen\src\Core\arch\NEON\TypeCasting.h" />
+    <ClInclude Include="include\Eigen\src\Core\arch\SSE\Complex.h" />
+    <ClInclude Include="include\Eigen\src\Core\arch\SSE\MathFunctions.h" />
+    <ClInclude Include="include\Eigen\src\Core\arch\SSE\PacketMath.h" />
+    <ClInclude Include="include\Eigen\src\Core\arch\SSE\TypeCasting.h" />
+    <ClInclude Include="include\Eigen\src\Core\arch\SVE\MathFunctions.h" />
+    <ClInclude Include="include\Eigen\src\Core\arch\SVE\PacketMath.h" />
+    <ClInclude Include="include\Eigen\src\Core\arch\SVE\TypeCasting.h" />
+    <ClInclude Include="include\Eigen\src\Core\arch\SYCL\InteropHeaders.h" />
+    <ClInclude Include="include\Eigen\src\Core\arch\SYCL\MathFunctions.h" />
+    <ClInclude Include="include\Eigen\src\Core\arch\SYCL\PacketMath.h" />
+    <ClInclude Include="include\Eigen\src\Core\arch\SYCL\SyclMemoryModel.h" />
+    <ClInclude Include="include\Eigen\src\Core\arch\SYCL\TypeCasting.h" />
+    <ClInclude Include="include\Eigen\src\Core\arch\ZVector\Complex.h" />
+    <ClInclude Include="include\Eigen\src\Core\arch\ZVector\MathFunctions.h" />
+    <ClInclude Include="include\Eigen\src\Core\arch\ZVector\PacketMath.h" />
+    <ClInclude Include="include\Eigen\src\Core\ArithmeticSequence.h" />
+    <ClInclude Include="include\Eigen\src\Core\Array.h" />
+    <ClInclude Include="include\Eigen\src\Core\ArrayBase.h" />
+    <ClInclude Include="include\Eigen\src\Core\ArrayWrapper.h" />
+    <ClInclude Include="include\Eigen\src\Core\Assign.h" />
+    <ClInclude Include="include\Eigen\src\Core\AssignEvaluator.h" />
+    <ClInclude Include="include\Eigen\src\Core\Assign_MKL.h" />
+    <ClInclude Include="include\Eigen\src\Core\BandMatrix.h" />
+    <ClInclude Include="include\Eigen\src\Core\Block.h" />
+    <ClInclude Include="include\Eigen\src\Core\BooleanRedux.h" />
+    <ClInclude Include="include\Eigen\src\Core\CommaInitializer.h" />
+    <ClInclude Include="include\Eigen\src\Core\ConditionEstimator.h" />
+    <ClInclude Include="include\Eigen\src\Core\CoreEvaluators.h" />
+    <ClInclude Include="include\Eigen\src\Core\CoreIterators.h" />
+    <ClInclude Include="include\Eigen\src\Core\CwiseBinaryOp.h" />
+    <ClInclude Include="include\Eigen\src\Core\CwiseNullaryOp.h" />
+    <ClInclude Include="include\Eigen\src\Core\CwiseTernaryOp.h" />
+    <ClInclude Include="include\Eigen\src\Core\CwiseUnaryOp.h" />
+    <ClInclude Include="include\Eigen\src\Core\CwiseUnaryView.h" />
+    <ClInclude Include="include\Eigen\src\Core\DenseBase.h" />
+    <ClInclude Include="include\Eigen\src\Core\DenseCoeffsBase.h" />
+    <ClInclude Include="include\Eigen\src\Core\DenseStorage.h" />
+    <ClInclude Include="include\Eigen\src\Core\Diagonal.h" />
+    <ClInclude Include="include\Eigen\src\Core\DiagonalMatrix.h" />
+    <ClInclude Include="include\Eigen\src\Core\DiagonalProduct.h" />
+    <ClInclude Include="include\Eigen\src\Core\Dot.h" />
+    <ClInclude Include="include\Eigen\src\Core\EigenBase.h" />
+    <ClInclude Include="include\Eigen\src\Core\ForceAlignedAccess.h" />
+    <ClInclude Include="include\Eigen\src\Core\functors\AssignmentFunctors.h" />
+    <ClInclude Include="include\Eigen\src\Core\functors\BinaryFunctors.h" />
+    <ClInclude Include="include\Eigen\src\Core\functors\NullaryFunctors.h" />
+    <ClInclude Include="include\Eigen\src\Core\functors\StlFunctors.h" />
+    <ClInclude Include="include\Eigen\src\Core\functors\TernaryFunctors.h" />
+    <ClInclude Include="include\Eigen\src\Core\functors\UnaryFunctors.h" />
+    <ClInclude Include="include\Eigen\src\Core\Fuzzy.h" />
+    <ClInclude Include="include\Eigen\src\Core\GeneralProduct.h" />
+    <ClInclude Include="include\Eigen\src\Core\GenericPacketMath.h" />
+    <ClInclude Include="include\Eigen\src\Core\GlobalFunctions.h" />
+    <ClInclude Include="include\Eigen\src\Core\IndexedView.h" />
+    <ClInclude Include="include\Eigen\src\Core\Inverse.h" />
+    <ClInclude Include="include\Eigen\src\Core\IO.h" />
+    <ClInclude Include="include\Eigen\src\Core\Map.h" />
+    <ClInclude Include="include\Eigen\src\Core\MapBase.h" />
+    <ClInclude Include="include\Eigen\src\Core\MathFunctions.h" />
+    <ClInclude Include="include\Eigen\src\Core\MathFunctionsImpl.h" />
+    <ClInclude Include="include\Eigen\src\Core\Matrix.h" />
+    <ClInclude Include="include\Eigen\src\Core\MatrixBase.h" />
+    <ClInclude Include="include\Eigen\src\Core\NestByValue.h" />
+    <ClInclude Include="include\Eigen\src\Core\NoAlias.h" />
+    <ClInclude Include="include\Eigen\src\Core\NumTraits.h" />
+    <ClInclude Include="include\Eigen\src\Core\PartialReduxEvaluator.h" />
+    <ClInclude Include="include\Eigen\src\Core\PermutationMatrix.h" />
+    <ClInclude Include="include\Eigen\src\Core\PlainObjectBase.h" />
+    <ClInclude Include="include\Eigen\src\Core\Product.h" />
+    <ClInclude Include="include\Eigen\src\Core\ProductEvaluators.h" />
+    <ClInclude Include="include\Eigen\src\Core\products\GeneralBlockPanelKernel.h" />
+    <ClInclude Include="include\Eigen\src\Core\products\GeneralMatrixMatrix.h" />
+    <ClInclude Include="include\Eigen\src\Core\products\GeneralMatrixMatrixTriangular.h" />
+    <ClInclude Include="include\Eigen\src\Core\products\GeneralMatrixMatrixTriangular_BLAS.h" />
+    <ClInclude Include="include\Eigen\src\Core\products\GeneralMatrixMatrix_BLAS.h" />
+    <ClInclude Include="include\Eigen\src\Core\products\GeneralMatrixVector.h" />
+    <ClInclude Include="include\Eigen\src\Core\products\GeneralMatrixVector_BLAS.h" />
+    <ClInclude Include="include\Eigen\src\Core\products\Parallelizer.h" />
+    <ClInclude Include="include\Eigen\src\Core\products\SelfadjointMatrixMatrix.h" />
+    <ClInclude Include="include\Eigen\src\Core\products\SelfadjointMatrixMatrix_BLAS.h" />
+    <ClInclude Include="include\Eigen\src\Core\products\SelfadjointMatrixVector.h" />
+    <ClInclude Include="include\Eigen\src\Core\products\SelfadjointMatrixVector_BLAS.h" />
+    <ClInclude Include="include\Eigen\src\Core\products\SelfadjointProduct.h" />
+    <ClInclude Include="include\Eigen\src\Core\products\SelfadjointRank2Update.h" />
+    <ClInclude Include="include\Eigen\src\Core\products\TriangularMatrixMatrix.h" />
+    <ClInclude Include="include\Eigen\src\Core\products\TriangularMatrixMatrix_BLAS.h" />
+    <ClInclude Include="include\Eigen\src\Core\products\TriangularMatrixVector.h" />
+    <ClInclude Include="include\Eigen\src\Core\products\TriangularMatrixVector_BLAS.h" />
+    <ClInclude Include="include\Eigen\src\Core\products\TriangularSolverMatrix.h" />
+    <ClInclude Include="include\Eigen\src\Core\products\TriangularSolverMatrix_BLAS.h" />
+    <ClInclude Include="include\Eigen\src\Core\products\TriangularSolverVector.h" />
+    <ClInclude Include="include\Eigen\src\Core\Random.h" />
+    <ClInclude Include="include\Eigen\src\Core\Redux.h" />
+    <ClInclude Include="include\Eigen\src\Core\Ref.h" />
+    <ClInclude Include="include\Eigen\src\Core\Replicate.h" />
+    <ClInclude Include="include\Eigen\src\Core\Reshaped.h" />
+    <ClInclude Include="include\Eigen\src\Core\ReturnByValue.h" />
+    <ClInclude Include="include\Eigen\src\Core\Reverse.h" />
+    <ClInclude Include="include\Eigen\src\Core\Select.h" />
+    <ClInclude Include="include\Eigen\src\Core\SelfAdjointView.h" />
+    <ClInclude Include="include\Eigen\src\Core\SelfCwiseBinaryOp.h" />
+    <ClInclude Include="include\Eigen\src\Core\Solve.h" />
+    <ClInclude Include="include\Eigen\src\Core\SolverBase.h" />
+    <ClInclude Include="include\Eigen\src\Core\SolveTriangular.h" />
+    <ClInclude Include="include\Eigen\src\Core\StableNorm.h" />
+    <ClInclude Include="include\Eigen\src\Core\StlIterators.h" />
+    <ClInclude Include="include\Eigen\src\Core\Stride.h" />
+    <ClInclude Include="include\Eigen\src\Core\Swap.h" />
+    <ClInclude Include="include\Eigen\src\Core\Transpose.h" />
+    <ClInclude Include="include\Eigen\src\Core\Transpositions.h" />
+    <ClInclude Include="include\Eigen\src\Core\TriangularMatrix.h" />
+    <ClInclude Include="include\Eigen\src\Core\util\BlasUtil.h" />
+    <ClInclude Include="include\Eigen\src\Core\util\ConfigureVectorization.h" />
+    <ClInclude Include="include\Eigen\src\Core\util\Constants.h" />
+    <ClInclude Include="include\Eigen\src\Core\util\DisableStupidWarnings.h" />
+    <ClInclude Include="include\Eigen\src\Core\util\ForwardDeclarations.h" />
+    <ClInclude Include="include\Eigen\src\Core\util\IndexedViewHelper.h" />
+    <ClInclude Include="include\Eigen\src\Core\util\IntegralConstant.h" />
+    <ClInclude Include="include\Eigen\src\Core\util\Macros.h" />
+    <ClInclude Include="include\Eigen\src\Core\util\Memory.h" />
+    <ClInclude Include="include\Eigen\src\Core\util\Meta.h" />
+    <ClInclude Include="include\Eigen\src\Core\util\MKL_support.h" />
+    <ClInclude Include="include\Eigen\src\Core\util\NonMPL2.h" />
+    <ClInclude Include="include\Eigen\src\Core\util\ReenableStupidWarnings.h" />
+    <ClInclude Include="include\Eigen\src\Core\util\ReshapedHelper.h" />
+    <ClInclude Include="include\Eigen\src\Core\util\StaticAssert.h" />
+    <ClInclude Include="include\Eigen\src\Core\util\SymbolicIndex.h" />
+    <ClInclude Include="include\Eigen\src\Core\util\XprHelper.h" />
+    <ClInclude Include="include\Eigen\src\Core\VectorBlock.h" />
+    <ClInclude Include="include\Eigen\src\Core\VectorwiseOp.h" />
+    <ClInclude Include="include\Eigen\src\Core\Visitor.h" />
+    <ClInclude Include="include\Eigen\src\Eigenvalues\ComplexEigenSolver.h" />
+    <ClInclude Include="include\Eigen\src\Eigenvalues\ComplexSchur.h" />
+    <ClInclude Include="include\Eigen\src\Eigenvalues\ComplexSchur_LAPACKE.h" />
+    <ClInclude Include="include\Eigen\src\Eigenvalues\EigenSolver.h" />
+    <ClInclude Include="include\Eigen\src\Eigenvalues\GeneralizedEigenSolver.h" />
+    <ClInclude Include="include\Eigen\src\Eigenvalues\GeneralizedSelfAdjointEigenSolver.h" />
+    <ClInclude Include="include\Eigen\src\Eigenvalues\HessenbergDecomposition.h" />
+    <ClInclude Include="include\Eigen\src\Eigenvalues\MatrixBaseEigenvalues.h" />
+    <ClInclude Include="include\Eigen\src\Eigenvalues\RealQZ.h" />
+    <ClInclude Include="include\Eigen\src\Eigenvalues\RealSchur.h" />
+    <ClInclude Include="include\Eigen\src\Eigenvalues\RealSchur_LAPACKE.h" />
+    <ClInclude Include="include\Eigen\src\Eigenvalues\SelfAdjointEigenSolver.h" />
+    <ClInclude Include="include\Eigen\src\Eigenvalues\SelfAdjointEigenSolver_LAPACKE.h" />
+    <ClInclude Include="include\Eigen\src\Eigenvalues\Tridiagonalization.h" />
+    <ClInclude Include="include\Eigen\src\Geometry\AlignedBox.h" />
+    <ClInclude Include="include\Eigen\src\Geometry\AngleAxis.h" />
+    <ClInclude Include="include\Eigen\src\Geometry\arch\Geometry_SIMD.h" />
+    <ClInclude Include="include\Eigen\src\Geometry\EulerAngles.h" />
+    <ClInclude Include="include\Eigen\src\Geometry\Homogeneous.h" />
+    <ClInclude Include="include\Eigen\src\Geometry\Hyperplane.h" />
+    <ClInclude Include="include\Eigen\src\Geometry\OrthoMethods.h" />
+    <ClInclude Include="include\Eigen\src\Geometry\ParametrizedLine.h" />
+    <ClInclude Include="include\Eigen\src\Geometry\Quaternion.h" />
+    <ClInclude Include="include\Eigen\src\Geometry\Rotation2D.h" />
+    <ClInclude Include="include\Eigen\src\Geometry\RotationBase.h" />
+    <ClInclude Include="include\Eigen\src\Geometry\Scaling.h" />
+    <ClInclude Include="include\Eigen\src\Geometry\Transform.h" />
+    <ClInclude Include="include\Eigen\src\Geometry\Translation.h" />
+    <ClInclude Include="include\Eigen\src\Geometry\Umeyama.h" />
+    <ClInclude Include="include\Eigen\src\Householder\BlockHouseholder.h" />
+    <ClInclude Include="include\Eigen\src\Householder\Householder.h" />
+    <ClInclude Include="include\Eigen\src\Householder\HouseholderSequence.h" />
+    <ClInclude Include="include\Eigen\src\IterativeLinearSolvers\BasicPreconditioners.h" />
+    <ClInclude Include="include\Eigen\src\IterativeLinearSolvers\BiCGSTAB.h" />
+    <ClInclude Include="include\Eigen\src\IterativeLinearSolvers\ConjugateGradient.h" />
+    <ClInclude Include="include\Eigen\src\IterativeLinearSolvers\IncompleteCholesky.h" />
+    <ClInclude Include="include\Eigen\src\IterativeLinearSolvers\IncompleteLUT.h" />
+    <ClInclude Include="include\Eigen\src\IterativeLinearSolvers\IterativeSolverBase.h" />
+    <ClInclude Include="include\Eigen\src\IterativeLinearSolvers\LeastSquareConjugateGradient.h" />
+    <ClInclude Include="include\Eigen\src\IterativeLinearSolvers\SolveWithGuess.h" />
+    <ClInclude Include="include\Eigen\src\Jacobi\Jacobi.h" />
+    <ClInclude Include="include\Eigen\src\KLUSupport\KLUSupport.h" />
+    <ClInclude Include="include\Eigen\src\LU\arch\InverseSize4.h" />
+    <ClInclude Include="include\Eigen\src\LU\Determinant.h" />
+    <ClInclude Include="include\Eigen\src\LU\FullPivLU.h" />
+    <ClInclude Include="include\Eigen\src\LU\InverseImpl.h" />
+    <ClInclude Include="include\Eigen\src\LU\PartialPivLU.h" />
+    <ClInclude Include="include\Eigen\src\LU\PartialPivLU_LAPACKE.h" />
+    <ClInclude Include="include\Eigen\src\MetisSupport\MetisSupport.h" />
+    <ClInclude Include="include\Eigen\src\misc\blas.h" />
+    <ClInclude Include="include\Eigen\src\misc\Image.h" />
+    <ClInclude Include="include\Eigen\src\misc\Kernel.h" />
+    <ClInclude Include="include\Eigen\src\misc\lapack.h" />
+    <ClInclude Include="include\Eigen\src\misc\lapacke.h" />
+    <ClInclude Include="include\Eigen\src\misc\lapacke_mangling.h" />
+    <ClInclude Include="include\Eigen\src\misc\RealSvd2x2.h" />
+    <ClInclude Include="include\Eigen\src\OrderingMethods\Amd.h" />
+    <ClInclude Include="include\Eigen\src\OrderingMethods\Eigen_Colamd.h" />
+    <ClInclude Include="include\Eigen\src\OrderingMethods\Ordering.h" />
+    <ClInclude Include="include\Eigen\src\PardisoSupport\PardisoSupport.h" />
+    <ClInclude Include="include\Eigen\src\PaStiXSupport\PaStiXSupport.h" />
+    <ClInclude Include="include\Eigen\src\plugins\ArrayCwiseBinaryOps.h" />
+    <ClInclude Include="include\Eigen\src\plugins\ArrayCwiseUnaryOps.h" />
+    <ClInclude Include="include\Eigen\src\plugins\BlockMethods.h" />
+    <ClInclude Include="include\Eigen\src\plugins\CommonCwiseBinaryOps.h" />
+    <ClInclude Include="include\Eigen\src\plugins\CommonCwiseUnaryOps.h" />
+    <ClInclude Include="include\Eigen\src\plugins\IndexedViewMethods.h" />
+    <ClInclude Include="include\Eigen\src\plugins\MatrixCwiseBinaryOps.h" />
+    <ClInclude Include="include\Eigen\src\plugins\MatrixCwiseUnaryOps.h" />
+    <ClInclude Include="include\Eigen\src\plugins\ReshapedMethods.h" />
+    <ClInclude Include="include\Eigen\src\QR\ColPivHouseholderQR.h" />
+    <ClInclude Include="include\Eigen\src\QR\ColPivHouseholderQR_LAPACKE.h" />
+    <ClInclude Include="include\Eigen\src\QR\CompleteOrthogonalDecomposition.h" />
+    <ClInclude Include="include\Eigen\src\QR\FullPivHouseholderQR.h" />
+    <ClInclude Include="include\Eigen\src\QR\HouseholderQR.h" />
+    <ClInclude Include="include\Eigen\src\QR\HouseholderQR_LAPACKE.h" />
+    <ClInclude Include="include\Eigen\src\SparseCholesky\SimplicialCholesky.h" />
+    <ClInclude Include="include\Eigen\src\SparseCholesky\SimplicialCholesky_impl.h" />
+    <ClInclude Include="include\Eigen\src\SparseCore\AmbiVector.h" />
+    <ClInclude Include="include\Eigen\src\SparseCore\CompressedStorage.h" />
+    <ClInclude Include="include\Eigen\src\SparseCore\ConservativeSparseSparseProduct.h" />
+    <ClInclude Include="include\Eigen\src\SparseCore\MappedSparseMatrix.h" />
+    <ClInclude Include="include\Eigen\src\SparseCore\SparseAssign.h" />
+    <ClInclude Include="include\Eigen\src\SparseCore\SparseBlock.h" />
+    <ClInclude Include="include\Eigen\src\SparseCore\SparseColEtree.h" />
+    <ClInclude Include="include\Eigen\src\SparseCore\SparseCompressedBase.h" />
+    <ClInclude Include="include\Eigen\src\SparseCore\SparseCwiseBinaryOp.h" />
+    <ClInclude Include="include\Eigen\src\SparseCore\SparseCwiseUnaryOp.h" />
+    <ClInclude Include="include\Eigen\src\SparseCore\SparseDenseProduct.h" />
+    <ClInclude Include="include\Eigen\src\SparseCore\SparseDiagonalProduct.h" />
+    <ClInclude Include="include\Eigen\src\SparseCore\SparseDot.h" />
+    <ClInclude Include="include\Eigen\src\SparseCore\SparseFuzzy.h" />
+    <ClInclude Include="include\Eigen\src\SparseCore\SparseMap.h" />
+    <ClInclude Include="include\Eigen\src\SparseCore\SparseMatrix.h" />
+    <ClInclude Include="include\Eigen\src\SparseCore\SparseMatrixBase.h" />
+    <ClInclude Include="include\Eigen\src\SparseCore\SparsePermutation.h" />
+    <ClInclude Include="include\Eigen\src\SparseCore\SparseProduct.h" />
+    <ClInclude Include="include\Eigen\src\SparseCore\SparseRedux.h" />
+    <ClInclude Include="include\Eigen\src\SparseCore\SparseRef.h" />
+    <ClInclude Include="include\Eigen\src\SparseCore\SparseSelfAdjointView.h" />
+    <ClInclude Include="include\Eigen\src\SparseCore\SparseSolverBase.h" />
+    <ClInclude Include="include\Eigen\src\SparseCore\SparseSparseProductWithPruning.h" />
+    <ClInclude Include="include\Eigen\src\SparseCore\SparseTranspose.h" />
+    <ClInclude Include="include\Eigen\src\SparseCore\SparseTriangularView.h" />
+    <ClInclude Include="include\Eigen\src\SparseCore\SparseUtil.h" />
+    <ClInclude Include="include\Eigen\src\SparseCore\SparseVector.h" />
+    <ClInclude Include="include\Eigen\src\SparseCore\SparseView.h" />
+    <ClInclude Include="include\Eigen\src\SparseCore\TriangularSolver.h" />
+    <ClInclude Include="include\Eigen\src\SparseLU\SparseLU.h" />
+    <ClInclude Include="include\Eigen\src\SparseLU\SparseLUImpl.h" />
+    <ClInclude Include="include\Eigen\src\SparseLU\SparseLU_column_bmod.h" />
+    <ClInclude Include="include\Eigen\src\SparseLU\SparseLU_column_dfs.h" />
+    <ClInclude Include="include\Eigen\src\SparseLU\SparseLU_copy_to_ucol.h" />
+    <ClInclude Include="include\Eigen\src\SparseLU\SparseLU_gemm_kernel.h" />
+    <ClInclude Include="include\Eigen\src\SparseLU\SparseLU_heap_relax_snode.h" />
+    <ClInclude Include="include\Eigen\src\SparseLU\SparseLU_kernel_bmod.h" />
+    <ClInclude Include="include\Eigen\src\SparseLU\SparseLU_Memory.h" />
+    <ClInclude Include="include\Eigen\src\SparseLU\SparseLU_panel_bmod.h" />
+    <ClInclude Include="include\Eigen\src\SparseLU\SparseLU_panel_dfs.h" />
+    <ClInclude Include="include\Eigen\src\SparseLU\SparseLU_pivotL.h" />
+    <ClInclude Include="include\Eigen\src\SparseLU\SparseLU_pruneL.h" />
+    <ClInclude Include="include\Eigen\src\SparseLU\SparseLU_relax_snode.h" />
+    <ClInclude Include="include\Eigen\src\SparseLU\SparseLU_Structs.h" />
+    <ClInclude Include="include\Eigen\src\SparseLU\SparseLU_SupernodalMatrix.h" />
+    <ClInclude Include="include\Eigen\src\SparseLU\SparseLU_Utils.h" />
+    <ClInclude Include="include\Eigen\src\SparseQR\SparseQR.h" />
+    <ClInclude Include="include\Eigen\src\SPQRSupport\SuiteSparseQRSupport.h" />
+    <ClInclude Include="include\Eigen\src\StlSupport\details.h" />
+    <ClInclude Include="include\Eigen\src\StlSupport\StdDeque.h" />
+    <ClInclude Include="include\Eigen\src\StlSupport\StdList.h" />
+    <ClInclude Include="include\Eigen\src\StlSupport\StdVector.h" />
+    <ClInclude Include="include\Eigen\src\SuperLUSupport\SuperLUSupport.h" />
+    <ClInclude Include="include\Eigen\src\SVD\BDCSVD.h" />
+    <ClInclude Include="include\Eigen\src\SVD\JacobiSVD.h" />
+    <ClInclude Include="include\Eigen\src\SVD\JacobiSVD_LAPACKE.h" />
+    <ClInclude Include="include\Eigen\src\SVD\SVDBase.h" />
+    <ClInclude Include="include\Eigen\src\SVD\UpperBidiagonalization.h" />
+    <ClInclude Include="include\Eigen\src\UmfPackSupport\UmfPackSupport.h" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{0e6fd659-1f14-4574-8012-66e070d8a28c}</ProjectGuid>
+    <RootNamespace>HarlinnEigen</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Label="Vcpkg">
+    <VcpkgEnabled>false</VcpkgEnabled>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.superlu;$(ONEAPI_ROOT)mkl\latest\include;$(BOOST_ROOT);$(ProjectDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>
+      </SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.superlu;$(ONEAPI_ROOT)mkl\latest\include;$(BOOST_ROOT);$(ProjectDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>
+      </SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.superlu;$(ONEAPI_ROOT)mkl\latest\include;$(BOOST_ROOT);$(ProjectDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>
+      </SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.superlu;$(ONEAPI_ROOT)mkl\latest\include;$(BOOST_ROOT);$(ProjectDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>
+      </SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

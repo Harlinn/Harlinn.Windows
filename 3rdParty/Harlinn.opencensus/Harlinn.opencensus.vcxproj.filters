@@ -1,0 +1,491 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="include">
+      <UniqueIdentifier>{eb91f49f-52e9-4726-839a-5daada4b5436}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\opencensus">
+      <UniqueIdentifier>{89e75da7-7337-481a-aeb4-3b5679b44fdd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{b34deb19-2e3a-4b05-b5cd-9ec63e590eba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\opencensus\common">
+      <UniqueIdentifier>{0f6c1b70-ebb2-4526-ac9e-939e475cc362}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\opencensus\context">
+      <UniqueIdentifier>{15a35df9-8369-44e5-ad9c-0064227dfd20}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\opencensus\exporters">
+      <UniqueIdentifier>{468b03b3-f92b-487e-b53f-0567a6a45b50}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\opencensus\stats">
+      <UniqueIdentifier>{341f22c4-6603-4413-9c8d-3a054cdb2863}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\opencensus\tags">
+      <UniqueIdentifier>{a2062c6c-854c-4af1-94ed-23d15e3c3911}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\opencensus\trace">
+      <UniqueIdentifier>{c2835882-fe44-4b02-8b2b-1b8eb025b335}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\opencensus\exporters\stats">
+      <UniqueIdentifier>{ea12d464-5b6d-4f29-b75a-2b6618cf934c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\opencensus\exporters\trace">
+      <UniqueIdentifier>{c5a0fd2d-70d3-48ba-b4e6-ce8140c51ce9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\opencensus\exporters\stats\stdout">
+      <UniqueIdentifier>{c5ca505b-4c2e-4f7f-9a5b-3dd833842490}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\opencensus\exporters\trace\stdout">
+      <UniqueIdentifier>{97803202-be11-488d-9359-5bebb6bd91d7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\opencensus\trace\exporter">
+      <UniqueIdentifier>{9ef148fd-f4ca-4b67-a2c8-e8fca98d223f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\opencensus\trace\propagation">
+      <UniqueIdentifier>{d64b4ad4-2e41-461c-ad01-df6e6062846a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\common">
+      <UniqueIdentifier>{16019a0c-333d-40c0-af6b-001df9d66d0f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\context">
+      <UniqueIdentifier>{17ae8db3-7fc8-40fc-963c-463b5a22b35c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\exporters">
+      <UniqueIdentifier>{d05470cb-3e35-43a3-aaa5-f631f2753593}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\stats">
+      <UniqueIdentifier>{17a4921a-72f3-4cbb-99b4-1f7052e482cb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\tags">
+      <UniqueIdentifier>{bde932c9-e48a-433e-be71-62a2225a9491}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\trace">
+      <UniqueIdentifier>{7cd31008-baab-4bb2-aa7e-012e97140d87}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\exporters\stats">
+      <UniqueIdentifier>{58d231f4-f49a-4e6f-8b8a-1d094623d9c4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\exporters\trace">
+      <UniqueIdentifier>{ccfb7988-7a6a-4b02-9456-4bdb39e52131}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\exporters\trace\stdout">
+      <UniqueIdentifier>{42bd6e80-b21e-4416-848b-c784add2c23f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\exporters\stats\stdout">
+      <UniqueIdentifier>{47f285c8-c266-4c86-9e73-0ed5953bfdc9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\opencensus\common\internal">
+      <UniqueIdentifier>{471d0946-eab5-4e08-8a21-d012a0cf036c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\opencensus\stats\internal">
+      <UniqueIdentifier>{5fc8c300-d230-4153-809a-41089ec5fcf5}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="dllmain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\common\random.cc">
+      <Filter>src\common</Filter>
+    </ClCompile>
+    <ClCompile Include="src\context\context.cc">
+      <Filter>src\context</Filter>
+    </ClCompile>
+    <ClCompile Include="src\context\with_context.cc">
+      <Filter>src\context</Filter>
+    </ClCompile>
+    <ClCompile Include="src\exporters\stats\stdout\stats_stdout_exporter.cc">
+      <Filter>src\exporters\stats\stdout</Filter>
+    </ClCompile>
+    <ClCompile Include="src\exporters\trace\stdout\trace_stdout_exporter.cc">
+      <Filter>src\exporters\trace\stdout</Filter>
+    </ClCompile>
+    <ClCompile Include="src\stats\aggregation.cc">
+      <Filter>src\stats</Filter>
+    </ClCompile>
+    <ClCompile Include="src\stats\aggregation_window.cc">
+      <Filter>src\stats</Filter>
+    </ClCompile>
+    <ClCompile Include="src\stats\bucket_boundaries.cc">
+      <Filter>src\stats</Filter>
+    </ClCompile>
+    <ClCompile Include="src\stats\delta_producer.cc">
+      <Filter>src\stats</Filter>
+    </ClCompile>
+    <ClCompile Include="src\stats\distribution.cc">
+      <Filter>src\stats</Filter>
+    </ClCompile>
+    <ClCompile Include="src\stats\measure.cc">
+      <Filter>src\stats</Filter>
+    </ClCompile>
+    <ClCompile Include="src\stats\measure_data.cc">
+      <Filter>src\stats</Filter>
+    </ClCompile>
+    <ClCompile Include="src\stats\measure_descriptor.cc">
+      <Filter>src\stats</Filter>
+    </ClCompile>
+    <ClCompile Include="src\stats\measure_registry.cc">
+      <Filter>src\stats</Filter>
+    </ClCompile>
+    <ClCompile Include="src\stats\measure_registry_impl.cc">
+      <Filter>src\stats</Filter>
+    </ClCompile>
+    <ClCompile Include="src\stats\recording.cc">
+      <Filter>src\stats</Filter>
+    </ClCompile>
+    <ClCompile Include="src\stats\set_aggregation_window.cc">
+      <Filter>src\stats</Filter>
+    </ClCompile>
+    <ClCompile Include="src\stats\stats_exporter.cc">
+      <Filter>src\stats</Filter>
+    </ClCompile>
+    <ClCompile Include="src\stats\stats_manager.cc">
+      <Filter>src\stats</Filter>
+    </ClCompile>
+    <ClCompile Include="src\stats\view.cc">
+      <Filter>src\stats</Filter>
+    </ClCompile>
+    <ClCompile Include="src\stats\view_data.cc">
+      <Filter>src\stats</Filter>
+    </ClCompile>
+    <ClCompile Include="src\stats\view_data_impl.cc">
+      <Filter>src\stats</Filter>
+    </ClCompile>
+    <ClCompile Include="src\stats\view_descriptor.cc">
+      <Filter>src\stats</Filter>
+    </ClCompile>
+    <ClCompile Include="src\tags\tags_context_util.cc">
+      <Filter>src\tags</Filter>
+    </ClCompile>
+    <ClCompile Include="src\tags\tag_key.cc">
+      <Filter>src\tags</Filter>
+    </ClCompile>
+    <ClCompile Include="src\tags\tag_map.cc">
+      <Filter>src\tags</Filter>
+    </ClCompile>
+    <ClCompile Include="src\tags\with_tag_map.cc">
+      <Filter>src\tags</Filter>
+    </ClCompile>
+    <ClCompile Include="src\trace\annotation.cc">
+      <Filter>src\trace</Filter>
+    </ClCompile>
+    <ClCompile Include="src\trace\attribute_list.cc">
+      <Filter>src\trace</Filter>
+    </ClCompile>
+    <ClCompile Include="src\trace\attribute_value.cc">
+      <Filter>src\trace</Filter>
+    </ClCompile>
+    <ClCompile Include="src\trace\attribute_value_ref.cc">
+      <Filter>src\trace</Filter>
+    </ClCompile>
+    <ClCompile Include="src\trace\cloud_trace_context.cc">
+      <Filter>src\trace</Filter>
+    </ClCompile>
+    <ClCompile Include="src\trace\trace_context_util.cc">
+      <Filter>src\trace</Filter>
+    </ClCompile>
+    <ClCompile Include="src\trace\grpc_trace_bin.cc">
+      <Filter>src\trace</Filter>
+    </ClCompile>
+    <ClCompile Include="src\trace\link.cc">
+      <Filter>src\trace</Filter>
+    </ClCompile>
+    <ClCompile Include="src\trace\local_span_store.cc">
+      <Filter>src\trace</Filter>
+    </ClCompile>
+    <ClCompile Include="src\trace\local_span_store_impl.cc">
+      <Filter>src\trace</Filter>
+    </ClCompile>
+    <ClCompile Include="src\trace\message_event.cc">
+      <Filter>src\trace</Filter>
+    </ClCompile>
+    <ClCompile Include="src\trace\running_span_store.cc">
+      <Filter>src\trace</Filter>
+    </ClCompile>
+    <ClCompile Include="src\trace\running_span_store_impl.cc">
+      <Filter>src\trace</Filter>
+    </ClCompile>
+    <ClCompile Include="src\trace\sampler.cc">
+      <Filter>src\trace</Filter>
+    </ClCompile>
+    <ClCompile Include="src\trace\span.cc">
+      <Filter>src\trace</Filter>
+    </ClCompile>
+    <ClCompile Include="src\trace\span_context.cc">
+      <Filter>src\trace</Filter>
+    </ClCompile>
+    <ClCompile Include="src\trace\span_data.cc">
+      <Filter>src\trace</Filter>
+    </ClCompile>
+    <ClCompile Include="src\trace\span_exporter.cc">
+      <Filter>src\trace</Filter>
+    </ClCompile>
+    <ClCompile Include="src\trace\span_exporter_impl.cc">
+      <Filter>src\trace</Filter>
+    </ClCompile>
+    <ClCompile Include="src\trace\span_id.cc">
+      <Filter>src\trace</Filter>
+    </ClCompile>
+    <ClCompile Include="src\trace\span_impl.cc">
+      <Filter>src\trace</Filter>
+    </ClCompile>
+    <ClCompile Include="src\trace\status.cc">
+      <Filter>src\trace</Filter>
+    </ClCompile>
+    <ClCompile Include="src\trace\trace_config.cc">
+      <Filter>src\trace</Filter>
+    </ClCompile>
+    <ClCompile Include="src\trace\trace_config_impl.cc">
+      <Filter>src\trace</Filter>
+    </ClCompile>
+    <ClCompile Include="src\trace\trace_context.cc">
+      <Filter>src\trace</Filter>
+    </ClCompile>
+    <ClCompile Include="src\trace\trace_id.cc">
+      <Filter>src\trace</Filter>
+    </ClCompile>
+    <ClCompile Include="src\trace\trace_options.cc">
+      <Filter>src\trace</Filter>
+    </ClCompile>
+    <ClCompile Include="src\trace\with_span.cc">
+      <Filter>src\trace</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\opencensus\common\version.h">
+      <Filter>include\opencensus\common</Filter>
+    </ClInclude>
+    <ClInclude Include="include\opencensus\context\context.h">
+      <Filter>include\opencensus\context</Filter>
+    </ClInclude>
+    <ClInclude Include="include\opencensus\context\with_context.h">
+      <Filter>include\opencensus\context</Filter>
+    </ClInclude>
+    <ClInclude Include="include\opencensus\exporters\stats\stdout\stdout_exporter.h">
+      <Filter>include\opencensus\exporters\stats\stdout</Filter>
+    </ClInclude>
+    <ClInclude Include="include\opencensus\exporters\trace\stdout\stdout_exporter.h">
+      <Filter>include\opencensus\exporters\trace\stdout</Filter>
+    </ClInclude>
+    <ClInclude Include="include\opencensus\stats\aggregation.h">
+      <Filter>include\opencensus\stats</Filter>
+    </ClInclude>
+    <ClInclude Include="include\opencensus\stats\bucket_boundaries.h">
+      <Filter>include\opencensus\stats</Filter>
+    </ClInclude>
+    <ClInclude Include="include\opencensus\stats\distribution.h">
+      <Filter>include\opencensus\stats</Filter>
+    </ClInclude>
+    <ClInclude Include="include\opencensus\stats\measure.h">
+      <Filter>include\opencensus\stats</Filter>
+    </ClInclude>
+    <ClInclude Include="include\opencensus\stats\measure_descriptor.h">
+      <Filter>include\opencensus\stats</Filter>
+    </ClInclude>
+    <ClInclude Include="include\opencensus\stats\measure_registry.h">
+      <Filter>include\opencensus\stats</Filter>
+    </ClInclude>
+    <ClInclude Include="include\opencensus\stats\recording.h">
+      <Filter>include\opencensus\stats</Filter>
+    </ClInclude>
+    <ClInclude Include="include\opencensus\stats\stats.h">
+      <Filter>include\opencensus\stats</Filter>
+    </ClInclude>
+    <ClInclude Include="include\opencensus\stats\stats_exporter.h">
+      <Filter>include\opencensus\stats</Filter>
+    </ClInclude>
+    <ClInclude Include="include\opencensus\stats\tag_key.h">
+      <Filter>include\opencensus\stats</Filter>
+    </ClInclude>
+    <ClInclude Include="include\opencensus\stats\tag_set.h">
+      <Filter>include\opencensus\stats</Filter>
+    </ClInclude>
+    <ClInclude Include="include\opencensus\stats\view.h">
+      <Filter>include\opencensus\stats</Filter>
+    </ClInclude>
+    <ClInclude Include="include\opencensus\stats\view_data.h">
+      <Filter>include\opencensus\stats</Filter>
+    </ClInclude>
+    <ClInclude Include="include\opencensus\stats\view_descriptor.h">
+      <Filter>include\opencensus\stats</Filter>
+    </ClInclude>
+    <ClInclude Include="include\opencensus\tags\context_util.h">
+      <Filter>include\opencensus\tags</Filter>
+    </ClInclude>
+    <ClInclude Include="include\opencensus\tags\tag_key.h">
+      <Filter>include\opencensus\tags</Filter>
+    </ClInclude>
+    <ClInclude Include="include\opencensus\tags\tag_map.h">
+      <Filter>include\opencensus\tags</Filter>
+    </ClInclude>
+    <ClInclude Include="include\opencensus\tags\with_tag_map.h">
+      <Filter>include\opencensus\tags</Filter>
+    </ClInclude>
+    <ClInclude Include="include\opencensus\trace\exporter\annotation.h">
+      <Filter>include\opencensus\trace\exporter</Filter>
+    </ClInclude>
+    <ClInclude Include="include\opencensus\trace\exporter\attribute_value.h">
+      <Filter>include\opencensus\trace\exporter</Filter>
+    </ClInclude>
+    <ClInclude Include="include\opencensus\trace\exporter\link.h">
+      <Filter>include\opencensus\trace\exporter</Filter>
+    </ClInclude>
+    <ClInclude Include="include\opencensus\trace\exporter\message_event.h">
+      <Filter>include\opencensus\trace\exporter</Filter>
+    </ClInclude>
+    <ClInclude Include="include\opencensus\trace\exporter\span_data.h">
+      <Filter>include\opencensus\trace\exporter</Filter>
+    </ClInclude>
+    <ClInclude Include="include\opencensus\trace\exporter\span_exporter.h">
+      <Filter>include\opencensus\trace\exporter</Filter>
+    </ClInclude>
+    <ClInclude Include="include\opencensus\trace\exporter\status.h">
+      <Filter>include\opencensus\trace\exporter</Filter>
+    </ClInclude>
+    <ClInclude Include="include\opencensus\trace\propagation\cloud_trace_context.h">
+      <Filter>include\opencensus\trace\propagation</Filter>
+    </ClInclude>
+    <ClInclude Include="include\opencensus\trace\propagation\grpc_trace_bin.h">
+      <Filter>include\opencensus\trace\propagation</Filter>
+    </ClInclude>
+    <ClInclude Include="include\opencensus\trace\propagation\trace_context.h">
+      <Filter>include\opencensus\trace\propagation</Filter>
+    </ClInclude>
+    <ClInclude Include="include\opencensus\trace\attribute_value_ref.h">
+      <Filter>include\opencensus\trace</Filter>
+    </ClInclude>
+    <ClInclude Include="include\opencensus\trace\context_util.h">
+      <Filter>include\opencensus\trace</Filter>
+    </ClInclude>
+    <ClInclude Include="include\opencensus\trace\sampler.h">
+      <Filter>include\opencensus\trace</Filter>
+    </ClInclude>
+    <ClInclude Include="include\opencensus\trace\span.h">
+      <Filter>include\opencensus\trace</Filter>
+    </ClInclude>
+    <ClInclude Include="include\opencensus\trace\span_context.h">
+      <Filter>include\opencensus\trace</Filter>
+    </ClInclude>
+    <ClInclude Include="include\opencensus\trace\span_id.h">
+      <Filter>include\opencensus\trace</Filter>
+    </ClInclude>
+    <ClInclude Include="include\opencensus\trace\status_code.h">
+      <Filter>include\opencensus\trace</Filter>
+    </ClInclude>
+    <ClInclude Include="include\opencensus\trace\trace_config.h">
+      <Filter>include\opencensus\trace</Filter>
+    </ClInclude>
+    <ClInclude Include="include\opencensus\trace\trace_id.h">
+      <Filter>include\opencensus\trace</Filter>
+    </ClInclude>
+    <ClInclude Include="include\opencensus\trace\trace_options.h">
+      <Filter>include\opencensus\trace</Filter>
+    </ClInclude>
+    <ClInclude Include="include\opencensus\trace\trace_params.h">
+      <Filter>include\opencensus\trace</Filter>
+    </ClInclude>
+    <ClInclude Include="include\opencensus\trace\with_span.h">
+      <Filter>include\opencensus\trace</Filter>
+    </ClInclude>
+    <ClInclude Include="include\opencensus\opencensus_export.h">
+      <Filter>include\opencensus</Filter>
+    </ClInclude>
+    <ClInclude Include="src\stats\stats_exporter_impl.h">
+      <Filter>src\stats</Filter>
+    </ClInclude>
+    <ClInclude Include="src\trace\attribute_list.h">
+      <Filter>src\trace</Filter>
+    </ClInclude>
+    <ClInclude Include="src\trace\event_with_time.h">
+      <Filter>src\trace</Filter>
+    </ClInclude>
+    <ClInclude Include="src\trace\local_span_store.h">
+      <Filter>src\trace</Filter>
+    </ClInclude>
+    <ClInclude Include="src\trace\local_span_store_impl.h">
+      <Filter>src\trace</Filter>
+    </ClInclude>
+    <ClInclude Include="src\trace\running_span_store.h">
+      <Filter>src\trace</Filter>
+    </ClInclude>
+    <ClInclude Include="src\trace\running_span_store_impl.h">
+      <Filter>src\trace</Filter>
+    </ClInclude>
+    <ClInclude Include="src\trace\span_exporter_impl.h">
+      <Filter>src\trace</Filter>
+    </ClInclude>
+    <ClInclude Include="src\trace\span_impl.h">
+      <Filter>src\trace</Filter>
+    </ClInclude>
+    <ClInclude Include="src\trace\trace_config_impl.h">
+      <Filter>src\trace</Filter>
+    </ClInclude>
+    <ClInclude Include="src\trace\trace_events.h">
+      <Filter>src\trace</Filter>
+    </ClInclude>
+    <ClInclude Include="src\trace\trace_params_impl.h">
+      <Filter>src\trace</Filter>
+    </ClInclude>
+    <ClInclude Include="include\opencensus\common\internal\hash_mix.h">
+      <Filter>include\opencensus\common\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\opencensus\common\internal\random.h">
+      <Filter>include\opencensus\common\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\opencensus\common\internal\stats_object.h">
+      <Filter>include\opencensus\common\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\opencensus\stats\internal\aggregation_window.h">
+      <Filter>include\opencensus\stats\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\opencensus\stats\internal\delta_producer.h">
+      <Filter>include\opencensus\stats\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\opencensus\stats\internal\measure_data.h">
+      <Filter>include\opencensus\stats\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\opencensus\stats\internal\measure_registry_impl.h">
+      <Filter>include\opencensus\stats\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\opencensus\stats\internal\set_aggregation_window.h">
+      <Filter>include\opencensus\stats\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\opencensus\stats\internal\stats_manager.h">
+      <Filter>include\opencensus\stats\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\opencensus\stats\internal\view_data_impl.h">
+      <Filter>include\opencensus\stats\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\opencensus\common\internal\string_vector_hash.h">
+      <Filter>include\opencensus\common\internal</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="src\context\README.md">
+      <Filter>src\context</Filter>
+    </None>
+    <None Include="src\stats\README.md">
+      <Filter>src\stats</Filter>
+    </None>
+    <None Include="src\tags\README.md">
+      <Filter>src\tags</Filter>
+    </None>
+    <None Include="src\trace\README.md">
+      <Filter>src\trace</Filter>
+    </None>
+  </ItemGroup>
+</Project>

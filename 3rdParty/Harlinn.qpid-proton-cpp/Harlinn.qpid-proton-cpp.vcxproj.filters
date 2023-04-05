@@ -1,0 +1,510 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="include">
+      <UniqueIdentifier>{c8b60bc6-7806-44ad-957f-26e7929a76d4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\proton">
+      <UniqueIdentifier>{f132486f-6f82-4e94-8384-df44bcc642bf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\proton\codec">
+      <UniqueIdentifier>{e46e80ed-9f38-428c-917f-b06ad847a386}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\proton\internal">
+      <UniqueIdentifier>{424ccbf5-42a1-48bb-9690-66975fa6a6d6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\proton\io">
+      <UniqueIdentifier>{69db222d-bc6c-4592-af55-b9feff27a9a6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{824106df-7369-44c9-85d4-2a247d18ae6b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Readme">
+      <UniqueIdentifier>{369fb25f-40c1-4838-84dc-e7b8a31f897f}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="dllmain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\binary.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\byte_array.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\codec_test.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\connect_config.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\connect_config_dummy.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\connect_config_test.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\connection.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\connection_driver.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\connection_driver_test.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\connection_options.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\container.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\container_test.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\contexts.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cpp-test.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\credit_test.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\data.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\decimal.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\decoder.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\delivery.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\delivery_test.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\duration.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\encoder.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\endpoint.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\error.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\error_condition.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\handler.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\interop_test.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\link.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\link_namer.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\link_test.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\listener.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\map.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\map_test.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\message.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\message_test.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\messaging_adapter.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\node_options.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\null.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\object.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\object_test.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\proactor_container_impl.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\proton_bits.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\receiver.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\receiver_options.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\reconnect_options.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\reconnect_test.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\returned.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\sasl.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\scalar_base.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\scalar_test.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\sender.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\sender_options.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\session.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\session_options.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\source.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ssl.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ssl_options.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\target.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\terminus.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\timestamp.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\tracker.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\transfer.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\transport.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\type_id.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\url.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\url_test.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\uuid.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\value.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\value_test.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\work_queue.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\connect_config.hpp">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\contexts.hpp">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\link_namer.hpp">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\messaging_adapter.hpp">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\msg.hpp">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\proactor_container_impl.hpp">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\proactor_work_queue_impl.hpp">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\proton_bits.hpp">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\reconnect_options_impl.hpp">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scalar_test.hpp">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ssl_options_impl.hpp">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\test_bits.hpp">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\types_internal.hpp">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="include\proton\codec\common.hpp">
+      <Filter>include\proton\codec</Filter>
+    </ClInclude>
+    <ClInclude Include="include\proton\codec\decoder.hpp">
+      <Filter>include\proton\codec</Filter>
+    </ClInclude>
+    <ClInclude Include="include\proton\codec\deque.hpp">
+      <Filter>include\proton\codec</Filter>
+    </ClInclude>
+    <ClInclude Include="include\proton\codec\encoder.hpp">
+      <Filter>include\proton\codec</Filter>
+    </ClInclude>
+    <ClInclude Include="include\proton\codec\forward_list.hpp">
+      <Filter>include\proton\codec</Filter>
+    </ClInclude>
+    <ClInclude Include="include\proton\codec\list.hpp">
+      <Filter>include\proton\codec</Filter>
+    </ClInclude>
+    <ClInclude Include="include\proton\codec\map.hpp">
+      <Filter>include\proton\codec</Filter>
+    </ClInclude>
+    <ClInclude Include="include\proton\codec\unordered_map.hpp">
+      <Filter>include\proton\codec</Filter>
+    </ClInclude>
+    <ClInclude Include="include\proton\codec\vector.hpp">
+      <Filter>include\proton\codec</Filter>
+    </ClInclude>
+    <ClInclude Include="include\proton\internal\comparable.hpp">
+      <Filter>include\proton\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\proton\internal\data.hpp">
+      <Filter>include\proton\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\proton\internal\export.hpp">
+      <Filter>include\proton\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\proton\internal\object.hpp">
+      <Filter>include\proton\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\proton\internal\pn_unique_ptr.hpp">
+      <Filter>include\proton\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\proton\internal\type_traits.hpp">
+      <Filter>include\proton\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\proton\io\connection_driver.hpp">
+      <Filter>include\proton\io</Filter>
+    </ClInclude>
+    <ClInclude Include="include\proton\annotation_key.hpp">
+      <Filter>include\proton</Filter>
+    </ClInclude>
+    <ClInclude Include="include\proton\binary.hpp">
+      <Filter>include\proton</Filter>
+    </ClInclude>
+    <ClInclude Include="include\proton\byte_array.hpp">
+      <Filter>include\proton</Filter>
+    </ClInclude>
+    <ClInclude Include="include\proton\connect_config.hpp">
+      <Filter>include\proton</Filter>
+    </ClInclude>
+    <ClInclude Include="include\proton\connection.hpp">
+      <Filter>include\proton</Filter>
+    </ClInclude>
+    <ClInclude Include="include\proton\connection_options.hpp">
+      <Filter>include\proton</Filter>
+    </ClInclude>
+    <ClInclude Include="include\proton\container.hpp">
+      <Filter>include\proton</Filter>
+    </ClInclude>
+    <ClInclude Include="include\proton\decimal.hpp">
+      <Filter>include\proton</Filter>
+    </ClInclude>
+    <ClInclude Include="include\proton\default_container.hpp">
+      <Filter>include\proton</Filter>
+    </ClInclude>
+    <ClInclude Include="include\proton\delivery.hpp">
+      <Filter>include\proton</Filter>
+    </ClInclude>
+    <ClInclude Include="include\proton\delivery_mode.hpp">
+      <Filter>include\proton</Filter>
+    </ClInclude>
+    <ClInclude Include="include\proton\duration.hpp">
+      <Filter>include\proton</Filter>
+    </ClInclude>
+    <ClInclude Include="include\proton\endpoint.hpp">
+      <Filter>include\proton</Filter>
+    </ClInclude>
+    <ClInclude Include="include\proton\error.hpp">
+      <Filter>include\proton</Filter>
+    </ClInclude>
+    <ClInclude Include="include\proton\error_condition.hpp">
+      <Filter>include\proton</Filter>
+    </ClInclude>
+    <ClInclude Include="include\proton\function.hpp">
+      <Filter>include\proton</Filter>
+    </ClInclude>
+    <ClInclude Include="include\proton\fwd.hpp">
+      <Filter>include\proton</Filter>
+    </ClInclude>
+    <ClInclude Include="include\proton\link.hpp">
+      <Filter>include\proton</Filter>
+    </ClInclude>
+    <ClInclude Include="include\proton\listen_handler.hpp">
+      <Filter>include\proton</Filter>
+    </ClInclude>
+    <ClInclude Include="include\proton\listener.hpp">
+      <Filter>include\proton</Filter>
+    </ClInclude>
+    <ClInclude Include="include\proton\map.hpp">
+      <Filter>include\proton</Filter>
+    </ClInclude>
+    <ClInclude Include="include\proton\message.hpp">
+      <Filter>include\proton</Filter>
+    </ClInclude>
+    <ClInclude Include="include\proton\message_id.hpp">
+      <Filter>include\proton</Filter>
+    </ClInclude>
+    <ClInclude Include="include\proton\messaging_handler.hpp">
+      <Filter>include\proton</Filter>
+    </ClInclude>
+    <ClInclude Include="include\proton\namespaces.hpp">
+      <Filter>include\proton</Filter>
+    </ClInclude>
+    <ClInclude Include="include\proton\null.hpp">
+      <Filter>include\proton</Filter>
+    </ClInclude>
+    <ClInclude Include="include\proton\receiver.hpp">
+      <Filter>include\proton</Filter>
+    </ClInclude>
+    <ClInclude Include="include\proton\receiver_options.hpp">
+      <Filter>include\proton</Filter>
+    </ClInclude>
+    <ClInclude Include="include\proton\reconnect_options.hpp">
+      <Filter>include\proton</Filter>
+    </ClInclude>
+    <ClInclude Include="include\proton\returned.hpp">
+      <Filter>include\proton</Filter>
+    </ClInclude>
+    <ClInclude Include="include\proton\sasl.hpp">
+      <Filter>include\proton</Filter>
+    </ClInclude>
+    <ClInclude Include="include\proton\scalar.hpp">
+      <Filter>include\proton</Filter>
+    </ClInclude>
+    <ClInclude Include="include\proton\scalar_base.hpp">
+      <Filter>include\proton</Filter>
+    </ClInclude>
+    <ClInclude Include="include\proton\sender.hpp">
+      <Filter>include\proton</Filter>
+    </ClInclude>
+    <ClInclude Include="include\proton\sender_options.hpp">
+      <Filter>include\proton</Filter>
+    </ClInclude>
+    <ClInclude Include="include\proton\session.hpp">
+      <Filter>include\proton</Filter>
+    </ClInclude>
+    <ClInclude Include="include\proton\session_options.hpp">
+      <Filter>include\proton</Filter>
+    </ClInclude>
+    <ClInclude Include="include\proton\source.hpp">
+      <Filter>include\proton</Filter>
+    </ClInclude>
+    <ClInclude Include="include\proton\source_options.hpp">
+      <Filter>include\proton</Filter>
+    </ClInclude>
+    <ClInclude Include="include\proton\ssl.hpp">
+      <Filter>include\proton</Filter>
+    </ClInclude>
+    <ClInclude Include="include\proton\symbol.hpp">
+      <Filter>include\proton</Filter>
+    </ClInclude>
+    <ClInclude Include="include\proton\target.hpp">
+      <Filter>include\proton</Filter>
+    </ClInclude>
+    <ClInclude Include="include\proton\target_options.hpp">
+      <Filter>include\proton</Filter>
+    </ClInclude>
+    <ClInclude Include="include\proton\terminus.hpp">
+      <Filter>include\proton</Filter>
+    </ClInclude>
+    <ClInclude Include="include\proton\thread_safe.hpp">
+      <Filter>include\proton</Filter>
+    </ClInclude>
+    <ClInclude Include="include\proton\timestamp.hpp">
+      <Filter>include\proton</Filter>
+    </ClInclude>
+    <ClInclude Include="include\proton\tracker.hpp">
+      <Filter>include\proton</Filter>
+    </ClInclude>
+    <ClInclude Include="include\proton\transfer.hpp">
+      <Filter>include\proton</Filter>
+    </ClInclude>
+    <ClInclude Include="include\proton\transport.hpp">
+      <Filter>include\proton</Filter>
+    </ClInclude>
+    <ClInclude Include="include\proton\type_id.hpp">
+      <Filter>include\proton</Filter>
+    </ClInclude>
+    <ClInclude Include="include\proton\types.hpp">
+      <Filter>include\proton</Filter>
+    </ClInclude>
+    <ClInclude Include="include\proton\types_fwd.hpp">
+      <Filter>include\proton</Filter>
+    </ClInclude>
+    <ClInclude Include="include\proton\url.hpp">
+      <Filter>include\proton</Filter>
+    </ClInclude>
+    <ClInclude Include="include\proton\uuid.hpp">
+      <Filter>include\proton</Filter>
+    </ClInclude>
+    <ClInclude Include="include\proton\value.hpp">
+      <Filter>include\proton</Filter>
+    </ClInclude>
+    <ClInclude Include="include\proton\work_queue.hpp">
+      <Filter>include\proton</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
