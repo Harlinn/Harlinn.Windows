@@ -2744,6 +2744,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Media", "Media", "{CA80A16E
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Harlinn.libsodium", "3rdParty\Harlinn.libsodium\Harlinn.libsodium.vcxproj", "{6247326D-50CB-44D9-9813-4619489F6C1C}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Harlinn.libzmq", "3rdParty\Harlinn.libzmq\Harlinn.libzmq.vcxproj", "{B995B3CE-D8B0-4243-A316-1C4A8057D326}"
+	ProjectSection(ProjectDependencies) = postProject
+		{6247326D-50CB-44D9-9813-4619489F6C1C} = {6247326D-50CB-44D9-9813-4619489F6C1C}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -8418,6 +8423,18 @@ Global
 		{6247326D-50CB-44D9-9813-4619489F6C1C}.Release|x64.Build.0 = Release|x64
 		{6247326D-50CB-44D9-9813-4619489F6C1C}.Release|x86.ActiveCfg = Release|Win32
 		{6247326D-50CB-44D9-9813-4619489F6C1C}.Release|x86.Build.0 = Release|Win32
+		{B995B3CE-D8B0-4243-A316-1C4A8057D326}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{B995B3CE-D8B0-4243-A316-1C4A8057D326}.Debug|Any CPU.Build.0 = Debug|x64
+		{B995B3CE-D8B0-4243-A316-1C4A8057D326}.Debug|x64.ActiveCfg = Debug|x64
+		{B995B3CE-D8B0-4243-A316-1C4A8057D326}.Debug|x64.Build.0 = Debug|x64
+		{B995B3CE-D8B0-4243-A316-1C4A8057D326}.Debug|x86.ActiveCfg = Debug|Win32
+		{B995B3CE-D8B0-4243-A316-1C4A8057D326}.Debug|x86.Build.0 = Debug|Win32
+		{B995B3CE-D8B0-4243-A316-1C4A8057D326}.Release|Any CPU.ActiveCfg = Release|x64
+		{B995B3CE-D8B0-4243-A316-1C4A8057D326}.Release|Any CPU.Build.0 = Release|x64
+		{B995B3CE-D8B0-4243-A316-1C4A8057D326}.Release|x64.ActiveCfg = Release|x64
+		{B995B3CE-D8B0-4243-A316-1C4A8057D326}.Release|x64.Build.0 = Release|x64
+		{B995B3CE-D8B0-4243-A316-1C4A8057D326}.Release|x86.ActiveCfg = Release|Win32
+		{B995B3CE-D8B0-4243-A316-1C4A8057D326}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -9036,6 +9053,7 @@ Global
 		{64A96445-53CF-4169-8639-BD45B5DBFBF8} = {0B26211F-10CE-4D98-A137-05062EF5CAE8}
 		{CA80A16E-A61E-42A3-97F2-5EA73E381E5D} = {64A96445-53CF-4169-8639-BD45B5DBFBF8}
 		{6247326D-50CB-44D9-9813-4619489F6C1C} = {3E2C34DD-A4A7-4423-ACE5-5892A378AF5F}
+		{B995B3CE-D8B0-4243-A316-1C4A8057D326} = {3E2C34DD-A4A7-4423-ACE5-5892A378AF5F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {72148CF9-A054-4B83-9675-2D14F91844D1}
