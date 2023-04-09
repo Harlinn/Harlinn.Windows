@@ -466,8 +466,8 @@ class SmallVector {
   // The actual data used to store the array elements.  It must never be used
   // directly, but must only be accesed through |small_data_|.
   //typename std::aligned_storage<sizeof(T), std::alignment_of<T>::value>::type
-  alignas(T) T
-      buffer[small_size];
+  alignas(T) std::byte
+      buffer[small_size*sizeof(T) ];
 
   // A pointer to a vector that is used to store the elements of the vector when
   // this size exceeds |small_size|.  If |large_data_| is nullptr, then the data
