@@ -189,7 +189,7 @@ class Streamable {
     }
   }
 
-  std::ostream& Print(std::ostream& os) const;
+  ABSEIL_EXPORT std::ostream& Print(std::ostream& os) const;
 
   friend std::ostream& operator<<(std::ostream& os, const Streamable& l) {
     return l.Print(os);
@@ -206,24 +206,24 @@ class Streamable {
 };
 
 // for testing
-std::string Summarize(UntypedFormatSpecImpl format,
+ABSEIL_EXPORT std::string Summarize(UntypedFormatSpecImpl format,
                       absl::Span<const FormatArgImpl> args);
-bool BindWithPack(const UnboundConversion* props,
+ABSEIL_EXPORT bool BindWithPack(const UnboundConversion* props,
                   absl::Span<const FormatArgImpl> pack, BoundConversion* bound);
 
-bool FormatUntyped(FormatRawSinkImpl raw_sink,
+ABSEIL_EXPORT bool FormatUntyped(FormatRawSinkImpl raw_sink,
                    UntypedFormatSpecImpl format,
                    absl::Span<const FormatArgImpl> args);
 
-std::string& AppendPack(std::string* out, UntypedFormatSpecImpl format,
+ABSEIL_EXPORT std::string& AppendPack(std::string* out, UntypedFormatSpecImpl format,
                         absl::Span<const FormatArgImpl> args);
 
-std::string FormatPack(const UntypedFormatSpecImpl format,
+ABSEIL_EXPORT std::string FormatPack(const UntypedFormatSpecImpl format,
                        absl::Span<const FormatArgImpl> args);
 
-int FprintF(std::FILE* output, UntypedFormatSpecImpl format,
+ABSEIL_EXPORT int FprintF(std::FILE* output, UntypedFormatSpecImpl format,
             absl::Span<const FormatArgImpl> args);
-int SnprintF(char* output, size_t size, UntypedFormatSpecImpl format,
+ABSEIL_EXPORT int SnprintF(char* output, size_t size, UntypedFormatSpecImpl format,
              absl::Span<const FormatArgImpl> args);
 
 // Returned by Streamed(v). Converts via '%s' to the std::string created

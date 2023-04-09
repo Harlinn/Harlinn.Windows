@@ -103,7 +103,7 @@ class Cord;
 class CordTestPeer;
 template <typename Releaser>
 Cord MakeCordFromExternal(absl::string_view, Releaser&&);
-void CopyCordToString(const Cord& src, std::string* dst);
+ABSEIL_EXPORT void CopyCordToString(const Cord& src, std::string* dst);
 
 // Cord memory accounting modes
 enum class CordMemoryAccounting {
@@ -170,13 +170,13 @@ class Cord {
   // prevent implicit Cord constructions from arguments convertible to an
   // `absl::string_view`.
   explicit Cord(absl::string_view src);
-  Cord& operator=(absl::string_view src);
+  ABSEIL_EXPORT Cord& operator=(absl::string_view src);
 
   // Creates a Cord from a `std::string&&` rvalue. These constructors are
   // templated to avoid ambiguities for types that are convertible to both
   // `absl::string_view` and `std::string`, such as `const char*`.
   template <typename T, EnableIfString<T> = 0>
-  explicit Cord(T&& src);
+  ABSEIL_TEMPLATE_EXPORT_DECL explicit Cord(T&& src);
   template <typename T, EnableIfString<T> = 0>
   Cord& operator=(T&& src);
 
@@ -233,22 +233,22 @@ class Cord {
   //
   // Releases the Cord data. Any nodes that share data with other Cords, if
   // applicable, will have their reference counts reduced by 1.
-  ABSL_ATTRIBUTE_REINITIALIZES void Clear();
+  ABSEIL_EXPORT ABSL_ATTRIBUTE_REINITIALIZES void Clear();
 
   // Cord::Append()
   //
   // Appends data to the Cord, which may come from another Cord or other string
   // data.
-  void Append(const Cord& src);
-  void Append(Cord&& src);
-  void Append(absl::string_view src);
+  ABSEIL_EXPORT void Append(const Cord& src);
+  ABSEIL_EXPORT void Append(Cord&& src);
+  ABSEIL_EXPORT void Append(absl::string_view src);
   template <typename T, EnableIfString<T> = 0>
-  void Append(T&& src);
+  ABSEIL_EXPORT void Append(T&& src);
 
   // Appends `buffer` to this cord, unless `buffer` has a zero length in which
   // case this method has no effect on this cord instance.
   // This method is guaranteed to consume `buffer`.
-  void Append(CordBuffer buffer);
+  ABSEIL_EXPORT void Append(CordBuffer buffer);
 
   // Returns a CordBuffer, re-using potential existing capacity in this cord.
   //
@@ -288,28 +288,28 @@ class Cord {
   //
   // Prepends data to the Cord, which may come from another Cord or other string
   // data.
-  void Prepend(const Cord& src);
-  void Prepend(absl::string_view src);
+  ABSEIL_EXPORT void Prepend(const Cord& src);
+  ABSEIL_EXPORT void Prepend(absl::string_view src);
   template <typename T, EnableIfString<T> = 0>
-  void Prepend(T&& src);
+  ABSEIL_EXPORT void Prepend(T&& src);
 
   // Prepends `buffer` to this cord, unless `buffer` has a zero length in which
   // case this method has no effect on this cord instance.
   // This method is guaranteed to consume `buffer`.
-  void Prepend(CordBuffer buffer);
+  ABSEIL_EXPORT void Prepend(CordBuffer buffer);
 
   // Cord::RemovePrefix()
   //
   // Removes the first `n` bytes of a Cord.
-  void RemovePrefix(size_t n);
-  void RemoveSuffix(size_t n);
+  ABSEIL_EXPORT void RemovePrefix(size_t n);
+  ABSEIL_EXPORT void RemoveSuffix(size_t n);
 
   // Cord::Subcord()
   //
   // Returns a new Cord representing the subrange [pos, pos + new_size) of
   // *this. If pos >= size(), the result is empty(). If
   // (pos + new_size) >= size(), the result is the subrange [pos, size()).
-  Cord Subcord(size_t pos, size_t new_size) const;
+  ABSEIL_EXPORT Cord Subcord(size_t pos, size_t new_size) const;
 
   // Cord::swap()
   //
@@ -347,7 +347,7 @@ class Cord {
   //   -1  'this' Cord is smaller
   //    0  two Cords are equal
   //    1  'this' Cord is larger
-  int Compare(absl::string_view rhs) const;
+  ABSEIL_EXPORT int Compare(absl::string_view rhs) const;
   int Compare(const Cord& rhs) const;
 
   // Cord::StartsWith()
@@ -366,7 +366,7 @@ class Cord {
   //
   // Converts a Cord into a `std::string()`. This operator is marked explicit to
   // prevent unintended Cord usage in functions that take a string.
-  explicit operator std::string() const;
+  ABSEIL_EXPORT explicit operator std::string() const;
 
   // CopyCordToString()
   //
@@ -377,7 +377,7 @@ class Cord {
   // guarantee that pointers previously returned by `dst->data()` remain valid
   // even if `*dst` had enough capacity to hold `src`. If `*dst` is a new
   // object, prefer to simply use the conversion operator to `std::string`.
-  friend void CopyCordToString(const Cord& src, std::string* dst);
+  friend ABSEIL_EXPORT void CopyCordToString(const Cord& src, std::string* dst);
 
   class CharIterator;
 
@@ -446,7 +446,7 @@ class Cord {
     // Removes `n` bytes from `current_chunk_`. Expects `n` to be smaller than
     // `current_chunk_.size()`.
     void RemoveChunkPrefix(size_t n);
-    Cord AdvanceAndReadBytes(size_t n);
+    ABSEIL_EXPORT Cord AdvanceAndReadBytes(size_t n);
     void AdvanceBytes(size_t n);
 
     // Btree specific operator++
@@ -769,7 +769,7 @@ class Cord {
 
   // Creates a cord instance with `method` representing the originating
   // public API call causing the cord to be created.
-  explicit Cord(absl::string_view src, MethodIdentifier method);
+  ABSEIL_TEMPLATE_EXPORT explicit Cord(absl::string_view src, MethodIdentifier method);
 
   friend class CordTestPeer;
   friend bool operator==(const Cord& lhs, const Cord& rhs);
@@ -783,7 +783,7 @@ class Cord {
 
   // Allocates new contiguous storage for the contents of the cord. This is
   // called by Flatten() when the cord was not already flat.
-  absl::string_view FlattenSlowPath();
+  ABSEIL_TEMPLATE_EXPORT absl::string_view FlattenSlowPath();
 
   // Actual cord contents are hidden inside the following simple
   // class so that we can isolate the bulk of cord.cc from changes
@@ -808,8 +808,8 @@ class Cord {
     bool empty() const;
     size_t size() const;
     const char* data() const;  // Returns nullptr if holding pointer
-    void set_data(const char* data, size_t n);  // Discards pointer, if any
-    char* set_data(size_t n);                   // Write data to the result
+    ABSEIL_EXPORT void set_data(const char* data, size_t n);  // Discards pointer, if any
+    ABSEIL_EXPORT char* set_data(size_t n);                   // Write data to the result
     // Returns nullptr if holding bytes
     absl::cord_internal::CordRep* tree() const;
     absl::cord_internal::CordRep* as_tree() const;
@@ -817,10 +817,10 @@ class Cord {
     // Returns non-null iff was holding a pointer
     absl::cord_internal::CordRep* clear();
     // Converts to pointer if necessary.
-    void reduce_size(size_t n);    // REQUIRES: holding data
-    void remove_prefix(size_t n);  // REQUIRES: holding data
-    void AppendArray(absl::string_view src, MethodIdentifier method);
-    absl::string_view FindFlatStartPiece() const;
+    ABSEIL_EXPORT void reduce_size(size_t n);    // REQUIRES: holding data
+    ABSEIL_EXPORT void remove_prefix(size_t n);  // REQUIRES: holding data
+    ABSEIL_EXPORT void AppendArray(absl::string_view src, MethodIdentifier method);
+    ABSEIL_EXPORT absl::string_view FindFlatStartPiece() const;
 
     // Creates a CordRepFlat instance from the current inlined data with `extra'
     // bytes of desired additional capacity.
@@ -854,12 +854,12 @@ class Cord {
     void CommitTree(const CordRep* old_rep, CordRep* rep,
                     const CordzUpdateScope& scope, MethodIdentifier method);
 
-    void AppendTreeToInlined(CordRep* tree, MethodIdentifier method);
-    void AppendTreeToTree(CordRep* tree, MethodIdentifier method);
-    void AppendTree(CordRep* tree, MethodIdentifier method);
-    void PrependTreeToInlined(CordRep* tree, MethodIdentifier method);
-    void PrependTreeToTree(CordRep* tree, MethodIdentifier method);
-    void PrependTree(CordRep* tree, MethodIdentifier method);
+    ABSEIL_EXPORT void AppendTreeToInlined(CordRep* tree, MethodIdentifier method);
+    ABSEIL_EXPORT void AppendTreeToTree(CordRep* tree, MethodIdentifier method);
+    ABSEIL_EXPORT void AppendTree(CordRep* tree, MethodIdentifier method);
+    ABSEIL_EXPORT void PrependTreeToInlined(CordRep* tree, MethodIdentifier method);
+    ABSEIL_EXPORT void PrependTreeToTree(CordRep* tree, MethodIdentifier method);
+    ABSEIL_EXPORT void PrependTree(CordRep* tree, MethodIdentifier method);
 
     template <bool has_length>
     void GetAppendRegion(char** region, size_t* size, size_t length);
@@ -923,9 +923,9 @@ class Cord {
    private:
     friend class Cord;
 
-    void AssignSlow(const InlineRep& src);
+    ABSEIL_EXPORT void AssignSlow(const InlineRep& src);
     // Unrefs the tree and stops profiling.
-    void UnrefTree();
+    ABSEIL_EXPORT void UnrefTree();
 
     void ResetToEmpty() { data_ = {}; }
 
@@ -937,37 +937,37 @@ class Cord {
   InlineRep contents_;
 
   // Helper for GetFlat() and TryFlat().
-  static bool GetFlatAux(absl::cord_internal::CordRep* rep,
+  ABSEIL_EXPORT static bool GetFlatAux(absl::cord_internal::CordRep* rep,
                          absl::string_view* fragment);
 
   // Helper for ForEachChunk().
-  static void ForEachChunkAux(
+  ABSEIL_EXPORT static void ForEachChunkAux(
       absl::cord_internal::CordRep* rep,
       absl::FunctionRef<void(absl::string_view)> callback);
 
   // The destructor for non-empty Cords.
-  void DestroyCordSlow();
+  ABSEIL_EXPORT void DestroyCordSlow();
 
   // Out-of-line implementation of slower parts of logic.
-  void CopyToArraySlowPath(char* dst) const;
-  int CompareSlowPath(absl::string_view rhs, size_t compared_size,
+  ABSEIL_EXPORT void CopyToArraySlowPath(char* dst) const;
+  ABSEIL_EXPORT int CompareSlowPath(absl::string_view rhs, size_t compared_size,
                       size_t size_to_compare) const;
-  int CompareSlowPath(const Cord& rhs, size_t compared_size,
+  ABSEIL_EXPORT int CompareSlowPath(const Cord& rhs, size_t compared_size,
                       size_t size_to_compare) const;
-  bool EqualsImpl(absl::string_view rhs, size_t size_to_compare) const;
-  bool EqualsImpl(const Cord& rhs, size_t size_to_compare) const;
-  int CompareImpl(const Cord& rhs) const;
+  ABSEIL_EXPORT bool EqualsImpl(absl::string_view rhs, size_t size_to_compare) const;
+  ABSEIL_EXPORT bool EqualsImpl(const Cord& rhs, size_t size_to_compare) const;
+  ABSEIL_EXPORT int CompareImpl(const Cord& rhs) const;
 
   template <typename ResultType, typename RHS>
   friend ResultType GenericCompare(const Cord& lhs, const RHS& rhs,
                                    size_t size_to_compare);
-  static absl::string_view GetFirstChunk(const Cord& c);
-  static absl::string_view GetFirstChunk(absl::string_view sv);
+  ABSEIL_EXPORT static absl::string_view GetFirstChunk(const Cord& c);
+  ABSEIL_EXPORT static absl::string_view GetFirstChunk(absl::string_view sv);
 
   // Returns a new reference to contents_.tree(), or steals an existing
   // reference if called on an rvalue.
-  absl::cord_internal::CordRep* TakeRep() const&;
-  absl::cord_internal::CordRep* TakeRep() &&;
+  ABSEIL_EXPORT absl::cord_internal::CordRep* TakeRep() const&;
+  ABSEIL_EXPORT absl::cord_internal::CordRep* TakeRep() &&;
 
   // Helper for Append().
   template <typename C>
@@ -977,18 +977,18 @@ class Cord {
   // This method does explicitly not attempt to use any spare capacity
   // in any pending last added private owned flat.
   // Requires `src` to be <= kMaxFlatLength.
-  void AppendPrecise(absl::string_view src, MethodIdentifier method);
-  void PrependPrecise(absl::string_view src, MethodIdentifier method);
+  ABSEIL_EXPORT void AppendPrecise(absl::string_view src, MethodIdentifier method);
+  ABSEIL_EXPORT void PrependPrecise(absl::string_view src, MethodIdentifier method);
 
-  CordBuffer GetAppendBufferSlowPath(size_t capacity, size_t min_capacity);
+  ABSEIL_EXPORT CordBuffer GetAppendBufferSlowPath(size_t capacity, size_t min_capacity);
 
   // Prepends the provided data to this instance. `method` contains the public
   // API method for this action which is tracked for Cordz sampling purposes.
-  void PrependArray(absl::string_view src, MethodIdentifier method);
+  ABSEIL_EXPORT void PrependArray(absl::string_view src, MethodIdentifier method);
 
   // Assigns the value in 'src' to this instance, 'stealing' its contents.
   // Requires src.length() > kMaxBytesToCopy.
-  Cord& AssignLargeString(std::string&& src);
+  ABSEIL_EXPORT Cord& AssignLargeString(std::string&& src);
 
   // Helper for AbslHashValue().
   template <typename H>
@@ -1058,7 +1058,7 @@ inline void SmallMemmove(char* dst, const char* src, size_t n) {
 
 // Does non-template-specific `CordRepExternal` initialization.
 // Requires `data` to be non-empty.
-void InitializeCordRepExternal(absl::string_view data, CordRepExternal* rep);
+ABSEIL_EXPORT void InitializeCordRepExternal(absl::string_view data, CordRepExternal* rep);
 
 // Creates a new `CordRep` that owns `data` and `releaser` and returns a pointer
 // to it. Requires `data` to be non-empty.
@@ -1363,8 +1363,8 @@ inline CordBuffer Cord::GetAppendBuffer(size_t capacity, size_t min_capacity) {
   return GetAppendBufferSlowPath(capacity, min_capacity);
 }
 
-extern template void Cord::Append(std::string&& src);
-extern template void Cord::Prepend(std::string&& src);
+extern template ABSEIL_EXPORT void Cord::Append(std::string&& src);
+extern template ABSEIL_EXPORT void Cord::Prepend(std::string&& src);
 
 inline int Cord::Compare(const Cord& rhs) const {
   if (!contents_.is_tree() && !rhs.contents_.is_tree()) {
@@ -1628,12 +1628,12 @@ inline bool operator>=(absl::string_view x, const Cord& y) { return !(x < y); }
 namespace strings_internal {
 class CordTestAccess {
  public:
-  static size_t FlatOverhead();
-  static size_t MaxFlatLength();
-  static size_t SizeofCordRepExternal();
-  static size_t SizeofCordRepSubstring();
-  static size_t FlatTagToLength(uint8_t tag);
-  static uint8_t LengthToTag(size_t s);
+  ABSEIL_EXPORT static size_t FlatOverhead();
+  ABSEIL_EXPORT static size_t MaxFlatLength();
+  ABSEIL_EXPORT static size_t SizeofCordRepExternal();
+  ABSEIL_EXPORT static size_t SizeofCordRepSubstring();
+  ABSEIL_EXPORT static size_t FlatTagToLength(uint8_t tag);
+  ABSEIL_EXPORT static uint8_t LengthToTag(size_t s);
 };
 }  // namespace strings_internal
 ABSL_NAMESPACE_END

@@ -122,6 +122,13 @@ namespace Harlinn::Common::Core
         {
         }
 
+        FixedSizeMemoryManager( const FixedSizeMemoryManager& other ) = delete;
+        FixedSizeMemoryManager( FixedSizeMemoryManager&& other ) = delete;
+
+        FixedSizeMemoryManager& operator = ( const FixedSizeMemoryManager& other ) = delete;
+        FixedSizeMemoryManager& operator = ( FixedSizeMemoryManager&& other ) = delete;
+
+
         ~FixedSizeMemoryManager( )
         {
             Reset( );

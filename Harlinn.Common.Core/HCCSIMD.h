@@ -2193,7 +2193,7 @@ namespace Harlinn::Common::Core::SIMD
             }
         }
 
-
+        /*
         static SIMDType HSum( SIMDType v ) noexcept
         {
             if constexpr ( UseShortSIMDType )
@@ -2210,7 +2210,7 @@ namespace Harlinn::Common::Core::SIMD
                 return _mm_add_sd( r2, _mm_movehdup_pd( r2 ) );
             }
         }
-
+        */
 
         /// <summary>
         /// Subtracts float64 vectors.

@@ -60,7 +60,7 @@ class ABSL_LOCKABLE CordzInfo : public CordzHandle {
   // and/or deleted. `method` identifies the Cord public API method initiating
   // the cord to be sampled.
   // Requires `cord` to hold a tree, and `cord.cordz_info()` to be null.
-  static void TrackCord(InlineData& cord, MethodIdentifier method);
+  ABSEIL_EXPORT static void TrackCord(InlineData& cord, MethodIdentifier method);
 
   // Identical to TrackCord(), except that this function fills the
   // `parent_stack` and `parent_method` properties of the returned CordzInfo
@@ -68,7 +68,7 @@ class ABSL_LOCKABLE CordzInfo : public CordzHandle {
   // This function should be used for sampling 'copy constructed' and 'copy
   // assigned' cords. This function allows 'cord` to be already sampled, in
   // which case the CordzInfo will be newly created from `src`.
-  static void TrackCord(InlineData& cord, const InlineData& src,
+  ABSEIL_EXPORT static void TrackCord(InlineData& cord, const InlineData& src,
                         MethodIdentifier method);
 
   // Maybe sample the cord identified by 'cord' for method 'method'.
@@ -110,31 +110,31 @@ class ABSL_LOCKABLE CordzInfo : public CordzHandle {
   // and before the root cordrep of the sampled cord is unreffed.
   // This function may extend the lifetime of the cordrep in cases where the
   // CordInfo instance is being held by a concurrent collection thread.
-  void Untrack();
+  ABSEIL_EXPORT void Untrack();
 
   // Invokes UntrackCord() on `info` if `info` is not null.
-  static void MaybeUntrackCord(CordzInfo* info);
+  ABSEIL_EXPORT static void MaybeUntrackCord(CordzInfo* info);
 
   CordzInfo() = delete;
   CordzInfo(const CordzInfo&) = delete;
   CordzInfo& operator=(const CordzInfo&) = delete;
 
   // Retrieves the oldest existing CordzInfo.
-  static CordzInfo* Head(const CordzSnapshot& snapshot)
+  ABSEIL_EXPORT static CordzInfo* Head(const CordzSnapshot& snapshot)
       ABSL_NO_THREAD_SAFETY_ANALYSIS;
 
   // Retrieves the next oldest existing CordzInfo older than 'this' instance.
-  CordzInfo* Next(const CordzSnapshot& snapshot) const
+  ABSEIL_EXPORT CordzInfo* Next(const CordzSnapshot& snapshot) const
       ABSL_NO_THREAD_SAFETY_ANALYSIS;
 
   // Locks this instance for the update identified by `method`.
   // Increases the count for `method` in `update_tracker`.
-  void Lock(MethodIdentifier method) ABSL_EXCLUSIVE_LOCK_FUNCTION(mutex_);
+  ABSEIL_EXPORT void Lock(MethodIdentifier method) ABSL_EXCLUSIVE_LOCK_FUNCTION(mutex_);
 
   // Unlocks this instance. If the contained `rep` has been set to null
   // indicating the Cord has been cleared or is otherwise no longer sampled,
   // then this method will delete this CordzInfo instance.
-  void Unlock() ABSL_UNLOCK_FUNCTION(mutex_);
+  ABSEIL_EXPORT void Unlock() ABSL_UNLOCK_FUNCTION(mutex_);
 
   // Asserts that this CordzInfo instance is locked.
   void AssertHeld() ABSL_ASSERT_EXCLUSIVE_LOCK(mutex_);
@@ -169,17 +169,17 @@ class ABSL_LOCKABLE CordzInfo : public CordzHandle {
   // was first created. Some cords are created as inlined cords, and only as
   // data is added do they become a non-inlined cord. However, typically the
   // location represents reasonably well where the cord is 'created'.
-  absl::Span<void* const> GetStack() const;
+  ABSEIL_EXPORT absl::Span<void* const> GetStack() const;
 
   // Returns the stack trace for a sampled cord's 'parent stack trace'. This
   // value may be set if the cord is sampled (promoted) after being created
   // from, or being assigned the value of an existing (sampled) cord.
-  absl::Span<void* const> GetParentStack() const;
+  ABSEIL_EXPORT absl::Span<void* const> GetParentStack() const;
 
   // Retrieves the CordzStatistics associated with this Cord. The statistics
   // are only updated when a Cord goes through a mutation, such as an Append
   // or RemovePrefix.
-  CordzStatistics GetCordzStatistics() const;
+  ABSEIL_EXPORT CordzStatistics GetCordzStatistics() const;
 
  private:
   using SpinLock = absl::base_internal::SpinLock;
@@ -198,9 +198,9 @@ class ABSL_LOCKABLE CordzInfo : public CordzHandle {
 
   static constexpr int kMaxStackDepth = 64;
 
-  explicit CordzInfo(CordRep* rep, const CordzInfo* src,
+  ABSEIL_EXPORT explicit CordzInfo(CordRep* rep, const CordzInfo* src,
                      MethodIdentifier method);
-  ~CordzInfo() override;
+  ABSEIL_EXPORT ~CordzInfo() override;
 
   // Sets `rep_` without holding a lock.
   void UnsafeSetCordRep(CordRep* rep) ABSL_NO_THREAD_SAFETY_ANALYSIS;
@@ -210,13 +210,13 @@ class ABSL_LOCKABLE CordzInfo : public CordzHandle {
   // Returns the parent method from `src`, which is either `parent_method_` or
   // `method_` depending on `parent_method_` being kUnknown.
   // Returns kUnknown if `src` is null.
-  static MethodIdentifier GetParentMethod(const CordzInfo* src);
+  ABSEIL_EXPORT static MethodIdentifier GetParentMethod(const CordzInfo* src);
 
   // Fills the provided stack from `src`, copying either `parent_stack_` or
   // `stack_` depending on `parent_stack_` being empty, returning the size of
   // the parent stack.
   // Returns 0 if `src` is null.
-  static int FillParentStack(const CordzInfo* src, void** stack);
+  ABSEIL_EXPORT static int FillParentStack(const CordzInfo* src, void** stack);
 
   void ODRCheck() const {
 #ifndef NDEBUG
@@ -227,7 +227,7 @@ class ABSL_LOCKABLE CordzInfo : public CordzHandle {
   // Non-inlined implementation of `MaybeTrackCord`, which is executed if
   // either `src` is sampled or `cord` is sampled, and either untracks or
   // tracks `cord` as documented per `MaybeTrackCord`.
-  static void MaybeTrackCordImpl(InlineData& cord, const InlineData& src,
+  ABSEIL_EXPORT static void MaybeTrackCordImpl(InlineData& cord, const InlineData& src,
                                  MethodIdentifier method);
 
   ABSL_CONST_INIT static List global_list_;

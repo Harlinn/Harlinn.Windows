@@ -194,7 +194,7 @@ class Arg {
 
 // Internal helper function. Don't call this from outside this implementation.
 // This interface may change without notice.
-void SubstituteAndAppendArray(std::string* output, absl::string_view format,
+ABSEIL_EXPORT void SubstituteAndAppendArray(std::string* output, absl::string_view format,
                               const absl::string_view* args_array,
                               size_t num_args);
 

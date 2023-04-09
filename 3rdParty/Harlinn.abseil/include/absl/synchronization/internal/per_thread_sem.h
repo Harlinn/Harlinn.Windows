@@ -46,7 +46,7 @@ class PerThreadSem {
 
   // Routine invoked periodically (once a second) by a background thread.
   // Has no effect on user-visible state.
-  static void Tick(base_internal::ThreadIdentity* identity);
+  ABSEIL_EXPORT static void Tick(base_internal::ThreadIdentity* identity);
 
   // ---------------------------------------------------------------------------
   // Routines used by autosizing threadpools to detect when threads are
@@ -58,16 +58,16 @@ class PerThreadSem {
   // implementations.  GetThreadBlockedCounter() should be used by modules that
   // block threads; if the pointer returned is non-zero, the location should be
   // incremented before the thread blocks, and decremented after it wakes.
-  static void SetThreadBlockedCounter(std::atomic<int> *counter);
-  static std::atomic<int> *GetThreadBlockedCounter();
+  ABSEIL_EXPORT static void SetThreadBlockedCounter(std::atomic<int> *counter);
+  ABSEIL_EXPORT static std::atomic<int> *GetThreadBlockedCounter();
 
  private:
   // Create the PerThreadSem associated with "identity".  Initializes count=0.
   // REQUIRES: May only be called by ThreadIdentity.
-  static void Init(base_internal::ThreadIdentity* identity);
+  ABSEIL_EXPORT static void Init(base_internal::ThreadIdentity* identity);
 
   // Increments "identity"'s count.
-  static inline void Post(base_internal::ThreadIdentity* identity);
+  ABSEIL_EXPORT static inline void Post(base_internal::ThreadIdentity* identity);
 
   // Waits until either our count > 0 or t has expired.
   // If count > 0, decrements count and returns true.  Otherwise returns false.

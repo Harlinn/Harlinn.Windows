@@ -349,7 +349,7 @@ Cord::Cord(T&& src) : contents_(InlineData::kDefaultInit) {
   }
 }
 
-template Cord::Cord(std::string&& src);
+template ABSEIL_TEMPLATE_EXPORT Cord::Cord(std::string&& src);
 
 // The destruction code is separate so that the compiler can determine
 // that it does not need to call the destructor on a moved-from Cord.

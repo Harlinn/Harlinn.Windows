@@ -31,7 +31,7 @@ ABSL_NAMESPACE_BEGIN
 // Now()
 //
 // Returns the current time, expressed as an `absl::Time` absolute time value.
-absl::Time Now();
+ABSEIL_EXPORT absl::Time Now();
 
 // GetCurrentTimeNanos()
 //
@@ -39,7 +39,7 @@ absl::Time Now();
 // Epoch (https://en.wikipedia.org/wiki/Unix_time). Prefer `absl::Now()` instead
 // for all but the most performance-sensitive cases (i.e. when you are calling
 // this function hundreds of thousands of times per second).
-int64_t GetCurrentTimeNanos();
+ABSEIL_EXPORT int64_t GetCurrentTimeNanos();
 
 // SleepFor()
 //
@@ -48,7 +48,7 @@ int64_t GetCurrentTimeNanos();
 // Notes:
 // * Signal interruptions will not reduce the sleep duration.
 // * Returns immediately when passed a nonpositive duration.
-void SleepFor(absl::Duration duration);
+ABSEIL_EXPORT void SleepFor(absl::Duration duration);
 
 ABSL_NAMESPACE_END
 }  // namespace absl
@@ -64,7 +64,7 @@ ABSL_NAMESPACE_END
 // By changing our extension points to be extern "C", we dodge this
 // check.
 extern "C" {
-void ABSL_INTERNAL_C_SYMBOL(AbslInternalSleepFor)(absl::Duration duration);
+ABSEIL_EXPORT void ABSL_INTERNAL_C_SYMBOL(AbslInternalSleepFor)(absl::Duration duration);
 }  // extern "C"
 
 inline void absl::SleepFor(absl::Duration duration) {

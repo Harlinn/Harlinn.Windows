@@ -34,7 +34,7 @@ namespace synchronization_internal {
 
 // Allocates and attaches a ThreadIdentity object for the calling thread.
 // For private use only.
-base_internal::ThreadIdentity* CreateThreadIdentity();
+ABSEIL_EXPORT base_internal::ThreadIdentity* CreateThreadIdentity();
 
 // Returns the ThreadIdentity object representing the calling thread; guaranteed
 // to be unique for its lifetime.  The returned object will remain valid for the

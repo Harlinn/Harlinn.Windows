@@ -123,8 +123,8 @@ ABSL_NAMESPACE_BEGIN
 //   // v[0] == "a", v[1] == "b", v[2] == "c"
 class ByString {
  public:
-  explicit ByString(absl::string_view sp);
-  absl::string_view Find(absl::string_view text, size_t pos) const;
+  ABSEIL_EXPORT explicit ByString(absl::string_view sp);
+  ABSEIL_EXPORT absl::string_view Find(absl::string_view text, size_t pos) const;
 
  private:
   const std::string delimiter_;
@@ -156,7 +156,7 @@ class ByString {
 class ByChar {
  public:
   explicit ByChar(char c) : c_(c) {}
-  absl::string_view Find(absl::string_view text, size_t pos) const;
+  ABSEIL_EXPORT absl::string_view Find(absl::string_view text, size_t pos) const;
 
  private:
   char c_;
@@ -181,8 +181,8 @@ class ByChar {
 //
 class ByAnyChar {
  public:
-  explicit ByAnyChar(absl::string_view sp);
-  absl::string_view Find(absl::string_view text, size_t pos) const;
+  ABSEIL_EXPORT explicit ByAnyChar(absl::string_view sp);
+  ABSEIL_EXPORT absl::string_view Find(absl::string_view text, size_t pos) const;
 
  private:
   const std::string delimiters_;
@@ -212,8 +212,8 @@ class ByAnyChar {
 //   // v[0] == "12", v[1] == "34", v[2] == "5"
 class ByLength {
  public:
-  explicit ByLength(ptrdiff_t length);
-  absl::string_view Find(absl::string_view text, size_t pos) const;
+  ABSEIL_EXPORT explicit ByLength(ptrdiff_t length);
+  ABSEIL_EXPORT absl::string_view Find(absl::string_view text, size_t pos) const;
 
  private:
   const ptrdiff_t length_;

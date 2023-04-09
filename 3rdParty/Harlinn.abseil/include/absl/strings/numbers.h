@@ -70,7 +70,7 @@ ABSL_MUST_USE_RESULT bool SimpleAtoi(absl::string_view str, int_type* out);
 // allowed formats for `str`, except SimpleAtof() is locale-independent and will
 // always use the "C" locale. If any errors are encountered, this function
 // returns `false`, leaving `out` in an unspecified state.
-ABSL_MUST_USE_RESULT bool SimpleAtof(absl::string_view str, float* out);
+ABSEIL_EXPORT ABSL_MUST_USE_RESULT bool SimpleAtof(absl::string_view str, float* out);
 
 // SimpleAtod()
 //
@@ -81,7 +81,7 @@ ABSL_MUST_USE_RESULT bool SimpleAtof(absl::string_view str, float* out);
 // allowed formats for `str`, except SimpleAtod is locale-independent and will
 // always use the "C" locale. If any errors are encountered, this function
 // returns `false`, leaving `out` in an unspecified state.
-ABSL_MUST_USE_RESULT bool SimpleAtod(absl::string_view str, double* out);
+ABSEIL_EXPORT ABSL_MUST_USE_RESULT bool SimpleAtod(absl::string_view str, double* out);
 
 // SimpleAtob()
 //
@@ -91,7 +91,7 @@ ABSL_MUST_USE_RESULT bool SimpleAtod(absl::string_view str, double* out);
 // are interpreted as boolean `false`: "false", "f", "no", "n", "0". If any
 // errors are encountered, this function returns `false`, leaving `out` in an
 // unspecified state.
-ABSL_MUST_USE_RESULT bool SimpleAtob(absl::string_view str, bool* out);
+ABSEIL_EXPORT ABSL_MUST_USE_RESULT bool SimpleAtob(absl::string_view str, bool* out);
 
 // SimpleHexAtoi()
 //
@@ -141,13 +141,13 @@ inline void PutTwoDigits(size_t i, char* buf) {
 
 // safe_strto?() functions for implementing SimpleAtoi()
 
-bool safe_strto32_base(absl::string_view text, int32_t* value, int base);
-bool safe_strto64_base(absl::string_view text, int64_t* value, int base);
-bool safe_strto128_base(absl::string_view text, absl::int128* value,
+ABSEIL_EXPORT bool safe_strto32_base(absl::string_view text, int32_t* value, int base);
+ABSEIL_EXPORT bool safe_strto64_base(absl::string_view text, int64_t* value, int base);
+ABSEIL_EXPORT bool safe_strto128_base(absl::string_view text, absl::int128* value,
                          int base);
-bool safe_strtou32_base(absl::string_view text, uint32_t* value, int base);
-bool safe_strtou64_base(absl::string_view text, uint64_t* value, int base);
-bool safe_strtou128_base(absl::string_view text, absl::uint128* value,
+ABSEIL_EXPORT bool safe_strtou32_base(absl::string_view text, uint32_t* value, int base);
+ABSEIL_EXPORT bool safe_strtou64_base(absl::string_view text, uint64_t* value, int base);
+ABSEIL_EXPORT bool safe_strtou128_base(absl::string_view text, absl::uint128* value,
                          int base);
 
 static const int kFastToBufferSize = 32;
@@ -159,15 +159,15 @@ static const int kSixDigitsToBufferSize = 16;
 // outside the range 0.0001-999999 are output using scientific notation
 // (1.23456e+06). This routine is heavily optimized.
 // Required buffer size is `kSixDigitsToBufferSize`.
-size_t SixDigitsToBuffer(double d, char* buffer);
+ABSEIL_EXPORT size_t SixDigitsToBuffer(double d, char* buffer);
 
 // These functions are intended for speed. All functions take an output buffer
 // as an argument and return a pointer to the last byte they wrote, which is the
 // terminating '\0'. At most `kFastToBufferSize` bytes are written.
-char* FastIntToBuffer(int32_t, char*);
-char* FastIntToBuffer(uint32_t, char*);
-char* FastIntToBuffer(int64_t, char*);
-char* FastIntToBuffer(uint64_t, char*);
+ABSEIL_EXPORT char* FastIntToBuffer(int32_t, char*);
+ABSEIL_EXPORT char* FastIntToBuffer(uint32_t, char*);
+ABSEIL_EXPORT char* FastIntToBuffer(int64_t, char*);
+ABSEIL_EXPORT char* FastIntToBuffer(uint64_t, char*);
 
 // For enums and integer types that are not an exact match for the types above,
 // use templates to call the appropriate one of the four overloads above.

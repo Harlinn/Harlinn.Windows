@@ -18,13 +18,13 @@
 
 namespace grpc_binder {
 
-const int kFlagPrefix = 0x1;
-const int kFlagMessageData = 0x2;
-const int kFlagSuffix = 0x4;
-const int kFlagOutOfBandClose = 0x8;
-const int kFlagExpectSingleMessage = 0x10;
-const int kFlagStatusDescription = 0x20;
-const int kFlagMessageDataIsParcelable = 0x40;
-const int kFlagMessageDataIsPartial = 0x80;
+constinit const int kFlagPrefix = 0x1;
+constinit const int kFlagMessageData = 0x2;
+constinit const int kFlagSuffix = 0x4;
+constinit const int kFlagOutOfBandClose = 0x8;
+constinit const int kFlagExpectSingleMessage = 0x10;
+constinit const int kFlagStatusDescription = 0x20;
+constinit const int kFlagMessageDataIsParcelable = 0x40;
+constinit const int kFlagMessageDataIsPartial = 0x80;
 
 }  // namespace grpc_binder

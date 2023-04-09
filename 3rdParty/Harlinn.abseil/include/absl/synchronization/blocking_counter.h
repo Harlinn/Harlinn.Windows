@@ -62,7 +62,7 @@ ABSL_NAMESPACE_BEGIN
 //
 class BlockingCounter {
  public:
-  explicit BlockingCounter(int initial_count);
+  ABSEIL_EXPORT explicit BlockingCounter(int initial_count);
 
   BlockingCounter(const BlockingCounter&) = delete;
   BlockingCounter& operator=(const BlockingCounter&) = delete;
@@ -75,7 +75,7 @@ class BlockingCounter {
   // Memory ordering: For any threads X and Y, any action taken by X
   // before it calls `DecrementCount()` is visible to thread Y after
   // Y's call to `DecrementCount()`, provided Y's call returns `true`.
-  bool DecrementCount();
+  ABSEIL_EXPORT bool DecrementCount();
 
   // BlockingCounter::Wait()
   //
@@ -86,7 +86,7 @@ class BlockingCounter {
   // Memory ordering: For any threads X and Y, any action taken by X
   // before X calls `DecrementCount()` is visible to Y after Y returns
   // from `Wait()`.
-  void Wait();
+  ABSEIL_EXPORT void Wait();
 
  private:
   Mutex lock_;

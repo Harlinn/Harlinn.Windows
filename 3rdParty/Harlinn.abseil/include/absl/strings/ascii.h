@@ -165,7 +165,7 @@ inline char ascii_tolower(unsigned char c) {
 }
 
 // Converts the characters in `s` to lowercase, changing the contents of `s`.
-void AsciiStrToLower(std::string* s);
+ABSEIL_EXPORT void AsciiStrToLower(std::string* s);
 
 // Creates a lowercase string from a given absl::string_view.
 ABSL_MUST_USE_RESULT inline std::string AsciiStrToLower(absl::string_view s) {
@@ -183,7 +183,7 @@ inline char ascii_toupper(unsigned char c) {
 }
 
 // Converts the characters in `s` to uppercase, changing the contents of `s`.
-void AsciiStrToUpper(std::string* s);
+ABSEIL_EXPORT void AsciiStrToUpper(std::string* s);
 
 // Creates an uppercase string from a given absl::string_view.
 ABSL_MUST_USE_RESULT inline std::string AsciiStrToUpper(absl::string_view s) {
@@ -234,7 +234,7 @@ inline void StripAsciiWhitespace(std::string* str) {
 }
 
 // Removes leading, trailing, and consecutive internal whitespace.
-void RemoveExtraAsciiWhitespace(std::string*);
+ABSEIL_EXPORT void RemoveExtraAsciiWhitespace(std::string*);
 
 ABSL_NAMESPACE_END
 }  // namespace absl

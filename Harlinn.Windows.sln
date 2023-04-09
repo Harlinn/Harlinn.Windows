@@ -6,6 +6,7 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Harlinn.Common.Core", "Harlinn.Common.Core\Harlinn.Common.Core.vcxproj", "{B47470E4-2B24-4119-BAC1-4E8BC52FB19D}"
 	ProjectSection(ProjectDependencies) = postProject
 		{3FE269CC-338B-4314-9E86-044CEBEEBA8A} = {3FE269CC-338B-4314-9E86-044CEBEEBA8A}
+		{B995B3CE-D8B0-4243-A316-1C4A8057D326} = {B995B3CE-D8B0-4243-A316-1C4A8057D326}
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Harlinn.Common.Core.Tests", "Tests\Harlinn.Common.Core.Tests\Harlinn.Common.Core.Tests.vcxproj", "{23FFEA5C-999C-45D4-9FCC-2AEA8F239C29}"
@@ -2213,7 +2214,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "skia_test", "Tests\3rdParty
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "images", "images", "{D822B1C3-FC79-4D8F-9203-55A5DB7F9645}"
 	ProjectSection(SolutionItems) = preProject
-		Readme\Images\AngleTorusLightingES2.png = Readme\Images\AngleTorusLightingES2.png
 		Readme\Images\HWSkiaShadowColorView.png = Readme\Images\HWSkiaShadowColorView.png
 		Readme\Images\HWSkiaSkottie3D.png = Readme\Images\HWSkiaSkottie3D.png
 		Readme\Images\ImGuiDemo.png = Readme\Images\ImGuiDemo.png

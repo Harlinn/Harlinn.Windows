@@ -200,7 +200,7 @@ namespace Harlinn::Common::Core::IO::Sockets::Tcp::Server
         bool IsRunning( ) const
         {
             ConnectionHandlerState state = state_.load( );
-            if ( state > ConnectionHandlerState::Unknown && state < ConnectionHandlerState::Disconnected )
+            if ( state > ConnectionHandlerState::Unknown && state < ConnectionHandlerState::ClientDisconnected )
             {
                 auto listener = Listener( );
                 if ( listener )

@@ -18,13 +18,13 @@
 
 #ifndef GPR_SUPPORT_BINDER_TRANSPORT
 
-const int FIRST_CALL_TRANSACTION = 0x00000001;
-const int LAST_CALL_TRANSACTION = 0x00FFFFFF;
+constinit const int FIRST_CALL_TRANSACTION = 0x00000001;
+constinit const int LAST_CALL_TRANSACTION = 0x00FFFFFF;
 
 #endif  // GPR_SUPPORT_BINDER_TRANSPORT
 
 namespace grpc_binder {
 
-const int kFirstCallId = FIRST_CALL_TRANSACTION + 1000;
+constinit const int kFirstCallId = FIRST_CALL_TRANSACTION + 1000;
 
 }  // namespace grpc_binder

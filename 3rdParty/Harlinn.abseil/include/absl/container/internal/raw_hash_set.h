@@ -738,7 +738,7 @@ inline bool IsValidCapacity(size_t n) { return ((n + 1) & n) == 0 && n > 0; }
 //   IsValidCapacity(capacity)
 //   ctrl[capacity] == ctrl_t::kSentinel
 //   ctrl[i] != ctrl_t::kSentinel for all i < capacity
-void ConvertDeletedToEmptyAndFullToDeleted(ctrl_t* ctrl, size_t capacity);
+ABSEIL_EXPORT void ConvertDeletedToEmptyAndFullToDeleted(ctrl_t* ctrl, size_t capacity);
 
 // Converts `n` into the next valid capacity, per `IsValidCapacity`.
 inline size_t NormalizeCapacity(size_t n) {
@@ -865,7 +865,7 @@ inline FindInfo find_first_non_full(const ctrl_t* ctrl, size_t hash,
 // Extern template for inline function keep possibility of inlining.
 // When compiler decided to not inline, no symbols will be added to the
 // corresponding translation unit.
-extern template FindInfo find_first_non_full(const ctrl_t*, size_t, size_t);
+extern template ABSEIL_EXPORT FindInfo find_first_non_full(const ctrl_t*, size_t, size_t);
 
 // Sets `ctrl` to `{kEmpty, kSentinel, ..., kEmpty}`, marking the entire
 // array as marked as empty.

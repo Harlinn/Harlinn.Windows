@@ -74,9 +74,6 @@ The most common problem will be a function or variable that is not exported from
 are probably other bugs too. Some, probably, created by yours truly. 
 
 Still, with this solution you can now: 
-- Use Open GL ES to create graphical applications on top of DirectX 3D:
-
-  ![](./Images/AngleTorusLightingES2.png)
 - Create nice 2D effects:
  
   ![](./Images/HWSkiaShadowColorView.png)
@@ -813,23 +810,6 @@ The abseil_test contains the unit tests for the Harlinn.abseil project
 **Project:** Harlinn.aec
 
 
-### [ANGLE - Almost Native Graphics Layer Engine](https://github.com/google/angle)
-**Version:** master as of 2021.09.20
-
-**Description:**
-> The goal of ANGLE is to allow users of multiple operating systems to seamlessly run WebGL and other OpenGL 
-> ES content by translating OpenGL ES API calls to one of the hardware-supported APIs available for that 
-> platform. ANGLE currently provides translation from OpenGL ES 2.0, 3.0 and 3.1 to Vulkan, desktop OpenGL, 
-> OpenGL ES, Direct3D 9, and Direct3D 11.
-
-**Projects:**
-- Harlinn.angle
-- Harlinn.angle-egl
-- Harlinn.angle-gl
-- Harlinn.angle-glesv1
-- Harlinn.angle-glesv2
-- Harlinn.angle-opencl
-- Harlinn.angle-util
 
 ### [Alliance for Open Media - AV1 Codec Library](https://aomedia.googlesource.com/aom)
 **Version:** 3.1.2 
@@ -1133,28 +1113,6 @@ The abseil_test contains the unit tests for the Harlinn.abseil project
 > input and events.
 
 **Project:** Harlinn.glfw
-
-### [Glslang](https://github.com/KhronosGroup/glslang)
-**Version:** 2020.07.28
-
-**Description:**
-> **Reference Validator and GLSL/ESSL -> AST Front End**
-> 
-> An OpenGL GLSL and OpenGL|ES GLSL (ESSL) front-end for reference validation and translation of GLSL/ESSL into an internal abstract syntax tree (AST).
-> 
-> **HLSL -> AST Front End**
-> 
-> An HLSL front-end for translation of an approximation of HLSL to glslang's AST form.
->
-> **AST -> SPIR-V Back End**
->
-> Translates glslang's AST to the Khronos-specified SPIR-V intermediate language.
->
-> **Reflector**
->
-> An API for getting reflection information from the AST, reflection types/variables/etc. from the HLL source (not the SPIR-V).
-
-**Project:** Harlinn.glslang
 
 ### [gRPC](https://grpc.io/)
 **Version:** 1.41.1 
@@ -1867,30 +1825,6 @@ Skia Color Management
 > files are anywhere from 20% to 100% bigger.
 
 **Project:** Harlinn.snappy
-
-### [SPIRV-Cross](https://github.com/KhronosGroup/SPIRV-Cross)
-**Version:** Version used for MoltenVK 1.1.5 release
-
-**Description:**
-> SPIRV-Cross is a tool designed for parsing and converting SPIR-V to other shader languages.
-
-**Project:** Harlinn.spirv-cross
-
-### [SPIR-V Headers](https://github.com/KhronosGroup/SPIRV-Headers)
-**Version:** 1.5.4
-
-**Description:**
-The header files from https://github.com/KhronosGroup/SPIRV-Headers 
-
-**Project:** Harlinn.spirv-headers
-
-### [SPIR-V Tools](https://github.com/KhronosGroup/SPIRV-Tools)
-**Version:** 2021.3 
-
-**Description:**
-> The project includes an assembler, binary module parser, disassembler, validator, and optimizer for SPIR-V.
-
-**Project:** Harlinn.spirv-tools
 
 ### [sqlite3](https://www.sqlite.org/index.html)
 **Version:** 3.36.0

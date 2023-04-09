@@ -81,6 +81,7 @@ extern "C" {
 #define ZMQ_EXPORT __declspec(dllexport)
 #else
 #define ZMQ_EXPORT __declspec(dllimport)
+#pragma comment(lib,"Harlinn.libzmq.lib")
 #endif
 #else
 #if defined __SUNPRO_C || defined __SUNPRO_CC

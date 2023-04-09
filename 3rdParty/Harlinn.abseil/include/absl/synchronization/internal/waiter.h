@@ -65,7 +65,7 @@ namespace synchronization_internal {
 class Waiter {
  public:
   // Prepare any data to track waits.
-  Waiter();
+  ABSEIL_EXPORT Waiter();
 
   // Not copyable or movable
   Waiter(const Waiter&) = delete;
@@ -74,15 +74,15 @@ class Waiter {
   // Blocks the calling thread until a matching call to `Post()` or
   // `t` has passed. Returns `true` if woken (`Post()` called),
   // `false` on timeout.
-  bool Wait(KernelTimeout t);
+  ABSEIL_EXPORT bool Wait(KernelTimeout t);
 
   // Restart the caller of `Wait()` as with a normal semaphore.
-  void Post();
+  ABSEIL_EXPORT void Post();
 
   // If anyone is waiting, wake them up temporarily and cause them to
   // call `MaybeBecomeIdle()`. They will then return to waiting for a
   // `Post()` or timeout.
-  void Poke();
+  ABSEIL_EXPORT void Poke();
 
   // Returns the Waiter associated with the identity.
   static Waiter* GetWaiter(base_internal::ThreadIdentity* identity) {

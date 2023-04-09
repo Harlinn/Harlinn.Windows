@@ -76,11 +76,11 @@ struct from_chars_result {
 // format that strtod() accepts, except that a "0x" prefix is NOT matched.
 // (In particular, in `hex` mode, the input "0xff" results in the largest
 // matching pattern "0".)
-absl::from_chars_result from_chars(const char* first, const char* last,
+ABSEIL_EXPORT absl::from_chars_result from_chars(const char* first, const char* last,
                                    double& value,  // NOLINT
                                    chars_format fmt = chars_format::general);
 
-absl::from_chars_result from_chars(const char* first, const char* last,
+ABSEIL_EXPORT absl::from_chars_result from_chars(const char* first, const char* last,
                                    float& value,  // NOLINT
                                    chars_format fmt = chars_format::general);
 

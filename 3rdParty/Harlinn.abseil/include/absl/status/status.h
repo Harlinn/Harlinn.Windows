@@ -275,12 +275,12 @@ enum class StatusCode : int {
 // StatusCodeToString()
 //
 // Returns the name for the status code, or "" if it is an unknown value.
-std::string StatusCodeToString(StatusCode code);
+ABSEIL_EXPORT std::string StatusCodeToString(StatusCode code);
 
 // operator<<
 //
 // Streams StatusCodeToString(code) to `os`.
-std::ostream& operator<<(std::ostream& os, StatusCode code);
+ABSEIL_EXPORT std::ostream& operator<<(std::ostream& os, StatusCode code);
 
 // absl::StatusToStringMode
 //
@@ -436,7 +436,7 @@ class Status final {
   //
   // The `msg` string must be in UTF-8. The implementation may complain (e.g.,  // NOLINT
   // by printing a warning) if it is not.
-  Status(absl::StatusCode code, absl::string_view msg);
+  ABSEIL_EXPORT Status(absl::StatusCode code, absl::string_view msg);
 
   Status(const Status&);
   Status& operator=(const Status& x);
@@ -477,7 +477,7 @@ class Status final {
   // Status::code()
   //
   // Returns the canonical error code of type `absl::StatusCode` of this status.
-  absl::StatusCode code() const;
+  ABSEIL_EXPORT absl::StatusCode code() const;
 
   // Status::raw_code()
   //
@@ -489,7 +489,7 @@ class Status final {
   //
   // NOTE: This function should only be called when converting to an associated
   // wire format. Use `Status::code()` for error handling.
-  int raw_code() const;
+  ABSEIL_EXPORT int raw_code() const;
 
   // Status::message()
   //
@@ -565,7 +565,7 @@ class Status final {
   // Status::GetPayload()
   //
   // Gets the payload of a status given its unique `type_url` key, if present.
-  absl::optional<absl::Cord> GetPayload(absl::string_view type_url) const;
+  ABSEIL_EXPORT absl::optional<absl::Cord> GetPayload(absl::string_view type_url) const;
 
   // Status::SetPayload()
   //
@@ -573,13 +573,13 @@ class Status final {
   // any existing payload for that `type_url`.
   //
   // NOTE: This function does nothing if the Status is ok.
-  void SetPayload(absl::string_view type_url, absl::Cord payload);
+  ABSEIL_EXPORT void SetPayload(absl::string_view type_url, absl::Cord payload);
 
   // Status::ErasePayload()
   //
   // Erases the payload corresponding to the `type_url` key.  Returns `true` if
   // the payload was present.
-  bool ErasePayload(absl::string_view type_url);
+  ABSEIL_EXPORT bool ErasePayload(absl::string_view type_url);
 
   // Status::ForEachPayload()
   //
@@ -591,7 +591,7 @@ class Status final {
   //
   // NOTE: Any mutation on the same 'absl::Status' object during visitation is
   // forbidden and could result in undefined behavior.
-  void ForEachPayload(
+  ABSEIL_EXPORT void ForEachPayload(
       absl::FunctionRef<void(absl::string_view, const absl::Cord&)> visitor)
       const;
 
@@ -602,25 +602,25 @@ class Status final {
   // code, and an empty error message.
   explicit Status(absl::StatusCode code);
 
-  static void UnrefNonInlined(uintptr_t rep);
+  ABSEIL_EXPORT static void UnrefNonInlined(uintptr_t rep);
   static void Ref(uintptr_t rep);
   static void Unref(uintptr_t rep);
 
   // REQUIRES: !ok()
   // Ensures rep_ is not shared with any other Status.
-  void PrepareToModify();
+  ABSEIL_EXPORT void PrepareToModify();
 
   const status_internal::Payloads* GetPayloads() const;
   status_internal::Payloads* GetPayloads();
 
-  static bool EqualsSlow(const absl::Status& a, const absl::Status& b);
+  ABSEIL_EXPORT static bool EqualsSlow(const absl::Status& a, const absl::Status& b);
 
   // MSVC 14.0 limitation requires the const.
   static constexpr const char kMovedFromString[] =
       "Status accessed after move.";
 
-  static const std::string* EmptyString();
-  static const std::string* MovedFromString();
+  ABSEIL_EXPORT static const std::string* EmptyString();
+  ABSEIL_EXPORT static const std::string* MovedFromString();
 
   // Returns whether rep contains an inlined representation.
   // See rep_ for details.
@@ -641,7 +641,7 @@ class Status final {
   static uintptr_t PointerToRep(status_internal::StatusRep* r);
   static status_internal::StatusRep* RepToPointer(uintptr_t r);
 
-  std::string ToStringSlow(StatusToStringMode mode) const;
+  ABSEIL_EXPORT std::string ToStringSlow(StatusToStringMode mode) const;
 
   // Status supports two different representations.
   //  - When the low bit is off it is an inlined representation.
@@ -663,7 +663,7 @@ Status OkStatus();
 // operator<<()
 //
 // Prints a human-readable representation of `x` to `os`.
-std::ostream& operator<<(std::ostream& os, const Status& x);
+ABSEIL_EXPORT std::ostream& operator<<(std::ostream& os, const Status& x);
 
 // IsAborted()
 // IsAlreadyExists()
@@ -684,22 +684,22 @@ std::ostream& operator<<(std::ostream& os, const Status& x);
 //
 // These convenience functions return `true` if a given status matches the
 // `absl::StatusCode` error code of its associated function.
-ABSL_MUST_USE_RESULT bool IsAborted(const Status& status);
-ABSL_MUST_USE_RESULT bool IsAlreadyExists(const Status& status);
-ABSL_MUST_USE_RESULT bool IsCancelled(const Status& status);
-ABSL_MUST_USE_RESULT bool IsDataLoss(const Status& status);
-ABSL_MUST_USE_RESULT bool IsDeadlineExceeded(const Status& status);
-ABSL_MUST_USE_RESULT bool IsFailedPrecondition(const Status& status);
-ABSL_MUST_USE_RESULT bool IsInternal(const Status& status);
-ABSL_MUST_USE_RESULT bool IsInvalidArgument(const Status& status);
-ABSL_MUST_USE_RESULT bool IsNotFound(const Status& status);
-ABSL_MUST_USE_RESULT bool IsOutOfRange(const Status& status);
-ABSL_MUST_USE_RESULT bool IsPermissionDenied(const Status& status);
-ABSL_MUST_USE_RESULT bool IsResourceExhausted(const Status& status);
-ABSL_MUST_USE_RESULT bool IsUnauthenticated(const Status& status);
-ABSL_MUST_USE_RESULT bool IsUnavailable(const Status& status);
-ABSL_MUST_USE_RESULT bool IsUnimplemented(const Status& status);
-ABSL_MUST_USE_RESULT bool IsUnknown(const Status& status);
+ABSEIL_EXPORT ABSL_MUST_USE_RESULT bool IsAborted(const Status& status);
+ABSEIL_EXPORT ABSL_MUST_USE_RESULT bool IsAlreadyExists(const Status& status);
+ABSEIL_EXPORT ABSL_MUST_USE_RESULT bool IsCancelled(const Status& status);
+ABSEIL_EXPORT ABSL_MUST_USE_RESULT bool IsDataLoss(const Status& status);
+ABSEIL_EXPORT ABSL_MUST_USE_RESULT bool IsDeadlineExceeded(const Status& status);
+ABSEIL_EXPORT ABSL_MUST_USE_RESULT bool IsFailedPrecondition(const Status& status);
+ABSEIL_EXPORT ABSL_MUST_USE_RESULT bool IsInternal(const Status& status);
+ABSEIL_EXPORT ABSL_MUST_USE_RESULT bool IsInvalidArgument(const Status& status);
+ABSEIL_EXPORT ABSL_MUST_USE_RESULT bool IsNotFound(const Status& status);
+ABSEIL_EXPORT ABSL_MUST_USE_RESULT bool IsOutOfRange(const Status& status);
+ABSEIL_EXPORT ABSL_MUST_USE_RESULT bool IsPermissionDenied(const Status& status);
+ABSEIL_EXPORT ABSL_MUST_USE_RESULT bool IsResourceExhausted(const Status& status);
+ABSEIL_EXPORT ABSL_MUST_USE_RESULT bool IsUnauthenticated(const Status& status);
+ABSEIL_EXPORT ABSL_MUST_USE_RESULT bool IsUnavailable(const Status& status);
+ABSEIL_EXPORT ABSL_MUST_USE_RESULT bool IsUnimplemented(const Status& status);
+ABSEIL_EXPORT ABSL_MUST_USE_RESULT bool IsUnknown(const Status& status);
 
 // AbortedError()
 // AlreadyExistsError()
@@ -721,35 +721,35 @@ ABSL_MUST_USE_RESULT bool IsUnknown(const Status& status);
 // These convenience functions create an `absl::Status` object with an error
 // code as indicated by the associated function name, using the error message
 // passed in `message`.
-Status AbortedError(absl::string_view message);
-Status AlreadyExistsError(absl::string_view message);
-Status CancelledError(absl::string_view message);
-Status DataLossError(absl::string_view message);
-Status DeadlineExceededError(absl::string_view message);
-Status FailedPreconditionError(absl::string_view message);
-Status InternalError(absl::string_view message);
-Status InvalidArgumentError(absl::string_view message);
-Status NotFoundError(absl::string_view message);
-Status OutOfRangeError(absl::string_view message);
-Status PermissionDeniedError(absl::string_view message);
-Status ResourceExhaustedError(absl::string_view message);
-Status UnauthenticatedError(absl::string_view message);
-Status UnavailableError(absl::string_view message);
-Status UnimplementedError(absl::string_view message);
-Status UnknownError(absl::string_view message);
+ABSEIL_EXPORT Status AbortedError(absl::string_view message);
+ABSEIL_EXPORT Status AlreadyExistsError(absl::string_view message);
+ABSEIL_EXPORT Status CancelledError(absl::string_view message);
+ABSEIL_EXPORT Status DataLossError(absl::string_view message);
+ABSEIL_EXPORT Status DeadlineExceededError(absl::string_view message);
+ABSEIL_EXPORT Status FailedPreconditionError(absl::string_view message);
+ABSEIL_EXPORT Status InternalError(absl::string_view message);
+ABSEIL_EXPORT Status InvalidArgumentError(absl::string_view message);
+ABSEIL_EXPORT Status NotFoundError(absl::string_view message);
+ABSEIL_EXPORT Status OutOfRangeError(absl::string_view message);
+ABSEIL_EXPORT Status PermissionDeniedError(absl::string_view message);
+ABSEIL_EXPORT Status ResourceExhaustedError(absl::string_view message);
+ABSEIL_EXPORT Status UnauthenticatedError(absl::string_view message);
+ABSEIL_EXPORT Status UnavailableError(absl::string_view message);
+ABSEIL_EXPORT Status UnimplementedError(absl::string_view message);
+ABSEIL_EXPORT Status UnknownError(absl::string_view message);
 
 // ErrnoToStatusCode()
 //
 // Returns the StatusCode for `error_number`, which should be an `errno` value.
 // See https://en.cppreference.com/w/cpp/error/errno_macros and similar
 // references.
-absl::StatusCode ErrnoToStatusCode(int error_number);
+ABSEIL_EXPORT absl::StatusCode ErrnoToStatusCode(int error_number);
 
 // ErrnoToStatus()
 //
 // Convenience function that creates a `absl::Status` using an `error_number`,
 // which should be an `errno` value.
-Status ErrnoToStatus(int error_number, absl::string_view message);
+ABSEIL_EXPORT Status ErrnoToStatus(int error_number, absl::string_view message);
 
 //------------------------------------------------------------------------------
 // Implementation details follow
