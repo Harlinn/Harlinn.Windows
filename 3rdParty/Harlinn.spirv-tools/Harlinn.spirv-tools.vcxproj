@@ -1,0 +1,616 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{bbb9a088-d0a2-4246-9286-2622859ae7dd}</ProjectGuid>
+    <RootNamespace>Harlinnspirvtools</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Label="Vcpkg">
+    <VcpkgEnabled>false</VcpkgEnabled>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>BUILDING_HARLINN_SPIRVTOOLS=1;WIN32;_WINDOWS;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;SPIRV_TOOLS_IMPLEMENTATION;SPIRV_TOOLS_SHAREDLIB;SPIRV_WINDOWS;SPIRV_COLOR_TERMINAL;SPIRV_CHECK_CONTEXT;WIN32;_DEBUG;HARLINNSPIRVTOOLS_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)src\source;$(ProjectDir)src;$(SolutionDir)3rdParty\Harlinn.spirv-headers\include;$(ProjectDir)src\source\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>false</SDLCheck>
+      <PreprocessorDefinitions>BUILDING_HARLINN_SPIRVTOOLS=1;WIN32;_WINDOWS;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;SPIRV_TOOLS_IMPLEMENTATION;SPIRV_TOOLS_SHAREDLIB;SPIRV_WINDOWS;SPIRV_COLOR_TERMINAL;SPIRV_CHECK_CONTEXT;WIN32;NDEBUG;HARLINNSPIRVTOOLS_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)src\source;$(ProjectDir)src;$(SolutionDir)3rdParty\Harlinn.spirv-headers\include;$(ProjectDir)src\source\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>BUILDING_HARLINN_SPIRVTOOLS=1;WIN32;_WINDOWS;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;SPIRV_TOOLS_IMPLEMENTATION;SPIRV_TOOLS_SHAREDLIB;SPIRV_WINDOWS;SPIRV_COLOR_TERMINAL;SPIRV_CHECK_CONTEXT;_DEBUG;HARLINNSPIRVTOOLS_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)src\source;$(ProjectDir)src;$(SolutionDir)3rdParty\Harlinn.spirv-headers\include;$(ProjectDir)src\source\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>false</SDLCheck>
+      <PreprocessorDefinitions>BUILDING_HARLINN_SPIRVTOOLS=1;WIN32;_WINDOWS;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;SPIRV_TOOLS_IMPLEMENTATION;SPIRV_TOOLS_SHAREDLIB;SPIRV_WINDOWS;SPIRV_COLOR_TERMINAL;SPIRV_CHECK_CONTEXT;NDEBUG;HARLINNSPIRVTOOLS_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)src\source;$(ProjectDir)src;$(SolutionDir)3rdParty\Harlinn.spirv-headers\include;$(ProjectDir)src\source\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="src\source\assembly_grammar.cpp" />
+    <ClCompile Include="src\source\binary.cpp" />
+    <ClCompile Include="src\source\diagnostic.cpp" />
+    <ClCompile Include="src\source\disassemble.cpp" />
+    <ClCompile Include="src\source\enum_string_mapping.cpp" />
+    <ClCompile Include="src\source\extensions.cpp" />
+    <ClCompile Include="src\source\ext_inst.cpp" />
+    <ClCompile Include="src\source\libspirv.cpp" />
+    <ClCompile Include="src\source\link\linker.cpp" />
+    <ClCompile Include="src\source\lint\divergence_analysis.cpp" />
+    <ClCompile Include="src\source\lint\linter.cpp" />
+    <ClCompile Include="src\source\name_mapper.cpp" />
+    <ClCompile Include="src\source\opcode.cpp" />
+    <ClCompile Include="src\source\operand.cpp" />
+    <ClCompile Include="src\source\opt\aggressive_dead_code_elim_pass.cpp" />
+    <ClCompile Include="src\source\opt\amd_ext_to_khr.cpp" />
+    <ClCompile Include="src\source\opt\basic_block.cpp" />
+    <ClCompile Include="src\source\opt\block_merge_pass.cpp" />
+    <ClCompile Include="src\source\opt\block_merge_util.cpp" />
+    <ClCompile Include="src\source\opt\build_module.cpp" />
+    <ClCompile Include="src\source\opt\ccp_pass.cpp" />
+    <ClCompile Include="src\source\opt\cfg.cpp" />
+    <ClCompile Include="src\source\opt\cfg_cleanup_pass.cpp" />
+    <ClCompile Include="src\source\opt\code_sink.cpp" />
+    <ClCompile Include="src\source\opt\combine_access_chains.cpp" />
+    <ClCompile Include="src\source\opt\compact_ids_pass.cpp" />
+    <ClCompile Include="src\source\opt\composite.cpp" />
+    <ClCompile Include="src\source\opt\constants.cpp" />
+    <ClCompile Include="src\source\opt\const_folding_rules.cpp" />
+    <ClCompile Include="src\source\opt\control_dependence.cpp" />
+    <ClCompile Include="src\source\opt\convert_to_half_pass.cpp" />
+    <ClCompile Include="src\source\opt\convert_to_sampled_image_pass.cpp" />
+    <ClCompile Include="src\source\opt\copy_prop_arrays.cpp" />
+    <ClCompile Include="src\source\opt\dataflow.cpp" />
+    <ClCompile Include="src\source\opt\dead_branch_elim_pass.cpp" />
+    <ClCompile Include="src\source\opt\dead_insert_elim_pass.cpp" />
+    <ClCompile Include="src\source\opt\dead_variable_elimination.cpp" />
+    <ClCompile Include="src\source\opt\debug_info_manager.cpp" />
+    <ClCompile Include="src\source\opt\decoration_manager.cpp" />
+    <ClCompile Include="src\source\opt\def_use_manager.cpp" />
+    <ClCompile Include="src\source\opt\desc_sroa.cpp" />
+    <ClCompile Include="src\source\opt\dominator_analysis.cpp" />
+    <ClCompile Include="src\source\opt\dominator_tree.cpp" />
+    <ClCompile Include="src\source\opt\eliminate_dead_constant_pass.cpp" />
+    <ClCompile Include="src\source\opt\eliminate_dead_functions_pass.cpp" />
+    <ClCompile Include="src\source\opt\eliminate_dead_functions_util.cpp" />
+    <ClCompile Include="src\source\opt\eliminate_dead_members_pass.cpp" />
+    <ClCompile Include="src\source\opt\feature_manager.cpp" />
+    <ClCompile Include="src\source\opt\fix_storage_class.cpp" />
+    <ClCompile Include="src\source\opt\flatten_decoration_pass.cpp" />
+    <ClCompile Include="src\source\opt\fold.cpp" />
+    <ClCompile Include="src\source\opt\folding_rules.cpp" />
+    <ClCompile Include="src\source\opt\fold_spec_constant_op_and_composite_pass.cpp" />
+    <ClCompile Include="src\source\opt\freeze_spec_constant_value_pass.cpp" />
+    <ClCompile Include="src\source\opt\function.cpp" />
+    <ClCompile Include="src\source\opt\graphics_robust_access_pass.cpp" />
+    <ClCompile Include="src\source\opt\if_conversion.cpp" />
+    <ClCompile Include="src\source\opt\inline_exhaustive_pass.cpp" />
+    <ClCompile Include="src\source\opt\inline_opaque_pass.cpp" />
+    <ClCompile Include="src\source\opt\inline_pass.cpp" />
+    <ClCompile Include="src\source\opt\instruction.cpp" />
+    <ClCompile Include="src\source\opt\instruction_list.cpp" />
+    <ClCompile Include="src\source\opt\instrument_pass.cpp" />
+    <ClCompile Include="src\source\opt\inst_bindless_check_pass.cpp" />
+    <ClCompile Include="src\source\opt\inst_buff_addr_check_pass.cpp" />
+    <ClCompile Include="src\source\opt\inst_debug_printf_pass.cpp" />
+    <ClCompile Include="src\source\opt\interp_fixup_pass.cpp" />
+    <ClCompile Include="src\source\opt\ir_context.cpp" />
+    <ClCompile Include="src\source\opt\ir_loader.cpp" />
+    <ClCompile Include="src\source\opt\licm_pass.cpp" />
+    <ClCompile Include="src\source\opt\local_access_chain_convert_pass.cpp" />
+    <ClCompile Include="src\source\opt\local_redundancy_elimination.cpp" />
+    <ClCompile Include="src\source\opt\local_single_block_elim_pass.cpp" />
+    <ClCompile Include="src\source\opt\local_single_store_elim_pass.cpp" />
+    <ClCompile Include="src\source\opt\loop_dependence.cpp" />
+    <ClCompile Include="src\source\opt\loop_dependence_helpers.cpp" />
+    <ClCompile Include="src\source\opt\loop_descriptor.cpp" />
+    <ClCompile Include="src\source\opt\loop_fission.cpp" />
+    <ClCompile Include="src\source\opt\loop_fusion.cpp" />
+    <ClCompile Include="src\source\opt\loop_fusion_pass.cpp" />
+    <ClCompile Include="src\source\opt\loop_peeling.cpp" />
+    <ClCompile Include="src\source\opt\loop_unroller.cpp" />
+    <ClCompile Include="src\source\opt\loop_unswitch_pass.cpp" />
+    <ClCompile Include="src\source\opt\loop_utils.cpp" />
+    <ClCompile Include="src\source\opt\mem_pass.cpp" />
+    <ClCompile Include="src\source\opt\merge_return_pass.cpp" />
+    <ClCompile Include="src\source\opt\module.cpp" />
+    <ClCompile Include="src\source\opt\optimizer.cpp" />
+    <ClCompile Include="src\source\opt\pass.cpp" />
+    <ClCompile Include="src\source\opt\pass_manager.cpp" />
+    <ClCompile Include="src\source\opt\pch_source_opt.cpp" />
+    <ClCompile Include="src\source\opt\private_to_local_pass.cpp" />
+    <ClCompile Include="src\source\opt\propagator.cpp" />
+    <ClCompile Include="src\source\opt\reduce_load_size.cpp" />
+    <ClCompile Include="src\source\opt\redundancy_elimination.cpp" />
+    <ClCompile Include="src\source\opt\register_pressure.cpp" />
+    <ClCompile Include="src\source\opt\relax_float_ops_pass.cpp" />
+    <ClCompile Include="src\source\opt\remove_duplicates_pass.cpp" />
+    <ClCompile Include="src\source\opt\remove_unused_interface_variables_pass.cpp" />
+    <ClCompile Include="src\source\opt\replace_invalid_opc.cpp" />
+    <ClCompile Include="src\source\opt\scalar_analysis.cpp" />
+    <ClCompile Include="src\source\opt\scalar_analysis_simplification.cpp" />
+    <ClCompile Include="src\source\opt\scalar_replacement_pass.cpp" />
+    <ClCompile Include="src\source\opt\set_spec_constant_default_value_pass.cpp" />
+    <ClCompile Include="src\source\opt\simplification_pass.cpp" />
+    <ClCompile Include="src\source\opt\ssa_rewrite_pass.cpp" />
+    <ClCompile Include="src\source\opt\strength_reduction_pass.cpp" />
+    <ClCompile Include="src\source\opt\strip_debug_info_pass.cpp" />
+    <ClCompile Include="src\source\opt\strip_reflect_info_pass.cpp" />
+    <ClCompile Include="src\source\opt\struct_cfg_analysis.cpp" />
+    <ClCompile Include="src\source\opt\types.cpp" />
+    <ClCompile Include="src\source\opt\type_manager.cpp" />
+    <ClCompile Include="src\source\opt\unify_const_pass.cpp" />
+    <ClCompile Include="src\source\opt\upgrade_memory_model.cpp" />
+    <ClCompile Include="src\source\opt\value_number_table.cpp" />
+    <ClCompile Include="src\source\opt\vector_dce.cpp" />
+    <ClCompile Include="src\source\opt\workaround1209.cpp" />
+    <ClCompile Include="src\source\opt\wrap_opkill.cpp" />
+    <ClCompile Include="src\source\parsed_operand.cpp" />
+    <ClCompile Include="src\source\pch_source.cpp" />
+    <ClCompile Include="src\source\print.cpp" />
+    <ClCompile Include="src\source\reduce\change_operand_reduction_opportunity.cpp" />
+    <ClCompile Include="src\source\reduce\change_operand_to_undef_reduction_opportunity.cpp" />
+    <ClCompile Include="src\source\reduce\conditional_branch_to_simple_conditional_branch_opportunity_finder.cpp" />
+    <ClCompile Include="src\source\reduce\conditional_branch_to_simple_conditional_branch_reduction_opportunity.cpp" />
+    <ClCompile Include="src\source\reduce\merge_blocks_reduction_opportunity.cpp" />
+    <ClCompile Include="src\source\reduce\merge_blocks_reduction_opportunity_finder.cpp" />
+    <ClCompile Include="src\source\reduce\operand_to_const_reduction_opportunity_finder.cpp" />
+    <ClCompile Include="src\source\reduce\operand_to_dominating_id_reduction_opportunity_finder.cpp" />
+    <ClCompile Include="src\source\reduce\operand_to_undef_reduction_opportunity_finder.cpp" />
+    <ClCompile Include="src\source\reduce\pch_source_reduce.cpp" />
+    <ClCompile Include="src\source\reduce\reducer.cpp" />
+    <ClCompile Include="src\source\reduce\reduction_opportunity.cpp" />
+    <ClCompile Include="src\source\reduce\reduction_opportunity_finder.cpp" />
+    <ClCompile Include="src\source\reduce\reduction_pass.cpp" />
+    <ClCompile Include="src\source\reduce\reduction_util.cpp" />
+    <ClCompile Include="src\source\reduce\remove_block_reduction_opportunity.cpp" />
+    <ClCompile Include="src\source\reduce\remove_block_reduction_opportunity_finder.cpp" />
+    <ClCompile Include="src\source\reduce\remove_function_reduction_opportunity.cpp" />
+    <ClCompile Include="src\source\reduce\remove_function_reduction_opportunity_finder.cpp" />
+    <ClCompile Include="src\source\reduce\remove_instruction_reduction_opportunity.cpp" />
+    <ClCompile Include="src\source\reduce\remove_selection_reduction_opportunity.cpp" />
+    <ClCompile Include="src\source\reduce\remove_selection_reduction_opportunity_finder.cpp" />
+    <ClCompile Include="src\source\reduce\remove_struct_member_reduction_opportunity.cpp" />
+    <ClCompile Include="src\source\reduce\remove_unused_instruction_reduction_opportunity_finder.cpp" />
+    <ClCompile Include="src\source\reduce\remove_unused_struct_member_reduction_opportunity_finder.cpp" />
+    <ClCompile Include="src\source\reduce\simple_conditional_branch_to_branch_opportunity_finder.cpp" />
+    <ClCompile Include="src\source\reduce\simple_conditional_branch_to_branch_reduction_opportunity.cpp" />
+    <ClCompile Include="src\source\reduce\structured_construct_to_block_reduction_opportunity.cpp" />
+    <ClCompile Include="src\source\reduce\structured_construct_to_block_reduction_opportunity_finder.cpp" />
+    <ClCompile Include="src\source\reduce\structured_loop_to_selection_reduction_opportunity.cpp" />
+    <ClCompile Include="src\source\reduce\structured_loop_to_selection_reduction_opportunity_finder.cpp" />
+    <ClCompile Include="src\source\software_version.cpp" />
+    <ClCompile Include="src\source\spirv_endian.cpp" />
+    <ClCompile Include="src\source\spirv_fuzzer_options.cpp" />
+    <ClCompile Include="src\source\spirv_optimizer_options.cpp" />
+    <ClCompile Include="src\source\spirv_reducer_options.cpp" />
+    <ClCompile Include="src\source\spirv_target_env.cpp" />
+    <ClCompile Include="src\source\spirv_validator_options.cpp" />
+    <ClCompile Include="src\source\table.cpp" />
+    <ClCompile Include="src\source\text.cpp" />
+    <ClCompile Include="src\source\text_handler.cpp" />
+    <ClCompile Include="src\source\util\bit_vector.cpp" />
+    <ClCompile Include="src\source\util\parse_number.cpp" />
+    <ClCompile Include="src\source\util\string_utils.cpp" />
+    <ClCompile Include="src\source\util\timer.cpp" />
+    <ClCompile Include="src\source\val\basic_block_val.cpp" />
+    <ClCompile Include="src\source\val\construct.cpp" />
+    <ClCompile Include="src\source\val\function_val.cpp" />
+    <ClCompile Include="src\source\val\instruction_val.cpp" />
+    <ClCompile Include="src\source\val\validate.cpp" />
+    <ClCompile Include="src\source\val\validate_adjacency.cpp" />
+    <ClCompile Include="src\source\val\validate_annotation.cpp" />
+    <ClCompile Include="src\source\val\validate_arithmetics.cpp" />
+    <ClCompile Include="src\source\val\validate_atomics.cpp" />
+    <ClCompile Include="src\source\val\validate_barriers.cpp" />
+    <ClCompile Include="src\source\val\validate_bitwise.cpp" />
+    <ClCompile Include="src\source\val\validate_builtins.cpp" />
+    <ClCompile Include="src\source\val\validate_capability.cpp" />
+    <ClCompile Include="src\source\val\validate_cfg.cpp" />
+    <ClCompile Include="src\source\val\validate_composites.cpp" />
+    <ClCompile Include="src\source\val\validate_constants.cpp" />
+    <ClCompile Include="src\source\val\validate_conversion.cpp" />
+    <ClCompile Include="src\source\val\validate_debug.cpp" />
+    <ClCompile Include="src\source\val\validate_decorations.cpp" />
+    <ClCompile Include="src\source\val\validate_derivatives.cpp" />
+    <ClCompile Include="src\source\val\validate_execution_limitations.cpp" />
+    <ClCompile Include="src\source\val\validate_extensions.cpp" />
+    <ClCompile Include="src\source\val\validate_function.cpp" />
+    <ClCompile Include="src\source\val\validate_id.cpp" />
+    <ClCompile Include="src\source\val\validate_image.cpp" />
+    <ClCompile Include="src\source\val\validate_instruction.cpp" />
+    <ClCompile Include="src\source\val\validate_interfaces.cpp" />
+    <ClCompile Include="src\source\val\validate_layout.cpp" />
+    <ClCompile Include="src\source\val\validate_literals.cpp" />
+    <ClCompile Include="src\source\val\validate_logicals.cpp" />
+    <ClCompile Include="src\source\val\validate_memory.cpp" />
+    <ClCompile Include="src\source\val\validate_memory_semantics.cpp" />
+    <ClCompile Include="src\source\val\validate_misc.cpp" />
+    <ClCompile Include="src\source\val\validate_mode_setting.cpp" />
+    <ClCompile Include="src\source\val\validate_non_uniform.cpp" />
+    <ClCompile Include="src\source\val\validate_primitives.cpp" />
+    <ClCompile Include="src\source\val\validate_scopes.cpp" />
+    <ClCompile Include="src\source\val\validate_small_type_uses.cpp" />
+    <ClCompile Include="src\source\val\validate_type.cpp" />
+    <ClCompile Include="src\source\val\validation_state.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\spirv-tools\instrument.hpp" />
+    <ClInclude Include="include\spirv-tools\libspirv.h" />
+    <ClInclude Include="include\spirv-tools\libspirv.hpp" />
+    <ClInclude Include="include\spirv-tools\linker.hpp" />
+    <ClInclude Include="include\spirv-tools\linter.hpp" />
+    <ClInclude Include="include\spirv-tools\optimizer.hpp" />
+    <ClInclude Include="src\source\assembly_grammar.h" />
+    <ClInclude Include="src\source\binary.h" />
+    <ClInclude Include="src\source\cfa.h" />
+    <ClInclude Include="src\source\common_debug_info.h" />
+    <ClInclude Include="src\source\DebugInfo.h" />
+    <ClInclude Include="src\source\diagnostic.h" />
+    <ClInclude Include="src\source\disassemble.h" />
+    <ClInclude Include="src\source\enum_set.h" />
+    <ClInclude Include="src\source\enum_string_mapping.h" />
+    <ClInclude Include="src\source\extensions.h" />
+    <ClInclude Include="src\source\ext_inst.h" />
+    <ClInclude Include="src\source\instruction.h" />
+    <ClInclude Include="src\source\latest_version_glsl_std_450_header.h" />
+    <ClInclude Include="src\source\latest_version_opencl_std_header.h" />
+    <ClInclude Include="src\source\latest_version_spirv_header.h" />
+    <ClInclude Include="src\source\lint\divergence_analysis.h" />
+    <ClInclude Include="src\source\macro.h" />
+    <ClInclude Include="src\source\name_mapper.h" />
+    <ClInclude Include="src\source\NonSemanticVulkanDebugInfo100.h" />
+    <ClInclude Include="src\source\opcode.h" />
+    <ClInclude Include="src\source\OpenCLDebugInfo100.h" />
+    <ClInclude Include="src\source\operand.h" />
+    <ClInclude Include="src\source\opt\aggressive_dead_code_elim_pass.h" />
+    <ClInclude Include="src\source\opt\amd_ext_to_khr.h" />
+    <ClInclude Include="src\source\opt\basic_block.h" />
+    <ClInclude Include="src\source\opt\block_merge_pass.h" />
+    <ClInclude Include="src\source\opt\block_merge_util.h" />
+    <ClInclude Include="src\source\opt\build_module.h" />
+    <ClInclude Include="src\source\opt\ccp_pass.h" />
+    <ClInclude Include="src\source\opt\cfg.h" />
+    <ClInclude Include="src\source\opt\cfg_cleanup_pass.h" />
+    <ClInclude Include="src\source\opt\code_sink.h" />
+    <ClInclude Include="src\source\opt\combine_access_chains.h" />
+    <ClInclude Include="src\source\opt\compact_ids_pass.h" />
+    <ClInclude Include="src\source\opt\composite.h" />
+    <ClInclude Include="src\source\opt\constants.h" />
+    <ClInclude Include="src\source\opt\const_folding_rules.h" />
+    <ClInclude Include="src\source\opt\control_dependence.h" />
+    <ClInclude Include="src\source\opt\convert_to_half_pass.h" />
+    <ClInclude Include="src\source\opt\convert_to_sampled_image_pass.h" />
+    <ClInclude Include="src\source\opt\copy_prop_arrays.h" />
+    <ClInclude Include="src\source\opt\dataflow.h" />
+    <ClInclude Include="src\source\opt\dead_branch_elim_pass.h" />
+    <ClInclude Include="src\source\opt\dead_insert_elim_pass.h" />
+    <ClInclude Include="src\source\opt\dead_variable_elimination.h" />
+    <ClInclude Include="src\source\opt\debug_info_manager.h" />
+    <ClInclude Include="src\source\opt\decoration_manager.h" />
+    <ClInclude Include="src\source\opt\def_use_manager.h" />
+    <ClInclude Include="src\source\opt\desc_sroa.h" />
+    <ClInclude Include="src\source\opt\dominator_analysis.h" />
+    <ClInclude Include="src\source\opt\dominator_tree.h" />
+    <ClInclude Include="src\source\opt\eliminate_dead_constant_pass.h" />
+    <ClInclude Include="src\source\opt\eliminate_dead_functions_pass.h" />
+    <ClInclude Include="src\source\opt\eliminate_dead_functions_util.h" />
+    <ClInclude Include="src\source\opt\eliminate_dead_members_pass.h" />
+    <ClInclude Include="src\source\opt\empty_pass.h" />
+    <ClInclude Include="src\source\opt\feature_manager.h" />
+    <ClInclude Include="src\source\opt\fix_storage_class.h" />
+    <ClInclude Include="src\source\opt\flatten_decoration_pass.h" />
+    <ClInclude Include="src\source\opt\fold.h" />
+    <ClInclude Include="src\source\opt\folding_rules.h" />
+    <ClInclude Include="src\source\opt\fold_spec_constant_op_and_composite_pass.h" />
+    <ClInclude Include="src\source\opt\freeze_spec_constant_value_pass.h" />
+    <ClInclude Include="src\source\opt\function.h" />
+    <ClInclude Include="src\source\opt\graphics_robust_access_pass.h" />
+    <ClInclude Include="src\source\opt\if_conversion.h" />
+    <ClInclude Include="src\source\opt\inline_exhaustive_pass.h" />
+    <ClInclude Include="src\source\opt\inline_opaque_pass.h" />
+    <ClInclude Include="src\source\opt\inline_pass.h" />
+    <ClInclude Include="src\source\opt\instruction.h" />
+    <ClInclude Include="src\source\opt\instruction_list.h" />
+    <ClInclude Include="src\source\opt\instrument_pass.h" />
+    <ClInclude Include="src\source\opt\inst_bindless_check_pass.h" />
+    <ClInclude Include="src\source\opt\inst_buff_addr_check_pass.h" />
+    <ClInclude Include="src\source\opt\inst_debug_printf_pass.h" />
+    <ClInclude Include="src\source\opt\interp_fixup_pass.h" />
+    <ClInclude Include="src\source\opt\ir_builder.h" />
+    <ClInclude Include="src\source\opt\ir_context.h" />
+    <ClInclude Include="src\source\opt\ir_loader.h" />
+    <ClInclude Include="src\source\opt\iterator.h" />
+    <ClInclude Include="src\source\opt\licm_pass.h" />
+    <ClInclude Include="src\source\opt\local_access_chain_convert_pass.h" />
+    <ClInclude Include="src\source\opt\local_redundancy_elimination.h" />
+    <ClInclude Include="src\source\opt\local_single_block_elim_pass.h" />
+    <ClInclude Include="src\source\opt\local_single_store_elim_pass.h" />
+    <ClInclude Include="src\source\opt\log.h" />
+    <ClInclude Include="src\source\opt\loop_dependence.h" />
+    <ClInclude Include="src\source\opt\loop_descriptor.h" />
+    <ClInclude Include="src\source\opt\loop_fission.h" />
+    <ClInclude Include="src\source\opt\loop_fusion.h" />
+    <ClInclude Include="src\source\opt\loop_fusion_pass.h" />
+    <ClInclude Include="src\source\opt\loop_peeling.h" />
+    <ClInclude Include="src\source\opt\loop_unroller.h" />
+    <ClInclude Include="src\source\opt\loop_unswitch_pass.h" />
+    <ClInclude Include="src\source\opt\loop_utils.h" />
+    <ClInclude Include="src\source\opt\mem_pass.h" />
+    <ClInclude Include="src\source\opt\merge_return_pass.h" />
+    <ClInclude Include="src\source\opt\module.h" />
+    <ClInclude Include="src\source\opt\null_pass.h" />
+    <ClInclude Include="src\source\opt\pass.h" />
+    <ClInclude Include="src\source\opt\passes.h" />
+    <ClInclude Include="src\source\opt\pass_manager.h" />
+    <ClInclude Include="src\source\opt\pch_source_opt.h" />
+    <ClInclude Include="src\source\opt\private_to_local_pass.h" />
+    <ClInclude Include="src\source\opt\propagator.h" />
+    <ClInclude Include="src\source\opt\reduce_load_size.h" />
+    <ClInclude Include="src\source\opt\redundancy_elimination.h" />
+    <ClInclude Include="src\source\opt\reflect.h" />
+    <ClInclude Include="src\source\opt\register_pressure.h" />
+    <ClInclude Include="src\source\opt\relax_float_ops_pass.h" />
+    <ClInclude Include="src\source\opt\remove_duplicates_pass.h" />
+    <ClInclude Include="src\source\opt\remove_unused_interface_variables_pass.h" />
+    <ClInclude Include="src\source\opt\replace_invalid_opc.h" />
+    <ClInclude Include="src\source\opt\scalar_analysis.h" />
+    <ClInclude Include="src\source\opt\scalar_analysis_nodes.h" />
+    <ClInclude Include="src\source\opt\scalar_replacement_pass.h" />
+    <ClInclude Include="src\source\opt\set_spec_constant_default_value_pass.h" />
+    <ClInclude Include="src\source\opt\simplification_pass.h" />
+    <ClInclude Include="src\source\opt\ssa_rewrite_pass.h" />
+    <ClInclude Include="src\source\opt\strength_reduction_pass.h" />
+    <ClInclude Include="src\source\opt\strip_debug_info_pass.h" />
+    <ClInclude Include="src\source\opt\strip_reflect_info_pass.h" />
+    <ClInclude Include="src\source\opt\struct_cfg_analysis.h" />
+    <ClInclude Include="src\source\opt\tree_iterator.h" />
+    <ClInclude Include="src\source\opt\types.h" />
+    <ClInclude Include="src\source\opt\type_manager.h" />
+    <ClInclude Include="src\source\opt\unify_const_pass.h" />
+    <ClInclude Include="src\source\opt\upgrade_memory_model.h" />
+    <ClInclude Include="src\source\opt\value_number_table.h" />
+    <ClInclude Include="src\source\opt\vector_dce.h" />
+    <ClInclude Include="src\source\opt\workaround1209.h" />
+    <ClInclude Include="src\source\opt\wrap_opkill.h" />
+    <ClInclude Include="src\source\parsed_operand.h" />
+    <ClInclude Include="src\source\pch_source.h" />
+    <ClInclude Include="src\source\print.h" />
+    <ClInclude Include="src\source\reduce\change_operand_reduction_opportunity.h" />
+    <ClInclude Include="src\source\reduce\change_operand_to_undef_reduction_opportunity.h" />
+    <ClInclude Include="src\source\reduce\conditional_branch_to_simple_conditional_branch_opportunity_finder.h" />
+    <ClInclude Include="src\source\reduce\conditional_branch_to_simple_conditional_branch_reduction_opportunity.h" />
+    <ClInclude Include="src\source\reduce\merge_blocks_reduction_opportunity.h" />
+    <ClInclude Include="src\source\reduce\merge_blocks_reduction_opportunity_finder.h" />
+    <ClInclude Include="src\source\reduce\operand_to_const_reduction_opportunity_finder.h" />
+    <ClInclude Include="src\source\reduce\operand_to_dominating_id_reduction_opportunity_finder.h" />
+    <ClInclude Include="src\source\reduce\operand_to_undef_reduction_opportunity_finder.h" />
+    <ClInclude Include="src\source\reduce\pch_source_reduce.h" />
+    <ClInclude Include="src\source\reduce\reducer.h" />
+    <ClInclude Include="src\source\reduce\reduction_opportunity.h" />
+    <ClInclude Include="src\source\reduce\reduction_opportunity_finder.h" />
+    <ClInclude Include="src\source\reduce\reduction_pass.h" />
+    <ClInclude Include="src\source\reduce\reduction_util.h" />
+    <ClInclude Include="src\source\reduce\remove_block_reduction_opportunity.h" />
+    <ClInclude Include="src\source\reduce\remove_block_reduction_opportunity_finder.h" />
+    <ClInclude Include="src\source\reduce\remove_function_reduction_opportunity.h" />
+    <ClInclude Include="src\source\reduce\remove_function_reduction_opportunity_finder.h" />
+    <ClInclude Include="src\source\reduce\remove_instruction_reduction_opportunity.h" />
+    <ClInclude Include="src\source\reduce\remove_selection_reduction_opportunity.h" />
+    <ClInclude Include="src\source\reduce\remove_selection_reduction_opportunity_finder.h" />
+    <ClInclude Include="src\source\reduce\remove_struct_member_reduction_opportunity.h" />
+    <ClInclude Include="src\source\reduce\remove_unused_instruction_reduction_opportunity_finder.h" />
+    <ClInclude Include="src\source\reduce\remove_unused_struct_member_reduction_opportunity_finder.h" />
+    <ClInclude Include="src\source\reduce\simple_conditional_branch_to_branch_opportunity_finder.h" />
+    <ClInclude Include="src\source\reduce\simple_conditional_branch_to_branch_reduction_opportunity.h" />
+    <ClInclude Include="src\source\reduce\structured_construct_to_block_reduction_opportunity.h" />
+    <ClInclude Include="src\source\reduce\structured_construct_to_block_reduction_opportunity_finder.h" />
+    <ClInclude Include="src\source\reduce\structured_loop_to_selection_reduction_opportunity.h" />
+    <ClInclude Include="src\source\reduce\structured_loop_to_selection_reduction_opportunity_finder.h" />
+    <ClInclude Include="src\source\spirv_constant.h" />
+    <ClInclude Include="src\source\spirv_definition.h" />
+    <ClInclude Include="src\source\spirv_endian.h" />
+    <ClInclude Include="src\source\spirv_fuzzer_options.h" />
+    <ClInclude Include="src\source\spirv_optimizer_options.h" />
+    <ClInclude Include="src\source\spirv_reducer_options.h" />
+    <ClInclude Include="src\source\spirv_target_env.h" />
+    <ClInclude Include="src\source\spirv_validator_options.h" />
+    <ClInclude Include="src\source\table.h" />
+    <ClInclude Include="src\source\text.h" />
+    <ClInclude Include="src\source\text_handler.h" />
+    <ClInclude Include="src\source\util\bitutils.h" />
+    <ClInclude Include="src\source\util\bit_vector.h" />
+    <ClInclude Include="src\source\util\hex_float.h" />
+    <ClInclude Include="src\source\util\ilist.h" />
+    <ClInclude Include="src\source\util\ilist_node.h" />
+    <ClInclude Include="src\source\util\make_unique.h" />
+    <ClInclude Include="src\source\util\parse_number.h" />
+    <ClInclude Include="src\source\util\small_vector.h" />
+    <ClInclude Include="src\source\util\string_utils.h" />
+    <ClInclude Include="src\source\util\timer.h" />
+    <ClInclude Include="src\source\val\basic_block.h" />
+    <ClInclude Include="src\source\val\construct.h" />
+    <ClInclude Include="src\source\val\decoration.h" />
+    <ClInclude Include="src\source\val\function.h" />
+    <ClInclude Include="src\source\val\instruction.h" />
+    <ClInclude Include="src\source\val\validate.h" />
+    <ClInclude Include="src\source\val\validate_memory_semantics.h" />
+    <ClInclude Include="src\source\val\validate_scopes.h" />
+    <ClInclude Include="src\source\val\validation_state.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="src\source\CMakeLists.txt" />
+    <Text Include="src\source\opt\CMakeLists.txt" />
+    <Text Include="src\source\reduce\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="src\source\extinst.nonsemantic.vulkan.debuginfo.100.grammar.json" />
+    <None Include="src\source\inc\build-version.inc" />
+    <None Include="src\source\inc\core.insts-unified1.inc" />
+    <None Include="src\source\inc\debuginfo.insts.inc" />
+    <None Include="src\source\inc\enum_string_mapping.inc" />
+    <None Include="src\source\inc\extension_enum.inc" />
+    <None Include="src\source\inc\generators.inc" />
+    <None Include="src\source\inc\glsl.std.450.insts.inc" />
+    <None Include="src\source\inc\nonsemantic.clspvreflection.insts.inc" />
+    <None Include="src\source\inc\nonsemantic.vulkan.debuginfo.100.insts.inc" />
+    <None Include="src\source\inc\opencl.debuginfo.100.insts.inc" />
+    <None Include="src\source\inc\opencl.std.insts.inc" />
+    <None Include="src\source\inc\operand.kinds-unified1.inc" />
+    <None Include="src\source\inc\spv-amd-gcn-shader.insts.inc" />
+    <None Include="src\source\inc\spv-amd-shader-ballot.insts.inc" />
+    <None Include="src\source\inc\spv-amd-shader-explicit-vertex-parameter.insts.inc" />
+    <None Include="src\source\inc\spv-amd-shader-trinary-minmax.insts.inc" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

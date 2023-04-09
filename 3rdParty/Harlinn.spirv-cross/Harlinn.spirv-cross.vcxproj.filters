@@ -1,0 +1,126 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="include">
+      <UniqueIdentifier>{9d3bcfe8-bf52-49f1-9234-7f8f2946d206}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\spirv-cross">
+      <UniqueIdentifier>{1865b55d-dd87-4cc7-9237-9033ef34a6ae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{a75756de-7393-452b-bcf0-4130318bbb90}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Readme">
+      <UniqueIdentifier>{310233ab-1ff9-48c5-b235-2319fa82ee0a}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="dllmain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\spirv_cfg.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\spirv_cpp.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\spirv_cross.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\spirv_cross_c.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\spirv_cross_parsed_ir.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\spirv_cross_util.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\spirv_glsl.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\spirv_hlsl.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\spirv_msl.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\spirv_parser.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\spirv_reflect.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\spirv_cross\GLSL.std.450.h">
+      <Filter>include\spirv-cross</Filter>
+    </ClInclude>
+    <ClInclude Include="include\spirv_cross\spirv.h">
+      <Filter>include\spirv-cross</Filter>
+    </ClInclude>
+    <ClInclude Include="include\spirv_cross\spirv.hpp">
+      <Filter>include\spirv-cross</Filter>
+    </ClInclude>
+    <ClInclude Include="include\spirv_cross\spirv_cfg.hpp">
+      <Filter>include\spirv-cross</Filter>
+    </ClInclude>
+    <ClInclude Include="include\spirv_cross\spirv_common.hpp">
+      <Filter>include\spirv-cross</Filter>
+    </ClInclude>
+    <ClInclude Include="include\spirv_cross\spirv_cpp.hpp">
+      <Filter>include\spirv-cross</Filter>
+    </ClInclude>
+    <ClInclude Include="include\spirv_cross\spirv_cross.hpp">
+      <Filter>include\spirv-cross</Filter>
+    </ClInclude>
+    <ClInclude Include="include\spirv_cross\spirv_cross_c.h">
+      <Filter>include\spirv-cross</Filter>
+    </ClInclude>
+    <ClInclude Include="include\spirv_cross\spirv_cross_containers.hpp">
+      <Filter>include\spirv-cross</Filter>
+    </ClInclude>
+    <ClInclude Include="include\spirv_cross\spirv_cross_error_handling.hpp">
+      <Filter>include\spirv-cross</Filter>
+    </ClInclude>
+    <ClInclude Include="include\spirv_cross\spirv_cross_parsed_ir.hpp">
+      <Filter>include\spirv-cross</Filter>
+    </ClInclude>
+    <ClInclude Include="include\spirv_cross\spirv_cross_util.hpp">
+      <Filter>include\spirv-cross</Filter>
+    </ClInclude>
+    <ClInclude Include="include\spirv_cross\spirv_glsl.hpp">
+      <Filter>include\spirv-cross</Filter>
+    </ClInclude>
+    <ClInclude Include="include\spirv_cross\spirv_hlsl.hpp">
+      <Filter>include\spirv-cross</Filter>
+    </ClInclude>
+    <ClInclude Include="include\spirv_cross\spirv_msl.hpp">
+      <Filter>include\spirv-cross</Filter>
+    </ClInclude>
+    <ClInclude Include="include\spirv_cross\spirv_parser.hpp">
+      <Filter>include\spirv-cross</Filter>
+    </ClInclude>
+    <ClInclude Include="include\spirv_cross\spirv_reflect.hpp">
+      <Filter>include\spirv-cross</Filter>
+    </ClInclude>
+    <ClInclude Include="src\gitversion.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="include\spirv_cross\spirv_cross_export.h">
+      <Filter>include\spirv-cross</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
