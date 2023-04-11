@@ -390,7 +390,7 @@ class Cord {
   // guarantee that pointers previously returned by `dst->data()` remain valid
   // even if `*dst` had enough capacity to hold `src`. If `*dst` is a new
   // object, prefer to simply use the conversion operator to `std::string`.
-  friend void CopyCordToString(const Cord& src, std::string* dst);
+  friend ABSEIL_EXPORT void CopyCordToString(const Cord& src, std::string* dst);
 
   class CharIterator;
 

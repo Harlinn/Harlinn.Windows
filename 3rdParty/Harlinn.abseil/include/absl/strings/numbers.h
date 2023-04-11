@@ -159,7 +159,7 @@ static const int kSixDigitsToBufferSize = 16;
 // outside the range 0.0001-999999 are output using scientific notation
 // (1.23456e+06). This routine is heavily optimized.
 // Required buffer size is `kSixDigitsToBufferSize`.
-size_t SixDigitsToBuffer(double d, char* buffer);
+ABSEIL_EXPORT size_t SixDigitsToBuffer(double d, char* buffer);
 
 // These functions are intended for speed. All functions take an output buffer
 // as an argument and return a pointer to the last byte they wrote, which is the

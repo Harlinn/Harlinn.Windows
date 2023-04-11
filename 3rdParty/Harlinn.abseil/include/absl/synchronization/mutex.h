@@ -182,7 +182,7 @@ class ABSL_LOCKABLE Mutex {
   // an error (typically by crashing with a diagnostic) or it may do nothing.
   // This function is intended only as a tool to assist debugging; it doesn't
   // guarantee correctness.
-  void AssertHeld() const ABSL_ASSERT_EXCLUSIVE_LOCK();
+  ABSEIL_EXPORT void AssertHeld() const ABSL_ASSERT_EXCLUSIVE_LOCK();
 
   // ---------------------------------------------------------------------------
   // Reader-Writer Locking

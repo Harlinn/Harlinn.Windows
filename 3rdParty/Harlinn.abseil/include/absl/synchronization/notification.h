@@ -69,7 +69,7 @@ class Notification {
   explicit Notification(bool prenotify) : notified_yet_(prenotify) {}
   Notification(const Notification&) = delete;
   Notification& operator=(const Notification&) = delete;
-  ~Notification();
+  ABSEIL_EXPORT ~Notification();
 
   // Notification::HasBeenNotified()
   //
@@ -83,21 +83,21 @@ class Notification {
   // Blocks the calling thread until the notification's "notified" state is
   // `true`. Note that if `Notify()` has been previously called on this
   // notification, this function will immediately return.
-  void WaitForNotification() const;
+  ABSEIL_EXPORT void WaitForNotification() const;
 
   // Notification::WaitForNotificationWithTimeout()
   //
   // Blocks until either the notification's "notified" state is `true` (which
   // may occur immediately) or the timeout has elapsed, returning the value of
   // its "notified" state in either case.
-  bool WaitForNotificationWithTimeout(absl::Duration timeout) const;
+  ABSEIL_EXPORT bool WaitForNotificationWithTimeout(absl::Duration timeout) const;
 
   // Notification::WaitForNotificationWithDeadline()
   //
   // Blocks until either the notification's "notified" state is `true` (which
   // may occur immediately) or the deadline has expired, returning the value of
   // its "notified" state in either case.
-  bool WaitForNotificationWithDeadline(absl::Time deadline) const;
+  ABSEIL_EXPORT bool WaitForNotificationWithDeadline(absl::Time deadline) const;
 
   // Notification::Notify()
   //
@@ -105,7 +105,7 @@ class Notification {
   // threads. Note: do not call `Notify()` multiple times on the same
   // `Notification`; calling `Notify()` more than once on the same notification
   // results in undefined behavior.
-  void Notify();
+  ABSEIL_EXPORT void Notify();
 
  private:
   static inline bool HasBeenNotifiedInternal(

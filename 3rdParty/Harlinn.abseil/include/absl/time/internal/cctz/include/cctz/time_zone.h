@@ -228,19 +228,19 @@ class time_zone {
 // Loads the named time zone. May perform I/O on the initial load.
 // If the name is invalid, or some other kind of error occurs, returns
 // false and "*tz" is set to the UTC time zone.
-bool load_time_zone(const std::string& name, time_zone* tz);
+ABSEIL_EXPORT bool load_time_zone(const std::string& name, time_zone* tz);
 
 // Returns a time_zone representing UTC. Cannot fail.
-time_zone utc_time_zone();
+ABSEIL_EXPORT time_zone utc_time_zone();
 
 // Returns a time zone that is a fixed offset (seconds east) from UTC.
 // Note: If the absolute value of the offset is greater than 24 hours
 // you'll get UTC (i.e., zero offset) instead.
-time_zone fixed_time_zone(const seconds& offset);
+ABSEIL_EXPORT time_zone fixed_time_zone(const seconds& offset);
 
 // Returns a time zone representing the local time zone. Falls back to UTC.
 // Note: local_time_zone.name() may only be something like "localtime".
-time_zone local_time_zone();
+ABSEIL_EXPORT time_zone local_time_zone();
 
 // Returns the civil time (cctz::civil_second) within the given time zone at
 // the given absolute time (time_point). Since the additional fields provided

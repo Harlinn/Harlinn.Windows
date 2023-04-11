@@ -582,7 +582,7 @@ class FormatArgImpl {
 };
 
 #define ABSL_INTERNAL_FORMAT_DISPATCH_INSTANTIATE_(T, E)                     \
-  E template bool FormatArgImpl::Dispatch<T>(Data, FormatConversionSpecImpl, \
+  E template ABSEIL_TEMPLATE_EXPORT bool FormatArgImpl::Dispatch<T>(Data, FormatConversionSpecImpl, \
                                              void*)
 
 #define ABSL_INTERNAL_FORMAT_DISPATCH_OVERLOADS_EXPAND_(...)                   \
