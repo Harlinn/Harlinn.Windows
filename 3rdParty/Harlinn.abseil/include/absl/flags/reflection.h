@@ -41,11 +41,11 @@ class FlagSaverImpl;
 // Returns the reflection handle of an Abseil flag of the specified name, or
 // `nullptr` if not found. This function will emit a warning if the name of a
 // 'retired' flag is specified.
-absl::CommandLineFlag* FindCommandLineFlag(absl::string_view name);
+ABSEIL_EXPORT absl::CommandLineFlag* FindCommandLineFlag(absl::string_view name);
 
 // Returns current state of the Flags registry in a form of mapping from flag
 // name to a flag reflection handle.
-absl::flat_hash_map<absl::string_view, absl::CommandLineFlag*> GetAllFlags();
+ABSEIL_EXPORT absl::flat_hash_map<absl::string_view, absl::CommandLineFlag*> GetAllFlags();
 
 //------------------------------------------------------------------------------
 // FlagSaver
@@ -72,8 +72,8 @@ absl::flat_hash_map<absl::string_view, absl::CommandLineFlag*> GetAllFlags();
 
 class FlagSaver {
  public:
-  FlagSaver();
-  ~FlagSaver();
+  ABSEIL_EXPORT FlagSaver();
+  ABSEIL_EXPORT ~FlagSaver();
 
   FlagSaver(const FlagSaver&) = delete;
   void operator=(const FlagSaver&) = delete;

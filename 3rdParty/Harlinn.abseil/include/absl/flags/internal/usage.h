@@ -38,7 +38,7 @@ enum class HelpFormat {
 
 // Streams the help message describing `flag` to `out`.
 // The default value for `flag` is included in the output.
-void FlagHelp(std::ostream& out, const CommandLineFlag& flag,
+ABSEIL_EXPORT void FlagHelp(std::ostream& out, const CommandLineFlag& flag,
               HelpFormat format = HelpFormat::kHumanReadable);
 
 // Produces the help messages for all flags matching the filter. A flag matches
@@ -50,7 +50,7 @@ void FlagHelp(std::ostream& out, const CommandLineFlag& flag,
 //  .../path/to/file.<ext>
 // for any extension 'ext'. If the filter is empty this function produces help
 // messages for all flags.
-void FlagsHelp(std::ostream& out, absl::string_view filter,
+ABSEIL_EXPORT void FlagsHelp(std::ostream& out, absl::string_view filter,
                HelpFormat format, absl::string_view program_usage_message);
 
 // --------------------------------------------------------------------
@@ -63,7 +63,7 @@ void FlagsHelp(std::ostream& out, absl::string_view filter,
 // -1 - if no usage flags were set on a commmand line.
 // Non negative return values are expected to be used as an exit code for a
 // binary.
-int HandleUsageFlags(std::ostream& out,
+ABSEIL_EXPORT int HandleUsageFlags(std::ostream& out,
                      absl::string_view program_usage_message);
 
 // --------------------------------------------------------------------
@@ -81,21 +81,21 @@ enum class HelpMode {
 };
 
 // Returns substring to filter help output (--help=substr argument)
-std::string GetFlagsHelpMatchSubstr();
+ABSEIL_EXPORT std::string GetFlagsHelpMatchSubstr();
 // Returns the requested help mode.
-HelpMode GetFlagsHelpMode();
+ABSEIL_EXPORT HelpMode GetFlagsHelpMode();
 // Returns the requested help format.
-HelpFormat GetFlagsHelpFormat();
+ABSEIL_EXPORT HelpFormat GetFlagsHelpFormat();
 
 // These are corresponding setters to the attributes above.
-void SetFlagsHelpMatchSubstr(absl::string_view);
-void SetFlagsHelpMode(HelpMode);
-void SetFlagsHelpFormat(HelpFormat);
+ABSEIL_EXPORT void SetFlagsHelpMatchSubstr(absl::string_view);
+ABSEIL_EXPORT void SetFlagsHelpMode(HelpMode);
+ABSEIL_EXPORT void SetFlagsHelpFormat(HelpFormat);
 
 // Deduces usage flags from the input argument in a form --name=value or
 // --name. argument is already split into name and value before we call this
 // function.
-bool DeduceUsageFlags(absl::string_view name, absl::string_view value);
+ABSEIL_EXPORT bool DeduceUsageFlags(absl::string_view name, absl::string_view value);
 
 }  // namespace flags_internal
 ABSL_NAMESPACE_END

@@ -103,7 +103,7 @@ SeedSeq CreateSeedSeqFrom(URBG* urbg) {
 //   std::mt19937 rng2(my_seed_seq);
 //   EXPECT_EQ(rng1(), rng2());
 //
-SeedSeq MakeSeedSeq();
+ABSEIL_EXPORT SeedSeq MakeSeedSeq();
 
 ABSL_NAMESPACE_END
 }  // namespace absl

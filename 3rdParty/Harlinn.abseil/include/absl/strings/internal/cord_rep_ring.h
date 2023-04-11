@@ -102,7 +102,7 @@ class CordRepRing : public CordRep {
   // Returns true if this instance is valid, false if some or all of the
   // invariants are broken. Intended for debug purposes only.
   // `output` receives an explanation of the broken invariants.
-  bool IsValid(std::ostream& output) const;
+  ABSEIL_EXPORT bool IsValid(std::ostream& output) const;
 
   // Returns the size in bytes for a CordRepRing with `capacity' entries.
   static constexpr size_t AllocSize(size_t capacity);
@@ -112,7 +112,7 @@ class CordRepRing : public CordRep {
 
   // Creates a new ring buffer from the provided `rep`. Adopts a reference
   // on `rep`. The returned ring buffer has a capacity of at least `extra + 1`
-  static CordRepRing* Create(CordRep* child, size_t extra = 0);
+  ABSEIL_EXPORT static CordRepRing* Create(CordRep* child, size_t extra = 0);
 
   // `head`, `tail` and `capacity` indexes defining the ring buffer boundaries.
   index_type head() const { return head_; }
@@ -158,7 +158,7 @@ class CordRepRing : public CordRep {
   // If the provided child is a RING or CONCAT tree, or a SUBSTRING of a RING or
   // CONCAT tree, then all child nodes not excluded by any start offset or
   // length values are added recursively.
-  static CordRepRing* Append(CordRepRing* rep, CordRep* child);
+  ABSEIL_EXPORT static CordRepRing* Append(CordRepRing* rep, CordRep* child);
 
   // Appends the provided string data to the `rep` instance.
   // This function will attempt to utilize any remaining capacity in the last
@@ -166,7 +166,7 @@ class CordRepRing : public CordRep {
   // of type FLAT. Remaining data will be added as one or more FLAT nodes.
   // Any last node added to the ring buffer will be allocated with up to
   // `extra` bytes of capacity for (anticipated) subsequent append actions.
-  static CordRepRing* Append(CordRepRing* rep, string_view data,
+  ABSEIL_EXPORT static CordRepRing* Append(CordRepRing* rep, string_view data,
                              size_t extra = 0);
 
   // Prepends the provided child node to the `rep` instance.
@@ -177,7 +177,7 @@ class CordRepRing : public CordRep {
   // If the provided child is a RING or CONCAT tree, or a SUBSTRING of a RING
   // or CONCAT tree, then all child nodes not excluded by any start offset or
   // length values are added recursively.
-  static CordRepRing* Prepend(CordRepRing* rep, CordRep* child);
+  ABSEIL_EXPORT static CordRepRing* Prepend(CordRepRing* rep, CordRep* child);
 
   // Prepends the provided string data to the `rep` instance.
   // This function will attempt to utilize any remaining capacity in the first
@@ -185,7 +185,7 @@ class CordRepRing : public CordRep {
   // of type FLAT. Remaining data will be added as one or more FLAT nodes.
   // Any first node prepnded to the ring buffer will be allocated with up to
   // `extra` bytes of capacity for (anticipated) subsequent prepend actions.
-  static CordRepRing* Prepend(CordRepRing* rep, string_view data,
+  ABSEIL_EXPORT static CordRepRing* Prepend(CordRepRing* rep, string_view data,
                               size_t extra = 0);
 
   // Returns a span referencing potentially unused capacity in the last node.
@@ -194,19 +194,19 @@ class CordRepRing : public CordRep {
   // If non empty, the ring buffer is adjusted to the new length, with the newly
   // added capacity left uninitialized. Callers should assign a value to the
   // entire span before any other operations on this instance.
-  Span<char> GetAppendBuffer(size_t size);
+  ABSEIL_EXPORT Span<char> GetAppendBuffer(size_t size);
 
   // Returns a span referencing potentially unused capacity in the first node.
   // This function is identical to GetAppendBuffer except that it returns a span
   // referencing up to `size` capacity directly before the existing data.
-  Span<char> GetPrependBuffer(size_t size);
+  ABSEIL_EXPORT Span<char> GetPrependBuffer(size_t size);
 
   // Returns a cord ring buffer containing `len` bytes of data starting at
   // `offset`. If the input is not shared, this function will remove all head
   // and tail child nodes outside of the requested range, and adjust the new
   // head and tail nodes as required. If the input is shared, this function
   // returns a new instance sharing some or all of the nodes from the input.
-  static CordRepRing* SubRing(CordRepRing* r, size_t offset, size_t len,
+  ABSEIL_EXPORT static CordRepRing* SubRing(CordRepRing* r, size_t offset, size_t len,
                               size_t extra = 0);
 
   // Returns a cord ring buffer with the first `len` bytes removed.
@@ -214,7 +214,7 @@ class CordRepRing : public CordRep {
   // fully inside the first `length` bytes, and adjust the new head as required.
   // If the input is shared, this function returns a new instance sharing some
   // or all of the nodes from the input.
-  static CordRepRing* RemoveSuffix(CordRepRing* r, size_t len,
+  ABSEIL_EXPORT static CordRepRing* RemoveSuffix(CordRepRing* r, size_t len,
                                    size_t extra = 0);
 
   // Returns a cord ring buffer with the last `len` bytes removed.
@@ -222,11 +222,11 @@ class CordRepRing : public CordRep {
   // fully inside the first `length` bytes, and adjust the new head as required.
   // If the input is shared, this function returns a new instance sharing some
   // or all of the nodes from the input.
-  static CordRepRing* RemovePrefix(CordRepRing* r, size_t len,
+  ABSEIL_EXPORT static CordRepRing* RemovePrefix(CordRepRing* r, size_t len,
                                    size_t extra = 0);
 
   // Returns the character at `offset`. Requires that `offset < length`.
-  char GetCharacter(size_t offset) const;
+  ABSEIL_EXPORT char GetCharacter(size_t offset) const;
 
   // Returns true if this instance manages a single contiguous buffer, in which
   // case the (optional) output parameter `fragment` is set. Otherwise, the
@@ -241,7 +241,7 @@ class CordRepRing : public CordRep {
   bool IsFlat(size_t offset, size_t len, absl::string_view* fragment) const;
 
   // Testing only: set capacity to requested capacity.
-  void SetCapacityForTesting(size_t capacity);
+  ABSEIL_EXPORT void SetCapacityForTesting(size_t capacity);
 
   // Returns the CordRep data pointer for the provided CordRep.
   // Requires that the provided `rep` is either a FLAT or EXTERNAL CordRep.
@@ -346,7 +346,7 @@ class CordRepRing : public CordRep {
 
   // Dump this instance's data tp stream `s` in human readable format, excluding
   // the actual data content itself. Intended for debug purposes only.
-  friend std::ostream& operator<<(std::ostream& s, const CordRepRing& rep);
+  friend ABSEIL_EXPORT std::ostream& operator<<(std::ostream& s, const CordRepRing& rep);
 
  private:
   enum class AddMode { kAppend, kPrepend };
@@ -376,16 +376,16 @@ class CordRepRing : public CordRep {
   // The returned capacity may be larger if the allocated memory allows for it.
   // The maximum capacity of a CordRepRing is capped at kMaxCapacity.
   // Throws `std::length_error` if `capacity + extra' exceeds kMaxCapacity.
-  static CordRepRing* New(size_t capacity, size_t extra);
+  ABSEIL_EXPORT static CordRepRing* New(size_t capacity, size_t extra);
 
   // Deallocates (but does not destroy) the provided ring buffer.
-  static void Delete(CordRepRing* rep);
+  ABSEIL_EXPORT static void Delete(CordRepRing* rep);
 
   // Destroys the provided ring buffer, decrementing the reference count of all
   // contained child CordReps. The provided 1\`rep` should have a ref count of
   // one (pre decrement destroy call observing `refcount.IsOne()`) or zero
   // (post decrement destroy call observing `!refcount.Decrement()`).
-  static void Destroy(CordRepRing* rep);
+  ABSEIL_EXPORT static void Destroy(CordRepRing* rep);
 
   // Returns a mutable reference to the logical end position array.
   pos_type* entry_end_pos() {
@@ -403,22 +403,22 @@ class CordRepRing : public CordRep {
   }
 
   // Find implementations for the non fast path 0 / length cases.
-  Position FindSlow(index_type head, size_t offset) const;
-  Position FindTailSlow(index_type head, size_t offset) const;
+  ABSEIL_EXPORT Position FindSlow(index_type head, size_t offset) const;
+  ABSEIL_EXPORT Position FindTailSlow(index_type head, size_t offset) const;
 
   // Finds the index of the first node that is inside a reasonable distance
   // of the node at `offset` from which we can continue with a linear search.
   template <bool wrap>
-  index_type FindBinary(index_type head, index_type tail, size_t offset) const;
+  ABSEIL_EXPORT index_type FindBinary(index_type head, index_type tail, size_t offset) const;
 
   // Fills the current (initialized) instance from the provided source, copying
   // entries [head, tail). Adds a reference to copied entries if `ref` is true.
   template <bool ref>
-  void Fill(const CordRepRing* src, index_type head, index_type tail);
+  ABSEIL_EXPORT void Fill(const CordRepRing* src, index_type head, index_type tail);
 
   // Create a copy of 'rep', copying all entries [head, tail), allocating room
   // for `extra` entries. Adds a reference on all copied entries.
-  static CordRepRing* Copy(CordRepRing* rep, index_type head, index_type tail,
+  ABSEIL_EXPORT static CordRepRing* Copy(CordRepRing* rep, index_type head, index_type tail,
                            size_t extra = 0);
 
   // Returns a Mutable CordRepRing reference from `rep` with room for at least
@@ -432,48 +432,48 @@ class CordRepRing : public CordRep {
   // If a new CordRepRing can not be allocated, or the new capacity would exceed
   // the maxmimum capacity, then the input is consumed only, and an exception is
   // thrown.
-  static CordRepRing* Mutable(CordRepRing* rep, size_t extra);
+  ABSEIL_EXPORT static CordRepRing* Mutable(CordRepRing* rep, size_t extra);
 
   // Slow path for Append(CordRepRing* rep, CordRep* child). This function is
   // exercised if the provided `child` in Append() is not a leaf node, i.e., a
   // ring buffer or old (concat) cord tree.
-  static CordRepRing* AppendSlow(CordRepRing* rep, CordRep* child);
+  ABSEIL_EXPORT static CordRepRing* AppendSlow(CordRepRing* rep, CordRep* child);
 
   // Appends the provided leaf node. Requires `child` to be FLAT or EXTERNAL.
-  static CordRepRing* AppendLeaf(CordRepRing* rep, CordRep* child,
+  ABSEIL_EXPORT static CordRepRing* AppendLeaf(CordRepRing* rep, CordRep* child,
                                  size_t offset, size_t length);
 
   // Prepends the provided leaf node. Requires `child` to be FLAT or EXTERNAL.
-  static CordRepRing* PrependLeaf(CordRepRing* rep, CordRep* child,
+  ABSEIL_EXPORT static CordRepRing* PrependLeaf(CordRepRing* rep, CordRep* child,
                                   size_t offset, size_t length);
 
   // Slow path for Prepend(CordRepRing* rep, CordRep* child). This function is
   // exercised if the provided `child` in Prepend() is not a leaf node, i.e., a
   // ring buffer or old (concat) cord tree.
-  static CordRepRing* PrependSlow(CordRepRing* rep, CordRep* child);
+  ABSEIL_EXPORT static CordRepRing* PrependSlow(CordRepRing* rep, CordRep* child);
 
   // Slow path for Create(CordRep* child, size_t extra). This function is
   // exercised if the provided `child` in Prepend() is not a leaf node, i.e., a
   // ring buffer or old (concat) cord tree.
-  static CordRepRing* CreateSlow(CordRep* child, size_t extra);
+  ABSEIL_EXPORT static CordRepRing* CreateSlow(CordRep* child, size_t extra);
 
   // Creates a new ring buffer from the provided `child` leaf node. Requires
   // `child` to be FLAT or EXTERNAL. on `rep`.
   // The returned ring buffer has a capacity of at least `1 + extra`
-  static CordRepRing* CreateFromLeaf(CordRep* child, size_t offset,
+  ABSEIL_EXPORT static CordRepRing* CreateFromLeaf(CordRep* child, size_t offset,
                                      size_t length, size_t extra);
 
   // Appends or prepends (depending on AddMode) the ring buffer in `ring' to
   // `rep` starting at `offset` with length `len`.
   template <AddMode mode>
-  static CordRepRing* AddRing(CordRepRing* rep, CordRepRing* ring,
+  ABSEIL_EXPORT static CordRepRing* AddRing(CordRepRing* rep, CordRepRing* ring,
                               size_t offset, size_t len);
 
   // Increases the data offset for entry `index` by `n`.
-  void AddDataOffset(index_type index, size_t n);
+  ABSEIL_EXPORT void AddDataOffset(index_type index, size_t n);
 
   // Descreases the length for entry `index` by `n`.
-  void SubLength(index_type index, size_t n);
+  ABSEIL_EXPORT void SubLength(index_type index, size_t n);
 
   index_type head_;
   index_type tail_;
@@ -598,7 +598,7 @@ inline bool CordRepRing::IsFlat(size_t offset, size_t len,
   return false;
 }
 
-std::ostream& operator<<(std::ostream& s, const CordRepRing& rep);
+ABSEIL_EXPORT std::ostream& operator<<(std::ostream& s, const CordRepRing& rep);
 
 }  // namespace cord_internal
 ABSL_NAMESPACE_END

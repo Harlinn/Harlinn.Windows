@@ -49,13 +49,13 @@ ABSEIL_EXPORT uint32_t SpinLockWait(std::atomic<uint32_t> *w, int n,
 // is true, wake all such threads. On some systems, this may be a no-op; on
 // those systems, threads calling SpinLockDelay() will always wake eventually
 // even if SpinLockWake() is never called.
-ABSEIL_EXPORT void SpinLockWake(std::atomic<uint32_t> *w, bool all);
+void SpinLockWake(std::atomic<uint32_t> *w, bool all);
 
 // Wait for an appropriate spin delay on iteration "loop" of a
 // spin loop on location *w, whose previously observed value was "value".
 // SpinLockDelay() may do nothing, may yield the CPU, may sleep a clock tick,
 // or may wait for a call to SpinLockWake(w).
-ABSEIL_EXPORT void SpinLockDelay(std::atomic<uint32_t> *w, uint32_t value, int loop,
+void SpinLockDelay(std::atomic<uint32_t> *w, uint32_t value, int loop,
                    base_internal::SchedulingMode scheduling_mode);
 
 // Helper used by AbslInternalSpinLockDelay.

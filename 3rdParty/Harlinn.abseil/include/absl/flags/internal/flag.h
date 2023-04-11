@@ -421,8 +421,8 @@ struct FlagCallback {
 // The class encapsulates the Flag's data and access to it.
 
 struct DynValueDeleter {
-  explicit DynValueDeleter(FlagOpFn op_arg = nullptr);
-  void operator()(void* ptr) const;
+  ABSEIL_EXPORT explicit DynValueDeleter(FlagOpFn op_arg = nullptr);
+  ABSEIL_EXPORT void operator()(void* ptr) const;
 
   FlagOpFn op;
 };
@@ -448,9 +448,9 @@ class FlagImpl final : public CommandLineFlag {
         data_guard_{} {}
 
   // Constant access methods
-  int64_t ReadOneWord() const ABSL_LOCKS_EXCLUDED(*DataGuard());
-  bool ReadOneBool() const ABSL_LOCKS_EXCLUDED(*DataGuard());
-  void Read(void* dst) const override ABSL_LOCKS_EXCLUDED(*DataGuard());
+  ABSEIL_EXPORT int64_t ReadOneWord() const ABSL_LOCKS_EXCLUDED(*DataGuard());
+  ABSEIL_EXPORT bool ReadOneBool() const ABSL_LOCKS_EXCLUDED(*DataGuard());
+  ABSEIL_EXPORT void Read(void* dst) const override ABSL_LOCKS_EXCLUDED(*DataGuard());
   void Read(bool* value) const ABSL_LOCKS_EXCLUDED(*DataGuard()) {
     *value = ReadOneBool();
   }
@@ -471,12 +471,12 @@ class FlagImpl final : public CommandLineFlag {
   }
 
   // Mutating access methods
-  void Write(const void* src) ABSL_LOCKS_EXCLUDED(*DataGuard());
+  ABSEIL_EXPORT void Write(const void* src) ABSL_LOCKS_EXCLUDED(*DataGuard());
 
   // Interfaces to operate on callbacks.
-  void SetCallback(const FlagCallbackFunc mutation_callback)
+  ABSEIL_EXPORT void SetCallback(const FlagCallbackFunc mutation_callback)
       ABSL_LOCKS_EXCLUDED(*DataGuard());
-  void InvokeCallback() const ABSL_EXCLUSIVE_LOCKS_REQUIRED(*DataGuard());
+  ABSEIL_EXPORT void InvokeCallback() const ABSL_EXCLUSIVE_LOCKS_REQUIRED(*DataGuard());
 
   // Used in read/write operations to validate source/target has correct type.
   // For example if flag is declared as absl::Flag<int> FLAGS_foo, a call to
@@ -484,7 +484,7 @@ class FlagImpl final : public CommandLineFlag {
   // int. To do that we pass the "assumed" type id (which is deduced from type
   // int) as an argument `type_id`, which is in turn is validated against the
   // type id stored in flag object by flag definition statement.
-  void AssertValidType(FlagFastTypeId type_id,
+  ABSEIL_EXPORT void AssertValidType(FlagFastTypeId type_id,
                        const std::type_info* (*gen_rtti)()) const;
 
  private:
@@ -493,13 +493,13 @@ class FlagImpl final : public CommandLineFlag {
   friend class FlagState;
 
   // Ensures that `data_guard_` is initialized and returns it.
-  absl::Mutex* DataGuard() const
+  ABSEIL_EXPORT absl::Mutex* DataGuard() const
       ABSL_LOCK_RETURNED(reinterpret_cast<absl::Mutex*>(data_guard_));
   // Returns heap allocated value of type T initialized with default value.
-  std::unique_ptr<void, DynValueDeleter> MakeInitValue() const
+  ABSEIL_EXPORT std::unique_ptr<void, DynValueDeleter> MakeInitValue() const
       ABSL_EXCLUSIVE_LOCKS_REQUIRED(*DataGuard());
   // Flag initialization called via absl::call_once.
-  void Init();
+  ABSEIL_EXPORT void Init();
 
   // Offset value access methods. One per storage kind. These methods to not
   // respect const correctness, so be very carefull using them.
@@ -512,27 +512,27 @@ class FlagImpl final : public CommandLineFlag {
   // This is an accessor for a value stored in an aligned buffer storage
   // used for non-trivially-copyable data types.
   // Returns a mutable pointer to the start of a buffer.
-  void* AlignedBufferValue() const;
+  ABSEIL_EXPORT void* AlignedBufferValue() const;
 
   // The same as above, but used for sequencelock-protected storage.
-  std::atomic<uint64_t>* AtomicBufferValue() const;
+  ABSEIL_EXPORT std::atomic<uint64_t>* AtomicBufferValue() const;
 
   // This is an accessor for a value stored as one word atomic. Returns a
   // mutable reference to an atomic value.
-  std::atomic<int64_t>& OneWordValue() const;
+  ABSEIL_EXPORT std::atomic<int64_t>& OneWordValue() const;
 
   // Attempts to parse supplied `value` string. If parsing is successful,
   // returns new value. Otherwise returns nullptr.
-  std::unique_ptr<void, DynValueDeleter> TryParse(absl::string_view value,
+  ABSEIL_EXPORT std::unique_ptr<void, DynValueDeleter> TryParse(absl::string_view value,
                                                   std::string& err) const
       ABSL_EXCLUSIVE_LOCKS_REQUIRED(*DataGuard());
   // Stores the flag value based on the pointer to the source.
-  void StoreValue(const void* src) ABSL_EXCLUSIVE_LOCKS_REQUIRED(*DataGuard());
+  ABSEIL_EXPORT void StoreValue(const void* src) ABSL_EXCLUSIVE_LOCKS_REQUIRED(*DataGuard());
 
   // Copy the flag data, protected by `seq_lock_` into `dst`.
   //
   // REQUIRES: ValueStorageKind() == kSequenceLocked.
-  void ReadSequenceLockedData(void* dst) const
+  ABSEIL_EXPORT void ReadSequenceLockedData(void* dst) const
       ABSL_LOCKS_EXCLUDED(*DataGuard());
 
   FlagHelpKind HelpSourceKind() const {
@@ -547,33 +547,33 @@ class FlagImpl final : public CommandLineFlag {
   }
 
   // CommandLineFlag interface implementation
-  absl::string_view Name() const override;
-  std::string Filename() const override;
-  std::string Help() const override;
-  FlagFastTypeId TypeId() const override;
-  bool IsSpecifiedOnCommandLine() const override
+  ABSEIL_EXPORT absl::string_view Name() const override;
+  ABSEIL_EXPORT std::string Filename() const override;
+  ABSEIL_EXPORT std::string Help() const override;
+  ABSEIL_EXPORT FlagFastTypeId TypeId() const override;
+  ABSEIL_EXPORT bool IsSpecifiedOnCommandLine() const override
       ABSL_LOCKS_EXCLUDED(*DataGuard());
-  std::string DefaultValue() const override ABSL_LOCKS_EXCLUDED(*DataGuard());
-  std::string CurrentValue() const override ABSL_LOCKS_EXCLUDED(*DataGuard());
-  bool ValidateInputValue(absl::string_view value) const override
+  ABSEIL_EXPORT std::string DefaultValue() const override ABSL_LOCKS_EXCLUDED(*DataGuard());
+  ABSEIL_EXPORT std::string CurrentValue() const override ABSL_LOCKS_EXCLUDED(*DataGuard());
+  ABSEIL_EXPORT bool ValidateInputValue(absl::string_view value) const override
       ABSL_LOCKS_EXCLUDED(*DataGuard());
-  void CheckDefaultValueParsingRoundtrip() const override
+  ABSEIL_EXPORT void CheckDefaultValueParsingRoundtrip() const override
       ABSL_LOCKS_EXCLUDED(*DataGuard());
 
-  int64_t ModificationCount() const ABSL_EXCLUSIVE_LOCKS_REQUIRED(*DataGuard());
+  ABSEIL_EXPORT int64_t ModificationCount() const ABSL_EXCLUSIVE_LOCKS_REQUIRED(*DataGuard());
 
   // Interfaces to save and restore flags to/from persistent state.
   // Returns current flag state or nullptr if flag does not support
   // saving and restoring a state.
-  std::unique_ptr<FlagStateInterface> SaveState() override
+  ABSEIL_EXPORT std::unique_ptr<FlagStateInterface> SaveState() override
       ABSL_LOCKS_EXCLUDED(*DataGuard());
 
   // Restores the flag state to the supplied state object. If there is
   // nothing to restore returns false. Otherwise returns true.
-  bool RestoreState(const FlagState& flag_state)
+  ABSEIL_EXPORT bool RestoreState(const FlagState& flag_state)
       ABSL_LOCKS_EXCLUDED(*DataGuard());
 
-  bool ParseFrom(absl::string_view value, FlagSettingMode set_mode,
+  ABSEIL_EXPORT bool ParseFrom(absl::string_view value, FlagSettingMode set_mode,
                  ValueSource source, std::string& error) override
       ABSL_LOCKS_EXCLUDED(*DataGuard());
 

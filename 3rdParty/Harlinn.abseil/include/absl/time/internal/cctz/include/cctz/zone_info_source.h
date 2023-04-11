@@ -30,7 +30,7 @@ namespace cctz {
 // A stdio-like interface for providing zoneinfo data for a particular zone.
 class ZoneInfoSource {
  public:
-  ABSEIL_EXPORT virtual ~ZoneInfoSource();
+  virtual ~ZoneInfoSource();
 
   virtual std::size_t Read(void* ptr, std::size_t size) = 0;  // like fread()
   virtual int Skip(std::size_t offset) = 0;                   // like fseek()
@@ -38,7 +38,7 @@ class ZoneInfoSource {
   // Until the zoneinfo data supports versioning information, we provide
   // a way for a ZoneInfoSource to indicate it out-of-band.  The default
   // implementation returns an empty string.
-  ABSEIL_EXPORT virtual std::string Version() const;
+  virtual std::string Version() const;
 };
 
 }  // namespace cctz

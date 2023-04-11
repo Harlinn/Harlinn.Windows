@@ -23,10 +23,10 @@
 #include "absl/flags/declare.h"
 #include "absl/strings/string_view.h"
 
-ABSL_DECLARE_FLAG(std::vector<std::string>, flagfile);
-ABSL_DECLARE_FLAG(std::vector<std::string>, fromenv);
-ABSL_DECLARE_FLAG(std::vector<std::string>, tryfromenv);
-ABSL_DECLARE_FLAG(std::vector<std::string>, undefok);
+ABSL_DECLARE_FLAG_DLL(std::vector<std::string>, flagfile, ABSEIL_EXPORT );
+ABSL_DECLARE_FLAG_DLL(std::vector<std::string>, fromenv, ABSEIL_EXPORT );
+ABSL_DECLARE_FLAG_DLL(std::vector<std::string>, tryfromenv, ABSEIL_EXPORT );
+ABSL_DECLARE_FLAG_DLL(std::vector<std::string>, undefok, ABSEIL_EXPORT );
 
 namespace absl {
 ABSL_NAMESPACE_BEGIN
@@ -51,6 +51,10 @@ std::vector<char*> ParseCommandLineImpl(int argc, char* argv[],
 // Returns true if flag with specified name was either present on the original
 // command line or specified in flag file present on the original command line.
 bool WasPresentOnCommandLine(absl::string_view flag_name);
+
+// Return existing flags similar to the parameter, in order to help in case of
+// misspellings.
+std::vector<std::string> GetMisspellingHints(absl::string_view flag);
 
 }  // namespace flags_internal
 ABSL_NAMESPACE_END

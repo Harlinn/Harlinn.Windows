@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef ABSL_STRINGS_CORDZ_HANDLE_H_
-#define ABSL_STRINGS_CORDZ_HANDLE_H_
+#ifndef ABSL_STRINGS_INTERNAL_CORDZ_HANDLE_H_
+#define ABSL_STRINGS_INTERNAL_CORDZ_HANDLE_H_
 
 #include <atomic>
 #include <vector>
@@ -49,7 +49,7 @@ class CordzHandle {
   // safe to be deleted directly.
   // If SafeToDelete returns false, callers MUST use the Delete() method to
   // safely queue CordzHandle instances for deletion.
-  bool SafeToDelete() const;
+  ABSEIL_EXPORT bool SafeToDelete() const;
 
   // Deletes the provided instance, or puts it on the delete queue to be deleted
   // once there are no more sample tokens (snapshot) instances potentially
@@ -57,13 +57,13 @@ class CordzHandle {
   static void Delete(CordzHandle* handle);
 
   // Returns the current entries in the delete queue in LIFO order.
-  static std::vector<const CordzHandle*> DiagnosticsGetDeleteQueue();
+  ABSEIL_EXPORT static std::vector<const CordzHandle*> DiagnosticsGetDeleteQueue();
 
   // Returns true if the provided handle is nullptr or guarded by this handle.
   // Since the CordzSnapshot token is itself a CordzHandle, this method will
   // allow tests to check if that token is keeping an arbitrary CordzHandle
   // alive.
-  bool DiagnosticsHandleIsSafeToInspect(const CordzHandle* handle) const;
+  ABSEIL_EXPORT bool DiagnosticsHandleIsSafeToInspect(const CordzHandle* handle) const;
 
   // Returns the current entries in the delete queue, in LIFO order, that are
   // protected by this. CordzHandle objects are only placed on the delete queue
@@ -72,11 +72,11 @@ class CordzHandle {
   // included in the return vector. For each of the handles in the return
   // vector, the earliest that their memory can be freed is when this
   // CordzSnapshot object is deleted.
-  std::vector<const CordzHandle*> DiagnosticsGetSafeToInspectDeletedHandles();
+  ABSEIL_EXPORT std::vector<const CordzHandle*> DiagnosticsGetSafeToInspectDeletedHandles();
 
  protected:
-  explicit CordzHandle(bool is_snapshot);
-  virtual ~CordzHandle();
+  ABSEIL_EXPORT explicit CordzHandle(bool is_snapshot);
+  ABSEIL_EXPORT virtual ~CordzHandle();
 
  private:
   // Global queue data. CordzHandle stores a pointer to the global queue
@@ -128,4 +128,4 @@ class CordzSnapshot : public CordzHandle {
 ABSL_NAMESPACE_END
 }  // namespace absl
 
-#endif  // ABSL_STRINGS_CORDZ_HANDLE_H_
+#endif  // ABSL_STRINGS_INTERNAL_CORDZ_HANDLE_H_

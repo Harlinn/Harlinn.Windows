@@ -16,8 +16,8 @@
 #include "absl/strings/internal/cordz_handle.h"
 #include "absl/strings/internal/cordz_info.h"
 
-#ifndef ABSL_STRINGS_CORDZ_SAMPLE_TOKEN_H_
-#define ABSL_STRINGS_CORDZ_SAMPLE_TOKEN_H_
+#ifndef ABSL_STRINGS_INTERNAL_CORDZ_SAMPLE_TOKEN_H_
+#define ABSL_STRINGS_INTERNAL_CORDZ_SAMPLE_TOKEN_H_
 
 namespace absl {
 ABSL_NAMESPACE_BEGIN
@@ -67,16 +67,16 @@ class CordzSampleToken : public CordzSnapshot {
 
     Iterator() = default;
 
-    Iterator& operator++();
-    Iterator operator++(int);
-    friend bool operator==(const Iterator& lhs, const Iterator& rhs);
-    friend bool operator!=(const Iterator& lhs, const Iterator& rhs);
-    reference operator*() const;
-    pointer operator->() const;
+    ABSEIL_EXPORT Iterator& operator++();
+    ABSEIL_EXPORT Iterator operator++(int);
+    ABSEIL_EXPORT friend bool operator==(const Iterator& lhs, const Iterator& rhs);
+    ABSEIL_EXPORT friend bool operator!=(const Iterator& lhs, const Iterator& rhs);
+    ABSEIL_EXPORT reference operator*() const;
+    ABSEIL_EXPORT pointer operator->() const;
 
    private:
     friend class CordzSampleToken;
-    explicit Iterator(const CordzSampleToken* token);
+    ABSEIL_EXPORT explicit Iterator(const CordzSampleToken* token);
 
     const CordzSampleToken* token_ = nullptr;
     pointer current_ = nullptr;
@@ -94,4 +94,4 @@ class CordzSampleToken : public CordzSnapshot {
 ABSL_NAMESPACE_END
 }  // namespace absl
 
-#endif  // ABSL_STRINGS_CORDZ_SAMPLE_TOKEN_H_
+#endif  // ABSL_STRINGS_INTERNAL_CORDZ_SAMPLE_TOKEN_H_

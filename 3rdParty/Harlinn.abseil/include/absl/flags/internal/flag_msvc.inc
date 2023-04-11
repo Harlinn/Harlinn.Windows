@@ -33,7 +33,7 @@
 // https://developercommunity.visualstudio.com/content/problem/336946/class-with-constexpr-constructor-not-using-static.html?childToView=648454#comment-648454
 
 namespace flags_internal {
-absl::Mutex* GetGlobalConstructionGuard();
+ABSEIL_EXPORT absl::Mutex* GetGlobalConstructionGuard();
 }  // namespace flags_internal
 
 // Public methods of `absl::Flag<T>` are NOT part of the Abseil Flags API.

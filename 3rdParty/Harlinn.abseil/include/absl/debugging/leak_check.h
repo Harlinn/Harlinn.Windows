@@ -37,7 +37,7 @@
 // not also use AddressSanitizer). To use the mode, simply pass
 // `-fsanitize=leak` to both the compiler and linker. Since GCC does not
 // currently provide a way of detecting this mode at compile-time, GCC users
-// must also pass -DLEAK_SANIITIZER to the compiler. An example Bazel command
+// must also pass -DLEAK_SANITIZER to the compiler. An example Bazel command
 // could be
 //
 //   $ bazel test --copt=-DLEAK_SANITIZER --copt=-fsanitize=leak
@@ -58,19 +58,19 @@ ABSL_NAMESPACE_BEGIN
 //
 // Returns true if a leak-checking sanitizer (either ASan or standalone LSan) is
 // currently built into this target.
-bool HaveLeakSanitizer();
+ABSEIL_EXPORT bool HaveLeakSanitizer();
 
 // LeakCheckerIsActive()
 //
 // Returns true if a leak-checking sanitizer (either ASan or standalone LSan) is
 // currently built into this target and is turned on.
-bool LeakCheckerIsActive();
+ABSEIL_EXPORT bool LeakCheckerIsActive();
 
 // DoIgnoreLeak()
 //
 // Implements `IgnoreLeak()` below. This function should usually
 // not be called directly; calling `IgnoreLeak()` is preferred.
-void DoIgnoreLeak(const void* ptr);
+ABSEIL_EXPORT void DoIgnoreLeak(const void* ptr);
 
 // IgnoreLeak()
 //
@@ -105,7 +105,7 @@ T* IgnoreLeak(T* ptr) {
 //   ... diagnostic already printed. Exit with failure code.
 //   exit(1)
 // }
-bool FindAndReportLeaks();
+ABSEIL_EXPORT bool FindAndReportLeaks();
 
 // LeakCheckDisabler
 //
@@ -124,10 +124,10 @@ bool FindAndReportLeaks();
 // REQUIRES: Destructor runs in same thread as constructor
 class LeakCheckDisabler {
  public:
-  LeakCheckDisabler();
+  ABSEIL_EXPORT LeakCheckDisabler();
   LeakCheckDisabler(const LeakCheckDisabler&) = delete;
   LeakCheckDisabler& operator=(const LeakCheckDisabler&) = delete;
-  ~LeakCheckDisabler();
+  ABSEIL_EXPORT ~LeakCheckDisabler();
 };
 
 // RegisterLivePointers()
@@ -136,13 +136,13 @@ class LeakCheckDisabler {
 // referenced and for which leak checking should be ignored. This function is
 // useful if you store pointers in mapped memory, for memory ranges that we know
 // are correct but for which normal analysis would flag as leaked code.
-void RegisterLivePointers(const void* ptr, size_t size);
+ABSEIL_EXPORT void RegisterLivePointers(const void* ptr, size_t size);
 
 // UnRegisterLivePointers()
 //
 // Deregisters the pointers previously marked as active in
 // `RegisterLivePointers()`, enabling leak checking of those pointers.
-void UnRegisterLivePointers(const void* ptr, size_t size);
+ABSEIL_EXPORT void UnRegisterLivePointers(const void* ptr, size_t size);
 
 ABSL_NAMESPACE_END
 }  // namespace absl

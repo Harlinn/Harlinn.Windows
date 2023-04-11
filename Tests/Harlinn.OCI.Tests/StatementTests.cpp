@@ -357,11 +357,11 @@ BOOST_AUTO_TEST_CASE( ExecuteTest12 )
         L"END;";
 
     auto statement = serviceContext.CreateStatement( sql );
-    auto result = statement.Bind<Single>( 1 );
+    auto result = statement.Bind<float>( 1 );
 
     statement.Execute( 1 );
 
-    auto value = result->As<Single>( );
+    auto value = result->As<float>( );
     BOOST_CHECK( value == 1 );
 
     serviceContext.SessionEnd( );
@@ -986,7 +986,7 @@ BOOST_AUTO_TEST_CASE( ExecuteScalarTest10 )
 
     std::wstring sql( L"SELECT 1 FROM DUAL" );
 
-    auto result = serviceContext.ExecuteScalar<Single>( sql );
+    auto result = serviceContext.ExecuteScalar<float>( sql );
     BOOST_CHECK( result.has_value( ) );
     BOOST_CHECK( result.value( ) );
 

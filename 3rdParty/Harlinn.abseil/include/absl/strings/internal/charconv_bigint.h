@@ -234,7 +234,7 @@ class BigUnsigned {
   // account for the decimal point and for dropped significant digits.  After
   // this function returns,
   //   actual_value_of_parsed_string ~= *this * 10**exponent_adjustment.
-  ABSEIL_EXPORT int ReadDigits(const char* begin, const char* end, int significant_digits);
+  int ReadDigits(const char* begin, const char* end, int significant_digits);
 
   // Performs a step of big integer multiplication.  This computes the full
   // (64-bit-wide) values that should be added at the given index (step), and
@@ -413,8 +413,8 @@ std::ostream& operator<<(std::ostream& os, const BigUnsigned<N>& num) {
 //
 // Comments justifying the use of 84 belong in the from_chars implementation,
 // and will be added in a follow-up CL.
-extern template class BigUnsigned<4>;
-extern template class BigUnsigned<84>;
+extern template ABSEIL_TEMPLATE_EXPORT_DECL class BigUnsigned<4>;
+extern template ABSEIL_TEMPLATE_EXPORT_DECL class BigUnsigned<84>;
 
 }  // namespace strings_internal
 ABSL_NAMESPACE_END

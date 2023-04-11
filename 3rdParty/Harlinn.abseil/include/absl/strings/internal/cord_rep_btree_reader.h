@@ -143,7 +143,7 @@ class CordRepBtreeReader {
   // read. If `n` exceeded the amount of remaining data this function will
   // return an empty string view and `tree` will be set to nullptr.
   // In both cases, `consumed` will be set to `length`.
-  absl::string_view Read(size_t n, size_t chunk_size, CordRep*& tree);
+  ABSEIL_EXPORT absl::string_view Read(size_t n, size_t chunk_size, CordRep*& tree);
 
   // Navigates to the chunk at offset `offset`.
   // Returns a reference into the navigated to chunk, adjusted for the relative

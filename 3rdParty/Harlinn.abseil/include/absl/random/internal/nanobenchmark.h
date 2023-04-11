@@ -124,12 +124,12 @@ struct Result {
 // Ensures the thread is running on the specified cpu, and no others.
 // Reduces noise due to desynchronized socket RDTSC and context switches.
 // If "cpu" is negative, pin to the currently running core.
-void PinThreadToCPU(const int cpu = -1);
+ABSEIL_EXPORT void PinThreadToCPU(const int cpu = -1);
 
 // Returns tick rate, useful for converting measurements to seconds. Invariant
 // means the tick counter frequency is independent of CPU throttling or sleep.
 // This call may be expensive, callers should cache the result.
-double InvariantTicksPerSecond();
+ABSEIL_EXPORT double InvariantTicksPerSecond();
 
 // Precisely measures the number of ticks elapsed when calling "func" with the
 // given inputs, shuffled to ensure realistic branch prediction hit rates.
@@ -143,7 +143,7 @@ double InvariantTicksPerSecond();
 //   uniform distribution over [0, 4) could be represented as {3,0,2,1}.
 // Returns how many Result were written to "results": one per unique input, or
 //   zero if the measurement failed (an error message goes to stderr).
-size_t Measure(const Func func, const void* arg, const FuncInput* inputs,
+ABSEIL_EXPORT size_t Measure(const Func func, const void* arg, const FuncInput* inputs,
                const size_t num_inputs, Result* results,
                const Params& p = Params());
 

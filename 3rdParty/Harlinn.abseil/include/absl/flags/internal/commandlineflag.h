@@ -55,7 +55,7 @@ enum ValueSource {
 // of a flag produced this flag state from method CommandLineFlag::SaveState().
 class FlagStateInterface {
  public:
-  virtual ~FlagStateInterface();
+  ABSEIL_EXPORT virtual ~FlagStateInterface();
 
   // Restores the flag originated this object to the saved state.
   virtual void Restore() const = 0;

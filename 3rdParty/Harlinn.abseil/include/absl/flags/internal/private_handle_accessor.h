@@ -34,22 +34,22 @@ namespace flags_internal {
 class PrivateHandleAccessor {
  public:
   // Access to CommandLineFlag::TypeId.
-  static FlagFastTypeId TypeId(const CommandLineFlag& flag);
+  ABSEIL_EXPORT static FlagFastTypeId TypeId(const CommandLineFlag& flag);
 
   // Access to CommandLineFlag::SaveState.
-  static std::unique_ptr<FlagStateInterface> SaveState(CommandLineFlag& flag);
+  ABSEIL_EXPORT static std::unique_ptr<FlagStateInterface> SaveState(CommandLineFlag& flag);
 
   // Access to CommandLineFlag::IsSpecifiedOnCommandLine.
-  static bool IsSpecifiedOnCommandLine(const CommandLineFlag& flag);
+  ABSEIL_EXPORT static bool IsSpecifiedOnCommandLine(const CommandLineFlag& flag);
 
   // Access to CommandLineFlag::ValidateInputValue.
-  static bool ValidateInputValue(const CommandLineFlag& flag,
+  ABSEIL_EXPORT static bool ValidateInputValue(const CommandLineFlag& flag,
                                  absl::string_view value);
 
   // Access to CommandLineFlag::CheckDefaultValueParsingRoundtrip.
-  static void CheckDefaultValueParsingRoundtrip(const CommandLineFlag& flag);
+  ABSEIL_EXPORT static void CheckDefaultValueParsingRoundtrip(const CommandLineFlag& flag);
 
-  static bool ParseFrom(CommandLineFlag& flag, absl::string_view value,
+  ABSEIL_EXPORT static bool ParseFrom(CommandLineFlag& flag, absl::string_view value,
                         flags_internal::FlagSettingMode set_mode,
                         flags_internal::ValueSource source, std::string& error);
 };

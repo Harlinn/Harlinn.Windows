@@ -86,7 +86,7 @@
 //   }
 //
 // Using an optional flag in this manner avoids common workarounds for
-// indicating such an unset flag (such as using sentinal values to indicate this
+// indicating such an unset flag (such as using sentinel values to indicate this
 // state).
 //
 // An optional flag also allows a developer to pass a flag in an "unset"
@@ -223,20 +223,20 @@ inline std::string UnparseFlag(const T& v);
 namespace flags_internal {
 
 // Overloads of `AbslParseFlag()` and `AbslUnparseFlag()` for fundamental types.
-bool AbslParseFlag(absl::string_view, bool*, std::string*);
-bool AbslParseFlag(absl::string_view, short*, std::string*);           // NOLINT
-bool AbslParseFlag(absl::string_view, unsigned short*, std::string*);  // NOLINT
-bool AbslParseFlag(absl::string_view, int*, std::string*);             // NOLINT
-bool AbslParseFlag(absl::string_view, unsigned int*, std::string*);    // NOLINT
-bool AbslParseFlag(absl::string_view, long*, std::string*);            // NOLINT
-bool AbslParseFlag(absl::string_view, unsigned long*, std::string*);   // NOLINT
-bool AbslParseFlag(absl::string_view, long long*, std::string*);       // NOLINT
-bool AbslParseFlag(absl::string_view, unsigned long long*,             // NOLINT
+ABSEIL_EXPORT bool AbslParseFlag(absl::string_view, bool*, std::string*);
+ABSEIL_EXPORT bool AbslParseFlag(absl::string_view, short*, std::string*);           // NOLINT
+ABSEIL_EXPORT bool AbslParseFlag(absl::string_view, unsigned short*, std::string*);  // NOLINT
+ABSEIL_EXPORT bool AbslParseFlag(absl::string_view, int*, std::string*);             // NOLINT
+ABSEIL_EXPORT bool AbslParseFlag(absl::string_view, unsigned int*, std::string*);    // NOLINT
+ABSEIL_EXPORT bool AbslParseFlag(absl::string_view, long*, std::string*);            // NOLINT
+ABSEIL_EXPORT bool AbslParseFlag(absl::string_view, unsigned long*, std::string*);   // NOLINT
+ABSEIL_EXPORT bool AbslParseFlag(absl::string_view, long long*, std::string*);       // NOLINT
+ABSEIL_EXPORT bool AbslParseFlag(absl::string_view, unsigned long long*,             // NOLINT
                    std::string*);
-bool AbslParseFlag(absl::string_view, float*, std::string*);
-bool AbslParseFlag(absl::string_view, double*, std::string*);
-bool AbslParseFlag(absl::string_view, std::string*, std::string*);
-bool AbslParseFlag(absl::string_view, std::vector<std::string>*, std::string*);
+ABSEIL_EXPORT bool AbslParseFlag(absl::string_view, float*, std::string*);
+ABSEIL_EXPORT bool AbslParseFlag(absl::string_view, double*, std::string*);
+ABSEIL_EXPORT bool AbslParseFlag(absl::string_view, std::string*, std::string*);
+ABSEIL_EXPORT bool AbslParseFlag(absl::string_view, std::vector<std::string>*, std::string*);
 
 template <typename T>
 bool AbslParseFlag(absl::string_view text, absl::optional<T>* f,
@@ -278,8 +278,8 @@ bool InvokeParseFlag(absl::string_view input, T* dst, std::string* err) {
 // Strings and std:: containers do not have the same overload resolution
 // considerations as fundamental types. Naming these 'AbslUnparseFlag' means we
 // can avoid the need for additional specializations of Unparse (below).
-std::string AbslUnparseFlag(absl::string_view v);
-std::string AbslUnparseFlag(const std::vector<std::string>&);
+ABSEIL_EXPORT std::string AbslUnparseFlag(absl::string_view v);
+ABSEIL_EXPORT std::string AbslUnparseFlag(const std::vector<std::string>&);
 
 template <typename T>
 std::string AbslUnparseFlag(const absl::optional<T>& f) {
@@ -301,17 +301,17 @@ std::string Unparse(const T& v) {
 }
 
 // Overloads for builtin types.
-std::string Unparse(bool v);
-std::string Unparse(short v);               // NOLINT
-std::string Unparse(unsigned short v);      // NOLINT
-std::string Unparse(int v);                 // NOLINT
-std::string Unparse(unsigned int v);        // NOLINT
-std::string Unparse(long v);                // NOLINT
-std::string Unparse(unsigned long v);       // NOLINT
-std::string Unparse(long long v);           // NOLINT
-std::string Unparse(unsigned long long v);  // NOLINT
-std::string Unparse(float v);
-std::string Unparse(double v);
+ABSEIL_EXPORT std::string Unparse(bool v);
+ABSEIL_EXPORT std::string Unparse(short v);               // NOLINT
+ABSEIL_EXPORT std::string Unparse(unsigned short v);      // NOLINT
+ABSEIL_EXPORT std::string Unparse(int v);                 // NOLINT
+ABSEIL_EXPORT std::string Unparse(unsigned int v);        // NOLINT
+ABSEIL_EXPORT std::string Unparse(long v);                // NOLINT
+ABSEIL_EXPORT std::string Unparse(unsigned long v);       // NOLINT
+ABSEIL_EXPORT std::string Unparse(long long v);           // NOLINT
+ABSEIL_EXPORT std::string Unparse(unsigned long long v);  // NOLINT
+ABSEIL_EXPORT std::string Unparse(float v);
+ABSEIL_EXPORT std::string Unparse(double v);
 
 }  // namespace flags_internal
 
@@ -347,8 +347,8 @@ inline std::string UnparseFlag(const T& v) {
 // definition because it is layered below flags.  See proper documentation in
 // base/log_severity.h.
 enum class LogSeverity : int;
-bool AbslParseFlag(absl::string_view, absl::LogSeverity*, std::string*);
-std::string AbslUnparseFlag(absl::LogSeverity);
+ABSEIL_EXPORT bool AbslParseFlag(absl::string_view, absl::LogSeverity*, std::string*);
+ABSEIL_EXPORT std::string AbslUnparseFlag(absl::LogSeverity);
 
 ABSL_NAMESPACE_END
 }  // namespace absl

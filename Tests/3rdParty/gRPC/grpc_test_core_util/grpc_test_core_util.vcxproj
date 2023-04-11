@@ -94,7 +94,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
-      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.abseil\include;$(SolutionDir)3rdParty\Harlinn.grpc\include;$(SolutionDir)3rdParty\Harlinn.protobuf\include;$(SolutionDir)3rdParty\Harlinn.grpc;$(SolutionDir)3rdParty\Harlinn.gtest\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.abseil\include;$(SolutionDir)3rdParty\Harlinn.grpc\include;$(SolutionDir)3rdParty\Harlinn.protobuf\include;$(SolutionDir)3rdParty\Harlinn.grpc;$(SolutionDir)3rdParty\Harlinn.gtest\include;$(SolutionDir)3rdParty\Harlinn.boringssl\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
@@ -115,7 +115,7 @@
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <BufferSecurityCheck>false</BufferSecurityCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.abseil\include;$(SolutionDir)3rdParty\Harlinn.grpc\include;$(SolutionDir)3rdParty\Harlinn.protobuf\include;$(SolutionDir)3rdParty\Harlinn.grpc;$(SolutionDir)3rdParty\Harlinn.gtest\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.abseil\include;$(SolutionDir)3rdParty\Harlinn.grpc\include;$(SolutionDir)3rdParty\Harlinn.protobuf\include;$(SolutionDir)3rdParty\Harlinn.grpc;$(SolutionDir)3rdParty\Harlinn.gtest\include;$(SolutionDir)3rdParty\Harlinn.boringssl\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
@@ -135,7 +135,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
-      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.abseil\include;$(SolutionDir)3rdParty\Harlinn.grpc\include;$(SolutionDir)3rdParty\Harlinn.protobuf\include;$(SolutionDir)3rdParty\Harlinn.grpc;$(SolutionDir)3rdParty\Harlinn.gtest\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.abseil\include;$(SolutionDir)3rdParty\Harlinn.grpc\include;$(SolutionDir)3rdParty\Harlinn.protobuf\include;$(SolutionDir)3rdParty\Harlinn.grpc;$(SolutionDir)3rdParty\Harlinn.gtest\include;$(SolutionDir)3rdParty\Harlinn.boringssl\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
@@ -156,7 +156,7 @@
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <BufferSecurityCheck>false</BufferSecurityCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.abseil\include;$(SolutionDir)3rdParty\Harlinn.grpc\include;$(SolutionDir)3rdParty\Harlinn.protobuf\include;$(SolutionDir)3rdParty\Harlinn.grpc;$(SolutionDir)3rdParty\Harlinn.gtest\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.abseil\include;$(SolutionDir)3rdParty\Harlinn.grpc\include;$(SolutionDir)3rdParty\Harlinn.protobuf\include;$(SolutionDir)3rdParty\Harlinn.grpc;$(SolutionDir)3rdParty\Harlinn.gtest\include;$(SolutionDir)3rdParty\Harlinn.boringssl\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>

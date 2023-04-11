@@ -110,13 +110,13 @@ class CordRepBtreeNavigator {
   // bytes have been consumed from a navigator.
   // This function returns `ReadResult.tree = nullptr` if the requested length
   // exceeds the length of the tree starting at the current data edge.
-  ReadResult Read(size_t edge_offset, size_t n);
+  ABSEIL_EXPORT ReadResult Read(size_t edge_offset, size_t n);
 
   // Skips `n` bytes forward from the current data edge, returning the navigated
   // to data edge in `Position.edge` and `Position.offset` containing the offset
   // inside that data edge. Note that the state of the navigator is left
   // unchanged if `n` is smaller than the length of the current data edge.
-  Position Skip(size_t n);
+  ABSEIL_EXPORT Position Skip(size_t n);
 
   // Resets this instance to the default / empty state.
   void Reset();

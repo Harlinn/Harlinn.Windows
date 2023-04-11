@@ -72,13 +72,13 @@ ABSL_NAMESPACE_BEGIN
 // }
 class BadStatusOrAccess : public std::exception {
  public:
-  explicit BadStatusOrAccess(absl::Status status);
+  ABSEIL_EXPORT explicit BadStatusOrAccess(absl::Status status);
   ~BadStatusOrAccess() override = default;
 
-  BadStatusOrAccess(const BadStatusOrAccess& other);
-  BadStatusOrAccess& operator=(const BadStatusOrAccess& other);
-  BadStatusOrAccess(BadStatusOrAccess&& other);
-  BadStatusOrAccess& operator=(BadStatusOrAccess&& other);
+  ABSEIL_EXPORT BadStatusOrAccess(const BadStatusOrAccess& other);
+  ABSEIL_EXPORT BadStatusOrAccess& operator=(const BadStatusOrAccess& other);
+  ABSEIL_EXPORT BadStatusOrAccess(BadStatusOrAccess&& other);
+  ABSEIL_EXPORT BadStatusOrAccess& operator=(BadStatusOrAccess&& other);
 
   // BadStatusOrAccess::what()
   //
@@ -88,16 +88,16 @@ class BadStatusOrAccess : public std::exception {
   //
   // The pointer of this string is guaranteed to be valid until any non-const
   // function is invoked on the exception object.
-  const char* what() const noexcept override;
+  ABSEIL_EXPORT const char* what() const noexcept override;
 
   // BadStatusOrAccess::status()
   //
   // Returns the associated `absl::Status` of the `absl::StatusOr<T>` object's
   // error.
-  const absl::Status& status() const;
+  ABSEIL_EXPORT const absl::Status& status() const;
 
  private:
-  void InitWhat() const;
+  ABSEIL_EXPORT void InitWhat() const;
 
   absl::Status status_;
   mutable absl::once_flag init_what_;

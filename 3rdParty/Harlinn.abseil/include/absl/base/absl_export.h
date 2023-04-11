@@ -12,7 +12,9 @@
 #define ABSEIL_TEMPLATE_EXPORT __declspec(dllimport)
 #define ABSEIL_TEMPLATE_EXPORT_DECL __declspec(dllimport)
 #define ABSL_CONSUME_DLL
+#ifndef NO_PRAGMA_COMMENT_LIB_HARLINN_ABSEIL_LIB
 #pragma comment(lib,"Harlinn.abseil.lib")
+#endif
 #endif
 
 

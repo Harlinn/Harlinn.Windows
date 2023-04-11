@@ -95,8 +95,9 @@ class CordRepBtree : public CordRep {
   // local stack variable compared to Cord's current near 400 bytes stack use.
   // The maximum `height` value of a node is then `kMaxDepth - 1` as node height
   // values start with a value of 0 for leaf nodes.
-  static constexpr int kMaxDepth = 12;
-  static constexpr int kMaxHeight = kMaxDepth - 1;
+  static constexpr size_t kMaxDepth = 12;
+  // See comments on height() for why this is an int and not a size_t.
+  static constexpr int kMaxHeight = static_cast<int>(kMaxDepth - 1);
 
   // `Action` defines the action for unwinding changes done at the btree's leaf
   // level that need to be propagated up to the parent node(s). Each operation
@@ -162,7 +163,7 @@ class CordRepBtree : public CordRep {
 
   // Destroys the provided tree. Should only be called by cord internal API's,
   // typically after a ref_count.Decrement() on the last reference count.
-  static void Destroy(CordRepBtree* tree);
+  ABSEIL_EXPORT static void Destroy(CordRepBtree* tree);
 
   // Destruction
   static void Delete(CordRepBtree* tree) { delete tree; }
@@ -276,7 +277,7 @@ class CordRepBtree : public CordRep {
   //     ...
   //     // Remaining edge in `result.tree`.
   //   }
-  static ExtractResult ExtractAppendBuffer(CordRepBtree* tree,
+  ABSEIL_EXPORT static ExtractResult ExtractAppendBuffer(CordRepBtree* tree,
                                            size_t extra_capacity = 1);
 
   // Returns the `height` of the tree. The height of a tree is limited to
@@ -319,7 +320,7 @@ class CordRepBtree : public CordRep {
   // internal `cord_btree_exhaustive_validation` diagnostics variable is true,
   // in which case the performed validations works as if `shallow` were false.
   // This function is intended for debugging and testing purposes only.
-  static bool IsValid(const CordRepBtree* tree, bool shallow = false);
+  ABSEIL_EXPORT static bool IsValid(const CordRepBtree* tree, bool shallow = false);
 
   // Diagnostics: asserts that the provided tree is valid.
   // `AssertValid()` performs a shallow validation by default. `shallow` can be
@@ -327,16 +328,16 @@ class CordRepBtree : public CordRep {
   // function is implemented in terms of calling `IsValid()` and asserting the
   // return value to be true. See `IsValid()` for more information.
   // This function is intended for debugging and testing purposes only.
-  static CordRepBtree* AssertValid(CordRepBtree* tree, bool shallow = true);
-  static const CordRepBtree* AssertValid(const CordRepBtree* tree,
+  ABSEIL_EXPORT static CordRepBtree* AssertValid(CordRepBtree* tree, bool shallow = true);
+  ABSEIL_EXPORT static const CordRepBtree* AssertValid(const CordRepBtree* tree,
                                          bool shallow = true);
 
   // Diagnostics: dump the contents of this tree to `stream`.
   // This function is intended for debugging and testing purposes only.
-  static void Dump(const CordRep* rep, std::ostream& stream);
-  static void Dump(const CordRep* rep, absl::string_view label,
+  ABSEIL_EXPORT static void Dump(const CordRep* rep, std::ostream& stream);
+  ABSEIL_EXPORT static void Dump(const CordRep* rep, absl::string_view label,
                    std::ostream& stream);
-  static void Dump(const CordRep* rep, absl::string_view label,
+  ABSEIL_EXPORT static void Dump(const CordRep* rep, absl::string_view label,
                    bool include_contents, std::ostream& stream);
 
   // Adds the edge `edge` to this node if possible. `owned` indicates if the
@@ -443,11 +444,11 @@ class CordRepBtree : public CordRep {
   // was copied or not.
   // See the `Append/Prepend` function for the meaning and purpose of `extra`.
   template <EdgeType edge_type>
-  static CordRepBtree* NewLeaf(absl::string_view data, size_t extra);
+  ABSEIL_EXPORT static CordRepBtree* NewLeaf(absl::string_view data, size_t extra);
 
-  // Creates a raw copy of this Btree node, copying all properties, but
-  // without adding any references to existing edges.
-  CordRepBtree* CopyRaw() const;
+  // Creates a raw copy of this Btree node with the specified length, copying
+  // all properties, but without adding any references to existing edges.
+  CordRepBtree* CopyRaw(size_t new_length) const;
 
   // Creates a full copy of this Btree node, adding a reference on all edges.
   CordRepBtree* Copy() const;
@@ -523,7 +524,7 @@ class CordRepBtree : public CordRep {
   // suffix of the input.
   // See the `Append/Prepend` function for the meaning and purpose of `extra`.
   template <EdgeType edge_type>
-  absl::string_view AddData(absl::string_view data, size_t extra);
+  ABSEIL_EXPORT absl::string_view AddData(absl::string_view data, size_t extra);
 
   // Replace the front or back edge with the provided value.
   // Adopts a reference on `edge` and unrefs the old edge.
@@ -559,14 +560,14 @@ class CordRepBtree : public CordRep {
   // Adds `data` to the specified tree, returning the modified tree.
   // See the `Append/Prepend` function for the meaning and purpose of `extra`.
   template <EdgeType edge_type>
-  static CordRepBtree* AddData(CordRepBtree* tree, absl::string_view data,
+  ABSEIL_EXPORT static CordRepBtree* AddData(CordRepBtree* tree, absl::string_view data,
                                size_t extra = 0);
 
   // Merges `src` into `dst` with `src` being added either before (kFront) or
   // after (kBack) `dst`. Requires the height of `dst` to be greater than or
   // equal to the height of `src`.
   template <EdgeType edge_type>
-  static CordRepBtree* Merge(CordRepBtree* dst, CordRepBtree* src);
+  ABSEIL_EXPORT static CordRepBtree* Merge(CordRepBtree* dst, CordRepBtree* src);
 
   // Fallback version of GetAppendBuffer for large trees: GetAppendBuffer()
   // implements an inlined version for trees of limited height (3 levels),
@@ -665,15 +666,28 @@ inline void CordRepBtree::Unref(absl::Span<CordRep* const> edges) {
   }
 }
 
-inline CordRepBtree* CordRepBtree::CopyRaw() const {
-  auto* tree = static_cast<CordRepBtree*>(::operator new(sizeof(CordRepBtree)));
-  memcpy(static_cast<void*>(tree), this, sizeof(CordRepBtree));
-  new (&tree->refcount) RefcountAndFlags;
+inline CordRepBtree* CordRepBtree::CopyRaw(size_t new_length) const {
+  CordRepBtree* tree = new CordRepBtree;
+
+  // `length` and `refcount` are the first members of `CordRepBtree`.
+  // We initialize `length` using the given length, have `refcount` be set to
+  // ref = 1 through its default constructor, and copy all data beyond
+  // 'refcount' which starts with `tag` using a single memcpy: all contents
+  // except `refcount` is trivially copyable, and the compiler does not
+  // efficiently coalesce member-wise copy of these members.
+  // See https://gcc.godbolt.org/z/qY8zsca6z
+  // # LINT.IfChange(copy_raw)
+  tree->length = new_length;
+  uint8_t* dst = &tree->tag;
+  const uint8_t* src = &tag;
+  const ptrdiff_t offset = src - reinterpret_cast<const uint8_t*>(this);
+  memcpy(dst, src, sizeof(CordRepBtree) - static_cast<size_t>(offset));
   return tree;
+  // # LINT.ThenChange()
 }
 
 inline CordRepBtree* CordRepBtree::Copy() const {
-  CordRepBtree* tree = CopyRaw();
+  CordRepBtree* tree = CopyRaw(length);
   for (CordRep* rep : Edges()) CordRep::Ref(rep);
   return tree;
 }
@@ -682,8 +696,7 @@ inline CordRepBtree* CordRepBtree::CopyToEndFrom(size_t begin,
                                                  size_t new_length) const {
   assert(begin >= this->begin());
   assert(begin <= this->end());
-  CordRepBtree* tree = CopyRaw();
-  tree->length = new_length;
+  CordRepBtree* tree = CopyRaw(new_length);
   tree->set_begin(begin);
   for (CordRep* edge : tree->Edges()) CordRep::Ref(edge);
   return tree;
@@ -693,8 +706,7 @@ inline CordRepBtree* CordRepBtree::CopyBeginTo(size_t end,
                                                size_t new_length) const {
   assert(end <= capacity());
   assert(end >= this->begin());
-  CordRepBtree* tree = CopyRaw();
-  tree->length = new_length;
+  CordRepBtree* tree = CopyRaw(new_length);
   tree->set_end(end);
   for (CordRep* edge : tree->Edges()) CordRep::Ref(edge);
   return tree;

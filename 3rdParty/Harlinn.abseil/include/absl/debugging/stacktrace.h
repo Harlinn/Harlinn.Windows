@@ -78,7 +78,7 @@ ABSL_NAMESPACE_BEGIN
 //
 // This routine may return fewer stack frame entries than are
 // available. Also note that `result` and `sizes` must both be non-null.
-ABSEIL_EXPORT extern int GetStackFrames(void** result, int* sizes, int max_depth,
+extern ABSEIL_EXPORT int GetStackFrames(void** result, int* sizes, int max_depth,
                           int skip_count);
 
 // GetStackFramesWithContext()
@@ -102,7 +102,7 @@ ABSEIL_EXPORT extern int GetStackFrames(void** result, int* sizes, int max_depth
 // or other reasons. (This value will be set to `0` if no frames were dropped.)
 // The number of total stack frames is guaranteed to be >= skip_count +
 // max_depth + *min_dropped_frames.
-ABSEIL_EXPORT extern int GetStackFramesWithContext(void** result, int* sizes, int max_depth,
+extern ABSEIL_EXPORT int GetStackFramesWithContext(void** result, int* sizes, int max_depth,
                                      int skip_count, const void* uc,
                                      int* min_dropped_frames);
 
@@ -130,7 +130,7 @@ ABSEIL_EXPORT extern int GetStackFramesWithContext(void** result, int* sizes, in
 //           ....       ...
 //
 // `result` must not be null.
-ABSEIL_EXPORT extern int GetStackTrace(void** result, int max_depth, int skip_count);
+extern ABSEIL_EXPORT int GetStackTrace(void** result, int max_depth, int skip_count);
 
 // GetStackTraceWithContext()
 //
@@ -152,7 +152,7 @@ ABSEIL_EXPORT extern int GetStackTrace(void** result, int max_depth, int skip_co
 // or other reasons. (This value will be set to `0` if no frames were dropped.)
 // The number of total stack frames is guaranteed to be >= skip_count +
 // max_depth + *min_dropped_frames.
-ABSEIL_EXPORT extern int GetStackTraceWithContext(void** result, int max_depth,
+extern ABSEIL_EXPORT int GetStackTraceWithContext(void** result, int max_depth,
                                     int skip_count, const void* uc,
                                     int* min_dropped_frames);
 
@@ -184,7 +184,7 @@ ABSEIL_EXPORT extern int GetStackTraceWithContext(void** result, int max_depth,
 // Therefore do not clean up any state that may be needed by an old
 // unwinder.
 // *****************************************************************************
-ABSEIL_EXPORT extern void SetStackUnwinder(int (*unwinder)(void** pcs, int* sizes,
+extern ABSEIL_EXPORT void SetStackUnwinder(int (*unwinder)(void** pcs, int* sizes,
                                              int max_depth, int skip_count,
                                              const void* uc,
                                              int* min_dropped_frames));
@@ -214,7 +214,7 @@ ABSEIL_EXPORT extern void SetStackUnwinder(int (*unwinder)(void** pcs, int* size
 //     null uc | GetStackTrace()            | GetStackFrames()            |
 // non-null uc | GetStackTraceWithContext() | GetStackFramesWithContext() |
 //             |==========================================================|
-ABSEIL_EXPORT extern int DefaultStackUnwinder(void** pcs, int* sizes, int max_depth,
+extern ABSEIL_EXPORT int DefaultStackUnwinder(void** pcs, int* sizes, int max_depth,
                                 int skip_count, const void* uc,
                                 int* min_dropped_frames);
 
@@ -223,7 +223,7 @@ namespace debugging_internal {
 // implementations. Intended to be used for tests which want to exclude
 // verification of logic known to be broken because stack traces are not
 // working.
-ABSEIL_EXPORT extern bool StackTraceWorksForTest();
+extern ABSEIL_EXPORT bool StackTraceWorksForTest();
 }  // namespace debugging_internal
 ABSL_NAMESPACE_END
 }  // namespace absl

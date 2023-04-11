@@ -84,14 +84,12 @@ ABSL_ATTRIBUTE_ALWAYS_INLINE inline int Unwind(void** result, int* sizes,
 
 }  // anonymous namespace
 
-ABSEIL_EXPORT
 ABSL_ATTRIBUTE_NOINLINE ABSL_ATTRIBUTE_NO_TAIL_CALL int GetStackFrames(
     void** result, int* sizes, int max_depth, int skip_count) {
   return Unwind<true, false>(result, sizes, max_depth, skip_count, nullptr,
                              nullptr);
 }
 
-ABSEIL_EXPORT
 ABSL_ATTRIBUTE_NOINLINE ABSL_ATTRIBUTE_NO_TAIL_CALL int
 GetStackFramesWithContext(void** result, int* sizes, int max_depth,
                           int skip_count, const void* uc,
@@ -100,14 +98,12 @@ GetStackFramesWithContext(void** result, int* sizes, int max_depth,
                             min_dropped_frames);
 }
 
-ABSEIL_EXPORT
 ABSL_ATTRIBUTE_NOINLINE ABSL_ATTRIBUTE_NO_TAIL_CALL int GetStackTrace(
     void** result, int max_depth, int skip_count) {
   return Unwind<false, false>(result, nullptr, max_depth, skip_count, nullptr,
                               nullptr);
 }
 
-ABSEIL_EXPORT
 ABSL_ATTRIBUTE_NOINLINE ABSL_ATTRIBUTE_NO_TAIL_CALL int
 GetStackTraceWithContext(void** result, int max_depth, int skip_count,
                          const void* uc, int* min_dropped_frames) {
@@ -115,12 +111,10 @@ GetStackTraceWithContext(void** result, int max_depth, int skip_count,
                              min_dropped_frames);
 }
 
-ABSEIL_EXPORT
 void SetStackUnwinder(Unwinder w) {
   custom.store(w, std::memory_order_release);
 }
 
-ABSEIL_EXPORT
 int DefaultStackUnwinder(void** pcs, int* sizes, int depth, int skip,
                          const void* uc, int* min_dropped_frames) {
   skip++;  // For this function

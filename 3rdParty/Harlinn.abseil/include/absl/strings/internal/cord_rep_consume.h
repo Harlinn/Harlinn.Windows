@@ -40,8 +40,8 @@ using ConsumeFn = FunctionRef<void(CordRep*, size_t, size_t)>;
 // violations, we can not 100% guarantee that all code respects 'new format'
 // settings and flags, so we need to be able to parse old data on the fly until
 // all old code is deprecated / no longer the default format.
-void Consume(CordRep* rep, ConsumeFn consume_fn);
-void ReverseConsume(CordRep* rep, ConsumeFn consume_fn);
+ABSEIL_EXPORT void Consume(CordRep* rep, ConsumeFn consume_fn);
+ABSEIL_EXPORT void ReverseConsume(CordRep* rep, ConsumeFn consume_fn);
 
 }  // namespace cord_internal
 ABSL_NAMESPACE_END

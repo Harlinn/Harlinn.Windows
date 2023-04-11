@@ -111,13 +111,13 @@ struct FlagsUsageConfig {
 // Sets the usage reporting configuration callbacks. If any of the callbacks are
 // not set in usage_config instance, then the default value of the callback is
 // used.
-void SetFlagsUsageConfig(FlagsUsageConfig usage_config);
+ABSEIL_EXPORT void SetFlagsUsageConfig(FlagsUsageConfig usage_config);
 
 namespace flags_internal {
 
-FlagsUsageConfig GetUsageConfig();
+ABSEIL_EXPORT FlagsUsageConfig GetUsageConfig();
 
-void ReportUsageError(absl::string_view msg, bool is_fatal);
+ABSEIL_EXPORT void ReportUsageError(absl::string_view msg, bool is_fatal);
 
 }  // namespace flags_internal
 ABSL_NAMESPACE_END
@@ -127,7 +127,7 @@ extern "C" {
 
 // Additional report of fatal usage error message before we std::exit. Error is
 // fatal if is_fatal argument to ReportUsageError is true.
-void ABSL_INTERNAL_C_SYMBOL(AbslInternalReportFatalUsageError)(
+void ABSEIL_EXPORT ABSL_INTERNAL_C_SYMBOL(AbslInternalReportFatalUsageError)(
     absl::string_view);
 
 }  // extern "C"

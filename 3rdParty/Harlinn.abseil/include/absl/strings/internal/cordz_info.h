@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef ABSL_STRINGS_CORDZ_INFO_H_
-#define ABSL_STRINGS_CORDZ_INFO_H_
+#ifndef ABSL_STRINGS_INTERNAL_CORDZ_INFO_H_
+#define ABSL_STRINGS_INTERNAL_CORDZ_INFO_H_
 
 #include <atomic>
 #include <cstdint>
@@ -113,7 +113,7 @@ class ABSL_LOCKABLE CordzInfo : public CordzHandle {
   ABSEIL_EXPORT void Untrack();
 
   // Invokes UntrackCord() on `info` if `info` is not null.
-  ABSEIL_EXPORT static void MaybeUntrackCord(CordzInfo* info);
+  static void MaybeUntrackCord(CordzInfo* info);
 
   CordzInfo() = delete;
   CordzInfo(const CordzInfo&) = delete;
@@ -196,7 +196,7 @@ class ABSL_LOCKABLE CordzInfo : public CordzHandle {
     std::atomic<CordzInfo*> head ABSL_GUARDED_BY(mutex){nullptr};
   };
 
-  static constexpr int kMaxStackDepth = 64;
+  static constexpr size_t kMaxStackDepth = 64;
 
   ABSEIL_EXPORT explicit CordzInfo(CordRep* rep, const CordzInfo* src,
                      MethodIdentifier method);
@@ -205,7 +205,7 @@ class ABSL_LOCKABLE CordzInfo : public CordzHandle {
   // Sets `rep_` without holding a lock.
   void UnsafeSetCordRep(CordRep* rep) ABSL_NO_THREAD_SAFETY_ANALYSIS;
 
-  void Track();
+  ABSEIL_EXPORT void Track();
 
   // Returns the parent method from `src`, which is either `parent_method_` or
   // `method_` depending on `parent_method_` being kUnknown.
@@ -216,7 +216,7 @@ class ABSL_LOCKABLE CordzInfo : public CordzHandle {
   // `stack_` depending on `parent_stack_` being empty, returning the size of
   // the parent stack.
   // Returns 0 if `src` is null.
-  ABSEIL_EXPORT static int FillParentStack(const CordzInfo* src, void** stack);
+  ABSEIL_EXPORT static size_t FillParentStack(const CordzInfo* src, void** stack);
 
   void ODRCheck() const {
 #ifndef NDEBUG
@@ -244,8 +244,8 @@ class ABSL_LOCKABLE CordzInfo : public CordzHandle {
 
   void* stack_[kMaxStackDepth];
   void* parent_stack_[kMaxStackDepth];
-  const int stack_depth_;
-  const int parent_stack_depth_;
+  const size_t stack_depth_;
+  const size_t parent_stack_depth_;
   const MethodIdentifier method_;
   const MethodIdentifier parent_method_;
   CordzUpdateTracker update_tracker_;
@@ -295,4 +295,4 @@ inline CordRep* CordzInfo::RefCordRep() const ABSL_LOCKS_EXCLUDED(mutex_) {
 ABSL_NAMESPACE_END
 }  // namespace absl
 
-#endif  // ABSL_STRINGS_CORDZ_INFO_H_
+#endif  // ABSL_STRINGS_INTERNAL_CORDZ_INFO_H_

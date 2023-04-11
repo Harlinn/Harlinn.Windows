@@ -96,7 +96,7 @@ class PeriodicSamplerBase {
   //     // ...
   //   }
   inline bool SubtleMaybeSample() noexcept;
-  bool SubtleConfirmSample() noexcept;
+  ABSEIL_EXPORT bool SubtleConfirmSample() noexcept;
 
  protected:
   // We explicitly don't use a virtual destructor as this class is never
@@ -106,7 +106,7 @@ class PeriodicSamplerBase {
 
   // Returns the next stride for our sampler.
   // This function is virtual for testing purposes only.
-  virtual int64_t GetExponentialBiased(int period) noexcept;
+  ABSEIL_EXPORT virtual int64_t GetExponentialBiased(int period) noexcept;
 
  private:
   // Returns the current period of this sampler. Thread-safe.

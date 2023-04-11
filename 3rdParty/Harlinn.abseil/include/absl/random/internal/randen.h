@@ -39,7 +39,7 @@ class Randen {
 
   ~Randen() = default;
 
-  Randen();
+  ABSEIL_EXPORT Randen();
 
   // Generate updates the randen sponge. The outer portion of the sponge
   // (kCapacityBytes .. kStateBytes) may be consumed as PRNG state.

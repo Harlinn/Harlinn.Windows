@@ -113,7 +113,7 @@ constexpr absl::LogSeverity NormalizeLogSeverity(int s) {
 //
 // The exact representation of a streamed `absl::LogSeverity` is deliberately
 // unspecified; do not rely on it.
-std::ostream& operator<<(std::ostream& os, absl::LogSeverity s);
+ABSEIL_EXPORT std::ostream& operator<<(std::ostream& os, absl::LogSeverity s);
 
 // Enums representing a lower bound for LogSeverity. APIs that only operate on
 // messages of at least a certain level (for example, `SetMinLogLevel()`) use
@@ -128,7 +128,7 @@ enum class LogSeverityAtLeast : int {
   kInfinity = 1000,
 };
 
-std::ostream& operator<<(std::ostream& os, absl::LogSeverityAtLeast s);
+ABSEIL_EXPORT std::ostream& operator<<(std::ostream& os, absl::LogSeverityAtLeast s);
 
 // Enums representing an upper bound for LogSeverity. APIs that only operate on
 // messages of at most a certain level (for example, buffer all messages at or
@@ -143,7 +143,7 @@ enum class LogSeverityAtMost : int {
   kFatal = static_cast<int>(absl::LogSeverity::kFatal),
 };
 
-std::ostream& operator<<(std::ostream& os, absl::LogSeverityAtMost s);
+ABSEIL_EXPORT std::ostream& operator<<(std::ostream& os, absl::LogSeverityAtMost s);
 
 #define COMPOP(op1, op2, T)                                         \
   constexpr bool operator op1(absl::T lhs, absl::LogSeverity rhs) { \

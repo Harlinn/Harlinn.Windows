@@ -14,7 +14,7 @@ public:
     {
         using namespace Harlinn::Common::Core;
         CoInitializeEx( nullptr, COINIT_MULTITHREADED );
-        auto xmlFilename = IO::Directory::GetExecutableDirectory( ) + L"Harlinn.OCI.Tests.xml";
+        auto xmlFilename = IO::Directory::GetExecutableDirectory<std::wstring>( ) + L"Harlinn.OCI.Tests.xml";
 
         auto document = Xml::Dom::Document::Create( );
         document.SetAsync( false );

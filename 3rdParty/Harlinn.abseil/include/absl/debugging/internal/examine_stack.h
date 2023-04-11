@@ -35,17 +35,17 @@ typedef void (*SymbolizeUrlEmitter)(void* const stack[], int depth,
 
 // Registration of SymbolizeUrlEmitter for use inside of a signal handler.
 // This is inherently unsafe and must be signal safe code.
-void RegisterDebugStackTraceHook(SymbolizeUrlEmitter hook);
-SymbolizeUrlEmitter GetDebugStackTraceHook();
+ABSEIL_EXPORT void RegisterDebugStackTraceHook(SymbolizeUrlEmitter hook);
+ABSEIL_EXPORT SymbolizeUrlEmitter GetDebugStackTraceHook();
 
 // Returns the program counter from signal context, or nullptr if
 // unknown. `vuc` is a ucontext_t*. We use void* to avoid the use of
 // ucontext_t on non-POSIX systems.
-void* GetProgramCounter(void* const vuc);
+ABSEIL_EXPORT void* GetProgramCounter(void* const vuc);
 
 // Uses `writer` to dump the program counter, stack trace, and stack
 // frame sizes.
-void DumpPCAndFrameSizesAndStackTrace(void* const pc, void* const stack[],
+ABSEIL_EXPORT void DumpPCAndFrameSizesAndStackTrace(void* const pc, void* const stack[],
                                       int frame_sizes[], int depth,
                                       int min_dropped_frames,
                                       bool symbolize_stacktrace,
@@ -53,7 +53,7 @@ void DumpPCAndFrameSizesAndStackTrace(void* const pc, void* const stack[],
 
 // Dump current stack trace omitting the topmost `min_dropped_frames` stack
 // frames.
-void DumpStackTrace(int min_dropped_frames, int max_num_frames,
+ABSEIL_EXPORT void DumpStackTrace(int min_dropped_frames, int max_num_frames,
                     bool symbolize_stacktrace, OutputWriter* writer,
                     void* writer_arg);
 

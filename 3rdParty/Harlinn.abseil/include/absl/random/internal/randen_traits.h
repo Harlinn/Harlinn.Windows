@@ -78,8 +78,8 @@ struct RandenTraits {
 };
 
 // Randen key arrays. In randen_round_keys.cc
-extern const unsigned char kRandenRoundKeys[RandenTraits::kKeyBytes];
-extern const unsigned char kRandenRoundKeysBE[RandenTraits::kKeyBytes];
+extern ABSEIL_EXPORT const unsigned char kRandenRoundKeys[RandenTraits::kKeyBytes];
+extern ABSEIL_EXPORT const unsigned char kRandenRoundKeysBE[RandenTraits::kKeyBytes];
 
 }  // namespace random_internal
 ABSL_NAMESPACE_END

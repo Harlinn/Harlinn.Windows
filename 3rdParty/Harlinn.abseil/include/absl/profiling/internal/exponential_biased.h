@@ -90,21 +90,21 @@ class ExponentialBiased {
   //     printf("tail\n");
   //   }
   //
-  int64_t GetSkipCount(int64_t mean);
+  ABSEIL_EXPORT int64_t GetSkipCount(int64_t mean);
 
   // GetStride() returns the number of events required for a specific event to
   // happen. See the class comments for a usage example. `GetStride()` is
   // equivalent to `GetSkipCount(mean - 1) + 1`. When to use `GetStride()` or
   // `GetSkipCount()` depends mostly on what best fits the use case.
-  int64_t GetStride(int64_t mean);
+  ABSEIL_EXPORT int64_t GetStride(int64_t mean);
 
   // Computes a random number in the range [0, 1<<(kPrngNumBits+1) - 1]
   //
   // This is public to enable testing.
-  static uint64_t NextRandom(uint64_t rnd);
+  ABSEIL_EXPORT static uint64_t NextRandom(uint64_t rnd);
 
  private:
-  void Initialize();
+  ABSEIL_EXPORT void Initialize();
 
   uint64_t rng_{0};
   double bias_{0};

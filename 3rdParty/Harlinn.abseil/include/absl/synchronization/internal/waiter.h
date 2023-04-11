@@ -137,7 +137,7 @@ class Waiter {
   class WinHelper;
 
   // REQUIRES: WinHelper::GetLock(this) must be held.
-  void InternalCondVarPoke();
+  ABSEIL_EXPORT void InternalCondVarPoke();
 
   // We can't include Windows.h in our headers, so we use aligned character
   // buffers to define the storage of SRWLOCK and CONDITION_VARIABLE.

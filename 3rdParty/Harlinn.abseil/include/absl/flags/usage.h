@@ -32,10 +32,10 @@ ABSL_NAMESPACE_BEGIN
 //                   " <uselessarg1> <uselessarg2>"));
 // Do not include commandline flags in the usage: we do that for you!
 // Note: Calling SetProgramUsageMessage twice will trigger a call to std::exit.
-void SetProgramUsageMessage(absl::string_view new_usage_message);
+ABSEIL_EXPORT void SetProgramUsageMessage(absl::string_view new_usage_message);
 
 // Returns the usage message set by SetProgramUsageMessage().
-absl::string_view ProgramUsageMessage();
+ABSEIL_EXPORT absl::string_view ProgramUsageMessage();
 
 ABSL_NAMESPACE_END
 }  // namespace absl

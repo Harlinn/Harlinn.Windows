@@ -133,7 +133,7 @@ class CommandLineFlag {
   // absl::CommandLineFlag::IsRetired()
   //
   // Returns true iff this object corresponds to retired flag.
-  virtual bool IsRetired() const;
+  ABSEIL_EXPORT virtual bool IsRetired() const;
 
   // absl::CommandLineFlag::DefaultValue()
   //

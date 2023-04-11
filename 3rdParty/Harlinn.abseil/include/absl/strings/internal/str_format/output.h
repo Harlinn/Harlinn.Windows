@@ -41,7 +41,7 @@ class BufferRawSink {
   BufferRawSink(char* buffer, size_t size) : buffer_(buffer), size_(size) {}
 
   size_t total_written() const { return total_written_; }
-  void Write(string_view v);
+  ABSEIL_EXPORT void Write(string_view v);
 
  private:
   char* buffer_;
@@ -56,7 +56,7 @@ class FILERawSink {
  public:
   explicit FILERawSink(std::FILE* output) : output_(output) {}
 
-  void Write(string_view v);
+  ABSEIL_EXPORT void Write(string_view v);
 
   size_t count() const { return count_; }
   int error() const { return error_; }

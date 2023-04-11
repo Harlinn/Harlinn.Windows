@@ -67,7 +67,7 @@ class PerThreadSem {
   ABSEIL_EXPORT static void Init(base_internal::ThreadIdentity* identity);
 
   // Increments "identity"'s count.
-  ABSEIL_EXPORT static inline void Post(base_internal::ThreadIdentity* identity);
+  static inline void Post(base_internal::ThreadIdentity* identity);
 
   // Waits until either our count > 0 or t has expired.
   // If count > 0, decrements count and returns true.  Otherwise returns false.

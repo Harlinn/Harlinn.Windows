@@ -17,11 +17,13 @@
 #include <cassert>
 #include <cstdint>
 #include <iostream>
+#include <ostream>
 #include <string>
 
 #include "absl/base/attributes.h"
 #include "absl/base/config.h"
 #include "absl/base/internal/raw_logging.h"
+#include "absl/base/optimization.h"
 #include "absl/strings/internal/cord_data_edge.h"
 #include "absl/strings/internal/cord_internal.h"
 #include "absl/strings/internal/cord_rep_consume.h"
@@ -55,8 +57,10 @@ inline bool exhaustive_validation() {
 // Prints the entire tree structure or 'rep'. External callers should
 // not specify 'depth' and leave it to its default (0) value.
 // Rep may be a CordRepBtree tree, or a SUBSTRING / EXTERNAL / FLAT node.
-void DumpAll(const CordRep* rep, bool include_contents, std::ostream& stream,
-             int depth = 0) {
+void DumpAll(const CordRep* rep,
+             bool include_contents,
+             std::ostream& stream,
+             size_t depth = 0) {
   // Allow for full height trees + substring -> flat / external nodes.
   assert(depth <= CordRepBtree::kMaxDepth + 2);
   std::string sharing = const_cast<CordRep*>(rep)->refcount.IsOne()
@@ -283,7 +287,7 @@ struct StackOperations {
       case CordRepBtree::kSelf:
         return result.tree;
     }
-    ABSL_INTERNAL_UNREACHABLE;
+    ABSL_UNREACHABLE();
     return result.tree;
   }
 
@@ -499,7 +503,7 @@ OpResult CordRepBtree::SetEdge(bool owned, CordRep* edge, size_t delta) {
     // open interval [begin, back) or [begin + 1, end) depending on `edge_type`.
     // We conveniently cover both case using a constexpr `shift` being 0 or 1
     // as `end :== back + 1`.
-    result = {CopyRaw(), kCopied};
+    result = {CopyRaw(length), kCopied};
     constexpr int shift = edge_type == kFront ? 1 : 0;
     for (CordRep* r : Edges(begin() + shift, back() + shift)) {
       CordRep::Ref(r);
@@ -522,7 +526,7 @@ CordRepBtree* CordRepBtree::AddCordRep(CordRepBtree* tree, CordRep* rep) {
 }
 
 template <>
-CordRepBtree* CordRepBtree::NewLeaf<kBack>(absl::string_view data,
+ABSEIL_EXPORT CordRepBtree* CordRepBtree::NewLeaf<kBack>(absl::string_view data,
                                            size_t extra) {
   CordRepBtree* leaf = CordRepBtree::New(0);
   size_t length = 0;
@@ -541,7 +545,7 @@ CordRepBtree* CordRepBtree::NewLeaf<kBack>(absl::string_view data,
 }
 
 template <>
-CordRepBtree* CordRepBtree::NewLeaf<kFront>(absl::string_view data,
+ABSEIL_EXPORT CordRepBtree* CordRepBtree::NewLeaf<kFront>(absl::string_view data,
                                             size_t extra) {
   CordRepBtree* leaf = CordRepBtree::New(0);
   size_t length = 0;
@@ -560,7 +564,7 @@ CordRepBtree* CordRepBtree::NewLeaf<kFront>(absl::string_view data,
 }
 
 template <>
-absl::string_view CordRepBtree::AddData<kBack>(absl::string_view data,
+ABSEIL_EXPORT absl::string_view CordRepBtree::AddData<kBack>(absl::string_view data,
                                                size_t extra) {
   assert(!data.empty());
   assert(size() < capacity());
@@ -577,7 +581,7 @@ absl::string_view CordRepBtree::AddData<kBack>(absl::string_view data,
 }
 
 template <>
-absl::string_view CordRepBtree::AddData<kFront>(absl::string_view data,
+ABSEIL_EXPORT absl::string_view CordRepBtree::AddData<kFront>(absl::string_view data,
                                                 size_t extra) {
   assert(!data.empty());
   assert(size() < capacity());
@@ -593,7 +597,7 @@ absl::string_view CordRepBtree::AddData<kFront>(absl::string_view data,
 }
 
 template <EdgeType edge_type>
-CordRepBtree* CordRepBtree::AddData(CordRepBtree* tree, absl::string_view data,
+ABSEIL_EXPORT CordRepBtree* CordRepBtree::AddData(CordRepBtree* tree, absl::string_view data,
                                     size_t extra) {
   if (ABSL_PREDICT_FALSE(data.empty())) return tree;
 
@@ -644,7 +648,7 @@ CordRepBtree* CordRepBtree::AddData(CordRepBtree* tree, absl::string_view data,
 }
 
 template <EdgeType edge_type>
-CordRepBtree* CordRepBtree::Merge(CordRepBtree* dst, CordRepBtree* src) {
+ABSEIL_EXPORT CordRepBtree* CordRepBtree::Merge(CordRepBtree* dst, CordRepBtree* src) {
   assert(dst->height() >= src->height());
 
   // Capture source length as we may consume / destroy `src`.

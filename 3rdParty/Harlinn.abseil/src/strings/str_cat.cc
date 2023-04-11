@@ -17,17 +17,20 @@
 #include <assert.h>
 
 #include <algorithm>
+#include <cstddef>
 #include <cstdint>
 #include <cstring>
+#include <string>
 
 #include "absl/strings/ascii.h"
 #include "absl/strings/internal/resize_uninitialized.h"
 #include "absl/strings/numbers.h"
+#include "absl/strings/string_view.h"
 
 namespace absl {
 ABSL_NAMESPACE_BEGIN
 
-ABSEIL_EXPORT AlphaNum::AlphaNum(Hex hex) {
+AlphaNum::AlphaNum(Hex hex) {
   static_assert(numbers_internal::kFastToBufferSize >= 32,
                 "This function only works when output buffer >= 32 bytes long");
   char* const end = &digits_[numbers_internal::kFastToBufferSize];
@@ -45,7 +48,7 @@ ABSEIL_EXPORT AlphaNum::AlphaNum(Hex hex) {
   }
 }
 
-ABSEIL_EXPORT AlphaNum::AlphaNum(Dec dec) {
+AlphaNum::AlphaNum(Dec dec) {
   assert(dec.width <= numbers_internal::kFastToBufferSize);
   char* const end = &digits_[numbers_internal::kFastToBufferSize];
   char* const minfill = end - dec.width;
@@ -56,7 +59,7 @@ ABSEIL_EXPORT AlphaNum::AlphaNum(Dec dec) {
     *--writer = '0' + (value % 10);
     value /= 10;
   }
-  *--writer = '0' + value;
+  *--writer = '0' + static_cast<char>(value);
   if (neg) *--writer = '-';
 
   ptrdiff_t fillers = writer - minfill;
@@ -73,7 +76,7 @@ ABSEIL_EXPORT AlphaNum::AlphaNum(Dec dec) {
     if (add_sign_again) *--writer = '-';
   }
 
-  piece_ = absl::string_view(writer, end - writer);
+  piece_ = absl::string_view(writer, static_cast<size_t>(end - writer));
 }
 
 // ----------------------------------------------------------------------
@@ -95,7 +98,7 @@ static char* Append(char* out, const AlphaNum& x) {
   return after;
 }
 
-ABSEIL_EXPORT std::string StrCat(const AlphaNum& a, const AlphaNum& b) {
+std::string StrCat(const AlphaNum& a, const AlphaNum& b) {
   std::string result;
   absl::strings_internal::STLStringResizeUninitialized(&result,
                                                        a.size() + b.size());
@@ -107,7 +110,7 @@ ABSEIL_EXPORT std::string StrCat(const AlphaNum& a, const AlphaNum& b) {
   return result;
 }
 
-ABSEIL_EXPORT std::string StrCat(const AlphaNum& a, const AlphaNum& b, const AlphaNum& c) {
+std::string StrCat(const AlphaNum& a, const AlphaNum& b, const AlphaNum& c) {
   std::string result;
   strings_internal::STLStringResizeUninitialized(
       &result, a.size() + b.size() + c.size());
@@ -120,7 +123,7 @@ ABSEIL_EXPORT std::string StrCat(const AlphaNum& a, const AlphaNum& b, const Alp
   return result;
 }
 
-ABSEIL_EXPORT std::string StrCat(const AlphaNum& a, const AlphaNum& b, const AlphaNum& c,
+std::string StrCat(const AlphaNum& a, const AlphaNum& b, const AlphaNum& c,
                    const AlphaNum& d) {
   std::string result;
   strings_internal::STLStringResizeUninitialized(
@@ -138,15 +141,15 @@ ABSEIL_EXPORT std::string StrCat(const AlphaNum& a, const AlphaNum& b, const Alp
 namespace strings_internal {
 
 // Do not call directly - these are not part of the public API.
-ABSEIL_EXPORT std::string CatPieces(std::initializer_list<absl::string_view> pieces) {
+std::string CatPieces(std::initializer_list<absl::string_view> pieces) {
   std::string result;
   size_t total_size = 0;
-  for (const absl::string_view& piece : pieces) total_size += piece.size();
+  for (absl::string_view piece : pieces) total_size += piece.size();
   strings_internal::STLStringResizeUninitialized(&result, total_size);
 
   char* const begin = &result[0];
   char* out = begin;
-  for (const absl::string_view& piece : pieces) {
+  for (absl::string_view piece : pieces) {
     const size_t this_size = piece.size();
     if (this_size != 0) {
       memcpy(out, piece.data(), this_size);
@@ -166,11 +169,11 @@ ABSEIL_EXPORT std::string CatPieces(std::initializer_list<absl::string_view> pie
   assert(((src).size() == 0) ||      \
          (uintptr_t((src).data() - (dest).data()) > uintptr_t((dest).size())))
 
-ABSEIL_EXPORT void AppendPieces(std::string* dest,
+void AppendPieces(std::string* dest,
                   std::initializer_list<absl::string_view> pieces) {
   size_t old_size = dest->size();
   size_t total_size = old_size;
-  for (const absl::string_view& piece : pieces) {
+  for (absl::string_view piece : pieces) {
     ASSERT_NO_OVERLAP(*dest, piece);
     total_size += piece.size();
   }
@@ -178,7 +181,7 @@ ABSEIL_EXPORT void AppendPieces(std::string* dest,
 
   char* const begin = &(*dest)[0];
   char* out = begin + old_size;
-  for (const absl::string_view& piece : pieces) {
+  for (absl::string_view piece : pieces) {
     const size_t this_size = piece.size();
     if (this_size != 0) {
       memcpy(out, piece.data(), this_size);
@@ -190,12 +193,12 @@ ABSEIL_EXPORT void AppendPieces(std::string* dest,
 
 }  // namespace strings_internal
 
-ABSEIL_EXPORT void StrAppend(std::string* dest, const AlphaNum& a) {
+void StrAppend(std::string* dest, const AlphaNum& a) {
   ASSERT_NO_OVERLAP(*dest, a);
   dest->append(a.data(), a.size());
 }
 
-ABSEIL_EXPORT void StrAppend(std::string* dest, const AlphaNum& a, const AlphaNum& b) {
+void StrAppend(std::string* dest, const AlphaNum& a, const AlphaNum& b) {
   ASSERT_NO_OVERLAP(*dest, a);
   ASSERT_NO_OVERLAP(*dest, b);
   std::string::size_type old_size = dest->size();
@@ -208,7 +211,7 @@ ABSEIL_EXPORT void StrAppend(std::string* dest, const AlphaNum& a, const AlphaNu
   assert(out == begin + dest->size());
 }
 
-ABSEIL_EXPORT void StrAppend(std::string* dest, const AlphaNum& a, const AlphaNum& b,
+void StrAppend(std::string* dest, const AlphaNum& a, const AlphaNum& b,
                const AlphaNum& c) {
   ASSERT_NO_OVERLAP(*dest, a);
   ASSERT_NO_OVERLAP(*dest, b);
@@ -224,7 +227,7 @@ ABSEIL_EXPORT void StrAppend(std::string* dest, const AlphaNum& a, const AlphaNu
   assert(out == begin + dest->size());
 }
 
-ABSEIL_EXPORT void StrAppend(std::string* dest, const AlphaNum& a, const AlphaNum& b,
+void StrAppend(std::string* dest, const AlphaNum& a, const AlphaNum& b,
                const AlphaNum& c, const AlphaNum& d) {
   ASSERT_NO_OVERLAP(*dest, a);
   ASSERT_NO_OVERLAP(*dest, b);

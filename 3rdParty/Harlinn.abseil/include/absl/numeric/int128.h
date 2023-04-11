@@ -121,9 +121,9 @@ class
   constexpr uint128(unsigned __int128 v);  // NOLINT(runtime/explicit)
 #endif  // ABSL_HAVE_INTRINSIC_INT128
   constexpr uint128(int128 v);  // NOLINT(runtime/explicit)
-  explicit uint128(float v);
-  explicit uint128(double v);
-  explicit uint128(long double v);
+  ABSEIL_EXPORT explicit uint128(float v);
+  ABSEIL_EXPORT explicit uint128(double v);
+  ABSEIL_EXPORT explicit uint128(long double v);
 
   // Assignment operators from arithmetic types
   uint128& operator=(int v);
@@ -241,7 +241,7 @@ class
 ABSL_DLL extern const uint128 kuint128max;
 
 // allow uint128 to be logged
-std::ostream& operator<<(std::ostream& os, uint128 v);
+ABSEIL_EXPORT std::ostream& operator<<(std::ostream& os, uint128 v);
 
 // TODO(strel) add operator>>(std::istream&, uint128)
 
@@ -351,9 +351,9 @@ class int128 {
   constexpr explicit int128(unsigned __int128 v);
 #endif  // ABSL_HAVE_INTRINSIC_INT128
   constexpr explicit int128(uint128 v);
-  explicit int128(float v);
-  explicit int128(double v);
-  explicit int128(long double v);
+  ABSEIL_EXPORT explicit int128(float v);
+  ABSEIL_EXPORT explicit int128(double v);
+  ABSEIL_EXPORT explicit int128(long double v);
 
   // Assignment operators from arithmetic types
   int128& operator=(int v);
@@ -472,7 +472,7 @@ class int128 {
 #endif  // ABSL_HAVE_INTRINSIC_INT128
 };
 
-std::ostream& operator<<(std::ostream& os, int128 v);
+ABSEIL_EXPORT std::ostream& operator<<(std::ostream& os, int128 v);
 
 // TODO(absl-team) add operator>>(std::istream&, int128)
 
@@ -591,8 +591,8 @@ constexpr uint128 operator>>(uint128 lhs, int amount);
 constexpr uint128 operator+(uint128 lhs, uint128 rhs);
 constexpr uint128 operator-(uint128 lhs, uint128 rhs);
 uint128 operator*(uint128 lhs, uint128 rhs);
-uint128 operator/(uint128 lhs, uint128 rhs);
-uint128 operator%(uint128 lhs, uint128 rhs);
+ABSEIL_EXPORT uint128 operator/(uint128 lhs, uint128 rhs);
+ABSEIL_EXPORT uint128 operator%(uint128 lhs, uint128 rhs);
 
 inline uint128& uint128::operator<<=(int amount) {
   *this = *this << amount;
@@ -1074,8 +1074,8 @@ constexpr int128 operator-(int128 v);
 constexpr int128 operator+(int128 lhs, int128 rhs);
 constexpr int128 operator-(int128 lhs, int128 rhs);
 int128 operator*(int128 lhs, int128 rhs);
-int128 operator/(int128 lhs, int128 rhs);
-int128 operator%(int128 lhs, int128 rhs);
+ABSEIL_EXPORT int128 operator/(int128 lhs, int128 rhs);
+ABSEIL_EXPORT int128 operator%(int128 lhs, int128 rhs);
 constexpr int128 operator|(int128 lhs, int128 rhs);
 constexpr int128 operator&(int128 lhs, int128 rhs);
 constexpr int128 operator^(int128 lhs, int128 rhs);

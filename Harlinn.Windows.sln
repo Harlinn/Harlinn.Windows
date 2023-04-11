@@ -2719,6 +2719,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Harlinn.spirv-tools", "3rdP
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Harlinn.spirv-headers", "3rdParty\Harlinn.spirv-headers\Harlinn.spirv-headers.vcxproj", "{C4819649-25E5-43DC-A136-E60E79C3B0DE}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "abseil", "abseil", "{3C2F765E-D2BC-4736-B35A-B5228BC7872D}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "gaussian_distribution_gentables", "Tools\3rdParty\abseil\gaussian_distribution_gentables\gaussian_distribution_gentables.vcxproj", "{93DE2EE2-2B04-4280-8D5F-F66A2F2332FD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -8251,6 +8255,18 @@ Global
 		{C4819649-25E5-43DC-A136-E60E79C3B0DE}.Release|x64.Build.0 = Release|x64
 		{C4819649-25E5-43DC-A136-E60E79C3B0DE}.Release|x86.ActiveCfg = Release|Win32
 		{C4819649-25E5-43DC-A136-E60E79C3B0DE}.Release|x86.Build.0 = Release|Win32
+		{93DE2EE2-2B04-4280-8D5F-F66A2F2332FD}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{93DE2EE2-2B04-4280-8D5F-F66A2F2332FD}.Debug|Any CPU.Build.0 = Debug|x64
+		{93DE2EE2-2B04-4280-8D5F-F66A2F2332FD}.Debug|x64.ActiveCfg = Debug|x64
+		{93DE2EE2-2B04-4280-8D5F-F66A2F2332FD}.Debug|x64.Build.0 = Debug|x64
+		{93DE2EE2-2B04-4280-8D5F-F66A2F2332FD}.Debug|x86.ActiveCfg = Debug|Win32
+		{93DE2EE2-2B04-4280-8D5F-F66A2F2332FD}.Debug|x86.Build.0 = Debug|Win32
+		{93DE2EE2-2B04-4280-8D5F-F66A2F2332FD}.Release|Any CPU.ActiveCfg = Release|x64
+		{93DE2EE2-2B04-4280-8D5F-F66A2F2332FD}.Release|Any CPU.Build.0 = Release|x64
+		{93DE2EE2-2B04-4280-8D5F-F66A2F2332FD}.Release|x64.ActiveCfg = Release|x64
+		{93DE2EE2-2B04-4280-8D5F-F66A2F2332FD}.Release|x64.Build.0 = Release|x64
+		{93DE2EE2-2B04-4280-8D5F-F66A2F2332FD}.Release|x86.ActiveCfg = Release|Win32
+		{93DE2EE2-2B04-4280-8D5F-F66A2F2332FD}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -8854,6 +8870,8 @@ Global
 		{96A037CD-1935-40FD-BECA-9666C102D187} = {3E2C34DD-A4A7-4423-ACE5-5892A378AF5F}
 		{BBB9A088-D0A2-4246-9286-2622859AE7DD} = {3E2C34DD-A4A7-4423-ACE5-5892A378AF5F}
 		{C4819649-25E5-43DC-A136-E60E79C3B0DE} = {3E2C34DD-A4A7-4423-ACE5-5892A378AF5F}
+		{3C2F765E-D2BC-4736-B35A-B5228BC7872D} = {54C8DC8B-5D89-4A3D-AF2E-D98E6218B356}
+		{93DE2EE2-2B04-4280-8D5F-F66A2F2332FD} = {3C2F765E-D2BC-4736-B35A-B5228BC7872D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {72148CF9-A054-4B83-9675-2D14F91844D1}

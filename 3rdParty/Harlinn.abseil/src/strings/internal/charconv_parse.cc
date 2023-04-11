@@ -190,11 +190,11 @@ bool IsDigit<16>(char ch) {
 
 template <>
 unsigned ToDigit<10>(char ch) {
-  return ch - '0';
+  return static_cast<unsigned>(ch - '0');
 }
 template <>
 unsigned ToDigit<16>(char ch) {
-  return kAsciiToInt[static_cast<unsigned char>(ch)];
+  return static_cast<unsigned>(kAsciiToInt[static_cast<unsigned char>(ch)]);
 }
 
 template <>
@@ -494,9 +494,9 @@ strings_internal::ParsedFloat ParseFloat(const char* begin, const char* end,
   return result;
 }
 
-template ParsedFloat ParseFloat<10>(const char* begin, const char* end,
+template ParsedFloat ABSEIL_TEMPLATE_EXPORT ParseFloat<10>(const char* begin, const char* end,
                                     chars_format format_flags);
-template ParsedFloat ParseFloat<16>(const char* begin, const char* end,
+template ParsedFloat ABSEIL_TEMPLATE_EXPORT ParseFloat<16>(const char* begin, const char* end,
                                     chars_format format_flags);
 
 }  // namespace strings_internal

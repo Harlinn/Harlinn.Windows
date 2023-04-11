@@ -88,12 +88,6 @@
     <Filter Include="time\internal">
       <UniqueIdentifier>{415095a4-5add-4e0f-bef0-6eb712d00240}</UniqueIdentifier>
     </Filter>
-    <Filter Include="time\internal\cctz">
-      <UniqueIdentifier>{5000d933-a7f7-4aae-91a0-c55a9c88d769}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="time\internal\cctz\src">
-      <UniqueIdentifier>{4ada23d4-510f-42ea-b0d2-967040fe36b6}</UniqueIdentifier>
-    </Filter>
     <Filter Include="types">
       <UniqueIdentifier>{e8148093-c5de-4eb5-912f-f8c3ea3094b6}</UniqueIdentifier>
     </Filter>
@@ -111,6 +105,24 @@
     </Filter>
     <Filter Include="utility">
       <UniqueIdentifier>{ac51f428-ee7a-4492-aa01-b658a96674e2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="crc">
+      <UniqueIdentifier>{fb53dc38-c65d-4d47-a23c-1bef15ac56f8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="crc\internal">
+      <UniqueIdentifier>{1fe5e094-a0ea-457b-85bf-cf925b1b0d30}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="log">
+      <UniqueIdentifier>{f5850090-2e46-4265-8c17-b49519f43074}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="log\internal">
+      <UniqueIdentifier>{1d54ffad-2b56-4e59-b0e6-437c02b05404}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="time\internal\cctz">
+      <UniqueIdentifier>{4f85def7-c622-46e1-b493-4202ee037d60}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="time\internal\cctz\src">
+      <UniqueIdentifier>{a6f732d7-7767-4a90-8100-a92d2bb0b52b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -195,6 +207,18 @@
     <ClCompile Include="cleanup\cleanup_test.cc">
       <Filter>cleanup</Filter>
     </ClCompile>
+    <ClCompile Include="base\internal\low_level_alloc_test.cc">
+      <Filter>base\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="base\internal\prefetch_test.cc">
+      <Filter>base\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="base\internal\cmake_thread_test.cc">
+      <Filter>base\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="container\internal\common_policy_traits_test.cc">
+      <Filter>container\internal</Filter>
+    </ClCompile>
     <ClCompile Include="container\internal\compressed_tuple_test.cc">
       <Filter>container\internal</Filter>
     </ClCompile>
@@ -219,6 +243,9 @@
     <ClCompile Include="container\internal\layout_test.cc">
       <Filter>container\internal</Filter>
     </ClCompile>
+    <ClCompile Include="container\internal\node_slot_policy_test.cc">
+      <Filter>container\internal</Filter>
+    </ClCompile>
     <ClCompile Include="container\internal\raw_hash_set_allocator_test.cc">
       <Filter>container\internal</Filter>
     </ClCompile>
@@ -234,32 +261,20 @@
     <ClCompile Include="container\internal\unordered_set_test.cc">
       <Filter>container\internal</Filter>
     </ClCompile>
-    <ClCompile Include="container\btree_test.cc">
-      <Filter>container</Filter>
+    <ClCompile Include="crc\internal\crc_cord_state_test.cc">
+      <Filter>crc\internal</Filter>
     </ClCompile>
-    <ClCompile Include="container\fixed_array_test.cc">
-      <Filter>container</Filter>
+    <ClCompile Include="crc\internal\crc_memcpy_test.cc">
+      <Filter>crc\internal</Filter>
     </ClCompile>
-    <ClCompile Include="container\flat_hash_map_test.cc">
-      <Filter>container</Filter>
+    <ClCompile Include="crc\internal\non_temporal_memcpy_test.cc">
+      <Filter>crc\internal</Filter>
     </ClCompile>
-    <ClCompile Include="container\flat_hash_set_test.cc">
-      <Filter>container</Filter>
+    <ClCompile Include="crc\crc32c_test.cc">
+      <Filter>crc</Filter>
     </ClCompile>
-    <ClCompile Include="container\inlined_vector_exception_safety_test.cc">
-      <Filter>container</Filter>
-    </ClCompile>
-    <ClCompile Include="container\inlined_vector_test.cc">
-      <Filter>container</Filter>
-    </ClCompile>
-    <ClCompile Include="container\node_hash_map_test.cc">
-      <Filter>container</Filter>
-    </ClCompile>
-    <ClCompile Include="container\node_hash_set_test.cc">
-      <Filter>container</Filter>
-    </ClCompile>
-    <ClCompile Include="container\internal\test_instance_tracker.cc">
-      <Filter>container\internal</Filter>
+    <ClCompile Include="debugging\internal\stack_consumption_test.cc">
+      <Filter>debugging\internal</Filter>
     </ClCompile>
     <ClCompile Include="debugging\failure_signal_handler_test.cc">
       <Filter>debugging</Filter>
@@ -270,25 +285,31 @@
     <ClCompile Include="debugging\leak_check_test.cc">
       <Filter>debugging</Filter>
     </ClCompile>
+    <ClCompile Include="debugging\stacktrace_test.cc">
+      <Filter>debugging</Filter>
+    </ClCompile>
     <ClCompile Include="debugging\symbolize_test.cc">
       <Filter>debugging</Filter>
     </ClCompile>
-    <ClCompile Include="debugging\internal\demangle_test.cc">
-      <Filter>debugging\internal</Filter>
+    <ClCompile Include="flags\internal\path_util_test.cc">
+      <Filter>flags\internal</Filter>
     </ClCompile>
-    <ClCompile Include="debugging\internal\stack_consumption_test.cc">
-      <Filter>debugging\internal</Filter>
+    <ClCompile Include="flags\internal\program_name_test.cc">
+      <Filter>flags\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="flags\internal\sequence_lock_test.cc">
+      <Filter>flags\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="flags\internal\usage_test.cc">
+      <Filter>flags\internal</Filter>
     </ClCompile>
     <ClCompile Include="flags\commandlineflag_test.cc">
       <Filter>flags</Filter>
     </ClCompile>
-    <ClCompile Include="flags\fl_config_test.cc">
+    <ClCompile Include="flags\config_test.cc">
       <Filter>flags</Filter>
     </ClCompile>
     <ClCompile Include="flags\flag_test.cc">
-      <Filter>flags</Filter>
-    </ClCompile>
-    <ClCompile Include="flags\flag_test_defs.cc">
       <Filter>flags</Filter>
     </ClCompile>
     <ClCompile Include="flags\marshalling_test.cc">
@@ -303,17 +324,8 @@
     <ClCompile Include="flags\usage_config_test.cc">
       <Filter>flags</Filter>
     </ClCompile>
-    <ClCompile Include="flags\internal\path_util_test.cc">
-      <Filter>flags\internal</Filter>
-    </ClCompile>
-    <ClCompile Include="flags\internal\program_name_test.cc">
-      <Filter>flags\internal</Filter>
-    </ClCompile>
-    <ClCompile Include="flags\internal\sequence_lock_test.cc">
-      <Filter>flags\internal</Filter>
-    </ClCompile>
-    <ClCompile Include="flags\internal\usage_test.cc">
-      <Filter>flags\internal</Filter>
+    <ClCompile Include="functional\any_invocable_test.cc">
+      <Filter>functional</Filter>
     </ClCompile>
     <ClCompile Include="functional\bind_front_test.cc">
       <Filter>functional</Filter>
@@ -321,11 +333,65 @@
     <ClCompile Include="functional\function_ref_test.cc">
       <Filter>functional</Filter>
     </ClCompile>
+    <ClCompile Include="hash\internal\city_test.cc">
+      <Filter>hash\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="hash\internal\low_level_hash_test.cc">
+      <Filter>hash\internal</Filter>
+    </ClCompile>
     <ClCompile Include="hash\hash_test.cc">
       <Filter>hash</Filter>
     </ClCompile>
-    <ClCompile Include="memory\memory_exception_safety_test.cc">
-      <Filter>memory</Filter>
+    <ClCompile Include="log\internal\stderr_log_sink_test.cc">
+      <Filter>log\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="log\absl_check_test.cc">
+      <Filter>log</Filter>
+    </ClCompile>
+    <ClCompile Include="log\absl_log_basic_test.cc">
+      <Filter>log</Filter>
+    </ClCompile>
+    <ClCompile Include="log\check_test.cc">
+      <Filter>log</Filter>
+    </ClCompile>
+    <ClCompile Include="log\die_if_null_test.cc">
+      <Filter>log</Filter>
+    </ClCompile>
+    <ClCompile Include="log\flags_test.cc">
+      <Filter>log</Filter>
+    </ClCompile>
+    <ClCompile Include="log\globals_test.cc">
+      <Filter>log</Filter>
+    </ClCompile>
+    <ClCompile Include="log\log_basic_test.cc">
+      <Filter>log</Filter>
+    </ClCompile>
+    <ClCompile Include="log\log_entry_test.cc">
+      <Filter>log</Filter>
+    </ClCompile>
+    <ClCompile Include="log\log_format_test.cc">
+      <Filter>log</Filter>
+    </ClCompile>
+    <ClCompile Include="log\log_macro_hygiene_test.cc">
+      <Filter>log</Filter>
+    </ClCompile>
+    <ClCompile Include="log\log_modifier_methods_test.cc">
+      <Filter>log</Filter>
+    </ClCompile>
+    <ClCompile Include="log\log_sink_test.cc">
+      <Filter>log</Filter>
+    </ClCompile>
+    <ClCompile Include="log\log_streamer_test.cc">
+      <Filter>log</Filter>
+    </ClCompile>
+    <ClCompile Include="log\scoped_mock_log_test.cc">
+      <Filter>log</Filter>
+    </ClCompile>
+    <ClCompile Include="log\stripping_test.cc">
+      <Filter>log</Filter>
+    </ClCompile>
+    <ClCompile Include="log\structured_test.cc">
+      <Filter>log</Filter>
     </ClCompile>
     <ClCompile Include="memory\memory_test.cc">
       <Filter>memory</Filter>
@@ -333,59 +399,23 @@
     <ClCompile Include="meta\type_traits_test.cc">
       <Filter>meta</Filter>
     </ClCompile>
+    <ClCompile Include="numeric\bits_test.cc">
+      <Filter>numeric</Filter>
+    </ClCompile>
     <ClCompile Include="numeric\int128_stream_test.cc">
       <Filter>numeric</Filter>
     </ClCompile>
     <ClCompile Include="numeric\int128_test.cc">
       <Filter>numeric</Filter>
     </ClCompile>
-    <ClCompile Include="random\bernoulli_distribution_test.cc">
-      <Filter>random</Filter>
+    <ClCompile Include="profiling\internal\exponential_biased_test.cc">
+      <Filter>profiling\internal</Filter>
     </ClCompile>
-    <ClCompile Include="random\beta_distribution_test.cc">
-      <Filter>random</Filter>
+    <ClCompile Include="profiling\internal\periodic_sampler_test.cc">
+      <Filter>profiling\internal</Filter>
     </ClCompile>
-    <ClCompile Include="random\bit_gen_ref_test.cc">
-      <Filter>random</Filter>
-    </ClCompile>
-    <ClCompile Include="random\discrete_distribution_test.cc">
-      <Filter>random</Filter>
-    </ClCompile>
-    <ClCompile Include="random\distributions_test.cc">
-      <Filter>random</Filter>
-    </ClCompile>
-    <ClCompile Include="random\examples_test.cc">
-      <Filter>random</Filter>
-    </ClCompile>
-    <ClCompile Include="random\exponential_distribution_test.cc">
-      <Filter>random</Filter>
-    </ClCompile>
-    <ClCompile Include="random\gaussian_distribution_test.cc">
-      <Filter>random</Filter>
-    </ClCompile>
-    <ClCompile Include="random\log_uniform_int_distribution_test.cc">
-      <Filter>random</Filter>
-    </ClCompile>
-    <ClCompile Include="random\mock_distributions_test.cc">
-      <Filter>random</Filter>
-    </ClCompile>
-    <ClCompile Include="random\mocking_bit_gen_test.cc">
-      <Filter>random</Filter>
-    </ClCompile>
-    <ClCompile Include="random\poisson_distribution_test.cc">
-      <Filter>random</Filter>
-    </ClCompile>
-    <ClCompile Include="random\seed_sequences_test.cc">
-      <Filter>random</Filter>
-    </ClCompile>
-    <ClCompile Include="random\uniform_int_distribution_test.cc">
-      <Filter>random</Filter>
-    </ClCompile>
-    <ClCompile Include="random\uniform_real_distribution_test.cc">
-      <Filter>random</Filter>
-    </ClCompile>
-    <ClCompile Include="random\zipf_distribution_test.cc">
-      <Filter>random</Filter>
+    <ClCompile Include="profiling\internal\sample_recorder_test.cc">
+      <Filter>profiling\internal</Filter>
     </ClCompile>
     <ClCompile Include="random\internal\chi_square_test.cc">
       <Filter>random\internal</Filter>
@@ -406,6 +436,9 @@
       <Filter>random\internal</Filter>
     </ClCompile>
     <ClCompile Include="random\internal\iostream_state_saver_test.cc">
+      <Filter>random\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="random\internal\nanobenchmark_test.cc">
       <Filter>random\internal</Filter>
     </ClCompile>
     <ClCompile Include="random\internal\nonsecure_base_test.cc">
@@ -435,11 +468,65 @@
     <ClCompile Include="random\internal\seed_material_test.cc">
       <Filter>random\internal</Filter>
     </ClCompile>
+    <ClCompile Include="random\internal\traits_test.cc">
+      <Filter>random\internal</Filter>
+    </ClCompile>
     <ClCompile Include="random\internal\uniform_helper_test.cc">
       <Filter>random\internal</Filter>
     </ClCompile>
     <ClCompile Include="random\internal\wide_multiply_test.cc">
       <Filter>random\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="random\bernoulli_distribution_test.cc">
+      <Filter>random</Filter>
+    </ClCompile>
+    <ClCompile Include="random\beta_distribution_test.cc">
+      <Filter>random</Filter>
+    </ClCompile>
+    <ClCompile Include="random\bit_gen_ref_test.cc">
+      <Filter>random</Filter>
+    </ClCompile>
+    <ClCompile Include="random\discrete_distribution_test.cc">
+      <Filter>random</Filter>
+    </ClCompile>
+    <ClCompile Include="random\distributions_test.cc">
+      <Filter>random</Filter>
+    </ClCompile>
+    <ClCompile Include="random\examples_test.cc">
+      <Filter>random</Filter>
+    </ClCompile>
+    <ClCompile Include="random\exponential_distribution_test.cc">
+      <Filter>random</Filter>
+    </ClCompile>
+    <ClCompile Include="random\gaussian_distribution_test.cc">
+      <Filter>random</Filter>
+    </ClCompile>
+    <ClCompile Include="random\generators_test.cc">
+      <Filter>random</Filter>
+    </ClCompile>
+    <ClCompile Include="random\log_uniform_int_distribution_test.cc">
+      <Filter>random</Filter>
+    </ClCompile>
+    <ClCompile Include="random\mock_distributions_test.cc">
+      <Filter>random</Filter>
+    </ClCompile>
+    <ClCompile Include="random\mocking_bit_gen_test.cc">
+      <Filter>random</Filter>
+    </ClCompile>
+    <ClCompile Include="random\poisson_distribution_test.cc">
+      <Filter>random</Filter>
+    </ClCompile>
+    <ClCompile Include="random\seed_sequences_test.cc">
+      <Filter>random</Filter>
+    </ClCompile>
+    <ClCompile Include="random\uniform_int_distribution_test.cc">
+      <Filter>random</Filter>
+    </ClCompile>
+    <ClCompile Include="random\uniform_real_distribution_test.cc">
+      <Filter>random</Filter>
+    </ClCompile>
+    <ClCompile Include="random\zipf_distribution_test.cc">
+      <Filter>random</Filter>
     </ClCompile>
     <ClCompile Include="status\status_test.cc">
       <Filter>status</Filter>
@@ -477,6 +564,45 @@
     <ClCompile Include="strings\internal\charconv_parse_test.cc">
       <Filter>strings\internal</Filter>
     </ClCompile>
+    <ClCompile Include="strings\internal\cord_data_edge_test.cc">
+      <Filter>strings\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="strings\internal\cord_rep_btree_navigator_test.cc">
+      <Filter>strings\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="strings\internal\cord_rep_btree_reader_test.cc">
+      <Filter>strings\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="strings\internal\cord_rep_btree_test.cc">
+      <Filter>strings\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="strings\internal\cord_rep_crc_test.cc">
+      <Filter>strings\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="strings\internal\cordz_functions_test.cc">
+      <Filter>strings\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="strings\internal\cordz_handle_test.cc">
+      <Filter>strings\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="strings\internal\cordz_info_statistics_test.cc">
+      <Filter>strings\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="strings\internal\cordz_info_test.cc">
+      <Filter>strings\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="strings\internal\cordz_sample_token_test.cc">
+      <Filter>strings\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="strings\internal\cordz_update_scope_test.cc">
+      <Filter>strings\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="strings\internal\cordz_update_tracker_test.cc">
+      <Filter>strings\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="strings\internal\damerau_levenshtein_distance_test.cc">
+      <Filter>strings\internal</Filter>
+    </ClCompile>
     <ClCompile Include="strings\internal\memutil_test.cc">
       <Filter>strings\internal</Filter>
     </ClCompile>
@@ -498,7 +624,13 @@
     <ClCompile Include="strings\ascii_test.cc">
       <Filter>strings</Filter>
     </ClCompile>
+    <ClCompile Include="strings\atod_manual_test.cc">
+      <Filter>strings</Filter>
+    </ClCompile>
     <ClCompile Include="strings\charconv_test.cc">
+      <Filter>strings</Filter>
+    </ClCompile>
+    <ClCompile Include="strings\cord_buffer_test.cc">
       <Filter>strings</Filter>
     </ClCompile>
     <ClCompile Include="strings\cord_ring_reader_test.cc">
@@ -508,6 +640,9 @@
       <Filter>strings</Filter>
     </ClCompile>
     <ClCompile Include="strings\cord_test.cc">
+      <Filter>strings</Filter>
+    </ClCompile>
+    <ClCompile Include="strings\cordz_test.cc">
       <Filter>strings</Filter>
     </ClCompile>
     <ClCompile Include="strings\escaping_test.cc">
@@ -564,7 +699,7 @@
     <ClCompile Include="synchronization\notification_test.cc">
       <Filter>synchronization</Filter>
     </ClCompile>
-    <ClCompile Include="time\internal\cctz\src\cctz_civil_time_test.cc">
+    <ClCompile Include="time\internal\cctz\src\civil_time_test.cc">
       <Filter>time\internal\cctz\src</Filter>
     </ClCompile>
     <ClCompile Include="time\internal\cctz\src\time_zone_format_test.cc">
@@ -621,94 +756,76 @@
     <ClCompile Include="types\variant_test.cc">
       <Filter>types</Filter>
     </ClCompile>
-    <ClCompile Include="base\internal\low_level_alloc_test.cc">
-      <Filter>base\internal</Filter>
-    </ClCompile>
-    <ClCompile Include="base\internal\prefetch_test.cc">
-      <Filter>base\internal</Filter>
-    </ClCompile>
-    <ClCompile Include="container\internal\node_slot_policy_test.cc">
-      <Filter>container\internal</Filter>
-    </ClCompile>
-    <ClCompile Include="container\fixed_array_exception_safety_test.cc">
-      <Filter>container</Filter>
-    </ClCompile>
-    <ClCompile Include="container\sample_element_size_test.cc">
-      <Filter>container</Filter>
-    </ClCompile>
-    <ClCompile Include="functional\any_invocable_test.cc">
-      <Filter>functional</Filter>
-    </ClCompile>
-    <ClCompile Include="hash\internal\city_test.cc">
-      <Filter>hash\internal</Filter>
-    </ClCompile>
-    <ClCompile Include="hash\internal\low_level_hash_test.cc">
-      <Filter>hash\internal</Filter>
-    </ClCompile>
-    <ClCompile Include="numeric\bits_test.cc">
-      <Filter>numeric</Filter>
-    </ClCompile>
-    <ClCompile Include="profiling\internal\exponential_biased_test.cc">
-      <Filter>profiling\internal</Filter>
-    </ClCompile>
-    <ClCompile Include="profiling\internal\periodic_sampler_test.cc">
-      <Filter>profiling\internal</Filter>
-    </ClCompile>
-    <ClCompile Include="profiling\internal\sample_recorder_test.cc">
-      <Filter>profiling\internal</Filter>
-    </ClCompile>
-    <ClCompile Include="random\internal\nanobenchmark_test.cc">
-      <Filter>random\internal</Filter>
-    </ClCompile>
-    <ClCompile Include="random\internal\traits_test.cc">
-      <Filter>random\internal</Filter>
-    </ClCompile>
-    <ClCompile Include="strings\internal\cord_data_edge_test.cc">
-      <Filter>strings\internal</Filter>
-    </ClCompile>
-    <ClCompile Include="strings\internal\cord_rep_btree_navigator_test.cc">
-      <Filter>strings\internal</Filter>
-    </ClCompile>
-    <ClCompile Include="strings\internal\cord_rep_btree_reader_test.cc">
-      <Filter>strings\internal</Filter>
-    </ClCompile>
-    <ClCompile Include="strings\internal\cord_rep_btree_test.cc">
-      <Filter>strings\internal</Filter>
-    </ClCompile>
-    <ClCompile Include="strings\internal\cord_rep_crc_test.cc">
-      <Filter>strings\internal</Filter>
-    </ClCompile>
-    <ClCompile Include="strings\internal\cordz_functions_test.cc">
-      <Filter>strings\internal</Filter>
-    </ClCompile>
-    <ClCompile Include="strings\internal\cordz_handle_test.cc">
-      <Filter>strings\internal</Filter>
-    </ClCompile>
-    <ClCompile Include="strings\internal\cordz_info_statistics_test.cc">
-      <Filter>strings\internal</Filter>
-    </ClCompile>
-    <ClCompile Include="strings\internal\cordz_sample_token_test.cc">
-      <Filter>strings\internal</Filter>
-    </ClCompile>
-    <ClCompile Include="strings\internal\cordz_update_scope_test.cc">
-      <Filter>strings\internal</Filter>
-    </ClCompile>
-    <ClCompile Include="strings\internal\cordz_update_tracker_test.cc">
-      <Filter>strings\internal</Filter>
-    </ClCompile>
-    <ClCompile Include="strings\cord_buffer_test.cc">
-      <Filter>strings</Filter>
-    </ClCompile>
-    <ClCompile Include="strings\cordz_test.cc">
-      <Filter>strings</Filter>
-    </ClCompile>
     <ClCompile Include="utility\utility_test.cc">
       <Filter>utility</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="base\internal\atomic_hook_test_helper.h">
+      <Filter>base\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="base\internal\exception_safety_testing.h">
+      <Filter>base\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="base\internal\inline_variable_testing.h">
+      <Filter>base\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="container\internal\hash_generator_testing.h">
+      <Filter>container\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="container\internal\hash_policy_testing.h">
+      <Filter>container\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="container\internal\unordered_map_constructor_test.h">
+      <Filter>container\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="container\internal\unordered_map_lookup_test.h">
+      <Filter>container\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="container\internal\unordered_map_members_test.h">
+      <Filter>container\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="container\internal\unordered_map_modifiers_test.h">
+      <Filter>container\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="container\internal\unordered_set_constructor_test.h">
+      <Filter>container\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="container\internal\unordered_set_lookup_test.h">
+      <Filter>container\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="container\internal\unordered_set_members_test.h">
+      <Filter>container\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="container\internal\unordered_set_modifiers_test.h">
+      <Filter>container\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="hash\hash_testing.h">
+      <Filter>hash</Filter>
+    </ClInclude>
+    <ClInclude Include="log\log_basic_test_impl.h">
+      <Filter>log</Filter>
+    </ClInclude>
+    <ClInclude Include="strings\internal\escaping_test_common.h">
+      <Filter>strings\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="strings\internal\numbers_test_common.h">
+      <Filter>strings\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="strings\cord_test_helpers.h">
+      <Filter>strings</Filter>
+    </ClInclude>
+    <ClInclude Include="strings\cordz_test_helpers.h">
+      <Filter>strings</Filter>
+    </ClInclude>
     <ClInclude Include="time\internal\test_util.h">
       <Filter>time\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="types\internal\conformance_testing.h">
+      <Filter>types\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="types\internal\conformance_testing_helpers.h">
+      <Filter>types\internal</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -40,7 +40,7 @@ namespace hash_internal {
 // To allow all hashable types (including string_view and Span) to depend on
 // this algorithm, we keep the API low-level, with as few dependencies as
 // possible.
-uint64_t LowLevelHash(const void* data, size_t len, uint64_t seed,
+ABSEIL_EXPORT uint64_t LowLevelHash(const void* data, size_t len, uint64_t seed,
                       const uint64_t salt[5]);
 
 }  // namespace hash_internal

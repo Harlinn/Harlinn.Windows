@@ -51,11 +51,11 @@ class RandenPool {
   inline result_type operator()() { return Generate(); }
 
   // Fill data with random values.
-  ABSEIL_EXPORT static void Fill(absl::Span<result_type> data);
+  static void Fill(absl::Span<result_type> data);
 
  protected:
   // Generate returns a single value.
-  ABSEIL_EXPORT static result_type Generate();
+  static result_type Generate();
 };
 
 extern template class RandenPool<uint8_t>;
