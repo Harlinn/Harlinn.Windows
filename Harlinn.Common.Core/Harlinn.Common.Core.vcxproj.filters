@@ -19,8 +19,8 @@
     <Filter Include="Source Files\fmt">
       <UniqueIdentifier>{da36ca02-a687-42a8-b1ea-52118f666545}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Debug">
-      <UniqueIdentifier>{3dea0a4b-95b8-4dc0-84a6-a5f7e7bccbe5}</UniqueIdentifier>
+    <Filter Include="Support">
+      <UniqueIdentifier>{1e8e447f-0af3-4461-8360-99ff5ed446d6}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -490,8 +490,8 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <Natvis Include="Debug\hcc.natvis">
-      <Filter>Debug</Filter>
+    <Natvis Include="Support\hcc.natvis">
+      <Filter>Support</Filter>
     </Natvis>
   </ItemGroup>
   <ItemGroup>

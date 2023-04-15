@@ -369,7 +369,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <Natvis Include="Debug\hcc.natvis" />
+    <Natvis Include="Support\hcc.natvis" />
   </ItemGroup>
   <ItemGroup>
     <None Include="HCCComInterfaces.xm" />

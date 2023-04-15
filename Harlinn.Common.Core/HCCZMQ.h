@@ -11,6 +11,7 @@ namespace Harlinn::Common::Core::ZeroMq
 {
     using SocketType = zmq::socket_type;
     using SendFlags = zmq::send_flags;
+    using PollItem = zmq::pollitem_t;
 
     using MemoryManager = FixedSizeMemoryManager<64 * 1024, 1024>;
 

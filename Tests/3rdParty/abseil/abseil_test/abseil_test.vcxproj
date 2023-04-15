@@ -89,12 +89,12 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS=1;NOMINMAX=1;_ENABLE_EXTENDED_ALIGNED_STORAGE=1;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_SILENCE_CXX23_ALIGNED_STORAGE_DEPRECATION_WARNING=1;_CRT_SECURE_NO_WARNINGS=1;NOMINMAX=1;_ENABLE_EXTENDED_ALIGNED_STORAGE=1;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalOptions>/Zc:__cplusplus -utf-8 /bigobj %(AdditionalOptions)</AdditionalOptions>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
-      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.gtest\include;$(SolutionDir)3rdParty\Harlinn.abseil\include;$(ProjectDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)include;$(SolutionDir)3rdParty\Harlinn.gtest\include;$(SolutionDir)3rdParty\Harlinn.abseil\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
@@ -108,14 +108,14 @@
       <WarningLevel>Level3</WarningLevel>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS=1;NOMINMAX=1;_ENABLE_EXTENDED_ALIGNED_STORAGE=1;WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_SILENCE_CXX23_ALIGNED_STORAGE_DEPRECATION_WARNING=1;_CRT_SECURE_NO_WARNINGS=1;NOMINMAX=1;_ENABLE_EXTENDED_ALIGNED_STORAGE=1;WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalOptions>/Zc:__cplusplus -utf-8 /bigobj %(AdditionalOptions)</AdditionalOptions>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <BufferSecurityCheck>false</BufferSecurityCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.gtest\include;$(SolutionDir)3rdParty\Harlinn.abseil\include;$(ProjectDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)include;$(SolutionDir)3rdParty\Harlinn.gtest\include;$(SolutionDir)3rdParty\Harlinn.abseil\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
@@ -130,12 +130,12 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS=1;NOMINMAX=1;_ENABLE_EXTENDED_ALIGNED_STORAGE=1;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_SILENCE_CXX23_ALIGNED_STORAGE_DEPRECATION_WARNING=1;_CRT_SECURE_NO_WARNINGS=1;NOMINMAX=1;_ENABLE_EXTENDED_ALIGNED_STORAGE=1;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalOptions>/Zc:__cplusplus -utf-8 /bigobj %(AdditionalOptions)</AdditionalOptions>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
-      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.gtest\include;$(SolutionDir)3rdParty\Harlinn.abseil\include;$(ProjectDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)include;$(SolutionDir)3rdParty\Harlinn.gtest\include;$(SolutionDir)3rdParty\Harlinn.abseil\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
@@ -149,14 +149,14 @@
       <WarningLevel>Level3</WarningLevel>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS=1;NOMINMAX=1;_ENABLE_EXTENDED_ALIGNED_STORAGE=1;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_SILENCE_CXX23_ALIGNED_STORAGE_DEPRECATION_WARNING=1;_CRT_SECURE_NO_WARNINGS=1;NOMINMAX=1;_ENABLE_EXTENDED_ALIGNED_STORAGE=1;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalOptions>/Zc:__cplusplus -utf-8 /bigobj %(AdditionalOptions)</AdditionalOptions>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <BufferSecurityCheck>false</BufferSecurityCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.gtest\include;$(SolutionDir)3rdParty\Harlinn.abseil\include;$(ProjectDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)include;$(SolutionDir)3rdParty\Harlinn.gtest\include;$(SolutionDir)3rdParty\Harlinn.abseil\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
@@ -224,7 +224,7 @@
     <ClCompile Include="debugging\stacktrace_test.cc" />
     <ClCompile Include="debugging\symbolize_test.cc" />
     <ClCompile Include="flags\commandlineflag_test.cc" />
-    <ClCompile Include="flags\config_test.cc" />
+    <ClCompile Include="flags\fl_config_test.cc" />
     <ClCompile Include="flags\flag_test.cc" />
     <ClCompile Include="flags\internal\path_util_test.cc" />
     <ClCompile Include="flags\internal\program_name_test.cc" />
@@ -363,7 +363,7 @@
     <ClCompile Include="time\clock_test.cc" />
     <ClCompile Include="time\duration_test.cc" />
     <ClCompile Include="time\format_test.cc" />
-    <ClCompile Include="time\internal\cctz\src\civil_time_test.cc" />
+    <ClCompile Include="time\internal\cctz\src\i_civil_time_test.cc" />
     <ClCompile Include="time\internal\cctz\src\time_zone_format_test.cc" />
     <ClCompile Include="time\internal\cctz\src\time_zone_lookup_test.cc" />
     <ClCompile Include="time\internal\test_util.cc" />
@@ -381,23 +381,23 @@
     <ClCompile Include="utility\utility_test.cc" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="base\internal\atomic_hook_test_helper.h" />
-    <ClInclude Include="base\internal\exception_safety_testing.h" />
-    <ClInclude Include="base\internal\inline_variable_testing.h" />
-    <ClInclude Include="container\internal\hash_generator_testing.h" />
-    <ClInclude Include="container\internal\hash_policy_testing.h" />
-    <ClInclude Include="container\internal\unordered_map_constructor_test.h" />
-    <ClInclude Include="container\internal\unordered_map_lookup_test.h" />
-    <ClInclude Include="container\internal\unordered_map_members_test.h" />
-    <ClInclude Include="container\internal\unordered_map_modifiers_test.h" />
-    <ClInclude Include="container\internal\unordered_set_constructor_test.h" />
-    <ClInclude Include="container\internal\unordered_set_lookup_test.h" />
-    <ClInclude Include="container\internal\unordered_set_members_test.h" />
-    <ClInclude Include="container\internal\unordered_set_modifiers_test.h" />
     <ClInclude Include="hash\hash_testing.h" />
+    <ClInclude Include="include\absl\base\internal\atomic_hook_test_helper.h" />
+    <ClInclude Include="include\absl\base\internal\exception_safety_testing.h" />
+    <ClInclude Include="include\absl\base\internal\inline_variable_testing.h" />
+    <ClInclude Include="include\absl\container\internal\hash_generator_testing.h" />
+    <ClInclude Include="include\absl\container\internal\hash_policy_testing.h" />
+    <ClInclude Include="include\absl\container\internal\unordered_map_constructor_test.h" />
+    <ClInclude Include="include\absl\container\internal\unordered_map_lookup_test.h" />
+    <ClInclude Include="include\absl\container\internal\unordered_map_members_test.h" />
+    <ClInclude Include="include\absl\container\internal\unordered_map_modifiers_test.h" />
+    <ClInclude Include="include\absl\container\internal\unordered_set_constructor_test.h" />
+    <ClInclude Include="include\absl\container\internal\unordered_set_lookup_test.h" />
+    <ClInclude Include="include\absl\container\internal\unordered_set_members_test.h" />
+    <ClInclude Include="include\absl\container\internal\unordered_set_modifiers_test.h" />
+    <ClInclude Include="include\absl\strings\cordz_test_helpers.h" />
+    <ClInclude Include="include\absl\strings\cord_test_helpers.h" />
     <ClInclude Include="log\log_basic_test_impl.h" />
-    <ClInclude Include="strings\cordz_test_helpers.h" />
-    <ClInclude Include="strings\cord_test_helpers.h" />
     <ClInclude Include="strings\internal\escaping_test_common.h" />
     <ClInclude Include="strings\internal\numbers_test_common.h" />
     <ClInclude Include="time\internal\test_util.h" />

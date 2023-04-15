@@ -26,6 +26,13 @@
 #include "absl/time/clock.h"
 #include "absl/time/time.h"
 
+
+namespace absl
+{
+    template<size_t len, size_t align = alignof( max_align_t )>
+    using aligned_storage_t = std::aligned_storage_t<len, align>;
+}
+
 namespace {
 
 using ::testing::StaticAssertTypeEq;

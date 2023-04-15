@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010">
+  <Type Name="Harlinn::Common::Core::Vector&lt;*&gt;">
+    <DisplayString>{{Size={end_ - data_.storage_} Capacity={allocatedEnd_-data_.storage_}}}</DisplayString>
+    <Expand>
+      <ArrayItems>
+        <Size>end_ - data_.storage_</Size>
+        <ValuePointer>data_.storage_</ValuePointer>
+      </ArrayItems>
+    </Expand>
+  </Type>
+</AutoVisualizer>

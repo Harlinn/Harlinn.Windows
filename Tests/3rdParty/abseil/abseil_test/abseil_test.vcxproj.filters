@@ -124,6 +124,27 @@
     <Filter Include="time\internal\cctz\src">
       <UniqueIdentifier>{a6f732d7-7767-4a90-8100-a92d2bb0b52b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="include">
+      <UniqueIdentifier>{4ef36b9c-894d-48cf-9481-5bd4b7eaee9e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\absl">
+      <UniqueIdentifier>{ac6dbb35-08cb-4e2c-b997-55ce90b5933b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\absl\base">
+      <UniqueIdentifier>{00bbeca6-bfd5-4b03-85f7-26b5d0120116}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\absl\base\internal">
+      <UniqueIdentifier>{59397cab-cb02-4c94-8077-9e783bbbdbbc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\absl\container">
+      <UniqueIdentifier>{827f77ac-8964-4251-a00f-01f9de6aed04}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\absl\container\internal">
+      <UniqueIdentifier>{047e2ca6-6550-4b85-8403-6f9ecff5197a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\absl\strings">
+      <UniqueIdentifier>{b5d202fe-6123-4fe8-bbe2-e4fdc229f13d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="abseil_test.cpp">
@@ -306,7 +327,7 @@
     <ClCompile Include="flags\commandlineflag_test.cc">
       <Filter>flags</Filter>
     </ClCompile>
-    <ClCompile Include="flags\config_test.cc">
+    <ClCompile Include="flags\fl_config_test.cc">
       <Filter>flags</Filter>
     </ClCompile>
     <ClCompile Include="flags\flag_test.cc">
@@ -699,7 +720,7 @@
     <ClCompile Include="synchronization\notification_test.cc">
       <Filter>synchronization</Filter>
     </ClCompile>
-    <ClCompile Include="time\internal\cctz\src\civil_time_test.cc">
+    <ClCompile Include="time\internal\cctz\src\i_civil_time_test.cc">
       <Filter>time\internal\cctz\src</Filter>
     </ClCompile>
     <ClCompile Include="time\internal\cctz\src\time_zone_format_test.cc">
@@ -761,45 +782,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="base\internal\atomic_hook_test_helper.h">
-      <Filter>base\internal</Filter>
-    </ClInclude>
-    <ClInclude Include="base\internal\exception_safety_testing.h">
-      <Filter>base\internal</Filter>
-    </ClInclude>
-    <ClInclude Include="base\internal\inline_variable_testing.h">
-      <Filter>base\internal</Filter>
-    </ClInclude>
-    <ClInclude Include="container\internal\hash_generator_testing.h">
-      <Filter>container\internal</Filter>
-    </ClInclude>
-    <ClInclude Include="container\internal\hash_policy_testing.h">
-      <Filter>container\internal</Filter>
-    </ClInclude>
-    <ClInclude Include="container\internal\unordered_map_constructor_test.h">
-      <Filter>container\internal</Filter>
-    </ClInclude>
-    <ClInclude Include="container\internal\unordered_map_lookup_test.h">
-      <Filter>container\internal</Filter>
-    </ClInclude>
-    <ClInclude Include="container\internal\unordered_map_members_test.h">
-      <Filter>container\internal</Filter>
-    </ClInclude>
-    <ClInclude Include="container\internal\unordered_map_modifiers_test.h">
-      <Filter>container\internal</Filter>
-    </ClInclude>
-    <ClInclude Include="container\internal\unordered_set_constructor_test.h">
-      <Filter>container\internal</Filter>
-    </ClInclude>
-    <ClInclude Include="container\internal\unordered_set_lookup_test.h">
-      <Filter>container\internal</Filter>
-    </ClInclude>
-    <ClInclude Include="container\internal\unordered_set_members_test.h">
-      <Filter>container\internal</Filter>
-    </ClInclude>
-    <ClInclude Include="container\internal\unordered_set_modifiers_test.h">
-      <Filter>container\internal</Filter>
-    </ClInclude>
     <ClInclude Include="hash\hash_testing.h">
       <Filter>hash</Filter>
     </ClInclude>
@@ -812,12 +794,6 @@
     <ClInclude Include="strings\internal\numbers_test_common.h">
       <Filter>strings\internal</Filter>
     </ClInclude>
-    <ClInclude Include="strings\cord_test_helpers.h">
-      <Filter>strings</Filter>
-    </ClInclude>
-    <ClInclude Include="strings\cordz_test_helpers.h">
-      <Filter>strings</Filter>
-    </ClInclude>
     <ClInclude Include="time\internal\test_util.h">
       <Filter>time\internal</Filter>
     </ClInclude>
@@ -826,6 +802,51 @@
     </ClInclude>
     <ClInclude Include="types\internal\conformance_testing_helpers.h">
       <Filter>types\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\base\internal\atomic_hook_test_helper.h">
+      <Filter>include\absl\base\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\base\internal\exception_safety_testing.h">
+      <Filter>include\absl\base\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\base\internal\inline_variable_testing.h">
+      <Filter>include\absl\base\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\container\internal\hash_generator_testing.h">
+      <Filter>include\absl\container\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\container\internal\hash_policy_testing.h">
+      <Filter>include\absl\container\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\container\internal\unordered_map_constructor_test.h">
+      <Filter>include\absl\container\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\container\internal\unordered_map_lookup_test.h">
+      <Filter>include\absl\container\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\container\internal\unordered_map_members_test.h">
+      <Filter>include\absl\container\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\container\internal\unordered_map_modifiers_test.h">
+      <Filter>include\absl\container\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\container\internal\unordered_set_constructor_test.h">
+      <Filter>include\absl\container\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\container\internal\unordered_set_lookup_test.h">
+      <Filter>include\absl\container\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\container\internal\unordered_set_members_test.h">
+      <Filter>include\absl\container\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\container\internal\unordered_set_modifiers_test.h">
+      <Filter>include\absl\container\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\strings\cord_test_helpers.h">
+      <Filter>include\absl\strings</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\strings\cordz_test_helpers.h">
+      <Filter>include\absl\strings</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
