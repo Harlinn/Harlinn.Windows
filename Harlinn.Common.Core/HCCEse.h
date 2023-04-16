@@ -1205,11 +1205,12 @@ namespace Harlinn::Common::Core::Ese
             return Move( JET_MoveLast );
         }
 
-        unsigned long RetrieveColumnSize( JET_COLUMNID columnId, int itagSequence = 0, RetrieveFlags retrieveFlags = RetrieveFlags::None ) const
+        unsigned long RetrieveColumnSize( JET_COLUMNID columnId, int itagSequence, RetrieveFlags retrieveFlags = RetrieveFlags::None ) const
         {
             JET_RETINFO retinfo = { sizeof( JET_RETINFO ), 0, static_cast<ULONG>( itagSequence ), 0 };
             unsigned long dataSize = 0;
-            auto rc = static_cast<Result>( JetRetrieveColumn( sessionId_, tableId_, columnId, nullptr, 0, &dataSize, static_cast<int>(retrieveFlags), &retinfo ) );
+            Byte buffer[ 1 ] = {};
+            auto rc = static_cast<Result>( JetRetrieveColumn( sessionId_, tableId_, columnId, buffer, 1, &dataSize, static_cast<int>(retrieveFlags), &retinfo ) );
             if ( rc == Result::WarningColumnNull )
             {
                 return 0;
@@ -1221,11 +1222,28 @@ namespace Harlinn::Common::Core::Ese
             return dataSize;
         }
 
+        unsigned long RetrieveColumnSize( JET_COLUMNID columnId, RetrieveFlags retrieveFlags = RetrieveFlags::None ) const
+        {
+            unsigned long dataSize = 0;
+            auto rc = static_cast< Result >( JetRetrieveColumn( sessionId_, tableId_, columnId, nullptr, 0, &dataSize, static_cast< int >( retrieveFlags ), nullptr ) );
+            if ( rc == Result::WarningColumnNull )
+            {
+                return 0;
+            }
+            else if ( rc != Result::Success && rc != Result::WarningBufferTruncated )
+            {
+                HCC_THROW( Exception, rc );
+            }
+            return dataSize;
+        }
+
+
         bool IsDBNull(JET_COLUMNID columnId, int itagSequence = 0, RetrieveFlags retrieveFlags = RetrieveFlags::None) const
         {
             JET_RETINFO retinfo = { sizeof(JET_RETINFO), 0, static_cast<ULONG>(itagSequence), 0 };
             unsigned long dataSize = 0;
-            auto rc = static_cast<Result>(JetRetrieveColumn(sessionId_, tableId_, columnId, nullptr, 0, &dataSize, static_cast<int>(retrieveFlags), &retinfo));
+            Byte buffer[ 1 ] = {};
+            auto rc = static_cast<Result>(JetRetrieveColumn(sessionId_, tableId_, columnId, buffer, 1, &dataSize, static_cast<int>(retrieveFlags), &retinfo));
             if (rc == Result::WarningColumnNull)
             {
                 return true;
@@ -1719,7 +1737,7 @@ namespace Harlinn::Common::Core::Ese
         template<BinaryVectorType T>
         bool Read( JET_COLUMNID columnId, T& value, RetrieveFlags retrieveFlags = RetrieveFlags::None ) const
         {
-            unsigned long dataSize = RetrieveColumnSize( columnId, 0, retrieveFlags );
+            unsigned long dataSize = RetrieveColumnSize( columnId, retrieveFlags );
             if ( dataSize )
             {
                 value.resize( dataSize );
@@ -1735,7 +1753,7 @@ namespace Harlinn::Common::Core::Ese
 
         bool Read( JET_COLUMNID columnId, IO::MemoryStream& value, RetrieveFlags retrieveFlags = RetrieveFlags::None ) const
         {
-            unsigned long dataSize = RetrieveColumnSize( columnId, 0, retrieveFlags );
+            unsigned long dataSize = RetrieveColumnSize( columnId, retrieveFlags );
             if ( dataSize )
             {
                 value.SetCapacity( dataSize );
