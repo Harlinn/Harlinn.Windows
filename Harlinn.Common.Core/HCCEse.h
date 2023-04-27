@@ -1733,7 +1733,7 @@ namespace Harlinn::Common::Core::Ese
             RequireSuccess( rc );
             return false;
         }
-
+        /*
         template<BinaryVectorType T>
         bool Read( JET_COLUMNID columnId, T& value, RetrieveFlags retrieveFlags = RetrieveFlags::None ) const
         {
@@ -1749,6 +1749,41 @@ namespace Harlinn::Common::Core::Ese
             {
                 return false;
             }
+        }
+        */
+
+        template<BinaryVectorType T>
+        bool Read( JET_COLUMNID columnId, T& value, RetrieveFlags retrieveFlags = RetrieveFlags::None ) const
+        {
+            using ByteType = typename T::value_type;
+            constexpr unsigned long BufferSize = 32*1024;
+            ByteType buffer[ BufferSize ];
+            unsigned long actualDataSize;
+            auto rc = RetrieveColumn( columnId, buffer, BufferSize, &actualDataSize, retrieveFlags, nullptr );
+            if ( rc == Result::WarningColumnNull )
+            {
+                return false;
+            }
+
+            if ( rc == Result::Success )
+            {
+                value.resize( actualDataSize );
+                memcpy( value.data( ), buffer, actualDataSize );
+                return true;
+            }
+            else if ( rc == Result::WarningBufferTruncated )
+            {
+                unsigned long newDataSize;
+                value.resize( actualDataSize );
+                rc = RetrieveColumn( columnId, value.data( ), actualDataSize, &newDataSize, retrieveFlags, nullptr );
+                if ( rc == Result::WarningBufferTruncated )
+                {
+                    throw InvalidOperationException( "Buffer size changed" );
+                }
+                return RequireSuccess( rc );
+            }
+            RequireSuccess( rc );
+            return false;
         }
 
         bool Read( JET_COLUMNID columnId, IO::MemoryStream& value, RetrieveFlags retrieveFlags = RetrieveFlags::None ) const
@@ -2120,7 +2155,9 @@ namespace Harlinn::Common::Core::Ese
         PermitDDL = JET_bitTablePermitDDL,
         Preread = JET_bitTablePreread,
         ReadOnly = JET_bitTableReadOnly,
+        OpportuneRead = JET_bitTableOpportuneRead,
         Sequential = JET_bitTableSequential,
+        
         Updatable = JET_bitTableUpdatable
     };
     HCC_DEFINE_ENUM_FLAG_OPERATORS( OpenTableFlags, int );

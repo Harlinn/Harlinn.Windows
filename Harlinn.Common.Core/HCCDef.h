@@ -214,7 +214,9 @@
 #include <numeric>
 #include <optional>
 #include <thread>
+#ifndef _MANAGED
 #include <future>
+#endif
 #include <mutex>
 #include <shared_mutex>
 #include <tuple>
