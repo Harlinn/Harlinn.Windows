@@ -2723,6 +2723,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "abseil", "abseil", "{3C2F76
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "gaussian_distribution_gentables", "Tools\3rdParty\abseil\gaussian_distribution_gentables\gaussian_distribution_gentables.vcxproj", "{93DE2EE2-2B04-4280-8D5F-F66A2F2332FD}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HODBCBasicInsert03", "Examples\ODBC\HODBCBasicInsert03\HODBCBasicInsert03.vcxproj", "{08063A3D-9649-411E-934F-15D259089E29}"
+	ProjectSection(ProjectDependencies) = postProject
+		{7B1B08DE-246F-469E-A372-1462E164ED09} = {7B1B08DE-246F-469E-A372-1462E164ED09}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -8267,6 +8272,18 @@ Global
 		{93DE2EE2-2B04-4280-8D5F-F66A2F2332FD}.Release|x64.Build.0 = Release|x64
 		{93DE2EE2-2B04-4280-8D5F-F66A2F2332FD}.Release|x86.ActiveCfg = Release|Win32
 		{93DE2EE2-2B04-4280-8D5F-F66A2F2332FD}.Release|x86.Build.0 = Release|Win32
+		{08063A3D-9649-411E-934F-15D259089E29}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{08063A3D-9649-411E-934F-15D259089E29}.Debug|Any CPU.Build.0 = Debug|x64
+		{08063A3D-9649-411E-934F-15D259089E29}.Debug|x64.ActiveCfg = Debug|x64
+		{08063A3D-9649-411E-934F-15D259089E29}.Debug|x64.Build.0 = Debug|x64
+		{08063A3D-9649-411E-934F-15D259089E29}.Debug|x86.ActiveCfg = Debug|Win32
+		{08063A3D-9649-411E-934F-15D259089E29}.Debug|x86.Build.0 = Debug|Win32
+		{08063A3D-9649-411E-934F-15D259089E29}.Release|Any CPU.ActiveCfg = Release|x64
+		{08063A3D-9649-411E-934F-15D259089E29}.Release|Any CPU.Build.0 = Release|x64
+		{08063A3D-9649-411E-934F-15D259089E29}.Release|x64.ActiveCfg = Release|x64
+		{08063A3D-9649-411E-934F-15D259089E29}.Release|x64.Build.0 = Release|x64
+		{08063A3D-9649-411E-934F-15D259089E29}.Release|x86.ActiveCfg = Release|Win32
+		{08063A3D-9649-411E-934F-15D259089E29}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -8872,6 +8889,7 @@ Global
 		{C4819649-25E5-43DC-A136-E60E79C3B0DE} = {3E2C34DD-A4A7-4423-ACE5-5892A378AF5F}
 		{3C2F765E-D2BC-4736-B35A-B5228BC7872D} = {54C8DC8B-5D89-4A3D-AF2E-D98E6218B356}
 		{93DE2EE2-2B04-4280-8D5F-F66A2F2332FD} = {3C2F765E-D2BC-4736-B35A-B5228BC7872D}
+		{08063A3D-9649-411E-934F-15D259089E29} = {0D684C5C-360D-4A11-89AE-69F59970B7F6}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {72148CF9-A054-4B83-9675-2D14F91844D1}

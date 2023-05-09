@@ -419,6 +419,7 @@ namespace Harlinn::ODBC
         constexpr SqlHandle& operator = ( SqlHandle&& other ) noexcept
         {
             std::swap( sqlHandle_, other.sqlHandle_ );
+            return *this;
         }
 
         constexpr SQLHANDLE Handle( ) const noexcept
@@ -919,29 +920,29 @@ namespace Harlinn::ODBC
             return rc;
         }
 
-        Result BindParameter( SQLUSMALLINT parameterNumber, ODBC::ParameterDirection parameterDirection, Int16* parameterValue, SQLLEN* lengthOrIndicator ) const
+        Result BindParameter( SQLUSMALLINT parameterNumber, ODBC::ParameterDirection parameterDirection, Int16* parameterValue, SQLLEN* lengthOrIndicator = nullptr ) const
         {
             auto rc = BindParameter( parameterNumber, parameterDirection, NativeType::Int16, SqlType::SmallInt, 0, 0, parameterValue, 0, lengthOrIndicator );
             return rc;
         }
 
-        Result BindParameter( SQLUSMALLINT parameterNumber, ODBC::ParameterDirection parameterDirection, UInt16* parameterValue, SQLLEN* lengthOrIndicator ) const
+        Result BindParameter( SQLUSMALLINT parameterNumber, ODBC::ParameterDirection parameterDirection, UInt16* parameterValue, SQLLEN* lengthOrIndicator = nullptr ) const
         {
             auto rc = BindParameter( parameterNumber, parameterDirection, NativeType::UInt16, SqlType::SmallInt, 0, 0, parameterValue, 0, lengthOrIndicator );
             return rc;
         }
 
-        Result BindParameter( SQLUSMALLINT parameterNumber, ODBC::ParameterDirection parameterDirection, SByte* parameterValue, SQLLEN* lengthOrIndicator ) const
+        Result BindParameter( SQLUSMALLINT parameterNumber, ODBC::ParameterDirection parameterDirection, SByte* parameterValue, SQLLEN* lengthOrIndicator = nullptr ) const
         {
             auto rc = BindParameter( parameterNumber, parameterDirection, NativeType::SByte, SqlType::TinyInt, 0, 0, parameterValue, 0, lengthOrIndicator );
             return rc;
         }
-        Result BindParameter( SQLUSMALLINT parameterNumber, ODBC::ParameterDirection parameterDirection, Byte* parameterValue, SQLLEN* lengthOrIndicator ) const
+        Result BindParameter( SQLUSMALLINT parameterNumber, ODBC::ParameterDirection parameterDirection, Byte* parameterValue, SQLLEN* lengthOrIndicator = nullptr ) const
         {
             auto rc = BindParameter( parameterNumber, parameterDirection, NativeType::Byte, SqlType::TinyInt, 0, 0, parameterValue, 0, lengthOrIndicator );
             return rc;
         }
-        Result BindParameter( SQLUSMALLINT parameterNumber, ODBC::ParameterDirection parameterDirection, Guid* parameterValue, SQLLEN* lengthOrIndicator ) const
+        Result BindParameter( SQLUSMALLINT parameterNumber, ODBC::ParameterDirection parameterDirection, Guid* parameterValue, SQLLEN* lengthOrIndicator = nullptr ) const
         {
             auto rc = BindParameter( parameterNumber, parameterDirection, NativeType::Guid, SqlType::Guid, 0, 0, parameterValue, 0, lengthOrIndicator );
             return rc;
@@ -1707,7 +1708,7 @@ namespace Harlinn::ODBC
             return static_cast<Result>( rc );
         }
 
-        ODBC::Statement CreateStatement( )
+        ODBC::Statement CreateStatement( ) const
         {
             auto connectionHandle = ODBC::Statement::AllocateHandle( Handle( ) );
             ODBC::Statement result( connectionHandle );
