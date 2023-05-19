@@ -26,10 +26,28 @@ BOOST_AUTO_TEST_CASE( ConstructorTest2 )
 {
     // {8D544315-5A2F-4807-93D5-F66E5D690197}
     static const GUID expectedGuid = { 0x8d544315, 0x5a2f, 0x4807, { 0x93, 0xd5, 0xf6, 0x6e, 0x5d, 0x69, 0x1, 0x97 } };
+    constexpr unsigned char bytes[ ] = { 0x15, 0x43, 0x54, 0x8D, 0x2F, 0x5A, 0x07, 0x48, 0x93, 0xD5, 0xF6, 0x6E, 0x5D, 0x69, 0x01, 0x97 };
+    constexpr unsigned long long uint64s[ ] = { 0x48075A2F8D544315, 0x9701695D6EF6D593 };
 
-    Guid guid( expectedGuid );
-    BOOST_CHECK( guid == expectedGuid );
-    BOOST_CHECK( guid ? true : false );
+    Guid guid1( expectedGuid );
+    BOOST_CHECK( guid1 == expectedGuid );
+    BOOST_CHECK( guid1 ? true : false );
+
+    Guid guid2( uint64s[0], uint64s[ 1 ] );
+    BOOST_CHECK( guid2 == expectedGuid );
+
+    Guid guid3( uint64s );
+    BOOST_CHECK( guid3 == expectedGuid );
+
+    Guid guid4( bytes );
+    BOOST_CHECK( guid4 == expectedGuid );
+
+    Guid guid5( { 0x15, 0x43, 0x54, 0x8D, 0x2F, 0x5A, 0x07, 0x48, 0x93, 0xD5, 0xF6, 0x6E, 0x5D, 0x69, 0x01, 0x97 } );
+    BOOST_CHECK( guid5 == expectedGuid );
+
+    Guid guid6( 0x15, 0x43, 0x54, 0x8D, 0x2F, 0x5A, 0x07, 0x48, 0x93, 0xD5, 0xF6, 0x6E, 0x5D, 0x69, 0x01, 0x97);
+    BOOST_CHECK( guid6 == expectedGuid );
+
 }
 
 // --run_test=GuidTests/ConstructorTest3

@@ -12,41 +12,77 @@ namespace Harlinn::Common::Core
 
     class Guid
     {
-        union DataT
+    public:
+        using Bytes = std::array<Byte, 16>;
+    private:
+        struct DataT : GUID
         {
-            GUID g_;
-            struct
-            {
-                uint64_t hi_;
-                uint64_t lo_;
-            };
+            using Base = GUID;
             constexpr DataT( ) noexcept
-                : hi_(0), lo_( 0 )
+                : Base{}
             {
             }
 
             constexpr DataT( const GUID& g ) noexcept
-                : g_( g )
+                : Base( g )
             {
             }
 
-            DataT( const boost::uuids::uuid& g ) noexcept
-                : g_( *reinterpret_cast<const GUID*>(&g) )
+            constexpr DataT( const boost::uuids::uuid& g ) noexcept
+                : Base( std::bit_cast<GUID>(g) )
             {
             }
 
-            constexpr DataT( uint64_t hi, uint64_t lo ) noexcept
-                : hi_( hi ), lo_( lo )
+            constexpr DataT( uint64_t lo, uint64_t hi ) noexcept
+                : Base{ lo & 0XFFFFFFFF, ( ( lo >> 32 ) & 0XFFFF ), ( ( lo >> 48 ) & 0XFFFF ), 
+                    {( hi & 0xFF ), 
+                    ( ( hi >> 8 ) & 0xFF ), 
+                    ( ( hi >> 16 ) & 0xFF ), 
+                    ( ( hi >> 24 ) & 0xFF ), 
+                    ( ( hi >> 32 ) & 0xFF ), 
+                    ( ( hi >> 40 ) & 0xFF ), 
+                    ( ( hi >> 48 ) & 0xFF ), 
+                    ( ( hi >> 56 ) & 0xFF )} }
+            {
+            }
+
+            constexpr DataT( const uint64_t values[ 2 ] ) noexcept
+                : DataT( values[ 0 ], values[ 1 ] )
             { }
+
             constexpr DataT( UInt32 d1, UInt16 d2, UInt16 d3, Byte d4, Byte d5, Byte d6, Byte d7, Byte d8, Byte d9, Byte d10, Byte d11 ) noexcept
-                : g_{ d1, d2, d3, {d4, d5, d6, d7, d8, d9, d10, d11 } }
+                : Base{ d1, d2, d3, {d4, d5, d6, d7, d8, d9, d10, d11 } }
+            {
+            }
+
+            constexpr DataT( const Bytes& bytes ) noexcept
+                : Base{ std::bit_cast<GUID>( bytes )}
+            {
+            }
+
+            constexpr DataT( Byte b1, Byte b2, Byte b3, Byte b4, Byte b5, Byte b6, Byte b7, Byte b8, Byte b9, Byte b10, Byte b11, Byte b12, Byte b13, Byte b14, Byte b15, Byte b16 ) noexcept
+                : DataT{ Bytes{b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16} }
+            {
+            }
+
+            constexpr DataT( const Byte values[ 16 ] ) noexcept
+                : DataT( values[ 0 ], values[ 1 ], values[ 2 ], values[ 3 ], values[ 4 ], values[ 5 ], values[ 6 ], values[ 7 ], values[ 8 ], values[ 9 ], values[ 10 ], values[ 11 ], values[ 12 ], values[ 13 ], values[ 14 ], values[ 15 ] )
             {
             }
 
 
 
-        };
+            constexpr UInt64 Lo( ) const
+            {
+                return static_cast< UInt64 >( Base::Data1 ) | ( static_cast< UInt64 >( Base::Data2 ) << 32 ) | ( static_cast< UInt64 >( Base::Data3 ) << 48 );
+            }
 
+            constexpr UInt64 Hi( ) const
+            {
+                return std::bit_cast< UInt64 >( Base::Data4 );
+            }
+        };
+        
         DataT data_;
     public:
         constexpr Guid() noexcept
@@ -59,19 +95,26 @@ namespace Harlinn::Common::Core
         }
 
         constexpr Guid( const std::array<Byte,16>& other ) noexcept
-            : data_( reinterpret_cast<const GUID&>(other) )
-        {
-        }
-
-        Guid( const boost::uuids::uuid& other ) noexcept
             : data_( other )
         {
         }
 
-        constexpr Guid( uint64_t hi, uint64_t lo ) noexcept
-            : data_( hi, lo )
+        constexpr Guid( const boost::uuids::uuid& other ) noexcept
+            : data_( other )
         {
         }
+
+        constexpr Guid( uint64_t lo, uint64_t hi ) noexcept
+            : data_( lo, hi )
+        {
+        }
+
+        constexpr Guid( const uint64_t values[ 2 ] ) noexcept
+            : data_( values )
+        {
+        }
+
+
 
         constexpr Guid( UInt32 d1, UInt16 d2, UInt16 d3, Byte d4, Byte d5, Byte d6, Byte d7, Byte d8, Byte d9, Byte d10, Byte d11 ) noexcept
             : data_( d1, d2, d3, d4, d5, d6, d7, d8, d9, d10, d11 )
@@ -79,15 +122,28 @@ namespace Harlinn::Common::Core
             
         }
 
-        Guid Next( ) const noexcept
+        constexpr Guid( Byte b1, Byte b2, Byte b3, Byte b4, Byte b5, Byte b6, Byte b7, Byte b8, Byte b9, Byte b10, Byte b11, Byte b12, Byte b13, Byte b14, Byte b15, Byte b16 ) noexcept
+            : data_( b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16 )
         {
-            if ( data_.lo_ != MAXUINT64 )
+
+        }
+
+        constexpr Guid( const Byte values[ 16 ] ) noexcept
+            : data_( values )
+        {
+        }
+
+
+
+        constexpr Guid Next( ) const noexcept
+        {
+            if ( data_.Hi() != MAXUINT64 )
             {
-                return Guid( data_.hi_, data_.lo_ + 1 );
+                return Guid( data_.Lo( ), data_.Hi( ) + 1 );
             }
             else
             {
-                return Guid( data_.hi_ + 1, 0 );
+                return Guid( data_.Lo( ) + 1, 0 );
             }
         }
 
@@ -96,8 +152,8 @@ namespace Harlinn::Common::Core
         {
             if ( std::is_constant_evaluated( ) )
             {
-                auto self = std::bit_cast<std::array<Byte, 16>, GUID>( data_.g_ );
-                auto othr = std::bit_cast<std::array<Byte, 16>, GUID>( other.data_.g_ );
+                auto self = std::bit_cast<std::array<Byte, 16>, GUID>( data_ );
+                auto othr = std::bit_cast<std::array<Byte, 16>, GUID>( other.data_ );
                 size_t i = 0;
                 while ( i < self.size() )
                 {
@@ -170,7 +226,7 @@ namespace Harlinn::Common::Core
 
         HCC_EXPORT const GUID& AsGuid( ) const
         {
-            return data_.g_;
+            return data_;
         }
 
 
@@ -192,11 +248,11 @@ namespace Harlinn::Common::Core
 
         constexpr uint64_t Hi( ) const noexcept
         {
-            return data_.hi_;
+            return data_.Hi( );
         }
         constexpr uint64_t Lo( ) const noexcept
         {
-            return data_.lo_;
+            return data_.Lo( );
         }
 
         const std::array<Byte, 16>& ToArray( ) const
@@ -211,27 +267,28 @@ namespace Harlinn::Common::Core
 
         constexpr operator const GUID& ( ) const noexcept
         {
-            return data_.g_;
+            return data_;
         }
 
         constexpr const GUID& Value( ) const noexcept
         {
-            return data_.g_;
+            return data_;
         }
         constexpr GUID& Value( ) noexcept
         {
-            return data_.g_;
+            return data_;
         }
 
 
         template<GuidType T>
         bool operator == ( const T& other ) const noexcept
         {
-            __m128i self = _mm_lddqu_si128( reinterpret_cast<const __m128i*>( &data_ ) );
-            __m128i othr = _mm_lddqu_si128( reinterpret_cast<const __m128i*>( &other ) );
+            __m128i self = _mm_lddqu_si128( reinterpret_cast< const __m128i* >( &data_ ) );
+            __m128i othr = _mm_lddqu_si128( reinterpret_cast< const __m128i* >( &other ) );
             __m128i mask = _mm_xor_si128( self, othr );
             return _mm_test_all_zeros( mask, mask ) != 0;
         }
+
 
         template<GuidType T>
         bool operator != ( const T& other ) const noexcept
