@@ -4334,7 +4334,7 @@ namespace Harlinn::Common::Core::IO::Sockets
         void Shutdown( ShutdownFlag flags )
         {
             WinError error = Base::Shutdown( flags );
-            if ( error != WinError::None )
+            if ( error != WinError::None && error != WinError::WsaNotConnected )
             {
                 HCC_THROW_SOCKET_ERROR( error );
             }

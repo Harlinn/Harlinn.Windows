@@ -4754,6 +4754,18 @@ namespace Harlinn::Common::Core
         }
     };
 
+    inline RecordInfo SafeArray::GetRecordInfo( ) const
+    {
+        if ( ptr_ )
+        {
+            RecordInfo result;
+            auto hr = SafeArrayGetRecordInfo( ptr_, reinterpret_cast< IRecordInfo** >( &result ) );
+            CheckHRESULT( hr );
+            return result;
+        }
+        return RecordInfo( );
+    }
+
 
     /// <summary>
     /// Communicates detailed error information between a client and an object.

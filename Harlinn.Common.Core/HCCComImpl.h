@@ -52,7 +52,7 @@ namespace Harlinn::Common::Core::Com
             return ptr;
         }
     public:
-        virtual HRESULT __stdcall QueryInterface( const IID& iid, void** result ) override
+        HRESULT QueryInterfaceImpl( const IID& iid, void** result )
         {
             if ( !result )
             {
@@ -62,7 +62,7 @@ namespace Harlinn::Common::Core::Com
             if ( ptr )
             {
                 *result = ptr;
-                DerivedType* self = static_cast<DerivedType*>( this );
+                DerivedType* self = static_cast< DerivedType* >( this );
                 self->AddRef( );
                 return S_OK;
             }
@@ -72,22 +72,31 @@ namespace Harlinn::Common::Core::Com
                 return E_NOINTERFACE;
             }
         }
+
+        virtual HRESULT __stdcall QueryInterface( const IID& iid, void** result ) override
+        {
+            auto& self = *static_cast< DerivedType* >( this );
+            return self.QueryInterfaceImpl( iid, result );
+        }
     };
 
-    template<typename DerivedT, typename ... InterfaceTypes>
-    class __declspec( novtable ) ObjectBase : public Interfaces<DerivedT, InterfaceTypes...>
+    template<typename DerivedT>
+    class ObjectBase
     {
         ULONG referenceCount_ = 1;
     public:
         using DerivedType = DerivedT;
 
-        virtual ULONG __stdcall AddRef( ) override
+        virtual ~ObjectBase( ) = default;
+
+
+        ULONG AddRefImpl( )
         {
             ULONG result = InterlockedIncrement( &referenceCount_ );
             return result;
         }
 
-        virtual ULONG __stdcall Release( ) override
+        ULONG ReleaseImpl( )
         {
             ULONG result = InterlockedDecrement( &referenceCount_ );
             if ( result == 0 )
@@ -101,12 +110,28 @@ namespace Harlinn::Common::Core::Com
 
 
 
+
+
+
+
     template<typename DerivedT, typename ... InterfaceTypes>
-    class __declspec( novtable ) IUknownImpl : public ObjectBase<DerivedT, InterfaceTypes...>
+    class __declspec( novtable ) IUknownImpl : public Interfaces<DerivedT, InterfaceTypes...>
     {
     public:
         using DerivedType = DerivedT;
         using InterfaceType = IUnknown;
+
+        virtual ULONG __stdcall AddRef( ) override
+        {
+            auto& self = *static_cast< DerivedType* >( this );
+            return self.AddRefImpl( );
+        }
+
+        virtual ULONG __stdcall Release( ) override
+        {
+            auto& self = *static_cast< DerivedType* >( this );
+            return self.ReleaseImpl( );
+        }
 
     };
 
@@ -180,6 +205,12 @@ namespace Harlinn::Common::Core::Com
             auto itf = typeInfo_.GetInterfacePointer<ITypeInfo>( );
             return itf->QueryInterface( typeInfo );
         }
+
+        TypeInfo GetTypeInfo( ) const
+        {
+            return typeInfo_;
+        }
+
 
         virtual HRESULT __stdcall GetIDsOfNames(REFIID riid, LPOLESTR* rgszNames, UINT cNames, LCID lcid, DISPID* rgDispId )
         {

@@ -8,6 +8,8 @@
 
 namespace Harlinn::Common::Core
 {
+    class RecordInfo;
+
     // ----------------------------------------------------------------------
     // VariantType
     // ----------------------------------------------------------------------
@@ -478,6 +480,109 @@ namespace Harlinn::Common::Core
             }
         }
 
+        bool operator == ( const std::wstring& other ) const
+        {
+            if ( bstr_ )
+            {
+                auto len = SysStringLen( bstr_ );
+                auto lenOther = other.size();
+                if ( len == lenOther )
+                {
+                    return wmemcmp( bstr_, other.data(), len ) == 0;
+                }
+                return false;
+            }
+            else
+            {
+                return other.empty( );
+            }
+        }
+
+        bool empty( ) const
+        {
+            if ( bstr_ )
+            {
+                auto len = SysStringLen( bstr_ );
+                return len > 0;
+            }
+            return true;
+        }
+
+
+        int CompareTo( const SysString& other ) const
+        {
+            if ( bstr_ != other.bstr_ )
+            {
+                auto len = length( );
+                auto otherLen = other.length( );
+                auto maxCompareLength = std::min( len, otherLen );
+                auto result = wmemcmp( bstr_, other.data( ), maxCompareLength );
+                if ( result == 0 )
+                {
+                    if ( len == otherLen )
+                    {
+                        return 0;
+                    }
+                    return len < otherLen ? -1 : 1;
+                }
+                return result;
+            }
+            else
+            {
+                return 0;
+            }
+        }
+
+        int CompareTo( const wchar_t* other ) const
+        {
+            if ( bstr_ != other )
+            {
+                auto len = length( );
+                auto otherLen = wcslen(other);
+                auto maxCompareLength = std::min( len, otherLen );
+                auto result = wmemcmp( bstr_, other, maxCompareLength );
+                if ( result == 0 )
+                {
+                    if ( len == otherLen )
+                    {
+                        return 0;
+                    }
+                    return len < otherLen ? -1 : 1;
+                }
+                return result;
+            }
+            else
+            {
+                return 0;
+            }
+        }
+
+        int CompareTo( const std::wstring& other ) const
+        {
+            if ( bstr_ != other )
+            {
+                auto len = length( );
+                auto otherLen = other.size();
+                auto maxCompareLength = std::min( len, otherLen );
+                auto result = wmemcmp( bstr_, other.data(), maxCompareLength );
+                if ( result == 0 )
+                {
+                    if ( len == otherLen )
+                    {
+                        return 0;
+                    }
+                    return len < otherLen ? -1 : 1;
+                }
+                return result;
+            }
+            else
+            {
+                return 0;
+            }
+        }
+
+
+
 
         SysString& Attach( BSTR other ) noexcept
         {
@@ -531,6 +636,12 @@ namespace Harlinn::Common::Core
             return 0;
         }
 
+        size_t size( ) const noexcept
+        {
+            return length( );
+        }
+
+
         OLECHAR At( size_t index ) const noexcept
         {
             return bstr_[index];
@@ -563,6 +674,23 @@ namespace Harlinn::Common::Core
 
     };
 
+    // ----------------------------------------------------------------------
+    // AttachedSysString
+    // ----------------------------------------------------------------------
+    class AttachedSysString : public SysString
+    {
+    public:
+        using Base = SysString;
+        explicit AttachedSysString( const wchar_t* str )
+            : Base( str, true )
+        { }
+
+        ~AttachedSysString( )
+        {
+            Detach( );
+        }
+
+    };
 
     // ----------------------------------------------------------------------
     // SafeArray
@@ -571,8 +699,35 @@ namespace Harlinn::Common::Core
     {
         template<typename T>
         friend class VariantT;
-        SAFEARRAY* ptr_;
+        SAFEARRAY* ptr_ = nullptr;
     public:
+        class Bound : public SAFEARRAYBOUND
+        {
+        public:
+            using Base = SAFEARRAYBOUND;
+            Bound( ULONG numberOfElements, LONG lowerBound )
+                : Base{ numberOfElements, lowerBound }
+            { }
+
+            size_t size( ) const
+            {
+                return cElements;
+            }
+
+            ptrdiff_t LowerBound( ) const
+            {
+                return static_cast< ptrdiff_t >( lLbound );
+            }
+
+            ptrdiff_t UpperBound( ) const
+            {
+                return LowerBound( ) + static_cast< ptrdiff_t >( size() );
+            }
+
+
+        };
+
+
         static VariantType GetElementVariantType( SAFEARRAY* safeArray )
         {
             if ( safeArray )
@@ -727,13 +882,128 @@ namespace Harlinn::Common::Core
         explicit SafeArray( VariantType variantType, UINT numberOfElements )
             : ptr_( 0 )
         {
-            SAFEARRAYBOUND rgsabound = { numberOfElements,0 };
-            ptr_ = SafeArrayCreate( VARTYPE( variantType ), 1, &rgsabound );
+            ptr_ = SafeArrayCreateVectorEx( VARTYPE( variantType ), 0, numberOfElements, nullptr );
             if ( !ptr_ )
             {
                 CheckHRESULT( E_OUTOFMEMORY );
             }
         }
+
+        explicit SafeArray( VariantType variantType, LONG lowerBound, UINT numberOfElements )
+            : ptr_( 0 )
+        {
+            ptr_ = SafeArrayCreateVectorEx( VARTYPE( variantType ), lowerBound, numberOfElements, nullptr );
+            if ( !ptr_ )
+            {
+                CheckHRESULT( E_OUTOFMEMORY );
+            }
+        }
+
+        template<typename T>
+            requires std::is_base_of_v<IUnknown,std::remove_cvref_t<T>>
+        explicit SafeArray( UINT numberOfElements )
+        {
+            GUID iid = __uuidof( std::remove_cvref_t<T> );
+            if constexpr ( std::is_base_of_v<IDispatch, std::remove_cvref_t<T>> )
+            {
+                ptr_ = SafeArrayCreateVectorEx( VT_DISPATCH, 0, numberOfElements, &iid );
+            }
+            else
+            {
+                ptr_ = SafeArrayCreateVectorEx( VT_UNKNOWN, 0, numberOfElements, &iid );
+            }
+            if ( !ptr_ )
+            {
+                CheckHRESULT( E_OUTOFMEMORY );
+            }
+        }
+
+        template<typename T>
+            requires std::is_base_of_v<IUnknown, std::remove_cvref_t<T>>
+        explicit SafeArray( LONG lowerBound, UINT numberOfElements )
+        {
+            GUID iid = __uuidof( std::remove_cvref_t<T> );
+            if constexpr ( std::is_base_of_v<IDispatch, std::remove_cvref_t<T>> )
+            {
+                ptr_ = SafeArrayCreateVectorEx( VT_DISPATCH, lowerBound, numberOfElements, &iid );
+            }
+            else
+            {
+                ptr_ = SafeArrayCreateVectorEx( VT_UNKNOWN, lowerBound, numberOfElements, &iid );
+            }
+            if ( !ptr_ )
+            {
+                CheckHRESULT( E_OUTOFMEMORY );
+            }
+        }
+
+        explicit SafeArray(IRecordInfo* recordInfo, UINT numberOfElements )
+        {
+            ptr_ = SafeArrayCreateVectorEx( VT_RECORD, 0, numberOfElements, recordInfo );
+            if ( !ptr_ )
+            {
+                CheckHRESULT( E_OUTOFMEMORY );
+            }
+        }
+
+        explicit SafeArray( IRecordInfo* recordInfo, LONG lowerBound, UINT numberOfElements )
+        {
+            ptr_ = SafeArrayCreateVectorEx( VT_RECORD, lowerBound, numberOfElements, recordInfo );
+            if ( !ptr_ )
+            {
+                CheckHRESULT( E_OUTOFMEMORY );
+            }
+        }
+
+
+
+
+        explicit SafeArray( VariantType variantType, UINT numberOfDimensions, const SAFEARRAYBOUND* dimensionbounds )
+            : ptr_( 0 )
+        {
+            ptr_ = SafeArrayCreate( VARTYPE( variantType ), numberOfDimensions, const_cast< SAFEARRAYBOUND* >(dimensionbounds) );
+            if ( !ptr_ )
+            {
+                CheckHRESULT( E_OUTOFMEMORY );
+            }
+        }
+
+        explicit SafeArray( VariantType variantType, UINT numberOfDimensions, const Bound* dimensionbounds )
+            : SafeArray( variantType, numberOfDimensions, reinterpret_cast< const SAFEARRAYBOUND* >( dimensionbounds ) )
+        { }
+
+        explicit SafeArray( VariantType variantType, UINT numberOfDimensions, const SAFEARRAYBOUND* dimensionbounds, const Guid& iid )
+            : ptr_( 0 )
+        {
+            ptr_ = SafeArrayCreateEx( VARTYPE( variantType ), numberOfDimensions, const_cast< SAFEARRAYBOUND* >( dimensionbounds ), const_cast<Guid*>( &iid ) );
+            if ( !ptr_ )
+            {
+                CheckHRESULT( E_OUTOFMEMORY );
+            }
+        }
+
+        explicit SafeArray( VariantType variantType, UINT numberOfDimensions, const Bound* dimensionbounds, const Guid& iid )
+            : SafeArray( variantType, numberOfDimensions, reinterpret_cast< const SAFEARRAYBOUND* >( dimensionbounds ), iid )
+        {
+        }
+
+
+        explicit SafeArray( IRecordInfo* recordInfo, UINT numberOfDimensions, const SAFEARRAYBOUND* dimensionbounds )
+            : ptr_( 0 )
+        {
+            ptr_ = SafeArrayCreateEx( VT_RECORD, numberOfDimensions, const_cast< SAFEARRAYBOUND* >( dimensionbounds ), recordInfo );
+            if ( !ptr_ )
+            {
+                CheckHRESULT( E_OUTOFMEMORY );
+            }
+        }
+
+        explicit SafeArray( IRecordInfo* recordInfo, UINT numberOfDimensions, const Bound* dimensionbounds )
+            : SafeArray( recordInfo, numberOfDimensions, reinterpret_cast< const SAFEARRAYBOUND* >( dimensionbounds ) )
+        {
+        }
+
+
 
         SafeArray( const SafeArray& other )
             : ptr_( 0 )
@@ -764,6 +1034,159 @@ namespace Harlinn::Common::Core
                 CheckHRESULT( hr );
             }
         }
+
+        SAFEARRAY* Release( )
+        {
+            auto result = ptr_;
+            ptr_ = nullptr;
+            return result;
+        }
+
+
+        /// <summary>
+        /// An array that is allocated on the stack.
+        /// </summary>
+        bool IsAuto( ) const
+        {
+            if ( ptr_ )
+            {
+                return ( ptr_->fFeatures & FADF_AUTO ) != 0;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// An array that is statically allocated.
+        /// </summary>
+        bool IsStatic( ) const
+        {
+            if ( ptr_ )
+            {
+                return ( ptr_->fFeatures & FADF_STATIC ) != 0;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// An array that is embedded in a structure.
+        /// </summary>
+        bool IsEmbedded( ) const
+        {
+            if ( ptr_ )
+            {
+                return ( ptr_->fFeatures & FADF_EMBEDDED ) != 0;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// An array that may not be resized or reallocated.
+        /// </summary>
+        bool IsFixedSize( ) const
+        {
+            if ( ptr_ )
+            {
+                return ( ptr_->fFeatures & FADF_FIXEDSIZE ) != 0;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// An array that contains records. When set, there will be a pointer 
+        /// to the IRecordInfo interface at negative offset 4 in the array descriptor.
+        /// </summary>
+        bool IsRecord( ) const
+        {
+            if ( ptr_ )
+            {
+                return ( ptr_->fFeatures & FADF_RECORD ) != 0;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// An array that has an IID identifying interface. When set, there will be 
+        /// a GUID at negative offset 16 in the safe array descriptor. Flag is set 
+        /// only when FADF_DISPATCH or FADF_UNKNOWN is also set.
+        /// </summary>
+        bool HaveIID( ) const
+        {
+            if ( ptr_ )
+            {
+                return ( ptr_->fFeatures & FADF_HAVEIID ) != 0;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// An array that has a variant type.
+        /// </summary>
+        bool HaveVariantType( ) const
+        {
+            if ( ptr_ )
+            {
+                return ( ptr_->fFeatures & FADF_HAVEVARTYPE ) != 0;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// An array of BSTRs.
+        /// </summary>
+        bool IsBSTR( ) const
+        {
+            if ( ptr_ )
+            {
+                return ( ptr_->fFeatures & FADF_BSTR ) != 0;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// An array of BSTRs.
+        /// </summary>
+        bool IsSysString( ) const
+        {
+            return IsBSTR( );
+        }
+
+        /// <summary>
+        /// An array of IUnknown*
+        /// </summary>
+        bool IsUnknown( ) const
+        {
+            if ( ptr_ )
+            {
+                return ( ptr_->fFeatures & FADF_UNKNOWN ) != 0;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// An array of IDispatch*.
+        /// </summary>
+        bool IsDispatch( ) const
+        {
+            if ( ptr_ )
+            {
+                return ( ptr_->fFeatures & FADF_DISPATCH ) != 0;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// An array of VARIANTs.
+        /// </summary>
+        bool IsVariant( ) const
+        {
+            if ( ptr_ )
+            {
+                return ( ptr_->fFeatures & FADF_VARIANT ) != 0;
+            }
+            return false;
+        }
+
+
 
 
 
@@ -816,7 +1239,212 @@ namespace Harlinn::Common::Core
             return ptr_;
         }
 
+        UINT Dimensions( ) const
+        {
+            return SafeArrayGetDim( ptr_ );
+        }
+
+        LONG LowerBound( UINT dimension ) const
+        {
+            LONG result = 0;
+            auto hr = SafeArrayGetLBound( ptr_, dimension, &result );
+            CheckHRESULT( hr );
+            return result;
+        }
+
+        LONG UpperBound( UINT dimension ) const
+        {
+            LONG result = 0;
+            auto hr = SafeArrayGetUBound( ptr_, dimension, &result );
+            CheckHRESULT( hr );
+            return result;
+        }
+
+        Bound* Bounds( ) const
+        {
+            if ( ptr_ )
+            {
+                return reinterpret_cast< Bound* >( ptr_->rgsabound );
+            }
+            return nullptr;
+        }
+
+        Bound& Bounds( UINT dimension ) const
+        {
+            if ( ptr_ )
+            {
+                if ( dimension < static_cast< UINT >( ptr_->cDims ) )
+                {
+                    return reinterpret_cast< Bound& >( ptr_->rgsabound[ dimension ] );
+                }
+                CheckHRESULT( DISP_E_BADINDEX );
+            }
+            CheckHRESULT( E_HANDLE );
+        }
+
+        size_t size( ) const
+        {
+            size_t result = 0;
+            auto dimensions = Dimensions( );
+            auto bounds = Bounds( );
+            for ( UINT i = 0; i < dimensions; i++ )
+            {
+                result += bounds[ i ].size( );
+            }
+            return result;
+        }
+
+        size_t Length( ) const
+        {
+            return size( );
+        }
+
+        size_t ElementSize( ) const
+        {
+            if ( ptr_ )
+            {
+                return ptr_->cbElements;
+            }
+            return 0;
+        }
+
+        void* Data( ) const
+        {
+            if ( ptr_ )
+            {
+                return ptr_->pvData;
+            }
+            return nullptr;
+        }
+
+        Guid GetIID( ) const
+        {
+            if ( ptr_ )
+            {
+                Guid result;
+                auto hr = SafeArrayGetIID( ptr_, reinterpret_cast< GUID* >( &result ) );
+                CheckHRESULT( hr );
+                return result;
+            }
+            return Guid();
+        }
+
+        void SetIID( const Guid& iid ) const
+        {
+            if ( ptr_ )
+            {
+                auto hr = SafeArraySetIID( ptr_, iid );
+                CheckHRESULT( hr );
+            }
+            else
+            {
+                CheckHRESULT( E_HANDLE );
+            }
+        }
+
+        inline RecordInfo GetRecordInfo( ) const;
+
+        void SetRecordInfo( IRecordInfo* recordInfo ) const
+        {
+            if ( ptr_ )
+            {
+                auto hr = SafeArraySetRecordInfo( ptr_, recordInfo );
+                CheckHRESULT( hr );
+            }
+            else
+            {
+                CheckHRESULT( E_HANDLE );
+            }
+        }
+
+
+        VariantType GetVariantType( ) const
+        {
+            if ( ptr_ )
+            {
+                VariantType result;
+                auto hr = SafeArrayGetVartype( ptr_, reinterpret_cast< VARTYPE* >( &result ) );
+                CheckHRESULT( hr );
+                return result;
+            }
+            return VariantType::Empty;
+        }
+
+
     };
+
+    // ----------------------------------------------------------------------
+    // AttachedSafeArray
+    // ----------------------------------------------------------------------
+    class AttachedSafeArray : public SafeArray
+    {
+    public:
+        using Base = SafeArray;
+
+        AttachedSafeArray(SAFEARRAY* safearray)
+            : Base( safearray )
+        { }
+
+        ~AttachedSafeArray( )
+        {
+            Release( );
+        }
+
+    };
+
+
+    class BooleanSafeArray : public SafeArray
+    {
+    public:
+    private:
+    public:
+
+    };
+
+    template<typename ValueT>
+    class SafeArrayT : public SafeArray
+    {
+    public:
+        using Base = SafeArray;
+        using value_type = std::remove_cvref_t<ValueT>;
+
+        using Traits = VariantTraits<value_type>;
+
+    private:
+        static SAFEARRAY* EnsureRightType( SAFEARRAY* ptr )
+        {
+            if ( ptr )
+            {
+                if ( ( ptr->fFeatures & FADF_HAVEVARTYPE ) == 0 )
+                {
+                    CheckHRESULT( E_INVALIDARG );
+                }
+                VariantType variantType;
+                auto hr = SafeArrayGetVartype( ptr, reinterpret_cast< VARTYPE* >( &variantType ) );
+                if ( FAILED( hr ) )
+                {
+                    CheckHRESULT( hr );
+                }
+                if ( variantType != Traits::VariantType )
+                {
+                    CheckHRESULT( E_INVALIDARG );
+                }
+                if ( ptr->cDims != 1 )
+                {
+                    CheckHRESULT( E_INVALIDARG );
+                }
+            }
+            return ptr;
+        }
+    public:
+        SafeArrayT(SAFEARRAY* ptr)
+            : Base( EnsureRightType( ptr ) )
+        { }
+
+
+
+    };
+
 
 
 
@@ -1537,6 +2165,14 @@ namespace Harlinn::Common::Core
             SetVariantType( VariantType::UShort );
             Base::uiVal = value;
         }
+
+        void Assign( wchar_t value )
+        {
+            Clear( );
+            SetVariantType( VariantType::UShort );
+            Base::uiVal = static_cast<UInt16>(value);
+        }
+
 
         void Assign( ULONG value )
         {

@@ -31,6 +31,30 @@ namespace Harlinn::Common::Core::Com
         }
     };
 
+#define HCC_COM_IMPLEMENT_INTERFACE_SPECIALIZATION( Itf, BaseItf ) \
+    template<>  \
+    struct Interface<Itf> : Interface<BaseItf>  \
+    {  \
+        using Base = Interface<BaseItf>; \
+        using InterfaceType = Itf;  \
+        template<typename DerivedInterfaceType>  \
+        static void* QueryInterface( const Guid& interfaceId, const DerivedInterfaceType* impl )  \
+        {  \
+            if ( interfaceId == __uuidof( InterfaceType ) )  \
+            {  \
+                auto* result = static_cast<InterfaceType*>( const_cast<DerivedInterfaceType*>( impl ) ); \
+                return result; \
+            }  \
+            else  \
+            { \
+                return Base::QueryInterface<DerivedInterfaceType>( interfaceId, impl ); \
+            }  \
+        }  \
+    }
+
+
+
+
 #define X( Itf, BaseItf ) \
     template<>  \
     struct Interface<Itf> : Interface<BaseItf>  \

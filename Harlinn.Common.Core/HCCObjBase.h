@@ -260,7 +260,7 @@ namespace Harlinn::Common::Core
             result.resize( requestedNumberOfElements );
             ULONG actual = 0;
 
-            auto hr = pInterface->Next( 1, result.data( ), &actual );
+            auto hr = pInterface->Next( 1, reinterpret_cast<VARIANT*>(result.data( )), &actual );
             if ( actual )
             {
                 if ( result.size( ) != actual )
