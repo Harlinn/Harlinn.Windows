@@ -378,6 +378,15 @@
     <ClInclude Include="HCCZMQ.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="HCCComModule.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HCCRegistry.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HCCComRegistry.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -496,6 +505,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="HCCComInterfaces.xm">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="HCCComRegistry.inl">
       <Filter>Header Files</Filter>
     </None>
   </ItemGroup>

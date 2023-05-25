@@ -52,7 +52,7 @@ namespace Harlinn::Common::Core::Com
             return ptr;
         }
     public:
-        HRESULT QueryInterfaceImpl( const IID& iid, void** result )
+        HRESULT QueryInterfaceImpl( const IID& iid, void** result, bool addRef = true )
         {
             if ( !result )
             {
@@ -62,8 +62,11 @@ namespace Harlinn::Common::Core::Com
             if ( ptr )
             {
                 *result = ptr;
-                DerivedType* self = static_cast< DerivedType* >( this );
-                self->AddRef( );
+                if ( addRef )
+                {
+                    DerivedType* self = static_cast< DerivedType* >( this );
+                    self->AddRef( );
+                }
                 return S_OK;
             }
             else
@@ -73,6 +76,8 @@ namespace Harlinn::Common::Core::Com
             }
         }
 
+
+
         virtual HRESULT __stdcall QueryInterface( const IID& iid, void** result ) override
         {
             auto& self = *static_cast< DerivedType* >( this );
@@ -80,15 +85,13 @@ namespace Harlinn::Common::Core::Com
         }
     };
 
-    template<typename DerivedT>
+
+
     class ObjectBase
     {
         ULONG referenceCount_ = 1;
     public:
-        using DerivedType = DerivedT;
-
         virtual ~ObjectBase( ) = default;
-
 
         ULONG AddRefImpl( )
         {
@@ -101,8 +104,7 @@ namespace Harlinn::Common::Core::Com
             ULONG result = InterlockedDecrement( &referenceCount_ );
             if ( result == 0 )
             {
-                DerivedType* self = static_cast<DerivedType*>( this );
-                delete self;
+                delete this;
             }
             return result;
         }
@@ -243,6 +245,7 @@ namespace Harlinn::Common::Core::Com
     class __declspec(novtable) IClassFactoryImpl : public IUknownImpl<DerivedT, InterfaceTypes...>
     {
     public:
+        using InterfaceType = IClassFactory;
         using ClassType = ClassT;
         virtual HRESULT STDMETHODCALLTYPE CreateInstance(IUnknown* pUnkOuter, REFIID riid, void** ppvObject) override
         {

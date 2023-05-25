@@ -2122,8 +2122,10 @@ namespace Harlinn::Common::Core
 
 
     
+    
 
 
+    class TypeAttributes;
     class TypeLibEntry;
     class TypeLib;
     /// <summary>
@@ -2143,6 +2145,9 @@ namespace Harlinn::Common::Core
             auto hr = pInterface->GetTypeAttr( ppTypeAttr );
             HCC_COM_CHECK_HRESULT2( hr, pInterface );
         }
+
+        inline TypeAttributes GetTypeAttributes( ) const;
+
 
         TypeComp GetTypeComp( ) const
         {
@@ -2216,6 +2221,18 @@ namespace Harlinn::Common::Core
             theDocString.Attach( bstrDocString );
             theHelpFile.Attach( bstrHelpFile );
         }
+
+        SysString GetName( )
+        {
+            auto pInterface = GetInterface( );
+            BSTR bstrName;
+            auto hr = pInterface->GetDocumentation( MEMBERID_NIL, &bstrName, nullptr, nullptr, nullptr );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+            SysString result( bstrName, true );
+            return result;
+        }
+
+
 
         void GetDllEntry( MEMBERID memid, INVOKEKIND invKind, SysString& theDllName, SysString& theName, WORD& pwOrdinal ) const
         {
@@ -2296,6 +2313,209 @@ namespace Harlinn::Common::Core
         }
     };
 
+    class TypeAttributes
+    {
+        TypeInfo typeInfo_;
+        TYPEATTR* typeAttr_ = nullptr;
+    public:
+        TypeAttributes( const TypeInfo& typeInfo )
+            : typeInfo_( typeInfo )
+        { 
+            typeInfo_.GetTypeAttr( &typeAttr_ );
+        }
+
+        TypeAttributes( const TypeAttributes& other ) = delete;
+        TypeAttributes& operator = ( const TypeAttributes& other ) = delete;
+
+        TypeAttributes( TypeAttributes&& other ) noexcept
+            : typeInfo_( std::move( other.typeInfo_ ) ), typeAttr_( other.typeAttr_ )
+        {
+            other.typeAttr_ = nullptr;
+        }
+        TypeAttributes& operator = ( TypeAttributes&& other ) noexcept
+        {
+            std::swap( typeInfo_, other.typeInfo_ );
+            std::swap( typeAttr_, other.typeAttr_ );
+            return *this;
+        }
+
+
+        ~TypeAttributes( )
+        {
+            if ( typeAttr_ )
+            {
+                typeInfo_.ReleaseTypeAttr( typeAttr_ );
+            }
+        }
+
+        explicit operator bool( ) const noexcept
+        {
+            return typeAttr_ != nullptr;
+        }
+
+        Guid Id( ) const
+        {
+            if ( typeAttr_ )
+            {
+                return typeAttr_->guid;
+            }
+            return {};
+        }
+
+        LCID LocaleId( ) const
+        {
+            if ( typeAttr_ )
+            {
+                return typeAttr_->lcid;
+            }
+            return {};
+        }
+
+        MEMBERID Constructor( ) const
+        {
+            if ( typeAttr_ )
+            {
+                return typeAttr_->memidConstructor;
+            }
+            return {};
+        }
+
+        MEMBERID Destructor( ) const
+        {
+            if ( typeAttr_ )
+            {
+                return typeAttr_->memidDestructor;
+            }
+            return {};
+        }
+
+        size_t InstanceSize( ) const
+        {
+            if ( typeAttr_ )
+            {
+                return typeAttr_->cbSizeInstance;
+            }
+            return {};
+        }
+
+        TYPEKIND TypeKind( ) const
+        {
+            if ( typeAttr_ )
+            {
+                return typeAttr_->typekind;
+            }
+            return {};
+        }
+
+        size_t NumberOfFunctions( ) const
+        {
+            if ( typeAttr_ )
+            {
+                return typeAttr_->cFuncs;
+            }
+            return {};
+        }
+
+        size_t NumberOfFields( ) const
+        {
+            if ( typeAttr_ )
+            {
+                return typeAttr_->cVars;
+            }
+            return {};
+        }
+
+        size_t NumberOfImplementedInterfaces( ) const
+        {
+            if ( typeAttr_ )
+            {
+                return typeAttr_->cImplTypes;
+            }
+            return {};
+        }
+
+        size_t SizeOfVirtualFunctionTable( ) const
+        {
+            if ( typeAttr_ )
+            {
+                return typeAttr_->cbSizeVft;
+            }
+            return {};
+        }
+
+        size_t Alignment( ) const
+        {
+            if ( typeAttr_ )
+            {
+                return typeAttr_->cbAlignment == 0? static_cast<size_t>(MaxUInt16) + 1 : typeAttr_->cbAlignment;
+            }
+            return {};
+        }
+
+        TYPEFLAGS TypeFlags( ) const
+        {
+            if ( typeAttr_ )
+            {
+                return static_cast< TYPEFLAGS >( typeAttr_->wTypeFlags );
+            }
+            return {};
+        }
+
+        size_t MajorVersion( ) const
+        {
+            if ( typeAttr_ )
+            {
+                return typeAttr_->wMajorVerNum;
+            }
+            return {};
+        }
+
+        size_t MinorVersion( ) const
+        {
+            if ( typeAttr_ )
+            {
+                return typeAttr_->wMinorVerNum;
+            }
+            return {};
+        }
+
+        std::pair<UInt16, UInt16> Version( ) const
+        {
+            if ( typeAttr_ )
+            {
+                return std::make_pair( typeAttr_->wMajorVerNum, typeAttr_->wMinorVerNum);
+            }
+            return {};
+        }
+
+        const TYPEDESC* AliasedTypeDescriptor( ) const
+        {
+            if ( typeAttr_ )
+            {
+                if ( typeAttr_->typekind == TKIND_ALIAS )
+                {
+                    return &typeAttr_->tdescAlias;
+                }
+            }
+            return {};
+        }
+
+        USHORT IDLFlags( ) const
+        {
+            if ( typeAttr_ )
+            {
+                return typeAttr_->idldescType.wIDLFlags;
+            }
+            return {};
+        }
+    };
+
+    inline TypeAttributes TypeInfo::GetTypeAttributes( ) const
+    {
+        return TypeAttributes( *this );
+    }
+
+    class TypeLibAttributes;
     /// <summary>
     /// Represents a type library, the data that describes a set of objects. 
     /// A type library can be a stand-alone binary file (.TLB), a resource 
@@ -2344,12 +2564,29 @@ namespace Harlinn::Common::Core
             return TypeInfo( result );
         }
 
+        TypeInfo GetTypeInfoOfGuid( REFGUID guid, TYPEKIND expectedTypeKind ) const
+        {
+            auto typeInfo = GetTypeInfoOfGuid( guid );
+            auto attributes = typeInfo.GetTypeAttributes( );
+            auto typeKind = attributes.TypeKind( );
+            if ( typeKind != expectedTypeKind && typeKind == TKIND_ALIAS)
+            {
+                auto hreftype = attributes.AliasedTypeDescriptor( )->hreftype;
+                auto aliasedTypeInfo = typeInfo.GetRefTypeInfo( hreftype );
+                return aliasedTypeInfo;
+            }
+            return typeInfo;
+        }
+
+
         void GetLibAttr( TLIBATTR** ppTLibAttr ) const
         {
             auto pInterface = GetInterface( );
             auto hr = pInterface->GetLibAttr( ppTLibAttr );
             HCC_COM_CHECK_HRESULT2( hr, pInterface );
         }
+
+        inline TypeLibAttributes GetLibAttributes( ) const;
 
         TypeComp GetTypeComp( ) const
         {
@@ -2389,8 +2626,21 @@ namespace Harlinn::Common::Core
             pInterface->ReleaseTLibAttr( pTLibAttr );
         }
 
-    };
+        void Unregister( ) const
+        {
+            TLIBATTR* tlibAttrPtr = nullptr;
+            GetLibAttr( &tlibAttrPtr );
+            TLIBATTR tlibAttr = *tlibAttrPtr;
+            ReleaseTLibAttr( tlibAttrPtr );
+            auto hr = UnRegisterTypeLib( tlibAttr.guid, tlibAttr.wMajorVerNum, tlibAttr.wMinorVerNum, tlibAttr.lcid, tlibAttr.syskind );
+            if ( FAILED( hr ) )
+            {
+                auto pInterface = GetInterface( );
+                HCC_COM_CHECK_HRESULT2( hr, pInterface );
+            }
+        }
 
+    };
 
     inline TypeLib TypeInfo::GetContainingTypeLib( UINT& index ) const
     {
@@ -2400,6 +2650,153 @@ namespace Harlinn::Common::Core
         HCC_COM_CHECK_HRESULT2( hr, pInterface );
         return TypeLib( ptr );
     }
+
+    class TypeLibAttributes
+    {
+        TypeLib typeLib_;
+        TLIBATTR* tlibAttr_ = nullptr;
+    public:
+        TypeLibAttributes( const TypeLib& typeLib )
+            : typeLib_( typeLib )
+        {
+            typeLib_.GetLibAttr( &tlibAttr_ );
+        }
+
+        TypeLibAttributes( const TypeLibAttributes& other ) = delete;
+        TypeLibAttributes& operator = ( const TypeLibAttributes& other ) = delete;
+
+        TypeLibAttributes( TypeLibAttributes&& other ) noexcept
+            : typeLib_( std::move( other.typeLib_ ) ), tlibAttr_(other.tlibAttr_)
+        {
+            other.tlibAttr_ = nullptr;
+        }
+        TypeLibAttributes& operator = ( TypeLibAttributes&& other ) noexcept
+        {
+            std::swap( typeLib_, other.typeLib_ );
+            std::swap( tlibAttr_, other.tlibAttr_ );
+            return *this;
+        }
+
+
+        ~TypeLibAttributes( )
+        {
+            if ( tlibAttr_ )
+            {
+                typeLib_.ReleaseTLibAttr( tlibAttr_ );
+            }
+        }
+
+        explicit operator bool( ) const
+        {
+            return tlibAttr_ != nullptr;
+        }
+
+
+        Guid Id( ) const
+        {
+            if ( tlibAttr_ )
+            {
+                return tlibAttr_->guid;
+            }
+            return {};
+        }
+
+        LCID LocaleId( ) const
+        {
+            if ( tlibAttr_ )
+            {
+                return tlibAttr_->lcid;
+            }
+            return {};
+        }
+
+        SYSKIND SysKind( ) const
+        {
+            if ( tlibAttr_ )
+            {
+                return tlibAttr_->syskind;
+            }
+            return {};
+        }
+
+        size_t MajorVersion( ) const
+        {
+            if ( tlibAttr_ )
+            {
+                return tlibAttr_->wMajorVerNum;
+            }
+            return {};
+        }
+
+        size_t MinorVersion( ) const
+        {
+            if ( tlibAttr_ )
+            {
+                return tlibAttr_->wMinorVerNum;
+            }
+            return {};
+        }
+
+        std::pair<UInt16, UInt16> Version( ) const
+        {
+            if ( tlibAttr_ )
+            {
+                return std::make_pair(tlibAttr_->wMajorVerNum, tlibAttr_->wMinorVerNum);
+            }
+            return {};
+        }
+
+        UInt16 Flags( ) const
+        {
+            if ( tlibAttr_ )
+            {
+                return tlibAttr_->wLibFlags;
+            }
+            return {};
+        }
+
+        bool IsRestricted( ) const
+        {
+            if ( tlibAttr_ )
+            {
+                return (tlibAttr_->wLibFlags & LIBFLAG_FRESTRICTED) != 0;
+            }
+            return false;
+        }
+
+        bool IsControl( ) const
+        {
+            if ( tlibAttr_ )
+            {
+                return ( tlibAttr_->wLibFlags & LIBFLAG_FCONTROL ) != 0;
+            }
+            return false;
+        }
+
+        bool IsHidden( ) const
+        {
+            if ( tlibAttr_ )
+            {
+                return ( tlibAttr_->wLibFlags & LIBFLAG_FHIDDEN ) != 0;
+            }
+            return false;
+        }
+
+        bool HasDiskImage( ) const
+        {
+            if ( tlibAttr_ )
+            {
+                return ( tlibAttr_->wLibFlags & LIBFLAG_FHASDISKIMAGE ) != 0;
+            }
+            return false;
+        }
+    };
+
+    inline TypeLibAttributes TypeLib::GetLibAttributes( ) const
+    {
+        return TypeLibAttributes( *this );
+    }
+
 
     class TypeLibEntry
     {
@@ -2441,6 +2838,27 @@ namespace Harlinn::Common::Core
     public:
         using Base = TypeLib;
         HCC_COM_STANDARD_METHODS_IMPL( TypeLib2, TypeLib, ITypeLib2, ITypeLib )
+
+
+        static TypeLib2 LoadTypeLib( const std::wstring& filename, REGKIND registrationkind = REGKIND::REGKIND_NONE )
+        {
+            ITypeLib* tlib = nullptr;
+            auto hr = LoadTypeLibEx( filename.c_str( ), registrationkind, &tlib );
+            if ( FAILED( hr ) )
+            {
+                CheckHRESULT( hr );
+            }
+            ITypeLib2* itf = nullptr;
+            hr = tlib->QueryInterface( &itf );
+            if ( FAILED( hr ) )
+            {
+                tlib->Release( );
+                CheckHRESULT( hr );
+            }
+            TypeLib2 result( itf );
+            tlib->Release( );
+            return result;
+        }
 
         void GetCustData( __RPC__in REFGUID guid, __RPC__out VARIANT* pVarVal ) const
         {

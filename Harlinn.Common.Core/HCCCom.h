@@ -173,6 +173,17 @@ namespace Harlinn::Common::Core
             return *this;
         }
 
+        void swap( Unknown& other ) noexcept
+        {
+            std::swap( unknown_, other.unknown_ );
+        }
+
+        friend void swap( Unknown& first, Unknown& second ) noexcept
+        {
+            first.swap( second );
+        }
+
+
         void ResetPtr( IUnknown* other = nullptr, bool addRef = false ) noexcept
         {
             if ( unknown_ != other )
@@ -1344,8 +1355,16 @@ public: \
         HCC_EXPORT std::vector<Guid> GetSupportedKnownInterfaceIds(IUnknown* unknown);
 
     }
-
-
 }
+
+namespace std
+{
+    template<>
+    inline void swap<Harlinn::Common::Core::Unknown>( Harlinn::Common::Core::Unknown& first, Harlinn::Common::Core::Unknown& second ) noexcept
+    {
+        first.swap( second );
+    }
+}
+
 
 #endif

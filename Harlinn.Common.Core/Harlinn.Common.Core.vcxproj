@@ -214,6 +214,8 @@
     <ClInclude Include="HCCBuffer.h" />
     <ClInclude Include="HCCComImpl.h" />
     <ClInclude Include="HCCComInterfaces.h" />
+    <ClInclude Include="HCCComModule.h" />
+    <ClInclude Include="HCCComRegistry.h" />
     <ClInclude Include="HCCConcurrentQueue.h" />
     <ClInclude Include="HCCDataSource.h" />
     <ClInclude Include="HCCDirectoryUtils.h" />
@@ -271,6 +273,7 @@
     <ClInclude Include="HCCPropSys.h" />
     <ClInclude Include="HCCRdtscConverter.h" />
     <ClInclude Include="HCCReference.h" />
+    <ClInclude Include="HCCRegistry.h" />
     <ClInclude Include="HCCRtWorkQ.h" />
     <ClInclude Include="HCCSecurity.h" />
     <ClInclude Include="HCCCommDevice.h" />
@@ -373,6 +376,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="HCCComInterfaces.xm" />
+    <None Include="HCCComRegistry.inl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
