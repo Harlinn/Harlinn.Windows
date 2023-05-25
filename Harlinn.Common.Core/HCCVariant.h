@@ -2,6 +2,7 @@
 #ifndef __HCCVARIANT_H__
 #define __HCCVARIANT_H__
 
+#include <HCCLib.h>
 #include <HCCCom.h>
 #include <HCCDateTime.h>
 #include <HCCCurrency.h>
@@ -91,221 +92,107 @@ namespace Harlinn::Common::Core
     class SafeArray;
 
     template<typename T>
-    struct VariantTraits
+    struct VariantTypeTraits : std::false_type
     {
-        static const Core::VariantType VariantType = Core::VariantType::Empty;
-        typedef void ValueType;
-        typedef void VariantValueType;
+        static constexpr Core::VariantType VariantType = Core::VariantType::Empty;
+        using ValueType = void;
+        using VariantValueType = void;
+        static constexpr bool RequiresConversion = false;
+        static constexpr bool IsRecord = false;
     };
 
 
     namespace Internal
     {
         template<Core::VariantType vt, typename ValueT, typename VariantValueT = ValueT >
-        struct VariantTraitsBase
+        struct VariantTypeTraits : public std::true_type
         {
-            static const Core::VariantType VariantType = vt;
-            typedef ValueT ValueType;
-            typedef VariantValueT VariantValueType;
+            static constexpr Core::VariantType VariantType = vt;
+            using ValueType = ValueT;
+            using VariantValueType = VariantValueT;
+            static constexpr bool RequiresConversion = false;
+            static constexpr bool IsRecord = false;
         };
 
-        template<Core::VariantType vt, typename ValueT, typename VariantValueT = ValueT >
-        struct SafeArrayOperations
-        {
-            static const Core::VariantType VariantType = vt;
-            typedef ValueT ValueType;
-            typedef VariantValueT VariantValueType;
-
-            static HRESULT ToSafeArray( const std::vector<ValueType>& values, SAFEARRAY** result )
-            {
-                if ( !result )
-                {
-                    return E_POINTER;
-                }
-                SAFEARRAY* safeArray = SafeArrayCreateVector( static_cast<VARTYPE>( VariantType ), 0, static_cast<ULONG>( values.size( ) ) );
-                if ( !safeArray )
-                {
-                    return E_OUTOFMEMORY;
-                }
-                auto size = values.size( );
-                if ( size )
-                {
-                    SafeArrayLock( safeArray );
-                    auto rawValues = values.data( );
-                    auto data = safeArray->pvData;
-
-                    memcpy( data, rawValues, size * sizeof( ValueType ) );
-
-                    SafeArrayUnlock( safeArray );
-                }
-                *result = safeArray;
-                return S_OK;
-            }
-
-            static void FromSafeArray( SAFEARRAY* safeArray, std::vector<ValueType>& result )
-            {
-                result.clear( );
-                if ( safeArray )
-                {
-                    VariantValueType* valuesData;
-                    auto hr = SafeArrayAccessData( safeArray, (void**)&valuesData );
-                    if ( FAILED( hr ) )
-                    {
-                        CheckHRESULT( hr );
-                    }
-                    long lowerBound, upperBound;
-                    SafeArrayGetLBound( safeArray, 1, &lowerBound );
-                    SafeArrayGetUBound( safeArray, 1, &upperBound );
-
-                    auto size = static_cast<size_t>( upperBound - lowerBound + 1 );
-                    if ( size )
-                    {
-                        result.reserve( size );
-                        for ( size_t i = 0; i < size; i++ )
-                        {
-                            result.push_back( valuesData[i] );
-                        }
-                    }
-                    SafeArrayUnaccessData( safeArray );
-                }
-                //return S_OK;
-            }
-        };
-
-        template< >
-        struct SafeArrayOperations<Core::VariantType::Bool, bool, VARIANT_BOOL>
-        {
-            static const Core::VariantType VariantType = Core::VariantType::Bool;
-            typedef bool ValueType;
-            typedef VARIANT_BOOL VariantValueType;
-
-            static HRESULT ToSafeArray( const std::vector<ValueType>& values, SAFEARRAY** result )
-            {
-                if ( !result )
-                {
-                    return E_POINTER;
-                }
-                SAFEARRAY* safeArray = SafeArrayCreateVector( static_cast<VARTYPE>( VariantType ), 0, static_cast<ULONG>( values.size( ) ) );
-                if ( !safeArray )
-                {
-                    return E_OUTOFMEMORY;
-                }
-                auto size = values.size( );
-                if ( size )
-                {
-                    ::SafeArrayLock( safeArray );
-
-                    auto data = (VARIANT_BOOL*)safeArray->pvData;
-                    for ( size_t i = 0; i < size; i++ )
-                    {
-                        data[i] = values[i] ? VARIANT_TRUE : VARIANT_FALSE;
-                    }
-
-                    SafeArrayUnlock( safeArray );
-                }
-                *result = safeArray;
-                return S_OK;
-            }
-
-            static void FromSafeArray( SAFEARRAY* safeArray, std::vector<ValueType>& result )
-            {
-                result.clear( );
-                if ( safeArray )
-                {
-                    VariantValueType* valuesData;
-                    auto hr = SafeArrayAccessData( safeArray, (void**)&valuesData );
-                    if ( FAILED( hr ) )
-                    {
-                        CheckHRESULT( hr );
-                    }
-                    long lowerBound, upperBound;
-                    SafeArrayGetLBound( safeArray, 1, &lowerBound );
-                    SafeArrayGetUBound( safeArray, 1, &upperBound );
-
-                    auto size = static_cast<size_t>( upperBound - lowerBound + 1 );
-                    if ( size )
-                    {
-                        result.reserve( size );
-                        for ( size_t i = 0; i < size; i++ )
-                        {
-                            result.push_back( valuesData[i] == VARIANT_FALSE ? false : true );
-                        }
-                    }
-                    SafeArrayUnaccessData( safeArray );
-                }
-            }
-        };
-
-        template<Core::VariantType vt, typename ValueT, typename VariantValueT = ValueT >
-        struct VariantTraits : public SafeArrayOperations<vt, ValueT, VariantValueT>
-        {
-        };
     }
 
     template<>
-    struct VariantTraits<bool> : public Internal::VariantTraits<Core::VariantType::Bool, bool, VARIANT_BOOL >
+    struct VariantTypeTraits<bool> : public Internal::VariantTypeTraits<Core::VariantType::Bool, bool, VARIANT_BOOL >
+    {
+        using Base = Internal::VariantTypeTraits<Core::VariantType::Bool, bool, VARIANT_BOOL >;
+        using ValueType = Base::ValueType;
+        using VariantValueType = Base::VariantValueType;
+        static constexpr bool RequiresConversion = true;
+
+        static constexpr ValueType Convert( VariantValueType value )
+        {
+            return value != VARIANT_FALSE;
+        }
+        static constexpr VariantValueType Convert( ValueType value )
+        {
+            return value ? VARIANT_TRUE : VARIANT_FALSE;
+        }
+    };
+
+
+    template<>
+    struct VariantTypeTraits<signed char> : public Internal::VariantTypeTraits<Core::VariantType::SByte, signed char >
+    {
+    };
+
+    template<>
+    struct VariantTypeTraits<unsigned char> : public Internal::VariantTypeTraits<Core::VariantType::Byte, unsigned char >
+    {
+    };
+
+    template<>
+    struct VariantTypeTraits<short> : public Internal::VariantTypeTraits<Core::VariantType::Short, short >
+    {
+    };
+
+    template<>
+    struct VariantTypeTraits<unsigned short> : public Internal::VariantTypeTraits<Core::VariantType::UShort, unsigned short >
+    {
+    };
+
+    template<>
+    struct VariantTypeTraits<long> : public Internal::VariantTypeTraits<Core::VariantType::Long, long >
+    {
+    };
+
+    template<>
+    struct VariantTypeTraits<unsigned long> : public Internal::VariantTypeTraits<Core::VariantType::ULong, unsigned long >
+    {
+    };
+
+    template<>
+    struct VariantTypeTraits<int> : public Internal::VariantTypeTraits<Core::VariantType::Long, int, long >
+    {
+    };
+
+    template<>
+    struct VariantTypeTraits<unsigned int> : public Internal::VariantTypeTraits<Core::VariantType::ULong, unsigned int, unsigned long >
     {
     };
 
 
     template<>
-    struct VariantTraits<signed char> : public Internal::VariantTraits<Core::VariantType::SByte, signed char >
+    struct VariantTypeTraits<long long> : public Internal::VariantTypeTraits<Core::VariantType::LongLong, long long >
     {
     };
 
     template<>
-    struct VariantTraits<unsigned char> : public Internal::VariantTraits<Core::VariantType::Byte, unsigned char >
+    struct VariantTypeTraits<unsigned long long> : public Internal::VariantTypeTraits<Core::VariantType::ULongLong, unsigned long long >
     {
     };
 
     template<>
-    struct VariantTraits<short> : public Internal::VariantTraits<Core::VariantType::Short, short >
+    struct VariantTypeTraits<float> : public Internal::VariantTypeTraits<Core::VariantType::Real4, float >
     {
     };
 
     template<>
-    struct VariantTraits<unsigned short> : public Internal::VariantTraits<Core::VariantType::UShort, unsigned short >
-    {
-    };
-
-    template<>
-    struct VariantTraits<long> : public Internal::VariantTraits<Core::VariantType::Long, long >
-    {
-    };
-
-    template<>
-    struct VariantTraits<unsigned long> : public Internal::VariantTraits<Core::VariantType::ULong, unsigned long >
-    {
-    };
-
-    template<>
-    struct VariantTraits<int> : public Internal::VariantTraits<Core::VariantType::Long, int, long >
-    {
-    };
-
-    template<>
-    struct VariantTraits<unsigned int> : public Internal::VariantTraits<Core::VariantType::ULong, unsigned int, unsigned long >
-    {
-    };
-
-
-    template<>
-    struct VariantTraits<long long> : public Internal::VariantTraits<Core::VariantType::LongLong, long long >
-    {
-    };
-
-    template<>
-    struct VariantTraits<unsigned long long> : public Internal::VariantTraits<Core::VariantType::ULongLong, unsigned long long >
-    {
-    };
-
-    template<>
-    struct VariantTraits<float> : public Internal::VariantTraits<Core::VariantType::Real4, float >
-    {
-    };
-
-    template<>
-    struct VariantTraits<double> : public Internal::VariantTraits<Core::VariantType::Real8, double >
+    struct VariantTypeTraits<double> : public Internal::VariantTypeTraits<Core::VariantType::Real8, double >
     {
     };
 
@@ -823,8 +710,8 @@ namespace Harlinn::Common::Core
             {
             }
 
-            DataLock( SafeArray& safeArray )
-                : safeArray_( safeArray.ptr_ )
+            DataLock( const SafeArray& safeArray )
+                : safeArray_( const_cast< SAFEARRAY* >( safeArray.ptr_ ) )
             {
                 auto hr = SafeArrayAccessData( safeArray_, &data_ );
                 if ( FAILED( hr ) )
@@ -888,6 +775,42 @@ namespace Harlinn::Common::Core
                 CheckHRESULT( E_OUTOFMEMORY );
             }
         }
+
+        template<SimpleSpanLike ContainerT, typename TraitsT = VariantTypeTraits< std::remove_cvref_t<typename ContainerT::value_type>> >
+        explicit SafeArray( const ContainerT& container )
+            : ptr_( 0 )
+        {
+            using TraitsType = TraitsT;
+
+            constexpr auto variantType = TraitsType::VariantType;
+            auto containerSize = container.size( );
+
+            ptr_ = SafeArrayCreateVectorEx( static_cast< VARTYPE >( variantType ), 0, static_cast<ULONG>( containerSize ), nullptr );
+            if ( !ptr_ )
+            {
+                CheckHRESULT( E_OUTOFMEMORY );
+            }
+            if ( containerSize )
+            {
+                DataLock dataLock( *this );
+                auto containerData = container.data( );
+                auto data = dataLock.Data< typename TraitsType::VariantValueType >();
+
+                if constexpr ( TraitsType::RequiresConversion )
+                {
+                    for ( size_t i = 0; i < containerSize; i++ )
+                    {
+                        data[ i ] = TraitsType::Convert( containerData[i] );
+                    }
+                }
+                else
+                {
+                    memcpy( data, containerData, containerSize * sizeof( typename TraitsType::ValueType ) );
+                }
+            }
+        }
+
+
 
         explicit SafeArray( VariantType variantType, LONG lowerBound, UINT numberOfElements )
             : ptr_( 0 )
@@ -1040,6 +963,11 @@ namespace Harlinn::Common::Core
             auto result = ptr_;
             ptr_ = nullptr;
             return result;
+        }
+
+        SAFEARRAY* Detach( )
+        {
+            return Release( );
         }
 
 
@@ -1370,6 +1298,153 @@ namespace Harlinn::Common::Core
             return VariantType::Empty;
         }
 
+        template<SimpleSpanLike ContainerT, typename TraitsT = VariantTypeTraits< std::remove_cvref_t<typename ContainerT::value_type>> >
+        void AssignTo( ContainerT& container ) const
+        {
+            using TraitsType = TraitsT;
+            if ( Dimensions( ) == 1 )
+            {
+                if ( HaveVariantType( ) )
+                {
+                    auto variantType = GetVariantType( );
+                    if ( TraitsType::VariantType == variantType )
+                    {
+                        DataLock dataLock( *this );
+                        auto length = static_cast<size_t>(Length( ));
+                        auto* dataPtr = dataLock.Data<typename TraitsType::VariantValueType>( );
+                        if constexpr ( TraitsType::RequiresConversion )
+                        {
+                            container.resize( length );
+                            for ( size_t i = 0; i < length; i++ )
+                            {
+                                container[ i ] = TraitsType::Convert( dataPtr[ i ] );
+                            }
+                        }
+                        else
+                        {
+                            container.assign( dataPtr, dataPtr + length );
+                        }
+                    }
+                    else
+                    {
+                        HCC_THROW( ArgumentException, L"Unexpected variant type, does not match value type of container." );
+                    }
+                }
+                else
+                {
+                    HCC_THROW( InvalidOperationException, L"Variant type is required." );
+                }
+            }
+            else
+            {
+                HCC_THROW( InvalidOperationException, L"SAFEARRAY is not a vector." );
+            }
+        }
+
+
+        template<SimpleSpanLike ContainerT, typename TraitsT = VariantTypeTraits< std::remove_cvref_t<typename ContainerT::value_type>> >
+        [[nodiscard]] bool CanCompareWith( const ContainerT& container ) const
+        {
+            using TraitsType = TraitsT;
+            if ( Dimensions( ) == 1 )
+            {
+                if ( HaveVariantType( ) )
+                {
+                    auto variantType = GetVariantType( );
+                    if ( TraitsType::VariantType == variantType )
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+
+        template<SimpleSpanLike ContainerT, typename TraitsT = VariantTypeTraits< std::remove_cvref_t<typename ContainerT::value_type>> >
+        [[nodiscard]] bool EqualTo( const ContainerT& container ) const
+        {
+            using TraitsType = TraitsT;
+            if ( Dimensions( ) == 1 )
+            {
+                if ( HaveVariantType( ) )
+                {
+                    auto variantType = GetVariantType( );
+                    if ( TraitsType::VariantType == variantType )
+                    {
+                        auto length = static_cast< size_t >( Length( ) );
+                        auto containerSize = container.size( );
+                        if ( length == containerSize )
+                        {
+                            DataLock dataLock( *this );
+                            auto* dataPtr = dataLock.Data<typename TraitsType::VariantValueType>( );
+                            if constexpr ( TraitsType::RequiresConversion )
+                            {
+                                for ( size_t i = 0; i < containerSize; i++ )
+                                {
+                                    if ( container[ i ] != TraitsType::Convert( dataPtr[ i ] ) )
+                                    {
+                                        return false;
+                                    }
+                                }
+                                return true;
+                            }
+                            else
+                            {
+                                return std::equal( container.begin(), container.end(), dataPtr, dataPtr + containerSize );
+                            }
+                        }
+                    }
+                }
+            }
+            return false;
+        }
+
+        template<SimpleSpanLike ContainerT, typename TraitsT = VariantTypeTraits< std::remove_cvref_t<typename ContainerT::value_type>> >
+        [[nodiscard]] Int32 CompareTo( const ContainerT& container ) const
+        {
+            using TraitsType = TraitsT;
+            if ( Dimensions( ) == 1 )
+            {
+                if ( HaveVariantType( ) )
+                {
+                    auto variantType = GetVariantType( );
+                    if ( TraitsType::VariantType == variantType )
+                    {
+                        auto length = static_cast< size_t >( Length( ) );
+                        auto containerSize = container.size( );
+                        auto compareSize = std::min( length, containerSize );
+                        Int32 result = 0;
+                        DataLock dataLock( *this );
+                        auto* dataPtr = dataLock.Data<typename TraitsType::VariantValueType>( );
+                        if constexpr ( TraitsType::RequiresConversion )
+                        {
+                            return Core::Compare( container.data( ), container.size( ), dataPtr, containerSize, TraitsType::Convert );
+                        }
+                        else
+                        {
+                            return Core::Compare( container.data( ), container.size( ), dataPtr, containerSize );
+                        }
+                        
+                    }
+                    else
+                    {
+                        HCC_THROW( ArgumentException, L"Unexpected variant type, does not match value type of container." );
+                    }
+                }
+                else
+                {
+                    HCC_THROW( InvalidOperationException, L"Variant type is required." );
+                }
+            }
+            else
+            {
+                HCC_THROW( InvalidOperationException, L"SAFEARRAY is not a vector." );
+            }
+        }
+
+
+
 
     };
 
@@ -1408,7 +1483,7 @@ namespace Harlinn::Common::Core
         using Base = SafeArray;
         using value_type = std::remove_cvref_t<ValueT>;
 
-        using Traits = VariantTraits<value_type>;
+        using Traits = VariantTypeTraits<value_type>;
 
     private:
         static SAFEARRAY* EnsureRightType( SAFEARRAY* ptr )

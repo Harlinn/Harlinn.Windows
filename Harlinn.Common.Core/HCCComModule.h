@@ -6,8 +6,8 @@
 #include <HCCGuid.h>
 #include <HCCSync.h>
 #include <HCCHandle.h>
-#include <HCCObj.h>
-#include <HCCComRegistry.h>
+#include <HCCRegistry.h>
+#include <HCCComImpl.h>
 
 namespace Harlinn::Common::Core::Com
 {
@@ -485,10 +485,12 @@ namespace Harlinn::Common::Core::Com
     }
 
 
-    class ModuleObjectBase
+    template<typename DerivedT, typename ... InterfaceTypes>
+    class ModuleObjectBase : public Interfaces<DerivedT, InterfaceTypes...>
     {
         ULONG referenceCount_ = 1;
     public:
+        using DerivedType = DerivedT;
         ModuleObjectBase( )
         {
             auto module = Module::Instance( );
@@ -499,6 +501,24 @@ namespace Harlinn::Common::Core::Com
         {
             auto module = Module::Instance( );
             module->ReleaseReference( );
+        }
+
+        HRESULT __stdcall QueryInterface( const IID& iid, void** result )
+        {
+            auto& self = *static_cast< DerivedType* >( this );
+            return self.QueryInterfaceImpl( iid, result );
+        }
+
+        ULONG __stdcall AddRef( )
+        {
+            auto& self = *static_cast< DerivedType* >( this );
+            return self.AddRefImpl( );
+        }
+
+        ULONG __stdcall Release( )
+        {
+            auto& self = *static_cast< DerivedType* >( this );
+            return self.ReleaseImpl( );
         }
 
         ULONG AddRefImpl( )
@@ -674,9 +694,6 @@ namespace Harlinn::Common::Core::Com::Registry
     }
 
 }
-
-
-#include "HCCComRegistry.inl"
 
 
 #endif

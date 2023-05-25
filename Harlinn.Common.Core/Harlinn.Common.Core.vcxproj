@@ -216,6 +216,7 @@
     <ClInclude Include="HCCComInterfaces.h" />
     <ClInclude Include="HCCComModule.h" />
     <ClInclude Include="HCCComRegistry.h" />
+    <ClInclude Include="HCCConcepts.h" />
     <ClInclude Include="HCCConcurrentQueue.h" />
     <ClInclude Include="HCCDataSource.h" />
     <ClInclude Include="HCCDirectoryUtils.h" />

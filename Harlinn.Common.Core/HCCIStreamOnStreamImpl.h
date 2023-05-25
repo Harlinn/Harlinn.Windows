@@ -13,7 +13,7 @@ namespace Harlinn::Common::Core::Com
         class ISequentialStreamOnStreamImpl : public IUknownImpl<DerivedT, InterfaceT>
         {
         public:
-            using Base = IUknownImpl<InterfaceT>;
+            using Base = IUknownImpl<DerivedT, InterfaceT>;
             using StreamType = StreamT;
             using InterfaceType = InterfaceT;
         protected:

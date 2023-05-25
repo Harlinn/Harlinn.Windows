@@ -4,6 +4,7 @@
 
 #include <HCCDef.h>
 #include <HCCTraits.h>
+#include <HCCConcepts.h>
 
 #define HCCLIB_IMPLEMENTS_ROUND 1
 #define HCCLIB_IMPLEMENTS_MIN_MAX_CLAMP 1
@@ -389,52 +390,32 @@ namespace Harlinn::Common::Core
 
 
     template<typename T1, typename T2>
-    requires ( sizeof( T2 ) == 8 ) && ( std::is_same_v<Int32, T1> || std::is_same_v<UInt32, T1> ) && requires( T2 t2 )
-    {
-        { std::bit_cast<UInt64>( t2 ) }->std::convertible_to<UInt64>;
-    }
+        requires ( sizeof( T2 ) == 8 ) && ( std::is_same_v<Int32, T1> || std::is_same_v<UInt32, T1> ) && requires( T2 t2 )
+        {
+            { std::bit_cast<UInt64>( t2 ) }->std::convertible_to<UInt64>;
+        }
     inline constexpr T1 GetHigh32Bits( T2 val ) noexcept
     {
         auto value = std::bit_cast<UInt64>( val );
         return static_cast<T1>( value >> 32 );
-        /*
-        if ( std::is_constant_evaluated( ) )
-        {
-            auto value = std::bit_cast<UInt64>( val );
-            return static_cast<T1>( value >> 32 );
-        }
-        else
-        {
-            if constexpr ( IsUnsignedInteger<T2> )
-            {
-                //return reinterpret_cast<Bits64>( val ).high.uint32;
-                return ( *( (Bits64*)&val ) ).high.uint32;
-            }
-            else
-            {
-                //return reinterpret_cast<Bits64>( val ).high.int32;
-                return (*((Bits64*)&val)).high.int32;
-            }
-        }
-        */
     }
 
 
     template<typename T1, typename T2>
-    requires ( sizeof( T2 ) == 8 ) && ( std::is_same_v<Int32, T1> || std::is_same_v<UInt32, T1> ) && requires( T2 t2 )
-    {
-        { std::bit_cast<UInt64>( t2 ) }->std::convertible_to<UInt64>;
-    }
+        requires ( sizeof( T2 ) == 8 ) && ( std::is_same_v<Int32, T1> || std::is_same_v<UInt32, T1> ) && requires( T2 t2 )
+        {
+            { std::bit_cast<UInt64>( t2 ) }->std::convertible_to<UInt64>;
+        }
     inline constexpr T2 SetHigh32Bits( T2 x, T1 value ) noexcept
     {
         return std::bit_cast<T2>( (std::bit_cast<UInt64>( x ) & 0x00000000FFFFFFFFULL) + (static_cast<UInt64>(std::bit_cast<UInt32>( value )) << 32) );
     }
 
     template<typename T1, typename T2>
-    requires ( sizeof( T2 ) == 8 ) && ( std::is_same_v<Int32, T1> || std::is_same_v<UInt32, T1> ) && requires( T2 t2 )
-    {
-        { std::bit_cast<UInt64>( t2 ) }->std::convertible_to<UInt64>;
-    }
+        requires ( sizeof( T2 ) == 8 ) && ( std::is_same_v<Int32, T1> || std::is_same_v<UInt32, T1> ) && requires( T2 t2 )
+        {
+            { std::bit_cast<UInt64>( t2 ) }->std::convertible_to<UInt64>;
+        }
     inline constexpr T1 GetLow32Bits( T2 val ) noexcept
     {
         auto value = std::bit_cast<UInt64>( val );
@@ -443,20 +424,20 @@ namespace Harlinn::Common::Core
 
 
     template<typename T1, typename T2>
-    requires ( sizeof( T2 ) == 8 ) && ( std::is_same_v<Int32, T1> || std::is_same_v<UInt32, T1> ) && requires( T2 t2 )
-    {
-        { std::bit_cast<UInt64>( t2 ) }->std::convertible_to<UInt64>;
-    }
+        requires ( sizeof( T2 ) == 8 ) && ( std::is_same_v<Int32, T1> || std::is_same_v<UInt32, T1> ) && requires( T2 t2 )
+        {
+            { std::bit_cast<UInt64>( t2 ) }->std::convertible_to<UInt64>;
+        }
     inline constexpr T2 SetLow32Bits( T2 x, T1 value ) noexcept
     {
         return std::bit_cast<T2>( ( std::bit_cast<UInt64>( x ) & 0xFFFFFFFF00000000ULL ) + static_cast<UInt64>( std::bit_cast<UInt32>( value ) ) );
     }
 
     template<typename T1, typename T2, typename T3>
-    requires ( sizeof( T1 ) == 8 ) && ( std::is_same_v<Int32, T2> || std::is_same_v<UInt32, T2> ) && ( std::is_same_v<Int32, T3> || std::is_same_v<UInt32, T3> ) && requires( UInt64 v1 )
-    {
-        { std::bit_cast<T1>( v1 ) }->std::same_as<T1>;
-    }
+        requires ( sizeof( T1 ) == 8 ) && ( std::is_same_v<Int32, T2> || std::is_same_v<UInt32, T2> ) && ( std::is_same_v<Int32, T3> || std::is_same_v<UInt32, T3> ) && requires( UInt64 v1 )
+        {
+            { std::bit_cast<T1>( v1 ) }->std::same_as<T1>;
+        }
     inline constexpr T1 From32BitsTo64Bits( T2 high32Bits, T3 low32Bits ) noexcept
     {
         return std::bit_cast<T1>(  (static_cast<UInt64>( high32Bits ) << 32) + static_cast<UInt64>( low32Bits ) );
@@ -474,10 +455,10 @@ namespace Harlinn::Common::Core
     }
 
     template<typename T>
-    requires requires( T container )
-    {
-        { container.size( ) } -> std::convertible_to<size_t>;
-    }
+        requires requires( T container )
+        {
+            { container.size( ) } -> std::convertible_to<size_t>;
+        }
     inline constexpr size_t LengthOf( const T& container ) noexcept
     {
         return container.size( );
@@ -510,7 +491,7 @@ namespace Harlinn::Common::Core
     }
 
     template<typename T>
-    requires ( std::is_pointer_v<T> && ( std::is_same_v<char, std::remove_const_t< std::remove_pointer_t<T> > > || std::is_same_v<wchar_t, std::remove_const_t< std::remove_pointer_t<T> > > ) )
+        requires ( std::is_pointer_v<T> && ( std::is_same_v<char, std::remove_const_t< std::remove_pointer_t<T> > > || std::is_same_v<wchar_t, std::remove_const_t< std::remove_pointer_t<T> > > ) )
     inline constexpr size_t LengthOf( T str ) noexcept
     {
         return Core::Internal::LengthOf( str );
@@ -665,9 +646,84 @@ namespace Harlinn::Common::Core
         return v1.compare( v2 );
     }
 
+    template<typename FirstT, typename SecondT >
+        requires requires( FirstT f, SecondT s )
+        { 
+            { Compare( f, s ) } ->std::convertible_to<int>;
+        }
+    inline int Compare( const FirstT* first, size_t firstLength, const SecondT* second, size_t secondLength )
+    {
+        auto compareSize = std::min( firstLength, secondLength );
+        for ( size_t i = 0; i < compareSize; i++ )
+        {
+            auto result = Compare(first[i], second[i] );
+            if ( result )
+            {
+                return result;
+            }
+        }
+        if ( firstLength == secondLength )
+        {
+            return 0;
+        }
+        else if ( firstLength < secondLength )
+        {
+            return -1;
+        }
+        else
+        {
+            return 1;
+        }
+    }
+
+    template<typename FirstT, typename SecondT, typename ConversionFunc >
+        requires requires( FirstT f, SecondT s, ConversionFunc func )
+        {
+            { Compare( f, s ) } ->std::convertible_to<int>;
+            { func(s) } ->std::convertible_to<FirstT>;
+        }
+    inline int Compare( const FirstT* first, size_t firstLength, const SecondT* second, size_t secondLength, ConversionFunc converter )
+    {
+        auto compareSize = std::min( firstLength, secondLength );
+        for ( size_t i = 0; i < compareSize; i++ )
+        {
+            auto result = Compare( first[ i ], converter( second[ i ] ) );
+            if ( result )
+            {
+                return result;
+            }
+        }
+        if ( firstLength == secondLength )
+        {
+            return 0;
+        }
+        else if ( firstLength < secondLength )
+        {
+            return -1;
+        }
+        else
+        {
+            return 1;
+        }
+    }
+
+
+    template<SimpleSpanLike T1, SimpleSpanLike T2, typename ConversionFunc >
+    inline int Compare( const T1& first, const T2& second, ConversionFunc converter )
+    {
+        return Compare( first.data( ), first.size( ), second.data( ), second.size( ), converter );
+    }
+
+    template<SimpleSpanLike T1, SimpleSpanLike T2 >
+    inline int Compare( const T1& first, const T2& second )
+    {
+        return Compare( first.data( ), first.size( ), second.data( ), second.size( ) );
+    }
+
+
 
     template<typename T>
-    requires std::is_floating_point_v<T>
+        requires std::is_floating_point_v<T>
     constexpr bool AreNearlyEqual( T a, T b, T smallNumber = static_cast<T>( 0.0001 ) ) noexcept
     {
         if ( a <= b )

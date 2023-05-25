@@ -31,7 +31,7 @@ namespace Harlinn::Common::Core::Com
     /// </p>
     /// </typeparam>
     template<typename DerivedT, typename ... InterfaceTypes >
-    class __declspec( novtable ) Interfaces : public InterfaceTypes...
+    class __declspec( novtable ) Interfaces //: public InterfaceTypes...
     {
     public:
         using DerivedType = DerivedT;
@@ -75,23 +75,36 @@ namespace Harlinn::Common::Core::Com
                 return E_NOINTERFACE;
             }
         }
+    };
 
 
+    template<typename DerivedT, typename ... InterfaceTypes>
+    class ObjectBase : public Interfaces<DerivedT, InterfaceTypes...>
+    {
+        ULONG referenceCount_ = 1;
+    public:
+        using Base = Interfaces<DerivedT, InterfaceTypes...>;
+        using DerivedType = DerivedT;
 
-        virtual HRESULT __stdcall QueryInterface( const IID& iid, void** result ) override
+        virtual ~ObjectBase( ) = default;
+
+        HRESULT __stdcall QueryInterface( const IID& iid, void** result )
         {
             auto& self = *static_cast< DerivedType* >( this );
             return self.QueryInterfaceImpl( iid, result );
         }
-    };
 
+        ULONG __stdcall AddRef( )
+        {
+            auto& self = *static_cast< DerivedType* >( this );
+            return self.AddRefImpl( );
+        }
 
-
-    class ObjectBase
-    {
-        ULONG referenceCount_ = 1;
-    public:
-        virtual ~ObjectBase( ) = default;
+        ULONG __stdcall Release( )
+        {
+            auto& self = *static_cast< DerivedType* >( this );
+            return self.ReleaseImpl( );
+        }
 
         ULONG AddRefImpl( )
         {
@@ -116,12 +129,18 @@ namespace Harlinn::Common::Core::Com
 
 
 
-    template<typename DerivedT, typename ... InterfaceTypes>
-    class __declspec( novtable ) IUknownImpl : public Interfaces<DerivedT, InterfaceTypes...>
+    template<typename DerivedT, typename InterfaceT>
+    class __declspec( novtable ) IUknownImpl : public InterfaceT
     {
     public:
         using DerivedType = DerivedT;
         using InterfaceType = IUnknown;
+
+        virtual HRESULT __stdcall QueryInterface( const IID& iid, void** result ) override
+        {
+            auto& self = *static_cast< DerivedType* >( this );
+            return self.QueryInterfaceImpl( iid, result );
+        }
 
         virtual ULONG __stdcall AddRef( ) override
         {
@@ -138,8 +157,8 @@ namespace Harlinn::Common::Core::Com
     };
 
 
-    template<typename DerivedT, typename ... InterfaceTypes>
-    class __declspec( novtable ) IDispatchImpl : public IUknownImpl<DerivedT, InterfaceTypes...>
+    template<typename DerivedT, typename InterfaceT>
+    class __declspec( novtable ) IDispatchImpl : public IUknownImpl<DerivedT, InterfaceT>
     {
         TypeInfo typeInfo_;
     public:
@@ -231,42 +250,299 @@ namespace Harlinn::Common::Core::Com
     };
 
     
-    template<typename T>
-    concept ModuleType = requires(T t)
-    {
-        { t.AddRef() } -> std::convertible_to<long>;
-        { t.Release() } -> std::convertible_to<long>;
-        { t.CanUnloadNow() } -> std::convertible_to<bool>;
-    };
-    
 
+    template<typename ConnectionPointT, typename ObjectBaseT>
+    class EnumConnectionsImpl;
 
-    template<typename DerivedT, typename ClassT, typename ... InterfaceTypes>
-    class __declspec(novtable) IClassFactoryImpl : public IUknownImpl<DerivedT, InterfaceTypes...>
+    template<typename DerivedT, typename ObjectBaseT, typename ConnectionInterfaceT, typename InterfaceT>
+    class __declspec( novtable ) IConnectionPointImpl : public IUknownImpl<DerivedT, InterfaceT>
     {
     public:
-        using InterfaceType = IClassFactory;
-        using ClassType = ClassT;
-        virtual HRESULT STDMETHODCALLTYPE CreateInstance(IUnknown* pUnkOuter, REFIID riid, void** ppvObject) override
+        using DerivedType = DerivedT;
+        using ObjectBaseType = ObjectBaseT;
+        using InterfaceType = IConnectionPoint;
+        using ConnectionInterfaceType = ConnectionInterfaceT;
+        using ConnectionContainer = std::vector<ConnectionInterfaceType*>;
+        using size_type = typename ConnectionContainer::size_type;
+        using iterator = typename ConnectionContainer::iterator;
+        using const_iterator = typename ConnectionContainer::const_iterator;
+        using reference = typename ConnectionContainer::reference;
+        using const_reference = typename ConnectionContainer::const_reference;
+    private:
+        IConnectionPointContainer* connectionPointContainer_ = nullptr;
+        ConnectionContainer connections_;
+    public:
+        IConnectionPointImpl( IConnectionPointContainer* connectionPointContainer )
+            : connectionPointContainer_( connectionPointContainer )
+        {
+        }
+
+        bool empty( ) const
+        {
+            return connections_.empty( );
+        }
+
+        size_type size( ) const
+        {
+            return connections_.size( );
+        }
+
+        iterator begin( )
+        {
+            return connections_.begin( );
+        }
+        iterator end( )
+        {
+            return connections_.end( );
+        }
+
+        const_iterator begin( ) const
+        {
+            return connections_.begin( );
+        }
+        const_iterator end( ) const
+        {
+            return connections_.end( );
+        }
+        
+        reference operator[]( size_type index )
+        {
+            return connections_[ index ];
+        }
+        const_reference operator[]( size_type index ) const
+        {
+            return connections_[ index ];
+        }
+
+        virtual HRESULT STDMETHODCALLTYPE GetConnectionInterface( IID* pIID ) override
         {
             try
             {
-
+                if ( pIID )
+                {
+                    *pIID = __uuidof( ConnectionInterfaceType );
+                }
+                else
+                {
+                    return E_POINTER;
+                }
             }
-            HCC_COM_CATCH_ALL_REPORT_EXCEPTION_AND_RETURN_HRESULT();
+            HCC_COM_CATCH_ALL_REPORT_EXCEPTION_AND_RETURN_HRESULT( );
         }
 
-        virtual HRESULT STDMETHODCALLTYPE LockServer(BOOL fLock) override
+        virtual HRESULT STDMETHODCALLTYPE GetConnectionPointContainer( IConnectionPointContainer** result ) override
         {
             try
             {
-
+                return connectionPointContainer_->QueryInterface( result );
             }
-            HCC_COM_CATCH_ALL_REPORT_EXCEPTION_AND_RETURN_HRESULT();
+            HCC_COM_CATCH_ALL_REPORT_EXCEPTION_AND_RETURN_HRESULT( );
         }
+
+        virtual HRESULT STDMETHODCALLTYPE Advise( IUnknown* sink, DWORD* cookie ) override
+        {
+            try
+            {
+                if ( cookie )
+                {
+                    if ( sink )
+                    {
+                        auto count = connections_.size( );
+                        for ( size_t i = 0; i < count; i++ )
+                        {
+                            if ( connections_[ i ] == nullptr )
+                            {
+                                connections_[ i ] = static_cast< ConnectionInterfaceType* >( sink );
+                                sink->AddRef( );
+                                *cookie = static_cast<DWORD>( i );
+                                return S_OK;
+                            }
+                        }
+                        *cookie = static_cast< DWORD >( connections_.size() );
+                        connections_.push_back( sink );
+                        sink->AddRef( );
+                        return S_OK;
+                    }
+                    else
+                    {
+                        return E_INVALIDARG;
+                    }
+                }
+                else
+                {
+                    return E_POINTER;
+                }
+            }
+            HCC_COM_CATCH_ALL_REPORT_EXCEPTION_AND_RETURN_HRESULT( );
+        }
+
+        virtual HRESULT STDMETHODCALLTYPE Unadvise( DWORD cookie ) override
+        {
+            try
+            {
+                if ( cookie < connections_.size( ) )
+                {
+                    auto connection = connections_[ cookie ];
+                    connections_[ cookie ] = nullptr;
+                    connection->Release( );
+                    return S_OK;
+                }
+                else
+                {
+                    return E_POINTER;
+                }
+            }
+            HCC_COM_CATCH_ALL_REPORT_EXCEPTION_AND_RETURN_HRESULT( );
+        }
+
+        virtual HRESULT STDMETHODCALLTYPE EnumConnections( IEnumConnections** result ) override;
+
     };
 
+    template<typename ConnectionPointT, typename ObjectBaseT>
+    class EnumConnectionsImpl : public ObjectBaseT, public IUknownImpl<EnumConnectionsImpl<ConnectionPointT, ObjectBaseT>, IEnumConnections>
+    {
+    public:
+        using ConnectionPointType = ConnectionPointT;
+        using ObjectBaseType = ObjectBaseT;
+        using InterfaceType = IEnumConnections;
+        using size_type = typename ConnectionPointType::size_type;
+        using ConnectionInterfaceType = typename ConnectionPointType::ConnectionInterfaceType;
+    private:
+        ConnectionPointType* connectionPoint_;
+        size_type position_ = 0;
+    public:
+        EnumConnectionsImpl( ConnectionPointType* connectionPoint )
+            : connectionPoint_( connectionPoint )
+        {
+            connectionPoint_->AddRef( );
+        }
+        ~EnumConnectionsImpl( )
+        {
+            connectionPoint_->Release( );
+        }
 
+        virtual HRESULT STDMETHODCALLTYPE Next( ULONG connectDataSize, LPCONNECTDATA connectData, ULONG* fetched ) override
+        {
+            try
+            {
+                if ( connectData && fetched )
+                {
+                    auto& connectionPoint = *connectionPoint_;
+                    auto size = connectionPoint.size( );
+                    if ( position_ < size )
+                    {
+                        size_type count = 0;
+                        size_type maxCount = size - position_;
+                        for ( size_t i = 0; i < maxCount && count < connectDataSize; i++ )
+                        {
+                            auto connection = connectionPoint[ position_ ];
+                            if ( connection )
+                            {
+                                auto& element = connectData[ count ];
+                                element.pUnk = connection;
+                                connection->AddRef( );
+                                element.dwCookie = static_cast< DWORD >( position_ );
+                                count++;
+                            }
+                            position_++;
+                        }
+                        *fetched = static_cast< ULONG >( count );
+                        return count == connectDataSize ? S_OK : S_FALSE;
+                    }
+                    else
+                    {
+                        *fetched = 0;
+                        return connectDataSize == 0 ? S_OK : S_FALSE;
+                    }
+                }
+                else
+                {
+                    return E_POINTER;
+                }
+            }
+            HCC_COM_CATCH_ALL_REPORT_EXCEPTION_AND_RETURN_HRESULT( );
+        }
+
+        virtual HRESULT STDMETHODCALLTYPE Skip( ULONG numberOfConnectionsToSkip ) override
+        {
+            try
+            {
+                auto& connectionPoint = *connectionPoint_;
+                auto size = connectionPoint.size( );
+                if ( position_ < size )
+                {
+                    // Free slots doesn't count, which is why we need to iterate over the connections
+                    size_type count = 0;
+                    size_type maxCount = size - position_;
+                    for ( size_t i = 0; i < maxCount && count < numberOfConnectionsToSkip; i++ )
+                    {
+                        auto connection = connectionPoint[ position_ ];
+                        if ( connection )
+                        {
+                            count++;
+                        }
+                        position_++;
+                    }
+                    return count == numberOfConnectionsToSkip ? S_OK : S_FALSE;
+                }
+                else
+                {
+                    return numberOfConnectionsToSkip == 0 ? S_OK : S_FALSE;
+                }
+            }
+            HCC_COM_CATCH_ALL_REPORT_EXCEPTION_AND_RETURN_HRESULT( );
+        }
+
+        virtual HRESULT STDMETHODCALLTYPE Reset( ) override
+        {
+            try
+            {
+                position_ = 0;
+            }
+            HCC_COM_CATCH_ALL_REPORT_EXCEPTION_AND_RETURN_HRESULT( );
+        }
+
+        virtual HRESULT STDMETHODCALLTYPE Clone( IEnumConnections** result ) override
+        {
+            try
+            {
+                if ( result )
+                {
+                    auto ptr = new EnumConnectionsImpl<ConnectionPointType, ObjectBaseType>( connectionPoint_ );
+                    ptr->position_ = position_;
+                    *result = static_cast< IEnumConnections* >( ptr );
+                    return S_OK;
+                }
+                else
+                {
+                    return E_POINTER;
+                }
+            }
+            HCC_COM_CATCH_ALL_REPORT_EXCEPTION_AND_RETURN_HRESULT( );
+        }
+
+    };
+
+    template<typename DerivedT, typename ObjectBaseT, typename ConnectionInterfaceT, typename InterfaceT>
+    HRESULT STDMETHODCALLTYPE IConnectionPointImpl<DerivedT, ObjectBaseT, ConnectionInterfaceT, InterfaceT>::EnumConnections( IEnumConnections** result )
+    {
+        try
+        {
+            if ( result )
+            {
+                using ConnectionPointType = IConnectionPointImpl<DerivedT, ObjectBaseT, ConnectionInterfaceT, InterfaceT>;
+                auto ptr = new EnumConnectionsImpl<ConnectionPointType, ObjectBaseType>( this );
+                *result = static_cast< IEnumConnections* >( ptr );
+                return S_OK;
+            }
+            else
+            {
+                return E_POINTER;
+            }
+        }
+        HCC_COM_CATCH_ALL_REPORT_EXCEPTION_AND_RETURN_HRESULT( );
+    }
 
 
 }

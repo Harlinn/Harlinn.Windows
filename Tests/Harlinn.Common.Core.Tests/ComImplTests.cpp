@@ -15,11 +15,18 @@ namespace
     };
 
 
-    class ObjectImpl : public Com::ObjectBase, 
-        public Com::IUknownImpl<ObjectImpl, IEnumString, IEnumVARIANT>
+    class ObjectImpl : public Com::ObjectBase<ObjectImpl, IEnumString, IEnumVARIANT>,
+        public Com::IUknownImpl<ObjectImpl, IEnumString>,
+        public Com::IUknownImpl<ObjectImpl, IEnumVARIANT>
     {
         int value_ = 0;
     public:
+        using ObjectBaseType = Com::ObjectBase<ObjectImpl, IEnumString, IEnumVARIANT>;
+        using ObjectBaseType::QueryInterface;
+        using ObjectBaseType::AddRef;
+        using ObjectBaseType::Release;
+
+
         virtual HRESULT __stdcall Next( ULONG celt, LPOLESTR* rgelt, ULONG* pceltFetched )
         {
             if ( !rgelt )
