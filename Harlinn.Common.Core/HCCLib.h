@@ -627,11 +627,19 @@ namespace Harlinn::Common::Core
     template<typename T>
         requires std::is_same_v<DateTime, std::remove_cvref_t<T>> || 
             std::is_same_v<TimeSpan, std::remove_cvref_t<T>> || 
-            std::is_same_v<Currency, std::remove_cvref_t<T>> || 
-            std::is_same_v<Guid, std::remove_cvref_t<T>>
+            std::is_same_v<Currency, std::remove_cvref_t<T>>
     constexpr inline int Compare( T v1, T v2 ) noexcept
     {
         return v1.CompareTo( v2 );
+    }
+
+
+    template<typename T1, typename T2>
+        requires ((std::is_same_v<Guid, std::remove_cvref_t<T1>> || std::is_same_v<GUID, std::remove_cvref_t<T1>> ) &&
+                ( std::is_same_v<Guid, std::remove_cvref_t<T2>> || std::is_same_v<GUID, std::remove_cvref_t<T2>> ) )
+    constexpr inline int Compare( const T1& v1, const T2& v2 ) noexcept
+    {
+        return reinterpret_cast<const Guid&>(v1).CompareTo( reinterpret_cast< const Guid& >( v2 ) );
     }
 
 

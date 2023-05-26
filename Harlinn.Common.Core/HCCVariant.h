@@ -146,6 +146,24 @@ namespace Harlinn::Common::Core
     };
 
     template<>
+    struct VariantTypeTraits<wchar_t> : public Internal::VariantTypeTraits<Core::VariantType::UShort, wchar_t, unsigned short >
+    {
+        using Base = Internal::VariantTypeTraits<Core::VariantType::UShort, wchar_t, unsigned short >;
+        using ValueType = Base::ValueType;
+        using VariantValueType = Base::VariantValueType;
+        static constexpr bool RequiresConversion = true;
+
+        static constexpr ValueType Convert( VariantValueType value )
+        {
+            return static_cast< ValueType >(value);
+        }
+        static constexpr VariantValueType Convert( ValueType value )
+        {
+            return static_cast< VariantValueType >( value );
+        }
+    };
+
+    template<>
     struct VariantTypeTraits<short> : public Internal::VariantTypeTraits<Core::VariantType::Short, short >
     {
     };
@@ -1885,6 +1903,18 @@ namespace Harlinn::Common::Core
             Base::ulVal = value;
         }
 
+        explicit VariantT( IRecordInfo* recordInfo, void* value, bool addRef = false ) noexcept
+            : Base( )
+        {
+            Base::vt = static_cast< USHORT >( VariantType::Record );
+            Base::pRecInfo = recordInfo;
+            Base::pvRecord = value;
+            if ( addRef )
+            {
+                recordInfo->AddRef( );
+            }
+        }
+
 
         VariantT( const VariantT& other )
         {
@@ -2005,7 +2035,11 @@ namespace Harlinn::Common::Core
                 {
                     Clear();
                 }
-                memcpy( &Base::vt, &other.vt, sizeof( VARIANT ) );
+
+                Base* self = this;
+                Base* otherPtr = &other;
+
+                memcpy( self, otherPtr, sizeof( VARIANT ) );
                 other.vt = VT_EMPTY;
             }
             return *this;
@@ -2227,7 +2261,7 @@ namespace Harlinn::Common::Core
             }
         }
 
-        void Assign( CHAR value )
+        void Assign( signed char value )
         {
             Clear( );
             SetVariantType( VariantType::SByte );

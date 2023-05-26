@@ -2311,6 +2311,10 @@ namespace Harlinn::Common::Core
             auto pInterface = GetInterface( );
             pInterface->ReleaseVarDesc( pVarDesc );
         }
+
+        inline RecordInfo GetRecordInfo( ) const;
+        
+
     };
 
     class TypeAttributes
@@ -5183,6 +5187,20 @@ namespace Harlinn::Common::Core
         }
         return RecordInfo( );
     }
+
+    inline RecordInfo TypeInfo::GetRecordInfo( ) const
+    {
+        auto pInterface = GetInterface( );
+        if ( pInterface )
+        {
+            RecordInfo result;
+            auto hr = GetRecordInfoFromTypeInfo( pInterface, reinterpret_cast< IRecordInfo** >( &result ) );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+            return result;
+        }
+        return {};
+    }
+
 
 
     /// <summary>
