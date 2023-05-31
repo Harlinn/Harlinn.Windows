@@ -3078,7 +3078,7 @@ namespace Harlinn::Common::Core::IO::Sockets
             return 0;
         }
     public:
-        [[nodiscard]]
+        
         WinError Receive( void* buffer, size_t numberOfBytesToRead, size_t* numberOfBytesReceived, MessageFlags flags ) const
         {
             int bufferSize = static_cast<int>( numberOfBytesToRead );

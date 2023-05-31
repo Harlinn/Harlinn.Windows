@@ -164,6 +164,42 @@ namespace Harlinn::Common::Core
     };
 
     template<>
+    struct VariantTypeTraits<std::wstring> : public Internal::VariantTypeTraits<Core::VariantType::BStr, std::wstring, BSTR >
+    {
+        using Base = Internal::VariantTypeTraits<Core::VariantType::BStr, std::wstring, BSTR >;
+        using ValueType = Base::ValueType;
+        using VariantValueType = Base::VariantValueType;
+        static constexpr bool RequiresConversion = true;
+
+        static constexpr ValueType Convert( VariantValueType value )
+        {
+            if ( value )
+            {
+                auto length = static_cast<size_t>(SysStringLen( value ));
+                return ValueType( reinterpret_cast< const wchar_t* >( value ), length );
+            }
+            else
+            {
+                return {};
+            }
+            return static_cast< ValueType >( value );
+        }
+        static constexpr VariantValueType Convert( const ValueType& value )
+        {
+            auto valueSize = value.size( );
+            if ( valueSize )
+            {
+                return SysAllocStringLen( value.c_str( ), static_cast< UINT >( valueSize ) );
+            }
+            else
+            {
+                return nullptr;
+            }
+        }
+    };
+
+
+    template<>
     struct VariantTypeTraits<short> : public Internal::VariantTypeTraits<Core::VariantType::Short, short >
     {
     };
@@ -253,6 +289,7 @@ namespace Harlinn::Common::Core
                 CheckHRESULT( E_OUTOFMEMORY );
             }
         }
+
 
         explicit SysString( const std::string& str )
             : bstr_( 0 )
@@ -1084,6 +1121,14 @@ namespace Harlinn::Common::Core
             if ( ptr_ )
             {
                 return ( ptr_->fFeatures & FADF_BSTR ) != 0;
+            }
+            if ( HaveVariantType( ) )
+            {
+                auto variantType = GetVariantType( );
+                if ( variantType == VariantType::BStr )
+                {
+                    return true;
+                }
             }
             return false;
         }

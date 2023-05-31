@@ -643,13 +643,12 @@ namespace Harlinn::Common::Core
     }
 
 
-
-    constexpr inline int Compare( const std::string_view& v1, const std::string_view& v2 ) noexcept
-    {
-        return v1.compare( v2 );
-    }
-
-    inline int Compare( const std::string& v1, const std::string& v2 ) noexcept
+    template<typename T1, typename T2 >
+        requires requires( const T1& t1, const T2& t2 )
+        {
+            { t1.compare( t2 ) } ->std::convertible_to<int>;
+        }
+    inline int Compare( const T1& v1, const T2& v2 ) noexcept
     {
         return v1.compare( v2 );
     }
@@ -714,6 +713,39 @@ namespace Harlinn::Common::Core
             return 1;
         }
     }
+
+    template<typename FirstT, typename SecondT, typename CompareFunc >
+        requires requires( FirstT f, SecondT s, CompareFunc func )
+    {
+        { func( f, s ) } ->std::convertible_to<int>;
+    }
+    inline int CompareEx( const FirstT* first, size_t firstLength, const SecondT* second, size_t secondLength, CompareFunc compare )
+    {
+        auto compareSize = std::min( firstLength, secondLength );
+        for ( size_t i = 0; i < compareSize; i++ )
+        {
+            auto result = compare( first[ i ], second[ i ] );
+            if ( result )
+            {
+                return result;
+            }
+        }
+        if ( firstLength == secondLength )
+        {
+            return 0;
+        }
+        else if ( firstLength < secondLength )
+        {
+            return -1;
+        }
+        else
+        {
+            return 1;
+        }
+    }
+
+
+
 
 
     template<SimpleSpanLike T1, SimpleSpanLike T2, typename ConversionFunc >
