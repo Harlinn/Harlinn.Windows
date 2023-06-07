@@ -1060,7 +1060,77 @@ namespace Harlinn::Common::Core
     }
 
 
+    enum class LocaleCategory : Int32
+    {
+        All = LC_ALL,
+        Collate = LC_COLLATE,
+        CharType = LC_CTYPE,
+        Monetary = LC_MONETARY,
+        Numeric = LC_NUMERIC,
+        Time = LC_TIME
+    };
 
+    class Locale
+    {
+    public:
+        
+    private:
+        _locale_t locale_ = nullptr;
+        bool ownsLocale_ = false;
+    public:
+        Locale( ) = default;
+
+        explicit Locale( _locale_t locale, bool ownsLocale )
+            : locale_( locale ), ownsLocale_( ownsLocale )
+        {
+        }
+
+        explicit Locale( LocaleCategory category, const char* localeSpecifier )
+            : locale_( _create_locale( static_cast<int>( category ), localeSpecifier ) ), ownsLocale_(true)
+        { }
+        explicit Locale( LocaleCategory category, const wchar_t* localeSpecifier )
+            : locale_( _wcreate_locale( static_cast< int >( category ), localeSpecifier ) ), ownsLocale_( true )
+        {
+        }
+
+        ~Locale( )
+        {
+            if ( locale_ && ownsLocale_ )
+            {
+                _free_locale( locale_ );
+            }
+        }
+
+        Locale( const Locale& other ) = delete;
+        Locale& operator = ( const Locale& other ) = delete;
+
+
+        Locale( Locale&& other ) noexcept
+            : locale_( other.locale_ ), ownsLocale_( other.ownsLocale_ )
+        {
+            other.locale_ = nullptr;
+            other.ownsLocale_ = false;
+        }
+        Locale& operator = ( Locale&& other ) noexcept
+        {
+            std::swap( locale_, other.locale_ );
+            std::swap( ownsLocale_, other.ownsLocale_ );
+            return *this;
+        }
+
+
+
+        constexpr operator _locale_t( ) const
+        {
+            return locale_;
+        }
+
+        static const Locale& InvariantLocale( )
+        {
+            static Locale invariantLocale( LocaleCategory::All, L"en-US" );
+            return invariantLocale;
+        }
+    };
 
 
     

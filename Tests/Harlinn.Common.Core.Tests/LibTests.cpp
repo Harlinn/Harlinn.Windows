@@ -288,13 +288,13 @@ BOOST_AUTO_TEST_CASE( GuidCompareTest )
     Guid guid4 = guid2;
     
 
-    constexpr auto result1 = Compare( guid1, guid2 );
+    constexpr auto result1 = guid1.CompareTo( guid2 );
     BOOST_CHECK( result1 > 0 );
 
-    constexpr auto result2 = Compare( guid1, guid1 );
+    constexpr auto result2 = guid1.CompareTo( guid1 );
     BOOST_CHECK( result2 == 0 );
 
-    constexpr auto result3 = Compare( guid2, guid1 );
+    constexpr auto result3 = guid2.CompareTo( guid1 );
     BOOST_CHECK( result3 < 0 );
 
     auto result4 = Compare( guid3, guid4 );

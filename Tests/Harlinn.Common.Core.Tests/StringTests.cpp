@@ -365,6 +365,14 @@ BOOST_AUTO_TEST_CASE( TrimTest3d )
 }
 
 
+// --run_test=StringTests/ToAnsiStringTest001d
+BOOST_AUTO_TEST_CASE( ToAnsiStringTest001d )
+{
+    float value = 1.0f;
+    auto str = ToAnsiString( value, 6,2, Locale::InvariantLocale() );
+    bool areEqual = str == "001.00";
+    BOOST_TEST( areEqual );
+}
 
 
 

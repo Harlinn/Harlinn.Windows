@@ -180,6 +180,20 @@ namespace Harlinn::Common::Core
     {
         return std::to_wstring( value );
     }
+
+    std::wstring ToWideString( Single value, int width, int precission )
+    {
+        return Format( L"%0*.*f", width, precission, value );
+    }
+    std::wstring ToWideString( Single value, const Locale& locale )
+    {
+        return Format( locale, L"%0f", value );
+    }
+    std::wstring ToWideString( Single value, int width, int precission, const Locale& locale )
+    {
+        return Format( locale, L"%0*.*f", width, precission, value );
+    }
+
     std::wstring ToWideString( Double value )
     {
         return std::to_wstring( value );
@@ -282,6 +296,20 @@ namespace Harlinn::Common::Core
     {
         return std::to_string( value );
     }
+
+    std::string ToAnsiString( Single value, int width, int precission )
+    {
+        return Format( "%0*.*f", width, precission, value );
+    }
+    std::string ToAnsiString( Single value, const Locale& locale )
+    {
+        return Format( locale, "%0f", value );
+    }
+    std::string ToAnsiString( Single value, int width, int precission, const Locale& locale )
+    {
+        return Format( locale, "%0*.*f", width, precission, value );
+    }
+
     std::string ToAnsiString( Double value )
     {
         return std::to_string( value );

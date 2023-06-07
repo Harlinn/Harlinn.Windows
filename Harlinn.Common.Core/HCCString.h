@@ -64,6 +64,9 @@ namespace Harlinn::Common::Core
     HCC_EXPORT std::wstring ToWideString( Int64 value, int base = 10 );
     HCC_EXPORT std::wstring ToWideString( UInt64 value, int base = 10 );
     HCC_EXPORT std::wstring ToWideString( Single value );
+    HCC_EXPORT std::wstring ToWideString( Single value, int width, int precission );
+    HCC_EXPORT std::wstring ToWideString( Single value, const Locale& locale );
+    HCC_EXPORT std::wstring ToWideString( Single value, int width, int precission, const Locale& locale );
     HCC_EXPORT std::wstring ToWideString( Double value );
     HCC_EXPORT std::wstring ToWideString( const DateTime& value );
     HCC_EXPORT std::wstring ToWideString( const TimeSpan& value );
@@ -125,6 +128,9 @@ namespace Harlinn::Common::Core
     HCC_EXPORT std::string ToAnsiString( Int64 value, int base = 10 );
     HCC_EXPORT std::string ToAnsiString( UInt64 value, int base = 10 );
     HCC_EXPORT std::string ToAnsiString( Single value );
+    HCC_EXPORT std::string ToAnsiString( Single value, const Locale& locale );
+    HCC_EXPORT std::string ToAnsiString( Single value, int width, int precission );
+    HCC_EXPORT std::string ToAnsiString( Single value, int width, int precission, const Locale& locale );
     HCC_EXPORT std::string ToAnsiString( Double value );
     HCC_EXPORT std::string ToAnsiString( const DateTime& value );
     HCC_EXPORT std::string ToAnsiString( const TimeSpan& value );
@@ -153,6 +159,27 @@ namespace Harlinn::Common::Core
         }
     }
 
+    inline std::wstring Format( const Locale& locale, const wchar_t* fmt, ... )
+    {
+        va_list args;
+        va_start( args, fmt );
+        auto requiredLength = _vscwprintf_l( fmt, locale, args );
+        if ( requiredLength > 0 )
+        {
+            std::wstring result;
+            result.resize( requiredLength );
+            _vswprintf_p_l( result.data( ), requiredLength + 1, fmt, locale, args );
+            va_end( args );
+            return result;
+        }
+        else
+        {
+            va_end( args );
+            return {};
+        }
+    }
+
+
     inline std::string Format( const char* fmt, ... )
     {
         va_list args;
@@ -172,6 +199,27 @@ namespace Harlinn::Common::Core
             return {};
         }
     }
+
+    inline std::string Format( const Locale& locale, const char* fmt, ... )
+    {
+        va_list args;
+        va_start( args, fmt );
+        auto requiredLength = _vscprintf_l( fmt, locale, args );
+        if ( requiredLength > 0 )
+        {
+            std::string result;
+            result.resize( requiredLength );
+            _vsprintf_p_l( result.data( ), requiredLength + 1, fmt, locale, args );
+            va_end( args );
+            return result;
+        }
+        else
+        {
+            va_end( args );
+            return {};
+        }
+    }
+
 
     HCC_EXPORT bool ToBoolean( const wchar_t* str ) noexcept;
     HCC_EXPORT bool ToBoolean( const char* str ) noexcept;

@@ -130,7 +130,7 @@ namespace Harlinn::Common::Core::Com
 
 
     template<typename DerivedT, typename InterfaceT>
-    class __declspec( novtable ) IUknownImpl : public InterfaceT
+    class __declspec( novtable ) IUnknownImpl : public InterfaceT
     {
     public:
         using DerivedType = DerivedT;
@@ -158,7 +158,7 @@ namespace Harlinn::Common::Core::Com
 
 
     template<typename DerivedT, typename InterfaceT>
-    class __declspec( novtable ) IDispatchImpl : public IUknownImpl<DerivedT, InterfaceT>
+    class __declspec( novtable ) IDispatchImpl : public IUnknownImpl<DerivedT, InterfaceT>
     {
         TypeInfo typeInfo_;
     public:
@@ -255,7 +255,7 @@ namespace Harlinn::Common::Core::Com
     class EnumConnectionsImpl;
 
     template<typename DerivedT, typename ObjectBaseT, typename ConnectionInterfaceT, typename InterfaceT>
-    class __declspec( novtable ) IConnectionPointImpl : public IUknownImpl<DerivedT, InterfaceT>
+    class __declspec( novtable ) IConnectionPointImpl : public IUnknownImpl<DerivedT, InterfaceT>
     {
     public:
         using DerivedType = DerivedT;
@@ -400,7 +400,7 @@ namespace Harlinn::Common::Core::Com
     };
 
     template<typename ConnectionPointT, typename ObjectBaseT>
-    class EnumConnectionsImpl : public ObjectBaseT, public IUknownImpl<EnumConnectionsImpl<ConnectionPointT, ObjectBaseT>, IEnumConnections>
+    class EnumConnectionsImpl : public ObjectBaseT, public IUnknownImpl<EnumConnectionsImpl<ConnectionPointT, ObjectBaseT>, IEnumConnections>
     {
     public:
         using ConnectionPointType = ConnectionPointT;

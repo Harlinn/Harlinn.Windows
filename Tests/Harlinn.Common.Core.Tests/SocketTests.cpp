@@ -231,9 +231,12 @@ BOOST_AUTO_TEST_CASE( ClientReadTest1 )
     SocketServer server( "ClientWriteTest1" );
     server.Start( );
 
-    TcpSocket clientSocket( AddressFamily::InterNetworkV6 );
-    Address address( 42000 );
-    clientSocket.Connect( address );
+    //Address address( L"127.0.0.1", 42000 );
+    //Address address( L"localhost", 42000 );
+    Address address( AddressFamily::InterNetwork, L"127.0.0.1:42000" );
+    TcpSocket clientSocket( address.Family() );
+    
+    clientSocket.Connect( address, nullptr, nullptr, nullptr );
     clientSocket.Send( dataToWrite.data( ), dataToWrite.size( ), MessageFlags::None );
     clientSocket.Receive( dataReceived.data(), dataReceived.size() );
     bool equal = dataReceived == dataToWrite;
