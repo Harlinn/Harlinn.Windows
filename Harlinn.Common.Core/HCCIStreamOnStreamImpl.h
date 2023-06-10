@@ -10,16 +10,20 @@ namespace Harlinn::Common::Core::Com
     namespace Internal
     {
         template<typename StreamT, typename DerivedT, typename InterfaceT = ISequentialStream>
-        class ISequentialStreamOnStreamImpl : public IUknownImpl<DerivedT, InterfaceT>
+        class ISequentialStreamOnStreamImpl : public ObjectBase<InterfaceT>, public IUnknownImpl<DerivedT, InterfaceT>
         {
         public:
-            using Base = IUknownImpl<DerivedT, InterfaceT>;
+            using Base = ObjectBase<InterfaceT>;
             using StreamType = StreamT;
             using InterfaceType = InterfaceT;
         protected:
             StreamT stream_;
             CriticalSection criticalSection_;
         public:
+            using Base::QueryInterface;
+            using Base::AddRef;
+            using Base::Release;
+
             ISequentialStreamOnStreamImpl(StreamType&& stream)
                 : stream_(std::move(stream))
             {

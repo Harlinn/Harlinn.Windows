@@ -16,8 +16,8 @@ namespace
 
 
     class ObjectImpl : public Com::ObjectBase<ObjectImpl, IEnumString, IEnumVARIANT>,
-        public Com::IUknownImpl<ObjectImpl, IEnumString>,
-        public Com::IUknownImpl<ObjectImpl, IEnumVARIANT>
+        public Com::IUnknownImpl<ObjectImpl, IEnumString>,
+        public Com::IUnknownImpl<ObjectImpl, IEnumVARIANT>
     {
         int value_ = 0;
     public:
