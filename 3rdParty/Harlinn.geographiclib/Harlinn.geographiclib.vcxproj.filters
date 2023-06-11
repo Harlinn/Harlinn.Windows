@@ -1,0 +1,299 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="include">
+      <UniqueIdentifier>{b04dc854-a062-4ab4-a3eb-7288dd0d0d7d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\GeographicLib">
+      <UniqueIdentifier>{de6baeda-3017-4157-8c52-a89c9963f40f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{e4a3300c-6bd9-42db-8ed5-f96f37596e29}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\GeographicLib\Accumulator.hpp">
+      <Filter>include\GeographicLib</Filter>
+    </ClInclude>
+    <ClInclude Include="include\GeographicLib\AlbersEqualArea.hpp">
+      <Filter>include\GeographicLib</Filter>
+    </ClInclude>
+    <ClInclude Include="include\GeographicLib\AuxAngle.hpp">
+      <Filter>include\GeographicLib</Filter>
+    </ClInclude>
+    <ClInclude Include="include\GeographicLib\AuxLatitude.hpp">
+      <Filter>include\GeographicLib</Filter>
+    </ClInclude>
+    <ClInclude Include="include\GeographicLib\AzimuthalEquidistant.hpp">
+      <Filter>include\GeographicLib</Filter>
+    </ClInclude>
+    <ClInclude Include="include\GeographicLib\CassiniSoldner.hpp">
+      <Filter>include\GeographicLib</Filter>
+    </ClInclude>
+    <ClInclude Include="include\GeographicLib\CircularEngine.hpp">
+      <Filter>include\GeographicLib</Filter>
+    </ClInclude>
+    <ClInclude Include="include\GeographicLib\Constants.hpp">
+      <Filter>include\GeographicLib</Filter>
+    </ClInclude>
+    <ClInclude Include="include\GeographicLib\DAuxLatitude.hpp">
+      <Filter>include\GeographicLib</Filter>
+    </ClInclude>
+    <ClInclude Include="include\GeographicLib\DMS.hpp">
+      <Filter>include\GeographicLib</Filter>
+    </ClInclude>
+    <ClInclude Include="include\GeographicLib\DST.hpp">
+      <Filter>include\GeographicLib</Filter>
+    </ClInclude>
+    <ClInclude Include="include\GeographicLib\Ellipsoid.hpp">
+      <Filter>include\GeographicLib</Filter>
+    </ClInclude>
+    <ClInclude Include="include\GeographicLib\EllipticFunction.hpp">
+      <Filter>include\GeographicLib</Filter>
+    </ClInclude>
+    <ClInclude Include="include\GeographicLib\GARS.hpp">
+      <Filter>include\GeographicLib</Filter>
+    </ClInclude>
+    <ClInclude Include="include\GeographicLib\Geocentric.hpp">
+      <Filter>include\GeographicLib</Filter>
+    </ClInclude>
+    <ClInclude Include="include\GeographicLib\GeoCoords.hpp">
+      <Filter>include\GeographicLib</Filter>
+    </ClInclude>
+    <ClInclude Include="include\GeographicLib\Geodesic.hpp">
+      <Filter>include\GeographicLib</Filter>
+    </ClInclude>
+    <ClInclude Include="include\GeographicLib\GeodesicExact.hpp">
+      <Filter>include\GeographicLib</Filter>
+    </ClInclude>
+    <ClInclude Include="include\GeographicLib\GeodesicLine.hpp">
+      <Filter>include\GeographicLib</Filter>
+    </ClInclude>
+    <ClInclude Include="include\GeographicLib\GeodesicLineExact.hpp">
+      <Filter>include\GeographicLib</Filter>
+    </ClInclude>
+    <ClInclude Include="include\GeographicLib\Geohash.hpp">
+      <Filter>include\GeographicLib</Filter>
+    </ClInclude>
+    <ClInclude Include="include\GeographicLib\Geoid.hpp">
+      <Filter>include\GeographicLib</Filter>
+    </ClInclude>
+    <ClInclude Include="include\GeographicLib\Georef.hpp">
+      <Filter>include\GeographicLib</Filter>
+    </ClInclude>
+    <ClInclude Include="include\GeographicLib\Gnomonic.hpp">
+      <Filter>include\GeographicLib</Filter>
+    </ClInclude>
+    <ClInclude Include="include\GeographicLib\GravityCircle.hpp">
+      <Filter>include\GeographicLib</Filter>
+    </ClInclude>
+    <ClInclude Include="include\GeographicLib\GravityModel.hpp">
+      <Filter>include\GeographicLib</Filter>
+    </ClInclude>
+    <ClInclude Include="include\GeographicLib\LambertConformalConic.hpp">
+      <Filter>include\GeographicLib</Filter>
+    </ClInclude>
+    <ClInclude Include="include\GeographicLib\LocalCartesian.hpp">
+      <Filter>include\GeographicLib</Filter>
+    </ClInclude>
+    <ClInclude Include="include\GeographicLib\MagneticCircle.hpp">
+      <Filter>include\GeographicLib</Filter>
+    </ClInclude>
+    <ClInclude Include="include\GeographicLib\MagneticModel.hpp">
+      <Filter>include\GeographicLib</Filter>
+    </ClInclude>
+    <ClInclude Include="include\GeographicLib\Math.hpp">
+      <Filter>include\GeographicLib</Filter>
+    </ClInclude>
+    <ClInclude Include="include\GeographicLib\MGRS.hpp">
+      <Filter>include\GeographicLib</Filter>
+    </ClInclude>
+    <ClInclude Include="include\GeographicLib\NearestNeighbor.hpp">
+      <Filter>include\GeographicLib</Filter>
+    </ClInclude>
+    <ClInclude Include="include\GeographicLib\NormalGravity.hpp">
+      <Filter>include\GeographicLib</Filter>
+    </ClInclude>
+    <ClInclude Include="include\GeographicLib\OSGB.hpp">
+      <Filter>include\GeographicLib</Filter>
+    </ClInclude>
+    <ClInclude Include="include\GeographicLib\PolarStereographic.hpp">
+      <Filter>include\GeographicLib</Filter>
+    </ClInclude>
+    <ClInclude Include="include\GeographicLib\PolygonArea.hpp">
+      <Filter>include\GeographicLib</Filter>
+    </ClInclude>
+    <ClInclude Include="include\GeographicLib\Rhumb.hpp">
+      <Filter>include\GeographicLib</Filter>
+    </ClInclude>
+    <ClInclude Include="include\GeographicLib\SphericalEngine.hpp">
+      <Filter>include\GeographicLib</Filter>
+    </ClInclude>
+    <ClInclude Include="include\GeographicLib\SphericalHarmonic.hpp">
+      <Filter>include\GeographicLib</Filter>
+    </ClInclude>
+    <ClInclude Include="include\GeographicLib\SphericalHarmonic1.hpp">
+      <Filter>include\GeographicLib</Filter>
+    </ClInclude>
+    <ClInclude Include="include\GeographicLib\SphericalHarmonic2.hpp">
+      <Filter>include\GeographicLib</Filter>
+    </ClInclude>
+    <ClInclude Include="include\GeographicLib\TransverseMercator.hpp">
+      <Filter>include\GeographicLib</Filter>
+    </ClInclude>
+    <ClInclude Include="include\GeographicLib\TransverseMercatorExact.hpp">
+      <Filter>include\GeographicLib</Filter>
+    </ClInclude>
+    <ClInclude Include="include\GeographicLib\Utility.hpp">
+      <Filter>include\GeographicLib</Filter>
+    </ClInclude>
+    <ClInclude Include="include\GeographicLib\UTMUPS.hpp">
+      <Filter>include\GeographicLib</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="dllmain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Accumulator.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AlbersEqualArea.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AuxAngle.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AuxLatitude.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AzimuthalEquidistant.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CassiniSoldner.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CircularEngine.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DAuxLatitude.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DMS.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DST.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Ellipsoid.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\EllipticFunction.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GARS.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Geocentric.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GeoCoords.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Geodesic.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GeodesicExact.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GeodesicLine.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GeodesicLineExact.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Geohash.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Geoid.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Georef.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Gnomonic.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GravityCircle.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GravityModel.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\LambertConformalConic.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\LocalCartesian.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\MagneticCircle.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\MagneticModel.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Math.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\MGRS.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\NormalGravity.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\OSGB.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\PolarStereographic.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\PolygonArea.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Rhumb.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SphericalEngine.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\TransverseMercator.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\TransverseMercatorExact.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Utility.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\UTMUPS.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="include\GeographicLib\Config.h">
+      <Filter>include\GeographicLib</Filter>
+    </None>
+  </ItemGroup>
+</Project>
