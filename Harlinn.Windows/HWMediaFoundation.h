@@ -24,11 +24,18 @@ namespace Harlinn::Windows::MF
     using Init = MediaFoundation;
 
 
-    class IMFAsyncCallbackImplBase abstract : public Com::IUknownImpl<IMFAsyncCallbackImplBase, IMFAsyncCallback>
+    class IMFAsyncCallbackImplBase abstract : public Com::ObjectBase<IMFAsyncCallbackImplBase, IMFAsyncCallback>,  public Com::IUnknownImpl<IMFAsyncCallbackImplBase, IMFAsyncCallback>
     {
         DWORD flags_ = 0;
         DWORD queue_ = 0;
     public:
+        using ObjectBaseType = Com::ObjectBase<IMFAsyncCallbackImplBase, IMFAsyncCallback>;
+
+        using ObjectBaseType::QueryInterface;
+        using ObjectBaseType::AddRef;
+        using ObjectBaseType::Release;
+
+
         IMFAsyncCallbackImplBase(DWORD flags = 0, DWORD queue = MFASYNC_CALLBACK_QUEUE_MULTITHREADED)
             : flags_(flags), queue_(queue) 
         {}

@@ -215,7 +215,7 @@ namespace PostScript_Support
 			containsOffset(false),offsetSign('+'),offsetHour(0),offsetMin(0)
 		{
 		}
-		bool operator==(const Date &a)
+		bool operator==(const Date &a) const
 		{
 			return this->day==a.day &&
 				this->month==a.month &&
