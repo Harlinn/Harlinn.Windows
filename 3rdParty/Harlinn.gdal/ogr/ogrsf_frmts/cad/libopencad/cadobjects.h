@@ -49,7 +49,7 @@ public:
     CADVector( double dx, double dy );
     CADVector( double dx, double dy, double dz );
     CADVector( const CADVector& other );
-    bool      operator==( const CADVector& second );
+    bool      operator==( const CADVector& second ) const;
     CADVector& operator=( const CADVector& second );
     double getX() const;
     void   setX( double value );
