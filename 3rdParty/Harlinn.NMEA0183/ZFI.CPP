@@ -1,0 +1,133 @@
+/*
+Author: Samuel R. Blackburn
+Internet: wfc@pobox.com
+
+"You can get credit for something or get it done, but not both."
+Dr. Richard Garwin
+
+The MIT License (MIT)
+
+Copyright (c) 1996-2019 Sam Blackburn
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+*/
+
+// SPDX-License-Identifier: MIT
+
+/*
+** This Sentence Not Recommended For New Designs
+** ZFO is recommended.
+*/
+
+#include "nmea0183.h"
+#pragma hdrstop
+
+void ZFI::Empty( void ) noexcept
+{
+   UTCTimeString.clear();
+   UTCTime = 0;
+   ElapsedTimeString.clear();
+   ElapsedTime = 0;
+   From.clear();
+}
+
+bool ZFI::Parse( SENTENCE const& sentence ) noexcept
+{
+   /*
+   ** ZFI - Elapsed time from point of interest
+   **
+   **        1         2         3    4
+   **        |         |         |    |  
+   ** $--ZFI,hhmmss.ss,hhmmss.ss,c--c*hh<CR><LF>
+   **
+   ** 1) Universal Time Coordinated (UTC)
+   ** 2) Elapsed Time
+   ** 3) Waypoint ID (From)
+   ** 4) Checksum
+   */
+
+   /*
+   ** First we check the checksum...
+   */
+
+   if ( sentence.IsChecksumBad( 4 ) == NMEA0183_BOOLEAN::True )
+   {
+       SetErrorMessage(STRING_VIEW("Invalid Checksum"));
+       return( false );
+   }
+
+   auto temp_time{ time(nullptr) };
+   auto tm_p{ gmtime(&temp_time) };
+   auto const year{ tm_p->tm_year + 1900 };
+   auto const month{ tm_p->tm_mon };
+   auto const day{ tm_p->tm_mday };
+
+   UTCTimeString = sentence.Field( 1 );
+
+   int hours{ 0 };
+   std::ignore = std::from_chars(UTCTimeString.data(), UTCTimeString.data() + 2, hours, 10);
+
+   int minutes{ 0 };
+   std::ignore = std::from_chars(UTCTimeString.data() + 2, UTCTimeString.data() + 4, minutes, 10);
+
+   int seconds{ 0 };
+   std::ignore = std::from_chars(UTCTimeString.data() + 4, UTCTimeString.data() + 6, seconds, 10);
+
+   UTCTime = ctime( year, month, day, hours, minutes, seconds );
+
+   ElapsedTimeString = sentence.Field( 2 );
+
+   std::ignore = std::from_chars(ElapsedTimeString.data(), ElapsedTimeString.data() + 2, hours, 10);
+   std::ignore = std::from_chars(ElapsedTimeString.data() + 2, ElapsedTimeString.data() + 4, minutes, 10);
+   std::ignore = std::from_chars(ElapsedTimeString.data() + 4, ElapsedTimeString.data() + 6, seconds, 10);
+
+   ElapsedTime = ctime( year, month, day, hours, minutes, seconds );
+
+   From = sentence.Field( 3 );
+
+   return( true );
+}
+
+bool ZFI::Write( SENTENCE& sentence ) const noexcept
+{
+   /*
+   ** Let the parent do its thing
+   */
+   
+   RESPONSE::Write( sentence );
+
+   sentence += UTCTimeString;
+   sentence += ElapsedTimeString;
+   sentence += From;
+
+   sentence.Finish();
+
+   return( true );
+}
+
+ZFI const& ZFI::operator = ( ZFI const& source ) noexcept
+{
+   UTCTimeString     = source.UTCTimeString;
+   UTCTime           = source.UTCTime;
+   ElapsedTimeString = source.ElapsedTimeString;
+   ElapsedTime       = source.ElapsedTime;
+   From              = source.From;
+
+   return( *this );
+}
