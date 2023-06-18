@@ -226,6 +226,15 @@
 #include <cctype>
 #include <cwctype>
 
+#include <ppl.h>
+
+#include <concurrent_priority_queue.h>
+#include <concurrent_queue.h>
+#include <concurrent_unordered_map.h>
+#include <concurrent_unordered_set.h>
+#include <concurrent_vector.h>
+
+
 #define XXH_INLINE_ALL
 #include <xxhash.h>
 
@@ -246,6 +255,7 @@
 #include <fmt/color.h>
 #include <fmt/ostream.h>
 #include <fmt/printf.h>
+#include <fmt/xchar.h>
 
 #include <HCCWinError.h>
 

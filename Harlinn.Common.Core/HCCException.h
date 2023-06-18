@@ -248,6 +248,18 @@ namespace Harlinn::Common::Core
         HCC_EXPORT virtual ExceptionType Kind( ) const;
 
         HCC_EXPORT virtual const char* what( ) const;
+    protected:
+        virtual std::unique_ptr<Exception> CreateClone( ) const
+        {
+            return std::make_unique<Exception>( *this );
+        }
+    public:
+        std::unique_ptr<Exception> Clone( ) const
+        {
+            return this->CreateClone( );
+        }
+    
+
 
         HCC_EXPORT std::wstring Message( ) const;
         HCC_EXPORT Exception& SetMessage( const char* theValue );
@@ -323,7 +335,10 @@ bool _IsA( ExceptionType kind ) const \
 public: \
 HCC_EXPORT virtual bool IsA( ExceptionType kind ) const override; \
 HCC_EXPORT virtual ExceptionType Kind( ) const override; \
-HCC_EXPORT className & operator = (const className & other ) 
+protected: \
+HCC_EXPORT virtual std::unique_ptr<Harlinn::Common::Core::Exception> CreateClone( ) const override; \
+public: \
+HCC_EXPORT className& operator = ( const className& other ) \
 
 
 #define HARLINN_COMMON_DECLARE_STANDARD_EXCEPTION_MEMBERS2( className, exp ) \
@@ -366,6 +381,9 @@ bool _IsA( Common:: ExceptionType theKind ) const \
 public: \
 exp virtual bool IsA( Common:: ExceptionType theKind ) const override; \
 exp virtual Common:: ExceptionType Kind( ) const override; \
+protected: \
+exp virtual std::unique_ptr<Harlinn::Common::Core::Exception> CreateClone( ) const override; \
+public: \
 exp className & operator = (const className & theException) 
 
 
@@ -403,7 +421,9 @@ className :: className ( const ExceptionLocation& theLocation, HRESULT hResult, 
 className :: className ( const ExceptionLocation& theLocation, HRESULT hResult, long long theCode, const std::wstring& theMessage ) : Base(theLocation, hResult, theCode, theMessage) { }  \
 bool className :: IsA( ExceptionType theKind ) const { return _IsA(theKind); } \
 ExceptionType className :: Kind( ) const { return KIND; } \
-className & className :: operator = (const className & theException ) { Base :: operator = ( reinterpret_cast< const Base & > (theException) ); return *this; }  
+className & className :: operator = (const className & theException ) { Base :: operator = ( reinterpret_cast< const Base & > (theException) ); return *this; }  \
+std::unique_ptr<Harlinn::Common::Core::Exception> className::CreateClone( ) const { return std::make_unique<className>( *this ); }
+
 
     class SystemException : public Exception
     {

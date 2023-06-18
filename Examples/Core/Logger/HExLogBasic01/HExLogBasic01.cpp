@@ -38,8 +38,8 @@ int main( )
         BackendLogger backendLogger( Level::Default, Backend::Instance( ) );
 
 
-        HCC_DEBUG( consoleLogger, "Debug {}", 1 );
-        HCC_INFO( consoleLogger, "Info {}", 1 );
+        //HCC_DEBUG( consoleLogger, "Debug {}", 1 );
+        //HCC_INFO( consoleLogger, "Info {}", 1 );
 
         constexpr Int32 intValue1 = 1;
         constexpr Int32 intValue2 = 2;
