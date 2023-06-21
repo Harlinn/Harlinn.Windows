@@ -2,6 +2,8 @@
 #ifndef __HCCDEF_H__
 #define __HCCDEF_H__
 
+#define HCC_WITH_BASIC_STRING 1
+
 
 #ifdef BUILDING_HARLINN_COMMON_CORE
 #define HCC_EXPORT __declspec(dllexport)
@@ -185,6 +187,7 @@
 #include <array>
 
 #include <atomic>
+#include <format>
 #include <bit>
 #include <cmath>
 #include <cfloat>
@@ -352,6 +355,11 @@ namespace Harlinn::Common::Core
 
     using WideStringView = BasicStringView<wchar_t>;
     using AnsiStringView = BasicStringView<char>;
+#else
+    using WideString = std::wstring;
+    using AnsiString = std::string;
+    using WideStringView = std::wstring_view;
+    using AnsiStringView = std::string_view;
 #endif
 
     class Guid;
@@ -454,7 +462,7 @@ namespace Harlinn::Common::Core
     HCC_EXPORT void CheckHRESULT( HRESULT hresult, IUnknown* itf );
     HCC_EXPORT void CheckHRESULT( HRESULT hresult, const wchar_t* function, const wchar_t* filename, int lineNumber );
     HCC_EXPORT void CheckHRESULT( HRESULT hresult, IUnknown* itf, const wchar_t* function, const wchar_t* filename, int lineNumber );
-    HCC_EXPORT std::wstring FormatError( DWORD errorId );
+    HCC_EXPORT WideString FormatError( DWORD errorId );
     HCC_EXPORT std::string FormatErrorA( DWORD errorId );
     HCC_EXPORT void ThrowLastOSError( );
     HCC_EXPORT void ThrowOSError( DWORD errorId );

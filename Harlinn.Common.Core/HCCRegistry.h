@@ -248,7 +248,7 @@ namespace Harlinn::Common::Core
             return result;
         }
 
-        static RegistryHandle ConnectRegistry( const std::wstring& theMachineName, const RegistryHandle& thePredefinedHandle )
+        static RegistryHandle ConnectRegistry( const WideString& theMachineName, const RegistryHandle& thePredefinedHandle )
         {
             HKEY hKey = 0;
             auto predefinedHandle = ( HKEY )thePredefinedHandle.Value( );
@@ -314,7 +314,7 @@ namespace Harlinn::Common::Core
             return result;
         }
 
-        static RegistryHandle ConnectRegistry( const std::wstring& theMachineName, const RegistryHandle& thePredefinedHandle, ULONG theFlags )
+        static RegistryHandle ConnectRegistry( const WideString& theMachineName, const RegistryHandle& thePredefinedHandle, ULONG theFlags )
         {
             HKEY hKey = 0;
             auto predefinedHandle = ( HKEY )thePredefinedHandle.Value( );
@@ -392,7 +392,7 @@ namespace Harlinn::Common::Core
             return result;
         }
 
-        RegistryHandle CreateKey( const std::wstring& theSubKey ) const
+        RegistryHandle CreateKey( const WideString& theSubKey ) const
         {
             auto self = ( HKEY )Value( );
             HKEY hKey = 0;
@@ -436,7 +436,7 @@ namespace Harlinn::Common::Core
         }
 
 
-        RegistryHandle CreateKey( const std::wstring& theSubKey, const std::wstring& theClass, DWORD theOptions, REGSAM desiredAccess, LPSECURITY_ATTRIBUTES theSecurityAttributes, bool& keyWasCreated ) const
+        RegistryHandle CreateKey( const WideString& theSubKey, const WideString& theClass, DWORD theOptions, REGSAM desiredAccess, LPSECURITY_ATTRIBUTES theSecurityAttributes, bool& keyWasCreated ) const
         {
             auto self = ( HKEY )Value( );
             HKEY hKey = 0;
@@ -497,7 +497,7 @@ namespace Harlinn::Common::Core
         }
 
 
-        RegistryHandle CreateKey( const std::wstring& theSubKey, const std::wstring& theClass, DWORD theOptions, REGSAM desiredAccess, LPSECURITY_ATTRIBUTES theSecurityAttributes, bool& keyWasCreated, HANDLE hTransaction ) const
+        RegistryHandle CreateKey( const WideString& theSubKey, const WideString& theClass, DWORD theOptions, REGSAM desiredAccess, LPSECURITY_ATTRIBUTES theSecurityAttributes, bool& keyWasCreated, HANDLE hTransaction ) const
         {
             auto self = ( HKEY )Value( );
             HKEY hKey = 0;
@@ -549,7 +549,7 @@ namespace Harlinn::Common::Core
         }
 
 
-        void DeleteKey( const std::wstring& theSubKey ) const
+        void DeleteKey( const WideString& theSubKey ) const
         {
             auto self = ( HKEY )Value( );
             HKEY hKey = 0;
@@ -591,7 +591,7 @@ namespace Harlinn::Common::Core
             }
         }
 
-        void DeleteKey( const std::wstring& theSubKey, REGSAM desiredRegistryView ) const
+        void DeleteKey( const WideString& theSubKey, REGSAM desiredRegistryView ) const
         {
             auto self = ( HKEY )Value( );
             auto rc = RegDeleteKeyExW( self, theSubKey.data( ), desiredRegistryView, 0 );
@@ -631,7 +631,7 @@ namespace Harlinn::Common::Core
             }
         }
 
-        void DeleteKey( const std::wstring& theSubKey, REGSAM desiredRegistryView, HANDLE hTransaction ) const
+        void DeleteKey( const WideString& theSubKey, REGSAM desiredRegistryView, HANDLE hTransaction ) const
         {
             auto self = ( HKEY )Value( );
             auto rc = RegDeleteKeyTransactedW( self, theSubKey.data( ), desiredRegistryView, 0, hTransaction, 0 );
@@ -701,7 +701,7 @@ namespace Harlinn::Common::Core
             }
         }
 
-        void DeleteKeyValue( const std::wstring& theValueName ) const
+        void DeleteKeyValue( const WideString& theValueName ) const
         {
             auto self = ( HKEY )Value( );
             auto rc = RegDeleteKeyValueW( self, nullptr, theValueName.data( ) );
@@ -721,7 +721,7 @@ namespace Harlinn::Common::Core
             }
         }
 
-        void DeleteKeyValue( const std::wstring& theSubKey, const std::wstring& theValueName ) const
+        void DeleteKeyValue( const WideString& theSubKey, const WideString& theValueName ) const
         {
             auto self = ( HKEY )Value( );
             auto rc = RegDeleteKeyValueW( self, theSubKey.data( ), theValueName.data( ) );
@@ -814,7 +814,7 @@ namespace Harlinn::Common::Core
         }
 
 
-        void DeleteValue( const std::wstring& theValueName ) const
+        void DeleteValue( const WideString& theValueName ) const
         {
             auto self = ( HKEY )Value( );
             auto rc = RegDeleteValueW( self, theValueName.data( ) );
@@ -881,7 +881,7 @@ namespace Harlinn::Common::Core
         }
 
 
-        long EnumKeyNames( std::vector<std::wstring>& result ) const
+        long EnumKeyNames( std::vector<WideString>& result ) const
         {
             long rc = ERROR_SUCCESS;
             DWORD index = 0;
@@ -898,7 +898,7 @@ namespace Harlinn::Common::Core
                 }
                 else if ( rc == ERROR_SUCCESS )
                 {
-                    std::wstring name( nameBuffer, static_cast< size_t >( sizeOfTheNameBuffer ) );
+                    WideString name( nameBuffer, static_cast< size_t >( sizeOfTheNameBuffer ) );
                     result.push_back( name );
                 }
                 index++;
@@ -1017,7 +1017,7 @@ namespace Harlinn::Common::Core
             }
         }
 
-        void LoadKey( const std::wstring& theSubKey, const std::wstring& theFilename ) const
+        void LoadKey( const WideString& theSubKey, const WideString& theFilename ) const
         {
             auto self = ( HKEY )Value( );
             auto rc = RegLoadKeyW( self, theSubKey.data( ), theFilename.data( ) );
@@ -1037,7 +1037,7 @@ namespace Harlinn::Common::Core
             }
         }
 
-        void LoadKey( const std::wstring& theFilename ) const
+        void LoadKey( const WideString& theFilename ) const
         {
             auto self = ( HKEY )Value( );
             auto rc = RegLoadKeyW( self, nullptr, theFilename.data( ) );
@@ -1081,7 +1081,7 @@ namespace Harlinn::Common::Core
             return result;
         }
 
-        static RegistryHandle LoadAppKey( const std::wstring& theFilename, REGSAM desiredAccess, DWORD theOptions )
+        static RegistryHandle LoadAppKey( const WideString& theFilename, REGSAM desiredAccess, DWORD theOptions )
         {
             HKEY hKey = 0;
             auto rc = RegLoadAppKeyW( theFilename.data( ), &hKey, desiredAccess, theOptions, 0 );
@@ -1138,7 +1138,7 @@ namespace Harlinn::Common::Core
             }
         }
 
-        bool KeyExists( const std::wstring& theSubKey ) const
+        bool KeyExists( const WideString& theSubKey ) const
         {
             if ( theSubKey.length( ) )
             {
@@ -1197,7 +1197,7 @@ namespace Harlinn::Common::Core
         }
 
 
-        RegistryHandle OpenKey( const std::wstring& theSubKey, REGSAM desiredAccess ) const
+        RegistryHandle OpenKey( const WideString& theSubKey, REGSAM desiredAccess ) const
         {
             HKEY hKey = 0;
             auto self = ( HKEY )Value( );
@@ -1258,7 +1258,7 @@ namespace Harlinn::Common::Core
         }
 
 
-        RegistryHandle OpenKey( const std::wstring& theSubKey, REGSAM desiredAccess, HANDLE hTransaction ) const
+        RegistryHandle OpenKey( const WideString& theSubKey, REGSAM desiredAccess, HANDLE hTransaction ) const
         {
             HKEY hKey = 0;
             auto self = ( HKEY )Value( );
@@ -1390,7 +1390,7 @@ namespace Harlinn::Common::Core
             return rc;
         }
 
-        long QueryValue( const std::wstring& theValueName, DWORD& theValueType, void* theDataBuffer, DWORD& theSizeOfTheDataBuffer ) const
+        long QueryValue( const WideString& theValueName, DWORD& theValueType, void* theDataBuffer, DWORD& theSizeOfTheDataBuffer ) const
         {
             auto self = ( HKEY )Value( );
             auto rc = RegQueryValueExW( self, theValueName.data( ), nullptr, &theValueType, ( LPBYTE )theDataBuffer, &theSizeOfTheDataBuffer );
@@ -1425,9 +1425,9 @@ namespace Harlinn::Common::Core
 
 
     private:
-        std::wstring ToString( const std::vector<char>& theData ) const
+        WideString ToString( const std::vector<char>& theData ) const
         {
-            std::wstring result;
+            WideString result;
             size_t length = theData.size( ) / 2;
             if ( length )
             {
@@ -1438,7 +1438,7 @@ namespace Harlinn::Common::Core
                 }
                 if ( length )
                 {
-                    result = std::wstring( data, length );
+                    result = WideString( data, length );
                 }
             }
             return result;
@@ -1729,9 +1729,9 @@ namespace Harlinn::Common::Core
             return result;
         }
 
-        std::wstring ToString( DWORD theValueType, const std::vector<char>& theData ) const
+        WideString ToString( DWORD theValueType, const std::vector<char>& theData ) const
         {
-            std::wstring result;
+            WideString result;
             switch ( theValueType )
             {
                 case REG_EXPAND_SZ:
@@ -1749,7 +1749,7 @@ namespace Harlinn::Common::Core
                         }
                         if ( length )
                         {
-                            result = std::wstring( data, length );
+                            result = WideString( data, length );
                         }
                     }
                 }
@@ -1985,7 +1985,7 @@ namespace Harlinn::Common::Core
 
 
 
-        bool ReadString( const wchar_t* theValueName, std::wstring& theResult ) const
+        bool ReadString( const wchar_t* theValueName, WideString& theResult ) const
         {
             DWORD valueType;
             std::vector<char> data;
@@ -2043,7 +2043,7 @@ namespace Harlinn::Common::Core
         }
 
 
-        void ReplaceKey( const std::wstring& theSubKey, const std::wstring& newFile, const std::wstring& oldFile ) const
+        void ReplaceKey( const WideString& theSubKey, const WideString& newFile, const WideString& oldFile ) const
         {
             auto self = ( HKEY )Value( );
             auto rc = RegReplaceKeyW( self, theSubKey.data( ), newFile.data( ), oldFile.data( ) );
@@ -2063,7 +2063,7 @@ namespace Harlinn::Common::Core
             }
         }
 
-        void ReplaceKey( const std::wstring& newFile, const std::wstring& oldFile ) const
+        void ReplaceKey( const WideString& newFile, const WideString& oldFile ) const
         {
             auto self = ( HKEY )Value( );
             auto rc = RegReplaceKeyW( self, nullptr, newFile.data( ), oldFile.data( ) );
@@ -2104,7 +2104,7 @@ namespace Harlinn::Common::Core
             }
         }
 
-        void RestoreKey( const std::wstring& oldFile, DWORD theFlags ) const
+        void RestoreKey( const WideString& oldFile, DWORD theFlags ) const
         {
             auto self = ( HKEY )Value( );
             auto rc = RegRestoreKeyW( self, oldFile.data( ), theFlags );
@@ -2124,7 +2124,7 @@ namespace Harlinn::Common::Core
             }
         }
 
-        void RenameKey( const std::wstring& oldSubKeyName, const std::wstring& newSubKeyName ) const
+        void RenameKey( const WideString& oldSubKeyName, const WideString& newSubKeyName ) const
         {
             auto self = ( HKEY )Value( );
             auto rc = RegRenameKey( self, oldSubKeyName.data( ), newSubKeyName.data( ) );
@@ -2172,7 +2172,7 @@ namespace Harlinn::Common::Core
             }
         }
 
-        void SaveKey( const std::wstring& theFilename, LPSECURITY_ATTRIBUTES theSecurityAttributes = nullptr ) const
+        void SaveKey( const WideString& theFilename, LPSECURITY_ATTRIBUTES theSecurityAttributes = nullptr ) const
         {
             auto self = ( HKEY )Value( );
             auto rc = RegSaveKeyW( self, theFilename.data( ), theSecurityAttributes );
@@ -2213,7 +2213,7 @@ namespace Harlinn::Common::Core
         }
 
 
-        void SaveKey( const std::wstring& theFilename, DWORD theFlags, LPSECURITY_ATTRIBUTES theSecurityAttributes = nullptr ) const
+        void SaveKey( const WideString& theFilename, DWORD theFlags, LPSECURITY_ATTRIBUTES theSecurityAttributes = nullptr ) const
         {
             auto self = ( HKEY )Value( );
             auto rc = RegSaveKeyExW( self, theFilename.data( ), theSecurityAttributes, theFlags );
@@ -2289,7 +2289,7 @@ namespace Harlinn::Common::Core
             SetValue( valueName.c_str( ), valueType, data, sizeOfData );
         }
 
-        void SetValue( const std::wstring& valueName, DWORD valueType, const void* data, DWORD sizeOfData ) const
+        void SetValue( const WideString& valueName, DWORD valueType, const void* data, DWORD sizeOfData ) const
         {
             SetValue( valueName.c_str( ), valueType, data, sizeOfData );
         }
@@ -2306,7 +2306,7 @@ namespace Harlinn::Common::Core
         {
             SetValue( valueName, static_cast< DWORD >( valueType ), data, sizeOfData );
         }
-        void SetValue( const std::wstring& valueName, RegistryValueType valueType, const void* data, DWORD sizeOfData ) const
+        void SetValue( const WideString& valueName, RegistryValueType valueType, const void* data, DWORD sizeOfData ) const
         {
             SetValue( valueName, static_cast< DWORD >( valueType ), data, sizeOfData );
         }
@@ -2326,7 +2326,7 @@ namespace Harlinn::Common::Core
             SetValue( valueName, RegistryValueType::String, value.c_str(), static_cast<DWORD>( value.size() + 1 ) );
         }
 
-        void SetValue( const std::wstring& valueName, const std::wstring& value ) const
+        void SetValue( const WideString& valueName, const WideString& value ) const
         {
             SetValue( valueName, RegistryValueType::String, value.c_str( ), static_cast< DWORD >( (value.size( ) + 1) * sizeof(wchar_t) ) );
         }
@@ -2336,7 +2336,7 @@ namespace Harlinn::Common::Core
             SetValueA( RegistryValueType::String, value.c_str( ), static_cast< DWORD >( value.size( ) + 1 ) );
         }
 
-        void SetValue( const std::wstring& value ) const
+        void SetValue( const WideString& value ) const
         {
             SetValue( RegistryValueType::String, value.c_str( ), static_cast< DWORD >( ( value.size( ) + 1 ) * sizeof( wchar_t ) ) );
         }

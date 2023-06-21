@@ -3,6 +3,7 @@
 #define __HCCCRYPTO_H__
 
 #include <HCCBuffer.h>
+#include <HCCString.h>
 
 #pragma comment(lib, "Crypt32.lib")
 
@@ -115,7 +116,7 @@ namespace Harlinn::Common::Core::Crypto
     HCC_DEFINE_ENUM_FLAG_OPERATORS( CryptStringFlags, DWORD );
 
 
-    inline void BinaryToString( const Byte* inputBuffer, size_t inputBufferSize, CryptStringFlags flags, std::wstring& result )
+    inline void BinaryToString( const Byte* inputBuffer, size_t inputBufferSize, CryptStringFlags flags, WideString& result )
     {
         DWORD requiredStringBufferSize = 0;
         auto rc = CryptBinaryToStringW( inputBuffer, static_cast<DWORD>(inputBufferSize), static_cast<DWORD>( flags ), nullptr, &requiredStringBufferSize );
@@ -164,17 +165,17 @@ namespace Harlinn::Common::Core::Crypto
         }
     }
 
-    inline void BinaryToString( const Buffer& inputBuffer, CryptStringFlags flags, std::wstring& result )
+    inline void BinaryToString( const Buffer& inputBuffer, CryptStringFlags flags, WideString& result )
     {
         BinaryToString( inputBuffer.data( ), inputBuffer.size( ), flags, result );
     }
 
-    inline void BinaryToString( const std::span<Byte>& inputBuffer, CryptStringFlags flags, std::wstring& result )
+    inline void BinaryToString( const std::span<Byte>& inputBuffer, CryptStringFlags flags, WideString& result )
     {
         BinaryToString( inputBuffer.data( ), inputBuffer.size( ), flags, result );
     }
 
-    inline void BinaryToString( const std::vector<Byte>& inputBuffer, CryptStringFlags flags, std::wstring& result )
+    inline void BinaryToString( const std::vector<Byte>& inputBuffer, CryptStringFlags flags, WideString& result )
     {
         BinaryToString( inputBuffer.data( ), inputBuffer.size( ), flags, result );
     }
@@ -215,7 +216,7 @@ namespace Harlinn::Common::Core::Crypto
         return requiredBufferSize;
     }
 
-    inline size_t StringToBinary( const std::wstring& inputString, CryptStringFlags requestedConversionFlags, std::unique_ptr<Byte[]>& result, UInt32* skipCount = nullptr, CryptStringFlags* actualConversionFlags = nullptr )
+    inline size_t StringToBinary( const WideString& inputString, CryptStringFlags requestedConversionFlags, std::unique_ptr<Byte[]>& result, UInt32* skipCount = nullptr, CryptStringFlags* actualConversionFlags = nullptr )
     {
         return StringToBinary( inputString.c_str( ), inputString.size( ), requestedConversionFlags, result, skipCount, actualConversionFlags );
     }
@@ -246,7 +247,7 @@ namespace Harlinn::Common::Core::Crypto
         }
     }
 
-    inline size_t StringToBinary( const std::wstring& inputString, CryptStringFlags requestedConversionFlags, std::vector<Byte>& result, UInt32* skipCount = nullptr, CryptStringFlags* actualConversionFlags = nullptr )
+    inline size_t StringToBinary( const WideString& inputString, CryptStringFlags requestedConversionFlags, std::vector<Byte>& result, UInt32* skipCount = nullptr, CryptStringFlags* actualConversionFlags = nullptr )
     {
         StringToBinary( inputString.c_str( ), inputString.size( ), requestedConversionFlags, result, skipCount, actualConversionFlags );
     }
@@ -278,7 +279,7 @@ namespace Harlinn::Common::Core::Crypto
         }
     }
 
-    inline size_t StringToBinary( const std::wstring& inputString, CryptStringFlags requestedConversionFlags, Buffer& result, UInt32* skipCount = nullptr, CryptStringFlags* actualConversionFlags = nullptr )
+    inline size_t StringToBinary( const WideString& inputString, CryptStringFlags requestedConversionFlags, Buffer& result, UInt32* skipCount = nullptr, CryptStringFlags* actualConversionFlags = nullptr )
     {
         StringToBinary( inputString.c_str( ), inputString.size( ), requestedConversionFlags, result, skipCount, actualConversionFlags );
     }
@@ -624,7 +625,7 @@ namespace Harlinn::Common::Core::Crypto
 
     
 
-    inline void FormatObject( const EncodingType& certEncodingType, FormatType formatType, FormatStringType formatStringType, const char* structType, const Byte* encodedBuffer, size_t encodedBufferLength, std::wstring& result )
+    inline void FormatObject( const EncodingType& certEncodingType, FormatType formatType, FormatStringType formatStringType, const char* structType, const Byte* encodedBuffer, size_t encodedBufferLength, WideString& result )
     {
         DWORD requiredSizeInBytes = 0;
         auto rc = CryptFormatObject( certEncodingType.Value( ), static_cast<DWORD>( formatType ), static_cast<DWORD>( formatStringType ), nullptr, structType, encodedBuffer, static_cast<DWORD>( encodedBufferLength ), nullptr, &requiredSizeInBytes );
@@ -1741,7 +1742,7 @@ namespace Harlinn::Common::Core::Crypto
         /// will be filled with the names of the requested 
         /// certificate stores.
         /// </param>
-        static void GetSystemStoreNames( CertificateStoreLocation certificateStoreLocation, std::vector<std::wstring>& result )
+        static void GetSystemStoreNames( CertificateStoreLocation certificateStoreLocation, std::vector<WideString>& result )
         {
             auto rc = CertEnumSystemStore( static_cast<DWORD>( certificateStoreLocation ), nullptr,
                 &result,
@@ -1751,7 +1752,7 @@ namespace Harlinn::Common::Core::Crypto
                     void* pvReserved,
                     void* pvArg )->BOOL
             {
-                auto* vector = ( std::vector<std::wstring>* )pvArg;
+                auto* vector = ( std::vector<WideString>* )pvArg;
                 const wchar_t* storeName = (const wchar_t*)pvSystemStore;
                 if ( storeName && storeName[0] )
                 {

@@ -50,11 +50,11 @@ namespace Harlinn::Windows::DirectWrite
         CheckHRESULT( hr );
         return *this;
     }
-    std::shared_ptr<std::wstring> LocalFontFileLoader::GetFilePathFromKey( void const* fontFileReferenceKey, UINT32 fontFileReferenceKeySize )
+    std::shared_ptr<WideString> LocalFontFileLoader::GetFilePathFromKey( void const* fontFileReferenceKey, UINT32 fontFileReferenceKeySize )
     {
         UINT32 filePathSize = GetFilePathLengthFromKey( fontFileReferenceKey, fontFileReferenceKeySize );
 
-        std::shared_ptr<std::wstring> result = std::make_shared<std::wstring>( filePathSize, std::wstring::value_type( 0 ) );
+        std::shared_ptr<WideString> result = std::make_shared<WideString>( filePathSize, WideString::value_type( 0 ) );
 
         InterfaceType* pInterface = GetInterface( );
         HRESULT hr = pInterface->GetFilePathFromKey( fontFileReferenceKey, fontFileReferenceKeySize, const_cast<WCHAR*>( result->c_str( ) ), filePathSize );
@@ -457,12 +457,12 @@ namespace Harlinn::Windows::DirectWrite
         CheckHRESULT( hr );
         return *this;
     }
-    std::shared_ptr<std::wstring> LocalizedStrings::GetLocaleName( UINT32 index )
+    std::shared_ptr<WideString> LocalizedStrings::GetLocaleName( UINT32 index )
     {
         UINT32 size = GetLocaleNameLength( index );
-        std::shared_ptr<std::wstring> result = std::make_shared<std::wstring>( size, std::wstring::value_type( 0 ) );
+        std::shared_ptr<WideString> result = std::make_shared<WideString>( size, WideString::value_type( 0 ) );
         InterfaceType* pInterface = GetInterface( );
-        HRESULT hr = pInterface->GetLocaleName( index, const_cast<std::wstring::value_type*>( result->c_str( ) ), size );
+        HRESULT hr = pInterface->GetLocaleName( index, const_cast< WideString::value_type*>( result->c_str( ) ), size );
         CheckHRESULT( hr );
         return result;
     }
@@ -490,12 +490,12 @@ namespace Harlinn::Windows::DirectWrite
         CheckHRESULT( hr );
         return *this;
     }
-    std::shared_ptr<std::wstring> LocalizedStrings::GetString( UINT32 index )
+    std::shared_ptr<WideString> LocalizedStrings::GetString( UINT32 index )
     {
         UINT32 size = GetStringLength( index );
-        std::shared_ptr<std::wstring> result = std::make_shared<std::wstring>( size, std::wstring::value_type( 0 ) );
+        std::shared_ptr<WideString> result = std::make_shared<WideString>( size, WideString::value_type( 0 ) );
         InterfaceType* pInterface = GetInterface( );
-        HRESULT hr = pInterface->GetString( index, const_cast<std::wstring::value_type*>( result->c_str( ) ), size );
+        HRESULT hr = pInterface->GetString( index, const_cast< WideString::value_type*>( result->c_str( ) ), size );
         CheckHRESULT( hr );
         return result;
     }
@@ -907,10 +907,10 @@ namespace Harlinn::Windows::DirectWrite
         CheckHRESULT( hr );
         return *this;
     }
-    std::shared_ptr<std::wstring> TextFormat::GetFontFamilyName( )
+    std::shared_ptr<WideString> TextFormat::GetFontFamilyName( )
     {
         UINT32 nameSize = GetFontFamilyNameLength( );
-        std::shared_ptr<std::wstring> result = std::make_shared<std::wstring>( nameSize, std::wstring::value_type( 0 ) );
+        std::shared_ptr<WideString> result = std::make_shared<WideString>( nameSize, WideString::value_type( 0 ) );
         InterfaceType* pInterface = GetInterface( );
         HRESULT hr = pInterface->GetFontFamilyName( const_cast<wchar_t*>( result->c_str( ) ), nameSize );
         CheckHRESULT( hr );
@@ -948,10 +948,10 @@ namespace Harlinn::Windows::DirectWrite
         CheckHRESULT( hr );
         return *this;
     }
-    std::shared_ptr<std::wstring> TextFormat::GetLocaleName( )
+    std::shared_ptr<WideString> TextFormat::GetLocaleName( )
     {
         UINT32 nameSize = GetLocaleNameLength( );
-        std::shared_ptr<std::wstring> result = std::make_shared<std::wstring>( nameSize, std::wstring::value_type( 0 ) );
+        std::shared_ptr<WideString> result = std::make_shared<WideString>( nameSize, WideString::value_type( 0 ) );
         InterfaceType* pInterface = GetInterface( );
         HRESULT hr = pInterface->GetLocaleName( const_cast<wchar_t*>( result->c_str( ) ), nameSize );
         CheckHRESULT( hr );

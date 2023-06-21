@@ -36,7 +36,7 @@ namespace Harlinn::Common::Core
             CheckHRESULT( hr );
         }
     }
-    Guid::Guid( const std::wstring& uuid )
+    Guid::Guid( const WideString& uuid )
         : data_( )
     {
         auto hr = IIDFromString( uuid.c_str(), (LPIID)&data_ );
@@ -78,7 +78,7 @@ namespace Harlinn::Common::Core
         }
         return true;
     }
-    bool Guid::TryParse( const std::wstring& uuid, Guid& result )
+    bool Guid::TryParse( const WideString& uuid, Guid& result )
     {
         auto hr = IIDFromString( uuid.c_str(), (LPIID)&result.data_ );
         if ( hr != S_OK )
@@ -125,7 +125,7 @@ namespace Harlinn::Common::Core
             HCC_THROW( ArgumentException, L"Invalid GUID" );
         }
     }
-    Guid Guid::Parse( const std::wstring& uuid )
+    Guid Guid::Parse( const WideString& uuid )
     {
         Guid guid;
         if ( TryParse( uuid, guid ) )
@@ -139,20 +139,20 @@ namespace Harlinn::Common::Core
     }
 
 
-    std::wstring Guid::ToString( ) const
+    WideString Guid::ToString( ) const
     {
         LPOLESTR ptr = nullptr;
         auto hr = StringFromIID( *this, &ptr );
         if ( SUCCEEDED( hr ) )
         {
-            std::wstring result( ptr );
+            WideString result( ptr );
             CoTaskMemFree( ptr );
             return result;
         }
         else
         {
             CheckHRESULT( hr );
-            return std::wstring( );
+            return {};
         }
     }
 

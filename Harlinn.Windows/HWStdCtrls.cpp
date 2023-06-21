@@ -12,11 +12,11 @@ namespace Harlinn::Windows
     {
     public:
         typedef Windows::WindowClass Base;
-        static std::wstring windowClassName;
+        static WideString windowClassName;
         ButtonWindowClass( const Windows::WindowClass& existingClass );
     };
 
-    std::wstring ButtonWindowClass::windowClassName = std::wstring( L"CommonButtonWindowClassName" );
+    WideString ButtonWindowClass::windowClassName = WideString( L"CommonButtonWindowClassName" );
 
     typedef SuperClassMessageDispatcher<Button> ButtonMessageDispatcher;
     WNDPROC ButtonMessageDispatcher::ControlProcedure;
@@ -508,11 +508,11 @@ namespace Harlinn::Windows
     {
     public:
         typedef WindowClass Base;
-        static std::wstring windowClassName;
+        static WideString windowClassName;
         DateTimePickerWindowClass( const WindowClass& existingClass );
     };
 
-    std::wstring DateTimePickerWindowClass::windowClassName = std::wstring( L"CommonDateTimePickerWindowClassName" );
+    WideString DateTimePickerWindowClass::windowClassName = WideString( L"CommonDateTimePickerWindowClassName" );
 
     typedef SuperClassMessageDispatcher<DateTimePicker> DateTimePickerMessageDispatcher;
     WNDPROC DateTimePickerMessageDispatcher::ControlProcedure;
@@ -559,11 +559,11 @@ namespace Harlinn::Windows
     {
     public:
         typedef WindowClass Base;
-        static std::wstring windowClassName;
+        static WideString windowClassName;
         GroupBoxWindowClass( const WindowClass& existingClass );
     };
 
-    std::wstring GroupBoxWindowClass::windowClassName = std::wstring( L"CommonGroupBoxWindowClassName" );
+    WideString GroupBoxWindowClass::windowClassName = WideString( L"CommonGroupBoxWindowClassName" );
 
     typedef SuperClassMessageDispatcher<GroupBox> GroupBoxMessageDispatcher;
     WNDPROC GroupBoxMessageDispatcher::ControlProcedure;
@@ -611,11 +611,11 @@ namespace Harlinn::Windows
     {
     public:
         typedef WindowClass Base;
-        static std::wstring windowClassName;
+        static WideString windowClassName;
         LabelWindowClass( const WindowClass& existingClass );
     };
 
-    std::wstring LabelWindowClass::windowClassName = std::wstring( L"CommonLabelWindowClassName" );
+    WideString LabelWindowClass::windowClassName = WideString( L"CommonLabelWindowClassName" );
 
     typedef SuperClassMessageDispatcher<Label> LabelMessageDispatcher;
     WNDPROC LabelMessageDispatcher::ControlProcedure;
@@ -661,11 +661,11 @@ namespace Harlinn::Windows
     {
     public:
         typedef WindowClass Base;
-        static std::wstring windowClassName;
+        static WideString windowClassName;
         LinkLabelWindowClass( const WindowClass& existingClass );
     };
 
-    std::wstring LinkLabelWindowClass::windowClassName = std::wstring( L"CommonLinkLabelWindowClassName" );
+    WideString LinkLabelWindowClass::windowClassName = WideString( L"CommonLinkLabelWindowClassName" );
 
     typedef SuperClassMessageDispatcher<LinkLabel> LinkLabelMessageDispatcher;
     WNDPROC LinkLabelMessageDispatcher::ControlProcedure;
@@ -743,11 +743,11 @@ namespace Harlinn::Windows
     {
     public:
         typedef WindowClass Base;
-        static std::wstring windowClassName;
+        static WideString windowClassName;
         ComboBoxWindowClass( const WindowClass& existingClass );
     };
 
-    std::wstring ComboBoxWindowClass::windowClassName = std::wstring( L"CommonComboBoxWindowClassName" );
+    WideString ComboBoxWindowClass::windowClassName = WideString( L"CommonComboBoxWindowClassName" );
 
     typedef SuperClassMessageDispatcher<ComboBox> ComboBoxMessageDispatcher;
     WNDPROC ComboBoxMessageDispatcher::ControlProcedure;
@@ -793,11 +793,11 @@ namespace Harlinn::Windows
     {
     public:
         typedef WindowClass Base;
-        static std::wstring windowClassName;
+        static WideString windowClassName;
         ListBoxWindowClass( const WindowClass& existingClass );
     };
 
-    std::wstring ListBoxWindowClass::windowClassName = std::wstring( L"CommonListBoxWindowClassName" );
+    WideString ListBoxWindowClass::windowClassName = WideString( L"CommonListBoxWindowClassName" );
 
     typedef SuperClassMessageDispatcher<ListBox> ListBoxMessageDispatcher;
     WNDPROC ListBoxMessageDispatcher::ControlProcedure;
@@ -864,7 +864,7 @@ namespace Harlinn::Windows
     }
 
 
-    HeaderControlItem::HeaderControlItem( HeaderControlItems* theHeaderControlItems, const std::wstring& theText )
+    HeaderControlItem::HeaderControlItem( HeaderControlItems* theHeaderControlItems, const WideString& theText )
         : items_( theHeaderControlItems ),
           mask_( HeaderControlItemMask::None ),
           dimension_( 50 ),
@@ -895,11 +895,11 @@ namespace Harlinn::Windows
 
 
 
-    std::wstring HeaderControlItem::Text( ) const
+    WideString HeaderControlItem::Text( ) const
     {
         return text_;
     }
-    HeaderControlItem& HeaderControlItem::SetText( const std::wstring& theText )
+    HeaderControlItem& HeaderControlItem::SetText( const WideString& theText )
     {
         if ( text_ != theText )
         {
@@ -958,7 +958,7 @@ namespace Harlinn::Windows
         }
         if ( item.mask & HDI_TEXT )
         {
-            std::wstring s( item.pszText, item.cchTextMax );
+            WideString s( item.pszText, item.cchTextMax );
             if ( text_ != s )
             {
                 text_ = s;
@@ -1201,7 +1201,7 @@ namespace Harlinn::Windows
     }
 
 
-    const HeaderControlItem* HeaderControlItems::Add( const std::wstring& headerText )
+    const HeaderControlItem* HeaderControlItems::Add( const WideString& headerText )
     {
         auto newItem = std::make_unique<HeaderControlItem>( this, headerText );
         auto result = newItem.get( );
@@ -1209,7 +1209,7 @@ namespace Harlinn::Windows
         result->InsertHDITEM( );
         return result;
     }
-    const HeaderControlItem* HeaderControlItems::Add( const std::wstring& headerText, HorizontalAlignment alignment )
+    const HeaderControlItem* HeaderControlItems::Add( const WideString& headerText, HorizontalAlignment alignment )
     {
         auto newItem = std::make_unique<HeaderControlItem>( this, headerText );
         auto result = newItem.get( );
@@ -1245,11 +1245,11 @@ namespace Harlinn::Windows
     {
     public:
         typedef WindowClass Base;
-        static std::wstring windowClassName;
+        static WideString windowClassName;
         HeaderControlWindowClass( const WindowClass& existingClass );
     };
 
-    std::wstring HeaderControlWindowClass::windowClassName = std::wstring( L"CommonHeaderControlWindowClassName" );
+    WideString HeaderControlWindowClass::windowClassName = WideString( L"CommonHeaderControlWindowClassName" );
 
     typedef SuperClassMessageDispatcher<HeaderControl> HeaderControlMessageDispatcher;
     WNDPROC HeaderControlMessageDispatcher::ControlProcedure;
@@ -1685,11 +1685,11 @@ namespace Harlinn::Windows
     {
     public:
         typedef WindowClass Base;
-        static std::wstring windowClassName;
+        static WideString windowClassName;
         ListViewWindowClass( const WindowClass& existingClass );
     };
 
-    std::wstring ListViewWindowClass::windowClassName = std::wstring( L"CommonListViewWindowClassName" );
+    WideString ListViewWindowClass::windowClassName = WideString( L"CommonListViewWindowClassName" );
 
     typedef SuperClassMessageDispatcher<ListView> ListViewMessageDispatcher;
     WNDPROC ListViewMessageDispatcher::ControlProcedure;
@@ -1735,11 +1735,11 @@ namespace Harlinn::Windows
     {
     public:
         typedef WindowClass Base;
-        static std::wstring windowClassName;
+        static WideString windowClassName;
         MonthCalendarWindowClass( const WindowClass& existingClass );
     };
 
-    std::wstring MonthCalendarWindowClass::windowClassName = std::wstring( L"CommonMonthCalendarWindowClassName" );
+    WideString MonthCalendarWindowClass::windowClassName = WideString( L"CommonMonthCalendarWindowClassName" );
 
     typedef SuperClassMessageDispatcher<MonthCalendar> MonthCalendarMessageDispatcher;
     WNDPROC MonthCalendarMessageDispatcher::ControlProcedure;
@@ -1815,11 +1815,11 @@ namespace Harlinn::Windows
     {
     public:
         typedef WindowClass Base;
-        static std::wstring windowClassName;
+        static WideString windowClassName;
         TextEditWindowClass( const WindowClass& existingClass );
     };
 
-    std::wstring TextEditWindowClass::windowClassName = std::wstring( L"CommonTextEditWindowClassName" );
+    WideString TextEditWindowClass::windowClassName = WideString( L"CommonTextEditWindowClassName" );
 
     typedef SuperClassMessageDispatcher<TextEdit> TextEditMessageDispatcher;
     WNDPROC TextEditMessageDispatcher::ControlProcedure;
@@ -1881,17 +1881,17 @@ namespace Harlinn::Windows
         SendMessage( EM_FMTLINES, addSoftLinebreaks ? TRUE : FALSE );
         return *this;
     }
-    std::wstring TextEdit::CueBannerText( ) const
+    WideString TextEdit::CueBannerText( ) const
     {
         wchar_t buffer[1024] = { 0, };
         if ( SendMessage( EM_GETCUEBANNER, WPARAM( buffer ), 1024 ) != FALSE )
         {
-            return std::wstring( buffer );
+            return WideString( buffer );
         }
-        return std::wstring( );
+        return WideString( );
     }
 
-    TextEdit& TextEdit::SetCueBannerText( const std::wstring& theText, bool displayWhileFocused )
+    TextEdit& TextEdit::SetCueBannerText( const WideString& theText, bool displayWhileFocused )
     {
         SetCueBannerText( theText.c_str( ), displayWhileFocused );
         return *this;
@@ -1942,18 +1942,18 @@ namespace Harlinn::Windows
         }
         return -1;
     }
-    std::wstring TextEdit::Line( int theIndex ) const
+    WideString TextEdit::Line( int theIndex ) const
     {
         int lineLength = LineLength( theIndex );
         if ( lineLength > 0 )
         {
-            std::wstring result( nullptr, std::wstring::size_type( lineLength ) );
+            WideString result( nullptr, WideString::size_type( lineLength ) );
             *(WORD*)result.c_str( ) = WORD( lineLength );
             LRESULT messageResult = SendMessage( UINT( EM_GETLINE ), WPARAM( theIndex ), LPARAM( result.c_str( ) ) );
             result.resize( messageResult );
             return result;
         }
-        return std::wstring( );
+        return WideString( );
     }
     int TextEdit::LineCount( ) const
     {
@@ -1995,7 +1995,7 @@ namespace Harlinn::Windows
         Edit_Enable( this->GetHandle( ), theValue );
     }
 
-    TextEdit& TextEdit::ReplaceSelection( const std::wstring& theText )
+    TextEdit& TextEdit::ReplaceSelection( const WideString& theText )
     {
         ReplaceSelection( theText.c_str( ) );
         return *this;
@@ -2012,7 +2012,7 @@ namespace Harlinn::Windows
         }
         return *this;
     }
-    TextEdit& TextEdit::Append( const std::wstring& theText )
+    TextEdit& TextEdit::Append( const WideString& theText )
     {
         Range currentSelection = Selection( );
         int endOfText = TextLength( );
@@ -2028,7 +2028,7 @@ namespace Harlinn::Windows
     {
         if ( theText && theText[0] )
         {
-            std::wstring s( theText );
+            WideString s( theText );
             Append( s );
         }
         return *this;
@@ -2057,12 +2057,12 @@ namespace Harlinn::Windows
         return int( messageResult );
     }
 
-    MemoEdit& MemoEdit::AppendLine( const std::wstring& theText )
+    MemoEdit& MemoEdit::AppendLine( const WideString& theText )
     {
         auto length = theText.length( );
         if ( length )
         {
-            std::wstring text( L"\r\n", 2 );
+            WideString text( L"\r\n", 2 );
             text.append( theText.c_str( ), length );
             Append( text );
         }
@@ -2074,7 +2074,7 @@ namespace Harlinn::Windows
         if ( theText && theText[0] )
         {
             auto len = wcslen( theText );
-            std::wstring s( L"\r\n", 2 );
+            WideString s( L"\r\n", 2 );
             s.append( theText, len );
             Append( s );
         }
@@ -2089,11 +2089,11 @@ namespace Harlinn::Windows
     {
     public:
         typedef WindowClass Base;
-        static std::wstring windowClassName;
+        static WideString windowClassName;
         HotKeyWindowClass( const WindowClass& existingClass );
     };
 
-    std::wstring HotKeyWindowClass::windowClassName = std::wstring( L"CommonHotKeyWindowClassName" );
+    WideString HotKeyWindowClass::windowClassName = WideString( L"CommonHotKeyWindowClassName" );
 
     typedef SuperClassMessageDispatcher<HotKey> HotKeyMessageDispatcher;
     WNDPROC HotKeyMessageDispatcher::ControlProcedure;
@@ -2139,11 +2139,11 @@ namespace Harlinn::Windows
     {
     public:
         typedef WindowClass Base;
-        static std::wstring windowClassName;
+        static WideString windowClassName;
         ScrollBarWindowClass( const WindowClass& existingClass );
     };
 
-    std::wstring ScrollBarWindowClass::windowClassName = std::wstring( L"CommonScrollBarWindowClassName" );
+    WideString ScrollBarWindowClass::windowClassName = WideString( L"CommonScrollBarWindowClassName" );
 
     typedef SuperClassMessageDispatcher<ScrollBar> ScrollBarMessageDispatcher;
     WNDPROC ScrollBarMessageDispatcher::ControlProcedure;
@@ -2245,7 +2245,7 @@ namespace Harlinn::Windows
         HWND result = nullptr;
         if ( windowClass )
         {
-            const std::wstring& className = windowClass->Name( );
+            const WideString& className = windowClass->Name( );
             if ( className.length( ) )
             {
                 HWND hWndParent = HWND_MESSAGE;
@@ -2360,11 +2360,11 @@ namespace Harlinn::Windows
     {
     public:
         typedef WindowClass Base;
-        static std::wstring windowClassName;
+        static WideString windowClassName;
         TreeViewWindowClass( const WindowClass& existingClass );
     };
 
-    std::wstring TreeViewWindowClass::windowClassName = std::wstring( L"CommonTreeViewWindowClassName" );
+    WideString TreeViewWindowClass::windowClassName = WideString( L"CommonTreeViewWindowClassName" );
 
     typedef SuperClassMessageDispatcher<TreeView> TreeViewMessageDispatcher;
     WNDPROC TreeViewMessageDispatcher::ControlProcedure;
@@ -2401,7 +2401,7 @@ namespace Harlinn::Windows
         return Base::GetStyle( ) | TVS_DISABLEDRAGDROP | TVS_HASBUTTONS | TVS_HASLINES;
     }
 
-    TreeViewItem TreeView::AddItem( const std::wstring& theText )
+    TreeViewItem TreeView::AddItem( const WideString& theText )
     {
         TreeViewItem item( *this, theText );
         TVINSERTSTRUCTW tvis = { 0, };
@@ -2417,7 +2417,7 @@ namespace Harlinn::Windows
     // --------------------------------------------------------------------
     // TreeViewItem
     // --------------------------------------------------------------------
-    TreeViewItem::TreeViewItem( Windows::TreeView& treeView, const std::wstring& theText )
+    TreeViewItem::TreeViewItem( Windows::TreeView& treeView, const WideString& theText )
         : treeView_( treeView ), handle_( 0 ), text_( theText )
     {
     }

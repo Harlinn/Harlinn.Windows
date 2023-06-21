@@ -47,7 +47,7 @@ namespace Harlinn::OCI::Internal
     template<>
     struct Traits<Guid> : TraitsImpl<GuidBind, GuidArrayBind, GuidDefine, GuidArrayDefine> {};
     template<>
-    struct Traits<std::wstring> : TraitsImpl<CStringBind, CStringArrayBind, CStringDefine, CStringArrayDefine> {};
+    struct Traits<WideString> : TraitsImpl<CStringBind, CStringArrayBind, CStringDefine, CStringArrayDefine> {};
     template<>
     struct Traits<wchar_t*> : TraitsImpl<CStringBind, CStringArrayBind, CStringDefine, CStringArrayDefine> {};
 
@@ -57,7 +57,7 @@ namespace Harlinn::OCI::Internal
     inline constexpr bool IsSimple = IsAnyOf_v<T, bool, SByte, Byte, Int16, UInt16, Int32, UInt32, Int64, UInt64, Single, Double>;
 
     template<typename T>
-    inline constexpr bool HasTraits = IsAnyOf_v<T, bool, SByte, Byte, Int16, UInt16, Int32, UInt32, Int64, UInt64, Single, Double, DateTime, Guid, std::wstring>;
+    inline constexpr bool HasTraits = IsAnyOf_v<T, bool, SByte, Byte, Int16, UInt16, Int32, UInt32, Int64, UInt64, Single, Double, DateTime, Guid, WideString>;
 
     template<typename T>
     concept SimpleBindableType = HasTraits<T> || ( IsSpecializationOf<T,std::optional> && HasTraits<typename T::value_type> );

@@ -1866,7 +1866,7 @@ namespace Harlinn::Common::Core
             return OpenNamespace( ( const BSTR ) namespaceName, flags, context );
         }
 
-        WbemServices OpenNamespace( const std::wstring& namespaceName, long flags = 0, __RPC__in_opt IWbemContext* context = nullptr ) const
+        WbemServices OpenNamespace( const WideString& namespaceName, long flags = 0, __RPC__in_opt IWbemContext* context = nullptr ) const
         {
             return OpenNamespace( (const BSTR)namespaceName.c_str(), flags, context );
         }

@@ -51,8 +51,8 @@ namespace Harlinn::OCI
     {
         auto s = this->AsString( index );
         std::vector<Byte> result;
-        result.resize( s.length( ) * sizeof( std::wstring::value_type ) );
-        memcpy( result.data( ), s.c_str( ), s.length( ) * sizeof( std::wstring::value_type ) );
+        result.resize( s.length( ) * sizeof( WideString::value_type ) );
+        memcpy( result.data( ), s.c_str( ), s.length( ) * sizeof( WideString::value_type ) );
         return result;
     }
     short CStringArrayDefine::AsInt16( size_t index ) const
@@ -107,11 +107,11 @@ namespace Harlinn::OCI
         auto result = ConvertTo<TimeSpan>( this->AsString( index ) );
         return result;
     }
-    std::wstring CStringArrayDefine::AsString( size_t index ) const
+    WideString CStringArrayDefine::AsString( size_t index ) const
     {
         const wchar_t* ptr = (const wchar_t*)&data_[index * maxColumnDataSize_];
         size_t length = dataSizes_[index] / sizeof( wchar_t );
-        std::wstring result( ( std::wstring::value_type* )ptr, length );
+        WideString result( ( WideString::value_type* )ptr, length );
         return result;
     }
 

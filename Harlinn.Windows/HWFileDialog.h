@@ -300,7 +300,7 @@ namespace Harlinn::Windows
         }
 
 
-        std::wstring GetFileName( )
+        WideString GetFileName( )
         {
             auto pInterface = GetInterface( );
             LPWSTR result;
@@ -309,7 +309,7 @@ namespace Harlinn::Windows
             {
                 CheckHRESULT( hr );
             }
-            std::wstring s( result );
+            WideString s( result );
             CoTaskMemFree( result );
             return s;
         }

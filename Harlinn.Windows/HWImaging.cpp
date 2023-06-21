@@ -518,7 +518,7 @@ namespace Harlinn::Windows
             CheckHRESULT( hr );
             return *this;
         }
-        ColorContext& ColorContext::InitializeFromFilename( const std::wstring& theFilename )
+        ColorContext& ColorContext::InitializeFromFilename( const WideString& theFilename )
         {
             InterfaceType* pInterface = GetInterface( );
             auto hr = pInterface->InitializeFromFilename( theFilename.c_str( ) );
@@ -686,14 +686,14 @@ namespace Harlinn::Windows
             CheckHRESULT( hr );
             return *this;
         }
-        std::wstring MetadataQueryReader::GetLocation( ) const
+        WideString MetadataQueryReader::GetLocation( ) const
         {
             UINT actualLength = 0;
             WCHAR buffer[512];
             InterfaceType* pInterface = GetInterface( );
             auto hr = pInterface->GetLocation( sizeof( buffer ) / sizeof( WCHAR ), buffer, &actualLength );
             CheckHRESULT( hr );
-            return std::wstring( buffer, size_t( actualLength ) );
+            return WideString( buffer, size_t( actualLength ) );
         }
         const MetadataQueryReader& MetadataQueryReader::GetMetadataByName( LPCWSTR wzName, PROPVARIANT* pvarValue ) const
         {
@@ -702,7 +702,7 @@ namespace Harlinn::Windows
             CheckHRESULT( hr );
             return *this;
         }
-        const MetadataQueryReader& MetadataQueryReader::GetMetadataByName( const std::wstring& theName, PROPVARIANT* pvarValue ) const
+        const MetadataQueryReader& MetadataQueryReader::GetMetadataByName( const WideString& theName, PROPVARIANT* pvarValue ) const
         {
             InterfaceType* pInterface = GetInterface( );
             auto hr = pInterface->GetMetadataByName( theName.c_str( ), pvarValue );
@@ -1322,14 +1322,14 @@ namespace Harlinn::Windows
             return result;
         }
 
-        std::wstring ComponentInfo::GetAuthor( ) const
+        WideString ComponentInfo::GetAuthor( ) const
         {
             InterfaceType* pInterface = GetInterface( );
             WCHAR buffer[1024];
             UINT actual = 0;
             auto hr = pInterface->GetAuthor( 1024, buffer, &actual );
             CheckHRESULT( hr );
-            return std::wstring( buffer, size_t( actual ) );
+            return WideString( buffer, size_t( actual ) );
         }
 
         const ComponentInfo& ComponentInfo::GetVendorGUID( GUID* pguidVendor ) const
@@ -1348,34 +1348,34 @@ namespace Harlinn::Windows
             return result;
         }
 
-        std::wstring ComponentInfo::GetVersion( ) const
+        WideString ComponentInfo::GetVersion( ) const
         {
             InterfaceType* pInterface = GetInterface( );
             WCHAR buffer[1024];
             UINT actual = 0;
             auto hr = pInterface->GetVersion( 1024, buffer, &actual );
             CheckHRESULT( hr );
-            return std::wstring( buffer, size_t( actual ) );
+            return WideString( buffer, size_t( actual ) );
         }
 
-        std::wstring ComponentInfo::GetSpecVersion( ) const
+        WideString ComponentInfo::GetSpecVersion( ) const
         {
             InterfaceType* pInterface = GetInterface( );
             WCHAR buffer[1024];
             UINT actual = 0;
             auto hr = pInterface->GetSpecVersion( 1024, buffer, &actual );
             CheckHRESULT( hr );
-            return std::wstring( buffer, size_t( actual ) );
+            return WideString( buffer, size_t( actual ) );
         }
 
-        std::wstring ComponentInfo::GetFriendlyName( ) const
+        WideString ComponentInfo::GetFriendlyName( ) const
         {
             InterfaceType* pInterface = GetInterface( );
             WCHAR buffer[1024];
             UINT actual = 0;
             auto hr = pInterface->GetFriendlyName( 1024, buffer, &actual );
             CheckHRESULT( hr );
-            return std::wstring( buffer, size_t( actual ) );
+            return WideString( buffer, size_t( actual ) );
         }
 
         // -----------------------------------------------------------------
@@ -1447,50 +1447,50 @@ namespace Harlinn::Windows
             return result;
         }
 
-        std::wstring BitmapCodecInfo::GetColorManagementVersion( ) const
+        WideString BitmapCodecInfo::GetColorManagementVersion( ) const
         {
             InterfaceType* pInterface = GetInterface( );
             WCHAR buffer[1024];
             UINT actual = 0;
             auto hr = pInterface->GetColorManagementVersion( 1024, buffer, &actual );
             CheckHRESULT( hr );
-            return std::wstring( buffer, size_t( actual ) );
+            return WideString( buffer, size_t( actual ) );
         }
-        std::wstring BitmapCodecInfo::GetDeviceManufacturer( ) const
+        WideString BitmapCodecInfo::GetDeviceManufacturer( ) const
         {
             InterfaceType* pInterface = GetInterface( );
             WCHAR buffer[1024];
             UINT actual = 0;
             auto hr = pInterface->GetDeviceManufacturer( 1024, buffer, &actual );
             CheckHRESULT( hr );
-            return std::wstring( buffer, size_t( actual ) );
+            return WideString( buffer, size_t( actual ) );
         }
-        std::wstring BitmapCodecInfo::GetDeviceModels( ) const
+        WideString BitmapCodecInfo::GetDeviceModels( ) const
         {
             InterfaceType* pInterface = GetInterface( );
             WCHAR buffer[1024];
             UINT actual = 0;
             auto hr = pInterface->GetDeviceModels( 1024, buffer, &actual );
             CheckHRESULT( hr );
-            return std::wstring( buffer, size_t( actual ) );
+            return WideString( buffer, size_t( actual ) );
         }
-        std::wstring BitmapCodecInfo::GetMimeTypes( ) const
+        WideString BitmapCodecInfo::GetMimeTypes( ) const
         {
             InterfaceType* pInterface = GetInterface( );
             WCHAR buffer[1024];
             UINT actual = 0;
             auto hr = pInterface->GetMimeTypes( 1024, buffer, &actual );
             CheckHRESULT( hr );
-            return std::wstring( buffer, size_t( actual ) );
+            return WideString( buffer, size_t( actual ) );
         }
-        std::wstring BitmapCodecInfo::GetFileExtensions( ) const
+        WideString BitmapCodecInfo::GetFileExtensions( ) const
         {
             InterfaceType* pInterface = GetInterface( );
             WCHAR buffer[1024];
             UINT actual = 0;
             auto hr = pInterface->GetFileExtensions( 1024, buffer, &actual );
             CheckHRESULT( hr );
-            return std::wstring( buffer, size_t( actual ) );
+            return WideString( buffer, size_t( actual ) );
         }
 
         bool BitmapCodecInfo::DoesSupportAnimation( ) const
@@ -1534,7 +1534,7 @@ namespace Harlinn::Windows
             CheckHRESULT( hr );
             return result != FALSE;
         }
-        bool BitmapCodecInfo::MatchesMimeType( const std::wstring& theMimeType ) const
+        bool BitmapCodecInfo::MatchesMimeType( const WideString& theMimeType ) const
         {
             InterfaceType* pInterface = GetInterface( );
             BOOL result = FALSE;
@@ -1699,7 +1699,7 @@ namespace Harlinn::Windows
             CheckHRESULT( hr );
             return BitmapDecoder( const_cast<ImagingFactory*>( this ), result );
         }
-        BitmapDecoder ImagingFactory::CreateDecoderFromFilename( const std::wstring& theFilename, const GUID* pguidVendor, DWORD dwDesiredAccess, DecodeOptions metadataOptions ) const
+        BitmapDecoder ImagingFactory::CreateDecoderFromFilename( const WideString& theFilename, const GUID* pguidVendor, DWORD dwDesiredAccess, DecodeOptions metadataOptions ) const
         {
             IWICBitmapDecoder* result = nullptr;
             InterfaceType* pInterface = GetInterface( );
@@ -1707,7 +1707,7 @@ namespace Harlinn::Windows
             CheckHRESULT( hr );
             return BitmapDecoder( const_cast<ImagingFactory*>( this ), result );
         }
-        BitmapDecoder ImagingFactory::CreateDecoderFromFilename( const std::wstring& theFilename, DWORD dwDesiredAccess, DecodeOptions metadataOptions ) const
+        BitmapDecoder ImagingFactory::CreateDecoderFromFilename( const WideString& theFilename, DWORD dwDesiredAccess, DecodeOptions metadataOptions ) const
         {
             IWICBitmapDecoder* result = nullptr;
             InterfaceType* pInterface = GetInterface( );
@@ -1715,7 +1715,7 @@ namespace Harlinn::Windows
             CheckHRESULT( hr );
             return BitmapDecoder( const_cast<ImagingFactory*>( this ), result );
         }
-        BitmapDecoder ImagingFactory::CreateDecoderFromFilename( const std::wstring& theFilename ) const
+        BitmapDecoder ImagingFactory::CreateDecoderFromFilename( const WideString& theFilename ) const
         {
             IWICBitmapDecoder* result = nullptr;
             InterfaceType* pInterface = GetInterface( );

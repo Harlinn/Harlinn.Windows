@@ -248,8 +248,8 @@ namespace Harlinn::Common::Core
     class ExceptionLocationData
     {
         long referenceCount_;
-        std::wstring function_;
-        std::wstring filename_;
+        WideString function_;
+        WideString filename_;
         int lineNumber_;
     public:
         ExceptionLocationData( const char* function, const char* filename, int lineNumber )
@@ -260,7 +260,7 @@ namespace Harlinn::Common::Core
             : referenceCount_( 1 ), function_( function ), filename_( filename ), lineNumber_( lineNumber )
         {
         }
-        ExceptionLocationData( const std::wstring& function, const std::wstring& filename, int lineNumber )
+        ExceptionLocationData( const WideString& function, const WideString& filename, int lineNumber )
             : referenceCount_( 1 ), function_( function ), filename_( filename ), lineNumber_( lineNumber )
         {
         }
@@ -286,11 +286,11 @@ namespace Harlinn::Common::Core
 
 
 
-        const std::wstring& Function( ) const
+        const WideString& Function( ) const
         {
             return function_;
         }
-        const std::wstring& Filename( ) const
+        const WideString& Filename( ) const
         {
             return filename_;
         }
@@ -312,7 +312,7 @@ namespace Harlinn::Common::Core
         : data_( new ExceptionLocationData( function, filename, lineNumber ) )
     {
     }
-    ExceptionLocation::ExceptionLocation( const std::wstring& function, const std::wstring& filename, int lineNumber )
+    ExceptionLocation::ExceptionLocation( const WideString& function, const WideString& filename, int lineNumber )
         : data_( new ExceptionLocationData( function, filename, lineNumber ) )
     {
     }
@@ -355,21 +355,21 @@ namespace Harlinn::Common::Core
         return *this;
     }
 
-    std::wstring ExceptionLocation::Function( ) const
+    WideString ExceptionLocation::Function( ) const
     {
         if ( data_ )
         {
             return data_->Function( );
         }
-        return std::wstring( );
+        return {};
     }
-    std::wstring ExceptionLocation::Filename( ) const
+    WideString ExceptionLocation::Filename( ) const
     {
         if ( data_ )
         {
             return data_->Filename( );
         }
-        return std::wstring( );
+        return {};
     }
     int ExceptionLocation::LineNumber( ) const
     {
@@ -389,13 +389,13 @@ namespace Harlinn::Common::Core
     {
 
         mutable std::string ansiMessage_;
-        std::wstring message_;
-        std::wstring helpLink_;
-        std::wstring source_;
+        WideString message_;
+        WideString helpLink_;
+        WideString source_;
         HRESULT hResult_;
         long long code_;
         ExceptionData* innerException_;
-        std::unordered_map<int, std::wstring> data_;
+        std::unordered_map<int, WideString> data_;
         ExceptionLocation location_;
     public:
         explicit ExceptionData( );
@@ -403,34 +403,34 @@ namespace Harlinn::Common::Core
         explicit ExceptionData( const char* theMessage );
         explicit ExceptionData( const wchar_t* theMessage );
         explicit ExceptionData( const std::string& theMessage );
-        explicit ExceptionData( const std::wstring& theMessage );
+        explicit ExceptionData( const WideString& theMessage );
         ExceptionData( const char* theMessage, const ExceptionData* theInnerException );
         ExceptionData( const wchar_t* theMessage, const ExceptionData* theInnerException );
         ExceptionData( long long theCode, const char* theMessage );
         ExceptionData( long long theCode, const wchar_t* theMessage );
         ExceptionData( long long theCode, const std::string& theMessage );
-        ExceptionData( long long theCode, const std::wstring& theMessage );
+        ExceptionData( long long theCode, const WideString& theMessage );
         ExceptionData( HRESULT hResult, long long theCode, const char* theMessage );
         ExceptionData( HRESULT hResult, long long theCode, const wchar_t* theMessage );
         ExceptionData( HRESULT hResult, long long theCode, const std::string& theMessage );
-        ExceptionData( HRESULT hResult, long long theCode, const std::wstring& theMessage );
+        ExceptionData( HRESULT hResult, long long theCode, const WideString& theMessage );
 
         explicit ExceptionData( const ExceptionLocation& theLocation );
         ExceptionData( const ExceptionLocation& theLocation, const ExceptionData& theInnerException );
         ExceptionData( const ExceptionLocation& theLocation, const char* theMessage );
         ExceptionData( const ExceptionLocation& theLocation, const wchar_t* theMessage );
         ExceptionData( const ExceptionLocation& theLocation, const std::string& theMessage );
-        ExceptionData( const ExceptionLocation& theLocation, const std::wstring& theMessage );
+        ExceptionData( const ExceptionLocation& theLocation, const WideString& theMessage );
         ExceptionData( const ExceptionLocation& theLocation, const char* theMessage, const ExceptionData* theInnerException );
         ExceptionData( const ExceptionLocation& theLocation, const wchar_t* theMessage, const ExceptionData* theInnerException );
         ExceptionData( const ExceptionLocation& theLocation, long long theCode, const char* theMessage );
         ExceptionData( const ExceptionLocation& theLocation, long long theCode, const wchar_t* theMessage );
         ExceptionData( const ExceptionLocation& theLocation, long long theCode, const std::string& theMessage );
-        ExceptionData( const ExceptionLocation& theLocation, long long theCode, const std::wstring& theMessage );
+        ExceptionData( const ExceptionLocation& theLocation, long long theCode, const WideString& theMessage );
         ExceptionData( const ExceptionLocation& theLocation, HRESULT hResult, long long theCode, const char* theMessage );
         ExceptionData( const ExceptionLocation& theLocation, HRESULT hResult, long long theCode, const wchar_t* theMessage );
         ExceptionData( const ExceptionLocation& theLocation, HRESULT hResult, long long theCode, const std::string& theMessage );
-        ExceptionData( const ExceptionLocation& theLocation, HRESULT hResult, long long theCode, const std::wstring& theMessage );
+        ExceptionData( const ExceptionLocation& theLocation, HRESULT hResult, long long theCode, const WideString& theMessage );
 
 
         ~ExceptionData( );
@@ -447,18 +447,18 @@ namespace Harlinn::Common::Core
             return ansiMessage_;
         }
 
-        const std::wstring& Message( ) const;
+        const WideString& Message( ) const;
         const char* what( ) const;
         ExceptionData& SetMessage( const char* theValue );
         ExceptionData& SetMessage( const wchar_t* theValue );
         ExceptionData& SetMessage( const std::string& theValue );
-        ExceptionData& SetMessage( const std::wstring& theValue );
+        ExceptionData& SetMessage( const WideString& theValue );
 
-        std::wstring GetHelpLink( ) const;
+        WideString GetHelpLink( ) const;
         ExceptionData& SetHelpLink( const char* theValue );
         ExceptionData& SetHelpLink( const wchar_t* theValue );
         ExceptionData& SetHelpLink( const std::string& theValue );
-        ExceptionData& SetHelpLink( const std::wstring& theValue );
+        ExceptionData& SetHelpLink( const WideString& theValue );
 
         HRESULT GetHRESULT( ) const;
         ExceptionData& SetHRESULT( HRESULT theValue );
@@ -470,17 +470,17 @@ namespace Harlinn::Common::Core
         const ExceptionData* GetInnerException( ) const;
         ExceptionData& SetInnerException( const ExceptionData* theValue );
 
-        std::wstring GetSource( ) const;
+        WideString GetSource( ) const;
         ExceptionData& SetSource( const char* theValue );
         ExceptionData& SetSource( const wchar_t* theValue );
         ExceptionData& SetSource( const std::string& theValue );
-        ExceptionData& SetSource( const std::wstring& theValue );
+        ExceptionData& SetSource( const WideString& theValue );
 
-        std::wstring GetData( int id ) const;
+        WideString GetData( int id ) const;
         ExceptionData& SetData( int id, const char* theValue );
         ExceptionData& SetData( int id, const wchar_t* theValue );
         ExceptionData& SetData( int id, const std::string& theValue );
-        ExceptionData& SetData( int id, const std::wstring& theValue );
+        ExceptionData& SetData( int id, const WideString& theValue );
 
         ExceptionLocation GetLocation( ) const
         {
@@ -541,7 +541,7 @@ namespace Harlinn::Common::Core
     {
     }
 
-    ExceptionData::ExceptionData( const std::wstring& theMessage )
+    ExceptionData::ExceptionData( const WideString& theMessage )
         : message_( theMessage ),
           hResult_( 0 ),
           code_( 0 ),
@@ -597,7 +597,7 @@ namespace Harlinn::Common::Core
     {
     }
 
-    ExceptionData::ExceptionData( long long theCode, const std::wstring& theMessage )
+    ExceptionData::ExceptionData( long long theCode, const WideString& theMessage )
         : message_( theMessage ),
           hResult_( 0 ),
           code_( theCode ),
@@ -629,7 +629,7 @@ namespace Harlinn::Common::Core
     {
     }
 
-    ExceptionData::ExceptionData( HRESULT hResult, long long theCode, const std::wstring& theMessage )
+    ExceptionData::ExceptionData( HRESULT hResult, long long theCode, const WideString& theMessage )
         : message_( theMessage ),
           hResult_( hResult ),
           code_( theCode ),
@@ -691,7 +691,7 @@ namespace Harlinn::Common::Core
     {
     }
 
-    ExceptionData::ExceptionData( const ExceptionLocation& theLocation, const std::wstring& theMessage )
+    ExceptionData::ExceptionData( const ExceptionLocation& theLocation, const WideString& theMessage )
         : location_( theLocation ), 
           message_( theMessage ),
           hResult_( 0 ),
@@ -753,7 +753,7 @@ namespace Harlinn::Common::Core
     {
     }
 
-    ExceptionData::ExceptionData( const ExceptionLocation& theLocation, long long theCode, const std::wstring& theMessage )
+    ExceptionData::ExceptionData( const ExceptionLocation& theLocation, long long theCode, const WideString& theMessage )
         : location_( theLocation ), 
           message_( theMessage ),
           hResult_( 0 ),
@@ -789,7 +789,7 @@ namespace Harlinn::Common::Core
     {
     }
 
-    ExceptionData::ExceptionData( const ExceptionLocation& theLocation, HRESULT hResult, long long theCode, const std::wstring& theMessage )
+    ExceptionData::ExceptionData( const ExceptionLocation& theLocation, HRESULT hResult, long long theCode, const WideString& theMessage )
         : location_( theLocation ), 
           message_( theMessage ),
           hResult_( hResult ),
@@ -813,7 +813,7 @@ namespace Harlinn::Common::Core
         return result;
     }
 
-    const std::wstring& ExceptionData::Message( ) const
+    const WideString& ExceptionData::Message( ) const
     {
         return message_;
     }
@@ -848,14 +848,14 @@ namespace Harlinn::Common::Core
         return *this;
     }
 
-    ExceptionData& ExceptionData::SetMessage( const std::wstring& theValue )
+    ExceptionData& ExceptionData::SetMessage( const WideString& theValue )
     {
         message_ = theValue;
         ansiMessage_ = std::string( );
         return *this;
     }
 
-    std::wstring ExceptionData::GetHelpLink( ) const
+    WideString ExceptionData::GetHelpLink( ) const
     {
         return helpLink_;
     }
@@ -877,7 +877,7 @@ namespace Harlinn::Common::Core
         return *this;
     }
 
-    ExceptionData& ExceptionData::SetHelpLink( const std::wstring& theValue )
+    ExceptionData& ExceptionData::SetHelpLink( const WideString& theValue )
     {
         helpLink_ = theValue;
         return *this;
@@ -925,7 +925,7 @@ namespace Harlinn::Common::Core
         return *this;
     }
 
-    std::wstring ExceptionData::GetSource( ) const
+    WideString ExceptionData::GetSource( ) const
     {
         return source_;
     }
@@ -947,16 +947,16 @@ namespace Harlinn::Common::Core
         return *this;
     }
 
-    ExceptionData& ExceptionData::SetSource( const std::wstring& theValue )
+    ExceptionData& ExceptionData::SetSource( const WideString& theValue )
     {
         source_ = theValue;
         return *this;
     }
 
-    std::wstring ExceptionData::GetData( int id ) const
+    WideString ExceptionData::GetData( int id ) const
     {
         auto parameter = data_.find( id );
-        return parameter != data_.end( ) ? parameter->second : std::wstring( );
+        return parameter != data_.end( ) ? parameter->second : WideString( );
     }
 
     ExceptionData& ExceptionData::SetData( const int id, const char* theValue )
@@ -977,7 +977,7 @@ namespace Harlinn::Common::Core
         return *this;
     }
 
-    ExceptionData& ExceptionData::SetData( const int id, const std::wstring& theValue )
+    ExceptionData& ExceptionData::SetData( const int id, const WideString& theValue )
     {
         data_[id] = theValue;
         return *this;
@@ -1003,7 +1003,7 @@ namespace Harlinn::Common::Core
     }
 
     __declspec( thread ) wchar_t ExceptionFormatBuffer[1024];
-    std::wstring Exception::Format( const char* fmt, ... )
+    WideString Exception::Format( const char* fmt, ... )
     {
         va_list args;
         va_start( args, fmt );
@@ -1015,18 +1015,18 @@ namespace Harlinn::Common::Core
         return ToWideString( result );
     }
 
-    std::wstring Exception::Format( const wchar_t* fmt, ... )
+    WideString Exception::Format( const wchar_t* fmt, ... )
     {
         va_list args;
         va_start( args, fmt );
-        std::wstring::size_type length = _vsnwprintf_s( ExceptionFormatBuffer, 1023, fmt, args );
+        WideString::size_type length = _vsnwprintf_s( ExceptionFormatBuffer, 1023, fmt, args );
         ExceptionFormatBuffer[1023] = '\x0';
-        std::wstring result( ExceptionFormatBuffer, length );
+        WideString result( ExceptionFormatBuffer, length );
         va_end( args );
         return result;
     }
 
-    std::wstring Exception::FormatList( const char* fmt, va_list args )
+    WideString Exception::FormatList( const char* fmt, va_list args )
     {
         char* buffer = (char*)ExceptionFormatBuffer;
         std::string::size_type length = vsnprintf_s( buffer, 1023, _TRUNCATE, fmt, args );
@@ -1035,11 +1035,11 @@ namespace Harlinn::Common::Core
         return ToWideString( result );
     }
 
-    std::wstring Exception::FormatList( const wchar_t* fmt, va_list args )
+    WideString Exception::FormatList( const wchar_t* fmt, va_list args )
     {
-        std::wstring::size_type length = _vsnwprintf_s( ExceptionFormatBuffer, 1023, fmt, args );
+        WideString::size_type length = _vsnwprintf_s( ExceptionFormatBuffer, 1023, fmt, args );
         ExceptionFormatBuffer[1023] = '\x0';
-        std::wstring result( ExceptionFormatBuffer, length );
+        WideString result( ExceptionFormatBuffer, length );
         return result;
     }
 
@@ -1083,7 +1083,7 @@ namespace Harlinn::Common::Core
         data = new ExceptionData( theMessage );
     }
 
-    Exception::Exception( const std::wstring& theMessage )
+    Exception::Exception( const WideString& theMessage )
         : data( nullptr )
     {
         data = new ExceptionData( theMessage );
@@ -1114,7 +1114,7 @@ namespace Harlinn::Common::Core
         data = new ExceptionData( theCode, theMessage );
     }
 
-    Exception::Exception( long long theCode, const std::wstring& theMessage )
+    Exception::Exception( long long theCode, const WideString& theMessage )
     {
         data = new ExceptionData( theCode, theMessage );
     }
@@ -1134,7 +1134,7 @@ namespace Harlinn::Common::Core
         data = new ExceptionData( hResult, theCode, theMessage );
     }
 
-    Exception::Exception( HRESULT hResult, long long theCode, const std::wstring& theMessage )
+    Exception::Exception( HRESULT hResult, long long theCode, const WideString& theMessage )
     {
         data = new ExceptionData( hResult, theCode, theMessage );
     }
@@ -1166,7 +1166,7 @@ namespace Harlinn::Common::Core
         data = new ExceptionData( theLocation, theMessage );
     }
 
-    Exception::Exception( const ExceptionLocation& theLocation, const std::wstring& theMessage )
+    Exception::Exception( const ExceptionLocation& theLocation, const WideString& theMessage )
         : data( nullptr )
     {
         data = new ExceptionData( theLocation, theMessage );
@@ -1192,7 +1192,7 @@ namespace Harlinn::Common::Core
         data = new ExceptionData( theLocation, theCode, theMessage );
     }
 
-    Exception::Exception( const ExceptionLocation& theLocation, long long theCode, const std::wstring& theMessage )
+    Exception::Exception( const ExceptionLocation& theLocation, long long theCode, const WideString& theMessage )
     {
         data = new ExceptionData( theLocation, theCode, theMessage );
     }
@@ -1212,7 +1212,7 @@ namespace Harlinn::Common::Core
         data = new ExceptionData( theLocation, hResult, theCode, theMessage );
     }
 
-    Exception::Exception( const ExceptionLocation& theLocation, HRESULT hResult, long long theCode, const std::wstring& theMessage )
+    Exception::Exception( const ExceptionLocation& theLocation, HRESULT hResult, long long theCode, const WideString& theMessage )
     {
         data = new ExceptionData( theLocation, hResult, theCode, theMessage );
     }
@@ -1265,14 +1265,14 @@ namespace Harlinn::Common::Core
     }
 
 
-    std::wstring Exception::Message( ) const
+    WideString Exception::Message( ) const
     {
         auto exceptionData = GetExceptionData( );
         if ( exceptionData )
         {
             return exceptionData->Message( );
         }
-        return std::wstring( );
+        return WideString( );
     }
 
     Exception& Exception::SetMessage( const char* theValue )
@@ -1296,7 +1296,7 @@ namespace Harlinn::Common::Core
         return *this;
     }
 
-    Exception& Exception::SetMessage( const std::wstring& theValue )
+    Exception& Exception::SetMessage( const WideString& theValue )
     {
         auto exceptionData = GetExceptionData( );
         exceptionData->SetMessage( theValue );
@@ -1305,14 +1305,14 @@ namespace Harlinn::Common::Core
 
 
 
-    std::wstring Exception::GetHelpLink( ) const
+    WideString Exception::GetHelpLink( ) const
     {
         auto exceptionData = GetExceptionData( );
         if ( exceptionData )
         {
             return exceptionData->GetHelpLink( );
         }
-        return std::wstring( );
+        return WideString( );
     }
 
     Exception& Exception::SetHelpLink( const char* theValue )
@@ -1336,7 +1336,7 @@ namespace Harlinn::Common::Core
         return *this;
     }
 
-    Exception& Exception::SetHelpLink( const std::wstring& theValue )
+    Exception& Exception::SetHelpLink( const WideString& theValue )
     {
         auto exceptionData = GetExceptionData( );
         exceptionData->SetHelpLink( theValue );
@@ -1397,14 +1397,14 @@ namespace Harlinn::Common::Core
         return *this;
     }
 
-    std::wstring Exception::GetSource( ) const
+    WideString Exception::GetSource( ) const
     {
         auto exceptionData = GetExceptionData( );
         if ( exceptionData )
         {
             return exceptionData->GetSource( );
         }
-        return std::wstring( );
+        return WideString( );
     }
 
     Exception& Exception::SetSource( const char* theValue )
@@ -1421,14 +1421,14 @@ namespace Harlinn::Common::Core
         return *this;
     }
 
-    Exception& Exception::SetSource( const std::wstring& theValue )
+    Exception& Exception::SetSource( const WideString& theValue )
     {
         auto exceptionData = GetExceptionData( );
         exceptionData->SetSource( theValue );
         return *this;
     }
 
-    std::wstring Exception::GetData( int id ) const
+    WideString Exception::GetData( int id ) const
     {
         auto exceptionData = GetExceptionData( );
         auto result = exceptionData->GetData( id );
@@ -1447,7 +1447,7 @@ namespace Harlinn::Common::Core
         return *this;
     }
 
-    Exception& Exception::SetData( int id, const std::wstring& theValue )
+    Exception& Exception::SetData( int id, const WideString& theValue )
     {
         auto exceptionData = GetExceptionData( );
         exceptionData->SetData( id, theValue );
@@ -1469,12 +1469,12 @@ namespace Harlinn::Common::Core
         try
         {
             auto exceptionLocation = GetLocation( );
-            std::wstring file = exceptionLocation.Filename( );
-            std::wstring function = exceptionLocation.Function( );
+            WideString file = exceptionLocation.Filename( );
+            WideString function = exceptionLocation.Function( );
             auto lineNumber = exceptionLocation.LineNumber( );
 
             auto message = this->Message( );
-            std::wstring messageText;
+            WideString messageText;
             if ( !message.empty() )
             {
                 messageText = TypeName( ) + L":" + message;
@@ -1492,7 +1492,7 @@ namespace Harlinn::Common::Core
     }
 
 
-    std::wstring Exception::TypeName( ) const
+    WideString Exception::TypeName( ) const
     {
         const char* name = typeid( *this ).name( );
         return ToWideString( name );
@@ -1532,7 +1532,7 @@ namespace Harlinn::Common::Core
 
     namespace
     {
-        void InternalReportException( const std::wstring& exceptionType, ExceptionLocation exceptionLocation, const std::wstring& exceptionMessage, const wchar_t* function, const wchar_t* filename, int lineNumber )
+        void InternalReportException( const WideString& exceptionType, ExceptionLocation exceptionLocation, const WideString& exceptionMessage, const wchar_t* function, const wchar_t* filename, int lineNumber )
         {
             auto threadId = CurrentThread::Id( );
             auto threadDescription = CurrentThread::Description( );
@@ -1620,19 +1620,19 @@ namespace Harlinn::Common::Core
         GetExceptionData( )->SetData( ParamNameId, argument );
     }
 
-    ArgumentException::ArgumentException( const std::wstring& message, const char* argument )
+    ArgumentException::ArgumentException( const WideString& message, const char* argument )
     {
         SetMessage( message );
         GetExceptionData( )->SetData( ParamNameId, argument );
     }
 
-    ArgumentException::ArgumentException( const std::wstring& message, const wchar_t* argument )
+    ArgumentException::ArgumentException( const WideString& message, const wchar_t* argument )
     {
         SetMessage( message );
         GetExceptionData( )->SetData( ParamNameId, argument );
     }
 
-    ArgumentException::ArgumentException( const std::wstring& message, const std::wstring& argument )
+    ArgumentException::ArgumentException( const WideString& message, const WideString& argument )
     {
         SetMessage( message );
         GetExceptionData( )->SetData( ParamNameId, argument );
@@ -1653,21 +1653,21 @@ namespace Harlinn::Common::Core
         GetExceptionData( )->SetData( ParamNameId, argument );
     }
 
-    ArgumentException::ArgumentException( const ExceptionLocation& theLocation, const std::wstring& message, const char* argument )
+    ArgumentException::ArgumentException( const ExceptionLocation& theLocation, const WideString& message, const char* argument )
         : Base( theLocation )
     {
         SetMessage( message );
         GetExceptionData( )->SetData( ParamNameId, argument );
     }
 
-    ArgumentException::ArgumentException( const ExceptionLocation& theLocation, const std::wstring& message, const wchar_t* argument )
+    ArgumentException::ArgumentException( const ExceptionLocation& theLocation, const WideString& message, const wchar_t* argument )
         : Base( theLocation )
     {
         SetMessage( message );
         GetExceptionData( )->SetData( ParamNameId, argument );
     }
 
-    ArgumentException::ArgumentException( const ExceptionLocation& theLocation, const std::wstring& message, const std::wstring& argument )
+    ArgumentException::ArgumentException( const ExceptionLocation& theLocation, const WideString& message, const WideString& argument )
         : Base( theLocation )
     {
         SetMessage( message );
@@ -1675,7 +1675,7 @@ namespace Harlinn::Common::Core
     }
 
 
-    std::wstring ArgumentException::GetParamName( ) const
+    WideString ArgumentException::GetParamName( ) const
     {
         return GetExceptionData( )->GetData( ParamNameId );
     }
@@ -1694,17 +1694,17 @@ namespace Harlinn::Common::Core
     }
 
 
-    ArgumentNullException::ArgumentNullException( const char* argument, const std::wstring& message )
+    ArgumentNullException::ArgumentNullException( const char* argument, const WideString& message )
         : ArgumentException( message, argument )
     {
     }
 
-    ArgumentNullException::ArgumentNullException( const wchar_t* argument, const std::wstring& message )
+    ArgumentNullException::ArgumentNullException( const wchar_t* argument, const WideString& message )
         : ArgumentException( message, argument )
     {
     }
 
-    ArgumentNullException::ArgumentNullException( const std::wstring& argument, const std::wstring& message )
+    ArgumentNullException::ArgumentNullException( const WideString& argument, const WideString& message )
         : ArgumentException( message, argument )
     {
     }
@@ -1722,17 +1722,17 @@ namespace Harlinn::Common::Core
     }
 
 
-    ArgumentNullException::ArgumentNullException( const ExceptionLocation& theLocation, const char* argument, const std::wstring& message )
+    ArgumentNullException::ArgumentNullException( const ExceptionLocation& theLocation, const char* argument, const WideString& message )
         : ArgumentException( theLocation, message, argument )
     {
     }
 
-    ArgumentNullException::ArgumentNullException( const ExceptionLocation& theLocation, const wchar_t* argument, const std::wstring& message )
+    ArgumentNullException::ArgumentNullException( const ExceptionLocation& theLocation, const wchar_t* argument, const WideString& message )
         : ArgumentException( theLocation, message, argument )
     {
     }
 
-    ArgumentNullException::ArgumentNullException( const ExceptionLocation& theLocation, const std::wstring& argument, const std::wstring& message )
+    ArgumentNullException::ArgumentNullException( const ExceptionLocation& theLocation, const WideString& argument, const WideString& message )
         : ArgumentException( theLocation, message, argument )
     {
     }
@@ -1750,18 +1750,18 @@ namespace Harlinn::Common::Core
     {
     }
 
-    ArgumentOutOfRangeException::ArgumentOutOfRangeException( const char* argument, const std::wstring& message )
+    ArgumentOutOfRangeException::ArgumentOutOfRangeException( const char* argument, const WideString& message )
         : ArgumentException( message, argument )
     {
     }
 
-    ArgumentOutOfRangeException::ArgumentOutOfRangeException( const wchar_t* argument, const std::wstring& message )
+    ArgumentOutOfRangeException::ArgumentOutOfRangeException( const wchar_t* argument, const WideString& message )
         : ArgumentException( message, argument )
     {
     }
 
 
-    ArgumentOutOfRangeException::ArgumentOutOfRangeException( const std::wstring& argument, const std::wstring& message )
+    ArgumentOutOfRangeException::ArgumentOutOfRangeException( const WideString& argument, const WideString& message )
         : ArgumentException( message, argument )
     {
     }
@@ -1777,18 +1777,18 @@ namespace Harlinn::Common::Core
     {
     }
 
-    ArgumentOutOfRangeException::ArgumentOutOfRangeException( const ExceptionLocation& theLocation, const char* argument, const std::wstring& message )
+    ArgumentOutOfRangeException::ArgumentOutOfRangeException( const ExceptionLocation& theLocation, const char* argument, const WideString& message )
         : ArgumentException( theLocation, message, argument )
     {
     }
 
-    ArgumentOutOfRangeException::ArgumentOutOfRangeException( const ExceptionLocation& theLocation, const wchar_t* argument, const std::wstring& message )
+    ArgumentOutOfRangeException::ArgumentOutOfRangeException( const ExceptionLocation& theLocation, const wchar_t* argument, const WideString& message )
         : ArgumentException( theLocation, message, argument )
     {
     }
 
 
-    ArgumentOutOfRangeException::ArgumentOutOfRangeException( const ExceptionLocation& theLocation, const std::wstring& argument, const std::wstring& message )
+    ArgumentOutOfRangeException::ArgumentOutOfRangeException( const ExceptionLocation& theLocation, const WideString& argument, const WideString& message )
         : ArgumentException( theLocation, message, argument )
     {
     }
@@ -1831,10 +1831,10 @@ namespace Harlinn::Common::Core
     }
 
 
-    std::wstring FormatError( DWORD errorId )
+    WideString FormatError( DWORD errorId )
     {
         int length = FormatMessageW( FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS, nullptr, errorId, 0, buffer, 512, nullptr );
-        return std::wstring( buffer, static_cast<size_t>( length ) );
+        return WideString( buffer, static_cast<size_t>( length ) );
     }
     std::string FormatErrorA( DWORD errorId )
     {

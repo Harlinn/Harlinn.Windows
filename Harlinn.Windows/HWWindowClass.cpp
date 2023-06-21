@@ -5,31 +5,31 @@
 
 namespace Harlinn::Windows
 {
-    std::wstring WindowClass::animate_class_name = std::wstring( ANIMATE_CLASSW );
-    std::wstring WindowClass::datetimepick_class_name = std::wstring( DATETIMEPICK_CLASSW );
-    std::wstring WindowClass::hotkey_class_name = std::wstring( HOTKEY_CLASSW );
-    std::wstring WindowClass::link_class_name = std::wstring( WC_LINK );
-    std::wstring WindowClass::monthcal_class_name = std::wstring( MONTHCAL_CLASSW );
-    std::wstring WindowClass::nativefontctl_class_name = std::wstring( WC_NATIVEFONTCTLW );
-    std::wstring WindowClass::progress_class_name = std::wstring( PROGRESS_CLASSW );
-    std::wstring WindowClass::rebar_class_name = std::wstring( REBARCLASSNAMEW );
-    std::wstring WindowClass::status_class_name = std::wstring( STATUSCLASSNAMEW );
-    std::wstring WindowClass::toolbar_class_name = std::wstring( TOOLBARCLASSNAMEW );
-    std::wstring WindowClass::tooltips_class_name = std::wstring( TOOLTIPS_CLASSW );
-    std::wstring WindowClass::trackbar_class_name = std::wstring( TRACKBAR_CLASSW );
-    std::wstring WindowClass::updown_class_name = std::wstring( UPDOWN_CLASSW );
-    std::wstring WindowClass::button_class_name = std::wstring( WC_BUTTONW );
-    std::wstring WindowClass::combobox_class_name = std::wstring( WC_COMBOBOXEXW );
-    std::wstring WindowClass::edit_class_name = std::wstring( WC_EDITW );
-    std::wstring WindowClass::header_class_name = std::wstring( WC_HEADERW );
-    std::wstring WindowClass::listbox_class_name = std::wstring( WC_LISTBOXW );
-    std::wstring WindowClass::ipaddress_class_name = std::wstring( WC_IPADDRESSW );
-    std::wstring WindowClass::listview_class_name = std::wstring( WC_LISTVIEWW );
-    std::wstring WindowClass::pagescroller_class_name = std::wstring( WC_PAGESCROLLERW );
-    std::wstring WindowClass::scrollbar_class_name = std::wstring( WC_SCROLLBARW );
-    std::wstring WindowClass::static_class_name = std::wstring( WC_STATICW );
-    std::wstring WindowClass::tabcontrol_class_name = std::wstring( WC_TABCONTROLW );
-    std::wstring WindowClass::treeview_class_name = std::wstring( WC_TREEVIEWW );
+    WideString WindowClass::animate_class_name = WideString( ANIMATE_CLASSW );
+    WideString WindowClass::datetimepick_class_name = WideString( DATETIMEPICK_CLASSW );
+    WideString WindowClass::hotkey_class_name = WideString( HOTKEY_CLASSW );
+    WideString WindowClass::link_class_name = WideString( WC_LINK );
+    WideString WindowClass::monthcal_class_name = WideString( MONTHCAL_CLASSW );
+    WideString WindowClass::nativefontctl_class_name = WideString( WC_NATIVEFONTCTLW );
+    WideString WindowClass::progress_class_name = WideString( PROGRESS_CLASSW );
+    WideString WindowClass::rebar_class_name = WideString( REBARCLASSNAMEW );
+    WideString WindowClass::status_class_name = WideString( STATUSCLASSNAMEW );
+    WideString WindowClass::toolbar_class_name = WideString( TOOLBARCLASSNAMEW );
+    WideString WindowClass::tooltips_class_name = WideString( TOOLTIPS_CLASSW );
+    WideString WindowClass::trackbar_class_name = WideString( TRACKBAR_CLASSW );
+    WideString WindowClass::updown_class_name = WideString( UPDOWN_CLASSW );
+    WideString WindowClass::button_class_name = WideString( WC_BUTTONW );
+    WideString WindowClass::combobox_class_name = WideString( WC_COMBOBOXEXW );
+    WideString WindowClass::edit_class_name = WideString( WC_EDITW );
+    WideString WindowClass::header_class_name = WideString( WC_HEADERW );
+    WideString WindowClass::listbox_class_name = WideString( WC_LISTBOXW );
+    WideString WindowClass::ipaddress_class_name = WideString( WC_IPADDRESSW );
+    WideString WindowClass::listview_class_name = WideString( WC_LISTVIEWW );
+    WideString WindowClass::pagescroller_class_name = WideString( WC_PAGESCROLLERW );
+    WideString WindowClass::scrollbar_class_name = WideString( WC_SCROLLBARW );
+    WideString WindowClass::static_class_name = WideString( WC_STATICW );
+    WideString WindowClass::tabcontrol_class_name = WideString( WC_TABCONTROLW );
+    WideString WindowClass::treeview_class_name = WideString( WC_TREEVIEWW );
 
 
 
@@ -46,11 +46,11 @@ namespace Harlinn::Windows
     {
         if ( wndClass.lpszClassName )
         {
-            name_ = std::wstring( wndClass.lpszClassName );
+            name_ = WideString( wndClass.lpszClassName );
         }
         if ( wndClass.lpszMenuName )
         {
-            menuName_ = std::wstring( wndClass.lpszMenuName );
+            menuName_ = WideString( wndClass.lpszMenuName );
         }
     }
 
@@ -98,24 +98,24 @@ namespace Harlinn::Windows
     }
 
 
-    const std::wstring& WindowClass::Name( ) const
+    const WideString& WindowClass::Name( ) const
     {
         return name_;
     }
 
-    WindowClass& WindowClass::SetName( const std::wstring& name )
+    WindowClass& WindowClass::SetName( const WideString& name )
     {
         name_ = name;
         return *this;
     }
 
 
-    const std::wstring& WindowClass::MenuName( ) const
+    const WideString& WindowClass::MenuName( ) const
     {
         return menuName_;
     }
 
-    WindowClass& WindowClass::SetMenuName( const std::wstring& menuName )
+    WindowClass& WindowClass::SetMenuName( const WideString& menuName )
     {
         menuName_ = menuName;
         return *this;
@@ -275,7 +275,7 @@ namespace Harlinn::Windows
     }
 
 
-    void WindowClasses::LoadStandardClass( const std::wstring& className )
+    void WindowClasses::LoadStandardClass( const WideString& className )
     {
         auto cit = map_.find( className );
         if ( cit == map_.end( ) )
@@ -286,13 +286,13 @@ namespace Harlinn::Windows
     }
 
 
-    std::unique_ptr<WindowClass> WindowClasses::GetClassInfo( const std::wstring& className )
+    std::unique_ptr<WindowClass> WindowClasses::GetClassInfo( const WideString& className )
     {
         auto result = GetClassInfo( (HINSTANCE)0, className );
         return result;
     }
 
-    std::unique_ptr<WindowClass> WindowClasses::GetClassInfo( HINSTANCE hInstance, const std::wstring& className )
+    std::unique_ptr<WindowClass> WindowClasses::GetClassInfo( HINSTANCE hInstance, const WideString& className )
     {
         WNDCLASSEXW wndCls = { 0, };
         GetClassInfoExW( hInstance, className.c_str( ), &wndCls );
@@ -300,7 +300,7 @@ namespace Harlinn::Windows
         return result;
     }
 
-    WindowClass* WindowClasses::GetWindowClass( const std::wstring& className ) const
+    WindowClass* WindowClasses::GetWindowClass( const WideString& className ) const
     {
         auto it = map_.find( className );
         if ( it != map_.end( ) )

@@ -83,7 +83,7 @@ BOOST_AUTO_TEST_CASE( AttributesTest1 )
 
     auto attribute = documentElement.Attribute( L"xmlns" );
     
-    auto attributeValue = attribute.As<std::wstring>( );
+    auto attributeValue = attribute.As<WideString>( );
     BOOST_CHECK( attributeValue == L"x-schema:weatherSchema.xml" );
 
 
@@ -118,7 +118,7 @@ BOOST_AUTO_TEST_CASE( LoadTest1 )
     document.SetResolveExternals( false );
     document.SetPreserveWhiteSpace( true );
 
-    auto xmlFilename = IO::Directory::GetExecutableDirectory<std::wstring>() + L"Harlinn.OCI.Tests.xml";
+    auto xmlFilename = IO::Directory::GetExecutableDirectory<WideString>() + L"Harlinn.OCI.Tests.xml";
 
     auto success = document.Load( xmlFilename );
     BOOST_CHECK( success );

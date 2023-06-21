@@ -12,7 +12,7 @@ namespace Harlinn::Windows::MF
 #define IF_EQUAL_RETURN(param, val) if(val == param) return L#val
 #endif
 
-    HW_EXPORT std::wstring GetGUIDNameConst(const Guid& guid)
+    HW_EXPORT WideString GetGUIDNameConst(const Guid& guid)
     {
         IF_EQUAL_RETURN(guid, MF_MT_MAJOR_TYPE);
         IF_EQUAL_RETURN(guid, MF_MT_MAJOR_TYPE);
@@ -159,12 +159,12 @@ namespace Harlinn::Windows::MF
         IF_EQUAL_RETURN(guid, MFAudioFormat_AAC); //              WAVE_FORMAT_MPEG_HEAAC 
         IF_EQUAL_RETURN(guid, MFAudioFormat_ADTS); //             WAVE_FORMAT_MPEG_ADTS_AAC 
 
-        return std::wstring();
+        return {};
     }
 
-    HW_EXPORT std::wstring GetMediaTypeDescription(const MFMediaType& mediaType)
+    HW_EXPORT WideString GetMediaTypeDescription(const MFMediaType& mediaType)
     {
-        std::wstring description;
+        WideString description;
 
         if (mediaType == nullptr)
         {

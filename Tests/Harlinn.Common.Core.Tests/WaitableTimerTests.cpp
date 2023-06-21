@@ -35,7 +35,7 @@ BOOST_AUTO_TEST_CASE( WaitTest1 )
 // --run_test=WaitableTimerTests/OpenTest1
 BOOST_AUTO_TEST_CASE( OpenTest1 )
 {
-    std::wstring waitableTimerName( L"OpenTest1WaitableTimerName" );
+    WideString waitableTimerName( L"OpenTest1WaitableTimerName" );
     WaitableTimer waitableTimer( waitableTimerName, true );
     EventWaitHandle event( true );
 
@@ -56,7 +56,7 @@ BOOST_AUTO_TEST_CASE( OpenTest1 )
 // --run_test=WaitableTimerTests/TryOpenTest1
 BOOST_AUTO_TEST_CASE( TryOpenTest1 )
 {
-    std::wstring waitableTimerName( L"OpenTest1WaitableTimerName" );
+    WideString waitableTimerName( L"OpenTest1WaitableTimerName" );
     WaitableTimer waitableTimer( waitableTimerName, true );
     EventWaitHandle event( true );
 

@@ -4,7 +4,7 @@
 namespace Harlinn::OCI
 {
 
-    void Describe::DescribeAny( const std::wstring& objectName, OCI::ParameterType parameterType ) const
+    void Describe::DescribeAny( const WideString& objectName, OCI::ParameterType parameterType ) const
     {
         auto& serviceContext = ServiceContext( );
         auto& error = Error( );

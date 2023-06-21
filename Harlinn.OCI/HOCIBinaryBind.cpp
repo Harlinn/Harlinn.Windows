@@ -16,7 +16,7 @@ namespace Harlinn::OCI
         SimpleBindByPos( positon, ExternalType, data_, size_ );
     }
 
-    void BinaryBind::Bind( const std::wstring& name, UInt32 iters )
+    void BinaryBind::Bind( const WideString& name, UInt32 iters )
     {
         SimpleBindByName( name, ExternalType, data_, size_ );
     }

@@ -5,6 +5,7 @@
 #include <HCCArray.h>
 #include <HCCTuple.h>
 #include <HCCVector.h>
+#include <HCCString.h>
 
 #pragma pack(push,1)
 

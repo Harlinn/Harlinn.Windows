@@ -488,33 +488,21 @@ namespace Harlinn::Common::Core
         HCC_EXPORT std::string ToAnsiString( ) const;
         HCC_EXPORT std::string ToAnsiString( const std::string& format ) const;
 
-        HCC_EXPORT std::wstring ToWideString( ) const;
-        HCC_EXPORT std::wstring ToWideString( const std::wstring& format ) const;
+        HCC_EXPORT WideString ToWideString( ) const;
+        HCC_EXPORT WideString ToWideString( const WideString& format ) const;
 
-        HCC_EXPORT std::wstring ToString( ) const;
-        HCC_EXPORT std::wstring ToString( const std::wstring& format ) const;
+        HCC_EXPORT WideString ToString( ) const;
+        HCC_EXPORT WideString ToString( const WideString& format ) const;
 
         HCC_EXPORT static bool TryParse( const wchar_t* text, TimeSpan& result );
         HCC_EXPORT static bool TryParse( const char* text, TimeSpan& result );
-        static bool TryParse( const std::wstring& text, TimeSpan& result )
-        {
-            return TryParse( text.c_str( ), result );
-        }
-        static bool TryParse( const std::string& text, TimeSpan& result )
-        {
-            return TryParse( text.c_str( ), result );
-        }
+        HCC_EXPORT bool TryParse( const WideString& text, TimeSpan& result );
+        HCC_EXPORT bool TryParse( const std::string& text, TimeSpan& result );
 
         HCC_EXPORT static TimeSpan Parse( const wchar_t* text );
         HCC_EXPORT static TimeSpan Parse( const char* text );
-        static TimeSpan Parse( const std::wstring& text )
-        {
-            return Parse( text.c_str( ) );
-        }
-        static TimeSpan Parse( const std::string& text )
-        {
-            return Parse( text.c_str( ) );
-        }
+        HCC_EXPORT static TimeSpan Parse( const WideString& text );
+        HCC_EXPORT static TimeSpan Parse( const std::string& text );
 
 
         friend std::ostream& operator << ( std::ostream& stream, const TimeSpan& timeSpan )
@@ -633,13 +621,14 @@ namespace Harlinn::Common::Core
         HCC_EXPORT const DateTime& AssingTo( SYSTEMTIME& systemTime ) const;
 
         HCC_EXPORT std::string DateToAnsiString( ) const;
-        HCC_EXPORT std::wstring DateToString( ) const;
+        HCC_EXPORT WideString DateToString( ) const;
 
         HCC_EXPORT std::string TimeToAnsiString( ) const;
-        HCC_EXPORT std::wstring TimeToString( ) const;
+        HCC_EXPORT WideString TimeToString( ) const;
 
         HCC_EXPORT std::string ToAnsiString( ) const;
-        HCC_EXPORT std::wstring ToString( ) const;
+        HCC_EXPORT WideString ToString( ) const;
+        HCC_EXPORT WideString ToString( const std::wstring_view& format ) const;
 
         HCC_EXPORT TimeSpan Subtract( const DateTime& value ) const;
         HCC_EXPORT DateTime Subtract( const TimeSpan& value ) const;
@@ -835,22 +824,10 @@ namespace Harlinn::Common::Core
         HCC_EXPORT static DateTime Parse( const wchar_t* text );
         HCC_EXPORT static DateTime Parse( const char* text );
 
-        static bool TryParse( const std::wstring& text, DateTime& result )
-        {
-            return TryParse( text.c_str(), result );
-        }
-        static bool TryParse( const std::string& text, DateTime& result )
-        {
-            return TryParse( text.c_str( ), result );
-        }
-        static DateTime Parse( const std::wstring& text )
-        {
-            return Parse( text.c_str( ) );
-        }
-        static DateTime Parse( const std::string& text )
-        {
-            return Parse( text.c_str( ) );
-        }
+        HCC_EXPORT static bool TryParse( const WideString& text, DateTime& result );
+        HCC_EXPORT static bool TryParse( const std::string& text, DateTime& result );
+        HCC_EXPORT static DateTime Parse( const WideString& text );
+        HCC_EXPORT static DateTime Parse( const std::string& text );
 
 
 
@@ -968,6 +945,24 @@ namespace std
             return dateTime.hash( );
         }
     };
+
+    template<> struct formatter<Harlinn::Common::Core::DateTime>
+    {
+        using ChronoFormatter = std::formatter<std::chrono::system_clock::time_point>;
+        ChronoFormatter chronoFormatter_;
+
+        constexpr auto parse( std::format_parse_context& ctx )
+        {
+            return chronoFormatter_.parse( ctx );
+        }
+
+        auto format( const Harlinn::Common::Core::DateTime& dateTime, std::format_context& ctx )
+        {
+            auto timePoint = dateTime.ToTimePoint( );
+            return chronoFormatter_.format( timePoint, ctx );
+        }
+    };
+
 
 }
 

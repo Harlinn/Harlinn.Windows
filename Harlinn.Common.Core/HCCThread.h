@@ -240,7 +240,7 @@ namespace Harlinn::Common::Core
         }
 
 
-        inline std::wstring Description( )
+        inline WideString Description( )
         {
             PWSTR data = nullptr;
             HRESULT hr = GetThreadDescription( GetCurrentThread( ), &data );
@@ -250,13 +250,13 @@ namespace Harlinn::Common::Core
             }
             if ( data )
             {
-                std::wstring result( data );
+                WideString result( data );
                 LocalFree( data );
                 return result;
             }
             else
             {
-                return std::wstring( );
+                return WideString( );
             }
         }
         inline void SetDescription( const wchar_t* threadDescription )
@@ -581,7 +581,7 @@ namespace Harlinn::Common::Core
             return ExitCode( ) == StillActive;
         }
 
-        [[nodiscard]] std::wstring Description( ) const
+        [[nodiscard]] WideString Description( ) const
         {
             PWSTR data = nullptr;
             HRESULT hr = GetThreadDescription( GetHandle(), &data );
@@ -591,13 +591,13 @@ namespace Harlinn::Common::Core
             }
             if ( data )
             {
-                std::wstring result( data );
+                WideString result( data );
                 LocalFree( data );
                 return result;
             }
             else
             {
-                return std::wstring( );
+                return WideString( );
             }
         }
         void SetDescription( const wchar_t* threadDescription ) const

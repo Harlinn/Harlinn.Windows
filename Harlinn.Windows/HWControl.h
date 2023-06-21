@@ -183,7 +183,7 @@ namespace Harlinn::Windows
 
         LONG id_;
         Windows::Controls controls_;
-        std::wstring text_;
+        WideString text_;
         bool automaticallyAddParentlessOwnedControls_;
 
         AnchorStyles anchorStyles_;
@@ -363,8 +363,8 @@ namespace Harlinn::Windows
 
 
         HW_EXPORT int TextLength( ) const;
-        HW_EXPORT std::wstring Text( ) const;
-        HW_EXPORT bool SetText( const std::wstring& text );
+        HW_EXPORT WideString Text( ) const;
+        HW_EXPORT bool SetText( const WideString& text );
         HW_EXPORT bool SetText( const wchar_t* text );
 
         HW_EXPORT bool Show( );

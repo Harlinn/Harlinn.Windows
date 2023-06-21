@@ -21,7 +21,7 @@ namespace Harlinn::OCI
         }
     }
 
-    void DateArrayBind::Bind( const std::wstring& name, UInt32 iters )
+    void DateArrayBind::Bind( const WideString& name, UInt32 iters )
     {
         auto dataSize = data_.size( );
         actualSize_ = static_cast<UInt32>( dataSize );
@@ -98,34 +98,34 @@ namespace Harlinn::OCI
         Assign( index, newValue.Ticks( ) );
     }
 
-    std::wstring DateArrayBind::AsString( size_t index, const std::wstring& format ) const
+    WideString DateArrayBind::AsString( size_t index, const WideString& format ) const
     {
         wchar_t buffer[64];
         UInt32 bufferSize = sizeof(64);
         const OCIDate* ociDate = (OCIDate*)std::addressof( data_[index] );
         auto& error = Error( );
         OCI::DateToText( error, &data_[index], format.c_str( ), static_cast<Byte>( format.length( ) ), nullptr, 0, &bufferSize, buffer );
-        std::wstring result( ( std::wstring::value_type* )buffer, static_cast<std::wstring::size_type>( bufferSize ) );
+        WideString result( ( WideString::value_type* )buffer, static_cast<WideString::size_type>( bufferSize ) );
         return result;
     }
 
-    std::wstring DateArrayBind::AsString( size_t index ) const
+    WideString DateArrayBind::AsString( size_t index ) const
     {
         wchar_t buffer[32];
         UInt32 bufferSize = sizeof( buffer );
-        static std::wstring fmt( HCC_TEXT( "YYYY/MM/DD HH24:MI:SS" ) );
+        static WideString fmt( HCC_TEXT( "YYYY/MM/DD HH24:MI:SS" ) );
         auto& error = Error( );
         OCI::DateToText( error, &data_[index], fmt.c_str( ), static_cast<Byte>( fmt.length( ) ), nullptr, 0, &bufferSize, buffer );
-        std::wstring result( ( std::wstring::value_type* )buffer, static_cast<std::wstring::size_type>( bufferSize ) );
+        WideString result( ( WideString::value_type* )buffer, static_cast<WideString::size_type>( bufferSize ) );
         return result;
     }
 
-    void DateArrayBind::Assign( size_t index, const std::wstring& newValue )
+    void DateArrayBind::Assign( size_t index, const WideString& newValue )
     {
-        static std::wstring fmt( HCC_TEXT( "YYYY/MM/DD HH24:MI:SS" ) );
+        static WideString fmt( HCC_TEXT( "YYYY/MM/DD HH24:MI:SS" ) );
         Assign( index, fmt, newValue );
     }
-    void DateArrayBind::Assign( size_t index, const std::wstring& format, const std::wstring& newValue )
+    void DateArrayBind::Assign( size_t index, const WideString& format, const WideString& newValue )
     {
         OCI::Date* ociDate = &data_[index];
         auto& error = Error( );

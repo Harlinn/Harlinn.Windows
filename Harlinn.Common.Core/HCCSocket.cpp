@@ -113,12 +113,12 @@ namespace Harlinn::Common::Core::IO::Sockets
     }
 
 
-    std::wstring Address::ToString( ) const
+    WideString Address::ToString( ) const
     {
         wchar_t buffer[128];
         DWORD bufferSize = sizeof( buffer )/sizeof(wchar_t);
         WSAAddressToStringW( (sockaddr*)&storage_, length_, nullptr, buffer, &bufferSize );
-        std::wstring result( buffer, static_cast<size_t>( bufferSize - 1 ) );
+        WideString result( buffer, static_cast<size_t>( bufferSize - 1 ) );
         return result;
     }
 

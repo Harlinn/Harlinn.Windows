@@ -8,8 +8,8 @@ namespace Harlinn::Common::Core::Logging
     HCC_EXPORT BackendComputerInfo GetBackendComputerInfo( )
     {
         Guid machineGuid = Environment::MachineGuid( );
-        std::wstring domainName = Environment::DomainName( );
-        std::wstring computerName = Environment::ComputerName( Environment::ComputerNameFormat::NetBIOS );
+        WideString domainName = Environment::DomainName( );
+        WideString computerName = Environment::ComputerName( Environment::ComputerNameFormat::NetBIOS );
         BackendComputerInfo result( machineGuid, domainName, computerName );
         return result;
     }
@@ -21,8 +21,8 @@ namespace Harlinn::Common::Core::Logging
             auto uniqueId = Environment::UserName( Environment::UserNameFormat::UniqueId );
             userId = Guid( uniqueId );
         }
-        std::wstring domainName = Environment::DomainName( );
-        std::wstring userName = Environment::UserName( Environment::UserNameFormat::SamCompatible );
+        WideString domainName = Environment::DomainName( );
+        WideString userName = Environment::UserName( Environment::UserNameFormat::SamCompatible );
         BackendUserInfo result( userId, domainName, userName );
         return result;
     }
@@ -37,7 +37,7 @@ namespace Harlinn::Common::Core::Logging
             ThrowLastOSError( );
         }
 
-        BackendExecutableInfo result( Guid( ), std::wstring( buffer, static_cast<size_t>(rc) ) );
+        BackendExecutableInfo result( Guid( ), WideString( buffer, static_cast<size_t>(rc) ) );
         return result;
     }
 
@@ -51,8 +51,8 @@ namespace Harlinn::Common::Core::Logging
         Guid id = Guid::NewGuid( );
         DateTime startTime = DateTime::UtcNow( );
         UInt32 processId = GetCurrentProcessId( );
-        std::wstring computerName = Environment::ComputerName( Environment::ComputerNameFormat::NetBIOS );
-        std::wstring userName = Environment::UserName( Environment::UserNameFormat::SamCompatible );
+        WideString computerName = Environment::ComputerName( Environment::ComputerNameFormat::NetBIOS );
+        WideString userName = Environment::UserName( Environment::UserNameFormat::SamCompatible );
         */
         return BackendProcessInfo( );
     }

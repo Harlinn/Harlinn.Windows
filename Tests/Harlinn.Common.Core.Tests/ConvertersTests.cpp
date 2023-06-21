@@ -458,7 +458,7 @@ BOOST_AUTO_TEST_CASE( SameTest14 )
 // --run_test=ConvertersTests/SameTest15
 BOOST_AUTO_TEST_CASE( SameTest15 )
 {
-    using Type = std::wstring;
+    using Type = WideString;
     Type value( L"Hi" );
     auto result = ConvertTo<Type>( value );
     BOOST_CHECK( value == result );
@@ -497,8 +497,8 @@ BOOST_AUTO_TEST_CASE( ToWideStringTest1 )
 {
     using Type = bool;
     Type value = true;
-    std::wstring expectedResult = L"True";
-    auto result = ConvertTo<std::wstring>( value );
+    WideString expectedResult = L"True";
+    auto result = ConvertTo<WideString>( value );
     BOOST_CHECK( expectedResult == result );
 }
 
@@ -507,8 +507,8 @@ BOOST_AUTO_TEST_CASE( ToWideStringTest2 )
 {
     using Type = SByte;
     Type value = 1;
-    std::wstring expectedResult = L"1";
-    auto result = ConvertTo<std::wstring>( value );
+    WideString expectedResult = L"1";
+    auto result = ConvertTo<WideString>( value );
     BOOST_CHECK( expectedResult == result );
 }
 
@@ -517,8 +517,8 @@ BOOST_AUTO_TEST_CASE( ToWideStringTest3 )
 {
     using Type = Byte;
     Type value = 1;
-    std::wstring expectedResult = L"1";
-    auto result = ConvertTo<std::wstring>( value );
+    WideString expectedResult = L"1";
+    auto result = ConvertTo<WideString>( value );
     BOOST_CHECK( expectedResult == result );
 }
 
@@ -527,8 +527,8 @@ BOOST_AUTO_TEST_CASE( ToWideStringTest4 )
 {
     using Type = Int16;
     Type value = 1;
-    std::wstring expectedResult = L"1";
-    auto result = ConvertTo<std::wstring>( value );
+    WideString expectedResult = L"1";
+    auto result = ConvertTo<WideString>( value );
     BOOST_CHECK( expectedResult == result );
 }
 
@@ -537,8 +537,8 @@ BOOST_AUTO_TEST_CASE( ToWideStringTest5 )
 {
     using Type = UInt16;
     Type value = 1;
-    std::wstring expectedResult = L"1";
-    auto result = ConvertTo<std::wstring>( value );
+    WideString expectedResult = L"1";
+    auto result = ConvertTo<WideString>( value );
     BOOST_CHECK( expectedResult == result );
 }
 
@@ -547,8 +547,8 @@ BOOST_AUTO_TEST_CASE( ToWideStringTest6 )
 {
     using Type = Int32;
     Type value = 1;
-    std::wstring expectedResult = L"1";
-    auto result = ConvertTo<std::wstring>( value );
+    WideString expectedResult = L"1";
+    auto result = ConvertTo<WideString>( value );
     BOOST_CHECK( expectedResult == result );
 }
 
@@ -557,8 +557,8 @@ BOOST_AUTO_TEST_CASE( ToWideStringTest7 )
 {
     using Type = UInt32;
     Type value = 1;
-    std::wstring expectedResult = L"1";
-    auto result = ConvertTo<std::wstring>( value );
+    WideString expectedResult = L"1";
+    auto result = ConvertTo<WideString>( value );
     BOOST_CHECK( expectedResult == result );
 }
 
@@ -567,8 +567,8 @@ BOOST_AUTO_TEST_CASE( ToWideStringTest8 )
 {
     using Type = Int64;
     Type value = 1;
-    std::wstring expectedResult = L"1";
-    auto result = ConvertTo<std::wstring>( value );
+    WideString expectedResult = L"1";
+    auto result = ConvertTo<WideString>( value );
     BOOST_CHECK( expectedResult == result );
 }
 
@@ -577,8 +577,8 @@ BOOST_AUTO_TEST_CASE( ToWideStringTest9 )
 {
     using Type = UInt64;
     Type value = 1;
-    std::wstring expectedResult = L"1";
-    auto result = ConvertTo<std::wstring>( value );
+    WideString expectedResult = L"1";
+    auto result = ConvertTo<WideString>( value );
     BOOST_CHECK( expectedResult == result );
 }
 
@@ -587,8 +587,8 @@ BOOST_AUTO_TEST_CASE( ToWideStringTest10 )
 {
     using Type = float;
     Type value = 1;
-    std::wstring expectedResult = L"1.000000";
-    auto result = ConvertTo<std::wstring>( value );
+    WideString expectedResult = L"1.000000";
+    auto result = ConvertTo<WideString>( value );
     BOOST_CHECK( expectedResult == result );
 }
 
@@ -597,8 +597,8 @@ BOOST_AUTO_TEST_CASE( ToWideStringTest11 )
 {
     using Type = Double;
     Type value = 1;
-    std::wstring expectedResult = L"1.000000";
-    auto result = ConvertTo<std::wstring>( value );
+    WideString expectedResult = L"1.000000";
+    auto result = ConvertTo<WideString>( value );
     BOOST_CHECK( expectedResult == result );
 }
 
@@ -607,8 +607,8 @@ BOOST_AUTO_TEST_CASE( ToWideStringTest12 )
 {
     using Type = DateTime;
     Type value(2020,1,1);
-    std::wstring expectedResult = value.ToString();
-    auto result = ConvertTo<std::wstring>( value );
+    WideString expectedResult = value.ToString();
+    auto result = ConvertTo<WideString>( value );
     BOOST_CHECK( expectedResult == result );
 }
 
@@ -617,8 +617,8 @@ BOOST_AUTO_TEST_CASE( ToWideStringTest13 )
 {
     using Type = TimeSpan;
     Type value = Type::FromDays(1);
-    std::wstring expectedResult = value.ToString( );
-    auto result = ConvertTo<std::wstring>( value );
+    WideString expectedResult = value.ToString( );
+    auto result = ConvertTo<WideString>( value );
     BOOST_CHECK( expectedResult == result );
 }
 
@@ -628,8 +628,8 @@ BOOST_AUTO_TEST_CASE( ToWideStringTest14 )
 {
     using Type = Guid;
     Type value("{39978367-04DD-415F-8633-F079EA432700}");
-    std::wstring expectedResult = value.ToString( );
-    auto result = ConvertTo<std::wstring>( value );
+    WideString expectedResult = value.ToString( );
+    auto result = ConvertTo<WideString>( value );
     BOOST_CHECK( expectedResult == result );
 }
 
@@ -638,8 +638,8 @@ BOOST_AUTO_TEST_CASE( ToWideStringTest15 )
 {
     using Type = Currency;
     Type value( 10000 );
-    std::wstring expectedResult = value.ToWideString( );
-    auto result = ConvertTo<std::wstring>( value );
+    WideString expectedResult = value.ToWideString( );
+    auto result = ConvertTo<WideString>( value );
     BOOST_CHECK( expectedResult == result );
 }
 
@@ -648,17 +648,17 @@ BOOST_AUTO_TEST_CASE( ToWideStringTest16 )
 {
     using Type = Variant;
     Type value( 1 );
-    std::wstring expectedResult = value.AsWideString();
-    auto result = ConvertTo<std::wstring>( value );
+    WideString expectedResult = value.AsWideString();
+    auto result = ConvertTo<WideString>( value );
     BOOST_CHECK( expectedResult == result );
 }
 
 // --run_test=ConvertersTests/ToWideStringTest17
 BOOST_AUTO_TEST_CASE( ToWideStringTest17 )
 {
-    using Type = std::wstring;
+    using Type = WideString;
     Type value( L"Hi" );
-    auto result = ConvertTo<std::wstring>( value );
+    auto result = ConvertTo<WideString>( value );
     BOOST_CHECK( value == result );
 }
 
@@ -667,8 +667,8 @@ BOOST_AUTO_TEST_CASE( ToWideStringTest18 )
 {
     using Type = std::string;
     Type value( "Hi" );
-    std::wstring expectedResult = ToWideString( value );
-    auto result = ConvertTo<std::wstring>( value );
+    WideString expectedResult = ToWideString( value );
+    auto result = ConvertTo<WideString>( value );
     BOOST_CHECK( expectedResult == result );
 }
 
@@ -836,7 +836,7 @@ BOOST_AUTO_TEST_CASE( ToAnsiStringTest16 )
 // --run_test=ConvertersTests/ToAnsiStringTest17
 BOOST_AUTO_TEST_CASE( ToAnsiStringTest17 )
 {
-    using Type = std::wstring;
+    using Type = WideString;
     Type value( L"Hi" );
     std::string expectedResult = ToAnsiString( value );
     auto result = ConvertTo<std::string>( value );
@@ -1018,7 +1018,7 @@ BOOST_AUTO_TEST_CASE( ToBooleanTest16 )
 // --run_test=ConvertersTests/ToBooleanTest17
 BOOST_AUTO_TEST_CASE( ToBooleanTest17 )
 {
-    using Type = std::wstring;
+    using Type = WideString;
     Type value( L"Hi" );
     bool expectedResult = false;
     auto result = ConvertTo<bool>( value );
@@ -1028,7 +1028,7 @@ BOOST_AUTO_TEST_CASE( ToBooleanTest17 )
 // --run_test=ConvertersTests/ToBooleanTest17a
 BOOST_AUTO_TEST_CASE( ToBooleanTest17a )
 {
-    using Type = std::wstring;
+    using Type = WideString;
     Type value( L"true" );
     bool expectedResult = true;
     auto result = ConvertTo<bool>( value );
@@ -1038,7 +1038,7 @@ BOOST_AUTO_TEST_CASE( ToBooleanTest17a )
 // --run_test=ConvertersTests/ToBooleanTest17b
 BOOST_AUTO_TEST_CASE( ToBooleanTest17b )
 {
-    using Type = std::wstring;
+    using Type = WideString;
     Type value( L"yes" );
     bool expectedResult = false;
     auto result = ConvertTo<bool>( value );
@@ -1048,7 +1048,7 @@ BOOST_AUTO_TEST_CASE( ToBooleanTest17b )
 // --run_test=ConvertersTests/ToBooleanTest17c
 BOOST_AUTO_TEST_CASE( ToBooleanTest17c )
 {
-    using Type = std::wstring;
+    using Type = WideString;
     Type value( L"1" );
     bool expectedResult = true;
     auto result = ConvertTo<bool>( value );
@@ -1058,7 +1058,7 @@ BOOST_AUTO_TEST_CASE( ToBooleanTest17c )
 // --run_test=ConvertersTests/ToBooleanTest17d
 BOOST_AUTO_TEST_CASE( ToBooleanTest17d )
 {
-    using Type = std::wstring;
+    using Type = WideString;
     Type value( L"10" );
     bool expectedResult = true;
     auto result = ConvertTo<bool>( value );
@@ -1242,7 +1242,7 @@ BOOST_AUTO_TEST_CASE( ToSByteTest16 )
 // --run_test=ConvertersTests/ToSByteTest17
 BOOST_AUTO_TEST_CASE( ToSByteTest17 )
 {
-    using Type = std::wstring;
+    using Type = WideString;
     Type value( L"1" );
     SByte expectedResult = 1;
     auto result = ConvertTo<SByte>( value );

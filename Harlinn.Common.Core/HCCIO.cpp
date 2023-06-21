@@ -17,7 +17,7 @@ namespace Harlinn::Common::Core::IO
         wchar_t InvalidFileNameChars[] = { '\"', '<', '>', '|', '\0', 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, ':', '*', '?', '\\', '/' };
 
 
-        inline void CheckInvalidPathChars( const std::wstring& path )
+        inline void CheckInvalidPathChars( const WideString& path )
         {
             for ( auto c : path )
             {
@@ -35,10 +35,12 @@ namespace Harlinn::Common::Core::IO
 
     
 
-    HCC_EXPORT std::wstring Path::Append( const std::wstring& startOfPath, const std::wstring& remainingPath )
+    HCC_EXPORT WideString Path::Append( const WideString& startOfPath, const WideString& remainingPath )
     {
-        std::wstring result;
+        WideString result;
+#ifndef HCC_WITH_BASIC_STRING
         result.reserve( startOfPath.length( ) + 1 + remainingPath.length( ) );
+#endif
         result += startOfPath;
         if ( !startOfPath.ends_with( L'\\' ) &&
             !startOfPath.ends_with( L'/' ) &&
@@ -68,7 +70,7 @@ namespace Harlinn::Common::Core::IO
     }
 
 
-    std::wstring Path::ChangeExtension( const std::wstring& path, const std::wstring& newExtension )
+    WideString Path::ChangeExtension( const WideString& path, const WideString& newExtension )
     {
         if ( path.empty( ) == false )
         {
@@ -76,9 +78,9 @@ namespace Harlinn::Common::Core::IO
             wchar_t stopCharacters[] = { '.', DirectorySeparatorChar, AltDirectorySeparatorChar, VolumeSeparatorChar, '\x00' };
 
 
-            std::wstring::size_type index = path.find_last_of( stopCharacters );
-            std::wstring result = path;
-            if ( index != std::wstring::npos )
+            WideString::size_type index = path.find_last_of( stopCharacters );
+            WideString result = path;
+            if ( index != WideString::npos )
             {
                 if ( path[index] == '.' )
                 {
@@ -96,10 +98,10 @@ namespace Harlinn::Common::Core::IO
             }
             return result;
         }
-        return std::wstring( );
+        return {};
     }
 
-    std::wstring Path::GetLongPathName( const std::wstring& path )
+    WideString Path::GetLongPathName( const WideString& path )
     {
         if ( path.empty( ) == false )
         {
@@ -111,7 +113,7 @@ namespace Harlinn::Common::Core::IO
             }
             if ( length > ( sizeof( buffer ) / sizeof( wchar_t ) ) )
             {
-                std::wstring result;
+                WideString result;
                 result.resize( length - 1 );
                 length = ::GetLongPathNameW( path.c_str( ), result.data( ), length );
                 if ( length == 0 )
@@ -122,14 +124,14 @@ namespace Harlinn::Common::Core::IO
             }
             else
             {
-                std::wstring result( buffer, length );
+                WideString result( buffer, length );
                 return result;
             }
         }
-        return std::wstring( );
+        return {};
     }
 
-    std::wstring Path::GetFullPathName( const std::wstring& path )
+    WideString Path::GetFullPathName( const WideString& path )
     {
         if ( path.empty( ) == false )
         {
@@ -142,7 +144,7 @@ namespace Harlinn::Common::Core::IO
             }
             if ( length >= ( sizeof( buffer ) / sizeof( wchar_t ) ) )
             {
-                std::wstring result;
+                WideString result;
                 result.resize( length - 1 );
                 length = ::GetFullPathNameW( path.c_str( ), length, result.data( ), &filePart );
                 if ( length == 0 )
@@ -153,13 +155,13 @@ namespace Harlinn::Common::Core::IO
             }
             else
             {
-                std::wstring result( buffer, length );
+                WideString result( buffer, length );
                 return result;
             }
         }
-        return std::wstring( );
+        return {};
     }
-    std::wstring Path::GetFullPathName( const std::wstring& path, std::wstring::size_type& indexOfFileName )
+    WideString Path::GetFullPathName( const WideString& path, WideString::size_type& indexOfFileName )
     {
         if ( path.empty( ) == false )
         {
@@ -172,7 +174,7 @@ namespace Harlinn::Common::Core::IO
             }
             if ( length >= ( sizeof( buffer ) / sizeof( wchar_t ) ) )
             {
-                std::wstring result;
+                WideString result;
                 result.resize( length - 1 );
                 length = ::GetFullPathNameW( path.c_str( ), length, result.data( ), &filePart );
                 if ( length == 0 )
@@ -185,12 +187,12 @@ namespace Harlinn::Common::Core::IO
             else
             {
                 indexOfFileName = filePart - buffer;
-                std::wstring result( buffer, length );
+                WideString result( buffer, length );
                 return result;
             }
         }
-        indexOfFileName = std::wstring::npos;
-        return std::wstring( );
+        indexOfFileName = WideString::npos;
+        return {};
     }
 
     std::string Path::GetFullPathName(const std::string& path)
@@ -290,7 +292,7 @@ namespace Harlinn::Common::Core::IO
 
 
 
-    std::wstring Path::GetParentDirectory( const wchar_t* path )
+    WideString Path::GetParentDirectory( const wchar_t* path )
     {
         wchar_t drive[_MAX_DRIVE + 1];
         wchar_t dir[_MAX_DIR + 1];
@@ -298,7 +300,7 @@ namespace Harlinn::Common::Core::IO
         wchar_t ext[_MAX_EXT + 1];
 
         _wsplitpath_s( path, drive, dir, filename, ext );
-        std::wstring result( drive );
+        WideString result( drive );
         result += dir;
         return result;
     }
@@ -381,7 +383,7 @@ namespace Harlinn::Common::Core::IO
     }
 
 
-    bool Path::IsRelative( const std::wstring& path )
+    bool Path::IsRelative( const WideString& path )
     {
         return IsRelative( path.data( ) );
     }
@@ -395,7 +397,7 @@ namespace Harlinn::Common::Core::IO
         return true;
     }
 
-    bool Path::IsRoot( const std::wstring& path )
+    bool Path::IsRoot( const WideString& path )
     {
         return IsRoot( path.data( ) );
     }
@@ -442,7 +444,7 @@ namespace Harlinn::Common::Core::IO
     }
 
 
-    bool Path::IsUNC( const std::wstring& path )
+    bool Path::IsUNC( const WideString& path )
     {
         return IsUNC( path.data( ) );
     }
@@ -542,7 +544,7 @@ namespace Harlinn::Common::Core::IO
     }
 
 
-    bool File::Exist( const std::wstring& path )
+    bool File::Exist( const WideString& path )
     {
         if ( path.empty( ) == false )
         {
@@ -671,7 +673,7 @@ namespace Harlinn::Common::Core::IO
         return ( static_cast<UInt64>( attributeData.nFileSizeHigh ) << 32 ) + static_cast<UInt64>( attributeData.nFileSizeLow );
     }
 
-    bool File::Search( const std::wstring& directoryPath, const std::wstring& filename, bool recurseSubdirectories, std::wstring& result )
+    bool File::Search( const WideString& directoryPath, const WideString& filename, bool recurseSubdirectories, WideString& result )
     {
         if ( directoryPath.empty( ) == false )
         {
@@ -831,11 +833,11 @@ namespace Harlinn::Common::Core::IO
     // -----------------------------------------------------------------
     // Directory
     // -----------------------------------------------------------------
-    std::wstring Directory::GetTemporary()
+    WideString Directory::GetTemporary()
     {
         wchar_t buffer[MAX_PATH + 2] = {};
         auto rc = GetTempPathW(MAX_PATH + 1, buffer);
-        return std::wstring(buffer, static_cast<size_t>(rc));
+        return WideString(buffer, static_cast<size_t>(rc));
     }
 
     std::string Directory::GetTemporaryA()
@@ -846,7 +848,7 @@ namespace Harlinn::Common::Core::IO
     }
 
 
-    std::wstring Directory::GetExecutableDirectoryW( )
+    WideString Directory::GetExecutableDirectoryW( )
     {
         wchar_t buffer[MAX_PATH + 1] = { 0, };
         GetModuleFileNameW( nullptr, buffer, sizeof( buffer ) / sizeof( wchar_t ) );
@@ -857,7 +859,7 @@ namespace Harlinn::Common::Core::IO
         return ToAnsiString( GetExecutableDirectoryW( ) );
     }
 
-    std::wstring Directory::Current( )
+    WideString Directory::Current( )
     {
         wchar_t buffer[MAX_PATH + 1] = { 0, };
         auto length = ::GetCurrentDirectoryW( sizeof( buffer ) / sizeof( wchar_t ), buffer );
@@ -867,7 +869,7 @@ namespace Harlinn::Common::Core::IO
         }
         if ( length > ( sizeof( buffer ) / sizeof( wchar_t ) ) )
         {
-            std::wstring result;
+            WideString result;
             result.resize( length - 1 );
             length = ::GetCurrentDirectoryW( length, result.data( ) );
             if ( length == 0 )
@@ -878,7 +880,7 @@ namespace Harlinn::Common::Core::IO
         }
         else
         {
-            std::wstring result( buffer, length );
+            WideString result( buffer, length );
             return result;
         }
     }

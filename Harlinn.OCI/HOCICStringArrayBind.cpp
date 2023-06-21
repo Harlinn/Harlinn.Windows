@@ -44,7 +44,7 @@ namespace Harlinn::OCI
             Base::BindByPos( positon, ExternalType, data_, static_cast<Int32>( maxColumnDataSize_ ) * sizeof( wchar_t ), indicator_.data( ), dataSizes_.data( ), nullptr, arrayMaxSize_, &arraySize_ );
         }
     }
-    void CStringArrayBind::Bind( const std::wstring& name, UInt32 iters )
+    void CStringArrayBind::Bind( const WideString& name, UInt32 iters )
     {
         if ( IsPlSQL( ) == false )
         {
@@ -66,7 +66,7 @@ namespace Harlinn::OCI
     }
     void CStringArrayBind::Assign( size_t index, bool newValue )
     {
-        auto s = ConvertTo<std::wstring>( newValue );
+        auto s = ConvertTo<WideString>( newValue );
         Assign( index, s );
     }
     Byte CStringArrayBind::AsByte( size_t index ) const
@@ -76,7 +76,7 @@ namespace Harlinn::OCI
     }
     void CStringArrayBind::Assign( size_t index, Byte newValue )
     {
-        auto s = ConvertTo<std::wstring>( newValue );
+        auto s = ConvertTo<WideString>( newValue );
         Assign( index, s );
     }
     SByte CStringArrayBind::AsSByte( size_t index ) const
@@ -86,7 +86,7 @@ namespace Harlinn::OCI
     }
     void CStringArrayBind::Assign( size_t index, SByte newValue )
     {
-        auto s = ConvertTo<std::wstring>( newValue );
+        auto s = ConvertTo<WideString>( newValue );
         Assign( index, s );
     }
     short CStringArrayBind::AsInt16( size_t index ) const
@@ -96,7 +96,7 @@ namespace Harlinn::OCI
     }
     void CStringArrayBind::Assign( size_t index, Int16 newValue )
     {
-        auto s = ConvertTo<std::wstring>( newValue );
+        auto s = ConvertTo<WideString>( newValue );
         Assign( index, s );
     }
     UInt16 CStringArrayBind::AsUInt16( size_t index ) const
@@ -106,7 +106,7 @@ namespace Harlinn::OCI
     }
     void CStringArrayBind::Assign( size_t index, UInt16 newValue )
     {
-        auto s = ConvertTo<std::wstring>( newValue );
+        auto s = ConvertTo<WideString>( newValue );
         Assign( index, s );
     }
     Int32 CStringArrayBind::AsInt32( size_t index ) const
@@ -116,7 +116,7 @@ namespace Harlinn::OCI
     }
     void CStringArrayBind::Assign( size_t index, Int32 newValue )
     {
-        auto s = ConvertTo<std::wstring>( newValue );
+        auto s = ConvertTo<WideString>( newValue );
         Assign( index, s );
     }
     UInt32 CStringArrayBind::AsUInt32( size_t index ) const
@@ -126,7 +126,7 @@ namespace Harlinn::OCI
     }
     void CStringArrayBind::Assign( size_t index, UInt32 newValue )
     {
-        auto s = ConvertTo<std::wstring>( newValue );
+        auto s = ConvertTo<WideString>( newValue );
         Assign( index, s );
     }
     Int64 CStringArrayBind::AsInt64( size_t index ) const
@@ -136,7 +136,7 @@ namespace Harlinn::OCI
     }
     void CStringArrayBind::Assign( size_t index, Int64 newValue )
     {
-        auto s = ConvertTo<std::wstring>( newValue );
+        auto s = ConvertTo<WideString>( newValue );
         Assign( index, s );
     }
     UInt64 CStringArrayBind::AsUInt64( size_t index ) const
@@ -146,7 +146,7 @@ namespace Harlinn::OCI
     }
     void CStringArrayBind::Assign( size_t index, UInt64 newValue )
     {
-        auto s = ConvertTo<std::wstring>( newValue );
+        auto s = ConvertTo<WideString>( newValue );
         Assign( index, s );
     }
     float CStringArrayBind::AsSingle( size_t index ) const
@@ -156,7 +156,7 @@ namespace Harlinn::OCI
     }
     void CStringArrayBind::Assign( size_t index, float newValue )
     {
-        auto s = ConvertTo<std::wstring>( newValue );
+        auto s = ConvertTo<WideString>( newValue );
         Assign( index, s );
     }
     double CStringArrayBind::AsDouble( size_t index ) const
@@ -166,7 +166,7 @@ namespace Harlinn::OCI
     }
     void CStringArrayBind::Assign( size_t index, double newValue )
     {
-        auto s = ConvertTo<std::wstring>( newValue );
+        auto s = ConvertTo<WideString>( newValue );
         Assign( index, s );
     }
 
@@ -178,7 +178,7 @@ namespace Harlinn::OCI
 
     void CStringArrayBind::Assign( size_t index, const DateTime& newValue )
     {
-        auto s = ConvertTo<std::wstring>( newValue );
+        auto s = ConvertTo<WideString>( newValue );
         Assign( index, s );
     }
 
@@ -190,22 +190,22 @@ namespace Harlinn::OCI
 
     void CStringArrayBind::Assign( size_t index, const TimeSpan& newValue )
     {
-        auto s = ConvertTo<std::wstring>( newValue.Ticks( ) );
+        auto s = ConvertTo<WideString>( newValue.Ticks( ) );
         Assign( index, s );
     }
 
 
-    std::wstring CStringArrayBind::AsString( size_t index ) const
+    WideString CStringArrayBind::AsString( size_t index ) const
     {
         auto dataSize = dataSizes_[index];
         auto length = dataSize ? ( dataSize - 2 ) / sizeof( wchar_t ) : 0;
         auto ptr = &data_[index * maxColumnDataSize_];
 
-        std::wstring result( ( std::wstring::value_type* )ptr, length );
+        WideString result( ( WideString::value_type* )ptr, length );
         return result;
     }
 
-    void CStringArrayBind::Assign( size_t index, const std::wstring& newValue )
+    void CStringArrayBind::Assign( size_t index, const WideString& newValue )
     {
         auto copyLength = std::min( static_cast<size_t>( newValue.length( ) ), ( maxColumnDataSize_ - 1 ) );
         auto ptr = &data_[index * maxColumnDataSize_];
@@ -239,7 +239,7 @@ namespace Harlinn::OCI
     }
     void CStringArrayBind::Assign( size_t index, const Guid& newValue )
     {
-        auto s = ConvertTo<std::wstring>( newValue.ToString( ) );
+        auto s = ConvertTo<WideString>( newValue.ToString( ) );
         Assign( index, s );
     }
 }

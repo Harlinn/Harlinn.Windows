@@ -5,6 +5,7 @@
 #include <HODBCDef.h>
 #include <HCCGuid.h>
 #include <HCCDateTime.h>
+#include <HCCString.h>
 
 namespace Harlinn::ODBC
 {
@@ -218,14 +219,14 @@ namespace Harlinn::ODBC
 
     struct Driver
     {
-        std::wstring Description;
-        std::wstring Attributes;
+        WideString Description;
+        WideString Attributes;
     };
 
     struct DataSource
     {
-        std::wstring Name;
-        std::wstring Description;
+        WideString Name;
+        WideString Description;
     };
 
 
@@ -1681,17 +1682,17 @@ namespace Harlinn::ODBC
             return static_cast<Result>( rc );
         }
 
-        Result Connect( const std::wstring& datasourceName )
+        Result Connect( const WideString& datasourceName )
         {
             return Connect( datasourceName.c_str(), static_cast<SQLSMALLINT>( datasourceName.length() ), nullptr, 0, nullptr, 0 );
         }
 
-        Result Connect( const std::wstring& datasourceName, const std::wstring& userName )
+        Result Connect( const WideString& datasourceName, const WideString& userName )
         {
             return Connect( datasourceName.c_str( ), static_cast<SQLSMALLINT>( datasourceName.length( ) ), userName.c_str(), static_cast<SQLSMALLINT>( userName.length( ) ), nullptr, 0 );
         }
 
-        Result Connect( const std::wstring& datasourceName, const std::wstring& userName, const std::wstring& authenticationString )
+        Result Connect( const WideString& datasourceName, const WideString& userName, const WideString& authenticationString )
         {
             return Connect( datasourceName.c_str( ), static_cast<SQLSMALLINT>( datasourceName.length( ) ), userName.c_str( ), static_cast<SQLSMALLINT>( userName.length( ) ), authenticationString.c_str( ), static_cast<SQLSMALLINT>( authenticationString.length( ) ) );
         }
@@ -1774,7 +1775,7 @@ namespace Harlinn::ODBC
             return static_cast<Result>( rc );
         }
 
-        Result GetAttribute( SQLINTEGER attributeId, std::wstring& result ) const
+        Result GetAttribute( SQLINTEGER attributeId, WideString& result ) const
         {
             constexpr SQLINTEGER bufferSize = 1024;
             SQLINTEGER actualLength = 0;
@@ -1818,7 +1819,7 @@ namespace Harlinn::ODBC
             return static_cast<Result>( rc );
         }
 
-        Result SetAttribute( SQLINTEGER attributeId, const std::wstring& value ) const
+        Result SetAttribute( SQLINTEGER attributeId, const WideString& value ) const
         {
             auto rc = SetAttributeW( attributeId, const_cast<wchar_t*>(value.c_str( )), static_cast<SQLINTEGER>( value.length( )*sizeof(wchar_t) ) );
             return rc;
@@ -1850,20 +1851,20 @@ namespace Harlinn::ODBC
 
 
 
-        Result GetCurrentCatalog( std::wstring& result ) const
+        Result GetCurrentCatalog( WideString& result ) const
         {
             auto rc = GetAttribute( SQL_ATTR_CURRENT_CATALOG, result );
             return rc;
         }
 
-        std::wstring CurrentCatalog( ) const
+        WideString CurrentCatalog( ) const
         {
-            std::wstring result;
+            WideString result;
             GetCurrentCatalog( result );
             return result;
         }
 
-        Result SetCurrentCatalog( const std::wstring& currentCatalog ) const
+        Result SetCurrentCatalog( const WideString& currentCatalog ) const
         {
             auto rc = SetAttribute( SQL_ATTR_CURRENT_CATALOG, currentCatalog );
             return rc;
@@ -2040,7 +2041,7 @@ namespace Harlinn::ODBC
             auto rc = DataSources( direction, dataSourceName, 1024, &dataSourceNameLength, dataSourceDescription, 1024, &dataSourceDescriptionLength );
             while ( rc == Result::Success )
             {
-                result.emplace_back( ODBC::DataSource{ std::wstring{dataSourceName,static_cast<size_t>( dataSourceNameLength )},std::wstring{dataSourceDescription,static_cast<size_t>( dataSourceDescriptionLength )} } );
+                result.emplace_back( ODBC::DataSource{ WideString{dataSourceName,static_cast<size_t>( dataSourceNameLength )},WideString{dataSourceDescription,static_cast<size_t>( dataSourceDescriptionLength )} } );
                 rc = DataSources( ODBC::Fetch::Next, dataSourceName, 1024, &dataSourceNameLength, dataSourceDescription, 1024, &dataSourceDescriptionLength );
             }
 
@@ -2069,7 +2070,7 @@ namespace Harlinn::ODBC
             auto rc = Drivers( direction, driverDescription, 1024, &driverDescriptionLength, driverAttributes, 1024, &driverAttributesLength );
             while ( rc == Result::Success )
             {
-                result.emplace_back( ODBC::Driver{ std::wstring{driverDescription,static_cast<size_t>( driverDescriptionLength )},std::wstring{driverAttributes,static_cast<size_t>( driverAttributesLength )} } );
+                result.emplace_back( ODBC::Driver{ WideString{driverDescription,static_cast<size_t>( driverDescriptionLength )},WideString{driverAttributes,static_cast<size_t>( driverAttributesLength )} } );
                 rc = Drivers( ODBC::Fetch::Next, driverDescription, 1024, &driverDescriptionLength, driverAttributes, 1024, &driverAttributesLength );
             }
 
@@ -2105,21 +2106,21 @@ namespace Harlinn::ODBC
         }
 
 
-        ODBC::Connection Connect( const std::wstring& datasourceName )
+        ODBC::Connection Connect( const WideString& datasourceName )
         {
             auto connection = CreateConnection( );
             connection.Connect( datasourceName.c_str( ), static_cast<SQLSMALLINT>( datasourceName.length( ) ), nullptr, 0, nullptr, 0 );
             return connection;
         }
 
-        ODBC::Connection Connect( const std::wstring& datasourceName, const std::wstring& userName )
+        ODBC::Connection Connect( const WideString& datasourceName, const WideString& userName )
         {
             auto connection = CreateConnection( );
             connection.Connect( datasourceName.c_str( ), static_cast<SQLSMALLINT>( datasourceName.length( ) ), userName.c_str( ), static_cast<SQLSMALLINT>( userName.length( ) ), nullptr, 0 );
             return connection;
         }
 
-        ODBC::Connection Connect( const std::wstring& datasourceName, const std::wstring& userName, const std::wstring& authenticationString )
+        ODBC::Connection Connect( const WideString& datasourceName, const WideString& userName, const WideString& authenticationString )
         {
             auto connection = CreateConnection( );
             connection.Connect( datasourceName.c_str( ), static_cast<SQLSMALLINT>( datasourceName.length( ) ), userName.c_str( ), static_cast<SQLSMALLINT>( userName.length( ) ), authenticationString.c_str( ), static_cast<SQLSMALLINT>( authenticationString.length( ) ) );

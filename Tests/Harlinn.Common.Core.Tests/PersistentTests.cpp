@@ -3509,7 +3509,7 @@ BOOST_AUTO_TEST_CASE( ReadTest81 )
 // --run_test=PersistentTests/ReadTest82
 BOOST_AUTO_TEST_CASE( ReadTest82 )
 {
-    using Type = std::wstring;
+    using Type = WideString;
 
     Type expectedValue( L"Hello" );
     Type arg = expectedValue;

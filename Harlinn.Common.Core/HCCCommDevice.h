@@ -4,6 +4,7 @@
 
 #include <HCCIOContext.h>
 #include <HCCException.h>
+#include <HCCString.h>
 
 namespace Harlinn::Common::Core::IO
 {
@@ -185,7 +186,7 @@ namespace Harlinn::Common::Core::IO
         static constexpr UInt32 DefaultAccess = GENERIC_READ | GENERIC_WRITE;
         static constexpr DWORD DefaultBaudRate = CBR_57600;
 
-        HCC_EXPORT std::wstring Name( ) const;
+        HCC_EXPORT WideString Name( ) const;
 
         inline CommDeviceStream Open( bool overlapped, DWORD desiredAccess ) const;
         inline CommDeviceStream Open( bool overlapped ) const;
@@ -317,7 +318,7 @@ namespace Harlinn::Common::Core::IO
         explicit CommDeviceStream( const wchar_t* name, bool overlapped )
             : Base( Create( name, overlapped ) )
         { }
-        explicit CommDeviceStream( const std::wstring& name, bool overlapped )
+        explicit CommDeviceStream( const WideString& name, bool overlapped )
             : Base( Create( name.c_str(), overlapped ) )
         { }
         explicit CommDeviceStream( const char* name, bool overlapped )
@@ -330,7 +331,7 @@ namespace Harlinn::Common::Core::IO
         explicit CommDeviceStream( const wchar_t* name, UInt32 baudRate = DefaultBaudRate, Parity parity = Parity::None, Byte dataBits = 8, StopBits stopBits = StopBits::One, FlowControl flowControl = FlowControl::None, bool overlapped = false )
             : Base( Create( name, baudRate, parity, dataBits, stopBits, flowControl, overlapped ) )
         { }
-        explicit CommDeviceStream( const std::wstring& name, UInt32 baudRate = DefaultBaudRate, Parity parity = Parity::None, Byte dataBits = 8, StopBits stopBits = StopBits::One, FlowControl flowControl = FlowControl::None, bool overlapped = false )
+        explicit CommDeviceStream( const WideString& name, UInt32 baudRate = DefaultBaudRate, Parity parity = Parity::None, Byte dataBits = 8, StopBits stopBits = StopBits::One, FlowControl flowControl = FlowControl::None, bool overlapped = false )
             : Base( Create( name.c_str(), baudRate, parity, dataBits, stopBits, flowControl, overlapped ) )
         { }
         explicit CommDeviceStream( const char* name, UInt32 baudRate = DefaultBaudRate, Parity parity = Parity::None, Byte dataBits = 8, StopBits stopBits = StopBits::One, FlowControl flowControl = FlowControl::None, bool overlapped = false )

@@ -36,7 +36,7 @@ namespace OCITest
         virtual void InitializeDefines( ) final override
         {
             Define<Guid>( ID_FIELD_ID + 1 );
-            Define<std::wstring>( NAME_FIELD_ID + 1, 128 );
+            Define<WideString>( NAME_FIELD_ID + 1, 128 );
             Define<Int64>( OPTIMISTICLOCK_FIELD_ID + 1 );
             Define<DateTime>( CREATED_FIELD_ID + 1 );
             Define<DateTime>( DELETED_FIELD_ID + 1 );
@@ -44,11 +44,11 @@ namespace OCITest
         }
 
         Guid Id( ) { return As<Guid>( ID_FIELD_ID ); }
-        std::wstring Name( ) { return As<std::wstring>( NAME_FIELD_ID ); }
+        WideString Name( ) { return As<WideString>( NAME_FIELD_ID ); }
         Int64 OptimisticLock( ) { return As<Int64>( OPTIMISTICLOCK_FIELD_ID ); }
         DateTime Created( ) { return As<DateTime>( CREATED_FIELD_ID ); }
         std::optional<DateTime> Deleted( ) { return As<std::optional<DateTime>>( DELETED_FIELD_ID ); }
-        std::wstring Description( ) { return As<std::wstring>( DESCRIPTION_FIELD_ID ); }
+        WideString Description( ) { return As<WideString>( DESCRIPTION_FIELD_ID ); }
 
         void AssignTo( OwnedObjectType& ownedObjectType )
         {
@@ -120,7 +120,7 @@ namespace OCITest
             return serviceContext_;
         }
 
-        OCI::Statement CreateStatement( const std::wstring& sql )
+        OCI::Statement CreateStatement( const WideString& sql )
         {
             return serviceContext_.CreateStatement( sql );
         }
@@ -128,7 +128,7 @@ namespace OCITest
 
         void Insert( const OwnedObjectType& ownedObjectType )
         {
-            std::optional<std::wstring> description;
+            std::optional<WideString> description;
             if ( ownedObjectType.Description( ).length( ) )
             {
                 description = ownedObjectType.Description( );
@@ -137,7 +137,7 @@ namespace OCITest
             constexpr wchar_t SQL[] = L"INSERT INTO OwnedObjectType(Id, Name, OptimisticLock, Created, Description) "\
                 L"VALUES(:1,:2,0,:3,:4)";
 
-            static std::wstring sql( SQL );
+            static WideString sql( SQL );
             auto statement = serviceContext_.CreateStatement( sql, 
                 ownedObjectType.Id( ), 
                 ownedObjectType.Name( ), 
@@ -151,16 +151,16 @@ namespace OCITest
             constexpr wchar_t SQL[] = L"INSERT INTO OwnedObjectType(Id, Name, OptimisticLock, Created, Description) "\
                 L"VALUES(:1,:2,0,:3,:4)";
 
-            static std::wstring sql( SQL );
+            static WideString sql( SQL );
             auto statement = CreateStatement( sql );
             auto id = statement.Bind<Guid>( 1 );
             id->Assign( ownedObjectType.Id( ) );
-            auto name = statement.Bind<std::wstring>( 2, ownedObjectType.Name( ).length() );
+            auto name = statement.Bind<WideString>( 2, ownedObjectType.Name( ).length() );
             name->Assign( ownedObjectType.Name( ) );
             auto created = statement.Bind<DateTime>( 3 );
             created->Assign( ownedObjectType.Created( ) );
 
-            auto description = statement.Bind<std::wstring>( 4, ownedObjectType.Description( ).length( ) );
+            auto description = statement.Bind<WideString>( 4, ownedObjectType.Description( ).length( ) );
             if ( ownedObjectType.Description( ).length( ) )
             {
                 description->Assign( ownedObjectType.Description( ) );
@@ -176,17 +176,17 @@ namespace OCITest
         bool OwnedObjectTypeExist( const Guid& id )
         {
             constexpr wchar_t SQL[] = L"SELECT COUNT(*) FROM OwnedObjectType WHERE Id=:1";
-            static std::wstring sql( SQL );
+            static WideString sql( SQL );
             auto statement = CreateStatement( sql );
             auto bind = statement.Bind<OCI::GuidBind>( 1 );
             bind->Assign( id );
             auto result = statement.ExecuteScalar<Int32>( );
             return result.has_value( ) ? result.value( ) > 0 : false;
         }
-        bool OwnedObjectTypeExist( const std::wstring& name )
+        bool OwnedObjectTypeExist( const WideString& name )
         {
             constexpr wchar_t SQL[] = L"SELECT COUNT(*) FROM OwnedObjectType WHERE Name=:1";
-            static std::wstring sql( SQL );
+            static WideString sql( SQL );
             auto statement = CreateStatement( sql );
             auto bind = statement.Bind<OCI::CStringBind>( 1 );
             bind->Assign( name );
@@ -196,23 +196,23 @@ namespace OCITest
         void OwnedObjectTypeDelete( )
         {
             constexpr wchar_t SQL[] = L"DELETE FROM OwnedObjectType";
-            static std::wstring sql( SQL );
+            static WideString sql( SQL );
             auto statement = CreateStatement( sql );
             statement.Execute( );
         }
         void OwnedObjectTypeDelete( const Guid& id )
         {
             constexpr wchar_t SQL[] = L"DELETE FROM OwnedObjectType WHERE Id=:1";
-            static std::wstring sql( SQL );
+            static WideString sql( SQL );
             auto statement = CreateStatement( sql );
             auto bind = statement.Bind<OCI::GuidBind>( 1 );
             bind->Assign( id );
             statement.Execute( );
         }
-        void OwnedObjectTypeDelete( const std::wstring& name )
+        void OwnedObjectTypeDelete( const WideString& name )
         {
             constexpr wchar_t SQL[] = L"DELETE FROM OwnedObjectType WHERE Name=:1";
-            static std::wstring sql( SQL );
+            static WideString sql( SQL );
             auto statement = CreateStatement( sql );
             auto bind = statement.Bind<OCI::CStringBind>( 1 );
             bind->Assign( name );
@@ -235,7 +235,7 @@ namespace OCITest
             server_ = environment_.CreateServer( );
         }
 
-        Session Connect( const std::wstring& username, const std::wstring& password, const std::wstring& alias )
+        Session Connect( const WideString& username, const WideString& password, const WideString& alias )
         {
             auto serviceContext = server_.CreateServiceContext( username, password, alias );
             Session result( std::move( serviceContext ) );

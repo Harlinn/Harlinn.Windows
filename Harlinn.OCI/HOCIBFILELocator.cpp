@@ -44,7 +44,7 @@ namespace Harlinn::OCI
         
     }
 
-    std::wstring BFILELocator::FileGetName( std::wstring& directoryAlias ) const
+    WideString BFILELocator::FileGetName( WideString& directoryAlias ) const
     {
         auto& environment = Environment( );
         auto& error = Error( );
@@ -60,13 +60,13 @@ namespace Harlinn::OCI
         OCI::LobFileGetName( environment, error, handle, dirAliasBuffer, &dirAliasSize, filenameBuffer, &filenameSize );
 
 
-        std::wstring result( (wchar_t*)filenameBuffer, size_t( filenameSize ) / sizeof( wchar_t ) );
-        std::wstring da( (wchar_t*)dirAliasBuffer, size_t( dirAliasSize ) / sizeof( wchar_t ) );
+        WideString result( (wchar_t*)filenameBuffer, size_t( filenameSize ) / sizeof( wchar_t ) );
+        WideString da( (wchar_t*)dirAliasBuffer, size_t( dirAliasSize ) / sizeof( wchar_t ) );
         directoryAlias = da;
         return result;
     }
 
-    void BFILELocator::FileSetName( const std::wstring& directoryAlias, const std::wstring& filename )
+    void BFILELocator::FileSetName( const WideString& directoryAlias, const WideString& filename )
     {
         auto& environment = Environment( );
         auto& error = Error( );

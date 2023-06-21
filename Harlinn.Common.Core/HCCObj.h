@@ -299,14 +299,14 @@ namespace Harlinn::Common::Core
             HCC_COM_CHECK_HRESULT2( hr, pInterface );
             return Moniker( result );
         }
-        std::wstring GetDisplayName( IBindCtx* pbc, IMoniker* pmkToLeft = nullptr ) const
+        WideString GetDisplayName( IBindCtx* pbc, IMoniker* pmkToLeft = nullptr ) const
         {
             auto pInterface = GetInterface( );
             Malloc malloc = Malloc::GetMalloc( );
             LPOLESTR result = nullptr;
             auto hr = pInterface->GetDisplayName( pbc, pmkToLeft, &result );
             HCC_COM_CHECK_HRESULT2( hr, pInterface );
-            std::wstring s( result );
+            WideString s( result );
             malloc.Free( result );
             return s;
         }
@@ -928,14 +928,14 @@ namespace Harlinn::Common::Core
             HCC_COM_CHECK_HRESULT2( hr, pInterface );
         }
 
-        bool GetCurFile( std::wstring& theFilename ) const
+        bool GetCurFile( WideString& theFilename ) const
         {
             auto pInterface = GetInterface( );
             Malloc malloc = Malloc::GetMalloc( );
             LPOLESTR result = nullptr;
             auto hr = pInterface->GetCurFile( &result );
             HCC_COM_CHECK_HRESULT2( hr, pInterface );
-            std::wstring s( result );
+            WideString s( result );
             malloc.Free( result );
             theFilename = s;
             return hr == S_OK;
@@ -2844,7 +2844,7 @@ namespace Harlinn::Common::Core
         HCC_COM_STANDARD_METHODS_IMPL( TypeLib2, TypeLib, ITypeLib2, ITypeLib )
 
 
-        static TypeLib2 LoadTypeLib( const std::wstring& filename, REGKIND registrationkind = REGKIND::REGKIND_NONE )
+        static TypeLib2 LoadTypeLib( const WideString& filename, REGKIND registrationkind = REGKIND::REGKIND_NONE )
         {
             ITypeLib* tlib = nullptr;
             auto hr = LoadTypeLibEx( filename.c_str( ), registrationkind, &tlib );
@@ -2941,7 +2941,7 @@ namespace Harlinn::Common::Core
         }
 
 
-        std::shared_ptr< std::vector< DISPID > > GetIDsOfNames( const std::shared_ptr< std::vector <std::wstring> > names, LCID lcid = LOCALE_SYSTEM_DEFAULT ) const
+        std::shared_ptr< std::vector< DISPID > > GetIDsOfNames( const std::shared_ptr< std::vector <WideString> > names, LCID lcid = LOCALE_SYSTEM_DEFAULT ) const
         {
             auto pInterface = GetInterface( );
 
@@ -2952,7 +2952,7 @@ namespace Harlinn::Common::Core
 
             for ( auto it = names->begin( ); it != names->end( ); it++ )
             {
-                const std::wstring& s = *it;
+                const WideString& s = *it;
                 const wchar_t* ptr = s.c_str( );
                 nms.push_back( ptr );
             }
@@ -3041,14 +3041,14 @@ namespace Harlinn::Common::Core
             HCC_COM_CHECK_HRESULT2( hr, pInterface );
         }
 
-        std::wstring GetMemberName( DISPID id ) const
+        WideString GetMemberName( DISPID id ) const
         {
             BSTR bstrName = nullptr;
             auto pInterface = GetInterface( );
             auto hr = pInterface->GetMemberName( id, &bstrName );
             HCC_COM_CHECK_HRESULT2( hr, pInterface );
             auto length = SysStringLen( bstrName );
-            auto result = std::wstring( (const wchar_t*)bstrName, std::wstring::size_type( length ) );
+            auto result = WideString( (const wchar_t*)bstrName, WideString::size_type( length ) );
             SysFreeString( bstrName );
             return result;
         }
@@ -3827,13 +3827,13 @@ namespace Harlinn::Common::Core
             return result;
         }
 
-        std::wstring GetUserType( DWORD dwFormOfType ) const
+        WideString GetUserType( DWORD dwFormOfType ) const
         {
             auto pInterface = GetInterface( );
             LPOLESTR result = nullptr;
             auto hr = pInterface->GetUserType( dwFormOfType, &result );
             HCC_COM_CHECK_HRESULT2( hr, pInterface );
-            std::wstring s( result );
+            WideString s( result );
             CoTaskMemFree( result );
             return s;
         }

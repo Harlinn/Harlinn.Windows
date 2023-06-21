@@ -61,7 +61,7 @@ namespace Harlinn::Common::Core::Environment
         Surname = NameSurname
     };
 
-    HCC_EXPORT std::wstring UserName( UserNameFormat nameFormat );
+    HCC_EXPORT WideString UserName( UserNameFormat nameFormat );
 
     enum class ComputerNameFormat
     {
@@ -75,17 +75,17 @@ namespace Harlinn::Common::Core::Environment
         PhysicalDnsFullyQualified = ComputerNamePhysicalDnsFullyQualified
     };
 
-    HCC_EXPORT std::wstring ComputerName( ComputerNameFormat nameFormat );
-    HCC_EXPORT std::wstring DomainName( );
+    HCC_EXPORT WideString ComputerName( ComputerNameFormat nameFormat );
+    HCC_EXPORT WideString DomainName( );
     HCC_EXPORT Guid MachineGuid( );
 
-    HCC_EXPORT std::wstring EnvironmentVariable( const wchar_t* environmentVariableName );
+    HCC_EXPORT WideString EnvironmentVariable( const wchar_t* environmentVariableName );
     HCC_EXPORT std::string EnvironmentVariable( const char* environmentVariableName );
 
-    HCC_EXPORT std::wstring Where( const wchar_t* fileName );
+    HCC_EXPORT WideString Where( const wchar_t* fileName );
     HCC_EXPORT std::string Where( const char* fileName );
 
-    inline std::wstring Where( const std::wstring& fileName )
+    inline WideString Where( const WideString& fileName )
     {
         return Where( fileName.c_str() );
     }
@@ -94,16 +94,16 @@ namespace Harlinn::Common::Core::Environment
         return Where( fileName.c_str( ) );
     }
 
-    HCC_EXPORT std::wstring Where( const wchar_t* path, const wchar_t* fileName );
-    inline std::wstring Where( const wchar_t* path, const std::wstring& fileName )
+    HCC_EXPORT WideString Where( const wchar_t* path, const wchar_t* fileName );
+    inline WideString Where( const wchar_t* path, const WideString& fileName )
     {
         return Where( path, fileName.c_str() );
     }
-    inline std::wstring Where( const std::wstring& path, const wchar_t* fileName )
+    inline WideString Where( const WideString& path, const wchar_t* fileName )
     {
         return Where( path.c_str(), fileName );
     }
-    inline std::wstring Where( const std::wstring& path, const std::wstring& fileName )
+    inline WideString Where( const WideString& path, const WideString& fileName )
     {
         return Where( path.c_str( ), fileName );
     }

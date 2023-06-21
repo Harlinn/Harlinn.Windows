@@ -3485,13 +3485,13 @@ namespace Harlinn::Windows::Graphics
         inline void DrawText( const WCHAR* string, UINT32 stringLength, const DirectWrite::TextFormat& textFormat, const D2D1_RECT_F* layoutRect, const Brush& defaultForegroundBrush, D2D1_DRAW_TEXT_OPTIONS options = D2D1_DRAW_TEXT_OPTIONS_NONE, DWRITE_MEASURING_MODE measuringMode = DWRITE_MEASURING_MODE_NATURAL ) const;
 
 
-        void DrawText( const std::wstring& text, IDWriteTextFormat* textFormat, const D2D1_RECT_F* layoutRect, ID2D1Brush* defaultForegroundBrush, D2D1_DRAW_TEXT_OPTIONS options = D2D1_DRAW_TEXT_OPTIONS_NONE, DWRITE_MEASURING_MODE measuringMode = DWRITE_MEASURING_MODE_NATURAL ) const
+        void DrawText( const WideString& text, IDWriteTextFormat* textFormat, const D2D1_RECT_F* layoutRect, ID2D1Brush* defaultForegroundBrush, D2D1_DRAW_TEXT_OPTIONS options = D2D1_DRAW_TEXT_OPTIONS_NONE, DWRITE_MEASURING_MODE measuringMode = DWRITE_MEASURING_MODE_NATURAL ) const
         {
             InterfaceType* pInterface = GetInterface( );
             pInterface->DrawText( text.c_str( ), static_cast<UINT32>( text.length( ) ), textFormat, layoutRect, defaultForegroundBrush, options, measuringMode );
         }
 
-        inline void DrawText( const std::wstring& text, const DirectWrite::TextFormat& textFormat, const D2D1_RECT_F* layoutRect, const Brush& defaultForegroundBrush, D2D1_DRAW_TEXT_OPTIONS options = D2D1_DRAW_TEXT_OPTIONS_NONE, DWRITE_MEASURING_MODE measuringMode = DWRITE_MEASURING_MODE_NATURAL ) const;
+        inline void DrawText( const WideString& text, const DirectWrite::TextFormat& textFormat, const D2D1_RECT_F* layoutRect, const Brush& defaultForegroundBrush, D2D1_DRAW_TEXT_OPTIONS options = D2D1_DRAW_TEXT_OPTIONS_NONE, DWRITE_MEASURING_MODE measuringMode = DWRITE_MEASURING_MODE_NATURAL ) const;
 
 
         /// <summary>
@@ -12874,9 +12874,9 @@ namespace Harlinn::Windows::Graphics
             HCC_COM_CHECK_HRESULT2( hr, pInterface );
         }
 
-        std::wstring GetTagName( ) const
+        WideString GetTagName( ) const
         {
-            std::wstring result;
+            WideString result;
             auto tagNameLength = GetTagNameLength( );
             result.resize( tagNameLength );
             GetTagName( result.data(), static_cast<size_t>(tagNameLength) );
@@ -13173,10 +13173,10 @@ namespace Harlinn::Windows::Graphics
             auto hr = pInterface->GetSpecifiedAttributeName( index, name, nameCount, inherited );
             HCC_COM_CHECK_HRESULT2( hr, pInterface );
         }
-        std::wstring GetSpecifiedAttributeName( UINT32 index, _Out_opt_ BOOL* inherited = nullptr ) const
+        WideString GetSpecifiedAttributeName( UINT32 index, _Out_opt_ BOOL* inherited = nullptr ) const
         {
              UINT32 attributeNameLength = GetSpecifiedAttributeNameLength( index );
-             std::wstring result;
+             WideString result;
              result.resize( static_cast<size_t>( attributeNameLength ) );
              GetSpecifiedAttributeName( index, result.data( ), attributeNameLength, inherited );
              return result;
@@ -13226,7 +13226,7 @@ namespace Harlinn::Windows::Graphics
             auto hr = pInterface->SetTextValue( value, valueCount );
             HCC_COM_CHECK_HRESULT2( hr, pInterface );
         }
-        void SetTextValue( const std::wstring& value ) const
+        void SetTextValue( const WideString& value ) const
         {
             SetTextValue( value.c_str(), static_cast<UINT32>( value.size() ) );
         }
@@ -13244,10 +13244,10 @@ namespace Harlinn::Windows::Graphics
             auto hr = pInterface->GetTextValue( value, valueCount );
             HCC_COM_CHECK_HRESULT2( hr, pInterface );
         }
-        std::wstring GetTextValue( ) const
+        WideString GetTextValue( ) const
         {
             auto textValueLength = GetTextValueLength( );
-            std::wstring result;
+            WideString result;
             result.resize( static_cast<size_t>( textValueLength ) );
             GetTextValue( result.data(), textValueLength );
             return result;
@@ -13287,10 +13287,10 @@ namespace Harlinn::Windows::Graphics
             auto hr = pInterface->GetAttributeValue( name, type, value, valueCount );
             HCC_COM_CHECK_HRESULT2( hr, pInterface );
         }
-        std::wstring GetAttributeValue( _In_ PCWSTR name, D2D1_SVG_ATTRIBUTE_STRING_TYPE type = D2D1_SVG_ATTRIBUTE_STRING_TYPE_SVG ) const
+        WideString GetAttributeValue( _In_ PCWSTR name, D2D1_SVG_ATTRIBUTE_STRING_TYPE type = D2D1_SVG_ATTRIBUTE_STRING_TYPE_SVG ) const
         {
             auto attributeValueLength = GetAttributeValueLength( name, type );
-            std::wstring result;
+            WideString result;
             result.resize( static_cast<size_t>( attributeValueLength ) );
             GetAttributeValue( name, type, result.data( ), attributeValueLength );
             return result;

@@ -29,7 +29,7 @@ namespace Harlinn::Windows::DirectWrite
         HW_EXPORT UINT32 GetFilePathLengthFromKey( void const* fontFileReferenceKey, UINT32 fontFileReferenceKeySize );
 
         HW_EXPORT LocalFontFileLoader& GetFilePathFromKey( void const* fontFileReferenceKey, UINT32 fontFileReferenceKeySize, WCHAR* filePath, UINT32 filePathSize );
-        HW_EXPORT std::shared_ptr<std::wstring> GetFilePathFromKey( void const* fontFileReferenceKey, UINT32 fontFileReferenceKeySize );
+        HW_EXPORT std::shared_ptr<WideString> GetFilePathFromKey( void const* fontFileReferenceKey, UINT32 fontFileReferenceKeySize );
 
         HW_EXPORT LocalFontFileLoader& GetLastWriteTimeFromKey( void const* fontFileReferenceKey, UINT32 fontFileReferenceKeySize, FILETIME* lastWriteTime );
         HW_EXPORT FILETIME GetLastWriteTimeFromKey( void const* fontFileReferenceKey, UINT32 fontFileReferenceKeySize );
@@ -159,13 +159,13 @@ namespace Harlinn::Windows::DirectWrite
         HW_EXPORT UINT32 GetLocaleNameLength( UINT32 index );
 
         HW_EXPORT LocalizedStrings& GetLocaleName( UINT32 index, WCHAR* localeName, UINT32 size );
-        HW_EXPORT std::shared_ptr<std::wstring> GetLocaleName( UINT32 index );
+        HW_EXPORT std::shared_ptr<WideString> GetLocaleName( UINT32 index );
 
         HW_EXPORT LocalizedStrings& GetStringLength( UINT32 index, UINT32* length );
         HW_EXPORT UINT32 GetStringLength( UINT32 index );
 
         HW_EXPORT LocalizedStrings& GetString( UINT32 index, WCHAR* stringBuffer, UINT32 size );
-        HW_EXPORT std::shared_ptr<std::wstring> GetString( UINT32 index );
+        HW_EXPORT std::shared_ptr<WideString> GetString( UINT32 index );
     };
 
     class FontFamily;
@@ -276,14 +276,14 @@ namespace Harlinn::Windows::DirectWrite
         HW_EXPORT FontCollection GetFontCollection( );
         HW_EXPORT UINT32 GetFontFamilyNameLength( );
         HW_EXPORT TextFormat& GetFontFamilyName( WCHAR* fontFamilyName, UINT32 nameSize );
-        HW_EXPORT std::shared_ptr<std::wstring> GetFontFamilyName( );
+        HW_EXPORT std::shared_ptr<WideString> GetFontFamilyName( );
         HW_EXPORT DWRITE_FONT_WEIGHT GetFontWeight( );
         HW_EXPORT DWRITE_FONT_STYLE GetFontStyle( );
         HW_EXPORT DWRITE_FONT_STRETCH GetFontStretch( );
         HW_EXPORT FLOAT GetFontSize( );
         HW_EXPORT UINT32 GetLocaleNameLength( );
         HW_EXPORT TextFormat& GetLocaleName( WCHAR* localeName, UINT32 nameSize );
-        HW_EXPORT std::shared_ptr<std::wstring> GetLocaleName( );
+        HW_EXPORT std::shared_ptr<WideString> GetLocaleName( );
     };
 
 
@@ -736,7 +736,7 @@ namespace Harlinn::Windows::Graphics
         DrawText( string, stringLength, textFormat.GetInterfacePointer<IDWriteTextFormat>( ), layoutRect, defaultForegroundBrush.GetInterfacePointer<ID2D1Brush>( ), options, measuringMode );
     }
 
-    inline void RenderTarget::DrawText( const std::wstring& text, const DirectWrite::TextFormat& textFormat, const D2D1_RECT_F* layoutRect, const Brush& defaultForegroundBrush, D2D1_DRAW_TEXT_OPTIONS options, DWRITE_MEASURING_MODE measuringMode ) const
+    inline void RenderTarget::DrawText( const WideString& text, const DirectWrite::TextFormat& textFormat, const D2D1_RECT_F* layoutRect, const Brush& defaultForegroundBrush, D2D1_DRAW_TEXT_OPTIONS options, DWRITE_MEASURING_MODE measuringMode ) const
     {
         DrawText( text.c_str( ), static_cast<UINT32>( text.length( ) ), textFormat.GetInterfacePointer<IDWriteTextFormat>( ), layoutRect, defaultForegroundBrush.GetInterfacePointer<ID2D1Brush>( ), options, measuringMode );
     }

@@ -2,6 +2,7 @@
 
 using namespace Harlinn::Common::Core;
 
+
 namespace
 {
     class LocalFixture
@@ -232,6 +233,26 @@ BOOST_AUTO_TEST_CASE( DateTimeDayOfYearTest1 )
 
     BOOST_CHECK( dayOfYear == 2 );
 }
+
+// --run_test=DateTimeTests/FormatTest1
+BOOST_AUTO_TEST_CASE( FormatTest1 )
+{
+    DateTime dateTime( 2020, 1, 2, 1, 2, 3, 345 );
+
+    auto text = std::format( "{}", dateTime );
+
+    bool empty = text.empty( );
+    BOOST_CHECK( empty == false );
+
+    auto text2 = std::format( "{:%Y-%m-%d %H:%M:%S}", std::chrono::floor<std::chrono::milliseconds>( dateTime.ToTimePoint() ) );
+    empty = text.empty( );
+    BOOST_CHECK( empty == false );
+    
+
+
+
+}
+
 
 
 

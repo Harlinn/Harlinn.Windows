@@ -43,8 +43,8 @@ namespace Harlinn::OCI
     {
         auto s = this->AsString( );
         std::vector<Byte> result;
-        result.resize( s.length( ) * sizeof( std::wstring::value_type ) );
-        memcpy( result.data( ), s.c_str( ), s.length( ) * sizeof( std::wstring::value_type ) );
+        result.resize( s.length( ) * sizeof( WideString::value_type ) );
+        memcpy( result.data( ), s.c_str( ), s.length( ) * sizeof( WideString::value_type ) );
         return result;
     }
     short CStringDefine::AsInt16( ) const
@@ -98,9 +98,9 @@ namespace Harlinn::OCI
         auto result = ConvertTo<TimeSpan>( this->AsString( ) );
         return result;
     }
-    std::wstring CStringDefine::AsString( ) const
+    WideString CStringDefine::AsString( ) const
     {
-        std::wstring result( data_.data( ), static_cast<size_t>( actualSize_ ) / sizeof( wchar_t ) );
+        WideString result( data_.data( ), static_cast<size_t>( actualSize_ ) / sizeof( wchar_t ) );
         return result;
     }
 

@@ -264,7 +264,7 @@ namespace Harlinn::OCI
         HCC_THROW( NotImplementedException );
     }
 
-    std::wstring ArrayDefine::AsString( size_t index ) const
+    WideString ArrayDefine::AsString( size_t index ) const
     {
         HCC_THROW( NotImplementedException );
     }

@@ -51,7 +51,7 @@ namespace Harlinn::Windows
 
         HW_EXPORT const WindowClasses& GetWindowClasses( ) const;
         HW_EXPORT WindowClasses& GetWindowClasses( );
-        HW_EXPORT static WindowClass* GetWindowClass( const std::wstring& className );
+        HW_EXPORT static WindowClass* GetWindowClass( const WideString& className );
         HW_EXPORT static WindowClass* GetWindowClass( const wchar_t* className );
 
         static void RegisterWindowClass( std::unique_ptr<WindowClass>&& windowClass )

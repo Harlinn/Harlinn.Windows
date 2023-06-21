@@ -34,7 +34,7 @@ BOOST_AUTO_TEST_CASE( WaitTest1 )
 // --run_test=MutexTests/OpenTest1
 BOOST_AUTO_TEST_CASE( OpenTest1 )
 {
-    std::wstring mutexName( L"OpenTest1MutexName" );
+    WideString mutexName( L"OpenTest1MutexName" );
     Mutex mutex( mutexName, true );
     EventWaitHandle event(true);
 
@@ -54,7 +54,7 @@ BOOST_AUTO_TEST_CASE( OpenTest1 )
 // --run_test=MutexTests/TryOpenTest1
 BOOST_AUTO_TEST_CASE( TryOpenTest1 )
 {
-    std::wstring mutexName( L"OpenTest1MutexName" );
+    WideString mutexName( L"OpenTest1MutexName" );
     Mutex mutex( mutexName, true );
     EventWaitHandle event( true );
 

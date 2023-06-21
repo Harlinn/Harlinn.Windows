@@ -4,12 +4,12 @@ using namespace Harlinn::Common::Core;
 
 namespace
 {
-    std::wstring TestDataRoot = Environment::EnvironmentVariable( L"HCC_TEST_DATA_ROOT" );
+    WideString TestDataRoot = Environment::EnvironmentVariable( L"HCC_TEST_DATA_ROOT" );
 
-    std::wstring DatabaseDir = IO::Path::Append( TestDataRoot, L"\\ESE\\Test" );
-    std::wstring DatabasePath = DatabaseDir + L"\\Database.edb";
-    std::wstring DatabaseSystemPath = DatabaseDir + L"\\System\\";
-    std::wstring DatabaseLogfilePath = DatabaseDir + L"\\Log\\";
+    WideString DatabaseDir = IO::Path::Append( TestDataRoot, L"\\ESE\\Test" );
+    WideString DatabasePath = DatabaseDir + L"\\Database.edb";
+    WideString DatabaseSystemPath = DatabaseDir + L"\\System\\";
+    WideString DatabaseLogfilePath = DatabaseDir + L"\\Log\\";
 
 
     class LocalFixture
@@ -1692,12 +1692,12 @@ class SensorEngine : public Engine
 {
 public:
     using Base = Engine;
-    static std::wstring SensorValueTableName;
-    static std::wstring SensorValueIndexName;
-    static std::wstring SensorColumnName;
-    static std::wstring TimestampColumnName;
-    static std::wstring FlagsColumnName;
-    static std::wstring ValueColumnName;
+    static WideString SensorValueTableName;
+    static WideString SensorValueIndexName;
+    static WideString SensorColumnName;
+    static WideString TimestampColumnName;
+    static WideString FlagsColumnName;
+    static WideString ValueColumnName;
     JET_COLUMNID SensorColumnId;
     JET_COLUMNID TimestampColumnId;
     JET_COLUMNID FlagsColumnId;
@@ -1891,12 +1891,12 @@ public:
 
 };
 
-std::wstring SensorEngine::SensorValueTableName = L"SV";
-std::wstring SensorEngine::SensorValueIndexName = L"ISV";
-std::wstring SensorEngine::SensorColumnName = L"S";
-std::wstring SensorEngine::TimestampColumnName = L"T";
-std::wstring SensorEngine::FlagsColumnName = L"F";
-std::wstring SensorEngine::ValueColumnName = L"V";
+WideString SensorEngine::SensorValueTableName = L"SV";
+WideString SensorEngine::SensorValueIndexName = L"ISV";
+WideString SensorEngine::SensorColumnName = L"S";
+WideString SensorEngine::TimestampColumnName = L"T";
+WideString SensorEngine::FlagsColumnName = L"F";
+WideString SensorEngine::ValueColumnName = L"V";
 
 
 // --run_test=EseTests/CreateSensorValueTableTest1

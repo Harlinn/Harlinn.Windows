@@ -164,14 +164,14 @@ namespace Harlinn::Common::Core
     };
 
     template<>
-    struct VariantTypeTraits<std::wstring> : public Internal::VariantTypeTraits<Core::VariantType::BStr, std::wstring, BSTR >
+    struct VariantTypeTraits<WideString> : public Internal::VariantTypeTraits<Core::VariantType::BStr, WideString, BSTR >
     {
-        using Base = Internal::VariantTypeTraits<Core::VariantType::BStr, std::wstring, BSTR >;
+        using Base = Internal::VariantTypeTraits<Core::VariantType::BStr, WideString, BSTR >;
         using ValueType = Base::ValueType;
         using VariantValueType = Base::VariantValueType;
         static constexpr bool RequiresConversion = true;
 
-        static constexpr ValueType Convert( VariantValueType value )
+        static ValueType Convert( VariantValueType value )
         {
             if ( value )
             {
@@ -184,7 +184,7 @@ namespace Harlinn::Common::Core
             }
             return static_cast< ValueType >( value );
         }
-        static constexpr VariantValueType Convert( const ValueType& value )
+        static VariantValueType Convert( const ValueType& value )
         {
             auto valueSize = value.size( );
             if ( valueSize )
@@ -280,7 +280,7 @@ namespace Harlinn::Common::Core
         {
         }
 
-        explicit SysString( const std::wstring& str )
+        explicit SysString( const WideString& str )
             : bstr_( 0 )
         {
             bstr_ = SysAllocStringLen( str.c_str( ), UINT( str.length( ) ) );
@@ -422,7 +422,7 @@ namespace Harlinn::Common::Core
             }
         }
 
-        bool operator == ( const std::wstring& other ) const
+        bool operator == ( const WideString& other ) const
         {
             if ( bstr_ )
             {
@@ -499,7 +499,7 @@ namespace Harlinn::Common::Core
             }
         }
 
-        int CompareTo( const std::wstring& other ) const
+        int CompareTo( const WideString& other ) const
         {
             if ( bstr_ != other )
             {
@@ -604,14 +604,14 @@ namespace Harlinn::Common::Core
             return bstr_[index];
         }
 
-        std::wstring ToString( )
+        WideString ToString( )
         {
             if ( bstr_ )
             {
                 auto size = size_t( SysStringLen( bstr_ ) );
-                return std::wstring( bstr_, size );
+                return WideString( bstr_, size );
             }
-            return std::wstring( );
+            return {};
         }
 
     };
@@ -1809,7 +1809,7 @@ namespace Harlinn::Common::Core
             Base::bstrVal = value.Detach();
         }
 
-        explicit VariantT( const std::wstring& value )
+        explicit VariantT( const WideString& value )
             : Base( )
         {
             Base::vt = static_cast<USHORT>( VariantType::BStr );
@@ -2251,7 +2251,7 @@ namespace Harlinn::Common::Core
             Base::bstrVal = value.Copy( );
         }
 
-        void Assign( const std::wstring& value )
+        void Assign( const WideString& value )
         {
             Clear( );
             SetVariantType( VariantType::BStr );
@@ -2802,17 +2802,17 @@ namespace Harlinn::Common::Core
         }
 
 
-        std::wstring AsWideString( ) const
+        WideString AsWideString( ) const
         {
             if ( Type( ) == VariantType::BStr )
             {
                 if ( Base::bstrVal )
                 {
-                    return std::wstring( Base::bstrVal );
+                    return WideString( Base::bstrVal );
                 }
                 else
                 {
-                    return std::wstring( );
+                    return {};
                 }
             }
             else
@@ -2822,16 +2822,16 @@ namespace Harlinn::Common::Core
                 CheckHRESULT( hr );
                 if ( result.bstrVal )
                 {
-                    return std::wstring( result.bstrVal );
+                    return WideString( result.bstrVal );
                 }
                 else
                 {
-                    return std::wstring( );
+                    return {};
                 }
             }
         }
         template<>
-        std::wstring As<std::wstring>( ) const
+        WideString As<WideString>( ) const
         {
             return AsWideString( );
         }

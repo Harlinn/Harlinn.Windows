@@ -330,19 +330,19 @@ namespace Harlinn::Windows
             return hr == S_OK;
         }
 
-        std::wstring GetString(const Guid& key) const
+        WideString GetString(const Guid& key) const
         {
             UINT32 length = 0;
             if (GetStringLength(key, &length))
             {
                 if (length)
                 {
-                    std::wstring result(static_cast<size_t>(length), static_cast<wchar_t>(0));
+                    WideString result(static_cast<size_t>(length), static_cast<wchar_t>(0));
                     GetString(key, result.data(),length+1);
                     return result;
                 }
             }
-            return std::wstring();
+            return WideString();
         }
 
 
@@ -500,7 +500,7 @@ namespace Harlinn::Windows
             HRESULT hr = pInterface->SetString(key, value);
             HCC_COM_CHECK_HRESULT2(hr, pInterface);
         }
-        void SetString(const Guid& key, const std::wstring& value) const
+        void SetString(const Guid& key, const WideString& value) const
         {
             SetString(key, value.c_str());
         }

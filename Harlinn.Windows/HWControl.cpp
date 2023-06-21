@@ -82,12 +82,12 @@ namespace Harlinn::Windows
     class ControlWindowClass : public WindowClass
     {
     public:
-        static std::wstring ClassName;
+        static WideString ClassName;
 
         ControlWindowClass( );
     };
 
-    std::wstring ControlWindowClass::ClassName = std::wstring( L"HarlinnWindowsControlWindowClassName" );
+    WideString ControlWindowClass::ClassName = WideString( L"HarlinnWindowsControlWindowClassName" );
 
     typedef ControlMessageDispatcher<Control> DefaultControlMessageDispatcher;
 
@@ -856,7 +856,7 @@ namespace Harlinn::Windows
         return size;
     }
 
-    std::wstring Control::Text( ) const
+    WideString Control::Text( ) const
     {
         int size = ::GetWindowTextLengthW( GetHandle( ) );
         if ( size > 0 )
@@ -865,17 +865,17 @@ namespace Harlinn::Windows
 
             ::GetWindowTextW( handle_, buffer, size + 1 );
 
-            std::wstring result = std::wstring( buffer );
+            WideString result = WideString( buffer );
             return result;
         }
         else
         {
-            return std::wstring( );
+            return {};
         }
     }
 
 
-    bool Control::SetText( const std::wstring& text )
+    bool Control::SetText( const WideString& text )
     {
         bool result = true;
         if ( handle_ )
@@ -905,7 +905,7 @@ namespace Harlinn::Windows
         }
         else
         {
-            text_ = std::wstring( );
+            text_.clear();
         }
         return result;
     }

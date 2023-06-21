@@ -3,7 +3,7 @@
 
 namespace Harlinn::Common::Core
 {
-    bool EnumString::Next( std::wstring& result ) const
+    bool EnumString::Next( WideString& result ) const
     {
         InterfaceType* pInterface = GetInterface( );
         ULONG numberOfElementsFetched = 0;
@@ -33,7 +33,7 @@ namespace Harlinn::Common::Core
         }
         return false;
     }
-    bool EnumString::Next( ULONG celt, std::vector<std::wstring>& result ) const
+    bool EnumString::Next( ULONG celt, std::vector<WideString>& result ) const
     {
         
         InterfaceType* pInterface = GetInterface( );
@@ -55,7 +55,7 @@ namespace Harlinn::Common::Core
         }
         return false;
     }
-    void EnumString::All( std::vector<std::wstring>& result ) const
+    void EnumString::All( std::vector<WideString>& result ) const
     {
         result.clear( );
         InterfaceType* pInterface = GetInterface( );
@@ -117,9 +117,9 @@ namespace Harlinn::Common::Core
                 return false;
             }
         }
-        std::vector<std::wstring> GetSupportedKnownInterfaces(IUnknown* unknown)
+        std::vector<WideString> GetSupportedKnownInterfaces(IUnknown* unknown)
         {
-            std::vector<std::wstring> result;
+            std::vector<WideString> result;
             if (unknown == nullptr)
             {
                 return result;

@@ -45,7 +45,7 @@ namespace Harlinn::OCI
     }
 
 
-    void ServiceContext::TypeByName( const std::wstring& schemaName, const std::wstring& typeName, const std::wstring& versionName, OCI::Duration pinDuration, OCI::TypeGetOpt typeGetOption, OCIType** ociType ) const
+    void ServiceContext::TypeByName( const WideString& schemaName, const WideString& typeName, const WideString& versionName, OCI::Duration pinDuration, OCI::TypeGetOpt typeGetOption, OCIType** ociType ) const
     {
         auto& environment = Environment( );
         if ( environment.IsValid( ) )
@@ -73,7 +73,7 @@ namespace Harlinn::OCI
     }
 
 
-    void ServiceContext::TypeByFullName( const std::wstring& fullName, const std::wstring& versionName, OCI::Duration pinDuration, OCI::TypeGetOpt typeGetOption, OCIType** ociType ) const
+    void ServiceContext::TypeByFullName( const WideString& fullName, const WideString& versionName, OCI::Duration pinDuration, OCI::TypeGetOpt typeGetOption, OCIType** ociType ) const
     {
         auto& environment = Environment( );
         if ( environment.IsValid( ) )
@@ -97,7 +97,7 @@ namespace Harlinn::OCI
         }
     }
 
-    bool ServiceContext::Exists( const std::wstring& objectName, OCI::ParameterType parameterType ) const
+    bool ServiceContext::Exists( const WideString& objectName, OCI::ParameterType parameterType ) const
     {
         OCIDescribe* ociDescribe = nullptr;
 
@@ -141,7 +141,7 @@ namespace Harlinn::OCI
         return true;
     }
 
-    OCI::Describe ServiceContext::Describe( const std::wstring& objectName, OCI::ParameterType parameterType, bool showInvisibleColumns ) const
+    OCI::Describe ServiceContext::Describe( const WideString& objectName, OCI::ParameterType parameterType, bool showInvisibleColumns ) const
     {
         OCIDescribe* ociDescribe = nullptr;
 
@@ -243,7 +243,7 @@ namespace Harlinn::OCI
         }
     }
 
-    const OCI::Session& ServiceContext::CreateSession( const std::wstring& username, const std::wstring& password )
+    const OCI::Session& ServiceContext::CreateSession( const WideString& username, const WideString& password )
     {
         auto& result = CreateSession( );
         result.SetUserName( username );
@@ -321,7 +321,7 @@ namespace Harlinn::OCI
         }
     }
 
-    OCI::Statement ServiceContext::CreateStatement( const std::wstring& sql ) const
+    OCI::Statement ServiceContext::CreateStatement( const WideString& sql ) const
     {
         auto& environment = Environment( );
         if ( environment.IsValid( ) )
@@ -360,9 +360,9 @@ namespace Harlinn::OCI
     }
 
 
-    std::vector<std::wstring> ServiceContext::GetDbmsOutput( ) const
+    std::vector<WideString> ServiceContext::GetDbmsOutput( ) const
     {
-        std::vector<std::wstring> result;
+        std::vector<WideString> result;
         auto statement = CreateStatement( L"BEGIN DBMS_OUTPUT.GET_LINE(line=>:p1, status=>:p2); END;" );
 
         auto bufferBind = statement.Bind<OCI::CStringBind>( 1, 32767 );

@@ -3,6 +3,7 @@
 #define __HCCPIPE_H__
 
 #include <HCCIOContext.h>
+#include <HCCString.h>
 
 namespace Harlinn::Common::Core::IO
 {
@@ -383,7 +384,7 @@ namespace Harlinn::Common::Core::IO
             }
         }
 
-        std::wstring GetClientComputerName( ) const
+        WideString GetClientComputerName( ) const
         {
             wchar_t buffer[512] = {};
             auto handle = Handle( );
@@ -392,7 +393,7 @@ namespace Harlinn::Common::Core::IO
             {
                 ThrowLastOSError( );
             }
-            return std::wstring( buffer );
+            return WideString( buffer );
         }
     };
 

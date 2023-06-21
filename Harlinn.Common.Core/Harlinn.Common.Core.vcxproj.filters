@@ -390,6 +390,9 @@
     <ClInclude Include="HCCConcepts.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="HCCDemangle.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -500,6 +503,9 @@
     <ClCompile Include="HCCIStreamOnStreamImpl.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="HCCDemangle.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="Support\hcc.natvis">
@@ -511,6 +517,9 @@
       <Filter>Header Files</Filter>
     </None>
     <None Include="HCCComRegistry.inl">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="HCCDemangle.m">
       <Filter>Header Files</Filter>
     </None>
   </ItemGroup>

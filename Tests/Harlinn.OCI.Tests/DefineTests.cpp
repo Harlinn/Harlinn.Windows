@@ -49,7 +49,7 @@ void TestCHAR5Define(const OCI::ServiceContext& serviceContext )
 
     bool boolValues[] = { true,true };
     Int64 intValues[] = { 10, 20 };
-    std::wstring stringValues[] = { L"10"s, L"20"s };
+    WideString stringValues[] = { WideString(L"10"), WideString(L"20") };
 
     auto statement = serviceContext.CreateStatement( sql );
     auto reader = statement.ExecuteReader< TestDataReader< DefineT> >( );
@@ -100,13 +100,13 @@ void TestCHAR5Define(const OCI::ServiceContext& serviceContext )
         }
         else if constexpr ( std::is_same_v<DefineT, OCI::CStringDefine> )
         {
-            std::wstring stringValues[] = { L"10   "s, L"20   "s };
-            auto strVal = reader->As<std::wstring>( 0 );
+            WideString stringValues[] = { WideString(L"10   "), WideString(L"20   ") };
+            auto strVal = reader->As<WideString>( 0 );
             BOOST_CHECK( stringValues[count] == strVal );
         }
         else
         {
-            auto strVal = reader->As<std::wstring>( 0 );
+            auto strVal = reader->As<WideString>( 0 );
             BOOST_CHECK( stringValues[count] == strVal );
         }
 
@@ -139,8 +139,8 @@ BOOST_AUTO_TEST_CASE( CHAR5DefineTest1 )
         serviceContext.ExecuteNonQuery( L"DROP TABLE HOCIDefineTestTable" );
     }
     serviceContext.ExecuteNonQuery( L"CREATE TABLE HOCIDefineTestTable(NAME CHAR(5) NOT NULL PRIMARY KEY )" );
-    serviceContext.ExecuteNonQuery( L"INSERT INTO HOCIDefineTestTable(NAME) VALUES(:1)", L"10"s );
-    serviceContext.ExecuteNonQuery( L"INSERT INTO HOCIDefineTestTable(NAME) VALUES(:1)", L"20"s );
+    serviceContext.ExecuteNonQuery( L"INSERT INTO HOCIDefineTestTable(NAME) VALUES(:1)", WideString(L"10") );
+    serviceContext.ExecuteNonQuery( L"INSERT INTO HOCIDefineTestTable(NAME) VALUES(:1)", WideString(L"20") );
 
     TestCHAR5Define<OCI::BooleanDefine>( serviceContext );
     TestCHAR5Define<OCI::SByteDefine>( serviceContext );
@@ -176,8 +176,8 @@ BOOST_AUTO_TEST_CASE( NCHAR5DefineTest1 )
         serviceContext.ExecuteNonQuery( L"DROP TABLE HOCIDefineTestTable" );
     }
     serviceContext.ExecuteNonQuery( L"CREATE TABLE HOCIDefineTestTable(NAME NCHAR(5) NOT NULL PRIMARY KEY )" );
-    serviceContext.ExecuteNonQuery( L"INSERT INTO HOCIDefineTestTable(NAME) VALUES(:1)", L"10"s );
-    serviceContext.ExecuteNonQuery( L"INSERT INTO HOCIDefineTestTable(NAME) VALUES(:1)", L"20"s );
+    serviceContext.ExecuteNonQuery( L"INSERT INTO HOCIDefineTestTable(NAME) VALUES(:1)", WideString( L"10" ) );
+    serviceContext.ExecuteNonQuery( L"INSERT INTO HOCIDefineTestTable(NAME) VALUES(:1)", WideString( L"20" ) );
 
     TestCHAR5Define<OCI::BooleanDefine>( serviceContext );
     TestCHAR5Define<OCI::SByteDefine>( serviceContext );

@@ -101,7 +101,7 @@ namespace Harlinn::Common::Core::Com
         inline virtual HRESULT STDMETHODCALLTYPE LockServer( BOOL lock );
 
         virtual Guid GetIID( ) = 0;
-        std::wstring ComponentName( ) const
+        WideString ComponentName( ) const
         {
             auto typeInfo = GetTypeInfo( );
             auto name = typeInfo.GetName( );
@@ -228,7 +228,7 @@ namespace Harlinn::Common::Core::Com
         // This must be placed in the exe/dll implementing the module
         HCC_COM_MODULE_EXPORT static Module* instance_;
 
-        std::wstring applicationName_;
+        WideString applicationName_;
         Guid libId_;
         ModuleHandle moduleHandle_;
         unsigned long referenceCount_ = 0;
@@ -330,7 +330,7 @@ namespace Harlinn::Common::Core::Com
         }
         
 
-        [[nodiscard]] const std::wstring& ApplicationName() const
+        [[nodiscard]] const WideString& ApplicationName() const
         {
             return applicationName_;
         }
@@ -340,7 +340,7 @@ namespace Harlinn::Common::Core::Com
             moduleHandle_.SetValue( moduleHandle, false );
         }
 
-        [[nodiscard]] std::wstring ModuleFileName( ) const
+        [[nodiscard]] WideString ModuleFileName( ) const
         {
             return moduleHandle_.ModuleFileName( );
         }
@@ -580,21 +580,21 @@ namespace Harlinn::Common::Core::Com::Registry
 {
     namespace Internal
     {
-        inline void WriteValue( const std::wstring& nameOfSubKey, const std::wstring& nameOfRegistryValue, const std::wstring& value )
+        inline void WriteValue( const WideString& nameOfSubKey, const WideString& nameOfRegistryValue, const WideString& value )
         {
             auto rootKey = RegistryHandle::ClassesRoot( );
             auto subKey = rootKey.CreateKey( nameOfSubKey );
             subKey.SetValue( nameOfRegistryValue, value );
         }
 
-        inline void WriteKey( const std::wstring& nameOfSubKey, const std::wstring& value )
+        inline void WriteKey( const WideString& nameOfSubKey, const WideString& value )
         {
             auto rootKey = RegistryHandle::ClassesRoot( );
             auto subKey = rootKey.CreateKey( nameOfSubKey );
             subKey.SetValue( value );
         }
 
-        inline void DeleteKey( const std::wstring& nameOfSubKey )
+        inline void DeleteKey( const WideString& nameOfSubKey )
         {
             auto rootKey = RegistryHandle::ClassesRoot( );
             rootKey.DeleteKey( nameOfSubKey );

@@ -8,8 +8,8 @@ namespace Harlinn::Common::Core
 {
     struct FilterSpecification
     {
-        std::wstring name;
-        std::wstring specification;
+        WideString name;
+        WideString specification;
     };
 
 
@@ -53,7 +53,7 @@ namespace Harlinn::Common::Core
             return ShellItem( result );
         }
 
-        std::wstring GetDisplayName( SIGDN sigdnName = SIGDN_NORMALDISPLAY )
+        WideString GetDisplayName( SIGDN sigdnName = SIGDN_NORMALDISPLAY )
         {
             auto pInterface = GetInterface( );
             LPWSTR result;
@@ -62,7 +62,7 @@ namespace Harlinn::Common::Core
             {
                 CheckHRESULT( hr );
             }
-            std::wstring s( result );
+            WideString s( result );
             CoTaskMemFree( result );
             return s;
         }
@@ -193,7 +193,7 @@ namespace Harlinn::Common::Core
             }
             return result;
         }
-        std::wstring GetString( REFPROPERTYKEY key )
+        WideString GetString( REFPROPERTYKEY key )
         {
             auto pInterface = GetInterface( );
             LPWSTR result = nullptr;
@@ -202,7 +202,7 @@ namespace Harlinn::Common::Core
             {
                 CheckHRESULT( hr );
             }
-            std::wstring s( result );
+            WideString s( result );
             CoTaskMemFree( result );
             return s;
         }

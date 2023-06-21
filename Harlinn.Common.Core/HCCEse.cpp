@@ -7,7 +7,7 @@ namespace Harlinn::Common::Core::Ese
     {
         __declspec(thread) wchar_t messagebuffer[4096] = { 0, };
 
-        std::wstring GetEseError( JET_ERR rc )
+        WideString GetEseError( JET_ERR rc )
         {
             wchar_t* buffer = messagebuffer;
             JetGetSystemParameterW( JET_instanceNil, JET_sesidNil, JET_paramErrorToString, ( JET_API_PTR* )&rc, buffer, 4096 );
@@ -28,12 +28,12 @@ namespace Harlinn::Common::Core::Ese
 
     }
 
-    std::wstring Exception::GetErrorMessage( JET_ERR rc )
+    WideString Exception::GetErrorMessage( JET_ERR rc )
     {
         return GetEseError( rc );
     }
 
-    std::wstring Exception::GetErrorMessage( Result rc )
+    WideString Exception::GetErrorMessage( Result rc )
     {
         return GetEseError( static_cast<JET_ERR>( rc ) );
     }

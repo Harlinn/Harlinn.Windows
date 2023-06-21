@@ -238,7 +238,7 @@ namespace Harlinn::Common::Core
                 CheckHRESULT( hr );
             }
         }
-        void SetStringValue( __RPC__in REFPROPERTYKEY key, const std::wstring& value ) const
+        void SetStringValue( __RPC__in REFPROPERTYKEY key, const WideString& value ) const
         {
             SetStringValue( key, value.c_str( ) );
         }

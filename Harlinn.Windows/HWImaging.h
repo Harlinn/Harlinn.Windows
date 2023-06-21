@@ -815,7 +815,7 @@ namespace Harlinn::Windows
             HW_IMAGING_STANDARD_METHODS_IMPL( ColorContext, ImagingObject, IWICColorContext, IUnknown )
 
             HW_EXPORT ColorContext& InitializeFromFilename( LPCWSTR theFilename );
-            HW_EXPORT ColorContext& InitializeFromFilename( const std::wstring& theFilename );
+            HW_EXPORT ColorContext& InitializeFromFilename( const WideString& theFilename );
 
             HW_EXPORT ColorContext& InitializeFromMemory( const BYTE* theBuffer, UINT theBufferSize );
 
@@ -896,10 +896,10 @@ namespace Harlinn::Windows
             HW_EXPORT GUID GetContainerFormat( ) const;
 
             HW_EXPORT const MetadataQueryReader& GetLocation( UINT cchMaxLength, WCHAR* wzNamespace, UINT* pcchActualLength ) const;
-            HW_EXPORT std::wstring GetLocation( ) const;
+            HW_EXPORT WideString GetLocation( ) const;
 
             HW_EXPORT const MetadataQueryReader& GetMetadataByName( LPCWSTR wzName, PROPVARIANT* pvarValue ) const;
-            HW_EXPORT const MetadataQueryReader& GetMetadataByName( const std::wstring& theName, PROPVARIANT* pvarValue ) const;
+            HW_EXPORT const MetadataQueryReader& GetMetadataByName( const WideString& theName, PROPVARIANT* pvarValue ) const;
 
 
             HW_EXPORT EnumString GetEnumerator( ) const;
@@ -1110,16 +1110,16 @@ namespace Harlinn::Windows
 
             HW_EXPORT DWORD GetSigningStatus( ) const;
 
-            HW_EXPORT std::wstring GetAuthor( ) const;
+            HW_EXPORT WideString GetAuthor( ) const;
 
             HW_EXPORT const ComponentInfo& GetVendorGUID( GUID* pguidVendor ) const;
             HW_EXPORT GUID GetVendorGUID( ) const;
 
-            HW_EXPORT std::wstring GetVersion( ) const;
+            HW_EXPORT WideString GetVersion( ) const;
 
-            HW_EXPORT std::wstring GetSpecVersion( ) const;
+            HW_EXPORT WideString GetSpecVersion( ) const;
 
-            HW_EXPORT std::wstring GetFriendlyName( ) const;
+            HW_EXPORT WideString GetFriendlyName( ) const;
 
         };
 
@@ -1147,15 +1147,15 @@ namespace Harlinn::Windows
 
             HW_EXPORT std::shared_ptr< std::vector<WICPixelFormatGUID> > GetPixelFormats( ) const;
 
-            HW_EXPORT std::wstring GetColorManagementVersion( ) const;
+            HW_EXPORT WideString GetColorManagementVersion( ) const;
 
-            HW_EXPORT std::wstring GetDeviceManufacturer( ) const;
+            HW_EXPORT WideString GetDeviceManufacturer( ) const;
 
-            HW_EXPORT std::wstring GetDeviceModels( ) const;
+            HW_EXPORT WideString GetDeviceModels( ) const;
 
-            HW_EXPORT std::wstring GetMimeTypes( ) const;
+            HW_EXPORT WideString GetMimeTypes( ) const;
 
-            HW_EXPORT std::wstring GetFileExtensions( ) const;
+            HW_EXPORT WideString GetFileExtensions( ) const;
 
             HW_EXPORT bool DoesSupportAnimation( ) const;
 
@@ -1166,7 +1166,7 @@ namespace Harlinn::Windows
             HW_EXPORT bool DoesSupportMultiframe( ) const;
 
             HW_EXPORT bool MatchesMimeType( LPCWSTR wzMimeType ) const;
-            HW_EXPORT bool MatchesMimeType( const std::wstring& theMimeType ) const;
+            HW_EXPORT bool MatchesMimeType( const WideString& theMimeType ) const;
 
         };
 
@@ -1233,9 +1233,9 @@ namespace Harlinn::Windows
             HW_EXPORT BitmapDecoder CreateDecoderFromFilename( LPCWSTR theFilename, DWORD dwDesiredAccess, DecodeOptions metadataOptions ) const;
             HW_EXPORT BitmapDecoder CreateDecoderFromFilename( LPCWSTR theFilename ) const;
 
-            HW_EXPORT BitmapDecoder CreateDecoderFromFilename( const std::wstring& theFilename, const GUID* pguidVendor, DWORD dwDesiredAccess, DecodeOptions metadataOptions ) const;
-            HW_EXPORT BitmapDecoder CreateDecoderFromFilename( const std::wstring& theFilename, DWORD dwDesiredAccess, DecodeOptions metadataOptions ) const;
-            HW_EXPORT BitmapDecoder CreateDecoderFromFilename( const std::wstring& theFilename ) const;
+            HW_EXPORT BitmapDecoder CreateDecoderFromFilename( const WideString& theFilename, const GUID* pguidVendor, DWORD dwDesiredAccess, DecodeOptions metadataOptions ) const;
+            HW_EXPORT BitmapDecoder CreateDecoderFromFilename( const WideString& theFilename, DWORD dwDesiredAccess, DecodeOptions metadataOptions ) const;
+            HW_EXPORT BitmapDecoder CreateDecoderFromFilename( const WideString& theFilename ) const;
 
 
             HW_EXPORT BitmapDecoder CreateDecoderFromStream( IStream* theStream, const GUID* pguidVendor, DecodeOptions metadataOptions ) const;

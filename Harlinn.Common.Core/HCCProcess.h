@@ -6,6 +6,7 @@
 #include <HCCException.h>
 #include <HCCThread.h>
 
+
 namespace Harlinn::Common::Core
 {
     enum class ProcessAccessRights : DWORD
@@ -262,39 +263,39 @@ namespace Harlinn::Common::Core
 
     class ProcessOptions
     {
-        std::wstring applicationName_;
-        std::wstring commandLine_;
+        WideString applicationName_;
+        WideString commandLine_;
         SECURITY_ATTRIBUTES* processAttributes_;
         SECURITY_ATTRIBUTES* threadAttributes_;
         bool inheritHandles_;
         ProcessCreationFlags creationFlags_;
-        std::wstring environment_;
-        std::wstring currentDirectory_;
+        WideString environment_;
+        WideString currentDirectory_;
         Core::StartupInfo startupInfo_;
     public:
         ProcessOptions()
             : processAttributes_(nullptr), threadAttributes_(nullptr), inheritHandles_(false), creationFlags_( ProcessCreationFlags::None )
         { }
 
-        ProcessOptions( const std::wstring& applicationName, const std::wstring& commandLine, ProcessCreationFlags creationFlags = ProcessCreationFlags::ProfileUser )
+        ProcessOptions( const WideString& applicationName, const WideString& commandLine, ProcessCreationFlags creationFlags = ProcessCreationFlags::ProfileUser )
             :applicationName_( applicationName ), commandLine_( commandLine ), processAttributes_( nullptr ), threadAttributes_( nullptr ), inheritHandles_( false ), creationFlags_( creationFlags )
         {
         }
 
-        const std::wstring& ApplicationName( ) const noexcept
+        const WideString& ApplicationName( ) const noexcept
         {
             return applicationName_;
         }
-        void SetApplicationName( const std::wstring& applicationName )
+        void SetApplicationName( const WideString& applicationName )
         {
             applicationName_ = applicationName;
         }
 
-        const std::wstring& CommandLine( ) const noexcept
+        const WideString& CommandLine( ) const noexcept
         {
             return commandLine_;
         }
-        void SetCommandLine( const std::wstring& commandLine )
+        void SetCommandLine( const WideString& commandLine )
         {
             commandLine_ = commandLine;
         }
@@ -336,20 +337,20 @@ namespace Harlinn::Common::Core
             creationFlags_ = creationFlags;
         }
 
-        const std::wstring& Environment( ) const noexcept
+        const WideString& Environment( ) const noexcept
         {
             return environment_;
         }
-        void SetEnvironment( const std::wstring& environment )
+        void SetEnvironment( const WideString& environment )
         {
             environment_ = environment;
         }
 
-        const std::wstring& CurrentDirectory( )  const noexcept
+        const WideString& CurrentDirectory( )  const noexcept
         {
             return currentDirectory_;
         }
-        void SetCurrentDirectory( const std::wstring& currentDirectory )
+        void SetCurrentDirectory( const WideString& currentDirectory )
         {
             currentDirectory_ = currentDirectory;
         }
@@ -415,7 +416,7 @@ namespace Harlinn::Common::Core
             return static_cast<ProcessPriorityClass>( rc );
         }
 
-        inline std::wstring ExecutableFilename( )
+        inline WideString ExecutableFilename( )
         {
             wchar_t buffer[4096];
             auto rc = GetModuleFileNameW( 0, buffer, sizeof( buffer ) / sizeof( wchar_t ) );
@@ -423,7 +424,7 @@ namespace Harlinn::Common::Core
             {
                 ThrowLastOSError( );
             }
-            return std::wstring( buffer, static_cast<size_t>(rc) );
+            return WideString( buffer, static_cast<size_t>(rc) );
         }
 
 

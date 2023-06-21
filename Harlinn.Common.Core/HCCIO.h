@@ -855,11 +855,11 @@ namespace Harlinn::Common::Core::IO
         { }
 
 
-        constexpr const std::wstring& ParentDirectory( ) const noexcept
+        constexpr const WideString& ParentDirectory( ) const noexcept
         {
             return parentDirectory_;
         }
-        constexpr const std::wstring& Name( ) const noexcept
+        constexpr const WideString& Name( ) const noexcept
         {
             return name_;
         }
@@ -1109,21 +1109,21 @@ namespace Harlinn::Common::Core::IO
 
 
 
-        HCC_EXPORT static std::wstring Append( const std::wstring& startOfPath, const std::wstring& remainingPath );
+        HCC_EXPORT static WideString Append( const WideString& startOfPath, const WideString& remainingPath );
         HCC_EXPORT static std::string Append( const std::string& startOfPath, const std::string& remainingPath );
 
-        HCC_EXPORT static std::wstring ChangeExtension( const std::wstring& path, const std::wstring& newExtension );
-        HCC_EXPORT static std::wstring GetLongPathName( const std::wstring& path );
-        HCC_EXPORT static std::wstring GetFullPathName( const std::wstring& path );
-        HCC_EXPORT static std::wstring GetFullPathName( const std::wstring& path, std::wstring::size_type& indexOfFileName );
+        HCC_EXPORT static WideString ChangeExtension( const WideString& path, const WideString& newExtension );
+        HCC_EXPORT static WideString GetLongPathName( const WideString& path );
+        HCC_EXPORT static WideString GetFullPathName( const WideString& path );
+        HCC_EXPORT static WideString GetFullPathName( const WideString& path, WideString::size_type& indexOfFileName );
 
         HCC_EXPORT static std::string GetFullPathName(const std::string& path);
         HCC_EXPORT static std::string GetFullPathName(const std::string& path, std::string::size_type& indexOfFileName);
 
         HCC_EXPORT static std::string FullPath( const std::string& path );
 
-        HCC_EXPORT static std::wstring GetParentDirectory( const wchar_t* path );
-        static std::wstring GetParentDirectory( const std::wstring& path )
+        HCC_EXPORT static WideString GetParentDirectory( const wchar_t* path );
+        static WideString GetParentDirectory( const WideString& path )
         {
             return GetParentDirectory( path.c_str() );
         }
@@ -1139,18 +1139,18 @@ namespace Harlinn::Common::Core::IO
 
 
         // Searches a path and determines if it is relative
-        HCC_EXPORT static bool IsRelative( const std::wstring& path );
+        HCC_EXPORT static bool IsRelative( const WideString& path );
         // Searches a path and determines if it is relative
         HCC_EXPORT static bool IsRelative( const wchar_t* path );
 
         // Determines whether a path string refers to the root of a volume
-        HCC_EXPORT static bool IsRoot( const std::wstring& path );
+        HCC_EXPORT static bool IsRoot( const WideString& path );
         // Determines whether a path string refers to the root of a volume
         HCC_EXPORT static bool IsRoot( const wchar_t* path );
 
         // Determines if a path string is a valid Universal Naming 
         // Convention (UNC) path, as opposed to a path based on a drive letter
-        HCC_EXPORT static bool IsUNC( const std::wstring& path );
+        HCC_EXPORT static bool IsUNC( const WideString& path );
         // Determines if a path string is a valid Universal Naming 
         // Convention (UNC) path, as opposed to a path based on a drive letter
         HCC_EXPORT static bool IsUNC( const wchar_t* path );
@@ -1568,7 +1568,7 @@ namespace Harlinn::Common::Core::IO
         HCC_EXPORT static void Delete( const char* filePath );
 
         template<typename T>
-            requires std::is_same_v<std::string,std::remove_cv_t<T>> || std::is_same_v<std::wstring, std::remove_cv_t<T>>
+            requires std::is_same_v<std::string,std::remove_cv_t<T>> || std::is_same_v<WideString, std::remove_cv_t<T>>
         static void Delete( const T& filePath )
         {
             Delete( filePath.c_str( ) );
@@ -1578,14 +1578,14 @@ namespace Harlinn::Common::Core::IO
         HCC_EXPORT static bool DeleteIfExist( const char* filePath );
 
         template<typename T>
-            requires std::is_same_v<std::string, std::remove_cv_t<T>> || std::is_same_v<std::wstring, std::remove_cv_t<T>>
+            requires std::is_same_v<std::string, std::remove_cv_t<T>> || std::is_same_v<WideString, std::remove_cv_t<T>>
         static bool DeleteIfExist( const T & filePath )
         {
             return DeleteIfExist( filePath.c_str( ) );
         }
 
 
-        HCC_EXPORT static bool Exist( const std::wstring& filePath );
+        HCC_EXPORT static bool Exist( const WideString& filePath );
         HCC_EXPORT static bool Exist( const wchar_t* filePath );
 
         HCC_EXPORT static bool Exist( const std::string& filePath );
@@ -1601,7 +1601,7 @@ namespace Harlinn::Common::Core::IO
             return Size( filePath.c_str() );
         }
 
-        HCC_EXPORT static bool Search( const std::wstring& directoryPath, const std::wstring& filename, bool recurseSubdirectories, std::wstring& result );
+        HCC_EXPORT static bool Search( const WideString& directoryPath, const WideString& filename, bool recurseSubdirectories, WideString& result );
         HCC_EXPORT static bool Search( const std::string& directoryPath, const std::string& filename, bool recurseSubdirectories, std::string& result );
 
 
@@ -1651,7 +1651,7 @@ namespace Harlinn::Common::Core::IO
         /// The returned string ends with a backslash, for example, "C:\TEMP\".
         /// </remarks>
         /// <returns>The path of the directory designated for temporary files</returns>
-        HCC_EXPORT static std::wstring GetTemporary();
+        HCC_EXPORT static WideString GetTemporary();
         /// <summary>
         /// Retrieves the path of the directory designated for temporary files.
         /// </summary>
@@ -1688,7 +1688,7 @@ namespace Harlinn::Common::Core::IO
             return StringType(buffer, static_cast<size_t>(rc));
         }
 
-        HCC_EXPORT static std::wstring GetExecutableDirectoryW( );
+        HCC_EXPORT static WideString GetExecutableDirectoryW( );
         HCC_EXPORT static std::string GetExecutableDirectoryA( );
 
         template<typename StringT>
@@ -1707,10 +1707,10 @@ namespace Harlinn::Common::Core::IO
             }
         }
 
-        HCC_EXPORT static std::wstring Current( );
+        HCC_EXPORT static WideString Current( );
         HCC_EXPORT static std::string CurrentA( );
         HCC_EXPORT static bool Exist( const wchar_t* directoryPath );
-        static bool Exist( const std::wstring& directoryPath )
+        static bool Exist( const WideString& directoryPath )
         {
             return Exist( directoryPath.c_str() );
         }
@@ -1722,7 +1722,7 @@ namespace Harlinn::Common::Core::IO
 
         HCC_EXPORT static void Create( const wchar_t* directoryPath );
         HCC_EXPORT static void Create( const char* directoryPath );
-        static void Create( const std::wstring& directoryPath )
+        static void Create( const WideString& directoryPath )
         {
             Create( directoryPath.c_str( ) );
         }
@@ -2120,7 +2120,7 @@ namespace Harlinn::Common::Core::IO
         explicit FileStream( HANDLE handle )
             : Base( handle )
         { }
-        FileStream( const std::wstring& fileName, FileAccess fileAccess, FileShare fileShare, LPSECURITY_ATTRIBUTES securityAttributes, FileMode fileMode, FileAttributes attributes, FileOptions fileOptions )
+        FileStream( const WideString& fileName, FileAccess fileAccess, FileShare fileShare, LPSECURITY_ATTRIBUTES securityAttributes, FileMode fileMode, FileAttributes attributes, FileOptions fileOptions )
             : Base( Create( fileName.c_str( ), fileAccess, fileShare, securityAttributes, fileMode, attributes, fileOptions ) )
         { }
         FileStream( const std::string& fileName, FileAccess fileAccess, FileShare fileShare, LPSECURITY_ATTRIBUTES securityAttributes, FileMode fileMode, FileAttributes attributes, FileOptions fileOptions )
@@ -2133,7 +2133,7 @@ namespace Harlinn::Common::Core::IO
             : Base( Create( fileName, fileAccess, fileShare, securityAttributes, fileMode, attributes, fileOptions ) )
         { }
 
-        FileStream( const std::wstring& fileName )
+        FileStream( const WideString& fileName )
             : Base( Create( fileName.c_str( ), FileAccess::Default, FileShare::Default, nullptr, FileMode::Default, FileAttributes::Normal, FileOptions::Default ) )
         { }
         FileStream( const std::string& fileName )
@@ -2146,7 +2146,7 @@ namespace Harlinn::Common::Core::IO
             : Base( Create( fileName, FileAccess::Default, FileShare::Default, nullptr, FileMode::Default, FileAttributes::Normal, FileOptions::Default ) )
         { }
 
-        FileStream( const std::wstring& fileName, FileAccess fileAccess )
+        FileStream( const WideString& fileName, FileAccess fileAccess )
             : Base( Create( fileName.c_str( ), fileAccess, FileShare::Default, nullptr, FileMode::Default, FileAttributes::Normal, FileOptions::Default ) )
         { }
         FileStream( const std::string& fileName, FileAccess fileAccess )
@@ -2159,7 +2159,7 @@ namespace Harlinn::Common::Core::IO
             : Base( Create( fileName, fileAccess, FileShare::Default, nullptr, FileMode::Default, FileAttributes::Normal, FileOptions::Default ) )
         { }
 
-        FileStream( const std::wstring& fileName, FileAccess fileAccess, FileShare fileShare )
+        FileStream( const WideString& fileName, FileAccess fileAccess, FileShare fileShare )
             : Base( Create( fileName.c_str( ), fileAccess, fileShare, nullptr, FileMode::Default, FileAttributes::Normal, FileOptions::Default ) )
         { }
         FileStream( const std::string& fileName, FileAccess fileAccess, FileShare fileShare )
@@ -2172,7 +2172,7 @@ namespace Harlinn::Common::Core::IO
             : Base( Create( fileName, fileAccess, fileShare, nullptr, FileMode::Default, FileAttributes::Normal, FileOptions::Default ) )
         { }
 
-        FileStream( const std::wstring& fileName, FileAccess fileAccess, FileMode fileMode )
+        FileStream( const WideString& fileName, FileAccess fileAccess, FileMode fileMode )
             : Base( Create( fileName.c_str( ), fileAccess, FileShare::Default, nullptr, fileMode, FileAttributes::Normal, FileOptions::Default ) )
         { }
         FileStream( const std::string& fileName, FileAccess fileAccess, FileMode fileMode )
@@ -2185,7 +2185,7 @@ namespace Harlinn::Common::Core::IO
             : Base( Create( fileName, fileAccess, FileShare::Default, nullptr, fileMode, FileAttributes::Normal, FileOptions::Default ) )
         { }
 
-        FileStream( const std::wstring& fileName, FileAccess fileAccess, FileShare fileShare, FileMode fileMode )
+        FileStream( const WideString& fileName, FileAccess fileAccess, FileShare fileShare, FileMode fileMode )
             : Base( Create( fileName.c_str( ), fileAccess, fileShare, nullptr, fileMode, FileAttributes::Normal, FileOptions::Default ) )
         { }
         FileStream( const std::string& fileName, FileAccess fileAccess, FileShare fileShare, FileMode fileMode )
@@ -2198,7 +2198,7 @@ namespace Harlinn::Common::Core::IO
             : Base( Create( fileName, fileAccess, fileShare, nullptr, fileMode, FileAttributes::Normal, FileOptions::Default ) )
         { }
 
-        FileStream( const std::wstring& fileName, FileShare fileShare, FileMode fileMode )
+        FileStream( const WideString& fileName, FileShare fileShare, FileMode fileMode )
             : Base( Create( fileName.c_str( ), FileAccess::Default, fileShare, nullptr, fileMode, FileAttributes::Normal, FileOptions::Default ) )
         { }
         FileStream( const std::string& fileName, FileShare fileShare, FileMode fileMode )
@@ -2211,7 +2211,7 @@ namespace Harlinn::Common::Core::IO
             : Base( Create( fileName, FileAccess::Default, fileShare, nullptr, fileMode, FileAttributes::Normal, FileOptions::Default ) )
         { }
 
-        FileStream( const std::wstring& fileName, FileMode fileMode )
+        FileStream( const WideString& fileName, FileMode fileMode )
             : Base( Create( fileName.c_str( ), FileAccess::Default, FileShare::Default, nullptr, fileMode, FileAttributes::Normal, FileOptions::Default ) )
         { }
         FileStream( const std::string& fileName, FileMode fileMode )
@@ -2225,7 +2225,7 @@ namespace Harlinn::Common::Core::IO
         { }
 
 
-        FileStream( const std::wstring& fileName, FileAccess fileAccess, FileShare fileShare, FileMode fileMode, FileAttributes attributes, FileOptions fileOptions )
+        FileStream( const WideString& fileName, FileAccess fileAccess, FileShare fileShare, FileMode fileMode, FileAttributes attributes, FileOptions fileOptions )
             : Base( Create( fileName.c_str( ), fileAccess, fileShare, nullptr, fileMode, attributes, fileOptions ) )
         { }
         FileStream( const std::string& fileName, FileAccess fileAccess, FileShare fileShare, FileMode fileMode, FileAttributes attributes, FileOptions fileOptions )

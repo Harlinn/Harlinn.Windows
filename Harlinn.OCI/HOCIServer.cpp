@@ -4,7 +4,7 @@
 namespace Harlinn::OCI
 {
 
-    void Server::Attach( const std::wstring& databaseLink, ServerAttachMode attachMode ) const
+    void Server::Attach( const WideString& databaseLink, ServerAttachMode attachMode ) const
     {
         auto& error = Error( );
         auto errorHandle = (OCIError*)error.Handle( );
@@ -42,7 +42,7 @@ namespace Harlinn::OCI
             ThrowInvalidEnvironment( );
         }
     }
-    ServiceContext Server::CreateServiceContext( const std::wstring& username, const std::wstring& password, const std::wstring& databaseLink, ServerAttachMode attachMode ) const
+    ServiceContext Server::CreateServiceContext( const WideString& username, const WideString& password, const WideString& databaseLink, ServerAttachMode attachMode ) const
     {
         Attach( databaseLink, attachMode );
         auto result = CreateServiceContext( );

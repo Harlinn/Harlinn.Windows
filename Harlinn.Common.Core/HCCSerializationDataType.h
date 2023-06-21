@@ -503,7 +503,7 @@ namespace Harlinn::Common::Core::IO::Serialization
         };
 
         template<>
-        struct ArrayDataTypeResolver<std::wstring> : StringArrayTypeResolver
+        struct ArrayDataTypeResolver<WideString> : StringArrayTypeResolver
         {
         };
         template<>

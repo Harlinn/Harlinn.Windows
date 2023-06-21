@@ -151,10 +151,10 @@ BOOST_AUTO_TEST_CASE( SysStringConstructorTest1 )
 // --run_test=VariantTests/wstringConstructorTest1
 BOOST_AUTO_TEST_CASE( wstringConstructorTest1 )
 {
-    std::wstring variantValue( L"Test" );
+    WideString variantValue( L"Test" );
     Variant variant( variantValue );
     BOOST_CHECK( variant.Type( ) == VariantType::BStr );
-    BOOST_CHECK( variantValue == variant.As<std::wstring>( ) );
+    BOOST_CHECK( variantValue == variant.As<WideString>( ) );
 }
 
 // --run_test=VariantTests/BooleanToSByteConversionTest1
@@ -424,7 +424,7 @@ BOOST_AUTO_TEST_CASE( SByteTowstringConversionTest1 )
     constexpr SByte variantValue = 10;
     Variant variant( variantValue );
     BOOST_CHECK( variant.Type( ) == VariantType::SByte );
-    auto converted = variant.As<std::wstring>( );
+    auto converted = variant.As<WideString>( );
     BOOST_CHECK( converted == L"10" );
 }
 
@@ -574,7 +574,7 @@ BOOST_AUTO_TEST_CASE( ByteTowstringConversionTest1 )
     constexpr Byte variantValue = 10;
     Variant variant( variantValue );
     BOOST_CHECK( variant.Type( ) == VariantType::Byte );
-    auto converted = variant.As<std::wstring>( );
+    auto converted = variant.As<WideString>( );
     BOOST_CHECK( converted == L"10" );
 }
 
@@ -726,7 +726,7 @@ BOOST_AUTO_TEST_CASE( Int16TowstringConversionTest1 )
     constexpr Int16 variantValue = 10;
     Variant variant( variantValue );
     BOOST_CHECK( variant.Type( ) == VariantType::Int16 );
-    auto converted = variant.As<std::wstring>( );
+    auto converted = variant.As<WideString>( );
     BOOST_CHECK( converted == L"10" );
 }
 
@@ -879,7 +879,7 @@ BOOST_AUTO_TEST_CASE( UInt16TowstringConversionTest1 )
     constexpr UInt16 variantValue = 10;
     Variant variant( variantValue );
     BOOST_CHECK( variant.Type( ) == VariantType::UInt16 );
-    auto converted = variant.As<std::wstring>( );
+    auto converted = variant.As<WideString>( );
     BOOST_CHECK( converted == L"10" );
 }
 
@@ -1031,7 +1031,7 @@ BOOST_AUTO_TEST_CASE( Int32TowstringConversionTest1 )
     constexpr Int32 variantValue = 10;
     Variant variant( variantValue );
     BOOST_CHECK( variant.Type( ) == VariantType::Int32 );
-    auto converted = variant.As<std::wstring>( );
+    auto converted = variant.As<WideString>( );
     BOOST_CHECK( converted == L"10" );
 }
 
@@ -1183,7 +1183,7 @@ BOOST_AUTO_TEST_CASE( UInt32TowstringConversionTest1 )
     constexpr UInt32 variantValue = 10;
     Variant variant( variantValue );
     BOOST_CHECK( variant.Type( ) == VariantType::UInt32 );
-    auto converted = variant.As<std::wstring>( );
+    auto converted = variant.As<WideString>( );
     BOOST_CHECK( converted == L"10" );
 }
 
@@ -1335,7 +1335,7 @@ BOOST_AUTO_TEST_CASE( Int64TowstringConversionTest1 )
     constexpr Int64 variantValue = 10;
     Variant variant( variantValue );
     BOOST_CHECK( variant.Type( ) == VariantType::Int64 );
-    auto converted = variant.As<std::wstring>( );
+    auto converted = variant.As<WideString>( );
     BOOST_CHECK( converted == L"10" );
 }
 
@@ -1485,7 +1485,7 @@ BOOST_AUTO_TEST_CASE( UInt64TowstringConversionTest1 )
     constexpr UInt64 variantValue = 10;
     Variant variant( variantValue );
     BOOST_CHECK( variant.Type( ) == VariantType::UInt64 );
-    auto converted = variant.As<std::wstring>( );
+    auto converted = variant.As<WideString>( );
     BOOST_CHECK( converted == L"10" );
 }
 
@@ -1638,7 +1638,7 @@ BOOST_AUTO_TEST_CASE( SingleTowstringConversionTest1 )
     constexpr float variantValue = 10;
     Variant variant( variantValue );
     BOOST_CHECK( variant.Type( ) == VariantType::Single );
-    auto converted = variant.As<std::wstring>( );
+    auto converted = variant.As<WideString>( );
     BOOST_CHECK( converted == L"10" );
 }
 
@@ -1788,7 +1788,7 @@ BOOST_AUTO_TEST_CASE( DoubleTowstringConversionTest1 )
     constexpr Double variantValue = 10;
     Variant variant( variantValue );
     BOOST_CHECK( variant.Type( ) == VariantType::Double );
-    auto converted = variant.As<std::wstring>( );
+    auto converted = variant.As<WideString>( );
     BOOST_CHECK( converted == L"10" );
 }
 

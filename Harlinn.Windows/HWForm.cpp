@@ -10,12 +10,12 @@ namespace Harlinn::Windows
     class FormWindowClass : public WindowClass
     {
     public:
-        static std::wstring ClassName;
+        static WideString ClassName;
 
         FormWindowClass( );
     };
 
-    std::wstring FormWindowClass::ClassName = std::wstring( L"HarlinnWindowsFormWindowClassName" );
+    WideString FormWindowClass::ClassName = WideString( L"HarlinnWindowsFormWindowClassName" );
 
     typedef ControlMessageDispatcher<Form> FormMessageDispatcher;
 

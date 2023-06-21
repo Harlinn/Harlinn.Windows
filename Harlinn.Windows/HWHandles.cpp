@@ -10,7 +10,7 @@ namespace Harlinn::Windows
     // BitmapHandle
     // ----------------------------------------------------------------------
 
-    BitmapHandle BitmapHandle::LoadFromFile( const std::wstring& theFileMame )
+    BitmapHandle BitmapHandle::LoadFromFile( const WideString& theFileMame )
     {
         using namespace Imaging;
 

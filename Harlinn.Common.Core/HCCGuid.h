@@ -209,19 +209,19 @@ namespace Harlinn::Common::Core
         HCC_EXPORT explicit Guid( const char* uuid );
         HCC_EXPORT explicit Guid( const wchar_t* uuid );
         HCC_EXPORT explicit Guid( const std::string& uuid );
-        HCC_EXPORT explicit Guid( const std::wstring& uuid );
+        HCC_EXPORT explicit Guid( const WideString& uuid );
 
         HCC_EXPORT static bool TryParse( const char* uuid, Guid& result );
         HCC_EXPORT static bool TryParse( const wchar_t* uuid, Guid& result );
         HCC_EXPORT static bool TryParse( const std::string& uuid, Guid& result );
-        HCC_EXPORT static bool TryParse( const std::wstring& uuid, Guid& result );
+        HCC_EXPORT static bool TryParse( const WideString& uuid, Guid& result );
 
         HCC_EXPORT static Guid Parse( const char* uuid );
         HCC_EXPORT static Guid Parse( const wchar_t* uuid );
         HCC_EXPORT static Guid Parse( const std::string& uuid );
-        HCC_EXPORT static Guid Parse( const std::wstring& uuid );
+        HCC_EXPORT static Guid Parse( const WideString& uuid );
 
-        HCC_EXPORT std::wstring ToString( ) const;
+        HCC_EXPORT WideString ToString( ) const;
         HCC_EXPORT std::string ToAnsiString( ) const;
 
         HCC_EXPORT const GUID& AsGuid( ) const

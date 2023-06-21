@@ -193,7 +193,7 @@ namespace Harlinn::Windows
 
     class TextMenuItem : public MenuItem
     {
-        std::wstring text_;
+        WideString text_;
     public:
         using Base = MenuItem ;
 
@@ -201,7 +201,7 @@ namespace Harlinn::Windows
             : Base( parentMenu ), text_( text )
         {
         }
-        TextMenuItem( Menu* parentMenu, const std::wstring& text )
+        TextMenuItem( Menu* parentMenu, const WideString& text )
             : Base( parentMenu ), text_( text )
         {
         }
@@ -215,7 +215,7 @@ namespace Harlinn::Windows
             }
             return *this;
         }
-        TextMenuItem& SetText( const std::wstring& text )
+        TextMenuItem& SetText( const WideString& text )
         {
             if ( text_ != text )
             {
@@ -225,7 +225,7 @@ namespace Harlinn::Windows
             return *this;
         }
 
-        const std::wstring& Text( ) const
+        const WideString& Text( ) const
         {
             return text_;
         }
@@ -255,7 +255,7 @@ namespace Harlinn::Windows
 
     class SubMenuItem : public MenuItem
     {
-        std::wstring text_;
+        WideString text_;
         mutable std::unique_ptr<Menu> menu_;
     public:
         typedef MenuItem Base;
@@ -265,7 +265,7 @@ namespace Harlinn::Windows
               text_( text )
         {
         }
-        explicit SubMenuItem( Menu* parentMenu, const std::wstring& text )
+        explicit SubMenuItem( Menu* parentMenu, const WideString& text )
             : Base( parentMenu ),
               text_( text )
         {
@@ -284,12 +284,12 @@ namespace Harlinn::Windows
             requires std::is_invocable_v<Func, MenuItem*>
         TextMenuItem* AddMenuItem( const wchar_t* text, Func&& func );
 
-        TextMenuItem* AddMenuItem( const std::wstring& text );
+        TextMenuItem* AddMenuItem( const WideString& text );
 
         SeparatorMenuItem* AddSeparator( );
 
         SubMenuItem* AddSubMenu( const wchar_t* text );
-        SubMenuItem* AddSubMenu( const std::wstring& text );
+        SubMenuItem* AddSubMenu( const WideString& text );
 
     protected:
         virtual void InitializeMenuItemInfo( MENUITEMINFOW& info ) const;
@@ -365,7 +365,7 @@ namespace Harlinn::Windows
         }
 
 
-        TextMenuItem* AddMenuItem( const std::wstring& text )
+        TextMenuItem* AddMenuItem( const WideString& text )
         {
             return AddMenuItem( text.c_str() );
         }
@@ -387,7 +387,7 @@ namespace Harlinn::Windows
             Add( std::move( menuItem ) );
             return result;
         }
-        SubMenuItem* AddSubMenu( const std::wstring& text )
+        SubMenuItem* AddSubMenu( const WideString& text )
         {
             auto menu = Menu( );
             auto menuItem = std::make_unique<SubMenuItem>( menu, text );
@@ -527,7 +527,7 @@ namespace Harlinn::Windows
             return items_.AddMenuItem( text, std::forward<Func>( func ) );
         }
 
-        TextMenuItem* AddMenuItem( const std::wstring& text )
+        TextMenuItem* AddMenuItem( const WideString& text )
         {
             return items_.AddMenuItem( text );
         }
@@ -541,7 +541,7 @@ namespace Harlinn::Windows
         {
             return items_.AddSubMenu( text );
         }
-        SubMenuItem* AddSubMenu( const std::wstring& text )
+        SubMenuItem* AddSubMenu( const WideString& text )
         {
             return items_.AddSubMenu( text );
         }
@@ -623,7 +623,7 @@ namespace Harlinn::Windows
         return menu.AddMenuItem( text, std::forward<Func>(func));
     }
 
-    inline TextMenuItem* SubMenuItem::AddMenuItem( const std::wstring& text )
+    inline TextMenuItem* SubMenuItem::AddMenuItem( const WideString& text )
     {
         auto& menu = Menu( );
         return menu.AddMenuItem( text );
@@ -640,7 +640,7 @@ namespace Harlinn::Windows
         auto& menu = Menu( );
         return menu.AddSubMenu( text );
     }
-    inline SubMenuItem* SubMenuItem::AddSubMenu( const std::wstring& text )
+    inline SubMenuItem* SubMenuItem::AddSubMenu( const WideString& text )
     {
         auto& menu = Menu( );
         return menu.AddSubMenu( text );

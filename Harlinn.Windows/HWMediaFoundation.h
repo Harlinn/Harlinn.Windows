@@ -229,8 +229,8 @@ namespace Harlinn::Windows::MF
     }
 
     
-    HW_EXPORT std::wstring GetGUIDNameConst(const Guid& id);
-    HW_EXPORT std::wstring GetMediaTypeDescription(const MFMediaType& mediaType);
+    HW_EXPORT WideString GetGUIDNameConst(const Guid& id);
+    HW_EXPORT WideString GetMediaTypeDescription(const MFMediaType& mediaType);
 
 
 }

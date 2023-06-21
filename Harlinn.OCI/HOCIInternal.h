@@ -46,15 +46,15 @@ namespace Harlinn::OCI
         }
 
         template<typename T>
-        inline T ByteSize( const std::wstring& str ) noexcept
+        inline T ByteSize( const WideString& str ) noexcept
         {
             return static_cast<T>( str.length( ) * sizeof( wchar_t ) );
         }
-        inline OraText* TextOf( std::wstring& str )
+        inline OraText* TextOf( WideString& str )
         {
             return (OraText*)str.data( );
         }
-        inline const OraText* TextOf( const std::wstring& str )
+        inline const OraText* TextOf( const WideString& str )
         {
             return (OraText*)str.data( );
         }

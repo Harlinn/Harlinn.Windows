@@ -428,9 +428,9 @@ namespace Harlinn::Common::Core::IO::Serialization
             WriteArray(values.data(), values.size());
         }
     private:
-        void WriteStringArray(const std::wstring* values, size_t numberOfValues)
+        void WriteStringArray(const WideString* values, size_t numberOfValues)
         {
-            using Resolver = Serialization::Internal::ArrayDataTypeResolver<std::wstring>;
+            using Resolver = Serialization::Internal::ArrayDataTypeResolver<WideString>;
             if (values == nullptr)
             {
                 WriteDataType(DataType::Null);

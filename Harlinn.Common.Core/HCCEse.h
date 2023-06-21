@@ -31,8 +31,8 @@ namespace Harlinn::Common::Core::Ese
 
         HCC_EXPORT Exception( JET_ERR rc );
         HCC_EXPORT Exception( Ese::Result rc );
-        HCC_EXPORT static std::wstring GetErrorMessage( JET_ERR rc );
-        HCC_EXPORT static std::wstring GetErrorMessage( Ese::Result rc );
+        HCC_EXPORT static WideString GetErrorMessage( JET_ERR rc );
+        HCC_EXPORT static WideString GetErrorMessage( Ese::Result rc );
 
         HARLINN_COMMON_DECLARE_STANDARD_EXCEPTION_MEMBERS(Exception);
     };
@@ -61,7 +61,7 @@ namespace Harlinn::Common::Core::Ese
     }
 
     template<typename T>
-    concept StringType = ( std::is_same_v<std::string, T> || std::is_same_v<std::wstring, T> );
+    concept StringType = ( std::is_same_v<std::string, T> || std::is_same_v<WideString, T> );
 
     template<typename T>
     concept CharType = ( std::is_same_v<char, T> || std::is_same_v<wchar_t, T> );
@@ -1930,24 +1930,24 @@ namespace Harlinn::Common::Core::Ese
         {
         }
 
-        std::wstring ContainerName() const
+        WideString ContainerName() const
         {
-            std::wstring result;
+            WideString result;
             if ( Read( objectList_.columnidcontainername, result ) )
             {
                 return std::move( result );
             }
-            return std::wstring();
+            return {};
         }
 
-        std::wstring ObjectName() const
+        WideString ObjectName() const
         {
-            std::wstring result;
+            WideString result;
             if ( Read( objectList_.columnidobjectname, result ) )
             {
                 return std::move( result );
             }
-            return std::wstring();
+            return {};
         }
 
         TableOptions Options() const
@@ -2014,14 +2014,14 @@ namespace Harlinn::Common::Core::Ese
             }
             return -1;
         }
-        std::wstring ColumnName() const
+        WideString ColumnName() const
         {
-            std::wstring result;
+            WideString result;
             if ( Read( columnList_.columnidcolumnname, result ) )
             {
                 return std::move( result );
             }
-            return std::wstring();
+            return {};
         }
         JET_COLUMNID ColumnId() const
         {
@@ -2105,32 +2105,32 @@ namespace Harlinn::Common::Core::Ese
             }
             return result;
         }
-        std::wstring BaseTableName() const
+        WideString BaseTableName() const
         {
-            std::wstring result;
+            WideString result;
             if ( Read( columnList_.columnidBaseTableName, result ) )
             {
                 return std::move( result );
             }
-            return std::wstring();
+            return {};
         }
-        std::wstring BaseColumnName() const
+        WideString BaseColumnName() const
         {
-            std::wstring result;
+            WideString result;
             if ( Read( columnList_.columnidBaseColumnName, result ) )
             {
                 return std::move( result );
             }
-            return std::wstring();
+            return {};
         }
-        std::wstring DefinitionName() const
+        WideString DefinitionName() const
         {
-            std::wstring result;
+            WideString result;
             if ( Read( columnList_.columnidDefinitionName, result ) )
             {
                 return std::move( result );
             }
-            return std::wstring();
+            return {};
         }
     };
 
@@ -2636,13 +2636,13 @@ namespace Harlinn::Common::Core::Ese
             RequireSuccess( rc );
         }
 
-        std::wstring GetSystemStringParameter( unsigned long paramId ) const
+        WideString GetSystemStringParameter( unsigned long paramId ) const
         {
             wchar_t buffer[1024] = { 0, };
 
             auto rc = static_cast<Result>( JetGetSystemParameterW( instance_, sessionId_, paramId, nullptr, buffer, sizeof( buffer ) ) );
             RequireSuccess( rc );
-            return std::wstring( buffer );
+            return WideString( buffer );
         }
 
         void SetSystemParameter( unsigned long paramId, unsigned long long value )
@@ -2651,7 +2651,7 @@ namespace Harlinn::Common::Core::Ese
             RequireSuccess( rc );
         }
 
-        void SetSystemParameter( unsigned long paramId, const std::wstring& value )
+        void SetSystemParameter( unsigned long paramId, const WideString& value )
         {
             auto rc = static_cast<Result>( JetSetSystemParameterW( &instance_, sessionId_, paramId, 0, value.c_str( ) ) );
             RequireSuccess( rc );
@@ -2742,7 +2742,7 @@ namespace Harlinn::Common::Core::Ese
         /// <param name="maxDatabaseSizeInNumberOfPages">The maximum size, in database pages, for the database.</param>
         /// <returns>The Database object for the database.</returns>
         template<DatabaseType T=Database>
-        [[nodiscard]] T CreateDatabase(const std::wstring& filename, CreateDatabaseFlags flags, unsigned long maxDatabaseSizeInNumberOfPages = 0) const
+        [[nodiscard]] T CreateDatabase(const WideString& filename, CreateDatabaseFlags flags, unsigned long maxDatabaseSizeInNumberOfPages = 0) const
         {
             JET_DBID databaseId = 0;
             auto rc = static_cast<Result>( JetCreateDatabase2W( sessionId_, filename.c_str( ), maxDatabaseSizeInNumberOfPages, &databaseId, ( int )flags ) );
@@ -2780,7 +2780,7 @@ namespace Harlinn::Common::Core::Ese
         /// <param name="filename">The name of the database to attach</param>
         /// <param name="flags">Options to be used for this call</param>
         /// <param name="maxDatabaseSizeInNumberOfPages">The maximum size, in database pages, for database. The default, 0, means that there is no maximum enforced by the database engine</param>
-        void AttachDatabase( const std::wstring& filename, AttachDatabaseFlags flags = AttachDatabaseFlags::None, unsigned long maxDatabaseSizeInNumberOfPages = 0 ) const
+        void AttachDatabase( const WideString& filename, AttachDatabaseFlags flags = AttachDatabaseFlags::None, unsigned long maxDatabaseSizeInNumberOfPages = 0 ) const
         {
             auto rc = static_cast<Result>( JetAttachDatabase2W( sessionId_, filename.c_str( ), maxDatabaseSizeInNumberOfPages, ( int )flags ) );
             RequireNotError( rc );
@@ -2799,7 +2799,7 @@ namespace Harlinn::Common::Core::Ese
             RequireNotError( rc );
         }
 
-        void DetachDatabase(const std::wstring& filename, DetachDatabaseFlags flags) const
+        void DetachDatabase(const WideString& filename, DetachDatabaseFlags flags) const
         {
             auto rc = static_cast<Result>( JetDetachDatabase2W( sessionId_, filename.c_str( ), ( int )flags ));
             RequireSuccess( rc );
@@ -2819,7 +2819,7 @@ namespace Harlinn::Common::Core::Ese
         /// <param name="flags">Options controlling how the database is opened.</param>
         /// <returns></returns>
         template<DatabaseType T = Database>
-        [[nodiscard]] T OpenDatabase( const std::wstring& filename, OpenDatabaseFlags flags = OpenDatabaseFlags::None ) const
+        [[nodiscard]] T OpenDatabase( const WideString& filename, OpenDatabaseFlags flags = OpenDatabaseFlags::None ) const
         {
             wchar_t connect[1024] = { 0, };
             JET_DBID databaseId = 0;
@@ -2965,7 +2965,7 @@ namespace Harlinn::Common::Core::Ese
         {
         }
 
-        Instance(const std::wstring& instanceName, const std::wstring& displayName = std::wstring(), InitFlags initFlags = InitFlags::None)
+        Instance(const WideString& instanceName, const WideString& displayName = WideString(), InitFlags initFlags = InitFlags::None)
             : instance_(JET_instanceNil), initialized_(false), initFlags_(initFlags)
         {
             JET_INSTANCE instance = 0;
@@ -3074,7 +3074,7 @@ namespace Harlinn::Common::Core::Ese
             return result;
         }
 
-        Result Backup( const std::wstring& backupPath, BackupFlags backupFlags, JET_PFNSTATUS statusCallbackFunction = nullptr ) const
+        Result Backup( const WideString& backupPath, BackupFlags backupFlags, JET_PFNSTATUS statusCallbackFunction = nullptr ) const
         {
             auto rc = static_cast<Result>( JetBackupInstanceW( instance_, backupPath.c_str( ), static_cast< unsigned long >( backupFlags ), statusCallbackFunction ) );
             RequireNotError( rc );
@@ -3082,14 +3082,14 @@ namespace Harlinn::Common::Core::Ese
         }
 
 
-        Result Restore( const std::wstring& backupPath, const std::wstring& destinationPath, JET_PFNSTATUS statusCallbackFunction = nullptr ) const
+        Result Restore( const WideString& backupPath, const WideString& destinationPath, JET_PFNSTATUS statusCallbackFunction = nullptr ) const
         {
             auto rc = static_cast<Result>( JetRestoreInstanceW( instance_, backupPath.c_str( ), destinationPath.c_str(), statusCallbackFunction ) );
             RequireNotError( rc );
             return rc;
         }
 
-        Result Restore( const std::wstring& backupPath, JET_PFNSTATUS statusCallbackFunction = nullptr ) const
+        Result Restore( const WideString& backupPath, JET_PFNSTATUS statusCallbackFunction = nullptr ) const
         {
             auto rc = static_cast<Result>( JetRestoreInstanceW( instance_, backupPath.c_str( ), nullptr, statusCallbackFunction ) );
             RequireNotError( rc );
@@ -3121,12 +3121,12 @@ namespace Harlinn::Common::Core::Ese
             RequireSuccess( rc );
         }
 
-        std::wstring GetSystemStringParameter(unsigned long paramId) const
+        WideString GetSystemStringParameter(unsigned long paramId) const
         {
             wchar_t buffer[1024] = { 0, };
             auto rc = static_cast<Result>( JetGetSystemParameterW( instance_, JET_sesidNil, paramId, nullptr, buffer, sizeof( buffer ) ));
             RequireSuccess( rc );
-            return std::wstring(buffer);
+            return WideString(buffer);
         }
 
         void SetSystemParameter(unsigned long paramId, unsigned long long value) const
@@ -3141,7 +3141,7 @@ namespace Harlinn::Common::Core::Ese
             RequireSuccess( rc );
         }
 
-        void SetSystemParameter(unsigned long paramId, const std::wstring& value) const
+        void SetSystemParameter(unsigned long paramId, const WideString& value) const
         {
             auto rc = static_cast<Result>( JetSetSystemParameterW(const_cast<JET_INSTANCE*>(&instance_), JET_sesidNil, paramId, 0, value.c_str( ) ));
             RequireSuccess( rc );
@@ -3159,7 +3159,7 @@ namespace Harlinn::Common::Core::Ese
         // replay to function correctly. This can be used to force crash recovery or a restore 
         // operation to look for the databases referenced in the transaction log in the 
         // specified folder
-        std::wstring QueryAlternateDatabaseRecoveryPath() const
+        WideString QueryAlternateDatabaseRecoveryPath() const
         {
             auto result = GetSystemStringParameter(JET_paramAlternateDatabaseRecoveryPath);
             return result;
@@ -3170,7 +3170,7 @@ namespace Harlinn::Common::Core::Ese
         // replay to function correctly. This can be used to force crash recovery or a restore 
         // operation to look for the databases referenced in the transaction log in the 
         // specified folder
-        void SetAlternateDatabaseRecoveryPath( const std::wstring& value ) const
+        void SetAlternateDatabaseRecoveryPath( const WideString& value ) const
         {
             SetSystemParameter(JET_paramAlternateDatabaseRecoveryPath, value);
         }
@@ -3719,13 +3719,13 @@ namespace Harlinn::Common::Core::Ese
         }
 
 
-        std::wstring QueryBaseName() const
+        WideString QueryBaseName() const
         {
             auto result = GetSystemStringParameter(JET_paramBaseName);
             return result;
         }
 
-        void SetBaseName(const std::wstring& value) const
+        void SetBaseName(const WideString& value) const
         {
             SetSystemParameter(JET_paramBaseName, value);
         }
@@ -3881,7 +3881,7 @@ namespace Harlinn::Common::Core::Ese
         /// that is using the database engine.
         /// </remarks>
         /// <returns>The current value of the LogFilePath parameter</returns>
-        std::wstring QueryLogFilePath() const
+        WideString QueryLogFilePath() const
         {
             auto result = GetSystemStringParameter(JET_paramLogFilePath);
             return result;
@@ -3916,7 +3916,7 @@ namespace Harlinn::Common::Core::Ese
         /// that is using the database engine.
         /// </remarks>
         /// <param name="value">The value to assign to the LogFilePath parameter</param>
-        void SetLogFilePath(const std::wstring& value) const
+        void SetLogFilePath(const WideString& value) const
         {
             SetSystemParameter(JET_paramLogFilePath, value);
         }
@@ -3948,13 +3948,13 @@ namespace Harlinn::Common::Core::Ese
         }
 
 
-        std::wstring QueryRecovery() const
+        WideString QueryRecovery() const
         {
             auto result = GetSystemStringParameter(JET_paramRecovery);
             return result;
         }
 
-        void SetRecovery(const std::wstring& value) const
+        void SetRecovery(const WideString& value) const
         {
             SetSystemParameter(JET_paramRecovery, value);
         }
@@ -3974,7 +3974,7 @@ namespace Harlinn::Common::Core::Ese
         /// the database engine.
         /// </summary>
         /// <returns>The current value of the SystemPath parameter</returns>
-        std::wstring QuerySystemPath() const
+        WideString QuerySystemPath() const
         {
             auto result = GetSystemStringParameter(JET_paramSystemPath);
             return result;
@@ -3995,7 +3995,7 @@ namespace Harlinn::Common::Core::Ese
         /// the database engine.
         /// </summary>
         /// <param name="value">The new value to assign to the SystemPath parameter</param>
-        void SetSystemPath(const std::wstring& value) const
+        void SetSystemPath(const WideString& value) const
         {
             SetSystemParameter(JET_paramSystemPath, value);
         }

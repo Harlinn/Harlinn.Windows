@@ -14,15 +14,15 @@ namespace Harlinn::OCI
     HO_EXPORT void DateTimeConvert( const OCI::HandleBase& handle, const ErrorHandle& error, OCIDateTime* indate, OCIDateTime* outdate );
     HO_EXPORT void DateTimeFromArray( const OCI::HandleBase& handle, const ErrorHandle& error, const Byte* inarray, UInt32 len, Byte type, OCIDateTime* datetime, const OCIInterval* reftz, Byte fsprec );
     HO_EXPORT void DateTimeFromText( const OCI::HandleBase& handle, const ErrorHandle& error, const wchar_t* date_str, size_t dstr_length, const wchar_t* fmt, Byte fmt_length, const wchar_t* lang_name, size_t lang_length, OCIDateTime* datetime );
-    inline void DateTimeFromText( const OCI::HandleBase& handle, const ErrorHandle& error, const std::wstring& dateStr, const std::wstring& fmtStr, const std::wstring& langNameStr, OCIDateTime* datetime )
+    inline void DateTimeFromText( const OCI::HandleBase& handle, const ErrorHandle& error, const WideString& dateStr, const WideString& fmtStr, const WideString& langNameStr, OCIDateTime* datetime )
     {
         DateTimeFromText( handle, error, dateStr.c_str( ), dateStr.length( ) * sizeof( wchar_t ), fmtStr.c_str( ), static_cast<Byte>( fmtStr.length( ) * sizeof( wchar_t ) ), langNameStr.c_str( ), langNameStr.length( ) * sizeof( wchar_t ), datetime );
     }
-    inline void DateTimeFromText( const OCI::HandleBase& handle, const ErrorHandle& error, const std::wstring& dateStr, const std::wstring& fmtStr, OCIDateTime* datetime )
+    inline void DateTimeFromText( const OCI::HandleBase& handle, const ErrorHandle& error, const WideString& dateStr, const WideString& fmtStr, OCIDateTime* datetime )
     {
         DateTimeFromText( handle, error, dateStr.c_str( ), dateStr.length( ) * sizeof( wchar_t ), fmtStr.c_str( ), static_cast<Byte>( fmtStr.length( ) * sizeof( wchar_t ) ), nullptr, 0, datetime );
     }
-    inline void DateTimeFromText( const OCI::HandleBase& handle, const ErrorHandle& error, const std::wstring& dateStr, OCIDateTime* datetime )
+    inline void DateTimeFromText( const OCI::HandleBase& handle, const ErrorHandle& error, const WideString& dateStr, OCIDateTime* datetime )
     {
         DateTimeFromText( handle, error, dateStr.c_str( ), dateStr.length( ) * sizeof( wchar_t ), nullptr, 0, nullptr, 0, datetime );
     }
@@ -44,18 +44,18 @@ namespace Harlinn::OCI
     HO_EXPORT void DateTimeSysTimeStamp( const OCI::HandleBase& handle, const ErrorHandle& error, OCIDateTime* sys_date );
     HO_EXPORT void DateTimeToArray( const OCI::HandleBase& handle, const ErrorHandle& error, const OCIDateTime* datetime, const OCIInterval* reftz, Byte* outarray, UInt32* len, Byte fsprec );
     HO_EXPORT void DateTimeToText( const OCI::HandleBase& handle, const ErrorHandle& error, const OCIDateTime* date, const wchar_t* fmt, Byte fmt_length, Byte fsprec, const wchar_t* lang_name, size_t lang_length, UInt32* buf_size, wchar_t* buf );
-    HO_EXPORT std::wstring DateTimeToText( const OCI::HandleBase& handle, const ErrorHandle& error, const OCIDateTime* date, const wchar_t* fmt, Byte fmt_length, Byte fsprec, const wchar_t* lang_name, size_t lang_length );
-    inline std::wstring DateTimeToText( const OCI::HandleBase& handle, const ErrorHandle& error, const OCIDateTime* date, const std::wstring& fmt, Byte fsprec, const std::wstring& langName )
+    HO_EXPORT WideString DateTimeToText( const OCI::HandleBase& handle, const ErrorHandle& error, const OCIDateTime* date, const wchar_t* fmt, Byte fmt_length, Byte fsprec, const wchar_t* lang_name, size_t lang_length );
+    inline WideString DateTimeToText( const OCI::HandleBase& handle, const ErrorHandle& error, const OCIDateTime* date, const WideString& fmt, Byte fsprec, const WideString& langName )
     {
         return DateTimeToText( handle, error, date, fmt.c_str( ), static_cast<Byte>( fmt.length( ) * sizeof( wchar_t ) ), fsprec, langName.c_str( ), langName.length( ) * sizeof( wchar_t ) );
     }
 
-    inline std::wstring DateTimeToText( const OCI::HandleBase& handle, const ErrorHandle& error, const OCIDateTime* date, const std::wstring& fmt, Byte fsprec )
+    inline WideString DateTimeToText( const OCI::HandleBase& handle, const ErrorHandle& error, const OCIDateTime* date, const WideString& fmt, Byte fsprec )
     {
         return DateTimeToText( handle, error, date, fmt.c_str( ), static_cast<Byte>( fmt.length( ) * sizeof( wchar_t ) ), fsprec, nullptr, static_cast<size_t>( 0 ) );
     }
 
-    inline std::wstring DateTimeToText( const OCI::HandleBase& handle, const ErrorHandle& error, const OCIDateTime* date, Byte fsprec = 2 )
+    inline WideString DateTimeToText( const OCI::HandleBase& handle, const ErrorHandle& error, const OCIDateTime* date, Byte fsprec = 2 )
     {
         return DateTimeToText( handle, error, date, nullptr, 0, fsprec, nullptr, static_cast<size_t>( 0 ) );
     }
@@ -70,13 +70,13 @@ namespace Harlinn::OCI
     HO_EXPORT void IntervalFromNumber( const OCI::HandleBase& handle, const ErrorHandle& error, OCIInterval* inter, OCI::Number* number );
     HO_EXPORT void IntervalFromText( const OCI::HandleBase& handle, const ErrorHandle& error, const wchar_t* inpstr, size_t str_len, OCIInterval* result );
     HO_EXPORT void IntervalToText( const OCI::HandleBase& handle, const ErrorHandle& error, const OCIInterval* inter, Byte lfprec, Byte fsprec, wchar_t* buffer, size_t buflen, size_t* resultlen );
-    inline std::wstring IntervalToText( const OCI::HandleBase& handle, const ErrorHandle& error, const OCIInterval* inter, Byte lfprec, Byte fsprec )
+    inline WideString IntervalToText( const OCI::HandleBase& handle, const ErrorHandle& error, const OCIInterval* inter, Byte lfprec, Byte fsprec )
     {
         wchar_t buffer[256] = {}; 
         size_t buflen = 512; 
         size_t resultlen = 0;
         IntervalToText( handle, error, inter, lfprec, fsprec, buffer, buflen, &resultlen );
-        return std::wstring( buffer, resultlen );
+        return WideString( buffer, resultlen );
     }
     HO_EXPORT void IntervalToNumber( const OCI::HandleBase& handle, const ErrorHandle& error, const OCIInterval* inter, OCI::Number* number );
     HO_EXPORT void IntervalCheck( const OCI::HandleBase& handle, const ErrorHandle& error, const OCIInterval* interval, UInt32* valid );
@@ -341,8 +341,8 @@ namespace Harlinn::OCI
     HO_EXPORT void LobGetDeduplicateRegions( const ServiceContext& serviceContext, const ErrorHandle& error, OCILobLocator* locp, OCILobRegion* regp, UInt32* count, Byte piece, void* ctxp, CallbackLobGetDeduplicateRegions cbfp );
     HO_EXPORT void LobWriteAppend( const ServiceContext& serviceContext, const ErrorHandle& error, OCILobLocator* lobp, UInt32* amtp, void* bufp, UInt32 bufl, Byte piece, void* ctxp, CallbackLobWrite cbfp, UInt16 csid, Byte csfrm );
 
-    HO_EXPORT std::wstring LobReadWideString( const ServiceContext& serviceContext, const ErrorHandle& error, OCILobLocator* locp, CharacterSetForm csfrm );
-    HO_EXPORT void LobWriteWideString( const ServiceContext& serviceContext, const ErrorHandle& error, const std::wstring& str, CharacterSetForm csfrm, OCILobLocator* locp );
+    HO_EXPORT WideString LobReadWideString( const ServiceContext& serviceContext, const ErrorHandle& error, OCILobLocator* locp, CharacterSetForm csfrm );
+    HO_EXPORT void LobWriteWideString( const ServiceContext& serviceContext, const ErrorHandle& error, const WideString& str, CharacterSetForm csfrm, OCILobLocator* locp );
 
     HO_EXPORT IO::MemoryStream LobReadMemoryStream( const ServiceContext& serviceContext, const ErrorHandle& error, OCILobLocator* locp );
     HO_EXPORT void LobWriteMemoryStream( const ServiceContext& serviceContext, const ErrorHandle& error, const IO::MemoryStream& stream, OCILobLocator* locp );

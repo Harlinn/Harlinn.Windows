@@ -5,7 +5,7 @@
 
 namespace Harlinn::Common::Core
 {
-    HCC_EXPORT std::wstring Currency::ToWideString( ) const
+    HCC_EXPORT WideString Currency::ToWideString( ) const
     {
         CY cy;
         cy.int64 = value_;
@@ -15,13 +15,13 @@ namespace Harlinn::Common::Core
         if ( bstr )
         {
             size_t length = static_cast<size_t>( SysStringLen( bstr ) );
-            std::wstring result( bstr, length );
+            WideString result( bstr, length );
             SysFreeString( bstr );
             return result;
         }
         else
         {
-            return std::wstring( );
+            return {};
         }
     }
 
@@ -29,6 +29,18 @@ namespace Harlinn::Common::Core
     {
         return Core::ToAnsiString( ToWideString( ) );
     }
+
+    template<>
+    WideString Currency::As<WideString>( ) const
+    {
+        return ToWideString( );
+    }
+    template<>
+    std::string Currency::As<std::string>( ) const
+    {
+        return ToAnsiString( );
+    }
+
 
     bool Currency::TryParse( const wchar_t* text, Currency& result )
     {

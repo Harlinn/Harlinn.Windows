@@ -78,7 +78,7 @@ namespace Harlinn::Windows
     struct HighContrast
     {
         HighContrastFlags Flags;
-        std::wstring DefaultScheme;
+        WideString DefaultScheme;
     };
 
     enum class MouseKeysFlags : DWord
@@ -124,13 +124,13 @@ namespace Harlinn::Windows
     {
         HW_EXPORT Environment( );
     public:
-        HW_EXPORT static std::wstring GetResourceString( const wchar_t* key, ... );
+        HW_EXPORT static WideString GetResourceString( const wchar_t* key, ... );
         HW_EXPORT static std::string GetResourceString( const char* key, ... );
-        //HW_EXPORT static std::wstring GetResourceString(const std::wstring& key, ...);
+        //HW_EXPORT static WideString GetResourceString(const WideString& key, ...);
 
-        HW_EXPORT static std::wstring NewLine( );
-        HW_EXPORT static std::wstring Expand( const std::wstring& s );
-        HW_EXPORT static std::wstring Read( const std::wstring& s );
+        HW_EXPORT static WideString NewLine( );
+        HW_EXPORT static WideString Expand( const WideString& s );
+        HW_EXPORT static WideString Read( const WideString& s );
 
 
 
@@ -142,8 +142,8 @@ namespace Harlinn::Windows
             HW_EXPORT static bool ClearType( );
             HW_EXPORT static void SetClearType( bool theValue, bool sendChange = true, bool updateProfile = true );
 
-            HW_EXPORT static std::wstring DesktopWallpaper( );
-            HW_EXPORT static void SetDesktopWallpaper( const std::wstring& theValue, bool sendChange = true, bool updateProfile = true );
+            HW_EXPORT static WideString DesktopWallpaper( );
+            HW_EXPORT static void SetDesktopWallpaper( const WideString& theValue, bool sendChange = true, bool updateProfile = true );
 
             HW_EXPORT static bool DropShadow( );
             HW_EXPORT static void SetDropShadow( bool theValue, bool sendChange = true, bool updateProfile = true );
@@ -285,36 +285,36 @@ namespace Harlinn::Windows
         class ComputerName
         {
             HW_EXPORT ComputerName( );
-            HW_EXPORT static std::wstring QueryComputerName( COMPUTER_NAME_FORMAT format );
+            HW_EXPORT static WideString QueryComputerName( COMPUTER_NAME_FORMAT format );
         public:
 
-            HW_EXPORT static std::wstring DnsDomain( );
-            HW_EXPORT static std::wstring DnsFullyQualified( );
-            HW_EXPORT static std::wstring DnsHostname( );
-            HW_EXPORT static std::wstring NetBIOS( );
-            HW_EXPORT static std::wstring PhysicalDnsDomain( );
-            HW_EXPORT static std::wstring PhysicalDnsFullyQualified( );
-            HW_EXPORT static std::wstring PhysicalDnsHostname( );
-            HW_EXPORT static std::wstring PhysicalNetBIOS( );
+            HW_EXPORT static WideString DnsDomain( );
+            HW_EXPORT static WideString DnsFullyQualified( );
+            HW_EXPORT static WideString DnsHostname( );
+            HW_EXPORT static WideString NetBIOS( );
+            HW_EXPORT static WideString PhysicalDnsDomain( );
+            HW_EXPORT static WideString PhysicalDnsFullyQualified( );
+            HW_EXPORT static WideString PhysicalDnsHostname( );
+            HW_EXPORT static WideString PhysicalNetBIOS( );
         };
 
 
         class UserName
         {
             HW_EXPORT UserName( );
-            HW_EXPORT static std::wstring QueryUserName( EXTENDED_NAME_FORMAT format );
+            HW_EXPORT static WideString QueryUserName( EXTENDED_NAME_FORMAT format );
         public:
-            HW_EXPORT static std::wstring FullyQualifiedDN( );
-            HW_EXPORT static std::wstring SamCompatible( );
-            HW_EXPORT static std::wstring Display( );
-            HW_EXPORT static std::wstring UniqueId( );
-            HW_EXPORT static std::wstring Canonical( );
-            HW_EXPORT static std::wstring UserPrincipal( );
-            HW_EXPORT static std::wstring CanonicalEx( );
-            HW_EXPORT static std::wstring ServicePrincipal( );
-            HW_EXPORT static std::wstring DnsDomain( );
-            HW_EXPORT static std::wstring GivenName( );
-            HW_EXPORT static std::wstring Surname( );
+            HW_EXPORT static WideString FullyQualifiedDN( );
+            HW_EXPORT static WideString SamCompatible( );
+            HW_EXPORT static WideString Display( );
+            HW_EXPORT static WideString UniqueId( );
+            HW_EXPORT static WideString Canonical( );
+            HW_EXPORT static WideString UserPrincipal( );
+            HW_EXPORT static WideString CanonicalEx( );
+            HW_EXPORT static WideString ServicePrincipal( );
+            HW_EXPORT static WideString DnsDomain( );
+            HW_EXPORT static WideString GivenName( );
+            HW_EXPORT static WideString Surname( );
 
         };
 
@@ -322,119 +322,119 @@ namespace Harlinn::Windows
         class KnownFolder
         {
             HW_EXPORT KnownFolder( );
-            HW_EXPORT static std::wstring QueryKnownFolder( const GUID& folderId, KnownFolderFlags flags, HANDLE userToken );
+            HW_EXPORT static WideString QueryKnownFolder( const GUID& folderId, KnownFolderFlags flags, HANDLE userToken );
         public:
 
-            HW_EXPORT static std::wstring NetworkFolder( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
-            HW_EXPORT static std::wstring ComputerFolder( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
-            HW_EXPORT static std::wstring InternetFolder( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
-            HW_EXPORT static std::wstring ControlPanelFolder( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
-            HW_EXPORT static std::wstring PrintersFolder( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
-            HW_EXPORT static std::wstring SyncManagerFolder( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
-            HW_EXPORT static std::wstring SyncSetupFolder( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
-            HW_EXPORT static std::wstring ConflictFolder( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
-            HW_EXPORT static std::wstring SyncResultsFolder( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
-            HW_EXPORT static std::wstring RecycleBinFolder( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
-            HW_EXPORT static std::wstring ConnectionsFolder( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
-            HW_EXPORT static std::wstring Fonts( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
-            HW_EXPORT static std::wstring Desktop( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
-            HW_EXPORT static std::wstring Startup( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
-            HW_EXPORT static std::wstring Programs( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
-            HW_EXPORT static std::wstring StartMenu( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
-            HW_EXPORT static std::wstring Recent( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
-            HW_EXPORT static std::wstring SendTo( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
-            HW_EXPORT static std::wstring Documents( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
-            HW_EXPORT static std::wstring Favorites( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
-            HW_EXPORT static std::wstring NetHood( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
-            HW_EXPORT static std::wstring PrintHood( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
-            HW_EXPORT static std::wstring Templates( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
-            HW_EXPORT static std::wstring CommonStartup( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
-            HW_EXPORT static std::wstring CommonPrograms( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
-            HW_EXPORT static std::wstring CommonStartMenu( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
-            HW_EXPORT static std::wstring PublicDesktop( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
-            HW_EXPORT static std::wstring ProgramData( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
-            HW_EXPORT static std::wstring CommonTemplates( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
-            HW_EXPORT static std::wstring PublicDocuments( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
-            HW_EXPORT static std::wstring RoamingAppData( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
-            HW_EXPORT static std::wstring LocalAppData( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
-            HW_EXPORT static std::wstring LocalAppDataLow( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
-            HW_EXPORT static std::wstring InternetCache( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
-            HW_EXPORT static std::wstring Cookies( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
-            HW_EXPORT static std::wstring History( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
-            HW_EXPORT static std::wstring System( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
-            HW_EXPORT static std::wstring SystemX86( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
-            HW_EXPORT static std::wstring Windows( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
-            HW_EXPORT static std::wstring Profile( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
-            HW_EXPORT static std::wstring Pictures( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
-            HW_EXPORT static std::wstring ProgramFilesX86( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
-            HW_EXPORT static std::wstring ProgramFilesCommonX86( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
-            HW_EXPORT static std::wstring ProgramFilesX64( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
-            HW_EXPORT static std::wstring ProgramFilesCommonX64( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
-            HW_EXPORT static std::wstring ProgramFiles( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
-            HW_EXPORT static std::wstring ProgramFilesCommon( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
-            HW_EXPORT static std::wstring UserProgramFiles( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
-            HW_EXPORT static std::wstring UserProgramFilesCommon( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
-            HW_EXPORT static std::wstring AdminTools( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
-            HW_EXPORT static std::wstring CommonAdminTools( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
-            HW_EXPORT static std::wstring Music( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
-            HW_EXPORT static std::wstring Videos( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
-            HW_EXPORT static std::wstring Ringtones( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
-            HW_EXPORT static std::wstring PublicPictures( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
-            HW_EXPORT static std::wstring PublicMusic( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
-            HW_EXPORT static std::wstring PublicVideos( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
-            HW_EXPORT static std::wstring PublicRingtones( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
-            HW_EXPORT static std::wstring ResourceDir( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
-            HW_EXPORT static std::wstring LocalizedResourcesDir( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
-            HW_EXPORT static std::wstring CommonOEMLinks( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
-            HW_EXPORT static std::wstring CDBurning( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
-            HW_EXPORT static std::wstring UserProfiles( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
-            HW_EXPORT static std::wstring Playlists( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
-            HW_EXPORT static std::wstring SamplePlaylists( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
-            HW_EXPORT static std::wstring SampleMusic( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
-            HW_EXPORT static std::wstring SamplePictures( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
-            HW_EXPORT static std::wstring SampleVideos( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
-            HW_EXPORT static std::wstring PhotoAlbums( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
-            HW_EXPORT static std::wstring Public( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
-            HW_EXPORT static std::wstring ChangeRemovePrograms( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
-            HW_EXPORT static std::wstring AppUpdates( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
-            HW_EXPORT static std::wstring AddNewPrograms( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
-            HW_EXPORT static std::wstring Downloads( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
-            HW_EXPORT static std::wstring PublicDownloads( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
-            HW_EXPORT static std::wstring SavedSearches( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
-            HW_EXPORT static std::wstring QuickLaunch( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
-            HW_EXPORT static std::wstring Contacts( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
-            HW_EXPORT static std::wstring SidebarParts( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
-            HW_EXPORT static std::wstring SidebarDefaultParts( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
-            HW_EXPORT static std::wstring PublicGameTasks( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
-            HW_EXPORT static std::wstring GameTasks( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
-            HW_EXPORT static std::wstring SavedGames( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
-            HW_EXPORT static std::wstring Games( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
-            HW_EXPORT static std::wstring SEARCH_MAPI( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
-            HW_EXPORT static std::wstring SEARCH_CSC( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
-            HW_EXPORT static std::wstring Links( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
-            HW_EXPORT static std::wstring UsersFiles( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
-            HW_EXPORT static std::wstring UsersLibraries( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
-            HW_EXPORT static std::wstring SearchHome( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
-            HW_EXPORT static std::wstring OriginalImages( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
-            HW_EXPORT static std::wstring DocumentsLibrary( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
-            HW_EXPORT static std::wstring MusicLibrary( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
-            HW_EXPORT static std::wstring PicturesLibrary( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
-            HW_EXPORT static std::wstring VideosLibrary( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
-            HW_EXPORT static std::wstring RecordedTVLibrary( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
-            HW_EXPORT static std::wstring HomeGroup( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
-            HW_EXPORT static std::wstring HomeGroupCurrentUser( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
-            HW_EXPORT static std::wstring DeviceMetadataStore( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
-            HW_EXPORT static std::wstring Libraries( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
-            HW_EXPORT static std::wstring PublicLibraries( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
-            HW_EXPORT static std::wstring UserPinned( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
-            HW_EXPORT static std::wstring ImplicitAppShortcuts( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
-            HW_EXPORT static std::wstring AccountPictures( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
-            HW_EXPORT static std::wstring PublicUserTiles( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
-            HW_EXPORT static std::wstring AppsFolder( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
-            HW_EXPORT static std::wstring ApplicationShortcuts( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
-            HW_EXPORT static std::wstring RoamingTiles( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
-            HW_EXPORT static std::wstring RoamedTileImages( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
-            HW_EXPORT static std::wstring Screenshots( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
+            HW_EXPORT static WideString NetworkFolder( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
+            HW_EXPORT static WideString ComputerFolder( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
+            HW_EXPORT static WideString InternetFolder( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
+            HW_EXPORT static WideString ControlPanelFolder( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
+            HW_EXPORT static WideString PrintersFolder( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
+            HW_EXPORT static WideString SyncManagerFolder( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
+            HW_EXPORT static WideString SyncSetupFolder( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
+            HW_EXPORT static WideString ConflictFolder( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
+            HW_EXPORT static WideString SyncResultsFolder( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
+            HW_EXPORT static WideString RecycleBinFolder( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
+            HW_EXPORT static WideString ConnectionsFolder( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
+            HW_EXPORT static WideString Fonts( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
+            HW_EXPORT static WideString Desktop( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
+            HW_EXPORT static WideString Startup( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
+            HW_EXPORT static WideString Programs( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
+            HW_EXPORT static WideString StartMenu( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
+            HW_EXPORT static WideString Recent( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
+            HW_EXPORT static WideString SendTo( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
+            HW_EXPORT static WideString Documents( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
+            HW_EXPORT static WideString Favorites( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
+            HW_EXPORT static WideString NetHood( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
+            HW_EXPORT static WideString PrintHood( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
+            HW_EXPORT static WideString Templates( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
+            HW_EXPORT static WideString CommonStartup( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
+            HW_EXPORT static WideString CommonPrograms( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
+            HW_EXPORT static WideString CommonStartMenu( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
+            HW_EXPORT static WideString PublicDesktop( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
+            HW_EXPORT static WideString ProgramData( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
+            HW_EXPORT static WideString CommonTemplates( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
+            HW_EXPORT static WideString PublicDocuments( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
+            HW_EXPORT static WideString RoamingAppData( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
+            HW_EXPORT static WideString LocalAppData( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
+            HW_EXPORT static WideString LocalAppDataLow( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
+            HW_EXPORT static WideString InternetCache( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
+            HW_EXPORT static WideString Cookies( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
+            HW_EXPORT static WideString History( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
+            HW_EXPORT static WideString System( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
+            HW_EXPORT static WideString SystemX86( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
+            HW_EXPORT static WideString Windows( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
+            HW_EXPORT static WideString Profile( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
+            HW_EXPORT static WideString Pictures( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
+            HW_EXPORT static WideString ProgramFilesX86( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
+            HW_EXPORT static WideString ProgramFilesCommonX86( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
+            HW_EXPORT static WideString ProgramFilesX64( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
+            HW_EXPORT static WideString ProgramFilesCommonX64( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
+            HW_EXPORT static WideString ProgramFiles( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
+            HW_EXPORT static WideString ProgramFilesCommon( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
+            HW_EXPORT static WideString UserProgramFiles( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
+            HW_EXPORT static WideString UserProgramFilesCommon( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
+            HW_EXPORT static WideString AdminTools( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
+            HW_EXPORT static WideString CommonAdminTools( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
+            HW_EXPORT static WideString Music( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
+            HW_EXPORT static WideString Videos( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
+            HW_EXPORT static WideString Ringtones( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
+            HW_EXPORT static WideString PublicPictures( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
+            HW_EXPORT static WideString PublicMusic( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
+            HW_EXPORT static WideString PublicVideos( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
+            HW_EXPORT static WideString PublicRingtones( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
+            HW_EXPORT static WideString ResourceDir( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
+            HW_EXPORT static WideString LocalizedResourcesDir( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
+            HW_EXPORT static WideString CommonOEMLinks( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
+            HW_EXPORT static WideString CDBurning( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
+            HW_EXPORT static WideString UserProfiles( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
+            HW_EXPORT static WideString Playlists( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
+            HW_EXPORT static WideString SamplePlaylists( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
+            HW_EXPORT static WideString SampleMusic( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
+            HW_EXPORT static WideString SamplePictures( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
+            HW_EXPORT static WideString SampleVideos( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
+            HW_EXPORT static WideString PhotoAlbums( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
+            HW_EXPORT static WideString Public( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
+            HW_EXPORT static WideString ChangeRemovePrograms( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
+            HW_EXPORT static WideString AppUpdates( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
+            HW_EXPORT static WideString AddNewPrograms( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
+            HW_EXPORT static WideString Downloads( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
+            HW_EXPORT static WideString PublicDownloads( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
+            HW_EXPORT static WideString SavedSearches( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
+            HW_EXPORT static WideString QuickLaunch( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
+            HW_EXPORT static WideString Contacts( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
+            HW_EXPORT static WideString SidebarParts( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
+            HW_EXPORT static WideString SidebarDefaultParts( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
+            HW_EXPORT static WideString PublicGameTasks( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
+            HW_EXPORT static WideString GameTasks( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
+            HW_EXPORT static WideString SavedGames( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
+            HW_EXPORT static WideString Games( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
+            HW_EXPORT static WideString SEARCH_MAPI( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
+            HW_EXPORT static WideString SEARCH_CSC( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
+            HW_EXPORT static WideString Links( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
+            HW_EXPORT static WideString UsersFiles( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
+            HW_EXPORT static WideString UsersLibraries( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
+            HW_EXPORT static WideString SearchHome( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
+            HW_EXPORT static WideString OriginalImages( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
+            HW_EXPORT static WideString DocumentsLibrary( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
+            HW_EXPORT static WideString MusicLibrary( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
+            HW_EXPORT static WideString PicturesLibrary( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
+            HW_EXPORT static WideString VideosLibrary( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
+            HW_EXPORT static WideString RecordedTVLibrary( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
+            HW_EXPORT static WideString HomeGroup( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
+            HW_EXPORT static WideString HomeGroupCurrentUser( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
+            HW_EXPORT static WideString DeviceMetadataStore( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
+            HW_EXPORT static WideString Libraries( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
+            HW_EXPORT static WideString PublicLibraries( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
+            HW_EXPORT static WideString UserPinned( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
+            HW_EXPORT static WideString ImplicitAppShortcuts( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
+            HW_EXPORT static WideString AccountPictures( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
+            HW_EXPORT static WideString PublicUserTiles( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
+            HW_EXPORT static WideString AppsFolder( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
+            HW_EXPORT static WideString ApplicationShortcuts( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
+            HW_EXPORT static WideString RoamingTiles( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
+            HW_EXPORT static WideString RoamedTileImages( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
+            HW_EXPORT static WideString Screenshots( KnownFolderFlags flags = KnownFolderFlags::Default, HANDLE userToken = nullptr );
         };
     };
 }

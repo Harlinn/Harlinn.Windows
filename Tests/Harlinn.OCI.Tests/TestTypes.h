@@ -12,28 +12,28 @@ namespace OCITest
     class OwnedObjectType
     {
         Guid id_;
-        std::wstring name_;
+        WideString name_;
         Int64 optimisticLock_;
         DateTime created_;
         std::optional<DateTime> deleted_;
-        std::wstring description_;
+        WideString description_;
     public:
         OwnedObjectType( )
             : optimisticLock_( -1 )
         {
         }
 
-        OwnedObjectType( const Guid& id, const std::wstring& name, Int64 optimisticLock, const DateTime& created, const std::optional<DateTime>& deleted, const std::wstring& description )
+        OwnedObjectType( const Guid& id, const WideString& name, Int64 optimisticLock, const DateTime& created, const std::optional<DateTime>& deleted, const WideString& description )
             : id_( id ), name_( name ), optimisticLock_( optimisticLock ), created_( created ), deleted_( deleted ), description_( description )
         {
         }
 
-        OwnedObjectType( const std::wstring& name, const std::wstring& description = std::wstring() )
+        OwnedObjectType( const WideString& name, const WideString& description = WideString() )
             : id_( Guid::NewGuid() ), name_( name ), optimisticLock_( -1 ), created_( DateTime::Now() ), description_( description )
         {
         }
 
-        void Assign( const Guid& id, const std::wstring& name, Int64 optimisticLock, const DateTime& created, const std::optional<DateTime>& deleted, const std::wstring& description )
+        void Assign( const Guid& id, const WideString& name, Int64 optimisticLock, const DateTime& created, const std::optional<DateTime>& deleted, const WideString& description )
         {
             id_ = id;
             name_ = name;
@@ -52,11 +52,11 @@ namespace OCITest
             id_ = id;
         }
 
-        const std::wstring& Name( ) const noexcept
+        const WideString& Name( ) const noexcept
         {
             return name_;
         }
-        void SetName( const std::wstring& name )
+        void SetName( const WideString& name )
         {
             name_ = name;
         }
@@ -96,11 +96,11 @@ namespace OCITest
             deleted_ = deleted;
         }
 
-        const std::wstring& Description( ) const noexcept
+        const WideString& Description( ) const noexcept
         {
             return description_;
         }
-        void SetDescription( const std::wstring& description )
+        void SetDescription( const WideString& description )
         {
             description_ = description;
         }
@@ -111,11 +111,11 @@ namespace OCITest
         Guid id_;
         Guid type_;
         Guid owner_;
-        std::wstring name_;
+        WideString name_;
         Int64 optimisticLock_;
         DateTime created_;
         std::optional<DateTime> deleted_;
-        std::wstring description_;
+        WideString description_;
         IO::MemoryStream data_;
     public:
         OwnedObject( )
@@ -123,12 +123,12 @@ namespace OCITest
         {
         }
 
-        OwnedObject( const Guid& id, const Guid& type, const Guid& owner, const std::wstring& name, Int64 optimisticLock, const DateTime& created, const std::optional<DateTime>& deleted, const std::wstring& description, const IO::MemoryStream& data )
+        OwnedObject( const Guid& id, const Guid& type, const Guid& owner, const WideString& name, Int64 optimisticLock, const DateTime& created, const std::optional<DateTime>& deleted, const WideString& description, const IO::MemoryStream& data )
             : id_( id ), type_( type ), owner_( owner ), name_( name ), optimisticLock_( optimisticLock ), created_( created ), deleted_( deleted ), description_( description ), data_( data )
         {
         }
 
-        void Assign( const Guid& id, const Guid& type, const Guid& owner, const std::wstring& name, Int64 optimisticLock, const DateTime& created, const std::optional<DateTime>& deleted, const std::wstring& description, const IO::MemoryStream& data )
+        void Assign( const Guid& id, const Guid& type, const Guid& owner, const WideString& name, Int64 optimisticLock, const DateTime& created, const std::optional<DateTime>& deleted, const WideString& description, const IO::MemoryStream& data )
         {
             id_ = id;
             type_ = type;
@@ -169,11 +169,11 @@ namespace OCITest
             owner_ = owner;
         }
 
-        const std::wstring& Name( ) const noexcept
+        const WideString& Name( ) const noexcept
         {
             return name_;
         }
-        void SetName( const std::wstring& name )
+        void SetName( const WideString& name )
         {
             name_ = name;
         }
@@ -209,11 +209,11 @@ namespace OCITest
             deleted_.reset( );
         }
 
-        const std::wstring& Description( ) const noexcept
+        const WideString& Description( ) const noexcept
         {
             return description_;
         }
-        void SetDescription( const std::wstring& description )
+        void SetDescription( const WideString& description )
         {
             description_ = description;
         }

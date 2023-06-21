@@ -11,640 +11,7 @@
 
 namespace Harlinn::Common::Core
 {
-    HCC_EXPORT void ToWideString( const char* source, size_t length, unsigned codePage, unsigned flags, std::wstring& dest );
-    inline void ToWideString( const char* source, size_t length, std::wstring& dest )
-    {
-        ToWideString( source, length, CP_ACP, 0, dest );
-    }
-    inline void ToWideString( const std::string& source, std::wstring& dest )
-    {
-        ToWideString( source.c_str( ), source.length( ), dest );
-    }
-    inline std::wstring ToWideString( const std::string& source )
-    {
-        std::wstring result;
-        ToWideString( source, result );
-        return result;
-    }
-    inline std::wstring ToWideString( const char* source )
-    {
-        if ( source && source[0] )
-        {
-            auto length = strlen( source );
-            std::wstring result;
-            ToWideString( source, length, CP_ACP, 0, result );
-            return result;
-        }
-        else
-        {
-            return {};
-        }
-    }
-    inline std::wstring ToWideString( const wchar_t* source )
-    {
-        if ( source && source[0] )
-        {
-            auto length = wcslen( source );
-            std::wstring result( source, length );
-            return result;
-        }
-        else
-        {
-            return {};
-        }
-    }
-
-    HCC_EXPORT std::wstring ToWideString( bool value );
-    HCC_EXPORT std::wstring ToWideString( SByte value, int base = 10 );
-    HCC_EXPORT std::wstring ToWideString( Byte value, int base = 10 );
-    HCC_EXPORT std::wstring ToWideString( Int16 value, int base = 10 );
-    HCC_EXPORT std::wstring ToWideString( UInt16 value, int base = 10 );
-    HCC_EXPORT std::wstring ToWideString( Int32 value, int base = 10 );
-    HCC_EXPORT std::wstring ToWideString( UInt32 value, int base = 10 );
-    HCC_EXPORT std::wstring ToWideString( Int64 value, int base = 10 );
-    HCC_EXPORT std::wstring ToWideString( UInt64 value, int base = 10 );
-    HCC_EXPORT std::wstring ToWideString( Single value );
-    HCC_EXPORT std::wstring ToWideString( Single value, int width, int precission );
-    HCC_EXPORT std::wstring ToWideString( Single value, const Locale& locale );
-    HCC_EXPORT std::wstring ToWideString( Single value, int width, int precission, const Locale& locale );
-    HCC_EXPORT std::wstring ToWideString( Double value );
-    HCC_EXPORT std::wstring ToWideString( const DateTime& value );
-    HCC_EXPORT std::wstring ToWideString( const TimeSpan& value );
-    HCC_EXPORT std::wstring ToWideString( const Guid& value );
-    HCC_EXPORT std::wstring ToWideString( const Currency& value );
-    HCC_EXPORT std::wstring ToWideString( const Variant& value );
-
-
-    HCC_EXPORT void ToAnsiString( const wchar_t* source, size_t length, unsigned codePage, unsigned flags, std::string& dest );
-    inline void ToAnsiString( const wchar_t* source, size_t length, std::string& dest )
-    {
-        ToAnsiString( source, length, CP_ACP, 0, dest );
-    }
-    inline void ToAnsiString( const std::wstring& source, std::string& dest )
-    {
-        ToAnsiString( source.c_str(), source.length(), CP_ACP, 0, dest );
-    }
-    inline std::string ToAnsiString( const std::wstring& source )
-    {
-        std::string result;
-        ToAnsiString( source, result );
-        return result;
-    }
-    inline std::string ToAnsiString( const wchar_t* source )
-    {
-        if ( source && source[0] )
-        {
-            auto length = wcslen( source );
-            std::string result;
-            ToAnsiString( source, length, CP_ACP, 0, result );
-            return result;
-        }
-        else
-        {
-            return {};
-        }
-    }
-    inline std::string ToAnsiString( const char* source )
-    {
-        if ( source && source[0] )
-        {
-            auto length = strlen( source );
-            std::string result(source, length);
-            return result;
-        }
-        else
-        {
-            return {};
-        }
-    }
-
-    HCC_EXPORT std::string ToAnsiString( bool value );
-    HCC_EXPORT std::string ToAnsiString( SByte value, int base = 10 );
-    HCC_EXPORT std::string ToAnsiString( Byte value, int base = 10 );
-    HCC_EXPORT std::string ToAnsiString( Int16 value, int base = 10 );
-    HCC_EXPORT std::string ToAnsiString( UInt16 value, int base = 10 );
-    HCC_EXPORT std::string ToAnsiString( Int32 value, int base = 10 );
-    HCC_EXPORT std::string ToAnsiString( UInt32 value, int base = 10 );
-    HCC_EXPORT std::string ToAnsiString( Int64 value, int base = 10 );
-    HCC_EXPORT std::string ToAnsiString( UInt64 value, int base = 10 );
-    HCC_EXPORT std::string ToAnsiString( Single value );
-    HCC_EXPORT std::string ToAnsiString( Single value, const Locale& locale );
-    HCC_EXPORT std::string ToAnsiString( Single value, int width, int precission );
-    HCC_EXPORT std::string ToAnsiString( Single value, int width, int precission, const Locale& locale );
-    HCC_EXPORT std::string ToAnsiString( Double value );
-    HCC_EXPORT std::string ToAnsiString( const DateTime& value );
-    HCC_EXPORT std::string ToAnsiString( const TimeSpan& value );
-    HCC_EXPORT std::string ToAnsiString( const Guid& value );
-    HCC_EXPORT std::string ToAnsiString( const Currency& value );
-    HCC_EXPORT std::string ToAnsiString( const Variant& value );
-
-
-    inline std::wstring Format( const wchar_t* fmt, ... )
-    {
-        va_list args;
-        va_start( args, fmt );
-        auto requiredLength = _vscwprintf( fmt, args );
-        if ( requiredLength > 0 )
-        {
-            std::wstring result;
-            result.resize( requiredLength );
-            vswprintf_s( result.data( ), requiredLength+1, fmt, args );
-            va_end( args );
-            return result;
-        }
-        else
-        {
-            va_end( args );
-            return {};
-        }
-    }
-
-    inline std::wstring Format( const Locale& locale, const wchar_t* fmt, ... )
-    {
-        va_list args;
-        va_start( args, fmt );
-        auto requiredLength = _vscwprintf_l( fmt, locale, args );
-        if ( requiredLength > 0 )
-        {
-            std::wstring result;
-            result.resize( requiredLength );
-            _vswprintf_p_l( result.data( ), requiredLength + 1, fmt, locale, args );
-            va_end( args );
-            return result;
-        }
-        else
-        {
-            va_end( args );
-            return {};
-        }
-    }
-
-
-    inline std::string Format( const char* fmt, ... )
-    {
-        va_list args;
-        va_start( args, fmt );
-        auto requiredLength = _vscprintf( fmt, args );
-        if ( requiredLength > 0 )
-        {
-            std::string result;
-            result.resize( requiredLength );
-            vsprintf_s( result.data( ), requiredLength+1, fmt, args );
-            va_end( args );
-            return result;
-        }
-        else
-        {
-            va_end( args );
-            return {};
-        }
-    }
-
-    inline std::string Format( const Locale& locale, const char* fmt, ... )
-    {
-        va_list args;
-        va_start( args, fmt );
-        auto requiredLength = _vscprintf_l( fmt, locale, args );
-        if ( requiredLength > 0 )
-        {
-            std::string result;
-            result.resize( requiredLength );
-            _vsprintf_p_l( result.data( ), requiredLength + 1, fmt, locale, args );
-            va_end( args );
-            return result;
-        }
-        else
-        {
-            va_end( args );
-            return {};
-        }
-    }
-
-
-    HCC_EXPORT bool ToBoolean( const wchar_t* str ) noexcept;
-    HCC_EXPORT bool ToBoolean( const char* str ) noexcept;
-
-    inline bool ToBoolean( const std::wstring& str ) noexcept
-    {
-        return ToBoolean( str.c_str() );
-    }
-    inline bool ToBoolean( const std::string& str ) noexcept
-    {
-        return ToBoolean( str.c_str( ) );
-    }
-
-    HCC_EXPORT Byte ToByte( const wchar_t* str, int radix = 10 );
-    HCC_EXPORT Byte ToByte( const char* str, int radix = 10 );
-
-    inline Byte ToByte( const std::wstring& str, int radix = 10 )
-    {
-        return ToByte( str.c_str( ), radix );
-    }
-    inline Byte ToByte( const std::string& str, int radix = 10 )
-    {
-        return ToByte( str.c_str( ), radix );
-    }
-
-
-    HCC_EXPORT SByte ToSByte( const wchar_t* str, int radix = 10 );
-    HCC_EXPORT SByte ToSByte( const char* str, int radix = 10 );
-
-    inline SByte ToSByte( const std::wstring& str, int radix = 10 )
-    {
-        return ToSByte( str.c_str( ), radix );
-    }
-    inline SByte ToSByte( const std::string& str, int radix = 10 )
-    {
-        return ToSByte( str.c_str( ), radix );
-    }
-
-    HCC_EXPORT Int16 ToInt16( const wchar_t* str, int radix = 10 );
-    HCC_EXPORT Int16 ToInt16( const char* str, int radix = 10 );
-
-    inline Int16 ToInt16( const std::wstring& str, int radix = 10 )
-    {
-        return ToInt16( str.c_str( ), radix );
-    }
-    inline Int16 ToInt16( const std::string& str, int radix = 10 )
-    {
-        return ToInt16( str.c_str( ), radix );
-    }
-
-    HCC_EXPORT UInt16 ToUInt16( const wchar_t* str, int radix = 10 );
-    HCC_EXPORT UInt16 ToUInt16( const char* str, int radix = 10 );
-
-    inline UInt16 ToUInt16( const std::wstring& str, int radix = 10 )
-    {
-        return ToUInt16( str.c_str( ), radix );
-    }
-    inline UInt16 ToUInt16( const std::string& str, int radix = 10 )
-    {
-        return ToUInt16( str.c_str( ), radix );
-    }
-
-    HCC_EXPORT Int32 ToInt32( const wchar_t* str, int radix = 10 );
-    HCC_EXPORT Int32 ToInt32( const char* str, int radix = 10 );
-
-    inline Int32 ToInt32( const std::wstring& str, int radix = 10 )
-    {
-        return ToInt32( str.c_str( ), radix );
-    }
-    inline Int32 ToInt32( const std::string& str, int radix = 10 )
-    {
-        return ToInt32( str.c_str( ), radix );
-    }
-
-    HCC_EXPORT UInt32 ToUInt32( const wchar_t* str, int radix = 10 );
-    HCC_EXPORT UInt32 ToUInt32( const char* str, int radix = 10 );
-
-    inline UInt32 ToUInt32( const std::wstring& str, int radix = 10 )
-    {
-        return ToUInt32( str.c_str( ), radix );
-    }
-    inline UInt32 ToUInt32( const std::string& str, int radix = 10 )
-    {
-        return ToUInt32( str.c_str( ), radix );
-    }
-
-    HCC_EXPORT Int64 ToInt64( const wchar_t* str, int radix = 10 );
-    HCC_EXPORT Int64 ToInt64( const char* str, int radix = 10 );
-
-    inline Int64 ToInt64( const std::wstring& str, int radix = 10 )
-    {
-        return ToInt64( str.c_str( ), radix );
-    }
-    inline Int64 ToInt64( const std::string& str, int radix = 10 )
-    {
-        return ToInt64( str.c_str( ), radix );
-    }
-
-    HCC_EXPORT UInt64 ToUInt64( const wchar_t* str, int radix = 10 );
-    HCC_EXPORT UInt64 ToUInt64( const char* str, int radix = 10 );
-
-    inline UInt64 ToUInt64( const std::wstring& str, int radix = 10 )
-    {
-        return ToUInt64( str.c_str( ), radix );
-    }
-    inline UInt64 ToUInt64( const std::string& str, int radix = 10 )
-    {
-        return ToUInt64( str.c_str( ), radix );
-    }
-
-
-    HCC_EXPORT Single ToSingle( const wchar_t* str );
-    HCC_EXPORT Single ToSingle( const char* str );
-
-    inline Single ToSingle( const std::wstring& str )
-    {
-        return ToSingle( str.c_str( ) );
-    }
-    inline Single ToSingle( const std::string& str )
-    {
-        return ToSingle( str.c_str( ) );
-    }
-
-
-    HCC_EXPORT Double ToDouble( const wchar_t* str );
-    HCC_EXPORT Double ToDouble( const char* str );
-
-    inline Double ToDouble( const std::wstring& str )
-    {
-        return ToDouble( str.c_str( ) );
-    }
-    inline Double ToDouble( const std::string& str )
-    {
-        return ToDouble( str.c_str( ) );
-    }
-
-    inline bool IsAlnum( wchar_t c )
-    {
-        return std::iswalnum( c );
-    }
-    inline bool IsAlnum( char c )
-    {
-        return std::isalnum( c );
-    }
-    inline bool IsAlpha( wchar_t c )
-    {
-        return std::iswalpha( c );
-    }
-    inline bool IsAlpha( char c )
-    {
-        return std::isalpha( c );
-    }
-    inline bool IsBlank( wchar_t c )
-    {
-        return std::iswblank( c );
-    }
-    inline bool IsBlank( char c )
-    {
-        return std::isblank( c );
-    }
-    inline bool IsCntrl( wchar_t c )
-    {
-        return std::iswcntrl( c );
-    }
-    inline bool IsCntrl( char c )
-    {
-        return std::iscntrl( c );
-    }
-    inline bool IsDigit( wchar_t c )
-    {
-        return std::iswdigit( c );
-    }
-    inline bool IsDigit( char c )
-    {
-        return std::isdigit( c );
-    }
-    inline bool IsGraph( wchar_t c )
-    {
-        return std::iswgraph( c );
-    }
-    inline bool IsGraph( char c )
-    {
-        return std::isgraph( c );
-    }
-    inline bool IsLower( wchar_t c )
-    {
-        return std::iswlower( c );
-    }
-    inline bool IsLower( char c )
-    {
-        return std::islower( c );
-    }
-    inline bool IsPrint( wchar_t c )
-    {
-        return std::iswprint( c );
-    }
-    inline bool IsPrint( char c )
-    {
-        return std::isprint( c );
-    }
-    inline bool IsPunct( wchar_t c )
-    {
-        return std::iswpunct( c );
-    }
-    inline bool IsPunct( char c )
-    {
-        return std::ispunct( c );
-    }
-    inline bool IsSpace( wchar_t c )
-    {
-        return std::iswspace( c );
-    }
-    inline bool IsSpace( char c )
-    {
-        return std::isspace( c );
-    }
-    inline bool IsUpper( wchar_t c )
-    {
-        return std::iswupper( c );
-    }
-    inline bool IsUpper( char c )
-    {
-        return std::isupper( c );
-    }
-    inline bool IsXDigit( wchar_t c )
-    {
-        return std::iswxdigit( c );
-    }
-    inline bool IsXDigit( char c )
-    {
-        return std::isxdigit( c );
-    }
-
-    template<typename T>
-        requires ( IsStdBasicString<T> || IsStdBasicStringView<T> )
-    inline T TrimTrailing( const T& str, bool( testFunction )(typename T::value_type c)  )
-    {
-        using StringType = T;
-        using CharType = StringType::value_type;
-        auto begin = str.begin( );
-        auto end = str.end( );
-        while ( end > begin )
-        {
-            --end;
-            CharType c = *end;
-            if ( testFunction( c ) == false )
-            {
-                ++end;
-                break;
-            }
-        }
-        return StringType( begin, end );
-    }
-
-    template<typename T >
-        requires ( IsStdBasicString<T> || IsStdBasicStringView<T> )
-    inline T TrimTrailing( const T& str )
-    {
-        return TrimTrailing<T>( str, IsSpace );
-    }
-
-    template<typename T>
-        requires ( IsStdBasicString<T> || IsStdBasicStringView<T> )
-    inline T Trim( const T& str, bool( testFunction )(typename T::value_type c)  )
-    {
-        using StringType = T;
-        using CharType = StringType::value_type;
-        auto begin = str.begin( );
-        auto end = str.end( );
-
-        while ( begin < end )
-        {
-            CharType c = *begin;
-            if ( testFunction( c ) == false )
-            {
-                break;
-            }
-            ++begin;
-        }
-        if ( begin < end )
-        {
-            while ( end > begin )
-            {
-                --end;
-                CharType c = *end;
-                if ( testFunction( c ) == false )
-                {
-                    ++end;
-                    break;
-                }
-            }
-        }
-        return StringType( begin, end );
-    }
-
-    template<typename T >
-        requires ( IsStdBasicString<T> || IsStdBasicStringView<T> )
-    inline T Trim( const T& str )
-    {
-        return Trim<T>( str, IsSpace );
-    }
-
-
-    template<typename T>
-        requires ( IsStdBasicString<T> || IsStdBasicStringView<T> )
-    inline T TrimLeading( const T& str, bool( testFunction )(typename T::value_type c)  )
-    {
-        using StringType = T;
-        using CharType = StringType::value_type;
-        auto begin = str.begin( );
-        auto end = str.end( );
-
-        while ( begin < end )
-        {
-            CharType c = *begin;
-            if ( testFunction( c ) == false )
-            {
-                break;
-            }
-            ++begin;
-        }
-        return StringType( begin, end );
-    }
-
-    template<typename T >
-        requires ( IsStdBasicString<T> || IsStdBasicStringView<T> )
-    inline T TrimLeading( const T& str )
-    {
-        return TrimLeading<T>( str, IsSpace );
-    }
-
-    template<typename T >
-        requires IsStdBasicString<T> 
-    inline T Strip( const T& str, bool( testFunction )( typename T::value_type c ) )
-    {
-        using StringType = T;
-        using CharType = StringType::value_type;
-        auto begin = str.begin( );
-        auto end = str.end( );
-        StringType result;
-        result.reserve( str.size() );
-        while ( begin < end )
-        {
-            CharType c = *begin;
-            if ( testFunction( c ) == false )
-            {
-                result += c;
-            }
-            ++begin;
-        }
-        return result;
-    }
-
-    inline char ToLower( char c )
-    {
-        return static_cast<char>( std::tolower( c ) );
-    }
-
-    inline wchar_t ToLower( wchar_t c )
-    {
-        return static_cast<wchar_t>( std::towlower( c ) );
-    }
-
-    inline char ToUpper( char c )
-    {
-        return static_cast<char>( std::toupper( c ) );
-    }
-
-    inline wchar_t ToUpper( wchar_t c )
-    {
-        return static_cast<wchar_t>(std::towupper( c ));
-    }
-
-
-    template<typename T >
-        requires IsStdBasicString<T> 
-    inline T ToLower( const T& str )
-    {
-        using StringType = T;
-        using CharType = StringType::value_type;
-        auto begin = str.begin( );
-        auto end = str.end( );
-        StringType result;
-        result.reserve( str.size() );
-        while ( begin < end )
-        {
-            CharType c = *begin;
-            if ( IsUpper( c ) == false )
-            {
-                result += c;
-            }
-            else
-            {
-                result += ToLower( c );
-            }
-            ++begin;
-        }
-        return result;
-    }
-
-    template<typename T >
-        requires IsStdBasicString<T> 
-    inline T ToUpper( const T& str )
-    {
-        using StringType = T;
-        using CharType = StringType::value_type;
-        auto begin = str.begin( );
-        auto end = str.end( );
-        StringType result;
-        result.reserve( str.size() );
-        while ( begin < end )
-        {
-            CharType c = *begin;
-            if ( IsLower( c ) == false )
-            {
-                result += c;
-            }
-            else
-            {
-                result += ToUpper( c );
-            }
-            ++begin;
-        }
-        return result;
-    }
+    
 
 
 
@@ -1609,6 +976,12 @@ namespace Harlinn::Common::Core
         {
         }
 
+        BasicString( const_iterator first, const_iterator last)
+            : data_( Initialize( first, first <= last ? static_cast<size_type>( last - first ) : 0 ) )
+        {
+        }
+
+
         BasicString( const BasicStringView<T>& v );
 
 
@@ -1744,6 +1117,50 @@ namespace Harlinn::Common::Core
             return *this;
         }
 
+        void Assign( const CharType* string )
+        {
+            if ( data_ )
+            {
+                auto tmp = Initialize( string );
+                Release( data_ );
+                data_ = tmp;
+            }
+            else
+            {
+                data_ = Initialize( string );
+            }
+        }
+        void assign( const CharType* string )
+        {
+            Assign( string );
+        }
+
+
+        BasicString& operator = ( const CharType* string )
+        {
+            Assign( string );
+            return *this;
+        }
+
+
+        void Assign( const CharType* string, size_type size )
+        {
+            if ( data_ )
+            {
+                auto tmp = Initialize( string, size );
+                Release( data_ );
+                data_ = tmp;
+            }
+            else
+            {
+                data_ = Initialize( string, size );
+            }
+        }
+        void assign( const CharType* string, size_type size )
+        {
+            Assign( string, size );
+        }
+
 
         static BasicString<CharType> Format( const CharType* fmt, ... )
         {
@@ -1817,6 +1234,24 @@ namespace Harlinn::Common::Core
         {
             return data_ ? data_->buffer_ : nullptr;
         }
+
+        constexpr CharType front( ) const
+        {
+            return *begin( );
+        }
+        constexpr CharType& front( )
+        {
+            return *begin( );
+        }
+        constexpr CharType back( ) const
+        {
+            return *( end( ) - 1 );
+        }
+        constexpr CharType& back( )
+        {
+            return *( end( ) - 1 );
+        }
+
 
         constexpr iterator end( ) noexcept
         {
@@ -1892,6 +1327,11 @@ namespace Harlinn::Common::Core
             {
                 data_ = Allocate( newLength );
             }
+        }
+
+        void resize( size_type newLength )
+        {
+            SetLength( newLength );
         }
 
 
@@ -1988,11 +1428,21 @@ namespace Harlinn::Common::Core
             auto* dest = Extend( otherLength );
             Internal::Copy( dest, other, otherLength );
         }
+        void append( const CharType* other )
+        {
+            Append( other );
+        }
+
 
         void Append( const CharType* other, size_t otherLength )
         {
             auto* dest = Extend( otherLength );
             Internal::Copy( dest, other, otherLength );
+        }
+
+        void append( const CharType* other, size_t otherLength )
+        {
+            Append( other, otherLength );
         }
 
         void Append( const BasicString<CharType>& other )
@@ -2002,17 +1452,44 @@ namespace Harlinn::Common::Core
             Internal::Copy( dest, other.data( ), otherLength );
         }
 
+        void append( const BasicString<CharType>& other )
+        {
+            Append( other );
+        }
+
+
         void Append( CharType c )
         {
             auto* dest = Extend( 1 );
             *dest = c;
         }
 
+        void append( CharType c )
+        {
+            Append( c );
+        }
+
+        void push_back( CharType c )
+        {
+            Append( c );
+        }
+
         BasicString<CharType>& operator += ( const CharType* other ) { Append( other ); return *this; }
         BasicString<CharType>& operator += ( const BasicString<CharType>& other ) { Append( other ); return *this; }
         BasicString<CharType>& operator += ( CharType c ) { Append( c ); return *this; }
+        BasicString<CharType>& operator += ( const std::basic_string<CharType>& other ) { Append( other.c_str(), other.size() ); return *this; }
 
-
+        iterator insert( const_iterator pos, CharType ch )
+        {
+            auto position = const_cast< iterator >( pos );
+            iterator end_ = Extend( 1 );
+            if ( position < end_ )
+            {
+                Internal::Move( position + 1, position, static_cast< size_t >( end_ - position ) );
+            }
+            *position = ch;
+            return position;
+        }
 
 
 
@@ -2304,10 +1781,6 @@ namespace Harlinn::Common::Core
 
 
 
-
-
-
-
         size_type IndexOf( CharType c )
         {
             if ( data_ )
@@ -2534,6 +2007,12 @@ namespace Harlinn::Common::Core
             return npos;
         }
 
+        size_type find_last_of( const BasicString& searchChars, size_type start = npos ) const
+        {
+            return LastIndexOfAnyOf( searchChars, start );
+        }
+
+
         size_type ILastIndexOfAnyOf( const BasicString& searchChars, size_type start = npos ) const
         {
             auto* searchData = searchChars.data_;
@@ -2553,6 +2032,12 @@ namespace Harlinn::Common::Core
             }
             return npos;
         }
+
+        size_type find_last_of( const CharType* searchChars, size_type start = npos ) const
+        {
+            return LastIndexOfAnyOf( searchChars, start );
+        }
+
 
         size_type ILastIndexOfAnyOf( const CharType* searchChars, size_type start = npos ) const
         {
@@ -3177,6 +2662,24 @@ namespace Harlinn::Common::Core
             return false;
         }
 
+        bool StartsWith( const CharType ch ) const
+        {
+            if ( data_ )
+            {
+                auto size = data_->size_;
+                if ( size )
+                {
+                    return data_->buffer_[ 0 ] == ch;
+                }
+            }
+            return false;
+        }
+        bool starts_with( const CharType ch ) const
+        {
+            return StartsWith( ch );
+        }
+
+
         bool StartsWith( const CharType* str ) const
         {
             if ( data_ && data_->buffer_[0] && str && str[0] )
@@ -3195,6 +2698,11 @@ namespace Harlinn::Common::Core
             }
             return false;
         }
+        bool starts_with( const CharType* str ) const
+        {
+            return StartsWith( str );
+        }
+
 
         bool StartsWith( const BasicString& str ) const
         {
@@ -3207,6 +2715,12 @@ namespace Harlinn::Common::Core
                 return false;
             }
         }
+
+        bool starts_with( const BasicString& str ) const
+        {
+            return StartsWith( str );
+        }
+
 
         bool IStartsWith( const CharType* str ) const
         {
@@ -3239,6 +2753,24 @@ namespace Harlinn::Common::Core
             }
         }
 
+        bool EndsWith( const CharType ch ) const
+        {
+            if ( data_  )
+            {
+                auto size = data_->size_;
+                if ( size )
+                {
+                    return data_->buffer_[ size - 1 ] == ch;
+                }
+            }
+            return false;
+        }
+
+        bool ends_with( const CharType ch ) const
+        {
+            return EndsWith( ch );
+        }
+
         bool EndsWith( const CharType* str ) const
         {
             if ( data_ && data_->size_ && str && str[0] )
@@ -3246,11 +2778,17 @@ namespace Harlinn::Common::Core
                 auto otherLength = Internal::LengthOf( str );
                 if ( otherLength <= data_->size_ )
                 {
-                    return Internal::Compare( &data_->data[data_->size_ - otherLength], otherLength, str, otherLength ) == 0;
+                    return Internal::Compare( &data_->buffer_[data_->size_ - otherLength], otherLength, str, otherLength ) == 0;
                 }
             }
             return false;
         }
+
+        bool ends_with( const CharType* str ) const
+        {
+            return EndsWith( str );
+        }
+
         bool EndsWith( const BasicString& str ) const
         {
             auto* other = str.data_;
@@ -3258,11 +2796,17 @@ namespace Harlinn::Common::Core
             {
                 if ( other->size_ <= data_->size_ )
                 {
-                    return Internal::Compare( &data_->data[data_->size_ - other->size_], other->size_, other->buffer_, other->size_ ) == 0;
+                    return Internal::Compare( &data_->buffer_[data_->size_ - other->size_], other->size_, other->buffer_, other->size_ ) == 0;
                 }
             }
             return false;
         }
+
+        bool ends_with( const BasicString& str ) const
+        {
+            return EndsWith( str );
+        }
+
         bool IEndsWith( const CharType* str ) const
         {
             if ( data_ && data_->size_ && str && str[0] )
@@ -3270,7 +2814,7 @@ namespace Harlinn::Common::Core
                 auto otherLength = Internal::LengthOf( str );
                 if ( otherLength <= data_->size_ )
                 {
-                    return Internal::ICompare( &data_->data[data_->size_ - otherLength], otherLength, str, otherLength ) == 0;
+                    return Internal::ICompare( &data_->buffer_[data_->size_ - otherLength], otherLength, str, otherLength ) == 0;
                 }
             }
             return false;
@@ -3282,7 +2826,7 @@ namespace Harlinn::Common::Core
             {
                 if ( other->size_ <= data_->size_ )
                 {
-                    return Internal::ICompare( &data_->data[data_->size_ - other->size_], other->size_, other->buffer_, other->size_ ) == 0;
+                    return Internal::ICompare( &data_->buffer_[data_->size_ - other->size_], other->size_, other->buffer_, other->size_ ) == 0;
                 }
             }
             return false;
@@ -3310,6 +2854,11 @@ namespace Harlinn::Common::Core
             {
                 return BasicString( );
             }
+        }
+
+        BasicString substr( size_type start, size_type length = npos ) const
+        {
+            return SubString( start, length );
         }
 
         BasicString& UpperCase( )
@@ -3374,46 +2923,47 @@ namespace Harlinn::Common::Core
             }
         }
 
-        BasicString& erase( )
+        void erase( )
         {
             Release( data_ );
             data_ = nullptr;
-            return *this;
         }
 
-        BasicString& erase( size_type index, size_type count = npos )
+        void erase( size_type index, size_type count = npos )
         {
             Erase( index, count );
-            return *this;
         }
 
 
-        BasicString& Clear( )
+        void Clear( )
         {
             Release( data_ );
             data_ = nullptr;
-            return *this;
         }
 
-        BasicString& Remove( size_type start, size_type length = npos )
+        void clear( )
+        {
+            Clear( );
+        }
+
+
+        void Remove( size_type start, size_type length = npos )
         {
             if ( data_ && start < data_->size_ )
             {
                 Erase( start, length );
             }
-            return *this;
         }
 
-        BasicString& RemoveRange( size_type start, size_type end )
+        void RemoveRange( size_type start, size_type end )
         {
             if ( data_ && start < data_->size_ && start < end )
             {
                 Erase( start, end - start );
             }
-            return *this;
         }
 
-        BasicString& Replace( CharType what, CharType with )
+        void Replace( CharType what, CharType with )
         {
             if ( data_ )
             {
@@ -3451,32 +3001,36 @@ namespace Harlinn::Common::Core
                     }
                 }
             }
-            return *this;
         }
 
 
-        BasicString& TrimRight( const CharType* charactersToRemove, size_type numberOfCharactersToRemove )
+        void TrimRight( const CharType* charactersToRemove, size_type numberOfCharactersToRemove )
         {
             if ( data_ )
             {
                 auto index = LastIndexOfAnyBut( charactersToRemove, numberOfCharactersToRemove );
                 erase( index );
             }
-            return *this;
         }
 
-        BasicString& TrimRight( BasicString& charactersToRemove )
+        void TrimRight( BasicString& charactersToRemove )
         {
             if ( data_ )
             {
                 auto index = LastIndexOfAnyBut( charactersToRemove.c_str( ), charactersToRemove.size( ) );
                 erase( index );
             }
-            return *this;
         }
 
 
     };
+
+    template< class CharT, class Traits >
+    inline std::basic_ostream<CharT, Traits>& operator<<( std::basic_ostream<CharT, Traits>& os, const BasicString<CharT>& str )
+    {
+        return std::_Insert_string( os, str.data( ), str.size( ) );
+    }
+
 
 
 
@@ -3603,6 +3157,667 @@ namespace Harlinn::Common::Core
     {
     }
 #endif
+
+    HCC_EXPORT void ToWideString( const char* source, size_t length, unsigned codePage, unsigned flags, WideString& dest );
+    inline void ToWideString( const char* source, size_t length, WideString& dest )
+    {
+        ToWideString( source, length, CP_ACP, 0, dest );
+    }
+    inline void ToWideString( const std::string& source, WideString& dest )
+    {
+        ToWideString( source.c_str( ), source.length( ), dest );
+    }
+    inline WideString ToWideString( const std::string& source )
+    {
+        WideString result;
+        ToWideString( source, result );
+        return result;
+    }
+
+    inline WideString ToWideString( const std::string_view& source )
+    {
+        WideString result;
+        ToWideString( source.data( ), source.size( ), result );
+        return result;
+    }
+
+    inline WideString ToWideString( const char* source )
+    {
+        if ( source && source[ 0 ] )
+        {
+            auto length = strlen( source );
+            WideString result;
+            ToWideString( source, length, CP_ACP, 0, result );
+            return result;
+        }
+        else
+        {
+            return {};
+        }
+    }
+    inline WideString ToWideString( const wchar_t* source )
+    {
+        if ( source && source[ 0 ] )
+        {
+            auto length = wcslen( source );
+            WideString result( source, length );
+            return result;
+        }
+        else
+        {
+            return {};
+        }
+    }
+
+    HCC_EXPORT WideString ToWideString( bool value );
+    HCC_EXPORT WideString ToWideString( SByte value, int base = 10 );
+    HCC_EXPORT WideString ToWideString( Byte value, int base = 10 );
+    HCC_EXPORT WideString ToWideString( Int16 value, int base = 10 );
+    HCC_EXPORT WideString ToWideString( UInt16 value, int base = 10 );
+    HCC_EXPORT WideString ToWideString( Int32 value, int base = 10 );
+    HCC_EXPORT WideString ToWideString( UInt32 value, int base = 10 );
+    HCC_EXPORT WideString ToWideString( Int64 value, int base = 10 );
+    HCC_EXPORT WideString ToWideString( UInt64 value, int base = 10 );
+    HCC_EXPORT WideString ToWideString( Single value );
+    HCC_EXPORT WideString ToWideString( Single value, int width, int precission );
+    HCC_EXPORT WideString ToWideString( Single value, const Locale& locale );
+    HCC_EXPORT WideString ToWideString( Single value, int width, int precission, const Locale& locale );
+    HCC_EXPORT WideString ToWideString( Double value );
+    HCC_EXPORT WideString ToWideString( const DateTime& value );
+    HCC_EXPORT WideString ToWideString( const TimeSpan& value );
+    HCC_EXPORT WideString ToWideString( const Guid& value );
+    HCC_EXPORT WideString ToWideString( const Currency& value );
+    HCC_EXPORT WideString ToWideString( const Variant& value );
+
+
+    HCC_EXPORT void ToAnsiString( const wchar_t* source, size_t length, unsigned codePage, unsigned flags, std::string& dest );
+    inline void ToAnsiString( const wchar_t* source, size_t length, std::string& dest )
+    {
+        ToAnsiString( source, length, CP_ACP, 0, dest );
+    }
+    inline void ToAnsiString( const WideString& source, std::string& dest )
+    {
+        ToAnsiString( source.c_str( ), source.length( ), CP_ACP, 0, dest );
+    }
+    inline std::string ToAnsiString( const WideString& source )
+    {
+        std::string result;
+        ToAnsiString( source, result );
+        return result;
+    }
+
+    inline void ToAnsiString( const std::wstring_view& source, std::string& dest )
+    {
+        ToAnsiString( source.data( ), source.length( ), CP_ACP, 0, dest );
+    }
+    inline std::string ToAnsiString( const std::wstring_view& source )
+    {
+        std::string result;
+        ToAnsiString( source, result );
+        return result;
+    }
+
+    inline std::string ToAnsiString( const wchar_t* source )
+    {
+        if ( source && source[ 0 ] )
+        {
+            auto length = wcslen( source );
+            std::string result;
+            ToAnsiString( source, length, CP_ACP, 0, result );
+            return result;
+        }
+        else
+        {
+            return {};
+        }
+    }
+    inline std::string ToAnsiString( const char* source )
+    {
+        if ( source && source[ 0 ] )
+        {
+            auto length = strlen( source );
+            std::string result( source, length );
+            return result;
+        }
+        else
+        {
+            return {};
+        }
+    }
+
+    HCC_EXPORT std::string ToAnsiString( bool value );
+    HCC_EXPORT std::string ToAnsiString( SByte value, int base = 10 );
+    HCC_EXPORT std::string ToAnsiString( Byte value, int base = 10 );
+    HCC_EXPORT std::string ToAnsiString( Int16 value, int base = 10 );
+    HCC_EXPORT std::string ToAnsiString( UInt16 value, int base = 10 );
+    HCC_EXPORT std::string ToAnsiString( Int32 value, int base = 10 );
+    HCC_EXPORT std::string ToAnsiString( UInt32 value, int base = 10 );
+    HCC_EXPORT std::string ToAnsiString( Int64 value, int base = 10 );
+    HCC_EXPORT std::string ToAnsiString( UInt64 value, int base = 10 );
+    HCC_EXPORT std::string ToAnsiString( Single value );
+    HCC_EXPORT std::string ToAnsiString( Single value, const Locale& locale );
+    HCC_EXPORT std::string ToAnsiString( Single value, int width, int precission );
+    HCC_EXPORT std::string ToAnsiString( Single value, int width, int precission, const Locale& locale );
+    HCC_EXPORT std::string ToAnsiString( Double value );
+    HCC_EXPORT std::string ToAnsiString( const DateTime& value );
+    HCC_EXPORT std::string ToAnsiString( const TimeSpan& value );
+    HCC_EXPORT std::string ToAnsiString( const Guid& value );
+    HCC_EXPORT std::string ToAnsiString( const Currency& value );
+    HCC_EXPORT std::string ToAnsiString( const Variant& value );
+
+
+
+
+    HCC_EXPORT bool ToBoolean( const wchar_t* str ) noexcept;
+    HCC_EXPORT bool ToBoolean( const char* str ) noexcept;
+
+    inline bool ToBoolean( const WideString& str ) noexcept
+    {
+        return ToBoolean( str.c_str( ) );
+    }
+    inline bool ToBoolean( const std::string& str ) noexcept
+    {
+        return ToBoolean( str.c_str( ) );
+    }
+
+    HCC_EXPORT Byte ToByte( const wchar_t* str, int radix = 10 );
+    HCC_EXPORT Byte ToByte( const char* str, int radix = 10 );
+
+    inline Byte ToByte( const WideString& str, int radix = 10 )
+    {
+        return ToByte( str.c_str( ), radix );
+    }
+    inline Byte ToByte( const std::string& str, int radix = 10 )
+    {
+        return ToByte( str.c_str( ), radix );
+    }
+
+
+    HCC_EXPORT SByte ToSByte( const wchar_t* str, int radix = 10 );
+    HCC_EXPORT SByte ToSByte( const char* str, int radix = 10 );
+
+    inline SByte ToSByte( const WideString& str, int radix = 10 )
+    {
+        return ToSByte( str.c_str( ), radix );
+    }
+    inline SByte ToSByte( const std::string& str, int radix = 10 )
+    {
+        return ToSByte( str.c_str( ), radix );
+    }
+
+    HCC_EXPORT Int16 ToInt16( const wchar_t* str, int radix = 10 );
+    HCC_EXPORT Int16 ToInt16( const char* str, int radix = 10 );
+
+    inline Int16 ToInt16( const WideString& str, int radix = 10 )
+    {
+        return ToInt16( str.c_str( ), radix );
+    }
+    inline Int16 ToInt16( const std::string& str, int radix = 10 )
+    {
+        return ToInt16( str.c_str( ), radix );
+    }
+
+    HCC_EXPORT UInt16 ToUInt16( const wchar_t* str, int radix = 10 );
+    HCC_EXPORT UInt16 ToUInt16( const char* str, int radix = 10 );
+
+    inline UInt16 ToUInt16( const WideString& str, int radix = 10 )
+    {
+        return ToUInt16( str.c_str( ), radix );
+    }
+    inline UInt16 ToUInt16( const std::string& str, int radix = 10 )
+    {
+        return ToUInt16( str.c_str( ), radix );
+    }
+
+    HCC_EXPORT Int32 ToInt32( const wchar_t* str, int radix = 10 );
+    HCC_EXPORT Int32 ToInt32( const char* str, int radix = 10 );
+
+    inline Int32 ToInt32( const WideString& str, int radix = 10 )
+    {
+        return ToInt32( str.c_str( ), radix );
+    }
+    inline Int32 ToInt32( const std::string& str, int radix = 10 )
+    {
+        return ToInt32( str.c_str( ), radix );
+    }
+
+    HCC_EXPORT UInt32 ToUInt32( const wchar_t* str, int radix = 10 );
+    HCC_EXPORT UInt32 ToUInt32( const char* str, int radix = 10 );
+
+    inline UInt32 ToUInt32( const WideString& str, int radix = 10 )
+    {
+        return ToUInt32( str.c_str( ), radix );
+    }
+    inline UInt32 ToUInt32( const std::string& str, int radix = 10 )
+    {
+        return ToUInt32( str.c_str( ), radix );
+    }
+
+    HCC_EXPORT Int64 ToInt64( const wchar_t* str, int radix = 10 );
+    HCC_EXPORT Int64 ToInt64( const char* str, int radix = 10 );
+
+    inline Int64 ToInt64( const WideString& str, int radix = 10 )
+    {
+        return ToInt64( str.c_str( ), radix );
+    }
+    inline Int64 ToInt64( const std::string& str, int radix = 10 )
+    {
+        return ToInt64( str.c_str( ), radix );
+    }
+
+    HCC_EXPORT UInt64 ToUInt64( const wchar_t* str, int radix = 10 );
+    HCC_EXPORT UInt64 ToUInt64( const char* str, int radix = 10 );
+
+    inline UInt64 ToUInt64( const WideString& str, int radix = 10 )
+    {
+        return ToUInt64( str.c_str( ), radix );
+    }
+    inline UInt64 ToUInt64( const std::string& str, int radix = 10 )
+    {
+        return ToUInt64( str.c_str( ), radix );
+    }
+
+
+    HCC_EXPORT Single ToSingle( const wchar_t* str );
+    HCC_EXPORT Single ToSingle( const char* str );
+
+    inline Single ToSingle( const WideString& str )
+    {
+        return ToSingle( str.c_str( ) );
+    }
+    inline Single ToSingle( const std::string& str )
+    {
+        return ToSingle( str.c_str( ) );
+    }
+
+
+    HCC_EXPORT Double ToDouble( const wchar_t* str );
+    HCC_EXPORT Double ToDouble( const char* str );
+
+    inline Double ToDouble( const WideString& str )
+    {
+        return ToDouble( str.c_str( ) );
+    }
+    inline Double ToDouble( const std::string& str )
+    {
+        return ToDouble( str.c_str( ) );
+    }
+
+    inline bool IsAlnum( wchar_t c )
+    {
+        return std::iswalnum( c );
+    }
+    inline bool IsAlnum( char c )
+    {
+        return std::isalnum( c );
+    }
+    inline bool IsAlpha( wchar_t c )
+    {
+        return std::iswalpha( c );
+    }
+    inline bool IsAlpha( char c )
+    {
+        return std::isalpha( c );
+    }
+    inline bool IsBlank( wchar_t c )
+    {
+        return std::iswblank( c );
+    }
+    inline bool IsBlank( char c )
+    {
+        return std::isblank( c );
+    }
+    inline bool IsCntrl( wchar_t c )
+    {
+        return std::iswcntrl( c );
+    }
+    inline bool IsCntrl( char c )
+    {
+        return std::iscntrl( c );
+    }
+    inline bool IsDigit( wchar_t c )
+    {
+        return std::iswdigit( c );
+    }
+    inline bool IsDigit( char c )
+    {
+        return std::isdigit( c );
+    }
+    inline bool IsGraph( wchar_t c )
+    {
+        return std::iswgraph( c );
+    }
+    inline bool IsGraph( char c )
+    {
+        return std::isgraph( c );
+    }
+    inline bool IsLower( wchar_t c )
+    {
+        return std::iswlower( c );
+    }
+    inline bool IsLower( char c )
+    {
+        return std::islower( c );
+    }
+    inline bool IsPrint( wchar_t c )
+    {
+        return std::iswprint( c );
+    }
+    inline bool IsPrint( char c )
+    {
+        return std::isprint( c );
+    }
+    inline bool IsPunct( wchar_t c )
+    {
+        return std::iswpunct( c );
+    }
+    inline bool IsPunct( char c )
+    {
+        return std::ispunct( c );
+    }
+    inline bool IsSpace( wchar_t c )
+    {
+        return std::iswspace( c );
+    }
+    inline bool IsSpace( char c )
+    {
+        return std::isspace( c );
+    }
+    inline bool IsUpper( wchar_t c )
+    {
+        return std::iswupper( c );
+    }
+    inline bool IsUpper( char c )
+    {
+        return std::isupper( c );
+    }
+    inline bool IsXDigit( wchar_t c )
+    {
+        return std::iswxdigit( c );
+    }
+    inline bool IsXDigit( char c )
+    {
+        return std::isxdigit( c );
+    }
+
+    template<typename T>
+        requires ( IsStdBasicString<T> || IsStdBasicStringView<T> )
+    inline T TrimTrailing( const T& str, bool( testFunction )( typename T::value_type c ) )
+    {
+        using StringType = T;
+        using CharType = StringType::value_type;
+        auto begin = str.begin( );
+        auto end = str.end( );
+        while ( end > begin )
+        {
+            --end;
+            CharType c = *end;
+            if ( testFunction( c ) == false )
+            {
+                ++end;
+                break;
+            }
+        }
+        return StringType( begin, end );
+    }
+
+    template<typename T >
+        requires ( IsStdBasicString<T> || IsStdBasicStringView<T> )
+    inline T TrimTrailing( const T& str )
+    {
+        return TrimTrailing<T>( str, IsSpace );
+    }
+
+    template<typename T>
+        requires ( IsStdBasicString<T> || IsStdBasicStringView<T> )
+    inline T Trim( const T& str, bool( testFunction )( typename T::value_type c ) )
+    {
+        using StringType = T;
+        using CharType = StringType::value_type;
+        auto begin = str.begin( );
+        auto end = str.end( );
+
+        while ( begin < end )
+        {
+            CharType c = *begin;
+            if ( testFunction( c ) == false )
+            {
+                break;
+            }
+            ++begin;
+        }
+        if ( begin < end )
+        {
+            while ( end > begin )
+            {
+                --end;
+                CharType c = *end;
+                if ( testFunction( c ) == false )
+                {
+                    ++end;
+                    break;
+                }
+            }
+        }
+        return StringType( begin, end );
+    }
+
+    template<typename T >
+        requires ( IsStdBasicString<T> || IsStdBasicStringView<T> )
+    inline T Trim( const T& str )
+    {
+        return Trim<T>( str, IsSpace );
+    }
+
+
+    template<typename T>
+        requires ( IsStdBasicString<T> || IsStdBasicStringView<T> )
+    inline T TrimLeading( const T& str, bool( testFunction )( typename T::value_type c ) )
+    {
+        using StringType = T;
+        using CharType = StringType::value_type;
+        auto begin = str.begin( );
+        auto end = str.end( );
+
+        while ( begin < end )
+        {
+            CharType c = *begin;
+            if ( testFunction( c ) == false )
+            {
+                break;
+            }
+            ++begin;
+        }
+        return StringType( begin, end );
+    }
+
+    template<typename T >
+        requires ( IsStdBasicString<T> || IsStdBasicStringView<T> )
+    inline T TrimLeading( const T& str )
+    {
+        return TrimLeading<T>( str, IsSpace );
+    }
+
+    template<typename T >
+        requires IsStdBasicString<T>
+    inline T Strip( const T& str, bool( testFunction )( typename T::value_type c ) )
+    {
+        using StringType = T;
+        using CharType = StringType::value_type;
+        auto begin = str.begin( );
+        auto end = str.end( );
+        StringType result;
+        result.reserve( str.size( ) );
+        while ( begin < end )
+        {
+            CharType c = *begin;
+            if ( testFunction( c ) == false )
+            {
+                result += c;
+            }
+            ++begin;
+        }
+        return result;
+    }
+
+    inline char ToLower( char c )
+    {
+        return static_cast< char >( std::tolower( c ) );
+    }
+
+    inline wchar_t ToLower( wchar_t c )
+    {
+        return static_cast< wchar_t >( std::towlower( c ) );
+    }
+
+    inline char ToUpper( char c )
+    {
+        return static_cast< char >( std::toupper( c ) );
+    }
+
+    inline wchar_t ToUpper( wchar_t c )
+    {
+        return static_cast< wchar_t >( std::towupper( c ) );
+    }
+
+
+    template<typename T >
+        requires IsStdBasicString<T>
+    inline T ToLower( const T& str )
+    {
+        using StringType = T;
+        using CharType = StringType::value_type;
+        auto begin = str.begin( );
+        auto end = str.end( );
+        StringType result;
+#ifndef HCC_WITH_BASIC_STRING
+        result.reserve( str.size( ) );
+#endif
+        while ( begin < end )
+        {
+            CharType c = *begin;
+            if ( IsUpper( c ) == false )
+            {
+                result += c;
+            }
+            else
+            {
+                result += ToLower( c );
+            }
+            ++begin;
+        }
+        return result;
+    }
+
+    template<typename T >
+        requires IsStdBasicString<T>
+    inline T ToUpper( const T& str )
+    {
+        using StringType = T;
+        using CharType = StringType::value_type;
+        auto begin = str.begin( );
+        auto end = str.end( );
+        StringType result;
+        result.reserve( str.size( ) );
+        while ( begin < end )
+        {
+            CharType c = *begin;
+            if ( IsLower( c ) == false )
+            {
+                result += c;
+            }
+            else
+            {
+                result += ToUpper( c );
+            }
+            ++begin;
+        }
+        return result;
+    }
+
+    inline WideString Format( const wchar_t* fmt, ... )
+    {
+        va_list args;
+        va_start( args, fmt );
+        auto requiredLength = _vscwprintf( fmt, args );
+        if ( requiredLength > 0 )
+        {
+            WideString result;
+            result.resize( requiredLength );
+            vswprintf_s( result.data( ), requiredLength + 1, fmt, args );
+            va_end( args );
+            return result;
+        }
+        else
+        {
+            va_end( args );
+            return {};
+        }
+    }
+
+    inline WideString Format( const Locale& locale, const wchar_t* fmt, ... )
+    {
+        va_list args;
+        va_start( args, fmt );
+        auto requiredLength = _vscwprintf_l( fmt, locale, args );
+        if ( requiredLength > 0 )
+        {
+            WideString result;
+            result.resize( requiredLength );
+            _vswprintf_p_l( result.data( ), requiredLength + 1, fmt, locale, args );
+            va_end( args );
+            return result;
+        }
+        else
+        {
+            va_end( args );
+            return {};
+        }
+    }
+
+
+    inline std::string Format( const char* fmt, ... )
+    {
+        va_list args;
+        va_start( args, fmt );
+        auto requiredLength = _vscprintf( fmt, args );
+        if ( requiredLength > 0 )
+        {
+            std::string result;
+            result.resize( requiredLength );
+            vsprintf_s( result.data( ), requiredLength + 1, fmt, args );
+            va_end( args );
+            return result;
+        }
+        else
+        {
+            va_end( args );
+            return {};
+        }
+    }
+
+    inline std::string Format( const Locale& locale, const char* fmt, ... )
+    {
+        va_list args;
+        va_start( args, fmt );
+        auto requiredLength = _vscprintf_l( fmt, locale, args );
+        if ( requiredLength > 0 )
+        {
+            std::string result;
+            result.resize( requiredLength );
+            _vsprintf_p_l( result.data( ), requiredLength + 1, fmt, locale, args );
+            va_end( args );
+            return result;
+        }
+        else
+        {
+            va_end( args );
+            return {};
+        }
+    }
+
+
+
 }
 
 #ifdef HCC_WITH_BASIC_STRING
@@ -3640,6 +3855,13 @@ namespace std
             return s.Hash( );
         }
     };
+
+
+    template<> struct formatter<Harlinn::Common::Core::WideString>
+    {
+
+    };
+
 }
 #endif
 

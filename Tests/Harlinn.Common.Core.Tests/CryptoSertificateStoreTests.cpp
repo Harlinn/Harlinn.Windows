@@ -24,7 +24,7 @@ BOOST_AUTO_TEST_CASE( OpenSystemStoreTest1 )
 // --run_test=CryptoSertificateStoreTests/GetSystemStoreNamesTest1
 BOOST_AUTO_TEST_CASE( GetSystemStoreNamesTest1 )
 {
-    std::vector<std::wstring> systemStoreNames;
+    std::vector<WideString> systemStoreNames;
     CertificateStore::GetSystemStoreNames( CertificateStoreLocation::CurrentUser, systemStoreNames );
     BOOST_CHECK( systemStoreNames.size() != 0 );
 }

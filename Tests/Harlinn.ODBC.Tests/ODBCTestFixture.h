@@ -6,8 +6,9 @@
 class LocalFixture
 {
 public:
-    std::wstring DataSource = L"Ajaworks";
-    std::wstring DatabaseName = L"AjaworksDev";
+    using WideString = Harlinn::Common::Core::WideString;
+    WideString DataSource = L"Ajaworks";
+    WideString DatabaseName = L"AjaworksDev";
 
 
     LocalFixture( )

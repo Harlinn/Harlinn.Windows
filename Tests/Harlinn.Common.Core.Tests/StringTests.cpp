@@ -37,7 +37,7 @@ BOOST_AUTO_TEST_CASE( FormatStringTest )
 // --run_test=StringTests/TrimTrailingTest1a
 BOOST_AUTO_TEST_CASE( TrimTrailingTest1a )
 {
-    std::wstring str1 = L" a ";
+    WideString str1 = L" a ";
     auto str2 = TrimTrailing( str1 );
     bool areEqual = str2 == L" a";
     BOOST_TEST( areEqual );
@@ -74,7 +74,7 @@ BOOST_AUTO_TEST_CASE( TrimTrailingTest1d )
 // --run_test=StringTests/TrimTrailingTest2a
 BOOST_AUTO_TEST_CASE( TrimTrailingTest2a )
 {
-    std::wstring str1 = L" ";
+    WideString str1 = L" ";
     auto str2 = TrimTrailing( str1 );
     bool areEqual = str2 == L"";
     BOOST_TEST( areEqual );
@@ -110,7 +110,7 @@ BOOST_AUTO_TEST_CASE( TrimTrailingTest2d )
 // --run_test=StringTests/TrimTrailingTest3a
 BOOST_AUTO_TEST_CASE( TrimTrailingTest3a )
 {
-    std::wstring str1 = L"";
+    WideString str1 = L"";
     auto str2 = TrimTrailing( str1 );
     bool areEqual = str2 == L"";
     BOOST_TEST( areEqual );
@@ -148,7 +148,7 @@ BOOST_AUTO_TEST_CASE( TrimTrailingTest3d )
 // --run_test=StringTests/TrimLeadingTest1a
 BOOST_AUTO_TEST_CASE( TrimLeadingTest1a )
 {
-    std::wstring str1 = L" a ";
+    WideString str1 = L" a ";
     auto str2 = TrimLeading( str1 );
     bool areEqual = str2 == L"a ";
     BOOST_TEST( areEqual );
@@ -184,7 +184,7 @@ BOOST_AUTO_TEST_CASE( TrimLeadingTest1d )
 // --run_test=StringTests/TrimLeadingTest2a
 BOOST_AUTO_TEST_CASE( TrimLeadingTest2a )
 {
-    std::wstring str1 = L" ";
+    WideString str1 = L" ";
     auto str2 = TrimLeading( str1 );
     bool areEqual = str2 == L"";
     BOOST_TEST( areEqual );
@@ -221,7 +221,7 @@ BOOST_AUTO_TEST_CASE( TrimLeadingTest2d )
 // --run_test=StringTests/TrimLeadingTest3a
 BOOST_AUTO_TEST_CASE( TrimLeadingTest3a )
 {
-    std::wstring str1 = L"";
+    WideString str1 = L"";
     auto str2 = TrimLeading( str1 );
     bool areEqual = str2 == L"";
     BOOST_TEST( areEqual );
@@ -259,7 +259,7 @@ BOOST_AUTO_TEST_CASE( TrimLeadingTest3d )
 // --run_test=StringTests/TrimTest1a
 BOOST_AUTO_TEST_CASE( TrimTest1a )
 {
-    std::wstring str1 = L" a ";
+    WideString str1 = L" a ";
     auto str2 = Trim( str1 );
     bool areEqual = str2 == L"a";
     BOOST_TEST( areEqual );
@@ -295,7 +295,7 @@ BOOST_AUTO_TEST_CASE( TrimTest1d )
 // --run_test=StringTests/TrimTest2a
 BOOST_AUTO_TEST_CASE( TrimTest2a )
 {
-    std::wstring str1 = L" ";
+    WideString str1 = L" ";
     auto str2 = Trim( str1 );
     bool areEqual = str2 == L"";
     BOOST_TEST( areEqual );
@@ -331,7 +331,7 @@ BOOST_AUTO_TEST_CASE( TrimTest2d )
 // --run_test=StringTests/TrimTest3a
 BOOST_AUTO_TEST_CASE( TrimTest3a )
 {
-    std::wstring str1 = L"";
+    WideString str1 = L"";
     auto str2 = Trim( str1 );
     bool areEqual = str2 == L"";
     BOOST_TEST( areEqual );

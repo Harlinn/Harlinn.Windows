@@ -9,8 +9,8 @@ namespace Harlinn::Windows
 
     class WindowClass
     {
-        std::wstring name_;
-        std::wstring menuName_;
+        WideString name_;
+        WideString menuName_;
 
         UINT style_;
         WNDPROC procedure_;
@@ -22,31 +22,31 @@ namespace Harlinn::Windows
         HBRUSH backgroundBrush_;
         HICON smallIcon_;
     public:
-        static std::wstring HW_EXPORT animate_class_name;
-        static std::wstring HW_EXPORT datetimepick_class_name;
-        static std::wstring HW_EXPORT hotkey_class_name;
-        static std::wstring HW_EXPORT link_class_name;
-        static std::wstring HW_EXPORT monthcal_class_name;
-        static std::wstring HW_EXPORT nativefontctl_class_name;
-        static std::wstring HW_EXPORT progress_class_name;
-        static std::wstring HW_EXPORT rebar_class_name;
-        static std::wstring HW_EXPORT status_class_name;
-        static std::wstring HW_EXPORT toolbar_class_name;
-        static std::wstring HW_EXPORT tooltips_class_name;
-        static std::wstring HW_EXPORT trackbar_class_name;
-        static std::wstring HW_EXPORT updown_class_name;
-        static std::wstring HW_EXPORT button_class_name;
-        static std::wstring HW_EXPORT combobox_class_name;
-        static std::wstring HW_EXPORT edit_class_name;
-        static std::wstring HW_EXPORT header_class_name;
-        static std::wstring HW_EXPORT listbox_class_name;
-        static std::wstring HW_EXPORT ipaddress_class_name;
-        static std::wstring HW_EXPORT listview_class_name;
-        static std::wstring HW_EXPORT pagescroller_class_name;
-        static std::wstring HW_EXPORT scrollbar_class_name;
-        static std::wstring HW_EXPORT static_class_name;
-        static std::wstring HW_EXPORT tabcontrol_class_name;
-        static std::wstring HW_EXPORT treeview_class_name;
+        static WideString HW_EXPORT animate_class_name;
+        static WideString HW_EXPORT datetimepick_class_name;
+        static WideString HW_EXPORT hotkey_class_name;
+        static WideString HW_EXPORT link_class_name;
+        static WideString HW_EXPORT monthcal_class_name;
+        static WideString HW_EXPORT nativefontctl_class_name;
+        static WideString HW_EXPORT progress_class_name;
+        static WideString HW_EXPORT rebar_class_name;
+        static WideString HW_EXPORT status_class_name;
+        static WideString HW_EXPORT toolbar_class_name;
+        static WideString HW_EXPORT tooltips_class_name;
+        static WideString HW_EXPORT trackbar_class_name;
+        static WideString HW_EXPORT updown_class_name;
+        static WideString HW_EXPORT button_class_name;
+        static WideString HW_EXPORT combobox_class_name;
+        static WideString HW_EXPORT edit_class_name;
+        static WideString HW_EXPORT header_class_name;
+        static WideString HW_EXPORT listbox_class_name;
+        static WideString HW_EXPORT ipaddress_class_name;
+        static WideString HW_EXPORT listview_class_name;
+        static WideString HW_EXPORT pagescroller_class_name;
+        static WideString HW_EXPORT scrollbar_class_name;
+        static WideString HW_EXPORT static_class_name;
+        static WideString HW_EXPORT tabcontrol_class_name;
+        static WideString HW_EXPORT treeview_class_name;
 
 
         HW_EXPORT WindowClass( );
@@ -56,11 +56,11 @@ namespace Harlinn::Windows
 
         HW_EXPORT WNDCLASSEXW AsWNDCLASSEX( ) const;
 
-        HW_EXPORT const std::wstring& Name( ) const;
-        HW_EXPORT WindowClass& SetName( const std::wstring& name );
+        HW_EXPORT const WideString& Name( ) const;
+        HW_EXPORT WindowClass& SetName( const WideString& name );
 
-        HW_EXPORT const std::wstring& MenuName( ) const;
-        HW_EXPORT WindowClass& SetMenuName( const std::wstring& menuName );
+        HW_EXPORT const WideString& MenuName( ) const;
+        HW_EXPORT WindowClass& SetMenuName( const WideString& menuName );
 
         HW_EXPORT UINT Style( ) const;
         HW_EXPORT WindowClass& SetStyle( UINT style );
@@ -95,21 +95,21 @@ namespace Harlinn::Windows
     {
     public:
 
-        typedef std::unordered_map<std::wstring, std::unique_ptr<WindowClass> > map_t;
+        typedef std::unordered_map<WideString, std::unique_ptr<WindowClass> > map_t;
     private:
         map_t map_;
 
         void LoadStandardClasses( );
-        void LoadStandardClass( const std::wstring& className );
+        void LoadStandardClass( const WideString& className );
     public:
         HW_EXPORT WindowClasses( );
         HW_EXPORT ~WindowClasses( );
 
-        static HW_EXPORT std::unique_ptr<WindowClass> GetClassInfo( const std::wstring& className );
-        static HW_EXPORT std::unique_ptr<WindowClass> GetClassInfo( HINSTANCE hInstance, const std::wstring& className );
+        static HW_EXPORT std::unique_ptr<WindowClass> GetClassInfo( const WideString& className );
+        static HW_EXPORT std::unique_ptr<WindowClass> GetClassInfo( HINSTANCE hInstance, const WideString& className );
 
 
-        HW_EXPORT WindowClass* GetWindowClass( const std::wstring& className ) const;
+        HW_EXPORT WindowClass* GetWindowClass( const WideString& className ) const;
         HW_EXPORT bool Register( std::unique_ptr<WindowClass>&& windowClass );
     };
 

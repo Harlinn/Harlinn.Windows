@@ -33,10 +33,10 @@ namespace Harlinn::Common::Core
             rootDirectory_ = GetRootDirectory(executableDirectory_);
         }
 
-        static std::wstring GetRootDirectory(const std::wstring& executableDirectory)
+        static WideString GetRootDirectory(const WideString& executableDirectory)
         {
             auto dir = ToLower(executableDirectory);
-            static std::wstring toRemove[] = { L"bin\\",L"bin",L"x64\\release\\",L"x64\\release",L"x64\\debug\\", L"x64\\debug", L"release\\",L"release",L"debug\\", L"debug" };
+            static WideString toRemove[] = { L"bin\\",L"bin",L"x64\\release\\",L"x64\\release",L"x64\\debug\\", L"x64\\debug", L"release\\",L"release",L"debug\\", L"debug" };
             for (auto& str : toRemove)
             {
                 if (dir.ends_with(str))

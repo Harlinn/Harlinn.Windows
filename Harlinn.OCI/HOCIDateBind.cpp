@@ -8,7 +8,7 @@ namespace Harlinn::OCI
         SimpleBindByPos( positon, OCI::OraType::ORA_OCIDate, &ocidate_, sizeof( ocidate_ ) );
     }
 
-    void DateBind::Bind( const std::wstring& name, UInt32 iters )
+    void DateBind::Bind( const WideString& name, UInt32 iters )
     {
         SimpleBindByName( name, OCI::OraType::ORA_OCIDate, &ocidate_, sizeof( ocidate_ ) );
     }
@@ -75,33 +75,33 @@ namespace Harlinn::OCI
         Assign( newValue.Ticks( ) );
     }
 
-    std::wstring DateBind::AsString( const std::wstring& format ) const
+    WideString DateBind::AsString( const WideString& format ) const
     {
         wchar_t buffer[64];
         UInt32 bufferSize = sizeof( buffer );
         auto& error = Error( );
         OCI::DateToText( error, &ocidate_, format.c_str( ), static_cast<Byte>( format.length( ) ), nullptr, 0, &bufferSize, buffer );
-        std::wstring result( ( std::wstring::value_type* )buffer, static_cast<std::wstring::size_type>( bufferSize / sizeof( wchar_t ) ) );
+        WideString result( ( WideString::value_type* )buffer, static_cast<WideString::size_type>( bufferSize / sizeof( wchar_t ) ) );
         return result;
     }
 
-    std::wstring DateBind::AsString( ) const
+    WideString DateBind::AsString( ) const
     {
         wchar_t buffer[32];
         UInt32 bufferSize = sizeof( buffer );
-        static std::wstring fmt( L"YYYY/MM/DD HH24:MI:SS" );
+        static WideString fmt( L"YYYY/MM/DD HH24:MI:SS" );
         auto& error = Error( );
         OCI::DateToText( error, &ocidate_, fmt.c_str( ), static_cast<Byte>( fmt.length( ) ), nullptr, 0, &bufferSize, buffer );
-        std::wstring result( ( std::wstring::value_type* )buffer, static_cast<std::wstring::size_type>( bufferSize / sizeof( wchar_t ) ) );
+        WideString result( ( WideString::value_type* )buffer, static_cast<WideString::size_type>( bufferSize / sizeof( wchar_t ) ) );
         return result;
     }
 
-    void DateBind::Assign( const std::wstring& newValue )
+    void DateBind::Assign( const WideString& newValue )
     {
-        static std::wstring fmt( HCC_TEXT( "YYYY/MM/DD HH24:MI:SS" ) );
+        static WideString fmt( HCC_TEXT( "YYYY/MM/DD HH24:MI:SS" ) );
         Assign( fmt, newValue );
     }
-    void DateBind::Assign( const std::wstring& format, const std::wstring& newValue )
+    void DateBind::Assign( const WideString& format, const WideString& newValue )
     {
         auto& error = Error( );
         OCI::DateFromText( error, newValue.c_str( ), static_cast<UInt32>( newValue.length( ) ),

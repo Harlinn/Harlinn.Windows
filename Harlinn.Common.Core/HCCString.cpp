@@ -92,7 +92,7 @@ namespace Harlinn::Common::Core
     }
 #endif
 
-    void ToWideString( const char* source, size_t length, unsigned codePage, unsigned flags, std::wstring& dest )
+    void ToWideString( const char* source, size_t length, unsigned codePage, unsigned flags, WideString& dest )
     {
         auto byteCount = static_cast<int>( length );
         if ( byteCount )
@@ -111,7 +111,7 @@ namespace Harlinn::Common::Core
         }
     }
 
-    std::wstring ToWideString( bool value )
+    WideString ToWideString( bool value )
     {
         BSTR bstr = nullptr;
         auto hr = VarBstrFromBool( value?VARIANT_TRUE:VARIANT_FALSE, GetSystemDefaultLCID( ), LOCALE_NOUSEROVERRIDE, &bstr );
@@ -119,102 +119,116 @@ namespace Harlinn::Common::Core
         if ( bstr )
         {
             size_t length = static_cast<size_t>( SysStringLen( bstr ) );
-            std::wstring result( bstr, length );
+            WideString result( bstr, length );
             SysFreeString( bstr );
             return result;
         }
         else
         {
-            return std::wstring( );
+            return {};
         }
     }
-    std::wstring ToWideString( SByte value, int base )
+    WideString ToWideString( SByte value, int base )
     {
         wchar_t buffer[33];
         _itow_s( value, buffer, base );
-        return std::wstring( buffer );
+        return WideString( buffer );
     }
-    std::wstring ToWideString( Byte value, int base )
+    WideString ToWideString( Byte value, int base )
     {
         wchar_t buffer[33];
         _ultow_s( value, buffer, base );
-        return std::wstring( buffer );
+        return WideString( buffer );
     }
-    std::wstring ToWideString( Int16 value, int base )
+    WideString ToWideString( Int16 value, int base )
     {
         wchar_t buffer[33];
         _itow_s( value, buffer, base );
-        return std::wstring( buffer );
+        return WideString( buffer );
     }
-    std::wstring ToWideString( UInt16 value, int base )
+    WideString ToWideString( UInt16 value, int base )
     {
         wchar_t buffer[33];
         _ultow_s( value, buffer, base );
-        return std::wstring( buffer );
+        return WideString( buffer );
     }
-    std::wstring ToWideString( Int32 value, int base )
+    WideString ToWideString( Int32 value, int base )
     {
         wchar_t buffer[33];
         _itow_s( value, buffer, base );
-        return std::wstring( buffer );
+        return WideString( buffer );
     }
-    std::wstring ToWideString( UInt32 value, int base )
+    WideString ToWideString( UInt32 value, int base )
     {
         wchar_t buffer[33];
         _ultow_s( value, buffer, base );
-        return std::wstring( buffer );
+        return WideString( buffer );
     }
-    std::wstring ToWideString( Int64 value, int base )
+    WideString ToWideString( Int64 value, int base )
     {
         wchar_t buffer[66];
         _i64tow_s( value, buffer, ARRAYSIZE( buffer ), base );
-        return std::wstring( buffer );
+        return WideString( buffer );
     }
-    std::wstring ToWideString( UInt64 value, int base )
+    WideString ToWideString( UInt64 value, int base )
     {
         wchar_t buffer[66];
         _ui64tow_s( value, buffer, ARRAYSIZE( buffer ), base );
-        return std::wstring( buffer );
+        return WideString( buffer );
     }
-    std::wstring ToWideString( Single value )
+    WideString ToWideString( Single value )
     {
+#ifdef HCC_WITH_BASIC_STRING
+        const auto length = static_cast< size_t >( _scwprintf( L"%f", value ) );
+        WideString str( length, L'\0' );
+        swprintf_s( str.data(), length + 1, L"%f", value );
+        return str;
+#else
         return std::to_wstring( value );
+#endif
     }
 
-    std::wstring ToWideString( Single value, int width, int precission )
+    WideString ToWideString( Single value, int width, int precission )
     {
         return Format( L"%0*.*f", width, precission, value );
     }
-    std::wstring ToWideString( Single value, const Locale& locale )
+    WideString ToWideString( Single value, const Locale& locale )
     {
         return Format( locale, L"%0f", value );
     }
-    std::wstring ToWideString( Single value, int width, int precission, const Locale& locale )
+    WideString ToWideString( Single value, int width, int precission, const Locale& locale )
     {
         return Format( locale, L"%0*.*f", width, precission, value );
     }
 
-    std::wstring ToWideString( Double value )
+    WideString ToWideString( Double value )
     {
+#ifdef HCC_WITH_BASIC_STRING
+        const auto length = static_cast< size_t >( _scwprintf( L"%f", value ) );
+        WideString str( length, L'\0' );
+        swprintf_s( str.data( ), length + 1, L"%f", value );
+        return str;
+#else
         return std::to_wstring( value );
+#endif
     }
-    std::wstring ToWideString( const DateTime& value )
+    WideString ToWideString( const DateTime& value )
     {
         return value.ToString( );
     }
-    std::wstring ToWideString( const TimeSpan& value )
+    WideString ToWideString( const TimeSpan& value )
     {
         return value.ToString( );
     }
-    std::wstring ToWideString( const Guid& value )
+    WideString ToWideString( const Guid& value )
     {
         return value.ToString( );
     }
-    std::wstring ToWideString( const Currency& value )
+    WideString ToWideString( const Currency& value )
     {
         return value.ToWideString( );
     }
-    std::wstring ToWideString( const Variant& value )
+    WideString ToWideString( const Variant& value )
     {
         return value.AsWideString( );
     }

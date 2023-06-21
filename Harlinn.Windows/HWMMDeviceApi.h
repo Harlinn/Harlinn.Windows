@@ -81,19 +81,19 @@ namespace Harlinn::Windows
             HRESULT hr = pInterface->GetId(id);
             HCC_COM_CHECK_HRESULT2(hr, pInterface);
         }
-        std::wstring GetId( ) const
+        WideString GetId( ) const
         {
             LPWSTR str = nullptr;
             GetId(&str);
             if (str)
             {
-                std::wstring result(str);
+                WideString result(str);
                 CoTaskMemFree(str);
                 return result;
             }
             else
             {
-                return std::wstring();
+                return WideString();
             }
         }
 

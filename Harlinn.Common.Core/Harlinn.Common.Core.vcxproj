@@ -90,7 +90,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>BUILDING_HARLINN_COMMON_CORE=1;FMT_EXPORT=1;_CRT_SECURE_NO_WARNINGS=1;WIN32;_DEBUG;HARLINNCOMMONCORE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>BUILDING_HARLINN_COMMON_CORE=1;FMT_EXPORT=1;FMT_LIB_EXPORT=1;_CRT_SECURE_NO_WARNINGS=1;WIN32;_DEBUG;HARLINNCOMMONCORE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -108,7 +108,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
       <AdditionalDependencies>Secur32.lib;OneCore.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(OutDir)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(OutDir);$(BOOST_ROOT)\stage\lib</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -116,7 +116,7 @@
       <WarningLevel>Level3</WarningLevel>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>BUILDING_HARLINN_COMMON_CORE=1;FMT_EXPORT=1;_CRT_SECURE_NO_WARNINGS=1;WIN32;NDEBUG;HARLINNCOMMONCORE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>BUILDING_HARLINN_COMMON_CORE=1;FMT_EXPORT=1;FMT_LIB_EXPORT=1;_CRT_SECURE_NO_WARNINGS=1;WIN32;NDEBUG;HARLINNCOMMONCORE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -136,14 +136,14 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
       <AdditionalDependencies>Secur32.lib;OneCore.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(OutDir)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(OutDir);$(BOOST_ROOT)\stage\lib</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>BUILDING_HARLINN_COMMON_CORE=1;FMT_EXPORT=1;_CRT_SECURE_NO_WARNINGS=1;_DEBUG;HARLINNCOMMONCORE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>BUILDING_HARLINN_COMMON_CORE=1;FMT_EXPORT=1;FMT_LIB_EXPORT=1;_CRT_SECURE_NO_WARNINGS=1;_DEBUG;HARLINNCOMMONCORE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -161,7 +161,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
       <AdditionalDependencies>Secur32.lib;OneCore.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(OutDir)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(OutDir);$(BOOST_ROOT)\stage\lib</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -169,7 +169,7 @@
       <WarningLevel>Level3</WarningLevel>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>BUILDING_HARLINN_COMMON_CORE=1;FMT_EXPORT=1;_CRT_SECURE_NO_WARNINGS=1;NDEBUG;HARLINNCOMMONCORE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>BUILDING_HARLINN_COMMON_CORE=1;FMT_EXPORT=1;FMT_LIB_EXPORT=1;_CRT_SECURE_NO_WARNINGS=1;NDEBUG;HARLINNCOMMONCORE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -189,7 +189,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
       <AdditionalDependencies>Secur32.lib;OneCore.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(OutDir)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(OutDir);$(BOOST_ROOT)\stage\lib</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -224,6 +224,7 @@
     <ClInclude Include="HCCConcepts.h" />
     <ClInclude Include="HCCConcurrentQueue.h" />
     <ClInclude Include="HCCDataSource.h" />
+    <ClInclude Include="HCCDemangle.h" />
     <ClInclude Include="HCCDirectoryUtils.h" />
     <ClInclude Include="HCCIOBufferStream.h" />
     <ClInclude Include="HCCCom.h" />
@@ -330,6 +331,7 @@
     <ClCompile Include="HCCCRC32.cpp" />
     <ClCompile Include="HCCCurrency.cpp" />
     <ClCompile Include="HCCDateTime.cpp" />
+    <ClCompile Include="HCCDemangle.cpp" />
     <ClCompile Include="HCCEnvironment.cpp" />
     <ClCompile Include="HCCEse.cpp" />
     <ClCompile Include="HCCException.cpp" />
@@ -389,6 +391,7 @@
   <ItemGroup>
     <None Include="HCCComInterfaces.xm" />
     <None Include="HCCComRegistry.inl" />
+    <None Include="HCCDemangle.m" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

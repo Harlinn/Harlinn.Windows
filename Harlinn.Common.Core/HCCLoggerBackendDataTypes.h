@@ -4,6 +4,7 @@
 
 #include <HCCDateTime.h>
 #include <HCCGuid.h>
+#include <HCCString.h>
 
 namespace Harlinn::Common::Core::Logging
 {
@@ -109,14 +110,14 @@ namespace Harlinn::Common::Core::Logging
     public:
         using Base = Identified<BackendDomainObject>;
     private:
-        std::wstring domainName_;
-        std::wstring name_;
+        WideString domainName_;
+        WideString name_;
     public:
         BackendDomainObject( )
         {
         }
 
-        BackendDomainObject( const Guid& id, const std::wstring& domainName, const std::wstring& name )
+        BackendDomainObject( const Guid& id, const WideString& domainName, const WideString& name )
             : Base( id ), domainName_( domainName ), name_( name )
         {
         }
@@ -137,8 +138,8 @@ namespace Harlinn::Common::Core::Logging
 
         void AddTo( XXH64Hasher& hasher ) const noexcept
         {
-            hasher.Add( domainName_ );
-            hasher.Add( name_ );
+            hasher.Add( domainName_.c_str(), domainName_.size() * sizeof(WideString::value_type) );
+            hasher.Add( name_.c_str( ), name_.size( ) * sizeof( WideString::value_type ) );
         }
 
         size_t Hash( ) const noexcept
@@ -150,27 +151,27 @@ namespace Harlinn::Common::Core::Logging
         }
 
 
-        void Assign( const Guid& id, const std::wstring& domainName, const std::wstring& name )
+        void Assign( const Guid& id, const WideString& domainName, const WideString& name )
         {
             Base::Assign( id );
             domainName_ = domainName;
             name_ = name;
         }
 
-        const std::wstring& DomainName( ) const noexcept
+        const WideString& DomainName( ) const noexcept
         {
             return domainName_;
         }
-        void SetDomainName( const std::wstring& domainName )
+        void SetDomainName( const WideString& domainName )
         {
             domainName_ = domainName;
         }
 
-        const std::wstring& Name( ) const noexcept
+        const WideString& Name( ) const noexcept
         {
             return name_;
         }
-        void SetName( const std::wstring& name )
+        void SetName( const WideString& name )
         {
             name_ = name;
         }
@@ -187,18 +188,18 @@ namespace Harlinn::Common::Core::Logging
     public:
         using Base = Identified<BackendExecutableInfo>;
     private:
-        std::wstring path_;
+        WideString path_;
     public:
         BackendExecutableInfo()
         { }
 
-        BackendExecutableInfo( const Guid& id, const std::wstring& path )
+        BackendExecutableInfo( const Guid& id, const WideString& path )
             : Base(id), path_( path )
         {
         }
 
 
-        void Assign( const Guid& id, const std::wstring& path )
+        void Assign( const Guid& id, const WideString& path )
         {
             Base::Assign( id );
             path_ = path;
@@ -218,7 +219,7 @@ namespace Harlinn::Common::Core::Logging
 
         void AddTo( XXH64Hasher& hasher ) const noexcept
         {
-            hasher.Add( path_ );
+            hasher.Add( path_.c_str(), path_.size() * sizeof(WideString::value_type) );
         }
 
         size_t Hash( ) const noexcept
@@ -229,11 +230,11 @@ namespace Harlinn::Common::Core::Logging
             return result;
         }
 
-        const std::wstring& Path( ) const noexcept
+        const WideString& Path( ) const noexcept
         {
             return path_;
         }
-        void SetPath( const std::wstring& path )
+        void SetPath( const WideString& path )
         {
             path_ = path;
         }
@@ -249,20 +250,20 @@ namespace Harlinn::Common::Core::Logging
     public:
         using Base = Identified<BackendConfigurationFileInfo>;
     private:
-        std::wstring path_;
-        std::wstring data_;
+        WideString path_;
+        WideString data_;
     public:
         BackendConfigurationFileInfo( )
         {
         }
 
-        BackendConfigurationFileInfo( const Guid& id, const std::wstring& path, const std::wstring& data )
+        BackendConfigurationFileInfo( const Guid& id, const WideString& path, const WideString& data )
             : Base( id ), path_( path ), data_( data )
         {
         }
 
 
-        void Assign( const Guid& id, const std::wstring& path, const std::wstring& data )
+        void Assign( const Guid& id, const WideString& path, const WideString& data )
         {
             Base::Assign( id );
             path_ = path;
@@ -285,8 +286,8 @@ namespace Harlinn::Common::Core::Logging
 
         void AddTo( XXH64Hasher& hasher ) const noexcept
         {
-            hasher.Add( path_ );
-            hasher.Add( data_ );
+            hasher.Add( path_.c_str(), path_.size() * sizeof(WideString::value_type) );
+            hasher.Add( data_.c_str( ), data_.size( ) * sizeof( WideString::value_type ) );
         }
 
         size_t Hash( ) const noexcept
@@ -297,20 +298,20 @@ namespace Harlinn::Common::Core::Logging
             return result;
         }
 
-        const std::wstring& Path( ) const noexcept
+        const WideString& Path( ) const noexcept
         {
             return path_;
         }
-        void SetPath( const std::wstring& path )
+        void SetPath( const WideString& path )
         {
             path_ = path;
         }
 
-        const std::wstring& Data( ) const noexcept
+        const WideString& Data( ) const noexcept
         {
             return data_;
         }
-        void SetData( const std::wstring& data )
+        void SetData( const WideString& data )
         {
             data_ = data;
         }
@@ -385,7 +386,7 @@ namespace Harlinn::Common::Core::Logging
         UInt32 minorVersion_ = 0;
         UInt32 buildNumber_ = 0;
         UInt32 platformId_ = 0;
-        std::wstring csdVersion_;
+        WideString csdVersion_;
         UInt16 servicePackMajor_ = 0;
         UInt16 servicePackMinor_ = 0;
         UInt16 suiteMask_ = 0;
@@ -397,7 +398,7 @@ namespace Harlinn::Common::Core::Logging
         BackendWindowsVersionInfo( )
         { }
 
-        BackendWindowsVersionInfo( Guid id, const DateTime& timeStamp, UInt32 majorVersion, UInt32 minorVersion, UInt32 buildNumber, UInt32 platformId, std::wstring csdVersion, UInt16 servicePackMajor, UInt16 servicePackMinor, UInt16 suiteMask, Byte  productType )
+        BackendWindowsVersionInfo( Guid id, const DateTime& timeStamp, UInt32 majorVersion, UInt32 minorVersion, UInt32 buildNumber, UInt32 platformId, WideString csdVersion, UInt16 servicePackMajor, UInt16 servicePackMinor, UInt16 suiteMask, Byte  productType )
             : primaryKey_( id, timeStamp ), majorVersion_( majorVersion ), minorVersion_( minorVersion ), buildNumber_( buildNumber ), platformId_( platformId ), csdVersion_( csdVersion ), servicePackMajor_( servicePackMajor ), servicePackMinor_( servicePackMinor ), suiteMask_( suiteMask ), productType_( productType )
         {}
 
@@ -406,7 +407,7 @@ namespace Harlinn::Common::Core::Logging
         {
         }
 
-        void Assign( Guid id, const DateTime& timeStamp, UInt32 majorVersion, UInt32 minorVersion, UInt32 buildNumber, UInt32 platformId, std::wstring csdVersion, UInt16 servicePackMajor, UInt16 servicePackMinor, UInt16 suiteMask, Byte  productType )
+        void Assign( Guid id, const DateTime& timeStamp, UInt32 majorVersion, UInt32 minorVersion, UInt32 buildNumber, UInt32 platformId, WideString csdVersion, UInt16 servicePackMajor, UInt16 servicePackMinor, UInt16 suiteMask, Byte  productType )
         {
             primaryKey_.Assign( id, timeStamp );
             majorVersion_ = majorVersion;
@@ -482,7 +483,7 @@ namespace Harlinn::Common::Core::Logging
             hasher.Add( minorVersion_ );
             hasher.Add( buildNumber_ );
             hasher.Add( platformId_ );
-            hasher.Add( csdVersion_ );
+            hasher.Add( csdVersion_.c_str( ), csdVersion_.size( ) * sizeof( WideString::value_type ) );
             hasher.Add( servicePackMajor_ );
             hasher.Add( servicePackMinor_ );
             hasher.Add( suiteMask_ );
@@ -542,7 +543,7 @@ namespace Harlinn::Common::Core::Logging
         {
             return platformId_;
         }
-        constexpr const std::wstring& CSDVersion( ) const noexcept
+        constexpr const WideString& CSDVersion( ) const noexcept
         {
             return csdVersion_;
         }
@@ -579,14 +580,14 @@ namespace Harlinn::Common::Core::Logging
         Guid userId_;
         Guid windowsVersionId_;
         Guid configurationFileId_;
-        std::wstring commandlineArguments_;
+        WideString commandlineArguments_;
     public:
         BackendProcessInfo( )
             : processId_( 0 )
         {
         }
 
-        BackendProcessInfo( const Guid& id, const DateTime& startTime, UInt32 processId, const Guid& computerId, const Guid& userId, const Guid& windowsVersionId, const Guid& configurationFileId, const std::wstring& commandlineArguments )
+        BackendProcessInfo( const Guid& id, const DateTime& startTime, UInt32 processId, const Guid& computerId, const Guid& userId, const Guid& windowsVersionId, const Guid& configurationFileId, const WideString& commandlineArguments )
             : Base( id ), startTime_( startTime ), processId_( processId ), computerId_( computerId ), userId_( userId ), windowsVersionId_( windowsVersionId ), configurationFileId_( configurationFileId ), commandlineArguments_( commandlineArguments )
         {
         }
@@ -628,7 +629,7 @@ namespace Harlinn::Common::Core::Logging
             hasher.Add( userId_ );
             hasher.Add( windowsVersionId_ );
             hasher.Add( configurationFileId_ );
-            hasher.Add( commandlineArguments_ );
+            hasher.Add( commandlineArguments_.c_str( ), commandlineArguments_.size( ) * sizeof( WideString::value_type ) );
         }
 
         size_t Hash( ) const noexcept
@@ -685,7 +686,7 @@ namespace Harlinn::Common::Core::Logging
         {
             return configurationFileId_;
         }
-        constexpr const std::wstring& CommandlineArguments( ) const noexcept
+        constexpr const WideString& CommandlineArguments( ) const noexcept
         {
             return commandlineArguments_;
         }

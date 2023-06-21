@@ -3393,11 +3393,11 @@ namespace Harlinn::Common::Core::Http
         }
     }
 
-    std::wstring PrepareUrl( const wchar_t* url )
+    WideString PrepareUrl( const wchar_t* url )
     {
         wchar_t* preparedUrl = nullptr;
         PrepareUrl( url, &preparedUrl );
-        std::wstring result( preparedUrl );
+        WideString result( preparedUrl );
         HeapFree( GetProcessHeap( ), 0, preparedUrl );
         return result;
     }

@@ -25,7 +25,7 @@ namespace Harlinn::OCI
             error.CheckResult( rc );
         }
     }
-    BlobBind::BlobBind( const OCI::Statement& statement, const std::wstring& name )
+    BlobBind::BlobBind( const OCI::Statement& statement, const WideString& name )
         : Base( statement, name ), data_( 0 )
     {
         auto rc = OCIDescriptorAlloc( statement.Handle( ), (void**)&data_, OCI_DTYPE_LOB, 0, nullptr );
@@ -46,7 +46,7 @@ namespace Harlinn::OCI
     {
         SimpleBindByPos( positon, ExternalType, &data_, static_cast<Int32>( sizeof( BoundType ) ) );
     }
-    void BlobBind::Bind( const std::wstring& name, UInt32 iters )
+    void BlobBind::Bind( const WideString& name, UInt32 iters )
     {
         SimpleBindByName( name, ExternalType, &data_, static_cast<Int32>( sizeof( BoundType ) ) );
     }

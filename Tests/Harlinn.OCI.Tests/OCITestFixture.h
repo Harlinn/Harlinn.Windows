@@ -5,16 +5,17 @@
 class LocalFixture
 {
 public:
+    using WideString = Harlinn::Common::Core::WideString;
 
-    std::wstring Username;
-    std::wstring Password;
-    std::wstring Alias;
+    WideString Username;
+    WideString Password;
+    WideString Alias;
 
     LocalFixture( )
     {
         using namespace Harlinn::Common::Core;
         CoInitializeEx( nullptr, COINIT_MULTITHREADED );
-        auto xmlFilename = IO::Directory::GetExecutableDirectory<std::wstring>( ) + L"Harlinn.OCI.Tests.xml";
+        auto xmlFilename = IO::Directory::GetExecutableDirectory<WideString>( ) + L"Harlinn.OCI.Tests.xml";
 
         auto document = Xml::Dom::Document::Create( );
         document.SetAsync( false );
@@ -35,9 +36,9 @@ public:
             auto password = element.Attribute( L"Password" );
             auto alias = element.Attribute( L"Alias" );
 
-            Username = username.As<std::wstring>( );
-            Password = password.As<std::wstring>( );
-            Alias = alias.As<std::wstring>( );
+            Username = username.As<WideString>( );
+            Password = password.As<WideString>( );
+            Alias = alias.As<WideString>( );
         }
 
     }

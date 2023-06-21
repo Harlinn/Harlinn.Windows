@@ -259,6 +259,9 @@ namespace Harlinn::Common::Core
 
         template<typename CharT, typename Traits, typename Allocator>
         constexpr bool IsStdBasicStringImpl<std::basic_string<CharT, Traits, Allocator>> = true;
+
+        template<typename CharT>
+        constexpr bool IsStdBasicStringImpl<BasicString<CharT>> = true;
     }
     template<typename T>
     constexpr bool IsStdBasicString = Core::Internal::IsStdBasicStringImpl<std::remove_cvref_t<T>>;
@@ -601,7 +604,7 @@ namespace Harlinn::Common::Core
     inline constexpr bool IsAnsiString = std::is_base_of_v<std::string,T>;
 
     template <typename T>
-    inline constexpr bool IsWideString = std::is_base_of_v<std::wstring, T>;
+    inline constexpr bool IsWideString = std::is_base_of_v<WideString, T>;
 
     template <typename T>
     inline constexpr bool IsAnsiStringView = std::is_base_of_v<std::string_view, T>;

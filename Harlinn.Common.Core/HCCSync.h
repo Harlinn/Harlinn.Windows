@@ -875,7 +875,7 @@ namespace Harlinn::Common::Core
             : Base( Create( securityAttributes, manualReset, initialState, desiredAccess, name ) )
         {
         }
-        explicit EventWaitHandle( const std::wstring& name, bool manualReset = true, bool initialState = false, EventWaitHandleRights desiredAccess = EventWaitHandleRights::FullControl, LPSECURITY_ATTRIBUTES securityAttributes = nullptr )
+        explicit EventWaitHandle( const WideString& name, bool manualReset = true, bool initialState = false, EventWaitHandleRights desiredAccess = EventWaitHandleRights::FullControl, LPSECURITY_ATTRIBUTES securityAttributes = nullptr )
             : Base( Create( securityAttributes, manualReset, initialState, desiredAccess, name.empty()? static_cast<LPCWSTR>(nullptr):name.c_str() ) )
         {
         }
@@ -900,7 +900,7 @@ namespace Harlinn::Common::Core
             auto handle = Open( desiredAccess, inheritHandle, name );
             return EventWaitHandle( handle );
         }
-        static EventWaitHandle OpenExisting( const std::wstring& name, EventWaitHandleRights desiredAccess = EventWaitHandleRights::Synchronize | EventWaitHandleRights::Modify, bool inheritHandle = false )
+        static EventWaitHandle OpenExisting( const WideString& name, EventWaitHandleRights desiredAccess = EventWaitHandleRights::Synchronize | EventWaitHandleRights::Modify, bool inheritHandle = false )
         {
             auto handle = Open( desiredAccess, inheritHandle, name.c_str() );
             return EventWaitHandle( handle );
@@ -921,7 +921,7 @@ namespace Harlinn::Common::Core
             auto handle = TryOpen( desiredAccess, inheritHandle, name );
             return EventWaitHandle( handle );
         }
-        static EventWaitHandle TryOpenExisting( const std::wstring& name, EventWaitHandleRights desiredAccess = EventWaitHandleRights::Synchronize | EventWaitHandleRights::Modify, bool inheritHandle = false )
+        static EventWaitHandle TryOpenExisting( const WideString& name, EventWaitHandleRights desiredAccess = EventWaitHandleRights::Synchronize | EventWaitHandleRights::Modify, bool inheritHandle = false )
         {
             auto handle = TryOpen( desiredAccess, inheritHandle, name.c_str( ) );
             return EventWaitHandle( handle );
@@ -1129,7 +1129,7 @@ namespace Harlinn::Common::Core
             : Base( Create( securityAttributes, initiallyOwned, desiredAccess, name ) )
         {
         }
-        explicit Mutex( const std::wstring& name, bool initiallyOwned = true, MutexRights desiredAccess = MutexRights::FullControl, LPSECURITY_ATTRIBUTES securityAttributes = nullptr )
+        explicit Mutex( const WideString& name, bool initiallyOwned = true, MutexRights desiredAccess = MutexRights::FullControl, LPSECURITY_ATTRIBUTES securityAttributes = nullptr )
             : Base( Create( securityAttributes, initiallyOwned, desiredAccess, name.empty( ) ? static_cast<LPCWSTR>( nullptr ) : name.c_str( ) ) )
         {
         }
@@ -1154,7 +1154,7 @@ namespace Harlinn::Common::Core
             auto handle = Open( desiredAccess, inheritHandle, name );
             return Mutex( handle );
         }
-        static Mutex OpenExisting( const std::wstring& name, MutexRights desiredAccess = MutexRights::Synchronize | MutexRights::Modify, bool inheritHandle = false )
+        static Mutex OpenExisting( const WideString& name, MutexRights desiredAccess = MutexRights::Synchronize | MutexRights::Modify, bool inheritHandle = false )
         {
             auto handle = Open( desiredAccess, inheritHandle, name.c_str( ) );
             return Mutex( handle );
@@ -1175,7 +1175,7 @@ namespace Harlinn::Common::Core
             auto handle = TryOpen( desiredAccess, inheritHandle, name );
             return Mutex( handle );
         }
-        static Mutex TryOpenExisting( const std::wstring& name, MutexRights desiredAccess = MutexRights::Synchronize | MutexRights::Modify, bool inheritHandle = false )
+        static Mutex TryOpenExisting( const WideString& name, MutexRights desiredAccess = MutexRights::Synchronize | MutexRights::Modify, bool inheritHandle = false )
         {
             auto handle = TryOpen( desiredAccess, inheritHandle, name.c_str( ) );
             return Mutex( handle );
@@ -1356,7 +1356,7 @@ namespace Harlinn::Common::Core
             : Base( Create( securityAttributes, initialCount, maximumCount, desiredAccess, name ) )
         {
         }
-        explicit Semaphore( const std::wstring& name, long initialCount, long maximumCount = MaximumCount, SemaphoreRights desiredAccess = SemaphoreRights::FullControl, LPSECURITY_ATTRIBUTES securityAttributes = nullptr )
+        explicit Semaphore( const WideString& name, long initialCount, long maximumCount = MaximumCount, SemaphoreRights desiredAccess = SemaphoreRights::FullControl, LPSECURITY_ATTRIBUTES securityAttributes = nullptr )
             : Base( Create( securityAttributes, initialCount, maximumCount, desiredAccess, name.empty( ) ? static_cast<LPCWSTR>( nullptr ) : name.c_str( ) ) )
         {
         }
@@ -1381,7 +1381,7 @@ namespace Harlinn::Common::Core
             auto handle = Open( desiredAccess, inheritHandle, name );
             return Semaphore( handle );
         }
-        static Semaphore OpenExisting( const std::wstring& name, SemaphoreRights desiredAccess = SemaphoreRights::Synchronize | SemaphoreRights::Modify, bool inheritHandle = false )
+        static Semaphore OpenExisting( const WideString& name, SemaphoreRights desiredAccess = SemaphoreRights::Synchronize | SemaphoreRights::Modify, bool inheritHandle = false )
         {
             auto handle = Open( desiredAccess, inheritHandle, name.c_str( ) );
             return Semaphore( handle );
@@ -1402,7 +1402,7 @@ namespace Harlinn::Common::Core
             auto handle = TryOpen( desiredAccess, inheritHandle, name );
             return Semaphore( handle );
         }
-        static Semaphore TryOpenExisting( const std::wstring& name, SemaphoreRights desiredAccess = SemaphoreRights::Synchronize | SemaphoreRights::Modify, bool inheritHandle = false )
+        static Semaphore TryOpenExisting( const WideString& name, SemaphoreRights desiredAccess = SemaphoreRights::Synchronize | SemaphoreRights::Modify, bool inheritHandle = false )
         {
             auto handle = TryOpen( desiredAccess, inheritHandle, name.c_str( ) );
             return Semaphore( handle );
@@ -1621,7 +1621,7 @@ namespace Harlinn::Common::Core
             : Base( Create( securityAttributes, manualReset, highResolution, desiredAccess, name ) )
         {
         }
-        explicit WaitableTimer( const std::wstring& name, bool manualReset = true, bool highResolution = false, WaitableTimerRights desiredAccess = WaitableTimerRights::FullControl, LPSECURITY_ATTRIBUTES securityAttributes = nullptr )
+        explicit WaitableTimer( const WideString& name, bool manualReset = true, bool highResolution = false, WaitableTimerRights desiredAccess = WaitableTimerRights::FullControl, LPSECURITY_ATTRIBUTES securityAttributes = nullptr )
             : Base( Create( securityAttributes, manualReset, highResolution, desiredAccess, name.empty( ) ? static_cast<LPCWSTR>( nullptr ) : name.c_str( ) ) )
         {
         }
@@ -1646,7 +1646,7 @@ namespace Harlinn::Common::Core
             auto handle = Open( desiredAccess, inheritHandle, name );
             return WaitableTimer( handle );
         }
-        static WaitableTimer OpenExisting( const std::wstring& name, WaitableTimerRights desiredAccess = WaitableTimerRights::Synchronize | WaitableTimerRights::Modify, bool inheritHandle = false )
+        static WaitableTimer OpenExisting( const WideString& name, WaitableTimerRights desiredAccess = WaitableTimerRights::Synchronize | WaitableTimerRights::Modify, bool inheritHandle = false )
         {
             auto handle = Open( desiredAccess, inheritHandle, name.c_str( ) );
             return WaitableTimer( handle );
@@ -1667,7 +1667,7 @@ namespace Harlinn::Common::Core
             auto handle = TryOpen( desiredAccess, inheritHandle, name );
             return WaitableTimer( handle );
         }
-        static WaitableTimer TryOpenExisting( const std::wstring& name, WaitableTimerRights desiredAccess = WaitableTimerRights::Synchronize | WaitableTimerRights::Modify, bool inheritHandle = false )
+        static WaitableTimer TryOpenExisting( const WideString& name, WaitableTimerRights desiredAccess = WaitableTimerRights::Synchronize | WaitableTimerRights::Modify, bool inheritHandle = false )
         {
             auto handle = TryOpen( desiredAccess, inheritHandle, name.c_str( ) );
             return WaitableTimer( handle );

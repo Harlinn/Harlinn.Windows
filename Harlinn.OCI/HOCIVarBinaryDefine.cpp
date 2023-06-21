@@ -119,16 +119,16 @@ namespace Harlinn::OCI
     {
         return ConvertBinaryTo<TimeSpan>( ColumnData( ) );
     }
-    std::wstring VarBinaryDefine::AsString( ) const
+    WideString VarBinaryDefine::AsString( ) const
     {
         auto columnData = ColumnData( );
         if ( columnData && columnData->size )
         {
             IO::BufferStream bufferStream( columnData->data, columnData->size );
             IO::BinaryReader reader( bufferStream );
-            return reader.Read<std::wstring>( );
+            return reader.Read<WideString>( );
         }
-        return std::wstring();
+        return {};
     }
     Guid VarBinaryDefine::AsGuid( ) const
     {

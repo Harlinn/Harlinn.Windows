@@ -691,9 +691,9 @@ namespace Harlinn::Common::Core::IO::Serialization
         {
             return Read<Guid>();
         }
-        std::wstring ReadString()
+        WideString ReadString()
         {
-            return Read<std::wstring>();
+            return Read<WideString>();
         }
 
 

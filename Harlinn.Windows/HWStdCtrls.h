@@ -1250,13 +1250,13 @@ namespace Harlinn::Windows
 
         HeaderControlItemMask mask_;
         int dimension_;
-        std::wstring text_;
+        WideString text_;
         BitmapHandle bitmap_;
         HeaderControlItemFormat format_;
         int     imageIndex_;
         int     order_;
         HeaderControlItemFilterType filterType_;
-        std::wstring  textFilter_;
+        WideString  textFilter_;
         int intFilter_;
         SYSTEMTIME timeFilter_;
 
@@ -1268,13 +1268,13 @@ namespace Harlinn::Windows
         
 
         HW_EXPORT HeaderControlItem( HeaderControlItems* theHeaderControlItems );
-        HW_EXPORT HeaderControlItem( HeaderControlItems* theHeaderControlItems, const std::wstring& theText );
+        HW_EXPORT HeaderControlItem( HeaderControlItems* theHeaderControlItems, const WideString& theText );
 
         const HeaderControlItems* Items( ) const { return items_; }
         HeaderControlItems* Items( ) { return items_; }
 
-        HW_EXPORT std::wstring Text( ) const;
-        HW_EXPORT HeaderControlItem& SetText( const std::wstring& theText );
+        HW_EXPORT WideString Text( ) const;
+        HW_EXPORT HeaderControlItem& SetText( const WideString& theText );
 
         HW_EXPORT HeaderControlItem& Assign( const HDITEMW& item );
         HW_EXPORT const HeaderControlItem& AssignTo( HDITEMW& item ) const;
@@ -1363,8 +1363,8 @@ namespace Harlinn::Windows
 
         HW_EXPORT size_type FocusedIndex( ) const;
 
-        HW_EXPORT const HeaderControlItem* Add( const std::wstring& headerText );
-        HW_EXPORT const HeaderControlItem* Add( const std::wstring& headerText, HorizontalAlignment alignment );
+        HW_EXPORT const HeaderControlItem* Add( const WideString& headerText );
+        HW_EXPORT const HeaderControlItem* Add( const WideString& headerText, HorizontalAlignment alignment );
         HW_EXPORT HeaderControlItems& RemoveAt( size_type index );
 
 
@@ -1559,8 +1559,8 @@ namespace Harlinn::Windows
         HW_EXPORT TextEdit& EmptyUndoBuffer( );
         HW_EXPORT TextEdit& FmtLines( bool addSoftLinebreaks );
 
-        HW_EXPORT std::wstring CueBannerText( ) const;
-        HW_EXPORT TextEdit& SetCueBannerText( const std::wstring& theText, bool displayWhileFocused = false );
+        HW_EXPORT WideString CueBannerText( ) const;
+        HW_EXPORT TextEdit& SetCueBannerText( const WideString& theText, bool displayWhileFocused = false );
         HW_EXPORT TextEdit& SetCueBannerText( const wchar_t* theText, bool displayWhileFocused = false );
 
         HW_EXPORT int GetFirstVisibleLine( ) const;
@@ -1570,7 +1570,7 @@ namespace Harlinn::Windows
 
         HW_EXPORT int LineIndex( int theIndex ) const;
         HW_EXPORT int LineLength( int theIndex ) const;
-        HW_EXPORT std::wstring Line( int theIndex ) const;
+        HW_EXPORT WideString Line( int theIndex ) const;
         HW_EXPORT int LineCount( ) const;
         HW_EXPORT bool IsModified( ) const;
 
@@ -1580,10 +1580,10 @@ namespace Harlinn::Windows
         HW_EXPORT Range Selection( ) const;
         HW_EXPORT TextEdit& SetSelection( const Range& selectionRange );
 
-        HW_EXPORT TextEdit& ReplaceSelection( const std::wstring& theText );
+        HW_EXPORT TextEdit& ReplaceSelection( const WideString& theText );
         HW_EXPORT TextEdit& ReplaceSelection( const wchar_t* theText );
 
-        HW_EXPORT TextEdit& Append( const std::wstring& theText );
+        HW_EXPORT TextEdit& Append( const WideString& theText );
         HW_EXPORT TextEdit& Append( const wchar_t* theText );
 
 
@@ -1606,12 +1606,12 @@ namespace Harlinn::Windows
         HW_EXPORT MemoEdit( );
 
         HW_EXPORT int FirstVisibleLine( ) const;
-        HW_EXPORT MemoEdit& AppendLine( const std::wstring& theText );
+        HW_EXPORT MemoEdit& AppendLine( const WideString& theText );
         HW_EXPORT MemoEdit& AppendLine( const wchar_t* theText );
     protected:
         HW_EXPORT virtual DWORD GetStyle( ) const;
         /*
-        HW_EXPORT virtual std::wstring Text() const;
+        HW_EXPORT virtual WideString Text() const;
         protected:
         HW_EXPORT HLOCAL GetHandle() const;
         */
@@ -1762,7 +1762,7 @@ namespace Harlinn::Windows
         HW_EXPORT virtual WindowClass* GetWindowClass( ) const;
         HW_EXPORT virtual DWORD GetStyle( ) const;
 
-        HW_EXPORT TreeViewItem AddItem( const std::wstring& theText );
+        HW_EXPORT TreeViewItem AddItem( const WideString& theText );
     };
 
     // --------------------------------------------------------------------
@@ -1774,9 +1774,9 @@ namespace Harlinn::Windows
 
         HTREEITEM handle_;
         TreeView& treeView_;
-        std::wstring text_;
+        WideString text_;
     public:
-        HW_EXPORT TreeViewItem( Windows::TreeView& treeView, const std::wstring& text );
+        HW_EXPORT TreeViewItem( Windows::TreeView& treeView, const WideString& text );
     protected:
     protected:
         const Windows::TreeView& TreeView( ) const

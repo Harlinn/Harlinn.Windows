@@ -6,6 +6,7 @@
 #include <HCCGuid.h>
 #include <HCCDateTime.h>
 #include <HCCCrypto.h>
+#include <HCCString.h>
 
 #pragma comment(lib,"Secur32.lib")
 
@@ -791,8 +792,8 @@ namespace Harlinn::Common::Core::Security
     
     struct SecurityIdInfo
     {
-        std::wstring Name;
-        std::wstring Domain;
+        WideString Name;
+        WideString Domain;
         SecurityIdType Type;
     };
 
@@ -1131,7 +1132,7 @@ namespace Harlinn::Common::Core::Security
         }
 
 
-        std::wstring ToString( ) const
+        WideString ToString( ) const
         {
             LPWSTR stringSid = nullptr;
             auto rc = ConvertSidToStringSidW( sid_, &stringSid );
@@ -1139,12 +1140,12 @@ namespace Harlinn::Common::Core::Security
             {
                 ThrowLastOSError( );
             }
-            std::wstring result( stringSid );
+            WideString result( stringSid );
             LocalFree( stringSid );
             return result;
         }
 
-        std::wstring Name( const wchar_t* serverName = nullptr ) const
+        WideString Name( const wchar_t* serverName = nullptr ) const
         {
             SID_NAME_USE accountType{};
             std::array<wchar_t, 260> buffer;
@@ -1156,7 +1157,7 @@ namespace Harlinn::Common::Core::Security
             {
                 ThrowLastOSError( );
             }
-            std::wstring result( buffer.data( ), bufferSize );
+            WideString result( buffer.data( ), bufferSize );
             return result;
         }
 
@@ -1207,11 +1208,11 @@ namespace Harlinn::Common::Core::Security
     class SecurityIdAndDomain
     {
     public:
-        using StringType = std::wstring;
+        using StringType = WideString;
         using SecurityIdType = SID_NAME_USE;
     private:
         Security::SecurityId securityId_;
-        std::wstring domainName_;
+        WideString domainName_;
         SecurityIdType securityIdType_;
     public:
         SecurityIdAndDomain()
@@ -1262,7 +1263,7 @@ namespace Harlinn::Common::Core::Security
         {
             return securityId_;
         }
-        constexpr const std::wstring& DomainName( ) const noexcept
+        constexpr const WideString& DomainName( ) const noexcept
         {
             return domainName_;
         }
@@ -1519,14 +1520,14 @@ namespace Harlinn::Common::Core::Security
         /// system.
         /// </param>
         /// <returns>The name of the privilege.</returns>
-        std::wstring QueryPrivilegeName( const wchar_t* systemName = nullptr ) const
+        WideString QueryPrivilegeName( const wchar_t* systemName = nullptr ) const
         {
             std::array<wchar_t, 512> buffer;
             size_type bufferLength = static_cast<size_type>( buffer.size( ) );
             auto rc = QueryPrivilegeName( systemName, buffer.data( ), &bufferLength );
             if ( !rc )
             {
-                std::wstring result;
+                WideString result;
                 result.resize( bufferLength - 1 );
                 rc = QueryPrivilegeName( systemName, result.data( ), &bufferLength );
                 if ( !rc )
@@ -1537,7 +1538,7 @@ namespace Harlinn::Common::Core::Security
             }
             else
             {
-                std::wstring result( buffer.data( ), bufferLength );
+                WideString result( buffer.data( ), bufferLength );
                 return result;
             }
         }
@@ -6244,9 +6245,9 @@ StandardRightsExecute = STANDARD_RIGHTS_EXECUTE
         // Specifies the maximum size, in bytes, of the token
         UInt32 maxTokenSize_;
         // The name of the security package
-        std::wstring name_;
+        WideString name_;
         // Additional information about the security package
-        std::wstring comment_;
+        WideString comment_;
 
         PSecurityFunctionTableW functionTable_ = nullptr;
 
@@ -6269,7 +6270,7 @@ StandardRightsExecute = STANDARD_RIGHTS_EXECUTE
             FreeContextBuffer( package );
         }
 
-        SecurityPackage( SecurityPackageFlags flags, UInt16 rpcId, UInt32 maxTokenSize, const std::wstring& name, const std::wstring& comment )
+        SecurityPackage( SecurityPackageFlags flags, UInt16 rpcId, UInt32 maxTokenSize, const WideString& name, const WideString& comment )
             : flags_( flags ), rpcId_( rpcId ), maxTokenSize_( maxTokenSize ), name_( name ), comment_( comment )
         {
         }
@@ -6310,12 +6311,12 @@ StandardRightsExecute = STANDARD_RIGHTS_EXECUTE
             return maxTokenSize_;
         }
         // The name of the security package
-        const std::wstring& Name( ) const noexcept
+        const WideString& Name( ) const noexcept
         {
             return name_;
         }
         // Additional information about the security package
-        const std::wstring& Comment( ) const noexcept
+        const WideString& Comment( ) const noexcept
         {
             return comment_;
         }
@@ -6326,10 +6327,10 @@ StandardRightsExecute = STANDARD_RIGHTS_EXECUTE
     /// An std::unordered_map of information about the 
     /// security packages installed on the system.
     /// </summary>
-    class SecurityPackages : public std::unordered_map<std::wstring, SecurityPackage>
+    class SecurityPackages : public std::unordered_map<WideString, SecurityPackage>
     {
     public:
-        using Base = std::unordered_map<std::wstring, SecurityPackage>;
+        using Base = std::unordered_map<WideString, SecurityPackage>;
 
         SecurityPackages( )
         {
@@ -6346,8 +6347,8 @@ StandardRightsExecute = STANDARD_RIGHTS_EXECUTE
                 SecurityPackageFlags flags = static_cast<SecurityPackageFlags>( current.fCapabilities );
                 UInt16 rpcId = current.wRPCID;
                 UInt32 maxTokenSize = current.cbMaxToken;
-                std::wstring name( current.Name );
-                std::wstring comment( current.Comment );
+                WideString name( current.Name );
+                WideString comment( current.Comment );
                 emplace( name, SecurityPackage( flags, rpcId, maxTokenSize, name, comment ) );
             }
             FreeContextBuffer( packages );
@@ -7599,18 +7600,18 @@ namespace Harlinn::Common::Core::Environment
 
     class DomainObject
     {
-        std::wstring name_;
+        WideString name_;
     protected:
         using NetApiBuffer = Environment::Internal::NetApiBuffer;
         DomainObject( )
         {
         }
 
-        DomainObject( const std::wstring& name )
+        DomainObject( const WideString& name )
             : name_( name )
         {
         }
-        DomainObject( std::wstring&& name )
+        DomainObject( WideString&& name )
             : name_( std::move( name ) )
         {
         }
@@ -7635,11 +7636,11 @@ namespace Harlinn::Common::Core::Environment
                 name_.clear( );
             }
         }
-        void SetName( const std::wstring& name )
+        void SetName( const WideString& name )
         {
             name_ = name;
         }
-        void SetName( std::wstring&& name )
+        void SetName( WideString&& name )
         {
             name_ = std::move( name );
         }
@@ -7655,7 +7656,7 @@ namespace Harlinn::Common::Core::Environment
             return result;
         }
 
-        constexpr const std::wstring& Name( ) const noexcept
+        constexpr const WideString& Name( ) const noexcept
         {
             return name_;
         }
@@ -7682,10 +7683,10 @@ namespace Harlinn::Common::Core::Environment
     {
         TimeSpan passwordAge_;
         UserPrivilege privilege_ = UserPrivilege::None;
-        std::wstring homeDirectory_;
-        std::wstring comment_;
+        WideString homeDirectory_;
+        WideString comment_;
         UserFlags flags_ = UserFlags::None;
-        std::wstring scriptPath_;
+        WideString scriptPath_;
     public:
         using Base = DomainObject;
 
@@ -7693,11 +7694,11 @@ namespace Harlinn::Common::Core::Environment
         {
         }
 
-        User( const std::wstring& name )
+        User( const WideString& name )
             : Base( name )
         {
         }
-        User( std::wstring&& name )
+        User( WideString&& name )
             : Base( std::move( name ) )
         {
         }
@@ -7864,28 +7865,28 @@ namespace Harlinn::Common::Core::Environment
         {
         }
 
-        Computer( const std::wstring& name )
+        Computer( const WideString& name )
             : Base( name )
         {
         }
-        Computer( std::wstring&& name )
+        Computer( WideString&& name )
             : Base( std::move( name ) )
         {
         }
 
-        static std::wstring GetDomainOrWorkgroupName( const wchar_t* serverName = nullptr )
+        static WideString GetDomainOrWorkgroupName( const wchar_t* serverName = nullptr )
         {
             NetApiBuffer infoPtr;
             auto rc = NetWkstaGetInfo( const_cast<wchar_t*>(serverName), 100, infoPtr.dataPtr() );
             if ( rc == NERR_Success )
             {
                 WKSTA_INFO_100* info = infoPtr.As<WKSTA_INFO_100>();
-                std::wstring result = info->wki100_langroup;
+                WideString result = info->wki100_langroup;
                 return result;
             }
             else
             {
-                return std::wstring( );
+                return {};
             }
 
         }
@@ -7900,7 +7901,7 @@ namespace Harlinn::Common::Core::Environment
     /// </summary>
     class Group : public DomainObject
     {
-        std::wstring comment_;
+        WideString comment_;
         GroupFlags flags_ = GroupFlags::None;
         Security::SecurityId securityId_;
     public:
@@ -7910,11 +7911,11 @@ namespace Harlinn::Common::Core::Environment
         {
         }
 
-        Group( const std::wstring& name )
+        Group( const WideString& name )
             : Base( name )
         {
         }
-        Group( std::wstring&& name )
+        Group( WideString&& name )
             : Base( std::move( name ) )
         {
         }
@@ -7943,7 +7944,7 @@ namespace Harlinn::Common::Core::Environment
         }
 
         Group( const GROUP_INFO_3* info )
-            : Base( std::wstring( info->grpi3_name&& info->grpi3_name[0] ? info->grpi3_name : L"" ) )
+            : Base( WideString( info->grpi3_name&& info->grpi3_name[0] ? info->grpi3_name : L"" ) )
         {
             comment_ = info->grpi3_comment ? info->grpi3_comment : L"";
             if ( info->grpi3_group_sid )
@@ -7955,7 +7956,7 @@ namespace Harlinn::Common::Core::Environment
         }
 
         Group( const LOCALGROUP_INFO_1* info )
-            : Base( std::wstring( info->lgrpi1_name&& info->lgrpi1_name[0] ? info->lgrpi1_name : L"" ) )
+            : Base( WideString( info->lgrpi1_name&& info->lgrpi1_name[0] ? info->lgrpi1_name : L"" ) )
         {
             comment_ = info->lgrpi1_comment ? info->lgrpi1_comment : L"";
             Security::SecurityIdAndDomain securityIdAndDomain( info->lgrpi1_name );

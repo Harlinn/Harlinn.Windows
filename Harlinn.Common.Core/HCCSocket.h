@@ -208,7 +208,7 @@ namespace Harlinn::Common::Core::IO::Sockets
         }
 
 
-        HCC_EXPORT std::wstring ToString( ) const;
+        HCC_EXPORT WideString ToString( ) const;
 
     };
 

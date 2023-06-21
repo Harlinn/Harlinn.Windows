@@ -115,9 +115,9 @@ namespace Harlinn::Common::Core::Com
             using StreamType = Base::StreamType;
             using InterfaceType = Base::InterfaceType;
         private:
-            std::wstring name_;
+            WideString name_;
         public:
-            IStreamOnStreamImpl(StreamType&& stream, const std::wstring& name = std::wstring())
+            IStreamOnStreamImpl(StreamType&& stream, const WideString& name = WideString())
                 : Base(std::move(stream)), name_(name)
             {
             }

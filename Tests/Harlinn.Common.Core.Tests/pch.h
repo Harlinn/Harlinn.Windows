@@ -20,7 +20,7 @@
 #include <HCCIOContext.h>
 #include <HCCLib.h>
 #include <HCCLMDB.h>
-#include <HCCLoggerLMDBSinkStorage.h>
+//#include <HCCLoggerLMDBSinkStorage.h>
 #include <HCCMath.h>
 #include <HCCMatrix.h>
 #include <HCCObj.h>
@@ -34,7 +34,7 @@
 #include <HCCThread.h>
 #include <HCCTraits.h>
 #include <HCCTuple.h>
-#include <HCCTypeDescriptorCursor.h>
+//#include <HCCTypeDescriptorCursor.h>
 #include <HCCVariant.h>
 #include <HCCVector.h>
 #include <HCCXml.h>

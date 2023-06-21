@@ -268,7 +268,7 @@ namespace Harlinn::Common::Core::Xml
                 XmlString xmlString( text );
                 SetText( xmlString );
             }
-            void SetText( const std::wstring& text ) const
+            void SetText( const WideString& text ) const
             {
                 XmlString xmlString( text );
                 SetText( xmlString );
@@ -959,7 +959,7 @@ namespace Harlinn::Common::Core::Xml
                 HCC_COM_CHECK_HRESULT2( hr, pInterface );
                 return result;
             }
-            Variant Attribute( const std::wstring& name ) const
+            Variant Attribute( const WideString& name ) const
             {
                 return Attribute( name.c_str() );
             }
@@ -976,7 +976,7 @@ namespace Harlinn::Common::Core::Xml
                 return hr == S_OK;
             }
 
-            bool TryGetAttribute( const std::wstring& name, Variant& result ) const
+            bool TryGetAttribute( const WideString& name, Variant& result ) const
             {
                 return TryGetAttribute( name.c_str( ), result );
             }
@@ -1419,7 +1419,7 @@ namespace Harlinn::Common::Core::Xml
                 LoadXML( xml );
             }
 
-            explicit Document( const std::wstring& xml, bool validateOnParse = false, bool resolveExternals = false, bool preserveWhiteSpace = false, bool async = false )
+            explicit Document( const WideString& xml, bool validateOnParse = false, bool resolveExternals = false, bool preserveWhiteSpace = false, bool async = false )
                 : Document( xml.c_str(), validateOnParse, resolveExternals, preserveWhiteSpace, async )
             {
             }
@@ -1581,7 +1581,7 @@ namespace Harlinn::Common::Core::Xml
                 return Load( variant );
             }
 
-            bool Load( const std::wstring& xmlSource ) const
+            bool Load( const WideString& xmlSource ) const
             {
                 Variant variant( xmlSource );
                 return Load( variant );
@@ -1652,7 +1652,7 @@ namespace Harlinn::Common::Core::Xml
             {
                 return LoadXML( (BSTR)xml );
             }
-            bool LoadXML( const std::wstring& xml ) const
+            bool LoadXML( const WideString& xml ) const
             {
                 return LoadXML( (BSTR)xml.c_str() );
             }
@@ -1665,7 +1665,7 @@ namespace Harlinn::Common::Core::Xml
                 HCC_COM_CHECK_HRESULT2( hr, pInterface );
             }
 
-            void Save(const std::wstring& destination) const
+            void Save(const WideString& destination) const
             {
                 Variant arg( destination );
                 Save(arg);

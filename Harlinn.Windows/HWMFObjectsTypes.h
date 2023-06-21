@@ -293,7 +293,7 @@ namespace Harlinn::Windows::MF
     using Int64Attribute = Internal::AttributeImpl<Int64, MF_ATTRIBUTE_TYPE::MF_ATTRIBUTE_UINT64>;
     using DoubleAttribute = Internal::AttributeImpl<double, MF_ATTRIBUTE_TYPE::MF_ATTRIBUTE_DOUBLE>;
     using GuidAttribute = Internal::AttributeImpl<Guid, MF_ATTRIBUTE_TYPE::MF_ATTRIBUTE_GUID>;
-    using StringAttribute = Internal::AttributeImpl<std::wstring, MF_ATTRIBUTE_TYPE::MF_ATTRIBUTE_STRING>;
+    using StringAttribute = Internal::AttributeImpl<WideString, MF_ATTRIBUTE_TYPE::MF_ATTRIBUTE_STRING>;
     using BlobAttribute = Internal::AttributeImpl<std::vector<Byte>, MF_ATTRIBUTE_TYPE::MF_ATTRIBUTE_BLOB>;
     using UnknownAttribute = Internal::AttributeImpl<Unknown, MF_ATTRIBUTE_TYPE::MF_ATTRIBUTE_IUNKNOWN>;
 

@@ -47,7 +47,7 @@ namespace Harlinn::Common::Core
     template <typename ResultType, typename ArgumentType>
         requires (requires( ArgumentType a )
         {
-            { ToWideString( a ) } -> std::same_as<std::wstring>;
+            { ToWideString( a ) } -> std::same_as<WideString>;
             
         } && IsWideString<ResultType> && 
             std::is_same_v<Variant, ArgumentType> == false && std::is_same_v<Currency, ArgumentType> == false )
@@ -96,7 +96,7 @@ namespace Harlinn::Common::Core
 
     template <typename ResultType, typename ArgumentType>
         requires ( std::is_same_v<ResultType, bool> &&
-            ( std::is_same_v<std::wstring, ArgumentType> || std::is_same_v<std::string, ArgumentType> ) )
+            ( std::is_same_v<WideString, ArgumentType> || std::is_same_v<std::string, ArgumentType> ) )
     inline ResultType ConvertTo( const ArgumentType& arg )
     {
         return ToBoolean( arg );

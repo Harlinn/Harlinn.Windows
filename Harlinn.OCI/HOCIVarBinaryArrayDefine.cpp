@@ -122,16 +122,16 @@ namespace Harlinn::OCI
     {
         return ConvertBinaryTo<TimeSpan>( ColumnData( index ) );
     }
-    std::wstring VarBinaryArrayDefine::AsString( size_t index ) const
+    WideString VarBinaryArrayDefine::AsString( size_t index ) const
     {
         auto columnData = ColumnData( index );
         if ( columnData && columnData->size )
         {
             IO::BufferStream bufferStream( columnData->data, columnData->size );
             IO::BinaryReader reader( bufferStream );
-            return reader.Read<std::wstring>( );
+            return reader.Read<WideString>( );
         }
-        return std::wstring( );
+        return {};
     }
     Guid VarBinaryArrayDefine::AsGuid( size_t index ) const
     {

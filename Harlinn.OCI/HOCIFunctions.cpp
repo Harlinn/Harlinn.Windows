@@ -134,12 +134,12 @@ namespace Harlinn::OCI
         error.CheckResult( rc );
     }
 
-    std::wstring DateTimeToText( const OCI::HandleBase& handle, const ErrorHandle& error, const OCIDateTime* date, const wchar_t* fmt, Byte fmt_length, Byte fsprec, const wchar_t* lang_name, size_t lang_length )
+    WideString DateTimeToText( const OCI::HandleBase& handle, const ErrorHandle& error, const OCIDateTime* date, const wchar_t* fmt, Byte fmt_length, Byte fsprec, const wchar_t* lang_name, size_t lang_length )
     {
         wchar_t buffer[512];
         UInt32 bufferSize = sizeof( buffer );
         DateTimeToText( handle, error, date, fmt, fmt_length, fsprec, lang_name, lang_length, &bufferSize, buffer );
-        return std::wstring( buffer, bufferSize / sizeof( wchar_t ) );
+        return WideString( buffer, bufferSize / sizeof( wchar_t ) );
     }
 
     void IntervalSubtract( const OCI::HandleBase& handle, const ErrorHandle& error, OCIInterval* minuend, OCIInterval* subtrahend, OCIInterval* result )
@@ -1477,10 +1477,10 @@ namespace Harlinn::OCI
         error.CheckResult( rc );
     }
 
-    std::wstring LobReadWideString( const ServiceContext& serviceContext, const ErrorHandle& error, OCILobLocator* locp, CharacterSetForm csfrm )
+    WideString LobReadWideString( const ServiceContext& serviceContext, const ErrorHandle& error, OCILobLocator* locp, CharacterSetForm csfrm )
     {
         auto length = LobGetLength2( serviceContext, error, locp );
-        std::wstring result;
+        WideString result;
         result.resize( length );
         auto charLength = length;
         auto byteLength = length * sizeof( wchar_t );
@@ -1488,7 +1488,7 @@ namespace Harlinn::OCI
         return result;
 
     }
-    void LobWriteWideString( const ServiceContext& serviceContext, const ErrorHandle& error, const std::wstring& str, CharacterSetForm csfrm, OCILobLocator* locp )
+    void LobWriteWideString( const ServiceContext& serviceContext, const ErrorHandle& error, const WideString& str, CharacterSetForm csfrm, OCILobLocator* locp )
     {
         auto handle = (OCISvcCtx*)serviceContext.Handle( );
         auto errorHandle = (OCIError*)error.Handle( );

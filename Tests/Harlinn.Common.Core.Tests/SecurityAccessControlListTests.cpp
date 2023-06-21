@@ -4,9 +4,9 @@ using namespace Harlinn::Common::Core;
 using namespace Harlinn::Common::Core::Security;
 namespace
 {
-    std::wstring GetTestFileDirectory( )
+    WideString GetTestFileDirectory( )
     {
-        std::wstring TestDataRoot = Environment::EnvironmentVariable( L"HCC_TEST_DATA_ROOT" );
+        WideString TestDataRoot = Environment::EnvironmentVariable( L"HCC_TEST_DATA_ROOT" );
         auto directoryPath = IO::Path::Append( TestDataRoot, L"\\ACLTests" );
 
         if ( IO::Directory::Exist( directoryPath ) == false )

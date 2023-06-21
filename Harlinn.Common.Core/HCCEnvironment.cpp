@@ -10,7 +10,7 @@
 
 namespace Harlinn::Common::Core::Environment
 {
-    std::wstring UserName( UserNameFormat nameFormat )
+    WideString UserName( UserNameFormat nameFormat )
     {
         wchar_t buffer[MAX_PATH + 1];
         DWORD bufferLength = sizeof( buffer )/sizeof(wchar_t);
@@ -19,10 +19,10 @@ namespace Harlinn::Common::Core::Environment
         {
             ThrowLastOSError( );
         }
-        return std::wstring( buffer, static_cast<size_t>( bufferLength ) );
+        return WideString( buffer, static_cast<size_t>( bufferLength ) );
     }
 
-    std::wstring ComputerName( ComputerNameFormat nameFormat )
+    WideString ComputerName( ComputerNameFormat nameFormat )
     {
         wchar_t buffer[MAX_PATH + 1];
         DWORD bufferLength = sizeof( buffer )/sizeof( wchar_t );
@@ -31,12 +31,12 @@ namespace Harlinn::Common::Core::Environment
         {
             ThrowLastOSError( );
         }
-        return std::wstring( buffer, static_cast<size_t>( bufferLength ) );
+        return WideString( buffer, static_cast<size_t>( bufferLength ) );
     }
 
-    std::wstring DomainName( )
+    WideString DomainName( )
     {
-        std::wstring result;
+        WideString result;
         LPWSTR	nameBuffer = nullptr;
 
         NETSETUP_JOIN_STATUS BufferType;
@@ -58,7 +58,7 @@ namespace Harlinn::Common::Core::Environment
 
     Guid MachineGuid( )
     {
-        std::wstring guidAsString;
+        WideString guidAsString;
         const wchar_t* keyName = L"SOFTWARE\\Microsoft\\Cryptography";
         const wchar_t* valueName = L"MachineGuid";
         HKEY keyHandle = nullptr;
@@ -87,7 +87,7 @@ namespace Harlinn::Common::Core::Environment
     }
 
 
-    std::wstring EnvironmentVariable( const wchar_t* environmentVariableName )
+    WideString EnvironmentVariable( const wchar_t* environmentVariableName )
     {
         wchar_t buffer[MAX_PATH + 1];
         constexpr DWORD bufferLength = sizeof( buffer )/sizeof( wchar_t );
@@ -102,7 +102,7 @@ namespace Harlinn::Common::Core::Environment
         }
         if ( rc > MAX_PATH + 1 )
         {
-            std::wstring s;
+            WideString s;
             s.resize( rc - 1 );
             rc = GetEnvironmentVariableW( environmentVariableName, s.data(), rc );
             if ( !rc )
@@ -113,7 +113,7 @@ namespace Harlinn::Common::Core::Environment
         }
         else
         {
-            return std::wstring(buffer, static_cast<size_t>( rc ) );
+            return WideString(buffer, static_cast<size_t>( rc ) );
         }
     }
     std::string EnvironmentVariable( const char* environmentVariableName )
@@ -146,7 +146,7 @@ namespace Harlinn::Common::Core::Environment
         }
     }
 
-    std::wstring Where( const wchar_t* fileName )
+    WideString Where( const wchar_t* fileName )
     {
         wchar_t buffer[2048] = { 0, };
         constexpr DWORD bufferSize = sizeof( buffer ) / sizeof( wchar_t );
@@ -159,7 +159,7 @@ namespace Harlinn::Common::Core::Environment
             {
                 ThrowOSError( lastError );
             }
-            return std::wstring( );
+            return WideString( );
         }
 
         return buffer;
@@ -183,7 +183,7 @@ namespace Harlinn::Common::Core::Environment
         return buffer;
     }
 
-    std::wstring Where( const wchar_t* path, const wchar_t* fileName )
+    WideString Where( const wchar_t* path, const wchar_t* fileName )
     {
         wchar_t buffer[2048] = { 0, };
         constexpr DWORD bufferSize = sizeof( buffer ) / sizeof( wchar_t );
@@ -196,7 +196,7 @@ namespace Harlinn::Common::Core::Environment
             {
                 ThrowOSError( lastError );
             }
-            return std::wstring( );
+            return WideString( );
         }
 
         return buffer;

@@ -417,18 +417,18 @@ namespace Harlinn::Common::Core::BitConverter
     }
 
 
-    static std::wstring::value_type GetHexValue( int i )
+    static WideString::value_type GetHexValue( int i )
     {
         if ( i < 10 )
         {
-            return ( std::wstring::value_type ) ( i + '0' );
+            return ( WideString::value_type ) ( i + '0' );
         }
-        return ( std::wstring::value_type ) ( i - 10 + 'A' );
+        return ( WideString::value_type ) ( i - 10 + 'A' );
     }
 
 
     // Converts a vector of bytes into a String.
-    static std::wstring ToString( const std::vector<byte>& value, size_t startIndex, size_t length )
+    static WideString ToString( const std::vector<byte>& value, size_t startIndex, size_t length )
     {
         if ( startIndex >= value.size( ) && startIndex > 0 )
         {
@@ -443,7 +443,7 @@ namespace Harlinn::Common::Core::BitConverter
 
         if ( length == 0 )
         {
-            return std::wstring( );
+            return {};
         }
 
         if ( length > ( MaxInt32 / 3 ) )
@@ -453,9 +453,9 @@ namespace Harlinn::Common::Core::BitConverter
         }
 
         size_t stringLength = size_t( length ) * 3 - 1;
-        std::wstring result;
+        WideString result;
         result.resize( stringLength );
-        std::wstring::value_type* buffer = result.data( );
+        WideString::value_type* buffer = result.data( );
         size_t i = 0;
         size_t index = startIndex;
         for ( i = 0; i < stringLength; i += 3 )
@@ -470,13 +470,13 @@ namespace Harlinn::Common::Core::BitConverter
     }
 
     // Converts a vector of bytes into a String. 
-    static std::wstring ToString( const std::vector<byte>& value )
+    static WideString ToString( const std::vector<byte>& value )
     {
         return ToString( value, 0, value.size( ) );
     }
 
     // Converts a vector of bytes into a String. 
-    static std::wstring ToString( const std::vector<byte>& value, size_t startIndex )
+    static WideString ToString( const std::vector<byte>& value, size_t startIndex )
     {
         return ToString( value, startIndex, value.size( ) - startIndex );
     }

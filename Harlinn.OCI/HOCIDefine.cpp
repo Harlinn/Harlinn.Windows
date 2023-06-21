@@ -252,7 +252,7 @@ namespace Harlinn::OCI
     {
         HCC_THROW( NotImplementedException );
     }
-    std::wstring Define::AsString( ) const
+    WideString Define::AsString( ) const
     {
         HCC_THROW( NotImplementedException );
     }

@@ -9,12 +9,12 @@ namespace Harlinn::OCI::Metadata
     { 
     }
 
-    MetadataObject::MetadataObject( const OCI::ServiceContext* serviceContext, const MetadataObject* owner, const std::wstring& name )
+    MetadataObject::MetadataObject( const OCI::ServiceContext* serviceContext, const MetadataObject* owner, const WideString& name )
         : serviceContext_( serviceContext ), owner_( owner ), name_( name )
     {
     }
 
-    MetadataObject::MetadataObject( const OCI::ServiceContext* serviceContext, const std::wstring& name )
+    MetadataObject::MetadataObject( const OCI::ServiceContext* serviceContext, const WideString& name )
         : serviceContext_( serviceContext ), owner_( nullptr ), name_( name )
     {
     }

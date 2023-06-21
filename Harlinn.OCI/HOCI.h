@@ -279,42 +279,42 @@ namespace Harlinn::OCI
         }
 
         /// <summary>
-        /// Gets the value of an attribute from the handle as a std::wstring
+        /// Gets the value of an attribute from the handle as a WideString
         /// </summary>
         /// <param name="attribute">Identifies the attribute to retrieve the value for</param>
-        /// <returns>Value of the attribute as a std::wstring</returns>
-        std::wstring GetStringAttribute( Attribute attribute ) const
+        /// <returns>Value of the attribute as a WideString</returns>
+        WideString GetStringAttribute( Attribute attribute ) const
         {
             wchar_t* buffer = nullptr;
             UInt32 bufferSize = 0;
             GetAttribute( &buffer, &bufferSize, attribute );
-            std::wstring result( buffer, bufferSize / sizeof( wchar_t ) );
+            WideString result( buffer, bufferSize / sizeof( wchar_t ) );
             return result;
         }
 
         /// <summary>
-        /// Gets the value of an attribute from the handle as a std::wstring
+        /// Gets the value of an attribute from the handle as a WideString
         /// For use with attributes that are not returned as UTF-16
         /// </summary>
         /// <param name="attribute">Identifies the attribute to retrieve the value for</param>
-        /// <returns>Value of the attribute as a std::wstring</returns>
-        std::wstring GetStringAttributeFromByteString( Attribute attribute ) const
+        /// <returns>Value of the attribute as a WideString</returns>
+        WideString GetStringAttributeFromByteString( Attribute attribute ) const
         {
             char* buffer = nullptr;
             UInt32 bufferSize = 0;
             GetAttribute( &buffer, &bufferSize, attribute );
-            std::wstring result;
+            WideString result;
             ToWideString( buffer, bufferSize, result );
             return result;
         }
 
 
         /// <summary>
-        /// Sets the value of an attribute on the handle as a std::wstring
+        /// Sets the value of an attribute on the handle as a WideString
         /// </summary>
         /// <param name="attribute">Identifies the attribute to assign the value to</param>
-        /// <param name="value">Value of the attribute as a std::wstring</param>
-        void SetStringAttribute( Attribute attribute, const std::wstring& value ) const
+        /// <param name="value">Value of the attribute as a WideString</param>
+        void SetStringAttribute( Attribute attribute, const WideString& value ) const
         {
             SetAttribute( (void*)value.c_str( ), static_cast<UInt32>( value.length( ) * sizeof( wchar_t ) ), attribute );
         }
@@ -774,13 +774,13 @@ namespace Harlinn::OCI
         /// subscribes to receive notifications of database events or events in the AQ namespace.
         /// </remarks>
         /// <returns>The newly created Subscription object</returns>
-        OCI::Subscription CreateSubscription( const std::wstring& subscriptionName ) const;
+        OCI::Subscription CreateSubscription( const WideString& subscriptionName ) const;
 
         /// <summary>
         /// The login name (DN) for LDAP connections. 
         /// </summary>
         /// <returns>login name</returns>
-        std::wstring BindDN( ) const
+        WideString BindDN( ) const
         {
             auto result = GetStringAttribute( Attribute::BIND_DN );
             return result;
@@ -789,7 +789,7 @@ namespace Harlinn::OCI
         /// Sets the login name (DN) for LDAP connections. 
         /// </summary>
         /// <param name="loginName"></param>
-        void SetBindDN( const std::wstring& loginName ) const
+        void SetBindDN( const WideString& loginName ) const
         {
             SetStringAttribute( Attribute::BIND_DN, loginName );
         }
@@ -905,11 +905,11 @@ namespace Harlinn::OCI
         /// holds the password to use when connecting to the LDAP server.
         /// </summary>
         /// <returns></returns>
-        std::wstring LDAPCredentials( ) const
+        WideString LDAPCredentials( ) const
         {
             return GetStringAttribute( Attribute::LDAP_CRED );
         }
-        void SetLDAPCredentials( const std::wstring& credentials ) const
+        void SetLDAPCredentials( const WideString& credentials ) const
         {
             SetStringAttribute( Attribute::LDAP_CRED, credentials );
         }
@@ -918,11 +918,11 @@ namespace Harlinn::OCI
         /// The administrative context of the client. This is usually the root of the Oracle 
         /// RDBMS LDAP schema in the LDAP server.
         /// </summary>
-        std::wstring LDAPContext( ) const
+        WideString LDAPContext( ) const
         {
             return GetStringAttribute( Attribute::LDAP_CTX );
         }
-        void SetLDAPContext( const std::wstring& context ) const
+        void SetLDAPContext( const WideString& context ) const
         {
             SetStringAttribute( Attribute::LDAP_CTX, context );
         }
@@ -930,11 +930,11 @@ namespace Harlinn::OCI
         /// <summary>
         /// The name of the host on which the LDAP server runs.
         /// </summary>
-        std::wstring LDAPHost( ) const
+        WideString LDAPHost( ) const
         {
             return GetStringAttribute( Attribute::LDAP_HOST );
         }
-        void SetLDAPHost( const std::wstring& host ) const
+        void SetLDAPHost( const WideString& host ) const
         {
             SetStringAttribute( Attribute::LDAP_HOST, host );
         }
@@ -1078,7 +1078,7 @@ namespace Harlinn::OCI
         /// If the authentication method is SSL authentication, this attribute 
         /// contains the location of the client wallet.
         /// </summary>
-        std::wstring SSLWalletLocation( ) const
+        WideString SSLWalletLocation( ) const
         {
             return GetStringAttribute( Attribute::WALL_LOC );
         }
@@ -1086,7 +1086,7 @@ namespace Harlinn::OCI
         /// If the authentication method is SSL authentication, this attribute 
         /// contains the location of the client wallet.
         /// </summary>
-        void SetSSLWalletLocation( const std::wstring& location ) const
+        void SetSSLWalletLocation( const WideString& location ) const
         {
             SetStringAttribute( Attribute::WALL_LOC, location );
         }
@@ -1165,11 +1165,11 @@ namespace Harlinn::OCI
             return error_;
         }
 
-        HO_EXPORT void Attach( const std::wstring& databaseLink, ServerAttachMode attachMode = ServerAttachMode::Default ) const;
+        HO_EXPORT void Attach( const WideString& databaseLink, ServerAttachMode attachMode = ServerAttachMode::Default ) const;
         HO_EXPORT void Detach( ) const;
 
         HO_EXPORT ServiceContext CreateServiceContext( ) const;
-        HO_EXPORT ServiceContext CreateServiceContext( const std::wstring& username, const std::wstring& password, const std::wstring& databaseLink, ServerAttachMode attachMode = ServerAttachMode::Default ) const;
+        HO_EXPORT ServiceContext CreateServiceContext( const WideString& username, const WideString& password, const WideString& databaseLink, ServerAttachMode attachMode = ServerAttachMode::Default ) const;
 
         
         /// <summary>
@@ -1181,11 +1181,11 @@ namespace Harlinn::OCI
         /// coordination.Server database names can only be accessed if the database is open at 
         /// the time the OCISessionBegin( ) call is issued.
         /// </summary>
-        std::wstring ExternalName( ) const
+        WideString ExternalName( ) const
         {
             return GetStringAttribute( Attribute::EXTERNAL_NAME );
         }
-        void SetExternalName( const std::wstring& externalName ) const
+        void SetExternalName( const WideString& externalName ) const
         {
             SetStringAttribute( Attribute::EXTERNAL_NAME, externalName );
         }
@@ -1233,11 +1233,11 @@ namespace Harlinn::OCI
         /// Sets the client database name that will be recorded when performing global transactions. 
         /// The name can be used by the DBA to track transactions that may be pending in a prepared 
         /// state due to failures.
-        std::wstring InternalName( ) const
+        WideString InternalName( ) const
         {
             return GetStringAttribute( Attribute::INTERNAL_NAME );
         }
-        void SetInternalName( const std::wstring& internalName ) const
+        void SetInternalName( const WideString& internalName ) const
         {
             SetStringAttribute( Attribute::INTERNAL_NAME, internalName );
         }
@@ -1267,14 +1267,14 @@ namespace Harlinn::OCI
         /// <summary>
         /// An alpha-numeric string not exceeding 30 characters specifying the server group
         /// </summary>
-        std::wstring ServerGroup( ) const
+        WideString ServerGroup( ) const
         {
             return GetStringAttribute( Attribute::SERVER_GROUP );
         }
         /// <summary>
         /// An alpha-numeric string not exceeding 30 characters specifying the server group
         /// </summary>
-        void SetServerGroup( const std::wstring& serverGroup ) const
+        void SetServerGroup( const WideString& serverGroup ) const
         {
             SetStringAttribute( Attribute::SERVER_GROUP, serverGroup );
         }
@@ -1300,15 +1300,15 @@ namespace Harlinn::OCI
         }
 
 
-        std::wstring DbDomain( ) const
+        WideString DbDomain( ) const
         {
             return GetStringAttribute( Attribute::DBDOMAIN );
         }
-        std::wstring DbName( ) const
+        WideString DbName( ) const
         {
             return GetStringAttributeFromByteString( Attribute::DBNAME );
         }
-        std::wstring InstanceName( ) const
+        WideString InstanceName( ) const
         {
             return GetStringAttribute( Attribute::INSTNAME );
         }
@@ -1322,7 +1322,7 @@ namespace Harlinn::OCI
             return result;
         }
 
-        std::wstring ServiceName( ) const
+        WideString ServiceName( ) const
         {
             return GetStringAttribute( Attribute::SERVICENAME );
         }
@@ -1398,16 +1398,16 @@ namespace Harlinn::OCI
         }
         
     public:
-        std::wstring UserName( ) const
+        WideString UserName( ) const
         {
             return GetStringAttribute( Attribute::USERNAME );
         }
-        void SetUserName( const std::wstring& userName ) const
+        void SetUserName( const WideString& userName ) const
         {
             SetStringAttribute( Attribute::USERNAME, userName );
         }
 
-        void SetPassword( const std::wstring& password ) const
+        void SetPassword( const WideString& password ) const
         {
             SetStringAttribute( Attribute::PASSWORD, password );
         }
@@ -1634,16 +1634,16 @@ namespace Harlinn::OCI
             return result;
         }
 
-        HO_EXPORT void TypeByName( const std::wstring& schemaName,
-                                        const std::wstring& typeName,
-                                        const std::wstring& versionName,
+        HO_EXPORT void TypeByName( const WideString& schemaName,
+                                        const WideString& typeName,
+                                        const WideString& versionName,
                                         OCI::Duration pinDuration,
                                         OCI::TypeGetOpt typeGetOption,
                                         OCIType **tdo ) const;
     public:
-        std::unique_ptr<OCI::Type> TypeByName( const std::wstring& schemaName,
-                                        const std::wstring& typeName,
-                                        const std::wstring& versionName,
+        std::unique_ptr<OCI::Type> TypeByName( const WideString& schemaName,
+                                        const WideString& typeName,
+                                        const WideString& versionName,
                                         OCI::Duration pinDuration,
                                         OCI::TypeGetOpt typeGetOption ) const
         {
@@ -1652,26 +1652,26 @@ namespace Harlinn::OCI
             return std::make_unique< OCI::Type >( *this, ociType );
         }
 
-        std::unique_ptr<OCI::Type> TypeByName( const std::wstring& schemaName, const std::wstring& typeName, OCI::Duration pinDuration = OCI::Duration::Session, OCI::TypeGetOpt typeGetOption = OCI::TypeGetOpt::Header ) const;
+        std::unique_ptr<OCI::Type> TypeByName( const WideString& schemaName, const WideString& typeName, OCI::Duration pinDuration = OCI::Duration::Session, OCI::TypeGetOpt typeGetOption = OCI::TypeGetOpt::Header ) const;
     private:
-        HO_EXPORT void TypeByFullName( const std::wstring& fullName,
-                                                const std::wstring& versionName,
+        HO_EXPORT void TypeByFullName( const WideString& fullName,
+                                                const WideString& versionName,
                                                 OCI::Duration pinDuration,
                                                 OCI::TypeGetOpt typeGetOption,
                                                 OCIType ** ociType ) const;
     public:
-        std::unique_ptr<OCI::Type> TypeByFullName( const std::wstring& fullName, const std::wstring& versionName, OCI::Duration pinDuration, OCI::TypeGetOpt typeGetOption ) const
+        std::unique_ptr<OCI::Type> TypeByFullName( const WideString& fullName, const WideString& versionName, OCI::Duration pinDuration, OCI::TypeGetOpt typeGetOption ) const
         {
             OCIType* ociType = nullptr;
             TypeByFullName( fullName, versionName, pinDuration, typeGetOption, &ociType );
             return std::make_unique< OCI::Type >( *this, ociType );
         }
-        std::unique_ptr<OCI::Type> TypeByFullName( const std::wstring& fullName, OCI::Duration pinDuration = OCI::Duration::Session, OCI::TypeGetOpt typeGetOption = OCI::TypeGetOpt::Header ) const;
+        std::unique_ptr<OCI::Type> TypeByFullName( const WideString& fullName, OCI::Duration pinDuration = OCI::Duration::Session, OCI::TypeGetOpt typeGetOption = OCI::TypeGetOpt::Header ) const;
 
 
-        HO_EXPORT bool Exists( const std::wstring& objectName, OCI::ParameterType parameterType = OCI::ParameterType::Unknown ) const;
+        HO_EXPORT bool Exists( const WideString& objectName, OCI::ParameterType parameterType = OCI::ParameterType::Unknown ) const;
 
-        HO_EXPORT OCI::Describe Describe( const std::wstring& objectName, OCI::ParameterType parameterType = OCI::ParameterType::Unknown, bool showInvisibleColumns = false ) const;
+        HO_EXPORT OCI::Describe Describe( const WideString& objectName, OCI::ParameterType parameterType = OCI::ParameterType::Unknown, bool showInvisibleColumns = false ) const;
         HO_EXPORT OCI::Describe Describe( const OCI::Type& type ) const;
         HO_EXPORT OCI::Describe Describe( const OCI::Ref& typeRef ) const;
         HO_EXPORT OCI::Describe Describe( OCIType* type ) const;
@@ -1679,7 +1679,7 @@ namespace Harlinn::OCI
 
         
         HO_EXPORT const OCI::Session& CreateSession( );
-        HO_EXPORT const OCI::Session& CreateSession( const std::wstring& username, const std::wstring& password );
+        HO_EXPORT const OCI::Session& CreateSession( const WideString& username, const WideString& password );
 
 
         const OCI::Server* Server( ) const
@@ -1698,22 +1698,22 @@ namespace Harlinn::OCI
         HO_EXPORT void SessionEnd( ) const;
 
 
-        HO_EXPORT OCI::Statement CreateStatement( const std::wstring& sql ) const;
+        HO_EXPORT OCI::Statement CreateStatement( const WideString& sql ) const;
 
         template<typename ...BindableTypes>
-        OCI::Statement CreateStatement( const std::wstring& sql, BindableTypes&& ...bindableArgs ) const;
+        OCI::Statement CreateStatement( const WideString& sql, BindableTypes&& ...bindableArgs ) const;
 
         HO_EXPORT OCI::Describe CreateDescribe( ) const;
-        HO_EXPORT std::vector<std::wstring> GetDbmsOutput( ) const;
+        HO_EXPORT std::vector<WideString> GetDbmsOutput( ) const;
 
         template<typename T>
-        std::optional<T> ExecuteScalar( const std::wstring& sql ) const;
+        std::optional<T> ExecuteScalar( const WideString& sql ) const;
 
         template<typename ...BindableTypes>
-        Int64 ExecuteNonQuery( const std::wstring& sql, BindableTypes&& ...bindableArgs ) const;
+        Int64 ExecuteNonQuery( const WideString& sql, BindableTypes&& ...bindableArgs ) const;
 
 
-        std::wstring DbName( ) const
+        WideString DbName( ) const
         {
             return server_->DbName( );
         }
@@ -1956,11 +1956,11 @@ namespace Harlinn::OCI
         /// attributes are not set, an error is returned.The subscription name that is 
         /// set for the subscription handle must be consistent with its namespace.
         /// </summary>
-        std::wstring Name( ) const
+        WideString Name( ) const
         {
             return GetStringAttribute( Attribute::SUBSCR_NAME );
         }
-        void SetName( const std::wstring& name ) const
+        void SetName( const WideString& name ) const
         {
             SetStringAttribute( Attribute::SUBSCR_NAME, name );
         }
@@ -2053,11 +2053,11 @@ namespace Harlinn::OCI
         /// <summary>
         /// The name of the recipient of the notification
         /// </summary>
-        std::wstring Recipient( ) const
+        WideString Recipient( ) const
         {
             return GetStringAttribute( Attribute::SUBSCR_RECPT );
         }
-        void SetRecipient( const std::wstring& recipientName ) const
+        void SetRecipient( const WideString& recipientName ) const
         {
             SetStringAttribute( Attribute::SUBSCR_RECPT, recipientName );
         }
@@ -2135,7 +2135,7 @@ namespace Harlinn::OCI
         /// <summary>
         /// Name of the database
         /// </summary>
-        std::wstring ContinuousQueryNotificationDatabaseName( ) const
+        WideString ContinuousQueryNotificationDatabaseName( ) const
         {
             return GetStringAttribute( Attribute::CHDES_DBNAME );
         }
@@ -2156,13 +2156,13 @@ namespace Harlinn::OCI
             return GetUInt32Attribute( Attribute::CHDES_ROW_OPFLAGS );
         }
 
-        std::wstring ContinuousQueryNotificationRowId( ) const
+        WideString ContinuousQueryNotificationRowId( ) const
         {
             return GetStringAttribute( Attribute::CHDES_ROW_ROWID );
         }
     };
 
-    inline Subscription Environment::CreateSubscription( const std::wstring& subscriptionName ) const
+    inline Subscription Environment::CreateSubscription( const WideString& subscriptionName ) const
     {
         auto result = CreateSubscription( );
         result.SetName( subscriptionName );
@@ -2256,10 +2256,10 @@ namespace Harlinn::OCI
 
         template <typename BindType, typename ...ArgTypes >
             requires std::is_base_of_v<BindBase, BindType>
-        BindType* Bind( const std::wstring& name, ArgTypes&&... args ) const;
+        BindType* Bind( const WideString& name, ArgTypes&&... args ) const;
         template <typename T, typename ...ArgTypes >
             requires Internal::HasTraits<T>
-        typename Internal::Traits<T>::BindType* Bind( const std::wstring& name, ArgTypes&&... args ) const;
+        typename Internal::Traits<T>::BindType* Bind( const WideString& name, ArgTypes&&... args ) const;
 
         const std::vector<std::unique_ptr<OCI::BindBase>>& Binds( ) const
         {
@@ -2409,7 +2409,7 @@ namespace Harlinn::OCI
         /// Returns the text of the SQL statement prepared in a statement handle. 
         /// In UTF-16 mode, the returned statement is in UTF-16 encoding.
         /// </summary>
-        std::wstring Text( ) const
+        WideString Text( ) const
         {
             return GetStringAttribute( Attribute::STATEMENT );
         }
@@ -2499,7 +2499,7 @@ namespace Harlinn::OCI
 
 
     template<typename ...BindableTypes>
-    inline Int64 ServiceContext::ExecuteNonQuery( const std::wstring& sql, BindableTypes&& ...bindableArgs ) const
+    inline Int64 ServiceContext::ExecuteNonQuery( const WideString& sql, BindableTypes&& ...bindableArgs ) const
     {
         auto statement = CreateStatement( sql, std::forward<BindableTypes>( bindableArgs )... );
         return statement.ExecuteNonQuery( );
@@ -2574,12 +2574,12 @@ namespace Harlinn::OCI
             other.serviceContext_ = nullptr;
         }
 
-        std::wstring GetStringAttribute( DescribeAttribute attributeId ) const
+        WideString GetStringAttribute( DescribeAttribute attributeId ) const
         {
             return Base::GetStringAttribute( static_cast<Attribute>( attributeId ) );
         }
         using Base::GetStringAttribute;
-        void SetStringAttribute( DescribeAttribute attribute, const std::wstring& value ) const
+        void SetStringAttribute( DescribeAttribute attribute, const WideString& value ) const
         {
             Base::SetStringAttribute( static_cast<Attribute>( attribute ), value );
         }
@@ -2709,7 +2709,7 @@ namespace Harlinn::OCI
         /// Database name or object name in a schema
         /// </summary>
         /// <returns>The database name or object name in a schema</returns>
-        std::wstring Name( ) const
+        WideString Name( ) const
         {
             return GetStringAttribute( Attribute::OBJ_NAME );
         }
@@ -2718,7 +2718,7 @@ namespace Harlinn::OCI
         /// Schema name where the object is located
         /// </summary>
         /// <returns>The schema name where the object is located</returns>
-        std::wstring Schema( ) const
+        WideString Schema( ) const
         {
             return GetStringAttribute( Attribute::OBJ_SCHEMA );
         }
@@ -2977,8 +2977,8 @@ namespace Harlinn::OCI
         HO_EXPORT bool FileExists( ) const;
         HO_EXPORT bool FileIsOpen( ) const;
         HO_EXPORT void FileOpen( ) const;
-        HO_EXPORT std::wstring FileGetName( std::wstring& directoryAlias ) const;
-        HO_EXPORT void FileSetName( const std::wstring& directoryAlias, const std::wstring& filename );
+        HO_EXPORT WideString FileGetName( WideString& directoryAlias ) const;
+        HO_EXPORT void FileSetName( const WideString& directoryAlias, const WideString& filename );
 
     };
 
@@ -3021,7 +3021,7 @@ namespace Harlinn::OCI
         using Base = HandleBase;
         OCI::Statement* statement_;
         UInt32 position_;
-        std::wstring name_;
+        WideString name_;
     protected:
         BindBase( ) noexcept
             : Base( ), statement_(nullptr), position_(0)
@@ -3050,7 +3050,7 @@ namespace Harlinn::OCI
         {
             EnsureStatementIsValid( statement );
         }
-        BindBase( const OCI::Statement& statement, const std::wstring& name )
+        BindBase( const OCI::Statement& statement, const WideString& name )
             : Base( OCI::HandleType::Bind, nullptr, false ), 
               statement_( const_cast<OCI::Statement*>( &statement ) ), 
               position_( 0 ), 
@@ -3069,7 +3069,7 @@ namespace Harlinn::OCI
         }
 
         HO_EXPORT void BindByPos( UInt32 positon, OraType dataType, void* dataAddress, Int64 dataSize, Int16* indicators, UInt32* actualLengths = nullptr, UInt16* returnCodes = nullptr, UInt32 plsqlMaxArrayLength = 0, UInt32* plsqlArrayLength = nullptr, UInt32 mode = 0 );
-        HO_EXPORT void BindByName( const std::wstring& name, OraType dataType, void* dataAddress, Int64 dataSize, Int16* indicators, UInt32* actualLengths = nullptr, UInt16* returnCodes = nullptr, UInt32 plsqlMaxArrayLength = 0, UInt32* plsqlArrayLength = nullptr, UInt32 mode = 0 );
+        HO_EXPORT void BindByName( const WideString& name, OraType dataType, void* dataAddress, Int64 dataSize, Int16* indicators, UInt32* actualLengths = nullptr, UInt16* returnCodes = nullptr, UInt32 plsqlMaxArrayLength = 0, UInt32* plsqlArrayLength = nullptr, UInt32 mode = 0 );
 
 
     protected:
@@ -3080,7 +3080,7 @@ namespace Harlinn::OCI
             return stmtType == OCI::StatementType::Begin || stmtType == OCI::StatementType::Declare;
         }
         HO_EXPORT virtual void Bind( UInt32 positon, UInt32 iters );
-        HO_EXPORT virtual void Bind( const std::wstring& name, UInt32 iters );
+        HO_EXPORT virtual void Bind( const WideString& name, UInt32 iters );
     public:
         void OnExecute( UInt32 iters )
         {
@@ -3121,16 +3121,16 @@ namespace Harlinn::OCI
             return position_ > 0;
         }
 
-        const std::wstring& Name( ) const
+        const WideString& Name( ) const
         {
             return name_;
         }
-        std::wstring Name( )
+        WideString Name( )
         {
             return name_;
         }
 
-        void SetName( const std::wstring& name )
+        void SetName( const WideString& name )
         {
             name_ = name;
         }
@@ -3323,7 +3323,7 @@ namespace Harlinn::OCI
             : Base( statement, position ), indicator_( -1 )
         { }
 
-        Bind( const OCI::Statement& statement, const std::wstring& name )
+        Bind( const OCI::Statement& statement, const WideString& name )
             : Base( statement, name ), indicator_( -1 )
         { }
 
@@ -3331,7 +3331,7 @@ namespace Harlinn::OCI
         {
             Base::BindByPos( positon, dataType, dataAddress, dataSize, &indicator_ );
         }
-        void SimpleBindByName( const std::wstring& name, OraType dataType, void* dataAddress, Int32 dataSize )
+        void SimpleBindByName( const WideString& name, OraType dataType, void* dataAddress, Int32 dataSize )
         {
             Base::BindByName( name, dataType, dataAddress, dataSize, &indicator_ );
         }
@@ -3473,11 +3473,11 @@ namespace Harlinn::OCI
         {
             HCC_THROW( NotImplementedException );
         }
-        virtual std::wstring AsString( ) const
+        virtual WideString AsString( ) const
         {
             HCC_THROW( NotImplementedException );
         }
-        virtual void Assign( const std::wstring& newValue )
+        virtual void Assign( const WideString& newValue )
         {
             HCC_THROW( NotImplementedException );
         }
@@ -3564,7 +3564,7 @@ namespace Harlinn::OCI
             return this->AsGuid( );
         }
         template<>
-        std::wstring As( ) const
+        WideString As( ) const
         {
             return this->AsString( );
         }
@@ -3596,7 +3596,7 @@ namespace Harlinn::OCI
             : Base( statement, position )
         { }
 
-        ArrayBind( const OCI::Statement& statement, const std::wstring& name )
+        ArrayBind( const OCI::Statement& statement, const WideString& name )
             : Base( statement, name )
         { }
 
@@ -3605,7 +3605,7 @@ namespace Harlinn::OCI
         {
             Base::BindByPos( positon, dataType, dataAddress, dataSize, indicator_.data( ), nullptr, nullptr, maximumNumberOfElements, currentNumberOfElements );
         }
-        void SimpleBindByName( const std::wstring& name, OraType dataType, void* dataAddress, Int32 dataSize, UInt32 maximumNumberOfElements, UInt32* currentNumberOfElements )
+        void SimpleBindByName( const WideString& name, OraType dataType, void* dataAddress, Int32 dataSize, UInt32 maximumNumberOfElements, UInt32* currentNumberOfElements )
         {
             Base::BindByName( name, dataType, dataAddress, dataSize, indicator_.data( ), nullptr, nullptr, maximumNumberOfElements, currentNumberOfElements );
         }
@@ -3754,11 +3754,11 @@ namespace Harlinn::OCI
         {
             HCC_THROW( NotImplementedException );
         }
-        virtual std::wstring AsString( size_t index ) const
+        virtual WideString AsString( size_t index ) const
         {
             HCC_THROW( NotImplementedException );
         }
-        virtual void Assign( size_t index, const std::wstring& newValue )
+        virtual void Assign( size_t index, const WideString& newValue )
         {
             HCC_THROW( NotImplementedException );
         }
@@ -3792,7 +3792,7 @@ namespace Harlinn::OCI
             : Base( statement, position )
         { }
 
-        DynamicBind( const OCI::Statement& statement, const std::wstring& name )
+        DynamicBind( const OCI::Statement& statement, const WideString& name )
             : Base( statement, name )
         { }
 
@@ -3806,7 +3806,7 @@ namespace Harlinn::OCI
 
         HO_EXPORT void RegisterCallbacks( );
         HO_EXPORT void BindByPos( UInt32 positon, OraType dataType, Int32 dataSize  );
-        HO_EXPORT void BindByName( const std::wstring& name, OraType dataType, Int32 dataSize  );
+        HO_EXPORT void BindByName( const WideString& name, OraType dataType, Int32 dataSize  );
     };
 
 
@@ -3837,7 +3837,7 @@ namespace Harlinn::OCI
             : Base( statement, position ), data_( IntermediateType{} )
         { }
 
-        SimpleBind( const OCI::Statement& statement, const std::wstring& name )
+        SimpleBind( const OCI::Statement& statement, const WideString& name )
             : Base( statement, name ), data_( IntermediateType{} )
         { }
     protected:
@@ -3845,7 +3845,7 @@ namespace Harlinn::OCI
         {
             SimpleBindByPos( positon, ExternalType, &data_, sizeof( data_ ) );
         }
-        virtual void Bind( const std::wstring& name, UInt32 iters ) final override
+        virtual void Bind( const WideString& name, UInt32 iters ) final override
         {
             SimpleBindByName( name, ExternalType, &data_, sizeof( data_ ) );
         }
@@ -3987,7 +3987,7 @@ namespace Harlinn::OCI
             : Base( statement, position ), actualSize_( 0 )
         { }
 
-        SimpleArrayBind( const OCI::Statement& statement, const std::wstring& name )
+        SimpleArrayBind( const OCI::Statement& statement, const WideString& name )
             : Base( statement, name ), actualSize_( 0 )
         { }
 
@@ -4076,7 +4076,7 @@ namespace Harlinn::OCI
                 SimpleBindByPos( positon, ExternalType, data_.data( ), sizeof( BoundType ), actualSize_, &actualSize_ );
             }
         }
-        virtual void Bind( const std::wstring& name, UInt32 iters )
+        virtual void Bind( const WideString& name, UInt32 iters )
         {
             auto dataSize = data_.size( );
             actualSize_ = static_cast<UInt32>( dataSize );
@@ -4210,7 +4210,7 @@ namespace Harlinn::OCI
         using Base = Bind;
     public:
         static constexpr OCI::OraType ExternalType = OCI::OraType::STR;
-        using BoundType = std::wstring;
+        using BoundType = WideString;
     private:
         size_t allocated_;
         wchar_t* string_;
@@ -4230,18 +4230,18 @@ namespace Harlinn::OCI
             Require( maximumColumnSize );
         }
 
-        CStringBind( const OCI::Statement& statement, const std::wstring& name )
+        CStringBind( const OCI::Statement& statement, const WideString& name )
             : Base( statement, name ), allocated_( 0 ), string_( nullptr )
         { }
 
-        CStringBind( const OCI::Statement& statement, UInt32 position, const std::wstring& value, size_t maximumColumnSize = 0 )
+        CStringBind( const OCI::Statement& statement, UInt32 position, const WideString& value, size_t maximumColumnSize = 0 )
             : Base( statement, position ), allocated_( 0 ), string_( nullptr )
         {
             Require( maximumColumnSize );
             Assign( value );
         }
 
-        CStringBind( const OCI::Statement& statement, const std::wstring& name, const std::wstring& value, size_t maximumColumnSize = 0 )
+        CStringBind( const OCI::Statement& statement, const WideString& name, const WideString& value, size_t maximumColumnSize = 0 )
             : Base( statement, name ), allocated_( 0 ), string_( nullptr )
         {
             Assign( value );
@@ -4268,7 +4268,7 @@ namespace Harlinn::OCI
         {
             Base::BindByPos( positon, ExternalType, string_, static_cast<Int32>( allocated_ ), &indicator_, nullptr, nullptr, 0, nullptr );
         }
-        virtual void Bind( const std::wstring& name, UInt32 iters ) final override
+        virtual void Bind( const WideString& name, UInt32 iters ) final override
         {
             Base::BindByName( name, ExternalType, string_, static_cast<Int32>( allocated_ ), &indicator_, nullptr, nullptr, 0, nullptr );
         }
@@ -4283,7 +4283,7 @@ namespace Harlinn::OCI
         }
         virtual void Assign( bool newValue ) final override
         {
-            Assign( ConvertTo<std::wstring>( newValue ) );
+            Assign( ConvertTo<WideString>( newValue ) );
         }
         virtual Byte AsByte( ) const final override
         {
@@ -4291,7 +4291,7 @@ namespace Harlinn::OCI
         }
         virtual void Assign( Byte newValue ) final override
         {
-            Assign( ConvertTo<std::wstring>( newValue ) );
+            Assign( ConvertTo<WideString>( newValue ) );
         }
         virtual SByte AsSByte( ) const final override
         {
@@ -4299,7 +4299,7 @@ namespace Harlinn::OCI
         }
         virtual void Assign( SByte newValue ) final override
         {
-            Assign( ConvertTo<std::wstring>( newValue ) );
+            Assign( ConvertTo<WideString>( newValue ) );
         }
         virtual Int16 AsInt16( ) const final override
         {
@@ -4307,7 +4307,7 @@ namespace Harlinn::OCI
         }
         virtual void Assign( Int16 newValue ) final override
         {
-            Assign( ConvertTo<std::wstring>( newValue ) );
+            Assign( ConvertTo<WideString>( newValue ) );
         }
         virtual UInt16 AsUInt16( ) const final override
         {
@@ -4315,7 +4315,7 @@ namespace Harlinn::OCI
         }
         virtual void Assign( UInt16 newValue ) final override
         {
-            Assign( ConvertTo<std::wstring>( newValue ) );
+            Assign( ConvertTo<WideString>( newValue ) );
         }
         virtual Int32 AsInt32( ) const final override
         {
@@ -4323,7 +4323,7 @@ namespace Harlinn::OCI
         }
         virtual void Assign( Int32 newValue ) final override
         {
-            Assign( ConvertTo<std::wstring>( newValue ) );
+            Assign( ConvertTo<WideString>( newValue ) );
         }
         virtual UInt32 AsUInt32( ) const final override
         {
@@ -4331,7 +4331,7 @@ namespace Harlinn::OCI
         }
         virtual void Assign( UInt32 newValue ) final override
         {
-            Assign( ConvertTo<std::wstring>( newValue ) );
+            Assign( ConvertTo<WideString>( newValue ) );
         }
         virtual Int64 AsInt64( ) const final override
         {
@@ -4339,7 +4339,7 @@ namespace Harlinn::OCI
         }
         virtual void Assign( Int64 newValue ) final override
         {
-            Assign( ConvertTo<std::wstring>( newValue ) );
+            Assign( ConvertTo<WideString>( newValue ) );
         }
         virtual UInt64 AsUInt64( ) const final override
         {
@@ -4347,7 +4347,7 @@ namespace Harlinn::OCI
         }
         virtual void Assign( UInt64 newValue ) final override
         {
-            Assign( ConvertTo<std::wstring>( newValue ) );
+            Assign( ConvertTo<WideString>( newValue ) );
         }
         virtual float AsSingle( ) const final override
         {
@@ -4355,7 +4355,7 @@ namespace Harlinn::OCI
         }
         virtual void Assign( float newValue ) final override
         {
-            Assign( ConvertTo<std::wstring>( newValue ) );
+            Assign( ConvertTo<WideString>( newValue ) );
         }
         virtual double AsDouble( ) const final override
         {
@@ -4363,7 +4363,7 @@ namespace Harlinn::OCI
         }
         virtual void Assign( double newValue ) final override
         {
-            Assign( ConvertTo<std::wstring>( newValue ) );
+            Assign( ConvertTo<WideString>( newValue ) );
         }
 
         virtual DateTime AsDateTime( ) const final override
@@ -4372,7 +4372,7 @@ namespace Harlinn::OCI
         }
         virtual void Assign( const DateTime& newValue ) final override
         {
-            Assign( ConvertTo<std::wstring>( newValue ) );
+            Assign( ConvertTo<WideString>( newValue ) );
         }
         virtual TimeSpan AsTimeSpan( ) const final override
         {
@@ -4380,17 +4380,17 @@ namespace Harlinn::OCI
         }
         virtual void Assign( const TimeSpan& newValue ) final override
         {
-            Assign( ConvertTo<std::wstring>( newValue.Ticks( ) ) );
+            Assign( ConvertTo<WideString>( newValue.Ticks( ) ) );
         }
-        virtual std::wstring AsString( ) const final override
+        virtual WideString AsString( ) const final override
         {
             if ( indicator_ != -1 && string_ )
             {
-                return std::wstring( string_ );
+                return WideString( string_ );
             }
-            return std::wstring( );
+            return WideString( );
         }
-        virtual void Assign( const std::wstring& newValue ) final override
+        virtual void Assign( const WideString& newValue ) final override
         {
             auto length = newValue.length( );
             Require( length );
@@ -4411,7 +4411,7 @@ namespace Harlinn::OCI
         }
         virtual void Assign( const Guid& newValue ) final override
         {
-            Assign( ConvertTo<std::wstring>( newValue ) );
+            Assign( ConvertTo<WideString>( newValue ) );
         }
     };
 
@@ -4423,7 +4423,7 @@ namespace Harlinn::OCI
         using Base = ArrayBind;
     public:
         static constexpr OCI::OraType ExternalType = OCI::OraType::STR;
-        using BoundType = std::wstring;
+        using BoundType = WideString;
     private:
         UInt32 arraySize_;
         UInt32 arrayMaxSize_;
@@ -4444,7 +4444,7 @@ namespace Harlinn::OCI
             : Base( statement, position ), arraySize_( 0 ), arrayMaxSize_( 0 ), maxColumnDataSize_( 0 ), data_( nullptr )
         { 
         }
-        CStringArrayBind( const OCI::Statement& statement, const std::wstring& name, size_t arraySize, size_t maximumArraySize, size_t maximumColumnSize )
+        CStringArrayBind( const OCI::Statement& statement, const WideString& name, size_t arraySize, size_t maximumArraySize, size_t maximumColumnSize )
             : Base( statement, name ), arraySize_( 0 ), arrayMaxSize_( 0 ), maxColumnDataSize_( 0 ), data_( nullptr )
         { 
         }
@@ -4454,7 +4454,7 @@ namespace Harlinn::OCI
         HO_EXPORT void Resize( size_t arraySize, size_t maximumArraySize, size_t elementSize );
     protected:
         HO_EXPORT virtual void Bind( UInt32 positon, UInt32 iters ) override;
-        HO_EXPORT virtual void Bind( const std::wstring& name, UInt32 iters ) override;
+        HO_EXPORT virtual void Bind( const WideString& name, UInt32 iters ) override;
     public:
 
         HO_EXPORT virtual void* Data( size_t index ) const override;
@@ -4486,8 +4486,8 @@ namespace Harlinn::OCI
         HO_EXPORT virtual void Assign( size_t index, const DateTime& newValue ) override;
         HO_EXPORT virtual TimeSpan AsTimeSpan( size_t index ) const override;
         HO_EXPORT virtual void Assign( size_t index, const TimeSpan& newValue ) override;
-        HO_EXPORT virtual std::wstring AsString( size_t index ) const override;
-        HO_EXPORT virtual void Assign( size_t index, const std::wstring& newValue ) override;
+        HO_EXPORT virtual WideString AsString( size_t index ) const override;
+        HO_EXPORT virtual void Assign( size_t index, const WideString& newValue ) override;
         HO_EXPORT void Assign( size_t index, const wchar_t* newValue );
         HO_EXPORT virtual Guid AsGuid( size_t index ) const override;
         HO_EXPORT virtual void Assign( size_t index, const Guid& newValue ) override;
@@ -4503,7 +4503,7 @@ namespace Harlinn::OCI
         using Base = Bind;
     public:
         static constexpr OCI::OraType ExternalType = OCI::OraType::ORA_OCIString;
-        using BoundType = std::wstring;
+        using BoundType = WideString;
     private:
         OCIString* string_;
     public:
@@ -4521,15 +4521,15 @@ namespace Harlinn::OCI
             : Base( statement, position ), string_( nullptr )
         { }
 
-        StringBind( const OCI::Statement& statement, const std::wstring& name )
+        StringBind( const OCI::Statement& statement, const WideString& name )
             : Base( statement, name ), string_( nullptr )
         { }
 
-        StringBind( const OCI::Statement& statement, UInt32 position, const std::wstring& value, size_t maximumColumnSize = 0 )
+        StringBind( const OCI::Statement& statement, UInt32 position, const WideString& value, size_t maximumColumnSize = 0 )
             : Base( statement, position ), string_( nullptr )
         { }
 
-        StringBind( const OCI::Statement& statement, const std::wstring& name, const std::wstring& value, size_t maximumColumnSize = 0 )
+        StringBind( const OCI::Statement& statement, const WideString& name, const WideString& value, size_t maximumColumnSize = 0 )
             : Base( statement, name ), string_( nullptr )
         { }
 
@@ -4537,7 +4537,7 @@ namespace Harlinn::OCI
 
     protected:
         HO_EXPORT virtual void Bind( UInt32 positon, UInt32 iters ) override;
-        HO_EXPORT virtual void Bind( const std::wstring& name, UInt32 iters ) override;
+        HO_EXPORT virtual void Bind( const WideString& name, UInt32 iters ) override;
     public:
         HO_EXPORT virtual void* Data( ) const override;
         HO_EXPORT virtual bool AsBoolean( ) const override;
@@ -4567,8 +4567,8 @@ namespace Harlinn::OCI
         HO_EXPORT virtual void Assign( const DateTime& newValue ) override;
         HO_EXPORT virtual TimeSpan AsTimeSpan( ) const override;
         HO_EXPORT virtual void Assign( const TimeSpan& newValue ) override;
-        HO_EXPORT virtual std::wstring AsString( ) const override;
-        HO_EXPORT virtual void Assign( const std::wstring& newValue ) override;
+        HO_EXPORT virtual WideString AsString( ) const override;
+        HO_EXPORT virtual void Assign( const WideString& newValue ) override;
         HO_EXPORT virtual Guid AsGuid( ) const override;
         HO_EXPORT virtual void Assign( const Guid& newValue ) override;
     };
@@ -4600,14 +4600,14 @@ namespace Harlinn::OCI
         {
         }
 
-        DateBind( const OCI::Statement& statement, const std::wstring& name )
+        DateBind( const OCI::Statement& statement, const WideString& name )
             : Base( statement, name )
         {
         }
 
     protected:
         HO_EXPORT virtual void Bind( UInt32 positon, UInt32 iters ) override;
-        HO_EXPORT virtual void Bind( const std::wstring& name, UInt32 iters ) override;
+        HO_EXPORT virtual void Bind( const WideString& name, UInt32 iters ) override;
     public:
 
         HO_EXPORT virtual void* Data( ) const override;
@@ -4638,10 +4638,10 @@ namespace Harlinn::OCI
         HO_EXPORT virtual void Assign( const DateTime& newValue ) override;
         HO_EXPORT virtual TimeSpan AsTimeSpan( ) const override;
         HO_EXPORT virtual void Assign( const TimeSpan& newValue ) override;
-        HO_EXPORT std::wstring AsString( const std::wstring& format ) const;
-        HO_EXPORT virtual std::wstring AsString( ) const override;
-        HO_EXPORT virtual void Assign( const std::wstring& newValue ) override;
-        HO_EXPORT void Assign( const std::wstring& format, const std::wstring& newValue );
+        HO_EXPORT WideString AsString( const WideString& format ) const;
+        HO_EXPORT virtual WideString AsString( ) const override;
+        HO_EXPORT virtual void Assign( const WideString& newValue ) override;
+        HO_EXPORT void Assign( const WideString& format, const WideString& newValue );
     };
 
     /// <summary>
@@ -4671,14 +4671,14 @@ namespace Harlinn::OCI
         {
         }
 
-        DateArrayBind( const OCI::Statement& statement, const std::wstring& name )
+        DateArrayBind( const OCI::Statement& statement, const WideString& name )
             : Base( statement, name ), actualSize_( 0 )
         {
         }
 
     protected:
         HO_EXPORT virtual void Bind( UInt32 positon, UInt32 iters ) override;
-        HO_EXPORT virtual void Bind( const std::wstring& name, UInt32 iters ) override;
+        HO_EXPORT virtual void Bind( const WideString& name, UInt32 iters ) override;
     public:
 
         HO_EXPORT virtual void* Data( size_t index ) const override;
@@ -4709,10 +4709,10 @@ namespace Harlinn::OCI
         HO_EXPORT virtual void Assign( size_t index, const DateTime& newValue ) override;
         HO_EXPORT virtual TimeSpan AsTimeSpan( size_t index ) const override;
         HO_EXPORT virtual void Assign( size_t index, const TimeSpan& newValue ) override;
-        HO_EXPORT std::wstring AsString( size_t index, const std::wstring& format ) const;
-        HO_EXPORT virtual std::wstring AsString( size_t index ) const override;
-        HO_EXPORT virtual void Assign( size_t index, const std::wstring& newValue ) override;
-        HO_EXPORT void Assign( size_t index, const std::wstring& format, const std::wstring& newValue );
+        HO_EXPORT WideString AsString( size_t index, const WideString& format ) const;
+        HO_EXPORT virtual WideString AsString( size_t index ) const override;
+        HO_EXPORT virtual void Assign( size_t index, const WideString& newValue ) override;
+        HO_EXPORT void Assign( size_t index, const WideString& format, const WideString& newValue );
     };
 
 
@@ -4736,7 +4736,7 @@ namespace Harlinn::OCI
             : Base( statement, position )
         { }
 
-        DescriptorBaseBind( const OCI::Statement& statement, const std::wstring& name )
+        DescriptorBaseBind( const OCI::Statement& statement, const WideString& name )
             : Base( statement, name )
         { }
 
@@ -4768,7 +4768,7 @@ namespace Harlinn::OCI
         {
         }
 
-        DescriptorArrayBaseBind( const OCI::Statement& statement, const std::wstring& name )
+        DescriptorArrayBaseBind( const OCI::Statement& statement, const WideString& name )
             : Base( statement, name )
         {
         }
@@ -4807,7 +4807,7 @@ namespace Harlinn::OCI
             : Base( statement, position ), data_( reinterpret_cast<OracleType*>( DescriptorAlloc( HandleType ) ) )
         {
         }
-        DescriptorBind( const OCI::Statement& statement, const std::wstring& name )
+        DescriptorBind( const OCI::Statement& statement, const WideString& name )
             : Base( statement, name ), data_( reinterpret_cast<OracleType*>( DescriptorAlloc( HandleType ) ) )
         {
         }
@@ -4824,7 +4824,7 @@ namespace Harlinn::OCI
             SimpleBindByPos( positon, ExternalType, &data_, sizeof( data_ ) );
         }
 
-        void Bind( const std::wstring& name, UInt32 iters ) final override
+        void Bind( const WideString& name, UInt32 iters ) final override
         {
             SimpleBindByName( name, ExternalType, &data_, sizeof( data_ ) );
         }
@@ -4865,7 +4865,7 @@ namespace Harlinn::OCI
             : Base( statement, position ), actualSize_( 0 )
         {
         }
-        DescriptorArrayBind( const OCI::Statement& statement, const std::wstring& name )
+        DescriptorArrayBind( const OCI::Statement& statement, const WideString& name )
             : Base( statement, name ), actualSize_( 0 )
         {
         }
@@ -4895,7 +4895,7 @@ namespace Harlinn::OCI
             }
         }
 
-        void Bind( const std::wstring& name, UInt32 iters ) final override
+        void Bind( const WideString& name, UInt32 iters ) final override
         {
             SimpleBindByName( name, ExternalType, &data_, sizeof( data_ ), actualSize_, &actualSize_ );
         }
@@ -4975,7 +4975,7 @@ namespace Harlinn::OCI
             : Base( statement, position )
         {
         }
-        TimestampBaseBind( const OCI::Statement& statement, const std::wstring& name )
+        TimestampBaseBind( const OCI::Statement& statement, const WideString& name )
             : Base( statement, name )
         {
         }
@@ -5010,7 +5010,7 @@ namespace Harlinn::OCI
             DateTimeConstruct( environment, error, data_, year, month, day, hour, minute, second, fractionalSecond, langName, langLength );
         }
 
-        void SetDateTime( Int16 year, Byte month, Byte day, Byte hour, Byte minute, Byte second, UInt32 fractionalSecond, const std::wstring& langName )
+        void SetDateTime( Int16 year, Byte month, Byte day, Byte hour, Byte minute, Byte second, UInt32 fractionalSecond, const WideString& langName )
         {
             SetDateTime( year, month, day, hour, minute, second, fractionalSecond, langName.c_str( ), langName.length( ) * sizeof( wchar_t ) );
         }
@@ -5090,21 +5090,21 @@ namespace Harlinn::OCI
         {
             Assign( ConvertTo<DateTime>( newValue ) );
         }
-        std::wstring AsString( const std::wstring& format ) const
+        WideString AsString( const WideString& format ) const
         {
             auto& environment = Environment( );
             auto& error = Statement( ).Error( );
 
             return DateTimeToText( environment, error, data_, format );
         }
-        std::wstring AsString( ) const final override
+        WideString AsString( ) const final override
         {
             auto& environment = Environment( );
             auto& error = Statement( ).Error( );
 
             return DateTimeToText( environment, error, data_ );
         }
-        void Assign( const std::wstring& newValue ) final override
+        void Assign( const WideString& newValue ) final override
         {
             auto& environment = Environment( );
             auto& error = Statement( ).Error( );
@@ -5112,7 +5112,7 @@ namespace Harlinn::OCI
             DateTimeFromText( environment, error, newValue, data_ );
             Base::SetDBNotNull( );
         }
-        void Assign( const std::wstring& format, const std::wstring& newValue )
+        void Assign( const WideString& format, const WideString& newValue )
         {
             auto& environment = Environment( );
             auto& error = Statement( ).Error( );
@@ -5148,7 +5148,7 @@ namespace Harlinn::OCI
             : Base( statement, position )
         {
         }
-        TimestampBaseArrayBind( const OCI::Statement& statement, const std::wstring& name )
+        TimestampBaseArrayBind( const OCI::Statement& statement, const WideString& name )
             : Base( statement, name )
         {
         }
@@ -5183,7 +5183,7 @@ namespace Harlinn::OCI
             DateTimeConstruct( environment, error, data_[index], year, month, day, hour, minute, second, fractionalSecond, langName, langLength );
         }
 
-        void SetDateTime( size_t index, Int16 year, Byte month, Byte day, Byte hour, Byte minute, Byte second, UInt32 fractionalSecond, const std::wstring& langName )
+        void SetDateTime( size_t index, Int16 year, Byte month, Byte day, Byte hour, Byte minute, Byte second, UInt32 fractionalSecond, const WideString& langName )
         {
             SetDateTime( index ,year, month, day, hour, minute, second, fractionalSecond, langName.c_str( ), langName.length( ) * sizeof( wchar_t ) );
         }
@@ -5275,28 +5275,28 @@ namespace Harlinn::OCI
         {
             Assign( index, ConvertTo<DateTime>( newValue ) );
         }
-        std::wstring AsString( size_t index, const std::wstring& format ) const
+        WideString AsString( size_t index, const WideString& format ) const
         {
             auto& environment = Environment( );
             auto& error = Statement( ).Error( );
 
             return DateTimeToText( environment, error, data_[index], format );
         }
-        std::wstring AsString( size_t index ) const final override
+        WideString AsString( size_t index ) const final override
         {
             auto& environment = Environment( );
             auto& error = Statement( ).Error( );
 
             return DateTimeToText( environment, error, data_[index] );
         }
-        void Assign( size_t index, const std::wstring& newValue ) final override
+        void Assign( size_t index, const WideString& newValue ) final override
         {
             auto& environment = Environment( );
             auto& error = Statement( ).Error( );
 
             DateTimeFromText( environment, error, newValue, data_[index] );
         }
-        void Assign( size_t index, const std::wstring& format, const std::wstring& newValue )
+        void Assign( size_t index, const WideString& format, const WideString& newValue )
         {
             auto& environment = Environment( );
             auto& error = Statement( ).Error( );
@@ -5337,7 +5337,7 @@ namespace Harlinn::OCI
         {
         }
 
-        FixedBinaryBind( const OCI::Statement& statement, const std::wstring& name )
+        FixedBinaryBind( const OCI::Statement& statement, const WideString& name )
             : Base( statement, name ), data_{}
         {
         }
@@ -5346,7 +5346,7 @@ namespace Harlinn::OCI
         {
             SimpleBindByPos( positon, ExternalType, data_.data( ), static_cast<Int32>( size_ ) );
         }
-        virtual void Bind( const std::wstring& name, UInt32 iters ) override
+        virtual void Bind( const WideString& name, UInt32 iters ) override
         {
             SimpleBindByName( name, ExternalType, data_.data( ), static_cast<Int32>( size_ ) );
         }
@@ -5381,7 +5381,7 @@ namespace Harlinn::OCI
         {
         }
 
-        FixedBinaryArrayBind( const OCI::Statement& statement, const std::wstring& name )
+        FixedBinaryArrayBind( const OCI::Statement& statement, const WideString& name )
             : Base( statement, name ), actualSize_( 0 )
         {
         }
@@ -5403,7 +5403,7 @@ namespace Harlinn::OCI
                 SimpleBindByPos( positon, ExternalType, data_.data( ), static_cast<Int32>( size_ ), actualSize_, &actualSize_ );
             }
         }
-        virtual void Bind( const std::wstring& name, UInt32 iters ) override
+        virtual void Bind( const WideString& name, UInt32 iters ) override
         {
             auto dataSize = data_.size( );
             actualSize_ = static_cast<UInt32>( dataSize );
@@ -5438,7 +5438,7 @@ namespace Harlinn::OCI
         {
         }
 
-        GuidBind( const OCI::Statement& statement, const std::wstring& name )
+        GuidBind( const OCI::Statement& statement, const WideString& name )
             : Base( statement, name )
         {
         }
@@ -5455,12 +5455,12 @@ namespace Harlinn::OCI
             indicator_ = 0;
         }
 
-        virtual std::wstring AsString( ) const override
+        virtual WideString AsString( ) const override
         {
             return AsGuid( ).ToString( );
         }
 
-        virtual void Assign( const std::wstring& newValue ) override
+        virtual void Assign( const WideString& newValue ) override
         {
             Guid guid( newValue );
             Assign( guid );
@@ -5490,7 +5490,7 @@ namespace Harlinn::OCI
             
         }
 
-        GuidArrayBind( const OCI::Statement& statement, const std::wstring& name )
+        GuidArrayBind( const OCI::Statement& statement, const WideString& name )
             : Base( statement, name )
         {
             
@@ -5537,12 +5537,12 @@ namespace Harlinn::OCI
             data_[index] = newValue.ToBytes( );
         }
 
-        virtual std::wstring AsString( size_t index ) const override
+        virtual WideString AsString( size_t index ) const override
         {
             return AsGuid( index ).ToString( );
         }
 
-        virtual void Assign( size_t index, const std::wstring& newValue ) override
+        virtual void Assign( size_t index, const WideString& newValue ) override
         {
             Guid guid( newValue );
             Assign( index, guid );
@@ -5703,7 +5703,7 @@ namespace Harlinn::OCI
             : Base( statement, position )
         {
         }
-        LobBaseBind( const OCI::Statement& statement, const std::wstring& name )
+        LobBaseBind( const OCI::Statement& statement, const WideString& name )
             : Base( statement, name )
         {
         }
@@ -5748,20 +5748,20 @@ namespace Harlinn::OCI
             : Base( statement, position )
         {
         }
-        CLobBaseBind( const OCI::Statement& statement, const std::wstring& name )
+        CLobBaseBind( const OCI::Statement& statement, const WideString& name )
             : Base( statement, name )
         {
         }
 
 
-        virtual std::wstring AsString( ) const final override
+        virtual WideString AsString( ) const final override
         {
             auto& serviceContext = Base::ServiceContext( );
             auto& error = Base::Error( );
             return LobReadWideString( serviceContext, error, data_, CharacterSetFormDefault );
         }
 
-        virtual void Assign( const std::wstring& newValue ) override
+        virtual void Assign( const WideString& newValue ) override
         {
             auto& serviceContext = Base::ServiceContext( );
             auto& error = Base::Error( );
@@ -5802,7 +5802,7 @@ namespace Harlinn::OCI
             : Base( statement, position )
         {
         }
-        LobBaseArrayBind( const OCI::Statement& statement, const std::wstring& name )
+        LobBaseArrayBind( const OCI::Statement& statement, const WideString& name )
             : Base( statement, name )
         {
         }
@@ -5837,20 +5837,20 @@ namespace Harlinn::OCI
             : Base( statement, position )
         {
         }
-        CLobBaseArrayBind( const OCI::Statement& statement, const std::wstring& name )
+        CLobBaseArrayBind( const OCI::Statement& statement, const WideString& name )
             : Base( statement, name )
         {
         }
 
 
-        virtual std::wstring AsString( size_t index ) const final override
+        virtual WideString AsString( size_t index ) const final override
         {
             auto& serviceContext = Base::ServiceContext( );
             auto& error = Base::Error( );
             return LobReadWideString( serviceContext, error, data_[index], CharacterSetFormDefault );
         }
 
-        virtual void Assign( size_t index, const std::wstring& newValue ) final override
+        virtual void Assign( size_t index, const WideString& newValue ) final override
         {
             auto& serviceContext = Base::ServiceContext( );
             auto& error = Base::Error( );
@@ -5882,12 +5882,12 @@ namespace Harlinn::OCI
 
         HO_EXPORT BlobBind( const OCI::Statement& statement );
         HO_EXPORT BlobBind( const OCI::Statement& statement, UInt32 position );
-        HO_EXPORT BlobBind( const OCI::Statement& statement, const std::wstring& name );
+        HO_EXPORT BlobBind( const OCI::Statement& statement, const WideString& name );
         HO_EXPORT ~BlobBind( );
 
     protected:
         HO_EXPORT virtual void Bind( UInt32 positon, UInt32 iters ) override;
-        HO_EXPORT virtual void Bind( const std::wstring& name, UInt32 iters );
+        HO_EXPORT virtual void Bind( const WideString& name, UInt32 iters );
     public:
     };
 
@@ -5914,14 +5914,14 @@ namespace Harlinn::OCI
         BinaryBind( const OCI::Statement& statement, UInt32 position )
             : Base( statement, position ), size_( 0 ), data_( nullptr )
         { }
-        BinaryBind( const OCI::Statement& statement, const std::wstring& name )
+        BinaryBind( const OCI::Statement& statement, const WideString& name )
             : Base( statement, name ), size_( 0 ), data_( nullptr )
         { }
         HO_EXPORT ~BinaryBind( );
 
     protected:
         HO_EXPORT virtual void Bind( UInt32 positon, UInt32 iters ) override;
-        HO_EXPORT virtual void Bind( const std::wstring& name, UInt32 iters );
+        HO_EXPORT virtual void Bind( const WideString& name, UInt32 iters );
     public:
         HO_EXPORT size_t Size( ) const;
         HO_EXPORT void*  Data( ) const;
@@ -5956,7 +5956,7 @@ namespace Harlinn::OCI
             : Base( statement, position ), size_( 0 ), data_( nullptr )
         {
         }
-        LargeBinaryRefBind( const OCI::Statement& statement, const std::wstring& name )
+        LargeBinaryRefBind( const OCI::Statement& statement, const WideString& name )
             : Base( statement, name ), size_( 0 ), data_( nullptr )
         {
         }
@@ -5967,7 +5967,7 @@ namespace Harlinn::OCI
         {
             SimpleBindByPos( positon, ExternalType, Data( ), size_ );
         }
-        virtual void Bind( const std::wstring& name, UInt32 iters ) override
+        virtual void Bind( const WideString& name, UInt32 iters ) override
         {
             SimpleBindByName( name, ExternalType, Data( ), size_ );
         }
@@ -6030,7 +6030,7 @@ namespace Harlinn::OCI
         BinaryDynamicBind( const OCI::Statement& statement, UInt32 position )
             : Base( statement, position ), blockSize_( 4096 )
         { }
-        BinaryDynamicBind( const OCI::Statement& statement, const std::wstring& name )
+        BinaryDynamicBind( const OCI::Statement& statement, const WideString& name )
             : Base( statement, name ), blockSize_( 4096 )
         { }
         HO_EXPORT ~BinaryDynamicBind( );
@@ -6047,7 +6047,7 @@ namespace Harlinn::OCI
 
     protected:
         HO_EXPORT virtual void Bind( UInt32 positon, UInt32 iters ) override;
-        HO_EXPORT virtual void Bind( const std::wstring& name, UInt32 iters );
+        HO_EXPORT virtual void Bind( const WideString& name, UInt32 iters );
         HO_EXPORT virtual Int32 HandleInData( UInt32 iter, UInt32 index, void **bufpp, UInt32 *alenpp, Byte* piecep, void **indpp );
     public:
 
@@ -6075,13 +6075,13 @@ namespace Harlinn::OCI
         RefCursorBind( const OCI::Statement& statement, UInt32 position )
             : Base( statement, position ), boundStatementhandle_( nullptr )
         { }
-        RefCursorBind( const OCI::Statement& statement, const std::wstring& name )
+        RefCursorBind( const OCI::Statement& statement, const WideString& name )
             : Base( statement, name ), boundStatementhandle_( nullptr )
         { }
         HO_EXPORT ~RefCursorBind( );
     protected:
         HO_EXPORT virtual void Bind( UInt32 positon, UInt32 iters ) override;
-        HO_EXPORT virtual void Bind( const std::wstring& name, UInt32 iters );
+        HO_EXPORT virtual void Bind( const WideString& name, UInt32 iters );
     public:
         HO_EXPORT const OCI::Statement& CursorStatement( );
 
@@ -6102,7 +6102,7 @@ namespace Harlinn::OCI
         void BindArgs( OCI::Statement& statement, UInt32 position, 
             const Arg& arg, OtherArgsTypes&& ...otherArgsTypes )
         {
-            if constexpr ( IsAnyOf_v<Arg, std::wstring> )
+            if constexpr ( IsAnyOf_v<Arg, WideString> )
             {
                 auto newBind = statement.Bind<Arg>( position, arg.length( ) );
                 newBind->Assign( arg );
@@ -6112,7 +6112,7 @@ namespace Harlinn::OCI
                 using BintT = typename Arg::value_type;
                 if ( arg.has_value( ) )
                 {
-                    if constexpr ( IsAnyOf_v< BintT, std::wstring> )
+                    if constexpr ( IsAnyOf_v< BintT, WideString> )
                     {
                         auto newBind = statement.Bind<BintT>( position, arg.value( ).length( ) );
                         newBind->Assign( arg.value() );
@@ -6125,7 +6125,7 @@ namespace Harlinn::OCI
                 }
                 else
                 {
-                    if constexpr ( IsAnyOf_v<BintT, std::wstring> )
+                    if constexpr ( IsAnyOf_v<BintT, WideString> )
                     {
                         auto newBind = statement.Bind<BintT>( position, static_cast<size_t>(0) );
                         newBind->SetDBNull( );
@@ -6151,7 +6151,7 @@ namespace Harlinn::OCI
 
 
     template<typename ...BindableTypes>
-    inline OCI::Statement ServiceContext::CreateStatement( const std::wstring& sql, 
+    inline OCI::Statement ServiceContext::CreateStatement( const WideString& sql, 
         BindableTypes&& ...bindableArgs ) const
     {
         auto result = CreateStatement( sql );
@@ -6276,7 +6276,7 @@ namespace Harlinn::OCI
         HO_EXPORT virtual double AsDouble( ) const;
         HO_EXPORT virtual DateTime AsDateTime( ) const;
         HO_EXPORT virtual TimeSpan AsTimeSpan( ) const;
-        HO_EXPORT virtual std::wstring AsString( ) const;
+        HO_EXPORT virtual WideString AsString( ) const;
         HO_EXPORT virtual Guid AsGuid( ) const;
         HO_EXPORT virtual OCI::Object* AsObject( ) const;
         HO_EXPORT virtual OCI::Collection* AsCollection( ) const;
@@ -6345,7 +6345,7 @@ namespace Harlinn::OCI
         HO_EXPORT virtual double AsDouble( size_t index ) const;
         HO_EXPORT virtual DateTime AsDateTime( size_t index ) const;
         HO_EXPORT virtual TimeSpan AsTimeSpan( size_t index ) const;
-        HO_EXPORT virtual std::wstring AsString( size_t index ) const;
+        HO_EXPORT virtual WideString AsString( size_t index ) const;
         HO_EXPORT virtual Guid AsGuid( size_t index ) const;
         HO_EXPORT virtual OCI::Object* AsObject( size_t index ) const;
         HO_EXPORT virtual OCI::Collection* AsCollection( size_t index ) const;
@@ -6501,9 +6501,9 @@ namespace Harlinn::OCI
         {
             return ConvertTo<TimeSpan>( data_ );
         }
-        virtual std::wstring AsString( ) const final override
+        virtual WideString AsString( ) const final override
         {
-            return ConvertTo<std::wstring>( data_ );
+            return ConvertTo<WideString>( data_ );
         }
     };
 
@@ -6611,9 +6611,9 @@ namespace Harlinn::OCI
         {
             return ConvertTo<TimeSpan>( data_[index] );
         }
-        virtual std::wstring AsString( size_t index ) const final override
+        virtual WideString AsString( size_t index ) const final override
         {
-            return ConvertTo<std::wstring>( data_[index] );
+            return ConvertTo<WideString>( data_[index] );
         }
 
     };
@@ -6662,7 +6662,7 @@ namespace Harlinn::OCI
         HO_EXPORT virtual double AsDouble( ) const override;
         HO_EXPORT virtual DateTime AsDateTime( ) const override;
         HO_EXPORT virtual TimeSpan AsTimeSpan( ) const override;
-        HO_EXPORT virtual std::wstring AsString( ) const override;
+        HO_EXPORT virtual WideString AsString( ) const override;
         HO_EXPORT virtual Guid AsGuid( ) const;
     };
 
@@ -6709,7 +6709,7 @@ namespace Harlinn::OCI
         HO_EXPORT virtual double AsDouble( size_t index ) const override;
         HO_EXPORT virtual DateTime AsDateTime( size_t index ) const override;
         HO_EXPORT virtual TimeSpan AsTimeSpan( size_t index ) const override;
-        HO_EXPORT virtual std::wstring AsString( size_t index ) const override;
+        HO_EXPORT virtual WideString AsString( size_t index ) const override;
         HO_EXPORT virtual Guid AsGuid( size_t index ) const;
 
     };
@@ -6841,18 +6841,18 @@ namespace Harlinn::OCI
             return result;
         }
 
-        virtual std::wstring AsString( ) const final override
+        virtual WideString AsString( ) const final override
         {
             return AsString( L"TM", 2 );
         }
 
-        std::wstring AsString(const wchar_t* fmt, UInt32 fmtLength ) const
+        WideString AsString(const wchar_t* fmt, UInt32 fmtLength ) const
         {
             wchar_t buffer[256];
             UInt32 bufferSize = sizeof( buffer );
             auto& error = Error( );
             OCI::NumberToText( error, &data_, fmt, fmtLength, nullptr, 0, &bufferSize, buffer );
-            return std::wstring( buffer );
+            return WideString( buffer );
         }
     };
 
@@ -6987,18 +6987,18 @@ namespace Harlinn::OCI
             TimeSpan result( AsInt64( index ) );
             return result;
         }
-        virtual std::wstring AsString( size_t index ) const final override
+        virtual WideString AsString( size_t index ) const final override
         {
             return AsString( index, L"TM", 2 );
         }
 
-        std::wstring AsString( size_t index, const wchar_t* fmt, UInt32 fmtLength ) const
+        WideString AsString( size_t index, const wchar_t* fmt, UInt32 fmtLength ) const
         {
             wchar_t buffer[256];
             UInt32 bufferSize = sizeof( buffer );
             auto& error = Error( );
             OCI::NumberToText( error, &data_[index], fmt, fmtLength, nullptr, 0, &bufferSize, buffer );
-            return std::wstring( buffer );
+            return WideString( buffer );
         }
     };
 
@@ -7080,7 +7080,7 @@ namespace Harlinn::OCI
         HO_EXPORT virtual double AsDouble( ) const final override;
         HO_EXPORT virtual DateTime AsDateTime( ) const final override;
         HO_EXPORT virtual TimeSpan AsTimeSpan( ) const final override;
-        HO_EXPORT virtual std::wstring AsString( ) const final override;
+        HO_EXPORT virtual WideString AsString( ) const final override;
         HO_EXPORT virtual Guid AsGuid( ) const final override;
     };
 
@@ -7135,7 +7135,7 @@ namespace Harlinn::OCI
         HO_EXPORT virtual double AsDouble( size_t index ) const final override;
         HO_EXPORT virtual DateTime AsDateTime( size_t index ) const final override;
         HO_EXPORT virtual TimeSpan AsTimeSpan( size_t index ) const final override;
-        HO_EXPORT virtual std::wstring AsString( size_t index ) const final override;
+        HO_EXPORT virtual WideString AsString( size_t index ) const final override;
         HO_EXPORT virtual Guid AsGuid( size_t index ) const final override;
 
     };
@@ -7218,7 +7218,7 @@ namespace Harlinn::OCI
         HO_EXPORT virtual double AsDouble( ) const final override;
         HO_EXPORT virtual DateTime AsDateTime( ) const final override;
         HO_EXPORT virtual TimeSpan AsTimeSpan( ) const final override;
-        HO_EXPORT virtual std::wstring AsString( ) const final override;
+        HO_EXPORT virtual WideString AsString( ) const final override;
         HO_EXPORT virtual Guid AsGuid( ) const final override;
     };
 
@@ -7271,7 +7271,7 @@ namespace Harlinn::OCI
         HO_EXPORT virtual double AsDouble( size_t index ) const final override;
         HO_EXPORT virtual DateTime AsDateTime( size_t index ) const final override;
         HO_EXPORT virtual TimeSpan AsTimeSpan( size_t index ) const final override;
-        HO_EXPORT virtual std::wstring AsString( size_t index ) const final override;
+        HO_EXPORT virtual WideString AsString( size_t index ) const final override;
         HO_EXPORT virtual Guid AsGuid( size_t index ) const final override;
 
     };
@@ -7454,7 +7454,7 @@ namespace Harlinn::OCI
             return result;
         }
 
-        virtual std::wstring AsString( ) const override
+        virtual WideString AsString( ) const override
         {
             return AsGuid( ).ToString( );
         }
@@ -7488,7 +7488,7 @@ namespace Harlinn::OCI
             return result;
         }
 
-        virtual std::wstring AsString( size_t index ) const final override
+        virtual WideString AsString( size_t index ) const final override
         {
             return AsGuid( index ).ToString( );
         }
@@ -7582,19 +7582,19 @@ namespace Harlinn::OCI
         {
             return ConvertTo<TimeSpan>( AsInt64( ) );
         }
-        virtual std::wstring AsString( ) const final override
+        virtual WideString AsString( ) const final override
         {
-            static std::wstring fmt( L"YYYY/MM/DD HH24:MI:SS" );
+            static WideString fmt( L"YYYY/MM/DD HH24:MI:SS" );
             return AsString( fmt );
         }
-        std::wstring AsString( const std::wstring& fmt ) const
+        WideString AsString( const WideString& fmt ) const
         {
             wchar_t buffer[256];
             UInt32 bufferSize = sizeof( buffer );
             auto& error = Error( );
             OCI::DateToText( error, &date_, fmt.c_str( ), static_cast<Byte>( fmt.length( ) ), nullptr, 0, &bufferSize, buffer );
 
-            return std::wstring( (std::wstring::value_type*)buffer, static_cast<std::wstring::size_type>( bufferSize ) );
+            return WideString( (WideString::value_type*)buffer, static_cast<WideString::size_type>( bufferSize ) );
         }
     };
 
@@ -7690,19 +7690,19 @@ namespace Harlinn::OCI
         {
             return ConvertTo<TimeSpan>( AsInt64( index ) );
         }
-        virtual std::wstring AsString( size_t index ) const final override
+        virtual WideString AsString( size_t index ) const final override
         {
-            static std::wstring fmt( L"YYYY/MM/DD HH24:MI:SS" );
+            static WideString fmt( L"YYYY/MM/DD HH24:MI:SS" );
             return AsString( index, fmt );
         }
-        std::wstring AsString( size_t index, const std::wstring& fmt ) const
+        WideString AsString( size_t index, const WideString& fmt ) const
         {
             wchar_t buffer[256];
             UInt32 bufferSize = sizeof( buffer );
             auto& error = Error( );
             OCI::DateToText( error, &data_[index], fmt.c_str( ), static_cast<Byte>( fmt.length( ) ), nullptr, 0, &bufferSize, buffer );
 
-            return std::wstring( (std::wstring::value_type*)buffer, static_cast<std::wstring::size_type>( bufferSize ) );
+            return WideString( (WideString::value_type*)buffer, static_cast<WideString::size_type>( bufferSize ) );
         }
 
     };
@@ -7934,13 +7934,13 @@ namespace Harlinn::OCI
         {
             return ConvertTo<TimeSpan>( AsDateTime( ) );
         }
-        virtual std::wstring AsString( ) const final override
+        virtual WideString AsString( ) const final override
         {
             auto& environment = Base::Environment( );
             auto& error = Base::Error( );
             return DateTimeToText( environment, error, Base::Value( ) );
         }
-        std::wstring AsString( const std::wstring& fmt, Byte fractionalSecondPrecision = 2 ) const
+        WideString AsString( const WideString& fmt, Byte fractionalSecondPrecision = 2 ) const
         {
             auto& environment = Base::Environment( );
             auto& error = Base::Error( );
@@ -8027,13 +8027,13 @@ namespace Harlinn::OCI
         {
             return ConvertTo<TimeSpan>( AsDateTime( index ) );
         }
-        virtual std::wstring AsString( size_t index ) const final override
+        virtual WideString AsString( size_t index ) const final override
         {
             auto& environment = Base::Environment( );
             auto& error = Base::Error( );
             return DateTimeToText( environment, error, Base::Value( index ) );
         }
-        std::wstring AsString( size_t index, const std::wstring& fmt, Byte fractionalSecondPrecision = 2 ) const
+        WideString AsString( size_t index, const WideString& fmt, Byte fractionalSecondPrecision = 2 ) const
         {
             auto& environment = Base::Environment( );
             auto& error = Base::Error( );
@@ -8122,7 +8122,7 @@ namespace Harlinn::OCI
             auto& error = Base::Error( );
             return IntervalGetTimeSpan( serviceContext, error, Base::Value( ) );
         }
-        virtual std::wstring AsString( ) const final override
+        virtual WideString AsString( ) const final override
         {
             auto& serviceContext = Base::ServiceContext( );
             auto& error = Base::Error( );
@@ -8207,7 +8207,7 @@ namespace Harlinn::OCI
             auto& error = Base::Error( );
             return IntervalGetTimeSpan( serviceContext, error, Base::Value( index ) );
         }
-        virtual std::wstring AsString( size_t index ) const final override
+        virtual WideString AsString( size_t index ) const final override
         {
             auto& serviceContext = Base::ServiceContext( );
             auto& error = Base::Error( );
@@ -8312,7 +8312,7 @@ namespace Harlinn::OCI
         {
         }
 
-        virtual std::wstring AsString( ) const final override
+        virtual WideString AsString( ) const final override
         {
             auto& serviceContext = Base::ServiceContext( );
             auto& error = Base::Error( );
@@ -8374,7 +8374,7 @@ namespace Harlinn::OCI
         }
             
 
-        virtual std::wstring AsString( size_t index ) const final override
+        virtual WideString AsString( size_t index ) const final override
         {
             auto& serviceContext = Base::ServiceContext( );
             auto& error = Base::Error( );
@@ -8657,16 +8657,16 @@ namespace Harlinn::OCI
         }
 
         template<>
-        [[nodiscard]] std::wstring As<std::wstring>( UInt32 index ) const
+        [[nodiscard]] WideString As<WideString>( UInt32 index ) const
         {
             return static_cast<const DerivedType*>( this )->GetString( index );
         }
         template<>
-        [[nodiscard]] std::optional<std::wstring> As<std::optional<std::wstring>>( UInt32 index ) const
+        [[nodiscard]] std::optional<WideString> As<std::optional<WideString>>( UInt32 index ) const
         {
             return IsDBNull( index ) == false ?
                 std::optional( static_cast<const DerivedType*>( this )->GetString( index ) )
-                : std::optional<std::wstring>( );
+                : std::optional<WideString>( );
         }
     };
 
@@ -8879,11 +8879,11 @@ namespace Harlinn::OCI
             return define->AsGuid( );
         }
         /// <summary>
-        /// Gets the value of the specified column as a std::wstring.
+        /// Gets the value of the specified column as a WideString.
         /// </summary>
         /// <param name="index">The index of the field to find.</param>
         /// <returns>The value of the column.</returns>
-        [[nodiscard]] std::wstring GetString( UInt32 i ) const
+        [[nodiscard]] WideString GetString( UInt32 i ) const
         {
             auto define = GetDefine( i );
             return define->AsString( );
@@ -8931,7 +8931,7 @@ namespace Harlinn::OCI
     }
 
     template<typename T>
-    inline std::optional<T> ServiceContext::ExecuteScalar( const std::wstring& sql ) const
+    inline std::optional<T> ServiceContext::ExecuteScalar( const WideString& sql ) const
     {
         auto statement = CreateStatement( sql );
         auto reader = statement.ExecuteReader<Internal::ScalarDataReader<T>>( );
@@ -9174,7 +9174,7 @@ namespace Harlinn::OCI
         /// </summary>
         /// <param name="index">The index of the field to find.</param>
         /// <returns>The value of the column.</returns>
-        [[nodiscard]] std::wstring GetString( UInt32 i ) const
+        [[nodiscard]] WideString GetString( UInt32 i ) const
         {
             auto define = GetDefine( i );
             return define->AsString( currentRowIndex_ );
@@ -9494,7 +9494,7 @@ namespace Harlinn::OCI
         /// <summary>
         /// the column name (OCI_ATTR_NAME)
         /// </summary>
-        std::wstring Name( ) const
+        WideString Name( ) const
         {
             return GetStringAttribute( static_cast<Attribute>( DescribeAttribute::NAME ) );
         }
@@ -9550,7 +9550,7 @@ namespace Harlinn::OCI
         /// If the data type is SQLT_REF, the type name of the named data type
         /// pointed to by the REF is returned. (OCI_ATTR_TYPE_NAME)
         /// </summary>
-        std::wstring TypeName( ) const
+        WideString TypeName( ) const
         {
             return GetStringAttribute( DescribeAttribute::TYPE_NAME );
         }
@@ -9559,7 +9559,7 @@ namespace Harlinn::OCI
         /// Returns a string with the schema name under which the type has
         /// been created (OCI_ATTR_SCHEMA_NAME)
         /// </summary>
-        std::wstring SchemaName( ) const
+        WideString SchemaName( ) const
         {
             return GetStringAttribute( DescribeAttribute::SCHEMA_NAME );
         }
@@ -9595,7 +9595,7 @@ namespace Harlinn::OCI
         /// <summary>
         /// Retrieves the argument name
         /// </summary>
-        std::wstring Name( ) const
+        WideString Name( ) const
         {
             return GetStringAttribute( DescribeAttribute::NAME );
         }
@@ -9717,7 +9717,7 @@ namespace Harlinn::OCI
         /// named data type's type is returned. If the data type is SQLT_REF, the type
         /// name of the named data type pointed to by the REF is returned.
         /// </summary>
-        std::wstring TypeName( ) const
+        WideString TypeName( ) const
         {
             return GetStringAttribute( DescribeAttribute::TYPE_NAME );
         }
@@ -9727,7 +9727,7 @@ namespace Harlinn::OCI
         /// under which the type was created, or under which the package was
         /// created for package local types
         /// </summary>
-        std::wstring SchemaName( ) const
+        WideString SchemaName( ) const
         {
             return GetStringAttribute( DescribeAttribute::SCHEMA_NAME );
         }
@@ -9736,7 +9736,7 @@ namespace Harlinn::OCI
         /// For SQLT_NTY or SQLT_REF, returns a string with the type name, 
         /// for package local types
         /// </summary>
-        std::wstring SubName( ) const
+        WideString SubName( ) const
         {
             return GetStringAttribute( DescribeAttribute::SUB_NAME );
         }
@@ -9746,7 +9746,7 @@ namespace Harlinn::OCI
         /// of the database on which the type exists.This can happen only for
         /// package local types, when the package is remote.
         /// </summary>
-        std::wstring Link( ) const
+        WideString Link( ) const
         {
             return GetStringAttribute( Attribute::LINK );
         }
@@ -10252,7 +10252,7 @@ namespace Harlinn::OCI
         /// <summary>
         /// type attribute name
         /// </summary>
-        std::wstring Name( ) const
+        WideString Name( ) const
         {
             return GetStringAttribute( DescribeAttribute::NAME );
         }
@@ -10280,7 +10280,7 @@ namespace Harlinn::OCI
         /// <summary>
         /// the package name of a type if it is a package type
         /// </summary>
-        std::wstring PackageName( ) const
+        WideString PackageName( ) const
         {
             return GetStringAttribute( DescribeAttribute::PACKAGE_NAME );
         }
@@ -10291,7 +10291,7 @@ namespace Harlinn::OCI
         /// the name of the named data type's type is returned. If the data type is 
         /// SQLT_REF, the type name of the named data type pointed to by the REF is returned.
         /// </summary>
-        std::wstring TypeName( ) const
+        WideString TypeName( ) const
         {
             return GetStringAttribute( DescribeAttribute::TYPE_NAME );
         }
@@ -10299,7 +10299,7 @@ namespace Harlinn::OCI
         /// <summary>
         /// A string with the schema name under which the type has been created
         /// </summary>
-        std::wstring SchemaName( ) const
+        WideString SchemaName( ) const
         {
             return GetStringAttribute( DescribeAttribute::SCHEMA_NAME );
         }
@@ -10395,7 +10395,7 @@ namespace Harlinn::OCI
         /// <summary>
         /// Type attribute name
         /// </summary>
-        std::wstring Name( ) const
+        WideString Name( ) const
         {
             return GetStringAttribute( DescribeAttribute::NAME );
         }
@@ -10423,7 +10423,7 @@ namespace Harlinn::OCI
         /// <summary>
         /// the package name of a type if it is a package type
         /// </summary>
-        std::wstring PackageName( ) const
+        WideString PackageName( ) const
         {
             return GetStringAttribute( DescribeAttribute::PACKAGE_NAME );
         }
@@ -10434,7 +10434,7 @@ namespace Harlinn::OCI
         /// the name of the named data type's type is returned. If the data type is 
         /// SQLT_REF, the type name of the named data type pointed to by the REF is returned.
         /// </summary>
-        std::wstring TypeName( ) const
+        WideString TypeName( ) const
         {
             return GetStringAttribute( DescribeAttribute::TYPE_NAME );
         }
@@ -10442,7 +10442,7 @@ namespace Harlinn::OCI
         /// <summary>
         /// A string with the schema name under which the type has been created
         /// </summary>
-        std::wstring SchemaName( ) const
+        WideString SchemaName( ) const
         {
             return GetStringAttribute( DescribeAttribute::SCHEMA_NAME );
         }
@@ -10575,7 +10575,7 @@ namespace Harlinn::OCI
         /// <summary>
         /// Database version
         /// </summary>
-        std::wstring Version( ) const
+        WideString Version( ) const
         {
             return GetStringAttribute( Attribute::VERSION );
         }
@@ -10783,7 +10783,7 @@ namespace Harlinn::OCI
 
     template <typename BindType, typename ...ArgTypes>
         requires std::is_base_of_v<BindBase, BindType>
-    inline BindType* Statement::Bind( const std::wstring& name, ArgTypes&&... args ) const
+    inline BindType* Statement::Bind( const WideString& name, ArgTypes&&... args ) const
     {
         auto bind = std::make_unique<BindType>( *this, name, std::forward<ArgTypes>( args )... );
         auto* result = bind.get( );
@@ -10793,7 +10793,7 @@ namespace Harlinn::OCI
 
     template <typename T, typename ...ArgTypes>
         requires Internal::HasTraits<T>
-    inline typename Internal::Traits<T>::BindType* Statement::Bind( const std::wstring& name, ArgTypes&&... args ) const
+    inline typename Internal::Traits<T>::BindType* Statement::Bind( const WideString& name, ArgTypes&&... args ) const
     {
         return Bind<typename Internal::Traits<T>::BindType>( name, std::forward<ArgTypes>( args )... );
     }
@@ -10860,7 +10860,7 @@ namespace Harlinn::OCI
 
         
 
-        HO_EXPORT void DescribeAny( const std::wstring& objectName, OCI::ParameterType parameterType = OCI::ParameterType::Unknown ) const;
+        HO_EXPORT void DescribeAny( const WideString& objectName, OCI::ParameterType parameterType = OCI::ParameterType::Unknown ) const;
         HO_EXPORT void DescribeAny( const OCI::Type& type ) const;
         HO_EXPORT void DescribeAny( OCIType* type ) const;
         HO_EXPORT void DescribeAny( const OCI::Ref& typeRef ) const;
@@ -11144,13 +11144,13 @@ namespace Harlinn::OCI
 
     };
 
-    inline std::unique_ptr<OCI::Type> ServiceContext::TypeByName( const std::wstring& schemaName, const std::wstring& typeName, OCI::Duration pinDuration, OCI::TypeGetOpt typeGetOption ) const
+    inline std::unique_ptr<OCI::Type> ServiceContext::TypeByName( const WideString& schemaName, const WideString& typeName, OCI::Duration pinDuration, OCI::TypeGetOpt typeGetOption ) const
     {
-        return TypeByName( schemaName, typeName, std::wstring( ), pinDuration, typeGetOption );
+        return TypeByName( schemaName, typeName, WideString( ), pinDuration, typeGetOption );
     }
-    inline std::unique_ptr<OCI::Type> ServiceContext::TypeByFullName( const std::wstring& fullName, OCI::Duration pinDuration, OCI::TypeGetOpt typeGetOption ) const
+    inline std::unique_ptr<OCI::Type> ServiceContext::TypeByFullName( const WideString& fullName, OCI::Duration pinDuration, OCI::TypeGetOpt typeGetOption ) const
     {
-        return TypeByFullName( fullName, std::wstring( ), pinDuration, typeGetOption );
+        return TypeByFullName( fullName, WideString( ), pinDuration, typeGetOption );
     }
 	    
     /// <summary>
@@ -11327,11 +11327,11 @@ namespace Harlinn::OCI
         {
             const OCI::ServiceContext* serviceContext_;
             const MetadataObject* owner_;
-            std::wstring name_;
+            WideString name_;
         protected:
             HO_EXPORT MetadataObject( const OCI::ServiceContext* serviceContext, const MetadataObject* owner, const OCI::ParameterDescriptor* descriptor );
-            HO_EXPORT MetadataObject( const OCI::ServiceContext* serviceContext, const std::wstring& name );
-            HO_EXPORT MetadataObject( const OCI::ServiceContext* serviceContext, const MetadataObject* owner, const std::wstring& name );
+            HO_EXPORT MetadataObject( const OCI::ServiceContext* serviceContext, const WideString& name );
+            HO_EXPORT MetadataObject( const OCI::ServiceContext* serviceContext, const MetadataObject* owner, const WideString& name );
         public:
             HO_EXPORT virtual ~MetadataObject( );
         protected:
@@ -11344,20 +11344,22 @@ namespace Harlinn::OCI
             {
                 return owner_;
             }
-            const std::wstring& Name( ) const noexcept
+            const WideString& Name( ) const noexcept
             {
                 return name_;
             }
             virtual Metadata::Kind Kind( ) const noexcept = 0;
 
-            virtual std::wstring QualifiedName( ) const
+            virtual WideString QualifiedName( ) const
             {
                 if ( owner_ )
                 {
                     auto qualifiedNameOfOwner = owner_->QualifiedName( );
                     size_t resultSize = qualifiedNameOfOwner.size( ) + 1 + name_.size( );
-                    std::wstring result;
+                    WideString result;
+#ifndef HCC_WITH_BASIC_STRING
                     result.reserve( resultSize );
+#endif
                     result += qualifiedNameOfOwner;
                     result += L'.';
                     result += name_;
@@ -11368,15 +11370,17 @@ namespace Harlinn::OCI
                     return name_;
                 }
             }
-            virtual std::wstring QuotedQualifiedName( ) const
+            virtual WideString QuotedQualifiedName( ) const
             {
-                std::wstring result;
+                WideString result;
                 if ( owner_ )
                 {
                     auto qualifiedNameOfOwner = owner_->QuotedQualifiedName( );
                     size_t resultSize = qualifiedNameOfOwner.size( ) + 3 + name_.size( );
-                    std::wstring result;
+                    WideString result;
+#ifndef HCC_WITH_BASIC_STRING
                     result.reserve( resultSize );
+#endif
                     result += qualifiedNameOfOwner;
                     result += L'.';
                     result += L'\"';
@@ -11387,7 +11391,9 @@ namespace Harlinn::OCI
                 else
                 {
                     size_t resultSize = 2 + name_.size( );
+#ifndef HCC_WITH_BASIC_STRING
                     result.reserve( resultSize );
+#endif
                     result += L'\"';
                     result += name_;
                     result += L'\"';
@@ -11486,32 +11492,36 @@ namespace Harlinn::OCI
         public:
             using Base = MetadataObject;
         private:
-            std::wstring schemaName_;
+            WideString schemaName_;
         public:
             SchemaObject( const OCI::ServiceContext* serviceContext, const Schema* owner, const OCI::ParameterDescriptor* descriptor );
 
             virtual Metadata::Kind Kind( ) const noexcept override { return Metadata::Kind::SchemaObject; }
 
-            virtual std::wstring QualifiedName( ) const override
+            virtual WideString QualifiedName( ) const override
             {
                 const auto& name = Name( );
 
                 size_t resultLength = schemaName_.size( ) + 1 + name.size( );
-                std::wstring result;
+                WideString result;
+#ifndef HCC_WITH_BASIC_STRING
                 result.reserve( resultLength );
+#endif
                 result = schemaName_;
                 result += L'.';
                 result += name;
                 return result;
             }
 
-            virtual std::wstring QuotedQualifiedName( ) const override
+            virtual WideString QuotedQualifiedName( ) const override
             {
                 const auto& name = Name( );
 
                 size_t resultLength = schemaName_.size( ) + 5 + name.size( );
-                std::wstring result;
+                WideString result;
+#ifndef HCC_WITH_BASIC_STRING
                 result.reserve( resultLength );
+#endif
                 result += L'\"';
                 result += schemaName_;
                 result += L'\"';
@@ -11541,8 +11551,8 @@ namespace Harlinn::OCI
             Int16 precision_;
             SByte scale_;
             bool nullable_;
-            std::wstring typeName_;
-            std::wstring schemaName_;
+            WideString typeName_;
+            WideString schemaName_;
             OCI::CharacterSetForm characterSetForm_;
         public:
             HO_EXPORT Column( const OCI::ServiceContext* serviceContext, const TableOrView* owner, const OCI::ColumnDescriptor* descriptor );
@@ -11644,7 +11654,7 @@ namespace Harlinn::OCI
             /// If the data type is SQLT_REF, the type name of the named data type
             /// pointed to by the REF is returned.
             /// </summary>
-            std::wstring TypeName( ) const
+            WideString TypeName( ) const
             {
                 return typeName_;
             }
@@ -11653,7 +11663,7 @@ namespace Harlinn::OCI
             /// Returns a string with the schema name under which the type has
             /// been created
             /// </summary>
-            std::wstring SchemaName( ) const
+            WideString SchemaName( ) const
             {
                 return schemaName_;
             }
@@ -11805,7 +11815,7 @@ namespace Harlinn::OCI
         {
         public:
             using Base = MetadataObject;
-            using SchemaObjectContainer = std::unordered_map<std::wstring, std::unique_ptr<MetadataObject>>;
+            using SchemaObjectContainer = std::unordered_map<WideString, std::unique_ptr<MetadataObject>>;
         private:
         public:
             HO_EXPORT Schema( const OCI::ServiceContext* serviceContext, const Database* owner, const OCI::SchemaDescriptor* descriptor );
@@ -11815,16 +11825,18 @@ namespace Harlinn::OCI
 
             virtual Metadata::Kind Kind( ) const noexcept override { return Metadata::Kind::Schema; }
 
-            virtual std::wstring QualifiedName( ) const override
+            virtual WideString QualifiedName( ) const override
             {
                 return Name( );
             }
 
-            virtual std::wstring QuotedQualifiedName( ) const override
+            virtual WideString QuotedQualifiedName( ) const override
             {
                 auto& name = Name( );
-                std::wstring result;
+                WideString result;
+#ifndef HCC_WITH_BASIC_STRING
                 result.reserve( name.size() + 2 );
+#endif
                 result += '\"';
                 result += name;
                 result += '\"';
@@ -11843,7 +11855,7 @@ namespace Harlinn::OCI
         {
         public:
             using Base = MetadataObject;
-            using SchemaContainer = std::unordered_map<std::wstring, std::unique_ptr<Schema>>;
+            using SchemaContainer = std::unordered_map<WideString, std::unique_ptr<Schema>>;
         private:
         public:
             HO_EXPORT Database( const OCI::ServiceContext* serviceContext );

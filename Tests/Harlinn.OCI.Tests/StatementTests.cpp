@@ -23,7 +23,7 @@ BOOST_AUTO_TEST_CASE( ExecuteTest1 )
 
     serviceContext.SessionBegin( );
 
-    std::wstring sql =
+    WideString sql =
         L"BEGIN"\
         L" :result := SYSDATE();" \
         L"END;";
@@ -60,7 +60,7 @@ BOOST_AUTO_TEST_CASE( ExecuteTest1a )
 
     serviceContext.SessionBegin( );
 
-    std::wstring sql =
+    WideString sql =
         L"BEGIN"\
         L" :result := SYSDATE();" \
         L"END;";
@@ -89,7 +89,7 @@ BOOST_AUTO_TEST_CASE( ExecuteTest2 )
 
     serviceContext.SessionBegin( );
 
-    std::wstring sql =
+    WideString sql =
         L"BEGIN"\
         L" :result := SYSTIMESTAMP();" \
         L"END;";
@@ -116,7 +116,7 @@ BOOST_AUTO_TEST_CASE( ExecuteTest3 )
     auto serviceContext = server.CreateServiceContext( Username, Password, Alias );
     serviceContext.SessionBegin( );
 
-    std::wstring sql =
+    WideString sql =
         L"BEGIN"\
         L" :result := 1;" \
         L"END;";
@@ -142,7 +142,7 @@ BOOST_AUTO_TEST_CASE( ExecuteTest4 )
 
     serviceContext.SessionBegin( );
 
-    std::wstring sql =
+    WideString sql =
         L"BEGIN"\
         L" :result := 1;" \
         L"END;";
@@ -169,7 +169,7 @@ BOOST_AUTO_TEST_CASE( ExecuteTest5 )
 
     serviceContext.SessionBegin( );
 
-    std::wstring sql =
+    WideString sql =
         L"BEGIN"\
         L" :result := 1;" \
         L"END;";
@@ -195,7 +195,7 @@ BOOST_AUTO_TEST_CASE( ExecuteTest6 )
 
     serviceContext.SessionBegin( );
 
-    std::wstring sql =
+    WideString sql =
         L"BEGIN"\
         L" :result := 1;" \
         L"END;";
@@ -221,7 +221,7 @@ BOOST_AUTO_TEST_CASE( ExecuteTest7 )
 
     serviceContext.SessionBegin( );
 
-    std::wstring sql =
+    WideString sql =
         L"BEGIN"\
         L" :result := 1;" \
         L"END;";
@@ -247,7 +247,7 @@ BOOST_AUTO_TEST_CASE( ExecuteTest8 )
 
     serviceContext.SessionBegin( );
 
-    std::wstring sql =
+    WideString sql =
         L"BEGIN"\
         L" :result := 1;" \
         L"END;";
@@ -273,7 +273,7 @@ BOOST_AUTO_TEST_CASE( ExecuteTest9 )
 
     serviceContext.SessionBegin( );
 
-    std::wstring sql =
+    WideString sql =
         L"BEGIN"\
         L" :result := 1;" \
         L"END;";
@@ -299,7 +299,7 @@ BOOST_AUTO_TEST_CASE( ExecuteTest10 )
 
     serviceContext.SessionBegin( );
 
-    std::wstring sql =
+    WideString sql =
         L"BEGIN"\
         L" :result := 1;" \
         L"END;";
@@ -325,7 +325,7 @@ BOOST_AUTO_TEST_CASE( ExecuteTest11 )
 
     serviceContext.SessionBegin( );
 
-    std::wstring sql =
+    WideString sql =
         L"BEGIN"\
         L" :result := 1;" \
         L"END;";
@@ -351,7 +351,7 @@ BOOST_AUTO_TEST_CASE( ExecuteTest12 )
 
     serviceContext.SessionBegin( );
 
-    std::wstring sql =
+    WideString sql =
         L"BEGIN"\
         L" :result := 1;" \
         L"END;";
@@ -377,7 +377,7 @@ BOOST_AUTO_TEST_CASE( ExecuteTest13 )
 
     serviceContext.SessionBegin( );
 
-    std::wstring sql =
+    WideString sql =
         L"BEGIN"\
         L" :result := 1;" \
         L"END;";
@@ -403,18 +403,18 @@ BOOST_AUTO_TEST_CASE( ExecuteTest14 )
 
     serviceContext.SessionBegin( );
 
-    std::wstring sql =
+    WideString sql =
         L"BEGIN"\
         L" :result := 1;" \
         L"END;";
 
     auto statement = serviceContext.CreateStatement( sql );
-    auto result = statement.Bind<std::wstring>( 1 );
+    auto result = statement.Bind<WideString>( 1 );
     result->Reserve( 5 );
 
     statement.Execute( 1 );
 
-    auto value = result->As<std::wstring>( );
+    auto value = result->As<WideString>( );
     BOOST_CHECK( value == L"1" );
 
     serviceContext.SessionEnd( );
@@ -430,7 +430,7 @@ BOOST_AUTO_TEST_CASE( ExecuteTest15 )
 
     serviceContext.SessionBegin( );
 
-    std::wstring sql =
+    WideString sql =
         L"BEGIN"\
         L" :result := 1;" \
         L"END;";
@@ -457,7 +457,7 @@ BOOST_AUTO_TEST_CASE( ExecuteTest16 )
 
     serviceContext.SessionBegin( );
 
-    std::wstring sql =
+    WideString sql =
         L"BEGIN"\
         L" :result := :value;" \
         L"END;";
@@ -486,14 +486,14 @@ BOOST_AUTO_TEST_CASE( ExecuteReaderTest1a )
 
     serviceContext.SessionBegin( );
 
-    std::wstring sql =
+    WideString sql =
         L"SELECT * FROM ALL_USERS WHERE USERNAME<>:1";
-    std::wstring myName( L"ESPEN" );
+    WideString myName( L"ESPEN" );
     auto statement = serviceContext.CreateStatement( sql, myName );
     auto reader = statement.ExecuteReader<DataReader>( );
     while ( reader->Read( ) )
     {
-        auto userName = reader->As<std::wstring>( 0 );
+        auto userName = reader->As<WideString>( 0 );
         auto userId = reader->As<Int64>( 1 );
         auto created = reader->As<DateTime>( 2 );
     }
@@ -515,7 +515,7 @@ BOOST_AUTO_TEST_CASE( ExecuteReaderTest1 )
 
     serviceContext.SessionBegin( );
 
-    std::wstring sql =
+    WideString sql =
         L"SELECT * FROM ALL_USERS";
 
     auto statement = serviceContext.CreateStatement( sql );
@@ -546,7 +546,7 @@ BOOST_AUTO_TEST_CASE( ExecuteArrayReaderTest1 )
 
     serviceContext.SessionBegin( );
 
-    std::wstring sql = L"SELECT * FROM ALL_USERS";
+    WideString sql = L"SELECT * FROM ALL_USERS";
 
     auto statement = serviceContext.CreateStatement( sql );
 
@@ -609,7 +609,7 @@ public:
         allShard_ = Define<CStringDefine>( ALL_SHARD + 1, 3 );
     }
 
-    std::wstring UserName( ) const
+    WideString UserName( ) const
     {
         return userName_->AsString( );
     }
@@ -634,7 +634,7 @@ public:
     {
         return inherited_->AsString( ) == L"YES";
     }
-    std::wstring DefaultCollation( ) const
+    WideString DefaultCollation( ) const
     {
         return defaultCollation_->AsString( );
     }
@@ -700,18 +700,18 @@ public:
 
     virtual void InitializeDefines( ) override
     {
-        Define<std::wstring>( USERNAME + 1, 128 );
+        Define<WideString>( USERNAME + 1, 128 );
         Define<Int64>( USER_ID + 1 );
         Define<DateTime>( CREATED + 1 );
-        Define<std::wstring>( COMMON + 1, 3 );
-        Define<std::wstring>( ORACLE_MAINTAINED + 1, 1 );
-        Define<std::wstring>( INHERITED + 1, 3 );
-        Define<std::wstring>( DEFAULT_COLLATION + 1, 100 );
-        Define<std::wstring>( IMPLICIT + 1, 3 );
-        Define<std::wstring>( ALL_SHARD + 1, 3 );
+        Define<WideString>( COMMON + 1, 3 );
+        Define<WideString>( ORACLE_MAINTAINED + 1, 1 );
+        Define<WideString>( INHERITED + 1, 3 );
+        Define<WideString>( DEFAULT_COLLATION + 1, 100 );
+        Define<WideString>( IMPLICIT + 1, 3 );
+        Define<WideString>( ALL_SHARD + 1, 3 );
     }
 
-    std::wstring UserName( ) const
+    WideString UserName( ) const
     {
         return GetString( USERNAME );
     }
@@ -736,7 +736,7 @@ public:
     {
         return GetString( INHERITED ) == L"YES";
     }
-    std::wstring DefaultCollation( ) const
+    WideString DefaultCollation( ) const
     {
         return GetString( DEFAULT_COLLATION );
     }
@@ -790,11 +790,11 @@ BOOST_AUTO_TEST_CASE( ExecuteReaderTest5 )
     while ( reader->Read( ) )
     {
         auto id = reader->As<Guid>( 0 );
-        auto name = reader->As<std::wstring>( 1 );
+        auto name = reader->As<WideString>( 1 );
         auto optimisticLock = reader->As<Int64>( 2 );
         auto create = reader->As<DateTime>( 3 );
         auto deleted = reader->As<std::optional< DateTime > >( 4 );
-        auto description = reader->As< std::optional< std::wstring >>( 5 );
+        auto description = reader->As< std::optional< WideString >>( 5 );
         count++;
     }
     BOOST_CHECK( count > 0 );
@@ -813,7 +813,7 @@ BOOST_AUTO_TEST_CASE( ExecuteScalarTest1 )
     auto serviceContext = server.CreateServiceContext( Username, Password, Alias );
     serviceContext.SessionBegin( );
 
-    std::wstring sql( L"SELECT 1 FROM DUAL" );
+    WideString sql( L"SELECT 1 FROM DUAL" );
 
     auto result = serviceContext.ExecuteScalar<bool>( sql );
     BOOST_CHECK( result.has_value( ) );
@@ -832,7 +832,7 @@ BOOST_AUTO_TEST_CASE( ExecuteScalarTest2 )
     auto serviceContext = server.CreateServiceContext( Username, Password, Alias );
     serviceContext.SessionBegin( );
 
-    std::wstring sql( L"SELECT 1 FROM DUAL" );
+    WideString sql( L"SELECT 1 FROM DUAL" );
 
     auto result = serviceContext.ExecuteScalar<SByte>( sql );
     BOOST_CHECK( result.has_value( ) );
@@ -851,7 +851,7 @@ BOOST_AUTO_TEST_CASE( ExecuteScalarTest3 )
     auto serviceContext = server.CreateServiceContext( Username, Password, Alias );
     serviceContext.SessionBegin( );
 
-    std::wstring sql( L"SELECT 1 FROM DUAL" );
+    WideString sql( L"SELECT 1 FROM DUAL" );
 
     auto result = serviceContext.ExecuteScalar<Byte>( sql );
     BOOST_CHECK( result.has_value( ) );
@@ -870,7 +870,7 @@ BOOST_AUTO_TEST_CASE( ExecuteScalarTest4 )
     auto serviceContext = server.CreateServiceContext( Username, Password, Alias );
     serviceContext.SessionBegin( );
 
-    std::wstring sql( L"SELECT 1 FROM DUAL" );
+    WideString sql( L"SELECT 1 FROM DUAL" );
 
     auto result = serviceContext.ExecuteScalar<Int16>( sql );
     BOOST_CHECK( result.has_value( ) );
@@ -889,7 +889,7 @@ BOOST_AUTO_TEST_CASE( ExecuteScalarTest5 )
     auto serviceContext = server.CreateServiceContext( Username, Password, Alias );
     serviceContext.SessionBegin( );
 
-    std::wstring sql( L"SELECT 1 FROM DUAL" );
+    WideString sql( L"SELECT 1 FROM DUAL" );
 
     auto result = serviceContext.ExecuteScalar<UInt16>( sql );
     BOOST_CHECK( result.has_value( ) );
@@ -908,7 +908,7 @@ BOOST_AUTO_TEST_CASE( ExecuteScalarTest6 )
     auto serviceContext = server.CreateServiceContext( Username, Password, Alias );
     serviceContext.SessionBegin( );
 
-    std::wstring sql( L"SELECT 1 FROM DUAL" );
+    WideString sql( L"SELECT 1 FROM DUAL" );
 
     auto result = serviceContext.ExecuteScalar<Int32>( sql );
     BOOST_CHECK( result.has_value( ) );
@@ -927,7 +927,7 @@ BOOST_AUTO_TEST_CASE( ExecuteScalarTest7 )
     auto serviceContext = server.CreateServiceContext( Username, Password, Alias );
     serviceContext.SessionBegin( );
 
-    std::wstring sql( L"SELECT 1 FROM DUAL" );
+    WideString sql( L"SELECT 1 FROM DUAL" );
 
     auto result = serviceContext.ExecuteScalar<UInt32>( sql );
     BOOST_CHECK( result.has_value( ) );
@@ -946,7 +946,7 @@ BOOST_AUTO_TEST_CASE( ExecuteScalarTest8 )
     auto serviceContext = server.CreateServiceContext( Username, Password, Alias );
     serviceContext.SessionBegin( );
 
-    std::wstring sql( L"SELECT 1 FROM DUAL" );
+    WideString sql( L"SELECT 1 FROM DUAL" );
 
     auto result = serviceContext.ExecuteScalar<Int64>( sql );
     BOOST_CHECK( result.has_value( ) );
@@ -965,7 +965,7 @@ BOOST_AUTO_TEST_CASE( ExecuteScalarTest9 )
     auto serviceContext = server.CreateServiceContext( Username, Password, Alias );
     serviceContext.SessionBegin( );
 
-    std::wstring sql( L"SELECT 1 FROM DUAL" );
+    WideString sql( L"SELECT 1 FROM DUAL" );
 
     auto result = serviceContext.ExecuteScalar<UInt64>( sql );
     BOOST_CHECK( result.has_value( ) );
@@ -984,7 +984,7 @@ BOOST_AUTO_TEST_CASE( ExecuteScalarTest10 )
     auto serviceContext = server.CreateServiceContext( Username, Password, Alias );
     serviceContext.SessionBegin( );
 
-    std::wstring sql( L"SELECT 1 FROM DUAL" );
+    WideString sql( L"SELECT 1 FROM DUAL" );
 
     auto result = serviceContext.ExecuteScalar<float>( sql );
     BOOST_CHECK( result.has_value( ) );
@@ -1003,7 +1003,7 @@ BOOST_AUTO_TEST_CASE( ExecuteScalarTest11 )
     auto serviceContext = server.CreateServiceContext( Username, Password, Alias );
     serviceContext.SessionBegin( );
 
-    std::wstring sql( L"SELECT 1 FROM DUAL" );
+    WideString sql( L"SELECT 1 FROM DUAL" );
 
     auto result = serviceContext.ExecuteScalar<Double>( sql );
     BOOST_CHECK( result.has_value( ) );
@@ -1022,7 +1022,7 @@ BOOST_AUTO_TEST_CASE( ExecuteScalarTest12 )
     auto serviceContext = server.CreateServiceContext( Username, Password, Alias );
     serviceContext.SessionBegin( );
 
-    std::wstring sql( L"SELECT SYSTIMESTAMP FROM DUAL" );
+    WideString sql( L"SELECT SYSTIMESTAMP FROM DUAL" );
 
     auto result = serviceContext.ExecuteScalar<DateTime>( sql );
     BOOST_CHECK( result.has_value( ) );

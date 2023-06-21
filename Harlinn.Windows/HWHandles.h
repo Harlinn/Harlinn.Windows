@@ -52,7 +52,7 @@ namespace Harlinn::Windows
             }
             SetValue( hBitmap, flags & LR_SHARED ? false : true );
         }
-        BitmapHandle( const std::wstring& bitmapName, int width = 0, int height = 0, DWORD flags = LR_SHARED | LR_DEFAULTSIZE )
+        BitmapHandle( const WideString& bitmapName, int width = 0, int height = 0, DWORD flags = LR_SHARED | LR_DEFAULTSIZE )
             : BitmapHandle( bitmapName.c_str(), width, height, flags )
         {
         }
@@ -93,7 +93,7 @@ namespace Harlinn::Windows
             }
             SetValue( hBitmap, flags & LR_SHARED ? false : true );
         }
-        BitmapHandle( const ModuleHandle& module, const std::wstring& bitmapName, int width = 0, int height = 0, DWORD flags = LR_SHARED | LR_DEFAULTSIZE )
+        BitmapHandle( const ModuleHandle& module, const WideString& bitmapName, int width = 0, int height = 0, DWORD flags = LR_SHARED | LR_DEFAULTSIZE )
             : BitmapHandle( module, bitmapName.c_str(), width, height, flags )
         {
         }
@@ -122,7 +122,7 @@ namespace Harlinn::Windows
         }
 
 
-        HW_EXPORT static BitmapHandle LoadFromFile( const std::wstring& fileMame );
+        HW_EXPORT static BitmapHandle LoadFromFile( const WideString& fileMame );
     };
 
     class ImageListHandle;
@@ -190,7 +190,7 @@ namespace Harlinn::Windows
             }
             SetValue( hIcon, flags & LR_SHARED ? false : true );
         }
-        IconHandle( const std::wstring& iconName, int width = 0, int height = 0, DWORD flags = LR_SHARED | LR_DEFAULTSIZE )
+        IconHandle( const WideString& iconName, int width = 0, int height = 0, DWORD flags = LR_SHARED | LR_DEFAULTSIZE )
             : IconHandle( iconName.c_str( ), width, height, flags )
         {
         }
@@ -216,7 +216,7 @@ namespace Harlinn::Windows
             }
             SetValue( hIcon, flags & LR_SHARED ? false : true );
         }
-        IconHandle( const ModuleHandle& module, const std::wstring& iconName, int width = 0, int height = 0, DWORD flags = LR_SHARED | LR_DEFAULTSIZE )
+        IconHandle( const ModuleHandle& module, const WideString& iconName, int width = 0, int height = 0, DWORD flags = LR_SHARED | LR_DEFAULTSIZE )
             : IconHandle( module, iconName.c_str(), width, height, flags )
         {
         }
@@ -299,7 +299,7 @@ namespace Harlinn::Windows
             }
             SetValue( hCursor, flags & LR_SHARED ? false : true );
         }
-        CursorHandle( const std::wstring& cursorName, int width = 0, int height = 0, DWORD flags = LR_SHARED | LR_DEFAULTSIZE )
+        CursorHandle( const WideString& cursorName, int width = 0, int height = 0, DWORD flags = LR_SHARED | LR_DEFAULTSIZE )
             : CursorHandle( cursorName.c_str(), width , height, flags )
         {
         }
@@ -325,7 +325,7 @@ namespace Harlinn::Windows
             }
             SetValue( hCursor, flags & LR_SHARED ? false : true );
         }
-        CursorHandle( const ModuleHandle& module, const std::wstring& cursorName, int width = 0, int height = 0, DWORD flags = LR_SHARED | LR_DEFAULTSIZE )
+        CursorHandle( const ModuleHandle& module, const WideString& cursorName, int width = 0, int height = 0, DWORD flags = LR_SHARED | LR_DEFAULTSIZE )
             : CursorHandle( module, cursorName.c_str(), width, height, flags )
         {
         }
@@ -538,16 +538,16 @@ namespace Harlinn::Windows
             int result = ::GetMenuStringW( Value( ), itemIdOrPosition, lpString, nMaxCount, byPosition ? MF_BYPOSITION : MF_BYCOMMAND );
             return result;
         }
-        std::wstring GetText( UINT itemIdOrPosition, bool byPosition ) const
+        WideString GetText( UINT itemIdOrPosition, bool byPosition ) const
         {
             int length = GetTextLength( itemIdOrPosition, byPosition );
             if ( length )
             {
-                std::wstring result( size_t( length ), '\x0' );
+                WideString result( size_t( length ), '\x0' );
                 ::GetMenuStringW( Value( ), itemIdOrPosition, const_cast<wchar_t*>( result.c_str( ) ), length, byPosition ? MF_BYPOSITION : MF_BYCOMMAND );
                 return result;
             }
-            return std::wstring( );
+            return WideString( );
         }
 
         MenuHandle GetSubMenu( int position ) const
@@ -563,7 +563,7 @@ namespace Harlinn::Windows
                 ThrowLastOSError( );
             }
         }
-        void Insert( UINT uPosition, UINT uFlags, UINT_PTR itemIdOrPosition, const std::wstring& newItemText ) const
+        void Insert( UINT uPosition, UINT uFlags, UINT_PTR itemIdOrPosition, const WideString& newItemText ) const
         {
             Insert( uPosition, uFlags, itemIdOrPosition, newItemText.c_str( ) );
         }
@@ -1542,12 +1542,12 @@ namespace Harlinn::Windows
             DrawState( text, x, y, 0, 0, drawStateFlags );
         }
 
-        void DrawState( const std::wstring& text, int x, int y, int cx, int cy, DrawStateFlags drawStateFlags ) const
+        void DrawState( const WideString& text, int x, int y, int cx, int cy, DrawStateFlags drawStateFlags ) const
         {
             auto flags = ConvertDrawStateFlagsForText( drawStateFlags );
             DrawState( nullptr, nullptr, reinterpret_cast<LPARAM>( text.c_str() ), static_cast<WPARAM>( text.length( ) ), x, y, cx, cy, flags );
         }
-        void DrawState( const std::wstring& text, int x, int y, DrawStateFlags drawStateFlags ) const
+        void DrawState( const WideString& text, int x, int y, DrawStateFlags drawStateFlags ) const
         {
             DrawState( text, x, y, 0, 0, drawStateFlags );
         }
@@ -1557,7 +1557,7 @@ namespace Harlinn::Windows
             auto flags = ConvertDrawStateFlagsForText( drawStateFlags );
             DrawState( brush.Value(), nullptr, reinterpret_cast<LPARAM>( text ), 0, x, y, cx, cy, flags );
         }
-        void DrawState( const BrushHandle& brush, const std::wstring& text, int x, int y, int cx, int cy, DrawStateFlags drawStateFlags ) const
+        void DrawState( const BrushHandle& brush, const WideString& text, int x, int y, int cx, int cy, DrawStateFlags drawStateFlags ) const
         {
             auto flags = ConvertDrawStateFlagsForText( drawStateFlags );
             DrawState( brush.Value( ), nullptr, reinterpret_cast<LPARAM>( text.c_str() ), static_cast<WPARAM>( text.length( ) ), x, y, cx, cy, flags );
@@ -1567,7 +1567,7 @@ namespace Harlinn::Windows
         {
             DrawState( brush, text, x, y, 0, 0, flags );
         }
-        void DrawState( const BrushHandle& brush, const std::wstring& text, int x, int y, DrawStateFlags flags ) const
+        void DrawState( const BrushHandle& brush, const WideString& text, int x, int y, DrawStateFlags flags ) const
         {
             DrawState( brush, text, x, y, 0, 0, flags );
         }
@@ -1703,7 +1703,7 @@ namespace Harlinn::Windows
             return static_cast<Windows::ForegroundMixMode>( rc );
         }
 
-        void DrawGrayString( const std::wstring& text, int X, int Y, int nWidth = 0, int nHeight = 0 ) const
+        void DrawGrayString( const WideString& text, int X, int Y, int nWidth = 0, int nHeight = 0 ) const
         {
             if ( text.length( ) )
             {
@@ -1713,7 +1713,7 @@ namespace Harlinn::Windows
                 }
             }
         }
-        void DrawGrayString( const BrushHandle& brush, const std::wstring& text, int X, int Y, int nWidth = 0, int nHeight = 0 ) const
+        void DrawGrayString( const BrushHandle& brush, const WideString& text, int X, int Y, int nWidth = 0, int nHeight = 0 ) const
         {
             if ( text.length( ) )
             {
@@ -2122,7 +2122,7 @@ namespace Harlinn::Windows
             }
             return result;
         }
-        int DrawText( const std::wstring& text, RECT& rect, DrawTextFlags drawTextFlags ) const
+        int DrawText( const WideString& text, RECT& rect, DrawTextFlags drawTextFlags ) const
         {
             return DrawText( text.c_str( ), static_cast<int>( text.length( ) ), rect, drawTextFlags );
         }
@@ -2166,7 +2166,7 @@ namespace Harlinn::Windows
             }
         }
 
-        void DrawText( int nXStart, int nYStart, const std::wstring& text ) const
+        void DrawText( int nXStart, int nYStart, const WideString& text ) const
         {
             DrawText( nXStart, nYStart, text.c_str( ), static_cast<int>( text.length( ) ) );
         }
@@ -2174,7 +2174,7 @@ namespace Harlinn::Windows
         {
             DrawText( nXStart, nYStart, text.c_str( ), static_cast<int>( text.length( ) ) );
         }
-        void DrawText( const POINT& startPosition, const std::wstring& text ) const
+        void DrawText( const POINT& startPosition, const WideString& text ) const
         {
             DrawText( startPosition.x, startPosition.y, text.c_str( ), static_cast<int>( text.length( ) ) );
         }

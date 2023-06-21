@@ -155,7 +155,7 @@ namespace Harlinn::Common::Core
             }
             SetValue( hModule );
         }
-        ModuleHandle( const std::wstring& moduleName, DWORD flags = 0 )
+        ModuleHandle( const WideString& moduleName, DWORD flags = 0 )
             : ModuleHandle( moduleName.c_str( ), flags )
         {
         }
@@ -188,20 +188,20 @@ namespace Harlinn::Common::Core
         using Base::SetValue;
 
 
-        std::wstring ModuleFileName( ) const
+        WideString ModuleFileName( ) const
         {
             if ( IsValid( ) )
             {
                 wchar_t buffer[ 512 ];
-                std::wstring::size_type length = ::GetModuleFileNameW( Value( ), buffer, 512 );
+                WideString::size_type length = ::GetModuleFileNameW( Value( ), buffer, 512 );
                 if ( length == 0 )
                 {
                     ThrowLastOSError( );
                 }
-                std::wstring result( buffer, length );
+                WideString result( buffer, length );
                 return result;
             }
-            return std::wstring( );
+            return {};
         }
 
 

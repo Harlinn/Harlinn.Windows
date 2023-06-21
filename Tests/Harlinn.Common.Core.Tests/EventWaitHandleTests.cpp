@@ -80,7 +80,7 @@ BOOST_AUTO_TEST_CASE( WaitWithTimeoutTest1 )
 // --run_test=EventWaitHandleTests/OpenTest1
 BOOST_AUTO_TEST_CASE( OpenTest1 )
 {
-    std::wstring eventName(L"OpenTest1EventName" );
+    WideString eventName(L"OpenTest1EventName" );
     EventWaitHandle event1( eventName, true );
 
     Thread thread( [&eventName]( )
@@ -104,7 +104,7 @@ BOOST_AUTO_TEST_CASE( OpenTest1 )
 // --run_test=EventWaitHandleTests/TryOpenTest1
 BOOST_AUTO_TEST_CASE( TryOpenTest1 )
 {
-    std::wstring eventName( L"TryOpenTest1EventName" );
+    WideString eventName( L"TryOpenTest1EventName" );
     EventWaitHandle event1( eventName, true );
 
     Thread thread( [&eventName]( )

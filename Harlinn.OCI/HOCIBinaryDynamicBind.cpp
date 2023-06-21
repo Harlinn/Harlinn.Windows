@@ -13,7 +13,7 @@ namespace Harlinn::OCI
 
     }
 
-    void BinaryDynamicBind::Bind( const std::wstring& name, UInt32 iters )
+    void BinaryDynamicBind::Bind( const WideString& name, UInt32 iters )
     {
         BindByName( name, ExternalType, 0 );
     }

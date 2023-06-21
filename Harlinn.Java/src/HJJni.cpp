@@ -20,7 +20,7 @@ namespace Harlinn::Java
         JNI_GetCreatedJavaVMsFuncDef* JNI_GetCreatedJavaVMsFunc = nullptr;
 
         
-        bool FindJVMInPath( std::wstring& location )
+        bool FindJVMInPath( hcc::WideString& location )
         {
             auto jvmDll = hcc::Environment::Where( L"jvm.dll" );
             if ( jvmDll.size( ) )
@@ -32,9 +32,9 @@ namespace Harlinn::Java
         }
 
 
-        bool FindJdkJVM( HKEY rootKey, std::wstring& location )
+        bool FindJdkJVM( HKEY rootKey, hcc::WideString& location )
         {
-            std::wstring keyPath = L"SOFTWARE\\JavaSoft\\JDK";
+            hcc::WideString keyPath = L"SOFTWARE\\JavaSoft\\JDK";
             DWORD rc = NO_ERROR;
             HKEY jrtKey = nullptr;
             if ( rc = RegOpenKeyExW( rootKey, keyPath.c_str(), 0, KEY_READ, &jrtKey ) )
@@ -68,10 +68,10 @@ namespace Harlinn::Java
             {
                 return false;
             }
-            return hcc::IO::File::Search( jdkHome, L"jvm.dll", true, location );
+            return hcc::IO::File::Search( hcc::WideString( jdkHome ), hcc::WideString(L"jvm.dll"), true, location );
         }
 
-        bool FindJrtJVM( HKEY rootKey, std::wstring& location )
+        bool FindJrtJVM( HKEY rootKey, hcc::WideString& location )
         {
             DWORD rc = NO_ERROR;
             HKEY jrtKey = nullptr;
@@ -101,7 +101,7 @@ namespace Harlinn::Java
             return true;
         }
 
-        bool FindJVM( std::wstring& location )
+        bool FindJVM( hcc::WideString& location )
         {
             if ( !FindJVMInPath( location ) )
             {
@@ -127,7 +127,7 @@ namespace Harlinn::Java
         {
             if ( !JvmDll )
             {
-                std::wstring location;
+                hcc::WideString location;
                 if ( FindJVM( location ) )
                 {
                     JvmDll = LoadLibraryW( location.c_str( ) );

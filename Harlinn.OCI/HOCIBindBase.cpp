@@ -17,7 +17,7 @@ namespace Harlinn::OCI
         }
         InitializeHandle( bindHandle, true );
     }
-    void BindBase::BindByName( const std::wstring& name, OraType dataType, void* dataAddress, Int64 dataSize, Int16* indicators, UInt32* actualLengths, UInt16* returnCodes, UInt32 plsqlMaxArrayLength, UInt32* plsqlArrayLength, UInt32 mode )
+    void BindBase::BindByName( const WideString& name, OraType dataType, void* dataAddress, Int64 dataSize, Int16* indicators, UInt32* actualLengths, UInt16* returnCodes, UInt32 plsqlMaxArrayLength, UInt32* plsqlArrayLength, UInt32 mode )
     {
         void* bindHandle = nullptr;
         auto& statement = Statement( );
@@ -36,7 +36,7 @@ namespace Harlinn::OCI
         HCC_THROW( NotImplementedException );
     }
 
-    void BindBase::Bind( const std::wstring& name, UInt32 iters )
+    void BindBase::Bind( const WideString& name, UInt32 iters )
     {
         HCC_THROW( NotImplementedException );
     }

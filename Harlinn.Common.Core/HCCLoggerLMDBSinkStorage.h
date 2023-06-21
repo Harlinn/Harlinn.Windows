@@ -800,7 +800,7 @@ namespace Harlinn::Common::Core::Logging::Sinks::Storage
     using LogComputerTableInfo = LogTableInfoT
         <
             BackendComputerInfo,Guid,
-            Persistent::DescriptorType<Guid, std::wstring, std::wstring>
+            Persistent::DescriptorType<Guid, WideString, WideString>
         >;
     using LogComputerTable = LogComputerTableInfo::TableType;
     using LogComputerIndexInfo = LogComputerTableInfo::IndexInfoType;
@@ -809,7 +809,7 @@ namespace Harlinn::Common::Core::Logging::Sinks::Storage
     using LogUserTableInfo = LogTableInfoT
         <
             BackendUserInfo, Guid,
-            Persistent::DescriptorType<Guid, std::wstring, std::wstring>
+            Persistent::DescriptorType<Guid, WideString, WideString>
         >;
     using LogUserTable = LogUserTableInfo::TableType;
     using LogUserIndexInfo = LogUserTableInfo::IndexInfoType;
@@ -817,7 +817,7 @@ namespace Harlinn::Common::Core::Logging::Sinks::Storage
     using LogExecutableTableInfo = LogTableInfoT
         <
             BackendExecutableInfo, Guid,
-            Persistent::DescriptorType<Guid, std::wstring>
+            Persistent::DescriptorType<Guid, WideString>
         >;
     using LogExecutableTable = LogExecutableTableInfo::TableType;
     using LogExecutableIndexInfo = LogExecutableTableInfo::IndexInfoType;
@@ -825,7 +825,7 @@ namespace Harlinn::Common::Core::Logging::Sinks::Storage
     using LogConfigurationFileTableInfo = LogTableInfoT
         <
             BackendConfigurationFileInfo, Guid,
-            Persistent::DescriptorType<Guid, std::wstring, std::wstring>
+            Persistent::DescriptorType<Guid, WideString, WideString>
         >;
     using LogConfigurationFileTable = LogConfigurationFileTableInfo::TableType;
     using LogConfigurationFileIndexInfo = LogConfigurationFileTableInfo::IndexInfoType;
@@ -833,7 +833,7 @@ namespace Harlinn::Common::Core::Logging::Sinks::Storage
     using LogWindowsVersionTableInfo = LogTableInfoT
         <
             BackendWindowsVersionInfo, Guid,
-            Persistent::DescriptorType<Guid, DateTime, Guid, UInt32, UInt32, UInt32, UInt32, std::wstring, UInt16, UInt16, UInt16, Byte>
+            Persistent::DescriptorType<Guid, DateTime, Guid, UInt32, UInt32, UInt32, UInt32, WideString, UInt16, UInt16, UInt16, Byte>
         >;
     using LogWindowsVersionTable = LogWindowsVersionTableInfo::TableType;
     using LogWindowsVersionIndexInfo = LogWindowsVersionTableInfo::IndexInfoType;
@@ -841,7 +841,7 @@ namespace Harlinn::Common::Core::Logging::Sinks::Storage
     using LogProcessTableInfo = LogTableInfoT
         <
             BackendProcessInfo, Guid,
-            Persistent::DescriptorType<Guid, std::wstring, std::wstring>
+            Persistent::DescriptorType<Guid, WideString, WideString>
         >;
     using LogProcessTable = LogProcessTableInfo::TableType;
     using LogProcessIndexInfo = LogProcessTableInfo::IndexInfoType;

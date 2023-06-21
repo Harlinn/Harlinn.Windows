@@ -359,7 +359,7 @@ namespace Harlinn::Common::Core
         }
         template<typename T>
             requires std::is_base_of_v<Unknown, T>
-        static T CoCreateInstanceFromClassId( const std::wstring& clsid, DWORD classContext = CLSCTX_INPROC_SERVER )
+        static T CoCreateInstanceFromClassId( const WideString& clsid, DWORD classContext = CLSCTX_INPROC_SERVER )
         {
             return CoCreateInstanceFromClassId( clsid.c_str( ), classContext );
         }
@@ -378,7 +378,7 @@ namespace Harlinn::Common::Core
         }
         template<typename T>
             requires std::is_base_of_v<Unknown, T>
-        static T CoCreateInstanceFromProgId( const std::wstring& progId, DWORD classContext = CLSCTX_INPROC_SERVER )
+        static T CoCreateInstanceFromProgId( const WideString& progId, DWORD classContext = CLSCTX_INPROC_SERVER )
         {
             return CoCreateInstanceFromProgId( progId, classContext );
         }
@@ -749,10 +749,10 @@ public: \
     public:
         HCC_COM_STANDARD_METHODS_IMPL( EnumString, Unknown, IEnumString, IUnknown )
 
-        HCC_EXPORT bool Next( std::wstring& result ) const;
+        HCC_EXPORT bool Next( WideString& result ) const;
         HCC_EXPORT bool Next( ULONG celt, LPOLESTR* rgelt, ULONG* pceltFetched ) const;
-        HCC_EXPORT bool Next( ULONG celt, std::vector<std::wstring>& result ) const;
-        HCC_EXPORT void All( std::vector<std::wstring>& result ) const;
+        HCC_EXPORT bool Next( ULONG celt, std::vector<WideString>& result ) const;
+        HCC_EXPORT void All( std::vector<WideString>& result ) const;
         HCC_EXPORT void Skip( ULONG celt ) const;
         HCC_EXPORT void Reset( ) const;
         HCC_EXPORT EnumString Clone( ) const;
@@ -1011,9 +1011,9 @@ public: \
             return data_[index];
         }
 
-        std::wstring ToString( ) const
+        WideString ToString( ) const
         {
-            return std::wstring( data_ );
+            return WideString( data_ );
         }
 
         wchar_t* c_str( )
@@ -1351,7 +1351,7 @@ public: \
             SetProxyBlanket( proxy.GetInterfacePointer(), authenticationService, authorization, serverPrincipalName, authenticationLevel, impersonationLevel, authInfo, authenticationCapabilities );
         }
 
-        HCC_EXPORT std::vector<std::wstring> GetSupportedKnownInterfaces(IUnknown* unknown);
+        HCC_EXPORT std::vector<WideString> GetSupportedKnownInterfaces(IUnknown* unknown);
         HCC_EXPORT std::vector<Guid> GetSupportedKnownInterfaceIds(IUnknown* unknown);
 
     }

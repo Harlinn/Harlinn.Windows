@@ -75,7 +75,7 @@ namespace Harlinn::Common::Core
     }
 
 
-    std::wstring TimeSpan::ToWideString( ) const
+    WideString TimeSpan::ToWideString( ) const
     {
         wchar_t buffer[128];
         size_t length = GetDurationFormat( LOCALE_USER_DEFAULT, 0, nullptr, ticks_, L"d:hh:mm:ss:fffffff", buffer, 128 );
@@ -83,10 +83,10 @@ namespace Harlinn::Common::Core
         {
             ThrowLastOSError( );
         }
-        return std::wstring( buffer, length );
+        return WideString( buffer, length );
     }
 
-    std::wstring TimeSpan::ToWideString( const std::wstring& theFormat ) const
+    WideString TimeSpan::ToWideString( const WideString& theFormat ) const
     {
         wchar_t buffer[256];
         size_t length = GetDurationFormat( LOCALE_USER_DEFAULT, 0, nullptr, ticks_, theFormat.c_str( ), buffer, 256 );
@@ -94,7 +94,7 @@ namespace Harlinn::Common::Core
         {
             ThrowLastOSError( );
         }
-        return std::wstring( buffer, length );
+        return WideString( buffer, length );
     }
 
     std::string TimeSpan::ToAnsiString( ) const
@@ -111,11 +111,11 @@ namespace Harlinn::Common::Core
     }
 
 
-    std::wstring TimeSpan::ToString( ) const
+    WideString TimeSpan::ToString( ) const
     {
         return ToWideString( );
     }
-    std::wstring TimeSpan::ToString( const std::wstring& theFormat ) const
+    WideString TimeSpan::ToString( const WideString& theFormat ) const
     {
         return ToWideString( theFormat );
     }
@@ -269,6 +269,16 @@ namespace Harlinn::Common::Core
         return TryParseImpl( text, result );
     }
 
+    bool TimeSpan::TryParse( const WideString& text, TimeSpan& result )
+    {
+        return TryParse( text.c_str( ), result );
+    }
+    bool TimeSpan::TryParse( const std::string& text, TimeSpan& result )
+    {
+        return TryParse( text.c_str( ), result );
+    }
+
+
     TimeSpan TimeSpan::Parse( const wchar_t* text )
     {
         TimeSpan timeSpan;
@@ -293,6 +303,15 @@ namespace Harlinn::Common::Core
         {
             HCC_THROW( ArgumentException, L"Invalid timespan" );
         }
+    }
+
+    TimeSpan TimeSpan::Parse( const WideString& text )
+    {
+        return Parse( text.c_str( ) );
+    }
+    TimeSpan TimeSpan::Parse( const std::string& text )
+    {
+        return Parse( text.c_str( ) );
     }
 
 
@@ -532,7 +551,7 @@ namespace Harlinn::Common::Core
         std::string result( buffer, length );
         return result;
     }
-    std::wstring DateTime::DateToString( ) const
+    WideString DateTime::DateToString( ) const
     {
         wchar_t buffer[128];
         SYSTEMTIME systemTime;
@@ -542,7 +561,7 @@ namespace Harlinn::Common::Core
         {
             ThrowLastOSError( );
         }
-        std::wstring result( buffer, length );
+        WideString result( buffer, length );
         return result;
     }
 
@@ -559,7 +578,7 @@ namespace Harlinn::Common::Core
         std::string result( buffer, length );
         return result;
     }
-    std::wstring DateTime::TimeToString( ) const
+    WideString DateTime::TimeToString( ) const
     {
         wchar_t buffer[128];
         SYSTEMTIME systemTime;
@@ -569,7 +588,7 @@ namespace Harlinn::Common::Core
         {
             ThrowLastOSError( );
         }
-        std::wstring result( buffer, length );
+        WideString result( buffer, length );
         return result;
     }
 
@@ -595,7 +614,7 @@ namespace Harlinn::Common::Core
         return result;
     }
 
-    std::wstring DateTime::ToString( ) const
+    WideString DateTime::ToString( ) const
     {
         wchar_t buffer[128];
         SYSTEMTIME systemTime;
@@ -613,7 +632,17 @@ namespace Harlinn::Common::Core
             ThrowLastOSError( );
         }
 
-        std::wstring result( buffer, size_t( length + length2 - 1 ) );
+        WideString result( buffer, size_t( length + length2 - 1 ) );
+        return result;
+    }
+
+    WideString DateTime::ToString( const std::wstring_view& format ) const
+    {
+        auto timePoint = ToTimePoint( );
+        std::wformat_args args = std::make_wformat_args( timePoint );
+
+        WideString result;
+        std::vformat_to( std::back_insert_iterator{ result }, format, args );
         return result;
     }
 
@@ -970,6 +999,23 @@ namespace Harlinn::Common::Core
         {
             HCC_THROW( ArgumentException, L"Invalid datetime" );
         }
+    }
+
+    bool DateTime::TryParse( const WideString& text, DateTime& result )
+    {
+        return TryParse( text.c_str( ), result );
+    }
+    bool DateTime::TryParse( const std::string& text, DateTime& result )
+    {
+        return TryParse( text.c_str( ), result );
+    }
+    DateTime DateTime::Parse( const WideString& text )
+    {
+        return Parse( text.c_str( ) );
+    }
+    DateTime DateTime::Parse( const std::string& text )
+    {
+        return Parse( text.c_str( ) );
     }
 
 

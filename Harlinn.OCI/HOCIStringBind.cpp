@@ -28,7 +28,7 @@ namespace Harlinn::OCI
         }
         SimpleBindByPos( positon, ExternalType, &string_, sizeof( string_ ) );
     }
-    void StringBind::Bind( const std::wstring& name, UInt32 iters )
+    void StringBind::Bind( const WideString& name, UInt32 iters )
     {
         SimpleBindByName( name, ExternalType, &string_, sizeof( string_ ) );
     }
@@ -43,7 +43,7 @@ namespace Harlinn::OCI
     }
     void StringBind::Assign( bool newValue )
     {
-        auto s = ConvertTo<std::wstring>( newValue );
+        auto s = ConvertTo<WideString>( newValue );
         Assign( s );
     }
     Byte StringBind::AsByte( ) const
@@ -53,7 +53,7 @@ namespace Harlinn::OCI
     }
     void StringBind::Assign( Byte newValue )
     {
-        auto s = ConvertTo<std::wstring>( newValue );
+        auto s = ConvertTo<WideString>( newValue );
         Assign( s );
     }
     SByte StringBind::AsSByte( ) const
@@ -63,7 +63,7 @@ namespace Harlinn::OCI
     }
     void StringBind::Assign( SByte newValue )
     {
-        auto s = ConvertTo<std::wstring>( newValue );
+        auto s = ConvertTo<WideString>( newValue );
         Assign( s );
     }
     short StringBind::AsInt16( ) const
@@ -73,7 +73,7 @@ namespace Harlinn::OCI
     }
     void StringBind::Assign( short newValue )
     {
-        auto s = ConvertTo<std::wstring>( newValue );
+        auto s = ConvertTo<WideString>( newValue );
         Assign( s );
     }
     UInt16 StringBind::AsUInt16( ) const
@@ -83,7 +83,7 @@ namespace Harlinn::OCI
     }
     void StringBind::Assign( UInt16 newValue )
     {
-        auto s = ConvertTo<std::wstring>( newValue );
+        auto s = ConvertTo<WideString>( newValue );
         Assign( s );
     }
     Int32 StringBind::AsInt32( ) const
@@ -93,7 +93,7 @@ namespace Harlinn::OCI
     }
     void StringBind::Assign( Int32 newValue )
     {
-        auto s = ConvertTo<std::wstring>( newValue );
+        auto s = ConvertTo<WideString>( newValue );
         Assign( s );
     }
     UInt32 StringBind::AsUInt32( ) const
@@ -103,7 +103,7 @@ namespace Harlinn::OCI
     }
     void StringBind::Assign( UInt32 newValue )
     {
-        auto s = ConvertTo<std::wstring>( newValue );
+        auto s = ConvertTo<WideString>( newValue );
         Assign( s );
     }
     long long StringBind::AsInt64( ) const
@@ -113,7 +113,7 @@ namespace Harlinn::OCI
     }
     void StringBind::Assign( long long newValue )
     {
-        auto s = ConvertTo<std::wstring>( newValue );
+        auto s = ConvertTo<WideString>( newValue );
         Assign( s );
     }
     UInt64 StringBind::AsUInt64( ) const
@@ -123,7 +123,7 @@ namespace Harlinn::OCI
     }
     void StringBind::Assign( UInt64 newValue )
     {
-        auto s = ConvertTo<std::wstring>( newValue );
+        auto s = ConvertTo<WideString>( newValue );
         Assign( s );
     }
     float StringBind::AsSingle( ) const
@@ -133,7 +133,7 @@ namespace Harlinn::OCI
     }
     void StringBind::Assign( float newValue )
     {
-        auto s = ConvertTo<std::wstring>( newValue );
+        auto s = ConvertTo<WideString>( newValue );
         Assign( s );
     }
     double StringBind::AsDouble( ) const
@@ -143,7 +143,7 @@ namespace Harlinn::OCI
     }
     void StringBind::Assign( double newValue )
     {
-        auto s = ConvertTo<std::wstring>( newValue );
+        auto s = ConvertTo<WideString>( newValue );
         Assign( s );
     }
 
@@ -155,7 +155,7 @@ namespace Harlinn::OCI
 
     void StringBind::Assign( const DateTime& newValue )
     {
-        auto s = ConvertTo<std::wstring>( newValue );
+        auto s = ConvertTo<WideString>( newValue );
         Assign( s );
     }
 
@@ -167,12 +167,12 @@ namespace Harlinn::OCI
 
     void StringBind::Assign( const TimeSpan& newValue )
     {
-        auto s = ConvertTo<std::wstring>( newValue.Ticks( ) );
+        auto s = ConvertTo<WideString>( newValue.Ticks( ) );
         Assign( s );
     }
 
 
-    std::wstring StringBind::AsString( ) const
+    WideString StringBind::AsString( ) const
     {
         if ( indicator_ != -1 )
         {
@@ -182,14 +182,14 @@ namespace Harlinn::OCI
                 auto environmentHandle = (OCIEnv*)environment.Handle( );
                 auto byteCount = OCIStringSize( environmentHandle, string_ );
                 wchar_t* ptr = (wchar_t*)OCIStringPtr( environmentHandle, string_ );
-                return std::wstring( ptr, static_cast<size_t>( byteCount / sizeof( wchar_t ) ) );
+                return WideString( ptr, static_cast<size_t>( byteCount / sizeof( wchar_t ) ) );
             }
         }
 
-        return std::wstring( );
+        return WideString( );
     }
 
-    void StringBind::Assign( const std::wstring& newValue )
+    void StringBind::Assign( const WideString& newValue )
     {
         auto& error = Error( );
         auto errorHandle = (OCIError*)error.Handle( );
@@ -223,7 +223,7 @@ namespace Harlinn::OCI
     }
     void StringBind::Assign( const Guid& newValue )
     {
-        auto s = ConvertTo<std::wstring>( newValue.ToString( ) );
+        auto s = ConvertTo<WideString>( newValue.ToString( ) );
         Assign( s );
     }
 }

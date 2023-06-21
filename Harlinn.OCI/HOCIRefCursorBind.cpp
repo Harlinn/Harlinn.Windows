@@ -27,7 +27,7 @@ namespace Harlinn::OCI
         boundStatementhandle_ = tmp;
         BindByPos( positon, OCI::OraType::RSET, &boundStatementhandle_, sizeof( boundStatementhandle_ ), &indicator_ );
     }
-    void RefCursorBind::Bind( const std::wstring& name, UInt32 iters )
+    void RefCursorBind::Bind( const WideString& name, UInt32 iters )
     {
         BindByName( name, OCI::OraType::RSET, &boundStatementhandle_, sizeof( boundStatementhandle_ ), &indicator_ );
     }

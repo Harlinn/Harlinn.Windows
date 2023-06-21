@@ -3,7 +3,7 @@
 
 namespace Harlinn::Common::Core::IO
 {
-    std::wstring SerialPort::Name( ) const
+    WideString SerialPort::Name( ) const
     {
         wchar_t buffer[16];
         buffer[0] = 0;

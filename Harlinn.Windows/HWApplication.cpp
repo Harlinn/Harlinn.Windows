@@ -141,7 +141,7 @@ namespace Harlinn::Windows
         return windowClasses_;
     }
 
-    WindowClass* Application::GetWindowClass( const std::wstring& className )
+    WindowClass* Application::GetWindowClass( const WideString& className )
     {
         auto application = Application::Current( );
         if ( application )
@@ -156,7 +156,7 @@ namespace Harlinn::Windows
     {
         if ( className && className[0] )
         {
-            std::wstring clsName( className );
+            WideString clsName( className );
             return GetWindowClass( clsName );
         }
         return nullptr;

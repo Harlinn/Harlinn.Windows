@@ -139,7 +139,7 @@ namespace Harlinn::Windows::Graphics
             HRESULT hr = pInterface->SetName( name );
             HCC_COM_CHECK_HRESULT2( hr, pInterface );
         }
-        void SetName( const std::wstring& name ) const
+        void SetName( const WideString& name ) const
         {
             SetName( name.c_str( ) );
         }

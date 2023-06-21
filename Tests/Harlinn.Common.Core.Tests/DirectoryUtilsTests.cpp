@@ -18,7 +18,7 @@ BOOST_FIXTURE_TEST_SUITE(DirectoryUtilsTests, LocalFixture)
 // --run_test=DirectoryUtilsTests/ApplicationDirectoriesTest1
 BOOST_AUTO_TEST_CASE(ApplicationDirectoriesTest1)
 {
-    ApplicationDirectories<std::wstring> applicationDirectories;
+    ApplicationDirectories<WideString> applicationDirectories;
 
     auto& baseName = applicationDirectories.ExecutableBaseName();
     auto& directory = applicationDirectories.ExecutableDirectory();

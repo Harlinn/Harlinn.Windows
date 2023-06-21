@@ -78,7 +78,7 @@ namespace Harlinn::OCI
         RegisterCallbacks( );
     }
 
-    void DynamicBind::BindByName( const std::wstring& name, OraType dataType, Int32 dataSize )
+    void DynamicBind::BindByName( const WideString& name, OraType dataType, Int32 dataSize )
     {
         Base::BindByName( name, dataType, nullptr, dataSize, nullptr, nullptr, nullptr, 0, nullptr, OCI_DATA_AT_EXEC );
         RegisterCallbacks( );
