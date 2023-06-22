@@ -140,7 +140,7 @@ namespace Harlinn::Common::Core
         HCC_EXPORT ExceptionLocation( const char* function, const char* filename, int lineNumber );
         HCC_EXPORT ExceptionLocation( const wchar_t* function, const wchar_t* filename, int lineNumber );
         HCC_EXPORT ExceptionLocation( const WideString& function, const WideString& filename, int lineNumber );
-        HCC_EXPORT ExceptionLocation( const std::string& function, const std::string& filename, int lineNumber );
+        HCC_EXPORT ExceptionLocation( const AnsiString& function, const AnsiString& filename, int lineNumber );
 
         HCC_EXPORT ExceptionLocation( const ExceptionLocation& other );
         ExceptionLocation( ExceptionLocation&& other ) noexcept
@@ -182,14 +182,14 @@ namespace Harlinn::Common::Core
     class Exception : public std::exception
     {
         ExceptionData* data;
-        HCC_EXPORT static std::string empty;
+        HCC_EXPORT static AnsiString empty;
     protected:
         HCC_EXPORT const ExceptionData* GetExceptionData( ) const;
         HCC_EXPORT ExceptionData* GetExceptionData( );
         HCC_EXPORT WideString GetData( int id ) const;
         HCC_EXPORT Exception& SetData( int id, const char* theValue );
         HCC_EXPORT Exception& SetData( int id, const wchar_t* theValue );
-        HCC_EXPORT Exception& SetData( int id, const std::string& theValue );
+        HCC_EXPORT Exception& SetData( int id, const AnsiString& theValue );
         HCC_EXPORT Exception& SetData( int id, const WideString& theValue );
     public:
         typedef Exception Type;
@@ -206,33 +206,33 @@ namespace Harlinn::Common::Core
         HCC_EXPORT Exception( const Exception& theException );
         HCC_EXPORT explicit Exception( const char* theMessage );
         HCC_EXPORT explicit Exception( const wchar_t* theMessage );
-        HCC_EXPORT explicit Exception( const std::string& theMessage );
+        HCC_EXPORT explicit Exception( const AnsiString& theMessage );
         HCC_EXPORT explicit Exception( const WideString& theMessage );
         HCC_EXPORT Exception( const char* theMessage, const Exception& theInnerException );
         HCC_EXPORT Exception( const wchar_t* theMessage, const Exception& theInnerException );
         HCC_EXPORT Exception( long long theCode, const char* theMessage );
         HCC_EXPORT Exception( long long theCode, const wchar_t* theMessage );
-        HCC_EXPORT Exception( long long theCode, const std::string& theMessage );
+        HCC_EXPORT Exception( long long theCode, const AnsiString& theMessage );
         HCC_EXPORT Exception( long long theCode, const WideString& theMessage );
         HCC_EXPORT Exception( HRESULT hResult, long long theCode, const char* theMessage );
         HCC_EXPORT Exception( HRESULT hResult, long long theCode, const wchar_t* theMessage );
-        HCC_EXPORT Exception( HRESULT hResult, long long theCode, const std::string& theMessage );
+        HCC_EXPORT Exception( HRESULT hResult, long long theCode, const AnsiString& theMessage );
         HCC_EXPORT Exception( HRESULT hResult, long long theCode, const WideString& theMessage );
 
         HCC_EXPORT explicit Exception( const ExceptionLocation& theLocation );
         HCC_EXPORT Exception( const ExceptionLocation& theLocation, const char* theMessage );
         HCC_EXPORT Exception( const ExceptionLocation& theLocation, const wchar_t* theMessage );
-        HCC_EXPORT Exception( const ExceptionLocation& theLocation, const std::string& theMessage );
+        HCC_EXPORT Exception( const ExceptionLocation& theLocation, const AnsiString& theMessage );
         HCC_EXPORT Exception( const ExceptionLocation& theLocation, const WideString& theMessage );
         HCC_EXPORT Exception( const ExceptionLocation& theLocation, const char* theMessage, const Exception& theInnerException );
         HCC_EXPORT Exception( const ExceptionLocation& theLocation, const wchar_t* theMessage, const Exception& theInnerException );
         HCC_EXPORT Exception( const ExceptionLocation& theLocation, long long theCode, const char* theMessage );
         HCC_EXPORT Exception( const ExceptionLocation& theLocation, long long theCode, const wchar_t* theMessage );
-        HCC_EXPORT Exception( const ExceptionLocation& theLocation, long long theCode, const std::string& theMessage );
+        HCC_EXPORT Exception( const ExceptionLocation& theLocation, long long theCode, const AnsiString& theMessage );
         HCC_EXPORT Exception( const ExceptionLocation& theLocation, long long theCode, const WideString& theMessage );
         HCC_EXPORT Exception( const ExceptionLocation& theLocation, HRESULT hResult, long long theCode, const char* theMessage );
         HCC_EXPORT Exception( const ExceptionLocation& theLocation, HRESULT hResult, long long theCode, const wchar_t* theMessage );
-        HCC_EXPORT Exception( const ExceptionLocation& theLocation, HRESULT hResult, long long theCode, const std::string& theMessage );
+        HCC_EXPORT Exception( const ExceptionLocation& theLocation, HRESULT hResult, long long theCode, const AnsiString& theMessage );
         HCC_EXPORT Exception( const ExceptionLocation& theLocation, HRESULT hResult, long long theCode, const WideString& theMessage );
 
         HCC_EXPORT virtual ~Exception( );
@@ -264,13 +264,13 @@ namespace Harlinn::Common::Core
         HCC_EXPORT WideString Message( ) const;
         HCC_EXPORT Exception& SetMessage( const char* theValue );
         HCC_EXPORT Exception& SetMessage( const wchar_t* theValue );
-        HCC_EXPORT Exception& SetMessage( const std::string& theValue );
+        HCC_EXPORT Exception& SetMessage( const AnsiString& theValue );
         HCC_EXPORT Exception& SetMessage( const WideString& theValue );
 
         HCC_EXPORT WideString GetHelpLink( ) const;
         HCC_EXPORT Exception& SetHelpLink( const char* theValue );
         HCC_EXPORT Exception& SetHelpLink( const wchar_t* theValue );
-        HCC_EXPORT Exception& SetHelpLink( const std::string& theValue );
+        HCC_EXPORT Exception& SetHelpLink( const AnsiString& theValue );
         HCC_EXPORT Exception& SetHelpLink( const WideString& theValue );
 
         HCC_EXPORT HRESULT GetHRESULT( ) const;
@@ -285,7 +285,7 @@ namespace Harlinn::Common::Core
         HCC_EXPORT WideString GetSource( ) const;
         HCC_EXPORT Exception& SetSource( const char* theValue );
         HCC_EXPORT Exception& SetSource( const wchar_t* theValue );
-        HCC_EXPORT Exception& SetSource( const std::string& theValue );
+        HCC_EXPORT Exception& SetSource( const AnsiString& theValue );
         HCC_EXPORT Exception& SetSource( const WideString& theValue );
 
         HCC_EXPORT ExceptionLocation GetLocation( ) const;
@@ -300,30 +300,30 @@ HCC_EXPORT explicit className (); \
 HCC_EXPORT className (const className & other );  \
 HCC_EXPORT explicit className (const char* message);  \
 HCC_EXPORT explicit className (const wchar_t* message);  \
-HCC_EXPORT explicit className (const std::string& message);  \
+HCC_EXPORT explicit className (const AnsiString& message);  \
 HCC_EXPORT explicit className (const WideString& message);  \
 HCC_EXPORT className ( long long code, const char* message ); \
 HCC_EXPORT className ( long long code, const wchar_t* message ); \
-HCC_EXPORT className ( long long code, const std::string& message );  \
+HCC_EXPORT className ( long long code, const AnsiString& message );  \
 HCC_EXPORT className ( long long code, const WideString& message );  \
 HCC_EXPORT className ( HRESULT hResult, long long code, const char* message );  \
 HCC_EXPORT className ( HRESULT hResult, long long code, const wchar_t* message );  \
-HCC_EXPORT className ( HRESULT hResult, long long code, const std::string& message );  \
+HCC_EXPORT className ( HRESULT hResult, long long code, const AnsiString& message );  \
 HCC_EXPORT className ( HRESULT hResult, long long code, const WideString& message );  \
 HCC_EXPORT className (const char* message, const Exception& innerException);  \
 HCC_EXPORT className (const wchar_t* message, const Exception& innerException);  \
 HCC_EXPORT explicit className (const ExceptionLocation& location ); \
 HCC_EXPORT className (const ExceptionLocation& location, const char* message);  \
 HCC_EXPORT className (const ExceptionLocation& location, const wchar_t* message);  \
-HCC_EXPORT className (const ExceptionLocation& location, const std::string& message);  \
+HCC_EXPORT className (const ExceptionLocation& location, const AnsiString& message);  \
 HCC_EXPORT className (const ExceptionLocation& location, const WideString& message);  \
 HCC_EXPORT className ( const ExceptionLocation& location, long long code, const char* message ); \
 HCC_EXPORT className ( const ExceptionLocation& location, long long code, const wchar_t* message ); \
-HCC_EXPORT className ( const ExceptionLocation& location, long long code, const std::string& message );  \
+HCC_EXPORT className ( const ExceptionLocation& location, long long code, const AnsiString& message );  \
 HCC_EXPORT className ( const ExceptionLocation& location, long long code, const WideString& message );  \
 HCC_EXPORT className ( const ExceptionLocation& location, HRESULT hResult, long long theCode, const char* message );  \
 HCC_EXPORT className ( const ExceptionLocation& location, HRESULT hResult, long long theCode, const wchar_t* message );  \
-HCC_EXPORT className ( const ExceptionLocation& location, HRESULT hResult, long long theCode, const std::string& message );  \
+HCC_EXPORT className ( const ExceptionLocation& location, HRESULT hResult, long long theCode, const AnsiString& message );  \
 HCC_EXPORT className ( const ExceptionLocation& location, HRESULT hResult, long long theCode, const WideString& message );  \
 HCC_EXPORT className (const ExceptionLocation& location, const char* message, const Exception& innerException);  \
 HCC_EXPORT className (const ExceptionLocation& location, const wchar_t* message, const Exception& innerException);  \
@@ -346,30 +346,30 @@ exp explicit className (); \
 exp className (const className & theException);  \
 exp explicit className (const char* theMessage);  \
 exp explicit className (const wchar_t* theMessage);  \
-exp explicit className (const Common:: std::string& theMessage);  \
+exp explicit className (const Common:: AnsiString& theMessage);  \
 exp explicit className (const Common:: WideString& theMessage);  \
 exp className ( long long theCode, const char* theMessage ); \
 exp className ( long long theCode, const wchar_t* theMessage ); \
-exp className ( long long theCode, const Common:: std::string& theMessage );  \
+exp className ( long long theCode, const Common:: AnsiString& theMessage );  \
 exp className ( long long theCode, const Common:: WideString& theMessage );  \
 exp className ( HRESULT hResult, long long theCode, const char* theMessage );  \
 exp className ( HRESULT hResult, long long theCode, const wchar_t* theMessage );  \
-exp className ( HRESULT hResult, long long theCode, const Common:: std::string& theMessage );  \
+exp className ( HRESULT hResult, long long theCode, const Common:: AnsiString& theMessage );  \
 exp className ( HRESULT hResult, long long theCode, const Common:: WideString& theMessage );  \
 exp className (const char* theMessage, const Common:: Exception& theInnerException);  \
 exp className (const wchar_t* theMessage, const Common:: Exception& theInnerException);  \
 exp explicit className (const Common:: ExceptionLocation& theLocation ); \
 exp className (const Common:: ExceptionLocation& theLocation, const char* theMessage);  \
 exp className (const Common:: ExceptionLocation& theLocation, const wchar_t* theMessage);  \
-exp className (const Common:: ExceptionLocation& theLocation, const Common:: std::string& theMessage);  \
+exp className (const Common:: ExceptionLocation& theLocation, const Common:: AnsiString& theMessage);  \
 exp className (const Common:: ExceptionLocation& theLocation, const Common:: WideString& theMessage);  \
 exp className ( const Common:: ExceptionLocation& theLocation, long long theCode, const char* theMessage ); \
 exp className ( const Common:: ExceptionLocation& theLocation, long long theCode, const wchar_t* theMessage ); \
-exp className ( const Common:: ExceptionLocation& theLocation, long long theCode, const Common:: std::string& theMessage );  \
+exp className ( const Common:: ExceptionLocation& theLocation, long long theCode, const Common:: AnsiString& theMessage );  \
 exp className ( const Common:: ExceptionLocation& theLocation, long long theCode, const Common:: WideString& theMessage );  \
 exp className ( const Common:: ExceptionLocation& theLocation, HRESULT hResult, long long theCode, const char* theMessage );  \
 exp className ( const Common:: ExceptionLocation& theLocation, HRESULT hResult, long long theCode, const wchar_t* theMessage );  \
-exp className ( const Common:: ExceptionLocation& theLocation, HRESULT hResult, long long theCode, const Common:: std::string& theMessage );  \
+exp className ( const Common:: ExceptionLocation& theLocation, HRESULT hResult, long long theCode, const Common:: AnsiString& theMessage );  \
 exp className ( const Common:: ExceptionLocation& theLocation, HRESULT hResult, long long theCode, const Common:: WideString& theMessage );  \
 exp className (const Common:: ExceptionLocation& theLocation, const char* theMessage, const Exception& theInnerException);  \
 exp className (const Common:: ExceptionLocation& theLocation, const wchar_t* theMessage, const Exception& theInnerException);  \
@@ -392,32 +392,32 @@ className :: className () : Base() { SetHRESULT( className :: HRESULTForExceptio
 className :: className (const className & theException) : Base(theException) { }  \
 className :: className (const char* theMessage) : Base(theMessage) { SetHRESULT( className :: HRESULTForExceptionType); }  \
 className :: className (const wchar_t* theMessage) : Base(theMessage) { SetHRESULT( className :: HRESULTForExceptionType); }  \
-className :: className (const std::string& theMessage) : Base(theMessage) { SetHRESULT( className :: HRESULTForExceptionType); }  \
+className :: className (const AnsiString& theMessage) : Base(theMessage) { SetHRESULT( className :: HRESULTForExceptionType); }  \
 className :: className (const WideString& theMessage) : Base(theMessage) { SetHRESULT( className :: HRESULTForExceptionType); }  \
 className :: className (const char* theMessage, const Exception& theInnerException) : Base(theMessage,theInnerException) { SetHRESULT( className :: HRESULTForExceptionType); }  \
 className :: className (const wchar_t* theMessage, const Exception& theInnerException) : Base(theMessage,theInnerException) { SetHRESULT( className :: HRESULTForExceptionType); }  \
 className :: className ( long long theCode, const char* theMessage ) : Base(className :: HRESULTForExceptionType, theCode, theMessage) { }  \
 className :: className ( long long theCode, const wchar_t* theMessage ) : Base(className :: HRESULTForExceptionType, theCode, theMessage) { }  \
-className :: className ( long long theCode, const std::string& theMessage ) : Base(className :: HRESULTForExceptionType, theCode, theMessage) { }  \
+className :: className ( long long theCode, const AnsiString& theMessage ) : Base(className :: HRESULTForExceptionType, theCode, theMessage) { }  \
 className :: className ( long long theCode, const WideString& theMessage ) : Base(className :: HRESULTForExceptionType, theCode, theMessage) { }  \
 className :: className ( HRESULT hResult, long long theCode, const char* theMessage ) : Base(hResult, theCode, theMessage) { }  \
 className :: className ( HRESULT hResult, long long theCode, const wchar_t* theMessage ) : Base(hResult, theCode, theMessage) { }  \
-className :: className ( HRESULT hResult, long long theCode, const std::string& theMessage ) : Base(hResult, theCode, theMessage) { }  \
+className :: className ( HRESULT hResult, long long theCode, const AnsiString& theMessage ) : Base(hResult, theCode, theMessage) { }  \
 className :: className ( HRESULT hResult, long long theCode, const WideString& theMessage ) : Base(hResult, theCode, theMessage) { }  \
 className :: className ( const ExceptionLocation& theLocation ) : Base( theLocation ) { SetHRESULT( className :: HRESULTForExceptionType); } \
 className :: className ( const ExceptionLocation& theLocation, const char* theMessage) : Base(theLocation, theMessage) { SetHRESULT( className :: HRESULTForExceptionType); }  \
 className :: className ( const ExceptionLocation& theLocation, const wchar_t* theMessage) : Base(theLocation, theMessage) { SetHRESULT( className :: HRESULTForExceptionType); }  \
-className :: className ( const ExceptionLocation& theLocation, const std::string& theMessage) : Base(theLocation, theMessage) { SetHRESULT( className :: HRESULTForExceptionType); }  \
+className :: className ( const ExceptionLocation& theLocation, const AnsiString& theMessage) : Base(theLocation, theMessage) { SetHRESULT( className :: HRESULTForExceptionType); }  \
 className :: className ( const ExceptionLocation& theLocation, const WideString& theMessage) : Base(theLocation, theMessage) { SetHRESULT( className :: HRESULTForExceptionType); }  \
 className :: className ( const ExceptionLocation& theLocation, const char* theMessage, const Exception& theInnerException) : Base(theLocation, theMessage,theInnerException) { SetHRESULT( className :: HRESULTForExceptionType); }  \
 className :: className ( const ExceptionLocation& theLocation, const wchar_t* theMessage, const Exception& theInnerException) : Base(theLocation, theMessage,theInnerException) { SetHRESULT( className :: HRESULTForExceptionType); }  \
 className :: className ( const ExceptionLocation& theLocation, long long theCode, const char* theMessage ) : Base(theLocation, className :: HRESULTForExceptionType, theCode, theMessage) { }  \
 className :: className ( const ExceptionLocation& theLocation, long long theCode, const wchar_t* theMessage ) : Base(theLocation, className :: HRESULTForExceptionType, theCode, theMessage) { }  \
-className :: className ( const ExceptionLocation& theLocation, long long theCode, const std::string& theMessage ) : Base(theLocation, className :: HRESULTForExceptionType, theCode, theMessage) { }  \
+className :: className ( const ExceptionLocation& theLocation, long long theCode, const AnsiString& theMessage ) : Base(theLocation, className :: HRESULTForExceptionType, theCode, theMessage) { }  \
 className :: className ( const ExceptionLocation& theLocation, long long theCode, const WideString& theMessage ) : Base(theLocation, className :: HRESULTForExceptionType, theCode, theMessage) { }  \
 className :: className ( const ExceptionLocation& theLocation, HRESULT hResult, long long theCode, const char* theMessage ) : Base(theLocation, hResult, theCode, theMessage) { }  \
 className :: className ( const ExceptionLocation& theLocation, HRESULT hResult, long long theCode, const wchar_t* theMessage ) : Base(theLocation, hResult, theCode, theMessage) { }  \
-className :: className ( const ExceptionLocation& theLocation, HRESULT hResult, long long theCode, const std::string& theMessage ) : Base(theLocation, hResult, theCode, theMessage) { }  \
+className :: className ( const ExceptionLocation& theLocation, HRESULT hResult, long long theCode, const AnsiString& theMessage ) : Base(theLocation, hResult, theCode, theMessage) { }  \
 className :: className ( const ExceptionLocation& theLocation, HRESULT hResult, long long theCode, const WideString& theMessage ) : Base(theLocation, hResult, theCode, theMessage) { }  \
 bool className :: IsA( ExceptionType theKind ) const { return _IsA(theKind); } \
 ExceptionType className :: Kind( ) const { return KIND; } \

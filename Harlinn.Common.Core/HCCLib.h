@@ -881,8 +881,16 @@ namespace Harlinn::Common::Core
             requires IsSpecializationOf<T, std::basic_string> || IsSpecializationOf<T, std::basic_string_view>
         void Add( const T& str )
         { 
-            Add( str.data(), str.size() );
+            Add( str.data(), str.size() * sizeof(typename T::value_type) );
         }
+
+        template<typename T>
+            requires IsWideString<T> || IsAnsiString<T>
+        void Add( const T& str )
+        {
+            Add( str.data( ), str.size( ) * sizeof( typename T::value_type ) );
+        }
+
     };
 
 

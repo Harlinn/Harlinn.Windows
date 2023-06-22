@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "HCCDemangle.h"
 #include <boost/locale.hpp>
+#include "HCCException.h"
 
 // Original comment:
 
@@ -28,6 +29,8 @@
 
 namespace Harlinn::Common::Core::Demangle
 {
+    HARLINN_COMMON_IMPLEMENT_STANDARD_EXCEPTION_MEMBERS( Error )
+
     namespace
     {
 
@@ -66,13 +69,13 @@ namespace Harlinn::Common::Core::Demangle
             char const* name;
         };
 
-        std::string str( DemangledTypePtr const& p )
+        AnsiString str( DemangledTypePtr const& p )
         {
             if ( p )
             {
                 return TextOutput( ).convert( *p );
             }
-            return std::string( );
+            return AnsiString( );
         }
 
         class VisualStudioDemangler
@@ -80,10 +83,10 @@ namespace Harlinn::Common::Core::Demangle
         private:
             friend struct save_stack;
 
-            const std::string& mangled;
+            const AnsiString& mangled;
             bool debug;
             size_t offset;
-            std::string error;
+            AnsiString error;
 
             // These are pointers because we need to swap them out when we enter and leave templates.
             ReferenceStack name_stack;
@@ -93,8 +96,8 @@ namespace Harlinn::Common::Core::Demangle
             char get_current_char( );
             void advance_to_next_char( );
 
-            [[noreturn]] void bad_code( char c, const std::string& desc );
-            [[noreturn]] void general_error( const std::string& e );
+            [[noreturn]] void bad_code( char c, const AnsiString& desc );
+            [[noreturn]] void general_error( const AnsiString& e );
 
             // Given a stack and a position character, safely resolve and return the reference.
             DemangledTypePtr resolve_reference( ReferenceStack& stack, char poschar );
@@ -132,14 +135,14 @@ namespace Harlinn::Common::Core::Demangle
                 bool is_const, bool is_volatile,
                 bool is_func, bool is_based, bool is_member );
 
-            std::string get_literal( );
+            AnsiString get_literal( );
             void get_symbol_start( );
             int64_t get_number( );
 
             // Some helper functions to make debugging a little prettier.
-            void progress( const std::string& msg );
-            void print_stack( ReferenceStack const& stack, const std::string& msg );
-            void stack_debug( ReferenceStack const& stack, size_t position, const std::string& msg );
+            void progress( const AnsiString& msg );
+            void print_stack( ReferenceStack const& stack, const AnsiString& msg );
+            void stack_debug( ReferenceStack const& stack, size_t position, const AnsiString& msg );
             save_stack push_names( );
             save_stack push_types( );
 
@@ -164,7 +167,7 @@ namespace Harlinn::Common::Core::Demangle
             }
         public:
 
-            VisualStudioDemangler( const std::string& mangled, bool debug = false );
+            VisualStudioDemangler( const AnsiString& mangled, bool debug = false );
 
             DemangledTypePtr analyze( );
         };
@@ -201,17 +204,17 @@ namespace Harlinn::Common::Core::Demangle
 
     } // namespace detail
 
-    HCC_EXPORT DemangledTypePtr visual_studio_demangle( const std::string& mangled, bool debug )
+    HCC_EXPORT DemangledTypePtr visual_studio_demangle( const AnsiString& mangled, bool debug )
     {
         detail::VisualStudioDemangler demangler( mangled, debug );
         return demangler.analyze( );
     }
 
-    std::string quote_string( const std::string& input )
+    AnsiString quote_string( const AnsiString& input )
     {
         static auto special_chars = "\"\\\a\b\f\n\r\t\v";
         static auto names = "\"\\abfnrtv";
-        std::string output;
+        AnsiString output;
         output.reserve( input.size( ) + 2 );
         output.push_back( '\"' );
         for ( auto c : input )
@@ -252,7 +255,7 @@ namespace Harlinn::Common::Core::Demangle
     namespace detail
     {
 
-        VisualStudioDemangler::VisualStudioDemangler( const std::string& m, bool d )
+        VisualStudioDemangler::VisualStudioDemangler( const AnsiString& m, bool d )
             : mangled( m ), debug( d ), offset( 0 )
         {
         }
@@ -278,19 +281,19 @@ namespace Harlinn::Common::Core::Demangle
             return mangled[ offset ];
         }
 
-        [[noreturn]] void VisualStudioDemangler::bad_code( char c, const std::string& desc )
+        [[noreturn]] void VisualStudioDemangler::bad_code( char c, const AnsiString& desc )
         {
-            error = fmt::format( "Unrecognized {} code '{}' at offset {}", desc, c, offset );
+            error = Format( "Unrecognized {} code '{}' at offset {}", desc, c, offset );
             throw Error( error );
         }
 
-        [[noreturn]] void VisualStudioDemangler::general_error( const std::string& e )
+        [[noreturn]] void VisualStudioDemangler::general_error( const AnsiString& e )
         {
             error = e;
             throw Error( error );
         }
 
-        void VisualStudioDemangler::progress( const std::string& msg )
+        void VisualStudioDemangler::progress( const AnsiString& msg )
         {
             if ( debug )
             {
@@ -298,7 +301,7 @@ namespace Harlinn::Common::Core::Demangle
             }
         }
 
-        void VisualStudioDemangler::print_stack( ReferenceStack const& stack, const std::string& msg )
+        void VisualStudioDemangler::print_stack( ReferenceStack const& stack, const AnsiString& msg )
         {
             std::cerr << "The full " << msg << " stack currently contains:" << std::endl;
             size_t p = 0;
@@ -309,9 +312,9 @@ namespace Harlinn::Common::Core::Demangle
             }
         }
 
-        void VisualStudioDemangler::stack_debug( ReferenceStack const& stack, size_t position, const std::string& msg )
+        void VisualStudioDemangler::stack_debug( ReferenceStack const& stack, size_t position, const AnsiString& msg )
         {
-            std::string entry;
+            AnsiString entry;
 
             if ( !debug ) return;
 
@@ -321,7 +324,7 @@ namespace Harlinn::Common::Core::Demangle
             }
             else
             {
-                entry = fmt::format( "INVALID {}", position );
+                entry = Format( "INVALID {}", position );
             }
 
             std::cerr << "Pushing " << msg << " position " << position << " in stack refers to " << entry << std::endl;
@@ -829,7 +832,7 @@ namespace Harlinn::Common::Core::Demangle
             auto real_len = get_number( );
             auto len = std::min( real_len, int64_t( multibyte ? 64 : 32 ) );
             get_number( );
-            std::string result;
+            AnsiString result;
             for ( int64_t i = 0; i < len; ++i )
             {
                 char v;
@@ -880,13 +883,13 @@ namespace Harlinn::Common::Core::Demangle
 
             if ( multibyte )
             {
-                std::basic_string<char16_t> wide;
+                WideString wide;
                 for ( size_t i = 0; i < result.size( ); i += 2 )
                 {
                     char16_t c16 = result[ i ] * 0x100 + result[ i + 1 ];
                     wide.push_back( c16 );
                 }
-                result = boost::locale::conv::utf_to_utf<char>( wide );
+                result = ToAnsiString( wide );
             }
             if ( !result.empty( ) && result.back( ) == 0 )
             {
@@ -1305,7 +1308,7 @@ namespace Harlinn::Common::Core::Demangle
             // Each symbol should begin with a question mark.
             if ( c != '?' )
             {
-                error = fmt::format( "'{}' at position {}", c, offset );
+                error = Format( "'{}' at position {}", c, offset );
                 error = "Expected '?' code at start of symbol, instead found character " + error;
                 throw Error( error );
             }
@@ -1329,7 +1332,7 @@ namespace Harlinn::Common::Core::Demangle
             }
 
             // Even if our position was invalid kludge something up for debugging.
-            return std::make_shared<DemangledType>( fmt::format( "ref#{}", stack_offset ) );
+            return std::make_shared<DemangledType>( Format( "ref#{}", stack_offset ) );
         }
 
         DemangledTypePtr VisualStudioDemangler::add_templated_type( DemangledTypePtr& type )
@@ -1415,7 +1418,7 @@ namespace Harlinn::Common::Core::Demangle
                             // We'll interpret as a $$ type, but there could be any number of $s first.  So skip
                             // past the last $ and then go back two
                             auto pos = mangled.find_first_not_of( '$', offset );
-                            if ( pos == std::string::npos )
+                            if ( pos == AnsiString::npos )
                             {
                                 bad_code( c, "template argument" );
                             }
@@ -1501,7 +1504,7 @@ namespace Harlinn::Common::Core::Demangle
                             else
                             {
                                 uint64_t number = get_number( );
-                                std::string numbered_namespace = fmt::format( "`{}'" , number );
+                                AnsiString numbered_namespace = Format( "`{}'" , number );
                                 if ( debug ) std::cerr << "Found numbered namespace: "
                                     << numbered_namespace << std::endl;
                                 auto nns = std::make_shared<DemangledType>( numbered_namespace );
@@ -1546,12 +1549,12 @@ namespace Harlinn::Common::Core::Demangle
             size_t start_offset = offset;
             if ( c != '0' )
             {
-                general_error( fmt::format( "Expected '0' in anonymous namespace, found '{}'.", c ) );
+                general_error( Format( "Expected '0' in anonymous namespace, found '{}'.", c ) );
             }
             c = get_next_char( );
             if ( c != 'x' )
             {
-                general_error( fmt::format( "Expected 'x' in anonymous namespace, found '{}'.", c ) );
+                general_error( Format( "Expected 'x' in anonymous namespace, found '{}'.", c ) );
             }
 
             size_t digits = 0;
@@ -1565,14 +1568,14 @@ namespace Harlinn::Common::Core::Demangle
                 }
                 else
                 {
-                    general_error( fmt::format( "Disallowed character '{}' in anonymous namespace digits.", c ) );
+                    general_error( Format( "Disallowed character '{}' in anonymous namespace digits.", c ) );
                 }
                 c = get_next_char( );
                 digits++;
             }
 
             // Now build the return string from the bytes we consumed.
-            std::string literal = mangled.substr( start_offset, offset - start_offset );
+            AnsiString literal = mangled.substr( start_offset, offset - start_offset );
             if ( debug ) std::cerr << "Anonymous namespace ID was: " << literal << std::endl;
 
             // Advance past the '@' that terminated the literal.
@@ -1583,9 +1586,9 @@ namespace Harlinn::Common::Core::Demangle
             return ans;
         }
 
-        std::string VisualStudioDemangler::get_literal( )
+        AnsiString VisualStudioDemangler::get_literal( )
         {
-            std::string literal;
+            AnsiString literal;
 
             size_t start_offset = offset;
             progress( "literal" );
@@ -1605,8 +1608,7 @@ namespace Harlinn::Common::Core::Demangle
                             ( c >= 'a' && c <= 'z' ) || // lowercase letters
                             ( c >= '0' && c <= '9' ) ) ) // digits
                         {
-                            general_error(
-                                fmt::format( "Disallowed character '{}' in literal string.", c ) );
+                            general_error( Format( "Disallowed character '{}' in literal string.", c ) );
                         }
                 }
                 c = get_next_char( );
@@ -1903,6 +1905,12 @@ namespace Harlinn::Common::Core::Demangle
                     return *this;
                 }
 
+                ConvStream& operator<<( AnsiString&& x )
+                {
+                    ( *this ) << const_cast< AnsiString const& >( x );
+                    return *this;
+                }
+
                 ConvStream& operator<<( std::string&& x )
                 {
                     ( *this ) << const_cast< std::string const& >( x );
@@ -1912,6 +1920,30 @@ namespace Harlinn::Common::Core::Demangle
                 static bool is_symbol_char( char c )
                 {
                     return c == '_' || std::isalnum( c );
+                }
+
+                ConvStream& operator<<( AnsiString const& s )
+                {
+                    if ( SPACE_MUNGING && !s.empty( ) && is_symbol_char( last ) && is_symbol_char( s.front( ) ) )
+                    {
+                        // Ensure a space between symbols
+                        stream << ' ' << s;
+                    }
+                    else if ( SPACE_MUNGING && last == ' ' && !s.empty( ) && s.front( ) == ' ' )
+                    {
+                        // Don't allow double-spaces
+                        stream << s.substr( 1 );
+                    }
+                    else
+                    {
+                        stream << s;
+                    }
+                    if ( !s.empty( ) )
+                    {
+                        last = s.back( );
+                    }
+                    fixup( );
+                    return *this;
                 }
 
                 ConvStream& operator<<( std::string const& s )
@@ -1938,9 +1970,10 @@ namespace Harlinn::Common::Core::Demangle
                     return *this;
                 }
 
+
                 ConvStream& operator<<( char const* s )
                 {
-                    return ( *this ) << std::string( s );
+                    return ( *this ) << AnsiString( s );
                 }
 
                 ConvStream& operator<<( char c )
@@ -2009,7 +2042,7 @@ namespace Harlinn::Common::Core::Demangle
             void do_function( DemangledType const& fn, std::function<void( )> name = nullptr );
             void do_storage_properties( DemangledType const& type, cv_context_t ctx );
             void do_method_properties( DemangledType const& m );
-            void output_quoted_string( std::string const& s );
+            void output_quoted_string( AnsiString const& s );
 
             bool template_parameters_ = true;
             DemangledType const* retval_ = nullptr;
@@ -2062,15 +2095,15 @@ namespace Harlinn::Common::Core::Demangle
             return stream;
         }
 
-        void Converter::output_quoted_string( std::string const& s )
+        void Converter::output_quoted_string( AnsiString const& s )
         {
-            static std::string special_chars( "\"\\\a\b\f\n\r\t\v\0", 10 );
-            static std::string names( "\"\\abfnrtv0", 10 );
+            static AnsiString special_chars( "\"\\\a\b\f\n\r\t\v\0", 10 );
+            static AnsiString names( "\"\\abfnrtv0", 10 );
             stream << '\"';
             for ( auto c : s )
             {
                 auto pos = special_chars.find_first_of( c );
-                if ( pos == std::string::npos )
+                if ( pos == AnsiString::npos )
                 {
                     stream << raw( c );
                 }
@@ -2630,11 +2663,11 @@ namespace Harlinn::Common::Core::Demangle
 
     } // namespace detail
 
-    std::string TextOutput::convert( DemangledType const& sym ) const
+    AnsiString TextOutput::convert( DemangledType const& sym ) const
     {
         std::ostringstream os;
         convert( os, sym );
-        return os.str( );
+        return ToAnsiString( os.str( ) );
     }
 
     void TextOutput::convert_( std::ostream& stream, DemangledType const& sym ) const
@@ -2642,31 +2675,31 @@ namespace Harlinn::Common::Core::Demangle
         detail::Converter( attr, stream, sym )( );
     }
 
-    std::string TextOutput::get_class_name( DemangledType const& sym ) const
+    AnsiString TextOutput::get_class_name( DemangledType const& sym ) const
     {
         std::ostringstream os;
         detail::Converter( attr, os, sym ).class_name( );
-        return os.str( );
+        return ToAnsiString( os.str( ) );
     }
 
-    std::string TextOutput::get_method_name( DemangledType const& sym ) const
+    AnsiString TextOutput::get_method_name( DemangledType const& sym ) const
     {
         std::ostringstream os;
         detail::Converter( attr, os, sym ).method_name( );
-        return os.str( );
+        return ToAnsiString( os.str( ) );
     }
 
-    std::string TextOutput::get_method_signature( DemangledType const& sym ) const
+    AnsiString TextOutput::get_method_signature( DemangledType const& sym ) const
     {
         std::ostringstream os;
         detail::Converter( attr, os, sym ).method_signature( );
-        return os.str( );
+        return ToAnsiString( os.str( ) );
     }
 
-    std::vector<std::pair<const TextAttribute, const std::string>> const&
+    std::vector<std::pair<const TextAttribute, const AnsiString>> const&
         TextAttributes::explain( )
     {
-        static std::vector<std::pair<const TextAttribute, const std::string>> names{
+        static std::vector<std::pair<const TextAttribute, const AnsiString>> names{
             {TextAttribute::SPACE_AFTER_COMMA,
                 "Add a space after a comma"},
             { TextAttribute::SPACE_BETWEEN_TEMPLATE_BRACKETS,

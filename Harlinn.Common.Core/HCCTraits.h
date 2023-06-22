@@ -601,16 +601,16 @@ namespace Harlinn::Common::Core
     inline constexpr bool size_is_less_or_equal = sizeof( ty1 ) <= sizeof( ty2 ) ? true : false;
 
     template <typename T>
-    inline constexpr bool IsAnsiString = std::is_base_of_v<std::string,T>;
+    inline constexpr bool IsAnsiString = std::is_base_of_v<AnsiString,T>;
 
     template <typename T>
     inline constexpr bool IsWideString = std::is_base_of_v<WideString, T>;
 
     template <typename T>
-    inline constexpr bool IsAnsiStringView = std::is_base_of_v<std::string_view, T>;
+    inline constexpr bool IsAnsiStringView = std::is_base_of_v<AnsiStringView, T>;
 
     template <typename T>
-    inline constexpr bool IsWideStringView = std::is_base_of_v<std::wstring_view, T>;
+    inline constexpr bool IsWideStringView = std::is_base_of_v<WideStringView, T>;
 
 
     template <typename T>

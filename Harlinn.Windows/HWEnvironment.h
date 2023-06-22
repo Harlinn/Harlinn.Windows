@@ -125,8 +125,8 @@ namespace Harlinn::Windows
         HW_EXPORT Environment( );
     public:
         HW_EXPORT static WideString GetResourceString( const wchar_t* key, ... );
-        HW_EXPORT static std::string GetResourceString( const char* key, ... );
-        //HW_EXPORT static WideString GetResourceString(const WideString& key, ...);
+        HW_EXPORT static AnsiString GetResourceString( const char* key, ... );
+        
 
         HW_EXPORT static WideString NewLine( );
         HW_EXPORT static WideString Expand( const WideString& s );

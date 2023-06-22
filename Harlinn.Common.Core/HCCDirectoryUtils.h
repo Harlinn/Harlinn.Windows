@@ -46,10 +46,10 @@ namespace Harlinn::Common::Core
             }
             return executableDirectory;
         }
-        static std::string GetRootDirectory(const std::string& executableDirectory)
+        static AnsiString GetRootDirectory(const AnsiString& executableDirectory)
         {
             auto dir = ToLower(executableDirectory);
-            static std::string toRemove[] = { "bin\\","bin","x64\\release\\","x64\\release","x64\\debug\\", "x64\\debug", "release\\","release","debug\\", "debug" };
+            static AnsiString toRemove[] = { "bin\\","bin","x64\\release\\","x64\\release","x64\\debug\\", "x64\\debug", "release\\","release","debug\\", "debug" };
             for (auto& str : toRemove)
             {
                 if (dir.ends_with(str))

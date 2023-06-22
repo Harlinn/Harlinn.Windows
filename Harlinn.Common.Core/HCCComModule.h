@@ -613,16 +613,16 @@ namespace Harlinn::Common::Core::Com::Registry
         auto componentName = classFactory.ComponentName( );
         auto componentVersion = classFactory.ComponentVersion( );
 
-        auto clsidSubKey = Format( L"CLSID\\%s", classId.c_str( ) );
+        auto clsidSubKey = Format( L"CLSID\\{}", classId );
         auto clsidInprocServer32SubKey = clsidSubKey + L"\\InprocServer32";
         auto clsidProgIdSubKey = clsidSubKey + L"\\ProgId";
 
         //
-        auto progId = Format( L"%s.%s.%d.%d", applicationName.c_str( ), componentName.c_str( ), componentVersion.first, componentVersion.second );
+        auto progId = Format( L"{}.{}.{}.{}", applicationName, componentName, componentVersion.first, componentVersion.second );
         auto progIdClsidSubkey = progId + L"\\CLSID";
 
 
-        auto versionIndependentProgId = Format( L"%s.%s", applicationName.c_str( ), componentName.c_str( ) );
+        auto versionIndependentProgId = Format( L"{}.{}", applicationName, componentName );
         auto versionIndependentProgIdClsidSubkey = versionIndependentProgId + L"\\CLSID";
         auto versionIndependentProgIdCurVerSubkey = versionIndependentProgId + L"\\CurVer";
 
@@ -652,16 +652,16 @@ namespace Harlinn::Common::Core::Com::Registry
         auto componentName = classFactory.ComponentName( );
         auto componentVersion = classFactory.ComponentVersion( );
 
-        auto clsidSubKey = Format( L"CLSID\\%s", classId.c_str( ) );
+        auto clsidSubKey = Format( L"CLSID\\{}", classId );
         auto clsidInprocServer32SubKey = clsidSubKey + L"\\InprocServer32";
         auto clsidProgIdSubKey = clsidSubKey + L"\\ProgId";
 
         //
-        auto progId = Format( L"%s.%s.%d.%d", applicationName.c_str( ), componentName.c_str( ), componentVersion.first, componentVersion.second );
+        auto progId = Format( L"{}.{}.{}.{}", applicationName, componentName, componentVersion.first, componentVersion.second );
         auto progIdClsidSubkey = progId + L"\\CLSID";
 
 
-        auto versionIndependentProgId = Format( L"%s.%s", applicationName.c_str( ), componentName.c_str( ) );
+        auto versionIndependentProgId = Format( L"{}.{}", applicationName, componentName );
         auto versionIndependentProgIdClsidSubkey = versionIndependentProgId + L"\\CLSID";
         auto versionIndependentProgIdCurVerSubkey = versionIndependentProgId + L"\\CurVer";
 

@@ -743,7 +743,7 @@ namespace Harlinn::Common::Core
             return data;
         }
 
-        static void Release( Data* data )
+        static void ReleaseData( Data* data )
         {
             if ( data && data->DecRef( ) == 0 )
             {
@@ -763,7 +763,7 @@ namespace Harlinn::Common::Core
             Internal::Copy( &newData->buffer_[offset + expandSize], &data_->buffer_[offset], remaining );
             auto* tmp = data_;
             data_ = newData;
-            Release( tmp );
+            ReleaseData( tmp );
             return &newData->buffer_[offset];
         }
 
@@ -818,7 +818,7 @@ namespace Harlinn::Common::Core
             Internal::Copy( newData->buffer_, data_->buffer_, currentSize );
             auto* tmp = data_;
             data_ = newData;
-            Release( tmp );
+            ReleaseData( tmp );
             return &newData->buffer_[currentSize];
         }
 
@@ -859,6 +859,26 @@ namespace Harlinn::Common::Core
             {
                 data_ = Allocate( extendSize );
                 return data_->buffer_;
+            }
+        }
+
+        void RangeCheck( const_iterator position )
+        {
+            if ( data_ )
+            {
+                if ( position < data_->buffer_ )
+                {
+                    throw std::out_of_range( "position < begin()" );
+                }
+                auto currentSize = data_->size_;
+                if ( position >= &data_->buffer_[ currentSize ] )
+                {
+                    throw std::out_of_range( "position >= end()" );
+                }
+            }
+            else
+            {
+                throw std::out_of_range( "string is empty" );
             }
         }
 
@@ -905,7 +925,7 @@ namespace Harlinn::Common::Core
                             {
                                 Internal::Copy( &newData->buffer_[offset], &data_->buffer_[offset + numberOfCharactersToErase], remainingSize );
                             }
-                            Release( data_ );
+                            ReleaseData( data_ );
                             data_ = newData;
                         }
                         return &data_->buffer_[offset];
@@ -913,9 +933,13 @@ namespace Harlinn::Common::Core
                     }
                     else
                     {
-                        Release( data_ );
+                        ReleaseData( data_ );
                         data_ = nullptr;
                     }
+                }
+                else
+                {
+                    return &data_->buffer_[ currentSize ];
                 }
             }
             return nullptr;
@@ -1011,7 +1035,7 @@ namespace Harlinn::Common::Core
         {
             if ( data_ )
             {
-                Release( data_ );
+                ReleaseData( data_ );
             }
         }
 
@@ -1092,7 +1116,7 @@ namespace Harlinn::Common::Core
             {
                 if ( data_ )
                 {
-                    Release( data_ );
+                    ReleaseData( data_ );
                 }
                 data_ = other.data_;
                 if ( data_ )
@@ -1109,7 +1133,7 @@ namespace Harlinn::Common::Core
             {
                 if ( data_ )
                 {
-                    Release( data_ );
+                    ReleaseData( data_ );
                 }
                 data_ = other.data_;
                 other.data_ = nullptr;
@@ -1122,7 +1146,7 @@ namespace Harlinn::Common::Core
             if ( data_ )
             {
                 auto tmp = Initialize( string );
-                Release( data_ );
+                ReleaseData( data_ );
                 data_ = tmp;
             }
             else
@@ -1148,7 +1172,7 @@ namespace Harlinn::Common::Core
             if ( data_ )
             {
                 auto tmp = Initialize( string, size );
-                Release( data_ );
+                ReleaseData( data_ );
                 data_ = tmp;
             }
             else
@@ -1235,6 +1259,32 @@ namespace Harlinn::Common::Core
             return data_ ? data_->buffer_ : nullptr;
         }
 
+        constexpr iterator end( ) noexcept
+        {
+            return data_ ? &data_->buffer_[data_->size_] : nullptr;
+        }
+
+        constexpr const_iterator begin( ) const noexcept
+        {
+            return data_ ? data_->buffer_ : nullptr;
+        }
+
+        constexpr const_iterator end( ) const noexcept
+        {
+            return data_ ? &data_->buffer_[data_->size_] : nullptr;
+        }
+
+        constexpr const_iterator cbegin( ) const noexcept
+        {
+            return begin();
+        }
+
+        constexpr const_iterator cend( ) const noexcept
+        {
+            return end( );
+        }
+
+
         constexpr CharType front( ) const
         {
             return *begin( );
@@ -1253,26 +1303,20 @@ namespace Harlinn::Common::Core
         }
 
 
-        constexpr iterator end( ) noexcept
-        {
-            return data_ ? &data_->buffer_[data_->size_] : nullptr;
-        }
-
-        constexpr const_iterator begin( ) const noexcept
-        {
-            return data_ ? data_->buffer_ : nullptr;
-        }
-
-        constexpr const_iterator end( ) const noexcept
-        {
-            return data_ ? &data_->buffer_[data_->size_] : nullptr;
-        }
-
 
         constexpr size_type size( ) const noexcept
         {
             return data_ ? data_->size_ : 0;
         }
+
+        constexpr size_type capacity( ) const noexcept
+        {
+            return data_ ? AllocationByteCount( data_->size_ ) : 0;
+        }
+
+        constexpr void reserve( size_type ) const noexcept
+        { }
+
 
         constexpr size_type length( ) const noexcept
         {
@@ -1295,7 +1339,7 @@ namespace Harlinn::Common::Core
                         data_ = Allocate( newLength );
                         auto copyLength = std::min( newLength, tmp->size_ );
                         Internal::Copy( data_->buffer_, tmp->buffer_, copyLength );
-                        Release( tmp );
+                        ReleaseData( tmp );
                     }
                     else
                     {
@@ -1313,13 +1357,13 @@ namespace Harlinn::Common::Core
                             data_ = Allocate( newLength );
                             auto copyLength = std::min( newLength, tmp->size_ );
                             Internal::Copy( data_->buffer_, tmp->buffer_, copyLength );
-                            Release( tmp );
+                            ReleaseData( tmp );
                         }
                     }
                 }
                 else
                 {
-                    Release( data_ );
+                    ReleaseData( data_ );
                     data_ = nullptr;
                 }
             }
@@ -1445,6 +1489,19 @@ namespace Harlinn::Common::Core
             Append( other, otherLength );
         }
 
+        void Append( const CharType* first, const CharType* last )
+        {
+            if ( first < last )
+            {
+                Append( first, static_cast< size_type >( last - first ) );
+            }
+        }
+        void append( const CharType* first, const CharType* last )
+        {
+            Append( first, last );
+        }
+
+
         void Append( const BasicString<CharType>& other )
         {
             auto otherLength = other.size( );
@@ -1474,6 +1531,11 @@ namespace Harlinn::Common::Core
             Append( c );
         }
 
+        void pop_back( )
+        {
+            erase( end( ) - 1 );
+        }
+
         BasicString<CharType>& operator += ( const CharType* other ) { Append( other ); return *this; }
         BasicString<CharType>& operator += ( const BasicString<CharType>& other ) { Append( other ); return *this; }
         BasicString<CharType>& operator += ( CharType c ) { Append( c ); return *this; }
@@ -1490,6 +1552,25 @@ namespace Harlinn::Common::Core
             *position = ch;
             return position;
         }
+
+        iterator insert( const_iterator pos, size_type count, CharType ch )
+        {
+            auto position = const_cast< iterator >( pos );
+            iterator end_ = Extend( count );
+            if ( position < end_ )
+            {
+                Internal::Move( position + count, position, static_cast< size_t >( end_ - position ) );
+            }
+            Internal::Set( position, ch, count );
+            return position;
+        }
+
+        iterator insert( size_type index, size_type count, CharType ch )
+        {
+            const_iterator pos = cbegin( ) + index;
+            return insert( pos, count, ch );
+        }
+
 
 
 
@@ -1688,6 +1769,39 @@ namespace Harlinn::Common::Core
             return Compare( first.data_, second );
         }
 
+        int Compare( const BasicString& second ) const
+        {
+            return Compare( data_, second.data_ );
+        }
+        int Compare( const CharType* second ) const
+        {
+            return Compare( data_, second );
+        }
+
+
+        static int compare( const BasicString& first, const BasicString& second )
+        {
+            return Compare( first, second );
+        }
+        static int compare( const CharType* first, const BasicString& second )
+        {
+            return Compare( first, second );
+        }
+        static int compare( const BasicString& first, const CharType* second )
+        {
+            return Compare( first, second );
+        }
+
+        int compare( const BasicString& second ) const
+        {
+            return Compare( second );
+        }
+        int compare( const CharType* second ) const
+        {
+            return Compare( second );
+        }
+
+
         static int ICompare( const BasicString& first, const BasicString& second )
         {
             return ICompare( first.data_, second.data_ );
@@ -1781,7 +1895,7 @@ namespace Harlinn::Common::Core
 
 
 
-        size_type IndexOf( CharType c )
+        size_type IndexOf( CharType c ) const
         {
             if ( data_ )
             {
@@ -1793,6 +1907,14 @@ namespace Harlinn::Common::Core
                 return npos;
             }
         }
+
+        size_type find_first_of( CharType c ) const
+        {
+            return IndexOf( c );
+        }
+
+        
+
 
         size_type IndexOfAnyOf( const CharType* searchChars, size_type numberOfSearchChars, size_type start ) const
         {
@@ -1892,6 +2014,23 @@ namespace Harlinn::Common::Core
             return npos;
         }
 
+        size_type find_first_not_of( const CharType* searchChars, size_type numberOfSearchChars, size_type start ) const
+        {
+            return IndexOfAnyBut( searchChars, numberOfSearchChars, start );
+        }
+
+        size_type IndexOfAnyBut( const CharType searchChar, size_type start = 0 ) const
+        {
+            return IndexOfAnyBut( &searchChar, 1, start );
+        }
+
+        size_type find_first_not_of( const CharType searchChar, size_type start = 0 ) const
+        {
+            return IndexOfAnyBut( searchChar, start );
+        }
+
+
+
         size_type IIndexOfAnyBut( const CharType* searchChars, size_type numberOfSearchChars, size_type start ) const
         {
             if ( data_ && searchChars && numberOfSearchChars )
@@ -1929,6 +2068,11 @@ namespace Harlinn::Common::Core
             return npos;
         }
 
+        size_type find_first_not_of( const BasicString& searchChars, size_type start = 0 ) const
+        {
+            return IndexOfAnyBut( searchChars, start );
+        }
+
         size_type IIndexOfAnyBut( const BasicString& searchChars, size_type start = 0 ) const
         {
             auto* searchData = searchChars.data_;
@@ -1943,6 +2087,11 @@ namespace Harlinn::Common::Core
         {
             size_type length = Internal::LengthOf( searchChars );
             return IndexOfAnyBut( searchChars, length, start );
+        }
+
+        size_type find_first_not_of( const CharType* searchChars, size_type start = 0 ) const
+        {
+            return IndexOfAnyBut( searchChars, start );
         }
 
         size_type IIndexOfAnyBut( const CharType* searchChars, size_type start = 0 ) const
@@ -2295,7 +2444,7 @@ namespace Harlinn::Common::Core
         }
 
 
-        size_type IndexOf( const CharType c, size_type start = 0 ) const
+        size_type IndexOf( const CharType c, size_type start ) const
         {
             if ( data_ && start < data_->size_ )
             {
@@ -2306,6 +2455,11 @@ namespace Harlinn::Common::Core
                 }
             }
             return npos;
+        }
+
+        size_type find_first_of( CharType c, size_type start ) const
+        {
+            return IndexOf( c, start );
         }
 
 
@@ -2869,7 +3023,7 @@ namespace Harlinn::Common::Core
                 {
                     auto newData = Allocate( data_->size_ );
                     Internal::Copy( newData->buffer_, data_->buffer_, data_->size_ );
-                    Release( data_ );
+                    ReleaseData( data_ );
                     data_ = newData;
                 }
                 Internal::ToUpper( data_->buffer_, data_->size_ );
@@ -2885,7 +3039,7 @@ namespace Harlinn::Common::Core
                 {
                     auto newData = Allocate( data_->size_ );
                     Internal::Copy( newData->buffer_, data_->buffer_, data_->size_ );
-                    Release( data_ );
+                    ReleaseData( data_ );
                     data_ = newData;
                 }
                 Internal::ToLower( data_->buffer_, data_->size_ );
@@ -2925,7 +3079,7 @@ namespace Harlinn::Common::Core
 
         void erase( )
         {
-            Release( data_ );
+            ReleaseData( data_ );
             data_ = nullptr;
         }
 
@@ -2934,10 +3088,17 @@ namespace Harlinn::Common::Core
             Erase( index, count );
         }
 
+        iterator erase( const_iterator position )
+        {
+            // RangeCheck throws if data_ is nullptr
+            RangeCheck( position );
+            return Erase( static_cast<size_type>(position - begin()) , 1 );
+        }
+
 
         void Clear( )
         {
-            Release( data_ );
+            ReleaseData( data_ );
             data_ = nullptr;
         }
 
@@ -2992,7 +3153,7 @@ namespace Harlinn::Common::Core
                             destIt++;
                             it++;
                         }
-                        Release( data_ );
+                        ReleaseData( data_ );
                         data_ = newData;
                     }
                     else
@@ -3035,114 +3196,72 @@ namespace Harlinn::Common::Core
 
 
     template<typename T>
-    class BasicStringView
+    class BasicStringView : public std::basic_string_view<T>
     {
     public:
-        using CharType = T;
-        using const_iterator = const CharType*;
-        using const_reference = const CharType&;
-        using size_type = size_t;
-        using value_type = T;
-
-        static constexpr size_type npos = MAXUINT64;
-    private:
-        size_type size_;
-        const CharType* buffer_;
+        using Base = std::basic_string_view<T>;
+        using CharType = typename Base::value_type;
+        using const_iterator = typename Base::const_iterator;
+        using const_reference = typename Base::const_reference;
+        using size_type = typename Base::size_type;
+        using value_type = typename Base::value_type;
     public:
         constexpr BasicStringView( ) noexcept
-            : size_( 0 ), buffer_( nullptr )
         {
         }
 
 
         constexpr BasicStringView( const CharType* s, size_type count ) noexcept
-            : size_( count ), buffer_( s )
+            : Base( s, count )
         {
         }
 
-        BasicStringView( const CharType* s ) noexcept
-            : size_( Internal::LengthOf( s ) ), buffer_( s )
+        constexpr BasicStringView( const CharType* s ) noexcept
+            : Base(s)
         {
         }
 
-        BasicStringView( const BasicString<T>& s ) noexcept
-            : size_( s.size( ) ), buffer_( s.data( ) )
-        {
-
-        }
-
-
-        BasicStringView( const BasicStringView& other ) noexcept
-            : size_( other.size_ ), buffer_( other.buffer_ )
+        constexpr BasicStringView( const BasicString<T>& s ) noexcept
+            : Base( s.data( ), s.size( ) )
         {
         }
 
-
-        BasicStringView& operator = ( const BasicStringView& other )
+        constexpr BasicStringView( const std::basic_string<T>& s ) noexcept
+            : Base( s.data( ), s.size( ) )
         {
-            size_ = other.size_;
-            buffer_ = other.buffer_;
+        }
+
+
+        constexpr BasicStringView& operator = ( const CharType* other )
+        {
+            Base::operator = ( other );
+            return *this;
+        }
+
+        constexpr BasicStringView& operator = ( const BasicStringView& other )
+        {
+            Base::operator = ( other );
+            return *this;
+        }
+
+        constexpr BasicStringView& operator = ( const BasicString<T>& other )
+        {
+            *this = BasicStringView( other );
+            return *this;
+        }
+
+        constexpr BasicStringView& operator = ( const std::basic_string<T>& other )
+        {
+            *this = BasicStringView( other );
             return *this;
         }
 
 
-        constexpr bool empty( ) const noexcept
-        {
-            return size_ != 0;
-        }
-        constexpr bool IsEmpty( ) const noexcept
-        {
-            return size_ != 0;
-        }
-
-        constexpr size_type size( ) const noexcept
-        {
-            return size_;
-        }
-        constexpr size_type length( ) const noexcept
-        {
-            return size_;
-        }
-        constexpr size_type Length( ) const noexcept
-        {
-            return size_;
-        }
-
-        constexpr const_iterator begin( ) const noexcept
-        {
-            return buffer_;
-        }
-
-        constexpr const_iterator end( ) const noexcept
-        {
-            return buffer_ + size_;
-        }
-
-        constexpr const_iterator cbegin( ) const noexcept
-        {
-            return buffer_;
-        }
-
-        constexpr const_iterator cend( ) const noexcept
-        {
-            return buffer_ + size_;
-        }
-
-        constexpr const_reference operator[]( size_type index ) const noexcept
-        {
-            return buffer_[index];
-        }
-
-        constexpr const CharType* data( ) const noexcept
-        {
-            return buffer_;
-        }
-
         size_t Hash( ) const noexcept
         {
-            if ( buffer_ )
+            if ( Base::data() )
             {
-                return XXH3_64bits( buffer_, size_ * sizeof( CharType ) );
+                return XXH3_64bits( Base::data( ), Base::size( ) * sizeof( CharType ) );
             }
             else
             {
@@ -3167,12 +3286,24 @@ namespace Harlinn::Common::Core
     {
         ToWideString( source.c_str( ), source.length( ), dest );
     }
+    inline void ToWideString( const AnsiString& source, WideString& dest )
+    {
+        ToWideString( source.c_str( ), source.length( ), dest );
+    }
     inline WideString ToWideString( const std::string& source )
     {
         WideString result;
         ToWideString( source, result );
         return result;
     }
+
+    inline WideString ToWideString( const AnsiString& source )
+    {
+        WideString result;
+        ToWideString( source, result );
+        return result;
+    }
+
 
     inline WideString ToWideString( const std::string_view& source )
     {
@@ -3220,8 +3351,8 @@ namespace Harlinn::Common::Core
     HCC_EXPORT WideString ToWideString( UInt64 value, int base = 10 );
     HCC_EXPORT WideString ToWideString( Single value );
     HCC_EXPORT WideString ToWideString( Single value, int width, int precission );
-    HCC_EXPORT WideString ToWideString( Single value, const Locale& locale );
-    HCC_EXPORT WideString ToWideString( Single value, int width, int precission, const Locale& locale );
+    HCC_EXPORT WideString ToWideString( Single value, const std::locale& locale );
+    HCC_EXPORT WideString ToWideString( Single value, int width, int precission, const std::locale& locale );
     HCC_EXPORT WideString ToWideString( Double value );
     HCC_EXPORT WideString ToWideString( const DateTime& value );
     HCC_EXPORT WideString ToWideString( const TimeSpan& value );
@@ -3230,39 +3361,39 @@ namespace Harlinn::Common::Core
     HCC_EXPORT WideString ToWideString( const Variant& value );
 
 
-    HCC_EXPORT void ToAnsiString( const wchar_t* source, size_t length, unsigned codePage, unsigned flags, std::string& dest );
-    inline void ToAnsiString( const wchar_t* source, size_t length, std::string& dest )
+    HCC_EXPORT void ToAnsiString( const wchar_t* source, size_t length, unsigned codePage, unsigned flags, AnsiString& dest );
+    inline void ToAnsiString( const wchar_t* source, size_t length, AnsiString& dest )
     {
         ToAnsiString( source, length, CP_ACP, 0, dest );
     }
-    inline void ToAnsiString( const WideString& source, std::string& dest )
+    inline void ToAnsiString( const WideString& source, AnsiString& dest )
     {
         ToAnsiString( source.c_str( ), source.length( ), CP_ACP, 0, dest );
     }
-    inline std::string ToAnsiString( const WideString& source )
+    inline AnsiString ToAnsiString( const WideString& source )
     {
-        std::string result;
+        AnsiString result;
         ToAnsiString( source, result );
         return result;
     }
 
-    inline void ToAnsiString( const std::wstring_view& source, std::string& dest )
+    inline void ToAnsiString( const std::wstring_view& source, AnsiString& dest )
     {
         ToAnsiString( source.data( ), source.length( ), CP_ACP, 0, dest );
     }
-    inline std::string ToAnsiString( const std::wstring_view& source )
+    inline AnsiString ToAnsiString( const std::wstring_view& source )
     {
-        std::string result;
+        AnsiString result;
         ToAnsiString( source, result );
         return result;
     }
 
-    inline std::string ToAnsiString( const wchar_t* source )
+    inline AnsiString ToAnsiString( const wchar_t* source )
     {
         if ( source && source[ 0 ] )
         {
             auto length = wcslen( source );
-            std::string result;
+            AnsiString result;
             ToAnsiString( source, length, CP_ACP, 0, result );
             return result;
         }
@@ -3271,12 +3402,12 @@ namespace Harlinn::Common::Core
             return {};
         }
     }
-    inline std::string ToAnsiString( const char* source )
+    inline AnsiString ToAnsiString( const char* source )
     {
         if ( source && source[ 0 ] )
         {
             auto length = strlen( source );
-            std::string result( source, length );
+            AnsiString result( source, length );
             return result;
         }
         else
@@ -3285,25 +3416,32 @@ namespace Harlinn::Common::Core
         }
     }
 
-    HCC_EXPORT std::string ToAnsiString( bool value );
-    HCC_EXPORT std::string ToAnsiString( SByte value, int base = 10 );
-    HCC_EXPORT std::string ToAnsiString( Byte value, int base = 10 );
-    HCC_EXPORT std::string ToAnsiString( Int16 value, int base = 10 );
-    HCC_EXPORT std::string ToAnsiString( UInt16 value, int base = 10 );
-    HCC_EXPORT std::string ToAnsiString( Int32 value, int base = 10 );
-    HCC_EXPORT std::string ToAnsiString( UInt32 value, int base = 10 );
-    HCC_EXPORT std::string ToAnsiString( Int64 value, int base = 10 );
-    HCC_EXPORT std::string ToAnsiString( UInt64 value, int base = 10 );
-    HCC_EXPORT std::string ToAnsiString( Single value );
-    HCC_EXPORT std::string ToAnsiString( Single value, const Locale& locale );
-    HCC_EXPORT std::string ToAnsiString( Single value, int width, int precission );
-    HCC_EXPORT std::string ToAnsiString( Single value, int width, int precission, const Locale& locale );
-    HCC_EXPORT std::string ToAnsiString( Double value );
-    HCC_EXPORT std::string ToAnsiString( const DateTime& value );
-    HCC_EXPORT std::string ToAnsiString( const TimeSpan& value );
-    HCC_EXPORT std::string ToAnsiString( const Guid& value );
-    HCC_EXPORT std::string ToAnsiString( const Currency& value );
-    HCC_EXPORT std::string ToAnsiString( const Variant& value );
+    inline AnsiString ToAnsiString( const std::string& source )
+    {
+        AnsiString result( source.c_str(), source.size() );
+        return result;
+    }
+
+
+    HCC_EXPORT AnsiString ToAnsiString( bool value );
+    HCC_EXPORT AnsiString ToAnsiString( SByte value, int base = 10 );
+    HCC_EXPORT AnsiString ToAnsiString( Byte value, int base = 10 );
+    HCC_EXPORT AnsiString ToAnsiString( Int16 value, int base = 10 );
+    HCC_EXPORT AnsiString ToAnsiString( UInt16 value, int base = 10 );
+    HCC_EXPORT AnsiString ToAnsiString( Int32 value, int base = 10 );
+    HCC_EXPORT AnsiString ToAnsiString( UInt32 value, int base = 10 );
+    HCC_EXPORT AnsiString ToAnsiString( Int64 value, int base = 10 );
+    HCC_EXPORT AnsiString ToAnsiString( UInt64 value, int base = 10 );
+    HCC_EXPORT AnsiString ToAnsiString( Single value );
+    HCC_EXPORT AnsiString ToAnsiString( Single value, const std::locale& locale );
+    HCC_EXPORT AnsiString ToAnsiString( Single value, int width, int precission );
+    HCC_EXPORT AnsiString ToAnsiString( Single value, int width, int precission, const std::locale& locale );
+    HCC_EXPORT AnsiString ToAnsiString( Double value );
+    HCC_EXPORT AnsiString ToAnsiString( const DateTime& value );
+    HCC_EXPORT AnsiString ToAnsiString( const TimeSpan& value );
+    HCC_EXPORT AnsiString ToAnsiString( const Guid& value );
+    HCC_EXPORT AnsiString ToAnsiString( const Currency& value );
+    HCC_EXPORT AnsiString ToAnsiString( const Variant& value );
 
 
 
@@ -3315,7 +3453,7 @@ namespace Harlinn::Common::Core
     {
         return ToBoolean( str.c_str( ) );
     }
-    inline bool ToBoolean( const std::string& str ) noexcept
+    inline bool ToBoolean( const AnsiString& str ) noexcept
     {
         return ToBoolean( str.c_str( ) );
     }
@@ -3327,7 +3465,7 @@ namespace Harlinn::Common::Core
     {
         return ToByte( str.c_str( ), radix );
     }
-    inline Byte ToByte( const std::string& str, int radix = 10 )
+    inline Byte ToByte( const AnsiString& str, int radix = 10 )
     {
         return ToByte( str.c_str( ), radix );
     }
@@ -3340,7 +3478,7 @@ namespace Harlinn::Common::Core
     {
         return ToSByte( str.c_str( ), radix );
     }
-    inline SByte ToSByte( const std::string& str, int radix = 10 )
+    inline SByte ToSByte( const AnsiString& str, int radix = 10 )
     {
         return ToSByte( str.c_str( ), radix );
     }
@@ -3352,7 +3490,7 @@ namespace Harlinn::Common::Core
     {
         return ToInt16( str.c_str( ), radix );
     }
-    inline Int16 ToInt16( const std::string& str, int radix = 10 )
+    inline Int16 ToInt16( const AnsiString& str, int radix = 10 )
     {
         return ToInt16( str.c_str( ), radix );
     }
@@ -3364,7 +3502,7 @@ namespace Harlinn::Common::Core
     {
         return ToUInt16( str.c_str( ), radix );
     }
-    inline UInt16 ToUInt16( const std::string& str, int radix = 10 )
+    inline UInt16 ToUInt16( const AnsiString& str, int radix = 10 )
     {
         return ToUInt16( str.c_str( ), radix );
     }
@@ -3376,7 +3514,7 @@ namespace Harlinn::Common::Core
     {
         return ToInt32( str.c_str( ), radix );
     }
-    inline Int32 ToInt32( const std::string& str, int radix = 10 )
+    inline Int32 ToInt32( const AnsiString& str, int radix = 10 )
     {
         return ToInt32( str.c_str( ), radix );
     }
@@ -3388,7 +3526,7 @@ namespace Harlinn::Common::Core
     {
         return ToUInt32( str.c_str( ), radix );
     }
-    inline UInt32 ToUInt32( const std::string& str, int radix = 10 )
+    inline UInt32 ToUInt32( const AnsiString& str, int radix = 10 )
     {
         return ToUInt32( str.c_str( ), radix );
     }
@@ -3400,7 +3538,7 @@ namespace Harlinn::Common::Core
     {
         return ToInt64( str.c_str( ), radix );
     }
-    inline Int64 ToInt64( const std::string& str, int radix = 10 )
+    inline Int64 ToInt64( const AnsiString& str, int radix = 10 )
     {
         return ToInt64( str.c_str( ), radix );
     }
@@ -3412,7 +3550,7 @@ namespace Harlinn::Common::Core
     {
         return ToUInt64( str.c_str( ), radix );
     }
-    inline UInt64 ToUInt64( const std::string& str, int radix = 10 )
+    inline UInt64 ToUInt64( const AnsiString& str, int radix = 10 )
     {
         return ToUInt64( str.c_str( ), radix );
     }
@@ -3425,7 +3563,7 @@ namespace Harlinn::Common::Core
     {
         return ToSingle( str.c_str( ) );
     }
-    inline Single ToSingle( const std::string& str )
+    inline Single ToSingle( const AnsiString& str )
     {
         return ToSingle( str.c_str( ) );
     }
@@ -3438,7 +3576,7 @@ namespace Harlinn::Common::Core
     {
         return ToDouble( str.c_str( ) );
     }
-    inline Double ToDouble( const std::string& str )
+    inline Double ToDouble( const AnsiString& str )
     {
         return ToDouble( str.c_str( ) );
     }
@@ -3735,87 +3873,61 @@ namespace Harlinn::Common::Core
         return result;
     }
 
-    inline WideString Format( const wchar_t* fmt, ... )
+#ifdef HCC_WITH_BASIC_STRING
+    inline [[nodiscard]] AnsiString FormatV( const std::string_view fmt, const std::format_args args )
     {
-        va_list args;
-        va_start( args, fmt );
-        auto requiredLength = _vscwprintf( fmt, args );
-        if ( requiredLength > 0 )
-        {
-            WideString result;
-            result.resize( requiredLength );
-            vswprintf_s( result.data( ), requiredLength + 1, fmt, args );
-            va_end( args );
-            return result;
-        }
-        else
-        {
-            va_end( args );
-            return {};
-        }
+        AnsiString result;
+        std::vformat_to( std::back_insert_iterator{ result }, fmt, args );
+        return result;
     }
 
-    inline WideString Format( const Locale& locale, const wchar_t* fmt, ... )
+    inline [[nodiscard]] WideString FormatV( const std::wstring_view fmt, const std::wformat_args args )
     {
-        va_list args;
-        va_start( args, fmt );
-        auto requiredLength = _vscwprintf_l( fmt, locale, args );
-        if ( requiredLength > 0 )
-        {
-            WideString result;
-            result.resize( requiredLength );
-            _vswprintf_p_l( result.data( ), requiredLength + 1, fmt, locale, args );
-            va_end( args );
-            return result;
-        }
-        else
-        {
-            va_end( args );
-            return {};
-        }
+        WideString result;
+        std::vformat_to( std::back_insert_iterator{ result }, fmt, args );
+        return result;
+    }
+
+    inline [[nodiscard]] AnsiString FormatV( const std::locale& locale, const std::string_view fmt, const std::format_args args )
+    {
+        AnsiString result;
+        std::vformat_to( std::back_insert_iterator{ result }, locale, fmt, args );
+        return result;
+    }
+
+    inline [[nodiscard]] WideString FormatV( const std::locale& locale, const std::wstring_view fmt, const std::wformat_args args )
+    {
+        WideString result;
+        std::vformat_to( std::back_insert_iterator{ result }, locale, fmt, args );
+        return result;
     }
 
 
-    inline std::string Format( const char* fmt, ... )
+    template <class... Types>
+    inline [[nodiscard]] AnsiString Format( const std::format_string<Types...> fmt, Types&&... args )
     {
-        va_list args;
-        va_start( args, fmt );
-        auto requiredLength = _vscprintf( fmt, args );
-        if ( requiredLength > 0 )
-        {
-            std::string result;
-            result.resize( requiredLength );
-            vsprintf_s( result.data( ), requiredLength + 1, fmt, args );
-            va_end( args );
-            return result;
-        }
-        else
-        {
-            va_end( args );
-            return {};
-        }
+        return FormatV( fmt.get( ), std::make_format_args( args... ) );
     }
 
-    inline std::string Format( const Locale& locale, const char* fmt, ... )
+    template <class... Types>
+    inline [[nodiscard]] WideString Format( const std::wformat_string<Types...> fmt, Types&&... args )
     {
-        va_list args;
-        va_start( args, fmt );
-        auto requiredLength = _vscprintf_l( fmt, locale, args );
-        if ( requiredLength > 0 )
-        {
-            std::string result;
-            result.resize( requiredLength );
-            _vsprintf_p_l( result.data( ), requiredLength + 1, fmt, locale, args );
-            va_end( args );
-            return result;
-        }
-        else
-        {
-            va_end( args );
-            return {};
-        }
+        return FormatV( fmt.get( ), std::make_wformat_args( args... ) );
     }
 
+
+    template <class... Types>
+    inline [[nodiscard]] AnsiString Format( const std::locale& locale, const std::format_string<Types...> fmt, Types&&... args )
+    {
+        return FormatV( locale, fmt.get( ), std::make_format_args( args... ) );
+    }
+
+    template <class... Types>
+    inline [[nodiscard]] WideString Format( const std::locale& locale, const std::wformat_string<Types...> fmt, Types&&... args )
+    {
+        return FormatV( locale, fmt.get( ), std::make_wformat_args( args... ) );
+    }
+#endif
 
 
 }
@@ -3857,10 +3969,49 @@ namespace std
     };
 
 
+    template<>
+    struct formatter<Harlinn::Common::Core::WideString,wchar_t>
+    {
+        formatter<wstring_view, wchar_t> viewFormatter;
+        constexpr auto parse( wformat_parse_context& ctx )
+        {
+            return viewFormatter.parse( ctx );
+        }
+
+        template <typename FormatContext>
+        auto format( const Harlinn::Common::Core::WideString& v, FormatContext& ctx )
+        {
+            wstring_view view( v.data( ), v.size( ) );
+            return viewFormatter.format( view, ctx );
+        }
+
+    };
+
+    template<>
+    struct formatter<Harlinn::Common::Core::AnsiString> 
+    {
+        formatter<string_view> viewFormatter;
+        constexpr auto parse( format_parse_context& ctx )
+        {
+            return viewFormatter.parse( ctx );
+        }
+
+        template <typename FormatContext>
+        auto format( const Harlinn::Common::Core::AnsiString& v, FormatContext& ctx )
+        {
+            string_view view( v.data(), v.size( ) );
+            return viewFormatter.format( view, ctx );
+        }
+
+    };
+
+
+    /*
     template<> struct formatter<Harlinn::Common::Core::WideString>
     {
 
     };
+    */
 
 }
 #endif

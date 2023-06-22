@@ -291,7 +291,7 @@ namespace Harlinn::Common::Core
         }
 
 
-        explicit SysString( const std::string& str )
+        explicit SysString( const AnsiString& str )
             : bstr_( 0 )
         {
             auto wstr = Core::ToWideString( str );
@@ -2836,13 +2836,13 @@ namespace Harlinn::Common::Core
             return AsWideString( );
         }
 
-        std::string AsAnsiString( ) const
+        AnsiString AsAnsiString( ) const
         {
             return ToAnsiString( AsWideString( ) );
         }
 
         template<>
-        std::string As<std::string>( ) const
+        AnsiString As<AnsiString>( ) const
         {
             return AsAnsiString( );
         }

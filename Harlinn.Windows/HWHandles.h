@@ -66,7 +66,7 @@ namespace Harlinn::Windows
             }
             SetValue( hBitmap, flags & LR_SHARED ? false : true );
         }
-        BitmapHandle( const std::string& bitmapName, int width = 0, int height = 0, DWORD flags = LR_SHARED | LR_DEFAULTSIZE )
+        BitmapHandle( const AnsiString& bitmapName, int width = 0, int height = 0, DWORD flags = LR_SHARED | LR_DEFAULTSIZE )
             : BitmapHandle( bitmapName.c_str( ), width, height, flags )
         {
         }
@@ -232,7 +232,7 @@ namespace Harlinn::Windows
             }
             SetValue( hIcon, flags & LR_SHARED ? false : true );
         }
-        IconHandle( const ModuleHandle& module, const std::string& iconName, int width = 0, int height = 0, DWORD flags = LR_SHARED | LR_DEFAULTSIZE )
+        IconHandle( const ModuleHandle& module, const AnsiString& iconName, int width = 0, int height = 0, DWORD flags = LR_SHARED | LR_DEFAULTSIZE )
             : IconHandle( module, iconName.c_str( ), width, height, flags )
         {
         }
@@ -341,7 +341,7 @@ namespace Harlinn::Windows
             }
             SetValue( hCursor, flags & LR_SHARED ? false : true );
         }
-        CursorHandle( const ModuleHandle& module, const std::string& cursorName, int width = 0, int height = 0, DWORD flags = LR_SHARED | LR_DEFAULTSIZE )
+        CursorHandle( const ModuleHandle& module, const AnsiString& cursorName, int width = 0, int height = 0, DWORD flags = LR_SHARED | LR_DEFAULTSIZE )
             : CursorHandle( module, cursorName.c_str( ), width, height, flags )
         {
         }
@@ -574,7 +574,7 @@ namespace Harlinn::Windows
                 ThrowLastOSError( );
             }
         }
-        void Insert( UINT uPosition, UINT uFlags, UINT_PTR itemIdOrPosition, const std::string& newItemText ) const
+        void Insert( UINT uPosition, UINT uFlags, UINT_PTR itemIdOrPosition, const AnsiString& newItemText ) const
         {
             Insert( uPosition, uFlags, itemIdOrPosition, newItemText.c_str( ) );
         }
@@ -2126,7 +2126,7 @@ namespace Harlinn::Windows
         {
             return DrawText( text.c_str( ), static_cast<int>( text.length( ) ), rect, drawTextFlags );
         }
-        int DrawText( const std::string& text, RECT& rect, DrawTextFlags drawTextFlags ) const
+        int DrawText( const AnsiString& text, RECT& rect, DrawTextFlags drawTextFlags ) const
         {
             return DrawText( text.c_str( ), static_cast<int>( text.length( ) ), rect, drawTextFlags );
         }
@@ -2170,7 +2170,7 @@ namespace Harlinn::Windows
         {
             DrawText( nXStart, nYStart, text.c_str( ), static_cast<int>( text.length( ) ) );
         }
-        void DrawText( int nXStart, int nYStart, const std::string& text ) const
+        void DrawText( int nXStart, int nYStart, const AnsiString& text ) const
         {
             DrawText( nXStart, nYStart, text.c_str( ), static_cast<int>( text.length( ) ) );
         }
@@ -2178,7 +2178,7 @@ namespace Harlinn::Windows
         {
             DrawText( startPosition.x, startPosition.y, text.c_str( ), static_cast<int>( text.length( ) ) );
         }
-        void DrawText( const POINT& startPosition, const std::string& text ) const
+        void DrawText( const POINT& startPosition, const AnsiString& text ) const
         {
             DrawText( startPosition.x, startPosition.y, text.c_str( ), static_cast<int>( text.length( ) ) );
         }

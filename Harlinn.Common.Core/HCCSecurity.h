@@ -1553,14 +1553,14 @@ namespace Harlinn::Common::Core::Security
         /// system.
         /// </param>
         /// <returns>The name of the privilege.</returns>
-        std::string QueryPrivilegeName( const char* systemName ) const
+        AnsiString QueryPrivilegeName( const char* systemName ) const
         {
             std::array<char, 512> buffer;
             size_type bufferLength = static_cast<size_type>( buffer.size( ) );
             auto rc = QueryPrivilegeName( systemName, buffer.data( ), &bufferLength );
             if ( !rc )
             {
-                std::string result;
+                AnsiString result;
                 result.resize( bufferLength - 1 );
                 rc = QueryPrivilegeName( systemName, result.data( ), &bufferLength );
                 if ( !rc )
@@ -1571,7 +1571,7 @@ namespace Harlinn::Common::Core::Security
             }
             else
             {
-                std::string result( buffer.data( ), bufferLength );
+                AnsiString result( buffer.data( ), bufferLength );
                 return result;
             }
         }

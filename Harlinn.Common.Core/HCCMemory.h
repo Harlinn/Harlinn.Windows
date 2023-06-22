@@ -3,6 +3,7 @@
 #define __HCCMEMORY_H__
 
 #include <HCCLinkedList.h>
+#include <HCCString.h>
 
 namespace Harlinn::Common::Core
 {
@@ -399,7 +400,7 @@ namespace Harlinn::Common::Core
                 return begin_[index];
             }
 
-            void AppendTo( std::vector<std::string>& strings ) const
+            void AppendTo( std::vector<AnsiString>& strings ) const
             {
                 auto start = begin( );
                 auto ptr = start;
@@ -409,7 +410,12 @@ namespace Harlinn::Common::Core
                     auto c = *ptr;
                     if ( c == '\r' )
                     {
+#ifdef HCC_WITH_BASIC_STRING
+                        AnsiString str( reinterpret_cast< const AnsiString::value_type* >( start ), static_cast<size_t>(ptr - start) );
+                        strings.emplace_back( std::move( str ) );
+#else
                         strings.emplace_back( start, ptr );
+#endif
                         if ( ( ptr + 1 < end_ ) && *( ptr + 1 ) == '\n' )
                         {
                             ptr++;
@@ -418,20 +424,34 @@ namespace Harlinn::Common::Core
                     }
                     else if ( c == '\n' )
                     {
+#ifdef HCC_WITH_BASIC_STRING
+                        AnsiString str( reinterpret_cast< const AnsiString::value_type* >( start ), static_cast< size_t >( ptr - start ) );
+                        strings.emplace_back( std::move( str ) );
+#else
                         strings.emplace_back( start, ptr );
+#endif
                         start = ptr + 1;
                     }
                     ptr++;
                 }
                 if ( start < end_ )
                 {
-                    strings.emplace_back( start, end() );
+#ifdef HCC_WITH_BASIC_STRING
+                    AnsiString str( reinterpret_cast< const AnsiString::value_type* >( start ), static_cast< size_t >( ptr - end( ) ) );
+                    strings.emplace_back( std::move( str ) );
+#else
+                    strings.emplace_back( start, end( ) );
+#endif
                 }
             }
 
-            void AppendTo( std::string& str ) const
+            void AppendTo( AnsiString& str ) const
             {
+#ifdef HCC_WITH_BASIC_STRING
+                str.append( reinterpret_cast< const AnsiString::value_type*>( begin( ) ), reinterpret_cast< const AnsiString::value_type* >( end( ) ) );
+#else
                 str.append( begin( ), end( ) );
+#endif
             }
 
 

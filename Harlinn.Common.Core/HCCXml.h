@@ -273,7 +273,7 @@ namespace Harlinn::Common::Core::Xml
                 XmlString xmlString( text );
                 SetText( xmlString );
             }
-            void SetText( const std::string& text ) const
+            void SetText( const AnsiString& text ) const
             {
                 XmlString xmlString( text );
                 SetText( xmlString );

@@ -248,12 +248,12 @@ namespace Harlinn::Common::Core
 
 
         HCC_EXPORT WideString ToWideString( ) const;
-        HCC_EXPORT std::string ToAnsiString( ) const;
+        HCC_EXPORT AnsiString ToAnsiString( ) const;
 
         template<>
         HCC_EXPORT WideString As<WideString>( ) const;
         template<>
-        HCC_EXPORT std::string As<std::string>( ) const;
+        HCC_EXPORT AnsiString As<AnsiString>( ) const;
 
         HCC_EXPORT static bool TryParse( const wchar_t* text, Currency& result );
         HCC_EXPORT static bool TryParse( const char* text, Currency& result );

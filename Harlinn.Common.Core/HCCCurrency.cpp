@@ -25,7 +25,7 @@ namespace Harlinn::Common::Core
         }
     }
 
-    std::string Currency::ToAnsiString( ) const
+    AnsiString Currency::ToAnsiString( ) const
     {
         return Core::ToAnsiString( ToWideString( ) );
     }
@@ -36,7 +36,7 @@ namespace Harlinn::Common::Core
         return ToWideString( );
     }
     template<>
-    std::string Currency::As<std::string>( ) const
+    AnsiString Currency::As<AnsiString>( ) const
     {
         return ToAnsiString( );
     }

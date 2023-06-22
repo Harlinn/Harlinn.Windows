@@ -5,6 +5,7 @@
 
 #include <HTDef.h>
 #include <HCCLMDB.h>
+#include <HCCString.h>
 
 #include <HTSegment.h>
 #include <HTTimeseriesPoint.h>
@@ -973,24 +974,24 @@ namespace Harlinn::Timeseries
         }
 
     private:
-        std::string ToString( const Point& point ) requires ( SegmentSize <= 10 )
+        AnsiString ToString( const Point& point ) requires ( SegmentSize <= 10 )
         {
-            auto result = Format( "[%lld, %f]", point.Timestamp( ).Ticks( ), point.Value( ).Value( ) );
+            auto result = Format( "[{}, {}]", point.Timestamp( ).Ticks( ), point.Value( ).Value( ) );
             return result;
         }
 
         void Dump( const KeyData& keyData, const SegmentType& segmentData ) requires ( SegmentSize <= 10 )
         {
-            std::string tmp;
+            AnsiString tmp;
             for ( size_t i = 0; i < segmentData.size( ); ++i )
             {
                 if ( i == 0 )
                 {
-                    tmp += Format( "%04lld", segmentData[i].Timestamp( ).Ticks( ) );
+                    tmp += Format( "{:04d}", segmentData[i].Timestamp( ).Ticks( ) );
                 }
                 else
                 {
-                    tmp += Format( ",%04lld", segmentData[i].Timestamp( ).Ticks( ) );
+                    tmp += Format( ",{:04d}", segmentData[i].Timestamp( ).Ticks( ) );
                 }
 
             }
@@ -1731,7 +1732,7 @@ namespace Harlinn::Timeseries
     struct EngineOptions
     {
         constexpr static size_t DefaultMaxDatabaseSize = 500ull * 1024ull * 1024ull * 1024ull;
-        std::string DatabaseDirectory;
+        AnsiString DatabaseDirectory;
         bool Create = false;
         size_t MaxDatabaseSize = DefaultMaxDatabaseSize;
 
@@ -1739,7 +1740,7 @@ namespace Harlinn::Timeseries
         {
         }
 
-        EngineOptions( const std::string& databaseDirectory, bool create, size_t maxDatabaseSize = DefaultMaxDatabaseSize )
+        EngineOptions( const AnsiString& databaseDirectory, bool create, size_t maxDatabaseSize = DefaultMaxDatabaseSize )
             : DatabaseDirectory( databaseDirectory ), Create( create ), MaxDatabaseSize( maxDatabaseSize )
         {
         }

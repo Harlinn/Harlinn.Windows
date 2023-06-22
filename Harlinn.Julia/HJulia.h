@@ -3,6 +3,7 @@
 #define __HJULIA_H__
 
 #include <HJDef.h>
+#include <HCCString.h>
 
 #pragma pack(push,8)
 
@@ -506,17 +507,17 @@ namespace Harlinn::Julia
             return jl_unbox_float64( value_ );
         }
 
-        std::string ToString( ) const
+        AnsiString ToString( ) const
         {
             return jl_string_ptr( value_ );
         }
         template<>
-        std::string As<std::string>( ) const
+        AnsiString As<AnsiString>( ) const
         {
             return jl_string_ptr( value_ );
         }
         template<>
-        std::string_view As<std::string_view>( ) const
+        AnsiStringView As<AnsiStringView>( ) const
         {
             return jl_string_ptr( value_ );
         }

@@ -190,15 +190,15 @@ namespace Harlinn::Common::Core
 
     WideString ToWideString( Single value, int width, int precission )
     {
-        return Format( L"%0*.*f", width, precission, value );
+        return Format( L"{:0{}.{}f}", value, width, precission );
     }
-    WideString ToWideString( Single value, const Locale& locale )
+    WideString ToWideString( Single value, const std::locale& locale )
     {
-        return Format( locale, L"%0f", value );
+        return Format( locale, L"{:0f}", value );
     }
-    WideString ToWideString( Single value, int width, int precission, const Locale& locale )
+    WideString ToWideString( Single value, int width, int precission, const std::locale& locale )
     {
-        return Format( locale, L"%0*.*f", width, precission, value );
+        return Format( locale, L"{:0{}.{}f}", value, width, precission );
     }
 
     WideString ToWideString( Double value )
@@ -234,7 +234,7 @@ namespace Harlinn::Common::Core
     }
 
 
-    void ToAnsiString( const wchar_t* source, size_t length, unsigned codePage, unsigned flags, std::string& dest )
+    void ToAnsiString( const wchar_t* source, size_t length, unsigned codePage, unsigned flags, AnsiString& dest )
     {
         auto wideCharCount = static_cast<int>( length );
         if ( wideCharCount )
@@ -253,98 +253,112 @@ namespace Harlinn::Common::Core
         }
     }
 
-    std::string ToAnsiString( bool value )
+    AnsiString ToAnsiString( bool value )
     {
         return ToAnsiString( ToWideString( value ) );
     }
 
-    std::string ToAnsiString( SByte value, int base )
+    AnsiString ToAnsiString( SByte value, int base )
     {
         char buffer[33];
         _itoa_s( value, buffer, base );
-        return std::string( buffer );
+        return AnsiString( buffer );
     }
-    std::string ToAnsiString( Byte value, int base )
+    AnsiString ToAnsiString( Byte value, int base )
     {
         char buffer[33];
         _ultoa_s( value, buffer, base );
-        return std::string( buffer );
+        return AnsiString( buffer );
     }
-    std::string ToAnsiString( Int16 value, int base )
+    AnsiString ToAnsiString( Int16 value, int base )
     {
         char buffer[33];
         _itoa_s( value, buffer, base );
-        return std::string( buffer );
+        return AnsiString( buffer );
     }
-    std::string ToAnsiString( UInt16 value, int base )
+    AnsiString ToAnsiString( UInt16 value, int base )
     {
         char buffer[33];
         _ultoa_s( value, buffer, base );
-        return std::string( buffer );
+        return AnsiString( buffer );
     }
-    std::string ToAnsiString( Int32 value, int base )
+    AnsiString ToAnsiString( Int32 value, int base )
     {
         char buffer[33];
         _itoa_s( value, buffer, base );
-        return std::string( buffer );
+        return AnsiString( buffer );
     }
-    std::string ToAnsiString( UInt32 value, int base )
+    AnsiString ToAnsiString( UInt32 value, int base )
     {
         char buffer[33];
         _ultoa_s( value, buffer, base );
-        return std::string( buffer );
+        return AnsiString( buffer );
     }
-    std::string ToAnsiString( Int64 value, int base )
+    AnsiString ToAnsiString( Int64 value, int base )
     {
         char buffer[66];
         _i64toa_s( value, buffer, ARRAYSIZE( buffer ), base );
-        return std::string( buffer );
+        return AnsiString( buffer );
     }
-    std::string ToAnsiString( UInt64 value, int base )
+    AnsiString ToAnsiString( UInt64 value, int base )
     {
         char buffer[66];
         _ui64toa_s( value, buffer, ARRAYSIZE( buffer ), base );
-        return std::string( buffer );
+        return AnsiString( buffer );
     }
-    std::string ToAnsiString( Single value )
+    AnsiString ToAnsiString( Single value )
     {
+#ifdef HCC_WITH_BASIC_STRING
+        const auto length = static_cast< size_t >( _scprintf( "%f", value ) );
+        AnsiString str( length, '\0' );
+        sprintf_s( str.data( ), length + 1, "%f", value );
+        return str;
+#else
         return std::to_string( value );
+#endif
     }
 
-    std::string ToAnsiString( Single value, int width, int precission )
+    AnsiString ToAnsiString( Single value, int width, int precission )
     {
-        return Format( "%0*.*f", width, precission, value );
+        return Format( "{:0{}.{}f}", value, width, precission );
     }
-    std::string ToAnsiString( Single value, const Locale& locale )
+    AnsiString ToAnsiString( Single value, const std::locale& locale )
     {
-        return Format( locale, "%0f", value );
+        return Format( locale, "{:0f}", value );
     }
-    std::string ToAnsiString( Single value, int width, int precission, const Locale& locale )
+    AnsiString ToAnsiString( Single value, int width, int precission, const std::locale& locale )
     {
-        return Format( locale, "%0*.*f", width, precission, value );
+        return Format( locale, "{:{}.{}f}", value, width, precission );
     }
 
-    std::string ToAnsiString( Double value )
+    AnsiString ToAnsiString( Double value )
     {
+#ifdef HCC_WITH_BASIC_STRING
+        const auto length = static_cast< size_t >( _scprintf( "%f", value ) );
+        AnsiString str( length, '\0' );
+        sprintf_s( str.data( ), length + 1, "%f", value );
+        return str;
+#else
         return std::to_string( value );
+#endif
     }
-    std::string ToAnsiString( const DateTime& value )
+    AnsiString ToAnsiString( const DateTime& value )
     {
         return ToAnsiString(value.ToString( ));
     }
-    std::string ToAnsiString( const TimeSpan& value )
+    AnsiString ToAnsiString( const TimeSpan& value )
     {
         return ToAnsiString( value.ToString( ) );
     }
-    std::string ToAnsiString( const Guid& value )
+    AnsiString ToAnsiString( const Guid& value )
     {
         return ToAnsiString( value.ToString( ) );
     }
-    std::string ToAnsiString( const Currency& value )
+    AnsiString ToAnsiString( const Currency& value )
     {
         return ToAnsiString( value.ToWideString( ) );
     }
-    std::string ToAnsiString( const Variant& value )
+    AnsiString ToAnsiString( const Variant& value )
     {
         return ToAnsiString( value.AsWideString( ) );
     }

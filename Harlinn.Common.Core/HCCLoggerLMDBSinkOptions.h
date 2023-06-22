@@ -4,17 +4,18 @@
 
 #include <HCCDef.h>
 #include <HCCLoggerLevel.h>
+#include <HCCString.h>
 
 namespace Harlinn::Common::Core::Logging::Sinks
 {
     class LMDBSinkOptions
     {
-        std::string databaseDirectory_;
+        AnsiString databaseDirectory_;
         Logging::Level enabledLevels_ = Logging::Level::Default;
     public:
         LMDBSinkOptions()
         { }
-        LMDBSinkOptions( const std::string& databaseDirectory, Logging::Level enabledLevels = Logging::Level::Default )
+        LMDBSinkOptions( const AnsiString& databaseDirectory, Logging::Level enabledLevels = Logging::Level::Default )
             : databaseDirectory_( databaseDirectory ), enabledLevels_( enabledLevels )
         {
         }
@@ -26,7 +27,7 @@ namespace Harlinn::Common::Core::Logging::Sinks
         }
 
 
-        constexpr const std::string& DatabaseDirectory( ) const noexcept
+        constexpr const AnsiString& DatabaseDirectory( ) const noexcept
         {
             return databaseDirectory_;
         }

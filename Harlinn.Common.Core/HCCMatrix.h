@@ -4,6 +4,7 @@
 
 #include <HCCMath.h>
 #include <HCCSIMD.h>
+#include <HCCString.h>
 
 namespace Harlinn::Common::Core::Math
 {
@@ -568,20 +569,20 @@ namespace Harlinn::Common::Core::Math
 
 
 
-        [[nodiscard]] std::string ToString( ) const
+        [[nodiscard]] AnsiString ToString( ) const
         {
             if ( Size )
             {
-                std::string result( "[" );
+                AnsiString result( "[" );
                 for ( size_t i = 0; i < Size; ++i )
                 {
                     if ( ( i + 1 ) != Size )
                     {
-                        result += fmt::format( "{},", values_[i] );
+                        result += Format( "{},", values_[i] );
                     }
                     else
                     {
-                        result += fmt::format( "{}", values_[i] );
+                        result += Format( "{}", values_[i] );
                     }
                 }
                 result += "]";

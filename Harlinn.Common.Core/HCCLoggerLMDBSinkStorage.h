@@ -33,7 +33,7 @@ namespace Harlinn::Common::Core::Logging::Sinks::Storage
         static constexpr auto keyFormat = Persistent::DescriptorType<UInt64>::value;
         static constexpr auto valueFormat = Persistent::DescriptorType<Vector<UInt64>>::value;
     public:
-        LogSiteIndexInfo( const std::string& name )
+        LogSiteIndexInfo( const AnsiString& name )
             : Base( name, keyFormat, valueFormat )
         {
         }
@@ -72,11 +72,11 @@ namespace Harlinn::Common::Core::Logging::Sinks::Storage
         using Base = LMDBEx::TableInfoT<LogSiteTable>;
     private:
         static constexpr auto keyFormat = Persistent::DescriptorType<UInt64>::value;
-        static constexpr auto valueFormat = Persistent::DescriptorType<UInt16, std::string, std::vector<Byte>, bool, size_t, UInt32, UInt32, std::string, std::string >::value;
+        static constexpr auto valueFormat = Persistent::DescriptorType<UInt16, AnsiString, std::vector<Byte>, bool, size_t, UInt32, UInt32, AnsiString, AnsiString >::value;
 
         UInt64 maxId_ = 0;
     public:
-        LogSiteTableInfo( const std::string& name )
+        LogSiteTableInfo( const AnsiString& name )
             : Base( name, keyFormat, valueFormat )
         {
         }
@@ -346,7 +346,7 @@ namespace Harlinn::Common::Core::Logging::Sinks::Storage
         static constexpr auto keyFormat = KeyFormatT::value;
         static constexpr auto valueFormat = ValueFormatT::value;
     public:
-        LogHashIndexInfoT( const std::string& name )
+        LogHashIndexInfoT( const AnsiString& name )
             : Base( name, keyFormat, valueFormat )
         {
         }
@@ -665,7 +665,7 @@ namespace Harlinn::Common::Core::Logging::Sinks::Storage
         static constexpr auto keyFormat = KeyFormatType::value;
         static constexpr auto valueFormat = ValueFormatType::value;
     public:
-        LogTableInfoT( const std::string& name )
+        LogTableInfoT( const AnsiString& name )
             : Base( name, keyFormat, valueFormat )
         {
         }
@@ -698,7 +698,7 @@ namespace Harlinn::Common::Core::Logging::Sinks::Storage
         static constexpr auto keyFormat = Persistent::DescriptorType<Guid, DateTime>::value;
         static constexpr auto valueFormat = Persistent::DescriptorType<std::vector<Byte>>::value;
     public:
-        LogDataTableInfo( const std::string& name )
+        LogDataTableInfo( const AnsiString& name )
             : Base( name, keyFormat, valueFormat )
         {
         }
@@ -927,7 +927,7 @@ namespace Harlinn::Common::Core::Logging::Sinks::Storage
             Initialize( );
         }
 
-        LogDatabaseOptions( const std::string& databasePath, size_t memoryMapSize = LMDB::Environment::DefaultMemoryMapSize )
+        LogDatabaseOptions( const AnsiString& databasePath, size_t memoryMapSize = LMDB::Environment::DefaultMemoryMapSize )
             : Base( databasePath, memoryMapSize )
         {
             Initialize( );

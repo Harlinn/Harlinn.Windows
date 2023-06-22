@@ -143,7 +143,7 @@ namespace Harlinn::Windows::Graphics
         {
             SetName( name.c_str( ) );
         }
-        void SetName( const std::string& name ) const
+        void SetName( const AnsiString& name ) const
         {
             SetName( ToWideString( name ) );
         }

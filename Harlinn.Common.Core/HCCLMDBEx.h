@@ -31,19 +31,19 @@ namespace Harlinn::Common::Core::LMDBEx
     /// </summary>
     class TableInfoBase
     {
-        std::string name_;
+        AnsiString name_;
         KeyFormat keyFormat_;
         ValueFormat valueFormat_;
         LMDB::Database database_;
     public:
-        TableInfoBase( const std::string& name, const LMDBEx::KeyFormat& keyFormat, const LMDBEx::ValueFormat& valueFormat )
+        TableInfoBase( const AnsiString& name, const LMDBEx::KeyFormat& keyFormat, const LMDBEx::ValueFormat& valueFormat )
             : name_( name ), keyFormat_( keyFormat ), valueFormat_( valueFormat )
         {
         }
 
         template<typename KFT, typename VFT>
             requires IsCoreTuple<KFT> && IsCoreTuple<VFT>
-        TableInfoBase( const std::string& name, const KFT& keyFormat, const VFT& valueFormat )
+        TableInfoBase( const AnsiString& name, const KFT& keyFormat, const VFT& valueFormat )
             : name_( name ), 
               keyFormat_( reinterpret_cast<const Byte*>(&keyFormat), reinterpret_cast<const Byte*>( &keyFormat ) + sizeof(KFT) ),
               valueFormat_( reinterpret_cast<const Byte*>( &valueFormat ), reinterpret_cast<const Byte*>( &valueFormat ) + sizeof( VFT ) )
@@ -78,7 +78,7 @@ namespace Harlinn::Common::Core::LMDBEx
             }
         }
 
-        const std::string& Name( ) const noexcept
+        const AnsiString& Name( ) const noexcept
         {
             return name_;
         }
@@ -246,14 +246,14 @@ namespace Harlinn::Common::Core::LMDBEx
     public:
         using Base = TableInfoBase;
 
-        IndexInfo( const std::string& name, const LMDBEx::KeyFormat& keyFormat, const LMDBEx::ValueFormat& valueFormat )
+        IndexInfo( const AnsiString& name, const LMDBEx::KeyFormat& keyFormat, const LMDBEx::ValueFormat& valueFormat )
             : Base( name, keyFormat, valueFormat )
         {
         }
 
         template<typename KFT, typename VFT>
             requires IsCoreTuple<KFT> && IsCoreTuple<VFT>
-        IndexInfo( const std::string& name, const KFT& keyFormat, const VFT& valueFormat )
+        IndexInfo( const AnsiString& name, const KFT& keyFormat, const VFT& valueFormat )
             : Base( name, keyFormat, valueFormat )
         {
         }
@@ -361,14 +361,14 @@ namespace Harlinn::Common::Core::LMDBEx
     public:
         using Base = IndexInfo;
 
-        HashIndexInfo( const std::string& name, LMDBEx::KeyFormat& keyFormat, const LMDBEx::ValueFormat& valueFormat )
+        HashIndexInfo( const AnsiString& name, LMDBEx::KeyFormat& keyFormat, const LMDBEx::ValueFormat& valueFormat )
             : Base( name, keyFormat, valueFormat )
         {
         }
 
         template<typename KFT, typename VFT>
             requires IsCoreTuple<KFT> && IsCoreTuple<VFT>
-        HashIndexInfo( const std::string& name, const KFT& keyFormat, const VFT& valueFormat )
+        HashIndexInfo( const AnsiString& name, const KFT& keyFormat, const VFT& valueFormat )
             : Base( name, keyFormat, valueFormat )
         {
         }
@@ -520,14 +520,14 @@ namespace Harlinn::Common::Core::LMDBEx
     public:
         using Base = TableInfoBase;
 
-        TableInfo( const std::string& name, const LMDBEx::KeyFormat& keyFormat, const LMDBEx::ValueFormat& valueFormat )
+        TableInfo( const AnsiString& name, const LMDBEx::KeyFormat& keyFormat, const LMDBEx::ValueFormat& valueFormat )
             : Base( name, keyFormat, valueFormat )
         {
         }
 
         template<typename KFT, typename VFT>
             requires IsCoreTuple<KFT> && IsCoreTuple<VFT>
-        TableInfo( const std::string& name, const KFT& keyFormat, const VFT& valueFormat )
+        TableInfo( const AnsiString& name, const KFT& keyFormat, const VFT& valueFormat )
             : Base( name, keyFormat, valueFormat )
         {
         }
@@ -642,14 +642,14 @@ namespace Harlinn::Common::Core::LMDBEx
         using Base = TableInfo;
         using TableType = TableT;
 
-        TableInfoT( const std::string& name, const LMDBEx::KeyFormat& keyFormat, const LMDBEx::ValueFormat& valueFormat )
+        TableInfoT( const AnsiString& name, const LMDBEx::KeyFormat& keyFormat, const LMDBEx::ValueFormat& valueFormat )
             : Base( name, keyFormat, valueFormat )
         {
         }
 
         template<typename KFT, typename VFT>
             requires IsCoreTuple<KFT> && IsCoreTuple<VFT>
-        TableInfoT( const std::string& name, const KFT& keyFormat, const VFT& valueFormat )
+        TableInfoT( const AnsiString& name, const KFT& keyFormat, const VFT& valueFormat )
             : Base( name, keyFormat, valueFormat )
         {
         }
@@ -669,14 +669,14 @@ namespace Harlinn::Common::Core::LMDBEx
         using Base = IndexInfo;
         using IndexType = IndexT;
 
-        IndexInfoT( const std::string& name, const LMDBEx::KeyFormat& keyFormat, const LMDBEx::ValueFormat& valueFormat )
+        IndexInfoT( const AnsiString& name, const LMDBEx::KeyFormat& keyFormat, const LMDBEx::ValueFormat& valueFormat )
             : Base( name, keyFormat, valueFormat )
         {
         }
 
         template<typename KFT, typename VFT>
             requires IsCoreTuple<KFT> && IsCoreTuple<VFT>
-        IndexInfoT( const std::string& name, const KFT& keyFormat, const VFT& valueFormat )
+        IndexInfoT( const AnsiString& name, const KFT& keyFormat, const VFT& valueFormat )
             : Base( name, keyFormat, valueFormat )
         {
         }
@@ -696,14 +696,14 @@ namespace Harlinn::Common::Core::LMDBEx
         using Base = HashIndexInfo<PrimaryKeyT>;
         using HashIndexType = HashIndexT;
 
-        HashIndexInfoT( const std::string& name, const LMDBEx::KeyFormat& keyFormat, const LMDBEx::ValueFormat& valueFormat )
+        HashIndexInfoT( const AnsiString& name, const LMDBEx::KeyFormat& keyFormat, const LMDBEx::ValueFormat& valueFormat )
             : Base( name, keyFormat, valueFormat )
         {
         }
 
         template<typename KFT, typename VFT>
             requires IsCoreTuple<KFT> && IsCoreTuple<VFT>
-        HashIndexInfoT( const std::string& name, const KFT& keyFormat, const VFT& valueFormat )
+        HashIndexInfoT( const AnsiString& name, const KFT& keyFormat, const VFT& valueFormat )
             : Base( name, keyFormat, valueFormat )
         {
         }
@@ -800,7 +800,7 @@ namespace Harlinn::Common::Core::LMDBEx
 
     class DatabaseOptions
     {
-        std::string databasePath_;
+        AnsiString databasePath_;
         size_t memoryMapSize_ = LMDB::Environment::DefaultMemoryMapSize;
         std::unordered_map<std::string_view, std::unique_ptr< TableInfo > > tables_;
         std::unordered_map<std::string_view, std::unique_ptr< IndexInfo > > indexes_;
@@ -809,7 +809,7 @@ namespace Harlinn::Common::Core::LMDBEx
         {
         }
 
-        DatabaseOptions( const std::string& databasePath, size_t memoryMapSize = LMDB::Environment::DefaultMemoryMapSize )
+        DatabaseOptions( const AnsiString& databasePath, size_t memoryMapSize = LMDB::Environment::DefaultMemoryMapSize )
             : databasePath_( databasePath ), memoryMapSize_( memoryMapSize )
         {
         }
@@ -819,7 +819,7 @@ namespace Harlinn::Common::Core::LMDBEx
             return static_cast<UInt32>( tables_.size( ) + indexes_.size( ) );
         }
 
-        const std::string& DatabasePath( ) const noexcept
+        const AnsiString& DatabasePath( ) const noexcept
         {
             return databasePath_;
         }
@@ -839,7 +839,7 @@ namespace Harlinn::Common::Core::LMDBEx
         }
 
         template<typename TableInfoType>
-        TableInfoType* AddTable( const std::string& name )
+        TableInfoType* AddTable( const AnsiString& name )
         {
             std::unique_ptr<TableInfo> tableInfo = std::make_unique<TableInfoType>( name );
             std::string_view nameView = tableInfo->Name( );
@@ -862,7 +862,7 @@ namespace Harlinn::Common::Core::LMDBEx
         }
 
         template<typename IndexInfoType>
-        IndexInfoType* AddIndex( const std::string& tableName, const std::string& name )
+        IndexInfoType* AddIndex( const AnsiString& tableName, const AnsiString& name )
         {
             auto tableInfo = FindTable( tableName );
             if ( tableInfo )
@@ -880,7 +880,7 @@ namespace Harlinn::Common::Core::LMDBEx
 
 
         template<typename HashIndexInfoType>
-        HashIndexInfoType* AddHashIndex( const std::string& tableName, const std::string& name )
+        HashIndexInfoType* AddHashIndex( const AnsiString& tableName, const AnsiString& name )
         {
             auto tableInfo = FindTable( tableName );
             if ( tableInfo )

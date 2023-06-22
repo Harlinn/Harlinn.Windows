@@ -61,7 +61,7 @@ namespace Harlinn::Common::Core::Ese
     }
 
     template<typename T>
-    concept StringType = ( std::is_same_v<std::string, T> || std::is_same_v<WideString, T> );
+    concept StringType = ( std::is_same_v<AnsiString, T> || std::is_same_v<WideString, T> );
 
     template<typename T>
     concept CharType = ( std::is_same_v<char, T> || std::is_same_v<wchar_t, T> );
@@ -1630,7 +1630,7 @@ namespace Harlinn::Common::Core::Ese
             return AddColumn( columnName, columnDef );
         }
         template<StringType T>
-        JET_COLUMNID AddBinary( const std::string& columnName, unsigned long maxSize = 255, ColumnFlags flags = ColumnFlags::NotNULL ) const
+        JET_COLUMNID AddBinary( const AnsiString& columnName, unsigned long maxSize = 255, ColumnFlags flags = ColumnFlags::NotNULL ) const
         {
             return AddBinary( columnName.c_str( ), maxSize, flags );
         }
@@ -2762,7 +2762,7 @@ namespace Harlinn::Common::Core::Ese
         /// <param name="maxDatabaseSizeInNumberOfPages">The maximum size, in database pages, for the database.</param>
         /// <returns>The Database object for the database.</returns>
         template<DatabaseType T = Database>
-        [[nodiscard]] T CreateDatabase( const std::string& filename, CreateDatabaseFlags flags, unsigned long maxDatabaseSizeInNumberOfPages = 0 ) const
+        [[nodiscard]] T CreateDatabase( const AnsiString& filename, CreateDatabaseFlags flags, unsigned long maxDatabaseSizeInNumberOfPages = 0 ) const
         {
             JET_DBID databaseId = 0;
             auto rc = static_cast<Result>( JetCreateDatabase2A( sessionId_, filename.c_str( ), maxDatabaseSizeInNumberOfPages, &databaseId, (int)flags ) );
@@ -2793,7 +2793,7 @@ namespace Harlinn::Common::Core::Ese
         /// <param name="filename">The name of the database to attach</param>
         /// <param name="flags">Options to be used for this call</param>
         /// <param name="maxDatabaseSizeInNumberOfPages">The maximum size, in database pages, for database. The default, 0, means that there is no maximum enforced by the database engine</param>
-        void AttachDatabase( const std::string& filename, AttachDatabaseFlags flags = AttachDatabaseFlags::None, unsigned long maxDatabaseSizeInNumberOfPages = 0 ) const
+        void AttachDatabase( const AnsiString& filename, AttachDatabaseFlags flags = AttachDatabaseFlags::None, unsigned long maxDatabaseSizeInNumberOfPages = 0 ) const
         {
             auto rc = static_cast<Result>( JetAttachDatabase2A( sessionId_, filename.c_str( ), maxDatabaseSizeInNumberOfPages, (int)flags ) );
             RequireNotError( rc );
@@ -2831,7 +2831,7 @@ namespace Harlinn::Common::Core::Ese
         }
 
         template<DatabaseType T = Database>
-        [[nodiscard]] T OpenDatabase( const std::string& filename, OpenDatabaseFlags flags = OpenDatabaseFlags::None ) const
+        [[nodiscard]] T OpenDatabase( const AnsiString& filename, OpenDatabaseFlags flags = OpenDatabaseFlags::None ) const
         {
             char connect[1024] = { 0, };
             JET_DBID databaseId = 0;
@@ -2974,7 +2974,7 @@ namespace Harlinn::Common::Core::Ese
             instance_ = instance;
         }
 
-        Instance( const std::string& instanceName, const std::string& displayName = std::string( ), InitFlags initFlags = InitFlags::None )
+        Instance( const AnsiString& instanceName, const AnsiString& displayName = AnsiString( ), InitFlags initFlags = InitFlags::None )
             : instance_( JET_instanceNil ), initialized_( false ), initFlags_( initFlags )
         {
             JET_INSTANCE instance = 0;
@@ -3146,7 +3146,7 @@ namespace Harlinn::Common::Core::Ese
             auto rc = static_cast<Result>( JetSetSystemParameterW(const_cast<JET_INSTANCE*>(&instance_), JET_sesidNil, paramId, 0, value.c_str( ) ));
             RequireSuccess( rc );
         }
-        void SetSystemParameter( unsigned long paramId, const std::string& value ) const
+        void SetSystemParameter( unsigned long paramId, const AnsiString& value ) const
         {
             auto rc = static_cast<Result>( JetSetSystemParameterA(const_cast<JET_INSTANCE*>(&instance_), JET_sesidNil, paramId, 0, value.c_str( ) ) );
             RequireSuccess( rc );
@@ -3920,7 +3920,7 @@ namespace Harlinn::Common::Core::Ese
         {
             SetSystemParameter(JET_paramLogFilePath, value);
         }
-        void SetLogFilePath( const std::string& value ) const
+        void SetLogFilePath( const AnsiString& value ) const
         {
             SetSystemParameter( JET_paramLogFilePath, value );
         }
@@ -3999,7 +3999,7 @@ namespace Harlinn::Common::Core::Ese
         {
             SetSystemParameter(JET_paramSystemPath, value);
         }
-        void SetSystemPath( const std::string& value ) const
+        void SetSystemPath( const AnsiString& value ) const
         {
             SetSystemParameter( JET_paramSystemPath, value );
         }

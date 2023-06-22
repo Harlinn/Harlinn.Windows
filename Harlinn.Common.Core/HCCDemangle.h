@@ -28,6 +28,8 @@
 
 
 #include <HCCDef.h>
+#include <HCCString.h>
+#include <HCCException.h>
 
 namespace Harlinn::Common::Core::Demangle
 {
@@ -52,12 +54,14 @@ namespace Harlinn::Common::Core::Demangle
     }
 
 
-    // Thrown for errors encountered while demangling names.
-    class Error : public std::runtime_error
+    class Error : public ApplicationException
     {
     public:
-        using std::runtime_error::runtime_error;
+        using Base = ApplicationException;
+        HARLINN_COMMON_DECLARE_STANDARD_EXCEPTION_MEMBERS( Error );
     };
+
+    
 
     enum class SymbolType
     {
@@ -202,7 +206,7 @@ namespace Harlinn::Common::Core::Demangle
         // type names, namespace names, and a bunch of other things as well.  simple_string is used
         // iff simple_code == Code::UNDEFINED.
         Code simple_code = Code::Undefined;
-        std::string simple_string;
+        AnsiString simple_string;
 
         // The fully qualified name of a complex type (e.g. a templated class).
         FullyQualifiedName name;
@@ -220,7 +224,7 @@ namespace Harlinn::Common::Core::Demangle
         MethodProperty method_property = MethodProperty::Unspecified;
 
         // Calling convention
-        std::string calling_convention;
+        AnsiString calling_convention;
 
         // Was this symbol exported?
         bool is_exported = false;
@@ -251,8 +255,8 @@ namespace Harlinn::Common::Core::Demangle
         DemangledType& operator=( const DemangledType& other ) = default;
         DemangledType& operator=( DemangledType&& other ) = default;
 
-        DemangledType( std::string&& simple_name ) : simple_string( std::move( simple_name ) ) {}
-        DemangledType( std::string const& simple_name ) : simple_string( simple_name ) {}
+        DemangledType( AnsiString&& simple_name ) : simple_string( std::move( simple_name ) ) {}
+        DemangledType( AnsiString const& simple_name ) : simple_string( simple_name ) {}
         DemangledType( char const* simple_name ) : simple_string( simple_name ) {}
         DemangledType( Code code ) : simple_code( code ) {}
 
@@ -265,7 +269,7 @@ namespace Harlinn::Common::Core::Demangle
     };
 
     // Main entry point to demangler
-    HCC_EXPORT DemangledTypePtr visual_studio_demangle( const std::string& mangled, bool debug = false );
+    HCC_EXPORT DemangledTypePtr visual_studio_demangle( const AnsiString& mangled, bool debug = false );
 
 
     enum class TextAttribute : std::uint32_t
@@ -351,7 +355,7 @@ namespace Harlinn::Common::Core::Demangle
             return attr;
         };
 
-        static std::vector<std::pair<const TextAttribute, const std::string>> const&
+        static std::vector<std::pair<const TextAttribute, const AnsiString>> const&
             explain( );
 
     private:
@@ -365,7 +369,7 @@ namespace Harlinn::Common::Core::Demangle
         TextOutput( ) = default;
         TextOutput( TextAttributes a ) : attr( a ) {}
 
-        std::string convert( DemangledType const& sym ) const;
+        AnsiString convert( DemangledType const& sym ) const;
 
         void set_attributes( TextAttributes a )
         {
@@ -388,11 +392,11 @@ namespace Harlinn::Common::Core::Demangle
         }
 
         // Get just the class name
-        std::string get_class_name( DemangledType const& sym ) const;
+        AnsiString get_class_name( DemangledType const& sym ) const;
         // Get just the method name, without the class or arguments
-        std::string get_method_name( DemangledType const& sym ) const;
+        AnsiString get_method_name( DemangledType const& sym ) const;
         // Get just the method name and arguments
-        std::string get_method_signature( DemangledType const& sym ) const;
+        AnsiString get_method_signature( DemangledType const& sym ) const;
 
         class StreamApplyObject
         {

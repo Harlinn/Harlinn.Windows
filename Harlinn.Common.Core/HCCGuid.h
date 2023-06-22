@@ -208,21 +208,21 @@ namespace Harlinn::Common::Core
 
         HCC_EXPORT explicit Guid( const char* uuid );
         HCC_EXPORT explicit Guid( const wchar_t* uuid );
-        HCC_EXPORT explicit Guid( const std::string& uuid );
+        HCC_EXPORT explicit Guid( const AnsiString& uuid );
         HCC_EXPORT explicit Guid( const WideString& uuid );
 
         HCC_EXPORT static bool TryParse( const char* uuid, Guid& result );
         HCC_EXPORT static bool TryParse( const wchar_t* uuid, Guid& result );
-        HCC_EXPORT static bool TryParse( const std::string& uuid, Guid& result );
+        HCC_EXPORT static bool TryParse( const AnsiString& uuid, Guid& result );
         HCC_EXPORT static bool TryParse( const WideString& uuid, Guid& result );
 
         HCC_EXPORT static Guid Parse( const char* uuid );
         HCC_EXPORT static Guid Parse( const wchar_t* uuid );
-        HCC_EXPORT static Guid Parse( const std::string& uuid );
+        HCC_EXPORT static Guid Parse( const AnsiString& uuid );
         HCC_EXPORT static Guid Parse( const WideString& uuid );
 
         HCC_EXPORT WideString ToString( ) const;
-        HCC_EXPORT std::string ToAnsiString( ) const;
+        HCC_EXPORT AnsiString ToAnsiString( ) const;
 
         HCC_EXPORT const GUID& AsGuid( ) const
         {
@@ -230,12 +230,7 @@ namespace Harlinn::Common::Core
         }
 
 
-        friend std::ostream& operator << ( std::ostream& stream, const Guid& guid )
-        {
-            auto str = guid.ToAnsiString( );
-            stream << str;
-            return stream;
-        }
+        HCC_EXPORT friend std::ostream& operator << ( std::ostream& stream, const Guid& guid );
 
 
         HCC_EXPORT static Guid NewGuid( );

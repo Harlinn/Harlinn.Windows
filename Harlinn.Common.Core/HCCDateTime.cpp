@@ -97,13 +97,13 @@ namespace Harlinn::Common::Core
         return WideString( buffer, length );
     }
 
-    std::string TimeSpan::ToAnsiString( ) const
+    AnsiString TimeSpan::ToAnsiString( ) const
     {
         auto ws = ToWideString( );
         return Core::ToAnsiString( ws );
     }
 
-    std::string TimeSpan::ToAnsiString( const std::string& format ) const
+    AnsiString TimeSpan::ToAnsiString( const AnsiString& format ) const
     {
         auto wsFormat = Core::ToWideString( format );
         auto ws = ToWideString( wsFormat );
@@ -273,7 +273,7 @@ namespace Harlinn::Common::Core
     {
         return TryParse( text.c_str( ), result );
     }
-    bool TimeSpan::TryParse( const std::string& text, TimeSpan& result )
+    bool TimeSpan::TryParse( const AnsiString& text, TimeSpan& result )
     {
         return TryParse( text.c_str( ), result );
     }
@@ -309,9 +309,16 @@ namespace Harlinn::Common::Core
     {
         return Parse( text.c_str( ) );
     }
-    TimeSpan TimeSpan::Parse( const std::string& text )
+    TimeSpan TimeSpan::Parse( const AnsiString& text )
     {
         return Parse( text.c_str( ) );
+    }
+
+    HCC_EXPORT std::ostream& operator << ( std::ostream& stream, const TimeSpan& timeSpan )
+    {
+        auto str = timeSpan.ToAnsiString( );
+        stream << str;
+        return stream;
     }
 
 
@@ -393,7 +400,7 @@ namespace Harlinn::Common::Core
                 return n * TicksPerDay;
             }
         }
-        auto message = Format( L"Argument out of range. Year: %d, Month: %d, Day: %d", year, month, day );
+        auto message = Format( L"Argument out of range. Year: {}, Month: {}, Day: {}", year, month, day );
         throw ArgumentOutOfRangeException( static_cast<wchar_t*>( nullptr ), message );
     }
 
@@ -538,7 +545,7 @@ namespace Harlinn::Common::Core
         return *this;
     }
 
-    std::string DateTime::DateToAnsiString( ) const
+    AnsiString DateTime::DateToAnsiString( ) const
     {
         char buffer[128];
         SYSTEMTIME systemTime;
@@ -548,7 +555,7 @@ namespace Harlinn::Common::Core
         {
             ThrowLastOSError( );
         }
-        std::string result( buffer, length );
+        AnsiString result( buffer, length );
         return result;
     }
     WideString DateTime::DateToString( ) const
@@ -565,7 +572,7 @@ namespace Harlinn::Common::Core
         return result;
     }
 
-    std::string DateTime::TimeToAnsiString( ) const
+    AnsiString DateTime::TimeToAnsiString( ) const
     {
         char buffer[128];
         SYSTEMTIME systemTime;
@@ -575,7 +582,7 @@ namespace Harlinn::Common::Core
         {
             ThrowLastOSError( );
         }
-        std::string result( buffer, length );
+        AnsiString result( buffer, length );
         return result;
     }
     WideString DateTime::TimeToString( ) const
@@ -592,7 +599,7 @@ namespace Harlinn::Common::Core
         return result;
     }
 
-    std::string DateTime::ToAnsiString( ) const
+    AnsiString DateTime::ToAnsiString( ) const
     {
         char buffer[128];
         SYSTEMTIME systemTime;
@@ -610,7 +617,7 @@ namespace Harlinn::Common::Core
             ThrowLastOSError( );
         }
 
-        std::string result( buffer, size_t( length + length2 - 1 ) );
+        AnsiString result( buffer, size_t( length + length2 - 1 ) );
         return result;
     }
 
@@ -1005,7 +1012,7 @@ namespace Harlinn::Common::Core
     {
         return TryParse( text.c_str( ), result );
     }
-    bool DateTime::TryParse( const std::string& text, DateTime& result )
+    bool DateTime::TryParse( const AnsiString& text, DateTime& result )
     {
         return TryParse( text.c_str( ), result );
     }
@@ -1013,9 +1020,16 @@ namespace Harlinn::Common::Core
     {
         return Parse( text.c_str( ) );
     }
-    DateTime DateTime::Parse( const std::string& text )
+    DateTime DateTime::Parse( const AnsiString& text )
     {
         return Parse( text.c_str( ) );
+    }
+
+    std::ostream& operator << ( std::ostream& stream, const DateTime& dateTime )
+    {
+        auto str = dateTime.ToAnsiString( );
+        stream << str;
+        return stream;
     }
 
 

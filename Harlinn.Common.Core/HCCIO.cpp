@@ -52,19 +52,19 @@ namespace Harlinn::Common::Core::IO
         result += remainingPath;
         return result;
     }
-    HCC_EXPORT std::string Path::Append( const std::string& startOfPath, const std::string& remainingPath )
+    HCC_EXPORT AnsiString Path::Append( const AnsiString& startOfPath, const AnsiString& remainingPath )
     {
         if ( !startOfPath.ends_with( '\\' ) &&
             !startOfPath.ends_with( '/' ) &&
             !remainingPath.starts_with( '\\' ) &&
             !remainingPath.starts_with( '/' ) )
         {
-            auto result = Format( "%s\\%s", startOfPath.c_str( ), remainingPath.c_str( ) );
+            auto result = Format( "{}\\{}", startOfPath, remainingPath );
             return result;
         }
         else
         {
-            auto result = Format( "%s%s", startOfPath.c_str( ), remainingPath.c_str( ) );
+            auto result = Format( "{}{}", startOfPath, remainingPath );
             return result;
         }
     }
@@ -195,7 +195,7 @@ namespace Harlinn::Common::Core::IO
         return {};
     }
 
-    std::string Path::GetFullPathName(const std::string& path)
+    AnsiString Path::GetFullPathName(const AnsiString& path)
     {
         if (path.empty() == false)
         {
@@ -208,7 +208,7 @@ namespace Harlinn::Common::Core::IO
             }
             if (length >= (sizeof(buffer) / sizeof(wchar_t)))
             {
-                std::string result;
+                AnsiString result;
                 result.resize(length - 1);
                 length = ::GetFullPathNameA(path.c_str(), length, result.data(), &filePart);
                 if (length == 0)
@@ -219,13 +219,13 @@ namespace Harlinn::Common::Core::IO
             }
             else
             {
-                std::string result(buffer, length);
+                AnsiString result(buffer, length);
                 return result;
             }
         }
-        return std::string();
+        return {};
     }
-    std::string Path::GetFullPathName(const std::string& path, std::string::size_type& indexOfFileName)
+    AnsiString Path::GetFullPathName(const AnsiString& path, AnsiString::size_type& indexOfFileName)
     {
         if (path.empty() == false)
         {
@@ -238,7 +238,7 @@ namespace Harlinn::Common::Core::IO
             }
             if (length >= (sizeof(buffer) / sizeof(wchar_t)))
             {
-                std::string result;
+                AnsiString result;
                 result.resize(length - 1);
                 length = ::GetFullPathNameA(path.c_str(), length, result.data(), &filePart);
                 if (length == 0)
@@ -251,15 +251,15 @@ namespace Harlinn::Common::Core::IO
             else
             {
                 indexOfFileName = filePart - buffer;
-                std::string result(buffer, length);
+                AnsiString result(buffer, length);
                 return result;
             }
         }
-        indexOfFileName = std::string::npos;
-        return std::string();
+        indexOfFileName = AnsiString::npos;
+        return {};
     }
 
-    std::string Path::FullPath( const std::string& path )
+    AnsiString Path::FullPath( const AnsiString& path )
     {
         if ( path.empty( ) == false )
         {
@@ -272,7 +272,7 @@ namespace Harlinn::Common::Core::IO
             }
             if ( length >= sizeof( buffer ) )
             {
-                std::string result;
+                AnsiString result;
                 result.resize( length - 1 );
                 length = ::GetFullPathNameA( path.c_str( ), length, result.data( ), &filePart );
                 if ( length == 0 )
@@ -283,11 +283,11 @@ namespace Harlinn::Common::Core::IO
             }
             else
             {
-                std::string result( buffer, length );
+                AnsiString result( buffer, length );
                 return result;
             }
         }
-        return std::string( );
+        return {};
     }
 
 
@@ -305,7 +305,7 @@ namespace Harlinn::Common::Core::IO
         return result;
     }
 
-    std::string Path::GetParentDirectory( const char* path )
+    AnsiString Path::GetParentDirectory( const char* path )
     {
         char drive[_MAX_DRIVE + 1];
         char dir[_MAX_DIR + 1];
@@ -313,7 +313,7 @@ namespace Harlinn::Common::Core::IO
         char ext[_MAX_EXT + 1];
 
         _splitpath_s( path, drive, dir, filename, ext );
-        std::string result( drive );
+        AnsiString result( drive );
         result += dir;
         return result;
     }
@@ -598,7 +598,7 @@ namespace Harlinn::Common::Core::IO
         return false;
     }
 
-    bool File::Exist( const std::string& path )
+    bool File::Exist( const AnsiString& path )
     {
         if ( path.empty( ) == false )
         {
@@ -730,7 +730,7 @@ namespace Harlinn::Common::Core::IO
             return Search( Directory::Current( ), filename, recurseSubdirectories, result );
         }
     }
-    bool File::Search( const std::string& directoryPath, const std::string& filename, bool recurseSubdirectories, std::string& result )
+    bool File::Search( const AnsiString& directoryPath, const AnsiString& filename, bool recurseSubdirectories, AnsiString& result )
     {
         if ( directoryPath.empty( ) == false )
         {
@@ -789,38 +789,38 @@ namespace Harlinn::Common::Core::IO
     }
 
 
-    void File::ReadAllLines( const std::string& filePath, std::vector<std::string>& destination )
+    void File::ReadAllLines( const AnsiString& filePath, std::vector<AnsiString>& destination )
     {
         destination.clear( );
         ReadAndAppendAllLinesTo( filePath, destination );
     }
 
-    void File::ReadAndAppendAllLinesTo( const std::string& filePath, std::vector<std::string>& destination )
+    void File::ReadAndAppendAllLinesTo( const AnsiString& filePath, std::vector<AnsiString>& destination )
     {
         FileStream fileStream( filePath.c_str( ), FileAccess::Read, FileShare::Read, nullptr, FileMode::Open, FileAttributes::Normal, FileOptions::Default );
         fileStream.ReadFile( destination );
     }
 
-    void File::WriteAllLines( const std::string& filePath, const std::vector<std::string>& contents )
+    void File::WriteAllLines( const AnsiString& filePath, const std::vector<AnsiString>& contents )
     {
         FileStream fileStream( filePath.c_str( ), FileAccess::ReadWrite, FileShare::None, nullptr, FileMode::OpenOrCreate, FileAttributes::Normal, FileOptions::SequentialScan );
         fileStream.SetSize( 0 );
         fileStream.WriteFile( contents );
     }
 
-    void File::ReadAllText( const std::string& filePath, std::string& destination )
+    void File::ReadAllText( const AnsiString& filePath, AnsiString& destination )
     {
         destination.clear( );
         ReadAndAppendAllTextTo( filePath, destination );
     }
 
-    void File::ReadAndAppendAllTextTo( const std::string& filePath, std::string& destination )
+    void File::ReadAndAppendAllTextTo( const AnsiString& filePath, AnsiString& destination )
     {
         FileStream fileStream( filePath.c_str( ), FileAccess::Read, FileShare::Read, nullptr, FileMode::Open, FileAttributes::Normal, FileOptions::Default );
         fileStream.ReadFile( destination );
     }
 
-    void File::WriteAllText( const std::string& filePath, const std::string& contents )
+    void File::WriteAllText( const AnsiString& filePath, const AnsiString& contents )
     {
         FileStream fileStream( filePath.c_str( ), FileAccess::ReadWrite, FileShare::None, nullptr, FileMode::OpenOrCreate, FileAttributes::Normal, FileOptions::SequentialScan );
         fileStream.SetSize( 0 );
@@ -840,11 +840,11 @@ namespace Harlinn::Common::Core::IO
         return WideString(buffer, static_cast<size_t>(rc));
     }
 
-    std::string Directory::GetTemporaryA()
+    AnsiString Directory::GetTemporaryA()
     {
         char buffer[MAX_PATH + 2] = {};
         auto rc = GetTempPathA(MAX_PATH + 1, buffer);
-        return std::string(buffer, static_cast<size_t>(rc));
+        return AnsiString(buffer, static_cast<size_t>(rc));
     }
 
 
@@ -854,7 +854,7 @@ namespace Harlinn::Common::Core::IO
         GetModuleFileNameW( nullptr, buffer, sizeof( buffer ) / sizeof( wchar_t ) );
         return Path::GetParentDirectory( buffer );
     }
-    std::string Directory::GetExecutableDirectoryA( )
+    AnsiString Directory::GetExecutableDirectoryA( )
     {
         return ToAnsiString( GetExecutableDirectoryW( ) );
     }
@@ -884,7 +884,7 @@ namespace Harlinn::Common::Core::IO
             return result;
         }
     }
-    std::string Directory::CurrentA( )
+    AnsiString Directory::CurrentA( )
     {
         char buffer[MAX_PATH + 1] = { 0, };
         auto length = ::GetCurrentDirectoryA( sizeof( buffer ), buffer );
@@ -894,7 +894,7 @@ namespace Harlinn::Common::Core::IO
         }
         if ( length > sizeof( buffer ) )
         {
-            std::string result;
+            AnsiString result;
             result.resize( length - 1 );
             length = ::GetCurrentDirectoryA( length, result.data( ) );
             if ( length == 0 )
@@ -905,7 +905,7 @@ namespace Harlinn::Common::Core::IO
         }
         else
         {
-            std::string result( buffer, length );
+            AnsiString result( buffer, length );
             return result;
         }
     }
@@ -1059,20 +1059,20 @@ namespace Harlinn::Common::Core::IO
         return result;
     }
 
-    void FileStream::ReadFile( std::vector<std::string>& destination ) const
+    void FileStream::ReadFile( std::vector<AnsiString>& destination ) const
     {
         FileMapping fileMapping( Handle( ), PageFlags::Readonly, SectionFlags::None, 0 );
         FileMapping::View view( fileMapping, FileMap::Read, 0, Size( ) );
         view.AppendTo( destination );
     }
-    void FileStream::ReadFile( std::string& destination ) const
+    void FileStream::ReadFile( AnsiString& destination ) const
     {
         FileMapping fileMapping( Handle( ), PageFlags::Readonly, SectionFlags::None, 0 );
         FileMapping::View view( fileMapping, FileMap::Read, 0, Size( ) );
         view.AppendTo( destination );
     }
 
-    void FileStream::WriteFile( const std::vector<std::string>& contents ) const
+    void FileStream::WriteFile( const std::vector<AnsiString>& contents ) const
     {
         Seek( 0, SeekOrigin::StartOfFile );
         SetSize( 0 );
@@ -1086,7 +1086,7 @@ namespace Harlinn::Common::Core::IO
         writeBuffer.Flush( );
     }
 
-    void FileStream::WriteFile( const std::string& contents ) const
+    void FileStream::WriteFile( const AnsiString& contents ) const
     {
         Seek( 0, SeekOrigin::StartOfFile );
         SetSize( 0 );

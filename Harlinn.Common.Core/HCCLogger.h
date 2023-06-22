@@ -187,8 +187,8 @@ namespace Harlinn::Common::Core::Logging
             template<typename ...Args>
             void WriteLogRecord( const LogSite* site, Args&& ...args ) noexcept
             {
-                fmt::print( site->Message(), std::forward<Args>( args )... );
-                std::puts( "" );
+                auto message = std::format( site->Message(), std::forward<Args>( args )... );
+                std::puts( message.c_str() );
             }
 
             void Flush()

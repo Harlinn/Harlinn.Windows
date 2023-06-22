@@ -80,16 +80,16 @@ namespace Harlinn::Common::Core::Environment
     HCC_EXPORT Guid MachineGuid( );
 
     HCC_EXPORT WideString EnvironmentVariable( const wchar_t* environmentVariableName );
-    HCC_EXPORT std::string EnvironmentVariable( const char* environmentVariableName );
+    HCC_EXPORT AnsiString EnvironmentVariable( const char* environmentVariableName );
 
     HCC_EXPORT WideString Where( const wchar_t* fileName );
-    HCC_EXPORT std::string Where( const char* fileName );
+    HCC_EXPORT AnsiString Where( const char* fileName );
 
     inline WideString Where( const WideString& fileName )
     {
         return Where( fileName.c_str() );
     }
-    inline std::string Where( const std::string& fileName )
+    inline AnsiString Where( const AnsiString& fileName )
     {
         return Where( fileName.c_str( ) );
     }
@@ -107,16 +107,16 @@ namespace Harlinn::Common::Core::Environment
     {
         return Where( path.c_str( ), fileName );
     }
-    HCC_EXPORT std::string Where( const char* path, const char* fileName );
-    inline std::string Where( const char* path, const std::string& fileName )
+    HCC_EXPORT AnsiString Where( const char* path, const char* fileName );
+    inline AnsiString Where( const char* path, const AnsiString& fileName )
     {
         return Where( path, fileName.c_str( ) );
     }
-    inline std::string Where( const std::string& path, const char* fileName )
+    inline AnsiString Where( const AnsiString& path, const char* fileName )
     {
         return Where( path.c_str( ), fileName );
     }
-    inline std::string Where( const std::string& path, const std::string& fileName )
+    inline AnsiString Where( const AnsiString& path, const AnsiString& fileName )
     {
         return Where( path.c_str( ), fileName );
     }

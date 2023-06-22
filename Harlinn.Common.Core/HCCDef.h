@@ -248,18 +248,6 @@
 #include <boost/container/flat_set.hpp>
 #include <boost/mp11.hpp>
 
-#define FMT_LOCALE
-
-#include <fmt/format.h>
-#include <fmt/args.h>
-#include <fmt/ranges.h>
-#include <fmt/chrono.h>
-#include <fmt/compile.h>
-#include <fmt/color.h>
-#include <fmt/ostream.h>
-#include <fmt/printf.h>
-#include <fmt/xchar.h>
-
 #include <HCCWinError.h>
 
 namespace Harlinn::Common::Core
@@ -463,7 +451,7 @@ namespace Harlinn::Common::Core
     HCC_EXPORT void CheckHRESULT( HRESULT hresult, const wchar_t* function, const wchar_t* filename, int lineNumber );
     HCC_EXPORT void CheckHRESULT( HRESULT hresult, IUnknown* itf, const wchar_t* function, const wchar_t* filename, int lineNumber );
     HCC_EXPORT WideString FormatError( DWORD errorId );
-    HCC_EXPORT std::string FormatErrorA( DWORD errorId );
+    HCC_EXPORT AnsiString FormatErrorA( DWORD errorId );
     HCC_EXPORT void ThrowLastOSError( );
     HCC_EXPORT void ThrowOSError( DWORD errorId );
     [[noreturn]] HCC_EXPORT void ThrowNoInterface( );

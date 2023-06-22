@@ -141,7 +141,7 @@ namespace Harlinn::Common::Core::Crypto
     }
 
 
-    inline void BinaryToString( const Byte* inputBuffer, size_t inputBufferSize, CryptStringFlags flags, std::string& result )
+    inline void BinaryToString( const Byte* inputBuffer, size_t inputBufferSize, CryptStringFlags flags, AnsiString& result )
     {
         DWORD requiredStringBufferSize = 0;
         auto rc = CryptBinaryToStringA( inputBuffer, static_cast<DWORD>( inputBufferSize ), static_cast<DWORD>(flags), nullptr, &requiredStringBufferSize );
@@ -180,17 +180,17 @@ namespace Harlinn::Common::Core::Crypto
         BinaryToString( inputBuffer.data( ), inputBuffer.size( ), flags, result );
     }
 
-    inline void BinaryToString( const Buffer& inputBuffer, CryptStringFlags flags, std::string& result )
+    inline void BinaryToString( const Buffer& inputBuffer, CryptStringFlags flags, AnsiString& result )
     {
         BinaryToString( inputBuffer.data( ), inputBuffer.size( ), flags, result );
     }
 
-    inline void BinaryToString( const std::span<Byte>& inputBuffer, CryptStringFlags flags, std::string& result )
+    inline void BinaryToString( const std::span<Byte>& inputBuffer, CryptStringFlags flags, AnsiString& result )
     {
         BinaryToString( inputBuffer.data( ), inputBuffer.size( ), flags, result );
     }
 
-    inline void BinaryToString( const std::vector<Byte>& inputBuffer, CryptStringFlags flags, std::string& result )
+    inline void BinaryToString( const std::vector<Byte>& inputBuffer, CryptStringFlags flags, AnsiString& result )
     {
         BinaryToString( inputBuffer.data( ), inputBuffer.size( ), flags, result );
     }
@@ -313,7 +313,7 @@ namespace Harlinn::Common::Core::Crypto
         return requiredBufferSize;
     }
 
-    inline size_t StringToBinary( const std::string& inputString, CryptStringFlags requestedConversionFlags, std::unique_ptr<Byte[]>& result, UInt32* skipCount = nullptr, CryptStringFlags* actualConversionFlags = nullptr )
+    inline size_t StringToBinary( const AnsiString& inputString, CryptStringFlags requestedConversionFlags, std::unique_ptr<Byte[]>& result, UInt32* skipCount = nullptr, CryptStringFlags* actualConversionFlags = nullptr )
     {
         return StringToBinary( inputString.c_str( ), inputString.size( ), requestedConversionFlags, result, skipCount, actualConversionFlags );
     }
@@ -345,7 +345,7 @@ namespace Harlinn::Common::Core::Crypto
         }
     }
 
-    inline size_t StringToBinary( const std::string& inputString, CryptStringFlags requestedConversionFlags, std::vector<Byte>& result, UInt32* skipCount = nullptr, CryptStringFlags* actualConversionFlags = nullptr )
+    inline size_t StringToBinary( const AnsiString& inputString, CryptStringFlags requestedConversionFlags, std::vector<Byte>& result, UInt32* skipCount = nullptr, CryptStringFlags* actualConversionFlags = nullptr )
     {
         StringToBinary( inputString.c_str( ), inputString.size( ), requestedConversionFlags, result, skipCount, actualConversionFlags );
     }
@@ -377,7 +377,7 @@ namespace Harlinn::Common::Core::Crypto
         }
     }
 
-    inline size_t StringToBinary( const std::string& inputString, CryptStringFlags requestedConversionFlags, Buffer& result, UInt32* skipCount = nullptr, CryptStringFlags* actualConversionFlags = nullptr )
+    inline size_t StringToBinary( const AnsiString& inputString, CryptStringFlags requestedConversionFlags, Buffer& result, UInt32* skipCount = nullptr, CryptStringFlags* actualConversionFlags = nullptr )
     {
         StringToBinary( inputString.c_str( ), inputString.size( ), requestedConversionFlags, result, skipCount, actualConversionFlags );
     }

@@ -116,7 +116,7 @@ namespace Harlinn::Common::Core::Environment
             return WideString(buffer, static_cast<size_t>( rc ) );
         }
     }
-    std::string EnvironmentVariable( const char* environmentVariableName )
+    AnsiString EnvironmentVariable( const char* environmentVariableName )
     {
         char buffer[MAX_PATH + 1];
         constexpr DWORD bufferLength = sizeof( buffer ) / sizeof( wchar_t );
@@ -131,7 +131,7 @@ namespace Harlinn::Common::Core::Environment
         }
         if ( rc > MAX_PATH + 1 )
         {
-            std::string s;
+            AnsiString s;
             s.resize( rc - 1 );
             rc = GetEnvironmentVariableA( environmentVariableName, s.data( ), rc );
             if ( !rc )
@@ -142,7 +142,7 @@ namespace Harlinn::Common::Core::Environment
         }
         else
         {
-            return std::string( buffer, static_cast<size_t>( rc ) );
+            return AnsiString( buffer, static_cast<size_t>( rc ) );
         }
     }
 
@@ -165,7 +165,7 @@ namespace Harlinn::Common::Core::Environment
         return buffer;
     }
 
-    std::string Where( const char* fileName )
+    AnsiString Where( const char* fileName )
     { 
         char buffer[2048] = { 0, };
         constexpr DWORD bufferSize = sizeof( buffer );
@@ -178,7 +178,7 @@ namespace Harlinn::Common::Core::Environment
             {
                 ThrowOSError( lastError );
             }
-            return std::string( );
+            return {};
         }
         return buffer;
     }
@@ -201,7 +201,7 @@ namespace Harlinn::Common::Core::Environment
 
         return buffer;
     }
-    std::string Where( const char* path, const char* fileName )
+    AnsiString Where( const char* path, const char* fileName )
     {
         char buffer[2048] = { 0, };
         constexpr DWORD bufferSize = sizeof( buffer );
@@ -214,7 +214,7 @@ namespace Harlinn::Common::Core::Environment
             {
                 ThrowOSError( lastError );
             }
-            return std::string( );
+            return {};
         }
         return buffer;
     }

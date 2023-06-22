@@ -324,7 +324,7 @@ namespace Harlinn::Common::Core::IO
         explicit CommDeviceStream( const char* name, bool overlapped )
             : Base( Create( name, overlapped ) )
         { }
-        explicit CommDeviceStream( const std::string& name, bool overlapped )
+        explicit CommDeviceStream( const AnsiString& name, bool overlapped )
             : Base( Create( name.c_str(), overlapped ) )
         { }
 
@@ -337,7 +337,7 @@ namespace Harlinn::Common::Core::IO
         explicit CommDeviceStream( const char* name, UInt32 baudRate = DefaultBaudRate, Parity parity = Parity::None, Byte dataBits = 8, StopBits stopBits = StopBits::One, FlowControl flowControl = FlowControl::None, bool overlapped = false )
             : Base( Create( name, baudRate, parity, dataBits, stopBits, flowControl, overlapped ) )
         { }
-        explicit CommDeviceStream( const std::string& name, UInt32 baudRate = DefaultBaudRate, Parity parity = Parity::None, Byte dataBits = 8, StopBits stopBits = StopBits::One, FlowControl flowControl = FlowControl::None, bool overlapped = false )
+        explicit CommDeviceStream( const AnsiString& name, UInt32 baudRate = DefaultBaudRate, Parity parity = Parity::None, Byte dataBits = 8, StopBits stopBits = StopBits::One, FlowControl flowControl = FlowControl::None, bool overlapped = false )
             : Base( Create( name.c_str(), baudRate, parity, dataBits, stopBits, flowControl, overlapped ) )
         { }
 

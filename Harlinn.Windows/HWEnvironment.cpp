@@ -27,41 +27,26 @@ namespace Harlinn::Windows
 
         wchar_t buffer[1024];
 
-        std::string::size_type length = _vsnwprintf_s( buffer, 1023, key, args );
+        WideString::size_type length = _vsnwprintf_s( buffer, 1023, key, args );
         buffer[1023] = '\x0';
         WideString result( buffer, length );
         va_end( args );
         return result;
     }
 
-    std::string Environment::GetResourceString( const char* key, ... )
+    AnsiString Environment::GetResourceString( const char* key, ... )
     {
         va_list args;
         va_start( args, key );
 
         char buffer[1024];
 
-        std::string::size_type length = vsnprintf_s( buffer, 1023, key, args );
+        AnsiString::size_type length = vsnprintf_s( buffer, 1023, key, args );
         buffer[1023] = '\x0';
-        std::string result( buffer, length );
+        AnsiString result( buffer, length );
         va_end( args );
         return result;
     }
-    /*
-    WideString Environment::GetResourceString(const WideString& key, ...)
-    {
-        va_list args;
-        va_start(args, key);
-
-        wchar_t buffer[1024];
-
-        std::string::size_type length = _vsnwprintf_s (buffer,1023, key.c_str(), args );
-        buffer[1023] = '\x0';
-        WideString result(buffer, length);
-        va_end(args);
-        return result;
-    }
-    */
 
     WideString Environment::NewLine( )
     {

@@ -170,7 +170,7 @@ namespace Harlinn::Common::Core
             }
             SetValue( hModule );
         }
-        ModuleHandle( const std::string& moduleName, DWORD flags = 0 )
+        ModuleHandle( const AnsiString& moduleName, DWORD flags = 0 )
             : ModuleHandle( moduleName.c_str( ), flags )
         {
         }

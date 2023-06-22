@@ -165,7 +165,7 @@ namespace Harlinn::Common::Core::LMDB
         [[noreturn]] inline void ThrowException( const char* function, int result )
         {
             auto error = mdb_strerror( static_cast<int>( result ) );
-            auto message = Format( "%s: %s", function, error );
+            auto message = Format( "{}: {}", function, error );
             throw Exception( static_cast<int>( result ), message );
         }
     }
@@ -1363,7 +1363,7 @@ namespace Harlinn::Common::Core::LMDB
             }
         }
 
-        explicit Environment( const std::string& path, size_t newMemoryMapSize = DefaultMemoryMapSize, unsigned int maxDatabases = 0, EnvironmentFlags environmentFlags = EnvironmentFlags::WriteMemMap ) noexcept
+        explicit Environment( const AnsiString& path, size_t newMemoryMapSize = DefaultMemoryMapSize, unsigned int maxDatabases = 0, EnvironmentFlags environmentFlags = EnvironmentFlags::WriteMemMap ) noexcept
             : Environment( path.c_str( ), newMemoryMapSize, maxDatabases, environmentFlags )
         {
         }

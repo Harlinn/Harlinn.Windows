@@ -485,8 +485,8 @@ namespace Harlinn::Common::Core
         }
 
 
-        HCC_EXPORT std::string ToAnsiString( ) const;
-        HCC_EXPORT std::string ToAnsiString( const std::string& format ) const;
+        HCC_EXPORT AnsiString ToAnsiString( ) const;
+        HCC_EXPORT AnsiString ToAnsiString( const AnsiString& format ) const;
 
         HCC_EXPORT WideString ToWideString( ) const;
         HCC_EXPORT WideString ToWideString( const WideString& format ) const;
@@ -497,20 +497,14 @@ namespace Harlinn::Common::Core
         HCC_EXPORT static bool TryParse( const wchar_t* text, TimeSpan& result );
         HCC_EXPORT static bool TryParse( const char* text, TimeSpan& result );
         HCC_EXPORT bool TryParse( const WideString& text, TimeSpan& result );
-        HCC_EXPORT bool TryParse( const std::string& text, TimeSpan& result );
+        HCC_EXPORT bool TryParse( const AnsiString& text, TimeSpan& result );
 
         HCC_EXPORT static TimeSpan Parse( const wchar_t* text );
         HCC_EXPORT static TimeSpan Parse( const char* text );
         HCC_EXPORT static TimeSpan Parse( const WideString& text );
-        HCC_EXPORT static TimeSpan Parse( const std::string& text );
+        HCC_EXPORT static TimeSpan Parse( const AnsiString& text );
 
-
-        friend std::ostream& operator << ( std::ostream& stream, const TimeSpan& timeSpan )
-        {
-            auto str = timeSpan.ToAnsiString( );
-            stream << str;
-            return stream;
-        }
+        HCC_EXPORT friend std::ostream& operator << ( std::ostream& stream, const TimeSpan& timeSpan );
 
     };
 
@@ -620,13 +614,13 @@ namespace Harlinn::Common::Core
 
         HCC_EXPORT const DateTime& AssingTo( SYSTEMTIME& systemTime ) const;
 
-        HCC_EXPORT std::string DateToAnsiString( ) const;
+        HCC_EXPORT AnsiString DateToAnsiString( ) const;
         HCC_EXPORT WideString DateToString( ) const;
 
-        HCC_EXPORT std::string TimeToAnsiString( ) const;
+        HCC_EXPORT AnsiString TimeToAnsiString( ) const;
         HCC_EXPORT WideString TimeToString( ) const;
 
-        HCC_EXPORT std::string ToAnsiString( ) const;
+        HCC_EXPORT AnsiString ToAnsiString( ) const;
         HCC_EXPORT WideString ToString( ) const;
         HCC_EXPORT WideString ToString( const std::wstring_view& format ) const;
 
@@ -825,9 +819,9 @@ namespace Harlinn::Common::Core
         HCC_EXPORT static DateTime Parse( const char* text );
 
         HCC_EXPORT static bool TryParse( const WideString& text, DateTime& result );
-        HCC_EXPORT static bool TryParse( const std::string& text, DateTime& result );
+        HCC_EXPORT static bool TryParse( const AnsiString& text, DateTime& result );
         HCC_EXPORT static DateTime Parse( const WideString& text );
-        HCC_EXPORT static DateTime Parse( const std::string& text );
+        HCC_EXPORT static DateTime Parse( const AnsiString& text );
 
 
 
@@ -868,12 +862,7 @@ namespace Harlinn::Common::Core
             return static_cast<double>( ticks_ - UnixEpoch ) / TicksPerSecond;
         }
 
-        friend std::ostream& operator << ( std::ostream& stream, const DateTime& dateTime )
-        {
-            auto str = dateTime.ToAnsiString( );
-            stream << str;
-            return stream;
-        }
+        HCC_EXPORT friend std::ostream& operator << ( std::ostream& stream, const DateTime& dateTime );
     };
 
     template<typename T>

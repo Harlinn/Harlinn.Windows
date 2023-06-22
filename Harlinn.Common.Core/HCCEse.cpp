@@ -11,7 +11,7 @@ namespace Harlinn::Common::Core::Ese
         {
             wchar_t* buffer = messagebuffer;
             JetGetSystemParameterW( JET_instanceNil, JET_sesidNil, JET_paramErrorToString, ( JET_API_PTR* )&rc, buffer, 4096 );
-            auto result = Format( L"ESENT error %d: %s\n", rc, buffer );
+            auto result = Format( L"ESENT error {}: {}\n", rc, buffer );
             return result;
         }
     }

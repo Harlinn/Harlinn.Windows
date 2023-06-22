@@ -26,7 +26,7 @@ namespace Harlinn::Common::Core
         }
     }
 
-    Guid::Guid( const std::string& uuid )
+    Guid::Guid( const AnsiString& uuid )
         : data_( )
     {
         auto s = ToWideString( uuid );
@@ -67,7 +67,7 @@ namespace Harlinn::Common::Core
         }
         return true;
     }
-    bool Guid::TryParse( const std::string& uuid, Guid& result )
+    bool Guid::TryParse( const AnsiString& uuid, Guid& result )
     {
         auto s = ToWideString( uuid );
         auto hr = IIDFromString( s.c_str( ), (LPIID)&result.data_ );
@@ -113,7 +113,7 @@ namespace Harlinn::Common::Core
             HCC_THROW( ArgumentException, L"Invalid GUID" );
         }
     }
-    Guid Guid::Parse( const std::string& uuid )
+    Guid Guid::Parse( const AnsiString& uuid )
     {
         Guid guid;
         if ( TryParse( uuid, guid ) )
@@ -156,7 +156,7 @@ namespace Harlinn::Common::Core
         }
     }
 
-    std::string Guid::ToAnsiString( ) const
+    AnsiString Guid::ToAnsiString( ) const
     {
         return Core::ToAnsiString( ToString( ) );
     }
@@ -170,6 +170,11 @@ namespace Harlinn::Common::Core
         return result;
     }
 
-
+    HCC_EXPORT std::ostream& operator << ( std::ostream& stream, const Guid& guid )
+    {
+        auto str = guid.ToAnsiString( );
+        stream << str;
+        return stream;
+    }
 
 }
