@@ -5,16 +5,12 @@
 #include <HCCDef.h>
 #include <HCCTraits.h>
 #include <HCCException.h>
-#include <HCCLib.h>
+#include <HCCIterator.h>
 
 
 
 namespace Harlinn::Common::Core
 {
-    
-
-
-
 #pragma pack(push,1)
     template <typename SizeT,typename CharT, size_t maxSize, bool zeroTerminated >
     class BasicFixedString
@@ -701,17 +697,29 @@ namespace Harlinn::Common::Core
 
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <typeparam name="T">The character type of the string</typeparam>
     template<typename T>
     class BasicString
     {
     public:
         using CharType = T;
-        using iterator = CharType*;
-        using const_iterator = const CharType*;
+        using value_type = T;
+
+        using pointer = CharType*;
+        using const_pointer = const CharType*;
         using reference = CharType&;
         using const_reference = const CharType&;
         using size_type = size_t;
-        using value_type = T;
+        using difference_type = ptrdiff_t;
+
+        using iterator = Internal::PointerIterator<BasicString<T>>;
+        using const_iterator = Internal::ConstPointerIterator<BasicString<T>>;
+        using reverse_iterator = std::reverse_iterator<iterator>;
+        using const_reverse_iterator = std::reverse_iterator<const_iterator>;
+
 
         static constexpr size_type npos = MAXUINT64;
         static constexpr size_type AllocationGranularity = 64;
@@ -960,6 +968,23 @@ namespace Harlinn::Common::Core
             }
         }
 
+        template<typename InputIt>
+        static Data* Initialize( InputIt first, InputIt last )
+        {
+            auto size = std::distance( first, last );
+            if ( size )
+            {
+                Data* data = Allocate( size );
+                std::copy( first, last, data->buffer_ );
+                return data;
+            }
+            else
+            {
+                return nullptr;
+            }
+        }
+
+
         static Data* Initialize( const CharType* string )
         {
             auto size = Internal::LengthOf( string );
@@ -1000,11 +1025,26 @@ namespace Harlinn::Common::Core
         {
         }
 
+        template<typename InputIt>
+            requires ( (std::is_same_v<const_iterator, std::remove_cvref_t<InputIt>> || std::is_same_v<iterator, std::remove_cvref_t<InputIt>>) && ( std::is_pointer_v<std::remove_cvref_t<InputIt>> == false ) )
         BasicString( const_iterator first, const_iterator last)
-            : data_( Initialize( first, first <= last ? static_cast<size_type>( last - first ) : 0 ) )
+            : data_( Initialize( first.ptr_, first <= last ? static_cast<size_type>( last - first ) : 0 ) )
         {
         }
 
+        template<typename InputIt>
+            requires std::is_pointer_v<std::remove_cvref_t<InputIt>>
+        BasicString( const_iterator first, const_iterator last )
+            : data_( Initialize( first, first <= last ? static_cast< size_type >( last - first ) : 0 ) )
+        {
+        }
+
+        template<typename InputIt>
+            requires ( (std::is_same_v<const_iterator, std::remove_cvref_t<InputIt>> == false) && ( std::is_same_v<iterator, std::remove_cvref_t<InputIt>> == false ) && ( std::is_pointer_v<std::remove_cvref_t<InputIt>> == false ) )
+        BasicString( const_iterator first, const_iterator last )
+            : data_( Initialize( first, last ) )
+        {
+        }
 
         BasicString( const BasicStringView<T>& v );
 
@@ -1024,7 +1064,7 @@ namespace Harlinn::Common::Core
             }
         }
 
-        BasicString( BasicString&& other )
+        BasicString( BasicString&& other ) noexcept
             : data_( other.data_ )
         {
             other.data_ = nullptr;
@@ -1036,6 +1076,30 @@ namespace Harlinn::Common::Core
             if ( data_ )
             {
                 ReleaseData( data_ );
+            }
+        }
+
+        bool IsUnique( ) const noexcept
+        {
+            return data_ ? data_->referenceCount_ == 1 : false;
+        }
+
+        BasicString Clone( ) const
+        {
+            if ( data_ )
+            {
+                return BasicString( data_->buffer_, data_->size_ );
+            }
+            return {};
+        }
+
+        void EnsureUnique( )
+        {
+            if ( data_ && data_->referenceCount_ > 1 )
+            {
+                auto tmp = Initialize( data_->buffer_, data_->size_ );
+                ReleaseData( data_ );
+                data_ = tmp;
             }
         }
 
@@ -1186,40 +1250,10 @@ namespace Harlinn::Common::Core
         }
 
 
-        static BasicString<CharType> Format( const CharType* fmt, ... )
-        {
-            va_list args;
-            va_start( args, fmt );
-            int length = Internal::BufferSizeForFormat( fmt, args );
-
-            if ( length < 0 )
-            {
-                throw ArgumentException( L"fmt" );
-            }
-
-            BasicString<CharType> result( size_type( length ), '\x0' );
-            Internal::Format( result.data( ), length + 1, fmt, args );
-            va_end( args );
-            return result;
-        }
-
-        static BasicString<CharType> FormatV( const CharType* fmt, va_list args )
-        {
-            int length = Internal::BufferSizeForFormat( fmt, args );
-
-            if ( length < 0 )
-            {
-                throw ArgumentException( L"fmt" );
-            }
-
-            BasicString<CharType> result( size_type( length ), '\x0' );
-            Internal::Format( result.data( ), length + 1, fmt, args );
-            return result;
-        }
 
 
 
-        constexpr const CharType* c_str( ) const noexcept
+        [[nodiscard]] constexpr const CharType* c_str( ) const noexcept
         {
             if constexpr ( std::is_same_v<CharType, char> )
             {
@@ -1231,17 +1265,17 @@ namespace Harlinn::Common::Core
             }
         }
 
-        constexpr const CharType* data( ) const noexcept
+        [[nodiscard]] constexpr const CharType* data( ) const noexcept
         {
             return data_ ? data_->buffer_ : nullptr;
         }
 
-        constexpr CharType* data( ) noexcept
+        [[nodiscard]] constexpr CharType* data( ) noexcept
         {
             return data_ ? data_->buffer_ : nullptr;
         }
 
-        size_t Hash( ) const noexcept
+        [[nodiscard]] size_t Hash( ) const noexcept
         {
             if ( data_ )
             {
@@ -1254,50 +1288,81 @@ namespace Harlinn::Common::Core
         }
 
 
-        constexpr iterator begin( ) noexcept
+        [[nodiscard]] constexpr iterator begin( ) noexcept
         {
             return data_ ? data_->buffer_ : nullptr;
         }
 
-        constexpr iterator end( ) noexcept
+        [[nodiscard]] constexpr iterator end( ) noexcept
         {
             return data_ ? &data_->buffer_[data_->size_] : nullptr;
         }
 
-        constexpr const_iterator begin( ) const noexcept
+        [[nodiscard]] constexpr const_iterator begin( ) const noexcept
         {
             return data_ ? data_->buffer_ : nullptr;
         }
 
-        constexpr const_iterator end( ) const noexcept
+        [[nodiscard]] constexpr const_iterator end( ) const noexcept
         {
             return data_ ? &data_->buffer_[data_->size_] : nullptr;
         }
 
-        constexpr const_iterator cbegin( ) const noexcept
+        [[nodiscard]] constexpr const_iterator cbegin( ) const noexcept
         {
             return begin();
         }
 
-        constexpr const_iterator cend( ) const noexcept
+        [[nodiscard]] constexpr const_iterator cend( ) const noexcept
         {
             return end( );
         }
 
+        [[nodiscard]] constexpr reverse_iterator rbegin( ) noexcept
+        {
+            return reverse_iterator( end( ) );
+        }
 
-        constexpr CharType front( ) const
+        [[nodiscard]] constexpr reverse_iterator rend( ) noexcept
+        {
+            return reverse_iterator( begin( ) );
+        }
+
+        [[nodiscard]] constexpr const_reverse_iterator rbegin( ) const noexcept
+        {
+            return const_reverse_iterator( end( ) );
+        }
+
+        [[nodiscard]] constexpr const_reverse_iterator rend( ) const noexcept
+        {
+            return const_reverse_iterator( begin( ) );
+        }
+
+        [[nodiscard]] constexpr const_reverse_iterator crbegin( ) const noexcept
+        {
+            return rbegin( );
+        }
+
+        [[nodiscard]] constexpr const_reverse_iterator crend( ) const noexcept
+        {
+            return rend( );
+        }
+
+
+
+        [[nodiscard]] constexpr const CharType front( ) const
         {
             return *begin( );
         }
-        constexpr CharType& front( )
+        [[nodiscard]] constexpr CharType front( )
         {
             return *begin( );
         }
-        constexpr CharType back( ) const
+        [[nodiscard]] constexpr CharType back( ) const
         {
             return *( end( ) - 1 );
         }
-        constexpr CharType& back( )
+        [[nodiscard]] constexpr CharType back( )
         {
             return *( end( ) - 1 );
         }
@@ -1543,7 +1608,7 @@ namespace Harlinn::Common::Core
 
         iterator insert( const_iterator pos, CharType ch )
         {
-            auto position = const_cast< iterator >( pos );
+            auto position = pos.ptr_;
             iterator end_ = Extend( 1 );
             if ( position < end_ )
             {
@@ -1555,7 +1620,7 @@ namespace Harlinn::Common::Core
 
         iterator insert( const_iterator pos, size_type count, CharType ch )
         {
-            auto position = const_cast< iterator >( pos );
+            auto position = pos.ptr_;
             iterator end_ = Extend( count );
             if ( position < end_ )
             {

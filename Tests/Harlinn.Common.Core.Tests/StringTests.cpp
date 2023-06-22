@@ -14,6 +14,20 @@ namespace
 
 BOOST_FIXTURE_TEST_SUITE( StringTests, LocalFixture )
 
+#ifdef HCC_WITH_BASIC_STRING
+
+
+// --run_test=StringTests/ConstructorTest1W
+BOOST_AUTO_TEST_CASE( ConstructorTest1W )
+{
+    WideString wideString;
+
+}
+
+
+#endif
+
+
 // --run_test=StringTests/FormatWStringTest
 BOOST_AUTO_TEST_CASE( FormatWStringTest )
 {

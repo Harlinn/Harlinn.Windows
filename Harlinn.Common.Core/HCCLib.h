@@ -755,6 +755,7 @@ namespace Harlinn::Common::Core
     }
 
     template<SimpleSpanLike T1, SimpleSpanLike T2 >
+        requires (std::is_same_v< typename T1::value_type, typename T2::value_type > && ( IsBasicString<T1> == false ) )
     inline int Compare( const T1& first, const T2& second )
     {
         return Compare( first.data( ), first.size( ), second.data( ), second.size( ) );
@@ -1066,6 +1067,49 @@ namespace Harlinn::Common::Core
             return false;
         }
     }
+
+    /// <summary>
+    /// Extracts a plain pointer from a smart pointer
+    /// </summary>
+    template <typename PointerT>
+    inline constexpr [[nodiscard]] auto UnwrapPointer( const PointerT& pointer ) noexcept
+    { 
+        return std::addressof( *pointer );
+    }
+    /// <summary>
+    /// Extracts a plain pointer from a smart pointer
+    /// </summary>
+    template <typename PointerT>
+    inline constexpr [[nodiscard]] auto UnwrapPointer( PointerT& pointer ) noexcept
+    {
+        return std::addressof( *pointer );
+    }
+
+    /// <summary>
+    /// ensure no conversion for regular pointers
+    /// </summary>
+    template <typename T>
+    inline constexpr [[nodiscard]] T* UnwrapPointer( T* pointer ) noexcept
+    { 
+        return pointer;
+    }
+
+
+    template <typename PointerT, std::enable_if_t<!std::is_pointer_v<PointerT>, int> = 0>
+    inline constexpr [[nodiscard]] PointerT WrapPointer( typename std::pointer_traits<PointerT>::element_type* pointer ) noexcept
+    {
+        return std::pointer_traits<PointerT>::pointer_to( *pointer );
+    }
+
+    /// <summary>
+    /// ensure no conversion for regular pointers
+    /// </summary>
+    template <typename PointerT, std::enable_if_t<std::is_pointer_v<PointerT>, int> = 0>
+    inline constexpr [[nodiscard]] PointerT WrapPointer( PointerT pointer ) noexcept
+    {
+        return pointer;
+    }
+
 
 
     enum class LocaleCategory : Int32
