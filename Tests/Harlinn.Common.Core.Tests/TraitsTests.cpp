@@ -2878,8 +2878,8 @@ BOOST_AUTO_TEST_CASE( TypeTraitsTest29 )
 
     using TypeTraits_1 = Types::TypeTraits<Type>;
 
-    constexpr bool isStdBasicString = TypeTraits_1::TypeId == Types::ContainerTypeId::StdBasicString;
-    BOOST_CHECK( isStdBasicString == true );
+    constexpr bool isBasicString = TypeTraits_1::TypeId == Types::ContainerTypeId::BasicString;
+    BOOST_CHECK( isBasicString == true );
 
     constexpr bool isContainer1 = TypeTraits_1::IsContainer;
     BOOST_CHECK( isContainer1 == true );
@@ -2966,13 +2966,12 @@ BOOST_AUTO_TEST_CASE( TypeTraitsTest29 )
 // --run_test=TraitsTests/TypeTraitsTest30
 BOOST_AUTO_TEST_CASE( TypeTraitsTest30 )
 {
-    /* TODO
     using Type = WideString;
 
     using TypeTraits_1 = Types::TypeTraits<Type>;
 
-    constexpr bool isStdBasicString = TypeTraits_1::TypeId == Types::ContainerTypeId::StdBasicString;
-    BOOST_CHECK( isStdBasicString == true );
+    constexpr bool isBasicString = TypeTraits_1::TypeId == Types::ContainerTypeId::BasicString;
+    BOOST_CHECK( isBasicString == true );
 
     constexpr bool isContainer1 = TypeTraits_1::IsContainer;
     BOOST_CHECK( isContainer1 == true );
@@ -3054,7 +3053,6 @@ BOOST_AUTO_TEST_CASE( TypeTraitsTest30 )
     BOOST_CHECK( isVolatile_8 == true );
     constexpr bool isReference_8 = TypeTraits_8::IsReference;
     BOOST_CHECK( isReference_8 == true );
-    */
 }
 
 // --run_test=TraitsTests/TypeTraitsTest31

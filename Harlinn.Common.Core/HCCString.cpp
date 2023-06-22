@@ -328,7 +328,7 @@ namespace Harlinn::Common::Core
     }
     AnsiString ToAnsiString( Single value, int width, int precission, const std::locale& locale )
     {
-        return Format( locale, "{:{}.{}f}", value, width, precission );
+        return Format( locale, "{:0{}.{}f}", value, width, precission );
     }
 
     AnsiString ToAnsiString( Double value )
