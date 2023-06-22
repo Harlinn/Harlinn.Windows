@@ -3679,7 +3679,7 @@ namespace Harlinn::Common::Core
     }
 
     template<typename T>
-        requires ( IsStdBasicString<T> || IsStdBasicStringView<T> )
+        requires ( IsStdBasicString<T> || IsStdBasicStringView<T> || IsBasicString<T> || IsBasicStringView<T> )
     inline T TrimTrailing( const T& str, bool( testFunction )( typename T::value_type c ) )
     {
         using StringType = T;
@@ -3700,14 +3700,14 @@ namespace Harlinn::Common::Core
     }
 
     template<typename T >
-        requires ( IsStdBasicString<T> || IsStdBasicStringView<T> )
+        requires ( IsStdBasicString<T> || IsStdBasicStringView<T> || IsBasicString<T> || IsBasicStringView<T> )
     inline T TrimTrailing( const T& str )
     {
         return TrimTrailing<T>( str, IsSpace );
     }
 
     template<typename T>
-        requires ( IsStdBasicString<T> || IsStdBasicStringView<T> )
+        requires ( IsStdBasicString<T> || IsStdBasicStringView<T> || IsBasicString<T> || IsBasicStringView<T> )
     inline T Trim( const T& str, bool( testFunction )( typename T::value_type c ) )
     {
         using StringType = T;
@@ -3741,7 +3741,7 @@ namespace Harlinn::Common::Core
     }
 
     template<typename T >
-        requires ( IsStdBasicString<T> || IsStdBasicStringView<T> )
+        requires ( IsStdBasicString<T> || IsStdBasicStringView<T> || IsBasicString<T> || IsBasicStringView<T> )
     inline T Trim( const T& str )
     {
         return Trim<T>( str, IsSpace );
@@ -3749,7 +3749,7 @@ namespace Harlinn::Common::Core
 
 
     template<typename T>
-        requires ( IsStdBasicString<T> || IsStdBasicStringView<T> )
+        requires ( IsStdBasicString<T> || IsStdBasicStringView<T> || IsBasicString<T> || IsBasicStringView<T> )
     inline T TrimLeading( const T& str, bool( testFunction )( typename T::value_type c ) )
     {
         using StringType = T;
@@ -3770,14 +3770,14 @@ namespace Harlinn::Common::Core
     }
 
     template<typename T >
-        requires ( IsStdBasicString<T> || IsStdBasicStringView<T> )
+        requires ( IsStdBasicString<T> || IsStdBasicStringView<T> || IsBasicString<T> || IsBasicStringView<T> )
     inline T TrimLeading( const T& str )
     {
         return TrimLeading<T>( str, IsSpace );
     }
 
     template<typename T >
-        requires IsStdBasicString<T>
+        requires ( IsStdBasicString<T> || IsBasicString<T> )
     inline T Strip( const T& str, bool( testFunction )( typename T::value_type c ) )
     {
         using StringType = T;
@@ -3820,7 +3820,7 @@ namespace Harlinn::Common::Core
 
 
     template<typename T >
-        requires IsStdBasicString<T>
+        requires ( IsStdBasicString<T> || IsBasicString<T> )
     inline T ToLower( const T& str )
     {
         using StringType = T;
@@ -3848,7 +3848,7 @@ namespace Harlinn::Common::Core
     }
 
     template<typename T >
-        requires IsStdBasicString<T>
+        requires ( IsStdBasicString<T> || IsBasicString<T> )
     inline T ToUpper( const T& str )
     {
         using StringType = T;

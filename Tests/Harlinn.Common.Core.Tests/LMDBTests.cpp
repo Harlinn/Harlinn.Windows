@@ -4,9 +4,9 @@ using namespace Harlinn::Common::Core;
 
 namespace
 {
-    std::string GetDatabaseDir( )
+    AnsiString GetDatabaseDir( )
     {
-        std::string TestDataRoot = Environment::EnvironmentVariable( "HCC_TEST_DATA_ROOT" );
+        AnsiString TestDataRoot = Environment::EnvironmentVariable( "HCC_TEST_DATA_ROOT" );
         auto directoryPath = IO::Path::Append( TestDataRoot, "\\LMDB" );
 
         if ( IO::Directory::Exist( directoryPath ) == false )

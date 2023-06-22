@@ -24,7 +24,7 @@ BOOST_AUTO_TEST_CASE( WriteReadTest1 )
         IO::FileAttributes::Normal,
         IO::FileOptions::DeleteOnClose );
 
-    std::vector<std::string> lines1( 
+    std::vector<AnsiString> lines1(
         {
             { "line1" },
             { "line2" },
@@ -35,7 +35,7 @@ BOOST_AUTO_TEST_CASE( WriteReadTest1 )
 
     fileStream.WriteFile( lines1 );
 
-    std::vector<std::string> lines2;
+    std::vector<AnsiString> lines2;
     fileStream.ReadFile( lines2 );
 
     auto linesAreEqual = lines1 == lines2;
@@ -48,7 +48,7 @@ BOOST_AUTO_TEST_CASE( WriteReadTest2 )
 {
     auto filename = IO::Directory::GetTemporaryA( ) + "WriteReadTest2.txt";
 
-    std::vector<std::string> lines1(
+    std::vector<AnsiString> lines1(
         {
             { "line1" },
             { "line2" },
@@ -59,7 +59,7 @@ BOOST_AUTO_TEST_CASE( WriteReadTest2 )
 
     IO::File::WriteAllLines( filename, lines1 );
 
-    std::vector<std::string> lines2;
+    std::vector<AnsiString> lines2;
     IO::File::ReadAllLines( filename, lines2 );
 
     IO::File::Delete( filename );
@@ -74,13 +74,13 @@ BOOST_AUTO_TEST_CASE( WriteReadTest3 )
 {
     auto filename = IO::Directory::GetTemporaryA( ) + "WriteReadTest3.txt";
 
-    std::string lines1( "line1\r\nline2\r\nline3\r\nline4\r\nline5");
+    AnsiString lines1( "line1\r\nline2\r\nline3\r\nline4\r\nline5");
 
     IO::File::WriteAllText( filename, lines1 );
 
     auto filesize = IO::File::Size( filename );
 
-    std::string lines2;
+    AnsiString lines2;
     IO::File::ReadAllText( filename, lines2 );
 
     IO::File::Delete( filename );
@@ -95,7 +95,7 @@ BOOST_AUTO_TEST_CASE( WriteReadTest4 )
 {
     auto filename = IO::Directory::GetTemporaryA( ) + "WriteReadTest4.txt";
 
-    std::vector<std::string> expectedLines(
+    std::vector<AnsiString> expectedLines(
         {
             { "line1" },
             { "line2" },
@@ -104,12 +104,12 @@ BOOST_AUTO_TEST_CASE( WriteReadTest4 )
             { "line5" }
         } );
 
-    std::string lines1( "line1\r\nline2\r\nline3\r\nline4\r\nline5" );
+    AnsiString lines1( "line1\r\nline2\r\nline3\r\nline4\r\nline5" );
 
     IO::File::WriteAllText( filename, lines1 );
     
 
-    std::vector<std::string> lines2;
+    std::vector<AnsiString> lines2;
     IO::File::ReadAllLines( filename, lines2 );
 
     IO::File::Delete( filename );

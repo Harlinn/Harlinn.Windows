@@ -20,7 +20,7 @@ BOOST_AUTO_TEST_CASE( FormatWStringTest )
     const wchar_t* arg1 = L"Lorem ipsum dolor sit amet";
     const wchar_t* arg2 = L"consectetur adipiscing elit";
     double arg3 = 1.0;
-    auto formatted = Format( L"%s %s %f", arg1, arg2, arg3 );
+    auto formatted = Format( L"{} {} {}", arg1, arg2, arg3 );
     BOOST_TEST( formatted.size( ) > 0 );
 }
 
@@ -30,7 +30,7 @@ BOOST_AUTO_TEST_CASE( FormatStringTest )
     const char* arg1 = "Lorem ipsum dolor sit amet";
     const char* arg2 = "consectetur adipiscing elit";
     double arg3 = 1.0;
-    auto formatted = Format( "%s %s %f", arg1, arg2, arg3 );
+    auto formatted = Format( "{} {} {}", arg1, arg2, arg3 );
     BOOST_TEST( formatted.size( ) > 0 );
 }
 
@@ -46,7 +46,7 @@ BOOST_AUTO_TEST_CASE( TrimTrailingTest1a )
 // --run_test=StringTests/TrimTrailingTest1b
 BOOST_AUTO_TEST_CASE( TrimTrailingTest1b )
 {
-    std::string str1 = " a ";
+    AnsiString str1 = " a ";
     auto str2 = TrimTrailing( str1 );
     bool areEqual = str2 == " a";
     BOOST_TEST( areEqual );
@@ -83,7 +83,7 @@ BOOST_AUTO_TEST_CASE( TrimTrailingTest2a )
 // --run_test=StringTests/TrimTrailingTest2b
 BOOST_AUTO_TEST_CASE( TrimTrailingTest2b )
 {
-    std::string str1 = " ";
+    AnsiString str1 = " ";
     auto str2 = TrimTrailing( str1 );
     bool areEqual = str2 == "";
     BOOST_TEST( areEqual );
@@ -119,7 +119,7 @@ BOOST_AUTO_TEST_CASE( TrimTrailingTest3a )
 // --run_test=StringTests/TrimTrailingTest3b
 BOOST_AUTO_TEST_CASE( TrimTrailingTest3b )
 {
-    std::string str1 = "";
+    AnsiString str1 = "";
     auto str2 = TrimTrailing( str1 );
     bool areEqual = str2 == "";
     BOOST_TEST( areEqual );
@@ -157,7 +157,7 @@ BOOST_AUTO_TEST_CASE( TrimLeadingTest1a )
 // --run_test=StringTests/TrimLeadingTest1b
 BOOST_AUTO_TEST_CASE( TrimLeadingTest1b )
 {
-    std::string str1 = " a ";
+    AnsiString str1 = " a ";
     auto str2 = TrimLeading( str1 );
     bool areEqual = str2 == "a ";
     BOOST_TEST( areEqual );
@@ -193,7 +193,7 @@ BOOST_AUTO_TEST_CASE( TrimLeadingTest2a )
 // --run_test=StringTests/TrimLeadingTest2b
 BOOST_AUTO_TEST_CASE( TrimLeadingTest2b )
 {
-    std::string str1 = " ";
+    AnsiString str1 = " ";
     auto str2 = TrimLeading( str1 );
     bool areEqual = str2 == "";
     BOOST_TEST( areEqual );
@@ -230,7 +230,7 @@ BOOST_AUTO_TEST_CASE( TrimLeadingTest3a )
 // --run_test=StringTests/TrimLeadingTest3b
 BOOST_AUTO_TEST_CASE( TrimLeadingTest3b )
 {
-    std::string str1 = "";
+    AnsiString str1 = "";
     auto str2 = TrimLeading( str1 );
     bool areEqual = str2 == "";
     BOOST_TEST( areEqual );
@@ -268,7 +268,7 @@ BOOST_AUTO_TEST_CASE( TrimTest1a )
 // --run_test=StringTests/TrimTest1b
 BOOST_AUTO_TEST_CASE( TrimTest1b )
 {
-    std::string str1 = " a ";
+    AnsiString str1 = " a ";
     auto str2 = Trim( str1 );
     bool areEqual = str2 == "a";
     BOOST_TEST( areEqual );
@@ -304,7 +304,7 @@ BOOST_AUTO_TEST_CASE( TrimTest2a )
 // --run_test=StringTests/TrimTest2b
 BOOST_AUTO_TEST_CASE( TrimTest2b )
 {
-    std::string str1 = " ";
+    AnsiString str1 = " ";
     auto str2 = Trim( str1 );
     bool areEqual = str2 == "";
     BOOST_TEST( areEqual );
@@ -340,7 +340,7 @@ BOOST_AUTO_TEST_CASE( TrimTest3a )
 // --run_test=StringTests/TrimTest3b
 BOOST_AUTO_TEST_CASE( TrimTest3b )
 {
-    std::string str1 = "";
+    AnsiString str1 = "";
     auto str2 = Trim( str1 );
     bool areEqual = str2 == "";
     BOOST_TEST( areEqual );
@@ -369,7 +369,8 @@ BOOST_AUTO_TEST_CASE( TrimTest3d )
 BOOST_AUTO_TEST_CASE( ToAnsiStringTest001d )
 {
     float value = 1.0f;
-    auto str = ToAnsiString( value, 6,2, Locale::InvariantLocale() );
+    std::locale locale;
+    auto str = ToAnsiString( value, 6,2, locale );
     bool areEqual = str == "001.00";
     BOOST_TEST( areEqual );
 }

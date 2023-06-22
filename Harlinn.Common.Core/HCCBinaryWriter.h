@@ -141,7 +141,7 @@ namespace Harlinn::Common::Core::IO
     public:
 
         template<typename T>
-            requires ( IsStdBasicString<T> || IsStdBasicStringView<T> )
+            requires ( IsStdBasicString<T> || IsStdBasicStringView<T> || IsBasicString<T> || IsBasicStringView<T> )
         void Write( const T& value )
         {
             using ValueType = typename T::value_type;

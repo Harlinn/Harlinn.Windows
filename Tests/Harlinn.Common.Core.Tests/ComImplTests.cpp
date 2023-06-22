@@ -36,7 +36,7 @@ namespace
             for ( ULONG i = 0; i < celt; i++ )
             {
                 value_++;
-                auto text = Format( L"%d", value_ );
+                auto text = Format( L"{}", value_ );
                 auto textSize = text.size( );
                 LPOLESTR ptr = reinterpret_cast<LPOLESTR>(CoTaskMemAlloc( (textSize + 1)*sizeof(OLECHAR) ));
                 if ( !ptr )
@@ -126,7 +126,7 @@ BOOST_AUTO_TEST_CASE( ObjectImplTest )
         hr = pEnumString->Next( 1, &str, &retrieved );
         BOOST_CHECK( hr == S_OK );
         BOOST_CHECK( retrieved == 1 );
-        auto expectedText = Format( L"%d", i + 1 );
+        auto expectedText = Format( L"{}", i + 1 );
         BOOST_CHECK( expectedText == str );
         CoTaskMemFree( str );
     }

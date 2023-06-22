@@ -1499,7 +1499,7 @@ BOOST_AUTO_TEST_CASE( CreateTableWithNullableGuidColumnTest1 )
 // --run_test=EseTests/CreateTableWithTextColumnTest1
 BOOST_AUTO_TEST_CASE( CreateTableWithTextColumnTest1 )
 {
-    using ValueType = std::string;
+    using ValueType = AnsiString;
     ValueType ValueToInsert( "Text to store" );
     ValueType InitialValue( "Not stored" );
     Engine engine;
@@ -1517,7 +1517,7 @@ BOOST_AUTO_TEST_CASE( CreateTableWithTextColumnTest1 )
     BOOST_REQUIRE_NO_THROW( DoInsert( ) );
     bool moveResult = table1.MoveFirst( );
     BOOST_TEST( moveResult );
-    auto value1 = table1.As<std::string>( columnId );
+    auto value1 = table1.As<AnsiString>( columnId );
     BOOST_TEST( value1.has_value( ) );
     BOOST_TEST( value1.value_or( InitialValue ) == ValueToInsert );
     ValueType value2 = InitialValue;
@@ -1529,7 +1529,7 @@ BOOST_AUTO_TEST_CASE( CreateTableWithTextColumnTest1 )
 // --run_test=EseTests/CreateTableWithNullableTextColumnTest1
 BOOST_AUTO_TEST_CASE( CreateTableWithNullableTextColumnTest1 )
 {
-    using ValueType = std::string;
+    using ValueType = AnsiString;
     ValueType FirstValueToInsert( "Text to store" );;
     ValueType SecondValueToInsert( "Second Text to store" );;
     ValueType InitialValue( "Not stored" );

@@ -6,9 +6,9 @@ using namespace Harlinn::Common::Core::Logging::Sinks::Storage;
 
 namespace
 {
-    std::string GetDatabaseDir( )
+    AnsiString GetDatabaseDir( )
     {
-        std::string TestDataRoot = Environment::EnvironmentVariable( "HCC_TEST_DATA_ROOT" );
+        AnsiString TestDataRoot = Environment::EnvironmentVariable( "HCC_TEST_DATA_ROOT" );
         auto directoryPath = IO::Path::Append( TestDataRoot, "\\LogStorageTest" );
 
         if ( IO::Directory::Exist( directoryPath ) == false )
@@ -18,10 +18,10 @@ namespace
         return directoryPath;
     }
 
-    void RemoveDatabaseFiles( const std::string& directoryPath )
+    void RemoveDatabaseFiles( const AnsiString& directoryPath )
     {
-        std::string datafile = directoryPath + "\\data.mdb";
-        std::string lockfile = directoryPath + "\\lock.mdb";
+        AnsiString datafile = directoryPath + "\\data.mdb";
+        AnsiString lockfile = directoryPath + "\\lock.mdb";
         if ( IO::File::Exist( datafile ) )
         {
             IO::File::Delete( datafile );

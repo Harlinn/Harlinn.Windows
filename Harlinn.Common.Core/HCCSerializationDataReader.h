@@ -87,7 +87,7 @@ namespace Harlinn::Common::Core::IO::Serialization
                 default:
                 {
                     auto typeName = ToWideString( typeid(ValueType).name() );
-                    auto message = Format(L"Invalid data type: {} while reading {}.", dataType,typeName);
+                    auto message = Format(L"Invalid data type: {} while reading {}.", static_cast<Int32>(dataType), typeName);
                     HCC_THROW(Exception, message);
                 }
                 break;
@@ -132,7 +132,7 @@ namespace Harlinn::Common::Core::IO::Serialization
                 default:
                 {
                     auto typeName = ToWideString(typeid(ValueType).name());
-                    auto message = Format(L"Invalid data type: {} while reading {}.", dataType, typeName);
+                    auto message = Format(L"Invalid data type: {} while reading {}.", static_cast< Int32 >( dataType ), typeName);
                     HCC_THROW(Exception, message);
                 }
                 break;
@@ -166,7 +166,7 @@ namespace Harlinn::Common::Core::IO::Serialization
                 default:
                 {
                     auto typeName = ToWideString(typeid(ValueType).name());
-                    auto message = Format(L"Invalid data type: {} while reading {}.", dataType, typeName);
+                    auto message = Format(L"Invalid data type: {} while reading {}.", static_cast< Int32 >( dataType ), typeName);
                     HCC_THROW(Exception, message);
                 }
                 break;
@@ -202,7 +202,7 @@ namespace Harlinn::Common::Core::IO::Serialization
                 default:
                 {
                     auto typeName = ToWideString(typeid(OptionalType).name());
-                    auto message = Format(L"Invalid data type: {} while reading {}.", dataType, typeName);
+                    auto message = Format(L"Invalid data type: {} while reading {}.", static_cast< Int32 >( dataType ), typeName);
                     HCC_THROW(Exception, message);
                 }
                 break;
@@ -244,7 +244,7 @@ namespace Harlinn::Common::Core::IO::Serialization
                 default:
                 {
                     auto typeName = ToWideString(typeid(ValueType).name());
-                    auto message = Format(L"Invalid data type: {} while reading {}.", dataType, typeName);
+                    auto message = Format(L"Invalid data type: {} while reading {}.", static_cast< Int32 >( dataType ), typeName);
                     HCC_THROW(Exception, message);
                 }
                 break;
@@ -290,7 +290,7 @@ namespace Harlinn::Common::Core::IO::Serialization
                 default:
                 {
                     auto typeName = ToWideString(typeid(ValueType).name());
-                    auto message = Format(L"Invalid data type: {} while reading {}.", dataType, typeName);
+                    auto message = Format(L"Invalid data type: {} while reading {}.", static_cast< Int32 >( dataType ), typeName);
                     HCC_THROW(Exception, message);
                 }
                 break;
@@ -341,7 +341,7 @@ namespace Harlinn::Common::Core::IO::Serialization
                 default:
                 {
                     auto typeName = ToWideString(typeid(ValueType).name());
-                    auto message = Format(L"Invalid data type: {} while reading {}.", dataType, typeName);
+                    auto message = Format(L"Invalid data type: {} while reading {}.", static_cast< Int32 >( dataType ), typeName);
                     HCC_THROW(Exception, message);
                 }
                 break;
@@ -397,7 +397,7 @@ namespace Harlinn::Common::Core::IO::Serialization
                 default:
                 {
                     auto typeName = ToWideString(typeid(ValueType).name());
-                    auto message = Format(L"Invalid data type: {} while reading {}.", dataType, typeName);
+                    auto message = Format(L"Invalid data type: {} while reading {}.", static_cast< Int32 >( dataType ), typeName);
                     HCC_THROW(Exception, message);
                 }
                 break;
@@ -463,7 +463,7 @@ namespace Harlinn::Common::Core::IO::Serialization
                 default:
                 {
                     auto typeName = ToWideString(typeid(ValueType).name());
-                    auto message = Format(L"Invalid data type: {} while reading {}.", dataType, typeName);
+                    auto message = Format(L"Invalid data type: {} while reading {}.", static_cast< Int32 >( dataType ), typeName);
                     HCC_THROW(Exception, message);
                 }
                 break;
@@ -534,7 +534,7 @@ namespace Harlinn::Common::Core::IO::Serialization
                 default:
                 {
                     auto typeName = ToWideString(typeid(ValueType).name());
-                    auto message = Format(L"Invalid data type: {} while reading {}.", dataType, typeName);
+                    auto message = Format(L"Invalid data type: {} while reading {}.", static_cast< Int32 >( dataType ), typeName);
                     HCC_THROW(Exception, message);
                 }
                 break;
@@ -562,7 +562,7 @@ namespace Harlinn::Common::Core::IO::Serialization
                 default:
                 {
                     auto typeName = ToWideString(typeid(ValueType).name());
-                    auto message = Format(L"Invalid data type: {} while reading {}.", dataType, typeName);
+                    auto message = Format(L"Invalid data type: {} while reading {}.", static_cast< Int32 >( dataType ), typeName);
                     HCC_THROW(Exception, message);
                 }
                 break;
@@ -596,7 +596,7 @@ namespace Harlinn::Common::Core::IO::Serialization
                 default:
                 {
                     auto typeName = ToWideString(typeid(OptionalType).name());
-                    auto message = Format(L"Invalid data type: {} while reading {}.", dataType, typeName);
+                    auto message = Format(L"Invalid data type: {} while reading {}.", static_cast< Int32 >( dataType ), typeName);
                     HCC_THROW(Exception, message);
                 }
                 break;
@@ -624,7 +624,7 @@ namespace Harlinn::Common::Core::IO::Serialization
                 default:
                 {
                     auto typeName = ToWideString(typeid(ValueType).name());
-                    auto message = Format(L"Invalid data type: {} while reading {}.", dataType, typeName);
+                    auto message = Format(L"Invalid data type: {} while reading {}.", static_cast< Int32 >( dataType ), typeName);
                     HCC_THROW(Exception, message);
                 }
                 break;
@@ -735,7 +735,7 @@ namespace Harlinn::Common::Core::IO::Serialization
                 default:
                 {
                     auto typeName = ToWideString(typeid(VectorType).name());
-                    auto message = Format(L"Invalid data type: {} while reading {}.", dataType, typeName);
+                    auto message = Format(L"Invalid data type: {} while reading {}.", static_cast< Int32 >( dataType ), typeName);
                     HCC_THROW(Exception, message);
                 }
                 break;
@@ -810,7 +810,7 @@ namespace Harlinn::Common::Core::IO::Serialization
                 default:
                 {
                     auto typeName = ToWideString(typeid(VectorType).name());
-                    auto message = Format(L"Invalid data type: {} while reading {}.", dataType, typeName);
+                    auto message = Format(L"Invalid data type: {} while reading {}.", static_cast< Int32 >( dataType ), typeName);
                     HCC_THROW(Exception, message);
                 }
                 break;
@@ -870,7 +870,7 @@ namespace Harlinn::Common::Core::IO::Serialization
                 default:
                 {
                     auto typeName = ToWideString(typeid(result).name());
-                    auto message = Format(L"Invalid data type: {} while reading {}.", dataType, typeName);
+                    auto message = Format(L"Invalid data type: {} while reading {}.", static_cast< Int32 >( dataType ), typeName);
                     HCC_THROW(Exception, message);
                 }
                 break;
@@ -925,7 +925,7 @@ namespace Harlinn::Common::Core::IO::Serialization
                 default:
                 {
                     auto typeName = ToWideString(typeid(result).name());
-                    auto message = Format(L"Invalid data type: {} while reading {}.", dataType, typeName);
+                    auto message = Format(L"Invalid data type: {} while reading {}.", static_cast< Int32 >( dataType ), typeName);
                     HCC_THROW(Exception, message);
                 }
                 break;
@@ -976,7 +976,7 @@ namespace Harlinn::Common::Core::IO::Serialization
                 default:
                 {
                     auto typeName = ToWideString(typeid(VectorType).name());
-                    auto message = Format(L"Invalid data type: {} while reading {}.", dataType, typeName);
+                    auto message = Format(L"Invalid data type: {} while reading {}.", static_cast< Int32 >( dataType ), typeName);
                     HCC_THROW(Exception, message);
                 }
                 break;
@@ -1024,7 +1024,7 @@ namespace Harlinn::Common::Core::IO::Serialization
                 default:
                 {
                     auto typeName = ToWideString(typeid(VectorType).name());
-                    auto message = Format(L"Invalid data type: {} while reading {}.", dataType, typeName);
+                    auto message = Format(L"Invalid data type: {} while reading {}.", static_cast< Int32 >( dataType ), typeName);
                     HCC_THROW(Exception, message);
                 }
                 break;

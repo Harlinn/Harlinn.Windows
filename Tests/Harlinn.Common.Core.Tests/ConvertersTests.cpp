@@ -449,7 +449,7 @@ BOOST_AUTO_TEST_CASE( SameTest13 )
 // --run_test=ConvertersTests/SameTest14
 BOOST_AUTO_TEST_CASE( SameTest14 )
 {
-    using Type = std::string;
+    using Type = AnsiString;
     Type value( "Hi" );
     auto result = ConvertTo<Type>( value );
     BOOST_CHECK( value == result );
@@ -665,7 +665,7 @@ BOOST_AUTO_TEST_CASE( ToWideStringTest17 )
 // --run_test=ConvertersTests/ToWideStringTest18
 BOOST_AUTO_TEST_CASE( ToWideStringTest18 )
 {
-    using Type = std::string;
+    using Type = AnsiString;
     Type value( "Hi" );
     WideString expectedResult = ToWideString( value );
     auto result = ConvertTo<WideString>( value );
@@ -677,8 +677,8 @@ BOOST_AUTO_TEST_CASE( ToAnsiStringTest1 )
 {
     using Type = bool;
     Type value = true;
-    std::string expectedResult = "True";
-    auto result = ConvertTo<std::string>( value );
+    AnsiString expectedResult = "True";
+    auto result = ConvertTo<AnsiString>( value );
     BOOST_CHECK( expectedResult == result );
 }
 
@@ -687,8 +687,8 @@ BOOST_AUTO_TEST_CASE( ToAnsiStringTest2 )
 {
     using Type = SByte;
     Type value = 1;
-    std::string expectedResult = "1";
-    auto result = ConvertTo<std::string>( value );
+    AnsiString expectedResult = "1";
+    auto result = ConvertTo<AnsiString>( value );
     BOOST_CHECK( expectedResult == result );
 }
 
@@ -697,8 +697,8 @@ BOOST_AUTO_TEST_CASE( ToAnsiStringTest3 )
 {
     using Type = Byte;
     Type value = 1;
-    std::string expectedResult = "1";
-    auto result = ConvertTo<std::string>( value );
+    AnsiString expectedResult = "1";
+    auto result = ConvertTo<AnsiString>( value );
     BOOST_CHECK( expectedResult == result );
 }
 
@@ -707,8 +707,8 @@ BOOST_AUTO_TEST_CASE( ToAnsiStringTest4 )
 {
     using Type = Int16;
     Type value = 1;
-    std::string expectedResult = "1";
-    auto result = ConvertTo<std::string>( value );
+    AnsiString expectedResult = "1";
+    auto result = ConvertTo<AnsiString>( value );
     BOOST_CHECK( expectedResult == result );
 }
 
@@ -717,8 +717,8 @@ BOOST_AUTO_TEST_CASE( ToAnsiStringTest5 )
 {
     using Type = UInt16;
     Type value = 1;
-    std::string expectedResult = "1";
-    auto result = ConvertTo<std::string>( value );
+    AnsiString expectedResult = "1";
+    auto result = ConvertTo<AnsiString>( value );
     BOOST_CHECK( expectedResult == result );
 }
 
@@ -727,8 +727,8 @@ BOOST_AUTO_TEST_CASE( ToAnsiStringTest6 )
 {
     using Type = Int32;
     Type value = 1;
-    std::string expectedResult = "1";
-    auto result = ConvertTo<std::string>( value );
+    AnsiString expectedResult = "1";
+    auto result = ConvertTo<AnsiString>( value );
     BOOST_CHECK( expectedResult == result );
 }
 
@@ -737,8 +737,8 @@ BOOST_AUTO_TEST_CASE( ToAnsiStringTest7 )
 {
     using Type = UInt32;
     Type value = 1;
-    std::string expectedResult = "1";
-    auto result = ConvertTo<std::string>( value );
+    AnsiString expectedResult = "1";
+    auto result = ConvertTo<AnsiString>( value );
     BOOST_CHECK( expectedResult == result );
 }
 
@@ -747,8 +747,8 @@ BOOST_AUTO_TEST_CASE( ToAnsiStringTest8 )
 {
     using Type = Int64;
     Type value = 1;
-    std::string expectedResult = "1";
-    auto result = ConvertTo<std::string>( value );
+    AnsiString expectedResult = "1";
+    auto result = ConvertTo<AnsiString>( value );
     BOOST_CHECK( expectedResult == result );
 }
 
@@ -757,8 +757,8 @@ BOOST_AUTO_TEST_CASE( ToAnsiStringTest9 )
 {
     using Type = UInt64;
     Type value = 1;
-    std::string expectedResult = "1";
-    auto result = ConvertTo<std::string>( value );
+    AnsiString expectedResult = "1";
+    auto result = ConvertTo<AnsiString>( value );
     BOOST_CHECK( expectedResult == result );
 }
 
@@ -767,8 +767,8 @@ BOOST_AUTO_TEST_CASE( ToAnsiStringTest10 )
 {
     using Type = float;
     Type value = 1;
-    std::string expectedResult = "1.000000";
-    auto result = ConvertTo<std::string>( value );
+    AnsiString expectedResult = "1.000000";
+    auto result = ConvertTo<AnsiString>( value );
     BOOST_CHECK( expectedResult == result );
 }
 
@@ -777,8 +777,8 @@ BOOST_AUTO_TEST_CASE( ToAnsiStringTest11 )
 {
     using Type = Double;
     Type value = 1;
-    std::string expectedResult = "1.000000";
-    auto result = ConvertTo<std::string>( value );
+    AnsiString expectedResult = "1.000000";
+    auto result = ConvertTo<AnsiString>( value );
     BOOST_CHECK( expectedResult == result );
 }
 
@@ -787,8 +787,8 @@ BOOST_AUTO_TEST_CASE( ToAnsiStringTest12 )
 {
     using Type = DateTime;
     Type value( 2020, 1, 1 );
-    std::string expectedResult = value.ToAnsiString( );
-    auto result = ConvertTo<std::string>( value );
+    AnsiString expectedResult = value.ToAnsiString( );
+    auto result = ConvertTo<AnsiString>( value );
     BOOST_CHECK( expectedResult == result );
 }
 
@@ -797,8 +797,8 @@ BOOST_AUTO_TEST_CASE( ToAnsiStringTest13 )
 {
     using Type = TimeSpan;
     Type value = Type::FromDays( 1 );
-    std::string expectedResult = value.ToAnsiString( );
-    auto result = ConvertTo<std::string>( value );
+    AnsiString expectedResult = value.ToAnsiString( );
+    auto result = ConvertTo<AnsiString>( value );
     BOOST_CHECK( expectedResult == result );
 }
 
@@ -808,8 +808,8 @@ BOOST_AUTO_TEST_CASE( ToAnsiStringTest14 )
 {
     using Type = Guid;
     Type value( "{39978367-04DD-415F-8633-F079EA432700}" );
-    std::string expectedResult = value.ToAnsiString( );
-    auto result = ConvertTo<std::string>( value );
+    AnsiString expectedResult = value.ToAnsiString( );
+    auto result = ConvertTo<AnsiString>( value );
     BOOST_CHECK( expectedResult == result );
 }
 
@@ -818,8 +818,8 @@ BOOST_AUTO_TEST_CASE( ToAnsiStringTest15 )
 {
     using Type = Currency;
     Type value( 10000 );
-    std::string expectedResult = value.ToAnsiString( );
-    auto result = ConvertTo<std::string>( value );
+    AnsiString expectedResult = value.ToAnsiString( );
+    auto result = ConvertTo<AnsiString>( value );
     BOOST_CHECK( expectedResult == result );
 }
 
@@ -828,8 +828,8 @@ BOOST_AUTO_TEST_CASE( ToAnsiStringTest16 )
 {
     using Type = Variant;
     Type value( 1 );
-    std::string expectedResult = value.As<std::string>( );
-    auto result = ConvertTo<std::string>( value );
+    AnsiString expectedResult = value.As<AnsiString>( );
+    auto result = ConvertTo<AnsiString>( value );
     BOOST_CHECK( expectedResult == result );
 }
 
@@ -838,18 +838,18 @@ BOOST_AUTO_TEST_CASE( ToAnsiStringTest17 )
 {
     using Type = WideString;
     Type value( L"Hi" );
-    std::string expectedResult = ToAnsiString( value );
-    auto result = ConvertTo<std::string>( value );
+    AnsiString expectedResult = ToAnsiString( value );
+    auto result = ConvertTo<AnsiString>( value );
     BOOST_CHECK( expectedResult == result );
 }
 
 // --run_test=ConvertersTests/ToAnsiStringTest18
 BOOST_AUTO_TEST_CASE( ToAnsiStringTest18 )
 {
-    using Type = std::string;
+    using Type = AnsiString;
     Type value( "Hi" );
-    std::string expectedResult = value;
-    auto result = ConvertTo<std::string>( value );
+    AnsiString expectedResult = value;
+    auto result = ConvertTo<AnsiString>( value );
     BOOST_CHECK( expectedResult == result );
 }
 
@@ -1072,7 +1072,7 @@ BOOST_AUTO_TEST_CASE( ToBooleanTest17d )
 // --run_test=ConvertersTests/ToBooleanTest18
 BOOST_AUTO_TEST_CASE( ToBooleanTest18 )
 {
-    using Type = std::string;
+    using Type = AnsiString;
     Type value( "Hi" );
     bool expectedResult = false;
     auto result = ConvertTo<bool>( value );
@@ -1252,7 +1252,7 @@ BOOST_AUTO_TEST_CASE( ToSByteTest17 )
 // --run_test=ConvertersTests/ToSByteTest18
 BOOST_AUTO_TEST_CASE( ToSByteTest18 )
 {
-    using Type = std::string;
+    using Type = AnsiString;
     Type value( "1" );
     SByte expectedResult = 1;
     auto result = ConvertTo<SByte>( value );

@@ -65,7 +65,7 @@ BOOST_AUTO_TEST_CASE( FileWriteReadTest1 )
     printf( "Waiting for Write\n" );
     writeDoneEvent.Wait( );
 
-    std::string str;
+    AnsiString str;
     str.resize( numberOfBytesToWrite );
 
     IO::ReadFileRequest readFileRequest( fileStream.Handle( ), (Byte*)str.data( ), numberOfBytesToWrite );

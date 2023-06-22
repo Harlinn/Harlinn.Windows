@@ -482,8 +482,8 @@ BOOST_AUTO_TEST_CASE( GuidTest1 )
 // --run_test=BinaryRWTests/StringTest1
 BOOST_AUTO_TEST_CASE( StringTest1 )
 {
-    std::string value1( "s1" );
-    std::string value2( "s2" );
+    AnsiString value1( "s1" );
+    AnsiString value2( "s2" );
 
     IO::MemoryStream stream;
     IO::BinaryWriter writer( stream );
@@ -492,8 +492,8 @@ BOOST_AUTO_TEST_CASE( StringTest1 )
     stream.SetPosition( 0 );
     IO::BinaryReader reader( stream );
 
-    auto v1 = reader.Read<std::string>( );
-    auto v2 = reader.Read<std::string>( );
+    auto v1 = reader.Read<AnsiString>( );
+    auto v2 = reader.Read<AnsiString>( );
     BOOST_CHECK( value1 == v1 );
     BOOST_CHECK( value2 == v2 );
 }

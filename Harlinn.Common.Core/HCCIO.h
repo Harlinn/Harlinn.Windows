@@ -917,7 +917,7 @@ namespace Harlinn::Common::Core::IO
 
 
     template<typename T>
-        requires IsStdBasicString<T>
+        requires IsStdBasicString<T> || IsBasicString<T>
     class SplitPath
     {
     public:
@@ -1595,7 +1595,7 @@ namespace Harlinn::Common::Core::IO
         HCC_EXPORT static UInt64 Size( const char* filePath );
 
         template<typename T>
-            requires IsStdBasicString<T>
+            requires IsStdBasicString<T> || IsBasicString<T>
         static UInt64 Size( const T& filePath )
         {
             return Size( filePath.c_str() );

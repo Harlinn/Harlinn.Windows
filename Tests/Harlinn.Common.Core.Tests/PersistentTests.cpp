@@ -3485,7 +3485,7 @@ BOOST_AUTO_TEST_CASE( ReadTest80 )
 // --run_test=PersistentTests/ReadTest81
 BOOST_AUTO_TEST_CASE( ReadTest81 )
 {
-    using Type = std::string;
+    using Type = AnsiString;
 
     Type expectedValue( "Hello" );
     Type arg = expectedValue;
@@ -3533,7 +3533,7 @@ BOOST_AUTO_TEST_CASE( ReadTest82 )
 // --run_test=PersistentTests/ReadTest83
 BOOST_AUTO_TEST_CASE( ReadTest83 )
 {
-    using Type_1 = std::string;
+    using Type_1 = AnsiString;
     using Type_2 = std::tuple<Byte, double>;
 
     Type_1 expectedValue_1( "Hello" );
@@ -3565,7 +3565,7 @@ BOOST_AUTO_TEST_CASE( ReadTest83 )
 // --run_test=PersistentTests/ReadTest84
 BOOST_AUTO_TEST_CASE( ReadTest84 )
 {
-    using Type_1 = std::string;
+    using Type_1 = AnsiString;
     using Type_2 = std::tuple<Byte, double>;
     using Type_3 = std::vector<std::tuple<DateTime, UInt32, double>>;
 
@@ -3606,7 +3606,7 @@ BOOST_AUTO_TEST_CASE( ReadTest84 )
 // --run_test=PersistentTests/ReadTest85
 BOOST_AUTO_TEST_CASE( ReadTest85 )
 {
-    using Type_1 = std::string;
+    using Type_1 = AnsiString;
     using Type_2 = std::tuple<Byte, double>;
     using Type_3 = std::vector<std::tuple<DateTime, UInt32, double>>;
 

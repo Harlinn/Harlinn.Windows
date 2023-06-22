@@ -259,12 +259,22 @@ namespace Harlinn::Common::Core
 
         template<typename CharT, typename Traits, typename Allocator>
         constexpr bool IsStdBasicStringImpl<std::basic_string<CharT, Traits, Allocator>> = true;
-
-        template<typename CharT>
-        constexpr bool IsStdBasicStringImpl<BasicString<CharT>> = true;
     }
     template<typename T>
     constexpr bool IsStdBasicString = Core::Internal::IsStdBasicStringImpl<std::remove_cvref_t<T>>;
+
+    namespace Internal
+    {
+        template<typename T>
+        constexpr bool IsBasicStringImpl = false;
+
+        template<typename CharT>
+        constexpr bool IsBasicStringImpl<BasicString<CharT>> = true;
+    }
+    template<typename T>
+    constexpr bool IsBasicString = Core::Internal::IsBasicStringImpl<std::remove_cvref_t<T>>;
+
+
 
     namespace Internal
     {
@@ -276,6 +286,19 @@ namespace Harlinn::Common::Core
     }
     template<typename T>
     constexpr bool IsStdBasicStringView = Core::Internal::IsStdBasicStringViewImpl<std::remove_cvref_t<T>>;
+
+    namespace Internal
+    {
+        template<typename T>
+        constexpr bool IsBasicStringViewImpl = false;
+
+        template<typename CharT>
+        constexpr bool IsBasicStringViewImpl<BasicStringView<CharT>> = true;
+    }
+    template<typename T>
+    constexpr bool IsBasicStringView = Core::Internal::IsBasicStringViewImpl<std::remove_cvref_t<T>>;
+
+
 
     namespace Internal
     {
@@ -330,6 +353,10 @@ namespace Harlinn::Common::Core
                                 IsStdSpan<T> ||
                                 IsStdBasicString<T> ||
                                 IsStdBasicStringView<T> ||
+#ifdef HCC_WITH_BASIC_STRING
+                                IsBasicString<T> ||
+                                IsBasicStringView<T> ||
+#endif
                                 IsCoreArray<T> ||
                                 IsCoreByteArray<T> ||
                                 IsCoreVector<T>;
@@ -1019,6 +1046,8 @@ namespace Harlinn::Common::Core
             StdSpan,
             StdBasicString,
             StdBasicStringView,
+            BasicString,
+            BasicStringView,
             Array,
             ByteArray,
             Vector
@@ -1422,6 +1451,24 @@ namespace Harlinn::Common::Core
                 static constexpr bool IsView = true;
                 static constexpr ContainerTypeId TypeId = ContainerTypeId::StdBasicStringView;
             };
+
+            template<typename RT, typename T >
+            struct ContainerTypeTraits<RT, BasicString<T>> : ContainerTypeTraitsBase<BasicString<T>, RT>
+            {
+                using Base = ContainerTypeTraitsBase<BasicString<T>, RT>;
+                using CharTraits = typename std::basic_string<T>::traits_type;
+                static constexpr ContainerTypeId TypeId = ContainerTypeId::BasicString;
+            };
+
+            template<typename RT, typename T>
+            struct ContainerTypeTraits<RT, BasicStringView<T>> : ContainerTypeTraitsBase<BasicStringView<T>, RT>
+            {
+                using Base = ContainerTypeTraitsBase<BasicStringView<T>, RT>;
+                using CharTraits = typename std::basic_string_view<T>::traits_type;
+                static constexpr bool IsView = true;
+                static constexpr ContainerTypeId TypeId = ContainerTypeId::BasicStringView;
+            };
+
 
 
             template<typename RT, typename T, size_t N>

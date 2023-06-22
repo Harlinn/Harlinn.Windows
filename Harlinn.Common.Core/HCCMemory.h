@@ -437,7 +437,7 @@ namespace Harlinn::Common::Core
                 if ( start < end_ )
                 {
 #ifdef HCC_WITH_BASIC_STRING
-                    AnsiString str( reinterpret_cast< const AnsiString::value_type* >( start ), static_cast< size_t >( ptr - end( ) ) );
+                    AnsiString str( reinterpret_cast< const AnsiString::value_type* >( start ), static_cast< size_t >( end( ) - start ) );
                     strings.emplace_back( std::move( str ) );
 #else
                     strings.emplace_back( start, end( ) );

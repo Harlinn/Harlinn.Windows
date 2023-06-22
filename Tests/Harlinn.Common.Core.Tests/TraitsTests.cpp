@@ -271,16 +271,16 @@ BOOST_AUTO_TEST_CASE( IsContainerTest1 )
     constexpr bool unorderedMapIsContainer = IsContainer<std::unordered_map<Byte, long>>;
     BOOST_CHECK( unorderedMapIsContainer == true );
 
-    constexpr bool stdstringIsContainer = IsContainer<std::string>;
+    constexpr bool stdstringIsContainer = IsContainer<AnsiString>;
     BOOST_CHECK( stdstringIsContainer == true );
 
     constexpr bool stdwstringIsContainer = IsContainer<WideString>;
     BOOST_CHECK( stdwstringIsContainer == true );
 
-    constexpr bool stdstring_viewIsContainer = IsContainer<std::string_view>;
+    constexpr bool stdstring_viewIsContainer = IsContainer<AnsiStringView>;
     BOOST_CHECK( stdstring_viewIsContainer == true );
 
-    constexpr bool stdwstring_viewIsContainer = IsContainer<std::wstring_view>;
+    constexpr bool stdwstring_viewIsContainer = IsContainer<WideStringView>;
     BOOST_CHECK( stdwstring_viewIsContainer == true );
 
     constexpr bool stdspanIsContainer = IsContainer<std::span<Byte>>;
@@ -2874,7 +2874,7 @@ BOOST_AUTO_TEST_CASE( TypeTraitsTest28 )
 // --run_test=TraitsTests/TypeTraitsTest29
 BOOST_AUTO_TEST_CASE( TypeTraitsTest29 )
 {
-    using Type = std::string;
+    using Type = AnsiString;
 
     using TypeTraits_1 = Types::TypeTraits<Type>;
 

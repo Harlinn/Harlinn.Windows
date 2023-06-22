@@ -258,7 +258,7 @@ namespace Harlinn::Common::Core::IO
 
 
         template<typename T>
-            requires ( IsStdBasicString<T> || std::is_same_v<WideString,std::remove_cvref_t<T>> )
+            requires ( IsStdBasicString<T> || IsBasicString<T> )
         void Read( T& result )
         {
             // Length of the string in bytes
@@ -285,7 +285,7 @@ namespace Harlinn::Common::Core::IO
         }
 
         template<typename T>
-            requires ( IsStdBasicString<T> || std::is_same_v<WideString, std::remove_cvref_t<T>> )
+            requires ( IsStdBasicString<T> || IsBasicString<T> )
         std::remove_cvref_t<T> Read( )
         {
             using Type = std::remove_cvref_t<T>;

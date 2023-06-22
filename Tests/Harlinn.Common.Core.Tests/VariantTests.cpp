@@ -434,7 +434,7 @@ BOOST_AUTO_TEST_CASE( SByteTostringConversionTest1 )
     constexpr SByte variantValue = 10;
     Variant variant( variantValue );
     BOOST_CHECK( variant.Type( ) == VariantType::SByte );
-    auto converted = variant.As<std::string>( );
+    auto converted = variant.As<AnsiString>( );
     BOOST_CHECK( converted == "10" );
 }
 
@@ -584,7 +584,7 @@ BOOST_AUTO_TEST_CASE( ByteTostringConversionTest1 )
     constexpr Byte variantValue = 10;
     Variant variant( variantValue );
     BOOST_CHECK( variant.Type( ) == VariantType::Byte );
-    auto converted = variant.As<std::string>( );
+    auto converted = variant.As<AnsiString>( );
     BOOST_CHECK( converted == "10" );
 }
 
@@ -736,7 +736,7 @@ BOOST_AUTO_TEST_CASE( Int16TostringConversionTest1 )
     constexpr Int16 variantValue = 10;
     Variant variant( variantValue );
     BOOST_CHECK( variant.Type( ) == VariantType::Int16 );
-    auto converted = variant.As<std::string>( );
+    auto converted = variant.As<AnsiString>( );
     BOOST_CHECK( converted == "10" );
 }
 
@@ -889,7 +889,7 @@ BOOST_AUTO_TEST_CASE( UInt16TostringConversionTest1 )
     constexpr UInt16 variantValue = 10;
     Variant variant( variantValue );
     BOOST_CHECK( variant.Type( ) == VariantType::UInt16 );
-    auto converted = variant.As<std::string>( );
+    auto converted = variant.As<AnsiString>( );
     BOOST_CHECK( converted == "10" );
 }
 
@@ -1041,7 +1041,7 @@ BOOST_AUTO_TEST_CASE( Int32TostringConversionTest1 )
     constexpr Int32 variantValue = 10;
     Variant variant( variantValue );
     BOOST_CHECK( variant.Type( ) == VariantType::Int32 );
-    auto converted = variant.As<std::string>( );
+    auto converted = variant.As<AnsiString>( );
     BOOST_CHECK( converted == "10" );
 }
 
@@ -1193,7 +1193,7 @@ BOOST_AUTO_TEST_CASE( UInt32TostringConversionTest1 )
     constexpr UInt32 variantValue = 10;
     Variant variant( variantValue );
     BOOST_CHECK( variant.Type( ) == VariantType::UInt32 );
-    auto converted = variant.As<std::string>( );
+    auto converted = variant.As<AnsiString>( );
     BOOST_CHECK( converted == "10" );
 }
 
@@ -1345,7 +1345,7 @@ BOOST_AUTO_TEST_CASE( Int64TostringConversionTest1 )
     constexpr Int64 variantValue = 10;
     Variant variant( variantValue );
     BOOST_CHECK( variant.Type( ) == VariantType::Int64 );
-    auto converted = variant.As<std::string>( );
+    auto converted = variant.As<AnsiString>( );
     BOOST_CHECK( converted == "10" );
 }
 
@@ -1495,7 +1495,7 @@ BOOST_AUTO_TEST_CASE( UInt64TostringConversionTest1 )
     constexpr UInt64 variantValue = 10;
     Variant variant( variantValue );
     BOOST_CHECK( variant.Type( ) == VariantType::UInt64 );
-    auto converted = variant.As<std::string>( );
+    auto converted = variant.As<AnsiString>( );
     BOOST_CHECK( converted == "10" );
 }
 
@@ -1648,7 +1648,7 @@ BOOST_AUTO_TEST_CASE( SingleTostringConversionTest1 )
     constexpr float variantValue = 10;
     Variant variant( variantValue );
     BOOST_CHECK( variant.Type( ) == VariantType::Single );
-    auto converted = variant.As<std::string>( );
+    auto converted = variant.As<AnsiString>( );
     BOOST_CHECK( converted == "10" );
 }
 
@@ -1798,7 +1798,7 @@ BOOST_AUTO_TEST_CASE( DoubleTostringConversionTest1 )
     constexpr Double variantValue = 10;
     Variant variant( variantValue );
     BOOST_CHECK( variant.Type( ) == VariantType::Double );
-    auto converted = variant.As<std::string>( );
+    auto converted = variant.As<AnsiString>( );
     BOOST_CHECK( converted == "10" );
 }
 

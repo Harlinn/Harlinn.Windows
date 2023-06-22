@@ -243,7 +243,7 @@ namespace Harlinn::Common::Core::IO::Serialization
 
 
         template<typename T>
-            requires (IsStdBasicString<T> || IsStdBasicStringView<T>)
+            requires (IsStdBasicString<T> || IsStdBasicStringView<T> || IsBasicString<T> || IsBasicStringView<T> )
         void Write(const T& v)
         {
             if (v.size() == 0)
