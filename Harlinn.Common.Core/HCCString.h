@@ -698,8 +698,38 @@ namespace Harlinn::Common::Core
     }
 
     /// <summary>
-    /// 
+    /// This is a reference counted string class.
     /// </summary>
+    /// <remarks>
+    /// There are potential pitfalls when this class is used in 
+    /// a multi-threaded program, but they can easily be avoided:
+    /// 
+    ///     1. There should be no problems as long as the strings 
+    ///        are just passed around between threads. This is
+    ///        the normal/most common use case.
+    /// 
+    ///     2. Call EnsureUnique before changes are made using 
+    ///        character references, iterators and pointers to
+    ///        the contents of a string. This will invalidate
+    ///        existing references, iterators and pointers to
+    ///        the contents of that string object, but not references, 
+    ///        iterators and pointers to other string objects that
+    ///        originally shared the internal reference counted string
+    ///        representation. Ideally the editing functions should
+    ///        be used to change the contents of a string.
+    ///     
+    ///     3. Never call an editing function using a reference 
+    ///        to a string object that is shared between threads.
+    ///        Two string objects, each local to a separate thread,
+    ///        may share the same internal data object, and this is
+    ///        fine, but sharing a reference/pointer to a string object 
+    ///        between threads is not OK when editing functions will 
+    ///        be called. 
+    /// 
+    /// Small strings, with 24 wide characters, or less, are allocated from
+    /// a pool that is lock-free to enhance the performance for small strings.
+    /// 
+    /// </remarks>
     /// <typeparam name="T">The character type of the string</typeparam>
     template<typename T>
     class BasicString
@@ -1025,22 +1055,17 @@ namespace Harlinn::Common::Core
         {
         }
 
-        template<typename InputIt>
-            requires ( (std::is_same_v<const_iterator, std::remove_cvref_t<InputIt>> || std::is_same_v<iterator, std::remove_cvref_t<InputIt>>) && ( std::is_pointer_v<std::remove_cvref_t<InputIt>> == false ) )
         BasicString( const_iterator first, const_iterator last)
             : data_( Initialize( first.ptr_, first <= last ? static_cast<size_type>( last - first ) : 0 ) )
         {
         }
 
-        template<typename InputIt>
-            requires std::is_pointer_v<std::remove_cvref_t<InputIt>>
-        BasicString( const_iterator first, const_iterator last )
+        BasicString( const_pointer first, const_pointer last )
             : data_( Initialize( first, first <= last ? static_cast< size_type >( last - first ) : 0 ) )
         {
         }
 
         template<typename InputIt>
-            requires ( (std::is_same_v<const_iterator, std::remove_cvref_t<InputIt>> == false) && ( std::is_same_v<iterator, std::remove_cvref_t<InputIt>> == false ) && ( std::is_pointer_v<std::remove_cvref_t<InputIt>> == false ) )
         BasicString( const_iterator first, const_iterator last )
             : data_( Initialize( first, last ) )
         {
@@ -1079,12 +1104,12 @@ namespace Harlinn::Common::Core
             }
         }
 
-        bool IsUnique( ) const noexcept
+        [[nodiscard]] bool IsUnique( ) const noexcept
         {
             return data_ ? data_->referenceCount_ == 1 : false;
         }
 
-        BasicString Clone( ) const
+        [[nodiscard]] BasicString Clone( ) const
         {
             if ( data_ )
             {
@@ -1104,74 +1129,84 @@ namespace Harlinn::Common::Core
         }
 
 
-        static BasicString From( const WideString& s )
+        [[nodiscard]] static BasicString From( const WideString& s )
             requires std::is_same_v<CharType, char>
         {
             return Internal::From( s.data( ), s.Length( ) );
         }
-        static BasicString From( const std::wstring& s )
+        [[nodiscard]] static BasicString From( const std::wstring& s )
             requires std::is_same_v<CharType, char>
         {
             return Internal::From( s.data( ), s.size( ) );
         }
-        static BasicString From( const wchar_t* s )
+        [[nodiscard]] static BasicString From( const wchar_t* s )
             requires std::is_same_v<CharType, char>
         {
             return Internal::From( s, Internal::LengthOf( s ) );
         }
-        static BasicString From( const char* s )
+        [[nodiscard]] static BasicString From( const char* s )
             requires std::is_same_v<CharType, char>
         {
             return BasicString( s, Internal::LengthOf( s ) );
         }
 
 
-        static BasicString From( const AnsiString& s )
+        [[nodiscard]] static BasicString From( const AnsiString& s )
             requires std::is_same_v<CharType, char>
         {
             return s;
         }
-        static BasicString From( const std::string& s )
+        [[nodiscard]] static BasicString From( const std::string& s )
             requires std::is_same_v<CharType, char>
         {
             return BasicString( s.data( ), s.size( ) );
         }
 
 
-        static BasicString From( const AnsiString& s )
+        [[nodiscard]] static BasicString From( const AnsiString& s )
             requires std::is_same_v<CharType, wchar_t>
         {
             return Internal::From( s.data( ), s.Length( ) );
         }
-        static BasicString From( const std::string& s )
+        [[nodiscard]] static BasicString From( const std::string& s )
             requires std::is_same_v<CharType, wchar_t>
         {
             return Internal::From( s.data( ), s.size( ) );
         }
 
-        static BasicString From( const WideString& s )
+        [[nodiscard]] static BasicString From( const WideString& s )
             requires std::is_same_v<CharType, wchar_t>
         {
             return s;
         }
-        static BasicString From( const std::wstring& s )
+        [[nodiscard]] static BasicString From( const std::wstring& s )
             requires std::is_same_v<CharType, wchar_t>
         {
             return BasicString( s.data( ), s.size( ) );
         }
 
-        static BasicString From( const wchar_t* s )
+        [[nodiscard]] static BasicString From( const wchar_t* s )
             requires std::is_same_v<CharType, wchar_t>
         {
             return BasicString( s, Internal::LengthOf( s ) );
         }
-        static BasicString From( const char* s )
+        [[nodiscard]] static BasicString From( const char* s )
             requires std::is_same_v<CharType, wchar_t>
         {
             return Internal::From( s, Internal::LengthOf( s ) );
         }
 
 
+
+        BasicString& operator = ( nullptr_t )
+        {
+            if ( data_ )
+            {
+                ReleaseData( data_ );
+                data_ = nullptr;
+            }
+            return *this;
+        }
 
 
         BasicString& operator = ( const BasicString& other )
@@ -1369,12 +1404,12 @@ namespace Harlinn::Common::Core
 
 
 
-        constexpr size_type size( ) const noexcept
+        [[nodiscard]] constexpr size_type size( ) const noexcept
         {
             return data_ ? data_->size_ : 0;
         }
 
-        constexpr size_type capacity( ) const noexcept
+        [[nodiscard]] constexpr size_type capacity( ) const noexcept
         {
             return data_ ? AllocationByteCount( data_->size_ ) : 0;
         }
@@ -1383,11 +1418,11 @@ namespace Harlinn::Common::Core
         { }
 
 
-        constexpr size_type length( ) const noexcept
+        [[nodiscard]] constexpr size_type length( ) const noexcept
         {
             return size( );
         }
-        constexpr size_type Length( ) const noexcept
+        [[nodiscard]] constexpr size_type Length( ) const noexcept
         {
             return size( );
         }
@@ -1444,34 +1479,34 @@ namespace Harlinn::Common::Core
         }
 
 
-        constexpr bool empty( ) const noexcept
+        [[nodiscard]] constexpr bool empty( ) const noexcept
         {
             return data_ ? data_->size_ == 0 : true;
         }
 
-        constexpr bool IsEmpty( ) const noexcept
+        [[nodiscard]] constexpr bool IsEmpty( ) const noexcept
         {
             return empty( );
         }
 
 
-        constexpr explicit operator bool( ) const
+        [[nodiscard]] constexpr explicit operator bool( ) const noexcept
         {
             return empty( ) == false;
         }
 
 
-        reference operator[]( size_type offset ) noexcept
+        [[nodiscard]] reference operator[]( size_type offset ) noexcept
         {
             return data_->buffer_[offset];
         }
-        const_reference operator[]( size_type offset ) const noexcept
+        [[nodiscard]] const_reference operator[]( size_type offset ) const noexcept
         {
             return data_->buffer_[offset];
         }
 
 
-        static BasicString<CharType> Combine( const CharType* first, size_t firstLength, const CharType* second, size_t secondLength )
+        [[nodiscard]] static BasicString<CharType> Combine( const CharType* first, size_t firstLength, const CharType* second, size_t secondLength )
         {
             auto sz = firstLength + secondLength;
             if ( sz )
@@ -1498,7 +1533,7 @@ namespace Harlinn::Common::Core
         }
 
 
-        friend BasicString<CharType> operator +( const BasicString<CharType>& first, const BasicString<CharType>& second )
+        [[nodiscard]] friend BasicString<CharType> operator +( const BasicString<CharType>& first, const BasicString<CharType>& second )
         {
             auto firstSize = first.size( );
             auto* firstData = first.data( );
@@ -1510,7 +1545,7 @@ namespace Harlinn::Common::Core
 
         }
 
-        friend BasicString<CharType> operator +( const CharType* first, const BasicString<CharType>& second )
+        [[nodiscard]] friend BasicString<CharType> operator +( const CharType* first, const BasicString<CharType>& second )
         {
             auto firstSize = Internal::LengthOf( first );
 
@@ -1520,7 +1555,7 @@ namespace Harlinn::Common::Core
             return Combine( first, firstSize, secondData, secondSize );
         }
 
-        friend BasicString<CharType> operator +( const BasicString<CharType>& first, const CharType* second )
+        [[nodiscard]] friend BasicString<CharType> operator +( const BasicString<CharType>& first, const CharType* second )
         {
             auto firstSize = first.size( );
             auto* firstData = first.data( );
@@ -1640,7 +1675,7 @@ namespace Harlinn::Common::Core
 
 
     private:
-        static int Compare( const Data* first, const Data* second )
+        [[nodiscard]] static int Compare( const Data* first, const Data* second )
         {
             if ( first != second )
             {
@@ -1666,7 +1701,7 @@ namespace Harlinn::Common::Core
             }
         }
 
-        static int ICompare( const Data* first, const Data* second )
+        [[nodiscard]] static int ICompare( const Data* first, const Data* second )
         {
             if ( first != second )
             {
@@ -1692,7 +1727,7 @@ namespace Harlinn::Common::Core
             }
         }
 
-        static bool IsNotSame( const CharType* first, const Data* second )
+        [[nodiscard]] static bool IsNotSame( const CharType* first, const Data* second )
         {
             if ( second )
             {
@@ -1703,7 +1738,7 @@ namespace Harlinn::Common::Core
                 return first ? false : true;
             }
         }
-        static bool IsNotSame( const Data* first, const CharType* second )
+        [[nodiscard]] static bool IsNotSame( const Data* first, const CharType* second )
         {
             if ( first )
             {
@@ -1716,7 +1751,7 @@ namespace Harlinn::Common::Core
         }
 
 
-        static int Compare( const CharType* first, const Data* second )
+        [[nodiscard]] static int Compare( const CharType* first, const Data* second )
         {
             if ( IsNotSame( first, second ) )
             {
@@ -1742,7 +1777,7 @@ namespace Harlinn::Common::Core
             }
         }
 
-        static int ICompare( const CharType* first, const Data* second )
+        [[nodiscard]] static int ICompare( const CharType* first, const Data* second )
         {
             if ( IsNotSame( first, second ) )
             {
@@ -1768,7 +1803,7 @@ namespace Harlinn::Common::Core
             }
         }
 
-        static int Compare( const Data* first, const CharType* second )
+        [[nodiscard]] static int Compare( const Data* first, const CharType* second )
         {
             if ( IsNotSame( first, second ) )
             {
@@ -1794,7 +1829,7 @@ namespace Harlinn::Common::Core
             }
         }
 
-        static int ICompare( const Data* first, const CharType* second )
+        [[nodiscard]] static int ICompare( const Data* first, const CharType* second )
         {
             if ( IsNotSame( first, second ) )
             {
@@ -1821,138 +1856,138 @@ namespace Harlinn::Common::Core
         }
 
     public:
-        static int Compare( const BasicString& first, const BasicString& second )
+        [[nodiscard]] static int Compare( const BasicString& first, const BasicString& second )
         {
             return Compare( first.data_, second.data_ );
         }
-        static int Compare( const CharType* first, const BasicString& second )
+        [[nodiscard]] static int Compare( const CharType* first, const BasicString& second )
         {
             return Compare( first, second.data_ );
         }
-        static int Compare( const BasicString& first, const CharType* second )
+        [[nodiscard]] static int Compare( const BasicString& first, const CharType* second )
         {
             return Compare( first.data_, second );
         }
 
-        int Compare( const BasicString& second ) const
+        [[nodiscard]] int Compare( const BasicString& second ) const
         {
             return Compare( data_, second.data_ );
         }
-        int Compare( const CharType* second ) const
+        [[nodiscard]] int Compare( const CharType* second ) const
         {
             return Compare( data_, second );
         }
 
 
-        static int compare( const BasicString& first, const BasicString& second )
+        [[nodiscard]] static int compare( const BasicString& first, const BasicString& second )
         {
             return Compare( first, second );
         }
-        static int compare( const CharType* first, const BasicString& second )
+        [[nodiscard]] static int compare( const CharType* first, const BasicString& second )
         {
             return Compare( first, second );
         }
-        static int compare( const BasicString& first, const CharType* second )
+        [[nodiscard]] static int compare( const BasicString& first, const CharType* second )
         {
             return Compare( first, second );
         }
 
-        int compare( const BasicString& second ) const
+        [[nodiscard]] int compare( const BasicString& second ) const
         {
             return Compare( second );
         }
-        int compare( const CharType* second ) const
+        [[nodiscard]] int compare( const CharType* second ) const
         {
             return Compare( second );
         }
 
 
-        static int ICompare( const BasicString& first, const BasicString& second )
+        [[nodiscard]] static int ICompare( const BasicString& first, const BasicString& second )
         {
             return ICompare( first.data_, second.data_ );
         }
-        static int ICompare( const CharType* first, const BasicString& second )
+        [[nodiscard]] static int ICompare( const CharType* first, const BasicString& second )
         {
             return ICompare( first, second.data_ );
         }
-        static int ICompare( const BasicString& first, const CharType* second )
+        [[nodiscard]] static int ICompare( const BasicString& first, const CharType* second )
         {
             return ICompare( first.data_, second );
         }
 
-        friend bool operator == ( const BasicString& first, const BasicString& second )
+        [[nodiscard]] friend bool operator == ( const BasicString& first, const BasicString& second )
         {
             return Compare( first, second ) == 0;
         }
-        friend bool operator == ( const CharType* first, const BasicString& second )
+        [[nodiscard]] friend bool operator == ( const CharType* first, const BasicString& second )
         {
             return Compare( first, second ) == 0;
         }
-        friend bool operator == ( const BasicString& first, const CharType* second )
+        [[nodiscard]] friend bool operator == ( const BasicString& first, const CharType* second )
         {
             return Compare( first, second ) == 0;
         }
 
-        friend bool operator <= ( const BasicString& first, const BasicString& second )
+        [[nodiscard]] friend bool operator <= ( const BasicString& first, const BasicString& second )
         {
             return Compare( first, second ) <= 0;
         }
-        friend bool operator <= ( const CharType* first, const BasicString& second )
+        [[nodiscard]] friend bool operator <= ( const CharType* first, const BasicString& second )
         {
             return Compare( first, second ) <= 0;
         }
-        friend bool operator <= ( const BasicString& first, const CharType* second )
+        [[nodiscard]] friend bool operator <= ( const BasicString& first, const CharType* second )
         {
             return Compare( first, second ) <= 0;
         }
 
-        friend bool operator >= ( const BasicString& first, const BasicString& second )
+        [[nodiscard]] friend bool operator >= ( const BasicString& first, const BasicString& second )
         {
             return Compare( first, second ) >= 0;
         }
-        friend bool operator >= ( const CharType* first, const BasicString& second )
+        [[nodiscard]] friend bool operator >= ( const CharType* first, const BasicString& second )
         {
             return Compare( first, second ) >= 0;
         }
-        friend bool operator >= ( const BasicString& first, const CharType* second )
+        [[nodiscard]] friend bool operator >= ( const BasicString& first, const CharType* second )
         {
             return Compare( first, second ) >= 0;
         }
 
-        friend bool operator < ( const BasicString& first, const BasicString& second )
+        [[nodiscard]] friend bool operator < ( const BasicString& first, const BasicString& second )
         {
             return Compare( first, second ) < 0;
         }
-        friend bool operator < ( const CharType* first, const BasicString& second )
+        [[nodiscard]] friend bool operator < ( const CharType* first, const BasicString& second )
         {
             return Compare( first, second ) < 0;
         }
-        friend bool operator < ( const BasicString& first, const CharType* second )
+        [[nodiscard]] friend bool operator < ( const BasicString& first, const CharType* second )
         {
             return Compare( first, second ) < 0;
         }
-        friend bool operator > ( const BasicString& first, const BasicString& second )
+        [[nodiscard]] friend bool operator > ( const BasicString& first, const BasicString& second )
         {
             return Compare( first, second ) > 0;
         }
-        friend bool operator > ( const CharType* first, const BasicString& second )
+        [[nodiscard]] friend bool operator > ( const CharType* first, const BasicString& second )
         {
             return Compare( first, second ) > 0;
         }
-        friend bool operator > ( const BasicString& first, const CharType* second )
+        [[nodiscard]] friend bool operator > ( const BasicString& first, const CharType* second )
         {
             return Compare( first, second ) > 0;
         }
 
-        friend bool operator != ( const BasicString& first, const BasicString& second )
+        [[nodiscard]] friend bool operator != ( const BasicString& first, const BasicString& second )
         {
             return Compare( first, second ) != 0;
         }
-        friend bool operator != ( const CharType* first, const BasicString& second )
+        [[nodiscard]] friend bool operator != ( const CharType* first, const BasicString& second )
         {
             return Compare( first, second ) != 0;
         }
-        friend bool operator != ( const BasicString& first, const CharType* second )
+        [[nodiscard]] friend bool operator != ( const BasicString& first, const CharType* second )
         {
             return Compare( first, second ) != 0;
         }
@@ -1960,7 +1995,7 @@ namespace Harlinn::Common::Core
 
 
 
-        size_type IndexOf( CharType c ) const
+        [[nodiscard]] size_type IndexOf( CharType c ) const
         {
             if ( data_ )
             {
@@ -1973,7 +2008,7 @@ namespace Harlinn::Common::Core
             }
         }
 
-        size_type find_first_of( CharType c ) const
+        [[nodiscard]] size_type find_first_of( CharType c ) const
         {
             return IndexOf( c );
         }
@@ -1981,7 +2016,7 @@ namespace Harlinn::Common::Core
         
 
 
-        size_type IndexOfAnyOf( const CharType* searchChars, size_type numberOfSearchChars, size_type start ) const
+        [[nodiscard]] size_type IndexOfAnyOf( const CharType* searchChars, size_type numberOfSearchChars, size_type start ) const
         {
             if ( data_ && searchChars && numberOfSearchChars )
             {
@@ -1999,7 +2034,7 @@ namespace Harlinn::Common::Core
         }
 
 
-        size_type IIndexOfAnyOf( const CharType* searchChars, size_type numberOfSearchChars, size_type start ) const
+        [[nodiscard]] size_type IIndexOfAnyOf( const CharType* searchChars, size_type numberOfSearchChars, size_type start ) const
         {
             if ( data_ && searchChars && numberOfSearchChars )
             {
@@ -2021,7 +2056,7 @@ namespace Harlinn::Common::Core
         }
 
 
-        size_type IndexOfAnyOf( const BasicString<CharType>& searchChars, size_type start = 0 ) const
+        [[nodiscard]] size_type IndexOfAnyOf( const BasicString<CharType>& searchChars, size_type start = 0 ) const
         {
             const auto* searchData = searchChars.data_;
             if ( searchData )
@@ -2031,7 +2066,7 @@ namespace Harlinn::Common::Core
             return npos;
         }
 
-        size_type IIndexOfAnyOf( const AnsiString& searchChars, size_type start = 0 ) const
+        [[nodiscard]] size_type IIndexOfAnyOf( const AnsiString& searchChars, size_type start = 0 ) const
         {
             const auto* searchData = searchChars.data_;
             if ( searchData )
@@ -2041,7 +2076,7 @@ namespace Harlinn::Common::Core
             return npos;
         }
 
-        size_type IndexOfAnyOf( const CharType* searchChars, size_type start = 0 ) const
+        [[nodiscard]] size_type IndexOfAnyOf( const CharType* searchChars, size_type start = 0 ) const
         {
             size_type length = Internal::LengthOf( searchChars );
             if ( length )
@@ -2051,7 +2086,7 @@ namespace Harlinn::Common::Core
             return npos;
         }
 
-        size_type IIndexOfAnyOf( const CharType* searchChars, size_type start = 0 ) const
+        [[nodiscard]] size_type IIndexOfAnyOf( const CharType* searchChars, size_type start = 0 ) const
         {
             size_type length = Internal::LengthOf( searchChars );
             if ( length )
@@ -2062,7 +2097,7 @@ namespace Harlinn::Common::Core
         }
 
 
-        size_type IndexOfAnyBut( const CharType* searchChars, size_type numberOfSearchChars, size_type start ) const
+        [[nodiscard]] size_type IndexOfAnyBut( const CharType* searchChars, size_type numberOfSearchChars, size_type start ) const
         {
             if ( data_ && searchChars && numberOfSearchChars )
             {
@@ -2079,24 +2114,24 @@ namespace Harlinn::Common::Core
             return npos;
         }
 
-        size_type find_first_not_of( const CharType* searchChars, size_type numberOfSearchChars, size_type start ) const
+        [[nodiscard]] size_type find_first_not_of( const CharType* searchChars, size_type numberOfSearchChars, size_type start ) const
         {
             return IndexOfAnyBut( searchChars, numberOfSearchChars, start );
         }
 
-        size_type IndexOfAnyBut( const CharType searchChar, size_type start = 0 ) const
+        [[nodiscard]] size_type IndexOfAnyBut( const CharType searchChar, size_type start = 0 ) const
         {
             return IndexOfAnyBut( &searchChar, 1, start );
         }
 
-        size_type find_first_not_of( const CharType searchChar, size_type start = 0 ) const
+        [[nodiscard]] size_type find_first_not_of( const CharType searchChar, size_type start = 0 ) const
         {
             return IndexOfAnyBut( searchChar, start );
         }
 
 
 
-        size_type IIndexOfAnyBut( const CharType* searchChars, size_type numberOfSearchChars, size_type start ) const
+        [[nodiscard]] size_type IIndexOfAnyBut( const CharType* searchChars, size_type numberOfSearchChars, size_type start ) const
         {
             if ( data_ && searchChars && numberOfSearchChars )
             {
@@ -2123,7 +2158,7 @@ namespace Harlinn::Common::Core
         }
 
 
-        size_type IndexOfAnyBut( const BasicString& searchChars, size_type start = 0 ) const
+        [[nodiscard]] size_type IndexOfAnyBut( const BasicString& searchChars, size_type start = 0 ) const
         {
             auto* searchData = searchChars.data_;
             if ( searchData )
@@ -2133,12 +2168,12 @@ namespace Harlinn::Common::Core
             return npos;
         }
 
-        size_type find_first_not_of( const BasicString& searchChars, size_type start = 0 ) const
+        [[nodiscard]] size_type find_first_not_of( const BasicString& searchChars, size_type start = 0 ) const
         {
             return IndexOfAnyBut( searchChars, start );
         }
 
-        size_type IIndexOfAnyBut( const BasicString& searchChars, size_type start = 0 ) const
+        [[nodiscard]] size_type IIndexOfAnyBut( const BasicString& searchChars, size_type start = 0 ) const
         {
             auto* searchData = searchChars.data_;
             if ( searchData )
@@ -2148,25 +2183,25 @@ namespace Harlinn::Common::Core
             return npos;
         }
 
-        size_type IndexOfAnyBut( const CharType* searchChars, size_type start = 0 ) const
+        [[nodiscard]] size_type IndexOfAnyBut( const CharType* searchChars, size_type start = 0 ) const
         {
             size_type length = Internal::LengthOf( searchChars );
             return IndexOfAnyBut( searchChars, length, start );
         }
 
-        size_type find_first_not_of( const CharType* searchChars, size_type start = 0 ) const
+        [[nodiscard]] size_type find_first_not_of( const CharType* searchChars, size_type start = 0 ) const
         {
             return IndexOfAnyBut( searchChars, start );
         }
 
-        size_type IIndexOfAnyBut( const CharType* searchChars, size_type start = 0 ) const
+        [[nodiscard]] size_type IIndexOfAnyBut( const CharType* searchChars, size_type start = 0 ) const
         {
             size_type length = Internal::LengthOf( searchChars );
             return IIndexOfAnyBut( searchChars, length, start );
         }
 
 
-        size_type LastIndexOfAnyOf( const CharType* searchChars, size_type numberOfSearchChars, size_type start ) const
+        [[nodiscard]] size_type LastIndexOfAnyOf( const CharType* searchChars, size_type numberOfSearchChars, size_type start ) const
         {
             if ( data_ && searchChars && numberOfSearchChars )
             {
@@ -2186,7 +2221,7 @@ namespace Harlinn::Common::Core
             return npos;
         }
 
-        size_type ILastIndexOfAnyOf( const CharType* searchChars, size_type numberOfSearchChars, size_type start ) const
+        [[nodiscard]] size_type ILastIndexOfAnyOf( const CharType* searchChars, size_type numberOfSearchChars, size_type start ) const
         {
             if ( data_ && searchChars && numberOfSearchChars )
             {
@@ -2211,7 +2246,7 @@ namespace Harlinn::Common::Core
         }
 
 
-        size_type LastIndexOfAnyOf( const BasicString& searchChars, size_type start = npos ) const
+        [[nodiscard]] size_type LastIndexOfAnyOf( const BasicString& searchChars, size_type start = npos ) const
         {
             auto* searchData = searchChars.data_;
             if ( searchData )
@@ -2221,13 +2256,13 @@ namespace Harlinn::Common::Core
             return npos;
         }
 
-        size_type find_last_of( const BasicString& searchChars, size_type start = npos ) const
+        [[nodiscard]] size_type find_last_of( const BasicString& searchChars, size_type start = npos ) const
         {
             return LastIndexOfAnyOf( searchChars, start );
         }
 
 
-        size_type ILastIndexOfAnyOf( const BasicString& searchChars, size_type start = npos ) const
+        [[nodiscard]] size_type ILastIndexOfAnyOf( const BasicString& searchChars, size_type start = npos ) const
         {
             auto* searchData = searchChars.data_;
             if ( searchData )
@@ -2237,7 +2272,7 @@ namespace Harlinn::Common::Core
             return npos;
         }
 
-        size_type LastIndexOfAnyOf( const CharType* searchChars, size_type start = npos ) const
+        [[nodiscard]] size_type LastIndexOfAnyOf( const CharType* searchChars, size_type start = npos ) const
         {
             size_type length = Internal::LengthOf( searchChars );
             if ( length )
@@ -2247,13 +2282,13 @@ namespace Harlinn::Common::Core
             return npos;
         }
 
-        size_type find_last_of( const CharType* searchChars, size_type start = npos ) const
+        [[nodiscard]] size_type find_last_of( const CharType* searchChars, size_type start = npos ) const
         {
             return LastIndexOfAnyOf( searchChars, start );
         }
 
 
-        size_type ILastIndexOfAnyOf( const CharType* searchChars, size_type start = npos ) const
+        [[nodiscard]] size_type ILastIndexOfAnyOf( const CharType* searchChars, size_type start = npos ) const
         {
             size_type length = Internal::LengthOf( searchChars );
             if ( length )
@@ -2264,7 +2299,7 @@ namespace Harlinn::Common::Core
         }
 
 
-        size_type LastIndexOfAnyBut( const CharType* searchChars, size_type numberOfSearchChars, size_type start ) const
+        [[nodiscard]] size_type LastIndexOfAnyBut( const CharType* searchChars, size_type numberOfSearchChars, size_type start ) const
         {
             if ( data_ )
             {
@@ -2284,7 +2319,7 @@ namespace Harlinn::Common::Core
             return npos;
         }
 
-        size_type ILastIndexOfAnyBut( const CharType* searchChars, size_type numberOfSearchChars, size_type start ) const
+        [[nodiscard]] size_type ILastIndexOfAnyBut( const CharType* searchChars, size_type numberOfSearchChars, size_type start ) const
         {
             if ( data_ )
             {
@@ -2316,7 +2351,7 @@ namespace Harlinn::Common::Core
 
 
 
-        size_type LastIndexOfAnyBut( const BasicString& searchChars, size_type start = npos ) const
+        [[nodiscard]] size_type LastIndexOfAnyBut( const BasicString& searchChars, size_type start = npos ) const
         {
             auto* searchData = searchChars.data_;
             if ( searchData )
@@ -2326,7 +2361,7 @@ namespace Harlinn::Common::Core
             return npos;
         }
 
-        size_type ILastIndexOfAnyBut( const BasicString& searchChars, size_type start = npos ) const
+        [[nodiscard]] size_type ILastIndexOfAnyBut( const BasicString& searchChars, size_type start = npos ) const
         {
             auto* searchData = searchChars.data_;
             if ( searchData )
@@ -2336,7 +2371,7 @@ namespace Harlinn::Common::Core
             return npos;
         }
 
-        size_type LastIndexOfAnyBut( const CharType* searchChars, size_type start = npos ) const
+        [[nodiscard]] size_type LastIndexOfAnyBut( const CharType* searchChars, size_type start = npos ) const
         {
             size_type length = Internal::LengthOf( searchChars );
             if ( length )
@@ -2346,7 +2381,7 @@ namespace Harlinn::Common::Core
             return npos;
         }
 
-        size_type ILastIndexOfAnyBut( const CharType* searchChars, size_type start = npos ) const
+        [[nodiscard]] size_type ILastIndexOfAnyBut( const CharType* searchChars, size_type start = npos ) const
         {
             size_type length = Internal::LengthOf( searchChars );
             if ( length )
@@ -2357,7 +2392,7 @@ namespace Harlinn::Common::Core
         }
 
 
-        size_type IndexOf( const CharType* searchString, size_type searchStringLength, size_type start ) const
+        [[nodiscard]] size_type IndexOf( const CharType* searchString, size_type searchStringLength, size_type start ) const
         {
             if ( data_ && ( start < data_->size_ ) )
             {
@@ -2386,7 +2421,7 @@ namespace Harlinn::Common::Core
 
 
 
-        size_type IIndexOf( const CharType* searchString, size_type searchStringLength, size_type start ) const
+        [[nodiscard]] size_type IIndexOf( const CharType* searchString, size_type searchStringLength, size_type start ) const
         {
             if ( data_ && ( start < data_->size_ ) )
             {
@@ -2414,7 +2449,7 @@ namespace Harlinn::Common::Core
         }
 
 
-        size_type IndexOf( const BasicString& searchString, size_type start = 0 ) const
+        [[nodiscard]] size_type IndexOf( const BasicString& searchString, size_type start = 0 ) const
         {
             auto* searchData = searchString.data_;
             if ( searchData )
@@ -2424,7 +2459,7 @@ namespace Harlinn::Common::Core
             return npos;
         }
 
-        size_type IIndexOf( const BasicString& searchString, size_type start = 0 ) const
+        [[nodiscard]] size_type IIndexOf( const BasicString& searchString, size_type start = 0 ) const
         {
             auto* searchData = searchString.data_;
             if ( searchData )
@@ -2434,7 +2469,7 @@ namespace Harlinn::Common::Core
             return npos;
         }
 
-        size_type IndexOf( const CharType* searchString, size_type start = 0 ) const
+        [[nodiscard]] size_type IndexOf( const CharType* searchString, size_type start = 0 ) const
         {
             if ( searchString && searchString[0] && data_ && start < data_->size_ )
             {
@@ -2471,7 +2506,7 @@ namespace Harlinn::Common::Core
             return npos;
         }
 
-        size_type IIndexOf( const CharType* searchString, size_type start = 0 ) const
+        [[nodiscard]] size_type IIndexOf( const CharType* searchString, size_type start = 0 ) const
         {
             if ( searchString && searchString[0] && data_ && start < data_->size_ )
             {
@@ -2509,7 +2544,7 @@ namespace Harlinn::Common::Core
         }
 
 
-        size_type IndexOf( const CharType c, size_type start ) const
+        [[nodiscard]] size_type IndexOf( const CharType c, size_type start ) const
         {
             if ( data_ && start < data_->size_ )
             {
@@ -2522,13 +2557,13 @@ namespace Harlinn::Common::Core
             return npos;
         }
 
-        size_type find_first_of( CharType c, size_type start ) const
+        [[nodiscard]] size_type find_first_of( CharType c, size_type start ) const
         {
             return IndexOf( c, start );
         }
 
 
-        size_type IndexOf( bool( *test )( CharType ), size_type start = 0 ) const
+        [[nodiscard]] size_type IndexOf( bool( *test )( CharType ), size_type start = 0 ) const
         {
             if ( data_ )
             {
@@ -2545,7 +2580,7 @@ namespace Harlinn::Common::Core
             return npos;
         }
 
-        size_type IndexOf( bool( *test )( const CharType*, size_type length ), size_type start = 0 ) const
+        [[nodiscard]] size_type IndexOf( bool( *test )( const CharType*, size_type length ), size_type start = 0 ) const
         {
             if ( data_ && start < data_->size_ )
             {
@@ -2564,7 +2599,7 @@ namespace Harlinn::Common::Core
             return npos;
         }
 
-        size_type IndexOf( bool( *test )( const CharType*, const CharType* ), size_type start = 0 ) const
+        [[nodiscard]] size_type IndexOf( bool( *test )( const CharType*, const CharType* ), size_type start = 0 ) const
         {
             if ( data_ && start < data_->size_ )
             {
@@ -2585,7 +2620,7 @@ namespace Harlinn::Common::Core
 
 
 
-        size_type LastIndexOf( const CharType* searchString, size_type searchStringLength, size_type start ) const
+        [[nodiscard]] size_type LastIndexOf( const CharType* searchString, size_type searchStringLength, size_type start ) const
         {
             if ( data_ && ( searchStringLength <= data_->size_ ) )
             {
@@ -2619,7 +2654,7 @@ namespace Harlinn::Common::Core
         }
 
 
-        size_type ILastIndexOf( const CharType* searchString, size_type searchStringLength, size_type start ) const
+        [[nodiscard]] size_type ILastIndexOf( const CharType* searchString, size_type searchStringLength, size_type start ) const
         {
             if ( data_ && ( searchStringLength <= data_->size_ ) )
             {
@@ -2653,7 +2688,7 @@ namespace Harlinn::Common::Core
             return npos;
         }
 
-        size_type LastIndexOf( const BasicString& searchString, size_type start = npos ) const
+        [[nodiscard]] size_type LastIndexOf( const BasicString& searchString, size_type start = npos ) const
         {
             auto* searchData = searchString.data_;
             if ( searchData )
@@ -2663,7 +2698,7 @@ namespace Harlinn::Common::Core
             return npos;
         }
 
-        size_type ILastIndexOf( const BasicString& searchString, size_type start = npos ) const
+        [[nodiscard]] size_type ILastIndexOf( const BasicString& searchString, size_type start = npos ) const
         {
             auto* searchData = searchString.data_;
             if ( searchData )
@@ -2673,7 +2708,7 @@ namespace Harlinn::Common::Core
             return npos;
         }
 
-        size_type LastIndexOf( const CharType* searchString, size_type start = npos ) const
+        [[nodiscard]] size_type LastIndexOf( const CharType* searchString, size_type start = npos ) const
         {
             size_type length = Internal::LengthOf( searchString );
             if ( length )
@@ -2684,7 +2719,7 @@ namespace Harlinn::Common::Core
             return npos;
         }
 
-        size_type ILastIndexOf( const CharType* searchString, size_type start = npos ) const
+        [[nodiscard]] size_type ILastIndexOf( const CharType* searchString, size_type start = npos ) const
         {
             size_type length = Internal::LengthOf( searchString );
             if ( length )
@@ -2695,7 +2730,7 @@ namespace Harlinn::Common::Core
             return npos;
         }
 
-        size_type LastIndexOf( CharType c, size_type start = npos ) const
+        [[nodiscard]] size_type LastIndexOf( CharType c, size_type start = npos ) const
         {
             if ( data_ )
             {
@@ -2715,7 +2750,7 @@ namespace Harlinn::Common::Core
             return npos;
         }
 
-        size_type ILastIndexOf( CharType c, size_type start = npos ) const
+        [[nodiscard]] size_type ILastIndexOf( CharType c, size_type start = npos ) const
         {
             c = Internal::ToUpper( c );
             if ( data_ )
@@ -2737,7 +2772,7 @@ namespace Harlinn::Common::Core
         }
 
 
-        size_type LastIndexOf( bool( *test )( CharType ), size_type start = npos ) const
+        [[nodiscard]] size_type LastIndexOf( bool( *test )( CharType ), size_type start = npos ) const
         {
             if ( data_ )
             {
@@ -2760,7 +2795,7 @@ namespace Harlinn::Common::Core
         }
 
 
-        size_type LastIndexOf( bool( *test )( const CharType*, size_type length ), size_type start = npos ) const
+        [[nodiscard]] size_type LastIndexOf( bool( *test )( const CharType*, size_type length ), size_type start = npos ) const
         {
             if ( ( data_ ) && ( start < data_->size_ ) )
             {
@@ -2785,7 +2820,7 @@ namespace Harlinn::Common::Core
         }
 
 
-        size_type LastIndexOf( bool( *test )( const CharType*, const CharType* ), size_type start = npos ) const
+        [[nodiscard]] size_type LastIndexOf( bool( *test )( const CharType*, const CharType* ), size_type start = npos ) const
         {
             if ( ( data_ ) && ( start < data_->size_ ) )
             {
@@ -2807,7 +2842,7 @@ namespace Harlinn::Common::Core
             return npos;
         }
 
-        bool IsSpace( size_type position ) const
+        [[nodiscard]] bool IsSpace( size_type position ) const
         {
             if ( ( data_ ) && ( position < data_->size_ ) )
             {
@@ -2816,7 +2851,7 @@ namespace Harlinn::Common::Core
             return false;
         }
 
-        bool IsControl( size_type position ) const
+        [[nodiscard]] bool IsControl( size_type position ) const
         {
             if ( ( data_ ) && ( position < data_->size_ ) )
             {
@@ -2824,7 +2859,7 @@ namespace Harlinn::Common::Core
             }
             return false;
         }
-        bool IsDigit( size_type position ) const
+        [[nodiscard]] bool IsDigit( size_type position ) const
         {
             if ( ( data_ ) && ( position < data_->size_ ) )
             {
@@ -2832,7 +2867,7 @@ namespace Harlinn::Common::Core
             }
             return false;
         }
-        bool IsLetter( size_type position ) const
+        [[nodiscard]] bool IsLetter( size_type position ) const
         {
             if ( ( data_ ) && ( position < data_->size_ ) )
             {
@@ -2840,7 +2875,7 @@ namespace Harlinn::Common::Core
             }
             return false;
         }
-        bool IsLetterOrDigit( size_type position ) const
+        [[nodiscard]] bool IsLetterOrDigit( size_type position ) const
         {
             if ( ( data_ ) && ( position < data_->size_ ) )
             {
@@ -2848,7 +2883,7 @@ namespace Harlinn::Common::Core
             }
             return false;
         }
-        bool IsLower( size_type position ) const
+        [[nodiscard]] bool IsLower( size_type position ) const
         {
             if ( ( data_ ) && ( position < data_->size_ ) )
             {
@@ -2856,7 +2891,7 @@ namespace Harlinn::Common::Core
             }
             return false;
         }
-        bool IsUpper( size_type position ) const
+        [[nodiscard]] bool IsUpper( size_type position ) const
         {
             if ( ( data_ ) && ( position < data_->size_ ) )
             {
@@ -2864,7 +2899,7 @@ namespace Harlinn::Common::Core
             }
             return false;
         }
-        bool IsPunctuation( size_type position ) const
+        [[nodiscard]] bool IsPunctuation( size_type position ) const
         {
             if ( ( data_ ) && ( position < data_->size_ ) )
             {
@@ -2872,7 +2907,7 @@ namespace Harlinn::Common::Core
             }
             return false;
         }
-        bool IsWhiteSpace( size_type position ) const
+        [[nodiscard]] bool IsWhiteSpace( size_type position ) const
         {
             if ( ( data_ ) && ( position < data_->size_ ) )
             {
@@ -2881,7 +2916,7 @@ namespace Harlinn::Common::Core
             return false;
         }
 
-        bool StartsWith( const CharType ch ) const
+        [[nodiscard]] bool StartsWith( const CharType ch ) const
         {
             if ( data_ )
             {
@@ -2893,13 +2928,13 @@ namespace Harlinn::Common::Core
             }
             return false;
         }
-        bool starts_with( const CharType ch ) const
+        [[nodiscard]] bool starts_with( const CharType ch ) const
         {
             return StartsWith( ch );
         }
 
 
-        bool StartsWith( const CharType* str ) const
+        [[nodiscard]] bool StartsWith( const CharType* str ) const
         {
             if ( data_ && data_->buffer_[0] && str && str[0] )
             {
@@ -2917,13 +2952,13 @@ namespace Harlinn::Common::Core
             }
             return false;
         }
-        bool starts_with( const CharType* str ) const
+        [[nodiscard]] bool starts_with( const CharType* str ) const
         {
             return StartsWith( str );
         }
 
 
-        bool StartsWith( const BasicString& str ) const
+        [[nodiscard]] bool StartsWith( const BasicString& str ) const
         {
             if ( str.data_ )
             {
@@ -2935,13 +2970,13 @@ namespace Harlinn::Common::Core
             }
         }
 
-        bool starts_with( const BasicString& str ) const
+        [[nodiscard]] bool starts_with( const BasicString& str ) const
         {
             return StartsWith( str );
         }
 
 
-        bool IStartsWith( const CharType* str ) const
+        [[nodiscard]] bool IStartsWith( const CharType* str ) const
         {
             if ( data_ && data_->buffer_[0] && str && str[0] )
             {
@@ -2960,7 +2995,7 @@ namespace Harlinn::Common::Core
             return false;
         }
 
-        bool IStartsWith( const BasicString& str ) const
+        [[nodiscard]] bool IStartsWith( const BasicString& str ) const
         {
             if ( str.data_ )
             {
@@ -2972,7 +3007,7 @@ namespace Harlinn::Common::Core
             }
         }
 
-        bool EndsWith( const CharType ch ) const
+        [[nodiscard]] bool EndsWith( const CharType ch ) const
         {
             if ( data_  )
             {
@@ -2985,12 +3020,12 @@ namespace Harlinn::Common::Core
             return false;
         }
 
-        bool ends_with( const CharType ch ) const
+        [[nodiscard]] bool ends_with( const CharType ch ) const
         {
             return EndsWith( ch );
         }
 
-        bool EndsWith( const CharType* str ) const
+        [[nodiscard]] bool EndsWith( const CharType* str ) const
         {
             if ( data_ && data_->size_ && str && str[0] )
             {
@@ -3003,12 +3038,12 @@ namespace Harlinn::Common::Core
             return false;
         }
 
-        bool ends_with( const CharType* str ) const
+        [[nodiscard]] bool ends_with( const CharType* str ) const
         {
             return EndsWith( str );
         }
 
-        bool EndsWith( const BasicString& str ) const
+        [[nodiscard]] bool EndsWith( const BasicString& str ) const
         {
             auto* other = str.data_;
             if ( data_ && data_->size_ && other && other->size_ )
@@ -3021,12 +3056,12 @@ namespace Harlinn::Common::Core
             return false;
         }
 
-        bool ends_with( const BasicString& str ) const
+        [[nodiscard]] bool ends_with( const BasicString& str ) const
         {
             return EndsWith( str );
         }
 
-        bool IEndsWith( const CharType* str ) const
+        [[nodiscard]] bool IEndsWith( const CharType* str ) const
         {
             if ( data_ && data_->size_ && str && str[0] )
             {
@@ -3038,7 +3073,7 @@ namespace Harlinn::Common::Core
             }
             return false;
         }
-        bool IEndsWith( const BasicString& str ) const
+        [[nodiscard]] bool IEndsWith( const BasicString& str ) const
         {
             auto* other = str.data_;
             if ( data_ && data_->size_ && other && other->size_ )
@@ -3052,7 +3087,7 @@ namespace Harlinn::Common::Core
         }
 
 
-        BasicString SubString( size_type start, size_type length = npos ) const
+        [[nodiscard]] BasicString SubString( size_type start, size_type length = npos ) const
         {
             if ( data_ && ( start < data_->size_ ) )
             {
@@ -3075,7 +3110,7 @@ namespace Harlinn::Common::Core
             }
         }
 
-        BasicString substr( size_type start, size_type length = npos ) const
+        [[nodiscard]] BasicString substr( size_type start, size_type length = npos ) const
         {
             return SubString( start, length );
         }
@@ -3112,7 +3147,7 @@ namespace Harlinn::Common::Core
             return *this;
         }
 
-        BasicString ToLower( ) const
+        [[nodiscard]] BasicString ToLower( ) const
         {
             if ( data_ )
             {
@@ -3127,7 +3162,7 @@ namespace Harlinn::Common::Core
             }
         }
 
-        BasicString ToUpper( ) const
+        [[nodiscard]] BasicString ToUpper( ) const
         {
             if ( data_ )
             {
@@ -3322,7 +3357,7 @@ namespace Harlinn::Common::Core
         }
 
 
-        size_t Hash( ) const noexcept
+        [[nodiscard]] size_t Hash( ) const noexcept
         {
             if ( Base::data() )
             {

@@ -20,8 +20,15 @@ BOOST_FIXTURE_TEST_SUITE( StringTests, LocalFixture )
 // --run_test=StringTests/ConstructorTest1W
 BOOST_AUTO_TEST_CASE( ConstructorTest1W )
 {
-    WideString wideString;
+    WideString string;
+    BOOST_TEST( !!string );
+}
 
+// --run_test=StringTests/ConstructorTest1A
+BOOST_AUTO_TEST_CASE( ConstructorTest1A )
+{
+    AnsiString string;
+    BOOST_TEST( !!string );
 }
 
 
