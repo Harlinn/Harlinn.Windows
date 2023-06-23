@@ -21,15 +21,49 @@ BOOST_FIXTURE_TEST_SUITE( StringTests, LocalFixture )
 BOOST_AUTO_TEST_CASE( ConstructorTest1W )
 {
     WideString string;
-    BOOST_TEST( !!string );
+
+    BOOST_TEST( string.empty() );
 }
 
 // --run_test=StringTests/ConstructorTest1A
 BOOST_AUTO_TEST_CASE( ConstructorTest1A )
 {
     AnsiString string;
-    BOOST_TEST( !!string );
+    BOOST_TEST( string.empty( ) );
 }
+
+// --run_test=StringTests/ConstructorTest2W
+BOOST_AUTO_TEST_CASE( ConstructorTest2W )
+{
+    WideString string( L"1" );
+    bool equal = string == L"1";
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/ConstructorTest2A
+BOOST_AUTO_TEST_CASE( ConstructorTest2A )
+{
+    AnsiString string( "1" );
+    bool equal = string == "1";
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/ConstructorTest3W
+BOOST_AUTO_TEST_CASE( ConstructorTest3W )
+{
+    WideString string( L"123", 2 );
+    bool equal = string == L"12";
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/ConstructorTest3A
+BOOST_AUTO_TEST_CASE( ConstructorTest3A )
+{
+    AnsiString string( "123", 2 );
+    bool equal = string == "12";
+    BOOST_TEST( equal );
+}
+
 
 
 #endif
