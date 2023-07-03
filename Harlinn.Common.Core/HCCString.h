@@ -1066,7 +1066,7 @@ namespace Harlinn::Common::Core
         }
 
         template<typename InputIt>
-        BasicString( const_iterator first, const_iterator last )
+        BasicString( InputIt first, InputIt last )
             : data_( Initialize( first, last ) )
         {
         }
@@ -1162,6 +1162,12 @@ namespace Harlinn::Common::Core
             return BasicString( s.data( ), s.size( ) );
         }
 
+        [[nodiscard]] static BasicString From( const std::string_view& s )
+            requires std::is_same_v<CharType, char>
+        {
+            return BasicString( s.data( ), s.size( ) );
+        }
+
 
         [[nodiscard]] static BasicString From( const AnsiString& s )
             requires std::is_same_v<CharType, wchar_t>
@@ -1174,6 +1180,13 @@ namespace Harlinn::Common::Core
             return Internal::From( s.data( ), s.size( ) );
         }
 
+        [[nodiscard]] static BasicString From( const std::string_view& s )
+            requires std::is_same_v<CharType, wchar_t>
+        {
+            return Internal::From( s.data( ), s.size( ) );
+        }
+
+
         [[nodiscard]] static BasicString From( const WideString& s )
             requires std::is_same_v<CharType, wchar_t>
         {
@@ -1184,6 +1197,19 @@ namespace Harlinn::Common::Core
         {
             return BasicString( s.data( ), s.size( ) );
         }
+
+        [[nodiscard]] static BasicString From( const std::wstring_view& s )
+            requires std::is_same_v<CharType, wchar_t>
+        {
+            return BasicString( s.data( ), s.size( ) );
+        }
+        [[nodiscard]] static BasicString From( const std::wstring_view& s )
+            requires std::is_same_v<CharType, char>
+        {
+            return Internal::From( s.data( ), s.size( ) );
+        }
+
+
 
         [[nodiscard]] static BasicString From( const wchar_t* s )
             requires std::is_same_v<CharType, wchar_t>
@@ -1565,6 +1591,23 @@ namespace Harlinn::Common::Core
             return Combine( firstData, firstSize, second, secondSize );
         }
 
+        [[nodiscard]] friend BasicString<CharType> operator +( const CharType first, const BasicString<CharType>& second )
+        {
+            auto secondSize = second.size( );
+            auto* secondData = second.data( );
+
+            return Combine( &first, 1, secondData, secondSize );
+        }
+
+        [[nodiscard]] friend BasicString<CharType> operator +( const BasicString<CharType>& first, const CharType second )
+        {
+            auto firstSize = first.size( );
+            auto* firstData = first.data( );
+
+            return Combine( firstData, firstSize, &second, 1 );
+        }
+
+
 
         void Append( const CharType* other )
         {
@@ -1675,6 +1718,61 @@ namespace Harlinn::Common::Core
 
 
     private:
+        [[nodiscard]] static bool AreEqual( const Data* first, const Data* second )
+        {
+            if ( first != second )
+            {
+                if ( first )
+                {
+                    if ( second )
+                    {
+                        if ( first->size_ == second->size_ )
+                        {
+                            return Internal::Compare( first->buffer_, first->size_, second->buffer_, second->size_ ) == 0;
+                        }
+                    }
+                }
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+        [[nodiscard]] static bool AreEqual( const Data* first, const CharType* second )
+        {
+                if ( first )
+                {
+                    if ( second )
+                    {
+                        size_type secondSize = Internal::LengthOf( second );
+                        if ( first->size_ == secondSize )
+                        {
+                            return Internal::Compare( first->buffer_, first->size_, second, secondSize ) == 0;
+                        }
+                    }
+                    return false;
+                }
+                return second ? false : true;
+        }
+
+        [[nodiscard]] static bool AreEqual( const Data* first, const CharType* second, size_type secondSize )
+        {
+            if ( first )
+            {
+                if ( second )
+                {
+                    if ( first->size_ == secondSize )
+                    {
+                        return Internal::Compare( first->buffer_, first->size_, second, secondSize ) == 0;
+                    }
+                }
+                return false;
+            }
+            return second ? false : true;
+        }
+
+
         [[nodiscard]] static int Compare( const Data* first, const Data* second )
         {
             if ( first != second )
@@ -4106,12 +4204,6 @@ namespace std
     };
 
 
-    /*
-    template<> struct formatter<Harlinn::Common::Core::WideString>
-    {
-
-    };
-    */
 
 }
 #endif

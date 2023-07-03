@@ -1783,7 +1783,7 @@ namespace Harlinn::Common::Core::IO
     };
 
     template<typename StringT>
-        requires IsStdBasicString<StringT>
+        requires IsBasicString<StringT>
     class FileSystemEntries
     {
     public:

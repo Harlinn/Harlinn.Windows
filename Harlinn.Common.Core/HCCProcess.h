@@ -427,6 +427,20 @@ namespace Harlinn::Common::Core
             return WideString( buffer, static_cast<size_t>(rc) );
         }
 
+        inline DateTime CreationTime( )
+        {
+            Int64 creationTime = 0;
+            Int64 exitTime = 0;
+            Int64 kernelTime = 0;
+            Int64 userTime = 0;
+            auto rc = GetProcessTimes( GetCurrentProcess( ), reinterpret_cast< FILETIME* >( &creationTime ), reinterpret_cast< FILETIME* >( &exitTime ), reinterpret_cast< FILETIME* >( &kernelTime ), reinterpret_cast< FILETIME* >( &userTime ) );
+            if ( !rc )
+            {
+                ThrowLastOSError( );
+            }
+            return DateTime( creationTime + DateTime::FileTimeOffset );
+        }
+
 
     }
 

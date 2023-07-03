@@ -65,6 +65,334 @@ BOOST_AUTO_TEST_CASE( ConstructorTest3A )
 }
 
 
+// --run_test=StringTests/ConstructorTest4W
+BOOST_AUTO_TEST_CASE( ConstructorTest4W )
+{
+    WideString string1( L"123" );
+    WideString string2( string1.begin() + 1, string1.end() - 1 );
+    bool equal = string2 == L"2";
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/ConstructorTest4A
+BOOST_AUTO_TEST_CASE( ConstructorTest4A )
+{
+    AnsiString string1( "123" );
+    AnsiString string2( string1.begin( ) + 1, string1.end( ) - 1 );
+    bool equal = string2 == "2";
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/ConstructorTest5W
+BOOST_AUTO_TEST_CASE( ConstructorTest5W )
+{
+    WideString string1( L"123" );
+    WideString string2( string1.data( ) + 1, string1.data( ) + 2 );
+    bool equal = string2 == L"2";
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/ConstructorTest5A
+BOOST_AUTO_TEST_CASE( ConstructorTest5A )
+{
+    AnsiString string1( "123" );
+    AnsiString string2( string1.data( ) + 1, string1.data( ) + 2 );
+    bool equal = string2 == "2";
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/ConstructorTest6W
+BOOST_AUTO_TEST_CASE( ConstructorTest6W )
+{
+    std::vector<wchar_t> string1{ '1','2', '3' };
+    WideString string2( string1.begin( ) + 1, string1.end( ) - 1 );
+    bool equal = string2 == L"2";
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/ConstructorTest6A
+BOOST_AUTO_TEST_CASE( ConstructorTest6A )
+{
+    std::vector<char> string1{ '1', '2', '3' };
+    AnsiString string2( string1.begin( ) + 1, string1.end( ) - 1 );
+    bool equal = string2 == "2";
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/ConstructorTest7W
+BOOST_AUTO_TEST_CASE( ConstructorTest7W )
+{
+    std::vector<wchar_t> vector{ '1', '2', '3' };
+    WideStringView string1( vector.data(), vector.size() );
+    WideString string2( string1 );
+    bool equal = string2 == L"123";
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/ConstructorTest7A
+BOOST_AUTO_TEST_CASE( ConstructorTest7A )
+{
+    std::vector<char> vector{ '1', '2', '3' };
+    AnsiStringView string1( vector.data( ), vector.size( ) );
+    AnsiString string2( string1 );
+    bool equal = string2 == "123";
+    BOOST_TEST( equal );
+}
+
+
+// --run_test=StringTests/ConstructorTest8W
+BOOST_AUTO_TEST_CASE( ConstructorTest8W )
+{
+    WideString string1( 3, L'3' );
+    bool equal = string1 == L"333";
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/ConstructorTest8A
+BOOST_AUTO_TEST_CASE( ConstructorTest8A )
+{
+    AnsiString string1( 3, '3' );
+    bool equal = string1 == "333";
+    BOOST_TEST( equal );
+}
+
+
+// --run_test=StringTests/ConstructorTest9W
+BOOST_AUTO_TEST_CASE( ConstructorTest9W )
+{
+    WideString string1( L"123" );
+    WideString string2( string1 );
+    bool equal = string2 == L"123";
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/ConstructorTest9A
+BOOST_AUTO_TEST_CASE( ConstructorTest9A )
+{
+    AnsiString string1( "123" );
+    AnsiString string2( string1 );
+    bool equal = string2 == "123";
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/ConstructorTest10W
+BOOST_AUTO_TEST_CASE( ConstructorTest10W )
+{
+    WideString string1( L"123" );
+    WideString string2( std::move(string1) );
+    bool equal = string2 == L"123";
+    BOOST_TEST( equal );
+    BOOST_TEST( string1.empty() );
+}
+
+// --run_test=StringTests/ConstructorTest10A
+BOOST_AUTO_TEST_CASE( ConstructorTest10A )
+{
+    AnsiString string1( "123" );
+    AnsiString string2( std::move( string1 ) );
+    bool equal = string2 == "123";
+    BOOST_TEST( equal );
+    BOOST_TEST( string1.empty( ) );
+}
+
+// --run_test=StringTests/StringIsUniqueTest1W
+BOOST_AUTO_TEST_CASE( StringIsUniqueTest1W )
+{
+    WideString string1( L"123" );
+    BOOST_TEST( string1.IsUnique() );
+    WideString string2( string1 );
+    BOOST_TEST( string1.IsUnique( ) == false );
+    BOOST_TEST( string2.IsUnique( ) == false );
+}
+
+// --run_test=StringTests/StringIsUniqueTest1A
+BOOST_AUTO_TEST_CASE( StringIsUniqueTest1A )
+{
+    AnsiString string1( "123" );
+    BOOST_TEST( string1.IsUnique( ) );
+    AnsiString string2( string1 );
+    BOOST_TEST( string1.IsUnique( ) == false );
+    BOOST_TEST( string2.IsUnique( ) == false );
+}
+
+// --run_test=StringTests/StringCloneTest1W
+BOOST_AUTO_TEST_CASE( StringCloneTest1W )
+{
+    WideString string1( L"123" );
+    BOOST_TEST( string1.IsUnique( ) );
+    WideString string2( string1.Clone() );
+    BOOST_TEST( string1.IsUnique( ) );
+    BOOST_TEST( string2.IsUnique( ) );
+}
+
+// --run_test=StringTests/StringCloneTest1A
+BOOST_AUTO_TEST_CASE( StringCloneTest1A )
+{
+    AnsiString string1( "123" );
+    BOOST_TEST( string1.IsUnique( ) );
+    AnsiString string2( string1.Clone( ) );
+    BOOST_TEST( string1.IsUnique( ) );
+    BOOST_TEST( string2.IsUnique( ) );
+}
+
+// --run_test=StringTests/StringEnsureUniqueTest1W
+BOOST_AUTO_TEST_CASE( StringEnsureUniqueTest1W )
+{
+    WideString string1( L"123" );
+    BOOST_TEST( string1.IsUnique( ) );
+    WideString string2( string1 );
+    BOOST_TEST( string1.IsUnique( ) == false );
+    BOOST_TEST( string2.IsUnique( ) == false );
+    string2.EnsureUnique( );
+    BOOST_TEST( string1.IsUnique( ) );
+    BOOST_TEST( string2.IsUnique( ) );
+}
+
+// --run_test=StringTests/StringEnsureUniqueTest1A
+BOOST_AUTO_TEST_CASE( StringEnsureUniqueTest1A )
+{
+    AnsiString string1( "123" );
+    BOOST_TEST( string1.IsUnique( ) );
+    AnsiString string2( string1 );
+    BOOST_TEST( string1.IsUnique( ) == false );
+    BOOST_TEST( string2.IsUnique( ) == false );
+    string2.EnsureUnique( );
+    BOOST_TEST( string1.IsUnique( ) );
+    BOOST_TEST( string2.IsUnique( ) );
+}
+
+// --run_test=StringTests/StringFromTest1W
+BOOST_AUTO_TEST_CASE( StringFromTest1W )
+{
+    WideString from( L"123" );
+    WideString to = WideString::From( from );
+    bool equal = to == from;
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringFromTest1A
+BOOST_AUTO_TEST_CASE( StringFromTest1A )
+{
+    AnsiString from( "123" );
+    AnsiString to = AnsiString::From( from );
+    bool equal = to == from;
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringFromTest2W
+BOOST_AUTO_TEST_CASE( StringFromTest2W )
+{
+    std::wstring from( L"123" );
+    WideString to = WideString::From( from );
+    bool equal = to == from.c_str();
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringFromTest2A
+BOOST_AUTO_TEST_CASE( StringFromTest2A )
+{
+    std::string from( "123" );
+    AnsiString to = AnsiString::From( from );
+    bool equal = to == from.c_str( );
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringFromTest3W
+BOOST_AUTO_TEST_CASE( StringFromTest3W )
+{
+    WideString from( L"123" );
+    WideString to = WideString::From( from.c_str() );
+    bool equal = to == from;
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringFromTest3W
+BOOST_AUTO_TEST_CASE( StringFromTest3A )
+{
+    AnsiString from( "123" );
+    AnsiString to = AnsiString::From( from.c_str( ) );
+    bool equal = to == from;
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringFromTest4W
+BOOST_AUTO_TEST_CASE( StringFromTest4W )
+{
+    AnsiString from( "123" );
+    WideString to = WideString::From( from );
+    bool equal = to == ToWideString(from);
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringFromTest4A
+BOOST_AUTO_TEST_CASE( StringFromTest4A )
+{
+    WideString from( L"123" );
+    AnsiString to = AnsiString::From( from );
+    bool equal = to == ToAnsiString( from );
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringFromTest5W
+BOOST_AUTO_TEST_CASE( StringFromTest5W )
+{
+    AnsiString from( "123" );
+    WideString to = WideString::From( from.c_str( ) );
+    bool equal = to == ToWideString( from );
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringFromTest5A
+BOOST_AUTO_TEST_CASE( StringFromTest5A )
+{
+    WideString from( L"123" );
+    AnsiString to = AnsiString::From( from.c_str( ) );
+    bool equal = to == ToAnsiString( from );
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringFromTest6W
+BOOST_AUTO_TEST_CASE( StringFromTest6W )
+{
+    std::string from( "123" );
+    WideString to = WideString::From( from );
+    bool equal = to == ToWideString( from );
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringFromTest6A
+BOOST_AUTO_TEST_CASE( StringFromTest6A )
+{
+    std::wstring from( L"123" );
+    AnsiString to = AnsiString::From( from );
+    bool equal = to == ToAnsiString( from );
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringFromTest7W
+BOOST_AUTO_TEST_CASE( StringFromTest7W )
+{
+    std::string from( "123" );
+    std::string_view from_view( from );
+    WideString to = WideString::From( from_view );
+    bool equal = to == ToWideString( from );
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringFromTest7A
+BOOST_AUTO_TEST_CASE( StringFromTest7A )
+{
+    std::wstring from( L"123" );
+    std::wstring_view from_view( from );
+    AnsiString to = AnsiString::From( from_view );
+    bool equal = to == ToAnsiString( from );
+    BOOST_TEST( equal );
+}
+
+
+
+
+
 
 #endif
 

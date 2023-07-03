@@ -248,10 +248,15 @@
 #include <boost/container/flat_set.hpp>
 #include <boost/mp11.hpp>
 
+#include <boost/bind/bind.hpp>
+#include <boost/asio.hpp>
+
 #include <HCCWinError.h>
 
 namespace Harlinn::Common::Core
 {
+    namespace asio = boost::asio;
+
     template<typename EnumT, typename ... Args >
         requires std::is_enum_v<EnumT> && std::conjunction_v<std::is_same<std::remove_cvref_t<EnumT>, std::remove_cvref_t<Args>>...> && ( sizeof...( Args ) > 0 )
     constexpr bool ContainsAllOf( EnumT flags, Args&& ... args )
@@ -398,44 +403,44 @@ namespace Harlinn::Common::Core
     using Double = double;
 
 
-    const UInt8 MaxUInt8 = ( (UInt8)~( (UInt8)0 ) );
-    const Int8 MaxInt8 = ( (Int8)( MaxUInt8 >> 1 ) );
-    const Int8 MinInt8 = ( (Int8)~MaxInt8 );
+    constexpr UInt8 MaxUInt8 = ( (UInt8)~( (UInt8)0 ) );
+    constexpr Int8 MaxInt8 = ( (Int8)( MaxUInt8 >> 1 ) );
+    constexpr Int8 MinInt8 = ( (Int8)~MaxInt8 );
 
-    const UInt16 MaxUInt16 = ( (UInt16)~( (UInt16)0 ) );
-    const Int16  MaxInt16 = ( (Int16)( MaxUInt16 >> 1 ) );
-    const Int16  MinInt16 = ( (Int16)~MaxInt16 );
+    constexpr UInt16 MaxUInt16 = ( (UInt16)~( (UInt16)0 ) );
+    constexpr Int16  MaxInt16 = ( (Int16)( MaxUInt16 >> 1 ) );
+    constexpr Int16  MinInt16 = ( (Int16)~MaxInt16 );
 
-    const UInt32 MaxUInt32 = ( (UInt32)~( (UInt32)0 ) );
-    const Int32  MaxInt32 = ( (Int32)( MaxUInt32 >> 1 ) );
-    const Int32  MinInt32 = ( (Int32)~MaxInt32 );
+    constexpr UInt32 MaxUInt32 = ( (UInt32)~( (UInt32)0 ) );
+    constexpr Int32  MaxInt32 = ( (Int32)( MaxUInt32 >> 1 ) );
+    constexpr Int32  MinInt32 = ( (Int32)~MaxInt32 );
 
-    const UInt64 MaxUInt64 = ( (UInt64)~( (UInt64)0 ) );
-    const Int64  MaxInt64 = ( (Int64)( MaxUInt64 >> 1 ) );
-    const Int64  MinInt64 = ( (Int64)~MaxInt64 );
+    constexpr UInt64 MaxUInt64 = ( (UInt64)~( (UInt64)0 ) );
+    constexpr Int64  MaxInt64 = ( (Int64)( MaxUInt64 >> 1 ) );
+    constexpr Int64  MinInt64 = ( (Int64)~MaxInt64 );
 
-    const ULong32 MaxULong32 = ( (ULong32)~( (ULong32)0 ) );
-    const Long32  MaxLong32 = ( (Long32)( MaxULong32 >> 1 ) );
-    const Long32  MinLong32 = ( (Long32)~MaxLong32 );
+    constexpr ULong32 MaxULong32 = ( (ULong32)~( (ULong32)0 ) );
+    constexpr Long32  MaxLong32 = ( (Long32)( MaxULong32 >> 1 ) );
+    constexpr Long32  MinLong32 = ( (Long32)~MaxLong32 );
 
-    const ULong64 MaxULong64 = ( (ULong64)~( (ULong64)0 ) );
-    const Long64 MaxLong64 = ( (Long64)( MaxULong64 >> 1 ) );
-    const Long64 MinLong64 = ( (Long64)~MaxLong64 );
+    constexpr ULong64 MaxULong64 = ( (ULong64)~( (ULong64)0 ) );
+    constexpr Long64 MaxLong64 = ( (Long64)( MaxULong64 >> 1 ) );
+    constexpr Long64 MinLong64 = ( (Long64)~MaxLong64 );
 
-    const ULongLong MaxULongLong = ( (ULongLong)~( (ULongLong)0 ) );
-    const LongLong MaxLongLong = ( (LongLong)( MaxULongLong >> 1 ) );
-    const LongLong MinLongLong = ( (LongLong)~MaxLongLong );
+    constexpr ULongLong MaxULongLong = ( (ULongLong)~( (ULongLong)0 ) );
+    constexpr LongLong MaxLongLong = ( (LongLong)( MaxULongLong >> 1 ) );
+    constexpr LongLong MinLongLong = ( (LongLong)~MaxLongLong );
 
-    const  SizeT MaxSizeT = ( (SizeT)~( (SizeT)0 ) );
-    const  SSizeT MaxSSizeT = ( (SSizeT)( MaxSizeT >> 1 ) );
-    const  SSizeT MinSSizeT = ( (SSizeT)~MaxSSizeT );
+    constexpr SizeT MaxSizeT = ( (SizeT)~( (SizeT)0 ) );
+    constexpr SSizeT MaxSSizeT = ( (SSizeT)( MaxSizeT >> 1 ) );
+    constexpr SSizeT MinSSizeT = ( (SSizeT)~MaxSSizeT );
 
-    const  UInt MaxUInt = ( (UInt)~( (UInt)0 ) );
-    const  Int MaxInt = ( (Int)( MaxUInt >> 1 ) );
-    const  Int  MinInt = ( (Int)~MaxInt );
+    constexpr UInt MaxUInt = ( (UInt)~( (UInt)0 ) );
+    constexpr Int MaxInt = ( (Int)( MaxUInt >> 1 ) );
+    constexpr Int  MinInt = ( (Int)~MaxInt );
 
-    const  DWord32 MaxDWord32 = ( (DWord32)~( (DWord32)0 ) );
-    const  DWord64 MaxDWord64 = ( (DWord64)~( (DWord64)0 ) );
+    constexpr DWord32 MaxDWord32 = ( (DWord32)~( (DWord32)0 ) );
+    constexpr DWord64 MaxDWord64 = ( (DWord64)~( (DWord64)0 ) );
 
     template<typename T>
     using Nullable = std::optional<T>;

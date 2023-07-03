@@ -81,6 +81,7 @@ namespace Harlinn::Common::Core
         static constexpr long long MinMilliSeconds = MinInt64 / TicksPerMillisecond;
 
         static constexpr long long UnixEpoch = 621355968000000000LL;
+        static constexpr long long NtpEpoch = UnixEpoch - ( 2208988800 * TicksPerSecond );
         
 
         static constexpr int DaysPerYear= 365;
@@ -839,6 +840,59 @@ namespace Harlinn::Common::Core
         {
             return DateTime(ToTicks(tv));
         }
+
+        // 64-bit NTP time will wrap in 2036
+        //
+        // Since the conversion to/from NTP timestamps uses
+        // floating point arithmetic it is not 100% accurate.
+        // 
+        // When converting to NTP time and back again, the result 
+        // may be different. While testing this difference was 
+        // never found to be greater than 1 tick. 
+        Int64 ToNTP( ) const
+        {
+            Int64 result = (ticks_ - NtpEpoch) / TicksPerSecond;
+            result <<= 32;  
+            double p = ldexp( static_cast< double >( ticks_ % TicksPerSecond ), 32 ) / static_cast<double>( TicksPerSecond );
+            UInt32 frac = static_cast< UInt32 >( p );
+            result |= frac;
+            return result;
+        }
+
+        // 64-bit NTP time will wrap in 2036
+        //
+        // Since the conversion to/from NTP timestamps uses
+        // floating point arithmetic it is not 100% accurate.
+        // 
+        // When converting to NTP time and back again, the result 
+        // may be different. While testing this difference was 
+        // never found to be greater than 1 tick. 
+        static DateTime FromNTP( UInt32 secondsSince1900, UInt32 fraction )
+        {
+            Int64 ticks = ( static_cast<Int64>( secondsSince1900 ) * TicksPerSecond) + NtpEpoch;
+            Int64 fractionTicks = static_cast< Int64 >( ( static_cast< double >( fraction ) * static_cast< double >( TicksPerSecond ) / static_cast< double >( 1LL << 32 ) ) );
+            ticks += fractionTicks;
+            return DateTime( ticks );
+        }
+
+        // 64-bit NTP time will wrap in 2036
+        //
+        // Since the conversion to/from NTP timestamps uses
+        // floating point arithmetic it is not 100% accurate.
+        // 
+        // When converting to NTP time and back again, the result 
+        // may be different. While testing this difference was 
+        // never found to be greater than 1 tick. 
+        static DateTime FromNTP( Int64 ntpTime )
+        {
+            Int64 ticks = ( ( std::bit_cast<UInt64>(ntpTime) >> 32 ) * TicksPerSecond ) + NtpEpoch;
+            UInt64 fraction = ntpTime & 0xFFFFFFFF;
+            Int64 fractionTicks = static_cast< Int64 >( ( static_cast< double >( fraction ) * static_cast< double >( TicksPerSecond ) / static_cast< double >( 1LL << 32 ) ) );
+            ticks += fractionTicks;
+            return DateTime( ticks );
+        }
+
+
 
         constexpr std::chrono::system_clock::time_point ToTimePoint( ) const noexcept
         {

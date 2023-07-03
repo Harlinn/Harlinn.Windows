@@ -215,6 +215,22 @@ namespace Harlinn::Common::Core
             ModuleHandle result( hModule, false );
             return result;
         }
+
+        void* GetProcAddress( const char* symbolName ) const
+        {
+            if ( IsValid( ) )
+            {
+                return ::GetProcAddress( Value( ), symbolName );
+            }
+            return nullptr;
+        }
+
+        void* GetSymbol( const char* symbolName ) const
+        {
+            return GetProcAddress( symbolName );
+        }
+
+
     };
 
  
