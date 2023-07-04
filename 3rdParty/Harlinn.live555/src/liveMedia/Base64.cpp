@@ -37,13 +37,13 @@ static void initBase64DecodeTable() {
   base64DecodeTable[(unsigned char)'='] = 0;
 }
 
-unsigned char* base64Decode(char const* in, unsigned& resultSize,
+LIVE555_EXPORT unsigned char* base64Decode(char const* in, unsigned& resultSize,
 			    Boolean trimTrailingZeros) {
   if (in == NULL) return NULL; // sanity check
   return base64Decode(in, strlen(in), resultSize, trimTrailingZeros);
 }
 
-unsigned char* base64Decode(char const* in, unsigned inSize,
+LIVE555_EXPORT unsigned char* base64Decode(char const* in, unsigned inSize,
 			    unsigned& resultSize,
 			    Boolean trimTrailingZeros) {
   static Boolean haveInitializedBase64DecodeTable = False;
@@ -85,7 +85,7 @@ unsigned char* base64Decode(char const* in, unsigned inSize,
 static const char base64Char[] =
 "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
-char* base64Encode(char const* origSigned, unsigned origLength) {
+LIVE555_EXPORT char* base64Encode(char const* origSigned, unsigned origLength) {
   unsigned char const* orig = (unsigned char const*)origSigned; // in case any input bytes have the MSB set
   if (orig == NULL) return NULL;
 

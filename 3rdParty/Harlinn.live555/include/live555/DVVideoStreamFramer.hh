@@ -32,33 +32,33 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class DVVideoStreamFramer: public FramedFilter {
 public:
-  static DVVideoStreamFramer*
+  LIVE555_EXPORT static DVVideoStreamFramer*
   createNew(UsageEnvironment& env, FramedSource* inputSource,
 	    Boolean sourceIsSeekable = False, Boolean leavePresentationTimesUnmodified = False);
       // Set "sourceIsSeekable" to True if the input source is a seekable object (e.g. a file), and the server that uses us
       // does a seek-to-zero on the source before reading from it.  (Our RTSP server implementation does this.)
-  char const* profileName();
-  Boolean getFrameParameters(unsigned& frameSize/*bytes*/, double& frameDuration/*microseconds*/);
+  LIVE555_EXPORT char const* profileName();
+  LIVE555_EXPORT Boolean getFrameParameters(unsigned& frameSize/*bytes*/, double& frameDuration/*microseconds*/);
 
 protected:
-  DVVideoStreamFramer(UsageEnvironment& env, FramedSource* inputSource,
+  LIVE555_EXPORT DVVideoStreamFramer(UsageEnvironment& env, FramedSource* inputSource,
 		      Boolean sourceIsSeekable, Boolean leavePresentationTimesUnmodified);
       // called only by createNew(), or by subclass constructors
-  virtual ~DVVideoStreamFramer();
+  LIVE555_EXPORT virtual ~DVVideoStreamFramer();
 
 protected:
   // redefined virtual functions:
-  virtual Boolean isDVVideoStreamFramer() const;
-  virtual void doGetNextFrame();
+  LIVE555_EXPORT virtual Boolean isDVVideoStreamFramer() const;
+  LIVE555_EXPORT virtual void doGetNextFrame();
 
 protected:
-  void getAndDeliverData(); // used to implement "doGetNextFrame()"
-  static void afterGettingFrame(void* clientData, unsigned frameSize,
+  LIVE555_EXPORT void getAndDeliverData(); // used to implement "doGetNextFrame()"
+  LIVE555_EXPORT static void afterGettingFrame(void* clientData, unsigned frameSize,
                                 unsigned numTruncatedBytes,
                                 struct timeval presentationTime,
                                 unsigned durationInMicroseconds);
-  void afterGettingFrame(unsigned frameSize, unsigned numTruncatedBytes, struct timeval presentationTime);
-  void getProfile();
+  LIVE555_EXPORT void afterGettingFrame(unsigned frameSize, unsigned numTruncatedBytes, struct timeval presentationTime);
+  LIVE555_EXPORT void getProfile();
 
 protected:
   Boolean fLeavePresentationTimesUnmodified;

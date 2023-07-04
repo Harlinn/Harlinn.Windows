@@ -32,32 +32,32 @@ class ServerMediaSubsession; // forward
 
 class ServerMediaSession: public Medium {
 public:
-  static ServerMediaSession* createNew(UsageEnvironment& env,
+  LIVE555_EXPORT static ServerMediaSession* createNew(UsageEnvironment& env,
 				       char const* streamName = NULL,
 				       char const* info = NULL,
 				       char const* description = NULL,
 				       Boolean isSSM = False,
 				       char const* miscSDPLines = NULL);
 
-  static Boolean lookupByName(UsageEnvironment& env,
+  LIVE555_EXPORT static Boolean lookupByName(UsageEnvironment& env,
                               char const* mediumName,
                               ServerMediaSession*& resultSession);
 
-  char* generateSDPDescription(int addressFamily); // based on the entire session
+  LIVE555_EXPORT char* generateSDPDescription(int addressFamily); // based on the entire session
       // Note: The caller is responsible for freeing the returned string
 
   char const* streamName() const { return fStreamName; }
 
-  Boolean addSubsession(ServerMediaSubsession* subsession);
+  LIVE555_EXPORT Boolean addSubsession(ServerMediaSubsession* subsession);
   unsigned numSubsessions() const { return fSubsessionCounter; }
 
-  void testScaleFactor(float& scale); // sets "scale" to the actual supported scale
-  float duration() const;
+  LIVE555_EXPORT void testScaleFactor(float& scale); // sets "scale" to the actual supported scale
+  LIVE555_EXPORT float duration() const;
     // a result == 0 means an unbounded session (the default)
     // a result < 0 means: subsession durations differ; the result is -(the largest).
     // a result > 0 means: this is the duration of a bounded session
 
-  virtual void noteLiveness();
+  LIVE555_EXPORT virtual void noteLiveness();
     // called whenever a client - accessing this media - notes liveness.
     // The default implementation does nothing, but subclasses can redefine this - e.g., if you
     // want to remove long-unused "ServerMediaSession"s from the server.
@@ -67,7 +67,7 @@ public:
   void decrementReferenceCount() { if (fReferenceCount > 0) --fReferenceCount; }
   Boolean& deleteWhenUnreferenced() { return fDeleteWhenUnreferenced; }
 
-  void deleteAllSubsessions();
+  LIVE555_EXPORT void deleteAllSubsessions();
     // Removes and deletes all subsessions added by "addSubsession()", returning us to an 'empty' state
     // Note: If you have already added this "ServerMediaSession" to a server then, before calling this function,
     //   you must first close any client connections that use it,
@@ -77,15 +77,15 @@ public:
   Boolean streamingIsEncrypted; // by default, False
 
 protected:
-  ServerMediaSession(UsageEnvironment& env, char const* streamName,
+  LIVE555_EXPORT ServerMediaSession(UsageEnvironment& env, char const* streamName,
 		     char const* info, char const* description,
 		     Boolean isSSM, char const* miscSDPLines);
   // called only by "createNew()"
 
-  virtual ~ServerMediaSession();
+  LIVE555_EXPORT virtual ~ServerMediaSession();
 
 private: // redefined virtual functions
-  virtual Boolean isServerMediaSession() const;
+  LIVE555_EXPORT virtual Boolean isServerMediaSession() const;
 
 private:
   Boolean fIsSSM;
@@ -108,11 +108,11 @@ private:
 
 class ServerMediaSubsessionIterator {
 public:
-  ServerMediaSubsessionIterator(ServerMediaSession& session);
-  virtual ~ServerMediaSubsessionIterator();
+  LIVE555_EXPORT ServerMediaSubsessionIterator(ServerMediaSession& session);
+  LIVE555_EXPORT virtual ~ServerMediaSubsessionIterator();
 
-  ServerMediaSubsession* next(); // NULL if none
-  void reset();
+  LIVE555_EXPORT ServerMediaSubsession* next(); // NULL if none
+  LIVE555_EXPORT void reset();
 
 private:
   ServerMediaSession& fOurSession;
@@ -123,7 +123,7 @@ private:
 class ServerMediaSubsession: public Medium {
 public:
   unsigned trackNumber() const { return fTrackNumber; }
-  char const* trackId();
+  LIVE555_EXPORT char const* trackId();
   virtual char const* sdpLines(int addressFamily) = 0;
   virtual void getStreamParameters(unsigned clientSessionId, // in
 				   struct sockaddr_storage const& clientAddress, // in
@@ -147,43 +147,43 @@ public:
 			   unsigned& rtpTimestamp,
 			   ServerRequestAlternativeByteHandler* serverRequestAlternativeByteHandler,
 			   void* serverRequestAlternativeByteHandlerClientData) = 0;
-  virtual void pauseStream(unsigned clientSessionId, void* streamToken);
-  virtual void seekStream(unsigned clientSessionId, void* streamToken, double& seekNPT,
+  LIVE555_EXPORT virtual void pauseStream(unsigned clientSessionId, void* streamToken);
+  LIVE555_EXPORT virtual void seekStream(unsigned clientSessionId, void* streamToken, double& seekNPT,
 			  double streamDuration, u_int64_t& numBytes);
      // This routine is used to seek by relative (i.e., NPT) time.
      // "streamDuration", if >0.0, specifies how much data to stream, past "seekNPT".  (If <=0.0, all remaining data is streamed.)
      // "numBytes" returns the size (in bytes) of the data to be streamed, or 0 if unknown or unlimited.
-  virtual void seekStream(unsigned clientSessionId, void* streamToken, char*& absStart, char*& absEnd);
+  LIVE555_EXPORT virtual void seekStream(unsigned clientSessionId, void* streamToken, char*& absStart, char*& absEnd);
      // This routine is used to seek by 'absolute' time.
      // "absStart" should be a string of the form "YYYYMMDDTHHMMSSZ" or "YYYYMMDDTHHMMSS.<frac>Z".
      // "absEnd" should be either NULL (for no end time), or a string of the same form as "absStart".
      // These strings may be modified in-place, or can be reassigned to a newly-allocated value (after delete[]ing the original).
-  virtual void nullSeekStream(unsigned clientSessionId, void* streamToken,
+  LIVE555_EXPORT virtual void nullSeekStream(unsigned clientSessionId, void* streamToken,
 			      double streamEndTime, u_int64_t& numBytes);
      // Called whenever we're handling a "PLAY" command without a specified start time.
-  virtual void setStreamScale(unsigned clientSessionId, void* streamToken, float scale);
-  virtual float getCurrentNPT(void* streamToken);
-  virtual FramedSource* getStreamSource(void* streamToken);
+  LIVE555_EXPORT virtual void setStreamScale(unsigned clientSessionId, void* streamToken, float scale);
+  LIVE555_EXPORT virtual float getCurrentNPT(void* streamToken);
+  LIVE555_EXPORT virtual FramedSource* getStreamSource(void* streamToken);
   virtual void getRTPSinkandRTCP(void* streamToken,
 				 RTPSink const*& rtpSink, RTCPInstance const*& rtcp) = 0;
      // Returns pointers to the "RTPSink" and "RTCPInstance" objects for "streamToken".
      // (This can be useful if you want to get the associated 'Groupsock' objects, for example.)
      // You must not delete these objects, or start/stop playing them; instead, that is done
      // using the "startStream()" and "deleteStream()" functions.
-  virtual void deleteStream(unsigned clientSessionId, void*& streamToken);
+  LIVE555_EXPORT virtual void deleteStream(unsigned clientSessionId, void*& streamToken);
 
-  virtual void testScaleFactor(float& scale); // sets "scale" to the actual supported scale
-  virtual float duration() const;
+  LIVE555_EXPORT virtual void testScaleFactor(float& scale); // sets "scale" to the actual supported scale
+  LIVE555_EXPORT virtual float duration() const;
     // returns 0 for an unbounded session (the default)
     // returns > 0 for a bounded session
-  virtual void getAbsoluteTimeRange(char*& absStartTime, char*& absEndTime) const;
+  LIVE555_EXPORT virtual void getAbsoluteTimeRange(char*& absStartTime, char*& absEndTime) const;
     // Subclasses can reimplement this iff they support seeking by 'absolute' time.
 
 protected: // we're a virtual base class
-  ServerMediaSubsession(UsageEnvironment& env);
-  virtual ~ServerMediaSubsession();
+  LIVE555_EXPORT ServerMediaSubsession(UsageEnvironment& env);
+  LIVE555_EXPORT virtual ~ServerMediaSubsession();
 
-  char const* rangeSDPLine() const;
+  LIVE555_EXPORT char const* rangeSDPLine() const;
       // returns a string to be delete[]d
 
   ServerMediaSession* fParentSession;

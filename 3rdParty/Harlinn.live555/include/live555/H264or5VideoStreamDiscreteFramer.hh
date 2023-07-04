@@ -30,27 +30,27 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class H264or5VideoStreamDiscreteFramer: public H264or5VideoStreamFramer {
 protected:
-  H264or5VideoStreamDiscreteFramer(int hNumber, UsageEnvironment& env, FramedSource* inputSource,
+  LIVE555_EXPORT H264or5VideoStreamDiscreteFramer(int hNumber, UsageEnvironment& env, FramedSource* inputSource,
 				   Boolean includeStartCodeInOutput,
 				   Boolean insertAccessUnitDelimiters);
       // we're an abstract base class
-  virtual ~H264or5VideoStreamDiscreteFramer();
+  LIVE555_EXPORT virtual ~H264or5VideoStreamDiscreteFramer();
 
 protected:
   // redefined virtual functions:
-  virtual void doGetNextFrame();
+  LIVE555_EXPORT virtual void doGetNextFrame();
 
 protected:
-  static void afterGettingFrame(void* clientData, unsigned frameSize,
+  LIVE555_EXPORT static void afterGettingFrame(void* clientData, unsigned frameSize,
                                 unsigned numTruncatedBytes,
                                 struct timeval presentationTime,
                                 unsigned durationInMicroseconds);
-  void afterGettingFrame1(unsigned frameSize,
+  LIVE555_EXPORT void afterGettingFrame1(unsigned frameSize,
                           unsigned numTruncatedBytes,
                           struct timeval presentationTime,
                           unsigned durationInMicroseconds);
 
-  virtual Boolean nalUnitEndsAccessUnit(u_int8_t nal_unit_type);
+  LIVE555_EXPORT virtual Boolean nalUnitEndsAccessUnit(u_int8_t nal_unit_type);
 };
 
 #endif

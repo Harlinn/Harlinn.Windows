@@ -35,28 +35,28 @@ class DeviceParameters {
 
 class DeviceSource: public FramedSource {
 public:
-  static DeviceSource* createNew(UsageEnvironment& env,
+  LIVE555_EXPORT static DeviceSource* createNew(UsageEnvironment& env,
 				 DeviceParameters params);
 
 public:
-  static EventTriggerId eventTriggerId;
+  LIVE555_EXPORT static EventTriggerId eventTriggerId;
   // Note that this is defined here to be a static class variable, because this code is intended to illustrate how to
   // encapsulate a *single* device - not a set of devices.
   // You can, however, redefine this to be a non-static member variable.
 
 protected:
-  DeviceSource(UsageEnvironment& env, DeviceParameters params);
+  LIVE555_EXPORT DeviceSource(UsageEnvironment& env, DeviceParameters params);
   // called only by createNew(), or by subclass constructors
-  virtual ~DeviceSource();
+  LIVE555_EXPORT virtual ~DeviceSource();
 
 private:
   // redefined virtual functions:
-  virtual void doGetNextFrame();
+  LIVE555_EXPORT virtual void doGetNextFrame();
   //virtual void doStopGettingFrames(); // optional
 
 private:
-  static void deliverFrame0(void* clientData);
-  void deliverFrame();
+  LIVE555_EXPORT static void deliverFrame0(void* clientData);
+  LIVE555_EXPORT void deliverFrame();
 
 private:
   static unsigned referenceCount; // used to count how many instances of this class currently exist

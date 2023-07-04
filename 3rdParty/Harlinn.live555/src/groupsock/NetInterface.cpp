@@ -28,7 +28,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 ////////// NetInterface //////////
 
-UsageEnvironment* NetInterface::DefaultUsageEnvironment = NULL;
+LIVE555_EXPORT UsageEnvironment* NetInterface::DefaultUsageEnvironment = NULL;
 
 NetInterface::NetInterface() {
 }
@@ -39,7 +39,7 @@ NetInterface::~NetInterface() {
 
 ////////// Socket //////////
 
-int Socket::DebugLevel = 1; // default value
+LIVE555_EXPORT int Socket::DebugLevel = 1; // default value
 
 Socket::Socket(UsageEnvironment& env, Port port, int family)
   : fEnv(DefaultUsageEnvironment != NULL ? *DefaultUsageEnvironment : env),

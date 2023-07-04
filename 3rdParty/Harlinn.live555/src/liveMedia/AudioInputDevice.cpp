@@ -31,7 +31,7 @@ AudioInputDevice
 AudioInputDevice::~AudioInputDevice() {
 }
 
-char** AudioInputDevice::allowedDeviceNames = NULL;
+LIVE555_EXPORT char** AudioInputDevice::allowedDeviceNames = NULL;
 
 ////////// AudioPortNames implementation //////////
 

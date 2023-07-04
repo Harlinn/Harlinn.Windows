@@ -27,7 +27,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class OggFileSink: public FileSink {
 public:
-  static OggFileSink* createNew(UsageEnvironment& env, char const* fileName,
+  LIVE555_EXPORT static OggFileSink* createNew(UsageEnvironment& env, char const* fileName,
 				unsigned samplingFrequency = 0, // used for granule_position
 				char const* configStr = NULL,
       // "configStr" is an optional 'SDP format' string (Base64-encoded)
@@ -38,21 +38,21 @@ public:
       // See "FileSink.hh" for a description of these parameters.
 
 protected:
-  OggFileSink(UsageEnvironment& env, FILE* fid, unsigned samplingFrequency, char const* configStr,
+  LIVE555_EXPORT OggFileSink(UsageEnvironment& env, FILE* fid, unsigned samplingFrequency, char const* configStr,
 	      unsigned bufferSize, char const* perFrameFileNamePrefix);
       // called only by createNew()
-  virtual ~OggFileSink();
+  LIVE555_EXPORT virtual ~OggFileSink();
 
 protected: // redefined virtual functions:
-  virtual Boolean continuePlaying();
-  virtual void addData(unsigned char const* data, unsigned dataSize,
+  LIVE555_EXPORT virtual Boolean continuePlaying();
+  LIVE555_EXPORT virtual void addData(unsigned char const* data, unsigned dataSize,
 		       struct timeval presentationTime);
-  virtual void afterGettingFrame(unsigned frameSize, unsigned numTruncatedBytes,
+  LIVE555_EXPORT virtual void afterGettingFrame(unsigned frameSize, unsigned numTruncatedBytes,
 				 struct timeval presentationTime);
 
 private:
-  static void ourOnSourceClosure(void* clientData);
-  void ourOnSourceClosure();
+  LIVE555_EXPORT static void ourOnSourceClosure(void* clientData);
+  LIVE555_EXPORT void ourOnSourceClosure();
 
 private:
   unsigned fSamplingFrequency;

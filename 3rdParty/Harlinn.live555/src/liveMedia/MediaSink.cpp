@@ -110,7 +110,7 @@ Boolean MediaSink::isRTPSink() const {
 
 ////////// OutPacketBuffer //////////
 
-unsigned OutPacketBuffer::maxSize = 60000; // by default
+LIVE555_EXPORT unsigned OutPacketBuffer::maxSize = 60000; // by default
 
 OutPacketBuffer
 ::OutPacketBuffer(unsigned preferredPacketSize, unsigned maxPacketSize, unsigned maxBufferSize)

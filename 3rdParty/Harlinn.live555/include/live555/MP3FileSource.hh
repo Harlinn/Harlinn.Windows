@@ -29,34 +29,34 @@ class MP3StreamState; // forward
 
 class MP3FileSource: public FramedFileSource {
 public:
-  static MP3FileSource* createNew(UsageEnvironment& env, char const* fileName);
+  LIVE555_EXPORT static MP3FileSource* createNew(UsageEnvironment& env, char const* fileName);
 
-  float filePlayTime() const;
-  unsigned fileSize() const;
-  void setPresentationTimeScale(unsigned scale);
-  void seekWithinFile(double seekNPT, double streamDuration);
+  LIVE555_EXPORT float filePlayTime() const;
+  LIVE555_EXPORT unsigned fileSize() const;
+  LIVE555_EXPORT void setPresentationTimeScale(unsigned scale);
+  LIVE555_EXPORT void seekWithinFile(double seekNPT, double streamDuration);
       // if "streamDuration" is >0.0, then we limit the stream to that duration, before treating it as EOF
 
 protected:
-  MP3FileSource(UsageEnvironment& env, FILE* fid);
+  LIVE555_EXPORT MP3FileSource(UsageEnvironment& env, FILE* fid);
 	// called only by createNew()
 
-  virtual ~MP3FileSource();
+  LIVE555_EXPORT virtual ~MP3FileSource();
 
 protected:
-  void assignStream(FILE* fid, unsigned filesize);
-  Boolean initializeStream();
+  LIVE555_EXPORT void assignStream(FILE* fid, unsigned filesize);
+  LIVE555_EXPORT Boolean initializeStream();
 
   MP3StreamState* streamState() {return fStreamState;}
 
 private:
   // redefined virtual functions:
-  virtual void doGetNextFrame();
-  virtual char const* MIMEtype() const;
-  virtual void getAttributes() const;
+  LIVE555_EXPORT virtual void doGetNextFrame();
+  LIVE555_EXPORT virtual char const* MIMEtype() const;
+  LIVE555_EXPORT virtual void getAttributes() const;
 
 private:
-  static void fileReadableHandler(MP3FileSource* source, int mask);
+  LIVE555_EXPORT static void fileReadableHandler(MP3FileSource* source, int mask);
 
 private:
   MP3StreamState* fStreamState;

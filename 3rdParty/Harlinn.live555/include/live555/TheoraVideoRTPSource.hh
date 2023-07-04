@@ -27,24 +27,24 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class TheoraVideoRTPSource: public MultiFramedRTPSource {
 public:
-  static TheoraVideoRTPSource*
+  LIVE555_EXPORT static TheoraVideoRTPSource*
   createNew(UsageEnvironment& env, Groupsock* RTPgs,
 	    unsigned char rtpPayloadFormat);
 
   u_int32_t curPacketIdent() const { return fCurPacketIdent; } // The current "Ident" field; only the low-order 24 bits are used
 
 protected:
-  TheoraVideoRTPSource(UsageEnvironment& env, Groupsock* RTPgs,
+  LIVE555_EXPORT TheoraVideoRTPSource(UsageEnvironment& env, Groupsock* RTPgs,
 		       unsigned char rtpPayloadFormat);
       // called only by createNew()
 
-  virtual ~TheoraVideoRTPSource();
+  LIVE555_EXPORT virtual ~TheoraVideoRTPSource();
 
 protected:
   // redefined virtual functions:
-  virtual Boolean processSpecialHeader(BufferedPacket* packet,
+  LIVE555_EXPORT virtual Boolean processSpecialHeader(BufferedPacket* packet,
                                        unsigned& resultSpecialHeaderSize);
-  virtual char const* MIMEtype() const;
+  LIVE555_EXPORT virtual char const* MIMEtype() const;
 
 private:
   u_int32_t fCurPacketIdent; // only the low-order 24 bits are used

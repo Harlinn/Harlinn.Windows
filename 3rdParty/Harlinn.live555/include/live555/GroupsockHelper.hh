@@ -29,76 +29,76 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 #define MSG_NOSIGNAL 0
 #endif
 
-int setupDatagramSocket(UsageEnvironment& env, Port port, int domain);
-int setupStreamSocket(UsageEnvironment& env, Port port, int domain,
+LIVE555_EXPORT int setupDatagramSocket(UsageEnvironment& env, Port port, int domain);
+LIVE555_EXPORT int setupStreamSocket(UsageEnvironment& env, Port port, int domain,
 		      Boolean makeNonBlocking = True, Boolean setKeepAlive = False);
 
-int readSocket(UsageEnvironment& env,
+LIVE555_EXPORT int readSocket(UsageEnvironment& env,
 	       int socket, unsigned char* buffer, unsigned bufferSize,
 	       struct sockaddr_storage& fromAddress /*set only if we're a datagram socket*/);
 
-Boolean writeSocket(UsageEnvironment& env,
+LIVE555_EXPORT Boolean writeSocket(UsageEnvironment& env,
 		    int socket, struct sockaddr_storage const& addressAndPort,
 		    u_int8_t ttlArg,
 		    unsigned char* buffer, unsigned bufferSize);
 
-Boolean writeSocket(UsageEnvironment& env,
+LIVE555_EXPORT Boolean writeSocket(UsageEnvironment& env,
 		    int socket, struct sockaddr_storage const& addressAndPort,
 		    unsigned char* buffer, unsigned bufferSize);
     // An optimized version of "writeSocket" that omits the "setsockopt()" call to set the TTL.
 
-void ignoreSigPipeOnSocket(int socketNum);
+LIVE555_EXPORT void ignoreSigPipeOnSocket(int socketNum);
 
-unsigned getSendBufferSize(UsageEnvironment& env, int socket);
-unsigned getReceiveBufferSize(UsageEnvironment& env, int socket);
-unsigned setSendBufferTo(UsageEnvironment& env,
+LIVE555_EXPORT unsigned getSendBufferSize(UsageEnvironment& env, int socket);
+LIVE555_EXPORT unsigned getReceiveBufferSize(UsageEnvironment& env, int socket);
+LIVE555_EXPORT unsigned setSendBufferTo(UsageEnvironment& env,
 			 int socket, unsigned requestedSize);
-unsigned setReceiveBufferTo(UsageEnvironment& env,
+LIVE555_EXPORT unsigned setReceiveBufferTo(UsageEnvironment& env,
 			    int socket, unsigned requestedSize);
-unsigned increaseSendBufferTo(UsageEnvironment& env,
+LIVE555_EXPORT unsigned increaseSendBufferTo(UsageEnvironment& env,
 			      int socket, unsigned requestedSize);
-unsigned increaseReceiveBufferTo(UsageEnvironment& env,
+LIVE555_EXPORT unsigned increaseReceiveBufferTo(UsageEnvironment& env,
 				 int socket, unsigned requestedSize);
 
-Boolean makeSocketNonBlocking(int sock);
-Boolean makeSocketBlocking(int sock, unsigned writeTimeoutInMilliseconds = 0);
+LIVE555_EXPORT Boolean makeSocketNonBlocking(int sock);
+LIVE555_EXPORT Boolean makeSocketBlocking(int sock, unsigned writeTimeoutInMilliseconds = 0);
   // A "writeTimeoutInMilliseconds" value of 0 means: Don't timeout
-Boolean setSocketKeepAlive(int sock);
+LIVE555_EXPORT Boolean setSocketKeepAlive(int sock);
 
-Boolean socketJoinGroup(UsageEnvironment& env, int socket,
+LIVE555_EXPORT Boolean socketJoinGroup(UsageEnvironment& env, int socket,
 			struct sockaddr_storage const& groupAddress);
-Boolean socketLeaveGroup(UsageEnvironment&, int socket,
+LIVE555_EXPORT Boolean socketLeaveGroup(UsageEnvironment&, int socket,
 			 struct sockaddr_storage const& groupAddress);
 
 // source-specific multicast join/leave
-Boolean socketJoinGroupSSM(UsageEnvironment& env, int socket,
+LIVE555_EXPORT Boolean socketJoinGroupSSM(UsageEnvironment& env, int socket,
 			   struct sockaddr_storage const& groupAddress,
 			   struct sockaddr_storage const& sourceFilterAddr);
-Boolean socketLeaveGroupSSM(UsageEnvironment&, int socket,
+LIVE555_EXPORT Boolean socketLeaveGroupSSM(UsageEnvironment&, int socket,
 			    struct sockaddr_storage const& groupAddress,
 			    struct sockaddr_storage const& sourceFilterAddr);
 
-Boolean getSourcePort(UsageEnvironment& env, int socket, int domain, Port& port);
+LIVE555_EXPORT Boolean getSourcePort(UsageEnvironment& env, int socket, int domain, Port& port);
 
-ipv4AddressBits ourIPv4Address(UsageEnvironment& env); // in network order
-ipv6AddressBits const& ourIPv6Address(UsageEnvironment& env);
+LIVE555_EXPORT ipv4AddressBits ourIPv4Address(UsageEnvironment& env); // in network order
+LIVE555_EXPORT ipv6AddressBits const& ourIPv6Address(UsageEnvironment& env);
 
-Boolean weHaveAnIPv4Address(UsageEnvironment& env);
-Boolean weHaveAnIPv6Address(UsageEnvironment& env);
-Boolean weHaveAnIPAddress(UsageEnvironment& env);
+LIVE555_EXPORT Boolean weHaveAnIPv4Address(UsageEnvironment& env);
+LIVE555_EXPORT Boolean weHaveAnIPv6Address(UsageEnvironment& env);
+LIVE555_EXPORT Boolean weHaveAnIPAddress(UsageEnvironment& env);
   // returns True if we have either an IPv4 or an IPv6 address
 
 // IPv4 addresses of our sending and receiving interfaces.  (By default, these
 // are INADDR_ANY (i.e., 0), specifying the default interface.)
-extern ipv4AddressBits SendingInterfaceAddr;
-extern ipv4AddressBits ReceivingInterfaceAddr;
-extern in6_addr ReceivingInterfaceAddr6;
+LIVE555_EXPORT extern ipv4AddressBits SendingInterfaceAddr;
+LIVE555_EXPORT extern ipv4AddressBits ReceivingInterfaceAddr;
+LIVE555_EXPORT extern in6_addr ReceivingInterfaceAddr6;
 
 // Allocates a randomly-chosen IPv4 SSM (multicast) address:
-ipv4AddressBits chooseRandomIPv4SSMAddress(UsageEnvironment& env);
+LIVE555_EXPORT ipv4AddressBits chooseRandomIPv4SSMAddress(UsageEnvironment& env);
 
 // Returns a simple "hh:mm:ss" string, for use in debugging output (e.g.)
-char const* timestampString();
+LIVE555_EXPORT char const* timestampString();
 
 
 #ifdef HAVE_SOCKADDR_LEN
@@ -133,8 +133,8 @@ char const* timestampString();
 //          }
 class NoReuse {
 public:
-  NoReuse(UsageEnvironment& env);
-  ~NoReuse();
+  LIVE555_EXPORT NoReuse(UsageEnvironment& env);
+  LIVE555_EXPORT ~NoReuse();
 
 private:
   UsageEnvironment& fEnv;
@@ -147,20 +147,20 @@ struct _groupsockPriv { // There should be only one of these allocated
   HashTable* socketTable;
   int reuseFlag;
 };
-_groupsockPriv* groupsockPriv(UsageEnvironment& env); // allocates it if necessary
-void reclaimGroupsockPriv(UsageEnvironment& env);
+LIVE555_EXPORT _groupsockPriv* groupsockPriv(UsageEnvironment& env); // allocates it if necessary
+LIVE555_EXPORT void reclaimGroupsockPriv(UsageEnvironment& env);
 
 
 #if (defined(__WIN32__) || defined(_WIN32)) && !defined(__MINGW32__)
 // For Windoze, we need to implement our own gettimeofday()
-extern int gettimeofday(struct timeval*, int*);
+LIVE555_EXPORT extern int gettimeofday(struct timeval*, int*);
 #else
 #include <sys/time.h>
 #endif
 
 // The following are implemented in inet.c:
-extern "C" void our_srandom(int x);
-extern "C" long our_random();
-extern "C" u_int32_t our_random32(); // because "our_random()" returns a 31-bit number
+extern "C" LIVE555_EXPORT void our_srandom(int x);
+extern "C" LIVE555_EXPORT long our_random();
+extern "C" LIVE555_EXPORT u_int32_t our_random32(); // because "our_random()" returns a 31-bit number
 
 #endif

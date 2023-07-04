@@ -27,36 +27,36 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class MPEG1or2AudioStreamFramer: public FramedFilter {
 public:
-  static MPEG1or2AudioStreamFramer*
+  LIVE555_EXPORT static MPEG1or2AudioStreamFramer*
   createNew(UsageEnvironment& env, FramedSource* inputSource,
 	    Boolean syncWithInputSource = False);
   // If "syncWithInputSource" is True, the stream's presentation time
   // will be reset to that of the input source, whenever new data
   // is read from it.
 
-  void flushInput(); // called if there is a discontinuity (seeking) in the input
+  LIVE555_EXPORT void flushInput(); // called if there is a discontinuity (seeking) in the input
 
 private:
-  MPEG1or2AudioStreamFramer(UsageEnvironment& env, FramedSource* inputSource,
+  LIVE555_EXPORT MPEG1or2AudioStreamFramer(UsageEnvironment& env, FramedSource* inputSource,
 			    Boolean syncWithInputSource);
       // called only by createNew()
-  virtual ~MPEG1or2AudioStreamFramer();
+  LIVE555_EXPORT virtual ~MPEG1or2AudioStreamFramer();
 
-  static void continueReadProcessing(void* clientData,
+  LIVE555_EXPORT static void continueReadProcessing(void* clientData,
 				     unsigned char* ptr, unsigned size,
 				     struct timeval presentationTime);
-  void continueReadProcessing();
+  LIVE555_EXPORT void continueReadProcessing();
 
-  void resetPresentationTime(struct timeval newPresentationTime);
+  LIVE555_EXPORT void resetPresentationTime(struct timeval newPresentationTime);
       // useful if we're being synced with a separate (e.g., video) stream
 
 private:
   // redefined virtual functions:
-  virtual void doGetNextFrame();
+  LIVE555_EXPORT virtual void doGetNextFrame();
 
 private:
-  void reset();
-  struct timeval currentFramePlayTime() const;
+  LIVE555_EXPORT void reset();
+  LIVE555_EXPORT struct timeval currentFramePlayTime() const;
 
 private:
   Boolean fSyncWithInputSource;

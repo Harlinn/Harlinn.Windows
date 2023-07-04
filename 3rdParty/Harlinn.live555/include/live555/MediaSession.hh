@@ -62,10 +62,10 @@ class MediaSubsession; // forward
 
 class MediaSession: public Medium {
 public:
-  static MediaSession* createNew(UsageEnvironment& env,
+  LIVE555_EXPORT static MediaSession* createNew(UsageEnvironment& env,
 				 char const* sdpDescription);
 
-  static Boolean lookupByName(UsageEnvironment& env, char const* sourceName,
+  LIVE555_EXPORT static Boolean lookupByName(UsageEnvironment& env, char const* sourceName,
 			      MediaSession*& resultSession);
 
   Boolean hasSubsessions() const { return fSubsessionsHead != NULL; }
@@ -83,13 +83,13 @@ public:
 
   double& playStartTime() { return fMaxPlayStartTime; }
   double& playEndTime() { return fMaxPlayEndTime; }
-  char* absStartTime() const;
-  char* absEndTime() const;
+  LIVE555_EXPORT char* absStartTime() const;
+  LIVE555_EXPORT char* absEndTime() const;
   // Used only to set the local fields:
   char*& _absStartTime() { return fAbsStartTime; }
   char*& _absEndTime() { return fAbsEndTime; }
 
-  Boolean initiateByMediaType(char const* mimeType,
+  LIVE555_EXPORT Boolean initiateByMediaType(char const* mimeType,
 			      MediaSubsession*& resultSubsession,
 			      int useSpecialRTPoffset = -1);
       // Initiates the first subsession with the specified MIME type
@@ -99,30 +99,30 @@ public:
   SRTPCryptographicContext* getCrypto() const { return fCrypto; }
 
 protected: // redefined virtual functions
-  virtual Boolean isMediaSession() const;
+  LIVE555_EXPORT virtual Boolean isMediaSession() const;
 
 protected:
-  MediaSession(UsageEnvironment& env);
+  LIVE555_EXPORT MediaSession(UsageEnvironment& env);
       // called only by createNew();
-  virtual ~MediaSession();
+  LIVE555_EXPORT virtual ~MediaSession();
 
-  virtual MediaSubsession* createNewMediaSubsession();
+  LIVE555_EXPORT virtual MediaSubsession* createNewMediaSubsession();
 
-  Boolean initializeWithSDP(char const* sdpDescription);
-  Boolean parseSDPLine(char const* input, char const*& nextLine);
-  Boolean parseSDPLine_s(char const* sdpLine);
-  Boolean parseSDPLine_i(char const* sdpLine);
-  Boolean parseSDPLine_c(char const* sdpLine);
-  Boolean parseSDPAttribute_type(char const* sdpLine);
-  Boolean parseSDPAttribute_control(char const* sdpLine);
-  Boolean parseSDPAttribute_range(char const* sdpLine);
-  Boolean parseSDPAttribute_source_filter(char const* sdpLine);
-  Boolean parseSDPAttribute_key_mgmt(char const* sdpLine);
+  LIVE555_EXPORT Boolean initializeWithSDP(char const* sdpDescription);
+  LIVE555_EXPORT Boolean parseSDPLine(char const* input, char const*& nextLine);
+  LIVE555_EXPORT Boolean parseSDPLine_s(char const* sdpLine);
+  LIVE555_EXPORT Boolean parseSDPLine_i(char const* sdpLine);
+  LIVE555_EXPORT Boolean parseSDPLine_c(char const* sdpLine);
+  LIVE555_EXPORT Boolean parseSDPAttribute_type(char const* sdpLine);
+  LIVE555_EXPORT Boolean parseSDPAttribute_control(char const* sdpLine);
+  LIVE555_EXPORT Boolean parseSDPAttribute_range(char const* sdpLine);
+  LIVE555_EXPORT Boolean parseSDPAttribute_source_filter(char const* sdpLine);
+  LIVE555_EXPORT Boolean parseSDPAttribute_key_mgmt(char const* sdpLine);
 
-  static char* lookupPayloadFormat(unsigned char rtpPayloadType,
+  LIVE555_EXPORT static char* lookupPayloadFormat(unsigned char rtpPayloadType,
 				   unsigned& rtpTimestampFrequency,
 				   unsigned& numChannels);
-  static unsigned guessRTPTimestampFrequency(char const* mediumName,
+  LIVE555_EXPORT static unsigned guessRTPTimestampFrequency(char const* mediumName,
 					     char const* codecName);
 
 protected:
@@ -156,11 +156,11 @@ protected:
 
 class MediaSubsessionIterator {
 public:
-  MediaSubsessionIterator(MediaSession const& session);
-  virtual ~MediaSubsessionIterator();
+  LIVE555_EXPORT MediaSubsessionIterator(MediaSession const& session);
+  LIVE555_EXPORT virtual ~MediaSubsessionIterator();
 
-  MediaSubsession* next(); // NULL if none
-  void reset();
+  LIVE555_EXPORT MediaSubsession* next(); // NULL if none
+  LIVE555_EXPORT void reset();
 
 private:
   MediaSession const& fOurSession;
@@ -197,24 +197,24 @@ public:
   FramedSource* readSource() { return fReadSource; }
     // This is the source that client sinks read from.  It is usually
     // (but not necessarily) the same as "rtpSource()"
-  void addFilter(FramedFilter* filter);
+  LIVE555_EXPORT void addFilter(FramedFilter* filter);
     // Changes "readSource()" to "filter" (which must have just been created with "readSource()" as its input)
 
-  double playStartTime() const;
-  double playEndTime() const;
-  char* absStartTime() const;
-  char* absEndTime() const;
+  LIVE555_EXPORT double playStartTime() const;
+  LIVE555_EXPORT double playEndTime() const;
+  LIVE555_EXPORT char* absStartTime() const;
+  LIVE555_EXPORT char* absEndTime() const;
   // Used only to set the local fields:
   double& _playStartTime() { return fPlayStartTime; }
   double& _playEndTime() { return fPlayEndTime; }
   char*& _absStartTime() { return fAbsStartTime; }
   char*& _absEndTime() { return fAbsEndTime; }
 
-  Boolean initiate(int useSpecialRTPoffset = -1);
+  LIVE555_EXPORT Boolean initiate(int useSpecialRTPoffset = -1);
       // Creates a "RTPSource" for this subsession. (Has no effect if it's
       // already been created.)  Returns True iff this succeeds.
-  void deInitiate(); // Destroys any previously created RTPSource
-  Boolean setClientPortNum(unsigned short portNum);
+  LIVE555_EXPORT void deInitiate(); // Destroys any previously created RTPSource
+  LIVE555_EXPORT Boolean setClientPortNum(unsigned short portNum);
       // Sets the preferred client port number that any "RTPSource" for
       // this subsession would use.  (By default, the client port number
       // is gotten from the original SDP description, or - if the SDP
@@ -237,32 +237,32 @@ public:
   unsigned bandwidth() const { return fBandwidth; }
 
   // General SDP attribute accessor functions:
-  char const* attrVal_str(char const* attrName) const;
+  LIVE555_EXPORT char const* attrVal_str(char const* attrName) const;
       // returns "" if attribute doesn't exist (and has no default value), or is not a string
-  char const* attrVal_strToLower(char const* attrName) const;
+  LIVE555_EXPORT char const* attrVal_strToLower(char const* attrName) const;
       // returns "" if attribute doesn't exist (and has no default value), or is not a string
-  unsigned attrVal_int(char const* attrName) const;
+  LIVE555_EXPORT unsigned attrVal_int(char const* attrName) const;
       // also returns 0 if attribute doesn't exist (and has no default value)
-  unsigned attrVal_unsigned(char const* attrName) const { return (unsigned)attrVal_int(attrName); }
-  Boolean attrVal_bool(char const* attrName) const { return attrVal_int(attrName) != 0; }
+  LIVE555_EXPORT unsigned attrVal_unsigned(char const* attrName) const { return (unsigned)attrVal_int(attrName); }
+  LIVE555_EXPORT Boolean attrVal_bool(char const* attrName) const { return attrVal_int(attrName) != 0; }
 
   // Old, now-deprecated SDP attribute accessor functions, kept here for backwards-compatibility:
-  char const* fmtp_config() const;
-  char const* fmtp_configuration() const { return fmtp_config(); }
-  char const* fmtp_spropparametersets() const { return attrVal_str("sprop-parameter-sets"); }
-  char const* fmtp_spropvps() const { return attrVal_str("sprop-vps"); }
-  char const* fmtp_spropsps() const { return attrVal_str("sprop-sps"); }
-  char const* fmtp_sproppps() const { return attrVal_str("sprop-pps"); }
+  LIVE555_EXPORT char const* fmtp_config() const;
+  LIVE555_EXPORT char const* fmtp_configuration() const { return fmtp_config(); }
+  LIVE555_EXPORT char const* fmtp_spropparametersets() const { return attrVal_str("sprop-parameter-sets"); }
+  LIVE555_EXPORT char const* fmtp_spropvps() const { return attrVal_str("sprop-vps"); }
+  LIVE555_EXPORT char const* fmtp_spropsps() const { return attrVal_str("sprop-sps"); }
+  LIVE555_EXPORT char const* fmtp_sproppps() const { return attrVal_str("sprop-pps"); }
 
-  void getConnectionEndpointAddress(struct sockaddr_storage& addr) const;
+  LIVE555_EXPORT void getConnectionEndpointAddress(struct sockaddr_storage& addr) const;
       // Converts "fConnectionEndpointName" to an address (or 0 if unknown)
-  void setDestinations(struct sockaddr_storage const& defaultDestAddress);
+  LIVE555_EXPORT void setDestinations(struct sockaddr_storage const& defaultDestAddress);
       // Uses "fConnectionEndpointName" and "serverPortNum" to set
       // the destination address and port of the RTP and RTCP objects.
       // This is typically called by RTSP clients after doing "SETUP".
 
   char const* sessionId() const { return fSessionId; }
-  void setSessionId(char const* sessionId);
+  LIVE555_EXPORT void setSessionId(char const* sessionId);
 
   // Public fields that external callers can use to keep state.
   // (They are responsible for all storage management on these fields)
@@ -278,7 +278,7 @@ public:
     Boolean infoIsNew; // not part of the RTSP header; instead, set whenever this struct is filled in
   } rtpInfo;
 
-  double getNormalPlayTime(struct timeval const& presentationTime);
+  LIVE555_EXPORT double getNormalPlayTime(struct timeval const& presentationTime);
   // Computes the stream's "Normal Play Time" (NPT) from the given "presentationTime".
   // (For the definition of "Normal Play Time", see RFC 2326, section 3.6.)
   // This function is useful only if the "rtpInfo" structure was previously filled in
@@ -293,27 +293,27 @@ public:
 protected:
   friend class MediaSession;
   friend class MediaSubsessionIterator;
-  MediaSubsession(MediaSession& parent);
-  virtual ~MediaSubsession();
+  LIVE555_EXPORT MediaSubsession(MediaSession& parent);
+  LIVE555_EXPORT virtual ~MediaSubsession();
 
   UsageEnvironment& env() { return fParent.envir(); }
   void setNext(MediaSubsession* next) { fNext = next; }
 
-  void setAttribute(char const* name, char const* value = NULL, Boolean valueIsHexadecimal = False);
+  LIVE555_EXPORT void setAttribute(char const* name, char const* value = NULL, Boolean valueIsHexadecimal = False);
 
-  Boolean parseSDPLine_c(char const* sdpLine);
-  Boolean parseSDPLine_b(char const* sdpLine);
-  Boolean parseSDPAttribute_rtpmap(char const* sdpLine);
-  Boolean parseSDPAttribute_rtcpmux(char const* sdpLine);
-  Boolean parseSDPAttribute_control(char const* sdpLine);
-  Boolean parseSDPAttribute_range(char const* sdpLine);
-  Boolean parseSDPAttribute_fmtp(char const* sdpLine);
-  Boolean parseSDPAttribute_source_filter(char const* sdpLine);
-  Boolean parseSDPAttribute_x_dimensions(char const* sdpLine);
-  Boolean parseSDPAttribute_framerate(char const* sdpLine);
-  Boolean parseSDPAttribute_key_mgmt(char const* sdpLine);
+  LIVE555_EXPORT Boolean parseSDPLine_c(char const* sdpLine);
+  LIVE555_EXPORT Boolean parseSDPLine_b(char const* sdpLine);
+  LIVE555_EXPORT Boolean parseSDPAttribute_rtpmap(char const* sdpLine);
+  LIVE555_EXPORT Boolean parseSDPAttribute_rtcpmux(char const* sdpLine);
+  LIVE555_EXPORT Boolean parseSDPAttribute_control(char const* sdpLine);
+  LIVE555_EXPORT Boolean parseSDPAttribute_range(char const* sdpLine);
+  LIVE555_EXPORT Boolean parseSDPAttribute_fmtp(char const* sdpLine);
+  LIVE555_EXPORT Boolean parseSDPAttribute_source_filter(char const* sdpLine);
+  LIVE555_EXPORT Boolean parseSDPAttribute_x_dimensions(char const* sdpLine);
+  LIVE555_EXPORT Boolean parseSDPAttribute_framerate(char const* sdpLine);
+  LIVE555_EXPORT Boolean parseSDPAttribute_key_mgmt(char const* sdpLine);
 
-  virtual Boolean createSourceObjects(int useSpecialRTPoffset);
+  LIVE555_EXPORT virtual Boolean createSourceObjects(int useSpecialRTPoffset);
     // create "fRTPSource" and "fReadSource" member objects, after we've been initialized via SDP
 
 protected:

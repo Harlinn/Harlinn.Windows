@@ -42,50 +42,50 @@ class ClientTrickPlayState; // forward
 
 class MPEG2TransportFileServerMediaSubsession: public FileServerMediaSubsession {
 public:
-  static MPEG2TransportFileServerMediaSubsession*
+  LIVE555_EXPORT static MPEG2TransportFileServerMediaSubsession*
   createNew(UsageEnvironment& env,
 	    char const* dataFileName, char const* indexFileName,
 	    Boolean reuseFirstSource);
 
 protected:
-  MPEG2TransportFileServerMediaSubsession(UsageEnvironment& env,
+  LIVE555_EXPORT MPEG2TransportFileServerMediaSubsession(UsageEnvironment& env,
 					  char const* fileName,
 					  MPEG2TransportStreamIndexFile* indexFile,
 					  Boolean reuseFirstSource);
       // called only by createNew();
-  virtual ~MPEG2TransportFileServerMediaSubsession();
+  LIVE555_EXPORT virtual ~MPEG2TransportFileServerMediaSubsession();
 
-  virtual ClientTrickPlayState* newClientTrickPlayState();
+  LIVE555_EXPORT virtual ClientTrickPlayState* newClientTrickPlayState();
 
 private: // redefined virtual functions
   // Note that because - to implement 'trick play' operations - we're operating on
   // more than just the input source, we reimplement some functions that are
   // already implemented in "OnDemandServerMediaSubsession", rather than
   // reimplementing "seekStreamSource()" and "setStreamSourceScale()":
-  virtual void startStream(unsigned clientSessionId, void* streamToken,
+  LIVE555_EXPORT virtual void startStream(unsigned clientSessionId, void* streamToken,
                            TaskFunc* rtcpRRHandler,
                            void* rtcpRRHandlerClientData,
                            unsigned short& rtpSeqNum,
                            unsigned& rtpTimestamp,
 			   ServerRequestAlternativeByteHandler* serverRequestAlternativeByteHandler,
                            void* serverRequestAlternativeByteHandlerClientData);
-  virtual void pauseStream(unsigned clientSessionId, void* streamToken);
-  virtual void seekStream(unsigned clientSessionId, void* streamToken, double& seekNPT, double streamDuration, u_int64_t& numBytes);
-  virtual void setStreamScale(unsigned clientSessionId, void* streamToken, float scale);
-  virtual void deleteStream(unsigned clientSessionId, void*& streamToken);
+  LIVE555_EXPORT virtual void pauseStream(unsigned clientSessionId, void* streamToken);
+  LIVE555_EXPORT virtual void seekStream(unsigned clientSessionId, void* streamToken, double& seekNPT, double streamDuration, u_int64_t& numBytes);
+  LIVE555_EXPORT virtual void setStreamScale(unsigned clientSessionId, void* streamToken, float scale);
+  LIVE555_EXPORT virtual void deleteStream(unsigned clientSessionId, void*& streamToken);
 
   // The virtual functions that are usually implemented by "ServerMediaSubsession"s:
-  virtual FramedSource* createNewStreamSource(unsigned clientSessionId,
+  LIVE555_EXPORT virtual FramedSource* createNewStreamSource(unsigned clientSessionId,
 					      unsigned& estBitrate);
-  virtual RTPSink* createNewRTPSink(Groupsock* rtpGroupsock,
+  LIVE555_EXPORT virtual RTPSink* createNewRTPSink(Groupsock* rtpGroupsock,
                                     unsigned char rtpPayloadTypeIfDynamic,
 				    FramedSource* inputSource);
 
-  virtual void testScaleFactor(float& scale);
-  virtual float duration() const;
+  LIVE555_EXPORT virtual void testScaleFactor(float& scale);
+  LIVE555_EXPORT virtual float duration() const;
 
 private:
-  ClientTrickPlayState* lookupClient(unsigned clientSessionId);
+  LIVE555_EXPORT ClientTrickPlayState* lookupClient(unsigned clientSessionId);
 
 private:
   MPEG2TransportStreamIndexFile* fIndexFile;
@@ -101,22 +101,22 @@ private:
 
 class ClientTrickPlayState {
 public:
-  ClientTrickPlayState(MPEG2TransportStreamIndexFile* indexFile);
+  LIVE555_EXPORT ClientTrickPlayState(MPEG2TransportStreamIndexFile* indexFile);
 
   // Functions to bring "fNPT", "fTSRecordNum" and "fIxRecordNum" in sync:
-  unsigned long updateStateFromNPT(double npt, double seekDuration);
-  void updateStateOnScaleChange();
-  void updateStateOnPlayChange(Boolean reverseToPreviousVSH);
+  LIVE555_EXPORT unsigned long updateStateFromNPT(double npt, double seekDuration);
+  LIVE555_EXPORT void updateStateOnScaleChange();
+  LIVE555_EXPORT void updateStateOnPlayChange(Boolean reverseToPreviousVSH);
 
-  void handleStreamDeletion();
-  void setSource(MPEG2TransportStreamFramer* framer);
+  LIVE555_EXPORT void handleStreamDeletion();
+  LIVE555_EXPORT void setSource(MPEG2TransportStreamFramer* framer);
 
   void setNextScale(float nextScale) { fNextScale = nextScale; }
   Boolean areChangingScale() const { return fNextScale != fScale; }
 
 protected:
-  void updateTSRecordNum();
-  void reseekOriginalTransportStreamSource();
+  LIVE555_EXPORT void updateTSRecordNum();
+  LIVE555_EXPORT void reseekOriginalTransportStreamSource();
 
 protected:
   MPEG2TransportStreamIndexFile* fIndexFile;

@@ -30,32 +30,32 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class MPEG1or2FileServerDemux: public Medium {
 public:
-  static MPEG1or2FileServerDemux*
+  LIVE555_EXPORT static MPEG1or2FileServerDemux*
   createNew(UsageEnvironment& env, char const* fileName, Boolean reuseFirstSource);
 
-  ServerMediaSubsession* newAudioServerMediaSubsession(); // MPEG-1 or 2 audio
-  ServerMediaSubsession* newVideoServerMediaSubsession(Boolean iFramesOnly = False,
+  LIVE555_EXPORT ServerMediaSubsession* newAudioServerMediaSubsession(); // MPEG-1 or 2 audio
+  LIVE555_EXPORT ServerMediaSubsession* newVideoServerMediaSubsession(Boolean iFramesOnly = False,
 						       double vshPeriod = 5.0
 		       /* how often (in seconds) to inject a Video_Sequence_Header,
 			  if one doesn't already appear in the stream */);
-  ServerMediaSubsession* newAC3AudioServerMediaSubsession(); // AC-3 audio (from VOB)
+  LIVE555_EXPORT ServerMediaSubsession* newAC3AudioServerMediaSubsession(); // AC-3 audio (from VOB)
 
   unsigned fileSize() const { return fFileSize; }
   float fileDuration() const { return fFileDuration; }
 
 private:
-  MPEG1or2FileServerDemux(UsageEnvironment& env, char const* fileName,
+  LIVE555_EXPORT MPEG1or2FileServerDemux(UsageEnvironment& env, char const* fileName,
 			  Boolean reuseFirstSource);
       // called only by createNew();
-  virtual ~MPEG1or2FileServerDemux();
+  LIVE555_EXPORT virtual ~MPEG1or2FileServerDemux();
 
 private:
   friend class MPEG1or2DemuxedServerMediaSubsession;
-  MPEG1or2DemuxedElementaryStream* newElementaryStream(unsigned clientSessionId,
+  LIVE555_EXPORT MPEG1or2DemuxedElementaryStream* newElementaryStream(unsigned clientSessionId,
 						       u_int8_t streamIdTag);
 
-  static void onDemuxDeletion(void* clientData, MPEG1or2Demux* demuxBeingDeleted);
-  void onDemuxDeletion(MPEG1or2Demux* demuxBeingDeleted);
+  LIVE555_EXPORT static void onDemuxDeletion(void* clientData, MPEG1or2Demux* demuxBeingDeleted);
+  LIVE555_EXPORT void onDemuxDeletion(MPEG1or2Demux* demuxBeingDeleted);
 
 private:
   char const* fFileName;

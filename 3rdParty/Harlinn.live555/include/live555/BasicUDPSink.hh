@@ -30,15 +30,15 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class BasicUDPSink: public MediaSink {
 public:
-  static BasicUDPSink* createNew(UsageEnvironment& env, Groupsock* gs,
+  LIVE555_EXPORT static BasicUDPSink* createNew(UsageEnvironment& env, Groupsock* gs,
 				  unsigned maxPayloadSize = 1450);
 protected:
-  BasicUDPSink(UsageEnvironment& env, Groupsock* gs, unsigned maxPayloadSize);
+  LIVE555_EXPORT BasicUDPSink(UsageEnvironment& env, Groupsock* gs, unsigned maxPayloadSize);
       // called only by createNew()
-  virtual ~BasicUDPSink();
+  LIVE555_EXPORT virtual ~BasicUDPSink();
 
 private: // redefined virtual functions:
-  virtual Boolean continuePlaying();
+  LIVE555_EXPORT virtual Boolean continuePlaying();
 
 private:
   void continuePlaying1();

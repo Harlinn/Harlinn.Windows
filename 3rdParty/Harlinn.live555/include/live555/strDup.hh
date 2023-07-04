@@ -24,14 +24,16 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 #include <string.h>
 
-char* strDup(char const* str);
+#include "live555Def.h"
+
+LIVE555_EXPORT char* strDup(char const* str);
 // Note: strDup(NULL) returns NULL
 
-char* strDupSize(char const* str);
+LIVE555_EXPORT char* strDupSize(char const* str);
 // Like "strDup()", except that it *doesn't* copy the original.
 // (Instead, it just allocates a string of the same size as the original.)
 
-char* strDupSize(char const* str, size_t& resultBufSize);
+LIVE555_EXPORT char* strDupSize(char const* str, size_t& resultBufSize);
 // An alternative form of "strDupSize()" that also returns the size of the allocated buffer.
 
 #endif

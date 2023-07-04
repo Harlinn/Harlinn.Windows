@@ -37,40 +37,40 @@ class IndexRecord; // forward
 
 class MPEG2IFrameIndexFromTransportStream: public FramedFilter {
 public:
-  static MPEG2IFrameIndexFromTransportStream*
+  LIVE555_EXPORT static MPEG2IFrameIndexFromTransportStream*
   createNew(UsageEnvironment& env, FramedSource* inputSource);
 
 protected:
-  MPEG2IFrameIndexFromTransportStream(UsageEnvironment& env,
+  LIVE555_EXPORT MPEG2IFrameIndexFromTransportStream(UsageEnvironment& env,
 				      FramedSource* inputSource);
       // called only by createNew()
-  virtual ~MPEG2IFrameIndexFromTransportStream();
+  LIVE555_EXPORT virtual ~MPEG2IFrameIndexFromTransportStream();
 
 private:
   // Redefined virtual functions:
-  virtual void doGetNextFrame();
+  LIVE555_EXPORT virtual void doGetNextFrame();
 
 private:
-  static void afterGettingFrame(void* clientData, unsigned frameSize,
+  LIVE555_EXPORT static void afterGettingFrame(void* clientData, unsigned frameSize,
 				unsigned numTruncatedBytes,
 				struct timeval presentationTime,
 				unsigned durationInMicroseconds);
-  void afterGettingFrame1(unsigned frameSize,
+  LIVE555_EXPORT void afterGettingFrame1(unsigned frameSize,
 			  unsigned numTruncatedBytes,
 			  struct timeval presentationTime,
 			  unsigned durationInMicroseconds);
 
-  static void handleInputClosure(void* clientData);
-  void handleInputClosure1();
+  LIVE555_EXPORT static void handleInputClosure(void* clientData);
+  LIVE555_EXPORT void handleInputClosure1();
 
-  void analyzePAT(unsigned char* pkt, unsigned size);
-  void analyzePMT(unsigned char* pkt, unsigned size);
+  LIVE555_EXPORT void analyzePAT(unsigned char* pkt, unsigned size);
+  LIVE555_EXPORT void analyzePMT(unsigned char* pkt, unsigned size);
 
-  Boolean deliverIndexRecord();
-  Boolean parseFrame();
-  Boolean parseToNextCode(unsigned char& nextCode);
-  void compactParseBuffer();
-  void addToTail(IndexRecord* newIndexRecord);
+  LIVE555_EXPORT Boolean deliverIndexRecord();
+  LIVE555_EXPORT Boolean parseFrame();
+  LIVE555_EXPORT Boolean parseToNextCode(unsigned char& nextCode);
+  LIVE555_EXPORT void compactParseBuffer();
+  LIVE555_EXPORT void addToTail(IndexRecord* newIndexRecord);
 
 private:
   Boolean fIsH264; // True iff the video is H.264 (encapsulated in a Transport Stream)

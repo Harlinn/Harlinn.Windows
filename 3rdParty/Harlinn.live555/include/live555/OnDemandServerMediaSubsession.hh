@@ -37,14 +37,14 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class OnDemandServerMediaSubsession: public ServerMediaSubsession {
 protected: // we're a virtual base class
-  OnDemandServerMediaSubsession(UsageEnvironment& env, Boolean reuseFirstSource,
+  LIVE555_EXPORT OnDemandServerMediaSubsession(UsageEnvironment& env, Boolean reuseFirstSource,
 				portNumBits initialPortNum = 6970,
 				Boolean multiplexRTCPWithRTP = False);
-  virtual ~OnDemandServerMediaSubsession();
+  LIVE555_EXPORT virtual ~OnDemandServerMediaSubsession();
 
 protected: // redefined virtual functions
-  virtual char const* sdpLines(int addressFamily);
-  virtual void getStreamParameters(unsigned clientSessionId,
+  LIVE555_EXPORT virtual char const* sdpLines(int addressFamily);
+  LIVE555_EXPORT virtual void getStreamParameters(unsigned clientSessionId,
 				   struct sockaddr_storage const& clientAddress,
                                    Port const& clientRTPPort,
                                    Port const& clientRTCPPort,
@@ -58,65 +58,65 @@ protected: // redefined virtual functions
                                    Port& serverRTPPort,
                                    Port& serverRTCPPort,
                                    void*& streamToken);
-  virtual void startStream(unsigned clientSessionId, void* streamToken,
+  LIVE555_EXPORT virtual void startStream(unsigned clientSessionId, void* streamToken,
 			   TaskFunc* rtcpRRHandler,
 			   void* rtcpRRHandlerClientData,
 			   unsigned short& rtpSeqNum,
                            unsigned& rtpTimestamp,
 			   ServerRequestAlternativeByteHandler* serverRequestAlternativeByteHandler,
                            void* serverRequestAlternativeByteHandlerClientData);
-  virtual void pauseStream(unsigned clientSessionId, void* streamToken);
-  virtual void seekStream(unsigned clientSessionId, void* streamToken, double& seekNPT, double streamDuration, u_int64_t& numBytes);
-  virtual void seekStream(unsigned clientSessionId, void* streamToken, char*& absStart, char*& absEnd);
-  virtual void nullSeekStream(unsigned clientSessionId, void* streamToken,
+  LIVE555_EXPORT virtual void pauseStream(unsigned clientSessionId, void* streamToken);
+  LIVE555_EXPORT virtual void seekStream(unsigned clientSessionId, void* streamToken, double& seekNPT, double streamDuration, u_int64_t& numBytes);
+  LIVE555_EXPORT virtual void seekStream(unsigned clientSessionId, void* streamToken, char*& absStart, char*& absEnd);
+  LIVE555_EXPORT virtual void nullSeekStream(unsigned clientSessionId, void* streamToken,
 			      double streamEndTime, u_int64_t& numBytes);
-  virtual void setStreamScale(unsigned clientSessionId, void* streamToken, float scale);
-  virtual float getCurrentNPT(void* streamToken);
-  virtual FramedSource* getStreamSource(void* streamToken);
-  virtual void getRTPSinkandRTCP(void* streamToken,
+  LIVE555_EXPORT virtual void setStreamScale(unsigned clientSessionId, void* streamToken, float scale);
+  LIVE555_EXPORT virtual float getCurrentNPT(void* streamToken);
+  LIVE555_EXPORT virtual FramedSource* getStreamSource(void* streamToken);
+  LIVE555_EXPORT virtual void getRTPSinkandRTCP(void* streamToken,
 				 RTPSink const*& rtpSink, RTCPInstance const*& rtcp);
-  virtual void deleteStream(unsigned clientSessionId, void*& streamToken);
+  LIVE555_EXPORT virtual void deleteStream(unsigned clientSessionId, void*& streamToken);
 
 protected: // new virtual functions, possibly redefined by subclasses
-  virtual char const* getAuxSDPLine(RTPSink* rtpSink,
+  LIVE555_EXPORT virtual char const* getAuxSDPLine(RTPSink* rtpSink,
 				    FramedSource* inputSource);
-  virtual void seekStreamSource(FramedSource* inputSource, double& seekNPT, double streamDuration, u_int64_t& numBytes);
+  LIVE555_EXPORT virtual void seekStreamSource(FramedSource* inputSource, double& seekNPT, double streamDuration, u_int64_t& numBytes);
     // This routine is used to seek by relative (i.e., NPT) time.
     // "streamDuration", if >0.0, specifies how much data to stream, past "seekNPT".  (If <=0.0, all remaining data is streamed.)
     // "numBytes" returns the size (in bytes) of the data to be streamed, or 0 if unknown or unlimited.
-  virtual void seekStreamSource(FramedSource* inputSource, char*& absStart, char*& absEnd);
+  LIVE555_EXPORT virtual void seekStreamSource(FramedSource* inputSource, char*& absStart, char*& absEnd);
     // This routine is used to seek by 'absolute' time.
     // "absStart" should be a string of the form "YYYYMMDDTHHMMSSZ" or "YYYYMMDDTHHMMSS.<frac>Z".
     // "absEnd" should be either NULL (for no end time), or a string of the same form as "absStart".
     // These strings may be modified in-place, or can be reassigned to a newly-allocated value (after delete[]ing the original).
-  virtual void setStreamSourceScale(FramedSource* inputSource, float scale);
-  virtual void setStreamSourceDuration(FramedSource* inputSource, double streamDuration, u_int64_t& numBytes);
-  virtual void closeStreamSource(FramedSource* inputSource);
+  LIVE555_EXPORT virtual void setStreamSourceScale(FramedSource* inputSource, float scale);
+  LIVE555_EXPORT virtual void setStreamSourceDuration(FramedSource* inputSource, double streamDuration, u_int64_t& numBytes);
+  LIVE555_EXPORT virtual void closeStreamSource(FramedSource* inputSource);
 
 protected: // new virtual functions, defined by all subclasses
-  virtual FramedSource* createNewStreamSource(unsigned clientSessionId,
+  LIVE555_EXPORT virtual FramedSource* createNewStreamSource(unsigned clientSessionId,
 					      unsigned& estBitrate) = 0;
       // "estBitrate" is the stream's estimated bitrate, in kbps
-  virtual RTPSink* createNewRTPSink(Groupsock* rtpGroupsock,
+  LIVE555_EXPORT virtual RTPSink* createNewRTPSink(Groupsock* rtpGroupsock,
 				    unsigned char rtpPayloadTypeIfDynamic,
 				    FramedSource* inputSource) = 0;
 
 protected: // new virtual functions, may be redefined by a subclass:
-  virtual Groupsock* createGroupsock(struct sockaddr_storage const& addr, Port port);
-  virtual RTCPInstance* createRTCP(Groupsock* RTCPgs, unsigned totSessionBW, /* in kbps */
+  LIVE555_EXPORT virtual Groupsock* createGroupsock(struct sockaddr_storage const& addr, Port port);
+  LIVE555_EXPORT virtual RTCPInstance* createRTCP(Groupsock* RTCPgs, unsigned totSessionBW, /* in kbps */
 				   unsigned char const* cname, RTPSink* sink);
 
 public:
   void multiplexRTCPWithRTP() { fMultiplexRTCPWithRTP = True; }
     // An alternative to passing the "multiplexRTCPWithRTP" parameter as True in the constructor
 
-  void setRTCPAppPacketHandler(RTCPAppHandlerFunc* handler, void* clientData);
+  LIVE555_EXPORT void setRTCPAppPacketHandler(RTCPAppHandlerFunc* handler, void* clientData);
     // Sets a handler to be called if a RTCP "APP" packet arrives from any future client.
     // (Any current clients are not affected; any "APP" packets from them will continue to be
     // handled by whatever handler existed when the client sent its first RTSP "PLAY" command.)
     // (Call with (NULL, NULL) to remove an existing handler - for future clients only)
 
-  void sendRTCPAppPacket(u_int8_t subtype, char const* name,
+  LIVE555_EXPORT void sendRTCPAppPacket(u_int8_t subtype, char const* name,
 			 u_int8_t* appDependentData, unsigned appDependentDataSize);
     // Sends a custom RTCP "APP" packet to the most recent client (if "reuseFirstSource" was False),
     // or to all current clients (if "reuseFirstSource" was True).
@@ -127,7 +127,7 @@ public:
     // then the remaining bytes are '\0'.)
 
 protected:
-  void setSDPLinesFromRTPSink(RTPSink* rtpSink, FramedSource* inputSource,
+  LIVE555_EXPORT void setSDPLinesFromRTPSink(RTPSink* rtpSink, FramedSource* inputSource,
 			      unsigned estBitrate);
       // used to implement "sdpLines()"
 
@@ -179,22 +179,22 @@ public:
 
 class StreamState {
 public:
-  StreamState(OnDemandServerMediaSubsession& master,
+  LIVE555_EXPORT StreamState(OnDemandServerMediaSubsession& master,
               Port const& serverRTPPort, Port const& serverRTCPPort,
 	      RTPSink* rtpSink, BasicUDPSink* udpSink,
 	      unsigned totalBW, FramedSource* mediaSource,
 	      Groupsock* rtpGS, Groupsock* rtcpGS);
-  virtual ~StreamState();
+  LIVE555_EXPORT virtual ~StreamState();
 
-  void startPlaying(Destinations* destinations, unsigned clientSessionId,
+  LIVE555_EXPORT void startPlaying(Destinations* destinations, unsigned clientSessionId,
 		    TaskFunc* rtcpRRHandler, void* rtcpRRHandlerClientData,
 		    ServerRequestAlternativeByteHandler* serverRequestAlternativeByteHandler,
                     void* serverRequestAlternativeByteHandlerClientData);
-  void pause();
-  void sendRTCPAppPacket(u_int8_t subtype, char const* name,
+  LIVE555_EXPORT void pause();
+  LIVE555_EXPORT void sendRTCPAppPacket(u_int8_t subtype, char const* name,
 			 u_int8_t* appDependentData, unsigned appDependentDataSize);
-  void endPlaying(Destinations* destinations, unsigned clientSessionId);
-  void reclaim();
+  LIVE555_EXPORT void endPlaying(Destinations* destinations, unsigned clientSessionId);
+  LIVE555_EXPORT void reclaim();
 
   unsigned& referenceCount() { return fReferenceCount; }
 

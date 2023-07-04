@@ -30,7 +30,7 @@ DeviceSource::createNew(UsageEnvironment& env,
   return new DeviceSource(env, params);
 }
 
-EventTriggerId DeviceSource::eventTriggerId = 0;
+LIVE555_EXPORT EventTriggerId DeviceSource::eventTriggerId = 0;
 
 unsigned DeviceSource::referenceCount = 0;
 

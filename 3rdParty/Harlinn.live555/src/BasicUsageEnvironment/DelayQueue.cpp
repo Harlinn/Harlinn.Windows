@@ -25,7 +25,7 @@ static const int MILLION = 1000000;
 
 ///// Timeval /////
 
-int Timeval::operator>=(const Timeval& arg2) const {
+bool Timeval::operator>=(const Timeval& arg2) const {
   return seconds() > arg2.seconds()
     || (seconds() == arg2.seconds()
 	&& useconds() >= arg2.useconds());
@@ -50,7 +50,7 @@ void Timeval::operator-=(const DelayInterval& arg2) {
 
 }
 
-DelayInterval operator-(const Timeval& arg1, const Timeval& arg2) {
+LIVE555_EXPORT DelayInterval operator-(const Timeval& arg1, const Timeval& arg2) {
   time_base_seconds secs = arg1.seconds() - arg2.seconds();
   time_base_seconds usecs = arg1.useconds() - arg2.useconds();
 
@@ -67,7 +67,7 @@ DelayInterval operator-(const Timeval& arg1, const Timeval& arg2) {
 
 ///// DelayInterval /////
 
-DelayInterval operator*(short arg1, const DelayInterval& arg2) {
+LIVE555_EXPORT DelayInterval operator*(short arg1, const DelayInterval& arg2) {
   time_base_seconds result_seconds = arg1*arg2.seconds();
   time_base_seconds result_useconds = arg1*arg2.useconds();
 
@@ -81,12 +81,12 @@ DelayInterval operator*(short arg1, const DelayInterval& arg2) {
 #ifndef INT_MAX
 #define INT_MAX	0x7FFFFFFF
 #endif
-const DelayInterval DELAY_ZERO(0, 0);
-const DelayInterval DELAY_SECOND(1, 0);
-const DelayInterval DELAY_MINUTE = 60*DELAY_SECOND;
-const DelayInterval DELAY_HOUR = 60*DELAY_MINUTE;
-const DelayInterval DELAY_DAY = 24*DELAY_HOUR;
-const DelayInterval ETERNITY(INT_MAX, MILLION-1);
+LIVE555_EXPORT const DelayInterval DELAY_ZERO(0, 0);
+LIVE555_EXPORT const DelayInterval DELAY_SECOND(1, 0);
+LIVE555_EXPORT const DelayInterval DELAY_MINUTE = 60*DELAY_SECOND;
+LIVE555_EXPORT const DelayInterval DELAY_HOUR = 60*DELAY_MINUTE;
+LIVE555_EXPORT const DelayInterval DELAY_DAY = 24*DELAY_HOUR;
+LIVE555_EXPORT const DelayInterval ETERNITY(INT_MAX, MILLION-1);
 // used internally to make the implementation work
 
 
@@ -219,7 +219,7 @@ void DelayQueue::synchronize() {
 
 ///// _EventTime /////
 
-_EventTime TimeNow() {
+LIVE555_EXPORT _EventTime TimeNow() {
   struct timeval tvNow;
 
   gettimeofday(&tvNow, NULL);
@@ -227,4 +227,4 @@ _EventTime TimeNow() {
   return _EventTime(tvNow.tv_sec, tvNow.tv_usec);
 }
 
-const _EventTime THE_END_OF_TIME(INT_MAX);
+LIVE555_EXPORT const _EventTime THE_END_OF_TIME(INT_MAX);

@@ -29,7 +29,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class uLawFromPCMAudioSource: public FramedFilter {
 public:
-  static uLawFromPCMAudioSource*
+  LIVE555_EXPORT static uLawFromPCMAudioSource*
   createNew(UsageEnvironment& env, FramedSource* inputSource,
 	    int byteOrdering = 0);
   // "byteOrdering" == 0 => host order (the default)
@@ -37,21 +37,21 @@ public:
   // "byteOrdering" == 2 => network (i.e., big-endian) order
 
 protected:
-  uLawFromPCMAudioSource(UsageEnvironment& env, FramedSource* inputSource,
+  LIVE555_EXPORT uLawFromPCMAudioSource(UsageEnvironment& env, FramedSource* inputSource,
 			 int byteOrdering);
       // called only by createNew()
-  virtual ~uLawFromPCMAudioSource();
+  LIVE555_EXPORT virtual ~uLawFromPCMAudioSource();
 
 private:
   // Redefined virtual functions:
-  virtual void doGetNextFrame();
+  LIVE555_EXPORT virtual void doGetNextFrame();
 
 private:
-  static void afterGettingFrame(void* clientData, unsigned frameSize,
+  LIVE555_EXPORT static void afterGettingFrame(void* clientData, unsigned frameSize,
 				unsigned numTruncatedBytes,
 				struct timeval presentationTime,
 				unsigned durationInMicroseconds);
-  void afterGettingFrame1(unsigned frameSize,
+  LIVE555_EXPORT void afterGettingFrame1(unsigned frameSize,
 			  unsigned numTruncatedBytes,
 			  struct timeval presentationTime,
 			  unsigned durationInMicroseconds);
@@ -67,25 +67,25 @@ private:
 
 class PCMFromuLawAudioSource: public FramedFilter {
 public:
-  static PCMFromuLawAudioSource*
+  LIVE555_EXPORT static PCMFromuLawAudioSource*
   createNew(UsageEnvironment& env, FramedSource* inputSource);
 
 protected:
-  PCMFromuLawAudioSource(UsageEnvironment& env,
+  LIVE555_EXPORT PCMFromuLawAudioSource(UsageEnvironment& env,
 			 FramedSource* inputSource);
       // called only by createNew()
-  virtual ~PCMFromuLawAudioSource();
+  LIVE555_EXPORT virtual ~PCMFromuLawAudioSource();
 
 private:
   // Redefined virtual functions:
-  virtual void doGetNextFrame();
+  LIVE555_EXPORT virtual void doGetNextFrame();
 
 private:
-  static void afterGettingFrame(void* clientData, unsigned frameSize,
+  LIVE555_EXPORT static void afterGettingFrame(void* clientData, unsigned frameSize,
 				unsigned numTruncatedBytes,
 				struct timeval presentationTime,
 				unsigned durationInMicroseconds);
-  void afterGettingFrame1(unsigned frameSize,
+  LIVE555_EXPORT void afterGettingFrame1(unsigned frameSize,
 			  unsigned numTruncatedBytes,
 			  struct timeval presentationTime,
 			  unsigned durationInMicroseconds);
@@ -100,24 +100,24 @@ private:
 
 class NetworkFromHostOrder16: public FramedFilter {
 public:
-  static NetworkFromHostOrder16*
+  LIVE555_EXPORT static NetworkFromHostOrder16*
   createNew(UsageEnvironment& env, FramedSource* inputSource);
 
 protected:
-  NetworkFromHostOrder16(UsageEnvironment& env, FramedSource* inputSource);
+  LIVE555_EXPORT NetworkFromHostOrder16(UsageEnvironment& env, FramedSource* inputSource);
       // called only by createNew()
-  virtual ~NetworkFromHostOrder16();
+  LIVE555_EXPORT virtual ~NetworkFromHostOrder16();
 
 private:
   // Redefined virtual functions:
-  virtual void doGetNextFrame();
+  LIVE555_EXPORT virtual void doGetNextFrame();
 
 private:
-  static void afterGettingFrame(void* clientData, unsigned frameSize,
+  LIVE555_EXPORT static void afterGettingFrame(void* clientData, unsigned frameSize,
 				unsigned numTruncatedBytes,
 				struct timeval presentationTime,
 				unsigned durationInMicroseconds);
-  void afterGettingFrame1(unsigned frameSize,
+  LIVE555_EXPORT void afterGettingFrame1(unsigned frameSize,
 			  unsigned numTruncatedBytes,
 			  struct timeval presentationTime,
 			  unsigned durationInMicroseconds);
@@ -128,24 +128,24 @@ private:
 
 class HostFromNetworkOrder16: public FramedFilter {
 public:
-  static HostFromNetworkOrder16*
+  LIVE555_EXPORT static HostFromNetworkOrder16*
   createNew(UsageEnvironment& env, FramedSource* inputSource);
 
 protected:
-  HostFromNetworkOrder16(UsageEnvironment& env, FramedSource* inputSource);
+  LIVE555_EXPORT HostFromNetworkOrder16(UsageEnvironment& env, FramedSource* inputSource);
       // called only by createNew()
-  virtual ~HostFromNetworkOrder16();
+  LIVE555_EXPORT virtual ~HostFromNetworkOrder16();
 
 private:
   // Redefined virtual functions:
-  virtual void doGetNextFrame();
+  LIVE555_EXPORT virtual void doGetNextFrame();
 
 private:
-  static void afterGettingFrame(void* clientData, unsigned frameSize,
+  LIVE555_EXPORT static void afterGettingFrame(void* clientData, unsigned frameSize,
 				unsigned numTruncatedBytes,
 				struct timeval presentationTime,
 				unsigned durationInMicroseconds);
-  void afterGettingFrame1(unsigned frameSize,
+  LIVE555_EXPORT void afterGettingFrame1(unsigned frameSize,
 			  unsigned numTruncatedBytes,
 			  struct timeval presentationTime,
 			  unsigned durationInMicroseconds);
@@ -156,23 +156,23 @@ private:
 
 class EndianSwap16: public FramedFilter {
 public:
-  static EndianSwap16* createNew(UsageEnvironment& env, FramedSource* inputSource);
+  LIVE555_EXPORT static EndianSwap16* createNew(UsageEnvironment& env, FramedSource* inputSource);
 
 protected:
-  EndianSwap16(UsageEnvironment& env, FramedSource* inputSource);
+  LIVE555_EXPORT EndianSwap16(UsageEnvironment& env, FramedSource* inputSource);
       // called only by createNew()
-  virtual ~EndianSwap16();
+  LIVE555_EXPORT virtual ~EndianSwap16();
 
 private:
   // Redefined virtual functions:
-  virtual void doGetNextFrame();
+  LIVE555_EXPORT virtual void doGetNextFrame();
 
 private:
-  static void afterGettingFrame(void* clientData, unsigned frameSize,
+  LIVE555_EXPORT static void afterGettingFrame(void* clientData, unsigned frameSize,
 				unsigned numTruncatedBytes,
 				struct timeval presentationTime,
 				unsigned durationInMicroseconds);
-  void afterGettingFrame1(unsigned frameSize,
+  LIVE555_EXPORT void afterGettingFrame1(unsigned frameSize,
 			  unsigned numTruncatedBytes,
 			  struct timeval presentationTime,
 			  unsigned durationInMicroseconds);
@@ -183,23 +183,23 @@ private:
 
 class EndianSwap24: public FramedFilter {
 public:
-  static EndianSwap24* createNew(UsageEnvironment& env, FramedSource* inputSource);
+  LIVE555_EXPORT static EndianSwap24* createNew(UsageEnvironment& env, FramedSource* inputSource);
 
 protected:
-  EndianSwap24(UsageEnvironment& env, FramedSource* inputSource);
+  LIVE555_EXPORT EndianSwap24(UsageEnvironment& env, FramedSource* inputSource);
       // called only by createNew()
-  virtual ~EndianSwap24();
+  LIVE555_EXPORT virtual ~EndianSwap24();
 
 private:
   // Redefined virtual functions:
-  virtual void doGetNextFrame();
+  LIVE555_EXPORT virtual void doGetNextFrame();
 
 private:
-  static void afterGettingFrame(void* clientData, unsigned frameSize,
+  LIVE555_EXPORT static void afterGettingFrame(void* clientData, unsigned frameSize,
 				unsigned numTruncatedBytes,
 				struct timeval presentationTime,
 				unsigned durationInMicroseconds);
-  void afterGettingFrame1(unsigned frameSize,
+  LIVE555_EXPORT void afterGettingFrame1(unsigned frameSize,
 			  unsigned numTruncatedBytes,
 			  struct timeval presentationTime,
 			  unsigned durationInMicroseconds);

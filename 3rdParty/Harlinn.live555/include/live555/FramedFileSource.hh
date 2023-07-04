@@ -27,8 +27,8 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class FramedFileSource: public FramedSource {
 protected:
-  FramedFileSource(UsageEnvironment& env, FILE* fid); // abstract base class
-  virtual ~FramedFileSource();
+  LIVE555_EXPORT FramedFileSource(UsageEnvironment& env, FILE* fid); // abstract base class
+  LIVE555_EXPORT virtual ~FramedFileSource();
 
 protected:
   FILE* fFid;

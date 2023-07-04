@@ -28,21 +28,21 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class MPEG2TransportUDPServerMediaSubsession: public OnDemandServerMediaSubsession {
 public:
-  static MPEG2TransportUDPServerMediaSubsession*
+  LIVE555_EXPORT static MPEG2TransportUDPServerMediaSubsession*
   createNew(UsageEnvironment& env,
 	    char const* inputAddressStr, // An IP multicast address, or use "0.0.0.0" or NULL for unicast input
 	    Port const& inputPort,
 	    Boolean inputStreamIsRawUDP = False); // otherwise (default) the input stream is RTP/UDP
 protected:
-  MPEG2TransportUDPServerMediaSubsession(UsageEnvironment& env,
+  LIVE555_EXPORT MPEG2TransportUDPServerMediaSubsession(UsageEnvironment& env,
 					 char const* inputAddressStr, Port const& inputPort, Boolean inputStreamIsRawUDP);
       // called only by createNew();
-  virtual ~MPEG2TransportUDPServerMediaSubsession();
+  LIVE555_EXPORT virtual ~MPEG2TransportUDPServerMediaSubsession();
 
 protected: // redefined virtual functions
-  virtual FramedSource* createNewStreamSource(unsigned clientSessionId,
+  LIVE555_EXPORT virtual FramedSource* createNewStreamSource(unsigned clientSessionId,
 					      unsigned& estBitrate);
-  virtual RTPSink* createNewRTPSink(Groupsock* rtpGroupsock,
+  LIVE555_EXPORT virtual RTPSink* createNewRTPSink(Groupsock* rtpGroupsock,
 				    unsigned char rtpPayloadTypeIfDynamic,
 				    FramedSource* inputSource);
 protected:

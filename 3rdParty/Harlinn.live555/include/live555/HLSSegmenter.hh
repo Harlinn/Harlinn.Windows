@@ -29,37 +29,37 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class HLSSegmenter: public MediaSink {
 public:
-  typedef void (onEndOfSegmentFunc)(void* clientData,
+  typedef void (__cdecl onEndOfSegmentFunc)(void* clientData,
 				    char const* segmentFileName, double segmentDuration);
-  static HLSSegmenter* createNew(UsageEnvironment& env,
+  LIVE555_EXPORT static HLSSegmenter* createNew(UsageEnvironment& env,
 				 unsigned segmentationDuration, char const* fileNamePrefix,
 				 onEndOfSegmentFunc* onEndOfSegmentFunc = NULL,
 				 void* onEndOfSegmentClientData = NULL);
 
 private:
-  HLSSegmenter(UsageEnvironment& env, unsigned segmentationDuration, char const* fileNamePrefix,
+  LIVE555_EXPORT HLSSegmenter(UsageEnvironment& env, unsigned segmentationDuration, char const* fileNamePrefix,
 	       onEndOfSegmentFunc* onEndOfSegmentFunc, void* onEndOfSegmentClientData);
     // called only by createNew()
-  virtual ~HLSSegmenter();
+  LIVE555_EXPORT virtual ~HLSSegmenter();
 
-  static void ourEndOfSegmentHandler(void* clientData, double segmentDuration);
-  void ourEndOfSegmentHandler(double segmentDuration);
+  LIVE555_EXPORT static void ourEndOfSegmentHandler(void* clientData, double segmentDuration);
+  LIVE555_EXPORT void ourEndOfSegmentHandler(double segmentDuration);
 
-  Boolean openNextOutputSegment();
+  LIVE555_EXPORT Boolean openNextOutputSegment();
 
-  static void afterGettingFrame(void* clientData, unsigned frameSize,
+  LIVE555_EXPORT static void afterGettingFrame(void* clientData, unsigned frameSize,
                                 unsigned numTruncatedBytes,
                                 struct timeval presentationTime,
                                 unsigned durationInMicroseconds);
-  virtual void afterGettingFrame(unsigned frameSize,
+  LIVE555_EXPORT virtual void afterGettingFrame(unsigned frameSize,
                                  unsigned numTruncatedBytes);
 
-  static void ourOnSourceClosure(void* clientData);
-  void ourOnSourceClosure();
+  LIVE555_EXPORT static void ourOnSourceClosure(void* clientData);
+  LIVE555_EXPORT void ourOnSourceClosure();
 
 private: // redefined virtual functions:
-  virtual Boolean sourceIsCompatibleWithUs(MediaSource& source);
-  virtual Boolean continuePlaying();
+  LIVE555_EXPORT virtual Boolean sourceIsCompatibleWithUs(MediaSource& source);
+  LIVE555_EXPORT virtual Boolean continuePlaying();
 
 private:
   unsigned fSegmentationDuration;

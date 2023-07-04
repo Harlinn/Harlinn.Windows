@@ -31,7 +31,7 @@ typedef void MPEG1or2DemuxOnDeletionFunc(void* objectToNotify, class MPEG1or2Dem
 
 class MPEG1or2Demux: public Medium {
 public:
-  static MPEG1or2Demux* createNew(UsageEnvironment& env,
+  LIVE555_EXPORT static MPEG1or2Demux* createNew(UsageEnvironment& env,
 				  FramedSource* inputSource,
 				  Boolean reclaimWhenLastESDies = False,
 				  MPEG1or2DemuxOnDeletionFunc* onDeletionFunc = NULL,
@@ -39,16 +39,16 @@ public:
   // If "reclaimWhenLastESDies" is True, the the demux is deleted when
   // all "MPEG1or2DemuxedElementaryStream"s that we created get deleted.
 
-  MPEG1or2DemuxedElementaryStream* newElementaryStream(u_int8_t streamIdTag);
+  LIVE555_EXPORT MPEG1or2DemuxedElementaryStream* newElementaryStream(u_int8_t streamIdTag);
 
   // Specialized versions of the above for audio and video:
-  MPEG1or2DemuxedElementaryStream* newAudioStream();
-  MPEG1or2DemuxedElementaryStream* newVideoStream();
+  LIVE555_EXPORT MPEG1or2DemuxedElementaryStream* newAudioStream();
+  LIVE555_EXPORT MPEG1or2DemuxedElementaryStream* newVideoStream();
 
   // A hack for getting raw, undemuxed PES packets from the Program Stream:
-  MPEG1or2DemuxedElementaryStream* newRawPESStream();
+  LIVE555_EXPORT MPEG1or2DemuxedElementaryStream* newRawPESStream();
 
-  void getNextFrame(u_int8_t streamIdTag,
+  LIVE555_EXPORT void getNextFrame(u_int8_t streamIdTag,
 		    unsigned char* to, unsigned maxSize,
 		    FramedSource::afterGettingFunc* afterGettingFunc,
 		    void* afterGettingClientData,
@@ -57,11 +57,11 @@ public:
       // similar to FramedSource::getNextFrame(), except that it also
       // takes a stream id tag as parameter.
 
-  void stopGettingFrames(u_int8_t streamIdTag);
+  LIVE555_EXPORT void stopGettingFrames(u_int8_t streamIdTag);
       // similar to FramedSource::stopGettingFrames(), except that it also
       // takes a stream id tag as parameter.
 
-  static void handleClosure(void* clientData);
+  LIVE555_EXPORT static void handleClosure(void* clientData);
       // This should be called (on ourself) if the source is discovered
       // to be closed (i.e., no longer readable)
 
@@ -69,7 +69,7 @@ public:
 
   class SCR {
   public:
-    SCR();
+    LIVE555_EXPORT SCR();
 
     u_int8_t highBit;
     u_int32_t remainingBits;
@@ -81,35 +81,35 @@ public:
 
   unsigned char mpegVersion() const { return fMPEGversion; }
 
-  void flushInput(); // should be called before any 'seek' on the underlying source
+  LIVE555_EXPORT void flushInput(); // should be called before any 'seek' on the underlying source
 
 private:
-  MPEG1or2Demux(UsageEnvironment& env,
+  LIVE555_EXPORT MPEG1or2Demux(UsageEnvironment& env,
 		FramedSource* inputSource, Boolean reclaimWhenLastESDies,
 		MPEG1or2DemuxOnDeletionFunc* onDeletionFunc, void* objectToNotify);
       // called only by createNew()
-  virtual ~MPEG1or2Demux();
+  LIVE555_EXPORT virtual ~MPEG1or2Demux();
 
-  void registerReadInterest(u_int8_t streamIdTag,
+  LIVE555_EXPORT void registerReadInterest(u_int8_t streamIdTag,
 			    unsigned char* to, unsigned maxSize,
 			    FramedSource::afterGettingFunc* afterGettingFunc,
 			    void* afterGettingClientData,
 			    FramedSource::onCloseFunc* onCloseFunc,
 			    void* onCloseClientData);
 
-  Boolean useSavedData(u_int8_t streamIdTag,
+  LIVE555_EXPORT Boolean useSavedData(u_int8_t streamIdTag,
 		       unsigned char* to, unsigned maxSize,
 		       FramedSource::afterGettingFunc* afterGettingFunc,
 		       void* afterGettingClientData);
 
-  static void continueReadProcessing(void* clientData,
+  LIVE555_EXPORT static void continueReadProcessing(void* clientData,
 				     unsigned char* ptr, unsigned size,
 				     struct timeval presentationTime);
-  void continueReadProcessing();
+  LIVE555_EXPORT void continueReadProcessing();
 
 private:
   friend class MPEG1or2DemuxedElementaryStream;
-  void noteElementaryStreamDeletion(MPEG1or2DemuxedElementaryStream* es);
+  LIVE555_EXPORT void noteElementaryStreamDeletion(MPEG1or2DemuxedElementaryStream* es);
 
 private:
   FramedSource* fInputSource;

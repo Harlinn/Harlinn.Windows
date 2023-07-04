@@ -38,19 +38,19 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class OutputSocket: public Socket {
 public:
-  OutputSocket(UsageEnvironment& env, int family);
-  virtual ~OutputSocket();
+  LIVE555_EXPORT OutputSocket(UsageEnvironment& env, int family);
+  LIVE555_EXPORT virtual ~OutputSocket();
 
-  virtual Boolean write(struct sockaddr_storage const& addressAndPort, u_int8_t ttl,
+  LIVE555_EXPORT virtual Boolean write(struct sockaddr_storage const& addressAndPort, u_int8_t ttl,
 			unsigned char* buffer, unsigned bufferSize);
 
 protected:
-  OutputSocket(UsageEnvironment& env, Port port, int family);
+    LIVE555_EXPORT OutputSocket(UsageEnvironment& env, Port port, int family);
 
   portNumBits sourcePortNum() const {return fSourcePort.num();}
 
 private: // redefined virtual function
-  virtual Boolean handleRead(unsigned char* buffer, unsigned bufferMaxSize,
+  LIVE555_EXPORT virtual Boolean handleRead(unsigned char* buffer, unsigned bufferMaxSize,
 			     unsigned& bytesRead,
 			     struct sockaddr_storage& fromAddressAndPort);
 
@@ -61,9 +61,9 @@ private:
 
 class destRecord {
 public:
-  destRecord(struct sockaddr_storage const& addr, Port const& port, u_int8_t ttl, unsigned sessionId,
+  LIVE555_EXPORT destRecord(struct sockaddr_storage const& addr, Port const& port, u_int8_t ttl, unsigned sessionId,
 	     destRecord* next);
-  virtual ~destRecord();
+  LIVE555_EXPORT virtual ~destRecord();
 
 public:
   destRecord* fNext;
@@ -77,20 +77,20 @@ public:
 
 class Groupsock: public OutputSocket {
 public:
-  Groupsock(UsageEnvironment& env, struct sockaddr_storage const& groupAddr,
+  LIVE555_EXPORT Groupsock(UsageEnvironment& env, struct sockaddr_storage const& groupAddr,
 	    Port port, u_int8_t ttl);
       // used for a 'source-independent multicast' group
-  Groupsock(UsageEnvironment& env, struct sockaddr_storage const& groupAddr,
+  LIVE555_EXPORT Groupsock(UsageEnvironment& env, struct sockaddr_storage const& groupAddr,
 	    struct sockaddr_storage const& sourceFilterAddr,
 	    Port port);
       // used for a 'source-specific multicast' group
 
-  virtual ~Groupsock();
+  LIVE555_EXPORT virtual ~Groupsock();
 
-  virtual destRecord* createNewDestRecord(struct sockaddr_storage const& addr, Port const& port, u_int8_t ttl, unsigned sessionId, destRecord* next);
+  LIVE555_EXPORT virtual destRecord* createNewDestRecord(struct sockaddr_storage const& addr, Port const& port, u_int8_t ttl, unsigned sessionId, destRecord* next);
       // Can be redefined by subclasses that also subclass "destRecord"
 
-  void changeDestinationParameters(struct sockaddr_storage const& newDestAddr,
+  LIVE555_EXPORT void changeDestinationParameters(struct sockaddr_storage const& newDestAddr,
 				   Port newDestPort, int newDestTTL,
 				   unsigned sessionId = 0);
       // By default, the destination address, port and ttl for
@@ -100,15 +100,15 @@ public:
       // number, at least, to be different from the source port.
       // (If a parameter is 0 (or ~0 for ttl), then no change is made to that parameter.)
       // (If no existing "destRecord" exists with this "sessionId", then we add a new "destRecord".)
-  unsigned lookupSessionIdFromDestination(struct sockaddr_storage const& destAddrAndPort) const;
+  LIVE555_EXPORT unsigned lookupSessionIdFromDestination(struct sockaddr_storage const& destAddrAndPort) const;
       // returns 0 if not found
 
   // As a special case, we also allow multiple destinations (addresses & ports)
   // (This can be used to implement multi-unicast.)
-  virtual void addDestination(struct sockaddr_storage const& addr, Port const& port,
+  LIVE555_EXPORT virtual void addDestination(struct sockaddr_storage const& addr, Port const& port,
 			      unsigned sessionId);
-  virtual void removeDestination(unsigned sessionId);
-  void removeAllDestinations();
+  LIVE555_EXPORT virtual void removeDestination(unsigned sessionId);
+  LIVE555_EXPORT void removeAllDestinations();
   Boolean hasMultipleDestinations() const { return fDests != NULL && fDests->fNext != NULL; }
 
   struct sockaddr_storage const& groupAddress() const {
@@ -124,28 +124,28 @@ public:
 
   u_int8_t ttl() const { return fIncomingGroupEId.ttl(); }
 
-  void multicastSendOnly(); // send, but don't receive any multicast packets
+  LIVE555_EXPORT void multicastSendOnly(); // send, but don't receive any multicast packets
 
-  virtual Boolean output(UsageEnvironment& env, unsigned char* buffer, unsigned bufferSize);
+  LIVE555_EXPORT virtual Boolean output(UsageEnvironment& env, unsigned char* buffer, unsigned bufferSize);
 
   static NetInterfaceTrafficStats statsIncoming;
   static NetInterfaceTrafficStats statsOutgoing;
   NetInterfaceTrafficStats statsGroupIncoming; // *not* static
   NetInterfaceTrafficStats statsGroupOutgoing; // *not* static
 
-  Boolean wasLoopedBackFromUs(UsageEnvironment& env,
+  LIVE555_EXPORT Boolean wasLoopedBackFromUs(UsageEnvironment& env,
 			      struct sockaddr_storage const& fromAddressAndPort);
 
 public: // redefined virtual functions
-  virtual Boolean handleRead(unsigned char* buffer, unsigned bufferMaxSize,
+    LIVE555_EXPORT virtual Boolean handleRead(unsigned char* buffer, unsigned bufferMaxSize,
 			     unsigned& bytesRead,
 			     struct sockaddr_storage& fromAddressAndPort);
 
 protected:
-  destRecord* lookupDestRecordFromDestination(struct sockaddr_storage const& targetAddrAndPort) const;
+  LIVE555_EXPORT destRecord* lookupDestRecordFromDestination(struct sockaddr_storage const& targetAddrAndPort) const;
 
 private:
-  void removeDestinationFrom(destRecord*& dests, unsigned sessionId);
+  LIVE555_EXPORT void removeDestinationFrom(destRecord*& dests, unsigned sessionId);
     // used to implement (the public) "removeDestination()", and "changeDestinationParameters()"
 protected:
   destRecord* fDests;
@@ -153,42 +153,42 @@ private:
   GroupEId fIncomingGroupEId;
 };
 
-UsageEnvironment& operator<<(UsageEnvironment& s, const Groupsock& g);
+LIVE555_EXPORT UsageEnvironment& operator<<(UsageEnvironment& s, const Groupsock& g);
 
 // A data structure for looking up a 'groupsock'
 // by (multicast address, port), or by socket number
 class GroupsockLookupTable {
 public:
-  Groupsock* Fetch(UsageEnvironment& env, struct sockaddr_storage const& groupAddress,
+  LIVE555_EXPORT Groupsock* Fetch(UsageEnvironment& env, struct sockaddr_storage const& groupAddress,
 		   Port port, u_int8_t ttl, Boolean& isNew);
       // Creates a new Groupsock if none already exists
-  Groupsock* Fetch(UsageEnvironment& env, struct sockaddr_storage const& groupAddress,
+  LIVE555_EXPORT Groupsock* Fetch(UsageEnvironment& env, struct sockaddr_storage const& groupAddress,
 		   struct sockaddr_storage const& sourceFilterAddr,
 		   Port port, Boolean& isNew);
       // Creates a new Groupsock if none already exists
-  Groupsock* Lookup(struct sockaddr_storage const& groupAddress, Port port);
+  LIVE555_EXPORT Groupsock* Lookup(struct sockaddr_storage const& groupAddress, Port port);
       // Returns NULL if none already exists
-  Groupsock* Lookup(struct sockaddr_storage const& groupAddress,
+  LIVE555_EXPORT Groupsock* Lookup(struct sockaddr_storage const& groupAddress,
 		    struct sockaddr_storage const& sourceFilterAddr,
 		    Port port);
       // Returns NULL if none already exists
-  Groupsock* Lookup(UsageEnvironment& env, int sock);
+  LIVE555_EXPORT Groupsock* Lookup(UsageEnvironment& env, int sock);
       // Returns NULL if none already exists
-  Boolean Remove(Groupsock const* groupsock);
+  LIVE555_EXPORT Boolean Remove(Groupsock const* groupsock);
 
   // Used to iterate through the groupsocks in the table
   class Iterator {
   public:
-    Iterator(GroupsockLookupTable& groupsocks);
+    LIVE555_EXPORT Iterator(GroupsockLookupTable& groupsocks);
 
-    Groupsock* next(); // NULL iff none
+    LIVE555_EXPORT Groupsock* next(); // NULL iff none
 
   private:
     AddressPortLookupTable::Iterator fIter;
   };
 
 private:
-  Groupsock* AddNew(UsageEnvironment& env,
+  LIVE555_EXPORT Groupsock* AddNew(UsageEnvironment& env,
 		    struct sockaddr_storage const& groupAddress,
 		    struct sockaddr_storage const& sourceFilterAddress,
 		    Port port, u_int8_t ttl);

@@ -26,21 +26,21 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class JPEG2000VideoRTPSink: public VideoRTPSink {
 public:
-  static JPEG2000VideoRTPSink* createNew(UsageEnvironment& env, Groupsock* RTPgs);
+  LIVE555_EXPORT static JPEG2000VideoRTPSink* createNew(UsageEnvironment& env, Groupsock* RTPgs);
 
 protected:
-  JPEG2000VideoRTPSink(UsageEnvironment& env, Groupsock* RTPgs);
+  LIVE555_EXPORT JPEG2000VideoRTPSink(UsageEnvironment& env, Groupsock* RTPgs);
 	// called only by createNew()
 
-  virtual ~JPEG2000VideoRTPSink();
+  LIVE555_EXPORT virtual ~JPEG2000VideoRTPSink();
 
 private: // redefined virtual functions:
-  virtual void doSpecialFrameHandling(unsigned fragmentationOffset,
+  LIVE555_EXPORT virtual void doSpecialFrameHandling(unsigned fragmentationOffset,
                                       unsigned char* frameStart,
                                       unsigned numBytesInFrame,
                                       struct timeval framePresentationTime,
                                       unsigned numRemainingBytes);
-  virtual unsigned specialHeaderSize() const;
+  LIVE555_EXPORT virtual unsigned specialHeaderSize() const;
 };
 
 #endif

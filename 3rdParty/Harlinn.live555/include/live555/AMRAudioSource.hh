@@ -34,14 +34,14 @@ public:
   // The frame header for the most recently read frame (RFC 4867, sec. 5.3)
 
 protected:
-  AMRAudioSource(UsageEnvironment& env, Boolean isWideband, unsigned numChannels);
+  LIVE555_EXPORT AMRAudioSource(UsageEnvironment& env, Boolean isWideband, unsigned numChannels);
 	// virtual base class
-  virtual ~AMRAudioSource();
+  LIVE555_EXPORT virtual ~AMRAudioSource();
 
 private:
   // redefined virtual functions:
-  virtual char const* MIMEtype() const;
-  virtual Boolean isAMRAudioSource() const;
+  LIVE555_EXPORT virtual char const* MIMEtype() const;
+  LIVE555_EXPORT virtual Boolean isAMRAudioSource() const;
 
 protected:
   Boolean fIsWideband;

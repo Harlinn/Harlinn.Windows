@@ -27,7 +27,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class MPEG4GenericRTPSink: public MultiFramedRTPSink {
 public:
-  static MPEG4GenericRTPSink*
+  LIVE555_EXPORT static MPEG4GenericRTPSink*
   createNew(UsageEnvironment& env, Groupsock* RTPgs,
 	    u_int8_t rtpPayloadFormat, u_int32_t rtpTimestampFrequency,
 	    char const* sdpMediaTypeString, char const* mpeg4Mode,
@@ -35,7 +35,7 @@ public:
 	    unsigned numChannels = 1);
 
 protected:
-  MPEG4GenericRTPSink(UsageEnvironment& env, Groupsock* RTPgs,
+  LIVE555_EXPORT MPEG4GenericRTPSink(UsageEnvironment& env, Groupsock* RTPgs,
 		      u_int8_t rtpPayloadFormat,
 		      u_int32_t rtpTimestampFrequency,
 		      char const* sdpMediaTypeString,
@@ -43,22 +43,22 @@ protected:
 		      unsigned numChannels);
 	// called only by createNew()
 
-  virtual ~MPEG4GenericRTPSink();
+  LIVE555_EXPORT virtual ~MPEG4GenericRTPSink();
 
 private: // redefined virtual functions:
-  virtual
+  LIVE555_EXPORT virtual
   Boolean frameCanAppearAfterPacketStart(unsigned char const* frameStart,
 					 unsigned numBytesInFrame) const;
-  virtual void doSpecialFrameHandling(unsigned fragmentationOffset,
+  LIVE555_EXPORT virtual void doSpecialFrameHandling(unsigned fragmentationOffset,
                                       unsigned char* frameStart,
                                       unsigned numBytesInFrame,
                                       struct timeval framePresentationTime,
                                       unsigned numRemainingBytes);
-  virtual unsigned specialHeaderSize() const;
+  LIVE555_EXPORT virtual unsigned specialHeaderSize() const;
 
-  virtual char const* sdpMediaType() const;
+  LIVE555_EXPORT virtual char const* sdpMediaType() const;
 
-  virtual char const* auxSDPLine(); // for the "a=fmtp:" SDP line
+  LIVE555_EXPORT virtual char const* auxSDPLine(); // for the "a=fmtp:" SDP line
 
 private:
   char const* fSDPMediaTypeString;

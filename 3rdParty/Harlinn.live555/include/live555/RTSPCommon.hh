@@ -38,7 +38,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 #define RTSP_PARAM_STRING_MAX 200
 
-Boolean parseRTSPRequestString(char const *reqStr, unsigned reqStrSize, // in
+LIVE555_EXPORT Boolean parseRTSPRequestString(char const *reqStr, unsigned reqStrSize, // in
 			       char *resultCmdName, // out
 			       unsigned resultCmdNameMaxSize, // in
 			       char* resultURLPreSuffix, // out
@@ -51,15 +51,15 @@ Boolean parseRTSPRequestString(char const *reqStr, unsigned reqStrSize, // in
 			       unsigned resultSessionIdMaxSize, // in
 			       unsigned& contentLength, Boolean& urlIsRTSPS); // out
 
-Boolean parseRangeParam(char const* paramStr, double& rangeStart, double& rangeEnd, char*& absStartTime, char*& absEndTime, Boolean& startTimeIsNow);
-Boolean parseRangeHeader(char const* buf, double& rangeStart, double& rangeEnd, char*& absStartTime, char*& absEndTime, Boolean& startTimeIsNow);
+LIVE555_EXPORT Boolean parseRangeParam(char const* paramStr, double& rangeStart, double& rangeEnd, char*& absStartTime, char*& absEndTime, Boolean& startTimeIsNow);
+LIVE555_EXPORT Boolean parseRangeHeader(char const* buf, double& rangeStart, double& rangeEnd, char*& absStartTime, char*& absEndTime, Boolean& startTimeIsNow);
 
-Boolean parseScaleHeader(char const* buf, float& scale);
+LIVE555_EXPORT Boolean parseScaleHeader(char const* buf, float& scale);
 
-Boolean RTSPOptionIsSupported(char const* commandName, char const* optionsResponseString);
+LIVE555_EXPORT Boolean RTSPOptionIsSupported(char const* commandName, char const* optionsResponseString);
     // Returns True iff the RTSP command "commandName" is mentioned as one of the commands supported in "optionsResponseString"
     // (which should be the 'resultString' from a previous RTSP "OPTIONS" request).
 
-char const* dateHeader(); // A "Date:" header that can be used in a RTSP (or HTTP) response 
+LIVE555_EXPORT char const* dateHeader(); // A "Date:" header that can be used in a RTSP (or HTTP) response 
 
 #endif

@@ -27,16 +27,16 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class H264or5VideoFileSink: public FileSink {
 protected:
-  H264or5VideoFileSink(UsageEnvironment& env, FILE* fid,
+  LIVE555_EXPORT H264or5VideoFileSink(UsageEnvironment& env, FILE* fid,
 		       unsigned bufferSize, char const* perFrameFileNamePrefix,
 		       char const* sPropParameterSetsStr1,
 		       char const* sPropParameterSetsStr2 = NULL,
 		       char const* sPropParameterSetsStr3 = NULL);
       // we're an abstract base class
-  virtual ~H264or5VideoFileSink();
+  LIVE555_EXPORT virtual ~H264or5VideoFileSink();
 
 protected: // redefined virtual functions:
-  virtual void afterGettingFrame(unsigned frameSize, unsigned numTruncatedBytes, struct timeval presentationTime);
+  LIVE555_EXPORT virtual void afterGettingFrame(unsigned frameSize, unsigned numTruncatedBytes, struct timeval presentationTime);
 
 private:
   char const* fSPropParameterSetsStr[3];

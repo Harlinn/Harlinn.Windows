@@ -36,77 +36,77 @@ enum inviteClientState { Calling, Proceeding, Completed, Terminated };
 
 class SIPClient: public Medium {
 public:
-  static SIPClient* createNew(UsageEnvironment& env,
+  LIVE555_EXPORT static SIPClient* createNew(UsageEnvironment& env,
 			      unsigned char desiredAudioRTPPayloadFormat,
 			      char const* mimeSubtype = NULL,
 			      int verbosityLevel = 0,
 			      char const* applicationName = NULL);
 
-  void setProxyServer(struct sockaddr_storage const& proxyServerAddress,
+  LIVE555_EXPORT void setProxyServer(struct sockaddr_storage const& proxyServerAddress,
 		      portNumBits proxyServerPortNum);
 
   void setClientStartPortNum(portNumBits clientStartPortNum) {
     fClientStartPortNum = clientStartPortNum;
   }
 
-  char* invite(char const* url, Authenticator* authenticator = NULL);
+  LIVE555_EXPORT char* invite(char const* url, Authenticator* authenticator = NULL);
       // Issues a SIP "INVITE" command
       // Returns the session SDP description if this command succeeds
-  char* inviteWithPassword(char const* url,
+  LIVE555_EXPORT char* inviteWithPassword(char const* url,
 			   char const* username, char const* password);
       // Uses "invite()" to do an "INVITE" - first
       // without using "password", then (if we get an Unauthorized
       // response) with an authentication response computed from "password"
 
-  Boolean sendACK(); // on current call
-  Boolean sendBYE(); // on current call
+  LIVE555_EXPORT Boolean sendACK(); // on current call
+  LIVE555_EXPORT Boolean sendBYE(); // on current call
 
-  static Boolean parseSIPURL(UsageEnvironment& env, char const* url,
+  LIVE555_EXPORT static Boolean parseSIPURL(UsageEnvironment& env, char const* url,
 			     NetAddress& address, portNumBits& portNum);
       // (ignores any "<username>[:<password>]@" in "url")
-  static Boolean parseSIPURLUsernamePassword(char const* url,
+  LIVE555_EXPORT static Boolean parseSIPURLUsernamePassword(char const* url,
 					     char*& username,
 					     char*& password);
   char const* getInviteSdpReply() const { return fInviteSDPDescriptionReturned; }
 
-  void setUserAgentString(char const* userAgentName);
+  LIVE555_EXPORT void setUserAgentString(char const* userAgentName);
        // sets an alternative string to be used in SIP "User-Agent:" headers
 
 protected:
-  virtual ~SIPClient();
+	LIVE555_EXPORT virtual ~SIPClient();
 
 private:
-  SIPClient(UsageEnvironment& env,
+	LIVE555_EXPORT SIPClient(UsageEnvironment& env,
 	    unsigned char desiredAudioRTPPayloadFormat,
 	    char const* mimeSubtype,
 	    int verbosityLevel,
 	    char const* applicationName);
       // called only by createNew();
 
-  void reset();
+	LIVE555_EXPORT void reset();
 
   // Routines used to implement invite*():
-  char* invite1(Authenticator* authenticator);
-  Boolean processURL(char const* url);
-  Boolean sendINVITE();
-  static void inviteResponseHandler(void* clientData, int mask);
-  void doInviteStateMachine(unsigned responseCode);
-  void doInviteStateTerminated(unsigned responseCode);
+  LIVE555_EXPORT char* invite1(Authenticator* authenticator);
+  LIVE555_EXPORT Boolean processURL(char const* url);
+  LIVE555_EXPORT Boolean sendINVITE();
+  LIVE555_EXPORT static void inviteResponseHandler(void* clientData, int mask);
+  LIVE555_EXPORT void doInviteStateMachine(unsigned responseCode);
+  LIVE555_EXPORT void doInviteStateTerminated(unsigned responseCode);
   TaskToken fTimerA, fTimerB, fTimerD;
-  static void timerAHandler(void* clientData);
-  static void timerBHandler(void* clientData);
-  static void timerDHandler(void* clientData);
+  LIVE555_EXPORT static void timerAHandler(void* clientData);
+  LIVE555_EXPORT static void timerBHandler(void* clientData);
+  LIVE555_EXPORT static void timerDHandler(void* clientData);
   unsigned const fT1; // in microseconds
   unsigned fTimerALen; // in microseconds; initially fT1, then doubles
   unsigned fTimerACount;
 
   // Routines used to implement all commands:
-  char* createAuthenticatorString(Authenticator const* authenticator,
+  LIVE555_EXPORT char* createAuthenticatorString(Authenticator const* authenticator,
 				  char const* cmd, char const* url);
-  Boolean sendRequest(char const* requestString, unsigned requestLength);
-  unsigned getResponseCode();
-  unsigned getResponse(char*& responseBuffer, unsigned responseBufferSize);
-  Boolean parseResponseCode(char const* line, unsigned& responseCode);
+  LIVE555_EXPORT Boolean sendRequest(char const* requestString, unsigned requestLength);
+  LIVE555_EXPORT unsigned getResponseCode();
+  LIVE555_EXPORT unsigned getResponse(char*& responseBuffer, unsigned responseBufferSize);
+  LIVE555_EXPORT Boolean parseResponseCode(char const* line, unsigned& responseCode);
 
 private:
   // Set for all calls:

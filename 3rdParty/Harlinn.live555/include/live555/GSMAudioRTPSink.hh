@@ -27,16 +27,16 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class GSMAudioRTPSink: public AudioRTPSink {
 public:
-  static GSMAudioRTPSink* createNew(UsageEnvironment& env, Groupsock* RTPgs);
+  LIVE555_EXPORT static GSMAudioRTPSink* createNew(UsageEnvironment& env, Groupsock* RTPgs);
 
 protected:
-  GSMAudioRTPSink(UsageEnvironment& env, Groupsock* RTPgs);
+  LIVE555_EXPORT GSMAudioRTPSink(UsageEnvironment& env, Groupsock* RTPgs);
 	// called only by createNew()
 
-  virtual ~GSMAudioRTPSink();
+  LIVE555_EXPORT virtual ~GSMAudioRTPSink();
 
 private: // redefined virtual functions:
-  virtual
+  LIVE555_EXPORT virtual
   Boolean frameCanAppearAfterPacketStart(unsigned char const* frameStart,
 					 unsigned numBytesInFrame) const;
 };

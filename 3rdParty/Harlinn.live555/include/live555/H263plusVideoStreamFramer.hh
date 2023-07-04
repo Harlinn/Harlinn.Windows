@@ -29,27 +29,27 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 class H263plusVideoStreamFramer: public FramedFilter {
 public:
 
-  static H263plusVideoStreamFramer* createNew(UsageEnvironment& env, FramedSource* inputSource);
+  LIVE555_EXPORT static H263plusVideoStreamFramer* createNew(UsageEnvironment& env, FramedSource* inputSource);
 
   Boolean& pictureEndMarker() { return fPictureEndMarker; }    // a hack for implementing the RTP 'M' bit
 
 protected:
   // Constructor called only by createNew(), or by subclass constructors
-  H263plusVideoStreamFramer(UsageEnvironment& env,
+  LIVE555_EXPORT H263plusVideoStreamFramer(UsageEnvironment& env,
 			                FramedSource* inputSource,
 			                Boolean createParser = True);
-  virtual ~H263plusVideoStreamFramer();
+  LIVE555_EXPORT virtual ~H263plusVideoStreamFramer();
 
 
 public:
-  static void continueReadProcessing(void* clientData,
+  LIVE555_EXPORT static void continueReadProcessing(void* clientData,
 				     unsigned char* ptr, unsigned size,
 				     struct timeval presentationTime);
-  void continueReadProcessing();
+  LIVE555_EXPORT void continueReadProcessing();
 
 private:
-  virtual void doGetNextFrame();
-  virtual Boolean isH263plusVideoStreamFramer() const;
+  LIVE555_EXPORT virtual void doGetNextFrame();
+  LIVE555_EXPORT virtual Boolean isH263plusVideoStreamFramer() const;
 
 protected:
   double   fFrameRate;

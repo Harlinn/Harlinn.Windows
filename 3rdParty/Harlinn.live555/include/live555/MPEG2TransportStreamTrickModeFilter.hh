@@ -37,11 +37,11 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class MPEG2TransportStreamTrickModeFilter: public FramedFilter {
 public:
-  static MPEG2TransportStreamTrickModeFilter*
+  LIVE555_EXPORT static MPEG2TransportStreamTrickModeFilter*
   createNew(UsageEnvironment& env, FramedSource* inputSource,
 	    MPEG2TransportStreamIndexFile* indexFile, int scale);
 
-  Boolean seekTo(unsigned long tsPacketNumber, unsigned long indexRecordNumber);
+  LIVE555_EXPORT Boolean seekTo(unsigned long tsPacketNumber, unsigned long indexRecordNumber);
 
   unsigned long nextIndexRecordNum() const { return fNextIndexRecordNum; }
 
@@ -49,29 +49,29 @@ public:
       // this lets us delete this without also deleting the input Transport Stream
 
 protected:
-  MPEG2TransportStreamTrickModeFilter(UsageEnvironment& env, FramedSource* inputSource,
+  LIVE555_EXPORT MPEG2TransportStreamTrickModeFilter(UsageEnvironment& env, FramedSource* inputSource,
 				      MPEG2TransportStreamIndexFile* indexFile, int scale);
       // called only by createNew()
-  virtual ~MPEG2TransportStreamTrickModeFilter();
+  LIVE555_EXPORT virtual ~MPEG2TransportStreamTrickModeFilter();
 
 private:
   // Redefined virtual functions:
-  virtual void doGetNextFrame();
-  virtual void doStopGettingFrames();
+  LIVE555_EXPORT virtual void doGetNextFrame();
+  LIVE555_EXPORT virtual void doStopGettingFrames();
 
 private:
-  void attemptDeliveryToClient();
-  void seekToTransportPacket(unsigned long tsPacketNum);
-  void readTransportPacket(unsigned long tsPacketNum); // asynchronously
+  LIVE555_EXPORT void attemptDeliveryToClient();
+  LIVE555_EXPORT void seekToTransportPacket(unsigned long tsPacketNum);
+  LIVE555_EXPORT void readTransportPacket(unsigned long tsPacketNum); // asynchronously
 
-  static void afterGettingFrame(void* clientData, unsigned frameSize,
+  LIVE555_EXPORT static void afterGettingFrame(void* clientData, unsigned frameSize,
 				unsigned numTruncatedBytes,
 				struct timeval presentationTime,
 				unsigned durationInMicroseconds);
-  void afterGettingFrame1(unsigned frameSize);
+  LIVE555_EXPORT void afterGettingFrame1(unsigned frameSize);
 
-  static void onSourceClosure(void* clientData);
-  void onSourceClosure1();
+  LIVE555_EXPORT static void onSourceClosure(void* clientData);
+  LIVE555_EXPORT void onSourceClosure1();
 
 private:
   Boolean fHaveStarted;

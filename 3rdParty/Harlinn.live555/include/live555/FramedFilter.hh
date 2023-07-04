@@ -32,18 +32,18 @@ public:
   void reassignInputSource(FramedSource* newInputSource) { fInputSource = newInputSource; }
 
   // Call before destruction if you want to prevent the destructor from closing the input source
-  void detachInputSource();
+  LIVE555_EXPORT void detachInputSource();
 
 protected:
-  FramedFilter(UsageEnvironment& env, FramedSource* inputSource);
+  LIVE555_EXPORT FramedFilter(UsageEnvironment& env, FramedSource* inputSource);
 	 // abstract base class
-  virtual ~FramedFilter();
+  LIVE555_EXPORT virtual ~FramedFilter();
 
 protected:
   // Redefined virtual functions (with default 'null' implementations):
-  virtual char const* MIMEtype() const;
-  virtual void getAttributes() const;
-  virtual void doStopGettingFrames();
+  LIVE555_EXPORT virtual char const* MIMEtype() const;
+  LIVE555_EXPORT virtual void getAttributes() const;
+  LIVE555_EXPORT virtual void doStopGettingFrames();
 
 protected:
   FramedSource* fInputSource;

@@ -27,7 +27,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class TheoraVideoRTPSink: public VideoRTPSink {
 public:
-  static TheoraVideoRTPSink*
+  LIVE555_EXPORT static TheoraVideoRTPSink*
   createNew(UsageEnvironment& env, Groupsock* RTPgs, u_int8_t rtpPayloadFormat,
 	    // The following headers provide the 'configuration' information, for the SDP description:
 	    u_int8_t* identificationHeader, unsigned identificationHeaderSize,
@@ -35,14 +35,14 @@ public:
 	    u_int8_t* setupHeader, unsigned setupHeaderSize,
 	    u_int32_t identField = 0xFACADE);
   
-  static TheoraVideoRTPSink*
+  LIVE555_EXPORT static TheoraVideoRTPSink*
   createNew(UsageEnvironment& env, Groupsock* RTPgs, u_int8_t rtpPayloadFormat,
             char const* configStr);
   // an optional variant of "createNew()" that takes a Base-64-encoded 'configuration' string,
   // rather than the raw configuration headers as parameter.
 
 protected:
-  TheoraVideoRTPSink(UsageEnvironment& env, Groupsock* RTPgs,
+  LIVE555_EXPORT TheoraVideoRTPSink(UsageEnvironment& env, Groupsock* RTPgs,
 		     u_int8_t rtpPayloadFormat,
 		     u_int8_t* identificationHeader, unsigned identificationHeaderSize,
 		     u_int8_t* commentHeader, unsigned commentHeaderSize,
@@ -50,19 +50,19 @@ protected:
 		     u_int32_t identField);
   // called only by createNew()
   
-  virtual ~TheoraVideoRTPSink();
+  LIVE555_EXPORT virtual ~TheoraVideoRTPSink();
   
 private: // redefined virtual functions:
-  virtual char const* auxSDPLine(); // for the "a=fmtp:" SDP line
+  LIVE555_EXPORT virtual char const* auxSDPLine(); // for the "a=fmtp:" SDP line
   
-  virtual void doSpecialFrameHandling(unsigned fragmentationOffset,
+  LIVE555_EXPORT virtual void doSpecialFrameHandling(unsigned fragmentationOffset,
 				      unsigned char* frameStart,
 				      unsigned numBytesInFrame,
 				      struct timeval framePresentationTime,
 				      unsigned numRemainingBytes);
-  virtual Boolean frameCanAppearAfterPacketStart(unsigned char const* frameStart,
+  LIVE555_EXPORT virtual Boolean frameCanAppearAfterPacketStart(unsigned char const* frameStart,
 						 unsigned numBytesInFrame) const;
-  virtual unsigned specialHeaderSize() const;
+  LIVE555_EXPORT virtual unsigned specialHeaderSize() const;
   
 private:
   u_int32_t fIdent; // "Ident" field used by this stream.  (Only the low 24 bits of this are used.)

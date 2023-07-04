@@ -52,7 +52,7 @@ class TaskScheduler; // forward
 
 class UsageEnvironment {
 public:
-  Boolean reclaim();
+  LIVE555_EXPORT Boolean reclaim();
       // returns True iff we were actually able to delete our object
 
   // task scheduler:
@@ -74,7 +74,7 @@ public:
 	// used to report a (previously set) error message within
 	// a background event
 
-  virtual void internalError(); // used to 'handle' a 'should not occur'-type error condition within the library.
+  LIVE555_EXPORT virtual void internalError(); // used to 'handle' a 'should not occur'-type error condition within the library.
 
   // 'errno'
   virtual int getErrno() const = 0;
@@ -91,21 +91,21 @@ public:
   void* groupsockPriv;
 
 protected:
-  UsageEnvironment(TaskScheduler& scheduler); // abstract base class
-  virtual ~UsageEnvironment(); // we are deleted only by reclaim()
+  LIVE555_EXPORT UsageEnvironment(TaskScheduler& scheduler); // abstract base class
+  LIVE555_EXPORT virtual ~UsageEnvironment(); // we are deleted only by reclaim()
 
 private:
   TaskScheduler& fScheduler;
 };
 
 
-typedef void TaskFunc(void* clientData);
+typedef void __cdecl TaskFunc(void* clientData);
 typedef void* TaskToken;
 typedef u_int32_t EventTriggerId;
 
 class TaskScheduler {
 public:
-  virtual ~TaskScheduler();
+  LIVE555_EXPORT virtual ~TaskScheduler();
 
   virtual TaskToken scheduleDelayedTask(int64_t microseconds, TaskFunc* proc,
 					void* clientData) = 0;
@@ -121,7 +121,7 @@ public:
         // Sets "prevTask" to NULL afterwards.
         // Note: This MUST NOT be called if the scheduled task has already occurred.
 
-  virtual void rescheduleDelayedTask(TaskToken& task,
+  LIVE555_EXPORT virtual void rescheduleDelayedTask(TaskToken& task,
 				     int64_t microseconds, TaskFunc* proc,
 				     void* clientData);
         // Combines "unscheduleDelayedTask()" with "scheduleDelayedTask()"
@@ -129,7 +129,7 @@ public:
         // Note: This MUST NOT be called if the scheduled task has already occurred.
 
   // For handling socket operations in the background (from the event loop):
-  typedef void BackgroundHandlerProc(void* clientData, int mask);
+  LIVE555_EXPORT typedef void BackgroundHandlerProc(void* clientData, int mask);
     // Possible bits to set in "mask".  (These are deliberately defined
     // the same as those in Tcl, to make a Tcl-based subclass easy.)
     #define SOCKET_READABLE    (1<<1)
@@ -167,10 +167,10 @@ public:
   }
   void turnOffBackgroundReadHandling(int socketNum) { disableBackgroundHandling(socketNum); }
 
-  virtual void internalError(); // used to 'handle' a 'should not occur'-type error condition within the library.
+  LIVE555_EXPORT virtual void internalError(); // used to 'handle' a 'should not occur'-type error condition within the library.
 
 protected:
-  TaskScheduler(); // abstract base class
+  LIVE555_EXPORT TaskScheduler(); // abstract base class
 };
 
 #endif

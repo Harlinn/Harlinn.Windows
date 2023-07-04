@@ -28,7 +28,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class MPEG1or2VideoStreamFramer: public MPEGVideoStreamFramer {
 public:
-  static MPEG1or2VideoStreamFramer*
+  LIVE555_EXPORT static MPEG1or2VideoStreamFramer*
       createNew(UsageEnvironment& env, FramedSource* inputSource,
 		Boolean iFramesOnly = False,
 		double vshPeriod = 5.0
@@ -36,19 +36,19 @@ public:
 		   if one doesn't already appear in the stream */);
 
 protected:
-  MPEG1or2VideoStreamFramer(UsageEnvironment& env,
+  LIVE555_EXPORT MPEG1or2VideoStreamFramer(UsageEnvironment& env,
 			    FramedSource* inputSource,
 			    Boolean iFramesOnly, double vshPeriod,
 			    Boolean createParser = True);
       // called only by createNew(), or by subclass constructors
-  virtual ~MPEG1or2VideoStreamFramer();
+  LIVE555_EXPORT virtual ~MPEG1or2VideoStreamFramer();
 
 private:
   // redefined virtual functions:
-  virtual Boolean isMPEG1or2VideoStreamFramer() const;
+  LIVE555_EXPORT virtual Boolean isMPEG1or2VideoStreamFramer() const;
 
 private:
-  double getCurrentPTS() const;
+  LIVE555_EXPORT double getCurrentPTS() const;
 
   friend class MPEG1or2VideoStreamParser; // hack
 };

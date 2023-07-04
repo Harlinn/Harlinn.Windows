@@ -27,36 +27,36 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class AC3AudioStreamFramer: public FramedFilter {
 public:
-  static AC3AudioStreamFramer*
+  LIVE555_EXPORT static AC3AudioStreamFramer*
   createNew(UsageEnvironment& env, FramedSource* inputSource,
 	    unsigned char streamCode = 0);
   // If "streamCode" != 0, then we assume that there's a 1-byte code at the beginning of each chunk of data that we read from
   // our source.  If that code is not the value we want, we discard the chunk of data.
   // However, if "streamCode" == 0 (the default), then we don't expect this 1-byte code.
 
-  unsigned samplingRate();
+  LIVE555_EXPORT unsigned samplingRate();
 
-  void flushInput(); // called if there is a discontinuity (seeking) in the input
+  LIVE555_EXPORT void flushInput(); // called if there is a discontinuity (seeking) in the input
 
 private:
-  AC3AudioStreamFramer(UsageEnvironment& env, FramedSource* inputSource,
+  LIVE555_EXPORT AC3AudioStreamFramer(UsageEnvironment& env, FramedSource* inputSource,
 		       unsigned char streamCode);
       // called only by createNew()
-  virtual ~AC3AudioStreamFramer();
+  LIVE555_EXPORT virtual ~AC3AudioStreamFramer();
 
-  static void handleNewData(void* clientData,
+  LIVE555_EXPORT static void handleNewData(void* clientData,
 			    unsigned char* ptr, unsigned size,
 			    struct timeval presentationTime);
-  void handleNewData(unsigned char* ptr, unsigned size);
+  LIVE555_EXPORT void handleNewData(unsigned char* ptr, unsigned size);
 
-  void parseNextFrame();
+  LIVE555_EXPORT void parseNextFrame();
 
 private:
   // redefined virtual functions:
-  virtual void doGetNextFrame();
+	LIVE555_EXPORT virtual void doGetNextFrame();
 
 private:
-  struct timeval currentFramePlayTime() const;
+  LIVE555_EXPORT struct timeval currentFramePlayTime() const;
 
 private:
   struct timeval fNextFramePresentationTime;

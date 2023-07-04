@@ -23,8 +23,8 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class RawVideoFrameParameters {
 public:
-  RawVideoFrameParameters(unsigned width, unsigned height, unsigned depth, char const* sampling);
-  virtual ~RawVideoFrameParameters();
+  LIVE555_EXPORT RawVideoFrameParameters(unsigned width, unsigned height, unsigned depth, char const* sampling);
+  LIVE555_EXPORT virtual ~RawVideoFrameParameters();
 
 public:
   u_int16_t pgroupSize; // in octets

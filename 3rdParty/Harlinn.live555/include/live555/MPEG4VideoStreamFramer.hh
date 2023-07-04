@@ -32,34 +32,34 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class MPEG4VideoStreamFramer: public MPEGVideoStreamFramer {
 public:
-  static MPEG4VideoStreamFramer*
+  LIVE555_EXPORT static MPEG4VideoStreamFramer*
   createNew(UsageEnvironment& env, FramedSource* inputSource);
 
   u_int8_t profile_and_level_indication() const {
     return fProfileAndLevelIndication;
   }
 
-  unsigned char* getConfigBytes(unsigned& numBytes) const;
+  LIVE555_EXPORT unsigned char* getConfigBytes(unsigned& numBytes) const;
 
-  void setConfigInfo(u_int8_t profileAndLevelIndication, char const* configStr);
+  LIVE555_EXPORT void setConfigInfo(u_int8_t profileAndLevelIndication, char const* configStr);
     // Assigns the "profile_and_level_indication" number, and the 'config' bytes.
     // If this function is not called, then this data is only assigned later, when it appears in the input stream.
 
 protected:
-  MPEG4VideoStreamFramer(UsageEnvironment& env,
+  LIVE555_EXPORT MPEG4VideoStreamFramer(UsageEnvironment& env,
 			 FramedSource* inputSource,
 			 Boolean createParser = True);
       // called only by createNew(), or by subclass constructors
-  virtual ~MPEG4VideoStreamFramer();
+  LIVE555_EXPORT virtual ~MPEG4VideoStreamFramer();
 
-  void startNewConfig();
-  void appendToNewConfig(unsigned char* newConfigBytes,
+  LIVE555_EXPORT void startNewConfig();
+  LIVE555_EXPORT void appendToNewConfig(unsigned char* newConfigBytes,
 			 unsigned numNewBytes);
-  void completeNewConfig();
+  LIVE555_EXPORT void completeNewConfig();
 
 private:
   // redefined virtual functions:
-  virtual Boolean isMPEG4VideoStreamFramer() const;
+  LIVE555_EXPORT virtual Boolean isMPEG4VideoStreamFramer() const;
 
 protected:
   u_int8_t fProfileAndLevelIndication;

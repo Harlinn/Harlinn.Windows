@@ -31,19 +31,19 @@ class BufferedPacketFactory; // forward
 
 class MultiFramedRTPSource: public RTPSource {
 protected:
-  MultiFramedRTPSource(UsageEnvironment& env, Groupsock* RTPgs,
+  LIVE555_EXPORT MultiFramedRTPSource(UsageEnvironment& env, Groupsock* RTPgs,
 		       unsigned char rtpPayloadFormat,
 		       unsigned rtpTimestampFrequency,
 		       BufferedPacketFactory* packetFactory = NULL);
       // virtual base class
-  virtual ~MultiFramedRTPSource();
+  LIVE555_EXPORT virtual ~MultiFramedRTPSource();
 
-  virtual Boolean processSpecialHeader(BufferedPacket* packet,
+  LIVE555_EXPORT virtual Boolean processSpecialHeader(BufferedPacket* packet,
 				       unsigned& resultSpecialHeaderSize);
       // Subclasses redefine this to handle any special, payload format
       // specific header that follows the RTP header.
 
-  virtual Boolean packetIsUsableInJitterCalculation(unsigned char* packet,
+  LIVE555_EXPORT virtual Boolean packetIsUsableInJitterCalculation(unsigned char* packet,
 						    unsigned packetSize);
       // The default implementation returns True, but this can be redefined
 
@@ -53,19 +53,19 @@ protected:
 
 protected:
   // redefined virtual functions:
-  virtual void doGetNextFrame();
-  virtual void doStopGettingFrames();
+  LIVE555_EXPORT virtual void doGetNextFrame();
+  LIVE555_EXPORT virtual void doStopGettingFrames();
 
 private:
   // redefined virtual functions:
-  virtual void setPacketReorderingThresholdTime(unsigned uSeconds);
+  LIVE555_EXPORT virtual void setPacketReorderingThresholdTime(unsigned uSeconds);
 
 private:
-  void reset();
-  void doGetNextFrame1();
+  LIVE555_EXPORT void reset();
+  LIVE555_EXPORT void doGetNextFrame1();
 
-  static void networkReadHandler(MultiFramedRTPSource* source, int /*mask*/);
-  void networkReadHandler1();
+  LIVE555_EXPORT static void networkReadHandler(MultiFramedRTPSource* source, int /*mask*/);
+  LIVE555_EXPORT void networkReadHandler1();
 
   Boolean fAreDoingNetworkReads;
   BufferedPacket* fPacketReadInProgress;
@@ -85,21 +85,21 @@ private:
 
 class BufferedPacket {
 public:
-  BufferedPacket();
-  virtual ~BufferedPacket();
+  LIVE555_EXPORT BufferedPacket();
+  LIVE555_EXPORT virtual ~BufferedPacket();
 
   Boolean hasUsableData() const { return fTail > fHead; }
   unsigned useCount() const { return fUseCount; }
 
-  Boolean fillInData(RTPInterface& rtpInterface, struct sockaddr_storage& fromAddress, Boolean& packetReadWasIncomplete);
-  void assignMiscParams(unsigned short rtpSeqNo, unsigned rtpTimestamp,
+  LIVE555_EXPORT Boolean fillInData(RTPInterface& rtpInterface, struct sockaddr_storage& fromAddress, Boolean& packetReadWasIncomplete);
+  LIVE555_EXPORT void assignMiscParams(unsigned short rtpSeqNo, unsigned rtpTimestamp,
 			struct timeval presentationTime,
 			Boolean hasBeenSyncedUsingRTCP,
 			Boolean rtpMarkerBit, struct timeval timeReceived);
-  void skip(unsigned numBytes); // used to skip over an initial header
-  void removePadding(unsigned numBytes); // used to remove trailing bytes
-  void appendData(unsigned char* newData, unsigned numBytes);
-  void use(unsigned char* to, unsigned toSize,
+  LIVE555_EXPORT void skip(unsigned numBytes); // used to skip over an initial header
+  LIVE555_EXPORT void removePadding(unsigned numBytes); // used to remove trailing bytes
+  LIVE555_EXPORT void appendData(unsigned char* newData, unsigned numBytes);
+  LIVE555_EXPORT void use(unsigned char* to, unsigned toSize,
 	   unsigned& bytesUsed, unsigned& bytesTruncated,
 	   unsigned short& rtpSeqNo, unsigned& rtpTimestamp,
 	   struct timeval& presentationTime,
@@ -117,11 +117,11 @@ public:
   unsigned bytesAvailable() const { return fPacketSize - fTail; }
 
 protected:
-  virtual void reset();
-  virtual unsigned nextEnclosedFrameSize(unsigned char*& framePtr,
+  LIVE555_EXPORT virtual void reset();
+  LIVE555_EXPORT virtual unsigned nextEnclosedFrameSize(unsigned char*& framePtr,
 					 unsigned dataSize);
       // The above function has been deprecated.  Instead, new subclasses should use:
-  virtual void getNextEnclosedFrameParameters(unsigned char*& framePtr,
+  LIVE555_EXPORT virtual void getNextEnclosedFrameParameters(unsigned char*& framePtr,
 					      unsigned dataSize,
 					      unsigned& frameSize,
 					      unsigned& frameDurationInMicroseconds);
@@ -150,10 +150,10 @@ private:
 
 class BufferedPacketFactory {
 public:
-  BufferedPacketFactory();
-  virtual ~BufferedPacketFactory();
+  LIVE555_EXPORT BufferedPacketFactory();
+  LIVE555_EXPORT virtual ~BufferedPacketFactory();
 
-  virtual BufferedPacket* createNewPacket(MultiFramedRTPSource* ourSource);
+  LIVE555_EXPORT virtual BufferedPacket* createNewPacket(MultiFramedRTPSource* ourSource);
 };
 
 #endif

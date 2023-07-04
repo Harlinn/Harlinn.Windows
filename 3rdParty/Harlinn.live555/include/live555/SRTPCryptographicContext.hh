@@ -26,15 +26,15 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class SRTPCryptographicContext {
 public:
-  SRTPCryptographicContext(MIKEYState const& mikeyState);
-  virtual ~SRTPCryptographicContext();
+  LIVE555_EXPORT SRTPCryptographicContext(MIKEYState const& mikeyState);
+  LIVE555_EXPORT virtual ~SRTPCryptographicContext();
 
   // Authenticate (if necessary) and decrypt (if necessary) incoming SRTP and SRTCP packets.
   // Returns True iff the packet is well-formed and authenticates OK.
   // ("outPacketSize" will be <= "inPacketSize".)
-  Boolean processIncomingSRTPPacket(u_int8_t* buffer, unsigned inPacketSize,
+  LIVE555_EXPORT Boolean processIncomingSRTPPacket(u_int8_t* buffer, unsigned inPacketSize,
 				    unsigned& outPacketSize);
-  Boolean processIncomingSRTCPPacket(u_int8_t* buffer, unsigned inPacketSize,
+  LIVE555_EXPORT Boolean processIncomingSRTCPPacket(u_int8_t* buffer, unsigned inPacketSize,
 				     unsigned& outPacketSize);
 
   // Encrypt (if necessary) and add an authentication tag (if necessary) to an outgoing
@@ -42,9 +42,9 @@ public:
   // Returns True iff the packet is well-formed.
   // ("outPacketSize" will be >= "inPacketSize"; there must be enough space at the end of
   //  "buffer" for the extra (4+10 bytes for SRTP; 4+4+10 bytes for SRTCP).)
-  Boolean processOutgoingSRTPPacket(u_int8_t* buffer, unsigned inPacketSize,
+  LIVE555_EXPORT Boolean processOutgoingSRTPPacket(u_int8_t* buffer, unsigned inPacketSize,
 				    unsigned& outPacketSize);
-  Boolean processOutgoingSRTCPPacket(u_int8_t* buffer, unsigned inPacketSize,
+  LIVE555_EXPORT Boolean processOutgoingSRTCPPacket(u_int8_t* buffer, unsigned inPacketSize,
 				     unsigned& outPacketSize);
 
 #ifndef NO_OPENSSL

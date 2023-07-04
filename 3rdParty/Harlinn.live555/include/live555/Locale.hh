@@ -53,13 +53,15 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 #endif
 #endif
 
+#include "live555Def.h"
+
 
 enum LocaleCategory { All, Numeric }; // define and implement more categories later, as needed
 
 class Locale {
 public:
-  Locale(char const* newLocale, LocaleCategory category = All);
-  virtual ~Locale();
+  LIVE555_EXPORT Locale(char const* newLocale, LocaleCategory category = All);
+  LIVE555_EXPORT virtual ~Locale();
 
 private:
 #ifndef LOCALE_NOT_USED

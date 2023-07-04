@@ -37,17 +37,17 @@ private:
 	class TableEntry; // forward
 
 public:
-  BasicHashTable(int keyType);
-  virtual ~BasicHashTable();
+  LIVE555_EXPORT BasicHashTable(int keyType);
+  LIVE555_EXPORT virtual ~BasicHashTable();
 
   // Used to iterate through the members of the table:
   class Iterator; friend class Iterator; // to make Sun's C++ compiler happy
   class Iterator: public HashTable::Iterator {
   public:
-    Iterator(BasicHashTable const& table);
+    LIVE555_EXPORT Iterator(BasicHashTable const& table);
 
   private: // implementation of inherited pure virtual functions
-    void* next(char const*& key); // returns 0 if none
+    LIVE555_EXPORT void* next(char const*& key); // returns 0 if none
 
   private:
     BasicHashTable const& fTable;

@@ -27,28 +27,28 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class AC3AudioRTPSink: public AudioRTPSink {
 public:
-  static AC3AudioRTPSink* createNew(UsageEnvironment& env,
+  LIVE555_EXPORT static AC3AudioRTPSink* createNew(UsageEnvironment& env,
 				    Groupsock* RTPgs,
 				    u_int8_t rtpPayloadFormat,
 				    u_int32_t rtpTimestampFrequency);
 
 protected:
-  AC3AudioRTPSink(UsageEnvironment& env, Groupsock* RTPgs,
+  LIVE555_EXPORT AC3AudioRTPSink(UsageEnvironment& env, Groupsock* RTPgs,
 		  u_int8_t rtpPayloadFormat,
 		  u_int32_t rtpTimestampFrequency);
 	// called only by createNew()
 
-  virtual ~AC3AudioRTPSink();
+  LIVE555_EXPORT virtual ~AC3AudioRTPSink();
 
 private: // redefined virtual functions:
-  virtual Boolean frameCanAppearAfterPacketStart(unsigned char const* frameStart,
+  LIVE555_EXPORT virtual Boolean frameCanAppearAfterPacketStart(unsigned char const* frameStart,
 						 unsigned numBytesInFrame) const;
-  virtual void doSpecialFrameHandling(unsigned fragmentationOffset,
+  LIVE555_EXPORT virtual void doSpecialFrameHandling(unsigned fragmentationOffset,
                                       unsigned char* frameStart,
                                       unsigned numBytesInFrame,
                                       struct timeval framePresentationTime,
                                       unsigned numRemainingBytes);
-  virtual unsigned specialHeaderSize() const;
+  LIVE555_EXPORT virtual unsigned specialHeaderSize() const;
 
 private:
   unsigned char fTotNumFragmentsUsed; // used only if a frame gets fragmented across multiple packets

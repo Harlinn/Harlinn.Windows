@@ -28,27 +28,27 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class MPEG4VideoFileServerMediaSubsession: public FileServerMediaSubsession{
 public:
-  static MPEG4VideoFileServerMediaSubsession*
+  LIVE555_EXPORT static MPEG4VideoFileServerMediaSubsession*
   createNew(UsageEnvironment& env, char const* fileName, Boolean reuseFirstSource);
 
   // Used to implement "getAuxSDPLine()":
-  void checkForAuxSDPLine1();
-  void afterPlayingDummy1();
+  LIVE555_EXPORT void checkForAuxSDPLine1();
+  LIVE555_EXPORT void afterPlayingDummy1();
 
 protected:
-  MPEG4VideoFileServerMediaSubsession(UsageEnvironment& env,
+  LIVE555_EXPORT MPEG4VideoFileServerMediaSubsession(UsageEnvironment& env,
 				      char const* fileName, Boolean reuseFirstSource);
       // called only by createNew();
-  virtual ~MPEG4VideoFileServerMediaSubsession();
+  LIVE555_EXPORT virtual ~MPEG4VideoFileServerMediaSubsession();
 
   void setDoneFlag() { fDoneFlag = ~0; }
 
 protected: // redefined virtual functions
-  virtual char const* getAuxSDPLine(RTPSink* rtpSink,
+  LIVE555_EXPORT virtual char const* getAuxSDPLine(RTPSink* rtpSink,
 				    FramedSource* inputSource);
-  virtual FramedSource* createNewStreamSource(unsigned clientSessionId,
+  LIVE555_EXPORT virtual FramedSource* createNewStreamSource(unsigned clientSessionId,
 					      unsigned& estBitrate);
-  virtual RTPSink* createNewRTPSink(Groupsock* rtpGroupsock,
+  LIVE555_EXPORT virtual RTPSink* createNewRTPSink(Groupsock* rtpGroupsock,
                                     unsigned char rtpPayloadTypeIfDynamic,
 				    FramedSource* inputSource);
 

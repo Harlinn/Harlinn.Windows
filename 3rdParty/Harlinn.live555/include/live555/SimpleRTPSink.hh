@@ -28,7 +28,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class SimpleRTPSink: public MultiFramedRTPSink {
 public:
-  static SimpleRTPSink*
+  LIVE555_EXPORT static SimpleRTPSink*
   createNew(UsageEnvironment& env, Groupsock* RTPgs,
 	    unsigned char rtpPayloadFormat,
 	    unsigned rtpTimestampFrequency,
@@ -44,7 +44,7 @@ public:
   void setMBitOnNextPacket() { fSetMBitOnNextPacket = True; } // hack for optionally setting the RTP 'M' bit from outside the class
 
 protected:
-  SimpleRTPSink(UsageEnvironment& env, Groupsock* RTPgs,
+  LIVE555_EXPORT SimpleRTPSink(UsageEnvironment& env, Groupsock* RTPgs,
 		unsigned char rtpPayloadFormat,
 		unsigned rtpTimestampFrequency,
 		char const* sdpMediaTypeString,
@@ -54,18 +54,18 @@ protected:
 		Boolean doNormalMBitRule);
 	// called only by createNew()
 
-  virtual ~SimpleRTPSink();
+  LIVE555_EXPORT virtual ~SimpleRTPSink();
 
 protected: // redefined virtual functions
-  virtual void doSpecialFrameHandling(unsigned fragmentationOffset,
+  LIVE555_EXPORT virtual void doSpecialFrameHandling(unsigned fragmentationOffset,
                                       unsigned char* frameStart,
                                       unsigned numBytesInFrame,
                                       struct timeval framePresentationTime,
                                       unsigned numRemainingBytes);
-  virtual
+  LIVE555_EXPORT virtual
   Boolean frameCanAppearAfterPacketStart(unsigned char const* frameStart,
 					 unsigned numBytesInFrame) const;
-  virtual char const* sdpMediaType() const;
+  LIVE555_EXPORT virtual char const* sdpMediaType() const;
 
 private:
   char const* fSDPMediaTypeString;

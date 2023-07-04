@@ -27,24 +27,24 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class H264VideoRTPSource: public MultiFramedRTPSource {
 public:
-  static H264VideoRTPSource*
+  LIVE555_EXPORT static H264VideoRTPSource*
   createNew(UsageEnvironment& env, Groupsock* RTPgs,
 	    unsigned char rtpPayloadFormat,
 	    unsigned rtpTimestampFrequency = 90000);
 
 protected:
-  H264VideoRTPSource(UsageEnvironment& env, Groupsock* RTPgs,
+  LIVE555_EXPORT H264VideoRTPSource(UsageEnvironment& env, Groupsock* RTPgs,
 			 unsigned char rtpPayloadFormat,
 			 unsigned rtpTimestampFrequency);
       // called only by createNew()
 
-  virtual ~H264VideoRTPSource();
+  LIVE555_EXPORT virtual ~H264VideoRTPSource();
 
 protected:
   // redefined virtual functions:
-  virtual Boolean processSpecialHeader(BufferedPacket* packet,
+  LIVE555_EXPORT virtual Boolean processSpecialHeader(BufferedPacket* packet,
                                        unsigned& resultSpecialHeaderSize);
-  virtual char const* MIMEtype() const;
+  LIVE555_EXPORT virtual char const* MIMEtype() const;
 
 private:
   friend class H264BufferedPacket;
@@ -59,7 +59,7 @@ public:
   unsigned char* sPropBytes;
 };
 
-SPropRecord* parseSPropParameterSets(char const* sPropParameterSetsStr,
+LIVE555_EXPORT SPropRecord* parseSPropParameterSets(char const* sPropParameterSetsStr,
 				     // result parameter:
 				     unsigned& numSPropRecords);
     // Returns the binary value of each 'parameter set' specified in a

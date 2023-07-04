@@ -26,8 +26,10 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 #include "NetCommon.h"
 #endif
 
+#include "live555Def.h"
+
 // All HMAC hash functions have the following signature:
-typedef void HMAC_hash(u_int8_t const* key, unsigned keyLength,
+LIVE555_EXPORT typedef void HMAC_hash(u_int8_t const* key, unsigned keyLength,
 		       u_int8_t const* text, unsigned textLength,
 		       u_int8_t* resultDigest);
     // "resultDigest" must point to an array of sufficient size to hold the digest

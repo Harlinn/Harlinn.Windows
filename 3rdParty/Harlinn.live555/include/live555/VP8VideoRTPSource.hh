@@ -27,24 +27,24 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class VP8VideoRTPSource: public MultiFramedRTPSource {
 public:
-  static VP8VideoRTPSource*
+  LIVE555_EXPORT static VP8VideoRTPSource*
   createNew(UsageEnvironment& env, Groupsock* RTPgs,
 	    unsigned char rtpPayloadFormat,
 	    unsigned rtpTimestampFrequency = 90000);
 
 protected:
-  VP8VideoRTPSource(UsageEnvironment& env, Groupsock* RTPgs,
+  LIVE555_EXPORT VP8VideoRTPSource(UsageEnvironment& env, Groupsock* RTPgs,
 		    unsigned char rtpPayloadFormat,
 		    unsigned rtpTimestampFrequency);
       // called only by createNew()
 
-  virtual ~VP8VideoRTPSource();
+  LIVE555_EXPORT virtual ~VP8VideoRTPSource();
 
 protected:
   // redefined virtual functions:
-  virtual Boolean processSpecialHeader(BufferedPacket* packet,
+  LIVE555_EXPORT virtual Boolean processSpecialHeader(BufferedPacket* packet,
                                        unsigned& resultSpecialHeaderSize);
-  virtual char const* MIMEtype() const;
+  LIVE555_EXPORT virtual char const* MIMEtype() const;
 };
 
 #endif

@@ -645,7 +645,7 @@
     <ClInclude Include="src\liveMedia\StreamParser.hh">
       <Filter>src\liveMedia</Filter>
     </ClInclude>
-    <ClInclude Include="live555Def.h">
+    <ClInclude Include="include\live555\live555Def.h">
       <Filter>include\live555</Filter>
     </ClInclude>
   </ItemGroup>

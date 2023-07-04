@@ -28,19 +28,19 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class AC3AudioFileServerMediaSubsession: public FileServerMediaSubsession{
 public:
-  static AC3AudioFileServerMediaSubsession*
+  LIVE555_EXPORT static AC3AudioFileServerMediaSubsession*
   createNew(UsageEnvironment& env, char const* fileName, Boolean reuseFirstSource);
 
 private:
-  AC3AudioFileServerMediaSubsession(UsageEnvironment& env,
+  LIVE555_EXPORT AC3AudioFileServerMediaSubsession(UsageEnvironment& env,
 				      char const* fileName, Boolean reuseFirstSource);
       // called only by createNew();
-  virtual ~AC3AudioFileServerMediaSubsession();
+  LIVE555_EXPORT virtual ~AC3AudioFileServerMediaSubsession();
 
 private: // redefined virtual functions
-  virtual FramedSource* createNewStreamSource(unsigned clientSessionId,
+  LIVE555_EXPORT virtual FramedSource* createNewStreamSource(unsigned clientSessionId,
 					      unsigned& estBitrate);
-  virtual RTPSink* createNewRTPSink(Groupsock* rtpGroupsock,
+  LIVE555_EXPORT virtual RTPSink* createNewRTPSink(Groupsock* rtpGroupsock,
                                     unsigned char rtpPayloadTypeIfDynamic,
 				    FramedSource* inputSource);
 };

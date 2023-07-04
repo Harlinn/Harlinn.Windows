@@ -75,7 +75,7 @@ private:
 
 ////////// MPEG2TransportStreamFromESSource implementation //////////
 
-unsigned MPEG2TransportStreamFromESSource::maxInputESFrameSize = 100000; // bytes
+LIVE555_EXPORT unsigned MPEG2TransportStreamFromESSource::maxInputESFrameSize = 100000; // bytes
 
 MPEG2TransportStreamFromESSource* MPEG2TransportStreamFromESSource
 ::createNew(UsageEnvironment& env) {

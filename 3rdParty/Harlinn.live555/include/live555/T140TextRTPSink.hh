@@ -32,22 +32,22 @@ class T140IdleFilter;
 
 class T140TextRTPSink: public TextRTPSink {
 public:
-  static T140TextRTPSink* createNew(UsageEnvironment& env, Groupsock* RTPgs, unsigned char rtpPayloadFormat);
+  LIVE555_EXPORT static T140TextRTPSink* createNew(UsageEnvironment& env, Groupsock* RTPgs, unsigned char rtpPayloadFormat);
 
 protected:
-  T140TextRTPSink(UsageEnvironment& env, Groupsock* RTPgs, unsigned char rtpPayloadFormat);
+  LIVE555_EXPORT T140TextRTPSink(UsageEnvironment& env, Groupsock* RTPgs, unsigned char rtpPayloadFormat);
 	// called only by createNew()
 
-  virtual ~T140TextRTPSink();
+  LIVE555_EXPORT virtual ~T140TextRTPSink();
 
 protected: // redefined virtual functions:
-  virtual Boolean continuePlaying();
-  virtual void doSpecialFrameHandling(unsigned fragmentationOffset,
+  LIVE555_EXPORT virtual Boolean continuePlaying();
+  LIVE555_EXPORT virtual void doSpecialFrameHandling(unsigned fragmentationOffset,
                                       unsigned char* frameStart,
                                       unsigned numBytesInFrame,
                                       struct timeval framePresentationTime,
                                       unsigned numRemainingBytes);
-  virtual Boolean frameCanAppearAfterPacketStart(unsigned char const* frameStart,
+  LIVE555_EXPORT virtual Boolean frameCanAppearAfterPacketStart(unsigned char const* frameStart,
 						 unsigned numBytesInFrame) const;
 
 protected:
@@ -65,31 +65,31 @@ protected:
 
 class T140IdleFilter: public FramedFilter {
 public:
-  T140IdleFilter(UsageEnvironment& env, FramedSource* inputSource);
-  virtual ~T140IdleFilter();
+  LIVE555_EXPORT T140IdleFilter(UsageEnvironment& env, FramedSource* inputSource);
+  LIVE555_EXPORT virtual ~T140IdleFilter();
 
 private: // redefined virtual functions:
-  virtual void doGetNextFrame();
-  virtual void doStopGettingFrames();
+  LIVE555_EXPORT virtual void doGetNextFrame();
+  LIVE555_EXPORT virtual void doStopGettingFrames();
 
 private:
-  static void afterGettingFrame(void* clientData, unsigned frameSize,
+  LIVE555_EXPORT static void afterGettingFrame(void* clientData, unsigned frameSize,
 				unsigned numTruncatedBytes,
                                 struct timeval presentationTime,
                                 unsigned durationInMicroseconds);
-  void afterGettingFrame(unsigned frameSize,
+  LIVE555_EXPORT void afterGettingFrame(unsigned frameSize,
 			 unsigned numTruncatedBytes,
 			 struct timeval presentationTime,
 			 unsigned durationInMicroseconds);
 
-  static void handleIdleTimeout(void* clientData);
-  void handleIdleTimeout();
+  LIVE555_EXPORT static void handleIdleTimeout(void* clientData);
+  LIVE555_EXPORT void handleIdleTimeout();
 
-  void deliverFromBuffer();
-  void deliverEmptyFrame();
+  LIVE555_EXPORT void deliverFromBuffer();
+  LIVE555_EXPORT void deliverEmptyFrame();
 
-  static void onSourceClosure(void* clientData);
-  void onSourceClosure();
+  LIVE555_EXPORT static void onSourceClosure(void* clientData);
+  LIVE555_EXPORT void onSourceClosure();
 
 private:
   TaskToken fIdleTimerTask;

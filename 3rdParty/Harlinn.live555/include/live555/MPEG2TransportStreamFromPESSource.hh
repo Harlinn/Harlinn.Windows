@@ -30,26 +30,26 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class MPEG2TransportStreamFromPESSource: public MPEG2TransportStreamMultiplexor {
 public:
-  static MPEG2TransportStreamFromPESSource*
+  LIVE555_EXPORT static MPEG2TransportStreamFromPESSource*
   createNew(UsageEnvironment& env, MPEG1or2DemuxedElementaryStream* inputSource);
 
 protected:
-  MPEG2TransportStreamFromPESSource(UsageEnvironment& env,
+  LIVE555_EXPORT MPEG2TransportStreamFromPESSource(UsageEnvironment& env,
 				    MPEG1or2DemuxedElementaryStream* inputSource);
       // called only by createNew()
-  virtual ~MPEG2TransportStreamFromPESSource();
+  LIVE555_EXPORT virtual ~MPEG2TransportStreamFromPESSource();
 
 private:
   // Redefined virtual functions:
-  virtual void doStopGettingFrames();
-  virtual void awaitNewBuffer(unsigned char* oldBuffer);
+  LIVE555_EXPORT virtual void doStopGettingFrames();
+  LIVE555_EXPORT virtual void awaitNewBuffer(unsigned char* oldBuffer);
 
 private:
-  static void afterGettingFrame(void* clientData, unsigned frameSize,
+  LIVE555_EXPORT static void afterGettingFrame(void* clientData, unsigned frameSize,
 				unsigned numTruncatedBytes,
 				struct timeval presentationTime,
 				unsigned durationInMicroseconds);
-  void afterGettingFrame1(unsigned frameSize,
+  LIVE555_EXPORT void afterGettingFrame1(unsigned frameSize,
 			  unsigned numTruncatedBytes,
 			  struct timeval presentationTime,
 			  unsigned durationInMicroseconds);

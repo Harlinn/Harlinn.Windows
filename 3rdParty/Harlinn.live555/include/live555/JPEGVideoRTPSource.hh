@@ -29,17 +29,17 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class JPEGVideoRTPSource: public MultiFramedRTPSource {
 public:
-  static JPEGVideoRTPSource*
+  LIVE555_EXPORT static JPEGVideoRTPSource*
   createNew(UsageEnvironment& env, Groupsock* RTPgs,
 	    unsigned char rtpPayloadFormat = 26,
 	    unsigned rtpPayloadFrequency = 90000,
 	    unsigned defaultWidth = 0, unsigned defaultHeight = 0);
 
 protected:
-  virtual ~JPEGVideoRTPSource();
+  LIVE555_EXPORT virtual ~JPEGVideoRTPSource();
 
 private:
-  JPEGVideoRTPSource(UsageEnvironment& env, Groupsock* RTPgs,
+  LIVE555_EXPORT JPEGVideoRTPSource(UsageEnvironment& env, Groupsock* RTPgs,
 		     unsigned char rtpPayloadFormat,
 		     unsigned rtpTimestampFrequency,
 		     unsigned defaultWidth, unsigned defaultHeight);
@@ -50,7 +50,7 @@ private:
 
 private:
   // redefined virtual functions:
-  virtual Boolean processSpecialHeader(BufferedPacket* packet,
+  LIVE555_EXPORT virtual Boolean processSpecialHeader(BufferedPacket* packet,
                                        unsigned& resultSpecialHeaderSize);
 
   virtual char const* MIMEtype() const;

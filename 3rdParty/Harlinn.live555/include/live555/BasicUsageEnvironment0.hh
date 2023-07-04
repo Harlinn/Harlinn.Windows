@@ -45,26 +45,26 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 class BasicUsageEnvironment0: public UsageEnvironment {
 public:
   // redefined virtual functions:
-  virtual MsgString getResultMsg() const;
+  LIVE555_EXPORT virtual MsgString getResultMsg() const;
 
-  virtual void setResultMsg(MsgString msg);
-  virtual void setResultMsg(MsgString msg1,
+  LIVE555_EXPORT virtual void setResultMsg(MsgString msg);
+  LIVE555_EXPORT virtual void setResultMsg(MsgString msg1,
 		    MsgString msg2);
-  virtual void setResultMsg(MsgString msg1,
+  LIVE555_EXPORT virtual void setResultMsg(MsgString msg1,
 		    MsgString msg2,
 		    MsgString msg3);
-  virtual void setResultErrMsg(MsgString msg, int err = 0);
+  LIVE555_EXPORT virtual void setResultErrMsg(MsgString msg, int err = 0);
 
-  virtual void appendToResultMsg(MsgString msg);
+  LIVE555_EXPORT virtual void appendToResultMsg(MsgString msg);
 
-  virtual void reportBackgroundError();
+  LIVE555_EXPORT virtual void reportBackgroundError();
 
 protected:
-  BasicUsageEnvironment0(TaskScheduler& taskScheduler);
-  virtual ~BasicUsageEnvironment0();
+  LIVE555_EXPORT BasicUsageEnvironment0(TaskScheduler& taskScheduler);
+  LIVE555_EXPORT virtual ~BasicUsageEnvironment0();
 
 private:
-  void reset();
+  LIVE555_EXPORT void reset();
 
   char fResultMsgBuffer[RESULT_MSG_BUFFER_MAX];
   unsigned fCurBufferSize;
@@ -79,27 +79,27 @@ class HandlerSet; // forward
 // (e.g., to redefine the implementation of socket event handling)
 class BasicTaskScheduler0: public TaskScheduler {
 public:
-  virtual ~BasicTaskScheduler0();
+  LIVE555_EXPORT virtual ~BasicTaskScheduler0();
 
-  virtual void SingleStep(unsigned maxDelayTime = 0) = 0;
+  LIVE555_EXPORT virtual void SingleStep(unsigned maxDelayTime = 0) = 0;
       // "maxDelayTime" is in microseconds.  It allows a subclass to impose a limit
       // on how long "select()" can delay, in case it wants to also do polling.
       // 0 (the default value) means: There's no maximum; just look at the delay queue
 
 public:
   // Redefined virtual functions:
-  virtual TaskToken scheduleDelayedTask(int64_t microseconds, TaskFunc* proc,
+  LIVE555_EXPORT virtual TaskToken scheduleDelayedTask(int64_t microseconds, TaskFunc* proc,
 				void* clientData);
-  virtual void unscheduleDelayedTask(TaskToken& prevTask);
+  LIVE555_EXPORT virtual void unscheduleDelayedTask(TaskToken& prevTask);
 
-  virtual void doEventLoop(char volatile* watchVariable);
+  LIVE555_EXPORT virtual void doEventLoop(char volatile* watchVariable);
 
-  virtual EventTriggerId createEventTrigger(TaskFunc* eventHandlerProc);
-  virtual void deleteEventTrigger(EventTriggerId eventTriggerId);
-  virtual void triggerEvent(EventTriggerId eventTriggerId, void* clientData = NULL);
+  LIVE555_EXPORT virtual EventTriggerId createEventTrigger(TaskFunc* eventHandlerProc);
+  LIVE555_EXPORT virtual void deleteEventTrigger(EventTriggerId eventTriggerId);
+  LIVE555_EXPORT virtual void triggerEvent(EventTriggerId eventTriggerId, void* clientData = NULL);
 
 protected:
-  BasicTaskScheduler0();
+  LIVE555_EXPORT BasicTaskScheduler0();
 
 protected:
   // To implement delayed operations:

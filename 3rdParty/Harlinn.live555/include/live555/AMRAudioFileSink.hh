@@ -27,20 +27,20 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class AMRAudioFileSink: public FileSink {
 public:
-  static AMRAudioFileSink* createNew(UsageEnvironment& env, char const* fileName,
+  LIVE555_EXPORT static AMRAudioFileSink* createNew(UsageEnvironment& env, char const* fileName,
 				     unsigned bufferSize = 10000,
 				     Boolean oneFilePerFrame = False);
   // (See "FileSink.hh" for a description of these parameters.)
 
 protected:
-  AMRAudioFileSink(UsageEnvironment& env, FILE* fid, unsigned bufferSize,
+  LIVE555_EXPORT AMRAudioFileSink(UsageEnvironment& env, FILE* fid, unsigned bufferSize,
 		   char const* perFrameFileNamePrefix);
       // called only by createNew()
-  virtual ~AMRAudioFileSink();
+  LIVE555_EXPORT virtual ~AMRAudioFileSink();
 
 protected: // redefined virtual functions:
-  virtual Boolean sourceIsCompatibleWithUs(MediaSource& source);
-  virtual void afterGettingFrame(unsigned frameSize,
+  LIVE555_EXPORT virtual Boolean sourceIsCompatibleWithUs(MediaSource& source);
+  LIVE555_EXPORT virtual void afterGettingFrame(unsigned frameSize,
 				 unsigned numTruncatedBytes,
 				 struct timeval presentationTime);
 

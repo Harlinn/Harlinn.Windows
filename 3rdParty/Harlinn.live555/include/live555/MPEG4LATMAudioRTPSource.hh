@@ -27,29 +27,29 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class MPEG4LATMAudioRTPSource: public MultiFramedRTPSource {
 public:
-  static MPEG4LATMAudioRTPSource*
+  LIVE555_EXPORT static MPEG4LATMAudioRTPSource*
   createNew(UsageEnvironment& env, Groupsock* RTPgs,
 	    unsigned char rtpPayloadFormat,
 	    unsigned rtpTimestampFrequency);
 
   // By default, the LATM data length field is included at the beginning of each
   // returned frame.  To omit this field, call the following:
-  void omitLATMDataLengthField();
+  LIVE555_EXPORT void omitLATMDataLengthField();
 
-  Boolean returnedFrameIncludesLATMDataLengthField() const { return fIncludeLATMDataLengthField; }
+  LIVE555_EXPORT Boolean returnedFrameIncludesLATMDataLengthField() const { return fIncludeLATMDataLengthField; }
 
 protected:
-  virtual ~MPEG4LATMAudioRTPSource();
+  LIVE555_EXPORT virtual ~MPEG4LATMAudioRTPSource();
 
 private:
-  MPEG4LATMAudioRTPSource(UsageEnvironment& env, Groupsock* RTPgs,
+  LIVE555_EXPORT MPEG4LATMAudioRTPSource(UsageEnvironment& env, Groupsock* RTPgs,
 			  unsigned char rtpPayloadFormat,
 			  unsigned rtpTimestampFrequency);
       // called only by createNew()
 
 private:
   // redefined virtual functions:
-  virtual Boolean processSpecialHeader(BufferedPacket* packet,
+  LIVE555_EXPORT virtual Boolean processSpecialHeader(BufferedPacket* packet,
                                        unsigned& resultSpecialHeaderSize);
   virtual char const* MIMEtype() const;
 
@@ -59,7 +59,7 @@ private:
 
 
 // A utility for parsing a "StreamMuxConfig" string
-Boolean
+LIVE555_EXPORT Boolean
 parseStreamMuxConfigStr(char const* configStr,
 			// result parameters:
 			Boolean& audioMuxVersion,
@@ -85,14 +85,14 @@ parseStreamMuxConfigStr(char const* configStr,
     // Also, any 'other data' or CRC info will be included at
     // the end of "audioSpecificConfig".
 
-unsigned char* parseStreamMuxConfigStr(char const* configStr,
+LIVE555_EXPORT unsigned char* parseStreamMuxConfigStr(char const* configStr,
 				       // result parameter:
 				       unsigned& audioSpecificConfigSize);
     // A variant of the above that returns just the "AudioSpecificConfig" data
     // (or NULL) if the parsing failed, without bothering with the other
     // result parameters.
 
-unsigned char* parseGeneralConfigStr(char const* configStr,
+LIVE555_EXPORT unsigned char* parseGeneralConfigStr(char const* configStr,
 				     // result parameter:
 				     unsigned& configSize);
     // A routine that parses an arbitrary config string, returning

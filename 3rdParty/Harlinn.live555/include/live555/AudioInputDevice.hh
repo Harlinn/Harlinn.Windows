@@ -26,8 +26,8 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class AudioPortNames {
 public:
-  AudioPortNames();
-  virtual ~AudioPortNames();
+  LIVE555_EXPORT AudioPortNames();
+  LIVE555_EXPORT virtual ~AudioPortNames();
 
   unsigned numPorts;
   char** portName;
@@ -42,25 +42,25 @@ public:
   virtual Boolean setInputPort(int portIndex) = 0;
   virtual double getAverageLevel() const = 0;
 
-  static AudioInputDevice*
+  LIVE555_EXPORT static AudioInputDevice*
   createNew(UsageEnvironment& env, int inputPortNumber,
 	    unsigned char bitsPerSample, unsigned char numChannels,
 	    unsigned samplingFrequency, unsigned granularityInMS = 20);
-  static AudioPortNames* getPortNames();
+  LIVE555_EXPORT static AudioPortNames* getPortNames();
 
-  static char** allowedDeviceNames;
+  LIVE555_EXPORT static char** allowedDeviceNames;
   // If this is set to non-NULL, then it's a NULL-terminated array of strings
   // of device names that we are allowed to access.
 
 protected:
-  AudioInputDevice(UsageEnvironment& env,
+  LIVE555_EXPORT AudioInputDevice(UsageEnvironment& env,
 		   unsigned char bitsPerSample,
 		   unsigned char numChannels,
 		   unsigned samplingFrequency,
 		   unsigned granularityInMS);
 	// we're an abstract base class
 
-  virtual ~AudioInputDevice();
+  LIVE555_EXPORT virtual ~AudioInputDevice();
 
 protected:
   unsigned char fBitsPerSample, fNumChannels;

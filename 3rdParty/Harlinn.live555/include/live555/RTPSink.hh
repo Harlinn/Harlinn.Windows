@@ -35,7 +35,7 @@ class RTPTransmissionStatsDB; // forward
 
 class RTPSink: public MediaSink {
 public:
-  static Boolean lookupByName(UsageEnvironment& env, char const* sinkName,
+  LIVE555_EXPORT static Boolean lookupByName(UsageEnvironment& env, char const* sinkName,
 			      RTPSink*& resultSink);
 
   // used by RTSP servers:
@@ -51,21 +51,21 @@ public:
 
   unsigned numChannels() const { return fNumChannels; }
 
-  void setupForSRTP(Boolean useEncryption);
+  LIVE555_EXPORT void setupForSRTP(Boolean useEncryption);
       // sets up keying/encryption state for streaming via SRTP, using default values.
-  u_int8_t* setupForSRTP(Boolean useEncryption, unsigned& resultMIKEYStateMessageSize);
+  LIVE555_EXPORT u_int8_t* setupForSRTP(Boolean useEncryption, unsigned& resultMIKEYStateMessageSize);
       // as above, but returns the binary MIKEY state
-  void setupForSRTP(u_int8_t const* MIKEYStateMessage, unsigned MIKEYStateMessageSize);
+  LIVE555_EXPORT void setupForSRTP(u_int8_t const* MIKEYStateMessage, unsigned MIKEYStateMessageSize);
       // as above, but takes a MIKEY state message as parameter
 
-  virtual char const* sdpMediaType() const; // for use in SDP m= lines
-  virtual char* rtpmapLine() const; // returns a string to be delete[]d
-  virtual char* keyMgmtLine(); // returns a string to be delete[]d
-  virtual char const* auxSDPLine();
+  LIVE555_EXPORT virtual char const* sdpMediaType() const; // for use in SDP m= lines
+  LIVE555_EXPORT virtual char* rtpmapLine() const; // returns a string to be delete[]d
+  LIVE555_EXPORT virtual char* keyMgmtLine(); // returns a string to be delete[]d
+  LIVE555_EXPORT virtual char const* auxSDPLine();
       // optional SDP line (e.g. a=fmtp:...)
 
   u_int16_t currentSeqNo() const { return fSeqNo; }
-  u_int32_t presetNextTimestamp();
+  LIVE555_EXPORT u_int32_t presetNextTimestamp();
       // ensures that the next timestamp to be used will correspond to
       // the current 'wall clock' time.
 
@@ -76,14 +76,14 @@ public:
   Boolean nextTimestampHasBeenPreset() const { return fNextTimestampHasBeenPreset; }
   Boolean& enableRTCPReports() { return fEnableRTCPReports; }
 
-  void getTotalBitrate(unsigned& outNumBytes, double& outElapsedTime);
+  LIVE555_EXPORT void getTotalBitrate(unsigned& outNumBytes, double& outElapsedTime);
       // returns the number of bytes sent since the last time that we
       // were called, and resets the counter.
 
   struct timeval const& creationTime() const { return fCreationTime; }
   struct timeval const& initialPresentationTime() const { return fInitialPresentationTime; }
   struct timeval const& mostRecentPresentationTime() const { return fMostRecentPresentationTime; }
-  void resetPresentationTimes();
+  LIVE555_EXPORT void resetPresentationTimes();
 
   // Hacks to allow sending RTP over TCP (RFC 2236, section 10.12):
   void setStreamSocket(int sockNum, unsigned char streamChannelId, TLSState* tlsState) {
@@ -103,19 +103,19 @@ public:
   SRTPCryptographicContext* getCrypto() const { return fCrypto; }
 
 protected:
-  RTPSink(UsageEnvironment& env,
+  LIVE555_EXPORT RTPSink(UsageEnvironment& env,
 	  Groupsock* rtpGS, unsigned char rtpPayloadType,
 	  u_int32_t rtpTimestampFrequency,
 	  char const* rtpPayloadFormatName,
 	  unsigned numChannels);
 	// abstract base class
 
-  virtual ~RTPSink();
+  LIVE555_EXPORT virtual ~RTPSink();
 
   // used by RTCP:
   friend class RTCPInstance;
   friend class RTPTransmissionStats;
-  u_int32_t convertToRTPTimestamp(struct timeval tv);
+  LIVE555_EXPORT u_int32_t convertToRTPTimestamp(struct timeval tv);
   unsigned packetCount() const {return fPacketCount;}
   unsigned octetCount() const {return fOctetCount;}
 
@@ -157,10 +157,10 @@ public:
 
   class Iterator {
   public:
-    Iterator(RTPTransmissionStatsDB& receptionStatsDB);
-    virtual ~Iterator();
+    LIVE555_EXPORT Iterator(RTPTransmissionStatsDB& receptionStatsDB);
+    LIVE555_EXPORT virtual ~Iterator();
 
-    RTPTransmissionStats* next();
+    LIVE555_EXPORT RTPTransmissionStats* next();
         // NULL if none
 
   private:
@@ -168,22 +168,22 @@ public:
   };
 
   // The following is called whenever a RTCP RR packet is received:
-  void noteIncomingRR(u_int32_t SSRC, struct sockaddr_storage const& lastFromAddress,
+  LIVE555_EXPORT void noteIncomingRR(u_int32_t SSRC, struct sockaddr_storage const& lastFromAddress,
                       unsigned lossStats, unsigned lastPacketNumReceived,
                       unsigned jitter, unsigned lastSRTime, unsigned diffSR_RRTime);
 
   // The following is called when a RTCP BYE packet is received:
-  void removeRecord(u_int32_t SSRC);
+  LIVE555_EXPORT void removeRecord(u_int32_t SSRC);
 
-  RTPTransmissionStats* lookup(u_int32_t SSRC) const;
+  LIVE555_EXPORT RTPTransmissionStats* lookup(u_int32_t SSRC) const;
 
 private: // constructor and destructor, called only by RTPSink:
   friend class RTPSink;
-  RTPTransmissionStatsDB(RTPSink& rtpSink);
-  virtual ~RTPTransmissionStatsDB();
+  LIVE555_EXPORT RTPTransmissionStatsDB(RTPSink& rtpSink);
+  LIVE555_EXPORT virtual ~RTPTransmissionStatsDB();
 
 private:
-  void add(u_int32_t SSRC, RTPTransmissionStats* stats);
+  LIVE555_EXPORT void add(u_int32_t SSRC, RTPTransmissionStats* stats);
 
 private:
   friend class Iterator;
@@ -202,27 +202,27 @@ public:
   unsigned jitter() const {return fJitter;}
   unsigned lastSRTime() const { return fLastSRTime; }
   unsigned diffSR_RRTime() const { return fDiffSR_RRTime; }
-  unsigned roundTripDelay() const;
+  LIVE555_EXPORT unsigned roundTripDelay() const;
       // The round-trip delay (in units of 1/65536 seconds) computed from
       // the most recently-received RTCP RR packet.
   struct timeval const& timeCreated() const {return fTimeCreated;}
   struct timeval const& lastTimeReceived() const {return fTimeReceived;}
-  void getTotalOctetCount(u_int32_t& hi, u_int32_t& lo);
-  void getTotalPacketCount(u_int32_t& hi, u_int32_t& lo);
+  LIVE555_EXPORT void getTotalOctetCount(u_int32_t& hi, u_int32_t& lo);
+  LIVE555_EXPORT void getTotalPacketCount(u_int32_t& hi, u_int32_t& lo);
 
   // Information which requires at least two RRs to have been received:
-  unsigned packetsReceivedSinceLastRR() const;
+  LIVE555_EXPORT unsigned packetsReceivedSinceLastRR() const;
   u_int8_t packetLossRatio() const { return fPacketLossRatio; }
      // as an 8-bit fixed-point number
-  int packetsLostBetweenRR() const;
+  LIVE555_EXPORT int packetsLostBetweenRR() const;
 
 private:
   // called only by RTPTransmissionStatsDB:
   friend class RTPTransmissionStatsDB;
-  RTPTransmissionStats(RTPSink& rtpSink, u_int32_t SSRC);
-  virtual ~RTPTransmissionStats();
+  LIVE555_EXPORT RTPTransmissionStats(RTPSink& rtpSink, u_int32_t SSRC);
+  LIVE555_EXPORT virtual ~RTPTransmissionStats();
 
-  void noteIncomingRR(struct sockaddr_storage const& lastFromAddress,
+  LIVE555_EXPORT void noteIncomingRR(struct sockaddr_storage const& lastFromAddress,
 		      unsigned lossStats, unsigned lastPacketNumReceived,
                       unsigned jitter,
 		      unsigned lastSRTime, unsigned diffSR_RRTime);

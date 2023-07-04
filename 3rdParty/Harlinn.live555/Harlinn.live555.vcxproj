@@ -237,6 +237,7 @@
     <ClInclude Include="include\live555\JPEGVideoRTPSink.hh" />
     <ClInclude Include="include\live555\JPEGVideoRTPSource.hh" />
     <ClInclude Include="include\live555\JPEGVideoSource.hh" />
+    <ClInclude Include="include\live555\live555Def.h" />
     <ClInclude Include="include\live555\liveMedia.hh" />
     <ClInclude Include="include\live555\liveMedia_version.hh" />
     <ClInclude Include="include\live555\Locale.hh" />
@@ -340,7 +341,6 @@
     <ClInclude Include="include\live555\VP9VideoRTPSource.hh" />
     <ClInclude Include="include\live555\WAVAudioFileServerMediaSubsession.hh" />
     <ClInclude Include="include\live555\WAVAudioFileSource.hh" />
-    <ClInclude Include="live555Def.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="src\liveMedia\EBMLNumber.hh" />
     <ClInclude Include="src\liveMedia\H263plusVideoStreamParser.hh" />

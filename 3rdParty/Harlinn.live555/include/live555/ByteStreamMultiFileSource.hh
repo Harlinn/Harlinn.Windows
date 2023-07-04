@@ -28,7 +28,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class ByteStreamMultiFileSource: public FramedSource {
 public:
-  static ByteStreamMultiFileSource*
+  LIVE555_EXPORT static ByteStreamMultiFileSource*
   createNew(UsageEnvironment& env, char const** fileNameArray,
 	    unsigned preferredFrameSize = 0, unsigned playTimePerFrame = 0);
   // "fileNameArray" is a pointer to an array of (char const*) file names, with
@@ -38,20 +38,20 @@ public:
   // True iff the most recently delivered frame was the first from a newly-opened file
 
 protected:
-  ByteStreamMultiFileSource(UsageEnvironment& env, char const** fileNameArray,
+  LIVE555_EXPORT ByteStreamMultiFileSource(UsageEnvironment& env, char const** fileNameArray,
 			    unsigned preferredFrameSize, unsigned playTimePerFrame);
 	// called only by createNew()
 
-  virtual ~ByteStreamMultiFileSource();
+  LIVE555_EXPORT virtual ~ByteStreamMultiFileSource();
 
 private:
   // redefined virtual functions:
-  virtual void doGetNextFrame();
+  LIVE555_EXPORT virtual void doGetNextFrame();
 
 private:
-  static void onSourceClosure(void* clientData);
-  void onSourceClosure1();
-  static void afterGettingFrame(void* clientData,
+  LIVE555_EXPORT static void onSourceClosure(void* clientData);
+  LIVE555_EXPORT void onSourceClosure1();
+  LIVE555_EXPORT static void afterGettingFrame(void* clientData,
 				unsigned frameSize, unsigned numTruncatedBytes,
                                 struct timeval presentationTime,
 				unsigned durationInMicroseconds);

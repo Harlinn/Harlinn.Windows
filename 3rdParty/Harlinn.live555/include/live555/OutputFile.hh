@@ -24,8 +24,8 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 #include <UsageEnvironment.hh>
 #include <stdio.h>
 
-FILE* OpenOutputFile(UsageEnvironment& env, char const* fileName);
+LIVE555_EXPORT FILE* OpenOutputFile(UsageEnvironment& env, char const* fileName);
 
-void CloseOutputFile(FILE* fid);
+LIVE555_EXPORT void CloseOutputFile(FILE* fid);
 
 #endif

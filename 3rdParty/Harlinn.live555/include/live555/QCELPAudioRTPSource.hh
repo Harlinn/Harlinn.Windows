@@ -27,7 +27,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class QCELPAudioRTPSource {
 public:
-  static FramedSource* createNew(UsageEnvironment& env,
+  LIVE555_EXPORT static FramedSource* createNew(UsageEnvironment& env,
 				 Groupsock* RTPgs,
 				 RTPSource*& resultRTPSource,
 				 unsigned char rtpPayloadFormat = 12,

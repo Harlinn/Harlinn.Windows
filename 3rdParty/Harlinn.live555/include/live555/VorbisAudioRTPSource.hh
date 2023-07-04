@@ -27,7 +27,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class VorbisAudioRTPSource: public MultiFramedRTPSource {
 public:
-  static VorbisAudioRTPSource*
+  LIVE555_EXPORT static VorbisAudioRTPSource*
   createNew(UsageEnvironment& env, Groupsock* RTPgs,
 	    unsigned char rtpPayloadFormat,
 	    unsigned rtpTimestampFrequency);
@@ -35,24 +35,24 @@ public:
   u_int32_t curPacketIdent() const { return fCurPacketIdent; } // The current "Ident" field; only the low-order 24 bits are used
 
 protected:
-  VorbisAudioRTPSource(UsageEnvironment& env, Groupsock* RTPgs,
+  LIVE555_EXPORT VorbisAudioRTPSource(UsageEnvironment& env, Groupsock* RTPgs,
 		       unsigned char rtpPayloadFormat,
 		       unsigned rtpTimestampFrequency);
       // called only by createNew()
 
-  virtual ~VorbisAudioRTPSource();
+  LIVE555_EXPORT virtual ~VorbisAudioRTPSource();
 
 protected:
   // redefined virtual functions:
-  virtual Boolean processSpecialHeader(BufferedPacket* packet,
+  LIVE555_EXPORT virtual Boolean processSpecialHeader(BufferedPacket* packet,
                                        unsigned& resultSpecialHeaderSize);
-  virtual char const* MIMEtype() const;
+  LIVE555_EXPORT virtual char const* MIMEtype() const;
 
 private:
   u_int32_t fCurPacketIdent; // only the low-order 24 bits are used
 };
 
-void parseVorbisOrTheoraConfigStr(char const* configStr,
+LIVE555_EXPORT void parseVorbisOrTheoraConfigStr(char const* configStr,
 				  u_int8_t*& identificationHdr, unsigned& identificationHdrSize,
 				  u_int8_t*& commentHdr, unsigned& commentHdrSize,
 				  u_int8_t*& setupHdr, unsigned& setupHdrSize,

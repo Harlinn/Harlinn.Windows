@@ -49,11 +49,11 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class Medium {
 public:
-  static Boolean lookupByName(UsageEnvironment& env,
+  LIVE555_EXPORT static Boolean lookupByName(UsageEnvironment& env,
 			      char const* mediumName,
 			      Medium*& resultMedium);
-  static void close(UsageEnvironment& env, char const* mediumName);
-  static void close(Medium* medium); // alternative close() method using ptrs
+  LIVE555_EXPORT static void close(UsageEnvironment& env, char const* mediumName);
+  LIVE555_EXPORT static void close(Medium* medium); // alternative close() method using ptrs
       // (has no effect if medium == NULL)
 
   UsageEnvironment& envir() const {return fEnviron;}
@@ -61,18 +61,18 @@ public:
   char const* name() const {return fMediumName;}
 
   // Test for specific types of media:
-  virtual Boolean isSource() const;
-  virtual Boolean isSink() const;
-  virtual Boolean isRTCPInstance() const;
-  virtual Boolean isRTSPClient() const;
-  virtual Boolean isRTSPServer() const;
-  virtual Boolean isMediaSession() const;
-  virtual Boolean isServerMediaSession() const;
+  LIVE555_EXPORT virtual Boolean isSource() const;
+  LIVE555_EXPORT virtual Boolean isSink() const;
+  LIVE555_EXPORT virtual Boolean isRTCPInstance() const;
+  LIVE555_EXPORT virtual Boolean isRTSPClient() const;
+  LIVE555_EXPORT virtual Boolean isRTSPServer() const;
+  LIVE555_EXPORT virtual Boolean isMediaSession() const;
+  LIVE555_EXPORT virtual Boolean isServerMediaSession() const;
 
 protected:
   friend class MediaLookupTable;
-  Medium(UsageEnvironment& env); // abstract base class
-  virtual ~Medium(); // instances are deleted using close() only
+  LIVE555_EXPORT Medium(UsageEnvironment& env); // abstract base class
+  LIVE555_EXPORT virtual ~Medium(); // instances are deleted using close() only
 
   TaskToken& nextTask() {
 	return fNextTask;
@@ -90,23 +90,23 @@ private:
 //  the whole set of "Medium" objects that we've created.)
 class MediaLookupTable {
 public:
-  static MediaLookupTable* ourMedia(UsageEnvironment& env);
-  HashTable const& getTable() { return *fTable; }
+  LIVE555_EXPORT static MediaLookupTable* ourMedia(UsageEnvironment& env);
+  LIVE555_EXPORT HashTable const& getTable() { return *fTable; }
 
 protected:
-  MediaLookupTable(UsageEnvironment& env);
-  virtual ~MediaLookupTable();
+  LIVE555_EXPORT MediaLookupTable(UsageEnvironment& env);
+  LIVE555_EXPORT virtual ~MediaLookupTable();
 
 private:
   friend class Medium;
 
-  Medium* lookup(char const* name) const;
+  LIVE555_EXPORT Medium* lookup(char const* name) const;
   // Returns NULL if none already exists
 
-  void addNew(Medium* medium, char* mediumName);
-  void remove(char const* name);
+  LIVE555_EXPORT void addNew(Medium* medium, char* mediumName);
+  LIVE555_EXPORT void remove(char const* name);
 
-  void generateNewName(char* mediumName, unsigned maxLen);
+  LIVE555_EXPORT void generateNewName(char* mediumName, unsigned maxLen);
 
 private:
   UsageEnvironment& fEnv;
@@ -118,17 +118,17 @@ private:
 // The structure pointed to by the "liveMediaPriv" UsageEnvironment field:
 class _Tables {
 public:
-  static _Tables* getOurTables(UsageEnvironment& env, Boolean createIfNotPresent = True);
+  LIVE555_EXPORT static _Tables* getOurTables(UsageEnvironment& env, Boolean createIfNotPresent = True);
       // returns a pointer to a "_Tables" structure (creating it if necessary)
-  void reclaimIfPossible();
+  LIVE555_EXPORT void reclaimIfPossible();
       // used to delete ourselves when we're no longer used
 
   MediaLookupTable* mediaTable;
   void* socketTable;
 
 protected:
-  _Tables(UsageEnvironment& env);
-  virtual ~_Tables();
+  LIVE555_EXPORT _Tables(UsageEnvironment& env);
+  LIVE555_EXPORT virtual ~_Tables();
 
 private:
   UsageEnvironment& fEnv;

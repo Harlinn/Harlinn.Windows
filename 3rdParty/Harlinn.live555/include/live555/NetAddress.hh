@@ -40,59 +40,59 @@ typedef u_int8_t ipv6AddressBits[16]; // 128 bits
 
 class NetAddress {
 public:
-  NetAddress(u_int8_t const* data,
+  LIVE555_EXPORT NetAddress(u_int8_t const* data,
 	     unsigned length = 4 /* default: 32 bits (for IPv4); use 16 (128 bits) for IPv6 */);
-  NetAddress(unsigned length = 4); // sets address data to all-zeros
-  NetAddress(NetAddress const& orig);
-  NetAddress& operator=(NetAddress const& rightSide);
-  virtual ~NetAddress();
+  LIVE555_EXPORT NetAddress(unsigned length = 4); // sets address data to all-zeros
+  LIVE555_EXPORT NetAddress(NetAddress const& orig);
+  LIVE555_EXPORT NetAddress& operator=(NetAddress const& rightSide);
+  LIVE555_EXPORT virtual ~NetAddress();
   
   unsigned length() const { return fLength; }
   u_int8_t const* data() const // always in network byte order
   { return fData; }
   
 private:
-  void assign(u_int8_t const* data, unsigned length);
-  void clean();
+  LIVE555_EXPORT void assign(u_int8_t const* data, unsigned length);
+  LIVE555_EXPORT void clean();
   
   unsigned fLength;
   u_int8_t* fData;
 };
 
-struct sockaddr_storage const& nullAddress(int addressFamily = AF_INET);
-Boolean addressIsNull(sockaddr_storage const& address);
+LIVE555_EXPORT struct sockaddr_storage const& nullAddress(int addressFamily = AF_INET);
+LIVE555_EXPORT Boolean addressIsNull(sockaddr_storage const& address);
 
-SOCKLEN_T addressSize(sockaddr_storage const& address);
+LIVE555_EXPORT SOCKLEN_T addressSize(sockaddr_storage const& address);
 
-void copyAddress(struct sockaddr_storage& to, NetAddress const* from);
+LIVE555_EXPORT void copyAddress(struct sockaddr_storage& to, NetAddress const* from);
 
-Boolean operator==(struct sockaddr_storage const& left, struct sockaddr_storage const& right);
+LIVE555_EXPORT Boolean operator==(struct sockaddr_storage const& left, struct sockaddr_storage const& right);
     // compares the family and address parts only; not the port number or anything else
 
 class NetAddressList {
 public:
-  NetAddressList(char const* hostname, int addressFamily = AF_UNSPEC);
-  NetAddressList(NetAddressList const& orig);
-  NetAddressList& operator=(NetAddressList const& rightSide);
-  virtual ~NetAddressList();
+  LIVE555_EXPORT NetAddressList(char const* hostname, int addressFamily = AF_UNSPEC);
+  LIVE555_EXPORT NetAddressList(NetAddressList const& orig);
+  LIVE555_EXPORT NetAddressList& operator=(NetAddressList const& rightSide);
+  LIVE555_EXPORT virtual ~NetAddressList();
   
   unsigned numAddresses() const { return fNumAddresses; }
   
-  NetAddress const* firstAddress() const;
+  LIVE555_EXPORT NetAddress const* firstAddress() const;
   
   // Used to iterate through the addresses in a list:
   class Iterator {
   public:
-    Iterator(NetAddressList const& addressList);
-    NetAddress const* nextAddress(); // NULL iff none
+    LIVE555_EXPORT Iterator(NetAddressList const& addressList);
+    LIVE555_EXPORT NetAddress const* nextAddress(); // NULL iff none
   private:
     NetAddressList const& fAddressList;
     unsigned fNextIndex;
   };
   
 private:
-  void assign(unsigned numAddresses, NetAddress** addressArray);
-  void clean();
+  LIVE555_EXPORT void assign(unsigned numAddresses, NetAddress** addressArray);
+  LIVE555_EXPORT void clean();
   
   friend class Iterator;
   unsigned fNumAddresses;
@@ -103,7 +103,7 @@ typedef u_int16_t portNumBits;
 
 class Port {
 public:
-  Port(portNumBits num /* in host byte order */);
+  LIVE555_EXPORT Port(portNumBits num /* in host byte order */);
   
   portNumBits num() const { return fPortNum; } // in network byte order
   
@@ -114,16 +114,16 @@ private:
 #endif
 };
 
-UsageEnvironment& operator<<(UsageEnvironment& s, const Port& p);
+LIVE555_EXPORT UsageEnvironment& operator<<(UsageEnvironment& s, const Port& p);
 
 
 // A generic table for looking up objects by (address1, address2, port)
 class AddressPortLookupTable {
 public:
-  AddressPortLookupTable();
-  virtual ~AddressPortLookupTable();
+  LIVE555_EXPORT AddressPortLookupTable();
+  LIVE555_EXPORT virtual ~AddressPortLookupTable();
   
-  void* Add(struct sockaddr_storage const& address1,
+  LIVE555_EXPORT void* Add(struct sockaddr_storage const& address1,
 	    struct sockaddr_storage const& address2,
 	    Port port,
 	    void* value);
@@ -134,7 +134,7 @@ public:
     return Add(address1, nullAddress(), port, value);
   }
 
-  Boolean Remove(struct sockaddr_storage const& address1,
+  LIVE555_EXPORT Boolean Remove(struct sockaddr_storage const& address1,
 		 struct sockaddr_storage const& address2,
 		 Port port);
   Boolean Remove(struct sockaddr_storage const& address1,
@@ -142,7 +142,7 @@ public:
     return Remove(address1, nullAddress(), port);
   }
 
-  void* Lookup(struct sockaddr_storage const& address1,
+  LIVE555_EXPORT void* Lookup(struct sockaddr_storage const& address1,
 	       struct sockaddr_storage const& address2,
 	       Port port);
       // Returns 0 if not found
@@ -156,10 +156,10 @@ public:
   // Used to iterate through the entries in the table
   class Iterator {
   public:
-    Iterator(AddressPortLookupTable& table);
-    virtual ~Iterator();
+    LIVE555_EXPORT Iterator(AddressPortLookupTable& table);
+    LIVE555_EXPORT virtual ~Iterator();
     
-    void* next(); // NULL iff none
+    LIVE555_EXPORT void* next(); // NULL iff none
     
   private:
     HashTable::Iterator* fIter;
@@ -171,7 +171,7 @@ private:
 };
 
 
-Boolean IsMulticastAddress(struct sockaddr_storage const& address);
+LIVE555_EXPORT Boolean IsMulticastAddress(struct sockaddr_storage const& address);
 
 
 // A mechanism for displaying an IP (v4 or v6) address in ASCII.
@@ -179,31 +179,31 @@ Boolean IsMulticastAddress(struct sockaddr_storage const& address);
 class AddressString {
 public:
   // IPv4 input:
-  AddressString(struct sockaddr_in const& addr);
-  AddressString(struct in_addr const& addr);
-  AddressString(ipv4AddressBits const& addr); // "addr" is assumed to be in network byte order
+  LIVE555_EXPORT AddressString(struct sockaddr_in const& addr);
+  LIVE555_EXPORT AddressString(struct in_addr const& addr);
+  LIVE555_EXPORT AddressString(ipv4AddressBits const& addr); // "addr" is assumed to be in network byte order
 
   // IPv6 input:
-  AddressString(struct sockaddr_in6 const& addr);
-  AddressString(struct in6_addr const& addr);
-  AddressString(ipv6AddressBits const& addr);
+  LIVE555_EXPORT AddressString(struct sockaddr_in6 const& addr);
+  LIVE555_EXPORT AddressString(struct in6_addr const& addr);
+  LIVE555_EXPORT AddressString(ipv6AddressBits const& addr);
 
   // IPv4 or IPv6 input:
-  AddressString(struct sockaddr_storage const& addr);
+  LIVE555_EXPORT AddressString(struct sockaddr_storage const& addr);
 
-  virtual ~AddressString();
+  LIVE555_EXPORT virtual ~AddressString();
 
   char const* val() const { return fVal; }
 
 private:
-  void init(ipv4AddressBits const& addr); // used to implement the IPv4 constructors
-  void init(ipv6AddressBits const& addr); // used to implement the IPv6 constructors
+  LIVE555_EXPORT void init(ipv4AddressBits const& addr); // used to implement the IPv4 constructors
+  LIVE555_EXPORT void init(ipv6AddressBits const& addr); // used to implement the IPv6 constructors
 
 private:
   char* fVal; // The result ASCII string: allocated by the constructor; deleted by the destructor
 };
 
-portNumBits portNum(struct sockaddr_storage const& address);
-void setPortNum(struct sockaddr_storage& address, portNumBits portNum/*in network order*/);
+LIVE555_EXPORT portNumBits portNum(struct sockaddr_storage const& address);
+LIVE555_EXPORT void setPortNum(struct sockaddr_storage& address, portNumBits portNum/*in network order*/);
 
 #endif

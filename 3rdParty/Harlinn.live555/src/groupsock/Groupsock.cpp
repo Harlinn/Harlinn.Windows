@@ -361,7 +361,7 @@ void Groupsock::removeDestinationFrom(destRecord*& dests, unsigned sessionId) {
   }
 }
 
-UsageEnvironment& operator<<(UsageEnvironment& s, const Groupsock& g) {
+LIVE555_EXPORT UsageEnvironment& operator<<(UsageEnvironment& s, const Groupsock& g) {
   UsageEnvironment& s1 = s << timestampString() << " Groupsock("
 			   << g.socketNum() << ": "
 			   << AddressString(g.groupAddress()).val()

@@ -31,21 +31,21 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 // The "username" and "password" fields are supplied by the client.
 class Authenticator {
 public:
-  Authenticator();
-  Authenticator(char const* username, char const* password, Boolean passwordIsMD5 = False);
+  LIVE555_EXPORT Authenticator();
+  LIVE555_EXPORT Authenticator(char const* username, char const* password, Boolean passwordIsMD5 = False);
       // If "passwordIsMD5" is True, then "password" is actually the value computed
       // by md5(<username>:<realm>:<actual-password>)
-  Authenticator(const Authenticator& orig);
-  Authenticator& operator=(const Authenticator& rightSide);
-  Boolean operator<(const Authenticator* rightSide);
-  virtual ~Authenticator();
+  LIVE555_EXPORT Authenticator(const Authenticator& orig);
+  LIVE555_EXPORT Authenticator& operator=(const Authenticator& rightSide);
+  LIVE555_EXPORT Boolean operator<(const Authenticator* rightSide);
+  LIVE555_EXPORT virtual ~Authenticator();
 
-  void reset();
-  void setRealmAndNonce(char const* realm, char const* nonce);
-  void setRealmAndRandomNonce(char const* realm);
+  LIVE555_EXPORT void reset();
+  LIVE555_EXPORT void setRealmAndNonce(char const* realm, char const* nonce);
+  LIVE555_EXPORT void setRealmAndRandomNonce(char const* realm);
       // as above, except that the nonce is created randomly.
       // (This is used by servers.)
-  void setUsernameAndPassword(char const* username, char const* password, Boolean passwordIsMD5 = False);
+  LIVE555_EXPORT void setUsernameAndPassword(char const* username, char const* password, Boolean passwordIsMD5 = False);
       // If "passwordIsMD5" is True, then "password" is actually the value computed
       // by md5(<username>:<realm>:<actual-password>)
 
@@ -54,16 +54,16 @@ public:
   char const* username() const { return fUsername; }
   char const* password() const { return fPassword; }
 
-  char const* computeDigestResponse(char const* cmd, char const* url) const;
+  LIVE555_EXPORT char const* computeDigestResponse(char const* cmd, char const* url) const;
       // The returned string from this function must later be freed by calling:
-  void reclaimDigestResponse(char const* responseStr) const;
+  LIVE555_EXPORT void reclaimDigestResponse(char const* responseStr) const;
 
 private:
-  void resetRealmAndNonce();
-  void resetUsernameAndPassword();
-  void assignRealmAndNonce(char const* realm, char const* nonce);
-  void assignUsernameAndPassword(char const* username, char const* password, Boolean passwordIsMD5);
-  void assign(char const* realm, char const* nonce,
+  LIVE555_EXPORT void resetRealmAndNonce();
+  LIVE555_EXPORT void resetUsernameAndPassword();
+  LIVE555_EXPORT void assignRealmAndNonce(char const* realm, char const* nonce);
+  LIVE555_EXPORT void assignUsernameAndPassword(char const* username, char const* password, Boolean passwordIsMD5);
+  LIVE555_EXPORT void assign(char const* realm, char const* nonce,
 	      char const* username, char const* password, Boolean passwordIsMD5);
 
 private:

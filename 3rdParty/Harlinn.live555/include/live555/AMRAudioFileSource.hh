@@ -27,19 +27,19 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class AMRAudioFileSource: public AMRAudioSource {
 public:
-  static AMRAudioFileSource* createNew(UsageEnvironment& env,
+  LIVE555_EXPORT static AMRAudioFileSource* createNew(UsageEnvironment& env,
 				       char const* fileName);
 
 private:
-  AMRAudioFileSource(UsageEnvironment& env, FILE* fid,
+  LIVE555_EXPORT AMRAudioFileSource(UsageEnvironment& env, FILE* fid,
 		     Boolean isWideband, unsigned numChannels);
 	// called only by createNew()
 
-  virtual ~AMRAudioFileSource();
+  LIVE555_EXPORT virtual ~AMRAudioFileSource();
 
 private:
   // redefined virtual functions:
-  virtual void doGetNextFrame();
+  LIVE555_EXPORT virtual void doGetNextFrame();
 
 private:
   FILE* fFid;

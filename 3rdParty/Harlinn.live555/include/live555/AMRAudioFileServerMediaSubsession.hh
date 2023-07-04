@@ -28,19 +28,19 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class AMRAudioFileServerMediaSubsession: public FileServerMediaSubsession{
 public:
-  static AMRAudioFileServerMediaSubsession*
+  LIVE555_EXPORT static AMRAudioFileServerMediaSubsession*
   createNew(UsageEnvironment& env, char const* fileName, Boolean reuseFirstSource);
 
 private:
-  AMRAudioFileServerMediaSubsession(UsageEnvironment& env,
+  LIVE555_EXPORT AMRAudioFileServerMediaSubsession(UsageEnvironment& env,
 				      char const* fileName, Boolean reuseFirstSource);
       // called only by createNew();
-  virtual ~AMRAudioFileServerMediaSubsession();
+  LIVE555_EXPORT virtual ~AMRAudioFileServerMediaSubsession();
 
 private: // redefined virtual functions
-  virtual FramedSource* createNewStreamSource(unsigned clientSessionId,
+  LIVE555_EXPORT virtual FramedSource* createNewStreamSource(unsigned clientSessionId,
 					      unsigned& estBitrate);
-  virtual RTPSink* createNewRTPSink(Groupsock* rtpGroupsock,
+  LIVE555_EXPORT virtual RTPSink* createNewRTPSink(Groupsock* rtpGroupsock,
                                     unsigned char rtpPayloadTypeIfDynamic,
 				    FramedSource* inputSource);
 };

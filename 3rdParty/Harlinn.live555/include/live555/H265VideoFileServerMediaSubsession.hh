@@ -28,27 +28,27 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class H265VideoFileServerMediaSubsession: public FileServerMediaSubsession {
 public:
-  static H265VideoFileServerMediaSubsession*
+  LIVE555_EXPORT static H265VideoFileServerMediaSubsession*
   createNew(UsageEnvironment& env, char const* fileName, Boolean reuseFirstSource);
 
   // Used to implement "getAuxSDPLine()":
-  void checkForAuxSDPLine1();
-  void afterPlayingDummy1();
+  LIVE555_EXPORT void checkForAuxSDPLine1();
+  LIVE555_EXPORT void afterPlayingDummy1();
 
 protected:
-  H265VideoFileServerMediaSubsession(UsageEnvironment& env,
+  LIVE555_EXPORT H265VideoFileServerMediaSubsession(UsageEnvironment& env,
 				      char const* fileName, Boolean reuseFirstSource);
       // called only by createNew();
-  virtual ~H265VideoFileServerMediaSubsession();
+  LIVE555_EXPORT virtual ~H265VideoFileServerMediaSubsession();
 
   void setDoneFlag() { fDoneFlag = ~0; }
 
 protected: // redefined virtual functions
-  virtual char const* getAuxSDPLine(RTPSink* rtpSink,
+  LIVE555_EXPORT virtual char const* getAuxSDPLine(RTPSink* rtpSink,
 				    FramedSource* inputSource);
-  virtual FramedSource* createNewStreamSource(unsigned clientSessionId,
+  LIVE555_EXPORT virtual FramedSource* createNewStreamSource(unsigned clientSessionId,
 					      unsigned& estBitrate);
-  virtual RTPSink* createNewRTPSink(Groupsock* rtpGroupsock,
+  LIVE555_EXPORT virtual RTPSink* createNewRTPSink(Groupsock* rtpGroupsock,
                                     unsigned char rtpPayloadTypeIfDynamic,
 				    FramedSource* inputSource);
 

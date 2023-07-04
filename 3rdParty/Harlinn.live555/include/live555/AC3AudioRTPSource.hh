@@ -27,25 +27,25 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class AC3AudioRTPSource: public MultiFramedRTPSource {
 public:
-  static AC3AudioRTPSource*
+  LIVE555_EXPORT static AC3AudioRTPSource*
   createNew(UsageEnvironment& env, Groupsock* RTPgs,
 	    unsigned char rtpPayloadFormat,
 	    unsigned rtpTimestampFrequency);
 
 protected:
-  virtual ~AC3AudioRTPSource();
+  LIVE555_EXPORT virtual ~AC3AudioRTPSource();
 
 private:
-  AC3AudioRTPSource(UsageEnvironment& env, Groupsock* RTPgs,
+  LIVE555_EXPORT AC3AudioRTPSource(UsageEnvironment& env, Groupsock* RTPgs,
 		     unsigned char rtpPayloadFormat,
 		     unsigned rtpTimestampFrequency);
       // called only by createNew()
 
 private:
   // redefined virtual functions:
-  virtual Boolean processSpecialHeader(BufferedPacket* packet,
+  LIVE555_EXPORT virtual Boolean processSpecialHeader(BufferedPacket* packet,
                                        unsigned& resultSpecialHeaderSize);
-  virtual char const* MIMEtype() const;
+  LIVE555_EXPORT virtual char const* MIMEtype() const;
 };
 
 #endif

@@ -28,10 +28,10 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class TimeCode {
 public:
-  TimeCode();
-  virtual ~TimeCode();
+  LIVE555_EXPORT TimeCode();
+  LIVE555_EXPORT virtual ~TimeCode();
 
-  bool operator==( const TimeCode& arg2) const;
+  LIVE555_EXPORT bool operator==( const TimeCode& arg2) const;
   unsigned days, hours, minutes, seconds, pictures;
 };
 
@@ -40,29 +40,29 @@ public:
   Boolean& pictureEndMarker() { return fPictureEndMarker; }
       // a hack for implementing the RTP 'M' bit
 
-  void flushInput(); // called if there is a discontinuity (seeking) in the input
+  LIVE555_EXPORT void flushInput(); // called if there is a discontinuity (seeking) in the input
 
 protected:
-  MPEGVideoStreamFramer(UsageEnvironment& env, FramedSource* inputSource);
+  LIVE555_EXPORT MPEGVideoStreamFramer(UsageEnvironment& env, FramedSource* inputSource);
       // we're an abstract base class
-  virtual ~MPEGVideoStreamFramer();
+  LIVE555_EXPORT virtual ~MPEGVideoStreamFramer();
 
-  void computePresentationTime(unsigned numAdditionalPictures);
+  LIVE555_EXPORT void computePresentationTime(unsigned numAdditionalPictures);
       // sets "fPresentationTime"
-  void setTimeCode(unsigned hours, unsigned minutes, unsigned seconds,
+  LIVE555_EXPORT void setTimeCode(unsigned hours, unsigned minutes, unsigned seconds,
 		   unsigned pictures, unsigned picturesSinceLastGOP);
 
 protected: // redefined virtual functions
-  virtual void doGetNextFrame();
-  virtual void doStopGettingFrames();
+  LIVE555_EXPORT virtual void doGetNextFrame();
+  LIVE555_EXPORT virtual void doStopGettingFrames();
 
 private:
-  void reset();
+  LIVE555_EXPORT void reset();
 
-  static void continueReadProcessing(void* clientData,
+  LIVE555_EXPORT static void continueReadProcessing(void* clientData,
 				     unsigned char* ptr, unsigned size,
 				     struct timeval presentationTime);
-  void continueReadProcessing();
+  LIVE555_EXPORT void continueReadProcessing();
 
 protected:
   double fFrameRate; // Note: For MPEG-4, this is really a 'tick rate'

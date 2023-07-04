@@ -27,36 +27,36 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class MPEG4ESVideoRTPSink: public VideoRTPSink {
 public:
-  static MPEG4ESVideoRTPSink* createNew(UsageEnvironment& env,
+  LIVE555_EXPORT static MPEG4ESVideoRTPSink* createNew(UsageEnvironment& env,
 					Groupsock* RTPgs, unsigned char rtpPayloadFormat,
 					u_int32_t rtpTimestampFrequency = 90000);
-  static MPEG4ESVideoRTPSink* createNew(UsageEnvironment& env,
+  LIVE555_EXPORT static MPEG4ESVideoRTPSink* createNew(UsageEnvironment& env,
 					Groupsock* RTPgs, unsigned char rtpPayloadFormat, u_int32_t rtpTimestampFrequency,
 					u_int8_t profileAndLevelIndication, char const* configStr);
     // an optional variant of "createNew()", useful if we know, in advance, the stream's 'configuration' info.
 
 
 protected:
-  MPEG4ESVideoRTPSink(UsageEnvironment& env, Groupsock* RTPgs, unsigned char rtpPayloadFormat, u_int32_t rtpTimestampFrequency,
+  LIVE555_EXPORT MPEG4ESVideoRTPSink(UsageEnvironment& env, Groupsock* RTPgs, unsigned char rtpPayloadFormat, u_int32_t rtpTimestampFrequency,
 		      u_int8_t profileAndLevelIndication = 0, char const* configStr = NULL);
 	// called only by createNew()
 
-  virtual ~MPEG4ESVideoRTPSink();
+  LIVE555_EXPORT virtual ~MPEG4ESVideoRTPSink();
 
 protected: // redefined virtual functions:
-  virtual Boolean sourceIsCompatibleWithUs(MediaSource& source);
+  LIVE555_EXPORT virtual Boolean sourceIsCompatibleWithUs(MediaSource& source);
 
-  virtual void doSpecialFrameHandling(unsigned fragmentationOffset,
+  LIVE555_EXPORT virtual void doSpecialFrameHandling(unsigned fragmentationOffset,
                                       unsigned char* frameStart,
                                       unsigned numBytesInFrame,
                                       struct timeval framePresentationTime,
                                       unsigned numRemainingBytes);
-  virtual Boolean allowFragmentationAfterStart() const;
-  virtual Boolean
+  LIVE555_EXPORT virtual Boolean allowFragmentationAfterStart() const;
+  LIVE555_EXPORT virtual Boolean
   frameCanAppearAfterPacketStart(unsigned char const* frameStart,
 				 unsigned numBytesInFrame) const;
 
-  virtual char const* auxSDPLine();
+  LIVE555_EXPORT virtual char const* auxSDPLine();
 
 protected:
   Boolean fVOPIsPresent;

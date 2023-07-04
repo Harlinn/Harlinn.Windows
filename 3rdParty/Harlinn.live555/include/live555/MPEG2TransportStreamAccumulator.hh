@@ -28,26 +28,26 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class MPEG2TransportStreamAccumulator: public FramedFilter {
 public:
-  static MPEG2TransportStreamAccumulator* createNew(UsageEnvironment& env,
+  LIVE555_EXPORT static MPEG2TransportStreamAccumulator* createNew(UsageEnvironment& env,
 						    FramedSource* inputSource,
 						    unsigned maxPacketSize = 1456);
 
 protected:
-  MPEG2TransportStreamAccumulator(UsageEnvironment& env,
+  LIVE555_EXPORT MPEG2TransportStreamAccumulator(UsageEnvironment& env,
 				  FramedSource* inputSource, unsigned maxPacketSize);
       // called only by createNew()
-  virtual ~MPEG2TransportStreamAccumulator();
+  LIVE555_EXPORT virtual ~MPEG2TransportStreamAccumulator();
 
 private:
   // redefined virtual functions:
-  virtual void doGetNextFrame();
+  LIVE555_EXPORT virtual void doGetNextFrame();
 
 private:
-  static void afterGettingFrame(void* clientData, unsigned frameSize,
+  LIVE555_EXPORT static void afterGettingFrame(void* clientData, unsigned frameSize,
                                 unsigned numTruncatedBytes,
                                 struct timeval presentationTime,
                                 unsigned durationInMicroseconds);
-  void afterGettingFrame1(unsigned frameSize,
+  LIVE555_EXPORT void afterGettingFrame1(unsigned frameSize,
                           unsigned numTruncatedBytes,
                           struct timeval presentationTime,
                           unsigned durationInMicroseconds);

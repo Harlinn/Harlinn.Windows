@@ -27,7 +27,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class H265VideoFileSink: public H264or5VideoFileSink {
 public:
-  static H265VideoFileSink* createNew(UsageEnvironment& env, char const* fileName,
+  LIVE555_EXPORT static H265VideoFileSink* createNew(UsageEnvironment& env, char const* fileName,
 				      char const* sPropVPSStr = NULL,
 				      char const* sPropSPSStr = NULL,
 				      char const* sPropPPSStr = NULL,
@@ -39,13 +39,13 @@ public:
       // See "FileSink.hh" for a description of these parameters.
 
 protected:
-  H265VideoFileSink(UsageEnvironment& env, FILE* fid,
+  LIVE555_EXPORT H265VideoFileSink(UsageEnvironment& env, FILE* fid,
 		    char const* sPropVPSStr,
 		    char const* sPropSPSStr,
 		    char const* sPropPPSStr,
 		    unsigned bufferSize, char const* perFrameFileNamePrefix);
       // called only by createNew()
-  virtual ~H265VideoFileSink();
+  LIVE555_EXPORT virtual ~H265VideoFileSink();
 };
 
 #endif

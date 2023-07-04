@@ -388,7 +388,7 @@ void RTSPClient::setUserAgentString(char const* userAgentName) {
   fUserAgentHeaderStrLen = strlen(fUserAgentHeaderStr);
 }
 
-unsigned RTSPClient::responseBufferSize = 20000; // default value; you can reassign this in your application if you need to
+LIVE555_EXPORT unsigned RTSPClient::responseBufferSize = 20000; // default value; you can reassign this in your application if you need to
 
 RTSPClient::RTSPClient(UsageEnvironment& env, char const* rtspURL,
 		       int verbosityLevel, char const* applicationName,

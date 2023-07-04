@@ -29,7 +29,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class H263plusVideoRTPSource: public MultiFramedRTPSource {
 public:
-  static H263plusVideoRTPSource*
+  LIVE555_EXPORT static H263plusVideoRTPSource*
   createNew(UsageEnvironment& env, Groupsock* RTPgs,
 	    unsigned char rtpPayloadFormat,
 	    unsigned rtpTimestampFrequency = 90000);
@@ -42,19 +42,19 @@ public:
   unsigned fPacketSizes[256];
 
 protected:
-  virtual ~H263plusVideoRTPSource();
+  LIVE555_EXPORT virtual ~H263plusVideoRTPSource();
 
 private:
-  H263plusVideoRTPSource(UsageEnvironment& env, Groupsock* RTPgs,
+  LIVE555_EXPORT H263plusVideoRTPSource(UsageEnvironment& env, Groupsock* RTPgs,
 			 unsigned char rtpPayloadFormat,
 			 unsigned rtpTimestampFrequency);
       // called only by createNew()
 
 private:
   // redefined virtual functions:
-  virtual Boolean processSpecialHeader(BufferedPacket* packet,
+  LIVE555_EXPORT virtual Boolean processSpecialHeader(BufferedPacket* packet,
                                        unsigned& resultSpecialHeaderSize);
-  virtual char const* MIMEtype() const;
+  LIVE555_EXPORT virtual char const* MIMEtype() const;
 };
 
 #endif

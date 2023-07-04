@@ -27,19 +27,19 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class H265VideoStreamFramer: public H264or5VideoStreamFramer {
 public:
-  static H265VideoStreamFramer* createNew(UsageEnvironment& env, FramedSource* inputSource,
+  LIVE555_EXPORT static H265VideoStreamFramer* createNew(UsageEnvironment& env, FramedSource* inputSource,
 					  Boolean includeStartCodeInOutput = False,
 					  Boolean insertAccessUnitDelimiters = False);
 
 protected:
-  H265VideoStreamFramer(UsageEnvironment& env, FramedSource* inputSource,
+  LIVE555_EXPORT H265VideoStreamFramer(UsageEnvironment& env, FramedSource* inputSource,
 			Boolean createParser,
 			Boolean includeStartCodeInOutput, Boolean insertAccessUnitDelimiters);
       // called only by "createNew()"
-  virtual ~H265VideoStreamFramer();
+  LIVE555_EXPORT virtual ~H265VideoStreamFramer();
 
   // redefined virtual functions:
-  virtual Boolean isH265VideoStreamFramer() const;
+  LIVE555_EXPORT virtual Boolean isH265VideoStreamFramer() const;
 };
 
 #endif

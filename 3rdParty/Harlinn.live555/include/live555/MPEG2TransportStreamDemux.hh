@@ -27,19 +27,19 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class MPEG2TransportStreamDemux: public Medium {
 public:
-  static MPEG2TransportStreamDemux* createNew(UsageEnvironment& env,
+  LIVE555_EXPORT static MPEG2TransportStreamDemux* createNew(UsageEnvironment& env,
 					      FramedSource* inputSource,
 					      FramedSource::onCloseFunc* onCloseFunc,
 					      void* onCloseClientData);
 
 private:
-  MPEG2TransportStreamDemux(UsageEnvironment& env, FramedSource* inputSource,
+  LIVE555_EXPORT MPEG2TransportStreamDemux(UsageEnvironment& env, FramedSource* inputSource,
 			    FramedSource::onCloseFunc* onCloseFunc, void* onCloseClientData);
       // called only by createNew()
-  virtual ~MPEG2TransportStreamDemux();
+  LIVE555_EXPORT virtual ~MPEG2TransportStreamDemux();
 
-  static void handleEndOfFile(void* clientData);
-  void handleEndOfFile();
+  LIVE555_EXPORT static void handleEndOfFile(void* clientData);
+  LIVE555_EXPORT void handleEndOfFile();
 
 private:
   class MPEG2TransportStreamParser* fParser;

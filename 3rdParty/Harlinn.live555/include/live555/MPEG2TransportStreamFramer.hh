@@ -33,36 +33,36 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class MPEG2TransportStreamFramer: public FramedFilter {
 public:
-  static MPEG2TransportStreamFramer*
+  LIVE555_EXPORT static MPEG2TransportStreamFramer*
   createNew(UsageEnvironment& env, FramedSource* inputSource);
 
   u_int64_t tsPacketCount() const { return fTSPacketCount; }
 
   void changeInputSource(FramedSource* newInputSource) { fInputSource = newInputSource; }
 
-  void clearPIDStatusTable();
-  void setNumTSPacketsToStream(unsigned long numTSRecordsToStream);
-  void setPCRLimit(float pcrLimit);
+  LIVE555_EXPORT void clearPIDStatusTable();
+  LIVE555_EXPORT void setNumTSPacketsToStream(unsigned long numTSRecordsToStream);
+  LIVE555_EXPORT void setPCRLimit(float pcrLimit);
 
 protected:
-  MPEG2TransportStreamFramer(UsageEnvironment& env, FramedSource* inputSource);
+  LIVE555_EXPORT MPEG2TransportStreamFramer(UsageEnvironment& env, FramedSource* inputSource);
       // called only by createNew()
-  virtual ~MPEG2TransportStreamFramer();
+  LIVE555_EXPORT virtual ~MPEG2TransportStreamFramer();
 
 private:
   // Redefined virtual functions:
-  virtual void doGetNextFrame();
-  virtual void doStopGettingFrames();
+  LIVE555_EXPORT virtual void doGetNextFrame();
+  LIVE555_EXPORT virtual void doStopGettingFrames();
 
 private:
-  static void afterGettingFrame(void* clientData, unsigned frameSize,
+  LIVE555_EXPORT static void afterGettingFrame(void* clientData, unsigned frameSize,
 				unsigned numTruncatedBytes,
 				struct timeval presentationTime,
 				unsigned durationInMicroseconds);
-  void afterGettingFrame1(unsigned frameSize,
+  LIVE555_EXPORT void afterGettingFrame1(unsigned frameSize,
 			  struct timeval presentationTime);
 
-  Boolean updateTSPacketDurationEstimate(unsigned char* pkt, double timeNow);
+  LIVE555_EXPORT Boolean updateTSPacketDurationEstimate(unsigned char* pkt, double timeNow);
 
 private:
   u_int64_t fTSPacketCount;

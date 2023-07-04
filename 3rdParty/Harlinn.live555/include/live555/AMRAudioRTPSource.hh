@@ -30,7 +30,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class AMRAudioRTPSource {
 public:
-  static AMRAudioSource* createNew(UsageEnvironment& env,
+  LIVE555_EXPORT static AMRAudioSource* createNew(UsageEnvironment& env,
 				   Groupsock* RTPgs,
 				   RTPSource*& resultRTPSource,
 				   unsigned char rtpPayloadFormat,

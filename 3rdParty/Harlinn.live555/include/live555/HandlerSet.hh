@@ -27,8 +27,8 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 ////////// HandlerSet (etc.) definition //////////
 
 class HandlerDescriptor {
-  HandlerDescriptor(HandlerDescriptor* nextHandler);
-  virtual ~HandlerDescriptor();
+  LIVE555_EXPORT HandlerDescriptor(HandlerDescriptor* nextHandler);
+  LIVE555_EXPORT virtual ~HandlerDescriptor();
 
 public:
   int socketNum;
@@ -46,15 +46,15 @@ private:
 
 class HandlerSet {
 public:
-  HandlerSet();
-  virtual ~HandlerSet();
+  LIVE555_EXPORT HandlerSet();
+  LIVE555_EXPORT virtual ~HandlerSet();
 
-  void assignHandler(int socketNum, int conditionSet, TaskScheduler::BackgroundHandlerProc* handlerProc, void* clientData);
-  void clearHandler(int socketNum);
-  void moveHandler(int oldSocketNum, int newSocketNum);
+  LIVE555_EXPORT void assignHandler(int socketNum, int conditionSet, TaskScheduler::BackgroundHandlerProc* handlerProc, void* clientData);
+  LIVE555_EXPORT void clearHandler(int socketNum);
+  LIVE555_EXPORT void moveHandler(int oldSocketNum, int newSocketNum);
 
 private:
-  HandlerDescriptor* lookupHandler(int socketNum);
+  LIVE555_EXPORT HandlerDescriptor* lookupHandler(int socketNum);
 
 private:
   friend class HandlerIterator;
@@ -63,11 +63,11 @@ private:
 
 class HandlerIterator {
 public:
-  HandlerIterator(HandlerSet& handlerSet);
-  virtual ~HandlerIterator();
+  LIVE555_EXPORT HandlerIterator(HandlerSet& handlerSet);
+  LIVE555_EXPORT virtual ~HandlerIterator();
 
-  HandlerDescriptor* next(); // returns NULL if none
-  void reset();
+  LIVE555_EXPORT HandlerDescriptor* next(); // returns NULL if none
+  LIVE555_EXPORT void reset();
 
 private:
   HandlerSet& fOurSet;

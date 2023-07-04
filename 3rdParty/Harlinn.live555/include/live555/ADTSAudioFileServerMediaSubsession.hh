@@ -28,19 +28,19 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class ADTSAudioFileServerMediaSubsession: public FileServerMediaSubsession{
 public:
-  static ADTSAudioFileServerMediaSubsession*
+  LIVE555_EXPORT static ADTSAudioFileServerMediaSubsession*
   createNew(UsageEnvironment& env, char const* fileName, Boolean reuseFirstSource);
 
 protected:
-  ADTSAudioFileServerMediaSubsession(UsageEnvironment& env,
+  LIVE555_EXPORT ADTSAudioFileServerMediaSubsession(UsageEnvironment& env,
 				      char const* fileName, Boolean reuseFirstSource);
       // called only by createNew();
-  virtual ~ADTSAudioFileServerMediaSubsession();
+  LIVE555_EXPORT virtual ~ADTSAudioFileServerMediaSubsession();
 
 protected: // redefined virtual functions
-  virtual FramedSource* createNewStreamSource(unsigned clientSessionId,
+  LIVE555_EXPORT virtual FramedSource* createNewStreamSource(unsigned clientSessionId,
 					      unsigned& estBitrate);
-  virtual RTPSink* createNewRTPSink(Groupsock* rtpGroupsock,
+  LIVE555_EXPORT virtual RTPSink* createNewRTPSink(Groupsock* rtpGroupsock,
                                     unsigned char rtpPayloadTypeIfDynamic,
 				    FramedSource* inputSource);
 };

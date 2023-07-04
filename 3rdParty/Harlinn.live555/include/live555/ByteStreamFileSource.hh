@@ -27,44 +27,44 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class ByteStreamFileSource: public FramedFileSource {
 public:
-  static ByteStreamFileSource* createNew(UsageEnvironment& env,
+  LIVE555_EXPORT static ByteStreamFileSource* createNew(UsageEnvironment& env,
 					 char const* fileName,
 					 unsigned preferredFrameSize = 0,
 					 unsigned playTimePerFrame = 0);
   // "preferredFrameSize" == 0 means 'no preference'
   // "playTimePerFrame" is in microseconds
 
-  static ByteStreamFileSource* createNew(UsageEnvironment& env,
+  LIVE555_EXPORT static ByteStreamFileSource* createNew(UsageEnvironment& env,
 					 FILE* fid,
 					 unsigned preferredFrameSize = 0,
 					 unsigned playTimePerFrame = 0);
       // an alternative version of "createNew()" that's used if you already have
       // an open file.
 
-  u_int64_t fileSize() const { return fFileSize; }
+  LIVE555_EXPORT u_int64_t fileSize() const { return fFileSize; }
       // 0 means zero-length, unbounded, or unknown
 
-  void seekToByteAbsolute(u_int64_t byteNumber, u_int64_t numBytesToStream = 0);
+  LIVE555_EXPORT void seekToByteAbsolute(u_int64_t byteNumber, u_int64_t numBytesToStream = 0);
     // if "numBytesToStream" is >0, then we limit the stream to that number of bytes, before treating it as EOF
-  void seekToByteRelative(int64_t offset, u_int64_t numBytesToStream = 0);
-  void seekToEnd(); // to force EOF handling on the next read
+  LIVE555_EXPORT void seekToByteRelative(int64_t offset, u_int64_t numBytesToStream = 0);
+  LIVE555_EXPORT void seekToEnd(); // to force EOF handling on the next read
 
 protected:
-  ByteStreamFileSource(UsageEnvironment& env,
+  LIVE555_EXPORT ByteStreamFileSource(UsageEnvironment& env,
 		       FILE* fid,
 		       unsigned preferredFrameSize,
 		       unsigned playTimePerFrame);
 	// called only by createNew()
 
-  virtual ~ByteStreamFileSource();
+  LIVE555_EXPORT virtual ~ByteStreamFileSource();
 
-  static void fileReadableHandler(ByteStreamFileSource* source, int mask);
-  void doReadFromFile();
+  LIVE555_EXPORT static void fileReadableHandler(ByteStreamFileSource* source, int mask);
+  LIVE555_EXPORT void doReadFromFile();
 
 private:
   // redefined virtual functions:
-  virtual void doGetNextFrame();
-  virtual void doStopGettingFrames();
+  LIVE555_EXPORT virtual void doGetNextFrame();
+  LIVE555_EXPORT virtual void doStopGettingFrames();
 
 protected:
   u_int64_t fFileSize;

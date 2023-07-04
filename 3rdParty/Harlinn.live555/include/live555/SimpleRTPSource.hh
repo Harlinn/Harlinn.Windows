@@ -31,7 +31,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class SimpleRTPSource: public MultiFramedRTPSource {
 public:
-  static SimpleRTPSource* createNew(UsageEnvironment& env, Groupsock* RTPgs,
+  LIVE555_EXPORT static SimpleRTPSource* createNew(UsageEnvironment& env, Groupsock* RTPgs,
 				    unsigned char rtpPayloadFormat,
 				    unsigned rtpTimestampFrequency,
 				    char const* mimeTypeString,
@@ -42,19 +42,19 @@ public:
   // of a frame.  Otherwise (i.e., if "doNormalMBitRule" is False, or the medium is "audio"), the "M" bit is ignored.
 
 protected:
-  SimpleRTPSource(UsageEnvironment& env, Groupsock* RTPgs,
+  LIVE555_EXPORT SimpleRTPSource(UsageEnvironment& env, Groupsock* RTPgs,
 		  unsigned char rtpPayloadFormat,
 		  unsigned rtpTimestampFrequency,
 		  char const* mimeTypeString, unsigned offset,
 		  Boolean doNormalMBitRule);
       // called only by createNew(), or by subclass constructors
-  virtual ~SimpleRTPSource();
+  LIVE555_EXPORT virtual ~SimpleRTPSource();
 
 protected:
   // redefined virtual functions:
-  virtual Boolean processSpecialHeader(BufferedPacket* packet,
+  LIVE555_EXPORT virtual Boolean processSpecialHeader(BufferedPacket* packet,
                                        unsigned& resultSpecialHeaderSize);
-  virtual char const* MIMEtype() const;
+  LIVE555_EXPORT virtual char const* MIMEtype() const;
 
 private:
   char const* fMIMEtypeString;

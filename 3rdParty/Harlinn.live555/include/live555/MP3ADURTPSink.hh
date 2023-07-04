@@ -27,26 +27,26 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class MP3ADURTPSink: public AudioRTPSink {
 public:
-  static MP3ADURTPSink* createNew(UsageEnvironment& env, Groupsock* RTPgs,
+  LIVE555_EXPORT static MP3ADURTPSink* createNew(UsageEnvironment& env, Groupsock* RTPgs,
 				  unsigned char RTPPayloadType);
 
 protected:
-  virtual ~MP3ADURTPSink();
+  LIVE555_EXPORT virtual ~MP3ADURTPSink();
 
 private:
-  MP3ADURTPSink(UsageEnvironment& env, Groupsock* RTPgs,
+  LIVE555_EXPORT MP3ADURTPSink(UsageEnvironment& env, Groupsock* RTPgs,
 		unsigned char RTPPayloadType);
 	// called only by createNew()
 
 
 private:
   // Redefined virtual functions:
-  virtual void doSpecialFrameHandling(unsigned fragmentationOffset,
+  LIVE555_EXPORT virtual void doSpecialFrameHandling(unsigned fragmentationOffset,
                                       unsigned char* frameStart,
                                       unsigned numBytesInFrame,
                                       struct timeval framePresentationTime,
                                       unsigned numRemainingBytes);
-  virtual unsigned specialHeaderSize() const;
+  LIVE555_EXPORT virtual unsigned specialHeaderSize() const;
 
 private:
   unsigned fCurADUSize; // used when fragmenting over multiple RTP packets

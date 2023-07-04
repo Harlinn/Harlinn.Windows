@@ -30,19 +30,19 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class H264VideoStreamDiscreteFramer: public H264or5VideoStreamDiscreteFramer {
 public:
-  static H264VideoStreamDiscreteFramer*
+  LIVE555_EXPORT static H264VideoStreamDiscreteFramer*
   createNew(UsageEnvironment& env, FramedSource* inputSource,
 	    Boolean includeStartCodeInOutput = False, Boolean insertAccessUnitDelimiters = False);
 
 protected:
-  H264VideoStreamDiscreteFramer(UsageEnvironment& env, FramedSource* inputSource,
+  LIVE555_EXPORT H264VideoStreamDiscreteFramer(UsageEnvironment& env, FramedSource* inputSource,
 				Boolean includeStartCodeInOutput, Boolean insertAccessUnitDelimiters);
       // called only by createNew()
-  virtual ~H264VideoStreamDiscreteFramer();
+  LIVE555_EXPORT virtual ~H264VideoStreamDiscreteFramer();
 
 private:
   // redefined virtual functions:
-  virtual Boolean isH264VideoStreamFramer() const;
+  LIVE555_EXPORT virtual Boolean isH264VideoStreamFramer() const;
 };
 
 #endif

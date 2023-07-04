@@ -27,15 +27,15 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class VideoRTPSink: public MultiFramedRTPSink {
 protected:
-  VideoRTPSink(UsageEnvironment& env,
+  LIVE555_EXPORT VideoRTPSink(UsageEnvironment& env,
 	       Groupsock* rtpgs, unsigned char rtpPayloadType,
 	       unsigned rtpTimestampFrequency,
 	       char const* rtpPayloadFormatName);
   // (we're an abstract base class)
-  virtual ~VideoRTPSink();
+  LIVE555_EXPORT virtual ~VideoRTPSink();
 
 private: // redefined virtual functions:
-  virtual char const* sdpMediaType() const;
+  LIVE555_EXPORT virtual char const* sdpMediaType() const;
 };
 
 #endif

@@ -28,7 +28,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class QuickTimeGenericRTPSource: public MultiFramedRTPSource {
 public:
-  static QuickTimeGenericRTPSource*
+  LIVE555_EXPORT static QuickTimeGenericRTPSource*
   createNew(UsageEnvironment& env, Groupsock* RTPgs,
 	    unsigned char rtpPayloadFormat, unsigned rtpTimestampFrequency,
 	    char const* mimeTypeString);
@@ -46,10 +46,10 @@ public:
   } qtState;
 
 protected:
-  virtual ~QuickTimeGenericRTPSource();
+  LIVE555_EXPORT virtual ~QuickTimeGenericRTPSource();
 
 private:
-  QuickTimeGenericRTPSource(UsageEnvironment& env, Groupsock* RTPgs,
+  LIVE555_EXPORT QuickTimeGenericRTPSource(UsageEnvironment& env, Groupsock* RTPgs,
 			    unsigned char rtpPayloadFormat,
 			    unsigned rtpTimestampFrequency,
 			    char const* mimeTypeString);
@@ -57,9 +57,9 @@ private:
 
 private:
   // redefined virtual functions:
-  virtual Boolean processSpecialHeader(BufferedPacket* packet,
+  LIVE555_EXPORT virtual Boolean processSpecialHeader(BufferedPacket* packet,
                                        unsigned& resultSpecialHeaderSize);
-  virtual char const* MIMEtype() const;
+  LIVE555_EXPORT virtual char const* MIMEtype() const;
 
 private:
   char const* fMIMEtypeString;

@@ -27,25 +27,25 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class DVVideoRTPSource: public MultiFramedRTPSource {
 public:
-  static DVVideoRTPSource*
+  LIVE555_EXPORT static DVVideoRTPSource*
   createNew(UsageEnvironment& env, Groupsock* RTPgs,
 	    unsigned char rtpPayloadFormat,
 	    unsigned rtpTimestampFrequency);
 
 protected:
-  virtual ~DVVideoRTPSource();
+  LIVE555_EXPORT virtual ~DVVideoRTPSource();
 
 private:
-  DVVideoRTPSource(UsageEnvironment& env, Groupsock* RTPgs,
+  LIVE555_EXPORT DVVideoRTPSource(UsageEnvironment& env, Groupsock* RTPgs,
 		   unsigned char rtpPayloadFormat,
 		   unsigned rtpTimestampFrequency);
       // called only by createNew()
 
 private:
   // redefined virtual functions:
-  virtual Boolean processSpecialHeader(BufferedPacket* packet,
+  LIVE555_EXPORT virtual Boolean processSpecialHeader(BufferedPacket* packet,
                                        unsigned& resultSpecialHeaderSize);
-  virtual char const* MIMEtype() const;
+  LIVE555_EXPORT virtual char const* MIMEtype() const;
 };
 
 #endif

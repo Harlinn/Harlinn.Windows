@@ -27,9 +27,9 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class H265VideoRTPSink: public H264or5VideoRTPSink {
 public:
-  static H265VideoRTPSink*
+  LIVE555_EXPORT static H265VideoRTPSink*
   createNew(UsageEnvironment& env, Groupsock* RTPgs, unsigned char rtpPayloadFormat);
-  static H265VideoRTPSink*
+  LIVE555_EXPORT static H265VideoRTPSink*
   createNew(UsageEnvironment& env, Groupsock* RTPgs, unsigned char rtpPayloadFormat,
 	    u_int8_t const* vps, unsigned vpsSize,
 	    u_int8_t const* sps, unsigned spsSize,
@@ -37,7 +37,7 @@ public:
     // an optional variant of "createNew()", useful if we know, in advance,
     // the stream's VPS, SPS and PPS NAL units.
     // This avoids us having to 'pre-read' from the input source in order to get these values.
-  static H265VideoRTPSink*
+  LIVE555_EXPORT static H265VideoRTPSink*
   createNew(UsageEnvironment& env, Groupsock* RTPgs, unsigned char rtpPayloadFormat,
 	    char const* sPropVPSStr, char const* sPropSPSStr, char const* sPropPPSStr);
     // an optional variant of "createNew()", useful if we know, in advance,
@@ -45,18 +45,18 @@ public:
     // This avoids us having to 'pre-read' from the input source in order to get these values.
 
 protected:
-  H265VideoRTPSink(UsageEnvironment& env, Groupsock* RTPgs, unsigned char rtpPayloadFormat,
+  LIVE555_EXPORT H265VideoRTPSink(UsageEnvironment& env, Groupsock* RTPgs, unsigned char rtpPayloadFormat,
 		   u_int8_t const* vps = NULL, unsigned vpsSize = 0,
 		   u_int8_t const* sps = NULL, unsigned spsSize = 0,
 		   u_int8_t const* pps = NULL, unsigned ppsSize = 0);
 	// called only by createNew()
-  virtual ~H265VideoRTPSink();
+  LIVE555_EXPORT virtual ~H265VideoRTPSink();
 
 protected: // redefined virtual functions:
-  virtual char const* auxSDPLine();
+  LIVE555_EXPORT virtual char const* auxSDPLine();
 
 private: // redefined virtual functions:
-  virtual Boolean sourceIsCompatibleWithUs(MediaSource& source);
+  LIVE555_EXPORT virtual Boolean sourceIsCompatibleWithUs(MediaSource& source);
 };
 
 #endif

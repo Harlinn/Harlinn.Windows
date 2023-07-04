@@ -45,22 +45,22 @@ typedef void ServerRequestAlternativeByteHandler(void* instance, u_int8_t reques
 
 class RTPInterface {
 public:
-  RTPInterface(Medium* owner, Groupsock* gs);
-  virtual ~RTPInterface();
+  LIVE555_EXPORT RTPInterface(Medium* owner, Groupsock* gs);
+  LIVE555_EXPORT virtual ~RTPInterface();
 
   Groupsock* gs() const { return fGS; }
 
-  void setStreamSocket(int sockNum, unsigned char streamChannelId, TLSState* tlsState);
-  void addStreamSocket(int sockNum, unsigned char streamChannelId, TLSState* tlsState);
-  void removeStreamSocket(int sockNum, unsigned char streamChannelId);
-  static void setServerRequestAlternativeByteHandler(UsageEnvironment& env, int socketNum,
+  LIVE555_EXPORT void setStreamSocket(int sockNum, unsigned char streamChannelId, TLSState* tlsState);
+  LIVE555_EXPORT void addStreamSocket(int sockNum, unsigned char streamChannelId, TLSState* tlsState);
+  LIVE555_EXPORT void removeStreamSocket(int sockNum, unsigned char streamChannelId);
+  LIVE555_EXPORT static void setServerRequestAlternativeByteHandler(UsageEnvironment& env, int socketNum,
 						     ServerRequestAlternativeByteHandler* handler, void* clientData);
-  static void clearServerRequestAlternativeByteHandler(UsageEnvironment& env, int socketNum);
+  LIVE555_EXPORT static void clearServerRequestAlternativeByteHandler(UsageEnvironment& env, int socketNum);
 
-  Boolean sendPacket(unsigned char* packet, unsigned packetSize);
-  void startNetworkReading(TaskScheduler::BackgroundHandlerProc*
+  LIVE555_EXPORT Boolean sendPacket(unsigned char* packet, unsigned packetSize);
+  LIVE555_EXPORT void startNetworkReading(TaskScheduler::BackgroundHandlerProc*
                            handlerProc);
-  Boolean handleRead(unsigned char* buffer, unsigned bufferMaxSize,
+  LIVE555_EXPORT Boolean handleRead(unsigned char* buffer, unsigned bufferMaxSize,
 		     // out parameters:
 		     unsigned& bytesRead, struct sockaddr_storage& fromAddress,
 		     int& tcpSocketNum, unsigned char& tcpStreamChannelId,
@@ -72,7 +72,7 @@ public:
   // Otherwise (if "tcpSocketNum" >= 0), the packet was received (interleaved) over TCP, and
   //   "tcpStreamChannelId" will return the channel id.
 
-  void stopNetworkReading();
+  LIVE555_EXPORT void stopNetworkReading();
 
   UsageEnvironment& envir() const { return fOwner->envir(); }
 
@@ -89,10 +89,10 @@ public:
 
 private:
   // Helper functions for sending a RTP or RTCP packet over a TCP connection:
-  Boolean sendRTPorRTCPPacketOverTCP(unsigned char* packet, unsigned packetSize,
+  LIVE555_EXPORT Boolean sendRTPorRTCPPacketOverTCP(unsigned char* packet, unsigned packetSize,
 				     int socketNum, unsigned char streamChannelId,
 				     TLSState* tlsState);
-  Boolean sendDataOverTCP(int socketNum, TLSState* tlsState,
+  LIVE555_EXPORT Boolean sendDataOverTCP(int socketNum, TLSState* tlsState,
 			  u_int8_t const* data, unsigned dataSize, Boolean forceSendToSucceed);
 
 private:

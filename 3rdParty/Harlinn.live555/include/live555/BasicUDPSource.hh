@@ -30,9 +30,9 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class BasicUDPSource: public FramedSource {
 public:
-  static BasicUDPSource* createNew(UsageEnvironment& env, Groupsock* inputGS);
+  LIVE555_EXPORT static BasicUDPSource* createNew(UsageEnvironment& env, Groupsock* inputGS);
 
-  virtual ~BasicUDPSource();
+  LIVE555_EXPORT virtual ~BasicUDPSource();
 
   Groupsock* gs() const { return fInputGS; }
 

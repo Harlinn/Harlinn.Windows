@@ -35,14 +35,14 @@ class RTPReceptionStatsDB; // forward
 
 class RTPSource: public FramedSource {
 public:
-  static Boolean lookupByName(UsageEnvironment& env, char const* sourceName,
+  LIVE555_EXPORT static Boolean lookupByName(UsageEnvironment& env, char const* sourceName,
 			      RTPSource*& resultSource);
 
   Boolean curPacketMarkerBit() const { return fCurPacketMarkerBit; }
 
   unsigned char rtpPayloadFormat() const { return fRTPPayloadFormat; }
 
-  virtual Boolean hasBeenSynchronizedUsingRTCP();
+  LIVE555_EXPORT virtual Boolean hasBeenSynchronizedUsingRTCP();
 
   Groupsock* RTPgs() const { return fRTPInterface.gs(); }
 
@@ -90,10 +90,10 @@ private: friend class MediaSubsession; // "MediaSubsession" is the only outside 
   u_int32_t curPacketRTPTimestamp() const { return fCurPacketRTPTimestamp; }
 
 protected:
-  RTPSource(UsageEnvironment& env, Groupsock* RTPgs,
+  LIVE555_EXPORT RTPSource(UsageEnvironment& env, Groupsock* RTPgs,
 	    unsigned char rtpPayloadFormat, u_int32_t rtpTimestampFrequency);
       // abstract base class
-  virtual ~RTPSource();
+  LIVE555_EXPORT virtual ~RTPSource();
 
 protected:
   RTPInterface fRTPInterface;
@@ -129,16 +129,16 @@ public:
     return fNumActiveSourcesSinceLastReset;
  }
 
-  void reset();
+  LIVE555_EXPORT void reset();
       // resets periodic stats (called each time they're used to
       // generate a reception report)
 
   class Iterator {
   public:
-    Iterator(RTPReceptionStatsDB& receptionStatsDB);
-    virtual ~Iterator();
+    LIVE555_EXPORT Iterator(RTPReceptionStatsDB& receptionStatsDB);
+    LIVE555_EXPORT virtual ~Iterator();
 
-    RTPReceptionStats* next(Boolean includeInactiveSources = False);
+    LIVE555_EXPORT RTPReceptionStats* next(Boolean includeInactiveSources = False);
         // NULL if none
 
   private:
@@ -146,7 +146,7 @@ public:
   };
 
   // The following is called whenever a RTP packet is received:
-  void noteIncomingPacket(u_int32_t SSRC, u_int16_t seqNum,
+  LIVE555_EXPORT void noteIncomingPacket(u_int32_t SSRC, u_int16_t seqNum,
 			  u_int32_t rtpTimestamp,
 			  unsigned timestampFrequency,
 			  Boolean useForJitterCalculation,
@@ -155,22 +155,22 @@ public:
 			  unsigned packetSize /* payload only */);
 
   // The following is called whenever a RTCP SR packet is received:
-  void noteIncomingSR(u_int32_t SSRC,
+  LIVE555_EXPORT void noteIncomingSR(u_int32_t SSRC,
 		      u_int32_t ntpTimestampMSW, u_int32_t ntpTimestampLSW,
 		      u_int32_t rtpTimestamp);
 
   // The following is called when a RTCP BYE packet is received:
-  void removeRecord(u_int32_t SSRC);
+  LIVE555_EXPORT void removeRecord(u_int32_t SSRC);
 
-  RTPReceptionStats* lookup(u_int32_t SSRC) const;
+  LIVE555_EXPORT RTPReceptionStats* lookup(u_int32_t SSRC) const;
 
 protected: // constructor and destructor, called only by RTPSource:
   friend class RTPSource;
-  RTPReceptionStatsDB();
-  virtual ~RTPReceptionStatsDB();
+  LIVE555_EXPORT RTPReceptionStatsDB();
+  LIVE555_EXPORT virtual ~RTPReceptionStatsDB();
 
 protected:
-  void add(u_int32_t SSRC, RTPReceptionStats* stats);
+  LIVE555_EXPORT void add(u_int32_t SSRC, RTPReceptionStats* stats);
 
 protected:
   friend class Iterator;
@@ -188,7 +188,7 @@ public:
     return fNumPacketsReceivedSinceLastReset;
   }
   unsigned totNumPacketsReceived() const { return fTotNumPacketsReceived; }
-  double totNumKBytesReceived() const;
+  LIVE555_EXPORT double totNumKBytesReceived() const;
 
   unsigned totNumPacketsExpected() const {
     return (fHighestExtSeqNumReceived - fBaseExtSeqNumReceived) + 1;
@@ -202,7 +202,7 @@ public:
     return fHighestExtSeqNumReceived;
   }
 
-  unsigned jitter() const;
+  LIVE555_EXPORT unsigned jitter() const;
 
   unsigned lastReceivedSR_NTPmsw() const { return fLastReceivedSR_NTPmsw; }
   unsigned lastReceivedSR_NTPlsw() const { return fLastReceivedSR_NTPlsw; }
@@ -219,22 +219,22 @@ public:
 protected:
   // called only by RTPReceptionStatsDB:
   friend class RTPReceptionStatsDB;
-  RTPReceptionStats(u_int32_t SSRC, u_int16_t initialSeqNum);
-  RTPReceptionStats(u_int32_t SSRC);
-  virtual ~RTPReceptionStats();
+  LIVE555_EXPORT RTPReceptionStats(u_int32_t SSRC, u_int16_t initialSeqNum);
+  LIVE555_EXPORT RTPReceptionStats(u_int32_t SSRC);
+  LIVE555_EXPORT virtual ~RTPReceptionStats();
 
 private:
-  void noteIncomingPacket(u_int16_t seqNum, u_int32_t rtpTimestamp,
+  LIVE555_EXPORT void noteIncomingPacket(u_int16_t seqNum, u_int32_t rtpTimestamp,
 			  unsigned timestampFrequency,
 			  Boolean useForJitterCalculation,
 			  struct timeval& resultPresentationTime,
 			  Boolean& resultHasBeenSyncedUsingRTCP,
 			  unsigned packetSize /* payload only */);
-  void noteIncomingSR(u_int32_t ntpTimestampMSW, u_int32_t ntpTimestampLSW,
+  LIVE555_EXPORT void noteIncomingSR(u_int32_t ntpTimestampMSW, u_int32_t ntpTimestampLSW,
 		      u_int32_t rtpTimestamp);
-  void init(u_int32_t SSRC);
-  void initSeqNum(u_int16_t initialSeqNum);
-  void reset();
+  LIVE555_EXPORT void init(u_int32_t SSRC);
+  LIVE555_EXPORT void initSeqNum(u_int16_t initialSeqNum);
+  LIVE555_EXPORT void reset();
       // resets periodic stats (called each time they're used to
       // generate a reception report)
 

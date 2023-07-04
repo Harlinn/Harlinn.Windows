@@ -33,26 +33,26 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class SDESItem {
 public:
-  SDESItem(unsigned char tag, unsigned char const* value);
+  LIVE555_EXPORT SDESItem(unsigned char tag, unsigned char const* value);
 
   unsigned char const* data() const {return fData;}
-  unsigned totalSize() const;
+  LIVE555_EXPORT unsigned totalSize() const;
 
 private:
   unsigned char fData[2 + 0xFF]; // first 2 bytes are tag and length
 };
 
-typedef void RTCPAppHandlerFunc(void* clientData,
+typedef void __cdecl RTCPAppHandlerFunc(void* clientData,
 				u_int8_t subtype, u_int32_t nameBytes/*big-endian order*/,
 				u_int8_t* appDependentData, unsigned appDependentDataSize);
 
 class RTCPMemberDatabase; // forward
 
-typedef void ByeWithReasonHandlerFunc(void* clientData, char const* reason);
+typedef void __cdecl ByeWithReasonHandlerFunc(void* clientData, char const* reason);
 
 class RTCPInstance: public Medium {
 public:
-  static RTCPInstance* createNew(UsageEnvironment& env, Groupsock* RTCPgs,
+  LIVE555_EXPORT static RTCPInstance* createNew(UsageEnvironment& env, Groupsock* RTCPgs,
 				 unsigned totSessionBW, /* in kbps */
 				 unsigned char const* cname,
 				 RTPSink* sink,
@@ -60,15 +60,15 @@ public:
 				 Boolean isSSMTransmitter = False,
 				 SRTPCryptographicContext* crypto = NULL);
 
-  static Boolean lookupByName(UsageEnvironment& env, char const* instanceName,
+  LIVE555_EXPORT static Boolean lookupByName(UsageEnvironment& env, char const* instanceName,
                               RTCPInstance*& resultInstance);
 
-  unsigned numMembers() const;
+  LIVE555_EXPORT unsigned numMembers() const;
   unsigned totSessionBW() const { return fTotSessionBW; }
 
-  void setupForSRTCP();
+  LIVE555_EXPORT void setupForSRTCP();
   
-  void setByeHandler(TaskFunc* handlerTask, void* clientData,
+  LIVE555_EXPORT void setByeHandler(TaskFunc* handlerTask, void* clientData,
 		     Boolean handleActiveParticipantsOnly = True);
       // Assigns a handler routine to be called if a "BYE" arrives.
       // The handler is called once only; for subsequent "BYE"s,
@@ -81,28 +81,28 @@ public:
       // If "handleActiveParticipantsOnly" is False, then the handler is called
       // for any incoming RTCP "BYE".
       // (To remove an existing "BYE" handler, call "setByeHandler()" again, with a "handlerTask" of NULL.)
-  void setByeWithReasonHandler(ByeWithReasonHandlerFunc* handlerTask, void* clientData,
+  LIVE555_EXPORT void setByeWithReasonHandler(ByeWithReasonHandlerFunc* handlerTask, void* clientData,
 			       Boolean handleActiveParticipantsOnly = True);
       // Like "setByeHandler()", except that a string 'reason for the bye' (received as part of
       // the RTCP "BYE" packet) is passed to the handler function (along with "clientData").
       // (The 'reason' parameter to the handler function will be a dynamically-allocated string,
       // or NULL, and should be delete[]d by the handler function.)
-  void setSRHandler(TaskFunc* handlerTask, void* clientData);
-  void setRRHandler(TaskFunc* handlerTask, void* clientData);
+  LIVE555_EXPORT void setSRHandler(TaskFunc* handlerTask, void* clientData);
+  LIVE555_EXPORT void setRRHandler(TaskFunc* handlerTask, void* clientData);
       // Assigns a handler routine to be called if a "SR" or "RR" packet
       // (respectively) arrives.  Unlike "setByeHandler()", the handler will
       // be called once for each incoming "SR" or "RR".  (To turn off handling,
       // call the function again with "handlerTask" (and "clientData") as NULL.)
-  void setSpecificRRHandler(struct sockaddr_storage const& fromAddress, Port fromPort,
+  LIVE555_EXPORT void setSpecificRRHandler(struct sockaddr_storage const& fromAddress, Port fromPort,
 			    TaskFunc* handlerTask, void* clientData);
       // Like "setRRHandler()", but applies only to "RR" packets that come from
       // a specific source address and port.  (Note that if both a specific
       // and a general "RR" handler function is set, then both will be called.)
-  void unsetSpecificRRHandler(struct sockaddr_storage const& fromAddress, Port fromPort); // equivalent to setSpecificRRHandler(..., NULL, NULL);
-  void setAppHandler(RTCPAppHandlerFunc* handlerTask, void* clientData);
+  LIVE555_EXPORT void unsetSpecificRRHandler(struct sockaddr_storage const& fromAddress, Port fromPort); // equivalent to setSpecificRRHandler(..., NULL, NULL);
+  LIVE555_EXPORT void setAppHandler(RTCPAppHandlerFunc* handlerTask, void* clientData);
       // Assigns a handler routine to be called whenever an "APP" packet arrives.  (To turn off
       // handling, call the function again with "handlerTask" (and "clientData") as NULL.)
-  void sendAppPacket(u_int8_t subtype, char const* name,
+  LIVE555_EXPORT void sendAppPacket(u_int8_t subtype, char const* name,
 		     u_int8_t* appDependentData, unsigned appDependentDataSize);
       // Sends a custom RTCP "APP" packet to the peer(s).  The parameters correspond to their
       // respective fields as described in the RTP/RTCP definition (RFC 3550).
@@ -112,8 +112,8 @@ public:
 
   Groupsock* RTCPgs() const { return fRTCPInterface.gs(); }
 
-  void setStreamSocket(int sockNum, unsigned char streamChannelId, TLSState* tlsState);
-  void addStreamSocket(int sockNum, unsigned char streamChannelId, TLSState* tlsState);
+  LIVE555_EXPORT void setStreamSocket(int sockNum, unsigned char streamChannelId, TLSState* tlsState);
+  LIVE555_EXPORT void addStreamSocket(int sockNum, unsigned char streamChannelId, TLSState* tlsState);
   void removeStreamSocket(int sockNum, unsigned char streamChannelId) {
     fRTCPInterface.removeStreamSocket(sockNum, streamChannelId);
   }
@@ -125,26 +125,26 @@ public:
 					    handlerClientData);
   }
 
-  void injectReport(u_int8_t const* packet, unsigned packetSize, struct sockaddr_storage const& fromAddress);
+  LIVE555_EXPORT void injectReport(u_int8_t const* packet, unsigned packetSize, struct sockaddr_storage const& fromAddress);
     // Allows an outside party to inject an RTCP report (from other than the network interface)
 
 protected:
-  RTCPInstance(UsageEnvironment& env, Groupsock* RTPgs, unsigned totSessionBW,
+  LIVE555_EXPORT RTCPInstance(UsageEnvironment& env, Groupsock* RTPgs, unsigned totSessionBW,
 	       unsigned char const* cname,
 	       RTPSink* sink, RTPSource* source,
 	       Boolean isSSMTransmitter,
 	       SRTPCryptographicContext* crypto);
       // called only by createNew()
-  virtual ~RTCPInstance();
+  LIVE555_EXPORT virtual ~RTCPInstance();
 
-  virtual void noteArrivingRR(struct sockaddr_storage const& fromAddressAndPort,
+  LIVE555_EXPORT virtual void noteArrivingRR(struct sockaddr_storage const& fromAddressAndPort,
 			      int tcpSocketNum, unsigned char tcpStreamChannelId);
 
-  void incomingReportHandler1();
+  LIVE555_EXPORT void incomingReportHandler1();
 
 private:
   // redefined virtual functions:
-  virtual Boolean isRTCPInstance() const;
+  LIVE555_EXPORT virtual Boolean isRTCPInstance() const;
 
 private:
   Boolean addReport(Boolean alwaysAdd = False);
@@ -209,17 +209,17 @@ private:
   void* fAppHandlerClientData;
 
 public: // because this stuff is used by an external "C" function
-  void schedule(double nextTime);
-  void reschedule(double nextTime);
-  void sendReport();
-  void sendBYE(char const* reason = NULL);
-  int typeOfEvent() {return fTypeOfEvent;}
-  int sentPacketSize() {return fLastSentSize;}
-  int packetType() {return fTypeOfPacket;}
-  int receivedPacketSize() {return fLastReceivedSize;}
-  int checkNewSSRC();
-  void removeLastReceivedSSRC();
-  void removeSSRC(u_int32_t ssrc, Boolean alsoRemoveStats);
+  LIVE555_EXPORT void schedule(double nextTime);
+  LIVE555_EXPORT void reschedule(double nextTime);
+  LIVE555_EXPORT void sendReport();
+  LIVE555_EXPORT void sendBYE(char const* reason = NULL);
+  LIVE555_EXPORT int typeOfEvent() {return fTypeOfEvent;}
+  LIVE555_EXPORT int sentPacketSize() {return fLastSentSize;}
+  LIVE555_EXPORT int packetType() {return fTypeOfPacket;}
+  LIVE555_EXPORT int receivedPacketSize() {return fLastReceivedSize;}
+  LIVE555_EXPORT int checkNewSSRC();
+  LIVE555_EXPORT void removeLastReceivedSSRC();
+  LIVE555_EXPORT void removeSSRC(u_int32_t ssrc, Boolean alsoRemoveStats);
 };
 
 // RTCP packet types:

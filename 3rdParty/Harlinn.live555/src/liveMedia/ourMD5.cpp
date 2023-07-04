@@ -50,7 +50,7 @@ private:
   unsigned char fWorkingBuffer[64];
 };
 
-char* our_MD5Data(unsigned char const* data, unsigned dataSize, char* outputDigest) {
+LIVE555_EXPORT char* our_MD5Data(unsigned char const* data, unsigned dataSize, char* outputDigest) {
   MD5Context ctx;
 
   ctx.addData(data, dataSize);
@@ -61,7 +61,7 @@ char* our_MD5Data(unsigned char const* data, unsigned dataSize, char* outputDige
   return outputDigest;
 }
 
-unsigned char* our_MD5DataRaw(unsigned char const* data, unsigned dataSize,
+LIVE555_EXPORT unsigned char* our_MD5DataRaw(unsigned char const* data, unsigned dataSize,
 			      unsigned char* outputDigest) {
   MD5Context ctx;
 

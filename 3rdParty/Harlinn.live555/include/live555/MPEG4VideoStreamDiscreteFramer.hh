@@ -30,33 +30,33 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class MPEG4VideoStreamDiscreteFramer: public MPEG4VideoStreamFramer {
 public:
-  static MPEG4VideoStreamDiscreteFramer*
+  LIVE555_EXPORT static MPEG4VideoStreamDiscreteFramer*
   createNew(UsageEnvironment& env, FramedSource* inputSource, Boolean leavePresentationTimesUnmodified = False);
 
 protected:
-  MPEG4VideoStreamDiscreteFramer(UsageEnvironment& env,
+  LIVE555_EXPORT MPEG4VideoStreamDiscreteFramer(UsageEnvironment& env,
 				 FramedSource* inputSource, Boolean leavePresentationTimesUnmodified);
       // called only by createNew()
-  virtual ~MPEG4VideoStreamDiscreteFramer();
+  LIVE555_EXPORT virtual ~MPEG4VideoStreamDiscreteFramer();
 
 protected:
   // redefined virtual functions:
-  virtual void doGetNextFrame();
+  LIVE555_EXPORT virtual void doGetNextFrame();
 
 protected:
-  static void afterGettingFrame(void* clientData, unsigned frameSize,
+  LIVE555_EXPORT static void afterGettingFrame(void* clientData, unsigned frameSize,
                                 unsigned numTruncatedBytes,
                                 struct timeval presentationTime,
                                 unsigned durationInMicroseconds);
-  void afterGettingFrame1(unsigned frameSize,
+  LIVE555_EXPORT void afterGettingFrame1(unsigned frameSize,
                           unsigned numTruncatedBytes,
                           struct timeval presentationTime,
                           unsigned durationInMicroseconds);
 
-  Boolean getNextFrameBit(u_int8_t& result);
-  Boolean getNextFrameBits(unsigned numBits, u_int32_t& result);
+  LIVE555_EXPORT Boolean getNextFrameBit(u_int8_t& result);
+  LIVE555_EXPORT Boolean getNextFrameBits(unsigned numBits, u_int32_t& result);
     // Which are used by:
-  void analyzeVOLHeader();
+  LIVE555_EXPORT void analyzeVOLHeader();
 
 protected:
   Boolean fLeavePresentationTimesUnmodified;

@@ -27,7 +27,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class ByteStreamMemoryBufferSource: public FramedSource {
 public:
-  static ByteStreamMemoryBufferSource* createNew(UsageEnvironment& env,
+  LIVE555_EXPORT static ByteStreamMemoryBufferSource* createNew(UsageEnvironment& env,
 						 u_int8_t* buffer, u_int64_t bufferSize,
 						 Boolean deleteBufferOnClose = True,
 						 unsigned preferredFrameSize = 0,
@@ -37,23 +37,23 @@ public:
 
   u_int64_t bufferSize() const { return fBufferSize; }
 
-  void seekToByteAbsolute(u_int64_t byteNumber, u_int64_t numBytesToStream = 0);
+  LIVE555_EXPORT void seekToByteAbsolute(u_int64_t byteNumber, u_int64_t numBytesToStream = 0);
     // if "numBytesToStream" is >0, then we limit the stream to that number of bytes, before treating it as EOF
-  void seekToByteRelative(int64_t offset, u_int64_t numBytesToStream = 0);
+  LIVE555_EXPORT void seekToByteRelative(int64_t offset, u_int64_t numBytesToStream = 0);
 
 protected:
-  ByteStreamMemoryBufferSource(UsageEnvironment& env,
+  LIVE555_EXPORT ByteStreamMemoryBufferSource(UsageEnvironment& env,
 			       u_int8_t* buffer, u_int64_t bufferSize,
 			       Boolean deleteBufferOnClose,
 			       unsigned preferredFrameSize,
 			       unsigned playTimePerFrame);
 	// called only by createNew()
 
-  virtual ~ByteStreamMemoryBufferSource();
+  LIVE555_EXPORT virtual ~ByteStreamMemoryBufferSource();
 
 private:
   // redefined virtual functions:
-  virtual void doGetNextFrame();
+  LIVE555_EXPORT virtual void doGetNextFrame();
 
 private:
   u_int8_t* fBuffer;

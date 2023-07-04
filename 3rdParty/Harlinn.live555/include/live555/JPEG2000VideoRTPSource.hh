@@ -25,16 +25,16 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class JPEG2000VideoRTPSource: public MultiFramedRTPSource {
 public:
-  static JPEG2000VideoRTPSource* createNew(UsageEnvironment& env, Groupsock* RTPgs,
+  LIVE555_EXPORT static JPEG2000VideoRTPSource* createNew(UsageEnvironment& env, Groupsock* RTPgs,
 					   unsigned char rtpPayloadFormat,
 					   unsigned rtpTimestampFrequency,
 					   char const* sampling);
 
 protected:
-  virtual ~JPEG2000VideoRTPSource();
+  LIVE555_EXPORT virtual ~JPEG2000VideoRTPSource();
 
 protected:
-  JPEG2000VideoRTPSource(UsageEnvironment& env, Groupsock* RTPgs,
+  LIVE555_EXPORT JPEG2000VideoRTPSource(UsageEnvironment& env, Groupsock* RTPgs,
 			 unsigned char rtpPayloadFormat,
 			 unsigned rtpTimestampFrequency,
 			 char const* sampling);
@@ -42,9 +42,9 @@ protected:
 
 private:
   // redefined virtual functions:
-  virtual Boolean processSpecialHeader(BufferedPacket* packet,
+  LIVE555_EXPORT virtual Boolean processSpecialHeader(BufferedPacket* packet,
                                        unsigned& resultSpecialHeaderSize);
-  virtual char const* MIMEtype() const;
+  LIVE555_EXPORT virtual char const* MIMEtype() const;
 
 private:
   char* fSampling;

@@ -49,26 +49,26 @@ public:
   }
 
 protected:
-  H264or5VideoStreamFramer(int hNumber, // 264 or 265
+  LIVE555_EXPORT H264or5VideoStreamFramer(int hNumber, // 264 or 265
 			   UsageEnvironment& env, FramedSource* inputSource,
 			   Boolean createParser,
 			   Boolean includeStartCodeInOutput, Boolean insertAccessUnitDelimiters);
       // We're an abstract base class.
-  virtual ~H264or5VideoStreamFramer();
+  LIVE555_EXPORT virtual ~H264or5VideoStreamFramer();
 
-  void saveCopyOfVPS(u_int8_t* from, unsigned size);
-  void saveCopyOfSPS(u_int8_t* from, unsigned size);
-  void saveCopyOfPPS(u_int8_t* from, unsigned size);
+  LIVE555_EXPORT void saveCopyOfVPS(u_int8_t* from, unsigned size);
+  LIVE555_EXPORT void saveCopyOfSPS(u_int8_t* from, unsigned size);
+  LIVE555_EXPORT void saveCopyOfPPS(u_int8_t* from, unsigned size);
 
-  void setPresentationTime();
+  LIVE555_EXPORT void setPresentationTime();
 
-  Boolean isVPS(u_int8_t nal_unit_type);
-  Boolean isSPS(u_int8_t nal_unit_type);
-  Boolean isPPS(u_int8_t nal_unit_type);
-  Boolean isVCL(u_int8_t nal_unit_type);
+  LIVE555_EXPORT Boolean isVPS(u_int8_t nal_unit_type);
+  LIVE555_EXPORT Boolean isSPS(u_int8_t nal_unit_type);
+  LIVE555_EXPORT Boolean isPPS(u_int8_t nal_unit_type);
+  LIVE555_EXPORT Boolean isVCL(u_int8_t nal_unit_type);
 
 protected: // redefined virtual functions
-  virtual void doGetNextFrame();
+  LIVE555_EXPORT virtual void doGetNextFrame();
 
 protected:
   int fHNumber;
@@ -85,7 +85,7 @@ protected:
 
 // A general routine for making a copy of a (H.264 or H.265) NAL unit,
 // removing 'emulation' bytes from the copy:
-unsigned removeH264or5EmulationBytes(u_int8_t* to, unsigned toMaxSize,
+LIVE555_EXPORT unsigned removeH264or5EmulationBytes(u_int8_t* to, unsigned toMaxSize,
 				     u_int8_t const* from, unsigned fromSize);
     // returns the size of the copy; it will be <= min(toMaxSize,fromSize)
 

@@ -29,8 +29,8 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 #define MAX_CYCLE_SIZE 256
 class Interleaving {
 public:
-  Interleaving(unsigned cycleSize, unsigned char const* cycleArray);
-  virtual ~Interleaving();
+  LIVE555_EXPORT Interleaving(unsigned cycleSize, unsigned char const* cycleArray);
+  LIVE555_EXPORT virtual ~Interleaving();
 
   unsigned cycleSize() const {return fCycleSize;}
   unsigned char lookupInverseCycle(unsigned char index) const {
@@ -46,19 +46,19 @@ private:
 
 class MP3ADUinterleaverBase: public FramedFilter {
 protected:
-  MP3ADUinterleaverBase(UsageEnvironment& env,
+  LIVE555_EXPORT MP3ADUinterleaverBase(UsageEnvironment& env,
 			FramedSource* inputSource);
       // abstract base class
-  virtual ~MP3ADUinterleaverBase();
+  LIVE555_EXPORT virtual ~MP3ADUinterleaverBase();
 
-  static FramedSource* getInputSource(UsageEnvironment& env,
+  LIVE555_EXPORT static FramedSource* getInputSource(UsageEnvironment& env,
 				      char const* inputSourceName);
-  static void afterGettingFrame(void* clientData,
+  LIVE555_EXPORT static void afterGettingFrame(void* clientData,
 				unsigned numBytesRead,
 				unsigned numTruncatedBytes,
 				struct timeval presentationTime,
 				unsigned durationInMicroseconds);
-  virtual void afterGettingFrame(unsigned numBytesRead,
+  LIVE555_EXPORT virtual void afterGettingFrame(unsigned numBytesRead,
 				 struct timeval presentationTime,
 				 unsigned durationInMicroseconds) = 0;
 };
@@ -68,26 +68,26 @@ protected:
 
 class MP3ADUinterleaver: public MP3ADUinterleaverBase {
 public:
-  static MP3ADUinterleaver* createNew(UsageEnvironment& env,
+  LIVE555_EXPORT static MP3ADUinterleaver* createNew(UsageEnvironment& env,
 				      Interleaving const& interleaving,
 				      FramedSource* inputSource);
 
 protected:
-  MP3ADUinterleaver(UsageEnvironment& env,
+  LIVE555_EXPORT MP3ADUinterleaver(UsageEnvironment& env,
 		    Interleaving const& interleaving,
 		    FramedSource* inputSource);
       // called only by createNew()
-  virtual ~MP3ADUinterleaver();
+  LIVE555_EXPORT virtual ~MP3ADUinterleaver();
 
 private:
   // redefined virtual functions:
-  virtual void doGetNextFrame();
-  virtual void afterGettingFrame(unsigned numBytesRead,
+  LIVE555_EXPORT virtual void doGetNextFrame();
+  LIVE555_EXPORT virtual void afterGettingFrame(unsigned numBytesRead,
 				 struct timeval presentationTime,
 				 unsigned durationInMicroseconds);
 
 private:
-  void releaseOutgoingFrame();
+	LIVE555_EXPORT void releaseOutgoingFrame();
 
 private:
   Interleaving const fInterleaving;
@@ -101,24 +101,24 @@ private:
 
 class MP3ADUdeinterleaver: public MP3ADUinterleaverBase {
 public:
-  static MP3ADUdeinterleaver* createNew(UsageEnvironment& env,
+  LIVE555_EXPORT static MP3ADUdeinterleaver* createNew(UsageEnvironment& env,
 					FramedSource* inputSource);
 
 protected:
-  MP3ADUdeinterleaver(UsageEnvironment& env,
+  LIVE555_EXPORT MP3ADUdeinterleaver(UsageEnvironment& env,
 		      FramedSource* inputSource);
       // called only by createNew()
-  virtual ~MP3ADUdeinterleaver();
+  LIVE555_EXPORT virtual ~MP3ADUdeinterleaver();
 
 private:
   // redefined virtual functions:
-  virtual void doGetNextFrame();
-  virtual void afterGettingFrame(unsigned numBytesRead,
+  LIVE555_EXPORT virtual void doGetNextFrame();
+  LIVE555_EXPORT virtual void afterGettingFrame(unsigned numBytesRead,
 				 struct timeval presentationTime,
 				 unsigned durationInMicroseconds);
 
 private:
-  void releaseOutgoingFrame();
+  LIVE555_EXPORT void releaseOutgoingFrame();
 
 private:
   class DeinterleavingFrames* fFrames;

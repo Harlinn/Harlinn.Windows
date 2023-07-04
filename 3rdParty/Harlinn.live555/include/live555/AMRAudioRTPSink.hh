@@ -27,7 +27,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class AMRAudioRTPSink: public AudioRTPSink {
 public:
-  static AMRAudioRTPSink* createNew(UsageEnvironment& env,
+  LIVE555_EXPORT static AMRAudioRTPSink* createNew(UsageEnvironment& env,
 				    Groupsock* RTPgs,
 				    unsigned char rtpPayloadFormat,
 				    Boolean sourceIsWideband = False,
@@ -36,26 +36,26 @@ public:
   Boolean sourceIsWideband() const { return fSourceIsWideband; }
 
 protected:
-  AMRAudioRTPSink(UsageEnvironment& env, Groupsock* RTPgs,
+  LIVE555_EXPORT AMRAudioRTPSink(UsageEnvironment& env, Groupsock* RTPgs,
 		  unsigned char rtpPayloadFormat,
 		  Boolean sourceIsWideband, unsigned numChannelsInSource);
 	// called only by createNew()
 
-  virtual ~AMRAudioRTPSink();
+  LIVE555_EXPORT virtual ~AMRAudioRTPSink();
 
 private: // redefined virtual functions:
-  virtual Boolean sourceIsCompatibleWithUs(MediaSource& source);
-  virtual void doSpecialFrameHandling(unsigned fragmentationOffset,
+  LIVE555_EXPORT virtual Boolean sourceIsCompatibleWithUs(MediaSource& source);
+  LIVE555_EXPORT virtual void doSpecialFrameHandling(unsigned fragmentationOffset,
                                       unsigned char* frameStart,
                                       unsigned numBytesInFrame,
                                       struct timeval framePresentationTime,
                                       unsigned numRemainingBytes);
-  virtual Boolean
+  LIVE555_EXPORT virtual Boolean
   frameCanAppearAfterPacketStart(unsigned char const* frameStart,
 				 unsigned numBytesInFrame) const;
 
-  virtual unsigned specialHeaderSize() const;
-  virtual char const* auxSDPLine();
+  LIVE555_EXPORT virtual unsigned specialHeaderSize() const;
+  LIVE555_EXPORT virtual char const* auxSDPLine();
 
 private:
   Boolean fSourceIsWideband;

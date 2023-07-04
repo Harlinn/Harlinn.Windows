@@ -27,7 +27,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class QuickTimeFileSink: public Medium {
 public:
-  static QuickTimeFileSink* createNew(UsageEnvironment& env,
+  LIVE555_EXPORT static QuickTimeFileSink* createNew(UsageEnvironment& env,
 				      MediaSession& inputSession,
 				      char const* outputFileName,
 				      unsigned bufferSize = 20000,
@@ -39,35 +39,35 @@ public:
 				      Boolean generateHintTracks = False,
 				      Boolean generateMP4Format = False);
 
-  typedef void (afterPlayingFunc)(void* clientData);
-  Boolean startPlaying(afterPlayingFunc* afterFunc,
+  typedef void (__cdecl afterPlayingFunc)(void* clientData);
+  LIVE555_EXPORT Boolean startPlaying(afterPlayingFunc* afterFunc,
                        void* afterClientData);
 
   unsigned numActiveSubsessions() const { return fNumSubsessions; }
 
 protected:
-  QuickTimeFileSink(UsageEnvironment& env, MediaSession& inputSession,
+  LIVE555_EXPORT QuickTimeFileSink(UsageEnvironment& env, MediaSession& inputSession,
 		    char const* outputFileName, unsigned bufferSize,
 		    unsigned short movieWidth, unsigned short movieHeight,
 		    unsigned movieFPS, Boolean packetLossCompensate,
 		    Boolean syncStreams, Boolean generateHintTracks,
 		    Boolean generateMP4Format);
       // called only by createNew()
-  virtual ~QuickTimeFileSink();
+  LIVE555_EXPORT virtual ~QuickTimeFileSink();
 
-  virtual void noteRecordedFrame(MediaSubsession& inputSubsession,
+  LIVE555_EXPORT virtual void noteRecordedFrame(MediaSubsession& inputSubsession,
 				 unsigned packetDataSize, struct timeval const& presentationTime);
 
 private:
-  Boolean continuePlaying();
-  static void afterGettingFrame(void* clientData, unsigned frameSize,
+  LIVE555_EXPORT Boolean continuePlaying();
+  LIVE555_EXPORT static void afterGettingFrame(void* clientData, unsigned frameSize,
 				unsigned numTruncatedBytes,
 				struct timeval presentationTime,
 				unsigned durationInMicroseconds);
-  static void onSourceClosure(void* clientData);
-  void onSourceClosure1();
-  static void onRTCPBye(void* clientData);
-  void completeOutputFile();
+  LIVE555_EXPORT static void onSourceClosure(void* clientData);
+  LIVE555_EXPORT void onSourceClosure1();
+  LIVE555_EXPORT static void onRTCPBye(void* clientData);
+  LIVE555_EXPORT void completeOutputFile();
 
 private:
   friend class SubsessionIOState;

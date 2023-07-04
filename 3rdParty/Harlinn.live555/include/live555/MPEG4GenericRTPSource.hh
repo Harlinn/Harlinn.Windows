@@ -27,7 +27,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class MPEG4GenericRTPSource: public MultiFramedRTPSource {
 public:
-  static MPEG4GenericRTPSource*
+  LIVE555_EXPORT static MPEG4GenericRTPSource*
   createNew(UsageEnvironment& env, Groupsock* RTPgs,
 	    unsigned char rtpPayloadFormat,
 	    unsigned rtpTimestampFrequency,
@@ -40,7 +40,7 @@ public:
   // it *cannot* be NULL
 
 protected:
-  MPEG4GenericRTPSource(UsageEnvironment& env, Groupsock* RTPgs,
+  LIVE555_EXPORT MPEG4GenericRTPSource(UsageEnvironment& env, Groupsock* RTPgs,
 			unsigned char rtpPayloadFormat,
 			unsigned rtpTimestampFrequency,
 			char const* mediumName,
@@ -49,13 +49,13 @@ protected:
 			unsigned indexDeltaLength
 			);
       // called only by createNew(), or by subclass constructors
-  virtual ~MPEG4GenericRTPSource();
+  LIVE555_EXPORT virtual ~MPEG4GenericRTPSource();
 
 protected:
   // redefined virtual functions:
-  virtual Boolean processSpecialHeader(BufferedPacket* packet,
+  LIVE555_EXPORT virtual Boolean processSpecialHeader(BufferedPacket* packet,
                                        unsigned& resultSpecialHeaderSize);
-  virtual char const* MIMEtype() const;
+  LIVE555_EXPORT virtual char const* MIMEtype() const;
 
 private:
   char* fMIMEType;
@@ -73,6 +73,6 @@ private:
 
 // A function that looks up the sampling frequency from an
 // "AudioSpecificConfig" string.  (0 means 'unknown')
-unsigned samplingFrequencyFromAudioSpecificConfig(char const* configStr);
+LIVE555_EXPORT unsigned samplingFrequencyFromAudioSpecificConfig(char const* configStr);
 
 #endif

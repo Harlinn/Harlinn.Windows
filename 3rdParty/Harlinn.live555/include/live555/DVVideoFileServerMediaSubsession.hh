@@ -28,21 +28,21 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class DVVideoFileServerMediaSubsession: public FileServerMediaSubsession{
 public:
-  static DVVideoFileServerMediaSubsession*
+  LIVE555_EXPORT static DVVideoFileServerMediaSubsession*
   createNew(UsageEnvironment& env, char const* fileName, Boolean reuseFirstSource);
 
 private:
-  DVVideoFileServerMediaSubsession(UsageEnvironment& env, char const* fileName, Boolean reuseFirstSource);
+  LIVE555_EXPORT DVVideoFileServerMediaSubsession(UsageEnvironment& env, char const* fileName, Boolean reuseFirstSource);
       // called only by createNew();
-  virtual ~DVVideoFileServerMediaSubsession();
+  LIVE555_EXPORT virtual ~DVVideoFileServerMediaSubsession();
 
 private: // redefined virtual functions
-  virtual char const* getAuxSDPLine(RTPSink* rtpSink, FramedSource* inputSource);
-  virtual void seekStreamSource(FramedSource* inputSource, double& seekNPT, double streamDuration, u_int64_t& numBytes);
-  virtual void setStreamSourceDuration(FramedSource* inputSource, double streamDuration, u_int64_t& numBytes);
-  virtual FramedSource* createNewStreamSource(unsigned clientSessionId, unsigned& estBitrate);
-  virtual RTPSink* createNewRTPSink(Groupsock* rtpGroupsock, unsigned char rtpPayloadTypeIfDynamic, FramedSource* inputSource);
-  virtual float duration() const;
+  LIVE555_EXPORT virtual char const* getAuxSDPLine(RTPSink* rtpSink, FramedSource* inputSource);
+  LIVE555_EXPORT virtual void seekStreamSource(FramedSource* inputSource, double& seekNPT, double streamDuration, u_int64_t& numBytes);
+  LIVE555_EXPORT virtual void setStreamSourceDuration(FramedSource* inputSource, double streamDuration, u_int64_t& numBytes);
+  LIVE555_EXPORT virtual FramedSource* createNewStreamSource(unsigned clientSessionId, unsigned& estBitrate);
+  LIVE555_EXPORT virtual RTPSink* createNewRTPSink(Groupsock* rtpGroupsock, unsigned char rtpPayloadTypeIfDynamic, FramedSource* inputSource);
+  LIVE555_EXPORT virtual float duration() const;
 
 private:
   float fFileDuration; // in seconds

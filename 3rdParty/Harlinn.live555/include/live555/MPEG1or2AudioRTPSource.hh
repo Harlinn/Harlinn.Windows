@@ -27,25 +27,25 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class MPEG1or2AudioRTPSource: public MultiFramedRTPSource {
 public:
-  static MPEG1or2AudioRTPSource*
+  LIVE555_EXPORT static MPEG1or2AudioRTPSource*
   createNew(UsageEnvironment& env, Groupsock* RTPgs,
 	    unsigned char rtpPayloadFormat = 14,
 	    unsigned rtpTimestampFrequency = 90000);
 
 protected:
-  virtual ~MPEG1or2AudioRTPSource();
+  LIVE555_EXPORT virtual ~MPEG1or2AudioRTPSource();
 
 private:
-  MPEG1or2AudioRTPSource(UsageEnvironment& env, Groupsock* RTPgs,
+  LIVE555_EXPORT MPEG1or2AudioRTPSource(UsageEnvironment& env, Groupsock* RTPgs,
 		     unsigned char rtpPayloadFormat,
 		     unsigned rtpTimestampFrequency);
       // called only by createNew()
 
 private:
   // redefined virtual functions:
-  virtual Boolean processSpecialHeader(BufferedPacket* packet,
+  LIVE555_EXPORT virtual Boolean processSpecialHeader(BufferedPacket* packet,
                                        unsigned& resultSpecialHeaderSize);
-  virtual char const* MIMEtype() const;
+  LIVE555_EXPORT virtual char const* MIMEtype() const;
 };
 
 #endif

@@ -27,16 +27,16 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class AudioRTPSink: public MultiFramedRTPSink {
 protected:
-  AudioRTPSink(UsageEnvironment& env,
+  LIVE555_EXPORT AudioRTPSink(UsageEnvironment& env,
 	       Groupsock* rtpgs, unsigned char rtpPayloadType,
 	       unsigned rtpTimestampFrequency,
 	       char const* rtpPayloadFormatName,
 	       unsigned numChannels = 1);
   // (we're an abstract base class)
-  virtual ~AudioRTPSink();
+  LIVE555_EXPORT virtual ~AudioRTPSink();
 
 private: // redefined virtual functions:
-  virtual char const* sdpMediaType() const;
+  LIVE555_EXPORT virtual char const* sdpMediaType() const;
 };
 
 #endif

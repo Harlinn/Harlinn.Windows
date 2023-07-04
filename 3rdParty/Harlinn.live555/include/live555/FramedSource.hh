@@ -30,28 +30,28 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class FramedSource: public MediaSource {
 public:
-  static Boolean lookupByName(UsageEnvironment& env, char const* sourceName,
+  LIVE555_EXPORT static Boolean lookupByName(UsageEnvironment& env, char const* sourceName,
 			      FramedSource*& resultSource);
 
-  typedef void (afterGettingFunc)(void* clientData, unsigned frameSize,
+  typedef void (__cdecl afterGettingFunc)(void* clientData, unsigned frameSize,
 				  unsigned numTruncatedBytes,
 				  struct timeval presentationTime,
 				  unsigned durationInMicroseconds);
-  typedef void (onCloseFunc)(void* clientData);
-  void getNextFrame(unsigned char* to, unsigned maxSize,
+  typedef void (__cdecl onCloseFunc)(void* clientData);
+  LIVE555_EXPORT void getNextFrame(unsigned char* to, unsigned maxSize,
 		    afterGettingFunc* afterGettingFunc,
 		    void* afterGettingClientData,
 		    onCloseFunc* onCloseFunc,
 		    void* onCloseClientData);
 
-  static void handleClosure(void* clientData);
-  void handleClosure();
+  LIVE555_EXPORT static void handleClosure(void* clientData);
+  LIVE555_EXPORT void handleClosure();
       // This should be called (on ourself) if the source is discovered
       // to be closed (i.e., no longer readable)
 
-  void stopGettingFrames();
+  LIVE555_EXPORT void stopGettingFrames();
 
-  virtual unsigned maxFrameSize() const;
+  LIVE555_EXPORT virtual unsigned maxFrameSize() const;
       // size of the largest possible frame that we may serve, or 0
       // if no such maximum is known (default)
 
@@ -60,15 +60,15 @@ public:
 
   Boolean isCurrentlyAwaitingData() const {return fIsCurrentlyAwaitingData;}
 
-  static void afterGetting(FramedSource* source);
+  LIVE555_EXPORT static void afterGetting(FramedSource* source);
       // doGetNextFrame() should arrange for this to be called after the
       // frame has been read (*iff* it is read successfully)
 
 protected:
-  FramedSource(UsageEnvironment& env); // abstract base class
-  virtual ~FramedSource();
+  LIVE555_EXPORT FramedSource(UsageEnvironment& env); // abstract base class
+  LIVE555_EXPORT virtual ~FramedSource();
 
-  virtual void doStopGettingFrames();
+  LIVE555_EXPORT virtual void doStopGettingFrames();
 
 protected:
   // The following variables are typically accessed/set by doGetNextFrame()

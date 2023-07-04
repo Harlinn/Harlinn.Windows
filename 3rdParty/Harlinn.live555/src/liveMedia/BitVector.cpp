@@ -149,7 +149,7 @@ int BitVector::get_expGolombSigned() {
   }
 }
 
-void shiftBits(unsigned char* toBasePtr, unsigned toBitOffset,
+LIVE555_EXPORT void shiftBits(unsigned char* toBasePtr, unsigned toBitOffset,
 	       unsigned char const* fromBasePtr, unsigned fromBitOffset,
 	       unsigned numBits) {
   if (numBits == 0) return;
