@@ -2106,7 +2106,14 @@ namespace Harlinn::Common::Core
             }
         }
 
+
+
         [[nodiscard]] size_type find_first_of( CharType c ) const
+        {
+            return IndexOf( c );
+        }
+
+        [[nodiscard]] size_type find( CharType c ) const
         {
             return IndexOf( c );
         }
@@ -2557,6 +2564,12 @@ namespace Harlinn::Common::Core
             return npos;
         }
 
+        [[nodiscard]] size_type find( const BasicString& searchString, size_type start = 0 ) const
+        {
+            return IndexOf( searchString, start );
+        }
+
+
         [[nodiscard]] size_type IIndexOf( const BasicString& searchString, size_type start = 0 ) const
         {
             auto* searchData = searchString.data_;
@@ -2604,6 +2617,12 @@ namespace Harlinn::Common::Core
             return npos;
         }
 
+        [[nodiscard]] size_type find( const CharType* searchString, size_type start = 0 ) const
+        {
+            return IndexOf( searchString, start );
+        }
+
+
         [[nodiscard]] size_type IIndexOf( const CharType* searchString, size_type start = 0 ) const
         {
             if ( searchString && searchString[0] && data_ && start < data_->size_ )
@@ -2642,18 +2661,19 @@ namespace Harlinn::Common::Core
         }
 
 
-        [[nodiscard]] size_type IndexOf( const CharType c, size_type start ) const
+        [[nodiscard]] size_type IndexOf( CharType c, size_type start ) const
         {
             if ( data_ && start < data_->size_ )
             {
-                auto* p = Internal::MemChr( &data_->buffer_[start], c, static_cast<size_t>( data_->size_ - start ) );
-                if ( p )
-                {
-                    return p - data_->buffer_;
-                }
+                auto* foundAt = Internal::MemChr( data_->buffer_ + start, c, data_->size_ - start );
+                return foundAt ? foundAt - data_->buffer_ : npos;
             }
-            return npos;
+            else
+            {
+                return npos;
+            }
         }
+
 
         [[nodiscard]] size_type find_first_of( CharType c, size_type start ) const
         {
@@ -3184,6 +3204,69 @@ namespace Harlinn::Common::Core
             return false;
         }
 
+        [[nodiscard]] size_type Count( CharType what, size_type start = 0 ) const
+        {
+            size_type result = 0;
+            if ( data_ )
+            {
+                while ( start < data_->size_ )
+                {
+                    auto index = IndexOf( what, start );
+                    if ( index != npos )
+                    {
+                        result++;
+                        start = index + 1;
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+            }
+            return result;
+        }
+
+        [[nodiscard]] size_type Count( const CharType* what, size_type whatLength, size_type start = 0 ) const
+        {
+            size_type result = 0;
+            if ( data_ && what && whatLength )
+            {
+                while ( start < data_->size_ )
+                {
+                    auto index = IndexOf( what, whatLength, start );
+                    if ( index != npos )
+                    {
+                        result++;
+                        start = index + whatLength;
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+            }
+            return result;
+        }
+
+        [[nodiscard]] size_type Count( const BasicString& what, size_type start = 0 ) const
+        {
+            if ( what.data_ )
+            {
+                return Count( what.data_->buffer_, what.data_->size_, start );
+            }
+            return 0;
+        }
+
+        [[nodiscard]] size_type Count( const std::basic_string_view<CharType>& what, size_type start = 0 ) const
+        {
+            if ( what.size() )
+            {
+                return Count( what.data(), what.size( ), start );
+            }
+            return 0;
+        }
+
+
 
         [[nodiscard]] BasicString SubString( size_type start, size_type length = npos ) const
         {
@@ -3322,11 +3405,53 @@ namespace Harlinn::Common::Core
             }
         }
 
-        void Replace( CharType what, CharType with )
+        bool FindAndReplace( CharType what, CharType with, size_type start = 0 )
         {
             if ( data_ )
             {
-                auto index = IndexOf( what );
+                auto index = IndexOf( what, start );
+                if ( index != npos )
+                {
+                    if ( data_->referenceCount_ > 1 )
+                    {
+                        auto currentSize = data_->size_;
+                        auto* newData = Allocate( currentSize );
+                        Internal::Copy( newData->buffer_, data_->buffer_, index );
+                        auto endIt = data_->buffer_ + currentSize;
+                        auto it = data_->buffer_ + index;
+                        auto destIt = newData->buffer_ + index;
+                        while ( it < endIt )
+                        {
+                            auto c = *it;
+                            if ( c != what )
+                            {
+                                *destIt = c;
+                            }
+                            else
+                            {
+                                *destIt = with;
+                            }
+                            destIt++;
+                            it++;
+                        }
+                        ReleaseData( data_ );
+                        data_ = newData;
+                    }
+                    else
+                    {
+                        std::replace( begin( ) + index, end( ), what, with );
+                    }
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        bool FindAndReplace( const CharType* what, size_type whatLength, const CharType* with, size_type withLength, size_type start = 0 )
+        {
+            if ( data_ )
+            {
+                auto index = IndexOf( what, whatLength, start );
                 if ( index != npos )
                 {
                     if ( data_->referenceCount_ > 1 )
@@ -3360,7 +3485,9 @@ namespace Harlinn::Common::Core
                     }
                 }
             }
+            return false;
         }
+
 
 
         void TrimRight( const CharType* charactersToRemove, size_type numberOfCharactersToRemove )

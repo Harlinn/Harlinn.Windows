@@ -175,7 +175,7 @@ protected:
   };
 
   // The basic, synchronous "ServerMediaSession" lookup operation; only for subclasses:
-  ServerMediaSession* getServerMediaSession(char const* streamName);
+  LIVE555_EXPORT ServerMediaSession* getServerMediaSession(char const* streamName);
   
 protected:
   friend class ClientConnection;

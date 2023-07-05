@@ -1,18 +1,20 @@
 #pragma once
 #include <boost/program_options.hpp>
 #include <iostream>
+#include <HCCString.h>
 
 namespace GenerateProject
 {
     namespace po = boost::program_options;
+    using namespace Harlinn::Common::Core;
 
 
     class Options
     {
         // Template name
-        std::string templateName_;
+        AnsiString templateName_;
         // Project name
-        std::string projectName_;
+        AnsiString projectName_;
         bool valid_ = false;
     public:
         Options( int argc, char* argv[] )
@@ -20,8 +22,8 @@ namespace GenerateProject
             po::options_description desc( "Options" );
             desc.add_options( )
                 ( "help", "displays this help message." )
-                ( "template", po::value< std::string >( &templateName_ ), "template name." )
-                ( "project", po::value< std::string >( &projectName_ ), "template name." );
+                ( "template", po::value< AnsiString >( &templateName_ ), "template name." )
+                ( "project", po::value< AnsiString >( &projectName_ ), "template name." );
 
             po::positional_options_description p;
             p.add( "project", -1 );
@@ -43,11 +45,11 @@ namespace GenerateProject
 
         }
 
-        const std::string& TemplateName( ) const noexcept
+        const AnsiString& TemplateName( ) const noexcept
         {
             return templateName_;
         }
-        const std::string& ProjectName( ) const noexcept
+        const AnsiString& ProjectName( ) const noexcept
         {
             return projectName_;
         }

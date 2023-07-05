@@ -1,5 +1,7 @@
 #include "pch.h"
 
+#include <HCCTypeDescriptorCursor.h>
+
 using namespace Harlinn::Common::Core;
 
 namespace

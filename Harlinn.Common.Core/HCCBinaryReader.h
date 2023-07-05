@@ -261,7 +261,7 @@ namespace Harlinn::Common::Core::IO
             requires ( IsStdBasicString<T> || IsBasicString<T> )
         void Read( T& result )
         {
-            // Length of the string in bytes
+            // Length of the string in T::value_type
             int stringLength = Read7BitEncodedInt( );
             if ( stringLength < 0 )
             {
@@ -271,11 +271,25 @@ namespace Harlinn::Common::Core::IO
             if ( stringLength != 0 )
             {
                 result.resize( stringLength );
+                if constexpr ( IsBasicString<T> )
+                {
+                    result.EnsureUnique( );
+                }
                 auto numberOfBytesToRead = static_cast<size_t>( stringLength ) * sizeof( typename T::value_type );
                 auto bytesRead = static_cast<Derived&>( *this ).Read( result.data( ), numberOfBytesToRead );
                 if ( bytesRead < static_cast<long long>( numberOfBytesToRead ) )
                 {
                     HCC_THROW( IO::EndOfStreamException );
+                }
+                if constexpr ( NetworkByteOrder && sizeof( typename T::value_type ) > 1 )
+                {
+                    auto ptr = result.data( );
+                    auto endPtr = ptr + stringLength;
+                    while ( ptr < endPtr )
+                    {
+                        *ptr = ByteSwap( *ptr );
+                        ++ptr;
+                    }
                 }
             }
             else
@@ -289,7 +303,7 @@ namespace Harlinn::Common::Core::IO
         std::remove_cvref_t<T> Read( )
         {
             using Type = std::remove_cvref_t<T>;
-            // Length of the string in bytes
+            // Length of the string in T::value_type
             int stringLength = Read7BitEncodedInt( );
             if ( stringLength < 0 )
             {
@@ -304,6 +318,16 @@ namespace Harlinn::Common::Core::IO
                 if ( bytesRead < static_cast<long long>( numberOfBytesToRead ) )
                 {
                     HCC_THROW( IO::EndOfStreamException );
+                }
+                if constexpr ( NetworkByteOrder && sizeof( typename T::value_type ) > 1 )
+                {
+                    auto ptr = result.data( );
+                    auto endPtr = ptr + stringLength;
+                    while ( ptr < endPtr )
+                    {
+                        *ptr = ByteSwap( *ptr );
+                        ++ptr;
+                    }
                 }
             }
             return result;

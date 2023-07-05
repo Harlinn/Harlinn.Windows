@@ -643,7 +643,7 @@ namespace Harlinn::Common::Core::Persistent
                   IsVectorContainer<T>, VectorContainerFormatTraits<std::remove_cvref_t<T>, T>,
                     std::conditional_t
                     <
-                      IsStdBasicString<T>, StringContainerFormatTraits<std::remove_cvref_t<T>, T>,
+                      IsBasicString<T>, StringContainerFormatTraits<std::remove_cvref_t<T>, T>,
                       ContainerFormatTraitsBase<std::remove_cvref_t<T>, T>
                     >
                 >

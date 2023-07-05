@@ -146,17 +146,17 @@ namespace Harlinn::Common::Core::IO
         {
             using ValueType = typename T::value_type;
             size_t count = value.length( );
-            int len = static_cast<int>( count * sizeof( ValueType ) );
+            int len = static_cast<int>( count );
             Write7BitEncodedInt( len );
             if ( len )
             {
-                if constexpr ( NetworkByteOrder )
+                if constexpr ( NetworkByteOrder && sizeof( ValueType ) > 1 )
                 {
                     WriteInNetworkByteOrder( value.data( ), value.size( ) );
                 }
                 else
                 {
-                    static_cast<Derived&>( *this ).Write( reinterpret_cast<const Byte*>( value.data( ) ), size_t( len ) );
+                    static_cast<Derived&>( *this ).Write( reinterpret_cast<const Byte*>( value.data( ) ), size_t( len ) * sizeof( ValueType ) );
                 }
             }
         }

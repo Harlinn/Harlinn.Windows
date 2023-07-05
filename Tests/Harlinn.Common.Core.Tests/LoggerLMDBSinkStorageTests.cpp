@@ -1,6 +1,9 @@
 #include "pch.h"
 
 
+#include <HCCLoggerLMDBSinkStorage.h>
+
+
 using namespace Harlinn::Common::Core;
 using namespace Harlinn::Common::Core::Logging::Sinks::Storage;
 

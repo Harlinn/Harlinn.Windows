@@ -545,11 +545,11 @@ int main()
     Application application( options );
     application.Start( );
 
-    //ArrayAssignTest1a( );
-    //ArrayAssignTest1b( );
-    //ArrayAssignTest1c( );
-    //ArrayAssignTest1d( );
-    //ArrayCopyTest1a( );
+    ArrayAssignTest1a( );
+    ArrayAssignTest1b( );
+    ArrayAssignTest1c( );
+    ArrayAssignTest1d( );
+    ArrayCopyTest1a( );
 
     /*
     auto dtStart = DateTime::UtcNow( );

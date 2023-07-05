@@ -12,11 +12,11 @@ namespace GenerateProject
     class File
     {
         GenerateProject::Project* project_;
-        std::string name_;
-        std::string contents_;
+        AnsiString name_;
+        AnsiString contents_;
 
     public:
-        File( GenerateProject::Project* project, const std::string& name, const std::string& contents )
+        File( GenerateProject::Project* project, const AnsiString& name, const AnsiString& contents )
             : project_( project ), name_( name ), contents_( contents )
         {
         }
@@ -28,7 +28,7 @@ namespace GenerateProject
         }
 
 
-        std::string Directory( ) const
+        AnsiString Directory( ) const
         {
             char drive[_MAX_DRIVE + 1];
             char directory[_MAX_PATH + 1];
@@ -37,7 +37,7 @@ namespace GenerateProject
             auto directoryLength = LengthOf( directory );
             if ( driveLength && directoryLength )
             {
-                std::string result;
+                AnsiString result;
                 result.reserve( driveLength + directoryLength );
                 result.append( drive, driveLength );
                 result.append( directory, directoryLength );
@@ -46,7 +46,7 @@ namespace GenerateProject
             }
             else if ( directoryLength )
             {
-                std::string result;
+                AnsiString result;
                 if ( directory[0] != '\\' && directory[0] != '/' )
                 {
                     result.append( ".\\" );
@@ -60,24 +60,24 @@ namespace GenerateProject
             }
             else
             {
-                return std::string( );
+                return AnsiString( );
             }
         }
 
-        std::string Filename( ) const
+        AnsiString Filename( ) const
         {
             char name[_MAX_FNAME + 1];
             char ext[_MAX_EXT + 1];
             _splitpath_s( name_.c_str( ), nullptr, 0, nullptr, 0, name, _MAX_FNAME + 1, ext, _MAX_EXT + 1 );
             auto nameLength = LengthOf( name );
             auto extLength = LengthOf( ext );
-            std::string result;
+            AnsiString result;
             result.append( name, nameLength );
             result.append( ext, extLength );
             return result;
         }
 
-        std::string FilePath( ) const
+        AnsiString FilePath( ) const
         {
             auto result = Directory( );
             if ( result.ends_with( '\\' ) == false && result.ends_with( '/' ) == false )
@@ -106,26 +106,26 @@ namespace GenerateProject
         {
             return project_;
         }
-        const std::string& Name( ) const
+        const AnsiString& Name( ) const
         {
             return name_;
         }
-        const std::string& Contents( ) const
+        const AnsiString& Contents( ) const
         {
             return contents_;
         }
 
-        bool SetTagValue( const std::string& tagName, const std::string& newValue )
+        bool SetTagValue( const AnsiString& tagName, const AnsiString& newValue )
         {
             auto startTag = Format( "<%s>", tagName.c_str( ) );
             auto endTag = Format( "</%s>", tagName.c_str( ) );
 
             auto startOffset = contents_.find( startTag );
-            if ( startOffset != std::string::npos )
+            if ( startOffset != AnsiString::npos )
             {
                 auto valueOffset = startOffset + startTag.size( );
                 auto endOffset = contents_.find( endTag, valueOffset );
-                if ( endOffset != std::string::npos )
+                if ( endOffset != AnsiString::npos )
                 {
                     auto valueLength = endOffset - valueOffset;
                     contents_.replace( valueOffset, valueLength, newValue );
@@ -135,10 +135,10 @@ namespace GenerateProject
             return false;
         }
 
-        bool Replace( const std::string& oldValue, const std::string& newValue )
+        bool Replace( const AnsiString& oldValue, const AnsiString& newValue )
         {
             auto startOffset = contents_.find( oldValue );
-            if ( startOffset != std::string::npos )
+            if ( startOffset != AnsiString::npos )
             {
                 auto valueLength = oldValue.size();
                 contents_.replace( startOffset, valueLength, newValue );
@@ -156,7 +156,7 @@ namespace GenerateProject
     public:
         using Base = File;
     public:
-        SourceFile( GenerateProject::Project* project, const std::string& name, const std::string& contents )
+        SourceFile( GenerateProject::Project* project, const AnsiString& name, const AnsiString& contents )
             : Base( project, name, contents )
         {
         }
@@ -173,7 +173,7 @@ namespace GenerateProject
         using Base = File;
     private:
     public:
-        ProjectFile( GenerateProject::Project* project, const std::string& name, const std::string& contents )
+        ProjectFile( GenerateProject::Project* project, const AnsiString& name, const AnsiString& contents )
             : Base( project, name, contents )
         {
         }
@@ -189,7 +189,7 @@ namespace GenerateProject
         using Base = File;
     private:
     public:
-        ProjectFilterFile( GenerateProject::Project* project, const std::string& name, const std::string& contents )
+        ProjectFilterFile( GenerateProject::Project* project, const AnsiString& name, const AnsiString& contents )
             : Base( project, name, contents )
         {
         }
@@ -203,7 +203,7 @@ namespace GenerateProject
         using Base = File;
     private:
     public:
-        ProjectUserFile( GenerateProject::Project* project, const std::string& name, const std::string& contents )
+        ProjectUserFile( GenerateProject::Project* project, const AnsiString& name, const AnsiString& contents )
             : Base( project, name, contents )
         {
         }

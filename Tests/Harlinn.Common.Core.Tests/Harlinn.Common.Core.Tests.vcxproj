@@ -213,12 +213,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="LoggerLMDBSinkStorageTests.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClCompile>
+    <ClCompile Include="LoggerLMDBSinkStorageTests.cpp" />
     <ClCompile Include="MathMatrixTests.cpp" />
     <ClCompile Include="MathTests.cpp" />
     <ClCompile Include="CommDeviceTests.cpp" />
@@ -238,12 +233,7 @@
     <ClCompile Include="LMDBTests.cpp" />
     <ClCompile Include="MemoryStreamTests.cpp" />
     <ClCompile Include="MutexTests.cpp" />
-    <ClCompile Include="PersistentTests.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClCompile>
+    <ClCompile Include="PersistentTests.cpp" />
     <ClCompile Include="ProcessTests.cpp" />
     <ClCompile Include="SecurityAccessControlListTests.cpp" />
     <ClCompile Include="SecurityAccessMaskTests.cpp" />

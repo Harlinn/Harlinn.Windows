@@ -25,8 +25,8 @@ namespace Harlinn::Common::Core::Internal
             : ptr_( nullptr )
         {
         }
-        constexpr ConstPointerIterator( Pointer ptr ) noexcept
-            : ptr_( ptr )
+        constexpr ConstPointerIterator( pointer ptr ) noexcept
+            : ptr_( const_cast<Pointer>(ptr) )
         {
         }
 

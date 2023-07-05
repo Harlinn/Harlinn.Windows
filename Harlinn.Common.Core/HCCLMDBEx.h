@@ -516,7 +516,7 @@ namespace Harlinn::Common::Core::LMDBEx
     /// </summary>
     class TableInfo : public TableInfoBase
     {
-        std::unordered_map<std::string_view, IndexInfo*> indexes_;
+        std::unordered_map<AnsiStringView, IndexInfo*> indexes_;
     public:
         using Base = TableInfoBase;
 
@@ -534,14 +534,14 @@ namespace Harlinn::Common::Core::LMDBEx
 
         virtual std::unique_ptr<Table> CreateTable( Session& session );
 
-        const std::unordered_map<std::string_view, IndexInfo*>& Indexes( ) const
+        const std::unordered_map<AnsiStringView, IndexInfo*>& Indexes( ) const
         {
             return indexes_;
         }
 
         void Add( IndexInfo* index )
         {
-            std::string_view name = index->Name( );
+            AnsiStringView name = index->Name( );
             indexes_.emplace( name, index );
         }
 
@@ -564,7 +564,7 @@ namespace Harlinn::Common::Core::LMDBEx
     public:
         using Base = TableBase;
     private:
-        std::unordered_map<std::string_view, std::unique_ptr<Index>> indexes_;
+        std::unordered_map<AnsiStringView, std::unique_ptr<Index>> indexes_;
     protected:
 
     public:
@@ -730,7 +730,7 @@ namespace Harlinn::Common::Core::LMDBEx
         Guid sessionId_;
         LMDB::TransactionFlags transactionFlags_;
         LMDB::Transaction transaction_;
-        std::unordered_map<std::string_view, std::unique_ptr<Table> > tables_;
+        std::unordered_map<AnsiStringView, std::unique_ptr<Table> > tables_;
         XXH64Hasher hasher_;
         Session* next_ = nullptr;
     public:
@@ -776,7 +776,7 @@ namespace Harlinn::Common::Core::LMDBEx
             return hasher_;
         }
 
-        LMDBEx::Table* GetTable( const std::string_view& tableName )
+        LMDBEx::Table* GetTable( const AnsiStringView& tableName )
         {
             auto it = tables_.find( tableName );
             if ( it != tables_.end( ) )
@@ -802,8 +802,8 @@ namespace Harlinn::Common::Core::LMDBEx
     {
         AnsiString databasePath_;
         size_t memoryMapSize_ = LMDB::Environment::DefaultMemoryMapSize;
-        std::unordered_map<std::string_view, std::unique_ptr< TableInfo > > tables_;
-        std::unordered_map<std::string_view, std::unique_ptr< IndexInfo > > indexes_;
+        std::unordered_map<AnsiStringView, std::unique_ptr< TableInfo > > tables_;
+        std::unordered_map<AnsiStringView, std::unique_ptr< IndexInfo > > indexes_;
     public:
         DatabaseOptions( )
         {
@@ -829,11 +829,11 @@ namespace Harlinn::Common::Core::LMDBEx
             return memoryMapSize_;
         }
 
-        const std::unordered_map<std::string_view, std::unique_ptr< TableInfo > >& Tables( ) const
+        const std::unordered_map<AnsiStringView, std::unique_ptr< TableInfo > >& Tables( ) const
         {
             return tables_;
         }
-        const std::unordered_map<std::string_view, std::unique_ptr< IndexInfo > >& Indexes( ) const
+        const std::unordered_map<AnsiStringView, std::unique_ptr< IndexInfo > >& Indexes( ) const
         {
             return indexes_;
         }
@@ -842,13 +842,13 @@ namespace Harlinn::Common::Core::LMDBEx
         TableInfoType* AddTable( const AnsiString& name )
         {
             std::unique_ptr<TableInfo> tableInfo = std::make_unique<TableInfoType>( name );
-            std::string_view nameView = tableInfo->Name( );
+            AnsiStringView nameView = tableInfo->Name( );
             auto* result = static_cast<TableInfoType*>( tableInfo.get( ) );
             tables_.emplace( nameView, std::move( tableInfo ) );
             return result;
         }
 
-        TableInfo* FindTable( const std::string_view& tableName ) const
+        TableInfo* FindTable( const AnsiStringView& tableName ) const
         {
             auto it = tables_.find( tableName );
             if ( it != tables_.end( ) )
@@ -868,7 +868,7 @@ namespace Harlinn::Common::Core::LMDBEx
             if ( tableInfo )
             {
                 std::unique_ptr<IndexInfo> indexInfo = std::make_unique<IndexInfoType>( name );
-                std::string_view nameView = indexInfo->Name( );
+                AnsiStringView nameView = indexInfo->Name( );
                 auto* result = static_cast<IndexInfoType*>( indexInfo.get( ) );
                 tableInfo->Add( result );
                 indexes_.emplace( nameView, std::move( indexInfo ) );
@@ -886,7 +886,7 @@ namespace Harlinn::Common::Core::LMDBEx
             if ( tableInfo )
             {
                 std::unique_ptr<IndexInfo> indexInfo = std::make_unique<HashIndexInfoType>( name );
-                std::string_view nameView = indexInfo->Name( );
+                AnsiStringView nameView = indexInfo->Name( );
                 auto* result = static_cast<HashIndexInfoType*>( indexInfo.get( ) );
                 tableInfo->Add( result );
                 indexes_.emplace( nameView, std::move( indexInfo ) );
@@ -948,11 +948,11 @@ namespace Harlinn::Common::Core::LMDBEx
             transaction.Commit( );
         }
     public:
-        const std::unordered_map<std::string_view, std::unique_ptr< TableInfo > >& Tables( ) const
+        const std::unordered_map<AnsiStringView, std::unique_ptr< TableInfo > >& Tables( ) const
         {
             return options_.Tables( );
         }
-        const std::unordered_map<std::string_view, std::unique_ptr< IndexInfo > >& Indexes( ) const
+        const std::unordered_map<AnsiStringView, std::unique_ptr< IndexInfo > >& Indexes( ) const
         {
             return options_.Indexes( );
         }
@@ -1030,7 +1030,7 @@ namespace Harlinn::Common::Core::LMDBEx
         for ( auto& entry : tableInfos )
         {
             auto table = entry.second->CreateTable( *this );
-            std::string_view name = entry.second->Name( );
+            AnsiString name = entry.second->Name( );
             tables_.emplace( name, std::move( table ) );
         }
     }

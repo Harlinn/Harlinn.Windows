@@ -11,8 +11,8 @@ namespace GenerateProject
         std::unique_ptr<ProjectFile> projectFile_;
         std::unique_ptr<ProjectFilterFile> projectFilterFile_;
         std::unique_ptr<ProjectUserFile> projectUserFile_;
-        std::string templateMainSourceFileName_;
-        std::string mainSourceFileName_;
+        AnsiString templateMainSourceFileName_;
+        AnsiString mainSourceFileName_;
         bool renamedMainSourceFile_ = false;
         std::vector< std::unique_ptr<SourceFile> > sourceFiles_;
     public:
@@ -21,12 +21,12 @@ namespace GenerateProject
         {
         }
 
-        const std::string GetTemplateMainSourceFileName( ) const
+        const AnsiString GetTemplateMainSourceFileName( ) const
         {
             char name[_MAX_FNAME + 1];
             char ext[_MAX_EXT + 1];
             _splitpath_s( templateMainSourceFileName_.c_str( ), nullptr, 0, nullptr, 0, name, _MAX_FNAME + 1, ext, _MAX_EXT + 1 );
-            std::string result;
+            AnsiString result;
             auto nameLength = LengthOf( name );
             auto extLength = LengthOf( ext );
             result.reserve( nameLength + extLength );
@@ -35,12 +35,12 @@ namespace GenerateProject
 
             return result;
         }
-        const std::string GetMainSourceFileName( ) const
+        const AnsiString GetMainSourceFileName( ) const
         {
             char name[_MAX_FNAME + 1];
             char ext[_MAX_EXT + 1];
             _splitpath_s( mainSourceFileName_.c_str( ), nullptr, 0, nullptr, 0, name, _MAX_FNAME + 1, ext, _MAX_EXT + 1 );
-            std::string result;
+            AnsiString result;
             auto nameLength = LengthOf( name );
             auto extLength = LengthOf( ext );
             result.reserve( nameLength + extLength );
@@ -56,7 +56,7 @@ namespace GenerateProject
         }
 
 
-        std::string TemplateDirectory( ) const
+        AnsiString TemplateDirectory( ) const
         {
             auto result = options_.TemplateName( );
             if ( result.ends_with( '\\' ) || result.ends_with( '/' ) )
@@ -66,7 +66,7 @@ namespace GenerateProject
             return result;
         }
 
-        std::string ProjectDirectory( ) const
+        AnsiString ProjectDirectory( ) const
         {
             auto result = options_.ProjectName( );
             if ( result.ends_with( '\\' ) || result.ends_with( '/' ) )
@@ -76,7 +76,7 @@ namespace GenerateProject
             return result;
         }
 
-        std::string TemplateName( ) const
+        AnsiString TemplateName( ) const
         {
             auto templateDirectory = TemplateDirectory( );
             char name[_MAX_FNAME + 1];
@@ -84,15 +84,15 @@ namespace GenerateProject
             auto nameLength = LengthOf( name );
             if ( nameLength )
             {
-                return std::string( name, nameLength );
+                return AnsiString( name, nameLength );
             }
             else 
             {
-                return std::string( );
+                return AnsiString( );
             }
         }
 
-        std::string ProjectName( ) const
+        AnsiString ProjectName( ) const
         {
             auto projectDirectory = ProjectDirectory( );
             char name[_MAX_FNAME + 1];
@@ -100,11 +100,11 @@ namespace GenerateProject
             auto nameLength = LengthOf( name );
             if ( nameLength )
             {
-                return std::string( name, nameLength );
+                return AnsiString( name, nameLength );
             }
             else
             {
-                return std::string( );
+                return AnsiString( );
             }
         }
 
@@ -116,26 +116,26 @@ namespace GenerateProject
         }
 
 
-        std::string TemplateProjectFileName( ) const
+        AnsiString TemplateProjectFileName( ) const
         {
             return TemplateDirectory( ) + '\\' + TemplateName( ) + ".vcxproj";
         }
 
-        std::string TemplateProjectFilterFileName( ) const
+        AnsiString TemplateProjectFilterFileName( ) const
         {
             return TemplateDirectory( ) + '\\' + TemplateName( ) + ".vcxproj.filters";
         }
 
-        std::string TemplateProjectUserFileName( ) const
+        AnsiString TemplateProjectUserFileName( ) const
         {
             return TemplateDirectory( ) + '\\' + TemplateName( ) + ".vcxproj.user";
         }
 
 
-        std::string TemplateMainSourceFileName( ) const
+        AnsiString TemplateMainSourceFileName( ) const
         {
-            std::vector<std::string> extensions{ {".cpp"},{".cxx"},{".cc"} };
-            std::vector<std::string> baseNames{ TemplateName( ), {"main"}};
+            std::vector<AnsiString> extensions{ {".cpp"},{".cxx"},{".cc"} };
+            std::vector<AnsiString> baseNames{ TemplateName( ), {"main"}};
             auto templateDirectory = TemplateDirectory( );
             for ( const auto& baseName : baseNames )
             {
@@ -148,20 +148,20 @@ namespace GenerateProject
                     }
                 }
             }
-            return std::string( );
+            return AnsiString( );
         }
 
-        std::string ProjectFileName( ) const
+        AnsiString ProjectFileName( ) const
         {
             return ProjectDirectory( ) + '\\' + ProjectName( ) + ".vcxproj";
         }
 
-        std::string ProjectFilterFileName( ) const
+        AnsiString ProjectFilterFileName( ) const
         {
             return ProjectDirectory( ) + '\\' + ProjectName( ) + ".vcxproj.filters";
         }
 
-        std::string ProjectUserFileName( ) const
+        AnsiString ProjectUserFileName( ) const
         {
             return ProjectDirectory( ) + '\\' + ProjectName( ) + ".vcxproj.user";
         }
@@ -232,7 +232,7 @@ namespace GenerateProject
         }
     private:
         template<typename T>
-        std::unique_ptr<T> LoadFile( const std::string& templateFilename, const std::string& filename )
+        std::unique_ptr<T> LoadFile( const AnsiString& templateFilename, const AnsiString& filename )
         {
             auto contents = IO::File::ReadAllText( templateFilename );
             auto file = std::make_unique<T>(this, filename, contents );
@@ -278,7 +278,7 @@ namespace GenerateProject
             _splitpath_s( templateMainSourceFileName.c_str( ), nullptr, 0, nullptr, 0, name, _MAX_FNAME + 1, ext, _MAX_EXT + 1 );
             if ( name[0] && ext[0] )
             {
-                std::string fileName;
+                AnsiString fileName;
                 auto templateName = TemplateName( );
                 if ( templateName == name )
                 {

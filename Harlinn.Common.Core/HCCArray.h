@@ -7,6 +7,7 @@
 #include <HCCGuid.h>
 #include <HCCCurrency.h>
 #include <HCC7BitEncoding.h>
+#include <HCCIterator.h>
 
 #pragma pack(push,1)
 namespace Harlinn::Common::Core
@@ -60,268 +61,6 @@ namespace Harlinn::Common::Core
 
     template <class FirstT, class... RestT>
     ArrayEx( FirstT, RestT... ) ->ArrayEx<typename Internal::EnforceSame<FirstT, RestT...>::type, 1 + sizeof...( RestT )>;
-    
-
-    template<typename T, size_t N>
-    class Array;
-
-    template< typename ArrayT >
-    class ArrayConstIterator
-    {
-        template<typename T, size_t N>
-        friend class Array;
-    public:
-        using iterator_concept = std::contiguous_iterator_tag;
-        using iterator_category = std::random_access_iterator_tag;
-        using value_type = typename ArrayT::value_type;
-        using difference_type = typename ArrayT::difference_type;
-        using pointer = typename ArrayT::const_pointer;
-        using reference = const value_type&;
-    public:
-        const value_type* ptr_ = nullptr;
-
-        constexpr ArrayConstIterator( const value_type* ptr ) noexcept
-            : ptr_( ptr )
-        {
-
-        }
-    public:
-        constexpr ArrayConstIterator( ) noexcept
-        {
-        }
-
-
-        constexpr operator bool( ) const noexcept
-        {
-            return ptr_ != nullptr;
-        }
-
-        constexpr bool operator == ( const ArrayConstIterator& other ) const noexcept
-        {
-            return ptr_ == other.ptr_;
-        }
-        constexpr bool operator != ( const ArrayConstIterator& other ) const noexcept
-        {
-            return ptr_ != other.ptr_;
-        }
-
-        constexpr bool operator == ( nullptr_t ) const noexcept
-        {
-            return ptr_ == nullptr;
-        }
-        constexpr bool operator != ( nullptr_t ) const noexcept
-        {
-            return ptr_ != nullptr;
-        }
-
-
-        constexpr bool operator <= ( const ArrayConstIterator& other ) const noexcept
-        {
-            return ptr_ <= other.ptr_;
-        }
-        constexpr bool operator < ( const ArrayConstIterator& other ) const noexcept
-        {
-            return ptr_ < other.ptr_;
-        }
-        constexpr bool operator >= ( const ArrayConstIterator& other ) const noexcept
-        {
-            return ptr_ >= other.ptr_;
-        }
-        constexpr bool operator > ( const ArrayConstIterator& other ) const noexcept
-        {
-            return ptr_ > other.ptr_;
-        }
-
-
-        [[nodiscard]] constexpr reference operator*( ) const noexcept
-        {
-            return const_cast<reference>( *ptr_ );
-        }
-
-        [[nodiscard]] constexpr pointer operator->( ) const noexcept
-        {
-            return const_cast<pointer>( ptr_ );
-        }
-
-        constexpr ArrayConstIterator& operator++( ) noexcept
-        {
-            ptr_++;
-            return *this;
-        }
-
-        constexpr ArrayConstIterator operator++( int ) noexcept
-        {
-            ArrayConstIterator result = *this;
-            ptr_++;
-            return result;
-        }
-
-        constexpr ArrayConstIterator& operator--( ) noexcept
-        {
-            ptr_--;
-            return *this;
-        }
-
-        constexpr ArrayConstIterator operator--( int ) noexcept
-        {
-            ArrayConstIterator result = *this;
-            ptr_--;
-            return result;
-        }
-
-        constexpr ArrayConstIterator& operator += ( const difference_type offset ) noexcept
-        {
-            ptr_ += offset;
-            return *this;
-        }
-
-        template <typename DiffT>
-        requires IsInteger<DiffT>
-        [[nodiscard]] constexpr ArrayConstIterator operator + ( const DiffT offset ) const noexcept
-        {
-            ArrayConstIterator result( ptr_ + offset );
-            return result;
-        }
-
-        constexpr ArrayConstIterator& operator-=( const difference_type offset ) noexcept
-        {
-            ptr_ -= offset;
-            return *this;
-        }
-
-
-        [[nodiscard]] constexpr ArrayConstIterator operator - ( const difference_type offset ) const noexcept
-        {
-            ArrayConstIterator result( ptr_ - offset );
-            return result;
-        }
-
-        [[nodiscard]] constexpr difference_type operator - ( const ArrayConstIterator& other ) const noexcept
-        {
-            return static_cast<difference_type>( ptr_ - other.ptr_ );
-        }
-
-
-        [[nodiscard]] constexpr reference operator[]( const difference_type offset ) const noexcept
-        {
-            return const_cast<reference>( ptr_[offset] );
-        }
-
-        constexpr void swap( ArrayConstIterator& other ) noexcept
-        {
-            std::swap( ptr_, other.ptr_ );
-        }
-
-    };
-
-    template<typename ArrayT>
-    class ArrayIterator : public ArrayConstIterator<ArrayT>
-    {
-        template<typename T,size_t N>
-        friend class Array;
-    public:
-        using Base = ArrayConstIterator<ArrayT>;
-
-        using iterator_concept = std::contiguous_iterator_tag;
-        using iterator_category = std::random_access_iterator_tag;
-        using value_type = typename ArrayT::value_type;
-        using difference_type = typename ArrayT::difference_type;
-        using pointer = typename ArrayT::pointer;
-        using reference = value_type&;
-    public:
-        constexpr explicit ArrayIterator( value_type* ptr ) noexcept
-            : Base( ptr )
-        {
-
-        }
-    public:
-        constexpr ArrayIterator( ) noexcept
-        {
-        }
-
-
-        [[nodiscard]] constexpr reference operator*( ) const noexcept
-        {
-            return const_cast<reference>( *Base::ptr_ );
-        }
-
-        [[nodiscard]] constexpr pointer operator->( ) const noexcept
-        {
-            return const_cast<pointer>( Base::ptr_ );
-        }
-
-        constexpr ArrayIterator& operator++( ) noexcept
-        {
-            Base::ptr_++;
-            return *this;
-        }
-
-        constexpr ArrayIterator operator++( int ) noexcept
-        {
-            ArrayIterator result = *this;
-            Base::ptr_++;
-            return result;
-        }
-
-        constexpr ArrayIterator& operator--( ) noexcept
-        {
-            Base::ptr_--;
-            return *this;
-        }
-
-        constexpr ArrayIterator operator--( int ) noexcept
-        {
-            ArrayIterator result = *this;
-            Base::ptr_--;
-            return result;
-        }
-
-        constexpr ArrayIterator& operator += ( const difference_type offset ) noexcept
-        {
-            Base::ptr_ += offset;
-            return *this;
-        }
-
-        template <typename DiffT>
-        requires IsInteger<DiffT>
-            [[nodiscard]] constexpr ArrayIterator operator + ( const DiffT offset ) const noexcept
-        {
-            ArrayIterator result( const_cast<value_type*>(Base::ptr_) + static_cast<size_t>( offset ) );
-            return result;
-        }
-
-        [[nodiscard]] constexpr difference_type operator - ( const ArrayIterator& other ) const noexcept
-        {
-            return static_cast<difference_type>( Base::ptr_ - other.ptr_ );
-        }
-
-
-        constexpr ArrayIterator& operator-=( const difference_type offset ) noexcept
-        {
-            Base::ptr_ -= offset;
-            return *this;
-        }
-
-
-        template <typename DiffT>
-        requires IsInteger<DiffT>
-            [[nodiscard]] constexpr ArrayIterator operator - ( const DiffT offset ) const noexcept
-        {
-            ArrayIterator result( Base::ptr_ - static_cast<size_t>( offset ) );
-            return result;
-        }
-
-        [[nodiscard]] constexpr reference operator[]( const difference_type offset ) const noexcept
-        {
-            return const_cast<reference>( Base::ptr_[offset] );
-        }
-
-        constexpr void swap( ArrayIterator& other ) noexcept
-        {
-            std::swap( Base::ptr_, other.ptr_ );
-        }
-
-    };
 
 
     template<typename T, size_t N>
@@ -336,8 +75,8 @@ namespace Harlinn::Common::Core
         using reference = T&;
         using const_reference = const T&;
 
-        using iterator = ArrayIterator<Array>;
-        using const_iterator = ArrayConstIterator<Array>;
+        using iterator = Internal::PointerIterator<Array<T,N>>;
+        using const_iterator = Internal::ConstPointerIterator<Array<T, N>>;
         using reverse_iterator = std::reverse_iterator<iterator>;
         using const_reverse_iterator = std::reverse_iterator<const_iterator>;
 
@@ -345,23 +84,23 @@ namespace Harlinn::Common::Core
 
         [[nodiscard]] constexpr iterator begin( ) noexcept
         {
-            return iterator( data_ );
+            return iterator( &data_[ 0 ] );
         }
 
         [[nodiscard]] constexpr const_iterator begin( ) const noexcept
         {
-            const_iterator result(data_);
+            const_iterator result( &data_[ 0 ] );
             return result;
         }
 
         [[nodiscard]] constexpr iterator end( ) noexcept
         {
-            return iterator( data_ + N );
+            return iterator( &data_[ N ] );
         }
 
         [[nodiscard]] constexpr const_iterator end( ) const noexcept
         {
-            const_iterator result( data_ + N );
+            const_iterator result( &data_[ N ] );
             return result;
         }
 
@@ -471,8 +210,9 @@ namespace Harlinn::Common::Core
         using reference = T&;
         using const_reference = const T&;
 
-        using iterator = ArrayIterator<Array>;
-        using const_iterator = ArrayConstIterator<Array>;
+        using iterator = Internal::PointerIterator<Array<T, 0>>;
+        using const_iterator = Internal::ConstPointerIterator<Array<T, 0>>;
+
         using reverse_iterator = std::reverse_iterator<iterator>;
         using const_reverse_iterator = std::reverse_iterator<const_iterator>;
 
@@ -481,22 +221,22 @@ namespace Harlinn::Common::Core
 
         [[nodiscard]] constexpr iterator begin( ) noexcept
         {
-            return iterator(data_);
+            return iterator( &data_[0] );
         }
 
         [[nodiscard]] constexpr const_iterator begin( ) const noexcept
         {
-            return const_iterator(data_);
+            return const_iterator( &data_[ 0 ] );
         }
 
         [[nodiscard]] constexpr iterator end( ) noexcept
         {
-            return iterator( data_ );
+            return iterator( &data_[ 0 ] );
         }
 
         [[nodiscard]] constexpr const_iterator end( ) const noexcept
         {
-            return const_iterator( data_ );
+            return const_iterator( &data_[ 0 ] );
         }
 
         [[nodiscard]] constexpr bool operator==( const Array& other ) const noexcept
