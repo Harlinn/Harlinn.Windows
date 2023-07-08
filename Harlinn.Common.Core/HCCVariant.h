@@ -2836,6 +2836,42 @@ namespace Harlinn::Common::Core
             return AsWideString( );
         }
 
+        std::wstring AsStdWideString( ) const
+        {
+            if ( Type( ) == VariantType::BStr )
+            {
+                if ( Base::bstrVal )
+                {
+                    return std::wstring( Base::bstrVal );
+                }
+                else
+                {
+                    return {};
+                }
+            }
+            else
+            {
+                VariantT result;
+                auto hr = VariantChangeType( ( VARIANT* )&result, ( VARIANT* )this, 0, ( VARTYPE )VariantType::BStr );
+                CheckHRESULT( hr );
+                if ( result.bstrVal )
+                {
+                    return std::wstring( result.bstrVal );
+                }
+                else
+                {
+                    return {};
+                }
+            }
+        }
+
+        template<>
+        std::wstring As<std::wstring>( ) const
+        {
+            return AsStdWideString( );
+        }
+
+
         AnsiString AsAnsiString( ) const
         {
             return ToAnsiString( AsWideString( ) );
@@ -2845,6 +2881,19 @@ namespace Harlinn::Common::Core
         AnsiString As<AnsiString>( ) const
         {
             return AsAnsiString( );
+        }
+
+        std::string AsStdString( ) const
+        {
+            std::string result;
+            ToAnsiString( AsWideString( ), result );
+            return result;
+        }
+
+        template<>
+        std::string As<std::string>( ) const
+        {
+            return AsStdString( );
         }
 
         SysString AsSysString( ) const

@@ -6,7 +6,7 @@ namespace
 {
     WideString TestDataRoot = Environment::EnvironmentVariable( L"HCC_TEST_DATA_ROOT" );
 
-    WideString DatabaseDir = IO::Path::Append( TestDataRoot, L"\\ESE\\Test" );
+    WideString DatabaseDir = IO::Path::Combine<WideString>( TestDataRoot, L"\\ESE\\Test" );
     WideString DatabasePath = DatabaseDir + L"\\Database.edb";
     WideString DatabaseSystemPath = DatabaseDir + L"\\System\\";
     WideString DatabaseLogfilePath = DatabaseDir + L"\\Log\\";

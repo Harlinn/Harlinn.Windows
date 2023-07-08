@@ -78,13 +78,13 @@ namespace Harlinn::Common::Core::Examples
             SetColumn( ownerColumnId_, id );
         }
 
-        std::string Name( ) const
+        AnsiString Name( ) const
         {
-            std::string result;
+            AnsiString result;
             Read( nameColumnId_, result );
             return result;
         }
-        void SetName( const std::string& name ) const
+        void SetName( const AnsiString& name ) const
         {
             SetColumn( nameColumnId_, name );
         }
@@ -109,7 +109,7 @@ namespace Harlinn::Common::Core::Examples
         }
 
 
-        bool MoveTo( const Guid& ownerId, const std::string& name ) const
+        bool MoveTo( const Guid& ownerId, const AnsiString& name ) const
         {
             return MoveTo( ownerId, name.c_str( ) );
         }
@@ -388,7 +388,7 @@ namespace Harlinn::Common::Core::Examples
         }
     private:
         template<typename T>
-        T CreateOrRetriveItem( const Guid& owningCatalogId, const std::string& name ) const
+        T CreateOrRetriveItem( const Guid& owningCatalogId, const AnsiString& name ) const
         {
             if ( MoveTo( owningCatalogId, name ) )
             {
@@ -409,11 +409,11 @@ namespace Harlinn::Common::Core::Examples
             }
         }
     public:
-        Catalog CreateOrRetrieveCatalog( const Guid& owningCatalogId, const std::string& name ) const
+        Catalog CreateOrRetrieveCatalog( const Guid& owningCatalogId, const AnsiString& name ) const
         { 
             return CreateOrRetriveItem<Catalog>( owningCatalogId, name );
         }
-        Asset CreateOrRetrieveAsset( const Guid& owningCatalogId, const std::string& name ) const
+        Asset CreateOrRetrieveAsset( const Guid& owningCatalogId, const AnsiString& name ) const
         {
             return CreateOrRetriveItem<Asset>( owningCatalogId, name );
         }

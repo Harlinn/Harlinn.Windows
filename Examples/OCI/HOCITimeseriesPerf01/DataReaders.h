@@ -30,7 +30,7 @@ public:
     virtual void InitializeDefines( ) override
     {
         Define<Guid>( ID_FIELDID + 1 );
-        Define<std::wstring>( NAME_FIELDID + 1, 128 );
+        Define<WideString>( NAME_FIELDID + 1, 128 );
         Define<Int64>( OPTIMISTICLOCK_FIELDID + 1 );
         Define<DateTime>( CREATED_FIELDID + 1 );
         Define<DateTime>( DELETED_FIELDID + 1 );
@@ -41,7 +41,7 @@ public:
     {
         return GetGuid( ID_FIELDID );
     }
-    std::wstring Name( ) const
+    WideString Name( ) const
     {
         return GetString( NAME_FIELDID );
     }
@@ -57,7 +57,7 @@ public:
     {
         return GetDateTime( DELETED_FIELDID );
     }
-    std::wstring Description( ) const
+    WideString Description( ) const
     {
         return GetString( DESCRIPTION_FIELDID );
     }
@@ -96,7 +96,7 @@ public:
         Define<Guid>( ID_FIELDID + 1 );
         Define<Guid>( TYPE_FIELDID + 1 );
         Define<Guid>( OWNER_FIELDID + 1 );
-        Define<std::wstring>( NAME_FIELDID + 1, 128 );
+        Define<WideString>( NAME_FIELDID + 1, 128 );
         Define<Int64>( OPTIMISTICLOCK_FIELDID + 1 );
         Define<DateTime>( CREATED_FIELDID + 1 );
         Define<DateTime>( DELETED_FIELDID + 1 );
@@ -120,7 +120,7 @@ public:
         }
         return Guid( );
     }
-    std::wstring Name( ) const
+    WideString Name( ) const
     {
         return GetString( NAME_FIELDID );
     }
@@ -143,7 +143,7 @@ public:
             return std::optional<DateTime>( );
         }
     }
-    std::wstring Description( ) const
+    WideString Description( ) const
     {
         return GetString( DESCRIPTION_FIELDID );
     }

@@ -12,7 +12,7 @@ namespace
     AnsiString GetDatabaseDir( )
     {
         AnsiString TestDataRoot = Environment::EnvironmentVariable( "HCC_TEST_DATA_ROOT" );
-        auto directoryPath = IO::Path::Append( TestDataRoot, "\\LogStorageTest" );
+        auto directoryPath = IO::Path::Combine( TestDataRoot, "\\LogStorageTest" );
 
         if ( IO::Directory::Exist( directoryPath ) == false )
         {

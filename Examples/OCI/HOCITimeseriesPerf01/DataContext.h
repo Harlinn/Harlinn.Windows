@@ -19,24 +19,24 @@ public:
     { }
     const OCI::ServiceContext& ServiceContext( ) const;
 
-    std::unique_ptr<OwnedObjectTypeData> CreateOwnedObjectType( const std::wstring& name, const std::wstring& description ) const;
-    std::unique_ptr<OwnedObjectTypeData> CreateOwnedObjectType( const Guid& id, const std::wstring& name, const std::wstring& description ) const;
+    std::unique_ptr<OwnedObjectTypeData> CreateOwnedObjectType( const WideString& name, const WideString& description ) const;
+    std::unique_ptr<OwnedObjectTypeData> CreateOwnedObjectType( const Guid& id, const WideString& name, const WideString& description ) const;
     std::unique_ptr<OwnedObjectTypeData> FindOwnedObjectType( const Guid& id ) const;
-    std::unique_ptr<OwnedObjectTypeData> FindOwnedObjectType( const std::wstring& name ) const;
+    std::unique_ptr<OwnedObjectTypeData> FindOwnedObjectType( const WideString& name ) const;
     std::unordered_map<Guid, std::unique_ptr<OwnedObjectTypeData> > ReadOwnedObjectTypes( ) const;
     void ClearOwnedObjectTypes( ) const;
     bool UpdateOwnedObjectType( std::unique_ptr<OwnedObjectTypeData>& data ) const;
     bool DeleteOwnedObjectType( const Guid& id, Int64 optimisticLock ) const;
     
 
-    std::unique_ptr<OwnedObjectData> CreateOwnedObject( const Guid& type, const std::wstring& name, const std::wstring& description ) const;
-    std::unique_ptr<OwnedObjectData> CreateOwnedObject( const Guid& type, const std::wstring& name, const std::wstring& description, const IO::MemoryStream& data ) const;
-    std::unique_ptr<OwnedObjectData> CreateOwnedObject( const Guid& id, const Guid& type, const std::wstring& name, const std::wstring& description ) const;
-    std::unique_ptr<OwnedObjectData> CreateOwnedObject( const Guid& id, const Guid& owner, const Guid& type, const std::wstring& name, const std::wstring& description ) const;
-    std::unique_ptr<OwnedObjectData> CreateOwnedObject( const Guid& id, const Guid& type, const std::wstring& name, const std::wstring& description, const IO::MemoryStream& data ) const;
-    std::unique_ptr<OwnedObjectData> CreateOwnedObject( const Guid& id, const Guid& owner, const Guid& type, const std::wstring& name, const std::wstring& description, const IO::MemoryStream& data ) const;
+    std::unique_ptr<OwnedObjectData> CreateOwnedObject( const Guid& type, const WideString& name, const WideString& description ) const;
+    std::unique_ptr<OwnedObjectData> CreateOwnedObject( const Guid& type, const WideString& name, const WideString& description, const IO::MemoryStream& data ) const;
+    std::unique_ptr<OwnedObjectData> CreateOwnedObject( const Guid& id, const Guid& type, const WideString& name, const WideString& description ) const;
+    std::unique_ptr<OwnedObjectData> CreateOwnedObject( const Guid& id, const Guid& owner, const Guid& type, const WideString& name, const WideString& description ) const;
+    std::unique_ptr<OwnedObjectData> CreateOwnedObject( const Guid& id, const Guid& type, const WideString& name, const WideString& description, const IO::MemoryStream& data ) const;
+    std::unique_ptr<OwnedObjectData> CreateOwnedObject( const Guid& id, const Guid& owner, const Guid& type, const WideString& name, const WideString& description, const IO::MemoryStream& data ) const;
     std::unique_ptr<OwnedObjectData> FindOwnedObject( const Guid& id ) const;
-    std::unique_ptr<OwnedObjectData> FindOwnedObject( const Guid& owner, const std::wstring& name ) const;
+    std::unique_ptr<OwnedObjectData> FindOwnedObject( const Guid& owner, const WideString& name ) const;
     std::unordered_map<Guid, std::unique_ptr<OwnedObjectData> > ReadOwnedObjects( ) const;
     std::unordered_map<Guid, std::unique_ptr<OwnedObjectData> > ReadOwnedObjectsByOwner( const Guid& owner ) const;
     std::unordered_map<Guid, std::unique_ptr<OwnedObjectData> > ReadOwnedObjectsByType( const Guid& type ) const;
@@ -58,7 +58,7 @@ class Session
     OCI::Server server_;
     OCI::ServiceContext serviceContext_;
 public:
-    Session( const Engine& engine, const std::wstring& userId, const std::wstring& password, const std::wstring& alias );
+    Session( const Engine& engine, const WideString& userId, const WideString& password, const WideString& alias );
     ~Session( )
     {
         serviceContext_.SessionEnd( );
@@ -101,7 +101,7 @@ public:
 
 };
 
-inline Session::Session( const Engine& engine, const std::wstring& userId, const std::wstring& password, const std::wstring& alias )
+inline Session::Session( const Engine& engine, const WideString& userId, const WideString& password, const WideString& alias )
     : engine_( &engine )
 {
     const auto& environment = engine.Environment( );

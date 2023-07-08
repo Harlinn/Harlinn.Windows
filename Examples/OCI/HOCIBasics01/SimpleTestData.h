@@ -10,19 +10,19 @@ class SimpleTestData
 {
     Int64 id_;
     Int64 optimisticLock_;
-    std::wstring name_;
-    std::wstring description_;
+    WideString name_;
+    WideString description_;
 public:
     SimpleTestData()
         : id_(0), optimisticLock_(0)
     { }
 
-    SimpleTestData( Int64 id, Int64 optimisticLock, const std::wstring& name, const std::wstring& description = std::wstring() )
+    SimpleTestData( Int64 id, Int64 optimisticLock, const WideString& name, const WideString& description = WideString() )
         : id_( id ), optimisticLock_( optimisticLock ), name_( name ), description_( description )
     {
     }
 
-    SimpleTestData( Int64 id, const std::wstring& name, const std::wstring& description = std::wstring( ) )
+    SimpleTestData( Int64 id, const WideString& name, const WideString& description = WideString( ) )
         : id_( id ), optimisticLock_( 0 ), name_( name ), description_( description )
     {
     }
@@ -31,19 +31,19 @@ public:
     void SetId( Int64 id ) noexcept { id_ = id; }
     constexpr Int64 OptimisticLock( ) const noexcept { return optimisticLock_; }
     void SetOptimisticLock( Int64 optimisticLock ) noexcept { optimisticLock_ = optimisticLock; }
-    constexpr const std::wstring& Name( ) const noexcept { return name_; }
-    void SetName( const std::wstring& name ) { name_ = name; }
-    constexpr const std::wstring& Description( ) const noexcept { return description_; }
-    void SetDescription( const std::wstring& description ) { description_ = description; }
+    constexpr const WideString& Name( ) const noexcept { return name_; }
+    void SetName( const WideString& name ) { name_ = name; }
+    constexpr const WideString& Description( ) const noexcept { return description_; }
+    void SetDescription( const WideString& description ) { description_ = description; }
 
-    void Assign( Int64 id, Int64 optimisticLock, const std::wstring& name, const std::wstring& description = std::wstring( ) )
+    void Assign( Int64 id, Int64 optimisticLock, const WideString& name, const WideString& description = WideString( ) )
     {
         id_ = id;
         optimisticLock_ = optimisticLock;
         name_ = name;
         description_ = description;
     }
-    void Assign( Int64 id, const std::wstring& name, const std::wstring& description = std::wstring( ) )
+    void Assign( Int64 id, const WideString& name, const WideString& description = WideString( ) )
     {
         id_ = id;
         optimisticLock_ = 0;
@@ -63,9 +63,9 @@ public:
         return Equals( *other );
     }
 
-    std::wstring ToString( ) const
+    WideString ToString( ) const
     {
-        return Format( L"Id: %llu, OptimisticLock: %llu, Name: %s, Description: %s", id_, optimisticLock_, name_.c_str( ), description_.c_str( ) );
+        return Format( L"Id: {}, OptimisticLock: {}, Name: {}, Description: {}", id_, optimisticLock_, name_, description_ );
     }
 
 

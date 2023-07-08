@@ -671,7 +671,7 @@ void DeviceContextExampleForm::DrawScreenWidthAndHeight( const DeviceContextHand
 
     dc.SetMapMode( mapMode );
 
-    std::wstring s = Format( L"Width %d, Height %d", pt.x, pt.y );
+    auto s = Format( L"Width {}, Height {}", pt.x, pt.y );
 
     dc.DrawStateW( s, rect.left, rect.top, DrawStateFlags::Normal );
 }

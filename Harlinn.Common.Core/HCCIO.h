@@ -9,12 +9,411 @@
 #include <HCCLogging.h>
 #include <HCCIOBufferStream.h>
 #include <HCCReference.h>
+#include <HCCConcepts.h>
+
 
 namespace Harlinn::Common::Core::IO
 {
-    
+    template<typename T>
+    struct FindDataBase;
 
+    template<>
+    struct FindDataBase<char> : public WIN32_FIND_DATAA
+    { };
+
+    static_assert( sizeof( FindDataBase<char> ) == sizeof( WIN32_FIND_DATAA ) );
+
+    template<>
+    struct FindDataBase<wchar_t> : public WIN32_FIND_DATAW
+    {
+    };
+    static_assert( sizeof( FindDataBase<wchar_t> ) == sizeof( WIN32_FIND_DATAW ) );
+
+    inline [[nodiscard]] bool CreateDirectoryEntry( const char* pathName, const SECURITY_ATTRIBUTES* securityAttributes )
+    {
+        return CreateDirectoryA( pathName, const_cast< SECURITY_ATTRIBUTES* >( securityAttributes ) );
+    }
+
+    inline [[nodiscard]] bool CreateDirectoryEntry( const wchar_t* pathName, const SECURITY_ATTRIBUTES* securityAttributes )
+    {
+        return CreateDirectoryW( pathName, const_cast< SECURITY_ATTRIBUTES* >( securityAttributes ) );
+    }
+
+    template<SimpleStringLike StringT>
+    inline [[nodiscard]] bool CreateDirectoryEntry( const StringT& pathName, const SECURITY_ATTRIBUTES* securityAttributes )
+    {
+        return CreateDirectoryEntry( pathName.c_str(), securityAttributes );
+    }
+
+    inline [[nodiscard]] bool EraseDirectoryEntry( const char* pathName )
+    {
+        return RemoveDirectoryA( pathName );
+    }
+
+    inline [[nodiscard]] bool EraseDirectoryEntry( const wchar_t* pathName )
+    {
+        return RemoveDirectoryW( pathName );
+    }
+    template<SimpleStringLike StringT>
+    inline [[nodiscard]] bool EraseDirectoryEntry( const StringT& pathName )
+    {
+        return EraseDirectoryEntry( pathName.c_str( ) );
+    }
+
+
+    inline [[nodiscard]] HANDLE CreateFileEntry( const char* fileName, DWORD desiredAccess, DWORD shareMode, const SECURITY_ATTRIBUTES* securityAttributes, DWORD creationDisposition, DWORD flagsAndAttributes, HANDLE templateFileHandle = nullptr )
+    {
+        return CreateFileA( fileName, desiredAccess, shareMode, const_cast< SECURITY_ATTRIBUTES* >( securityAttributes ), creationDisposition, flagsAndAttributes, templateFileHandle );
+    }
+
+    inline [[nodiscard]] HANDLE CreateFileEntry( const wchar_t* fileName, DWORD desiredAccess, DWORD shareMode, const SECURITY_ATTRIBUTES* securityAttributes, DWORD creationDisposition, DWORD flagsAndAttributes, HANDLE templateFileHandle = nullptr )
+    {
+        return CreateFileW( fileName, desiredAccess, shareMode, const_cast< SECURITY_ATTRIBUTES* >( securityAttributes ), creationDisposition, flagsAndAttributes, templateFileHandle );
+    }
+    template<SimpleStringLike StringT>
+    inline [[nodiscard]] HANDLE CreateFileEntry( const StringT& fileName, DWORD desiredAccess, DWORD shareMode, const SECURITY_ATTRIBUTES* securityAttributes, DWORD creationDisposition, DWORD flagsAndAttributes, HANDLE templateFileHandle = nullptr )
+    {
+        return CreateFileEntry( fileName.c_str(), desiredAccess, shareMode, const_cast< SECURITY_ATTRIBUTES* >( securityAttributes ), creationDisposition, flagsAndAttributes, templateFileHandle );
+    }
+
+
+
+    inline [[nodiscard]] HANDLE FindFirstFileEntry( const char* fileName, FINDEX_INFO_LEVELS infoLevel, WIN32_FIND_DATAA* findData, FINDEX_SEARCH_OPS searchOp, DWORD additionalFlags )
+    {
+        return FindFirstFileExA( fileName, infoLevel, findData, searchOp, nullptr, additionalFlags );
+    }
+
+    inline [[nodiscard]] HANDLE FindFirstFileEntry( const wchar_t* fileName, FINDEX_INFO_LEVELS infoLevel, WIN32_FIND_DATAW* findData, FINDEX_SEARCH_OPS searchOp, DWORD additionalFlags )
+    {
+        return FindFirstFileExW( fileName, infoLevel, findData, searchOp, nullptr, additionalFlags );
+    }
+
+    template<SimpleStringLike StringT>
+    inline [[nodiscard]] HANDLE FindFirstFileEntry( const StringT& fileName, FINDEX_INFO_LEVELS infoLevel, WIN32_FIND_DATAA* findData, FINDEX_SEARCH_OPS searchOp, DWORD additionalFlags )
+    {
+        return FindFirstFileEntry( fileName.c_str(), infoLevel, findData, searchOp, nullptr, additionalFlags );
+    }
+    template<SimpleStringLike StringT>
+    inline [[nodiscard]] HANDLE FindFirstFileEntry( const StringT& fileName, FINDEX_INFO_LEVELS infoLevel, WIN32_FIND_DATAW* findData, FINDEX_SEARCH_OPS searchOp, DWORD additionalFlags )
+    {
+        return FindFirstFileEntry( fileName.c_str( ), infoLevel, findData, searchOp, nullptr, additionalFlags );
+    }
+
+
+
+    inline [[nodiscard]] HANDLE FindFirstFileEntry( const char* fileName, WIN32_FIND_DATAA* findData )
+    {
+        return FindFirstFileA( fileName, findData );
+    }
+
+    inline [[nodiscard]] HANDLE FindFirstFileEntry( const wchar_t* fileName, WIN32_FIND_DATAW* findData )
+    {
+        return FindFirstFileW( fileName, findData );
+    }
+    template<SimpleStringLike StringT>
+    inline [[nodiscard]] HANDLE FindFirstFileEntry( const StringT& fileName, WIN32_FIND_DATAA* findData )
+    {
+        return FindFirstFileEntry( fileName.c_str(), findData );
+    }
+
+    template<SimpleStringLike StringT>
+    inline [[nodiscard]] HANDLE FindFirstFileEntry( const StringT& fileName, WIN32_FIND_DATAW* findData )
+    {
+        return FindFirstFileEntry( fileName.c_str( ), findData );
+    }
+
+
+    inline [[nodiscard]] bool FindNextFileEntry( HANDLE findHandle, WIN32_FIND_DATAA* findData )
+    {
+        return FindNextFileA( findHandle, findData );
+    }
+    inline [[nodiscard]] bool FindNextFileEntry( HANDLE findHandle, WIN32_FIND_DATAW* findData )
+    {
+        return FindNextFileW( findHandle, findData );
+    }
     
+    inline [[nodiscard]] bool EraseFileEntry( const char* fileName )
+    {
+        return DeleteFileA( fileName );
+    }
+
+    inline [[nodiscard]] bool EraseFileEntry( const wchar_t* fileName )
+    {
+        return DeleteFileW( fileName );
+    }
+    template<SimpleStringLike StringT>
+    inline [[nodiscard]] bool EraseFileEntry( const StringT& fileName )
+    {
+        return EraseFileEntry( fileName.c_str() );
+    }
+
+    inline [[nodiscard]] bool EraseVolumeMountPoint( const wchar_t* volumeMountPoint )
+    {
+        return DeleteVolumeMountPointW( volumeMountPoint );
+    }
+    inline [[nodiscard]] bool EraseVolumeMountPoint( const char* volumeMountPoint )
+    {
+        auto volumeMountPointString = WideString::From( volumeMountPoint );
+        return DeleteVolumeMountPointW( volumeMountPointString.c_str() );
+    }
+    template<SimpleStringLike StringT>
+    inline [[nodiscard]] bool EraseVolumeMountPoint( const StringT& volumeMountPoint )
+    {
+        return EraseVolumeMountPoint( volumeMountPoint.c_str( ) );
+    }
+
+
+
+
+    inline [[nodiscard]] HANDLE FindFirstEntryChangeNotification( const char* fileName, bool watchSubtree, DWORD notifyFilter )
+    {
+        return FindFirstChangeNotificationA( fileName, watchSubtree, notifyFilter );
+    }
+    inline [[nodiscard]] HANDLE FindFirstEntryChangeNotification( const wchar_t* fileName, bool watchSubtree, DWORD notifyFilter )
+    {
+        return FindFirstChangeNotificationW( fileName, watchSubtree, notifyFilter );
+    }
+    template<SimpleStringLike StringT>
+    inline [[nodiscard]] HANDLE FindFirstEntryChangeNotification( const StringT& fileName, bool watchSubtree, DWORD notifyFilter )
+    {
+        return FindFirstEntryChangeNotification( fileName.c_str(), watchSubtree, notifyFilter );
+    }
+
+    inline [[nodiscard]] HANDLE FindFirstVolumeEntry( wchar_t* volumeName, DWORD volumeNameLength )
+    {
+        return FindFirstVolumeW( volumeName, volumeNameLength );
+    }
+
+    inline [[nodiscard]] HANDLE FindFirstVolumeEntry( char* volumeName, DWORD volumeNameLength )
+    {
+        boost::container::small_vector<wchar_t, 20> data;
+        data.resize( volumeNameLength );
+        auto result = FindFirstVolumeW( data.data(), volumeNameLength );
+        auto ansiData = ToAnsiString( data.data( ) );
+        memcpy( volumeName, ansiData.c_str( ), std::min(volumeNameLength, static_cast<DWORD>(ansiData.size()) ));
+        return result;
+    }
+
+    template<WideStringLike StringT>
+    inline [[nodiscard]] HANDLE FindFirstVolumeEntry( StringT& resultString )
+    {
+        boost::container::small_vector<wchar_t, 20> data;
+        data.resize( 20 );
+        auto resultHandle = FindFirstVolumeW( data.data( ), 20 );
+        resultString = data.data( );
+        return resultHandle;
+    }
+
+    template<AnsiStringLike StringT>
+    inline [[nodiscard]] HANDLE FindFirstVolumeEntry( StringT& resultString )
+    {
+        boost::container::small_vector<wchar_t, 20> data;
+        data.resize( 20 );
+        auto resultHandle = FindFirstVolumeW( data.data( ), 20 );
+        resultString = ToAnsiString<StringT>( data.data( ) );
+        return resultHandle;
+    }
+
+
+    inline [[nodiscard]] bool FindNextVolumeEntry( HANDLE findHandle, wchar_t* volumeName, DWORD volumeNameLength )
+    {
+        return FindNextVolumeW( findHandle, volumeName, volumeNameLength );
+    }
+
+    inline [[nodiscard]] bool FindNextVolumeEntry( HANDLE findHandle, char* volumeName, DWORD volumeNameLength )
+    {
+        boost::container::small_vector<wchar_t, 20> data;
+        data.resize( volumeNameLength );
+        auto result = FindNextVolumeW( findHandle, data.data( ), volumeNameLength );
+        auto ansiData = ToAnsiString( data.data( ) );
+        memcpy( volumeName, ansiData.c_str( ), std::min( volumeNameLength, static_cast< DWORD >( ansiData.size( ) ) ) );
+        return result;
+    }
+
+    template<WideStringLike StringT>
+    inline [[nodiscard]] bool FindNextVolumeEntry( HANDLE findHandle, StringT& resultString )
+    {
+        boost::container::small_vector<wchar_t, 20> data;
+        data.resize( 20 );
+        auto result = FindNextVolumeW( findHandle, data.data( ), 20 );
+        resultString = data.data( );
+        return result;
+    }
+
+    template<AnsiStringLike StringT>
+    inline [[nodiscard]] bool FindNextVolumeEntry( HANDLE findHandle, StringT& resultString )
+    {
+        boost::container::small_vector<wchar_t, 20> data;
+        data.resize( 20 );
+        auto result = FindNextVolumeW( findHandle, data.data( ), 20 );
+        resultString = ToAnsiString<StringT>( data.data( ) );
+        return result;
+    }
+
+    inline [[nodiscard]] bool QueryDiskFreeSpace( const char* rootPathName, LPDWORD sectorsPerCluster, LPDWORD bytesPerSector, LPDWORD numberOfFreeClusters, LPDWORD totalNumberOfClusters )
+    {
+        return GetDiskFreeSpaceA( rootPathName, sectorsPerCluster, bytesPerSector, numberOfFreeClusters, totalNumberOfClusters );
+    }
+    inline [[nodiscard]] bool QueryDiskFreeSpace( const wchar_t* rootPathName, LPDWORD sectorsPerCluster, LPDWORD bytesPerSector, LPDWORD numberOfFreeClusters, LPDWORD totalNumberOfClusters )
+    {
+        return GetDiskFreeSpaceW( rootPathName, sectorsPerCluster, bytesPerSector, numberOfFreeClusters, totalNumberOfClusters );
+    }
+    template<SimpleStringLike StringT>
+    inline [[nodiscard]] bool QueryDiskFreeSpace( const StringT& rootPathName, LPDWORD sectorsPerCluster, LPDWORD bytesPerSector, LPDWORD numberOfFreeClusters, LPDWORD totalNumberOfClusters )
+    {
+        return QueryDiskFreeSpace( rootPathName.c_str( ), sectorsPerCluster, bytesPerSector, numberOfFreeClusters, totalNumberOfClusters );
+    }
+
+    inline [[nodiscard]] bool QueryDiskFreeSpace( const char* rootPathName, UInt64* freeBytesAvailableToCaller, UInt64* totalNumberOfBytes, UInt64* totalNumberOfFreeBytes )
+    {
+        return GetDiskFreeSpaceExA( rootPathName, reinterpret_cast< PULARGE_INTEGER >( freeBytesAvailableToCaller ), reinterpret_cast< PULARGE_INTEGER >( totalNumberOfBytes ), reinterpret_cast< PULARGE_INTEGER >( totalNumberOfFreeBytes ) );
+    }
+    inline [[nodiscard]] bool QueryDiskFreeSpace( const wchar_t* rootPathName, UInt64* freeBytesAvailableToCaller, UInt64* totalNumberOfBytes, UInt64* totalNumberOfFreeBytes )
+    {
+        return GetDiskFreeSpaceExW( rootPathName, reinterpret_cast< PULARGE_INTEGER >( freeBytesAvailableToCaller ), reinterpret_cast< PULARGE_INTEGER >( totalNumberOfBytes ), reinterpret_cast< PULARGE_INTEGER >( totalNumberOfFreeBytes ) );
+    }
+    template<SimpleStringLike StringT>
+    inline [[nodiscard]] bool QueryDiskFreeSpace( const StringT& rootPathName, UInt64* freeBytesAvailableToCaller, UInt64* totalNumberOfBytes, UInt64* totalNumberOfFreeBytes )
+    {
+        return QueryDiskFreeSpace( rootPathName.c_str( ), freeBytesAvailableToCaller, totalNumberOfBytes, totalNumberOfFreeBytes );
+    }
+
+    inline [[nodiscard]] HRESULT QueryDiskSpaceInformation( const char* rootPath, DISK_SPACE_INFORMATION* diskSpaceInfo )
+    {
+        return GetDiskSpaceInformationA( rootPath, diskSpaceInfo );
+    }
+    inline [[nodiscard]] HRESULT QueryDiskSpaceInformation( const wchar_t* rootPath, DISK_SPACE_INFORMATION* diskSpaceInfo )
+    {
+        return GetDiskSpaceInformationW( rootPath, diskSpaceInfo );
+    }
+    template<SimpleStringLike StringT>
+    inline [[nodiscard]] HRESULT QueryDiskSpaceInformation( const StringT& rootPath, DISK_SPACE_INFORMATION* diskSpaceInfo )
+    {
+        return QueryDiskSpaceInformation( rootPath.c_str(), diskSpaceInfo );
+    }
+
+    inline [[nodiscard]] UInt32 QueryDriveType( const char* rootPathName )
+    {
+        return GetDriveTypeA( rootPathName );
+    }
+    inline [[nodiscard]] UInt32 QueryDriveType( const wchar_t* rootPathName )
+    {
+        return GetDriveTypeW( rootPathName );
+    }
+    template<SimpleStringLike StringT>
+    inline [[nodiscard]] UInt32 QueryDriveType( const StringT& rootPathName )
+    {
+        return QueryDriveType( rootPathName.c_str() );
+    }
+
+    inline [[nodiscard]] UInt32 QueryFileAttributes( const char* fileName )
+    {
+        return GetFileAttributesA( fileName );
+    }
+    inline [[nodiscard]] UInt32 QueryFileAttributes( const wchar_t* fileName )
+    {
+        return GetFileAttributesW( fileName );
+    }
+    template<SimpleStringLike StringT>
+    inline [[nodiscard]] UInt32 QueryFileAttributes( const StringT& fileName )
+    {
+        return QueryFileAttributes( fileName.c_str() );
+    }
+
+    inline [[nodiscard]] bool QueryFileAttributes( const char* fileName, GET_FILEEX_INFO_LEVELS infoLevel, void* result )
+    {
+        return GetFileAttributesExA( fileName, infoLevel, result );
+    }
+    inline [[nodiscard]] bool QueryFileAttributes( const wchar_t* fileName, GET_FILEEX_INFO_LEVELS infoLevel, void* result )
+    {
+        return GetFileAttributesExW( fileName, infoLevel, result );
+    }
+    template<SimpleStringLike StringT>
+    inline [[nodiscard]] bool QueryFileAttributes( const StringT& fileName, GET_FILEEX_INFO_LEVELS infoLevel, void* result )
+    {
+        return QueryFileAttributes( fileName.c_str(), infoLevel, result );
+    }
+
+
+    inline [[nodiscard]] DWORD QueryFullPathName( const char* fileName, DWORD bufferLength, char* buffer, char** filePart = nullptr )
+    {
+        return GetFullPathNameA( fileName, bufferLength, buffer, filePart );
+    }
+
+    inline [[nodiscard]] DWORD QueryFullPathName( const wchar_t* fileName, DWORD bufferLength, wchar_t* buffer, wchar_t** filePart = nullptr )
+    {
+        return GetFullPathNameW( fileName, bufferLength, buffer, filePart );
+    }
+    template<SimpleStringLike StringT>
+    inline [[nodiscard]] DWORD QueryFullPathName( const StringT& fileName, DWORD bufferLength, wchar_t* buffer, wchar_t** filePart = nullptr )
+    {
+        return QueryFullPathName( fileName.c_str(), bufferLength, buffer, filePart );
+    }
+
+    inline [[nodiscard]] DWORD QueryTempPath( DWORD bufferLength, char* buffer )
+    {
+        return GetTempPathA( bufferLength, buffer );
+    }
+    inline [[nodiscard]] DWORD QueryTempPath( DWORD bufferLength, wchar_t* buffer )
+    {
+        return GetTempPathW( bufferLength, buffer );
+    }
+    inline [[nodiscard]] DWORD QueryTempPath2( DWORD bufferLength, char* buffer )
+    {
+        return GetTempPath2A( bufferLength, buffer );
+    }
+    inline [[nodiscard]] DWORD QueryTempPath2( DWORD bufferLength, wchar_t* buffer )
+    {
+        return GetTempPath2W( bufferLength, buffer );
+    }
+
+    inline [[nodiscard]] DWORD QueryTempFileName( const char* pathName, const char* prefixString, UINT unique, char* tempFileName )
+    {
+        return GetTempFileNameA( pathName, prefixString, unique, tempFileName );
+    }
+    inline [[nodiscard]] DWORD QueryTempFileName( const wchar_t* pathName, const wchar_t* prefixString, UINT unique, wchar_t* tempFileName )
+    {
+        return GetTempFileNameW( pathName, prefixString, unique, tempFileName );
+    }
+    template<SimpleStringLike StringT>
+    inline [[nodiscard]] DWORD QueryTempFileName( const StringT& pathName, const typename StringT::value_type* prefixString, UINT unique, wchar_t* tempFileName )
+    {
+        return QueryTempFileName( pathName.c_str(), prefixString, unique, tempFileName );
+    }
+    template<SimpleStringLike StringT>
+    inline [[nodiscard]] DWORD QueryTempFileName( const StringT& pathName, const StringT& prefixString, UINT unique, wchar_t* tempFileName )
+    {
+        return QueryTempFileName( pathName.c_str( ), prefixString.c_str(), unique, tempFileName );
+    }
+
+    inline [[nodiscard]] DWORD QueryLongPathName( const char* shortPathName, char* longPathBuffer, DWORD longPathBufferSize )
+    {
+        return GetLongPathNameA( shortPathName, longPathBuffer, longPathBufferSize );
+    }
+    inline [[nodiscard]] DWORD QueryLongPathName( const wchar_t* shortPathName, wchar_t* longPathBuffer, DWORD longPathBufferSize )
+    {
+        return GetLongPathNameW( shortPathName, longPathBuffer, longPathBufferSize );
+    }
+    template<SimpleStringLike StringT>
+    inline [[nodiscard]] DWORD QueryLongPathName( const StringT& shortPathName, wchar_t* longPathBuffer, DWORD longPathBufferSize )
+    {
+        return QueryLongPathName( shortPathName.c_str(), longPathBuffer, longPathBufferSize );
+    }
+
+    inline [[nodiscard]] DWORD QueryShortPathName( const char* longPathName, char* shortPathBuffer, DWORD shortPathBufferSize )
+    {
+        return GetShortPathNameA( longPathName, shortPathBuffer, shortPathBufferSize );
+    }
+    inline [[nodiscard]] DWORD QueryShortPathName( const wchar_t* longPathName, wchar_t* shortPathBuffer, DWORD shortPathBufferSize )
+    {
+        return GetShortPathNameW( longPathName, shortPathBuffer, shortPathBufferSize );
+    }
+    template<SimpleStringLike StringT>
+    inline [[nodiscard]] DWORD QueryShortPathName( const StringT& longPathName, wchar_t* shortPathBuffer, DWORD shortPathBufferSize )
+    {
+        return QueryShortPathName( longPathName.c_str( ), shortPathBuffer, shortPathBufferSize );
+    }
+
 
 
     /// <summary>
@@ -834,8 +1233,7 @@ namespace Harlinn::Common::Core::IO
     };
     HCC_DEFINE_ENUM_FLAG_OPERATORS( FileSystemRights, DWORD );
 
-    template<typename StringT>
-        requires IsStdBasicString<StringT>
+    template<SimpleStringLike StringT>
     class FileSystemEntry
     {
     public:
@@ -855,11 +1253,11 @@ namespace Harlinn::Common::Core::IO
         { }
 
 
-        constexpr const WideString& ParentDirectory( ) const noexcept
+        constexpr const StringType& ParentDirectory( ) const noexcept
         {
             return parentDirectory_;
         }
-        constexpr const WideString& Name( ) const noexcept
+        constexpr const StringType& Name( ) const noexcept
         {
             return name_;
         }
@@ -884,12 +1282,10 @@ namespace Harlinn::Common::Core::IO
 
     };
 
-    template<typename StringT>
-        requires IsStdBasicString<StringT>
+    template<SimpleStringLike StringT>
     using DirectoryInfo = FileSystemEntry<StringT>;
 
-    template<typename StringT>
-        requires IsStdBasicString<StringT>
+    template<SimpleStringLike StringT>
     class FileInfo : public FileSystemEntry<StringT>
     {
     public:
@@ -916,8 +1312,7 @@ namespace Harlinn::Common::Core::IO
     
 
 
-    template<typename T>
-        requires IsStdBasicString<T> || IsBasicString<T>
+    template<StringLike T>
     class SplitPath
     {
     public:
@@ -1062,10 +1457,10 @@ namespace Harlinn::Common::Core::IO
     class Path
     {
     public:
-        static constexpr wchar_t DirectorySeparatorChar = '\\';
-        static constexpr wchar_t AltDirectorySeparatorChar = '/';
-        static constexpr wchar_t VolumeSeparatorChar = ':';
-        static constexpr wchar_t PathSeparator = ';';
+        static constexpr char DirectorySeparatorChar = '\\';
+        static constexpr char AltDirectorySeparatorChar = '/';
+        static constexpr char VolumeSeparatorChar = ':';
+        static constexpr char PathSeparator = ';';
 
         static constexpr int MaxPath = 260;
         static constexpr int MaxDirectoryLength = 255;
@@ -1108,29 +1503,249 @@ namespace Harlinn::Common::Core::IO
         }
 
 
+        template<StringLike StringT, SimpleSpanLike SpanT1, SimpleSpanLike SpanT2>
+            requires (std::is_same_v<typename StringT::value_type, std::remove_cvref_t< typename SpanT1::value_type> > && std::is_same_v<typename StringT::value_type, std::remove_cvref_t< typename SpanT2::value_type> > )
+        static [[nodiscard]] StringT Combine( const SpanT1& startOfPath, const SpanT2& remainingPath )
+        {
+            using CharT = typename StringT::value_type;
 
-        HCC_EXPORT static WideString Append( const WideString& startOfPath, const WideString& remainingPath );
-        HCC_EXPORT static AnsiString Append( const AnsiString& startOfPath, const AnsiString& remainingPath );
+            if ( !EndsWith( startOfPath, static_cast< CharT >( '\\' ) ) &&
+                !EndsWith( startOfPath, static_cast< CharT >( '/' ) ) &&
+                !StartsWith( remainingPath, static_cast< CharT >( '\\' ) ) &&
+                !StartsWith( remainingPath, static_cast< CharT >( '/' ) ) )
+            {
+                
+                if constexpr ( IsStdBasicString<StringT> )
+                {
+                    StringT result;
+                    result.reserve( startOfPath.size( ) + 1 + remainingPath.size( ) );
+                    result.append( startOfPath.data( ), startOfPath.size( ) );
+                    result.append( static_cast< CharT >( '\\' ) );
+                    result.append( remainingPath.data( ), remainingPath.size( ) );
+                    return result;
+                }
+                else
+                {
+                    StringT result( startOfPath, static_cast< CharT >( '\\' ), remainingPath );
+                    return result;
+                }
+            }
+            else
+            {
+                if constexpr ( IsStdBasicString<StringT> )
+                {
+                    StringT result;
+                    result.reserve( startOfPath.size( ) + remainingPath.size( ) );
+                    result.append( startOfPath.data( ), startOfPath.size( ) );
+                    result.append( remainingPath.data( ), remainingPath.size( ) );
+                    return result;
+                }
+                else
+                {
+                    StringT result( startOfPath, remainingPath );
+                    return result;
+                }
+            }
+        }
 
-        HCC_EXPORT static WideString ChangeExtension( const WideString& path, const WideString& newExtension );
-        HCC_EXPORT static WideString GetLongPathName( const WideString& path );
-        HCC_EXPORT static WideString GetFullPathName( const WideString& path );
-        HCC_EXPORT static WideString GetFullPathName( const WideString& path, WideString::size_type& indexOfFileName );
+        template<StringLike StringT, SimpleSpanLike SpanT>
+            requires ( std::is_same_v<typename StringT::value_type, typename SpanT::value_type> )
+        static [[nodiscard]] StringT Combine( const SpanT& startOfPath, const typename StringT::value_type* remainingPath )
+        {
+            using CharT = typename StringT::value_type;
+            std::span<const CharT> remainingPathView( remainingPath, LengthOf( remainingPath ) );
+            return Combine<StringT>( startOfPath, remainingPathView );
+        }
+        template<StringLike StringT>
+        static [[nodiscard]] StringT Combine( const StringT& startOfPath, const typename StringT::value_type* remainingPath )
+        {
+            using CharT = typename StringT::value_type;
+            std::span<const CharT> remainingPathView( remainingPath, LengthOf( remainingPath ) );
+            return Combine<StringT>( startOfPath, remainingPathView );
+        }
 
-        HCC_EXPORT static AnsiString GetFullPathName(const AnsiString& path);
-        HCC_EXPORT static AnsiString GetFullPathName(const AnsiString& path, AnsiString::size_type& indexOfFileName);
+        
+    private:
+        template<SimpleStringLike StringT>
+        static void CheckInvalidPathChars( const StringT& path )
+        {
+            using CharT = typename StringT::value_type;
+            for ( auto c : path )
+            {
+                if ( c == static_cast< CharT >( '\"' ) || c == static_cast< CharT >( '<' ) || c == static_cast< CharT >( '>' ) || c == static_cast< CharT >( '|' ) || c < 32 )
+                {
+                    throw ArgumentException( "Invalid path character" );
+                }
+            }
+        }
+    public:
 
-        HCC_EXPORT static AnsiString FullPath( const AnsiString& path );
+        template<StringLike StringT>
+        static [[nodiscard]] StringT ChangeExtension( const StringT& path, const StringT& newExtension )
+        {
+            using size_type = typename StringT::size_type;
+            using CharT = typename StringT::value_type;
+            if ( path.empty( ) == false )
+            {
+                CheckInvalidPathChars( path );
+                CharT stopCharacters[ ] = { static_cast< CharT >( '.' ), static_cast< CharT >( DirectorySeparatorChar ), static_cast< CharT >( AltDirectorySeparatorChar ), static_cast< CharT >( VolumeSeparatorChar ), static_cast< CharT >( '\x00' ) };
 
-        HCC_EXPORT static WideString GetParentDirectory( const wchar_t* path );
-        static WideString GetParentDirectory( const WideString& path )
+
+                size_type index = path.find_last_of( stopCharacters );
+                StringT result = path;
+                if ( index != StringT::npos )
+                {
+                    if ( path[ index ] == static_cast< CharT >( '.' ) )
+                    {
+                        result = path.substr( 0, index );
+                    }
+                }
+
+                if ( newExtension.empty( ) == false )
+                {
+                    if ( newExtension[ 0 ] != static_cast< CharT >( '.' ) )
+                    {
+                        result += static_cast< CharT >( '.' );
+                    }
+                    result += newExtension;
+                }
+                return result;
+            }
+            return {};
+        }
+
+        template<StringLike StringT>
+        static [[nodiscard]] StringT LongPathName( const StringT& path )
+        {
+            using CharT = typename StringT::value_type;
+            if ( path.empty( ) == false )
+            {
+                CharT buffer[ MAX_PATH + 1 ] = { 0, };
+                auto length = QueryLongPathName( path.c_str( ), buffer, sizeof( buffer ) / sizeof( CharT ) );
+                if ( length == 0 )
+                {
+                    ThrowLastOSError( );
+                }
+                if ( length > ( sizeof( buffer ) / sizeof( CharT ) ) )
+                {
+                    StringT result;
+                    result.resize( length - 1 );
+                    length = QueryLongPathName( path.c_str( ), result.data( ), length );
+                    if ( length == 0 )
+                    {
+                        ThrowLastOSError( );
+                    }
+                    return result;
+                }
+                else
+                {
+                    StringT result( buffer, length );
+                    return result;
+                }
+            }
+            return {};
+        }
+
+        template<StringLike StringT>
+        static [[nodiscard]] StringT ShortPathName( const StringT& path )
+        {
+            using CharT = typename StringT::value_type;
+            if ( path.empty( ) == false )
+            {
+                CharT buffer[ MAX_PATH + 1 ] = { 0, };
+                auto length = QueryShortPathName( path.c_str( ), buffer, sizeof( buffer ) / sizeof( CharT ) );
+                if ( length == 0 )
+                {
+                    ThrowLastOSError( );
+                }
+                if ( length > ( sizeof( buffer ) / sizeof( CharT ) ) )
+                {
+                    StringT result;
+                    result.resize( length - 1 );
+                    length = QueryShortPathName( path.c_str( ), result.data( ), length );
+                    if ( length == 0 )
+                    {
+                        ThrowLastOSError( );
+                    }
+                    return result;
+                }
+                else
+                {
+                    StringT result( buffer, length );
+                    return result;
+                }
+            }
+            return {};
+        }
+
+        template<StringLike StringT>
+        static [[nodiscard]] StringT FullPath( const StringT& path, typename StringT::size_type* indexOfFileName = nullptr )
+        {
+            using CharT = typename StringT::value_type;
+            if ( path.empty( ) == false )
+            {
+                CharT* filePart;
+                CharT buffer[ MAX_PATH + 1 ] = { 0, };
+                auto length = QueryFullPathName( path.c_str( ), sizeof( buffer ) / sizeof( CharT ), buffer, &filePart );
+                if ( length == 0 )
+                {
+                    ThrowLastOSError( );
+                }
+                if ( length >= ( sizeof( buffer ) / sizeof( CharT ) ) )
+                {
+                    StringT result;
+                    result.resize( length - 1 );
+                    length = QueryFullPathName( path.c_str( ), length, result.data( ), &filePart );
+                    if ( length == 0 )
+                    {
+                        ThrowLastOSError( );
+                    }
+                    if ( indexOfFileName )
+                    {
+                        *indexOfFileName = filePart - result.c_str( );
+                    }
+                    return result;
+                }
+                else
+                {
+                    if ( indexOfFileName )
+                    {
+                        *indexOfFileName = filePart - buffer;
+                    }
+                    StringT result( buffer, length );
+                    return result;
+                }
+            }
+            return {};
+        }
+
+        
+        template<typename CharT>
+            requires ( std::is_same_v<CharT, char> || std::is_same_v<CharT, wchar_t> )
+        static BasicString<CharT> GetParentDirectory( const CharT* path )
+        {
+            CharT drive[ _MAX_DRIVE + 1 ];
+            CharT dir[ _MAX_DIR + 1 ];
+            CharT filename[ _MAX_FNAME + 1 ];
+            CharT ext[ _MAX_EXT + 1 ];
+
+            if constexpr ( std::is_same_v<CharT, wchar_t> )
+            {
+                _wsplitpath_s( path, drive, dir, filename, ext );
+            }
+            else
+            {
+                _splitpath_s( path, drive, dir, filename, ext );
+            }
+            BasicString<CharT> result( drive );
+            result += dir;
+            return result;
+        }
+
+        template<StringLike StringT>
+        static BasicString<typename StringT::value_type> GetParentDirectory( const StringT& path )
         {
             return GetParentDirectory( path.c_str() );
-        }
-        HCC_EXPORT static AnsiString GetParentDirectory( const char* path );
-        static AnsiString GetParentDirectory( const AnsiString& path )
-        {
-            return GetParentDirectory( path.c_str( ) );
         }
 
         // Compares two paths to determine if they share a common prefix. 
@@ -1138,22 +1753,104 @@ namespace Harlinn::Common::Core::IO
         HCC_EXPORT static size_t CommonPrefix( const wchar_t* path1, const wchar_t* path2, wchar_t* commonPrefix = nullptr );
 
 
+        
+
         // Searches a path and determines if it is relative
-        HCC_EXPORT static bool IsRelative( const WideString& path );
+        template<typename CharT>
+            requires (std::is_same_v<CharT,char> || std::is_same_v<CharT, wchar_t>)
+        static bool IsRelative( const CharT* path )
+        {
+            if ( !path || !*path )
+            {
+                return true;
+            }
+            else if ( *path == static_cast<CharT>( '\\' ) || *path == static_cast< CharT >( '/' ) || ( *path && path[ 1 ] == static_cast< CharT >( ':' ) ) )
+            {
+                return false;
+            }
+            return true;
+        }
+
         // Searches a path and determines if it is relative
-        HCC_EXPORT static bool IsRelative( const wchar_t* path );
+        template<SimpleStringLike StringT>
+        static bool IsRelative( const StringT& path )
+        {
+            return IsRelative( path.c_str() );
+        }
 
         // Determines whether a path string refers to the root of a volume
-        HCC_EXPORT static bool IsRoot( const WideString& path );
+        template<typename CharT>
+            requires ( std::is_same_v<CharT, char> || std::is_same_v<CharT, wchar_t> )
+        static bool IsRoot( const CharT* path )
+        {
+            if ( path && *path )
+            {
+                if ( *path == static_cast<CharT>('\\') )
+                {
+                    if ( !path[ 1 ] )
+                    {
+                        // '\' 
+                        return true;
+                    }
+                    else if ( path[ 1 ] == static_cast< CharT >('\\') )
+                    {
+                        bool slashSeen = false;
+                        path += 2;
+
+                        // Check for UNC root path 
+                        while ( *path )
+                        {
+                            if ( *path == static_cast< CharT >('\\') )
+                            {
+                                if ( slashSeen )
+                                    return false;
+                                slashSeen = true;
+                            }
+                            path++;
+                        }
+                        return true;
+                    }
+                }
+                else if ( path[ 1 ] == static_cast< CharT >( ':' ) &&
+                    path[ 2 ] == static_cast< CharT >( '\\' ) &&
+                    path[ 3 ] == static_cast< CharT >( '\0' ) )
+                {
+                    // "X:\"
+                    return true;
+                }
+            }
+            return false;
+        }
+
         // Determines whether a path string refers to the root of a volume
-        HCC_EXPORT static bool IsRoot( const wchar_t* path );
+        template<SimpleStringLike StringT>
+        static bool IsRoot( const StringT& path )
+        {
+            return IsRoot( path.c_str( ) );
+        }
 
         // Determines if a path string is a valid Universal Naming 
         // Convention (UNC) path, as opposed to a path based on a drive letter
-        HCC_EXPORT static bool IsUNC( const WideString& path );
+        template<typename CharT>
+            requires ( std::is_same_v<CharT, char> || std::is_same_v<CharT, wchar_t> )
+        static bool IsUNC( const CharT* path )
+        {
+            if ( path && ( path[ 0 ] == static_cast< CharT >( '\\' ) ) && ( path[ 1 ] == static_cast< CharT >( '\\' ) ) && ( path[ 2 ] != static_cast< CharT >( '?' ) ) )
+            {
+                return true;
+            }
+            return false;
+        }
+
         // Determines if a path string is a valid Universal Naming 
         // Convention (UNC) path, as opposed to a path based on a drive letter
-        HCC_EXPORT static bool IsUNC( const wchar_t* path );
+        template<SimpleStringLike StringT>
+        static bool IsUNC( const WideString& path )
+        {
+            return IsUNC( path.c_str( ) );
+        }
+
+
     };
 
 
@@ -1577,19 +2274,21 @@ namespace Harlinn::Common::Core::IO
         HCC_EXPORT static bool DeleteIfExist( const wchar_t* filePath );
         HCC_EXPORT static bool DeleteIfExist( const char* filePath );
 
-        template<typename T>
-            requires std::is_same_v<AnsiString, std::remove_cv_t<T>> || std::is_same_v<WideString, std::remove_cv_t<T>>
-        static bool DeleteIfExist( const T & filePath )
+        template<SimpleStringLike StringT>
+        static bool DeleteIfExist( const StringT& filePath )
         {
             return DeleteIfExist( filePath.c_str( ) );
         }
 
 
-        HCC_EXPORT static bool Exist( const WideString& filePath );
         HCC_EXPORT static bool Exist( const wchar_t* filePath );
-
-        HCC_EXPORT static bool Exist( const AnsiString& filePath );
         HCC_EXPORT static bool Exist( const char* filePath );
+
+        template<SimpleStringLike StringT>
+        static bool Exist( const StringT& filePath )
+        {
+            return Exist( filePath.c_str( ) );
+        }
 
         HCC_EXPORT static UInt64 Size( const wchar_t* filePath );
         HCC_EXPORT static UInt64 Size( const char* filePath );
@@ -1710,23 +2409,19 @@ namespace Harlinn::Common::Core::IO
         HCC_EXPORT static WideString Current( );
         HCC_EXPORT static AnsiString CurrentA( );
         HCC_EXPORT static bool Exist( const wchar_t* directoryPath );
-        static bool Exist( const WideString& directoryPath )
-        {
-            return Exist( directoryPath.c_str() );
-        }
         HCC_EXPORT static bool Exist( const char* directoryPath );
-        static bool Exist( const AnsiString& directoryPath )
+
+        template<SimpleStringLike StringT>
+        static bool Exist( const StringT& directoryPath )
         {
             return Exist( directoryPath.c_str( ) );
         }
 
         HCC_EXPORT static void Create( const wchar_t* directoryPath );
         HCC_EXPORT static void Create( const char* directoryPath );
-        static void Create( const WideString& directoryPath )
-        {
-            Create( directoryPath.c_str( ) );
-        }
-        static void Create( const AnsiString& directoryPath )
+
+        template<SimpleStringLike StringT>
+        static void Create( const StringT& directoryPath )
         {
             Create( directoryPath.c_str( ) );
         }
@@ -1735,11 +2430,11 @@ namespace Harlinn::Common::Core::IO
 
     template<typename CharT>
     requires ( std::is_same_v<std::remove_cvref_t<CharT>, char> || std::is_same_v<std::remove_cvref_t<CharT>, wchar_t>)
-    class FindData : public std::conditional_t< std::is_same_v<std::remove_cvref_t<CharT>, wchar_t>, WIN32_FIND_DATAW, WIN32_FIND_DATAA>
+    class FindData : public FindDataBase<std::remove_cvref_t<CharT>>
     {
     public:
         using CharType = std::remove_cvref_t<CharT>;
-        using Base = std::conditional_t< std::is_same_v<CharType, wchar_t>, WIN32_FIND_DATAW, WIN32_FIND_DATAA>;
+        using Base = FindDataBase<std::remove_cvref_t<CharT>>;
 
         constexpr FindData() noexcept
             : Base{}
@@ -1782,8 +2477,7 @@ namespace Harlinn::Common::Core::IO
         }
     };
 
-    template<typename StringT>
-        requires IsBasicString<StringT>
+    template<SimpleStringLike StringT>
     class FileSystemEntries
     {
     public:

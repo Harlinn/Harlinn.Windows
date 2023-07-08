@@ -29,17 +29,17 @@ int main()
     Address address( 42000 );
     clientSocket.Connect( address );
 
-    clientSocket.Write( &recordCount, sizeof( recordCount ) );
+    clientSocket.Send( &recordCount, sizeof( recordCount ), MessageFlags::None );
 
     Int32 index = 1;
-    clientSocket.Write( &index, sizeof( index ) );
+    clientSocket.Send( &index, sizeof( index ), MessageFlags::None );
 
     std::vector<SensorValue> records;
     records.resize( batchSize, SensorValue{ Guid( ), DateTime( static_cast<Int64>( index + 1 ) ),index + 3, 4.0 } );
     size_t sent = 0;
     while ( sent < recordCount )
     {
-        clientSocket.Write( records.data( ), records.size( ) * sizeof( SensorValue ) );
+        clientSocket.Send( records.data( ), records.size( ) * sizeof( SensorValue ), MessageFlags::None );
         sent += records.size( );
     }
     clientSocket.Disconnect( );

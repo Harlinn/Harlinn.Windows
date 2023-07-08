@@ -32,17 +32,17 @@ public:
 
 
 
-std::string GetSensorName( size_t value )
+AnsiString GetSensorName( size_t value )
 {
     return Format( "S%08x", value );
 }
 
-std::string GetCatalogName( size_t value )
+AnsiString GetCatalogName( size_t value )
 {
     return Format( "C%08x", value );
 }
 
-std::string GetAssetName( size_t value )
+AnsiString GetAssetName( size_t value )
 {
     return Format( "A%08x", value );
 }
@@ -68,7 +68,7 @@ void PerformanceOf( const char* functionName, OperationType operationType,F test
     }
     catch ( std::exception& exc )
     {
-        std::string message = exc.what( );
+        AnsiString message = exc.what( );
         printf("Exception while executing %s: %s", functionName, message.c_str() );
         return;
     }
@@ -451,7 +451,7 @@ int main( int argc, char* argv[] )
     }
     catch ( std::exception& exc )
     {
-        std::string message = exc.what( );
+        AnsiString message = exc.what( );
         printf( "Exception: %s", message.c_str( ) );
     }
     application.Start( );

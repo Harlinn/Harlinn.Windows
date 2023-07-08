@@ -26,10 +26,14 @@ enum class PlayerState
 
 //  Player class implements the MediaSession functionality and hides it from a calling 
 //  application.
-class Player : public Com::IUknownImpl<Player, IMFAsyncCallback>
+class Player : public Com::ObjectBase<Player, IMFAsyncCallback>, public Com::IUnknownImpl<Player, IMFAsyncCallback>
 {
 public:
-    using Base = Com::IUknownImpl<Player, IMFAsyncCallback>;
+    using Base = Com::ObjectBase<Player, IMFAsyncCallback>;
+
+    using Base::QueryInterface;
+    using Base::AddRef;
+    using Base::Release;
 private:
     CriticalSection criticalSection_;
 

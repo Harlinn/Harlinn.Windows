@@ -12,27 +12,27 @@ using namespace Harlinn::Common::Core;
 struct OwnedObjectTypeData
 {
     Guid Id;
-    std::wstring Name;
+    WideString Name;
     Int64 OptimisticLock;
     DateTime Created;
     std::optional<DateTime> Deleted;
-    std::wstring Description;
+    WideString Description;
 
     OwnedObjectTypeData( const Guid& id,
-        std::wstring&& name,
+        WideString&& name,
         Int64 optimisticLock,
         const DateTime& created,
         const std::optional<DateTime>& deleted,
-        std::wstring&& description )
+        WideString&& description )
         : Id( id ), Name(std::move( name )), OptimisticLock( optimisticLock ), Created( created ), Deleted( deleted ), Description(std::move( description ))
     {}
 
     OwnedObjectTypeData( const Guid& id,
-        const std::wstring& name,
+        const WideString& name,
         Int64 optimisticLock,
         const DateTime& created,
         const std::optional<DateTime>& deleted,
-        const std::wstring& description )
+        const WideString& description )
         : Id( id ), Name( name ), OptimisticLock( optimisticLock ), Created( created ), Deleted( deleted ), Description( description )
     {
     }
@@ -45,29 +45,29 @@ struct OwnedObjectData
     Guid Id;
     Guid Type;
     Guid Owner;
-    std::wstring Name;
+    WideString Name;
     Int64 OptimisticLock;
     DateTime Created;
     std::optional<DateTime> Deleted;
-    std::wstring Description;
+    WideString Description;
     IO::MemoryStream Data;
 
     OwnedObjectData( const Guid& id, const Guid& type, const Guid& owner,
-        std::wstring&& name,
+        WideString&& name,
         Int64 optimisticLock,
         const DateTime& created,
         const std::optional<DateTime>& deleted,
-        std::wstring&& description, IO::MemoryStream&& data )
+        WideString&& description, IO::MemoryStream&& data )
         : Id( id ), Type(type), Owner( owner ), Name( std::move( name ) ), OptimisticLock( optimisticLock ), Created( created ), Deleted( deleted ), Description( std::move( description ) ), Data(std::move(data))
     {
     }
 
     OwnedObjectData( const Guid& id, const Guid& type, const Guid& owner,
-        const std::wstring& name,
+        const WideString& name,
         Int64 optimisticLock,
         const DateTime& created,
         const std::optional<DateTime>& deleted,
-        const std::wstring& description, const IO::MemoryStream& data )
+        const WideString& description, const IO::MemoryStream& data )
         : Id( id ), Type( type ), Owner( owner ), Name( name ), OptimisticLock( optimisticLock ), Created( created ), Deleted( deleted ), Description( description ), Data( data )
     {
     }

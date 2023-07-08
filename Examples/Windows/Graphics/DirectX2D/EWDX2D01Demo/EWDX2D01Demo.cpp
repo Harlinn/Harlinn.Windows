@@ -26,8 +26,8 @@ class MyForm : public Form
     DirectWrite::Typography typography_;
     Graphics::LinearGradientBrush backgroundBrush_;
 
-    std::wstring text_;
-    std::wstring titleText_;
+    WideString text_;
+    WideString titleText_;
     std::unique_ptr<Timer> timer_;
     bool showingTime_;
 public:
@@ -242,7 +242,7 @@ void MyForm::DoOnPaint( Message& message )
 
     auto found = text_.find( L"C++" );
 
-    if ( found != std::wstring::npos )
+    if ( found != WideString::npos )
     {
         textRange.startPosition = UINT( found );
         textRange.length = 3;

@@ -92,24 +92,7 @@ namespace Harlinn::Common::Core
     }
 #endif
 
-    void ToWideString( const char* source, size_t length, unsigned codePage, unsigned flags, WideString& dest )
-    {
-        auto byteCount = static_cast<int>( length );
-        if ( byteCount )
-        {
-            auto wideCharCount = MultiByteToWideChar( codePage, flags, source, byteCount, nullptr, 0 );
-            if ( !wideCharCount )
-            {
-                ThrowLastOSError( );
-            }
-            dest.resize( wideCharCount );
-            auto rc = MultiByteToWideChar( codePage, flags, source, byteCount, dest.data( ), wideCharCount );
-            if ( !rc )
-            {
-                ThrowLastOSError( );
-            }
-        }
-    }
+    
 
     WideString ToWideString( bool value )
     {
@@ -234,24 +217,7 @@ namespace Harlinn::Common::Core
     }
 
 
-    void ToAnsiString( const wchar_t* source, size_t length, unsigned codePage, unsigned flags, AnsiString& dest )
-    {
-        auto wideCharCount = static_cast<int>( length );
-        if ( wideCharCount )
-        {
-            auto byteCount = WideCharToMultiByte( codePage, flags, source, wideCharCount, nullptr, 0, nullptr, nullptr );
-            if ( !byteCount )
-            {
-                ThrowLastOSError( );
-            }
-            dest.resize( byteCount );
-            auto rc = WideCharToMultiByte( codePage, flags, source, wideCharCount, dest.data( ), byteCount, nullptr, nullptr );
-            if ( !rc )
-            {
-                ThrowLastOSError( );
-            }
-        }
-    }
+    
 
     AnsiString ToAnsiString( bool value )
     {

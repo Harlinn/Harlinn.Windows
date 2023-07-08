@@ -998,6 +998,127 @@ namespace Harlinn::Common::Core
             }
         }
 
+        static Data* Initialize( const CharType* string1, size_type size1, const CharType* string2, size_type size2 )
+        {
+            auto size = size1 + size2;
+            if ( size )
+            {
+                Data* data = Allocate( size );
+                Internal::Copy( data->buffer_, string1, size1 );
+                Internal::Copy( data->buffer_ + size1, string2, size2 );
+                return data;
+            }
+            else
+            {
+                return nullptr;
+            }
+        }
+
+        static Data* Initialize( CharType value, size_type count, const CharType* string2, size_type size2 )
+        {
+            auto size = count + size2;
+            if ( size )
+            {
+                Data* data = Allocate( size );
+                Internal::Set( data->buffer_, value, count );
+                Internal::Copy( data->buffer_ + count, string2, size2 );
+                return data;
+            }
+            else
+            {
+                return nullptr;
+            }
+        }
+
+        static Data* Initialize( const CharType* string1, size_type size1, CharType value, size_type count )
+        {
+            auto size = size1 + count;
+            if ( size )
+            {
+                Data* data = Allocate( size );
+                Internal::Copy( data->buffer_, string1, size1 );
+                Internal::Set( data->buffer_ + size1, value, count );
+                return data;
+            }
+            else
+            {
+                return nullptr;
+            }
+        }
+
+
+
+        static Data* Initialize( const CharType* string1, size_type size1, const CharType* string2, size_type size2, const CharType* string3, size_type size3 )
+        {
+            auto size = size1 + size2 + size3;
+            if ( size )
+            {
+                Data* data = Allocate( size );
+                Internal::Copy( data->buffer_, string1, size1 );
+                Internal::Copy( data->buffer_ + size1, string2, size2 );
+                Internal::Copy( data->buffer_ + size1 + size2, string3, size3 );
+                return data;
+            }
+            else
+            {
+                return nullptr;
+            }
+        }
+
+        static Data* Initialize( CharType value, size_type count, const CharType* string2, size_type size2, const CharType* string3, size_type size3 )
+        {
+            auto size = count + size2 + size3;
+            if ( size )
+            {
+                Data* data = Allocate( size );
+                Internal::Set( data->buffer_, value, count );
+                Internal::Copy( data->buffer_ + count, string2, size2 );
+                Internal::Copy( data->buffer_ + count + size2, string3, size3 );
+                return data;
+            }
+            else
+            {
+                return nullptr;
+            }
+        }
+
+
+        static Data* Initialize( const CharType* string1, size_type size1, CharType value, size_type count, const CharType* string3, size_type size3 )
+        {
+            auto size = size1 + count + size3;
+            if ( size )
+            {
+                Data* data = Allocate( size );
+                Internal::Copy( data->buffer_, string1, size1 );
+                Internal::Set( data->buffer_ + size1, value, count );
+                Internal::Copy( data->buffer_ + size1 + count, string3, size3 );
+                return data;
+            }
+            else
+            {
+                return nullptr;
+            }
+        }
+
+        static Data* Initialize( const CharType* string1, size_type size1, const CharType* string2, size_type size2, CharType value, size_type count )
+        {
+            auto size = size1 + size2 + count;
+            if ( size )
+            {
+                Data* data = Allocate( size );
+                Internal::Copy( data->buffer_, string1, size1 );
+                Internal::Copy( data->buffer_ + size1, string2, size2 );
+                Internal::Set( data->buffer_ + size1 + size2, value, count );
+                return data;
+            }
+            else
+            {
+                return nullptr;
+            }
+        }
+
+
+
         template<typename InputIt>
         static Data* Initialize( InputIt first, InputIt last )
         {
@@ -1054,6 +1175,156 @@ namespace Harlinn::Common::Core
             : data_( Initialize( string, size ) )
         {
         }
+
+        template<SimpleSpanLike SpanT>
+            requires std::is_same_v<typename SpanT::value_type, CharType>
+        BasicString( const SpanT& span )
+            : data_( Initialize( span.data(), span.size() ) )
+        {
+        }
+
+        BasicString( const CharType* string1, size_type size1, const CharType* string2, size_type size2 )
+            : data_( Initialize( string1, size1, string2, size2 ) )
+        {
+        }
+
+        BasicString( CharType value, size_type count, const CharType* string2, size_type size2 )
+            : data_( Initialize( value, count, string2, size2 ) )
+        {
+        }
+
+        BasicString( const CharType* string1, size_type size1, CharType value, size_type count )
+            : data_( Initialize( string1, size1, value, count ) )
+        {
+        }
+
+
+        template<SimpleSpanLike SpanT1, SimpleSpanLike SpanT2>
+            requires (std::is_same_v<typename SpanT1::value_type, CharType> && std::is_same_v<typename SpanT2::value_type, CharType> )
+        BasicString( const SpanT1& span1, const SpanT2& span2 )
+            : data_( Initialize( span1.data( ), span1.size( ), span2.data( ), span2.size( ) ) )
+        {
+        }
+
+        template<SimpleSpanLike SpanT>
+            requires std::is_same_v<typename SpanT::value_type, CharType>
+        BasicString( CharType value, size_type count, const SpanT& span )
+            : data_( Initialize( value, count, span.data( ), span.size( ) ) )
+        {
+        }
+
+        template<SimpleSpanLike SpanT>
+            requires std::is_same_v<typename SpanT::value_type, CharType>
+        BasicString( CharType value, const SpanT& span )
+            : data_( Initialize( value, 1, span.data( ), span.size( ) ) )
+        {
+        }
+
+        template<SimpleSpanLike SpanT>
+            requires std::is_same_v<typename SpanT::value_type, CharType>
+        BasicString( const SpanT& span, CharType value, size_type count )
+            : data_( Initialize( span.data( ), span.size( ), value, count ) )
+        {
+        }
+
+        template<SimpleSpanLike SpanT>
+            requires std::is_same_v<typename SpanT::value_type, CharType>
+        BasicString( const SpanT& span, CharType value )
+            : data_( Initialize( span.data( ), span.size( ), value, 1 ) )
+        {
+        }
+
+
+
+        BasicString( const CharType* string1, size_type size1, const CharType* string2, size_type size2, const CharType* string3, size_type size3 )
+            : data_( Initialize( string1, size1, string2, size2, string3, size3 ) )
+        {
+        }
+
+        BasicString( CharType value, size_type count, const CharType* string2, size_type size2, const CharType* string3, size_type size3 )
+            : data_( Initialize( value, count, string2, size2, string3, size3 ) )
+        {
+        }
+
+        BasicString( const CharType* string1, size_type size1, CharType value, size_type count, const CharType* string3, size_type size3 )
+            : data_( Initialize( string1, size1, value, count, string3, size3 ) )
+        {
+        }
+
+        BasicString( const CharType* string1, size_type size1, const CharType* string2, size_type size2, CharType value, size_type count )
+            : data_( Initialize( string1, size1, string2, size2, value, count ) )
+        {
+        }
+
+        BasicString( CharType value, const CharType* string2, size_type size2, const CharType* string3, size_type size3 )
+            : data_( Initialize( value, 1, string2, size2, string3, size3 ) )
+        {
+        }
+
+        BasicString( const CharType* string1, size_type size1, CharType value, const CharType* string3, size_type size3 )
+            : data_( Initialize( string1, size1, value, 1, string3, size3 ) )
+        {
+        }
+
+        BasicString( const CharType* string1, size_type size1, const CharType* string2, size_type size2, CharType value )
+            : data_( Initialize( string1, size1, string2, size2, value, 1 ) )
+        {
+        }
+
+
+        template<SimpleSpanLike SpanT1, SimpleSpanLike SpanT2>
+            requires ( std::is_same_v<typename SpanT1::value_type, CharType>&& std::is_same_v<typename SpanT2::value_type, CharType> )
+        BasicString( CharType value, size_type count, const SpanT1& span1, const SpanT2& span2 )
+            : data_( Initialize( value, count, span1.data( ), span1.size( ), span2.data( ), span2.size( ) ) )
+        {
+        }
+
+        template<SimpleSpanLike SpanT1, SimpleSpanLike SpanT2>
+            requires ( std::is_same_v<typename SpanT1::value_type, CharType>&& std::is_same_v<typename SpanT2::value_type, CharType> )
+        BasicString( const SpanT1& span1, CharType value, size_type count, const SpanT2& span2 )
+            : data_( Initialize( span1.data( ), span1.size( ), value, count, span2.data( ), span2.size( ) ) )
+        {
+        }
+
+        template<SimpleSpanLike SpanT1, SimpleSpanLike SpanT2>
+            requires ( std::is_same_v<typename SpanT1::value_type, CharType>&& std::is_same_v<typename SpanT2::value_type, CharType> )
+        BasicString( const SpanT1& span1, const SpanT2& span2, CharType value, size_type count )
+            : data_( Initialize( span1.data( ), span1.size( ), span2.data( ), span2.size( ), value, count ) )
+        {
+        }
+
+
+        template<SimpleSpanLike SpanT1, SimpleSpanLike SpanT2>
+            requires ( std::is_same_v<typename SpanT1::value_type, CharType>&& std::is_same_v<typename SpanT2::value_type, CharType> )
+        BasicString( CharType value, const SpanT1& span1, const SpanT2& span2 )
+            : data_( Initialize( value, 1, span1.data( ), span1.size( ), span2.data( ), span2.size( ) ) )
+        {
+        }
+
+        template<SimpleSpanLike SpanT1, SimpleSpanLike SpanT2>
+            requires ( std::is_same_v<typename SpanT1::value_type, CharType>&& std::is_same_v<typename SpanT2::value_type, CharType> )
+        BasicString( const SpanT1& span1, CharType value, const SpanT2& span2 )
+            : data_( Initialize( span1.data( ), span1.size( ), value, 1, span2.data( ), span2.size( ) ) )
+        {
+        }
+
+        template<SimpleSpanLike SpanT1, SimpleSpanLike SpanT2>
+            requires ( std::is_same_v<typename SpanT1::value_type, CharType>&& std::is_same_v<typename SpanT2::value_type, CharType> )
+        BasicString( const SpanT1& span1, const SpanT2& span2, CharType value )
+            : data_( Initialize( span1.data( ), span1.size( ), span2.data( ), span2.size( ), value, 1 ) )
+        {
+        }
+
+
+
+
+        template<SimpleSpanLike SpanT1, SimpleSpanLike SpanT2, SimpleSpanLike SpanT3>
+            requires ( std::is_same_v<typename SpanT1::value_type, CharType> && std::is_same_v<typename SpanT2::value_type, CharType> && std::is_same_v<typename SpanT3::value_type, CharType> )
+        BasicString( const SpanT1& span1, const SpanT2& span2, const SpanT3& span3 )
+            : data_( Initialize( span1.data( ), span1.size( ), span2.data( ), span2.size( ), span3.data( ), span3.size( ) ) )
+        {
+        }
+
 
         BasicString( const_iterator first, const_iterator last)
             : data_( Initialize( first.ptr_, first <= last ? static_cast<size_type>( last - first ) : 0 ) )
@@ -2584,15 +2855,15 @@ namespace Harlinn::Common::Core
         {
             if ( searchString && searchString[0] && data_ && start < data_->size_ )
             {
-                const char* pStart = &data_->buffer_[start];
-                const char* pEnd = &data_->buffer_[data_->size_];
+                const CharType* pStart = &data_->buffer_[start];
+                const CharType* pEnd = &data_->buffer_[data_->size_];
                 while ( pStart < pEnd )
                 {
                     auto* p = Internal::MemChr( pStart, *searchString, pEnd - pStart );
                     if ( p )
                     {
-                        const char* pSearchChar = searchString + 1;
-                        const char* pContent = p + 1;
+                        const CharType* pSearchChar = searchString + 1;
+                        const CharType* pContent = p + 1;
                         while ( *pSearchChar )
                         {
                             if ( *pContent != *pSearchChar )
@@ -2627,15 +2898,15 @@ namespace Harlinn::Common::Core
         {
             if ( searchString && searchString[0] && data_ && start < data_->size_ )
             {
-                const char* pStart = &data_->buffer_[start];
-                const char* pEnd = &data_->buffer_[data_->size_];
+                const CharType* pStart = &data_->buffer_[start];
+                const CharType* pEnd = &data_->buffer_[data_->size_];
                 while ( pStart < pEnd )
                 {
                     auto* p = Internal::MemIChr( pStart, *searchString, pEnd - pStart );
                     if ( p )
                     {
-                        const char* pSearchChar = searchString + 1;
-                        const char* pContent = p + 1;
+                        const CharType* pSearchChar = searchString + 1;
+                        const CharType* pContent = p + 1;
                         while ( *pSearchChar )
                         {
                             if ( toupper( *pContent ) != toupper( *pSearchChar ) )
@@ -2702,7 +2973,7 @@ namespace Harlinn::Common::Core
         {
             if ( data_ && start < data_->size_ )
             {
-                char* pStart = &data_->buffer_[start];
+                CharType* pStart = &data_->buffer_[start];
                 size_type remainingLength = data_->size_ - start;
                 while ( remainingLength )
                 {
@@ -2721,8 +2992,8 @@ namespace Harlinn::Common::Core
         {
             if ( data_ && start < data_->size_ )
             {
-                const char* pStart = &data_->buffer_[start];
-                const char* pEnd = end( );
+                const CharType* pStart = &data_->buffer_[start];
+                const CharType* pEnd = end( );
                 while ( pStart < pEnd )
                 {
                     if ( test( pStart, pEnd ) )
@@ -2901,7 +3172,7 @@ namespace Harlinn::Common::Core
 
                 do
                 {
-                    char c = data_->buffer_[start];
+                    CharType c = data_->buffer_[start];
                     if ( test( c ) )
                     {
                         return start;
@@ -2922,7 +3193,7 @@ namespace Harlinn::Common::Core
                     start = data_->size_ - 1;
                 }
 
-                const char* pStart = &data_->buffer_[start];
+                const CharType* pStart = &data_->buffer_[start];
                 size_type remainingLength = data_->size_ - start;
 
                 do
@@ -2947,8 +3218,8 @@ namespace Harlinn::Common::Core
                     start = data_->size_ - 1;
                 }
 
-                const char* pStart = &data_->buffer_[start];
-                const char* pEnd = end( );
+                const CharType* pStart = &data_->buffer_[start];
+                const CharType* pEnd = end( );
                 do
                 {
                     if ( test( pStart, pEnd ) )
@@ -3056,7 +3327,7 @@ namespace Harlinn::Common::Core
         {
             if ( data_ && data_->buffer_[0] && str && str[0] )
             {
-                const char* p = data_->buffer_;
+                const CharType* p = data_->buffer_;
                 while ( *p && *str )
                 {
                     if ( *p != *str )
@@ -3098,7 +3369,7 @@ namespace Harlinn::Common::Core
         {
             if ( data_ && data_->buffer_[0] && str && str[0] )
             {
-                const char* p = data_->buffer_;
+                const CharType* p = data_->buffer_;
                 while ( *p && *str )
                 {
                     if ( Internal::ToUpper( *p ) != Internal::ToUpper( *str ) )
@@ -3264,6 +3535,54 @@ namespace Harlinn::Common::Core
                 return Count( what.data(), what.size( ), start );
             }
             return 0;
+        }
+
+        template<typename T >
+            requires std::is_convertible_v<size_type, typename T::value_type>
+        [[nodiscard]] bool Locate( CharType what, size_type start, T& container)
+        {
+            container.clear( );
+            if ( data_ )
+            {
+                while ( start < data_->size_ )
+                {
+                    auto index = IndexOf( what, start );
+                    if ( index != npos )
+                    {
+                        container.push_back( index );
+                        start = index + 1;
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+            }
+            return container.size( ) > 0;
+        }
+
+        template<typename T >
+            requires std::is_convertible_v<size_type, typename T::value_type>
+        [[nodiscard]] bool Locate( const CharType* what, size_type whatLength, size_type start, T& container )
+        {
+            container.clear( );
+            if ( data_ )
+            {
+                while ( start < data_->size_ )
+                {
+                    auto index = IndexOf( what, whatLength, start );
+                    if ( index != npos )
+                    {
+                        container.push_back( index );
+                        start = index + whatLength;
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+            }
+            return container.size( ) > 0;
         }
 
 
@@ -3517,6 +3836,10 @@ namespace Harlinn::Common::Core
         return std::_Insert_string( os, str.data( ), str.size( ) );
     }
 
+    static_assert( AnsiStringLike< BasicString<char> > );
+    static_assert( WideStringLike< BasicString<wchar_t> > );
+
+
 
 
 
@@ -3601,17 +3924,34 @@ namespace Harlinn::Common::Core
     {
     }
 #endif
+    template<WideStringLike StringT>
+    inline void ToWideString( const char* source, size_t length, unsigned codePage, unsigned flags, StringT& dest )
+    {
+        auto byteCount = static_cast< int >( length );
+        if ( byteCount )
+        {
+            auto wideCharCount = MultiByteToWideChar( codePage, flags, source, byteCount, nullptr, 0 );
+            if ( !wideCharCount )
+            {
+                ThrowLastOSError( );
+            }
+            dest.resize( wideCharCount );
+            auto rc = MultiByteToWideChar( codePage, flags, source, byteCount, dest.data( ), wideCharCount );
+            if ( !rc )
+            {
+                ThrowLastOSError( );
+            }
+        }
+    }
 
-    HCC_EXPORT void ToWideString( const char* source, size_t length, unsigned codePage, unsigned flags, WideString& dest );
-    inline void ToWideString( const char* source, size_t length, WideString& dest )
+    template<WideStringLike StringT>
+    inline void ToWideString( const char* source, size_t length, StringT& dest )
     {
         ToWideString( source, length, CP_ACP, 0, dest );
     }
-    inline void ToWideString( const std::string& source, WideString& dest )
-    {
-        ToWideString( source.c_str( ), source.length( ), dest );
-    }
-    inline void ToWideString( const AnsiString& source, WideString& dest )
+
+    template<AnsiStringLike AnsiStringT,WideStringLike WideStringT>
+    inline void ToWideString( const AnsiStringT& source, WideStringT& dest )
     {
         ToWideString( source.c_str( ), source.length( ), dest );
     }
@@ -3685,17 +4025,39 @@ namespace Harlinn::Common::Core
     HCC_EXPORT WideString ToWideString( const Currency& value );
     HCC_EXPORT WideString ToWideString( const Variant& value );
 
+    template<AnsiStringLike StringT>
+    inline void ToAnsiString( const wchar_t* source, size_t length, unsigned codePage, unsigned flags, StringT& dest )
+    {
+        auto wideCharCount = static_cast< int >( length );
+        if ( wideCharCount )
+        {
+            auto byteCount = WideCharToMultiByte( codePage, flags, source, wideCharCount, nullptr, 0, nullptr, nullptr );
+            if ( !byteCount )
+            {
+                ThrowLastOSError( );
+            }
+            dest.resize( byteCount );
+            auto rc = WideCharToMultiByte( codePage, flags, source, wideCharCount, dest.data( ), byteCount, nullptr, nullptr );
+            if ( !rc )
+            {
+                ThrowLastOSError( );
+            }
+        }
+    }
 
-    HCC_EXPORT void ToAnsiString( const wchar_t* source, size_t length, unsigned codePage, unsigned flags, AnsiString& dest );
-    inline void ToAnsiString( const wchar_t* source, size_t length, AnsiString& dest )
+    template<AnsiStringLike StringT>
+    inline void ToAnsiString( const wchar_t* source, size_t length, StringT& dest )
     {
         ToAnsiString( source, length, CP_ACP, 0, dest );
     }
-    inline void ToAnsiString( const WideString& source, AnsiString& dest )
+
+    template<WideStringLike WideStringT,AnsiStringLike AnsiStringT>
+    inline void ToAnsiString( const WideStringT& source, AnsiStringT& dest )
     {
         ToAnsiString( source.c_str( ), source.length( ), CP_ACP, 0, dest );
     }
-    inline AnsiString ToAnsiString( const WideString& source )
+    template<WideStringLike WideStringT>
+    inline AnsiString ToAnsiString( const WideStringT& source )
     {
         AnsiString result;
         ToAnsiString( source, result );
@@ -3727,6 +4089,23 @@ namespace Harlinn::Common::Core
             return {};
         }
     }
+
+    template<AnsiStringLike StringT>
+    inline StringT ToAnsiString( const wchar_t* source )
+    {
+        if ( source && source[ 0 ] )
+        {
+            auto length = wcslen( source );
+            StringT result;
+            ToAnsiString( source, length, CP_ACP, 0, result );
+            return result;
+        }
+        else
+        {
+            return {};
+        }
+    }
+
     inline AnsiString ToAnsiString( const char* source )
     {
         if ( source && source[ 0 ] )
@@ -4198,6 +4577,30 @@ namespace Harlinn::Common::Core
         return result;
     }
 
+
+    template<SimpleSpanLike SpanT>
+    inline bool StartsWith( const SpanT& span, typename SpanT::value_type value )
+    {
+        if ( span.size( ) )
+        {
+            return span[ 0 ] == value;
+        }
+        return false;
+    }
+
+    template<SimpleSpanLike SpanT>
+    inline bool EndsWith( const SpanT& span, typename SpanT::value_type value )
+    {
+        auto size = span.size( );
+        if ( size )
+        {
+            return span[ size - 1 ] == value;
+        }
+        return false;
+    }
+
+
+
 #ifdef HCC_WITH_BASIC_STRING
     inline [[nodiscard]] AnsiString FormatV( const std::string_view fmt, const std::format_args args )
     {
@@ -4252,6 +4655,38 @@ namespace Harlinn::Common::Core
     {
         return FormatV( locale, fmt.get( ), std::make_wformat_args( args... ) );
     }
+
+    //
+    template <class... Types>
+    inline void PrintLn( const std::format_string<Types...> fmt, Types&&... args )
+    {
+        auto str = FormatV( fmt.get( ), std::make_format_args( args... ) );
+        puts( str.c_str( ) );
+    }
+
+    template <class... Types>
+    inline void PrintLn( const std::wformat_string<Types...> fmt, Types&&... args )
+    {
+        auto str = FormatV( fmt.get( ), std::make_wformat_args( args... ) );
+        _putws( str.c_str( ) );
+    }
+
+
+    template <class... Types>
+    inline void PrintLn( const std::locale& locale, const std::format_string<Types...> fmt, Types&&... args )
+    {
+        auto str = FormatV( locale, fmt.get( ), std::make_format_args( args... ) );
+        puts( str.c_str( ) );
+    }
+
+    template <class... Types>
+    inline void PrintLn( const std::locale& locale, const std::wformat_string<Types...> fmt, Types&&... args )
+    {
+        auto str = FormatV( locale, fmt.get( ), std::make_wformat_args( args... ) );
+        _putws( str.c_str( ) );
+    }
+
+
 #endif
 
 

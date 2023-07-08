@@ -4,6 +4,7 @@
 
 #include <HCCGuid.h>
 #include <HCCDateTime.h>
+#include <HCCString.h>
 
 #include <variant>
 
@@ -64,7 +65,7 @@ namespace Harlinn::Common::Core::Examples
     struct Named
     {
         Guid Id;
-        std::string Name;
+        AnsiString Name;
         Named( )
         {
         }

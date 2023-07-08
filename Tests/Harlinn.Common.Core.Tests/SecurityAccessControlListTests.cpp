@@ -7,7 +7,7 @@ namespace
     WideString GetTestFileDirectory( )
     {
         WideString TestDataRoot = Environment::EnvironmentVariable( L"HCC_TEST_DATA_ROOT" );
-        auto directoryPath = IO::Path::Append( TestDataRoot, L"\\ACLTests" );
+        auto directoryPath = IO::Path::Combine( TestDataRoot, L"\\ACLTests" );
 
         if ( IO::Directory::Exist( directoryPath ) == false )
         {

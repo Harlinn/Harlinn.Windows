@@ -24,10 +24,14 @@ enum class PlayerState
     Closing
 };
 
-class Viewer : public Com::IUknownImpl<Viewer, IMFAsyncCallback>
+class Viewer : public Com::ObjectBase<Viewer, IMFAsyncCallback>, public Com::IUnknownImpl<Viewer, IMFAsyncCallback>
 {
 public:
-    using Base = Com::IUknownImpl<Viewer, IMFAsyncCallback>;
+    using Base = Com::ObjectBase<Viewer, IMFAsyncCallback>;
+
+    using Base::QueryInterface;
+    using Base::AddRef;
+    using Base::Release;
 private:
     CriticalSection criticalSection_;
 

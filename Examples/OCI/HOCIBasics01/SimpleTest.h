@@ -38,11 +38,11 @@ public:
 
 
 
-    std::unique_ptr<SimpleTestData> Insert( const std::wstring& name, 
-                        const std::wstring& description = std::wstring( ) ) const
+    std::unique_ptr<SimpleTestData> Insert( const WideString& name, 
+                        const WideString& description = WideString( ) ) const
     {
         auto& serviceContext = ServiceContext( );
-        std::optional<std::wstring> descr;
+        std::optional<WideString> descr;
         if ( description.size( ) )
         {
             descr = description;
@@ -73,7 +73,7 @@ public:
         {
             auto optimisticLock = reader->GetInt64( 0 );
             auto name = reader->GetString( 1 );
-            std::wstring description;
+            WideString description;
             if ( reader->IsDBNull( 2 ) == false )
             {
                 description = reader->GetString( 2 );
@@ -101,7 +101,7 @@ public:
             auto id = reader->GetInt64( 0 );
             auto optimisticLock = reader->GetInt64( 1 );
             auto name = reader->GetString( 2 );
-            std::wstring description;
+            WideString description;
             if ( reader->IsDBNull( 3 ) == false )
             {
                 description = reader->GetString( 3 );
@@ -119,7 +119,7 @@ public:
         auto& description = data.Description();
 
         auto& serviceContext = ServiceContext( );
-        std::optional<std::wstring> descr;
+        std::optional<WideString> descr;
         if ( description.size( ) )
         {
             descr = description;
@@ -186,7 +186,7 @@ public:
         for ( int i = 0; i < RowCount; ++i )
         {
             auto name = Format(L"Name%d", i + 1);
-            auto description = i % 2 == 0 ? std::wstring() : Format( L"Description%d", i + 1 );
+            auto description = i % 2 == 0 ? WideString() : Format( L"Description%d", i + 1 );
             auto data = Insert( name, description );
             originalItems.emplace( data->Id(), std::move(data) );
         }

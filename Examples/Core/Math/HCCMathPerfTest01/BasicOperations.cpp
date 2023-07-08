@@ -2,6 +2,7 @@
 
 #include <HCCMath.h>
 #include <HCCDateTime.h>
+#include <HCCString.h>
 
 using namespace Harlinn::Common::Core;
 using namespace Harlinn::Common::Core::Math;
@@ -31,7 +32,7 @@ namespace
 
             stopwatch.Stop( );
             auto duration = stopwatch.TotalSeconds( );
-            fmt::print( "{}: Duration={}, Accumulated={}\n",
+            PrintLn( "{}: Duration={}, Accumulated={}",
                 testName, duration, accumulated );
         }
     }
@@ -46,16 +47,16 @@ namespace
         {
             if ( AreNearlyEqual( accumulated1, accumulated2 ) )
             {
-                fmt::print( "\tAccumulated 1(={}) is nearly equal to Accumulated 2(={})\n\n", accumulated1, accumulated2 );
+                PrintLn( "\tAccumulated 1(={}) is nearly equal to Accumulated 2(={})\n", accumulated1, accumulated2 );
             }
             else
             {
-                fmt::print( "\tAccumulated 1(={}) differs significantly from Accumulated 2(={})\n\n", accumulated1, accumulated2 );
+                PrintLn( "\tAccumulated 1(={}) differs significantly from Accumulated 2(={})\n", accumulated1, accumulated2 );
             }
         }
         else
         {
-            fmt::print( "\tAccumulated 1 is identical to Accumulated 2\n\n" );
+            PrintLn( "\tAccumulated 1 is identical to Accumulated 2\n" );
         }
     }
 
@@ -68,24 +69,24 @@ namespace
         {
             if ( AreNearlyEqual( accumulated1a, accumulated2a ) )
             {
-                fmt::print( "\tAccumulated 1a(={}) is nearly equal to Accumulated 2a(={})\n", accumulated1a, accumulated2a );
+                PrintLn( "\tAccumulated 1a(={}) is nearly equal to Accumulated 2a(={})", accumulated1a, accumulated2a );
             }
             else
             {
-                fmt::print( "\tAccumulated 1a(={}) differs significantly from Accumulated 2a(={})\n", accumulated1a, accumulated2a );
+                PrintLn( "\tAccumulated 1a(={}) differs significantly from Accumulated 2a(={})", accumulated1a, accumulated2a );
             }
             if ( AreNearlyEqual( accumulated1b, accumulated2b ) )
             {
-                fmt::print( "\tAccumulated 1b(={}) is nearly equal to Accumulated 2b(={})\n\n", accumulated1b, accumulated2b );
+                PrintLn( "\tAccumulated 1b(={}) is nearly equal to Accumulated 2b(={})\n", accumulated1b, accumulated2b );
             }
             else
             {
-                fmt::print( "\tAccumulated 1b(={}) differs significantly from Accumulated 2b(={})\n\n", accumulated1b, accumulated2b );
+                PrintLn( "\tAccumulated 1b(={}) differs significantly from Accumulated 2b(={})\n", accumulated1b, accumulated2b );
             }
         }
         else
         {
-            fmt::print( "\tAccumulated 1(a and b) is identical to Accumulated 2(a and b)\n\n" );
+            PrintLn( "\tAccumulated 1(a and b) is identical to Accumulated 2(a and b)\n" );
         }
     }
 
@@ -94,7 +95,7 @@ namespace
     void RunTest1( Int64 outerIterationCount, const char* testName, Func1&& func1, Func2&& func2, FloatT base = static_cast<FloatT>( M_PI ), FloatT increment = static_cast<FloatT>( 0.000001 ) )
     {
         constexpr Int64 innerIterationCount = 1'000'000'000;
-        fmt::print( "{}: Outer {}, Inner {}\n", testName, outerIterationCount, innerIterationCount );
+        PrintLn( "{}: Outer {}, Inner {}", testName, outerIterationCount, innerIterationCount );
 
         for ( int j = 0; j < outerIterationCount; j++ )
         {
@@ -112,7 +113,7 @@ namespace
 
             stopwatch.Stop( );
             auto duration = stopwatch.TotalSeconds( );
-            fmt::print( "\tMath: Duration={}, Accumulated 1={}\n", duration, accumulated1 );
+            PrintLn( "\tMath: Duration={}, Accumulated 1={}", duration, accumulated1 );
 
             argumentValue = base;
             FloatT accumulated2 = 0.0;
@@ -126,7 +127,7 @@ namespace
 
             stopwatch.Stop( );
             duration = stopwatch.TotalSeconds( );
-            fmt::print( "\tstd:  Duration={}, Accumulated 2={}\n", duration, accumulated2 );
+            PrintLn( "\tstd:  Duration={}, Accumulated 2={}", duration, accumulated2 );
             PrintAccumulated( accumulated1, accumulated2 );
         }
     }
@@ -141,7 +142,7 @@ namespace
         using FloatingPointType = Math::Internal::FloatingPoint<FloatT>;
         using UIntType = typename FloatingPointType::UIntType;
         Int64 innerIterationCount = 1'000'000'000;
-        fmt::print( "{}: Outer {}, Inner {}\n", testName, outerIterationCount, innerIterationCount );
+        PrintLn( "{}: Outer {}, Inner {}", testName, outerIterationCount, innerIterationCount );
 
         for ( int j = 0; j < outerIterationCount; j++ )
         {
@@ -156,7 +157,7 @@ namespace
                 //if ( std::bit_cast<UIntType>( result1 ) != std::bit_cast<UIntType>( result2 ) )
                 if ( AreNearlyEqual( result1, result2, 0.0000001 ) == false )
                 {
-                    fmt::print( "\ti:{} Argument={} Result 1={}(0x{:X}), Result 2={}(0x{:X})\n\n", i, argumentValue, result1, std::bit_cast<UIntType>( result1 ), result2, std::bit_cast<UIntType>( result2 ) );
+                    PrintLn( "\ti:{} Argument={} Result 1={}(0x{:X}), Result 2={}(0x{:X})\n", i, argumentValue, result1, std::bit_cast<UIntType>( result1 ), result2, std::bit_cast<UIntType>( result2 ) );
                 }
                 accumulated1 += result1;
                 accumulated2 += result2;
@@ -164,7 +165,7 @@ namespace
                 argumentValue += increment;
             }
 
-            fmt::print( "\tAccumulated 1={}, Accumulated 2={}\n\n", accumulated1, accumulated2 );
+            PrintLn( "\tAccumulated 1={}, Accumulated 2={}\n", accumulated1, accumulated2 );
         }
     }
 
@@ -190,7 +191,7 @@ namespace
     void RunTest2( Int64 outerIterationCount, const char* testName, Func1&& func1, Func2&& func2, FloatT base = static_cast<FloatT>( M_PI ), FloatT increment = static_cast<FloatT>( 0.000001 ) )
     {
         Int64 innerIterationCount = 1'000'000'000;
-        fmt::print( "{}: Outer {}, Inner {}\n", testName, outerIterationCount, innerIterationCount );
+        PrintLn( "{}: Outer {}, Inner {}", testName, outerIterationCount, innerIterationCount );
 
         for ( int j = 0; j < outerIterationCount; j++ )
         {
@@ -210,7 +211,7 @@ namespace
 
             stopwatch.Stop( );
             auto duration = stopwatch.TotalSeconds( );
-            fmt::print( "\tMath: Duration={}, Accumulated 1={}, Accumulated 2={}\n", duration, accumulated1a, accumulated1b );
+            PrintLn( "\tMath: Duration={}, Accumulated 1={}, Accumulated 2={}", duration, accumulated1a, accumulated1b );
 
             argumentValue = base;
             FloatT accumulated2a = 0.0;
@@ -226,7 +227,7 @@ namespace
 
             stopwatch.Stop( );
             duration = stopwatch.TotalSeconds( );
-            fmt::print( "\tstd:  Duration={}, Accumulated 1={}, Accumulated 2={}\n", duration, accumulated2a, accumulated2b );
+            PrintLn( "\tstd:  Duration={}, Accumulated 1={}, Accumulated 2={}", duration, accumulated2a, accumulated2b );
             PrintAccumulated( accumulated1a, accumulated1b, accumulated2a, accumulated2b );
         }
     }
@@ -364,7 +365,7 @@ template<typename FloatT>
 void ClampTest( Int64 outerIterationCount, const char* testName )
 {
     constexpr Int64 InnerIterationCount = 1'000'000'000;
-    fmt::print( "{}: Outer {}, Inner {}\n", testName, outerIterationCount, InnerIterationCount );
+    PrintLn( "{}: Outer {}, Inner {}\n", testName, outerIterationCount, InnerIterationCount );
 
     constexpr FloatT increment = static_cast<FloatT>( 0.000001 );
     constexpr FloatT baseMin = static_cast<FloatT>( M_PI_2 );
@@ -391,7 +392,7 @@ void ClampTest( Int64 outerIterationCount, const char* testName )
 
         stopwatch.Stop( );
         auto duration = stopwatch.TotalSeconds( );
-        fmt::print( "\tMath: Duration={}, Accumulated={}\n", duration, accumulated1 );
+        PrintLn( "\tMath: Duration={}, Accumulated={}", duration, accumulated1 );
 
         FloatT accumulated2 = 0.0;
         valueMin = baseMin;
@@ -410,7 +411,7 @@ void ClampTest( Int64 outerIterationCount, const char* testName )
 
         stopwatch.Stop( );
         duration = stopwatch.TotalSeconds( );
-        fmt::print( "\tstd:  Duration={}, Accumulated={}\n", duration, accumulated2 );
+        PrintLn( "\tstd:  Duration={}, Accumulated={}", duration, accumulated2 );
         PrintAccumulated( accumulated1, accumulated2 );
     }
 }
@@ -428,7 +429,7 @@ template<typename FloatT>
 void LerpTest( Int64 outerIterationCount, const char* testName )
 {
     constexpr Int64 InnerIterationCount = 1'000'000'000;
-    fmt::print( "{}: Outer {}, Inner {}\n", testName, outerIterationCount, InnerIterationCount );
+    PrintLn( "{}: Outer {}, Inner {}", testName, outerIterationCount, InnerIterationCount );
     constexpr FloatT increment = static_cast<FloatT>( 0.000001 );
     constexpr FloatT baseMin = static_cast<FloatT>( M_PI_2 );
     constexpr FloatT baseMax = static_cast<FloatT>( 3 * M_PI );
@@ -452,7 +453,7 @@ void LerpTest( Int64 outerIterationCount, const char* testName )
 
         stopwatch.Stop( );
         auto duration = stopwatch.TotalSeconds( );
-        fmt::print( "\tMath: Duration={}, Accumulated={}\n", duration, accumulated1 );
+        PrintLn( "\tMath: Duration={}, Accumulated={}", duration, accumulated1 );
 
         FloatT accumulated2 = 0.0;
         valueMin = baseMin;
@@ -468,7 +469,7 @@ void LerpTest( Int64 outerIterationCount, const char* testName )
 
         stopwatch.Stop( );
         duration = stopwatch.TotalSeconds( );
-        fmt::print( "\tstd:  Duration={}, Accumulated={}\n", duration, accumulated2 );
+        PrintLn( "\tstd:  Duration={}, Accumulated={}", duration, accumulated2 );
         PrintAccumulated( accumulated1, accumulated2 );
     }
 }
@@ -497,7 +498,7 @@ void ScaleByNTest( Int64 outerIterationCount, const char* testName )
     constexpr Int64 ValueIterationCount = 10'000'000;
     constexpr Int64 ExpIterationCount = 100;
     constexpr Int64 InnerIterationCount = ValueIterationCount * ExpIterationCount;
-    fmt::print( "{}: Outer {}, Inner {}\n", testName, outerIterationCount, InnerIterationCount );
+    PrintLn( "{}: Outer {}, Inner {}", testName, outerIterationCount, InnerIterationCount );
 
     constexpr FloatT base = static_cast<FloatT>( M_PI_2 );
     constexpr FloatT increment = static_cast<FloatT>( 0.000001 );
@@ -520,7 +521,7 @@ void ScaleByNTest( Int64 outerIterationCount, const char* testName )
 
         stopwatch.Stop( );
         auto duration = stopwatch.TotalSeconds( );
-        fmt::print( "\tMath: Duration={}, Accumulated={}\n", duration, accumulated1 );
+        PrintLn( "\tMath: Duration={}, Accumulated={}", duration, accumulated1 );
 
         FloatT accumulated2 = static_cast<FloatT>( 0.0 );
         value = base;
@@ -537,7 +538,7 @@ void ScaleByNTest( Int64 outerIterationCount, const char* testName )
 
         stopwatch.Stop( );
         duration = stopwatch.TotalSeconds( );
-        fmt::print( "\tstd:  Duration={}, Accumulated={}\n", duration, accumulated2 );
+        PrintLn( "\tstd:  Duration={}, Accumulated={}", duration, accumulated2 );
         PrintAccumulated( accumulated1, accumulated2 );
     }
 }
@@ -671,7 +672,7 @@ template<typename FloatT >
 void NextAfterTest( Int64 outerIterationCount, const char* testName )
 {
     Int64 innerIterationCount = 1'000'000'000;
-    fmt::print( "{}: Outer {}, Inner {}\n", testName, outerIterationCount, innerIterationCount );
+    PrintLn( "{}: Outer {}, Inner {}", testName, outerIterationCount, innerIterationCount );
 
     for ( int j = 0; j < outerIterationCount; j++ )
     {
@@ -688,7 +689,7 @@ void NextAfterTest( Int64 outerIterationCount, const char* testName )
 
         stopwatch.Stop( );
         auto duration = stopwatch.TotalSeconds( );
-        fmt::print( "\tMath: Duration={}, Accumulated={}\n", duration, accumulated1 );
+        PrintLn( "\tMath: Duration={}, Accumulated={}", duration, accumulated1 );
 
         argumentValue = static_cast<FloatT>( 0.0 );
         FloatT accumulated2 = static_cast<FloatT>( 0.0 );
@@ -702,7 +703,7 @@ void NextAfterTest( Int64 outerIterationCount, const char* testName )
 
         stopwatch.Stop( );
         duration = stopwatch.TotalSeconds( );
-        fmt::print( "\tstd:  Duration={}, Accumulated={}\n", duration, accumulated2 );
+        PrintLn( "\tstd:  Duration={}, Accumulated={}", duration, accumulated2 );
         PrintAccumulated( accumulated1, accumulated2 );
     }
 }
@@ -720,7 +721,7 @@ template<typename FloatT >
 void NextUpTest( Int64 outerIterationCount, const char* testName )
 {
     Int64 innerIterationCount = 1'000'000'000;
-    fmt::print( "{}: Outer {}, Inner {}\n", testName, outerIterationCount, innerIterationCount );
+    PrintLn( "{}: Outer {}, Inner {}", testName, outerIterationCount, innerIterationCount );
     constexpr FloatT baseValue = static_cast<FloatT>( -0.0 );
 
     for ( int j = 0; j < outerIterationCount; j++ )
@@ -738,7 +739,7 @@ void NextUpTest( Int64 outerIterationCount, const char* testName )
 
         stopwatch.Stop( );
         auto duration = stopwatch.TotalSeconds( );
-        fmt::print( "\tMath: Duration={}, Accumulated={}\n", duration, accumulated1 );
+        PrintLn( "\tMath: Duration={}, Accumulated={}", duration, accumulated1 );
 
         argumentValue = static_cast<FloatT>( 0.0 );
         FloatT accumulated2 = static_cast<FloatT>( 0.0 );
@@ -752,7 +753,7 @@ void NextUpTest( Int64 outerIterationCount, const char* testName )
 
         stopwatch.Stop( );
         duration = stopwatch.TotalSeconds( );
-        fmt::print( "\tstd: Duration={}, Accumulated={}\n", duration, accumulated2 );
+        PrintLn( "\tstd: Duration={}, Accumulated={}", duration, accumulated2 );
 
         PrintAccumulated( accumulated1, accumulated2 );
     }
@@ -773,7 +774,7 @@ template<typename FloatT >
 void NextDownTest( Int64 outerIterationCount, const char* testName )
 {
     Int64 innerIterationCount = 1'000'000'000;
-    fmt::print( "{}: Outer {}, Inner {}\n", testName, outerIterationCount, innerIterationCount );
+    PrintLn( "{}: Outer {}, Inner {}", testName, outerIterationCount, innerIterationCount );
 
     for ( int j = 0; j < outerIterationCount; j++ )
     {
@@ -790,7 +791,7 @@ void NextDownTest( Int64 outerIterationCount, const char* testName )
 
         stopwatch.Stop( );
         auto duration = stopwatch.TotalSeconds( );
-        fmt::print( "\tMath: Duration={}, Accumulated={}\n", duration, accumulated1 );
+        PrintLn( "\tMath: Duration={}, Accumulated={}", duration, accumulated1 );
 
 
         argumentValue = static_cast<FloatT>( 0.0 );
@@ -806,7 +807,7 @@ void NextDownTest( Int64 outerIterationCount, const char* testName )
 
         stopwatch.Stop( );
         duration = stopwatch.TotalSeconds( );
-        fmt::print( "\tstd: Duration={}, Accumulated={}\n", duration, accumulated2 );
+        PrintLn( "\tstd: Duration={}, Accumulated={}", duration, accumulated2 );
         PrintAccumulated( accumulated1, accumulated2 );
     }
 }
@@ -826,7 +827,7 @@ void FModTest( Int64 outerIterationCount, const char* testName )
 {
     constexpr FloatT increment = static_cast<FloatT>( 0.000001 );
     Int64 innerIterationCount = 1'000'000'000;
-    fmt::print( "{}: Outer {}, Inner {}\n", testName, outerIterationCount, innerIterationCount );
+    PrintLn( "{}: Outer {}, Inner {}", testName, outerIterationCount, innerIterationCount );
 
     for ( int j = 0; j < outerIterationCount; j++ )
     {
@@ -845,7 +846,7 @@ void FModTest( Int64 outerIterationCount, const char* testName )
 
         stopwatch.Stop( );
         auto duration = stopwatch.TotalSeconds( );
-        fmt::print( "\tMath: Duration={}, Accumulated={}\n", duration, accumulated1 );
+        PrintLn( "\tMath: Duration={}, Accumulated={}", duration, accumulated1 );
 
 
         argument1Value = static_cast<FloatT>( M_PI );
@@ -863,7 +864,7 @@ void FModTest( Int64 outerIterationCount, const char* testName )
 
         stopwatch.Stop( );
         duration = stopwatch.TotalSeconds( );
-        fmt::print( "\tstd: Duration={}, Accumulated={}\n", duration, accumulated2 );
+        PrintLn( "\tstd: Duration={}, Accumulated={}", duration, accumulated2 );
         PrintAccumulated( accumulated1, accumulated2 );
     }
 }
@@ -932,7 +933,7 @@ void RemQuoTest( Int64 outerIterationCount, const char* testName )
 {
     constexpr FloatT increment = static_cast<FloatT>( 0.000001 );
     Int64 innerIterationCount = 1'000'000'000;
-    fmt::print( "{}: Outer {}, Inner {}\n", testName, outerIterationCount, innerIterationCount );
+    PrintLn( "{}: Outer {}, Inner {}", testName, outerIterationCount, innerIterationCount );
 
     for ( int j = 0; j < outerIterationCount; j++ )
     {
@@ -954,7 +955,7 @@ void RemQuoTest( Int64 outerIterationCount, const char* testName )
 
         stopwatch.Stop( );
         auto duration = stopwatch.TotalSeconds( );
-        fmt::print( "\tMath: Duration={}, Accumulated={} Accumulated Quotient={}\n", duration, accumulated, accumulatedQuotient );
+        PrintLn( "\tMath: Duration={}, Accumulated={} Accumulated Quotient={}", duration, accumulated, accumulatedQuotient );
     }
     for ( int j = 0; j < outerIterationCount; j++ )
     {
@@ -976,7 +977,7 @@ void RemQuoTest( Int64 outerIterationCount, const char* testName )
 
         stopwatch.Stop( );
         auto duration = stopwatch.TotalSeconds( );
-        fmt::print( "\tstd: Duration={}, Accumulated={} Accumulated Quotient={}\n", duration, accumulated, accumulatedQuotient );
+        PrintLn( "\tstd: Duration={}, Accumulated={} Accumulated Quotient={}", duration, accumulated, accumulatedQuotient );
     }
 }
 

@@ -220,7 +220,7 @@ namespace Harlinn::Windows::MF
     };
 
 
-    MFMediaSource GetCameraMediaSource(DWORD cameraIndex)
+    inline MFMediaSource GetCameraMediaSource(DWORD cameraIndex)
     {
         auto deviceSources = MF::DeviceSources::CreateVideoDeviceSources();
         auto deviceSourceActivate = deviceSources[cameraIndex];

@@ -3,7 +3,6 @@
 #define __HCCMETA_H__
 
 #include <HCCDef.h>
-#include <HCCTraits.h>
 
 namespace Harlinn::Common::Core::Meta
 {

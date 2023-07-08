@@ -17,7 +17,7 @@ struct LoginInfo
 LoginInfo GetLoginInfo( )
 {
     LoginInfo result;
-    auto xmlFilename = IO::Directory::GetExecutableDirectory( ) + L"Harlinn.OCI.Tests.xml";
+    auto xmlFilename = IO::Directory::GetExecutableDirectory<WideString>( ) + L"Harlinn.OCI.Tests.xml";
 
     auto document = Xml::Dom::Document::Create( );
     document.SetAsync( false );

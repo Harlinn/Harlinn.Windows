@@ -1,11 +1,11 @@
 #include <DataContext.h>
 
 
-std::unique_ptr<OwnedObjectTypeData> DataContext::CreateOwnedObjectType( const std::wstring& name, const std::wstring& description ) const
+std::unique_ptr<OwnedObjectTypeData> DataContext::CreateOwnedObjectType( const WideString& name, const WideString& description ) const
 {
     auto& serviceContext = ServiceContext( );
 
-    std::optional<std::wstring> desc;
+    std::optional<WideString> desc;
     if ( description.empty( ) == false )
     {
         desc = description;
@@ -27,11 +27,11 @@ std::unique_ptr<OwnedObjectTypeData> DataContext::CreateOwnedObjectType( const s
     return std::make_unique<OwnedObjectTypeData>( id, name, 0, created, std::optional<DateTime>(), description );
 
 }
-std::unique_ptr<OwnedObjectTypeData> DataContext::CreateOwnedObjectType( const Guid& id, const std::wstring& name, const std::wstring& description ) const
+std::unique_ptr<OwnedObjectTypeData> DataContext::CreateOwnedObjectType( const Guid& id, const WideString& name, const WideString& description ) const
 {
     auto& serviceContext = ServiceContext( );
 
-    std::optional<std::wstring> desc;
+    std::optional<WideString> desc;
     if ( description.empty( ) == false )
     {
         desc = description;
@@ -53,7 +53,7 @@ std::unique_ptr<OwnedObjectTypeData> DataContext::CreateOwnedObjectType( const G
 std::unique_ptr<OwnedObjectTypeData> DataContext::FindOwnedObjectType( const Guid& id ) const
 {
     auto& serviceContext = ServiceContext( );
-    std::wstring sql = Format( L"%s WHERE Id=:1", OwnedObjectTypeDataReader::SQL );
+    auto sql = Format( L"{} WHERE Id=:1", OwnedObjectTypeDataReader::SQL );
     auto statement = serviceContext.CreateStatement( sql, id );
 
     auto reader = statement.ExecuteReader<OwnedObjectTypeDataReader>( 1 );
@@ -63,10 +63,10 @@ std::unique_ptr<OwnedObjectTypeData> DataContext::FindOwnedObjectType( const Gui
     }
     return nullptr;
 }
-std::unique_ptr<OwnedObjectTypeData> DataContext::FindOwnedObjectType( const std::wstring& name ) const
+std::unique_ptr<OwnedObjectTypeData> DataContext::FindOwnedObjectType( const WideString& name ) const
 {
     auto& serviceContext = ServiceContext( );
-    std::wstring sql = Format( L"%s WHERE Name=:1", OwnedObjectTypeDataReader::SQL );
+    auto sql = Format( L"{} WHERE Name=:1", OwnedObjectTypeDataReader::SQL );
     auto statement = serviceContext.CreateStatement( sql, name );
 
     auto reader = statement.ExecuteReader<OwnedObjectTypeDataReader>( 1 );
@@ -101,7 +101,7 @@ bool DataContext::UpdateOwnedObjectType( std::unique_ptr<OwnedObjectTypeData>& d
 {
     auto& serviceContext = ServiceContext( );
 
-    std::optional<std::wstring> desc;
+    std::optional<WideString> desc;
     if ( data->Description.empty( ) == false )
     {
         desc = data->Description;
@@ -130,7 +130,7 @@ bool DataContext::DeleteOwnedObjectType( const Guid& id, Int64 optimisticLock ) 
 }
 
 
-std::unique_ptr<OwnedObjectData> DataContext::CreateOwnedObject( const Guid& type, const std::wstring& name, const std::wstring& description ) const
+std::unique_ptr<OwnedObjectData> DataContext::CreateOwnedObject( const Guid& type, const WideString& name, const WideString& description ) const
 {
     auto& serviceContext = ServiceContext( );
 
@@ -138,7 +138,7 @@ std::unique_ptr<OwnedObjectData> DataContext::CreateOwnedObject( const Guid& typ
         L"INSERT INTO OwnedObject(Id, Tp, Name, OptimisticLock, Created, Description ) "
         L"VALUES(SYS_GUID(),:1,:2,0,SYSTIMESTAMP,:3) RETURNING Id, Created INTO :4, :5";
 
-    std::optional<std::wstring> desc;
+    std::optional<WideString> desc;
     if ( description.empty( ) == false )
     {
         desc = description;
@@ -156,7 +156,7 @@ std::unique_ptr<OwnedObjectData> DataContext::CreateOwnedObject( const Guid& typ
     return std::make_unique<OwnedObjectData>( id, type, Guid() ,name, 0, created, std::optional<DateTime>( ), description, IO::MemoryStream() );
 
 }
-std::unique_ptr<OwnedObjectData> DataContext::CreateOwnedObject( const Guid& type, const std::wstring& name, const std::wstring& description, const IO::MemoryStream& data ) const
+std::unique_ptr<OwnedObjectData> DataContext::CreateOwnedObject( const Guid& type, const WideString& name, const WideString& description, const IO::MemoryStream& data ) const
 {
     auto& serviceContext = ServiceContext( );
 
@@ -164,7 +164,7 @@ std::unique_ptr<OwnedObjectData> DataContext::CreateOwnedObject( const Guid& typ
         L"INSERT INTO OwnedObject(Id, Tp, Name, OptimisticLock, Created, Description ) "
         L"VALUES(SYS_GUID(),:1,:2,0,SYSTIMESTAMP,:3, :4) RETURNING Id, Created INTO :5, :6";
 
-    std::optional<std::wstring> desc;
+    std::optional<WideString> desc;
     if ( description.empty( ) == false )
     {
         desc = description;
@@ -185,7 +185,7 @@ std::unique_ptr<OwnedObjectData> DataContext::CreateOwnedObject( const Guid& typ
 
     return std::make_unique<OwnedObjectData>( id, type, Guid( ), name, 0, created, std::optional<DateTime>( ), description, data );
 }
-std::unique_ptr<OwnedObjectData> DataContext::CreateOwnedObject( const Guid& id, const Guid& type, const std::wstring& name, const std::wstring& description ) const
+std::unique_ptr<OwnedObjectData> DataContext::CreateOwnedObject( const Guid& id, const Guid& type, const WideString& name, const WideString& description ) const
 {
     auto& serviceContext = ServiceContext( );
 
@@ -193,7 +193,7 @@ std::unique_ptr<OwnedObjectData> DataContext::CreateOwnedObject( const Guid& id,
         L"INSERT INTO OwnedObject(Id, Tp, Name, OptimisticLock, Created, Description ) "
         L"VALUES(:1,:2,:3,0,SYSTIMESTAMP,:4) RETURNING Created INTO :5";
 
-    std::optional<std::wstring> desc;
+    std::optional<WideString> desc;
     if ( description.empty( ) == false )
     {
         desc = description;
@@ -208,7 +208,7 @@ std::unique_ptr<OwnedObjectData> DataContext::CreateOwnedObject( const Guid& id,
 
     return std::make_unique<OwnedObjectData>( id, type, Guid( ), name, 0, created, std::optional<DateTime>( ), description, IO::MemoryStream( ) );
 }
-std::unique_ptr<OwnedObjectData> DataContext::CreateOwnedObject( const Guid& id, const Guid& owner, const Guid& type, const std::wstring& name, const std::wstring& description ) const
+std::unique_ptr<OwnedObjectData> DataContext::CreateOwnedObject( const Guid& id, const Guid& owner, const Guid& type, const WideString& name, const WideString& description ) const
 {
     auto& serviceContext = ServiceContext( );
 
@@ -216,7 +216,7 @@ std::unique_ptr<OwnedObjectData> DataContext::CreateOwnedObject( const Guid& id,
         L"INSERT INTO OwnedObject(Id, Tp, Owner, Name, OptimisticLock, Created, Description ) "
         L"VALUES(:1,:2,:3,:4,0,SYSTIMESTAMP,:5) RETURNING Created INTO :6";
 
-    std::optional<std::wstring> desc;
+    std::optional<WideString> desc;
     if ( description.empty( ) == false )
     {
         desc = description;
@@ -232,7 +232,7 @@ std::unique_ptr<OwnedObjectData> DataContext::CreateOwnedObject( const Guid& id,
     return std::make_unique<OwnedObjectData>( id, type, owner, name, 0, created, std::optional<DateTime>( ), description, IO::MemoryStream( ) );
 
 }
-std::unique_ptr<OwnedObjectData> DataContext::CreateOwnedObject( const Guid& id, const Guid& type, const std::wstring& name, const std::wstring& description, const IO::MemoryStream& data ) const
+std::unique_ptr<OwnedObjectData> DataContext::CreateOwnedObject( const Guid& id, const Guid& type, const WideString& name, const WideString& description, const IO::MemoryStream& data ) const
 {
     auto& serviceContext = ServiceContext( );
 
@@ -240,7 +240,7 @@ std::unique_ptr<OwnedObjectData> DataContext::CreateOwnedObject( const Guid& id,
         L"INSERT INTO OwnedObject(Id, Tp, Name, OptimisticLock, Created, Description, Data ) "
         L"VALUES(:1,:2,:3,0,SYSTIMESTAMP,:4,:5) RETURNING Created INTO :6";
 
-    std::optional<std::wstring> desc;
+    std::optional<WideString> desc;
     if ( description.empty( ) == false )
     {
         desc = description;
@@ -267,7 +267,7 @@ std::unique_ptr<OwnedObjectData> DataContext::CreateOwnedObject( const Guid& id,
     return std::make_unique<OwnedObjectData>( id, type, Guid( ), name, 0, created, std::optional<DateTime>( ), description, data );
 }
 
-std::unique_ptr<OwnedObjectData> DataContext::CreateOwnedObject( const Guid& id, const Guid& owner, const Guid& type, const std::wstring& name, const std::wstring& description, const IO::MemoryStream& data ) const
+std::unique_ptr<OwnedObjectData> DataContext::CreateOwnedObject( const Guid& id, const Guid& owner, const Guid& type, const WideString& name, const WideString& description, const IO::MemoryStream& data ) const
 {
     auto& serviceContext = ServiceContext( );
 
@@ -275,7 +275,7 @@ std::unique_ptr<OwnedObjectData> DataContext::CreateOwnedObject( const Guid& id,
         L"INSERT INTO OwnedObject(Id, Tp, Owner ,Name, OptimisticLock, Created, Description, Data ) "
         L"VALUES(:1,:2,:3,0,SYSTIMESTAMP,:4,:5) RETURNING Created INTO :6";
 
-    std::optional<std::wstring> desc;
+    std::optional<WideString> desc;
     if ( description.empty( ) == false )
     {
         desc = description;
@@ -305,7 +305,7 @@ std::unique_ptr<OwnedObjectData> DataContext::CreateOwnedObject( const Guid& id,
 std::unique_ptr<OwnedObjectData> DataContext::FindOwnedObject( const Guid& id ) const
 {
     auto& serviceContext = ServiceContext( );
-    std::wstring sql = Format( L"%s WHERE Id=:1", OwnedObjectDataReader::SQL );
+    auto sql = Format( L"{} WHERE Id=:1", OwnedObjectDataReader::SQL );
     auto statement = serviceContext.CreateStatement( sql, id );
 
     auto reader = statement.ExecuteReader<OwnedObjectDataReader>( 1 );
@@ -315,10 +315,10 @@ std::unique_ptr<OwnedObjectData> DataContext::FindOwnedObject( const Guid& id ) 
     }
     return nullptr;
 }
-std::unique_ptr<OwnedObjectData> DataContext::FindOwnedObject( const Guid& owner, const std::wstring& name ) const
+std::unique_ptr<OwnedObjectData> DataContext::FindOwnedObject( const Guid& owner, const WideString& name ) const
 {
     auto& serviceContext = ServiceContext( );
-    std::wstring sql = Format( L"%s WHERE Owner=:1 AND Name=:2", OwnedObjectDataReader::SQL );
+    auto sql = Format( L"{} WHERE Owner=:1 AND Name=:2", OwnedObjectDataReader::SQL );
     auto statement = serviceContext.CreateStatement( sql, owner, name );
 
     auto reader = statement.ExecuteReader<OwnedObjectDataReader>( 1 );
@@ -348,7 +348,7 @@ std::unordered_map<Guid, std::unique_ptr<OwnedObjectData> > DataContext::ReadOwn
     std::unordered_map<Guid, std::unique_ptr<OwnedObjectData> > result;
     auto& serviceContext = ServiceContext( );
 
-    std::wstring sql = Format( L"%s WHERE Owner=:1", OwnedObjectDataReader::SQL );
+    auto sql = Format( L"{} WHERE Owner=:1", OwnedObjectDataReader::SQL );
 
     auto statement = serviceContext.CreateStatement( sql, owner );
 
@@ -365,7 +365,7 @@ std::unordered_map<Guid, std::unique_ptr<OwnedObjectData> > DataContext::ReadOwn
     std::unordered_map<Guid, std::unique_ptr<OwnedObjectData> > result;
     auto& serviceContext = ServiceContext( );
 
-    std::wstring sql = Format( L"%s WHERE Tp=:1", OwnedObjectDataReader::SQL );
+    auto sql = Format( L"{} WHERE Tp=:1", OwnedObjectDataReader::SQL );
 
     auto statement = serviceContext.CreateStatement( sql, type );
 
@@ -382,7 +382,7 @@ std::unordered_map<Guid, std::unique_ptr<OwnedObjectData> > DataContext::ReadOwn
     std::unordered_map<Guid, std::unique_ptr<OwnedObjectData> > result;
     auto& serviceContext = ServiceContext( );
 
-    std::wstring sql = Format( L"%s WHERE Owner=:1 AND Tp=:2", OwnedObjectDataReader::SQL );
+    auto sql = Format( L"{} WHERE Owner=:1 AND Tp=:2", OwnedObjectDataReader::SQL );
 
     auto statement = serviceContext.CreateStatement( sql, owner, type );
 
@@ -410,7 +410,7 @@ bool DataContext::UpdateOwnedObject( std::unique_ptr<OwnedObjectData>& data ) co
     {
         owner = data->Owner;
     }
-    std::optional<std::wstring> description;
+    std::optional<WideString> description;
     if ( data->Description.empty( ) == false )
     {
         description = data->Description;
@@ -469,7 +469,7 @@ TimeseriesPoints DataContext::ReadSegments( const Guid& owner ) const
 {
     TimeseriesPoints result;
     auto& serviceContext = ServiceContext( );
-    std::wstring sql = Format( L"%s WHERE Id=:1 ORDER BY FirstTimestamp", TimeseriesSegmentDataReader::SQL );
+    auto sql = Format( L"{} WHERE Id=:1 ORDER BY FirstTimestamp", TimeseriesSegmentDataReader::SQL );
     auto statement = serviceContext.CreateStatement( sql, owner );
     auto reader = statement.ExecuteReader<TimeseriesSegmentDataReader>( );
     while ( reader->Read( ) )

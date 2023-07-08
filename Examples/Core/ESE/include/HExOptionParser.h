@@ -14,7 +14,7 @@ namespace Harlinn::Common::Core::Examples
         using namespace boost::program_options;
     }
 
-    inline std::string GetDirectory( const std::string& filename )
+    inline AnsiString GetDirectory( const AnsiString& filename )
     {
         char drive[_MAX_DRIVE + 1];
         char directory[_MAX_DIR + 1];
@@ -56,12 +56,12 @@ namespace Harlinn::Common::Core::Examples
             if ( options.SystemPath.empty( ) )
             {
                 auto directory = GetDirectory( options.Database );
-                options.SystemPath = directory + "System\\";
+                options.SystemPath = std::string(directory.c_str(), directory.length()) + "System\\";
             }
             if ( options.LogFilePath.empty( ) )
             {
                 auto directory = GetDirectory( options.Database );
-                options.LogFilePath = directory + "Log\\";
+                options.LogFilePath = std::string( directory.c_str( ), directory.length( ) ) + "Log\\";
             }
             return true;
         }

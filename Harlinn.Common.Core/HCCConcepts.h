@@ -39,13 +39,21 @@ namespace Harlinn::Common::Core
     };
 
     template<typename T>
-    concept StringLike = SimpleStringLike<T> && requires ( T t1, const T t2 )
+    concept SimpleWideStringLike = SimpleStringLike<T> && std::is_same_v<typename T::value_type, wchar_t>;
+
+    template<typename T>
+    concept SimpleAnsiStringLike = SimpleStringLike<T> && std::is_same_v<typename T::value_type, char>;
+
+
+    template<typename T>
+    concept StringLike = SimpleStringLike<T> && requires ( T t1, const T t2, typename T::size_type sz )
     {
         { t1[ 0 ] } ->std::same_as<typename T::reference>;
         { t1.rbegin( ) } ->std::same_as<typename T::reverse_iterator>;
         { t1.rend( ) } ->std::same_as<typename T::reverse_iterator>;
-        { t1.front( ) } ->std::same_as<typename T::reference>;
-        { t1.back( ) } ->std::same_as<typename T::reference>;
+        { t1.front( ) } ->std::convertible_to<typename T::value_type>;
+        { t1.back( ) } ->std::convertible_to<typename T::value_type>;
+        { t1.resize( sz ) };
         
 
         { t2[ 0 ] } ->std::same_as<typename T::const_reference>;
@@ -53,14 +61,19 @@ namespace Harlinn::Common::Core
         { t2.end( ) } ->std::same_as<typename T::const_iterator>;
         { t2.rbegin( ) } ->std::same_as<typename T::const_reverse_iterator>;
         { t2.rend( ) } ->std::same_as<typename T::const_reverse_iterator>;
-        { t2.front( ) } ->std::same_as<typename T::const_reference>;
-        { t2.back( ) } ->std::same_as<typename T::const_reference>;
+        { t2.front( ) } ->std::convertible_to<typename T::value_type>;
+        { t2.back( ) } ->std::convertible_to<typename T::value_type>;
         { t2.data( ) } ->std::same_as<typename T::const_pointer>;
     };
 
+    template<typename T>
+    concept WideStringLike = StringLike<T> && std::is_same_v<typename T::value_type, wchar_t>;
 
+    template<typename T>
+    concept AnsiStringLike = StringLike<T> && std::is_same_v<typename T::value_type, char>;
 
-    constexpr bool test1 = SpanLike<std::span<Int64>>;
+    static_assert( AnsiStringLike< std::string > );
+    static_assert( WideStringLike< std::wstring > );
     
 
 }

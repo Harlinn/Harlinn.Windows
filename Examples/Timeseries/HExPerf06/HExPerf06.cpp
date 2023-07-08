@@ -8,10 +8,10 @@
 using namespace Harlinn;
 using namespace Harlinn::Common::Core;
 
-std::string GetDatabaseDir( )
+AnsiString GetDatabaseDir( )
 {
-    std::string TestDataRoot = Environment::EnvironmentVariable( "HCC_TEST_DATA_ROOT" );
-    auto directoryPath = IO::Path::Append( TestDataRoot, "\\LMDB" );
+    auto TestDataRoot = Environment::EnvironmentVariable( "HCC_TEST_DATA_ROOT" );
+    auto directoryPath = IO::Path::Combine( TestDataRoot, "\\LMDB" );
 
     if ( IO::Directory::Exist( directoryPath ) == false )
     {

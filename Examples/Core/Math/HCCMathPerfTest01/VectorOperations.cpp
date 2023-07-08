@@ -2,6 +2,7 @@
 
 #include <HCCMatrix.h>
 #include <HCCDateTime.h>
+#include <HCCString.h>
 
 using namespace Harlinn::Common::Core;
 
@@ -30,7 +31,7 @@ namespace
 
             stopwatch.Stop( );
             auto duration = stopwatch.TotalSeconds( );
-            fmt::print( "{}: Duration={}, Accumulated={}\n",
+            PrintLn( "{}: Duration={}, Accumulated={}",
                 testName, duration, accumulated.ToString() );
         }
     }
@@ -60,7 +61,7 @@ namespace
 
             stopwatch.Stop( );
             auto duration = stopwatch.TotalSeconds( );
-            fmt::print( "{}: Duration={}, Accumulated={}\n",
+            PrintLn( "{}: Duration={}, Accumulated={}",
                 testName, duration, accumulated.ToString( ) );
         }
     }
@@ -92,7 +93,7 @@ namespace
 
             stopwatch.Stop( );
             auto duration = stopwatch.TotalSeconds( );
-            fmt::print( "{}: Duration={}, Accumulated={}\n",
+            PrintLn( "{}: Duration={}, Accumulated={}",
                 testName, duration, accumulated.ToString( ) );
         }
     }
