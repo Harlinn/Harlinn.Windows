@@ -34,17 +34,17 @@ public:
 
 AnsiString GetSensorName( size_t value )
 {
-    return Format( "S%08x", value );
+    return Format( "S{:08x}", value );
 }
 
 AnsiString GetCatalogName( size_t value )
 {
-    return Format( "C%08x", value );
+    return Format( "C{:08x}", value );
 }
 
 AnsiString GetAssetName( size_t value )
 {
-    return Format( "A%08x", value );
+    return Format( "A{:08x}", value );
 }
 
 

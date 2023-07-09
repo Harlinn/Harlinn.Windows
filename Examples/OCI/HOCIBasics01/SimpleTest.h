@@ -185,8 +185,8 @@ public:
         
         for ( int i = 0; i < RowCount; ++i )
         {
-            auto name = Format(L"Name%d", i + 1);
-            auto description = i % 2 == 0 ? WideString() : Format( L"Description%d", i + 1 );
+            auto name = Format(L"Name{}", i + 1);
+            auto description = i % 2 == 0 ? WideString() : Format( L"Description{}", i + 1 );
             auto data = Insert( name, description );
             originalItems.emplace( data->Id(), std::move(data) );
         }
@@ -205,8 +205,8 @@ public:
                 {
                     auto original = originalItem->ToString( );
                     auto database = databaseItem->ToString( );
-                    auto message = Format( L"The original item %s "
-                        L"is not equal to the item %s "
+                    auto message = Format( L"The original item {} "
+                        L"is not equal to the item {} "
                         L"retrieved from the database.", original.c_str( ), database.c_str( ) );
 
                     throw Exception( message );
@@ -215,7 +215,7 @@ public:
             else
             {
                 auto original = originalItem->ToString( );
-                auto message = Format( L"Did not retrieve %s from "
+                auto message = Format( L"Did not retrieve {} from "
                     L"the database.", original.c_str( ) );
                 throw Exception( message );
             }
@@ -236,8 +236,8 @@ public:
                     {
                         auto original = data->ToString( );
                         auto database = changedData->ToString( );
-                        auto message = Format( L"Unable to update %s, the " 
-                            L"row has been updated by another user %s",
+                        auto message = Format( L"Unable to update {}, the " 
+                            L"row has been updated by another user {}",
                             original.c_str( ), database.c_str( ) );
 
                         throw Exception( message );
@@ -245,7 +245,7 @@ public:
                     else
                     {
                         auto original = data->ToString( );
-                        auto message = Format( L"Unable to update %s, the "
+                        auto message = Format( L"Unable to update {}, the "
                             L"row has been deleted by another user", original.c_str( ) );
                         throw Exception( message );
                     }
@@ -269,7 +269,7 @@ public:
             if ( Delete( item ) == false )
             {
                 auto original = item->ToString( );
-                auto message = Format( L"Unable to update %s, the "
+                auto message = Format( L"Unable to update {}, the "
                     L"row has been deleted by another user", original.c_str( ) );
 
                 throw Exception( message );
@@ -283,7 +283,7 @@ public:
             if ( Delete( item ) )
             {
                 auto original = item->ToString( );
-                auto message = Format( L"It appears %s, "
+                auto message = Format( L"It appears {}, "
                     L"was not deleted", original.c_str( ) );
 
                 throw Exception( message );

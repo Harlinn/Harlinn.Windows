@@ -15,7 +15,7 @@ namespace Harlinn::ODBC
             SQLSMALLINT actualMessageLength = 0;
             SQLINTEGER nativeError = 0;
             GetDiagnosticRecord( handleType, sqlHandle, 1, sqlState, &nativeError, message, 2048, &actualMessageLength );
-            WideString msg = Format( L"%s: %s", sqlState, message );
+            WideString msg = Format( L"{}: {}", sqlState, message );
             Data::DbException exc( location, nativeError, msg );
             throw exc;
         }
@@ -27,7 +27,7 @@ namespace Harlinn::ODBC
             SQLSMALLINT actualMessageLength = 0;
             SQLINTEGER nativeError = 0;
             GetDiagnosticRecord( handleType, sqlHandle, 1, sqlState, &nativeError, message, 2048, &actualMessageLength );
-            WideString msg = Format( L"%s: %s", sqlState, message );
+            WideString msg = Format( L"{}: {}", sqlState, message );
             Data::DbException exc( nativeError, msg );
             throw exc;
         }

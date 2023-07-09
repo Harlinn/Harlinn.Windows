@@ -73,7 +73,7 @@ namespace Harlinn::CIMTool
         std::string caption_;
     public:
         TreeNode( Renderable* owner, UInt64 id, const std::string& caption )
-            : Base( owner ), id_(id), caption_(hcc::Format("%s##%ull", caption.c_str(), id ) )
+            : Base( owner ), id_(id), caption_(hcc::Format("{}##%ull", caption.c_str(), id ) )
         { }
 
         static UInt64 NextId( )
