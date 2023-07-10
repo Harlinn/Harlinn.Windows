@@ -16,6 +16,17 @@ BOOST_FIXTURE_TEST_SUITE( StringTests, LocalFixture )
 
 #ifdef HCC_WITH_BASIC_STRING
 
+// --run_test=StringTests/BufferHeaderSizeTest1
+BOOST_AUTO_TEST_CASE( BufferHeaderSizeTest1 )
+{
+    constexpr size_t WideStringBufferHeaderSize = WideString::BufferHeaderSize;
+    constexpr size_t AnsiStringBufferHeaderSize = AnsiString::BufferHeaderSize;
+    bool equal = WideStringBufferHeaderSize == AnsiStringBufferHeaderSize;
+    BOOST_TEST( equal );
+
+}
+
+
 
 // --run_test=StringTests/ConstructorTest1W
 BOOST_AUTO_TEST_CASE( ConstructorTest1W )
@@ -388,6 +399,562 @@ BOOST_AUTO_TEST_CASE( StringFromTest7A )
     bool equal = to == ToAnsiString( from );
     BOOST_TEST( equal );
 }
+
+
+// --run_test=StringTests/StringReplaceTest1W
+BOOST_AUTO_TEST_CASE( StringReplaceTest1W )
+{
+    WideString expectedStr( L"4123" );
+    WideString str( L"123" );
+    str.Replace( 0, 0, L"4", 1 );
+    
+    bool equal = expectedStr == str;
+
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringReplaceTest2W
+BOOST_AUTO_TEST_CASE( StringReplaceTest2W )
+{
+    WideString expectedStr( L"1423" );
+    WideString str( L"123" );
+    str.Replace( 1, 0, L"4", 1 );
+
+    bool equal = expectedStr == str;
+
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringReplaceTest3W
+BOOST_AUTO_TEST_CASE( StringReplaceTest3W )
+{
+    WideString expectedStr( L"1243" );
+    WideString str( L"123" );
+    str.Replace( 2, 0, L"4", 1 );
+
+    bool equal = expectedStr == str;
+
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringReplaceTest4W
+BOOST_AUTO_TEST_CASE( StringReplaceTest4W )
+{
+    WideString expectedStr( L"1234" );
+    WideString str( L"123" );
+    str.Replace( 3, 0, L"4", 1 );
+
+    bool equal = expectedStr == str;
+
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringReplaceTest5W
+BOOST_AUTO_TEST_CASE( StringReplaceTest5W )
+{
+    WideString expectedStr( L"123 4" );
+    WideString str( L"123" );
+    str.Replace( 4, 0, L"4", 1 );
+
+    bool equal = expectedStr == str;
+
+    BOOST_TEST( equal );
+}
+
+
+// --run_test=StringTests/StringReplaceTest6W
+BOOST_AUTO_TEST_CASE( StringReplaceTest6W )
+{
+    WideString expectedStr1( L"4123" );
+    WideString expectedStr2( L"123" );
+    WideString str1( L"123" );
+    WideString str2 = str1;
+    str1.Replace( 0, 0, L"4", 1 );
+
+    bool equal = expectedStr1 == str1;
+    BOOST_TEST( equal );
+    equal = expectedStr2 == str2;
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringReplaceTest7W
+BOOST_AUTO_TEST_CASE( StringReplaceTest7W )
+{
+    WideString expectedStr1( L"1423" );
+    WideString expectedStr2( L"123" );
+    WideString str1( L"123" );
+    WideString str2 = str1;
+    str1.Replace( 1, 0, L"4", 1 );
+
+    bool equal = expectedStr1 == str1;
+    BOOST_TEST( equal );
+    equal = expectedStr2 == str2;
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringReplaceTest8W
+BOOST_AUTO_TEST_CASE( StringReplaceTest8W )
+{
+    WideString expectedStr1( L"1243" );
+    WideString expectedStr2( L"123" );
+    WideString str1( L"123" );
+    WideString str2 = str1;
+    str1.Replace( 2, 0, L"4", 1 );
+
+    bool equal = expectedStr1 == str1;
+    BOOST_TEST( equal );
+    equal = expectedStr2 == str2;
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringReplaceTest9W
+BOOST_AUTO_TEST_CASE( StringReplaceTest9W )
+{
+    WideString expectedStr1( L"1234" );
+    WideString expectedStr2( L"123" );
+    WideString str1( L"123" );
+    WideString str2 = str1;
+    str1.Replace( 3, 0, L"4", 1 );
+
+    bool equal = expectedStr1 == str1;
+    BOOST_TEST( equal );
+    equal = expectedStr2 == str2;
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringReplaceTest10W
+BOOST_AUTO_TEST_CASE( StringReplaceTest10W )
+{
+    WideString expectedStr1( L"123 4" );
+    WideString expectedStr2( L"123" );
+    WideString str1( L"123" );
+    WideString str2 = str1;
+    str1.Replace( 4, 0, L"4", 1 );
+
+    bool equal = expectedStr1 == str1;
+    BOOST_TEST( equal );
+    equal = expectedStr2 == str2;
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringReplaceTest11W
+BOOST_AUTO_TEST_CASE( StringReplaceTest11W )
+{
+    WideString expectedStr( L"423" );
+    WideString str( L"123" );
+    str.Replace( 0, 1, L"4", 1 );
+
+    bool equal = expectedStr == str;
+
+    BOOST_TEST( equal );
+}
+
+
+// --run_test=StringTests/StringReplaceTest12W
+BOOST_AUTO_TEST_CASE( StringReplaceTest12W )
+{
+    WideString expectedStr( L"143" );
+    WideString str( L"123" );
+    str.Replace( 1, 1, L"4", 1 );
+
+    bool equal = expectedStr == str;
+
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringReplaceTest13W
+BOOST_AUTO_TEST_CASE( StringReplaceTest13W )
+{
+    WideString expectedStr( L"124" );
+    WideString str( L"123" );
+    str.Replace( 2, 1, L"4", 1 );
+
+    bool equal = expectedStr == str;
+
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringReplaceTest14W
+BOOST_AUTO_TEST_CASE( StringReplaceTest14W )
+{
+    WideString expectedStr( L"1234" );
+    WideString str( L"123" );
+    str.Replace( 3, 1, L"4", 1 );
+
+    bool equal = expectedStr == str;
+
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringReplaceTest15W
+BOOST_AUTO_TEST_CASE( StringReplaceTest15W )
+{
+    WideString expectedStr( L"123 4" );
+    WideString str( L"123" );
+    str.Replace( 4, 1, L"4", 1 );
+
+    bool equal = expectedStr == str;
+
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringReplaceTest16W
+BOOST_AUTO_TEST_CASE( StringReplaceTest16W )
+{
+    WideString expectedStr1( L"423" );
+    WideString expectedStr2( L"123" );
+    WideString str1( L"123" );
+    WideString str2 = str1;
+    str1.Replace( 0, 1, L"4", 1 );
+
+    bool equal = expectedStr1 == str1;
+    BOOST_TEST( equal );
+    equal = expectedStr2 == str2;
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringReplaceTest17W
+BOOST_AUTO_TEST_CASE( StringReplaceTest17W )
+{
+    WideString expectedStr1( L"143" );
+    WideString expectedStr2( L"123" );
+    WideString str1( L"123" );
+    WideString str2 = str1;
+    str1.Replace( 1, 1, L"4", 1 );
+
+    bool equal = expectedStr1 == str1;
+    BOOST_TEST( equal );
+    equal = expectedStr2 == str2;
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringReplaceTest18W
+BOOST_AUTO_TEST_CASE( StringReplaceTest18W )
+{
+    WideString expectedStr1( L"124" );
+    WideString expectedStr2( L"123" );
+    WideString str1( L"123" );
+    WideString str2 = str1;
+    str1.Replace( 2, 1, L"4", 1 );
+
+    bool equal = expectedStr1 == str1;
+    BOOST_TEST( equal );
+    equal = expectedStr2 == str2;
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringReplaceTest19W
+BOOST_AUTO_TEST_CASE( StringReplaceTest19W )
+{
+    WideString expectedStr1( L"1234" );
+    WideString expectedStr2( L"123" );
+    WideString str1( L"123" );
+    WideString str2 = str1;
+    str1.Replace( 3, 1, L"4", 1 );
+
+    bool equal = expectedStr1 == str1;
+    BOOST_TEST( equal );
+    equal = expectedStr2 == str2;
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringReplaceTest20W
+BOOST_AUTO_TEST_CASE( StringReplaceTest20W )
+{
+    WideString expectedStr1( L"123 4" );
+    WideString expectedStr2( L"123" );
+    WideString str1( L"123" );
+    WideString str2 = str1;
+    str1.Replace( 4, 1, L"4", 1 );
+
+    bool equal = expectedStr1 == str1;
+    BOOST_TEST( equal );
+    equal = expectedStr2 == str2;
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringReplaceTest21W
+BOOST_AUTO_TEST_CASE( StringReplaceTest21W )
+{
+    WideString expectedStr( L"4523" );
+    WideString str( L"123" );
+    str.Replace( 0, 1, L"45", 2 );
+
+    bool equal = expectedStr == str;
+
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringReplaceTest22W
+BOOST_AUTO_TEST_CASE( StringReplaceTest22W )
+{
+    WideString expectedStr( L"1453" );
+    WideString str( L"123" );
+    str.Replace( 1, 1, L"45", 2 );
+
+    bool equal = expectedStr == str;
+
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringReplaceTest23W
+BOOST_AUTO_TEST_CASE( StringReplaceTest23W )
+{
+    WideString expectedStr( L"1245" );
+    WideString str( L"123" );
+    str.Replace( 2, 1, L"45", 2 );
+
+    bool equal = expectedStr == str;
+
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringReplaceTest24W
+BOOST_AUTO_TEST_CASE( StringReplaceTest24W )
+{
+    WideString expectedStr( L"12345" );
+    WideString str( L"123" );
+    str.Replace( 3, 1, L"45", 2 );
+
+    bool equal = expectedStr == str;
+
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringReplaceTest25W
+BOOST_AUTO_TEST_CASE( StringReplaceTest25W )
+{
+    WideString expectedStr( L"123 45" );
+    WideString str( L"123" );
+    str.Replace( 4, 1, L"45", 2 );
+
+    bool equal = expectedStr == str;
+
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringReplaceTest26W
+BOOST_AUTO_TEST_CASE( StringReplaceTest26W )
+{
+    WideString expectedStr1( L"4523" );
+    WideString expectedStr2( L"123" );
+    WideString str1( L"123" );
+    WideString str2 = str1;
+    str1.Replace( 0, 1, L"45", 2 );
+
+    bool equal = expectedStr1 == str1;
+    BOOST_TEST( equal );
+
+    equal = expectedStr2 == str2;
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringReplaceTest27W
+BOOST_AUTO_TEST_CASE( StringReplaceTest27W )
+{
+    WideString expectedStr1( L"1453" );
+    WideString expectedStr2( L"123" );
+    WideString str1( L"123" );
+    WideString str2 = str1;
+    str1.Replace( 1, 1, L"45", 2 );
+
+    bool equal = expectedStr1 == str1;
+    BOOST_TEST( equal );
+
+    equal = expectedStr2 == str2;
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringReplaceTest28W
+BOOST_AUTO_TEST_CASE( StringReplaceTest28W )
+{
+    WideString expectedStr1( L"1245" );
+    WideString expectedStr2( L"123" );
+    WideString str1( L"123" );
+    WideString str2 = str1;
+    str1.Replace( 2, 1, L"45", 2 );
+
+    bool equal = expectedStr1 == str1;
+    BOOST_TEST( equal );
+
+    equal = expectedStr2 == str2;
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringReplaceTest29W
+BOOST_AUTO_TEST_CASE( StringReplaceTest29W )
+{
+    WideString expectedStr1( L"12345" );
+    WideString expectedStr2( L"123" );
+    WideString str1( L"123" );
+    WideString str2 = str1;
+    str1.Replace( 3, 1, L"45", 2 );
+
+    bool equal = expectedStr1 == str1;
+    BOOST_TEST( equal );
+
+    equal = expectedStr2 == str2;
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringReplaceTest30W
+BOOST_AUTO_TEST_CASE( StringReplaceTest30W )
+{
+    WideString expectedStr1( L"123 45" );
+    WideString expectedStr2( L"123" );
+    WideString str1( L"123" );
+    WideString str2 = str1;
+    str1.Replace( 4, 1, L"45", 2 );
+
+    bool equal = expectedStr1 == str1;
+    BOOST_TEST( equal );
+
+    equal = expectedStr2 == str2;
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringReplaceTest31W
+BOOST_AUTO_TEST_CASE( StringReplaceTest31W )
+{
+    WideString expectedStr( L"23" );
+    WideString str( L"123" );
+    str.Replace( 0, 1, L"", 0 );
+
+    bool equal = expectedStr == str;
+
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringReplaceTest32W
+BOOST_AUTO_TEST_CASE( StringReplaceTest32W )
+{
+    WideString expectedStr( L"13" );
+    WideString str( L"123" );
+    str.Replace( 1, 1, L"", 0 );
+
+    bool equal = expectedStr == str;
+
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringReplaceTest33W
+BOOST_AUTO_TEST_CASE( StringReplaceTest33W )
+{
+    WideString expectedStr( L"12" );
+    WideString str( L"123" );
+    str.Replace( 2, 1, L"", 0 );
+
+    bool equal = expectedStr == str;
+
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringReplaceTest34W
+BOOST_AUTO_TEST_CASE( StringReplaceTest34W )
+{
+    WideString expectedStr( L"123" );
+    WideString str( L"123" );
+    str.Replace( 3, 1, L"", 0 );
+
+    bool equal = expectedStr == str;
+
+    BOOST_TEST( equal );
+}
+
+
+// --run_test=StringTests/StringReplaceTest35W
+BOOST_AUTO_TEST_CASE( StringReplaceTest35W )
+{
+    WideString expectedStr( L"123" );
+    WideString str( L"123" );
+    str.Replace( 4, 1, L"", 0 );
+
+    bool equal = expectedStr == str;
+
+    BOOST_TEST( equal );
+}
+
+
+// --run_test=StringTests/StringReplaceTest36W
+BOOST_AUTO_TEST_CASE( StringReplaceTest36W )
+{
+    WideString expectedStr1( L"23" );
+    WideString expectedStr2( L"123" );
+    WideString str1( L"123" );
+    WideString str2 = str1;
+    str1.Replace( 0, 1, L"", 0 );
+
+    bool equal = expectedStr1 == str1;
+    BOOST_TEST( equal );
+
+    equal = expectedStr2 == str2;
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringReplaceTest37W
+BOOST_AUTO_TEST_CASE( StringReplaceTest37W )
+{
+    WideString expectedStr1( L"13" );
+    WideString expectedStr2( L"123" );
+    WideString str1( L"123" );
+    WideString str2 = str1;
+    str1.Replace( 1, 1, L"", 0 );
+
+    bool equal = expectedStr1 == str1;
+    BOOST_TEST( equal );
+
+    equal = expectedStr2 == str2;
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringReplaceTest38W
+BOOST_AUTO_TEST_CASE( StringReplaceTest38W )
+{
+    WideString expectedStr1( L"12" );
+    WideString expectedStr2( L"123" );
+    WideString str1( L"123" );
+    WideString str2 = str1;
+    str1.Replace( 2, 1, L"", 0 );
+
+    bool equal = expectedStr1 == str1;
+    BOOST_TEST( equal );
+
+    equal = expectedStr2 == str2;
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringReplaceTest39W
+BOOST_AUTO_TEST_CASE( StringReplaceTest39W )
+{
+    WideString expectedStr1( L"123" );
+    WideString expectedStr2( L"123" );
+    WideString str1( L"123" );
+    WideString str2 = str1;
+    str1.Replace( 3, 1, L"", 0 );
+
+    bool equal = expectedStr1 == str1;
+    BOOST_TEST( equal );
+
+    equal = expectedStr2 == str2;
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringReplaceTest40W
+BOOST_AUTO_TEST_CASE( StringReplaceTest40W )
+{
+    WideString expectedStr1( L"123" );
+    WideString expectedStr2( L"123" );
+    WideString str1( L"123" );
+    WideString str2 = str1;
+    str1.Replace( 4, 1, L"", 0 );
+
+    bool equal = expectedStr1 == str1;
+    BOOST_TEST( equal );
+
+    equal = expectedStr2 == str2;
+    BOOST_TEST( equal );
+}
+
 
 
 

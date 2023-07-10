@@ -221,29 +221,29 @@ namespace Harlinn::Common::Core
         HCC_EXPORT void ResetStringFixedSizeMemoryManager( );
 
         
-        inline void Copy( char* dest, const char* source, size_t length ) noexcept
+        inline void MemCopy( char* dest, const char* source, size_t length ) noexcept
         {
             memcpy( dest, source, length );
         }
-        inline void Copy( wchar_t* dest, const wchar_t* source, size_t length ) noexcept
+        inline void MemCopy( wchar_t* dest, const wchar_t* source, size_t length ) noexcept
         {
             wmemcpy( dest, source, length );
         }
 
-        inline void Move( char* dest, const char* source, size_t length ) noexcept
+        inline void MemMove( char* dest, const char* source, size_t length ) noexcept
         {
             memmove( dest, source, length );
         }
-        inline void Move( wchar_t* dest, const wchar_t* source, size_t length ) noexcept
+        inline void MemMove( wchar_t* dest, const wchar_t* source, size_t length ) noexcept
         {
             wmemmove( dest, source, length );
         }
 
-        inline void Set( char* dest, char value, size_t length ) noexcept
+        inline void MemSet( char* dest, char value, size_t length ) noexcept
         {
             memset( dest, value, length );
         }
-        inline void Set( wchar_t* dest, wchar_t value, size_t length ) noexcept
+        inline void MemSet( wchar_t* dest, wchar_t value, size_t length ) noexcept
         {
             wmemset( dest, value, length );
         }
@@ -675,8 +675,8 @@ namespace Harlinn::Common::Core
         struct Data
         {
             using CharType = T;
-            size_t referenceCount_;
-            size_t size_;
+            size_t referenceCount_ = 1;
+            size_t size_ = 0;
             CharType buffer_[1024];
 
             size_t AddRef( )
@@ -687,6 +687,15 @@ namespace Harlinn::Common::Core
             size_t DecRef( )
             {
                 return InterlockedDecrementSizeT( &referenceCount_ );
+            }
+
+            constexpr bool Contains( const CharType* ptr )
+            {
+                return ptr >= buffer_ && ptr <= (buffer_ + size_);
+            }
+            constexpr bool Contains( const CharType* ptr, size_t startPosition )
+            {
+                return ptr >= (buffer_ + startPosition ) && ptr <= ( buffer_ + size_ );
             }
 
         };
@@ -753,13 +762,13 @@ namespace Harlinn::Common::Core
 
         static constexpr size_type npos = MAXUINT64;
         static constexpr size_type AllocationGranularity = 64;
-    private:
+        static constexpr CharType DefaultPadCharacter = static_cast< CharType >( ' ' );
         using Data = Internal::Data<CharType>;
-
-        Data* data_;
-
         static constexpr size_t BufferHeaderSize = offsetof( Data, buffer_ );
         static constexpr size_type NonTextBufferByteCount = BufferHeaderSize + sizeof( CharType );
+    private:
+        Data* data_;
+
 
         static constexpr size_type AllocationByteCount( size_type length ) noexcept
         {
@@ -781,6 +790,15 @@ namespace Harlinn::Common::Core
             return data;
         }
 
+        static Data* Allocate( size_type allocationByteCount, size_t size )
+        {
+            Data* data = ( Data* )Internal::AllocateBytes( allocationByteCount );
+            data->referenceCount_ = 1;
+            data->size_ = size;
+            data->buffer_[ size ] = 0;
+            return data;
+        }
+
         static void ReleaseData( Data* data )
         {
             if ( data && data->DecRef( ) == 0 )
@@ -796,9 +814,9 @@ namespace Harlinn::Common::Core
             auto currentSize = data_->size_;
             auto newSize = currentSize + expandSize;
             auto newData = Allocate( newSize );
-            Internal::Copy( newData->buffer_, data_->buffer_, offset );
+            Internal::MemCopy( newData->buffer_, data_->buffer_, offset );
             auto remaining = currentSize - offset;
-            Internal::Copy( &newData->buffer_[offset + expandSize], &data_->buffer_[offset], remaining );
+            Internal::MemCopy( &newData->buffer_[offset + expandSize], &data_->buffer_[offset], remaining );
             auto* tmp = data_;
             data_ = newData;
             ReleaseData( tmp );
@@ -809,7 +827,7 @@ namespace Harlinn::Common::Core
         {
             auto currentSize = data_->size_;
             auto remaining = currentSize - offset;
-            Internal::Move( &data_->buffer_[offset + expandSize], &data_->buffer_[offset], remaining );
+            Internal::MemMove( &data_->buffer_[offset + expandSize], &data_->buffer_[offset], remaining );
             data_->size_ += expandSize;
             data_->buffer_[data_->size_] = 0;
             return &data_->buffer_[offset];
@@ -853,7 +871,7 @@ namespace Harlinn::Common::Core
             auto currentSize = data_->size_;
             auto newSize = currentSize + extendSize;
             auto newData = Allocate( newSize );
-            Internal::Copy( newData->buffer_, data_->buffer_, currentSize );
+            Internal::MemCopy( newData->buffer_, data_->buffer_, currentSize );
             auto* tmp = data_;
             data_ = newData;
             ReleaseData( tmp );
@@ -946,7 +964,7 @@ namespace Harlinn::Common::Core
                             if ( remainingSize )
                             {
                                 auto* dest = &data_->buffer_[offset];
-                                Internal::Copy( dest, dest + numberOfCharactersToErase, remainingSize );
+                                Internal::MemCopy( dest, dest + numberOfCharactersToErase, remainingSize );
                             }
                             data_->buffer_[newSize] = 0;
                             data_->size_ = newSize;
@@ -956,12 +974,12 @@ namespace Harlinn::Common::Core
                             auto* newData = Allocate( newSize );
                             if ( offset )
                             {
-                                Internal::Copy( newData->buffer_, data_->buffer_, offset );
+                                Internal::MemCopy( newData->buffer_, data_->buffer_, offset );
                             }
                             size_t remainingSize = currentSize - ( offset + numberOfCharactersToErase );
                             if ( remainingSize )
                             {
-                                Internal::Copy( &newData->buffer_[offset], &data_->buffer_[offset + numberOfCharactersToErase], remainingSize );
+                                Internal::MemCopy( &newData->buffer_[offset], &data_->buffer_[offset + numberOfCharactersToErase], remainingSize );
                             }
                             ReleaseData( data_ );
                             data_ = newData;
@@ -989,7 +1007,7 @@ namespace Harlinn::Common::Core
             if ( size )
             {
                 Data* data = Allocate( size );
-                Internal::Copy( data->buffer_, string, size );
+                Internal::MemCopy( data->buffer_, string, size );
                 return data;
             }
             else
@@ -1004,8 +1022,8 @@ namespace Harlinn::Common::Core
             if ( size )
             {
                 Data* data = Allocate( size );
-                Internal::Copy( data->buffer_, string1, size1 );
-                Internal::Copy( data->buffer_ + size1, string2, size2 );
+                Internal::MemCopy( data->buffer_, string1, size1 );
+                Internal::MemCopy( data->buffer_ + size1, string2, size2 );
                 return data;
             }
             else
@@ -1020,8 +1038,8 @@ namespace Harlinn::Common::Core
             if ( size )
             {
                 Data* data = Allocate( size );
-                Internal::Set( data->buffer_, value, count );
-                Internal::Copy( data->buffer_ + count, string2, size2 );
+                Internal::MemSet( data->buffer_, value, count );
+                Internal::MemCopy( data->buffer_ + count, string2, size2 );
                 return data;
             }
             else
@@ -1036,8 +1054,8 @@ namespace Harlinn::Common::Core
             if ( size )
             {
                 Data* data = Allocate( size );
-                Internal::Copy( data->buffer_, string1, size1 );
-                Internal::Set( data->buffer_ + size1, value, count );
+                Internal::MemCopy( data->buffer_, string1, size1 );
+                Internal::MemSet( data->buffer_ + size1, value, count );
                 return data;
             }
             else
@@ -1054,9 +1072,9 @@ namespace Harlinn::Common::Core
             if ( size )
             {
                 Data* data = Allocate( size );
-                Internal::Copy( data->buffer_, string1, size1 );
-                Internal::Copy( data->buffer_ + size1, string2, size2 );
-                Internal::Copy( data->buffer_ + size1 + size2, string3, size3 );
+                Internal::MemCopy( data->buffer_, string1, size1 );
+                Internal::MemCopy( data->buffer_ + size1, string2, size2 );
+                Internal::MemCopy( data->buffer_ + size1 + size2, string3, size3 );
                 return data;
             }
             else
@@ -1071,9 +1089,9 @@ namespace Harlinn::Common::Core
             if ( size )
             {
                 Data* data = Allocate( size );
-                Internal::Set( data->buffer_, value, count );
-                Internal::Copy( data->buffer_ + count, string2, size2 );
-                Internal::Copy( data->buffer_ + count + size2, string3, size3 );
+                Internal::MemSet( data->buffer_, value, count );
+                Internal::MemCopy( data->buffer_ + count, string2, size2 );
+                Internal::MemCopy( data->buffer_ + count + size2, string3, size3 );
                 return data;
             }
             else
@@ -1089,9 +1107,9 @@ namespace Harlinn::Common::Core
             if ( size )
             {
                 Data* data = Allocate( size );
-                Internal::Copy( data->buffer_, string1, size1 );
-                Internal::Set( data->buffer_ + size1, value, count );
-                Internal::Copy( data->buffer_ + size1 + count, string3, size3 );
+                Internal::MemCopy( data->buffer_, string1, size1 );
+                Internal::MemSet( data->buffer_ + size1, value, count );
+                Internal::MemCopy( data->buffer_ + size1 + count, string3, size3 );
                 return data;
             }
             else
@@ -1106,9 +1124,9 @@ namespace Harlinn::Common::Core
             if ( size )
             {
                 Data* data = Allocate( size );
-                Internal::Copy( data->buffer_, string1, size1 );
-                Internal::Copy( data->buffer_ + size1, string2, size2 );
-                Internal::Set( data->buffer_ + size1 + size2, value, count );
+                Internal::MemCopy( data->buffer_, string1, size1 );
+                Internal::MemCopy( data->buffer_ + size1, string2, size2 );
+                Internal::MemSet( data->buffer_ + size1 + size2, value, count );
                 return data;
             }
             else
@@ -1147,7 +1165,7 @@ namespace Harlinn::Common::Core
             if ( count )
             {
                 Data* data = Allocate( count );
-                Internal::Set( data->buffer_, value, count );
+                Internal::MemSet( data->buffer_, value, count );
                 return data;
             }
             else
@@ -1735,7 +1753,7 @@ namespace Harlinn::Common::Core
                         auto tmp = data_;
                         data_ = Allocate( newLength );
                         auto copyLength = std::min( newLength, tmp->size_ );
-                        Internal::Copy( data_->buffer_, tmp->buffer_, copyLength );
+                        Internal::MemCopy( data_->buffer_, tmp->buffer_, copyLength );
                         ReleaseData( tmp );
                     }
                     else
@@ -1753,7 +1771,7 @@ namespace Harlinn::Common::Core
                             auto tmp = data_;
                             data_ = Allocate( newLength );
                             auto copyLength = std::min( newLength, tmp->size_ );
-                            Internal::Copy( data_->buffer_, tmp->buffer_, copyLength );
+                            Internal::MemCopy( data_->buffer_, tmp->buffer_, copyLength );
                             ReleaseData( tmp );
                         }
                     }
@@ -1811,15 +1829,15 @@ namespace Harlinn::Common::Core
                 auto* data = Allocate( sz );
                 if ( firstLength )
                 {
-                    Internal::Copy( data->buffer_, first, firstLength );
+                    Internal::MemCopy( data->buffer_, first, firstLength );
                     if ( secondLength )
                     {
-                        Internal::Copy( &data->buffer_[firstLength], second, secondLength );
+                        Internal::MemCopy( &data->buffer_[firstLength], second, secondLength );
                     }
                 }
                 else
                 {
-                    Internal::Copy( data->buffer_, second, secondLength );
+                    Internal::MemCopy( data->buffer_, second, secondLength );
                 }
                 return BasicString<CharType>( data );
             }
@@ -1884,7 +1902,7 @@ namespace Harlinn::Common::Core
         {
             auto otherLength = Internal::LengthOf( other );
             auto* dest = Extend( otherLength );
-            Internal::Copy( dest, other, otherLength );
+            Internal::MemCopy( dest, other, otherLength );
         }
         void append( const CharType* other )
         {
@@ -1895,7 +1913,7 @@ namespace Harlinn::Common::Core
         void Append( const CharType* other, size_t otherLength )
         {
             auto* dest = Extend( otherLength );
-            Internal::Copy( dest, other, otherLength );
+            Internal::MemCopy( dest, other, otherLength );
         }
 
         void append( const CharType* other, size_t otherLength )
@@ -1920,7 +1938,7 @@ namespace Harlinn::Common::Core
         {
             auto otherLength = other.size( );
             auto* dest = Extend( otherLength );
-            Internal::Copy( dest, other.data( ), otherLength );
+            Internal::MemCopy( dest, other.data( ), otherLength );
         }
 
         void append( const BasicString<CharType>& other )
@@ -1961,7 +1979,7 @@ namespace Harlinn::Common::Core
             iterator end_ = Extend( 1 );
             if ( position < end_ )
             {
-                Internal::Move( position + 1, position, static_cast< size_t >( end_ - position ) );
+                Internal::MemMove( position + 1, position, static_cast< size_t >( end_ - position ) );
             }
             *position = ch;
             return position;
@@ -1973,9 +1991,9 @@ namespace Harlinn::Common::Core
             iterator end_ = Extend( count );
             if ( position < end_ )
             {
-                Internal::Move( position + count, position, static_cast< size_t >( end_ - position ) );
+                Internal::MemMove( position + count, position, static_cast< size_t >( end_ - position ) );
             }
-            Internal::Set( position, ch, count );
+            Internal::MemSet( position, ch, count );
             return position;
         }
 
@@ -3622,7 +3640,7 @@ namespace Harlinn::Common::Core
                 if ( data_->referenceCount_ > 1 )
                 {
                     auto newData = Allocate( data_->size_ );
-                    Internal::Copy( newData->buffer_, data_->buffer_, data_->size_ );
+                    Internal::MemCopy( newData->buffer_, data_->buffer_, data_->size_ );
                     ReleaseData( data_ );
                     data_ = newData;
                 }
@@ -3638,7 +3656,7 @@ namespace Harlinn::Common::Core
                 if ( data_->referenceCount_ > 1 )
                 {
                     auto newData = Allocate( data_->size_ );
-                    Internal::Copy( newData->buffer_, data_->buffer_, data_->size_ );
+                    Internal::MemCopy( newData->buffer_, data_->buffer_, data_->size_ );
                     ReleaseData( data_ );
                     data_ = newData;
                 }
@@ -3652,7 +3670,7 @@ namespace Harlinn::Common::Core
             if ( data_ )
             {
                 auto newData = Allocate( data_->size_ );
-                Internal::Copy( newData->buffer_, data_->buffer_, data_->size_ );
+                Internal::MemCopy( newData->buffer_, data_->buffer_, data_->size_ );
                 Internal::ToLower( newData->buffer_, newData->size_ );
                 return BasicString( newData );
             }
@@ -3667,7 +3685,7 @@ namespace Harlinn::Common::Core
             if ( data_ )
             {
                 auto newData = Allocate( data_->size_ );
-                Internal::Copy( newData->buffer_, data_->buffer_, data_->size_ );
+                Internal::MemCopy( newData->buffer_, data_->buffer_, data_->size_ );
                 Internal::ToUpper( newData->buffer_, newData->size_ );
                 return BasicString( newData );
             }
@@ -3735,7 +3753,7 @@ namespace Harlinn::Common::Core
                     {
                         auto currentSize = data_->size_;
                         auto* newData = Allocate( currentSize );
-                        Internal::Copy( newData->buffer_, data_->buffer_, index );
+                        Internal::MemCopy( newData->buffer_, data_->buffer_, index );
                         auto endIt = data_->buffer_ + currentSize;
                         auto it = data_->buffer_ + index;
                         auto destIt = newData->buffer_ + index;
@@ -3777,7 +3795,7 @@ namespace Harlinn::Common::Core
                     {
                         auto currentSize = data_->size_;
                         auto* newData = Allocate( currentSize );
-                        Internal::Copy( newData->buffer_, data_->buffer_, index );
+                        Internal::MemCopy( newData->buffer_, data_->buffer_, index );
                         auto endIt = data_->buffer_ + currentSize;
                         auto it = data_->buffer_ + index;
                         auto destIt = newData->buffer_ + index;
@@ -3809,6 +3827,8 @@ namespace Harlinn::Common::Core
 
 
 
+
+
         void TrimRight( const CharType* charactersToRemove, size_type numberOfCharactersToRemove )
         {
             if ( data_ )
@@ -3826,6 +3846,122 @@ namespace Harlinn::Common::Core
                 erase( index );
             }
         }
+
+        void Replace( size_type replaceAtPosition, size_type replaceLength, const CharType* with, size_type withLength, CharType padCharacter = DefaultPadCharacter )
+        {
+            if ( data_ )
+            {
+                auto currentLength = data_->size_;
+                auto currentAllocationSize = AllocationByteCount( currentLength );
+                if ( (data_->referenceCount_ == 1) && 
+                    (data_->Contains( with, replaceAtPosition ) == false) )
+                {
+                    if ( replaceAtPosition < currentLength )
+                    {
+                        auto maxReplaceLength = currentLength - replaceAtPosition;
+                        if ( maxReplaceLength < replaceLength )
+                        {
+                            replaceLength = maxReplaceLength;
+                        }
+                        if ( withLength != replaceLength )
+                        {
+                            auto newLength = currentLength + withLength - replaceLength;
+                            auto curentRemainingPosition = replaceAtPosition + replaceLength;
+                            auto remainingLength = currentLength - curentRemainingPosition;
+                            auto newRemainingPosition = replaceAtPosition + withLength;
+                            size_type newAllocationSize = AllocationByteCount( newLength );
+                            if ( newAllocationSize == currentAllocationSize )
+                            {
+                                Internal::MemMove( data_->buffer_ + newRemainingPosition, data_->buffer_ + curentRemainingPosition, remainingLength );
+                                Internal::MemMove( data_->buffer_ + replaceAtPosition, with, withLength );
+                                data_->size_ = newLength;
+                                data_->buffer_[ newLength ] = static_cast< CharType >( 0 );
+                            }
+                            else
+                            {
+                                std::unique_ptr<Data> tmp( Allocate( newAllocationSize, newLength ) );
+                                Internal::MemCopy( tmp->buffer_, data_->buffer_, replaceAtPosition );
+                                Internal::MemCopy( tmp->buffer_ + newRemainingPosition, data_->buffer_ + curentRemainingPosition, remainingLength );
+                                Internal::MemCopy( tmp->buffer_ + replaceAtPosition, with, withLength );
+                                ReleaseData( data_ );
+                                data_ = tmp.release( );
+                            }
+                        }
+                        else
+                        {
+                            // No change in size, just overwrite
+                            Internal::MemMove( data_->buffer_ + replaceAtPosition, with, withLength );
+                        }
+                    }
+                    else
+                    {
+                        if ( withLength )
+                        {
+                            auto newLength = replaceAtPosition + withLength;
+                            size_type newAllocationSize = AllocationByteCount( newLength );
+                            if ( newAllocationSize == currentAllocationSize )
+                            {
+                                Internal::MemSet( data_->buffer_ + data_->size_, padCharacter, replaceAtPosition - data_->size_ );
+                                Internal::MemCopy( data_->buffer_ + replaceAtPosition, with, withLength );
+                                data_->size_ = newLength;
+                                data_->buffer_[ newLength ] = static_cast< CharType >( 0 );
+                            }
+                            else
+                            {
+                                std::unique_ptr<Data> tmp( Initialize( data_->buffer_, data_->size_, padCharacter, replaceAtPosition, with, withLength ) );
+                                ReleaseData( data_ );
+                                data_ = tmp.release( );
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    if ( replaceAtPosition < currentLength )
+                    {
+                        auto maxReplaceLength = currentLength - replaceAtPosition;
+                        if ( maxReplaceLength < replaceLength )
+                        {
+                            replaceLength = maxReplaceLength;
+                        }
+                        
+                        auto newLength = currentLength + withLength - replaceLength;
+                        auto curentRemainingPosition = replaceAtPosition + replaceLength;
+                        auto remainingLength = currentLength - curentRemainingPosition;
+                        auto newRemainingPosition = replaceAtPosition + withLength;
+                        size_type newAllocationSize = AllocationByteCount( newLength );
+
+                        std::unique_ptr<Data> tmp( Allocate( newAllocationSize, newLength ) );
+                        Internal::MemCopy( tmp->buffer_, data_->buffer_, replaceAtPosition );
+                        Internal::MemCopy( tmp->buffer_ + newRemainingPosition, data_->buffer_ + curentRemainingPosition, remainingLength );
+                        Internal::MemCopy( tmp->buffer_ + replaceAtPosition, with, withLength );
+                        ReleaseData( data_ );
+                        data_ = tmp.release( );
+                    }
+                    else
+                    {
+                        if ( withLength )
+                        {
+                            std::unique_ptr<Data> tmp( Initialize( data_->buffer_, data_->size_, padCharacter, replaceAtPosition - data_->size_, with, withLength ) );
+                            ReleaseData( data_ );
+                            data_ = tmp.release( );
+                        }
+                    }
+                }
+            }
+            else
+            {
+                data_ = Initialize( padCharacter, replaceAtPosition, with, withLength);
+            }
+        }
+
+        void Replace( const_iterator replaceFirst, const_iterator replaceLast, const CharType* with, size_type withLength, CharType padCharacter = DefaultPadCharacter )
+        {
+            size_type replaceAtPosition = std::distance(begin(), replaceFirst );
+            size_type replaceLength = replaceLast.ptr_ - replaceFirst.ptr_;
+            Replace( replaceAtPosition, replaceLength, with, withLength, padCharacter );
+        }
+
 
 
     };
