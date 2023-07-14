@@ -2500,7 +2500,7 @@ namespace Harlinn::Common::Core::IO
             {
                 path_.resize(path_.length() - 1);
             }
-            path_ = Path::GetFullPathName(path);
+            path_ = Path::FullPath(path);
             
         }
         FileSystemEntries(const StringType& searchPattern)
