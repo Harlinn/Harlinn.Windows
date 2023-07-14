@@ -181,6 +181,8 @@
 #include <limits>
 #include <inttypes.h>
 #include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include <valarray>
 
 #include <algorithm>

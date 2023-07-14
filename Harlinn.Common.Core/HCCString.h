@@ -3955,11 +3955,30 @@ namespace Harlinn::Common::Core
             }
         }
 
+        void replace( size_type replaceAtPosition, size_type replaceLength, const CharType* with, size_type withLength, CharType padCharacter = DefaultPadCharacter )
+        {
+            Replace( replaceAtPosition, replaceLength, with, withLength, padCharacter );
+        }
+
         void Replace( const_iterator replaceFirst, const_iterator replaceLast, const CharType* with, size_type withLength, CharType padCharacter = DefaultPadCharacter )
         {
             size_type replaceAtPosition = std::distance(begin(), replaceFirst );
             size_type replaceLength = replaceLast.ptr_ - replaceFirst.ptr_;
             Replace( replaceAtPosition, replaceLength, with, withLength, padCharacter );
+        }
+
+        template<SimpleSpanLike SpanT>
+            requires std::is_same_v<std::remove_cvref_t<typename SpanT::value_type>, CharType>
+        void Replace( size_type replaceAtPosition, size_type replaceLength, const SpanT& with, CharType padCharacter = DefaultPadCharacter )
+        {
+            Replace( replaceAtPosition, replaceLength, with.data( ), with.size( ), padCharacter );
+        }
+
+        template<SimpleSpanLike SpanT>
+            requires std::is_same_v<std::remove_cvref_t<typename SpanT::value_type>, CharType>
+        void replace( size_type replaceAtPosition, size_type replaceLength, const SpanT& with, CharType padCharacter = DefaultPadCharacter )
+        {
+            Replace( replaceAtPosition, replaceLength, with.data( ), with.size( ), padCharacter );
         }
 
 
@@ -3972,8 +3991,15 @@ namespace Harlinn::Common::Core
         return std::_Insert_string( os, str.data( ), str.size( ) );
     }
 
+
+
+
+
+
     static_assert( AnsiStringLike< BasicString<char> > );
     static_assert( WideStringLike< BasicString<wchar_t> > );
+    static_assert( SimpleSpanLike< BasicString<char> > );
+    static_assert( SimpleSpanLike< BasicString<wchar_t> > );
 
 
 
