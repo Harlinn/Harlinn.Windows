@@ -193,19 +193,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="fmt\args.h" />
-    <ClInclude Include="fmt\chrono.h" />
-    <ClInclude Include="fmt\color.h" />
-    <ClInclude Include="fmt\compile.h" />
-    <ClInclude Include="fmt\core.h" />
-    <ClInclude Include="fmt\format-inl.h" />
-    <ClInclude Include="fmt\format.h" />
-    <ClInclude Include="fmt\os.h" />
-    <ClInclude Include="fmt\ostream.h" />
-    <ClInclude Include="fmt\printf.h" />
-    <ClInclude Include="fmt\ranges.h" />
-    <ClInclude Include="fmt\std.h" />
-    <ClInclude Include="fmt\xchar.h" />
     <ClInclude Include="HCC7BitEncoding.h" />
     <ClInclude Include="HCCActiveObject.h" />
     <ClInclude Include="HCCApplication.h" />
@@ -320,12 +307,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
-    <ClCompile Include="format.cc">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
     <ClCompile Include="HCCApplication.cpp" />
     <ClCompile Include="HCCBlocks.cpp" />
     <ClCompile Include="HCCCom.cpp" />
@@ -356,12 +337,6 @@
     <ClCompile Include="HCCString.cpp" />
     <ClCompile Include="HCCVariant.cpp" />
     <ClCompile Include="HCCwbem.cpp" />
-    <ClCompile Include="os.cc">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
