@@ -157,6 +157,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Readme", "Readme", "{E11D38
 		Readme\Build.md = Readme\Build.md
 		Readme\Changes.md = Readme\Changes.md
 		Readme\Overview.md = Readme\Overview.md
+		README.md = README.md
 		Readme\Redist.md = Readme\Redist.md
 	EndProjectSection
 EndProject
