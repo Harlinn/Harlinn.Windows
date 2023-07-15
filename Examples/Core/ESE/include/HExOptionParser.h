@@ -14,24 +14,29 @@ namespace Harlinn::Common::Core::Examples
         using namespace boost::program_options;
     }
 
-    inline AnsiString GetDirectory( const AnsiString& filename )
+    inline WideString GetDirectory( const WideString& filename )
     {
-        char drive[_MAX_DRIVE + 1];
-        char directory[_MAX_DIR + 1];
-        _splitpath( filename.c_str( ), drive, directory, nullptr, nullptr );
-        char buffer[_MAX_PATH + 1];
-        _makepath( buffer, drive, directory, nullptr, nullptr );
+        wchar_t drive[_MAX_DRIVE + 1];
+        wchar_t directory[_MAX_DIR + 1];
+        _wsplitpath( filename.c_str( ), drive, directory, nullptr, nullptr );
+        wchar_t buffer[_MAX_PATH + 1];
+        _wmakepath( buffer, drive, directory, nullptr, nullptr );
         return buffer;
     }
 
     inline bool ParseOptions( int argc, char* argv[], EngineOptions& options )
     {
+
+        std::string databasePath;
+        std::string systemPath;
+        std::string logFilePath;
+
         options_description desc( "Allowed options" );
         desc.add_options( )
             ( "help,?", "print usage message" )
-            ( "database,d", value( &options.Database ), "database path" )
-            ( "systempath,s", value( &options.SystemPath ), "checkpoint file directory" )
-            ( "logfilepath,l", value( &options.LogFilePath ), "transaction log file directory" )
+            ( "database,d", value( &databasePath ), "database path" )
+            ( "systempath,s", value( &systemPath ), "checkpoint file directory" )
+            ( "logfilepath,l", value( &logFilePath ), "transaction log file directory" )
             ( "create,c", bool_switch( &options.Create ), "Create new database" )
             ( "replace,r", bool_switch( &options.Replace ), "Replace existing database" )
             ( "unsafe,u", bool_switch( &options.Unsafe ), "Improve performance by reducing resilience" )
@@ -46,6 +51,12 @@ namespace Harlinn::Common::Core::Examples
         store( command_line_parser( argc, argv ).options( desc ).positional( p ).run( ), vm );
         notify( vm );
 
+
+        options.Database = WideString::From( databasePath );
+        options.SystemPath = WideString::From( systemPath );
+        options.LogFilePath = WideString::From( logFilePath );
+
+
         if ( vm.count( "help" ) || options.Database.empty() )
         {
             std::cout << desc << "\n";
@@ -56,12 +67,12 @@ namespace Harlinn::Common::Core::Examples
             if ( options.SystemPath.empty( ) )
             {
                 auto directory = GetDirectory( options.Database );
-                options.SystemPath = std::string(directory.c_str(), directory.length()) + "System\\";
+                options.SystemPath = WideString(directory.c_str(), directory.length()) + L"System\\";
             }
             if ( options.LogFilePath.empty( ) )
             {
                 auto directory = GetDirectory( options.Database );
-                options.LogFilePath = std::string( directory.c_str( ), directory.length( ) ) + "Log\\";
+                options.LogFilePath = WideString( directory.c_str( ), directory.length( ) ) + L"Log\\";
             }
             return true;
         }

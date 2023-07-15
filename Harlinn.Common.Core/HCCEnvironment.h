@@ -258,6 +258,7 @@ namespace Harlinn::Common::Core::Environment
 
 
     HCC_EXPORT bool IsService( );
+    HCC_EXPORT bool IsUserInteractive( );
     HCC_EXPORT size_t ProcessorCount( );
 
 

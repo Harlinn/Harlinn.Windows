@@ -65,7 +65,7 @@ namespace Harlinn::Common::Core::Examples
     struct Named
     {
         Guid Id;
-        AnsiString Name;
+        WideString Name;
         Named( )
         {
         }

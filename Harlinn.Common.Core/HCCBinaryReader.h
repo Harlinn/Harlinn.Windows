@@ -312,8 +312,8 @@ namespace Harlinn::Common::Core::IO
             Type result;
             if ( stringLength != 0 )
             {
-                result.resize( stringLength / sizeof( typename T::value_type ) );
-                auto numberOfBytesToRead = static_cast<size_t>( stringLength );
+                result.resize( stringLength );
+                auto numberOfBytesToRead = static_cast<size_t>( stringLength ) * sizeof( typename T::value_type );
                 auto bytesRead = static_cast<Derived&>( *this ).Read( result.data( ), numberOfBytesToRead );
                 if ( bytesRead < static_cast<long long>( numberOfBytesToRead ) )
                 {

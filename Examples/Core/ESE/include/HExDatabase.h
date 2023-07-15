@@ -12,9 +12,9 @@ namespace Harlinn::Common::Core::Examples
     public:
         using Base = Ese::Table;
 
-        static constexpr char IdColumnName[] = "Id";
-        static constexpr char OwnerColumnName[] = "Owner";
-        static constexpr char NameColumnName[] = "Name";
+        static constexpr wchar_t IdColumnName[] = L"Id";
+        static constexpr wchar_t OwnerColumnName[] = L"Owner";
+        static constexpr wchar_t NameColumnName[] = L"Name";
     protected:
         JET_COLUMNID idColumnId_ = 0;
         JET_COLUMNID ownerColumnId_ = 0;
@@ -37,8 +37,8 @@ namespace Harlinn::Common::Core::Examples
             ownerColumnId_ = AddGuid( OwnerColumnName );
             nameColumnId_ = AddText( NameColumnName );
 
-            CreateIndex( DerivedT::PrimaryIndexName, Ese::IndexFlags::Primary, "+Id\0", 5 );
-            CreateIndex( DerivedT::OwnerAndNameIndexName, Ese::IndexFlags::Unique, "+Owner\0+Name\0", 14 );
+            CreateIndex( DerivedT::PrimaryIndexName, Ese::IndexFlags::Primary, L"+Id\0", 10 );
+            CreateIndex( DerivedT::OwnerAndNameIndexName, Ese::IndexFlags::Unique, L"+Owner\0+Name\0", 28 );
 #ifdef _DEBUG
             SetCurrentIndex( DerivedT::OwnerAndNameIndexName );
 #endif
@@ -78,19 +78,19 @@ namespace Harlinn::Common::Core::Examples
             SetColumn( ownerColumnId_, id );
         }
 
-        AnsiString Name( ) const
+        WideString Name( ) const
         {
-            AnsiString result;
+            WideString result;
             Read( nameColumnId_, result );
             return result;
         }
-        void SetName( const AnsiString& name ) const
+        void SetName( const WideString& name ) const
         {
             SetColumn( nameColumnId_, name );
         }
 
 
-        bool MoveTo( const Guid& ownerId, const char* name ) const
+        bool MoveTo( const Guid& ownerId, const wchar_t* name ) const
         {
             SetCurrentIndex( DerivedT::OwnerAndNameIndexName );
             MakeKey( ownerId, Ese::KeyFlags::NewKey );
@@ -109,7 +109,7 @@ namespace Harlinn::Common::Core::Examples
         }
 
 
-        bool MoveTo( const Guid& ownerId, const AnsiString& name ) const
+        bool MoveTo( const Guid& ownerId, const WideString& name ) const
         {
             return MoveTo( ownerId, name.c_str( ) );
         }
@@ -157,9 +157,9 @@ namespace Harlinn::Common::Core::Examples
     public:
         using Base = OwnedTable<SensorTable>;
 
-        static constexpr char TableName[] = "Sensor";
-        static constexpr char PrimaryIndexName[] = "SensorIdx";
-        static constexpr char OwnerAndNameIndexName[] = "SONIdx";
+        static constexpr wchar_t TableName[] = L"Sensor";
+        static constexpr wchar_t PrimaryIndexName[] = L"SensorIdx";
+        static constexpr wchar_t OwnerAndNameIndexName[] = L"SONIdx";
     public:
         constexpr SensorTable( ) noexcept
         {
@@ -241,10 +241,10 @@ namespace Harlinn::Common::Core::Examples
     public:
         using Base = OwnedTable<CatalogItemTable>;
 
-        static constexpr char TypeColumnName[] = "Type";
-        static constexpr char TableName[] = "CatalogItem";
-        static constexpr char PrimaryIndexName[] = "CatalogItemIdx";
-        static constexpr char OwnerAndNameIndexName[] = "CONIdx";
+        static constexpr wchar_t TypeColumnName[] = L"Type";
+        static constexpr wchar_t TableName[] = L"CatalogItem";
+        static constexpr wchar_t PrimaryIndexName[] = L"CatalogItemIdx";
+        static constexpr wchar_t OwnerAndNameIndexName[] = L"CONIdx";
     protected:
         JET_COLUMNID typeColumnId_ = 0;
     public:
@@ -388,7 +388,7 @@ namespace Harlinn::Common::Core::Examples
         }
     private:
         template<typename T>
-        T CreateOrRetriveItem( const Guid& owningCatalogId, const AnsiString& name ) const
+        T CreateOrRetriveItem( const Guid& owningCatalogId, const WideString& name ) const
         {
             if ( MoveTo( owningCatalogId, name ) )
             {
@@ -409,11 +409,11 @@ namespace Harlinn::Common::Core::Examples
             }
         }
     public:
-        Catalog CreateOrRetrieveCatalog( const Guid& owningCatalogId, const AnsiString& name ) const
+        Catalog CreateOrRetrieveCatalog( const Guid& owningCatalogId, const WideString& name ) const
         { 
             return CreateOrRetriveItem<Catalog>( owningCatalogId, name );
         }
-        Asset CreateOrRetrieveAsset( const Guid& owningCatalogId, const AnsiString& name ) const
+        Asset CreateOrRetrieveAsset( const Guid& owningCatalogId, const WideString& name ) const
         {
             return CreateOrRetriveItem<Asset>( owningCatalogId, name );
         }
@@ -471,12 +471,12 @@ namespace Harlinn::Common::Core::Examples
     public:
         using Base = Ese::Table;
 
-        static constexpr char TableName[] = "SV";
-        static constexpr char PrimaryIndexName[] = "ISV";
-        static constexpr char SensorColumnName[] = "S";
-        static constexpr char TimestampColumnName[] = "T";
-        static constexpr char FlagsColumnName[] = "F";
-        static constexpr char ValueColumnName[] = "V";
+        static constexpr wchar_t TableName[] = L"SV";
+        static constexpr wchar_t PrimaryIndexName[] = L"ISV";
+        static constexpr wchar_t SensorColumnName[] = L"S";
+        static constexpr wchar_t TimestampColumnName[] = L"T";
+        static constexpr wchar_t FlagsColumnName[] = L"F";
+        static constexpr wchar_t ValueColumnName[] = L"V";
     private:
         JET_COLUMNID sensorColumnId_ = 0;
         JET_COLUMNID timestampColumnId_ = 0;
@@ -500,7 +500,7 @@ namespace Harlinn::Common::Core::Examples
             timestampColumnId_ = AddInt64( TimestampColumnName );
             flagsColumnId_ = AddUInt64( FlagsColumnName );
             valueColumnId_ = AddDouble( ValueColumnName );
-            CreateIndex( PrimaryIndexName, Ese::IndexFlags::Primary, "+S\0+T\0", 7 );
+            CreateIndex( PrimaryIndexName, Ese::IndexFlags::Primary, L"+S\0+T\0", 14 );
         }
 
         void OnTableOpened( )

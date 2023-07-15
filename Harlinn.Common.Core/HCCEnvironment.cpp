@@ -347,10 +347,31 @@ namespace Harlinn::Common::Core::Environment
 
     bool IsService( )
     {
-        ProcessEntries processEntries;
-        auto result = processEntries.IsChildOf( L"services.exe" );
+        return IsUserInteractive( ) == false;
+    }
+
+    bool IsUserInteractive( )
+    {
+        bool result = false;
+
+        HWINSTA processWindowStation = GetProcessWindowStation( );
+        if ( processWindowStation != nullptr )
+        {
+            USEROBJECTFLAGS uof = { 0 };
+            auto rc = GetUserObjectInformationW( processWindowStation, UOI_FLAGS, &uof, sizeof( USEROBJECTFLAGS ), NULL );
+            if ( !rc )
+            {
+                ThrowLastOSError( );
+            }
+
+            if ( uof.dwFlags & WSF_VISIBLE )
+            {
+                result = true;
+            }
+        }
         return result;
     }
+
 
     size_t ProcessorCount( )
     {

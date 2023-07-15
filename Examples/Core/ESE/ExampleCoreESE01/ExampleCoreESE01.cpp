@@ -32,19 +32,19 @@ public:
 
 
 
-AnsiString GetSensorName( size_t value )
+WideString GetSensorName( size_t value )
 {
-    return Format( "S{:08x}", value );
+    return Format( L"S{:08x}", value );
 }
 
-AnsiString GetCatalogName( size_t value )
+WideString GetCatalogName( size_t value )
 {
-    return Format( "C{:08x}", value );
+    return Format( L"C{:08x}", value );
 }
 
-AnsiString GetAssetName( size_t value )
+WideString GetAssetName( size_t value )
 {
-    return Format( "A{:08x}", value );
+    return Format( L"A{:08x}", value );
 }
 
 
@@ -57,7 +57,7 @@ enum class OperationType
 };
 
 template<typename F, typename ...Args>
-void PerformanceOf( const char* functionName, OperationType operationType,F testFunction, Args&&... args )
+void PerformanceOf( const wchar_t* functionName, OperationType operationType,F testFunction, Args&&... args )
 {
     using Seconds = std::chrono::duration<double, std::chrono::seconds::period>;
     size_t testResult = 0;
@@ -68,8 +68,8 @@ void PerformanceOf( const char* functionName, OperationType operationType,F test
     }
     catch ( std::exception& exc )
     {
-        AnsiString message = exc.what( );
-        printf("Exception while executing %s: %s", functionName, message.c_str() );
+        WideString message = WideString::From( exc.what( ) );
+        PrintLn( L"Exception while executing {}: {}", functionName, message );
         return;
     }
     auto end = std::chrono::high_resolution_clock::now( );
@@ -77,13 +77,13 @@ void PerformanceOf( const char* functionName, OperationType operationType,F test
     switch ( operationType )
     {
         case OperationType::Create:
-            printf( "Executed %s: inserted %lld rows in %f seconds - %f rows per second\n", functionName, testResult, testDuration.count( ), testResult / testDuration.count( ) );
+            PrintLn( L"Executed {}: inserted {} rows in {} seconds - {} rows per second", functionName, testResult, testDuration.count( ), testResult / testDuration.count( ) );
             break;
         case OperationType::Retrieve:
-            printf( "Executed %s: read %lld rows in %f seconds - %f rows per second\n", functionName, testResult, testDuration.count( ), testResult / testDuration.count( ) );
+            PrintLn( L"Executed {}: read {} rows in {} seconds - {} rows per second", functionName, testResult, testDuration.count( ), testResult / testDuration.count( ) );
             break;
         case OperationType::Delete:
-            printf( "Executed %s in %f seconds\n", functionName, testDuration.count( ) );
+            PrintLn( L"Executed {} in {} seconds\n", functionName, testDuration.count( ) );
             break;
     }
 }
@@ -383,32 +383,32 @@ void RunTests( Session& session )
     std::vector<Examples::Sensor> sensors;
     std::vector<CatalogData> catalogs;
 
-    PerformanceOf( "BuildStructure", OperationType::Create, BuildStructure, session, 10, 10, 10 );
-    PerformanceOf( "ReadStructure", OperationType::Retrieve, ReadStructure, session, catalogs );
+    PerformanceOf( L"BuildStructure", OperationType::Create, BuildStructure, session, 10, 10, 10 );
+    PerformanceOf( L"ReadStructure", OperationType::Retrieve, ReadStructure, session, catalogs );
     
-    PerformanceOf( "ReadSensors", OperationType::Retrieve, ReadSensors, session, sensors );
-    PerformanceOf( "GenerateSensorData", OperationType::Create, GenerateSensorData, session, sensors );
+    PerformanceOf( L"ReadSensors", OperationType::Retrieve, ReadSensors, session, sensors );
+    PerformanceOf( L"GenerateSensorData", OperationType::Create, GenerateSensorData, session, sensors );
 
-    PerformanceOf( "GetCatalogItemCount", OperationType::Retrieve, GetCatalogItemCount, session );
-    PerformanceOf( "GetSensorCount", OperationType::Retrieve, GetSensorCount, session );
-    PerformanceOf( "GetSensorValueCount", OperationType::Retrieve, GetSensorValueCount, session );
+    PerformanceOf( L"GetCatalogItemCount", OperationType::Retrieve, GetCatalogItemCount, session );
+    PerformanceOf( L"GetSensorCount", OperationType::Retrieve, GetSensorCount, session );
+    PerformanceOf( L"GetSensorValueCount", OperationType::Retrieve, GetSensorValueCount, session );
 
-    PerformanceOf( "ReadAllSensorData", OperationType::Retrieve, ReadAllSensorData, session, sensors );
-    PerformanceOf( "ReadSensorDataForInterval", OperationType::Retrieve, ReadSensorDataForInterval, session, sensors );
-    PerformanceOf( "ReadSensorDataForIntervalWithCheck", OperationType::Retrieve, ReadSensorDataForIntervalWithCheck, session, sensors );
+    PerformanceOf( L"ReadAllSensorData", OperationType::Retrieve, ReadAllSensorData, session, sensors );
+    PerformanceOf( L"ReadSensorDataForInterval", OperationType::Retrieve, ReadSensorDataForInterval, session, sensors );
+    PerformanceOf( L"ReadSensorDataForIntervalWithCheck", OperationType::Retrieve, ReadSensorDataForIntervalWithCheck, session, sensors );
 
 #ifdef _DEBUG
-    PerformanceOf( "DeleteCatalog", OperationType::Delete, DeleteCatalog, session, catalogs.front().Id );
+    PerformanceOf( L"DeleteCatalog", OperationType::Delete, DeleteCatalog, session, catalogs.front().Id );
 
-    PerformanceOf( "GetCatalogItemCount", OperationType::Retrieve, GetCatalogItemCount, session );
-    PerformanceOf( "GetSensorCount", OperationType::Retrieve, GetSensorCount, session );
-    PerformanceOf( "GetSensorValueCount", OperationType::Retrieve, GetSensorValueCount, session );
+    PerformanceOf( L"GetCatalogItemCount", OperationType::Retrieve, GetCatalogItemCount, session );
+    PerformanceOf( L"GetSensorCount", OperationType::Retrieve, GetSensorCount, session );
+    PerformanceOf( L"GetSensorValueCount", OperationType::Retrieve, GetSensorValueCount, session );
 #endif
     
-    //PerformanceOf( "DeleteSensorDataForInterval", OperationType::Delete, DeleteSensorDataForInterval, session, sensors );
-    //PerformanceOf( "ReadAllSensorData", OperationType::Retrieve, ReadAllSensorData, session, sensors );
-    //PerformanceOf( "DeleteSensors", OperationType::Delete, DeleteSensors, session, sensors );
-    //PerformanceOf( "ReadSensors", OperationType::Retrieve, ReadSensors, session, sensors );
+    //PerformanceOf( L"DeleteSensorDataForInterval", OperationType::Delete, DeleteSensorDataForInterval, session, sensors );
+    //PerformanceOf( L"ReadAllSensorData", OperationType::Retrieve, ReadAllSensorData, session, sensors );
+    //PerformanceOf( L"DeleteSensors", OperationType::Delete, DeleteSensors, session, sensors );
+    //PerformanceOf( L"ReadSensors", OperationType::Retrieve, ReadSensors, session, sensors );
     
 }
 
@@ -454,7 +454,7 @@ int main( int argc, char* argv[] )
         AnsiString message = exc.what( );
         printf( "Exception: %s", message.c_str( ) );
     }
-    application.Start( );
+    application.Stop( );
     return 0;
 }
 
