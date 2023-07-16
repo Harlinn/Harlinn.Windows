@@ -11,7 +11,7 @@ source libraries.
 
 ![Developed using Dear ImGui and ImPlot](./Images/ImGuiDemo2.png)
 
-There are currently 522 projects in the solution, and this article provides a high-level overview of what's inside.
+There are currently 520 projects in the solution, and this article provides a high-level overview of what's inside.
 
 ### Why did I not use cmake and vcpkg? 
 This is a good question, and initially I tried to do just that, but there were some snags:
@@ -57,7 +57,6 @@ I've also created a fair number of tests for my own projects:
 - **Harlinn.ODBC.Tests:** 9
 - **Harlinn.Timeseries.Tests:** 10
 - **Harlinn.Julia.Tests:** 11
-- **Harlinn.Common.Config.Tests:** 34
  
 All tests can be found under the Tests folder.
 
