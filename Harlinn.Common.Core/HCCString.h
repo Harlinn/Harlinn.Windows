@@ -2802,7 +2802,7 @@ namespace Harlinn::Common::Core
                 {
                     while ( ( start + searchStringLength ) <= data_->size_ )
                     {
-                        if ( Internal::Compare( &data_->buffer_[start], searchString, static_cast<size_t>( searchStringLength ) ) == 0 )
+                        if ( Internal::Compare( &data_->buffer_[start], searchStringLength, searchString, searchStringLength ) == 0 )
                         {
                             return start;
                         }
@@ -2831,7 +2831,7 @@ namespace Harlinn::Common::Core
                 {
                     while ( ( start + searchStringLength ) <= data_->size_ )
                     {
-                        if ( Internal::ICompare( &data_->buffer_[start], searchString, static_cast<size_t>( searchStringLength ) ) == 0 )
+                        if ( Internal::ICompare( &data_->buffer_[start], searchStringLength, searchString, searchStringLength ) == 0 )
                         {
                             return start;
                         }

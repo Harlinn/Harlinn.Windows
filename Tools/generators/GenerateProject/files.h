@@ -117,8 +117,8 @@ namespace GenerateProject
 
         bool SetTagValue( const AnsiString& tagName, const AnsiString& newValue )
         {
-            auto startTag = Format( "<{}>", tagName.c_str( ) );
-            auto endTag = Format( "</{}>", tagName.c_str( ) );
+            auto startTag = Format( "<{}>", tagName );
+            auto endTag = Format( "</{}>", tagName );
 
             auto startOffset = contents_.find( startTag );
             if ( startOffset != AnsiString::npos )

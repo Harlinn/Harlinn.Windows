@@ -956,6 +956,47 @@ BOOST_AUTO_TEST_CASE( StringReplaceTest40W )
 }
 
 
+// --run_test=StringTests/StringIndexOfTest1A
+BOOST_AUTO_TEST_CASE( StringIndexOfTest1A )
+{
+    using StringType = AnsiString;
+    StringType text = "AABBCCDDEEFF";
+    StringType::value_type lookFor = 'B';
+    StringType::size_type expectedIndex = 2;
+
+    auto index = text.IndexOf( lookFor );
+
+    bool equal = expectedIndex == index;
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringIndexOfTest1W
+BOOST_AUTO_TEST_CASE( StringIndexOfTest1W )
+{
+    using StringType = WideString;
+    StringType text = L"AABBCCDDEEFF";
+    StringType::value_type lookFor = L'B';
+    StringType::size_type expectedIndex = 2;
+
+    auto index = text.IndexOf( lookFor );
+
+    bool equal = expectedIndex == index;
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringIndexOfTest2A
+BOOST_AUTO_TEST_CASE( StringIndexOfTest2A )
+{
+    using StringType = AnsiString;
+    StringType text = "AABBCCDDEEFF";
+    StringType lookFor = "BC";
+    StringType::size_type expectedIndex = 3;
+
+    auto index = text.IndexOf( lookFor );
+
+    bool equal = expectedIndex == index;
+    BOOST_TEST( equal );
+}
 
 
 

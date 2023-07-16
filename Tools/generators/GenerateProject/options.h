@@ -19,11 +19,13 @@ namespace GenerateProject
     public:
         Options( int argc, char* argv[] )
         {
+            std::string templateName;
+            std::string projectName;
             po::options_description desc( "Options" );
             desc.add_options( )
                 ( "help", "displays this help message." )
-                ( "template", po::value< AnsiString >( &templateName_ ), "template name." )
-                ( "project", po::value< AnsiString >( &projectName_ ), "template name." );
+                ( "template", po::value< std::string >( &templateName ), "template name." )
+                ( "project", po::value< std::string >( &projectName ), "template name." );
 
             po::positional_options_description p;
             p.add( "project", -1 );
@@ -33,6 +35,9 @@ namespace GenerateProject
                 .options( desc )
                 .positional( p ).run( ), vm );
             po::notify( vm );
+
+            templateName_ = templateName;
+            projectName_ = projectName;
 
             if ( vm.count( "help" ) || templateName_.empty( ) || projectName_.empty( ) )
             {
