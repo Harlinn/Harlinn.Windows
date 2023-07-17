@@ -5,17 +5,18 @@ The provided code has been tried and tested on Windows 11 and Windows 2019 serve
  
 ## Requirements
 To build the solution you need:
-- [Visual Studio 17.0.3](https://visualstudio.microsoft.com/vs/) Ensure that you have installed support for .Net 6, 64-bit C++ development and 64-bit python development. 
+- [Visual Studio 17.6.4](https://visualstudio.microsoft.com/vs/) Ensure that you have installed support for .Net 6, 64-bit C++ development and 64-bit python development. 
 - [boost c++ libraries](https://www.boost.org/)
 - [nasm](https://www.nasm.us/) 
 - [yasm](https://yasm.tortall.net/)
 - [ICU4C](https://icu.unicode.org/)
-- [julia](https://julialang.org/) version 1.7
+- [julia](https://julialang.org/) version 1.9
 - [Oracle OCI](https://www.oracle.com/downloads/)
 - [Intel® oneAPI Base Toolkit](https://software.intel.com/content/www/us/en/develop/tools/oneapi/base-toolkit/download.html)
 - [WinFlexBison - Flex and Bison for Microsoft Windows](https://github.com/lexxmark/winflexbison)
 - [swig](http://www.swig.org/)
 - [perl](https://www.perl.org/)
+- [OpenSSL](https://www.openssl.org/)
 
 Make sure you install 64-bit binaries, libraries and headers.
 
@@ -33,6 +34,7 @@ Before building you need to set a few environment variables:
 - **HCC_HOME** must point to the directory containing Harlinn.Windows.sln.
 - **PROJ_LIB** must point to ***%HCC_HOME%**\\Share\\proj*
 - **GDAL_DATA** must point to ***%HCC_HOME%**\\Share\\gdal*
+- **OPENSSL_HOME** must point to the root of your openssl installation, which is the directory containing the bin, include and lib directories.
 
 The PATH environment variable must be updated to reference:
 - **%BOOST_ROOT%**\stage\lib

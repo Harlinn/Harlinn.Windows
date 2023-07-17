@@ -21,8 +21,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{6DEB9FDB-AEE1-4A74-A110-010F6153E434}</ProjectGuid>
-    <RootNamespace>live555TestMPEG1or2VideoStreamer</RootNamespace>
+    <ProjectGuid>{cd043376-c60b-408f-8dbc-eca2626d8a59}</ProjectGuid>
+    <RootNamespace>livetestmpegoraudiovideostreamer</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -140,10 +140,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\Utility\announceURL.cpp" />
-    <ClCompile Include="live555TestMPEG1or2VideoStreamer.cpp" />
+    <ClCompile Include="live555TestMPEG1or2AudioVideoStreamer.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\Utility\playCommon.hh" />
+    <ClInclude Include="..\Utility\announceURL.hh" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
