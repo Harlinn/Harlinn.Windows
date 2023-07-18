@@ -2788,6 +2788,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "live555TestDVVideoStreamer"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "live555TestWAVAudioStreamer", "Examples\3rdParty\Live555\live555TestWAVAudioStreamer\live555TestWAVAudioStreamer.vcxproj", "{33EDF92E-F50D-48CF-92E3-036463940E99}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "live555TestAMRAudioStreamer", "Examples\3rdParty\Live555\live555TestAMRAudioStreamer\live555TestAMRAudioStreamer.vcxproj", "{7EC8E49A-E525-4E4C-9833-6EF543A063AD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -8644,6 +8646,18 @@ Global
 		{33EDF92E-F50D-48CF-92E3-036463940E99}.Release|x64.Build.0 = Release|x64
 		{33EDF92E-F50D-48CF-92E3-036463940E99}.Release|x86.ActiveCfg = Release|Win32
 		{33EDF92E-F50D-48CF-92E3-036463940E99}.Release|x86.Build.0 = Release|Win32
+		{7EC8E49A-E525-4E4C-9833-6EF543A063AD}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{7EC8E49A-E525-4E4C-9833-6EF543A063AD}.Debug|Any CPU.Build.0 = Debug|x64
+		{7EC8E49A-E525-4E4C-9833-6EF543A063AD}.Debug|x64.ActiveCfg = Debug|x64
+		{7EC8E49A-E525-4E4C-9833-6EF543A063AD}.Debug|x64.Build.0 = Debug|x64
+		{7EC8E49A-E525-4E4C-9833-6EF543A063AD}.Debug|x86.ActiveCfg = Debug|Win32
+		{7EC8E49A-E525-4E4C-9833-6EF543A063AD}.Debug|x86.Build.0 = Debug|Win32
+		{7EC8E49A-E525-4E4C-9833-6EF543A063AD}.Release|Any CPU.ActiveCfg = Release|x64
+		{7EC8E49A-E525-4E4C-9833-6EF543A063AD}.Release|Any CPU.Build.0 = Release|x64
+		{7EC8E49A-E525-4E4C-9833-6EF543A063AD}.Release|x64.ActiveCfg = Release|x64
+		{7EC8E49A-E525-4E4C-9833-6EF543A063AD}.Release|x64.Build.0 = Release|x64
+		{7EC8E49A-E525-4E4C-9833-6EF543A063AD}.Release|x86.ActiveCfg = Release|Win32
+		{7EC8E49A-E525-4E4C-9833-6EF543A063AD}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -9278,6 +9292,7 @@ Global
 		{75DBA385-E3A8-4C89-85B8-BAA4D0577DFF} = {2C778549-0736-40E0-9ED1-1F099257F522}
 		{B46C029F-D86A-4F55-B9E8-77CAADD7310D} = {2C778549-0736-40E0-9ED1-1F099257F522}
 		{33EDF92E-F50D-48CF-92E3-036463940E99} = {2C778549-0736-40E0-9ED1-1F099257F522}
+		{7EC8E49A-E525-4E4C-9833-6EF543A063AD} = {2C778549-0736-40E0-9ED1-1F099257F522}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {72148CF9-A054-4B83-9675-2D14F91844D1}
