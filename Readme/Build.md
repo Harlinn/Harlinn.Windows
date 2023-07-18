@@ -17,6 +17,7 @@ To build the solution you need:
 - [swig](http://www.swig.org/)
 - [perl](https://www.perl.org/)
 - [OpenSSL](https://www.openssl.org/)
+- [nVidia CUDA toolkit](https://developer.nvidia.com/cuda-toolkit)
 
 Make sure you install 64-bit binaries, libraries and headers.
 
