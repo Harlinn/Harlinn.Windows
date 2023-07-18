@@ -2820,6 +2820,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "live555TestMKVSplitter", "E
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "live555TestMPEG2TransportStreamSplitter", "Examples\3rdParty\Live555\live555TestMPEG2TransportStreamSplitter\live555TestMPEG2TransportStreamSplitter.vcxproj", "{5ADA3E03-D065-4A03-920C-D13B77E7FC3F}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "live555MikeyParse", "Examples\3rdParty\Live555\live555MikeyParse\live555MikeyParse.vcxproj", "{A5946BF3-2BC8-4819-8A06-C3CC064F1231}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -8868,6 +8870,18 @@ Global
 		{5ADA3E03-D065-4A03-920C-D13B77E7FC3F}.Release|x64.Build.0 = Release|x64
 		{5ADA3E03-D065-4A03-920C-D13B77E7FC3F}.Release|x86.ActiveCfg = Release|Win32
 		{5ADA3E03-D065-4A03-920C-D13B77E7FC3F}.Release|x86.Build.0 = Release|Win32
+		{A5946BF3-2BC8-4819-8A06-C3CC064F1231}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{A5946BF3-2BC8-4819-8A06-C3CC064F1231}.Debug|Any CPU.Build.0 = Debug|x64
+		{A5946BF3-2BC8-4819-8A06-C3CC064F1231}.Debug|x64.ActiveCfg = Debug|x64
+		{A5946BF3-2BC8-4819-8A06-C3CC064F1231}.Debug|x64.Build.0 = Debug|x64
+		{A5946BF3-2BC8-4819-8A06-C3CC064F1231}.Debug|x86.ActiveCfg = Debug|Win32
+		{A5946BF3-2BC8-4819-8A06-C3CC064F1231}.Debug|x86.Build.0 = Debug|Win32
+		{A5946BF3-2BC8-4819-8A06-C3CC064F1231}.Release|Any CPU.ActiveCfg = Release|x64
+		{A5946BF3-2BC8-4819-8A06-C3CC064F1231}.Release|Any CPU.Build.0 = Release|x64
+		{A5946BF3-2BC8-4819-8A06-C3CC064F1231}.Release|x64.ActiveCfg = Release|x64
+		{A5946BF3-2BC8-4819-8A06-C3CC064F1231}.Release|x64.Build.0 = Release|x64
+		{A5946BF3-2BC8-4819-8A06-C3CC064F1231}.Release|x86.ActiveCfg = Release|Win32
+		{A5946BF3-2BC8-4819-8A06-C3CC064F1231}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -9518,6 +9532,7 @@ Global
 		{82A55496-8407-421D-9FBD-80782F2D785F} = {2C778549-0736-40E0-9ED1-1F099257F522}
 		{B1038930-4BEB-41B4-8A07-4D813105693A} = {2C778549-0736-40E0-9ED1-1F099257F522}
 		{5ADA3E03-D065-4A03-920C-D13B77E7FC3F} = {2C778549-0736-40E0-9ED1-1F099257F522}
+		{A5946BF3-2BC8-4819-8A06-C3CC064F1231} = {2C778549-0736-40E0-9ED1-1F099257F522}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {72148CF9-A054-4B83-9675-2D14F91844D1}
