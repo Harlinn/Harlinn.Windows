@@ -32,8 +32,6 @@ namespace Harlinn::Windows::ImGui
             : Base( options, std::move( dxContext ) ), io_( GetImGuiIO( ) )
         {
             io_.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
-            io_.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
-            io_.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
             //::ImGui::StyleColorsDark( );
             //::ImGui::StyleColorsLight( );
             ::ImGui::StyleColorsClassic( );
@@ -54,11 +52,6 @@ namespace Harlinn::Windows::ImGui
             context->CreateDeviceD3D( mainform.GetHandle( ) );
 
             ImGuiStyle& style = ::ImGui::GetStyle( );
-            if ( io_.ConfigFlags & ImGuiConfigFlags_ViewportsEnable )
-            {
-                style.WindowRounding = 0.0f;
-                style.Colors[ImGuiCol_WindowBg].w = 1.0f;
-            }
             style.AntiAliasedFill = true;
             style.AntiAliasedLines = true;
 
@@ -148,12 +141,7 @@ namespace Harlinn::Windows::ImGui
 
                 context->ExecuteCommandList( );
 
-                // Update and Render additional Platform Windows
-                if ( application.io_.ConfigFlags & ImGuiConfigFlags_ViewportsEnable )
-                {
-                    ::ImGui::UpdatePlatformWindows( );
-                    ::ImGui::RenderPlatformWindowsDefault( NULL, (void*)commandList );
-                }
+                
 
                 context->Present( );
                 context->FrameCompleted( );

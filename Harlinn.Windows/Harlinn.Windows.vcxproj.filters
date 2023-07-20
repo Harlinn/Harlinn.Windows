@@ -138,9 +138,6 @@
     <ClInclude Include="HWCameraUIControl.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="HWDXVA2Api.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="HWICodecApi.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -157,6 +154,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="HWMFReadWrite.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HWDXVA2Api.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -200,9 +200,6 @@
     <ClCompile Include="HWEnvironment.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="HWDXGI.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="HWGraphicsD3D12.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -219,9 +216,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="HWMFIDL.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="HWDComp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="HWMediaFoundation.cpp">

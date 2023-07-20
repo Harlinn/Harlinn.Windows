@@ -241,10 +241,8 @@
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="HWApplication.cpp" />
     <ClCompile Include="HWControl.cpp" />
-    <ClCompile Include="HWDComp.cpp" />
     <ClCompile Include="HWDWrite.cpp" />
     <ClCompile Include="HWDXApplication.cpp" />
-    <ClCompile Include="HWDXGI.cpp" />
     <ClCompile Include="HWEnvironment.cpp" />
     <ClCompile Include="HWFileDialog.cpp" />
     <ClCompile Include="HWForm.cpp" />

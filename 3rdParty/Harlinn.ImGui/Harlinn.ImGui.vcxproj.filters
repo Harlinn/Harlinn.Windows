@@ -28,6 +28,12 @@
     <Filter Include="misc\cpp">
       <UniqueIdentifier>{7ce8cf1d-6082-45e5-88e7-cdbd15094f47}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Readme\ImGui">
+      <UniqueIdentifier>{9d293e80-e1cc-4df8-a2c2-a8e7d0e9ca22}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Readme\ImPlot">
+      <UniqueIdentifier>{13fcd6a7-3a57-48a4-91cd-186c847f2d74}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -160,25 +166,46 @@
     <Text Include="misc\cpp\README.txt">
       <Filter>misc\cpp</Filter>
     </Text>
-    <Text Include="Readme\ImGui-LICENSE.txt">
-      <Filter>Readme</Filter>
+    <Text Include="Readme\ImGui\CHANGELOG.txt">
+      <Filter>Readme\ImGui</Filter>
+    </Text>
+    <Text Include="Readme\ImGui\LICENSE.txt">
+      <Filter>Readme\ImGui</Filter>
+    </Text>
+    <Text Include="Readme\ImGui\TODO.txt">
+      <Filter>Readme\ImGui</Filter>
     </Text>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Readme\ImGui-FONTS.md">
-      <Filter>Readme</Filter>
-    </None>
-    <None Include="Readme\ImGui-README.md">
-      <Filter>Readme</Filter>
-    </None>
-    <None Include="Readme\ImPlot-LICENSE">
-      <Filter>Readme</Filter>
-    </None>
-    <None Include="Readme\ImPlot-README.md">
-      <Filter>Readme</Filter>
-    </None>
     <None Include="misc\freetype\README.md">
       <Filter>misc\freetype</Filter>
+    </None>
+    <None Include="Readme\ImGui\BACKENDS.md">
+      <Filter>Readme\ImGui</Filter>
+    </None>
+    <None Include="Readme\ImGui\CONTRIBUTING.md">
+      <Filter>Readme\ImGui</Filter>
+    </None>
+    <None Include="Readme\ImGui\EXAMPLES.md">
+      <Filter>Readme\ImGui</Filter>
+    </None>
+    <None Include="Readme\ImGui\FAQ.md">
+      <Filter>Readme\ImGui</Filter>
+    </None>
+    <None Include="Readme\ImGui\FONTS.md">
+      <Filter>Readme\ImGui</Filter>
+    </None>
+    <None Include="Readme\ImGui\README.md">
+      <Filter>Readme\ImGui</Filter>
+    </None>
+    <None Include="Readme\ImPlot\LICENSE">
+      <Filter>Readme\ImPlot</Filter>
+    </None>
+    <None Include="Readme\ImPlot\README.md">
+      <Filter>Readme\ImPlot</Filter>
+    </None>
+    <None Include="Readme\ImPlot\TODO.md">
+      <Filter>Readme\ImPlot</Filter>
     </None>
   </ItemGroup>
 </Project>

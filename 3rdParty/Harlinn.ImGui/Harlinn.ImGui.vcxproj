@@ -239,14 +239,21 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="misc\cpp\README.txt" />
-    <Text Include="Readme\ImGui-LICENSE.txt" />
+    <Text Include="Readme\ImGui\CHANGELOG.txt" />
+    <Text Include="Readme\ImGui\LICENSE.txt" />
+    <Text Include="Readme\ImGui\TODO.txt" />
   </ItemGroup>
   <ItemGroup>
     <None Include="misc\freetype\README.md" />
-    <None Include="Readme\ImGui-FONTS.md" />
-    <None Include="Readme\ImGui-README.md" />
-    <None Include="Readme\ImPlot-LICENSE" />
-    <None Include="Readme\ImPlot-README.md" />
+    <None Include="Readme\ImGui\BACKENDS.md" />
+    <None Include="Readme\ImGui\CONTRIBUTING.md" />
+    <None Include="Readme\ImGui\EXAMPLES.md" />
+    <None Include="Readme\ImGui\FAQ.md" />
+    <None Include="Readme\ImGui\FONTS.md" />
+    <None Include="Readme\ImGui\README.md" />
+    <None Include="Readme\ImPlot\LICENSE" />
+    <None Include="Readme\ImPlot\README.md" />
+    <None Include="Readme\ImPlot\TODO.md" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

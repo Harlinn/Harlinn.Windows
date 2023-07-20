@@ -3,6 +3,7 @@
 #define __HCCVECTOR_H__
 
 #include <HCCLib.h>
+#include <HCCIterator.h>
 
 namespace Harlinn::Common::Core
 {
@@ -272,8 +273,8 @@ namespace Harlinn::Common::Core
 
 
 
-    template<typename T>
-    class Vector
+    template<typename T, typename IteratorT, typename ConstIteratorT>
+    class VectorBase
     {
         static constexpr bool CanZeroInitialize = std::is_trivially_default_constructible_v<T>;
         static constexpr size_t ElementSize = sizeof( T );
@@ -285,8 +286,8 @@ namespace Harlinn::Common::Core
         using reference = T&;
         using const_pointer = const T*;
         using const_reference = const T&;
-        using iterator = VectorIterator<Vector>;
-        using const_iterator = VectorConstIterator<Vector>;
+        using iterator = IteratorT;
+        using const_iterator = ConstIteratorT;
         using reverse_iterator = std::reverse_iterator<iterator>;
         using const_reverse_iterator = std::reverse_iterator<const_iterator>;
     private:
@@ -398,12 +399,12 @@ namespace Harlinn::Common::Core
         T* allocatedEnd_ = nullptr;
     public:
 
-        constexpr Vector( ) noexcept
+        constexpr VectorBase( ) noexcept
         {
 
         }
 
-        Vector(size_type count, const value_type& val ) noexcept
+        VectorBase(size_type count, const value_type& val )
         {
             if ( count )
             {
@@ -417,7 +418,7 @@ namespace Harlinn::Common::Core
             }
         }
 
-        Vector( size_type count ) noexcept
+        VectorBase( size_type count )
         {
             if ( count )
             {
@@ -442,7 +443,7 @@ namespace Harlinn::Common::Core
 
         template<typename It>
             requires IsIterator_v<It>
-        Vector( It first, It last )
+        VectorBase( It first, It last )
         { 
             auto count = std::distance( first, last );
             if ( count )
@@ -458,14 +459,14 @@ namespace Harlinn::Common::Core
         }
 
 
-        Vector( std::initializer_list<T> values )
-            : Vector( values.begin(), values.end() )
+        VectorBase( std::initializer_list<T> values )
+            : VectorBase( values.begin(), values.end() )
         {
 
         }
 
 
-        Vector( const Vector& other )
+        VectorBase( const VectorBase& other )
         {
             auto otherDataPtr = const_cast<T*>( other.data_.get( ) );
             auto otherEndPtr = const_cast<T*>( other.end_ );
@@ -483,14 +484,14 @@ namespace Harlinn::Common::Core
             }
         }
 
-        constexpr Vector( Vector&& other ) noexcept
+        constexpr VectorBase( VectorBase&& other ) noexcept
             : data_( other.data_.release( ) ), end_( other.end_ ), allocatedEnd_( other.allocatedEnd_ )
         {
             other.end_ = nullptr;
             other.allocatedEnd_ = nullptr;
         }
 
-        ~Vector( )
+        ~VectorBase( )
         {
             if constexpr ( std::is_trivially_destructible_v<T> == false )
             {
@@ -501,7 +502,7 @@ namespace Harlinn::Common::Core
             }
         }
 
-        void Assign( const Vector& other )
+        void Assign( const VectorBase& other )
         {
             auto dataPtr = data( );
             auto otherDataPtr = other.data( );
@@ -569,13 +570,13 @@ namespace Harlinn::Common::Core
             }
         }
 
-        Vector& operator = ( const Vector& other )
+        VectorBase& operator = ( const VectorBase& other )
         {
             Assign( other );
             return *this;
         }
 
-        Vector& operator = ( Vector&& other ) noexcept
+        VectorBase& operator = ( VectorBase&& other ) noexcept
         {
             std::swap( data_, other.data_ );
             std::swap( end_, other.end_ );
@@ -584,7 +585,7 @@ namespace Harlinn::Common::Core
         }
 
 
-        [[nodiscard]] bool Equals( Vector& other ) const
+        [[nodiscard]] bool Equals( VectorBase& other ) const
         {
             auto dataPtr = data_.get( );
             auto otherDataPtr = other.data_.get( );
@@ -619,11 +620,11 @@ namespace Harlinn::Common::Core
             }
         }
 
-        [[nodiscard]] bool operator == ( Vector& other ) const
+        [[nodiscard]] bool operator == ( VectorBase& other ) const
         {
             return Equals( other );
         }
-        [[nodiscard]] bool operator != ( Vector& other ) const
+        [[nodiscard]] bool operator != ( VectorBase& other ) const
         {
             return Equals( other ) == false;
         }
@@ -755,7 +756,7 @@ namespace Harlinn::Common::Core
         {
             return *( end_ - 1 );
         }
-        constexpr void swap( Vector<T>& other )
+        constexpr void swap( VectorBase& other )
         {
             std::swap( data_, other.data_ );
             std::swap( end_, other.end_ );
@@ -1640,9 +1641,86 @@ namespace Harlinn::Common::Core
     };
 
 
+    template<typename T>
+    class OldVector : public VectorBase<T, VectorIterator<OldVector<T>>, VectorConstIterator<OldVector<T>> >
+    {
+    public:
+        using Base = VectorBase<T, VectorIterator<OldVector<T>>, VectorConstIterator<OldVector<T>> >;
+        using value_type = typename Base::value_type;
+        using iterator = typename Base::iterator;
+        using const_iterator = typename Base::const_iterator;
+        using size_type = typename Base::size_type;
+
+        constexpr OldVector( ) noexcept = default;
+        OldVector( const OldVector& other ) noexcept = default;
+        OldVector( OldVector&& other ) noexcept = default;
+
+        OldVector( size_type count, const value_type& val )
+            : Base( count, val )
+        {
+        }
+        OldVector( size_type count )
+            : Base( count )
+        {
+        }
+
+        template<typename It>
+            requires IsIterator_v<It>
+        OldVector( It first, It last )
+            : Base( first, last )
+        {
+        }
+
+        OldVector( std::initializer_list<T> values )
+            : Base( values.begin( ), values.end( ) )
+        {
+        }
+
+        OldVector& operator = ( const OldVector& other ) noexcept = default;
+        OldVector& operator = ( OldVector&& other ) noexcept = default;
+
+    };
+
+    template<typename T>
+    class Vector : public VectorBase<T, Internal::PointerIterator<Vector<T>>, Internal::ConstPointerIterator<Vector<T>> >
+    {
+    public:
+        using Base = VectorBase<T, Internal::PointerIterator<Vector<T>>, Internal::ConstPointerIterator<Vector<T>> >;
+        using value_type = typename Base::value_type;
+        using iterator = typename Base::iterator;
+        using const_iterator = typename Base::const_iterator;
+        using size_type = typename Base::size_type;
+
+        constexpr Vector( ) noexcept = default;
+        Vector( const Vector& other ) noexcept = default;
+        Vector( Vector&& other ) noexcept = default;
+
+        Vector( size_type count, const value_type& val )
+            : Base( count, val )
+        { }
+        Vector( size_type count )
+            : Base( count )
+        { }
+
+        template<typename It>
+            requires IsIterator_v<It>
+        Vector( It first, It last )
+            : Base( first, last )
+        { }
+
+        Vector( std::initializer_list<T> values )
+            : Base( values.begin( ), values.end( ) )
+        { }
+
+        Vector& operator = ( const Vector& other ) noexcept = default;
+        Vector& operator = ( Vector&& other ) noexcept = default;
+
+    };
+
+
     template <typename It>
         requires IsIterator_v<It>
-    Vector( It, It ) -> Vector<IteratorValue_t<It>>;
+    Vector( It, It ) ->Vector<IteratorValue_t<It>>;
 
 
     template<typename T>
