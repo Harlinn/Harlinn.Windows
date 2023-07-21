@@ -29,7 +29,7 @@ single solution makes it easier, at least for me, to understand how everything i
 
 ### Why put Harlinn in front of every dll name?
 To avoid naming conflicts. I own the harlinn.com domain, so it is unlikely that anybody would, by accident, 
-put Harlinn in front of the name of their dll.
+put Harlinn in front of the name of their dll. These dlls are *not* drop-in replacements for the dlls that vcpkg and cmake generate, so I think it makes sense to ensure that they are uniquely named.
 
 ### What about the unit tests? 
 A few of those are included, but still just a fraction of those available for the original packages.

@@ -2859,14 +2859,33 @@ namespace Harlinn::Common::Core
         {
             if ( data_ && searchChars && numberOfSearchChars )
             {
-                while ( start < data_->size_ )
+                auto ptr = data_->buffer_ + start;
+                auto endPtr = data_->buffer_ + data_->size_;
+                if ( numberOfSearchChars == 1 && ptr < endPtr )
                 {
-                    const auto* p = Internal::MemChr( searchChars, data_->buffer_[start], static_cast<size_t>( numberOfSearchChars ) );
+                    auto p = Internal::MemChr( ptr, *searchChars, data_->size_ - start );
                     if ( p )
                     {
-                        return start;
+                        return static_cast< size_type >( p - data_->buffer_ );
                     }
-                    start++;
+                }
+                else
+                {
+                    auto searchEndPtr = searchChars + numberOfSearchChars;
+
+                    while ( ptr < endPtr )
+                    {
+                        auto searchPtr = searchChars;
+                        while ( searchPtr < searchEndPtr )
+                        {
+                            if ( *ptr == *searchPtr )
+                            {
+                                return static_cast< size_type >( ptr - data_->buffer_ );
+                            }
+                            searchPtr++;
+                        }
+                        ptr++;
+                    }
                 }
             }
             return npos;
@@ -2877,18 +2896,35 @@ namespace Harlinn::Common::Core
         {
             if ( data_ && searchChars && numberOfSearchChars )
             {
-                while ( start < data_->size_ )
+                auto ptr = data_->buffer_ + start;
+                auto endPtr = data_->buffer_ + data_->size_;
+                if ( numberOfSearchChars == 1 && ptr < endPtr )
                 {
-                    auto c = Internal::ToUpper( data_->buffer_[start] );
-                    for ( size_t i = 0; i < numberOfSearchChars; i++ )
+                    auto p = Internal::MemIChr( ptr, *searchChars, data_->size_ - start );
+                    if ( p )
                     {
-                        auto sc = Internal::ToUpper( searchChars[i] );
-                        if ( c == sc )
-                        {
-                            return start;
-                        }
+                        return static_cast< size_type >( p - data_->buffer_ );
                     }
-                    start++;
+                }
+                else
+                {
+                    auto searchEndPtr = searchChars + numberOfSearchChars;
+
+                    while ( ptr < endPtr )
+                    {
+                        auto searchPtr = searchChars;
+                        auto c = Internal::ToUpper( *ptr );
+                        while ( searchPtr < searchEndPtr )
+                        {
+                            auto sc = Internal::ToUpper( *searchPtr );
+                            if ( c == sc )
+                            {
+                                return static_cast< size_type >( ptr - data_->buffer_ );
+                            }
+                            searchPtr++;
+                        }
+                        ptr++;
+                    }
                 }
             }
             return npos;
@@ -2905,7 +2941,19 @@ namespace Harlinn::Common::Core
             return npos;
         }
 
-        [[nodiscard]] size_type IIndexOfAnyOf( const AnsiString& searchChars, size_type start = 0 ) const
+        template<SimpleSpanLike SpanT>
+            requires std::is_same_v<std::remove_cvref_t<typename SpanT::value_type>,CharType>
+        [[nodiscard]] size_type IndexOfAnyOf( const SpanT& searchChars, size_type start = 0 ) const
+        {
+            return IndexOfAnyOf( searchChars.data(), searchChars.size(), start );
+        }
+
+        [[nodiscard]] size_type IndexOfAnyOf( const std::basic_string_view<CharType>& searchChars, size_type start = 0 ) const
+        {
+            return IndexOfAnyOf( searchChars.data( ), searchChars.size( ), start );
+        }
+
+        [[nodiscard]] size_type IIndexOfAnyOf( const BasicString<CharType>& searchChars, size_type start = 0 ) const
         {
             const auto* searchData = searchChars.data_;
             if ( searchData )
@@ -2914,6 +2962,19 @@ namespace Harlinn::Common::Core
             }
             return npos;
         }
+
+        template<SimpleSpanLike SpanT>
+            requires std::is_same_v<std::remove_cvref_t<typename SpanT::value_type>, CharType>
+        [[nodiscard]] size_type IIndexOfAnyOf( const SpanT& searchChars, size_type start = 0 ) const
+        {
+            return IIndexOfAnyOf( searchChars.data( ), searchChars.size( ), start );
+        }
+
+        [[nodiscard]] size_type IIndexOfAnyOf( const std::basic_string_view<CharType>& searchChars, size_type start = 0 ) const
+        {
+            return IIndexOfAnyOf( searchChars.data( ), searchChars.size( ), start );
+        }
+
 
         [[nodiscard]] size_type IndexOfAnyOf( const CharType* searchChars, size_type start = 0 ) const
         {
