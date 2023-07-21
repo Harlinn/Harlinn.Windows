@@ -4,6 +4,7 @@
 
 #include <HCCDef.h>
 #include <HCCTraits.h>
+#include <HCCConcepts.h>
 #include <HCCException.h>
 #include <HCCIterator.h>
 
@@ -436,6 +437,8 @@ namespace Harlinn::Common::Core
             return (const wchar_t*)wmemchr( buffer, value, bufferSize );
         }
 
+        
+
 
 
 
@@ -509,51 +512,65 @@ namespace Harlinn::Common::Core
         }
 
 
-
-
         inline char* MemIChr( char* buffer, int value, size_t bufferSize ) noexcept
         {
             auto lowerValue = ToLower( static_cast<char>( value ) );
-            auto* result = (char*)memchr( buffer, lowerValue, bufferSize );
-            if ( !result )
+            auto ptr = buffer;
+            auto endPtr = buffer + bufferSize;
+            while ( ptr < endPtr )
             {
-                auto upperValue = ToUpper( static_cast<char>( value ) );
-                result = (char*)memchr( buffer, upperValue, bufferSize );
+                if ( ToLower( static_cast< char >( *ptr ) ) == lowerValue )
+                {
+                    return ptr;
+                }
+                ptr++;
             }
-            return result;
+            return nullptr;
         }
         inline const char* MemIChr( const char* buffer, int value, size_t bufferSize ) noexcept
         {
-            auto lowerValue = ToLower( static_cast<char>( value ) );
-            auto* result = (const char*)memchr( buffer, lowerValue, bufferSize );
-            if ( !result )
+            auto lowerValue = ToLower( static_cast< char >( value ) );
+            auto ptr = buffer;
+            auto endPtr = buffer + bufferSize;
+            while ( ptr < endPtr )
             {
-                auto upperValue = ToUpper( static_cast<char>( value ) );
-                result = (const char*)memchr( buffer, upperValue, bufferSize );
+                if ( ToLower( static_cast< char >( *ptr ) ) == lowerValue )
+                {
+                    return ptr;
+                }
+                ptr++;
             }
-            return result;
+            return nullptr;
         }
         inline wchar_t* MemIChr( wchar_t* buffer, int value, size_t bufferSize ) noexcept
         {
-            auto lowerValue = ToLower( static_cast<wchar_t>( value ) );
-            auto* result = (wchar_t*)wmemchr( buffer, lowerValue, bufferSize );
-            if ( !result )
+            auto lowerValue = ToLower( static_cast< wchar_t >( value ) );
+            auto ptr = buffer;
+            auto endPtr = buffer + bufferSize;
+            while ( ptr < endPtr )
             {
-                auto upperValue = ToUpper( static_cast<wchar_t>( value ) );
-                result = (wchar_t*)wmemchr( buffer, upperValue, bufferSize );
+                if ( ToLower( static_cast< wchar_t >( *ptr ) ) == lowerValue )
+                {
+                    return ptr;
+                }
+                ptr++;
             }
-            return result;
+            return nullptr;
         }
         inline const wchar_t* MemIChr( const wchar_t* buffer, int value, size_t bufferSize ) noexcept
         {
-            auto lowerValue = ToLower( static_cast<wchar_t>( value ) );
-            auto* result = (const wchar_t*)wmemchr( buffer, lowerValue, bufferSize );
-            if ( !result )
+            auto lowerValue = ToLower( static_cast< wchar_t >( value ) );
+            auto ptr = buffer;
+            auto endPtr = buffer + bufferSize;
+            while ( ptr < endPtr )
             {
-                auto upperValue = ToUpper( static_cast<wchar_t>( value ) );
-                result = (const wchar_t*)wmemchr( buffer, upperValue, bufferSize );
+                if ( ToLower( static_cast< wchar_t >( *ptr ) ) == lowerValue )
+                {
+                    return ptr;
+                }
+                ptr++;
             }
-            return result;
+            return nullptr;
         }
 
 
@@ -2810,6 +2827,19 @@ namespace Harlinn::Common::Core
             }
         }
 
+        [[nodiscard]] size_type IIndexOf( CharType c ) const
+        {
+            if ( data_ )
+            {
+                auto* foundAt = Internal::MemIChr( data_->buffer_, c, data_->size_ );
+                return foundAt ? foundAt - data_->buffer_ : npos;
+            }
+            else
+            {
+                return npos;
+            }
+        }
+
 
 
         [[nodiscard]] size_type find_first_of( CharType c ) const
@@ -3203,25 +3233,30 @@ namespace Harlinn::Common::Core
 
         [[nodiscard]] size_type IndexOf( const CharType* searchString, size_type searchStringLength, size_type start ) const
         {
-            if ( data_ && ( start < data_->size_ ) )
+            if ( data_ )
             {
-                if ( searchStringLength == 1 )
+                auto dataSize = data_->size_;
+                if ( ( start + searchStringLength ) <= dataSize )
                 {
-                    auto* p = Internal::MemChr( &data_->buffer_[start], *searchString, static_cast<size_t>( data_->size_ - start ) );
-                    if ( p )
+                    auto ptr = data_->buffer_ + start;
+                    auto endPtr = data_->buffer_ + dataSize - searchStringLength;
+
+                    while ( ptr <= endPtr )
                     {
-                        return p - data_->buffer_;
-                    }
-                }
-                else if ( searchStringLength )
-                {
-                    while ( ( start + searchStringLength ) <= data_->size_ )
-                    {
-                        if ( Internal::Compare( &data_->buffer_[start], searchStringLength, searchString, searchStringLength ) == 0 )
+                        auto* p = Internal::MemChr( ptr, *searchString, static_cast< size_type >( endPtr - ptr ) + searchStringLength );
+                        if ( p && p <= endPtr )
                         {
-                            return start;
+                            auto compareLength = searchStringLength - 1;
+                            if ( Internal::Compare( p + 1, compareLength, searchString + 1, compareLength ) == 0 )
+                            {
+                                return static_cast< size_type >( p - data_->buffer_ );
+                            }
+                            ptr = p + 1;
                         }
-                        start++;
+                        else
+                        {
+                            break;
+                        }
                     }
                 }
             }
@@ -3232,25 +3267,30 @@ namespace Harlinn::Common::Core
 
         [[nodiscard]] size_type IIndexOf( const CharType* searchString, size_type searchStringLength, size_type start ) const
         {
-            if ( data_ && ( start < data_->size_ ) )
+            if ( data_ )
             {
-                if ( searchStringLength == 1 )
+                auto dataSize = data_->size_;
+                if ( ( start + searchStringLength ) <= dataSize )
                 {
-                    auto* p = Internal::MemIChr( &data_->buffer_[start], *searchString, static_cast<size_t>( data_->size_ - start ) );
-                    if ( p )
+                    auto ptr = data_->buffer_ + start;
+                    auto endPtr = data_->buffer_ + dataSize - searchStringLength;
+
+                    while ( ptr <= endPtr )
                     {
-                        return p - data_->buffer_;
-                    }
-                }
-                else if ( searchStringLength )
-                {
-                    while ( ( start + searchStringLength ) <= data_->size_ )
-                    {
-                        if ( Internal::ICompare( &data_->buffer_[start], searchStringLength, searchString, searchStringLength ) == 0 )
+                        auto* p = Internal::MemIChr( ptr, *searchString, static_cast< size_type >( endPtr - ptr ) + searchStringLength );
+                        if ( p && p <= endPtr )
                         {
-                            return start;
+                            auto compareLength = searchStringLength - 1;
+                            if ( Internal::ICompare( p + 1, compareLength, searchString + 1, compareLength ) == 0 )
+                            {
+                                return static_cast< size_type >( p - data_->buffer_ );
+                            }
+                            ptr = p + 1;
                         }
-                        start++;
+                        else
+                        {
+                            break;
+                        }
                     }
                 }
             }
@@ -3273,6 +3313,37 @@ namespace Harlinn::Common::Core
             return IndexOf( searchString, start );
         }
 
+        template<SimpleSpanLike SpanT>
+            requires std::is_same_v< std::remove_cvref_t<typename SpanT::value_type>,CharType>
+        [[nodiscard]] size_type IndexOf( const SpanT& searchString, size_type start = 0 ) const
+        {
+            if ( searchString.size() )
+            {
+                return IndexOf( searchString.data(), searchString.size( ), start );
+            }
+            return npos;
+        }
+
+        template<SimpleSpanLike SpanT>
+            requires std::is_same_v< std::remove_cvref_t<typename SpanT::value_type>, CharType>
+        [[nodiscard]] size_type find( const SpanT& searchString, size_type start = 0 ) const
+        {
+            return IndexOf( searchString, start );
+        }
+
+        [[nodiscard]] size_type IndexOf( const std::basic_string_view<CharType>& searchString, size_type start = 0 ) const
+        {
+            if ( searchString.size( ) )
+            {
+                return IndexOf( searchString.data( ), searchString.size( ), start );
+            }
+            return npos;
+        }
+        [[nodiscard]] size_type find( const std::basic_string_view<CharType>& searchString, size_type start = 0 ) const
+        {
+            return IndexOf( searchString, start );
+        }
+
 
         [[nodiscard]] size_type IIndexOf( const BasicString& searchString, size_type start = 0 ) const
         {
@@ -3283,6 +3354,27 @@ namespace Harlinn::Common::Core
             }
             return npos;
         }
+
+        template<SimpleSpanLike SpanT>
+            requires std::is_same_v< std::remove_cvref_t<typename SpanT::value_type>, CharType>
+        [[nodiscard]] size_type IIndexOf( const SpanT& searchString, size_type start = 0 ) const
+        {
+            if ( searchString.size( ) )
+            {
+                return IIndexOf( searchString.data( ), searchString.size( ), start );
+            }
+            return npos;
+        }
+
+        [[nodiscard]] size_type IIndexOf( const std::basic_string_view<CharType>& searchString, size_type start = 0 ) const
+        {
+            if ( searchString.size( ) )
+            {
+                return IIndexOf( searchString.data( ), searchString.size( ), start );
+            }
+            return npos;
+        }
+
 
         [[nodiscard]] size_type IndexOf( const CharType* searchString, size_type start = 0 ) const
         {
@@ -3370,6 +3462,19 @@ namespace Harlinn::Common::Core
             if ( data_ && start < data_->size_ )
             {
                 auto* foundAt = Internal::MemChr( data_->buffer_ + start, c, data_->size_ - start );
+                return foundAt ? foundAt - data_->buffer_ : npos;
+            }
+            else
+            {
+                return npos;
+            }
+        }
+
+        [[nodiscard]] size_type IIndexOf( CharType c, size_type start ) const
+        {
+            if ( data_ && start < data_->size_ )
+            {
+                auto* foundAt = Internal::MemIChr( data_->buffer_ + start, c, data_->size_ - start );
                 return foundAt ? foundAt - data_->buffer_ : npos;
             }
             else
