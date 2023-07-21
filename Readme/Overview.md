@@ -21,8 +21,7 @@ This is a good question, and initially I tried to do just that, but there were s
 2. Some packages relied on different versions of the same package, including their own private copy of a package.
 3. Some packages were compiled with /sdl on, while others were not. I prefer to turn /sdl and /GS off for release builds, and on for debug builds.
    This may not be as significant as it used to, but you still get better performance when turning /sdl and /GS off. 
-4. Many packages will not compile with: 
-  - The **/std:c++latest** option, which *enables all currently implemented compiler and standard library features proposed for the next draft standard, as well as some in-progress and experimental features.*
+4. Many packages will not compile with:The **/std:c++latest** option, which *enables all currently implemented compiler and standard library features proposed for the next draft standard, as well as some in-progress and experimental features.*
 6. Many packages creates static libraries, not dlls. 
 
 Don't get me wrong; I think CMake and vcpkg are great tools, but putting everything into a 
@@ -51,7 +50,7 @@ In particular, I've included many of the unit tests, that can be expected to com
 
 I've also created a fair number of tests for my own projects:
 
-- **Harlinn.Common.Core.Tests:** 1175
+- **Harlinn.Common.Core.Tests:** 2726
 - **Harlinn.Windows.Tests:** 271
 - **Harlinn.OCI.Tests:** 49
 - **Harlinn.ODBC.Tests:** 9
