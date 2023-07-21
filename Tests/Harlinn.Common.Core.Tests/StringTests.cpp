@@ -32,7 +32,6 @@ BOOST_AUTO_TEST_CASE( BufferHeaderSizeTest1 )
 BOOST_AUTO_TEST_CASE( ConstructorTest1W )
 {
     WideString string;
-
     BOOST_TEST( string.empty() );
 }
 
@@ -175,6 +174,8 @@ BOOST_AUTO_TEST_CASE( ConstructorTest9W )
     WideString string2( string1 );
     bool equal = string2 == L"123";
     BOOST_TEST( equal );
+    equal = string2.data( ) == string1.data( );
+    BOOST_TEST( equal );
 }
 
 // --run_test=StringTests/ConstructorTest9A
@@ -183,6 +184,8 @@ BOOST_AUTO_TEST_CASE( ConstructorTest9A )
     AnsiString string1( "123" );
     AnsiString string2( string1 );
     bool equal = string2 == "123";
+    BOOST_TEST( equal );
+    equal = string2.data( ) == string1.data( );
     BOOST_TEST( equal );
 }
 
@@ -271,6 +274,2292 @@ BOOST_AUTO_TEST_CASE( StringEnsureUniqueTest1A )
     BOOST_TEST( string1.IsUnique( ) );
     BOOST_TEST( string2.IsUnique( ) );
 }
+
+
+// --run_test=StringTests/StringEqualTest1W
+BOOST_AUTO_TEST_CASE( StringEqualTest1W )
+{
+    WideString first;
+    WideString second;
+    bool equal = first == second;
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringEqualTest2W
+BOOST_AUTO_TEST_CASE( StringEqualTest2W )
+{
+    WideString first( L"1" );
+    WideString second;
+    bool equal = first == second;
+    BOOST_TEST( equal == false );
+}
+
+// --run_test=StringTests/StringEqualTest3W
+BOOST_AUTO_TEST_CASE( StringEqualTest3W )
+{
+    WideString first;
+    WideString second( L"1" );
+    bool equal = first == second;
+    BOOST_TEST( equal == false );
+}
+
+// --run_test=StringTests/StringEqualTest4W
+BOOST_AUTO_TEST_CASE( StringEqualTest4W )
+{
+    WideString first( L"12" );
+    WideString second( L"1" );
+    bool equal = first == second;
+    BOOST_TEST( equal == false );
+}
+
+// --run_test=StringTests/StringEqualTest5W
+BOOST_AUTO_TEST_CASE( StringEqualTest5W )
+{
+    WideString first( L"1" );
+    WideString second( L"12" );
+    bool equal = first == second;
+    BOOST_TEST( equal == false );
+}
+
+// --run_test=StringTests/StringEqualTest6W
+BOOST_AUTO_TEST_CASE( StringEqualTest6W )
+{
+    WideString first( L"123" );
+    WideString second( L"123" );
+    bool equal = first == second;
+    BOOST_TEST( equal );
+}
+
+
+// --run_test=StringTests/StringEqualTest7W
+BOOST_AUTO_TEST_CASE( StringEqualTest7W )
+{
+    WideString first;
+    const wchar_t* second = nullptr;
+    bool equal = first == second;
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringEqualTest8W
+BOOST_AUTO_TEST_CASE( StringEqualTest8W )
+{
+    WideString first( L"1" );
+    const wchar_t* second = nullptr;
+    bool equal = first == second;
+    BOOST_TEST( equal == false );
+}
+
+// --run_test=StringTests/StringEqualTest9W
+BOOST_AUTO_TEST_CASE( StringEqualTest9W )
+{
+    WideString first;
+    const wchar_t* second = L"1";
+    bool equal = first == second;
+    BOOST_TEST( equal == false );
+}
+
+// --run_test=StringTests/StringEqualTest10W
+BOOST_AUTO_TEST_CASE( StringEqualTest10W )
+{
+    WideString first( L"12" );
+    const wchar_t* second = L"1";
+    bool equal = first == second;
+    BOOST_TEST( equal == false );
+}
+
+// --run_test=StringTests/StringEqualTest11W
+BOOST_AUTO_TEST_CASE( StringEqualTest11W )
+{
+    WideString first( L"1" );
+    const wchar_t* second = L"12";
+    bool equal = first == second;
+    BOOST_TEST( equal == false );
+}
+
+// --run_test=StringTests/StringEqualTest12W
+BOOST_AUTO_TEST_CASE( StringEqualTest12W )
+{
+    WideString first( L"123" );
+    const wchar_t* second = L"123";
+    bool equal = first == second;
+    BOOST_TEST( equal );
+}
+
+
+// --run_test=StringTests/StringEqualTest13W
+BOOST_AUTO_TEST_CASE( StringEqualTest13W )
+{
+    const wchar_t* first = nullptr;
+    WideString second;
+    bool equal = first == second;
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringEqualTest14W
+BOOST_AUTO_TEST_CASE( StringEqualTest14W )
+{
+    const wchar_t* first = L"1";
+    WideString second;
+    bool equal = first == second;
+    BOOST_TEST( equal == false );
+}
+
+// --run_test=StringTests/StringEqualTest15W
+BOOST_AUTO_TEST_CASE( StringEqualTest15W )
+{
+    const wchar_t* first = nullptr;
+    WideString second( L"1" );
+    bool equal = first == second;
+    BOOST_TEST( equal == false );
+}
+
+// --run_test=StringTests/StringEqualTest16W
+BOOST_AUTO_TEST_CASE( StringEqualTest16W )
+{
+    const wchar_t* first = L"12";
+    WideString second( L"1" );
+    bool equal = first == second;
+    BOOST_TEST( equal == false );
+}
+
+// --run_test=StringTests/StringEqualTest17W
+BOOST_AUTO_TEST_CASE( StringEqualTest17W )
+{
+    const wchar_t* first = L"1";
+    WideString second( L"12" );
+    bool equal = first == second;
+    BOOST_TEST( equal == false );
+}
+
+// --run_test=StringTests/StringEqualTest18W
+BOOST_AUTO_TEST_CASE( StringEqualTest18W )
+{
+    const wchar_t* first = L"123";
+    WideString second( L"123" );
+    bool equal = first == second;
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringEqualTest19W
+BOOST_AUTO_TEST_CASE( StringEqualTest19W )
+{
+    std::wstring first;
+    WideString second;
+    bool equal = first == second;
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringEqualTest20W
+BOOST_AUTO_TEST_CASE( StringEqualTest20W )
+{
+    std::wstring first( L"1" );
+    WideString second;
+    bool equal = first == second;
+    BOOST_TEST( equal == false );
+}
+
+// --run_test=StringTests/StringEqualTest21W
+BOOST_AUTO_TEST_CASE( StringEqualTest21W )
+{
+    std::wstring first;
+    WideString second( L"1" );
+    bool equal = first == second;
+    BOOST_TEST( equal == false );
+}
+
+// --run_test=StringTests/StringEqualTest22W
+BOOST_AUTO_TEST_CASE( StringEqualTest22W )
+{
+    std::wstring first( L"12" );
+    WideString second( L"1" );
+    bool equal = first == second;
+    BOOST_TEST( equal == false );
+}
+
+// --run_test=StringTests/StringEqualTest23W
+BOOST_AUTO_TEST_CASE( StringEqualTest23W )
+{
+    std::wstring first( L"1" );
+    WideString second( L"12" );
+    bool equal = first == second;
+    BOOST_TEST( equal == false );
+}
+
+// --run_test=StringTests/StringEqualTest24W
+BOOST_AUTO_TEST_CASE( StringEqualTest24W )
+{
+    std::wstring first( L"123" );
+    WideString second( L"123" );
+    bool equal = first == second;
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringEqualTest25W
+BOOST_AUTO_TEST_CASE( StringEqualTest25W )
+{
+    WideString first;
+    std::wstring second;
+    bool equal = first == second;
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringEqualTest26W
+BOOST_AUTO_TEST_CASE( StringEqualTest26W )
+{
+    WideString first( L"1" );
+    std::wstring second;
+    bool equal = first == second;
+    BOOST_TEST( equal == false );
+}
+
+// --run_test=StringTests/StringEqualTest27W
+BOOST_AUTO_TEST_CASE( StringEqualTest27W )
+{
+    WideString first;
+    std::wstring second( L"1" );
+    bool equal = first == second;
+    BOOST_TEST( equal == false );
+}
+
+// --run_test=StringTests/StringEqualTest28W
+BOOST_AUTO_TEST_CASE( StringEqualTest28W )
+{
+    WideString first( L"12" );
+    std::wstring second( L"1" );
+    bool equal = first == second;
+    BOOST_TEST( equal == false );
+}
+
+// --run_test=StringTests/StringEqualTest29W
+BOOST_AUTO_TEST_CASE( StringEqualTest29W )
+{
+    WideString first( L"1" );
+    std::wstring second( L"12" );
+    bool equal = first == second;
+    BOOST_TEST( equal == false );
+}
+
+// --run_test=StringTests/StringEqualTest30W
+BOOST_AUTO_TEST_CASE( StringEqualTest30W )
+{
+    WideString first( L"123" );
+    std::wstring second( L"123" );
+    bool equal = first == second;
+    BOOST_TEST( equal );
+}
+
+
+// --run_test=StringTests/StringEqualTest31W
+BOOST_AUTO_TEST_CASE( StringEqualTest31W )
+{
+    std::wstring_view first;
+    WideString second;
+    bool equal = first == second;
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringEqualTest32W
+BOOST_AUTO_TEST_CASE( StringEqualTest32W )
+{
+    std::wstring_view first( L"1" );
+    WideString second;
+    bool equal = first == second;
+    BOOST_TEST( equal == false );
+}
+
+// --run_test=StringTests/StringEqualTest33W
+BOOST_AUTO_TEST_CASE( StringEqualTest33W )
+{
+    std::wstring_view first;
+    WideString second( L"1" );
+    bool equal = first == second;
+    BOOST_TEST( equal == false );
+}
+
+// --run_test=StringTests/StringEqualTest34W
+BOOST_AUTO_TEST_CASE( StringEqualTest34W )
+{
+    std::wstring_view first( L"12" );
+    WideString second( L"1" );
+    bool equal = first == second;
+    BOOST_TEST( equal == false );
+}
+
+// --run_test=StringTests/StringEqualTest35W
+BOOST_AUTO_TEST_CASE( StringEqualTest35W )
+{
+    std::wstring_view first( L"1" );
+    WideString second( L"12" );
+    bool equal = first == second;
+    BOOST_TEST( equal == false );
+}
+
+// --run_test=StringTests/StringEqualTest36W
+BOOST_AUTO_TEST_CASE( StringEqualTest36W )
+{
+    std::wstring_view first( L"123" );
+    WideString second( L"123" );
+    bool equal = first == second;
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringEqualTest37W
+BOOST_AUTO_TEST_CASE( StringEqualTest37W )
+{
+    WideString first;
+    std::wstring_view second;
+    bool equal = first == second;
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringEqualTest38W
+BOOST_AUTO_TEST_CASE( StringEqualTest38W )
+{
+    WideString first( L"1" );
+    std::wstring_view second;
+    bool equal = first == second;
+    BOOST_TEST( equal == false );
+}
+
+// --run_test=StringTests/StringEqualTest39W
+BOOST_AUTO_TEST_CASE( StringEqualTest39W )
+{
+    WideString first;
+    std::wstring_view second( L"1" );
+    bool equal = first == second;
+    BOOST_TEST( equal == false );
+}
+
+// --run_test=StringTests/StringEqualTest40W
+BOOST_AUTO_TEST_CASE( StringEqualTest40W )
+{
+    WideString first( L"12" );
+    std::wstring_view second( L"1" );
+    bool equal = first == second;
+    BOOST_TEST( equal == false );
+}
+
+// --run_test=StringTests/StringEqualTest41W
+BOOST_AUTO_TEST_CASE( StringEqualTest41W )
+{
+    WideString first( L"1" );
+    std::wstring_view second( L"12" );
+    bool equal = first == second;
+    BOOST_TEST( equal == false );
+}
+
+// --run_test=StringTests/StringEqualTest42W
+BOOST_AUTO_TEST_CASE( StringEqualTest42W )
+{
+    WideString first( L"123" );
+    std::wstring_view second( L"123" );
+    bool equal = first == second;
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringNotEqualTest1W
+BOOST_AUTO_TEST_CASE( StringNotEqualTest1W )
+{
+    WideString first;
+    WideString second;
+    bool notEqual = first != second;
+    BOOST_TEST( notEqual == false );
+}
+
+// --run_test=StringTests/StringNotEqualTest2W
+BOOST_AUTO_TEST_CASE( StringNotEqualTest2W )
+{
+    WideString first( L"1" );
+    WideString second;
+    bool notEqual = first != second;
+    BOOST_TEST( notEqual );
+}
+
+// --run_test=StringTests/StringNotEqualTest3W
+BOOST_AUTO_TEST_CASE( StringNotEqualTest3W )
+{
+    WideString first;
+    WideString second( L"1" );
+    bool notEqual = first != second;
+    BOOST_TEST( notEqual );
+}
+
+// --run_test=StringTests/StringNotEqualTest4W
+BOOST_AUTO_TEST_CASE( StringNotEqualTest4W )
+{
+    WideString first( L"12" );
+    WideString second( L"1" );
+    bool notEqual = first != second;
+    BOOST_TEST( notEqual );
+}
+
+// --run_test=StringTests/StringNotEqualTest5W
+BOOST_AUTO_TEST_CASE( StringNotEqualTest5W )
+{
+    WideString first( L"1" );
+    WideString second( L"12" );
+    bool notEqual = first != second;
+    BOOST_TEST( notEqual );
+}
+
+// --run_test=StringTests/StringNotEqualTest6W
+BOOST_AUTO_TEST_CASE( StringNotEqualTest6W )
+{
+    WideString first( L"123" );
+    WideString second( L"123" );
+    bool notEqual = first != second;
+    BOOST_TEST( notEqual == false );
+}
+
+
+// --run_test=StringTests/StringNotEqualTest7W
+BOOST_AUTO_TEST_CASE( StringNotEqualTest7W )
+{
+    WideString first;
+    const wchar_t* second = nullptr;
+    bool notEqual = first != second;
+    BOOST_TEST( notEqual == false );
+}
+
+// --run_test=StringTests/StringNotEqualTest8W
+BOOST_AUTO_TEST_CASE( StringNotEqualTest8W )
+{
+    WideString first( L"1" );
+    const wchar_t* second = nullptr;
+    bool notEqual = first != second;
+    BOOST_TEST( notEqual );
+}
+
+// --run_test=StringTests/StringNotEqualTest9W
+BOOST_AUTO_TEST_CASE( StringNotEqualTest9W )
+{
+    WideString first;
+    const wchar_t* second = L"1";
+    bool notEqual = first != second;
+    BOOST_TEST( notEqual );
+}
+
+// --run_test=StringTests/StringNotEqualTest10W
+BOOST_AUTO_TEST_CASE( StringNotEqualTest10W )
+{
+    WideString first( L"12" );
+    const wchar_t* second = L"1";
+    bool notEqual = first != second;
+    BOOST_TEST( notEqual );
+}
+
+// --run_test=StringTests/StringNotEqualTest11W
+BOOST_AUTO_TEST_CASE( StringNotEqualTest11W )
+{
+    WideString first( L"1" );
+    const wchar_t* second = L"12";
+    bool notEqual = first != second;
+    BOOST_TEST( notEqual );
+}
+
+// --run_test=StringTests/StringNotEqualTest12W
+BOOST_AUTO_TEST_CASE( StringNotEqualTest12W )
+{
+    WideString first( L"123" );
+    const wchar_t* second = L"123";
+    bool notEqual = first != second;
+    BOOST_TEST( notEqual == false );
+}
+
+
+// --run_test=StringTests/StringNotEqualTest13W
+BOOST_AUTO_TEST_CASE( StringNotEqualTest13W )
+{
+    const wchar_t* first = nullptr;
+    WideString second;
+    bool notEqual = first != second;
+    BOOST_TEST( notEqual == false );
+}
+
+// --run_test=StringTests/StringNotEqualTest14W
+BOOST_AUTO_TEST_CASE( StringNotEqualTest14W )
+{
+    const wchar_t* first = L"1";
+    WideString second;
+    bool notEqual = first != second;
+    BOOST_TEST( notEqual );
+}
+
+// --run_test=StringTests/StringNotEqualTest15W
+BOOST_AUTO_TEST_CASE( StringNotEqualTest15W )
+{
+    const wchar_t* first = nullptr;
+    WideString second( L"1" );
+    bool notEqual = first != second;
+    BOOST_TEST( notEqual );
+}
+
+// --run_test=StringTests/StringNotEqualTest16W
+BOOST_AUTO_TEST_CASE( StringNotEqualTest16W )
+{
+    const wchar_t* first = L"12";
+    WideString second( L"1" );
+    bool notEqual = first != second;
+    BOOST_TEST( notEqual );
+}
+
+// --run_test=StringTests/StringNotEqualTest17W
+BOOST_AUTO_TEST_CASE( StringNotEqualTest17W )
+{
+    const wchar_t* first = L"1";
+    WideString second( L"12" );
+    bool notEqual = first != second;
+    BOOST_TEST( notEqual );
+}
+
+// --run_test=StringTests/StringNotEqualTest18W
+BOOST_AUTO_TEST_CASE( StringNotEqualTest18W )
+{
+    const wchar_t* first = L"123";
+    WideString second( L"123" );
+    bool notEqual = first != second;
+    BOOST_TEST( notEqual == false );
+}
+
+// --run_test=StringTests/StringNotEqualTest19W
+BOOST_AUTO_TEST_CASE( StringNotEqualTest19W )
+{
+    std::wstring first;
+    WideString second;
+    bool notEqual = first != second;
+    BOOST_TEST( notEqual == false );
+}
+
+// --run_test=StringTests/StringNotEqualTest20W
+BOOST_AUTO_TEST_CASE( StringNotEqualTest20W )
+{
+    std::wstring first( L"1" );
+    WideString second;
+    bool notEqual = first != second;
+    BOOST_TEST( notEqual );
+}
+
+// --run_test=StringTests/StringNotEqualTest21W
+BOOST_AUTO_TEST_CASE( StringNotEqualTest21W )
+{
+    std::wstring first;
+    WideString second( L"1" );
+    bool notEqual = first != second;
+    BOOST_TEST( notEqual );
+}
+
+// --run_test=StringTests/StringNotEqualTest22W
+BOOST_AUTO_TEST_CASE( StringNotEqualTest22W )
+{
+    std::wstring first( L"12" );
+    WideString second( L"1" );
+    bool notEqual = first != second;
+    BOOST_TEST( notEqual );
+}
+
+// --run_test=StringTests/StringNotEqualTest23W
+BOOST_AUTO_TEST_CASE( StringNotEqualTest23W )
+{
+    std::wstring first( L"1" );
+    WideString second( L"12" );
+    bool notEqual = first != second;
+    BOOST_TEST( notEqual );
+}
+
+// --run_test=StringTests/StringNotEqualTest24W
+BOOST_AUTO_TEST_CASE( StringNotEqualTest24W )
+{
+    std::wstring first( L"123" );
+    WideString second( L"123" );
+    bool notEqual = first != second;
+    BOOST_TEST( notEqual == false );
+}
+
+// --run_test=StringTests/StringNotEqualTest25W
+BOOST_AUTO_TEST_CASE( StringNotEqualTest25W )
+{
+    WideString first;
+    std::wstring second;
+    bool notEqual = first != second;
+    BOOST_TEST( notEqual == false );
+}
+
+// --run_test=StringTests/StringNotEqualTest26W
+BOOST_AUTO_TEST_CASE( StringNotEqualTest26W )
+{
+    WideString first( L"1" );
+    std::wstring second;
+    bool notEqual = first != second;
+    BOOST_TEST( notEqual );
+}
+
+// --run_test=StringTests/StringNotEqualTest27W
+BOOST_AUTO_TEST_CASE( StringNotEqualTest27W )
+{
+    WideString first;
+    std::wstring second( L"1" );
+    bool notEqual = first != second;
+    BOOST_TEST( notEqual );
+}
+
+// --run_test=StringTests/StringNotEqualTest28W
+BOOST_AUTO_TEST_CASE( StringNotEqualTest28W )
+{
+    WideString first( L"12" );
+    std::wstring second( L"1" );
+    bool notEqual = first != second;
+    BOOST_TEST( notEqual );
+}
+
+// --run_test=StringTests/StringNotEqualTest29W
+BOOST_AUTO_TEST_CASE( StringNotEqualTest29W )
+{
+    WideString first( L"1" );
+    std::wstring second( L"12" );
+    bool notEqual = first != second;
+    BOOST_TEST( notEqual );
+}
+
+// --run_test=StringTests/StringNotEqualTest30W
+BOOST_AUTO_TEST_CASE( StringNotEqualTest30W )
+{
+    WideString first( L"123" );
+    std::wstring second( L"123" );
+    bool notEqual = first != second;
+    BOOST_TEST( notEqual == false );
+}
+
+
+// --run_test=StringTests/StringNotEqualTest31W
+BOOST_AUTO_TEST_CASE( StringNotEqualTest31W )
+{
+    std::wstring_view first;
+    WideString second;
+    bool notEqual = first != second;
+    BOOST_TEST( notEqual == false );
+}
+
+// --run_test=StringTests/StringNotEqualTest32W
+BOOST_AUTO_TEST_CASE( StringNotEqualTest32W )
+{
+    std::wstring_view first( L"1" );
+    WideString second;
+    bool notEqual = first != second;
+    BOOST_TEST( notEqual );
+}
+
+// --run_test=StringTests/StringNotEqualTest33W
+BOOST_AUTO_TEST_CASE( StringNotEqualTest33W )
+{
+    std::wstring_view first;
+    WideString second( L"1" );
+    bool notEqual = first != second;
+    BOOST_TEST( notEqual );
+}
+
+// --run_test=StringTests/StringNotEqualTest34W
+BOOST_AUTO_TEST_CASE( StringNotEqualTest34W )
+{
+    std::wstring_view first( L"12" );
+    WideString second( L"1" );
+    bool notEqual = first != second;
+    BOOST_TEST( notEqual );
+}
+
+// --run_test=StringTests/StringNotEqualTest35W
+BOOST_AUTO_TEST_CASE( StringNotEqualTest35W )
+{
+    std::wstring_view first( L"1" );
+    WideString second( L"12" );
+    bool notEqual = first != second;
+    BOOST_TEST( notEqual );
+}
+
+// --run_test=StringTests/StringNotEqualTest36W
+BOOST_AUTO_TEST_CASE( StringNotEqualTest36W )
+{
+    std::wstring_view first( L"123" );
+    WideString second( L"123" );
+    bool notEqual = first != second;
+    BOOST_TEST( notEqual == false );
+}
+
+// --run_test=StringTests/StringNotEqualTest37W
+BOOST_AUTO_TEST_CASE( StringNotEqualTest37W )
+{
+    WideString first;
+    std::wstring_view second;
+    bool notEqual = first != second;
+    BOOST_TEST( notEqual == false );
+}
+
+// --run_test=StringTests/StringNotEqualTest38W
+BOOST_AUTO_TEST_CASE( StringNotEqualTest38W )
+{
+    WideString first( L"1" );
+    std::wstring_view second;
+    bool notEqual = first != second;
+    BOOST_TEST( notEqual );
+}
+
+// --run_test=StringTests/StringNotEqualTest39W
+BOOST_AUTO_TEST_CASE( StringNotEqualTest39W )
+{
+    WideString first;
+    std::wstring_view second( L"1" );
+    bool notEqual = first != second;
+    BOOST_TEST( notEqual );
+}
+
+// --run_test=StringTests/StringNotEqualTest40W
+BOOST_AUTO_TEST_CASE( StringNotEqualTest40W )
+{
+    WideString first( L"12" );
+    std::wstring_view second( L"1" );
+    bool notEqual = first != second;
+    BOOST_TEST( notEqual );
+}
+
+// --run_test=StringTests/StringNotEqualTest41W
+BOOST_AUTO_TEST_CASE( StringNotEqualTest41W )
+{
+    WideString first( L"1" );
+    std::wstring_view second( L"12" );
+    bool notEqual = first != second;
+    BOOST_TEST( notEqual );
+}
+
+// --run_test=StringTests/StringNotEqualTest42W
+BOOST_AUTO_TEST_CASE( StringNotEqualTest42W )
+{
+    WideString first( L"123" );
+    std::wstring_view second( L"123" );
+    bool notEqual = first != second;
+    BOOST_TEST( notEqual == false );
+}
+
+
+// --run_test=StringTests/StringLessOrEqualTest1W
+BOOST_AUTO_TEST_CASE( StringLessOrEqualTest1W )
+{
+    WideString first;
+    WideString second;
+    bool lessOrEqual = first <= second;
+    BOOST_TEST( lessOrEqual );
+}
+
+// --run_test=StringTests/StringLessOrEqualTest2W
+BOOST_AUTO_TEST_CASE( StringLessOrEqualTest2W )
+{
+    WideString first( L"1" );
+    WideString second;
+    bool lessOrEqual = first <= second;
+    BOOST_TEST( lessOrEqual == false );
+}
+
+// --run_test=StringTests/StringLessOrEqualTest3W
+BOOST_AUTO_TEST_CASE( StringLessOrEqualTest3W )
+{
+    WideString first;
+    WideString second( L"1" );
+    bool lessOrEqual = first <= second;
+    BOOST_TEST( lessOrEqual );
+}
+
+// --run_test=StringTests/StringLessOrEqualTest4W
+BOOST_AUTO_TEST_CASE( StringLessOrEqualTest4W )
+{
+    WideString first( L"12" );
+    WideString second( L"1" );
+    bool lessOrEqual = first <= second;
+    BOOST_TEST( lessOrEqual == false );
+}
+
+// --run_test=StringTests/StringLessOrEqualTest5W
+BOOST_AUTO_TEST_CASE( StringLessOrEqualTest5W )
+{
+    WideString first( L"1" );
+    WideString second( L"12" );
+    bool lessOrEqual = first <= second;
+    BOOST_TEST( lessOrEqual );
+}
+
+// --run_test=StringTests/StringLessOrEqualTest6W
+BOOST_AUTO_TEST_CASE( StringLessOrEqualTest6W )
+{
+    WideString first( L"123" );
+    WideString second( L"123" );
+    bool lessOrEqual = first <= second;
+    BOOST_TEST( lessOrEqual );
+}
+
+
+// --run_test=StringTests/StringLessOrEqualTest7W
+BOOST_AUTO_TEST_CASE( StringLessOrEqualTest7W )
+{
+    const wchar_t* first = nullptr;
+    WideString second;
+    bool lessOrEqual = first <= second;
+    BOOST_TEST( lessOrEqual );
+}
+
+// --run_test=StringTests/StringLessOrEqualTest8W
+BOOST_AUTO_TEST_CASE( StringLessOrEqualTest8W )
+{
+    const wchar_t* first = L"1";
+    WideString second;
+    bool lessOrEqual = first <= second;
+    BOOST_TEST( lessOrEqual == false );
+}
+
+// --run_test=StringTests/StringLessOrEqualTest9W
+BOOST_AUTO_TEST_CASE( StringLessOrEqualTest9W )
+{
+    const wchar_t* first = nullptr;
+    WideString second( L"1" );
+    bool lessOrEqual = first <= second;
+    BOOST_TEST( lessOrEqual );
+}
+
+// --run_test=StringTests/StringLessOrEqualTest10W
+BOOST_AUTO_TEST_CASE( StringLessOrEqualTest10W )
+{
+    const wchar_t* first = L"12";
+    WideString second( L"1" );
+    bool lessOrEqual = first <= second;
+    BOOST_TEST( lessOrEqual == false );
+}
+
+// --run_test=StringTests/StringLessOrEqualTest11W
+BOOST_AUTO_TEST_CASE( StringLessOrEqualTest11W )
+{
+    const wchar_t* first = L"1";
+    WideString second( L"12" );
+    bool lessOrEqual = first <= second;
+    BOOST_TEST( lessOrEqual );
+}
+
+// --run_test=StringTests/StringLessOrEqualTest12W
+BOOST_AUTO_TEST_CASE( StringLessOrEqualTest12W )
+{
+    const wchar_t* first = L"123";
+    WideString second( L"123" );
+    bool lessOrEqual = first <= second;
+    BOOST_TEST( lessOrEqual );
+}
+
+// --run_test=StringTests/StringLessOrEqualTest13W
+BOOST_AUTO_TEST_CASE( StringLessOrEqualTest13W )
+{
+    WideString first;
+    const wchar_t* second = nullptr;
+    bool lessOrEqual = first <= second;
+    BOOST_TEST( lessOrEqual );
+}
+
+// --run_test=StringTests/StringLessOrEqualTest14W
+BOOST_AUTO_TEST_CASE( StringLessOrEqualTest14W )
+{
+    WideString first( L"1" );
+    const wchar_t* second = nullptr;
+    bool lessOrEqual = first <= second;
+    BOOST_TEST( lessOrEqual == false );
+}
+
+// --run_test=StringTests/StringLessOrEqualTest15W
+BOOST_AUTO_TEST_CASE( StringLessOrEqualTest15W )
+{
+    WideString first;
+    const wchar_t* second = L"1";
+    bool lessOrEqual = first <= second;
+    BOOST_TEST( lessOrEqual );
+}
+
+// --run_test=StringTests/StringLessOrEqualTest16W
+BOOST_AUTO_TEST_CASE( StringLessOrEqualTest16W )
+{
+    WideString first( L"12" );
+    const wchar_t* second = L"1";
+    bool lessOrEqual = first <= second;
+    BOOST_TEST( lessOrEqual == false );
+}
+
+// --run_test=StringTests/StringLessOrEqualTest17W
+BOOST_AUTO_TEST_CASE( StringLessOrEqualTest17W )
+{
+    WideString first( L"1" );
+    const wchar_t* second = L"12";
+    bool lessOrEqual = first <= second;
+    BOOST_TEST( lessOrEqual );
+}
+
+// --run_test=StringTests/StringLessOrEqualTest18W
+BOOST_AUTO_TEST_CASE( StringLessOrEqualTest18W )
+{
+    WideString first( L"123" );
+    const wchar_t* second = L"123";
+    bool lessOrEqual = first <= second;
+    BOOST_TEST( lessOrEqual );
+}
+
+
+// --run_test=StringTests/StringLessOrEqualTest19W
+BOOST_AUTO_TEST_CASE( StringLessOrEqualTest19W )
+{
+    std::wstring first;
+    WideString second;
+    bool lessOrEqual = first <= second;
+    BOOST_TEST( lessOrEqual );
+}
+
+// --run_test=StringTests/StringLessOrEqualTest20W
+BOOST_AUTO_TEST_CASE( StringLessOrEqualTest20W )
+{
+    std::wstring first( L"1" );
+    WideString second;
+    bool lessOrEqual = first <= second;
+    BOOST_TEST( lessOrEqual == false );
+}
+
+// --run_test=StringTests/StringLessOrEqualTest21W
+BOOST_AUTO_TEST_CASE( StringLessOrEqualTest21W )
+{
+    std::wstring first;
+    WideString second( L"1" );
+    bool lessOrEqual = first <= second;
+    BOOST_TEST( lessOrEqual );
+}
+
+// --run_test=StringTests/StringLessOrEqualTest22W
+BOOST_AUTO_TEST_CASE( StringLessOrEqualTest22W )
+{
+    std::wstring first( L"12" );
+    WideString second( L"1" );
+    bool lessOrEqual = first <= second;
+    BOOST_TEST( lessOrEqual == false );
+}
+
+// --run_test=StringTests/StringLessOrEqualTest23W
+BOOST_AUTO_TEST_CASE( StringLessOrEqualTest23W )
+{
+    std::wstring first( L"1" );
+    WideString second( L"12" );
+    bool lessOrEqual = first <= second;
+    BOOST_TEST( lessOrEqual );
+}
+
+// --run_test=StringTests/StringLessOrEqualTest24W
+BOOST_AUTO_TEST_CASE( StringLessOrEqualTest24W )
+{
+    std::wstring first( L"123" );
+    WideString second( L"123" );
+    bool lessOrEqual = first <= second;
+    BOOST_TEST( lessOrEqual );
+}
+
+// --run_test=StringTests/StringLessOrEqualTest25W
+BOOST_AUTO_TEST_CASE( StringLessOrEqualTest25W )
+{
+    WideString first;
+    std::wstring second;
+    bool lessOrEqual = first <= second;
+    BOOST_TEST( lessOrEqual );
+}
+
+// --run_test=StringTests/StringLessOrEqualTest26W
+BOOST_AUTO_TEST_CASE( StringLessOrEqualTest26W )
+{
+    WideString first( L"1" );
+    std::wstring second;
+    bool lessOrEqual = first <= second;
+    BOOST_TEST( lessOrEqual == false );
+}
+
+// --run_test=StringTests/StringLessOrEqualTest27W
+BOOST_AUTO_TEST_CASE( StringLessOrEqualTest27W )
+{
+    WideString first;
+    std::wstring second( L"1" );
+    bool lessOrEqual = first <= second;
+    BOOST_TEST( lessOrEqual );
+}
+
+// --run_test=StringTests/StringLessOrEqualTest28W
+BOOST_AUTO_TEST_CASE( StringLessOrEqualTest28W )
+{
+    WideString first( L"12" );
+    std::wstring second( L"1" );
+    bool lessOrEqual = first <= second;
+    BOOST_TEST( lessOrEqual == false );
+}
+
+// --run_test=StringTests/StringLessOrEqualTest29W
+BOOST_AUTO_TEST_CASE( StringLessOrEqualTest29W )
+{
+    WideString first( L"1" );
+    std::wstring second( L"12" );
+    bool lessOrEqual = first <= second;
+    BOOST_TEST( lessOrEqual );
+}
+
+// --run_test=StringTests/StringLessOrEqualTest30W
+BOOST_AUTO_TEST_CASE( StringLessOrEqualTest30W )
+{
+    WideString first( L"123" );
+    std::wstring second( L"123" );
+    bool lessOrEqual = first <= second;
+    BOOST_TEST( lessOrEqual );
+}
+
+// --run_test=StringTests/StringLessOrEqualTest31W
+BOOST_AUTO_TEST_CASE( StringLessOrEqualTest31W )
+{
+    std::wstring_view first;
+    WideString second;
+    bool lessOrEqual = first <= second;
+    BOOST_TEST( lessOrEqual );
+}
+
+// --run_test=StringTests/StringLessOrEqualTest32W
+BOOST_AUTO_TEST_CASE( StringLessOrEqualTest32W )
+{
+    std::wstring_view first( L"1" );
+    WideString second;
+    bool lessOrEqual = first <= second;
+    BOOST_TEST( lessOrEqual == false );
+}
+
+// --run_test=StringTests/StringLessOrEqualTest33W
+BOOST_AUTO_TEST_CASE( StringLessOrEqualTest33W )
+{
+    std::wstring_view first;
+    WideString second( L"1" );
+    bool lessOrEqual = first <= second;
+    BOOST_TEST( lessOrEqual );
+}
+
+// --run_test=StringTests/StringLessOrEqualTest34W
+BOOST_AUTO_TEST_CASE( StringLessOrEqualTest34W )
+{
+    std::wstring_view first( L"12" );
+    WideString second( L"1" );
+    bool lessOrEqual = first <= second;
+    BOOST_TEST( lessOrEqual == false );
+}
+
+// --run_test=StringTests/StringLessOrEqualTest35W
+BOOST_AUTO_TEST_CASE( StringLessOrEqualTest35W )
+{
+    std::wstring_view first( L"1" );
+    WideString second( L"12" );
+    bool lessOrEqual = first <= second;
+    BOOST_TEST( lessOrEqual );
+}
+
+// --run_test=StringTests/StringLessOrEqualTest36W
+BOOST_AUTO_TEST_CASE( StringLessOrEqualTest36W )
+{
+    std::wstring_view first( L"123" );
+    WideString second( L"123" );
+    bool lessOrEqual = first <= second;
+    BOOST_TEST( lessOrEqual );
+}
+
+// --run_test=StringTests/StringLessOrEqualTest37W
+BOOST_AUTO_TEST_CASE( StringLessOrEqualTest37W )
+{
+    WideString first;
+    std::wstring_view second;
+    bool lessOrEqual = first <= second;
+    BOOST_TEST( lessOrEqual );
+}
+
+// --run_test=StringTests/StringLessOrEqualTest38W
+BOOST_AUTO_TEST_CASE( StringLessOrEqualTest38W )
+{
+    WideString first( L"1" );
+    std::wstring_view second;
+    bool lessOrEqual = first <= second;
+    BOOST_TEST( lessOrEqual == false );
+}
+
+// --run_test=StringTests/StringLessOrEqualTest39W
+BOOST_AUTO_TEST_CASE( StringLessOrEqualTest39W )
+{
+    WideString first;
+    std::wstring_view second( L"1" );
+    bool lessOrEqual = first <= second;
+    BOOST_TEST( lessOrEqual );
+}
+
+// --run_test=StringTests/StringLessOrEqualTest40W
+BOOST_AUTO_TEST_CASE( StringLessOrEqualTest40W )
+{
+    WideString first( L"12" );
+    std::wstring_view second( L"1" );
+    bool lessOrEqual = first <= second;
+    BOOST_TEST( lessOrEqual == false );
+}
+
+// --run_test=StringTests/StringLessOrEqualTest41W
+BOOST_AUTO_TEST_CASE( StringLessOrEqualTest41W )
+{
+    WideString first( L"1" );
+    std::wstring_view second( L"12" );
+    bool lessOrEqual = first <= second;
+    BOOST_TEST( lessOrEqual );
+}
+
+// --run_test=StringTests/StringLessOrEqualTest42W
+BOOST_AUTO_TEST_CASE( StringLessOrEqualTest42W )
+{
+    WideString first( L"123" );
+    std::wstring_view second( L"123" );
+    bool lessOrEqual = first <= second;
+    BOOST_TEST( lessOrEqual );
+}
+
+// --run_test=StringTests/StringLessTest1W
+BOOST_AUTO_TEST_CASE( StringLessTest1W )
+{
+    WideString first;
+    WideString second;
+    bool isLess = first < second;
+    BOOST_TEST( isLess == false );
+}
+
+// --run_test=StringTests/StringLessTest2W
+BOOST_AUTO_TEST_CASE( StringLessTest2W )
+{
+    WideString first( L"1" );
+    WideString second;
+    bool isLess = first < second;
+    BOOST_TEST( isLess == false );
+}
+
+// --run_test=StringTests/StringLessTest3W
+BOOST_AUTO_TEST_CASE( StringLessTest3W )
+{
+    WideString first;
+    WideString second( L"1" );
+    bool isLess = first < second;
+    BOOST_TEST( isLess );
+}
+
+// --run_test=StringTests/StringLessTest4W
+BOOST_AUTO_TEST_CASE( StringLessTest4W )
+{
+    WideString first( L"12" );
+    WideString second( L"1" );
+    bool isLess = first < second;
+    BOOST_TEST( isLess == false );
+}
+
+// --run_test=StringTests/StringLessTest5W
+BOOST_AUTO_TEST_CASE( StringLessTest5W )
+{
+    WideString first( L"1" );
+    WideString second( L"12" );
+    bool isLess = first < second;
+    BOOST_TEST( isLess );
+}
+
+// --run_test=StringTests/StringLessTest6W
+BOOST_AUTO_TEST_CASE( StringLessTest6W )
+{
+    WideString first( L"123" );
+    WideString second( L"123" );
+    bool isLess = first < second;
+    BOOST_TEST( isLess == false );
+}
+
+
+// --run_test=StringTests/StringLessTest7W
+BOOST_AUTO_TEST_CASE( StringLessTest7W )
+{
+    const wchar_t* first = nullptr;
+    WideString second;
+    bool isLess = first < second;
+    BOOST_TEST( isLess == false );
+}
+
+// --run_test=StringTests/StringLessTest8W
+BOOST_AUTO_TEST_CASE( StringLessTest8W )
+{
+    const wchar_t* first = L"1";
+    WideString second;
+    bool isLess = first < second;
+    BOOST_TEST( isLess == false );
+}
+
+// --run_test=StringTests/StringLessTest9W
+BOOST_AUTO_TEST_CASE( StringLessTest9W )
+{
+    const wchar_t* first = nullptr;
+    WideString second( L"1" );
+    bool isLess = first < second;
+    BOOST_TEST( isLess );
+}
+
+// --run_test=StringTests/StringLessTest10W
+BOOST_AUTO_TEST_CASE( StringLessTest10W )
+{
+    const wchar_t* first = L"12";
+    WideString second( L"1" );
+    bool isLess = first < second;
+    BOOST_TEST( isLess == false );
+}
+
+// --run_test=StringTests/StringLessTest11W
+BOOST_AUTO_TEST_CASE( StringLessTest11W )
+{
+    const wchar_t* first = L"1";
+    WideString second( L"12" );
+    bool isLess = first < second;
+    BOOST_TEST( isLess );
+}
+
+// --run_test=StringTests/StringLessTest12W
+BOOST_AUTO_TEST_CASE( StringLessTest12W )
+{
+    const wchar_t* first = L"123";
+    WideString second( L"123" );
+    bool isLess = first < second;
+    BOOST_TEST( isLess == false );
+}
+
+// --run_test=StringTests/StringLessTest13W
+BOOST_AUTO_TEST_CASE( StringLessTest13W )
+{
+    WideString first;
+    const wchar_t* second = nullptr;
+    bool isLess = first < second;
+    BOOST_TEST( isLess == false );
+}
+
+// --run_test=StringTests/StringLessTest14W
+BOOST_AUTO_TEST_CASE( StringLessTest14W )
+{
+    WideString first( L"1" );
+    const wchar_t* second = nullptr;
+    bool isLess = first < second;
+    BOOST_TEST( isLess == false );
+}
+
+// --run_test=StringTests/StringLessTest15W
+BOOST_AUTO_TEST_CASE( StringLessTest15W )
+{
+    WideString first;
+    const wchar_t* second = L"1";
+    bool isLess = first < second;
+    BOOST_TEST( isLess );
+}
+
+// --run_test=StringTests/StringLessTest16W
+BOOST_AUTO_TEST_CASE( StringLessTest16W )
+{
+    WideString first( L"12" );
+    const wchar_t* second = L"1";
+    bool isLess = first < second;
+    BOOST_TEST( isLess == false );
+}
+
+// --run_test=StringTests/StringLessTest17W
+BOOST_AUTO_TEST_CASE( StringLessTest17W )
+{
+    WideString first( L"1" );
+    const wchar_t* second = L"12";
+    bool isLess = first < second;
+    BOOST_TEST( isLess );
+}
+
+// --run_test=StringTests/StringLessTest18W
+BOOST_AUTO_TEST_CASE( StringLessTest18W )
+{
+    WideString first( L"123" );
+    const wchar_t* second = L"123";
+    bool isLess = first < second;
+    BOOST_TEST( isLess == false );
+}
+
+
+// --run_test=StringTests/StringLessTest19W
+BOOST_AUTO_TEST_CASE( StringLessTest19W )
+{
+    std::wstring first;
+    WideString second;
+    bool isLess = first < second;
+    BOOST_TEST( isLess == false );
+}
+
+// --run_test=StringTests/StringLessTest20W
+BOOST_AUTO_TEST_CASE( StringLessTest20W )
+{
+    std::wstring first( L"1" );
+    WideString second;
+    bool isLess = first < second;
+    BOOST_TEST( isLess == false );
+}
+
+// --run_test=StringTests/StringLessTest21W
+BOOST_AUTO_TEST_CASE( StringLessTest21W )
+{
+    std::wstring first;
+    WideString second( L"1" );
+    bool isLess = first < second;
+    BOOST_TEST( isLess );
+}
+
+// --run_test=StringTests/StringLessTest22W
+BOOST_AUTO_TEST_CASE( StringLessTest22W )
+{
+    std::wstring first( L"12" );
+    WideString second( L"1" );
+    bool isLess = first < second;
+    BOOST_TEST( isLess == false );
+}
+
+// --run_test=StringTests/StringLessTest23W
+BOOST_AUTO_TEST_CASE( StringLessTest23W )
+{
+    std::wstring first( L"1" );
+    WideString second( L"12" );
+    bool isLess = first < second;
+    BOOST_TEST( isLess );
+}
+
+// --run_test=StringTests/StringLessTest24W
+BOOST_AUTO_TEST_CASE( StringLessTest24W )
+{
+    std::wstring first( L"123" );
+    WideString second( L"123" );
+    bool isLess = first < second;
+    BOOST_TEST( isLess == false );
+}
+
+// --run_test=StringTests/StringLessTest25W
+BOOST_AUTO_TEST_CASE( StringLessTest25W )
+{
+    WideString first;
+    std::wstring second;
+    bool isLess = first < second;
+    BOOST_TEST( isLess == false );
+}
+
+// --run_test=StringTests/StringLessTest26W
+BOOST_AUTO_TEST_CASE( StringLessTest26W )
+{
+    WideString first( L"1" );
+    std::wstring second;
+    bool isLess = first < second;
+    BOOST_TEST( isLess == false );
+}
+
+// --run_test=StringTests/StringLessTest27W
+BOOST_AUTO_TEST_CASE( StringLessTest27W )
+{
+    WideString first;
+    std::wstring second( L"1" );
+    bool isLess = first < second;
+    BOOST_TEST( isLess );
+}
+
+// --run_test=StringTests/StringLessTest28W
+BOOST_AUTO_TEST_CASE( StringLessTest28W )
+{
+    WideString first( L"12" );
+    std::wstring second( L"1" );
+    bool isLess = first < second;
+    BOOST_TEST( isLess == false );
+}
+
+// --run_test=StringTests/StringLessTest29W
+BOOST_AUTO_TEST_CASE( StringLessTest29W )
+{
+    WideString first( L"1" );
+    std::wstring second( L"12" );
+    bool isLess = first < second;
+    BOOST_TEST( isLess );
+}
+
+// --run_test=StringTests/StringLessTest30W
+BOOST_AUTO_TEST_CASE( StringLessTest30W )
+{
+    WideString first( L"123" );
+    std::wstring second( L"123" );
+    bool isLess = first < second;
+    BOOST_TEST( isLess == false );
+}
+
+// --run_test=StringTests/StringLessTest31W
+BOOST_AUTO_TEST_CASE( StringLessTest31W )
+{
+    std::wstring_view first;
+    WideString second;
+    bool isLess = first < second;
+    BOOST_TEST( isLess == false );
+}
+
+// --run_test=StringTests/StringLessTest32W
+BOOST_AUTO_TEST_CASE( StringLessTest32W )
+{
+    std::wstring_view first( L"1" );
+    WideString second;
+    bool isLess = first < second;
+    BOOST_TEST( isLess == false );
+}
+
+// --run_test=StringTests/StringLessTest33W
+BOOST_AUTO_TEST_CASE( StringLessTest33W )
+{
+    std::wstring_view first;
+    WideString second( L"1" );
+    bool isLess = first < second;
+    BOOST_TEST( isLess );
+}
+
+// --run_test=StringTests/StringLessTest34W
+BOOST_AUTO_TEST_CASE( StringLessTest34W )
+{
+    std::wstring_view first( L"12" );
+    WideString second( L"1" );
+    bool isLess = first < second;
+    BOOST_TEST( isLess == false );
+}
+
+// --run_test=StringTests/StringLessTest35W
+BOOST_AUTO_TEST_CASE( StringLessTest35W )
+{
+    std::wstring_view first( L"1" );
+    WideString second( L"12" );
+    bool isLess = first < second;
+    BOOST_TEST( isLess );
+}
+
+// --run_test=StringTests/StringLessTest36W
+BOOST_AUTO_TEST_CASE( StringLessTest36W )
+{
+    std::wstring_view first( L"123" );
+    WideString second( L"123" );
+    bool isLess = first < second;
+    BOOST_TEST( isLess == false );
+}
+
+// --run_test=StringTests/StringLessTest37W
+BOOST_AUTO_TEST_CASE( StringLessTest37W )
+{
+    WideString first;
+    std::wstring_view second;
+    bool isLess = first < second;
+    BOOST_TEST( isLess == false );
+}
+
+// --run_test=StringTests/StringLessTest38W
+BOOST_AUTO_TEST_CASE( StringLessTest38W )
+{
+    WideString first( L"1" );
+    std::wstring_view second;
+    bool isLess = first < second;
+    BOOST_TEST( isLess == false );
+}
+
+// --run_test=StringTests/StringLessTest39W
+BOOST_AUTO_TEST_CASE( StringLessTest39W )
+{
+    WideString first;
+    std::wstring_view second( L"1" );
+    bool isLess = first < second;
+    BOOST_TEST( isLess );
+}
+
+// --run_test=StringTests/StringLessTest40W
+BOOST_AUTO_TEST_CASE( StringLessTest40W )
+{
+    WideString first( L"12" );
+    std::wstring_view second( L"1" );
+    bool isLess = first < second;
+    BOOST_TEST( isLess == false );
+}
+
+// --run_test=StringTests/StringLessTest41W
+BOOST_AUTO_TEST_CASE( StringLessTest41W )
+{
+    WideString first( L"1" );
+    std::wstring_view second( L"12" );
+    bool isLess = first < second;
+    BOOST_TEST( isLess );
+}
+
+// --run_test=StringTests/StringLessTest42W
+BOOST_AUTO_TEST_CASE( StringLessTest42W )
+{
+    WideString first( L"123" );
+    std::wstring_view second( L"123" );
+    bool isLess = first < second;
+    BOOST_TEST( isLess == false );
+}
+
+// --run_test=StringTests/StringGreaterOrEqualTest1W
+BOOST_AUTO_TEST_CASE( StringGreaterOrEqualTest1W )
+{
+    WideString first;
+    WideString second;
+    bool greaterOrEqual = first >= second;
+    BOOST_TEST( greaterOrEqual );
+}
+
+// --run_test=StringTests/StringGreaterOrEqualTest2W
+BOOST_AUTO_TEST_CASE( StringGreaterOrEqualTest2W )
+{
+    WideString first( L"1" );
+    WideString second;
+    bool greaterOrEqual = first >= second;
+    BOOST_TEST( greaterOrEqual );
+}
+
+// --run_test=StringTests/StringGreaterOrEqualTest3W
+BOOST_AUTO_TEST_CASE( StringGreaterOrEqualTest3W )
+{
+    WideString first;
+    WideString second( L"1" );
+    bool greaterOrEqual = first >= second;
+    BOOST_TEST( greaterOrEqual == false );
+}
+
+// --run_test=StringTests/StringGreaterOrEqualTest4W
+BOOST_AUTO_TEST_CASE( StringGreaterOrEqualTest4W )
+{
+    WideString first( L"12" );
+    WideString second( L"1" );
+    bool greaterOrEqual = first >= second;
+    BOOST_TEST( greaterOrEqual );
+}
+
+// --run_test=StringTests/StringGreaterOrEqualTest5W
+BOOST_AUTO_TEST_CASE( StringGreaterOrEqualTest5W )
+{
+    WideString first( L"1" );
+    WideString second( L"12" );
+    bool greaterOrEqual = first >= second;
+    BOOST_TEST( greaterOrEqual == false );
+}
+
+// --run_test=StringTests/StringGreaterOrEqualTest6W
+BOOST_AUTO_TEST_CASE( StringGreaterOrEqualTest6W )
+{
+    WideString first( L"123" );
+    WideString second( L"123" );
+    bool greaterOrEqual = first >= second;
+    BOOST_TEST( greaterOrEqual );
+}
+
+
+// --run_test=StringTests/StringGreaterOrEqualTest7W
+BOOST_AUTO_TEST_CASE( StringGreaterOrEqualTest7W )
+{
+    const wchar_t* first = nullptr;
+    WideString second;
+    bool greaterOrEqual = first >= second;
+    BOOST_TEST( greaterOrEqual );
+}
+
+// --run_test=StringTests/StringGreaterOrEqualTest8W
+BOOST_AUTO_TEST_CASE( StringGreaterOrEqualTest8W )
+{
+    const wchar_t* first = L"1";
+    WideString second;
+    bool greaterOrEqual = first >= second;
+    BOOST_TEST( greaterOrEqual );
+}
+
+// --run_test=StringTests/StringGreaterOrEqualTest9W
+BOOST_AUTO_TEST_CASE( StringGreaterOrEqualTest9W )
+{
+    const wchar_t* first = nullptr;
+    WideString second( L"1" );
+    bool greaterOrEqual = first >= second;
+    BOOST_TEST( greaterOrEqual == false );
+}
+
+// --run_test=StringTests/StringGreaterOrEqualTest10W
+BOOST_AUTO_TEST_CASE( StringGreaterOrEqualTest10W )
+{
+    const wchar_t* first = L"12";
+    WideString second( L"1" );
+    bool greaterOrEqual = first >= second;
+    BOOST_TEST( greaterOrEqual );
+}
+
+// --run_test=StringTests/StringGreaterOrEqualTest11W
+BOOST_AUTO_TEST_CASE( StringGreaterOrEqualTest11W )
+{
+    const wchar_t* first = L"1";
+    WideString second( L"12" );
+    bool greaterOrEqual = first >= second;
+    BOOST_TEST( greaterOrEqual == false );
+}
+
+// --run_test=StringTests/StringGreaterOrEqualTest12W
+BOOST_AUTO_TEST_CASE( StringGreaterOrEqualTest12W )
+{
+    const wchar_t* first = L"123";
+    WideString second( L"123" );
+    bool greaterOrEqual = first >= second;
+    BOOST_TEST( greaterOrEqual );
+}
+
+// --run_test=StringTests/StringGreaterOrEqualTest13W
+BOOST_AUTO_TEST_CASE( StringGreaterOrEqualTest13W )
+{
+    WideString first;
+    const wchar_t* second = nullptr;
+    bool greaterOrEqual = first >= second;
+    BOOST_TEST( greaterOrEqual );
+}
+
+// --run_test=StringTests/StringGreaterOrEqualTest14W
+BOOST_AUTO_TEST_CASE( StringGreaterOrEqualTest14W )
+{
+    WideString first( L"1" );
+    const wchar_t* second = nullptr;
+    bool greaterOrEqual = first >= second;
+    BOOST_TEST( greaterOrEqual  );
+}
+
+// --run_test=StringTests/StringGreaterOrEqualTest15W
+BOOST_AUTO_TEST_CASE( StringGreaterOrEqualTest15W )
+{
+    WideString first;
+    const wchar_t* second = L"1";
+    bool greaterOrEqual = first >= second;
+    BOOST_TEST( greaterOrEqual == false );
+}
+
+// --run_test=StringTests/StringGreaterOrEqualTest16W
+BOOST_AUTO_TEST_CASE( StringGreaterOrEqualTest16W )
+{
+    WideString first( L"12" );
+    const wchar_t* second = L"1";
+    bool greaterOrEqual = first >= second;
+    BOOST_TEST( greaterOrEqual );
+}
+
+// --run_test=StringTests/StringGreaterOrEqualTest17W
+BOOST_AUTO_TEST_CASE( StringGreaterOrEqualTest17W )
+{
+    WideString first( L"1" );
+    const wchar_t* second = L"12";
+    bool greaterOrEqual = first >= second;
+    BOOST_TEST( greaterOrEqual == false );
+}
+
+// --run_test=StringTests/StringGreaterOrEqualTest18W
+BOOST_AUTO_TEST_CASE( StringGreaterOrEqualTest18W )
+{
+    WideString first( L"123" );
+    const wchar_t* second = L"123";
+    bool greaterOrEqual = first >= second;
+    BOOST_TEST( greaterOrEqual );
+}
+
+
+// --run_test=StringTests/StringGreaterOrEqualTest19W
+BOOST_AUTO_TEST_CASE( StringGreaterOrEqualTest19W )
+{
+    std::wstring first;
+    WideString second;
+    bool greaterOrEqual = first >= second;
+    BOOST_TEST( greaterOrEqual );
+}
+
+// --run_test=StringTests/StringGreaterOrEqualTest20W
+BOOST_AUTO_TEST_CASE( StringGreaterOrEqualTest20W )
+{
+    std::wstring first( L"1" );
+    WideString second;
+    bool greaterOrEqual = first >= second;
+    BOOST_TEST( greaterOrEqual );
+}
+
+// --run_test=StringTests/StringGreaterOrEqualTest21W
+BOOST_AUTO_TEST_CASE( StringGreaterOrEqualTest21W )
+{
+    std::wstring first;
+    WideString second( L"1" );
+    bool greaterOrEqual = first >= second;
+    BOOST_TEST( greaterOrEqual == false );
+}
+
+// --run_test=StringTests/StringGreaterOrEqualTest22W
+BOOST_AUTO_TEST_CASE( StringGreaterOrEqualTest22W )
+{
+    std::wstring first( L"12" );
+    WideString second( L"1" );
+    bool greaterOrEqual = first >= second;
+    BOOST_TEST( greaterOrEqual );
+}
+
+// --run_test=StringTests/StringGreaterOrEqualTest23W
+BOOST_AUTO_TEST_CASE( StringGreaterOrEqualTest23W )
+{
+    std::wstring first( L"1" );
+    WideString second( L"12" );
+    bool greaterOrEqual = first >= second;
+    BOOST_TEST( greaterOrEqual == false );
+}
+
+// --run_test=StringTests/StringGreaterOrEqualTest24W
+BOOST_AUTO_TEST_CASE( StringGreaterOrEqualTest24W )
+{
+    std::wstring first( L"123" );
+    WideString second( L"123" );
+    bool greaterOrEqual = first >= second;
+    BOOST_TEST( greaterOrEqual );
+}
+
+// --run_test=StringTests/StringGreaterOrEqualTest25W
+BOOST_AUTO_TEST_CASE( StringGreaterOrEqualTest25W )
+{
+    WideString first;
+    std::wstring second;
+    bool greaterOrEqual = first >= second;
+    BOOST_TEST( greaterOrEqual );
+}
+
+// --run_test=StringTests/StringGreaterOrEqualTest26W
+BOOST_AUTO_TEST_CASE( StringGreaterOrEqualTest26W )
+{
+    WideString first( L"1" );
+    std::wstring second;
+    bool greaterOrEqual = first >= second;
+    BOOST_TEST( greaterOrEqual );
+}
+
+// --run_test=StringTests/StringGreaterOrEqualTest27W
+BOOST_AUTO_TEST_CASE( StringGreaterOrEqualTest27W )
+{
+    WideString first;
+    std::wstring second( L"1" );
+    bool greaterOrEqual = first >= second;
+    BOOST_TEST( greaterOrEqual == false );
+}
+
+// --run_test=StringTests/StringGreaterOrEqualTest28W
+BOOST_AUTO_TEST_CASE( StringGreaterOrEqualTest28W )
+{
+    WideString first( L"12" );
+    std::wstring second( L"1" );
+    bool greaterOrEqual = first >= second;
+    BOOST_TEST( greaterOrEqual );
+}
+
+// --run_test=StringTests/StringGreaterOrEqualTest29W
+BOOST_AUTO_TEST_CASE( StringGreaterOrEqualTest29W )
+{
+    WideString first( L"1" );
+    std::wstring second( L"12" );
+    bool greaterOrEqual = first >= second;
+    BOOST_TEST( greaterOrEqual == false );
+}
+
+// --run_test=StringTests/StringGreaterOrEqualTest30W
+BOOST_AUTO_TEST_CASE( StringGreaterOrEqualTest30W )
+{
+    WideString first( L"123" );
+    std::wstring second( L"123" );
+    bool greaterOrEqual = first >= second;
+    BOOST_TEST( greaterOrEqual );
+}
+
+// --run_test=StringTests/StringGreaterOrEqualTest31W
+BOOST_AUTO_TEST_CASE( StringGreaterOrEqualTest31W )
+{
+    std::wstring_view first;
+    WideString second;
+    bool greaterOrEqual = first >= second;
+    BOOST_TEST( greaterOrEqual );
+}
+
+// --run_test=StringTests/StringGreaterOrEqualTest32W
+BOOST_AUTO_TEST_CASE( StringGreaterOrEqualTest32W )
+{
+    std::wstring_view first( L"1" );
+    WideString second;
+    bool greaterOrEqual = first >= second;
+    BOOST_TEST( greaterOrEqual );
+}
+
+// --run_test=StringTests/StringGreaterOrEqualTest33W
+BOOST_AUTO_TEST_CASE( StringGreaterOrEqualTest33W )
+{
+    std::wstring_view first;
+    WideString second( L"1" );
+    bool greaterOrEqual = first >= second;
+    BOOST_TEST( greaterOrEqual == false );
+}
+
+// --run_test=StringTests/StringGreaterOrEqualTest34W
+BOOST_AUTO_TEST_CASE( StringGreaterOrEqualTest34W )
+{
+    std::wstring_view first( L"12" );
+    WideString second( L"1" );
+    bool greaterOrEqual = first >= second;
+    BOOST_TEST( greaterOrEqual );
+}
+
+// --run_test=StringTests/StringGreaterOrEqualTest35W
+BOOST_AUTO_TEST_CASE( StringGreaterOrEqualTest35W )
+{
+    std::wstring_view first( L"1" );
+    WideString second( L"12" );
+    bool greaterOrEqual = first >= second;
+    BOOST_TEST( greaterOrEqual == false );
+}
+
+// --run_test=StringTests/StringGreaterOrEqualTest36W
+BOOST_AUTO_TEST_CASE( StringGreaterOrEqualTest36W )
+{
+    std::wstring_view first( L"123" );
+    WideString second( L"123" );
+    bool greaterOrEqual = first >= second;
+    BOOST_TEST( greaterOrEqual );
+}
+
+// --run_test=StringTests/StringGreaterOrEqualTest37W
+BOOST_AUTO_TEST_CASE( StringGreaterOrEqualTest37W )
+{
+    WideString first;
+    std::wstring_view second;
+    bool greaterOrEqual = first >= second;
+    BOOST_TEST( greaterOrEqual );
+}
+
+// --run_test=StringTests/StringGreaterOrEqualTest38W
+BOOST_AUTO_TEST_CASE( StringGreaterOrEqualTest38W )
+{
+    WideString first( L"1" );
+    std::wstring_view second;
+    bool greaterOrEqual = first >= second;
+    BOOST_TEST( greaterOrEqual );
+}
+
+// --run_test=StringTests/StringGreaterOrEqualTest39W
+BOOST_AUTO_TEST_CASE( StringGreaterOrEqualTest39W )
+{
+    WideString first;
+    std::wstring_view second( L"1" );
+    bool greaterOrEqual = first >= second;
+    BOOST_TEST( greaterOrEqual == false );
+}
+
+// --run_test=StringTests/StringGreaterOrEqualTest40W
+BOOST_AUTO_TEST_CASE( StringGreaterOrEqualTest40W )
+{
+    WideString first( L"12" );
+    std::wstring_view second( L"1" );
+    bool greaterOrEqual = first >= second;
+    BOOST_TEST( greaterOrEqual );
+}
+
+// --run_test=StringTests/StringGreaterOrEqualTest41W
+BOOST_AUTO_TEST_CASE( StringGreaterOrEqualTest41W )
+{
+    WideString first( L"1" );
+    std::wstring_view second( L"12" );
+    bool greaterOrEqual = first >= second;
+    BOOST_TEST( greaterOrEqual == false );
+}
+
+// --run_test=StringTests/StringGreaterOrEqualTest42W
+BOOST_AUTO_TEST_CASE( StringGreaterOrEqualTest42W )
+{
+    WideString first( L"123" );
+    std::wstring_view second( L"123" );
+    bool greaterOrEqual = first >= second;
+    BOOST_TEST( greaterOrEqual );
+}
+
+// --run_test=StringTests/StringGreaterTest1W
+BOOST_AUTO_TEST_CASE( StringGreaterTest1W )
+{
+    WideString first;
+    WideString second;
+    bool isGreater = first > second;
+    BOOST_TEST( isGreater == false );
+}
+
+// --run_test=StringTests/StringGreaterTest2W
+BOOST_AUTO_TEST_CASE( StringGreaterTest2W )
+{
+    WideString first( L"1" );
+    WideString second;
+    bool isGreater = first > second;
+    BOOST_TEST( isGreater );
+}
+
+// --run_test=StringTests/StringGreaterTest3W
+BOOST_AUTO_TEST_CASE( StringGreaterTest3W )
+{
+    WideString first;
+    WideString second( L"1" );
+    bool isGreater = first > second;
+    BOOST_TEST( isGreater == false );
+}
+
+// --run_test=StringTests/StringGreaterTest4W
+BOOST_AUTO_TEST_CASE( StringGreaterTest4W )
+{
+    WideString first( L"12" );
+    WideString second( L"1" );
+    bool isGreater = first > second;
+    BOOST_TEST( isGreater );
+}
+
+// --run_test=StringTests/StringGreaterTest5W
+BOOST_AUTO_TEST_CASE( StringGreaterTest5W )
+{
+    WideString first( L"1" );
+    WideString second( L"12" );
+    bool isGreater = first > second;
+    BOOST_TEST( isGreater == false );
+}
+
+// --run_test=StringTests/StringGreaterTest6W
+BOOST_AUTO_TEST_CASE( StringGreaterTest6W )
+{
+    WideString first( L"123" );
+    WideString second( L"123" );
+    bool isGreater = first > second;
+    BOOST_TEST( isGreater == false );
+}
+
+
+// --run_test=StringTests/StringGreaterTest7W
+BOOST_AUTO_TEST_CASE( StringGreaterTest7W )
+{
+    const wchar_t* first = nullptr;
+    WideString second;
+    bool isGreater = first > second;
+    BOOST_TEST( isGreater == false );
+}
+
+// --run_test=StringTests/StringGreaterTest8W
+BOOST_AUTO_TEST_CASE( StringGreaterTest8W )
+{
+    const wchar_t* first = L"1";
+    WideString second;
+    bool isGreater = first > second;
+    BOOST_TEST( isGreater );
+}
+
+// --run_test=StringTests/StringGreaterTest9W
+BOOST_AUTO_TEST_CASE( StringGreaterTest9W )
+{
+    const wchar_t* first = nullptr;
+    WideString second( L"1" );
+    bool isGreater = first > second;
+    BOOST_TEST( isGreater == false );
+}
+
+// --run_test=StringTests/StringGreaterTest10W
+BOOST_AUTO_TEST_CASE( StringGreaterTest10W )
+{
+    const wchar_t* first = L"12";
+    WideString second( L"1" );
+    bool isGreater = first > second;
+    BOOST_TEST( isGreater );
+}
+
+// --run_test=StringTests/StringGreaterTest11W
+BOOST_AUTO_TEST_CASE( StringGreaterTest11W )
+{
+    const wchar_t* first = L"1";
+    WideString second( L"12" );
+    bool isGreater = first > second;
+    BOOST_TEST( isGreater == false );
+}
+
+// --run_test=StringTests/StringGreaterTest12W
+BOOST_AUTO_TEST_CASE( StringGreaterTest12W )
+{
+    const wchar_t* first = L"123";
+    WideString second( L"123" );
+    bool isGreater = first > second;
+    BOOST_TEST( isGreater == false );
+}
+
+// --run_test=StringTests/StringGreaterTest13W
+BOOST_AUTO_TEST_CASE( StringGreaterTest13W )
+{
+    WideString first;
+    const wchar_t* second = nullptr;
+    bool isGreater = first > second;
+    BOOST_TEST( isGreater == false );
+}
+
+// --run_test=StringTests/StringGreaterTest14W
+BOOST_AUTO_TEST_CASE( StringGreaterTest14W )
+{
+    WideString first( L"1" );
+    const wchar_t* second = nullptr;
+    bool isGreater = first > second;
+    BOOST_TEST( isGreater );
+}
+
+// --run_test=StringTests/StringGreaterTest15W
+BOOST_AUTO_TEST_CASE( StringGreaterTest15W )
+{
+    WideString first;
+    const wchar_t* second = L"1";
+    bool isGreater = first > second;
+    BOOST_TEST( isGreater == false );
+}
+
+// --run_test=StringTests/StringGreaterTest16W
+BOOST_AUTO_TEST_CASE( StringGreaterTest16W )
+{
+    WideString first( L"12" );
+    const wchar_t* second = L"1";
+    bool isGreater = first > second;
+    BOOST_TEST( isGreater );
+}
+
+// --run_test=StringTests/StringGreaterTest17W
+BOOST_AUTO_TEST_CASE( StringGreaterTest17W )
+{
+    WideString first( L"1" );
+    const wchar_t* second = L"12";
+    bool isGreater = first > second;
+    BOOST_TEST( isGreater == false );
+}
+
+// --run_test=StringTests/StringGreaterTest18W
+BOOST_AUTO_TEST_CASE( StringGreaterTest18W )
+{
+    WideString first( L"123" );
+    const wchar_t* second = L"123";
+    bool isGreater = first > second;
+    BOOST_TEST( isGreater == false );
+}
+
+
+// --run_test=StringTests/StringGreaterTest19W
+BOOST_AUTO_TEST_CASE( StringGreaterTest19W )
+{
+    std::wstring first;
+    WideString second;
+    bool isGreater = first > second;
+    BOOST_TEST( isGreater == false );
+}
+
+// --run_test=StringTests/StringGreaterTest20W
+BOOST_AUTO_TEST_CASE( StringGreaterTest20W )
+{
+    std::wstring first( L"1" );
+    WideString second;
+    bool isGreater = first > second;
+    BOOST_TEST( isGreater );
+}
+
+// --run_test=StringTests/StringGreaterTest21W
+BOOST_AUTO_TEST_CASE( StringGreaterTest21W )
+{
+    std::wstring first;
+    WideString second( L"1" );
+    bool isGreater = first > second;
+    BOOST_TEST( isGreater == false );
+}
+
+// --run_test=StringTests/StringGreaterTest22W
+BOOST_AUTO_TEST_CASE( StringGreaterTest22W )
+{
+    std::wstring first( L"12" );
+    WideString second( L"1" );
+    bool isGreater = first > second;
+    BOOST_TEST( isGreater );
+}
+
+// --run_test=StringTests/StringGreaterTest23W
+BOOST_AUTO_TEST_CASE( StringGreaterTest23W )
+{
+    std::wstring first( L"1" );
+    WideString second( L"12" );
+    bool isGreater = first > second;
+    BOOST_TEST( isGreater == false );
+}
+
+// --run_test=StringTests/StringGreaterTest24W
+BOOST_AUTO_TEST_CASE( StringGreaterTest24W )
+{
+    std::wstring first( L"123" );
+    WideString second( L"123" );
+    bool isGreater = first > second;
+    BOOST_TEST( isGreater == false );
+}
+
+// --run_test=StringTests/StringGreaterTest25W
+BOOST_AUTO_TEST_CASE( StringGreaterTest25W )
+{
+    WideString first;
+    std::wstring second;
+    bool isGreater = first > second;
+    BOOST_TEST( isGreater == false );
+}
+
+// --run_test=StringTests/StringGreaterTest26W
+BOOST_AUTO_TEST_CASE( StringGreaterTest26W )
+{
+    WideString first( L"1" );
+    std::wstring second;
+    bool isGreater = first > second;
+    BOOST_TEST( isGreater );
+}
+
+// --run_test=StringTests/StringGreaterTest27W
+BOOST_AUTO_TEST_CASE( StringGreaterTest27W )
+{
+    WideString first;
+    std::wstring second( L"1" );
+    bool isGreater = first > second;
+    BOOST_TEST( isGreater == false );
+}
+
+// --run_test=StringTests/StringGreaterTest28W
+BOOST_AUTO_TEST_CASE( StringGreaterTest28W )
+{
+    WideString first( L"12" );
+    std::wstring second( L"1" );
+    bool isGreater = first > second;
+    BOOST_TEST( isGreater );
+}
+
+// --run_test=StringTests/StringGreaterTest29W
+BOOST_AUTO_TEST_CASE( StringGreaterTest29W )
+{
+    WideString first( L"1" );
+    std::wstring second( L"12" );
+    bool isGreater = first > second;
+    BOOST_TEST( isGreater == false );
+}
+
+// --run_test=StringTests/StringGreaterTest30W
+BOOST_AUTO_TEST_CASE( StringGreaterTest30W )
+{
+    WideString first( L"123" );
+    std::wstring second( L"123" );
+    bool isGreater = first > second;
+    BOOST_TEST( isGreater == false );
+}
+
+// --run_test=StringTests/StringGreaterTest31W
+BOOST_AUTO_TEST_CASE( StringGreaterTest31W )
+{
+    std::wstring_view first;
+    WideString second;
+    bool isGreater = first > second;
+    BOOST_TEST( isGreater == false );
+}
+
+// --run_test=StringTests/StringGreaterTest32W
+BOOST_AUTO_TEST_CASE( StringGreaterTest32W )
+{
+    std::wstring_view first( L"1" );
+    WideString second;
+    bool isGreater = first > second;
+    BOOST_TEST( isGreater );
+}
+
+// --run_test=StringTests/StringGreaterTest33W
+BOOST_AUTO_TEST_CASE( StringGreaterTest33W )
+{
+    std::wstring_view first;
+    WideString second( L"1" );
+    bool isGreater = first > second;
+    BOOST_TEST( isGreater == false );
+}
+
+// --run_test=StringTests/StringGreaterTest34W
+BOOST_AUTO_TEST_CASE( StringGreaterTest34W )
+{
+    std::wstring_view first( L"12" );
+    WideString second( L"1" );
+    bool isGreater = first > second;
+    BOOST_TEST( isGreater );
+}
+
+// --run_test=StringTests/StringGreaterTest35W
+BOOST_AUTO_TEST_CASE( StringGreaterTest35W )
+{
+    std::wstring_view first( L"1" );
+    WideString second( L"12" );
+    bool isGreater = first > second;
+    BOOST_TEST( isGreater == false );
+}
+
+// --run_test=StringTests/StringGreaterTest36W
+BOOST_AUTO_TEST_CASE( StringGreaterTest36W )
+{
+    std::wstring_view first( L"123" );
+    WideString second( L"123" );
+    bool isGreater = first > second;
+    BOOST_TEST( isGreater == false );
+}
+
+// --run_test=StringTests/StringGreaterTest37W
+BOOST_AUTO_TEST_CASE( StringGreaterTest37W )
+{
+    WideString first;
+    std::wstring_view second;
+    bool isGreater = first > second;
+    BOOST_TEST( isGreater == false );
+}
+
+// --run_test=StringTests/StringGreaterTest38W
+BOOST_AUTO_TEST_CASE( StringGreaterTest38W )
+{
+    WideString first( L"1" );
+    std::wstring_view second;
+    bool isGreater = first > second;
+    BOOST_TEST( isGreater );
+}
+
+// --run_test=StringTests/StringGreaterTest39W
+BOOST_AUTO_TEST_CASE( StringGreaterTest39W )
+{
+    WideString first;
+    std::wstring_view second( L"1" );
+    bool isGreater = first > second;
+    BOOST_TEST( isGreater == false );
+}
+
+// --run_test=StringTests/StringGreaterTest40W
+BOOST_AUTO_TEST_CASE( StringGreaterTest40W )
+{
+    WideString first( L"12" );
+    std::wstring_view second( L"1" );
+    bool isGreater = first > second;
+    BOOST_TEST( isGreater );
+}
+
+// --run_test=StringTests/StringGreaterTest41W
+BOOST_AUTO_TEST_CASE( StringGreaterTest41W )
+{
+    WideString first( L"1" );
+    std::wstring_view second( L"12" );
+    bool isGreater = first > second;
+    BOOST_TEST( isGreater == false );
+}
+
+// --run_test=StringTests/StringGreaterTest42W
+BOOST_AUTO_TEST_CASE( StringGreaterTest42W )
+{
+    WideString first( L"123" );
+    std::wstring_view second( L"123" );
+    bool isGreater = first > second;
+    BOOST_TEST( isGreater == false );
+}
+
+
 
 // --run_test=StringTests/StringFromTest1W
 BOOST_AUTO_TEST_CASE( StringFromTest1W )

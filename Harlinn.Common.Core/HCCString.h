@@ -248,6 +248,51 @@ namespace Harlinn::Common::Core
             wmemset( dest, value, length );
         }
 
+
+        inline int MemCmp( const char* first, const char* second, size_t length )
+        {
+            return memcmp( first, second, length );
+        }
+
+        inline int MemCmp( const wchar_t* first, const wchar_t* second, size_t length )
+        {
+            return wmemcmp( first, second, length );
+        }
+
+
+        inline bool AreEqual( const char* first, int firstLength, const char* second, int secondLength )
+        {
+            if ( firstLength == secondLength )
+            {
+                if ( first != second )
+                {
+                    return memcmp( first, second, firstLength ) == 0;
+                }
+                else
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        inline bool AreEqual( const wchar_t* first, int firstLength, const wchar_t* second, int secondLength )
+        {
+            if ( firstLength == secondLength )
+            {
+                if ( first != second )
+                {
+                    return wmemcmp( first, second, firstLength ) == 0;
+                }
+                else
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+
         inline int Compare( DWORD compareFlags, const char* first, int firstLength, const char* second, int secondLength )
         {
             if ( first && second )
@@ -1599,8 +1644,28 @@ namespace Harlinn::Common::Core
             Assign( string, size );
         }
 
+        template<SimpleSpanLike SpanT>
+            requires std::is_same_v<std::remove_cvref_t<typename SpanT::value_type>, CharType>
+        void Assign( const SpanT& string )
+        {
+            Assign( string.data( ), string.size( ) );
+        }
+
+        template<SimpleSpanLike SpanT>
+            requires std::is_same_v<std::remove_cvref_t<typename SpanT::value_type>, CharType>
+        void assign( const SpanT& string )
+        {
+            Assign( string.data( ), string.size( ) );
+        }
 
 
+        template<SimpleSpanLike SpanT>
+            requires std::is_same_v<std::remove_cvref_t<typename SpanT::value_type>, CharType>
+        BasicString& operator = ( const SpanT& string )
+        {
+            Assign( string.data(), string.size() );
+            return *this;
+        }
 
 
         [[nodiscard]] constexpr const CharType* c_str( ) const noexcept
@@ -2037,13 +2102,31 @@ namespace Harlinn::Common::Core
                         size_type secondSize = Internal::LengthOf( second );
                         if ( first->size_ == secondSize )
                         {
-                            return Internal::Compare( first->buffer_, first->size_, second, secondSize ) == 0;
+                            return Internal::MemCmp( first->buffer_, second, secondSize ) == 0;
                         }
                     }
                     return false;
                 }
-                return second ? false : true;
+                return second && second[0] ? false : true;
         }
+
+        [[nodiscard]] static bool AreEqual( const CharType* first, const Data* second )
+        {
+            if ( second )
+            {
+                if ( first )
+                {
+                    size_type firstSize = Internal::LengthOf( first );
+                    if ( second->size_ == firstSize )
+                    {
+                        return Internal::MemCmp( second->buffer_, first, firstSize ) == 0;
+                    }
+                }
+                return false;
+            }
+            return first && first[0] ? false : true;
+        }
+
 
         [[nodiscard]] static bool AreEqual( const Data* first, const CharType* second, size_type secondSize )
         {
@@ -2058,8 +2141,25 @@ namespace Harlinn::Common::Core
                 }
                 return false;
             }
-            return second ? false : true;
+            return second && secondSize ? false : true;
         }
+
+        [[nodiscard]] static bool AreEqual( const CharType* first, size_type firstSize, const Data* second )
+        {
+            if ( second )
+            {
+                if ( first )
+                {
+                    if ( second->size_ == firstSize )
+                    {
+                        return Internal::Compare( first, firstSize, second->buffer_, second->size_ ) == 0;
+                    }
+                }
+                return false;
+            }
+            return first && firstSize ? false : true;
+        }
+
 
 
         [[nodiscard]] static int Compare( const Data* first, const Data* second )
@@ -2087,6 +2187,9 @@ namespace Harlinn::Common::Core
                 return 0;
             }
         }
+
+        
+
 
         [[nodiscard]] static int ICompare( const Data* first, const Data* second )
         {
@@ -2122,7 +2225,7 @@ namespace Harlinn::Common::Core
             }
             else
             {
-                return first ? false : true;
+                return first && first[0] ? true : false;
             }
         }
         [[nodiscard]] static bool IsNotSame( const Data* first, const CharType* second )
@@ -2133,9 +2236,33 @@ namespace Harlinn::Common::Core
             }
             else
             {
-                return second ? false : true;
+                return second && second[0] ? true : false;
             }
         }
+
+        [[nodiscard]] static bool IsNotSame( const CharType* first, size_type firstLength, const Data* second )
+        {
+            if ( second )
+            {
+                return first != second->buffer_ || firstLength != second->size_;
+            }
+            else
+            {
+                return first && firstLength ? true : false;
+            }
+        }
+        [[nodiscard]] static bool IsNotSame( const Data* first, const CharType* second, size_type secondLength )
+        {
+            if ( first )
+            {
+                return first->buffer_ != second || first->size_ != secondLength;
+            }
+            else
+            {
+                return second && secondLength ? true : false;
+            }
+        }
+
 
 
         [[nodiscard]] static int Compare( const CharType* first, const Data* second )
@@ -2164,6 +2291,35 @@ namespace Harlinn::Common::Core
             }
         }
 
+        [[nodiscard]] static int Compare( const CharType* first, size_t firstLength, const Data* second )
+        {
+            if ( IsNotSame( first, firstLength, second ) )
+            {
+                if ( first )
+                {
+                    if ( second )
+                    {
+                        return Internal::Compare( first, firstLength, second->buffer_, second->size_ );
+                    }
+                    else
+                    {
+                        return 1;
+                    }
+                }
+                else
+                {
+                    return -1;
+                }
+            }
+            else
+            {
+                return 0;
+            }
+
+            
+        }
+
+
         [[nodiscard]] static int ICompare( const CharType* first, const Data* second )
         {
             if ( IsNotSame( first, second ) )
@@ -2188,6 +2344,34 @@ namespace Harlinn::Common::Core
             {
                 return 0;
             }
+        }
+
+        [[nodiscard]] static int ICompare( const CharType* first, size_t firstLength, const Data* second )
+        {
+            if ( IsNotSame( first, firstLength, second ) )
+            {
+                if ( first )
+                {
+                    if ( second )
+                    {
+                        return Internal::ICompare( first, firstLength, second->buffer_, second->size_ );
+                    }
+                    else
+                    {
+                        return 1;
+                    }
+                }
+                else
+                {
+                    return -1;
+                }
+            }
+            else
+            {
+                return 0;
+            }
+
+            
         }
 
         [[nodiscard]] static int Compare( const Data* first, const CharType* second )
@@ -2216,6 +2400,35 @@ namespace Harlinn::Common::Core
             }
         }
 
+        [[nodiscard]] static int Compare( const Data* first, const CharType* second, size_t secondLength )
+        {
+            if ( IsNotSame( first, second, secondLength ) )
+            {
+                if ( first )
+                {
+                    if ( second )
+                    {
+                        return Internal::Compare( first->buffer_, first->size_, second, secondLength );
+                    }
+                    else
+                    {
+                        return 1;
+                    }
+                }
+                else
+                {
+                    return -1;
+                }
+            }
+            else
+            {
+                return 0;
+            }
+
+            
+        }
+
+
         [[nodiscard]] static int ICompare( const Data* first, const CharType* second )
         {
             if ( IsNotSame( first, second ) )
@@ -2242,6 +2455,33 @@ namespace Harlinn::Common::Core
             }
         }
 
+        [[nodiscard]] static int ICompare( const Data* first, const CharType* second, size_t secondLength )
+        {
+            if ( IsNotSame( first, second, secondLength ) )
+            {
+                if ( first )
+                {
+                    if ( second )
+                    {
+                        return Internal::ICompare( first->buffer_, first->size_, second, secondLength );
+                    }
+                    else
+                    {
+                        return 1;
+                    }
+                }
+                else
+                {
+                    return -1;
+                }
+            }
+            else
+            {
+                return 0;
+            }
+            
+        }
+
     public:
         [[nodiscard]] static int Compare( const BasicString& first, const BasicString& second )
         {
@@ -2255,6 +2495,21 @@ namespace Harlinn::Common::Core
         {
             return Compare( first.data_, second );
         }
+
+        template<SimpleSpanLike SpanT>
+            requires std::is_same_v< std::remove_cvref_t<typename SpanT::value_type >, CharType >
+        [[nodiscard]] static int Compare( const SpanT& first, const BasicString& second )
+        {
+            return Compare( first.data(), first.size(), second.data_ );
+        }
+
+        template<SimpleSpanLike SpanT>
+            requires std::is_same_v< std::remove_cvref_t<typename SpanT::value_type >, CharType >
+        [[nodiscard]] static int Compare( const BasicString& first, const SpanT& second )
+        {
+            return Compare( first.data_, second.data(), second.size() );
+        }
+
 
         [[nodiscard]] int Compare( const BasicString& second ) const
         {
@@ -2302,18 +2557,58 @@ namespace Harlinn::Common::Core
             return ICompare( first.data_, second );
         }
 
+        template<SimpleSpanLike SpanT>
+            requires std::is_same_v< std::remove_cvref_t<typename SpanT::value_type >, CharType >
+        [[nodiscard]] static int ICompare( const SpanT& first, const BasicString& second )
+        {
+            return ICompare( first.data( ), first.size( ), second.data_ );
+        }
+
+        template<SimpleSpanLike SpanT>
+            requires std::is_same_v< std::remove_cvref_t<typename SpanT::value_type >, CharType >
+        [[nodiscard]] static int ICompare( const BasicString& first, const SpanT& second )
+        {
+            return ICompare( first.data_, second.data( ), second.size( ) );
+        }
+
+
         [[nodiscard]] friend bool operator == ( const BasicString& first, const BasicString& second )
         {
-            return Compare( first, second ) == 0;
+            return AreEqual( first.data_, second.data_ );
         }
         [[nodiscard]] friend bool operator == ( const CharType* first, const BasicString& second )
         {
-            return Compare( first, second ) == 0;
+            return AreEqual( first, second.data_ );
         }
         [[nodiscard]] friend bool operator == ( const BasicString& first, const CharType* second )
         {
-            return Compare( first, second ) == 0;
+            return AreEqual( first.data_, second );
         }
+
+        template<SimpleSpanLike SpanT>
+            requires std::is_same_v< std::remove_cvref_t<typename SpanT::value_type >, CharType >
+        [[nodiscard]] friend bool operator == ( const SpanT& first, const BasicString& second )
+        {
+            return AreEqual( first.data(), first.size(), second.data_ );
+        }
+        template<SimpleSpanLike SpanT>
+            requires std::is_same_v< std::remove_cvref_t<typename SpanT::value_type >, CharType >
+        [[nodiscard]] friend bool operator == ( const BasicString& first, const SpanT& second )
+        {
+            return AreEqual( first.data_, second.data( ), second.size() );
+        }
+
+        
+        [[nodiscard]] friend bool operator == ( const std::basic_string_view<CharType>& first, const BasicString& second )
+        {
+            return AreEqual( first.data( ), first.size( ), second.data_ );
+        }
+        [[nodiscard]] friend bool operator == ( const BasicString& first, const std::basic_string_view<CharType>& second )
+        {
+            return AreEqual( first.data_, second.data( ), second.size( ) );
+        }
+
+
 
         [[nodiscard]] friend bool operator <= ( const BasicString& first, const BasicString& second )
         {
@@ -2328,6 +2623,29 @@ namespace Harlinn::Common::Core
             return Compare( first, second ) <= 0;
         }
 
+        template<SimpleSpanLike SpanT>
+            requires std::is_same_v< std::remove_cvref_t<typename SpanT::value_type >, CharType >
+        [[nodiscard]] friend bool operator <= ( const SpanT& first, const BasicString& second )
+        {
+            return Compare( first.data( ), first.size( ), second.data_ ) <= 0;
+        }
+        template<SimpleSpanLike SpanT>
+            requires std::is_same_v< std::remove_cvref_t<typename SpanT::value_type >, CharType >
+        [[nodiscard]] friend bool operator <= ( const BasicString& first, const SpanT& second )
+        {
+            return Compare( first.data_, second.data( ), second.size( ) ) <= 0;
+        }
+
+        [[nodiscard]] friend bool operator <= ( const std::basic_string_view<CharType>& first, const BasicString& second )
+        {
+            return Compare( first.data( ), first.size( ), second.data_ ) <= 0;
+        }
+        [[nodiscard]] friend bool operator <= ( const BasicString& first, const std::basic_string_view<CharType>& second )
+        {
+            return Compare( first.data_, second.data( ), second.size( ) ) <= 0;
+        }
+
+
         [[nodiscard]] friend bool operator >= ( const BasicString& first, const BasicString& second )
         {
             return Compare( first, second ) >= 0;
@@ -2341,6 +2659,29 @@ namespace Harlinn::Common::Core
             return Compare( first, second ) >= 0;
         }
 
+        template<SimpleSpanLike SpanT>
+            requires std::is_same_v< std::remove_cvref_t<typename SpanT::value_type >, CharType >
+        [[nodiscard]] friend bool operator >= ( const SpanT& first, const BasicString& second )
+        {
+            return Compare( first.data( ), first.size( ), second.data_ ) >= 0;
+        }
+        template<SimpleSpanLike SpanT>
+            requires std::is_same_v< std::remove_cvref_t<typename SpanT::value_type >, CharType >
+        [[nodiscard]] friend bool operator >= ( const BasicString& first, const SpanT& second )
+        {
+            return Compare( first.data_, second.data( ), second.size( ) ) >= 0;
+        }
+
+        [[nodiscard]] friend bool operator >= ( const std::basic_string_view<CharType>& first, const BasicString& second )
+        {
+            return Compare( first.data( ), first.size( ), second.data_ ) >= 0;
+        }
+        [[nodiscard]] friend bool operator >= ( const BasicString& first, const std::basic_string_view<CharType>& second )
+        {
+            return Compare( first.data_, second.data( ), second.size( ) ) >= 0;
+        }
+
+
         [[nodiscard]] friend bool operator < ( const BasicString& first, const BasicString& second )
         {
             return Compare( first, second ) < 0;
@@ -2353,6 +2694,31 @@ namespace Harlinn::Common::Core
         {
             return Compare( first, second ) < 0;
         }
+
+        template<SimpleSpanLike SpanT>
+            requires std::is_same_v< std::remove_cvref_t<typename SpanT::value_type >, CharType >
+        [[nodiscard]] friend bool operator < ( const SpanT & first, const BasicString & second )
+        {
+            return Compare( first.data( ), first.size( ), second.data_ ) < 0;
+        }
+        template<SimpleSpanLike SpanT>
+            requires std::is_same_v< std::remove_cvref_t<typename SpanT::value_type >, CharType >
+        [[nodiscard]] friend bool operator < ( const BasicString & first, const SpanT & second )
+        {
+            return Compare( first.data_, second.data( ), second.size( ) ) < 0;
+        }
+
+        [[nodiscard]] friend bool operator < ( const std::basic_string_view<CharType>& first, const BasicString& second )
+        {
+            return Compare( first.data( ), first.size( ), second.data_ ) < 0;
+        }
+        [[nodiscard]] friend bool operator < ( const BasicString& first, const std::basic_string_view<CharType>& second )
+        {
+            return Compare( first.data_, second.data( ), second.size( ) ) < 0;
+        }
+
+
+
         [[nodiscard]] friend bool operator > ( const BasicString& first, const BasicString& second )
         {
             return Compare( first, second ) > 0;
@@ -2366,18 +2732,67 @@ namespace Harlinn::Common::Core
             return Compare( first, second ) > 0;
         }
 
+        template<SimpleSpanLike SpanT>
+            requires std::is_same_v< std::remove_cvref_t<typename SpanT::value_type >, CharType >
+        [[nodiscard]] friend bool operator > ( const SpanT& first, const BasicString& second )
+        {
+            return Compare( first.data( ), first.size( ), second.data_ ) > 0;
+        }
+        template<SimpleSpanLike SpanT>
+            requires std::is_same_v< std::remove_cvref_t<typename SpanT::value_type >, CharType >
+        [[nodiscard]] friend bool operator > ( const BasicString& first, const SpanT& second )
+        {
+            return Compare( first.data_, second.data( ), second.size( ) ) > 0;
+        }
+
+        [[nodiscard]] friend bool operator > ( const std::basic_string_view<CharType>& first, const BasicString& second )
+        {
+            return Compare( first.data( ), first.size( ), second.data_ ) > 0;
+        }
+        [[nodiscard]] friend bool operator > ( const BasicString& first, const std::basic_string_view<CharType>& second )
+        {
+            return Compare( first.data_, second.data( ), second.size( ) ) > 0;
+        }
+
+
         [[nodiscard]] friend bool operator != ( const BasicString& first, const BasicString& second )
         {
-            return Compare( first, second ) != 0;
+            return AreEqual( first.data_, second.data_ ) == false;
         }
         [[nodiscard]] friend bool operator != ( const CharType* first, const BasicString& second )
         {
-            return Compare( first, second ) != 0;
+            return AreEqual( first, second.data_ ) == false;
         }
         [[nodiscard]] friend bool operator != ( const BasicString& first, const CharType* second )
         {
-            return Compare( first, second ) != 0;
+            return AreEqual( first.data_, second ) == false;
         }
+
+
+        template<SimpleSpanLike SpanT>
+            requires std::is_same_v< std::remove_cvref_t<typename SpanT::value_type >, CharType >
+        [[nodiscard]] friend bool operator != ( const SpanT& first, const BasicString& second )
+        {
+            return AreEqual( first.data( ), first.size( ), second.data_ ) == false;
+        }
+
+        template<SimpleSpanLike SpanT>
+            requires std::is_same_v< std::remove_cvref_t<typename SpanT::value_type >, CharType >
+        [[nodiscard]] friend bool operator != ( const BasicString& first, const SpanT& second )
+        {
+            return AreEqual( first.data_, second.data( ), second.size( ) ) == false;
+        }
+
+        [[nodiscard]] friend bool operator != ( const std::basic_string_view<CharType>& first, const BasicString& second )
+        {
+            return AreEqual( first.data( ), first.size( ), second.data_ ) == false;
+        }
+
+        [[nodiscard]] friend bool operator != ( const BasicString& first, const std::basic_string_view<CharType>& second )
+        {
+            return AreEqual( first.data_, second.data( ), second.size( ) ) == false;
+        }
+
 
 
 
