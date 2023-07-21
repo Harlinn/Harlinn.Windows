@@ -21,7 +21,7 @@ This is a good question, and initially I tried to do just that, but there were s
 2. Some packages relied on different versions of the same package, including their own private copy of a package.
 3. Some packages were compiled with /sdl on, while others were not. I prefer to turn /sdl and /GS off for release builds, and on for debug builds.
    This may not be as significant as it used to, but you still get better performance when turning /sdl and /GS off. 
-4. Many packages will not compile with:The **/std:c++latest** option, which *enables all currently implemented compiler and standard library features proposed for the next draft standard, as well as some in-progress and experimental features.*
+4. Many packages will not compile with the **/std:c++latest** option, which *enables all currently implemented compiler and standard library features proposed for the next draft standard, as well as some in-progress and experimental features.*
 6. Many packages creates static libraries, not dlls. 
 
 Don't get me wrong; I think CMake and vcpkg are great tools, but putting everything into a 
