@@ -74,6 +74,9 @@ namespace Harlinn::Common::Core
 
     static_assert( AnsiStringLike< std::string > );
     static_assert( WideStringLike< std::wstring > );
+
+    
+
     
 
 }

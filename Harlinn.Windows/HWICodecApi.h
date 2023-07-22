@@ -12,8 +12,19 @@ namespace Harlinn::Windows
     public:
         HCC_COM_STANDARD_METHODS_IMPL(CodecAPI, Unknown, ICodecAPI, IUnknown)
     public:
-        void IsSupported( const Guid* api) const
+        /// <summary>
+        /// The IsSupported method queries whether a codec supports a given property.
+        /// </summary>
+        /// <param name="api">
+        /// Pointer to a GUID that specifies the property to query. 
+        /// </param>
+        /// <returns></returns>
+        bool IsSupported( const Guid* api) const
         {
+            auto itf = GetInterface( );
+            auto hr = itf->IsSupported( reinterpret_cast< const GUID* >( api ) );
+            HCC_COM_CHECK_HRESULT( hr );
+            return hr == S_OK;
         }
 
         void IsModifiable( const Guid* api) const

@@ -1903,33 +1903,6 @@ namespace Harlinn::Common::Core
         }
 
 
-        [[nodiscard]] static BasicString<CharType> Combine( const CharType* first, size_t firstLength, const CharType* second, size_t secondLength )
-        {
-            auto sz = firstLength + secondLength;
-            if ( sz )
-            {
-                auto* data = Allocate( sz );
-                if ( firstLength )
-                {
-                    Internal::MemCopy( data->buffer_, first, firstLength );
-                    if ( secondLength )
-                    {
-                        Internal::MemCopy( &data->buffer_[firstLength], second, secondLength );
-                    }
-                }
-                else
-                {
-                    Internal::MemCopy( data->buffer_, second, secondLength );
-                }
-                return BasicString<CharType>( data );
-            }
-            else
-            {
-                return BasicString<CharType>( );
-            }
-        }
-
-
         [[nodiscard]] friend BasicString<CharType> operator +( const BasicString<CharType>& first, const BasicString<CharType>& second )
         {
             auto firstSize = first.size( );
@@ -1938,7 +1911,7 @@ namespace Harlinn::Common::Core
             auto secondSize = second.size( );
             auto* secondData = second.data( );
 
-            return Combine( firstData, firstSize, secondData, secondSize );
+            return BasicString( firstData, firstSize, secondData, secondSize );
 
         }
 
@@ -1949,7 +1922,7 @@ namespace Harlinn::Common::Core
             auto secondSize = second.size( );
             auto* secondData = second.data( );
 
-            return Combine( first, firstSize, secondData, secondSize );
+            return BasicString( first, firstSize, secondData, secondSize );
         }
 
         [[nodiscard]] friend BasicString<CharType> operator +( const BasicString<CharType>& first, const CharType* second )
@@ -1959,7 +1932,7 @@ namespace Harlinn::Common::Core
 
             auto secondSize = Internal::LengthOf( second );
 
-            return Combine( firstData, firstSize, second, secondSize );
+            return BasicString( firstData, firstSize, second, secondSize );
         }
 
         [[nodiscard]] friend BasicString<CharType> operator +( const CharType first, const BasicString<CharType>& second )
@@ -1967,7 +1940,7 @@ namespace Harlinn::Common::Core
             auto secondSize = second.size( );
             auto* secondData = second.data( );
 
-            return Combine( &first, 1, secondData, secondSize );
+            return BasicString( &first, 1, secondData, secondSize );
         }
 
         [[nodiscard]] friend BasicString<CharType> operator +( const BasicString<CharType>& first, const CharType second )
@@ -1975,8 +1948,11 @@ namespace Harlinn::Common::Core
             auto firstSize = first.size( );
             auto* firstData = first.data( );
 
-            return Combine( firstData, firstSize, &second, 1 );
+            return BasicString( firstData, firstSize, &second, 1 );
         }
+
+
+
 
 
 
@@ -2055,7 +2031,7 @@ namespace Harlinn::Common::Core
         BasicString<CharType>& operator += ( CharType c ) { Append( c ); return *this; }
         BasicString<CharType>& operator += ( const std::basic_string<CharType>& other ) { Append( other.c_str(), other.size() ); return *this; }
 
-        iterator insert( const_iterator pos, CharType ch )
+        iterator Insert( const_iterator pos, CharType ch )
         {
             auto position = pos.ptr_;
             iterator end_ = Extend( 1 );
@@ -2067,7 +2043,13 @@ namespace Harlinn::Common::Core
             return position;
         }
 
-        iterator insert( const_iterator pos, size_type count, CharType ch )
+        iterator insert( const_iterator pos, CharType ch )
+        {
+            return Insert( pos, ch );
+        }
+
+
+        iterator Insert( const_iterator pos, size_type count, CharType ch )
         {
             auto position = pos.ptr_;
             iterator end_ = Extend( count );
@@ -2079,10 +2061,33 @@ namespace Harlinn::Common::Core
             return position;
         }
 
-        iterator insert( size_type index, size_type count, CharType ch )
+        iterator insert( const_iterator pos, size_type count, CharType ch )
+        {
+            return Insert( pos, count, ch );
+        }
+
+
+        iterator Insert( size_type index, size_type count, CharType ch )
         {
             const_iterator pos = cbegin( ) + index;
             return insert( pos, count, ch );
+        }
+
+        iterator insert( size_type index, size_type count, CharType ch )
+        {
+            return Insert( index, count, ch );
+        }
+
+        iterator Insert( const_iterator pos, const CharType* buffer, size_type bufferLength )
+        {
+            auto position = pos.ptr_;
+            iterator end_ = Extend( bufferLength );
+            if ( position < end_ )
+            {
+                Internal::MemMove( position + bufferLength, position, static_cast< size_t >( end_ - position ) );
+            }
+            Internal::MemCopy( position, buffer, bufferLength );
+            return position;
         }
 
 
@@ -3371,7 +3376,7 @@ namespace Harlinn::Common::Core
             {
                 return LastIndexOfAnyBut( searchChars, length, start );
             }
-            return npos;
+            return data_ ? data_->size_ - 1 : npos;
         }
 
         [[nodiscard]] size_type ILastIndexOfAnyBut( const CharType* searchChars, size_type start = npos ) const
@@ -3381,7 +3386,7 @@ namespace Harlinn::Common::Core
             {
                 return ILastIndexOfAnyBut( searchChars, length, start );
             }
-            return npos;
+            return data_ ? data_->size_ - 1 : npos;
         }
 
 

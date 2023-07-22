@@ -8369,6 +8369,1202 @@ BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyButTest6W )
     BOOST_TEST( equal );
 }
 
+// --run_test=StringTests/StringLastIndexOfAnyButTest7A
+BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyButTest7A )
+{
+    using StringType = AnsiString;
+    StringType text = "0123456";
+    std::basic_string<StringType::value_type> lookFor = "9876";
+    StringType::size_type expectedIndex = 5;
+
+    auto index = text.LastIndexOfAnyBut( lookFor );
+
+    bool equal = expectedIndex == index;
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringLastIndexOfAnyButTest7W
+BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyButTest7W )
+{
+    using StringType = WideString;
+    StringType text = L"0123456";
+    std::basic_string<StringType::value_type> lookFor = L"9876";
+    StringType::size_type expectedIndex = 5;
+
+    auto index = text.LastIndexOfAnyBut( lookFor );
+
+    bool equal = expectedIndex == index;
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringLastIndexOfAnyButTest8A
+BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyButTest8A )
+{
+    using StringType = AnsiString;
+    StringType text = "0123456";
+    std::basic_string<StringType::value_type> lookFor = "0123456";
+    StringType::size_type expectedIndex = StringType::npos;
+
+    auto index = text.LastIndexOfAnyBut( lookFor );
+
+    bool equal = expectedIndex == index;
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringLastIndexOfAnyButTest8W
+BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyButTest8W )
+{
+    using StringType = WideString;
+    StringType text = L"0123456";
+    std::basic_string<StringType::value_type> lookFor = L"0123456";
+    StringType::size_type expectedIndex = StringType::npos;
+
+    auto index = text.LastIndexOfAnyBut( lookFor );
+
+    bool equal = expectedIndex == index;
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringLastIndexOfAnyButTest9A
+BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyButTest9A )
+{
+    using StringType = AnsiString;
+    StringType text = "0123456";
+    std::basic_string<StringType::value_type> lookFor = "987";
+    StringType::size_type expectedIndex = 6;
+
+    auto index = text.LastIndexOfAnyBut( lookFor );
+
+    bool equal = expectedIndex == index;
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringLastIndexOfAnyButTest9W
+BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyButTest9W )
+{
+    using StringType = WideString;
+    StringType text = L"0123456";
+    std::basic_string<StringType::value_type> lookFor = L"987";
+    StringType::size_type expectedIndex = 6;
+
+    auto index = text.LastIndexOfAnyBut( lookFor );
+
+    bool equal = expectedIndex == index;
+    BOOST_TEST( equal );
+}
+
+
+// --run_test=StringTests/StringLastIndexOfAnyButTest10A
+BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyButTest10A )
+{
+    using StringType = AnsiString;
+    StringType text = "0123456";
+    std::basic_string<StringType::value_type> lookFor;
+    StringType::size_type expectedIndex = 6;
+
+    auto index = text.LastIndexOfAnyBut( lookFor );
+
+    bool equal = expectedIndex == index;
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringLastIndexOfAnyButTest10W
+BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyButTest10W )
+{
+    using StringType = WideString;
+    StringType text = L"0123456";
+    std::basic_string<StringType::value_type> lookFor;
+    StringType::size_type expectedIndex = 6;
+
+    auto index = text.LastIndexOfAnyBut( lookFor );
+
+    bool equal = expectedIndex == index;
+    BOOST_TEST( equal );
+}
+
+
+// --run_test=StringTests/StringLastIndexOfAnyButTest11A
+BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyButTest11A )
+{
+    using StringType = AnsiString;
+    StringType text;
+    std::basic_string<StringType::value_type> lookFor = "987";
+    StringType::size_type expectedIndex = StringType::npos;
+
+    auto index = text.LastIndexOfAnyBut( lookFor );
+
+    bool equal = expectedIndex == index;
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringLastIndexOfAnyButTest11W
+BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyButTest11W )
+{
+    using StringType = WideString;
+    StringType text;
+    std::basic_string<StringType::value_type> lookFor = L"987";
+    StringType::size_type expectedIndex = StringType::npos;
+
+    auto index = text.LastIndexOfAnyBut( lookFor );
+
+    bool equal = expectedIndex == index;
+    BOOST_TEST( equal );
+}
+
+
+// --run_test=StringTests/StringLastIndexOfAnyButTest12A
+BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyButTest12A )
+{
+    using StringType = AnsiString;
+    StringType text;
+    std::basic_string<StringType::value_type> lookFor;
+    StringType::size_type expectedIndex = StringType::npos;
+
+    auto index = text.LastIndexOfAnyBut( lookFor );
+
+    bool equal = expectedIndex == index;
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringLastIndexOfAnyButTest12W
+BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyButTest12W )
+{
+    using StringType = WideString;
+    StringType text;
+    std::basic_string<StringType::value_type> lookFor;
+    StringType::size_type expectedIndex = StringType::npos;
+
+    auto index = text.LastIndexOfAnyBut( lookFor );
+
+    bool equal = expectedIndex == index;
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringLastIndexOfAnyButTest13A
+BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyButTest13A )
+{
+    using StringType = AnsiString;
+    StringType text = "0123456";
+    std::basic_string_view<StringType::value_type> lookFor = "9876";
+    StringType::size_type expectedIndex = 5;
+
+    auto index = text.LastIndexOfAnyBut( lookFor );
+
+    bool equal = expectedIndex == index;
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringLastIndexOfAnyButTest13W
+BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyButTest13W )
+{
+    using StringType = WideString;
+    StringType text = L"0123456";
+    std::basic_string_view<StringType::value_type> lookFor = L"9876";
+    StringType::size_type expectedIndex = 5;
+
+    auto index = text.LastIndexOfAnyBut( lookFor );
+
+    bool equal = expectedIndex == index;
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringLastIndexOfAnyButTest14A
+BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyButTest14A )
+{
+    using StringType = AnsiString;
+    StringType text = "0123456";
+    std::basic_string_view<StringType::value_type> lookFor = "0123456";
+    StringType::size_type expectedIndex = StringType::npos;
+
+    auto index = text.LastIndexOfAnyBut( lookFor );
+
+    bool equal = expectedIndex == index;
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringLastIndexOfAnyButTest14W
+BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyButTest14W )
+{
+    using StringType = WideString;
+    StringType text = L"0123456";
+    std::basic_string_view<StringType::value_type> lookFor = L"0123456";
+    StringType::size_type expectedIndex = StringType::npos;
+
+    auto index = text.LastIndexOfAnyBut( lookFor );
+
+    bool equal = expectedIndex == index;
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringLastIndexOfAnyButTest15A
+BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyButTest15A )
+{
+    using StringType = AnsiString;
+    StringType text = "0123456";
+    std::basic_string_view<StringType::value_type> lookFor = "987";
+    StringType::size_type expectedIndex = 6;
+
+    auto index = text.LastIndexOfAnyBut( lookFor );
+
+    bool equal = expectedIndex == index;
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringLastIndexOfAnyButTest15W
+BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyButTest15W )
+{
+    using StringType = WideString;
+    StringType text = L"0123456";
+    std::basic_string_view<StringType::value_type> lookFor = L"987";
+    StringType::size_type expectedIndex = 6;
+
+    auto index = text.LastIndexOfAnyBut( lookFor );
+
+    bool equal = expectedIndex == index;
+    BOOST_TEST( equal );
+}
+
+
+// --run_test=StringTests/StringLastIndexOfAnyButTest16A
+BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyButTest16A )
+{
+    using StringType = AnsiString;
+    StringType text = "0123456";
+    std::basic_string_view<StringType::value_type> lookFor;
+    StringType::size_type expectedIndex = 6;
+
+    auto index = text.LastIndexOfAnyBut( lookFor );
+
+    bool equal = expectedIndex == index;
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringLastIndexOfAnyButTest16W
+BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyButTest16W )
+{
+    using StringType = WideString;
+    StringType text = L"0123456";
+    std::basic_string_view<StringType::value_type> lookFor;
+    StringType::size_type expectedIndex = 6;
+
+    auto index = text.LastIndexOfAnyBut( lookFor );
+
+    bool equal = expectedIndex == index;
+    BOOST_TEST( equal );
+}
+
+
+// --run_test=StringTests/StringLastIndexOfAnyButTest17A
+BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyButTest17A )
+{
+    using StringType = AnsiString;
+    StringType text;
+    std::basic_string_view<StringType::value_type> lookFor = "987";
+    StringType::size_type expectedIndex = StringType::npos;
+
+    auto index = text.LastIndexOfAnyBut( lookFor );
+
+    bool equal = expectedIndex == index;
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringLastIndexOfAnyButTest17W
+BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyButTest17W )
+{
+    using StringType = WideString;
+    StringType text;
+    std::basic_string_view<StringType::value_type> lookFor = L"987";
+    StringType::size_type expectedIndex = StringType::npos;
+
+    auto index = text.LastIndexOfAnyBut( lookFor );
+
+    bool equal = expectedIndex == index;
+    BOOST_TEST( equal );
+}
+
+
+// --run_test=StringTests/StringLastIndexOfAnyButTest18A
+BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyButTest18A )
+{
+    using StringType = AnsiString;
+    StringType text;
+    std::basic_string_view<StringType::value_type> lookFor;
+    StringType::size_type expectedIndex = StringType::npos;
+
+    auto index = text.LastIndexOfAnyBut( lookFor );
+
+    bool equal = expectedIndex == index;
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringLastIndexOfAnyButTest18W
+BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyButTest18W )
+{
+    using StringType = WideString;
+    StringType text;
+    std::basic_string_view<StringType::value_type> lookFor;
+    StringType::size_type expectedIndex = StringType::npos;
+
+    auto index = text.LastIndexOfAnyBut( lookFor );
+
+    bool equal = expectedIndex == index;
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringLastIndexOfAnyButTest19A
+BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyButTest19A )
+{
+    using StringType = AnsiString;
+    StringType text = "0123456";
+    const StringType::value_type* lookFor = "9876";
+    StringType::size_type expectedIndex = 5;
+
+    auto index = text.LastIndexOfAnyBut( lookFor );
+
+    bool equal = expectedIndex == index;
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringLastIndexOfAnyButTest19W
+BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyButTest19W )
+{
+    using StringType = WideString;
+    StringType text = L"0123456";
+    const StringType::value_type* lookFor = L"9876";
+    StringType::size_type expectedIndex = 5;
+
+    auto index = text.LastIndexOfAnyBut( lookFor );
+
+    bool equal = expectedIndex == index;
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringLastIndexOfAnyButTest20A
+BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyButTest20A )
+{
+    using StringType = AnsiString;
+    StringType text = "0123456";
+    const StringType::value_type* lookFor = "0123456";
+    StringType::size_type expectedIndex = StringType::npos;
+
+    auto index = text.LastIndexOfAnyBut( lookFor );
+
+    bool equal = expectedIndex == index;
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringLastIndexOfAnyButTest20W
+BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyButTest20W )
+{
+    using StringType = WideString;
+    StringType text = L"0123456";
+    const StringType::value_type* lookFor = L"0123456";
+    StringType::size_type expectedIndex = StringType::npos;
+
+    auto index = text.LastIndexOfAnyBut( lookFor );
+
+    bool equal = expectedIndex == index;
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringLastIndexOfAnyButTest21A
+BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyButTest21A )
+{
+    using StringType = AnsiString;
+    StringType text = "0123456";
+    const StringType::value_type* lookFor = "987";
+    StringType::size_type expectedIndex = 6;
+
+    auto index = text.LastIndexOfAnyBut( lookFor );
+
+    bool equal = expectedIndex == index;
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringLastIndexOfAnyButTest21W
+BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyButTest21W )
+{
+    using StringType = WideString;
+    StringType text = L"0123456";
+    const StringType::value_type* lookFor = L"987";
+    StringType::size_type expectedIndex = 6;
+
+    auto index = text.LastIndexOfAnyBut( lookFor );
+
+    bool equal = expectedIndex == index;
+    BOOST_TEST( equal );
+}
+
+
+// --run_test=StringTests/StringLastIndexOfAnyButTest22A
+BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyButTest22A )
+{
+    using StringType = AnsiString;
+    StringType text = "0123456";
+    const StringType::value_type* lookFor = nullptr;
+    StringType::size_type expectedIndex = 6;
+
+    auto index = text.LastIndexOfAnyBut( lookFor );
+
+    bool equal = expectedIndex == index;
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringLastIndexOfAnyButTest22W
+BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyButTest22W )
+{
+    using StringType = WideString;
+    StringType text = L"0123456";
+    const StringType::value_type* lookFor = nullptr;
+    StringType::size_type expectedIndex = 6;
+
+    auto index = text.LastIndexOfAnyBut( lookFor );
+
+    bool equal = expectedIndex == index;
+    BOOST_TEST( equal );
+}
+
+
+// --run_test=StringTests/StringLastIndexOfAnyButTest23A
+BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyButTest23A )
+{
+    using StringType = AnsiString;
+    StringType text;
+    const StringType::value_type* lookFor = "987";
+    StringType::size_type expectedIndex = StringType::npos;
+
+    auto index = text.LastIndexOfAnyBut( lookFor );
+
+    bool equal = expectedIndex == index;
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringLastIndexOfAnyButTest23W
+BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyButTest23W )
+{
+    using StringType = WideString;
+    StringType text;
+    const StringType::value_type* lookFor = L"987";
+    StringType::size_type expectedIndex = StringType::npos;
+
+    auto index = text.LastIndexOfAnyBut( lookFor );
+
+    bool equal = expectedIndex == index;
+    BOOST_TEST( equal );
+}
+
+
+// --run_test=StringTests/StringLastIndexOfAnyButTest24A
+BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyButTest24A )
+{
+    using StringType = AnsiString;
+    StringType text;
+    const StringType::value_type* lookFor = nullptr;
+    StringType::size_type expectedIndex = StringType::npos;
+
+    auto index = text.LastIndexOfAnyBut( lookFor );
+
+    bool equal = expectedIndex == index;
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringLastIndexOfAnyButTest24W
+BOOST_AUTO_TEST_CASE( StringLastIndexOfAnyButTest24W )
+{
+    using StringType = WideString;
+    StringType text;
+    const StringType::value_type* lookFor = nullptr;
+    StringType::size_type expectedIndex = StringType::npos;
+
+    auto index = text.LastIndexOfAnyBut( lookFor );
+
+    bool equal = expectedIndex == index;
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringILastIndexOfAnyButTest1A
+BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest1A )
+{
+    using StringType = AnsiString;
+    StringType text = "0123456";
+    StringType lookFor = "9876";
+    StringType::size_type expectedIndex = 5;
+
+    auto index = text.ILastIndexOfAnyBut( lookFor );
+
+    bool equal = expectedIndex == index;
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringILastIndexOfAnyButTest1W
+BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest1W )
+{
+    using StringType = WideString;
+    StringType text = L"0123456";
+    StringType lookFor = L"9876";
+    StringType::size_type expectedIndex = 5;
+
+    auto index = text.ILastIndexOfAnyBut( lookFor );
+
+    bool equal = expectedIndex == index;
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringILastIndexOfAnyButTest2A
+BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest2A )
+{
+    using StringType = AnsiString;
+    StringType text = "0123456";
+    StringType lookFor = "0123456";
+    StringType::size_type expectedIndex = StringType::npos;
+
+    auto index = text.ILastIndexOfAnyBut( lookFor );
+
+    bool equal = expectedIndex == index;
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringILastIndexOfAnyButTest2W
+BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest2W )
+{
+    using StringType = WideString;
+    StringType text = L"0123456";
+    StringType lookFor = L"0123456";
+    StringType::size_type expectedIndex = StringType::npos;
+
+    auto index = text.ILastIndexOfAnyBut( lookFor );
+
+    bool equal = expectedIndex == index;
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringILastIndexOfAnyButTest3A
+BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest3A )
+{
+    using StringType = AnsiString;
+    StringType text = "0123456";
+    StringType lookFor = "987";
+    StringType::size_type expectedIndex = 6;
+
+    auto index = text.ILastIndexOfAnyBut( lookFor );
+
+    bool equal = expectedIndex == index;
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringILastIndexOfAnyButTest3W
+BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest3W )
+{
+    using StringType = WideString;
+    StringType text = L"0123456";
+    StringType lookFor = L"987";
+    StringType::size_type expectedIndex = 6;
+
+    auto index = text.ILastIndexOfAnyBut( lookFor );
+
+    bool equal = expectedIndex == index;
+    BOOST_TEST( equal );
+}
+
+
+// --run_test=StringTests/StringILastIndexOfAnyButTest4A
+BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest4A )
+{
+    using StringType = AnsiString;
+    StringType text = "0123456";
+    StringType lookFor;
+    StringType::size_type expectedIndex = 6;
+
+    auto index = text.ILastIndexOfAnyBut( lookFor );
+
+    bool equal = expectedIndex == index;
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringILastIndexOfAnyButTest4W
+BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest4W )
+{
+    using StringType = WideString;
+    StringType text = L"0123456";
+    StringType lookFor;
+    StringType::size_type expectedIndex = 6;
+
+    auto index = text.ILastIndexOfAnyBut( lookFor );
+
+    bool equal = expectedIndex == index;
+    BOOST_TEST( equal );
+}
+
+
+// --run_test=StringTests/StringILastIndexOfAnyButTest5A
+BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest5A )
+{
+    using StringType = AnsiString;
+    StringType text;
+    StringType lookFor = "987";
+    StringType::size_type expectedIndex = StringType::npos;
+
+    auto index = text.ILastIndexOfAnyBut( lookFor );
+
+    bool equal = expectedIndex == index;
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringILastIndexOfAnyButTest5W
+BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest5W )
+{
+    using StringType = WideString;
+    StringType text;
+    StringType lookFor = L"987";
+    StringType::size_type expectedIndex = StringType::npos;
+
+    auto index = text.ILastIndexOfAnyBut( lookFor );
+
+    bool equal = expectedIndex == index;
+    BOOST_TEST( equal );
+}
+
+
+// --run_test=StringTests/StringILastIndexOfAnyButTest6A
+BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest6A )
+{
+    using StringType = AnsiString;
+    StringType text;
+    StringType lookFor;
+    StringType::size_type expectedIndex = StringType::npos;
+
+    auto index = text.ILastIndexOfAnyBut( lookFor );
+
+    bool equal = expectedIndex == index;
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringILastIndexOfAnyButTest6W
+BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest6W )
+{
+    using StringType = WideString;
+    StringType text;
+    StringType lookFor;
+    StringType::size_type expectedIndex = StringType::npos;
+
+    auto index = text.ILastIndexOfAnyBut( lookFor );
+
+    bool equal = expectedIndex == index;
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringILastIndexOfAnyButTest7A
+BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest7A )
+{
+    using StringType = AnsiString;
+    StringType text = "0123456";
+    std::basic_string<StringType::value_type> lookFor = "9876";
+    StringType::size_type expectedIndex = 5;
+
+    auto index = text.ILastIndexOfAnyBut( lookFor );
+
+    bool equal = expectedIndex == index;
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringILastIndexOfAnyButTest7W
+BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest7W )
+{
+    using StringType = WideString;
+    StringType text = L"0123456";
+    std::basic_string<StringType::value_type> lookFor = L"9876";
+    StringType::size_type expectedIndex = 5;
+
+    auto index = text.ILastIndexOfAnyBut( lookFor );
+
+    bool equal = expectedIndex == index;
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringILastIndexOfAnyButTest8A
+BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest8A )
+{
+    using StringType = AnsiString;
+    StringType text = "0123456";
+    std::basic_string<StringType::value_type> lookFor = "0123456";
+    StringType::size_type expectedIndex = StringType::npos;
+
+    auto index = text.ILastIndexOfAnyBut( lookFor );
+
+    bool equal = expectedIndex == index;
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringILastIndexOfAnyButTest8W
+BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest8W )
+{
+    using StringType = WideString;
+    StringType text = L"0123456";
+    std::basic_string<StringType::value_type> lookFor = L"0123456";
+    StringType::size_type expectedIndex = StringType::npos;
+
+    auto index = text.ILastIndexOfAnyBut( lookFor );
+
+    bool equal = expectedIndex == index;
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringILastIndexOfAnyButTest9A
+BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest9A )
+{
+    using StringType = AnsiString;
+    StringType text = "0123456";
+    std::basic_string<StringType::value_type> lookFor = "987";
+    StringType::size_type expectedIndex = 6;
+
+    auto index = text.ILastIndexOfAnyBut( lookFor );
+
+    bool equal = expectedIndex == index;
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringILastIndexOfAnyButTest9W
+BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest9W )
+{
+    using StringType = WideString;
+    StringType text = L"0123456";
+    std::basic_string<StringType::value_type> lookFor = L"987";
+    StringType::size_type expectedIndex = 6;
+
+    auto index = text.ILastIndexOfAnyBut( lookFor );
+
+    bool equal = expectedIndex == index;
+    BOOST_TEST( equal );
+}
+
+
+// --run_test=StringTests/StringILastIndexOfAnyButTest10A
+BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest10A )
+{
+    using StringType = AnsiString;
+    StringType text = "0123456";
+    std::basic_string<StringType::value_type> lookFor;
+    StringType::size_type expectedIndex = 6;
+
+    auto index = text.ILastIndexOfAnyBut( lookFor );
+
+    bool equal = expectedIndex == index;
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringILastIndexOfAnyButTest10W
+BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest10W )
+{
+    using StringType = WideString;
+    StringType text = L"0123456";
+    std::basic_string<StringType::value_type> lookFor;
+    StringType::size_type expectedIndex = 6;
+
+    auto index = text.ILastIndexOfAnyBut( lookFor );
+
+    bool equal = expectedIndex == index;
+    BOOST_TEST( equal );
+}
+
+
+// --run_test=StringTests/StringILastIndexOfAnyButTest11A
+BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest11A )
+{
+    using StringType = AnsiString;
+    StringType text;
+    std::basic_string<StringType::value_type> lookFor = "987";
+    StringType::size_type expectedIndex = StringType::npos;
+
+    auto index = text.ILastIndexOfAnyBut( lookFor );
+
+    bool equal = expectedIndex == index;
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringILastIndexOfAnyButTest11W
+BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest11W )
+{
+    using StringType = WideString;
+    StringType text;
+    std::basic_string<StringType::value_type> lookFor = L"987";
+    StringType::size_type expectedIndex = StringType::npos;
+
+    auto index = text.ILastIndexOfAnyBut( lookFor );
+
+    bool equal = expectedIndex == index;
+    BOOST_TEST( equal );
+}
+
+
+// --run_test=StringTests/StringILastIndexOfAnyButTest12A
+BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest12A )
+{
+    using StringType = AnsiString;
+    StringType text;
+    std::basic_string<StringType::value_type> lookFor;
+    StringType::size_type expectedIndex = StringType::npos;
+
+    auto index = text.ILastIndexOfAnyBut( lookFor );
+
+    bool equal = expectedIndex == index;
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringILastIndexOfAnyButTest12W
+BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest12W )
+{
+    using StringType = WideString;
+    StringType text;
+    std::basic_string<StringType::value_type> lookFor;
+    StringType::size_type expectedIndex = StringType::npos;
+
+    auto index = text.ILastIndexOfAnyBut( lookFor );
+
+    bool equal = expectedIndex == index;
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringILastIndexOfAnyButTest13A
+BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest13A )
+{
+    using StringType = AnsiString;
+    StringType text = "0123456";
+    std::basic_string_view<StringType::value_type> lookFor = "9876";
+    StringType::size_type expectedIndex = 5;
+
+    auto index = text.ILastIndexOfAnyBut( lookFor );
+
+    bool equal = expectedIndex == index;
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringILastIndexOfAnyButTest13W
+BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest13W )
+{
+    using StringType = WideString;
+    StringType text = L"0123456";
+    std::basic_string_view<StringType::value_type> lookFor = L"9876";
+    StringType::size_type expectedIndex = 5;
+
+    auto index = text.ILastIndexOfAnyBut( lookFor );
+
+    bool equal = expectedIndex == index;
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringILastIndexOfAnyButTest14A
+BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest14A )
+{
+    using StringType = AnsiString;
+    StringType text = "0123456";
+    std::basic_string_view<StringType::value_type> lookFor = "0123456";
+    StringType::size_type expectedIndex = StringType::npos;
+
+    auto index = text.ILastIndexOfAnyBut( lookFor );
+
+    bool equal = expectedIndex == index;
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringILastIndexOfAnyButTest14W
+BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest14W )
+{
+    using StringType = WideString;
+    StringType text = L"0123456";
+    std::basic_string_view<StringType::value_type> lookFor = L"0123456";
+    StringType::size_type expectedIndex = StringType::npos;
+
+    auto index = text.ILastIndexOfAnyBut( lookFor );
+
+    bool equal = expectedIndex == index;
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringILastIndexOfAnyButTest15A
+BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest15A )
+{
+    using StringType = AnsiString;
+    StringType text = "0123456";
+    std::basic_string_view<StringType::value_type> lookFor = "987";
+    StringType::size_type expectedIndex = 6;
+
+    auto index = text.ILastIndexOfAnyBut( lookFor );
+
+    bool equal = expectedIndex == index;
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringILastIndexOfAnyButTest15W
+BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest15W )
+{
+    using StringType = WideString;
+    StringType text = L"0123456";
+    std::basic_string_view<StringType::value_type> lookFor = L"987";
+    StringType::size_type expectedIndex = 6;
+
+    auto index = text.ILastIndexOfAnyBut( lookFor );
+
+    bool equal = expectedIndex == index;
+    BOOST_TEST( equal );
+}
+
+
+// --run_test=StringTests/StringILastIndexOfAnyButTest16A
+BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest16A )
+{
+    using StringType = AnsiString;
+    StringType text = "0123456";
+    std::basic_string_view<StringType::value_type> lookFor;
+    StringType::size_type expectedIndex = 6;
+
+    auto index = text.ILastIndexOfAnyBut( lookFor );
+
+    bool equal = expectedIndex == index;
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringILastIndexOfAnyButTest16W
+BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest16W )
+{
+    using StringType = WideString;
+    StringType text = L"0123456";
+    std::basic_string_view<StringType::value_type> lookFor;
+    StringType::size_type expectedIndex = 6;
+
+    auto index = text.ILastIndexOfAnyBut( lookFor );
+
+    bool equal = expectedIndex == index;
+    BOOST_TEST( equal );
+}
+
+
+// --run_test=StringTests/StringILastIndexOfAnyButTest17A
+BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest17A )
+{
+    using StringType = AnsiString;
+    StringType text;
+    std::basic_string_view<StringType::value_type> lookFor = "987";
+    StringType::size_type expectedIndex = StringType::npos;
+
+    auto index = text.ILastIndexOfAnyBut( lookFor );
+
+    bool equal = expectedIndex == index;
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringILastIndexOfAnyButTest17W
+BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest17W )
+{
+    using StringType = WideString;
+    StringType text;
+    std::basic_string_view<StringType::value_type> lookFor = L"987";
+    StringType::size_type expectedIndex = StringType::npos;
+
+    auto index = text.ILastIndexOfAnyBut( lookFor );
+
+    bool equal = expectedIndex == index;
+    BOOST_TEST( equal );
+}
+
+
+// --run_test=StringTests/StringILastIndexOfAnyButTest18A
+BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest18A )
+{
+    using StringType = AnsiString;
+    StringType text;
+    std::basic_string_view<StringType::value_type> lookFor;
+    StringType::size_type expectedIndex = StringType::npos;
+
+    auto index = text.ILastIndexOfAnyBut( lookFor );
+
+    bool equal = expectedIndex == index;
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringILastIndexOfAnyButTest18W
+BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest18W )
+{
+    using StringType = WideString;
+    StringType text;
+    std::basic_string_view<StringType::value_type> lookFor;
+    StringType::size_type expectedIndex = StringType::npos;
+
+    auto index = text.ILastIndexOfAnyBut( lookFor );
+
+    bool equal = expectedIndex == index;
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringILastIndexOfAnyButTest19A
+BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest19A )
+{
+    using StringType = AnsiString;
+    StringType text = "0123456";
+    const StringType::value_type* lookFor = "9876";
+    StringType::size_type expectedIndex = 5;
+
+    auto index = text.ILastIndexOfAnyBut( lookFor );
+
+    bool equal = expectedIndex == index;
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringILastIndexOfAnyButTest19W
+BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest19W )
+{
+    using StringType = WideString;
+    StringType text = L"0123456";
+    const StringType::value_type* lookFor = L"9876";
+    StringType::size_type expectedIndex = 5;
+
+    auto index = text.ILastIndexOfAnyBut( lookFor );
+
+    bool equal = expectedIndex == index;
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringILastIndexOfAnyButTest20A
+BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest20A )
+{
+    using StringType = AnsiString;
+    StringType text = "0123456";
+    const StringType::value_type* lookFor = "0123456";
+    StringType::size_type expectedIndex = StringType::npos;
+
+    auto index = text.ILastIndexOfAnyBut( lookFor );
+
+    bool equal = expectedIndex == index;
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringILastIndexOfAnyButTest20W
+BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest20W )
+{
+    using StringType = WideString;
+    StringType text = L"0123456";
+    const StringType::value_type* lookFor = L"0123456";
+    StringType::size_type expectedIndex = StringType::npos;
+
+    auto index = text.ILastIndexOfAnyBut( lookFor );
+
+    bool equal = expectedIndex == index;
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringILastIndexOfAnyButTest21A
+BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest21A )
+{
+    using StringType = AnsiString;
+    StringType text = "0123456";
+    const StringType::value_type* lookFor = "987";
+    StringType::size_type expectedIndex = 6;
+
+    auto index = text.ILastIndexOfAnyBut( lookFor );
+
+    bool equal = expectedIndex == index;
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringILastIndexOfAnyButTest21W
+BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest21W )
+{
+    using StringType = WideString;
+    StringType text = L"0123456";
+    const StringType::value_type* lookFor = L"987";
+    StringType::size_type expectedIndex = 6;
+
+    auto index = text.ILastIndexOfAnyBut( lookFor );
+
+    bool equal = expectedIndex == index;
+    BOOST_TEST( equal );
+}
+
+
+// --run_test=StringTests/StringILastIndexOfAnyButTest22A
+BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest22A )
+{
+    using StringType = AnsiString;
+    StringType text = "0123456";
+    const StringType::value_type* lookFor = nullptr;
+    StringType::size_type expectedIndex = 6;
+
+    auto index = text.ILastIndexOfAnyBut( lookFor );
+
+    bool equal = expectedIndex == index;
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringILastIndexOfAnyButTest22W
+BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest22W )
+{
+    using StringType = WideString;
+    StringType text = L"0123456";
+    const StringType::value_type* lookFor = nullptr;
+    StringType::size_type expectedIndex = 6;
+
+    auto index = text.ILastIndexOfAnyBut( lookFor );
+
+    bool equal = expectedIndex == index;
+    BOOST_TEST( equal );
+}
+
+
+// --run_test=StringTests/StringILastIndexOfAnyButTest23A
+BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest23A )
+{
+    using StringType = AnsiString;
+    StringType text;
+    const StringType::value_type* lookFor = "987";
+    StringType::size_type expectedIndex = StringType::npos;
+
+    auto index = text.ILastIndexOfAnyBut( lookFor );
+
+    bool equal = expectedIndex == index;
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringILastIndexOfAnyButTest23W
+BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest23W )
+{
+    using StringType = WideString;
+    StringType text;
+    const StringType::value_type* lookFor = L"987";
+    StringType::size_type expectedIndex = StringType::npos;
+
+    auto index = text.ILastIndexOfAnyBut( lookFor );
+
+    bool equal = expectedIndex == index;
+    BOOST_TEST( equal );
+}
+
+
+// --run_test=StringTests/StringILastIndexOfAnyButTest24A
+BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest24A )
+{
+    using StringType = AnsiString;
+    StringType text;
+    const StringType::value_type* lookFor = nullptr;
+    StringType::size_type expectedIndex = StringType::npos;
+
+    auto index = text.ILastIndexOfAnyBut( lookFor );
+
+    bool equal = expectedIndex == index;
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringILastIndexOfAnyButTest24W
+BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest24W )
+{
+    using StringType = WideString;
+    StringType text;
+    const StringType::value_type* lookFor = nullptr;
+    StringType::size_type expectedIndex = StringType::npos;
+
+    auto index = text.ILastIndexOfAnyBut( lookFor );
+
+    bool equal = expectedIndex == index;
+    BOOST_TEST( equal );
+}
 
 
 #endif

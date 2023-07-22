@@ -50,7 +50,7 @@ In particular, I've included many of the unit tests, that can be expected to com
 
 I've also created a fair number of tests for my own projects:
 
-- **Harlinn.Common.Core.Tests:** 2726
+- **Harlinn.Common.Core.Tests:** 3126
 - **Harlinn.Windows.Tests:** 271
 - **Harlinn.OCI.Tests:** 49
 - **Harlinn.ODBC.Tests:** 9
@@ -90,10 +90,9 @@ functionality that is useful for most Windows C++ projects.
 
 ### Other 3rd party code included in Harlinn.Common.Core
 The Harlinn.Common.Core library contains code from a number of libraries:
-1. The [\{fmt\}](https://github.com/fmtlib/fmt) library, version 8.0.1, by Victor Zverovich
-2. The [xxHash](https://github.com/Cyan4973/xxHash) library, version 0.8.1 
-3. The [CRC-32C (Castagnoli) for C++](https://github.com/robertvazan/crc32c-hw) library
-4. The [xxhash_cx](https://github.com/masyos/xxhash_cx) library
+1. The [xxHash](https://github.com/Cyan4973/xxHash) library, version 0.8.1 
+2. The [CRC-32C (Castagnoli) for C++](https://github.com/robertvazan/crc32c-hw) library
+3. The [xxhash_cx](https://github.com/masyos/xxhash_cx) library
 
 ### About ``char``, ``wchar_t``, ``signed char`` and ``unsigned char`` 
 The library tries to treat ``char`` and ``wchar_t`` as types used for the sole purpose of representing
