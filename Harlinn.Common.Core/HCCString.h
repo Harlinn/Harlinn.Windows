@@ -2998,32 +2998,11 @@ namespace Harlinn::Common::Core
     private:
         static bool Contains( const CharType* buffer, size_type bufferLength, CharType value )
         {
-            const CharType* ptr = buffer;
-            auto endPtr = buffer + bufferLength;
-            while ( ptr < endPtr )
-            {
-                if ( *ptr == value )
-                {
-                    return true;
-                }
-                ptr++;
-            }
-            return false;
+            return Internal::MemChr( buffer, value, bufferLength ) != nullptr;
         }
         static bool IContains( const CharType* buffer, size_type bufferLength, CharType value )
         {
-            const CharType* ptr = buffer;
-            auto endPtr = buffer + bufferLength;
-            auto lowerCaseValue = Internal::ToLower( value );
-            while ( ptr < endPtr )
-            {
-                if ( Internal::ToLower( *ptr ) == lowerCaseValue )
-                {
-                    return true;
-                }
-                ptr++;
-            }
-            return false;
+            return Internal::MemIChr( buffer, value, bufferLength ) != nullptr;
         }
     public:
 
@@ -3222,6 +3201,19 @@ namespace Harlinn::Common::Core
         }
 
 
+        template<SimpleSpanLike SpanT>
+            requires std::is_same_v<std::remove_cvref_t<typename SpanT::value_type>, CharType>
+        [[nodiscard]] size_type LastIndexOfAnyOf( const SpanT& searchChars, size_type start = npos ) const
+        {
+            return LastIndexOfAnyOf( searchChars.data(), searchChars.size(), start );
+        }
+
+        [[nodiscard]] size_type LastIndexOfAnyOf( const std::basic_string_view<CharType>& searchChars, size_type start = npos ) const
+        {
+            return LastIndexOfAnyOf( searchChars.data( ), searchChars.size( ), start );
+        }
+
+
         [[nodiscard]] size_type ILastIndexOfAnyOf( const BasicString& searchChars, size_type start = npos ) const
         {
             auto* searchData = searchChars.data_;
@@ -3231,6 +3223,19 @@ namespace Harlinn::Common::Core
             }
             return npos;
         }
+
+        template<SimpleSpanLike SpanT>
+            requires std::is_same_v<std::remove_cvref_t<typename SpanT::value_type>, CharType>
+        [[nodiscard]] size_type ILastIndexOfAnyOf( const SpanT& searchChars, size_type start = npos ) const
+        {
+            return ILastIndexOfAnyOf( searchChars.data( ), searchChars.size( ), start );
+        }
+
+        [[nodiscard]] size_type ILastIndexOfAnyOf( const std::basic_string_view<CharType>& searchChars, size_type start = npos ) const
+        {
+            return ILastIndexOfAnyOf( searchChars.data( ), searchChars.size( ), start );
+        }
+
 
         [[nodiscard]] size_type LastIndexOfAnyOf( const CharType* searchChars, size_type start = npos ) const
         {
@@ -3318,8 +3323,22 @@ namespace Harlinn::Common::Core
             {
                 return LastIndexOfAnyBut( searchData->buffer_, searchData->size_, start );
             }
-            return npos;
+            return data_ ? data_->size_ - 1 : npos;
         }
+
+        template<SimpleSpanLike SpanT>
+            requires std::is_same_v<std::remove_cvref_t<typename SpanT::value_type>, CharType>
+        [[nodiscard]] size_type LastIndexOfAnyBut( const SpanT& searchChars, size_type start = npos ) const
+        {
+            return LastIndexOfAnyBut( searchChars.data( ), searchChars.size( ), start );
+        }
+
+        [[nodiscard]] size_type LastIndexOfAnyBut( const std::basic_string_view<CharType>& searchChars, size_type start = npos ) const
+        {
+            return LastIndexOfAnyBut( searchChars.data( ), searchChars.size( ), start );
+        }
+
+
 
         [[nodiscard]] size_type ILastIndexOfAnyBut( const BasicString& searchChars, size_type start = npos ) const
         {
@@ -3328,8 +3347,22 @@ namespace Harlinn::Common::Core
             {
                 return ILastIndexOfAnyBut( searchData->buffer_, searchData->size_, start );
             }
-            return npos;
+            return data_ ? data_->size_ - 1 : npos;
         }
+
+        template<SimpleSpanLike SpanT>
+            requires std::is_same_v<std::remove_cvref_t<typename SpanT::value_type>, CharType>
+        [[nodiscard]] size_type ILastIndexOfAnyBut( const SpanT& searchChars, size_type start = npos ) const
+        {
+            return ILastIndexOfAnyBut( searchChars.data( ), searchChars.size( ), start );
+        }
+
+        [[nodiscard]] size_type ILastIndexOfAnyBut( const std::basic_string_view<CharType>& searchChars, size_type start = npos ) const
+        {
+            return ILastIndexOfAnyBut( searchChars.data( ), searchChars.size( ), start );
+        }
+
+
 
         [[nodiscard]] size_type LastIndexOfAnyBut( const CharType* searchChars, size_type start = npos ) const
         {
