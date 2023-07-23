@@ -243,10 +243,10 @@ void RandenPool<T>::Fill(absl::Span<result_type> data) {
              data.size() * sizeof(result_type));
 }
 
-template class RandenPool<uint8_t>;
-template class RandenPool<uint16_t>;
-template class RandenPool<uint32_t>;
-template class RandenPool<uint64_t>;
+template ABSEIL_TEMPLATE_EXPORT class RandenPool<uint8_t>;
+template ABSEIL_TEMPLATE_EXPORT class RandenPool<uint16_t>;
+template ABSEIL_TEMPLATE_EXPORT class RandenPool<uint32_t>;
+template ABSEIL_TEMPLATE_EXPORT class RandenPool<uint64_t>;
 
 }  // namespace random_internal
 ABSL_NAMESPACE_END

@@ -127,7 +127,7 @@ extern "C" {
 
 // Additional report of fatal usage error message before we std::exit. Error is
 // fatal if is_fatal argument to ReportUsageError is true.
-void ABSEIL_EXPORT ABSL_INTERNAL_C_SYMBOL(AbslInternalReportFatalUsageError)(
+ABSEIL_EXPORT void ABSL_INTERNAL_C_SYMBOL(AbslInternalReportFatalUsageError)(
     absl::string_view);
 
 }  // extern "C"

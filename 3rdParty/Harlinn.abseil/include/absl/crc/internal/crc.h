@@ -38,7 +38,7 @@ namespace crc_internal {
 
 class CRC {
  public:
-  virtual ~CRC();
+  ABSEIL_EXPORT virtual ~CRC();
 
   // Place the CRC of the empty string in "*crc"
   virtual void Empty(uint32_t* crc) const = 0;
@@ -61,7 +61,7 @@ class CRC {
   // If *px is the CRC (as defined by *crc) of some string X,
   // and y is the CRC of some string Y that is ylen bytes long, set
   // *px to the CRC of the concatenation of X followed by Y.
-  virtual void Concat(uint32_t* px, uint32_t y, size_t ylen);
+  ABSEIL_EXPORT virtual void Concat(uint32_t* px, uint32_t y, size_t ylen);
 
   // Apply a non-linear transformation to "*crc" so that
   // it is safe to CRC the result with the same polynomial without
@@ -74,7 +74,7 @@ class CRC {
 
   // Crc32c() returns the singleton implementation of CRC for the CRC32C
   // polynomial.  Returns a handle that MUST NOT be destroyed with delete.
-  static CRC* Crc32c();
+  ABSEIL_EXPORT static CRC* Crc32c();
 
  protected:
   CRC();  // Clients may not call constructor; use Crc32c() instead.

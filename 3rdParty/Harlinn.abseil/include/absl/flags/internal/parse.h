@@ -23,10 +23,10 @@
 #include "absl/flags/declare.h"
 #include "absl/strings/string_view.h"
 
-ABSL_DECLARE_FLAG_DLL(std::vector<std::string>, flagfile, ABSEIL_EXPORT );
-ABSL_DECLARE_FLAG_DLL(std::vector<std::string>, fromenv, ABSEIL_EXPORT );
-ABSL_DECLARE_FLAG_DLL(std::vector<std::string>, tryfromenv, ABSEIL_EXPORT );
-ABSL_DECLARE_FLAG_DLL(std::vector<std::string>, undefok, ABSEIL_EXPORT );
+ABSL_DECLARE_FLAG(std::vector<std::string>, flagfile);
+ABSL_DECLARE_FLAG(std::vector<std::string>, fromenv);
+ABSL_DECLARE_FLAG(std::vector<std::string>, tryfromenv);
+ABSL_DECLARE_FLAG(std::vector<std::string>, undefok);
 
 namespace absl {
 ABSL_NAMESPACE_BEGIN

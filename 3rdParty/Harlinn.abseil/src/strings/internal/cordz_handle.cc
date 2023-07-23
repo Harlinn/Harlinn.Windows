@@ -24,7 +24,7 @@ namespace cord_internal {
 
 using ::absl::base_internal::SpinLockHolder;
 
-ABSL_CONST_INIT CordzHandle::Queue CordzHandle::global_queue_(absl::kConstInit);
+ABSEIL_EXPORT ABSL_CONST_INIT CordzHandle::Queue CordzHandle::global_queue_(absl::kConstInit);
 
 CordzHandle::CordzHandle(bool is_snapshot) : is_snapshot_(is_snapshot) {
   if (is_snapshot) {

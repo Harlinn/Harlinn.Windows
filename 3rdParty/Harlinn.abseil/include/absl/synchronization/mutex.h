@@ -466,8 +466,8 @@ class ABSL_LOCKABLE Mutex {
 
   // Post()/Wait() versus associated PerThreadSem; in class for required
   // friendship with PerThreadSem.
-  static void IncrementSynchSem(Mutex *mu, base_internal::PerThreadSynch *w);
-  static bool DecrementSynchSem(Mutex *mu, base_internal::PerThreadSynch *w,
+  ABSEIL_EXPORT static void IncrementSynchSem(Mutex *mu, base_internal::PerThreadSynch *w);
+  ABSEIL_EXPORT static bool DecrementSynchSem(Mutex *mu, base_internal::PerThreadSynch *w,
                                 synchronization_internal::KernelTimeout t);
 
   // slow path acquire
@@ -895,9 +895,9 @@ class CondVar {
   ABSEIL_EXPORT void EnableDebugLog(const char *name);
 
  private:
-  ABSEIL_EXPORT bool WaitCommon(Mutex *mutex, synchronization_internal::KernelTimeout t);
-  ABSEIL_EXPORT void Remove(base_internal::PerThreadSynch *s);
-  ABSEIL_EXPORT void Wakeup(base_internal::PerThreadSynch *w);
+  bool WaitCommon(Mutex *mutex, synchronization_internal::KernelTimeout t);
+  void Remove(base_internal::PerThreadSynch *s);
+  void Wakeup(base_internal::PerThreadSynch *w);
   std::atomic<intptr_t> cv_;  // Condition variable state.
   CondVar(const CondVar&) = delete;
   CondVar& operator=(const CondVar&) = delete;
@@ -1123,7 +1123,7 @@ ABSL_NAMESPACE_END
 // By changing our extension points to be extern "C", we dodge this
 // check.
 extern "C" {
-void ABSL_INTERNAL_C_SYMBOL(AbslInternalMutexYield)();
+ABSEIL_EXPORT void ABSL_INTERNAL_C_SYMBOL(AbslInternalMutexYield)();
 }  // extern "C"
 
 #endif  // ABSL_SYNCHRONIZATION_MUTEX_H_

@@ -634,7 +634,6 @@ namespace type_traits_internal {
 // This trick to retrieve a default alignment is necessary for our
 // implementation of aligned_storage_t to be consistent with any
 // implementation of std::aligned_storage.
-/*
 template <size_t Len, typename T = std::aligned_storage<Len>>
 struct default_alignment_of_aligned_storage;
 
@@ -643,15 +642,12 @@ struct default_alignment_of_aligned_storage<
     Len, std::aligned_storage<Len, Align>> {
   static constexpr size_t value = Align;
 };
-*/
 }  // namespace type_traits_internal
 
-/*
 // TODO(b/260219225): std::aligned_storage(_t) is deprecated in C++23.
 template <size_t Len, size_t Align = type_traits_internal::
                           default_alignment_of_aligned_storage<Len>::value>
 using aligned_storage_t = typename std::aligned_storage<Len, Align>::type;
-*/
 
 template <typename T>
 using decay_t = typename std::decay<T>::type;
@@ -797,9 +793,7 @@ struct IsNothrowSwappable
 //
 // Performs the swap idiom from a namespace where valid candidates may only be
 // found in `std` or via ADL.
-//template <class T, absl::enable_if_t<IsSwappable<T>::value, int> = 0>
-template <class T>
-requires IsSwappable<T>::value
+template <class T, absl::enable_if_t<IsSwappable<T>::value, int> = 0>
 void Swap(T& lhs, T& rhs) noexcept(IsNothrowSwappable<T>::value) {
   swap(lhs, rhs);
 }

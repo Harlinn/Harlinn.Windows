@@ -44,7 +44,7 @@ namespace random_internal {
 // The specific algorithm has some of the improvements suggested by the
 // 2005 paper, "An Improved Ziggurat Method to Generate Normal Random Samples",
 // Jurgen A Doornik.  (https://www.doornik.com/research/ziggurat.pdf)
-class ABSL_DLL gaussian_distribution_base {
+class /*ABSL_DLL*/ gaussian_distribution_base {
  public:
   template <typename URBG>
   inline double zignor(URBG& g);  // NOLINT(runtime/references)
@@ -75,7 +75,7 @@ class ABSL_DLL gaussian_distribution_base {
     double x[kMask + 2];
     double f[kMask + 2];
   };
-  static const Tables zg_;
+  ABSEIL_EXPORT static const Tables zg_;
   random_internal::FastUniformBits<uint64_t> fast_u64_;
 };
 

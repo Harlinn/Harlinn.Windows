@@ -38,7 +38,7 @@ using ::absl::base_internal::SpinLockHolder;
 constexpr size_t CordzInfo::kMaxStackDepth;
 #endif
 
-ABSL_CONST_INIT CordzInfo::List CordzInfo::global_list_{absl::kConstInit};
+ABSEIL_EXPORT ABSL_CONST_INIT CordzInfo::List CordzInfo::global_list_{absl::kConstInit};
 
 namespace {
 

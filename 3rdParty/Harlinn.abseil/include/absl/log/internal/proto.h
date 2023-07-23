@@ -169,7 +169,7 @@ inline bool EncodeStringTruncate(uint64_t tag, absl::string_view value,
 // safe to pass to `EncodeMessageLength` but need not be.
 // Used for string, bytes, message, and packed-repeated field type.
 // Consumes up to kMaxVarintSize * 2 bytes (20).
-ABSL_MUST_USE_RESULT ABSEIL_EXPORT absl::Span<char> EncodeMessageStart(uint64_t tag,
+ABSEIL_EXPORT ABSL_MUST_USE_RESULT absl::Span<char> EncodeMessageStart(uint64_t tag,
                                                          uint64_t max_size,
                                                          absl::Span<char> *buf);
 

@@ -169,10 +169,6 @@ ABSL_NAMESPACE_END
 #define ABSL_FLAG(Type, name, default_value, help) \
   ABSL_FLAG_IMPL(Type, name, default_value, help)
 
-#define ABSL_FLAG_DLL(Type, name, default_value, help, export_macro) \
-  ABSL_FLAG_IMPL_DLL(Type, name, default_value, help, export_macro)
-
-
 // ABSL_FLAG().OnUpdate()
 //
 // Defines a flag of type `T` with a callback attached:
@@ -283,20 +279,6 @@ ABSL_NAMESPACE_END
   extern absl::flags_internal::FlagRegistrarEmpty FLAGS_no##name;             \
   absl::flags_internal::FlagRegistrarEmpty FLAGS_no##name =                   \
       ABSL_FLAG_IMPL_REGISTRAR(Type, FLAGS_##name)
-
-#define ABSL_FLAG_IMPL_DLL(Type, name, default_value, help, export_macro)     \
-  extern export_macro ::absl::Flag<Type> FLAGS_##name;                                     \
-  namespace absl /* block flags in namespaces */ {}                           \
-  ABSL_FLAG_IMPL_DECLARE_DEF_VAL_WRAPPER(name, Type, default_value)           \
-  ABSL_FLAG_IMPL_DECLARE_HELP_WRAPPER(name, help)                             \
-  ABSL_CONST_INIT export_macro absl::Flag<Type> FLAGS_##name{                              \
-      ABSL_FLAG_IMPL_FLAGNAME(#name), ABSL_FLAG_IMPL_FILENAME(),              \
-      ABSL_FLAG_IMPL_HELP_ARG(name), ABSL_FLAG_IMPL_DEFAULT_ARG(Type, name)}; \
-  extern export_macro absl::flags_internal::FlagRegistrarEmpty FLAGS_no##name;             \
-  absl::flags_internal::FlagRegistrarEmpty FLAGS_no##name =                   \
-      ABSL_FLAG_IMPL_REGISTRAR(Type, FLAGS_##name)
-
-
 
 // ABSL_RETIRED_FLAG
 //

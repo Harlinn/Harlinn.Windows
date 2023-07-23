@@ -611,13 +611,13 @@ CONSTEXPR_F int get_yearday(const civil_second& cs) noexcept {
 
 ////////////////////////////////////////////////////////////////////////
 
-std::ostream& operator<<(std::ostream& os, const civil_year& y);
-std::ostream& operator<<(std::ostream& os, const civil_month& m);
-std::ostream& operator<<(std::ostream& os, const civil_day& d);
-std::ostream& operator<<(std::ostream& os, const civil_hour& h);
-std::ostream& operator<<(std::ostream& os, const civil_minute& m);
-std::ostream& operator<<(std::ostream& os, const civil_second& s);
-std::ostream& operator<<(std::ostream& os, weekday wd);
+ABSEIL_EXPORT std::ostream& operator<<(std::ostream& os, const civil_year& y);
+ABSEIL_EXPORT std::ostream& operator<<(std::ostream& os, const civil_month& m);
+ABSEIL_EXPORT std::ostream& operator<<(std::ostream& os, const civil_day& d);
+ABSEIL_EXPORT std::ostream& operator<<(std::ostream& os, const civil_hour& h);
+ABSEIL_EXPORT std::ostream& operator<<(std::ostream& os, const civil_minute& m);
+ABSEIL_EXPORT std::ostream& operator<<(std::ostream& os, const civil_second& s);
+ABSEIL_EXPORT std::ostream& operator<<(std::ostream& os, weekday wd);
 
 }  // namespace detail
 }  // namespace cctz

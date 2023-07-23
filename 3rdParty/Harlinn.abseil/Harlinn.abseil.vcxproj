@@ -89,7 +89,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>BUILDING_HARLINN_ABSEIL=1;NOMINMAX=1;_CRT_SECURE_NO_WARNINGS=1;WIN32;_DEBUG;HARLINNABSEIL_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>BUILDING_HARLINN_ABSEIL=1;NOMINMAX=1;_SILENCE_CXX23_ALIGNED_STORAGE_DEPRECATION_WARNING=1;_CRT_SECURE_NO_WARNINGS=1;WIN32;_DEBUG;HARLINNABSEIL_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpplatest</LanguageStandard>
@@ -109,7 +109,7 @@
       <WarningLevel>Level3</WarningLevel>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>BUILDING_HARLINN_ABSEIL=1;NOMINMAX=1;_CRT_SECURE_NO_WARNINGS=1;WIN32;NDEBUG;HARLINNABSEIL_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>BUILDING_HARLINN_ABSEIL=1;NOMINMAX=1;_SILENCE_CXX23_ALIGNED_STORAGE_DEPRECATION_WARNING=1;_CRT_SECURE_NO_WARNINGS=1;WIN32;NDEBUG;HARLINNABSEIL_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpplatest</LanguageStandard>
@@ -132,7 +132,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>BUILDING_HARLINN_ABSEIL=1;NOMINMAX=1;_CRT_SECURE_NO_WARNINGS=1;_DEBUG;HARLINNABSEIL_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>BUILDING_HARLINN_ABSEIL=1;NOMINMAX=1;_SILENCE_CXX23_ALIGNED_STORAGE_DEPRECATION_WARNING=1;_CRT_SECURE_NO_WARNINGS=1;_DEBUG;HARLINNABSEIL_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpplatest</LanguageStandard>
@@ -152,7 +152,7 @@
       <WarningLevel>Level3</WarningLevel>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>BUILDING_HARLINN_ABSEIL=1;NOMINMAX=1;_CRT_SECURE_NO_WARNINGS=1;NDEBUG;HARLINNABSEIL_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>BUILDING_HARLINN_ABSEIL=1;NOMINMAX=1;_SILENCE_CXX23_ALIGNED_STORAGE_DEPRECATION_WARNING=1;_CRT_SECURE_NO_WARNINGS=1;NDEBUG;HARLINNABSEIL_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpplatest</LanguageStandard>
@@ -221,6 +221,7 @@
     <ClCompile Include="src\hash\internal\city.cc" />
     <ClCompile Include="src\hash\internal\hash.cc" />
     <ClCompile Include="src\hash\internal\low_level_hash.cc" />
+    <ClCompile Include="src\log\die_if_null.cc" />
     <ClCompile Include="src\log\flags.cc" />
     <ClCompile Include="src\log\globals.cc" />
     <ClCompile Include="src\log\initialize.cc" />
@@ -560,7 +561,6 @@
     <ClInclude Include="include\absl\strings\internal\cord_rep_flat.h" />
     <ClInclude Include="include\absl\strings\internal\cord_rep_ring.h" />
     <ClInclude Include="include\absl\strings\internal\cord_rep_ring_reader.h" />
-    <ClInclude Include="include\absl\strings\internal\cord_rep_test_util.h" />
     <ClInclude Include="include\absl\strings\internal\damerau_levenshtein_distance.h" />
     <ClInclude Include="include\absl\strings\internal\escaping.h" />
     <ClInclude Include="include\absl\strings\internal\has_absl_stringify.h" />

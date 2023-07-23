@@ -663,7 +663,7 @@ Status OkStatus();
 // operator<<()
 //
 // Prints a human-readable representation of `x` to `os`.
-std::ostream& operator<<(std::ostream& os, const Status& x);
+ABSEIL_EXPORT std::ostream& operator<<(std::ostream& os, const Status& x);
 
 // IsAborted()
 // IsAlreadyExists()
@@ -684,22 +684,22 @@ std::ostream& operator<<(std::ostream& os, const Status& x);
 //
 // These convenience functions return `true` if a given status matches the
 // `absl::StatusCode` error code of its associated function.
-ABSL_MUST_USE_RESULT ABSEIL_EXPORT bool IsAborted(const Status& status);
-ABSL_MUST_USE_RESULT ABSEIL_EXPORT bool IsAlreadyExists(const Status& status);
-ABSL_MUST_USE_RESULT ABSEIL_EXPORT bool IsCancelled(const Status& status);
-ABSL_MUST_USE_RESULT ABSEIL_EXPORT bool IsDataLoss(const Status& status);
-ABSL_MUST_USE_RESULT ABSEIL_EXPORT bool IsDeadlineExceeded(const Status& status);
-ABSL_MUST_USE_RESULT ABSEIL_EXPORT bool IsFailedPrecondition(const Status& status);
-ABSL_MUST_USE_RESULT ABSEIL_EXPORT bool IsInternal(const Status& status);
-ABSL_MUST_USE_RESULT ABSEIL_EXPORT bool IsInvalidArgument(const Status& status);
-ABSL_MUST_USE_RESULT ABSEIL_EXPORT bool IsNotFound(const Status& status);
-ABSL_MUST_USE_RESULT ABSEIL_EXPORT bool IsOutOfRange(const Status& status);
-ABSL_MUST_USE_RESULT ABSEIL_EXPORT bool IsPermissionDenied(const Status& status);
-ABSL_MUST_USE_RESULT ABSEIL_EXPORT bool IsResourceExhausted(const Status& status);
-ABSL_MUST_USE_RESULT ABSEIL_EXPORT bool IsUnauthenticated(const Status& status);
-ABSL_MUST_USE_RESULT ABSEIL_EXPORT bool IsUnavailable(const Status& status);
-ABSL_MUST_USE_RESULT ABSEIL_EXPORT bool IsUnimplemented(const Status& status);
-ABSL_MUST_USE_RESULT ABSEIL_EXPORT bool IsUnknown(const Status& status);
+ABSL_MUST_USE_RESULT bool IsAborted(const Status& status);
+ABSL_MUST_USE_RESULT bool IsAlreadyExists(const Status& status);
+ABSL_MUST_USE_RESULT bool IsCancelled(const Status& status);
+ABSL_MUST_USE_RESULT bool IsDataLoss(const Status& status);
+ABSL_MUST_USE_RESULT bool IsDeadlineExceeded(const Status& status);
+ABSL_MUST_USE_RESULT bool IsFailedPrecondition(const Status& status);
+ABSL_MUST_USE_RESULT bool IsInternal(const Status& status);
+ABSL_MUST_USE_RESULT bool IsInvalidArgument(const Status& status);
+ABSL_MUST_USE_RESULT bool IsNotFound(const Status& status);
+ABSL_MUST_USE_RESULT bool IsOutOfRange(const Status& status);
+ABSL_MUST_USE_RESULT bool IsPermissionDenied(const Status& status);
+ABSL_MUST_USE_RESULT bool IsResourceExhausted(const Status& status);
+ABSL_MUST_USE_RESULT bool IsUnauthenticated(const Status& status);
+ABSL_MUST_USE_RESULT bool IsUnavailable(const Status& status);
+ABSL_MUST_USE_RESULT bool IsUnimplemented(const Status& status);
+ABSL_MUST_USE_RESULT bool IsUnknown(const Status& status);
 
 // AbortedError()
 // AlreadyExistsError()

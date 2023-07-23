@@ -34,9 +34,9 @@ namespace cctz {
 class TimeZoneIf {
  public:
   // A factory function for TimeZoneIf implementations.
-  static std::unique_ptr<TimeZoneIf> Load(const std::string& name);
+  ABSEIL_EXPORT static std::unique_ptr<TimeZoneIf> Load(const std::string& name);
 
-  virtual ~TimeZoneIf();
+  ABSEIL_EXPORT virtual ~TimeZoneIf();
 
   virtual time_zone::absolute_lookup BreakTime(
       const time_point<seconds>& tp) const = 0;

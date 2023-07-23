@@ -21,7 +21,7 @@ namespace absl {
 ABSL_NAMESPACE_BEGIN
 namespace strings_internal {
 
-ABSL_CONST_INIT ABSEIL_EXPORT const char kBase64Chars[] =
+ABSEIL_EXPORT ABSL_CONST_INIT const char kBase64Chars[] =
     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
 size_t CalculateBase64EscapedLenInternal(size_t input_len, bool do_padding) {

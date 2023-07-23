@@ -228,7 +228,7 @@ class Duration {
 };
 
 // Relational Operators
-ABSL_ATTRIBUTE_CONST_FUNCTION constexpr bool operator<(Duration lhs,
+ABSEIL_EXPORT  ABSL_ATTRIBUTE_CONST_FUNCTION constexpr bool operator<(Duration lhs,
                                                        Duration rhs);
 ABSL_ATTRIBUTE_CONST_FUNCTION constexpr bool operator>(Duration lhs,
                                                        Duration rhs) {
@@ -242,7 +242,7 @@ ABSL_ATTRIBUTE_CONST_FUNCTION constexpr bool operator<=(Duration lhs,
                                                         Duration rhs) {
   return !(rhs < lhs);
 }
-ABSL_ATTRIBUTE_CONST_FUNCTION constexpr bool operator==(Duration lhs,
+ABSEIL_EXPORT ABSL_ATTRIBUTE_CONST_FUNCTION constexpr bool operator==(Duration lhs,
                                                         Duration rhs);
 ABSL_ATTRIBUTE_CONST_FUNCTION constexpr bool operator!=(Duration lhs,
                                                         Duration rhs) {
@@ -250,7 +250,7 @@ ABSL_ATTRIBUTE_CONST_FUNCTION constexpr bool operator!=(Duration lhs,
 }
 
 // Additive Operators
-ABSL_ATTRIBUTE_CONST_FUNCTION constexpr Duration operator-(Duration d);
+ABSEIL_EXPORT ABSL_ATTRIBUTE_CONST_FUNCTION constexpr Duration operator-(Duration d);
 ABSL_ATTRIBUTE_CONST_FUNCTION inline Duration operator+(Duration lhs,
                                                         Duration rhs) {
   return lhs += rhs;
@@ -412,7 +412,7 @@ ABSEIL_EXPORT ABSL_ATTRIBUTE_CONST_FUNCTION Duration Ceil(Duration d, Duration u
 //
 // The examples involving the `/` operator above also apply to `IDivDuration()`
 // and `FDivDuration()`.
-ABSL_ATTRIBUTE_CONST_FUNCTION constexpr Duration InfiniteDuration();
+ABSEIL_EXPORT ABSL_ATTRIBUTE_CONST_FUNCTION constexpr Duration InfiniteDuration();
 
 // Nanoseconds()
 // Microseconds()
@@ -520,12 +520,12 @@ ABSL_ATTRIBUTE_CONST_FUNCTION Duration Hours(T n) {
 //
 //   absl::Duration d = absl::Milliseconds(1500);
 //   int64_t isec = absl::ToInt64Seconds(d);  // isec == 1
-ABSL_ATTRIBUTE_CONST_FUNCTION ABSEIL_EXPORT int64_t ToInt64Nanoseconds( Duration d );
-ABSL_ATTRIBUTE_CONST_FUNCTION ABSEIL_EXPORT int64_t ToInt64Microseconds( Duration d );
-ABSL_ATTRIBUTE_CONST_FUNCTION ABSEIL_EXPORT int64_t ToInt64Milliseconds( Duration d );
-ABSL_ATTRIBUTE_CONST_FUNCTION ABSEIL_EXPORT int64_t ToInt64Seconds( Duration d );
-ABSL_ATTRIBUTE_CONST_FUNCTION ABSEIL_EXPORT int64_t ToInt64Minutes( Duration d );
-ABSL_ATTRIBUTE_CONST_FUNCTION ABSEIL_EXPORT int64_t ToInt64Hours(Duration d);
+ABSEIL_EXPORT ABSL_ATTRIBUTE_CONST_FUNCTION int64_t ToInt64Nanoseconds(Duration d);
+ABSEIL_EXPORT ABSL_ATTRIBUTE_CONST_FUNCTION int64_t ToInt64Microseconds(Duration d);
+ABSEIL_EXPORT ABSL_ATTRIBUTE_CONST_FUNCTION int64_t ToInt64Milliseconds(Duration d);
+ABSEIL_EXPORT ABSL_ATTRIBUTE_CONST_FUNCTION int64_t ToInt64Seconds(Duration d);
+ABSEIL_EXPORT ABSL_ATTRIBUTE_CONST_FUNCTION int64_t ToInt64Minutes(Duration d);
+ABSEIL_EXPORT ABSL_ATTRIBUTE_CONST_FUNCTION int64_t ToInt64Hours(Duration d);
 
 // ToDoubleNanoseconds()
 // ToDoubleMicroseconds()
@@ -542,12 +542,12 @@ ABSL_ATTRIBUTE_CONST_FUNCTION ABSEIL_EXPORT int64_t ToInt64Hours(Duration d);
 //
 //   absl::Duration d = absl::Milliseconds(1500);
 //   double dsec = absl::ToDoubleSeconds(d);  // dsec == 1.5
-ABSL_ATTRIBUTE_CONST_FUNCTION ABSEIL_EXPORT double ToDoubleNanoseconds(Duration d);
-ABSL_ATTRIBUTE_CONST_FUNCTION ABSEIL_EXPORT double ToDoubleMicroseconds(Duration d);
-ABSL_ATTRIBUTE_CONST_FUNCTION ABSEIL_EXPORT double ToDoubleMilliseconds(Duration d);
-ABSL_ATTRIBUTE_CONST_FUNCTION ABSEIL_EXPORT double ToDoubleSeconds(Duration d);
-ABSL_ATTRIBUTE_CONST_FUNCTION ABSEIL_EXPORT double ToDoubleMinutes(Duration d);
-ABSL_ATTRIBUTE_CONST_FUNCTION ABSEIL_EXPORT double ToDoubleHours(Duration d);
+ABSEIL_EXPORT ABSL_ATTRIBUTE_CONST_FUNCTION double ToDoubleNanoseconds(Duration d);
+ABSEIL_EXPORT ABSL_ATTRIBUTE_CONST_FUNCTION double ToDoubleMicroseconds(Duration d);
+ABSEIL_EXPORT ABSL_ATTRIBUTE_CONST_FUNCTION double ToDoubleMilliseconds(Duration d);
+ABSEIL_EXPORT ABSL_ATTRIBUTE_CONST_FUNCTION double ToDoubleSeconds(Duration d);
+ABSEIL_EXPORT ABSL_ATTRIBUTE_CONST_FUNCTION double ToDoubleMinutes(Duration d);
+ABSEIL_EXPORT ABSL_ATTRIBUTE_CONST_FUNCTION double ToDoubleHours(Duration d);
 
 // FromChrono()
 //
@@ -557,17 +557,17 @@ ABSL_ATTRIBUTE_CONST_FUNCTION ABSEIL_EXPORT double ToDoubleHours(Duration d);
 //
 //   std::chrono::milliseconds ms(123);
 //   absl::Duration d = absl::FromChrono(ms);
-ABSL_ATTRIBUTE_PURE_FUNCTION constexpr Duration FromChrono(
+ABSEIL_EXPORT ABSL_ATTRIBUTE_PURE_FUNCTION constexpr Duration FromChrono(
     const std::chrono::nanoseconds& d);
-ABSL_ATTRIBUTE_PURE_FUNCTION constexpr Duration FromChrono(
+ABSEIL_EXPORT ABSL_ATTRIBUTE_PURE_FUNCTION constexpr Duration FromChrono(
     const std::chrono::microseconds& d);
-ABSL_ATTRIBUTE_PURE_FUNCTION constexpr Duration FromChrono(
+ABSEIL_EXPORT ABSL_ATTRIBUTE_PURE_FUNCTION constexpr Duration FromChrono(
     const std::chrono::milliseconds& d);
-ABSL_ATTRIBUTE_PURE_FUNCTION constexpr Duration FromChrono(
+ABSEIL_EXPORT ABSL_ATTRIBUTE_PURE_FUNCTION constexpr Duration FromChrono(
     const std::chrono::seconds& d);
-ABSL_ATTRIBUTE_PURE_FUNCTION constexpr Duration FromChrono(
+ABSEIL_EXPORT ABSL_ATTRIBUTE_PURE_FUNCTION constexpr Duration FromChrono(
     const std::chrono::minutes& d);
-ABSL_ATTRIBUTE_PURE_FUNCTION constexpr Duration FromChrono(
+ABSEIL_EXPORT ABSL_ATTRIBUTE_PURE_FUNCTION constexpr Duration FromChrono(
     const std::chrono::hours& d);
 
 // ToChronoNanoseconds()
@@ -588,21 +588,21 @@ ABSL_ATTRIBUTE_PURE_FUNCTION constexpr Duration FromChrono(
 //   auto y = absl::ToChronoNanoseconds(d);  // x == y
 //   auto z = absl::ToChronoSeconds(absl::InfiniteDuration());
 //   // z == std::chrono::seconds::max()
-ABSL_ATTRIBUTE_CONST_FUNCTION ABSEIL_EXPORT std::chrono::nanoseconds ToChronoNanoseconds(
+ABSEIL_EXPORT ABSL_ATTRIBUTE_CONST_FUNCTION std::chrono::nanoseconds ToChronoNanoseconds(
     Duration d);
-ABSL_ATTRIBUTE_CONST_FUNCTION ABSEIL_EXPORT std::chrono::microseconds ToChronoMicroseconds(
+ABSEIL_EXPORT ABSL_ATTRIBUTE_CONST_FUNCTION std::chrono::microseconds ToChronoMicroseconds(
     Duration d);
-ABSL_ATTRIBUTE_CONST_FUNCTION ABSEIL_EXPORT std::chrono::milliseconds ToChronoMilliseconds(
+ABSEIL_EXPORT ABSL_ATTRIBUTE_CONST_FUNCTION std::chrono::milliseconds ToChronoMilliseconds(
     Duration d);
-ABSL_ATTRIBUTE_CONST_FUNCTION ABSEIL_EXPORT std::chrono::seconds ToChronoSeconds(Duration d);
-ABSL_ATTRIBUTE_CONST_FUNCTION ABSEIL_EXPORT std::chrono::minutes ToChronoMinutes(Duration d);
-ABSL_ATTRIBUTE_CONST_FUNCTION ABSEIL_EXPORT std::chrono::hours ToChronoHours(Duration d);
+ABSEIL_EXPORT ABSL_ATTRIBUTE_CONST_FUNCTION std::chrono::seconds ToChronoSeconds(Duration d);
+ABSEIL_EXPORT ABSL_ATTRIBUTE_CONST_FUNCTION std::chrono::minutes ToChronoMinutes(Duration d);
+ABSEIL_EXPORT ABSL_ATTRIBUTE_CONST_FUNCTION std::chrono::hours ToChronoHours(Duration d);
 
 // FormatDuration()
 //
 // Returns a string representing the duration in the form "72h3m0.5s".
 // Returns "inf" or "-inf" for +/- `InfiniteDuration()`.
-ABSL_ATTRIBUTE_CONST_FUNCTION ABSEIL_EXPORT std::string FormatDuration(Duration d);
+ABSEIL_EXPORT ABSL_ATTRIBUTE_CONST_FUNCTION std::string FormatDuration(Duration d);
 
 // Output stream operator.
 inline std::ostream& operator<<(std::ostream& os, Duration d) {
@@ -840,13 +840,13 @@ ABSL_ATTRIBUTE_CONST_FUNCTION constexpr Time InfinitePast() {
 // FromUniversal()
 //
 // Creates an `absl::Time` from a variety of other representations.
-ABSL_ATTRIBUTE_CONST_FUNCTION constexpr Time FromUnixNanos(int64_t ns);
-ABSL_ATTRIBUTE_CONST_FUNCTION constexpr Time FromUnixMicros(int64_t us);
-ABSL_ATTRIBUTE_CONST_FUNCTION constexpr Time FromUnixMillis(int64_t ms);
-ABSL_ATTRIBUTE_CONST_FUNCTION constexpr Time FromUnixSeconds(int64_t s);
-ABSL_ATTRIBUTE_CONST_FUNCTION constexpr Time FromTimeT(time_t t);
-ABSL_ATTRIBUTE_CONST_FUNCTION ABSEIL_EXPORT Time FromUDate(double udate);
-ABSL_ATTRIBUTE_CONST_FUNCTION ABSEIL_EXPORT Time FromUniversal(int64_t universal);
+ABSEIL_EXPORT ABSL_ATTRIBUTE_CONST_FUNCTION constexpr Time FromUnixNanos(int64_t ns);
+ABSEIL_EXPORT ABSL_ATTRIBUTE_CONST_FUNCTION constexpr Time FromUnixMicros(int64_t us);
+ABSEIL_EXPORT ABSL_ATTRIBUTE_CONST_FUNCTION constexpr Time FromUnixMillis(int64_t ms);
+ABSEIL_EXPORT ABSL_ATTRIBUTE_CONST_FUNCTION constexpr Time FromUnixSeconds(int64_t s);
+ABSEIL_EXPORT ABSL_ATTRIBUTE_CONST_FUNCTION constexpr Time FromTimeT(time_t t);
+ABSEIL_EXPORT ABSL_ATTRIBUTE_CONST_FUNCTION Time FromUDate(double udate);
+ABSEIL_EXPORT ABSL_ATTRIBUTE_CONST_FUNCTION Time FromUniversal(int64_t universal);
 
 // ToUnixNanos()
 // ToUnixMicros()
@@ -860,13 +860,13 @@ ABSL_ATTRIBUTE_CONST_FUNCTION ABSEIL_EXPORT Time FromUniversal(int64_t universal
 // these operations round down toward negative infinity where necessary to
 // adjust to the resolution of the result type.  Beware of possible time_t
 // over/underflow in ToTime{T,val,spec}() on 32-bit platforms.
-ABSL_ATTRIBUTE_CONST_FUNCTION ABSEIL_EXPORT int64_t ToUnixNanos(Time t);
-ABSL_ATTRIBUTE_CONST_FUNCTION ABSEIL_EXPORT int64_t ToUnixMicros(Time t);
-ABSL_ATTRIBUTE_CONST_FUNCTION ABSEIL_EXPORT int64_t ToUnixMillis(Time t);
-ABSL_ATTRIBUTE_CONST_FUNCTION ABSEIL_EXPORT int64_t ToUnixSeconds(Time t);
-ABSL_ATTRIBUTE_CONST_FUNCTION ABSEIL_EXPORT time_t ToTimeT(Time t);
-ABSL_ATTRIBUTE_CONST_FUNCTION ABSEIL_EXPORT double ToUDate(Time t);
-ABSL_ATTRIBUTE_CONST_FUNCTION ABSEIL_EXPORT int64_t ToUniversal(Time t);
+ABSEIL_EXPORT ABSL_ATTRIBUTE_CONST_FUNCTION int64_t ToUnixNanos(Time t);
+ABSEIL_EXPORT ABSL_ATTRIBUTE_CONST_FUNCTION int64_t ToUnixMicros(Time t);
+ABSEIL_EXPORT ABSL_ATTRIBUTE_CONST_FUNCTION int64_t ToUnixMillis(Time t);
+ABSEIL_EXPORT ABSL_ATTRIBUTE_CONST_FUNCTION int64_t ToUnixSeconds(Time t);
+ABSEIL_EXPORT ABSL_ATTRIBUTE_CONST_FUNCTION time_t ToTimeT(Time t);
+ABSEIL_EXPORT ABSL_ATTRIBUTE_CONST_FUNCTION double ToUDate(Time t);
+ABSEIL_EXPORT ABSL_ATTRIBUTE_CONST_FUNCTION int64_t ToUniversal(Time t);
 
 // DurationFromTimespec()
 // DurationFromTimeval()
@@ -882,14 +882,14 @@ ABSL_ATTRIBUTE_CONST_FUNCTION ABSEIL_EXPORT int64_t ToUniversal(Time t);
 // and gettimeofday(2)), so conversion functions are provided for both cases.
 // The "to timespec/val" direction is easily handled via overloading, but
 // for "from timespec/val" the desired type is part of the function name.
-ABSL_ATTRIBUTE_CONST_FUNCTION ABSEIL_EXPORT Duration DurationFromTimespec(timespec ts);
-ABSL_ATTRIBUTE_CONST_FUNCTION ABSEIL_EXPORT Duration DurationFromTimeval(timeval tv);
-ABSL_ATTRIBUTE_CONST_FUNCTION ABSEIL_EXPORT timespec ToTimespec(Duration d);
-ABSL_ATTRIBUTE_CONST_FUNCTION ABSEIL_EXPORT timeval ToTimeval(Duration d);
-ABSL_ATTRIBUTE_CONST_FUNCTION ABSEIL_EXPORT Time TimeFromTimespec(timespec ts);
-ABSL_ATTRIBUTE_CONST_FUNCTION ABSEIL_EXPORT Time TimeFromTimeval(timeval tv);
-ABSL_ATTRIBUTE_CONST_FUNCTION ABSEIL_EXPORT timespec ToTimespec(Time t);
-ABSL_ATTRIBUTE_CONST_FUNCTION ABSEIL_EXPORT timeval ToTimeval(Time t);
+ABSEIL_EXPORT ABSL_ATTRIBUTE_CONST_FUNCTION Duration DurationFromTimespec(timespec ts);
+ABSEIL_EXPORT ABSL_ATTRIBUTE_CONST_FUNCTION Duration DurationFromTimeval(timeval tv);
+ABSEIL_EXPORT ABSL_ATTRIBUTE_CONST_FUNCTION timespec ToTimespec(Duration d);
+ABSEIL_EXPORT ABSL_ATTRIBUTE_CONST_FUNCTION timeval ToTimeval(Duration d);
+ABSEIL_EXPORT ABSL_ATTRIBUTE_CONST_FUNCTION Time TimeFromTimespec(timespec ts);
+ABSEIL_EXPORT ABSL_ATTRIBUTE_CONST_FUNCTION Time TimeFromTimeval(timeval tv);
+ABSEIL_EXPORT ABSL_ATTRIBUTE_CONST_FUNCTION timespec ToTimespec(Time t);
+ABSEIL_EXPORT ABSL_ATTRIBUTE_CONST_FUNCTION timeval ToTimeval(Time t);
 
 // FromChrono()
 //
@@ -900,7 +900,7 @@ ABSL_ATTRIBUTE_CONST_FUNCTION ABSEIL_EXPORT timeval ToTimeval(Time t);
 //   auto tp = std::chrono::system_clock::from_time_t(123);
 //   absl::Time t = absl::FromChrono(tp);
 //   // t == absl::FromTimeT(123)
-ABSL_ATTRIBUTE_PURE_FUNCTION ABSEIL_EXPORT Time
+ABSEIL_EXPORT ABSL_ATTRIBUTE_PURE_FUNCTION Time
 FromChrono(const std::chrono::system_clock::time_point& tp);
 
 // ToChronoTime()
@@ -914,7 +914,7 @@ FromChrono(const std::chrono::system_clock::time_point& tp);
 //   absl::Time t = absl::FromTimeT(123);
 //   auto tp = absl::ToChronoTime(t);
 //   // tp == std::chrono::system_clock::from_time_t(123);
-ABSL_ATTRIBUTE_CONST_FUNCTION ABSEIL_EXPORT std::chrono::system_clock::time_point
+ABSEIL_EXPORT ABSL_ATTRIBUTE_CONST_FUNCTION std::chrono::system_clock::time_point
     ToChronoTime(Time);
 
 // AbslParseFlag()
@@ -1307,13 +1307,13 @@ inline Time FromDateTime(int64_t year, int mon, int day, int hour,
 // instant, so `tm_isdst != 0` returns the DST instant, and `tm_isdst == 0`
 // returns the non-DST instant, that would have matched if the transition never
 // happened.
-ABSL_ATTRIBUTE_PURE_FUNCTION ABSEIL_EXPORT Time FromTM(const struct tm& tm, TimeZone tz);
+ABSEIL_EXPORT ABSL_ATTRIBUTE_PURE_FUNCTION Time FromTM(const struct tm& tm, TimeZone tz);
 
 // ToTM()
 //
 // Converts the given `absl::Time` to a struct tm using the given time zone.
 // See ctime(3) for a description of the values of the tm fields.
-ABSL_ATTRIBUTE_PURE_FUNCTION ABSEIL_EXPORT struct tm ToTM(Time t, TimeZone tz);
+ABSEIL_EXPORT ABSL_ATTRIBUTE_PURE_FUNCTION struct tm ToTM(Time t, TimeZone tz);
 
 // RFC3339_full
 // RFC3339_sec
@@ -1372,14 +1372,14 @@ ABSL_DLL extern const char RFC1123_no_wday[];  // %d %b %E4Y %H:%M:%S %z
 // `absl::InfinitePast()`, the returned string will be exactly "infinite-past".
 // In both cases the given format string and `absl::TimeZone` are ignored.
 //
-ABSL_ATTRIBUTE_PURE_FUNCTION ABSEIL_EXPORT std::string FormatTime(absl::string_view format,
+ABSEIL_EXPORT ABSL_ATTRIBUTE_PURE_FUNCTION std::string FormatTime(absl::string_view format,
                                                     Time t, TimeZone tz);
 
 // Convenience functions that format the given time using the RFC3339_full
 // format.  The first overload uses the provided TimeZone, while the second
 // uses LocalTimeZone().
-ABSL_ATTRIBUTE_PURE_FUNCTION ABSEIL_EXPORT std::string FormatTime(Time t, TimeZone tz);
-ABSL_ATTRIBUTE_PURE_FUNCTION ABSEIL_EXPORT std::string FormatTime(Time t);
+ABSEIL_EXPORT ABSL_ATTRIBUTE_PURE_FUNCTION std::string FormatTime(Time t, TimeZone tz);
+ABSEIL_EXPORT ABSL_ATTRIBUTE_PURE_FUNCTION std::string FormatTime(Time t);
 
 // Output stream operator.
 inline std::ostream& operator<<(std::ostream& os, Time t) {

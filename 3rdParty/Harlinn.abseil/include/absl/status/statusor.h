@@ -97,7 +97,7 @@ class BadStatusOrAccess : public std::exception {
   ABSEIL_EXPORT const absl::Status& status() const;
 
  private:
-  ABSEIL_EXPORT void InitWhat() const;
+  void InitWhat() const;
 
   absl::Status status_;
   mutable absl::once_flag init_what_;

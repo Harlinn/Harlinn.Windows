@@ -60,14 +60,14 @@ namespace container_internal {
 // occur in the callback to `HashtablezSampler::Iterate`.
 struct HashtablezInfo : public profiling_internal::Sample<HashtablezInfo> {
   // Constructs the object but does not fill in any fields.
-  HashtablezInfo();
-  ~HashtablezInfo();
+  ABSEIL_EXPORT HashtablezInfo();
+  ABSEIL_EXPORT ~HashtablezInfo();
   HashtablezInfo(const HashtablezInfo&) = delete;
   HashtablezInfo& operator=(const HashtablezInfo&) = delete;
 
   // Puts the object into a clean state, fills in the logically `const` members,
   // blocking for any readers that are currently sampling the object.
-  void PrepareForSampling(int64_t stride, size_t inline_element_size_value)
+  ABSEIL_EXPORT void PrepareForSampling(int64_t stride, size_t inline_element_size_value)
       ABSL_EXCLUSIVE_LOCKS_REQUIRED(init_mu);
 
   // These fields are mutated by the various Record* APIs and need to be
@@ -95,19 +95,19 @@ struct HashtablezInfo : public profiling_internal::Sample<HashtablezInfo> {
   size_t inline_element_size;  // How big is the slot?
 };
 
-void RecordRehashSlow(HashtablezInfo* info, size_t total_probe_length);
+ABSEIL_EXPORT void RecordRehashSlow(HashtablezInfo* info, size_t total_probe_length);
 
-void RecordReservationSlow(HashtablezInfo* info, size_t target_capacity);
+ABSEIL_EXPORT void RecordReservationSlow(HashtablezInfo* info, size_t target_capacity);
 
-void RecordClearedReservationSlow(HashtablezInfo* info);
+ABSEIL_EXPORT void RecordClearedReservationSlow(HashtablezInfo* info);
 
-void RecordStorageChangedSlow(HashtablezInfo* info, size_t size,
+ABSEIL_EXPORT void RecordStorageChangedSlow(HashtablezInfo* info, size_t size,
                               size_t capacity);
 
-void RecordInsertSlow(HashtablezInfo* info, size_t hash,
+ABSEIL_EXPORT void RecordInsertSlow(HashtablezInfo* info, size_t hash,
                       size_t distance_from_desired);
 
-void RecordEraseSlow(HashtablezInfo* info);
+ABSEIL_EXPORT void RecordEraseSlow(HashtablezInfo* info);
 
 struct SamplingState {
   int64_t next_sample;
@@ -116,9 +116,9 @@ struct SamplingState {
   int64_t sample_stride;
 };
 
-HashtablezInfo* SampleSlow(SamplingState& next_sample,
+ABSEIL_EXPORT HashtablezInfo* SampleSlow(SamplingState& next_sample,
                            size_t inline_element_size);
-void UnsampleSlow(HashtablezInfo* info);
+ABSEIL_EXPORT void UnsampleSlow(HashtablezInfo* info);
 
 #if defined(ABSL_INTERNAL_HASHTABLEZ_SAMPLE)
 #error ABSL_INTERNAL_HASHTABLEZ_SAMPLE cannot be directly set

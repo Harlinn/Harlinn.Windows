@@ -222,9 +222,9 @@ inline StringConvertResult FormatConvertImpl(std::string_view v,
 }
 #endif  // ABSL_HAVE_STD_STRING_VIEW && !ABSL_USES_STD_STRING_VIEW
 
-ArgConvertResult<FormatConversionCharSetUnion(
+ABSEIL_EXPORT ArgConvertResult<FormatConversionCharSetUnion(
     FormatConversionCharSetInternal::s, FormatConversionCharSetInternal::p)>
-ABSEIL_EXPORT FormatConvertImpl(const char* v, const FormatConversionSpecImpl conv,
+FormatConvertImpl(const char* v, const FormatConversionSpecImpl conv,
                   FormatSinkImpl* sink);
 
 template <class AbslCord, typename std::enable_if<std::is_same<

@@ -77,7 +77,7 @@ class PerThreadSem {
   // Permitted callers.
   friend class PerThreadSemTest;
   friend class absl::Mutex;
-  friend void OneTimeInitThreadIdentity(absl::base_internal::ThreadIdentity*);
+  friend ABSEIL_EXPORT void OneTimeInitThreadIdentity(absl::base_internal::ThreadIdentity*);
 };
 
 }  // namespace synchronization_internal
@@ -91,9 +91,9 @@ ABSL_NAMESPACE_END
 // By changing our extension points to be extern "C", we dodge this
 // check.
 extern "C" {
-void ABSL_INTERNAL_C_SYMBOL(AbslInternalPerThreadSemPost)(
+ABSEIL_EXPORT void ABSL_INTERNAL_C_SYMBOL(AbslInternalPerThreadSemPost)(
     absl::base_internal::ThreadIdentity* identity);
-bool ABSL_INTERNAL_C_SYMBOL(AbslInternalPerThreadSemWait)(
+ABSEIL_EXPORT bool ABSL_INTERNAL_C_SYMBOL(AbslInternalPerThreadSemWait)(
     absl::synchronization_internal::KernelTimeout t);
 }  // extern "C"
 

@@ -648,7 +648,7 @@ ABSEIL_EXPORT CordRepBtree* CordRepBtree::AddData(CordRepBtree* tree, absl::stri
 }
 
 template <EdgeType edge_type>
-ABSEIL_EXPORT CordRepBtree* CordRepBtree::Merge(CordRepBtree* dst, CordRepBtree* src) {
+CordRepBtree* CordRepBtree::Merge(CordRepBtree* dst, CordRepBtree* src) {
   assert(dst->height() >= src->height());
 
   // Capture source length as we may consume / destroy `src`.
@@ -1086,14 +1086,14 @@ CordRepBtree* CordRepBtree::Prepend(CordRepBtree* tree, absl::string_view data,
   return CordRepBtree::AddData<kFront>(tree, data, extra);
 }
 
-template CordRepBtree* CordRepBtree::AddCordRep<kFront>(CordRepBtree* tree,
+template ABSEIL_TEMPLATE_EXPORT CordRepBtree* CordRepBtree::AddCordRep<kFront>(CordRepBtree* tree,
                                                         CordRep* rep);
-template CordRepBtree* CordRepBtree::AddCordRep<kBack>(CordRepBtree* tree,
+template ABSEIL_TEMPLATE_EXPORT CordRepBtree* CordRepBtree::AddCordRep<kBack>(CordRepBtree* tree,
                                                        CordRep* rep);
-template CordRepBtree* CordRepBtree::AddData<kFront>(CordRepBtree* tree,
+template ABSEIL_TEMPLATE_EXPORT CordRepBtree* CordRepBtree::AddData<kFront>(CordRepBtree* tree,
                                                      absl::string_view data,
                                                      size_t extra);
-template CordRepBtree* CordRepBtree::AddData<kBack>(CordRepBtree* tree,
+template ABSEIL_TEMPLATE_EXPORT CordRepBtree* CordRepBtree::AddData<kBack>(CordRepBtree* tree,
                                                     absl::string_view data,
                                                     size_t extra);
 

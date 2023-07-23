@@ -494,9 +494,9 @@ strings_internal::ParsedFloat ParseFloat(const char* begin, const char* end,
   return result;
 }
 
-template ParsedFloat ABSEIL_TEMPLATE_EXPORT ParseFloat<10>(const char* begin, const char* end,
+template ABSEIL_TEMPLATE_EXPORT ParsedFloat ParseFloat<10>(const char* begin, const char* end,
                                     chars_format format_flags);
-template ParsedFloat ABSEIL_TEMPLATE_EXPORT ParseFloat<16>(const char* begin, const char* end,
+template ABSEIL_TEMPLATE_EXPORT ParsedFloat ParseFloat<16>(const char* begin, const char* end,
                                     chars_format format_flags);
 
 }  // namespace strings_internal

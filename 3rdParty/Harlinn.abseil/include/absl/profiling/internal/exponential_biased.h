@@ -101,7 +101,7 @@ class ExponentialBiased {
   // Computes a random number in the range [0, 1<<(kPrngNumBits+1) - 1]
   //
   // This is public to enable testing.
-  ABSEIL_EXPORT static uint64_t NextRandom(uint64_t rnd);
+  static uint64_t NextRandom(uint64_t rnd);
 
  private:
   ABSEIL_EXPORT void Initialize();

@@ -171,7 +171,7 @@ class ABSL_LOCKABLE SpinLock {
     return scheduling_mode == base_internal::SCHEDULE_COOPERATIVE_AND_KERNEL;
   }
 
-  uint32_t TryLockInternal(uint32_t lock_value, uint32_t wait_cycles);
+  ABSEIL_EXPORT uint32_t TryLockInternal(uint32_t lock_value, uint32_t wait_cycles);
   ABSEIL_EXPORT void SlowLock() ABSL_ATTRIBUTE_COLD;
   ABSEIL_EXPORT void SlowUnlock(uint32_t lock_value) ABSL_ATTRIBUTE_COLD;
   ABSEIL_EXPORT uint32_t SpinLoop();

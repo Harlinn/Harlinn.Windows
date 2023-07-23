@@ -226,20 +226,20 @@ namespace detect_specialization {
 // their 64-bit variant. This does not change the printed value, but reduces the
 // number of instantiations even further. Promoting an integer is very cheap at
 // the call site.
-int64_t operator<<(std::ostream&, short value);           // NOLINT
-int64_t operator<<(std::ostream&, unsigned short value);  // NOLINT
-int64_t operator<<(std::ostream&, int value);
-int64_t operator<<(std::ostream&, unsigned int value);
-int64_t operator<<(std::ostream&, long value);                 // NOLINT
-uint64_t operator<<(std::ostream&, unsigned long value);       // NOLINT
-int64_t operator<<(std::ostream&, long long value);            // NOLINT
-uint64_t operator<<(std::ostream&, unsigned long long value);  // NOLINT
-float operator<<(std::ostream&, float value);
-double operator<<(std::ostream&, double value);
-long double operator<<(std::ostream&, long double value);
-bool operator<<(std::ostream&, bool value);
-const void* operator<<(std::ostream&, const void* value);
-const void* operator<<(std::ostream&, std::nullptr_t);
+ABSEIL_EXPORT int64_t operator<<(std::ostream&, short value);           // NOLINT
+ABSEIL_EXPORT int64_t operator<<(std::ostream&, unsigned short value);  // NOLINT
+ABSEIL_EXPORT int64_t operator<<(std::ostream&, int value);
+ABSEIL_EXPORT int64_t operator<<(std::ostream&, unsigned int value);
+ABSEIL_EXPORT int64_t operator<<(std::ostream&, long value);                 // NOLINT
+ABSEIL_EXPORT uint64_t operator<<(std::ostream&, unsigned long value);       // NOLINT
+ABSEIL_EXPORT int64_t operator<<(std::ostream&, long long value);            // NOLINT
+ABSEIL_EXPORT uint64_t operator<<(std::ostream&, unsigned long long value);  // NOLINT
+ABSEIL_EXPORT float operator<<(std::ostream&, float value);
+ABSEIL_EXPORT double operator<<(std::ostream&, double value);
+ABSEIL_EXPORT long double operator<<(std::ostream&, long double value);
+ABSEIL_EXPORT bool operator<<(std::ostream&, bool value);
+ABSEIL_EXPORT const void* operator<<(std::ostream&, const void* value);
+ABSEIL_EXPORT const void* operator<<(std::ostream&, std::nullptr_t);
 
 // These `char` overloads are specified like this in the standard, so we have to
 // write them exactly the same to ensure the call is ambiguous.
@@ -298,7 +298,7 @@ std::string* MakeCheckOpString(T1 v1, T2 v2, const char* exprtext) {
 // Add a few commonly used instantiations as extern to reduce size of objects
 // files.
 #define ABSL_LOG_INTERNAL_DEFINE_MAKE_CHECK_OP_STRING_EXTERN(x) \
-  extern template ABSEIL_TEMPLATE_EXPORT_DECL std::string* MakeCheckOpString(x, x, const char*)
+  extern template std::string* MakeCheckOpString(x, x, const char*)
 ABSL_LOG_INTERNAL_DEFINE_MAKE_CHECK_OP_STRING_EXTERN(bool);
 ABSL_LOG_INTERNAL_DEFINE_MAKE_CHECK_OP_STRING_EXTERN(int64_t);
 ABSL_LOG_INTERNAL_DEFINE_MAKE_CHECK_OP_STRING_EXTERN(uint64_t);
@@ -341,13 +341,13 @@ ABSL_LOG_INTERNAL_CHECK_OP_IMPL(Check_GE, >=)
 ABSL_LOG_INTERNAL_CHECK_OP_IMPL(Check_GT, >)
 #undef ABSL_LOG_INTERNAL_CHECK_OP_IMPL
 
-ABSEIL_EXPORT std::string* CheckstrcmptrueImpl(const char* s1, const char* s2,
+std::string* CheckstrcmptrueImpl(const char* s1, const char* s2,
                                  const char* exprtext);
-ABSEIL_EXPORT std::string* CheckstrcmpfalseImpl(const char* s1, const char* s2,
+std::string* CheckstrcmpfalseImpl(const char* s1, const char* s2,
                                   const char* exprtext);
-ABSEIL_EXPORT std::string* CheckstrcasecmptrueImpl(const char* s1, const char* s2,
+std::string* CheckstrcasecmptrueImpl(const char* s1, const char* s2,
                                      const char* exprtext);
-ABSEIL_EXPORT std::string* CheckstrcasecmpfalseImpl(const char* s1, const char* s2,
+std::string* CheckstrcasecmpfalseImpl(const char* s1, const char* s2,
                                       const char* exprtext);
 
 // `CHECK_EQ` and friends want to pass their arguments by reference, however

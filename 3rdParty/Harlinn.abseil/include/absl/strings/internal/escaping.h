@@ -23,7 +23,7 @@ namespace absl {
 ABSL_NAMESPACE_BEGIN
 namespace strings_internal {
 
-ABSL_CONST_INIT extern ABSEIL_EXPORT const char kBase64Chars[];
+ABSEIL_EXPORT ABSL_CONST_INIT extern const char kBase64Chars[];
 
 // Calculates the length of a Base64 encoding (RFC 4648) of a string of length
 // `input_len`, with or without padding per `do_padding`. Note that 'web-safe'

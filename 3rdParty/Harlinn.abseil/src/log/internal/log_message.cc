@@ -364,23 +364,23 @@ LogMessage& LogMessage::operator<<(std::ios_base& (*m)(std::ios_base& os)) {
   data_->manipulated << m;
   return *this;
 }
-template ABSEIL_TEMPLATE_EXPORT LogMessage& LogMessage::operator<<(const char& v);
-template ABSEIL_TEMPLATE_EXPORT LogMessage& LogMessage::operator<<(const signed char& v);
-template ABSEIL_TEMPLATE_EXPORT LogMessage& LogMessage::operator<<(const unsigned char& v);
-template ABSEIL_TEMPLATE_EXPORT LogMessage& LogMessage::operator<<(const short& v);           // NOLINT
-template ABSEIL_TEMPLATE_EXPORT LogMessage& LogMessage::operator<<(const unsigned short& v);  // NOLINT
-template ABSEIL_TEMPLATE_EXPORT LogMessage& LogMessage::operator<<(const int& v);
-template ABSEIL_TEMPLATE_EXPORT LogMessage& LogMessage::operator<<(const unsigned int& v);
-template ABSEIL_TEMPLATE_EXPORT LogMessage& LogMessage::operator<<(const long& v);           // NOLINT
-template ABSEIL_TEMPLATE_EXPORT LogMessage& LogMessage::operator<<(const unsigned long& v);  // NOLINT
-template ABSEIL_TEMPLATE_EXPORT LogMessage& LogMessage::operator<<(const long long& v);      // NOLINT
-template ABSEIL_TEMPLATE_EXPORT LogMessage& LogMessage::operator<<(
+template LogMessage& LogMessage::operator<<(const char& v);
+template LogMessage& LogMessage::operator<<(const signed char& v);
+template LogMessage& LogMessage::operator<<(const unsigned char& v);
+template LogMessage& LogMessage::operator<<(const short& v);           // NOLINT
+template LogMessage& LogMessage::operator<<(const unsigned short& v);  // NOLINT
+template LogMessage& LogMessage::operator<<(const int& v);
+template LogMessage& LogMessage::operator<<(const unsigned int& v);
+template LogMessage& LogMessage::operator<<(const long& v);           // NOLINT
+template LogMessage& LogMessage::operator<<(const unsigned long& v);  // NOLINT
+template LogMessage& LogMessage::operator<<(const long long& v);      // NOLINT
+template LogMessage& LogMessage::operator<<(
     const unsigned long long& v);  // NOLINT
-template ABSEIL_TEMPLATE_EXPORT LogMessage& LogMessage::operator<<(void* const& v);
-template ABSEIL_TEMPLATE_EXPORT LogMessage& LogMessage::operator<<(const void* const& v);
-template ABSEIL_TEMPLATE_EXPORT LogMessage& LogMessage::operator<<(const float& v);
-template ABSEIL_TEMPLATE_EXPORT LogMessage& LogMessage::operator<<(const double& v);
-template ABSEIL_TEMPLATE_EXPORT LogMessage& LogMessage::operator<<(const bool& v);
+template LogMessage& LogMessage::operator<<(void* const& v);
+template LogMessage& LogMessage::operator<<(const void* const& v);
+template LogMessage& LogMessage::operator<<(const float& v);
+template LogMessage& LogMessage::operator<<(const double& v);
+template LogMessage& LogMessage::operator<<(const bool& v);
 
 void LogMessage::Flush() {
   if (data_->entry.log_severity() < absl::MinLogLevel())

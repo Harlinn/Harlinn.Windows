@@ -241,7 +241,7 @@ class Cord {
   // data.
   ABSEIL_EXPORT void Append(const Cord& src);
   ABSEIL_EXPORT void Append(Cord&& src);
-  ABSEIL_EXPORT void Append(absl::string_view src);
+  void Append(absl::string_view src);
   template <typename T, EnableIfString<T> = 0>
   ABSEIL_EXPORT void Append(T&& src);
 
@@ -302,7 +302,7 @@ class Cord {
   // Prepends data to the Cord, which may come from another Cord or other string
   // data.
   ABSEIL_EXPORT void Prepend(const Cord& src);
-  ABSEIL_EXPORT void Prepend(absl::string_view src);
+  void Prepend(absl::string_view src);
   template <typename T, EnableIfString<T> = 0>
   ABSEIL_EXPORT void Prepend(T&& src);
 

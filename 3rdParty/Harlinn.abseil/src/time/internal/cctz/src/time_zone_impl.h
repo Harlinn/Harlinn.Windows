@@ -33,15 +33,15 @@ namespace cctz {
 class time_zone::Impl {
  public:
   // The UTC time zone. Also used for other time zones that fail to load.
-  static time_zone UTC();
+  ABSEIL_EXPORT static time_zone UTC();
 
   // Load a named time zone. Returns false if the name is invalid, or if
   // some other kind of error occurs. Note that loading "UTC" never fails.
-  static bool LoadTimeZone(const std::string& name, time_zone* tz);
+  ABSEIL_EXPORT static bool LoadTimeZone(const std::string& name, time_zone* tz);
 
   // Clears the map of cached time zones.  Primarily for use in benchmarks
   // that gauge the performance of loading/parsing the time-zone data.
-  static void ClearTimeZoneMapTestOnly();
+  ABSEIL_EXPORT static void ClearTimeZoneMapTestOnly();
 
   // The primary key is the time-zone ID (e.g., "America/New_York").
   const std::string& Name() const {
@@ -78,8 +78,8 @@ class time_zone::Impl {
   std::string Description() const { return zone_->Description(); }
 
  private:
-  explicit Impl(const std::string& name);
-  static const Impl* UTCImpl();
+  ABSEIL_EXPORT explicit Impl(const std::string& name);
+  ABSEIL_EXPORT static const Impl* UTCImpl();
 
   const std::string name_;
   std::unique_ptr<TimeZoneIf> zone_;

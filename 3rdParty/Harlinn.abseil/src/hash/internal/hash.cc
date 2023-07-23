@@ -44,7 +44,7 @@ uint64_t MixingHashState::CombineLargeContiguousImpl64(
                                std::integral_constant<int, 8>{});
 }
 
-ABSL_CONST_INIT const void* const MixingHashState::kSeed = &kSeed;
+ABSEIL_EXPORT ABSL_CONST_INIT const void* const MixingHashState::kSeed = &kSeed;
 
 // The salt array used by LowLevelHash. This array is NOT the mechanism used to
 // make absl::Hash non-deterministic between program invocations.  See `Seed()`

@@ -455,12 +455,12 @@ inline int GetYearDay(CivilSecond cs) {
 //   absl::CivilDay d = absl::CivilDay(1969, 7, 20);
 //   std::string day_string = absl::FormatCivilTime(d);  // "1969-07-20"
 //
-std::string FormatCivilTime(CivilSecond c);
-std::string FormatCivilTime(CivilMinute c);
-std::string FormatCivilTime(CivilHour c);
-std::string FormatCivilTime(CivilDay c);
-std::string FormatCivilTime(CivilMonth c);
-std::string FormatCivilTime(CivilYear c);
+ABSEIL_EXPORT std::string FormatCivilTime(CivilSecond c);
+ABSEIL_EXPORT std::string FormatCivilTime(CivilMinute c);
+ABSEIL_EXPORT std::string FormatCivilTime(CivilHour c);
+ABSEIL_EXPORT std::string FormatCivilTime(CivilDay c);
+ABSEIL_EXPORT std::string FormatCivilTime(CivilMonth c);
+ABSEIL_EXPORT std::string FormatCivilTime(CivilYear c);
 
 // absl::ParseCivilTime()
 //
@@ -486,12 +486,12 @@ std::string FormatCivilTime(CivilYear c);
 // Note that parsing will fail if the string's format does not match the
 // expected type exactly. `ParseLenientCivilTime()` below is more lenient.
 //
-bool ParseCivilTime(absl::string_view s, CivilSecond* c);
-bool ParseCivilTime(absl::string_view s, CivilMinute* c);
-bool ParseCivilTime(absl::string_view s, CivilHour* c);
-bool ParseCivilTime(absl::string_view s, CivilDay* c);
-bool ParseCivilTime(absl::string_view s, CivilMonth* c);
-bool ParseCivilTime(absl::string_view s, CivilYear* c);
+ABSEIL_EXPORT bool ParseCivilTime(absl::string_view s, CivilSecond* c);
+ABSEIL_EXPORT bool ParseCivilTime(absl::string_view s, CivilMinute* c);
+ABSEIL_EXPORT bool ParseCivilTime(absl::string_view s, CivilHour* c);
+ABSEIL_EXPORT bool ParseCivilTime(absl::string_view s, CivilDay* c);
+ABSEIL_EXPORT bool ParseCivilTime(absl::string_view s, CivilMonth* c);
+ABSEIL_EXPORT bool ParseCivilTime(absl::string_view s, CivilYear* c);
 
 // ParseLenientCivilTime()
 //
@@ -506,12 +506,12 @@ bool ParseCivilTime(absl::string_view s, CivilYear* c);
 //   ok = absl::ParseLenientCivilTime("1969-07-20T10", &d);   // OK: T10 floored
 //   ok = absl::ParseLenientCivilTime("1969-07", &d);   // OK: day defaults to 1
 //
-bool ParseLenientCivilTime(absl::string_view s, CivilSecond* c);
-bool ParseLenientCivilTime(absl::string_view s, CivilMinute* c);
-bool ParseLenientCivilTime(absl::string_view s, CivilHour* c);
-bool ParseLenientCivilTime(absl::string_view s, CivilDay* c);
-bool ParseLenientCivilTime(absl::string_view s, CivilMonth* c);
-bool ParseLenientCivilTime(absl::string_view s, CivilYear* c);
+ABSEIL_EXPORT bool ParseLenientCivilTime(absl::string_view s, CivilSecond* c);
+ABSEIL_EXPORT bool ParseLenientCivilTime(absl::string_view s, CivilMinute* c);
+ABSEIL_EXPORT bool ParseLenientCivilTime(absl::string_view s, CivilHour* c);
+ABSEIL_EXPORT bool ParseLenientCivilTime(absl::string_view s, CivilDay* c);
+ABSEIL_EXPORT bool ParseLenientCivilTime(absl::string_view s, CivilMonth* c);
+ABSEIL_EXPORT bool ParseLenientCivilTime(absl::string_view s, CivilYear* c);
 
 namespace time_internal {  // For functions found via ADL on civil-time tags.
 
@@ -525,35 +525,35 @@ namespace time_internal {  // For functions found via ADL on civil-time tags.
 //   absl::CivilDay d = absl::CivilDay(1969, 7, 20);
 //   std::cout << "Date is: " << d << "\n";
 //
-std::ostream& operator<<(std::ostream& os, CivilYear y);
-std::ostream& operator<<(std::ostream& os, CivilMonth m);
-std::ostream& operator<<(std::ostream& os, CivilDay d);
-std::ostream& operator<<(std::ostream& os, CivilHour h);
-std::ostream& operator<<(std::ostream& os, CivilMinute m);
-std::ostream& operator<<(std::ostream& os, CivilSecond s);
+ABSEIL_EXPORT std::ostream& operator<<(std::ostream& os, CivilYear y);
+ABSEIL_EXPORT std::ostream& operator<<(std::ostream& os, CivilMonth m);
+ABSEIL_EXPORT std::ostream& operator<<(std::ostream& os, CivilDay d);
+ABSEIL_EXPORT std::ostream& operator<<(std::ostream& os, CivilHour h);
+ABSEIL_EXPORT std::ostream& operator<<(std::ostream& os, CivilMinute m);
+ABSEIL_EXPORT std::ostream& operator<<(std::ostream& os, CivilSecond s);
 
 // AbslParseFlag()
 //
 // Parses the command-line flag string representation `s` into a civil-time
 // value. Flags must be specified in a format that is valid for
 // `absl::ParseLenientCivilTime()`.
-bool AbslParseFlag(absl::string_view s, CivilSecond* c, std::string* error);
-bool AbslParseFlag(absl::string_view s, CivilMinute* c, std::string* error);
-bool AbslParseFlag(absl::string_view s, CivilHour* c, std::string* error);
-bool AbslParseFlag(absl::string_view s, CivilDay* c, std::string* error);
-bool AbslParseFlag(absl::string_view s, CivilMonth* c, std::string* error);
-bool AbslParseFlag(absl::string_view s, CivilYear* c, std::string* error);
+ABSEIL_EXPORT bool AbslParseFlag(absl::string_view s, CivilSecond* c, std::string* error);
+ABSEIL_EXPORT bool AbslParseFlag(absl::string_view s, CivilMinute* c, std::string* error);
+ABSEIL_EXPORT bool AbslParseFlag(absl::string_view s, CivilHour* c, std::string* error);
+ABSEIL_EXPORT bool AbslParseFlag(absl::string_view s, CivilDay* c, std::string* error);
+ABSEIL_EXPORT bool AbslParseFlag(absl::string_view s, CivilMonth* c, std::string* error);
+ABSEIL_EXPORT bool AbslParseFlag(absl::string_view s, CivilYear* c, std::string* error);
 
 // AbslUnparseFlag()
 //
 // Unparses a civil-time value into a command-line string representation using
 // the format specified by `absl::ParseCivilTime()`.
-std::string AbslUnparseFlag(CivilSecond c);
-std::string AbslUnparseFlag(CivilMinute c);
-std::string AbslUnparseFlag(CivilHour c);
-std::string AbslUnparseFlag(CivilDay c);
-std::string AbslUnparseFlag(CivilMonth c);
-std::string AbslUnparseFlag(CivilYear c);
+ABSEIL_EXPORT std::string AbslUnparseFlag(CivilSecond c);
+ABSEIL_EXPORT std::string AbslUnparseFlag(CivilMinute c);
+ABSEIL_EXPORT std::string AbslUnparseFlag(CivilHour c);
+ABSEIL_EXPORT std::string AbslUnparseFlag(CivilDay c);
+ABSEIL_EXPORT std::string AbslUnparseFlag(CivilMonth c);
+ABSEIL_EXPORT std::string AbslUnparseFlag(CivilYear c);
 
 }  // namespace time_internal
 

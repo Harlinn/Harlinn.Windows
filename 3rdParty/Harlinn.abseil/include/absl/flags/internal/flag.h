@@ -508,7 +508,7 @@ class FlagImpl final : public CommandLineFlag {
   // it is only used inside the three routines below, which are defined in
   // flag.cc, we can define it in that file as well.
   template <typename StorageT>
-  StorageT* OffsetValue() const;
+  ABSEIL_EXPORT StorageT* OffsetValue() const;
   // This is an accessor for a value stored in an aligned buffer storage
   // used for non-trivially-copyable data types.
   // Returns a mutable pointer to the start of a buffer.

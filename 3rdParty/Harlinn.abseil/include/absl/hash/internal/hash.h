@@ -925,7 +925,7 @@ struct is_hashable
     : std::integral_constant<bool, HashSelect::template Apply<T>::value> {};
 
 // MixingHashState
-class ABSL_DLL MixingHashState : public HashStateBase<MixingHashState> {
+class /*ABSL_DLL*/ MixingHashState : public HashStateBase<MixingHashState> {
   // absl::uint128 is not an alias or a thin wrapper around the intrinsic.
   // We use the intrinsic when available to improve performance.
 #ifdef ABSL_HAVE_INTRINSIC_INT128
@@ -1032,10 +1032,10 @@ class ABSL_DLL MixingHashState : public HashStateBase<MixingHashState> {
   // Slow dispatch path for calls to CombineContiguousImpl with a size argument
   // larger than PiecewiseChunkSize().  Has the same effect as calling
   // CombineContiguousImpl() repeatedly with the chunk stride size.
-  static uint64_t CombineLargeContiguousImpl32(uint64_t state,
+  ABSEIL_EXPORT static uint64_t CombineLargeContiguousImpl32(uint64_t state,
                                                const unsigned char* first,
                                                size_t len);
-  static uint64_t CombineLargeContiguousImpl64(uint64_t state,
+  ABSEIL_EXPORT static uint64_t CombineLargeContiguousImpl64(uint64_t state,
                                                const unsigned char* first,
                                                size_t len);
 
@@ -1106,7 +1106,7 @@ class ABSL_DLL MixingHashState : public HashStateBase<MixingHashState> {
 
   // An extern to avoid bloat on a direct call to LowLevelHash() with fixed
   // values for both the seed and salt parameters.
-  static uint64_t LowLevelHashImpl(const unsigned char* data, size_t len);
+  ABSEIL_EXPORT static uint64_t LowLevelHashImpl(const unsigned char* data, size_t len);
 
   ABSL_ATTRIBUTE_ALWAYS_INLINE static uint64_t Hash64(const unsigned char* data,
                                                       size_t len) {
@@ -1143,7 +1143,7 @@ class ABSL_DLL MixingHashState : public HashStateBase<MixingHashState> {
     return static_cast<uint64_t>(reinterpret_cast<uintptr_t>(kSeed));
 #endif
   }
-  static const void* const kSeed;
+  ABSEIL_EXPORT static const void* const kSeed;
 
   uint64_t state_;
 };

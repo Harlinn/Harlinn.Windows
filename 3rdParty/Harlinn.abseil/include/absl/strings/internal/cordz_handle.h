@@ -54,7 +54,7 @@ class CordzHandle {
   // Deletes the provided instance, or puts it on the delete queue to be deleted
   // once there are no more sample tokens (snapshot) instances potentially
   // referencing the instance. `handle` should not be null.
-  static void Delete(CordzHandle* handle);
+  ABSEIL_EXPORT static void Delete(CordzHandle* handle);
 
   // Returns the current entries in the delete queue in LIFO order.
   ABSEIL_EXPORT static std::vector<const CordzHandle*> DiagnosticsGetDeleteQueue();
@@ -108,7 +108,7 @@ class CordzHandle {
 #endif
   }
 
-  ABSL_CONST_INIT static Queue global_queue_;
+  ABSEIL_EXPORT ABSL_CONST_INIT static Queue global_queue_;
   Queue* const queue_ = &global_queue_;
   const bool is_snapshot_;
 

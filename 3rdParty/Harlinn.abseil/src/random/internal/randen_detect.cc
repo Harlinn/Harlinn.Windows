@@ -128,7 +128,7 @@ namespace random_internal {
 // 3. Use the default for the compiler architecture.
 //
 
-bool CPUSupportsRandenHwAes() {
+ABSEIL_EXPORT bool CPUSupportsRandenHwAes() {
 #if defined(ABSL_INTERNAL_USE_X86_CPUID)
   // 1. For x86: Use CPUID to detect the required AES instruction set.
   int regs[4];

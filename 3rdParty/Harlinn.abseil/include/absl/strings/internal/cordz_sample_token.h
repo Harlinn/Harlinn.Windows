@@ -69,8 +69,8 @@ class CordzSampleToken : public CordzSnapshot {
 
     ABSEIL_EXPORT Iterator& operator++();
     ABSEIL_EXPORT Iterator operator++(int);
-    ABSEIL_EXPORT friend bool operator==(const Iterator& lhs, const Iterator& rhs);
-    ABSEIL_EXPORT friend bool operator!=(const Iterator& lhs, const Iterator& rhs);
+    friend ABSEIL_EXPORT bool operator==(const Iterator& lhs, const Iterator& rhs);
+    friend ABSEIL_EXPORT bool operator!=(const Iterator& lhs, const Iterator& rhs);
     ABSEIL_EXPORT reference operator*() const;
     ABSEIL_EXPORT pointer operator->() const;
 

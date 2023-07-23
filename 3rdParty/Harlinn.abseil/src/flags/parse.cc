@@ -98,8 +98,8 @@ struct SpecifiedFlagsCompare {
 ABSL_NAMESPACE_END
 }  // namespace absl
 
-ABSL_FLAG_DLL(std::vector<std::string>, flagfile, {},
-          "comma-separated list of files to load flags from", ABSEIL_EXPORT )
+ABSL_FLAG(std::vector<std::string>, flagfile, {},
+          "comma-separated list of files to load flags from")
     .OnUpdate([]() {
       if (absl::GetFlag(FLAGS_flagfile).empty()) return;
 
@@ -113,9 +113,9 @@ ABSL_FLAG_DLL(std::vector<std::string>, flagfile, {},
 
       absl::flags_internal::flagfile_needs_processing = true;
     });
-ABSL_FLAG_DLL(std::vector<std::string>, fromenv, {},
+ABSL_FLAG(std::vector<std::string>, fromenv, {},
           "comma-separated list of flags to set from the environment"
-          " [use 'export FLAGS_flag1=value']", ABSEIL_EXPORT )
+          " [use 'export FLAGS_flag1=value']")
     .OnUpdate([]() {
       if (absl::GetFlag(FLAGS_fromenv).empty()) return;
 
@@ -129,9 +129,9 @@ ABSL_FLAG_DLL(std::vector<std::string>, fromenv, {},
 
       absl::flags_internal::fromenv_needs_processing = true;
     });
-ABSL_FLAG_DLL(std::vector<std::string>, tryfromenv, {},
+ABSL_FLAG(std::vector<std::string>, tryfromenv, {},
           "comma-separated list of flags to try to set from the environment if "
-          "present", ABSEIL_EXPORT )
+          "present")
     .OnUpdate([]() {
       if (absl::GetFlag(FLAGS_tryfromenv).empty()) return;
 
@@ -147,10 +147,10 @@ ABSL_FLAG_DLL(std::vector<std::string>, tryfromenv, {},
       absl::flags_internal::tryfromenv_needs_processing = true;
     });
 
-ABSL_FLAG_DLL(std::vector<std::string>, undefok, {},
+ABSL_FLAG(std::vector<std::string>, undefok, {},
           "comma-separated list of flag names that it is okay to specify "
           "on the command line even if the program does not define a flag "
-          "with that name", ABSEIL_EXPORT );
+          "with that name");
 
 namespace absl {
 ABSL_NAMESPACE_BEGIN

@@ -70,13 +70,13 @@ struct StatusRep {
   std::unique_ptr<status_internal::Payloads> payloads;
 };
 
-absl::StatusCode MapToLocalCode(int value);
+ABSEIL_EXPORT absl::StatusCode MapToLocalCode(int value);
 
 // Returns a pointer to a newly-allocated string with the given `prefix`,
 // suitable for output as an error message in assertion/`CHECK()` failures.
 //
 // This is an internal implementation detail for Abseil logging.
-std::string* MakeCheckFailString(const absl::Status* status,
+ABSEIL_EXPORT std::string* MakeCheckFailString(const absl::Status* status,
                                  const char* prefix);
 
 }  // namespace status_internal

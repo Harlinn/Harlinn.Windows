@@ -69,18 +69,18 @@ class TimeZoneInfo : public TimeZoneIf {
   TimeZoneInfo& operator=(const TimeZoneInfo&) = delete;
 
   // Loads the zoneinfo for the given name, returning true if successful.
-  bool Load(const std::string& name);
+  ABSEIL_EXPORT bool Load(const std::string& name);
 
   // TimeZoneIf implementations.
-  time_zone::absolute_lookup BreakTime(
+  ABSEIL_EXPORT time_zone::absolute_lookup BreakTime(
       const time_point<seconds>& tp) const override;
-  time_zone::civil_lookup MakeTime(const civil_second& cs) const override;
-  bool NextTransition(const time_point<seconds>& tp,
+  ABSEIL_EXPORT time_zone::civil_lookup MakeTime(const civil_second& cs) const override;
+  ABSEIL_EXPORT bool NextTransition(const time_point<seconds>& tp,
                       time_zone::civil_transition* trans) const override;
-  bool PrevTransition(const time_point<seconds>& tp,
+  ABSEIL_EXPORT bool PrevTransition(const time_point<seconds>& tp,
                       time_zone::civil_transition* trans) const override;
-  std::string Version() const override;
-  std::string Description() const override;
+  ABSEIL_EXPORT std::string Version() const override;
+  ABSEIL_EXPORT std::string Description() const override;
 
  private:
   struct Header {            // counts of:
@@ -91,25 +91,25 @@ class TimeZoneInfo : public TimeZoneIf {
     std::size_t ttisstdcnt;  // UTC/local indicators (unused)
     std::size_t ttisutcnt;   // standard/wall indicators (unused)
 
-    bool Build(const tzhead& tzh);
-    std::size_t DataLength(std::size_t time_len) const;
+    ABSEIL_EXPORT bool Build(const tzhead& tzh);
+    ABSEIL_EXPORT std::size_t DataLength(std::size_t time_len) const;
   };
 
-  bool GetTransitionType(std::int_fast32_t utc_offset, bool is_dst,
+  ABSEIL_EXPORT bool GetTransitionType(std::int_fast32_t utc_offset, bool is_dst,
                          const std::string& abbr, std::uint_least8_t* index);
-  bool EquivTransitions(std::uint_fast8_t tt1_index,
+  ABSEIL_EXPORT bool EquivTransitions(std::uint_fast8_t tt1_index,
                         std::uint_fast8_t tt2_index) const;
-  bool ExtendTransitions();
+  ABSEIL_EXPORT bool ExtendTransitions();
 
-  bool ResetToBuiltinUTC(const seconds& offset);
-  bool Load(ZoneInfoSource* zip);
+  ABSEIL_EXPORT bool ResetToBuiltinUTC(const seconds& offset);
+  ABSEIL_EXPORT bool Load(ZoneInfoSource* zip);
 
   // Helpers for BreakTime() and MakeTime().
-  time_zone::absolute_lookup LocalTime(std::int_fast64_t unix_time,
+  ABSEIL_EXPORT time_zone::absolute_lookup LocalTime(std::int_fast64_t unix_time,
                                        const TransitionType& tt) const;
-  time_zone::absolute_lookup LocalTime(std::int_fast64_t unix_time,
+  ABSEIL_EXPORT time_zone::absolute_lookup LocalTime(std::int_fast64_t unix_time,
                                        const Transition& tr) const;
-  time_zone::civil_lookup TimeLocal(const civil_second& cs,
+  ABSEIL_EXPORT time_zone::civil_lookup TimeLocal(const civil_second& cs,
                                     year_t c4_shift) const;
 
   std::vector<Transition> transitions_;  // ordered by unix_time and civil_sec

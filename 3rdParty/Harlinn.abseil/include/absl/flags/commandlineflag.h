@@ -150,7 +150,7 @@ class CommandLineFlag {
   // Sets the value of the flag based on specified string `value`. If the flag
   // was successfully set to new value, it returns true. Otherwise, sets `error`
   // to indicate the error, leaves the flag unchanged, and returns false.
-  bool ParseFrom(absl::string_view value, std::string* error);
+  ABSEIL_EXPORT bool ParseFrom(absl::string_view value, std::string* error);
 
  protected:
   ~CommandLineFlag() = default;

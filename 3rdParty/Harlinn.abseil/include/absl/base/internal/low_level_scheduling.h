@@ -34,7 +34,7 @@ class CondVar;
 class Mutex;
 
 namespace synchronization_internal {
-int MutexDelay(int32_t c, int mode);
+ABSEIL_EXPORT int MutexDelay(int32_t c, int mode);
 }  // namespace synchronization_internal
 
 namespace base_internal {

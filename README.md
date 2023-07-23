@@ -16,7 +16,7 @@ Header only libraries are contained within ''Static library (.lib)'' projects, e
 All C++ code compiles using [/std:c++latest](https://docs.microsoft.com/en-us/cpp/build/reference/std-specify-language-standard-version?view=msvc-170) and [/Zc:__cplusplus](https://docs.microsoft.com/en-us/cpp/build/reference/zc-cplusplus?view=msvc-170)
 
 ### [abseil](https://abseil.io/)
-**Version:** 20210324.2
+**Version:** 20230125.3
 
 **Description:**
 > Abseil is an open source collection of C++ libraries drawn from the most fundamental pieces of Google’s 

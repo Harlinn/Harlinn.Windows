@@ -35,19 +35,19 @@
 // Log messages at this severity or above are sent to stderr in *addition* to
 // logfiles.  Defaults to `ERROR`.  See log_severity.h for numeric values of
 // severity levels.
-ABSL_DECLARE_FLAG_DLL(int, stderrthreshold, ABSEIL_EXPORT );
+ABSL_DECLARE_FLAG(int, stderrthreshold);
 
 // Log messages at this severity or above are logged; others are discarded.
 // Defaults to `INFO`, i.e. log all severities.  See log_severity.h for numeric
 // values of severity levels.
-ABSL_DECLARE_FLAG_DLL(int, minloglevel, ABSEIL_EXPORT );
+ABSL_DECLARE_FLAG(int, minloglevel);
 
 // If specified in the form file:linenum, any messages logged from a matching
 // location will also include a backtrace.
-ABSL_DECLARE_FLAG_DLL(std::string, log_backtrace_at, ABSEIL_EXPORT );
+ABSL_DECLARE_FLAG(std::string, log_backtrace_at);
 
 // If true, the log prefix (severity, date, time, PID, etc.) is prepended to
 // each message logged. Defaults to true.
-ABSL_DECLARE_FLAG_DLL(bool, log_prefix, ABSEIL_EXPORT );
+ABSL_DECLARE_FLAG(bool, log_prefix);
 
 #endif  // ABSL_LOG_INTERNAL_FLAGS_H_

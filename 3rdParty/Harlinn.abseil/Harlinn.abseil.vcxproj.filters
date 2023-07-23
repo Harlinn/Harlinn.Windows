@@ -678,11 +678,14 @@
     <ClCompile Include="src\types\bad_variant_access.cc">
       <Filter>src\types</Filter>
     </ClCompile>
-    <ClCompile Include="src\random\internal\distribution_test_util.cc">
-      <Filter>src\random\internal</Filter>
-    </ClCompile>
     <ClCompile Include="src\crc\internal\cpu_detect.cc">
       <Filter>src\crc\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\log\die_if_null.cc">
+      <Filter>src\log</Filter>
+    </ClCompile>
+    <ClCompile Include="src\random\internal\distribution_test_util.cc">
+      <Filter>src\random\internal</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1376,9 +1379,6 @@
     <ClInclude Include="include\absl\strings\internal\cord_rep_ring_reader.h">
       <Filter>include\absl\strings\internal</Filter>
     </ClInclude>
-    <ClInclude Include="include\absl\strings\internal\cord_rep_test_util.h">
-      <Filter>include\absl\strings\internal</Filter>
-    </ClInclude>
     <ClInclude Include="include\absl\strings\internal\cordz_functions.h">
       <Filter>include\absl\strings\internal</Filter>
     </ClInclude>
@@ -1616,13 +1616,13 @@
     <ClInclude Include="include\absl\base\absl_export.h">
       <Filter>include\absl\base</Filter>
     </ClInclude>
-    <ClInclude Include="include\absl\random\internal\distribution_test_util.h">
-      <Filter>include\absl\random\internal</Filter>
-    </ClInclude>
     <ClInclude Include="include\absl\random\internal\nanobenchmark.h">
       <Filter>include\absl\random\internal</Filter>
     </ClInclude>
     <ClInclude Include="include\absl\random\internal\randen_traits.h">
+      <Filter>include\absl\random\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\random\internal\distribution_test_util.h">
       <Filter>include\absl\random\internal</Filter>
     </ClInclude>
   </ItemGroup>

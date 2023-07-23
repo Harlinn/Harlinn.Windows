@@ -30,18 +30,18 @@ namespace cctz {
 // TODO: Add support for fixed offsets from UTC.
 class TimeZoneLibC : public TimeZoneIf {
  public:
-  explicit TimeZoneLibC(const std::string& name);
+  ABSEIL_EXPORT explicit TimeZoneLibC(const std::string& name);
 
   // TimeZoneIf implementations.
-  time_zone::absolute_lookup BreakTime(
+  ABSEIL_EXPORT time_zone::absolute_lookup BreakTime(
       const time_point<seconds>& tp) const override;
-  time_zone::civil_lookup MakeTime(const civil_second& cs) const override;
-  bool NextTransition(const time_point<seconds>& tp,
+  ABSEIL_EXPORT time_zone::civil_lookup MakeTime(const civil_second& cs) const override;
+  ABSEIL_EXPORT bool NextTransition(const time_point<seconds>& tp,
                       time_zone::civil_transition* trans) const override;
-  bool PrevTransition(const time_point<seconds>& tp,
+  ABSEIL_EXPORT bool PrevTransition(const time_point<seconds>& tp,
                       time_zone::civil_transition* trans) const override;
-  std::string Version() const override;
-  std::string Description() const override;
+  ABSEIL_EXPORT std::string Version() const override;
+  ABSEIL_EXPORT std::string Description() const override;
 
  private:
   const bool local_;  // localtime or UTC

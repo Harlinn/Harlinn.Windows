@@ -265,9 +265,9 @@ inline time_point<seconds> convert(const civil_second& cs,
 
 namespace detail {
 using femtoseconds = std::chrono::duration<std::int_fast64_t, std::femto>;
-std::string format(const std::string&, const time_point<seconds>&,
+ABSEIL_EXPORT std::string format(const std::string&, const time_point<seconds>&,
                    const femtoseconds&, const time_zone&);
-bool parse(const std::string&, const std::string&, const time_zone&,
+ABSEIL_EXPORT bool parse(const std::string&, const std::string&, const time_zone&,
            time_point<seconds>*, femtoseconds*, std::string* err = nullptr);
 template <typename Rep, std::intmax_t Denom>
 bool join_seconds(

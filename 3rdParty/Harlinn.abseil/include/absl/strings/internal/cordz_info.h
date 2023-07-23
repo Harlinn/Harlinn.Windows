@@ -230,7 +230,7 @@ class ABSL_LOCKABLE CordzInfo : public CordzHandle {
   ABSEIL_EXPORT static void MaybeTrackCordImpl(InlineData& cord, const InlineData& src,
                                  MethodIdentifier method);
 
-  ABSL_CONST_INIT static List global_list_;
+  ABSEIL_EXPORT ABSL_CONST_INIT static List global_list_;
   List* const list_ = &global_list_;
 
   // ci_prev_ and ci_next_ require the global list mutex to be held.
