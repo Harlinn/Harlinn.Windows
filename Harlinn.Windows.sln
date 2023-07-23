@@ -678,6 +678,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Harlinn.abseil", "3rdParty\
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Harlinn.gtest", "3rdParty\Harlinn.gtest\Harlinn.gtest.vcxproj", "{7A1FA6D2-BC91-4744-A62C-FDA1EAC22EBC}"
 	ProjectSection(ProjectDependencies) = postProject
+		{EA4E7902-023B-45C4-847D-27C8B920AE44} = {EA4E7902-023B-45C4-847D-27C8B920AE44}
 		{F2F6C316-38DC-4AFB-B64F-7D64FB3ED264} = {F2F6C316-38DC-4AFB-B64F-7D64FB3ED264}
 	EndProjectSection
 EndProject

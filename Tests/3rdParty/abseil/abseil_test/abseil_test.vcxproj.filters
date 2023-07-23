@@ -145,6 +145,12 @@
     <Filter Include="include\absl\strings">
       <UniqueIdentifier>{b5d202fe-6123-4fe8-bbe2-e4fdc229f13d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="include\absl\algorithm">
+      <UniqueIdentifier>{7d91a91e-5dd1-49bc-a1e3-2b8215474ed5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\absl\hash">
+      <UniqueIdentifier>{e061e7e0-4750-48a0-9752-c512b885c412}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="abseil_test.cpp">
@@ -780,6 +786,36 @@
     <ClCompile Include="utility\utility_test.cc">
       <Filter>utility</Filter>
     </ClCompile>
+    <ClCompile Include="container\btree_test.cc">
+      <Filter>container</Filter>
+    </ClCompile>
+    <ClCompile Include="container\fixed_array_exception_safety_test.cc">
+      <Filter>container</Filter>
+    </ClCompile>
+    <ClCompile Include="container\fixed_array_test.cc">
+      <Filter>container</Filter>
+    </ClCompile>
+    <ClCompile Include="container\flat_hash_map_test.cc">
+      <Filter>container</Filter>
+    </ClCompile>
+    <ClCompile Include="container\flat_hash_set_test.cc">
+      <Filter>container</Filter>
+    </ClCompile>
+    <ClCompile Include="container\inlined_vector_exception_safety_test.cc">
+      <Filter>container</Filter>
+    </ClCompile>
+    <ClCompile Include="container\inlined_vector_test.cc">
+      <Filter>container</Filter>
+    </ClCompile>
+    <ClCompile Include="container\node_hash_map_test.cc">
+      <Filter>container</Filter>
+    </ClCompile>
+    <ClCompile Include="container\node_hash_set_test.cc">
+      <Filter>container</Filter>
+    </ClCompile>
+    <ClCompile Include="container\sample_element_size_test.cc">
+      <Filter>container</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="hash\hash_testing.h">
@@ -847,6 +883,15 @@
     </ClInclude>
     <ClInclude Include="include\absl\strings\cordz_test_helpers.h">
       <Filter>include\absl\strings</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\base\internal\exception_testing.h">
+      <Filter>include\absl\base\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\container\btree_test.h">
+      <Filter>include\absl\container</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\hash\hash_testing.h">
+      <Filter>include\absl\hash</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

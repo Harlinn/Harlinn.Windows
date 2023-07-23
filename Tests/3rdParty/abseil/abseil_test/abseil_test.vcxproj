@@ -198,6 +198,13 @@
     <ClCompile Include="base\raw_logging_test.cc" />
     <ClCompile Include="base\throw_delegate_test.cc" />
     <ClCompile Include="cleanup\cleanup_test.cc" />
+    <ClCompile Include="container\btree_test.cc" />
+    <ClCompile Include="container\fixed_array_exception_safety_test.cc" />
+    <ClCompile Include="container\fixed_array_test.cc" />
+    <ClCompile Include="container\flat_hash_map_test.cc" />
+    <ClCompile Include="container\flat_hash_set_test.cc" />
+    <ClCompile Include="container\inlined_vector_exception_safety_test.cc" />
+    <ClCompile Include="container\inlined_vector_test.cc" />
     <ClCompile Include="container\internal\common_policy_traits_test.cc" />
     <ClCompile Include="container\internal\compressed_tuple_test.cc" />
     <ClCompile Include="container\internal\container_memory_test.cc" />
@@ -213,6 +220,9 @@
     <ClCompile Include="container\internal\test_instance_tracker_test.cc" />
     <ClCompile Include="container\internal\unordered_map_test.cc" />
     <ClCompile Include="container\internal\unordered_set_test.cc" />
+    <ClCompile Include="container\node_hash_map_test.cc" />
+    <ClCompile Include="container\node_hash_set_test.cc" />
+    <ClCompile Include="container\sample_element_size_test.cc" />
     <ClCompile Include="crc\crc32c_test.cc" />
     <ClCompile Include="crc\internal\crc_cord_state_test.cc" />
     <ClCompile Include="crc\internal\crc_memcpy_test.cc" />
@@ -384,7 +394,9 @@
     <ClInclude Include="hash\hash_testing.h" />
     <ClInclude Include="include\absl\base\internal\atomic_hook_test_helper.h" />
     <ClInclude Include="include\absl\base\internal\exception_safety_testing.h" />
+    <ClInclude Include="include\absl\base\internal\exception_testing.h" />
     <ClInclude Include="include\absl\base\internal\inline_variable_testing.h" />
+    <ClInclude Include="include\absl\container\btree_test.h" />
     <ClInclude Include="include\absl\container\internal\hash_generator_testing.h" />
     <ClInclude Include="include\absl\container\internal\hash_policy_testing.h" />
     <ClInclude Include="include\absl\container\internal\unordered_map_constructor_test.h" />
@@ -395,6 +407,7 @@
     <ClInclude Include="include\absl\container\internal\unordered_set_lookup_test.h" />
     <ClInclude Include="include\absl\container\internal\unordered_set_members_test.h" />
     <ClInclude Include="include\absl\container\internal\unordered_set_modifiers_test.h" />
+    <ClInclude Include="include\absl\hash\hash_testing.h" />
     <ClInclude Include="include\absl\strings\cordz_test_helpers.h" />
     <ClInclude Include="include\absl\strings\cord_test_helpers.h" />
     <ClInclude Include="log\log_basic_test_impl.h" />

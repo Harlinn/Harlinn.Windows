@@ -471,7 +471,7 @@ The abseil_test contains the unit tests for the Harlinn.abseil project
 **Project:** Harlinn.gta
 
 ### [GoogleTest](https://github.com/google/googletest)
-**Version:** 1.11.0
+**Version:** 1.13.0
 
 **Description:**
 > GoogleTest is Google’s C++ testing and mocking framework.

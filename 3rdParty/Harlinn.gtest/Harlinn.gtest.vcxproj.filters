@@ -51,11 +51,11 @@
     <ClCompile Include="dllmain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\gtest\gtest-all.cc">
-      <Filter>src\gtest</Filter>
-    </ClCompile>
     <ClCompile Include="src\gmock\gmock-all.cc">
       <Filter>src\gmock</Filter>
+    </ClCompile>
+    <ClCompile Include="src\gtest\gtest-all.cc">
+      <Filter>src\gtest</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -146,6 +146,9 @@
     <ClInclude Include="include\gtest\gtest_prod.h">
       <Filter>include\gtest</Filter>
     </ClInclude>
+    <ClInclude Include="include\gtest\gtest-assertion-result.h">
+      <Filter>include\gtest</Filter>
+    </ClInclude>
     <ClInclude Include="include\gtest\gtest-death-test.h">
       <Filter>include\gtest</Filter>
     </ClInclude>
@@ -170,49 +173,10 @@
     <ClInclude Include="include\gtest\gtest-typed-test.h">
       <Filter>include\gtest</Filter>
     </ClInclude>
-    <ClInclude Include="src\gtest\gtest-internal-inl.h">
-      <Filter>src\gtest</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="src\gtest\gtest.inl">
-      <Filter>src\gtest</Filter>
-    </None>
-    <None Include="src\gtest\gtest-death-test.inl">
-      <Filter>src\gtest</Filter>
-    </None>
-    <None Include="src\gtest\gtest-filepath.inl">
-      <Filter>src\gtest</Filter>
-    </None>
-    <None Include="src\gtest\gtest-matchers.inl">
-      <Filter>src\gtest</Filter>
-    </None>
-    <None Include="src\gtest\gtest-port.inl">
-      <Filter>src\gtest</Filter>
-    </None>
-    <None Include="src\gtest\gtest-printers.inl">
-      <Filter>src\gtest</Filter>
-    </None>
-    <None Include="src\gtest\gtest-test-part.inl">
-      <Filter>src\gtest</Filter>
-    </None>
-    <None Include="src\gtest\gtest-typed-test.inl">
-      <Filter>src\gtest</Filter>
-    </None>
-    <None Include="src\gmock\gmock.inl">
-      <Filter>src\gmock</Filter>
-    </None>
-    <None Include="src\gmock\gmock-cardinalities.inl">
-      <Filter>src\gmock</Filter>
-    </None>
-    <None Include="src\gmock\gmock-internal-utils.inl">
-      <Filter>src\gmock</Filter>
-    </None>
-    <None Include="src\gmock\gmock-matchers.inl">
-      <Filter>src\gmock</Filter>
-    </None>
-    <None Include="src\gmock\gmock-spec-builders.inl">
-      <Filter>src\gmock</Filter>
+    <None Include="include\gtest\internal\custom\README.md">
+      <Filter>include\gtest\internal\custom</Filter>
     </None>
   </ItemGroup>
 </Project>

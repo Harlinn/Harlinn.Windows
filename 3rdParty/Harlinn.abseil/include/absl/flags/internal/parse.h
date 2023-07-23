@@ -40,7 +40,7 @@ enum class OnUndefinedFlag {
   kAbortIfUndefined
 };
 
-std::vector<char*> ParseCommandLineImpl(int argc, char* argv[],
+ABSEIL_EXPORT std::vector<char*> ParseCommandLineImpl(int argc, char* argv[],
                                         ArgvListAction arg_list_act,
                                         UsageFlagsAction usage_flag_act,
                                         OnUndefinedFlag on_undef_flag);
@@ -50,11 +50,11 @@ std::vector<char*> ParseCommandLineImpl(int argc, char* argv[],
 
 // Returns true if flag with specified name was either present on the original
 // command line or specified in flag file present on the original command line.
-bool WasPresentOnCommandLine(absl::string_view flag_name);
+ABSEIL_EXPORT bool WasPresentOnCommandLine(absl::string_view flag_name);
 
 // Return existing flags similar to the parameter, in order to help in case of
 // misspellings.
-std::vector<std::string> GetMisspellingHints(absl::string_view flag);
+ABSEIL_EXPORT std::vector<std::string> GetMisspellingHints(absl::string_view flag);
 
 }  // namespace flags_internal
 ABSL_NAMESPACE_END

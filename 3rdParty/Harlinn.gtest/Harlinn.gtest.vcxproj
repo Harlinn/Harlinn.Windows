@@ -95,7 +95,7 @@
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
-      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.abseil\include;$(ProjectDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.abseil\include;$(SolutionDir)3rdParty\Harlinn.re2\include;$(ProjectDir)include;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
@@ -118,7 +118,7 @@
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <BufferSecurityCheck>false</BufferSecurityCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.abseil\include;$(ProjectDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.abseil\include;$(SolutionDir)3rdParty\Harlinn.re2\include;$(ProjectDir)include;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
@@ -140,7 +140,7 @@
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
-      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.abseil\include;$(ProjectDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.abseil\include;$(SolutionDir)3rdParty\Harlinn.re2\include;$(ProjectDir)include;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
@@ -163,7 +163,7 @@
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <BufferSecurityCheck>false</BufferSecurityCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.abseil\include;$(ProjectDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.abseil\include;$(SolutionDir)3rdParty\Harlinn.re2\include;$(ProjectDir)include;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
@@ -196,6 +196,7 @@
     <ClInclude Include="include\gmock\internal\gmock-internal-utils.h" />
     <ClInclude Include="include\gmock\internal\gmock-port.h" />
     <ClInclude Include="include\gmock\internal\gmock-pp.h" />
+    <ClInclude Include="include\gtest\gtest-assertion-result.h" />
     <ClInclude Include="include\gtest\gtest-death-test.h" />
     <ClInclude Include="include\gtest\gtest-matchers.h" />
     <ClInclude Include="include\gtest\gtest-message.h" />
@@ -218,22 +219,9 @@
     <ClInclude Include="include\gtest\internal\gtest-port.h" />
     <ClInclude Include="include\gtest\internal\gtest-string.h" />
     <ClInclude Include="include\gtest\internal\gtest-type-util.h" />
-    <ClInclude Include="src\gtest\gtest-internal-inl.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="src\gmock\gmock-cardinalities.inl" />
-    <None Include="src\gmock\gmock-internal-utils.inl" />
-    <None Include="src\gmock\gmock-matchers.inl" />
-    <None Include="src\gmock\gmock-spec-builders.inl" />
-    <None Include="src\gmock\gmock.inl" />
-    <None Include="src\gtest\gtest-death-test.inl" />
-    <None Include="src\gtest\gtest-filepath.inl" />
-    <None Include="src\gtest\gtest-matchers.inl" />
-    <None Include="src\gtest\gtest-port.inl" />
-    <None Include="src\gtest\gtest-printers.inl" />
-    <None Include="src\gtest\gtest-test-part.inl" />
-    <None Include="src\gtest\gtest-typed-test.inl" />
-    <None Include="src\gtest\gtest.inl" />
+    <None Include="include\gtest\internal\custom\README.md" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

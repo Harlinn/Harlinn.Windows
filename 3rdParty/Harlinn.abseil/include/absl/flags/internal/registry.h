@@ -32,13 +32,13 @@ namespace flags_internal {
 
 // Executes specified visitor for each non-retired flag in the registry. While
 // callback are executed, the registry is locked and can't be changed.
-void ForEachFlag(std::function<void(CommandLineFlag&)> visitor);
+ABSEIL_EXPORT void ForEachFlag(std::function<void(CommandLineFlag&)> visitor);
 
 //-----------------------------------------------------------------------------
 
-bool RegisterCommandLineFlag(CommandLineFlag&, const char* filename);
+ABSEIL_EXPORT bool RegisterCommandLineFlag(CommandLineFlag&, const char* filename);
 
-void FinalizeRegistry();
+ABSEIL_EXPORT void FinalizeRegistry();
 
 //-----------------------------------------------------------------------------
 // Retired registrations:
@@ -73,7 +73,7 @@ void FinalizeRegistry();
 //
 
 // Retire flag with name "name" and type indicated by ops.
-void Retire(const char* name, FlagFastTypeId type_id, char* buf);
+ABSEIL_EXPORT void Retire(const char* name, FlagFastTypeId type_id, char* buf);
 
 constexpr size_t kRetiredFlagObjSize = 3 * sizeof(void*);
 constexpr size_t kRetiredFlagObjAlignment = alignof(void*);

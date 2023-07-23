@@ -39,8 +39,8 @@
 #include "gmock/gmock.h"
 
 // The following lines pull in the real gmock *.cc files.
-#include "gmock-cardinalities.inl"
-#include "gmock-internal-utils.inl"
-#include "gmock-matchers.inl"
-#include "gmock-spec-builders.inl"
-#include "gmock.inl"
+#include "src/gmock/gmock-cardinalities.cc"
+#include "src/gmock/gmock-internal-utils.cc"
+#include "src/gmock/gmock-matchers.cc"
+#include "src/gmock/gmock-spec-builders.cc"
+#include "src/gmock/gmock.cc"
