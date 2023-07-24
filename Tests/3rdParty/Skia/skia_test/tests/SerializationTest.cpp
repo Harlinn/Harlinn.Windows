@@ -470,7 +470,7 @@ static void TestTypefaceSerialization(skiatest::Reporter* reporter, sk_sp<SkType
     SkFontMetrics fontMetrics, cloneMetrics;
     font.getMetrics(&fontMetrics);
     clone.getMetrics(&cloneMetrics);
-    REPORTER_ASSERT(reporter, fontMetrics == cloneMetrics,
+    REPORTER_ASSERT(reporter, (fontMetrics == cloneMetrics),
         "Typeface: \"%s\" CloneTypeface: \"%s\"", name.c_str(), cloneName.c_str());
 }
 DEF_TEST(Serialization_Typeface, reporter) {
