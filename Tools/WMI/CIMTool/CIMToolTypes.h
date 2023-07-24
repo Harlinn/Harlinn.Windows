@@ -70,10 +70,10 @@ namespace Harlinn::CIMTool
         ThreeState HasChildren = ThreeState::Unknown;
         static UInt64 nextId_;
         UInt64 id_;
-        std::string caption_;
+        hcc::AnsiString caption_;
     public:
-        TreeNode( Renderable* owner, UInt64 id, const std::string& caption )
-            : Base( owner ), id_(id), caption_(hcc::Format("{}##%ull", caption.c_str(), id ) )
+        TreeNode( Renderable* owner, UInt64 id, const hcc::AnsiString& caption )
+            : Base( owner ), id_(id), caption_(hcc::Format("{}##%ull", caption, id ) )
         { }
 
         static UInt64 NextId( )
@@ -103,13 +103,13 @@ namespace Harlinn::CIMTool
     class Command
     {
         Guid id_;
-        std::string caption_;
-        std::string shortcut_;
-        std::string tooltip_;
+        hcc::AnsiString caption_;
+        hcc::AnsiString shortcut_;
+        hcc::AnsiString tooltip_;
         mutable bool selected_ = false;
         bool enabled_ = true;
     public:
-        Command( const Guid& id, std::string& caption, const std::string& shortcut = std::string( ), const std::string& tooltip = std::string( ), bool selected = false, bool enabled = true )
+        Command( const Guid& id, hcc::AnsiString& caption, const hcc::AnsiString& shortcut = hcc::AnsiString( ), const hcc::AnsiString& tooltip = hcc::AnsiString( ), bool selected = false, bool enabled = true )
             : id_( id ), caption_( caption ), shortcut_( shortcut ), tooltip_( tooltip ), selected_( selected ), enabled_( enabled )
         { }
 
@@ -164,7 +164,7 @@ namespace Harlinn::CIMTool
 
         template<typename T = Command>
         requires std::is_base_of_v<Command,T>
-        T* AddCommand( const Guid& id, std::string& caption, const std::string& shortcut = std::string( ), const std::string& tooltip = std::string( ), bool selected = false, bool enabled = true )
+        T* AddCommand( const Guid& id, hcc::AnsiString& caption, const hcc::AnsiString& shortcut = hcc::AnsiString( ), const hcc::AnsiString& tooltip = hcc::AnsiString( ), bool selected = false, bool enabled = true )
         {
             auto command = std::make_unique<T>( id, caption, shortcut, tooltip, selected, enabled );
             T* result = command.get( );
@@ -196,12 +196,12 @@ namespace Harlinn::CIMTool
         using Base = Renderable;
     private:
         bool visible_ = true;
-        std::string caption_;
+        hcc::AnsiString caption_;
         hw::Size initialSize_;
         ImGuiWindowFlags windowFlags_;
         CommandManager commandManager_;
     public:
-        Window( Renderable* owner, const std::string& caption, const hw::Size& initialSize, ImGuiWindowFlags windowFlags )
+        Window( Renderable* owner, const hcc::AnsiString& caption, const hw::Size& initialSize, ImGuiWindowFlags windowFlags )
             : Base( owner ), caption_( caption ), initialSize_( initialSize ), windowFlags_( windowFlags ), commandManager_( this )
         { }
         virtual void Render( ) override
@@ -257,10 +257,10 @@ namespace Harlinn::CIMTool
         using Base = MenuItem;
         using ContainerType = boost::container::small_vector<std::unique_ptr<MenuItem>, 10>;
     private:
-        std::string caption_;
+        hcc::AnsiString caption_;
         ContainerType items_;
     public:
-        explicit SubMenuItem( Renderable* owner, const std::string& caption )
+        explicit SubMenuItem( Renderable* owner, const hcc::AnsiString& caption )
             : Base( owner ), caption_( caption )
         {
 
@@ -294,10 +294,10 @@ namespace Harlinn::CIMTool
         using Base = Renderable;
         using ContainerType = boost::container::small_vector<std::unique_ptr<MenuItem>, 10>;
     private:
-        std::string caption_;
+        hcc::AnsiString caption_;
         ContainerType items_;
     public:
-        Menu( Renderable* owner, const std::string& caption )
+        Menu( Renderable* owner, const hcc::AnsiString& caption )
             : Base( owner ), caption_( caption )
         { }
 
@@ -311,7 +311,7 @@ namespace Harlinn::CIMTool
         }
 
 
-        SubMenuItem* AddSubMenuItem( const std::string& caption )
+        SubMenuItem* AddSubMenuItem( const hcc::AnsiString& caption )
         {
             auto subMenuItem = std::make_unique<SubMenuItem>(this, caption );
             SubMenuItem* result = subMenuItem.get( );
@@ -375,12 +375,12 @@ namespace Harlinn::CIMTool
     private:
         hcc::WbemClassObject object_;
     public:
-        inline ClassObjectNode( NamespaceNode* owner, const std::string& name, hcc::WbemClassObject&& object );
+        inline ClassObjectNode( NamespaceNode* owner, const hcc::AnsiString& name, hcc::WbemClassObject&& object );
 
         virtual NamespaceNode* Namespace( ) const;
 
     protected:
-        inline ClassObjectNode( Renderable* owner, const std::string& name );
+        inline ClassObjectNode( Renderable* owner, const hcc::AnsiString& name );
     protected:
         virtual void RenderChildNodes( ) override
         {
@@ -397,20 +397,20 @@ namespace Harlinn::CIMTool
     {
     public:
         using Base = ClassObjectNode;
-        using NamespaceContainer = std::map<std::string, std::unique_ptr< NamespaceNode >>;
-        using ClassObjectContainer = std::map<std::string, std::unique_ptr< ClassObjectNode >>;
+        using NamespaceContainer = std::map<hcc::AnsiString, std::unique_ptr< NamespaceNode >>;
+        using ClassObjectContainer = std::map<hcc::AnsiString, std::unique_ptr< ClassObjectNode >>;
     private:
         hcc::WbemServices services_;
         bool retrievedItems_ = false;
         NamespaceContainer namespaces_;
         ClassObjectContainer items_;
     public:
-        NamespaceNode( Renderable* owner, const std::string& serverName, hcc::WbemServices&& services )
+        NamespaceNode( Renderable* owner, const hcc::AnsiString& serverName, hcc::WbemServices&& services )
             : Base( owner, serverName ) , services_(std::move( services ))
         {
         }
     
-        NamespaceNode( NamespaceNode* owner, const std::string& serverName, hcc::WbemClassObject&& object, hcc::WbemServices&& services )
+        NamespaceNode( NamespaceNode* owner, const hcc::AnsiString& serverName, hcc::WbemClassObject&& object, hcc::WbemServices&& services )
             : Base( owner, serverName, std::move( object ) ), services_( std::move( services ) )
         {
         }
@@ -493,12 +493,12 @@ namespace Harlinn::CIMTool
     {
     public:
         using Base = NamespaceNode;
-        using Container = std::map<std::string, std::unique_ptr< ClassObjectNode >>;
+        using Container = std::map<hcc::AnsiString, std::unique_ptr< ClassObjectNode >>;
     private:
         
     public:
 
-        Connection( Renderable* owner, const std::string& serverName, hcc::WbemServices&& root )
+        Connection( Renderable* owner, const hcc::AnsiString& serverName, hcc::WbemServices&& root )
             : Base( owner, serverName, std::move( root ) )
         {
         }
@@ -513,12 +513,12 @@ namespace Harlinn::CIMTool
 
     };
 
-    inline ClassObjectNode::ClassObjectNode( NamespaceNode* owner, const std::string& name, hcc::WbemClassObject&& object )
+    inline ClassObjectNode::ClassObjectNode( NamespaceNode* owner, const hcc::AnsiString& name, hcc::WbemClassObject&& object )
         : Base( owner, NextId( ), name ), object_( std::move( object ) )
     {
     }
 
-    inline ClassObjectNode::ClassObjectNode( Renderable* owner, const std::string& name )
+    inline ClassObjectNode::ClassObjectNode( Renderable* owner, const hcc::AnsiString& name )
         : Base( owner, NextId( ), name )
     {
 
@@ -531,7 +531,7 @@ namespace Harlinn::CIMTool
     {
     public:
         using Base = Renderable;
-        using Container = std::map<std::string, std::unique_ptr<Connection>>;
+        using Container = std::map<hcc::AnsiString, std::unique_ptr<Connection>>;
     private:
         hcc::WbemLocator locator_;
         Container items_;
