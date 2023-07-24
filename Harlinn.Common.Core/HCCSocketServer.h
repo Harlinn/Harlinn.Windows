@@ -77,6 +77,8 @@ namespace Harlinn::Common::Core::IO::Sockets::Server
         static constexpr size_t BufferSize = 64 * 1024;
         static constexpr size_t AddressInfoSize = AcceptRequest::CalculateBufferSizeFor( 0 );
         static constexpr size_t AcceptBufferSize = BufferSize - AddressInfoSize;
+        using size_type = size_t;
+        using value_type = Byte;
     private:
         size_t position_ = 0;
         size_t size_ = 0;
@@ -109,9 +111,40 @@ namespace Harlinn::Common::Core::IO::Sockets::Server
         {
             return size_;
         }
+
+        size_t size( ) const noexcept
+        {
+            return size_;
+        }
+
         void SetSize( size_t size ) noexcept
         {
             size_ = size;
+        }
+
+        Byte* Data( )
+        {
+            return data_.data( );
+        }
+
+        const Byte* Data( ) const
+        {
+            return data_.data( );
+        }
+
+        Byte* data( )
+        {
+            return data_.data( );
+        }
+
+        const Byte* data( ) const
+        {
+            return data_.data( );
+        }
+
+        bool Contains( const Byte* ptr ) const
+        {
+            return ptr >= data_.data( ) && ptr < (data_.data( ) + size( ));
         }
 
 
@@ -242,6 +275,69 @@ namespace Harlinn::Common::Core::IO::Sockets::Server
     }
 
 
+    namespace Internal
+    {
+        class BufferQueue
+        {
+            Buffer* head_ = nullptr;
+            Buffer* tail_ = nullptr;
+            size_t size_ = 0;
+        public:
+            BufferQueue()
+            { }
+
+            BufferQueue( const BufferQueue& ) = delete;
+            BufferQueue( BufferQueue&& ) = delete;
+            BufferQueue& operator = ( const BufferQueue& ) = delete;
+            BufferQueue& operator = ( BufferQueue&& ) = delete;
+
+            constexpr size_t size( ) const
+            {
+                return size_;
+            }
+
+
+            Buffer* Dequeue( )
+            {
+                if ( head_ != nullptr )
+                {
+                    auto result = head_;
+                    head_ = head_->Next( );
+                    result->Remove( );
+                    if ( !head_ )
+                    {
+                        tail_ = nullptr;
+                    }
+                    size_--;
+                    return result;
+                }
+                else
+                {
+                    return nullptr;
+                }
+            }
+
+            void Enqueue( Buffer* buffer )
+            {
+                if ( head_ == nullptr )
+                {
+                    head_ = buffer;
+                    tail_ = buffer;
+                }
+                else
+                {
+                    tail_->Append( buffer );
+                    tail_ = buffer;
+                }
+                size_++;
+            }
+
+
+
+        };
+    }
+
+
 
     template<typename DerivedT, typename ListenerT, typename ProtocolT >
     class TcpConnectionHandler;
@@ -307,6 +403,11 @@ namespace Harlinn::Common::Core::IO::Sockets::Server
                 ReleaseReceiveBuffer( readBuffer_ );
             }
             readBuffer_ = buffer;
+        }
+
+        bool HasInputData( ) const
+        {
+            return readBuffer_ && readBuffer_->Position( ) < readBuffer_->Size( );
         }
 
         const Buffer* WriteBuffer( ) const
@@ -426,6 +527,7 @@ namespace Harlinn::Common::Core::IO::Sockets::Server
     {
     public:
         static constexpr size_t Size = N;
+        static constexpr UInt32 DefaultAcquireTimeout = 60 * 1000;
     private:
         Semaphore semaphore_;
         CriticalSection criticalSection_;
@@ -438,7 +540,7 @@ namespace Harlinn::Common::Core::IO::Sockets::Server
         {
             for ( size_t i = 0; i < Size; i++ )
             {
-                freeBuffers_[i] = std::addressof( freeBuffers_[i] );
+                freeBuffers_[i] = std::addressof( buffers_[i] );
             }
         }
 
@@ -447,7 +549,7 @@ namespace Harlinn::Common::Core::IO::Sockets::Server
         BufferPool& operator = ( const BufferPool& other ) = delete;
         BufferPool& operator = ( BufferPool&& other ) = delete;
 
-        Buffer* Acquire( UInt32 timeoutInMillis )
+        Buffer* Acquire( UInt32 timeoutInMillis = DefaultAcquireTimeout )
         {
             if ( semaphore_.Wait( timeoutInMillis ) )
             {
@@ -469,7 +571,7 @@ namespace Harlinn::Common::Core::IO::Sockets::Server
         {
             for ( size_t i = 0; i < Size; i++ )
             {
-                if ( std::addressof( freeBuffers_[i] ) == buffer )
+                if ( freeBuffers_[i] == buffer )
                 {
                     return true;
                 }
@@ -504,10 +606,15 @@ namespace Harlinn::Common::Core::IO::Sockets::Server
     {
         template<typename DerivedT>
         friend class SocketHandler;
+
         template<typename DerivedT, typename ConnectionHandler>
         friend class TcpListener;
+
         template<typename ConnectionHandlerT>
         friend class BufferedSocketStream;
+
+        static constexpr size_t MaxReceiveBuffers = 2;
+        static constexpr size_t MaxSendBuffers = 20;
     public:
         using Base = Server::TcpConnectionHandlerBase< DerivedT >;
         using DerivedType = DerivedT;
@@ -515,9 +622,9 @@ namespace Harlinn::Common::Core::IO::Sockets::Server
         using ProtocolType = ProtocolT;
         using SocketStream = BufferedSocketStream<TcpConnectionHandler>;
         using Base::Socket;
-        static constexpr size_t MaxReceiveBuffers = 2;
-        static constexpr size_t MaxSendBuffers = 2;
     private:
+        using BufferQueue = Internal::BufferQueue;
+
         std::weak_ptr<ListenerType> listener_;
         TcpConnectionHandlerState state_;
         ProtocolType protocol_;
@@ -527,15 +634,17 @@ namespace Harlinn::Common::Core::IO::Sockets::Server
         std::unique_ptr<DisconnectRequest> disconnectRequest_;
         SocketStream socketStream_;
 
-        WSABUF readBuf_ = {};
-
-        std::atomic<size_t> outstandingRequests_;
         BufferPool<MaxReceiveBuffers> receivePool_;
         BufferPool<MaxSendBuffers> sendPool_;
 
         CriticalSection criticalSection_;
-        Buffer* firstWriteBuffer_ = nullptr;
-        Buffer* lastWriteBuffer_ = nullptr;
+        WSABUF receiveBuf_ = {};
+        Buffer* receiveBuffer_ = nullptr;
+
+        BufferQueue writeQueue_;
+        WSABUF sendBuf_ = {};
+        Buffer* sendBuffer_ = nullptr;
+
 
     public:
         template<typename ... Args>
@@ -572,6 +681,7 @@ namespace Harlinn::Common::Core::IO::Sockets::Server
             Base::Stop( );
         }
 
+    private:
         Buffer* AcquireReceiveBuffer( )
         {
             return receivePool_.Acquire( );
@@ -594,28 +704,30 @@ namespace Harlinn::Common::Core::IO::Sockets::Server
     private:
         AcceptRequest* GetAcceptRequest( const TcpSocket& server )
         {
-            Buffer* receiveBuffer = AcquireReceiveBuffer( );
-            receiveBuffer->PrepareForAccept( );
+            receiveBuffer_ = AcquireReceiveBuffer( );
+            receiveBuffer_->PrepareForAccept( );
 
             constexpr size_t bufferDataOffset = BufferDataOffset( );
-            Byte* buffer = reinterpret_cast<Byte*>( receiveBuffer ) + bufferDataOffset;
+            Byte* buffer = reinterpret_cast<Byte*>( receiveBuffer_ ) + bufferDataOffset;
 
             auto result = acceptRequest_.get( );
-            result->Reset( server, Socket( ), buffer, static_cast<UInt32>( receiveBuffer->Size() ) );
+            receiveBuf_ = { static_cast< ULONG >( receiveBuffer_->Size( ) ),reinterpret_cast< char* >( buffer ) };
+
+            result->Reset( server, Socket( ), buffer, static_cast<UInt32>( receiveBuffer_->Size() ) );
             return result;
         }
 
         ReceiveRequest* GetReceiveRequest( )
         {
-            Buffer* receiveBuffer = AcquireReceiveBuffer( );
-            receiveBuffer->PrepareForReceive( );
+            receiveBuffer_ = AcquireReceiveBuffer( );
+            receiveBuffer_->PrepareForReceive( );
 
             constexpr size_t bufferDataOffset = BufferDataOffset( );
-            Byte* buffer = reinterpret_cast<Byte*>( receiveBuffer ) + bufferDataOffset;
+            Byte* buffer = reinterpret_cast<Byte*>( receiveBuffer_ ) + bufferDataOffset;
 
             auto result = receiveRequest_.get( );
-            readBuf_ = { static_cast<ULONG>( receiveBuffer->Size() ),reinterpret_cast<char*>( buffer ) };
-            result->Reset( Socket( ), &readBuf_, 1, MessageFlags::None );
+            receiveBuf_ = { static_cast< ULONG >( receiveBuffer_->Size( ) ),reinterpret_cast< char* >( buffer ) };
+            result->Reset( Socket( ), &receiveBuf_, 1, MessageFlags::None );
 
             return result;
         }
@@ -684,13 +796,28 @@ namespace Harlinn::Common::Core::IO::Sockets::Server
         bool HandleReceiveCompleted( ReceiveRequest* request )
         {
             constexpr size_t bufferDataOffset = BufferDataOffset( );
-            Byte* buffer = request->Buffer( );
-            Buffer* receiveBuffer = reinterpret_cast<Buffer*>( buffer - bufferDataOffset );
-            receiveBuffer->PrepareForRead( request->NumberOfBytesTransferred( ) );
-            socketStream_.ResetReadBuffer( receiveBuffer );
-            IO::BinaryReader requestReader( socketStream_ );
-            IO::BinaryWriter replyWriter( socketStream_ );
-            auto doNotDisconnect = ProcessData( requestReader, replyWriter );
+            auto bufferCount = request->BufferCount( );
+            auto buffers = request->Buffers( );
+            size_t remainingNumberOfBytesToProcess = request->NumberOfBytesTransferred( );
+            bool doNotDisconnect = true;
+            UInt32 i = 0;
+            while ( doNotDisconnect && i < bufferCount )
+            {
+                Byte* buffer = reinterpret_cast<Byte*>(buffers[i].buf);
+                size_t bufferLength = buffers[ i ].len;
+                size_t bytesToProcessInBuffer = std::min( remainingNumberOfBytesToProcess, bufferLength );
+
+                Buffer* receiveBuffer = reinterpret_cast< Buffer* >( buffer - bufferDataOffset );
+                receiveBuffer->PrepareForRead( bytesToProcessInBuffer );
+                socketStream_.ResetReadBuffer( receiveBuffer );
+
+                IO::BinaryReader requestReader( socketStream_ );
+                IO::BinaryWriter replyWriter( socketStream_ );
+
+                doNotDisconnect = ProcessData( requestReader, replyWriter );
+                remainingNumberOfBytesToProcess -= bytesToProcessInBuffer;
+                ++i;
+            }
             FlushWrite( doNotDisconnect );
             return true;
         }
@@ -722,7 +849,7 @@ namespace Harlinn::Common::Core::IO::Sockets::Server
         {
             if ( socketStream_.writeBuffer_ )
             {
-                if ( socketStream_.writeBuffer_->size_ )
+                if ( socketStream_.writeBuffer_->size( ) )
                 {
                     std::unique_lock lock( criticalSection_ );
                     auto writeBuffer = socketStream_.writeBuffer_;
@@ -734,25 +861,15 @@ namespace Harlinn::Common::Core::IO::Sockets::Server
     private:
         void EnqueueNoLock( Buffer* writeBuffer )
         {
-            if ( lastWriteBuffer_ )
+            if ( sendBuffer_ == nullptr )
             {
-                lastWriteBuffer_->Append( writeBuffer );
-                lastWriteBuffer_ = writeBuffer;
+                // No buffer in flight, so it can be sendt immedeately
+                SendBuffer( writeBuffer );
             }
             else
             {
-                firstWriteBuffer_ = writeBuffer;
-                lastWriteBuffer_ = writeBuffer;
-                if ( !numberOfWriteBuffers_ )
-                {
-                    Dequeue( );
-                    if ( numberOfWriteBuffers_ )
-                    {
-                        auto request = GetSendRequest( );
-                        request->Reset( Socket(), wsaWriteBuffers_, numberOfWriteBuffers_, MessageFlags::None );
-                        Base::BeginAsyncSend( request );
-                    }
-                }
+                // There is a buffer in flight, so we enqueue for later processing
+                writeQueue_.Enqueue( writeBuffer );
             }
         }
     public:
@@ -762,60 +879,48 @@ namespace Harlinn::Common::Core::IO::Sockets::Server
             EnqueueNoLock( writeBuffer );
         }
 
-        void Dequeue( )
+    private:
+        void SendBuffer( Buffer* writeBuffer, size_t startOffset = 0 )
         {
-            while ( numberOfWriteBuffers_ < MaxWriteBuffers && firstWriteBuffer_ )
-            {
-                writeBuffers_[numberOfWriteBuffers_] = firstWriteBuffer_;
-                wsaWriteBuffers_[numberOfWriteBuffers_].buf = (char*)firstWriteBuffer_->data_;
-                wsaWriteBuffers_[numberOfWriteBuffers_].len = static_cast<UInt32>( firstWriteBuffer_->size_ );
+#ifdef _DEBUG
+            assert( writeBuffer != nullptr );
+            assert( writeBuffer->size() > startOffset );
+#endif
+            auto request = GetSendRequest( );
 
-                firstWriteBuffer_ = firstWriteBuffer_->next_;
-                if ( !firstWriteBuffer_ )
-                {
-                    lastWriteBuffer_ = nullptr;
-                }
-                numberOfWriteBuffers_++;
-            }
+            sendBuf_.len = static_cast< ULONG >( writeBuffer->size( ) - startOffset );
+            sendBuf_.buf = reinterpret_cast<CHAR*>( writeBuffer->data( ) + startOffset );
+            
+            request->Reset( Socket( ), &sendBuf_, 1, MessageFlags::None );
+
+            sendBuffer_ = writeBuffer;
+            Base::BeginAsyncSend( request );
         }
-        void ProcessCompletedSendRequest( SendRequest* request )
+
+
+        bool ProcessCompletedSendRequest( SendRequest* request )
         {
+#ifdef _DEBUG
+            assert( sendBuffer_ != nullptr );
+            assert( sendBuffer_->Contains( reinterpret_cast<Byte*>( sendBuf_.buf ) ) );
+#endif
+            auto sendBuffer = sendBuffer_;
+            sendBuffer_ = nullptr;
             auto numberOfBytesTransferred = request->NumberOfBytesTransferred( );
-            UInt32 completedBuffers = 0;
-            size_t completedBuffersSize = 0;
-            while ( completedBuffers < numberOfWriteBuffers_ )
+            if ( sendBuf_.len > numberOfBytesTransferred )
             {
-                if ( completedBuffersSize + wsaWriteBuffers_[completedBuffers].len <= numberOfBytesTransferred )
-                {
-                    completedBuffersSize += wsaWriteBuffers_[completedBuffers].len;
-                    completedBuffers++;
-                }
-                else
-                {
-                    break;
-                }
+                size_t originalSendBufferOffset = reinterpret_cast< Byte* >( sendBuf_.buf ) - sendBuffer->data( );
+                SendBuffer( sendBuffer, originalSendBufferOffset + numberOfBytesTransferred );
+                return false;
             }
-            for ( size_t i = 0; i < completedBuffers; ++i )
+            sendPool_.Release( sendBuffer );
+            if ( writeQueue_.size( ) )
             {
-                FreeBlock( writeBuffers_[i] );
+                auto nextSendBuffer = writeQueue_.Dequeue( );
+                SendBuffer( nextSendBuffer );
+                return false;
             }
-
-            if ( completedBuffers < numberOfWriteBuffers_ )
-            {
-                size_t remainingBuffers = numberOfWriteBuffers_ - completedBuffers;
-                memcpy( writeBuffers_, &writeBuffers_[completedBuffers], remainingBuffers * sizeof( WriteBuffer* ) );
-                memcpy( wsaWriteBuffers_, &wsaWriteBuffers_[completedBuffers], remainingBuffers * sizeof( WSABUF ) );
-
-                size_t numberOfBytesTransferredFromLastBuffer = numberOfBytesTransferred - completedBuffersSize;
-
-                wsaWriteBuffers_[0].buf += numberOfBytesTransferredFromLastBuffer;
-                wsaWriteBuffers_[0].len -= static_cast<UInt32>( numberOfBytesTransferredFromLastBuffer );
-                numberOfWriteBuffers_ -= completedBuffers;
-            }
-            else
-            {
-                numberOfWriteBuffers_ = 0;
-            }
+            return true;
         }
 
     protected:
@@ -823,15 +928,8 @@ namespace Harlinn::Common::Core::IO::Sockets::Server
         {
             std::unique_lock lock( criticalSection_ );
 
-            ProcessCompletedSendRequest( request );
-            Dequeue( );
-            if ( numberOfWriteBuffers_ )
-            {
-                request->Clear( );
-                request->Reset( Socket( ), wsaWriteBuffers_, numberOfWriteBuffers_, MessageFlags::None );
-                Base::BeginAsyncSend( request );
-            }
-            else
+            auto doneSending = ProcessCompletedSendRequest( request );
+            if ( doneSending )
             {
                 // what is the next step?
                 switch ( state_ )
@@ -864,17 +962,6 @@ namespace Harlinn::Common::Core::IO::Sockets::Server
             Destroy( );
             return true;
         }
-
-    protected:
-        virtual void ProcessDone( Base::Message& message ) override
-        {
-            auto* request = static_cast<SocketRequest*>( message.Request( ) );
-            if ( request )
-            {
-                ReleaseRequest( request );
-                outstandingRequests_--;
-            }
-        }
     };
 
     template<typename DerivedT, typename ConnectionHandlerT>
@@ -887,13 +974,11 @@ namespace Harlinn::Common::Core::IO::Sockets::Server
         using Base = IO::Sockets::Server::TcpListenerBase<DerivedT>;
         using DerivedType = DerivedT;
         using ConnectionHandlerType = ConnectionHandlerT;
-        using MemoryManager = typename ConnectionHandlerType::MemoryManager;
 
         using Base::Socket;
     private:
         CriticalSection criticalSection_;
         std::atomic<bool> stopping_;
-        MemoryManager memoryManager_;
         Address address_;
         boost::container::flat_map<SOCKET, std::shared_ptr<ConnectionHandlerType>> connectionHandlers_;
 
@@ -919,14 +1004,12 @@ namespace Harlinn::Common::Core::IO::Sockets::Server
         private:
             std::weak_ptr<IO::Context> context_;
             DerivedType* listener_;
-            MemoryManager* memoryManager_;
             TupleType tuple_;
         public:
-            ConnectionHandlerFactory( const std::shared_ptr<IO::Context>& context, DerivedType* listener, MemoryManager* memoryManager, Args&&... args )
+            ConnectionHandlerFactory( const std::shared_ptr<IO::Context>& context, DerivedType* listener, Args&&... args )
                 : Base( ),
                 context_( context ),
                 listener_( listener ),
-                memoryManager_( memoryManager ),
                 tuple_( std::forward<Args>( args )... )
             {
             }
@@ -938,7 +1021,7 @@ namespace Harlinn::Common::Core::IO::Sockets::Server
                 if ( context )
                 {
                     auto listener = listener_->Self( );
-                    return std::make_shared<ConnectionHandlerType>( context, listener, *memoryManager_, std::get<I>( tuple_ )... );
+                    return std::make_shared<ConnectionHandlerType>( context, listener, std::get<I>( tuple_ )... );
                 }
                 else
                 {
@@ -962,7 +1045,7 @@ namespace Harlinn::Common::Core::IO::Sockets::Server
               address_( listenAddress ), stopping_( false ), initialConnectionHandlerCount_( initialConnectionHandlerCount )
         {
             auto* self = static_cast<DerivedType*>( this );
-            factory_ = std::make_unique<ConnectionHandlerFactory<Args...> >( context, self, &memoryManager_, std::forward<Args>( args )... );
+            factory_ = std::make_unique<ConnectionHandlerFactory<Args...> >( context, self, std::forward<Args>( args )... );
         }
         
         bool IsRunning( ) const noexcept
@@ -1091,11 +1174,10 @@ namespace Harlinn::Common::Core::IO::Sockets::Server
     {
     public:
         using Base = TcpConnectionHandler<TcpSimpleConnectionHandler<ListenerT, ProtocolT>, ListenerT, ProtocolT>;
-        using MemoryManager = typename Base::MemoryManager;
 
         template<typename ...Args>
-        TcpSimpleConnectionHandler( const std::shared_ptr<IO::Context>& context, const std::shared_ptr<ListenerT>& listener, MemoryManager& memoryManager, Args&&... args )
-            : Base( context, listener, memoryManager, std::forward<Args>( args )... )
+        TcpSimpleConnectionHandler( const std::shared_ptr<IO::Context>& context, const std::shared_ptr<ListenerT>& listener, Args&&... args )
+            : Base( context, listener, std::forward<Args>( args )... )
         {
         }
     };

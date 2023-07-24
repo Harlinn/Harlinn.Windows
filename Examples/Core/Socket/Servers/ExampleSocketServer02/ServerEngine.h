@@ -234,7 +234,7 @@ namespace Harlinn::Common::Core::Examples
                 }
                 break;
                 default:
-                    std::string message("Unknown function");
+                    WideString message(L"Unknown function");
                     WriteFault( replyWriter, 0, 0, message );
                 break;
             }
@@ -251,9 +251,9 @@ namespace Harlinn::Common::Core::Examples
             replyWriter.Write( sessionId );
         }
         template<IO::StreamWriter StreamWriterT>
-        void WriteFault( IO::BinaryWriter<StreamWriterT>& replyWriter, UInt64 sessionId, Int64 errorCode, const std::string& message )
+        void WriteFault( IO::BinaryWriter<StreamWriterT>& replyWriter, UInt64 sessionId, Int64 errorCode, const WideString& message )
         {
-            printf( "Fault in session %zu, Code: %lld, Message: %s\n", sessionId, errorCode, message.c_str() );
+            wprintf( L"Fault in session %zu, Code: %lld, Message: %s\n", sessionId, errorCode, message.c_str() );
             replyWriter.Write( static_cast<Byte>( RequestReplyType::Fault ) );
             replyWriter.Write( sessionId );
             replyWriter.Write( errorCode );
@@ -263,25 +263,25 @@ namespace Harlinn::Common::Core::Examples
         template<IO::StreamWriter StreamWriterT>
         void InvalidSession( IO::BinaryWriter<StreamWriterT>& replyWriter, UInt64 sessionId )
         {
-            WriteFault( replyWriter, sessionId, 0 ,"Invalid session id" );
+            WriteFault( replyWriter, sessionId, 0 , L"Invalid session id" );
         }
         template<IO::StreamWriter StreamWriterT>
         void UnknownException( IO::BinaryWriter<StreamWriterT>& replyWriter, UInt64 sessionId )
         {
-            WriteFault( replyWriter, sessionId, 0, "Unknown exception" );
+            WriteFault( replyWriter, sessionId, 0, L"Unknown exception" );
         }
 
         template<IO::StreamWriter StreamWriterT>
         void WriteFault( IO::BinaryWriter<StreamWriterT>& replyWriter, UInt64 sessionId, const Harlinn::Common::Core::Exception& exc )
         {
-            auto message = ToAnsiString( exc.Message( ) );
+            auto message = exc.Message( );
             WriteFault( replyWriter, sessionId, exc.GetCode( ), message );
         }
 
         template<IO::StreamWriter StreamWriterT>
         void WriteFault( IO::BinaryWriter<StreamWriterT>& replyWriter, UInt64 sessionId, const std::exception& exc )
         {
-            std::string message( exc.what( ) );
+            WideString message( WideString::From( exc.what( ) ) );
             WriteFault( replyWriter, sessionId, 0, message );
         }
 
@@ -468,7 +468,7 @@ catch ( ... ) \
             constexpr RequestReplyType ReplyType = RequestReplyType::CreateOrRetrieveCatalog;
             auto [sessionId, requestId] = ReadSessionRequestHeader( requestReader );
             auto ownerId = requestReader.Read<Guid>( );
-            auto catalogName = requestReader.Read<std::string>( );
+            auto catalogName = requestReader.Read<WideString>( );
 
             auto* session = engine_.FindSession( sessionId );
             if ( session )
@@ -494,7 +494,7 @@ catch ( ... ) \
             constexpr RequestReplyType ReplyType = RequestReplyType::CreateOrRetrieveAsset;
             auto [sessionId, requestId] = ReadSessionRequestHeader( requestReader );
             auto ownerId = requestReader.Read<Guid>( );
-            auto assetName = requestReader.Read<std::string>( );
+            auto assetName = requestReader.Read<WideString>( );
 
             auto* session = engine_.FindSession( sessionId );
             if ( session )
@@ -635,7 +635,7 @@ catch ( ... ) \
             constexpr RequestReplyType ReplyType = RequestReplyType::CreateOrRetrieveSensor;
             auto [sessionId, requestId] = ReadSessionRequestHeader( requestReader );
             auto assetId = requestReader.Read<Guid>( );
-            auto sensorName = requestReader.Read<std::string>( );
+            auto sensorName = requestReader.Read<WideString>( );
 
             auto* session = engine_.FindSession( sessionId );
             if ( session )
@@ -868,7 +868,7 @@ catch ( ... ) \
             constexpr RequestReplyType ReplyType = RequestReplyType::SendJSON;
             auto [sessionId, requestId] = ReadSessionRequestHeader( requestReader );
             
-            auto json = requestReader.Read<std::string>( );
+            auto json = requestReader.Read<WideString>( );
 
             WriteReplyHeader<ReplyType>( replyWriter, sessionId, requestId );
         }

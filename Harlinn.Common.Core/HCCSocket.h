@@ -4842,7 +4842,7 @@ namespace Harlinn::Common::Core::IO::Sockets
         /// A server application waits for attempts to connect on this socket.
         /// </param>
         /// <param name="acceptSocket">
-        /// A a socket on which to accept an incoming connection. 
+        /// A socket on which to accept an incoming connection. 
         /// This socket must not be bound or connected.
         /// </param>
         /// <param name="buffer">

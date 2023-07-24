@@ -33,17 +33,17 @@ void Client( ThreadData& threadData, size_t count )
     Address address( 42000 );
     clientSocket.Connect( address );
 
-    clientSocket.Write( &count, sizeof( count ) );
+    clientSocket.Send( &count, sizeof( count ),MessageFlags::None );
 
     Int32 index = static_cast<Int32>( threadData.index );
-    clientSocket.Write( &index, sizeof( index ) );
+    clientSocket.Send( &index, sizeof( index ), MessageFlags::None );
 
     std::vector<Record> records;
     records.resize( 2000, Record{ Guid( ), DateTime( static_cast<Int64>( index + 1 ) ),index + 1, 1.0 } );
     size_t sent = 0;
     while ( sent < count )
     {
-        clientSocket.Write( records.data( ), records.size( ) * sizeof( Record ) );
+        clientSocket.Send( records.data( ), records.size( ) * sizeof( Record ), MessageFlags::None );
         sent += records.size( );
     }
 }
