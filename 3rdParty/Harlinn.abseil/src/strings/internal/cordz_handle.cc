@@ -26,6 +26,10 @@ using ::absl::base_internal::SpinLockHolder;
 
 ABSEIL_EXPORT ABSL_CONST_INIT CordzHandle::Queue CordzHandle::global_queue_(absl::kConstInit);
 
+CordzHandle::CordzHandle( ) 
+    : CordzHandle( false ) 
+{}
+
 CordzHandle::CordzHandle(bool is_snapshot) : is_snapshot_(is_snapshot) {
   if (is_snapshot) {
     SpinLockHolder lock(&queue_->mutex);

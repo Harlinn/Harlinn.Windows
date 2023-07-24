@@ -28,11 +28,11 @@ public:
     {
     }
 
-    void LoadFromFile( const std::wstring& wideFilename )
+    void LoadFromFile( const WideString& wideFilename )
     {
         auto filename = ToAnsiString( wideFilename );
         auto direcory = IO::Path::GetParentDirectory( filename );
-        auto resourceProvider = skresources::DataURIResourceProviderProxy::Make( skresources::FileResourceProvider::Make( SkString( direcory ), true ), true );
+        auto resourceProvider = skresources::DataURIResourceProviderProxy::Make( skresources::FileResourceProvider::Make( SkString( direcory.c_str(), direcory.size() ), true ), true );
         SkFILEStream in( filename.c_str( ) );
         svg_dom_ = SkSVGDOM::Builder( )
             .setFontManager( SkFontMgr::RefDefault( ) )

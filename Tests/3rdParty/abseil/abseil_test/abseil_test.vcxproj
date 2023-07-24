@@ -94,7 +94,7 @@
       <AdditionalOptions>/Zc:__cplusplus -utf-8 /bigobj %(AdditionalOptions)</AdditionalOptions>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
-      <AdditionalIncludeDirectories>$(ProjectDir)include;$(SolutionDir)3rdParty\Harlinn.gtest\include;$(SolutionDir)3rdParty\Harlinn.abseil\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)include;$(SolutionDir)3rdParty\Harlinn.gtest\include;$(SolutionDir)3rdParty\Harlinn.abseil\include;$(SolutionDir)3rdParty\Harlinn.re2\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
@@ -115,7 +115,7 @@
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <BufferSecurityCheck>false</BufferSecurityCheck>
-      <AdditionalIncludeDirectories>$(ProjectDir)include;$(SolutionDir)3rdParty\Harlinn.gtest\include;$(SolutionDir)3rdParty\Harlinn.abseil\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)include;$(SolutionDir)3rdParty\Harlinn.gtest\include;$(SolutionDir)3rdParty\Harlinn.abseil\include;$(SolutionDir)3rdParty\Harlinn.re2\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
@@ -135,7 +135,7 @@
       <AdditionalOptions>/Zc:__cplusplus -utf-8 /bigobj %(AdditionalOptions)</AdditionalOptions>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
-      <AdditionalIncludeDirectories>$(ProjectDir)include;$(SolutionDir)3rdParty\Harlinn.gtest\include;$(SolutionDir)3rdParty\Harlinn.abseil\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)include;$(SolutionDir)3rdParty\Harlinn.gtest\include;$(SolutionDir)3rdParty\Harlinn.abseil\include;$(SolutionDir)3rdParty\Harlinn.re2\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
@@ -156,7 +156,7 @@
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <BufferSecurityCheck>false</BufferSecurityCheck>
-      <AdditionalIncludeDirectories>$(ProjectDir)include;$(SolutionDir)3rdParty\Harlinn.gtest\include;$(SolutionDir)3rdParty\Harlinn.abseil\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)include;$(SolutionDir)3rdParty\Harlinn.gtest\include;$(SolutionDir)3rdParty\Harlinn.abseil\include;$(SolutionDir)3rdParty\Harlinn.re2\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
@@ -180,12 +180,16 @@
     <ClCompile Include="base\inline_variable_test_b.cc" />
     <ClCompile Include="base\internal\atomic_hook_test.cc" />
     <ClCompile Include="base\internal\atomic_hook_test_helper.cc" />
-    <ClCompile Include="base\internal\cmake_thread_test.cc" />
     <ClCompile Include="base\internal\endian_test.cc" />
     <ClCompile Include="base\internal\errno_saver_test.cc" />
     <ClCompile Include="base\internal\exception_safety_testing.cc" />
     <ClCompile Include="base\internal\fast_type_id_test.cc" />
-    <ClCompile Include="base\internal\low_level_alloc_test.cc" />
+    <ClCompile Include="base\internal\low_level_alloc_test.cc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="base\internal\prefetch_test.cc" />
     <ClCompile Include="base\internal\scoped_set_env_test.cc" />
     <ClCompile Include="base\internal\strerror_test.cc" />
@@ -217,6 +221,7 @@
     <ClCompile Include="container\internal\node_slot_policy_test.cc" />
     <ClCompile Include="container\internal\raw_hash_set_allocator_test.cc" />
     <ClCompile Include="container\internal\raw_hash_set_test.cc" />
+    <ClCompile Include="container\internal\test_instance_tracker.cc" />
     <ClCompile Include="container\internal\test_instance_tracker_test.cc" />
     <ClCompile Include="container\internal\unordered_map_test.cc" />
     <ClCompile Include="container\internal\unordered_set_test.cc" />
@@ -227,43 +232,113 @@
     <ClCompile Include="crc\internal\crc_cord_state_test.cc" />
     <ClCompile Include="crc\internal\crc_memcpy_test.cc" />
     <ClCompile Include="crc\internal\non_temporal_memcpy_test.cc" />
-    <ClCompile Include="debugging\failure_signal_handler_test.cc" />
+    <ClCompile Include="debugging\failure_signal_handler_test.cc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="debugging\internal\demangle_test.cc" />
     <ClCompile Include="debugging\internal\stack_consumption_test.cc" />
     <ClCompile Include="debugging\leak_check_fail_test.cc" />
     <ClCompile Include="debugging\leak_check_test.cc" />
     <ClCompile Include="debugging\stacktrace_test.cc" />
-    <ClCompile Include="debugging\symbolize_test.cc" />
-    <ClCompile Include="flags\commandlineflag_test.cc" />
-    <ClCompile Include="flags\fl_config_test.cc" />
-    <ClCompile Include="flags\flag_test.cc" />
+    <ClCompile Include="debugging\symbolize_test.cc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="flags\commandlineflag_test.cc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="flags\fl_config_test.cc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="flags\flag_test.cc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="flags\internal\path_util_test.cc" />
     <ClCompile Include="flags\internal\program_name_test.cc" />
     <ClCompile Include="flags\internal\sequence_lock_test.cc" />
     <ClCompile Include="flags\internal\usage_test.cc" />
-    <ClCompile Include="flags\marshalling_test.cc" />
-    <ClCompile Include="flags\parse_test.cc" />
-    <ClCompile Include="flags\reflection_test.cc" />
-    <ClCompile Include="flags\usage_config_test.cc" />
+    <ClCompile Include="flags\marshalling_test.cc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="flags\parse_test.cc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="flags\reflection_test.cc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="flags\usage_config_test.cc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="functional\any_invocable_test.cc" />
     <ClCompile Include="functional\bind_front_test.cc" />
     <ClCompile Include="functional\function_ref_test.cc" />
     <ClCompile Include="hash\hash_test.cc" />
     <ClCompile Include="hash\internal\city_test.cc" />
     <ClCompile Include="hash\internal\low_level_hash_test.cc" />
-    <ClCompile Include="log\absl_check_test.cc" />
-    <ClCompile Include="log\absl_log_basic_test.cc" />
-    <ClCompile Include="log\check_test.cc" />
+    <ClCompile Include="log\absl_check_test.cc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="log\absl_log_basic_test.cc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="log\check_test.cc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="log\die_if_null_test.cc" />
     <ClCompile Include="log\flags_test.cc" />
     <ClCompile Include="log\globals_test.cc" />
     <ClCompile Include="log\internal\stderr_log_sink_test.cc" />
-    <ClCompile Include="log\log_basic_test.cc" />
+    <ClCompile Include="log\internal\test_actions.cc" />
+    <ClCompile Include="log\internal\test_helpers.cc" />
+    <ClCompile Include="log\internal\test_matchers.cc" />
+    <ClCompile Include="log\log_basic_test.cc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="log\log_entry_test.cc" />
     <ClCompile Include="log\log_format_test.cc" />
     <ClCompile Include="log\log_macro_hygiene_test.cc" />
     <ClCompile Include="log\log_modifier_methods_test.cc" />
     <ClCompile Include="log\log_sink_test.cc" />
     <ClCompile Include="log\log_streamer_test.cc" />
+    <ClCompile Include="log\scoped_mock_log.cc" />
     <ClCompile Include="log\scoped_mock_log_test.cc" />
     <ClCompile Include="log\stripping_test.cc" />
     <ClCompile Include="log\structured_test.cc" />
@@ -291,13 +366,28 @@
     <ClCompile Include="random\internal\fast_uniform_bits_test.cc" />
     <ClCompile Include="random\internal\generate_real_test.cc" />
     <ClCompile Include="random\internal\iostream_state_saver_test.cc" />
-    <ClCompile Include="random\internal\nanobenchmark_test.cc" />
+    <ClCompile Include="random\internal\nanobenchmark_test.cc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="random\internal\nonsecure_base_test.cc" />
     <ClCompile Include="random\internal\pcg_engine_test.cc" />
     <ClCompile Include="random\internal\pool_urbg_test.cc" />
     <ClCompile Include="random\internal\randen_engine_test.cc" />
-    <ClCompile Include="random\internal\randen_hwaes_test.cc" />
-    <ClCompile Include="random\internal\randen_slow_test.cc" />
+    <ClCompile Include="random\internal\randen_hwaes_test.cc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="random\internal\randen_slow_test.cc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="random\internal\randen_test.cc" />
     <ClCompile Include="random\internal\salted_seed_seq_test.cc" />
     <ClCompile Include="random\internal\seed_material_test.cc" />
@@ -315,7 +405,12 @@
     <ClCompile Include="status\statusor_test.cc" />
     <ClCompile Include="status\status_test.cc" />
     <ClCompile Include="strings\ascii_test.cc" />
-    <ClCompile Include="strings\atod_manual_test.cc" />
+    <ClCompile Include="strings\atod_manual_test.cc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="strings\charconv_test.cc" />
     <ClCompile Include="strings\cordz_test.cc" />
     <ClCompile Include="strings\cord_buffer_test.cc" />
@@ -366,7 +461,13 @@
     <ClCompile Include="synchronization\blocking_counter_test.cc" />
     <ClCompile Include="synchronization\internal\graphcycles_test.cc" />
     <ClCompile Include="synchronization\internal\per_thread_sem_test.cc" />
-    <ClCompile Include="synchronization\lifetime_test.cc" />
+    <ClCompile Include="synchronization\lifetime_test.cc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="synchronization\mutex_method_pointer_test.cc" />
     <ClCompile Include="synchronization\mutex_test.cc" />
     <ClCompile Include="synchronization\notification_test.cc" />
     <ClCompile Include="time\civil_time_test.cc" />
@@ -391,7 +492,6 @@
     <ClCompile Include="utility\utility_test.cc" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="hash\hash_testing.h" />
     <ClInclude Include="include\absl\base\internal\atomic_hook_test_helper.h" />
     <ClInclude Include="include\absl\base\internal\exception_safety_testing.h" />
     <ClInclude Include="include\absl\base\internal\exception_testing.h" />
@@ -408,14 +508,22 @@
     <ClInclude Include="include\absl\container\internal\unordered_set_members_test.h" />
     <ClInclude Include="include\absl\container\internal\unordered_set_modifiers_test.h" />
     <ClInclude Include="include\absl\hash\hash_testing.h" />
+    <ClInclude Include="include\absl\log\check_test_impl.h" />
+    <ClInclude Include="include\absl\log\internal\test_actions.h" />
+    <ClInclude Include="include\absl\log\internal\test_helpers.h" />
+    <ClInclude Include="include\absl\log\internal\test_matchers.h" />
+    <ClInclude Include="include\absl\log\log_basic_test_impl.h" />
+    <ClInclude Include="include\absl\log\scoped_mock_log.h" />
+    <ClInclude Include="include\absl\random\internal\mock_helpers.h" />
+    <ClInclude Include="include\absl\random\internal\mock_overload_set.h" />
     <ClInclude Include="include\absl\strings\cordz_test_helpers.h" />
     <ClInclude Include="include\absl\strings\cord_test_helpers.h" />
-    <ClInclude Include="log\log_basic_test_impl.h" />
-    <ClInclude Include="strings\internal\escaping_test_common.h" />
-    <ClInclude Include="strings\internal\numbers_test_common.h" />
-    <ClInclude Include="time\internal\test_util.h" />
-    <ClInclude Include="types\internal\conformance_testing.h" />
-    <ClInclude Include="types\internal\conformance_testing_helpers.h" />
+    <ClInclude Include="include\absl\strings\internal\cord_rep_test_util.h" />
+    <ClInclude Include="include\absl\strings\internal\escaping_test_common.h" />
+    <ClInclude Include="include\absl\strings\internal\numbers_test_common.h" />
+    <ClInclude Include="include\absl\time\internal\test_util.h" />
+    <ClInclude Include="include\absl\types\internal\conformance_testing.h" />
+    <ClInclude Include="include\absl\types\internal\conformance_testing_helpers.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

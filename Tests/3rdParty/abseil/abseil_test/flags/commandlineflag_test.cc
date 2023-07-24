@@ -29,14 +29,15 @@
 #include "absl/strings/str_cat.h"
 #include "absl/strings/string_view.h"
 
-ABSL_FLAG(int, int_flag, 201, "int_flag help");
-ABSL_FLAG(std::string, string_flag, "dflt",
-          absl::StrCat("string_flag", " help"));
-ABSL_RETIRED_FLAG(bool, bool_retired_flag, false, "bool_retired_flag help");
 
-// These are only used to test default values.
-ABSL_FLAG(int, int_flag2, 201, "");
-ABSL_FLAG(std::string, string_flag2, "dflt", "");
+    ABSL_FLAG( int, int_flag, 201, "int_flag help" );
+    ABSL_FLAG( std::string, string_flag, "dflt",
+        absl::StrCat( "string_flag", " help" ) );
+    ABSL_RETIRED_FLAG( bool, bool_retired_flag, false, "bool_retired_flag help" );
+
+    // These are only used to test default values.
+    ABSL_FLAG( int, int_flag2, 201, "" );
+    ABSL_FLAG( std::string, string_flag2, "dflt", "" );
 
 namespace {
 

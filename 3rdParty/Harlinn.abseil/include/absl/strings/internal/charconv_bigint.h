@@ -86,7 +86,7 @@ class BigUnsigned {
   //
   // Returns the associated decimal exponent.  The value of the parsed float is
   // exactly *this * 10**exponent.
-  int ReadFloatMantissa(const ParsedFloat& fp, int significant_digits);
+  ABSEIL_EXPORT int ReadFloatMantissa(const ParsedFloat& fp, int significant_digits);
 
   // Returns the number of decimal digits of precision this type provides.  All
   // numbers with this many decimal digits or fewer are representable by this
@@ -188,7 +188,7 @@ class BigUnsigned {
   // Returns the value of 5**n, for non-negative n.  This implementation uses
   // a lookup table, and is faster then seeding a BigUnsigned with 1 and calling
   // MultiplyByFiveToTheNth().
-  static BigUnsigned FiveToTheNth(int n);
+  ABSEIL_EXPORT static BigUnsigned FiveToTheNth(int n);
 
   // Multiplies by another BigUnsigned, in-place.
   template <int M>
@@ -212,7 +212,7 @@ class BigUnsigned {
 
   // Returns this integer as a decimal string.  This is not used in the decimal-
   // to-binary conversion; it is intended to aid in testing.
-  std::string ToString() const;
+  ABSEIL_EXPORT std::string ToString() const;
 
   int size() const { return size_; }
   const uint32_t* words() const { return words_; }
@@ -234,7 +234,7 @@ class BigUnsigned {
   // account for the decimal point and for dropped significant digits.  After
   // this function returns,
   //   actual_value_of_parsed_string ~= *this * 10**exponent_adjustment.
-  int ReadDigits(const char* begin, const char* end, int significant_digits);
+  ABSEIL_EXPORT int ReadDigits(const char* begin, const char* end, int significant_digits);
 
   // Performs a step of big integer multiplication.  This computes the full
   // (64-bit-wide) values that should be added at the given index (step), and
@@ -264,7 +264,7 @@ class BigUnsigned {
   // `original_size` is the size_ of *this before the first call to
   // MultiplyStep().  `other_words` and `other_size` are the contents of our
   // operand.  `step` is the step to perform, as described above.
-  void MultiplyStep(int original_size, const uint32_t* other_words,
+  ABSEIL_EXPORT void MultiplyStep(int original_size, const uint32_t* other_words,
                     int other_size, int step);
 
   void MultiplyBy(int other_size, const uint32_t* other_words) {

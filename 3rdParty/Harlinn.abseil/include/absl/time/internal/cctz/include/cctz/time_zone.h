@@ -71,7 +71,7 @@ class time_zone {
   time_zone(const time_zone&) = default;
   time_zone& operator=(const time_zone&) = default;
 
-  std::string name() const;
+  ABSEIL_EXPORT std::string name() const;
 
   // An absolute_lookup represents the civil time (cctz::civil_second) within
   // this time_zone at the given absolute time (time_point). There are
@@ -92,7 +92,7 @@ class time_zone {
     bool is_dst;       // is offset non-standard?
     const char* abbr;  // time-zone abbreviation (e.g., "PST")
   };
-  absolute_lookup lookup(const time_point<seconds>& tp) const;
+  ABSEIL_EXPORT absolute_lookup lookup(const time_point<seconds>& tp) const;
   template <typename D>
   absolute_lookup lookup(const time_point<D>& tp) const {
     return lookup(detail::split_seconds(tp).first);
@@ -149,7 +149,7 @@ class time_zone {
     time_point<seconds> trans;  // instant of civil-offset change
     time_point<seconds> post;   // uses the post-transition offset
   };
-  civil_lookup lookup(const civil_second& cs) const;
+  ABSEIL_EXPORT civil_lookup lookup(const civil_second& cs) const;
 
   // Finds the time of the next/previous offset change in this time zone.
   //
@@ -183,13 +183,13 @@ class time_zone {
     civil_second from;  // the civil time we jump from
     civil_second to;    // the civil time we jump to
   };
-  bool next_transition(const time_point<seconds>& tp,
+  ABSEIL_EXPORT bool next_transition(const time_point<seconds>& tp,
                        civil_transition* trans) const;
   template <typename D>
   bool next_transition(const time_point<D>& tp, civil_transition* trans) const {
     return next_transition(detail::split_seconds(tp).first, trans);
   }
-  bool prev_transition(const time_point<seconds>& tp,
+  ABSEIL_EXPORT bool prev_transition(const time_point<seconds>& tp,
                        civil_transition* trans) const;
   template <typename D>
   bool prev_transition(const time_point<D>& tp, civil_transition* trans) const {
@@ -203,8 +203,8 @@ class time_zone {
   // empty when unavailable.
   //
   // Note: These functions are for informational or testing purposes only.
-  std::string version() const;  // empty when unknown
-  std::string description() const;
+  ABSEIL_EXPORT std::string version() const;  // empty when unknown
+  ABSEIL_EXPORT std::string description() const;
 
   // Relational operators.
   friend bool operator==(time_zone lhs, time_zone rhs) {
@@ -221,7 +221,7 @@ class time_zone {
 
  private:
   explicit time_zone(const Impl* impl) : impl_(impl) {}
-  const Impl& effective_impl() const;  // handles implicit UTC
+  ABSEIL_EXPORT const Impl& effective_impl() const;  // handles implicit UTC
   const Impl* impl_;
 };
 

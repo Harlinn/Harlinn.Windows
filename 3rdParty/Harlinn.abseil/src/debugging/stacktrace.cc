@@ -84,13 +84,13 @@ ABSL_ATTRIBUTE_ALWAYS_INLINE inline int Unwind(void** result, int* sizes,
 
 }  // anonymous namespace
 
-ABSL_ATTRIBUTE_NOINLINE ABSL_ATTRIBUTE_NO_TAIL_CALL int GetStackFrames(
+ABSEIL_EXPORT ABSL_ATTRIBUTE_NOINLINE ABSL_ATTRIBUTE_NO_TAIL_CALL int GetStackFrames(
     void** result, int* sizes, int max_depth, int skip_count) {
   return Unwind<true, false>(result, sizes, max_depth, skip_count, nullptr,
                              nullptr);
 }
 
-ABSL_ATTRIBUTE_NOINLINE ABSL_ATTRIBUTE_NO_TAIL_CALL int
+ABSEIL_EXPORT ABSL_ATTRIBUTE_NOINLINE ABSL_ATTRIBUTE_NO_TAIL_CALL int
 GetStackFramesWithContext(void** result, int* sizes, int max_depth,
                           int skip_count, const void* uc,
                           int* min_dropped_frames) {
@@ -98,24 +98,24 @@ GetStackFramesWithContext(void** result, int* sizes, int max_depth,
                             min_dropped_frames);
 }
 
-ABSL_ATTRIBUTE_NOINLINE ABSL_ATTRIBUTE_NO_TAIL_CALL int GetStackTrace(
+ABSEIL_EXPORT ABSL_ATTRIBUTE_NOINLINE ABSL_ATTRIBUTE_NO_TAIL_CALL int GetStackTrace(
     void** result, int max_depth, int skip_count) {
   return Unwind<false, false>(result, nullptr, max_depth, skip_count, nullptr,
                               nullptr);
 }
 
-ABSL_ATTRIBUTE_NOINLINE ABSL_ATTRIBUTE_NO_TAIL_CALL int
+ABSEIL_EXPORT ABSL_ATTRIBUTE_NOINLINE ABSL_ATTRIBUTE_NO_TAIL_CALL int
 GetStackTraceWithContext(void** result, int max_depth, int skip_count,
                          const void* uc, int* min_dropped_frames) {
   return Unwind<false, true>(result, nullptr, max_depth, skip_count, uc,
                              min_dropped_frames);
 }
 
-void SetStackUnwinder(Unwinder w) {
+ABSEIL_EXPORT void SetStackUnwinder(Unwinder w) {
   custom.store(w, std::memory_order_release);
 }
 
-int DefaultStackUnwinder(void** pcs, int* sizes, int depth, int skip,
+ABSEIL_EXPORT int DefaultStackUnwinder(void** pcs, int* sizes, int depth, int skip,
                          const void* uc, int* min_dropped_frames) {
   skip++;  // For this function
   Unwinder f = nullptr;

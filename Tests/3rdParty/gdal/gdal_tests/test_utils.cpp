@@ -15,7 +15,8 @@ std::string GetHomeDirecory( )
 
 std::string GetTempDirecory( )
 {
-    return hcc::IO::Path::GetTemporaryA() + "\\GDALTest";
+    auto tmpDir = hcc::IO::Directory::GetTemporaryA( ) + "\\GDALTest";
+    return std::string( tmpDir.c_str( ), tmpDir.size( ) );
 }
 
 

@@ -33,7 +33,7 @@ ABSL_NAMESPACE_BEGIN
 namespace log_internal {
 
 #define ABSL_LOGGING_INTERNAL_DEFINE_MAKE_CHECK_OP_STRING(x) \
-  template std::string* MakeCheckOpString(x, x, const char*)
+  template ABSEIL_TEMPLATE_EXPORT std::string* MakeCheckOpString(x, x, const char*)
 ABSL_LOGGING_INTERNAL_DEFINE_MAKE_CHECK_OP_STRING(bool);
 ABSL_LOGGING_INTERNAL_DEFINE_MAKE_CHECK_OP_STRING(int64_t);
 ABSL_LOGGING_INTERNAL_DEFINE_MAKE_CHECK_OP_STRING(uint64_t);

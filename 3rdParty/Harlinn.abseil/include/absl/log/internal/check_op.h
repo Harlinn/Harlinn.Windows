@@ -284,7 +284,7 @@ using CheckOpStreamType = decltype(detect_specialization::Detect<T>(0));
 
 // Build the error message string.  Specify no inlining for code size.
 template <typename T1, typename T2>
-ABSL_ATTRIBUTE_RETURNS_NONNULL std::string* MakeCheckOpString(
+ABSEIL_EXPORT ABSL_ATTRIBUTE_RETURNS_NONNULL std::string* MakeCheckOpString(
     T1 v1, T2 v2, const char* exprtext) ABSL_ATTRIBUTE_NOINLINE;
 
 template <typename T1, typename T2>
@@ -298,7 +298,7 @@ std::string* MakeCheckOpString(T1 v1, T2 v2, const char* exprtext) {
 // Add a few commonly used instantiations as extern to reduce size of objects
 // files.
 #define ABSL_LOG_INTERNAL_DEFINE_MAKE_CHECK_OP_STRING_EXTERN(x) \
-  extern template std::string* MakeCheckOpString(x, x, const char*)
+  extern template ABSEIL_TEMPLATE_EXPORT_DECL std::string* MakeCheckOpString(x, x, const char*)
 ABSL_LOG_INTERNAL_DEFINE_MAKE_CHECK_OP_STRING_EXTERN(bool);
 ABSL_LOG_INTERNAL_DEFINE_MAKE_CHECK_OP_STRING_EXTERN(int64_t);
 ABSL_LOG_INTERNAL_DEFINE_MAKE_CHECK_OP_STRING_EXTERN(uint64_t);

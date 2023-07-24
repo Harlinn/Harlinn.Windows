@@ -36,7 +36,7 @@ namespace cord_internal {
 // objects that are alive without needing to hold a global lock.
 class CordzHandle {
  public:
-  CordzHandle() : CordzHandle(false) {}
+     ABSEIL_EXPORT CordzHandle( );
 
   bool is_snapshot() const { return is_snapshot_; }
 

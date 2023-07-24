@@ -24,7 +24,7 @@ TEST(LeakCheckTest, LeakMemory) {
   // test will be run only by leak_check_test.sh, which will verify a
   // failed exit code.
 
-  char* foo = strdup("lsan should complain about this leaked string");
+  char* foo = _strdup("lsan should complain about this leaked string");
   ABSL_RAW_LOG(INFO, "Should detect leaked string %s", foo);
 }
 
@@ -33,7 +33,7 @@ TEST(LeakCheckTest, LeakMemoryAfterDisablerScope) {
   // test will be run only by external_leak_check_test.sh, which will verify a
   // failed exit code.
   { absl::LeakCheckDisabler disabler; }
-  char* foo = strdup("lsan should also complain about this leaked string");
+  char* foo = _strdup("lsan should also complain about this leaked string");
   ABSL_RAW_LOG(INFO, "Re-enabled leak detection.Should detect leaked string %s",
                foo);
 }

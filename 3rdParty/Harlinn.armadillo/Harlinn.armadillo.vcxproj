@@ -98,7 +98,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
-      <AdditionalIncludeDirectories>$(ProjectDir)include;$(SolutionDir)3rdParty\Harlinn.hdf5;$(SolutionDir)3rdParty\Harlinn.superlu;$(ONEAPI_ROOT)mkl\latest\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)include;$(SolutionDir)3rdParty\Harlinn.hdf5;$(SolutionDir)3rdParty\Harlinn.superlu;$(ONEAPI_ROOT)\mkl\latest\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
@@ -106,7 +106,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalLibraryDirectories>$(OutDir);$(ONEAPI_ROOT)mkl\latest\lib\intel64</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(OutDir);$(ONEAPI_ROOT)\mkl\latest\lib\intel64</AdditionalLibraryDirectories>
       <AdditionalDependencies>mkl_core_dll.lib;mkl_intel_lp64_dll.lib;mkl_sequential_dll.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -122,7 +122,7 @@
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <BufferSecurityCheck>false</BufferSecurityCheck>
-      <AdditionalIncludeDirectories>$(ProjectDir)include;$(SolutionDir)3rdParty\Harlinn.hdf5;$(SolutionDir)3rdParty\Harlinn.superlu;$(ONEAPI_ROOT)mkl\latest\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)include;$(SolutionDir)3rdParty\Harlinn.hdf5;$(SolutionDir)3rdParty\Harlinn.superlu;$(ONEAPI_ROOT)\mkl\latest\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
@@ -132,7 +132,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalLibraryDirectories>$(OutDir);$(ONEAPI_ROOT)mkl\latest\lib\intel64</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(OutDir);$(ONEAPI_ROOT)\mkl\latest\lib\intel64</AdditionalLibraryDirectories>
       <AdditionalDependencies>mkl_core_dll.lib;mkl_intel_lp64_dll.lib;mkl_sequential_dll.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -145,7 +145,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
-      <AdditionalIncludeDirectories>$(ProjectDir)include;$(SolutionDir)3rdParty\Harlinn.hdf5;$(SolutionDir)3rdParty\Harlinn.superlu;$(ONEAPI_ROOT)mkl\latest\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)include;$(SolutionDir)3rdParty\Harlinn.hdf5;$(SolutionDir)3rdParty\Harlinn.superlu;$(ONEAPI_ROOT)\mkl\latest\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
@@ -153,7 +153,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalLibraryDirectories>$(OutDir);$(ONEAPI_ROOT)mkl\latest\lib\intel64</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(OutDir);$(ONEAPI_ROOT)\mkl\latest\lib\intel64</AdditionalLibraryDirectories>
       <AdditionalDependencies>mkl_core_dll.lib;mkl_intel_lp64_dll.lib;mkl_sequential_dll.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -169,7 +169,7 @@
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <BufferSecurityCheck>false</BufferSecurityCheck>
-      <AdditionalIncludeDirectories>$(ProjectDir)include;$(SolutionDir)3rdParty\Harlinn.hdf5;$(SolutionDir)3rdParty\Harlinn.superlu;$(ONEAPI_ROOT)mkl\latest\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)include;$(SolutionDir)3rdParty\Harlinn.hdf5;$(SolutionDir)3rdParty\Harlinn.superlu;$(ONEAPI_ROOT)\mkl\latest\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
@@ -179,7 +179,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalLibraryDirectories>$(OutDir);$(ONEAPI_ROOT)mkl\latest\lib\intel64</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(OutDir);$(ONEAPI_ROOT)\mkl\latest\lib\intel64</AdditionalLibraryDirectories>
       <AdditionalDependencies>mkl_core_dll.lib;mkl_intel_lp64_dll.lib;mkl_sequential_dll.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>

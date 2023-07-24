@@ -66,14 +66,14 @@ enum CordFeatureDefaults {
   kCordShallowSubcordsDefault = false
 };
 
-extern std::atomic<bool> cord_ring_buffer_enabled;
-extern std::atomic<bool> shallow_subcords_enabled;
+extern ABSEIL_EXPORT std::atomic<bool> cord_ring_buffer_enabled;
+extern ABSEIL_EXPORT std::atomic<bool> shallow_subcords_enabled;
 
 // `cord_btree_exhaustive_validation` can be set to force exhaustive validation
 // in debug assertions, and code that calls `IsValid()` explicitly. By default,
 // assertions should be relatively cheap and AssertValid() can easily lead to
 // O(n^2) complexity as recursive / full tree validation is O(n).
-extern std::atomic<bool> cord_btree_exhaustive_validation;
+extern ABSEIL_EXPORT std::atomic<bool> cord_btree_exhaustive_validation;
 
 inline void enable_cord_ring_buffer(bool enable) {
   cord_ring_buffer_enabled.store(enable, std::memory_order_relaxed);

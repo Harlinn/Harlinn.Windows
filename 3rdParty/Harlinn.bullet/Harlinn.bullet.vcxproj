@@ -96,13 +96,13 @@
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalIncludeDirectories>$(ProjectDir)include;$(SolutionDir)3rdParty\Harlinn.gwen\include;$(SolutionDir)3rdParty\Harlinn.glad\include;$(SolutionDir)3rdParty\Harlinn.stb\include;$(SolutionDir)3rdParty\Harlinn.tinyxml2;$(SolutionDir)3rdParty\Harlinn.Eigen\include;$(SolutionDir)3rdParty\Harlinn.superlu;$(ProjectDir)src\ThirdPartyLibs;$(ONEAPI_ROOT)mkl\latest\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)include;$(SolutionDir)3rdParty\Harlinn.gwen\include;$(SolutionDir)3rdParty\Harlinn.glad\include;$(SolutionDir)3rdParty\Harlinn.stb\include;$(SolutionDir)3rdParty\Harlinn.tinyxml2;$(SolutionDir)3rdParty\Harlinn.Eigen\include;$(SolutionDir)3rdParty\Harlinn.superlu;$(ProjectDir)src\ThirdPartyLibs;$(ONEAPI_ROOT)\mkl\latest\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalLibraryDirectories>$(OutDir);$(ONEAPI_ROOT)mkl\latest\lib\intel64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(OutDir);$(ONEAPI_ROOT)\mkl\latest\lib\intel64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>mkl_core_dll.lib;mkl_intel_lp64_dll.lib;mkl_sequential_dll.lib;Opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -120,7 +120,7 @@
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <BufferSecurityCheck>false</BufferSecurityCheck>
-      <AdditionalIncludeDirectories>$(ProjectDir)include;$(SolutionDir)3rdParty\Harlinn.gwen\include;$(SolutionDir)3rdParty\Harlinn.glad\include;$(SolutionDir)3rdParty\Harlinn.stb\include;$(SolutionDir)3rdParty\Harlinn.tinyxml2;$(SolutionDir)3rdParty\Harlinn.Eigen\include;$(SolutionDir)3rdParty\Harlinn.superlu;$(ProjectDir)src\ThirdPartyLibs;$(ONEAPI_ROOT)mkl\latest\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)include;$(SolutionDir)3rdParty\Harlinn.gwen\include;$(SolutionDir)3rdParty\Harlinn.glad\include;$(SolutionDir)3rdParty\Harlinn.stb\include;$(SolutionDir)3rdParty\Harlinn.tinyxml2;$(SolutionDir)3rdParty\Harlinn.Eigen\include;$(SolutionDir)3rdParty\Harlinn.superlu;$(ProjectDir)src\ThirdPartyLibs;$(ONEAPI_ROOT)\mkl\latest\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -128,7 +128,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalLibraryDirectories>$(OutDir);$(ONEAPI_ROOT)mkl\latest\lib\intel64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(OutDir);$(ONEAPI_ROOT)\mkl\latest\lib\intel64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>mkl_core_dll.lib;mkl_intel_lp64_dll.lib;mkl_sequential_dll.lib;Opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -143,13 +143,13 @@
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalIncludeDirectories>$(ProjectDir)include;$(SolutionDir)3rdParty\Harlinn.gwen\include;$(SolutionDir)3rdParty\Harlinn.glad\include;$(SolutionDir)3rdParty\Harlinn.stb\include;$(SolutionDir)3rdParty\Harlinn.tinyxml2;$(SolutionDir)3rdParty\Harlinn.Eigen\include;$(SolutionDir)3rdParty\Harlinn.superlu;$(ProjectDir)src\ThirdPartyLibs;$(ONEAPI_ROOT)mkl\latest\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)include;$(SolutionDir)3rdParty\Harlinn.gwen\include;$(SolutionDir)3rdParty\Harlinn.glad\include;$(SolutionDir)3rdParty\Harlinn.stb\include;$(SolutionDir)3rdParty\Harlinn.tinyxml2;$(SolutionDir)3rdParty\Harlinn.Eigen\include;$(SolutionDir)3rdParty\Harlinn.superlu;$(ProjectDir)src\ThirdPartyLibs;$(ONEAPI_ROOT)\mkl\latest\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalLibraryDirectories>$(OutDir);$(ONEAPI_ROOT)mkl\latest\lib\intel64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(OutDir);$(ONEAPI_ROOT)\mkl\latest\lib\intel64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>mkl_core_dll.lib;mkl_intel_lp64_dll.lib;mkl_sequential_dll.lib;Opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -167,7 +167,7 @@
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <BufferSecurityCheck>false</BufferSecurityCheck>
-      <AdditionalIncludeDirectories>$(ProjectDir)include;$(SolutionDir)3rdParty\Harlinn.gwen\include;$(SolutionDir)3rdParty\Harlinn.glad\include;$(SolutionDir)3rdParty\Harlinn.stb\include;$(SolutionDir)3rdParty\Harlinn.tinyxml2;$(SolutionDir)3rdParty\Harlinn.Eigen\include;$(SolutionDir)3rdParty\Harlinn.superlu;$(ProjectDir)src\ThirdPartyLibs;$(ONEAPI_ROOT)mkl\latest\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)include;$(SolutionDir)3rdParty\Harlinn.gwen\include;$(SolutionDir)3rdParty\Harlinn.glad\include;$(SolutionDir)3rdParty\Harlinn.stb\include;$(SolutionDir)3rdParty\Harlinn.tinyxml2;$(SolutionDir)3rdParty\Harlinn.Eigen\include;$(SolutionDir)3rdParty\Harlinn.superlu;$(ProjectDir)src\ThirdPartyLibs;$(ONEAPI_ROOT)\mkl\latest\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -175,7 +175,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalLibraryDirectories>$(OutDir);$(ONEAPI_ROOT)mkl\latest\lib\intel64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(OutDir);$(ONEAPI_ROOT)\mkl\latest\lib\intel64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>mkl_core_dll.lib;mkl_intel_lp64_dll.lib;mkl_sequential_dll.lib;Opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>

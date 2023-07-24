@@ -202,11 +202,11 @@ class LogMessage {
   // filled in by `~OstreamView`.
   class OstreamView final : public std::streambuf {
    public:
-    explicit OstreamView(LogMessageData& message_data);
-    ~OstreamView() override;
+    ABSEIL_EXPORT explicit OstreamView(LogMessageData& message_data);
+    ABSEIL_EXPORT ~OstreamView() override;
     OstreamView(const OstreamView&) = delete;
     OstreamView& operator=(const OstreamView&) = delete;
-    std::ostream& stream();
+    ABSEIL_EXPORT std::ostream& stream();
 
    private:
     LogMessageData& data_;

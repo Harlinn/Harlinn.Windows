@@ -684,22 +684,22 @@ ABSEIL_EXPORT std::ostream& operator<<(std::ostream& os, const Status& x);
 //
 // These convenience functions return `true` if a given status matches the
 // `absl::StatusCode` error code of its associated function.
-ABSL_MUST_USE_RESULT bool IsAborted(const Status& status);
-ABSL_MUST_USE_RESULT bool IsAlreadyExists(const Status& status);
-ABSL_MUST_USE_RESULT bool IsCancelled(const Status& status);
-ABSL_MUST_USE_RESULT bool IsDataLoss(const Status& status);
-ABSL_MUST_USE_RESULT bool IsDeadlineExceeded(const Status& status);
-ABSL_MUST_USE_RESULT bool IsFailedPrecondition(const Status& status);
-ABSL_MUST_USE_RESULT bool IsInternal(const Status& status);
-ABSL_MUST_USE_RESULT bool IsInvalidArgument(const Status& status);
-ABSL_MUST_USE_RESULT bool IsNotFound(const Status& status);
-ABSL_MUST_USE_RESULT bool IsOutOfRange(const Status& status);
-ABSL_MUST_USE_RESULT bool IsPermissionDenied(const Status& status);
-ABSL_MUST_USE_RESULT bool IsResourceExhausted(const Status& status);
-ABSL_MUST_USE_RESULT bool IsUnauthenticated(const Status& status);
-ABSL_MUST_USE_RESULT bool IsUnavailable(const Status& status);
-ABSL_MUST_USE_RESULT bool IsUnimplemented(const Status& status);
-ABSL_MUST_USE_RESULT bool IsUnknown(const Status& status);
+ABSEIL_EXPORT ABSL_MUST_USE_RESULT bool IsAborted(const Status& status);
+ABSEIL_EXPORT ABSL_MUST_USE_RESULT bool IsAlreadyExists(const Status& status);
+ABSEIL_EXPORT ABSL_MUST_USE_RESULT bool IsCancelled(const Status& status);
+ABSEIL_EXPORT ABSL_MUST_USE_RESULT bool IsDataLoss(const Status& status);
+ABSEIL_EXPORT ABSL_MUST_USE_RESULT bool IsDeadlineExceeded(const Status& status);
+ABSEIL_EXPORT ABSL_MUST_USE_RESULT bool IsFailedPrecondition(const Status& status);
+ABSEIL_EXPORT ABSL_MUST_USE_RESULT bool IsInternal(const Status& status);
+ABSEIL_EXPORT ABSL_MUST_USE_RESULT bool IsInvalidArgument(const Status& status);
+ABSEIL_EXPORT ABSL_MUST_USE_RESULT bool IsNotFound(const Status& status);
+ABSEIL_EXPORT ABSL_MUST_USE_RESULT bool IsOutOfRange(const Status& status);
+ABSEIL_EXPORT ABSL_MUST_USE_RESULT bool IsPermissionDenied(const Status& status);
+ABSEIL_EXPORT ABSL_MUST_USE_RESULT bool IsResourceExhausted(const Status& status);
+ABSEIL_EXPORT ABSL_MUST_USE_RESULT bool IsUnauthenticated(const Status& status);
+ABSEIL_EXPORT ABSL_MUST_USE_RESULT bool IsUnavailable(const Status& status);
+ABSEIL_EXPORT ABSL_MUST_USE_RESULT bool IsUnimplemented(const Status& status);
+ABSEIL_EXPORT ABSL_MUST_USE_RESULT bool IsUnknown(const Status& status);
 
 // AbortedError()
 // AlreadyExistsError()

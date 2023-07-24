@@ -10,7 +10,7 @@
 namespace hcc = Harlinn::Common::Core;
 
 
-std::string  GetRootDataDirectory( )
+hcc::AnsiString GetRootDataDirectory( )
 {
     auto result = hcc::Environment::EnvironmentVariable( "HCC_TEST_DATA_ROOT" );
     if ( !result.ends_with( "\\" ) && !result.ends_with( "/" ) )
@@ -20,7 +20,7 @@ std::string  GetRootDataDirectory( )
     return result;
 }
 
-std::string  GetRocksDBDataDirectory( )
+hcc::AnsiString GetRocksDBDataDirectory( )
 {
     auto dataDir = GetRootDataDirectory( );
     auto rocksDBDataDirectory = dataDir + "RocksDB";
@@ -29,14 +29,14 @@ std::string  GetRocksDBDataDirectory( )
     return rocksDBDataDirectory;
 }
 
-std::string  GetRocksDBExampleDataDirectory( )
+hcc::AnsiString GetRocksDBExampleDataDirectory( )
 {
     auto rocksDBDataDirectory = GetRocksDBDataDirectory( );
     auto result = rocksDBDataDirectory + "SimpleExampleData";
     return result;
 }
 
-std::string  GetRocksDBExampleBackupDirectory( )
+hcc::AnsiString GetRocksDBExampleBackupDirectory( )
 {
     auto rocksDBDataDirectory = GetRocksDBDataDirectory( );
     auto result = rocksDBDataDirectory + "SimpleExampleBackup";

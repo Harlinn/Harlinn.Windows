@@ -14,20 +14,21 @@
 
 static const char kTestUsageMessage[] = "Custom usage message";
 
+/*
 #if ABSL_PER_THREAD_TLS
 extern ABSL_PER_THREAD_TLS_KEYWORD char symbolize_test_thread_small[1];
 extern ABSL_PER_THREAD_TLS_KEYWORD char
 symbolize_test_thread_big[2 * 1024 * 1024];
 #endif
-
+*/
 
 
 int main( int argc, char** argv )
 {
 #if ABSL_PER_THREAD_TLS
     // Touch the per-thread variables.
-    symbolize_test_thread_small[0] = 0;
-    symbolize_test_thread_big[0] = 0;
+    //symbolize_test_thread_small[0] = 0;
+    //symbolize_test_thread_big[0] = 0;
 #endif
 
     absl::InitializeSymbolizer( argv[0] );
