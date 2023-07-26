@@ -11,47 +11,47 @@
 namespace Harlinn::Common::Core
 {
     
-        enum class ThreadModel : DWORD
+    enum class ThreadModel : DWORD
+    {
+        Unknown = 0,
+        ApartmentThreaded = COINIT_APARTMENTTHREADED,
+        MultiThreaded = COINIT_MULTITHREADED,
+        DisableDDE = COINIT_DISABLE_OLE1DDE,
+        SpeedOverMemory = COINIT_SPEED_OVER_MEMORY
+    };
+    HCC_DEFINE_ENUM_FLAG_OPERATORS(ThreadModel, DWORD);
+
+    class ComInitialize
+    {
+        Core::ThreadModel threadModel_;
+        HRESULT result_ = S_OK;
+    public:
+        ComInitialize(Core::ThreadModel threadModel = Core::ThreadModel::MultiThreaded)
+            : threadModel_(threadModel)
         {
-            Unknown = 0,
-            ApartmentThreaded = COINIT_APARTMENTTHREADED,
-            MultiThreaded = COINIT_MULTITHREADED,
-            DisableDDE = COINIT_DISABLE_OLE1DDE,
-            SpeedOverMemory = COINIT_SPEED_OVER_MEMORY
-        };
-        HCC_DEFINE_ENUM_FLAG_OPERATORS(ThreadModel, DWORD);
-
-        class ComInitialize
+            result_ = CoInitializeEx(nullptr, static_cast<DWORD>(threadModel));
+        }
+        ~ComInitialize()
         {
-            Core::ThreadModel threadModel_;
-            HRESULT result_ = S_OK;
-        public:
-            ComInitialize(Core::ThreadModel threadModel = Core::ThreadModel::MultiThreaded)
-                : threadModel_(threadModel)
-            {
-                result_ = CoInitializeEx(nullptr, static_cast<DWORD>(threadModel));
-            }
-            ~ComInitialize()
-            {
-                CoUninitialize();
-            }
-            ComInitialize(const ComInitialize&) = delete;
-            ComInitialize& operator = (const ComInitialize&) = delete;
-            ComInitialize(ComInitialize&&) = delete;
-            ComInitialize& operator = (ComInitialize&&) = delete;
+            CoUninitialize();
+        }
+        ComInitialize(const ComInitialize&) = delete;
+        ComInitialize& operator = (const ComInitialize&) = delete;
+        ComInitialize(ComInitialize&&) = delete;
+        ComInitialize& operator = (ComInitialize&&) = delete;
 
-            HRESULT Result() const noexcept
-            {
-                return result_;
-            }
+        HRESULT Result() const noexcept
+        {
+            return result_;
+        }
 
-            Core::ThreadModel ThreadModel() const noexcept
-            {
-                return threadModel_;
-            }
+        Core::ThreadModel ThreadModel() const noexcept
+        {
+            return threadModel_;
+        }
 
 
-        };
+    };
     
 
     template<typename T>
@@ -198,6 +198,15 @@ namespace Harlinn::Common::Core
                     unknown_->AddRef( );
                 }
             }
+        }
+
+        Unknown& operator = ( nullptr_t )
+        {
+            if ( unknown_ )
+            {
+                unknown_->Release( );
+            }
+            return *this;
         }
 
 

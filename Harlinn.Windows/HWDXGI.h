@@ -455,6 +455,15 @@ namespace Harlinn::Windows::DXGI
             CheckHRESULT( hr );
         }
 
+        Output GetContainingOutput( ) const
+        {
+            IDXGIOutput* itf = nullptr;
+            GetContainingOutput( &itf );
+            Output result( itf );
+            return result;
+        }
+
+
         void GetFrameStatistics( DXGI_FRAME_STATISTICS* pStats ) const
         {
             auto* pInterface = GetInterface( );
@@ -1370,12 +1379,20 @@ namespace Harlinn::Windows::DXGI
             return pInterface->GetCurrentBackBufferIndex( );
         }
 
-        void CheckColorSpaceSupport( DXGI_COLOR_SPACE_TYPE ColorSpace, UINT* pColorSpaceSupport ) const
+        void CheckColorSpaceSupport( DXGI_COLOR_SPACE_TYPE colorSpace, UINT* pColorSpaceSupport ) const
         {
             auto* pInterface = GetInterface( );
-            auto hr = pInterface->CheckColorSpaceSupport( ColorSpace, pColorSpaceSupport );
+            auto hr = pInterface->CheckColorSpaceSupport( colorSpace, pColorSpaceSupport );
             CheckHRESULT( hr );
         }
+
+        UINT CheckColorSpaceSupport( DXGI_COLOR_SPACE_TYPE colorSpace )
+        {
+            UINT result = 0;
+            CheckColorSpaceSupport( colorSpace, &result );
+            return result;
+        }
+
 
         void SetColorSpace1( DXGI_COLOR_SPACE_TYPE ColorSpace ) const
         {

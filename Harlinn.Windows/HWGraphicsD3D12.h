@@ -1127,6 +1127,21 @@ namespace Harlinn::Windows::Graphics
             HCC_COM_CHECK_HRESULT2( hr, pInterface );
         }
 
+        bool CheckFeatureSupport( D3D12_FEATURE_DATA_D3D12_OPTIONS& options ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            auto hr = pInterface->CheckFeatureSupport( D3D12_FEATURE_D3D12_OPTIONS, &options, sizeof( D3D12_FEATURE_DATA_D3D12_OPTIONS ) );
+            return SUCCEEDED( hr );
+        }
+
+        
+        bool CheckFeatureSupport( D3D12_FEATURE_DATA_FORMAT_SUPPORT& formatSupport ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            auto hr = pInterface->CheckFeatureSupport( D3D12_FEATURE_FORMAT_SUPPORT, &formatSupport, sizeof( D3D12_FEATURE_DATA_FORMAT_SUPPORT ) );
+            return SUCCEEDED( hr );
+        }
+
         void CreateDescriptorHeap( _In_ const D3D12_DESCRIPTOR_HEAP_DESC* descriptorHeapDesc, REFIID riid, _COM_Outptr_ void** ppvHeap ) const
         {
             InterfaceType* pInterface = GetInterface( );
@@ -1237,6 +1252,14 @@ namespace Harlinn::Windows::Graphics
             HCC_COM_CHECK_HRESULT2( hr, pInterface );
         }
 
+        D3D12Resource CreateCommittedResource( _In_ const D3D12_HEAP_PROPERTIES* pHeapProperties, D3D12_HEAP_FLAGS heapFlags, _In_ const D3D12_RESOURCE_DESC* pDesc, D3D12_RESOURCE_STATES initialResourceState, _In_opt_ const D3D12_CLEAR_VALUE* pOptimizedClearValue ) const
+        {
+            ID3D12Resource* itf = nullptr;
+            CreateCommittedResource( pHeapProperties, heapFlags, pDesc, initialResourceState, pOptimizedClearValue, __uuidof( ID3D12Resource ), reinterpret_cast<void**>( &itf ) );
+            return D3D12Resource(itf);
+        }
+
+
         void CreateHeap( _In_ const D3D12_HEAP_DESC* pDesc, REFIID riid, _COM_Outptr_opt_  void** ppvHeap ) const
         {
             InterfaceType* pInterface = GetInterface( );
@@ -1249,6 +1272,13 @@ namespace Harlinn::Windows::Graphics
             InterfaceType* pInterface = GetInterface( );
             auto hr = pInterface->CreatePlacedResource( pHeap, heapOffset, pDesc, initialState, pOptimizedClearValue, riid, ppvResource );
             HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+
+        D3D12Resource CreatePlacedResource( _In_ ID3D12Heap* pHeap, UINT64 heapOffset, _In_ const D3D12_RESOURCE_DESC* pDesc, D3D12_RESOURCE_STATES initialState, _In_opt_ const D3D12_CLEAR_VALUE* pOptimizedClearValue ) const
+        {
+            ID3D12Resource* itf = nullptr;
+            CreatePlacedResource( pHeap, heapOffset, pDesc, initialState, pOptimizedClearValue, __uuidof( ID3D12Resource ), reinterpret_cast< void** >( &itf ) );
+            return D3D12Resource( itf );
         }
 
         void CreateReservedResource( _In_ const D3D12_RESOURCE_DESC* pDesc, D3D12_RESOURCE_STATES initialState, _In_opt_ const D3D12_CLEAR_VALUE* pOptimizedClearValue, REFIID riid, _COM_Outptr_opt_ void** ppvResource ) const
@@ -1342,7 +1372,7 @@ namespace Harlinn::Windows::Graphics
             HCC_COM_CHECK_HRESULT2( hr, pInterface );
         }
 
-        HRESULT CreateCommandSignature( _In_ const D3D12_COMMAND_SIGNATURE_DESC* pDesc, _In_opt_ ID3D12RootSignature* pRootSignature, REFIID riid, _COM_Outptr_opt_  void** ppvCommandSignature ) const
+        void CreateCommandSignature( _In_ const D3D12_COMMAND_SIGNATURE_DESC* pDesc, _In_opt_ ID3D12RootSignature* pRootSignature, REFIID riid, _COM_Outptr_opt_  void** ppvCommandSignature ) const
         {
             InterfaceType* pInterface = GetInterface( );
             auto hr = pInterface->CreateCommandSignature( pDesc, pRootSignature, riid, ppvCommandSignature );
@@ -2115,15 +2145,22 @@ namespace Harlinn::Windows::Graphics
 
     template<typename T = D3D12Device>
         requires std::is_base_of_v<D3D12Device, T>
-    inline T CreateDevice( Unknown adapter, D3D_FEATURE_LEVEL minimumFeatureLevel = D3D_FEATURE_LEVEL::D3D_FEATURE_LEVEL_11_1 )
+    inline T CreateDevice( IUnknown* adapter, D3D_FEATURE_LEVEL minimumFeatureLevel = D3D_FEATURE_LEVEL::D3D_FEATURE_LEVEL_11_1 )
     {
         using InterfaceType = T::InterfaceType;
         auto InterfaceId = __uuidof( InterfaceType );
         InterfaceType* intf = nullptr;
-        auto hr = D3D12CreateDevice( adapter.GetInterfacePointer(), minimumFeatureLevel, InterfaceId, (void**)&intf );
+        auto hr = D3D12CreateDevice( adapter, minimumFeatureLevel, InterfaceId, ( void** )&intf );
         HCC_COM_CHECK_HRESULT( hr );
         T result( intf );
         return result;
+    }
+
+    template<typename T = D3D12Device>
+        requires std::is_base_of_v<D3D12Device, T>
+    inline T CreateDevice( Unknown adapter, D3D_FEATURE_LEVEL minimumFeatureLevel = D3D_FEATURE_LEVEL::D3D_FEATURE_LEVEL_11_1 )
+    {
+        return CreateDevice<T>( adapter.GetInterfacePointer( ), minimumFeatureLevel );
     }
 
     inline D3D12Device4 D3D12DeviceChild::GetDevice( ) const

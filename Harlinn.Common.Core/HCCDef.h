@@ -64,6 +64,7 @@
 #include <CommCtrl.h>
 #include <Security.h>
 #include <dxgi1_6.h>
+#include <dxgidebug.h>
 #include <d2d1_3.h>
 #include <d2d1_3helper.h>
 #include <d2d1svg.h>
@@ -86,6 +87,9 @@
 #include <D3D9Types.h>
 #include <d3d9.h>
 #include <dxva2api.h>
+#include <DirectXMath.h>
+#include <directxcollision.h>
+#include <directxpackedvector.h>
 #include <Dmo.h>
 #include <mediaobj.h>
 #include <mfobjects.h>
