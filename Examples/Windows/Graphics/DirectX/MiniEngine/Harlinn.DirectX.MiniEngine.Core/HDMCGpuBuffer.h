@@ -29,18 +29,18 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         virtual ~GpuBuffer( ) { Destroy( ); }
 
         // Create a buffer.  If initial data is provided, it will be copied into the buffer using the default command context.
-        void Create( const std::wstring& name, uint32_t NumElements, uint32_t ElementSize,
+        HDMC_EXPORT void Create( const std::wstring& name, uint32_t NumElements, uint32_t ElementSize,
             const void* initialData = nullptr );
 
-        void Create( const std::wstring& name, uint32_t NumElements, uint32_t ElementSize,
+        HDMC_EXPORT void Create( const std::wstring& name, uint32_t NumElements, uint32_t ElementSize,
             const UploadBuffer& srcData, uint32_t srcOffset = 0 );
 
         // Create a buffer in ESRAM.  On Windows, ESRAM is not used.
-        void Create( const std::wstring& name, uint32_t NumElements, uint32_t ElementSize,
+        HDMC_EXPORT void Create( const std::wstring& name, uint32_t NumElements, uint32_t ElementSize,
             EsramAllocator& Allocator, const void* initialData = nullptr );
 
         // Sub-Allocate a buffer out of a pre-allocated heap.  If initial data is provided, it will be copied into the buffer using the default command context.
-        void CreatePlaced( const std::wstring& name, ID3D12Heap* pBackingHeap, uint32_t HeapOffset, uint32_t NumElements, uint32_t ElementSize,
+        HDMC_EXPORT void CreatePlaced( const std::wstring& name, ID3D12Heap* pBackingHeap, uint32_t HeapOffset, uint32_t NumElements, uint32_t ElementSize,
             const void* initialData = nullptr );
 
         const D3D12_CPU_DESCRIPTOR_HANDLE& GetUAV( void ) const { return m_UAV; }
@@ -48,7 +48,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine
 
         D3D12_GPU_VIRTUAL_ADDRESS RootConstantBufferView( void ) const { return m_GpuVirtualAddress; }
 
-        D3D12_CPU_DESCRIPTOR_HANDLE CreateConstantBufferView( uint32_t Offset, uint32_t Size ) const;
+        HDMC_EXPORT D3D12_CPU_DESCRIPTOR_HANDLE CreateConstantBufferView( uint32_t Offset, uint32_t Size ) const;
 
         D3D12_VERTEX_BUFFER_VIEW VertexBufferView( size_t Offset, uint32_t Size, uint32_t Stride ) const;
         D3D12_VERTEX_BUFFER_VIEW VertexBufferView( size_t BaseVertexIndex = 0 ) const
@@ -110,7 +110,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine
     class ByteAddressBuffer : public GpuBuffer
     {
     public:
-        virtual void CreateDerivedViews( void ) override;
+        HDMC_EXPORT virtual void CreateDerivedViews( void ) override;
     };
 
     class IndirectArgsBuffer : public ByteAddressBuffer
@@ -130,12 +130,12 @@ namespace Harlinn::Windows::DirectX::MiniEngine
             GpuBuffer::Destroy( );
         }
 
-        virtual void CreateDerivedViews( void ) override;
+        HDMC_EXPORT virtual void CreateDerivedViews( void ) override;
 
         ByteAddressBuffer& GetCounterBuffer( void ) { return m_CounterBuffer; }
 
-        const D3D12_CPU_DESCRIPTOR_HANDLE& GetCounterSRV( CommandContext& Context );
-        const D3D12_CPU_DESCRIPTOR_HANDLE& GetCounterUAV( CommandContext& Context );
+        HDMC_EXPORT const D3D12_CPU_DESCRIPTOR_HANDLE& GetCounterSRV( CommandContext& Context );
+        HDMC_EXPORT const D3D12_CPU_DESCRIPTOR_HANDLE& GetCounterUAV( CommandContext& Context );
 
     private:
         ByteAddressBuffer m_CounterBuffer;
@@ -145,7 +145,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine
     {
     public:
         TypedBuffer( DXGI_FORMAT Format ) : m_DataFormat( Format ) {}
-        virtual void CreateDerivedViews( void ) override;
+        HDMC_EXPORT virtual void CreateDerivedViews( void ) override;
 
     protected:
         DXGI_FORMAT m_DataFormat;

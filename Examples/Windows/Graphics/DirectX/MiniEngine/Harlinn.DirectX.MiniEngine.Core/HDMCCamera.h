@@ -26,15 +26,15 @@ namespace Harlinn::Windows::DirectX::MiniEngine::Math
         // Call this function once per frame and after you've changed any state.  This
         // regenerates all matrices.  Calling it more or less than once per frame will break
         // temporal effects and cause unpredictable results.
-        void Update( );
+        HDMC_EXPORT void Update( );
 
         // Public functions for controlling where the camera is and its orientation
         void SetEyeAtUp( Vector3 eye, Vector3 at, Vector3 up );
-        void SetLookDirection( Vector3 forward, Vector3 up );
+        HDMC_EXPORT void SetLookDirection( Vector3 forward, Vector3 up );
         void SetRotation( Quaternion basisRotation );
         void SetPosition( Vector3 worldPos );
         void SetTransform( const AffineTransform& xform );
-        void SetTransform( const OrthogonalTransform& xform );
+        HDMC_EXPORT void SetTransform( const OrthogonalTransform& xform );
 
         const Quaternion GetRotation( ) const { return m_CameraToWorld.GetRotation( ); }
         const Vector3 GetRightVec( ) const { return m_Basis.GetX( ); }
@@ -105,7 +105,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine::Math
 
     private:
 
-        void UpdateProjMatrix( void );
+        HDMC_EXPORT void UpdateProjMatrix( void );
 
         float m_VerticalFOV;	// Field of view angle in radians
         float m_AspectRatio;

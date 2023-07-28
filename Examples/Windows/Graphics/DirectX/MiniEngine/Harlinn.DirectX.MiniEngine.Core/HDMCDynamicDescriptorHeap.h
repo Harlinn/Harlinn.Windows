@@ -22,7 +22,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine
     class CommandContext;
     namespace Graphics
     {
-        extern D3D12Device g_Device;
+        HDMC_EXPORT extern D3D12Device g_Device;
     }
 
     // This class is a linear allocation system for dynamically generated descriptor tables.  It internally caches
@@ -31,8 +31,8 @@ namespace Harlinn::Windows::DirectX::MiniEngine
     class DynamicDescriptorHeap
     {
     public:
-        DynamicDescriptorHeap( CommandContext& OwningContext, D3D12_DESCRIPTOR_HEAP_TYPE HeapType );
-        ~DynamicDescriptorHeap( );
+        HDMC_EXPORT DynamicDescriptorHeap( CommandContext& OwningContext, D3D12_DESCRIPTOR_HEAP_TYPE HeapType );
+        HDMC_EXPORT ~DynamicDescriptorHeap( );
 
         static void DestroyAll( void )
         {
@@ -40,7 +40,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine
             sm_DescriptorHeapPool[ 1 ].clear( );
         }
 
-        void CleanupUsedHeaps( uint64_t fenceValue );
+        HDMC_EXPORT void CleanupUsedHeaps( uint64_t fenceValue );
 
         // Copy multiple handles into the cache area reserved for the specified root parameter.
         void SetGraphicsDescriptorHandles( UINT RootIndex, UINT Offset, UINT NumHandles, const D3D12_CPU_DESCRIPTOR_HANDLE Handles[ ] )
@@ -54,7 +54,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         }
 
         // Bypass the cache and upload directly to the shader-visible heap
-        D3D12_GPU_DESCRIPTOR_HANDLE UploadDirect( D3D12_CPU_DESCRIPTOR_HANDLE Handles );
+        HDMC_EXPORT D3D12_GPU_DESCRIPTOR_HANDLE UploadDirect( D3D12_CPU_DESCRIPTOR_HANDLE Handles );
 
         // Deduce cache layout needed to support the descriptor tables needed by the root signature.
         void ParseGraphicsRootSignature( const RootSignature& RootSig )
@@ -132,16 +132,16 @@ namespace Harlinn::Windows::DirectX::MiniEngine
             static const uint32_t kMaxNumDescriptors = 256;
             static const uint32_t kMaxNumDescriptorTables = 16;
 
-            uint32_t ComputeStagedSize( );
-            void CopyAndBindStaleTables( D3D12_DESCRIPTOR_HEAP_TYPE Type, uint32_t DescriptorSize, DescriptorHandle DestHandleStart, ID3D12GraphicsCommandList* CmdList,
+            HDMC_EXPORT uint32_t ComputeStagedSize( );
+            HDMC_EXPORT void CopyAndBindStaleTables( D3D12_DESCRIPTOR_HEAP_TYPE Type, uint32_t DescriptorSize, DescriptorHandle DestHandleStart, ID3D12GraphicsCommandList* CmdList,
                 void ( STDMETHODCALLTYPE ID3D12GraphicsCommandList::* SetFunc )( UINT, D3D12_GPU_DESCRIPTOR_HANDLE ) );
 
             DescriptorTableCache m_RootDescriptorTable[ kMaxNumDescriptorTables ];
             D3D12_CPU_DESCRIPTOR_HANDLE m_HandleCache[ kMaxNumDescriptors ];
 
-            void UnbindAllValid( );
-            void StageDescriptorHandles( UINT RootIndex, UINT Offset, UINT NumHandles, const D3D12_CPU_DESCRIPTOR_HANDLE Handles[ ] );
-            void ParseRootSignature( D3D12_DESCRIPTOR_HEAP_TYPE Type, const RootSignature& RootSig );
+            HDMC_EXPORT void UnbindAllValid( );
+            HDMC_EXPORT void StageDescriptorHandles( UINT RootIndex, UINT Offset, UINT NumHandles, const D3D12_CPU_DESCRIPTOR_HANDLE Handles[ ] );
+            HDMC_EXPORT void ParseRootSignature( D3D12_DESCRIPTOR_HEAP_TYPE Type, const RootSignature& RootSig );
         };
 
         DescriptorHandleCache m_GraphicsHandleCache;
@@ -152,9 +152,9 @@ namespace Harlinn::Windows::DirectX::MiniEngine
             return ( m_CurrentHeapPtr != nullptr && m_CurrentOffset + Count <= kNumDescriptorsPerHeap );
         }
 
-        void RetireCurrentHeap( void );
-        void RetireUsedHeaps( uint64_t fenceValue );
-        ID3D12DescriptorHeap* GetHeapPointer( );
+        HDMC_EXPORT void RetireCurrentHeap( void );
+        HDMC_EXPORT void RetireUsedHeaps( uint64_t fenceValue );
+        HDMC_EXPORT ID3D12DescriptorHeap* GetHeapPointer( );
 
         DescriptorHandle Allocate( UINT Count )
         {
@@ -163,11 +163,11 @@ namespace Harlinn::Windows::DirectX::MiniEngine
             return ret;
         }
 
-        void CopyAndBindStagedTables( DescriptorHandleCache& HandleCache, ID3D12GraphicsCommandList* CmdList,
+        HDMC_EXPORT void CopyAndBindStagedTables( DescriptorHandleCache& HandleCache, ID3D12GraphicsCommandList* CmdList,
             void ( STDMETHODCALLTYPE ID3D12GraphicsCommandList::* SetFunc )( UINT, D3D12_GPU_DESCRIPTOR_HANDLE ) );
 
         // Mark all descriptors in the cache as stale and in need of re-uploading.
-        void UnbindAllValid( void );
+        HDMC_EXPORT void UnbindAllValid( void );
 
     };
 }

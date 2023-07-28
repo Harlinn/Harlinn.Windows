@@ -77,7 +77,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine
 {
     namespace BitonicSort
     {
-        void Sort(
+        HDMC_EXPORT void Sort(
             // An existing compute context
             ComputeContext& Context,
 

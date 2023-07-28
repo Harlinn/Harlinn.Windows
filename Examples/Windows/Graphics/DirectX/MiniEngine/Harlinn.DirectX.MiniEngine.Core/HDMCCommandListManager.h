@@ -24,22 +24,22 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         friend class CommandContext;
 
     public:
-        CommandQueue( D3D12_COMMAND_LIST_TYPE Type );
-        ~CommandQueue( );
+        HDMC_EXPORT CommandQueue( D3D12_COMMAND_LIST_TYPE Type );
+        HDMC_EXPORT ~CommandQueue( );
 
-        void Create( ID3D12Device* pDevice );
-        void Shutdown( );
+        HDMC_EXPORT void Create( ID3D12Device* pDevice );
+        HDMC_EXPORT void Shutdown( );
 
         inline bool IsReady( )
         {
             return m_CommandQueue != nullptr;
         }
 
-        uint64_t IncrementFence( void );
-        bool IsFenceComplete( uint64_t FenceValue );
-        void StallForFence( uint64_t FenceValue );
-        void StallForProducer( CommandQueue& Producer );
-        void WaitForFence( uint64_t FenceValue );
+        HDMC_EXPORT uint64_t IncrementFence( void );
+        HDMC_EXPORT bool IsFenceComplete( uint64_t FenceValue );
+        HDMC_EXPORT void StallForFence( uint64_t FenceValue );
+        HDMC_EXPORT void StallForProducer( CommandQueue& Producer );
+        HDMC_EXPORT void WaitForFence( uint64_t FenceValue );
         void WaitForIdle( void ) { WaitForFence( IncrementFence( ) ); }
 
         ID3D12CommandQueue* GetCommandQueue( ) { return m_CommandQueue; }
@@ -48,9 +48,9 @@ namespace Harlinn::Windows::DirectX::MiniEngine
 
     private:
 
-        uint64_t ExecuteCommandList( ID3D12CommandList* List );
-        ID3D12CommandAllocator* RequestAllocator( void );
-        void DiscardAllocator( uint64_t FenceValueForReset, ID3D12CommandAllocator* Allocator );
+        HDMC_EXPORT uint64_t ExecuteCommandList( ID3D12CommandList* List );
+        HDMC_EXPORT ID3D12CommandAllocator* RequestAllocator( void );
+        HDMC_EXPORT void DiscardAllocator( uint64_t FenceValueForReset, ID3D12CommandAllocator* Allocator );
 
         ID3D12CommandQueue* m_CommandQueue;
 
@@ -73,11 +73,11 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         friend class CommandContext;
 
     public:
-        CommandListManager( );
-        ~CommandListManager( );
+        HDMC_EXPORT CommandListManager( );
+        HDMC_EXPORT ~CommandListManager( );
 
-        void Create( ID3D12Device* pDevice );
-        void Shutdown( );
+        HDMC_EXPORT void Create( ID3D12Device* pDevice );
+        HDMC_EXPORT void Shutdown( );
 
         CommandQueue& GetGraphicsQueue( void ) { return m_GraphicsQueue; }
         CommandQueue& GetComputeQueue( void ) { return m_ComputeQueue; }
@@ -98,7 +98,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine
             return m_GraphicsQueue.GetCommandQueue( );
         }
 
-        void CreateNewCommandList(
+        HDMC_EXPORT void CreateNewCommandList(
             D3D12_COMMAND_LIST_TYPE Type,
             ID3D12GraphicsCommandList** List,
             ID3D12CommandAllocator** Allocator );
@@ -110,7 +110,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         }
 
         // The CPU will wait for a fence to reach a specified value
-        void WaitForFence( uint64_t FenceValue );
+        HDMC_EXPORT void WaitForFence( uint64_t FenceValue );
 
         // The CPU will wait for all command queues to empty (so that the GPU is idle)
         void IdleGPU( void )

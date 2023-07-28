@@ -23,15 +23,15 @@ namespace Harlinn::Windows::DirectX::MiniEngine
 
     namespace EngineProfiling
     {
-        void Update( );
+        HDMC_EXPORT void Update( );
 
-        void BeginBlock( const std::wstring& name, CommandContext* Context = nullptr );
-        void EndBlock( CommandContext* Context = nullptr );
+        HDMC_EXPORT void BeginBlock( const std::wstring& name, CommandContext* Context = nullptr );
+        HDMC_EXPORT void EndBlock( CommandContext* Context = nullptr );
 
-        void DisplayFrameRate( TextContext& Text );
-        void DisplayPerfGraph( GraphicsContext& Text );
-        void Display( TextContext& Text, float x, float y, float w, float h );
-        bool IsPaused( );
+        HDMC_EXPORT void DisplayFrameRate( TextContext& Text );
+        HDMC_EXPORT void DisplayPerfGraph( GraphicsContext& Text );
+        HDMC_EXPORT void Display( TextContext& Text, float x, float y, float w, float h );
+        HDMC_EXPORT bool IsPaused( );
     }
 
 #ifdef RELEASE

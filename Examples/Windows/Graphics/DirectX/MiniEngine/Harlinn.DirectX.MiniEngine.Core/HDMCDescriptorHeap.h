@@ -30,9 +30,9 @@ namespace Harlinn::Windows::DirectX::MiniEngine
             m_CurrentHandle.ptr = D3D12_GPU_VIRTUAL_ADDRESS_UNKNOWN;
         }
 
-        D3D12_CPU_DESCRIPTOR_HANDLE Allocate( uint32_t Count );
+        HDMC_EXPORT D3D12_CPU_DESCRIPTOR_HANDLE Allocate( uint32_t Count );
 
-        static void DestroyAll( void );
+        HDMC_EXPORT static void DestroyAll( void );
 
     protected:
 
@@ -108,11 +108,11 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         DescriptorHeap( void ) {}
         ~DescriptorHeap( void ) { Destroy( ); }
 
-        void Create( const std::wstring& DebugHeapName, D3D12_DESCRIPTOR_HEAP_TYPE Type, uint32_t MaxCount );
+        HDMC_EXPORT void Create( const std::wstring& DebugHeapName, D3D12_DESCRIPTOR_HEAP_TYPE Type, uint32_t MaxCount );
         void Destroy( void ) { m_Heap.ResetPtr(); }
 
         bool HasAvailableSpace( uint32_t Count ) const { return Count <= m_NumFreeDescriptors; }
-        DescriptorHandle Alloc( uint32_t Count = 1 );
+        HDMC_EXPORT DescriptorHandle Alloc( uint32_t Count = 1 );
 
         DescriptorHandle operator[] ( uint32_t arrayIdx ) const { return m_FirstHandle + arrayIdx * m_DescriptorSize; }
 
@@ -121,7 +121,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine
             return ( uint32_t )( DHandle.GetCpuPtr( ) - m_FirstHandle.GetCpuPtr( ) ) / m_DescriptorSize;
         }
 
-        bool ValidateHandle( const DescriptorHandle& DHandle ) const;
+        HDMC_EXPORT bool ValidateHandle( const DescriptorHandle& DHandle ) const;
 
         ID3D12DescriptorHeap* GetHeapPointer( ) const { return m_Heap; }
 

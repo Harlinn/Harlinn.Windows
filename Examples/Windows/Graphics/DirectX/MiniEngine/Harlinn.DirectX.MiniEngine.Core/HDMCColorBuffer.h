@@ -35,28 +35,28 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         }
 
         // Create a color buffer from a swap chain buffer.  Unordered access is restricted.
-        void CreateFromSwapChain( const std::wstring& Name, ID3D12Resource* BaseResource );
+        HDMC_EXPORT void CreateFromSwapChain( const std::wstring& Name, ID3D12Resource* BaseResource );
 
         // Create a color buffer.  If an address is supplied, memory will not be allocated.
         // The vmem address allows you to alias buffers (which can be especially useful for
         // reusing ESRAM across a frame.)
-        void Create( const std::wstring& Name, uint32_t Width, uint32_t Height, uint32_t NumMips,
+        HDMC_EXPORT void Create( const std::wstring& Name, uint32_t Width, uint32_t Height, uint32_t NumMips,
             DXGI_FORMAT Format, D3D12_GPU_VIRTUAL_ADDRESS VidMemPtr = D3D12_GPU_VIRTUAL_ADDRESS_UNKNOWN );
 
         // Create a color buffer.  Memory will be allocated in ESRAM (on Xbox One).  On Windows,
         // this functions the same as Create() without a video address.
-        void Create( const std::wstring& Name, uint32_t Width, uint32_t Height, uint32_t NumMips,
+        HDMC_EXPORT void Create( const std::wstring& Name, uint32_t Width, uint32_t Height, uint32_t NumMips,
             DXGI_FORMAT Format, EsramAllocator& Allocator );
 
         // Create a color buffer.  If an address is supplied, memory will not be allocated.
         // The vmem address allows you to alias buffers (which can be especially useful for
         // reusing ESRAM across a frame.)
-        void CreateArray( const std::wstring& Name, uint32_t Width, uint32_t Height, uint32_t ArrayCount,
+        HDMC_EXPORT void CreateArray( const std::wstring& Name, uint32_t Width, uint32_t Height, uint32_t ArrayCount,
             DXGI_FORMAT Format, D3D12_GPU_VIRTUAL_ADDRESS VidMemPtr = D3D12_GPU_VIRTUAL_ADDRESS_UNKNOWN );
 
         // Create a color buffer.  Memory will be allocated in ESRAM (on Xbox One).  On Windows,
         // this functions the same as Create() without a video address.
-        void CreateArray( const std::wstring& Name, uint32_t Width, uint32_t Height, uint32_t ArrayCount,
+        HDMC_EXPORT void CreateArray( const std::wstring& Name, uint32_t Width, uint32_t Height, uint32_t ArrayCount,
             DXGI_FORMAT Format, EsramAllocator& Allocator );
 
         // Get pre-created CPU-visible descriptor handles
@@ -78,7 +78,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         // This will work for all texture sizes, but it's recommended for speed and quality
         // that you use dimensions with powers of two (but not necessarily square.)  Pass
         // 0 for ArrayCount to reserve space for mips at creation time.
-        void GenerateMipMaps( CommandContext& Context );
+        HDMC_EXPORT void GenerateMipMaps( CommandContext& Context );
 
     protected:
 
@@ -103,7 +103,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine
             return HighBit + 1;
         }
 
-        void CreateDerivedViews( ID3D12Device* Device, DXGI_FORMAT Format, uint32_t ArraySize, uint32_t NumMips = 1 );
+        HDMC_EXPORT void CreateDerivedViews( ID3D12Device* Device, DXGI_FORMAT Format, uint32_t ArraySize, uint32_t NumMips = 1 );
 
         Color m_ClearColor;
         D3D12_CPU_DESCRIPTOR_HANDLE m_SRVHandle;

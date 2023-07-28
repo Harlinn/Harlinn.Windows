@@ -29,49 +29,49 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         void InitializeCommonState( void );
         void DestroyCommonState( void );
 
-        extern SamplerDesc SamplerLinearWrapDesc;
-        extern SamplerDesc SamplerAnisoWrapDesc;
-        extern SamplerDesc SamplerShadowDesc;
-        extern SamplerDesc SamplerLinearClampDesc;
-        extern SamplerDesc SamplerVolumeWrapDesc;
-        extern SamplerDesc SamplerPointClampDesc;
-        extern SamplerDesc SamplerPointBorderDesc;
-        extern SamplerDesc SamplerLinearBorderDesc;
+        HDMC_EXPORT extern SamplerDesc SamplerLinearWrapDesc;
+        HDMC_EXPORT extern SamplerDesc SamplerAnisoWrapDesc;
+        HDMC_EXPORT extern SamplerDesc SamplerShadowDesc;
+        HDMC_EXPORT extern SamplerDesc SamplerLinearClampDesc;
+        HDMC_EXPORT extern SamplerDesc SamplerVolumeWrapDesc;
+        HDMC_EXPORT extern SamplerDesc SamplerPointClampDesc;
+        HDMC_EXPORT extern SamplerDesc SamplerPointBorderDesc;
+        HDMC_EXPORT extern SamplerDesc SamplerLinearBorderDesc;
 
-        extern D3D12_CPU_DESCRIPTOR_HANDLE SamplerLinearWrap;
-        extern D3D12_CPU_DESCRIPTOR_HANDLE SamplerAnisoWrap;
-        extern D3D12_CPU_DESCRIPTOR_HANDLE SamplerShadow;
-        extern D3D12_CPU_DESCRIPTOR_HANDLE SamplerLinearClamp;
-        extern D3D12_CPU_DESCRIPTOR_HANDLE SamplerVolumeWrap;
-        extern D3D12_CPU_DESCRIPTOR_HANDLE SamplerPointClamp;
-        extern D3D12_CPU_DESCRIPTOR_HANDLE SamplerPointBorder;
-        extern D3D12_CPU_DESCRIPTOR_HANDLE SamplerLinearBorder;
+        HDMC_EXPORT extern D3D12_CPU_DESCRIPTOR_HANDLE SamplerLinearWrap;
+        HDMC_EXPORT extern D3D12_CPU_DESCRIPTOR_HANDLE SamplerAnisoWrap;
+        HDMC_EXPORT extern D3D12_CPU_DESCRIPTOR_HANDLE SamplerShadow;
+        HDMC_EXPORT extern D3D12_CPU_DESCRIPTOR_HANDLE SamplerLinearClamp;
+        HDMC_EXPORT extern D3D12_CPU_DESCRIPTOR_HANDLE SamplerVolumeWrap;
+        HDMC_EXPORT extern D3D12_CPU_DESCRIPTOR_HANDLE SamplerPointClamp;
+        HDMC_EXPORT extern D3D12_CPU_DESCRIPTOR_HANDLE SamplerPointBorder;
+        HDMC_EXPORT extern D3D12_CPU_DESCRIPTOR_HANDLE SamplerLinearBorder;
 
-        extern D3D12_RASTERIZER_DESC RasterizerDefault;
-        extern D3D12_RASTERIZER_DESC RasterizerDefaultMsaa;
-        extern D3D12_RASTERIZER_DESC RasterizerDefaultCw;
-        extern D3D12_RASTERIZER_DESC RasterizerDefaultCwMsaa;
-        extern D3D12_RASTERIZER_DESC RasterizerTwoSided;
-        extern D3D12_RASTERIZER_DESC RasterizerTwoSidedMsaa;
-        extern D3D12_RASTERIZER_DESC RasterizerShadow;
-        extern D3D12_RASTERIZER_DESC RasterizerShadowCW;
-        extern D3D12_RASTERIZER_DESC RasterizerShadowTwoSided;
+        HDMC_EXPORT extern D3D12_RASTERIZER_DESC RasterizerDefault;
+        HDMC_EXPORT extern D3D12_RASTERIZER_DESC RasterizerDefaultMsaa;
+        HDMC_EXPORT extern D3D12_RASTERIZER_DESC RasterizerDefaultCw;
+        HDMC_EXPORT extern D3D12_RASTERIZER_DESC RasterizerDefaultCwMsaa;
+        HDMC_EXPORT extern D3D12_RASTERIZER_DESC RasterizerTwoSided;
+        HDMC_EXPORT extern D3D12_RASTERIZER_DESC RasterizerTwoSidedMsaa;
+        HDMC_EXPORT extern D3D12_RASTERIZER_DESC RasterizerShadow;
+        HDMC_EXPORT extern D3D12_RASTERIZER_DESC RasterizerShadowCW;
+        HDMC_EXPORT extern D3D12_RASTERIZER_DESC RasterizerShadowTwoSided;
 
-        extern D3D12_BLEND_DESC BlendNoColorWrite;		// XXX
-        extern D3D12_BLEND_DESC BlendDisable;			// 1, 0
-        extern D3D12_BLEND_DESC BlendPreMultiplied;		// 1, 1-SrcA
-        extern D3D12_BLEND_DESC BlendTraditional;		// SrcA, 1-SrcA
-        extern D3D12_BLEND_DESC BlendAdditive;			// 1, 1
-        extern D3D12_BLEND_DESC BlendTraditionalAdditive;// SrcA, 1
+        HDMC_EXPORT extern D3D12_BLEND_DESC BlendNoColorWrite;		// XXX
+        HDMC_EXPORT extern D3D12_BLEND_DESC BlendDisable;			// 1, 0
+        HDMC_EXPORT extern D3D12_BLEND_DESC BlendPreMultiplied;		// 1, 1-SrcA
+        HDMC_EXPORT extern D3D12_BLEND_DESC BlendTraditional;		// SrcA, 1-SrcA
+        HDMC_EXPORT extern D3D12_BLEND_DESC BlendAdditive;			// 1, 1
+        HDMC_EXPORT extern D3D12_BLEND_DESC BlendTraditionalAdditive;// SrcA, 1
 
-        extern D3D12_DEPTH_STENCIL_DESC DepthStateDisabled;
-        extern D3D12_DEPTH_STENCIL_DESC DepthStateReadWrite;
-        extern D3D12_DEPTH_STENCIL_DESC DepthStateReadOnly;
-        extern D3D12_DEPTH_STENCIL_DESC DepthStateReadOnlyReversed;
-        extern D3D12_DEPTH_STENCIL_DESC DepthStateTestEqual;
+        HDMC_EXPORT extern D3D12_DEPTH_STENCIL_DESC DepthStateDisabled;
+        HDMC_EXPORT extern D3D12_DEPTH_STENCIL_DESC DepthStateReadWrite;
+        HDMC_EXPORT extern D3D12_DEPTH_STENCIL_DESC DepthStateReadOnly;
+        HDMC_EXPORT extern D3D12_DEPTH_STENCIL_DESC DepthStateReadOnlyReversed;
+        HDMC_EXPORT extern D3D12_DEPTH_STENCIL_DESC DepthStateTestEqual;
 
-        extern CommandSignature DispatchIndirectCommandSignature;
-        extern CommandSignature DrawIndirectCommandSignature;
+        HDMC_EXPORT extern CommandSignature DispatchIndirectCommandSignature;
+        HDMC_EXPORT extern CommandSignature DrawIndirectCommandSignature;
 
         enum eDefaultTexture
         {
@@ -85,11 +85,11 @@ namespace Harlinn::Windows::DirectX::MiniEngine
 
             kNumDefaultTextures
         };
-        D3D12_CPU_DESCRIPTOR_HANDLE GetDefaultTexture( eDefaultTexture texID );
+        HDMC_EXPORT D3D12_CPU_DESCRIPTOR_HANDLE GetDefaultTexture( eDefaultTexture texID );
 
-        extern RootSignature g_CommonRS;
-        extern ComputePSO g_GenerateMipsLinearPSO[ 4 ];
-        extern ComputePSO g_GenerateMipsGammaPSO[ 4 ];
-        extern GraphicsPSO g_DownsampleDepthPSO;
+        HDMC_EXPORT extern RootSignature g_CommonRS;
+        HDMC_EXPORT extern ComputePSO g_GenerateMipsLinearPSO[ 4 ];
+        HDMC_EXPORT extern ComputePSO g_GenerateMipsGammaPSO[ 4 ];
+        HDMC_EXPORT extern GraphicsPSO g_DownsampleDepthPSO;
     }
 }

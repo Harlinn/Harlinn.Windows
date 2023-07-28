@@ -36,7 +36,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         virtual void Update( float dt ) = 0;
 
         // Helper function
-        static void ApplyMomentum( float& oldValue, float& newValue, float deltaTime );
+        HDMC_EXPORT static void ApplyMomentum( float& oldValue, float& newValue, float deltaTime );
 
     protected:
         Camera& m_TargetCamera;
@@ -48,16 +48,16 @@ namespace Harlinn::Windows::DirectX::MiniEngine
     class FlyingFPSCamera : public CameraController
     {
     public:
-        FlyingFPSCamera( Camera& camera, Vector3 worldUp );
+        HDMC_EXPORT FlyingFPSCamera( Camera& camera, Vector3 worldUp );
 
-        virtual void Update( float dt ) override;
+        HDMC_EXPORT virtual void Update( float dt ) override;
 
         void SlowMovement( bool enable ) { m_FineMovement = enable; }
         void SlowRotation( bool enable ) { m_FineRotation = enable; }
 
         void EnableMomentum( bool enable ) { m_Momentum = enable; }
 
-        void SetHeadingPitchAndPosition( float heading, float pitch, const Vector3& position );
+        HDMC_EXPORT void SetHeadingPitchAndPosition( float heading, float pitch, const Vector3& position );
 
     private:
 
@@ -88,11 +88,11 @@ namespace Harlinn::Windows::DirectX::MiniEngine
     class OrbitCamera : public CameraController
     {
     public:
-        OrbitCamera( Math::Camera& camera,
+        HDMC_EXPORT OrbitCamera( Math::Camera& camera,
             Math::BoundingSphere focus,
             Math::Vector3 upVec = Math::Vector3( Math::kYUnitVector ) );
 
-        virtual void Update( float dt ) override;
+        HDMC_EXPORT virtual void Update( float dt ) override;
 
         void EnableMomentum( bool enable ) { m_Momentum = enable; }
 

@@ -27,26 +27,26 @@ namespace Harlinn::Windows::DirectX::MiniEngine
     namespace Graphics
     {
 #ifndef RELEASE
-        extern const GUID WKPDID_D3DDebugObjectName;
+        HDMC_EXPORT extern const GUID WKPDID_D3DDebugObjectName;
 #endif
 
 
-        void Initialize( bool RequireDXRSupport = false );
-        void Shutdown( void );
+        HDMC_EXPORT void Initialize( bool RequireDXRSupport = false );
+        HDMC_EXPORT void Shutdown( void );
 
-        bool IsDeviceNvidia( ID3D12Device* pDevice );
-        bool IsDeviceAMD( ID3D12Device* pDevice );
-        bool IsDeviceIntel( ID3D12Device* pDevice );
+        HDMC_EXPORT bool IsDeviceNvidia( ID3D12Device* pDevice );
+        HDMC_EXPORT bool IsDeviceAMD( ID3D12Device* pDevice );
+        HDMC_EXPORT bool IsDeviceIntel( ID3D12Device* pDevice );
 
-        extern Harlinn::Windows::Graphics::D3D12Device g_Device;
-        extern CommandListManager g_CommandManager;
-        extern ContextManager g_ContextManager;
+        HDMC_EXPORT extern D3D12Device g_Device;
+        HDMC_EXPORT extern CommandListManager g_CommandManager;
+        HDMC_EXPORT extern ContextManager g_ContextManager;
 
-        extern D3D_FEATURE_LEVEL g_D3DFeatureLevel;
-        extern bool g_bTypedUAVLoadSupport_R11G11B10_FLOAT;
-        extern bool g_bTypedUAVLoadSupport_R16G16B16A16_FLOAT;
+        HDMC_EXPORT extern D3D_FEATURE_LEVEL g_D3DFeatureLevel;
+        HDMC_EXPORT extern bool g_bTypedUAVLoadSupport_R11G11B10_FLOAT;
+        HDMC_EXPORT extern bool g_bTypedUAVLoadSupport_R16G16B16A16_FLOAT;
 
-        extern DescriptorAllocator g_DescriptorAllocator[ ];
+        HDMC_EXPORT extern DescriptorAllocator g_DescriptorAllocator[ ];
         inline D3D12_CPU_DESCRIPTOR_HANDLE AllocateDescriptor( D3D12_DESCRIPTOR_HEAP_TYPE Type, UINT Count = 1 )
         {
             return g_DescriptorAllocator[ Type ].Allocate( Count );

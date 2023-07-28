@@ -128,7 +128,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         {
         }
 
-        static void DestroyAll( void );
+        HDMC_EXPORT static void DestroyAll( void );
 
         void Reset( UINT NumRootParams, UINT NumStaticSamplers = 0 )
         {
@@ -158,10 +158,10 @@ namespace Harlinn::Windows::DirectX::MiniEngine
             return m_ParamArray.get( )[ EntryIndex ];
         }
 
-        void InitStaticSampler( UINT Register, const D3D12_SAMPLER_DESC& NonStaticSamplerDesc,
+        HDMC_EXPORT void InitStaticSampler( UINT Register, const D3D12_SAMPLER_DESC& NonStaticSamplerDesc,
             D3D12_SHADER_VISIBILITY Visibility = D3D12_SHADER_VISIBILITY_ALL );
 
-        void Finalize( const std::wstring& name, D3D12_ROOT_SIGNATURE_FLAGS Flags = D3D12_ROOT_SIGNATURE_FLAG_NONE );
+        HDMC_EXPORT void Finalize( const std::wstring& name, D3D12_ROOT_SIGNATURE_FLAGS Flags = D3D12_ROOT_SIGNATURE_FLAG_NONE );
 
         ID3D12RootSignature* GetSignature( ) const { return m_Signature; }
 

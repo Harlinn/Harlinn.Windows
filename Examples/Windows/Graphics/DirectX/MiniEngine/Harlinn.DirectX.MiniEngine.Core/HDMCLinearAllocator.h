@@ -103,16 +103,16 @@ namespace Harlinn::Windows::DirectX::MiniEngine
     {
     public:
 
-        LinearAllocatorPageManager( );
-        LinearAllocationPage* RequestPage( void );
-        LinearAllocationPage* CreateNewPage( size_t PageSize = 0 );
+        HDMC_EXPORT LinearAllocatorPageManager( );
+        HDMC_EXPORT LinearAllocationPage* RequestPage( void );
+        HDMC_EXPORT LinearAllocationPage* CreateNewPage( size_t PageSize = 0 );
 
         // Discarded pages will get recycled.  This is for fixed size pages.
-        void DiscardPages( uint64_t FenceID, const std::vector<LinearAllocationPage*>& Pages );
+        HDMC_EXPORT void DiscardPages( uint64_t FenceID, const std::vector<LinearAllocationPage*>& Pages );
 
         // Freed pages will be destroyed once their fence has passed.  This is for single-use,
         // "large" pages.
-        void FreeLargePages( uint64_t FenceID, const std::vector<LinearAllocationPage*>& Pages );
+        HDMC_EXPORT void FreeLargePages( uint64_t FenceID, const std::vector<LinearAllocationPage*>& Pages );
 
         void Destroy( void ) { m_PagePool.clear( ); }
 
@@ -138,9 +138,9 @@ namespace Harlinn::Windows::DirectX::MiniEngine
             m_PageSize = ( Type == kGpuExclusive ? kGpuAllocatorPageSize : kCpuAllocatorPageSize );
         }
 
-        DynAlloc Allocate( size_t SizeInBytes, size_t Alignment = DEFAULT_ALIGN );
+        HDMC_EXPORT DynAlloc Allocate( size_t SizeInBytes, size_t Alignment = DEFAULT_ALIGN );
 
-        void CleanupUsedPages( uint64_t FenceID );
+        HDMC_EXPORT void CleanupUsedPages( uint64_t FenceID );
 
         static void DestroyAll( void )
         {

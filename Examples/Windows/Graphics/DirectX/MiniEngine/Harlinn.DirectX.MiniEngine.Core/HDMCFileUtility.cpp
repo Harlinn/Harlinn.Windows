@@ -22,6 +22,8 @@ namespace Harlinn::Windows::DirectX::MiniEngine
 {
 
     using namespace Utility;
+    using namespace concurrency;
+    using namespace std;
 
     namespace Utility
     {

@@ -25,16 +25,16 @@ namespace Harlinn::Windows::DirectX::MiniEngine
 
     namespace SSAO
     {
-        void Initialize( void );
-        void Shutdown( void );
-        void Render( GraphicsContext& Context, const float* ProjMat, float NearClipDist, float FarClipDist );
-        void Render( GraphicsContext& Context, const Math::Camera& camera );
-        void LinearizeZ( ComputeContext& Context, const Math::Camera& camera, uint32_t FrameIndex );
+        HDMC_EXPORT void Initialize( void );
+        HDMC_EXPORT void Shutdown( void );
+        HDMC_EXPORT void Render( GraphicsContext& Context, const float* ProjMat, float NearClipDist, float FarClipDist );
+        HDMC_EXPORT void Render( GraphicsContext& Context, const Math::Camera& camera );
+        HDMC_EXPORT void LinearizeZ( ComputeContext& Context, const Math::Camera& camera, uint32_t FrameIndex );
 
-        extern BoolVar Enable;
-        extern BoolVar DebugDraw;
-        extern BoolVar AsyncCompute;
-        extern BoolVar ComputeLinearZ;
+        HDMC_EXPORT extern BoolVar Enable;
+        HDMC_EXPORT extern BoolVar DebugDraw;
+        HDMC_EXPORT extern BoolVar AsyncCompute;
+        HDMC_EXPORT extern BoolVar ComputeLinearZ;
     }
 
 }

@@ -41,7 +41,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         XMUINT4 RandIndex[ 64 ];
     };
 
-    EmissionProperties* CreateEmissionProperties( );
+    HDMC_EXPORT EmissionProperties* CreateEmissionProperties( );
 
     struct ParticleSpawnData
     {

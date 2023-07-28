@@ -66,28 +66,28 @@ namespace Harlinn::Windows::DirectX::MiniEngine
 
         BuddyBlock( ) : m_pBuffer( nullptr ), m_pBackingHeap( nullptr ), m_offset( 0 ), m_size( 0 ), m_unpaddedSize( 0 ), m_fenceValue( 0 ) {};
 
-        BuddyBlock( uint32_t heapOffset, uint32_t totalSize, uint32_t unpaddedSize );
+        HDMC_EXPORT BuddyBlock( uint32_t heapOffset, uint32_t totalSize, uint32_t unpaddedSize );
 
-        void InitPlaced( ID3D12Heap* pBackingHeap, uint32_t numElements, uint32_t elementSize, const void* initialData = nullptr );
+        HDMC_EXPORT void InitPlaced( ID3D12Heap* pBackingHeap, uint32_t numElements, uint32_t elementSize, const void* initialData = nullptr );
 
-        void InitFromResource( ByteAddressBuffer* pBuffer, uint32_t numElements, uint32_t elementSize, const void* initialData = nullptr );
+        HDMC_EXPORT void InitFromResource( ByteAddressBuffer* pBuffer, uint32_t numElements, uint32_t elementSize, const void* initialData = nullptr );
 
-        void Destroy( );
+        HDMC_EXPORT void Destroy( );
     };
 
     class BuddyAllocator
     {
     public:
 
-        BuddyAllocator( kBuddyAllocationStrategy allocationStrategy, D3D12_HEAP_TYPE heapType, size_t maxBlockSize, size_t minBlockSize = MIN_PLACED_BUFFER_SIZE, size_t baseOffset = 0 );
+        HDMC_EXPORT BuddyAllocator( kBuddyAllocationStrategy allocationStrategy, D3D12_HEAP_TYPE heapType, size_t maxBlockSize, size_t minBlockSize = MIN_PLACED_BUFFER_SIZE, size_t baseOffset = 0 );
 
-        void Initialize( );
+        HDMC_EXPORT void Initialize( );
 
-        void Destroy( );
+        HDMC_EXPORT void Destroy( );
 
-        BuddyBlock* Allocate( uint32_t numElements, uint32_t elementSize, const void* initialData = nullptr );
+        HDMC_EXPORT BuddyBlock* Allocate( uint32_t numElements, uint32_t elementSize, const void* initialData = nullptr );
 
-        void Deallocate( BuddyBlock* pBlock );
+        HDMC_EXPORT void Deallocate( BuddyBlock* pBlock );
 
         inline bool IsOwner( const BuddyBlock& block )
         {
@@ -104,7 +104,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine
             m_freeBlocks[ m_maxOrder ].insert( ( size_t )0 );
         }
 
-        void CleanUpAllocations( );
+        HDMC_EXPORT void CleanUpAllocations( );
 
     private:
         ID3D12Heap* m_pBackingHeap;

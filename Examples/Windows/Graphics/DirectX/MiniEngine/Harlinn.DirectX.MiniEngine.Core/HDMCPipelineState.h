@@ -33,7 +33,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine
 
         PSO( const wchar_t* Name ) : m_Name( Name ), m_RootSignature( nullptr ), m_PSO( nullptr ) {}
 
-        static void DestroyAll( void );
+        HDMC_EXPORT static void DestroyAll( void );
 
         void SetRootSignature( const RootSignature& BindMappings )
         {
@@ -64,18 +64,18 @@ namespace Harlinn::Windows::DirectX::MiniEngine
     public:
 
         // Start with empty state
-        GraphicsPSO( const wchar_t* Name = L"Unnamed Graphics PSO" );
+        HDMC_EXPORT GraphicsPSO( const wchar_t* Name = L"Unnamed Graphics PSO" );
 
-        void SetBlendState( const D3D12_BLEND_DESC& BlendDesc );
-        void SetRasterizerState( const D3D12_RASTERIZER_DESC& RasterizerDesc );
-        void SetDepthStencilState( const D3D12_DEPTH_STENCIL_DESC& DepthStencilDesc );
-        void SetSampleMask( UINT SampleMask );
-        void SetPrimitiveTopologyType( D3D12_PRIMITIVE_TOPOLOGY_TYPE TopologyType );
-        void SetDepthTargetFormat( DXGI_FORMAT DSVFormat, UINT MsaaCount = 1, UINT MsaaQuality = 0 );
-        void SetRenderTargetFormat( DXGI_FORMAT RTVFormat, DXGI_FORMAT DSVFormat, UINT MsaaCount = 1, UINT MsaaQuality = 0 );
-        void SetRenderTargetFormats( UINT NumRTVs, const DXGI_FORMAT* RTVFormats, DXGI_FORMAT DSVFormat, UINT MsaaCount = 1, UINT MsaaQuality = 0 );
-        void SetInputLayout( UINT NumElements, const D3D12_INPUT_ELEMENT_DESC* pInputElementDescs );
-        void SetPrimitiveRestart( D3D12_INDEX_BUFFER_STRIP_CUT_VALUE IBProps );
+        HDMC_EXPORT void SetBlendState( const D3D12_BLEND_DESC& BlendDesc );
+        HDMC_EXPORT void SetRasterizerState( const D3D12_RASTERIZER_DESC& RasterizerDesc );
+        HDMC_EXPORT void SetDepthStencilState( const D3D12_DEPTH_STENCIL_DESC& DepthStencilDesc );
+        HDMC_EXPORT void SetSampleMask( UINT SampleMask );
+        HDMC_EXPORT void SetPrimitiveTopologyType( D3D12_PRIMITIVE_TOPOLOGY_TYPE TopologyType );
+        HDMC_EXPORT void SetDepthTargetFormat( DXGI_FORMAT DSVFormat, UINT MsaaCount = 1, UINT MsaaQuality = 0 );
+        HDMC_EXPORT void SetRenderTargetFormat( DXGI_FORMAT RTVFormat, DXGI_FORMAT DSVFormat, UINT MsaaCount = 1, UINT MsaaQuality = 0 );
+        HDMC_EXPORT void SetRenderTargetFormats( UINT NumRTVs, const DXGI_FORMAT* RTVFormats, DXGI_FORMAT DSVFormat, UINT MsaaCount = 1, UINT MsaaQuality = 0 );
+        HDMC_EXPORT void SetInputLayout( UINT NumElements, const D3D12_INPUT_ELEMENT_DESC* pInputElementDescs );
+        HDMC_EXPORT void SetPrimitiveRestart( D3D12_INDEX_BUFFER_STRIP_CUT_VALUE IBProps );
 
         // These const_casts shouldn't be necessary, but we need to fix the API to accept "const void* pShaderBytecode"
         void SetVertexShader( const void* Binary, size_t Size ) { m_PSODesc.VS = CD3DX12_SHADER_BYTECODE( const_cast< void* >( Binary ), Size ); }
@@ -91,7 +91,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         void SetDomainShader( const D3D12_SHADER_BYTECODE& Binary ) { m_PSODesc.DS = Binary; }
 
         // Perform validation and compute a hash value for fast state block comparisons
-        void Finalize( );
+        HDMC_EXPORT void Finalize( );
 
     private:
 
@@ -105,12 +105,12 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         friend class CommandContext;
 
     public:
-        ComputePSO( const wchar_t* Name = L"Unnamed Compute PSO" );
+        HDMC_EXPORT ComputePSO( const wchar_t* Name = L"Unnamed Compute PSO" );
 
         void SetComputeShader( const void* Binary, size_t Size ) { m_PSODesc.CS = CD3DX12_SHADER_BYTECODE( const_cast< void* >( Binary ), Size ); }
         void SetComputeShader( const D3D12_SHADER_BYTECODE& Binary ) { m_PSODesc.CS = Binary; }
 
-        void Finalize( );
+        HDMC_EXPORT void Finalize( );
 
     private:
 

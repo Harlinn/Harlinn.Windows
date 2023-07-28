@@ -194,7 +194,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         m_ref = nullptr;
     }
 
-    void TextureRef::operator= ( TextureRef& rhs )
+    void TextureRef::operator= ( const TextureRef& rhs )
     {
         if ( m_ref != nullptr )
             --m_ref->m_ReferenceCount;

@@ -67,9 +67,9 @@ namespace Harlinn::Windows::DirectX::MiniEngine
     public:
         ContextManager( void ) {}
 
-        CommandContext* AllocateContext( D3D12_COMMAND_LIST_TYPE Type );
-        void FreeContext( CommandContext* );
-        void DestroyAllContexts( );
+        HDMC_EXPORT CommandContext* AllocateContext( D3D12_COMMAND_LIST_TYPE Type );
+        HDMC_EXPORT void FreeContext( CommandContext* );
+        HDMC_EXPORT void DestroyAllContexts( );
 
     private:
         std::vector<std::unique_ptr<CommandContext> > sm_ContextPool[ 4 ];
@@ -89,26 +89,26 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         friend ContextManager;
     private:
 
-        CommandContext( D3D12_COMMAND_LIST_TYPE Type );
+        HDMC_EXPORT CommandContext( D3D12_COMMAND_LIST_TYPE Type );
 
-        void Reset( void );
+        HDMC_EXPORT void Reset( void );
 
     public:
 
-        ~CommandContext( void );
+        HDMC_EXPORT ~CommandContext( void );
 
-        static void DestroyAllContexts( void );
+        HDMC_EXPORT static void DestroyAllContexts( void );
 
-        static CommandContext& Begin( const std::wstring ID = L"" );
+        HDMC_EXPORT static CommandContext& Begin( const std::wstring ID = L"" );
 
         // Flush existing commands to the GPU but keep the context alive
-        uint64_t Flush( bool WaitForCompletion = false );
+        HDMC_EXPORT uint64_t Flush( bool WaitForCompletion = false );
 
         // Flush existing commands and release the current context
-        uint64_t Finish( bool WaitForCompletion = false );
+        HDMC_EXPORT uint64_t Finish( bool WaitForCompletion = false );
 
         // Prepare to render by reserving a command list and command allocator
-        void Initialize( void );
+        HDMC_EXPORT void Initialize( void );
 
         GraphicsContext& GetGraphicsContext( )
         {
@@ -128,39 +128,39 @@ namespace Harlinn::Windows::DirectX::MiniEngine
 
         void CopyBuffer( GpuResource& Dest, GpuResource& Src );
         void CopyBufferRegion( GpuResource& Dest, size_t DestOffset, GpuResource& Src, size_t SrcOffset, size_t NumBytes );
-        void CopySubresource( GpuResource& Dest, UINT DestSubIndex, GpuResource& Src, UINT SrcSubIndex );
+        HDMC_EXPORT void CopySubresource( GpuResource& Dest, UINT DestSubIndex, GpuResource& Src, UINT SrcSubIndex );
         void CopyCounter( GpuResource& Dest, size_t DestOffset, StructuredBuffer& Src );
         void CopyTextureRegion( GpuResource& Dest, UINT x, UINT y, UINT z, GpuResource& Source, RECT& rect );
         void ResetCounter( StructuredBuffer& Buf, uint32_t Value = 0 );
 
         // Creates a readback buffer of sufficient size, copies the texture into it,
         // and returns row pitch in bytes.
-        uint32_t ReadbackTexture( ReadbackBuffer& DstBuffer, PixelBuffer& SrcBuffer );
+        HDMC_EXPORT uint32_t ReadbackTexture( ReadbackBuffer& DstBuffer, PixelBuffer& SrcBuffer );
 
         DynAlloc ReserveUploadMemory( size_t SizeInBytes )
         {
             return m_CpuLinearAllocator.Allocate( SizeInBytes );
         }
 
-        static void InitializeTexture( GpuResource& Dest, UINT NumSubresources, D3D12_SUBRESOURCE_DATA SubData[ ] );
-        static void InitializeBuffer( GpuBuffer& Dest, const void* Data, size_t NumBytes, size_t DestOffset = 0 );
-        static void InitializeBuffer( GpuBuffer& Dest, const UploadBuffer& Src, size_t SrcOffset, size_t NumBytes = -1, size_t DestOffset = 0 );
-        static void InitializeTextureArraySlice( GpuResource& Dest, UINT SliceIndex, GpuResource& Src );
+        HDMC_EXPORT static void InitializeTexture( GpuResource& Dest, UINT NumSubresources, D3D12_SUBRESOURCE_DATA SubData[ ] );
+        HDMC_EXPORT static void InitializeBuffer( GpuBuffer& Dest, const void* Data, size_t NumBytes, size_t DestOffset = 0 );
+        HDMC_EXPORT static void InitializeBuffer( GpuBuffer& Dest, const UploadBuffer& Src, size_t SrcOffset, size_t NumBytes = -1, size_t DestOffset = 0 );
+        HDMC_EXPORT static void InitializeTextureArraySlice( GpuResource& Dest, UINT SliceIndex, GpuResource& Src );
 
-        void WriteBuffer( GpuResource& Dest, size_t DestOffset, const void* Data, size_t NumBytes );
-        void FillBuffer( GpuResource& Dest, size_t DestOffset, DWParam Value, size_t NumBytes );
+        HDMC_EXPORT void WriteBuffer( GpuResource& Dest, size_t DestOffset, const void* Data, size_t NumBytes );
+        HDMC_EXPORT void FillBuffer( GpuResource& Dest, size_t DestOffset, DWParam Value, size_t NumBytes );
 
-        void TransitionResource( GpuResource& Resource, D3D12_RESOURCE_STATES NewState, bool FlushImmediate = false );
-        void BeginResourceTransition( GpuResource& Resource, D3D12_RESOURCE_STATES NewState, bool FlushImmediate = false );
-        void InsertUAVBarrier( GpuResource& Resource, bool FlushImmediate = false );
-        void InsertAliasBarrier( GpuResource& Before, GpuResource& After, bool FlushImmediate = false );
+        HDMC_EXPORT void TransitionResource( GpuResource& Resource, D3D12_RESOURCE_STATES NewState, bool FlushImmediate = false );
+        HDMC_EXPORT void BeginResourceTransition( GpuResource& Resource, D3D12_RESOURCE_STATES NewState, bool FlushImmediate = false );
+        HDMC_EXPORT void InsertUAVBarrier( GpuResource& Resource, bool FlushImmediate = false );
+        HDMC_EXPORT void InsertAliasBarrier( GpuResource& Before, GpuResource& After, bool FlushImmediate = false );
         inline void FlushResourceBarriers( void );
 
         void InsertTimeStamp( ID3D12QueryHeap* pQueryHeap, uint32_t QueryIdx );
         void ResolveTimeStamps( ID3D12Resource* pReadbackHeap, ID3D12QueryHeap* pQueryHeap, uint32_t NumQueries );
-        void PIXBeginEvent( const wchar_t* label );
-        void PIXEndEvent( void );
-        void PIXSetMarker( const wchar_t* label );
+        HDMC_EXPORT void PIXBeginEvent( const wchar_t* label );
+        HDMC_EXPORT void PIXEndEvent( void );
+        HDMC_EXPORT void PIXSetMarker( const wchar_t* label );
 
         void SetDescriptorHeap( D3D12_DESCRIPTOR_HEAP_TYPE Type, ID3D12DescriptorHeap* HeapPtr );
         void SetDescriptorHeaps( UINT HeapCount, D3D12_DESCRIPTOR_HEAP_TYPE Type[ ], ID3D12DescriptorHeap* HeapPtrs[ ] );
@@ -170,7 +170,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine
 
     protected:
 
-        void BindDescriptorHeaps( void );
+        HDMC_EXPORT void BindDescriptorHeaps( void );
 
         CommandListManager* m_OwningManager;
         ID3D12GraphicsCommandList* m_CommandList;
@@ -206,31 +206,31 @@ namespace Harlinn::Windows::DirectX::MiniEngine
             return CommandContext::Begin( ID ).GetGraphicsContext( );
         }
 
-        void ClearUAV( GpuBuffer& Target );
-        void ClearUAV( ColorBuffer& Target );
-        void ClearColor( ColorBuffer& Target, D3D12_RECT* Rect = nullptr );
-        void ClearColor( ColorBuffer& Target, float Colour[ 4 ], D3D12_RECT* Rect = nullptr );
-        void ClearDepth( DepthBuffer& Target );
-        void ClearStencil( DepthBuffer& Target );
-        void ClearDepthAndStencil( DepthBuffer& Target );
+        HDMC_EXPORT void ClearUAV( GpuBuffer& Target );
+        HDMC_EXPORT void ClearUAV( ColorBuffer& Target );
+        HDMC_EXPORT void ClearColor( ColorBuffer& Target, D3D12_RECT* Rect = nullptr );
+        HDMC_EXPORT void ClearColor( ColorBuffer& Target, float Colour[ 4 ], D3D12_RECT* Rect = nullptr );
+        HDMC_EXPORT void ClearDepth( DepthBuffer& Target );
+        HDMC_EXPORT void ClearStencil( DepthBuffer& Target );
+        HDMC_EXPORT void ClearDepthAndStencil( DepthBuffer& Target );
 
-        void BeginQuery( ID3D12QueryHeap* QueryHeap, D3D12_QUERY_TYPE Type, UINT HeapIndex );
-        void EndQuery( ID3D12QueryHeap* QueryHeap, D3D12_QUERY_TYPE Type, UINT HeapIndex );
-        void ResolveQueryData( ID3D12QueryHeap* QueryHeap, D3D12_QUERY_TYPE Type, UINT StartIndex, UINT NumQueries, ID3D12Resource* DestinationBuffer, UINT64 DestinationBufferOffset );
+        HDMC_EXPORT void BeginQuery( ID3D12QueryHeap* QueryHeap, D3D12_QUERY_TYPE Type, UINT HeapIndex );
+        HDMC_EXPORT void EndQuery( ID3D12QueryHeap* QueryHeap, D3D12_QUERY_TYPE Type, UINT HeapIndex );
+        HDMC_EXPORT void ResolveQueryData( ID3D12QueryHeap* QueryHeap, D3D12_QUERY_TYPE Type, UINT StartIndex, UINT NumQueries, ID3D12Resource* DestinationBuffer, UINT64 DestinationBufferOffset );
 
         void SetRootSignature( const RootSignature& RootSig );
 
-        void SetRenderTargets( UINT NumRTVs, const D3D12_CPU_DESCRIPTOR_HANDLE RTVs[ ] );
-        void SetRenderTargets( UINT NumRTVs, const D3D12_CPU_DESCRIPTOR_HANDLE RTVs[ ], D3D12_CPU_DESCRIPTOR_HANDLE DSV );
+        HDMC_EXPORT void SetRenderTargets( UINT NumRTVs, const D3D12_CPU_DESCRIPTOR_HANDLE RTVs[ ] );
+        HDMC_EXPORT void SetRenderTargets( UINT NumRTVs, const D3D12_CPU_DESCRIPTOR_HANDLE RTVs[ ], D3D12_CPU_DESCRIPTOR_HANDLE DSV );
         void SetRenderTarget( D3D12_CPU_DESCRIPTOR_HANDLE RTV ) { SetRenderTargets( 1, &RTV ); }
         void SetRenderTarget( D3D12_CPU_DESCRIPTOR_HANDLE RTV, D3D12_CPU_DESCRIPTOR_HANDLE DSV ) { SetRenderTargets( 1, &RTV, DSV ); }
         void SetDepthStencilTarget( D3D12_CPU_DESCRIPTOR_HANDLE DSV ) { SetRenderTargets( 0, nullptr, DSV ); }
 
-        void SetViewport( const D3D12_VIEWPORT& vp );
-        void SetViewport( FLOAT x, FLOAT y, FLOAT w, FLOAT h, FLOAT minDepth = 0.0f, FLOAT maxDepth = 1.0f );
-        void SetScissor( const D3D12_RECT& rect );
+        HDMC_EXPORT void SetViewport( const D3D12_VIEWPORT& vp );
+        HDMC_EXPORT void SetViewport( FLOAT x, FLOAT y, FLOAT w, FLOAT h, FLOAT minDepth = 0.0f, FLOAT maxDepth = 1.0f );
+        HDMC_EXPORT void SetScissor( const D3D12_RECT& rect );
         void SetScissor( UINT left, UINT top, UINT right, UINT bottom );
-        void SetViewportAndScissor( const D3D12_VIEWPORT& vp, const D3D12_RECT& rect );
+        HDMC_EXPORT void SetViewportAndScissor( const D3D12_VIEWPORT& vp, const D3D12_RECT& rect );
         void SetViewportAndScissor( UINT x, UINT y, UINT w, UINT h );
         void SetStencilRef( UINT StencilRef );
         void SetBlendFactor( Color BlendFactor );

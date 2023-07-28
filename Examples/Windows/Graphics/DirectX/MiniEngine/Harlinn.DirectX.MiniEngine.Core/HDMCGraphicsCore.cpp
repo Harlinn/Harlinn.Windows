@@ -50,16 +50,16 @@ namespace Graphics
     const GUID WKPDID_D3DDebugObjectName = { 0x429b8c22,0x9188,0x4b0c, { 0x87,0x42,0xac,0xb0,0xbf,0x85,0xc2,0x00 }};
 #endif
 
-    bool g_bTypedUAVLoadSupport_R11G11B10_FLOAT = false;
-    bool g_bTypedUAVLoadSupport_R16G16B16A16_FLOAT = false;
+    HDMC_EXPORT bool g_bTypedUAVLoadSupport_R11G11B10_FLOAT = false;
+    HDMC_EXPORT bool g_bTypedUAVLoadSupport_R16G16B16A16_FLOAT = false;
 
-    D3D12Device g_Device;
-    CommandListManager g_CommandManager;
-    ContextManager g_ContextManager;
+    HDMC_EXPORT D3D12Device g_Device;
+    HDMC_EXPORT CommandListManager g_CommandManager;
+    HDMC_EXPORT ContextManager g_ContextManager;
 
-    D3D_FEATURE_LEVEL g_D3DFeatureLevel = D3D_FEATURE_LEVEL_11_0;
+    HDMC_EXPORT D3D_FEATURE_LEVEL g_D3DFeatureLevel = D3D_FEATURE_LEVEL_11_0;
 
-    DescriptorAllocator g_DescriptorAllocator[D3D12_DESCRIPTOR_HEAP_TYPE_NUM_TYPES] =
+    HDMC_EXPORT DescriptorAllocator g_DescriptorAllocator[D3D12_DESCRIPTOR_HEAP_TYPE_NUM_TYPES] =
     {
         D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV,
         D3D12_DESCRIPTOR_HEAP_TYPE_SAMPLER,

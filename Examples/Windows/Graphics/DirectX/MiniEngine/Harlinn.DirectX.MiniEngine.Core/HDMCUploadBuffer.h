@@ -28,10 +28,10 @@ namespace Harlinn::Windows::DirectX::MiniEngine
     public:
         virtual ~UploadBuffer( ) { Destroy( ); }
 
-        void Create( const std::wstring& name, size_t BufferSize );
+        HDMC_EXPORT void Create( const std::wstring& name, size_t BufferSize );
 
-        void* Map( void );
-        void Unmap( size_t begin = 0, size_t end = -1 );
+        HDMC_EXPORT void* Map( void );
+        HDMC_EXPORT void Unmap( size_t begin = 0, size_t end = -1 );
 
         size_t GetBufferSize( ) const { return m_BufferSize; }
 

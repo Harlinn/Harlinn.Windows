@@ -27,14 +27,14 @@ namespace Harlinn::Windows::DirectX::MiniEngine
     public:
         ShadowBuffer( ) {}
 
-        void Create( const std::wstring& Name, uint32_t Width, uint32_t Height,
+        HDMC_EXPORT void Create( const std::wstring& Name, uint32_t Width, uint32_t Height,
             D3D12_GPU_VIRTUAL_ADDRESS VidMemPtr = D3D12_GPU_VIRTUAL_ADDRESS_UNKNOWN );
-        void Create( const std::wstring& Name, uint32_t Width, uint32_t Height, EsramAllocator& Allocator );
+        HDMC_EXPORT void Create( const std::wstring& Name, uint32_t Width, uint32_t Height, EsramAllocator& Allocator );
 
         D3D12_CPU_DESCRIPTOR_HANDLE GetSRV( ) const { return GetDepthSRV( ); }
 
-        void BeginRendering( GraphicsContext& context );
-        void EndRendering( GraphicsContext& context );
+        HDMC_EXPORT void BeginRendering( GraphicsContext& context );
+        HDMC_EXPORT void EndRendering( GraphicsContext& context );
 
     private:
         D3D12_VIEWPORT m_Viewport;

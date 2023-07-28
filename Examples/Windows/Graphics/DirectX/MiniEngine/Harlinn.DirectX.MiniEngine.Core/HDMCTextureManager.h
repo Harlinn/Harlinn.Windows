@@ -36,13 +36,13 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         using Graphics::eDefaultTexture;
         using Graphics::kMagenta2D;
 
-        void Initialize( const std::wstring& RootPath );
-        void Shutdown( void );
+        HDMC_EXPORT void Initialize( const std::wstring& RootPath );
+        HDMC_EXPORT void Shutdown( void );
 
         // Load a texture from a DDS file.  Never returns null references, but if a 
         // texture cannot be found, ref->IsValid() will return false.
-        TextureRef LoadDDSFromFile( const std::wstring& filePath, eDefaultTexture fallback = kMagenta2D, bool sRGB = false );
-        TextureRef LoadDDSFromFile( const std::string& filePath, eDefaultTexture fallback = kMagenta2D, bool sRGB = false );
+        HDMC_EXPORT TextureRef LoadDDSFromFile( const std::wstring& filePath, eDefaultTexture fallback = kMagenta2D, bool sRGB = false );
+        HDMC_EXPORT TextureRef LoadDDSFromFile( const std::string& filePath, eDefaultTexture fallback = kMagenta2D, bool sRGB = false );
     }
 
     // Forward declaration; private implementation
@@ -57,25 +57,25 @@ namespace Harlinn::Windows::DirectX::MiniEngine
     {
     public:
 
-        TextureRef( const TextureRef& ref );
-        TextureRef( ManagedTexture* tex = nullptr );
-        ~TextureRef( );
+        HDMC_EXPORT TextureRef( const TextureRef& ref );
+        HDMC_EXPORT TextureRef( ManagedTexture* tex = nullptr );
+        HDMC_EXPORT ~TextureRef( );
 
-        void operator= ( std::nullptr_t );
-        void operator= ( TextureRef& rhs );
+        HDMC_EXPORT void operator= ( std::nullptr_t );
+        HDMC_EXPORT void operator= ( const TextureRef& rhs );
 
         // Check that this points to a valid texture (which loaded successfully)
-        bool IsValid( ) const;
+        HDMC_EXPORT bool IsValid( ) const;
 
         // Gets the SRV descriptor handle.  If the reference is invalid,
         // returns a valid descriptor handle (specified by the fallback)
-        D3D12_CPU_DESCRIPTOR_HANDLE GetSRV( ) const;
+        HDMC_EXPORT D3D12_CPU_DESCRIPTOR_HANDLE GetSRV( ) const;
 
         // Get the texture pointer.  Client is responsible to not dereference
         // null pointers.
-        const Texture* Get( void ) const;
+        HDMC_EXPORT const Texture* Get( void ) const;
 
-        const Texture* operator->( void ) const;
+        HDMC_EXPORT const Texture* operator->( void ) const;
 
     private:
         ManagedTexture* m_ref;

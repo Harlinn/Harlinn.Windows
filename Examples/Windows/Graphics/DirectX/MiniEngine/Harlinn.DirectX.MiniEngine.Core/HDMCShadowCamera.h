@@ -25,7 +25,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine
 
         ShadowCamera( ) {}
 
-        void UpdateMatrix(
+        HDMC_EXPORT void UpdateMatrix(
             Math::Vector3 LightDirection,		// Direction parallel to light, in direction of travel
             Math::Vector3 ShadowCenter,		// Center location on far bounding plane of shadowed region
             Math::Vector3 ShadowBounds,		// Width, height, and depth in world space represented by the shadow buffer

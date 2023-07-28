@@ -429,7 +429,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         //BoolVar DrawPerfGraph("Display Performance Graph", false);
         const bool DrawPerfGraph = false;
 
-        void Update( void )
+        HDMC_EXPORT void Update( void )
         {
             if ( GameInput::IsFirstPressed( GameInput::kStartButton )
                 || GameInput::IsFirstPressed( GameInput::kKey_space ) )
@@ -439,22 +439,22 @@ namespace Harlinn::Windows::DirectX::MiniEngine
             NestedTimingTree::UpdateTimes( );
         }
 
-        void BeginBlock( const wstring& name, CommandContext* Context )
+        HDMC_EXPORT void BeginBlock( const wstring& name, CommandContext* Context )
         {
             NestedTimingTree::PushProfilingMarker( name, Context );
         }
 
-        void EndBlock( CommandContext* Context )
+        HDMC_EXPORT void EndBlock( CommandContext* Context )
         {
             NestedTimingTree::PopProfilingMarker( Context );
         }
 
-        bool IsPaused( )
+        HDMC_EXPORT bool IsPaused( )
         {
             return Paused;
         }
 
-        void DisplayFrameRate( TextContext& Text )
+        HDMC_EXPORT void DisplayFrameRate( TextContext& Text )
         {
             if ( !DrawFrameRate )
                 return;
@@ -467,13 +467,13 @@ namespace Harlinn::Windows::DirectX::MiniEngine
                 cpuTime, gpuTime, ( uint32_t )( frameRate + 0.5f ) );
         }
 
-        void DisplayPerfGraph( GraphicsContext& Context )
+        HDMC_EXPORT void DisplayPerfGraph( GraphicsContext& Context )
         {
             if ( DrawPerfGraph )
                 GraphRenderer::RenderGraphs( Context, GraphType::Global );
         }
 
-        void Display( TextContext& Text, float x, float y, float /*w*/, float /*h*/ )
+        HDMC_EXPORT void Display( TextContext& Text, float x, float y, float /*w*/, float /*h*/ )
         {
             Text.ResetCursor( x, y );
 
