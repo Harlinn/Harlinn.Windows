@@ -167,6 +167,8 @@ namespace Harlinn::Windows
             HCC_COM_CHECK_HRESULT2(hr, pInterface);
         }
 
+        inline void SetTopology( DWORD setTopologyFlags, const MFTopology& topology ) const;
+
         void ClearTopologies( ) const
         {
             InterfaceType* pInterface = GetInterface();
@@ -216,6 +218,17 @@ namespace Harlinn::Windows
             HCC_COM_CHECK_HRESULT2(hr, pInterface);
         }
 
+
+        template<typename T = MFClock>
+            requires std::is_base_of_v<MFClock,T>
+        T GetClock( )
+        {
+            using ItfT = typename T::InterfaceType;
+            ItfT* ptr = nullptr;
+            GetClock( &ptr );
+            return T( ptr );
+        }
+
         void GetSessionCapabilities( DWORD* capabilities) const
         {
             InterfaceType* pInterface = GetInterface();
@@ -231,7 +244,7 @@ namespace Harlinn::Windows
         }
 
         template<typename T>
-        requires std::is_base_of_v<Unknown,T>
+            requires std::is_base_of_v<Unknown,T>
         T GetService(const Guid& serviceId) const
         {
             using ItfT = typename T::InterfaceType;
@@ -992,6 +1005,11 @@ namespace Harlinn::Windows
         inline MFCollectionT<MFTopologyNode> GetOutputNodeCollection() const;
 
     };
+
+    inline void MFMediaSession::SetTopology( DWORD setTopologyFlags, const MFTopology& topology ) const
+    {
+        SetTopology( setTopologyFlags, topology.GetInterfacePointer<IMFTopology>( ) );
+    }
 
 
     class MFTopologyNode : public MFAttributes

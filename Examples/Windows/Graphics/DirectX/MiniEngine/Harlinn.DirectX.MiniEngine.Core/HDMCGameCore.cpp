@@ -25,8 +25,6 @@
 #include "Util/HDMCCommandLineArg.h"
 #include <shellapi.h>
 
-#pragma comment(lib, "runtimeobject.lib") 
-
 namespace Harlinn::Windows::DirectX::MiniEngine
 {
 

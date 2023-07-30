@@ -453,7 +453,7 @@ public: \
         baseClassType :: operator = ( nullptr_t() ); \
         return *this; \
     } \
-    explicit operator interfaceType * ( ) const noexcept\
+    operator interfaceType * ( ) const noexcept\
     { \
         return reinterpret_cast< interfaceType * >( unknown_ ); \
     } \
@@ -481,11 +481,11 @@ public: \
     { \
         return unknown_ != other.unknown_; \
     } \
-    constexpr bool operator == ( const interfaceType* other ) const noexcept \
+    constexpr bool operator == ( interfaceType* other ) const noexcept \
     { \
         return unknown_ == other; \
     } \
-    constexpr bool operator != ( const interfaceType* other ) const noexcept \
+    constexpr bool operator != ( interfaceType* other ) const noexcept \
     { \
         return unknown_ != other; \
     } 

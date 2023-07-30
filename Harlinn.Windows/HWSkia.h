@@ -254,7 +254,7 @@ namespace Harlinn::Windows
 #endif
                 auto& surfaceProps = displayParams_.SurfaceProps( );
 
-                info.fResource.retain( buffers_[i] );
+                info.fResource.retain( buffers_[i].GetInterfacePointer<ID3D12Resource>() );
                 if ( sampleCount_ > 1 )
                 {
                     GrBackendTexture backendTexture( width, height, info );

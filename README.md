@@ -1,6 +1,6 @@
 ﻿# Harlinn.Windows
 
-This repository contains a Visual Studio Solution currently containing 554 projects.
+This repository contains a Visual Studio Solution currently containing 559 projects.
 
 Most of the projects are open source projects that I have found useful at work, and a few are my own.
 
@@ -75,6 +75,17 @@ The abseil_test contains the unit tests for the Harlinn.abseil project
 > Can be used for machine learning, pattern recognition, computer vision, signal processing, bioinformatics, statistics, finance, etc
 
 **Project:** Harlinn.armadillo
+
+### [Open Asset Import Library (assimp)](https://github.com/assimp/assimp)
+**Version:** 5.2.5
+
+**Description:**
+> Open Asset Import Library is a library to load various 3d file formats into a 
+> shared, in-memory format. It supports more than 40 file formats for import and 
+> a growing selection of file formats for export.
+
+**Project:** Harlinn.assimp
+
 
 ### [cpp-base64](https://github.com/ReneNyffenegger/cpp-base64)
 **Version:** 2.0.rc8
@@ -213,6 +224,30 @@ The abseil_test contains the unit tests for the Harlinn.abseil project
 
 **Project:** Harlinn.deflate
 
+### [DirectXMesh geometry processing library](https://github.com/microsoft/DirectXMesh)
+**Version:** June 2023
+
+**Description:**
+> This package contains DirectXMesh, a shared source library for performing various 
+> geometry content processing operations including generating normals and tangent frames, 
+> triangle adjacency computations, vertex cache optimization, and meshlet generation.
+
+**Project:** Harlinn.DirectXMesh
+
+### [DirectXTex texture processing library](https://github.com/microsoft/DirectXTex)
+**Version:** June 2023
+
+**Description:**
+> This package contains DirectXTex, a shared source library for reading and writing .DDS files, 
+> and performing various texture content processing operations including resizing, format 
+> conversion, mip-map generation, block compression for Direct3D runtime texture resources, and 
+> height-map to normal-map conversion. This library makes use of the Windows Image Component (WIC) 
+> APIs. It also includes .TGA and .HDR readers and writers since these image file formats are commonly 
+> used for texture content processing pipelines, but are not currently supported by a built-in WIC codec.
+
+**Project:** Harlinn.DirectXTex
+
+
 ### [Adobe Digital Negative (DNG) SDK](https://helpx.adobe.com/camera-raw/digital-negative.html)
 **Version:** 1.5.1
 
@@ -292,6 +327,18 @@ The abseil_test contains the unit tests for the Harlinn.abseil project
 > all supported formats.
 
 **Project:** Harlinn.gdal
+
+### [GeographicLib](https://github.com/geographiclib/geographiclib)
+**Version:** 2.2
+
+**Description:**
+> GeographicLib is a small C++ library for 
+> * geodesic and rhumb line calculations;
+> * conversions between geographic, UTM, UPS, MGRS, geocentric, and local cartesian coordinates;
+> * gravity (e.g., EGM2008) and geomagnetic field (e.g., WMM2020) calculations.
+
+**Project:** Harlinn.geographiclib
+
 
 ### [GEOS - coordinate transformation software library](https://libgeos.org/)
 **Version:** 3.10.0dev
@@ -536,8 +583,8 @@ The abseil_test contains the unit tests for the Harlinn.abseil project
 **Project:** Harlinn.imath
 
 ### [Dear ImGui](https://github.com/ocornut/imgui) and [ImPlot](https://github.com/epezent/implot)
-**Dear ImGui Version:** Docking branch after merge of master at version 1.86
-**ImPlot Version:** 0.12
+**Dear ImGui Version:** 1.89.7
+**ImPlot Version:** 0.15
 
 **Description:**
 Packages Dear ImGui and ImPlot as a single dll. 
@@ -709,6 +756,23 @@ Packages Dear ImGui and ImPlot as a single dll.
 
 **Project:** Harlinn.libogg
 
+### [libsodium](https://github.com/jedisct1/libsodium)
+**Version:** 1.0.18
+
+**Description:**
+> Sodium is a new, easy-to-use software library for encryption, decryption, signatures, password hashing and more.
+
+**Project:** Harlinn.libsodium
+
+### [libSRTP](https://github.com/cisco/libsrtp)
+**Version:** 2.5.0
+
+**Description:**
+> This package provides an implementation of the Secure Real-time Transport Protocol (SRTP), the Universal Security Transform (UST), and a supporting cryptographic kernel. 
+
+**Project:** Harlinn.libSRTP
+
+
 ### [LIBSVM -- A Library for Support Vector Machines](http://www.csie.ntu.edu.tw/~cjlin/libsvm)
 **Version:** 3.16
 
@@ -733,6 +797,28 @@ Packages Dear ImGui and ImPlot as a single dll.
 > Libxml2 is the XML C parser and toolkit developed for the Gnome project.
 
 **Project:** Harlinn.libxml2
+
+### [ZeroMQ](https://zeromq.org/)
+**Version:** 4.3.4
+
+**Description:**
+> ZeroMQ (also known as ØMQ, 0MQ, or zmq) looks like an embeddable networking library but acts like 
+> a concurrency framework. It gives you sockets that carry atomic messages across various transports 
+> like in-process, inter-process, TCP, and multicast. You can connect sockets N-to-N with patterns 
+> like fan-out, pub-sub, task distribution, and request-reply. It's fast enough to be the fabric for 
+> clustered products. Its asynchronous I/O model gives you scalable multicore applications, built as 
+> asynchronous message-processing tasks. It has a score of language APIs and runs on most operating systems.
+
+**Project:** Harlinn.libzmq
+
+### [LIVE555 Streaming Media](http://www.live555.com/liveMedia/)
+**Version:** 2023.06.20
+
+**Description:**
+> This code forms a set of C++ libraries for multimedia streaming, using open standard protocols (RTP/RTCP, RTSP, SIP).
+
+**Project:** Harlinn.live555
+
 
 ### [Lightning Memory-Mapped Database](https://symas.com/lmdb/)
 **Version:** 0.9.70
@@ -812,6 +898,13 @@ Packages Dear ImGui and ImPlot as a single dll.
 > JSON for Modern C++
 
 **Project:** Harlinn.nlohmann-json
+
+### [NMEA0183](https://github.com/SammyB428/NMEA0183)
+
+**Description:**
+C++ class to parse NMEA0183 sentences
+
+**Project:** Harlinn.NMEA0183
 
 ### [OpenAL Soft is an LGPL-licensed, cross-platform, software implementation of the OpenAL 3D audio API.](http://openal-soft.org)
 **Version:** 1.21.1
@@ -972,6 +1065,14 @@ Packages Dear ImGui and ImPlot as a single dll.
 > simplifies the process of interacting with computer MIDI hardware and software.
 
 **Project:** Harlinn.rtmidi
+
+### [RtspServer](https://github.com/PHZ76/RtspServer)
+**Version:** 1.0.0
+
+**Description:**
+> A RTSP server and pusher based on C++11
+
+**Project:** Harlinn.RtspServer
 
 
 ### [Scintilla - a free source code editing component](https://www.scintilla.org/)

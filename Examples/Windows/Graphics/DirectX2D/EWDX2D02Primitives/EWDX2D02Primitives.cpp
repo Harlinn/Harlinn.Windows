@@ -96,7 +96,7 @@ public:
         auto dxgiFactory = dxgiAdapter.GetParent<DXGI::Factory2>( );
 
         DXGI::SwapChain1 dxgiSwapChain;
-        dxgiFactory.CreateSwapChainForHwnd( dxgiDevice, constrol->GetHandle( ), &swapChainDesc, nullptr, nullptr, &dxgiSwapChain );
+        dxgiSwapChain = dxgiFactory.CreateSwapChainForHwnd<DXGI::SwapChain1>( dxgiDevice, constrol->GetHandle( ), &swapChainDesc );
 
         return dxgiSwapChain;
     }

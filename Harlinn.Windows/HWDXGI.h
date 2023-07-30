@@ -976,8 +976,8 @@ namespace Harlinn::Windows::DXGI
             CheckHRESULT( hr );
         }
 
-        template<typename SwapChainT = SwapChain1,typename CommandQueueT = Windows::Graphics::D3D12CommandQueue>
-            requires (std::is_base_of_v<SwapChain1, SwapChainT> && std::is_base_of_v<Windows::Graphics::D3D12CommandQueue, CommandQueueT>)
+        template<typename SwapChainT = SwapChain1,typename CommandQueueT = Unknown>
+            requires (std::is_base_of_v<SwapChain1, SwapChainT> && std::is_base_of_v<Unknown, CommandQueueT>)
         SwapChainT CreateSwapChainForHwnd( const CommandQueueT& commandQueue, HWND hWnd, const DXGI_SWAP_CHAIN_DESC1* pDesc, const DXGI_SWAP_CHAIN_FULLSCREEN_DESC* fullscreenDesc = nullptr, IDXGIOutput* pRestrictToOutput = nullptr ) const
         {
             IDXGISwapChain1* pSwapChain = nullptr;
