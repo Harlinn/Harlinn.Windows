@@ -70,6 +70,7 @@ bld/
 [Bb]in/
 [Oo]bj/
 [Ll]og/
+[Cs]ompiled[Ss]haders/
 !/3rdParty/Harlinn.abseil/include/absl/log
 !/3rdParty/Harlinn.abseil/src/log
 !/Tests/3rdParty/abseil/abseil_test/log
