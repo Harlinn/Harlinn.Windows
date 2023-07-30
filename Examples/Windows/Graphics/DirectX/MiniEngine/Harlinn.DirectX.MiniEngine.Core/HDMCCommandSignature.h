@@ -24,6 +24,8 @@ namespace Harlinn::Windows::DirectX::MiniEngine
     class IndirectParameter
     {
         friend class CommandSignature;
+    protected:
+        D3D12_INDIRECT_ARGUMENT_DESC m_IndirectParam;
     public:
 
         IndirectParameter( )
@@ -85,16 +87,19 @@ namespace Harlinn::Windows::DirectX::MiniEngine
 
         const D3D12_INDIRECT_ARGUMENT_DESC& GetDesc( void ) const { return m_IndirectParam; }
 
-    protected:
-
-        D3D12_INDIRECT_ARGUMENT_DESC m_IndirectParam;
     };
 
     class CommandSignature
     {
+    protected:
+        BOOL m_Finalized;
+        UINT m_NumParameters;
+        std::unique_ptr<IndirectParameter[ ]> m_ParamArray;
+        D3D12CommandSignature m_Signature;
     public:
 
-        CommandSignature( UINT NumParams = 0 ) : m_Finalized( FALSE ), m_NumParameters( NumParams )
+        CommandSignature( UINT NumParams = 0 ) 
+            : m_Finalized( FALSE ), m_NumParameters( NumParams )
         {
             Reset( NumParams );
         }
@@ -129,13 +134,8 @@ namespace Harlinn::Windows::DirectX::MiniEngine
 
         void Finalize( const RootSignature* RootSignature = nullptr );
 
-        ID3D12CommandSignature* GetSignature( ) const { return m_Signature.Get( ); }
+        const D3D12CommandSignature& GetSignature( ) const { return m_Signature; }
 
-    protected:
-
-        BOOL m_Finalized;
-        UINT m_NumParameters;
-        std::unique_ptr<IndirectParameter[ ]> m_ParamArray;
-        Microsoft::WRL::ComPtr<ID3D12CommandSignature> m_Signature;
+    
     };
 }

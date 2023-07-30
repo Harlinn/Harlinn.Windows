@@ -32,7 +32,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine
     {
     };
 
-    void BuddyBlock::InitPlaced( ID3D12Heap* pBackingHeap, uint32_t numElements, uint32_t elementSize, const void* initialData )
+    void BuddyBlock::InitPlaced( const D3D12Heap& pBackingHeap, uint32_t numElements, uint32_t elementSize, const void* initialData )
     {
         m_pBuffer = new ByteAddressBuffer( );
         m_pBackingHeap = pBackingHeap;
@@ -89,7 +89,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine
             desc.Alignment = MIN_PLACED_BUFFER_SIZE;
             desc.Flags = D3D12_HEAP_FLAG_ALLOW_ONLY_BUFFERS;
 
-            g_Device.CreateHeap( &desc, MY_IID_PPV_ARGS( &m_pBackingHeap ) );
+            m_pBackingHeap = g_Device.CreateHeap( desc );
         }
         else
         {
@@ -101,7 +101,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine
     {
         if ( m_allocationStrategy == kBuddyAllocationStrategy::kPlacedResourceStrategy )
         {
-            m_pBackingHeap->Release( );
+            m_pBackingHeap = nullptr;
         }
         else
         {

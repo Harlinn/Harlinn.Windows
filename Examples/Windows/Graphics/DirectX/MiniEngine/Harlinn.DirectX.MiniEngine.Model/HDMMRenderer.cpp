@@ -285,8 +285,8 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         s_SpecularIBLRange = 0.0f;
         if ( s_RadianceCubeMap.IsValid( ) )
         {
-            ID3D12Resource* texRes = const_cast< ID3D12Resource* >( s_RadianceCubeMap.Get( )->GetResource( ) );
-            const D3D12_RESOURCE_DESC& texDesc = texRes->GetDesc( );
+            const auto& texRes = s_RadianceCubeMap.Get( )->GetResource( );
+            const D3D12_RESOURCE_DESC& texDesc = texRes.GetDesc( );
             s_SpecularIBLRange = Max( 0.0f, ( float )texDesc.MipLevels - 1 );
             s_SpecularIBLBias = Min( s_SpecularIBLBias, s_SpecularIBLRange );
         }

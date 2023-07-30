@@ -32,7 +32,7 @@ namespace Harlinn::Windows::Graphics
         }
     };
 
-
+    using D3DBlob = D3D10Blob;
 
 }
 

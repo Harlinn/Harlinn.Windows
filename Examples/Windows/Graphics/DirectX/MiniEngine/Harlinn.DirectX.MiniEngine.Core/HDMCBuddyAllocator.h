@@ -54,7 +54,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine
     struct BuddyBlock
     {
         ByteAddressBuffer* m_pBuffer;
-        ID3D12Heap* m_pBackingHeap;
+        D3D12Heap m_pBackingHeap;
 
         size_t m_offset;
         size_t m_size;
@@ -68,7 +68,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine
 
         HDMC_EXPORT BuddyBlock( uint32_t heapOffset, uint32_t totalSize, uint32_t unpaddedSize );
 
-        HDMC_EXPORT void InitPlaced( ID3D12Heap* pBackingHeap, uint32_t numElements, uint32_t elementSize, const void* initialData = nullptr );
+        HDMC_EXPORT void InitPlaced( const D3D12Heap& pBackingHeap, uint32_t numElements, uint32_t elementSize, const void* initialData = nullptr );
 
         HDMC_EXPORT void InitFromResource( ByteAddressBuffer* pBuffer, uint32_t numElements, uint32_t elementSize, const void* initialData = nullptr );
 
@@ -107,7 +107,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         HDMC_EXPORT void CleanUpAllocations( );
 
     private:
-        ID3D12Heap* m_pBackingHeap;
+        D3D12Heap m_pBackingHeap;
         ByteAddressBuffer m_BackingResource;
 
         const D3D12_HEAP_TYPE m_heapType;

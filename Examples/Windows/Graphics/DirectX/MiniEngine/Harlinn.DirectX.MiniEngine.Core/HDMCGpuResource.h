@@ -23,7 +23,14 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         friend class CommandContext;
         friend class GraphicsContext;
         friend class ComputeContext;
+    protected:
+        D3D12Resource m_pResource;
+        D3D12_RESOURCE_STATES m_UsageState;
+        D3D12_RESOURCE_STATES m_TransitioningState;
+        D3D12_GPU_VIRTUAL_ADDRESS m_GpuVirtualAddress;
 
+        // Used to identify when a resource changes so descriptors can be copied etc.
+        uint32_t m_VersionID = 0;
     public:
 
         GpuResource( ) 
@@ -33,7 +40,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         {
         }
 
-        explicit GpuResource( ID3D12Resource* pResource, D3D12_RESOURCE_STATES CurrentState = D3D12_RESOURCE_STATE_COMMON )
+        explicit GpuResource( const D3D12Resource& pResource, D3D12_RESOURCE_STATES CurrentState = D3D12_RESOURCE_STATE_COMMON, bool addRef = false )
             : m_pResource( pResource ),
               m_GpuVirtualAddress( D3D12_GPU_VIRTUAL_ADDRESS_NULL ),
               m_UsageState( CurrentState ),
@@ -50,43 +57,61 @@ namespace Harlinn::Windows::DirectX::MiniEngine
             ++m_VersionID;
         }
 
-        
-        ID3D12Resource* operator->( ) 
-        { 
-            return m_pResource; 
+        void Map( UINT subResource, _In_opt_ const D3D12_RANGE* readRange, _Outptr_opt_result_bytebuffer_( _Inexpressible_( "Dependent on resource" ) )  void** ppData ) const
+        {
+            m_pResource.Map( subResource, readRange, ppData );
+        }
+
+        void Unmap( UINT subresource, _In_opt_  const D3D12_RANGE* pWrittenRange ) const
+        {
+            m_pResource.Unmap( subresource, pWrittenRange );
+        }
+
+        D3D12_RESOURCE_DESC GetDesc( ) const
+        {
+            return m_pResource.GetDesc( );
+        }
+
+        D3D12_GPU_VIRTUAL_ADDRESS GetGPUVirtualAddress( ) const
+        {
+            return m_pResource.GetGPUVirtualAddress( );
+        }
+
+        void WriteToSubresource( UINT DstSubresource, _In_opt_ const D3D12_BOX* pDstBox, _In_ const void* pSrcData, UINT SrcRowPitch, UINT SrcDepthPitch ) const
+        {
+            m_pResource.WriteToSubresource( DstSubresource, pDstBox, pSrcData, SrcRowPitch, SrcDepthPitch );
+        }
+
+        void ReadFromSubresource( _Out_ void* pDstData, UINT DstRowPitch, UINT DstDepthPitch, UINT SrcSubresource, _In_opt_ const D3D12_BOX* pSrcBox ) const
+        {
+            m_pResource.ReadFromSubresource( pDstData, DstRowPitch, DstDepthPitch, SrcSubresource, pSrcBox );
+        }
+
+        void GetHeapProperties( _Out_opt_ D3D12_HEAP_PROPERTIES* pHeapProperties, _Out_opt_ D3D12_HEAP_FLAGS* pHeapFlags ) const
+        {
+            m_pResource.GetHeapProperties( pHeapProperties, pHeapFlags );
         }
         
-        const ID3D12Resource* operator->( ) const 
-        { 
-            return m_pResource; 
-        }
-        
 
-        ID3D12Resource* GetResource( ) 
+        D3D12Resource& GetResource( ) noexcept
         { 
             return m_pResource; 
         }
-        const ID3D12Resource* GetResource( ) const 
+        const D3D12Resource& GetResource( ) const noexcept
         { 
             return m_pResource; 
         }
 
-        ID3D12Resource** GetAddressOf( ) 
+        D3D12_GPU_VIRTUAL_ADDRESS GetGpuVirtualAddress( ) const noexcept
         { 
-            return &m_pResource;
+            return m_GpuVirtualAddress; 
         }
 
-        D3D12_GPU_VIRTUAL_ADDRESS GetGpuVirtualAddress( ) const { return m_GpuVirtualAddress; }
+        uint32_t GetVersionID( ) const 
+        { 
+            return m_VersionID; 
+        }
 
-        uint32_t GetVersionID( ) const { return m_VersionID; }
-
-    protected:
-        Harlinn::Windows::Graphics::D3D12Resource m_pResource;
-        D3D12_RESOURCE_STATES m_UsageState;
-        D3D12_RESOURCE_STATES m_TransitioningState;
-        D3D12_GPU_VIRTUAL_ADDRESS m_GpuVirtualAddress;
-
-        // Used to identify when a resource changes so descriptors can be copied etc.
-        uint32_t m_VersionID = 0;
+    
     };
 }

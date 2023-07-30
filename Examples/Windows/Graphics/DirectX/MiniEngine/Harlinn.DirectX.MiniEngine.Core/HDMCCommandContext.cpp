@@ -112,19 +112,19 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         // Reset the command list and restore previous state
         //
 
-        m_CommandList->Reset( m_CurrentAllocator, nullptr );
+        m_CommandList.Reset( m_CurrentAllocator );
 
         if ( m_CurGraphicsRootSignature )
         {
-            m_CommandList->SetGraphicsRootSignature( m_CurGraphicsRootSignature );
+            m_CommandList.SetGraphicsRootSignature( m_CurGraphicsRootSignature );
         }
         if ( m_CurComputeRootSignature )
         {
-            m_CommandList->SetComputeRootSignature( m_CurComputeRootSignature );
+            m_CommandList.SetComputeRootSignature( m_CurComputeRootSignature );
         }
         if ( m_CurPipelineState )
         {
-            m_CommandList->SetPipelineState( m_CurPipelineState );
+            m_CommandList.SetPipelineState( m_CurPipelineState );
         }
 
         BindDescriptorHeaps( );
@@ -182,8 +182,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine
 
     CommandContext::~CommandContext( void )
     {
-        if ( m_CommandList != nullptr )
-            m_CommandList->Release( );
+        m_CommandList = nullptr;
     }
 
     void CommandContext::Initialize( void )
@@ -197,7 +196,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         // request a new allocator.
         ASSERT( m_CommandList != nullptr && m_CurrentAllocator == nullptr );
         m_CurrentAllocator = g_CommandManager.GetQueue( m_Type ).RequestAllocator( );
-        m_CommandList->Reset( m_CurrentAllocator, nullptr );
+        m_CommandList.Reset( m_CurrentAllocator );
 
         m_CurGraphicsRootSignature = nullptr;
         m_CurComputeRootSignature = nullptr;
@@ -210,41 +209,45 @@ namespace Harlinn::Windows::DirectX::MiniEngine
     void CommandContext::BindDescriptorHeaps( void )
     {
         UINT NonNullHeaps = 0;
-        ID3D12DescriptorHeap* HeapsToBind[ D3D12_DESCRIPTOR_HEAP_TYPE_NUM_TYPES ];
+        D3D12DescriptorHeap HeapsToBind[ D3D12_DESCRIPTOR_HEAP_TYPE_NUM_TYPES ];
         for ( UINT i = 0; i < D3D12_DESCRIPTOR_HEAP_TYPE_NUM_TYPES; ++i )
         {
-            ID3D12DescriptorHeap* HeapIter = m_CurrentDescriptorHeaps[ i ];
+            const D3D12DescriptorHeap& HeapIter = m_CurrentDescriptorHeaps[ i ];
             if ( HeapIter != nullptr )
+            {
                 HeapsToBind[ NonNullHeaps++ ] = HeapIter;
+            }
         }
 
         if ( NonNullHeaps > 0 )
-            m_CommandList->SetDescriptorHeaps( NonNullHeaps, HeapsToBind );
+        {
+            m_CommandList.SetDescriptorHeaps( NonNullHeaps, HeapsToBind );
+        }
     }
 
     void GraphicsContext::SetRenderTargets( UINT NumRTVs, const D3D12_CPU_DESCRIPTOR_HANDLE RTVs[ ], D3D12_CPU_DESCRIPTOR_HANDLE DSV )
     {
-        m_CommandList->OMSetRenderTargets( NumRTVs, RTVs, FALSE, &DSV );
+        m_CommandList.OMSetRenderTargets( NumRTVs, RTVs, FALSE, &DSV );
     }
 
     void GraphicsContext::SetRenderTargets( UINT NumRTVs, const D3D12_CPU_DESCRIPTOR_HANDLE RTVs[ ] )
     {
-        m_CommandList->OMSetRenderTargets( NumRTVs, RTVs, FALSE, nullptr );
+        m_CommandList.OMSetRenderTargets( NumRTVs, RTVs, FALSE, nullptr );
     }
 
-    void GraphicsContext::BeginQuery( ID3D12QueryHeap* QueryHeap, D3D12_QUERY_TYPE Type, UINT HeapIndex )
+    void GraphicsContext::BeginQuery( const D3D12QueryHeap& QueryHeap, D3D12_QUERY_TYPE Type, UINT HeapIndex )
     {
-        m_CommandList->BeginQuery( QueryHeap, Type, HeapIndex );
+        m_CommandList.BeginQuery( QueryHeap, Type, HeapIndex );
     }
 
-    void GraphicsContext::EndQuery( ID3D12QueryHeap* QueryHeap, D3D12_QUERY_TYPE Type, UINT HeapIndex )
+    void GraphicsContext::EndQuery( const D3D12QueryHeap& QueryHeap, D3D12_QUERY_TYPE Type, UINT HeapIndex )
     {
-        m_CommandList->EndQuery( QueryHeap, Type, HeapIndex );
+        m_CommandList.EndQuery( QueryHeap, Type, HeapIndex );
     }
 
-    void GraphicsContext::ResolveQueryData( ID3D12QueryHeap* QueryHeap, D3D12_QUERY_TYPE Type, UINT StartIndex, UINT NumQueries, ID3D12Resource* DestinationBuffer, UINT64 DestinationBufferOffset )
+    void GraphicsContext::ResolveQueryData( const D3D12QueryHeap& QueryHeap, D3D12_QUERY_TYPE Type, UINT StartIndex, UINT NumQueries, const D3D12Resource& DestinationBuffer, UINT64 DestinationBufferOffset )
     {
-        m_CommandList->ResolveQueryData( QueryHeap, Type, StartIndex, NumQueries, DestinationBuffer, DestinationBufferOffset );
+        m_CommandList.ResolveQueryData( QueryHeap, Type, StartIndex, NumQueries, DestinationBuffer, DestinationBufferOffset );
     }
 
     void GraphicsContext::ClearUAV( GpuBuffer& Target )
@@ -255,7 +258,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         // a shader to set all of the values).
         D3D12_GPU_DESCRIPTOR_HANDLE GpuVisibleHandle = m_DynamicViewDescriptorHeap.UploadDirect( Target.GetUAV( ) );
         const UINT ClearColor[ 4 ] = {};
-        m_CommandList->ClearUnorderedAccessViewUint( GpuVisibleHandle, Target.GetUAV( ), Target.GetResource( ), ClearColor, 0, nullptr );
+        m_CommandList.ClearUnorderedAccessViewUint( GpuVisibleHandle, Target.GetUAV( ), Target.GetResource( ), ClearColor, 0, nullptr );
     }
 
     void ComputeContext::ClearUAV( GpuBuffer& Target )
@@ -266,7 +269,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         // a shader to set all of the values).
         D3D12_GPU_DESCRIPTOR_HANDLE GpuVisibleHandle = m_DynamicViewDescriptorHeap.UploadDirect( Target.GetUAV( ) );
         const UINT ClearColor[ 4 ] = {};
-        m_CommandList->ClearUnorderedAccessViewUint( GpuVisibleHandle, Target.GetUAV( ), Target.GetResource( ), ClearColor, 0, nullptr );
+        m_CommandList.ClearUnorderedAccessViewUint( GpuVisibleHandle, Target.GetUAV( ), Target.GetResource( ), ClearColor, 0, nullptr );
     }
 
     void GraphicsContext::ClearUAV( ColorBuffer& Target )
@@ -280,7 +283,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine
 
         //TODO: My Nvidia card is not clearing UAVs with either Float or Uint variants.
         const float* ClearColor = Target.GetClearColor( ).GetPtr( );
-        m_CommandList->ClearUnorderedAccessViewFloat( GpuVisibleHandle, Target.GetUAV( ), Target.GetResource( ), ClearColor, 1, &ClearRect );
+        m_CommandList.ClearUnorderedAccessViewFloat( GpuVisibleHandle, Target.GetUAV( ), Target.GetResource( ), ClearColor, 1, &ClearRect );
     }
 
     void ComputeContext::ClearUAV( ColorBuffer& Target )
@@ -294,49 +297,49 @@ namespace Harlinn::Windows::DirectX::MiniEngine
 
         //TODO: My Nvidia card is not clearing UAVs with either Float or Uint variants.
         const float* ClearColor = Target.GetClearColor( ).GetPtr( );
-        m_CommandList->ClearUnorderedAccessViewFloat( GpuVisibleHandle, Target.GetUAV( ), Target.GetResource( ), ClearColor, 1, &ClearRect );
+        m_CommandList.ClearUnorderedAccessViewFloat( GpuVisibleHandle, Target.GetUAV( ), Target.GetResource( ), ClearColor, 1, &ClearRect );
     }
 
     void GraphicsContext::ClearColor( ColorBuffer& Target, D3D12_RECT* Rect )
     {
         FlushResourceBarriers( );
-        m_CommandList->ClearRenderTargetView( Target.GetRTV( ), Target.GetClearColor( ).GetPtr( ), ( Rect == nullptr ) ? 0 : 1, Rect );
+        m_CommandList.ClearRenderTargetView( Target.GetRTV( ), Target.GetClearColor( ).GetPtr( ), ( Rect == nullptr ) ? 0 : 1, Rect );
     }
 
     void GraphicsContext::ClearColor( ColorBuffer& Target, float Colour[ 4 ], D3D12_RECT* Rect )
     {
         FlushResourceBarriers( );
-        m_CommandList->ClearRenderTargetView( Target.GetRTV( ), Colour, ( Rect == nullptr ) ? 0 : 1, Rect );
+        m_CommandList.ClearRenderTargetView( Target.GetRTV( ), Colour, ( Rect == nullptr ) ? 0 : 1, Rect );
     }
 
     void GraphicsContext::ClearDepth( DepthBuffer& Target )
     {
         FlushResourceBarriers( );
-        m_CommandList->ClearDepthStencilView( Target.GetDSV( ), D3D12_CLEAR_FLAG_DEPTH, Target.GetClearDepth( ), Target.GetClearStencil( ), 0, nullptr );
+        m_CommandList.ClearDepthStencilView( Target.GetDSV( ), D3D12_CLEAR_FLAG_DEPTH, Target.GetClearDepth( ), Target.GetClearStencil( ), 0, nullptr );
     }
 
     void GraphicsContext::ClearStencil( DepthBuffer& Target )
     {
         FlushResourceBarriers( );
-        m_CommandList->ClearDepthStencilView( Target.GetDSV( ), D3D12_CLEAR_FLAG_STENCIL, Target.GetClearDepth( ), Target.GetClearStencil( ), 0, nullptr );
+        m_CommandList.ClearDepthStencilView( Target.GetDSV( ), D3D12_CLEAR_FLAG_STENCIL, Target.GetClearDepth( ), Target.GetClearStencil( ), 0, nullptr );
     }
 
     void GraphicsContext::ClearDepthAndStencil( DepthBuffer& Target )
     {
         FlushResourceBarriers( );
-        m_CommandList->ClearDepthStencilView( Target.GetDSV( ), D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, Target.GetClearDepth( ), Target.GetClearStencil( ), 0, nullptr );
+        m_CommandList.ClearDepthStencilView( Target.GetDSV( ), D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, Target.GetClearDepth( ), Target.GetClearStencil( ), 0, nullptr );
     }
 
     void GraphicsContext::SetViewportAndScissor( const D3D12_VIEWPORT& vp, const D3D12_RECT& rect )
     {
         ASSERT( rect.left < rect.right && rect.top < rect.bottom );
-        m_CommandList->RSSetViewports( 1, &vp );
-        m_CommandList->RSSetScissorRects( 1, &rect );
+        m_CommandList.RSSetViewports( 1, &vp );
+        m_CommandList.RSSetScissorRects( 1, &rect );
     }
 
     void GraphicsContext::SetViewport( const D3D12_VIEWPORT& vp )
     {
-        m_CommandList->RSSetViewports( 1, &vp );
+        m_CommandList.RSSetViewports( 1, &vp );
     }
 
     void GraphicsContext::SetViewport( FLOAT x, FLOAT y, FLOAT w, FLOAT h, FLOAT minDepth, FLOAT maxDepth )
@@ -348,13 +351,13 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         vp.MaxDepth = maxDepth;
         vp.TopLeftX = x;
         vp.TopLeftY = y;
-        m_CommandList->RSSetViewports( 1, &vp );
+        m_CommandList.RSSetViewports( 1, &vp );
     }
 
     void GraphicsContext::SetScissor( const D3D12_RECT& rect )
     {
         ASSERT( rect.left < rect.right && rect.top < rect.bottom );
-        m_CommandList->RSSetScissorRects( 1, &rect );
+        m_CommandList.RSSetScissorRects( 1, &rect );
     }
 
     void CommandContext::TransitionResource( GpuResource& Resource, D3D12_RESOURCE_STATES NewState, bool FlushImmediate )
@@ -373,7 +376,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine
             D3D12_RESOURCE_BARRIER& BarrierDesc = m_ResourceBarrierBuffer[ m_NumBarriersToFlush++ ];
 
             BarrierDesc.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-            BarrierDesc.Transition.pResource = Resource.GetResource( );
+            BarrierDesc.Transition.pResource = Resource.GetResource( ).GetInterfacePointer<ID3D12Resource>();
             BarrierDesc.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
             BarrierDesc.Transition.StateBefore = OldState;
             BarrierDesc.Transition.StateAfter = NewState;
@@ -410,7 +413,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine
             D3D12_RESOURCE_BARRIER& BarrierDesc = m_ResourceBarrierBuffer[ m_NumBarriersToFlush++ ];
 
             BarrierDesc.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-            BarrierDesc.Transition.pResource = Resource.GetResource( );
+            BarrierDesc.Transition.pResource = Resource.GetResource( ).GetInterfacePointer<ID3D12Resource>( );;
             BarrierDesc.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
             BarrierDesc.Transition.StateBefore = OldState;
             BarrierDesc.Transition.StateAfter = NewState;
@@ -431,7 +434,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine
 
         BarrierDesc.Type = D3D12_RESOURCE_BARRIER_TYPE_UAV;
         BarrierDesc.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-        BarrierDesc.UAV.pResource = Resource.GetResource( );
+        BarrierDesc.UAV.pResource = Resource.GetResource( ).GetInterfacePointer<ID3D12Resource>( );;
 
         if ( FlushImmediate )
             FlushResourceBarriers( );
@@ -444,8 +447,8 @@ namespace Harlinn::Windows::DirectX::MiniEngine
 
         BarrierDesc.Type = D3D12_RESOURCE_BARRIER_TYPE_ALIASING;
         BarrierDesc.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-        BarrierDesc.Aliasing.pResourceBefore = Before.GetResource( );
-        BarrierDesc.Aliasing.pResourceAfter = After.GetResource( );
+        BarrierDesc.Aliasing.pResourceBefore = Before.GetResource( ).GetInterfacePointer<ID3D12Resource>( );;
+        BarrierDesc.Aliasing.pResourceAfter = After.GetResource( ).GetInterfacePointer<ID3D12Resource>( );;
 
         if ( FlushImmediate )
             FlushResourceBarriers( );
@@ -467,15 +470,23 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         CopyBufferRegion( Dest, DestOffset, TempSpace.Buffer, TempSpace.Offset, NumBytes );
     }
 
-    void CommandContext::InitializeTexture( GpuResource& Dest, UINT NumSubresources, D3D12_SUBRESOURCE_DATA SubData[ ] )
+    void CommandContext::InitializeTexture( GpuResource& Dest, UINT NumSubresources, const D3D12_SUBRESOURCE_DATA* SubData )
     {
-        UINT64 uploadBufferSize = GetRequiredIntermediateSize( Dest.GetResource( ), 0, NumSubresources );
+        UINT64 uploadBufferSize = GetRequiredIntermediateSize( Dest.GetResource( ).GetInterfacePointer<ID3D12Resource>( ), 0, NumSubresources );
 
         CommandContext& InitContext = CommandContext::Begin( );
 
         // copy data to the intermediate upload heap and then schedule a copy from the upload heap to the default texture
         DynAlloc mem = InitContext.ReserveUploadMemory( uploadBufferSize );
-        UpdateSubresources( InitContext.m_CommandList, Dest.GetResource( ), mem.Buffer.GetResource( ), 0, 0, NumSubresources, SubData );
+
+        ID3D12GraphicsCommandList* commandList = InitContext.m_CommandList.GetInterfacePointer<ID3D12GraphicsCommandList>( );
+        ID3D12Resource* destinationResource = Dest.GetResource( ).GetInterfacePointer<ID3D12Resource>( );
+        ID3D12Resource* intermediateResource = mem.Buffer.GetResource( ).GetInterfacePointer<ID3D12Resource>( );
+
+        UpdateSubresources( commandList,
+            destinationResource,
+            intermediateResource, static_cast<UINT64>(0), static_cast<UINT>(0), NumSubresources, SubData );
+
         InitContext.TransitionResource( Dest, D3D12_RESOURCE_STATE_GENERIC_READ );
 
         // Execute the command list and wait for it to finish so we can release the upload buffer
@@ -488,19 +499,19 @@ namespace Harlinn::Windows::DirectX::MiniEngine
 
         D3D12_TEXTURE_COPY_LOCATION DestLocation =
         {
-            Dest.GetResource( ),
+            Dest.GetResource( ).GetInterfacePointer<ID3D12Resource>( ),
             D3D12_TEXTURE_COPY_TYPE_SUBRESOURCE_INDEX,
             DestSubIndex
         };
 
         D3D12_TEXTURE_COPY_LOCATION SrcLocation =
         {
-            Src.GetResource( ),
+            Src.GetResource( ).GetInterfacePointer<ID3D12Resource>( ),
             D3D12_TEXTURE_COPY_TYPE_SUBRESOURCE_INDEX,
             SrcSubIndex
         };
 
-        m_CommandList->CopyTextureRegion( &DestLocation, 0, 0, 0, &SrcLocation, nullptr );
+        m_CommandList.CopyTextureRegion( &DestLocation, 0, 0, 0, &SrcLocation, nullptr );
     }
 
     void CommandContext::InitializeTextureArraySlice( GpuResource& Dest, UINT SliceIndex, GpuResource& Src )
@@ -510,8 +521,8 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         Context.TransitionResource( Dest, D3D12_RESOURCE_STATE_COPY_DEST );
         Context.FlushResourceBarriers( );
 
-        const D3D12_RESOURCE_DESC& DestDesc = Dest.GetResource( )->GetDesc( );
-        const D3D12_RESOURCE_DESC& SrcDesc = Src.GetResource( )->GetDesc( );
+        const D3D12_RESOURCE_DESC DestDesc = Dest.GetResource( ).GetDesc( );
+        const D3D12_RESOURCE_DESC SrcDesc = Src.GetResource( ).GetDesc( );
 
         ASSERT( SliceIndex < DestDesc.DepthOrArraySize &&
             SrcDesc.DepthOrArraySize == 1 &&
@@ -526,19 +537,19 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         {
             D3D12_TEXTURE_COPY_LOCATION destCopyLocation =
             {
-                Dest.GetResource( ),
+                Dest.GetResource( ).GetInterfacePointer<ID3D12Resource>( ),
                 D3D12_TEXTURE_COPY_TYPE_SUBRESOURCE_INDEX,
                 SubResourceIndex + i
             };
 
             D3D12_TEXTURE_COPY_LOCATION srcCopyLocation =
             {
-                Src.GetResource( ),
+                Src.GetResource( ).GetInterfacePointer<ID3D12Resource>( ),
                 D3D12_TEXTURE_COPY_TYPE_SUBRESOURCE_INDEX,
                 i
             };
 
-            Context.m_CommandList->CopyTextureRegion( &destCopyLocation, 0, 0, 0, &srcCopyLocation, nullptr );
+            Context.m_CommandList.CopyTextureRegion( &destCopyLocation, 0, 0, 0, &srcCopyLocation, nullptr );
         }
 
         Context.TransitionResource( Dest, D3D12_RESOURCE_STATE_GENERIC_READ );
@@ -551,7 +562,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine
 
         // The footprint may depend on the device of the resource, but we assume there is only one device.
         D3D12_PLACED_SUBRESOURCE_FOOTPRINT PlacedFootprint;
-        auto resourceDesc = SrcBuffer.GetResource( )->GetDesc( );
+        auto resourceDesc = SrcBuffer.GetResource( ).GetDesc( );
         g_Device.GetCopyableFootprints( &resourceDesc, 0, 1, 0,
             &PlacedFootprint, nullptr, nullptr, &CopySize );
 
@@ -559,10 +570,10 @@ namespace Harlinn::Windows::DirectX::MiniEngine
 
         TransitionResource( SrcBuffer, D3D12_RESOURCE_STATE_COPY_SOURCE, true );
 
-        CD3DX12_TEXTURE_COPY_LOCATION destinationLocation( DstBuffer.GetResource( ), PlacedFootprint );
-        CD3DX12_TEXTURE_COPY_LOCATION sourceLocation( SrcBuffer.GetResource( ), 0 );
+        CD3DX12_TEXTURE_COPY_LOCATION destinationLocation( DstBuffer.GetResource( ).GetInterfacePointer<ID3D12Resource>( ), PlacedFootprint );
+        CD3DX12_TEXTURE_COPY_LOCATION sourceLocation( SrcBuffer.GetResource( ).GetInterfacePointer<ID3D12Resource>( ), 0 );
 
-        m_CommandList->CopyTextureRegion( &destinationLocation, 0, 0, 0, &sourceLocation, nullptr );
+        m_CommandList.CopyTextureRegion( &destinationLocation, 0, 0, 0, &sourceLocation, nullptr );
 
         return PlacedFootprint.Footprint.RowPitch;
     }
@@ -576,7 +587,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine
 
         // copy data to the intermediate upload heap and then schedule a copy from the upload heap to the default texture
         InitContext.TransitionResource( Dest, D3D12_RESOURCE_STATE_COPY_DEST, true );
-        InitContext.m_CommandList->CopyBufferRegion( Dest.GetResource( ), DestOffset, mem.Buffer.GetResource( ), 0, NumBytes );
+        InitContext.m_CommandList.CopyBufferRegion( Dest.GetResource( ), DestOffset, mem.Buffer.GetResource( ), 0, NumBytes );
         InitContext.TransitionResource( Dest, D3D12_RESOURCE_STATE_GENERIC_READ, true );
 
         // Execute the command list and wait for it to finish so we can release the upload buffer
@@ -592,7 +603,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine
 
         // copy data to the intermediate upload heap and then schedule a copy from the upload heap to the default texture
         InitContext.TransitionResource( Dest, D3D12_RESOURCE_STATE_COPY_DEST, true );
-        InitContext.m_CommandList->CopyBufferRegion( Dest.GetResource( ), DestOffset, ( ID3D12Resource* )Src.GetResource( ), SrcOffset, NumBytes );
+        InitContext.m_CommandList.CopyBufferRegion( Dest.GetResource( ), DestOffset, Src.GetResource( ), SrcOffset, NumBytes );
         InitContext.TransitionResource( Dest, D3D12_RESOURCE_STATE_GENERIC_READ, true );
 
         // Execute the command list and wait for it to finish so we can release the upload buffer
@@ -604,14 +615,14 @@ namespace Harlinn::Windows::DirectX::MiniEngine
 #ifdef RELEASE
         ( label );
 #else
-        ::PIXBeginEvent( m_CommandList, 0, label );
+        ::PIXBeginEvent( m_CommandList.GetInterfacePointer<ID3D12GraphicsCommandList>(), 0, label );
 #endif
     }
 
     void CommandContext::PIXEndEvent( void )
     {
 #ifndef RELEASE
-        ::PIXEndEvent( m_CommandList );
+        ::PIXEndEvent( m_CommandList.GetInterfacePointer<ID3D12GraphicsCommandList>( ) );
 #endif
     }
 
@@ -620,7 +631,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine
 #ifdef RELEASE
         ( label );
 #else
-        ::PIXSetMarker( m_CommandList, 0, label );
+        ::PIXSetMarker( m_CommandList.GetInterfacePointer<ID3D12GraphicsCommandList>( ), 0, label );
 #endif
     }
 }

@@ -54,6 +54,7 @@ namespace Harlinn::Common::Core
     };
     
 
+
     template<typename T>
     class UnknownPtr;
 
@@ -132,16 +133,6 @@ namespace Harlinn::Common::Core
             return unknown_ != nullptr;
         }
 
-        constexpr bool operator == (nullptr_t) const noexcept
-        {
-            return unknown_ == nullptr;
-        }
-        constexpr bool operator != (nullptr_t) const noexcept
-        {
-            return unknown_ != nullptr;
-        }
-
-
         Unknown& operator = ( const Unknown& other ) noexcept
         {
             if ( unknown_ != other.unknown_ )
@@ -204,7 +195,9 @@ namespace Harlinn::Common::Core
         {
             if ( unknown_ )
             {
-                unknown_->Release( );
+                auto tmp = unknown_;
+                unknown_ = nullptr;
+                tmp->Release( );
             }
             return *this;
         }
@@ -342,7 +335,30 @@ namespace Harlinn::Common::Core
             }
         }
 
+        template<typename T>
+            requires std::is_base_of_v<IUnknown, T>
+        bool QueryInterface( T** itf ) const
+        {
+            return QueryInterface( __uuidof( T ), reinterpret_cast< void** >( itf ) );
+        }
 
+        constexpr bool operator == ( const Unknown& other ) const noexcept
+        {
+            return unknown_ == other.unknown_;
+        }
+        constexpr bool operator != ( const Unknown& other ) const noexcept
+        {
+            return unknown_ != other.unknown_;
+        }
+
+        constexpr bool operator == ( const IUnknown* other ) const noexcept
+        {
+            return unknown_ == other;
+        }
+        constexpr bool operator != ( const IUnknown* other ) const noexcept
+        {
+            return unknown_ != other;
+        }
 
         template<typename T>
             requires std::is_base_of_v<Unknown, T>
@@ -432,28 +448,58 @@ public: \
         baseClassType :: operator = ( reinterpret_cast< baseClassType && > (other) ); \
         return *this; \
     } \
-    operator interfaceType * ( ) const noexcept\
+    classType & operator = (nullptr_t) noexcept\
+    { \
+        baseClassType :: operator = ( nullptr_t() ); \
+        return *this; \
+    } \
+    explicit operator interfaceType * ( ) const noexcept\
     { \
         return reinterpret_cast< interfaceType * >( unknown_ ); \
     } \
-    interfaceType** operator& ( ) noexcept \
+    void ResetPtr( interfaceType* itf = nullptr, bool addRef = false ) noexcept \
     { \
-        if ( unknown_ ) \
-        { \
-            unknown_->Release( ); \
-            unknown_ = nullptr; \
-        } \
-        return (interfaceType**)&unknown_; \
+        baseClassType :: ResetPtr(reinterpret_cast< baseInterfaceType *>( itf ), addRef); \
     } \
-    void ResetPtr( IUnknown* other = nullptr, bool addRef = false ) noexcept \
+    classType& operator = (interfaceType* itf) noexcept\
     { \
-        baseClassType :: ResetPtr(other, addRef); \
+        if( reinterpret_cast< interfaceType * >( unknown_ ) != itf ) \
+        { \
+            ResetPtr( itf, true ); \
+        } \
+        return *this; \
     } \
     interfaceType* Detach( ) \
     { \
         return reinterpret_cast<interfaceType*>( baseClassType :: Detach( )); \
+    } \
+    constexpr bool operator == ( const classType& other ) const noexcept \
+    { \
+        return unknown_ == other.unknown_; \
+    } \
+    constexpr bool operator != ( const classType& other ) const noexcept \
+    { \
+        return unknown_ != other.unknown_; \
+    } \
+    constexpr bool operator == ( const interfaceType* other ) const noexcept \
+    { \
+        return unknown_ == other; \
+    } \
+    constexpr bool operator != ( const interfaceType* other ) const noexcept \
+    { \
+        return unknown_ != other; \
     } 
 
+/*
+    constexpr bool operator == ( nullptr_t ) const noexcept \
+    { \
+        return unknown_ == nullptr; \
+    } \
+    constexpr bool operator != ( nullptr_t ) const noexcept \
+    { \
+        return unknown_ != nullptr; \
+    }
+*/
 
 #define HCC_COM_STANDARD_METHODS_IMPL2( classType, baseClassType ) HCC_COM_STANDARD_METHODS_IMPL(classType, baseClassType,I##classType, I##baseClassType)
 
@@ -528,7 +574,82 @@ public: \
 
     
 
+    namespace Com
+    {
+        template<typename T>
+            requires std::is_base_of_v<Unknown, T>
+        class Attached : public T
+        { 
+        public:
+            using Base = T;
+            using InterfaceType = typename Base::InterfaceType;
+        protected:
+            using Base::unknown_;
+        public:
+            Attached()
+                : Base()
+            { }
 
+            explicit Attached( InterfaceType* itf  )
+                : Base( itf, false )
+            {
+            }
+
+            Attached( const Attached& other )
+            {
+                unknown_ = other.unknown_;
+            }
+
+            Attached( Attached&& other ) noexcept
+            {
+                std::swap(unknown_, other.unknown_);
+            }
+
+            Attached( const Base& other )
+            {
+                unknown_ = other.unknown_;
+            }
+
+            ~Attached( )
+            {
+                unknown_ = nullptr;
+            }
+
+
+            Attached& operator = ( const Attached& other )
+            {
+                unknown_ = other.unknown_;
+                return *this;
+            }
+
+            Attached& operator = ( Attached&& other ) noexcept
+            {
+                std::swap( unknown_, other.unknown_ );
+                return *this;
+            }
+
+            Attached& operator = ( const Base& other )
+            {
+                unknown_ = other.unknown_;
+                return *this;
+            }
+
+            constexpr bool operator == ( const Attached& other ) const noexcept
+            {
+                return unknown_ == other.unknown_;
+            }
+            constexpr bool operator == ( const Base& other ) const noexcept
+            {
+                return unknown_ == other.unknown_;
+            }
+            constexpr bool operator == ( const InterfaceType* other ) const noexcept
+            {
+                return unknown_ == other;
+            }
+        };
+    }
+
+    
 
     template<typename DerivedT, typename InterfaceT, typename ...InterfaceTypes >
     class __declspec( novtable ) IUnknownImplementation : public InterfaceT

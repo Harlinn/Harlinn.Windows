@@ -21,11 +21,11 @@ namespace Harlinn::Windows::DirectX::MiniEngine
 
     namespace DepthOfField
     {
-        extern BoolVar Enable;
+        HDMC_EXPORT extern BoolVar Enable;
 
-        void Initialize( void );
-        void Shutdown( void );
+        HDMC_EXPORT void Initialize( void );
+        HDMC_EXPORT void Shutdown( void );
 
-        void Render( CommandContext& BaseContext, float NearClipDist, float FarClipDist );
+        HDMC_EXPORT void Render( CommandContext& BaseContext, float NearClipDist, float FarClipDist );
     }
 }

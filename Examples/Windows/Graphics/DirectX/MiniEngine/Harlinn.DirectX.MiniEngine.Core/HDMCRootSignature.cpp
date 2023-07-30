@@ -22,10 +22,8 @@ namespace Harlinn::Windows::DirectX::MiniEngine
 
 
     using namespace Graphics;
-    using namespace std;
-    using Microsoft::WRL::ComPtr;
 
-    static std::map< size_t, ComPtr<ID3D12RootSignature> > s_RootSignatureHashMap;
+    static std::map< size_t, D3D12RootSignature > s_RootSignatureHashMap;
 
     void RootSignature::DestroyAll( void )
     {
@@ -136,39 +134,40 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         ID3D12RootSignature** RSRef = nullptr;
         bool firstCompile = false;
         {
-            static mutex s_HashMapMutex;
-            lock_guard<mutex> CS( s_HashMapMutex );
+            static std::mutex s_HashMapMutex;
+            std::lock_guard CS( s_HashMapMutex );
             auto iter = s_RootSignatureHashMap.find( HashCode );
 
             // Reserve space so the next inquiry will find that someone got here first.
             if ( iter == s_RootSignatureHashMap.end( ) )
             {
-                RSRef = s_RootSignatureHashMap[ HashCode ].GetAddressOf( );
+                RSRef = reinterpret_cast< ID3D12RootSignature** >(&s_RootSignatureHashMap[ HashCode ] );
                 firstCompile = true;
             }
             else
-                RSRef = iter->second.GetAddressOf( );
+                RSRef = reinterpret_cast< ID3D12RootSignature** >( &iter->second );
         }
 
         if ( firstCompile )
         {
-            ComPtr<ID3DBlob> pOutBlob, pErrorBlob;
+            D3DBlob pOutBlob, pErrorBlob;
 
             ASSERT_SUCCEEDED( D3D12SerializeRootSignature( &RootDesc, D3D_ROOT_SIGNATURE_VERSION_1,
-                pOutBlob.GetAddressOf( ), pErrorBlob.GetAddressOf( ) ) );
+                reinterpret_cast<ID3DBlob** >( &pOutBlob ), reinterpret_cast< ID3DBlob** >( &pErrorBlob ) ) );
 
-            g_Device.CreateRootSignature( 1, pOutBlob->GetBufferPointer( ), pOutBlob->GetBufferSize( ),
-                MY_IID_PPV_ARGS( &m_Signature ) );
+            m_Signature = g_Device.CreateRootSignature( 1, pOutBlob.GetBufferPointer( ), pOutBlob.GetBufferSize( ));
 
-            m_Signature->SetName( name.c_str( ) );
+            m_Signature.SetName( name.c_str( ) );
 
-            s_RootSignatureHashMap[ HashCode ].Attach( m_Signature );
-            ASSERT( *RSRef == m_Signature );
+            s_RootSignatureHashMap[ HashCode ] = m_Signature;
+            ASSERT( m_Signature == *RSRef );
         }
         else
         {
             while ( *RSRef == nullptr )
-                this_thread::yield( );
+            {
+                Harlinn::Common::Core::CurrentThread::Yield( );
+            }
             m_Signature = *RSRef;
         }
 

@@ -32,7 +32,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         sm_DescriptorHeapPool.clear( );
     }
 
-    ID3D12DescriptorHeap* DescriptorAllocator::RequestNewHeap( D3D12_DESCRIPTOR_HEAP_TYPE Type )
+    D3D12DescriptorHeap DescriptorAllocator::RequestNewHeap( D3D12_DESCRIPTOR_HEAP_TYPE Type )
     {
         std::lock_guard<std::mutex> LockGuard( sm_AllocationMutex );
 
@@ -52,7 +52,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         if ( m_CurrentHeap == nullptr || m_RemainingFreeHandles < Count )
         {
             m_CurrentHeap = RequestNewHeap( m_Type );
-            m_CurrentHandle = m_CurrentHeap->GetCPUDescriptorHandleForHeapStart( );
+            m_CurrentHandle = m_CurrentHeap.GetCPUDescriptorHandleForHeapStart( );
             m_RemainingFreeHandles = sm_NumDescriptorsPerHeap;
 
             if ( m_DescriptorSize == 0 )

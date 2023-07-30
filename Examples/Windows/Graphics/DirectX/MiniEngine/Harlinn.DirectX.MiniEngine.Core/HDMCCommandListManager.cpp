@@ -41,10 +41,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine
 
         CloseHandle( m_FenceEventHandle );
 
-        m_pFence->Release( );
         m_pFence = nullptr;
-
-        m_CommandQueue->Release( );
         m_CommandQueue = nullptr;
     }
 
@@ -68,7 +65,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         m_CopyQueue.Shutdown( );
     }
 
-    void CommandQueue::Create( ID3D12Device* pDevice )
+    void CommandQueue::Create( const D3D12Device& pDevice )
     {
         ASSERT( pDevice != nullptr );
         ASSERT( !IsReady( ) );
@@ -77,13 +74,13 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         D3D12_COMMAND_QUEUE_DESC QueueDesc = {};
         QueueDesc.Type = m_Type;
         QueueDesc.NodeMask = 1;
-        pDevice->CreateCommandQueue( &QueueDesc, MY_IID_PPV_ARGS( &m_CommandQueue ) );
-        m_CommandQueue->SetName( L"CommandListManager::m_CommandQueue" );
+        m_CommandQueue = pDevice.CreateCommandQueue( QueueDesc );
+        m_CommandQueue.SetName( L"CommandListManager::m_CommandQueue" );
 
-        auto hr = pDevice->CreateFence( 0, D3D12_FENCE_FLAG_NONE, MY_IID_PPV_ARGS( &m_pFence ) );
-        CheckHRESULT( hr );
-        m_pFence->SetName( L"CommandListManager::m_pFence" );
-        m_pFence->Signal( ( uint64_t )m_Type << 56 );
+        m_pFence = pDevice.CreateFence( 0, D3D12_FENCE_FLAG_NONE );
+        
+        m_pFence.SetName( L"CommandListManager::m_pFence" );
+        m_pFence.Signal( ( uint64_t )m_Type << 56 );
 
         m_FenceEventHandle = CreateEvent( nullptr, false, false, nullptr );
         ASSERT( m_FenceEventHandle != NULL );
@@ -93,7 +90,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         ASSERT( IsReady( ) );
     }
 
-    void CommandListManager::Create( ID3D12Device* pDevice )
+    void CommandListManager::Create( const D3D12Device& pDevice )
     {
         ASSERT( pDevice != nullptr );
 
@@ -104,7 +101,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         m_CopyQueue.Create( pDevice );
     }
 
-    void CommandListManager::CreateNewCommandList( D3D12_COMMAND_LIST_TYPE Type, ID3D12GraphicsCommandList** List, ID3D12CommandAllocator** Allocator )
+    void CommandListManager::CreateNewCommandList( D3D12_COMMAND_LIST_TYPE Type, D3D12GraphicsCommandList* List, D3D12CommandAllocator* Allocator )
     {
         ASSERT( Type != D3D12_COMMAND_LIST_TYPE_BUNDLE, "Bundles are not yet supported" );
         switch ( Type )
@@ -115,23 +112,22 @@ namespace Harlinn::Windows::DirectX::MiniEngine
             case D3D12_COMMAND_LIST_TYPE_COPY: *Allocator = m_CopyQueue.RequestAllocator( ); break;
         }
 
-        auto hr = m_Device->CreateCommandList( 1, Type, *Allocator, nullptr, MY_IID_PPV_ARGS( List ) );
-        CheckHRESULT( hr );
-        ( *List )->SetName( L"CommandList" );
+        *List = m_Device.CreateCommandList( 1, Type, *Allocator );
+        
+        List->SetName( L"CommandList" );
     }
 
-    uint64_t CommandQueue::ExecuteCommandList( ID3D12CommandList* List )
+    uint64_t CommandQueue::ExecuteCommandList( const D3D12GraphicsCommandList& List )
     {
         std::lock_guard<std::mutex> LockGuard( m_FenceMutex );
 
-        auto hr = ( ( ID3D12GraphicsCommandList* )List )->Close( );
-        CheckHRESULT( hr );
+        List.Close( );
 
         // Kickoff the command list
-        m_CommandQueue->ExecuteCommandLists( 1, &List );
+        m_CommandQueue.ExecuteCommandLists( List );
 
         // Signal the next fence value (with the GPU)
-        m_CommandQueue->Signal( m_pFence, m_NextFenceValue );
+        m_CommandQueue.Signal( m_pFence, m_NextFenceValue );
 
         // And increment the fence value.  
         return m_NextFenceValue++;
@@ -140,7 +136,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine
     uint64_t CommandQueue::IncrementFence( void )
     {
         std::lock_guard<std::mutex> LockGuard( m_FenceMutex );
-        m_CommandQueue->Signal( m_pFence, m_NextFenceValue );
+        m_CommandQueue.Signal( m_pFence, m_NextFenceValue );
         return m_NextFenceValue++;
     }
 
@@ -150,7 +146,9 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         // The max() is to protect against an unlikely race condition that could cause the last
         // completed fence value to regress.
         if ( FenceValue > m_LastCompletedFenceValue )
-            m_LastCompletedFenceValue = std::max( m_LastCompletedFenceValue, m_pFence->GetCompletedValue( ) );
+        {
+            m_LastCompletedFenceValue = std::max( m_LastCompletedFenceValue, m_pFence.GetCompletedValue( ) );
+        }
 
         return FenceValue <= m_LastCompletedFenceValue;
     }
@@ -163,13 +161,13 @@ namespace Harlinn::Windows::DirectX::MiniEngine
     void CommandQueue::StallForFence( uint64_t FenceValue )
     {
         CommandQueue& Producer = Graphics::g_CommandManager.GetQueue( ( D3D12_COMMAND_LIST_TYPE )( FenceValue >> 56 ) );
-        m_CommandQueue->Wait( Producer.m_pFence, FenceValue );
+        m_CommandQueue.Wait( Producer.m_pFence, FenceValue );
     }
 
     void CommandQueue::StallForProducer( CommandQueue& Producer )
     {
         ASSERT( Producer.m_NextFenceValue > 0 );
-        m_CommandQueue->Wait( Producer.m_pFence, Producer.m_NextFenceValue - 1 );
+        m_CommandQueue.Wait( Producer.m_pFence, Producer.m_NextFenceValue - 1 );
     }
 
     void CommandQueue::WaitForFence( uint64_t FenceValue )
@@ -184,7 +182,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         {
             std::lock_guard<std::mutex> LockGuard( m_EventMutex );
 
-            m_pFence->SetEventOnCompletion( FenceValue, m_FenceEventHandle );
+            m_pFence.SetEventOnCompletion( FenceValue, m_FenceEventHandle );
             WaitForSingleObject( m_FenceEventHandle, INFINITE );
             m_LastCompletedFenceValue = FenceValue;
         }
@@ -196,14 +194,14 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         Producer.WaitForFence( FenceValue );
     }
 
-    ID3D12CommandAllocator* CommandQueue::RequestAllocator( )
+    D3D12CommandAllocator CommandQueue::RequestAllocator( )
     {
-        uint64_t CompletedFence = m_pFence->GetCompletedValue( );
+        uint64_t CompletedFence = m_pFence.GetCompletedValue( );
 
         return m_AllocatorPool.RequestAllocator( CompletedFence );
     }
 
-    void CommandQueue::DiscardAllocator( uint64_t FenceValue, ID3D12CommandAllocator* Allocator )
+    void CommandQueue::DiscardAllocator( uint64_t FenceValue, const D3D12CommandAllocator& Allocator )
     {
         m_AllocatorPool.DiscardAllocator( FenceValue, Allocator );
     }

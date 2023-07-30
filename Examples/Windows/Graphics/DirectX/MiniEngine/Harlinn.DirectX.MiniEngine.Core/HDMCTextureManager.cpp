@@ -138,11 +138,12 @@ namespace Harlinn::Windows::DirectX::MiniEngine
             // We probably have a texture to load, so let's allocate a new descriptor
             m_hCpuDescriptorHandle = AllocateDescriptor( D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV );
 
-            if ( SUCCEEDED( CreateDDSTextureFromMemory( g_Device, ( const uint8_t* )ba->data( ), ba->size( ),
-                0, forceSRGB, &m_pResource, m_hCpuDescriptorHandle ) ) )
+            m_pResource = CreateDDSTextureFromMemory( g_Device, ( const uint8_t* )ba->data( ), ba->size( ), 0, forceSRGB, m_hCpuDescriptorHandle );
+
+            if ( m_pResource )
             {
                 m_IsValid = true;
-                D3D12_RESOURCE_DESC desc = GetResource( )->GetDesc( );
+                D3D12_RESOURCE_DESC desc = GetResource( ).GetDesc( );
                 m_Width = ( uint32_t )desc.Width;
                 m_Height = desc.Height;
                 m_Depth = desc.DepthOrArraySize;

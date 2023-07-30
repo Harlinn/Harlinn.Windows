@@ -978,11 +978,12 @@ namespace Harlinn::Windows::DXGI
 
         template<typename SwapChainT = SwapChain1,typename CommandQueueT = Windows::Graphics::D3D12CommandQueue>
             requires (std::is_base_of_v<SwapChain1, SwapChainT> && std::is_base_of_v<Windows::Graphics::D3D12CommandQueue, CommandQueueT>)
-        SwapChainT CreateSwapChainForHwnd( const Windows::Graphics::D3D12CommandQueue& commandQueue, HWND hWnd, const DXGI_SWAP_CHAIN_DESC1* pDesc ) const
+        SwapChainT CreateSwapChainForHwnd( const CommandQueueT& commandQueue, HWND hWnd, const DXGI_SWAP_CHAIN_DESC1* pDesc, const DXGI_SWAP_CHAIN_FULLSCREEN_DESC* fullscreenDesc = nullptr, IDXGIOutput* pRestrictToOutput = nullptr ) const
         {
             IDXGISwapChain1* pSwapChain = nullptr;
             auto* pInterface = GetInterface( );
-            auto hr = pInterface->CreateSwapChainForHwnd( commandQueue, hWnd, pDesc, nullptr, nullptr, &pSwapChain );
+            IUnknown* pDevice = commandQueue.GetInterfacePointer<IUnknown>();
+            auto hr = pInterface->CreateSwapChainForHwnd( pDevice, hWnd, pDesc, fullscreenDesc, pRestrictToOutput, &pSwapChain );
             CheckHRESULT( hr );
             SwapChain1 swapChain1( pSwapChain );
             if constexpr ( std::is_same_v< SwapChainT, SwapChain1> )
@@ -1440,6 +1441,15 @@ namespace Harlinn::Windows::DXGI
             Factory4 result( factory );
             return result;
         }
+        static Factory4 Create( UINT flags )
+        {
+            InterfaceType* factory = nullptr;
+            auto hr = CreateDXGIFactory2( flags, __uuidof( InterfaceType ), ( void** )&factory );
+            CheckHRESULT( hr );
+            Factory4 result( factory );
+            return result;
+        }
+
     public:
         void EnumAdapterByLuid( LUID AdapterLuid, REFIID riid, void** ppvAdapter ) const
         {
@@ -1448,12 +1458,36 @@ namespace Harlinn::Windows::DXGI
             CheckHRESULT( hr );
         }
 
+        template<typename T = Adapter>
+            requires std::is_base_of_v<Adapter,T>
+        T EnumAdapterByLuid( LUID AdapterLuid ) const
+        {
+            using ItfT = typename T::InterfaceType;
+            constexpr auto riid = __uuidof( ItfT );
+            ItfT* ptr = nullptr;
+            EnumAdapterByLuid( AdapterLuid, riid, reinterpret_cast< void** >( &ptr ) );
+            return T( ptr );
+        }
+
+
         void EnumWarpAdapter( REFIID riid, void** ppvAdapter ) const
         {
             auto* pInterface = GetInterface( );
             auto hr = pInterface->EnumWarpAdapter( riid, ppvAdapter );
             CheckHRESULT( hr );
         }
+
+        template<typename T = Adapter>
+            requires std::is_base_of_v<Adapter, T>
+        T EnumWarpAdapter( ) const
+        {
+            using ItfT = typename T::InterfaceType;
+            constexpr auto riid = __uuidof( ItfT );
+            ItfT* ptr = nullptr;
+            EnumWarpAdapter( riid, reinterpret_cast< void** >( &ptr ) );
+            return T( ptr );
+        }
+
     };
 
     class Adapter3 : public Adapter2

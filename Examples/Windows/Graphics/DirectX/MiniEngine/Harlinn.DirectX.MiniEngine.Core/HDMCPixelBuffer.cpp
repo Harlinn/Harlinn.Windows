@@ -312,14 +312,14 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         }
     }
 
-    void PixelBuffer::AssociateWithResource( ID3D12Device* Device, const std::wstring& Name, ID3D12Resource* Resource, D3D12_RESOURCE_STATES CurrentState )
+    void PixelBuffer::AssociateWithResource( const D3D12Device& Device, const std::wstring& Name, const D3D12Resource& Resource, D3D12_RESOURCE_STATES CurrentState )
     {
         ( Device ); // Unused until we support multiple adapters
 
         ASSERT( Resource != nullptr );
-        D3D12_RESOURCE_DESC ResourceDesc = Resource->GetDesc( );
+        D3D12_RESOURCE_DESC ResourceDesc = Resource.GetDesc( );
 
-        m_pResource.ResetPtr( Resource );
+        m_pResource = Resource;
         m_UsageState = CurrentState;
 
         m_Width = ( uint32_t )ResourceDesc.Width;		// We don't care about large virtual textures yet
@@ -357,7 +357,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         return Desc;
     }
 
-    void PixelBuffer::CreateTextureResource( ID3D12Device* Device, const std::wstring& Name,
+    void PixelBuffer::CreateTextureResource( const D3D12Device& Device, const std::wstring& Name,
         const D3D12_RESOURCE_DESC& ResourceDesc, D3D12_CLEAR_VALUE ClearValue, D3D12_GPU_VIRTUAL_ADDRESS VidMemPtr )
     {
         Destroy( );
@@ -366,8 +366,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine
 
         {
             CD3DX12_HEAP_PROPERTIES HeapProps( D3D12_HEAP_TYPE_DEFAULT );
-            ASSERT_SUCCEEDED( Device->CreateCommittedResource( &HeapProps, D3D12_HEAP_FLAG_NONE,
-                &ResourceDesc, D3D12_RESOURCE_STATE_COMMON, &ClearValue, MY_IID_PPV_ARGS( &m_pResource ) ) );
+            m_pResource = Device.CreateCommittedResource( &HeapProps, D3D12_HEAP_FLAG_NONE, &ResourceDesc, D3D12_RESOURCE_STATE_COMMON, &ClearValue );
         }
 
         m_UsageState = D3D12_RESOURCE_STATE_COMMON;
@@ -380,7 +379,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine
 #endif
     }
 
-    void PixelBuffer::CreateTextureResource( ID3D12Device* Device, const std::wstring& Name,
+    void PixelBuffer::CreateTextureResource( const D3D12Device& Device, const std::wstring& Name,
         const D3D12_RESOURCE_DESC& ResourceDesc, D3D12_CLEAR_VALUE ClearValue, EsramAllocator& Allocator )
     {
         ( Allocator );

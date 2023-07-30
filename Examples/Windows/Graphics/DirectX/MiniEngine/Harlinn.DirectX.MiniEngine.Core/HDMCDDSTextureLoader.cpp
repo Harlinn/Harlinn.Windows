@@ -1193,7 +1193,8 @@ static HRESULT CreateTextureFromDDS( _In_ ID3D12Device* d3dDevice,
 
         if (SUCCEEDED(hr))
         {
-            GpuResource DestTexture(*texture, D3D12_RESOURCE_STATE_COPY_DEST);
+            D3D12Resource textureResource( *texture, true );
+            GpuResource DestTexture( textureResource, D3D12_RESOURCE_STATE_COPY_DEST,true);
             CommandContext::InitializeTexture(DestTexture, subresourceCount, initData.get());
         }
     }
@@ -1232,20 +1233,15 @@ static DDS_ALPHA_MODE GetAlphaMode( _In_ const DDS_HEADER* header )
 
 
 _Use_decl_annotations_
-HRESULT CreateDDSTextureFromMemory(
-    ID3D12Device* d3dDevice,
+D3D12Resource CreateDDSTextureFromMemory(
+    const D3D12Device& d3dDevice,
     const uint8_t* ddsData,
     size_t ddsDataSize,
     size_t maxsize,
     bool forceSRGB,
-    ID3D12Resource** texture,
     D3D12_CPU_DESCRIPTOR_HANDLE textureView,
     DDS_ALPHA_MODE* alphaMode )
 {
-    if ( texture )
-    {
-        *texture = nullptr;
-    }
 
     if ( alphaMode )
     {
@@ -1254,19 +1250,19 @@ HRESULT CreateDDSTextureFromMemory(
 
     if (!d3dDevice || !ddsData)
     {
-        return E_INVALIDARG;
+        CheckHRESULT( E_INVALIDARG );
     }
 
     // Validate DDS file in memory
     if (ddsDataSize < (sizeof(uint32_t) + sizeof(DDS_HEADER)))
     {
-        return E_FAIL;
+        CheckHRESULT( E_FAIL );
     }
 
     uint32_t dwMagicNumber = *( const uint32_t* )( ddsData );
     if (dwMagicNumber != DDS_MAGIC)
     {
-        return E_FAIL;
+        CheckHRESULT( E_FAIL );
     }
 
     auto header = reinterpret_cast<const DDS_HEADER*>( ddsData + sizeof( uint32_t ) );
@@ -1275,7 +1271,7 @@ HRESULT CreateDDSTextureFromMemory(
     if (header->size != sizeof(DDS_HEADER) ||
         header->ddspf.size != sizeof(DDS_PIXELFORMAT))
     {
-        return E_FAIL;
+        CheckHRESULT( E_FAIL );
     }
 
     size_t offset = sizeof(DDS_HEADER) + sizeof(uint32_t);
@@ -1288,41 +1284,39 @@ HRESULT CreateDDSTextureFromMemory(
     }
 
     // Must be long enough for all headers and magic value
-    if (ddsDataSize < offset)
-        return E_FAIL;
-
-    HRESULT hr = CreateTextureFromDDS( d3dDevice,
-                                       header, ddsData + offset, ddsDataSize - offset, maxsize,
-                                       forceSRGB, texture, textureView );
-    if ( SUCCEEDED(hr) )
+    if ( ddsDataSize < offset )
     {
-        if (texture != nullptr && *texture != nullptr)
-        {
-            (*texture)->SetName(L"DDSTextureLoader");
-        }
-
-        if ( alphaMode )
-            *alphaMode = GetAlphaMode( header );
+        CheckHRESULT( E_FAIL );
     }
 
-    return hr;
+    ID3D12Resource* texture = nullptr;
+
+    HRESULT hr = CreateTextureFromDDS( d3dDevice.GetInterfacePointer<ID3D12Device>(),
+                                       header, ddsData + offset, ddsDataSize - offset, maxsize,
+                                       forceSRGB, &texture, textureView );
+    CheckHRESULT( hr );
+    D3D12Resource result( texture );
+        
+    result.SetName(L"DDSTextureLoader");
+        
+
+    if ( alphaMode )
+    {
+        *alphaMode = GetAlphaMode( header );
+    }
+    return result;
 }
 
 
 _Use_decl_annotations_
-HRESULT CreateDDSTextureFromFile(
-    ID3D12Device* d3dDevice,
+D3D12Resource CreateDDSTextureFromFile(
+    const D3D12Device& d3dDevice,
     const wchar_t* fileName,
     size_t maxsize,
     bool forceSRGB,
-    ID3D12Resource** texture,
     D3D12_CPU_DESCRIPTOR_HANDLE textureView,
     DDS_ALPHA_MODE* alphaMode )
 {
-    if ( texture )
-    {
-        *texture = nullptr;
-    }
 
     if ( alphaMode )
     {
@@ -1331,7 +1325,7 @@ HRESULT CreateDDSTextureFromFile(
 
     if (!d3dDevice || !fileName)
     {
-        return E_INVALIDARG;
+        CheckHRESULT( E_INVALIDARG );
     }
 
     DDS_HEADER* header = nullptr;
@@ -1340,21 +1334,21 @@ HRESULT CreateDDSTextureFromFile(
 
     std::unique_ptr<uint8_t[]> ddsData;
     HRESULT hr = LoadTextureDataFromFile( fileName, ddsData, &header, &bitData, &bitSize );
-    if (FAILED(hr))
-    {
-        return hr;
-    }
+    CheckHRESULT( hr );
 
-    hr = CreateTextureFromDDS( d3dDevice,
+    ID3D12Resource* texture = nullptr;
+    hr = CreateTextureFromDDS( d3dDevice.GetInterfacePointer<ID3D12Device>( ),
                                header, bitData, bitSize, maxsize,
-                               forceSRGB, texture, textureView );
+                               forceSRGB, &texture, textureView );
+
+    CheckHRESULT( hr );
+    D3D12Resource result( texture );
 
     if ( alphaMode )
         *alphaMode = GetAlphaMode( header );
 
-    if (SUCCEEDED(hr))
-        (*texture)->SetName(fileName);
+    result.SetName(fileName);
 
-    return hr;
+    return result;
 }
 }

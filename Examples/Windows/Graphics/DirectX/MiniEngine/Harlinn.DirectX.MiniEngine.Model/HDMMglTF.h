@@ -247,7 +247,7 @@ namespace glTF
         Asset(const std::wstring& filepath) : m_scene(nullptr) { Parse(filepath); }
         ~Asset() { m_meshes.clear(); }
 
-        void Parse(const std::wstring& filepath);
+        HDMM_EXPORT void Parse(const std::wstring& filepath);
 
         Scene* m_scene;
         std::wstring m_basePath;

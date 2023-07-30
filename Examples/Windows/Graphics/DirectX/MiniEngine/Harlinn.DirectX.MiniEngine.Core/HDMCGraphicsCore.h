@@ -34,9 +34,9 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         HDMC_EXPORT void Initialize( bool RequireDXRSupport = false );
         HDMC_EXPORT void Shutdown( void );
 
-        HDMC_EXPORT bool IsDeviceNvidia( ID3D12Device* pDevice );
-        HDMC_EXPORT bool IsDeviceAMD( ID3D12Device* pDevice );
-        HDMC_EXPORT bool IsDeviceIntel( ID3D12Device* pDevice );
+        HDMC_EXPORT bool IsDeviceNvidia( const D3D12Device& pDevice );
+        HDMC_EXPORT bool IsDeviceAMD( const D3D12Device& pDevice );
+        HDMC_EXPORT bool IsDeviceIntel( const D3D12Device& pDevice );
 
         HDMC_EXPORT extern D3D12Device g_Device;
         HDMC_EXPORT extern CommandListManager g_CommandManager;

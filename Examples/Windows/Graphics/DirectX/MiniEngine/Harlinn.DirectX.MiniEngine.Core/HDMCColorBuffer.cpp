@@ -22,7 +22,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine
 
     using namespace Graphics;
 
-    void ColorBuffer::CreateDerivedViews( ID3D12Device* Device, DXGI_FORMAT Format, uint32_t ArraySize, uint32_t NumMips )
+    void ColorBuffer::CreateDerivedViews( const D3D12Device& device, DXGI_FORMAT Format, uint32_t ArraySize, uint32_t NumMips )
     {
         ASSERT( ArraySize == 1 || NumMips == 1, "We don't support auto-mips on texture arrays" );
 
@@ -80,10 +80,10 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         }
 
         // Create the render target view
-        Device->CreateRenderTargetView( m_pResource, &RTVDesc, m_RTVHandle );
+        device.CreateRenderTargetView( m_pResource, RTVDesc, m_RTVHandle );
 
         // Create the shader resource view
-        Device->CreateShaderResourceView( m_pResource, &SRVDesc, m_SRVHandle );
+        device.CreateShaderResourceView( m_pResource, SRVDesc, m_SRVHandle );
 
         if ( m_FragmentCount > 1 )
             return;
@@ -94,13 +94,13 @@ namespace Harlinn::Windows::DirectX::MiniEngine
             if ( m_UAVHandle[ i ].ptr == D3D12_GPU_VIRTUAL_ADDRESS_UNKNOWN )
                 m_UAVHandle[ i ] = Graphics::AllocateDescriptor( D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV );
 
-            Device->CreateUnorderedAccessView( m_pResource, nullptr, &UAVDesc, m_UAVHandle[ i ] );
+            device.CreateUnorderedAccessView( m_pResource, &UAVDesc, m_UAVHandle[ i ] );
 
             UAVDesc.Texture2D.MipSlice++;
         }
     }
 
-    void ColorBuffer::CreateFromSwapChain( const std::wstring& Name, ID3D12Resource* BaseResource )
+    void ColorBuffer::CreateFromSwapChain( const std::wstring& Name, const D3D12Resource& BaseResource )
     {
         AssociateWithResource( Graphics::g_Device, Name, BaseResource, D3D12_RESOURCE_STATE_PRESENT );
 

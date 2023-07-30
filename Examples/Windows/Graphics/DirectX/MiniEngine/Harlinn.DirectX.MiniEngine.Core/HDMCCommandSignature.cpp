@@ -69,7 +69,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine
 
         Microsoft::WRL::ComPtr<ID3DBlob> pOutBlob, pErrorBlob;
 
-        ID3D12RootSignature* pRootSig = RootSignature ? RootSignature->GetSignature( ) : nullptr;
+        D3D12RootSignature pRootSig = RootSignature ? RootSignature->GetSignature( ) : D3D12RootSignature();
         if ( RequiresRootSignature )
         {
             ASSERT( pRootSig != nullptr );
@@ -79,9 +79,9 @@ namespace Harlinn::Windows::DirectX::MiniEngine
             pRootSig = nullptr;
         }
 
-        g_Device.CreateCommandSignature( &CommandSignatureDesc, pRootSig, MY_IID_PPV_ARGS( &m_Signature ) );
+        m_Signature = g_Device.CreateCommandSignature( &CommandSignatureDesc, pRootSig );
 
-        m_Signature->SetName( L"CommandSignature" );
+        m_Signature.SetName( L"CommandSignature" );
 
         m_Finalized = TRUE;
     }

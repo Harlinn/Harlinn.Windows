@@ -53,7 +53,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine
 
     namespace Graphics
     {
-        extern EnumVar DebugZoom;
+        HDMC_EXPORT extern EnumVar DebugZoom;
     }
 
     void FlyingFPSCamera::Update( float deltaTime )

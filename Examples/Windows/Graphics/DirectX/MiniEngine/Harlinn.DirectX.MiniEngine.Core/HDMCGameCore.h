@@ -20,7 +20,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine
     class GraphicsContext;
     namespace GameCore
     {
-        extern bool gIsSupending;
+        HDMC_EXPORT extern bool gIsSupending;
 
         class IGameApp
         {
@@ -32,7 +32,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine
             virtual void Cleanup( void ) = 0;
 
             // Decide if you want the app to exit.  By default, app continues until the 'ESC' key is pressed.
-            virtual bool IsDone( void );
+            HDMC_EXPORT virtual bool IsDone( void );
 
             // The update method will be invoked once per frame.  Both state updating and scene
             // rendering should be handled by this method.
@@ -42,16 +42,20 @@ namespace Harlinn::Windows::DirectX::MiniEngine
             virtual void RenderScene( void ) = 0;
 
             // Optional UI (overlay) rendering pass.  This is LDR.  The buffer is already cleared.
-            virtual void RenderUI( GraphicsContext& ) {};
+            virtual void RenderUI( GraphicsContext& ) 
+            {};
 
             // Override this in applications that use DirectX Raytracing to require a DXR-capable device.
-            virtual bool RequiresRaytracingSupport( ) const { return false; }
+            virtual bool RequiresRaytracingSupport( ) const 
+            { 
+                return false; 
+            }
         };
     }
 
     namespace GameCore
     {
-        int RunApplication( IGameApp& app, const wchar_t* className, HINSTANCE hInst, int nCmdShow );
+        HDMC_EXPORT int RunApplication( IGameApp& app, const wchar_t* className, HINSTANCE hInst, int nCmdShow );
     }
 
 #define CREATE_APPLICATION( app_class ) \

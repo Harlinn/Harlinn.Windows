@@ -474,7 +474,8 @@ namespace Harlinn::Common::Core
 
         void WriteClassId( REFCLSID rclsid ) const
         {
-            auto hr = WriteClassStm( *this, rclsid );
+            auto pInterface = GetInterface( );
+            auto hr = WriteClassStm( pInterface, rclsid );
             if ( FAILED( hr ) )
             {
                 CheckHRESULT( hr );
@@ -483,8 +484,9 @@ namespace Harlinn::Common::Core
 
         CLSID ReadClassId( ) const
         {
+            auto pInterface = GetInterface( );
             CLSID result = { 0, };
-            auto hr = ReadClassStm( *this, &result );
+            auto hr = ReadClassStm( pInterface, &result );
             if ( FAILED( hr ) )
             {
                 CheckHRESULT( hr );

@@ -35,21 +35,22 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         DDS_ALPHA_MODE_CUSTOM = 4,
     };
 
-    HRESULT __cdecl CreateDDSTextureFromMemory( _In_ ID3D12Device* d3dDevice,
+    D3D12Resource __cdecl CreateDDSTextureFromMemory( _In_ const D3D12Device& d3dDevice,
         _In_reads_bytes_( ddsDataSize ) const uint8_t* ddsData,
         _In_ size_t ddsDataSize,
         _In_ size_t maxsize,
         _In_ bool forceSRGB,
-        _Outptr_opt_ ID3D12Resource** texture,
         _In_ D3D12_CPU_DESCRIPTOR_HANDLE textureView,
         _Out_opt_ DDS_ALPHA_MODE* alphaMode = nullptr
     );
 
-    HRESULT __cdecl CreateDDSTextureFromFile( _In_ ID3D12Device* d3dDevice,
+
+
+
+    D3D12Resource __cdecl CreateDDSTextureFromFile( _In_ const D3D12Device& d3dDevice,
         _In_z_ const wchar_t* szFileName,
         _In_ size_t maxsize,
         _In_ bool forceSRGB,
-        _Outptr_opt_ ID3D12Resource** texture,
         _In_ D3D12_CPU_DESCRIPTOR_HANDLE textureView,
         _Out_opt_ DDS_ALPHA_MODE* alphaMode = nullptr
     );

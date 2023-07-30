@@ -65,8 +65,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         HeapProps.CreationNodeMask = 1;
         HeapProps.VisibleNodeMask = 1;
 
-        g_Device.CreateCommittedResource( &HeapProps, D3D12_HEAP_FLAG_NONE, &texDesc,
-            m_UsageState, nullptr, MY_IID_PPV_ARGS( &m_pResource ) );
+        m_pResource = g_Device.CreateCommittedResource( &HeapProps, D3D12_HEAP_FLAG_NONE, &texDesc, m_UsageState, nullptr );
 
         m_pResource.SetName( L"Texture" );
 
@@ -111,8 +110,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         HeapProps.CreationNodeMask = 1;
         HeapProps.VisibleNodeMask = 1;
 
-        g_Device.CreateCommittedResource( &HeapProps, D3D12_HEAP_FLAG_NONE, &texDesc,
-            m_UsageState, nullptr, MY_IID_PPV_ARGS( &m_pResource ) );
+        m_pResource = g_Device.CreateCommittedResource( &HeapProps, D3D12_HEAP_FLAG_NONE, &texDesc, m_UsageState, nullptr );
 
         m_pResource.SetName( L"Texture" );
 
@@ -194,10 +192,9 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         if ( m_hCpuDescriptorHandle.ptr == D3D12_GPU_VIRTUAL_ADDRESS_UNKNOWN )
             m_hCpuDescriptorHandle = AllocateDescriptor( D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV );
 
-        HRESULT hr = CreateDDSTextureFromMemory( Graphics::g_Device,
-            ( const uint8_t* )filePtr, fileSize, 0, sRGB, &m_pResource, m_hCpuDescriptorHandle );
+        m_pResource = CreateDDSTextureFromMemory( Graphics::g_Device, ( const uint8_t* )filePtr, fileSize, 0, sRGB, m_hCpuDescriptorHandle );
 
-        return SUCCEEDED( hr );
+        return true;
     }
 
     void Texture::CreatePIXImageFromMemory( const void* memBuffer, size_t fileSize )

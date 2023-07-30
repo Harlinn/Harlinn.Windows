@@ -21,11 +21,9 @@ namespace Harlinn::Windows::DirectX::MiniEngine
 
     using Math::IsAligned;
     using namespace Graphics;
-    using Microsoft::WRL::ComPtr;
-    using namespace std;
 
-    static map< size_t, ComPtr<ID3D12PipelineState> > s_GraphicsPSOHashMap;
-    static map< size_t, ComPtr<ID3D12PipelineState> > s_ComputePSOHashMap;
+    static std::map< size_t, D3D12PipelineState > s_GraphicsPSOHashMap;
+    static std::map< size_t, D3D12PipelineState > s_ComputePSOHashMap;
 
     void PSO::DestroyAll( void )
     {
@@ -118,7 +116,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine
     void GraphicsPSO::Finalize( )
     {
         // Make sure the root signature is finalized first
-        m_PSODesc.pRootSignature = m_RootSignature->GetSignature( );
+        m_PSODesc.pRootSignature = m_RootSignature->GetSignature( ).GetInterfacePointer< ID3D12RootSignature >();
         ASSERT( m_PSODesc.pRootSignature != nullptr );
 
         m_PSODesc.InputLayout.pInputElementDescs = nullptr;
@@ -129,31 +127,33 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         ID3D12PipelineState** PSORef = nullptr;
         bool firstCompile = false;
         {
-            static mutex s_HashMapMutex;
-            lock_guard<mutex> CS( s_HashMapMutex );
+            static std::mutex s_HashMapMutex;
+            std::lock_guard<std::mutex> CS( s_HashMapMutex );
             auto iter = s_GraphicsPSOHashMap.find( HashCode );
 
             // Reserve space so the next inquiry will find that someone got here first.
             if ( iter == s_GraphicsPSOHashMap.end( ) )
             {
                 firstCompile = true;
-                PSORef = s_GraphicsPSOHashMap[ HashCode ].GetAddressOf( );
+                PSORef = reinterpret_cast< ID3D12PipelineState** >( &s_GraphicsPSOHashMap[ HashCode ] );
             }
             else
-                PSORef = iter->second.GetAddressOf( );
+                PSORef = reinterpret_cast< ID3D12PipelineState** >( &iter->second );
         }
 
         if ( firstCompile )
         {
             ASSERT( m_PSODesc.DepthStencilState.DepthEnable != ( m_PSODesc.DSVFormat == DXGI_FORMAT_UNKNOWN ) );
-            g_Device.CreateGraphicsPipelineState( &m_PSODesc, MY_IID_PPV_ARGS( &m_PSO ) );
-            s_GraphicsPSOHashMap[ HashCode ].Attach( m_PSO );
-            m_PSO->SetName( m_Name );
+            m_PSO = g_Device.CreateGraphicsPipelineState( &m_PSODesc );
+            s_GraphicsPSOHashMap[ HashCode ] = m_PSO;
+            m_PSO.SetName( m_Name );
         }
         else
         {
             while ( *PSORef == nullptr )
-                this_thread::yield( );
+            {
+                Harlinn::Common::Core::CurrentThread::Yield( );
+            }
             m_PSO = *PSORef;
         }
     }
@@ -161,7 +161,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine
     void ComputePSO::Finalize( )
     {
         // Make sure the root signature is finalized first
-        m_PSODesc.pRootSignature = m_RootSignature->GetSignature( );
+        m_PSODesc.pRootSignature = m_RootSignature->GetSignature( ).GetInterfacePointer< ID3D12RootSignature >( );
         ASSERT( m_PSODesc.pRootSignature != nullptr );
 
         size_t HashCode = Utility::HashState( &m_PSODesc );
@@ -169,30 +169,32 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         ID3D12PipelineState** PSORef = nullptr;
         bool firstCompile = false;
         {
-            static mutex s_HashMapMutex;
-            lock_guard<mutex> CS( s_HashMapMutex );
+            static std::mutex s_HashMapMutex;
+            std::lock_guard<std::mutex> CS( s_HashMapMutex );
             auto iter = s_ComputePSOHashMap.find( HashCode );
 
             // Reserve space so the next inquiry will find that someone got here first.
             if ( iter == s_ComputePSOHashMap.end( ) )
             {
                 firstCompile = true;
-                PSORef = s_ComputePSOHashMap[ HashCode ].GetAddressOf( );
+                PSORef = reinterpret_cast< ID3D12PipelineState** >( &s_ComputePSOHashMap[ HashCode ] );
             }
             else
-                PSORef = iter->second.GetAddressOf( );
+                PSORef = reinterpret_cast< ID3D12PipelineState** >( &iter->second );
         }
 
         if ( firstCompile )
         {
-            g_Device.CreateComputePipelineState( &m_PSODesc, MY_IID_PPV_ARGS( &m_PSO ) );
-            s_ComputePSOHashMap[ HashCode ].Attach( m_PSO );
-            m_PSO->SetName( m_Name );
+            m_PSO = g_Device.CreateComputePipelineState( &m_PSODesc );
+            s_ComputePSOHashMap[ HashCode ] = m_PSO;
+            m_PSO.SetName( m_Name );
         }
         else
         {
             while ( *PSORef == nullptr )
-                this_thread::yield( );
+            {
+                Harlinn::Common::Core::CurrentThread::Yield( );
+            }
             m_PSO = *PSORef;
         }
     }

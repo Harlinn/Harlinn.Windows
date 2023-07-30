@@ -26,8 +26,8 @@ namespace Harlinn::Windows::DirectX::MiniEngine
 
     namespace Graphics
     {
-        void InitializeCommonState( void );
-        void DestroyCommonState( void );
+        HDMC_EXPORT void InitializeCommonState( void );
+        HDMC_EXPORT void DestroyCommonState( void );
 
         HDMC_EXPORT extern SamplerDesc SamplerLinearWrapDesc;
         HDMC_EXPORT extern SamplerDesc SamplerAnisoWrapDesc;

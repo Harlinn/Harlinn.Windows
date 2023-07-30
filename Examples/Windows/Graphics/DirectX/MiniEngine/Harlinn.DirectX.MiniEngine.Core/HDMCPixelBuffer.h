@@ -22,6 +22,12 @@ namespace Harlinn::Windows::DirectX::MiniEngine
 
     class PixelBuffer : public GpuResource
     {
+    protected:
+        uint32_t m_Width;
+        uint32_t m_Height;
+        uint32_t m_ArraySize;
+        DXGI_FORMAT m_Format;
+        uint32_t m_BankRotation;
     public:
         PixelBuffer( ) : m_Width( 0 ), m_Height( 0 ), m_ArraySize( 0 ), m_Format( DXGI_FORMAT_UNKNOWN ), m_BankRotation( 0 ) {}
 
@@ -44,12 +50,12 @@ namespace Harlinn::Windows::DirectX::MiniEngine
 
         D3D12_RESOURCE_DESC DescribeTex2D( uint32_t Width, uint32_t Height, uint32_t DepthOrArraySize, uint32_t NumMips, DXGI_FORMAT Format, UINT Flags );
 
-        void AssociateWithResource( ID3D12Device* Device, const std::wstring& Name, ID3D12Resource* Resource, D3D12_RESOURCE_STATES CurrentState );
+        void AssociateWithResource( const D3D12Device& device, const std::wstring& Name, const D3D12Resource& Resource, D3D12_RESOURCE_STATES CurrentState );
 
-        void CreateTextureResource( ID3D12Device* Device, const std::wstring& Name, const D3D12_RESOURCE_DESC& ResourceDesc,
+        void CreateTextureResource( const D3D12Device& Device, const std::wstring& Name, const D3D12_RESOURCE_DESC& ResourceDesc,
             D3D12_CLEAR_VALUE ClearValue, D3D12_GPU_VIRTUAL_ADDRESS VidMemPtr = D3D12_GPU_VIRTUAL_ADDRESS_UNKNOWN );
 
-        void CreateTextureResource( ID3D12Device* Device, const std::wstring& Name, const D3D12_RESOURCE_DESC& ResourceDesc,
+        void CreateTextureResource( const D3D12Device& Device, const std::wstring& Name, const D3D12_RESOURCE_DESC& ResourceDesc,
             D3D12_CLEAR_VALUE ClearValue, EsramAllocator& Allocator );
 
         static DXGI_FORMAT GetBaseFormat( DXGI_FORMAT Format );
@@ -59,10 +65,6 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         static DXGI_FORMAT GetStencilFormat( DXGI_FORMAT Format );
         static size_t BytesPerPixel( DXGI_FORMAT Format );
 
-        uint32_t m_Width;
-        uint32_t m_Height;
-        uint32_t m_ArraySize;
-        DXGI_FORMAT m_Format;
-        uint32_t m_BankRotation;
+        
     };
 }

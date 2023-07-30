@@ -29,9 +29,14 @@ namespace Harlinn::Windows::DirectX::MiniEngine
 
     class PSO
     {
+    protected:
+        const wchar_t* m_Name;
+        const RootSignature* m_RootSignature = nullptr;
+        D3D12PipelineState m_PSO;
     public:
-
-        PSO( const wchar_t* Name ) : m_Name( Name ), m_RootSignature( nullptr ), m_PSO( nullptr ) {}
+        PSO( const wchar_t* Name ) 
+            : m_Name( Name ), m_RootSignature( nullptr ) 
+        {}
 
         HDMC_EXPORT static void DestroyAll( void );
 
@@ -46,21 +51,21 @@ namespace Harlinn::Windows::DirectX::MiniEngine
             return *m_RootSignature;
         }
 
-        ID3D12PipelineState* GetPipelineStateObject( void ) const { return m_PSO; }
+        const D3D12PipelineState& GetPipelineStateObject( void ) const 
+        { 
+            return m_PSO; 
+        }
 
-    protected:
-
-        const wchar_t* m_Name;
-
-        const RootSignature* m_RootSignature;
-
-        ID3D12PipelineState* m_PSO;
+    
     };
 
     class GraphicsPSO : public PSO
     {
         friend class CommandContext;
+    private:
 
+        D3D12_GRAPHICS_PIPELINE_STATE_DESC m_PSODesc;
+        std::shared_ptr<const D3D12_INPUT_ELEMENT_DESC> m_InputLayouts;
     public:
 
         // Start with empty state
@@ -93,10 +98,6 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         // Perform validation and compute a hash value for fast state block comparisons
         HDMC_EXPORT void Finalize( );
 
-    private:
-
-        D3D12_GRAPHICS_PIPELINE_STATE_DESC m_PSODesc;
-        std::shared_ptr<const D3D12_INPUT_ELEMENT_DESC> m_InputLayouts;
     };
 
 
@@ -104,6 +105,8 @@ namespace Harlinn::Windows::DirectX::MiniEngine
     {
         friend class CommandContext;
 
+    private:
+        D3D12_COMPUTE_PIPELINE_STATE_DESC m_PSODesc;
     public:
         HDMC_EXPORT ComputePSO( const wchar_t* Name = L"Unnamed Compute PSO" );
 
@@ -112,8 +115,5 @@ namespace Harlinn::Windows::DirectX::MiniEngine
 
         HDMC_EXPORT void Finalize( );
 
-    private:
-
-        D3D12_COMPUTE_PIPELINE_STATE_DESC m_PSODesc;
     };
 }

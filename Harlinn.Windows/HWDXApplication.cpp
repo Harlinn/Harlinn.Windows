@@ -299,7 +299,7 @@ namespace Harlinn::Windows
         barrier_ = {};
         barrier_.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
         barrier_.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-        barrier_.Transition.pResource = renderTargetResources_[backBufferIdx_];
+        barrier_.Transition.pResource = static_cast<ID3D12Resource*>(renderTargetResources_[backBufferIdx_]);
         barrier_.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
         barrier_.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT;
         barrier_.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;

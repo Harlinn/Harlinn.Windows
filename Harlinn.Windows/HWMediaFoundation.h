@@ -167,7 +167,7 @@ namespace Harlinn::Windows::MF
         {
             auto attributes = MFAttributes::Create(1);
             attributes.SetGUID(MF_DEVSOURCE_ATTRIBUTE_SOURCE_TYPE, sourceType);
-            return DeviceSources(attributes);
+            return DeviceSources(attributes.GetInterfacePointer<IMFAttributes>());
         }
 
         static DeviceSources CreateAudioDeviceSources()

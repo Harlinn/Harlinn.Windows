@@ -246,7 +246,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         srvDesc.Format = DXGI_FORMAT_R32_TYPELESS;
         srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
 
-        Graphics::g_Device.CreateShaderResourceView( const_cast< ID3D12Resource* >( m_GeometryBuffer.GetResource( ) ), &srvDesc, cpuHandle );
+        Graphics::g_Device.CreateShaderResourceView( m_GeometryBuffer.GetResource( ), &srvDesc, cpuHandle );
     }
 
     void ModelH3D::CreateIndexBufferSRV( D3D12_CPU_DESCRIPTOR_HANDLE cpuHandle ) const
@@ -259,7 +259,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         srvDesc.Format = DXGI_FORMAT_R32_TYPELESS;
         srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
 
-        Graphics::g_Device.CreateShaderResourceView( const_cast< ID3D12Resource* >( m_GeometryBuffer.GetResource( ) ), &srvDesc, cpuHandle );
+        Graphics::g_Device.CreateShaderResourceView( m_GeometryBuffer.GetResource( ), &srvDesc, cpuHandle );
     }
 
     bool ModelH3D::SaveH3D( const std::wstring& filename ) const

@@ -194,6 +194,12 @@ namespace Harlinn::Windows
             return result;
         }
 
+        DWORD Advise( const FileDialogEvents& fileDialogEvents )
+        {
+            return Advise( fileDialogEvents.GetInterfacePointer<IFileDialogEvents>( ) );
+        }
+
+
         FileDialog& Unadvise( DWORD dwCookie )
         {
             auto pInterface = GetInterface( );

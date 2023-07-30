@@ -143,7 +143,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Harlinn.Windows;$(SolutionDir)Harlinn.Common.Core;$(BOOST_ROOT);$(SolutionDir)Examples\Windows\Graphics\DirectX\MiniEngine\Harlinn.DirectX.MiniEngine.Core;$(SolutionDir)3rdParty\Harlinn.zlib;$(SolutionDir)3rdParty\Harlinn.nlohmann-json\include;$(SolutionDir)3rdParty\Harlinn.DirectXMesh\include;$(SolutionDir)3rdParty\Harlinn.DirectXTex\include;$(SolutionDir)3rdParty\Harlinn.DirectXMesh\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Harlinn.Windows;$(SolutionDir)Harlinn.Common.Core;$(BOOST_ROOT);$(SolutionDir)Examples\Windows\Graphics\DirectX\MiniEngine\Harlinn.DirectX.MiniEngine.Core;$(SolutionDir)3rdParty\Harlinn.zlib;$(SolutionDir)3rdParty\Harlinn.nlohmann-json\include;$(SolutionDir)3rdParty\Harlinn.DirectXMesh\include;$(SolutionDir)3rdParty\Harlinn.DirectXTex\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -174,7 +174,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Harlinn.Windows;$(SolutionDir)Harlinn.Common.Core;$(BOOST_ROOT);$(SolutionDir)Examples\Windows\Graphics\DirectX\MiniEngine\Harlinn.DirectX.MiniEngine.Core;$(SolutionDir)3rdParty\Harlinn.zlib;$(SolutionDir)3rdParty\Harlinn.nlohmann-json\include;$(SolutionDir)3rdParty\Harlinn.DirectXMesh\include;$(SolutionDir)3rdParty\Harlinn.DirectXTex\include;$(SolutionDir)3rdParty\Harlinn.DirectXMesh\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Harlinn.Windows;$(SolutionDir)Harlinn.Common.Core;$(BOOST_ROOT);$(SolutionDir)Examples\Windows\Graphics\DirectX\MiniEngine\Harlinn.DirectX.MiniEngine.Core;$(SolutionDir)3rdParty\Harlinn.zlib;$(SolutionDir)3rdParty\Harlinn.nlohmann-json\include;$(SolutionDir)3rdParty\Harlinn.DirectXMesh\include;$(SolutionDir)3rdParty\Harlinn.DirectXTex\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>

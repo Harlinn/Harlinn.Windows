@@ -628,6 +628,12 @@ namespace Harlinn::Windows::Graphics
             pInterface->SetDescriptorHeaps( numDescriptorHeaps, descriptorHeapsPtr );
         }
 
+        void SetDescriptorHeaps( _In_  UINT numDescriptorHeaps, _In_reads_( numDescriptorHeaps ) const D3D12DescriptorHeap* descriptorHeapsPtr ) const
+        {
+            SetDescriptorHeaps( numDescriptorHeaps, reinterpret_cast< ID3D12DescriptorHeap* const* >(descriptorHeapsPtr) );
+        }
+
+
         template<size_t N>
         void SetDescriptorHeaps( const std::array<D3D12DescriptorHeap,N>& descriptorHeaps ) const
         {
@@ -846,11 +852,23 @@ namespace Harlinn::Windows::Graphics
             pInterface->ResolveQueryData( pQueryHeap, type, startIndex, numQueries, pDestinationBuffer, alignedDestinationBufferOffset );
         }
 
+        void ResolveQueryData( const D3D12QueryHeap& pQueryHeap, _In_ D3D12_QUERY_TYPE type, _In_ UINT startIndex, _In_ UINT numQueries, const D3D12Resource& pDestinationBuffer, _In_ UINT64 alignedDestinationBufferOffset ) const
+        {
+            ResolveQueryData( pQueryHeap.GetInterfacePointer<ID3D12QueryHeap>(), type, startIndex, numQueries, pDestinationBuffer.GetInterfacePointer<ID3D12Resource>(), alignedDestinationBufferOffset );
+        }
+
+
         void SetPredication( _In_opt_ ID3D12Resource* pBuffer, _In_ UINT64 alignedBufferOffset, _In_ D3D12_PREDICATION_OP operation ) const
         {
             InterfaceType* pInterface = GetInterface( );
             pInterface->SetPredication( pBuffer, alignedBufferOffset, operation );
         }
+
+        void SetPredication( const D3D12Resource& pBuffer, _In_ UINT64 alignedBufferOffset, _In_ D3D12_PREDICATION_OP operation ) const
+        {
+            SetPredication( pBuffer.GetInterfacePointer<ID3D12Resource>(), alignedBufferOffset, operation );
+        }
+
 
         void SetMarker( UINT metadata, _In_reads_bytes_opt_( size )  const void* pData, UINT size ) const
         {
@@ -875,6 +893,23 @@ namespace Harlinn::Windows::Graphics
             InterfaceType* pInterface = GetInterface( );
             pInterface->ExecuteIndirect( pCommandSignature, maxCommandCount, pArgumentBuffer, argumentBufferOffset, pCountBuffer, countBufferOffset );
         }
+
+        void ExecuteIndirect( const D3D12CommandSignature& commandSignature, _In_ UINT maxCommandCount, const D3D12Resource& argumentBuffer, _In_ UINT64 argumentBufferOffset, const D3D12Resource& countBuffer, _In_ UINT64 countBufferOffset ) const
+        {
+            ID3D12CommandSignature* pCommandSignature = commandSignature.GetInterfacePointer<ID3D12CommandSignature>( );
+            ID3D12Resource* pArgumentBuffer = argumentBuffer.GetInterfacePointer<ID3D12Resource>( );
+            ID3D12Resource* pCountBuffer = countBuffer.GetInterfacePointer<ID3D12Resource>( );
+            ExecuteIndirect( pCommandSignature, maxCommandCount, pArgumentBuffer, argumentBufferOffset, pCountBuffer, countBufferOffset );
+        }
+
+        void ExecuteIndirect( const D3D12CommandSignature& commandSignature, _In_ UINT maxCommandCount, const D3D12Resource& argumentBuffer, _In_ UINT64 argumentBufferOffset ) const
+        {
+            ID3D12CommandSignature* pCommandSignature = commandSignature.GetInterfacePointer<ID3D12CommandSignature>( );
+            ID3D12Resource* pArgumentBuffer = argumentBuffer.GetInterfacePointer<ID3D12Resource>( );
+            ExecuteIndirect( pCommandSignature, maxCommandCount, pArgumentBuffer, argumentBufferOffset, nullptr, 0 );
+        }
+
+
     };
 
 
@@ -995,11 +1030,21 @@ namespace Harlinn::Windows::Graphics
             HCC_COM_CHECK_HRESULT2( hr, pInterface );
         }
 
+        void Signal( const D3D12Fence& fence, UINT64 value ) const
+        {
+            Signal( fence.GetInterfacePointer<ID3D12Fence>( ), value );
+        }
+
         void Wait( ID3D12Fence* pFence, UINT64 value ) const
         {
             InterfaceType* pInterface = GetInterface( );
             auto hr = pInterface->Wait( pFence, value );
             HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+
+        void Wait( const D3D12Fence& fence, UINT64 value ) const
+        {
+            Wait( fence.GetInterfacePointer<ID3D12Fence>( ), value );
         }
 
         void GetTimestampFrequency( _Out_ UINT64* pFrequency ) const
@@ -1077,19 +1122,43 @@ namespace Harlinn::Windows::Graphics
         }
 
 
-        void CreateGraphicsPipelineState( _In_ const D3D12_GRAPHICS_PIPELINE_STATE_DESC* pDesc, REFIID riid, _COM_Outptr_ void** ppPipelineState ) const
+        void CreateGraphicsPipelineState( _In_ const D3D12_GRAPHICS_PIPELINE_STATE_DESC* graphicsPipelineStateDesc, REFIID riid, _COM_Outptr_ void** ppPipelineState ) const
         {
             InterfaceType* pInterface = GetInterface( );
-            auto hr = pInterface->CreateGraphicsPipelineState( pDesc, riid, ppPipelineState );
+            auto hr = pInterface->CreateGraphicsPipelineState( graphicsPipelineStateDesc, riid, ppPipelineState );
             HCC_COM_CHECK_HRESULT2( hr, pInterface );
         }
 
-        void CreateComputePipelineState(_In_ const D3D12_COMPUTE_PIPELINE_STATE_DESC* pDesc, REFIID riid, _COM_Outptr_ void** ppPipelineState ) const
+        template <typename T = D3D12PipelineState>
+            requires std::is_base_of_v<D3D12PipelineState, T>
+        T CreateGraphicsPipelineState( _In_ const D3D12_GRAPHICS_PIPELINE_STATE_DESC* graphicsPipelineStateDesc ) const
+        {
+            using ItfT = typename T::InterfaceType;
+            constexpr auto refiid = __uuidof( ItfT );
+            ItfT* ptr = nullptr;
+            CreateGraphicsPipelineState( graphicsPipelineStateDesc, refiid, ( void** )&ptr );
+            return T( ptr, false );
+        }
+
+
+        void CreateComputePipelineState(_In_ const D3D12_COMPUTE_PIPELINE_STATE_DESC* computePipelineStateDesc, REFIID riid, _COM_Outptr_ void** ppPipelineState ) const
         {
             InterfaceType* pInterface = GetInterface( );
-            auto hr = pInterface->CreateComputePipelineState( pDesc, riid, ppPipelineState );
+            auto hr = pInterface->CreateComputePipelineState( computePipelineStateDesc, riid, ppPipelineState );
             HCC_COM_CHECK_HRESULT2( hr, pInterface );
         }
+
+        template <typename T = D3D12PipelineState>
+            requires std::is_base_of_v<D3D12PipelineState, T>
+        T CreateComputePipelineState( _In_ const D3D12_COMPUTE_PIPELINE_STATE_DESC* computePipelineStateDesc ) const
+        {
+            using ItfT = typename T::InterfaceType;
+            constexpr auto refiid = __uuidof( ItfT );
+            ItfT* ptr = nullptr;
+            CreateComputePipelineState( computePipelineStateDesc, refiid, ( void** )&ptr );
+            return T( ptr, false );
+        }
+
 
         void CreateCommandList( _In_ UINT nodeMask, _In_ D3D12_COMMAND_LIST_TYPE type, _In_ ID3D12CommandAllocator* pCommandAllocator, _In_opt_ ID3D12PipelineState* pInitialState, REFIID riid, _COM_Outptr_ void** ppCommandList ) const
         {
@@ -1142,6 +1211,14 @@ namespace Harlinn::Windows::Graphics
             return SUCCEEDED( hr );
         }
 
+        bool CheckFeatureSupport( D3D12_FEATURE_DATA_D3D12_OPTIONS5& options ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            auto hr = pInterface->CheckFeatureSupport( D3D12_FEATURE_D3D12_OPTIONS5, &options, sizeof( D3D12_FEATURE_DATA_D3D12_OPTIONS5 ) );
+            return SUCCEEDED( hr );
+        }
+
+
         void CreateDescriptorHeap( _In_ const D3D12_DESCRIPTOR_HEAP_DESC* descriptorHeapDesc, REFIID riid, _COM_Outptr_ void** ppvHeap ) const
         {
             InterfaceType* pInterface = GetInterface( );
@@ -1168,11 +1245,22 @@ namespace Harlinn::Windows::Graphics
             return pInterface->GetDescriptorHandleIncrementSize( descriptorHeapType );
         }
 
-        void CreateRootSignature( _In_ UINT nodeMask, _In_reads_( blobLengthInBytes )  const void* pBlobWithRootSignature, _In_ SIZE_T blobLengthInBytes, REFIID riid, _COM_Outptr_ void** ppvRootSignature ) const
+        void CreateRootSignature( _In_ UINT nodeMask, _In_reads_( blobLengthInBytes )  const void* blobWithRootSignature, _In_ SIZE_T blobLengthInBytes, REFIID riid, _COM_Outptr_ void** ppvRootSignature ) const
         {
             InterfaceType* pInterface = GetInterface( );
-            auto hr = pInterface->CreateRootSignature( nodeMask, pBlobWithRootSignature, blobLengthInBytes, riid, ppvRootSignature );
+            auto hr = pInterface->CreateRootSignature( nodeMask, blobWithRootSignature, blobLengthInBytes, riid, ppvRootSignature );
             HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+
+        template <typename T = D3D12RootSignature>
+            requires std::is_base_of_v<D3D12RootSignature, T>
+        T CreateRootSignature( _In_ UINT nodeMask, _In_reads_( blobLengthInBytes )  const void* blobWithRootSignature, _In_ SIZE_T blobLengthInBytes ) const
+        {
+            using ItfT = typename T::InterfaceType;
+            constexpr auto refiid = __uuidof( ItfT );
+            ItfT* ptr = nullptr;
+            CreateRootSignature( nodeMask, blobWithRootSignature, blobLengthInBytes, refiid, reinterpret_cast< void** >( &ptr ) );
+            return T( ptr );
         }
 
         void CreateConstantBufferView( _In_opt_ const D3D12_CONSTANT_BUFFER_VIEW_DESC* pDesc, _In_ D3D12_CPU_DESCRIPTOR_HANDLE destDescriptor ) const
@@ -1181,27 +1269,68 @@ namespace Harlinn::Windows::Graphics
             pInterface->CreateConstantBufferView( pDesc, destDescriptor );
         }
 
-        void CreateShaderResourceView(_In_opt_ ID3D12Resource* pResource, _In_opt_ const D3D12_SHADER_RESOURCE_VIEW_DESC* pDesc, _In_ D3D12_CPU_DESCRIPTOR_HANDLE destDescriptor ) const
+        void CreateShaderResourceView(_In_opt_ ID3D12Resource* pResource, _In_opt_ const D3D12_SHADER_RESOURCE_VIEW_DESC* shaderResourceViewDesc, _In_ D3D12_CPU_DESCRIPTOR_HANDLE destDescriptor ) const
         {
             InterfaceType* pInterface = GetInterface( );
-            pInterface->CreateShaderResourceView( pResource, pDesc, destDescriptor );
+            pInterface->CreateShaderResourceView( pResource, shaderResourceViewDesc, destDescriptor );
         }
 
-        void CreateUnorderedAccessView(_In_opt_ ID3D12Resource* pResource, _In_opt_ ID3D12Resource* pCounterResource, _In_opt_ const D3D12_UNORDERED_ACCESS_VIEW_DESC* pDesc, _In_ D3D12_CPU_DESCRIPTOR_HANDLE destDescriptor ) const
+        void CreateShaderResourceView( const D3D12Resource& resource, _In_opt_ const D3D12_SHADER_RESOURCE_VIEW_DESC* shaderResourceViewDesc, _In_ D3D12_CPU_DESCRIPTOR_HANDLE destDescriptor ) const
+        {
+            CreateShaderResourceView( resource.GetInterfacePointer<ID3D12Resource>( ), shaderResourceViewDesc, destDescriptor );
+        }
+        void CreateShaderResourceView( const D3D12Resource& resource, _In_opt_ const D3D12_SHADER_RESOURCE_VIEW_DESC& shaderResourceViewDesc, _In_ D3D12_CPU_DESCRIPTOR_HANDLE destDescriptor ) const
+        {
+            CreateShaderResourceView( resource.GetInterfacePointer<ID3D12Resource>( ), &shaderResourceViewDesc, destDescriptor );
+        }
+        void CreateShaderResourceView( const D3D12Resource& resource, _In_ D3D12_CPU_DESCRIPTOR_HANDLE destDescriptor ) const
+        {
+            CreateShaderResourceView( resource.GetInterfacePointer<ID3D12Resource>( ), nullptr, destDescriptor );
+        }
+
+
+
+        void CreateUnorderedAccessView(_In_opt_ ID3D12Resource* resource, _In_opt_ ID3D12Resource* counterResource, _In_opt_ const D3D12_UNORDERED_ACCESS_VIEW_DESC* unorderedAccessViewDesc, _In_ D3D12_CPU_DESCRIPTOR_HANDLE destDescriptor ) const
         {
             InterfaceType* pInterface = GetInterface( );
-            pInterface->CreateUnorderedAccessView( pResource, pCounterResource, pDesc, destDescriptor );
+            pInterface->CreateUnorderedAccessView( resource, counterResource, unorderedAccessViewDesc, destDescriptor );
         }
 
-        void CreateRenderTargetView(_In_opt_ ID3D12Resource* resource, _In_opt_ const D3D12_RENDER_TARGET_VIEW_DESC* desc, _In_ D3D12_CPU_DESCRIPTOR_HANDLE destDescriptor ) const
+        void CreateUnorderedAccessView( const D3D12Resource& resource, const D3D12Resource& counterResource, _In_opt_ const D3D12_UNORDERED_ACCESS_VIEW_DESC* unorderedAccessViewDesc, _In_ D3D12_CPU_DESCRIPTOR_HANDLE destDescriptor ) const
+        {
+            CreateUnorderedAccessView( resource.GetInterfacePointer<ID3D12Resource>( ), counterResource.GetInterfacePointer<ID3D12Resource>( ), unorderedAccessViewDesc, destDescriptor );
+        }
+        void CreateUnorderedAccessView( const D3D12Resource& resource, _In_opt_ const D3D12_UNORDERED_ACCESS_VIEW_DESC* unorderedAccessViewDesc, _In_ D3D12_CPU_DESCRIPTOR_HANDLE destDescriptor ) const
+        {
+            CreateUnorderedAccessView( resource.GetInterfacePointer<ID3D12Resource>( ), nullptr, unorderedAccessViewDesc, destDescriptor );
+        }
+        void CreateUnorderedAccessView( const D3D12Resource& resource, const D3D12Resource& counterResource, _In_opt_ const D3D12_UNORDERED_ACCESS_VIEW_DESC& unorderedAccessViewDesc, _In_ D3D12_CPU_DESCRIPTOR_HANDLE destDescriptor ) const
+        {
+            CreateUnorderedAccessView( resource.GetInterfacePointer<ID3D12Resource>( ), counterResource.GetInterfacePointer<ID3D12Resource>( ), &unorderedAccessViewDesc, destDescriptor );
+        }
+        void CreateUnorderedAccessView( const D3D12Resource& resource, _In_opt_ const D3D12_UNORDERED_ACCESS_VIEW_DESC& unorderedAccessViewDesc, _In_ D3D12_CPU_DESCRIPTOR_HANDLE destDescriptor ) const
+        {
+            CreateUnorderedAccessView( resource.GetInterfacePointer<ID3D12Resource>( ), nullptr, &unorderedAccessViewDesc, destDescriptor );
+        }
+        void CreateUnorderedAccessView( const D3D12Resource& resource, _In_ D3D12_CPU_DESCRIPTOR_HANDLE destDescriptor ) const
+        {
+            CreateUnorderedAccessView( resource.GetInterfacePointer<ID3D12Resource>( ), nullptr, nullptr, destDescriptor );
+        }
+
+
+
+        void CreateRenderTargetView(_In_opt_ ID3D12Resource* resource, _In_opt_ const D3D12_RENDER_TARGET_VIEW_DESC* renderTargetViewDesc, _In_ D3D12_CPU_DESCRIPTOR_HANDLE destDescriptor ) const
         {
             InterfaceType* pInterface = GetInterface( );
-            pInterface->CreateRenderTargetView( resource, desc, destDescriptor );
+            pInterface->CreateRenderTargetView( resource, renderTargetViewDesc, destDescriptor );
         }
-
-        void CreateRenderTargetView( const D3D12Resource& resource, _In_opt_ const D3D12_RENDER_TARGET_VIEW_DESC& desc, _In_ D3D12_CPU_DESCRIPTOR_HANDLE destDescriptor ) const
+        void CreateRenderTargetView( const D3D12Resource& resource, _In_opt_ const D3D12_RENDER_TARGET_VIEW_DESC* renderTargetViewDesc, _In_ D3D12_CPU_DESCRIPTOR_HANDLE destDescriptor ) const
         {
-            CreateRenderTargetView( resource.GetInterfacePointer<ID3D12Resource>(), &desc, destDescriptor );
+            CreateRenderTargetView( resource.GetInterfacePointer<ID3D12Resource>(), renderTargetViewDesc, destDescriptor );
+        }
+        void CreateRenderTargetView( const D3D12Resource& resource, const D3D12_RENDER_TARGET_VIEW_DESC& renderTargetViewDesc, _In_ D3D12_CPU_DESCRIPTOR_HANDLE destDescriptor ) const
+        {
+            CreateRenderTargetView( resource.GetInterfacePointer<ID3D12Resource>(), &renderTargetViewDesc, destDescriptor );
         }
         void CreateRenderTargetView( const D3D12Resource& resource, _In_ D3D12_CPU_DESCRIPTOR_HANDLE destDescriptor ) const
         {
@@ -1209,10 +1338,23 @@ namespace Harlinn::Windows::Graphics
         }
 
 
-        void CreateDepthStencilView( _In_opt_ ID3D12Resource* pResource, _In_opt_ const D3D12_DEPTH_STENCIL_VIEW_DESC* pDesc, _In_ D3D12_CPU_DESCRIPTOR_HANDLE destDescriptor ) const
+        void CreateDepthStencilView( _In_opt_ ID3D12Resource* resource, _In_opt_ const D3D12_DEPTH_STENCIL_VIEW_DESC* depthStencilViewDesc, _In_ D3D12_CPU_DESCRIPTOR_HANDLE destDescriptor ) const
         {
             InterfaceType* pInterface = GetInterface( );
-            pInterface->CreateDepthStencilView( pResource, pDesc, destDescriptor );
+            pInterface->CreateDepthStencilView( resource, depthStencilViewDesc, destDescriptor );
+        }
+
+        void CreateDepthStencilView( const D3D12Resource& resource, _In_opt_ const D3D12_DEPTH_STENCIL_VIEW_DESC* depthStencilViewDesc, _In_ D3D12_CPU_DESCRIPTOR_HANDLE destDescriptor ) const
+        {
+            CreateDepthStencilView( resource.GetInterfacePointer<ID3D12Resource>( ), depthStencilViewDesc, destDescriptor );
+        }
+        void CreateDepthStencilView( const D3D12Resource& resource, const D3D12_DEPTH_STENCIL_VIEW_DESC& depthStencilViewDesc, _In_ D3D12_CPU_DESCRIPTOR_HANDLE destDescriptor ) const
+        {
+            CreateDepthStencilView( resource.GetInterfacePointer<ID3D12Resource>( ), &depthStencilViewDesc, destDescriptor );
+        }
+        void CreateDepthStencilView( const D3D12Resource& resource, _In_ D3D12_CPU_DESCRIPTOR_HANDLE destDescriptor ) const
+        {
+            CreateDepthStencilView( resource.GetInterfacePointer<ID3D12Resource>( ), nullptr, destDescriptor );
         }
 
         void CreateSampler( _In_ const D3D12_SAMPLER_DESC* pDesc, _In_ D3D12_CPU_DESCRIPTOR_HANDLE destDescriptor ) const
@@ -1245,10 +1387,10 @@ namespace Harlinn::Windows::Graphics
             return pInterface->GetCustomHeapProperties( nodeMask, heapType );
         }
 
-        void CreateCommittedResource( _In_ const D3D12_HEAP_PROPERTIES* pHeapProperties, D3D12_HEAP_FLAGS heapFlags, _In_ const D3D12_RESOURCE_DESC* pDesc, D3D12_RESOURCE_STATES initialResourceState, _In_opt_ const D3D12_CLEAR_VALUE* pOptimizedClearValue, REFIID riidResource, _COM_Outptr_opt_  void** ppvResource ) const
+        void CreateCommittedResource( _In_ const D3D12_HEAP_PROPERTIES* heapProperties, D3D12_HEAP_FLAGS heapFlags, _In_ const D3D12_RESOURCE_DESC* resourceDesc, D3D12_RESOURCE_STATES initialResourceState, _In_opt_ const D3D12_CLEAR_VALUE* optimizedClearValue, REFIID riidResource, _COM_Outptr_opt_  void** ppvResource ) const
         {
             InterfaceType* pInterface = GetInterface( );
-            auto hr = pInterface->CreateCommittedResource( pHeapProperties, heapFlags, pDesc, initialResourceState, pOptimizedClearValue, riidResource, ppvResource );
+            auto hr = pInterface->CreateCommittedResource( heapProperties, heapFlags, resourceDesc, initialResourceState, optimizedClearValue, riidResource, ppvResource );
             HCC_COM_CHECK_HRESULT2( hr, pInterface );
         }
 
@@ -1267,6 +1409,18 @@ namespace Harlinn::Windows::Graphics
             HCC_COM_CHECK_HRESULT2( hr, pInterface );
         }
 
+        template<typename T = D3D12Heap>
+            requires std::is_base_of_v< D3D12Heap, T>
+        T CreateHeap( _In_ const D3D12_HEAP_DESC& heapDesc )
+        {
+            using HeapInterfaceType = typename T::InterfaceType;
+            HeapInterfaceType* itf = nullptr;
+            CreateHeap( &heapDesc, __uuidof( HeapInterfaceType ), reinterpret_cast< void** >( &itf ) );
+            return T( itf );
+        }
+
+
+
         void CreatePlacedResource( _In_ ID3D12Heap* pHeap, UINT64 heapOffset, _In_ const D3D12_RESOURCE_DESC* pDesc, D3D12_RESOURCE_STATES initialState, _In_opt_ const D3D12_CLEAR_VALUE* pOptimizedClearValue, REFIID riid, _COM_Outptr_opt_  void** ppvResource ) const
         {
             InterfaceType* pInterface = GetInterface( );
@@ -1274,12 +1428,24 @@ namespace Harlinn::Windows::Graphics
             HCC_COM_CHECK_HRESULT2( hr, pInterface );
         }
 
-        D3D12Resource CreatePlacedResource( _In_ ID3D12Heap* pHeap, UINT64 heapOffset, _In_ const D3D12_RESOURCE_DESC* pDesc, D3D12_RESOURCE_STATES initialState, _In_opt_ const D3D12_CLEAR_VALUE* pOptimizedClearValue ) const
+        template<typename T = D3D12Resource>
+            requires std::is_base_of_v< D3D12Resource, T>
+        T CreatePlacedResource( _In_ ID3D12Heap* pHeap, UINT64 heapOffset, _In_ const D3D12_RESOURCE_DESC* pDesc, D3D12_RESOURCE_STATES initialState, _In_opt_ const D3D12_CLEAR_VALUE* pOptimizedClearValue ) const
         {
-            ID3D12Resource* itf = nullptr;
-            CreatePlacedResource( pHeap, heapOffset, pDesc, initialState, pOptimizedClearValue, __uuidof( ID3D12Resource ), reinterpret_cast< void** >( &itf ) );
-            return D3D12Resource( itf );
+            using ItfT = typename T::InterfaceType;
+            constexpr auto riid = __uuidof( ItfT );
+            ItfT* itf = nullptr;
+            CreatePlacedResource( pHeap, heapOffset, pDesc, initialState, pOptimizedClearValue, riid, reinterpret_cast< void** >( &itf ) );
+            return T( itf );
         }
+
+        template<typename T = D3D12Resource>
+            requires std::is_base_of_v< D3D12Resource, T>
+        T CreatePlacedResource( const D3D12Heap& heap, UINT64 heapOffset, _In_ const D3D12_RESOURCE_DESC* pDesc, D3D12_RESOURCE_STATES initialState, _In_opt_ const D3D12_CLEAR_VALUE* pOptimizedClearValue ) const
+        {
+            return CreatePlacedResource<T>( heap.GetInterfacePointer<ID3D12Heap>(), heapOffset, pDesc, initialState, pOptimizedClearValue );
+        }
+
 
         void CreateReservedResource( _In_ const D3D12_RESOURCE_DESC* pDesc, D3D12_RESOURCE_STATES initialState, _In_opt_ const D3D12_CLEAR_VALUE* pOptimizedClearValue, REFIID riid, _COM_Outptr_opt_ void** ppvResource ) const
         {
@@ -1365,6 +1531,26 @@ namespace Harlinn::Windows::Graphics
             HCC_COM_CHECK_HRESULT2( hr, pInterface );
         }
 
+        template<typename T = D3D12QueryHeap>
+            requires std::is_base_of_v<D3D12QueryHeap,T>
+        T CreateQueryHeap( _In_ const D3D12_QUERY_HEAP_DESC* queryHeapDesc )
+        {
+            using ItfT = typename T::InterfaceType;
+            constexpr auto riid = __uuidof( ItfT );
+            ItfT* ptr = nullptr;
+            CreateQueryHeap( queryHeapDesc, riid, reinterpret_cast< void** >( &ptr ) );
+            return T( ptr );
+        }
+
+        template<typename T = D3D12QueryHeap>
+            requires std::is_base_of_v<D3D12QueryHeap, T>
+        T CreateQueryHeap( const D3D12_QUERY_HEAP_DESC& queryHeapDesc )
+        {
+            return CreateQueryHeap<T>( &queryHeapDesc );
+        }
+
+
+
         void SetStablePowerState( BOOL enable ) const
         {
             InterfaceType* pInterface = GetInterface( );
@@ -1378,6 +1564,32 @@ namespace Harlinn::Windows::Graphics
             auto hr = pInterface->CreateCommandSignature( pDesc, pRootSignature, riid, ppvCommandSignature );
             HCC_COM_CHECK_HRESULT2( hr, pInterface );
         }
+
+        template<typename T = D3D12CommandSignature>
+            requires std::is_base_of_v<D3D12CommandSignature,T>
+        T CreateCommandSignature( _In_ const D3D12_COMMAND_SIGNATURE_DESC* pDesc, _In_opt_ ID3D12RootSignature* pRootSignature = nullptr )
+        {
+            using ItfT = typename T::InterfaceType;
+            ItfT* ptr = nullptr;
+            constexpr auto riid = __uuidof( ItfT );
+            CreateCommandSignature( pDesc, pRootSignature, riid, reinterpret_cast<void**>( &ptr ) );
+            return T( ptr );
+        }
+
+        template<typename T = D3D12CommandSignature>
+            requires std::is_base_of_v<D3D12CommandSignature, T>
+        T CreateCommandSignature( _In_ const D3D12_COMMAND_SIGNATURE_DESC* pDesc, const D3D12RootSignature& rootSignature  )
+        {
+            return CreateCommandSignature<T>( pDesc, rootSignature.GetInterfacePointer<ID3D12RootSignature>() );
+        }
+        template<typename T = D3D12CommandSignature>
+            requires std::is_base_of_v<D3D12CommandSignature, T>
+        T CreateCommandSignature( _In_ const D3D12_COMMAND_SIGNATURE_DESC& pDesc, const D3D12RootSignature& rootSignature )
+        {
+            return CreateCommandSignature<T>( pDesc, rootSignature.GetInterfacePointer<ID3D12RootSignature>( ) );
+        }
+
+
 
         void GetResourceTiling( _In_ ID3D12Resource* pTiledResource, _Out_opt_  UINT* pNumTilesForEntireResource, _Out_opt_  D3D12_PACKED_MIP_INFO* pPackedMipDesc, _Out_opt_  D3D12_TILE_SHAPE* pStandardTileShapeForNonPackedMips, _Inout_opt_  UINT* pNumSubresourceTilings, _In_ UINT FirstSubresourceTilingToGet, _Out_writes_( *pNumSubresourceTilings )  D3D12_SUBRESOURCE_TILING* pSubresourceTilingsForNonPackedMips ) const
         {

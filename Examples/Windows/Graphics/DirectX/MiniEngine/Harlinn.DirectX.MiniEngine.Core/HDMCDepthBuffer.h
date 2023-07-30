@@ -22,6 +22,12 @@ namespace Harlinn::Windows::DirectX::MiniEngine
 
     class DepthBuffer : public PixelBuffer
     {
+    protected:
+        float m_ClearDepth;
+        uint8_t m_ClearStencil;
+        D3D12_CPU_DESCRIPTOR_HANDLE m_hDSV[ 4 ];
+        D3D12_CPU_DESCRIPTOR_HANDLE m_hDepthSRV;
+        D3D12_CPU_DESCRIPTOR_HANDLE m_hStencilSRV;
     public:
         DepthBuffer( float ClearDepth = 0.0f, uint8_t ClearStencil = 0 )
             : m_ClearDepth( ClearDepth ), m_ClearStencil( ClearStencil )
@@ -60,15 +66,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine
 
         float GetClearDepth( ) const { return m_ClearDepth; }
         uint8_t GetClearStencil( ) const { return m_ClearStencil; }
-
     protected:
-
-        void CreateDerivedViews( ID3D12Device* Device, DXGI_FORMAT Format );
-
-        float m_ClearDepth;
-        uint8_t m_ClearStencil;
-        D3D12_CPU_DESCRIPTOR_HANDLE m_hDSV[ 4 ];
-        D3D12_CPU_DESCRIPTOR_HANDLE m_hDepthSRV;
-        D3D12_CPU_DESCRIPTOR_HANDLE m_hStencilSRV;
+        void CreateDerivedViews( const D3D12Device& Device, DXGI_FORMAT Format );
     };
 }

@@ -35,7 +35,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         }
 
         // Create a color buffer from a swap chain buffer.  Unordered access is restricted.
-        HDMC_EXPORT void CreateFromSwapChain( const std::wstring& Name, ID3D12Resource* BaseResource );
+        HDMC_EXPORT void CreateFromSwapChain( const std::wstring& Name, const D3D12Resource& baseResource );
 
         // Create a color buffer.  If an address is supplied, memory will not be allocated.
         // The vmem address allows you to alias buffers (which can be especially useful for
@@ -103,7 +103,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine
             return HighBit + 1;
         }
 
-        HDMC_EXPORT void CreateDerivedViews( ID3D12Device* Device, DXGI_FORMAT Format, uint32_t ArraySize, uint32_t NumMips = 1 );
+        HDMC_EXPORT void CreateDerivedViews( const D3D12Device& device, DXGI_FORMAT Format, uint32_t ArraySize, uint32_t NumMips = 1 );
 
         Color m_ClearColor;
         D3D12_CPU_DESCRIPTOR_HANDLE m_SRVHandle;

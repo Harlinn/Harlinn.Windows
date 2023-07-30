@@ -506,12 +506,12 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         HeapProps.CreationNodeMask = 1;
         HeapProps.VisibleNodeMask = 1;
 
-        ID3D12Resource* tex = nullptr;
-        g_Device.CreateCommittedResource( &HeapProps, D3D12_HEAP_FLAG_NONE,
-            &TexDesc, D3D12_RESOURCE_STATE_COPY_DEST, nullptr, MY_IID_PPV_ARGS( &tex ) );
-        tex->SetName( L"Particle TexArray" );
+        //ID3D12Resource* tex = nullptr;
+        auto tex = g_Device.CreateCommittedResource( &HeapProps, D3D12_HEAP_FLAG_NONE,
+            &TexDesc, D3D12_RESOURCE_STATE_COPY_DEST, nullptr );
+        tex.SetName( L"Particle TexArray" );
         TextureArray = GpuResource( tex, D3D12_RESOURCE_STATE_COPY_DEST );
-        tex->Release( );
+        
 
         D3D12_SHADER_RESOURCE_VIEW_DESC SRVDesc = {};
         SRVDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;

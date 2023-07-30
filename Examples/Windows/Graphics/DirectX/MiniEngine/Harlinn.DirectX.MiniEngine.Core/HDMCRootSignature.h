@@ -23,6 +23,8 @@ namespace Harlinn::Windows::DirectX::MiniEngine
     class RootParameter
     {
         friend class RootSignature;
+    protected:
+        D3D12_ROOT_PARAMETER m_RootParam;
     public:
 
         RootParameter( )
@@ -38,8 +40,9 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         void Clear( )
         {
             if ( m_RootParam.ParameterType == D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE )
+            {
                 delete[ ] m_RootParam.DescriptorTable.pDescriptorRanges;
-
+            }
             m_RootParam.ParameterType = ( D3D12_ROOT_PARAMETER_TYPE )0xFFFFFFFF;
         }
 
@@ -100,12 +103,10 @@ namespace Harlinn::Windows::DirectX::MiniEngine
             range->OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
         }
 
-        const D3D12_ROOT_PARAMETER& operator() ( void ) const { return m_RootParam; }
-
-
-    protected:
-
-        D3D12_ROOT_PARAMETER m_RootParam;
+        const D3D12_ROOT_PARAMETER& operator() ( ) const 
+        { 
+            return m_RootParam; 
+        }
     };
 
     // Maximum 64 DWORDS divied up amongst all root parameters.
@@ -116,10 +117,25 @@ namespace Harlinn::Windows::DirectX::MiniEngine
     class RootSignature
     {
         friend class DynamicDescriptorHeap;
+    protected:
 
+        BOOL m_Finalized;
+        UINT m_NumParameters;
+        UINT m_NumSamplers;
+        UINT m_NumInitializedStaticSamplers;
+        // One bit is set for root parameters that are non-sampler descriptor tables
+        uint32_t m_DescriptorTableBitMap;
+        // One bit is set for root parameters that are sampler descriptor tables
+        uint32_t m_SamplerTableBitMap;
+        // Non-sampler descriptor tables need to know their descriptor count
+        uint32_t m_DescriptorTableSize[ 16 ];
+        std::unique_ptr<RootParameter[ ]> m_ParamArray;
+        std::unique_ptr<D3D12_STATIC_SAMPLER_DESC[ ]> m_SamplerArray;
+        D3D12RootSignature m_Signature;
     public:
 
-        RootSignature( UINT NumRootParams = 0, UINT NumStaticSamplers = 0 ) : m_Finalized( FALSE ), m_NumParameters( NumRootParams )
+        RootSignature( UINT NumRootParams = 0, UINT NumStaticSamplers = 0 ) 
+            : m_Finalized( FALSE ), m_NumParameters( NumRootParams )
         {
             Reset( NumRootParams, NumStaticSamplers );
         }
@@ -133,15 +149,23 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         void Reset( UINT NumRootParams, UINT NumStaticSamplers = 0 )
         {
             if ( NumRootParams > 0 )
+            {
                 m_ParamArray.reset( new RootParameter[ NumRootParams ] );
+            }
             else
+            {
                 m_ParamArray = nullptr;
+            }
             m_NumParameters = NumRootParams;
 
             if ( NumStaticSamplers > 0 )
+            {
                 m_SamplerArray.reset( new D3D12_STATIC_SAMPLER_DESC[ NumStaticSamplers ] );
+            }
             else
+            {
                 m_SamplerArray = nullptr;
+            }
             m_NumSamplers = NumStaticSamplers;
             m_NumInitializedStaticSamplers = 0;
         }
@@ -158,25 +182,16 @@ namespace Harlinn::Windows::DirectX::MiniEngine
             return m_ParamArray.get( )[ EntryIndex ];
         }
 
-        HDMC_EXPORT void InitStaticSampler( UINT Register, const D3D12_SAMPLER_DESC& NonStaticSamplerDesc,
-            D3D12_SHADER_VISIBILITY Visibility = D3D12_SHADER_VISIBILITY_ALL );
+        HDMC_EXPORT void InitStaticSampler( UINT Register, const D3D12_SAMPLER_DESC& NonStaticSamplerDesc, D3D12_SHADER_VISIBILITY Visibility = D3D12_SHADER_VISIBILITY_ALL );
 
         HDMC_EXPORT void Finalize( const std::wstring& name, D3D12_ROOT_SIGNATURE_FLAGS Flags = D3D12_ROOT_SIGNATURE_FLAG_NONE );
 
-        ID3D12RootSignature* GetSignature( ) const { return m_Signature; }
+        const D3D12RootSignature& GetSignature( ) const 
+        { 
+            return m_Signature; 
+        }
 
-    protected:
-
-        BOOL m_Finalized;
-        UINT m_NumParameters;
-        UINT m_NumSamplers;
-        UINT m_NumInitializedStaticSamplers;
-        uint32_t m_DescriptorTableBitMap;		// One bit is set for root parameters that are non-sampler descriptor tables
-        uint32_t m_SamplerTableBitMap;			// One bit is set for root parameters that are sampler descriptor tables
-        uint32_t m_DescriptorTableSize[ 16 ];		// Non-sampler descriptor tables need to know their descriptor count
-        std::unique_ptr<RootParameter[ ]> m_ParamArray;
-        std::unique_ptr<D3D12_STATIC_SAMPLER_DESC[ ]> m_SamplerArray;
-        ID3D12RootSignature* m_Signature;
+    
     };
 
 }

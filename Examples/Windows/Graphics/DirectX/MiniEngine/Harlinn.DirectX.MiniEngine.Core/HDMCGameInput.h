@@ -20,9 +20,9 @@ namespace Harlinn::Windows::DirectX::MiniEngine
 
     namespace GameInput
     {
-        void Initialize( );
-        void Shutdown( );
-        void Update( float frameDelta );
+        HDMC_EXPORT void Initialize( );
+        HDMC_EXPORT void Shutdown( );
+        HDMC_EXPORT void Update( float frameDelta );
 
         enum DigitalInput
         {
@@ -182,20 +182,20 @@ namespace Harlinn::Windows::DirectX::MiniEngine
             kNumAnalogInputs
         };
 
-        bool IsAnyPressed( void );
+        HDMC_EXPORT bool IsAnyPressed( void );
 
-        bool IsPressed( DigitalInput di );
-        bool IsFirstPressed( DigitalInput di );
-        bool IsReleased( DigitalInput di );
-        bool IsFirstReleased( DigitalInput di );
+        HDMC_EXPORT bool IsPressed( DigitalInput di );
+        HDMC_EXPORT bool IsFirstPressed( DigitalInput di );
+        HDMC_EXPORT bool IsReleased( DigitalInput di );
+        HDMC_EXPORT bool IsFirstReleased( DigitalInput di );
 
-        float GetDurationPressed( DigitalInput di );
+        HDMC_EXPORT float GetDurationPressed( DigitalInput di );
 
-        float GetAnalogInput( AnalogInput ai );
-        float GetTimeCorrectedAnalogInput( AnalogInput ai );
+        HDMC_EXPORT float GetAnalogInput( AnalogInput ai );
+        HDMC_EXPORT float GetTimeCorrectedAnalogInput( AnalogInput ai );
 
 #if !WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_TV_TITLE | WINAPI_PARTITION_DESKTOP)
-        void SetKeyState( Windows::System::VirtualKey key, bool IsDown );
+        HDMC_EXPORT void SetKeyState( Windows::System::VirtualKey key, bool IsDown );
 #endif
     }
 }

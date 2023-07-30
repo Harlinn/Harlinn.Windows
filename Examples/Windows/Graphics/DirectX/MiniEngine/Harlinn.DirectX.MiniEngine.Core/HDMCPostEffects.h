@@ -23,28 +23,28 @@ namespace Harlinn::Windows::DirectX::MiniEngine
 
     namespace PostEffects
     {
-        extern BoolVar EnableHDR;			// Turn on tone mapping features
+        HDMC_EXPORT extern BoolVar EnableHDR;			// Turn on tone mapping features
 
         // Tone mapping parameters
-        extern ExpVar Exposure;				// Brightness scaler when adapative exposure is disabled
-        extern BoolVar EnableAdaptation;	// Automatically adjust brightness based on perceived luminance
+        HDMC_EXPORT extern ExpVar Exposure;				// Brightness scaler when adapative exposure is disabled
+        HDMC_EXPORT extern BoolVar EnableAdaptation;	// Automatically adjust brightness based on perceived luminance
 
         // Adapation parameters
-        extern ExpVar MinExposure;
-        extern ExpVar MaxExposure;
-        extern NumVar TargetLuminance;
-        extern NumVar AdaptationRate;
+        HDMC_EXPORT extern ExpVar MinExposure;
+        HDMC_EXPORT extern ExpVar MaxExposure;
+        HDMC_EXPORT extern NumVar TargetLuminance;
+        HDMC_EXPORT extern NumVar AdaptationRate;
 
         // Bloom parameters
-        extern BoolVar BloomEnable;
-        extern NumVar BloomThreshold;
-        extern NumVar BloomStrength;
+        HDMC_EXPORT extern BoolVar BloomEnable;
+        HDMC_EXPORT extern NumVar BloomThreshold;
+        HDMC_EXPORT extern NumVar BloomStrength;
 
-        void Initialize( void );
-        void Shutdown( void );
-        void Render( void );
+        HDMC_EXPORT void Initialize( void );
+        HDMC_EXPORT void Shutdown( void );
+        HDMC_EXPORT void Render( void );
 
         // Copy the contents of the post effects buffer onto the main scene buffer
-        void CopyBackPostBuffer( ComputeContext& Context );
+        HDMC_EXPORT void CopyBackPostBuffer( ComputeContext& Context );
     }
 }

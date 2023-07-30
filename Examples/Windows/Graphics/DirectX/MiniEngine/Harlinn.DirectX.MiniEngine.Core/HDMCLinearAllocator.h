@@ -50,7 +50,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine
     public:
         using Base = GpuResource;
 
-        LinearAllocationPage( ID3D12Resource* pResource, D3D12_RESOURCE_STATES Usage ) 
+        LinearAllocationPage( const D3D12Resource& pResource, D3D12_RESOURCE_STATES Usage ) 
             : Base( pResource, Usage )
         {
             m_GpuVirtualAddress = m_pResource.GetGPUVirtualAddress( );

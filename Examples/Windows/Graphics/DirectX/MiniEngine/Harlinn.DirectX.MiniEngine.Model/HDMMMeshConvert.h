@@ -48,5 +48,5 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         };
     }
 
-    void OptimizeMesh( Renderer::Primitive& outPrim, const glTF::Primitive& inPrim, const Math::Matrix4& localToObject );
+    HDMM_EXPORT void OptimizeMesh( Renderer::Primitive& outPrim, const glTF::Primitive& inPrim, const Math::Matrix4& localToObject );
 }

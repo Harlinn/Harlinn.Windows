@@ -63,7 +63,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         );
     }
 
-    void ParticleEffect::LoadDeviceResources( ID3D12Device* device )
+    void ParticleEffect::LoadDeviceResources( const D3D12Device& device )
     {
         ( device ); // Currently unused.  May be useful with multi-adapter support.
 

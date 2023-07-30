@@ -122,11 +122,9 @@ namespace Harlinn::Windows::DirectX::MiniEngine
             DefaultUsage = D3D12_RESOURCE_STATE_GENERIC_READ;
         }
 
-        ID3D12Resource* pBuffer;
-        g_Device.CreateCommittedResource( &HeapProps, D3D12_HEAP_FLAG_NONE,
-            &ResourceDesc, DefaultUsage, nullptr, MY_IID_PPV_ARGS( &pBuffer ) );
+        auto pBuffer = g_Device.CreateCommittedResource( &HeapProps, D3D12_HEAP_FLAG_NONE, &ResourceDesc, DefaultUsage, nullptr );
 
-        pBuffer->SetName( L"LinearAllocator Page" );
+        pBuffer.SetName( L"LinearAllocator Page" );
 
         return new LinearAllocationPage( pBuffer, DefaultUsage );
     }

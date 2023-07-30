@@ -29,10 +29,10 @@ namespace Harlinn::Windows::DirectX::MiniEngine
 
     std::mutex DynamicDescriptorHeap::sm_Mutex;
     std::vector<D3D12DescriptorHeap> DynamicDescriptorHeap::sm_DescriptorHeapPool[ 2 ];
-    std::queue<std::pair<uint64_t, ID3D12DescriptorHeap*>> DynamicDescriptorHeap::sm_RetiredDescriptorHeaps[ 2 ];
-    std::queue<ID3D12DescriptorHeap*> DynamicDescriptorHeap::sm_AvailableDescriptorHeaps[ 2 ];
+    std::queue<std::pair<uint64_t, D3D12DescriptorHeap>> DynamicDescriptorHeap::sm_RetiredDescriptorHeaps[ 2 ];
+    std::queue<D3D12DescriptorHeap> DynamicDescriptorHeap::sm_AvailableDescriptorHeaps[ 2 ];
 
-    ID3D12DescriptorHeap* DynamicDescriptorHeap::RequestDescriptorHeap( D3D12_DESCRIPTOR_HEAP_TYPE HeapType )
+    D3D12DescriptorHeap DynamicDescriptorHeap::RequestDescriptorHeap( D3D12_DESCRIPTOR_HEAP_TYPE HeapType )
     {
         std::lock_guard<std::mutex> LockGuard( sm_Mutex );
 
@@ -46,7 +46,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine
 
         if ( !sm_AvailableDescriptorHeaps[ idx ].empty( ) )
         {
-            ID3D12DescriptorHeap* HeapPtr = sm_AvailableDescriptorHeaps[ idx ].front( );
+            D3D12DescriptorHeap HeapPtr = sm_AvailableDescriptorHeaps[ idx ].front( );
             sm_AvailableDescriptorHeaps[ idx ].pop( );
             return HeapPtr;
         }
@@ -63,12 +63,14 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         }
     }
 
-    void DynamicDescriptorHeap::DiscardDescriptorHeaps( D3D12_DESCRIPTOR_HEAP_TYPE HeapType, uint64_t FenceValue, const std::vector<ID3D12DescriptorHeap*>& UsedHeaps )
+    void DynamicDescriptorHeap::DiscardDescriptorHeaps( D3D12_DESCRIPTOR_HEAP_TYPE HeapType, uint64_t FenceValue, const std::vector<D3D12DescriptorHeap>& UsedHeaps )
     {
         uint32_t idx = HeapType == D3D12_DESCRIPTOR_HEAP_TYPE_SAMPLER ? 1 : 0;
         std::lock_guard<std::mutex> LockGuard( sm_Mutex );
         for ( auto iter = UsedHeaps.begin( ); iter != UsedHeaps.end( ); ++iter )
+        {
             sm_RetiredDescriptorHeaps[ idx ].push( std::make_pair( FenceValue, *iter ) );
+        }
     }
 
     void DynamicDescriptorHeap::RetireCurrentHeap( void )
@@ -112,15 +114,15 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         m_ComputeHandleCache.ClearCache( );
     }
 
-    inline ID3D12DescriptorHeap* DynamicDescriptorHeap::GetHeapPointer( )
+    inline D3D12DescriptorHeap DynamicDescriptorHeap::GetHeapPointer( )
     {
         if ( m_CurrentHeapPtr == nullptr )
         {
             ASSERT( m_CurrentOffset == 0 );
             m_CurrentHeapPtr = RequestDescriptorHeap( m_DescriptorType );
             m_FirstDescriptor = DescriptorHandle(
-                m_CurrentHeapPtr->GetCPUDescriptorHandleForHeapStart( ),
-                m_CurrentHeapPtr->GetGPUDescriptorHandleForHeapStart( ) );
+                m_CurrentHeapPtr.GetCPUDescriptorHandleForHeapStart( ),
+                m_CurrentHeapPtr.GetGPUDescriptorHandleForHeapStart( ) );
         }
 
         return m_CurrentHeapPtr;
@@ -147,7 +149,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine
 
     void DynamicDescriptorHeap::DescriptorHandleCache::CopyAndBindStaleTables(
         D3D12_DESCRIPTOR_HEAP_TYPE Type, uint32_t DescriptorSize,
-        DescriptorHandle DestHandleStart, ID3D12GraphicsCommandList* CmdList,
+        DescriptorHandle DestHandleStart, const D3D12GraphicsCommandList& CmdList,
         void ( STDMETHODCALLTYPE ID3D12GraphicsCommandList::* SetFunc )( UINT, D3D12_GPU_DESCRIPTOR_HANDLE ) )
     {
         uint32_t StaleParamCount = 0;
@@ -187,10 +189,13 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         D3D12_CPU_DESCRIPTOR_HANDLE pSrcDescriptorRangeStarts[ kMaxDescriptorsPerCopy ];
         UINT pSrcDescriptorRangeSizes[ kMaxDescriptorsPerCopy ];
 
+        ID3D12GraphicsCommandList* cmdListInterface = CmdList.GetInterfacePointer<ID3D12GraphicsCommandList>( );
+
         for ( uint32_t i = 0; i < StaleParamCount; ++i )
         {
             RootIndex = RootIndices[ i ];
-            ( CmdList->*SetFunc )( RootIndex, DestHandleStart );
+            
+            ( ( cmdListInterface )->*SetFunc )( RootIndex, DestHandleStart );
 
             DescriptorTableCache& RootDescTable = m_RootDescriptorTable[ RootIndex ];
 
@@ -248,7 +253,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine
             Type );
     }
 
-    void DynamicDescriptorHeap::CopyAndBindStagedTables( DescriptorHandleCache& HandleCache, ID3D12GraphicsCommandList* CmdList,
+    void DynamicDescriptorHeap::CopyAndBindStagedTables( DescriptorHandleCache& HandleCache, const D3D12GraphicsCommandList& CmdList,
         void ( STDMETHODCALLTYPE ID3D12GraphicsCommandList::* SetFunc )( UINT, D3D12_GPU_DESCRIPTOR_HANDLE ) )
     {
         uint32_t NeededSize = HandleCache.ComputeStagedSize( );

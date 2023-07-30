@@ -31,10 +31,10 @@ namespace Harlinn::Windows::DirectX::MiniEngine
 
     namespace Sponza
     {
-        void Startup( Math::Camera& camera );
-        void Cleanup( void );
+        HDMM_EXPORT void Startup( Math::Camera& camera );
+        HDMM_EXPORT void Cleanup( void );
 
-        void RenderScene(
+        HDMM_EXPORT void RenderScene(
             GraphicsContext& gfxContext,
             const Math::Camera& camera,
             const D3D12_VIEWPORT& viewport,
@@ -42,12 +42,12 @@ namespace Harlinn::Windows::DirectX::MiniEngine
             bool skipDiffusePass = false,
             bool skipShadowMap = false );
 
-        const ModelH3D& GetModel( );
+        HDMM_EXPORT const ModelH3D& GetModel( );
 
-        extern Math::Vector3 m_SunDirection;
-        extern ShadowCamera m_SunShadow;
-        extern ExpVar m_AmbientIntensity;
-        extern ExpVar m_SunLightIntensity;
+        HDMM_EXPORT extern Math::Vector3 m_SunDirection;
+        HDMM_EXPORT extern ShadowCamera m_SunShadow;
+        HDMM_EXPORT extern ExpVar m_AmbientIntensity;
+        HDMM_EXPORT extern ExpVar m_SunLightIntensity;
 
     }
 

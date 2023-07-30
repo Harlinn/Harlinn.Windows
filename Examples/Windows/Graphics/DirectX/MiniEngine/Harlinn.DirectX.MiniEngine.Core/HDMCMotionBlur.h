@@ -25,21 +25,21 @@ namespace Harlinn::Windows::DirectX::MiniEngine
 
     namespace MotionBlur
     {
-        extern BoolVar Enable;
+        HDMC_EXPORT extern BoolVar Enable;
 
-        void Initialize( void );
-        void Shutdown( void );
+        HDMC_EXPORT void Initialize( void );
+        HDMC_EXPORT void Shutdown( void );
 
-        void GenerateCameraVelocityBuffer( CommandContext& Context, const Math::Camera& camera, bool UseLinearZ = true );
-        void GenerateCameraVelocityBuffer( CommandContext& Context, const Math::Matrix4& reprojectionMatrix, float nearClip, float farClip, bool UseLinearZ = true );
+        HDMC_EXPORT void GenerateCameraVelocityBuffer( CommandContext& Context, const Math::Camera& camera, bool UseLinearZ = true );
+        HDMC_EXPORT void GenerateCameraVelocityBuffer( CommandContext& Context, const Math::Matrix4& reprojectionMatrix, float nearClip, float farClip, bool UseLinearZ = true );
 
         // Generate motion blur only associated with the camera.  Does not handle fast-moving objects well, but
         // does not require a full screen velocity buffer.
-        void RenderCameraBlur( CommandContext& Context, const Math::Camera& camera, bool UseLinearZ = true );
-        void RenderCameraBlur( CommandContext& Context, const Math::Matrix4& reprojectionMatrix, float nearClip, float farClip, bool UseLinearZ = true );
+        HDMC_EXPORT void RenderCameraBlur( CommandContext& Context, const Math::Camera& camera, bool UseLinearZ = true );
+        HDMC_EXPORT void RenderCameraBlur( CommandContext& Context, const Math::Matrix4& reprojectionMatrix, float nearClip, float farClip, bool UseLinearZ = true );
 
         // Generate proper motion blur that takes into account the velocity of each pixel.  Requires a pre-generated
         // velocity buffer (R16G16_FLOAT preferred.)
-        void RenderObjectBlur( CommandContext& Context, ColorBuffer& velocityBuffer );
+        HDMC_EXPORT void RenderObjectBlur( CommandContext& Context, ColorBuffer& velocityBuffer );
     }
 }

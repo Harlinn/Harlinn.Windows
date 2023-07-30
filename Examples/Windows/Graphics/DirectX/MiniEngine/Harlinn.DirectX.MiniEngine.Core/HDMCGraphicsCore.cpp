@@ -115,49 +115,47 @@ namespace Graphics
         }
     }
 
-    uint32_t GetVendorIdFromDevice(ID3D12Device* pDevice)
+    uint32_t GetVendorIdFromDevice(const D3D12Device& pDevice)
     {
-        LUID luid = pDevice->GetAdapterLuid();
+        LUID luid = pDevice.GetAdapterLuid();
 
         // Obtain the DXGI factory
-        Microsoft::WRL::ComPtr<IDXGIFactory4> dxgiFactory;
-        ASSERT_SUCCEEDED(CreateDXGIFactory2(0, MY_IID_PPV_ARGS(&dxgiFactory)));
+        DXGI::Factory4 dxgiFactory = DXGI::Factory4::Create( );;
+        
 
-        Microsoft::WRL::ComPtr<IDXGIAdapter1> pAdapter;
+        auto pAdapter = dxgiFactory.EnumAdapterByLuid<DXGI::Adapter2>( luid );
 
-        if (SUCCEEDED(dxgiFactory->EnumAdapterByLuid(luid, MY_IID_PPV_ARGS(&pAdapter))))
+        if ( pAdapter )
         {
             DXGI_ADAPTER_DESC1 desc;
-            if(SUCCEEDED(pAdapter->GetDesc1(&desc)))
-            {
-                return desc.VendorId;
-            }
+            pAdapter.GetDesc1( &desc );
+            return desc.VendorId;
         }
 
         return 0;
     }
 
-    bool IsDeviceNvidia(ID3D12Device* pDevice)
+    bool IsDeviceNvidia(const D3D12Device& pDevice)
     {
         return GetVendorIdFromDevice(pDevice) == vendorID_Nvidia;
     }
 
-    bool IsDeviceAMD(ID3D12Device* pDevice)
+    bool IsDeviceAMD(const D3D12Device& pDevice)
     {
         return GetVendorIdFromDevice(pDevice) == vendorID_AMD;
     }
 
-    bool IsDeviceIntel(ID3D12Device* pDevice)
+    bool IsDeviceIntel(const D3D12Device& pDevice)
     {
         return GetVendorIdFromDevice(pDevice) == vendorID_Intel;
     }
 
 	// Check adapter support for DirectX Raytracing.
-	bool IsDirectXRaytracingSupported(ID3D12Device* testDevice)
+	bool IsDirectXRaytracingSupported(const D3D12Device& testDevice)
 	{
 		D3D12_FEATURE_DATA_D3D12_OPTIONS5 featureSupport = {};
 
-        if (FAILED(testDevice->CheckFeatureSupport(D3D12_FEATURE_D3D12_OPTIONS5, &featureSupport, sizeof(featureSupport))))
+        if (testDevice.CheckFeatureSupport(featureSupport) == false)
             return false;
 
         return featureSupport.RaytracingTier != D3D12_RAYTRACING_TIER_NOT_SUPPORTED;

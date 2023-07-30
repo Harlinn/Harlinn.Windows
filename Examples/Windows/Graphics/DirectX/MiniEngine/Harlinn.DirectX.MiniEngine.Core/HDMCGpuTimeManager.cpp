@@ -22,8 +22,8 @@ namespace Harlinn::Windows::DirectX::MiniEngine
 {
     namespace
     {
-        ID3D12QueryHeap* sm_QueryHeap = nullptr;
-        ID3D12Resource* sm_ReadBackBuffer = nullptr;
+        D3D12QueryHeap sm_QueryHeap;
+        D3D12Resource sm_ReadBackBuffer;
         uint64_t* sm_TimeStampBuffer = nullptr;
         uint64_t sm_Fence = 0;
         uint32_t sm_MaxNumTimers = 0;
@@ -36,7 +36,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine
     void GpuTimeManager::Initialize( uint32_t MaxNumTimers )
     {
         uint64_t GpuFrequency;
-        Graphics::g_CommandManager.GetCommandQueue( )->GetTimestampFrequency( &GpuFrequency );
+        Graphics::g_CommandManager.GetCommandQueue( ).GetTimestampFrequency( &GpuFrequency );
         sm_GpuTickDelta = 1.0 / static_cast< double >( GpuFrequency );
 
         D3D12_HEAP_PROPERTIES HeapProps;
@@ -59,27 +59,23 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         BufferDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
         BufferDesc.Flags = D3D12_RESOURCE_FLAG_NONE;
 
-        Graphics::g_Device.CreateCommittedResource( &HeapProps, D3D12_HEAP_FLAG_NONE, &BufferDesc,
-            D3D12_RESOURCE_STATE_COPY_DEST, nullptr, MY_IID_PPV_ARGS( &sm_ReadBackBuffer ) );
-        sm_ReadBackBuffer->SetName( L"GpuTimeStamp Buffer" );
+        sm_ReadBackBuffer = Graphics::g_Device.CreateCommittedResource( &HeapProps, D3D12_HEAP_FLAG_NONE, &BufferDesc, D3D12_RESOURCE_STATE_COPY_DEST, nullptr );
+        sm_ReadBackBuffer.SetName( L"GpuTimeStamp Buffer" );
 
         D3D12_QUERY_HEAP_DESC QueryHeapDesc;
         QueryHeapDesc.Count = MaxNumTimers * 2;
         QueryHeapDesc.NodeMask = 1;
         QueryHeapDesc.Type = D3D12_QUERY_HEAP_TYPE_TIMESTAMP;
-        Graphics::g_Device.CreateQueryHeap( &QueryHeapDesc, MY_IID_PPV_ARGS( &sm_QueryHeap ) );
-        sm_QueryHeap->SetName( L"GpuTimeStamp QueryHeap" );
+        sm_QueryHeap = Graphics::g_Device.CreateQueryHeap( &QueryHeapDesc );
+        sm_QueryHeap.SetName( L"GpuTimeStamp QueryHeap" );
 
         sm_MaxNumTimers = ( uint32_t )MaxNumTimers;
     }
 
     void GpuTimeManager::Shutdown( )
     {
-        if ( sm_ReadBackBuffer != nullptr )
-            sm_ReadBackBuffer->Release( );
-
-        if ( sm_QueryHeap != nullptr )
-            sm_QueryHeap->Release( );
+        sm_ReadBackBuffer = nullptr;
+        sm_QueryHeap = nullptr;
     }
 
     uint32_t GpuTimeManager::NewTimer( void )
@@ -104,7 +100,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         D3D12_RANGE Range;
         Range.Begin = 0;
         Range.End = ( sm_NumTimers * 2 ) * sizeof( uint64_t );
-        ASSERT_SUCCEEDED( sm_ReadBackBuffer->Map( 0, &Range, reinterpret_cast< void** >( &sm_TimeStampBuffer ) ) );
+        sm_ReadBackBuffer.Map( 0, &Range, reinterpret_cast< void** >( &sm_TimeStampBuffer ) );
 
         sm_ValidTimeStart = sm_TimeStampBuffer[ 0 ];
         sm_ValidTimeEnd = sm_TimeStampBuffer[ 1 ];
@@ -121,7 +117,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine
     {
         // Unmap with an empty range to indicate nothing was written by the CPU
         D3D12_RANGE EmptyRange = {};
-        sm_ReadBackBuffer->Unmap( 0, &EmptyRange );
+        sm_ReadBackBuffer.Unmap( 0, &EmptyRange );
         sm_TimeStampBuffer = nullptr;
 
         CommandContext& Context = CommandContext::Begin( );

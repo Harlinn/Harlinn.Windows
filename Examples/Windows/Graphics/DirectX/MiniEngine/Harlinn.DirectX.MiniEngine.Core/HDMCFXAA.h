@@ -25,14 +25,14 @@ namespace Harlinn::Windows::DirectX::MiniEngine
 
     namespace FXAA
     {
-        extern BoolVar Enable;
-        extern BoolVar DebugDraw;
-        extern NumVar ContrastThreshold;	// Default = 0.20
-        extern NumVar SubpixelRemoval;		// Default = 0.75
+        HDMC_EXPORT extern BoolVar Enable;
+        HDMC_EXPORT extern BoolVar DebugDraw;
+        HDMC_EXPORT extern NumVar ContrastThreshold;	// Default = 0.20
+        HDMC_EXPORT extern NumVar SubpixelRemoval;		// Default = 0.75
 
-        void Initialize( void );
-        void Shutdown( void );
-        void Render( ComputeContext& Context, bool bUsePreComputedLuma );
+        HDMC_EXPORT void Initialize( void );
+        HDMC_EXPORT void Shutdown( void );
+        HDMC_EXPORT void Render( ComputeContext& Context, bool bUsePreComputedLuma );
 
     } // namespace FXAA
 }

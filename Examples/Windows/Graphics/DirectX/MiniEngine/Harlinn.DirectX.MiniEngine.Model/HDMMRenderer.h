@@ -58,14 +58,14 @@ namespace Harlinn::Windows::DirectX::MiniEngine
             kNumRootBindings
         };
 
-        void Initialize( void );
-        void Shutdown( void );
+        HDMM_EXPORT void Initialize( void );
+        HDMM_EXPORT void Shutdown( void );
 
-        uint8_t GetPSO( uint16_t psoFlags );
-        void SetIBLTextures( TextureRef diffuseIBL, TextureRef specularIBL );
-        void SetIBLBias( float LODBias );
-        void UpdateGlobalDescriptors( void );
-        void DrawSkybox( GraphicsContext& gfxContext, const Camera& camera, const D3D12_VIEWPORT& viewport, const D3D12_RECT& scissor );
+        HDMM_EXPORT uint8_t GetPSO( uint16_t psoFlags );
+        HDMM_EXPORT void SetIBLTextures( TextureRef diffuseIBL, TextureRef specularIBL );
+        HDMM_EXPORT void SetIBLBias( float LODBias );
+        HDMM_EXPORT void UpdateGlobalDescriptors( void );
+        HDMM_EXPORT void DrawSkybox( GraphicsContext& gfxContext, const Camera& camera, const D3D12_VIEWPORT& viewport, const D3D12_RECT& scissor );
 
         class MeshSorter
         {
@@ -102,15 +102,15 @@ namespace Harlinn::Windows::DirectX::MiniEngine
             const Frustum& GetViewFrustum( ) const { return m_Camera->GetViewSpaceFrustum( ); }
             const Matrix4& GetViewMatrix( ) const { return m_Camera->GetViewMatrix( ); }
 
-            void AddMesh( const Mesh& mesh, float distance,
+            HDMM_EXPORT void AddMesh( const Mesh& mesh, float distance,
                 D3D12_GPU_VIRTUAL_ADDRESS meshCBV,
                 D3D12_GPU_VIRTUAL_ADDRESS materialCBV,
                 D3D12_GPU_VIRTUAL_ADDRESS bufferPtr,
                 const Joint* skeleton = nullptr );
 
-            void Sort( );
+            HDMM_EXPORT void Sort( );
 
-            void RenderMeshes( DrawPass pass, GraphicsContext& context, GlobalConstants& globals );
+            HDMM_EXPORT void RenderMeshes( DrawPass pass, GraphicsContext& context, GlobalConstants& globals );
 
         private:
 

@@ -48,13 +48,13 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         Create( Name, Width, Height, Samples, Format );
     }
 
-    void DepthBuffer::CreateDerivedViews( ID3D12Device* Device, DXGI_FORMAT Format )
+    void DepthBuffer::CreateDerivedViews( const D3D12Device& Device, DXGI_FORMAT Format )
     {
-        ID3D12Resource* Resource = m_pResource;
+        const auto& Resource = m_pResource;
 
         D3D12_DEPTH_STENCIL_VIEW_DESC dsvDesc;
         dsvDesc.Format = GetDSVFormat( Format );
-        if ( Resource->GetDesc( ).SampleDesc.Count == 1 )
+        if ( Resource.GetDesc( ).SampleDesc.Count == 1 )
         {
             dsvDesc.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2D;
             dsvDesc.Texture2D.MipSlice = 0;
@@ -71,10 +71,10 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         }
 
         dsvDesc.Flags = D3D12_DSV_FLAG_NONE;
-        Device->CreateDepthStencilView( Resource, &dsvDesc, m_hDSV[ 0 ] );
+        Device.CreateDepthStencilView( Resource, &dsvDesc, m_hDSV[ 0 ] );
 
         dsvDesc.Flags = D3D12_DSV_FLAG_READ_ONLY_DEPTH;
-        Device->CreateDepthStencilView( Resource, &dsvDesc, m_hDSV[ 1 ] );
+        Device.CreateDepthStencilView( Resource, &dsvDesc, m_hDSV[ 1 ] );
 
         DXGI_FORMAT stencilReadFormat = GetStencilFormat( Format );
         if ( stencilReadFormat != DXGI_FORMAT_UNKNOWN )
@@ -86,10 +86,10 @@ namespace Harlinn::Windows::DirectX::MiniEngine
             }
 
             dsvDesc.Flags = D3D12_DSV_FLAG_READ_ONLY_STENCIL;
-            Device->CreateDepthStencilView( Resource, &dsvDesc, m_hDSV[ 2 ] );
+            Device.CreateDepthStencilView( Resource, &dsvDesc, m_hDSV[ 2 ] );
 
             dsvDesc.Flags = D3D12_DSV_FLAG_READ_ONLY_DEPTH | D3D12_DSV_FLAG_READ_ONLY_STENCIL;
-            Device->CreateDepthStencilView( Resource, &dsvDesc, m_hDSV[ 3 ] );
+            Device.CreateDepthStencilView( Resource, &dsvDesc, m_hDSV[ 3 ] );
         }
         else
         {
@@ -113,7 +113,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine
             SRVDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2DMS;
         }
         SRVDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-        Device->CreateShaderResourceView( Resource, &SRVDesc, m_hDepthSRV );
+        Device.CreateShaderResourceView( Resource, &SRVDesc, m_hDepthSRV );
 
         if ( stencilReadFormat != DXGI_FORMAT_UNKNOWN )
         {
@@ -121,7 +121,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine
                 m_hStencilSRV = Graphics::AllocateDescriptor( D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV );
 
             SRVDesc.Format = stencilReadFormat;
-            Device->CreateShaderResourceView( Resource, &SRVDesc, m_hStencilSRV );
+            Device.CreateShaderResourceView( Resource, &SRVDesc, m_hStencilSRV );
         }
     }
 }

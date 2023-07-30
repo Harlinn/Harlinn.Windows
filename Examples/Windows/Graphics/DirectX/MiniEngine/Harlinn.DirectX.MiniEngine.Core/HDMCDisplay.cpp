@@ -197,7 +197,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine
 
         enum DebugZoomLevel { kDebugZoomOff, kDebugZoom2x, kDebugZoom4x, kDebugZoom8x, kDebugZoom16x, kDebugZoomCount };
         const char* DebugZoomLabels[ ] = { "Off", "2x Zoom", "4x Zoom", "8x Zoom", "16x Zoom" };
-        EnumVar DebugZoom( "Graphics/Display/Magnify Pixels", kDebugZoomOff, kDebugZoomCount, DebugZoomLabels );
+        HDMC_EXPORT EnumVar DebugZoom( "Graphics/Display/Magnify Pixels", kDebugZoomOff, kDebugZoomCount, DebugZoomLabels );
     }
 
     void Display::Resize( uint32_t width, uint32_t height )
@@ -256,11 +256,11 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         DXGI_SWAP_CHAIN_FULLSCREEN_DESC fsSwapChainDesc = {};
         fsSwapChainDesc.Windowed = TRUE;
 
-        dxgiFactory.CreateSwapChainForHwnd( g_CommandManager.GetCommandQueue( ),
+        s_SwapChain1 = dxgiFactory.CreateSwapChainForHwnd( g_CommandManager.GetCommandQueue( ),
             GameCore::g_hWnd,
             &swapChainDesc,
             &fsSwapChainDesc,
-            nullptr, &s_SwapChain1 );
+            nullptr );
 
         /*
         ASSERT_SUCCEEDED( dxgiFactory->CreateSwapChainForHwnd(

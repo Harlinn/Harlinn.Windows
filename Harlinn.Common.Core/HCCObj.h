@@ -866,15 +866,17 @@ namespace Harlinn::Common::Core
 
         void WriteClassId( REFCLSID rclsid ) const
         {
-            auto hr = WriteClassStg( *this, rclsid );
+            auto pInterface = GetInterface( );
+            auto hr = WriteClassStg( pInterface, rclsid );
             HCC_COM_CHECK_HRESULT( hr );
         }
 
 
         CLSID ReadClassId( ) const
         {
+            auto pInterface = GetInterface( );
             CLSID result = { 0, };
-            auto hr = ReadClassStg( *this, &result );
+            auto hr = ReadClassStg( pInterface, &result );
             HCC_COM_CHECK_HRESULT( hr );
             result;
         }
@@ -3259,7 +3261,7 @@ namespace Harlinn::Common::Core
             cei.SetHelpContext( dwHelpContext );
 
             ErrorInfo ei = cei.As<ErrorInfo>( );
-            hr = ::SetErrorInfo( 0, ei );
+            hr = ::SetErrorInfo( 0, ei.GetInterfacePointer<IErrorInfo>() );
             HCC_COM_CHECK_HRESULT( hr );
         }
     };

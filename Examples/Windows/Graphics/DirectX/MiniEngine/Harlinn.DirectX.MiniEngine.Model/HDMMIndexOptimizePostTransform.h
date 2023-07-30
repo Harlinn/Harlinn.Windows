@@ -34,10 +34,10 @@ namespace Harlinn::Windows::DirectX::MiniEngine
     //          the size of the simulated post-transform cache (max:64)
     //-----------------------------------------------------------------------------
     template <typename SrcIndexType, typename DstIndexType>
-    void OptimizeFaces( const SrcIndexType* indexList, size_t indexCount, DstIndexType* newIndexList, size_t lruCacheSize );
+    HDMM_EXPORT void OptimizeFaces( const SrcIndexType* indexList, size_t indexCount, DstIndexType* newIndexList, size_t lruCacheSize );
 
-    template void OptimizeFaces<uint16_t, uint16_t>( const uint16_t* indexList, size_t indexCount, uint16_t* newIndexList, size_t lruCacheSize );
-    template void OptimizeFaces<uint32_t, uint16_t>( const uint32_t* indexList, size_t indexCount, uint16_t* newIndexList, size_t lruCacheSize );
-    template void OptimizeFaces<uint32_t, uint32_t>( const uint32_t* indexList, size_t indexCount, uint32_t* newIndexList, size_t lruCacheSize );
+    template HDMM_TEMPLATE_EXPORT_DECL void OptimizeFaces<uint16_t, uint16_t>( const uint16_t* indexList, size_t indexCount, uint16_t* newIndexList, size_t lruCacheSize );
+    template HDMM_TEMPLATE_EXPORT_DECL void OptimizeFaces<uint32_t, uint16_t>( const uint32_t* indexList, size_t indexCount, uint16_t* newIndexList, size_t lruCacheSize );
+    template HDMM_TEMPLATE_EXPORT_DECL void OptimizeFaces<uint32_t, uint32_t>( const uint32_t* indexList, size_t indexCount, uint32_t* newIndexList, size_t lruCacheSize );
 
 }

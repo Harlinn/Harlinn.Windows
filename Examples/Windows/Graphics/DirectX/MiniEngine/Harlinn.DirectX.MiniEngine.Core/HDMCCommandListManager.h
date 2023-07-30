@@ -17,42 +17,12 @@
 
 namespace Harlinn::Windows::DirectX::MiniEngine
 {
-
     class CommandQueue
     {
         friend class CommandListManager;
         friend class CommandContext;
 
-    public:
-        HDMC_EXPORT CommandQueue( D3D12_COMMAND_LIST_TYPE Type );
-        HDMC_EXPORT ~CommandQueue( );
-
-        HDMC_EXPORT void Create( ID3D12Device* pDevice );
-        HDMC_EXPORT void Shutdown( );
-
-        inline bool IsReady( )
-        {
-            return m_CommandQueue != nullptr;
-        }
-
-        HDMC_EXPORT uint64_t IncrementFence( void );
-        HDMC_EXPORT bool IsFenceComplete( uint64_t FenceValue );
-        HDMC_EXPORT void StallForFence( uint64_t FenceValue );
-        HDMC_EXPORT void StallForProducer( CommandQueue& Producer );
-        HDMC_EXPORT void WaitForFence( uint64_t FenceValue );
-        void WaitForIdle( void ) { WaitForFence( IncrementFence( ) ); }
-
-        ID3D12CommandQueue* GetCommandQueue( ) { return m_CommandQueue; }
-
-        uint64_t GetNextFenceValue( ) { return m_NextFenceValue; }
-
-    private:
-
-        HDMC_EXPORT uint64_t ExecuteCommandList( ID3D12CommandList* List );
-        HDMC_EXPORT ID3D12CommandAllocator* RequestAllocator( void );
-        HDMC_EXPORT void DiscardAllocator( uint64_t FenceValueForReset, ID3D12CommandAllocator* Allocator );
-
-        ID3D12CommandQueue* m_CommandQueue;
+        D3D12CommandQueue m_CommandQueue;
 
         const D3D12_COMMAND_LIST_TYPE m_Type;
 
@@ -61,22 +31,53 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         std::mutex m_EventMutex;
 
         // Lifetime of these objects is managed by the descriptor cache
-        ID3D12Fence* m_pFence;
+        D3D12Fence m_pFence;
         uint64_t m_NextFenceValue;
         uint64_t m_LastCompletedFenceValue;
         HANDLE m_FenceEventHandle;
+    public:
+        HDMC_EXPORT CommandQueue( D3D12_COMMAND_LIST_TYPE Type );
+        HDMC_EXPORT ~CommandQueue( );
 
+        HDMC_EXPORT void Create( const D3D12Device& pDevice );
+        HDMC_EXPORT void Shutdown( );
+
+        inline bool IsReady( )
+        {
+            return m_CommandQueue != nullptr;
+        }
+
+        HDMC_EXPORT uint64_t IncrementFence( );
+        HDMC_EXPORT bool IsFenceComplete( uint64_t FenceValue );
+        HDMC_EXPORT void StallForFence( uint64_t FenceValue );
+        HDMC_EXPORT void StallForProducer( CommandQueue& Producer );
+        HDMC_EXPORT void WaitForFence( uint64_t FenceValue );
+        void WaitForIdle( void ) { WaitForFence( IncrementFence( ) ); }
+
+        const D3D12CommandQueue& GetCommandQueue( ) { return m_CommandQueue; }
+
+        uint64_t GetNextFenceValue( ) { return m_NextFenceValue; }
+
+    private:
+        HDMC_EXPORT uint64_t ExecuteCommandList( const D3D12GraphicsCommandList& List );
+        HDMC_EXPORT D3D12CommandAllocator RequestAllocator( );
+        HDMC_EXPORT void DiscardAllocator( uint64_t FenceValueForReset, const D3D12CommandAllocator& Allocator );
     };
 
     class CommandListManager
     {
         friend class CommandContext;
+    private:
+        D3D12Device m_Device;
 
+        CommandQueue m_GraphicsQueue;
+        CommandQueue m_ComputeQueue;
+        CommandQueue m_CopyQueue;
     public:
         HDMC_EXPORT CommandListManager( );
         HDMC_EXPORT ~CommandListManager( );
 
-        HDMC_EXPORT void Create( ID3D12Device* pDevice );
+        HDMC_EXPORT void Create( const D3D12Device& pDevice );
         HDMC_EXPORT void Shutdown( );
 
         CommandQueue& GetGraphicsQueue( void ) { return m_GraphicsQueue; }
@@ -93,15 +94,15 @@ namespace Harlinn::Windows::DirectX::MiniEngine
             }
         }
 
-        ID3D12CommandQueue* GetCommandQueue( )
+        const D3D12CommandQueue& GetCommandQueue( )
         {
             return m_GraphicsQueue.GetCommandQueue( );
         }
 
         HDMC_EXPORT void CreateNewCommandList(
             D3D12_COMMAND_LIST_TYPE Type,
-            ID3D12GraphicsCommandList** List,
-            ID3D12CommandAllocator** Allocator );
+            D3D12GraphicsCommandList* List,
+            D3D12CommandAllocator* Allocator );
 
         // Test to see if a fence has already been reached
         bool IsFenceComplete( uint64_t FenceValue )
@@ -119,13 +120,5 @@ namespace Harlinn::Windows::DirectX::MiniEngine
             m_ComputeQueue.WaitForIdle( );
             m_CopyQueue.WaitForIdle( );
         }
-
-    private:
-
-        ID3D12Device* m_Device;
-
-        CommandQueue m_GraphicsQueue;
-        CommandQueue m_ComputeQueue;
-        CommandQueue m_CopyQueue;
     };
 }

@@ -52,8 +52,8 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         {
             BoundingSphere m_BoundingSphere;
             AxisAlignedBox m_BoundingBox;
-            std::vector<byte> m_GeometryData;
-            std::vector<byte> m_AnimationKeyFrameData;
+            std::vector<Byte> m_GeometryData;
+            std::vector<Byte> m_AnimationKeyFrameData;
             std::vector<AnimationCurve> m_AnimationCurves;
             std::vector<AnimationSet> m_Animations;
             std::vector<uint16_t> m_JointIndices;
@@ -88,7 +88,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine
 
         void CompileMesh(
             std::vector<Mesh*>& meshList,
-            std::vector<byte>& bufferMemory,
+            std::vector<Byte>& bufferMemory,
             glTF::Mesh& srcMesh,
             uint32_t matrixIdx,
             const Matrix4& localToObject,
@@ -96,9 +96,9 @@ namespace Harlinn::Windows::DirectX::MiniEngine
             Math::AxisAlignedBox& boundingBox
         );
 
-        bool BuildModel( ModelData& model, const glTF::Asset& asset, int sceneIdx = -1 );
-        bool SaveModel( const std::wstring& filePath, const ModelData& model );
+        HDMM_EXPORT bool BuildModel( ModelData& model, const glTF::Asset& asset, int sceneIdx = -1 );
+        HDMM_EXPORT bool SaveModel( const std::wstring& filePath, const ModelData& model );
 
-        std::shared_ptr<Model> LoadModel( const std::wstring& filePath, bool forceRebuild = false );
+        HDMM_EXPORT std::shared_ptr<Model> LoadModel( const std::wstring& filePath, bool forceRebuild = false );
     }
 }

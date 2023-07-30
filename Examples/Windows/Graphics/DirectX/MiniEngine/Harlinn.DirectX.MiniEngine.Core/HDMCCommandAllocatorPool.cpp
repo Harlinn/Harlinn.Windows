@@ -18,8 +18,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine
 {
 
     CommandAllocatorPool::CommandAllocatorPool( D3D12_COMMAND_LIST_TYPE Type ) :
-        m_cCommandListType( Type ),
-        m_Device( nullptr )
+        m_cCommandListType( Type )
     {
     }
 
@@ -28,34 +27,30 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         Shutdown( );
     }
 
-    void CommandAllocatorPool::Create( ID3D12Device* pDevice )
+    void CommandAllocatorPool::Create( const D3D12Device& pDevice )
     {
         m_Device = pDevice;
     }
 
     void CommandAllocatorPool::Shutdown( )
     {
-        for ( size_t i = 0; i < m_AllocatorPool.size( ); ++i )
-            m_AllocatorPool[ i ]->Release( );
-
         m_AllocatorPool.clear( );
     }
 
-    ID3D12CommandAllocator* CommandAllocatorPool::RequestAllocator( uint64_t CompletedFenceValue )
+    D3D12CommandAllocator CommandAllocatorPool::RequestAllocator( uint64_t CompletedFenceValue )
     {
         std::lock_guard<std::mutex> LockGuard( m_AllocatorMutex );
 
-        ID3D12CommandAllocator* pAllocator = nullptr;
+        D3D12CommandAllocator pAllocator;
 
         if ( !m_ReadyAllocators.empty( ) )
         {
-            std::pair<uint64_t, ID3D12CommandAllocator*>& AllocatorPair = m_ReadyAllocators.front( );
+            std::pair<uint64_t, D3D12CommandAllocator>& AllocatorPair = m_ReadyAllocators.front( );
 
             if ( AllocatorPair.first <= CompletedFenceValue )
             {
                 pAllocator = AllocatorPair.second;
-                auto hr = pAllocator->Reset( );
-                CheckHRESULT( hr );
+                pAllocator.Reset( );
                 m_ReadyAllocators.pop( );
             }
         }
@@ -63,18 +58,17 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         // If no allocator's were ready to be reused, create a new one
         if ( pAllocator == nullptr )
         {
-            auto hr = m_Device->CreateCommandAllocator( m_cCommandListType, MY_IID_PPV_ARGS( &pAllocator ) );
-            CheckHRESULT( hr );
+            pAllocator = m_Device.CreateCommandAllocator( m_cCommandListType );
             wchar_t AllocatorName[ 32 ];
             swprintf( AllocatorName, 32, L"CommandAllocator %zu", m_AllocatorPool.size( ) );
-            pAllocator->SetName( AllocatorName );
+            pAllocator.SetName( AllocatorName );
             m_AllocatorPool.push_back( pAllocator );
         }
 
         return pAllocator;
     }
 
-    void CommandAllocatorPool::DiscardAllocator( uint64_t FenceValue, ID3D12CommandAllocator* Allocator )
+    void CommandAllocatorPool::DiscardAllocator( uint64_t FenceValue, const D3D12CommandAllocator& Allocator )
     {
         std::lock_guard<std::mutex> LockGuard( m_AllocatorMutex );
 

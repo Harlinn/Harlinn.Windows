@@ -22,14 +22,6 @@ namespace Harlinn::Windows::DirectX::MiniEngine
     class ComputeContext;
     class ParticleEffect
     {
-    public:
-        ParticleEffect( ParticleEffectProperties& effectProperties );
-        void LoadDeviceResources( ID3D12Device* device );
-        void Update( ComputeContext& CompContext, float timeDelta );
-        float GetLifetime( ) { return m_EffectProperties.TotalActiveLifetime; }
-        float GetElapsedTime( ) { return m_ElapsedTime; }
-        void Reset( );
-
     private:
 
         StructuredBuffer m_StateBuffers[ 2 ];
@@ -42,6 +34,15 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         ParticleEffectProperties m_OriginalEffectProperties;
         float m_ElapsedTime;
         UINT m_effectID;
+
+    public:
+        HDMC_EXPORT ParticleEffect( ParticleEffectProperties& effectProperties );
+        HDMC_EXPORT void LoadDeviceResources( const D3D12Device& device );
+        HDMC_EXPORT void Update( ComputeContext& CompContext, float timeDelta );
+        float GetLifetime( ) { return m_EffectProperties.TotalActiveLifetime; }
+        float GetElapsedTime( ) { return m_ElapsedTime; }
+        HDMC_EXPORT void Reset( );
+
 
 
     };

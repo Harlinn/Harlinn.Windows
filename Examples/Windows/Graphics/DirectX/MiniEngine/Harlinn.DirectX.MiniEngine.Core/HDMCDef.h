@@ -6,6 +6,7 @@
 #include <HWGraphicsD3D12.h>
 #include <HWDXGI.h>
 #include <d3dx12.h>
+#include <HCCThread.h>
 
 #ifdef BUILDING_HARLINN_DIRECTX_MINIENGINE_CORE
 #define HDMC_EXPORT __declspec(dllexport)
@@ -40,11 +41,22 @@ namespace Harlinn::Windows::DirectX::MiniEngine
     using XMUINT3 = ::DirectX::XMUINT3;
     using XMUINT4 = ::DirectX::XMUINT4;
     
-
-    using D3D12Device = Harlinn::Windows::Graphics::D3D12Device;
-    using D3D12Resource = Harlinn::Windows::Graphics::D3D12Resource;
-    using D3D12DescriptorHeap = Harlinn::Windows::Graphics::D3D12DescriptorHeap;
+    using D3DBlob = Harlinn::Windows::Graphics::D3DBlob;
     using D3D12CommandAllocator = Harlinn::Windows::Graphics::D3D12CommandAllocator;
+    using D3D12CommandList = Harlinn::Windows::Graphics::D3D12CommandList;
+    using D3D12CommandQueue = Harlinn::Windows::Graphics::D3D12CommandQueue;
+    using D3D12CommandSignature = Harlinn::Windows::Graphics::D3D12CommandSignature;
+    using D3D12DescriptorHeap = Harlinn::Windows::Graphics::D3D12DescriptorHeap;
+    using D3D12Device = Harlinn::Windows::Graphics::D3D12Device;
+    using D3D12Fence = Harlinn::Windows::Graphics::D3D12Fence;
+    using D3D12GraphicsCommandList = Harlinn::Windows::Graphics::D3D12GraphicsCommandList;
+    using D3D12Heap = Harlinn::Windows::Graphics::D3D12Heap;
+    using D3D12PipelineState = Harlinn::Windows::Graphics::D3D12PipelineState;
+    using D3D12QueryHeap = Harlinn::Windows::Graphics::D3D12QueryHeap;
+    using D3D12Resource = Harlinn::Windows::Graphics::D3D12Resource;
+    using D3D12RootSignature = Harlinn::Windows::Graphics::D3D12RootSignature;
+    
+
 
 }
 

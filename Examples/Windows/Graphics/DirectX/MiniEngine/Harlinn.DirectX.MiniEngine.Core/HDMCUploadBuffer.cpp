@@ -48,8 +48,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         ResourceDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
         ResourceDesc.Flags = D3D12_RESOURCE_FLAG_NONE;
 
-        g_Device.CreateCommittedResource( &HeapProps, D3D12_HEAP_FLAG_NONE, &ResourceDesc,
-            D3D12_RESOURCE_STATE_GENERIC_READ, nullptr, MY_IID_PPV_ARGS( &m_pResource ) );
+        m_pResource = g_Device.CreateCommittedResource( &HeapProps, D3D12_HEAP_FLAG_NONE, &ResourceDesc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr );
 
         m_GpuVirtualAddress = m_pResource.GetGPUVirtualAddress( );
 

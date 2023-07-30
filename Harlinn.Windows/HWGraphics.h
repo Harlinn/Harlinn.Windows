@@ -8323,8 +8323,7 @@ namespace Harlinn::Windows::Graphics
         }
         void DrawImage( const Effect& effect, const D2D1_POINT_2F& targetOffset, const D2D1_RECT_F& imageRectangle, D2D1_INTERPOLATION_MODE interpolationMode = D2D1_INTERPOLATION_MODE_LINEAR, D2D1_COMPOSITE_MODE compositeMode = D2D1_COMPOSITE_MODE_SOURCE_OVER ) const
         {
-            auto* pInterface = GetInterface( );
-            pInterface->DrawImage( effect, &targetOffset, &imageRectangle, interpolationMode, compositeMode );
+            DrawImage( effect.GetInterfacePointer<ID2D1Effect>(), &targetOffset, &imageRectangle, interpolationMode, compositeMode );
         }
 
 

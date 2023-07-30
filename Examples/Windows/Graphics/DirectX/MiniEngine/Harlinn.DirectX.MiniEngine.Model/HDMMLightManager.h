@@ -34,25 +34,25 @@ namespace Harlinn::Windows::DirectX::MiniEngine
 
     namespace Lighting
     {
-        extern IntVar LightGridDim;
+        HDMM_EXPORT extern IntVar LightGridDim;
 
         enum { MaxLights = 128 };
 
         //LightData m_LightData[MaxLights];
-        extern StructuredBuffer m_LightBuffer;
-        extern ByteAddressBuffer m_LightGrid;
+        HDMM_EXPORT extern StructuredBuffer m_LightBuffer;
+        HDMM_EXPORT extern ByteAddressBuffer m_LightGrid;
 
-        extern ByteAddressBuffer m_LightGridBitMask;
-        extern std::uint32_t m_FirstConeLight;
-        extern std::uint32_t m_FirstConeShadowedLight;
+        HDMM_EXPORT extern ByteAddressBuffer m_LightGridBitMask;
+        HDMM_EXPORT extern std::uint32_t m_FirstConeLight;
+        HDMM_EXPORT extern std::uint32_t m_FirstConeShadowedLight;
 
-        extern ColorBuffer m_LightShadowArray;
-        extern ShadowBuffer m_LightShadowTempBuffer;
-        extern Math::Matrix4 m_LightShadowMatrix[ MaxLights ];
+        HDMM_EXPORT extern ColorBuffer m_LightShadowArray;
+        HDMM_EXPORT extern ShadowBuffer m_LightShadowTempBuffer;
+        HDMM_EXPORT extern Math::Matrix4 m_LightShadowMatrix[ MaxLights ];
 
-        void InitializeResources( void );
-        void CreateRandomLights( const Math::Vector3 minBound, const Math::Vector3 maxBound );
-        void FillLightGrid( GraphicsContext& gfxContext, const Math::Camera& camera );
-        void Shutdown( void );
+        HDMM_EXPORT void InitializeResources( void );
+        HDMM_EXPORT void CreateRandomLights( const Math::Vector3 minBound, const Math::Vector3 maxBound );
+        HDMM_EXPORT void FillLightGrid( GraphicsContext& gfxContext, const Math::Camera& camera );
+        HDMM_EXPORT void Shutdown( void );
     }
 }

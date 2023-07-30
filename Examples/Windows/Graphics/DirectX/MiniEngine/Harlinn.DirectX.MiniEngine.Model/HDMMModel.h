@@ -106,7 +106,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine
 
         ~Model( ) { Destroy( ); }
 
-        void Render( Renderer::MeshSorter& sorter,
+        HDMM_EXPORT void Render( Renderer::MeshSorter& sorter,
             const GpuBuffer& meshConstants,
             const Math::ScaleAndTranslation sphereTransforms[ ],
             const Joint* skeleton ) const;
@@ -129,7 +129,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         std::unique_ptr<Math::Matrix4[ ]> m_JointIBMs;
 
     protected:
-        void Destroy( );
+        HDMM_EXPORT void Destroy( );
     };
 
     class ModelInstance
@@ -141,29 +141,29 @@ namespace Harlinn::Windows::DirectX::MiniEngine
             m_MeshConstantsCPU.Destroy( );
             m_MeshConstantsGPU.Destroy( );
         }
-        ModelInstance( std::shared_ptr<const Model> sourceModel );
-        ModelInstance( const ModelInstance& modelInstance );
+        HDMM_EXPORT ModelInstance( std::shared_ptr<const Model> sourceModel );
+        HDMM_EXPORT ModelInstance( const ModelInstance& modelInstance );
 
-        ModelInstance& operator=( std::shared_ptr<const Model> sourceModel );
+        HDMM_EXPORT ModelInstance& operator=( std::shared_ptr<const Model> sourceModel );
 
         bool IsNull( void ) const { return m_Model == nullptr; }
 
-        void Update( GraphicsContext& gfxContext, float deltaTime );
-        void Render( Renderer::MeshSorter& sorter ) const;
+        HDMM_EXPORT void Update( GraphicsContext& gfxContext, float deltaTime );
+        HDMM_EXPORT void Render( Renderer::MeshSorter& sorter ) const;
 
-        void Resize( float newRadius );
-        Math::Vector3 GetCenter( ) const;
-        Math::Scalar GetRadius( ) const;
-        Math::BoundingSphere GetBoundingSphere( ) const;
-        Math::OrientedBox GetBoundingBox( ) const;
+        HDMM_EXPORT void Resize( float newRadius );
+        HDMM_EXPORT Math::Vector3 GetCenter( ) const;
+        HDMM_EXPORT Math::Scalar GetRadius( ) const;
+        HDMM_EXPORT Math::BoundingSphere GetBoundingSphere( ) const;
+        HDMM_EXPORT Math::OrientedBox GetBoundingBox( ) const;
 
         size_t GetNumAnimations( void ) const { return m_AnimState.size( ); }
-        void PlayAnimation( uint32_t animIdx, bool loop );
-        void PauseAnimation( uint32_t animIdx );
-        void ResetAnimation( uint32_t animIdx );
-        void StopAnimation( uint32_t animIdx );
-        void UpdateAnimations( float deltaTime );
-        void LoopAllAnimations( void );
+        HDMM_EXPORT void PlayAnimation( uint32_t animIdx, bool loop );
+        HDMM_EXPORT void PauseAnimation( uint32_t animIdx );
+        HDMM_EXPORT void ResetAnimation( uint32_t animIdx );
+        HDMM_EXPORT void StopAnimation( uint32_t animIdx );
+        HDMM_EXPORT void UpdateAnimations( float deltaTime );
+        HDMM_EXPORT void LoopAllAnimations( void );
 
     private:
         std::shared_ptr<const Model> m_Model;
