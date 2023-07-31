@@ -25,30 +25,28 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         friend class ComputeContext;
     protected:
         D3D12Resource m_pResource;
-        D3D12_RESOURCE_STATES m_UsageState;
-        D3D12_RESOURCE_STATES m_TransitioningState;
-        D3D12_GPU_VIRTUAL_ADDRESS m_GpuVirtualAddress;
+        D3D12_RESOURCE_STATES m_UsageState = D3D12_RESOURCE_STATE_COMMON;
+        D3D12_RESOURCE_STATES m_TransitioningState = ( D3D12_RESOURCE_STATES )-1;
+        D3D12_GPU_VIRTUAL_ADDRESS m_GpuVirtualAddress = D3D12_GPU_VIRTUAL_ADDRESS_NULL;
 
         // Used to identify when a resource changes so descriptors can be copied etc.
         uint32_t m_VersionID = 0;
     public:
 
         GpuResource( ) 
-            : m_GpuVirtualAddress( D3D12_GPU_VIRTUAL_ADDRESS_NULL ),
-              m_UsageState( D3D12_RESOURCE_STATE_COMMON ),
-              m_TransitioningState( ( D3D12_RESOURCE_STATES )-1 )
         {
         }
 
         explicit GpuResource( const D3D12Resource& pResource, D3D12_RESOURCE_STATES CurrentState = D3D12_RESOURCE_STATE_COMMON, bool addRef = false )
             : m_pResource( pResource ),
-              m_GpuVirtualAddress( D3D12_GPU_VIRTUAL_ADDRESS_NULL ),
-              m_UsageState( CurrentState ),
-              m_TransitioningState( ( D3D12_RESOURCE_STATES )-1 )
+              m_UsageState( CurrentState )
         {
         }
 
-        ~GpuResource( ) { Destroy( ); }
+        ~GpuResource( ) 
+        { 
+            Destroy( ); 
+        }
 
         virtual void Destroy( )
         {

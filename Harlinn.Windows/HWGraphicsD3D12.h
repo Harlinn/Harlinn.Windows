@@ -1218,6 +1218,17 @@ namespace Harlinn::Windows::Graphics
             return SUCCEEDED( hr );
         }
 
+        bool IsRaytracingSupported( D3D12_RAYTRACING_TIER raytracingTier = D3D12_RAYTRACING_TIER_1_0 ) const
+        {
+            D3D12_FEATURE_DATA_D3D12_OPTIONS5 options = {};
+            if ( CheckFeatureSupport( options ) )
+            {
+                return options.RaytracingTier == raytracingTier;
+            }
+            return false;
+        }
+
+
 
         void CreateDescriptorHeap( _In_ const D3D12_DESCRIPTOR_HEAP_DESC* descriptorHeapDesc, REFIID riid, _COM_Outptr_ void** ppvHeap ) const
         {

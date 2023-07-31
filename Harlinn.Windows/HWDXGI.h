@@ -607,6 +607,14 @@ namespace Harlinn::Windows::DXGI
             CheckHRESULT( hr );
         }
 
+        DXGI_ADAPTER_DESC1 GetDesc1( ) const
+        {
+            DXGI_ADAPTER_DESC1 result{};
+            GetDesc1( &result );
+            return result;
+        }
+
+
         bool CanCreateD3D12Device( D3D_FEATURE_LEVEL minimumFeatureLevel = D3D_FEATURE_LEVEL_11_1 ) const
         {
             auto* pInterface = GetInterface( );
@@ -1667,6 +1675,16 @@ namespace Harlinn::Windows::DXGI
             Factory6 result( factory );
             return result;
         }
+
+        static Factory6 Create( UINT flags )
+        {
+            InterfaceType* factory = nullptr;
+            auto hr = CreateDXGIFactory2( flags, __uuidof( InterfaceType ), ( void** )&factory );
+            CheckHRESULT( hr );
+            Factory6 result( factory );
+            return result;
+        }
+
     public:
         void EnumAdapterByGpuPreference( UINT Adapter, DXGI_GPU_PREFERENCE GpuPreference, REFIID riid, void** ppvAdapter ) const
         {

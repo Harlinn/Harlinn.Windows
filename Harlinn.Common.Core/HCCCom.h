@@ -68,7 +68,6 @@ namespace Harlinn::Common::Core
         constexpr Unknown( ) noexcept
             : unknown_( nullptr )
         {
-
         }
 
         explicit Unknown( IUnknown* unknown, bool addref = false ) noexcept
