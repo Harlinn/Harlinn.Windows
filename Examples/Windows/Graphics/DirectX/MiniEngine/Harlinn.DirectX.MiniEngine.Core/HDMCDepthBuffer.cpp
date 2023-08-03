@@ -14,7 +14,6 @@
 #include "pch.h"
 #include "HDMCDepthBuffer.h"
 #include "HDMCGraphicsCore.h"
-#include "HDMCEsramAllocator.h"
 #include "HDMCDescriptorHeap.h"
 
 namespace Harlinn::Windows::DirectX::MiniEngine
@@ -38,15 +37,8 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         CreateDerivedViews( Graphics::g_Device, Format );
     }
 
-    void DepthBuffer::Create( const std::wstring& Name, uint32_t Width, uint32_t Height, DXGI_FORMAT Format, EsramAllocator& Allocator )
-    {
-        Create( Name, Width, Height, 1, Format, Allocator );
-    }
+    
 
-    void DepthBuffer::Create( const std::wstring& Name, uint32_t Width, uint32_t Height, uint32_t Samples, DXGI_FORMAT Format, EsramAllocator& )
-    {
-        Create( Name, Width, Height, Samples, Format );
-    }
 
     void DepthBuffer::CreateDerivedViews( const D3D12Device& Device, DXGI_FORMAT Format )
     {

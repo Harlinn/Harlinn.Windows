@@ -93,9 +93,6 @@
     <ClInclude Include="HDMCEngineTuning.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="HDMCEsramAllocator.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="HDMCFileUtility.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -247,6 +244,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="dds.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HDMCEngine.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

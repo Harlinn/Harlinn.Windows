@@ -235,9 +235,9 @@
     <ClInclude Include="HDMCDescriptorHeap.h" />
     <ClInclude Include="HDMCDisplay.h" />
     <ClInclude Include="HDMCDynamicDescriptorHeap.h" />
+    <ClInclude Include="HDMCEngine.h" />
     <ClInclude Include="HDMCEngineProfiling.h" />
     <ClInclude Include="HDMCEngineTuning.h" />
-    <ClInclude Include="HDMCEsramAllocator.h" />
     <ClInclude Include="HDMCFileUtility.h" />
     <ClInclude Include="HDMCFXAA.h" />
     <ClInclude Include="HDMCGameCore.h" />

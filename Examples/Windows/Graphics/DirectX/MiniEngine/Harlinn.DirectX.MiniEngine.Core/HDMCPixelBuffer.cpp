@@ -13,7 +13,6 @@
 
 #include "pch.h"
 #include "HDMCPixelBuffer.h"
-#include "HDMCEsramAllocator.h"
 #include "HDMCGraphicsCore.h"
 #include "HDMCBufferManager.h"
 #include "HDMCCommandContext.h"

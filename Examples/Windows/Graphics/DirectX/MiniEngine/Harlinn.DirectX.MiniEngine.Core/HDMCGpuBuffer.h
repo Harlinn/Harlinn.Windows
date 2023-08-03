@@ -48,9 +48,6 @@ namespace Harlinn::Windows::DirectX::MiniEngine
 
         HDMC_EXPORT void Create( const std::wstring& name, uint32_t NumElements, uint32_t ElementSize, const UploadBuffer& srcData, uint32_t srcOffset = 0 );
 
-        // Create a buffer in ESRAM.  On Windows, ESRAM is not used.
-        HDMC_EXPORT void Create( const std::wstring& name, uint32_t NumElements, uint32_t ElementSize, EsramAllocator& Allocator, const void* initialData = nullptr );
-
         // Sub-Allocate a buffer out of a pre-allocated heap.  If initial data is provided, it will be copied into the buffer using the default command context.
         HDMC_EXPORT void CreatePlaced( const std::wstring& name, const D3D12Heap& pBackingHeap, uint32_t HeapOffset, uint32_t NumElements, uint32_t ElementSize, const void* initialData = nullptr );
 
@@ -70,7 +67,14 @@ namespace Harlinn::Windows::DirectX::MiniEngine
 
         HDMC_EXPORT D3D12_CPU_DESCRIPTOR_HANDLE CreateConstantBufferView( uint32_t Offset, uint32_t Size ) const;
 
-        D3D12_VERTEX_BUFFER_VIEW VertexBufferView( size_t Offset, uint32_t Size, uint32_t Stride ) const;
+        D3D12_VERTEX_BUFFER_VIEW VertexBufferView( size_t Offset, uint32_t Size, uint32_t Stride ) const
+        {
+            D3D12_VERTEX_BUFFER_VIEW VBView;
+            VBView.BufferLocation = m_GpuVirtualAddress + Offset;
+            VBView.SizeInBytes = Size;
+            VBView.StrideInBytes = Stride;
+            return VBView;
+        }
 
         D3D12_VERTEX_BUFFER_VIEW VertexBufferView( size_t BaseVertexIndex = 0 ) const
         {
@@ -78,53 +82,68 @@ namespace Harlinn::Windows::DirectX::MiniEngine
             return VertexBufferView( Offset, ( uint32_t )( m_BufferSize - Offset ), m_ElementSize );
         }
 
-        D3D12_INDEX_BUFFER_VIEW IndexBufferView( size_t Offset, uint32_t Size, bool b32Bit = false ) const;
+        D3D12_INDEX_BUFFER_VIEW IndexBufferView( size_t Offset, uint32_t Size, bool b32Bit = false ) const
+        {
+            D3D12_INDEX_BUFFER_VIEW IBView;
+            IBView.BufferLocation = m_GpuVirtualAddress + Offset;
+            IBView.Format = b32Bit ? DXGI_FORMAT_R32_UINT : DXGI_FORMAT_R16_UINT;
+            IBView.SizeInBytes = Size;
+            return IBView;
+        }
         D3D12_INDEX_BUFFER_VIEW IndexBufferView( size_t StartIndex = 0 ) const
         {
             size_t Offset = StartIndex * m_ElementSize;
             return IndexBufferView( Offset, ( uint32_t )( m_BufferSize - Offset ), m_ElementSize == 4 );
         }
 
-        size_t GetBufferSize( ) const { return m_BufferSize; }
-        uint32_t GetElementCount( ) const { return m_ElementCount; }
-        uint32_t GetElementSize( ) const { return m_ElementSize; }
+        size_t GetBufferSize( ) const 
+        { 
+            return m_BufferSize; 
+        }
+        uint32_t GetElementCount( ) const 
+        { 
+            return m_ElementCount; 
+        }
+        uint32_t GetElementSize( ) const 
+        { 
+            return m_ElementSize; 
+        }
 
     
     protected:
-        D3D12_RESOURCE_DESC DescribeBuffer( void );
+        D3D12_RESOURCE_DESC DescribeBuffer( )
+        {
+            ASSERT( m_BufferSize != 0 );
+
+            D3D12_RESOURCE_DESC Desc = {};
+            Desc.Alignment = 0;
+            Desc.DepthOrArraySize = 1;
+            Desc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
+            Desc.Flags = m_ResourceFlags;
+            Desc.Format = DXGI_FORMAT_UNKNOWN;
+            Desc.Height = 1;
+            Desc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
+            Desc.MipLevels = 1;
+            Desc.SampleDesc.Count = 1;
+            Desc.SampleDesc.Quality = 0;
+            Desc.Width = ( UINT64 )m_BufferSize;
+            return Desc;
+        }
         virtual void CreateDerivedViews( void ) = 0;
 
         
     };
 
-    inline D3D12_VERTEX_BUFFER_VIEW GpuBuffer::VertexBufferView( size_t Offset, uint32_t Size, uint32_t Stride ) const
-    {
-        D3D12_VERTEX_BUFFER_VIEW VBView;
-        VBView.BufferLocation = m_GpuVirtualAddress + Offset;
-        VBView.SizeInBytes = Size;
-        VBView.StrideInBytes = Stride;
-        return VBView;
-    }
-
-    inline D3D12_INDEX_BUFFER_VIEW GpuBuffer::IndexBufferView( size_t Offset, uint32_t Size, bool b32Bit ) const
-    {
-        D3D12_INDEX_BUFFER_VIEW IBView;
-        IBView.BufferLocation = m_GpuVirtualAddress + Offset;
-        IBView.Format = b32Bit ? DXGI_FORMAT_R32_UINT : DXGI_FORMAT_R16_UINT;
-        IBView.SizeInBytes = Size;
-        return IBView;
-    }
-
     class ByteAddressBuffer : public GpuBuffer
     {
     public:
-        HDMC_EXPORT virtual void CreateDerivedViews( void ) override;
+        HDMC_EXPORT virtual void CreateDerivedViews( ) override;
     };
 
     class IndirectArgsBuffer : public ByteAddressBuffer
     {
     public:
-        IndirectArgsBuffer( void )
+        IndirectArgsBuffer( )
         {
         }
     };

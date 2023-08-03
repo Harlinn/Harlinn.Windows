@@ -16,7 +16,6 @@
 
 #include "HDMCGpuBuffer.h"
 #include "HDMCGraphicsCore.h"
-#include "HDMCEsramAllocator.h"
 #include "HDMCCommandContext.h"
 #include "HDMCBufferManager.h"
 #include "HDMCUploadBuffer.h"
@@ -126,12 +125,6 @@ namespace Harlinn::Windows::DirectX::MiniEngine
 
     }
 
-    void GpuBuffer::Create( const std::wstring& name, uint32_t NumElements, uint32_t ElementSize, EsramAllocator& Allocator, const void* initialData )
-    {
-        ( void )Allocator;
-        Create( name, NumElements, ElementSize, initialData );
-    }
-
     D3D12_CPU_DESCRIPTOR_HANDLE GpuBuffer::CreateConstantBufferView( uint32_t Offset, uint32_t Size ) const
     {
         ASSERT( Offset + Size <= m_BufferSize );
@@ -147,24 +140,6 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         return hCBV;
     }
 
-    D3D12_RESOURCE_DESC GpuBuffer::DescribeBuffer( void )
-    {
-        ASSERT( m_BufferSize != 0 );
-
-        D3D12_RESOURCE_DESC Desc = {};
-        Desc.Alignment = 0;
-        Desc.DepthOrArraySize = 1;
-        Desc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
-        Desc.Flags = m_ResourceFlags;
-        Desc.Format = DXGI_FORMAT_UNKNOWN;
-        Desc.Height = 1;
-        Desc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
-        Desc.MipLevels = 1;
-        Desc.SampleDesc.Count = 1;
-        Desc.SampleDesc.Quality = 0;
-        Desc.Width = ( UINT64 )m_BufferSize;
-        return Desc;
-    }
 
     void ByteAddressBuffer::CreateDerivedViews( void )
     {

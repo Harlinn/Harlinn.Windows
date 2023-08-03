@@ -12,13 +12,6 @@
 
 namespace Harlinn::Windows
 {
-    Environment::Environment( )
-    {
-
-    }
-
-
-
 
     WideString Environment::GetResourceString( const wchar_t* key, ... )
     {
@@ -280,7 +273,7 @@ namespace Harlinn::Windows
             flags |= SPIF_UPDATEINIFILE;
         }
 
-        if ( SystemParametersInfoW( SPI_SETFONTSMOOTHINGCONTRAST, 0, PVOID( theValue ), flags ) == FALSE )
+        if ( SystemParametersInfoW( SPI_GETFONTSMOOTHINGORIENTATION, 0, PVOID( theValue ), flags ) == FALSE )
         {
             ThrowLastOSError( );
         }

@@ -989,22 +989,45 @@ namespace std
         }
     };
 
-    template<> struct formatter<Harlinn::Common::Core::DateTime>
+    template<typename CharT> 
+    struct formatter<Harlinn::Common::Core::DateTime, CharT> 
     {
-        using ChronoFormatter = std::formatter<std::chrono::system_clock::time_point>;
+        using ChronoFormatter = std::formatter<std::chrono::system_clock::time_point,CharT>;
         ChronoFormatter chronoFormatter_;
 
-        constexpr auto parse( std::format_parse_context& ctx )
+        constexpr auto parse( std::basic_format_parse_context<CharT>& ctx )
         {
             return chronoFormatter_.parse( ctx );
         }
 
-        auto format( const Harlinn::Common::Core::DateTime& dateTime, std::format_context& ctx )
+        template<typename FormatContextT>
+        auto format( const Harlinn::Common::Core::DateTime& dateTime, FormatContextT& ctx )
         {
             auto timePoint = dateTime.ToTimePoint( );
             return chronoFormatter_.format( timePoint, ctx );
         }
     };
+
+    template<typename CharT>
+    struct formatter<Harlinn::Common::Core::TimeSpan, CharT>
+    {
+        using ChronoFormatter = std::formatter<std::chrono::system_clock::duration, CharT>;
+        ChronoFormatter chronoFormatter_;
+
+        constexpr auto parse( std::basic_format_parse_context<CharT>& ctx )
+        {
+            return chronoFormatter_.parse( ctx );
+        }
+
+        template<typename FormatContextT>
+        auto format( const Harlinn::Common::Core::TimeSpan& timeSpan, FormatContextT& ctx )
+        {
+            std::chrono::system_clock::duration duration( timeSpan.Ticks() - Harlinn::Common::Core::TimeSpan::UnixEpoch );
+            return chronoFormatter_.format( duration, ctx );
+        }
+    };
+
+
 
 
 }

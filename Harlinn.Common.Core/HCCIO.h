@@ -2811,6 +2811,9 @@ namespace Harlinn::Common::Core::IO
     public:
         using Base = SystemStream<FileStream>;
 
+        explicit FileStream( )
+        { }
+
         explicit FileStream( HANDLE handle )
             : Base( handle )
         { }

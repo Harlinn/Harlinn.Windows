@@ -62,29 +62,26 @@ namespace Harlinn::Windows::DirectX::MiniEngine
     | D3D12_RESOURCE_STATE_COPY_DEST \
     | D3D12_RESOURCE_STATE_COPY_SOURCE )
 
-    class ContextManager
+    class ContextManager : public std::enable_shared_from_this<ContextManager>
     {
+    private:
+        std::vector<std::unique_ptr<CommandContext> > sm_ContextPool[ 4 ];
+        std::queue<CommandContext*> sm_AvailableContexts[ 4 ];
+        std::mutex sm_ContextAllocationMutex;
     public:
-        ContextManager( void ) {}
+        ContextManager( ) 
+        {}
 
         HDMC_EXPORT CommandContext* AllocateContext( D3D12_COMMAND_LIST_TYPE Type );
         HDMC_EXPORT void FreeContext( CommandContext* );
         HDMC_EXPORT void DestroyAllContexts( );
 
-    private:
-        std::vector<std::unique_ptr<CommandContext> > sm_ContextPool[ 4 ];
-        std::queue<CommandContext*> sm_AvailableContexts[ 4 ];
-        std::mutex sm_ContextAllocationMutex;
+    
     };
 
-    struct NonCopyable
-    {
-        NonCopyable( ) = default;
-        NonCopyable( const NonCopyable& ) = delete;
-        NonCopyable& operator=( const NonCopyable& ) = delete;
-    };
+    
 
-    class CommandContext : NonCopyable
+    class CommandContext : public std::enable_shared_from_this<CommandContext>
     {
         friend ContextManager;
     protected:
@@ -117,6 +114,11 @@ namespace Harlinn::Windows::DirectX::MiniEngine
     private:
 
         HDMC_EXPORT CommandContext( D3D12_COMMAND_LIST_TYPE Type );
+
+        CommandContext( const CommandContext& ) = delete;
+        CommandContext( CommandContext&& ) = delete;
+        CommandContext& operator=( const CommandContext& ) = delete;
+        CommandContext& operator=( CommandContext&& ) = delete;
 
         HDMC_EXPORT void Reset( void );
 
@@ -207,10 +209,115 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         HDMC_EXPORT void BindDescriptorHeaps( void );
 
         
-        void SetID( const std::wstring& ID ) { m_ID = ID; }
+        void SetID( const std::wstring& ID ) 
+        { 
+            m_ID = ID; 
+        }
 
         
     };
+
+    inline void CommandContext::SetPipelineState( const PSO& PSO )
+    {
+        const auto& PipelineState = PSO.GetPipelineStateObject( );
+        if ( PipelineState == m_CurPipelineState )
+            return;
+
+        m_CommandList.SetPipelineState( PipelineState );
+        m_CurPipelineState = PipelineState;
+    }
+
+    inline void CommandContext::SetDescriptorHeap( D3D12_DESCRIPTOR_HEAP_TYPE Type, const D3D12DescriptorHeap& HeapPtr )
+    {
+        if ( m_CurrentDescriptorHeaps[ Type ] != HeapPtr )
+        {
+            m_CurrentDescriptorHeaps[ Type ] = HeapPtr;
+            BindDescriptorHeaps( );
+        }
+    }
+
+    inline void CommandContext::SetDescriptorHeaps( UINT HeapCount, D3D12_DESCRIPTOR_HEAP_TYPE Type[ ], D3D12DescriptorHeap HeapPtrs[ ] )
+    {
+        bool AnyChanged = false;
+
+        for ( UINT i = 0; i < HeapCount; ++i )
+        {
+            if ( m_CurrentDescriptorHeaps[ Type[ i ] ] != HeapPtrs[ i ] )
+            {
+                m_CurrentDescriptorHeaps[ Type[ i ] ] = HeapPtrs[ i ];
+                AnyChanged = true;
+            }
+        }
+
+        if ( AnyChanged )
+            BindDescriptorHeaps( );
+    }
+
+    inline void CommandContext::SetPredication( const D3D12Resource& Buffer, UINT64 BufferOffset, D3D12_PREDICATION_OP Op )
+    {
+        m_CommandList.SetPredication( Buffer, BufferOffset, Op );
+    }
+
+
+    inline void CommandContext::CopyBuffer( GpuResource& Dest, GpuResource& Src )
+    {
+        TransitionResource( Dest, D3D12_RESOURCE_STATE_COPY_DEST );
+        TransitionResource( Src, D3D12_RESOURCE_STATE_COPY_SOURCE );
+        FlushResourceBarriers( );
+        m_CommandList.CopyResource( Dest.GetResource( ), Src.GetResource( ) );
+    }
+
+    inline void CommandContext::CopyBufferRegion( GpuResource& Dest, size_t DestOffset, GpuResource& Src, size_t SrcOffset, size_t NumBytes )
+    {
+        TransitionResource( Dest, D3D12_RESOURCE_STATE_COPY_DEST );
+        //TransitionResource(Src, D3D12_RESOURCE_STATE_COPY_SOURCE);
+        FlushResourceBarriers( );
+        m_CommandList.CopyBufferRegion( Dest.GetResource( ), DestOffset, Src.GetResource( ), SrcOffset, NumBytes );
+    }
+
+    inline void CommandContext::CopyCounter( GpuResource& Dest, size_t DestOffset, StructuredBuffer& Src )
+    {
+        TransitionResource( Dest, D3D12_RESOURCE_STATE_COPY_DEST );
+        TransitionResource( Src.GetCounterBuffer( ), D3D12_RESOURCE_STATE_COPY_SOURCE );
+        FlushResourceBarriers( );
+        m_CommandList.CopyBufferRegion( Dest.GetResource( ), DestOffset, Src.GetCounterBuffer( ).GetResource( ), 0, 4 );
+    }
+
+    inline void CommandContext::CopyTextureRegion( GpuResource& Dest, UINT x, UINT y, UINT z, GpuResource& Source, RECT& Rect )
+    {
+        TransitionResource( Dest, D3D12_RESOURCE_STATE_COPY_DEST );
+        TransitionResource( Source, D3D12_RESOURCE_STATE_COPY_SOURCE );
+        FlushResourceBarriers( );
+
+        D3D12_TEXTURE_COPY_LOCATION destLoc = CD3DX12_TEXTURE_COPY_LOCATION( Dest.GetResource( ).GetInterfacePointer<ID3D12Resource>( ), 0 );
+        D3D12_TEXTURE_COPY_LOCATION srcLoc = CD3DX12_TEXTURE_COPY_LOCATION( Source.GetResource( ).GetInterfacePointer<ID3D12Resource>( ), 0 );
+
+        D3D12_BOX box = {};
+        box.back = 1;
+        box.left = Rect.left;
+        box.right = Rect.right;
+        box.top = Rect.top;
+        box.bottom = Rect.bottom;
+
+        m_CommandList.CopyTextureRegion( &destLoc, x, y, z, &srcLoc, &box );
+    }
+
+    inline void CommandContext::ResetCounter( StructuredBuffer& Buf, uint32_t Value )
+    {
+        FillBuffer( Buf.GetCounterBuffer( ), 0, Value, sizeof( uint32_t ) );
+        TransitionResource( Buf.GetCounterBuffer( ), D3D12_RESOURCE_STATE_UNORDERED_ACCESS );
+    }
+
+    inline void CommandContext::InsertTimeStamp( const D3D12QueryHeap& pQueryHeap, uint32_t QueryIdx )
+    {
+        m_CommandList.EndQuery( pQueryHeap, D3D12_QUERY_TYPE_TIMESTAMP, QueryIdx );
+    }
+
+    inline void CommandContext::ResolveTimeStamps( const D3D12Resource& pReadbackHeap, const D3D12QueryHeap& pQueryHeap, uint32_t NumQueries )
+    {
+        m_CommandList.ResolveQueryData( pQueryHeap, D3D12_QUERY_TYPE_TIMESTAMP, 0, NumQueries, pReadbackHeap, 0 );
+    }
+
 
     class GraphicsContext : public CommandContext
     {
@@ -299,66 +406,13 @@ namespace Harlinn::Windows::DirectX::MiniEngine
     private:
     };
 
-    class ComputeContext : public CommandContext
+
+    inline void GraphicsContext::SetDynamicConstantBufferView( UINT RootIndex, size_t BufferSize, const void* BufferData )
     {
-    public:
-
-        static ComputeContext& Begin( const std::wstring& ID = L"", bool Async = false );
-
-        void ClearUAV( GpuBuffer& Target );
-        void ClearUAV( ColorBuffer& Target );
-
-        void SetRootSignature( const RootSignature& RootSig )
-        {
-            if ( RootSig.GetSignature( ) == m_CurComputeRootSignature )
-                return;
-
-            m_CurComputeRootSignature = RootSig.GetSignature( );
-            m_CommandList.SetComputeRootSignature( m_CurComputeRootSignature );
-
-            m_DynamicViewDescriptorHeap.ParseComputeRootSignature( RootSig );
-            m_DynamicSamplerDescriptorHeap.ParseComputeRootSignature( RootSig );
-        }
-
-        void SetConstantArray( UINT RootIndex, UINT NumConstants, const void* pConstants );
-        void SetConstant( UINT RootIndex, UINT Offset, DWParam Val );
-        void SetConstants( UINT RootIndex, DWParam X );
-        void SetConstants( UINT RootIndex, DWParam X, DWParam Y );
-        void SetConstants( UINT RootIndex, DWParam X, DWParam Y, DWParam Z );
-        void SetConstants( UINT RootIndex, DWParam X, DWParam Y, DWParam Z, DWParam W );
-        void SetConstantBuffer( UINT RootIndex, D3D12_GPU_VIRTUAL_ADDRESS CBV );
-        void SetDynamicConstantBufferView( UINT RootIndex, size_t BufferSize, const void* BufferData );
-        void SetDynamicSRV( UINT RootIndex, size_t BufferSize, const void* BufferData );
-        void SetBufferSRV( UINT RootIndex, const GpuBuffer& SRV, UINT64 Offset = 0 );
-        void SetBufferUAV( UINT RootIndex, const GpuBuffer& UAV, UINT64 Offset = 0 );
-        void SetDescriptorTable( UINT RootIndex, D3D12_GPU_DESCRIPTOR_HANDLE FirstHandle );
-
-        void SetDynamicDescriptor( UINT RootIndex, UINT Offset, D3D12_CPU_DESCRIPTOR_HANDLE Handle );
-        void SetDynamicDescriptors( UINT RootIndex, UINT Offset, UINT Count, const D3D12_CPU_DESCRIPTOR_HANDLE Handles[ ] );
-        void SetDynamicSampler( UINT RootIndex, UINT Offset, D3D12_CPU_DESCRIPTOR_HANDLE Handle );
-        void SetDynamicSamplers( UINT RootIndex, UINT Offset, UINT Count, const D3D12_CPU_DESCRIPTOR_HANDLE Handles[ ] );
-
-        void Dispatch( size_t GroupCountX = 1, size_t GroupCountY = 1, size_t GroupCountZ = 1 );
-        void Dispatch1D( size_t ThreadCountX, size_t GroupSizeX = 64 );
-        void Dispatch2D( size_t ThreadCountX, size_t ThreadCountY, size_t GroupSizeX = 8, size_t GroupSizeY = 8 );
-        void Dispatch3D( size_t ThreadCountX, size_t ThreadCountY, size_t ThreadCountZ, size_t GroupSizeX, size_t GroupSizeY, size_t GroupSizeZ );
-        void DispatchIndirect( GpuBuffer& ArgumentBuffer, uint64_t ArgumentBufferOffset = 0 );
-        void ExecuteIndirect( CommandSignature& CommandSig, GpuBuffer& ArgumentBuffer, uint64_t ArgumentStartOffset = 0,
-            uint32_t MaxCommands = 1, GpuBuffer* CommandCounterBuffer = nullptr, uint64_t CounterOffset = 0 );
-
-    private:
-    };
-
-
-
-    inline void CommandContext::SetPipelineState( const PSO& PSO )
-    {
-        const auto& PipelineState = PSO.GetPipelineStateObject( );
-        if ( PipelineState == m_CurPipelineState )
-            return;
-
-        m_CommandList.SetPipelineState( PipelineState );
-        m_CurPipelineState = PipelineState;
+        ASSERT( BufferData != nullptr && Math::IsAligned( BufferData, 16 ) );
+        DynAlloc cb = m_CpuLinearAllocator.Allocate( BufferSize );
+        memcpy( cb.DataPtr, BufferData, BufferSize );
+        m_CommandList.SetGraphicsRootConstantBufferView( RootIndex, cb.GpuAddress );
     }
 
     inline void GraphicsContext::SetViewportAndScissor( UINT x, UINT y, UINT w, UINT h )
@@ -385,42 +439,6 @@ namespace Harlinn::Windows::DirectX::MiniEngine
     inline void GraphicsContext::SetPrimitiveTopology( D3D12_PRIMITIVE_TOPOLOGY Topology )
     {
         m_CommandList.IASetPrimitiveTopology( Topology );
-    }
-
-    inline void ComputeContext::SetConstantArray( UINT RootEntry, UINT NumConstants, const void* pConstants )
-    {
-        m_CommandList.SetComputeRoot32BitConstants( RootEntry, NumConstants, pConstants, 0 );
-    }
-
-    inline void ComputeContext::SetConstant( UINT RootEntry, UINT Offset, DWParam Val )
-    {
-        m_CommandList.SetComputeRoot32BitConstant( RootEntry, Val.Uint, Offset );
-    }
-
-    inline void ComputeContext::SetConstants( UINT RootEntry, DWParam X )
-    {
-        m_CommandList.SetComputeRoot32BitConstant( RootEntry, X.Uint, 0 );
-    }
-
-    inline void ComputeContext::SetConstants( UINT RootEntry, DWParam X, DWParam Y )
-    {
-        m_CommandList.SetComputeRoot32BitConstant( RootEntry, X.Uint, 0 );
-        m_CommandList.SetComputeRoot32BitConstant( RootEntry, Y.Uint, 1 );
-    }
-
-    inline void ComputeContext::SetConstants( UINT RootEntry, DWParam X, DWParam Y, DWParam Z )
-    {
-        m_CommandList.SetComputeRoot32BitConstant( RootEntry, X.Uint, 0 );
-        m_CommandList.SetComputeRoot32BitConstant( RootEntry, Y.Uint, 1 );
-        m_CommandList.SetComputeRoot32BitConstant( RootEntry, Z.Uint, 2 );
-    }
-
-    inline void ComputeContext::SetConstants( UINT RootEntry, DWParam X, DWParam Y, DWParam Z, DWParam W )
-    {
-        m_CommandList.SetComputeRoot32BitConstant( RootEntry, X.Uint, 0 );
-        m_CommandList.SetComputeRoot32BitConstant( RootEntry, Y.Uint, 1 );
-        m_CommandList.SetComputeRoot32BitConstant( RootEntry, Z.Uint, 2 );
-        m_CommandList.SetComputeRoot32BitConstant( RootEntry, W.Uint, 3 );
     }
 
     inline void GraphicsContext::SetConstantArray( UINT RootIndex, UINT NumConstants, const void* pConstants )
@@ -457,32 +475,6 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         m_CommandList.SetGraphicsRoot32BitConstant( RootIndex, Y.Uint, 1 );
         m_CommandList.SetGraphicsRoot32BitConstant( RootIndex, Z.Uint, 2 );
         m_CommandList.SetGraphicsRoot32BitConstant( RootIndex, W.Uint, 3 );
-    }
-
-    inline void ComputeContext::SetConstantBuffer( UINT RootIndex, D3D12_GPU_VIRTUAL_ADDRESS CBV )
-    {
-        m_CommandList.SetComputeRootConstantBufferView( RootIndex, CBV );
-    }
-
-    inline void GraphicsContext::SetConstantBuffer( UINT RootIndex, D3D12_GPU_VIRTUAL_ADDRESS CBV )
-    {
-        m_CommandList.SetGraphicsRootConstantBufferView( RootIndex, CBV );
-    }
-
-    inline void GraphicsContext::SetDynamicConstantBufferView( UINT RootIndex, size_t BufferSize, const void* BufferData )
-    {
-        ASSERT( BufferData != nullptr && Math::IsAligned( BufferData, 16 ) );
-        DynAlloc cb = m_CpuLinearAllocator.Allocate( BufferSize );
-        memcpy( cb.DataPtr, BufferData, BufferSize );
-        m_CommandList.SetGraphicsRootConstantBufferView( RootIndex, cb.GpuAddress );
-    }
-
-    inline void ComputeContext::SetDynamicConstantBufferView( UINT RootIndex, size_t BufferSize, const void* BufferData )
-    {
-        ASSERT( BufferData != nullptr && Math::IsAligned( BufferData, 16 ) );
-        DynAlloc cb = m_CpuLinearAllocator.Allocate( BufferSize );
-        memcpy( cb.DataPtr, BufferData, BufferSize );
-        m_CommandList.SetComputeRootConstantBufferView( RootIndex, cb.GpuAddress );
     }
 
     inline void GraphicsContext::SetDynamicVB( UINT Slot, size_t NumVertices, size_t VertexStride, const void* VertexData )
@@ -527,12 +519,9 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         m_CommandList.SetGraphicsRootShaderResourceView( RootIndex, cb.GpuAddress );
     }
 
-    inline void ComputeContext::SetDynamicSRV( UINT RootIndex, size_t BufferSize, const void* BufferData )
+    inline void GraphicsContext::SetConstantBuffer( UINT RootIndex, D3D12_GPU_VIRTUAL_ADDRESS CBV )
     {
-        ASSERT( BufferData != nullptr && Math::IsAligned( BufferData, 16 ) );
-        DynAlloc cb = m_CpuLinearAllocator.Allocate( BufferSize );
-        SIMDMemCopy( cb.DataPtr, BufferData, Math::AlignUp( BufferSize, 16 ) >> 4 );
-        m_CommandList.SetComputeRootShaderResourceView( RootIndex, cb.GpuAddress );
+        m_CommandList.SetGraphicsRootConstantBufferView( RootIndex, CBV );
     }
 
     inline void GraphicsContext::SetBufferSRV( UINT RootIndex, const GpuBuffer& SRV, UINT64 Offset )
@@ -541,81 +530,10 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         m_CommandList.SetGraphicsRootShaderResourceView( RootIndex, SRV.GetGpuVirtualAddress( ) + Offset );
     }
 
-    inline void ComputeContext::SetBufferSRV( UINT RootIndex, const GpuBuffer& SRV, UINT64 Offset )
-    {
-        ASSERT( ( SRV.m_UsageState & D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE ) != 0 );
-        m_CommandList.SetComputeRootShaderResourceView( RootIndex, SRV.GetGpuVirtualAddress( ) + Offset );
-    }
-
     inline void GraphicsContext::SetBufferUAV( UINT RootIndex, const GpuBuffer& UAV, UINT64 Offset )
     {
         ASSERT( ( UAV.m_UsageState & D3D12_RESOURCE_STATE_UNORDERED_ACCESS ) != 0 );
         m_CommandList.SetGraphicsRootUnorderedAccessView( RootIndex, UAV.GetGpuVirtualAddress( ) + Offset );
-    }
-
-    inline void ComputeContext::SetBufferUAV( UINT RootIndex, const GpuBuffer& UAV, UINT64 Offset )
-    {
-        ASSERT( ( UAV.m_UsageState & D3D12_RESOURCE_STATE_UNORDERED_ACCESS ) != 0 );
-        m_CommandList.SetComputeRootUnorderedAccessView( RootIndex, UAV.GetGpuVirtualAddress( ) + Offset );
-    }
-
-    inline void ComputeContext::Dispatch( size_t GroupCountX, size_t GroupCountY, size_t GroupCountZ )
-    {
-        FlushResourceBarriers( );
-        m_DynamicViewDescriptorHeap.CommitComputeRootDescriptorTables( m_CommandList );
-        m_DynamicSamplerDescriptorHeap.CommitComputeRootDescriptorTables( m_CommandList );
-        m_CommandList.Dispatch( ( UINT )GroupCountX, ( UINT )GroupCountY, ( UINT )GroupCountZ );
-    }
-
-    inline void ComputeContext::Dispatch1D( size_t ThreadCountX, size_t GroupSizeX )
-    {
-        Dispatch( Math::DivideByMultiple( ThreadCountX, GroupSizeX ), 1, 1 );
-    }
-
-    inline void ComputeContext::Dispatch2D( size_t ThreadCountX, size_t ThreadCountY, size_t GroupSizeX, size_t GroupSizeY )
-    {
-        Dispatch(
-            Math::DivideByMultiple( ThreadCountX, GroupSizeX ),
-            Math::DivideByMultiple( ThreadCountY, GroupSizeY ), 1 );
-    }
-
-    inline void ComputeContext::Dispatch3D( size_t ThreadCountX, size_t ThreadCountY, size_t ThreadCountZ, size_t GroupSizeX, size_t GroupSizeY, size_t GroupSizeZ )
-    {
-        Dispatch(
-            Math::DivideByMultiple( ThreadCountX, GroupSizeX ),
-            Math::DivideByMultiple( ThreadCountY, GroupSizeY ),
-            Math::DivideByMultiple( ThreadCountZ, GroupSizeZ ) );
-    }
-
-    inline void CommandContext::SetDescriptorHeap( D3D12_DESCRIPTOR_HEAP_TYPE Type, const D3D12DescriptorHeap& HeapPtr )
-    {
-        if ( m_CurrentDescriptorHeaps[ Type ] != HeapPtr )
-        {
-            m_CurrentDescriptorHeaps[ Type ] = HeapPtr;
-            BindDescriptorHeaps( );
-        }
-    }
-
-    inline void CommandContext::SetDescriptorHeaps( UINT HeapCount, D3D12_DESCRIPTOR_HEAP_TYPE Type[ ], D3D12DescriptorHeap HeapPtrs[ ] )
-    {
-        bool AnyChanged = false;
-
-        for ( UINT i = 0; i < HeapCount; ++i )
-        {
-            if ( m_CurrentDescriptorHeaps[ Type[ i ] ] != HeapPtrs[ i ] )
-            {
-                m_CurrentDescriptorHeaps[ Type[ i ] ] = HeapPtrs[ i ];
-                AnyChanged = true;
-            }
-        }
-
-        if ( AnyChanged )
-            BindDescriptorHeaps( );
-    }
-
-    inline void CommandContext::SetPredication( const D3D12Resource& Buffer, UINT64 BufferOffset, D3D12_PREDICATION_OP Op )
-    {
-        m_CommandList.SetPredication( Buffer, BufferOffset, Op );
     }
 
     inline void GraphicsContext::SetDynamicDescriptor( UINT RootIndex, UINT Offset, D3D12_CPU_DESCRIPTOR_HANDLE Handle )
@@ -623,19 +541,9 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         SetDynamicDescriptors( RootIndex, Offset, 1, &Handle );
     }
 
-    inline void ComputeContext::SetDynamicDescriptor( UINT RootIndex, UINT Offset, D3D12_CPU_DESCRIPTOR_HANDLE Handle )
-    {
-        SetDynamicDescriptors( RootIndex, Offset, 1, &Handle );
-    }
-
     inline void GraphicsContext::SetDynamicDescriptors( UINT RootIndex, UINT Offset, UINT Count, const D3D12_CPU_DESCRIPTOR_HANDLE Handles[ ] )
     {
         m_DynamicViewDescriptorHeap.SetGraphicsDescriptorHandles( RootIndex, Offset, Count, Handles );
-    }
-
-    inline void ComputeContext::SetDynamicDescriptors( UINT RootIndex, UINT Offset, UINT Count, const D3D12_CPU_DESCRIPTOR_HANDLE Handles[ ] )
-    {
-        m_DynamicViewDescriptorHeap.SetComputeDescriptorHandles( RootIndex, Offset, Count, Handles );
     }
 
     inline void GraphicsContext::SetDynamicSampler( UINT RootIndex, UINT Offset, D3D12_CPU_DESCRIPTOR_HANDLE Handle )
@@ -648,14 +556,9 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         m_DynamicSamplerDescriptorHeap.SetGraphicsDescriptorHandles( RootIndex, Offset, Count, Handles );
     }
 
-    inline void ComputeContext::SetDynamicSampler( UINT RootIndex, UINT Offset, D3D12_CPU_DESCRIPTOR_HANDLE Handle )
+    inline void GraphicsContext::SetVertexBuffer( UINT Slot, const D3D12_VERTEX_BUFFER_VIEW& VBView )
     {
-        SetDynamicSamplers( RootIndex, Offset, 1, &Handle );
-    }
-
-    inline void ComputeContext::SetDynamicSamplers( UINT RootIndex, UINT Offset, UINT Count, const D3D12_CPU_DESCRIPTOR_HANDLE Handles[ ] )
-    {
-        m_DynamicSamplerDescriptorHeap.SetComputeDescriptorHandles( RootIndex, Offset, Count, Handles );
+        SetVertexBuffers( Slot, 1, &VBView );
     }
 
     inline void GraphicsContext::SetDescriptorTable( UINT RootIndex, D3D12_GPU_DESCRIPTOR_HANDLE FirstHandle )
@@ -663,19 +566,9 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         m_CommandList.SetGraphicsRootDescriptorTable( RootIndex, FirstHandle );
     }
 
-    inline void ComputeContext::SetDescriptorTable( UINT RootIndex, D3D12_GPU_DESCRIPTOR_HANDLE FirstHandle )
-    {
-        m_CommandList.SetComputeRootDescriptorTable( RootIndex, FirstHandle );
-    }
-
     inline void GraphicsContext::SetIndexBuffer( const D3D12_INDEX_BUFFER_VIEW& IBView )
     {
         m_CommandList.IASetIndexBuffer( &IBView );
-    }
-
-    inline void GraphicsContext::SetVertexBuffer( UINT Slot, const D3D12_VERTEX_BUFFER_VIEW& VBView )
-    {
-        SetVertexBuffers( Slot, 1, &VBView );
     }
 
     inline void GraphicsContext::SetVertexBuffers( UINT StartSlot, UINT Count, const D3D12_VERTEX_BUFFER_VIEW VBViews[ ] )
@@ -728,6 +621,210 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         ExecuteIndirect( Graphics::DrawIndirectCommandSignature, ArgumentBuffer, ArgumentBufferOffset );
     }
 
+    class ComputeContext : public CommandContext
+    {
+    public:
+
+        static ComputeContext& Begin( const std::wstring& ID = L"", bool Async = false );
+
+        void ClearUAV( GpuBuffer& Target );
+        void ClearUAV( ColorBuffer& Target );
+
+        void SetRootSignature( const RootSignature& RootSig )
+        {
+            if ( RootSig.GetSignature( ) == m_CurComputeRootSignature )
+                return;
+
+            m_CurComputeRootSignature = RootSig.GetSignature( );
+            m_CommandList.SetComputeRootSignature( m_CurComputeRootSignature );
+
+            m_DynamicViewDescriptorHeap.ParseComputeRootSignature( RootSig );
+            m_DynamicSamplerDescriptorHeap.ParseComputeRootSignature( RootSig );
+        }
+
+        void SetConstantArray( UINT RootIndex, UINT NumConstants, const void* pConstants );
+        void SetConstant( UINT RootIndex, UINT Offset, DWParam Val );
+        void SetConstants( UINT RootIndex, DWParam X );
+        void SetConstants( UINT RootIndex, DWParam X, DWParam Y );
+        void SetConstants( UINT RootIndex, DWParam X, DWParam Y, DWParam Z );
+        void SetConstants( UINT RootIndex, DWParam X, DWParam Y, DWParam Z, DWParam W );
+        void SetConstantBuffer( UINT RootIndex, D3D12_GPU_VIRTUAL_ADDRESS CBV );
+        void SetDynamicConstantBufferView( UINT RootIndex, size_t BufferSize, const void* BufferData );
+        void SetDynamicSRV( UINT RootIndex, size_t BufferSize, const void* BufferData );
+        void SetBufferSRV( UINT RootIndex, const GpuBuffer& SRV, UINT64 Offset = 0 );
+        void SetBufferUAV( UINT RootIndex, const GpuBuffer& UAV, UINT64 Offset = 0 );
+        void SetDescriptorTable( UINT RootIndex, D3D12_GPU_DESCRIPTOR_HANDLE FirstHandle );
+
+        void SetDynamicDescriptor( UINT RootIndex, UINT Offset, D3D12_CPU_DESCRIPTOR_HANDLE Handle );
+        void SetDynamicDescriptors( UINT RootIndex, UINT Offset, UINT Count, const D3D12_CPU_DESCRIPTOR_HANDLE Handles[ ] );
+        void SetDynamicSampler( UINT RootIndex, UINT Offset, D3D12_CPU_DESCRIPTOR_HANDLE Handle );
+        void SetDynamicSamplers( UINT RootIndex, UINT Offset, UINT Count, const D3D12_CPU_DESCRIPTOR_HANDLE Handles[ ] );
+
+        void Dispatch( size_t GroupCountX = 1, size_t GroupCountY = 1, size_t GroupCountZ = 1 );
+        void Dispatch1D( size_t ThreadCountX, size_t GroupSizeX = 64 );
+        void Dispatch2D( size_t ThreadCountX, size_t ThreadCountY, size_t GroupSizeX = 8, size_t GroupSizeY = 8 );
+        void Dispatch3D( size_t ThreadCountX, size_t ThreadCountY, size_t ThreadCountZ, size_t GroupSizeX, size_t GroupSizeY, size_t GroupSizeZ );
+        void DispatchIndirect( GpuBuffer& ArgumentBuffer, uint64_t ArgumentBufferOffset = 0 );
+        void ExecuteIndirect( CommandSignature& CommandSig, GpuBuffer& ArgumentBuffer, uint64_t ArgumentStartOffset = 0,
+            uint32_t MaxCommands = 1, GpuBuffer* CommandCounterBuffer = nullptr, uint64_t CounterOffset = 0 );
+
+    private:
+    };
+
+
+
+    
+
+    
+
+    inline void ComputeContext::SetConstantArray( UINT RootEntry, UINT NumConstants, const void* pConstants )
+    {
+        m_CommandList.SetComputeRoot32BitConstants( RootEntry, NumConstants, pConstants, 0 );
+    }
+
+    inline void ComputeContext::SetConstant( UINT RootEntry, UINT Offset, DWParam Val )
+    {
+        m_CommandList.SetComputeRoot32BitConstant( RootEntry, Val.Uint, Offset );
+    }
+
+    inline void ComputeContext::SetConstants( UINT RootEntry, DWParam X )
+    {
+        m_CommandList.SetComputeRoot32BitConstant( RootEntry, X.Uint, 0 );
+    }
+
+    inline void ComputeContext::SetConstants( UINT RootEntry, DWParam X, DWParam Y )
+    {
+        m_CommandList.SetComputeRoot32BitConstant( RootEntry, X.Uint, 0 );
+        m_CommandList.SetComputeRoot32BitConstant( RootEntry, Y.Uint, 1 );
+    }
+
+    inline void ComputeContext::SetConstants( UINT RootEntry, DWParam X, DWParam Y, DWParam Z )
+    {
+        m_CommandList.SetComputeRoot32BitConstant( RootEntry, X.Uint, 0 );
+        m_CommandList.SetComputeRoot32BitConstant( RootEntry, Y.Uint, 1 );
+        m_CommandList.SetComputeRoot32BitConstant( RootEntry, Z.Uint, 2 );
+    }
+
+    inline void ComputeContext::SetConstants( UINT RootEntry, DWParam X, DWParam Y, DWParam Z, DWParam W )
+    {
+        m_CommandList.SetComputeRoot32BitConstant( RootEntry, X.Uint, 0 );
+        m_CommandList.SetComputeRoot32BitConstant( RootEntry, Y.Uint, 1 );
+        m_CommandList.SetComputeRoot32BitConstant( RootEntry, Z.Uint, 2 );
+        m_CommandList.SetComputeRoot32BitConstant( RootEntry, W.Uint, 3 );
+    }
+
+    
+
+    inline void ComputeContext::SetConstantBuffer( UINT RootIndex, D3D12_GPU_VIRTUAL_ADDRESS CBV )
+    {
+        m_CommandList.SetComputeRootConstantBufferView( RootIndex, CBV );
+    }
+
+    
+
+    
+
+    inline void ComputeContext::SetDynamicConstantBufferView( UINT RootIndex, size_t BufferSize, const void* BufferData )
+    {
+        ASSERT( BufferData != nullptr && Math::IsAligned( BufferData, 16 ) );
+        DynAlloc cb = m_CpuLinearAllocator.Allocate( BufferSize );
+        memcpy( cb.DataPtr, BufferData, BufferSize );
+        m_CommandList.SetComputeRootConstantBufferView( RootIndex, cb.GpuAddress );
+    }
+
+    
+
+    inline void ComputeContext::SetDynamicSRV( UINT RootIndex, size_t BufferSize, const void* BufferData )
+    {
+        ASSERT( BufferData != nullptr && Math::IsAligned( BufferData, 16 ) );
+        DynAlloc cb = m_CpuLinearAllocator.Allocate( BufferSize );
+        SIMDMemCopy( cb.DataPtr, BufferData, Math::AlignUp( BufferSize, 16 ) >> 4 );
+        m_CommandList.SetComputeRootShaderResourceView( RootIndex, cb.GpuAddress );
+    }
+
+    
+
+    inline void ComputeContext::SetBufferSRV( UINT RootIndex, const GpuBuffer& SRV, UINT64 Offset )
+    {
+        ASSERT( ( SRV.m_UsageState & D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE ) != 0 );
+        m_CommandList.SetComputeRootShaderResourceView( RootIndex, SRV.GetGpuVirtualAddress( ) + Offset );
+    }
+
+    
+
+    inline void ComputeContext::SetBufferUAV( UINT RootIndex, const GpuBuffer& UAV, UINT64 Offset )
+    {
+        ASSERT( ( UAV.m_UsageState & D3D12_RESOURCE_STATE_UNORDERED_ACCESS ) != 0 );
+        m_CommandList.SetComputeRootUnorderedAccessView( RootIndex, UAV.GetGpuVirtualAddress( ) + Offset );
+    }
+
+    inline void ComputeContext::Dispatch( size_t GroupCountX, size_t GroupCountY, size_t GroupCountZ )
+    {
+        FlushResourceBarriers( );
+        m_DynamicViewDescriptorHeap.CommitComputeRootDescriptorTables( m_CommandList );
+        m_DynamicSamplerDescriptorHeap.CommitComputeRootDescriptorTables( m_CommandList );
+        m_CommandList.Dispatch( ( UINT )GroupCountX, ( UINT )GroupCountY, ( UINT )GroupCountZ );
+    }
+
+    inline void ComputeContext::Dispatch1D( size_t ThreadCountX, size_t GroupSizeX )
+    {
+        Dispatch( Math::DivideByMultiple( ThreadCountX, GroupSizeX ), 1, 1 );
+    }
+
+    inline void ComputeContext::Dispatch2D( size_t ThreadCountX, size_t ThreadCountY, size_t GroupSizeX, size_t GroupSizeY )
+    {
+        Dispatch(
+            Math::DivideByMultiple( ThreadCountX, GroupSizeX ),
+            Math::DivideByMultiple( ThreadCountY, GroupSizeY ), 1 );
+    }
+
+    inline void ComputeContext::Dispatch3D( size_t ThreadCountX, size_t ThreadCountY, size_t ThreadCountZ, size_t GroupSizeX, size_t GroupSizeY, size_t GroupSizeZ )
+    {
+        Dispatch(
+            Math::DivideByMultiple( ThreadCountX, GroupSizeX ),
+            Math::DivideByMultiple( ThreadCountY, GroupSizeY ),
+            Math::DivideByMultiple( ThreadCountZ, GroupSizeZ ) );
+    }
+
+    
+
+    
+
+    inline void ComputeContext::SetDynamicDescriptor( UINT RootIndex, UINT Offset, D3D12_CPU_DESCRIPTOR_HANDLE Handle )
+    {
+        SetDynamicDescriptors( RootIndex, Offset, 1, &Handle );
+    }
+
+    
+
+    inline void ComputeContext::SetDynamicDescriptors( UINT RootIndex, UINT Offset, UINT Count, const D3D12_CPU_DESCRIPTOR_HANDLE Handles[ ] )
+    {
+        m_DynamicViewDescriptorHeap.SetComputeDescriptorHandles( RootIndex, Offset, Count, Handles );
+    }
+
+    
+
+    inline void ComputeContext::SetDynamicSampler( UINT RootIndex, UINT Offset, D3D12_CPU_DESCRIPTOR_HANDLE Handle )
+    {
+        SetDynamicSamplers( RootIndex, Offset, 1, &Handle );
+    }
+
+    inline void ComputeContext::SetDynamicSamplers( UINT RootIndex, UINT Offset, UINT Count, const D3D12_CPU_DESCRIPTOR_HANDLE Handles[ ] )
+    {
+        m_DynamicSamplerDescriptorHeap.SetComputeDescriptorHandles( RootIndex, Offset, Count, Handles );
+    }
+
+    
+
+    inline void ComputeContext::SetDescriptorTable( UINT RootIndex, D3D12_GPU_DESCRIPTOR_HANDLE FirstHandle )
+    {
+        m_CommandList.SetComputeRootDescriptorTable( RootIndex, FirstHandle );
+    }
+
+    
+
+    
+
     inline void ComputeContext::ExecuteIndirect( CommandSignature& CommandSig,
         GpuBuffer& ArgumentBuffer, uint64_t ArgumentStartOffset,
         uint32_t MaxCommands, GpuBuffer* CommandCounterBuffer, uint64_t CounterOffset )
@@ -745,62 +842,5 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         ExecuteIndirect( Graphics::DispatchIndirectCommandSignature, ArgumentBuffer, ArgumentBufferOffset );
     }
 
-    inline void CommandContext::CopyBuffer( GpuResource& Dest, GpuResource& Src )
-    {
-        TransitionResource( Dest, D3D12_RESOURCE_STATE_COPY_DEST );
-        TransitionResource( Src, D3D12_RESOURCE_STATE_COPY_SOURCE );
-        FlushResourceBarriers( );
-        m_CommandList.CopyResource( Dest.GetResource( ), Src.GetResource( ) );
-    }
-
-    inline void CommandContext::CopyBufferRegion( GpuResource& Dest, size_t DestOffset, GpuResource& Src, size_t SrcOffset, size_t NumBytes )
-    {
-        TransitionResource( Dest, D3D12_RESOURCE_STATE_COPY_DEST );
-        //TransitionResource(Src, D3D12_RESOURCE_STATE_COPY_SOURCE);
-        FlushResourceBarriers( );
-        m_CommandList.CopyBufferRegion( Dest.GetResource( ), DestOffset, Src.GetResource( ), SrcOffset, NumBytes );
-    }
-
-    inline void CommandContext::CopyCounter( GpuResource& Dest, size_t DestOffset, StructuredBuffer& Src )
-    {
-        TransitionResource( Dest, D3D12_RESOURCE_STATE_COPY_DEST );
-        TransitionResource( Src.GetCounterBuffer( ), D3D12_RESOURCE_STATE_COPY_SOURCE );
-        FlushResourceBarriers( );
-        m_CommandList.CopyBufferRegion( Dest.GetResource( ), DestOffset, Src.GetCounterBuffer( ).GetResource( ), 0, 4 );
-    }
-
-    inline void CommandContext::CopyTextureRegion( GpuResource& Dest, UINT x, UINT y, UINT z, GpuResource& Source, RECT& Rect )
-    {
-        TransitionResource( Dest, D3D12_RESOURCE_STATE_COPY_DEST );
-        TransitionResource( Source, D3D12_RESOURCE_STATE_COPY_SOURCE );
-        FlushResourceBarriers( );
-
-        D3D12_TEXTURE_COPY_LOCATION destLoc = CD3DX12_TEXTURE_COPY_LOCATION( Dest.GetResource( ).GetInterfacePointer<ID3D12Resource>( ), 0 );
-        D3D12_TEXTURE_COPY_LOCATION srcLoc = CD3DX12_TEXTURE_COPY_LOCATION( Source.GetResource( ).GetInterfacePointer<ID3D12Resource>( ), 0 );
-
-        D3D12_BOX box = {};
-        box.back = 1;
-        box.left = Rect.left;
-        box.right = Rect.right;
-        box.top = Rect.top;
-        box.bottom = Rect.bottom;
-
-        m_CommandList.CopyTextureRegion( &destLoc, x, y, z, &srcLoc, &box );
-    }
-
-    inline void CommandContext::ResetCounter( StructuredBuffer& Buf, uint32_t Value )
-    {
-        FillBuffer( Buf.GetCounterBuffer( ), 0, Value, sizeof( uint32_t ) );
-        TransitionResource( Buf.GetCounterBuffer( ), D3D12_RESOURCE_STATE_UNORDERED_ACCESS );
-    }
-
-    inline void CommandContext::InsertTimeStamp( const D3D12QueryHeap& pQueryHeap, uint32_t QueryIdx )
-    {
-        m_CommandList.EndQuery( pQueryHeap, D3D12_QUERY_TYPE_TIMESTAMP, QueryIdx );
-    }
-
-    inline void CommandContext::ResolveTimeStamps( const D3D12Resource& pReadbackHeap, const D3D12QueryHeap& pQueryHeap, uint32_t NumQueries )
-    {
-        m_CommandList.ResolveQueryData( pQueryHeap, D3D12_QUERY_TYPE_TIMESTAMP, 0, NumQueries, pReadbackHeap, 0 );
-    }
+    
 }

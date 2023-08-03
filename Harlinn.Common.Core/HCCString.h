@@ -4338,6 +4338,53 @@ namespace Harlinn::Common::Core
             return SubString( start, length );
         }
 
+
+        template<typename VectorT = std::vector<std::basic_string_view<CharType>>>
+        [[nodiscard]] VectorT Split( const CharType* delimiters, size_type delimitersLength, size_type start ) const
+        {
+            using DestT = typename VectorT::value_type;
+            VectorT result;
+            if ( data_ && ( start < data_->size_ ) )
+            {
+                auto startPtr = data_->buffer_ + start;
+                auto endPtr = startPtr + data_->size_;
+                auto ptr = startPtr;
+                while ( ptr < endPtr )
+                {
+                    if ( Contains( delimiters, delimitersLength, *ptr ) )
+                    {
+                        size_type length = ptr - startPtr;
+                        result.emplace_back( DestT( startPtr, length ) );
+                        startPtr = ptr + 1;
+                    }
+                    ptr++;
+                }
+                if ( startPtr < endPtr )
+                {
+                    size_type length = endPtr - startPtr;
+                    result.emplace_back( DestT( startPtr, length ) );
+                }
+            }
+            return result;
+        }
+
+        template<typename VectorT = std::vector<std::basic_string_view<CharType>>, typename SpanT>
+        [[nodiscard]] VectorT Split( const SpanT& delimiterSpan, size_type start = 0 ) const
+        {
+            return Split<VectorT>( delimiterSpan.data(), delimiterSpan.size(), start );
+        }
+
+        template<typename VectorT = std::vector<std::basic_string_view<CharType>>>
+        [[nodiscard]] VectorT Split( const CharType* delimiters, size_type start = 0 ) const
+        {
+            size_type delimitersLength = LengthOf( delimiters );
+            return Split<VectorT>( delimiters, delimitersLength, start );
+        }
+
+
+
+
+
         BasicString& UpperCase( )
         {
             if ( data_ )
@@ -4770,6 +4817,18 @@ namespace Harlinn::Common::Core
             *this = BasicStringView( other );
             return *this;
         }
+
+
+        constexpr explicit operator bool( ) const noexcept
+        {
+            return Base::size( ) != 0;
+        }
+
+        constexpr bool empty( ) const noexcept
+        {
+            return Base::size( ) == 0;
+        }
+
 
 
         [[nodiscard]] size_t Hash( ) const noexcept
@@ -5596,43 +5655,38 @@ namespace std
     };
 
 
-    template<>
-    struct formatter<Harlinn::Common::Core::WideString,wchar_t>
+    template<typename CharT>
+    struct formatter<Harlinn::Common::Core::BasicString<CharT>, CharT>
     {
-        formatter<wstring_view, wchar_t> viewFormatter;
-        constexpr auto parse( wformat_parse_context& ctx )
+        formatter<std::basic_string_view<CharT>, CharT> viewFormatter;
+        constexpr auto parse( basic_format_parse_context<CharT>& ctx )
         {
             return viewFormatter.parse( ctx );
         }
 
         template <typename FormatContext>
-        auto format( const Harlinn::Common::Core::WideString& v, FormatContext& ctx )
+        auto format( const Harlinn::Common::Core::BasicString<CharT>& v, FormatContext& ctx )
         {
-            wstring_view view( v.data( ), v.size( ) );
+            basic_string_view<CharT> view( v.data( ), v.size( ) );
             return viewFormatter.format( view, ctx );
         }
-
     };
 
-    template<>
-    struct formatter<Harlinn::Common::Core::AnsiString> 
+    template<typename CharT>
+    struct formatter<Harlinn::Common::Core::BasicStringView<CharT>, CharT>
     {
-        formatter<string_view> viewFormatter;
-        constexpr auto parse( format_parse_context& ctx )
+        formatter<std::basic_string_view<CharT>, CharT> viewFormatter;
+        constexpr auto parse( basic_format_parse_context<CharT>& ctx )
         {
             return viewFormatter.parse( ctx );
         }
 
         template <typename FormatContext>
-        auto format( const Harlinn::Common::Core::AnsiString& v, FormatContext& ctx )
+        auto format( const Harlinn::Common::Core::BasicStringView<CharT>& view, FormatContext& ctx )
         {
-            string_view view( v.data(), v.size( ) );
             return viewFormatter.format( view, ctx );
         }
-
     };
-
-
 
 }
 #endif

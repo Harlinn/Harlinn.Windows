@@ -15,7 +15,6 @@
 #include "HDMCColorBuffer.h"
 #include "HDMCGraphicsCommon.h"
 #include "HDMCCommandContext.h"
-#include "HDMCEsramAllocator.h"
 
 namespace Harlinn::Windows::DirectX::MiniEngine
 {
@@ -132,11 +131,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         CreateDerivedViews( Graphics::g_Device, Format, 1, NumMips );
     }
 
-    void ColorBuffer::Create( const std::wstring& Name, uint32_t Width, uint32_t Height, uint32_t NumMips,
-        DXGI_FORMAT Format, EsramAllocator& )
-    {
-        Create( Name, Width, Height, NumMips, Format );
-    }
+    
 
     void ColorBuffer::CreateArray( const std::wstring& Name, uint32_t Width, uint32_t Height, uint32_t ArrayCount,
         DXGI_FORMAT Format, D3D12_GPU_VIRTUAL_ADDRESS VidMem )
@@ -153,12 +148,6 @@ namespace Harlinn::Windows::DirectX::MiniEngine
 
         CreateTextureResource( Graphics::g_Device, Name, ResourceDesc, ClearValue, VidMem );
         CreateDerivedViews( Graphics::g_Device, Format, ArrayCount, 1 );
-    }
-
-    void ColorBuffer::CreateArray( const std::wstring& Name, uint32_t Width, uint32_t Height, uint32_t ArrayCount,
-        DXGI_FORMAT Format, EsramAllocator& )
-    {
-        CreateArray( Name, Width, Height, ArrayCount, Format );
     }
 
     void ColorBuffer::GenerateMipMaps( CommandContext& BaseContext )
