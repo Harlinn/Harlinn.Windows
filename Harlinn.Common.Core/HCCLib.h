@@ -258,7 +258,12 @@ namespace Harlinn::Common::Core
     /// <returns>The generated bit-mask</returns>
     inline constexpr UInt64 CreateBitMask64( unsigned numberOfBitsToSet ) noexcept
     {
-        assert( numberOfBitsToSet <= 64 && numberOfBitsToSet > 0 && "The value of numberOfBitsToSet must be in the range [1,64]" );
+#ifdef _DEBUG
+        if ( !std::is_constant_evaluated( ) )
+        {
+            assert( numberOfBitsToSet <= 64 && numberOfBitsToSet > 0 && "The value of numberOfBitsToSet must be in the range [1,64]" );
+        }
+#endif
         UInt64 mostSignificantBit = 1ULL << (numberOfBitsToSet - 1);
         if ( std::is_constant_evaluated( ) )
         {
@@ -282,7 +287,12 @@ namespace Harlinn::Common::Core
     /// <returns>The generated bit-mask</returns>
     inline constexpr UInt32 CreateBitMask32( unsigned numberOfBitsToSet ) noexcept
     {
-        assert( numberOfBitsToSet <= 32 && numberOfBitsToSet > 0 && "The value of numberOfBitsToSet must be in the range [1,32]" );
+#ifdef _DEBUG
+        if ( !std::is_constant_evaluated( ) )
+        {
+            assert( numberOfBitsToSet <= 32 && numberOfBitsToSet > 0 && "The value of numberOfBitsToSet must be in the range [1,32]" );
+        }
+#endif
         UInt32 mostSignificantBit = 1ULL << ( numberOfBitsToSet - 1 );
         if ( std::is_constant_evaluated( ) )
         {
@@ -313,7 +323,7 @@ namespace Harlinn::Common::Core
     {
         if ( std::is_constant_evaluated( ) )
         {
-            UInt64 mask = CreateBitMask64( len );
+            UInt64 mask = len ? CreateBitMask64( len ) : 0;
             return ( value >> start ) & mask;
         }
         else
@@ -340,7 +350,7 @@ namespace Harlinn::Common::Core
     {
         if ( std::is_constant_evaluated( ) )
         {
-            UInt32 mask = CreateBitMask32( len );
+            UInt32 mask = len ? CreateBitMask32( len ) : 0;
             return ( value >> start ) & mask;
         }
         else

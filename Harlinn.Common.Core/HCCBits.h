@@ -6,6 +6,160 @@
 
 namespace Harlinn::Common::Core
 {
+    template<typename T>
+    struct BitTraits : public std::false_type {};
+
+    template<typename T>
+        requires ( std::is_integral_v<T> || std::is_same_v<bool, T> )
+    struct BitTraitsBase : public std::true_type
+    {
+        using type = T;
+        static constexpr size_t ByteCount = sizeof( T );
+        static constexpr size_t BitCount = ByteCount * 8;
+
+    };
+
+    struct BooleanBitTraits : public BitTraitsBase<bool> {};
+    template<> struct BitTraits<bool> : public BooleanBitTraits {};
+
+    struct ByteBitTraits : public BitTraitsBase<Byte> {};
+    template<> struct BitTraits<Byte> : public ByteBitTraits {};
+
+    struct SByteBitTraits : public BitTraitsBase<SByte> {};
+    template<> struct BitTraits<SByte> : public SByteBitTraits {};
+
+    struct CharBitTraits : public BitTraitsBase<char> {};
+    template<> struct BitTraits<char> : public CharBitTraits {};
+
+    struct WideCharBitTraits : public BitTraitsBase<wchar_t> {};
+    template<> struct BitTraits<wchar_t> : public WideCharBitTraits {};
+
+    struct UInt16BitTraits : public BitTraitsBase<UInt16> {};
+    template<> struct BitTraits<UInt16> : public UInt16BitTraits {};
+
+    struct Int16BitTraits : public BitTraitsBase<Int16> {};
+    template<> struct BitTraits<Int16> : public Int16BitTraits {};
+
+    struct UInt32BitTraits : public BitTraitsBase<UInt32> {};
+    template<> struct BitTraits<UInt32> : public UInt32BitTraits {};
+
+    struct Int32BitTraits : public BitTraitsBase<Int32> {};
+    template<> struct BitTraits<Int32> : public Int32BitTraits {};
+
+    struct UInt64BitTraits : public BitTraitsBase<UInt64> {};
+    template<> struct BitTraits<UInt64> : public UInt64BitTraits {};
+
+    struct Int64BitTraits : public BitTraitsBase<Int64> {};
+    template<> struct BitTraits<Int64> : public Int64BitTraits {};
+
+
+
+    template<typename ResultT, typename BitsT>
+        requires ( std::is_integral_v<BitsT>&& std::is_integral_v<ResultT>&& std::is_unsigned_v<ResultT> )
+    inline constexpr ResultT BitsToUnsigned( const BitsT bits, const UInt32 startIndex, const UInt32 bitCount )
+    {
+        using UnsignedType = std::make_unsigned_t<BitsT>;
+        if constexpr ( sizeof( BitsT ) <= 4 )
+        {
+            return static_cast< ResultT >( ExtractBits32( static_cast< UInt32 >( std::bit_cast< UnsignedType >( bits ) ), startIndex, bitCount ) );
+        }
+        else
+        {
+            return static_cast< ResultT >( ExtractBits64( static_cast< UInt64 >( std::bit_cast< UnsignedType >( bits ) ), startIndex, bitCount ) );
+        }
+
+    }
+    template<typename BitsT>
+        requires std::is_integral_v<BitsT>
+    inline constexpr Byte BitsToByte( const BitsT bits, UInt32 startIndex, UInt32 bitCount )
+    {
+        return BitsToUnsigned<Byte>( bits, startIndex, bitCount );
+    }
+    template<typename BitsT>
+        requires std::is_integral_v<BitsT>
+    inline constexpr SByte BitsToSByte( const BitsT bits, UInt32 startIndex, UInt32 bitCount )
+    {
+        return std::bit_cast< SByte >( BitsToUnsigned<Byte>( bits, startIndex, bitCount ) );
+    }
+    template<typename BitsT>
+        requires std::is_integral_v<BitsT>
+    inline constexpr UInt16 BitsToUInt16( const BitsT bits, UInt32 startIndex, UInt32 bitCount )
+    {
+        return BitsToUnsigned<UInt16>( bits, startIndex, bitCount );
+    }
+    template<typename BitsT>
+        requires std::is_integral_v<BitsT>
+    inline constexpr Int16 BitsToInt16( const BitsT bits, UInt32 startIndex, UInt32 bitCount )
+    {
+        return std::bit_cast< Int16 >( BitsToUnsigned<UInt16>( bits, startIndex, bitCount ) );
+    }
+    template<typename BitsT>
+        requires std::is_integral_v<BitsT>
+    inline constexpr UInt32 BitsToUInt32( const BitsT bits, UInt32 startIndex, UInt32 bitCount )
+    {
+        return BitsToUnsigned<UInt32>( bits, startIndex, bitCount );
+    }
+    template<typename BitsT>
+        requires std::is_integral_v<BitsT>
+    inline constexpr Int32 BitsToInt32( const BitsT bits, UInt32 startIndex, UInt32 bitCount )
+    {
+        return std::bit_cast< Int32 >( BitsToUnsigned<UInt32>( bits, startIndex, bitCount ) );
+    }
+    template<typename BitsT>
+        requires std::is_integral_v<BitsT>
+    inline constexpr UInt64 BitsToUInt64( const BitsT bits, UInt32 startIndex, UInt32 bitCount )
+    {
+        return BitsToUnsigned<UInt64>( bits, startIndex, bitCount );
+    }
+    template<typename BitsT>
+        requires std::is_integral_v<BitsT>
+    inline constexpr Int64 BitsToInt64( const BitsT bits, UInt32 startIndex, UInt32 bitCount )
+    {
+        return std::bit_cast< Int64 >( BitsToUnsigned<UInt64>( bits, startIndex, bitCount ) );
+    }
+
+    template<typename T>
+        requires (std::is_integral_v<T> && std::is_unsigned_v<T>)
+    inline constexpr T GrayEncode( T value )
+    {
+        return value ^ ( value >> 1 );
+    }
+
+    template<typename T>
+        requires ( std::is_integral_v<T>&& std::is_signed_v<T> )
+    inline constexpr T GrayEncode( T value )
+    {
+        using UnsignedType = std::make_unsigned_t<T>;
+        return std::bit_cast<T>( GrayEncode( std::bit_cast< UnsignedType >( value ) ) );
+    }
+
+
+    template<typename T>
+        requires ( std::is_integral_v<T>&& std::is_unsigned_v<T> )
+    inline constexpr T GrayDecode( T value )
+    {
+        constexpr auto InitialShift = BitTraits<T>::BitCount - 1;
+        for ( T bit = static_cast<T>(1U) << InitialShift; bit > 1; bit >>= 1 )
+        {
+            if ( value & bit )
+            {
+                value ^= bit >> 1;
+            }
+        }
+        return value;
+    }
+
+    template<typename T>
+        requires ( std::is_integral_v<T>&& std::is_signed_v<T> )
+    inline constexpr T GrayDecode( T value )
+    {
+        using UnsignedType = std::make_unsigned_t<T>;
+        return std::bit_cast< T >( GrayDecode( std::bit_cast< UnsignedType >( value ) ) );
+    }
+
+
+
+
     /// <summary>
     /// A type that holds a fixed number of bits
     /// </summary>
