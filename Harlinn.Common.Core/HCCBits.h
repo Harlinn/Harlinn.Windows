@@ -53,6 +53,38 @@ namespace Harlinn::Common::Core
     template<> struct BitTraits<Int64> : public Int64BitTraits {};
 
 
+    template<typename BitsT>
+        requires std::is_integral_v<BitsT>
+    inline constexpr bool BitsToBool( const BitsT bits, const UInt32 startIndex )
+    {
+        using UnsignedType = std::make_unsigned_t<BitsT>;
+        if constexpr ( sizeof( BitsT ) <= 4 )
+        {
+            return static_cast< bool >( ExtractBits32( static_cast< UInt32 >( std::bit_cast< UnsignedType >( bits ) ), startIndex, 1 ) );
+        }
+        else
+        {
+            return static_cast< bool >( ExtractBits64( static_cast< UInt64 >( std::bit_cast< UnsignedType >( bits ) ), startIndex, 1 ) );
+        }
+
+    }
+
+    template<typename ResultT, typename BitsT>
+        requires ( std::is_integral_v<BitsT> && std::is_enum_v<ResultT> )
+    inline constexpr ResultT BitsToEnum( const BitsT bits, const UInt32 startIndex, const UInt32 bitCount )
+    {
+        //using UnderlyingType = std::underlying_type_t<ResultT>;
+        using UnsignedType = std::make_unsigned_t<BitsT>;
+        if constexpr ( sizeof( BitsT ) <= 4 )
+        {
+            return static_cast< ResultT >( ExtractBits32( static_cast< UInt32 >( std::bit_cast< UnsignedType >( bits ) ), startIndex, bitCount ) );
+        }
+        else
+        {
+            return static_cast< ResultT >( ExtractBits64( static_cast< UInt64 >( std::bit_cast< UnsignedType >( bits ) ), startIndex, bitCount ) );
+        }
+    }
+
 
     template<typename ResultT, typename BitsT>
         requires ( std::is_integral_v<BitsT>&& std::is_integral_v<ResultT>&& std::is_unsigned_v<ResultT> )
@@ -67,8 +99,25 @@ namespace Harlinn::Common::Core
         {
             return static_cast< ResultT >( ExtractBits64( static_cast< UInt64 >( std::bit_cast< UnsignedType >( bits ) ), startIndex, bitCount ) );
         }
-
     }
+
+    template<typename ResultT, typename BitsT>
+        requires ( std::is_integral_v<BitsT>&& std::is_integral_v<ResultT>&& std::is_signed_v<ResultT> )
+    inline constexpr ResultT BitsToSigned( const BitsT bits, const UInt32 startIndex, const UInt32 bitCount )
+    {
+        using UnsignedType = std::make_unsigned_t<ResultT>;
+        auto value = static_cast< ResultT >(BitsToUnsigned<UnsignedType>( bits, startIndex, bitCount ));
+        if ( bitCount > 1 )
+        {
+            auto signMask = static_cast< ResultT >( static_cast< UnsignedType >(1U) << ( bitCount - 1 ) );
+            if ( value & signMask )
+            {
+                value = -( value & ~signMask );
+            }
+        }
+        return value;
+    }
+
     template<typename BitsT>
         requires std::is_integral_v<BitsT>
     inline constexpr Byte BitsToByte( const BitsT bits, UInt32 startIndex, UInt32 bitCount )
@@ -79,7 +128,8 @@ namespace Harlinn::Common::Core
         requires std::is_integral_v<BitsT>
     inline constexpr SByte BitsToSByte( const BitsT bits, UInt32 startIndex, UInt32 bitCount )
     {
-        return std::bit_cast< SByte >( BitsToUnsigned<Byte>( bits, startIndex, bitCount ) );
+        return BitsToSigned<SByte>( bits, startIndex, bitCount );
+        
     }
     template<typename BitsT>
         requires std::is_integral_v<BitsT>
@@ -91,7 +141,7 @@ namespace Harlinn::Common::Core
         requires std::is_integral_v<BitsT>
     inline constexpr Int16 BitsToInt16( const BitsT bits, UInt32 startIndex, UInt32 bitCount )
     {
-        return std::bit_cast< Int16 >( BitsToUnsigned<UInt16>( bits, startIndex, bitCount ) );
+        return BitsToSigned<Int16>( bits, startIndex, bitCount );
     }
     template<typename BitsT>
         requires std::is_integral_v<BitsT>
@@ -103,7 +153,7 @@ namespace Harlinn::Common::Core
         requires std::is_integral_v<BitsT>
     inline constexpr Int32 BitsToInt32( const BitsT bits, UInt32 startIndex, UInt32 bitCount )
     {
-        return std::bit_cast< Int32 >( BitsToUnsigned<UInt32>( bits, startIndex, bitCount ) );
+        return BitsToSigned<Int32>( bits, startIndex, bitCount );
     }
     template<typename BitsT>
         requires std::is_integral_v<BitsT>
@@ -115,7 +165,7 @@ namespace Harlinn::Common::Core
         requires std::is_integral_v<BitsT>
     inline constexpr Int64 BitsToInt64( const BitsT bits, UInt32 startIndex, UInt32 bitCount )
     {
-        return std::bit_cast< Int64 >( BitsToUnsigned<UInt64>( bits, startIndex, bitCount ) );
+        return BitsToSigned<Int64>( bits, startIndex, bitCount );
     }
 
     template<typename T>

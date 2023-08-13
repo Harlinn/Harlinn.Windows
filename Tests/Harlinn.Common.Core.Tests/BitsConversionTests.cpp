@@ -141,9 +141,22 @@ BOOST_AUTO_TEST_CASE( BitsToByteTests1 )
         auto value6b = BitsToByte( sbyteSource1, 12, 64 );
         BOOST_CHECK( value6b == 0 );
     }
+}
 
+// --run_test=BitsConversionTests/BitsToSByteTests1
+BOOST_AUTO_TEST_CASE( BitsToSByteTests1 )
+{
+    constexpr Byte byteSource1 = 0b10011001;
+    //constexpr Byte value1a = BitsToByte( byteSource1, 1, 1 );
+    constexpr SByte value1a = BitsToSByte( byteSource1, 0, 1 );
+    BOOST_CHECK( value1a == 1 );
+    constexpr SByte value1b = BitsToSByte( byteSource1, 3, 2 );
+    BOOST_CHECK( value1b == -1 );
+    constexpr SByte value1c = BitsToSByte( byteSource1, 0, 0 );
+    BOOST_CHECK( value1c == 0 );
 
 }
+
 
 
 
