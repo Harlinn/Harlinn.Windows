@@ -91,7 +91,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_WINDOWS;ROCKSDB_DLL;GFLAGS=gflags;SNAPPY;LZ4;ZLIB;ZSTD;HAVE_SSE42;HAVE_PCLMUL;ROCKSDB_SUPPORT_THREAD_LOCAL;OS_WIN;_MBCS;WIN64;NOMINMAX;_CRT_NONSTDC_NO_WARNINGS=1;_CRT_SECURE_NO_WARNINGS=1;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;ROCKSDB_DLL;GFLAGS=gflags;SNAPPY;LZ4;ZLIB;ZSTD;HAVE_SSE42;HAVE_PCLMUL;ROCKSDB_SUPPORT_THREAD_LOCAL;OS_WIN;_MBCS;WIN64;NOMINMAX;BOOST_ALL_DYN_LINK=1;_SILENCE_CXX23_DENORM_DEPRECATION_WARNING=1;_CRT_NONSTDC_NO_WARNINGS=1;_CRT_SECURE_NO_WARNINGS=1;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
@@ -109,7 +109,7 @@
       <WarningLevel>Level3</WarningLevel>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;_WINDOWS;ROCKSDB_DLL;GFLAGS=gflags;SNAPPY;LZ4;ZLIB;ZSTD;HAVE_SSE42;HAVE_PCLMUL;ROCKSDB_SUPPORT_THREAD_LOCAL;OS_WIN;_MBCS;WIN64;NOMINMAX;_CRT_NONSTDC_NO_WARNINGS=1;_CRT_SECURE_NO_WARNINGS=1;WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;ROCKSDB_DLL;GFLAGS=gflags;SNAPPY;LZ4;ZLIB;ZSTD;HAVE_SSE42;HAVE_PCLMUL;ROCKSDB_SUPPORT_THREAD_LOCAL;OS_WIN;_MBCS;WIN64;NOMINMAX;BOOST_ALL_DYN_LINK=1;_SILENCE_CXX23_DENORM_DEPRECATION_WARNING=1;_CRT_NONSTDC_NO_WARNINGS=1;_CRT_SECURE_NO_WARNINGS=1;WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
@@ -130,7 +130,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_WINDOWS;ROCKSDB_DLL;GFLAGS=gflags;SNAPPY;LZ4;ZLIB;ZSTD;HAVE_SSE42;HAVE_PCLMUL;ROCKSDB_SUPPORT_THREAD_LOCAL;OS_WIN;_MBCS;WIN64;NOMINMAX;_CRT_NONSTDC_NO_WARNINGS=1;_CRT_SECURE_NO_WARNINGS=1;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;ROCKSDB_DLL;GFLAGS=gflags;SNAPPY;LZ4;ZLIB;ZSTD;HAVE_SSE42;HAVE_PCLMUL;ROCKSDB_SUPPORT_THREAD_LOCAL;OS_WIN;_MBCS;WIN64;NOMINMAX;BOOST_ALL_DYN_LINK=1;_SILENCE_CXX23_DENORM_DEPRECATION_WARNING=1;_CRT_NONSTDC_NO_WARNINGS=1;_CRT_SECURE_NO_WARNINGS=1;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
@@ -148,7 +148,7 @@
       <WarningLevel>Level3</WarningLevel>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;_WINDOWS;ROCKSDB_DLL;GFLAGS=gflags;SNAPPY;LZ4;ZLIB;ZSTD;HAVE_SSE42;HAVE_PCLMUL;ROCKSDB_SUPPORT_THREAD_LOCAL;OS_WIN;_MBCS;WIN64;NOMINMAX;_CRT_NONSTDC_NO_WARNINGS=1;_CRT_SECURE_NO_WARNINGS=1;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;ROCKSDB_DLL;GFLAGS=gflags;SNAPPY;LZ4;ZLIB;ZSTD;HAVE_SSE42;HAVE_PCLMUL;ROCKSDB_SUPPORT_THREAD_LOCAL;OS_WIN;_MBCS;WIN64;NOMINMAX;BOOST_ALL_DYN_LINK=1;_SILENCE_CXX23_DENORM_DEPRECATION_WARNING=1;_CRT_NONSTDC_NO_WARNINGS=1;_CRT_SECURE_NO_WARNINGS=1;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>

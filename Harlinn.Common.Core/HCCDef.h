@@ -52,6 +52,9 @@
 #define _NOMINMAX
 #endif
 
+#ifndef BOOST_ALL_DYN_LINK
+#define BOOST_ALL_DYN_LINK 1
+#endif
 
 
 #include <windows.h>
