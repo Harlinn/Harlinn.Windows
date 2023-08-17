@@ -5,7 +5,7 @@ The provided code has been tried and tested on Windows 11 and Windows 2019 serve
  
 ## Requirements
 To build the solution you need:
-- [Visual Studio 17.6.4](https://visualstudio.microsoft.com/vs/) Ensure that you have installed support for .Net 6, 64-bit C++ development and 64-bit python development. 
+- [Visual Studio 17.7.1](https://visualstudio.microsoft.com/vs/) Ensure that you have installed support for .Net 6, 64-bit C++ development and 64-bit python development. 
 - [boost c++ libraries](https://www.boost.org/)
 - [nasm](https://www.nasm.us/) 
 - [yasm](https://yasm.tortall.net/)
@@ -52,11 +52,16 @@ The PATH environment variable must be updated to reference:
 
 
 ## Command line for building the boost libraries
+After downloading the boost libraries, you need to build boost using the following commands:
 ```
+bootstrap
+
 b2 -j8 address-model=64 threading=multi variant=debug link=shared --build-type=complete cxxstd=latest cflags=/arch:AVX2 cflags=/fsanitize=address cflags=/sdl stage
 
 b2 -j8 address-model=64 threading=multi variant=release link=shared --build-type=complete cxxstd=latest cflags=/arch:AVX2 stage
 ```
+The first invocation of b2 performs a debug build of the boost libraries as dlls with the 
+address sanitizer and sdl enabled, while the second performs a dll release build.   
 
 ## Make sure x64 is selected in the *Solution Platforms* drop-down in Visual Studio
 Make sure you compile for x64 by selecting x64 from the solution platforms drop-down 
