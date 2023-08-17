@@ -53,6 +53,7 @@ The PATH environment variable must be updated to reference:
 
 ## Command line for building the boost libraries
 ``b2 -j8 address-model=64 threading=multi variant=debug link=shared --build-type=complete cxxstd=latest cflags=/arch:AVX2 cflags=/fsanitize=address cflags=/sdl stage
+
 ``b2 -j8 address-model=64 threading=multi variant=release link=shared --build-type=complete cxxstd=latest cflags=/arch:AVX2 stage
 
 ## Make sure x64 is selected in the *Solution Platforms* drop-down in Visual Studio
