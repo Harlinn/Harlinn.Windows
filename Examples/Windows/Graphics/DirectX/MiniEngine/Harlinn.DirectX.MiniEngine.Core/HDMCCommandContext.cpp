@@ -1,3 +1,4 @@
+
 //
 // Copyright (c) Microsoft. All rights reserved.
 // This code is licensed under the MIT License (MIT).
@@ -89,8 +90,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine
 
     ComputeContext& ComputeContext::Begin( const std::wstring& ID, bool Async )
     {
-        ComputeContext& NewContext = g_ContextManager.AllocateContext(
-            Async ? D3D12_COMMAND_LIST_TYPE_COMPUTE : D3D12_COMMAND_LIST_TYPE_DIRECT )->GetComputeContext( );
+        ComputeContext& NewContext = g_ContextManager.AllocateContext( Async ? D3D12_COMMAND_LIST_TYPE_COMPUTE : D3D12_COMMAND_LIST_TYPE_DIRECT )->GetComputeContext( );
         NewContext.SetID( ID );
         if ( ID.length( ) > 0 )
             EngineProfiling::BeginBlock( ID, &NewContext );

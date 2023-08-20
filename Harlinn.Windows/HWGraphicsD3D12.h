@@ -445,6 +445,12 @@ namespace Harlinn::Windows::Graphics
 
         COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( D3D12CommandList, D3D12DeviceChild, ID3D12CommandList, ID3D12DeviceChild )
     public:
+        /// <summary>
+        /// Gets the type of the command list, such as direct, bundle, compute, or copy.
+        /// </summary>
+        /// <returns>
+        /// This method returns the type of the command list, as a D3D12_COMMAND_LIST_TYPE enumeration constant, such as direct, bundle, compute, or copy.
+        /// </returns>
         D3D12_COMMAND_LIST_TYPE GetType( ) const
         {
             InterfaceType* pInterface = GetInterface( );
@@ -460,6 +466,10 @@ namespace Harlinn::Windows::Graphics
 
         COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( D3D12GraphicsCommandList, D3D12CommandList, ID3D12GraphicsCommandList, ID3D12CommandList )
     public:
+
+        /// <summary>
+        /// Indicates that recording to the command list has finished.
+        /// </summary>
         void Close( ) const
         {
             InterfaceType* pInterface = GetInterface( );
@@ -467,6 +477,26 @@ namespace Harlinn::Windows::Graphics
             HCC_COM_CHECK_HRESULT2( hr, pInterface );
         }
 
+        /// <summary>
+        /// Resets a command list back to its initial state as if a new command list was just created.
+        /// </summary>
+        /// <param name="pAllocator">
+        /// A pointer to the ID3D12CommandAllocator object that the device creates command lists from.
+        /// </param>
+        /// <param name="pInitialState">
+        /// <p>
+        /// A pointer to the ID3D12PipelineState object that contains the initial pipeline state for 
+        /// the command list. This is optional and can be NULL. If NULL, the runtime sets a dummy initial 
+        /// pipeline state so that drivers don't have to deal with undefined state. The overhead for this 
+        /// is low, particularly for a command list, for which the overall cost of recording the command 
+        /// list likely dwarfs the cost of one initial state setting. So there is little cost in not setting 
+        /// the initial pipeline state parameter if it isn't convenient.
+        /// </p>
+        /// <p>
+        /// For bundles on the other hand, it might make more sense to try to set the initial state parameter 
+        /// since bundles are likely smaller overall and can be reused frequently.
+        /// </p>
+        /// </param>
         void Reset( _In_  ID3D12CommandAllocator* pAllocator, _In_opt_  ID3D12PipelineState* pInitialState = nullptr ) const
         {
             InterfaceType* pInterface = GetInterface( );
@@ -474,81 +504,411 @@ namespace Harlinn::Windows::Graphics
             HCC_COM_CHECK_HRESULT2( hr, pInterface );
         }
 
+        /// <summary>
+        /// Resets a command list back to its initial state as if a new command list was just created.
+        /// </summary>
         void Reset( const D3D12CommandAllocator& allocator, const D3D12PipelineState& initialState ) const
         {
             Reset( allocator.GetInterfacePointer<ID3D12CommandAllocator>(), initialState.GetInterfacePointer<ID3D12PipelineState>() );
         }
+        /// <summary>
+        /// Resets a command list back to its initial state as if a new command list was just created.
+        /// </summary>
         void Reset( const D3D12CommandAllocator& allocator ) const
         {
             Reset( allocator.GetInterfacePointer<ID3D12CommandAllocator>( ), nullptr );
         }
 
 
-        void ClearState( _In_opt_  ID3D12PipelineState* pPipelineState = nullptr ) const
+        /// <summary>
+        /// Resets the state of a direct command list back to the state it was in when the command list was created.
+        /// </summary>
+        /// <param name="pipelineState">
+        /// A pointer to the ID3D12PipelineState object that contains the initial pipeline state for the command list.
+        /// </param>
+        void ClearState( _In_opt_  ID3D12PipelineState* pipelineState = nullptr ) const
         {
             InterfaceType* pInterface = GetInterface( );
-            pInterface->ClearState( pPipelineState );
+            pInterface->ClearState( pipelineState );
         }
+
+        /// <summary>
+        /// Resets the state of a direct command list back to the state it was in when the command list was created.
+        /// </summary>
+        /// <param name="pipelineState">
+        /// A reference to the D3D12PipelineState object that contains the initial pipeline state for the command list.
+        /// </param>
         void ClearState( const D3D12PipelineState& pipelineState ) const
         {
             ClearState( pipelineState.GetInterfacePointer<ID3D12PipelineState>() );
         }
 
-
-        void DrawInstanced(_In_ UINT VertexCountPerInstance, _In_ UINT InstanceCount, _In_ UINT StartVertexLocation, _In_ UINT StartInstanceLocation ) const
+        /// <summary>
+        /// Draws non-indexed, instanced primitives.
+        /// </summary>
+        /// <param name="vertexCountPerInstance">
+        /// Number of vertices to draw.
+        /// </param>
+        /// <param name="instanceCount">
+        /// Number of instances to draw.
+        /// </param>
+        /// <param name="startVertexLocation">
+        /// Index of the first vertex.
+        /// </param>
+        /// <param name="startInstanceLocation">
+        /// A value added to each index before reading per-instance data from a vertex buffer.
+        /// </param>
+        /// <remarks>
+        /// <p>
+        /// A draw API submits work to the rendering pipeline.
+        /// </p>
+        /// <p>
+        /// Instancing might extend performance by reusing the same geometry to draw multiple 
+        /// objects in a scene.One example of instancing could be to draw the same object with 
+        /// different positions and colors.
+        /// </p>
+        /// <p>
+        /// The vertex data for an instanced draw call typically comes from a vertex buffer 
+        /// that is bound to the pipeline.But, you could also provide the vertex data from 
+        /// a shader that has instanced data identified with a system-value semantic( SV_InstanceID ).
+        /// </p>
+        /// </remarks>
+        void DrawInstanced(_In_ UINT vertexCountPerInstance, _In_ UINT instanceCount, _In_ UINT startVertexLocation, _In_ UINT startInstanceLocation ) const
         {
             InterfaceType* pInterface = GetInterface( );
-            pInterface->DrawInstanced( VertexCountPerInstance, InstanceCount, StartVertexLocation, StartInstanceLocation );
+            pInterface->DrawInstanced( vertexCountPerInstance, instanceCount, startVertexLocation, startInstanceLocation );
         }
 
-        void DrawIndexedInstanced( _In_ UINT IndexCountPerInstance, _In_ UINT InstanceCount, _In_ UINT StartIndexLocation, _In_ INT BaseVertexLocation, _In_ UINT StartInstanceLocation ) const
+        /// <summary>
+        /// Draws indexed, instanced primitives.
+        /// </summary>
+        /// <param name="indexCountPerInstance">
+        /// Number of indices read from the index buffer for each instance.
+        /// </param>
+        /// <param name="instanceCount">
+        /// Number of instances to draw.
+        /// </param>
+        /// <param name="startIndexLocation">
+        /// he location of the first index read by the GPU from the index buffer.
+        /// </param>
+        /// <param name="baseVertexLocation">
+        /// A value added to each index before reading a vertex from the vertex buffer.
+        /// </param>
+        /// <param name="startInstanceLocation">
+        /// A value added to each index before reading per-instance data from a vertex buffer.
+        /// </param>
+        void DrawIndexedInstanced( _In_ UINT indexCountPerInstance, _In_ UINT instanceCount, _In_ UINT startIndexLocation, _In_ INT baseVertexLocation, _In_ UINT startInstanceLocation ) const
         {
             InterfaceType* pInterface = GetInterface( );
-            pInterface->DrawIndexedInstanced( IndexCountPerInstance, InstanceCount, StartIndexLocation, BaseVertexLocation, StartInstanceLocation );
+            pInterface->DrawIndexedInstanced( indexCountPerInstance, instanceCount, startIndexLocation, baseVertexLocation, startInstanceLocation );
         }
 
+        /// <summary>
+        /// Executes a command list from a thread group.
+        /// </summary>
+        /// <param name="threadGroupCountX">
+        /// The number of groups dispatched in the x direction. ThreadGroupCountX must be less 
+        /// than or equal to D3D11_CS_DISPATCH_MAX_THREAD_GROUPS_PER_DIMENSION (65535).
+        /// </param>
+        /// <param name="threadGroupCountY">
+        /// The number of groups dispatched in the y direction. ThreadGroupCountY must be less 
+        /// than or equal to D3D11_CS_DISPATCH_MAX_THREAD_GROUPS_PER_DIMENSION (65535).
+        /// </param>
+        /// <param name="threadGroupCountZ">
+        /// The number of groups dispatched in the z direction. ThreadGroupCountZ must be less 
+        /// than or equal to D3D11_CS_DISPATCH_MAX_THREAD_GROUPS_PER_DIMENSION (65535). In 
+        /// feature level 10 the value for ThreadGroupCountZ must be 1.
+        /// </param>
+        /// <remarks>
+        /// You call the Dispatch method to execute commands in a compute shader. A compute 
+        /// shader can be run on many threads in parallel, within a thread group. Index a 
+        /// particular thread, within a thread group using a 3D vector given by (x,y,z).
+        /// </remarks>
         void Dispatch( _In_ UINT threadGroupCountX, _In_ UINT threadGroupCountY, _In_ UINT threadGroupCountZ ) const
         {
             InterfaceType* pInterface = GetInterface( );
             pInterface->Dispatch( threadGroupCountX, threadGroupCountY, threadGroupCountZ );
         }
 
+
+        /// <summary>
+        /// Copies a region of a buffer from one resource to another.
+        /// </summary>
+        /// <param name="dstBuffer">
+        /// Specifies the destination ID3D12Resource.
+        /// </param>
+        /// <param name="dstOffset">
+        /// Specifies a UINT64 offset (in bytes) into the destination resource.
+        /// </param>
+        /// <param name="srcBuffer">
+        /// Specifies the source ID3D12Resource.
+        /// </param>
+        /// <param name="srcOffset">
+        /// Specifies a UINT64 offset (in bytes) into the source resource, to start the copy from.
+        /// </param>
+        /// <param name="numBytes">
+        /// Specifies the number of bytes to copy.
+        /// </param>
         void CopyBufferRegion( _In_ ID3D12Resource* dstBuffer, UINT64 dstOffset, _In_ ID3D12Resource* srcBuffer, UINT64 srcOffset, UINT64 numBytes ) const
         {
             InterfaceType* pInterface = GetInterface( );
             pInterface->CopyBufferRegion( dstBuffer, dstOffset, srcBuffer, srcOffset, numBytes );
         }
 
+        /// <summary>
+        /// Copies a region of a buffer from one resource to another.
+        /// </summary>
+        /// <param name="dstBuffer">
+        /// Specifies the destination D3D12Resource.
+        /// </param>
+        /// <param name="dstOffset">
+        /// Specifies a UINT64 offset (in bytes) into the destination resource.
+        /// </param>
+        /// <param name="srcBuffer">
+        /// Specifies the source D3D12Resource.
+        /// </param>
+        /// <param name="srcOffset">
+        /// Specifies a UINT64 offset (in bytes) into the source resource, to start the copy from.
+        /// </param>
+        /// <param name="numBytes">
+        /// Specifies the number of bytes to copy.
+        /// </param>
         void CopyBufferRegion( const D3D12Resource& dstBuffer, UINT64 dstOffset, const D3D12Resource& srcBuffer, UINT64 srcOffset, UINT64 numBytes ) const
         {
             CopyBufferRegion( dstBuffer.GetInterfacePointer<ID3D12Resource>(), dstOffset, srcBuffer.GetInterfacePointer<ID3D12Resource>( ), srcOffset, numBytes );
         }
 
-
-        void CopyTextureRegion( _In_ const D3D12_TEXTURE_COPY_LOCATION* pDst, UINT dstX, UINT dstY, UINT dstZ, _In_ const D3D12_TEXTURE_COPY_LOCATION* pSrc, _In_opt_ const D3D12_BOX* pSrcBox ) const
+        /// <summary>
+        /// This function uses the GPU to copy texture data between two locations. Both 
+        /// the source and the destination may reference texture data located within either 
+        /// a buffer resource or a texture resource.
+        /// </summary>
+        /// <param name="destination">
+        /// Specifies the destination <see href="https://learn.microsoft.com/en-us/windows/desktop/api/d3d12/ns-d3d12-d3d12_texture_copy_location">D3D12_TEXTURE_COPY_LOCATION</see>. 
+        /// The subresource referred to must be in the D3D12_RESOURCE_STATE_COPY_DEST state.
+        /// </param>
+        /// <param name="destinationX">
+        /// The x-coordinate of the upper left corner of the destination region.
+        /// </param>
+        /// <param name="destinationY">
+        /// The y-coordinate of the upper left corner of the destination region. For a 1D subresource, this must be zero.
+        /// </param>
+        /// <param name="destinationZ">
+        /// The z-coordinate of the upper left corner of the destination region. For a 1D or 2D subresource, this must be zero.
+        /// </param>
+        /// <param name="source">
+        /// Specifies the source <see href="https://learn.microsoft.com/en-us/windows/desktop/api/d3d12/ns-d3d12-d3d12_texture_copy_location">D3D12_TEXTURE_COPY_LOCATION</see>. 
+        /// The subresource referred to must be in the D3D12_RESOURCE_STATE_COPY_SOURCE state.
+        /// </param>
+        /// <param name="sourceBox">
+        /// Specifies an optional <see href="https://learn.microsoft.com/en-us/windows/desktop/api/d3d12/ns-d3d12-d3d12_box">D3D12_BOX</see> that sets the size of the source texture to copy.
+        /// </param>
+        /// <remarks>
+        /// <p>
+        /// The source box must be within the size of the source resource. The destination offsets, 
+        /// (x, y, and z), allow the source box to be offset when writing into the destination resource; 
+        /// however, the dimensions of the source box and the offsets must be within the size of the 
+        /// resource. If you try and copy outside the destination resource or specify a source box that 
+        /// is larger than the source resource, the behavior of CopyTextureRegion is undefined. If you 
+        /// created a device that supports the debug layer, the debug output reports an error on this 
+        /// invalid CopyTextureRegion call. Invalid parameters to CopyTextureRegion cause undefined 
+        /// behavior and might result in incorrect rendering, clipping, no copy, or even the removal 
+        /// of the rendering device.
+        /// </p>
+        /// <p>
+        /// If the resources are buffers, all coordinates are in bytes; if the resources are textures, 
+        /// all coordinates are in texels.
+        /// </p>
+        /// <p>
+        /// CopyTextureRegion performs the copy on the GPU (similar to a memcpy by the CPU). As a consequence, the source and destination resources:
+        /// <list type="bullet">
+        ///     <item>
+        ///     Must be different subresources (although they can be from the same resource).
+        ///     </item>
+        ///     <item>
+        ///     Must have compatible DXGI_FORMATs (identical or from the same type group). For example, 
+        ///     a DXGI_FORMAT_R32G32B32_FLOAT texture can be copied to a DXGI_FORMAT_R32G32B32_UINT 
+        ///     texture since both of these formats are in the DXGI_FORMAT_R32G32B32_TYPELESS group. 
+        ///     CopyTextureRegion can copy between a few format types. For more info, 
+        ///     see <see href="https://learn.microsoft.com/en-us/windows/desktop/direct3d10/d3d10-graphics-programming-guide-resources-block-compression">Format Conversion using Direct3D 10.1</see>.
+        ///     </item>
+        /// </list>
+        /// </p>
+        /// <p>
+        /// CopyTextureRegion only supports copy; it does not support any stretch, color key, or blend. 
+        /// CopyTextureRegion can reinterpret the resource data between a few format types.
+        /// </p>
+        /// <p>
+        /// Note that for a depth-stencil buffer, the depth and stencil planes are separate subresources within the buffer.
+        /// </p>
+        /// <p>
+        /// To copy an entire resource, rather than just a region of a subresource, we recommend to use CopyResource instead.
+        /// </p>
+        /// </remarks>
+        void CopyTextureRegion( _In_ const D3D12_TEXTURE_COPY_LOCATION* destination, UINT destinationX, UINT destinationY, UINT destinationZ, _In_ const D3D12_TEXTURE_COPY_LOCATION* source, _In_opt_ const D3D12_BOX* sourceBox ) const
         {
             InterfaceType* pInterface = GetInterface( );
-            pInterface->CopyTextureRegion( pDst, dstX, dstY, dstZ, pSrc, pSrcBox );
+            pInterface->CopyTextureRegion( destination, destinationX, destinationY, destinationZ, source, sourceBox );
         }
 
-        void CopyResource( _In_ ID3D12Resource* dstResource, _In_ ID3D12Resource* srcResource ) const
+        /// <summary>
+        /// Copies the entire contents of the source resource to the destination resource.
+        /// </summary>
+        /// <param name="destinationResource">
+        /// Specifies the destination ID3D12Resource.
+        /// </param>
+        /// <param name="sourceResource">
+        /// Specifies the source ID3D12Resource.
+        /// </param>
+        void CopyResource( _In_ ID3D12Resource* destinationResource, _In_ ID3D12Resource* sourceResource ) const
         {
             InterfaceType* pInterface = GetInterface( );
-            pInterface->CopyResource( dstResource, srcResource );
+            pInterface->CopyResource( destinationResource, sourceResource );
         }
 
+        /// <summary>
+        /// Copies the entire contents of the source resource to the destination resource.
+        /// </summary>
+        /// <param name="destinationResource">
+        /// Specifies the destination D3D12Resource.
+        /// </param>
+        /// <param name="sourceResource">
+        /// Specifies the source D3D12Resource.
+        /// </param>
         void CopyResource( const D3D12Resource& dstResource, const D3D12Resource& srcResource ) const
         {
             CopyResource( dstResource.GetInterfacePointer<ID3D12Resource>( ), srcResource.GetInterfacePointer<ID3D12Resource>( ) );
         }
 
-        void CopyTiles( _In_ ID3D12Resource* tiledResource, _In_ const D3D12_TILED_RESOURCE_COORDINATE* tileRegionStartCoordinate, _In_ const D3D12_TILE_REGION_SIZE* tileRegionSize, _In_ ID3D12Resource* buffer, UINT64 bufferStartOffsetInBytes, D3D12_TILE_COPY_FLAGS flags ) const
+        /// <summary>
+        /// Copies tiles from buffer to tiled resource or vice versa.
+        /// </summary>
+        /// <param name="tiledResource">
+        /// Specifies a tiled resource.
+        /// </param>
+        /// <param name="tileRegionStartCoordinate">
+        /// A pointer to a <see href="https://learn.microsoft.com/en-us/windows/desktop/api/d3d12/ns-d3d12-d3d12_tiled_resource_coordinate">D3D12_TILED_RESOURCE_COORDINATE</see> 
+        /// structure that describes the starting coordinates of the tiled resource.
+        /// </param>
+        /// <param name="tileRegionSize">
+        /// A pointer to a <see href="https://learn.microsoft.com/en-us/windows/desktop/api/d3d12/ns-d3d12-d3d12_tile_region_size">D3D12_TILE_REGION_SIZE</see> 
+        /// structure that describes the size of the tiled region.
+        /// </param>
+        /// <param name="buffer">
+        /// Specifies an ID3D12Resource that represents a default, dynamic, or staging buffer.
+        /// </param>
+        /// <param name="bufferStartOffsetInBytes">
+        /// The offset in bytes into the buffer to start the operation.
+        /// </param>
+        /// <param name="flags">
+        /// A combination of <see href="https://learn.microsoft.com/en-us/windows/desktop/api/d3d12/ne-d3d12-d3d12_tile_copy_flags">D3D12_TILE_COPY_FLAGS</see>-typed 
+        /// values that are combined by using a bitwise OR operation and that identifies how to copy tiles.
+        /// </param>
+        /// <remarks>
+        /// <p>
+        /// CopyTiles drops write operations to unmapped areas and handles read operations from 
+        /// unmapped areas (except on Tier_1 tiled resources, where reading and writing unmapped 
+        /// areas is invalid - refer to D3D12_TILED_RESOURCES_TIER).
+        /// </p>
+        /// <p>
+        /// If a copy operation involves writing to the same memory location multiple times because 
+        /// multiple locations in the destination resource are mapped to the same tile memory, the 
+        /// resulting write operations to multi-mapped tiles are non-deterministic and non-repeatable; 
+        /// that is, accesses to the tile memory happen in whatever order the hardware happens to 
+        /// execute the copy operation.
+        /// </p>
+        /// <p>
+        /// The tiles involved in the copy operation can't include tiles that contain packed mipmaps or 
+        /// results of the copy operation are undefined. To transfer data to and from mipmaps that the 
+        /// hardware packs into the one-or-more tiles that constitute the packed mips, you must use 
+        /// the standard (that is, non-tile specific) copy APIs like CopyTextureRegion.
+        /// </p>
+        /// <p>
+        /// CopyTiles does copy data in a slightly different pattern than the standard copy methods.
+        /// </p>
+        /// <p>
+        /// The memory layout of the tiles in the non-tiled buffer resource side of the copy operation 
+        /// is linear in memory within 64 KB tiles, which the hardware and driver swizzle and de-swizzle 
+        /// per tile as appropriate when they transfer to and from a tiled resource. For multisample 
+        /// antialiasing (MSAA) surfaces, the hardware and driver traverse each pixel's samples in 
+        /// sample-index order before they move to the next pixel. For tiles that are partially filled 
+        /// on the right side (for a surface that has a width not a multiple of tile width in pixels), 
+        /// the pitch and stride to move down a row is the full size in bytes of the number pixels that 
+        /// would fit across the tile if the tile was full. So, there can be a gap between each row of 
+        /// pixels in memory. Mipmaps that are smaller than a tile are not packed together in the linear 
+        /// layout, which might seem to be a waste of memory space, but as mentioned you can't use 
+        /// CopyTiles to copy to mipmaps that the hardware packs together. You can just use generic copy 
+        /// APIs, like CopyTextureRegion, to copy small mipmaps individually.
+        /// </p>
+        /// </remarks>
+        void CopyTiles( _In_ ID3D12Resource* tiledResource, _In_ const D3D12_TILED_RESOURCE_COORDINATE* tileRegionStartCoordinate, _In_ const D3D12_TILE_REGION_SIZE* tileRegionSize, _In_ ID3D12Resource* buffer, UINT64 bufferStartOffsetInBytes, D3D12_TILE_COPY_FLAGS flags = D3D12_TILE_COPY_FLAGS::D3D12_TILE_COPY_FLAG_NONE ) const
         {
             InterfaceType* pInterface = GetInterface( );
             pInterface->CopyTiles( tiledResource, tileRegionStartCoordinate, tileRegionSize, buffer, bufferStartOffsetInBytes, flags );
         }
 
-        void CopyTiles( const D3D12Resource& tiledResource, _In_ const D3D12_TILED_RESOURCE_COORDINATE* tileRegionStartCoordinate, _In_ const D3D12_TILE_REGION_SIZE* tileRegionSize, const D3D12Resource& buffer, UINT64 bufferStartOffsetInBytes, D3D12_TILE_COPY_FLAGS flags ) const
+        /// <summary>
+        /// Copies tiles from buffer to tiled resource or vice versa.
+        /// </summary>
+        /// <param name="tiledResource">
+        /// Specifies a tiled resource.
+        /// </param>
+        /// <param name="tileRegionStartCoordinate">
+        /// A pointer to a <see href="https://learn.microsoft.com/en-us/windows/desktop/api/d3d12/ns-d3d12-d3d12_tiled_resource_coordinate">D3D12_TILED_RESOURCE_COORDINATE</see> 
+        /// structure that describes the starting coordinates of the tiled resource.
+        /// </param>
+        /// <param name="tileRegionSize">
+        /// A pointer to a <see href="https://learn.microsoft.com/en-us/windows/desktop/api/d3d12/ns-d3d12-d3d12_tile_region_size">D3D12_TILE_REGION_SIZE</see> 
+        /// structure that describes the size of the tiled region.
+        /// </param>
+        /// <param name="buffer">
+        /// Specifies an ID3D12Resource that represents a default, dynamic, or staging buffer.
+        /// </param>
+        /// <param name="bufferStartOffsetInBytes">
+        /// The offset in bytes into the buffer to start the operation.
+        /// </param>
+        /// <param name="flags">
+        /// A combination of <see href="https://learn.microsoft.com/en-us/windows/desktop/api/d3d12/ne-d3d12-d3d12_tile_copy_flags">D3D12_TILE_COPY_FLAGS</see>-typed 
+        /// values that are combined by using a bitwise OR operation and that identifies how to copy tiles.
+        /// </param>
+        /// <remarks>
+        /// <p>
+        /// CopyTiles drops write operations to unmapped areas and handles read operations from 
+        /// unmapped areas (except on Tier_1 tiled resources, where reading and writing unmapped 
+        /// areas is invalid - refer to D3D12_TILED_RESOURCES_TIER).
+        /// </p>
+        /// <p>
+        /// If a copy operation involves writing to the same memory location multiple times because 
+        /// multiple locations in the destination resource are mapped to the same tile memory, the 
+        /// resulting write operations to multi-mapped tiles are non-deterministic and non-repeatable; 
+        /// that is, accesses to the tile memory happen in whatever order the hardware happens to 
+        /// execute the copy operation.
+        /// </p>
+        /// <p>
+        /// The tiles involved in the copy operation can't include tiles that contain packed mipmaps or 
+        /// results of the copy operation are undefined. To transfer data to and from mipmaps that the 
+        /// hardware packs into the one-or-more tiles that constitute the packed mips, you must use 
+        /// the standard (that is, non-tile specific) copy APIs like CopyTextureRegion.
+        /// </p>
+        /// <p>
+        /// CopyTiles does copy data in a slightly different pattern than the standard copy methods.
+        /// </p>
+        /// <p>
+        /// The memory layout of the tiles in the non-tiled buffer resource side of the copy operation 
+        /// is linear in memory within 64 KB tiles, which the hardware and driver swizzle and de-swizzle 
+        /// per tile as appropriate when they transfer to and from a tiled resource. For multisample 
+        /// antialiasing (MSAA) surfaces, the hardware and driver traverse each pixel's samples in 
+        /// sample-index order before they move to the next pixel. For tiles that are partially filled 
+        /// on the right side (for a surface that has a width not a multiple of tile width in pixels), 
+        /// the pitch and stride to move down a row is the full size in bytes of the number pixels that 
+        /// would fit across the tile if the tile was full. So, there can be a gap between each row of 
+        /// pixels in memory. Mipmaps that are smaller than a tile are not packed together in the linear 
+        /// layout, which might seem to be a waste of memory space, but as mentioned you can't use 
+        /// CopyTiles to copy to mipmaps that the hardware packs together. You can just use generic copy 
+        /// APIs, like CopyTextureRegion, to copy small mipmaps individually.
+        /// </p>
+        /// </remarks>
+        void CopyTiles( const D3D12Resource& tiledResource, _In_ const D3D12_TILED_RESOURCE_COORDINATE* tileRegionStartCoordinate, _In_ const D3D12_TILE_REGION_SIZE* tileRegionSize, const D3D12Resource& buffer, UINT64 bufferStartOffsetInBytes, D3D12_TILE_COPY_FLAGS flags = D3D12_TILE_COPY_FLAGS::D3D12_TILE_COPY_FLAG_NONE ) const
         {
             CopyTiles( tiledResource.GetInterfacePointer<ID3D12Resource>( ), tileRegionStartCoordinate, tileRegionSize, buffer.GetInterfacePointer<ID3D12Resource>( ), bufferStartOffsetInBytes, flags );
         }

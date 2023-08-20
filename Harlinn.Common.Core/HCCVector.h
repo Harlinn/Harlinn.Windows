@@ -7,16 +7,16 @@
 
 namespace Harlinn::Common::Core
 {
-    template<typename T>
-    class Vector;
+    template<typename T, typename IteratorT, typename ConstIteratorT>
+    class VectorBase;
     template<typename T>
     class OwnerVector;
 
     template< typename VectorT >
     class VectorConstIterator
     {
-        template<typename T>
-        friend class Vector;
+        template<typename T, typename IteratorT, typename ConstIteratorT>
+        friend class VectorBase;
         template<typename T>
         friend class OwnerVector;
     public:
@@ -28,7 +28,7 @@ namespace Harlinn::Common::Core
         using reference = const value_type&;
     protected:
         value_type* ptr_ = nullptr;
-    
+    public:
         constexpr explicit VectorConstIterator( value_type* ptr ) noexcept
             : ptr_( ptr )
         {
@@ -163,8 +163,8 @@ namespace Harlinn::Common::Core
     template<typename VectorT>
     class VectorIterator : public VectorConstIterator<VectorT>
     {
-        template<typename T>
-        friend class Vector;
+        template<typename T, typename IteratorT, typename ConstIteratorT>
+        friend class VectorBase;
         template<typename T>
         friend class OwnerVector;
     public:
@@ -176,7 +176,7 @@ namespace Harlinn::Common::Core
         using difference_type = typename VectorT::difference_type;
         using pointer = typename VectorT::pointer;
         using reference = value_type&;
-    private:
+    //private:
         constexpr explicit VectorIterator( value_type* ptr ) noexcept
             : Base( ptr )
         {

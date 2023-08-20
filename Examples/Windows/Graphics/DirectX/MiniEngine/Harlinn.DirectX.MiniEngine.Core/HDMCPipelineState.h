@@ -55,8 +55,6 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         { 
             return m_PSO; 
         }
-
-    
     };
 
     class GraphicsPSO : public PSO

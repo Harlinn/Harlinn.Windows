@@ -48,22 +48,26 @@
 
 namespace Harlinn::Windows::DirectX::MiniEngine
 {
-
-
-    // This macro determines whether to detect if there is an HDR display and enable HDR10 output.
-    // Currently, with HDR display enabled, the pixel magnfication functionality is broken.
-#define CONDITIONALLY_ENABLE_HDR_OUTPUT 1
-
-    namespace GameCore { extern HWND g_hWnd; }
+    using namespace Math;
+    using namespace ImageScaling;
+    using namespace Graphics;
 
 
 #define SWAP_CHAIN_BUFFER_COUNT 3
 
     DXGI_FORMAT SwapChainFormat = DXGI_FORMAT_R10G10B10A2_UNORM;
 
-    using namespace Math;
-    using namespace ImageScaling;
-    using namespace Graphics;
+
+    // This macro determines whether to detect if there is an HDR display and enable HDR10 output.
+    // Currently, with HDR display enabled, the pixel magnfication functionality is broken.
+#define CONDITIONALLY_ENABLE_HDR_OUTPUT 1
+
+    namespace GameCore 
+    { 
+        extern HWND g_hWnd; 
+    }
+
+
 
     namespace
     {

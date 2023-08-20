@@ -45,6 +45,5 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         // The total number of frames per second
         HDMC_EXPORT float GetFrameRate( void );
 
-        HDMC_EXPORT extern bool g_bEnableHDROutput;
     }
 }
