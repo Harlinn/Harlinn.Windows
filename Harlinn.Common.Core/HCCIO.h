@@ -1898,11 +1898,13 @@ namespace Harlinn::Common::Core::IO
     {
     public:
         using Base = Security::AccessMaskT<FileAccessMask, FileAccessRights>;
-        static constexpr const Security::GenericMapping Mapping{
+        static constexpr const Security::GenericMapping Mapping
+        {
             static_cast<ACCESS_MASK>( FILE_GENERIC_READ ),
             static_cast<ACCESS_MASK>( FILE_GENERIC_WRITE ),
             static_cast<ACCESS_MASK>( FILE_GENERIC_EXECUTE ),
-            static_cast<ACCESS_MASK>( static_cast<ACCESS_MASK>( FileAccessRights::FullControl ) ) };
+            static_cast<ACCESS_MASK>( static_cast<ACCESS_MASK>( FileAccessRights::FullControl ) ) 
+        };
 
 
 
@@ -2083,11 +2085,13 @@ namespace Harlinn::Common::Core::IO
     {
     public:
         using Base = Security::AccessMaskT<DirectoryAccessMask, DirectoryAccessRights>;
-        static constexpr const Security::GenericMapping Mapping{
+        static constexpr const Security::GenericMapping Mapping
+        {
             static_cast<ACCESS_MASK>( FILE_GENERIC_READ ),
             static_cast<ACCESS_MASK>( FILE_GENERIC_WRITE ),
             static_cast<ACCESS_MASK>( FILE_GENERIC_EXECUTE ),
-            static_cast<ACCESS_MASK>( static_cast<ACCESS_MASK>( DirectoryAccessRights::FullControl ) ) };
+            static_cast<ACCESS_MASK>( static_cast<ACCESS_MASK>( DirectoryAccessRights::FullControl ) ) 
+        };
 
         constexpr DirectoryAccessMask( ) noexcept
         {

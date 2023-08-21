@@ -136,6 +136,7 @@
 #include <ntdsapi.h>
 #include <Credssp.h>
 #include <Schnlsp.h>
+#include <Dbt.h>
 
 #include <msxml2.h>
 #include <msxml6.h>
