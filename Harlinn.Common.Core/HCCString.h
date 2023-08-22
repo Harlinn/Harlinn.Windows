@@ -4743,6 +4743,64 @@ namespace Harlinn::Common::Core
         return std::_Insert_string( os, str.data( ), str.size( ) );
     }
 
+    template <class CharT, class CharTraitsT>
+    std::basic_istream<CharT, CharTraitsT>& operator >> ( std::basic_istream<CharT, CharTraitsT>& inputStream, BasicString<CharT>& str )
+    {
+        using IStreamT = std::basic_istream<CharT, CharTraitsT>;
+        using CTypeT = std::ctype<CharT>;
+        using SizeType = typename BasicString<CharT>::size_type;
+
+        typename IStreamT::iostate inputStreamState = IStreamT::goodbit;
+        bool changed = false;
+        const typename IStreamT::sentry sentryOk( inputStream );
+
+        if ( sentryOk )
+        { 
+            const CTypeT& ctypeFacet = std::use_facet<CTypeT>( inputStream.getloc( ) );
+            str.erase( );
+
+            try
+            {
+                SizeType inputSize = static_cast< SizeType >( inputStream.width( ) );
+
+                typename CharTraitsT::int_type inputCharacter = inputStream.rdbuf( )->sgetc( );
+
+                while( inputSize )
+                {
+                    if ( CharTraitsT::eq_int_type( CharTraitsT::eof( ), inputCharacter ) )
+                    {
+                        inputStreamState |= IStreamT::eofbit;
+                        break;
+                    }
+                    else if ( ctypeFacet.is( CTypeT::space, CharTraitsT::to_char_type( inputCharacter ) ) )
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        str.push_back( CharTraitsT::to_char_type( inputCharacter ) );
+                        changed = true;
+                    }
+                    inputSize--; 
+                    inputCharacter = inputStream.rdbuf( )->snextc( );
+                }
+            }
+            catch ( ... )
+            {
+                inputStream.setstate( IStreamT::badbit, true );
+            }
+        }
+
+        inputStream.width( 0 );
+        if ( !changed )
+        {
+            inputStreamState |= IStreamT::failbit;
+        }
+
+        inputStream.setstate( inputStreamState );
+        return inputStream;
+    }
+
 
 
 

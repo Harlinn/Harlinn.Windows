@@ -8,6 +8,7 @@
 #include <HCCConcepts.h>
 #include <HCCSync.h>
 #include <HCCArray.h>
+#include <HCCApplication.h>
 
 namespace Harlinn::Common::Core::Services
 {
@@ -598,9 +599,60 @@ namespace Harlinn::Common::Core::Services
         {
             return Open( machineName.c_str( ), nullptr, desiredAccessRights );
         }
-
-
     };
+
+
+    class IServiceHost
+    {
+    public:
+        virtual ~IServiceHost( ) = default;
+
+        virtual bool StartDispatcher( const SERVICE_TABLE_ENTRYW* serviceStartTable ) = 0;
+        virtual SERVICE_STATUS_HANDLE RegisterHandler(_In_ LPCWSTR serviceName, _In_ __callback LPHANDLER_FUNCTION_EX handlerProc, _In_opt_ LPVOID context ) = 0;
+        virtual bool SupportsRequestDeviceNotifications( )
+        {
+            return false;
+        }
+        virtual HDEVNOTIFY RequestDeviceNotifications( SERVICE_STATUS_HANDLE serviceStatusHandle, bool allInterfaceClasses, LPVOID notificationFilter ) = 0;
+        virtual bool SetStatus( _In_ SERVICE_STATUS_HANDLE serviceStatusHandle, _In_ LPSERVICE_STATUS serviceStatus) = 0;
+    };
+
+    class WindowsServiceHost : public IServiceHost
+    {
+    public:
+        virtual bool StartDispatcher( const SERVICE_TABLE_ENTRYW* serviceStartTable ) override
+        {
+            return StartServiceCtrlDispatcherW( serviceStartTable ) != FALSE;
+        }
+
+        virtual SERVICE_STATUS_HANDLE RegisterHandler( _In_ LPCWSTR serviceName, _In_ __callback LPHANDLER_FUNCTION_EX handlerProc, _In_opt_ LPVOID context ) override
+        {
+            return RegisterServiceCtrlHandlerExW( serviceName, handlerProc, context );
+        }
+
+        virtual bool SupportsRequestDeviceNotifications( )
+        {
+            return true;
+        }
+        virtual HDEVNOTIFY RequestDeviceNotifications( SERVICE_STATUS_HANDLE serviceStatusHandle, bool allInterfaceClasses, LPVOID notificationFilter )
+        {
+            DWORD flags = DEVICE_NOTIFY_SERVICE_HANDLE;
+            if ( allInterfaceClasses )
+            {
+                flags |= DEVICE_NOTIFY_ALL_INTERFACE_CLASSES;
+            }
+            return RegisterDeviceNotificationW( serviceStatusHandle, notificationFilter, flags );
+        }
+
+        virtual bool SetStatus( _In_ SERVICE_STATUS_HANDLE serviceStatusHandle, _In_ LPSERVICE_STATUS serviceStatus ) override
+        {
+            return SetServiceStatus( serviceStatusHandle, serviceStatus ) != FALSE;
+        }
+    };
+
+
+
+
 
     class ServiceApplication;
     class ServiceBase
@@ -613,14 +665,12 @@ namespace Harlinn::Common::Core::Services
         SERVICE_STATUS_HANDLE serviceStatusHandle_ = nullptr;
         SERVICE_STATUS serviceStatus_{};
         EventWaitHandle serviceStoppedEventWaitHandle_;
-
+        IServiceHost* serviceHost_ = nullptr;
         DWORD argc_ = 0;
         LPWSTR* argv_ = nullptr;
     public:
-        ServiceBase( const WideString& name, Services::ServiceControlAccepted serviceControlAccepted = Services::ServiceControlAccepted::Stop, Services::ServiceType serviceType = Services::ServiceType::WindowsOwnProcess )
-            : name_( name ), serviceControlAccepted_( serviceControlAccepted ), serviceType_( serviceType ), serviceStoppedEventWaitHandle_( true )
-        {
-        }
+        ServiceBase( const WideString& name, Services::ServiceControlAccepted serviceControlAccepted = Services::ServiceControlAccepted::Stop, Services::ServiceType serviceType = Services::ServiceType::WindowsOwnProcess );
+        
         virtual ~ServiceBase( )
         {
         }
@@ -632,7 +682,7 @@ namespace Harlinn::Common::Core::Services
 
         bool RegisterServiceControlHandler( )
         {
-            serviceStatusHandle_ = RegisterServiceCtrlHandlerExW( name_.c_str( ), ServiceHandlerFunctionEx, this );
+            serviceStatusHandle_ = serviceHost_->RegisterHandler( name_.c_str( ), ServiceHandlerFunctionEx, this );
             return serviceStatusHandle_ != nullptr;
         }
     protected:
@@ -659,7 +709,7 @@ namespace Harlinn::Common::Core::Services
             {
                 serviceStatus_.dwCheckPoint++;
             }
-            ::SetServiceStatus( serviceStatusHandle_, &serviceStatus_ );
+            serviceHost_->SetStatus( serviceStatusHandle_, &serviceStatus_ );
         }
 
     public:
@@ -760,7 +810,7 @@ namespace Harlinn::Common::Core::Services
         {
             return WinError::CallNotImplemented;
         }
-        virtual WinError HandleTimeChange( const SERVICE_TIMECHANGE_INFO* serviceTimechangeInfo )
+        virtual WinError HandleTimeChange( const SERVICE_TIMECHANGE_INFO* serviceTimeChangeInfo )
         {
             return WinError::CallNotImplemented;
         }
@@ -865,7 +915,7 @@ namespace Harlinn::Common::Core::Services
                 {
                     result = static_cast< DWORD >( serviceBase->HandleControl( static_cast< ServiceControl >( control ), eventType, eventData ) );
                 }
-                catch ( const ThreadAbortException& exception ) 
+                catch ( const ThreadAbortException& /*exception*/ )
                 { 
                     // This thread cannot be aborted
                     //throw; 
@@ -897,7 +947,9 @@ namespace Harlinn::Common::Core::Services
     public:
         using Base = ServiceBase;
         using DerivedType = DerivedT;
-
+    private:
+        
+    public:
         Service( Services::ServiceControlAccepted serviceControlAccepted = Services::ServiceControlAccepted::Stop, Services::ServiceType serviceType = Services::ServiceType::WindowsOwnProcess )
             : Base( DerivedType::ServiceName( ), serviceControlAccepted, serviceType )
         {
@@ -912,27 +964,57 @@ namespace Harlinn::Common::Core::Services
             }
         }
 
-
         // static constexpr const wchar_t* ServiceName( ) { return L""; }
 
     };
 
 
-    
-    template<typename ServiceT>
-    void Run( )
-    {
-        std::array< SERVICE_TABLE_ENTRYW, 2> entries{ };
-        entries[ 0 ].lpServiceName = ServiceT::ServiceName( );
-        entries[ 0 ].lpServiceProc = &ServiceT::Main;
 
-        auto rc = StartServiceCtrlDispatcherW( entries.data( ) );
-        if ( rc == FALSE )
+
+
+    class Application : public Core::Application
+    {
+        IServiceHost* serviceHost_ = nullptr;
+        std::vector<SERVICE_TABLE_ENTRYW> serviceEntries_;
+    public:
+        using Base = Core::Application;
+
+        HCC_EXPORT Application( const ApplicationOptions& options, IServiceHost* serviceHost );
+        HCC_EXPORT ~Application( );
+
+        static Application& Instance( ) noexcept
         {
-            ThrowLastOSError( );
+            return static_cast< Application& >( Base::Instance( ) );
         }
 
+        IServiceHost* ServiceHost( ) const
+        {
+            return serviceHost_;
+        }
+
+        template<typename ServiceT>
+        void RegisterService( )
+        {
+            SERVICE_TABLE_ENTRYW& entry = serviceEntries_.emplace_back();
+            entry.lpServiceName = ServiceT::ServiceName( );
+            entry.lpServiceProc = &ServiceT::Main;
+        }
+
+        void Run( )
+        {
+            SERVICE_TABLE_ENTRYW& entry = serviceEntries_.emplace_back( );
+            entry.lpServiceName = nullptr;
+            entry.lpServiceProc = nullptr;
+            serviceHost_->StartDispatcher( serviceEntries_.data( ) );
+        }
+
+    };
+
+    inline ServiceBase::ServiceBase( const WideString& name, Services::ServiceControlAccepted serviceControlAccepted, Services::ServiceType serviceType )
+        : name_( name ), serviceControlAccepted_( serviceControlAccepted ), serviceType_( serviceType ), serviceStoppedEventWaitHandle_( true ), serviceHost_( Application::Instance().ServiceHost() )
+    {
     }
+
 
 
 }

@@ -262,6 +262,9 @@
 #include <boost/bind/bind.hpp>
 #include <boost/asio.hpp>
 
+#include <boost/program_options.hpp>
+
+
 #include <HCCWinError.h>
 
 namespace Harlinn::Common::Core

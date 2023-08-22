@@ -213,6 +213,7 @@
     <ClInclude Include="HCCConcepts.h" />
     <ClInclude Include="HCCConcurrentQueue.h" />
     <ClInclude Include="HCCDataSource.h" />
+    <ClInclude Include="HCCDebugServiceHost.h" />
     <ClInclude Include="HCCDemangle.h" />
     <ClInclude Include="HCCDirectoryUtils.h" />
     <ClInclude Include="HCCIOBufferStream.h" />
@@ -335,6 +336,7 @@
     <ClCompile Include="HCCSecurity.cpp" />
     <ClCompile Include="HCCCommDevice.cpp" />
     <ClCompile Include="HCCSensorsAPI.cpp" />
+    <ClCompile Include="HCCService.cpp" />
     <ClCompile Include="HCCSocket.cpp" />
     <ClCompile Include="HCCString.cpp" />
     <ClCompile Include="HCCVariant.cpp" />
