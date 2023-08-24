@@ -61,8 +61,12 @@ public:
 
 
 
-int main( int argc, const wchar_t** argv )
+int wmain( int argc, const wchar_t** argv )
 {
-    std::cout << "Hello World!\n";
+    Options options;
+    options.Parse( argc, argv );
+
+    
+
 }
 

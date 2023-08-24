@@ -1800,6 +1800,11 @@ namespace Harlinn::Common::Core
         }
 
 
+        [[nodiscard]] constexpr size_type max_size( ) const noexcept
+        {
+            return ( MaxInt64 / sizeof( CharType ) ) - NonTextBufferByteCount;
+        }
+
 
         [[nodiscard]] constexpr size_type size( ) const noexcept
         {
@@ -4761,7 +4766,16 @@ namespace Harlinn::Common::Core
 
             try
             {
-                SizeType inputSize = static_cast< SizeType >( inputStream.width( ) );
+                SizeType inputStreamWidth = static_cast< SizeType >( inputStream.width( ) );
+                SizeType inputSize;
+                if ( inputStreamWidth == 0 )
+                {
+                    inputSize = str.max_size( );
+                }
+                else
+                {
+                    inputSize = std::min( inputStreamWidth, str.max_size( ) );
+                }
 
                 typename CharTraitsT::int_type inputCharacter = inputStream.rdbuf( )->sgetc( );
 

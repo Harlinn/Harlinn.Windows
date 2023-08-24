@@ -10,15 +10,24 @@ namespace Harlinn::Common::Core::Logging::Sinks
 {
     class LMDBSinkOptions
     {
-        AnsiString databaseDirectory_;
+        WideString databaseDirectory_;
         Logging::Level enabledLevels_ = Logging::Level::Default;
     public:
         LMDBSinkOptions()
         { }
-        LMDBSinkOptions( const AnsiString& databaseDirectory, Logging::Level enabledLevels = Logging::Level::Default )
+        LMDBSinkOptions( const WideString& databaseDirectory, Logging::Level enabledLevels = Logging::Level::Default )
             : databaseDirectory_( databaseDirectory ), enabledLevels_( enabledLevels )
         {
+
         }
+
+        void AddOptions( boost::program_options::options_description& optionsDescription )
+        {
+            namespace po = boost::program_options;
+            optionsDescription.add_options( )
+                ( "log_sink_lmdb_database_directory", po::wvalue<WideString>(&databaseDirectory_ ), "" );
+        }
+
 
 
         void Load( )
@@ -27,7 +36,7 @@ namespace Harlinn::Common::Core::Logging::Sinks
         }
 
 
-        constexpr const AnsiString& DatabaseDirectory( ) const noexcept
+        constexpr const WideString& DatabaseDirectory( ) const noexcept
         {
             return databaseDirectory_;
         }

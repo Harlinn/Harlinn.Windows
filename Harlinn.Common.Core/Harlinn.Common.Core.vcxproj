@@ -291,6 +291,7 @@
     <ClInclude Include="HCCThread.h" />
     <ClInclude Include="HCCThreadpools.h" />
     <ClInclude Include="HCCTimeseriesMath.h" />
+    <ClInclude Include="HCCTokenizer.h" />
     <ClInclude Include="HCCTraits.h" />
     <ClInclude Include="HCCTuple.h" />
     <ClInclude Include="HCCTypeDescriptorCursor.h" />

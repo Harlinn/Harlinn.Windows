@@ -9567,6 +9567,84 @@ BOOST_AUTO_TEST_CASE( StringILastIndexOfAnyButTest24W )
 }
 
 
+// --run_test=StringTests/StringOStreamOperatorTest1A
+BOOST_AUTO_TEST_CASE( StringOStreamOperatorTest1A )
+{
+    using StringType = AnsiString;
+    StringType text = "The Text";
+    
+    std::ostringstream dest;
+
+    dest << text;
+
+    auto result = dest.str( );
+
+    bool equal = text == result;
+
+
+    BOOST_TEST( equal );
+}
+
+// --run_test=StringTests/StringOStreamOperatorTest1W
+BOOST_AUTO_TEST_CASE( StringOStreamOperatorTest1W )
+{
+    using StringType = WideString;
+    StringType text = L"The Text";
+
+    std::wostringstream dest;
+
+    dest << text;
+
+    auto result = dest.str( );
+
+    bool equal = text == result;
+
+
+    BOOST_TEST( equal );
+}
+
+
+// --run_test=StringTests/StringIStreamOperatorTest1A
+BOOST_AUTO_TEST_CASE( StringIStreamOperatorTest1A )
+{
+    using StringType = AnsiString;
+    StringType text = "The Text";
+
+    std::istringstream source( text.c_str() );
+
+    StringType result;
+
+    source >> result;
+
+    bool equal = result == "The";
+
+
+    BOOST_TEST( equal );
+}
+
+
+// --run_test=StringTests/StringIStreamOperatorTest1W
+BOOST_AUTO_TEST_CASE( StringIStreamOperatorTest1w )
+{
+    using StringType = WideString;
+    StringType text = L"The Text";
+
+    std::wistringstream source( text.c_str( ) );
+
+    StringType result;
+
+    source >> result;
+
+    bool equal = result == L"The";
+
+
+    BOOST_TEST( equal );
+}
+
+
+
+
+
 #endif
 
 
