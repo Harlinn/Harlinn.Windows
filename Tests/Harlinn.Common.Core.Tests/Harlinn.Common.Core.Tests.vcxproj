@@ -39,7 +39,6 @@
     <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
-    <EnableASAN>true</EnableASAN>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -54,7 +53,6 @@
     <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
-    <EnableASAN>true</EnableASAN>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -194,6 +192,7 @@
     <ClCompile Include="ConcurrentQueueTests.cpp" />
     <ClCompile Include="DirectoryUtilsTests.cpp" />
     <ClCompile Include="ListTests.cpp" />
+    <ClCompile Include="LoggerLevelTests.cpp" />
     <ClCompile Include="SerializationRWTests.cpp" />
     <ClCompile Include="SimpleConcurrentQueueTests.cpp" />
     <ClCompile Include="ContextTests.cpp" />

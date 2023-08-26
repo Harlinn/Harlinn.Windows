@@ -354,9 +354,6 @@
     <ClInclude Include="HCCDebugServiceHost.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="HCCTokenizer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -465,6 +462,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="HCCService.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="HCCLoggerLevel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

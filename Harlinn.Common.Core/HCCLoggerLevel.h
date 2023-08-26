@@ -3,7 +3,7 @@
 #define __HCCLOGGERLEVEL_H__
 
 #include <HCCDef.h>
-#include <HCCConcepts.h>
+#include <HCCString.h>
 
 namespace Harlinn::Common::Core::Logging
 {
@@ -36,196 +36,56 @@ namespace Harlinn::Common::Core::Logging
 
 
     template<WideStringLike StringT>
-    inline StringT ToString( Level level )
-    {
-        if ( level == Level::None )
-        {
-            return L"None";
-        }
-        else if ( level == Level::SystemStart )
-        {
-            return L"Start";
-        }
-        else if ( level == Level::SystemStop )
-        {
-            return L"Stop";
-        }
-        else
-        {
-            StringT result;
-            int count = 0;
-            if ( level & Level::Trace )
-            {
-                result = L"Trace";
-                count++;
-            }
-            if ( level & Level::Debug )
-            {
-                result += count? L"|Debug" : L"Debug";
-                count++;
-            }
-            if ( level & Level::Info )
-            {
-                result += count ? L"|Info" : L"Info";
-                count++;
-            }
-            if ( level & Level::Notice )
-            {
-                result += count ? L"|Notice" : L"Notice";
-                count++;
-            }
-            if ( level & Level::Warning )
-            {
-                result += count ? L"|Warning" : L"Warning";
-                count++;
-            }
-            if ( level & Level::Error )
-            {
-                result += count ? L"|Error" : L"Error";
-                count++;
-            }
-            if ( level & Level::Exception )
-            {
-                result += count ? L"|Exception" : L"Exception";
-                count++;
-            }
-            if ( level & Level::Critical )
-            {
-                result += count ? L"|Critical" : L"Critical";
-                count++;
-            }
-            if ( level & Level::Alert )
-            {
-                result += count ? L"|Alert" : L"Alert";
-                count++;
-            }
-            if ( level & Level::Emergency )
-            {
-                result += count ? L"|Emergency" : L"Emergency";
-                count++;
-            }
-            if ( level & Level::System )
-            {
-                result += count ? L"|System" : L"System";
-                count++;
-            }
-            return result;
-        }
-    }
+    HCC_TEMPLATE_EXPORT_DECL StringT ToString( Level level );
+    template HCC_EXPORT WideString ToString<WideString>( Level level );
+    template HCC_EXPORT std::wstring ToString<std::wstring>( Level level );
+    
+
 
     template<AnsiStringLike StringT>
-    inline StringT ToString( Level level )
+    HCC_TEMPLATE_EXPORT_DECL StringT ToString( Level level );
+    template HCC_EXPORT AnsiString ToString<AnsiString>( Level level );
+    template HCC_EXPORT std::string ToString<std::string>( Level level );
+
+
+    HCC_EXPORT bool TryParse( const std::wstring_view& str, Level& result );
+    HCC_EXPORT bool TryParse( const std::string_view& str, Level& result );
+
+    template<StringLike StringT>
+    inline bool TryParse( const StringT& str, Level& result )
     {
-        if ( level == Level::None )
-        {
-            return "None";
-        }
-        else if ( level == Level::SystemStart )
-        {
-            return "Start";
-        }
-        else if ( level == Level::SystemStop )
-        {
-            return "Stop";
-        }
-        else
-        {
-            StringT result;
-            int count = 0;
-            if ( level & Level::Trace )
-            {
-                result = "Trace";
-                count++;
-            }
-            if ( level & Level::Debug )
-            {
-                result += count ? "|Debug" : "Debug";
-                count++;
-            }
-            if ( level & Level::Info )
-            {
-                result += count ? "|Info" : "Info";
-                count++;
-            }
-            if ( level & Level::Notice )
-            {
-                result += count ? "|Notice" : "Notice";
-                count++;
-            }
-            if ( level & Level::Warning )
-            {
-                result += count ? "|Warning" : "Warning";
-                count++;
-            }
-            if ( level & Level::Error )
-            {
-                result += count ? "|Error" : "Error";
-                count++;
-            }
-            if ( level & Level::Exception )
-            {
-                result += count ? "|Exception" : "Exception";
-                count++;
-            }
-            if ( level & Level::Critical )
-            {
-                result += count ? "|Critical" : "Critical";
-                count++;
-            }
-            if ( level & Level::Alert )
-            {
-                result += count ? "|Alert" : "Alert";
-                count++;
-            }
-            if ( level & Level::Emergency )
-            {
-                result += count ? "|Emergency" : "Emergency";
-                count++;
-            }
-            if ( level & Level::System )
-            {
-                result += count ? "|System" : "System";
-                count++;
-            }
-            return result;
-        }
+        using StringViewT = std::basic_string_view<typename StringT::value_type>;
+        StringViewT stringView( str.c_str(), str.size() );
+        return TryParse( stringView, result );
     }
-
-
-    inline bool TryParse( const std::wstring_view& str, Level& result)
-    {
-        if ( str == L"None" )
-        {
-            result = Level::None;
-            return true;
-        }
-        else if ( str == L"Start" )
-        {
-            result = Level::SystemStart;
-            return true;
-        }
-        else if ( str == L"Stop" )
-        {
-            result = Level::SystemStop;
-            return true;
-        }
-        else
-        {
-
-        }
-    }
-
 
 
 
     template< class CharT, class Traits >
-    inline std::basic_ostream<CharT, Traits>& operator<<( std::basic_ostream<CharT, Traits>& os, const Level& level )
+    inline std::basic_ostream<CharT, Traits>& operator<<( std::basic_ostream<CharT, Traits>& outputStream, const Level& level )
     {
-
-        return os;
+        using StringT = std::basic_string<CharT, Traits>;
+        StringT levelStr = ToString<StringT>( level );
+        outputStream << levelStr;
+        return outputStream;
     }
 
-
+    template <class CharT, class CharTraitsT>
+    std::basic_istream<CharT, CharTraitsT>& operator >> ( std::basic_istream<CharT, CharTraitsT>& inputStream, Level& level )
+    {
+        using IStreamT = std::basic_istream<CharT, CharTraitsT>;
+        using StringT = std::basic_string<CharT, CharTraitsT>;
+        StringT levelStr;
+        
+        inputStream >> levelStr;
+        if ( !TryParse( levelStr, level ) )
+        {
+            auto inputStreamState = inputStream.rdstate( );
+            inputStreamState |= IStreamT::failbit;
+            inputStream.setstate( inputStreamState );
+        }
+        return inputStream;
+    }
 
     
 

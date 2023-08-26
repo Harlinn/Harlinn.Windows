@@ -9641,6 +9641,51 @@ BOOST_AUTO_TEST_CASE( StringIStreamOperatorTest1w )
     BOOST_TEST( equal );
 }
 
+// --run_test=StringTests/SplitTest1A
+BOOST_AUTO_TEST_CASE( SplitTest1A )
+{
+    AnsiString source = "Debug | Info | Error";
+    AnsiStringView sourceView = source;
+    std::vector<std::string_view> result1;
+    std::vector<std::string_view> result2;
+    source.Split( '|', result1 );
+
+    auto count = result1.size( );
+
+    bool equal = count == 3;
+    BOOST_TEST( equal );
+
+    sourceView.Split( '|', result2 );
+
+    count = result2.size( );
+
+    equal = count == 3;
+    BOOST_TEST( equal );
+
+}
+
+// --run_test=StringTests/SplitTest1W
+BOOST_AUTO_TEST_CASE( SplitTest1W )
+{
+    WideString source = L"Debug | Info | Error";
+    WideStringView sourceView = source;
+    std::vector<std::wstring_view> result1;
+    std::vector<std::wstring_view> result2;
+    source.Split( L'|', result1 );
+
+    auto count = result1.size( );
+
+    bool equal = count == 3;
+    BOOST_TEST( equal );
+
+    sourceView.Split( L'|', result2 );
+
+    count = result2.size( );
+
+    equal = count == 3;
+    BOOST_TEST( equal );
+
+}
 
 
 

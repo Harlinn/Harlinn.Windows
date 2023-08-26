@@ -727,7 +727,7 @@ namespace Harlinn::Common::Core
         {
 #pragma warning(push)
 #pragma warning(disable:6330)
-            return isspace( c );
+            return iswspace( c );
 #pragma warning(pop)
         }
 
@@ -4386,7 +4386,63 @@ namespace Harlinn::Common::Core
             return Split<VectorT>( delimiters, delimitersLength, start );
         }
 
+        template<bool ignoreWhiteSpace = true, typename VectorT>
+        void Split( CharType separator, VectorT& result ) const
+        {
+            using DestinationT = typename VectorT::value_type;
+            auto startIt = begin( );
+            auto endIt = end( );
+            result.clear( );
 
+            while ( startIt != endIt )
+            {
+                while ( startIt != endIt )
+                {
+                    CharType currentChar = *startIt;
+                    if constexpr ( ignoreWhiteSpace )
+                    {
+                        if ( currentChar != separator && Internal::IsWhiteSpace( currentChar ) == false )
+                        {
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        if ( currentChar != separator )
+                        {
+                            break;
+                        }
+                    }
+                    ++startIt;
+                }
+                if ( startIt != endIt )
+                {
+                    auto pos = startIt;
+                    while ( pos != endIt )
+                    {
+                        CharType currentChar = *pos;
+                        if constexpr ( ignoreWhiteSpace )
+                        {
+                            if ( currentChar == separator || Internal::IsWhiteSpace( currentChar ) )
+                            {
+                                break;
+                            }
+                        }
+                        else
+                        {
+                            if ( currentChar == separator )
+                            {
+                                break;
+                            }
+                        }
+                        pos++;
+                    }
+                    result.emplace_back( startIt, pos );
+                    startIt = pos;
+                }
+            }
+
+        }
 
 
 
@@ -4839,6 +4895,8 @@ namespace Harlinn::Common::Core
         using const_reference = typename Base::const_reference;
         using size_type = typename Base::size_type;
         using value_type = typename Base::value_type;
+        using Base::begin;
+        using Base::end;
     public:
         constexpr BasicStringView( ) noexcept
         {
@@ -4865,6 +4923,11 @@ namespace Harlinn::Common::Core
         {
         }
 
+        constexpr BasicStringView( const std::basic_string_view<T>& s ) noexcept
+            : Base( s.data( ), s.size( ) )
+        {
+        }
+
 
         constexpr BasicStringView& operator = ( const CharType* other )
         {
@@ -4877,6 +4940,13 @@ namespace Harlinn::Common::Core
             Base::operator = ( other );
             return *this;
         }
+
+        constexpr BasicStringView& operator = ( const std::basic_string_view<T>& other )
+        {
+            Base::operator = ( other );
+            return *this;
+        }
+
 
         constexpr BasicStringView& operator = ( const BasicString<T>& other )
         {
@@ -4914,6 +4984,66 @@ namespace Harlinn::Common::Core
                 return 0;
             }
         }
+
+        template<bool ignoreWhiteSpace = true, typename VectorT>
+        void Split( CharType separator, VectorT& result ) const
+        {
+            using DestinationT = typename VectorT::value_type;
+            auto startIt = begin( );
+            auto endIt = end( );
+            result.clear( );
+
+            while ( startIt != endIt )
+            {
+                while ( startIt != endIt )
+                {
+                    CharType currentChar = *startIt;
+                    if constexpr ( ignoreWhiteSpace )
+                    {
+                        if ( currentChar != separator && Internal::IsWhiteSpace( currentChar ) == false )
+                        {
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        if ( currentChar != separator )
+                        {
+                            break;
+                        }
+                    }
+                    ++startIt;
+                }
+                if ( startIt != endIt )
+                {
+                    auto pos = startIt;
+                    while ( pos != endIt )
+                    {
+                        CharType currentChar = *pos;
+                        if constexpr ( ignoreWhiteSpace )
+                        {
+                            if ( currentChar == separator || Internal::IsWhiteSpace( currentChar ) )
+                            {
+                                break;
+                            }
+                        }
+                        else
+                        {
+                            if ( currentChar == separator )
+                            {
+                                break;
+                            }
+                        }
+                        pos++;
+                    }
+                    result.emplace_back( startIt, pos );
+                    startIt = pos;
+                }
+            }
+
+        }
+
+
     };
 
     template<typename T>
@@ -5054,10 +5184,10 @@ namespace Harlinn::Common::Core
     {
         ToAnsiString( source.c_str( ), source.length( ), CP_ACP, 0, dest );
     }
-    template<WideStringLike WideStringT>
-    inline AnsiString ToAnsiString( const WideStringT& source )
+    template<AnsiStringLike AnsiStringT = AnsiString, WideStringLike WideStringT>
+    inline AnsiStringT ToAnsiString( const WideStringT& source )
     {
-        AnsiString result;
+        AnsiStringT result;
         ToAnsiString( source, result );
         return result;
     }
@@ -5088,7 +5218,7 @@ namespace Harlinn::Common::Core
         }
     }
 
-    template<AnsiStringLike StringT>
+    template<AnsiStringLike StringT = AnsiString>
     inline StringT ToAnsiString( const wchar_t* source )
     {
         if ( source && source[ 0 ] )
@@ -5104,12 +5234,13 @@ namespace Harlinn::Common::Core
         }
     }
 
-    inline AnsiString ToAnsiString( const char* source )
+    template<AnsiStringLike StringT = AnsiString>
+    inline StringT ToAnsiString( const char* source )
     {
         if ( source && source[ 0 ] )
         {
             auto length = strlen( source );
-            AnsiString result( source, length );
+            StringT result( source, length );
             return result;
         }
         else
