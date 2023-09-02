@@ -9,6 +9,7 @@
 #include <HCCString.h>
 #include <HCCTraits.h>
 #include <HCCMath.h>
+#include <HCCSync.h>
 
 #ifdef BUILDING_HARLINN_WINDOWS
 #define HW_EXPORT __declspec(dllexport)

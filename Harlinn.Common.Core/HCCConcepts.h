@@ -16,6 +16,17 @@ namespace Harlinn::Common::Core
         { t1.data( ) } ->std::same_as<typename T::pointer>;
     };
 
+    template<typename T>
+    concept SimpleConstSpanLike = requires ( T t1 )
+    {
+        { t1[ 0 ] } ->std::convertible_to<const typename T::value_type>;
+        { t1.begin( ) } ->std::same_as<typename T::const_iterator>;
+        { t1.end( ) } ->std::same_as<typename T::const_iterator>;
+        { t1.size( ) } ->std::same_as<typename T::size_type>;
+        { t1.data( ) } ->std::same_as<typename T::const_pointer>;
+    };
+
+
 
     template<typename T>
     concept SpanLike = SimpleSpanLike<T> && requires ( T t1 )

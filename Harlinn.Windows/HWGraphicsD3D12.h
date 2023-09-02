@@ -94,7 +94,7 @@ namespace Harlinn::Windows::Graphics
         /// </param>
         /// <param name="dataPtr">
         /// A pointer to a memory block that receives the data from the device 
-        /// object if pDataSize points to a value that specifies a buffer large 
+        /// object if dataSizePtr points to a value that specifies a buffer large 
         /// enough to hold the data.
         /// </param>
         void GetPrivateData( _In_ REFGUID guid, _Inout_ UINT* dataSizePtr, _Out_writes_bytes_opt_( *dataSizePtr )  void* dataPtr ) const
@@ -121,6 +121,16 @@ namespace Harlinn::Windows::Graphics
             HCC_COM_CHECK_HRESULT2( hr, pInterface );
         }
 
+        /// <summary>
+        /// Associates an IUnknown-derived interface with the device object and associates 
+        /// that interface with an application-defined GUID.
+        /// </summary>
+        /// <param name="guid">
+        /// The GUID to associate with the interface.
+        /// </param>
+        /// <param name="privateDatainterfacePtr">
+        /// A pointer to the IUnknown-derived interface to be associated with the device object.
+        /// </param>
         void SetPrivateDataInterface( REFGUID guid, const IUnknown* privateDatainterfacePtr ) const
         {
             InterfaceType* pInterface = GetInterface( );
@@ -133,17 +143,49 @@ namespace Harlinn::Windows::Graphics
             SetPrivateDataInterface( guid.AsGuid(), privateDatainterface.GetInterfacePointer() );
         }
 
+        /// <summary>
+        /// Associates a name with the device object. This name is for use in 
+        /// debug diagnostics and tools.
+        /// </summary>
+        /// <param name="name">
+        /// A NULL-terminated UNICODE string that contains the name to associate 
+        /// with the device object.
+        /// </param>
         void SetName( _In_z_  LPCWSTR name ) const
         {
             InterfaceType* pInterface = GetInterface( );
             HRESULT hr = pInterface->SetName( name );
             HCC_COM_CHECK_HRESULT2( hr, pInterface );
         }
-        void SetName( const WideString& name ) const
+
+        /// <summary>
+        /// Retrieves the name associated with the device object.
+        /// </summary>
+        /// <typeparam name="StringT">
+        /// The type of string to return.
+        /// </typeparam>
+        template<WideStringLike StringT = WideString>
+        StringT Name() const
+        {
+            wchar_t buffer[ 512 ];
+            UINT dataSize = sizeof( buffer );
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->GetPrivateData( WKPDID_D3DDebugObjectNameW, &dataSize, buffer );
+            if ( SUCCEEDED( hr ) )
+            {
+                return StringT( buffer, static_cast<typename StringT::size_type>( dataSize / sizeof( wchar_t ) ) );
+            }
+            return {};
+        }
+
+        template<WideStringLike StringT>
+        void SetName( const StringT& name ) const
         {
             SetName( name.c_str( ) );
         }
-        void SetName( const AnsiString& name ) const
+
+        template<AnsiStringLike StringT>
+        void SetName( const StringT& name ) const
         {
             SetName( ToWideString( name ) );
         }
@@ -153,6 +195,9 @@ namespace Harlinn::Windows::Graphics
 
     class D3D12Device;
 
+    /// <summary>
+    /// Adds the ability to get the device used to create it.
+    /// </summary>
     class D3D12DeviceChild : public D3D12Object
     {
     public:
@@ -161,6 +206,19 @@ namespace Harlinn::Windows::Graphics
         COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( D3D12DeviceChild, D3D12Object, ID3D12DeviceChild, ID3D12Object )
 
     public:
+        /// <summary>
+        /// Gets a pointer to the device that created this interface.
+        /// </summary>
+        /// <param name="riid">
+        /// The globally unique identifier (GUID) for the device interface. 
+        /// The REFIID, or GUID, of the interface to the device can be obtained 
+        /// by using the __uuidof() macro. For example, __uuidof(ID3D12Device) 
+        /// will get the GUID of the interface to a device.
+        /// </param>
+        /// <param name="ppvDevice">
+        /// A pointer to a memory block that receives a pointer to the ID3D12Device 
+        /// interface, or one of its descendants, for the device.
+        /// </param>
         void GetDevice( REFIID riid, _COM_Outptr_opt_  void** ppvDevice ) const
         {
             InterfaceType* pInterface = GetInterface( );
@@ -169,7 +227,16 @@ namespace Harlinn::Windows::Graphics
         }
 
 
-
+        /// <summary>
+        /// Retrieves the D3D12Device, or one of its descendants, used to
+        /// create this object.
+        /// </summary>
+        /// <typeparam name="T">
+        /// The requested type, either D3D12Device, or one of its descendants.
+        /// </typeparam>
+        /// <returns>
+        /// The D3D12Device, or one of its descendants, used to create this object.
+        /// </returns>
         template<typename T >
             requires std::is_base_of_v<D3D12Device,T>
         T GetDevice( ) const
@@ -184,6 +251,12 @@ namespace Harlinn::Windows::Graphics
     };
 
 
+    /// <summary>
+    /// The root signature defines what resources are bound to the graphics pipeline. 
+    /// A root signature is configured by the app and links command lists to the 
+    /// resources the shaders require. Currently, there is one graphics and one compute 
+    /// root signature per app.
+    /// </summary>
     class D3D12RootSignature : public D3D12DeviceChild
     {
     public:
@@ -194,6 +267,13 @@ namespace Harlinn::Windows::Graphics
     };
 
 
+    /// <summary>
+    /// Contains a method to return the deserialized D3D12_ROOT_SIGNATURE_DESC 
+    /// data structure, of a serialized root signature version 1.0.
+    /// </summary>
+    /// <remarks>
+    /// This class has been superseded by D3D12VersionedRootSignatureDeserializer.
+    /// </remarks>
     class D3D12RootSignatureDeserializer : public Unknown
     {
     public:
@@ -202,6 +282,13 @@ namespace Harlinn::Windows::Graphics
         COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( D3D12RootSignatureDeserializer, Unknown, ID3D12RootSignatureDeserializer, IUnknown )
 
     public:
+        /// <summary>
+        /// Gets the layout of the root signature.
+        /// </summary>
+        /// <returns>
+        /// This function returns a deserialized root signature in a D3D12_ROOT_SIGNATURE_DESC 
+        /// structure that describes the layout of the root signature.
+        /// </returns>
         const D3D12_ROOT_SIGNATURE_DESC* GetRootSignatureDesc( ) const
         {
             InterfaceType* pInterface = GetInterface( );
@@ -209,6 +296,10 @@ namespace Harlinn::Windows::Graphics
         }
     };
 
+    /// <summary>
+    /// Contains methods to return the deserialized D3D12_ROOT_SIGNATURE_DESC1 data structure, 
+    /// of any version of a serialized root signature.
+    /// </summary>
     class D3D12VersionedRootSignatureDeserializer : public Unknown
     {
     public:
@@ -217,6 +308,33 @@ namespace Harlinn::Windows::Graphics
         COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( D3D12VersionedRootSignatureDeserializer, Unknown, ID3D12VersionedRootSignatureDeserializer, IUnknown )
 
     public:
+        /// <summary>
+        /// Converts root signature description structures to a requested version.
+        /// </summary>
+        /// <param name="convertToVersion">
+        /// Specifies the required D3D_ROOT_SIGNATURE_VERSION.
+        /// </param>
+        /// <param name="ppDesc">
+        /// Contains the deserialized root signature in a D3D12_VERSIONED_ROOT_SIGNATURE_DESC structure.
+        /// </param>
+        /// <remarks>
+        /// <para>
+        /// This method allocates additional storage if needed for the converted root signature (memory 
+        /// owned by the deserializer interface). If conversion is done, the deserializer interface doesn’t 
+        /// free the original deserialized root signature memory – all versions the interface has been 
+        /// asked to convert to are available until the deserializer is destroyed.
+        /// </para>
+        /// <para>
+        /// Converting a root signature from 1.1 to 1.0 will drop all D3D12_DESCRIPTOR_RANGE_FLAGS 
+        /// and D3D12_ROOT_DESCRIPTOR_FLAGS can be useful for generating compatible root signatures 
+        /// that need to run on old operating systems, though does lose optimization opportunities. 
+        /// For instance, multiple root signature versions can be serialized and stored with application 
+        /// assets, with the appropriate version used at runtime based on the operating system capabilities.
+        /// </para>
+        /// <para>
+        /// Converting a root signature from 1.0 to 1.1 just adds the appropriate flags to match 1.0 semantics.
+        /// </para>
+        /// </remarks>
         void GetRootSignatureDescAtVersion( D3D_ROOT_SIGNATURE_VERSION convertToVersion, _Out_  const D3D12_VERSIONED_ROOT_SIGNATURE_DESC** ppDesc ) const
         {
             InterfaceType* pInterface = GetInterface( );
@@ -224,6 +342,13 @@ namespace Harlinn::Windows::Graphics
             HCC_COM_CHECK_HRESULT2( hr, pInterface );
         }
 
+        /// <summary>
+        /// Gets the layout of the root signature, without converting between root signature versions.
+        /// </summary>
+        /// <returns>
+        /// This method returns a deserialized root signature in a D3D12_VERSIONED_ROOT_SIGNATURE_DESC 
+        /// structure that describes the layout of the root signature.
+        /// </returns>
         const D3D12_VERSIONED_ROOT_SIGNATURE_DESC* GetUnconvertedRootSignatureDesc( ) const
         {
             InterfaceType* pInterface = GetInterface( );
@@ -231,7 +356,10 @@ namespace Harlinn::Windows::Graphics
         }
     };
 
-
+    /// <summary>
+    /// Classes derived from D3D12Pageable encapsulates some amount of 
+    /// GPU-accessible memory.
+    /// </summary>
     class D3D12Pageable : public D3D12DeviceChild
     {
     public:
@@ -242,6 +370,10 @@ namespace Harlinn::Windows::Graphics
     };
 
 
+    /// <summary>
+    /// A heap is an abstraction of contiguous memory allocation, used to manage physical memory. 
+    /// This heap can be used with D3D12Resource objects to support placed resources or reserved resources.
+    /// </summary>
     class D3D12Heap : public D3D12Pageable
     {
     public:
@@ -249,6 +381,12 @@ namespace Harlinn::Windows::Graphics
 
         COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( D3D12Heap, D3D12Pageable, ID3D12Heap, ID3D12Pageable )
     public:
+        /// <summary>
+        /// Gets the heap description.
+        /// </summary>
+        /// <returns>
+        /// Returns the D3D12_HEAP_DESC structure that describes the heap.
+        /// </returns>
         D3D12_HEAP_DESC GetDesc( ) const
         {
             InterfaceType* pInterface = GetInterface( );
@@ -256,6 +394,12 @@ namespace Harlinn::Windows::Graphics
         }
     };
 
+    /// <summary>
+    /// Encapsulates a generalized ability of the CPU and GPU to read and write 
+    /// to physical memory, or heaps. It contains abstractions for organizing 
+    /// and manipulating simple arrays of data as well as multidimensional 
+    /// data optimized for shader sampling.
+    /// </summary>
     class D3D12Resource : public D3D12Pageable
     {
     public:
@@ -263,53 +407,368 @@ namespace Harlinn::Windows::Graphics
 
         COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( D3D12Resource, D3D12Pageable, ID3D12Resource, ID3D12Pageable )
     public:
-        void Map( UINT Subresource, _In_opt_ const D3D12_RANGE* pReadRange, _Outptr_opt_result_bytebuffer_( _Inexpressible_( "Dependent on resource" ) )  void** ppData ) const
+        /// <summary>
+        /// Gets a CPU pointer to the specified subresource in the resource, but 
+        /// may not disclose the pointer value to applications. Map also invalidates 
+        /// the CPU cache, when necessary, so that CPU reads to this address reflect 
+        /// any modifications made by the GPU.
+        /// </summary>
+        /// <param name="Subresource">
+        /// Specifies the index number of the subresource.
+        /// </param>
+        /// <param name="readRange">
+        /// <para>
+        /// A pointer to a <see href="https://learn.microsoft.com/en-us/windows/desktop/api/d3d12/ns-d3d12-d3d12_range">D3D12_RANGE</see> 
+        /// structure that describes the range of memory to access.
+        /// </para>
+        /// <para>
+        /// This indicates the region the CPU might read, and the coordinates are 
+        /// subresource-relative. A null pointer indicates the entire subresource 
+        /// might be read by the CPU. It is valid to specify the CPU won't read 
+        /// any data by passing a range where End is less than or equal to Begin.
+        /// </para>
+        /// </param>
+        /// <param name="dataPtr">
+        /// <para>
+        /// A pointer to a memory block that receives a pointer to the resource data.
+        /// </para>
+        /// <para>
+        /// A null pointer is valid and is useful to cache a CPU virtual address range 
+        /// for methods like WriteToSubresource. When <c>dataPtr</c> is not <c>nullptr</c>, the pointer 
+        /// returned is never offset by any values in <paramref>readRange</paramref>.
+        /// </para>
+        /// </param>
+        /// <remarks>
+        /// <para>
+        /// Map and Unmap can be called by multiple threads safely. Nested Map calls are 
+        /// supported and are ref-counted. The first call to Map allocates a CPU virtual 
+        /// address range for the resource. The last call to Unmap deallocates the CPU 
+        /// virtual address range. The CPU virtual address is commonly returned to the 
+        /// application; but manipulating the contents of textures with unknown layouts 
+        /// precludes disclosing the CPU virtual address. See <see cref="WriteToSubresource">WriteToSubresource</see> 
+        /// for more details. Applications cannot rely on the address being consistent, 
+        /// unless Map is persistently nested.
+        /// </para>
+        /// <para>
+        /// Pointers returned by Map are not guaranteed to have all the capabilities of 
+        /// normal pointers, but most applications won't notice a difference in normal 
+        /// usage. For example, pointers with WRITE_COMBINE behavior have weaker CPU 
+        /// memory ordering guarantees than WRITE_BACK behavior. Memory accessible by 
+        /// both CPU and GPU are not guaranteed to share the same atomic memory 
+        /// guarantees that the CPU has, due to PCIe limitations. Use fences for synchronization.
+        /// </para>
+        /// <para>
+        /// There are two usage model categories for Map, simple and advanced. The simple 
+        /// usage models maximize tool performance, so applications are recommended to 
+        /// stick with the simple models until the advanced models are proven to be 
+        /// required by the app.
+        /// </para>
+        /// <h3>Simple Usage Models</h3>
+        /// <para>
+        /// Applications should stick to the heap type abstractions of UPLOAD, DEFAULT, and 
+        /// READBACK, in order to support all adapter architectures reasonably well.
+        /// </para>
+        /// <para>
+        /// Applications should avoid CPU reads from pointers to resources on UPLOAD heaps, 
+        /// even accidently. CPU reads will work, but are prohibitively slow on many common 
+        /// GPU architectures, so consider the following:
+        /// </para>
+        /// <list type="bullet">
+        /// <item>
+        /// Don't make the CPU read from resources associated with heaps that are 
+        /// D3D12_HEAP_TYPE_UPLOAD or have D3D12_CPU_PAGE_PROPERTY_WRITE_COMBINE.
+        /// </item>
+        /// <item>
+        /// The memory region to which pData points can be allocated with 
+        /// PAGE_WRITECOMBINE, and your app must honor all restrictions that are 
+        /// associated with such memory.
+        /// </item>
+        /// <item>
+        /// <para>
+        /// Even the following C++ code can read from memory and trigger the performance 
+        /// penalty because the code can expand to the following x86 assembly code.
+        /// </para>
+        /// <para>
+        /// C++ code:
+        /// </para>
+        /// <code>
+        /// *((int*)MappedResource.pData) = 0;
+        /// </code>
+        /// <para>
+        /// x86 assembly code:
+        /// </para>
+        /// <code>
+        /// AND DWORD PTR [EAX],0
+        /// </code>
+        /// </item>
+        /// <item>
+        /// Use the appropriate optimization settings and language constructs to help 
+        /// avoid this performance penalty. For example, you can avoid the xor optimization 
+        /// by using a volatile pointer or by optimizing for code speed instead of code size.
+        /// </item>
+        /// </list>
+        /// <para>
+        /// Applications are encouraged to leave resources unmapped while the CPU will not 
+        /// modify them, and use tight, accurate ranges at all times. This enables the 
+        /// fastest modes for tools, like Graphics Debugging and the debug layer. Such 
+        /// tools need to track all CPU modifications to memory that the GPU could read.
+        /// </para>
+        /// <h3>Advanced Usage Models</h3>
+        /// <para>
+        /// Resources on CPU-accessible heaps can be persistently mapped, meaning Map can 
+        /// be called once, immediately after resource creation. Unmap never needs to be 
+        /// called, but the address returned from Map must no longer be used after the 
+        /// last reference to the resource is released. When using persistent map, the 
+        /// application must ensure the CPU finishes writing data into memory before the 
+        /// GPU executes a command list that reads or writes the memory. In common scenarios, 
+        /// the application merely must write to memory before calling ExecuteCommandLists; 
+        /// but using a fence to delay command list execution works as well.
+        /// </para>
+        /// <para>
+        /// All CPU-accessible memory types support persistent mapping usage, where the 
+        /// resource is mapped but then never unmapped, provided the application does not 
+        /// access the pointer after the resource has been disposed.
+        /// </para>
+        /// <remarks>
+        void Map( UINT Subresource, _In_opt_ const D3D12_RANGE* readRange, _Outptr_opt_result_bytebuffer_( _Inexpressible_( "Dependent on resource" ) )  void** dataPtr ) const
         {
             InterfaceType* pInterface = GetInterface( );
-            HRESULT hr = pInterface->Map( Subresource, pReadRange, ppData );
+            HRESULT hr = pInterface->Map( Subresource, readRange, dataPtr );
             HCC_COM_CHECK_HRESULT2( hr, pInterface );
         }
 
-        void Unmap( UINT Subresource, _In_opt_  const D3D12_RANGE* pWrittenRange ) const
+        void Map( UINT Subresource, _In_opt_ const D3D12_RANGE& readRange, _Outptr_opt_result_bytebuffer_( _Inexpressible_( "Dependent on resource" ) )  void** dataPtr ) const
         {
-            InterfaceType* pInterface = GetInterface( );
-            pInterface->Unmap( Subresource, pWrittenRange );
+            Map( Subresource, &readRange, dataPtr );
         }
 
+        void* Map( UINT Subresource, _In_opt_ const D3D12_RANGE* readRange = nullptr ) const
+        {
+            void* result = nullptr;
+            Map( Subresource, readRange, &result );
+            return result;
+        }
+        void* Map( UINT Subresource, _In_opt_ const D3D12_RANGE& readRange ) const
+        {
+            return Map( Subresource, &readRange );
+        }
+
+
+        /// <summary>
+        /// Invalidates the CPU pointer to the specified subresource in the resource.
+        /// </summary>
+        /// <param name="Subresource">
+        /// Specifies the index of the subresource.
+        /// </param>
+        /// <param name="writtenRange">
+        /// <para>
+        /// A pointer to a <see href="https://learn.microsoft.com/en-us/windows/desktop/api/d3d12/ns-d3d12-d3d12_range">D3D12_RANGE</see> 
+        /// structure that describes the range of memory to unmap.
+        /// </para>
+        /// <para>
+        /// This indicates the region the CPU might have modified, and the coordinates are 
+        /// subresource-relative. A null pointer indicates the entire subresource might have 
+        /// been modified by the CPU. It is valid to specify the CPU didn't write any data 
+        /// by passing a range where End is less than or equal to Begin.
+        /// </para>
+        /// <para>
+        /// This parameter is only used by tooling, and not for correctness of the actual unmap operation.
+        /// </para>
+        /// </param>
+        void Unmap( UINT Subresource, _In_opt_  const D3D12_RANGE* writtenRange = nullptr ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            pInterface->Unmap( Subresource, writtenRange );
+        }
+
+        void Unmap( UINT Subresource, const D3D12_RANGE& writtenRange ) const
+        {
+            Unmap( Subresource, &writtenRange );
+        }
+
+        /// <summary>
+        /// Gets the resource description.
+        /// </summary>
+        /// <returns>
+        /// A Direct3D 12 resource description structure.
+        /// </returns>
         D3D12_RESOURCE_DESC GetDesc( ) const
         {
             InterfaceType* pInterface = GetInterface( );
             return pInterface->GetDesc( );
         }
 
+
+        /// <summary>
+        /// This method returns the GPU virtual address of a buffer resource.
+        /// </summary>
+        /// <returns>
+        /// This method returns the GPU virtual address. D3D12_GPU_VIRTUAL_ADDRESS is a typedef'd synonym of UINT64.
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// This method is only useful for buffer resources, it will return zero for all texture resources.
+        /// </para>
+        /// <para>
+        /// For more information on the use of GPU virtual addresses, refer to 
+        /// <see href="https://learn.microsoft.com/en-us/windows/desktop/direct3d12/indirect-drawing">Indirect Drawing</see>.
+        /// </para>
+        /// <remarks>
         D3D12_GPU_VIRTUAL_ADDRESS GetGPUVirtualAddress( ) const
         {
             InterfaceType* pInterface = GetInterface( );
             return pInterface->GetGPUVirtualAddress( );
         }
 
-        void WriteToSubresource(UINT DstSubresource, _In_opt_ const D3D12_BOX* pDstBox, _In_ const void* pSrcData, UINT SrcRowPitch, UINT SrcDepthPitch ) const
+        /// <summary>
+        /// Uses the CPU to copy data into a subresource, enabling the CPU to modify 
+        /// the contents of most textures with undefined layouts.
+        /// </summary>
+        /// <param name="destinationSubresource">
+        /// Specifies the index of the subresource.
+        /// </param>
+        /// <param name="destinationBox">
+        /// A pointer to a box that defines the portion of the destination subresource 
+        /// to copy the resource data into. If NULL, the data is written to the destination 
+        /// subresource with no offset. The dimensions of the source must fit the destination 
+        /// (see <see href="https://learn.microsoft.com/en-us/windows/desktop/api/d3d12/ns-d3d12-d3d12_box">D3D12_BOX</see>).
+        /// </param>
+        /// <param name="sourceData">
+        /// A pointer to the source data in memory.
+        /// </param>
+        /// <param name="sourceRowPitch">
+        /// The distance from one row of source data to the next row.
+        /// </param>
+        /// <param name="sourceDepthPitch">
+        /// The distance from one depth slice of source data to the next.
+        /// </param>
+        /// <remarks>
+        /// <para>
+        /// The resource should first be mapped using Map. Textures must be in the 
+        /// D3D12_RESOURCE_STATE_COMMON state for CPU access through WriteToSubresource 
+        /// and ReadFromSubresource to be legal; but buffers do not.
+        /// </para>
+        /// <para>
+        /// For efficiency, ensure the bounds and alignment of the extents within the box are 
+        /// ( 64 / [bytes per pixel] ) pixels horizontally. Vertical bounds and alignment should 
+        /// be 2 rows, except when 1-byte-per-pixel formats are used, in which case 4 rows are 
+        /// recommended. Single depth slices per call are handled efficiently. It is recommended but 
+        /// not necessary to provide pointers and strides which are 128-byte aligned.
+        /// </para>
+        /// <para>
+        /// When writing to sub mipmap levels, it is recommended to use larger width and heights 
+        /// than described above. This is because small mipmap levels may actually be stored 
+        /// within a larger block of memory, with an opaque amount of offsetting which can 
+        /// interfere with alignment to cache lines.
+        /// </para>
+        /// <para>
+        /// WriteToSubresource and ReadFromSubresource enable near zero-copy optimizations for UMA 
+        /// adapters, but can prohibitively impair the efficiency of discrete/ NUMA adapters as the 
+        /// texture data cannot reside in local video memory. Typical applications should stick to 
+        /// discrete-friendly upload techniques, unless they recognize the adapter architecture is UMA. 
+        /// For more details on uploading, refer to CopyTextureRegion, and for more details on UMA, 
+        /// refer to D3D12_FEATURE_DATA_ARCHITECTURE.
+        /// </para>
+        /// <para>
+        /// On UMA systems, this routine can be used to minimize the cost of memory copying through 
+        /// the loop optimization known as loop tiling. By breaking up the upload into chucks that 
+        /// comfortably fit in the CPU cache, the effective bandwidth between the CPU and main memory 
+        /// more closely achieves theoretical maximums.
+        /// </para>
+        /// </remarks>
+        void WriteToSubresource(UINT destinationSubresource, _In_opt_ const D3D12_BOX* destinationBox, _In_ const void* sourceData, UINT sourceRowPitch, UINT sourceDepthPitch ) const
         {
             InterfaceType* pInterface = GetInterface( );
-            HRESULT hr = pInterface->WriteToSubresource( DstSubresource, pDstBox, pSrcData, SrcRowPitch, SrcDepthPitch );
+            HRESULT hr = pInterface->WriteToSubresource( destinationSubresource, destinationBox, sourceData, sourceRowPitch, sourceDepthPitch );
             HCC_COM_CHECK_HRESULT2( hr, pInterface );
         }
 
-        void ReadFromSubresource( _Out_ void* pDstData, UINT DstRowPitch, UINT DstDepthPitch, UINT SrcSubresource, _In_opt_ const D3D12_BOX* pSrcBox ) const
+        void WriteToSubresource( UINT destinationSubresource, _In_ const void* sourceData, UINT sourceRowPitch, UINT sourceDepthPitch ) const
+        {
+            WriteToSubresource( destinationSubresource, nullptr ,sourceData, sourceRowPitch, sourceDepthPitch );
+        }
+
+        void WriteToSubresource( UINT destinationSubresource, const D3D12_BOX& destinationBox, _In_ const void* sourceData, UINT sourceRowPitch, UINT sourceDepthPitch ) const
+        {
+            WriteToSubresource( destinationSubresource, &destinationBox, sourceData, sourceRowPitch, sourceDepthPitch );
+        }
+
+
+
+        /// <summary>
+        /// Uses the CPU to copy data from a subresource, enabling the CPU to read the contents 
+        /// of most textures with undefined layouts.
+        /// </summary>
+        /// <param name="destinationData">
+        /// A pointer to the destination data in memory.
+        /// </param>
+        /// <param name="destinationRowPitch">
+        /// The distance from one row of destination data to the next row.
+        /// </param>
+        /// <param name="destinationDepthPitch">
+        /// The distance from one depth slice of destination data to the next.
+        /// </param>
+        /// <param name="sourceSubresource">
+        /// Specifies the index of the subresource to read from.
+        /// </param>
+        /// <param name="sourceBox">
+        /// <para>
+        /// A pointer to a box that defines the portion of the destination subresource to copy 
+        /// the resource data from. If NULL, the data is read from the destination subresource 
+        /// with no offset. The dimensions of the destination must fit the destination 
+        /// (see <see href="https://learn.microsoft.com/en-us/windows/desktop/api/d3d12/ns-d3d12-d3d12_box">D3D12_BOX</see>).
+        /// </para>
+        /// <para>
+        /// An empty box results in a no-op. A box is empty if the top value is greater than or 
+        /// equal to the bottom value, or the left value is greater than or equal to the right 
+        /// value, or the front value is greater than or equal to the back value. When the box is 
+        /// empty, this method doesn't perform any operation.
+        /// </para>
+        /// </param>
+        void ReadFromSubresource( _Out_ void* destinationData, UINT destinationRowPitch, UINT destinationDepthPitch, UINT sourceSubresource, _In_opt_ const D3D12_BOX* sourceBox = nullptr ) const
         {
             InterfaceType* pInterface = GetInterface( );
-            HRESULT hr = pInterface->ReadFromSubresource( pDstData, DstRowPitch, DstDepthPitch, SrcSubresource, pSrcBox );
+            HRESULT hr = pInterface->ReadFromSubresource( destinationData, destinationRowPitch, destinationDepthPitch, sourceSubresource, sourceBox );
             HCC_COM_CHECK_HRESULT2( hr, pInterface );
         }
 
-        void GetHeapProperties( _Out_opt_ D3D12_HEAP_PROPERTIES* pHeapProperties, _Out_opt_ D3D12_HEAP_FLAGS* pHeapFlags ) const
+        void ReadFromSubresource( _Out_ void* destinationData, UINT destinationRowPitch, UINT destinationDepthPitch, UINT sourceSubresource, const D3D12_BOX& sourceBox ) const
+        {
+            ReadFromSubresource( destinationData, destinationRowPitch, destinationDepthPitch, sourceSubresource, &sourceBox );
+        }
+
+        /// <summary>
+        /// Retrieves the properties of the resource heap, for placed and committed resources.
+        /// </summary>
+        /// <param name="heapProperties">
+        /// Pointer to a <see href="https://learn.microsoft.com/en-us/windows/desktop/api/d3d12/ns-d3d12-d3d12_heap_properties">D3D12_HEAP_PROPERTIES</see> 
+        /// structure, that on successful completion of the method will contain the resource heap properties.
+        /// </param>
+        /// <param name="heapFlags">
+        /// Specifies a <see href="https://learn.microsoft.com/en-us/windows/desktop/api/d3d12/ne-d3d12-d3d12_heap_flags">D3D12_HEAP_FLAGS variable</see>, 
+        /// that on successful completion of the method will contain any miscellaneous heap flags.
+        /// </param>
+        void GetHeapProperties( _Out_opt_ D3D12_HEAP_PROPERTIES* heapProperties, _Out_opt_ D3D12_HEAP_FLAGS* heapFlags ) const
         {
             InterfaceType* pInterface = GetInterface( );
-            HRESULT hr = pInterface->GetHeapProperties( pHeapProperties, pHeapFlags );
+            HRESULT hr = pInterface->GetHeapProperties( heapProperties, heapFlags );
             HCC_COM_CHECK_HRESULT2( hr, pInterface );
         }
     };
 
+    /// <summary>
+    /// Represents the allocations of storage for graphics processing unit (GPU) commands.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// Use <see cref="D3D12Device::CreateCommandAllocator">D3D12Device::CreateCommandAllocator</see> to create a command allocator object.
+    /// </para>
+    /// <para>
+    /// The command allocator object corresponds to the underlying allocations in which 
+    /// GPU commands are stored. The command allocator object applies to both direct command 
+    /// lists and bundles. You must use a command allocator object in a DirectX 12 app.
+    /// </para>
+    /// </remarks>
     class D3D12CommandAllocator : public D3D12Pageable
     {
     public:
@@ -317,6 +776,30 @@ namespace Harlinn::Windows::Graphics
 
         COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( D3D12CommandAllocator, D3D12Pageable, ID3D12CommandAllocator, ID3D12Pageable )
     public:
+
+        /// <summary>
+        /// Indicates to re-use the memory that is associated with the command allocator.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// Apps call Reset to re-use the memory that is associated with a command allocator. 
+        /// From this call to Reset, the runtime and driver determine that the graphics processing 
+        /// unit (GPU) is no longer executing any command lists that have recorded commands with 
+        /// the command allocator.
+        /// </para>
+        /// <para>
+        /// Unlike <see cref="D3D12GraphicsCommandList::Reset">D3D12GraphicsCommandList::Reset</see>, it 
+        /// is not recommended that you call Reset on the command allocator while a command 
+        /// list is still being executed.
+        /// </para>
+        /// <para>
+        /// The debug layer will issue a warning if it can't prove that there are no pending GPU 
+        /// references to command lists that have recorded commands in the allocator.
+        /// </para>
+        /// <para>
+        /// The debug layer will issue an error if Reset is called concurrently by multiple threads (on the same allocator object).
+        /// </para>
+        /// </remarks>
         void Reset( ) const
         {
             InterfaceType* pInterface = GetInterface( );
@@ -326,6 +809,9 @@ namespace Harlinn::Windows::Graphics
     };
 
 
+    /// <summary>
+    /// Represents a fence, an object used for synchronization of the CPU and one or more GPUs.
+    /// </summary>
     class D3D12Fence : public D3D12Pageable
     {
     public:
@@ -333,12 +819,29 @@ namespace Harlinn::Windows::Graphics
 
         COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( D3D12Fence, D3D12Pageable, ID3D12Fence, ID3D12Pageable )
     public:
+
+        /// <summary>
+        /// Gets the current value of the fence.
+        /// </summary>
+        /// <returns>
+        /// Returns the current value of the fence. If the device has been removed, the return 
+        /// value will be UINT64_MAX.
+        /// </returns>
         UINT64 GetCompletedValue( ) const
         {
             InterfaceType* pInterface = GetInterface( );
             return pInterface->GetCompletedValue( );
         }
 
+        /// <summary>
+        /// Specifies an event that's raised when the fence reaches a certain value.
+        /// </summary>
+        /// <param name="value">
+        /// The fence value when the event is to be signaled.
+        /// </param>
+        /// <param name="eventHandle">
+        /// A handle to the event object.
+        /// </param>
         void SetEventOnCompletion( UINT64 value, HANDLE eventHandle ) const
         {
             InterfaceType* pInterface = GetInterface( );
@@ -346,6 +849,22 @@ namespace Harlinn::Windows::Graphics
             HCC_COM_CHECK_HRESULT2( hr, pInterface );
         }
 
+        void SetEventOnCompletion( UINT64 value, const EventWaitHandle& eventHandle ) const
+        {
+            SetEventOnCompletion( value, eventHandle.GetHandle( ) );
+        }
+
+        /// <summary>
+        /// Sets the fence to the specified value.
+        /// </summary>
+        /// <param name="value">
+        /// The value to set the fence to.
+        /// </param>
+        /// <remarks>
+        /// Use this method to set a fence value from the CPU side. Use 
+        /// <see cref="D3D12CommandQueue::Signal">D3D12CommandQueue::Signal</see> to 
+        /// set a fence from the GPU side.
+        /// </remarks>
         void Signal( UINT64 value ) const
         {
             InterfaceType* pInterface = GetInterface( );
@@ -355,6 +874,10 @@ namespace Harlinn::Windows::Graphics
     };
 
 
+    /// <summary>
+    /// Adds the ability to retrie the flags used to create the fence. 
+    /// This feature is useful primarily for opening shared fences.
+    /// </summary>
     class D3D12Fence1 : public D3D12Fence
     {
     public:
@@ -362,7 +885,14 @@ namespace Harlinn::Windows::Graphics
 
         COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( D3D12Fence1, D3D12Fence, ID3D12Fence1, ID3D12Fence )
     public:
-        D3D12_FENCE_FLAGS GetCreationFlags( void ) const
+
+        /// <summary>
+        /// Gets the flags used to create the fence represented by the current instance.
+        /// </summary>
+        /// <returns>
+        /// The flags used to create the fence.
+        /// </returns>
+        D3D12_FENCE_FLAGS GetCreationFlags( ) const
         {
             InterfaceType* pInterface = GetInterface( );
             return pInterface->GetCreationFlags( );
@@ -393,6 +923,13 @@ namespace Harlinn::Windows::Graphics
 
     };
 
+    /// <summary>
+    /// A descriptor heap is a collection of contiguous allocations of descriptors, 
+    /// one allocation for every descriptor. Descriptor heaps contain many object 
+    /// types that are not part of a Pipeline State Object (PSO), such as Shader 
+    /// Resource Views (SRVs), Unordered Access Views (UAVs), Constant Buffer Views 
+    /// (CBVs), and Samplers.
+    /// </summary>
     class D3D12DescriptorHeap : public D3D12Pageable
     {
     public:
@@ -400,18 +937,40 @@ namespace Harlinn::Windows::Graphics
 
         COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( D3D12DescriptorHeap, D3D12Pageable, ID3D12DescriptorHeap, ID3D12Pageable )
     public:
+
+        /// <summary>
+        /// Gets the descriptor heap description.
+        /// </summary>
+        /// <returns>
+        /// The description of the descriptor heap, as a 
+        /// <see href="https://learn.microsoft.com/en-us/windows/desktop/api/d3d12/ns-d3d12-d3d12_descriptor_heap_desc">D3D12_DESCRIPTOR_HEAP_DESC</see> 
+        /// structure.
+        /// </returns>
         D3D12_DESCRIPTOR_HEAP_DESC GetDesc( ) const
         {
             InterfaceType* pInterface = GetInterface( );
             return pInterface->GetDesc( );
         }
 
+        /// <summary>
+        /// Gets the CPU descriptor handle that represents the start of the heap.
+        /// </summary>
+        /// <returns>
+        /// Returns the CPU descriptor handle that represents the start of the heap.
+        /// </returns>
         D3D12_CPU_DESCRIPTOR_HANDLE GetCPUDescriptorHandleForHeapStart( ) const
         {
             InterfaceType* pInterface = GetInterface( );
             return pInterface->GetCPUDescriptorHandleForHeapStart( );
         }
 
+        /// <summary>
+        /// Gets the GPU descriptor handle that represents the start of the heap.
+        /// </summary>
+        /// <returns>
+        /// Returns the GPU descriptor handle that represents the start of the heap. 
+        /// If the descriptor heap is not shader-visible, a null handle is returned.
+        /// </returns>
         D3D12_GPU_DESCRIPTOR_HANDLE GetGPUDescriptorHandleForHeapStart( ) const
         {
             InterfaceType* pInterface = GetInterface( );
@@ -419,6 +978,10 @@ namespace Harlinn::Windows::Graphics
         }
     };
 
+
+    /// <summary>
+    /// Manages a query heap. A query heap holds an array of queries, referenced by indexes.
+    /// </summary>
     class D3D12QueryHeap : public D3D12Pageable
     {
     public:
@@ -428,6 +991,10 @@ namespace Harlinn::Windows::Graphics
     public:
     };
 
+    /// <summary>
+    /// A command signature object enables apps to specify indirect drawing, 
+    /// including the buffer format, command type and resource bindings to be used.
+    /// </summary>
     class D3D12CommandSignature : public D3D12Pageable
     {
     public:
@@ -437,7 +1004,12 @@ namespace Harlinn::Windows::Graphics
     public:
     };
 
-
+    /// <summary>
+    /// The base class for the D3D12GraphicsCommandList class. It represents 
+    /// an ordered set of commands that the GPU executes, while allowing for 
+    /// extension to support other command lists than just those for graphics 
+    /// (such as compute and copy).
+    /// </summary>
     class D3D12CommandList : public D3D12DeviceChild
     {
     public:
@@ -458,7 +1030,10 @@ namespace Harlinn::Windows::Graphics
         }
     };
 
-
+    /// <summary>
+    /// Encapsulates a list of graphics commands for rendering. Includes APIs for 
+    /// instrumenting the command list execution, and for setting and clearing the pipeline state.
+    /// </summary>
     class D3D12GraphicsCommandList : public D3D12CommandList
     {
     public:
@@ -913,39 +1488,152 @@ namespace Harlinn::Windows::Graphics
             CopyTiles( tiledResource.GetInterfacePointer<ID3D12Resource>( ), tileRegionStartCoordinate, tileRegionSize, buffer.GetInterfacePointer<ID3D12Resource>( ), bufferStartOffsetInBytes, flags );
         }
 
-        void ResolveSubresource( _In_ ID3D12Resource* dstResource, _In_ UINT dstSubresource, _In_ ID3D12Resource* srcResource, _In_ UINT srcSubresource, _In_ DXGI_FORMAT format ) const
+
+        /// <summary>
+        /// Copy a multi-sampled resource into a non-multi-sampled resource.
+        /// </summary>
+        /// <param name="destinationResource">
+        /// Destination resource. Must be a created on a D3D12_HEAP_TYPE_DEFAULT heap and be single-sampled.
+        /// </param>
+        /// <param name="destinationSubresource">
+        /// A zero-based index, that identifies the destination subresource. 
+        /// Use D3D12CalcSubresource to calculate the subresource index if the parent 
+        /// resource is complex.
+        /// </param>
+        /// <param name="sourceResource">
+        /// Source resource. Must be multisampled.
+        /// </param>
+        /// <param name="sourceSubresource">
+        /// The source subresource of the source resource.
+        /// </param>
+        /// <param name="format">
+        /// A DXGI_FORMAT that indicates how the multisampled resource will be resolved to a single-sampled resource. 
+        /// </param>
+        void ResolveSubresource( _In_ ID3D12Resource* destinationResource, _In_ UINT destinationSubresource, _In_ ID3D12Resource* sourceResource, _In_ UINT sourceSubresource, _In_ DXGI_FORMAT format ) const
         {
             InterfaceType* pInterface = GetInterface( );
-            pInterface->ResolveSubresource( dstResource, dstSubresource, srcResource, srcSubresource, format );
+            pInterface->ResolveSubresource( destinationResource, destinationSubresource, sourceResource, sourceSubresource, format );
         }
 
-        void ResolveSubresource( const D3D12Resource& dstResource, _In_ UINT dstSubresource, const D3D12Resource& srcResource, _In_ UINT srcSubresource, _In_ DXGI_FORMAT format ) const
+        void ResolveSubresource( const D3D12Resource& destinationResource, _In_ UINT destinationSubresource, const D3D12Resource& sourceResource, _In_ UINT sourceSubresource, _In_ DXGI_FORMAT format ) const
         {
-            ResolveSubresource( dstResource.GetInterfacePointer<ID3D12Resource>( ), dstSubresource, srcResource.GetInterfacePointer<ID3D12Resource>( ), srcSubresource, format );
+            ResolveSubresource( destinationResource.GetInterfacePointer<ID3D12Resource>( ), destinationSubresource, sourceResource.GetInterfacePointer<ID3D12Resource>( ), sourceSubresource, format );
         }
 
+        /// <summary>
+        /// Bind information about the primitive type, and data order 
+        /// that describes input data for the input assembler stage.
+        /// </summary>
+        /// <param name="primitiveTopology">
+        /// The type of primitive and ordering of the primitive data 
+        /// (see <see href="https://learn.microsoft.com/en-us/windows/desktop/api/d3dcommon/ne-d3dcommon-d3d_primitive_topology">D3D_PRIMITIVE_TOPOLOGY</see> ).
+        /// </param>
         void IASetPrimitiveTopology( _In_ D3D12_PRIMITIVE_TOPOLOGY primitiveTopology ) const
         {
             InterfaceType* pInterface = GetInterface( );
             pInterface->IASetPrimitiveTopology( primitiveTopology );
         }
 
-        void RSSetViewports( _In_range_( 0, D3D12_VIEWPORT_AND_SCISSORRECT_OBJECT_COUNT_PER_PIPELINE )  UINT numViewports, _In_reads_( numViewports )  const D3D12_VIEWPORT* pViewports ) const
+        /// <summary>
+        /// Bind an array of viewports to the rasterizer stage of the pipeline.
+        /// </summary>
+        /// <param name="numberOfViewports">
+        /// Number of viewports to bind.
+        /// </param>
+        /// <param name="viewports">
+        /// An array of <see href="https://learn.microsoft.com/en-us/windows/desktop/api/d3d12/ns-d3d12-d3d12_viewport">D3D12_VIEWPORT</see> 
+        /// structures to bind to the device.
+        /// </param>
+        /// <remarks>
+        /// <para>
+        /// All viewports must be set atomically as one operation. Any viewports not 
+        /// defined by the call are disabled.
+        /// </para>
+        /// <para>
+        /// Which viewport to use is determined by the <see href="https://learn.microsoft.com/en-us/windows/desktop/direct3dhlsl/dx-graphics-hlsl-semantics">SV_ViewportArrayIndex</see> 
+        /// semantic output by a geometry shader; if a geometry shader does not specify 
+        /// the semantic, Direct3D will use the first viewport in the array.
+        /// </para>
+        /// </remarks>
+        void RSSetViewports( _In_range_( 0, D3D12_VIEWPORT_AND_SCISSORRECT_OBJECT_COUNT_PER_PIPELINE )  UINT numberOfViewports, _In_reads_( numberOfViewports )  const D3D12_VIEWPORT* viewports ) const
         {
             InterfaceType* pInterface = GetInterface( );
-            pInterface->RSSetViewports( numViewports, pViewports );
+            pInterface->RSSetViewports( numberOfViewports, viewports );
         }
 
-        void RSSetScissorRects( _In_range_( 0, D3D12_VIEWPORT_AND_SCISSORRECT_OBJECT_COUNT_PER_PIPELINE )  UINT numRects, _In_reads_( numRects )  const D3D12_RECT* pRects ) const
+        template<typename SpanT>
+            requires requires( const SpanT& t )
+            {
+                { t.data( ) } -> std::convertible_to<const D3D12_VIEWPORT*>;
+                { t.size( ) } -> std::convertible_to<UINT>;
+            }
+        void RSSetViewports( const SpanT& viewports ) const
         {
-            InterfaceType* pInterface = GetInterface( );
-            pInterface->RSSetScissorRects( numRects, pRects );
+            RSSetViewports( static_cast<UINT>( viewports.size() ), viewports.data() );
         }
 
-        void OMSetBlendFactor( _In_reads_opt_( 4 ) const FLOAT BlendFactor[4] ) const
+        /// <summary>
+        /// Binds an array of scissor rectangles to the rasterizer stage.
+        /// </summary>
+        /// <param name="numberOfScissorRectangles">
+        /// The number of scissor rectangles to bind.
+        /// </param>
+        /// <param name="scissorRectangles">
+        /// An array of scissor rectangles.
+        /// </param>
+        /// <remarks>
+        /// <para>
+        /// All scissor rectangles must be set atomically as one operation. 
+        /// Any scissor rectangles not defined by the call are disabled.
+        /// </para>
+        /// <para>
+        /// Which scissor rectangle to use is determined by the SV_ViewportArrayIndex semantic 
+        /// output by a geometry shader (see shader semantic syntax). If a geometry shader does 
+        /// not make use of the SV_ViewportArrayIndex semantic then Direct3D will use the first 
+        /// scissor rectangle in the array.
+        /// </para>
+        /// <para>
+        /// Each scissor rectangle in the array corresponds to a viewport in an array of viewports.
+        /// </para>
+        /// </remarks>
+        void RSSetScissorRects( _In_range_( 0, D3D12_VIEWPORT_AND_SCISSORRECT_OBJECT_COUNT_PER_PIPELINE )  UINT numberOfScissorRectangles, _In_reads_( numberOfScissorRectangles )  const D3D12_RECT* scissorRectangles ) const
         {
             InterfaceType* pInterface = GetInterface( );
-            pInterface->OMSetBlendFactor( BlendFactor );
+            pInterface->RSSetScissorRects( numberOfScissorRectangles, scissorRectangles );
+        }
+
+        template<typename SpanT>
+            requires requires( const SpanT& t )
+        {
+            { t.data( ) } -> std::convertible_to<const D3D12_RECT*>;
+            { t.size( ) } -> std::convertible_to<UINT>;
+        }
+        void RSSetViewports( const SpanT& scissorRectangles ) const
+        {
+            RSSetViewports( static_cast< UINT >( scissorRectangles.size( ) ), scissorRectangles.data( ) );
+        }
+
+        /// <summary>
+        /// Sets the blend factors that modulate values for a pixel shader, render target, or both.
+        /// </summary>
+        /// <param name="blendFactors">
+        /// Array of blend factors, one for each RGBA component.
+        /// </param>
+        /// <remarks>
+        /// <para>
+        /// If you created the blend-state object with D3D12_BLEND_BLEND_FACTOR 
+        /// or D3D12_BLEND_INV_BLEND_FACTOR, then the blending stage uses the 
+        /// non-NULL array of blend factors. Otherwise,the blending stage doesn't use 
+        /// the non-NULL array of blend factors; the runtime stores the blend factors.
+        /// </para>
+        /// <para>
+        /// If you pass nullptr, then the runtime uses or stores a blend factor equal to <c>{ 1, 1, 1, 1 }</c>.
+        /// </para>
+        /// </remarks>
+        void OMSetBlendFactor( _In_reads_opt_( 4 ) const FLOAT blendFactors[4] ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            pInterface->OMSetBlendFactor( blendFactors );
         }
 
         void OMSetStencilRef( _In_ UINT stencilRef ) const
@@ -965,10 +1653,10 @@ namespace Harlinn::Windows::Graphics
             SetPipelineState( pipelineState.GetInterfacePointer<ID3D12PipelineState>( ) );
         }
 
-        void ResourceBarrier( _In_ UINT numBarriers, _In_reads_( numBarriers )  const D3D12_RESOURCE_BARRIER* pBarriers ) const
+        void ResourceBarrier( _In_ UINT numberOfBarriers, _In_reads_( numberOfBarriers )  const D3D12_RESOURCE_BARRIER* barriers ) const
         {
             InterfaceType* pInterface = GetInterface( );
-            pInterface->ResourceBarrier( numBarriers, pBarriers );
+            pInterface->ResourceBarrier( numberOfBarriers, barriers );
         }
 
         void ExecuteBundle( _In_ ID3D12GraphicsCommandList* commandList ) const
