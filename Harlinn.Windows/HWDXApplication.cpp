@@ -76,37 +76,6 @@ namespace Harlinn::Windows
     // ------------------------------------------------------------------------
     bool DXContext::CreateDeviceD3D( HWND hWnd )
     {
-        RECT clientRect{};
-        GetClientRect( hWnd, &clientRect );
-
-        UInt32 width = static_cast<UInt32>( clientRect.right - clientRect.left );
-        UInt32 height = static_cast<UInt32>( clientRect.bottom - clientRect.top );
-
-
-        if ( width == CW_USEDEFAULT )
-        {
-            width = 0;
-        }
-        if ( height == CW_USEDEFAULT )
-        {
-            height = 0;
-        }
-
-        // Setup swap chain
-        DXGI_SWAP_CHAIN_DESC1 sd{};
-        sd.BufferCount = BACK_BUFFERS_COUNT;
-        sd.Width = width;
-        sd.Height = height;
-        sd.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-        sd.Flags = DXGI_SWAP_CHAIN_FLAG_FRAME_LATENCY_WAITABLE_OBJECT;
-        sd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-        sd.SampleDesc.Count = 1;
-        sd.SampleDesc.Quality = 0;
-        sd.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
-        sd.AlphaMode = DXGI_ALPHA_MODE_UNSPECIFIED;
-        sd.Scaling = DXGI_SCALING_NONE;
-        sd.Stereo = FALSE;
-
         // [DEBUG] Enable debug interface
 #ifdef DX12_ENABLE_DEBUG_LAYER
         ID3D12Debug* pdx12Debug = NULL;
@@ -114,12 +83,12 @@ namespace Harlinn::Windows
         {
             pdx12Debug->EnableDebugLayer( );
         }
-        auto dxgiFactory = DXGI::CreateFactory<DXGI::Factory4>( true );
+        dxgiFactory_ = DXGI::CreateFactory<DXGI::Factory4>( true );
 #else
-        auto dxgiFactory = DXGI::CreateFactory<DXGI::Factory4>( false );
+        dxgiFactory_ = DXGI::CreateFactory<DXGI::Factory4>( false );
 #endif
-        auto hardwareAdapter = dxgiFactory.FindAdapter( D3D_FEATURE_LEVEL_12_1 );
-        d3dDevice_ = Graphics::CreateDevice( hardwareAdapter, D3D_FEATURE_LEVEL_12_1 );
+        hardwareAdapter_ = dxgiFactory_.FindAdapter( D3D_FEATURE_LEVEL_12_1 );
+        device_ = Graphics::CreateDevice( hardwareAdapter_, D3D_FEATURE_LEVEL_12_1 );
 
         
 #ifdef DX12_ENABLE_DEBUG_LAYER
@@ -137,55 +106,130 @@ namespace Harlinn::Windows
 #endif
 
         
-        {
-            D3D12_DESCRIPTOR_HEAP_DESC desc = {};
-            desc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
-            desc.NumDescriptors = BACK_BUFFERS_COUNT;
-            desc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
-            desc.NodeMask = 1;
-            d3dRtvDescHeap_ = d3dDevice_.CreateDescriptorHeap( desc );
+        renderTargetViewDescHeap_ = this->CreateRenderTargetViewDescriptorHeap( );
+        SetupRenderTargetDescriptors( );
 
-            SIZE_T rtvDescriptorSize = d3dDevice_.GetDescriptorHandleIncrementSize( D3D12_DESCRIPTOR_HEAP_TYPE_RTV );
-            D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle = d3dRtvDescHeap_.GetCPUDescriptorHandleForHeapStart( );
-            for ( UINT i = 0; i < BACK_BUFFERS_COUNT; i++ )
-            {
-                renderTargetDescriptors_[i] = rtvHandle;
-                rtvHandle.ptr += rtvDescriptorSize;
-            }
-        }
-        {
-            D3D12_DESCRIPTOR_HEAP_DESC desc = {};
-            desc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
-            desc.NumDescriptors = 1;
-            desc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
-            d3dSrvDescHeap_ = d3dDevice_.CreateDescriptorHeap( desc );
-        }
+        shaderResourceViewDescHeap_ = this->CreateShaderResourceViewDescriptorHeap( );
 
-        {
-            D3D12_COMMAND_QUEUE_DESC desc = {};
-            desc.Type = D3D12_COMMAND_LIST_TYPE_DIRECT;
-            desc.Flags = D3D12_COMMAND_QUEUE_FLAG_NONE;
-            desc.NodeMask = 1;
-            d3dCommandQueue_ = d3dDevice_.CreateCommandQueue( desc );
-        }
-        for ( UINT i = 0; i < FRAMES_IN_FLIGHT_COUNT; i++ )
-        {
-            frameContexts_[i].commandAllocator_ = d3dDevice_.CreateCommandAllocator( D3D12_COMMAND_LIST_TYPE_DIRECT );
-        }
-        d3dCommandList_ = d3dDevice_.CreateCommandList( 0, D3D12_COMMAND_LIST_TYPE_DIRECT, frameContexts_[0].commandAllocator_ );
-        d3dCommandList_.Close( );
+        commandQueue_ = this->CreateCommandQueue( );
+        SetupFrameContexts( );
+        
+        commandList_ = device_.CreateCommandList( 0, D3D12_COMMAND_LIST_TYPE_DIRECT, frameContexts_[ 0 ].commandAllocator_ );
+        commandList_.Close( );
 
-        fence_ = d3dDevice_.CreateFence( 0, D3D12_FENCE_FLAG_NONE );
+        commandList_ = this->CreateCommandList( frameContexts_[ 0 ].commandAllocator_ );
 
-        {
-            swapChain_ = dxgiFactory.CreateSwapChainForHwnd<DXGI::SwapChain3>( d3dCommandQueue_, hWnd, &sd );
-            swapChain_.SetMaximumFrameLatency( BACK_BUFFERS_COUNT );
-            swapChainWaitableObject_ = swapChain_.GetFrameLatencyWaitableObject( );
-        }
+        fence_ = device_.CreateFence( );
 
-        CreateRenderTarget( );
+        swapChain_ = this->CreateSwapChain( hWnd );
+
+        swapChainWaitableObject_ = swapChain_.GetFrameLatencyWaitableObject( );
+
+        CreateRenderTargetViews( );
         return true;
     }
+
+    DXContext::D3D12DescriptorHeap DXContext::CreateRenderTargetViewDescriptorHeap( )
+    {
+        D3D12_DESCRIPTOR_HEAP_DESC desc = {};
+        desc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
+        desc.NumDescriptors = BACK_BUFFERS_COUNT;
+        desc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
+        desc.NodeMask = 1;
+        return device_.CreateDescriptorHeap( desc );
+    }
+
+    void DXContext::SetupRenderTargetDescriptors( )
+    {
+        SIZE_T renderTargetViewDescriptorSize = device_.GetDescriptorHandleIncrementSize( D3D12_DESCRIPTOR_HEAP_TYPE_RTV );
+        D3D12_CPU_DESCRIPTOR_HANDLE renderTargetViewHandle = renderTargetViewDescHeap_.GetCPUDescriptorHandleForHeapStart( );
+        for ( UINT i = 0; i < BACK_BUFFERS_COUNT; i++ )
+        {
+            renderTargetDescriptors_[ i ] = renderTargetViewHandle;
+            renderTargetViewHandle.ptr += renderTargetViewDescriptorSize;
+        }
+    }
+
+    DXContext::D3D12DescriptorHeap DXContext::CreateShaderResourceViewDescriptorHeap( )
+    {
+        D3D12_DESCRIPTOR_HEAP_DESC desc = {};
+        desc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
+        desc.NumDescriptors = 1;
+        desc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
+        return device_.CreateDescriptorHeap( desc );
+    }
+
+    DXContext::D3D12CommandQueue DXContext::CreateCommandQueue( )
+    {
+        D3D12_COMMAND_QUEUE_DESC desc = {};
+        desc.Type = D3D12_COMMAND_LIST_TYPE_DIRECT;
+        desc.Flags = D3D12_COMMAND_QUEUE_FLAG_NONE;
+        desc.NodeMask = 1;
+        return device_.CreateCommandQueue( desc );
+    }
+
+    void DXContext::SetupFrameContexts( )
+    {
+        for ( UINT i = 0; i < FRAMES_IN_FLIGHT_COUNT; i++ )
+        {
+            frameContexts_[ i ].commandAllocator_ = device_.CreateCommandAllocator( );
+        }
+    }
+
+    DXContext::D3D12GraphicsCommandList DXContext::CreateCommandList( const D3D12CommandAllocator& commandAllocator )
+    {
+        auto result = device_.CreateCommandList( 0, D3D12_COMMAND_LIST_TYPE_DIRECT, frameContexts_[ 0 ].commandAllocator_ );
+        result.Close( );
+        return result;
+    }
+
+    DXContext::SwapChain4 DXContext::CreateSwapChain( HWND windowHandle )
+    {
+        RECT clientRect{};
+        GetClientRect( windowHandle, &clientRect );
+
+        UInt32 width = static_cast< UInt32 >( clientRect.right - clientRect.left );
+        UInt32 height = static_cast< UInt32 >( clientRect.bottom - clientRect.top );
+
+        if ( width == CW_USEDEFAULT )
+        {
+            width = 0;
+        }
+        if ( height == CW_USEDEFAULT )
+        {
+            height = 0;
+        }
+
+        DXGI_SWAP_CHAIN_DESC1 swapChainDesc{};
+        swapChainDesc.BufferCount = BACK_BUFFERS_COUNT;
+        swapChainDesc.Width = width;
+        swapChainDesc.Height = height;
+        swapChainDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+        swapChainDesc.Flags = DXGI_SWAP_CHAIN_FLAG_FRAME_LATENCY_WAITABLE_OBJECT;
+        swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+        swapChainDesc.SampleDesc.Count = 1;
+        swapChainDesc.SampleDesc.Quality = 0;
+        swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
+        swapChainDesc.AlphaMode = DXGI_ALPHA_MODE_UNSPECIFIED;
+        swapChainDesc.Scaling = DXGI_SCALING_NONE;
+        swapChainDesc.Stereo = FALSE;
+
+        auto result = dxgiFactory_.CreateSwapChainForHwnd<DXGI::SwapChain4>( commandQueue_, windowHandle, &swapChainDesc );
+        result.SetMaximumFrameLatency( BACK_BUFFERS_COUNT );
+        return result;
+    }
+
+
+    void DXContext::CreateRenderTargetViews( )
+    {
+        for ( UINT i = 0; i < BACK_BUFFERS_COUNT; i++ )
+        {
+            auto backBuffer = swapChain_.GetBuffer<D3D12Resource>( i );
+            device_.CreateRenderTargetView( backBuffer, renderTargetDescriptors_[ i ] );
+            renderTargetResources_[ i ] = std::move( backBuffer );
+        }
+    }
+
     void DXContext::CleanupDeviceD3D( )
     {
         CleanupRenderTarget( );
@@ -198,12 +242,15 @@ namespace Harlinn::Windows
         {
             frameContext.commandAllocator_.ResetPtr( );
         }
-        d3dCommandQueue_.ResetPtr( );
-        d3dCommandList_.ResetPtr( );
-        d3dRtvDescHeap_.ResetPtr( );
-        d3dSrvDescHeap_.ResetPtr( );
+        commandQueue_.ResetPtr( );
+        commandList_.ResetPtr( );
+        renderTargetViewDescHeap_.ResetPtr( );
+        shaderResourceViewDescHeap_.ResetPtr( );
         fence_.ResetPtr( );
-        d3dDevice_.ResetPtr( );
+        device_.ResetPtr( );
+
+        hardwareAdapter_.ResetPtr( );
+        dxgiFactory_.ResetPtr( );
 
 #ifdef DX12_ENABLE_DEBUG_LAYER
         IDXGIDebug1* pDebug = NULL;
@@ -214,15 +261,7 @@ namespace Harlinn::Windows
         }
 #endif
     }
-    void DXContext::CreateRenderTarget( )
-    {
-        for ( UINT i = 0; i < BACK_BUFFERS_COUNT; i++ )
-        {
-            auto backBuffer = swapChain_.GetBuffer<D3D12Resource>( i );
-            d3dDevice_.CreateRenderTargetView( backBuffer, renderTargetDescriptors_[i] );
-            renderTargetResources_[i] = std::move( backBuffer );
-        }
-    }
+    
     void DXContext::CleanupRenderTarget( )
     {
         this->WaitForLastSubmittedFrame( );
@@ -284,7 +323,7 @@ namespace Harlinn::Windows
         swapChain_.ResetPtr();
         CloseHandle( swapChainWaitableObject_ );
 
-        swapChain_ = dxgiFactory.CreateSwapChainForHwnd( d3dCommandQueue_, hWnd, &sd );
+        swapChain_ = dxgiFactory.CreateSwapChainForHwnd( commandQueue_, hWnd, &sd );
         swapChain_.SetMaximumFrameLatency( BACK_BUFFERS_COUNT );
         swapChainWaitableObject_ = swapChain_.GetFrameLatencyWaitableObject( );
     }
@@ -304,8 +343,8 @@ namespace Harlinn::Windows
         barrier_.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT;
         barrier_.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
 
-        d3dCommandList_.Reset( commandAllocator );
-        d3dCommandList_.ResourceBarrier( 1, &barrier_ );
+        commandList_.Reset( commandAllocator );
+        commandList_.ResourceBarrier( 1, &barrier_ );
 
         
     }
@@ -315,23 +354,23 @@ namespace Harlinn::Windows
         constexpr float clearColor[] = { 0.01f, 0.01f, 0.05f, 1.00f };
         constexpr float clearColorWithAlpha[4] = { clearColor[0] * clearColor[3], clearColor[1] * clearColor[3], clearColor[2] * clearColor[3], clearColor[3] };
 
-        d3dCommandList_.ClearRenderTargetView( renderTargetDescriptors_[backBufferIdx_], clearColorWithAlpha );
-        d3dCommandList_.OMSetRenderTargets( 1, &renderTargetDescriptors_[backBufferIdx_] );
+        commandList_.ClearRenderTargetView( renderTargetDescriptors_[backBufferIdx_], clearColorWithAlpha );
+        commandList_.OMSetRenderTargets( 1, &renderTargetDescriptors_[backBufferIdx_] );
 
-        d3dCommandList_.SetDescriptorHeaps( d3dSrvDescHeap_ );
+        commandList_.SetDescriptorHeaps( shaderResourceViewDescHeap_ );
 
     }
     void DXContext::CloseCommandList( )
     {
         barrier_.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
         barrier_.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
-        d3dCommandList_.ResourceBarrier( 1, &barrier_ );
-        d3dCommandList_.Close( );
+        commandList_.ResourceBarrier( 1, &barrier_ );
+        commandList_.Close( );
     }
 
     void DXContext::ExecuteCommandList( )
     {
-        d3dCommandQueue_.ExecuteCommandLists( d3dCommandList_ );
+        commandQueue_.ExecuteCommandLists( commandList_ );
     }
 
     void DXContext::Present( )
@@ -343,7 +382,7 @@ namespace Harlinn::Windows
     void DXContext::FrameCompleted( )
     {
         UINT64 fenceValue = fenceLastSignaledValue_ + 1;
-        d3dCommandQueue_.Signal( fence_, fenceValue );
+        commandQueue_.Signal( fence_, fenceValue );
         fenceLastSignaledValue_ = fenceValue;
         currentFrameContext_->fenceValue_ = fenceValue;
     }
@@ -356,33 +395,34 @@ namespace Harlinn::Windows
     DXApplication::DXApplication( const Windows::ApplicationOptions& options, std::unique_ptr<DXContext> dxContext )
         : Base( options ), dxContext_( std::move( dxContext ) )
     { 
+        
     }
     DXApplication::~DXApplication( )
     {
     }
 
-    int DXApplication::Run( Form& mainform )
+    int DXApplication::Run( Form& mainForm )
     {
         DXMessageLoop messageLoop;
-        int result = this->Run( mainform, messageLoop );
+        int result = this->Run( mainForm, messageLoop );
         return result;
     }
 
-    int DXApplication::Run( Form& mainform, MessageLoop& messageLoop )
+    int DXApplication::Run( Form& mainForm, MessageLoop& messageLoop )
     {
         DXMessageLoop& dxMessageLoop = dynamic_cast<DXMessageLoop&>( messageLoop );
-        return this->Run( mainform, dxMessageLoop );
+        return this->Run( mainForm, dxMessageLoop );
     }
 
-    int DXApplication::Run( Form& mainform, DXMessageLoop& messageLoop )
+    int DXApplication::Run( Form& mainForm, DXMessageLoop& messageLoop )
     {
         messageLoop_ = &messageLoop;
-        mainform.OnDestroy.connect( []( Control* sender, Windows::Message& message )
+        mainForm.OnDestroy.connect( []( Control* sender, Windows::Message& message )
         {
             ::PostQuitMessage( -1 );
         } );
 
-        mainform.Show( );
+        mainForm.Show( );
 
         int result = messageLoop.Run( );
 

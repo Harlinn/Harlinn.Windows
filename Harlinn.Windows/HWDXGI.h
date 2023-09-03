@@ -24,6 +24,55 @@ namespace Harlinn::Windows::Graphics
 
 namespace Harlinn::Windows::DXGI
 {
+    class Object;
+    class DeviceSubObject;
+    class Resource;
+    class KeyedMutex;
+    class Surface;
+    class Surface1;
+    class Adapter;
+    class Output;
+    class SwapChain;
+    class Factory;
+    class Device;
+    class Adapter1;
+    class Factory1;
+    class Device1;
+    class DisplayControl;
+    class OutputDuplication;
+    class Surface2;
+    class Resource1;
+    class Device2;
+    class SwapChain1;
+    class Factory2;
+    class Adapter2;
+    class Output1;
+    class Device3;
+    class SwapChain2;
+    class Output2;
+    class Factory3;
+    class DecodeSwapChain;
+    class FactoryMedia;
+    class SwapChainMedia;
+    class Output3;
+    class SwapChain3;
+    class Output4;
+    class Factory4;
+    class Adapter3;
+    class Output5;
+    class SwapChain4;
+    class Device4;
+    class Factory5;
+    class Adapter4;
+    class Output6;
+    class Factory6;
+    class Factory7;
+
+
+
+
+
+
     class Object : public Unknown
     {
     public:
@@ -374,6 +423,72 @@ namespace Harlinn::Windows::DXGI
 
         HCC_COM_STANDARD_METHODS_IMPL( SwapChain, Base, IDXGISwapChain, IDXGIDeviceSubObject )
     public:
+        /// <summary>
+        /// Presents a rendered image to the user.
+        /// </summary>
+        /// <param name="SyncInterval">
+        /// <para>
+        /// An integer that specifies how to synchronize presentation of a frame with the vertical blank.
+        /// </para>
+        /// <para>
+        /// For the bit-block transfer (bitblt) model 
+        /// (<see href="https://learn.microsoft.com/en-us/windows/win32/api/dxgi/ne-dxgi-dxgi_swap_effect">DXGI_SWAP_EFFECT_DISCARD</see> or 
+        /// <see href="https://learn.microsoft.com/en-us/windows/win32/api/dxgi/ne-dxgi-dxgi_swap_effect">DXGI_SWAP_EFFECT_SEQUENTIAL</see>), values are:
+        /// </para>
+        /// <list type="bullet">
+        /// <item>
+        /// 0 - The presentation occurs immediately, there is no synchronization.
+        /// </item>
+        /// <item>
+        /// 1 through 4 - Synchronize presentation after the nth vertical blank.
+        /// </item>
+        /// </list>
+        /// <para>
+        /// For the flip model (DXGI_SWAP_EFFECT_FLIP_SEQUENTIAL), values are:
+        /// </para>
+        /// <list type="bullet">
+        /// <item>
+        /// 0 - Cancel the remaining time on the previously presented frame and discard this frame if a newer frame is queued.
+        /// </item>
+        /// <item>
+        /// 1 through 4 - Synchronize presentation for at least n vertical blanks.
+        /// </item>
+        /// </list>
+        /// <para>
+        /// If the update region straddles more than one output (each represented by <see cref="Output">Output</see>), 
+        /// Present performs the synchronization to the output that contains the largest 
+        /// sub-rectangle of the target window's client area.
+        /// </para>
+        /// </param>
+        /// <param name="Flags">
+        /// An integer value that contains swap-chain presentation options. These options are defined by the 
+        /// <see href="https://learn.microsoft.com/en-us/windows/desktop/direct3ddxgi/dxgi-present">DXGI_PRESENT</see> constants.
+        /// </param>
+        /// <remarks>
+        /// <para>
+        /// Starting with Direct3D 11.1, consider using <see cref="SwapChain1::Present1">SwapChain1::Present1</see> 
+        /// because you can then use dirty rectangles and the scroll rectangle in the swap chain presentation 
+        /// and as such use less memory bandwidth and as a result less system power. For more info about using 
+        /// dirty rectangles and the scroll rectangle in swap chain presentation, see 
+        /// <see href="https://learn.microsoft.com/en-us/windows/win32/direct3ddxgi/dxgi-1-2-presentation-improvements">Using dirty rectangles and the scroll rectangle in swap chain presentation</see>.
+        /// </para>
+        /// <para>
+        /// For the best performance when flipping swap-chain buffers in a full-screen application, see 
+        /// <see href="https://learn.microsoft.com/en-us/windows/win32/direct3ddxgi/d3d10-graphics-programming-guide-dxgi">Full-Screen Application Performance Hints</see>.
+        /// </para>
+        /// <para>
+        /// Because calling Present might cause the render thread to wait on the message-pump 
+        /// thread, be careful when calling this method in an application that uses multiple 
+        /// threads. For more details, see 
+        /// <see href="https://learn.microsoft.com/en-us/windows/win32/direct3ddxgi/d3d10-graphics-programming-guide-dxgi">Multithreading Considerations</see>.
+        /// </para>
+        /// <para>
+        /// For flip presentation model swap chains that you create with the 
+        /// <see href="https://learn.microsoft.com/en-us/windows/win32/api/dxgi/ne-dxgi-dxgi_swap_effect">DXGI_SWAP_EFFECT_FLIP_SEQUENTIAL</see> 
+        /// value set, a successful presentation unbinds back buffer 0 from the graphics pipeline, except for when you pass the 
+        /// <see href="https://learn.microsoft.com/en-us/windows/win32/direct3ddxgi/dxgi-present">DXGI_PRESENT_DO_NOT_SEQUENCE</see> flag in the Flags parameter.
+        /// </para>
+        /// </remarks>
         void Present( UINT SyncInterval, UINT Flags ) const
         {
             auto* pInterface = GetInterface( );
@@ -690,6 +805,9 @@ namespace Harlinn::Windows::DXGI
             return Adapter1( );
         }
 
+        
+
+
 
         bool IsCurrent( void ) const
         {
@@ -883,22 +1001,46 @@ namespace Harlinn::Windows::DXGI
         {
             auto* pInterface = GetInterface( );
             auto hr = pInterface->GetDesc1( pDesc );
-            CheckHRESULT( hr );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
         }
+
+        DXGI_SWAP_CHAIN_DESC1 GetDesc1( ) const
+        {
+            DXGI_SWAP_CHAIN_DESC1 result{};
+            GetDesc1( &result );
+            return result;
+        }
+
 
         void GetFullscreenDesc( DXGI_SWAP_CHAIN_FULLSCREEN_DESC* pDesc ) const
         {
             auto* pInterface = GetInterface( );
             auto hr = pInterface->GetFullscreenDesc( pDesc );
-            CheckHRESULT( hr );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
         }
+
+        DXGI_SWAP_CHAIN_FULLSCREEN_DESC GetFullscreenDesc( ) const
+        {
+            DXGI_SWAP_CHAIN_FULLSCREEN_DESC result{};
+            GetFullscreenDesc( &result );
+            return result;
+        }
+
 
         void GetHwnd( HWND* pHwnd ) const
         {
             auto* pInterface = GetInterface( );
             auto hr = pInterface->GetHwnd( pHwnd );
-            CheckHRESULT( hr );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
         }
+
+        HWND GetHwnd( ) const
+        {
+            HWND result = nullptr;
+            GetHwnd( &result );
+            return result;
+        }
+
 
         void GetCoreWindow( REFIID refiid, void** ppUnk ) const
         {

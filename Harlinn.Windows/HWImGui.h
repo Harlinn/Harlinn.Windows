@@ -32,8 +32,6 @@ namespace Harlinn::Windows::ImGui
             : Base( options, std::move( dxContext ) ), io_( GetImGuiIO( ) )
         {
             io_.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
-            //::ImGui::StyleColorsDark( );
-            //::ImGui::StyleColorsLight( );
             ::ImGui::StyleColorsClassic( );
         }
         virtual ~Application( )
@@ -45,124 +43,77 @@ namespace Harlinn::Windows::ImGui
         }
 
         using Base::Run;
-        virtual int Run( Windows::Form& mainform, DXMessageLoop& messageLoop ) override
+        virtual int Run( Windows::Form& mainForm, DXMessageLoop& messageLoop ) override
         {
             auto context = Context( );
-
-            context->CreateDeviceD3D( mainform.GetHandle( ) );
 
             ImGuiStyle& style = ::ImGui::GetStyle( );
             style.AntiAliasedFill = true;
             style.AntiAliasedLines = true;
 
-            auto& srvDescHeap = context->SrvDescHeap( );
-            ImGui_ImplWin32_Init( mainform.GetHandle( ) );
+            auto& shaderResourceViewDescHeap = context->ShaderResourceViewDescHeap( );
+            ImGui_ImplWin32_Init( mainForm.GetHandle( ) );
             ImGui_ImplDX12_Init( static_cast<ID3D12Device*>(context->Device().GetInterfacePointer()), 
                             DXContext::FRAMES_IN_FLIGHT_COUNT, 
                             DXGI_FORMAT_R8G8B8A8_UNORM, 
-                            static_cast<ID3D12DescriptorHeap*>(srvDescHeap.GetInterfacePointer()), 
-                            srvDescHeap.GetCPUDescriptorHandleForHeapStart( ), 
-                            srvDescHeap.GetGPUDescriptorHandleForHeapStart( ) );
+                            static_cast<ID3D12DescriptorHeap*>( shaderResourceViewDescHeap.GetInterfacePointer()),
+                            shaderResourceViewDescHeap.GetCPUDescriptorHandleForHeapStart( ),
+                            shaderResourceViewDescHeap.GetGPUDescriptorHandleForHeapStart( ) );
 
-            auto result = Base::Run( mainform, messageLoop );
+            auto result = Base::Run( mainForm, messageLoop );
             return result;
         }
     };
 
 
-    class Form : public Windows::Form
+    class Form : public Windows::DXForm
     {
     public:
-        using Base = Windows::Form;
-        boost::signals2::signal<void( Form* sender )> OnRender;
+        using Base = Windows::DXForm;
     private:
-        bool attached_ = false;
-        boost::signals2::connection onRenderConnection_;
-
     protected:
         virtual void HandleMessage( Message& message ) override
         {
-            if ( !attached_ )
-            {
-                auto messageLoop = DXMessageLoop::Instance( );
-                if ( messageLoop )
-                {
-                    messageLoop->OnRender.connect( [this]( DXMessageLoop* sender ) 
-                    {
-                        this->DoOnRenderFrame( );
-                    } );
-                    attached_ = true;
-                }
-            }
             if ( ImGui_ImplWin32_WndProcHandler( message.hwnd, message.message, message.wParam, message.lParam ) )
             {
                 message.handled = true;
             }
             else
             {
-                if ( message.message == WM_SIZE )
-                {
-                    auto& application = DXApplication::Instance( );
-                    auto context = application.Context( );
-                    context->WaitForLastSubmittedFrame( );
-                    ImGui_ImplDX12_InvalidateDeviceObjects( );
-                    context->CleanupRenderTarget( );
-                    context->ResizeSwapChain( message.hwnd, (UINT)LOWORD( message.lParam ), (UINT)HIWORD( message.lParam ) );
-                    context->CreateRenderTarget( );
-                    ImGui_ImplDX12_CreateDeviceObjects( );
-                }
                 Base::HandleMessage( message );
             }
         }
 
-        virtual void DoOnNewFrame( )
+        virtual void DoOnNewFrame( ) override
         {
             ImGui_ImplDX12_NewFrame( );
             ImGui_ImplWin32_NewFrame( );
             ::ImGui::NewFrame( );
+            Base::DoOnNewFrame( );
         }
 
-        virtual void DoOnFrameDone( )
+        virtual void DoOnFrameDone( ) override
         {
             auto& application = static_cast<Application&>(DXApplication::Instance( ));
             auto context = application.Context( );
             if ( context )
             {
                 ::ImGui::Render( );
-
-                context->PrepareFrame( );
-                context->PrepareCommandList( );
-
                 ID3D12GraphicsCommandList* commandList = static_cast<ID3D12GraphicsCommandList*>( context->CommandList( ).GetInterfacePointer( ) );
-
                 ImGui_ImplDX12_RenderDrawData( ::ImGui::GetDrawData( ), commandList );
-
-                context->CloseCommandList( );
-
-                context->ExecuteCommandList( );
-
-                
-
-                context->Present( );
-                context->FrameCompleted( );
             }
+            Base::DoOnFrameDone( );
         }
 
-
-
-    public:
-        virtual void DoOnRenderFrame( )
+        virtual void DoOnInvalidateDeviceObjects( DXContext* context ) override
         {
-            this->DoOnNewFrame( );
-            this->DoOnRender( );
-            this->DoOnFrameDone( );
+            ImGui_ImplDX12_InvalidateDeviceObjects( );
         }
-        virtual void DoOnRender( )
+
+        virtual void DoOnCreateDeviceObjects( DXContext* context ) override
         {
-            OnRender( this );
+            ImGui_ImplDX12_CreateDeviceObjects( );
         }
-
-
     };
 }
 

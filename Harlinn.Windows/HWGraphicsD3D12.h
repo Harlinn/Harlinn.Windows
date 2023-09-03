@@ -900,6 +900,9 @@ namespace Harlinn::Windows::Graphics
     };
 
 
+    /// <summary>
+    /// Represents the state of all currently set shaders as well as certain fixed function state objects.
+    /// </summary>
     class D3D12PipelineState : public D3D12Pageable
     {
     public:
@@ -1561,12 +1564,8 @@ namespace Harlinn::Windows::Graphics
             pInterface->RSSetViewports( numberOfViewports, viewports );
         }
 
-        template<typename SpanT>
-            requires requires( const SpanT& t )
-            {
-                { t.data( ) } -> std::convertible_to<const D3D12_VIEWPORT*>;
-                { t.size( ) } -> std::convertible_to<UINT>;
-            }
+        template<SimpleConstSpanLike SpanT>
+            requires std::is_convertible_v<typename SpanT::value_type, const D3D12_VIEWPORT>
         void RSSetViewports( const SpanT& viewports ) const
         {
             RSSetViewports( static_cast<UINT>( viewports.size() ), viewports.data() );
@@ -1602,12 +1601,8 @@ namespace Harlinn::Windows::Graphics
             pInterface->RSSetScissorRects( numberOfScissorRectangles, scissorRectangles );
         }
 
-        template<typename SpanT>
-            requires requires( const SpanT& t )
-        {
-            { t.data( ) } -> std::convertible_to<const D3D12_RECT*>;
-            { t.size( ) } -> std::convertible_to<UINT>;
-        }
+        template<SimpleConstSpanLike SpanT>
+            requires std::is_convertible_v<typename SpanT::value_type, const D3D12_RECT>
         void RSSetViewports( const SpanT& scissorRectangles ) const
         {
             RSSetViewports( static_cast< UINT >( scissorRectangles.size( ) ), scissorRectangles.data( ) );
@@ -1636,12 +1631,24 @@ namespace Harlinn::Windows::Graphics
             pInterface->OMSetBlendFactor( blendFactors );
         }
 
+        /// <summary>
+        /// Sets the reference value for depth stencil tests.
+        /// </summary>
+        /// <param name="stencilRef">
+        /// Reference value to perform against when doing a depth-stencil test.
+        /// </param>
         void OMSetStencilRef( _In_ UINT stencilRef ) const
         {
             InterfaceType* pInterface = GetInterface( );
             pInterface->OMSetStencilRef( stencilRef );
         }
 
+        /// <summary>
+        /// Sets all shaders and programs most of the fixed-function state of the graphics processing unit (GPU) pipeline.
+        /// </summary>
+        /// <param name="pipelineState">
+        /// Pointer to the ID3D12PipelineState containing the pipeline state data.
+        /// </param>
         void SetPipelineState( _In_  ID3D12PipelineState* pipelineState ) const
         {
             InterfaceType* pInterface = GetInterface( );
@@ -1653,11 +1660,28 @@ namespace Harlinn::Windows::Graphics
             SetPipelineState( pipelineState.GetInterfacePointer<ID3D12PipelineState>( ) );
         }
 
+        /// <summary>
+        /// Notifies the driver that it needs to synchronize multiple accesses to resources.
+        /// </summary>
+        /// <param name="numberOfBarriers">
+        /// The number of submitted barrier descriptions.
+        /// </param>
+        /// <param name="barriers">
+        /// Pointer to an array of barrier descriptions.
+        /// </param>
         void ResourceBarrier( _In_ UINT numberOfBarriers, _In_reads_( numberOfBarriers )  const D3D12_RESOURCE_BARRIER* barriers ) const
         {
             InterfaceType* pInterface = GetInterface( );
             pInterface->ResourceBarrier( numberOfBarriers, barriers );
         }
+
+        template<SimpleConstSpanLike SpanT>
+            requires std::is_convertible_v<typename SpanT::value_type, const D3D12_RESOURCE_BARRIER>
+        void ResourceBarrier( const SpanT& barriers ) const
+        {
+            ResourceBarrier( static_cast< UINT >( barriers.size( ) ), barriers.data( ) );
+        }
+
 
         void ExecuteBundle( _In_ ID3D12GraphicsCommandList* commandList ) const
         {
@@ -2160,7 +2184,7 @@ namespace Harlinn::Windows::Graphics
 
         template <typename T = D3D12CommandAllocator>
             requires std::is_base_of_v<D3D12CommandAllocator, T>
-        T CreateCommandAllocator( _In_ D3D12_COMMAND_LIST_TYPE type ) const
+        T CreateCommandAllocator( _In_ D3D12_COMMAND_LIST_TYPE type = D3D12_COMMAND_LIST_TYPE::D3D12_COMMAND_LIST_TYPE_DIRECT ) const
         {
             using ItfT = typename T::InterfaceType;
             constexpr auto refiid = __uuidof( ItfT );
@@ -2297,7 +2321,20 @@ namespace Harlinn::Windows::Graphics
         }
 
 
-
+        /// <summary>
+        /// Gets the size of the handle increment for the given type of descriptor heap. 
+        /// This value is typically used to increment a handle into a descriptor array 
+        /// by the correct amount.
+        /// </summary>
+        /// <param name="descriptorHeapType">
+        /// The <see href="https://learn.microsoft.com/en-us/windows/desktop/api/d3d12/ne-d3d12-d3d12_descriptor_heap_type">D3D12_DESCRIPTOR_HEAP_TYPE</see>-typed 
+        /// value that specifies the type of descriptor heap to get the size 
+        /// of the handle increment for.
+        /// </param>
+        /// <returns>
+        /// Returns the size of the handle increment for the given type of descriptor heap, 
+        /// including any necessary padding.
+        /// </returns>
         UINT GetDescriptorHandleIncrementSize( _In_ D3D12_DESCRIPTOR_HEAP_TYPE descriptorHeapType ) const
         {
             InterfaceType* pInterface = GetInterface( );
@@ -2557,7 +2594,7 @@ namespace Harlinn::Windows::Graphics
 
         template<typename T = D3D12Fence>
             requires std::is_base_of_v<D3D12Fence,T>
-        T CreateFence( UINT64 initialValue, D3D12_FENCE_FLAGS flags ) const
+        T CreateFence( UINT64 initialValue = 0, D3D12_FENCE_FLAGS flags = D3D12_FENCE_FLAGS::D3D12_FENCE_FLAG_NONE ) const
         {
             using IntfT = T::InterfaceType;
             IID IntfTId = __uuidof( IntfT );

@@ -22,7 +22,7 @@ int main()
         bool showImPlotDemoWindow = true;
         bool showAnotherWindow = false;
 
-        form.OnRender.connect( [&showImGuiDemoWindow,&showImPlotDemoWindow, &showAnotherWindow]( Windows::ImGui::Form* sender )
+        form.OnRender.connect( [&showImGuiDemoWindow,&showImPlotDemoWindow, &showAnotherWindow]( Windows::DXForm* sender )
         {
             if ( showImGuiDemoWindow )
             {

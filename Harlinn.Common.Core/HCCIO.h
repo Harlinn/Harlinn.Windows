@@ -29,38 +29,174 @@ namespace Harlinn::Common::Core::IO
     };
     static_assert( sizeof( FindDataBase<wchar_t> ) == sizeof( WIN32_FIND_DATAW ) );
 
+    /// <summary>
+    /// Creates a new directory. If the underlying file system supports security on files 
+    /// and directories, the function applies a specified security descriptor to the new directory.
+    /// </summary>
+    /// <param name="pathName">
+    /// The path of the directory to be created.
+    /// </param>
+    /// <param name="securityAttributes">
+    /// A pointer to a SECURITY_ATTRIBUTES structure. The lpSecurityDescriptor member of 
+    /// the structure specifies a security descriptor for the new directory. If securityAttributes 
+    /// is NULL, the directory gets a default security descriptor. The ACLs in the default security 
+    /// descriptor for a directory are inherited from its parent directory.
+    /// </param>
+    /// <returns>
+    /// <para>
+    /// Returns true if the function succeeds, otherwise false.
+    /// </para>
+    /// </returns>
     inline [[nodiscard]] bool CreateDirectoryEntry( const char* pathName, const SECURITY_ATTRIBUTES* securityAttributes )
     {
         return CreateDirectoryA( pathName, const_cast< SECURITY_ATTRIBUTES* >( securityAttributes ) );
     }
 
+    /// <summary>
+    /// Creates a new directory. If the underlying file system supports security on files 
+    /// and directories, the function applies a specified security descriptor to the new directory.
+    /// </summary>
+    /// <param name="pathName">
+    /// The path of the directory to be created.
+    /// </param>
+    /// <param name="securityAttributes">
+    /// A pointer to a SECURITY_ATTRIBUTES structure. The lpSecurityDescriptor member of 
+    /// the structure specifies a security descriptor for the new directory. If securityAttributes 
+    /// is NULL, the directory gets a default security descriptor. The ACLs in the default security 
+    /// descriptor for a directory are inherited from its parent directory.
+    /// </param>
+    /// <returns>
+    /// <para>
+    /// Returns true if the function succeeds, otherwise false.
+    /// </para>
+    /// </returns>
     inline [[nodiscard]] bool CreateDirectoryEntry( const wchar_t* pathName, const SECURITY_ATTRIBUTES* securityAttributes )
     {
         return CreateDirectoryW( pathName, const_cast< SECURITY_ATTRIBUTES* >( securityAttributes ) );
     }
 
+    /// <summary>
+    /// Creates a new directory. If the underlying file system supports security on files 
+    /// and directories, the function applies a specified security descriptor to the new directory.
+    /// </summary>
+    /// <param name="pathName">
+    /// The path of the directory to be created.
+    /// </param>
+    /// <param name="securityAttributes">
+    /// A pointer to a SECURITY_ATTRIBUTES structure. The lpSecurityDescriptor member of 
+    /// the structure specifies a security descriptor for the new directory. If securityAttributes 
+    /// is NULL, the directory gets a default security descriptor. The ACLs in the default security 
+    /// descriptor for a directory are inherited from its parent directory.
+    /// </param>
+    /// <returns>
+    /// <para>
+    /// Returns true if the function succeeds, otherwise false.
+    /// </para>
+    /// </returns>
     template<SimpleStringLike StringT>
     inline [[nodiscard]] bool CreateDirectoryEntry( const StringT& pathName, const SECURITY_ATTRIBUTES* securityAttributes )
     {
         return CreateDirectoryEntry( pathName.c_str(), securityAttributes );
     }
 
+    /// <summary>
+    /// Deletes an existing empty directory.
+    /// </summary>
+    /// <param name="pathName">
+    /// The path of the directory to be removed. This path must specify an empty directory, 
+    /// and the calling process must have delete access to the directory.
+    /// </param>
+    /// <returns>
+    /// Returns true if the function succeeds, otherwise false.
+    /// </returns>
     inline [[nodiscard]] bool EraseDirectoryEntry( const char* pathName )
     {
         return RemoveDirectoryA( pathName );
     }
 
+    /// <summary>
+    /// Deletes an existing empty directory.
+    /// </summary>
+    /// <param name="pathName">
+    /// The path of the directory to be removed. This path must specify an empty directory, 
+    /// and the calling process must have delete access to the directory.
+    /// </param>
+    /// <returns>
+    /// Returns true if the function succeeds, otherwise false.
+    /// </returns>
     inline [[nodiscard]] bool EraseDirectoryEntry( const wchar_t* pathName )
     {
         return RemoveDirectoryW( pathName );
     }
+
+    /// <summary>
+    /// Deletes an existing empty directory.
+    /// </summary>
+    /// <param name="pathName">
+    /// The path of the directory to be removed. This path must specify an empty directory, 
+    /// and the calling process must have delete access to the directory.
+    /// </param>
+    /// <returns>
+    /// Returns true if the function succeeds, otherwise false.
+    /// </returns>
     template<SimpleStringLike StringT>
     inline [[nodiscard]] bool EraseDirectoryEntry( const StringT& pathName )
     {
         return EraseDirectoryEntry( pathName.c_str( ) );
     }
 
-
+    /// <summary>
+    /// Creates or opens a file or I/O device. The most commonly used I/O devices are as follows: 
+    /// file, file stream, directory, physical disk, volume, console buffer, tape drive, 
+    /// communications resource, mailslot, and pipe. The function returns a handle that can be 
+    /// used to access the file or device for various types of I/O depending on the file or 
+    /// device and the flags and attributes specified.
+    /// </summary>
+    /// <param name="fileName">
+    /// The name of the file or device to be created or opened. You may use either forward 
+    /// slashes (/) or backslashes (\) in this name.
+    /// </param>
+    /// <param name="desiredAccess">
+    /// <para>
+    /// The requested access to the file or device, which can be summarized as read, write, 
+    /// both or 0 to indicate neither).
+    /// </para>
+    /// <para>
+    /// The most commonly used values are GENERIC_READ, GENERIC_WRITE, or both 
+    /// (GENERIC_READ | GENERIC_WRITE). For more information, see 
+    /// <see href="https://learn.microsoft.com/en-us/windows/desktop/SecAuthZ/generic-access-rights">Generic Access Rights</see>, 
+    /// <see href="https://learn.microsoft.com/en-us/windows/desktop/FileIO/file-security-and-access-rights">File Security and Access Rights</see>, 
+    /// <see href="https://learn.microsoft.com/en-us/windows/desktop/FileIO/file-access-rights-constants">File Access Rights Constants</see>, and 
+    /// <see href="https://learn.microsoft.com/en-us/windows/desktop/SecAuthZ/access-mask">ACCESS_MASK</see>.
+    /// </para>
+    /// <para>
+    /// If this parameter is zero, the application can query certain metadata such as file, directory, 
+    /// or device attributes without accessing that file or device, even if GENERIC_READ access would 
+    /// have been denied.
+    /// </para>
+    /// <para>
+    /// You cannot request an access mode that conflicts with the sharing mode that is specified 
+    /// by the dwShareMode parameter in an open request that already has an open handle.
+    /// </para>
+    /// </param>
+    /// <param name="shareMode">
+    /// 
+    /// </param>
+    /// <param name="securityAttributes">
+    /// 
+    /// </param>
+    /// <param name="creationDisposition">
+    /// 
+    /// </param>
+    /// <param name="flagsAndAttributes">
+    /// 
+    /// </param>
+    /// <param name="templateFileHandle">
+    /// 
+    /// </param>
+    /// <returns>
+    /// 
+    /// </returns>
     inline [[nodiscard]] HANDLE CreateFileEntry( const char* fileName, DWORD desiredAccess, DWORD shareMode, const SECURITY_ATTRIBUTES* securityAttributes, DWORD creationDisposition, DWORD flagsAndAttributes, HANDLE templateFileHandle = nullptr )
     {
         return CreateFileA( fileName, desiredAccess, shareMode, const_cast< SECURITY_ATTRIBUTES* >( securityAttributes ), creationDisposition, flagsAndAttributes, templateFileHandle );
@@ -88,17 +224,11 @@ namespace Harlinn::Common::Core::IO
         return FindFirstFileExW( fileName, infoLevel, findData, searchOp, nullptr, additionalFlags );
     }
 
-    template<SimpleStringLike StringT>
-    inline [[nodiscard]] HANDLE FindFirstFileEntry( const StringT& fileName, FINDEX_INFO_LEVELS infoLevel, WIN32_FIND_DATAA* findData, FINDEX_SEARCH_OPS searchOp, DWORD additionalFlags )
+    template<SimpleStringLike StringT, typename FindDataT=std::conditional_t<std::is_same_v<typename StringT::value_type,wchar_t>, WIN32_FIND_DATAW, WIN32_FIND_DATAA>>
+    inline [[nodiscard]] HANDLE FindFirstFileEntry( const StringT& fileName, FINDEX_INFO_LEVELS infoLevel, FindDataT* findData, FINDEX_SEARCH_OPS searchOp, DWORD additionalFlags )
     {
         return FindFirstFileEntry( fileName.c_str(), infoLevel, findData, searchOp, nullptr, additionalFlags );
     }
-    template<SimpleStringLike StringT>
-    inline [[nodiscard]] HANDLE FindFirstFileEntry( const StringT& fileName, FINDEX_INFO_LEVELS infoLevel, WIN32_FIND_DATAW* findData, FINDEX_SEARCH_OPS searchOp, DWORD additionalFlags )
-    {
-        return FindFirstFileEntry( fileName.c_str( ), infoLevel, findData, searchOp, nullptr, additionalFlags );
-    }
-
 
 
     inline [[nodiscard]] HANDLE FindFirstFileEntry( const char* fileName, WIN32_FIND_DATAA* findData )
@@ -110,16 +240,10 @@ namespace Harlinn::Common::Core::IO
     {
         return FindFirstFileW( fileName, findData );
     }
-    template<SimpleStringLike StringT>
-    inline [[nodiscard]] HANDLE FindFirstFileEntry( const StringT& fileName, WIN32_FIND_DATAA* findData )
+    template<SimpleStringLike StringT, typename FindDataT = std::conditional_t<std::is_same_v<typename StringT::value_type, wchar_t>, WIN32_FIND_DATAW, WIN32_FIND_DATAA>>
+    inline [[nodiscard]] HANDLE FindFirstFileEntry( const StringT& fileName, FindDataT* findData )
     {
         return FindFirstFileEntry( fileName.c_str(), findData );
-    }
-
-    template<SimpleStringLike StringT>
-    inline [[nodiscard]] HANDLE FindFirstFileEntry( const StringT& fileName, WIN32_FIND_DATAW* findData )
-    {
-        return FindFirstFileEntry( fileName.c_str( ), findData );
     }
 
 
