@@ -88,7 +88,7 @@ namespace Harlinn::Windows
         dxgiFactory_ = DXGI::CreateFactory<DXGI::Factory4>( false );
 #endif
         hardwareAdapter_ = dxgiFactory_.FindAdapter( D3D_FEATURE_LEVEL_12_1 );
-        device_ = Graphics::CreateDevice( hardwareAdapter_, D3D_FEATURE_LEVEL_12_1 );
+        device_ = Graphics::D3D12::CreateDevice( hardwareAdapter_, D3D_FEATURE_LEVEL_12_1 );
 
         
 #ifdef DX12_ENABLE_DEBUG_LAYER
@@ -129,7 +129,7 @@ namespace Harlinn::Windows
         return true;
     }
 
-    DXContext::D3D12DescriptorHeap DXContext::CreateRenderTargetViewDescriptorHeap( )
+    DX::DescriptorHeap DXContext::CreateRenderTargetViewDescriptorHeap( )
     {
         D3D12_DESCRIPTOR_HEAP_DESC desc = {};
         desc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
@@ -150,7 +150,7 @@ namespace Harlinn::Windows
         }
     }
 
-    DXContext::D3D12DescriptorHeap DXContext::CreateShaderResourceViewDescriptorHeap( )
+    DX::DescriptorHeap DXContext::CreateShaderResourceViewDescriptorHeap( )
     {
         D3D12_DESCRIPTOR_HEAP_DESC desc = {};
         desc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
@@ -159,7 +159,7 @@ namespace Harlinn::Windows
         return device_.CreateDescriptorHeap( desc );
     }
 
-    DXContext::D3D12CommandQueue DXContext::CreateCommandQueue( )
+    DX::CommandQueue DXContext::CreateCommandQueue( )
     {
         D3D12_COMMAND_QUEUE_DESC desc = {};
         desc.Type = D3D12_COMMAND_LIST_TYPE_DIRECT;
@@ -176,14 +176,14 @@ namespace Harlinn::Windows
         }
     }
 
-    DXContext::D3D12GraphicsCommandList DXContext::CreateCommandList( const D3D12CommandAllocator& commandAllocator )
+    DX::GraphicsCommandList DXContext::CreateCommandList( const DX::CommandAllocator& commandAllocator )
     {
         auto result = device_.CreateCommandList( 0, D3D12_COMMAND_LIST_TYPE_DIRECT, frameContexts_[ 0 ].commandAllocator_ );
         result.Close( );
         return result;
     }
 
-    DXContext::SwapChain4 DXContext::CreateSwapChain( HWND windowHandle )
+    DXGI::SwapChain4 DXContext::CreateSwapChain( HWND windowHandle )
     {
         RECT clientRect{};
         GetClientRect( windowHandle, &clientRect );
@@ -224,7 +224,7 @@ namespace Harlinn::Windows
     {
         for ( UINT i = 0; i < BACK_BUFFERS_COUNT; i++ )
         {
-            auto backBuffer = swapChain_.GetBuffer<D3D12Resource>( i );
+            auto backBuffer = swapChain_.GetBuffer<DX::Resource>( i );
             device_.CreateRenderTargetView( backBuffer, renderTargetDescriptors_[ i ] );
             renderTargetResources_[ i ] = std::move( backBuffer );
         }

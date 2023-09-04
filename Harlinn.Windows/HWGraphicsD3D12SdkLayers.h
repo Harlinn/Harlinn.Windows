@@ -4,7 +4,7 @@
 
 #include "HWGraphicsD3D12.h"
 
-namespace Harlinn::Windows::Graphics
+namespace Harlinn::Windows::Graphics::D3D12
 {
 
     /// <summary>

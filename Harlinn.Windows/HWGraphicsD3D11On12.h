@@ -5,7 +5,7 @@
 #include "HWGraphicsD3D11.h"
 #include "HWGraphicsD3D12.h"
 
-namespace Harlinn::Windows::Graphics
+namespace Harlinn::Windows::Graphics::D3D11On12
 {
     class D3D11On12Device : public Unknown
     {

@@ -7,80 +7,139 @@
 
 #pragma comment(lib,"D3D12.lib")
 
+namespace Harlinn::Windows::Graphics::D3D12
+{
+    namespace Core = Harlinn::Common::Core;
+
+    class Object;
+    class DeviceChild;
+    class RootSignature;
+    class RootSignatureDeserializer;
+    class VersionedRootSignatureDeserializer;
+    class Pageable;
+    class Heap;
+    class Resource;
+    class CommandAllocator;
+    class Fence;
+    class Fence1;
+    class PipelineState;
+    class DescriptorHeap;
+    class QueryHeap;
+    class CommandSignature;
+    class CommandList;
+    class GraphicsCommandList;
+    class GraphicsCommandList1;
+    class GraphicsCommandList2;
+    class CommandQueue;
+    class Device;
+    class PipelineLibrary;
+    class PipelineLibrary1;
+    class Device1;
+    class Device2;
+    class Device3;
+    class ProtectedSession;
+    class ProtectedResourceSession;
+    class Device4;
+    class LifetimeOwner;
+    class SwapChainAssistant;
+    class LifetimeTracker;
+    class StateObject;
+    class StateObjectProperties;
+    class Device5;
+    class DeviceRemovedExtendedDataSettings;
+    class DeviceRemovedExtendedDataSettings1;
+    class DeviceRemovedExtendedData;
+    class DeviceRemovedExtendedData1;
+    class Device6;
+    class ProtectedResourceSession1;
+    class Device7;
+    class Device8;
+    class Resource1;
+    class Resource2;
+    class Heap1;
+    class GraphicsCommandList3;
+    class MetaCommand;
+    class GraphicsCommandList4;
+    class Tools;
+    class GraphicsCommandList5;
+    class GraphicsCommandList6;
+}
 
 namespace Harlinn::Windows::Graphics
 {
-    using namespace Harlinn::Common::Core;
+    using D3D12Object = D3D12::Object;
+    using D3D12DeviceChild = D3D12::DeviceChild;
+    using D3D12RootSignature = D3D12::RootSignature;
+    using D3D12RootSignatureDeserializer = D3D12::RootSignatureDeserializer;
+    using D3D12VersionedRootSignatureDeserializer = D3D12::VersionedRootSignatureDeserializer;
+    using D3D12Pageable = D3D12::Pageable;
+    using D3D12Heap = D3D12::Heap;
+    using D3D12Resource = D3D12::Resource;
+    using D3D12CommandAllocator = D3D12::CommandAllocator;
+    using D3D12Fence = D3D12::Fence;
+    using D3D12Fence1 = D3D12::Fence1;
+    using D3D12PipelineState = D3D12::PipelineState;
+    using D3D12DescriptorHeap = D3D12::DescriptorHeap;
+    using D3D12QueryHeap = D3D12::QueryHeap;
+    using D3D12CommandSignature = D3D12::CommandSignature;
+    using D3D12CommandList = D3D12::CommandList;
+    using D3D12GraphicsCommandList = D3D12::GraphicsCommandList;
+    using D3D12GraphicsCommandList1 = D3D12::GraphicsCommandList1;
+    using D3D12GraphicsCommandList2 = D3D12::GraphicsCommandList2;
+    using D3D12CommandQueue = D3D12::CommandQueue;
+    using D3D12Device = D3D12::Device;
+    using D3D12PipelineLibrary = D3D12::PipelineLibrary;
+    using D3D12PipelineLibrary1 = D3D12::PipelineLibrary1;
+    using D3D12Device1 = D3D12::Device1;
+    using D3D12Device2 = D3D12::Device2;
+    using D3D12Device3 = D3D12::Device3;
+    using D3D12ProtectedSession = D3D12::ProtectedSession;
+    using D3D12ProtectedResourceSession = D3D12::ProtectedResourceSession;
+    using D3D12Device4 = D3D12::Device4;
+    using D3D12LifetimeOwner = D3D12::LifetimeOwner;
+    using D3D12SwapChainAssistant = D3D12::SwapChainAssistant;
+    using D3D12LifetimeTracker = D3D12::LifetimeTracker;
+    using D3D12StateObject = D3D12::StateObject;
+    using D3D12StateObjectProperties = D3D12::StateObjectProperties;
+    using D3D12Device5 = D3D12::Device5;
+    using D3D12DeviceRemovedExtendedDataSettings = D3D12::DeviceRemovedExtendedDataSettings;
+    using D3D12DeviceRemovedExtendedDataSettings1 = D3D12::DeviceRemovedExtendedDataSettings1;
+    using D3D12DeviceRemovedExtendedData = D3D12::DeviceRemovedExtendedData;
+    using D3D12DeviceRemovedExtendedData1 = D3D12::DeviceRemovedExtendedData1;
+    using D3D12Device6 = D3D12::Device6;
+    using D3D12ProtectedResourceSession1 = D3D12::ProtectedResourceSession1;
+    using D3D12Device7 = D3D12::Device7;
+    using D3D12Device8 = D3D12::Device8;
+    using D3D12Resource1 = D3D12::Resource1;
+    using D3D12Resource2 = D3D12::Resource2;
+    using D3D12Heap1 = D3D12::Heap1;
+    using D3D12GraphicsCommandList3 = D3D12::GraphicsCommandList3;
+    using D3D12MetaCommand = D3D12::MetaCommand;
+    using D3D12GraphicsCommandList4 = D3D12::GraphicsCommandList4;
+    using D3D12Tools = D3D12::Tools;
+    using D3D12GraphicsCommandList5 = D3D12::GraphicsCommandList5;
+    using D3D12GraphicsCommandList6 = D3D12::GraphicsCommandList6;
+}
 
 
 
-    class D3D12Object;
-    class D3D12DeviceChild;
-    class D3D12RootSignature;
-    class D3D12RootSignatureDeserializer;
-    class D3D12VersionedRootSignatureDeserializer;
-    class D3D12Pageable;
-    class D3D12Heap;
-    class D3D12Resource;
-    class D3D12CommandAllocator;
-    class D3D12Fence;
-    class D3D12Fence1;
-    class D3D12PipelineState;
-    class D3D12DescriptorHeap;
-    class D3D12QueryHeap;
-    class D3D12CommandSignature;
-    class D3D12CommandList;
-    class D3D12GraphicsCommandList;
-    class D3D12GraphicsCommandList1;
-    class D3D12GraphicsCommandList2;
-    class D3D12CommandQueue;
-    class D3D12Device;
-    class D3D12PipelineLibrary;
-    class D3D12PipelineLibrary1;
-    class D3D12Device1;
-    class D3D12Device2;
-    class D3D12Device3;
-    class D3D12ProtectedSession;
-    class D3D12ProtectedResourceSession;
-    class D3D12Device4;
-    class D3D12LifetimeOwner;
-    class D3D12SwapChainAssistant;
-    class D3D12LifetimeTracker;
-    class D3D12StateObject;
-    class D3D12StateObjectProperties;
-    class D3D12Device5;
-    class D3D12DeviceRemovedExtendedDataSettings;
-    class D3D12DeviceRemovedExtendedDataSettings1;
-    class D3D12DeviceRemovedExtendedData;
-    class D3D12DeviceRemovedExtendedData1;
-    class D3D12Device6;
-    class D3D12ProtectedResourceSession1;
-    class D3D12Device7;
-    class D3D12Device8;
-    class D3D12Resource1;
-    class D3D12Resource2;
-    class D3D12Heap1;
-    class D3D12GraphicsCommandList3;
-    class D3D12MetaCommand;
-    class D3D12GraphicsCommandList4;
-    class D3D12Tools;
-    class D3D12GraphicsCommandList5;
-    class D3D12GraphicsCommandList6;
+namespace Harlinn::Windows::Graphics::D3D12
+{
 
 
 #define COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( classType, baseClassType , interfaceType, baseInterfaceType )  HCC_COM_STANDARD_METHODS_IMPL(classType, baseClassType , interfaceType, baseInterfaceType)
 
 
     /// <summary>
-    /// A base class from which D3D12Device and D3D12DeviceChild inherit from. 
+    /// A base class from which Device and DeviceChild inherit from. 
     /// It provides methods to associate private data and annotate object names.
     /// </summary>
-    class D3D12Object : public Unknown
+    class Object : public Unknown
     {
     public:
         using Base = Unknown;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( D3D12Object, Unknown, ID3D12Object, IUnknown )
+        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( Object, Unknown, ID3D12Object, IUnknown )
 
     public:
         /// <summary>
@@ -193,17 +252,15 @@ namespace Harlinn::Windows::Graphics
     };
     
 
-    class D3D12Device;
-
     /// <summary>
     /// Adds the ability to get the device used to create it.
     /// </summary>
-    class D3D12DeviceChild : public D3D12Object
+    class DeviceChild : public Object
     {
     public:
-        using Base = D3D12Object;
+        using Base = Object;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( D3D12DeviceChild, D3D12Object, ID3D12DeviceChild, ID3D12Object )
+        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( DeviceChild, Object, ID3D12DeviceChild, ID3D12Object )
 
     public:
         /// <summary>
@@ -228,17 +285,17 @@ namespace Harlinn::Windows::Graphics
 
 
         /// <summary>
-        /// Retrieves the D3D12Device, or one of its descendants, used to
+        /// Retrieves the Device, or one of its descendants, used to
         /// create this object.
         /// </summary>
         /// <typeparam name="T">
-        /// The requested type, either D3D12Device, or one of its descendants.
+        /// The requested type, either Device, or one of its descendants.
         /// </typeparam>
         /// <returns>
-        /// The D3D12Device, or one of its descendants, used to create this object.
+        /// The Device, or one of its descendants, used to create this object.
         /// </returns>
         template<typename T >
-            requires std::is_base_of_v<D3D12Device,T>
+            requires std::is_base_of_v<Device,T>
         T GetDevice( ) const
         {
             typename T::InterfaceType* ptr = nullptr;
@@ -246,7 +303,7 @@ namespace Harlinn::Windows::Graphics
             GetDevice( refiid, (void**) &ptr );
             return T( ptr, false );
         }
-        inline D3D12Device4 GetDevice( ) const;
+        inline Device4 GetDevice( ) const;
 
     };
 
@@ -257,12 +314,12 @@ namespace Harlinn::Windows::Graphics
     /// resources the shaders require. Currently, there is one graphics and one compute 
     /// root signature per app.
     /// </summary>
-    class D3D12RootSignature : public D3D12DeviceChild
+    class RootSignature : public DeviceChild
     {
     public:
-        using Base = D3D12DeviceChild;
+        using Base = DeviceChild;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( D3D12RootSignature, D3D12DeviceChild, ID3D12RootSignature, ID3D12DeviceChild )
+        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( RootSignature, DeviceChild, ID3D12RootSignature, ID3D12DeviceChild )
     public:
     };
 
@@ -272,14 +329,14 @@ namespace Harlinn::Windows::Graphics
     /// data structure, of a serialized root signature version 1.0.
     /// </summary>
     /// <remarks>
-    /// This class has been superseded by D3D12VersionedRootSignatureDeserializer.
+    /// This class has been superseded by VersionedRootSignatureDeserializer.
     /// </remarks>
-    class D3D12RootSignatureDeserializer : public Unknown
+    class RootSignatureDeserializer : public Unknown
     {
     public:
         using Base = Unknown;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( D3D12RootSignatureDeserializer, Unknown, ID3D12RootSignatureDeserializer, IUnknown )
+        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( RootSignatureDeserializer, Unknown, ID3D12RootSignatureDeserializer, IUnknown )
 
     public:
         /// <summary>
@@ -300,12 +357,12 @@ namespace Harlinn::Windows::Graphics
     /// Contains methods to return the deserialized D3D12_ROOT_SIGNATURE_DESC1 data structure, 
     /// of any version of a serialized root signature.
     /// </summary>
-    class D3D12VersionedRootSignatureDeserializer : public Unknown
+    class VersionedRootSignatureDeserializer : public Unknown
     {
     public:
         using Base = Unknown;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( D3D12VersionedRootSignatureDeserializer, Unknown, ID3D12VersionedRootSignatureDeserializer, IUnknown )
+        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( VersionedRootSignatureDeserializer, Unknown, ID3D12VersionedRootSignatureDeserializer, IUnknown )
 
     public:
         /// <summary>
@@ -357,29 +414,29 @@ namespace Harlinn::Windows::Graphics
     };
 
     /// <summary>
-    /// Classes derived from D3D12Pageable encapsulates some amount of 
+    /// Classes derived from Pageable encapsulates some amount of 
     /// GPU-accessible memory.
     /// </summary>
-    class D3D12Pageable : public D3D12DeviceChild
+    class Pageable : public DeviceChild
     {
     public:
-        using Base = D3D12DeviceChild;
+        using Base = DeviceChild;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( D3D12Pageable, D3D12DeviceChild, ID3D12Pageable, ID3D12DeviceChild )
+        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( Pageable, DeviceChild, ID3D12Pageable, ID3D12DeviceChild )
     public:
     };
 
 
     /// <summary>
     /// A heap is an abstraction of contiguous memory allocation, used to manage physical memory. 
-    /// This heap can be used with D3D12Resource objects to support placed resources or reserved resources.
+    /// This heap can be used with Resource objects to support placed resources or reserved resources.
     /// </summary>
-    class D3D12Heap : public D3D12Pageable
+    class Heap : public Pageable
     {
     public:
-        using Base = D3D12Pageable;
+        using Base = Pageable;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( D3D12Heap, D3D12Pageable, ID3D12Heap, ID3D12Pageable )
+        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( Heap, Pageable, ID3D12Heap, ID3D12Pageable )
     public:
         /// <summary>
         /// Gets the heap description.
@@ -400,12 +457,12 @@ namespace Harlinn::Windows::Graphics
     /// and manipulating simple arrays of data as well as multidimensional 
     /// data optimized for shader sampling.
     /// </summary>
-    class D3D12Resource : public D3D12Pageable
+    class Resource : public Pageable
     {
     public:
-        using Base = D3D12Pageable;
+        using Base = Pageable;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( D3D12Resource, D3D12Pageable, ID3D12Resource, ID3D12Pageable )
+        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( Resource, Pageable, ID3D12Resource, ID3D12Pageable )
     public:
         /// <summary>
         /// Gets a CPU pointer to the specified subresource in the resource, but 
@@ -761,7 +818,7 @@ namespace Harlinn::Windows::Graphics
     /// </summary>
     /// <remarks>
     /// <para>
-    /// Use <see cref="D3D12Device::CreateCommandAllocator">D3D12Device::CreateCommandAllocator</see> to create a command allocator object.
+    /// Use <see cref="Device::CreateCommandAllocator">Device::CreateCommandAllocator</see> to create a command allocator object.
     /// </para>
     /// <para>
     /// The command allocator object corresponds to the underlying allocations in which 
@@ -769,12 +826,12 @@ namespace Harlinn::Windows::Graphics
     /// lists and bundles. You must use a command allocator object in a DirectX 12 app.
     /// </para>
     /// </remarks>
-    class D3D12CommandAllocator : public D3D12Pageable
+    class CommandAllocator : public Pageable
     {
     public:
-        using Base = D3D12Pageable;
+        using Base = Pageable;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( D3D12CommandAllocator, D3D12Pageable, ID3D12CommandAllocator, ID3D12Pageable )
+        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( CommandAllocator, Pageable, ID3D12CommandAllocator, ID3D12Pageable )
     public:
 
         /// <summary>
@@ -788,7 +845,7 @@ namespace Harlinn::Windows::Graphics
         /// the command allocator.
         /// </para>
         /// <para>
-        /// Unlike <see cref="D3D12GraphicsCommandList::Reset">D3D12GraphicsCommandList::Reset</see>, it 
+        /// Unlike <see cref="GraphicsCommandList::Reset">GraphicsCommandList::Reset</see>, it 
         /// is not recommended that you call Reset on the command allocator while a command 
         /// list is still being executed.
         /// </para>
@@ -812,12 +869,12 @@ namespace Harlinn::Windows::Graphics
     /// <summary>
     /// Represents a fence, an object used for synchronization of the CPU and one or more GPUs.
     /// </summary>
-    class D3D12Fence : public D3D12Pageable
+    class Fence : public Pageable
     {
     public:
-        using Base = D3D12Pageable;
+        using Base = Pageable;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( D3D12Fence, D3D12Pageable, ID3D12Fence, ID3D12Pageable )
+        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( Fence, Pageable, ID3D12Fence, ID3D12Pageable )
     public:
 
         /// <summary>
@@ -862,7 +919,7 @@ namespace Harlinn::Windows::Graphics
         /// </param>
         /// <remarks>
         /// Use this method to set a fence value from the CPU side. Use 
-        /// <see cref="D3D12CommandQueue::Signal">D3D12CommandQueue::Signal</see> to 
+        /// <see cref="CommandQueue::Signal">CommandQueue::Signal</see> to 
         /// set a fence from the GPU side.
         /// </remarks>
         void Signal( UINT64 value ) const
@@ -878,12 +935,12 @@ namespace Harlinn::Windows::Graphics
     /// Adds the ability to retrie the flags used to create the fence. 
     /// This feature is useful primarily for opening shared fences.
     /// </summary>
-    class D3D12Fence1 : public D3D12Fence
+    class Fence1 : public Fence
     {
     public:
-        using Base = D3D12Fence;
+        using Base = Fence;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( D3D12Fence1, D3D12Fence, ID3D12Fence1, ID3D12Fence )
+        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( Fence1, Fence, ID3D12Fence1, ID3D12Fence )
     public:
 
         /// <summary>
@@ -903,12 +960,12 @@ namespace Harlinn::Windows::Graphics
     /// <summary>
     /// Represents the state of all currently set shaders as well as certain fixed function state objects.
     /// </summary>
-    class D3D12PipelineState : public D3D12Pageable
+    class PipelineState : public Pageable
     {
     public:
-        using Base = D3D12Pageable;
+        using Base = Pageable;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( D3D12PipelineState, D3D12Pageable, ID3D12PipelineState, ID3D12Pageable )
+        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( PipelineState, Pageable, ID3D12PipelineState, ID3D12Pageable )
     public:
         void GetCachedBlob( _COM_Outptr_  ID3DBlob** ppBlob ) const
         {
@@ -933,12 +990,12 @@ namespace Harlinn::Windows::Graphics
     /// Resource Views (SRVs), Unordered Access Views (UAVs), Constant Buffer Views 
     /// (CBVs), and Samplers.
     /// </summary>
-    class D3D12DescriptorHeap : public D3D12Pageable
+    class DescriptorHeap : public Pageable
     {
     public:
-        using Base = D3D12Pageable;
+        using Base = Pageable;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( D3D12DescriptorHeap, D3D12Pageable, ID3D12DescriptorHeap, ID3D12Pageable )
+        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( DescriptorHeap, Pageable, ID3D12DescriptorHeap, ID3D12Pageable )
     public:
 
         /// <summary>
@@ -985,12 +1042,12 @@ namespace Harlinn::Windows::Graphics
     /// <summary>
     /// Manages a query heap. A query heap holds an array of queries, referenced by indexes.
     /// </summary>
-    class D3D12QueryHeap : public D3D12Pageable
+    class QueryHeap : public Pageable
     {
     public:
-        using Base = D3D12Pageable;
+        using Base = Pageable;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( D3D12QueryHeap, D3D12Pageable, ID3D12QueryHeap, ID3D12Pageable )
+        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( QueryHeap, Pageable, ID3D12QueryHeap, ID3D12Pageable )
     public:
     };
 
@@ -998,27 +1055,27 @@ namespace Harlinn::Windows::Graphics
     /// A command signature object enables apps to specify indirect drawing, 
     /// including the buffer format, command type and resource bindings to be used.
     /// </summary>
-    class D3D12CommandSignature : public D3D12Pageable
+    class CommandSignature : public Pageable
     {
     public:
-        using Base = D3D12Pageable;
+        using Base = Pageable;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( D3D12CommandSignature, D3D12Pageable, ID3D12CommandSignature, ID3D12Pageable )
+        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( CommandSignature, Pageable, ID3D12CommandSignature, ID3D12Pageable )
     public:
     };
 
     /// <summary>
-    /// The base class for the D3D12GraphicsCommandList class. It represents 
+    /// The base class for the GraphicsCommandList class. It represents 
     /// an ordered set of commands that the GPU executes, while allowing for 
     /// extension to support other command lists than just those for graphics 
     /// (such as compute and copy).
     /// </summary>
-    class D3D12CommandList : public D3D12DeviceChild
+    class CommandList : public DeviceChild
     {
     public:
-        using Base = D3D12DeviceChild;
+        using Base = DeviceChild;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( D3D12CommandList, D3D12DeviceChild, ID3D12CommandList, ID3D12DeviceChild )
+        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( CommandList, DeviceChild, ID3D12CommandList, ID3D12DeviceChild )
     public:
         /// <summary>
         /// Gets the type of the command list, such as direct, bundle, compute, or copy.
@@ -1037,12 +1094,12 @@ namespace Harlinn::Windows::Graphics
     /// Encapsulates a list of graphics commands for rendering. Includes APIs for 
     /// instrumenting the command list execution, and for setting and clearing the pipeline state.
     /// </summary>
-    class D3D12GraphicsCommandList : public D3D12CommandList
+    class GraphicsCommandList : public CommandList
     {
     public:
-        using Base = D3D12CommandList;
+        using Base = CommandList;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( D3D12GraphicsCommandList, D3D12CommandList, ID3D12GraphicsCommandList, ID3D12CommandList )
+        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( GraphicsCommandList, CommandList, ID3D12GraphicsCommandList, ID3D12CommandList )
     public:
 
         /// <summary>
@@ -1085,14 +1142,14 @@ namespace Harlinn::Windows::Graphics
         /// <summary>
         /// Resets a command list back to its initial state as if a new command list was just created.
         /// </summary>
-        void Reset( const D3D12CommandAllocator& allocator, const D3D12PipelineState& initialState ) const
+        void Reset( const CommandAllocator& allocator, const PipelineState& initialState ) const
         {
             Reset( allocator.GetInterfacePointer<ID3D12CommandAllocator>(), initialState.GetInterfacePointer<ID3D12PipelineState>() );
         }
         /// <summary>
         /// Resets a command list back to its initial state as if a new command list was just created.
         /// </summary>
-        void Reset( const D3D12CommandAllocator& allocator ) const
+        void Reset( const CommandAllocator& allocator ) const
         {
             Reset( allocator.GetInterfacePointer<ID3D12CommandAllocator>( ), nullptr );
         }
@@ -1114,9 +1171,9 @@ namespace Harlinn::Windows::Graphics
         /// Resets the state of a direct command list back to the state it was in when the command list was created.
         /// </summary>
         /// <param name="pipelineState">
-        /// A reference to the D3D12PipelineState object that contains the initial pipeline state for the command list.
+        /// A reference to the PipelineState object that contains the initial pipeline state for the command list.
         /// </param>
-        void ClearState( const D3D12PipelineState& pipelineState ) const
+        void ClearState( const PipelineState& pipelineState ) const
         {
             ClearState( pipelineState.GetInterfacePointer<ID3D12PipelineState>() );
         }
@@ -1237,13 +1294,13 @@ namespace Harlinn::Windows::Graphics
         /// Copies a region of a buffer from one resource to another.
         /// </summary>
         /// <param name="dstBuffer">
-        /// Specifies the destination D3D12Resource.
+        /// Specifies the destination Resource.
         /// </param>
         /// <param name="dstOffset">
         /// Specifies a UINT64 offset (in bytes) into the destination resource.
         /// </param>
         /// <param name="srcBuffer">
-        /// Specifies the source D3D12Resource.
+        /// Specifies the source Resource.
         /// </param>
         /// <param name="srcOffset">
         /// Specifies a UINT64 offset (in bytes) into the source resource, to start the copy from.
@@ -1251,7 +1308,7 @@ namespace Harlinn::Windows::Graphics
         /// <param name="numBytes">
         /// Specifies the number of bytes to copy.
         /// </param>
-        void CopyBufferRegion( const D3D12Resource& dstBuffer, UINT64 dstOffset, const D3D12Resource& srcBuffer, UINT64 srcOffset, UINT64 numBytes ) const
+        void CopyBufferRegion( const Resource& dstBuffer, UINT64 dstOffset, const Resource& srcBuffer, UINT64 srcOffset, UINT64 numBytes ) const
         {
             CopyBufferRegion( dstBuffer.GetInterfacePointer<ID3D12Resource>(), dstOffset, srcBuffer.GetInterfacePointer<ID3D12Resource>( ), srcOffset, numBytes );
         }
@@ -1348,12 +1405,12 @@ namespace Harlinn::Windows::Graphics
         /// Copies the entire contents of the source resource to the destination resource.
         /// </summary>
         /// <param name="destinationResource">
-        /// Specifies the destination D3D12Resource.
+        /// Specifies the destination Resource.
         /// </param>
         /// <param name="sourceResource">
-        /// Specifies the source D3D12Resource.
+        /// Specifies the source Resource.
         /// </param>
-        void CopyResource( const D3D12Resource& dstResource, const D3D12Resource& srcResource ) const
+        void CopyResource( const Resource& dstResource, const Resource& srcResource ) const
         {
             CopyResource( dstResource.GetInterfacePointer<ID3D12Resource>( ), srcResource.GetInterfacePointer<ID3D12Resource>( ) );
         }
@@ -1440,7 +1497,7 @@ namespace Harlinn::Windows::Graphics
         /// structure that describes the size of the tiled region.
         /// </param>
         /// <param name="buffer">
-        /// Specifies an ID3D12Resource that represents a default, dynamic, or staging buffer.
+        /// Specifies a Resource that represents a default, dynamic, or staging buffer.
         /// </param>
         /// <param name="bufferStartOffsetInBytes">
         /// The offset in bytes into the buffer to start the operation.
@@ -1486,7 +1543,7 @@ namespace Harlinn::Windows::Graphics
         /// APIs, like CopyTextureRegion, to copy small mipmaps individually.
         /// </p>
         /// </remarks>
-        void CopyTiles( const D3D12Resource& tiledResource, _In_ const D3D12_TILED_RESOURCE_COORDINATE* tileRegionStartCoordinate, _In_ const D3D12_TILE_REGION_SIZE* tileRegionSize, const D3D12Resource& buffer, UINT64 bufferStartOffsetInBytes, D3D12_TILE_COPY_FLAGS flags = D3D12_TILE_COPY_FLAGS::D3D12_TILE_COPY_FLAG_NONE ) const
+        void CopyTiles( const Resource& tiledResource, _In_ const D3D12_TILED_RESOURCE_COORDINATE* tileRegionStartCoordinate, _In_ const D3D12_TILE_REGION_SIZE* tileRegionSize, const Resource& buffer, UINT64 bufferStartOffsetInBytes, D3D12_TILE_COPY_FLAGS flags = D3D12_TILE_COPY_FLAGS::D3D12_TILE_COPY_FLAG_NONE ) const
         {
             CopyTiles( tiledResource.GetInterfacePointer<ID3D12Resource>( ), tileRegionStartCoordinate, tileRegionSize, buffer.GetInterfacePointer<ID3D12Resource>( ), bufferStartOffsetInBytes, flags );
         }
@@ -1518,7 +1575,7 @@ namespace Harlinn::Windows::Graphics
             pInterface->ResolveSubresource( destinationResource, destinationSubresource, sourceResource, sourceSubresource, format );
         }
 
-        void ResolveSubresource( const D3D12Resource& destinationResource, _In_ UINT destinationSubresource, const D3D12Resource& sourceResource, _In_ UINT sourceSubresource, _In_ DXGI_FORMAT format ) const
+        void ResolveSubresource( const Resource& destinationResource, _In_ UINT destinationSubresource, const Resource& sourceResource, _In_ UINT sourceSubresource, _In_ DXGI_FORMAT format ) const
         {
             ResolveSubresource( destinationResource.GetInterfacePointer<ID3D12Resource>( ), destinationSubresource, sourceResource.GetInterfacePointer<ID3D12Resource>( ), sourceSubresource, format );
         }
@@ -1655,7 +1712,7 @@ namespace Harlinn::Windows::Graphics
             pInterface->SetPipelineState( pipelineState );
         }
 
-        void SetPipelineState( const D3D12PipelineState& pipelineState ) const
+        void SetPipelineState( const PipelineState& pipelineState ) const
         {
             SetPipelineState( pipelineState.GetInterfacePointer<ID3D12PipelineState>( ) );
         }
@@ -1689,7 +1746,7 @@ namespace Harlinn::Windows::Graphics
             pInterface->ExecuteBundle( commandList );
         }
 
-        void ExecuteBundle( const D3D12GraphicsCommandList& commandList ) const
+        void ExecuteBundle( const GraphicsCommandList& commandList ) const
         {
             ExecuteBundle( commandList.GetInterfacePointer<ID3D12GraphicsCommandList>( ) );
         }
@@ -1700,14 +1757,14 @@ namespace Harlinn::Windows::Graphics
             pInterface->SetDescriptorHeaps( numDescriptorHeaps, descriptorHeapsPtr );
         }
 
-        void SetDescriptorHeaps( _In_  UINT numDescriptorHeaps, _In_reads_( numDescriptorHeaps ) const D3D12DescriptorHeap* descriptorHeapsPtr ) const
+        void SetDescriptorHeaps( _In_  UINT numDescriptorHeaps, _In_reads_( numDescriptorHeaps ) const DescriptorHeap* descriptorHeapsPtr ) const
         {
             SetDescriptorHeaps( numDescriptorHeaps, reinterpret_cast< ID3D12DescriptorHeap* const* >(descriptorHeapsPtr) );
         }
 
 
         template<size_t N>
-        void SetDescriptorHeaps( const std::array<D3D12DescriptorHeap,N>& descriptorHeaps ) const
+        void SetDescriptorHeaps( const std::array<DescriptorHeap,N>& descriptorHeaps ) const
         {
             std::array<ID3D12DescriptorHeap*, N> heaps;
             for ( size_t i = 0; i < N; i++ )
@@ -1717,7 +1774,7 @@ namespace Harlinn::Windows::Graphics
             SetDescriptorHeaps(static_cast<UINT>(N), heaps.data() );
         }
         template<size_t N>
-        void SetDescriptorHeaps( D3D12DescriptorHeap( &descriptorHeaps )[N] ) const
+        void SetDescriptorHeaps( DescriptorHeap( &descriptorHeaps )[N] ) const
         {
             std::array<ID3D12DescriptorHeap*, N> heaps;
             for ( size_t i = 0; i < N; i++ )
@@ -1726,7 +1783,7 @@ namespace Harlinn::Windows::Graphics
             }
             SetDescriptorHeaps( static_cast<UINT>( N ), heaps.data( ) );
         }
-        void SetDescriptorHeaps( const D3D12DescriptorHeap& descriptorHeap ) const
+        void SetDescriptorHeaps( const DescriptorHeap& descriptorHeap ) const
         {
             ID3D12DescriptorHeap* ptr = descriptorHeap.GetInterfacePointer<ID3D12DescriptorHeap>( );
             SetDescriptorHeaps( 1, &ptr );
@@ -1738,7 +1795,7 @@ namespace Harlinn::Windows::Graphics
             pInterface->SetComputeRootSignature( rootSignature );
         }
 
-        void SetComputeRootSignature( const D3D12RootSignature& rootSignature ) const
+        void SetComputeRootSignature( const RootSignature& rootSignature ) const
         {
             SetComputeRootSignature( rootSignature.GetInterfacePointer<ID3D12RootSignature>( ) );
         }
@@ -1749,7 +1806,7 @@ namespace Harlinn::Windows::Graphics
             pInterface->SetGraphicsRootSignature( rootSignature );
         }
 
-        void SetGraphicsRootSignature( const D3D12RootSignature& rootSignature ) const
+        void SetGraphicsRootSignature( const RootSignature& rootSignature ) const
         {
             SetGraphicsRootSignature( rootSignature.GetInterfacePointer<ID3D12RootSignature>( ) );
         }
@@ -1868,7 +1925,7 @@ namespace Harlinn::Windows::Graphics
             pInterface->ClearUnorderedAccessViewUint( viewGPUHandleInCurrentHeap, viewCPUHandle, resource, values, numRects, rectsPtr );
         }
 
-        void ClearUnorderedAccessViewUint( _In_ D3D12_GPU_DESCRIPTOR_HANDLE viewGPUHandleInCurrentHeap, _In_ D3D12_CPU_DESCRIPTOR_HANDLE viewCPUHandle, const D3D12Resource& resource, _In_ const UINT values[4], _In_ UINT numRects, _In_reads_( numRects ) const D3D12_RECT* rectsPtr ) const
+        void ClearUnorderedAccessViewUint( _In_ D3D12_GPU_DESCRIPTOR_HANDLE viewGPUHandleInCurrentHeap, _In_ D3D12_CPU_DESCRIPTOR_HANDLE viewCPUHandle, const Resource& resource, _In_ const UINT values[4], _In_ UINT numRects, _In_reads_( numRects ) const D3D12_RECT* rectsPtr ) const
         {
             ClearUnorderedAccessViewUint( viewGPUHandleInCurrentHeap, viewCPUHandle, resource.GetInterfacePointer<ID3D12Resource>(), values, numRects, rectsPtr );
         }
@@ -1879,7 +1936,7 @@ namespace Harlinn::Windows::Graphics
             pInterface->ClearUnorderedAccessViewFloat( viewGPUHandleInCurrentHeap, viewCPUHandle, resource, values, numRects, rectsPtr );
         }
 
-        void ClearUnorderedAccessViewFloat( _In_ D3D12_GPU_DESCRIPTOR_HANDLE viewGPUHandleInCurrentHeap, _In_ D3D12_CPU_DESCRIPTOR_HANDLE viewCPUHandle, const D3D12Resource& resource, _In_ const FLOAT values[4], _In_ UINT numRects, _In_reads_( numRects ) const D3D12_RECT* rectsPtr ) const
+        void ClearUnorderedAccessViewFloat( _In_ D3D12_GPU_DESCRIPTOR_HANDLE viewGPUHandleInCurrentHeap, _In_ D3D12_CPU_DESCRIPTOR_HANDLE viewCPUHandle, const Resource& resource, _In_ const FLOAT values[4], _In_ UINT numRects, _In_reads_( numRects ) const D3D12_RECT* rectsPtr ) const
         {
             ClearUnorderedAccessViewFloat( viewGPUHandleInCurrentHeap, viewCPUHandle, resource.GetInterfacePointer<ID3D12Resource>( ), values, numRects, rectsPtr );
         }
@@ -1890,7 +1947,7 @@ namespace Harlinn::Windows::Graphics
             pInterface->DiscardResource( resource, region );
         }
 
-        void DiscardResource( const D3D12Resource& resource, _In_opt_ const D3D12_DISCARD_REGION* region = nullptr ) const
+        void DiscardResource( const Resource& resource, _In_opt_ const D3D12_DISCARD_REGION* region = nullptr ) const
         {
             DiscardResource( resource.GetInterfacePointer<ID3D12Resource>( ), region );
         }
@@ -1901,7 +1958,7 @@ namespace Harlinn::Windows::Graphics
             pInterface->BeginQuery( queryHeap, type, index );
         }
 
-        void BeginQuery( const D3D12QueryHeap& queryHeap, _In_ D3D12_QUERY_TYPE type, _In_ UINT index ) const
+        void BeginQuery( const QueryHeap& queryHeap, _In_ D3D12_QUERY_TYPE type, _In_ UINT index ) const
         {
             BeginQuery( queryHeap.GetInterfacePointer<ID3D12QueryHeap>( ), type, index );
         }
@@ -1913,7 +1970,7 @@ namespace Harlinn::Windows::Graphics
             pInterface->EndQuery( queryHeap, type, index );
         }
 
-        void EndQuery( const D3D12QueryHeap& queryHeap, _In_ D3D12_QUERY_TYPE type, _In_ UINT index ) const
+        void EndQuery( const QueryHeap& queryHeap, _In_ D3D12_QUERY_TYPE type, _In_ UINT index ) const
         {
             EndQuery( queryHeap.GetInterfacePointer<ID3D12QueryHeap>( ), type, index );
         }
@@ -1924,7 +1981,7 @@ namespace Harlinn::Windows::Graphics
             pInterface->ResolveQueryData( pQueryHeap, type, startIndex, numQueries, pDestinationBuffer, alignedDestinationBufferOffset );
         }
 
-        void ResolveQueryData( const D3D12QueryHeap& pQueryHeap, _In_ D3D12_QUERY_TYPE type, _In_ UINT startIndex, _In_ UINT numQueries, const D3D12Resource& pDestinationBuffer, _In_ UINT64 alignedDestinationBufferOffset ) const
+        void ResolveQueryData( const QueryHeap& pQueryHeap, _In_ D3D12_QUERY_TYPE type, _In_ UINT startIndex, _In_ UINT numQueries, const Resource& pDestinationBuffer, _In_ UINT64 alignedDestinationBufferOffset ) const
         {
             ResolveQueryData( pQueryHeap.GetInterfacePointer<ID3D12QueryHeap>(), type, startIndex, numQueries, pDestinationBuffer.GetInterfacePointer<ID3D12Resource>(), alignedDestinationBufferOffset );
         }
@@ -1936,7 +1993,7 @@ namespace Harlinn::Windows::Graphics
             pInterface->SetPredication( pBuffer, alignedBufferOffset, operation );
         }
 
-        void SetPredication( const D3D12Resource& pBuffer, _In_ UINT64 alignedBufferOffset, _In_ D3D12_PREDICATION_OP operation ) const
+        void SetPredication( const Resource& pBuffer, _In_ UINT64 alignedBufferOffset, _In_ D3D12_PREDICATION_OP operation ) const
         {
             SetPredication( pBuffer.GetInterfacePointer<ID3D12Resource>(), alignedBufferOffset, operation );
         }
@@ -1966,7 +2023,7 @@ namespace Harlinn::Windows::Graphics
             pInterface->ExecuteIndirect( pCommandSignature, maxCommandCount, pArgumentBuffer, argumentBufferOffset, pCountBuffer, countBufferOffset );
         }
 
-        void ExecuteIndirect( const D3D12CommandSignature& commandSignature, _In_ UINT maxCommandCount, const D3D12Resource& argumentBuffer, _In_ UINT64 argumentBufferOffset, const D3D12Resource& countBuffer, _In_ UINT64 countBufferOffset ) const
+        void ExecuteIndirect( const CommandSignature& commandSignature, _In_ UINT maxCommandCount, const Resource& argumentBuffer, _In_ UINT64 argumentBufferOffset, const Resource& countBuffer, _In_ UINT64 countBufferOffset ) const
         {
             ID3D12CommandSignature* pCommandSignature = commandSignature.GetInterfacePointer<ID3D12CommandSignature>( );
             ID3D12Resource* pArgumentBuffer = argumentBuffer.GetInterfacePointer<ID3D12Resource>( );
@@ -1974,7 +2031,7 @@ namespace Harlinn::Windows::Graphics
             ExecuteIndirect( pCommandSignature, maxCommandCount, pArgumentBuffer, argumentBufferOffset, pCountBuffer, countBufferOffset );
         }
 
-        void ExecuteIndirect( const D3D12CommandSignature& commandSignature, _In_ UINT maxCommandCount, const D3D12Resource& argumentBuffer, _In_ UINT64 argumentBufferOffset ) const
+        void ExecuteIndirect( const CommandSignature& commandSignature, _In_ UINT maxCommandCount, const Resource& argumentBuffer, _In_ UINT64 argumentBufferOffset ) const
         {
             ID3D12CommandSignature* pCommandSignature = commandSignature.GetInterfacePointer<ID3D12CommandSignature>( );
             ID3D12Resource* pArgumentBuffer = argumentBuffer.GetInterfacePointer<ID3D12Resource>( );
@@ -1985,12 +2042,12 @@ namespace Harlinn::Windows::Graphics
     };
 
 
-    class D3D12GraphicsCommandList1 : public D3D12GraphicsCommandList
+    class GraphicsCommandList1 : public GraphicsCommandList
     {
     public:
-        using Base = D3D12GraphicsCommandList;
+        using Base = GraphicsCommandList;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( D3D12GraphicsCommandList1, D3D12GraphicsCommandList, ID3D12GraphicsCommandList1, ID3D12GraphicsCommandList )
+        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( GraphicsCommandList1, GraphicsCommandList, ID3D12GraphicsCommandList1, ID3D12GraphicsCommandList )
     public:
         void AtomicCopyBufferUINT(_In_ ID3D12Resource* pDstBuffer, UINT64 dstOffset, _In_ ID3D12Resource* pSrcBuffer, UINT64 srcOffset, UINT dependencies, _In_reads_( dependencies )  ID3D12Resource* const* ppDependentResources, _In_reads_( dependencies )  const D3D12_SUBRESOURCE_RANGE_UINT64* pDependentSubresourceRanges ) const
         {
@@ -2029,12 +2086,12 @@ namespace Harlinn::Windows::Graphics
         }
     };
 
-    class D3D12GraphicsCommandList2 : public D3D12GraphicsCommandList1
+    class GraphicsCommandList2 : public GraphicsCommandList1
     {
     public:
-        using Base = D3D12GraphicsCommandList1;
+        using Base = GraphicsCommandList1;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( D3D12GraphicsCommandList2, D3D12GraphicsCommandList1, ID3D12GraphicsCommandList2, ID3D12GraphicsCommandList1 )
+        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( GraphicsCommandList2, GraphicsCommandList1, ID3D12GraphicsCommandList2, ID3D12GraphicsCommandList1 )
     public:
         void WriteBufferImmediate( UINT count, _In_reads_( count ) const D3D12_WRITEBUFFERIMMEDIATE_PARAMETER* pParams, _In_reads_opt_( count ) const D3D12_WRITEBUFFERIMMEDIATE_MODE* pModes ) const
         {
@@ -2044,12 +2101,12 @@ namespace Harlinn::Windows::Graphics
     };
 
 
-    class D3D12CommandQueue : public D3D12Pageable
+    class CommandQueue : public Pageable
     {
     public:
-        using Base = D3D12Pageable;
+        using Base = Pageable;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( D3D12CommandQueue, D3D12Pageable, ID3D12CommandQueue, ID3D12Pageable )
+        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( CommandQueue, Pageable, ID3D12CommandQueue, ID3D12Pageable )
     public:
         
         void UpdateTileMappings( _In_ ID3D12Resource* pResource, UINT numResourceRegions, _In_reads_opt_( numResourceRegions ) const D3D12_TILED_RESOURCE_COORDINATE* pResourceRegionStartCoordinates, _In_reads_opt_( numResourceRegions ) const D3D12_TILE_REGION_SIZE* pResourceRegionSizes, _In_opt_  ID3D12Heap* pHeap, UINT numRanges, _In_reads_opt_( numRanges ) const D3D12_TILE_RANGE_FLAGS* pRangeFlags, _In_reads_opt_( numRanges ) const UINT* pHeapRangeStartOffsets, _In_reads_opt_( numRanges ) const UINT* pRangeTileCounts, D3D12_TILE_MAPPING_FLAGS flags ) const
@@ -2070,7 +2127,7 @@ namespace Harlinn::Windows::Graphics
             pInterface->ExecuteCommandLists( numCommandLists, ppCommandLists );
         }
 
-        void ExecuteCommandLists( const D3D12CommandList& commandList ) const
+        void ExecuteCommandLists( const CommandList& commandList ) const
         {
             ID3D12CommandList* ptr = commandList.GetInterfacePointer<ID3D12CommandList>( );
             ExecuteCommandLists(1, &ptr );
@@ -2102,7 +2159,7 @@ namespace Harlinn::Windows::Graphics
             HCC_COM_CHECK_HRESULT2( hr, pInterface );
         }
 
-        void Signal( const D3D12Fence& fence, UINT64 value ) const
+        void Signal( const Fence& fence, UINT64 value ) const
         {
             Signal( fence.GetInterfacePointer<ID3D12Fence>( ), value );
         }
@@ -2114,7 +2171,7 @@ namespace Harlinn::Windows::Graphics
             HCC_COM_CHECK_HRESULT2( hr, pInterface );
         }
 
-        void Wait( const D3D12Fence& fence, UINT64 value ) const
+        void Wait( const Fence& fence, UINT64 value ) const
         {
             Wait( fence.GetInterfacePointer<ID3D12Fence>( ), value );
         }
@@ -2141,12 +2198,12 @@ namespace Harlinn::Windows::Graphics
 
     };
 
-    class D3D12Device : public D3D12Object
+    class Device : public Object
     {
     public:
-        using Base = D3D12Object;
+        using Base = Object;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( D3D12Device, D3D12Object, ID3D12Device, ID3D12Object )
+        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( Device, Object, ID3D12Device, ID3D12Object )
     public:
         UINT GetNodeCount( ) const
         {
@@ -2160,8 +2217,8 @@ namespace Harlinn::Windows::Graphics
             auto hr = pInterface->CreateCommandQueue( pDesc, riid, ppCommandQueue );
             HCC_COM_CHECK_HRESULT2( hr, pInterface );
         }
-        template<typename T = D3D12CommandQueue>
-            requires std::is_base_of_v< D3D12CommandQueue, T>
+        template<typename T = CommandQueue>
+            requires std::is_base_of_v< CommandQueue, T>
         T CreateCommandQueue( _In_ const D3D12_COMMAND_QUEUE_DESC& desc ) const
         {
             using IntfT = T::InterfaceType;
@@ -2182,8 +2239,8 @@ namespace Harlinn::Windows::Graphics
             HCC_COM_CHECK_HRESULT2( hr, pInterface );
         }
 
-        template <typename T = D3D12CommandAllocator>
-            requires std::is_base_of_v<D3D12CommandAllocator, T>
+        template <typename T = CommandAllocator>
+            requires std::is_base_of_v<CommandAllocator, T>
         T CreateCommandAllocator( _In_ D3D12_COMMAND_LIST_TYPE type = D3D12_COMMAND_LIST_TYPE::D3D12_COMMAND_LIST_TYPE_DIRECT ) const
         {
             using ItfT = typename T::InterfaceType;
@@ -2201,8 +2258,8 @@ namespace Harlinn::Windows::Graphics
             HCC_COM_CHECK_HRESULT2( hr, pInterface );
         }
 
-        template <typename T = D3D12PipelineState>
-            requires std::is_base_of_v<D3D12PipelineState, T>
+        template <typename T = PipelineState>
+            requires std::is_base_of_v<PipelineState, T>
         T CreateGraphicsPipelineState( _In_ const D3D12_GRAPHICS_PIPELINE_STATE_DESC* graphicsPipelineStateDesc ) const
         {
             using ItfT = typename T::InterfaceType;
@@ -2220,8 +2277,8 @@ namespace Harlinn::Windows::Graphics
             HCC_COM_CHECK_HRESULT2( hr, pInterface );
         }
 
-        template <typename T = D3D12PipelineState>
-            requires std::is_base_of_v<D3D12PipelineState, T>
+        template <typename T = PipelineState>
+            requires std::is_base_of_v<PipelineState, T>
         T CreateComputePipelineState( _In_ const D3D12_COMPUTE_PIPELINE_STATE_DESC* computePipelineStateDesc ) const
         {
             using ItfT = typename T::InterfaceType;
@@ -2239,9 +2296,9 @@ namespace Harlinn::Windows::Graphics
             HCC_COM_CHECK_HRESULT2( hr, pInterface );
         }
 
-        template <typename T = D3D12GraphicsCommandList>
-            requires std::is_base_of_v<D3D12GraphicsCommandList, T>
-        T CreateCommandList( _In_ UINT nodeMask, _In_ D3D12_COMMAND_LIST_TYPE type, const D3D12CommandAllocator& commandAllocator, const D3D12PipelineState& initialState ) const
+        template <typename T = GraphicsCommandList>
+            requires std::is_base_of_v<GraphicsCommandList, T>
+        T CreateCommandList( _In_ UINT nodeMask, _In_ D3D12_COMMAND_LIST_TYPE type, const CommandAllocator& commandAllocator, const PipelineState& initialState ) const
         {
             using ItfT = typename T::InterfaceType;
             constexpr auto refiid = __uuidof( ItfT );
@@ -2249,9 +2306,9 @@ namespace Harlinn::Windows::Graphics
             CreateCommandList( nodeMask, type, commandAllocator.GetInterfacePointer<ID3D12CommandAllocator>(), initialState.GetInterfacePointer<ID3D12PipelineState>( ), refiid, (void**)&ptr );
             return T( ptr, false );
         }
-        template <typename T = D3D12GraphicsCommandList>
-            requires std::is_base_of_v<D3D12GraphicsCommandList, T>
-        T CreateCommandList( _In_ UINT nodeMask, _In_ D3D12_COMMAND_LIST_TYPE type, const D3D12CommandAllocator& commandAllocator ) const
+        template <typename T = GraphicsCommandList>
+            requires std::is_base_of_v<GraphicsCommandList, T>
+        T CreateCommandList( _In_ UINT nodeMask, _In_ D3D12_COMMAND_LIST_TYPE type, const CommandAllocator& commandAllocator ) const
         {
             using ItfT = typename T::InterfaceType;
             constexpr auto refiid = __uuidof( ItfT );
@@ -2309,8 +2366,8 @@ namespace Harlinn::Windows::Graphics
             HCC_COM_CHECK_HRESULT2( hr, pInterface );
         }
 
-        template <typename T = D3D12DescriptorHeap>
-            requires std::is_base_of_v<D3D12DescriptorHeap,T>
+        template <typename T = DescriptorHeap>
+            requires std::is_base_of_v<DescriptorHeap,T>
         T CreateDescriptorHeap( _In_ const D3D12_DESCRIPTOR_HEAP_DESC& descriptorHeapDesc ) const
         {
             using ItfT = typename T::InterfaceType;
@@ -2348,8 +2405,8 @@ namespace Harlinn::Windows::Graphics
             HCC_COM_CHECK_HRESULT2( hr, pInterface );
         }
 
-        template <typename T = D3D12RootSignature>
-            requires std::is_base_of_v<D3D12RootSignature, T>
+        template <typename T = RootSignature>
+            requires std::is_base_of_v<RootSignature, T>
         T CreateRootSignature( _In_ UINT nodeMask, _In_reads_( blobLengthInBytes )  const void* blobWithRootSignature, _In_ SIZE_T blobLengthInBytes ) const
         {
             using ItfT = typename T::InterfaceType;
@@ -2371,15 +2428,15 @@ namespace Harlinn::Windows::Graphics
             pInterface->CreateShaderResourceView( pResource, shaderResourceViewDesc, destDescriptor );
         }
 
-        void CreateShaderResourceView( const D3D12Resource& resource, _In_opt_ const D3D12_SHADER_RESOURCE_VIEW_DESC* shaderResourceViewDesc, _In_ D3D12_CPU_DESCRIPTOR_HANDLE destDescriptor ) const
+        void CreateShaderResourceView( const Resource& resource, _In_opt_ const D3D12_SHADER_RESOURCE_VIEW_DESC* shaderResourceViewDesc, _In_ D3D12_CPU_DESCRIPTOR_HANDLE destDescriptor ) const
         {
             CreateShaderResourceView( resource.GetInterfacePointer<ID3D12Resource>( ), shaderResourceViewDesc, destDescriptor );
         }
-        void CreateShaderResourceView( const D3D12Resource& resource, _In_opt_ const D3D12_SHADER_RESOURCE_VIEW_DESC& shaderResourceViewDesc, _In_ D3D12_CPU_DESCRIPTOR_HANDLE destDescriptor ) const
+        void CreateShaderResourceView( const Resource& resource, _In_opt_ const D3D12_SHADER_RESOURCE_VIEW_DESC& shaderResourceViewDesc, _In_ D3D12_CPU_DESCRIPTOR_HANDLE destDescriptor ) const
         {
             CreateShaderResourceView( resource.GetInterfacePointer<ID3D12Resource>( ), &shaderResourceViewDesc, destDescriptor );
         }
-        void CreateShaderResourceView( const D3D12Resource& resource, _In_ D3D12_CPU_DESCRIPTOR_HANDLE destDescriptor ) const
+        void CreateShaderResourceView( const Resource& resource, _In_ D3D12_CPU_DESCRIPTOR_HANDLE destDescriptor ) const
         {
             CreateShaderResourceView( resource.GetInterfacePointer<ID3D12Resource>( ), nullptr, destDescriptor );
         }
@@ -2392,23 +2449,23 @@ namespace Harlinn::Windows::Graphics
             pInterface->CreateUnorderedAccessView( resource, counterResource, unorderedAccessViewDesc, destDescriptor );
         }
 
-        void CreateUnorderedAccessView( const D3D12Resource& resource, const D3D12Resource& counterResource, _In_opt_ const D3D12_UNORDERED_ACCESS_VIEW_DESC* unorderedAccessViewDesc, _In_ D3D12_CPU_DESCRIPTOR_HANDLE destDescriptor ) const
+        void CreateUnorderedAccessView( const Resource& resource, const Resource& counterResource, _In_opt_ const D3D12_UNORDERED_ACCESS_VIEW_DESC* unorderedAccessViewDesc, _In_ D3D12_CPU_DESCRIPTOR_HANDLE destDescriptor ) const
         {
             CreateUnorderedAccessView( resource.GetInterfacePointer<ID3D12Resource>( ), counterResource.GetInterfacePointer<ID3D12Resource>( ), unorderedAccessViewDesc, destDescriptor );
         }
-        void CreateUnorderedAccessView( const D3D12Resource& resource, _In_opt_ const D3D12_UNORDERED_ACCESS_VIEW_DESC* unorderedAccessViewDesc, _In_ D3D12_CPU_DESCRIPTOR_HANDLE destDescriptor ) const
+        void CreateUnorderedAccessView( const Resource& resource, _In_opt_ const D3D12_UNORDERED_ACCESS_VIEW_DESC* unorderedAccessViewDesc, _In_ D3D12_CPU_DESCRIPTOR_HANDLE destDescriptor ) const
         {
             CreateUnorderedAccessView( resource.GetInterfacePointer<ID3D12Resource>( ), nullptr, unorderedAccessViewDesc, destDescriptor );
         }
-        void CreateUnorderedAccessView( const D3D12Resource& resource, const D3D12Resource& counterResource, _In_opt_ const D3D12_UNORDERED_ACCESS_VIEW_DESC& unorderedAccessViewDesc, _In_ D3D12_CPU_DESCRIPTOR_HANDLE destDescriptor ) const
+        void CreateUnorderedAccessView( const Resource& resource, const Resource& counterResource, _In_opt_ const D3D12_UNORDERED_ACCESS_VIEW_DESC& unorderedAccessViewDesc, _In_ D3D12_CPU_DESCRIPTOR_HANDLE destDescriptor ) const
         {
             CreateUnorderedAccessView( resource.GetInterfacePointer<ID3D12Resource>( ), counterResource.GetInterfacePointer<ID3D12Resource>( ), &unorderedAccessViewDesc, destDescriptor );
         }
-        void CreateUnorderedAccessView( const D3D12Resource& resource, _In_opt_ const D3D12_UNORDERED_ACCESS_VIEW_DESC& unorderedAccessViewDesc, _In_ D3D12_CPU_DESCRIPTOR_HANDLE destDescriptor ) const
+        void CreateUnorderedAccessView( const Resource& resource, _In_opt_ const D3D12_UNORDERED_ACCESS_VIEW_DESC& unorderedAccessViewDesc, _In_ D3D12_CPU_DESCRIPTOR_HANDLE destDescriptor ) const
         {
             CreateUnorderedAccessView( resource.GetInterfacePointer<ID3D12Resource>( ), nullptr, &unorderedAccessViewDesc, destDescriptor );
         }
-        void CreateUnorderedAccessView( const D3D12Resource& resource, _In_ D3D12_CPU_DESCRIPTOR_HANDLE destDescriptor ) const
+        void CreateUnorderedAccessView( const Resource& resource, _In_ D3D12_CPU_DESCRIPTOR_HANDLE destDescriptor ) const
         {
             CreateUnorderedAccessView( resource.GetInterfacePointer<ID3D12Resource>( ), nullptr, nullptr, destDescriptor );
         }
@@ -2420,15 +2477,15 @@ namespace Harlinn::Windows::Graphics
             InterfaceType* pInterface = GetInterface( );
             pInterface->CreateRenderTargetView( resource, renderTargetViewDesc, destDescriptor );
         }
-        void CreateRenderTargetView( const D3D12Resource& resource, _In_opt_ const D3D12_RENDER_TARGET_VIEW_DESC* renderTargetViewDesc, _In_ D3D12_CPU_DESCRIPTOR_HANDLE destDescriptor ) const
+        void CreateRenderTargetView( const Resource& resource, _In_opt_ const D3D12_RENDER_TARGET_VIEW_DESC* renderTargetViewDesc, _In_ D3D12_CPU_DESCRIPTOR_HANDLE destDescriptor ) const
         {
             CreateRenderTargetView( resource.GetInterfacePointer<ID3D12Resource>(), renderTargetViewDesc, destDescriptor );
         }
-        void CreateRenderTargetView( const D3D12Resource& resource, const D3D12_RENDER_TARGET_VIEW_DESC& renderTargetViewDesc, _In_ D3D12_CPU_DESCRIPTOR_HANDLE destDescriptor ) const
+        void CreateRenderTargetView( const Resource& resource, const D3D12_RENDER_TARGET_VIEW_DESC& renderTargetViewDesc, _In_ D3D12_CPU_DESCRIPTOR_HANDLE destDescriptor ) const
         {
             CreateRenderTargetView( resource.GetInterfacePointer<ID3D12Resource>(), &renderTargetViewDesc, destDescriptor );
         }
-        void CreateRenderTargetView( const D3D12Resource& resource, _In_ D3D12_CPU_DESCRIPTOR_HANDLE destDescriptor ) const
+        void CreateRenderTargetView( const Resource& resource, _In_ D3D12_CPU_DESCRIPTOR_HANDLE destDescriptor ) const
         {
             CreateRenderTargetView( resource.GetInterfacePointer<ID3D12Resource>( ), nullptr, destDescriptor );
         }
@@ -2440,15 +2497,15 @@ namespace Harlinn::Windows::Graphics
             pInterface->CreateDepthStencilView( resource, depthStencilViewDesc, destDescriptor );
         }
 
-        void CreateDepthStencilView( const D3D12Resource& resource, _In_opt_ const D3D12_DEPTH_STENCIL_VIEW_DESC* depthStencilViewDesc, _In_ D3D12_CPU_DESCRIPTOR_HANDLE destDescriptor ) const
+        void CreateDepthStencilView( const Resource& resource, _In_opt_ const D3D12_DEPTH_STENCIL_VIEW_DESC* depthStencilViewDesc, _In_ D3D12_CPU_DESCRIPTOR_HANDLE destDescriptor ) const
         {
             CreateDepthStencilView( resource.GetInterfacePointer<ID3D12Resource>( ), depthStencilViewDesc, destDescriptor );
         }
-        void CreateDepthStencilView( const D3D12Resource& resource, const D3D12_DEPTH_STENCIL_VIEW_DESC& depthStencilViewDesc, _In_ D3D12_CPU_DESCRIPTOR_HANDLE destDescriptor ) const
+        void CreateDepthStencilView( const Resource& resource, const D3D12_DEPTH_STENCIL_VIEW_DESC& depthStencilViewDesc, _In_ D3D12_CPU_DESCRIPTOR_HANDLE destDescriptor ) const
         {
             CreateDepthStencilView( resource.GetInterfacePointer<ID3D12Resource>( ), &depthStencilViewDesc, destDescriptor );
         }
-        void CreateDepthStencilView( const D3D12Resource& resource, _In_ D3D12_CPU_DESCRIPTOR_HANDLE destDescriptor ) const
+        void CreateDepthStencilView( const Resource& resource, _In_ D3D12_CPU_DESCRIPTOR_HANDLE destDescriptor ) const
         {
             CreateDepthStencilView( resource.GetInterfacePointer<ID3D12Resource>( ), nullptr, destDescriptor );
         }
@@ -2490,11 +2547,11 @@ namespace Harlinn::Windows::Graphics
             HCC_COM_CHECK_HRESULT2( hr, pInterface );
         }
 
-        D3D12Resource CreateCommittedResource( _In_ const D3D12_HEAP_PROPERTIES* pHeapProperties, D3D12_HEAP_FLAGS heapFlags, _In_ const D3D12_RESOURCE_DESC* pDesc, D3D12_RESOURCE_STATES initialResourceState, _In_opt_ const D3D12_CLEAR_VALUE* pOptimizedClearValue ) const
+        Resource CreateCommittedResource( _In_ const D3D12_HEAP_PROPERTIES* pHeapProperties, D3D12_HEAP_FLAGS heapFlags, _In_ const D3D12_RESOURCE_DESC* pDesc, D3D12_RESOURCE_STATES initialResourceState, _In_opt_ const D3D12_CLEAR_VALUE* pOptimizedClearValue ) const
         {
             ID3D12Resource* itf = nullptr;
             CreateCommittedResource( pHeapProperties, heapFlags, pDesc, initialResourceState, pOptimizedClearValue, __uuidof( ID3D12Resource ), reinterpret_cast<void**>( &itf ) );
-            return D3D12Resource(itf);
+            return Resource(itf);
         }
 
 
@@ -2505,8 +2562,8 @@ namespace Harlinn::Windows::Graphics
             HCC_COM_CHECK_HRESULT2( hr, pInterface );
         }
 
-        template<typename T = D3D12Heap>
-            requires std::is_base_of_v< D3D12Heap, T>
+        template<typename T = Heap>
+            requires std::is_base_of_v< Heap, T>
         T CreateHeap( _In_ const D3D12_HEAP_DESC& heapDesc )
         {
             using HeapInterfaceType = typename T::InterfaceType;
@@ -2524,8 +2581,8 @@ namespace Harlinn::Windows::Graphics
             HCC_COM_CHECK_HRESULT2( hr, pInterface );
         }
 
-        template<typename T = D3D12Resource>
-            requires std::is_base_of_v< D3D12Resource, T>
+        template<typename T = Resource>
+            requires std::is_base_of_v< Resource, T>
         T CreatePlacedResource( _In_ ID3D12Heap* pHeap, UINT64 heapOffset, _In_ const D3D12_RESOURCE_DESC* pDesc, D3D12_RESOURCE_STATES initialState, _In_opt_ const D3D12_CLEAR_VALUE* pOptimizedClearValue ) const
         {
             using ItfT = typename T::InterfaceType;
@@ -2535,9 +2592,9 @@ namespace Harlinn::Windows::Graphics
             return T( itf );
         }
 
-        template<typename T = D3D12Resource>
-            requires std::is_base_of_v< D3D12Resource, T>
-        T CreatePlacedResource( const D3D12Heap& heap, UINT64 heapOffset, _In_ const D3D12_RESOURCE_DESC* pDesc, D3D12_RESOURCE_STATES initialState, _In_opt_ const D3D12_CLEAR_VALUE* pOptimizedClearValue ) const
+        template<typename T = Resource>
+            requires std::is_base_of_v< Resource, T>
+        T CreatePlacedResource( const Heap& heap, UINT64 heapOffset, _In_ const D3D12_RESOURCE_DESC* pDesc, D3D12_RESOURCE_STATES initialState, _In_opt_ const D3D12_CLEAR_VALUE* pOptimizedClearValue ) const
         {
             return CreatePlacedResource<T>( heap.GetInterfacePointer<ID3D12Heap>(), heapOffset, pDesc, initialState, pOptimizedClearValue );
         }
@@ -2592,8 +2649,8 @@ namespace Harlinn::Windows::Graphics
             HCC_COM_CHECK_HRESULT2( hr, pInterface );
         }
 
-        template<typename T = D3D12Fence>
-            requires std::is_base_of_v<D3D12Fence,T>
+        template<typename T = Fence>
+            requires std::is_base_of_v<Fence,T>
         T CreateFence( UINT64 initialValue = 0, D3D12_FENCE_FLAGS flags = D3D12_FENCE_FLAGS::D3D12_FENCE_FLAG_NONE ) const
         {
             using IntfT = T::InterfaceType;
@@ -2627,8 +2684,8 @@ namespace Harlinn::Windows::Graphics
             HCC_COM_CHECK_HRESULT2( hr, pInterface );
         }
 
-        template<typename T = D3D12QueryHeap>
-            requires std::is_base_of_v<D3D12QueryHeap,T>
+        template<typename T = QueryHeap>
+            requires std::is_base_of_v<QueryHeap,T>
         T CreateQueryHeap( _In_ const D3D12_QUERY_HEAP_DESC* queryHeapDesc )
         {
             using ItfT = typename T::InterfaceType;
@@ -2638,8 +2695,8 @@ namespace Harlinn::Windows::Graphics
             return T( ptr );
         }
 
-        template<typename T = D3D12QueryHeap>
-            requires std::is_base_of_v<D3D12QueryHeap, T>
+        template<typename T = QueryHeap>
+            requires std::is_base_of_v<QueryHeap, T>
         T CreateQueryHeap( const D3D12_QUERY_HEAP_DESC& queryHeapDesc )
         {
             return CreateQueryHeap<T>( &queryHeapDesc );
@@ -2661,8 +2718,8 @@ namespace Harlinn::Windows::Graphics
             HCC_COM_CHECK_HRESULT2( hr, pInterface );
         }
 
-        template<typename T = D3D12CommandSignature>
-            requires std::is_base_of_v<D3D12CommandSignature,T>
+        template<typename T = CommandSignature>
+            requires std::is_base_of_v<CommandSignature,T>
         T CreateCommandSignature( _In_ const D3D12_COMMAND_SIGNATURE_DESC* pDesc, _In_opt_ ID3D12RootSignature* pRootSignature = nullptr )
         {
             using ItfT = typename T::InterfaceType;
@@ -2672,15 +2729,15 @@ namespace Harlinn::Windows::Graphics
             return T( ptr );
         }
 
-        template<typename T = D3D12CommandSignature>
-            requires std::is_base_of_v<D3D12CommandSignature, T>
-        T CreateCommandSignature( _In_ const D3D12_COMMAND_SIGNATURE_DESC* pDesc, const D3D12RootSignature& rootSignature  )
+        template<typename T = CommandSignature>
+            requires std::is_base_of_v<CommandSignature, T>
+        T CreateCommandSignature( _In_ const D3D12_COMMAND_SIGNATURE_DESC* pDesc, const RootSignature& rootSignature  )
         {
             return CreateCommandSignature<T>( pDesc, rootSignature.GetInterfacePointer<ID3D12RootSignature>() );
         }
-        template<typename T = D3D12CommandSignature>
-            requires std::is_base_of_v<D3D12CommandSignature, T>
-        T CreateCommandSignature( _In_ const D3D12_COMMAND_SIGNATURE_DESC& pDesc, const D3D12RootSignature& rootSignature )
+        template<typename T = CommandSignature>
+            requires std::is_base_of_v<CommandSignature, T>
+        T CreateCommandSignature( _In_ const D3D12_COMMAND_SIGNATURE_DESC& pDesc, const RootSignature& rootSignature )
         {
             return CreateCommandSignature<T>( pDesc, rootSignature.GetInterfacePointer<ID3D12RootSignature>( ) );
         }
@@ -2700,12 +2757,12 @@ namespace Harlinn::Windows::Graphics
         }
     };
 
-    class D3D12PipelineLibrary : public D3D12DeviceChild
+    class PipelineLibrary : public DeviceChild
     {
     public:
-        using Base = D3D12DeviceChild;
+        using Base = DeviceChild;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( D3D12PipelineLibrary, D3D12DeviceChild, ID3D12PipelineLibrary, ID3D12DeviceChild )
+        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( PipelineLibrary, DeviceChild, ID3D12PipelineLibrary, ID3D12DeviceChild )
     public:
         void StorePipeline( _In_opt_  LPCWSTR pName, _In_  ID3D12PipelineState* pPipeline ) const
         {
@@ -2742,12 +2799,12 @@ namespace Harlinn::Windows::Graphics
         }
     };
 
-    class D3D12PipelineLibrary1 : public D3D12PipelineLibrary
+    class PipelineLibrary1 : public PipelineLibrary
     {
     public:
-        using Base = D3D12PipelineLibrary;
+        using Base = PipelineLibrary;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( D3D12PipelineLibrary1, D3D12PipelineLibrary, ID3D12PipelineLibrary1, ID3D12PipelineLibrary )
+        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( PipelineLibrary1, PipelineLibrary, ID3D12PipelineLibrary1, ID3D12PipelineLibrary )
     public:
         void LoadPipeline( _In_  LPCWSTR pName, _In_  const D3D12_PIPELINE_STATE_STREAM_DESC* pDesc, REFIID riid, _COM_Outptr_  void** ppPipelineState ) const
         {
@@ -2758,12 +2815,12 @@ namespace Harlinn::Windows::Graphics
     };
 
 
-    class D3D12Device1 : public D3D12Device
+    class Device1 : public Device
     {
     public:
-        using Base = D3D12Device;
+        using Base = Device;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( D3D12Device1, D3D12Device, ID3D12Device1, ID3D12Device )
+        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( Device1, Device, ID3D12Device1, ID3D12Device )
     public:
         void CreatePipelineLibrary( _In_reads_( BlobLength )  const void* pLibraryBlob, SIZE_T BlobLength, REFIID riid, _COM_Outptr_  void** ppPipelineLibrary ) const
         {
@@ -2788,12 +2845,12 @@ namespace Harlinn::Windows::Graphics
     };
 
 
-    class D3D12Device2 : public D3D12Device1
+    class Device2 : public Device1
     {
     public:
-        using Base = D3D12Device1;
+        using Base = Device1;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( D3D12Device2, D3D12Device1, ID3D12Device2, ID3D12Device1 )
+        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( Device2, Device1, ID3D12Device2, ID3D12Device1 )
     public:
         void CreatePipelineState( const D3D12_PIPELINE_STATE_STREAM_DESC* pDesc, REFIID riid, _COM_Outptr_  void** ppPipelineState ) const
         {
@@ -2803,12 +2860,12 @@ namespace Harlinn::Windows::Graphics
         }
     };
 
-    class D3D12Device3 : public D3D12Device2
+    class Device3 : public Device2
     {
     public:
-        using Base = D3D12Device2;
+        using Base = Device2;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( D3D12Device3, D3D12Device2, ID3D12Device3, ID3D12Device2 )
+        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( Device3, Device2, ID3D12Device3, ID3D12Device2 )
     public:
         void OpenExistingHeapFromAddress( _In_  const void* pAddress, REFIID riid, _COM_Outptr_  void** ppvHeap ) const
         {
@@ -2834,12 +2891,12 @@ namespace Harlinn::Windows::Graphics
     };
 
 
-    class D3D12ProtectedSession : public D3D12DeviceChild
+    class ProtectedSession : public DeviceChild
     {
     public:
-        using Base = D3D12DeviceChild;
+        using Base = DeviceChild;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( D3D12ProtectedSession, D3D12DeviceChild, ID3D12ProtectedSession, ID3D12DeviceChild )
+        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( ProtectedSession, DeviceChild, ID3D12ProtectedSession, ID3D12DeviceChild )
     public:
         void GetStatusFence( REFIID riid, _COM_Outptr_opt_  void** ppFence ) const
         {
@@ -2855,12 +2912,12 @@ namespace Harlinn::Windows::Graphics
         }
     };
 
-    class D3D12ProtectedResourceSession : public D3D12ProtectedSession
+    class ProtectedResourceSession : public ProtectedSession
     {
     public:
-        using Base = D3D12ProtectedSession;
+        using Base = ProtectedSession;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( D3D12ProtectedResourceSession, D3D12ProtectedSession, ID3D12ProtectedResourceSession, ID3D12ProtectedSession )
+        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( ProtectedResourceSession, ProtectedSession, ID3D12ProtectedResourceSession, ID3D12ProtectedSession )
     public:
         D3D12_PROTECTED_RESOURCE_SESSION_DESC GetDesc( ) const
         {
@@ -2869,12 +2926,12 @@ namespace Harlinn::Windows::Graphics
         }
     };
 
-    class D3D12Device4 : public D3D12Device3
+    class Device4 : public Device3
     {
     public:
-        using Base = D3D12Device3;
+        using Base = Device3;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( D3D12Device4, D3D12Device3, ID3D12Device4, ID3D12Device3 )
+        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( Device4, Device3, ID3D12Device4, ID3D12Device3 )
     public:
         void CreateCommandList1( _In_  UINT nodeMask, _In_  D3D12_COMMAND_LIST_TYPE type, _In_  D3D12_COMMAND_LIST_FLAGS flags, REFIID riid, _COM_Outptr_  void** ppCommandList ) const
         {
@@ -2918,12 +2975,12 @@ namespace Harlinn::Windows::Graphics
         }
     };
 
-    class D3D12LifetimeOwner : public Unknown
+    class LifetimeOwner : public Unknown
     {
     public:
         using Base = Unknown;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( D3D12LifetimeOwner, Unknown, ID3D12LifetimeOwner, IUnknown )
+        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( LifetimeOwner, Unknown, ID3D12LifetimeOwner, IUnknown )
     public:
         void LifetimeStateUpdated( D3D12_LIFETIME_STATE newState ) const
         {
@@ -2932,12 +2989,12 @@ namespace Harlinn::Windows::Graphics
         }
     };
 
-    class D3D12SwapChainAssistant : public Unknown
+    class SwapChainAssistant : public Unknown
     {
     public:
         using Base = Unknown;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( D3D12SwapChainAssistant, Unknown, ID3D12SwapChainAssistant, IUnknown )
+        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( SwapChainAssistant, Unknown, ID3D12SwapChainAssistant, IUnknown )
     public:
         LUID GetLUID( ) const
         {
@@ -2967,12 +3024,12 @@ namespace Harlinn::Windows::Graphics
         }
     };
 
-    class D3D12LifetimeTracker : public D3D12DeviceChild
+    class LifetimeTracker : public DeviceChild
     {
     public:
-        using Base = D3D12DeviceChild;
+        using Base = DeviceChild;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( D3D12LifetimeTracker, D3D12DeviceChild, ID3D12LifetimeTracker, ID3D12DeviceChild )
+        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( LifetimeTracker, DeviceChild, ID3D12LifetimeTracker, ID3D12DeviceChild )
     public:
         void DestroyOwnedObject( _In_ ID3D12DeviceChild* pObject ) const
         {
@@ -2982,22 +3039,22 @@ namespace Harlinn::Windows::Graphics
         }
     };
 
-    class D3D12StateObject : public D3D12Pageable
+    class StateObject : public Pageable
     {
     public:
-        using Base = D3D12Pageable;
+        using Base = Pageable;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( D3D12StateObject, D3D12Pageable, ID3D12StateObject, ID3D12Pageable )
+        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( StateObject, Pageable, ID3D12StateObject, ID3D12Pageable )
     public:
 
     };
 
-    class D3D12StateObjectProperties : public Unknown
+    class StateObjectProperties : public Unknown
     {
     public:
         using Base = Unknown;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( D3D12StateObjectProperties, Unknown, ID3D12StateObjectProperties, IUnknown )
+        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( StateObjectProperties, Unknown, ID3D12StateObjectProperties, IUnknown )
     public:
         void* GetShaderIdentifier( _In_  LPCWSTR pExportName ) const
         {
@@ -3024,12 +3081,12 @@ namespace Harlinn::Windows::Graphics
         }
     };
 
-    class D3D12Device5 : public D3D12Device4
+    class Device5 : public Device4
     {
     public:
-        using Base = D3D12Device4;
+        using Base = Device4;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( D3D12Device5, D3D12Device4, ID3D12Device5, ID3D12Device4 )
+        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( Device5, Device4, ID3D12Device5, ID3D12Device4 )
     public:
         HRESULT CreateLifetimeTracker( _In_  ID3D12LifetimeOwner* pOwner, REFIID riid, _COM_Outptr_  void** ppvTracker ) const
         {
@@ -3085,12 +3142,12 @@ namespace Harlinn::Windows::Graphics
         }
     };
 
-    class D3D12DeviceRemovedExtendedDataSettings : public Unknown
+    class DeviceRemovedExtendedDataSettings : public Unknown
     {
     public:
         using Base = Unknown;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( D3D12DeviceRemovedExtendedDataSettings, Unknown, ID3D12DeviceRemovedExtendedDataSettings, IUnknown )
+        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( DeviceRemovedExtendedDataSettings, Unknown, ID3D12DeviceRemovedExtendedDataSettings, IUnknown )
     public:
         void SetAutoBreadcrumbsEnablement( D3D12_DRED_ENABLEMENT Enablement ) const
         {
@@ -3111,12 +3168,12 @@ namespace Harlinn::Windows::Graphics
         }
     };
 
-    class D3D12DeviceRemovedExtendedDataSettings1 : public D3D12DeviceRemovedExtendedDataSettings
+    class DeviceRemovedExtendedDataSettings1 : public DeviceRemovedExtendedDataSettings
     {
     public:
-        using Base = D3D12DeviceRemovedExtendedDataSettings;
+        using Base = DeviceRemovedExtendedDataSettings;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( D3D12DeviceRemovedExtendedDataSettings1, D3D12DeviceRemovedExtendedDataSettings, ID3D12DeviceRemovedExtendedDataSettings1, ID3D12DeviceRemovedExtendedDataSettings )
+        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( DeviceRemovedExtendedDataSettings1, DeviceRemovedExtendedDataSettings, ID3D12DeviceRemovedExtendedDataSettings1, ID3D12DeviceRemovedExtendedDataSettings )
     public:
         void SetBreadcrumbContextEnablement( D3D12_DRED_ENABLEMENT Enablement ) const
         {
@@ -3125,12 +3182,12 @@ namespace Harlinn::Windows::Graphics
         }
     };
 
-    class D3D12DeviceRemovedExtendedData : public Unknown
+    class DeviceRemovedExtendedData : public Unknown
     {
     public:
         using Base = Unknown;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( D3D12DeviceRemovedExtendedData, Unknown, ID3D12DeviceRemovedExtendedData, IUnknown )
+        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( DeviceRemovedExtendedData, Unknown, ID3D12DeviceRemovedExtendedData, IUnknown )
     public:
         void GetAutoBreadcrumbsOutput( _Out_  D3D12_DRED_AUTO_BREADCRUMBS_OUTPUT* pOutput ) const
         {
@@ -3147,12 +3204,12 @@ namespace Harlinn::Windows::Graphics
         }
     };
 
-    class D3D12DeviceRemovedExtendedData1 : public D3D12DeviceRemovedExtendedData
+    class DeviceRemovedExtendedData1 : public DeviceRemovedExtendedData
     {
     public:
-        using Base = D3D12DeviceRemovedExtendedData;
+        using Base = DeviceRemovedExtendedData;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( D3D12DeviceRemovedExtendedData1, D3D12DeviceRemovedExtendedData, ID3D12DeviceRemovedExtendedData1, ID3D12DeviceRemovedExtendedData )
+        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( DeviceRemovedExtendedData1, DeviceRemovedExtendedData, ID3D12DeviceRemovedExtendedData1, ID3D12DeviceRemovedExtendedData )
     public:
         void GetAutoBreadcrumbsOutput1(_Out_  D3D12_DRED_AUTO_BREADCRUMBS_OUTPUT1* pOutput ) const
         {
@@ -3169,12 +3226,12 @@ namespace Harlinn::Windows::Graphics
         }
     };
 
-    class D3D12Device6 : public D3D12Device5
+    class Device6 : public Device5
     {
     public:
-        using Base = D3D12Device5;
+        using Base = Device5;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( D3D12Device6, D3D12Device5, ID3D12Device6, ID3D12Device5 )
+        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( Device6, Device5, ID3D12Device6, ID3D12Device5 )
     public:
         void SetBackgroundProcessingMode( D3D12_BACKGROUND_PROCESSING_MODE Mode, D3D12_MEASUREMENTS_ACTION MeasurementsAction, _In_opt_  HANDLE hEventToSignalUponCompletion, _Out_opt_  BOOL* pbFurtherMeasurementsDesired ) const
         {
@@ -3184,12 +3241,12 @@ namespace Harlinn::Windows::Graphics
         }
     };
 
-    class D3D12ProtectedResourceSession1 : public D3D12ProtectedResourceSession
+    class ProtectedResourceSession1 : public ProtectedResourceSession
     {
     public:
-        using Base = D3D12ProtectedResourceSession;
+        using Base = ProtectedResourceSession;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( D3D12ProtectedResourceSession1, D3D12ProtectedResourceSession, ID3D12ProtectedResourceSession1, ID3D12ProtectedResourceSession )
+        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( ProtectedResourceSession1, ProtectedResourceSession, ID3D12ProtectedResourceSession1, ID3D12ProtectedResourceSession )
     public:
         D3D12_PROTECTED_RESOURCE_SESSION_DESC1 GetDesc1( ) const
         {
@@ -3199,12 +3256,12 @@ namespace Harlinn::Windows::Graphics
     };
 
 
-    class D3D12Device7 : public D3D12Device6
+    class Device7 : public Device6
     {
     public:
-        using Base = D3D12Device6;
+        using Base = Device6;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( D3D12Device7, D3D12Device6, ID3D12Device7, ID3D12Device6 )
+        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( Device7, Device6, ID3D12Device7, ID3D12Device6 )
     public:
         void AddToStateObject( const D3D12_STATE_OBJECT_DESC* pAddition, ID3D12StateObject* pStateObjectToGrowFrom, REFIID riid, _COM_Outptr_  void** ppNewStateObject ) const
         {
@@ -3221,12 +3278,12 @@ namespace Harlinn::Windows::Graphics
         }
     };
 
-    class D3D12Device8 : public D3D12Device7
+    class Device8 : public Device7
     {
     public:
-        using Base = D3D12Device7;
+        using Base = Device7;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( D3D12Device8, D3D12Device7, ID3D12Device8, ID3D12Device7 )
+        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( Device8, Device7, ID3D12Device8, ID3D12Device7 )
     public:
         D3D12_RESOURCE_ALLOCATION_INFO GetResourceAllocationInfo2( UINT visibleMask, UINT numResourceDescs, _In_reads_( numResourceDescs )  const D3D12_RESOURCE_DESC1* pResourceDescs, _Out_writes_opt_( numResourceDescs )  D3D12_RESOURCE_ALLOCATION_INFO1* pResourceAllocationInfo1 ) const
         {
@@ -3261,12 +3318,12 @@ namespace Harlinn::Windows::Graphics
         }
     };
 
-    class D3D12Resource1 : public D3D12Resource
+    class Resource1 : public Resource
     {
     public:
-        using Base = D3D12Resource;
+        using Base = Resource;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( D3D12Resource1, D3D12Resource, ID3D12Resource1, ID3D12Resource )
+        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( Resource1, Resource, ID3D12Resource1, ID3D12Resource )
     public:
         void GetProtectedResourceSession( REFIID riid, _COM_Outptr_opt_  void** ppProtectedSession ) const
         {
@@ -3276,12 +3333,12 @@ namespace Harlinn::Windows::Graphics
         }
     };
 
-    class D3D12Resource2 : public D3D12Resource1
+    class Resource2 : public Resource1
     {
     public:
-        using Base = D3D12Resource1;
+        using Base = Resource1;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( D3D12Resource2, D3D12Resource1, ID3D12Resource2, ID3D12Resource1 )
+        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( Resource2, Resource1, ID3D12Resource2, ID3D12Resource1 )
     public:
         D3D12_RESOURCE_DESC1 GetDesc1( ) const
         {
@@ -3290,12 +3347,12 @@ namespace Harlinn::Windows::Graphics
         }
     };
 
-    class D3D12Heap1 : public D3D12Heap
+    class Heap1 : public Heap
     {
     public:
-        using Base = D3D12Heap;
+        using Base = Heap;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( D3D12Heap1, D3D12Heap, ID3D12Heap1, ID3D12Heap )
+        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( Heap1, Heap, ID3D12Heap1, ID3D12Heap )
     public:
         void GetProtectedResourceSession( REFIID riid, _COM_Outptr_opt_  void** ppProtectedSession ) const
         {
@@ -3305,12 +3362,12 @@ namespace Harlinn::Windows::Graphics
         }
     };
 
-    class D3D12GraphicsCommandList3 : public D3D12GraphicsCommandList2
+    class GraphicsCommandList3 : public GraphicsCommandList2
     {
     public:
-        using Base = D3D12GraphicsCommandList2;
+        using Base = GraphicsCommandList2;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( D3D12GraphicsCommandList3, D3D12GraphicsCommandList2, ID3D12GraphicsCommandList3, ID3D12GraphicsCommandList2 )
+        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( GraphicsCommandList3, GraphicsCommandList2, ID3D12GraphicsCommandList3, ID3D12GraphicsCommandList2 )
     public:
         void SetProtectedResourceSession( _In_opt_  ID3D12ProtectedResourceSession* pProtectedResourceSession ) const
         {
@@ -3319,12 +3376,12 @@ namespace Harlinn::Windows::Graphics
         }
     };
 
-    class D3D12MetaCommand : public D3D12Pageable
+    class MetaCommand : public Pageable
     {
     public:
-        using Base = D3D12Pageable;
+        using Base = Pageable;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( D3D12MetaCommand, D3D12Pageable, ID3D12MetaCommand, ID3D12Pageable )
+        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( MetaCommand, Pageable, ID3D12MetaCommand, ID3D12Pageable )
     public:
         UINT64 GetRequiredParameterResourceSize(_In_  D3D12_META_COMMAND_PARAMETER_STAGE Stage, _In_  UINT ParameterIndex ) const
         {
@@ -3333,12 +3390,12 @@ namespace Harlinn::Windows::Graphics
         }
     };
 
-    class D3D12GraphicsCommandList4 : public D3D12GraphicsCommandList3
+    class GraphicsCommandList4 : public GraphicsCommandList3
     {
     public:
-        using Base = D3D12GraphicsCommandList3;
+        using Base = GraphicsCommandList3;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( D3D12GraphicsCommandList4, D3D12GraphicsCommandList3, ID3D12GraphicsCommandList4, ID3D12GraphicsCommandList3 )
+        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( GraphicsCommandList4, GraphicsCommandList3, ID3D12GraphicsCommandList4, ID3D12GraphicsCommandList3 )
     public:
         void BeginRenderPass( _In_  UINT NumRenderTargets, _In_reads_opt_( NumRenderTargets )  const D3D12_RENDER_PASS_RENDER_TARGET_DESC* pRenderTargets, _In_opt_  const D3D12_RENDER_PASS_DEPTH_STENCIL_DESC* pDepthStencil, D3D12_RENDER_PASS_FLAGS Flags ) const
         {
@@ -3396,12 +3453,12 @@ namespace Harlinn::Windows::Graphics
     };
 
 
-    class D3D12Tools : public Unknown
+    class Tools : public Unknown
     {
     public:
         using Base = Unknown;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( D3D12Tools, Unknown, ID3D12Tools, IUnknown )
+        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( Tools, Unknown, ID3D12Tools, IUnknown )
     public:
         void EnableShaderInstrumentation( BOOL bEnable ) const
         {
@@ -3416,12 +3473,12 @@ namespace Harlinn::Windows::Graphics
         }
     };
 
-    class D3D12GraphicsCommandList5 : public D3D12GraphicsCommandList4
+    class GraphicsCommandList5 : public GraphicsCommandList4
     {
     public:
-        using Base = D3D12GraphicsCommandList4;
+        using Base = GraphicsCommandList4;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( D3D12GraphicsCommandList5, D3D12GraphicsCommandList4, ID3D12GraphicsCommandList5, ID3D12GraphicsCommandList4 )
+        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( GraphicsCommandList5, GraphicsCommandList4, ID3D12GraphicsCommandList5, ID3D12GraphicsCommandList4 )
     public:
         void RSSetShadingRate( _In_  D3D12_SHADING_RATE baseShadingRate, _In_reads_opt_( D3D12_RS_SET_SHADING_RATE_COMBINER_COUNT )  const D3D12_SHADING_RATE_COMBINER* combiners ) const
         {
@@ -3436,12 +3493,12 @@ namespace Harlinn::Windows::Graphics
         }
     };
 
-    class D3D12GraphicsCommandList6 : public D3D12GraphicsCommandList5
+    class GraphicsCommandList6 : public GraphicsCommandList5
     {
     public:
-        using Base = D3D12GraphicsCommandList5;
+        using Base = GraphicsCommandList5;
 
-        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( D3D12GraphicsCommandList6, D3D12GraphicsCommandList5, ID3D12GraphicsCommandList6, ID3D12GraphicsCommandList5 )
+        COMMON_GRAPHICS3D_STANDARD_METHODS_IMPL( GraphicsCommandList6, GraphicsCommandList5, ID3D12GraphicsCommandList6, ID3D12GraphicsCommandList5 )
     public:
         void DispatchMesh( _In_ UINT ThreadGroupCountX, _In_ UINT ThreadGroupCountY, _In_ UINT ThreadGroupCountZ ) const
         {
@@ -3451,8 +3508,8 @@ namespace Harlinn::Windows::Graphics
     };
 
 
-    template<typename T = D3D12Device>
-        requires std::is_base_of_v<D3D12Device, T>
+    template<typename T = Device>
+        requires std::is_base_of_v<Device, T>
     inline T CreateDevice( IUnknown* adapter, D3D_FEATURE_LEVEL minimumFeatureLevel = D3D_FEATURE_LEVEL::D3D_FEATURE_LEVEL_11_1 )
     {
         using InterfaceType = T::InterfaceType;
@@ -3464,16 +3521,16 @@ namespace Harlinn::Windows::Graphics
         return result;
     }
 
-    template<typename T = D3D12Device>
-        requires std::is_base_of_v<D3D12Device, T>
+    template<typename T = Device>
+        requires std::is_base_of_v<Device, T>
     inline T CreateDevice( Unknown adapter, D3D_FEATURE_LEVEL minimumFeatureLevel = D3D_FEATURE_LEVEL::D3D_FEATURE_LEVEL_11_1 )
     {
         return CreateDevice<T>( adapter.GetInterfacePointer( ), minimumFeatureLevel );
     }
 
-    inline D3D12Device4 D3D12DeviceChild::GetDevice( ) const
+    inline Device4 DeviceChild::GetDevice( ) const
     {
-        return GetDevice<D3D12Device4>( );
+        return GetDevice<Device4>( );
     }
 
 }

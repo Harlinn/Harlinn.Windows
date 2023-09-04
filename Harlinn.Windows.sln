@@ -2985,6 +2985,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HCCService01", "Examples\Co
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "EWD312HelloTriangle", "Examples\Windows\Graphics\DirectX\EWD312HelloTriangle\EWD312HelloTriangle.vcxproj", "{59FDAFC1-84BA-4167-9760-24AE40167E53}"
+	ProjectSection(ProjectDependencies) = postProject
+		{32225BC1-FE82-4716-9EA7-27FA4E517AF3} = {32225BC1-FE82-4716-9EA7-27FA4E517AF3}
+		{B47470E4-2B24-4119-BAC1-4E8BC52FB19D} = {B47470E4-2B24-4119-BAC1-4E8BC52FB19D}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

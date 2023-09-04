@@ -16,10 +16,10 @@ namespace Harlinn::Windows::Graphics
     class DeviceContext;
 }
 
-namespace Harlinn::Windows::Graphics
+namespace Harlinn::Windows::Graphics::D3D12
 {
-    class D3D12Resource;
-    class D3D12CommandQueue;
+    class Resource;
+    class CommandQueue;
 }
 
 namespace Harlinn::Windows::DXGI
@@ -69,7 +69,24 @@ namespace Harlinn::Windows::DXGI
     class Factory7;
 
 
-
+    /// <summary>
+    /// Describes multi-sampling parameters for a resource.
+    /// </summary>
+    struct SampleDesc
+    {
+        /// <summary>
+        /// The number of multisamples per pixel.
+        /// </summary>
+        UINT Count = 0;
+        /// <summary>
+        /// <para>
+        /// The image quality level. The higher the quality, the lower the performance. The valid range is between 
+        /// zero and one less than the level returned by ID3D10Device::CheckMultisampleQualityLevels for Direct3D 10 or 
+        /// ID3D11Device::CheckMultisampleQualityLevels for Direct3D 11.
+        /// </para>
+        /// </summary>
+        UINT Quality = 0;
+    };
 
 
 
@@ -513,7 +530,7 @@ namespace Harlinn::Windows::DXGI
         }
 
         template<typename T>
-            requires std::is_base_of_v<Windows::Graphics::D3D12Resource,T>
+            requires std::is_base_of_v<Windows::Graphics::D3D12::Resource,T>
         T GetBuffer( UINT bufferIndex ) const
         {
             using IntfT = T::InterfaceType;

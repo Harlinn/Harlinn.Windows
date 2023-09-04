@@ -4,7 +4,13 @@
 
 #include "HWGraphicsD3D12.h"
 
-namespace Harlinn::Windows::Graphics
+namespace Harlinn::Windows::Graphics::D3D12::Video
+{
+
+}
+
+
+namespace Harlinn::Windows::Graphics::D3D12::Video
 {
     class D3D12VideoDecoderHeap : public D3D12Pageable
     {
@@ -17,7 +23,7 @@ namespace Harlinn::Windows::Graphics
             return pInterface->GetDesc();
         }
     };
-
+    
 
     class D3D12VideoDevice : public Unknown
     {
@@ -51,7 +57,7 @@ namespace Harlinn::Windows::Graphics
             HCC_COM_CHECK_HRESULT2(hr, pInterface);
         }
     };
-
+    
 
     class D3D12VideoDecoder : public D3D12Pageable
     {
@@ -64,6 +70,7 @@ namespace Harlinn::Windows::Graphics
             return pInterface->GetDesc();
         }
     };
+    
 
     class D3D12VideoProcessor : public D3D12Pageable
     {
@@ -95,6 +102,7 @@ namespace Harlinn::Windows::Graphics
             return pInterface->GetOutputStreamDesc();
         }
     };
+    
 
 
     /// <summary>
@@ -361,7 +369,7 @@ namespace Harlinn::Windows::Graphics
             pInterface->WriteBufferImmediate(count, params, modes);
         }
     };
-
+    using DecodeCommandList = D3D12VideoDecodeCommandList;
 
     /// <summary>
     /// Encapsulates a list of graphics commands for video processing.
@@ -633,6 +641,8 @@ namespace Harlinn::Windows::Graphics
         }
         
     };
+
+    using ProcessCommandList = D3D12VideoProcessCommandList;
 
 
     /// <summary>

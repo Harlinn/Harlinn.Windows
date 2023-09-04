@@ -162,6 +162,12 @@
     <ClInclude Include="HWGraphicsD3D12SdkLayers.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="HWGraphicsD3D12Ex.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HWDXGIFormat.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">

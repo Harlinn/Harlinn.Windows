@@ -192,6 +192,8 @@
     <ClInclude Include="HWCommon.h" />
     <ClInclude Include="HWContainerControl.h" />
     <ClInclude Include="HWControl.h" />
+    <ClInclude Include="HWDXGIFormat.h" />
+    <ClInclude Include="HWGraphicsD3D12Ex.h" />
     <ClInclude Include="HWGraphicsD3D12SdkLayers.h" />
     <ClInclude Include="HWMFReadWrite.h" />
     <ClInclude Include="HWMFTransform.h" />

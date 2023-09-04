@@ -244,7 +244,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine
                     continue;
 
                 // Can create a D3D12 device?
-                auto device = Windows::Graphics::CreateDevice( pAdapter, D3D_FEATURE_LEVEL_11_0 );
+                auto device = Windows::Graphics::D3D12::CreateDevice( pAdapter, D3D_FEATURE_LEVEL_11_0 );
 
                 // Does support DXR if required?
                 if ( RequireDXRSupport && device.IsRaytracingSupported( ) == false )
@@ -278,7 +278,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine
             else
                 Utility::Print( "Failed to find a hardware adapter.  Falling back to WARP.\n" );
             auto pAdapter = dxgiFactory.EnumWarpAdapter( );
-            auto device = Windows::Graphics::CreateDevice( pAdapter, D3D_FEATURE_LEVEL_11_0 );
+            auto device = Windows::Graphics::D3D12::CreateDevice( pAdapter, D3D_FEATURE_LEVEL_11_0 );
             g_Device = std::move( device );
         }
 #ifndef RELEASE

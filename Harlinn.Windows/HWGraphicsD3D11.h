@@ -8,7 +8,7 @@
 #pragma comment(lib,"D3D11.lib")
 
 
-namespace Harlinn::Windows::Graphics
+namespace Harlinn::Windows::Graphics::D3D11
 {
     class D3D11DeviceChild : public Unknown
     {

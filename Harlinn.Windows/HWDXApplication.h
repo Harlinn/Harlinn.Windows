@@ -9,6 +9,20 @@
 
 namespace Harlinn::Windows
 {
+    namespace DX = Graphics::D3D12;
+
+
+    class DXRootParameter
+    {
+
+    };
+
+    class DXRootSignature
+    {
+
+    };
+
+
     class DXPipelineState
     {
     public:
@@ -22,36 +36,29 @@ namespace Harlinn::Windows
     public:
         static constexpr size_t FRAMES_IN_FLIGHT_COUNT = 3;
         static constexpr size_t BACK_BUFFERS_COUNT = 3;
-        using D3D12CommandAllocator = Graphics::D3D12CommandAllocator;
-        using D3D12Device = Graphics::D3D12Device;
-        using D3D12DescriptorHeap = Graphics::D3D12DescriptorHeap;
-        using D3D12CommandQueue = Graphics::D3D12CommandQueue;
-        using D3D12GraphicsCommandList = Graphics::D3D12GraphicsCommandList;
-        using D3D12Fence = Graphics::D3D12Fence;
-        using D3D12Resource = Graphics::D3D12Resource;
-        using SwapChain4 = DXGI::SwapChain4;
+        
 
         struct FrameContext
         {
-            D3D12CommandAllocator commandAllocator_;
+            DX::CommandAllocator commandAllocator_;
             UInt64 fenceValue_ = 0;
         };
     private:
         UINT frameIndex_ = 0;
         DXGI::Factory4 dxgiFactory_;
         DXGI::Adapter4 hardwareAdapter_;
-        D3D12Device device_;
+        DX::Device device_;
         EventWaitHandle fenceEvent_;
-        D3D12Fence fence_;
-        D3D12DescriptorHeap shaderResourceViewDescHeap_;
-        D3D12DescriptorHeap renderTargetViewDescHeap_;
-        D3D12GraphicsCommandList commandList_;
-        D3D12CommandQueue commandQueue_;
+        DX::Fence fence_;
+        DX::DescriptorHeap shaderResourceViewDescHeap_;
+        DX::DescriptorHeap renderTargetViewDescHeap_;
+        DX::GraphicsCommandList commandList_;
+        DX::CommandQueue commandQueue_;
         std::array<FrameContext, FRAMES_IN_FLIGHT_COUNT> frameContexts_ = {};
         UInt64 fenceLastSignaledValue_ = 0;
-        SwapChain4 swapChain_;
+        DXGI::SwapChain4 swapChain_;
         HANDLE swapChainWaitableObject_ = nullptr;
-        std::array<D3D12Resource, BACK_BUFFERS_COUNT> renderTargetResources_;
+        std::array<DX::Resource, BACK_BUFFERS_COUNT> renderTargetResources_;
         std::array<D3D12_CPU_DESCRIPTOR_HANDLE, BACK_BUFFERS_COUNT>  renderTargetDescriptors_ = {};
         D3D12_RESOURCE_BARRIER barrier_ = {};
         FrameContext* currentFrameContext_ = nullptr;
@@ -69,7 +76,7 @@ namespace Harlinn::Windows
         {
             return frameIndex_;
         }
-        const D3D12Device& Device( ) const
+        const DX::Device& Device( ) const
         {
             return device_;
         }
@@ -77,24 +84,24 @@ namespace Harlinn::Windows
         {
             return fenceEvent_;
         }
-        const D3D12Fence& Fence( ) const
+        const DX::Fence& Fence( ) const
         {
             return fence_;
         }
-        const D3D12DescriptorHeap& ShaderResourceViewDescHeap( ) const
+        const DX::DescriptorHeap& ShaderResourceViewDescHeap( ) const
         {
             return shaderResourceViewDescHeap_;
         }
-        const D3D12DescriptorHeap& RenderTargetViewDescHeap( ) const
+        const DX::DescriptorHeap& RenderTargetViewDescHeap( ) const
         {
             return renderTargetViewDescHeap_;
         }
-        const D3D12GraphicsCommandList& CommandList( ) const
+        const DX::GraphicsCommandList& CommandList( ) const
         {
             return commandList_;
         }
 
-        const D3D12CommandQueue& CommandQueue( ) const
+        const DX::CommandQueue& CommandQueue( ) const
         {
             return commandQueue_;
         }
@@ -106,7 +113,7 @@ namespace Harlinn::Windows
         {
             return fenceLastSignaledValue_;
         }
-        const SwapChain4& SwapChain( ) const
+        const DXGI::SwapChain4& SwapChain( ) const
         {
             return swapChain_;
         }
@@ -114,7 +121,7 @@ namespace Harlinn::Windows
         {
             return swapChainWaitableObject_;
         }
-        const std::array<D3D12Resource, BACK_BUFFERS_COUNT>& RenderTargetResources( ) const
+        const std::array<DX::Resource, BACK_BUFFERS_COUNT>& RenderTargetResources( ) const
         {
             return renderTargetResources_;
         }
@@ -126,13 +133,13 @@ namespace Harlinn::Windows
 
         HW_EXPORT virtual bool CreateDeviceD3D( HWND hWnd );
     protected:
-        HW_EXPORT virtual D3D12DescriptorHeap CreateRenderTargetViewDescriptorHeap( );
+        HW_EXPORT virtual DX::DescriptorHeap CreateRenderTargetViewDescriptorHeap( );
         HW_EXPORT void SetupRenderTargetDescriptors( );
-        HW_EXPORT virtual D3D12DescriptorHeap CreateShaderResourceViewDescriptorHeap( );
-        HW_EXPORT virtual D3D12CommandQueue CreateCommandQueue( );
+        HW_EXPORT virtual DX::DescriptorHeap CreateShaderResourceViewDescriptorHeap( );
+        HW_EXPORT virtual DX::CommandQueue CreateCommandQueue( );
         HW_EXPORT void SetupFrameContexts( );
-        HW_EXPORT virtual D3D12GraphicsCommandList CreateCommandList( const D3D12CommandAllocator& commandAllocator );
-        HW_EXPORT virtual SwapChain4 CreateSwapChain( HWND windowHandle );
+        HW_EXPORT virtual DX::GraphicsCommandList CreateCommandList( const DX::CommandAllocator& commandAllocator );
+        HW_EXPORT virtual DXGI::SwapChain4 CreateSwapChain( HWND windowHandle );
 
     public:
         HW_EXPORT virtual void CleanupDeviceD3D( );
