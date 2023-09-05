@@ -3,6 +3,7 @@
 #define HARLINN_WINDOWS_HWGRAPHICSD3D12_H_
 
 #include "HWGraphicsD3Common.h"
+#include "HWGraphicsD3D12Ex.h"
 #include <boost/container/small_vector.hpp>
 
 #pragma comment(lib,"D3D12.lib")

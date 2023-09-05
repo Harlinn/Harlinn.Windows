@@ -473,7 +473,7 @@ namespace Harlinn::Windows::DXGI
         V408 = DXGI_FORMAT_V408,
         Sampler_feedback_min_mip_opaque = DXGI_FORMAT_SAMPLER_FEEDBACK_MIN_MIP_OPAQUE,
         Sampler_feedback_mip_region_used_opaque = DXGI_FORMAT_SAMPLER_FEEDBACK_MIP_REGION_USED_OPAQUE,
-        Force_uint = DXGI_FORMAT_FORCE_UINT
+        Force_uint = std::bit_cast<UInt32>(DXGI_FORMAT_FORCE_UINT)
     };
 }
 

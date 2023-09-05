@@ -1018,6 +1018,9 @@ namespace Harlinn::Windows::Graphics::D3D12
 
     struct GraphicsPipelineStateDesc
     {
+        /// <summary>
+        /// A pointer to the <see href="">ID3D12RootSignature</see> object.
+        /// </summary>
         ID3D12RootSignature* pRootSignature = nullptr;
         ShaderBytecode VS;
         ShaderBytecode PS;
@@ -1041,6 +1044,1275 @@ namespace Harlinn::Windows::Graphics::D3D12
         PipelineStateFlags Flags = PipelineStateFlags::None;
     };
     static_assert( sizeof( D3D12_GRAPHICS_PIPELINE_STATE_DESC ) == sizeof( GraphicsPipelineStateDesc ) );
+
+
+    struct ComputePipelineStateDesc
+    {
+        ID3D12RootSignature* pRootSignature = nullptr;
+        ShaderBytecode CS;
+        UINT NodeMask = 0;
+        CachedPipelineState CachedPSO;
+        PipelineStateFlags Flags = PipelineStateFlags::None;
+    };
+    static_assert( sizeof( D3D12_COMPUTE_PIPELINE_STATE_DESC ) == sizeof( ComputePipelineStateDesc ) );
+
+    /// <summary>
+    /// Wraps an array of render target formats.
+    /// </summary>
+    /// <remarks>
+    /// This structure is primarily intended to be used when creating pipeline 
+    /// state stream descriptions that contain multiple contiguous render target 
+    /// format descriptions.
+    /// </remarks>
+    struct RenderTargetFormatArray
+    {
+        /// <summary>
+        /// Specifies a fixed-size array of DXGI::Format values that define the format of up to 8 render targets.
+        /// </summary>
+        DXGI::Format RTFormats[ 8 ]{};
+        /// <summary>
+        /// Specifies the number of render target formats stored in the array.
+        /// </summary>
+        UINT NumRenderTargets = 0;
+    };
+    static_assert( sizeof( D3D12_RT_FORMAT_ARRAY ) == sizeof( RenderTargetFormatArray ) );
+
+    /// <summary>
+    /// Describes a pipeline state stream.
+    /// </summary>
+    /// <remarks>
+    /// 
+    /// </remarks>
+    struct PipelineStateStreamDesc
+    {
+        /// <summary>
+        /// Specifies the size of the opaque data structure pointed to by the pPipelineStateSubobjectStream member, in bytes.
+        /// </summary>
+        _In_  SIZE_T SizeInBytes;
+        /// <summary>
+        /// Specifies the address of a data structure that describes as a bytestream an arbitrary pipeline state subobject.
+        /// </summary>
+        _In_reads_( _Inexpressible_( "Dependent on size of subobjects" ) )  void* pPipelineStateSubobjectStream;
+    };
+    static_assert( sizeof( D3D12_PIPELINE_STATE_STREAM_DESC ) == sizeof( PipelineStateStreamDesc ) );
+
+    /// <summary>
+    /// Specifies the type of a sub-object in a pipeline state stream description.
+    /// </summary>
+    /// <remarks>
+    /// This enum is used in the creation of pipeline state objects using the 
+    /// ID3D12Device1::CreatePipelineState method. The CreatePipelineState method takes a 
+    /// D3D12_PIPELINE_STATE_STREAM_DESC as one of its parameters, this structure in turn 
+    /// describes a bytestream made up of alternating D3D12_PIPELINE_STATE_SUBOBJECT_TYPE 
+    /// enumeration values and their corresponding subobject description structs. 
+    /// This bytestream description can be made a concrete type by defining a structure that 
+    /// has the same alternating pattern of alternating D3D12_PIPELINE_STATE_SUBOBJECT_TYPE 
+    /// enumeration values and their corresponding subobject description structs as members.
+    /// </remarks>
+    enum class PipelineStateSubobjectType : Int32
+    {
+        /// <summary>
+        /// <para>
+        /// Indicates a root signature subobject type.
+        /// </para>
+        /// <para>
+        /// The corresponding subobject type is ID3D12RootSignature.
+        /// </para>
+        /// </summary>
+        RootSignature = D3D12_PIPELINE_STATE_SUBOBJECT_TYPE_ROOT_SIGNATURE,
+        /// <summary>
+        /// <para>
+        /// Indicates a vertex shader subobject type.
+        /// </para>
+        /// <para>
+        /// The corresponding subobject type is ShaderBytecode.
+        /// </para>
+        /// </summary>
+        Vs = D3D12_PIPELINE_STATE_SUBOBJECT_TYPE_VS,
+        /// <summary>
+        /// <para>
+        /// Indicates a pixel shader subobject type.
+        /// </para>
+        /// <para>
+        /// The corresponding subobject type is ShaderBytecode.
+        /// </para>
+        /// </summary>
+        Ps = D3D12_PIPELINE_STATE_SUBOBJECT_TYPE_PS,
+        /// <summary>
+        /// <para>
+        /// Indicates a domain shader subobject type.
+        /// </para>
+        /// <para>
+        /// The corresponding subobject type is ShaderBytecode.
+        /// </para>
+        /// </summary>
+        Ds = D3D12_PIPELINE_STATE_SUBOBJECT_TYPE_DS,
+        /// <summary>
+        /// <para>
+        /// Indicates a hull shader subobject type.
+        /// </para>
+        /// <para>
+        /// The corresponding subobject type is ShaderBytecode.
+        /// </para>
+        /// </summary>
+        Hs = D3D12_PIPELINE_STATE_SUBOBJECT_TYPE_HS,
+        /// <summary>
+        /// <para>
+        /// Indicates a geometry shader subobject type.
+        /// </para>
+        /// <para>
+        /// The corresponding subobject type is ShaderBytecode.
+        /// </para>
+        /// </summary>
+        Gs = D3D12_PIPELINE_STATE_SUBOBJECT_TYPE_GS,
+        /// <summary>
+        /// <para>
+        /// Indicates a compute shader subobject type.
+        /// </para>
+        /// <para>
+        /// The corresponding subobject type is ShaderBytecode.
+        /// </para>
+        /// </summary>
+        Cs = D3D12_PIPELINE_STATE_SUBOBJECT_TYPE_CS,
+        /// <summary>
+        /// <para>
+        /// Indicates a stream-output subobject type.
+        /// </para>
+        /// <para>
+        /// The corresponding subobject type is ShaderBytecode.
+        /// </para>
+        /// </summary>
+        StreamOutput = D3D12_PIPELINE_STATE_SUBOBJECT_TYPE_STREAM_OUTPUT,
+        /// <summary>
+        /// <para>
+        /// Indicates a blend subobject type.
+        /// </para>
+        /// <para>
+        /// The corresponding subobject type is BlendDesc.
+        /// </para>
+        /// </summary>
+        Blend = D3D12_PIPELINE_STATE_SUBOBJECT_TYPE_BLEND,
+        /// <summary>
+        /// <para>
+        /// Indicates a sample mask subobject type.
+        /// </para>
+        /// <para>
+        /// The corresponding subobject type is UINT.
+        /// </para>
+        /// </summary>
+        SampleMask = D3D12_PIPELINE_STATE_SUBOBJECT_TYPE_SAMPLE_MASK,
+        /// <summary>
+        /// <para>
+        /// Indicates indicates a rasterizer subobject type.
+        /// </para>
+        /// <para>
+        /// The corresponding subobject type is RasterizerDesc.
+        /// </para>
+        /// </summary>
+        Rasterizer = D3D12_PIPELINE_STATE_SUBOBJECT_TYPE_RASTERIZER,
+        /// <summary>
+        /// <para>
+        /// Indicates a depth stencil subobject type.
+        /// </para>
+        /// <para>
+        /// The corresponding subobject type is DepthStencilDesc.
+        /// </para>
+        /// </summary>
+        DepthStencil = D3D12_PIPELINE_STATE_SUBOBJECT_TYPE_DEPTH_STENCIL,
+        /// <summary>
+        /// <para>
+        /// Indicates an input layout subobject type.
+        /// </para>
+        /// <para>
+        /// The corresponding subobject type is InputLayoutDesc.
+        /// </para>
+        /// </summary>
+        InputLayout = D3D12_PIPELINE_STATE_SUBOBJECT_TYPE_INPUT_LAYOUT,
+        /// <summary>
+        /// <para>
+        /// Indicates an index buffer strip cut value subobject type.
+        /// </para>
+        /// <para>
+        /// The corresponding subobject type is IndexBufferStripCutValue.
+        /// </para>
+        /// </summary>
+        IbStripCutValue = D3D12_PIPELINE_STATE_SUBOBJECT_TYPE_IB_STRIP_CUT_VALUE,
+        /// <summary>
+        /// <para>
+        /// Indicates a primitive topology subobject type.
+        /// </para>
+        /// <para>
+        /// The corresponding subobject type is PrimitiveTopologyType.
+        /// </para>
+        /// </summary>
+        PrimitiveTopology = D3D12_PIPELINE_STATE_SUBOBJECT_TYPE_PRIMITIVE_TOPOLOGY,
+        /// <summary>
+        /// <para>
+        /// Indicates a render target formats subobject type. 
+        /// </para>
+        /// <para>
+        /// The corresponding subobject type is RenderTargetFormatArray structure, which wraps an array of render target formats along with a count of the array elements.
+        /// </para>
+        /// </summary>
+        RenderTargetFormats = D3D12_PIPELINE_STATE_SUBOBJECT_TYPE_RENDER_TARGET_FORMATS,
+        /// <summary>
+        /// <para>
+        /// Indicates a depth stencil format subobject.
+        /// </para>
+        /// <para>
+        /// The corresponding subobject type is DXGI::Format.
+        /// </para>
+        /// </summary>
+        DepthStencilFormat = D3D12_PIPELINE_STATE_SUBOBJECT_TYPE_DEPTH_STENCIL_FORMAT,
+        /// <summary>
+        /// <para>
+        /// Indicates a sample description subobject type.
+        /// </para>
+        /// <para>
+        /// The corresponding subobject type is DXGI::SampleDesc.
+        /// </para>
+        /// </summary>
+        SampleDesc = D3D12_PIPELINE_STATE_SUBOBJECT_TYPE_SAMPLE_DESC,
+        /// <summary>
+        /// <para>
+        /// Indicates a node mask subobject type.
+        /// </para>
+        /// <para>
+        /// The corresponding subobject type is D3D12_NODE_MASK or UINT.
+        /// </para>
+        /// </summary>
+        NodeMask = D3D12_PIPELINE_STATE_SUBOBJECT_TYPE_NODE_MASK,
+        /// <summary>
+        /// <para>
+        /// Indicates a cached pipeline state object subobject type.
+        /// </para>
+        /// <para>
+        /// The corresponding subobject type is CachedPipelineState.
+        /// </para>
+        /// </summary>
+        CachedPipelineState = D3D12_PIPELINE_STATE_SUBOBJECT_TYPE_CACHED_PSO,
+        /// <summary>
+        /// <para>
+        /// Indicates a flags subobject type.
+        /// </para>
+        /// <para>
+        /// The corresponding subobject type is PipelineStateFlags.
+        /// </para>
+        /// </summary>
+        Flags = D3D12_PIPELINE_STATE_SUBOBJECT_TYPE_FLAGS,
+        /// <summary>
+        /// <para>
+        /// Indicates an expanded depth stencil subobject type. This expansion of the depth stencil subobject supports optional depth bounds checking.
+        /// </para>
+        /// <para>
+        /// The corresponding subobject type is DepthStencilDesc1.
+        /// </para>
+        /// </summary>
+        DepthStencil1 = D3D12_PIPELINE_STATE_SUBOBJECT_TYPE_DEPTH_STENCIL1,
+        /// <summary>
+        /// <para>
+        /// Indicates a view instancing subobject type.
+        /// </para>
+        /// <para>
+        /// The corresponding subobject type is D3D12_VIEW_INSTANCING_DESC.
+        /// </para>
+        /// </summary>
+        ViewInstancing = D3D12_PIPELINE_STATE_SUBOBJECT_TYPE_VIEW_INSTANCING,
+        /// <summary>
+        /// <para>
+        /// Indicates an amplification shader subobject type.
+        /// </para>
+        /// <para>
+        /// The corresponding subobject type is ShaderBytecode.
+        /// </para>
+        /// </summary>
+        As = D3D12_PIPELINE_STATE_SUBOBJECT_TYPE_AS,
+        /// <summary>
+        /// <para>
+        /// Indicates a mesh shader subobject type.
+        /// </para>
+        /// <para>
+        /// The corresponding subobject type is ShaderBytecode.
+        /// </para>
+        /// </summary>
+        Ms = D3D12_PIPELINE_STATE_SUBOBJECT_TYPE_MS,
+        /// <summary>
+        /// <para>
+        /// A sentinel value that marks the exclusive upper-bound of valid values this enumeration represents.
+        /// </para>
+        /// </summary>
+        Maxvalid = D3D12_PIPELINE_STATE_SUBOBJECT_TYPE_MAX_VALID
+    };
+
+    /// <summary>
+    /// Defines constants that specify a Direct3D 12 feature or feature set to query about. 
+    /// When you want to query for the level to which an adapter supports a feature, 
+    /// pass one of these values to ID3D12Device::CheckFeatureSupport.
+    /// </summary>
+    enum class Feature
+    {
+        /// <summary>
+        /// <para>
+        /// Indicates a query for the level of support for basic Direct3D 12 feature options.
+        /// </para>
+        /// <para>
+        /// 
+        /// </para>
+        /// </summary>
+        Options = D3D12_FEATURE_D3D12_OPTIONS,
+        Architecture = D3D12_FEATURE_ARCHITECTURE,
+        FeatureLevels = D3D12_FEATURE_FEATURE_LEVELS,
+        FormatSupport = D3D12_FEATURE_FORMAT_SUPPORT,
+        MultisampleQualityLevels = D3D12_FEATURE_MULTISAMPLE_QUALITY_LEVELS,
+        FormatInfo = D3D12_FEATURE_FORMAT_INFO,
+        GpuVirtualAddressSupport = D3D12_FEATURE_GPU_VIRTUAL_ADDRESS_SUPPORT,
+        ShaderModel = D3D12_FEATURE_SHADER_MODEL,
+        Options1 = D3D12_FEATURE_D3D12_OPTIONS1,
+        ProtectedResourceSessionSupport = D3D12_FEATURE_PROTECTED_RESOURCE_SESSION_SUPPORT,
+        RootSignature = D3D12_FEATURE_ROOT_SIGNATURE,
+        Architecture1 = D3D12_FEATURE_ARCHITECTURE1,
+        Options2 = D3D12_FEATURE_D3D12_OPTIONS2,
+        ShaderCache = D3D12_FEATURE_SHADER_CACHE,
+        CommandQueuePriority = D3D12_FEATURE_COMMAND_QUEUE_PRIORITY,
+        Options3 = D3D12_FEATURE_D3D12_OPTIONS3,
+        ExistingHeaps = D3D12_FEATURE_EXISTING_HEAPS,
+        Options4 = D3D12_FEATURE_D3D12_OPTIONS4,
+        Serialization = D3D12_FEATURE_SERIALIZATION,
+        CrossNode = D3D12_FEATURE_CROSS_NODE,
+        Options5 = D3D12_FEATURE_D3D12_OPTIONS5,
+        Displayable = D3D12_FEATURE_DISPLAYABLE,
+        Options6 = D3D12_FEATURE_D3D12_OPTIONS6,
+        QueryMetaCommand = D3D12_FEATURE_QUERY_META_COMMAND,
+        Options7 = D3D12_FEATURE_D3D12_OPTIONS7,
+        ProtectedResourceSessionTypeCount = D3D12_FEATURE_PROTECTED_RESOURCE_SESSION_TYPE_COUNT,
+        ProtectedResourceSessionTypes = D3D12_FEATURE_PROTECTED_RESOURCE_SESSION_TYPES,
+        Options8 = D3D12_FEATURE_D3D12_OPTIONS8,
+        Options9 = D3D12_FEATURE_D3D12_OPTIONS9,
+        Options10 = D3D12_FEATURE_D3D12_OPTIONS10,
+        Options11 = D3D12_FEATURE_D3D12_OPTIONS11,
+        Options12 = D3D12_FEATURE_D3D12_OPTIONS12,
+        Options13 = D3D12_FEATURE_D3D12_OPTIONS13
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_SHADER_MIN_PRECISION_SUPPORT
+    /// </para>
+    /// </summary>
+    enum class ShaderMinPrecisionSupport : Int32
+    {
+        None = D3D12_SHADER_MIN_PRECISION_SUPPORT_NONE,
+        Small = D3D12_SHADER_MIN_PRECISION_SUPPORT_10_BIT,
+        Half = D3D12_SHADER_MIN_PRECISION_SUPPORT_16_BIT
+    };
+    HCC_DEFINE_ENUM_FLAG_OPERATORS( ShaderMinPrecisionSupport, Int32 );
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_TILED_RESOURCES_TIER
+    /// </para>
+    /// </summary>
+    enum class TiledResourcesTier : Int32
+    {
+        NotSupported = D3D12_TILED_RESOURCES_TIER_NOT_SUPPORTED,
+        Tier1 = D3D12_TILED_RESOURCES_TIER_1,
+        Tier2 = D3D12_TILED_RESOURCES_TIER_2,
+        Tier3 = D3D12_TILED_RESOURCES_TIER_3,
+        Tier4 = D3D12_TILED_RESOURCES_TIER_4
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_RESOURCE_BINDING_TIER
+    /// </para>
+    /// </summary>
+    enum class ResourceBindingTier : Int32
+    {
+        Tier1 = D3D12_RESOURCE_BINDING_TIER_1,
+        Tier2 = D3D12_RESOURCE_BINDING_TIER_2,
+        Tier3 = D3D12_RESOURCE_BINDING_TIER_3
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_CONSERVATIVE_RASTERIZATION_TIER
+    /// </para>
+    /// </summary>
+    enum class ConservativeRasterizationTier : Int32
+    {
+        NotSupported = D3D12_CONSERVATIVE_RASTERIZATION_TIER_NOT_SUPPORTED,
+        Tier1 = D3D12_CONSERVATIVE_RASTERIZATION_TIER_1,
+        Tier2 = D3D12_CONSERVATIVE_RASTERIZATION_TIER_2,
+        Tier3 = D3D12_CONSERVATIVE_RASTERIZATION_TIER_3
+    };
+
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_FORMAT_SUPPORT1
+    /// </para>
+    /// </summary>
+    enum class FormatSupport1 : Int32
+    {
+        None = D3D12_FORMAT_SUPPORT1_NONE,
+        Buffer = D3D12_FORMAT_SUPPORT1_BUFFER,
+        IAVertexBuffer = D3D12_FORMAT_SUPPORT1_IA_VERTEX_BUFFER,
+        IAIndexBuffer = D3D12_FORMAT_SUPPORT1_IA_INDEX_BUFFER,
+        SoBuffer = D3D12_FORMAT_SUPPORT1_SO_BUFFER,
+        Texture1D = D3D12_FORMAT_SUPPORT1_TEXTURE1D,
+        Texture2D = D3D12_FORMAT_SUPPORT1_TEXTURE2D,
+        Texture3D = D3D12_FORMAT_SUPPORT1_TEXTURE3D,
+        Texturecube = D3D12_FORMAT_SUPPORT1_TEXTURECUBE,
+        ShaderLoad = D3D12_FORMAT_SUPPORT1_SHADER_LOAD,
+        ShaderSample = D3D12_FORMAT_SUPPORT1_SHADER_SAMPLE,
+        ShaderSampleComparison = D3D12_FORMAT_SUPPORT1_SHADER_SAMPLE_COMPARISON,
+        ShaderSampleMonoText = D3D12_FORMAT_SUPPORT1_SHADER_SAMPLE_MONO_TEXT,
+        Mip = D3D12_FORMAT_SUPPORT1_MIP,
+        RenderTarget = D3D12_FORMAT_SUPPORT1_RENDER_TARGET,
+        Blendable = D3D12_FORMAT_SUPPORT1_BLENDABLE,
+        DepthStencil = D3D12_FORMAT_SUPPORT1_DEPTH_STENCIL,
+        MultisampleResolve = D3D12_FORMAT_SUPPORT1_MULTISAMPLE_RESOLVE,
+        Display = D3D12_FORMAT_SUPPORT1_DISPLAY,
+        CastWithinBitLayout = D3D12_FORMAT_SUPPORT1_CAST_WITHIN_BIT_LAYOUT,
+        MultisampleRendertarget = D3D12_FORMAT_SUPPORT1_MULTISAMPLE_RENDERTARGET,
+        MultisampleLoad = D3D12_FORMAT_SUPPORT1_MULTISAMPLE_LOAD,
+        ShaderGather = D3D12_FORMAT_SUPPORT1_SHADER_GATHER,
+        BackBuffer_cast = D3D12_FORMAT_SUPPORT1_BACK_BUFFER_CAST,
+        TypedUnorderedAccessView = D3D12_FORMAT_SUPPORT1_TYPED_UNORDERED_ACCESS_VIEW,
+        ShaderGatherComparison = D3D12_FORMAT_SUPPORT1_SHADER_GATHER_COMPARISON,
+        DecoderOutput = D3D12_FORMAT_SUPPORT1_DECODER_OUTPUT,
+        VideoProcessorOutput = D3D12_FORMAT_SUPPORT1_VIDEO_PROCESSOR_OUTPUT,
+        VideoProcessorInput = D3D12_FORMAT_SUPPORT1_VIDEO_PROCESSOR_INPUT,
+        VideoEncoder = D3D12_FORMAT_SUPPORT1_VIDEO_ENCODER
+    };
+    HCC_DEFINE_ENUM_FLAG_OPERATORS( FormatSupport1, Int32 );
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_FORMAT_SUPPORT2
+    /// </para>
+    /// </summary>
+    enum class FormatSupport2 : Int32
+    {
+        None = D3D12_FORMAT_SUPPORT2_NONE,
+        UavAtomicAdd = D3D12_FORMAT_SUPPORT2_UAV_ATOMIC_ADD,
+        UavAtomicBitwiseOps = D3D12_FORMAT_SUPPORT2_UAV_ATOMIC_BITWISE_OPS,
+        UavAtomicCompare_store_or_compare_exchange = D3D12_FORMAT_SUPPORT2_UAV_ATOMIC_COMPARE_STORE_OR_COMPARE_EXCHANGE,
+        UavAtomicExchange = D3D12_FORMAT_SUPPORT2_UAV_ATOMIC_EXCHANGE,
+        UavAtomicSignedMinOrMax = D3D12_FORMAT_SUPPORT2_UAV_ATOMIC_SIGNED_MIN_OR_MAX,
+        UavAtomicUnsignedMinOrMax = D3D12_FORMAT_SUPPORT2_UAV_ATOMIC_UNSIGNED_MIN_OR_MAX,
+        UavTypedLoad = D3D12_FORMAT_SUPPORT2_UAV_TYPED_LOAD,
+        UavTypedStore = D3D12_FORMAT_SUPPORT2_UAV_TYPED_STORE,
+        OutputMergerLogicOp = D3D12_FORMAT_SUPPORT2_OUTPUT_MERGER_LOGIC_OP,
+        Tiled = D3D12_FORMAT_SUPPORT2_TILED,
+        MultiplaneOverlay = D3D12_FORMAT_SUPPORT2_MULTIPLANE_OVERLAY,
+        SamplerFeedback = D3D12_FORMAT_SUPPORT2_SAMPLER_FEEDBACK
+    };
+    HCC_DEFINE_ENUM_FLAG_OPERATORS( FormatSupport2, Int32 );
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_MULTISAMPLE_QUALITY_LEVEL_FLAGS
+    /// </para>
+    /// </summary>
+    enum class MultisampleQualityLevelFlags : Int32
+    {
+        None = D3D12_MULTISAMPLE_QUALITY_LEVELS_FLAG_NONE,
+        TiledResource = D3D12_MULTISAMPLE_QUALITY_LEVELS_FLAG_TILED_RESOURCE
+    };
+    HCC_DEFINE_ENUM_FLAG_OPERATORS( MultisampleQualityLevelFlags, Int32 );
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_CROSS_NODE_SHARING_TIER
+    /// </para>
+    /// </summary>
+    enum class CrossNodeSharingTier : Int32
+    {
+        NotSupported = D3D12_CROSS_NODE_SHARING_TIER_NOT_SUPPORTED,
+        Tier1Emulated = D3D12_CROSS_NODE_SHARING_TIER_1_EMULATED,
+        Tier1 = D3D12_CROSS_NODE_SHARING_TIER_1,
+        Tier2 = D3D12_CROSS_NODE_SHARING_TIER_2,
+        Tier3 = D3D12_CROSS_NODE_SHARING_TIER_3
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_RESOURCE_HEAP_TIER
+    /// </para>
+    /// </summary>
+    enum class ResourceHeapTier : Int32
+    {
+        Tier1 = D3D12_RESOURCE_HEAP_TIER_1,
+        Tier2 = D3D12_RESOURCE_HEAP_TIER_2
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_PROGRAMMABLE_SAMPLE_POSITIONS_TIER
+    /// </para>
+    /// </summary>
+    enum class ProgrammableSamplePositionsTier : Int32
+    {
+        NotSupported = D3D12_PROGRAMMABLE_SAMPLE_POSITIONS_TIER_NOT_SUPPORTED,
+        Tier1 = D3D12_PROGRAMMABLE_SAMPLE_POSITIONS_TIER_1,
+        Tier2 = D3D12_PROGRAMMABLE_SAMPLE_POSITIONS_TIER_2
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_VIEW_INSTANCING_TIER
+    /// </para>
+    /// </summary>
+    enum class ViewInstancingTier : Int32
+    {
+        NotSupported = D3D12_VIEW_INSTANCING_TIER_NOT_SUPPORTED,
+        Tier1 = D3D12_VIEW_INSTANCING_TIER_1,
+        Tier2 = D3D12_VIEW_INSTANCING_TIER_2,
+        Tier3 = D3D12_VIEW_INSTANCING_TIER_3
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_FEATURE_DATA_D3D12_OPTIONS
+    /// </para>
+    /// </summary>
+    struct FeatureDataD3D12Options
+    {
+        _Out_  BOOL DoublePrecisionFloatShaderOps;
+        _Out_  BOOL OutputMergerLogicOp;
+        _Out_  ShaderMinPrecisionSupport MinPrecisionSupport;
+        _Out_  TiledResourcesTier TiledResourcesTier;
+        _Out_  ResourceBindingTier ResourceBindingTier;
+        _Out_  BOOL PSSpecifiedStencilRefSupported;
+        _Out_  BOOL TypedUAVLoadAdditionalFormats;
+        _Out_  BOOL ROVsSupported;
+        _Out_  ConservativeRasterizationTier ConservativeRasterizationTier;
+        _Out_  UINT MaxGPUVirtualAddressBitsPerResource;
+        _Out_  BOOL StandardSwizzle64KBSupported;
+        _Out_  D3D12::CrossNodeSharingTier CrossNodeSharingTier;
+        _Out_  BOOL CrossAdapterRowMajorTextureSupported;
+        _Out_  BOOL VPAndRTArrayIndexFromAnyShaderFeedingRasterizerSupportedWithoutGSEmulation;
+        _Out_  D3D12::ResourceHeapTier ResourceHeapTier;
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_FEATURE_DATA_D3D12_OPTIONS1
+    /// </para>
+    /// </summary>
+    struct FeatureDataD3D12Options1
+    {
+        _Out_  BOOL WaveOps;
+        _Out_  UINT WaveLaneCountMin;
+        _Out_  UINT WaveLaneCountMax;
+        _Out_  UINT TotalLaneCount;
+        _Out_  BOOL ExpandedComputeResourceStates;
+        _Out_  BOOL Int64ShaderOps;
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_FEATURE_DATA_D3D12_OPTIONS2
+    /// </para>
+    /// </summary>
+    struct FeatureDataD3D12Options2
+    {
+        _Out_  BOOL DepthBoundsTestSupported;
+        _Out_  D3D12::ProgrammableSamplePositionsTier ProgrammableSamplePositionsTier;
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D_ROOT_SIGNATURE_VERSION
+    /// </para>
+    /// </summary>
+    enum class RootSignatureVersion : Int32
+    {
+        Version1 = D3D_ROOT_SIGNATURE_VERSION_1,
+        Version1_0 = D3D_ROOT_SIGNATURE_VERSION_1_0,
+        Version1_1 = D3D_ROOT_SIGNATURE_VERSION_1_1
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_FEATURE_DATA_ROOT_SIGNATURE
+    /// </para>
+    /// </summary>
+    struct FeatureDataRootSignature
+    {
+        _Inout_ RootSignatureVersion HighestVersion;
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_FEATURE_DATA_ARCHITECTURE
+    /// </para>
+    /// </summary>
+    struct FeatureDataArchitecture
+    {
+        _In_  UINT NodeIndex;
+        _Out_  BOOL TileBasedRenderer;
+        _Out_  BOOL UMA;
+        _Out_  BOOL CacheCoherentUMA;
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_FEATURE_DATA_ARCHITECTURE1
+    /// </para>
+    /// </summary>
+    struct FeatureDataArchitecture1 : public FeatureDataArchitecture
+    {
+        _Out_  BOOL IsolatedMMU;
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_FEATURE_DATA_FEATURE_LEVELS
+    /// </para>
+    /// </summary>
+    struct FeatureDataFeatureLevels
+    {
+        _In_  UINT NumFeatureLevels;
+        _In_reads_( NumFeatureLevels ) const D3D_FEATURE_LEVEL* pFeatureLevelsRequested;
+        _Out_  D3D_FEATURE_LEVEL MaxSupportedFeatureLevel;
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D_SHADER_MODEL
+    /// </para>
+    /// </summary>
+    using ShaderModel = D3D_SHADER_MODEL;
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_FEATURE_DATA_SHADER_MODEL
+    /// </para>
+    /// </summary>
+    using FeatureDataShaderModel = D3D12_FEATURE_DATA_SHADER_MODEL;
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_FEATURE_DATA_FORMAT_SUPPORT
+    /// </para>
+    /// </summary>
+    struct FeatureDataFormatSupport
+    {
+        _In_  DXGI::Format Format;
+        _Out_  FormatSupport1 Support1;
+        _Out_  FormatSupport2 Support2;
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_FEATURE_DATA_MULTISAMPLE_QUALITY_LEVELS
+    /// </para>
+    /// </summary>
+    struct FeatureDataMultiSampleQualityLevels
+    {
+        _In_  DXGI::Format Format;
+        _In_  UINT SampleCount;
+        _In_  MultisampleQualityLevelFlags Flags;
+        _Out_  UINT NumQualityLevels;
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_FEATURE_DATA_FORMAT_INFO
+    /// </para>
+    /// </summary>
+    struct FeatureDataFormatInfo
+    {
+        DXGI::Format Format;
+        UINT8 PlaneCount;
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_FEATURE_DATA_GPU_VIRTUAL_ADDRESS_SUPPORT
+    /// </para>
+    /// </summary>
+    struct FeatureDataGpuVirtualAddressSupport
+    {
+        UINT MaxGPUVirtualAddressBitsPerResource;
+        UINT MaxGPUVirtualAddressBitsPerProcess;
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_SHADER_CACHE_SUPPORT_FLAGS
+    /// </para>
+    /// </summary>
+    enum class ShaderCacheSupportFlags : Int32
+    {
+        None = D3D12_SHADER_CACHE_SUPPORT_NONE,
+        SinglePso = D3D12_SHADER_CACHE_SUPPORT_SINGLE_PSO,
+        Library = D3D12_SHADER_CACHE_SUPPORT_LIBRARY,
+        AutomaticInprocCache = D3D12_SHADER_CACHE_SUPPORT_AUTOMATIC_INPROC_CACHE,
+        AutomaticDiskCache = D3D12_SHADER_CACHE_SUPPORT_AUTOMATIC_DISK_CACHE,
+        DriverManagedCache = D3D12_SHADER_CACHE_SUPPORT_DRIVER_MANAGED_CACHE,
+        ShaderControlClear = D3D12_SHADER_CACHE_SUPPORT_SHADER_CONTROL_CLEAR,
+        ShaderSessionSelete = D3D12_SHADER_CACHE_SUPPORT_SHADER_SESSION_DELETE
+    };
+
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_FEATURE_DATA_SHADER_CACHE
+    /// </para>
+    /// </summary>
+    struct FeatureDataShaderCache
+    {
+        _Out_  ShaderCacheSupportFlags SupportFlags;
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_FEATURE_DATA_COMMAND_QUEUE_PRIORITY
+    /// </para>
+    /// </summary>
+    struct FeatureDataCommandQueuePriority
+    {
+        _In_  D3D12::CommandListType CommandListType;
+        _In_  UINT Priority;
+        _Out_  BOOL PriorityForTypeIsSupported;
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_COMMAND_LIST_SUPPORT_FLAGS
+    /// </para>
+    /// </summary>
+    enum class CommandListSupportFlags : Int32
+    {
+        None = D3D12_COMMAND_LIST_SUPPORT_FLAG_NONE,
+        Direct = D3D12_COMMAND_LIST_SUPPORT_FLAG_DIRECT,
+        Bundle = D3D12_COMMAND_LIST_SUPPORT_FLAG_BUNDLE,
+        Compute = D3D12_COMMAND_LIST_SUPPORT_FLAG_COMPUTE,
+        Copy = D3D12_COMMAND_LIST_SUPPORT_FLAG_COPY,
+        VideoDecode = D3D12_COMMAND_LIST_SUPPORT_FLAG_VIDEO_DECODE,
+        VideoProcess = D3D12_COMMAND_LIST_SUPPORT_FLAG_VIDEO_PROCESS,
+        VideoEncode = D3D12_COMMAND_LIST_SUPPORT_FLAG_VIDEO_ENCODE
+    };
+    HCC_DEFINE_ENUM_FLAG_OPERATORS( CommandListSupportFlags, Int32 );
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_FEATURE_DATA_D3D12_OPTIONS3
+    /// </para>
+    /// </summary>
+    struct FeatureDataD3D12Options3
+    {
+        _Out_  BOOL CopyQueueTimestampQueriesSupported;
+        _Out_  BOOL CastingFullyTypedFormatSupported;
+        _Out_  CommandListSupportFlags WriteBufferImmediateSupportFlags;
+        _Out_  D3D12::ViewInstancingTier ViewInstancingTier;
+        _Out_  BOOL BarycentricsSupported;
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_FEATURE_DATA_EXISTING_HEAPS
+    /// </para>
+    /// </summary>
+    struct FeatureDataExistingHeaps
+    {
+        _Out_  BOOL Supported;
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_SHARED_RESOURCE_COMPATIBILITY_TIER
+    /// </para>
+    /// </summary>
+    enum class SharedResourceCompatibilityTier : Int32
+    {
+        Tier0 = D3D12_SHARED_RESOURCE_COMPATIBILITY_TIER_0,
+        Tier1 = D3D12_SHARED_RESOURCE_COMPATIBILITY_TIER_1,
+        Tier2 = D3D12_SHARED_RESOURCE_COMPATIBILITY_TIER_2
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_FEATURE_DATA_DISPLAYABLE
+    /// </para>
+    /// </summary>
+    struct FeatureDataDisplayable
+    {
+        _Out_  BOOL DisplayableTexture;
+        _Out_  D3D12::SharedResourceCompatibilityTier SharedResourceCompatibilityTier;
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_FEATURE_DATA_D3D12_OPTIONS4
+    /// </para>
+    /// </summary>
+    struct D3D12_FEATURE_DATA_D3D12_OPTIONS4
+    {
+        _Out_  BOOL MSAA64KBAlignedTextureSupported;
+        _Out_  D3D12::SharedResourceCompatibilityTier SharedResourceCompatibilityTier;
+        _Out_  BOOL Native16BitShaderOpsSupported;
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_HEAP_SERIALIZATION_TIER
+    /// </para>
+    /// </summary>
+    enum class HeapSerializationTier : Int32
+    {
+        Tier1 = D3D12_HEAP_SERIALIZATION_TIER_0,
+        Tier10 = D3D12_HEAP_SERIALIZATION_TIER_10
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_FEATURE_DATA_SERIALIZATION
+    /// </para>
+    /// </summary>
+    struct FeatureDataSerialization
+    {
+        _In_  UINT NodeIndex;
+        _Out_  D3D12::HeapSerializationTier HeapSerializationTier;
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_FEATURE_DATA_CROSS_NODE
+    /// </para>
+    /// </summary>
+    struct FeatureDataCrossNode
+    {
+        CrossNodeSharingTier SharingTier;
+        BOOL AtomicShaderInstructions;
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_RENDER_PASS_TIER
+    /// </para>
+    /// </summary>
+    enum class RenderPassTier : Int32
+    {
+        Tier0 = D3D12_RENDER_PASS_TIER_0,
+        Tier1 = D3D12_RENDER_PASS_TIER_1,
+        Tier2 = D3D12_RENDER_PASS_TIER_2
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_RAYTRACING_TIER
+    /// </para>
+    /// </summary>
+    enum class RaytracingTier : Int32
+    {
+        Notsupported = D3D12_RAYTRACING_TIER_NOT_SUPPORTED,
+        Tier1_0 = D3D12_RAYTRACING_TIER_1_0,
+        Tier1_1 = D3D12_RAYTRACING_TIER_1_1
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_FEATURE_DATA_D3D12_OPTIONS5
+    /// </para>
+    /// </summary>
+    struct FeatureDataD3D12Options5
+    {
+        _Out_  BOOL SRVOnlyTiledResourceTier3;
+        _Out_  RenderPassTier RenderPassesTier;
+        _Out_  RaytracingTier RaytracingTier;
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_VARIABLE_SHADING_RATE_TIER
+    /// </para>
+    /// </summary>
+    enum class VariableShadingRateTier : Int32
+    {
+        NotSupported = D3D12_VARIABLE_SHADING_RATE_TIER_NOT_SUPPORTED,
+        Tier1 = D3D12_VARIABLE_SHADING_RATE_TIER_1,
+        Tier2 = D3D12_VARIABLE_SHADING_RATE_TIER_2
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_FEATURE_DATA_D3D12_OPTIONS6
+    /// </para>
+    /// </summary>
+    struct FeatureDataD3D12Options6
+    {
+        _Out_  BOOL AdditionalShadingRatesSupported;
+        _Out_  BOOL PerPrimitiveShadingRateSupportedWithViewportIndexing;
+        _Out_  VariableShadingRateTier VariableShadingRateTier;
+        _Out_  UINT ShadingRateImageTileSize;
+        _Out_  BOOL BackgroundProcessingSupported;
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_MESH_SHADER_TIER
+    /// </para>
+    /// </summary>
+    enum class MeshShaderTier : Int32
+    {
+        NotSupported = D3D12_MESH_SHADER_TIER_NOT_SUPPORTED,
+        Tier1 = D3D12_MESH_SHADER_TIER_1
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_SAMPLER_FEEDBACK_TIER
+    /// </para>
+    /// </summary>
+    enum class SamplerFeedbackTier : Int32
+    {
+        NotSupported = D3D12_SAMPLER_FEEDBACK_TIER_NOT_SUPPORTED,
+        Tier0_9 = D3D12_SAMPLER_FEEDBACK_TIER_0_9,
+        Tier1_0 = D3D12_SAMPLER_FEEDBACK_TIER_1_0
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_FEATURE_DATA_D3D12_OPTIONS7
+    /// </para>
+    /// </summary>
+    struct FeatureDataD3D12Options7
+    {
+        _Out_  D3D12::MeshShaderTier MeshShaderTier;
+        _Out_  D3D12::SamplerFeedbackTier SamplerFeedbackTier;
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_FEATURE_DATA_QUERY_META_COMMAND
+    /// </para>
+    /// </summary>
+    struct FeatureDataQueryMetaCommand
+    {
+        _In_  Guid CommandId;
+        _In_  UINT NodeMask;
+        _Field_size_bytes_full_opt_( QueryInputDataSizeInBytes )  const void* pQueryInputData;
+        _In_  SIZE_T QueryInputDataSizeInBytes;
+        _Field_size_bytes_full_( QueryOutputDataSizeInBytes )  void* pQueryOutputData;
+        _In_  SIZE_T QueryOutputDataSizeInBytes;
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_FEATURE_DATA_D3D12_OPTIONS8
+    /// </para>
+    /// </summary>
+    struct FeatureDataD3D12Options8
+    {
+        _Out_  BOOL UnalignedBlockTexturesSupported;
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_WAVE_MMA_TIER
+    /// </para>
+    /// </summary>
+    enum class WaveMmaTier : Int32
+    {
+        NotSupported = D3D12_WAVE_MMA_TIER_NOT_SUPPORTED,
+        Tier1_0 = D3D12_WAVE_MMA_TIER_1_0
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_FEATURE_DATA_D3D12_OPTIONS9
+    /// </para>
+    /// </summary>
+    struct FeatureDataD3D12Options9
+    {
+        _Out_  BOOL MeshShaderPipelineStatsSupported;
+        _Out_  BOOL MeshShaderSupportsFullRangeRenderTargetArrayIndex;
+        _Out_  BOOL AtomicInt64OnTypedResourceSupported;
+        _Out_  BOOL AtomicInt64OnGroupSharedSupported;
+        _Out_  BOOL DerivativesInMeshAndAmplificationShadersSupported;
+        _Out_  WaveMmaTier WaveMMATier;
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_FEATURE_DATA_D3D12_OPTIONS10
+    /// </para>
+    /// </summary>
+    struct FeatureDataD3D12Options10
+    {
+        _Out_  BOOL VariableRateShadingSumCombinerSupported;
+        _Out_  BOOL MeshShaderPerPrimitiveShadingRateSupported;
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_FEATURE_DATA_D3D12_OPTIONS11
+    /// </para>
+    /// </summary>
+    struct FeatureDataD3D12Options11
+    {
+        _Out_  BOOL AtomicInt64OnDescriptorHeapResourceSupported;
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_TRI_STATE
+    /// </para>
+    /// </summary>
+    enum class TriState : Int32
+    {
+        Unknown = D3D12_TRI_STATE_UNKNOWN,
+        False = D3D12_TRI_STATE_FALSE,
+        True = D3D12_TRI_STATE_TRUE
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_FEATURE_DATA_D3D12_OPTIONS12
+    /// </para>
+    /// </summary>
+    struct FeatureDataD3D12Options12
+    {
+        _Out_  TriState MSPrimitivesPipelineStatisticIncludesCulledPrimitives;
+        _Out_  BOOL EnhancedBarriersSupported;
+        _Out_  BOOL RelaxedFormatCastingSupported;
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_FEATURE_DATA_D3D12_OPTIONS13
+    /// </para>
+    /// </summary>
+    struct FeatureDataD3D12Options13
+    {
+        _Out_  BOOL UnrestrictedBufferTextureCopyPitchSupported;
+        _Out_  BOOL UnrestrictedVertexElementAlignmentSupported;
+        _Out_  BOOL InvertedViewportHeightFlipsYSupported;
+        _Out_  BOOL InvertedViewportDepthFlipsZSupported;
+        _Out_  BOOL TextureCopyBetweenDimensionsSupported;
+        _Out_  BOOL AlphaBlendFactorSupported;
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_RESOURCE_ALLOCATION_INFO
+    /// </para>
+    /// </summary>
+    struct ResourceAllocationInfo
+    {
+        UINT64 SizeInBytes;
+        UINT64 Alignment;
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_RESOURCE_ALLOCATION_INFO1
+    /// </para>
+    /// </summary>
+    struct ResourceAllocationInfo1
+    {
+        UINT64 Offset;
+        UINT64 Alignment;
+        UINT64 SizeInBytes;
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_HEAP_TYPE
+    /// </para>
+    /// </summary>
+    enum class HeapType : Int32
+    {
+        Default = D3D12_HEAP_TYPE_DEFAULT,
+        Upload = D3D12_HEAP_TYPE_UPLOAD,
+        ReadBack = D3D12_HEAP_TYPE_READBACK,
+        Custom = D3D12_HEAP_TYPE_CUSTOM
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_CPU_PAGE_PROPERTY
+    /// </para>
+    /// </summary>
+    enum class CpuPageProperty : Int32
+    {
+        Unknown = D3D12_CPU_PAGE_PROPERTY_UNKNOWN,
+        NotAvailable = D3D12_CPU_PAGE_PROPERTY_NOT_AVAILABLE,
+        WriteCombine = D3D12_CPU_PAGE_PROPERTY_WRITE_COMBINE,
+        WriteBack = D3D12_CPU_PAGE_PROPERTY_WRITE_BACK
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_MEMORY_POOL
+    /// </para>
+    /// </summary>
+    enum class MemoryPool : Int32
+    {
+        Unknown = D3D12_MEMORY_POOL_UNKNOWN,
+        L0 = D3D12_MEMORY_POOL_L0,
+        L1 = D3D12_MEMORY_POOL_L1
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_HEAP_PROPERTIES
+    /// </para>
+    /// </summary>
+    struct HeapProperties
+    {
+        HeapType Type;
+        CpuPageProperty CPUPageProperty;
+        MemoryPool MemoryPoolPreference;
+        UINT CreationNodeMask;
+        UINT VisibleNodeMask;
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_HEAP_PROPERTIES
+    /// </para>
+    /// </summary>
+    enum class HeapFlags : Int32
+    {
+        None = D3D12_HEAP_FLAG_NONE,
+        Shared = D3D12_HEAP_FLAG_SHARED,
+        DenyBuffers = D3D12_HEAP_FLAG_DENY_BUFFERS,
+        AllowDisplay = D3D12_HEAP_FLAG_ALLOW_DISPLAY,
+        SharedCrossAdapter = D3D12_HEAP_FLAG_SHARED_CROSS_ADAPTER,
+        DenyRtDsTextures = D3D12_HEAP_FLAG_DENY_RT_DS_TEXTURES,
+        DenyNonRtDsTextures = D3D12_HEAP_FLAG_DENY_NON_RT_DS_TEXTURES,
+        HardwareProtected = D3D12_HEAP_FLAG_HARDWARE_PROTECTED,
+        AllowWriteWatch = D3D12_HEAP_FLAG_ALLOW_WRITE_WATCH,
+        AllowShaderAtomics = D3D12_HEAP_FLAG_ALLOW_SHADER_ATOMICS,
+        CreateNotResident = D3D12_HEAP_FLAG_CREATE_NOT_RESIDENT,
+        CreateNotZeroed = D3D12_HEAP_FLAG_CREATE_NOT_ZEROED,
+        AllowAllBuffersAndTextures = D3D12_HEAP_FLAG_ALLOW_ALL_BUFFERS_AND_TEXTURES,
+        AllowOnlyBuffers = D3D12_HEAP_FLAG_ALLOW_ONLY_BUFFERS,
+        AllowOnlyNonRtDsTextures = D3D12_HEAP_FLAG_ALLOW_ONLY_NON_RT_DS_TEXTURES,
+        AllowOnlyRtDsTextures = D3D12_HEAP_FLAG_ALLOW_ONLY_RT_DS_TEXTURES
+    };
+    HCC_DEFINE_ENUM_FLAG_OPERATORS( HeapFlags, Int32 );
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_HEAP_DESC
+    /// </para>
+    /// </summary>
+    struct HeapDesc
+    {
+        UINT64 SizeInBytes;
+        HeapProperties Properties;
+        UINT64 Alignment;
+        HeapFlags Flags;
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_RESOURCE_DIMENSION
+    /// </para>
+    /// </summary>
+    enum class ResourceDimension : Int32
+    {
+        Unknown = D3D12_RESOURCE_DIMENSION_UNKNOWN,
+        Buffer = D3D12_RESOURCE_DIMENSION_BUFFER,
+        Texture1D = D3D12_RESOURCE_DIMENSION_TEXTURE1D,
+        Texture2D = D3D12_RESOURCE_DIMENSION_TEXTURE2D,
+        Texture3D = D3D12_RESOURCE_DIMENSION_TEXTURE3D
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_TEXTURE_LAYOUT
+    /// </para>
+    /// </summary>
+    enum class TextureLayout : Int32
+    {
+        Unknown = D3D12_TEXTURE_LAYOUT_UNKNOWN,
+        RowMajor = D3D12_TEXTURE_LAYOUT_ROW_MAJOR,
+        Undefined64KbSwizzle = D3D12_TEXTURE_LAYOUT_64KB_UNDEFINED_SWIZZLE,
+        Standard64KbSwizzle = D3D12_TEXTURE_LAYOUT_64KB_STANDARD_SWIZZLE
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_RESOURCE_FLAGS
+    /// </para>
+    /// </summary>
+    enum class ResourceFlags : Int32
+    {
+        None = D3D12_RESOURCE_FLAG_NONE,
+        AllowRenderTarget = D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET,
+        AllowDepthStencil = D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL,
+        AllowUnorderedAccess = D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS,
+        DenyShaderResource = D3D12_RESOURCE_FLAG_DENY_SHADER_RESOURCE,
+        AllowCrossAdapter = D3D12_RESOURCE_FLAG_ALLOW_CROSS_ADAPTER,
+        AllowSimultaneousAccess = D3D12_RESOURCE_FLAG_ALLOW_SIMULTANEOUS_ACCESS,
+        VideoDecodeReferenceOnly = D3D12_RESOURCE_FLAG_VIDEO_DECODE_REFERENCE_ONLY,
+        VideoEncodeReferenceOnly = D3D12_RESOURCE_FLAG_VIDEO_ENCODE_REFERENCE_ONLY,
+        RaytracingAccelerationStructure = D3D12_RESOURCE_FLAG_RAYTRACING_ACCELERATION_STRUCTURE
+    };
+    HCC_DEFINE_ENUM_FLAG_OPERATORS( ResourceFlags, Int32 );
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_MIP_REGION
+    /// </para>
+    /// </summary>
+    struct MipRegion
+    {
+        UINT Width = 0;
+        UINT Height = 0;
+        UINT Depth = 0;
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_RESOURCE_DESC
+    /// </para>
+    /// </summary>
+    struct ResourceDesc
+    {
+        ResourceDimension Dimension;
+        UINT64 Alignment;
+        UINT64 Width;
+        UINT Height;
+        UINT16 DepthOrArraySize;
+        UINT16 MipLevels;
+        DXGI::Format Format;
+        DXGI::SampleDesc SampleDesc;
+        D3D12::TextureLayout Layout;
+        D3D12::ResourceFlags Flags;
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_RESOURCE_DESC
+    /// </para>
+    /// </summary>
+    struct ResourceDesc1 : public ResourceDesc
+    {
+        MipRegion SamplerFeedbackMipRegion;
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_DEPTH_STENCIL_VALUE
+    /// </para>
+    /// </summary>
+    struct DepthStencilValue
+    {
+        FLOAT Depth;
+        UINT8 Stencil;
+    };
+
+
+
+
 }
 
 #endif
