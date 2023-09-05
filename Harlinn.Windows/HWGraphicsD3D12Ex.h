@@ -2310,7 +2310,419 @@ namespace Harlinn::Windows::Graphics::D3D12
         UINT8 Stencil;
     };
 
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_CLEAR_VALUE
+    /// </para>
+    /// </summary>
+    struct ClearValue
+    {
+        DXGI::Format Format;
+        union
+        {
+            FLOAT Color[ 4 ];
+            DepthStencilValue DepthStencil;
+        };
+    };
 
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_RANGE
+    /// </para>
+    /// </summary>
+    struct Range
+    {
+        SIZE_T Begin;
+        SIZE_T End;
+    };
+
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_RANGE_UINT64
+    /// </para>
+    /// </summary>
+    struct RangeUInt64
+    {
+        UINT64 Begin;
+        UINT64 End;
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_SUBRESOURCE_RANGE_UINT64
+    /// </para>
+    /// </summary>
+    struct SubresourceRangeUInt64
+    {
+        UINT Subresource;
+        RangeUInt64 Range;
+    };
+
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_SUBRESOURCE_INFO
+    /// </para>
+    /// </summary>
+    struct SubresourceInfo
+    {
+        UINT64 Offset;
+        UINT RowPitch;
+        UINT DepthPitch;
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_TILED_RESOURCE_COORDINATE
+    /// </para>
+    /// </summary>
+    struct TiledResourceCoordinate
+    {
+        UINT X;
+        UINT Y;
+        UINT Z;
+        UINT Subresource;
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_TILE_REGION_SIZE
+    /// </para>
+    /// </summary>
+    struct TileRegionSize
+    {
+        UINT NumTiles;
+        BOOL UseBox;
+        UINT Width;
+        UINT16 Height;
+        UINT16 Depth;
+    };
+
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_TILE_RANGE_FLAGS
+    /// </para>
+    /// </summary>
+    enum class TileRangeFlags : UInt32
+    {
+        None = D3D12_TILE_RANGE_FLAG_NONE,
+        Null = D3D12_TILE_RANGE_FLAG_NULL,
+        Skip = D3D12_TILE_RANGE_FLAG_SKIP,
+        ReuseSingleTile = D3D12_TILE_RANGE_FLAG_REUSE_SINGLE_TILE
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_SUBRESOURCE_TILING
+    /// </para>
+    /// </summary>
+    struct SubresourceTiling
+    {
+        UINT WidthInTiles;
+        UINT16 HeightInTiles;
+        UINT16 DepthInTiles;
+        UINT StartTileIndexInOverallResource;
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_TILE_SHAPE
+    /// </para>
+    /// </summary>
+    struct TileShape
+    {
+        UINT WidthInTexels;
+        UINT HeightInTexels;
+        UINT DepthInTexels;
+    };
+
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_PACKED_MIP_INFO
+    /// </para>
+    /// </summary>
+    struct PackedMipInfo
+    {
+        UINT8 NumStandardMips;
+        UINT8 NumPackedMips;
+        UINT NumTilesForPackedMips;
+        UINT StartTileIndexInOverallResource;
+    };
+
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_TILE_MAPPING_FLAGS
+    /// </para>
+    /// </summary>
+    enum class TileMappingFlags : Int32
+    {
+        None = D3D12_TILE_MAPPING_FLAG_NONE,
+        NoHazard = D3D12_TILE_MAPPING_FLAG_NO_HAZARD
+    };
+    HCC_DEFINE_ENUM_FLAG_OPERATORS( TileMappingFlags, Int32 );
+
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_TILE_COPY_FLAGS
+    /// </para>
+    /// </summary>
+    enum class TileCopyFlags : Int32
+    {
+        None = D3D12_TILE_COPY_FLAG_NONE,
+        NoHazard = D3D12_TILE_COPY_FLAG_NO_HAZARD,
+        LinearBufferToSwizzledTiledResource = D3D12_TILE_COPY_FLAG_LINEAR_BUFFER_TO_SWIZZLED_TILED_RESOURCE,
+        SwizzledTiledResourceToLinearBuffer = D3D12_TILE_COPY_FLAG_SWIZZLED_TILED_RESOURCE_TO_LINEAR_BUFFER
+    };
+    HCC_DEFINE_ENUM_FLAG_OPERATORS( TileCopyFlags, Int32 );
+
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_RESOURCE_STATES
+    /// </para>
+    /// </summary>
+    enum class ResourceStates : Int32
+    {
+        Common = D3D12_RESOURCE_STATE_COMMON,
+        VertexAndConstantBuffer = D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER,
+        IndexBuffer = D3D12_RESOURCE_STATE_INDEX_BUFFER,
+        RenderTarget = D3D12_RESOURCE_STATE_RENDER_TARGET,
+        UnorderedAccess = D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
+        DepthWrite = D3D12_RESOURCE_STATE_DEPTH_WRITE,
+        DepthRead = D3D12_RESOURCE_STATE_DEPTH_READ,
+        NonPixelShaderResource = D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE,
+        PixelShaderResource = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
+        StreamOut = D3D12_RESOURCE_STATE_STREAM_OUT,
+        IndirectArgument = D3D12_RESOURCE_STATE_INDIRECT_ARGUMENT,
+        CopyDest = D3D12_RESOURCE_STATE_COPY_DEST,
+        CopySource = D3D12_RESOURCE_STATE_COPY_SOURCE,
+        ResolveDest = D3D12_RESOURCE_STATE_RESOLVE_DEST,
+        ResolveSource = D3D12_RESOURCE_STATE_RESOLVE_SOURCE,
+        RaytracingAccelerationStructure = D3D12_RESOURCE_STATE_RAYTRACING_ACCELERATION_STRUCTURE,
+        ShadingRateSource = D3D12_RESOURCE_STATE_SHADING_RATE_SOURCE,
+        GenericRead = D3D12_RESOURCE_STATE_GENERIC_READ,
+        AllShaderResource = D3D12_RESOURCE_STATE_ALL_SHADER_RESOURCE,
+        Present = D3D12_RESOURCE_STATE_PRESENT,
+        Predication = D3D12_RESOURCE_STATE_PREDICATION,
+        VideoDecodeRead = D3D12_RESOURCE_STATE_VIDEO_DECODE_READ,
+        VideoDecodeWrite = D3D12_RESOURCE_STATE_VIDEO_DECODE_WRITE,
+        VideoProcessRead = D3D12_RESOURCE_STATE_VIDEO_PROCESS_READ,
+        VideoProcessWrite = D3D12_RESOURCE_STATE_VIDEO_PROCESS_WRITE,
+        VideoEncodeRead = D3D12_RESOURCE_STATE_VIDEO_ENCODE_READ,
+        VideoEncodeWrite = D3D12_RESOURCE_STATE_VIDEO_ENCODE_WRITE
+    };
+
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_RESOURCE_BARRIER_TYPE
+    /// </para>
+    /// </summary>
+    enum class ResourceBarrierType : Int32
+    {
+        Transition = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION,
+        Aliasing = D3D12_RESOURCE_BARRIER_TYPE_ALIASING,
+        Uav = D3D12_RESOURCE_BARRIER_TYPE_UAV
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_RESOURCE_TRANSITION_BARRIER
+    /// </para>
+    /// </summary>
+    struct ResourceTransitionBarrier
+    {
+        ID3D12Resource* pResource;
+        UINT Subresource;
+        D3D12_RESOURCE_STATES StateBefore;
+        D3D12_RESOURCE_STATES StateAfter;
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_RESOURCE_ALIASING_BARRIER
+    /// </para>
+    /// </summary>
+    struct ResourceAliasingBarrier
+    {
+        ID3D12Resource* pResourceBefore;
+        ID3D12Resource* pResourceAfter;
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_RESOURCE_UAV_BARRIER
+    /// </para>
+    /// </summary>
+    struct ResourceUavBarrier
+    {
+        ID3D12Resource* pResource;
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_RESOURCE_BARRIER_FLAGS
+    /// </para>
+    /// </summary>
+    enum class ResourceBarrierFlags : Int32
+    {
+        None = D3D12_RESOURCE_BARRIER_FLAG_NONE,
+        BeginOnly = D3D12_RESOURCE_BARRIER_FLAG_BEGIN_ONLY,
+        EndOnly = D3D12_RESOURCE_BARRIER_FLAG_END_ONLY
+    };
+    HCC_DEFINE_ENUM_FLAG_OPERATORS( ResourceBarrierFlags, Int32 );
+
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_RESOURCE_BARRIER
+    /// </para>
+    /// </summary>
+    struct ResourceBarrier
+    {
+        ResourceBarrierType Type;
+        ResourceBarrierFlags Flags;
+        union
+        {
+            ResourceTransitionBarrier Transition;
+            ResourceAliasingBarrier Aliasing;
+            ResourceUavBarrier UAV;
+        };
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_SUBRESOURCE_FOOTPRINT
+    /// </para>
+    /// </summary>
+    struct SubresourceFootprint
+    {
+        DXGI::Format Format;
+        UINT Width;
+        UINT Height;
+        UINT Depth;
+        UINT RowPitch;
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_PLACED_SUBRESOURCE_FOOTPRINT
+    /// </para>
+    /// </summary>
+    struct PlacedSubresourceFootprint
+    {
+        UINT64 Offset;
+        SubresourceFootprint Footprint;
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_TEXTURE_COPY_TYPE
+    /// </para>
+    /// </summary>
+    enum class TextureCopyType : Int32
+    {
+        SubresourceIndex = D3D12_TEXTURE_COPY_TYPE_SUBRESOURCE_INDEX,
+        PlacedFootprint = D3D12_TEXTURE_COPY_TYPE_PLACED_FOOTPRINT
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_TEXTURE_COPY_LOCATION
+    /// </para>
+    /// </summary>
+    struct TextureCopyLocation
+    {
+        ID3D12Resource* pResource;
+        TextureCopyType Type;
+        union
+        {
+            PlacedSubresourceFootprint PlacedFootprint;
+            UINT SubresourceIndex;
+        };
+    };
+
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_RESOLVE_MODE
+    /// </para>
+    /// </summary>
+    enum class ResolveMode : Int32
+    {
+        Decompress = D3D12_RESOLVE_MODE_DECOMPRESS,
+        Min = D3D12_RESOLVE_MODE_MIN,
+        Max = D3D12_RESOLVE_MODE_MAX,
+        Average = D3D12_RESOLVE_MODE_AVERAGE,
+        EncodeSamplerFeedback = D3D12_RESOLVE_MODE_ENCODE_SAMPLER_FEEDBACK,
+        DecodeSamplerFeedback = D3D12_RESOLVE_MODE_DECODE_SAMPLER_FEEDBACK
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_SAMPLE_POSITION
+    /// </para>
+    /// </summary>
+    struct SamplePosition
+    {
+        INT8 X;
+        INT8 Y;
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_VIEW_INSTANCE_LOCATION
+    /// </para>
+    /// </summary>
+    struct ViewInstanceLocation
+    {
+        UINT ViewportArrayIndex;
+        UINT RenderTargetArrayIndex;
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_VIEW_INSTANCING_FLAGS
+    /// </para>
+    /// </summary>
+    enum class ViewInstancingFlags : Int32
+    {
+        None = D3D12_VIEW_INSTANCING_FLAG_NONE,
+        EnableViewInstanceMasking = D3D12_VIEW_INSTANCING_FLAG_ENABLE_VIEW_INSTANCE_MASKING
+    };
+    HCC_DEFINE_ENUM_FLAG_OPERATORS( ViewInstancingFlags, Int32 );
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_VIEW_INSTANCING_DESC
+    /// </para>
+    /// </summary>
+    struct ViewInstancingDesc
+    {
+        UINT ViewInstanceCount;
+        _Field_size_full_( ViewInstanceCount )  const ViewInstanceLocation* pViewInstanceLocations;
+        ViewInstancingFlags Flags;
+    };
+
+    /// <summary>
+    /// <para>
+    /// Alias for D3D12_SHADER_COMPONENT_MAPPING
+    /// </para>
+    /// </summary>
+    enum class ShaderComponentMapping : Int32
+    {
+        FromMemoryComponent0 = D3D12_SHADER_COMPONENT_MAPPING_FROM_MEMORY_COMPONENT_0,
+        FromMemoryComponent1 = D3D12_SHADER_COMPONENT_MAPPING_FROM_MEMORY_COMPONENT_1,
+        FromMemoryComponent2 = D3D12_SHADER_COMPONENT_MAPPING_FROM_MEMORY_COMPONENT_2,
+        FromMemoryComponent3 = D3D12_SHADER_COMPONENT_MAPPING_FROM_MEMORY_COMPONENT_3,
+        ForceValue0 = D3D12_SHADER_COMPONENT_MAPPING_FORCE_VALUE_0,
+        ForceValue1 = D3D12_SHADER_COMPONENT_MAPPING_FORCE_VALUE_1
+    };
 
 
 }

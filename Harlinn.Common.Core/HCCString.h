@@ -5282,137 +5282,247 @@ namespace Harlinn::Common::Core
     HCC_EXPORT bool ToBoolean( const wchar_t* str ) noexcept;
     HCC_EXPORT bool ToBoolean( const char* str ) noexcept;
 
-    inline bool ToBoolean( const WideString& str ) noexcept
+    template<SimpleStringLike StringT>
+    inline bool ToBoolean( const StringT& str ) noexcept
     {
         return ToBoolean( str.c_str( ) );
     }
-    inline bool ToBoolean( const AnsiString& str ) noexcept
+
+    HCC_EXPORT bool TryToBoolean( const wchar_t* str, bool& value ) noexcept;
+    HCC_EXPORT bool TryToBoolean( const char* str, bool& value ) noexcept;
+
+    template<SimpleStringLike StringT>
+    inline bool TryToBoolean( const StringT& str, bool& value ) noexcept
     {
-        return ToBoolean( str.c_str( ) );
+        return TryToBoolean( str.c_str( ), value );
     }
+
 
     HCC_EXPORT Byte ToByte( const wchar_t* str, int radix = 10 );
     HCC_EXPORT Byte ToByte( const char* str, int radix = 10 );
 
-    inline Byte ToByte( const WideString& str, int radix = 10 )
+    template<SimpleStringLike StringT>
+    inline Byte ToByte( const StringT& str, int radix = 10 )
     {
         return ToByte( str.c_str( ), radix );
     }
-    inline Byte ToByte( const AnsiString& str, int radix = 10 )
+    
+    HCC_EXPORT bool TryToByte( const wchar_t* str, Byte& value, int radix = 10 ) noexcept;
+    HCC_EXPORT bool TryToByte( const char* str, Byte& value, int radix = 10 ) noexcept;
+
+    template<SimpleStringLike StringT>
+    inline bool TryToByte( const StringT& str, Byte& value, int radix = 10 ) noexcept
     {
-        return ToByte( str.c_str( ), radix );
+        return TryToByte( str.c_str( ), value, radix );
     }
 
 
     HCC_EXPORT SByte ToSByte( const wchar_t* str, int radix = 10 );
     HCC_EXPORT SByte ToSByte( const char* str, int radix = 10 );
 
-    inline SByte ToSByte( const WideString& str, int radix = 10 )
+    template<SimpleStringLike StringT>
+    inline SByte ToSByte( const StringT& str, int radix = 10 )
     {
         return ToSByte( str.c_str( ), radix );
     }
-    inline SByte ToSByte( const AnsiString& str, int radix = 10 )
+
+    HCC_EXPORT bool TryToSByte( const wchar_t* str, SByte& value, int radix = 10 ) noexcept;
+    HCC_EXPORT bool TryToSByte( const char* str, SByte& value, int radix = 10 ) noexcept;
+
+    template<SimpleStringLike StringT>
+    inline bool TryToSByte( const StringT& str, SByte& value, int radix = 10 ) noexcept
     {
-        return ToSByte( str.c_str( ), radix );
+        return TryToSByte( str.c_str( ), value, radix );
     }
+
 
     HCC_EXPORT Int16 ToInt16( const wchar_t* str, int radix = 10 );
     HCC_EXPORT Int16 ToInt16( const char* str, int radix = 10 );
 
-    inline Int16 ToInt16( const WideString& str, int radix = 10 )
+    template<SimpleStringLike StringT>
+    inline Int16 ToInt16( const StringT& str, int radix = 10 )
     {
         return ToInt16( str.c_str( ), radix );
     }
-    inline Int16 ToInt16( const AnsiString& str, int radix = 10 )
+
+    HCC_EXPORT bool TryToInt16( const wchar_t* str, Int16& value, int radix = 10 ) noexcept;
+    HCC_EXPORT bool TryToInt16( const char* str, Int16& value, int radix = 10 ) noexcept;
+
+    template<SimpleStringLike StringT>
+    inline bool TryToInt16( const StringT& str, Int16& value, int radix = 10 ) noexcept
     {
-        return ToInt16( str.c_str( ), radix );
+        return TryToInt16( str.c_str( ), value, radix );
     }
+
 
     HCC_EXPORT UInt16 ToUInt16( const wchar_t* str, int radix = 10 );
     HCC_EXPORT UInt16 ToUInt16( const char* str, int radix = 10 );
 
-    inline UInt16 ToUInt16( const WideString& str, int radix = 10 )
+    template<SimpleStringLike StringT>
+    inline UInt16 ToUInt16( const StringT& str, int radix = 10 )
     {
         return ToUInt16( str.c_str( ), radix );
     }
-    inline UInt16 ToUInt16( const AnsiString& str, int radix = 10 )
+
+    HCC_EXPORT bool TryToUInt16( const wchar_t* str, UInt16& value, int radix = 10 ) noexcept;
+    HCC_EXPORT bool TryToUInt16( const char* str, UInt16& value, int radix = 10 ) noexcept;
+
+    template<SimpleStringLike StringT>
+    inline bool TryToUInt16( const StringT& str, UInt16& value, int radix = 10 ) noexcept
     {
-        return ToUInt16( str.c_str( ), radix );
+        return TryToUInt16( str.c_str( ), value, radix );
     }
 
     HCC_EXPORT Int32 ToInt32( const wchar_t* str, int radix = 10 );
     HCC_EXPORT Int32 ToInt32( const char* str, int radix = 10 );
 
-    inline Int32 ToInt32( const WideString& str, int radix = 10 )
+    template<SimpleStringLike StringT>
+    inline Int32 ToInt32( const StringT& str, int radix = 10 )
     {
         return ToInt32( str.c_str( ), radix );
     }
-    inline Int32 ToInt32( const AnsiString& str, int radix = 10 )
+
+    HCC_EXPORT bool TryToInt32( const wchar_t* str, Int32& value, int radix = 10 ) noexcept;
+    HCC_EXPORT bool TryToInt32( const char* str, Int32& value, int radix = 10 ) noexcept;
+
+    template<SimpleStringLike StringT>
+    inline bool TryToInt32( const StringT& str, Int32& value, int radix = 10 ) noexcept
     {
-        return ToInt32( str.c_str( ), radix );
+        return TryToInt32( str.c_str( ), value, radix );
     }
 
     HCC_EXPORT UInt32 ToUInt32( const wchar_t* str, int radix = 10 );
     HCC_EXPORT UInt32 ToUInt32( const char* str, int radix = 10 );
 
-    inline UInt32 ToUInt32( const WideString& str, int radix = 10 )
+    template<SimpleStringLike StringT>
+    inline UInt32 ToUInt32( const StringT& str, int radix = 10 )
     {
         return ToUInt32( str.c_str( ), radix );
     }
-    inline UInt32 ToUInt32( const AnsiString& str, int radix = 10 )
+
+    HCC_EXPORT bool TryToUInt32( const wchar_t* str, UInt32& value, int radix = 10 ) noexcept;
+    HCC_EXPORT bool TryToUInt32( const char* str, UInt32& value, int radix = 10 ) noexcept;
+
+    template<SimpleStringLike StringT>
+    inline bool TryToUInt32( const StringT& str, UInt32& value, int radix = 10 ) noexcept
     {
-        return ToUInt32( str.c_str( ), radix );
+        return TryToUInt32( str.c_str( ), value, radix );
     }
+
 
     HCC_EXPORT Int64 ToInt64( const wchar_t* str, int radix = 10 );
     HCC_EXPORT Int64 ToInt64( const char* str, int radix = 10 );
 
-    inline Int64 ToInt64( const WideString& str, int radix = 10 )
+    template<SimpleStringLike StringT>
+    inline Int64 ToInt64( const StringT& str, int radix = 10 )
     {
         return ToInt64( str.c_str( ), radix );
     }
-    inline Int64 ToInt64( const AnsiString& str, int radix = 10 )
+
+    HCC_EXPORT bool TryToInt64( const wchar_t* str, Int64& value, int radix = 10 ) noexcept;
+    HCC_EXPORT bool TryToInt64( const char* str, Int64& value, int radix = 10 ) noexcept;
+
+    template<SimpleStringLike StringT>
+    inline bool TryToInt64( const StringT& str, Int64& value, int radix = 10 ) noexcept
     {
-        return ToInt64( str.c_str( ), radix );
+        return TryToInt64( str.c_str( ), value, radix );
     }
+
 
     HCC_EXPORT UInt64 ToUInt64( const wchar_t* str, int radix = 10 );
     HCC_EXPORT UInt64 ToUInt64( const char* str, int radix = 10 );
 
-    inline UInt64 ToUInt64( const WideString& str, int radix = 10 )
-    {
-        return ToUInt64( str.c_str( ), radix );
-    }
-    inline UInt64 ToUInt64( const AnsiString& str, int radix = 10 )
+    template<SimpleStringLike StringT>
+    inline UInt64 ToUInt64( const StringT& str, int radix = 10 )
     {
         return ToUInt64( str.c_str( ), radix );
     }
 
+    HCC_EXPORT bool TryToUInt64( const wchar_t* str, UInt64& value, int radix = 10 ) noexcept;
+    HCC_EXPORT bool TryToUInt64( const char* str, UInt64& value, int radix = 10 ) noexcept;
+
+    template<SimpleStringLike StringT>
+    inline bool TryToUInt64( const StringT& str, UInt64& value, int radix = 10 ) noexcept
+    {
+        return TryToUInt64( str.c_str( ), value, radix );
+    }
 
     HCC_EXPORT Single ToSingle( const wchar_t* str );
     HCC_EXPORT Single ToSingle( const char* str );
 
-    inline Single ToSingle( const WideString& str )
+    template<SimpleStringLike StringT>
+    inline Single ToSingle( const StringT& str )
     {
         return ToSingle( str.c_str( ) );
     }
-    inline Single ToSingle( const AnsiString& str )
+
+    HCC_EXPORT bool TryToSingle( const wchar_t* str, float& value ) noexcept;
+    HCC_EXPORT bool TryToSingle( const char* str, float& value ) noexcept;
+
+    template<SimpleStringLike StringT>
+    inline bool TryToSingle( const StringT& str, float& value ) noexcept
     {
-        return ToSingle( str.c_str( ) );
+        return TryToSingle( str.c_str( ), value );
+    }
+
+    HCC_EXPORT Single ToSingleInvariant( const wchar_t* str );
+    HCC_EXPORT Single ToSingleInvariant( const char* str );
+
+    template<SimpleStringLike StringT>
+    inline Single ToSingleInvariant( std::locale locale, const StringT& str )
+    {
+        return ToSingleInvariant( str.c_str( ) );
+    }
+
+    HCC_EXPORT bool TryToSingleInvariant( const wchar_t* str, float& value ) noexcept;
+    HCC_EXPORT bool TryToSingleInvariant( const char* str, float& value ) noexcept;
+
+    template<SimpleStringLike StringT>
+    inline bool TryToSingleInvariant( const StringT& str, float& value ) noexcept
+    {
+        return TryToSingleInvariant( str.c_str( ), value );
     }
 
 
     HCC_EXPORT Double ToDouble( const wchar_t* str );
     HCC_EXPORT Double ToDouble( const char* str );
 
-    inline Double ToDouble( const WideString& str )
+    template<SimpleStringLike StringT>
+    inline Double ToDouble( const StringT& str )
     {
         return ToDouble( str.c_str( ) );
     }
-    inline Double ToDouble( const AnsiString& str )
+
+    HCC_EXPORT bool TryToDouble( const wchar_t* str, double& value ) noexcept;
+    HCC_EXPORT bool TryToDouble( const char* str, double& value ) noexcept;
+
+    template<SimpleStringLike StringT>
+    inline bool TryToDouble( const StringT& str, double& value ) noexcept
     {
-        return ToDouble( str.c_str( ) );
+        return TryToDouble( str.c_str( ), value );
     }
+
+    HCC_EXPORT Double ToDoubleInvariant( const wchar_t* str );
+    HCC_EXPORT Double ToDoubleInvariant( const char* str );
+
+    template<SimpleStringLike StringT>
+    inline Double ToDoubleInvariant( const StringT& str )
+    {
+        return ToDoubleInvariant( str.c_str( ) );
+    }
+
+    HCC_EXPORT bool TryToDoubleInvariant( const wchar_t* str, double& value ) noexcept;
+    HCC_EXPORT bool TryToDoubleInvariant( const char* str, double& value ) noexcept;
+
+    template<SimpleStringLike StringT>
+    inline bool TryToDoubleInvariant( const StringT& str, double& value ) noexcept
+    {
+        return TryToDoubleInvariant( str.c_str( ), value );
+    }
+
+
+
+
 
     inline bool IsAlnum( wchar_t c )
     {

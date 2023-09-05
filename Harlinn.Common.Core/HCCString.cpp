@@ -359,6 +359,36 @@ namespace Harlinn::Common::Core
         return ToBoolean( wstr );
     }
 
+    bool TryToBoolean( const wchar_t* str, bool& value ) noexcept
+    {
+        if ( str != nullptr && str[ 0 ] )
+        {
+            VARIANT_BOOL result = VARIANT_FALSE;
+            auto hr = VarBoolFromStr( str, LOCALE_USER_DEFAULT, VAR_LOCALBOOL, &result );
+            if ( hr == S_OK )
+            {
+                value = result == VARIANT_TRUE;
+                return true;
+            }
+            else
+            {
+                hr = VarBoolFromStr( str, MAKELCID( LANG_INVARIANT, SUBLANG_NEUTRAL ), LOCALE_NOUSEROVERRIDE, &result );
+                if ( hr == S_OK )
+                {
+                    value = result == VARIANT_TRUE;
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    bool TryToBoolean( const char* str, bool& value ) noexcept
+    {
+        auto wstr = ToWideString( str );
+        return TryToBoolean( wstr.c_str(), value );
+    }
+
 
 
     Byte ToByte( const wchar_t* str, int radix )
@@ -408,6 +438,49 @@ namespace Harlinn::Common::Core
         }
     }
 
+    bool TryToByte( const wchar_t* str,Byte& value, int radix ) noexcept
+    {
+        if ( str && str[ 0 ] )
+        {
+            wchar_t* end = nullptr;
+            auto result = wcstoul( str, &end, radix );
+            if ( result == 0 && str == end )
+            {
+                return false;
+            }
+            if ( ( ( result == ULONG_MAX ) && errno == ERANGE ) ||
+                result > UINT8_MAX )
+            {
+                return false;
+            }
+
+            value = 0xFF & result;
+            return true;
+        }
+        return false;
+    }
+    bool TryToByte( const char* str, Byte& value, int radix ) noexcept
+    {
+        if ( str && str[ 0 ] )
+        {
+            char* end = nullptr;
+            auto result = strtoul( str, &end, radix );
+            if ( result == 0 && str == end )
+            {
+                return false;
+            }
+            if ( ( ( result == ULONG_MAX ) && errno == ERANGE ) ||
+                result > UINT8_MAX )
+            {
+                return false;
+            }
+
+            value = 0xFF & result;
+            return true;
+        }
+        return false;
+    }
+
     SByte ToSByte( const wchar_t* str, int radix )
     {
         if ( str && str[0] )
@@ -455,6 +528,50 @@ namespace Harlinn::Common::Core
         }
     }
 
+    bool TryToSByte( const wchar_t* str, SByte& value, int radix ) noexcept
+    {
+        if ( str && str[ 0 ] )
+        {
+            wchar_t* end = nullptr;
+            auto result = wcstol( str, &end, radix );
+            if ( result == 0 && str == end )
+            {
+                return false;
+            }
+            if ( ( ( result == ULONG_MAX ) && errno == ERANGE ) ||
+                result < INT8_MIN || result > INT8_MAX )
+            {
+                return false;
+            }
+
+            value = 0xFF & result;
+            return true;
+        }
+        return false;
+    }
+    bool TryToSByte( const char* str, SByte& value, int radix ) noexcept
+    {
+        if ( str && str[ 0 ] )
+        {
+            char* end = nullptr;
+            auto result = strtol( str, &end, radix );
+            if ( result == 0 && str == end )
+            {
+                return false;
+            }
+            if ( ( ( result == ULONG_MAX ) && errno == ERANGE ) ||
+                result < INT8_MIN || result > INT8_MAX )
+            {
+                return false;
+            }
+
+            value = 0xFF & result;
+            return true;
+        }
+        return false;
+    }
+
+
     Int16 ToInt16( const wchar_t* str, int radix )
     {
         if ( str && str[0] )
@@ -500,6 +617,49 @@ namespace Harlinn::Common::Core
         {
             throw ArgumentException( L"Not a number", "str" );
         }
+    }
+
+    bool TryToInt16( const wchar_t* str, Int16& value, int radix ) noexcept
+    {
+        if ( str && str[ 0 ] )
+        {
+            wchar_t* end = nullptr;
+            auto result = wcstol( str, &end, radix );
+            if ( result == 0 && str == end )
+            {
+                return false;
+            }
+            if ( ( ( result == ULONG_MAX ) && errno == ERANGE ) ||
+                result < INT16_MIN || result > INT16_MAX )
+            {
+                return false;
+            }
+
+            value = 0xFFFF & result;
+            return true;
+        }
+        return false;
+    }
+    bool TryToInt16( const char* str, Int16& value, int radix  ) noexcept
+    {
+        if ( str && str[ 0 ] )
+        {
+            char* end = nullptr;
+            auto result = strtol( str, &end, radix );
+            if ( result == 0 && str == end )
+            {
+                return false;
+            }
+            if ( ( ( result == ULONG_MAX ) && errno == ERANGE ) ||
+                result < INT16_MIN || result > INT16_MAX )
+            {
+                return false;
+            }
+
+            value = 0xFFFF & result;
+            return true;
+        }
+        return false;
     }
 
     UInt16 ToUInt16( const wchar_t* str, int radix )
@@ -549,6 +709,50 @@ namespace Harlinn::Common::Core
         }
     }
 
+    bool TryToUInt16( const wchar_t* str, UInt16& value, int radix ) noexcept
+    {
+        if ( str && str[ 0 ] )
+        {
+            wchar_t* end = nullptr;
+            auto result = wcstoul( str, &end, radix );
+            if ( result == 0 && str == end )
+            {
+                return false;
+            }
+            if ( ( ( result == ULONG_MAX ) && errno == ERANGE ) ||
+                result > UINT16_MAX )
+            {
+                return false;
+            }
+
+            value = 0xFFFF & result;
+            return true;
+        }
+        return false;
+    }
+    bool TryToUInt16( const char* str, UInt16& value, int radix ) noexcept
+    {
+        if ( str && str[ 0 ] )
+        {
+            char* end = nullptr;
+            auto result = strtoul( str, &end, radix );
+            if ( result == 0 && str == end )
+            {
+                return false;
+            }
+            if ( ( ( result == ULONG_MAX ) && errno == ERANGE ) ||
+                result > UINT16_MAX )
+            {
+                return false;
+            }
+
+            value = 0xFFFF & result;
+            return true;
+        }
+        return false;
+    }
+
+
     Int32 ToInt32( const wchar_t* str, int radix )
     {
         if ( str && str[0] )
@@ -565,7 +769,7 @@ namespace Harlinn::Common::Core
                 throw ArgumentException( L"Value out of range", "str" );
             }
 
-            return 0xFFFFFFFF & result;
+            return result;
         }
         else
         {
@@ -588,13 +792,57 @@ namespace Harlinn::Common::Core
                 throw ArgumentException( L"Value out of range", "str" );
             }
 
-            return 0xFFFFFFFF & result;
+            return result;
         }
         else
         {
             throw ArgumentException( L"Not a number", "str" );
         }
     }
+
+    bool TryToInt32( const wchar_t* str, Int32& value, int radix ) noexcept
+    {
+        if ( str && str[ 0 ] )
+        {
+            wchar_t* end = nullptr;
+            auto result = wcstol( str, &end, radix );
+            if ( result == 0 && str == end )
+            {
+                return false;
+            }
+            if ( ( ( result == ULONG_MAX ) && errno == ERANGE ) ||
+                result < INT32_MIN || result > INT32_MAX )
+            {
+                return false;
+            }
+
+            value = result;
+            return true;
+        }
+        return false;
+    }
+    bool TryToInt32( const char* str, Int32& value, int radix ) noexcept
+    {
+        if ( str && str[ 0 ] )
+        {
+            char* end = nullptr;
+            auto result = strtol( str, &end, radix );
+            if ( result == 0 && str == end )
+            {
+                return false;
+            }
+            if ( ( ( result == ULONG_MAX ) && errno == ERANGE ) ||
+                result < INT32_MIN || result > INT32_MAX )
+            {
+                return false;
+            }
+
+            value = result;
+            return true;
+        }
+        return false;
+    }
+
 
     UInt32 ToUInt32( const wchar_t* str, int radix )
     {
@@ -612,7 +860,7 @@ namespace Harlinn::Common::Core
                 throw ArgumentException( L"Value out of range", "str" );
             }
 
-            return 0xFFFFFFFF & result;
+            return result;
         }
         else
         {
@@ -635,12 +883,55 @@ namespace Harlinn::Common::Core
                 throw ArgumentException( L"Value out of range", "str" );
             }
 
-            return 0xFFFFFFFF & result;
+            return result;
         }
         else
         {
             throw ArgumentException( L"Not a number", "str" );
         }
+    }
+
+    bool TryToUInt32( const wchar_t* str, UInt32& value, int radix ) noexcept
+    {
+        if ( str && str[ 0 ] )
+        {
+            wchar_t* end = nullptr;
+            auto result = wcstoul( str, &end, radix );
+            if ( result == 0 && str == end )
+            {
+                return false;
+            }
+            if ( ( ( result == ULONG_MAX ) && errno == ERANGE ) ||
+                result > UINT32_MAX )
+            {
+                return false;
+            }
+
+            value = result;
+            return true;
+        }
+        return false;
+    }
+    bool TryToUInt32( const char* str, UInt32& value, int radix ) noexcept
+    {
+        if ( str && str[ 0 ] )
+        {
+            char* end = nullptr;
+            auto result = strtoul( str, &end, radix );
+            if ( result == 0 && str == end )
+            {
+                return false;
+            }
+            if ( ( ( result == ULONG_MAX ) && errno == ERANGE ) ||
+                result > UINT32_MAX )
+            {
+                return false;
+            }
+
+            value = result;
+            return true;
+        }
+        return false;
     }
 
     Int64 ToInt64( const wchar_t* str, int radix )
@@ -686,6 +977,51 @@ namespace Harlinn::Common::Core
         }
     }
 
+    bool TryToInt64( const wchar_t* str, Int64& value, int radix ) noexcept
+    {
+        if ( str && str[ 0 ] )
+        {
+            wchar_t* end = nullptr;
+            auto result = wcstoll( str, &end, radix );
+            if ( result == 0 && str == end )
+            {
+                return false;
+            }
+            if ( ( ( result == ULONG_MAX ) && errno == ERANGE ) ||
+                result < INT32_MIN || result > INT32_MAX )
+            {
+                return false;
+            }
+
+            value = result;
+            return true;
+        }
+        return false;
+    }
+    bool TryToInt64( const char* str, Int64& value, int radix ) noexcept
+    {
+        if ( str && str[ 0 ] )
+        {
+            char* end = nullptr;
+            auto result = strtoll( str, &end, radix );
+            if ( result == 0 && str == end )
+            {
+                return false;
+            }
+            if ( ( ( result == ULONG_MAX ) && errno == ERANGE ) ||
+                result < INT32_MIN || result > INT32_MAX )
+            {
+                return false;
+            }
+
+            value = result;
+            return true;
+        }
+        return false;
+    }
+
+
+
     UInt64 ToUInt64( const wchar_t* str, int radix )
     {
         if ( str && str[0] )
@@ -728,6 +1064,51 @@ namespace Harlinn::Common::Core
             throw ArgumentException( L"Not a number", "str" );
         }
     }
+
+    bool TryToUInt64( const wchar_t* str, UInt64& value, int radix ) noexcept
+    {
+        if ( str && str[ 0 ] )
+        {
+            wchar_t* end = nullptr;
+            auto result = wcstoull( str, &end, radix );
+            if ( result == 0 && str == end )
+            {
+                return false;
+            }
+            if ( ( ( result == ULONG_MAX ) && errno == ERANGE ) ||
+                result > UINT32_MAX )
+            {
+                return false;
+            }
+
+            value = result;
+            return true;
+        }
+        return false;
+    }
+    bool TryToUInt64( const char* str, UInt64& value, int radix ) noexcept
+    {
+        if ( str && str[ 0 ] )
+        {
+            char* end = nullptr;
+            auto result = strtoull( str, &end, radix );
+            if ( result == 0 && str == end )
+            {
+                return false;
+            }
+            if ( ( ( result == ULONG_MAX ) && errno == ERANGE ) ||
+                result > UINT32_MAX )
+            {
+                return false;
+            }
+
+            value = result;
+            return true;
+        }
+        return false;
+    }
+
+
 
     Single ToSingle( const wchar_t* str )
     {
@@ -772,6 +1153,157 @@ namespace Harlinn::Common::Core
         }
     }
 
+    bool TryToSingle( const wchar_t* str, float& value ) noexcept
+    {
+        if ( str && str[ 0 ] )
+        {
+            wchar_t* end = nullptr;
+            auto result = wcstof( str, &end );
+            if ( result == 0 && str == end )
+            {
+                return false;
+            }
+            if ( ( result == HUGE_VALF || result == -HUGE_VALF ) && errno == ERANGE )
+            {
+                return false;
+            }
+            value = result;
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    bool TryToSingle( const char* str, float& value ) noexcept
+    {
+        if ( str && str[ 0 ] )
+        {
+            char* end = nullptr;
+            auto result = strtof( str, &end );
+            if ( result == 0 && str == end )
+            {
+                return false;
+            }
+            if ( ( result == HUGE_VALF || result == -HUGE_VALF ) && errno == ERANGE )
+            {
+                return false;
+            }
+            value = result;
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+
+
+    namespace
+    {
+        _locale_t GetInvariantNumericLocale( )
+        {
+            static _locale_t invariantLocale = _wcreate_locale( LC_NUMERIC, L"C" );
+            return invariantLocale;
+        }
+    }
+
+
+    Single ToSingleInvariant( const wchar_t* str )
+    {
+        if ( str && str[ 0 ] )
+        {
+            static _locale_t invariantLocale = GetInvariantNumericLocale( );
+            wchar_t* end = nullptr;
+            auto result = _wcstof_l( str, &end, invariantLocale );
+            if ( result == 0 && str == end )
+            {
+                throw ArgumentException( L"Not a number", "str" );
+            }
+            if ( ( result == HUGE_VALF || result == -HUGE_VALF ) && errno == ERANGE )
+            {
+                throw ArgumentException( L"Value out of range", "str" );
+            }
+            return result;
+        }
+        else
+        {
+            throw ArgumentException( L"Not a number", "str" );
+        }
+    }
+    Single ToSingleInvariant( const char* str )
+    {
+        if ( str && str[ 0 ] )
+        {
+            static _locale_t invariantLocale = GetInvariantNumericLocale( );
+            char* end = nullptr;
+            auto result = _strtof_l( str, &end, invariantLocale );
+            if ( result == 0 && str == end )
+            {
+                throw ArgumentException( L"Not a number", "str" );
+            }
+            if ( ( result == HUGE_VALF || result == -HUGE_VALF ) && errno == ERANGE )
+            {
+                throw ArgumentException( L"Value out of range", "str" );
+            }
+            return result;
+        }
+        else
+        {
+            throw ArgumentException( L"Not a number", "str" );
+        }
+    }
+
+    bool TryToSingleInvariant( const wchar_t* str, float& value ) noexcept
+    {
+        if ( str && str[ 0 ] )
+        {
+            static _locale_t invariantLocale = GetInvariantNumericLocale( );
+            wchar_t* end = nullptr;
+            auto result = _wcstof_l( str, &end, invariantLocale );
+            if ( result == 0 && str == end )
+            {
+                return false;
+            }
+            if ( ( result == HUGE_VALF || result == -HUGE_VALF ) && errno == ERANGE )
+            {
+                return false;
+            }
+            value = result;
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+    bool TryToSingleInvariant( const char* str, float& value ) noexcept
+    {
+        if ( str && str[ 0 ] )
+        {
+            static _locale_t invariantLocale = GetInvariantNumericLocale( );
+            char* end = nullptr;
+            auto result = _strtof_l( str, &end, invariantLocale );
+            if ( result == 0 && str == end )
+            {
+                return false;
+            }
+            if ( ( result == HUGE_VALF || result == -HUGE_VALF ) && errno == ERANGE )
+            {
+                return false;
+            }
+            value = result;
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+
     Double ToDouble( const wchar_t* str )
     {
         if ( str && str[0] )
@@ -814,5 +1346,146 @@ namespace Harlinn::Common::Core
             throw ArgumentException( L"Not a number", "str" );
         }
     }
+
+    bool TryToDouble( const wchar_t* str, double& value ) noexcept
+    {
+        if ( str && str[ 0 ] )
+        {
+            wchar_t* end = nullptr;
+            auto result = wcstod( str, &end );
+            if ( result == 0 && str == end )
+            {
+                return false;
+            }
+            if ( ( result == HUGE_VAL || result == -HUGE_VAL ) && errno == ERANGE )
+            {
+                return false;
+            }
+            value = result;
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    bool TryToDouble( const char* str, double& value ) noexcept
+    {
+        if ( str && str[ 0 ] )
+        {
+            char* end = nullptr;
+            auto result = strtod( str, &end );
+            if ( result == 0 && str == end )
+            {
+                return false;
+            }
+            if ( ( result == HUGE_VAL || result == -HUGE_VAL ) && errno == ERANGE )
+            {
+                return false;
+            }
+            value = result;
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+
+    double ToDoubleInvariant( const wchar_t* str )
+    {
+        if ( str && str[ 0 ] )
+        {
+            static _locale_t invariantLocale = GetInvariantNumericLocale( );
+            wchar_t* end = nullptr;
+            auto result = _wcstod_l( str, &end, invariantLocale );
+            if ( result == 0 && str == end )
+            {
+                throw ArgumentException( L"Not a number", "str" );
+            }
+            if ( ( result == HUGE_VAL || result == -HUGE_VAL ) && errno == ERANGE )
+            {
+                throw ArgumentException( L"Value out of range", "str" );
+            }
+            return result;
+        }
+        else
+        {
+            throw ArgumentException( L"Not a number", "str" );
+        }
+    }
+    double ToDoubleInvariant( const char* str )
+    {
+        if ( str && str[ 0 ] )
+        {
+            static _locale_t invariantLocale = GetInvariantNumericLocale( );
+            char* end = nullptr;
+            auto result = _strtod_l( str, &end, invariantLocale );
+            if ( result == 0 && str == end )
+            {
+                throw ArgumentException( L"Not a number", "str" );
+            }
+            if ( ( result == HUGE_VAL || result == -HUGE_VAL ) && errno == ERANGE )
+            {
+                throw ArgumentException( L"Value out of range", "str" );
+            }
+            return result;
+        }
+        else
+        {
+            throw ArgumentException( L"Not a number", "str" );
+        }
+    }
+
+    bool TryToDoubleInvariant( const wchar_t* str, double& value ) noexcept
+    {
+        if ( str && str[ 0 ] )
+        {
+            static _locale_t invariantLocale = GetInvariantNumericLocale( );
+            wchar_t* end = nullptr;
+            auto result = _wcstod_l( str, &end, invariantLocale );
+            if ( result == 0 && str == end )
+            {
+                return false;
+            }
+            if ( ( result == HUGE_VAL || result == -HUGE_VAL ) && errno == ERANGE )
+            {
+                return false;
+            }
+            value = result;
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+    bool TryToDoubleInvariant( const char* str, double& value ) noexcept
+    {
+        if ( str && str[ 0 ] )
+        {
+            static _locale_t invariantLocale = GetInvariantNumericLocale( );
+            char* end = nullptr;
+            auto result = _strtod_l( str, &end, invariantLocale );
+            if ( result == 0 && str == end )
+            {
+                return false;
+            }
+            if ( ( result == HUGE_VAL || result == -HUGE_VAL ) && errno == ERANGE )
+            {
+                return false;
+            }
+            value = result;
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+
 
 }
