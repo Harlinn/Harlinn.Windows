@@ -766,6 +766,114 @@ namespace Harlinn::Common::Core
         HCC_EXPORT WideString From( const char* text, size_t textLength, unsigned codePage = CP_ACP, unsigned flags = 0 );
         HCC_EXPORT AnsiString From( const wchar_t* text, size_t textLength, unsigned codePage = CP_ACP, unsigned flags = 0 );
 
+        template<typename CharType> 
+        const CharType* SkipWhiteSpace( const CharType* start, const CharType* end )
+        {
+            while ( start < end )
+            {
+                CharType c = *start;
+                if ( IsWhiteSpace( c ) == false )
+                {
+                    break;
+                }
+                ++start;
+            }
+            return start;
+        }
+
+        template<typename CharType, bool ignoreWhiteSpace, typename VectorT>
+        const CharType* SplitProcessToken( const CharType* start, const CharType* end, CharType separator, VectorT& result )
+        {
+            using DestinationT = typename VectorT::value_type;
+            auto pos = start;
+            if constexpr ( ignoreWhiteSpace )
+            {
+                
+                while ( pos < end )
+                {
+                    CharType c = *pos;
+                    if ( c == separator || IsWhiteSpace( c ) )
+                    {
+                        break;
+                    }
+                    ++pos;
+                }
+                result.emplace_back( start, static_cast<typename DestinationT::size_type >( pos - start ) );
+                return pos;
+            }
+            else
+            {
+                while ( pos < end )
+                {
+                    CharType c = *pos;
+                    if ( c == separator )
+                    {
+                        break;
+                    }
+                    ++pos;
+                }
+                result.emplace_back( start, static_cast< typename DestinationT::size_type >( pos - start ) );
+                return pos;
+            }
+        }
+
+        template<typename CharType, bool ignoreWhiteSpace>
+        const CharType* SplitProcessSeparator( const CharType* start, const CharType* end, CharType separator, bool& foundSeparator )
+        {
+            foundSeparator = false;
+            auto pos = start;
+            if constexpr ( ignoreWhiteSpace )
+            {
+                pos = SkipWhiteSpace( pos, end );
+                if ( pos < end )
+                {
+                    CharType c = *pos;
+                    if ( c == separator )
+                    {
+                        foundSeparator = true;
+                        pos++;
+                    }
+                    pos = SkipWhiteSpace( pos, end );
+                }
+                return pos;
+            }
+            else
+            {
+                if ( pos < end )
+                {
+                    CharType c = *pos;
+                    if ( c == separator )
+                    {
+                        foundSeparator = true;
+                        pos++;
+                    }
+                }
+                return pos;
+            }
+        }
+
+
+
+        template<typename CharType, bool ignoreWhiteSpace = true, typename VectorT>
+        void Split( const CharType* string, size_t stringLength, CharType separator, VectorT& result )
+        {
+            using DestinationT = typename VectorT::value_type;
+            auto startIt = string;
+            auto endIt = string + stringLength;
+            result.clear( );
+            bool moreTokensExpected = true;
+            while ( startIt < endIt && moreTokensExpected )
+            {
+                startIt = SplitProcessToken<CharType, ignoreWhiteSpace, VectorT>( startIt, endIt, separator, result );
+                startIt = SplitProcessSeparator<CharType, ignoreWhiteSpace>( startIt, endIt, separator, moreTokensExpected );
+            }
+            if ( moreTokensExpected )
+            {
+                result.emplace_back( );
+            }
+        }
+
+
     }
 
     /// <summary>
@@ -4373,7 +4481,8 @@ namespace Harlinn::Common::Core
             return result;
         }
 
-        template<typename VectorT = std::vector<std::basic_string_view<CharType>>, typename SpanT>
+        template<typename VectorT = std::vector<std::basic_string_view<CharType>>, SimpleSpanLike SpanT>
+            requires std::is_same_v<CharType,std::remove_cvref_t<typename SpanT::value_type>>
         [[nodiscard]] VectorT Split( const SpanT& delimiterSpan, size_type start = 0 ) const
         {
             return Split<VectorT>( delimiterSpan.data(), delimiterSpan.size(), start );
@@ -4389,62 +4498,25 @@ namespace Harlinn::Common::Core
         template<bool ignoreWhiteSpace = true, typename VectorT>
         void Split( CharType separator, VectorT& result ) const
         {
-            using DestinationT = typename VectorT::value_type;
-            auto startIt = begin( );
-            auto endIt = end( );
-            result.clear( );
-
-            while ( startIt != endIt )
+            if ( data_ )
             {
-                while ( startIt != endIt )
-                {
-                    CharType currentChar = *startIt;
-                    if constexpr ( ignoreWhiteSpace )
-                    {
-                        if ( currentChar != separator && Internal::IsWhiteSpace( currentChar ) == false )
-                        {
-                            break;
-                        }
-                    }
-                    else
-                    {
-                        if ( currentChar != separator )
-                        {
-                            break;
-                        }
-                    }
-                    ++startIt;
-                }
-                if ( startIt != endIt )
-                {
-                    auto pos = startIt;
-                    while ( pos != endIt )
-                    {
-                        CharType currentChar = *pos;
-                        if constexpr ( ignoreWhiteSpace )
-                        {
-                            if ( currentChar == separator || Internal::IsWhiteSpace( currentChar ) )
-                            {
-                                break;
-                            }
-                        }
-                        else
-                        {
-                            if ( currentChar == separator )
-                            {
-                                break;
-                            }
-                        }
-                        pos++;
-                    }
-                    result.emplace_back( startIt, pos );
-                    startIt = pos;
-                }
+                Internal::Split<CharType, ignoreWhiteSpace, VectorT>( data_->buffer_, data_->size_, separator, result );
             }
-
+            else
+            {
+                using DestinationT = typename VectorT::value_type;
+                result.clear( );
+                result.push_back( DestinationT() );
+            }
         }
 
-
+        template<SimpleSpanLike VectorT, bool ignoreWhiteSpace = true>
+        VectorT Split( CharType separator ) const
+        {
+            VectorT result;
+            Split( separator, result );
+            return result;
+        }
 
         BasicString& UpperCase( )
         {
@@ -4988,61 +5060,25 @@ namespace Harlinn::Common::Core
         template<bool ignoreWhiteSpace = true, typename VectorT>
         void Split( CharType separator, VectorT& result ) const
         {
-            using DestinationT = typename VectorT::value_type;
-            auto startIt = begin( );
-            auto endIt = end( );
-            result.clear( );
-
-            while ( startIt != endIt )
+            if ( Base::data( ) )
             {
-                while ( startIt != endIt )
-                {
-                    CharType currentChar = *startIt;
-                    if constexpr ( ignoreWhiteSpace )
-                    {
-                        if ( currentChar != separator && Internal::IsWhiteSpace( currentChar ) == false )
-                        {
-                            break;
-                        }
-                    }
-                    else
-                    {
-                        if ( currentChar != separator )
-                        {
-                            break;
-                        }
-                    }
-                    ++startIt;
-                }
-                if ( startIt != endIt )
-                {
-                    auto pos = startIt;
-                    while ( pos != endIt )
-                    {
-                        CharType currentChar = *pos;
-                        if constexpr ( ignoreWhiteSpace )
-                        {
-                            if ( currentChar == separator || Internal::IsWhiteSpace( currentChar ) )
-                            {
-                                break;
-                            }
-                        }
-                        else
-                        {
-                            if ( currentChar == separator )
-                            {
-                                break;
-                            }
-                        }
-                        pos++;
-                    }
-                    result.emplace_back( startIt, pos );
-                    startIt = pos;
-                }
+                Internal::Split<CharType, ignoreWhiteSpace, VectorT>( Base::data( ), Base::size( ), separator, result );
             }
-
+            else
+            {
+                using DestinationT = typename VectorT::value_type;
+                result.clear( );
+                result.push_back( DestinationT( ) );
+            }
         }
 
+        template<SimpleSpanLike VectorT, bool ignoreWhiteSpace = true>
+        VectorT Split( CharType separator ) const
+        {
+            VectorT result;
+            Split( separator, result );
+            return result;
+        }
 
     };
 

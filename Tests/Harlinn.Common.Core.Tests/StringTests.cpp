@@ -9687,7 +9687,73 @@ BOOST_AUTO_TEST_CASE( SplitTest1W )
 
 }
 
+// --run_test=StringTests/SplitTest2A
+BOOST_AUTO_TEST_CASE( SplitTest2A )
+{
+    AnsiString source = ",";
+    AnsiStringView sourceView = source;
+    std::vector<std::string_view> result1;
+    std::vector<std::string_view> result2;
+    source.Split( ',', result1 );
 
+    auto count = result1.size( );
+
+    bool equal = count == 2;
+    BOOST_TEST( equal );
+
+    sourceView.Split( ',', result2 );
+
+    count = result2.size( );
+
+    equal = count == 2;
+    BOOST_TEST( equal );
+}
+
+
+// --run_test=StringTests/SplitTest3A
+BOOST_AUTO_TEST_CASE( SplitTest3A )
+{
+    AnsiString source = "";
+    AnsiStringView sourceView = source;
+    std::vector<std::string_view> result1;
+    std::vector<std::string_view> result2;
+    source.Split( ',', result1 );
+
+    auto count = result1.size( );
+
+    bool equal = count == 1;
+    BOOST_TEST( equal );
+
+    sourceView.Split( ',', result2 );
+
+    count = result2.size( );
+
+    equal = count == 1;
+    BOOST_TEST( equal );
+}
+
+
+// --run_test=StringTests/SplitTest4A
+BOOST_AUTO_TEST_CASE( SplitTest4A )
+{
+    AnsiString source = "0";
+    AnsiStringView sourceView = source;
+    std::vector<std::string_view> result1;
+    std::vector<std::string_view> result2;
+    source.Split( ',', result1 );
+
+    auto count = result1.size( );
+
+    bool equal = count == 1;
+    BOOST_TEST( equal );
+
+    sourceView.Split( ',', result2 );
+
+    count = result2.size( );
+
+    equal = count == 1;
+    BOOST_TEST( equal );
+}
 
 
 #endif
