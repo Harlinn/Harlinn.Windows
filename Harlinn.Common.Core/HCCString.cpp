@@ -8,6 +8,16 @@
 
 namespace Harlinn::Common::Core
 {
+    namespace
+    {
+        _locale_t GetInvariantNumericLocale( )
+        {
+            static _locale_t invariantLocale = _wcreate_locale( LC_NUMERIC, L"C" );
+            return invariantLocale;
+        }
+
+    }
+
 #ifdef HCC_WITH_BASIC_STRING
     namespace Internal
     {
@@ -159,6 +169,16 @@ namespace Harlinn::Common::Core
         _ui64tow_s( value, buffer, ARRAYSIZE( buffer ), base );
         return WideString( buffer );
     }
+
+    WideString ToWideStringInvariant( Single value, int width, int precision )
+    {
+        return ToWideString( value, width, precision, std::locale::classic( ) );
+    }
+    WideString ToWideStringInvariant( Single value )
+    {
+        return ToWideString( value, std::locale::classic( ) );
+    }
+
     WideString ToWideString( Single value )
     {
 #ifdef HCC_WITH_BASIC_STRING
@@ -171,17 +191,17 @@ namespace Harlinn::Common::Core
 #endif
     }
 
-    WideString ToWideString( Single value, int width, int precission )
+    WideString ToWideString( Single value, int width, int precision )
     {
-        return Format( L"{:0{}.{}f}", value, width, precission );
+        return Format( L"{:0{}.{}f}", value, width, precision );
     }
     WideString ToWideString( Single value, const std::locale& locale )
     {
         return Format( locale, L"{:0f}", value );
     }
-    WideString ToWideString( Single value, int width, int precission, const std::locale& locale )
+    WideString ToWideString( Single value, int width, int precision, const std::locale& locale )
     {
-        return Format( locale, L"{:0{}.{}f}", value, width, precission );
+        return Format( locale, L"{:0{}.{}f}", value, width, precision );
     }
 
     WideString ToWideString( Double value )
@@ -284,17 +304,28 @@ namespace Harlinn::Common::Core
 #endif
     }
 
-    AnsiString ToAnsiString( Single value, int width, int precission )
+    AnsiString ToAnsiStringInvariant( Single value, int width, int precision )
     {
-        return Format( "{:0{}.{}f}", value, width, precission );
+        return ToAnsiString( value, width, precision, std::locale::classic() );
+    }
+
+    AnsiString ToAnsiStringInvariant( Single value )
+    {
+        return ToAnsiString( value, std::locale::classic( ) );
+    }
+
+
+    AnsiString ToAnsiString( Single value, int width, int precision )
+    {
+        return Format( "{:0{}.{}f}", value, width, precision );
     }
     AnsiString ToAnsiString( Single value, const std::locale& locale )
     {
         return Format( locale, "{:0f}", value );
     }
-    AnsiString ToAnsiString( Single value, int width, int precission, const std::locale& locale )
+    AnsiString ToAnsiString( Single value, int width, int precision, const std::locale& locale )
     {
-        return Format( locale, "{:0{}.{}f}", value, width, precission );
+        return Format( locale, "{:0{}.{}f}", value, width, precision );
     }
 
     AnsiString ToAnsiString( Double value )
@@ -1201,14 +1232,7 @@ namespace Harlinn::Common::Core
 
 
 
-    namespace
-    {
-        _locale_t GetInvariantNumericLocale( )
-        {
-            static _locale_t invariantLocale = _wcreate_locale( LC_NUMERIC, L"C" );
-            return invariantLocale;
-        }
-    }
+    
 
 
     Single ToSingleInvariant( const wchar_t* str )

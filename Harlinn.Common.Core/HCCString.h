@@ -5178,6 +5178,8 @@ namespace Harlinn::Common::Core
     HCC_EXPORT WideString ToWideString( UInt32 value, int base = 10 );
     HCC_EXPORT WideString ToWideString( Int64 value, int base = 10 );
     HCC_EXPORT WideString ToWideString( UInt64 value, int base = 10 );
+    HCC_EXPORT WideString ToWideStringInvariant( Single value, int width, int precision );
+    HCC_EXPORT WideString ToWideStringInvariant( Single value );
     HCC_EXPORT WideString ToWideString( Single value );
     HCC_EXPORT WideString ToWideString( Single value, int width, int precission );
     HCC_EXPORT WideString ToWideString( Single value, const std::locale& locale );
@@ -5301,6 +5303,8 @@ namespace Harlinn::Common::Core
     HCC_EXPORT AnsiString ToAnsiString( UInt32 value, int base = 10 );
     HCC_EXPORT AnsiString ToAnsiString( Int64 value, int base = 10 );
     HCC_EXPORT AnsiString ToAnsiString( UInt64 value, int base = 10 );
+    HCC_EXPORT AnsiString ToAnsiStringInvariant( Single value, int width, int precision );
+    HCC_EXPORT AnsiString ToAnsiStringInvariant( Single value );
     HCC_EXPORT AnsiString ToAnsiString( Single value );
     HCC_EXPORT AnsiString ToAnsiString( Single value, const std::locale& locale );
     HCC_EXPORT AnsiString ToAnsiString( Single value, int width, int precission );
