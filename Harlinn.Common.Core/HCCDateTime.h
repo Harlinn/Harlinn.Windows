@@ -155,6 +155,12 @@ namespace Harlinn::Common::Core
 
         }
 
+        constexpr explicit TimeSpan( std::chrono::system_clock::duration value )
+            : ticks_( value.count() )
+        {
+        }
+
+
         TimeSpan( int hours, int minutes, int seconds )
             : ticks_( TimeToTicks( 0, hours, minutes, seconds ) )
         {
@@ -329,6 +335,11 @@ namespace Harlinn::Common::Core
             return Interval( value, MillisPerSecond );
         }
 
+        static constexpr TimeSpan FromDuration( std::chrono::system_clock::duration value )
+        {
+            return TimeSpan( value.count() );
+        }
+
         constexpr TimeSpan Subtract( const TimeSpan& other ) const noexcept
         {
             return TimeSpan( ticks_ - other.ticks_ );
@@ -359,6 +370,13 @@ namespace Harlinn::Common::Core
         constexpr TimeSpan operator - ( const TimeSpan& other ) const noexcept
         {
             return TimeSpan( ticks_ - other.ticks_ );
+        }
+
+
+        constexpr TimeSpan& operator = ( const std::chrono::system_clock::duration& value )
+        {
+            ticks_ = value.count( );
+            return *this;
         }
 
 
@@ -482,7 +500,7 @@ namespace Harlinn::Common::Core
 
         constexpr std::chrono::system_clock::duration ToDuration( ) const noexcept
         {
-            return std::chrono::system_clock::duration( Ticks( ) - UnixEpoch );
+            return std::chrono::system_clock::duration( Ticks( ) );
         }
 
 
@@ -549,6 +567,11 @@ namespace Harlinn::Common::Core
 
         constexpr explicit DateTime( long long ticks ) noexcept
             : ticks_( ticks )
+        {
+        }
+
+        constexpr explicit DateTime( const std::chrono::system_clock::time_point& timePoint ) noexcept
+            : ticks_( timePoint.time_since_epoch( ).count( ) + UnixEpoch )
         {
         }
 
@@ -658,6 +681,13 @@ namespace Harlinn::Common::Core
                 return 0;
             }
         }
+
+        constexpr DateTime& operator = ( const std::chrono::system_clock::time_point& timePoint ) noexcept
+        {
+            ticks_ = timePoint.time_since_epoch( ).count( ) + UnixEpoch;
+            return *this;
+        }
+
         constexpr bool operator == ( const DateTime& other ) const noexcept
         {
             return ticks_ == other.ticks_;
@@ -898,6 +928,12 @@ namespace Harlinn::Common::Core
         {
             return std::chrono::system_clock::time_point( std::chrono::system_clock::duration( Ticks( ) - UnixEpoch ) );
         }
+
+        static DateTime FromTimePoint( std::chrono::system_clock::time_point timePoint ) noexcept
+        {
+            return DateTime( timePoint.time_since_epoch( ).count( ) + UnixEpoch );
+        }
+
 
         timespec ToTimespec( ) const noexcept
         {

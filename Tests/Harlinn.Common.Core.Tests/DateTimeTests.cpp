@@ -247,10 +247,48 @@ BOOST_AUTO_TEST_CASE( FormatTest1 )
     auto text2 = std::format( "{:%Y-%m-%d %H:%M:%S}", std::chrono::floor<std::chrono::milliseconds>( dateTime.ToTimePoint() ) );
     empty = text.empty( );
     BOOST_CHECK( empty == false );
+}
+
+// --run_test=DateTimeTests/ChronoSystemClockTest1
+BOOST_AUTO_TEST_CASE( ChronoSystemClockTest1 )
+{
+    auto dateTimeNow = DateTime::UtcNow( );
+    auto now = std::chrono::system_clock::now( );
+    auto expected = dateTimeNow.Ticks( ) - DateTime::UnixEpoch;
+    auto nowCount = now.time_since_epoch( ).count( );
+    auto difference = std::abs( nowCount - expected );
+    auto nearlyEqual = difference < DateTime::TicksPerSecond;
+    BOOST_CHECK( nearlyEqual );
+}
+
+// --run_test=DateTimeTests/ChronoSystemClockTest2
+BOOST_AUTO_TEST_CASE( ChronoSystemClockTest2 )
+{
+    auto now = std::chrono::system_clock::now( );
+    DateTime dateTimeNow( now );
     
+    auto expected = dateTimeNow.Ticks( ) - DateTime::UnixEpoch;
+    auto nowCount = now.time_since_epoch( ).count( );
+    auto difference = std::abs( nowCount - expected );
+    auto nearlyEqual = difference < DateTime::TicksPerSecond;
+    BOOST_CHECK( nearlyEqual );
+}
 
 
+// --run_test=DateTimeTests/ChronoSystemClockTest3
+BOOST_AUTO_TEST_CASE( ChronoSystemClockTest3 )
+{
+    auto now = std::chrono::system_clock::now( );
+    DateTime dateTimeNow( now );
 
+    auto next = now + boost::asio::chrono::seconds( 1 );
+    auto dateTimeNext = dateTimeNow + TimeSpan::FromSeconds( 1 );
+
+    auto expected = dateTimeNext.Ticks( ) - DateTime::UnixEpoch;
+    auto nowCount = next.time_since_epoch( ).count( );
+    auto difference = std::abs( nowCount - expected );
+    auto nearlyEqual = difference < DateTime::TicksPerSecond;
+    BOOST_CHECK( nearlyEqual );
 }
 
 
