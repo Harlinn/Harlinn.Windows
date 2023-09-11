@@ -129,12 +129,185 @@ namespace Harlinn::Common::Core::IO
     {
     private:
         friend class CommDeviceStream;
-        DCB data_ = {sizeof( DCB ),0, };
+        DCB data_ = 
+        {
+            .BaudRate = sizeof( DCB ),
+            .fBinary = 1,
+        };
     public:
         DeviceControlBlock( ) = default;
 
         inline DeviceControlBlock( const CommDeviceStream& CommDeviceStream );
 
+        [[nodiscard]] DCB* data( ) noexcept
+        {
+            return &data_;
+        }
+
+        [[nodiscard]] const DCB* data( ) const noexcept
+        {
+            return &data_;
+        }
+
+        /// <summary>
+        /// Returns the baud rate at which the communications device operates. 
+        /// </summary>
+        /// <returns>The baud rate at which the communications device operates.</returns>
+        [[nodiscard]] UInt32 BaudRate( ) const noexcept
+        {
+            return data_.BaudRate;
+        }
+        void SetBaudRate( UInt32 baudRate ) noexcept
+        {
+            data_.BaudRate = baudRate;
+        }
+
+        /// <summary>
+        /// Windows does not support nonbinary mode transfers, so this function must return true.
+        /// </summary>
+        /// <returns></returns>
+        [[nodiscard]] bool Binary( ) const noexcept
+        {
+            return data_.fBinary == 1;
+        }
+
+        /// <summary>
+        /// If this member is TRUE, parity checking is performed and errors are reported.
+        /// </summary>
+        [[nodiscard]] bool ParityEnabled( ) const noexcept
+        {
+            return data_.fParity == 1;
+        }
+        void SetParityEnabled( bool value = true ) noexcept
+        {
+            data_.fParity = value ? 1 : 0;
+        }
+
+        /// <summary>
+        /// CTS handshaking on output
+        /// </summary>
+        [[nodiscard]] bool CtsFlowControlEnabled( ) const noexcept
+        {
+            return data_.fOutxCtsFlow == 1;
+        }
+
+        /// <summary>
+        /// DSR handshaking on output
+        /// </summary>
+        [[nodiscard]] bool DsrFlowControlEnabled( ) const noexcept
+        {
+            return data_.fOutxDsrFlow == 1;
+        }
+
+        /// <summary>
+        /// DTR Flow control
+        /// </summary>
+        [[nodiscard]] IO::DtrControl DtrControl( ) const noexcept
+        {
+            return static_cast< IO::DtrControl >( data_.fDtrControl );
+        }
+
+        /// <summary>
+        /// If true the communications driver is sensitive to the state of the DSR signal. 
+        /// The driver ignores any bytes received, unless the DSR modem input line is high.
+        /// </summary>
+        [[nodiscard]] bool DsrSensitivity( ) const noexcept
+        {
+            return data_.fDsrSensitivity == 1;
+        }
+
+        /// <summary>
+        /// If true, transmission continues after the input buffer has come within XoffLim 
+        /// bytes of being full and the driver has transmitted the XoffChar character to stop 
+        /// receiving bytes. If this member is FALSE, transmission does not continue until the 
+        /// input buffer is within XonLim bytes of being empty and the driver has transmitted 
+        /// the XonChar character to resume reception.
+        /// </summary>
+        [[nodiscard]] bool TXContinueOnXoff( ) const noexcept
+        {
+            return data_.fTXContinueOnXoff == 1;
+        }
+
+        [[nodiscard]] bool OutputXonXoffEnabled( ) const noexcept
+        {
+            return data_.fOutX == 1;
+        }
+
+        [[nodiscard]] bool InputXonXoffEnabled( ) const noexcept
+        {
+            return data_.fInX == 1;
+        }
+
+        [[nodiscard]] bool ErrorCharEnabled( ) const noexcept
+        {
+            return data_.fErrorChar == 1;
+        }
+
+        [[nodiscard]] bool NullStrippingEnabled( ) const noexcept
+        {
+            return data_.fNull == 1;
+        }
+
+
+        [[nodiscard]] IO::RtsControl RtsControl( ) const noexcept
+        {
+            return static_cast< IO::RtsControl >( data_.fRtsControl );
+        }
+
+        [[nodiscard]] bool AbortOnError( ) const noexcept
+        {
+            return data_.fAbortOnError == 1;
+        }
+
+        [[nodiscard]] UInt16 XonLim( ) const noexcept
+        {
+            return data_.XonLim;
+        }
+
+        [[nodiscard]] UInt16 XoffLim( ) const noexcept
+        {
+            return data_.XoffLim;
+        }
+
+        [[nodiscard]] Byte ByteSize( ) const noexcept
+        {
+            return data_.ByteSize;
+        }
+
+        [[nodiscard]] IO::Parity Parity( ) const noexcept
+        {
+            return static_cast< IO::Parity >( data_.Parity );
+        }
+
+        [[nodiscard]] IO::StopBits StopBits( ) const noexcept
+        {
+            return static_cast< IO::StopBits >( data_.StopBits );
+        }
+
+        [[nodiscard]] char XonChar( ) const noexcept
+        {
+            return data_.XonChar;
+        }
+
+        [[nodiscard]] char XoffChar( ) const noexcept
+        {
+            return data_.XoffChar;
+        }
+
+        [[nodiscard]] char ErrorChar( ) const noexcept
+        {
+            return data_.ErrorChar;
+        }
+
+        [[nodiscard]] char EofChar( ) const noexcept
+        {
+            return data_.EofChar;
+        }
+
+        [[nodiscard]] char EvtChar( ) const noexcept
+        {
+            return data_.EvtChar;
+        }
     };
 
 
@@ -156,6 +329,16 @@ namespace Harlinn::Common::Core::IO
         {
             return reinterpret_cast<const COMMCONFIG*>( data_.data( ) );
         }
+
+        IO::DeviceControlBlock& DeviceControlBlock( )
+        {
+            return reinterpret_cast< IO::DeviceControlBlock& >( data( )->dcb );
+        }
+        const IO::DeviceControlBlock& DeviceControlBlock( ) const
+        {
+            return reinterpret_cast< const IO::DeviceControlBlock& >( data( )->dcb );
+        }
+
 
         void resize( size_t newSize )
         {
@@ -312,6 +495,11 @@ namespace Harlinn::Common::Core::IO
         CommDeviceStream( )
             : Base( )
         { }
+
+        CommDeviceStream( HANDLE handle )
+            : Base( handle )
+        { }
+
         CommDeviceStream( ULONG portNumber, bool overlapped, DWORD desiredAccess )
             : Base( Create( portNumber, overlapped, desiredAccess ) )
         { }
@@ -413,7 +601,9 @@ namespace Harlinn::Common::Core::IO
 
 
         /// <summary>
-        /// 
+        /// Waits for an event to occur for a specified communications device. The set of events 
+        /// that are monitored by this function is contained in the event mask associated with the 
+        /// device handle.
         /// </summary>
         /// <param name="eventMask">A pointer to a variable that receives a mask indicating the type of event that occurred</param>
         /// <param name="overlapped">A pointer to an OVERLAPPED structure. This is required if the device was opened in overlapped mode.</param>

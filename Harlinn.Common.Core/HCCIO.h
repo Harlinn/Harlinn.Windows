@@ -2802,10 +2802,23 @@ namespace Harlinn::Common::Core::IO
             return handle_ != InvalidHandleValue;
         }
 
-        constexpr HANDLE Handle( ) const
+        [[nodiscard]] constexpr HANDLE Handle( ) const
         {
             return handle_;
         }
+
+        [[nodiscard]] constexpr HANDLE DetachHandle( ) 
+        {
+            auto tmp = handle_;
+            handle_ = InvalidHandleValue;
+            return tmp;
+        }
+    protected:
+        void AbandonHandle( )
+        {
+            handle_ = InvalidHandleValue;
+        }
+
     public:
         constexpr bool CanRead( ) const noexcept
         {
@@ -2927,9 +2940,25 @@ namespace Harlinn::Common::Core::IO
             }
             return DerivedType(duplicatedHandle);
         }
+    };
 
+    template <typename SystemStreamT>
+    class AttachedSystemStream : public SystemStreamT
+    {
+    public:
+        using Base = SystemStreamT;
+        constexpr explicit AttachedSystemStream( ) = default;
+        constexpr explicit AttachedSystemStream( HANDLE handle )
+            : Base( handle )
+        {
+        }
+        ~AttachedSystemStream( )
+        {
+            Base::AbandonHandle( );
+        }
 
     };
+
 
 
     class FileStream : public SystemStream<FileStream>
