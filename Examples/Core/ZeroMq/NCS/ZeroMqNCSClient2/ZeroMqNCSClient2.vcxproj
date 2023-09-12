@@ -19,10 +19,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <VCProjectVersion>16.0</VCProjectVersion>
+    <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{23ffea5c-999c-45d4-9fcc-2aea8f239c29}</ProjectGuid>
-    <RootNamespace>HarlinnCommonCoreTests</RootNamespace>
+    <ProjectGuid>{2dce2d74-f49e-4ea1-b3d1-33f748de4284}</ProjectGuid>
+    <RootNamespace>ZeroMqNCSClient2</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -72,32 +72,15 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <LinkIncremental>false</LinkIncremental>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <LinkIncremental>false</LinkIncremental>
-  </PropertyGroup>
-  <PropertyGroup Label="Vcpkg">
-    <VcpkgEnabled>false</VcpkgEnabled>
-  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
-      <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)Harlinn.Common.Core;$(SolutionDir)3rdParty\Harlinn.libzmq\include;$(SolutionDir)3rdParty\Harlinn.cppzmq;$(SolutionDir)3rdParty\Harlinn.LMDB;$(BOOST_ROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <SDLCheck>true</SDLCheck>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
-      <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <AdditionalOptions>/Zc:__cplusplus /bigobj %(AdditionalOptions)</AdditionalOptions>
-      <PrecompiledHeader>Use</PrecompiledHeader>
-      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <BuildStlModules>false</BuildStlModules>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -113,15 +96,10 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)Harlinn.Common.Core;$(SolutionDir)3rdParty\Harlinn.libzmq\include;$(SolutionDir)3rdParty\Harlinn.cppzmq;$(SolutionDir)3rdParty\Harlinn.LMDB;$(BOOST_ROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <LanguageStandard>stdcpplatest</LanguageStandard>
       <BufferSecurityCheck>false</BufferSecurityCheck>
-      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
-      <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <AdditionalOptions>/Zc:__cplusplus /bigobj %(AdditionalOptions)</AdditionalOptions>
-      <PrecompiledHeader>Use</PrecompiledHeader>
-      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <BuildStlModules>false</BuildStlModules>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -134,18 +112,12 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
-      <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)Harlinn.Common.Core;$(SolutionDir)3rdParty\Harlinn.libzmq\include;$(SolutionDir)3rdParty\Harlinn.cppzmq;$(SolutionDir)3rdParty\Harlinn.LMDB;$(BOOST_ROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <SDLCheck>true</SDLCheck>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
-      <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <AdditionalOptions>/Zc:__cplusplus /bigobj %(AdditionalOptions)</AdditionalOptions>
-      <PrecompiledHeader>Use</PrecompiledHeader>
-      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <BuildStlModules>false</BuildStlModules>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -161,15 +133,10 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)Harlinn.Common.Core;$(SolutionDir)3rdParty\Harlinn.libzmq\include;$(SolutionDir)3rdParty\Harlinn.cppzmq;$(SolutionDir)3rdParty\Harlinn.LMDB;$(BOOST_ROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <LanguageStandard>stdcpplatest</LanguageStandard>
       <BufferSecurityCheck>false</BufferSecurityCheck>
-      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
-      <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <AdditionalOptions>/Zc:__cplusplus /bigobj %(AdditionalOptions)</AdditionalOptions>
-      <PrecompiledHeader>Use</PrecompiledHeader>
-      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <BuildStlModules>false</BuildStlModules>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -180,84 +147,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="ArrayTests.cpp" />
-    <ClCompile Include="BinaryRWTests.cpp" />
-    <ClCompile Include="BitsConversionTests.cpp" />
-    <ClCompile Include="BitsTests.cpp" />
-    <ClCompile Include="BitVectorTests.cpp" />
-    <ClCompile Include="BlocksStreamTests.cpp" />
-    <ClCompile Include="BufferStreamTests.cpp" />
-    <ClCompile Include="ComImplTests.cpp" />
-    <ClCompile Include="ComInterfacesTests.cpp" />
-    <ClCompile Include="ConcurrentQueueTests.cpp" />
-    <ClCompile Include="DirectoryUtilsTests.cpp" />
-    <ClCompile Include="ListTests.cpp" />
-    <ClCompile Include="LoggerLevelTests.cpp" />
-    <ClCompile Include="SerializationRWTests.cpp" />
-    <ClCompile Include="SimpleConcurrentQueueTests.cpp" />
-    <ClCompile Include="ContextTests.cpp" />
-    <ClCompile Include="ConvertersTests.cpp" />
-    <ClCompile Include="CriticalSectionTests.cpp" />
-    <ClCompile Include="CryptoSertificateStoreTests.cpp" />
-    <ClCompile Include="CurrencyTests.cpp" />
-    <ClCompile Include="DateTimeTests.cpp" />
-    <ClCompile Include="EnvironmentTests.cpp" />
-    <ClCompile Include="EseTests.cpp" />
-    <ClCompile Include="EventWaitHandleTests.cpp" />
-    <ClCompile Include="FileTests.cpp" />
-    <ClCompile Include="FixedStringTests.cpp" />
-    <ClCompile Include="GuidTests.cpp" />
-    <ClCompile Include="Harlinn.Common.Core.Tests.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="LoggerLMDBSinkStorageTests.cpp" />
-    <ClCompile Include="MathMatrixTests.cpp" />
-    <ClCompile Include="MathTests.cpp" />
-    <ClCompile Include="CommDeviceTests.cpp" />
-    <ClCompile Include="pch.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="TypeDescriptorCursorTests.cpp" />
-    <ClCompile Include="IStreamMemoryStreamTests.cpp" />
-    <ClCompile Include="LMDBTests.cpp" />
-    <ClCompile Include="MemoryStreamTests.cpp" />
-    <ClCompile Include="MutexTests.cpp" />
-    <ClCompile Include="PersistentTests.cpp" />
-    <ClCompile Include="ProcessTests.cpp" />
-    <ClCompile Include="SecurityAccessControlListTests.cpp" />
-    <ClCompile Include="SecurityAccessMaskTests.cpp" />
-    <ClCompile Include="SecurityLocalUniqueIdTests.cpp" />
-    <ClCompile Include="SecurityPackageTests.cpp" />
-    <ClCompile Include="SecuritySecurityIdTests.cpp" />
-    <ClCompile Include="SecurityTokenTests.cpp" />
-    <ClCompile Include="SecurityTrusteeTests.cpp" />
-    <ClCompile Include="SlimReaderWriterLockTests.cpp" />
-    <ClCompile Include="SocketSecurityTests.cpp" />
-    <ClCompile Include="SocketTest2.cpp" />
-    <ClCompile Include="SocketTests.cpp" />
-    <ClCompile Include="SpinlockTests.cpp" />
-    <ClCompile Include="LibTests.cpp" />
-    <ClCompile Include="StringTests.cpp" />
-    <ClCompile Include="SynchronizationBarrierTests.cpp" />
-    <ClCompile Include="ThreadTests.cpp" />
-    <ClCompile Include="TimerQueueTests.cpp" />
-    <ClCompile Include="TimeSpanTests.cpp" />
-    <ClCompile Include="TraitsTests.cpp" />
-    <ClCompile Include="TupleTests.cpp" />
-    <ClCompile Include="VariantTests.cpp" />
-    <ClCompile Include="VectorTests.cpp" />
-    <ClCompile Include="WaitableTimerTests.cpp" />
-    <ClCompile Include="XmlTests.cpp" />
-    <ClCompile Include="ZMQTests.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="pch.h" />
+    <ClCompile Include="ZeroMqNCSClient2.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
