@@ -20,11 +20,11 @@ int main()
         ZMQNotificationServer server( context, L"TestServer", serverListenEndpoint, serverListenInprocEndpoint );
         server.Start( );
 
-        server.OnProcess.connect( []( ZMQServer* sender, ZMQReadStream& requestStream, ZMQWriteStream& replyStream, ZMQWriteStream& errorStream )
+        server.OnProcess.connect( []( ZMQServer* sender, IO::MemoryStream& requestStream, IO::MemoryStream& replyStream, IO::MemoryStream& errorStream )
             {
                 printf( "In Server\n" );
                 ZMQNotificationServer* notificationServer = static_cast< ZMQNotificationServer* >( sender );
-                IO::BinaryReader<ZMQReadStream> reader( requestStream );
+                IO::BinaryReader<IO::MemoryStream> reader( requestStream );
                 auto commandStr = reader.Read<WideString>( );
                 auto argumentStr = reader.Read<WideString>( );
 

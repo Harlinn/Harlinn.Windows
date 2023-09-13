@@ -11,11 +11,11 @@ using namespace Harlinn::Common::Core::ZeroMq;
 
 void SendCommand( ZMQNotificationClient& client, const WideString& commandString, const WideString& argumentString )
 {
-    ZMQWriteStream zmqWriteStream( client.ClientSocket( ) );
-    IO::BinaryWriter<ZMQWriteStream> writer( zmqWriteStream );
+    IO::MemoryStream writeStream;
+    IO::BinaryWriter<IO::MemoryStream> writer( writeStream );
     writer.Write( commandString );
     writer.Write( argumentString );
-    zmqWriteStream.Flush( );
+    client.Send( writeStream );
     Message message;
     client.Receive( message );
 }
@@ -33,9 +33,9 @@ int main()
         ZMQNotificationClient client( context, L"TestClient1", serverEndpoint, notificationListenEndpoint, notificationListenInprocEndpoint );
         client.Start( );
 
-        client.OnProcess.connect( []( ZMQServer* sender, ZMQReadStream& requestStream, ZMQWriteStream& replyStream, ZMQWriteStream& errorStream )
+        client.OnProcess.connect( []( ZMQServer* sender, IO::MemoryStream& requestStream, IO::MemoryStream& replyStream, IO::MemoryStream& errorStream )
             {
-                IO::BinaryReader<ZMQReadStream> reader( requestStream );
+                IO::BinaryReader<IO::MemoryStream> reader( requestStream );
                 auto str = reader.Read<WideString>( );
                 wprintf( L"Received: %s\n", str.c_str( ) );
             } );

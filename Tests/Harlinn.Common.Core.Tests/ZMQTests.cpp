@@ -75,11 +75,11 @@ BOOST_AUTO_TEST_CASE( NotificationClientServerTest1 )
 
         ZMQNotificationClient client2( context, L"TestClient2", serverEndpoint, notificationListenEndpoint2, notificationListenInprocEndpoint2 );
 
-        server.OnProcess.connect( [&receivedOnServer ]( ZMQServer* sender, ZMQReadStream& requestStream, ZMQWriteStream& replyStream, ZMQWriteStream& errorStream )
+        server.OnProcess.connect( [&receivedOnServer ]( ZMQServer* sender, IO::MemoryStream& requestStream, IO::MemoryStream& replyStream, IO::MemoryStream& errorStream )
             {
                 printf( "In Server\n" );
                 ZMQNotificationServer* notificationServer = static_cast< ZMQNotificationServer* >( sender );
-                IO::BinaryReader<ZMQReadStream> reader( requestStream );
+                IO::BinaryReader<IO::MemoryStream> reader( requestStream );
                 auto str = reader.Read<WideString>( );
                 receivedOnServer = str;
 
@@ -90,19 +90,19 @@ BOOST_AUTO_TEST_CASE( NotificationClientServerTest1 )
                 notificationServer->Publish( notification );
             } );
 
-        client1.OnProcess.connect( [&receivedOnClient1, &eventWaitHandle1 ]( ZMQServer* sender, ZMQReadStream& requestStream, ZMQWriteStream& replyStream, ZMQWriteStream& errorStream )
+        client1.OnProcess.connect( [&receivedOnClient1, &eventWaitHandle1 ]( ZMQServer* sender, IO::MemoryStream& requestStream, IO::MemoryStream& replyStream, IO::MemoryStream& errorStream )
             {
                 printf( "In Client1\n" );
-                IO::BinaryReader<ZMQReadStream> reader( requestStream );
+                IO::BinaryReader<IO::MemoryStream> reader( requestStream );
                 auto str = reader.Read<WideString>( );
                 receivedOnClient1 = str;
                 eventWaitHandle1.Signal( );
             } );
 
-        client2.OnProcess.connect( [&receivedOnClient2, &eventWaitHandle2 ]( ZMQServer* sender, ZMQReadStream& requestStream, ZMQWriteStream& replyStream, ZMQWriteStream& errorStream )
+        client2.OnProcess.connect( [&receivedOnClient2, &eventWaitHandle2 ]( ZMQServer* sender, IO::MemoryStream& requestStream, IO::MemoryStream& replyStream, IO::MemoryStream& errorStream )
             {
                 printf( "In Client2\n" );
-                IO::BinaryReader<ZMQReadStream> reader( requestStream );
+                IO::BinaryReader<IO::MemoryStream> reader( requestStream );
                 auto str = reader.Read<WideString>( );
                 receivedOnClient2 = str;
                 eventWaitHandle2.Signal( );

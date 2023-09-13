@@ -534,7 +534,7 @@ namespace Harlinn::Common::Core::ZeroMq
         AnsiString serverInprocEndpoint_;
         Thread thread_;
     public:
-        boost::signals2::signal<void( ZMQServer* sender, ZMQReadStream& requestStream, ZMQWriteStream& replyStream, ZMQWriteStream& errorStream )> OnProcess;
+        boost::signals2::signal<void( ZMQServer* sender, IO::MemoryStream& requestStream, IO::MemoryStream& replyStream, IO::MemoryStream& errorStream )> OnProcess;
         ZMQServer( ZeroMq::Context& context, const WideString& threadName, const AnsiString& serverEndpoint, const AnsiString& serverInprocEndpoint )
             : context_( context ), threadName_( threadName ), serverEndpoint_( serverEndpoint ), serverInprocEndpoint_( serverInprocEndpoint )
         { }
@@ -569,7 +569,7 @@ namespace Harlinn::Common::Core::ZeroMq
             }
         }
     protected:
-        virtual bool Process( ZMQReadStream& requestStream, ZMQWriteStream& replyStream, ZMQWriteStream& errorStream )
+        virtual bool Process( IO::MemoryStream& requestStream, IO::MemoryStream& replyStream, IO::MemoryStream& errorStream )
         {
             OnProcess( this, requestStream, replyStream, errorStream );
             return true;
@@ -652,17 +652,31 @@ namespace Harlinn::Common::Core::ZeroMq
 
                     if ( ( pollItems[ 0 ].revents & ZMQ_POLLIN ) == ZMQ_POLLIN )
                     {
+                        /*
                         ZMQReadStream requestStream( socket );
                         ZMQWriteStream replyStream( socket );
                         ZMQWriteStream errorStream( socket );
                         bool processed = this->Process( requestStream, replyStream, errorStream );
+                        */
+                        
+                        Message requestMessage;
+                        socket.Receive( requestMessage );
+
+                        IO::MemoryStream requestStream( reinterpret_cast<Byte*>(requestMessage.data()), requestMessage.size(), false );
+                        IO::MemoryStream replyStream;
+                        replyStream.SetCapacity( 64 * 1024 );
+                        
+                        IO::MemoryStream errorStream;
+
+                        bool processed = this->Process( requestStream, replyStream, errorStream );
+
                         if ( processed )
                         {
-                            replyStream.Flush( );
+                            socket.Send( replyStream );
                         }
                         else
                         {
-                            errorStream.Flush( );
+                            socket.Send( errorStream );
                         }
                     }
 
