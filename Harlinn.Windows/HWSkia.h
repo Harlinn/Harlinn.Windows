@@ -154,7 +154,7 @@ namespace Harlinn::Windows
 #endif
             auto dxgiFactory = DXGI::CreateFactory<DXGI::Factory4>( );
             auto hardwareAdapter = dxgiFactory.FindAdapter( D3D_FEATURE_LEVEL_12_1 );
-            auto device = CreateDevice( hardwareAdapter, D3D_FEATURE_LEVEL_12_1 );
+            auto device = D3D12::CreateDevice( hardwareAdapter, D3D_FEATURE_LEVEL_12_1 );
 
             D3D12_COMMAND_QUEUE_DESC queueDesc = {};
             queueDesc.Flags = D3D12_COMMAND_QUEUE_FLAG_NONE;

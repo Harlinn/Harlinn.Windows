@@ -30,7 +30,7 @@ int main( )
 
         Harlinn::CIMTool::Main mainUI;
 
-        form.OnRender.connect( [&mainUI]( Windows::ImGui::Form* sender )
+        form.OnRender.connect( [&mainUI]( auto* sender )
         {
             mainUI.Render( );
         } );
