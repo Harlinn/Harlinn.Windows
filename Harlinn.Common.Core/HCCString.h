@@ -741,21 +741,21 @@ namespace Harlinn::Common::Core
             size_t size_ = 0;
             CharType buffer_[1024];
 
-            size_t AddRef( )
+            size_t AddRef( ) noexcept
             {
                 return InterlockedIncrementSizeT( &referenceCount_ );
             }
 
-            size_t DecRef( )
+            size_t DecRef( ) noexcept
             {
                 return InterlockedDecrementSizeT( &referenceCount_ );
             }
 
-            constexpr bool Contains( const CharType* ptr )
+            constexpr bool Contains( const CharType* ptr ) noexcept
             {
                 return ptr >= buffer_ && ptr <= (buffer_ + size_);
             }
-            constexpr bool Contains( const CharType* ptr, size_t startPosition )
+            constexpr bool Contains( const CharType* ptr, size_t startPosition ) noexcept
             {
                 return ptr >= (buffer_ + startPosition ) && ptr <= ( buffer_ + size_ );
             }
@@ -1539,7 +1539,7 @@ namespace Harlinn::Common::Core
         }
 
 
-        BasicString( const BasicString& other )
+        BasicString( const BasicString& other ) noexcept
             : data_( other.data_ )
         {
             if ( data_ )

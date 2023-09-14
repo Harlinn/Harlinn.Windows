@@ -1087,8 +1087,111 @@ namespace Harlinn::Common::Core::Xml
                 auto hr = pInterface->normalize( );
                 HCC_COM_CHECK_HRESULT2( hr, pInterface );
             }
-        
+
+
+            template<typename T>
+                requires (std::is_arithmetic_v<T> || std::is_same_v<T,DateTime> || std::is_same_v<T, TimeSpan> || 
+                    std::is_same_v<T, WideString> || std::is_same_v<T, AnsiString> || std::is_same_v<T, std::string> || std::is_same_v<T, std::wstring> || std::is_same_v<T, SysString> ||
+                        std::is_same_v<T, Guid> || std::is_same_v<T, Currency> )
+            T Read(const wchar_t* attributeName ) const
+            { 
+                Variant variant;
+                if ( TryGetAttribute( attributeName, variant ) )
+                {
+                    return variant.As<T>( );
+                }
+                return {};
+            }
+
+            template<typename T, SimpleWideStringLike StringT>
+                requires (std::is_arithmetic_v<T> || std::is_same_v<T,DateTime> || std::is_same_v<T, TimeSpan> || 
+                    std::is_same_v<T, WideString> || std::is_same_v<T, AnsiString> || std::is_same_v<T, std::string> || std::is_same_v<T, std::wstring> || std::is_same_v<T, SysString> ||
+                        std::is_same_v<T, Guid> || std::is_same_v<T, Currency> )
+            T Read(const StringT& attributeName ) const
+            { 
+                Variant variant;
+                if ( TryGetAttribute( attributeName.c_str(), variant ) )
+                {
+                    return variant.As<T>( );
+                }
+                return {};
+            }
+
+            template<typename T>
+                requires (std::is_arithmetic_v<T> || std::is_same_v<T,DateTime> || std::is_same_v<T, TimeSpan> || 
+                    std::is_same_v<T, WideString> || std::is_same_v<T, AnsiString> || std::is_same_v<T, std::string> || std::is_same_v<T, std::wstring> || std::is_same_v<T, SysString> ||
+                        std::is_same_v<T, Guid> || std::is_same_v<T, Currency> )
+            T Read(const wchar_t* attributeName, const T& defaultValue ) const
+            { 
+                Variant variant;
+                if ( TryGetAttribute( attributeName, variant ) )
+                {
+                    return variant.As<T>( );
+                }
+                return defaultValue;
+            }
+
+            template<typename T, SimpleWideStringLike StringT>
+                requires (std::is_arithmetic_v<T> || std::is_same_v<T,DateTime> || std::is_same_v<T, TimeSpan> || 
+                    std::is_same_v<T, WideString> || std::is_same_v<T, AnsiString> || std::is_same_v<T, std::string> || std::is_same_v<T, std::wstring> || std::is_same_v<T, SysString> ||
+                        std::is_same_v<T, Guid> || std::is_same_v<T, Currency> )
+            T Read(const StringT& attributeName, const T& defaultValue ) const
+            { 
+                Variant variant;
+                if ( TryGetAttribute( attributeName.c_str(), variant ) )
+                {
+                    return variant.As<T>( );
+                }
+                return defaultValue;
+            }
+
+            template<typename T>
+                requires ( IsStdOptional<T> && 
+                    (std::is_arithmetic_v<typename T::value_type> || std::is_same_v<typename T::value_type,DateTime> || std::is_same_v<typename T::value_type, TimeSpan> ||
+                    std::is_same_v<typename T::value_type, WideString> || std::is_same_v<typename T::value_type, AnsiString> || std::is_same_v<typename T::value_type, std::string> || std::is_same_v<typename T::value_type, std::wstring> || std::is_same_v<typename T::value_type, SysString> ||
+                        std::is_same_v<typename T::value_type, Guid> || std::is_same_v<typename T::value_type, Currency> ) )
+            T Read(const wchar_t* attributeName ) const
+            { 
+                Variant variant;
+                if ( TryGetAttribute( attributeName, variant ) )
+                {
+                    return variant.As<typename T::value_type>( );
+                }
+                return {};
+            }
+
+            template<typename T, SimpleWideStringLike StringT>
+                requires ( IsStdOptional<T> && 
+                    (std::is_arithmetic_v<typename T::value_type> || std::is_same_v<typename T::value_type,DateTime> || std::is_same_v<typename T::value_type, TimeSpan> ||
+                    std::is_same_v<typename T::value_type, WideString> || std::is_same_v<typename T::value_type, AnsiString> || std::is_same_v<typename T::value_type, std::string> || std::is_same_v<typename T::value_type, std::wstring> || std::is_same_v<typename T::value_type, SysString> ||
+                        std::is_same_v<typename T::value_type, Guid> || std::is_same_v<typename T::value_type, Currency> ) )
+            T Read(const StringT& attributeName ) const
+            { 
+                Variant variant;
+                if ( TryGetAttribute( attributeName.c_str(), variant ) )
+                {
+                    return variant.As<typename T::value_type>( );
+                }
+                return {};
+            }
+
+            template<typename T>
+                requires std::is_same_v<T,Element>
+            T Read( const wchar_t* tagName ) const
+            {
+                return FindElement( tagName );
+            }
+
+            template<typename T, SimpleWideStringLike StringT>
+                requires std::is_same_v<T, Element>
+            T Read( const StringT& tagName ) const
+            {
+                return FindElement( tagName );
+            }
+
         };
+
+        
 
 
         class DocumentFragment : public Node
