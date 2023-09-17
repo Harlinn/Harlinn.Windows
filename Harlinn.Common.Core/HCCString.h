@@ -5307,9 +5307,14 @@ namespace Harlinn::Common::Core
     HCC_EXPORT AnsiString ToAnsiStringInvariant( Single value );
     HCC_EXPORT AnsiString ToAnsiString( Single value );
     HCC_EXPORT AnsiString ToAnsiString( Single value, const std::locale& locale );
-    HCC_EXPORT AnsiString ToAnsiString( Single value, int width, int precission );
-    HCC_EXPORT AnsiString ToAnsiString( Single value, int width, int precission, const std::locale& locale );
+    HCC_EXPORT AnsiString ToAnsiString( Single value, int width, int precision );
+    HCC_EXPORT AnsiString ToAnsiString( Single value, int width, int precision, const std::locale& locale );
+    HCC_EXPORT AnsiString ToAnsiStringInvariant( Double value, int width, int precision );
+    HCC_EXPORT AnsiString ToAnsiStringInvariant( Double value );
     HCC_EXPORT AnsiString ToAnsiString( Double value );
+    HCC_EXPORT AnsiString ToAnsiString( Double value, const std::locale& locale );
+    HCC_EXPORT AnsiString ToAnsiString( Double value, int width, int precision );
+    HCC_EXPORT AnsiString ToAnsiString( Double value, int width, int precision, const std::locale& locale );
     HCC_EXPORT AnsiString ToAnsiString( const DateTime& value );
     HCC_EXPORT AnsiString ToAnsiString( const TimeSpan& value );
     HCC_EXPORT AnsiString ToAnsiString( const Guid& value );
@@ -5735,27 +5740,27 @@ namespace Harlinn::Common::Core
 
     template<typename CharT>
         requires std::is_same_v<char, CharT> || std::is_same_v<wchar_t, CharT>
-    inline bool TryParse( const CharT* str, float& value, int radix = 10 )
+    inline bool TryParse( const CharT* str, float& value )
     {
-        return TryParseSingle( str, value, radix );
+        return TryParseSingle( str, value );
     }
     template<SimpleStringLike StringT>
-    inline bool TryParse( const StringT& str, float& value, int radix = 10 ) noexcept
+    inline bool TryParse( const StringT& str, float& value ) noexcept
     {
-        return TryParseSingle( str.c_str( ), value, radix );
+        return TryParseSingle( str.c_str( ), value );
     }
 
     template<typename T, typename CharT>
         requires std::is_same_v<float, T> && ( std::is_same_v<char, CharT> || std::is_same_v<wchar_t, CharT> )
-    inline T Parse( const CharT* str, int radix = 10 )
+    inline T Parse( const CharT* str )
     {
-        return ParseSingle( str, radix );
+        return ParseSingle( str );
     }
     template<typename T, SimpleStringLike StringT>
         requires std::is_same_v<float, T>
-    inline T Parse( const StringT& str, int radix = 10 )
+    inline T Parse( const StringT& str )
     {
-        return ParseSingle( str.c_str( ), radix );
+        return ParseSingle( str.c_str( ) );
     }
 
     HCC_EXPORT Single ParseSingleInvariant( const wchar_t* str );
@@ -5774,6 +5779,32 @@ namespace Harlinn::Common::Core
     inline bool TryParseSingleInvariant( const StringT& str, float& value ) noexcept
     {
         return TryParseSingleInvariant( str.c_str( ), value );
+    }
+
+
+    template<typename CharT>
+        requires std::is_same_v<char, CharT> || std::is_same_v<wchar_t, CharT>
+    inline bool TryParseInvariant( const CharT* str, float& value )
+    {
+        return TryParseSingleInvariant( str, value );
+    }
+    template<SimpleStringLike StringT>
+    inline bool TryParseInvariant( const StringT& str, float& value) noexcept
+    {
+        return TryParseSingleInvariant( str.c_str( ), value );
+    }
+
+    template<typename T, typename CharT>
+        requires std::is_same_v<float, T> && ( std::is_same_v<char, CharT> || std::is_same_v<wchar_t, CharT> )
+    inline T ParseInvariant( const CharT* str )
+    {
+        return ParseSingleInvariant( str );
+    }
+    template<typename T, SimpleStringLike StringT>
+        requires std::is_same_v<float, T>
+    inline T ParseInvariant( const StringT& str )
+    {
+        return ParseSingleInvariant( str.c_str( ) );
     }
 
 
@@ -5797,27 +5828,27 @@ namespace Harlinn::Common::Core
 
     template<typename CharT>
         requires std::is_same_v<char, CharT> || std::is_same_v<wchar_t, CharT>
-    inline bool TryParse( const CharT* str, double& value, int radix = 10 )
+    inline bool TryParse( const CharT* str, double& value )
     {
-        return TryParseDouble( str, value, radix );
+        return TryParseDouble( str, value );
     }
     template<SimpleStringLike StringT>
-    inline bool TryParse( const StringT& str, double& value, int radix = 10 ) noexcept
+    inline bool TryParse( const StringT& str, double& value ) noexcept
     {
-        return TryParseDouble( str.c_str( ), value, radix );
+        return TryParseDouble( str.c_str( ), value );
     }
 
     template<typename T, typename CharT>
         requires std::is_same_v<double, T> && ( std::is_same_v<char, CharT> || std::is_same_v<wchar_t, CharT> )
-    inline T Parse( const CharT* str, int radix = 10 )
+    inline T Parse( const CharT* str )
     {
-        return ParseDouble( str, radix );
+        return ParseDouble( str );
     }
     template<typename T, SimpleStringLike StringT>
         requires std::is_same_v<double, T>
-    inline T Parse( const StringT& str, int radix = 10 )
+    inline T Parse( const StringT& str )
     {
-        return ParseDouble( str.c_str( ), radix );
+        return ParseDouble( str.c_str( ) );
     }
 
 
@@ -5839,7 +5870,30 @@ namespace Harlinn::Common::Core
         return TryParseDoubleInvariant( str.c_str( ), value );
     }
 
+    template<typename CharT>
+        requires std::is_same_v<char, CharT> || std::is_same_v<wchar_t, CharT>
+    inline bool TryParseInvariant( const CharT* str, double& value )
+    {
+        return TryParseDoubleInvariant( str, value );
+    }
+    template<SimpleStringLike StringT>
+    inline bool TryParseInvariant( const StringT& str, double& value ) noexcept
+    {
+        return TryParseDoubleInvariant( str.c_str( ), value );
+    }
 
+    template<typename T, typename CharT>
+        requires std::is_same_v<double, T> && ( std::is_same_v<char, CharT> || std::is_same_v<wchar_t, CharT> )
+    inline T ParseInvariant( const CharT* str )
+    {
+        return ParseDoubleInvariant( str );
+    }
+    template<typename T, SimpleStringLike StringT>
+        requires std::is_same_v<double, T>
+    inline T ParseInvariant( const StringT& str )
+    {
+        return ParseDoubleInvariant( str.c_str( ) );
+    }
 
 
 

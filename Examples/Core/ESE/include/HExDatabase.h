@@ -130,7 +130,7 @@ namespace Harlinn::Common::Core::Examples
             if ( rc >= Ese::Result::Success && Owner() == ownerId )
             {
                 MakeKey( ownerId, Ese::KeyFlags::NewKey | Ese::KeyFlags::FullColumnEndLimit );
-                SetIndexRange( Ese::IndexRengeFlags::Inclusive | Ese::IndexRengeFlags::UpperLimit );
+                SetIndexRange( Ese::IndexRangeFlags::Inclusive | Ese::IndexRangeFlags::UpperLimit );
                 return true;
             }
             return false;
@@ -660,7 +660,7 @@ namespace Harlinn::Common::Core::Examples
             {
                 MakeKey( sensorId, Ese::KeyFlags::NewKey );
                 MakeKey( DateTime::MaxValue( ).Ticks() );
-                SetIndexRange( Ese::IndexRengeFlags::UpperLimit );
+                SetIndexRange( Ese::IndexRangeFlags::UpperLimit );
                 return true;
             }
             else
@@ -679,7 +679,7 @@ namespace Harlinn::Common::Core::Examples
             {
                 MakeKey( sensorId, Ese::KeyFlags::NewKey );
                 MakeKey( endTimestamp.Ticks( ) );
-                SetIndexRange( Ese::IndexRengeFlags::UpperLimit );
+                SetIndexRange( Ese::IndexRangeFlags::UpperLimit );
                 return true;
             }
             else

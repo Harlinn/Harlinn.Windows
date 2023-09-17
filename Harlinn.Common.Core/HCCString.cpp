@@ -328,6 +328,15 @@ namespace Harlinn::Common::Core
         return Format( locale, "{:0{}.{}f}", value, width, precision );
     }
 
+    AnsiString ToAnsiStringInvariant( Double value, int width, int precision )
+    {
+        return ToAnsiString( value, width, precision, std::locale::classic( ) );
+    }
+    AnsiString ToAnsiStringInvariant( Double value )
+    {
+        return ToAnsiString( value, std::locale::classic( ) );
+    }
+
     AnsiString ToAnsiString( Double value )
     {
 #ifdef HCC_WITH_BASIC_STRING
@@ -339,6 +348,20 @@ namespace Harlinn::Common::Core
         return std::to_string( value );
 #endif
     }
+
+    AnsiString ToAnsiString( Double value, const std::locale& locale )
+    {
+        return Format( locale, "{:0f}", value );
+    }
+    AnsiString ToAnsiString( Double value, int width, int precision )
+    {
+        return Format( "{:0{}.{}f}", value, width, precision );
+    }
+    AnsiString ToAnsiString( Double value, int width, int precision, const std::locale& locale )
+    {
+        return Format( locale, "{:0{}.{}f}", value, width, precision );
+    }
+
     AnsiString ToAnsiString( const DateTime& value )
     {
         return ToAnsiString(value.ToString( ));
