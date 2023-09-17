@@ -354,6 +354,12 @@
     <ClInclude Include="HCCDebugServiceHost.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="HCCFlags.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HCCEseOptions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">

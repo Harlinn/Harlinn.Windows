@@ -227,6 +227,11 @@ namespace Harlinn::Common::Core
             return static_cast<int>( ( ticks_ / TicksPerSecond ) % 60 );
         }
 
+        constexpr long long ToSeconds( ) const noexcept
+        {
+            return ticks_ / TicksPerSecond;
+        }
+
         constexpr double TotalDays( ) const noexcept
         {
             return ( static_cast<double>( ticks_ ) ) / static_cast<double>( TicksPerDay );
@@ -257,6 +262,12 @@ namespace Harlinn::Common::Core
 
             return static_cast<double>( result );
         }
+
+        constexpr long long ToMicroseconds( ) const noexcept
+        {
+            return ticks_ / TicksPerMicrosecond;
+        }
+
 
         constexpr double TotalMinutes( ) const noexcept
         {

@@ -82,6 +82,24 @@ namespace Harlinn::Common::Core::Environment
     HCC_EXPORT WideString EnvironmentVariable( const wchar_t* environmentVariableName );
     HCC_EXPORT AnsiString EnvironmentVariable( const char* environmentVariableName );
 
+    HCC_EXPORT WideString Expand( const wchar_t* str );
+    template<SimpleWideStringLike StringT>
+    WideString Expand( const StringT& str )
+    {
+        return Expand( str.c_str( ) );
+    }
+
+    template<typename T>
+    requires IsStdOptional<T> && std::is_same_v<WideString, typename T::value_type>
+    T Expand( const T& strOpt )
+    {
+        if ( strOpt )
+        {
+            return Expand( strOpt.value( ) );
+        }
+        return strOpt;
+    }
+
     HCC_EXPORT WideString Where( const wchar_t* fileName );
     HCC_EXPORT AnsiString Where( const char* fileName );
 

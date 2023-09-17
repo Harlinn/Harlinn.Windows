@@ -212,6 +212,8 @@
     <ClInclude Include="HCCDebugServiceHost.h" />
     <ClInclude Include="HCCDemangle.h" />
     <ClInclude Include="HCCDirectoryUtils.h" />
+    <ClInclude Include="HCCEseOptions.h" />
+    <ClInclude Include="HCCFlags.h" />
     <ClInclude Include="HCCIOBufferStream.h" />
     <ClInclude Include="HCCCom.h" />
     <ClInclude Include="HCCConsole.h" />

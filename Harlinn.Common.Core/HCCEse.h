@@ -9,7 +9,7 @@
 #include <HCCIO.h>
 #include <HCCException.h>
 #include <HCCLogging.h>
-
+#include <HCCFlags.h>
 #include <HCCEseResult.h>
 
 #pragma comment(lib,"esent.lib") 
@@ -23,6 +23,8 @@ namespace Harlinn::Common::Core::Ese
     class Database;
     class Session;
     class Instance;
+    class InstanceOptions;
+    class DatabaseOptions;
 
     class Exception : public Core::Exception
     {
@@ -142,6 +144,7 @@ namespace Harlinn::Common::Core::Ese
         UnsignedLongLong = JET_coltypUnsignedLongLong
     };
 
+
     enum class ColumnFlags : int
     {
         None = 0,
@@ -243,6 +246,7 @@ namespace Harlinn::Common::Core::Ese
         DotNetGuid = 0x00040000
     };
     HCC_DEFINE_ENUM_FLAG_OPERATORS( IndexFlags, int );
+
 
     enum class RetrieveFlags : int
     {
@@ -385,9 +389,9 @@ namespace Harlinn::Common::Core::Ese
     };
     HCC_DEFINE_ENUM_FLAG_OPERATORS( SetFlags, int );
 
-        /// <summary>
-        /// Info levels for retrieving column info.
-        /// </summary>
+    /// <summary>
+    /// Info levels for retrieving column info.
+    /// </summary>
     enum class ColumnInfoFlags : unsigned long
     {
         // pvResult is interpreted as a JET_COLUMNDEF, and the 
@@ -719,7 +723,7 @@ namespace Harlinn::Common::Core::Ese
     };
     HCC_DEFINE_ENUM_FLAG_OPERATORS( SeekFlags, unsigned long );
 
-    enum class IndexRengeFlags : unsigned long
+    enum class IndexRangeFlags : unsigned long
     {
         None = 0,
         Inclusive = JET_bitRangeInclusive,
@@ -727,7 +731,7 @@ namespace Harlinn::Common::Core::Ese
         InstantDuration = JET_bitRangeInstantDuration,
         Remove = JET_bitRangeRemove
     };
-    HCC_DEFINE_ENUM_FLAG_OPERATORS( IndexRengeFlags, unsigned long );
+    HCC_DEFINE_ENUM_FLAG_OPERATORS( IndexRangeFlags, unsigned long );
 
     enum class SetCurrentIndexFlags : unsigned long
     {
@@ -1052,7 +1056,7 @@ namespace Harlinn::Common::Core::Ese
         }
 
 
-        void SetIndexRange( IndexRengeFlags flags = Ese::IndexRengeFlags::None ) const
+        void SetIndexRange( IndexRangeFlags flags = Ese::IndexRangeFlags::None ) const
         {
             auto rc = static_cast<Result>( JetSetIndexRange( sessionId_, tableId_, static_cast<JET_GRBIT>( flags ) ) );
             RequireSuccess( rc );
@@ -2960,7 +2964,9 @@ namespace Harlinn::Common::Core::Ese
         mutable bool initialized_;
         InitFlags initFlags_;
     public:
-        constexpr Instance(  ) noexcept
+        boost::signals2::signal<void( const Instance* instance )> BeforeInit;
+        boost::signals2::signal<void( const Instance* instance )> AfterInit;
+        Instance(  ) noexcept
             : instance_( JET_instanceNil ), initialized_( false ), initFlags_( InitFlags::None )
         {
         }
@@ -2973,6 +2979,9 @@ namespace Harlinn::Common::Core::Ese
             RequireSuccess( rc );
             instance_ = instance;
         }
+
+
+        inline Instance( const InstanceOptions& instanceOptions );
 
         Instance( const AnsiString& instanceName, const AnsiString& displayName = AnsiString( ), InitFlags initFlags = InitFlags::None )
             : instance_( JET_instanceNil ), initialized_( false ), initFlags_( initFlags )
@@ -3037,6 +3046,7 @@ namespace Harlinn::Common::Core::Ese
     private:
         void InitializeInstance( ) const
         {
+            BeforeInit( this );
             if ( initFlags_ != InitFlags::None )
             {
                 auto rc = static_cast<Result>( JetInit2( const_cast<JET_INSTANCE*>(&instance_), static_cast<JET_GRBIT>(initFlags_)));
@@ -3047,6 +3057,7 @@ namespace Harlinn::Common::Core::Ese
                 auto rc = static_cast<Result>( JetInit(const_cast<JET_INSTANCE*>(&instance_) ) );
                 RequireSuccess( rc );
             }
+            AfterInit( this );
             initialized_ = true;
         }
     public:
@@ -3271,15 +3282,15 @@ namespace Harlinn::Common::Core::Ese
             SetSystemParameter(JET_paramDbExtensionSize, static_cast<unsigned long long>(value));
         }
 
-        bool QueryEnableIndexChecking() const
+        static bool QueryEnableIndexChecking()
         {
-            auto result = GetSystemNumericParameter(JET_paramEnableIndexChecking);
+            auto result = GetGlobalSystemNumericParameter(JET_paramEnableIndexChecking);
             return result != FALSE;
         }
 
-        void SetEnableIndexChecking(bool value) const
+        static void SetEnableIndexChecking(bool value)
         {
-            SetSystemParameter(JET_paramEnableIndexChecking, value ? TRUE : FALSE);
+            SetGlobalSystemParameter(JET_paramEnableIndexChecking, value ? TRUE : FALSE);
         }
 
         bool QueryEnableIndexCleanup() const
@@ -3293,15 +3304,15 @@ namespace Harlinn::Common::Core::Ese
             SetSystemParameter(JET_paramEnableIndexCleanup, value ? TRUE : FALSE);
         }
 
-        bool QueryOneDatabasePerSession() const
+        static bool QueryOneDatabasePerSession()
         {
-            auto result = GetSystemNumericParameter(JET_paramOneDatabasePerSession);
+            auto result = GetGlobalSystemNumericParameter(JET_paramOneDatabasePerSession);
             return result != FALSE;
         }
 
-        void SetOneDatabasePerSession(bool value) const
+        static void SetOneDatabasePerSession(bool value)
         {
-            SetSystemParameter(JET_paramOneDatabasePerSession, value ? TRUE : FALSE);
+            SetGlobalSystemParameter(JET_paramOneDatabasePerSession, value ? TRUE : FALSE);
         }
 
 
@@ -3533,6 +3544,18 @@ namespace Harlinn::Common::Core::Ese
             SetSystemParameter(JET_paramRuntimeCallback, reinterpret_cast<unsigned long long>(value));
         }
 
+        static Int32 QueryBatchIOBufferMax( )
+        {
+            auto result = GetGlobalSystemNumericParameter( JET_paramBatchIOBufferMax );
+            return static_cast< Int32 >( result );
+        }
+        static void SetBatchIOBufferMax( Int32 value )
+        {
+            SetGlobalSystemParameter( JET_paramBatchIOBufferMax, static_cast<UInt64>(value) );
+        }
+        
+
+
         unsigned long long QueryCacheSize() const
         {
             auto result = GetSystemNumericParameter(JET_paramCacheSize);
@@ -3601,15 +3624,15 @@ namespace Harlinn::Common::Core::Ese
         }
 
 
-        static unsigned long long QueryLRUKCorrInterval()
+        static TimeSpan QueryLRUKCorrInterval()
         {
-            auto result = GetGlobalSystemNumericParameter(JET_paramLRUKCorrInterval);
+            auto result = TimeSpan( GetGlobalSystemNumericParameter(JET_paramLRUKCorrInterval) * TimeSpan::TicksPerMicrosecond );
             return result;
         }
 
-        static void SetLRUKCorrInterval(unsigned long long value)
+        static void SetLRUKCorrInterval( TimeSpan value)
         {
-            SetGlobalSystemParameter(JET_paramLRUKCorrInterval, value);
+            SetGlobalSystemParameter(JET_paramLRUKCorrInterval, static_cast<UInt64>(value.ToMicroseconds() / TimeSpan::TicksPerMicrosecond ));
         }
 
         static unsigned long long QueryLRUKHistoryMax()
@@ -3643,7 +3666,7 @@ namespace Harlinn::Common::Core::Ese
 
         static void SetLRUKTimeout(const TimeSpan& value)
         {
-            auto v = static_cast<unsigned long long>(value.TotalSeconds());
+            auto v = static_cast<unsigned long long>(value.ToSeconds());
             SetGlobalSystemParameter(JET_paramLRUKTimeout, v);
         }
 
@@ -3696,7 +3719,7 @@ namespace Harlinn::Common::Core::Ese
         /// </summary>
         static void SetExceptionAction( Ese::ExceptionAction value )
         {
-            SetGlobalSystemParameter( JET_paramStopFlushThreshold, static_cast<unsigned long long>(value) );
+            SetGlobalSystemParameter( JET_paramExceptionAction, static_cast<unsigned long long>(value) );
         }
 
         // This setting controls the size (in bytes) of an eventlog message cache that 
@@ -3715,10 +3738,17 @@ namespace Harlinn::Common::Core::Ese
 
         static void SetEventLogCacheSize( size_t numberOfBytes )
         {
-            SetGlobalSystemParameter( JET_paramStopFlushThreshold, static_cast<unsigned long long>( numberOfBytes ) );
+            SetGlobalSystemParameter( JET_paramEventLogCache, static_cast<unsigned long long>( numberOfBytes ) );
         }
 
 
+        /// <summary>
+        /// This parameter sets the three letter prefix used for many of the files used by the 
+        /// database engine. For example, the checkpoint file is called EDB.CHK by default 
+        /// because EDB is the default base name. The base name can be used to easily 
+        /// distinguish between sets of files that belong to different instances or 
+        /// to different applications.
+        /// </summary>
         WideString QueryBaseName() const
         {
             auto result = GetSystemStringParameter(JET_paramBaseName);
@@ -4042,11 +4072,11 @@ namespace Harlinn::Common::Core::Ese
         static bool QueryMonitoringPerformance( )
         {
             auto result = GetGlobalSystemNumericParameter( JET_paramDisablePerfmon );
-            return result != FALSE;
+            return result == FALSE;
         }
         static void SetMonitoringPerformance( bool value )
         {
-            SetGlobalSystemParameter( JET_paramDisablePerfmon, value ? TRUE : FALSE );
+            SetGlobalSystemParameter( JET_paramDisablePerfmon, value ? FALSE : TRUE );
         }
 
         // This seting allows applications that operate in multi-instance mode to pre-allocate 
@@ -4109,6 +4139,26 @@ namespace Harlinn::Common::Core::Ese
         {
             SetSystemParameter( JET_paramMaxOpenTables, value );
         }
+
+        /// <summary>
+        /// <para>
+        /// This parameter attempts to keep the number of B+ Tree resources in use below the specified threshold.
+        /// </para>
+        /// <para>
+        /// 
+        /// </para>
+        /// </summary>
+        /// <returns></returns>
+        unsigned long long QueryPreferredMaxOpenTables( ) const
+        {
+            auto result = GetSystemNumericParameter( JET_paramPreferredMaxOpenTables );
+            return result;
+        }
+        void SetPreferredMaxOpenTables( size_t value ) const
+        {
+            SetSystemParameter( JET_paramPreferredMaxOpenTables, value );
+        }
+
 
         // This setting reserves the requested number of session resources for use by an instance. 
         // A session resource directly corresponds to a JET_SESID data type. This setting will affect 
@@ -4186,7 +4236,1477 @@ namespace Harlinn::Common::Core::Ese
 
 }
 
+namespace Harlinn::Common::Core
+{
+    HCC_EXPORT WideString ToWideString( Ese::ColumnType value );
+    HCC_EXPORT WideString ToWideString( Ese::ColumnType value, const WideString& defaultResult );
+
+    inline AnsiString ToAnsiString( Ese::ColumnType value )
+    {
+        return ToAnsiString( ToWideString( value ) );
+    }
+    inline AnsiString ToAnsiString( Ese::ColumnType value, const AnsiString& defaultResult )
+    {
+        return ToAnsiString( ToWideString( value, ToWideString( defaultResult ) ) );
+    }
+
+    namespace Ese
+    {
+        HCC_EXPORT Ese::ColumnType ParseColumnType( const WideString& str );
+        HCC_EXPORT Ese::ColumnType ParseColumnType( const WideString& str, Ese::ColumnType defaultResult );
+        HCC_EXPORT bool TryParseColumnType( const WideString& str, Ese::ColumnType& value );
+
+        inline Ese::ColumnType ParseColumnType( const AnsiString& str )
+        {
+            return ParseColumnType( ToWideString( str ) );
+        }
+        inline Ese::ColumnType ParseColumnType( const AnsiString& str, Ese::ColumnType defaultResult )
+        {
+            return ParseColumnType( ToWideString( str ), defaultResult );
+        }
+        inline bool TryParseColumnType( const AnsiString& str, Ese::ColumnType& value )
+        {
+            return TryParseColumnType( ToWideString( str ), value );
+        }
+    }
+
+    template<typename StringT>
+        requires std::is_same_v<StringT,WideString> || std::is_same_v<StringT, AnsiString>
+    inline bool TryParse( const StringT& str, Ese::ColumnType& value )
+    {
+        return Ese::TryParseColumnType( str, value );
+    }
+
+    template<typename T, typename StringT>
+        requires std::is_same_v<Ese::ColumnType, T> && ( std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString> )
+    inline T Parse( const WideString& str )
+    {
+        return Ese::ParseColumnType( str );
+    }
+
+    template<typename T, typename CharT>
+        requires std::is_same_v<Ese::ColumnType, T> && ( std::is_same_v<CharT, wchar_t> || std::is_same_v<CharT, char> )
+    inline T Parse( const CharT* str )
+    {
+        return Ese::ParseColumnType( str );
+    }
+    
+
+    HCC_EXPORT WideString ToWideString( Ese::ColumnFlags value );
+    HCC_EXPORT WideString ToWideString( Ese::ColumnFlags value, const WideString& defaultResult );
+
+    inline AnsiString ToAnsiString( Ese::ColumnFlags value )
+    {
+        return ToAnsiString( ToWideString( value ) );
+    }
+    inline AnsiString ToAnsiString( Ese::ColumnFlags value, const AnsiString& defaultResult )
+    {
+        return ToAnsiString( ToWideString( value, ToWideString( defaultResult ) ) );
+    }
+
+    namespace Ese
+    {
+        HCC_EXPORT Ese::ColumnFlags ParseColumnFlags( const WideString& str );
+        HCC_EXPORT Ese::ColumnFlags ParseColumnFlags( const WideString& str, Ese::ColumnFlags defaultResult );
+        HCC_EXPORT bool TryParseColumnFlags( const WideString& str, Ese::ColumnFlags& value );
+
+        inline Ese::ColumnFlags ParseColumnFlags( const AnsiString& str )
+        {
+            return ParseColumnFlags( ToWideString( str ) );
+        }
+        inline Ese::ColumnFlags ParseColumnFlags( const AnsiString& str, Ese::ColumnFlags defaultResult )
+        {
+            return ParseColumnFlags( ToWideString( str ), defaultResult );
+        }
+        inline bool TryParseColumnType( const AnsiString& str, Ese::ColumnFlags& value )
+        {
+            return TryParseColumnFlags( ToWideString( str ), value );
+        }
+    }
+    template<typename StringT>
+        requires std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString>
+    inline bool TryParse( const StringT& str, Ese::ColumnFlags& value )
+    {
+        return Ese::TryParseColumnFlags( str, value );
+    }
+
+    template<typename T, typename StringT>
+        requires std::is_same_v<Ese::ColumnFlags, T> && ( std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString> )
+    inline T Parse( const WideString& str )
+    {
+        return Ese::ParseColumnFlags( str );
+    }
+
+    template<typename T, typename CharT>
+        requires std::is_same_v<Ese::ColumnFlags, T> && ( std::is_same_v<CharT, wchar_t> || std::is_same_v<CharT, char> )
+    inline T Parse( const CharT* str )
+    {
+        return Ese::ParseColumnFlags( str );
+    }
+
+    HCC_EXPORT WideString ToWideString( Ese::IndexFlags value );
+    HCC_EXPORT WideString ToWideString( Ese::IndexFlags value, const WideString& defaultResult );
+
+    inline AnsiString ToAnsiString( Ese::IndexFlags value )
+    {
+        return ToAnsiString( ToWideString( value ) );
+    }
+    inline AnsiString ToAnsiString( Ese::IndexFlags value, const AnsiString& defaultResult )
+    {
+        return ToAnsiString( ToWideString( value, ToWideString( defaultResult ) ) );
+    }
+
+    namespace Ese
+    {
+        HCC_EXPORT Ese::IndexFlags ParseIndexFlags( const WideString& str );
+        HCC_EXPORT Ese::IndexFlags ParseIndexFlags( const WideString& str, Ese::IndexFlags defaultResult );
+        HCC_EXPORT bool TryParseIndexFlags( const WideString& str, Ese::IndexFlags& value );
+
+        inline Ese::IndexFlags ParseIndexFlags( const AnsiString& str )
+        {
+            return ParseIndexFlags( ToWideString( str ) );
+        }
+        inline Ese::IndexFlags ParseIndexFlags( const AnsiString& str, Ese::IndexFlags defaultResult )
+        {
+            return ParseIndexFlags( ToWideString( str ), defaultResult );
+        }
+        inline bool TryParseIndexFlags( const AnsiString& str, Ese::IndexFlags& value )
+        {
+            return TryParseIndexFlags( ToWideString( str ), value );
+        }
+
+    }
+
+    template<typename StringT>
+        requires std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString>
+    inline bool TryParse( const StringT& str, Ese::IndexFlags& value )
+    {
+        return Ese::TryParseIndexFlags( str, value );
+    }
+
+    template<typename T, typename StringT>
+        requires std::is_same_v<Ese::IndexFlags, T> && ( std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString> )
+    inline T Parse( const WideString& str )
+    {
+        return Ese::ParseIndexFlags( str );
+    }
+
+    template<typename T, typename CharT>
+        requires std::is_same_v<Ese::IndexFlags, T> && ( std::is_same_v<CharT, wchar_t> || std::is_same_v<CharT, char> )
+    inline T Parse( const CharT* str )
+    {
+        return Ese::ParseIndexFlags( str );
+    }
+
+    HCC_EXPORT WideString ToWideString( Ese::RetrieveFlags value );
+    HCC_EXPORT WideString ToWideString( Ese::RetrieveFlags value, const WideString& defaultResult );
+
+    inline AnsiString ToAnsiString( Ese::RetrieveFlags value )
+    {
+        return ToAnsiString( ToWideString( value ) );
+    }
+    inline AnsiString ToAnsiString( Ese::RetrieveFlags value, const AnsiString& defaultResult )
+    {
+        return ToAnsiString( ToWideString( value, ToWideString( defaultResult ) ) );
+    }
+
+    namespace Ese
+    {
+        HCC_EXPORT Ese::RetrieveFlags ParseRetrieveFlags( const WideString& str );
+        HCC_EXPORT Ese::RetrieveFlags ParseRetrieveFlags( const WideString& str, Ese::RetrieveFlags defaultResult );
+        HCC_EXPORT bool TryParseRetrieveFlags( const WideString& str, Ese::RetrieveFlags& value );
+
+        inline Ese::RetrieveFlags ParseRetrieveFlags( const AnsiString& str )
+        {
+            return ParseRetrieveFlags( ToWideString( str ) );
+        }
+        inline Ese::RetrieveFlags ParseRetrieveFlags( const AnsiString& str, Ese::RetrieveFlags defaultResult )
+        {
+            return ParseRetrieveFlags( ToWideString( str ), defaultResult );
+        }
+        inline bool TryParseRetrieveFlags( const AnsiString& str, Ese::RetrieveFlags& value )
+        {
+            return TryParseRetrieveFlags( ToWideString( str ), value );
+        }
+    }
+
+    template<typename StringT>
+        requires std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString>
+    inline bool TryParse( const StringT& str, Ese::RetrieveFlags& value )
+    {
+        return Ese::TryParseRetrieveFlags( str, value );
+    }
+
+    template<typename T, typename StringT>
+        requires std::is_same_v<Ese::RetrieveFlags, T> && ( std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString> )
+    inline T Parse( const WideString& str )
+    {
+        return Ese::ParseRetrieveFlags( str );
+    }
+
+    template<typename T, typename CharT>
+        requires std::is_same_v<Ese::RetrieveFlags, T> && ( std::is_same_v<CharT, wchar_t> || std::is_same_v<CharT, char> )
+    inline T Parse( const CharT* str )
+    {
+        return Ese::ParseRetrieveFlags( str );
+    }
+
+    HCC_EXPORT WideString ToWideString( Ese::SetFlags value );
+    HCC_EXPORT WideString ToWideString( Ese::SetFlags value, const WideString& defaultResult );
+
+    inline AnsiString ToAnsiString( Ese::SetFlags value )
+    {
+        return ToAnsiString( ToWideString( value ) );
+    }
+    inline AnsiString ToAnsiString( Ese::SetFlags value, const AnsiString& defaultResult )
+    {
+        return ToAnsiString( ToWideString( value, ToWideString( defaultResult ) ) );
+    }
+
+    namespace Ese
+    {
+        HCC_EXPORT Ese::SetFlags ParseSetFlags( const WideString& str );
+        HCC_EXPORT Ese::SetFlags ParseSetFlags( const WideString& str, Ese::SetFlags defaultResult );
+        HCC_EXPORT bool TryParseSetFlags( const WideString& str, Ese::SetFlags& value );
+
+        inline Ese::SetFlags ParseSetFlags( const AnsiString& str )
+        {
+            return ParseSetFlags( ToWideString( str ) );
+        }
+        inline Ese::SetFlags ParseSetFlags( const AnsiString& str, Ese::SetFlags defaultResult )
+        {
+            return ParseSetFlags( ToWideString( str ), defaultResult );
+        }
+        inline bool TryParseSetFlags( const AnsiString& str, Ese::SetFlags& value )
+        {
+            return TryParseSetFlags( ToWideString( str ), value );
+        }
+
+    }
+    template<typename StringT>
+        requires std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString>
+    inline bool TryParse( const StringT& str, Ese::SetFlags& value )
+    {
+        return Ese::TryParseSetFlags( str, value );
+    }
+
+    template<typename T, typename StringT>
+        requires std::is_same_v<Ese::SetFlags, T> && ( std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString> )
+    inline T Parse( const WideString& str )
+    {
+        return Ese::ParseSetFlags( str );
+    }
+
+    template<typename T, typename CharT>
+        requires std::is_same_v<Ese::SetFlags, T> && ( std::is_same_v<CharT, wchar_t> || std::is_same_v<CharT, char> )
+    inline T Parse( const CharT* str )
+    {
+        return Ese::ParseSetFlags( str );
+    }
+
+    HCC_EXPORT WideString ToWideString( Ese::ColumnInfoFlags value );
+    HCC_EXPORT WideString ToWideString( Ese::ColumnInfoFlags value, const WideString& defaultResult );
+
+    inline AnsiString ToAnsiString( Ese::ColumnInfoFlags value )
+    {
+        return ToAnsiString( ToWideString( value ) );
+    }
+    inline AnsiString ToAnsiString( Ese::ColumnInfoFlags value, const AnsiString& defaultResult )
+    {
+        return ToAnsiString( ToWideString( value, ToWideString( defaultResult ) ) );
+    }
+    namespace Ese
+    {
+        HCC_EXPORT Ese::ColumnInfoFlags ParseColumnInfoFlags( const WideString& str );
+        HCC_EXPORT Ese::ColumnInfoFlags ParseColumnInfoFlags( const WideString& str, Ese::ColumnInfoFlags defaultResult );
+        HCC_EXPORT bool TryParseColumnInfoFlags( const WideString& str, Ese::ColumnInfoFlags& value );
+
+        inline Ese::ColumnInfoFlags ParseColumnInfoFlags( const AnsiString& str )
+        {
+            return ParseColumnInfoFlags( ToWideString( str ) );
+        }
+        inline Ese::ColumnInfoFlags ParseColumnInfoFlags( const AnsiString& str, Ese::ColumnInfoFlags defaultResult )
+        {
+            return ParseColumnInfoFlags( ToWideString( str ), defaultResult );
+        }
+        inline bool TryParseColumnInfoFlags( const AnsiString& str, Ese::ColumnInfoFlags& value )
+        {
+            return TryParseColumnInfoFlags( ToWideString( str ), value );
+        }
+
+    }
+    template<typename StringT>
+        requires std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString>
+    inline bool TryParse( const StringT& str, Ese::ColumnInfoFlags& value )
+    {
+        return Ese::TryParseColumnInfoFlags( str, value );
+    }
+
+    template<typename T, typename StringT>
+        requires std::is_same_v<Ese::ColumnInfoFlags, T> && ( std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString> )
+    inline T Parse( const WideString& str )
+    {
+        return Ese::ParseColumnInfoFlags( str );
+    }
+
+    template<typename T, typename CharT>
+        requires std::is_same_v<Ese::ColumnInfoFlags, T> && ( std::is_same_v<CharT, wchar_t> || std::is_same_v<CharT, char> )
+    inline T Parse( const CharT* str )
+    {
+        return Ese::ParseColumnInfoFlags( str );
+    }
 
 
+    HCC_EXPORT WideString ToWideString( Ese::PrepareUpdateOptions value );
+    HCC_EXPORT WideString ToWideString( Ese::PrepareUpdateOptions value, const WideString& defaultResult );
+
+    inline AnsiString ToAnsiString( Ese::PrepareUpdateOptions value )
+    {
+        return ToAnsiString( ToWideString( value ) );
+    }
+    inline AnsiString ToAnsiString( Ese::PrepareUpdateOptions value, const AnsiString& defaultResult )
+    {
+        return ToAnsiString( ToWideString( value, ToWideString( defaultResult ) ) );
+    }
+
+    namespace Ese
+    {
+        HCC_EXPORT Ese::PrepareUpdateOptions ParsePrepareUpdateOptions( const WideString& str );
+        HCC_EXPORT Ese::PrepareUpdateOptions ParsePrepareUpdateOptions( const WideString& str, Ese::PrepareUpdateOptions defaultResult );
+        HCC_EXPORT bool TryParsePrepareUpdateOptions( const WideString& str, Ese::PrepareUpdateOptions& value );
+
+        inline Ese::PrepareUpdateOptions ParsePrepareUpdateOptions( const AnsiString& str )
+        {
+            return ParsePrepareUpdateOptions( ToWideString( str ) );
+        }
+        inline Ese::PrepareUpdateOptions ParsePrepareUpdateOptions( const AnsiString& str, Ese::PrepareUpdateOptions defaultResult )
+        {
+            return ParsePrepareUpdateOptions( ToWideString( str ), defaultResult );
+        }
+        inline bool TryParsePrepareUpdateOptions( const AnsiString& str, Ese::PrepareUpdateOptions& value )
+        {
+            return TryParsePrepareUpdateOptions( ToWideString( str ), value );
+        }
+
+    }
+    template<typename StringT>
+        requires std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString>
+    inline bool TryParse( const StringT& str, Ese::PrepareUpdateOptions& value )
+    {
+        return Ese::TryParsePrepareUpdateOptions( str, value );
+    }
+
+    template<typename T, typename StringT>
+        requires std::is_same_v<Ese::PrepareUpdateOptions, T> && ( std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString> )
+    inline T Parse( const WideString& str )
+    {
+        return Ese::ParsePrepareUpdateOptions( str );
+    }
+
+    template<typename T, typename CharT>
+        requires std::is_same_v<Ese::PrepareUpdateOptions, T> && ( std::is_same_v<CharT, wchar_t> || std::is_same_v<CharT, char> )
+    inline T Parse( const CharT* str )
+    {
+        return Ese::ParsePrepareUpdateOptions( str );
+    }
+
+    // =========================================================================
+    // KeyFlags
+    // =========================================================================
+    HCC_EXPORT WideString ToWideString( Ese::KeyFlags value );
+    HCC_EXPORT WideString ToWideString( Ese::KeyFlags value, const WideString& defaultResult );
+
+    inline AnsiString ToAnsiString( Ese::KeyFlags value )
+    {
+        return ToAnsiString( ToWideString( value ) );
+    }
+    inline AnsiString ToAnsiString( Ese::KeyFlags value, const AnsiString& defaultResult )
+    {
+        return ToAnsiString( ToWideString( value, ToWideString( defaultResult ) ) );
+    }
+
+    namespace Ese
+    {
+        HCC_EXPORT Ese::KeyFlags ParseKeyFlags( const WideString& str );
+        HCC_EXPORT Ese::KeyFlags ParseKeyFlags( const WideString& str, Ese::KeyFlags defaultResult );
+        HCC_EXPORT bool TryParseKeyFlags( const WideString& str, Ese::KeyFlags& value );
+
+        inline Ese::KeyFlags ParseKeyFlags( const AnsiString& str )
+        {
+            return ParseKeyFlags( ToWideString( str ) );
+        }
+        inline Ese::KeyFlags ParseKeyFlags( const AnsiString& str, Ese::KeyFlags defaultResult )
+        {
+            return ParseKeyFlags( ToWideString( str ), defaultResult );
+        }
+        inline bool TryParseKeyFlags( const AnsiString& str, Ese::KeyFlags& value )
+        {
+            return TryParseKeyFlags( ToWideString( str ), value );
+        }
+
+    }
+    template<typename StringT>
+        requires std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString>
+    inline bool TryParse( const StringT& str, Ese::KeyFlags& value )
+    {
+        return Ese::TryParseKeyFlags( str, value );
+    }
+
+    template<typename T, typename StringT>
+        requires std::is_same_v<Ese::KeyFlags, T> && ( std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString> )
+    inline T Parse( const WideString& str )
+    {
+        return Ese::ParseKeyFlags( str );
+    }
+
+    template<typename T, typename CharT>
+        requires std::is_same_v<Ese::KeyFlags, T> && ( std::is_same_v<CharT, wchar_t> || std::is_same_v<CharT, char> )
+    inline T Parse( const CharT* str )
+    {
+        return Ese::ParseKeyFlags( str );
+    }
+
+    // =========================================================================
+    // SeekFlags
+    // =========================================================================
+    HCC_EXPORT WideString ToWideString( Ese::SeekFlags value );
+    HCC_EXPORT WideString ToWideString( Ese::SeekFlags value, const WideString& defaultResult );
+
+    inline AnsiString ToAnsiString( Ese::SeekFlags value )
+    {
+        return ToAnsiString( ToWideString( value ) );
+    }
+    inline AnsiString ToAnsiString( Ese::SeekFlags value, const AnsiString& defaultResult )
+    {
+        return ToAnsiString( ToWideString( value, ToWideString( defaultResult ) ) );
+    }
+
+    namespace Ese
+    {
+        HCC_EXPORT Ese::SeekFlags ParseSeekFlags( const WideString& str );
+        HCC_EXPORT Ese::SeekFlags ParseSeekFlags( const WideString& str, Ese::SeekFlags defaultResult );
+        HCC_EXPORT bool TryParseSeekFlags( const WideString& str, Ese::SeekFlags& value );
+
+        inline Ese::SeekFlags ParseSeekFlags( const AnsiString& str )
+        {
+            return ParseSeekFlags( ToWideString( str ) );
+        }
+        inline Ese::SeekFlags ParseSeekFlags( const AnsiString& str, Ese::SeekFlags defaultResult )
+        {
+            return ParseSeekFlags( ToWideString( str ), defaultResult );
+        }
+        inline bool TryParseSeekFlags( const AnsiString& str, Ese::SeekFlags& value )
+        {
+            return TryParseSeekFlags( ToWideString( str ), value );
+        }
+
+    }
+    template<typename StringT>
+        requires std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString>
+    inline bool TryParse( const StringT& str, Ese::SeekFlags& value )
+    {
+        return Ese::TryParseSeekFlags( str, value );
+    }
+
+    template<typename T, typename StringT>
+        requires std::is_same_v<Ese::SeekFlags, T> && ( std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString> )
+    inline T Parse( const WideString& str )
+    {
+        return Ese::ParseSeekFlags( str );
+    }
+
+    template<typename T, typename CharT>
+        requires std::is_same_v<Ese::SeekFlags, T> && ( std::is_same_v<CharT, wchar_t> || std::is_same_v<CharT, char> )
+    inline T Parse( const CharT* str )
+    {
+        return Ese::ParseSeekFlags( str );
+    }
+
+
+    // =========================================================================
+    // IndexRangeFlags
+    // =========================================================================
+    HCC_EXPORT WideString ToWideString( Ese::IndexRangeFlags value );
+    HCC_EXPORT WideString ToWideString( Ese::IndexRangeFlags value, const WideString& defaultResult );
+
+    inline AnsiString ToAnsiString( Ese::IndexRangeFlags value )
+    {
+        return ToAnsiString( ToWideString( value ) );
+    }
+    inline AnsiString ToAnsiString( Ese::IndexRangeFlags value, const AnsiString& defaultResult )
+    {
+        return ToAnsiString( ToWideString( value, ToWideString( defaultResult ) ) );
+    }
+
+    namespace Ese
+    {
+        HCC_EXPORT Ese::IndexRangeFlags ParseIndexRangeFlags( const WideString& str );
+        HCC_EXPORT Ese::IndexRangeFlags ParseIndexRangeFlags( const WideString& str, Ese::IndexRangeFlags defaultResult );
+        HCC_EXPORT bool TryParseIndexRangeFlags( const WideString& str, Ese::IndexRangeFlags& value );
+
+        inline Ese::IndexRangeFlags ParseIndexRangeFlags( const AnsiString& str )
+        {
+            return ParseIndexRangeFlags( ToWideString( str ) );
+        }
+        inline Ese::IndexRangeFlags ParseIndexRangeFlags( const AnsiString& str, Ese::IndexRangeFlags defaultResult )
+        {
+            return ParseIndexRangeFlags( ToWideString( str ), defaultResult );
+        }
+        inline bool TryParseIndexRangeFlags( const AnsiString& str, Ese::IndexRangeFlags& value )
+        {
+            return TryParseIndexRangeFlags( ToWideString( str ), value );
+        }
+
+    }
+    template<typename StringT>
+        requires std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString>
+    inline bool TryParse( const StringT& str, Ese::IndexRangeFlags& value )
+    {
+        return Ese::TryParseIndexRangeFlags( str, value );
+    }
+
+    template<typename T, typename StringT>
+        requires std::is_same_v<Ese::IndexRangeFlags, T> && ( std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString> )
+    inline T Parse( const WideString& str )
+    {
+        return Ese::ParseIndexRangeFlags( str );
+    }
+
+    template<typename T, typename CharT>
+        requires std::is_same_v<Ese::IndexRangeFlags, T> && ( std::is_same_v<CharT, wchar_t> || std::is_same_v<CharT, char> )
+    inline T Parse( const CharT* str )
+    {
+        return Ese::ParseIndexRangeFlags( str );
+    }
+
+    // =========================================================================
+    // SetCurrentIndexFlags
+    // =========================================================================
+    HCC_EXPORT WideString ToWideString( Ese::SetCurrentIndexFlags value );
+    HCC_EXPORT WideString ToWideString( Ese::SetCurrentIndexFlags value, const WideString& defaultResult );
+
+    inline AnsiString ToAnsiString( Ese::SetCurrentIndexFlags value )
+    {
+        return ToAnsiString( ToWideString( value ) );
+    }
+    inline AnsiString ToAnsiString( Ese::SetCurrentIndexFlags value, const AnsiString& defaultResult )
+    {
+        return ToAnsiString( ToWideString( value, ToWideString( defaultResult ) ) );
+    }
+
+    namespace Ese
+    {
+        HCC_EXPORT Ese::SetCurrentIndexFlags ParseSetCurrentIndexFlags( const WideString& str );
+        HCC_EXPORT Ese::SetCurrentIndexFlags ParseSetCurrentIndexFlags( const WideString& str, Ese::SetCurrentIndexFlags defaultResult );
+        HCC_EXPORT bool TryParseSetCurrentIndexFlags( const WideString& str, Ese::SetCurrentIndexFlags& value );
+
+        inline Ese::SetCurrentIndexFlags ParseSetCurrentIndexFlags( const AnsiString& str )
+        {
+            return ParseSetCurrentIndexFlags( ToWideString( str ) );
+        }
+        inline Ese::SetCurrentIndexFlags ParseSetCurrentIndexFlags( const AnsiString& str, Ese::SetCurrentIndexFlags defaultResult )
+        {
+            return ParseSetCurrentIndexFlags( ToWideString( str ), defaultResult );
+        }
+        inline bool TryParseSetCurrentIndexFlags( const AnsiString& str, Ese::SetCurrentIndexFlags& value )
+        {
+            return TryParseSetCurrentIndexFlags( ToWideString( str ), value );
+        }
+
+    }
+    template<typename StringT>
+        requires std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString>
+    inline bool TryParse( const StringT& str, Ese::SetCurrentIndexFlags& value )
+    {
+        return Ese::TryParseSetCurrentIndexFlags( str, value );
+    }
+
+    template<typename T, typename StringT>
+        requires std::is_same_v<Ese::SetCurrentIndexFlags, T> && ( std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString> )
+    inline T Parse( const WideString& str )
+    {
+        return Ese::ParseSetCurrentIndexFlags( str );
+    }
+
+    template<typename T, typename CharT>
+        requires std::is_same_v<Ese::SetCurrentIndexFlags, T> && ( std::is_same_v<CharT, wchar_t> || std::is_same_v<CharT, char> )
+    inline T Parse( const CharT* str )
+    {
+        return Ese::ParseSetCurrentIndexFlags( str );
+    }
+
+    // =========================================================================
+    // TableOptions
+    // =========================================================================
+    HCC_EXPORT WideString ToWideString( Ese::TableOptions value );
+    HCC_EXPORT WideString ToWideString( Ese::TableOptions value, const WideString& defaultResult );
+
+    inline AnsiString ToAnsiString( Ese::TableOptions value )
+    {
+        return ToAnsiString( ToWideString( value ) );
+    }
+    inline AnsiString ToAnsiString( Ese::TableOptions value, const AnsiString& defaultResult )
+    {
+        return ToAnsiString( ToWideString( value, ToWideString( defaultResult ) ) );
+    }
+
+    namespace Ese
+    {
+        HCC_EXPORT Ese::TableOptions ParseTableOptions( const WideString& str );
+        HCC_EXPORT Ese::TableOptions ParseTableOptions( const WideString& str, Ese::TableOptions defaultResult );
+        HCC_EXPORT bool TryParseTableOptions( const WideString& str, Ese::TableOptions& value );
+
+        inline Ese::TableOptions ParseTableOptions( const AnsiString& str )
+        {
+            return ParseTableOptions( ToWideString( str ) );
+        }
+        inline Ese::TableOptions ParseTableOptions( const AnsiString& str, Ese::TableOptions defaultResult )
+        {
+            return ParseTableOptions( ToWideString( str ), defaultResult );
+        }
+        inline bool TryParseTableOptions( const AnsiString& str, Ese::TableOptions& value )
+        {
+            return TryParseTableOptions( ToWideString( str ), value );
+        }
+
+    }
+    template<typename StringT>
+        requires std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString>
+    inline bool TryParse( const StringT& str, Ese::TableOptions& value )
+    {
+        return Ese::TryParseTableOptions( str, value );
+    }
+
+    template<typename T, typename StringT>
+        requires std::is_same_v<Ese::TableOptions, T> && ( std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString> )
+    inline T Parse( const WideString& str )
+    {
+        return Ese::ParseTableOptions( str );
+    }
+
+    template<typename T, typename CharT>
+        requires std::is_same_v<Ese::TableOptions, T> && ( std::is_same_v<CharT, wchar_t> || std::is_same_v<CharT, char> )
+    inline T Parse( const CharT* str )
+    {
+        return Ese::ParseTableOptions( str );
+    }
+
+    // =========================================================================
+    // ObjectFlags
+    // =========================================================================
+    HCC_EXPORT WideString ToWideString( Ese::ObjectFlags value );
+    HCC_EXPORT WideString ToWideString( Ese::ObjectFlags value, const WideString& defaultResult );
+
+    inline AnsiString ToAnsiString( Ese::ObjectFlags value )
+    {
+        return ToAnsiString( ToWideString( value ) );
+    }
+    inline AnsiString ToAnsiString( Ese::ObjectFlags value, const AnsiString& defaultResult )
+    {
+        return ToAnsiString( ToWideString( value, ToWideString( defaultResult ) ) );
+    }
+
+    namespace Ese
+    {
+        HCC_EXPORT Ese::ObjectFlags ParseObjectFlags( const WideString& str );
+        HCC_EXPORT Ese::ObjectFlags ParseObjectFlags( const WideString& str, Ese::ObjectFlags defaultResult );
+        HCC_EXPORT bool TryParseObjectFlags( const WideString& str, Ese::ObjectFlags& value );
+
+        inline Ese::ObjectFlags ParseObjectFlags( const AnsiString& str )
+        {
+            return ParseObjectFlags( ToWideString( str ) );
+        }
+        inline Ese::ObjectFlags ParseObjectFlags( const AnsiString& str, Ese::ObjectFlags defaultResult )
+        {
+            return ParseObjectFlags( ToWideString( str ), defaultResult );
+        }
+        inline bool TryParseObjectFlags( const AnsiString& str, Ese::ObjectFlags& value )
+        {
+            return TryParseObjectFlags( ToWideString( str ), value );
+        }
+
+    }
+    template<typename StringT>
+        requires std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString>
+    inline bool TryParse( const StringT& str, Ese::ObjectFlags& value )
+    {
+        return Ese::TryParseObjectFlags( str, value );
+    }
+
+    template<typename T, typename StringT>
+        requires std::is_same_v<Ese::ObjectFlags, T> && ( std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString> )
+    inline T Parse( const WideString& str )
+    {
+        return Ese::ParseObjectFlags( str );
+    }
+
+    template<typename T, typename CharT>
+        requires std::is_same_v<Ese::ObjectFlags, T> && ( std::is_same_v<CharT, wchar_t> || std::is_same_v<CharT, char> )
+    inline T Parse( const CharT* str )
+    {
+        return Ese::ParseObjectFlags( str );
+    }
+
+    // =========================================================================
+    // SequentialFlags
+    // =========================================================================
+    HCC_EXPORT WideString ToWideString( Ese::SequentialFlags value );
+    HCC_EXPORT WideString ToWideString( Ese::SequentialFlags value, const WideString& defaultResult );
+
+    inline AnsiString ToAnsiString( Ese::SequentialFlags value )
+    {
+        return ToAnsiString( ToWideString( value ) );
+    }
+    inline AnsiString ToAnsiString( Ese::SequentialFlags value, const AnsiString& defaultResult )
+    {
+        return ToAnsiString( ToWideString( value, ToWideString( defaultResult ) ) );
+    }
+
+    namespace Ese
+    {
+        HCC_EXPORT Ese::SequentialFlags ParseSequentialFlags( const WideString& str );
+        HCC_EXPORT Ese::SequentialFlags ParseSequentialFlags( const WideString& str, Ese::SequentialFlags defaultResult );
+        HCC_EXPORT bool TryParseSequentialFlags( const WideString& str, Ese::SequentialFlags& value );
+
+        inline Ese::SequentialFlags ParseSequentialFlags( const AnsiString& str )
+        {
+            return ParseSequentialFlags( ToWideString( str ) );
+        }
+        inline Ese::SequentialFlags ParseSequentialFlags( const AnsiString& str, Ese::SequentialFlags defaultResult )
+        {
+            return ParseSequentialFlags( ToWideString( str ), defaultResult );
+        }
+        inline bool TryParseSequentialFlags( const AnsiString& str, Ese::SequentialFlags& value )
+        {
+            return TryParseSequentialFlags( ToWideString( str ), value );
+        }
+
+    }
+    template<typename StringT>
+        requires std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString>
+    inline bool TryParse( const StringT& str, Ese::SequentialFlags& value )
+    {
+        return Ese::TryParseSequentialFlags( str, value );
+    }
+
+    template<typename T, typename StringT>
+        requires std::is_same_v<Ese::SequentialFlags, T> && ( std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString> )
+    inline T Parse( const WideString& str )
+    {
+        return Ese::ParseSequentialFlags( str );
+    }
+
+    template<typename T, typename CharT>
+        requires std::is_same_v<Ese::SequentialFlags, T> && ( std::is_same_v<CharT, wchar_t> || std::is_same_v<CharT, char> )
+    inline T Parse( const CharT* str )
+    {
+        return Ese::ParseSequentialFlags( str );
+    }
+
+
+    // =========================================================================
+    // ExceptionAction
+    // =========================================================================
+    HCC_EXPORT WideString ToWideString( Ese::ExceptionAction value );
+    HCC_EXPORT WideString ToWideString( Ese::ExceptionAction value, const WideString& defaultResult );
+
+    inline AnsiString ToAnsiString( Ese::ExceptionAction value )
+    {
+        return ToAnsiString( ToWideString( value ) );
+    }
+    inline AnsiString ToAnsiString( Ese::ExceptionAction value, const AnsiString& defaultResult )
+    {
+        return ToAnsiString( ToWideString( value, ToWideString( defaultResult ) ) );
+    }
+
+    namespace Ese
+    {
+        HCC_EXPORT Ese::ExceptionAction ParseExceptionAction( const WideString& str );
+        HCC_EXPORT Ese::ExceptionAction ParseExceptionAction( const WideString& str, Ese::ExceptionAction defaultResult );
+        HCC_EXPORT bool TryParseExceptionAction( const WideString& str, Ese::ExceptionAction& value );
+
+        inline Ese::ExceptionAction ParseExceptionAction( const AnsiString& str )
+        {
+            return ParseExceptionAction( ToWideString( str ) );
+        }
+        inline Ese::ExceptionAction ParseExceptionAction( const AnsiString& str, Ese::ExceptionAction defaultResult )
+        {
+            return ParseExceptionAction( ToWideString( str ), defaultResult );
+        }
+        inline bool TryParseExceptionAction( const AnsiString& str, Ese::ExceptionAction& value )
+        {
+            return TryParseExceptionAction( ToWideString( str ), value );
+        }
+
+    }
+    template<typename StringT>
+        requires std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString>
+    inline bool TryParse( const StringT& str, Ese::ExceptionAction& value )
+    {
+        return Ese::TryParseExceptionAction( str, value );
+    }
+
+    template<typename T, typename StringT>
+        requires std::is_same_v<Ese::ExceptionAction, T> && ( std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString> )
+    inline T Parse( const WideString& str )
+    {
+        return Ese::ParseExceptionAction( str );
+    }
+
+    template<typename T, typename CharT>
+        requires std::is_same_v<Ese::ExceptionAction, T> && ( std::is_same_v<CharT, wchar_t> || std::is_same_v<CharT, char> )
+    inline T Parse( const CharT* str )
+    {
+        return Ese::ParseExceptionAction( str );
+    }
+
+
+    // =========================================================================
+    // OpenTableFlags
+    // =========================================================================
+    HCC_EXPORT WideString ToWideString( Ese::OpenTableFlags value );
+    HCC_EXPORT WideString ToWideString( Ese::OpenTableFlags value, const WideString& defaultResult );
+
+    inline AnsiString ToAnsiString( Ese::OpenTableFlags value )
+    {
+        return ToAnsiString( ToWideString( value ) );
+    }
+    inline AnsiString ToAnsiString( Ese::OpenTableFlags value, const AnsiString& defaultResult )
+    {
+        return ToAnsiString( ToWideString( value, ToWideString( defaultResult ) ) );
+    }
+
+    namespace Ese
+    {
+        HCC_EXPORT Ese::OpenTableFlags ParseOpenTableFlags( const WideString& str );
+        HCC_EXPORT Ese::OpenTableFlags ParseOpenTableFlags( const WideString& str, Ese::OpenTableFlags defaultResult );
+        HCC_EXPORT bool TryParseOpenTableFlags( const WideString& str, Ese::OpenTableFlags& value );
+
+        inline Ese::OpenTableFlags ParseOpenTableFlags( const AnsiString& str )
+        {
+            return ParseOpenTableFlags( ToWideString( str ) );
+        }
+        inline Ese::OpenTableFlags ParseOpenTableFlags( const AnsiString& str, Ese::OpenTableFlags defaultResult )
+        {
+            return ParseOpenTableFlags( ToWideString( str ), defaultResult );
+        }
+        inline bool TryParseOpenTableFlags( const AnsiString& str, Ese::OpenTableFlags& value )
+        {
+            return TryParseOpenTableFlags( ToWideString( str ), value );
+        }
+
+    }
+    template<typename StringT>
+        requires std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString>
+    inline bool TryParse( const StringT& str, Ese::OpenTableFlags& value )
+    {
+        return Ese::TryParseOpenTableFlags( str, value );
+    }
+
+    template<typename T, typename StringT>
+        requires std::is_same_v<Ese::OpenTableFlags, T> && ( std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString> )
+    inline T Parse( const WideString& str )
+    {
+        return Ese::ParseOpenTableFlags( str );
+    }
+
+    template<typename T, typename CharT>
+        requires std::is_same_v<Ese::OpenTableFlags, T> && ( std::is_same_v<CharT, wchar_t> || std::is_same_v<CharT, char> )
+    inline T Parse( const CharT* str )
+    {
+        return Ese::ParseOpenTableFlags( str );
+    }
+
+    // =========================================================================
+    // TransactionFlags
+    // =========================================================================
+    HCC_EXPORT WideString ToWideString( Ese::TransactionFlags value );
+    HCC_EXPORT WideString ToWideString( Ese::TransactionFlags value, const WideString& defaultResult );
+
+    inline AnsiString ToAnsiString( Ese::TransactionFlags value )
+    {
+        return ToAnsiString( ToWideString( value ) );
+    }
+    inline AnsiString ToAnsiString( Ese::TransactionFlags value, const AnsiString& defaultResult )
+    {
+        return ToAnsiString( ToWideString( value, ToWideString( defaultResult ) ) );
+    }
+
+    namespace Ese
+    {
+        HCC_EXPORT Ese::TransactionFlags ParseTransactionFlags( const WideString& str );
+        HCC_EXPORT Ese::TransactionFlags ParseTransactionFlags( const WideString& str, Ese::TransactionFlags defaultResult );
+        HCC_EXPORT bool TryParseTransactionFlags( const WideString& str, Ese::TransactionFlags& value );
+
+        inline Ese::TransactionFlags ParseTransactionFlags( const AnsiString& str )
+        {
+            return ParseTransactionFlags( ToWideString( str ) );
+        }
+        inline Ese::TransactionFlags ParseTransactionFlags( const AnsiString& str, Ese::TransactionFlags defaultResult )
+        {
+            return ParseTransactionFlags( ToWideString( str ), defaultResult );
+        }
+        inline bool TryParseTransactionFlags( const AnsiString& str, Ese::TransactionFlags& value )
+        {
+            return TryParseTransactionFlags( ToWideString( str ), value );
+        }
+
+    }
+    template<typename StringT>
+        requires std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString>
+    inline bool TryParse( const StringT& str, Ese::TransactionFlags& value )
+    {
+        return Ese::TryParseTransactionFlags( str, value );
+    }
+
+    template<typename T, typename StringT>
+        requires std::is_same_v<Ese::TransactionFlags, T> && ( std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString> )
+    inline T Parse( const WideString& str )
+    {
+        return Ese::ParseTransactionFlags( str );
+    }
+
+    template<typename T, typename CharT>
+        requires std::is_same_v<Ese::TransactionFlags, T> && ( std::is_same_v<CharT, wchar_t> || std::is_same_v<CharT, char> )
+    inline T Parse( const CharT* str )
+    {
+        return Ese::ParseTransactionFlags( str );
+    }
+
+    // =========================================================================
+    // AttachDatabaseFlags
+    // =========================================================================
+    HCC_EXPORT WideString ToWideString( Ese::AttachDatabaseFlags value );
+    HCC_EXPORT WideString ToWideString( Ese::AttachDatabaseFlags value, const WideString& defaultResult );
+
+    inline AnsiString ToAnsiString( Ese::AttachDatabaseFlags value )
+    {
+        return ToAnsiString( ToWideString( value ) );
+    }
+    inline AnsiString ToAnsiString( Ese::AttachDatabaseFlags value, const AnsiString& defaultResult )
+    {
+        return ToAnsiString( ToWideString( value, ToWideString( defaultResult ) ) );
+    }
+
+    namespace Ese
+    {
+        HCC_EXPORT Ese::AttachDatabaseFlags ParseAttachDatabaseFlags( const WideString& str );
+        HCC_EXPORT Ese::AttachDatabaseFlags ParseAttachDatabaseFlags( const WideString& str, Ese::AttachDatabaseFlags defaultResult );
+        HCC_EXPORT bool TryParseAttachDatabaseFlags( const WideString& str, Ese::AttachDatabaseFlags& value );
+
+        inline Ese::AttachDatabaseFlags ParseAttachDatabaseFlags( const AnsiString& str )
+        {
+            return ParseAttachDatabaseFlags( ToWideString( str ) );
+        }
+        inline Ese::AttachDatabaseFlags ParseAttachDatabaseFlags( const AnsiString& str, Ese::AttachDatabaseFlags defaultResult )
+        {
+            return ParseAttachDatabaseFlags( ToWideString( str ), defaultResult );
+        }
+        inline bool TryParseAttachDatabaseFlags( const AnsiString& str, Ese::AttachDatabaseFlags& value )
+        {
+            return TryParseAttachDatabaseFlags( ToWideString( str ), value );
+        }
+
+    }
+    template<typename StringT>
+        requires std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString>
+    inline bool TryParse( const StringT& str, Ese::AttachDatabaseFlags& value )
+    {
+        return Ese::TryParseAttachDatabaseFlags( str, value );
+    }
+
+    template<typename T, typename StringT>
+        requires std::is_same_v<Ese::AttachDatabaseFlags, T> && ( std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString> )
+    inline T Parse( const WideString& str )
+    {
+        return Ese::ParseAttachDatabaseFlags( str );
+    }
+
+    template<typename T, typename CharT>
+        requires std::is_same_v<Ese::AttachDatabaseFlags, T> && ( std::is_same_v<CharT, wchar_t> || std::is_same_v<CharT, char> )
+    inline T Parse( const CharT* str )
+    {
+        return Ese::ParseAttachDatabaseFlags( str );
+    }
+
+    // =========================================================================
+    // DetachDatabaseFlags
+    // =========================================================================
+    HCC_EXPORT WideString ToWideString( Ese::DetachDatabaseFlags value );
+    HCC_EXPORT WideString ToWideString( Ese::DetachDatabaseFlags value, const WideString& defaultResult );
+
+    inline AnsiString ToAnsiString( Ese::DetachDatabaseFlags value )
+    {
+        return ToAnsiString( ToWideString( value ) );
+    }
+    inline AnsiString ToAnsiString( Ese::DetachDatabaseFlags value, const AnsiString& defaultResult )
+    {
+        return ToAnsiString( ToWideString( value, ToWideString( defaultResult ) ) );
+    }
+
+    namespace Ese
+    {
+        HCC_EXPORT Ese::DetachDatabaseFlags ParseDetachDatabaseFlags( const WideString& str );
+        HCC_EXPORT Ese::DetachDatabaseFlags ParseDetachDatabaseFlags( const WideString& str, Ese::DetachDatabaseFlags defaultResult );
+        HCC_EXPORT bool TryParseDetachDatabaseFlags( const WideString& str, Ese::DetachDatabaseFlags& value );
+
+        inline Ese::DetachDatabaseFlags ParseDetachDatabaseFlags( const AnsiString& str )
+        {
+            return ParseDetachDatabaseFlags( ToWideString( str ) );
+        }
+        inline Ese::DetachDatabaseFlags ParseDetachDatabaseFlags( const AnsiString& str, Ese::DetachDatabaseFlags defaultResult )
+        {
+            return ParseDetachDatabaseFlags( ToWideString( str ), defaultResult );
+        }
+        inline bool TryParseDetachDatabaseFlags( const AnsiString& str, Ese::DetachDatabaseFlags& value )
+        {
+            return TryParseDetachDatabaseFlags( ToWideString( str ), value );
+        }
+
+    }
+    template<typename StringT>
+        requires std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString>
+    inline bool TryParse( const StringT& str, Ese::DetachDatabaseFlags& value )
+    {
+        return Ese::TryParseDetachDatabaseFlags( str, value );
+    }
+
+    template<typename T, typename StringT>
+        requires std::is_same_v<Ese::DetachDatabaseFlags, T> && ( std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString> )
+    inline T Parse( const WideString& str )
+    {
+        return Ese::ParseDetachDatabaseFlags( str );
+    }
+
+    template<typename T, typename CharT>
+        requires std::is_same_v<Ese::DetachDatabaseFlags, T> && ( std::is_same_v<CharT, wchar_t> || std::is_same_v<CharT, char> )
+    inline T Parse( const CharT* str )
+    {
+        return Ese::ParseDetachDatabaseFlags( str );
+    }
+
+    // =========================================================================
+    // CreateDatabaseFlags
+    // =========================================================================
+    HCC_EXPORT WideString ToWideString( Ese::CreateDatabaseFlags value );
+    HCC_EXPORT WideString ToWideString( Ese::CreateDatabaseFlags value, const WideString& defaultResult );
+
+    inline AnsiString ToAnsiString( Ese::CreateDatabaseFlags value )
+    {
+        return ToAnsiString( ToWideString( value ) );
+    }
+    inline AnsiString ToAnsiString( Ese::CreateDatabaseFlags value, const AnsiString& defaultResult )
+    {
+        return ToAnsiString( ToWideString( value, ToWideString( defaultResult ) ) );
+    }
+
+    namespace Ese
+    {
+        HCC_EXPORT Ese::CreateDatabaseFlags ParseCreateDatabaseFlags( const WideString& str );
+        HCC_EXPORT Ese::CreateDatabaseFlags ParseCreateDatabaseFlags( const WideString& str, Ese::CreateDatabaseFlags defaultResult );
+        HCC_EXPORT bool TryParseCreateDatabaseFlags( const WideString& str, Ese::CreateDatabaseFlags& value );
+
+        inline Ese::CreateDatabaseFlags ParseCreateDatabaseFlags( const AnsiString& str )
+        {
+            return ParseCreateDatabaseFlags( ToWideString( str ) );
+        }
+        inline Ese::CreateDatabaseFlags ParseCreateDatabaseFlags( const AnsiString& str, Ese::CreateDatabaseFlags defaultResult )
+        {
+            return ParseCreateDatabaseFlags( ToWideString( str ), defaultResult );
+        }
+        inline bool TryParseCreateDatabaseFlags( const AnsiString& str, Ese::CreateDatabaseFlags& value )
+        {
+            return TryParseCreateDatabaseFlags( ToWideString( str ), value );
+        }
+
+    }
+    template<typename StringT>
+        requires std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString>
+    inline bool TryParse( const StringT& str, Ese::CreateDatabaseFlags& value )
+    {
+        return Ese::TryParseCreateDatabaseFlags( str, value );
+    }
+
+    template<typename T, typename StringT>
+        requires std::is_same_v<Ese::CreateDatabaseFlags, T> && ( std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString> )
+    inline T Parse( const WideString& str )
+    {
+        return Ese::ParseCreateDatabaseFlags( str );
+    }
+
+    template<typename T, typename CharT>
+        requires std::is_same_v<Ese::CreateDatabaseFlags, T> && ( std::is_same_v<CharT, wchar_t> || std::is_same_v<CharT, char> )
+    inline T Parse( const CharT* str )
+    {
+        return Ese::ParseCreateDatabaseFlags( str );
+    }
+
+    // =========================================================================
+    // OpenDatabaseFlags
+    // =========================================================================
+    HCC_EXPORT WideString ToWideString( Ese::OpenDatabaseFlags value );
+    HCC_EXPORT WideString ToWideString( Ese::OpenDatabaseFlags value, const WideString& defaultResult );
+
+    inline AnsiString ToAnsiString( Ese::OpenDatabaseFlags value )
+    {
+        return ToAnsiString( ToWideString( value ) );
+    }
+    inline AnsiString ToAnsiString( Ese::OpenDatabaseFlags value, const AnsiString& defaultResult )
+    {
+        return ToAnsiString( ToWideString( value, ToWideString( defaultResult ) ) );
+    }
+
+    namespace Ese
+    {
+        HCC_EXPORT Ese::OpenDatabaseFlags ParseOpenDatabaseFlags( const WideString& str );
+        HCC_EXPORT Ese::OpenDatabaseFlags ParseOpenDatabaseFlags( const WideString& str, Ese::OpenDatabaseFlags defaultResult );
+        HCC_EXPORT bool TryParseOpenDatabaseFlags( const WideString& str, Ese::OpenDatabaseFlags& value );
+
+        inline Ese::OpenDatabaseFlags ParseOpenDatabaseFlags( const AnsiString& str )
+        {
+            return ParseOpenDatabaseFlags( ToWideString( str ) );
+        }
+        inline Ese::OpenDatabaseFlags ParseOpenDatabaseFlags( const AnsiString& str, Ese::OpenDatabaseFlags defaultResult )
+        {
+            return ParseOpenDatabaseFlags( ToWideString( str ), defaultResult );
+        }
+        inline bool TryParseOpenDatabaseFlags( const AnsiString& str, Ese::OpenDatabaseFlags& value )
+        {
+            return TryParseOpenDatabaseFlags( ToWideString( str ), value );
+        }
+
+    }
+    template<typename StringT>
+        requires std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString>
+    inline bool TryParse( const StringT& str, Ese::OpenDatabaseFlags& value )
+    {
+        return Ese::TryParseOpenDatabaseFlags( str, value );
+    }
+
+    template<typename T, typename StringT>
+        requires std::is_same_v<Ese::OpenDatabaseFlags, T> && ( std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString> )
+    inline T Parse( const WideString& str )
+    {
+        return Ese::ParseOpenDatabaseFlags( str );
+    }
+
+    template<typename T, typename CharT>
+        requires std::is_same_v<Ese::OpenDatabaseFlags, T> && ( std::is_same_v<CharT, wchar_t> || std::is_same_v<CharT, char> )
+    inline T Parse( const CharT* str )
+    {
+        return Ese::ParseOpenDatabaseFlags( str );
+    }
+
+    // =========================================================================
+    // InitFlags
+    // =========================================================================
+    HCC_EXPORT WideString ToWideString( Ese::InitFlags value );
+    HCC_EXPORT WideString ToWideString( Ese::InitFlags value, const WideString& defaultResult );
+
+    inline AnsiString ToAnsiString( Ese::InitFlags value )
+    {
+        return ToAnsiString( ToWideString( value ) );
+    }
+    inline AnsiString ToAnsiString( Ese::InitFlags value, const AnsiString& defaultResult )
+    {
+        return ToAnsiString( ToWideString( value, ToWideString( defaultResult ) ) );
+    }
+
+    namespace Ese
+    {
+        HCC_EXPORT Ese::InitFlags ParseInitFlags( const WideString& str );
+        HCC_EXPORT Ese::InitFlags ParseInitFlags( const WideString& str, Ese::InitFlags defaultResult );
+        HCC_EXPORT bool TryParseInitFlags( const WideString& str, Ese::InitFlags& value );
+
+        inline Ese::InitFlags ParseInitFlags( const AnsiString& str )
+        {
+            return ParseInitFlags( ToWideString( str ) );
+        }
+        inline Ese::InitFlags ParseInitFlags( const AnsiString& str, Ese::InitFlags defaultResult )
+        {
+            return ParseInitFlags( ToWideString( str ), defaultResult );
+        }
+        inline bool TryParseInitFlags( const AnsiString& str, Ese::InitFlags& value )
+        {
+            return TryParseInitFlags( ToWideString( str ), value );
+        }
+
+    }
+    template<typename StringT>
+        requires std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString>
+    inline bool TryParse( const StringT& str, Ese::InitFlags& value )
+    {
+        return Ese::TryParseInitFlags( str, value );
+    }
+
+    template<typename T, typename StringT>
+        requires std::is_same_v<Ese::InitFlags, T> && ( std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString> )
+    inline T Parse( const WideString& str )
+    {
+        return Ese::ParseInitFlags( str );
+    }
+
+    template<typename T, typename CharT>
+        requires std::is_same_v<Ese::InitFlags, T> && ( std::is_same_v<CharT, wchar_t> || std::is_same_v<CharT, char> )
+    inline T Parse( const CharT* str )
+    {
+        return Ese::ParseInitFlags( str );
+    }
+
+    // =========================================================================
+    // OnlineDefragFlags
+    // =========================================================================
+    HCC_EXPORT WideString ToWideString( Ese::OnlineDefragFlags value );
+    HCC_EXPORT WideString ToWideString( Ese::OnlineDefragFlags value, const WideString& defaultResult );
+
+    inline AnsiString ToAnsiString( Ese::OnlineDefragFlags value )
+    {
+        return ToAnsiString( ToWideString( value ) );
+    }
+    inline AnsiString ToAnsiString( Ese::OnlineDefragFlags value, const AnsiString& defaultResult )
+    {
+        return ToAnsiString( ToWideString( value, ToWideString( defaultResult ) ) );
+    }
+
+    namespace Ese
+    {
+        HCC_EXPORT Ese::OnlineDefragFlags ParseOnlineDefragFlags( const WideString& str );
+        HCC_EXPORT Ese::OnlineDefragFlags ParseOnlineDefragFlags( const WideString& str, Ese::OnlineDefragFlags defaultResult );
+        HCC_EXPORT bool TryParseOnlineDefragFlags( const WideString& str, Ese::OnlineDefragFlags& value );
+
+        inline Ese::OnlineDefragFlags ParseOnlineDefragFlags( const AnsiString& str )
+        {
+            return ParseOnlineDefragFlags( ToWideString( str ) );
+        }
+        inline Ese::OnlineDefragFlags ParseOnlineDefragFlags( const AnsiString& str, Ese::OnlineDefragFlags defaultResult )
+        {
+            return ParseOnlineDefragFlags( ToWideString( str ), defaultResult );
+        }
+        inline bool TryParseOnlineDefragFlags( const AnsiString& str, Ese::OnlineDefragFlags& value )
+        {
+            return TryParseOnlineDefragFlags( ToWideString( str ), value );
+        }
+
+    }
+    template<typename StringT>
+        requires std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString>
+    inline bool TryParse( const StringT& str, Ese::OnlineDefragFlags& value )
+    {
+        return Ese::TryParseOnlineDefragFlags( str, value );
+    }
+
+    template<typename T, typename StringT>
+        requires std::is_same_v<Ese::OnlineDefragFlags, T> && ( std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString> )
+    inline T Parse( const WideString& str )
+    {
+        return Ese::ParseOnlineDefragFlags( str );
+    }
+
+    template<typename T, typename CharT>
+        requires std::is_same_v<Ese::OnlineDefragFlags, T> && ( std::is_same_v<CharT, wchar_t> || std::is_same_v<CharT, char> )
+    inline T Parse( const CharT* str )
+    {
+        return Ese::ParseOnlineDefragFlags( str );
+    }
+
+    // =========================================================================
+    // BackupFlags
+    // =========================================================================
+    HCC_EXPORT WideString ToWideString( Ese::BackupFlags value );
+    HCC_EXPORT WideString ToWideString( Ese::BackupFlags value, const WideString& defaultResult );
+
+    inline AnsiString ToAnsiString( Ese::BackupFlags value )
+    {
+        return ToAnsiString( ToWideString( value ) );
+    }
+    inline AnsiString ToAnsiString( Ese::BackupFlags value, const AnsiString& defaultResult )
+    {
+        return ToAnsiString( ToWideString( value, ToWideString( defaultResult ) ) );
+    }
+
+    namespace Ese
+    {
+        HCC_EXPORT Ese::BackupFlags ParseBackupFlags( const WideString& str );
+        HCC_EXPORT Ese::BackupFlags ParseBackupFlags( const WideString& str, Ese::BackupFlags defaultResult );
+        HCC_EXPORT bool TryParseBackupFlags( const WideString& str, Ese::BackupFlags& value );
+
+        inline Ese::BackupFlags ParseBackupFlags( const AnsiString& str )
+        {
+            return ParseBackupFlags( ToWideString( str ) );
+        }
+        inline Ese::BackupFlags ParseBackupFlags( const AnsiString& str, Ese::BackupFlags defaultResult )
+        {
+            return ParseBackupFlags( ToWideString( str ), defaultResult );
+        }
+        inline bool TryParseBackupFlags( const AnsiString& str, Ese::BackupFlags& value )
+        {
+            return TryParseBackupFlags( ToWideString( str ), value );
+        }
+
+    }
+    template<typename StringT>
+        requires std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString>
+    inline bool TryParse( const StringT& str, Ese::BackupFlags& value )
+    {
+        return Ese::TryParseBackupFlags( str, value );
+    }
+
+    template<typename T, typename StringT>
+        requires std::is_same_v<Ese::BackupFlags, T> && ( std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString> )
+    inline T Parse( const WideString& str )
+    {
+        return Ese::ParseBackupFlags( str );
+    }
+
+    template<typename T, typename CharT>
+        requires std::is_same_v<Ese::BackupFlags, T> && ( std::is_same_v<CharT, wchar_t> || std::is_same_v<CharT, char> )
+    inline T Parse( const CharT* str )
+    {
+        return Ese::ParseBackupFlags( str );
+    }
+
+    namespace Internal
+    {
+        // =========================================================================
+        // EseFormatterImpl
+        // =========================================================================
+        template<typename EnumT, typename CharT>
+        struct EseFormatterImpl
+        {
+            std::formatter<std::basic_string_view<CharT>, CharT> viewFormatter;
+            constexpr auto parse( std::basic_format_parse_context<CharT>& ctx )
+            {
+                return viewFormatter.parse( ctx );
+            }
+
+            template <typename FormatContext>
+            auto format( EnumT value, FormatContext& ctx )
+            {
+                if constexpr ( sizeof( CharT ) == 2 )
+                {
+                    auto str = ToWideString( value );
+                    std::basic_string_view<CharT> view( str.data( ), str.size( ) );
+                    return viewFormatter.format( view, ctx );
+                }
+                else
+                {
+                    auto str = ToAnsiString( value );
+                    std::basic_string_view<CharT> view( str.data( ), str.size( ) );
+                    return viewFormatter.format( view, ctx );
+                }
+            }
+        };
+    }
+}
+
+namespace std
+{
+    template<typename CharT>
+    struct formatter<Harlinn::Common::Core::Ese::ColumnType, CharT> : public Harlinn::Common::Core::Internal::EseFormatterImpl<Harlinn::Common::Core::Ese::ColumnType,CharT>
+    {
+    };
+
+    template<typename CharT>
+    struct formatter<Harlinn::Common::Core::Ese::ColumnFlags, CharT> : public Harlinn::Common::Core::Internal::EseFormatterImpl<Harlinn::Common::Core::Ese::ColumnFlags, CharT>
+    {
+    };
+
+    template<typename CharT>
+    struct formatter<Harlinn::Common::Core::Ese::IndexFlags, CharT> : public Harlinn::Common::Core::Internal::EseFormatterImpl<Harlinn::Common::Core::Ese::IndexFlags, CharT>
+    {
+    };
+
+    template<typename CharT>
+    struct formatter<Harlinn::Common::Core::Ese::RetrieveFlags, CharT> : public Harlinn::Common::Core::Internal::EseFormatterImpl<Harlinn::Common::Core::Ese::RetrieveFlags, CharT>
+    {
+    };
+
+    template<typename CharT>
+    struct formatter<Harlinn::Common::Core::Ese::SetFlags, CharT> : public Harlinn::Common::Core::Internal::EseFormatterImpl<Harlinn::Common::Core::Ese::SetFlags, CharT>
+    {
+    };
+
+    template<typename CharT>
+    struct formatter<Harlinn::Common::Core::Ese::ColumnInfoFlags, CharT> : public Harlinn::Common::Core::Internal::EseFormatterImpl<Harlinn::Common::Core::Ese::ColumnInfoFlags, CharT>
+    {
+    };
+
+    template<typename CharT>
+    struct formatter<Harlinn::Common::Core::Ese::PrepareUpdateOptions, CharT> : public Harlinn::Common::Core::Internal::EseFormatterImpl<Harlinn::Common::Core::Ese::PrepareUpdateOptions, CharT>
+    {
+    };
+
+    template<typename CharT>
+    struct formatter<Harlinn::Common::Core::Ese::KeyFlags, CharT> : public Harlinn::Common::Core::Internal::EseFormatterImpl<Harlinn::Common::Core::Ese::KeyFlags, CharT>
+    {
+    };
+
+    template<typename CharT>
+    struct formatter<Harlinn::Common::Core::Ese::SeekFlags, CharT> : public Harlinn::Common::Core::Internal::EseFormatterImpl<Harlinn::Common::Core::Ese::SeekFlags, CharT>
+    {
+    };
+
+    template<typename CharT>
+    struct formatter<Harlinn::Common::Core::Ese::IndexRangeFlags, CharT> : public Harlinn::Common::Core::Internal::EseFormatterImpl<Harlinn::Common::Core::Ese::IndexRangeFlags, CharT>
+    {
+    };
+    template<typename CharT>
+    struct formatter<Harlinn::Common::Core::Ese::SetCurrentIndexFlags, CharT> : public Harlinn::Common::Core::Internal::EseFormatterImpl<Harlinn::Common::Core::Ese::SetCurrentIndexFlags, CharT>
+    {
+    };
+    template<typename CharT>
+    struct formatter<Harlinn::Common::Core::Ese::TableOptions, CharT> : public Harlinn::Common::Core::Internal::EseFormatterImpl<Harlinn::Common::Core::Ese::TableOptions, CharT>
+    {
+    };
+    template<typename CharT>
+    struct formatter<Harlinn::Common::Core::Ese::ObjectFlags, CharT> : public Harlinn::Common::Core::Internal::EseFormatterImpl<Harlinn::Common::Core::Ese::ObjectFlags, CharT>
+    {
+    };
+    template<typename CharT>
+    struct formatter<Harlinn::Common::Core::Ese::SequentialFlags, CharT> : public Harlinn::Common::Core::Internal::EseFormatterImpl<Harlinn::Common::Core::Ese::SequentialFlags, CharT>
+    {
+    };
+    template<typename CharT>
+    struct formatter<Harlinn::Common::Core::Ese::ExceptionAction, CharT> : public Harlinn::Common::Core::Internal::EseFormatterImpl<Harlinn::Common::Core::Ese::ExceptionAction, CharT>
+    {
+    };
+    template<typename CharT>
+    struct formatter<Harlinn::Common::Core::Ese::OpenTableFlags, CharT> : public Harlinn::Common::Core::Internal::EseFormatterImpl<Harlinn::Common::Core::Ese::OpenTableFlags, CharT>
+    {
+    };
+    template<typename CharT>
+    struct formatter<Harlinn::Common::Core::Ese::TransactionFlags, CharT> : public Harlinn::Common::Core::Internal::EseFormatterImpl<Harlinn::Common::Core::Ese::TransactionFlags, CharT>
+    {
+    };
+    template<typename CharT>
+    struct formatter<Harlinn::Common::Core::Ese::AttachDatabaseFlags, CharT> : public Harlinn::Common::Core::Internal::EseFormatterImpl<Harlinn::Common::Core::Ese::AttachDatabaseFlags, CharT>
+    {
+    };
+    template<typename CharT>
+    struct formatter<Harlinn::Common::Core::Ese::DetachDatabaseFlags, CharT> : public Harlinn::Common::Core::Internal::EseFormatterImpl<Harlinn::Common::Core::Ese::DetachDatabaseFlags, CharT>
+    {
+    };
+    template<typename CharT>
+    struct formatter<Harlinn::Common::Core::Ese::CreateDatabaseFlags, CharT> : public Harlinn::Common::Core::Internal::EseFormatterImpl<Harlinn::Common::Core::Ese::CreateDatabaseFlags, CharT>
+    {
+    };
+    template<typename CharT>
+    struct formatter<Harlinn::Common::Core::Ese::OpenDatabaseFlags, CharT> : public Harlinn::Common::Core::Internal::EseFormatterImpl<Harlinn::Common::Core::Ese::OpenDatabaseFlags, CharT>
+    {
+    };
+    template<typename CharT>
+    struct formatter<Harlinn::Common::Core::Ese::InitFlags, CharT> : public Harlinn::Common::Core::Internal::EseFormatterImpl<Harlinn::Common::Core::Ese::InitFlags, CharT>
+    {
+    };
+    template<typename CharT>
+    struct formatter<Harlinn::Common::Core::Ese::OnlineDefragFlags, CharT> : public Harlinn::Common::Core::Internal::EseFormatterImpl<Harlinn::Common::Core::Ese::OnlineDefragFlags, CharT>
+    {
+    };
+    template<typename CharT>
+    struct formatter<Harlinn::Common::Core::Ese::BackupFlags, CharT> : public Harlinn::Common::Core::Internal::EseFormatterImpl<Harlinn::Common::Core::Ese::BackupFlags, CharT>
+    {
+    };
+
+}
 
 #endif

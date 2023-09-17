@@ -1175,6 +1175,92 @@ namespace Harlinn::Common::Core::Xml
                 return {};
             }
 
+
+            template<typename T>
+                requires std::is_enum_v<T> &&
+                requires( T& value, const WideString& str)
+                { 
+                    { TryParse( str, value ) } -> std::same_as<bool>;
+                }
+            T Read( const wchar_t* attributeName ) const
+            {
+                Variant variant;
+                if ( TryGetAttribute( attributeName, variant ) )
+                {
+                    auto str = variant.As<WideString>( );
+                    typename T::value_type value;
+                    if ( TryParse( str, value ) )
+                    {
+                        return value;
+                    }
+                }
+                throw ArgumentException( L"attributeName" );
+            }
+
+            template<typename T, SimpleWideStringLike StringT>
+                requires std::is_enum_v<T>&&
+                requires( T& value, const WideString& str )
+                {
+                    { TryParse( str, value ) } -> std::same_as<bool>;
+                }
+            T Read( const StringT& attributeName ) const
+            {
+                Variant variant;
+                if ( TryGetAttribute( attributeName.c_str(), variant ) )
+                {
+                    auto str = variant.As<WideString>( );
+                    typename T::value_type value;
+                    if ( TryParse( str, value ) )
+                    {
+                        return value;
+                    }
+                }
+                throw ArgumentException( L"attributeName" );
+            }
+
+
+            template<typename T>
+                requires (IsStdOptional<T> && std::is_enum_v<typename T::value_type>) &&
+                requires( typename T::value_type& value, const WideString& str)
+                { 
+                    { TryParse( str, value ) } -> std::same_as<bool>;
+                }
+            T Read( const wchar_t* attributeName ) const
+            {
+                Variant variant;
+                if ( TryGetAttribute( attributeName, variant ) )
+                {
+                    auto str = variant.As<WideString>( );
+                    typename T::value_type value;
+                    if ( TryParse( str, value ) )
+                    {
+                        return value;
+                    }
+                }
+                return {};
+            }
+
+            template<typename T, SimpleWideStringLike StringT>
+                requires ( IsStdOptional<T>&& std::is_enum_v<typename T::value_type> ) &&
+                requires( typename T::value_type& value, const WideString& str )
+                {
+                    { TryParse( str, value ) } -> std::same_as<bool>;
+                }
+            T Read( const StringT& attributeName ) const
+            {
+                Variant variant;
+                if ( TryGetAttribute( attributeName, variant ) )
+                {
+                    auto str = variant.As<WideString>( );
+                    typename T::value_type value;
+                    if ( TryParse( str, value ) )
+                    {
+                        return value;
+                    }
+                }
+                return {};
+            }
+
             template<typename T>
                 requires std::is_same_v<T,Element>
             T Read( const wchar_t* tagName ) const

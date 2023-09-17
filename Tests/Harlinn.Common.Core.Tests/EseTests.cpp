@@ -1841,7 +1841,7 @@ public:
         {
             SensorValues.MakeKey( sensorId, Ese::KeyFlags::NewKey );
             SensorValues.MakeKey( DateTime::MaxValue() );
-            SensorValues.SetIndexRange( Ese::IndexRengeFlags::UpperLimit );
+            SensorValues.SetIndexRange( Ese::IndexRangeFlags::UpperLimit );
             return true;
         }
         else
@@ -2062,13 +2062,6 @@ BOOST_AUTO_TEST_CASE( InsertSearchAndUpdateSensorValueTableTest1 )
 
 
 }
-
-
-
-
-
-
-
 
 
 BOOST_AUTO_TEST_SUITE_END( )

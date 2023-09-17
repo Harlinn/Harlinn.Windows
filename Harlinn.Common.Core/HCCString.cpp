@@ -362,7 +362,7 @@ namespace Harlinn::Common::Core
 
 
 
-    bool ToBoolean( const wchar_t* str ) noexcept
+    bool ParseBoolean( const wchar_t* str ) noexcept
     {
         if ( str != nullptr && str[0] )
         {
@@ -384,13 +384,13 @@ namespace Harlinn::Common::Core
         return false;
     }
 
-    bool ToBoolean( const char* str ) noexcept
+    bool ParseBoolean( const char* str ) noexcept
     {
         auto wstr = ToWideString( str );
-        return ToBoolean( wstr );
+        return ParseBoolean( wstr );
     }
 
-    bool TryToBoolean( const wchar_t* str, bool& value ) noexcept
+    bool TryParseBoolean( const wchar_t* str, bool& value ) noexcept
     {
         if ( str != nullptr && str[ 0 ] )
         {
@@ -414,15 +414,15 @@ namespace Harlinn::Common::Core
         return false;
     }
 
-    bool TryToBoolean( const char* str, bool& value ) noexcept
+    bool TryParseBoolean( const char* str, bool& value ) noexcept
     {
         auto wstr = ToWideString( str );
-        return TryToBoolean( wstr.c_str(), value );
+        return TryParseBoolean( wstr.c_str(), value );
     }
 
 
 
-    Byte ToByte( const wchar_t* str, int radix )
+    Byte ParseByte( const wchar_t* str, int radix )
     {
         if ( str && str[0] )
         {
@@ -445,7 +445,7 @@ namespace Harlinn::Common::Core
             throw ArgumentException( L"Not a number", "str" );
         }
     }
-    Byte ToByte( const char* str, int radix )
+    Byte ParseByte( const char* str, int radix )
     {
         if ( str && str[0] )
         {
@@ -469,7 +469,7 @@ namespace Harlinn::Common::Core
         }
     }
 
-    bool TryToByte( const wchar_t* str,Byte& value, int radix ) noexcept
+    bool TryParseByte( const wchar_t* str,Byte& value, int radix ) noexcept
     {
         if ( str && str[ 0 ] )
         {
@@ -490,7 +490,7 @@ namespace Harlinn::Common::Core
         }
         return false;
     }
-    bool TryToByte( const char* str, Byte& value, int radix ) noexcept
+    bool TryParseByte( const char* str, Byte& value, int radix ) noexcept
     {
         if ( str && str[ 0 ] )
         {
@@ -512,7 +512,7 @@ namespace Harlinn::Common::Core
         return false;
     }
 
-    SByte ToSByte( const wchar_t* str, int radix )
+    SByte ParseSByte( const wchar_t* str, int radix )
     {
         if ( str && str[0] )
         {
@@ -535,7 +535,7 @@ namespace Harlinn::Common::Core
             throw ArgumentException( L"Not a number", "str" );
         }
     }
-    SByte ToSByte( const char* str, int radix )
+    SByte ParseSByte( const char* str, int radix )
     {
         if ( str && str[0] )
         {
@@ -559,7 +559,7 @@ namespace Harlinn::Common::Core
         }
     }
 
-    bool TryToSByte( const wchar_t* str, SByte& value, int radix ) noexcept
+    bool TryParseSByte( const wchar_t* str, SByte& value, int radix ) noexcept
     {
         if ( str && str[ 0 ] )
         {
@@ -580,7 +580,7 @@ namespace Harlinn::Common::Core
         }
         return false;
     }
-    bool TryToSByte( const char* str, SByte& value, int radix ) noexcept
+    bool TryParseSByte( const char* str, SByte& value, int radix ) noexcept
     {
         if ( str && str[ 0 ] )
         {
@@ -603,7 +603,7 @@ namespace Harlinn::Common::Core
     }
 
 
-    Int16 ToInt16( const wchar_t* str, int radix )
+    Int16 ParseInt16( const wchar_t* str, int radix )
     {
         if ( str && str[0] )
         {
@@ -626,7 +626,7 @@ namespace Harlinn::Common::Core
             throw ArgumentException( L"Not a number", "str" );
         }
     }
-    Int16 ToInt16( const char* str, int radix )
+    Int16 ParseInt16( const char* str, int radix )
     {
         if ( str && str[0] )
         {
@@ -650,7 +650,7 @@ namespace Harlinn::Common::Core
         }
     }
 
-    bool TryToInt16( const wchar_t* str, Int16& value, int radix ) noexcept
+    bool TryParseInt16( const wchar_t* str, Int16& value, int radix ) noexcept
     {
         if ( str && str[ 0 ] )
         {
@@ -671,7 +671,7 @@ namespace Harlinn::Common::Core
         }
         return false;
     }
-    bool TryToInt16( const char* str, Int16& value, int radix  ) noexcept
+    bool TryParseInt16( const char* str, Int16& value, int radix  ) noexcept
     {
         if ( str && str[ 0 ] )
         {
@@ -693,7 +693,7 @@ namespace Harlinn::Common::Core
         return false;
     }
 
-    UInt16 ToUInt16( const wchar_t* str, int radix )
+    UInt16 ParseUInt16( const wchar_t* str, int radix )
     {
         if ( str && str[0] )
         {
@@ -716,7 +716,7 @@ namespace Harlinn::Common::Core
             throw ArgumentException( L"Not a number", "str" );
         }
     }
-    UInt16 ToUInt16( const char* str, int radix )
+    UInt16 ParseUInt16( const char* str, int radix )
     {
         if ( str && str[0] )
         {
@@ -740,7 +740,7 @@ namespace Harlinn::Common::Core
         }
     }
 
-    bool TryToUInt16( const wchar_t* str, UInt16& value, int radix ) noexcept
+    bool TryParseUInt16( const wchar_t* str, UInt16& value, int radix ) noexcept
     {
         if ( str && str[ 0 ] )
         {
@@ -761,7 +761,7 @@ namespace Harlinn::Common::Core
         }
         return false;
     }
-    bool TryToUInt16( const char* str, UInt16& value, int radix ) noexcept
+    bool TryParseUInt16( const char* str, UInt16& value, int radix ) noexcept
     {
         if ( str && str[ 0 ] )
         {
@@ -784,7 +784,7 @@ namespace Harlinn::Common::Core
     }
 
 
-    Int32 ToInt32( const wchar_t* str, int radix )
+    Int32 ParseInt32( const wchar_t* str, int radix )
     {
         if ( str && str[0] )
         {
@@ -807,7 +807,7 @@ namespace Harlinn::Common::Core
             throw ArgumentException( L"Not a number", "str" );
         }
     }
-    Int32 ToInt32( const char* str, int radix )
+    Int32 ParseInt32( const char* str, int radix )
     {
         if ( str && str[0] )
         {
@@ -831,7 +831,7 @@ namespace Harlinn::Common::Core
         }
     }
 
-    bool TryToInt32( const wchar_t* str, Int32& value, int radix ) noexcept
+    bool TryParseInt32( const wchar_t* str, Int32& value, int radix ) noexcept
     {
         if ( str && str[ 0 ] )
         {
@@ -852,7 +852,7 @@ namespace Harlinn::Common::Core
         }
         return false;
     }
-    bool TryToInt32( const char* str, Int32& value, int radix ) noexcept
+    bool TryParseInt32( const char* str, Int32& value, int radix ) noexcept
     {
         if ( str && str[ 0 ] )
         {
@@ -875,7 +875,7 @@ namespace Harlinn::Common::Core
     }
 
 
-    UInt32 ToUInt32( const wchar_t* str, int radix )
+    UInt32 ParseUInt32( const wchar_t* str, int radix )
     {
         if ( str && str[0] )
         {
@@ -898,7 +898,7 @@ namespace Harlinn::Common::Core
             throw ArgumentException( L"Not a number", "str" );
         }
     }
-    UInt32 ToUInt32( const char* str, int radix )
+    UInt32 ParseUInt32( const char* str, int radix )
     {
         if ( str && str[0] )
         {
@@ -922,7 +922,7 @@ namespace Harlinn::Common::Core
         }
     }
 
-    bool TryToUInt32( const wchar_t* str, UInt32& value, int radix ) noexcept
+    bool TryParseUInt32( const wchar_t* str, UInt32& value, int radix ) noexcept
     {
         if ( str && str[ 0 ] )
         {
@@ -943,7 +943,7 @@ namespace Harlinn::Common::Core
         }
         return false;
     }
-    bool TryToUInt32( const char* str, UInt32& value, int radix ) noexcept
+    bool TryParseUInt32( const char* str, UInt32& value, int radix ) noexcept
     {
         if ( str && str[ 0 ] )
         {
@@ -965,7 +965,7 @@ namespace Harlinn::Common::Core
         return false;
     }
 
-    Int64 ToInt64( const wchar_t* str, int radix )
+    Int64 ParseInt64( const wchar_t* str, int radix )
     {
         if ( str && str[0] )
         {
@@ -986,7 +986,7 @@ namespace Harlinn::Common::Core
             throw ArgumentException( L"Not a number", "str" );
         }
     }
-    Int64 ToInt64( const char* str, int radix )
+    Int64 ParseInt64( const char* str, int radix )
     {
         if ( str && str[0] )
         {
@@ -1008,7 +1008,7 @@ namespace Harlinn::Common::Core
         }
     }
 
-    bool TryToInt64( const wchar_t* str, Int64& value, int radix ) noexcept
+    bool TryParseInt64( const wchar_t* str, Int64& value, int radix ) noexcept
     {
         if ( str && str[ 0 ] )
         {
@@ -1029,7 +1029,7 @@ namespace Harlinn::Common::Core
         }
         return false;
     }
-    bool TryToInt64( const char* str, Int64& value, int radix ) noexcept
+    bool TryParseInt64( const char* str, Int64& value, int radix ) noexcept
     {
         if ( str && str[ 0 ] )
         {
@@ -1053,7 +1053,7 @@ namespace Harlinn::Common::Core
 
 
 
-    UInt64 ToUInt64( const wchar_t* str, int radix )
+    UInt64 ParseUInt64( const wchar_t* str, int radix )
     {
         if ( str && str[0] )
         {
@@ -1074,7 +1074,7 @@ namespace Harlinn::Common::Core
             throw ArgumentException( L"Not a number", "str" );
         }
     }
-    UInt64 ToUInt64( const char* str, int radix )
+    UInt64 ParseUInt64( const char* str, int radix )
     {
         if ( str && str[0] )
         {
@@ -1096,7 +1096,7 @@ namespace Harlinn::Common::Core
         }
     }
 
-    bool TryToUInt64( const wchar_t* str, UInt64& value, int radix ) noexcept
+    bool TryParseUInt64( const wchar_t* str, UInt64& value, int radix ) noexcept
     {
         if ( str && str[ 0 ] )
         {
@@ -1117,7 +1117,7 @@ namespace Harlinn::Common::Core
         }
         return false;
     }
-    bool TryToUInt64( const char* str, UInt64& value, int radix ) noexcept
+    bool TryParseUInt64( const char* str, UInt64& value, int radix ) noexcept
     {
         if ( str && str[ 0 ] )
         {
@@ -1141,7 +1141,7 @@ namespace Harlinn::Common::Core
 
 
 
-    Single ToSingle( const wchar_t* str )
+    Single ParseSingle( const wchar_t* str )
     {
         if ( str && str[0] )
         {
@@ -1162,7 +1162,7 @@ namespace Harlinn::Common::Core
             throw ArgumentException( L"Not a number", "str" );
         }
     }
-    Single ToSingle( const char* str )
+    Single ParseSingle( const char* str )
     {
         if ( str && str[0] )
         {
@@ -1184,7 +1184,7 @@ namespace Harlinn::Common::Core
         }
     }
 
-    bool TryToSingle( const wchar_t* str, float& value ) noexcept
+    bool TryParseSingle( const wchar_t* str, float& value ) noexcept
     {
         if ( str && str[ 0 ] )
         {
@@ -1207,7 +1207,7 @@ namespace Harlinn::Common::Core
         }
     }
 
-    bool TryToSingle( const char* str, float& value ) noexcept
+    bool TryParseSingle( const char* str, float& value ) noexcept
     {
         if ( str && str[ 0 ] )
         {
@@ -1235,7 +1235,7 @@ namespace Harlinn::Common::Core
     
 
 
-    Single ToSingleInvariant( const wchar_t* str )
+    Single ParseSingleInvariant( const wchar_t* str )
     {
         if ( str && str[ 0 ] )
         {
@@ -1257,7 +1257,7 @@ namespace Harlinn::Common::Core
             throw ArgumentException( L"Not a number", "str" );
         }
     }
-    Single ToSingleInvariant( const char* str )
+    Single ParseSingleInvariant( const char* str )
     {
         if ( str && str[ 0 ] )
         {
@@ -1280,7 +1280,7 @@ namespace Harlinn::Common::Core
         }
     }
 
-    bool TryToSingleInvariant( const wchar_t* str, float& value ) noexcept
+    bool TryParseSingleInvariant( const wchar_t* str, float& value ) noexcept
     {
         if ( str && str[ 0 ] )
         {
@@ -1303,7 +1303,7 @@ namespace Harlinn::Common::Core
             return false;
         }
     }
-    bool TryToSingleInvariant( const char* str, float& value ) noexcept
+    bool TryParseSingleInvariant( const char* str, float& value ) noexcept
     {
         if ( str && str[ 0 ] )
         {
@@ -1328,7 +1328,7 @@ namespace Harlinn::Common::Core
     }
 
 
-    Double ToDouble( const wchar_t* str )
+    Double ParseDouble( const wchar_t* str )
     {
         if ( str && str[0] )
         {
@@ -1349,7 +1349,7 @@ namespace Harlinn::Common::Core
             throw ArgumentException( L"Not a number", "str" );
         }
     }
-    Double ToDouble( const char* str )
+    Double ParseDouble( const char* str )
     {
         if ( str && str[0] )
         {
@@ -1371,7 +1371,7 @@ namespace Harlinn::Common::Core
         }
     }
 
-    bool TryToDouble( const wchar_t* str, double& value ) noexcept
+    bool TryParseDouble( const wchar_t* str, double& value ) noexcept
     {
         if ( str && str[ 0 ] )
         {
@@ -1394,7 +1394,7 @@ namespace Harlinn::Common::Core
         }
     }
 
-    bool TryToDouble( const char* str, double& value ) noexcept
+    bool TryParseDouble( const char* str, double& value ) noexcept
     {
         if ( str && str[ 0 ] )
         {
@@ -1418,7 +1418,7 @@ namespace Harlinn::Common::Core
     }
 
 
-    double ToDoubleInvariant( const wchar_t* str )
+    double ParseDoubleInvariant( const wchar_t* str )
     {
         if ( str && str[ 0 ] )
         {
@@ -1440,7 +1440,7 @@ namespace Harlinn::Common::Core
             throw ArgumentException( L"Not a number", "str" );
         }
     }
-    double ToDoubleInvariant( const char* str )
+    double ParseDoubleInvariant( const char* str )
     {
         if ( str && str[ 0 ] )
         {
@@ -1463,7 +1463,7 @@ namespace Harlinn::Common::Core
         }
     }
 
-    bool TryToDoubleInvariant( const wchar_t* str, double& value ) noexcept
+    bool TryParseDoubleInvariant( const wchar_t* str, double& value ) noexcept
     {
         if ( str && str[ 0 ] )
         {
@@ -1486,7 +1486,7 @@ namespace Harlinn::Common::Core
             return false;
         }
     }
-    bool TryToDoubleInvariant( const char* str, double& value ) noexcept
+    bool TryParseDoubleInvariant( const char* str, double& value ) noexcept
     {
         if ( str && str[ 0 ] )
         {

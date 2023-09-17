@@ -99,7 +99,7 @@ namespace Harlinn::Common::Core
             ( std::is_same_v<WideString, ArgumentType> || std::is_same_v<AnsiString, ArgumentType> ) )
     inline ResultType ConvertTo( const ArgumentType& arg )
     {
-        return ToBoolean( arg );
+        return ParseBoolean( arg );
     }
 
     template <typename ResultType, typename ArgumentType>
@@ -237,7 +237,7 @@ namespace Harlinn::Common::Core
                 std::is_nothrow_convertible_v< ArgumentType, const char*> )
     inline ResultType ConvertTo( ArgumentType arg )
     {
-        return ToSByte( arg );
+        return ParseSByte( arg );
     }
     template <typename ResultType, typename ArgumentType>
         requires std::is_same_v<ResultType,Byte> && 
@@ -247,7 +247,7 @@ namespace Harlinn::Common::Core
                 std::is_nothrow_convertible_v< ArgumentType, const char*> )
     inline ResultType ConvertTo( ArgumentType arg )
     {
-        return ToByte( arg );
+        return ParseByte( arg );
     }
     template <typename ResultType, typename ArgumentType>
         requires std::is_same_v<ResultType,Int16> && 
@@ -257,7 +257,7 @@ namespace Harlinn::Common::Core
                 std::is_nothrow_convertible_v< ArgumentType, const char*> )
     inline ResultType ConvertTo( ArgumentType arg )
     {
-        return ToInt16( arg );
+        return ParseInt16( arg );
     }
     template <typename ResultType, typename ArgumentType>
         requires std::is_same_v<ResultType,UInt16> && 
@@ -267,7 +267,7 @@ namespace Harlinn::Common::Core
                 std::is_nothrow_convertible_v< ArgumentType, const char*> )
     inline ResultType ConvertTo( ArgumentType arg )
     {
-        return ToUInt16( arg );
+        return ParseUInt16( arg );
     }
     template <typename ResultType, typename ArgumentType>
         requires std::is_same_v<ResultType,Int32> && 
@@ -277,7 +277,7 @@ namespace Harlinn::Common::Core
                 std::is_nothrow_convertible_v< ArgumentType, const char*> )
     inline ResultType ConvertTo( ArgumentType arg )
     {
-        return ToInt32( arg );
+        return ParseInt32( arg );
     }
     template <typename ResultType, typename ArgumentType>
         requires std::is_same_v<ResultType,UInt32> && 
@@ -287,7 +287,7 @@ namespace Harlinn::Common::Core
                 std::is_nothrow_convertible_v< ArgumentType, const char*> )
     inline ResultType ConvertTo( ArgumentType arg )
     {
-        return ToUInt32( arg );
+        return ParseUInt32( arg );
     }
     template <typename ResultType, typename ArgumentType>
         requires std::is_same_v<ResultType,Int64> && 
@@ -297,7 +297,7 @@ namespace Harlinn::Common::Core
                 std::is_nothrow_convertible_v< ArgumentType, const char*> )
     inline ResultType ConvertTo( ArgumentType arg )
     {
-        return ToInt64( arg );
+        return ParseInt64( arg );
     }
     template <typename ResultType, typename ArgumentType>
         requires std::is_same_v<ResultType,UInt64> && 
@@ -307,7 +307,7 @@ namespace Harlinn::Common::Core
                 std::is_nothrow_convertible_v< ArgumentType, const char*> )
     inline ResultType ConvertTo( ArgumentType arg )
     {
-        return ToUInt64( arg );
+        return ParseUInt64( arg );
     }
     template <typename ResultType, typename ArgumentType>
         requires std::is_same_v<ResultType,Single> && 
@@ -317,7 +317,7 @@ namespace Harlinn::Common::Core
                 std::is_nothrow_convertible_v< ArgumentType, const char*> )
     inline ResultType ConvertTo( ArgumentType arg )
     {
-        return ToSingle( arg );
+        return ParseSingle( arg );
     }
     template <typename ResultType, typename ArgumentType>
         requires std::is_same_v<ResultType,Double> && 
@@ -327,7 +327,7 @@ namespace Harlinn::Common::Core
                 std::is_nothrow_convertible_v< ArgumentType, const char*> )
     inline ResultType ConvertTo( ArgumentType arg )
     {
-        return ToDouble( arg );
+        return ParseDouble( arg );
     }
 
 

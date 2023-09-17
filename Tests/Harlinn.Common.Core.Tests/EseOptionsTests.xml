@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<configuration>
+  <StorageEngine Name="TestInstance"
+                 CreatePathIfNotExist="True"
+                 ExceptionAction="None"
+                 LogFilePath="%HCC_TEST_DATA_ROOT%\ESE\Test\Log"
+                 SystemPath="%HCC_TEST_DATA_ROOT%\ESE\Test\System"
+                 EnableBackup="True"
+                 BackupDirectory="%HCC_TEST_DATA_ROOT%\ESE\Test\Backup">
+    <Databases>
+      <Database Name="Test" Filename="%HCC_TEST_DATA_ROOT%\ESE\Test\Database.edb" DatabaseSizeMax="0" CreateDatabaseFlags="OverwriteExisting" >
+      </Database>
+    </Databases>
+  </StorageEngine>
+</configuration>

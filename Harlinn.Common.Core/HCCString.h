@@ -5316,248 +5316,527 @@ namespace Harlinn::Common::Core
     HCC_EXPORT AnsiString ToAnsiString( const Currency& value );
     HCC_EXPORT AnsiString ToAnsiString( const Variant& value );
 
+    
 
-
-
-    HCC_EXPORT bool ToBoolean( const wchar_t* str ) noexcept;
-    HCC_EXPORT bool ToBoolean( const char* str ) noexcept;
+    HCC_EXPORT bool ParseBoolean( const wchar_t* str ) noexcept;
+    HCC_EXPORT bool ParseBoolean( const char* str ) noexcept;
 
     template<SimpleStringLike StringT>
-    inline bool ToBoolean( const StringT& str ) noexcept
+    inline bool ParseBoolean( const StringT& str ) noexcept
     {
-        return ToBoolean( str.c_str( ) );
+        return ParseBoolean( str.c_str( ) );
     }
 
-    HCC_EXPORT bool TryToBoolean( const wchar_t* str, bool& value ) noexcept;
-    HCC_EXPORT bool TryToBoolean( const char* str, bool& value ) noexcept;
+    HCC_EXPORT bool TryParseBoolean( const wchar_t* str, bool& value ) noexcept;
+    HCC_EXPORT bool TryParseBoolean( const char* str, bool& value ) noexcept;
 
     template<SimpleStringLike StringT>
-    inline bool TryToBoolean( const StringT& str, bool& value ) noexcept
+    inline bool TryParseBoolean( const StringT& str, bool& value ) noexcept
     {
-        return TryToBoolean( str.c_str( ), value );
+        return TryParseBoolean( str.c_str( ), value );
+    }
+
+    template<typename T>
+        requires std::is_same_v<char,T> || std::is_same_v<wchar_t, T>
+    inline bool TryParse( const T* str, bool& value )
+    {
+        return TryParseBoolean( str, value );
+    }
+    template<SimpleStringLike StringT>
+    inline bool TryParse( const StringT& str, bool& value ) noexcept
+    {
+        return TryParseBoolean( str.c_str( ), value );
+    }
+
+    template<typename T, typename CharT>
+        requires std::is_same_v<bool,T> && ( std::is_same_v<char, CharT> || std::is_same_v<wchar_t, CharT> )
+    inline T Parse( const CharT* str )
+    { 
+        return ParseBoolean( str );
+    }
+    template<typename T, SimpleStringLike StringT>
+        requires std::is_same_v<bool, T>
+    inline T Parse( const StringT& str )
+    {
+        return ParseBoolean( str.c_str() );
     }
 
 
-    HCC_EXPORT Byte ToByte( const wchar_t* str, int radix = 10 );
-    HCC_EXPORT Byte ToByte( const char* str, int radix = 10 );
+
+    HCC_EXPORT Byte ParseByte( const wchar_t* str, int radix = 10 );
+    HCC_EXPORT Byte ParseByte( const char* str, int radix = 10 );
 
     template<SimpleStringLike StringT>
-    inline Byte ToByte( const StringT& str, int radix = 10 )
+    inline Byte ParseByte( const StringT& str, int radix = 10 )
     {
-        return ToByte( str.c_str( ), radix );
+        return ParseByte( str.c_str( ), radix );
     }
     
-    HCC_EXPORT bool TryToByte( const wchar_t* str, Byte& value, int radix = 10 ) noexcept;
-    HCC_EXPORT bool TryToByte( const char* str, Byte& value, int radix = 10 ) noexcept;
+    HCC_EXPORT bool TryParseByte( const wchar_t* str, Byte& value, int radix = 10 ) noexcept;
+    HCC_EXPORT bool TryParseByte( const char* str, Byte& value, int radix = 10 ) noexcept;
 
     template<SimpleStringLike StringT>
-    inline bool TryToByte( const StringT& str, Byte& value, int radix = 10 ) noexcept
+    inline bool TryParseByte( const StringT& str, Byte& value, int radix = 10 ) noexcept
     {
-        return TryToByte( str.c_str( ), value, radix );
+        return TryParseByte( str.c_str( ), value, radix );
+    }
+
+    template<typename CharT>
+        requires std::is_same_v<char, CharT> || std::is_same_v<wchar_t, CharT>
+    inline bool TryParse( const CharT* str, Byte& value, int radix = 10 )
+    {
+        return TryParseByte( str, value, radix );
+    }
+    template<SimpleStringLike StringT>
+    inline bool TryParse( const StringT& str, Byte& value, int radix = 10 ) noexcept
+    {
+        return TryParseByte( str.c_str( ), value, radix );
+    }
+
+    template<typename T, typename CharT>
+        requires std::is_same_v<Byte, T> && ( std::is_same_v<char, CharT> || std::is_same_v<wchar_t, CharT> )
+    inline T Parse( const CharT* str, int radix = 10 )
+    {
+        return ParseByte( str, radix );
+    }
+    template<typename T, SimpleStringLike StringT>
+        requires std::is_same_v<Byte, T>
+    inline T Parse( const StringT& str, int radix = 10 )
+    {
+        return ParseByte( str.c_str( ), radix );
     }
 
 
-    HCC_EXPORT SByte ToSByte( const wchar_t* str, int radix = 10 );
-    HCC_EXPORT SByte ToSByte( const char* str, int radix = 10 );
+
+    HCC_EXPORT SByte ParseSByte( const wchar_t* str, int radix = 10 );
+    HCC_EXPORT SByte ParseSByte( const char* str, int radix = 10 );
 
     template<SimpleStringLike StringT>
-    inline SByte ToSByte( const StringT& str, int radix = 10 )
+    inline SByte ParseSByte( const StringT& str, int radix = 10 )
     {
-        return ToSByte( str.c_str( ), radix );
+        return ParseSByte( str.c_str( ), radix );
     }
 
-    HCC_EXPORT bool TryToSByte( const wchar_t* str, SByte& value, int radix = 10 ) noexcept;
-    HCC_EXPORT bool TryToSByte( const char* str, SByte& value, int radix = 10 ) noexcept;
+    HCC_EXPORT bool TryParseSByte( const wchar_t* str, SByte& value, int radix = 10 ) noexcept;
+    HCC_EXPORT bool TryParseSByte( const char* str, SByte& value, int radix = 10 ) noexcept;
 
     template<SimpleStringLike StringT>
-    inline bool TryToSByte( const StringT& str, SByte& value, int radix = 10 ) noexcept
+    inline bool TryParseSByte( const StringT& str, SByte& value, int radix = 10 ) noexcept
     {
-        return TryToSByte( str.c_str( ), value, radix );
+        return TryParseSByte( str.c_str( ), value, radix );
     }
 
-
-    HCC_EXPORT Int16 ToInt16( const wchar_t* str, int radix = 10 );
-    HCC_EXPORT Int16 ToInt16( const char* str, int radix = 10 );
-
-    template<SimpleStringLike StringT>
-    inline Int16 ToInt16( const StringT& str, int radix = 10 )
+    template<typename CharT>
+        requires std::is_same_v<char, CharT> || std::is_same_v<wchar_t, CharT>
+    inline bool TryParse( const CharT* str, SByte& value, int radix = 10 )
     {
-        return ToInt16( str.c_str( ), radix );
+        return TryParseSByte( str, value, radix );
+    }
+    template<SimpleStringLike StringT>
+    inline bool TryParse( const StringT& str, SByte& value, int radix = 10 ) noexcept
+    {
+        return TryParseSByte( str.c_str( ), value, radix );
     }
 
-    HCC_EXPORT bool TryToInt16( const wchar_t* str, Int16& value, int radix = 10 ) noexcept;
-    HCC_EXPORT bool TryToInt16( const char* str, Int16& value, int radix = 10 ) noexcept;
-
-    template<SimpleStringLike StringT>
-    inline bool TryToInt16( const StringT& str, Int16& value, int radix = 10 ) noexcept
+    template<typename T, typename CharT>
+        requires std::is_same_v<SByte, T> && ( std::is_same_v<char, CharT> || std::is_same_v<wchar_t, CharT> )
+    inline T Parse( const CharT* str, int radix = 10 )
     {
-        return TryToInt16( str.c_str( ), value, radix );
+        return ParseSByte( str, radix );
     }
-
-
-    HCC_EXPORT UInt16 ToUInt16( const wchar_t* str, int radix = 10 );
-    HCC_EXPORT UInt16 ToUInt16( const char* str, int radix = 10 );
-
-    template<SimpleStringLike StringT>
-    inline UInt16 ToUInt16( const StringT& str, int radix = 10 )
+    template<typename T, SimpleStringLike StringT>
+        requires std::is_same_v<SByte, T>
+    inline T Parse( const StringT& str, int radix = 10 )
     {
-        return ToUInt16( str.c_str( ), radix );
-    }
-
-    HCC_EXPORT bool TryToUInt16( const wchar_t* str, UInt16& value, int radix = 10 ) noexcept;
-    HCC_EXPORT bool TryToUInt16( const char* str, UInt16& value, int radix = 10 ) noexcept;
-
-    template<SimpleStringLike StringT>
-    inline bool TryToUInt16( const StringT& str, UInt16& value, int radix = 10 ) noexcept
-    {
-        return TryToUInt16( str.c_str( ), value, radix );
-    }
-
-    HCC_EXPORT Int32 ToInt32( const wchar_t* str, int radix = 10 );
-    HCC_EXPORT Int32 ToInt32( const char* str, int radix = 10 );
-
-    template<SimpleStringLike StringT>
-    inline Int32 ToInt32( const StringT& str, int radix = 10 )
-    {
-        return ToInt32( str.c_str( ), radix );
-    }
-
-    HCC_EXPORT bool TryToInt32( const wchar_t* str, Int32& value, int radix = 10 ) noexcept;
-    HCC_EXPORT bool TryToInt32( const char* str, Int32& value, int radix = 10 ) noexcept;
-
-    template<SimpleStringLike StringT>
-    inline bool TryToInt32( const StringT& str, Int32& value, int radix = 10 ) noexcept
-    {
-        return TryToInt32( str.c_str( ), value, radix );
-    }
-
-    HCC_EXPORT UInt32 ToUInt32( const wchar_t* str, int radix = 10 );
-    HCC_EXPORT UInt32 ToUInt32( const char* str, int radix = 10 );
-
-    template<SimpleStringLike StringT>
-    inline UInt32 ToUInt32( const StringT& str, int radix = 10 )
-    {
-        return ToUInt32( str.c_str( ), radix );
-    }
-
-    HCC_EXPORT bool TryToUInt32( const wchar_t* str, UInt32& value, int radix = 10 ) noexcept;
-    HCC_EXPORT bool TryToUInt32( const char* str, UInt32& value, int radix = 10 ) noexcept;
-
-    template<SimpleStringLike StringT>
-    inline bool TryToUInt32( const StringT& str, UInt32& value, int radix = 10 ) noexcept
-    {
-        return TryToUInt32( str.c_str( ), value, radix );
+        return ParseSByte( str.c_str( ), radix );
     }
 
 
-    HCC_EXPORT Int64 ToInt64( const wchar_t* str, int radix = 10 );
-    HCC_EXPORT Int64 ToInt64( const char* str, int radix = 10 );
+    HCC_EXPORT Int16 ParseInt16( const wchar_t* str, int radix = 10 );
+    HCC_EXPORT Int16 ParseInt16( const char* str, int radix = 10 );
 
     template<SimpleStringLike StringT>
-    inline Int64 ToInt64( const StringT& str, int radix = 10 )
+    inline Int16 ParseInt16( const StringT& str, int radix = 10 )
     {
-        return ToInt64( str.c_str( ), radix );
+        return ParseInt16( str.c_str( ), radix );
     }
 
-    HCC_EXPORT bool TryToInt64( const wchar_t* str, Int64& value, int radix = 10 ) noexcept;
-    HCC_EXPORT bool TryToInt64( const char* str, Int64& value, int radix = 10 ) noexcept;
+    HCC_EXPORT bool TryParseInt16( const wchar_t* str, Int16& value, int radix = 10 ) noexcept;
+    HCC_EXPORT bool TryParseInt16( const char* str, Int16& value, int radix = 10 ) noexcept;
 
     template<SimpleStringLike StringT>
-    inline bool TryToInt64( const StringT& str, Int64& value, int radix = 10 ) noexcept
+    inline bool TryParseInt16( const StringT& str, Int16& value, int radix = 10 ) noexcept
     {
-        return TryToInt64( str.c_str( ), value, radix );
+        return TryParseInt16( str.c_str( ), value, radix );
     }
 
-
-    HCC_EXPORT UInt64 ToUInt64( const wchar_t* str, int radix = 10 );
-    HCC_EXPORT UInt64 ToUInt64( const char* str, int radix = 10 );
-
-    template<SimpleStringLike StringT>
-    inline UInt64 ToUInt64( const StringT& str, int radix = 10 )
+    template<typename CharT>
+        requires std::is_same_v<char, CharT> || std::is_same_v<wchar_t, CharT>
+    inline bool TryParse( const CharT* str, Int16& value, int radix = 10 )
     {
-        return ToUInt64( str.c_str( ), radix );
+        return TryParseInt16( str, value, radix );
+    }
+    template<SimpleStringLike StringT>
+    inline bool TryParse( const StringT& str, Int16& value, int radix = 10 ) noexcept
+    {
+        return TryParseInt16( str.c_str( ), value, radix );
     }
 
-    HCC_EXPORT bool TryToUInt64( const wchar_t* str, UInt64& value, int radix = 10 ) noexcept;
-    HCC_EXPORT bool TryToUInt64( const char* str, UInt64& value, int radix = 10 ) noexcept;
-
-    template<SimpleStringLike StringT>
-    inline bool TryToUInt64( const StringT& str, UInt64& value, int radix = 10 ) noexcept
+    template<typename T, typename CharT>
+        requires std::is_same_v<Int16, T> && ( std::is_same_v<char, CharT> || std::is_same_v<wchar_t, CharT> )
+    inline T Parse( const CharT* str, int radix = 10 )
     {
-        return TryToUInt64( str.c_str( ), value, radix );
+        return ParseInt16( str, radix );
     }
-
-    HCC_EXPORT Single ToSingle( const wchar_t* str );
-    HCC_EXPORT Single ToSingle( const char* str );
-
-    template<SimpleStringLike StringT>
-    inline Single ToSingle( const StringT& str )
+    template<typename T, SimpleStringLike StringT>
+        requires std::is_same_v<Int16, T>
+    inline T Parse( const StringT& str, int radix = 10 )
     {
-        return ToSingle( str.c_str( ) );
-    }
-
-    HCC_EXPORT bool TryToSingle( const wchar_t* str, float& value ) noexcept;
-    HCC_EXPORT bool TryToSingle( const char* str, float& value ) noexcept;
-
-    template<SimpleStringLike StringT>
-    inline bool TryToSingle( const StringT& str, float& value ) noexcept
-    {
-        return TryToSingle( str.c_str( ), value );
-    }
-
-    HCC_EXPORT Single ToSingleInvariant( const wchar_t* str );
-    HCC_EXPORT Single ToSingleInvariant( const char* str );
-
-    template<SimpleStringLike StringT>
-    inline Single ToSingleInvariant( std::locale locale, const StringT& str )
-    {
-        return ToSingleInvariant( str.c_str( ) );
-    }
-
-    HCC_EXPORT bool TryToSingleInvariant( const wchar_t* str, float& value ) noexcept;
-    HCC_EXPORT bool TryToSingleInvariant( const char* str, float& value ) noexcept;
-
-    template<SimpleStringLike StringT>
-    inline bool TryToSingleInvariant( const StringT& str, float& value ) noexcept
-    {
-        return TryToSingleInvariant( str.c_str( ), value );
+        return ParseInt16( str.c_str( ), radix );
     }
 
 
-    HCC_EXPORT Double ToDouble( const wchar_t* str );
-    HCC_EXPORT Double ToDouble( const char* str );
+    HCC_EXPORT UInt16 ParseUInt16( const wchar_t* str, int radix = 10 );
+    HCC_EXPORT UInt16 ParseUInt16( const char* str, int radix = 10 );
 
     template<SimpleStringLike StringT>
-    inline Double ToDouble( const StringT& str )
+    inline UInt16 ParseUInt16( const StringT& str, int radix = 10 )
     {
-        return ToDouble( str.c_str( ) );
+        return ParseUInt16( str.c_str( ), radix );
     }
 
-    HCC_EXPORT bool TryToDouble( const wchar_t* str, double& value ) noexcept;
-    HCC_EXPORT bool TryToDouble( const char* str, double& value ) noexcept;
+    HCC_EXPORT bool TryParseUInt16( const wchar_t* str, UInt16& value, int radix = 10 ) noexcept;
+    HCC_EXPORT bool TryParseUInt16( const char* str, UInt16& value, int radix = 10 ) noexcept;
 
     template<SimpleStringLike StringT>
-    inline bool TryToDouble( const StringT& str, double& value ) noexcept
+    inline bool TryParseUInt16( const StringT& str, UInt16& value, int radix = 10 ) noexcept
     {
-        return TryToDouble( str.c_str( ), value );
+        return TryParseUInt16( str.c_str( ), value, radix );
     }
 
-    HCC_EXPORT Double ToDoubleInvariant( const wchar_t* str );
-    HCC_EXPORT Double ToDoubleInvariant( const char* str );
-
-    template<SimpleStringLike StringT>
-    inline Double ToDoubleInvariant( const StringT& str )
+    template<typename CharT>
+        requires std::is_same_v<char, CharT> || std::is_same_v<wchar_t, CharT>
+    inline bool TryParse( const CharT* str, UInt16& value, int radix = 10 )
     {
-        return ToDoubleInvariant( str.c_str( ) );
+        return TryParseUInt16( str, value, radix );
+    }
+    template<SimpleStringLike StringT>
+    inline bool TryParse( const StringT& str, UInt16& value, int radix = 10 ) noexcept
+    {
+        return TryParseUInt16( str.c_str( ), value, radix );
     }
 
-    HCC_EXPORT bool TryToDoubleInvariant( const wchar_t* str, double& value ) noexcept;
-    HCC_EXPORT bool TryToDoubleInvariant( const char* str, double& value ) noexcept;
+    template<typename T, typename CharT>
+        requires std::is_same_v<UInt16, T> && ( std::is_same_v<char, CharT> || std::is_same_v<wchar_t, CharT> )
+    inline T Parse( const CharT* str, int radix = 10 )
+    {
+        return ParseUInt16( str, radix );
+    }
+    template<typename T, SimpleStringLike StringT>
+        requires std::is_same_v<UInt16, T>
+    inline T Parse( const StringT& str, int radix = 10 )
+    {
+        return ParseUInt16( str.c_str( ), radix );
+    }
+
+
+    HCC_EXPORT Int32 ParseInt32( const wchar_t* str, int radix = 10 );
+    HCC_EXPORT Int32 ParseInt32( const char* str, int radix = 10 );
 
     template<SimpleStringLike StringT>
-    inline bool TryToDoubleInvariant( const StringT& str, double& value ) noexcept
+    inline Int32 ParseInt32( const StringT& str, int radix = 10 )
     {
-        return TryToDoubleInvariant( str.c_str( ), value );
+        return ParseInt32( str.c_str( ), radix );
+    }
+
+    HCC_EXPORT bool TryParseInt32( const wchar_t* str, Int32& value, int radix = 10 ) noexcept;
+    HCC_EXPORT bool TryParseInt32( const char* str, Int32& value, int radix = 10 ) noexcept;
+
+    template<SimpleStringLike StringT>
+    inline bool TryParseInt32( const StringT& str, Int32& value, int radix = 10 ) noexcept
+    {
+        return TryParseInt32( str.c_str( ), value, radix );
+    }
+
+    template<typename CharT>
+        requires std::is_same_v<char, CharT> || std::is_same_v<wchar_t, CharT>
+    inline bool TryParse( const CharT* str, Int32& value, int radix = 10 )
+    {
+        return TryParseInt32( str, value, radix );
+    }
+    template<SimpleStringLike StringT>
+    inline bool TryParse( const StringT& str, Int32& value, int radix = 10 ) noexcept
+    {
+        return TryParseInt32( str.c_str( ), value, radix );
+    }
+
+    template<typename T, typename CharT>
+        requires std::is_same_v<Int32, T> && ( std::is_same_v<char, CharT> || std::is_same_v<wchar_t, CharT> )
+    inline T Parse( const CharT* str, int radix = 10 )
+    {
+        return ParseInt32( str, radix );
+    }
+    template<typename T, SimpleStringLike StringT>
+        requires std::is_same_v<Int32, T>
+    inline T Parse( const StringT& str, int radix = 10 )
+    {
+        return ParseInt32( str.c_str( ), radix );
+    }
+
+
+    HCC_EXPORT UInt32 ParseUInt32( const wchar_t* str, int radix = 10 );
+    HCC_EXPORT UInt32 ParseUInt32( const char* str, int radix = 10 );
+
+    template<SimpleStringLike StringT>
+    inline UInt32 ParseUInt32( const StringT& str, int radix = 10 )
+    {
+        return ParseUInt32( str.c_str( ), radix );
+    }
+
+    HCC_EXPORT bool TryParseUInt32( const wchar_t* str, UInt32& value, int radix = 10 ) noexcept;
+    HCC_EXPORT bool TryParseUInt32( const char* str, UInt32& value, int radix = 10 ) noexcept;
+
+    template<SimpleStringLike StringT>
+    inline bool TryParseUInt32( const StringT& str, UInt32& value, int radix = 10 ) noexcept
+    {
+        return TryParseUInt32( str.c_str( ), value, radix );
+    }
+
+    template<typename CharT>
+        requires std::is_same_v<char, CharT> || std::is_same_v<wchar_t, CharT>
+    inline bool TryParse( const CharT* str, UInt32& value, int radix = 10 )
+    {
+        return TryParseUInt32( str, value, radix );
+    }
+    template<SimpleStringLike StringT>
+    inline bool TryParse( const StringT& str, UInt32& value, int radix = 10 ) noexcept
+    {
+        return TryParseUInt32( str.c_str( ), value, radix );
+    }
+
+    template<typename T, typename CharT>
+        requires std::is_same_v<UInt32, T> && ( std::is_same_v<char, CharT> || std::is_same_v<wchar_t, CharT> )
+    inline T Parse( const CharT* str, int radix = 10 )
+    {
+        return ParseUInt32( str, radix );
+    }
+    template<typename T, SimpleStringLike StringT>
+        requires std::is_same_v<UInt32, T>
+    inline T Parse( const StringT& str, int radix = 10 )
+    {
+        return ParseUInt32( str.c_str( ), radix );
+    }
+
+
+    HCC_EXPORT Int64 ParseInt64( const wchar_t* str, int radix = 10 );
+    HCC_EXPORT Int64 ParseInt64( const char* str, int radix = 10 );
+
+    template<SimpleStringLike StringT>
+    inline Int64 ParseInt64( const StringT& str, int radix = 10 )
+    {
+        return ParseInt64( str.c_str( ), radix );
+    }
+
+    HCC_EXPORT bool TryParseInt64( const wchar_t* str, Int64& value, int radix = 10 ) noexcept;
+    HCC_EXPORT bool TryParseInt64( const char* str, Int64& value, int radix = 10 ) noexcept;
+
+    template<SimpleStringLike StringT>
+    inline bool TryParseInt64( const StringT& str, Int64& value, int radix = 10 ) noexcept
+    {
+        return TryParseInt64( str.c_str( ), value, radix );
+    }
+
+    template<typename CharT>
+        requires std::is_same_v<char, CharT> || std::is_same_v<wchar_t, CharT>
+    inline bool TryParse( const CharT* str, Int64& value, int radix = 10 )
+    {
+        return TryParseInt64( str, value, radix );
+    }
+    template<SimpleStringLike StringT>
+    inline bool TryParse( const StringT& str, Int64& value, int radix = 10 ) noexcept
+    {
+        return TryParseInt64( str.c_str( ), value, radix );
+    }
+
+    template<typename T, typename CharT>
+        requires std::is_same_v<Int64, T> && ( std::is_same_v<char, CharT> || std::is_same_v<wchar_t, CharT> )
+    inline T Parse( const CharT* str, int radix = 10 )
+    {
+        return ParseInt64( str, radix );
+    }
+    template<typename T, SimpleStringLike StringT>
+        requires std::is_same_v<Int64, T>
+    inline T Parse( const StringT& str, int radix = 10 )
+    {
+        return ParseInt64( str.c_str( ), radix );
+    }
+
+
+    HCC_EXPORT UInt64 ParseUInt64( const wchar_t* str, int radix = 10 );
+    HCC_EXPORT UInt64 ParseUInt64( const char* str, int radix = 10 );
+
+    template<SimpleStringLike StringT>
+    inline UInt64 ParseUInt64( const StringT& str, int radix = 10 )
+    {
+        return ParseUInt64( str.c_str( ), radix );
+    }
+
+    HCC_EXPORT bool TryParseUInt64( const wchar_t* str, UInt64& value, int radix = 10 ) noexcept;
+    HCC_EXPORT bool TryParseUInt64( const char* str, UInt64& value, int radix = 10 ) noexcept;
+
+    template<SimpleStringLike StringT>
+    inline bool TryParseUInt64( const StringT& str, UInt64& value, int radix = 10 ) noexcept
+    {
+        return TryParseUInt64( str.c_str( ), value, radix );
+    }
+
+    template<typename CharT>
+        requires std::is_same_v<char, CharT> || std::is_same_v<wchar_t, CharT>
+    inline bool TryParse( const CharT* str, UInt64& value, int radix = 10 )
+    {
+        return TryParseUInt64( str, value, radix );
+    }
+    template<SimpleStringLike StringT>
+    inline bool TryParse( const StringT& str, UInt64& value, int radix = 10 ) noexcept
+    {
+        return TryParseUInt64( str.c_str( ), value, radix );
+    }
+
+    template<typename T, typename CharT>
+        requires std::is_same_v<UInt64, T> && ( std::is_same_v<char, CharT> || std::is_same_v<wchar_t, CharT> )
+    inline T Parse( const CharT* str, int radix = 10 )
+    {
+        return ParseUInt64( str, radix );
+    }
+    template<typename T, SimpleStringLike StringT>
+        requires std::is_same_v<UInt64, T>
+    inline T Parse( const StringT& str, int radix = 10 )
+    {
+        return ParseUInt64( str.c_str( ), radix );
+    }
+
+    HCC_EXPORT Single ParseSingle( const wchar_t* str );
+    HCC_EXPORT Single ParseSingle( const char* str );
+
+    template<SimpleStringLike StringT>
+    inline Single ParseSingle( const StringT& str )
+    {
+        return ParseSingle( str.c_str( ) );
+    }
+
+    HCC_EXPORT bool TryParseSingle( const wchar_t* str, float& value ) noexcept;
+    HCC_EXPORT bool TryParseSingle( const char* str, float& value ) noexcept;
+
+    template<SimpleStringLike StringT>
+    inline bool TryParseSingle( const StringT& str, float& value ) noexcept
+    {
+        return TryParseSingle( str.c_str( ), value );
+    }
+
+    template<typename CharT>
+        requires std::is_same_v<char, CharT> || std::is_same_v<wchar_t, CharT>
+    inline bool TryParse( const CharT* str, float& value, int radix = 10 )
+    {
+        return TryParseSingle( str, value, radix );
+    }
+    template<SimpleStringLike StringT>
+    inline bool TryParse( const StringT& str, float& value, int radix = 10 ) noexcept
+    {
+        return TryParseSingle( str.c_str( ), value, radix );
+    }
+
+    template<typename T, typename CharT>
+        requires std::is_same_v<float, T> && ( std::is_same_v<char, CharT> || std::is_same_v<wchar_t, CharT> )
+    inline T Parse( const CharT* str, int radix = 10 )
+    {
+        return ParseSingle( str, radix );
+    }
+    template<typename T, SimpleStringLike StringT>
+        requires std::is_same_v<float, T>
+    inline T Parse( const StringT& str, int radix = 10 )
+    {
+        return ParseSingle( str.c_str( ), radix );
+    }
+
+    HCC_EXPORT Single ParseSingleInvariant( const wchar_t* str );
+    HCC_EXPORT Single ParseSingleInvariant( const char* str );
+
+    template<SimpleStringLike StringT>
+    inline Single ParseSingleInvariant( std::locale locale, const StringT& str )
+    {
+        return ParseSingleInvariant( str.c_str( ) );
+    }
+
+    HCC_EXPORT bool TryParseSingleInvariant( const wchar_t* str, float& value ) noexcept;
+    HCC_EXPORT bool TryParseSingleInvariant( const char* str, float& value ) noexcept;
+
+    template<SimpleStringLike StringT>
+    inline bool TryParseSingleInvariant( const StringT& str, float& value ) noexcept
+    {
+        return TryParseSingleInvariant( str.c_str( ), value );
+    }
+
+
+    HCC_EXPORT Double ParseDouble( const wchar_t* str );
+    HCC_EXPORT Double ParseDouble( const char* str );
+
+    template<SimpleStringLike StringT>
+    inline Double ParseDouble( const StringT& str )
+    {
+        return ParseDouble( str.c_str( ) );
+    }
+
+    HCC_EXPORT bool TryParseDouble( const wchar_t* str, double& value ) noexcept;
+    HCC_EXPORT bool TryParseDouble( const char* str, double& value ) noexcept;
+
+    template<SimpleStringLike StringT>
+    inline bool TryParseDouble( const StringT& str, double& value ) noexcept
+    {
+        return TryParseDouble( str.c_str( ), value );
+    }
+
+    template<typename CharT>
+        requires std::is_same_v<char, CharT> || std::is_same_v<wchar_t, CharT>
+    inline bool TryParse( const CharT* str, double& value, int radix = 10 )
+    {
+        return TryParseDouble( str, value, radix );
+    }
+    template<SimpleStringLike StringT>
+    inline bool TryParse( const StringT& str, double& value, int radix = 10 ) noexcept
+    {
+        return TryParseDouble( str.c_str( ), value, radix );
+    }
+
+    template<typename T, typename CharT>
+        requires std::is_same_v<double, T> && ( std::is_same_v<char, CharT> || std::is_same_v<wchar_t, CharT> )
+    inline T Parse( const CharT* str, int radix = 10 )
+    {
+        return ParseDouble( str, radix );
+    }
+    template<typename T, SimpleStringLike StringT>
+        requires std::is_same_v<double, T>
+    inline T Parse( const StringT& str, int radix = 10 )
+    {
+        return ParseDouble( str.c_str( ), radix );
+    }
+
+
+    HCC_EXPORT Double ParseDoubleInvariant( const wchar_t* str );
+    HCC_EXPORT Double ParseDoubleInvariant( const char* str );
+
+    template<SimpleStringLike StringT>
+    inline Double ParseDoubleInvariant( const StringT& str )
+    {
+        return ParseDoubleInvariant( str.c_str( ) );
+    }
+
+    HCC_EXPORT bool TryParseDoubleInvariant( const wchar_t* str, double& value ) noexcept;
+    HCC_EXPORT bool TryParseDoubleInvariant( const char* str, double& value ) noexcept;
+
+    template<SimpleStringLike StringT>
+    inline bool TryParseDoubleInvariant( const StringT& str, double& value ) noexcept
+    {
+        return TryParseDoubleInvariant( str.c_str( ), value );
     }
 
 

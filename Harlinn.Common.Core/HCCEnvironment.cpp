@@ -146,6 +146,33 @@ namespace Harlinn::Common::Core::Environment
         }
     }
 
+    WideString Expand( const wchar_t* str )
+    {
+        constexpr size_t bufferSize = 512;
+        wchar_t buffer[ bufferSize ];
+        size_t len = ExpandEnvironmentStringsW( str, buffer, static_cast<DWORD>(bufferSize) );
+        if ( !len )
+        {
+            ThrowLastOSError( );
+        }
+        if ( len > bufferSize )
+        {
+            WideString result;
+            result.SetLength( len - 1 );
+            len = ExpandEnvironmentStringsW( str, buffer, static_cast< DWORD >( len ) );
+            if ( !len )
+            {
+                ThrowLastOSError( );
+            }
+            return result;
+        }
+        else
+        {
+            WideString result(buffer, len - 1);
+            return result;
+        }
+    }
+
     WideString Where( const wchar_t* fileName )
     {
         wchar_t buffer[2048] = { 0, };

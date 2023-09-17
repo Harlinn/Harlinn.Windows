@@ -10120,6 +10120,20 @@ BOOST_AUTO_TEST_CASE( ToAnsiStringTest001d )
     BOOST_TEST( areEqual );
 }
 
+// --run_test=StringTests/ParseBooleanTest1A
+BOOST_AUTO_TEST_CASE( ParseBooleanTest1A )
+{
+    AnsiString TrueStr = "True";
+    AnsiString FalseStr = "False";
+    bool value = Parse<bool>( TrueStr );
+    bool equal = value == true;
+    BOOST_TEST( equal );
+    value = Parse<bool>( FalseStr );
+    equal = value == false;
+    BOOST_TEST( equal );
+}
+
+
 
 
 BOOST_AUTO_TEST_SUITE_END( )

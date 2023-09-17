@@ -1488,7 +1488,7 @@ namespace Harlinn::Common::Core
                 case REG_SZ:
                 {
                     auto s = ToString( theData );
-                    result = Common::Core::ToBoolean( s );
+                    result = Common::Core::ParseBoolean( s );
                 }
                 break;
             }
@@ -1538,7 +1538,7 @@ namespace Harlinn::Common::Core
                 case REG_SZ:
                 {
                     auto s = ToString( theData );
-                    result = Common::Core::ToInt32( s );
+                    result = Common::Core::ParseInt32( s );
                 }
                 break;
             }
@@ -1588,7 +1588,7 @@ namespace Harlinn::Common::Core
                 case REG_SZ:
                 {
                     auto s = ToString( theData );
-                    result = Common::Core::ToUInt32( s );
+                    result = Common::Core::ParseUInt32( s );
                 }
                 break;
             }
@@ -1638,7 +1638,7 @@ namespace Harlinn::Common::Core
                 case REG_SZ:
                 {
                     auto s = ToString( theData );
-                    result = Common::Core::ToInt64( s );
+                    result = Common::Core::ParseInt64( s );
                 }
                 break;
             }
@@ -1688,7 +1688,7 @@ namespace Harlinn::Common::Core
                 case REG_SZ:
                 {
                     auto s = ToString( theData );
-                    result = Common::Core::ToUInt64( s );
+                    result = Common::Core::ParseUInt64( s );
                 }
                 break;
             }
