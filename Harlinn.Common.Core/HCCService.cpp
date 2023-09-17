@@ -4,7 +4,7 @@
 
 namespace Harlinn::Common::Core::Services
 {
-    Application::Application( const ApplicationOptions& options, IServiceHost* serviceHost )
+    Application::Application( const std::shared_ptr<ApplicationOptions>& options, IServiceHost* serviceHost )
         : Base( options ), serviceHost_( serviceHost )
     {
 

@@ -18,9 +18,7 @@ int main( )
     hcc::Com::InitializeClientSecurity( );
 
 
-    Windows::ApplicationOptions applicationOptions;
-    applicationOptions.Load( );
-    Windows::ImGui::Application application( applicationOptions );
+    Windows::ImGui::Application application;
     application.Start( );
 
     try

@@ -28,12 +28,17 @@ namespace Harlinn::Windows::ImGui
         }
     public:
         using Base = DXApplication;
-        Application( const Windows::ApplicationOptions& options, std::unique_ptr<DXContext> dxContext = std::make_unique<DXContext>( ) )
+        Application( const std::shared_ptr<Windows::ApplicationOptions>& options, std::unique_ptr<DXContext> dxContext = std::make_unique<DXContext>( ) )
             : Base( options, std::move( dxContext ) ), io_( GetImGuiIO( ) )
         {
             io_.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
             ::ImGui::StyleColorsClassic( );
         }
+
+        Application( std::unique_ptr<DXContext> dxContext = std::make_unique<DXContext>( ) )
+            : Application( Windows::ApplicationOptions::LoadFromFile<Windows::ApplicationOptions>(), std::move( dxContext ) )
+        { }
+
         virtual ~Application( )
         {
             ImGui_ImplDX12_Shutdown( );

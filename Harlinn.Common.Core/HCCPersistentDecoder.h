@@ -58,7 +58,7 @@ namespace Harlinn::Common::Core::Persistent
 
         constexpr Byte TypeId( ) const noexcept
         {
-            return cursor_.IsBasicType( );
+            return cursor_.TypeId( );
         }
         constexpr ModifierFlags Modifiers( ) const noexcept
         {
@@ -69,7 +69,7 @@ namespace Harlinn::Common::Core::Persistent
 
         constexpr bool IsUnknown( ) const noexcept
         {
-            return cursor_.IsBasicType( );
+            return cursor_.IsUnknown( );
         }
         constexpr bool IsKnownBasicType( ) const noexcept
         {

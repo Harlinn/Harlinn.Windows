@@ -22,10 +22,13 @@ namespace Harlinn::Common::Core
         
     private:
         HCC_EXPORT static Application* instance_;
-        const ApplicationOptions& options_;
+        const std::shared_ptr<ApplicationOptions> options_;
         Logging::Backend loggingBackend_;
     public:
-        HCC_EXPORT Application( const ApplicationOptions& options );
+        HCC_EXPORT Application( const std::shared_ptr<ApplicationOptions>& options );
+        Application( )
+            : Application( ApplicationOptions::LoadFromFile() )
+        { }
         HCC_EXPORT ~Application( );
 
         Application( const Application& other ) = delete;
@@ -33,7 +36,7 @@ namespace Harlinn::Common::Core
         Application& operator = ( const Application& other ) = delete;
         Application& operator = ( Application&& other ) = delete;
 
-        const ApplicationOptions& Options( ) const
+        const std::shared_ptr<ApplicationOptions>& Options( ) const
         {
             return options_;
         }

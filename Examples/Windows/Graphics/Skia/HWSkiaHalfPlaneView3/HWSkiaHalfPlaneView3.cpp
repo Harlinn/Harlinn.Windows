@@ -431,9 +431,7 @@ int main( )
     {
         SetThreadDpiAwarenessContext( DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2 );
 
-        Harlinn::Windows::ApplicationOptions applicationOptions;
-        applicationOptions.Load( );
-        Harlinn::Windows::Application application( applicationOptions );
+        Harlinn::Windows::Application application;
         application.Start( );
 
         SkGraphics::Init( );

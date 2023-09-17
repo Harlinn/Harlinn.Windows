@@ -687,15 +687,10 @@ int APIENTRY _tWinMain( _In_ HINSTANCE hInstance,
     UNREFERENCED_PARAMETER( lpCmdLine );
     try
     {
-        Harlinn::Windows::ApplicationOptions applicationOptions;
-        applicationOptions.Load( );
-        Harlinn::Windows::Application application( applicationOptions );
+        Harlinn::Windows::Application application;
         application.Start( );
 
-        DeviceContextExampleForm form;
-        form.Initialize( );
-
-        auto result = application.Run( form );
+        auto result = application.Run<DeviceContextExampleForm>( );
 
         application.Stop( );
 

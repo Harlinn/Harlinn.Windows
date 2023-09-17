@@ -430,8 +430,8 @@ Executed ReadSensorDataForIntervalWithCheck: read 21600000 rows in 120.187719 se
 
 int main( int argc, char* argv[] )
 {
-    ApplicationOptions options;
-    options.Load( );
+    auto options = std::make_shared<Harlinn::Common::Core::ApplicationOptions>( );
+    options->Load( );
     Application application( options );
     application.Start( );
     try

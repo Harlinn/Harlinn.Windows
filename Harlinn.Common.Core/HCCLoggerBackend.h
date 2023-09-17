@@ -182,7 +182,7 @@ namespace Harlinn::Common::Core::Logging
         using Base = ActiveObject<Backend>;
     private:
         HCC_EXPORT static Backend* instance_;
-        BackendOptions options_;
+        std::shared_ptr<BackendOptions> options_;
         BackendProcessInfo processInfo_;
         BackendBufferManager bufferManager_;
 
@@ -194,7 +194,7 @@ namespace Harlinn::Common::Core::Logging
         CriticalSection criticalSection_;
         Vector<ThreadData> loggers_;
     public:
-        HCC_EXPORT Backend( const BackendOptions& options );
+        HCC_EXPORT Backend( const std::shared_ptr<BackendOptions>& options );
         HCC_EXPORT ~Backend( );
 
         static Backend* Instance( )

@@ -11,9 +11,7 @@ int main()
 {
     try
     {
-        Windows::ApplicationOptions applicationOptions;
-        applicationOptions.Load( );
-        Windows::DXApplication application( applicationOptions );
+        Windows::DXApplication application;
         application.Start( );
 
         Windows::DXForm form;

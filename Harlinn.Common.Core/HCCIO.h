@@ -1612,6 +1612,31 @@ namespace Harlinn::Common::Core::IO
             }
             return false;
         }
+
+        template<SimpleStringLike StringT>
+        static StringT EnsurePathEndsWithDirectorySeparator( const StringT& path )
+        {
+            using CharT = typename StringT::value_type;
+            if ( path.size( ) )
+            {
+                CharT last = path.back( );
+                if ( ( last == static_cast< CharT >( DirectorySeparatorChar ) ) || ( last == static_cast< CharT >( AltDirectorySeparatorChar ) ) == false )
+                {
+                    return path + static_cast< CharT >( DirectorySeparatorChar );
+                }
+                else
+                {
+                    return path;
+                }
+            }
+            else
+            {
+                return StringT( 1, static_cast< CharT >( DirectorySeparatorChar ) );
+            }
+        }
+
+
+
         template<typename StringT>
             requires (IsWideString<StringT> || IsAnsiString<StringT> || IsWideStringView<StringT> || IsAnsiStringView<StringT>)
         static bool StartsWithDirectorySeparator(const StringT& str) noexcept
@@ -2463,6 +2488,9 @@ namespace Harlinn::Common::Core::IO
         HCC_EXPORT static void ReadAndAppendAllTextTo( const AnsiString& filePath, AnsiString& destination );
 
         HCC_EXPORT static void WriteAllText( const AnsiString& filePath, const AnsiString& contents );
+
+        HCC_EXPORT static WideString GetExecutableW( );
+        HCC_EXPORT static AnsiString GetExecutableA( );
 
 
     };

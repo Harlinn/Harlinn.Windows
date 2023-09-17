@@ -323,7 +323,6 @@
     <ClCompile Include="HCCIOContext.cpp" />
     <ClCompile Include="HCCIStreamOnStreamImpl.cpp" />
     <ClCompile Include="HCCLMDB.cpp" />
-    <ClCompile Include="HCCLocationAPI.cpp" />
     <ClCompile Include="HCCLoggerBackend.cpp" />
     <ClCompile Include="HCCLoggerBackendDataTypes.cpp" />
     <ClCompile Include="HCCLoggerLevel.cpp" />
@@ -334,7 +333,6 @@
     <ClCompile Include="HCCProcess.cpp" />
     <ClCompile Include="HCCSecurity.cpp" />
     <ClCompile Include="HCCCommDevice.cpp" />
-    <ClCompile Include="HCCSensorsAPI.cpp" />
     <ClCompile Include="HCCService.cpp" />
     <ClCompile Include="HCCSocket.cpp" />
     <ClCompile Include="HCCString.cpp" />

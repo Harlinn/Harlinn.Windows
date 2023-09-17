@@ -6,9 +6,7 @@
 
 int main( int argc, char* argv[], char* envp[] )
 {
-    Harlinn::Common::Core::ApplicationOptions options;
-    options.Load( );
-    Harlinn::Common::Core::Application application( options );
+    Harlinn::Common::Core::Application application;
     application.Start( );
     auto result = boost::unit_test::unit_test_main( &init_unit_test, argc, argv );
     application.Stop( );

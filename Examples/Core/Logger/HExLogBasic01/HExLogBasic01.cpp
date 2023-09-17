@@ -25,7 +25,8 @@ AnsiString GetLogDatabaseDir( )
 
 int main( )
 {
-    ApplicationOptions options;
+    auto options = std::make_shared<Harlinn::Common::Core::ApplicationOptions>( );
+    options->Load( );
     Application application( options );
     application.Start( );
 

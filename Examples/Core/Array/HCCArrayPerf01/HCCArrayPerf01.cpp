@@ -540,8 +540,8 @@ void ArrayCopyTest1a( )
 
 int main()
 {
-    ApplicationOptions options;
-    options.Load( );
+    auto options = std::make_shared<Harlinn::Common::Core::ApplicationOptions>( );
+    options->Load( );
     Application application( options );
     application.Start( );
 

@@ -7,9 +7,9 @@ namespace Harlinn::Common::Core
 
     HCC_EXPORT Application* Application::instance_ = nullptr;
 
-    Application::Application( const ApplicationOptions& options )
+    Application::Application( const std::shared_ptr<ApplicationOptions>& options )
         : options_( options ),
-          loggingBackend_( options.LoggingBackendOptions() )
+          loggingBackend_( options->LoggingBackendOptions() )
     {
         instance_ = this;
     }

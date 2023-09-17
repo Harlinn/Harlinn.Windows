@@ -215,7 +215,8 @@ namespace Harlinn::Windows
     public:
         using Base = Windows::Application;
 
-        HW_EXPORT DXApplication( const Windows::ApplicationOptions& options, std::unique_ptr<DXContext> dxContext = std::make_unique<DXContext>() );
+        HW_EXPORT DXApplication( const std::shared_ptr<Windows::ApplicationOptions>& options, std::unique_ptr<DXContext> dxContext = std::make_unique<DXContext>() );
+        HW_EXPORT DXApplication( std::unique_ptr<DXContext> dxContext = std::make_unique<DXContext>( ) );
         HW_EXPORT virtual ~DXApplication( );
 
         DXContext* Context( ) const

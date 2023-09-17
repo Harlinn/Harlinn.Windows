@@ -392,11 +392,17 @@ namespace Harlinn::Windows
     // DXApplication
     // ------------------------------------------------------------------------
 
-    DXApplication::DXApplication( const Windows::ApplicationOptions& options, std::unique_ptr<DXContext> dxContext )
+    DXApplication::DXApplication( const std::shared_ptr<Windows::ApplicationOptions>& options, std::unique_ptr<DXContext> dxContext )
         : Base( options ), dxContext_( std::move( dxContext ) )
     { 
         
     }
+
+    DXApplication::DXApplication( std::unique_ptr<DXContext> dxContext )
+        : DXApplication( Windows::ApplicationOptions::LoadFromFile<Windows::ApplicationOptions>( ), std::move( dxContext ) )
+    {
+    }
+
     DXApplication::~DXApplication( )
     {
     }

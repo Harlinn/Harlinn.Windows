@@ -10,9 +10,7 @@ int main()
 {
     try
     {
-        Windows::ApplicationOptions applicationOptions;
-        applicationOptions.Load( );
-        Windows::ImGui::Application application( applicationOptions );
+        Windows::ImGui::Application application;
         application.Start( );
 
         Windows::ImGui::Form form;

@@ -10,47 +10,54 @@ namespace Harlinn::Common::Core::Logging
 {
     class Backend;
 
-    enum class BackendSinks : UInt32
-    {
-        None = 0,
-        Console = 0x00000001,
-        LMDB = 0x00000002,
-    };
-    HCC_DEFINE_ENUM_FLAG_OPERATORS( BackendSinks, UInt32 );
 
-
-
-    class BackendOptions
+    class BackendOptions : public std::enable_shared_from_this<BackendOptions>
     {
         Level enabledLevels_ = Level::Default;
-        BackendSinks enabledSinks_ = BackendSinks::None;
         //ConsoleSinkOptions consoleSinkOptions_;
-        Sinks::LMDBSinkOptions lmdbSinkOptions_;
+        std::shared_ptr<Sinks::LMDBSinkOptions> lmdbSinkOptions_;
     public:
+        using Element = Xml::Dom::Element;
         BackendOptions()
+            : lmdbSinkOptions_( std::make_shared<Sinks::LMDBSinkOptions>( ) )
         { }
 
-        explicit BackendOptions( BackendSinks enabledSinks,  Level enabledLevels = Level::Default )
-            : enabledLevels_( enabledLevels ), enabledSinks_(enabledSinks)
+        explicit BackendOptions( Level enabledLevels )
+            : enabledLevels_( enabledLevels ), lmdbSinkOptions_( std::make_shared<Sinks::LMDBSinkOptions>() )
         {
         }
 
 
-        void Load( )
+        void ReadFrom( const Element& element )
         {
-            lmdbSinkOptions_.Load( );
+            auto sinksElement = element.FindElement( L"Sinks" );
+            if ( sinksElement )
+            {
+                auto lmdbElement = sinksElement.FindElement( L"LMDB" );
+                if ( lmdbElement )
+                {
+                    lmdbSinkOptions_->ReadFrom( lmdbElement );
+                }
+            }
+
+            if ( element.HasAttribute( L"EnabledLevels" ) )
+            {
+                auto str = element.Read<WideString>( L"EnabledLevels" );
+                Logging::Level enabledLevels{};
+                if ( Logging::TryParse( str, enabledLevels ) )
+                {
+                    enabledLevels_ = enabledLevels;
+                }
+            }
+            
         }
 
         Level EnabledLevels( ) const noexcept
         {
             return enabledLevels_;
         }
-        BackendSinks EnabledSinks( ) const noexcept
-        {
-            return enabledSinks_;
-        }
         //ConsoleSinkOptions consoleSinkOptions_;
-        const Sinks::LMDBSinkOptions& LMDBSinkOptions( ) const noexcept
+        const std::shared_ptr<Sinks::LMDBSinkOptions>& LMDBSinkOptions( ) const noexcept
         {
             return lmdbSinkOptions_;
         }

@@ -792,8 +792,8 @@ void ContextTest( )
 
 int main( )
 {
-    ApplicationOptions options;
-    options.Load( );
+    auto options = std::make_shared<ApplicationOptions>( );
+    options->Load( );
     Application application( options );
     application.Start( );
 

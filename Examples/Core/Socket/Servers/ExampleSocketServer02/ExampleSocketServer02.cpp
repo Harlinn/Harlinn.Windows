@@ -7,8 +7,8 @@ using namespace Harlinn::Common::Core::Examples;
 
 int main( int argc, char* argv[] )
 {
-    ApplicationOptions options;
-    options.Load( );
+    auto options = std::make_shared<ApplicationOptions>( );
+    options->Load( );
     Application application( options );
     application.Start( );
 

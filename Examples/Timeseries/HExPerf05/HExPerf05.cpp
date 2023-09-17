@@ -23,8 +23,8 @@ AnsiString GetDatabaseDir( )
 
 int main( )
 {
-    ApplicationOptions applicationOptions;
-    applicationOptions.Load( );
+    auto applicationOptions = std::make_shared<ApplicationOptions>( );
+    applicationOptions->Load( );
     Application application( applicationOptions );
     application.Start( );
 #ifdef _DEBUG

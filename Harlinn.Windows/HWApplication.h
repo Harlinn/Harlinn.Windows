@@ -39,7 +39,8 @@ namespace Harlinn::Windows
 
     public:
         using Base = Common::Core::Application;
-        HW_EXPORT Application( const Windows::ApplicationOptions& options );
+        HW_EXPORT Application( const std::shared_ptr<Windows::ApplicationOptions>& options );
+        HW_EXPORT Application( );
         HW_EXPORT virtual ~Application( );
 
         HW_EXPORT static Application* Current( );
@@ -48,6 +49,16 @@ namespace Harlinn::Windows
         HW_EXPORT int Run( const std::unique_ptr<Form>& mainform );
 
         HW_EXPORT virtual int Run( Form& mainform, MessageLoop& messageLoop );
+
+        template<typename FormT>
+            requires std::is_base_of_v<Form, FormT>
+        int Run( )
+        {
+            auto form = make_control<FormT>( );
+            auto result = this->Run( *form );
+            return result;
+        }
+
 
         HW_EXPORT const WindowClasses& GetWindowClasses( ) const;
         HW_EXPORT WindowClasses& GetWindowClasses( );

@@ -5,14 +5,17 @@
 #include <HCCDef.h>
 #include <HCCLoggerLevel.h>
 #include <HCCString.h>
+#include <HCCXml.h>
 
 namespace Harlinn::Common::Core::Logging::Sinks
 {
-    class LMDBSinkOptions
+    class LMDBSinkOptions : std::enable_shared_from_this<LMDBSinkOptions>
     {
         WideString databaseDirectory_;
         Logging::Level enabledLevels_ = Logging::Level::Default;
+        bool enabled_ = true;
     public:
+        using Element = Xml::Dom::Element;
         LMDBSinkOptions()
         { }
         LMDBSinkOptions( const WideString& databaseDirectory, Logging::Level enabledLevels = Logging::Level::Default )
@@ -21,18 +24,30 @@ namespace Harlinn::Common::Core::Logging::Sinks
 
         }
 
-        void AddOptions( boost::program_options::options_description& optionsDescription )
+        void ReadFrom( const Element& element )
         {
-            namespace po = boost::program_options;
-            optionsDescription.add_options( )
-                ( "log_sink_lmdb_database_directory", po::wvalue<WideString>(&databaseDirectory_ ), "" );
+            if ( element.HasAttribute( L"DatabaseDirectory" ) )
+            {
+                databaseDirectory_ = element.Read<WideString>( L"DatabaseDirectory" );
+            }
+            if ( element.HasAttribute( L"EnabledLevels" ) )
+            {
+                auto str = element.Read<WideString>( L"EnabledLevels" );
+                Logging::Level enabledLevels{};
+                if ( Logging::TryParse( str, enabledLevels ) )
+                {
+                    enabledLevels_ = enabledLevels;
+                }
+            }
+            if ( element.HasAttribute( L"Enabled" ) )
+            {
+                enabled_ = element.Read<bool>( L"Enabled" );
+            }
         }
 
-
-
-        void Load( )
+        constexpr bool Enabled( ) const noexcept
         {
-
+            return enabled_;
         }
 
 

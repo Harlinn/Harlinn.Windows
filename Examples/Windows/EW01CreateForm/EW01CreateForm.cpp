@@ -70,15 +70,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
     try
     {
-        Harlinn::Windows::ApplicationOptions applicationOptions;
-        applicationOptions.Load( );
-        Harlinn::Windows::Application application( applicationOptions );
+        Harlinn::Windows::Application application;
         application.Start( );
-
-        auto form = make_control<TextEditForm>( );
-
-        auto result = application.Run( *form );
-
+        auto result = application.Run<TextEditForm>();
         application.Stop( );
 
         return result;

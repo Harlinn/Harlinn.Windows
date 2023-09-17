@@ -41,7 +41,7 @@ namespace Harlinn::Common::Core::Logging
 
     HCC_EXPORT Backend* Backend::instance_ = nullptr;
 
-    Backend::Backend( const BackendOptions& options )
+    Backend::Backend( const std::shared_ptr<BackendOptions>& options )
         : options_( options ), processInfo_( BackendProcessInfo::Create( ) ), bufferManager_( this )
     {
         instance_ = this;
@@ -106,7 +106,7 @@ namespace Harlinn::Common::Core::Logging
         {
             return it->logger_;
         }
-        auto enabledLevels = options_.EnabledLevels( );
+        auto enabledLevels = options_->EnabledLevels( );
         auto result = new BackendLogger( enabledLevels, this );
         ThreadData threadData{ threadId, result };
         loggers_.insert( it, threadData );

@@ -452,12 +452,6 @@
     <ClCompile Include="HCCPortableDeviceTypes.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="HCCSensorsAPI.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="HCCLocationAPI.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="HCCwbem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

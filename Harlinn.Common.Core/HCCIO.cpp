@@ -419,6 +419,17 @@ namespace Harlinn::Common::Core::IO
         fileStream.Write( contents.data(), contents.size() );
     }
 
+    WideString File::GetExecutableW( )
+    {
+        wchar_t buffer[ (2*MAX_PATH) + 1 ] = { 0, };
+        GetModuleFileNameW( nullptr, buffer, sizeof( buffer ) / sizeof( wchar_t ) );
+        return buffer;
+    }
+    AnsiString File::GetExecutableA( )
+    {
+        return ToAnsiString( GetExecutableW( ) );
+    }
+
 
 
 

@@ -9,8 +9,8 @@ int main( )
     size_t Values = 100000;
     size_t bytesWritten = 0;
 
-    ApplicationOptions options;
-    options.Load( );
+    auto options = std::make_shared<Harlinn::Common::Core::ApplicationOptions>( );
+    options->Load( );
     Application application( options );
     application.Start( );
 

@@ -47,7 +47,7 @@ namespace Harlinn::Windows
     Application* Application::currentApplication_ = nullptr;
 
 
-    Application::Application( const Windows::ApplicationOptions& options )
+    Application::Application( const std::shared_ptr<Windows::ApplicationOptions>& options )
         : Base( options )
     {
         HRESULT hr = CoInitializeEx( 0, COINIT_MULTITHREADED);
@@ -61,6 +61,11 @@ namespace Harlinn::Windows
 
         InitCommonControlsEx( &icex );
 
+    }
+
+    Application::Application( )
+        : Application( Windows::ApplicationOptions::LoadFromFile<Windows::ApplicationOptions>( ) )
+    {
     }
 
     Application::~Application( )

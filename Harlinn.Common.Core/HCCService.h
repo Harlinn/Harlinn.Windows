@@ -979,7 +979,7 @@ namespace Harlinn::Common::Core::Services
     public:
         using Base = Core::Application;
 
-        HCC_EXPORT Application( const ApplicationOptions& options, IServiceHost* serviceHost );
+        HCC_EXPORT Application( const std::shared_ptr<ApplicationOptions>& options, IServiceHost* serviceHost );
         HCC_EXPORT ~Application( );
 
         static Application& Instance( ) noexcept

@@ -138,20 +138,14 @@ int main()
 {
     try
     {
-        Harlinn::Windows::ApplicationOptions applicationOptions;
-        applicationOptions.Load();
-        Harlinn::Windows::Application application(applicationOptions);
+        Harlinn::Windows::Application application;
         application.Start();
 
         SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_SYSTEM_AWARE);
         // Initializatio/Shutdown of the Media Foundation platform
         MF::MediaFoundation mediaFoundation;
 
-
-        MyForm form;
-        form.Initialize();
-
-        auto result = application.Run(form);
+        auto result = application.Run<MyForm>();
         application.Stop();
         return result;
     }
