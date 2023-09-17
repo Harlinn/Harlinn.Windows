@@ -64,7 +64,10 @@ namespace Harlinn::Common::Core
         void Load( )
         {
             auto filename = DefaultConfigurationFilename( );
-            Load( filename );
+            if ( IO::File::Exist( filename ) )
+            {
+                Load( filename );
+            }
         }
 
 
