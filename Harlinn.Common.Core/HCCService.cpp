@@ -528,4 +528,99 @@ namespace Harlinn::Common::Core
         }
     }
 
+    // =========================================================================
+    // HardwareProfileChangeEventType
+    // =========================================================================
+    namespace
+    {
+        using HardwareProfileChangeEventType = Services::HardwareProfileChangeEventType;
+        class HardwareProfileChangeEventTypeConverter : public Enum<HardwareProfileChangeEventType>
+        {
+        public:
+            HardwareProfileChangeEventTypeConverter( )
+            {
+                Add( L"None", HardwareProfileChangeEventType::None );
+                Add( L"ConfigChanged", HardwareProfileChangeEventType::ConfigChanged );
+                Add( L"QueryChangeConfig", HardwareProfileChangeEventType::QueryChangeConfig );
+                Add( L"ConfigChangeCanceled", HardwareProfileChangeEventType::ConfigChangeCanceled );
+            }
+        };
+        HardwareProfileChangeEventTypeConverter hardwareProfileChangeEventTypeConverter;
+    }
+
+    WideString ToWideString( Services::HardwareProfileChangeEventType value )
+    {
+        return hardwareProfileChangeEventTypeConverter.ToString( value );
+    }
+    WideString ToWideString( Services::HardwareProfileChangeEventType value, const WideString& defaultResult )
+    {
+        return hardwareProfileChangeEventTypeConverter.ToString( value, defaultResult );
+    }
+
+    namespace Services
+    {
+        Services::HardwareProfileChangeEventType ParseHardwareProfileChangeEventType( const WideString& str )
+        {
+            return hardwareProfileChangeEventTypeConverter.Parse( str );
+        }
+
+        Services::HardwareProfileChangeEventType ParseHardwareProfileChangeEventType( const WideString& str, Services::HardwareProfileChangeEventType defaultResult )
+        {
+            return hardwareProfileChangeEventTypeConverter.Parse( str, defaultResult );
+        }
+
+        bool TryParseHardwareProfileChangeEventType( const WideString& str, Services::HardwareProfileChangeEventType& value )
+        {
+            return hardwareProfileChangeEventTypeConverter.TryParse( str, value );
+        }
+    }
+
+    // =========================================================================
+    // PowerEventType
+    // =========================================================================
+    namespace
+    {
+        using PowerEventType = Services::PowerEventType;
+        class PowerEventTypeConverter : public Enum<PowerEventType>
+        {
+        public:
+            PowerEventTypeConverter( )
+            {
+                Add( L"None", PowerEventType::None );
+                Add( L"PowerStatusChange", PowerEventType::PowerStatusChange );
+                Add( L"ResumeAutomatic", PowerEventType::ResumeAutomatic );
+                Add( L"ResumeSuspend", PowerEventType::ResumeSuspend );
+                Add( L"Suspend", PowerEventType::Suspend );
+            }
+        };
+        PowerEventTypeConverter powerEventTypeConverter;
+    }
+
+    WideString ToWideString( Services::PowerEventType value )
+    {
+        return powerEventTypeConverter.ToString( value );
+    }
+    WideString ToWideString( Services::PowerEventType value, const WideString& defaultResult )
+    {
+        return powerEventTypeConverter.ToString( value, defaultResult );
+    }
+
+    namespace Services
+    {
+        Services::PowerEventType ParsePowerEventType( const WideString& str )
+        {
+            return powerEventTypeConverter.Parse( str );
+        }
+
+        Services::PowerEventType ParsePowerEventType( const WideString& str, Services::PowerEventType defaultResult )
+        {
+            return powerEventTypeConverter.Parse( str, defaultResult );
+        }
+
+        bool TryParsePowerEventType( const WideString& str, Services::PowerEventType& value )
+        {
+            return powerEventTypeConverter.TryParse( str, value );
+        }
+    }
+
 }

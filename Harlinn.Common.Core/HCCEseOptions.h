@@ -749,6 +749,10 @@ namespace Harlinn::Common::Core::Ese
     public:
         using Element = Xml::Dom::Element;
         DatabaseOptions( ) = default;
+        DatabaseOptions( const WideString& name, const WideString& filename, Ese::CreateDatabaseFlags createDatabaseFlags )
+            : name_( name ), filename_( filename ), createDatabaseFlags_( createDatabaseFlags )
+        { }
+
 
         void ReadFrom( const Element& element )
         {
@@ -827,6 +831,7 @@ namespace Harlinn::Common::Core::Ese
         std::shared_ptr<Ese::InstanceOptions> instanceOptions_;
         std::shared_ptr<Ese::GlobalOptions> globalOptions_;
         std::map<WideString, std::shared_ptr<DatabaseOptions>> databases_;
+        WideString currentDatabaseName_ = L"Default";
     public:
         using Element = Xml::Dom::Element;
         Options( )
@@ -852,6 +857,17 @@ namespace Harlinn::Common::Core::Ese
             return databases_;
         }
 
+
+        const WideString& CurrentDatabaseName( ) const noexcept
+        {
+            return currentDatabaseName_;
+        }
+        Options& SetCurrentDatabaseName( const WideString& currentDatabaseName ) noexcept
+        {
+            currentDatabaseName_ = currentDatabaseName;
+            return *this;
+        }
+
         bool DatabaseExist( const WideString& databaseName ) const
         {
             auto it = databases_.find( databaseName );
@@ -870,6 +886,21 @@ namespace Harlinn::Common::Core::Ese
                 return it->second;
             }
             return {};
+        }
+
+        std::shared_ptr<DatabaseOptions> Add( const WideString& databaseName, const WideString& databaseFilename, Ese::CreateDatabaseFlags createDatabaseFlags = Ese::CreateDatabaseFlags::None )
+        {
+            auto it = databases_.find( databaseName );
+            if ( it == databases_.end( ) )
+            {
+                auto result = std::make_shared<DatabaseOptions>( databaseName, databaseFilename, createDatabaseFlags );
+                databases_.emplace( databaseName, result );
+                return result;
+            }
+            else
+            {
+                return it->second;
+            }
         }
 
 
@@ -898,6 +929,10 @@ namespace Harlinn::Common::Core::Ese
                         }
                     }
                 }
+            }
+            if ( element.HasAttribute( L"CurrentDatabaseName" ) )
+            {
+                currentDatabaseName_ = element.Read<WideString>( L"CurrentDatabaseName" );
             }
         }
 

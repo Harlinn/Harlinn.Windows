@@ -1525,6 +1525,208 @@ namespace Harlinn::Common::Core
         return Services::ParseDeviceEventType( str );
     }
 
+    // =========================================================================
+    // HardwareProfileChangeEventType
+    // =========================================================================
+    HCC_EXPORT WideString ToWideString( Services::HardwareProfileChangeEventType value );
+    HCC_EXPORT WideString ToWideString( Services::HardwareProfileChangeEventType value, const WideString& defaultResult );
+
+    inline AnsiString ToAnsiString( Services::HardwareProfileChangeEventType value )
+    {
+        return ToAnsiString( ToWideString( value ) );
+    }
+    inline AnsiString ToAnsiString( Services::HardwareProfileChangeEventType value, const AnsiString& defaultResult )
+    {
+        return ToAnsiString( ToWideString( value, ToWideString( defaultResult ) ) );
+    }
+
+    namespace Services
+    {
+        HCC_EXPORT Services::HardwareProfileChangeEventType ParseHardwareProfileChangeEventType( const WideString& str );
+        HCC_EXPORT Services::HardwareProfileChangeEventType ParseHardwareProfileChangeEventType( const WideString& str, Services::HardwareProfileChangeEventType defaultResult );
+        HCC_EXPORT bool TryParseHardwareProfileChangeEventType( const WideString& str, Services::HardwareProfileChangeEventType& value );
+
+        inline Services::HardwareProfileChangeEventType ParseHardwareProfileChangeEventType( const AnsiString& str )
+        {
+            return ParseHardwareProfileChangeEventType( ToWideString( str ) );
+        }
+        inline Services::HardwareProfileChangeEventType ParseHardwareProfileChangeEventType( const AnsiString& str, Services::HardwareProfileChangeEventType defaultResult )
+        {
+            return ParseHardwareProfileChangeEventType( ToWideString( str ), defaultResult );
+        }
+        inline bool TryParseHardwareProfileChangeEventType( const AnsiString& str, Services::HardwareProfileChangeEventType& value )
+        {
+            return TryParseHardwareProfileChangeEventType( ToWideString( str ), value );
+        }
+
+    }
+    template<typename StringT>
+        requires std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString>
+    inline bool TryParse( const StringT& str, Services::HardwareProfileChangeEventType& value )
+    {
+        return Services::TryParseHardwareProfileChangeEventType( str, value );
+    }
+
+    template<typename T, typename StringT>
+        requires std::is_same_v<Services::HardwareProfileChangeEventType, T> && ( std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString> )
+    inline T Parse( const WideString& str )
+    {
+        return Services::ParseHardwareProfileChangeEventType( str );
+    }
+
+    template<typename T, typename CharT>
+        requires std::is_same_v<Services::HardwareProfileChangeEventType, T> && ( std::is_same_v<CharT, wchar_t> || std::is_same_v<CharT, char> )
+    inline T Parse( const CharT* str )
+    {
+        return Services::ParseHardwareProfileChangeEventType( str );
+    }
+
+    // =========================================================================
+    // PowerEventType
+    // =========================================================================
+    HCC_EXPORT WideString ToWideString( Services::PowerEventType value );
+    HCC_EXPORT WideString ToWideString( Services::PowerEventType value, const WideString& defaultResult );
+
+    inline AnsiString ToAnsiString( Services::PowerEventType value )
+    {
+        return ToAnsiString( ToWideString( value ) );
+    }
+    inline AnsiString ToAnsiString( Services::PowerEventType value, const AnsiString& defaultResult )
+    {
+        return ToAnsiString( ToWideString( value, ToWideString( defaultResult ) ) );
+    }
+
+    namespace Services
+    {
+        HCC_EXPORT Services::PowerEventType ParsePowerEventType( const WideString& str );
+        HCC_EXPORT Services::PowerEventType ParsePowerEventType( const WideString& str, Services::PowerEventType defaultResult );
+        HCC_EXPORT bool TryParsePowerEventType( const WideString& str, Services::PowerEventType& value );
+
+        inline Services::PowerEventType ParsePowerEventType( const AnsiString& str )
+        {
+            return ParsePowerEventType( ToWideString( str ) );
+        }
+        inline Services::PowerEventType ParsePowerEventType( const AnsiString& str, Services::PowerEventType defaultResult )
+        {
+            return ParsePowerEventType( ToWideString( str ), defaultResult );
+        }
+        inline bool TryParsePowerEventType( const AnsiString& str, Services::PowerEventType& value )
+        {
+            return TryParsePowerEventType( ToWideString( str ), value );
+        }
+
+    }
+    template<typename StringT>
+        requires std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString>
+    inline bool TryParse( const StringT& str, Services::PowerEventType& value )
+    {
+        return Services::TryParsePowerEventType( str, value );
+    }
+
+    template<typename T, typename StringT>
+        requires std::is_same_v<Services::PowerEventType, T> && ( std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString> )
+    inline T Parse( const WideString& str )
+    {
+        return Services::ParsePowerEventType( str );
+    }
+
+    template<typename T, typename CharT>
+        requires std::is_same_v<Services::PowerEventType, T> && ( std::is_same_v<CharT, wchar_t> || std::is_same_v<CharT, char> )
+    inline T Parse( const CharT* str )
+    {
+        return Services::ParsePowerEventType( str );
+    }
+
+    namespace Internal
+    {
+        // =========================================================================
+        // ServicesFormatterImpl
+        // =========================================================================
+        template<typename EnumT, typename CharT>
+        struct ServicesFormatterImpl
+        {
+            std::formatter<std::basic_string_view<CharT>, CharT> viewFormatter;
+            constexpr auto parse( std::basic_format_parse_context<CharT>& ctx )
+            {
+                return viewFormatter.parse( ctx );
+            }
+
+            template <typename FormatContext>
+            auto format( EnumT value, FormatContext& ctx )
+            {
+                if constexpr ( sizeof( CharT ) == 2 )
+                {
+                    auto str = ToWideString( value );
+                    std::basic_string_view<CharT> view( str.data( ), str.size( ) );
+                    return viewFormatter.format( view, ctx );
+                }
+                else
+                {
+                    auto str = ToAnsiString( value );
+                    std::basic_string_view<CharT> view( str.data( ), str.size( ) );
+                    return viewFormatter.format( view, ctx );
+                }
+            }
+        };
+    }
+}
+
+namespace std
+{
+    template<typename CharT>
+    struct formatter<Harlinn::Common::Core::Services::ServiceAccessRights, CharT> : public Harlinn::Common::Core::Internal::ServicesFormatterImpl<Harlinn::Common::Core::Services::ServiceAccessRights, CharT>
+    {
+    };
+
+    template<typename CharT>
+    struct formatter<Harlinn::Common::Core::Services::ServiceControlManagerAccessRights, CharT> : public Harlinn::Common::Core::Internal::ServicesFormatterImpl<Harlinn::Common::Core::Services::ServiceControlManagerAccessRights, CharT>
+    {
+    };
+
+    template<typename CharT>
+    struct formatter<Harlinn::Common::Core::Services::ServiceType, CharT> : public Harlinn::Common::Core::Internal::ServicesFormatterImpl<Harlinn::Common::Core::Services::ServiceType, CharT>
+    {
+    };
+
+    template<typename CharT>
+    struct formatter<Harlinn::Common::Core::Services::ServiceStartType, CharT> : public Harlinn::Common::Core::Internal::ServicesFormatterImpl<Harlinn::Common::Core::Services::ServiceStartType, CharT>
+    {
+    };
+
+    template<typename CharT>
+    struct formatter<Harlinn::Common::Core::Services::ServiceEnumerationState, CharT> : public Harlinn::Common::Core::Internal::ServicesFormatterImpl<Harlinn::Common::Core::Services::ServiceEnumerationState, CharT>
+    {
+    };
+
+    template<typename CharT>
+    struct formatter<Harlinn::Common::Core::Services::ServiceState, CharT> : public Harlinn::Common::Core::Internal::ServicesFormatterImpl<Harlinn::Common::Core::Services::ServiceState, CharT>
+    {
+    };
+
+    template<typename CharT>
+    struct formatter<Harlinn::Common::Core::Services::ServiceControl, CharT> : public Harlinn::Common::Core::Internal::ServicesFormatterImpl<Harlinn::Common::Core::Services::ServiceControl, CharT>
+    {
+    };
+
+    template<typename CharT>
+    struct formatter<Harlinn::Common::Core::Services::ServiceControlAccepted, CharT> : public Harlinn::Common::Core::Internal::ServicesFormatterImpl<Harlinn::Common::Core::Services::ServiceControlAccepted, CharT>
+    {
+    };
+
+    template<typename CharT>
+    struct formatter<Harlinn::Common::Core::Services::DeviceEventType, CharT> : public Harlinn::Common::Core::Internal::ServicesFormatterImpl<Harlinn::Common::Core::Services::DeviceEventType, CharT>
+    {
+    };
+
+    template<typename CharT>
+    struct formatter<Harlinn::Common::Core::Services::HardwareProfileChangeEventType, CharT> : public Harlinn::Common::Core::Internal::ServicesFormatterImpl<Harlinn::Common::Core::Services::HardwareProfileChangeEventType, CharT>
+    {
+    };
+
+    template<typename CharT>
+    struct formatter<Harlinn::Common::Core::Services::PowerEventType, CharT> : public Harlinn::Common::Core::Internal::ServicesFormatterImpl<Harlinn::Common::Core::Services::PowerEventType, CharT>
+    {
+    };
 
 }
 
