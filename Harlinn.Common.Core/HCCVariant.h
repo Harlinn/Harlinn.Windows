@@ -6,6 +6,7 @@
 #include <HCCCom.h>
 #include <HCCDateTime.h>
 #include <HCCCurrency.h>
+#include <HCCLogging.h>
 
 namespace Harlinn::Common::Core
 {

@@ -422,6 +422,7 @@ namespace Harlinn::Common::Core::Services
 
     enum class ServiceControlAccepted : DWORD
     {
+        None = 0,
         Stop = SERVICE_ACCEPT_STOP,
         PauseAndContinue = SERVICE_ACCEPT_PAUSE_CONTINUE,
         Shutdown = SERVICE_ACCEPT_SHUTDOWN,
@@ -442,6 +443,7 @@ namespace Harlinn::Common::Core::Services
 
     enum class DeviceEventType : DWORD
     {
+        None = 0,
         // system detected a new device
         Arrival = DBT_DEVICEARRIVAL,
         QueryRemove = DBT_DEVICEQUERYREMOVE,
@@ -462,6 +464,7 @@ namespace Harlinn::Common::Core::Services
 
     enum class PowerEventType
     {
+        None = 0,
         PowerStatusChange = PBT_APMPOWERSTATUSCHANGE,
         ResumeAutomatic = PBT_APMRESUMEAUTOMATIC,
         ResumeSuspend = PBT_APMRESUMESUSPEND,
@@ -1014,9 +1017,516 @@ namespace Harlinn::Common::Core::Services
         : name_( name ), serviceControlAccepted_( serviceControlAccepted ), serviceType_( serviceType ), serviceStoppedEventWaitHandle_( true ), serviceHost_( Application::Instance().ServiceHost() )
     {
     }
+}
 
+namespace Harlinn::Common::Core
+{
+    // =========================================================================
+    // ServiceAccessRights
+    // =========================================================================
+    HCC_EXPORT WideString ToWideString( Services::ServiceAccessRights value );
+    HCC_EXPORT WideString ToWideString( Services::ServiceAccessRights value, const WideString& defaultResult );
+
+    inline AnsiString ToAnsiString( Services::ServiceAccessRights value )
+    {
+        return ToAnsiString( ToWideString( value ) );
+    }
+    inline AnsiString ToAnsiString( Services::ServiceAccessRights value, const AnsiString& defaultResult )
+    {
+        return ToAnsiString( ToWideString( value, ToWideString( defaultResult ) ) );
+    }
+
+    namespace Services
+    {
+        HCC_EXPORT Services::ServiceAccessRights ParseServiceAccessRights( const WideString& str );
+        HCC_EXPORT Services::ServiceAccessRights ParseServiceAccessRights( const WideString& str, Services::ServiceAccessRights defaultResult );
+        HCC_EXPORT bool TryParseServiceAccessRights( const WideString& str, Services::ServiceAccessRights& value );
+
+        inline Services::ServiceAccessRights ParseServiceAccessRights( const AnsiString& str )
+        {
+            return ParseServiceAccessRights( ToWideString( str ) );
+        }
+        inline Services::ServiceAccessRights ParseServiceAccessRights( const AnsiString& str, Services::ServiceAccessRights defaultResult )
+        {
+            return ParseServiceAccessRights( ToWideString( str ), defaultResult );
+        }
+        inline bool TryParseServiceAccessRights( const AnsiString& str, Services::ServiceAccessRights& value )
+        {
+            return TryParseServiceAccessRights( ToWideString( str ), value );
+        }
+
+    }
+    template<typename StringT>
+        requires std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString>
+    inline bool TryParse( const StringT& str, Services::ServiceAccessRights& value )
+    {
+        return Services::TryParseServiceAccessRights( str, value );
+    }
+
+    template<typename T, typename StringT>
+        requires std::is_same_v<Services::ServiceAccessRights, T> && ( std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString> )
+    inline T Parse( const WideString& str )
+    {
+        return Services::ParseServiceAccessRights( str );
+    }
+
+    template<typename T, typename CharT>
+        requires std::is_same_v<Services::ServiceAccessRights, T> && ( std::is_same_v<CharT, wchar_t> || std::is_same_v<CharT, char> )
+    inline T Parse( const CharT* str )
+    {
+        return Services::ParseServiceAccessRights( str );
+    }
+
+    // =========================================================================
+    // ServiceControlManagerAccessRights
+    // =========================================================================
+    HCC_EXPORT WideString ToWideString( Services::ServiceControlManagerAccessRights value );
+    HCC_EXPORT WideString ToWideString( Services::ServiceControlManagerAccessRights value, const WideString& defaultResult );
+
+    inline AnsiString ToAnsiString( Services::ServiceControlManagerAccessRights value )
+    {
+        return ToAnsiString( ToWideString( value ) );
+    }
+    inline AnsiString ToAnsiString( Services::ServiceControlManagerAccessRights value, const AnsiString& defaultResult )
+    {
+        return ToAnsiString( ToWideString( value, ToWideString( defaultResult ) ) );
+    }
+
+    namespace Services
+    {
+        HCC_EXPORT Services::ServiceControlManagerAccessRights ParseServiceControlManagerAccessRights( const WideString& str );
+        HCC_EXPORT Services::ServiceControlManagerAccessRights ParseServiceControlManagerAccessRights( const WideString& str, Services::ServiceControlManagerAccessRights defaultResult );
+        HCC_EXPORT bool TryParseServiceControlManagerAccessRights( const WideString& str, Services::ServiceControlManagerAccessRights& value );
+
+        inline Services::ServiceControlManagerAccessRights ParseServiceControlManagerAccessRights( const AnsiString& str )
+        {
+            return ParseServiceControlManagerAccessRights( ToWideString( str ) );
+        }
+        inline Services::ServiceControlManagerAccessRights ParseServiceControlManagerAccessRights( const AnsiString& str, Services::ServiceControlManagerAccessRights defaultResult )
+        {
+            return ParseServiceControlManagerAccessRights( ToWideString( str ), defaultResult );
+        }
+        inline bool TryParseServiceControlManagerAccessRights( const AnsiString& str, Services::ServiceControlManagerAccessRights& value )
+        {
+            return TryParseServiceControlManagerAccessRights( ToWideString( str ), value );
+        }
+
+    }
+    template<typename StringT>
+        requires std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString>
+    inline bool TryParse( const StringT& str, Services::ServiceControlManagerAccessRights& value )
+    {
+        return Services::TryParseServiceControlManagerAccessRights( str, value );
+    }
+
+    template<typename T, typename StringT>
+        requires std::is_same_v<Services::ServiceControlManagerAccessRights, T> && ( std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString> )
+    inline T Parse( const WideString& str )
+    {
+        return Services::ParseServiceControlManagerAccessRights( str );
+    }
+
+    template<typename T, typename CharT>
+        requires std::is_same_v<Services::ServiceControlManagerAccessRights, T> && ( std::is_same_v<CharT, wchar_t> || std::is_same_v<CharT, char> )
+    inline T Parse( const CharT* str )
+    {
+        return Services::ParseServiceControlManagerAccessRights( str );
+    }
+
+    // =========================================================================
+    // ServiceType
+    // =========================================================================
+    HCC_EXPORT WideString ToWideString( Services::ServiceType value );
+    HCC_EXPORT WideString ToWideString( Services::ServiceType value, const WideString& defaultResult );
+
+    inline AnsiString ToAnsiString( Services::ServiceType value )
+    {
+        return ToAnsiString( ToWideString( value ) );
+    }
+    inline AnsiString ToAnsiString( Services::ServiceType value, const AnsiString& defaultResult )
+    {
+        return ToAnsiString( ToWideString( value, ToWideString( defaultResult ) ) );
+    }
+
+    namespace Services
+    {
+        HCC_EXPORT Services::ServiceType ParseServiceType( const WideString& str );
+        HCC_EXPORT Services::ServiceType ParseServiceType( const WideString& str, Services::ServiceType defaultResult );
+        HCC_EXPORT bool TryParseServiceType( const WideString& str, Services::ServiceType& value );
+
+        inline Services::ServiceType ParseServiceType( const AnsiString& str )
+        {
+            return ParseServiceType( ToWideString( str ) );
+        }
+        inline Services::ServiceType ParseServiceType( const AnsiString& str, Services::ServiceType defaultResult )
+        {
+            return ParseServiceType( ToWideString( str ), defaultResult );
+        }
+        inline bool TryParseServiceType( const AnsiString& str, Services::ServiceType& value )
+        {
+            return TryParseServiceType( ToWideString( str ), value );
+        }
+
+    }
+    template<typename StringT>
+        requires std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString>
+    inline bool TryParse( const StringT& str, Services::ServiceType& value )
+    {
+        return Services::TryParseServiceType( str, value );
+    }
+
+    template<typename T, typename StringT>
+        requires std::is_same_v<Services::ServiceType, T> && ( std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString> )
+    inline T Parse( const WideString& str )
+    {
+        return Services::ParseServiceType( str );
+    }
+
+    template<typename T, typename CharT>
+        requires std::is_same_v<Services::ServiceType, T> && ( std::is_same_v<CharT, wchar_t> || std::is_same_v<CharT, char> )
+    inline T Parse( const CharT* str )
+    {
+        return Services::ParseServiceType( str );
+    }
+
+    // =========================================================================
+    // ServiceStartType
+    // =========================================================================
+    HCC_EXPORT WideString ToWideString( Services::ServiceStartType value );
+    HCC_EXPORT WideString ToWideString( Services::ServiceStartType value, const WideString& defaultResult );
+
+    inline AnsiString ToAnsiString( Services::ServiceStartType value )
+    {
+        return ToAnsiString( ToWideString( value ) );
+    }
+    inline AnsiString ToAnsiString( Services::ServiceStartType value, const AnsiString& defaultResult )
+    {
+        return ToAnsiString( ToWideString( value, ToWideString( defaultResult ) ) );
+    }
+
+    namespace Services
+    {
+        HCC_EXPORT Services::ServiceStartType ParseServiceStartType( const WideString& str );
+        HCC_EXPORT Services::ServiceStartType ParseServiceStartType( const WideString& str, Services::ServiceStartType defaultResult );
+        HCC_EXPORT bool TryParseServiceStartType( const WideString& str, Services::ServiceStartType& value );
+
+        inline Services::ServiceStartType ParseServiceStartType( const AnsiString& str )
+        {
+            return ParseServiceStartType( ToWideString( str ) );
+        }
+        inline Services::ServiceStartType ParseServiceStartType( const AnsiString& str, Services::ServiceStartType defaultResult )
+        {
+            return ParseServiceStartType( ToWideString( str ), defaultResult );
+        }
+        inline bool TryParseServiceStartType( const AnsiString& str, Services::ServiceStartType& value )
+        {
+            return TryParseServiceStartType( ToWideString( str ), value );
+        }
+
+    }
+    template<typename StringT>
+        requires std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString>
+    inline bool TryParse( const StringT& str, Services::ServiceStartType& value )
+    {
+        return Services::TryParseServiceStartType( str, value );
+    }
+
+    template<typename T, typename StringT>
+        requires std::is_same_v<Services::ServiceStartType, T> && ( std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString> )
+    inline T Parse( const WideString& str )
+    {
+        return Services::ParseServiceStartType( str );
+    }
+
+    template<typename T, typename CharT>
+        requires std::is_same_v<Services::ServiceStartType, T> && ( std::is_same_v<CharT, wchar_t> || std::is_same_v<CharT, char> )
+    inline T Parse( const CharT* str )
+    {
+        return Services::ParseServiceStartType( str );
+    }
+
+    // =========================================================================
+    // ServiceEnumerationState
+    // =========================================================================
+    HCC_EXPORT WideString ToWideString( Services::ServiceEnumerationState value );
+    HCC_EXPORT WideString ToWideString( Services::ServiceEnumerationState value, const WideString& defaultResult );
+
+    inline AnsiString ToAnsiString( Services::ServiceEnumerationState value )
+    {
+        return ToAnsiString( ToWideString( value ) );
+    }
+    inline AnsiString ToAnsiString( Services::ServiceEnumerationState value, const AnsiString& defaultResult )
+    {
+        return ToAnsiString( ToWideString( value, ToWideString( defaultResult ) ) );
+    }
+
+    namespace Services
+    {
+        HCC_EXPORT Services::ServiceEnumerationState ParseServiceEnumerationState( const WideString& str );
+        HCC_EXPORT Services::ServiceEnumerationState ParseServiceEnumerationState( const WideString& str, Services::ServiceEnumerationState defaultResult );
+        HCC_EXPORT bool TryParseServiceEnumerationState( const WideString& str, Services::ServiceEnumerationState& value );
+
+        inline Services::ServiceEnumerationState ParseServiceEnumerationState( const AnsiString& str )
+        {
+            return ParseServiceEnumerationState( ToWideString( str ) );
+        }
+        inline Services::ServiceEnumerationState ParseServiceEnumerationState( const AnsiString& str, Services::ServiceEnumerationState defaultResult )
+        {
+            return ParseServiceEnumerationState( ToWideString( str ), defaultResult );
+        }
+        inline bool TryParseServiceEnumerationState( const AnsiString& str, Services::ServiceEnumerationState& value )
+        {
+            return TryParseServiceEnumerationState( ToWideString( str ), value );
+        }
+
+    }
+    template<typename StringT>
+        requires std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString>
+    inline bool TryParse( const StringT& str, Services::ServiceEnumerationState& value )
+    {
+        return Services::TryParseServiceEnumerationState( str, value );
+    }
+
+    template<typename T, typename StringT>
+        requires std::is_same_v<Services::ServiceEnumerationState, T> && ( std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString> )
+    inline T Parse( const WideString& str )
+    {
+        return Services::ParseServiceEnumerationState( str );
+    }
+
+    template<typename T, typename CharT>
+        requires std::is_same_v<Services::ServiceEnumerationState, T> && ( std::is_same_v<CharT, wchar_t> || std::is_same_v<CharT, char> )
+    inline T Parse( const CharT* str )
+    {
+        return Services::ParseServiceEnumerationState( str );
+    }
+
+    // =========================================================================
+    // ServiceState
+    // =========================================================================
+    HCC_EXPORT WideString ToWideString( Services::ServiceState value );
+    HCC_EXPORT WideString ToWideString( Services::ServiceState value, const WideString& defaultResult );
+
+    inline AnsiString ToAnsiString( Services::ServiceState value )
+    {
+        return ToAnsiString( ToWideString( value ) );
+    }
+    inline AnsiString ToAnsiString( Services::ServiceState value, const AnsiString& defaultResult )
+    {
+        return ToAnsiString( ToWideString( value, ToWideString( defaultResult ) ) );
+    }
+
+    namespace Services
+    {
+        HCC_EXPORT Services::ServiceState ParseServiceState( const WideString& str );
+        HCC_EXPORT Services::ServiceState ParseServiceState( const WideString& str, Services::ServiceState defaultResult );
+        HCC_EXPORT bool TryParseServiceState( const WideString& str, Services::ServiceState& value );
+
+        inline Services::ServiceState ParseServiceState( const AnsiString& str )
+        {
+            return ParseServiceState( ToWideString( str ) );
+        }
+        inline Services::ServiceState ParseServiceState( const AnsiString& str, Services::ServiceState defaultResult )
+        {
+            return ParseServiceState( ToWideString( str ), defaultResult );
+        }
+        inline bool TryParseServiceState( const AnsiString& str, Services::ServiceState& value )
+        {
+            return TryParseServiceState( ToWideString( str ), value );
+        }
+
+    }
+    template<typename StringT>
+        requires std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString>
+    inline bool TryParse( const StringT& str, Services::ServiceState& value )
+    {
+        return Services::TryParseServiceState( str, value );
+    }
+
+    template<typename T, typename StringT>
+        requires std::is_same_v<Services::ServiceState, T> && ( std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString> )
+    inline T Parse( const WideString& str )
+    {
+        return Services::ParseServiceState( str );
+    }
+
+    template<typename T, typename CharT>
+        requires std::is_same_v<Services::ServiceState, T> && ( std::is_same_v<CharT, wchar_t> || std::is_same_v<CharT, char> )
+    inline T Parse( const CharT* str )
+    {
+        return Services::ParseServiceState( str );
+    }
+
+    // =========================================================================
+    // ServiceControl
+    // =========================================================================
+    HCC_EXPORT WideString ToWideString( Services::ServiceControl value );
+    HCC_EXPORT WideString ToWideString( Services::ServiceControl value, const WideString& defaultResult );
+
+    inline AnsiString ToAnsiString( Services::ServiceControl value )
+    {
+        return ToAnsiString( ToWideString( value ) );
+    }
+    inline AnsiString ToAnsiString( Services::ServiceControl value, const AnsiString& defaultResult )
+    {
+        return ToAnsiString( ToWideString( value, ToWideString( defaultResult ) ) );
+    }
+
+    namespace Services
+    {
+        HCC_EXPORT Services::ServiceControl ParseServiceControl( const WideString& str );
+        HCC_EXPORT Services::ServiceControl ParseServiceControl( const WideString& str, Services::ServiceControl defaultResult );
+        HCC_EXPORT bool TryParseServiceControl( const WideString& str, Services::ServiceControl& value );
+
+        inline Services::ServiceControl ParseServiceControl( const AnsiString& str )
+        {
+            return ParseServiceControl( ToWideString( str ) );
+        }
+        inline Services::ServiceControl ParseServiceControl( const AnsiString& str, Services::ServiceControl defaultResult )
+        {
+            return ParseServiceControl( ToWideString( str ), defaultResult );
+        }
+        inline bool TryParseServiceControl( const AnsiString& str, Services::ServiceControl& value )
+        {
+            return TryParseServiceControl( ToWideString( str ), value );
+        }
+
+    }
+    template<typename StringT>
+        requires std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString>
+    inline bool TryParse( const StringT& str, Services::ServiceControl& value )
+    {
+        return Services::TryParseServiceControl( str, value );
+    }
+
+    template<typename T, typename StringT>
+        requires std::is_same_v<Services::ServiceControl, T> && ( std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString> )
+    inline T Parse( const WideString& str )
+    {
+        return Services::ParseServiceControl( str );
+    }
+
+    template<typename T, typename CharT>
+        requires std::is_same_v<Services::ServiceControl, T> && ( std::is_same_v<CharT, wchar_t> || std::is_same_v<CharT, char> )
+    inline T Parse( const CharT* str )
+    {
+        return Services::ParseServiceControl( str );
+    }
+
+    // =========================================================================
+    // ServiceControlAccepted
+    // =========================================================================
+    HCC_EXPORT WideString ToWideString( Services::ServiceControlAccepted value );
+    HCC_EXPORT WideString ToWideString( Services::ServiceControlAccepted value, const WideString& defaultResult );
+
+    inline AnsiString ToAnsiString( Services::ServiceControlAccepted value )
+    {
+        return ToAnsiString( ToWideString( value ) );
+    }
+    inline AnsiString ToAnsiString( Services::ServiceControlAccepted value, const AnsiString& defaultResult )
+    {
+        return ToAnsiString( ToWideString( value, ToWideString( defaultResult ) ) );
+    }
+
+    namespace Services
+    {
+        HCC_EXPORT Services::ServiceControlAccepted ParseServiceControlAccepted( const WideString& str );
+        HCC_EXPORT Services::ServiceControlAccepted ParseServiceControlAccepted( const WideString& str, Services::ServiceControlAccepted defaultResult );
+        HCC_EXPORT bool TryParseServiceControlAccepted( const WideString& str, Services::ServiceControlAccepted& value );
+
+        inline Services::ServiceControlAccepted ParseServiceControlAccepted( const AnsiString& str )
+        {
+            return ParseServiceControlAccepted( ToWideString( str ) );
+        }
+        inline Services::ServiceControlAccepted ParseServiceControlAccepted( const AnsiString& str, Services::ServiceControlAccepted defaultResult )
+        {
+            return ParseServiceControlAccepted( ToWideString( str ), defaultResult );
+        }
+        inline bool TryParseServiceControlAccepted( const AnsiString& str, Services::ServiceControlAccepted& value )
+        {
+            return TryParseServiceControlAccepted( ToWideString( str ), value );
+        }
+
+    }
+    template<typename StringT>
+        requires std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString>
+    inline bool TryParse( const StringT& str, Services::ServiceControlAccepted& value )
+    {
+        return Services::TryParseServiceControlAccepted( str, value );
+    }
+
+    template<typename T, typename StringT>
+        requires std::is_same_v<Services::ServiceControlAccepted, T> && ( std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString> )
+    inline T Parse( const WideString& str )
+    {
+        return Services::ParseServiceControlAccepted( str );
+    }
+
+    template<typename T, typename CharT>
+        requires std::is_same_v<Services::ServiceControlAccepted, T> && ( std::is_same_v<CharT, wchar_t> || std::is_same_v<CharT, char> )
+    inline T Parse( const CharT* str )
+    {
+        return Services::ParseServiceControlAccepted( str );
+    }
+
+    // =========================================================================
+    // DeviceEventType
+    // =========================================================================
+    HCC_EXPORT WideString ToWideString( Services::DeviceEventType value );
+    HCC_EXPORT WideString ToWideString( Services::DeviceEventType value, const WideString& defaultResult );
+
+    inline AnsiString ToAnsiString( Services::DeviceEventType value )
+    {
+        return ToAnsiString( ToWideString( value ) );
+    }
+    inline AnsiString ToAnsiString( Services::DeviceEventType value, const AnsiString& defaultResult )
+    {
+        return ToAnsiString( ToWideString( value, ToWideString( defaultResult ) ) );
+    }
+
+    namespace Services
+    {
+        HCC_EXPORT Services::DeviceEventType ParseDeviceEventType( const WideString& str );
+        HCC_EXPORT Services::DeviceEventType ParseDeviceEventType( const WideString& str, Services::DeviceEventType defaultResult );
+        HCC_EXPORT bool TryParseDeviceEventType( const WideString& str, Services::DeviceEventType& value );
+
+        inline Services::DeviceEventType ParseDeviceEventType( const AnsiString& str )
+        {
+            return ParseDeviceEventType( ToWideString( str ) );
+        }
+        inline Services::DeviceEventType ParseDeviceEventType( const AnsiString& str, Services::DeviceEventType defaultResult )
+        {
+            return ParseDeviceEventType( ToWideString( str ), defaultResult );
+        }
+        inline bool TryParseDeviceEventType( const AnsiString& str, Services::DeviceEventType& value )
+        {
+            return TryParseDeviceEventType( ToWideString( str ), value );
+        }
+
+    }
+    template<typename StringT>
+        requires std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString>
+    inline bool TryParse( const StringT& str, Services::DeviceEventType& value )
+    {
+        return Services::TryParseDeviceEventType( str, value );
+    }
+
+    template<typename T, typename StringT>
+        requires std::is_same_v<Services::DeviceEventType, T> && ( std::is_same_v<StringT, WideString> || std::is_same_v<StringT, AnsiString> )
+    inline T Parse( const WideString& str )
+    {
+        return Services::ParseDeviceEventType( str );
+    }
+
+    template<typename T, typename CharT>
+        requires std::is_same_v<Services::DeviceEventType, T> && ( std::is_same_v<CharT, wchar_t> || std::is_same_v<CharT, char> )
+    inline T Parse( const CharT* str )
+    {
+        return Services::ParseDeviceEventType( str );
+    }
 
 
 }
+
 
 #endif
