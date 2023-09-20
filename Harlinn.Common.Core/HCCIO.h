@@ -1712,6 +1712,13 @@ namespace Harlinn::Common::Core::IO
             std::span<const CharT> remainingPathView( remainingPath, LengthOf( remainingPath ) );
             return Combine<StringT>( startOfPath, remainingPathView );
         }
+        template<StringLike StringT1, StringLike StringT2>
+        static [[nodiscard]] StringT1 Combine( const StringT1& startOfPath, const StringT2& remainingPath )
+        {
+            using CharT = typename StringT2::value_type;
+            std::span<const CharT> remainingPathView( remainingPath.c_str(), remainingPath.size() );
+            return Combine<StringT1>( startOfPath, remainingPathView );
+        }
 
         
     private:
