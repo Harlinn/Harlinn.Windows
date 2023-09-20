@@ -525,7 +525,7 @@ namespace Harlinn::Common::Core::ZeroMq
     static_assert( IO::StreamWriter<ZMQWriteStream> );
     static_assert( IO::StreamFlush<ZMQWriteStream> );
 
-    class ZMQServer
+    class ZMQServer : public std::enable_shared_from_this<ZMQServer>
     {
     public:
         ZeroMq::Context& context_;
@@ -568,6 +568,20 @@ namespace Harlinn::Common::Core::ZeroMq
                 thread_.join( );
             }
         }
+
+        const AnsiString& LocalServerEndPoint( ) const noexcept
+        {
+            return serverEndpoint_;
+        }
+        const AnsiString& LocalServerEndPointForRemoteHost( ) const noexcept
+        {
+            if ( serverEndpoint_.StartsWith( "tcp://*:" ) )
+            {
+
+            }
+            return serverEndpoint_;
+        }
+
     protected:
         virtual bool Process( IO::MemoryStream& requestStream, IO::MemoryStream& replyStream, IO::MemoryStream& errorStream )
         {
@@ -1018,7 +1032,7 @@ namespace Harlinn::Common::Core::ZeroMq
         Socket clientSocket_;
     public:
         using Base = ZMQServer;
-        ZMQNotificationClient( ZeroMq::Context& context, const WideString& threadName, AnsiString serverEndpoint, const AnsiString& notificationEndpoint, const AnsiString& notificationInprocEndpoint )
+        ZMQNotificationClient( ZeroMq::Context& context, const WideString& threadName, const AnsiString& serverEndpoint, const AnsiString& notificationEndpoint, const AnsiString& notificationInprocEndpoint )
             : Base( context, threadName, notificationEndpoint, notificationInprocEndpoint ), serverEndpoint_( serverEndpoint ), clientSocket_( context, SocketType::req )
         {
         }
@@ -1087,7 +1101,6 @@ namespace Harlinn::Common::Core::ZeroMq
             ConstBuffer buffer( str.data( ), str.size( ) );
             return clientSocket_.Send( buffer, flags );
         }
-
 
 
         ReceiveResult Receive( Message& message, ReceiveFlags flags = ReceiveFlags::none )

@@ -60,8 +60,10 @@
 #include <windows.h>
 #include <winsock2.h>
 #include <Mswsock.h>
-#include <mstcpip.h>
 #include <WinIoCtl.h>
+#include <ws2ipdef.h>
+
+#include <mstcpip.h>
 
 #include <Windowsx.h>
 #include <CommCtrl.h>
@@ -146,6 +148,10 @@
 
 #include <wbemidl.h>
 #include <sensorsapi.h>
+
+#include <netioapi.h>
+#include <netiodef.h>
+
 
 #if (NTDDI_VERSION >= NTDDI_WINTHRESHOLD)
 #pragma push_macro("NTDDI_VERSION")

@@ -221,6 +221,7 @@
     <ClInclude Include="HCCIOBase.h" />
     <ClInclude Include="HCCIOCompletionPort.h" />
     <ClInclude Include="HCCIORequest.h" />
+    <ClInclude Include="HCCNetwork.h" />
     <ClInclude Include="HCCIStreamOnStreamImpl.h" />
     <ClInclude Include="HCCIterator.h" />
     <ClInclude Include="HCCList.h" />

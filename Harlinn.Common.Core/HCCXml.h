@@ -995,7 +995,11 @@ namespace Harlinn::Common::Core::Xml
                 HCC_COM_CHECK_HRESULT2( hr, pInterface );
                 return hr == S_OK;
             }
-
+            template<SimpleWideStringLike StringT>
+            bool HasAttribute( const StringT& name ) const
+            {
+                return HasAttribute( name.c_str() );
+            }
         
             void SetAttribute( BSTR name,VARIANT value) const
             {
@@ -1078,6 +1082,12 @@ namespace Harlinn::Common::Core::Xml
             Element FindElement( const wchar_t* tagName ) const
             {
                 return FindElement( (BSTR)tagName );
+            }
+
+            template<SimpleWideStringLike StringT>
+            Element FindElement( const StringT& tagName ) const
+            {
+                return FindElement( tagName.c_str() );
             }
 
         

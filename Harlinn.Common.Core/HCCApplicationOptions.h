@@ -41,7 +41,7 @@ namespace Harlinn::Common::Core
 
         static WideString DefaultConfigurationFilename( )
         {
-            return IO::File::GetExecutableW( ) + L".config";
+            return IO::File::GetExecutableW( ) + L".options";
         }
 
 

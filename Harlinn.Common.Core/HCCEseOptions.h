@@ -888,6 +888,12 @@ namespace Harlinn::Common::Core::Ese
             return {};
         }
 
+        std::shared_ptr<DatabaseOptions> CurrentDatabase( ) const noexcept
+        {
+            return Find( CurrentDatabaseName( ) );
+        }
+
+
         std::shared_ptr<DatabaseOptions> Add( const WideString& databaseName, const WideString& databaseFilename, Ese::CreateDatabaseFlags createDatabaseFlags = Ese::CreateDatabaseFlags::None )
         {
             auto it = databases_.find( databaseName );
@@ -929,10 +935,10 @@ namespace Harlinn::Common::Core::Ese
                         }
                     }
                 }
-            }
-            if ( element.HasAttribute( L"CurrentDatabaseName" ) )
-            {
-                currentDatabaseName_ = element.Read<WideString>( L"CurrentDatabaseName" );
+                if ( databases.HasAttribute( L"CurrentDatabaseName" ) )
+                {
+                    currentDatabaseName_ = databases.Read<WideString>( L"CurrentDatabaseName" );
+                }
             }
         }
 
