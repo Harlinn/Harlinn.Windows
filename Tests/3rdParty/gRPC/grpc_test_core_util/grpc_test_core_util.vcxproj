@@ -98,6 +98,7 @@
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.abseil\include;$(SolutionDir)3rdParty\Harlinn.grpc\include;$(SolutionDir)3rdParty\Harlinn.protobuf\include;$(SolutionDir)3rdParty\Harlinn.grpc;$(SolutionDir)3rdParty\Harlinn.gtest\include;$(SolutionDir)3rdParty\Harlinn.boringssl\include;$(SolutionDir)3rdParty\Harlinn.re2\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -139,6 +140,7 @@
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.abseil\include;$(SolutionDir)3rdParty\Harlinn.grpc\include;$(SolutionDir)3rdParty\Harlinn.protobuf\include;$(SolutionDir)3rdParty\Harlinn.grpc;$(SolutionDir)3rdParty\Harlinn.gtest\include;$(SolutionDir)3rdParty\Harlinn.boringssl\include;$(SolutionDir)3rdParty\Harlinn.re2\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
     </ClCompile>
     <Link>
       <SubSystem>

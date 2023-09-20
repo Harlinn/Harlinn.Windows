@@ -73,13 +73,13 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <LinkIncremental>true</LinkIncremental>
+    <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LinkIncremental>true</LinkIncremental>
+    <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -99,6 +99,7 @@
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
       <AdditionalIncludeDirectories>$(ProjectDir)include;$(SolutionDir)3rdParty\Harlinn.gwen\include;$(SolutionDir)3rdParty\Harlinn.glad\include;$(SolutionDir)3rdParty\Harlinn.stb\include;$(SolutionDir)3rdParty\Harlinn.tinyxml2;$(SolutionDir)3rdParty\Harlinn.Eigen\include;$(SolutionDir)3rdParty\Harlinn.superlu;$(ProjectDir)src\ThirdPartyLibs;$(ONEAPI_ROOT)\mkl\latest\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -146,6 +147,7 @@
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
       <AdditionalIncludeDirectories>$(ProjectDir)include;$(SolutionDir)3rdParty\Harlinn.gwen\include;$(SolutionDir)3rdParty\Harlinn.glad\include;$(SolutionDir)3rdParty\Harlinn.stb\include;$(SolutionDir)3rdParty\Harlinn.tinyxml2;$(SolutionDir)3rdParty\Harlinn.Eigen\include;$(SolutionDir)3rdParty\Harlinn.superlu;$(ProjectDir)src\ThirdPartyLibs;$(ONEAPI_ROOT)\mkl\latest\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

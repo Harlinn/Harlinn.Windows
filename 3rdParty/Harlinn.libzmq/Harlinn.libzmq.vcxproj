@@ -84,6 +84,7 @@
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.libsodium\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <BuildStlModules>false</BuildStlModules>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -131,6 +132,7 @@
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.libsodium\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <BuildStlModules>false</BuildStlModules>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

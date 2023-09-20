@@ -73,13 +73,13 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <LinkIncremental>true</LinkIncremental>
+    <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LinkIncremental>true</LinkIncremental>
+    <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -99,6 +99,7 @@
       <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.expat;$(SolutionDir)3rdParty\Harlinn.minizip\include;$(SolutionDir)3rdParty\Harlinn.zlib;$(SolutionDir)3rdParty\Harlinn.bzip2;$(SolutionDir)3rdParty\Harlinn.uriparser\include;$(SolutionDir)3rdParty\Harlinn.kmlbase\include;$(ProjectDir)include;$(BOOST_ROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -144,6 +145,7 @@
       <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.expat;$(SolutionDir)3rdParty\Harlinn.minizip\include;$(SolutionDir)3rdParty\Harlinn.zlib;$(SolutionDir)3rdParty\Harlinn.bzip2;$(SolutionDir)3rdParty\Harlinn.uriparser\include;$(SolutionDir)3rdParty\Harlinn.kmlbase\include;$(ProjectDir)include;$(BOOST_ROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

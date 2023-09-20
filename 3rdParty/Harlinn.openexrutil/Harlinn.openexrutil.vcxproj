@@ -73,13 +73,13 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <LinkIncremental>true</LinkIncremental>
+    <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LinkIncremental>true</LinkIncremental>
+    <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -99,6 +99,7 @@
       <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.ilmthread\include\IlmThread;$(SolutionDir)3rdParty\Harlinn.iex\include\iex;$(SolutionDir)3rdParty\Harlinn.imath\include\imath;$(SolutionDir)3rdParty\Harlinn.openexr\include\OpenEXR;$(SolutionDir)3rdParty\Harlinn.zlib;$(ProjectDir)include;$(ProjectDir)include\OpenEXRUtil;$(ProjectDir)src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -144,6 +145,7 @@
       <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.ilmthread\include\IlmThread;$(SolutionDir)3rdParty\Harlinn.iex\include\iex;$(SolutionDir)3rdParty\Harlinn.imath\include\imath;$(SolutionDir)3rdParty\Harlinn.openexr\include\OpenEXR;$(SolutionDir)3rdParty\Harlinn.zlib;$(ProjectDir)include;$(ProjectDir)include\OpenEXRUtil;$(ProjectDir)src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

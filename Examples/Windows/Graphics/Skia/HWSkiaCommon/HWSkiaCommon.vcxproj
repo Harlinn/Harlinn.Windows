@@ -99,6 +99,7 @@
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Harlinn.Windows;$(SolutionDir)Harlinn.Common.Core;$(SolutionDir)3rdParty\Harlinn.skia\include;$(SolutionDir)3rdParty\Harlinn.skia;$(SolutionDir)3rdParty\Harlinn.vulkan\include;$(SolutionDir)3rdParty\Harlinn.skcms\include;$(BOOST_ROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -142,6 +143,7 @@
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Harlinn.Windows;$(SolutionDir)Harlinn.Common.Core;$(SolutionDir)3rdParty\Harlinn.skia\include;$(SolutionDir)3rdParty\Harlinn.skia;$(SolutionDir)3rdParty\Harlinn.vulkan\include;$(SolutionDir)3rdParty\Harlinn.skcms\include;$(BOOST_ROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
     </ClCompile>
     <Link>
       <SubSystem>

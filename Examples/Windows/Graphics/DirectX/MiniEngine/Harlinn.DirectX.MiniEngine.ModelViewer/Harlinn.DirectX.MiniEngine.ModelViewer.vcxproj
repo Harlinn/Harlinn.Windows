@@ -81,6 +81,7 @@
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Harlinn.Windows;$(SolutionDir)Harlinn.Common.Core;$(BOOST_ROOT);$(SolutionDir)Examples\Windows\Graphics\DirectX\MiniEngine\Harlinn.DirectX.MiniEngine.Core;$(SolutionDir)Examples\Windows\Graphics\DirectX\MiniEngine\Harlinn.DirectX.MiniEngine.Model;$(SolutionDir)3rdParty\Harlinn.zlib;$(SolutionDir)3rdParty\Harlinn.nlohmann-json\include;$(SolutionDir)3rdParty\Harlinn.DirectXMesh\include;$(SolutionDir)3rdParty\Harlinn.DirectXTex\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -118,6 +119,7 @@
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Harlinn.Windows;$(SolutionDir)Harlinn.Common.Core;$(BOOST_ROOT);$(SolutionDir)Examples\Windows\Graphics\DirectX\MiniEngine\Harlinn.DirectX.MiniEngine.Core;$(SolutionDir)Examples\Windows\Graphics\DirectX\MiniEngine\Harlinn.DirectX.MiniEngine.Model;$(SolutionDir)3rdParty\Harlinn.zlib;$(SolutionDir)3rdParty\Harlinn.nlohmann-json\include;$(SolutionDir)3rdParty\Harlinn.DirectXMesh\include;$(SolutionDir)3rdParty\Harlinn.DirectXTex\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

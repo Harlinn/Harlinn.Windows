@@ -73,13 +73,13 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <LinkIncremental>true</LinkIncremental>
+    <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LinkIncremental>true</LinkIncremental>
+    <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -99,6 +99,7 @@
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.imath\include;$(SolutionDir)3rdParty\Harlinn.ilmthread\include;$(SolutionDir)3rdParty\Harlinn.iex\include;$(SolutionDir)3rdParty\Harlinn.openexr\include;$(SolutionDir)3rdParty\Harlinn.skcms\include;$(SolutionDir)3rdParty\Harlinn.sjpeg\include;$(SolutionDir)3rdParty\Harlinn.lodepng\include;$(SolutionDir)3rdParty\Harlinn.lcms2\include;$(SolutionDir)3rdParty\Harlinn.highway\include;$(SolutionDir)3rdParty\Harlinn.brotli\include;$(ProjectDir)include;$(ProjectDir)src;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -144,6 +145,7 @@
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.imath\include;$(SolutionDir)3rdParty\Harlinn.ilmthread\include;$(SolutionDir)3rdParty\Harlinn.iex\include;$(SolutionDir)3rdParty\Harlinn.openexr\include;$(SolutionDir)3rdParty\Harlinn.skcms\include;$(SolutionDir)3rdParty\Harlinn.sjpeg\include;$(SolutionDir)3rdParty\Harlinn.lodepng\include;$(SolutionDir)3rdParty\Harlinn.lcms2\include;$(SolutionDir)3rdParty\Harlinn.highway\include;$(SolutionDir)3rdParty\Harlinn.brotli\include;$(ProjectDir)include;$(ProjectDir)src;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

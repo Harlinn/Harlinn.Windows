@@ -73,13 +73,13 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <LinkIncremental>true</LinkIncremental>
+    <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LinkIncremental>true</LinkIncremental>
+    <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -99,6 +99,7 @@
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir);$(SolutionDir)3rdParty\Harlinn.skcms\include;$(SolutionDir)3rdParty\Harlinn.jpeg-turbo\include\jpeg_turbo;$(SolutionDir)3rdParty\Harlinn.png;$(SolutionDir)3rdParty\Harlinn.webp\src;$(SolutionDir)3rdParty\Harlinn.dngsdk\include\dngsdk;$(SolutionDir)3rdParty\Harlinn.piex\include;$(SolutionDir)3rdParty\Harlinn.d3d12allocator\include;$(SolutionDir)3rdParty\Harlinn.glfw\include;$(SolutionDir)3rdParty\Harlinn.zlib;$(SolutionDir)3rdParty\Harlinn.freetype\include;$(SolutionDir)3rdParty\Harlinn.expat;$(SolutionDir)3rdParty\Harlinn.spirv-tools\include;$(SolutionDir)3rdParty\Harlinn.spirv-cross\include;$(SolutionDir)3rdParty\Harlinn.vulkan\include;$(SolutionDir)3rdParty\Harlinn.harfbuzz\include;$(SolutionDir)3rdParty\Harlinn.sfml-audio\include;$(SolutionDir)3rdParty\Harlinn.sfml-system\include;$(SolutionDir)3rdParty\Harlinn.vulkanmemoryallocator\include;$(ICU4C_HOME)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -146,6 +147,7 @@
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir);$(SolutionDir)3rdParty\Harlinn.skcms\include;$(SolutionDir)3rdParty\Harlinn.jpeg-turbo\include\jpeg_turbo;$(SolutionDir)3rdParty\Harlinn.png;$(SolutionDir)3rdParty\Harlinn.webp\src;$(SolutionDir)3rdParty\Harlinn.dngsdk\include\dngsdk;$(SolutionDir)3rdParty\Harlinn.piex\include;$(SolutionDir)3rdParty\Harlinn.d3d12allocator\include;$(SolutionDir)3rdParty\Harlinn.glfw\include;$(SolutionDir)3rdParty\Harlinn.zlib;$(SolutionDir)3rdParty\Harlinn.freetype\include;$(SolutionDir)3rdParty\Harlinn.expat;$(SolutionDir)3rdParty\Harlinn.spirv-tools\include;$(SolutionDir)3rdParty\Harlinn.spirv-cross\include;$(SolutionDir)3rdParty\Harlinn.vulkan\include;$(SolutionDir)3rdParty\Harlinn.harfbuzz\include;$(SolutionDir)3rdParty\Harlinn.sfml-audio\include;$(SolutionDir)3rdParty\Harlinn.sfml-system\include;$(SolutionDir)3rdParty\Harlinn.vulkanmemoryallocator\include;$(ICU4C_HOME)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

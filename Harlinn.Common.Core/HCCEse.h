@@ -929,7 +929,7 @@ namespace Harlinn::Common::Core::Ese
 
         Table( const Table& other ) = delete;
 
-        constexpr Table( Table&& other ) noexcept
+        Table( Table&& other ) noexcept
             : sessionId_( other.sessionId_ ), tableId_( other.tableId_ )
         {
             other.sessionId_ = JET_sesidNil;
@@ -961,12 +961,12 @@ namespace Harlinn::Common::Core::Ese
             return tableId_;
         }
 
-        constexpr bool IsValid( ) const noexcept
+        bool IsValid( ) const noexcept
         {
-            return sessionId_ != JET_sesidNil && tableId_ != JET_tableidNil;
+            return (sessionId_ != JET_sesidNil) && (tableId_ != JET_tableidNil);
         }
 
-        constexpr explicit operator bool( ) const noexcept
+        explicit operator bool( ) const noexcept
         {
             return IsValid( );
         }

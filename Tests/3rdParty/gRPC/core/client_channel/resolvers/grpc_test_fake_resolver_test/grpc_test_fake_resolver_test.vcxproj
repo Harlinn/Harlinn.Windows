@@ -73,13 +73,13 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <LinkIncremental>true</LinkIncremental>
+    <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LinkIncremental>true</LinkIncremental>
+    <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -97,6 +97,7 @@
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.re2\include;$(SolutionDir)3rdParty\Harlinn.abseil\include;$(SolutionDir)3rdParty\Harlinn.boringssl\include;$(SolutionDir)3rdParty\Harlinn.c-ares\include;$(SolutionDir)3rdParty\Harlinn.grpc\include;$(SolutionDir)3rdParty\Harlinn.protobuf\include;$(SolutionDir)3rdParty\Harlinn.grpc;$(SolutionDir)3rdParty\Harlinn.gtest\include;$(SolutionDir)Tests\3rdParty\gRPC\grpc_test_core_util;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -138,6 +139,7 @@
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.re2\include;$(SolutionDir)3rdParty\Harlinn.abseil\include;$(SolutionDir)3rdParty\Harlinn.boringssl\include;$(SolutionDir)3rdParty\Harlinn.c-ares\include;$(SolutionDir)3rdParty\Harlinn.grpc\include;$(SolutionDir)3rdParty\Harlinn.protobuf\include;$(SolutionDir)3rdParty\Harlinn.grpc;$(SolutionDir)3rdParty\Harlinn.gtest\include;$(SolutionDir)Tests\3rdParty\gRPC\grpc_test_core_util;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

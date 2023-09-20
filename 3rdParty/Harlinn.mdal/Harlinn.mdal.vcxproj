@@ -73,13 +73,13 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <LinkIncremental>true</LinkIncremental>
+    <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LinkIncremental>true</LinkIncremental>
+    <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -97,6 +97,7 @@
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.hdf5;$(SolutionDir)3rdParty\Harlinn.gdal\ogr;$(SolutionDir)3rdParty\Harlinn.gdal\gcore;$(SolutionDir)3rdParty\Harlinn.gdal\alg;$(SolutionDir)3rdParty\Harlinn.gdal;$(SolutionDir)3rdParty\Harlinn.libxml2\include;$(SolutionDir)3rdParty\Harlinn.SQLite3;$(ICU4C_HOME)\include;$(ProjectDir)include\mdal;$(ProjectDir)include;$(ProjectDir)src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -137,6 +138,7 @@
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.hdf5;$(SolutionDir)3rdParty\Harlinn.gdal\ogr;$(SolutionDir)3rdParty\Harlinn.gdal\gcore;$(SolutionDir)3rdParty\Harlinn.gdal\alg;$(SolutionDir)3rdParty\Harlinn.gdal;$(SolutionDir)3rdParty\Harlinn.libxml2\include;$(SolutionDir)3rdParty\Harlinn.SQLite3;$(ICU4C_HOME)\include;$(ProjectDir)include\mdal;$(ProjectDir)include;$(ProjectDir)src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

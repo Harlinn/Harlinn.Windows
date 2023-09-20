@@ -73,13 +73,13 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <LinkIncremental>true</LinkIncremental>
+    <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LinkIncremental>true</LinkIncremental>
+    <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -99,6 +99,7 @@
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.webm\include;$(SolutionDir)3rdParty\Harlinn.jxl\include;$(SolutionDir)3rdParty\Harlinn.libvmaf\include;$(SolutionDir)3rdParty\Harlinn.yuv\include;$(ProjectDir)include\aom\aom;$(ProjectDir)include\aom\aom_dsp;$(ProjectDir)include\aom\aom_mem;$(ProjectDir)include\aom\aom_ports;$(ProjectDir)include\aom\aom_scale;$(ProjectDir)include\aom\aom_util;$(ProjectDir)include\aom\av1;$(ProjectDir)include\aom\common;$(ProjectDir)include\aom\config;$(ProjectDir)include\aom\stats;$(ProjectDir)include\aom;$(ProjectDir)include;$(ProjectDir)src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -144,6 +145,7 @@
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.webm\include;$(SolutionDir)3rdParty\Harlinn.jxl\include;$(SolutionDir)3rdParty\Harlinn.libvmaf\include;$(SolutionDir)3rdParty\Harlinn.yuv\include;$(ProjectDir)include\aom\aom;$(ProjectDir)include\aom\aom_dsp;$(ProjectDir)include\aom\aom_mem;$(ProjectDir)include\aom\aom_ports;$(ProjectDir)include\aom\aom_scale;$(ProjectDir)include\aom\aom_util;$(ProjectDir)include\aom\av1;$(ProjectDir)include\aom\common;$(ProjectDir)include\aom\config;$(ProjectDir)include\aom\stats;$(ProjectDir)include\aom;$(ProjectDir)include;$(ProjectDir)src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

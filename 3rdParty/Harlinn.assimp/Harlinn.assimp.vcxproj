@@ -85,6 +85,7 @@
       <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)code;$(ProjectDir)contrib\pugixml\src;$(SolutionDir)3rdParty\Harlinn.zlib;$(SolutionDir)3rdParty\Harlinn.RapidJSON\include;$(ProjectDir)contrib\unzip;$(ProjectDir)contrib\openddlparser\include;$(SolutionDir)3rdParty\Harlinn.stb\include;$(ProjectDir)code/AssetLib;$(ProjectDir)contrib;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -138,6 +139,7 @@
       <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)code;$(ProjectDir)contrib\pugixml\src;$(SolutionDir)3rdParty\Harlinn.zlib;$(SolutionDir)3rdParty\Harlinn.RapidJSON\include;$(ProjectDir)contrib\unzip;$(ProjectDir)contrib\openddlparser\include;$(SolutionDir)3rdParty\Harlinn.stb\include;$(ProjectDir)code/AssetLib;$(ProjectDir)contrib;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

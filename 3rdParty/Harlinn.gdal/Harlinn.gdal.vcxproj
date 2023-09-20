@@ -69,13 +69,13 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <LinkIncremental>true</LinkIncremental>
+    <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LinkIncremental>true</LinkIncremental>
+    <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -96,6 +96,7 @@
       <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.armadillo\include;$(SolutionDir)3rdParty\Harlinn.cfitsio\include\cfitsio;$(SolutionDir)3rdParty\Harlinn.crnlib\inc;$(SolutionDir)3rdParty\Harlinn.curl\include;$(SolutionDir)3rdParty\Harlinn.expat;$(SolutionDir)3rdParty\Harlinn.geos\include;$(SolutionDir)3rdParty\Harlinn.gif;$(SolutionDir)3rdParty\Harlinn.gta\include;$(SolutionDir)3rdParty\Harlinn.hdf4\include\hdf4;$(SolutionDir)3rdParty\Harlinn.hdf4\include\mfhdf;$(SolutionDir)3rdParty\Harlinn.hdf5;$(SolutionDir)3rdParty\Harlinn.iex\include\iex;$(SolutionDir)3rdParty\Harlinn.imath\include\imath;$(SolutionDir)3rdParty\Harlinn.jasper\include;$(SolutionDir)3rdParty\Harlinn.jasper;$(SolutionDir)3rdParty\Harlinn.jpeg;$(SolutionDir)3rdParty\Harlinn.json-c;$(SolutionDir)3rdParty\Harlinn.jxl\include;$(SolutionDir)3rdParty\Harlinn.kmlbase\include;$(SolutionDir)3rdParty\Harlinn.kmldom\include;$(SolutionDir)3rdParty\Harlinn.kmlengine\include;$(SolutionDir)3rdParty\Harlinn.kmlxsd\include;$(SolutionDir)3rdParty\Harlinn.Lerc;$(SolutionDir)3rdParty\Harlinn.libheif\include;$(SolutionDir)3rdParty\Harlinn.liblzma\liblzma\api;$(SolutionDir)3rdParty\Harlinn.libxml2\include;$(SolutionDir)3rdParty\Harlinn.lz4;$(SolutionDir)3rdParty\Harlinn.openfyba\include;$(SolutionDir)3rdParty\Harlinn.openexr\include\OpenEXR;$(SolutionDir)3rdParty\Harlinn.png;$(SolutionDir)3rdParty\Harlinn.proj\include;$(SolutionDir)3rdParty\Harlinn.proj\include\proj;$(SolutionDir)3rdParty\Harlinn.SQLite3;$(SolutionDir)3rdParty\Harlinn.superlu;$(SolutionDir)3rdParty\Harlinn.tiff;$(SolutionDir)3rdParty\Harlinn.webp\src;$(SolutionDir)3rdParty\Harlinn.xerces-c\include;$(SolutionDir)3rdParty\Harlinn.xerces-c\include\xercesc;$(SolutionDir)3rdParty\Harlinn.zlib;$(SolutionDir)3rdParty\Harlinn.zstd;$(ORACLE_HOME)\oci\include;$(ICU4C_HOME)\include;$(BOOST_ROOT);$(SolutionDir)Harlinn.Java\include;$(SolutionDir)Harlinn.Common.Core;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -145,6 +146,7 @@
       <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.armadillo\include;$(SolutionDir)3rdParty\Harlinn.cfitsio\include\cfitsio;$(SolutionDir)3rdParty\Harlinn.crnlib\inc;$(SolutionDir)3rdParty\Harlinn.curl\include;$(SolutionDir)3rdParty\Harlinn.expat;$(SolutionDir)3rdParty\Harlinn.geos\include;$(SolutionDir)3rdParty\Harlinn.gif;$(SolutionDir)3rdParty\Harlinn.gta\include;$(SolutionDir)3rdParty\Harlinn.hdf4\include\hdf4;$(SolutionDir)3rdParty\Harlinn.hdf4\include\mfhdf;$(SolutionDir)3rdParty\Harlinn.hdf5;$(SolutionDir)3rdParty\Harlinn.iex\include\iex;$(SolutionDir)3rdParty\Harlinn.imath\include\imath;$(SolutionDir)3rdParty\Harlinn.jasper\include;$(SolutionDir)3rdParty\Harlinn.jasper;$(SolutionDir)3rdParty\Harlinn.jpeg;$(SolutionDir)3rdParty\Harlinn.json-c;$(SolutionDir)3rdParty\Harlinn.jxl\include;$(SolutionDir)3rdParty\Harlinn.kmlbase\include;$(SolutionDir)3rdParty\Harlinn.kmldom\include;$(SolutionDir)3rdParty\Harlinn.kmlengine\include;$(SolutionDir)3rdParty\Harlinn.kmlxsd\include;$(SolutionDir)3rdParty\Harlinn.Lerc;$(SolutionDir)3rdParty\Harlinn.libheif\include;$(SolutionDir)3rdParty\Harlinn.liblzma\liblzma\api;$(SolutionDir)3rdParty\Harlinn.libxml2\include;$(SolutionDir)3rdParty\Harlinn.lz4;$(SolutionDir)3rdParty\Harlinn.openfyba\include;$(SolutionDir)3rdParty\Harlinn.openexr\include\OpenEXR;$(SolutionDir)3rdParty\Harlinn.png;$(SolutionDir)3rdParty\Harlinn.proj\include;$(SolutionDir)3rdParty\Harlinn.proj\include\proj;$(SolutionDir)3rdParty\Harlinn.SQLite3;$(SolutionDir)3rdParty\Harlinn.superlu;$(SolutionDir)3rdParty\Harlinn.tiff;$(SolutionDir)3rdParty\Harlinn.webp\src;$(SolutionDir)3rdParty\Harlinn.xerces-c\include;$(SolutionDir)3rdParty\Harlinn.xerces-c\include\xercesc;$(SolutionDir)3rdParty\Harlinn.zlib;$(SolutionDir)3rdParty\Harlinn.zstd;$(ORACLE_HOME)\oci\include;$(ICU4C_HOME)\include;$(BOOST_ROOT);$(SolutionDir)Harlinn.Java\include;$(SolutionDir)Harlinn.Common.Core;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
