@@ -146,7 +146,7 @@ namespace Harlinn::Common::Core::IO
         {
             using ValueType = typename T::value_type;
             size_t count = value.length( );
-            int len = static_cast<int>( count );
+            int len = static_cast<int>( count )*sizeof( ValueType );
             Write7BitEncodedInt( len );
             if ( len )
             {

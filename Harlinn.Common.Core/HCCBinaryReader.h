@@ -261,23 +261,24 @@ namespace Harlinn::Common::Core::IO
             requires ( IsStdBasicString<T> || IsBasicString<T> )
         void Read( T& result )
         {
+            using ValueType = typename T::value_type;
             // Length of the string in T::value_type
-            int stringLength = Read7BitEncodedInt( );
-            if ( stringLength < 0 )
+            int byteLength = Read7BitEncodedInt( );
+            if ( byteLength < 0 )
             {
                 throw new IO::IOException( "Invalid string length" );
             }
 
-            if ( stringLength != 0 )
+            if ( byteLength != 0 )
             {
+                size_t stringLength = static_cast< size_t >( byteLength ) / sizeof( ValueType );
                 result.resize( stringLength );
                 if constexpr ( IsBasicString<T> )
                 {
                     result.EnsureUnique( );
                 }
-                auto numberOfBytesToRead = static_cast<size_t>( stringLength ) * sizeof( typename T::value_type );
-                auto bytesRead = static_cast<Derived&>( *this ).Read( result.data( ), numberOfBytesToRead );
-                if ( bytesRead < static_cast<long long>( numberOfBytesToRead ) )
+                auto bytesRead = static_cast<Derived&>( *this ).Read( result.data( ), static_cast<size_t>(byteLength) );
+                if ( bytesRead < static_cast<long long>( byteLength ) )
                 {
                     HCC_THROW( IO::EndOfStreamException );
                 }
@@ -302,20 +303,21 @@ namespace Harlinn::Common::Core::IO
             requires ( IsStdBasicString<T> || IsBasicString<T> )
         std::remove_cvref_t<T> Read( )
         {
+            using ValueType = typename T::value_type;
             using Type = std::remove_cvref_t<T>;
             // Length of the string in T::value_type
-            int stringLength = Read7BitEncodedInt( );
-            if ( stringLength < 0 )
+            int byteLength = Read7BitEncodedInt( );
+            if ( byteLength < 0 )
             {
                 throw new IO::IOException( "Invalid string length" );
             }
             Type result;
-            if ( stringLength != 0 )
+            if ( byteLength != 0 )
             {
+                size_t stringLength = static_cast< size_t >( byteLength ) / sizeof( ValueType );
                 result.resize( stringLength );
-                auto numberOfBytesToRead = static_cast<size_t>( stringLength ) * sizeof( typename T::value_type );
-                auto bytesRead = static_cast<Derived&>( *this ).Read( result.data( ), numberOfBytesToRead );
-                if ( bytesRead < static_cast<long long>( numberOfBytesToRead ) )
+                auto bytesRead = static_cast<Derived&>( *this ).Read( result.data( ), static_cast< size_t >( byteLength ) );
+                if ( bytesRead < static_cast<long long>( byteLength ) )
                 {
                     HCC_THROW( IO::EndOfStreamException );
                 }
