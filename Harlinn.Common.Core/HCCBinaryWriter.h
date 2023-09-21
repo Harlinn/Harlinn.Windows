@@ -156,7 +156,7 @@ namespace Harlinn::Common::Core::IO
                 }
                 else
                 {
-                    static_cast<Derived&>( *this ).Write( reinterpret_cast<const Byte*>( value.data( ) ), size_t( len ) * sizeof( ValueType ) );
+                    static_cast<Derived&>( *this ).Write( reinterpret_cast<const Byte*>( value.data( ) ), size_t( len ) );
                 }
             }
         }
