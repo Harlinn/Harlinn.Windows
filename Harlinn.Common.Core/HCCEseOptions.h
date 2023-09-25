@@ -743,6 +743,7 @@ namespace Harlinn::Common::Core::Ese
     {
         WideString name_;
         WideString filename_;
+        WideString seed_;
         std::optional<UInt32> databaseSizeMax_;
         std::optional<Ese::CreateDatabaseFlags> createDatabaseFlags_;
         
@@ -758,6 +759,7 @@ namespace Harlinn::Common::Core::Ese
         {
             name_ = element.Read<WideString>( L"Name" );
             filename_ = Environment::Expand( element.Read<WideString>( L"Filename" ) );
+            seed_ = Environment::Expand( element.Read<WideString>( L"Seed" ) );
             databaseSizeMax_ = element.Read< std::optional<UInt32>>( L"DatabaseSizeMax" );
             createDatabaseFlags_ = element.Read<std::optional<Ese::CreateDatabaseFlags>>( L"CreateDatabaseFlags" );
         }
@@ -788,6 +790,16 @@ namespace Harlinn::Common::Core::Ese
         DatabaseOptions& SetFilename( const WideString& filename )
         {
             filename_ = filename;
+            return *this;
+        }
+
+        const WideString& Seed( ) const
+        {
+            return seed_;
+        }
+        DatabaseOptions& SetSeed( const WideString& seed )
+        {
+            seed_ = seed;
             return *this;
         }
 
