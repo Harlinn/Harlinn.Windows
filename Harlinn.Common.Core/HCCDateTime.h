@@ -554,6 +554,9 @@ namespace Harlinn::Common::Core
     private:
         long long ticks_;
     public:
+        static constexpr wchar_t DEFAULT_WIDE_FORMAT[ ] = L"%YT%TZ";
+        static constexpr char DEFAULT_FORMAT[ ] = "%YT%TZ";
+
         HCC_EXPORT static long long ToLocalTicks( long long ticksInUtc );
         HCC_EXPORT static long long ToUniversalTicks( long long ticksInLocalTime );
         HCC_EXPORT static long long ToTicks( int year, int month, int day, int hour, int minute, int second, int millisecond );
@@ -855,13 +858,106 @@ namespace Harlinn::Common::Core
 
         HCC_EXPORT DateTime ToUniversalTime( ) const;
 
-        HCC_EXPORT static bool TryParse( const wchar_t* text, DateTime& result );
-        HCC_EXPORT static bool TryParse( const char* text, DateTime& result );
+        HCC_EXPORT static bool TryParse( const std::locale& locale, const wchar_t* text, size_t textLength, const wchar_t* format, DateTime& result );
+        HCC_EXPORT static bool TryParse( const std::locale& locale, const char* text, size_t textLength, const char* format, DateTime& result );
+
+        static bool TryParse( const wchar_t* text, size_t textLength, const wchar_t* format, DateTime& result )
+        {
+            const auto& locale = std::locale::classic( );
+            return TryParse( locale, text, textLength, format, result );
+        }
+        static bool TryParse( const char* text, size_t textLength, const char* format, DateTime& result )
+        {
+            const auto& locale = std::locale::classic( );
+            return TryParse( locale, text, textLength, format, result );
+        }
+
+        template<SimpleStringLike StringT>
+        static bool TryParse( const std::locale& locale, const StringT& text, const wchar_t* format, DateTime& result )
+        {
+            return TryParse( locale, text.c_str( ), text.size( ), format, result );
+        }
+
+        template<typename StringT>
+            requires std::is_same_v<StringT, std::wstring_view> || std::is_same_v<StringT, std::string_view>
+        static bool TryParse( const std::locale& locale, const StringT& text, const wchar_t* format, DateTime& result )
+        {
+            return TryParse( locale, text.data( ), text.size( ), format, result );
+        }
+
+        template<SimpleStringLike StringT>
+        static bool TryParse( const StringT& text, const wchar_t* format, DateTime& result )
+        {
+            return TryParse( text.c_str( ), text.size( ), format, result );
+        }
+
+        template<SimpleStringLike StringT>
+        static bool TryParse( const StringT& text, DateTime& result )
+        {
+            return TryParse( text.c_str( ), text.size( ), DEFAULT_WIDE_FORMAT, result );
+        }
+
+        template<typename StringT>
+            requires std::is_same_v<StringT, std::wstring_view> || std::is_same_v<StringT, std::string_view>
+        static bool TryParse( const StringT& text, const wchar_t* format, DateTime& result )
+        {
+            return TryParse( text.data( ), text.size( ), format, result );
+        }
+
+        template<typename StringT>
+            requires std::is_same_v<StringT, std::wstring_view> || std::is_same_v<StringT, std::string_view>
+        static bool TryParse( const StringT& text, DateTime& result )
+        {
+            return TryParse( text.data( ), text.size( ), DEFAULT_FORMAT, result );
+        }
+        
+        static bool TryParse( const std::locale& locale, const wchar_t* text, size_t textLength, DateTime& result )
+        {
+            return TryParse( locale, text, textLength, DEFAULT_WIDE_FORMAT, result );
+        }
+        static bool TryParse( const std::locale& locale, const char* text, size_t textLength, DateTime& result )
+        {
+            return TryParse( locale, text, textLength, DEFAULT_FORMAT, result );
+        }
+
+        static bool TryParse( const wchar_t* text, size_t textLength, DateTime& result )
+        {
+            return TryParse( text, textLength, DEFAULT_WIDE_FORMAT, result );
+        }
+        static bool TryParse( const char* text, size_t textLength, DateTime& result )
+        {
+            return TryParse( text, textLength, DEFAULT_FORMAT, result );
+        }
+
+        static bool TryParse( const std::locale& locale, const wchar_t* text, DateTime& result )
+        {
+            size_t textLength = wcslen( text );
+            return TryParse( locale, text, textLength, DEFAULT_WIDE_FORMAT, result );
+        }
+        static bool TryParse( const std::locale& locale, const char* text, DateTime& result )
+        {
+            size_t textLength = strlen( text );
+            return TryParse( locale, text, textLength, DEFAULT_FORMAT, result );
+        }
+
+        static bool TryParse( const wchar_t* text, DateTime& result )
+        {
+            size_t textLength = wcslen( text );
+            return TryParse( text, textLength, DEFAULT_WIDE_FORMAT, result );
+        }
+        static bool TryParse( const char* text, DateTime& result )
+        {
+            size_t textLength = strlen( text );
+            return TryParse( text, textLength, DEFAULT_FORMAT, result );
+        }
+
+
+
+
+
         HCC_EXPORT static DateTime Parse( const wchar_t* text );
         HCC_EXPORT static DateTime Parse( const char* text );
 
-        HCC_EXPORT static bool TryParse( const WideString& text, DateTime& result );
-        HCC_EXPORT static bool TryParse( const AnsiString& text, DateTime& result );
         HCC_EXPORT static DateTime Parse( const WideString& text );
         HCC_EXPORT static DateTime Parse( const AnsiString& text );
 

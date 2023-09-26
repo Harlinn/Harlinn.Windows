@@ -2470,6 +2470,17 @@ namespace Harlinn::Common::Core
             return AsBoolean( );
         }
 
+        template<>
+        std::optional<bool> As<std::optional<bool>>( ) const
+        {
+            auto type = Type( );
+            if ( type != VariantType::Empty && type != VariantType::Null )
+            {
+                return AsBoolean( );
+            }
+            return {};
+        }
+
     private:
         template<typename T>
         bool ConvertTo( T& result ) const noexcept
@@ -2580,7 +2591,7 @@ namespace Harlinn::Common::Core
         
 
     public:
-        char AsSByte( ) const
+        signed char AsSByte( ) const
         {
             char result = 0;
             if ( ConvertTo( result ) )
@@ -2605,6 +2616,27 @@ namespace Harlinn::Common::Core
             return AsSByte( );
         }
 
+        template<>
+        std::optional<char> As<std::optional<char>>( ) const
+        {
+            auto type = Type( );
+            if ( type != VariantType::Empty && type != VariantType::Null )
+            {
+                return AsSByte( );
+            }
+            return {};
+        }
+        template<>
+        std::optional<signed char> As<std::optional<signed char>>( ) const
+        {
+            auto type = Type( );
+            if ( type != VariantType::Empty && type != VariantType::Null )
+            {
+                return AsSByte( );
+            }
+            return {};
+        }
+
         unsigned char AsByte( ) const
         {
             unsigned char result = 0;
@@ -2625,6 +2657,18 @@ namespace Harlinn::Common::Core
         {
             return AsByte( );
         }
+
+        template<>
+        std::optional<unsigned char> As<std::optional<unsigned char>>( ) const
+        {
+            auto type = Type( );
+            if ( type != VariantType::Empty && type != VariantType::Null )
+            {
+                return AsByte( );
+            }
+            return {};
+        }
+
 
         Int16 AsInt16( ) const
         {
@@ -2647,6 +2691,17 @@ namespace Harlinn::Common::Core
         Int16 As<Int16>( ) const
         {
             return AsInt16( );
+        }
+
+        template<>
+        std::optional<Int16> As<std::optional<Int16>>( ) const
+        {
+            auto type = Type( );
+            if ( type != VariantType::Empty && type != VariantType::Null )
+            {
+                return AsInt16( );
+            }
+            return {};
         }
 
         UInt16 AsUInt16( ) const
@@ -2676,6 +2731,29 @@ namespace Harlinn::Common::Core
             return AsUInt16( );
         }
 
+        template<>
+        std::optional<UInt16> As<std::optional<UInt16>>( ) const
+        {
+            auto type = Type( );
+            if ( type != VariantType::Empty && type != VariantType::Null )
+            {
+                return AsUInt16( );
+            }
+            return {};
+        }
+
+        template<>
+        std::optional<wchar_t> As<std::optional<wchar_t>>( ) const
+        {
+            auto type = Type( );
+            if ( type != VariantType::Empty && type != VariantType::Null )
+            {
+                return AsUInt16( );
+            }
+            return {};
+        }
+
+
         Int32 AsInt32( ) const
         {
             Int32 result = 0;
@@ -2695,6 +2773,35 @@ namespace Harlinn::Common::Core
         Int32 As<Int32>( ) const
         {
             return AsInt32( );
+        }
+
+        template<>
+        long As<long>( ) const
+        {
+            return AsInt32( );
+        }
+
+
+        template<>
+        std::optional<Int32> As<std::optional<Int32>>( ) const
+        {
+            auto type = Type( );
+            if ( type != VariantType::Empty && type != VariantType::Null )
+            {
+                return AsInt32( );
+            }
+            return {};
+        }
+
+        template<>
+        std::optional<long> As<std::optional<long>>( ) const
+        {
+            auto type = Type( );
+            if ( type != VariantType::Empty && type != VariantType::Null )
+            {
+                return AsInt32( );
+            }
+            return {};
         }
 
         UInt32 AsUInt32( ) const
@@ -2718,6 +2825,35 @@ namespace Harlinn::Common::Core
             return AsUInt32( );
         }
 
+        template<>
+        unsigned long As<unsigned long>( ) const
+        {
+            return AsUInt32( );
+        }
+
+        template<>
+        std::optional<UInt32> As<std::optional<UInt32>>( ) const
+        {
+            auto type = Type( );
+            if ( type != VariantType::Empty && type != VariantType::Null )
+            {
+                return AsUInt32( );
+            }
+            return {};
+        }
+
+        template<>
+        std::optional<unsigned long> As<std::optional<unsigned long>>( ) const
+        {
+            auto type = Type( );
+            if ( type != VariantType::Empty && type != VariantType::Null )
+            {
+                return AsUInt32( );
+            }
+            return {};
+        }
+
+
         Int64 AsInt64( ) const
         {
             Int64 result = 0;
@@ -2739,6 +2875,18 @@ namespace Harlinn::Common::Core
             return AsInt64( );
         }
 
+        template<>
+        std::optional<Int64> As<std::optional<Int64>>( ) const
+        {
+            auto type = Type( );
+            if ( type != VariantType::Empty && type != VariantType::Null )
+            {
+                return AsInt64( );
+            }
+            return {};
+        }
+
+
         UInt64 AsUInt64( ) const
         {
             UInt64 result = 0;
@@ -2758,6 +2906,17 @@ namespace Harlinn::Common::Core
         UInt64 As<UInt64>( ) const
         {
             return AsUInt64( );
+        }
+
+        template<>
+        std::optional<UInt64> As<std::optional<UInt64>>( ) const
+        {
+            auto type = Type( );
+            if ( type != VariantType::Empty && type != VariantType::Null )
+            {
+                return AsUInt64( );
+            }
+            return {};
         }
 
         Single AsSingle( ) const
@@ -2781,6 +2940,17 @@ namespace Harlinn::Common::Core
             return AsSingle( );
         }
 
+        template<>
+        std::optional<Single> As<std::optional<Single>>( ) const
+        {
+            auto type = Type( );
+            if ( type != VariantType::Empty && type != VariantType::Null )
+            {
+                return AsSingle( );
+            }
+            return {};
+        }
+
         Double AsDouble( ) const
         {
             Double result = 0;
@@ -2800,6 +2970,17 @@ namespace Harlinn::Common::Core
         Double As<Double>( ) const
         {
             return AsDouble( );
+        }
+
+        template<>
+        std::optional<Double> As<std::optional<Double>>( ) const
+        {
+            auto type = Type( );
+            if ( type != VariantType::Empty && type != VariantType::Null )
+            {
+                return AsDouble( );
+            }
+            return {};
         }
 
 
@@ -2837,6 +3018,17 @@ namespace Harlinn::Common::Core
             return AsWideString( );
         }
 
+        template<>
+        std::optional<WideString> As<std::optional<WideString>>( ) const
+        {
+            auto type = Type( );
+            if ( type != VariantType::Empty && type != VariantType::Null )
+            {
+                return AsWideString( );
+            }
+            return {};
+        }
+
         std::wstring AsStdWideString( ) const
         {
             if ( Type( ) == VariantType::BStr )
@@ -2872,6 +3064,17 @@ namespace Harlinn::Common::Core
             return AsStdWideString( );
         }
 
+        template<>
+        std::optional<std::wstring> As<std::optional<std::wstring>>( ) const
+        {
+            auto type = Type( );
+            if ( type != VariantType::Empty && type != VariantType::Null )
+            {
+                return AsStdWideString( );
+            }
+            return {};
+        }
+
 
         AnsiString AsAnsiString( ) const
         {
@@ -2882,6 +3085,17 @@ namespace Harlinn::Common::Core
         AnsiString As<AnsiString>( ) const
         {
             return AsAnsiString( );
+        }
+
+        template<>
+        std::optional<AnsiString> As<std::optional<AnsiString>>( ) const
+        {
+            auto type = Type( );
+            if ( type != VariantType::Empty && type != VariantType::Null )
+            {
+                return AsAnsiString( );
+            }
+            return {};
         }
 
         std::string AsStdString( ) const
@@ -2895,6 +3109,17 @@ namespace Harlinn::Common::Core
         std::string As<std::string>( ) const
         {
             return AsStdString( );
+        }
+
+        template<>
+        std::optional<std::string> As<std::optional<std::string>>( ) const
+        {
+            auto type = Type( );
+            if ( type != VariantType::Empty && type != VariantType::Null )
+            {
+                return AsStdString( );
+            }
+            return {};
         }
 
         SysString AsSysString( ) const
@@ -2932,25 +3157,53 @@ namespace Harlinn::Common::Core
             return AsSysString( );
         }
 
+        template<>
+        std::optional<SysString> As<std::optional<SysString>>( ) const
+        {
+            auto type = Type( );
+            if ( type != VariantType::Empty && type != VariantType::Null )
+            {
+                return AsSysString( );
+            }
+            return {};
+        }
+
 
         DateTime AsDateTime( LCID localeId = InvariantLocaleId ) const
         {
-            if ( Type( ) == VariantType::DateTime )
+            auto type = Type( );
+            if ( type == VariantType::DateTime )
             {
                 return DateTime::FromOADate( Base::date );
             }
-            else
+            else if ( type == VariantType::BStr )
             {
-                VariantT result;
-                auto hr = VariantChangeTypeEx( (VARIANT*)&result, (const VARIANT*)this, localeId, 0, (VARTYPE)VariantType::DateTime );
-                CheckHRESULT( hr );
-                return DateTime::FromOADate( result.date );
+                DateTime dateTime;
+                if ( DateTime::TryParse( static_cast<const wchar_t*>(Base::bstrVal), dateTime ) )
+                {
+                    return dateTime;
+                }
             }
+            VariantT result;
+            auto hr = VariantChangeTypeEx( (VARIANT*)&result, (const VARIANT*)this, localeId, 0, (VARTYPE)VariantType::DateTime );
+            CheckHRESULT( hr );
+            return DateTime::FromOADate( result.date );
         }
         template<>
         DateTime As<DateTime>( ) const
         {
             return AsDateTime( );
+        }
+
+        template<>
+        std::optional<DateTime> As<std::optional<DateTime>>( ) const
+        {
+            auto type = Type( );
+            if ( type != VariantType::Empty && type != VariantType::Null )
+            {
+                return AsDateTime( );
+            }
+            return {};
         }
 
 
@@ -2965,18 +3218,34 @@ namespace Harlinn::Common::Core
             {
                 return TimeSpan::FromDays( Base::fltVal );
             }
-            else
+            else if ( type == VariantType::BStr )
             {
-                VariantT result;
-                auto hr = VariantChangeTypeEx( (VARIANT*)&result, (const VARIANT*)this, localeId, 0, (VARTYPE)VariantType::Real8 );
-                CheckHRESULT( hr );
-                return TimeSpan::FromDays( result.dblVal );
+                TimeSpan timeSpan;
+                if ( TimeSpan::TryParse( Base::bstrVal, timeSpan ) )
+                {
+                    return timeSpan;
+                }
             }
+            VariantT result;
+            auto hr = VariantChangeTypeEx( (VARIANT*)&result, (const VARIANT*)this, localeId, 0, (VARTYPE)VariantType::Real8 );
+            CheckHRESULT( hr );
+            return TimeSpan::FromDays( result.dblVal );
         }
         template<>
         TimeSpan As<TimeSpan>( ) const
         {
             return AsTimeSpan( );
+        }
+
+        template<>
+        std::optional<TimeSpan> As<std::optional<TimeSpan>>( ) const
+        {
+            auto type = Type( );
+            if ( type != VariantType::Empty && type != VariantType::Null )
+            {
+                return AsTimeSpan( );
+            }
+            return {};
         }
 
         Guid AsGuid( ) const
@@ -2987,6 +3256,17 @@ namespace Harlinn::Common::Core
         Guid As<Guid>( ) const
         {
             return AsGuid( );
+        }
+
+        template<>
+        std::optional<Guid> As<std::optional<Guid>>( ) const
+        {
+            auto type = Type( );
+            if ( type != VariantType::Empty && type != VariantType::Null )
+            {
+                return AsGuid( );
+            }
+            return {};
         }
 
         Currency AsCurrency( ) const
@@ -3099,6 +3379,17 @@ namespace Harlinn::Common::Core
         Currency As<Currency>( ) const
         {
             return AsCurrency( );
+        }
+
+        template<>
+        std::optional<Currency> As<std::optional<Currency>>( ) const
+        {
+            auto type = Type( );
+            if ( type != VariantType::Empty && type != VariantType::Null )
+            {
+                return AsCurrency( );
+            }
+            return {};
         }
 
 

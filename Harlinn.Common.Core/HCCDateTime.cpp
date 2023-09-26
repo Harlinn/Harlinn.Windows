@@ -962,25 +962,57 @@ namespace Harlinn::Common::Core
         return true;
     }
 
-    bool DateTime::TryParse( const wchar_t* text, DateTime& result )
+    bool DateTime::TryParse( const std::locale& locale, const wchar_t* text, size_t textLength, const wchar_t* format, DateTime& result )
     {
-        DATE date = 0.0;
-        auto hr = VarDateFromStr( text, GetSystemDefaultLCID( ), LOCALE_NOUSEROVERRIDE, &date );
-        if ( hr == S_OK )
+        const auto* ptr = text;
+        while ( Internal::IsSpace( *ptr ) && textLength )
         {
-            result = FromOADate( date );
-            return true;
+            ptr++;
+            textLength--;
         }
-        else
+        if ( textLength )
         {
-            return false;
+            boost::iostreams::stream<boost::iostreams::basic_array_source<wchar_t>> stream( text, textLength );
+            stream.imbue( locale );
+
+            std::chrono::system_clock::time_point timePoint;
+            stream >> std::chrono::parse( format, timePoint );
+            if ( stream.good( ) )
+            {
+                result = FromTimePoint( timePoint );
+                return true;
+            }
         }
+        return false;
     }
-    bool DateTime::TryParse( const char* text, DateTime& result )
+    bool DateTime::TryParse( const std::locale& locale, const char* text, size_t textLength, const char* format, DateTime& result )
     {
-        auto s = ToWideString( text );
-        return TryParse( s.c_str( ), result );
+        const auto* ptr = text;
+        while ( Internal::IsSpace( *ptr ) && textLength )
+        {
+            ptr++;
+            textLength--;
+        }
+        if ( textLength )
+        {
+            boost::iostreams::stream<boost::iostreams::basic_array_source<char>> stream( text, textLength );
+            stream.imbue( locale );
+
+            std::chrono::system_clock::time_point timePoint;
+            stream >> std::chrono::parse( format, timePoint );
+            if ( stream.good( ) )
+            {
+                result = FromTimePoint( timePoint );
+                return true;
+            }
+        }
+        return false;
     }
+
+
+    
+
+
 
     DateTime DateTime::Parse( const wchar_t* text )
     {
@@ -1008,14 +1040,6 @@ namespace Harlinn::Common::Core
         }
     }
 
-    bool DateTime::TryParse( const WideString& text, DateTime& result )
-    {
-        return TryParse( text.c_str( ), result );
-    }
-    bool DateTime::TryParse( const AnsiString& text, DateTime& result )
-    {
-        return TryParse( text.c_str( ), result );
-    }
     DateTime DateTime::Parse( const WideString& text )
     {
         return Parse( text.c_str( ) );

@@ -151,7 +151,9 @@
 
 #include <netioapi.h>
 #include <netiodef.h>
-
+#ifndef __WINCRYPT_H__
+#include <wincrypt.h>
+#endif
 
 #if (NTDDI_VERSION >= NTDDI_WINTHRESHOLD)
 #pragma push_macro("NTDDI_VERSION")
@@ -270,6 +272,8 @@
 
 #include <boost/program_options.hpp>
 
+#include <boost/iostreams/device/array.hpp>
+#include <boost/iostreams/stream.hpp>
 
 #include <HCCWinError.h>
 

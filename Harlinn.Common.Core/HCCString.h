@@ -5190,6 +5190,7 @@ namespace Harlinn::Common::Core
     HCC_EXPORT WideString ToWideString( const Guid& value );
     HCC_EXPORT WideString ToWideString( const Currency& value );
     HCC_EXPORT WideString ToWideString( const Variant& value );
+    
 
     template<AnsiStringLike StringT>
     inline void ToAnsiString( const wchar_t* source, size_t length, unsigned codePage, unsigned flags, StringT& dest )
