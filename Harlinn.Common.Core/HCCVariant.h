@@ -2922,7 +2922,7 @@ namespace Harlinn::Common::Core
         Single AsSingle( ) const
         {
             Single result = 0;
-
+            auto type = Type( );
             if ( type == VariantType::Real4 )
             {
                 return Base::fltVal;
