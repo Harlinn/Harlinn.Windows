@@ -2922,6 +2922,23 @@ namespace Harlinn::Common::Core
         Single AsSingle( ) const
         {
             Single result = 0;
+
+            if ( type == VariantType::Real4 )
+            {
+                return Base::fltVal;
+            }
+            else if ( type == VariantType::BStr )
+            {
+                if ( TryParseInvariant( static_cast< const wchar_t* >( Base::bstrVal ), result ) )
+                {
+                    return result;
+                }
+                if ( TryParse( static_cast< const wchar_t* >( Base::bstrVal ), result ) )
+                {
+                    return result;
+                }
+            }
+
             if ( ConvertTo( result ) )
             {
                 return result;
@@ -2954,6 +2971,24 @@ namespace Harlinn::Common::Core
         Double AsDouble( ) const
         {
             Double result = 0;
+            auto type = Type( );
+            if ( type == VariantType::Real8 )
+            {
+                return Base::dblVal;
+            }
+            else if ( type == VariantType::BStr )
+            {
+                if ( TryParseInvariant( static_cast< const wchar_t* >( Base::bstrVal ), result ) )
+                {
+                    return result;
+                }
+                if ( TryParse( static_cast< const wchar_t* >( Base::bstrVal ), result ) )
+                {
+                    return result;
+                }
+            }
+            
+
             if ( ConvertTo( result ) )
             {
                 return result;
