@@ -554,8 +554,8 @@ namespace Harlinn::Common::Core
     private:
         long long ticks_;
     public:
-        static constexpr wchar_t DEFAULT_WIDE_FORMAT[ ] = L"%YT%TZ";
-        static constexpr char DEFAULT_FORMAT[ ] = "%YT%TZ";
+        static constexpr wchar_t DEFAULT_WIDE_FORMAT[ ] = L"%FT%T%Z";
+        static constexpr char DEFAULT_FORMAT[ ] = "%FT%T%Z";
 
         HCC_EXPORT static long long ToLocalTicks( long long ticksInUtc );
         HCC_EXPORT static long long ToUniversalTicks( long long ticksInLocalTime );

@@ -977,7 +977,7 @@ namespace Harlinn::Common::Core
 
             std::chrono::system_clock::time_point timePoint;
             stream >> std::chrono::parse( format, timePoint );
-            if ( stream.good( ) )
+            if ( !stream.fail( ) )
             {
                 result = FromTimePoint( timePoint );
                 return true;
@@ -1000,7 +1000,7 @@ namespace Harlinn::Common::Core
 
             std::chrono::system_clock::time_point timePoint;
             stream >> std::chrono::parse( format, timePoint );
-            if ( stream.good( ) )
+            if ( !stream.fail( ) )
             {
                 result = FromTimePoint( timePoint );
                 return true;
