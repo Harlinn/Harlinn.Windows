@@ -2809,7 +2809,7 @@ namespace Harlinn::Common::Core::Ese
             RequireSuccess( rc );
         }
 
-        void DetachAll(DetachDatabaseFlags flags) const
+        void DetachAll(DetachDatabaseFlags flags = DetachDatabaseFlags::None ) const
         {
             auto rc = static_cast<Result>( JetDetachDatabase2W( sessionId_, nullptr, ( int )flags ));
             RequireSuccess( rc );
