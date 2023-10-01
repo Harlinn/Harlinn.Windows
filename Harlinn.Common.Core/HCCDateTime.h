@@ -1072,6 +1072,114 @@ namespace Harlinn::Common::Core
         return std::bit_cast<DateTime>( ByteSwap( std::bit_cast<UInt64>( value ) ) );
     }
 
+
+    /// <summary>
+    /// A closed/open interval that works well with the boost Interval Container Library
+    /// </summary>
+    class Interval : public boost::icl::right_open_interval<DateTime>
+    {
+    public:
+        using Base = boost::icl::right_open_interval<DateTime>;
+        using value_type = DateTime;
+
+        Interval( )
+            : Base( )
+        { }
+
+        explicit Interval( const DateTime& dateTime )
+            : Base( dateTime, DateTime( dateTime.Ticks() + 1 ) )
+        {
+        }
+
+        Interval( const DateTime& lowerBound, const DateTime& upperBound )
+            : Base( lowerBound, upperBound )
+        {
+        }
+
+        TimeSpan Duration( ) const noexcept
+        {
+            return upper( ).Ticks( ) >= lower( ).Ticks( ) ? TimeSpan( upper( ).Ticks( ) - lower( ).Ticks( ) ) : TimeSpan( );
+        }
+
+        bool Intersects( const Interval& other ) const noexcept
+        {
+            return ( lower() <= other.upper() && upper( ) >= other.lower( ) ) ||
+                ( upper( ) >= other.lower( ) && lower( ) <= other.upper( ) );
+        }
+
+        bool Intersects( const DateTime& dateTime ) const noexcept
+        {
+            return lower( ) <= dateTime && upper( ) > dateTime;
+        }
+
+        bool Contains( const DateTime& dateTime ) const noexcept
+        {
+            return lower( ) <= dateTime && upper( ) > dateTime;
+        }
+
+        bool contains( const DateTime& dateTime ) const noexcept
+        {
+            return lower( ) <= dateTime && upper( ) > dateTime;
+        }
+
+        bool Contains( const Interval& other ) const noexcept
+        {
+            return lower( ) <= other.lower() && upper( ) >= other.upper();
+        }
+
+        bool contains( const Interval& other ) const noexcept
+        {
+            return lower( ) <= other.lower( ) && upper( ) >= other.upper( );
+        }
+
+        Interval Combine( const Interval& other ) const noexcept
+        {
+            if ( Intersects( other ) )
+            {
+                auto start = lower( ) <= other.lower( ) ? lower( ) : other.lower( );
+                auto end = upper( ) >= other.upper( ) ? upper( ) : other.upper( );
+                return { start, end };
+            }
+            return {};
+        }
+        
+    };
+}
+
+namespace boost::icl
+{
+    template<>
+    struct interval_traits< Harlinn::Common::Core::Interval >
+    {
+        using interval_type = Harlinn::Common::Core::Interval;
+        using domain_type = Harlinn::Common::Core::DateTime;
+        using domain_compare = std::less<domain_type>;
+        static interval_type construct( const domain_type& lo, const domain_type& up )
+        {
+            return interval_type( lo, up );
+        }
+        
+        static domain_type lower( const interval_type& inter_val ) 
+        { 
+            return inter_val.lower( ); 
+        };
+        static domain_type upper( const interval_type& inter_val ) 
+        { 
+            return inter_val.upper( ); 
+        };
+    };
+
+    template<>
+    struct interval_bound_type<Harlinn::Common::Core::Interval>
+    {
+        using type = interval_bound_type;
+        BOOST_STATIC_CONSTANT( bound_type, value = interval_bounds::static_right_open );
+    };
+}
+
+namespace Harlinn::Common::Core
+{
+
     class Stopwatch
     {
         long long elapsedTicks_;

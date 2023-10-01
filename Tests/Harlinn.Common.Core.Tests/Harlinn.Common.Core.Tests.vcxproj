@@ -195,6 +195,7 @@
     <ClCompile Include="DirectoryUtilsTests.cpp" />
     <ClCompile Include="EseOptionsTests.cpp" />
     <ClCompile Include="FlagsTests.cpp" />
+    <ClCompile Include="IntervalTests.cpp" />
     <ClCompile Include="ListTests.cpp" />
     <ClCompile Include="LoggerLevelTests.cpp" />
     <ClCompile Include="SerializationRWTests.cpp" />

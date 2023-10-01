@@ -2809,6 +2809,12 @@ namespace Harlinn::Common::Core::Ese
             RequireSuccess( rc );
         }
 
+        bool DetachDatabaseNX( const WideString& filename, DetachDatabaseFlags flags ) const
+        {
+            auto rc = static_cast< Result >( JetDetachDatabase2W( sessionId_, filename.c_str( ), ( int )flags ) );
+            return rc == Result::Success;
+        }
+
         void DetachAll(DetachDatabaseFlags flags = DetachDatabaseFlags::None ) const
         {
             auto rc = static_cast<Result>( JetDetachDatabase2W( sessionId_, nullptr, ( int )flags ));
