@@ -756,12 +756,37 @@ namespace Harlinn::Common::Core::ZeroMq
     };
 
 
+    class ZMQNotificationClientEndPoint : public std::enable_shared_from_this<ZMQNotificationClientEndPoint>
+    {
+        AnsiString endPoint_;
+    public:
+        ZMQNotificationClientEndPoint(const AnsiString& endPoint )
+            : endPoint_( endPoint )
+        { }
+        virtual ~ZMQNotificationClientEndPoint( ) = default;
+
+        const AnsiString& EndPoint( ) const noexcept
+        {
+            return endPoint_;
+        }
+    };
+
+
 
     class ZMQNotificationServer : public ZMQServer
     {
     public:
         using Base = ZMQServer;
         static constexpr size_t MaxNotificationQueueSize = 1024;
+    protected:
+        virtual void DoBeforeSendNotification( Socket& socket, const std::shared_ptr<ZMQNotificationClientEndPoint>& clientEndpoint, const std::shared_ptr<ZMQNotification>& notification )
+        {
+
+        }
+        virtual void DoAfterSendNotification( Socket& socket, const std::shared_ptr<ZMQNotificationClientEndPoint>& clientEndpoint, const std::shared_ptr<ZMQNotification>& notification )
+        {
+
+        }
     private:
         class NotificationEntry : public std::enable_shared_from_this<NotificationEntry>
         {
@@ -784,12 +809,17 @@ namespace Harlinn::Common::Core::ZeroMq
             WideString threadName_;
             std::atomic<bool> started_;
             std::atomic<bool> stopped_;
-            AnsiString clientEndpoint_;
+            std::shared_ptr<ZMQNotificationClientEndPoint> clientEndpoint_;
             std::unique_ptr<Socket> socket_;
             Thread thread_;
         public:
-            NotificationEntry( ZMQNotificationServer& server, const AnsiString& clientEndpoint )
+            NotificationEntry( ZMQNotificationServer& server, const std::shared_ptr<ZMQNotificationClientEndPoint>& clientEndpoint )
                 : server_( server ), clientEndpoint_( clientEndpoint )
+            {
+            }
+
+            NotificationEntry( ZMQNotificationServer& server, const AnsiString& clientEndpoint )
+                : server_( server ), clientEndpoint_( std::make_shared<ZMQNotificationClientEndPoint>( clientEndpoint ) )
             { }
 
 
@@ -873,6 +903,15 @@ namespace Harlinn::Common::Core::ZeroMq
                 }
             }
 
+            void DoBeforeSendNotification( const std::shared_ptr<ZMQNotification>& notification )
+            {
+                server_.DoBeforeSendNotification( *socket_.get( ), clientEndpoint_, notification );
+            }
+            void DoAfterSendNotification( const std::shared_ptr<ZMQNotification>& notification )
+            {
+                server_.DoAfterSendNotification( *socket_.get( ), clientEndpoint_, notification );
+            }
+
             void ProcessSendMessage( const std::shared_ptr<ZMQNotification>& notification )
             {
                 if ( notification )
@@ -880,11 +919,13 @@ namespace Harlinn::Common::Core::ZeroMq
                     if ( socket_ == nullptr )
                     {
                         socket_ = std::make_unique<Socket>( server_.Context(), SocketType::req );
-                        socket_->Connect( clientEndpoint_ );
+                        socket_->Connect( clientEndpoint_->EndPoint() );
                     }
+                    DoBeforeSendNotification( notification );
                     socket_->Send( notification->data(), notification->size() );
                     Message replyMessage;
                     socket_->Receive( replyMessage );
+                    DoAfterSendNotification( notification );
                 }
             }
 
@@ -898,7 +939,7 @@ namespace Harlinn::Common::Core::ZeroMq
                 { }
                 if ( socket_ != nullptr )
                 {
-                    socket_->Disconnect( clientEndpoint_ );
+                    socket_->Disconnect( clientEndpoint_->EndPoint() );
                     socket_->Close( );
                     socket_.reset( );
                 }
@@ -964,17 +1005,22 @@ namespace Harlinn::Common::Core::ZeroMq
         }
     public:
 
-        bool AddClient( const AnsiString& clientEndpoint )
+        bool AddClient( const std::shared_ptr<ZMQNotificationClientEndPoint>& clientEndpoint )
         {
             std::lock_guard guard( criticalSection_ );
-            if ( entries_.contains( clientEndpoint ) == false )
+            if ( entries_.contains( clientEndpoint->EndPoint() ) == false )
             {
                 auto newEntry = std::make_shared<NotificationEntry>( *this, clientEndpoint );
-                entries_.emplace( clientEndpoint, newEntry );
+                entries_.emplace( clientEndpoint->EndPoint( ), newEntry );
                 newEntry->Start( );
                 return true;
             }
             return false;
+        }
+
+        bool AddClient( const AnsiString& clientEndpoint )
+        {
+            return AddClient( std::make_shared<ZMQNotificationClientEndPoint>( clientEndpoint ) );
         }
 
         bool RemoveClient( const AnsiString& clientEndpoint )
@@ -988,6 +1034,10 @@ namespace Harlinn::Common::Core::ZeroMq
                 entry->Stop( );
             }
             return false;
+        }
+        bool RemoveClient( const std::shared_ptr<ZMQNotificationClientEndPoint>& clientEndpoint )
+        {
+            return RemoveClient( clientEndpoint->EndPoint( ) );
         }
 
 
