@@ -1132,7 +1132,7 @@ namespace Harlinn::Common::Core
             return lower( ) <= other.lower( ) && upper( ) >= other.upper( );
         }
 
-        Interval Combine( const Interval& other ) const noexcept
+        Interval Union( const Interval& other ) const noexcept
         {
             if ( Intersects( other ) )
             {
@@ -1141,6 +1141,13 @@ namespace Harlinn::Common::Core
                 return { start, end };
             }
             return {};
+        }
+
+        Interval Combine( const Interval& other ) const noexcept
+        {
+            auto start = lower( ) <= other.lower( ) ? lower( ) : other.lower( );
+            auto end = upper( ) >= other.upper( ) ? upper( ) : other.upper( );
+            return { start, end };
         }
         
     };
