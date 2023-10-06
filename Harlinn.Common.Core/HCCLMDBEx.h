@@ -49,7 +49,7 @@ namespace Harlinn::Common::Core::LMDBEx
               valueFormat_( reinterpret_cast<const Byte*>( &valueFormat ), reinterpret_cast<const Byte*>( &valueFormat ) + sizeof( VFT ) )
         { }
 
-
+        virtual ~TableInfoBase( ) = default;
 
         bool HasIntegerKey( ) const
         {
@@ -111,7 +111,7 @@ namespace Harlinn::Common::Core::LMDBEx
             : session_( session ), info_( info ), database_( info->Database( ) )
         {
         }
-
+        virtual ~TableBase( ) = default;
         LMDB::Transaction& Transaction( );
     public:
         LMDB::Cursor& Cursor( )
@@ -735,6 +735,7 @@ namespace Harlinn::Common::Core::LMDBEx
         Session* next_ = nullptr;
     public:
         Session( DatabaseBase& database, const Guid& sessionId, LMDB::TransactionFlags transactionFlags = LMDB::TransactionFlags::None );
+        virtual ~Session( ) = default;
     protected:
         LMDB::Environment& Environment( );
 

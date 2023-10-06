@@ -1166,6 +1166,7 @@ namespace Harlinn::Common::Core
             }
         }
 
+        /*
         template<typename T>
             requires std::is_integral_v<T>
         void append( const T* bits, size_t bitCount )
@@ -1180,16 +1181,20 @@ namespace Harlinn::Common::Core
                 const size_t currentFullByteOverflowBitCount = size % BitsPerByte;
                 if ( currentFullByteOverflowBitCount )
                 {
-                    UInt64* destUInt64Ptr = reinterpret_cast<UInt64*>( reinterpret_cast<Byte*>( data( ) ) + currentFullByteCount );
-                    const UInt64* srcUInt64Ptr = reinterpret_cast<const UInt64*>( bits );
                     const size_t bitsFullByteCount = bitCount / BitsPerByte;
                     const size_t bitsFullByteOverflowBitCount = bitCount % BitsPerByte;
                     const size_t srcUInt64Count = bitsFullByteCount / sizeof( UInt64 );
                     const size_t srcUInt64ByteOverflowCount = bitsFullByteCount % sizeof( UInt64 );
+                    
+                    word_type* wordDestPtr = data( ) + (currentFullByteCount/sizeof( word_type ));
+                    UInt64* destUInt64Ptr = reinterpret_cast< UInt64* >( wordDestPtr );
+                    const UInt64* srcUInt64Ptr = reinterpret_cast< const UInt64* >( bits );
                     const UInt64* srcUInt64EndPtr = srcUInt64Ptr + srcUInt64Count;
-
-                    const UInt64 mask = CreateBitMask64( static_cast<UInt32>( currentFullByteOverflowBitCount ) );
-                    UInt64 overflowValue = ( *destUInt64Ptr ) & mask;
+                    
+                    
+                    const UInt64 mask = CreateBitMask64( static_cast< UInt32 >( currentFullByteOverflowBitCount ) );
+                    word_type overflowWordValue = *wordDestPtr;
+                    UInt64 overflowValue = static_cast<UInt64>( overflowWordValue ) & mask;
                     const UInt64 overflowValueUInt64RightShift = 64ULL - currentFullByteOverflowBitCount;
                     while ( srcUInt64Ptr < srcUInt64EndPtr )
                     {
@@ -1251,6 +1256,81 @@ namespace Harlinn::Common::Core
                 }
             }
         }
+        */
+
+        template<typename T>
+            requires std::is_integral_v<T>
+        void append( const T* bits, size_t bitCount )
+        {
+            assert( ( bits || bitCount == 0 ) );
+            if ( bitCount )
+            {
+                const size_t size = size_;
+                const size_t newSize = size + bitCount;
+                resize( newSize );
+
+                const size_t destinationFullByteCount = size / BitsPerByte;
+                const size_t destinationOverflowBitCount = size % BitsPerByte;
+
+                const size_t sourceFullByteCount = bitCount / BitsPerByte;
+                const size_t sourceFullByteOverflowBitCount = bitCount % BitsPerByte;
+
+                if ( destinationOverflowBitCount )
+                {
+                    const Byte destinationMask = static_cast<Byte>(CreateMask( destinationOverflowBitCount ));
+
+                    const Byte* sourcePtr = reinterpret_cast< const Byte* >( bits );
+                    Byte* destPtr = reinterpret_cast< Byte* >( data() ) + destinationFullByteCount;
+                    Byte overflowByteValue = (*destPtr) & destinationMask;
+                    const size_t overflowValueByteRightShift = 8ULL - destinationOverflowBitCount;
+
+                    const Byte* sourceEndPtr = sourcePtr + sourceFullByteCount;
+                    while ( sourcePtr < sourceEndPtr )
+                    {
+                        const Byte value = *sourcePtr;
+                        *destPtr = overflowByteValue | ( value << destinationOverflowBitCount );
+                        overflowByteValue = value >> overflowValueByteRightShift;
+                        destPtr++;
+                        sourcePtr++;
+                    }
+                    
+                    if ( sourceFullByteOverflowBitCount )
+                    {
+                        const Byte sourceMask = static_cast< Byte >( CreateBitMask32( static_cast< UInt32 >( sourceFullByteOverflowBitCount ) ) );
+                        const Byte value = ( *sourcePtr ) & sourceMask;
+                        if ( ( sourceFullByteOverflowBitCount + destinationOverflowBitCount ) <= BitsPerByte )
+                        {
+                            *destPtr = overflowByteValue | ( value << destinationOverflowBitCount );
+                        }
+                        else
+                        {
+                            *destPtr = overflowByteValue | ( value << destinationOverflowBitCount );
+                            destPtr++;
+                            *destPtr = value >> overflowValueByteRightShift;
+                        }
+                    }
+                    else
+                    {
+                        *destPtr = overflowByteValue;
+                    }
+
+
+                }
+                else
+                {
+                    // The trivial case 
+                    Byte* destPtr = reinterpret_cast< Byte* >( data( ) ) + destinationFullByteCount;
+                    
+                    memcpy( destPtr, bits, sourceFullByteOverflowBitCount ? sourceFullByteCount + 1 : sourceFullByteCount );
+                    if ( sourceFullByteOverflowBitCount )
+                    {
+                        const Byte mask = static_cast< Byte >( CreateMask( static_cast< UInt32 >( sourceFullByteOverflowBitCount ) ) );
+                        destPtr[ sourceFullByteCount ] &= mask;
+                    }
+                }
+            }
+        }
+
 
         template<typename VectorU>
         void append( const BitVector<VectorU>& other )

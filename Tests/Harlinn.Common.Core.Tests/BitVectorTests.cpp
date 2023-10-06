@@ -214,22 +214,25 @@ namespace
         BitVectorFlipAnyTest( bitVector1 );
     }
 
-    template<size_t N, typename WordT>
+    template<size_t NumBits, typename WordT>
     void BitVectorFlipTest( )
     {
         using VectorType = std::vector<WordT>;
         using BitVectorType = BitVector<VectorType>;
         using WordType = WordT;
-        constexpr Byte byteValue = 0b01010101;
-        constexpr Byte flippedByteValue = ~byteValue;
-        constexpr size_t fullBytes = N / CHAR_BIT;
-        constexpr size_t remainingBits = N % CHAR_BIT;
-        std::vector<Byte> bits;
-        bits.resize( remainingBits ? fullBytes + 1 : fullBytes, byteValue );
-        std::vector<Byte> flippedBits;
-        flippedBits.resize( remainingBits ? fullBytes + 1 : fullBytes, flippedByteValue );
-        BitVectorType bitVector( bits.data(), N );
-        BitVectorType flippedBitVector( flippedBits.data( ), N );
+        constexpr size_t bitsPerWord = sizeof( WordType ) * CHAR_BIT;
+        constexpr size_t numberOfBits = NumBits;
+        constexpr UInt64 bitsValue = 0b0101010101010101010101010101010101010101010101010101010101010101;
+        constexpr UInt64 flippedBitsValue = ~bitsValue;
+        constexpr size_t fullWords = numberOfBits / ( bitsPerWord );
+        constexpr size_t remainingBits = numberOfBits % bitsPerWord;
+        constexpr size_t vectorSize = remainingBits ? fullWords + 1 : fullWords;
+        std::vector<WordT> bits;
+        bits.resize( vectorSize, static_cast< WordType >( bitsValue ) );
+        std::vector<WordT> flippedBits;
+        flippedBits.resize( vectorSize, static_cast< WordType >( flippedBitsValue ) );
+        BitVectorType bitVector( bits.data(), numberOfBits );
+        BitVectorType flippedBitVector( flippedBits.data( ), numberOfBits );
         bitVector.flip( );
         bool equal = bitVector == flippedBitVector;
         BOOST_CHECK( equal );
@@ -265,32 +268,68 @@ namespace
     }
 
     template<typename WordT>
+    constexpr WordT MakeWordOf( Byte value )
+    {
+        if constexpr ( sizeof( WordT ) == 1 )
+        {
+            return static_cast< WordT >( value );
+        }
+        else if constexpr ( sizeof( WordT ) == 2 )
+        {
+            return (static_cast< WordT >( value ) << 8 ) + 
+                static_cast< WordT >( value );
+        }
+        else if constexpr ( sizeof( WordT ) == 4 )
+        {
+            return ( static_cast< WordT >( value ) << 24 ) +
+                ( static_cast< WordT >( value ) << 16 ) +
+                ( static_cast< WordT >( value ) << 8 ) +
+                static_cast< WordT >( value );
+        }
+        else 
+        {
+            return ( static_cast< WordT >( value ) << 56 ) +
+                ( static_cast< WordT >( value ) << 48 ) +
+                ( static_cast< WordT >( value ) << 40 ) +
+                ( static_cast< WordT >( value ) << 32 ) +
+                ( static_cast< WordT >( value ) << 24 ) +
+                ( static_cast< WordT >( value ) << 16 ) +
+                ( static_cast< WordT >( value ) << 8 ) +
+                static_cast< WordT >( value );
+        }
+    }
+
+
+    template<typename WordT>
     void BitVectorAndTest( )
     {
         using VectorType = std::vector<WordT>;
         using BitVectorType = BitVector<VectorType>;
         using WordType = WordT;
 
-        constexpr Byte firstByteValue =  0b10100101;
-        constexpr Byte secondByteValue = 0b11000011;
-        constexpr Byte expectedByteValue = firstByteValue & secondByteValue;
+        constexpr size_t bitsPerWord = sizeof( WordType ) * CHAR_BIT;
+        constexpr WordType firstWordValue = MakeWordOf<WordType>( 0b10100101 );
+        constexpr WordType secondWordValue = MakeWordOf<WordType>( 0b11000011 );
+        constexpr WordType expectedWordValue = firstWordValue & secondWordValue;
         
 
         constexpr std::array<size_t, 20> BitVectorSizes = {1,2,7,8,9,15,16,17,31,32,33,63,64,65,127,128,129, 1023, 1024, 1025};
         for ( auto firstSize : BitVectorSizes )
         {
-            std::vector<Byte> firstBits;
-            size_t firstFullBytes = firstSize / CHAR_BIT;
-            size_t firstRemainingBits = firstSize % CHAR_BIT;
-            firstBits.resize( firstRemainingBits ? firstFullBytes + 1 : firstFullBytes, firstByteValue );
+            std::vector<WordType> firstBits;
+            size_t firstFullWords = firstSize / bitsPerWord;
+            size_t firstRemainingBits = firstSize % bitsPerWord;
+            size_t firstVectorSize = firstRemainingBits ? firstFullWords + 1 : firstFullWords;
+            firstBits.resize( firstVectorSize, firstWordValue );
             BitVectorType firstBitVector( firstBits.data( ), firstSize );
 
             for ( auto secondSize : BitVectorSizes )
             {
-                std::vector<Byte> secondBits;
-                size_t secondFullBytes = secondSize / CHAR_BIT;
-                size_t secondRemainingBits = secondSize % CHAR_BIT;
-                secondBits.resize( secondRemainingBits ? secondFullBytes + 1 : secondFullBytes, secondByteValue );
+                std::vector<WordType> secondBits;
+                size_t secondFullWords = secondSize / bitsPerWord;
+                size_t secondRemainingBits = secondSize % bitsPerWord;
+                size_t secondVectorSize = secondRemainingBits ? secondFullWords + 1 : secondFullWords;
+                secondBits.resize( secondVectorSize, secondWordValue );
                 BitVectorType secondBitVector( secondBits.data( ), secondSize );
 
                 size_t expectedSize = std::max( firstSize, secondSize );
@@ -316,26 +355,30 @@ namespace
         using BitVectorType = BitVector<VectorType>;
         using WordType = WordT;
 
-        constexpr Byte firstByteValue = 0b10100101;
-        constexpr Byte secondByteValue = 0b11000011;
-        constexpr Byte expectedByteValue = firstByteValue & secondByteValue;
+        constexpr size_t bitsPerWord = sizeof( WordType ) * CHAR_BIT;
+        constexpr WordType firstWordValue = MakeWordOf<WordType>( 0b10100101 );
+        constexpr WordType secondWordValue = MakeWordOf<WordType>( 0b11000011 );
+        constexpr WordType expectedWordValue = firstWordValue & secondWordValue;
 
 
         constexpr std::array<size_t, 20> BitVectorSizes = { 1,2,7,8,9,15,16,17,31,32,33,63,64,65,127,128,129, 1023, 1024, 1025 };
         for ( auto firstSize : BitVectorSizes )
         {
-            std::vector<Byte> firstBits;
-            size_t firstFullBytes = firstSize / CHAR_BIT;
-            size_t firstRemainingBits = firstSize % CHAR_BIT;
-            firstBits.resize( firstRemainingBits ? firstFullBytes + 1 : firstFullBytes, firstByteValue );
+            std::vector<WordType> firstBits;
+            size_t firstFullWords = firstSize / bitsPerWord;
+            size_t firstRemainingBits = firstSize % bitsPerWord;
+            size_t firstVectorSize = firstRemainingBits ? firstFullWords + 1 : firstFullWords;
+            firstBits.resize( firstVectorSize, firstWordValue );
             BitVectorType firstBitVector( firstBits.data( ), firstSize );
 
             for ( auto secondSize : BitVectorSizes )
             {
-                std::vector<Byte> secondBits;
-                size_t secondFullBytes = secondSize / CHAR_BIT;
-                size_t secondRemainingBits = secondSize % CHAR_BIT;
-                secondBits.resize( secondRemainingBits ? secondFullBytes + 1 : secondFullBytes, secondByteValue );
+                std::vector<WordType> secondBits;
+                size_t secondFullWords = secondSize / bitsPerWord;
+                size_t secondRemainingBits = secondSize % bitsPerWord;
+                size_t secondVectorSize = secondRemainingBits ? secondFullWords + 1 : secondFullWords;
+                secondBits.resize( secondVectorSize, secondWordValue );
+
                 BitVectorType secondBitVector( secondBits.data( ), secondSize );
 
                 size_t expectedSize = std::max( firstSize, secondSize );
@@ -363,25 +406,28 @@ namespace
         using BitVectorType = BitVector<VectorType>;
         using WordType = WordT;
 
-        constexpr Byte firstByteValue =  0b10100101;
-        constexpr Byte secondByteValue = 0b11000011;
-        constexpr Byte expectedByteValue = firstByteValue | secondByteValue;
+        constexpr size_t bitsPerWord = sizeof( WordType ) * CHAR_BIT;
+        constexpr WordType firstWordValue = MakeWordOf<WordType>( 0b10100101 );
+        constexpr WordType secondWordValue = MakeWordOf<WordType>( 0b11000011 );
+        constexpr WordType expectedWordValue = firstWordValue | secondWordValue;
 
         constexpr std::array<size_t, 20> BitVectorSizes = { 1,2,7,8,9,15,16,17,31,32,33,63,64,65,127,128,129, 1023, 1024, 1025 };
         for ( auto firstSize : BitVectorSizes )
         {
-            std::vector<Byte> firstBits;
-            size_t firstFullBytes = firstSize / CHAR_BIT;
-            size_t firstRemainingBits = firstSize % CHAR_BIT;
-            firstBits.resize( firstRemainingBits ? firstFullBytes + 1 : firstFullBytes, firstByteValue );
+            std::vector<WordType> firstBits;
+            size_t firstFullWords = firstSize / bitsPerWord;
+            size_t firstRemainingBits = firstSize % bitsPerWord;
+            size_t firstVectorSize = firstRemainingBits ? firstFullWords + 1 : firstFullWords;
+            firstBits.resize( firstVectorSize, firstWordValue );
             BitVectorType firstBitVector( firstBits.data( ), firstSize );
 
             for ( auto secondSize : BitVectorSizes )
             {
-                std::vector<Byte> secondBits;
-                size_t secondFullBytes = secondSize / CHAR_BIT;
-                size_t secondRemainingBits = secondSize % CHAR_BIT;
-                secondBits.resize( secondRemainingBits ? secondFullBytes + 1 : secondFullBytes, secondByteValue );
+                std::vector<WordType> secondBits;
+                size_t secondFullWords = secondSize / bitsPerWord;
+                size_t secondRemainingBits = secondSize % bitsPerWord;
+                size_t secondVectorSize = secondRemainingBits ? secondFullWords + 1 : secondFullWords;
+                secondBits.resize( secondVectorSize, secondWordValue );
                 BitVectorType secondBitVector( secondBits.data( ), secondSize );
 
                 size_t expectedSize = std::max( firstSize, secondSize );
@@ -423,25 +469,28 @@ namespace
         using BitVectorType = BitVector<VectorType>;
         using WordType = WordT;
 
-        constexpr Byte firstByteValue = 0b10100101;
-        constexpr Byte secondByteValue = 0b11000011;
-        constexpr Byte expectedByteValue = firstByteValue | secondByteValue;
+        constexpr size_t bitsPerWord = sizeof( WordType ) * CHAR_BIT;
+        constexpr WordType firstWordValue = MakeWordOf<WordType>( 0b10100101 );
+        constexpr WordType secondWordValue = MakeWordOf<WordType>( 0b11000011 );
+        constexpr WordType expectedWordValue = firstWordValue | secondWordValue;
 
         constexpr std::array<size_t, 20> BitVectorSizes = { 1,2,7,8,9,15,16,17,31,32,33,63,64,65,127,128,129, 1023, 1024, 1025 };
         for ( auto firstSize : BitVectorSizes )
         {
-            std::vector<Byte> firstBits;
-            size_t firstFullBytes = firstSize / CHAR_BIT;
-            size_t firstRemainingBits = firstSize % CHAR_BIT;
-            firstBits.resize( firstRemainingBits ? firstFullBytes + 1 : firstFullBytes, firstByteValue );
+            std::vector<WordType> firstBits;
+            size_t firstFullWords = firstSize / bitsPerWord;
+            size_t firstRemainingBits = firstSize % bitsPerWord;
+            size_t firstVectorSize = firstRemainingBits ? firstFullWords + 1 : firstFullWords;
+            firstBits.resize( firstVectorSize, firstWordValue );
             BitVectorType firstBitVector( firstBits.data( ), firstSize );
 
             for ( auto secondSize : BitVectorSizes )
             {
-                std::vector<Byte> secondBits;
-                size_t secondFullBytes = secondSize / CHAR_BIT;
-                size_t secondRemainingBits = secondSize % CHAR_BIT;
-                secondBits.resize( secondRemainingBits ? secondFullBytes + 1 : secondFullBytes, secondByteValue );
+                std::vector<WordType> secondBits;
+                size_t secondFullWords = secondSize / bitsPerWord;
+                size_t secondRemainingBits = secondSize % bitsPerWord;
+                size_t secondVectorSize = secondRemainingBits ? secondFullWords + 1 : secondFullWords;
+                secondBits.resize( secondVectorSize, secondWordValue );
                 BitVectorType secondBitVector( secondBits.data( ), secondSize );
 
                 size_t expectedSize = std::max( firstSize, secondSize );
@@ -486,25 +535,28 @@ namespace
         using BitVectorType = BitVector<VectorType>;
         using WordType = WordT;
 
-        constexpr Byte firstByteValue = 0b10100101;
-        constexpr Byte secondByteValue = 0b11000011;
-        constexpr Byte expectedByteValue = firstByteValue | secondByteValue;
+        constexpr size_t bitsPerWord = sizeof( WordType ) * CHAR_BIT;
+        constexpr WordType firstWordValue = MakeWordOf<WordType>( 0b10100101 );
+        constexpr WordType secondWordValue = MakeWordOf<WordType>( 0b11000011 );
+        constexpr WordType expectedWordValue = firstWordValue ^ secondWordValue;
 
         constexpr std::array<size_t, 20> BitVectorSizes = { 1,2,7,8,9,15,16,17,31,32,33,63,64,65,127,128,129, 1023, 1024, 1025 };
         for ( auto firstSize : BitVectorSizes )
         {
-            std::vector<Byte> firstBits;
-            size_t firstFullBytes = firstSize / CHAR_BIT;
-            size_t firstRemainingBits = firstSize % CHAR_BIT;
-            firstBits.resize( firstRemainingBits ? firstFullBytes + 1 : firstFullBytes, firstByteValue );
+            std::vector<WordType> firstBits;
+            size_t firstFullWords = firstSize / bitsPerWord;
+            size_t firstRemainingBits = firstSize % bitsPerWord;
+            size_t firstVectorSize = firstRemainingBits ? firstFullWords + 1 : firstFullWords;
+            firstBits.resize( firstVectorSize, firstWordValue );
             BitVectorType firstBitVector( firstBits.data( ), firstSize );
 
             for ( auto secondSize : BitVectorSizes )
             {
-                std::vector<Byte> secondBits;
-                size_t secondFullBytes = secondSize / CHAR_BIT;
-                size_t secondRemainingBits = secondSize % CHAR_BIT;
-                secondBits.resize( secondRemainingBits ? secondFullBytes + 1 : secondFullBytes, secondByteValue );
+                std::vector<WordType> secondBits;
+                size_t secondFullWords = secondSize / bitsPerWord;
+                size_t secondRemainingBits = secondSize % bitsPerWord;
+                size_t secondVectorSize = secondRemainingBits ? secondFullWords + 1 : secondFullWords;
+                secondBits.resize( secondVectorSize, secondWordValue );
                 BitVectorType secondBitVector( secondBits.data( ), secondSize );
 
                 size_t expectedSize = std::max( firstSize, secondSize );
@@ -546,25 +598,28 @@ namespace
         using BitVectorType = BitVector<VectorType>;
         using WordType = WordT;
 
-        constexpr Byte firstByteValue = 0b10100101;
-        constexpr Byte secondByteValue = 0b11000011;
-        constexpr Byte expectedByteValue = firstByteValue | secondByteValue;
+        constexpr size_t bitsPerWord = sizeof( WordType ) * CHAR_BIT;
+        constexpr WordType firstWordValue = MakeWordOf<WordType>( 0b10100101 );
+        constexpr WordType secondWordValue = MakeWordOf<WordType>( 0b11000011 );
+        constexpr WordType expectedWordValue = firstWordValue ^ secondWordValue;
 
         constexpr std::array<size_t, 20> BitVectorSizes = { 1,2,7,8,9,15,16,17,31,32,33,63,64,65,127,128,129, 1023, 1024, 1025 };
         for ( auto firstSize : BitVectorSizes )
         {
-            std::vector<Byte> firstBits;
-            size_t firstFullBytes = firstSize / CHAR_BIT;
-            size_t firstRemainingBits = firstSize % CHAR_BIT;
-            firstBits.resize( firstRemainingBits ? firstFullBytes + 1 : firstFullBytes, firstByteValue );
+            std::vector<WordType> firstBits;
+            size_t firstFullWords = firstSize / bitsPerWord;
+            size_t firstRemainingBits = firstSize % bitsPerWord;
+            size_t firstVectorSize = firstRemainingBits ? firstFullWords + 1 : firstFullWords;
+            firstBits.resize( firstVectorSize, firstWordValue );
             BitVectorType firstBitVector( firstBits.data( ), firstSize );
 
             for ( auto secondSize : BitVectorSizes )
             {
-                std::vector<Byte> secondBits;
-                size_t secondFullBytes = secondSize / CHAR_BIT;
-                size_t secondRemainingBits = secondSize % CHAR_BIT;
-                secondBits.resize( secondRemainingBits ? secondFullBytes + 1 : secondFullBytes, secondByteValue );
+                std::vector<WordType> secondBits;
+                size_t secondFullWords = secondSize / bitsPerWord;
+                size_t secondRemainingBits = secondSize % bitsPerWord;
+                size_t secondVectorSize = secondRemainingBits ? secondFullWords + 1 : secondFullWords;
+                secondBits.resize( secondVectorSize, secondWordValue );
                 BitVectorType secondBitVector( secondBits.data( ), secondSize );
 
                 size_t expectedSize = std::max( firstSize, secondSize );
@@ -607,24 +662,27 @@ namespace
         using BitVectorType = BitVector<VectorType>;
         using WordType = WordT;
 
-        constexpr Byte firstByteValue = 0b10100101;
-        constexpr Byte secondByteValue = 0b11000011;
+        constexpr size_t bitsPerWord = sizeof( WordType ) * CHAR_BIT;
+        constexpr WordType firstWordValue = MakeWordOf<WordType>( 0b10100101 );
+        constexpr WordType secondWordValue = MakeWordOf<WordType>( 0b11000011 );
 
         constexpr std::array<size_t, 20> BitVectorSizes = { 1,2,7,8,9,15,16,17,31,32,33,63,64,65,127,128,129, 1023, 1024, 1025 };
         for ( auto firstSize : BitVectorSizes )
         {
-            std::vector<Byte> firstBits;
-            size_t firstFullBytes = firstSize / CHAR_BIT;
-            size_t firstRemainingBits = firstSize % CHAR_BIT;
-            firstBits.resize( firstRemainingBits ? firstFullBytes + 1 : firstFullBytes, firstByteValue );
+            std::vector<WordType> firstBits;
+            size_t firstFullWords = firstSize / bitsPerWord;
+            size_t firstRemainingBits = firstSize % bitsPerWord;
+            size_t firstVectorSize = firstRemainingBits ? firstFullWords + 1 : firstFullWords;
+            firstBits.resize( firstVectorSize, firstWordValue );
             BitVectorType firstBitVector( firstBits.data( ), firstSize );
 
             for ( auto secondSize : BitVectorSizes )
             {
-                std::vector<Byte> secondBits;
-                size_t secondFullBytes = secondSize / CHAR_BIT;
-                size_t secondRemainingBits = secondSize % CHAR_BIT;
-                secondBits.resize( secondRemainingBits ? secondFullBytes + 1 : secondFullBytes, secondByteValue );
+                std::vector<WordType> secondBits;
+                size_t secondFullWords = secondSize / bitsPerWord;
+                size_t secondRemainingBits = secondSize % bitsPerWord;
+                size_t secondVectorSize = secondRemainingBits ? secondFullWords + 1 : secondFullWords;
+                secondBits.resize( secondVectorSize, secondWordValue );
                 BitVectorType secondBitVector( secondBits.data( ), secondSize );
 
                 BitVectorType expectedBitVector = firstBitVector;
@@ -648,15 +706,17 @@ namespace
         using BitVectorType = BitVector<VectorType>;
         using WordType = WordT;
 
-        constexpr Byte byteValue = 0b10100101;
+        constexpr size_t bitsPerWord = sizeof( WordType ) * CHAR_BIT;
+        constexpr WordType wordValue = MakeWordOf<WordType>( 0b10100101 );
 
         constexpr std::array<size_t, 23> BitVectorSizes = { 1,2,7,8,9,15,16,17,31,32,33,63,64,65,95,96,97,127,128,129, 1023, 1024, 1025 };
         for ( auto bitVectorSize : BitVectorSizes )
         {
-            std::vector<Byte> bits;
-            const size_t fullByteCount = bitVectorSize / CHAR_BIT;
-            const size_t fullByteOverflowBitCount = bitVectorSize % CHAR_BIT;
-            bits.resize( fullByteOverflowBitCount ? fullByteCount + 1 : fullByteCount, byteValue );
+            std::vector<WordT> bits;
+            const size_t fullWordCount = bitVectorSize / bitsPerWord;
+            const size_t fullWordOverflowBitCount = bitVectorSize % bitsPerWord;
+            const size_t vectorSize = fullWordOverflowBitCount ? fullWordCount + 1 : fullWordCount;
+            bits.resize( vectorSize, wordValue );
             const BitVectorType bitVector( bits.data( ), bitVectorSize );
 
             size_t count1 = 0;
