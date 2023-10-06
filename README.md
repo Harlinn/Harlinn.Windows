@@ -95,6 +95,15 @@ The abseil_test contains the unit tests for the Harlinn.abseil project
 
 **Project:** Harlinn.base64
 
+### [binlog](https://github.com/morganstanley/binlog)
+**Version:** master/head as of 7th. of October 2023.
+
+**Description:**
+> A high performance C++ log library to produce structured binary logs.
+
+**Project:** Harlinn.Binlog
+
+
 ### [BoringSSL](https://boringssl.googlesource.com/boringssl/)
 **Version:** master as of 2021.09.20
 
