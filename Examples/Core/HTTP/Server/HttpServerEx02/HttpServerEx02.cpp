@@ -18,25 +18,26 @@ int main()
         constexpr size_t NumberOfConcurrentRequests = 12;
         constexpr DWORD ThreadPoolSize = 12;
 
+        Http::Application httpApplication;
+        Http::ApiVersion httpApiVersion( 2, 0 );
         auto context = std::make_shared<IO::Context>( ThreadPoolSize );
         Http::Server::HttpServer httpServer( context );
         auto* urlGoup = httpServer.AddUrlGroup( );
-        auto requestQueue = httpServer.AddRequestQueue( NumberOfConcurrentRequests, L"ExRQ" );
+        auto httpRequestQueue = std::make_shared<Http::RequestQueue>( httpApiVersion, L"ExRQ" );
+
+        
         urlGoup->AddUrl( L"http://+:20000/Example/" );
-        urlGoup->Bind( *requestQueue );
+        urlGoup->Bind( httpRequestQueue->Handle() );
 
-
-        /*
-        for ( size_t i = 0; i < NumberOfConcurrentRequests; ++i )
-        {
-            serverHandler.ReceiveRequest( requestQueue, Http::ReceiveRequestFlags::FlushBody );
-        }
-        serverHandler.OnReceiveRequest.connect( []( const Http::ServerRequest& request, Http::ServerResponse& response )
+        auto serverHandler = httpServer.AddRequestHandler<Http::Server::HttpRequestDispatcher>( );
+        
+        serverHandler->OnProcess.connect( []( const Http::Server::HttpRequestDispatcher& dispatcher, const Http::Server::HttpRequest& request, Http::Server::HttpResponse& response )
         {
             auto& body = response.Body( );
-            body.Write( "<body><em>Hello</em> from Example HTTP Server</body>" );
+            AnsiString html = "<body><em>Hello</em> from Example HTTP Server</body>";
+            body.Write( html.c_str(), html.size() );
         } );
-        */
+        
 
         context->Start( );
 

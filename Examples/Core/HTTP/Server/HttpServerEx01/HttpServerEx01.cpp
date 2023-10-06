@@ -3,6 +3,7 @@
 
 // Execute the following command as administrator before running the server:
 // netsh http add urlacl url=http://+:20000/Example user=BUILTIN\Users
+// The url is: http://127.0.0.1:20000/Example
 
 using namespace Harlinn::Common::Core;
 

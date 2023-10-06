@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>17.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{98bc505f-85ef-4638-bbea-5ad0afa5ca05}</ProjectGuid>
+    <RootNamespace>HarlinnBinlog</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+    <EnableASAN>true</EnableASAN>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+    <EnableASAN>true</EnableASAN>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>BUILDING_HARLINN_BINLOG=1;WIN32;_DEBUG;HARLINNBINLOG_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <AdditionalIncludeDirectories>$(ProjectDir)include;$(BOOST_ROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>BUILDING_HARLINN_BINLOG=1;WIN32;NDEBUG;HARLINNBINLOG_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <AdditionalIncludeDirectories>$(ProjectDir)include;$(BOOST_ROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>BUILDING_HARLINN_BINLOG=1;_DEBUG;HARLINNBINLOG_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <AdditionalIncludeDirectories>$(ProjectDir)include;$(BOOST_ROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>BUILDING_HARLINN_BINLOG=1;NDEBUG;HARLINNBINLOG_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <AdditionalIncludeDirectories>$(ProjectDir)include;$(BOOST_ROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="include\binlog\adapt_enum.hpp" />
+    <ClInclude Include="include\binlog\adapt_stdduration.hpp" />
+    <ClInclude Include="include\binlog\adapt_stderrorcode.hpp" />
+    <ClInclude Include="include\binlog\adapt_stdfilesystem.hpp" />
+    <ClInclude Include="include\binlog\adapt_stdoptional.hpp" />
+    <ClInclude Include="include\binlog\adapt_stdtimepoint.hpp" />
+    <ClInclude Include="include\binlog\adapt_stdvariant.hpp" />
+    <ClInclude Include="include\binlog\adapt_struct.hpp" />
+    <ClInclude Include="include\binlog\Address.hpp" />
+    <ClInclude Include="include\binlog\advanced_log_macros.hpp" />
+    <ClInclude Include="include\binlog\ArrayView.hpp" />
+    <ClInclude Include="include\binlog\basic_log_macros.hpp" />
+    <ClInclude Include="include\binlog\binlog.hpp" />
+    <ClInclude Include="include\binlog\binlogexports.h" />
+    <ClInclude Include="include\binlog\char_ptr_is_string.hpp" />
+    <ClInclude Include="include\binlog\const_char_ptr_is_string.hpp" />
+    <ClInclude Include="include\binlog\create_source_and_event.hpp" />
+    <ClInclude Include="include\binlog\create_source_and_event_if.hpp" />
+    <ClInclude Include="include\binlog\default_session.hpp" />
+    <ClInclude Include="include\binlog\detail\OstreamBuffer.hpp" />
+    <ClInclude Include="include\binlog\detail\Queue.hpp" />
+    <ClInclude Include="include\binlog\detail\QueueReader.hpp" />
+    <ClInclude Include="include\binlog\detail\QueueWriter.hpp" />
+    <ClInclude Include="include\binlog\detail\SegmentedMap.hpp" />
+    <ClInclude Include="include\binlog\detail\VectorOutputStream.hpp" />
+    <ClInclude Include="include\binlog\Entries.hpp" />
+    <ClInclude Include="include\binlog\EntryStream.hpp" />
+    <ClInclude Include="include\binlog\EventFilter.hpp" />
+    <ClInclude Include="include\binlog\EventStream.hpp" />
+    <ClInclude Include="include\binlog\PrettyPrinter.hpp" />
+    <ClInclude Include="include\binlog\Range.hpp" />
+    <ClInclude Include="include\binlog\Session.hpp" />
+    <ClInclude Include="include\binlog\SessionWriter.hpp" />
+    <ClInclude Include="include\binlog\Severity.hpp" />
+    <ClInclude Include="include\binlog\TextOutputStream.hpp" />
+    <ClInclude Include="include\binlog\Time.hpp" />
+    <ClInclude Include="include\binlog\ToStringVisitor.hpp" />
+    <ClInclude Include="include\mserialize\cx_string.hpp" />
+    <ClInclude Include="include\mserialize\deserialize.hpp" />
+    <ClInclude Include="include\mserialize\detail\Deserializer.hpp" />
+    <ClInclude Include="include\mserialize\detail\foreach.hpp" />
+    <ClInclude Include="include\mserialize\detail\integer_to_hex.hpp" />
+    <ClInclude Include="include\mserialize\detail\preprocessor.hpp" />
+    <ClInclude Include="include\mserialize\detail\sequence_traits.hpp" />
+    <ClInclude Include="include\mserialize\detail\Serializer.hpp" />
+    <ClInclude Include="include\mserialize\detail\Singular.hpp" />
+    <ClInclude Include="include\mserialize\detail\Tag.hpp" />
+    <ClInclude Include="include\mserialize\detail\tag_util.hpp" />
+    <ClInclude Include="include\mserialize\detail\type_traits.hpp" />
+    <ClInclude Include="include\mserialize\detail\Visit.hpp" />
+    <ClInclude Include="include\mserialize\make_derived_struct_deserializable.hpp" />
+    <ClInclude Include="include\mserialize\make_derived_struct_serializable.hpp" />
+    <ClInclude Include="include\mserialize\make_derived_struct_tag.hpp" />
+    <ClInclude Include="include\mserialize\make_enum_tag.hpp" />
+    <ClInclude Include="include\mserialize\make_struct_deserializable.hpp" />
+    <ClInclude Include="include\mserialize\make_struct_serializable.hpp" />
+    <ClInclude Include="include\mserialize\make_struct_tag.hpp" />
+    <ClInclude Include="include\mserialize\make_template_deserializable.hpp" />
+    <ClInclude Include="include\mserialize\make_template_serializable.hpp" />
+    <ClInclude Include="include\mserialize\make_template_tag.hpp" />
+    <ClInclude Include="include\mserialize\serialize.hpp" />
+    <ClInclude Include="include\mserialize\singular.hpp" />
+    <ClInclude Include="include\mserialize\string_view.hpp" />
+    <ClInclude Include="include\mserialize\StructDeserializer.hpp" />
+    <ClInclude Include="include\mserialize\StructSerializer.hpp" />
+    <ClInclude Include="include\mserialize\tag.hpp" />
+    <ClInclude Include="include\mserialize\visit.hpp" />
+    <ClInclude Include="include\mserialize\Visitor.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="src\binlog\detail\OstreamBuffer.cpp" />
+    <ClCompile Include="src\binlog\EntryStream.cpp" />
+    <ClCompile Include="src\binlog\EventStream.cpp" />
+    <ClCompile Include="src\binlog\PrettyPrinter.cpp" />
+    <ClCompile Include="src\binlog\TextOutputStream.cpp" />
+    <ClCompile Include="src\binlog\Time.cpp" />
+    <ClCompile Include="src\binlog\ToStringVisitor.cpp" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

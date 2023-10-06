@@ -561,6 +561,11 @@ MigrationBackup/
 # Backup folder for Package Reference Convert tool in Visual Studio 2017
 
 # Ionide (cross platform F# VS Code tools) working folder
+
+!/3rdParty/Harlinn.Binlog
+
+
+
 /Examples/Windows/Graphics/DirectX/MiniEngine/Harlinn.DirectX.MiniEngine.Core/CompiledShaders/AdaptExposureCS.h
 /Examples/Windows/Graphics/DirectX/MiniEngine/Harlinn.DirectX.MiniEngine.Core/CompiledShaders/AoBlurUpsampleBlendOutCS.h
 /Examples/Windows/Graphics/DirectX/MiniEngine/Harlinn.DirectX.MiniEngine.Core/CompiledShaders/AoBlurUpsampleCS.h

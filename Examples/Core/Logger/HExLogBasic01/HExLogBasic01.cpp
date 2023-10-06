@@ -57,7 +57,8 @@ int main( )
         {
             // HCC_ERROR( backendLogger, "Level:{level}, Timestamp:{timestamp:%Y-%m-%d %H:%M:%S}, RDTSC:{rdtsc}, Thread:{thread}, first:{}, second:{}, third:{}\n", intValue1, intValue2, dblValue1 );
             // HCC_ERROR( backendLogger, "Level:{level}, Timestamp:{timestamp:%Y-%m-%d %H:%M:%S}, RDTSC:{rdtsc}, Thread:{thread}, first:{}, second:{}, third:{}\n", intValue1 );
-            HCC_ERROR( *BackendLogger::Instance(), "first:{}\n", intValue1 );
+            //HCC_ERROR( *BackendLogger::Instance(), "first:{}\n", intValue1 );
+            HCC_ERROR( *BackendLogger::Instance( ), "Logging int: {}, int: {}, double: {}", intValue1, intValue2, dblValue1 );
             //HCC_ERROR( backendLogger, "Level:{level}, Timestamp:{timestamp:%Y-%m-%d %H:%M:%S}, RDTSC:{rdtsc}, Thread:{thread}, first:{}, second:{}, third:{}\n", strValue );
             //HCC_ERROR( backendLogger, "first:{}\n", strValue );
         }

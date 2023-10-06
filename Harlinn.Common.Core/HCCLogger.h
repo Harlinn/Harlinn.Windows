@@ -20,7 +20,9 @@ namespace Harlinn::Common::Core::Logging
         UInt64 id_ = 0;
         Logging::Level level_ = Logging::Level::None;
         std::string message_;
-        std::vector<Byte> argumentsDescriptor_;
+        std::vector<Byte> argumentsDescriptorBytes_;
+        const Byte* argumentsDescriptor_ = nullptr;
+        size_t argumentsDescriptorSize_ = 0;
         bool isFixedSize_ = false;
         size_t fixedSize_ = 0;
         UInt32 line_ = 0;
@@ -30,11 +32,11 @@ namespace Harlinn::Common::Core::Logging
     public:
         using PrimaryKeyType = UInt64;
 
-        LogSite()
+        constexpr LogSite()
         { }
 
         constexpr LogSite( Logging::Level level, const char* message, const Byte* argumentsDescriptor, size_t argumentsDescriptorSize, bool isFixedSize, size_t fixedSize, UInt32 line, UInt32 column, const char* file, const char* function ) noexcept
-            : level_( level ), message_( message ), argumentsDescriptor_( argumentsDescriptor, argumentsDescriptor + argumentsDescriptorSize ), isFixedSize_( isFixedSize ), fixedSize_( fixedSize ), line_( line ), column_( column ), file_( file ), function_( function )
+            : level_( level ), message_( message ), argumentsDescriptor_( argumentsDescriptor ), argumentsDescriptorSize_( argumentsDescriptorSize ), isFixedSize_( isFixedSize ), fixedSize_( fixedSize ), line_( line ), column_( column ), file_( file ), function_( function )
         { }
 
         auto operator<=>( const LogSite& ) const = default;
@@ -58,7 +60,7 @@ namespace Harlinn::Common::Core::Logging
         {
             reader.Read( level_ );
             reader.Read( message_ );
-            reader.Read( argumentsDescriptor_ );
+            reader.Read( argumentsDescriptorBytes_ );
             reader.Read( isFixedSize_ );
             reader.Read( fixedSize_ );
             reader.Read( line_ );
@@ -85,7 +87,14 @@ namespace Harlinn::Common::Core::Logging
         {
             writer.Write( level_ );
             writer.Write( message_ );
-            writer.Write( argumentsDescriptor_ );
+            if ( argumentsDescriptorSize_ )
+            {
+                writer.Write( argumentsDescriptor_, argumentsDescriptorSize_ );
+            }
+            else
+            {
+                writer.Write( argumentsDescriptorBytes_ );
+            }
             writer.Write( isFixedSize_ );
             writer.Write( fixedSize_ );
             writer.Write( line_ );
@@ -98,7 +107,14 @@ namespace Harlinn::Common::Core::Logging
         {
             hasher.Add( static_cast<UInt16>(level_) );
             hasher.Add( message_ );
-            hasher.Add( argumentsDescriptor_.data(), argumentsDescriptor_.size() );
+            if ( argumentsDescriptorSize_ )
+            {
+                hasher.Add( argumentsDescriptor_, argumentsDescriptorSize_ );
+            }
+            else
+            {
+                hasher.Add( argumentsDescriptorBytes_.data(), argumentsDescriptorBytes_.size() );
+            }
             hasher.Add( isFixedSize_ );
             hasher.Add( fixedSize_ );
             hasher.Add( line_ );
@@ -141,9 +157,34 @@ namespace Harlinn::Common::Core::Logging
         {
             return message_;
         }
-        constexpr const std::vector<Byte>& ArgumentsDescriptor( ) const noexcept
+
+        constexpr const Byte* ArgumentsDescriptor( ) const noexcept
         {
-            return argumentsDescriptor_;
+            if ( argumentsDescriptorSize_ )
+            {
+                return argumentsDescriptor_;
+            }
+            else
+            {
+                return argumentsDescriptorBytes_.data( );
+            }
+        }
+
+        constexpr size_t ArgumentsDescriptorSize( ) const noexcept
+        {
+            if ( argumentsDescriptorSize_ )
+            {
+                return argumentsDescriptorSize_;
+            }
+            else
+            {
+                return argumentsDescriptorBytes_.size( );
+            }
+        }
+
+        constexpr const std::vector<Byte>& ArgumentsDescriptorBytes( ) const noexcept
+        {
+            return argumentsDescriptorBytes_;
         }
 
         constexpr bool IsFixedSize( ) const noexcept

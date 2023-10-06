@@ -22,8 +22,13 @@ void PerformanceOf( const char* preamble, F testFunction, Args&&... args )
 
 void CompareTest1()
 {
+#ifdef _DEBUG
+    constexpr size_t IterationCount = 1000;
+    constexpr size_t TestSize = 1'000;
+#else
     constexpr size_t IterationCount = 100'000;
     constexpr size_t TestSize = 1'000'000;
+#endif
     std::vector<Guid> guids;
     std::unordered_map<Guid, size_t> guidMap;
     guids.reserve( TestSize );
@@ -110,7 +115,11 @@ void CompareTest1()
 
 void CompareTest2( )
 {
+#ifdef _DEBUG
+    constexpr size_t TestSize = 10'000;
+#else
     constexpr size_t TestSize = 1'000'000;
+#endif
     //constexpr size_t TestSize = 10;
     std::vector<Guid> guids;
     guids.reserve( TestSize );

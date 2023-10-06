@@ -1,0 +1,273 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="include">
+      <UniqueIdentifier>{b45bde3b-431c-49bc-a477-143d6f8c0f54}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{18cfcd86-a941-4ae0-8552-f2e83fee4cd1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\binlog">
+      <UniqueIdentifier>{530fc55e-d72a-4e40-9aaf-bced7c93a722}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\binlog\detail">
+      <UniqueIdentifier>{a7d86615-4330-4f86-8ea1-01dacfe1760f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\binlog">
+      <UniqueIdentifier>{3b6434ba-aeb0-432c-bf3a-6cc7d7527965}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\binlog\detail">
+      <UniqueIdentifier>{80416e00-3c29-46a2-904b-ed02b7f2da27}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\mserialize">
+      <UniqueIdentifier>{08b00755-7ecc-406e-8fac-3961d486e6b6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\mserialize\detail">
+      <UniqueIdentifier>{89d1770d-3c88-4827-9c34-56fc11e9ffa3}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\binlog\detail\OstreamBuffer.hpp">
+      <Filter>include\binlog\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="include\binlog\detail\Queue.hpp">
+      <Filter>include\binlog\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="include\binlog\detail\QueueReader.hpp">
+      <Filter>include\binlog\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="include\binlog\detail\QueueWriter.hpp">
+      <Filter>include\binlog\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="include\binlog\detail\SegmentedMap.hpp">
+      <Filter>include\binlog\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="include\binlog\detail\VectorOutputStream.hpp">
+      <Filter>include\binlog\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="include\binlog\adapt_enum.hpp">
+      <Filter>include\binlog</Filter>
+    </ClInclude>
+    <ClInclude Include="include\binlog\adapt_stdduration.hpp">
+      <Filter>include\binlog</Filter>
+    </ClInclude>
+    <ClInclude Include="include\binlog\adapt_stderrorcode.hpp">
+      <Filter>include\binlog</Filter>
+    </ClInclude>
+    <ClInclude Include="include\binlog\adapt_stdfilesystem.hpp">
+      <Filter>include\binlog</Filter>
+    </ClInclude>
+    <ClInclude Include="include\binlog\adapt_stdoptional.hpp">
+      <Filter>include\binlog</Filter>
+    </ClInclude>
+    <ClInclude Include="include\binlog\adapt_stdtimepoint.hpp">
+      <Filter>include\binlog</Filter>
+    </ClInclude>
+    <ClInclude Include="include\binlog\adapt_stdvariant.hpp">
+      <Filter>include\binlog</Filter>
+    </ClInclude>
+    <ClInclude Include="include\binlog\adapt_struct.hpp">
+      <Filter>include\binlog</Filter>
+    </ClInclude>
+    <ClInclude Include="include\binlog\Address.hpp">
+      <Filter>include\binlog</Filter>
+    </ClInclude>
+    <ClInclude Include="include\binlog\advanced_log_macros.hpp">
+      <Filter>include\binlog</Filter>
+    </ClInclude>
+    <ClInclude Include="include\binlog\ArrayView.hpp">
+      <Filter>include\binlog</Filter>
+    </ClInclude>
+    <ClInclude Include="include\binlog\basic_log_macros.hpp">
+      <Filter>include\binlog</Filter>
+    </ClInclude>
+    <ClInclude Include="include\binlog\binlog.hpp">
+      <Filter>include\binlog</Filter>
+    </ClInclude>
+    <ClInclude Include="include\binlog\char_ptr_is_string.hpp">
+      <Filter>include\binlog</Filter>
+    </ClInclude>
+    <ClInclude Include="include\binlog\const_char_ptr_is_string.hpp">
+      <Filter>include\binlog</Filter>
+    </ClInclude>
+    <ClInclude Include="include\binlog\create_source_and_event.hpp">
+      <Filter>include\binlog</Filter>
+    </ClInclude>
+    <ClInclude Include="include\binlog\create_source_and_event_if.hpp">
+      <Filter>include\binlog</Filter>
+    </ClInclude>
+    <ClInclude Include="include\binlog\default_session.hpp">
+      <Filter>include\binlog</Filter>
+    </ClInclude>
+    <ClInclude Include="include\binlog\Entries.hpp">
+      <Filter>include\binlog</Filter>
+    </ClInclude>
+    <ClInclude Include="include\binlog\EntryStream.hpp">
+      <Filter>include\binlog</Filter>
+    </ClInclude>
+    <ClInclude Include="include\binlog\EventFilter.hpp">
+      <Filter>include\binlog</Filter>
+    </ClInclude>
+    <ClInclude Include="include\binlog\EventStream.hpp">
+      <Filter>include\binlog</Filter>
+    </ClInclude>
+    <ClInclude Include="include\binlog\PrettyPrinter.hpp">
+      <Filter>include\binlog</Filter>
+    </ClInclude>
+    <ClInclude Include="include\binlog\Range.hpp">
+      <Filter>include\binlog</Filter>
+    </ClInclude>
+    <ClInclude Include="include\binlog\Session.hpp">
+      <Filter>include\binlog</Filter>
+    </ClInclude>
+    <ClInclude Include="include\binlog\SessionWriter.hpp">
+      <Filter>include\binlog</Filter>
+    </ClInclude>
+    <ClInclude Include="include\binlog\Severity.hpp">
+      <Filter>include\binlog</Filter>
+    </ClInclude>
+    <ClInclude Include="include\binlog\TextOutputStream.hpp">
+      <Filter>include\binlog</Filter>
+    </ClInclude>
+    <ClInclude Include="include\binlog\Time.hpp">
+      <Filter>include\binlog</Filter>
+    </ClInclude>
+    <ClInclude Include="include\binlog\ToStringVisitor.hpp">
+      <Filter>include\binlog</Filter>
+    </ClInclude>
+    <ClInclude Include="include\mserialize\detail\Deserializer.hpp">
+      <Filter>include\mserialize\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="include\mserialize\detail\foreach.hpp">
+      <Filter>include\mserialize\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="include\mserialize\detail\integer_to_hex.hpp">
+      <Filter>include\mserialize\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="include\mserialize\detail\preprocessor.hpp">
+      <Filter>include\mserialize\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="include\mserialize\detail\sequence_traits.hpp">
+      <Filter>include\mserialize\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="include\mserialize\detail\Serializer.hpp">
+      <Filter>include\mserialize\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="include\mserialize\detail\Singular.hpp">
+      <Filter>include\mserialize\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="include\mserialize\detail\Tag.hpp">
+      <Filter>include\mserialize\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="include\mserialize\detail\tag_util.hpp">
+      <Filter>include\mserialize\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="include\mserialize\detail\type_traits.hpp">
+      <Filter>include\mserialize\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="include\mserialize\detail\Visit.hpp">
+      <Filter>include\mserialize\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="include\mserialize\cx_string.hpp">
+      <Filter>include\mserialize</Filter>
+    </ClInclude>
+    <ClInclude Include="include\mserialize\deserialize.hpp">
+      <Filter>include\mserialize</Filter>
+    </ClInclude>
+    <ClInclude Include="include\mserialize\make_derived_struct_deserializable.hpp">
+      <Filter>include\mserialize</Filter>
+    </ClInclude>
+    <ClInclude Include="include\mserialize\make_derived_struct_serializable.hpp">
+      <Filter>include\mserialize</Filter>
+    </ClInclude>
+    <ClInclude Include="include\mserialize\make_derived_struct_tag.hpp">
+      <Filter>include\mserialize</Filter>
+    </ClInclude>
+    <ClInclude Include="include\mserialize\make_enum_tag.hpp">
+      <Filter>include\mserialize</Filter>
+    </ClInclude>
+    <ClInclude Include="include\mserialize\make_struct_deserializable.hpp">
+      <Filter>include\mserialize</Filter>
+    </ClInclude>
+    <ClInclude Include="include\mserialize\make_struct_serializable.hpp">
+      <Filter>include\mserialize</Filter>
+    </ClInclude>
+    <ClInclude Include="include\mserialize\make_struct_tag.hpp">
+      <Filter>include\mserialize</Filter>
+    </ClInclude>
+    <ClInclude Include="include\mserialize\make_template_deserializable.hpp">
+      <Filter>include\mserialize</Filter>
+    </ClInclude>
+    <ClInclude Include="include\mserialize\make_template_serializable.hpp">
+      <Filter>include\mserialize</Filter>
+    </ClInclude>
+    <ClInclude Include="include\mserialize\make_template_tag.hpp">
+      <Filter>include\mserialize</Filter>
+    </ClInclude>
+    <ClInclude Include="include\mserialize\serialize.hpp">
+      <Filter>include\mserialize</Filter>
+    </ClInclude>
+    <ClInclude Include="include\mserialize\singular.hpp">
+      <Filter>include\mserialize</Filter>
+    </ClInclude>
+    <ClInclude Include="include\mserialize\string_view.hpp">
+      <Filter>include\mserialize</Filter>
+    </ClInclude>
+    <ClInclude Include="include\mserialize\StructDeserializer.hpp">
+      <Filter>include\mserialize</Filter>
+    </ClInclude>
+    <ClInclude Include="include\mserialize\StructSerializer.hpp">
+      <Filter>include\mserialize</Filter>
+    </ClInclude>
+    <ClInclude Include="include\mserialize\tag.hpp">
+      <Filter>include\mserialize</Filter>
+    </ClInclude>
+    <ClInclude Include="include\mserialize\visit.hpp">
+      <Filter>include\mserialize</Filter>
+    </ClInclude>
+    <ClInclude Include="include\mserialize\Visitor.hpp">
+      <Filter>include\mserialize</Filter>
+    </ClInclude>
+    <ClInclude Include="include\binlog\binlogexports.h">
+      <Filter>include\binlog</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="dllmain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\binlog\detail\OstreamBuffer.cpp">
+      <Filter>src\binlog\detail</Filter>
+    </ClCompile>
+    <ClCompile Include="src\binlog\EntryStream.cpp">
+      <Filter>src\binlog</Filter>
+    </ClCompile>
+    <ClCompile Include="src\binlog\EventStream.cpp">
+      <Filter>src\binlog</Filter>
+    </ClCompile>
+    <ClCompile Include="src\binlog\PrettyPrinter.cpp">
+      <Filter>src\binlog</Filter>
+    </ClCompile>
+    <ClCompile Include="src\binlog\TextOutputStream.cpp">
+      <Filter>src\binlog</Filter>
+    </ClCompile>
+    <ClCompile Include="src\binlog\Time.cpp">
+      <Filter>src\binlog</Filter>
+    </ClCompile>
+    <ClCompile Include="src\binlog\ToStringVisitor.cpp">
+      <Filter>src\binlog</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
