@@ -138,8 +138,8 @@ namespace Harlinn::Common::Core::Logging
 
         void AddTo( XXH64Hasher& hasher ) const noexcept
         {
-            hasher.Add( domainName_.c_str(), domainName_.size() * sizeof(WideString::value_type) );
-            hasher.Add( name_.c_str( ), name_.size( ) * sizeof( WideString::value_type ) );
+            hasher.Add( domainName_.c_str(), domainName_.size() );
+            hasher.Add( name_.c_str( ), name_.size( ) );
         }
 
         size_t Hash( ) const noexcept
