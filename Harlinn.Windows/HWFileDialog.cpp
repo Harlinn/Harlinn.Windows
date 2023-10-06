@@ -7,10 +7,10 @@ namespace Harlinn::Windows
 // ----------------------------------------------------------------------
 // ModalWindow
 // ----------------------------------------------------------------------
-    bool ModalWindow::Show( HWND theOwner )
+    bool ModalWindow::Show( HWND owner )
     {
         auto pInterface = GetInterface( );
-        auto hr = pInterface->Show( theOwner );
+        auto hr = pInterface->Show( owner );
         if ( hr == S_OK )
         {
             return true;
@@ -146,14 +146,14 @@ namespace Harlinn::Windows
     // FileDialog
     // ----------------------------------------------------------------------
 
-    bool FileDialog::Show( HWND theOwner )
+    bool FileDialog::Show( HWND owner )
     {
         bool result = false;
         FileDialogEvents fileDialogEvents( new FileDialogEventsImplementation( this ) );
         DWORD cookie = Advise( fileDialogEvents );
         try
         {
-            result = Base::Show( theOwner );
+            result = Base::Show( owner );
             Unadvise( cookie );
         }
         catch ( ... )

@@ -9,4 +9,7 @@
       </ArrayItems>
     </Expand>
   </Type>
+  <Type Name="Harlinn::Common::Core::Guid">
+    <DisplayString>{{Value={data_.Data1,nvoXb}-{data_.Data2,nvoXb}-{data_.Data3,nvoXb}-{data_.Data4[0],nvoXb}{data_.Data4[1],nvoXb}{data_.Data4[2],nvoXb}{data_.Data4[3],nvoXb}{data_.Data4[4],nvoXb}{data_.Data4[5],nvoXb}{data_.Data4[6],nvoXb}{data_.Data4[7],nvoXb}}}</DisplayString>
+  </Type>
 </AutoVisualizer>

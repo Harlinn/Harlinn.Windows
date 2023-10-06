@@ -39,7 +39,7 @@ namespace Harlinn::Windows
 
     public:
         using Base = Common::Core::Application;
-        HW_EXPORT Application( const std::shared_ptr<Windows::ApplicationOptions>& options );
+        HW_EXPORT Application( const std::shared_ptr<Windows::ApplicationOptions>& options, COINIT comInitalizationFlags = COINIT::COINIT_APARTMENTTHREADED );
         HW_EXPORT Application( );
         HW_EXPORT virtual ~Application( );
 

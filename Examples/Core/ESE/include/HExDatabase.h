@@ -102,8 +102,7 @@ namespace Harlinn::Common::Core::Examples
         bool MoveToFirstChild( const Guid& ownerId ) const
         {
             SetCurrentIndex( DerivedT::OwnerAndNameIndexName );
-            MakeKey( ownerId, Ese::KeyFlags::NewKey );
-            MakeKey( "" );
+            MakeKey( ownerId, Ese::KeyFlags::NewKey | Ese::KeyFlags::FullColumnStartLimit );
             auto rc = Seek( Ese::SeekFlags::GreaterOrEqual );
             return rc >= Ese::Result::Success && Owner() == ownerId;
         }

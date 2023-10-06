@@ -47,11 +47,10 @@ namespace Harlinn::Windows
     Application* Application::currentApplication_ = nullptr;
 
 
-    Application::Application( const std::shared_ptr<Windows::ApplicationOptions>& options )
+    Application::Application( const std::shared_ptr<Windows::ApplicationOptions>& options, COINIT comInitalizationFlags )
         : Base( options )
     {
-        HRESULT hr = CoInitializeEx( 0, COINIT_MULTITHREADED);
-        //HRESULT hr = CoInitializeEx(0, COINIT_APARTMENTTHREADED);
+        HRESULT hr = CoInitializeEx(0, comInitalizationFlags );
         CheckHRESULT( hr );
 
         currentApplication_ = this;

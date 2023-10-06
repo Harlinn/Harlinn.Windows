@@ -176,7 +176,11 @@ public:
 void ArrayAssignTest1a( )
 {
     printf( "%s\n", __FUNCTION__ );
+#ifdef _DEBUG
+    constexpr SSizeT InterationCount = 100000;
+#else
     constexpr SSizeT InterationCount = 100000000;
+#endif
     constexpr SSizeT ItemCount = 50;
 
     printf( "Assigns trivially copyable TimeseriesPoint: %lld iterations, creates a TimeseriesPoint and assigns it using operator[](...) %lld times per iteration\n", InterationCount, ItemCount );
@@ -244,7 +248,11 @@ void ArrayAssignTest1a( )
 void ArrayAssignTest1b( )
 {
     printf( "%s\n", __FUNCTION__ );
+#ifdef _DEBUG
+    constexpr SSizeT InterationCount = 100000;
+#else
     constexpr SSizeT InterationCount = 100000000;
+#endif
     constexpr SSizeT ItemCount = 50;
 
     printf( "Assigns trivially copyable TimeseriesPoint: %lld iterations, creates a TimeseriesPoint and assigns it using an iterator %lld times per iteration\n", InterationCount, ItemCount );
@@ -315,7 +323,11 @@ void ArrayAssignTest1b( )
 void ArrayAssignTest1c( )
 {
     printf( "%s\n", __FUNCTION__ );
+#ifdef _DEBUG
+    constexpr SSizeT InterationCount = 100000;
+#else
     constexpr SSizeT InterationCount = 100000000;
+#endif
     constexpr SSizeT ItemCount = 50;
 
     printf( "Assigns a byte: %lld iterations, using an iterator %lld times per iteration\n", InterationCount, ItemCount );
@@ -386,7 +398,11 @@ void ArrayAssignTest1c( )
 void ArrayAssignTest1d( )
 {
     printf( "%s\n", __FUNCTION__ );
+#ifdef _DEBUG
+    constexpr SSizeT InterationCount = 100000;
+#else
     constexpr SSizeT InterationCount = 100000000;
+#endif
     constexpr SSizeT ItemCount = 50;
 
     printf( "Assigns a byte: %lld iterations, using an iterator %lld times per iteration\n", InterationCount, ItemCount );

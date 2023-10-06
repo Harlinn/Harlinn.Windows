@@ -144,7 +144,7 @@ int main()
         application.Start();
 
         SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_SYSTEM_AWARE);
-        // Initializatio/Shutdown of the Media Foundation platform
+        // Initialization/Shutdown of the Media Foundation platform
         MF::MediaFoundation mediaFoundation;
 
         auto result = application.Run<MyForm>();

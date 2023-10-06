@@ -44,7 +44,7 @@ namespace Harlinn::Windows
         MenuItem( MenuItem&& other ) = delete;
         MenuItem& operator = ( const MenuItem& other ) = delete;
         MenuItem& operator = ( MenuItem&& other ) = delete;
-
+        virtual ~MenuItem( ) = default;
 
         MenuItems& ParentMenuItems( ) const;
         Menu* ParentMenu( ) const
@@ -311,7 +311,7 @@ namespace Harlinn::Windows
             : owner_( owner )
         {
         }
-        ~MenuItems( )
+        virtual ~MenuItems( )
         {
             std::for_each( items_.begin( ), items_.end( ), []( std::unique_ptr<MenuItem>& item ) { item->parentMenu_ = nullptr; } );
         }
@@ -459,7 +459,7 @@ namespace Harlinn::Windows
             }
         }
     
-        ~Menu( )
+        virtual ~Menu( )
         {
             if ( handle_ )
             {

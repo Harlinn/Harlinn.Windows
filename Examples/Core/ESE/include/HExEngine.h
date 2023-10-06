@@ -327,6 +327,7 @@ namespace Harlinn::Common::Core::Examples
             auto& catalogItems = CatalogItems( );
             auto& sensors = Sensors( );
             auto& values = Values( );
+            catalogItems.SetCurrentIndex( CatalogItemTable::PrimaryIndexName );
             if ( catalogItems.MoveTo( itemId ) )
             {
                 auto itemType = catalogItems.ItemType( );
