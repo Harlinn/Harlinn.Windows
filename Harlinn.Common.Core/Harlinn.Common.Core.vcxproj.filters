@@ -363,6 +363,12 @@
     <ClInclude Include="HCCNetwork.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="HCCPersistentFormatter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HCCFormatStringParser.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -468,6 +474,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="HCCLoggerLevel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="HCCPersistentFormatter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -216,6 +216,7 @@
     <ClInclude Include="HCCDirectoryUtils.h" />
     <ClInclude Include="HCCEseOptions.h" />
     <ClInclude Include="HCCFlags.h" />
+    <ClInclude Include="HCCFormatStringParser.h" />
     <ClInclude Include="HCCIOBufferStream.h" />
     <ClInclude Include="HCCCom.h" />
     <ClInclude Include="HCCConsole.h" />
@@ -266,6 +267,7 @@
     <ClInclude Include="HCCObservable.h" />
     <ClInclude Include="HCCPersistent.h" />
     <ClInclude Include="HCCPersistentDecoder.h" />
+    <ClInclude Include="HCCPersistentFormatter.h" />
     <ClInclude Include="HCCPipe.h" />
     <ClInclude Include="HCCPortableDeviceTypes.h" />
     <ClInclude Include="HCCProcess.h" />
@@ -331,6 +333,7 @@
     <ClCompile Include="HCCLoggerLevel.cpp" />
     <ClCompile Include="HCCLoggerLMDBSink.cpp" />
     <ClCompile Include="HCCMemory.cpp" />
+    <ClCompile Include="HCCPersistentFormatter.cpp" />
     <ClCompile Include="HCCPipe.cpp" />
     <ClCompile Include="HCCPortableDeviceTypes.cpp" />
     <ClCompile Include="HCCProcess.cpp" />
