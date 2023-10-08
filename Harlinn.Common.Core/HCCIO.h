@@ -3217,6 +3217,7 @@ namespace Harlinn::Common::Core::IO
     };
 
 
+    [[nodiscard]] inline WideString ToWideString( const IO::MemoryStream& stream, bool convertToUnicode = false );
 
 
 
