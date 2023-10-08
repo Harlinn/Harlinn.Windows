@@ -369,6 +369,9 @@
     <ClInclude Include="HCCFormatStringParser.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="HCCPersistentPrinter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">

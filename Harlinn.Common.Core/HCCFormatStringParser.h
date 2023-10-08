@@ -82,6 +82,11 @@ namespace Harlinn::Common::Core::Formatting
             : FormatStringParser( StringViewType( formatString ) )
         { }
 
+        explicit FormatStringParser( const CharType* formatString, size_type formatStringSize )
+            : FormatStringParser( StringViewType( formatString, formatStringSize ) )
+        {
+        }
+
         constexpr explicit operator bool( ) const noexcept
         {
             return isValid_;

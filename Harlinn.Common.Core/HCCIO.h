@@ -997,6 +997,8 @@ namespace Harlinn::Common::Core::IO
     
 
 
+
+
     /// <summary>
     /// A stream wrapper for the IStream interface
     /// </summary>
@@ -3215,14 +3217,39 @@ namespace Harlinn::Common::Core::IO
         }
 
     };
+}
 
-
+namespace Harlinn::Common::Core
+{
+    
     [[nodiscard]] inline WideString ToWideString( const IO::MemoryStream& stream, bool convertToUnicode = false );
 
-
-
-
-
+    [[nodiscard]] inline AnsiString ToAnsiString( const IO::MemoryStream& stream, bool convertFromUnicode = false )
+    {
+        if ( convertFromUnicode == false )
+        {
+            auto* data = reinterpret_cast<const char*>(stream.Buffer( ));
+            auto dataSize = static_cast<size_t>(stream.Size( ));
+            return { data, dataSize };
+        }
+        else
+        {
+            return ToAnsiString( ToWideString( stream ) );
+        }
+    }
+    [[nodiscard]] inline WideString ToWideString( const IO::MemoryStream& stream, bool convertToUnicode )
+    {
+        if ( convertToUnicode == false )
+        {
+            auto* data = reinterpret_cast< const wchar_t* >( stream.Buffer( ) );
+            auto dataSize = static_cast< size_t >( stream.Size( ) ) / sizeof( wchar_t );
+            return { data, dataSize };
+        }
+        else
+        {
+            return ToWideString( ToAnsiString( stream ) );
+        }
+    }
 }
 
 

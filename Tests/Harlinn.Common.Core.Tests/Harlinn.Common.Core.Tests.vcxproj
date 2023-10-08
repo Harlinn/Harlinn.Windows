@@ -199,6 +199,7 @@
     <ClCompile Include="IntervalTests.cpp" />
     <ClCompile Include="ListTests.cpp" />
     <ClCompile Include="LoggerLevelTests.cpp" />
+    <ClCompile Include="PersistentPrinterTests.cpp" />
     <ClCompile Include="SerializationRWTests.cpp" />
     <ClCompile Include="SimpleConcurrentQueueTests.cpp" />
     <ClCompile Include="ContextTests.cpp" />
