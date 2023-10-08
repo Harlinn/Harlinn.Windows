@@ -45,8 +45,8 @@ int main()
 {
     auto applicationOptions = std::make_shared<ApplicationOptions>( );
     applicationOptions->Load( );
-    Application application( applicationOptions );
-    application.Start( );
+    auto application = std::make_shared<Application>( applicationOptions );
+    application->Start( );
 
     using namespace Harlinn::Common::Core;
     CoInitializeEx( nullptr, COINIT_MULTITHREADED );
@@ -65,6 +65,6 @@ int main()
     serviceContext.SessionEnd( );
 
     CoUninitialize( );
-    application.Stop( );
+    application->Stop( );
     return 0;
 }

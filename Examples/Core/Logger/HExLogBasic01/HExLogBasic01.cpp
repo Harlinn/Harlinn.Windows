@@ -27,8 +27,8 @@ int main( )
 {
     auto options = std::make_shared<Harlinn::Common::Core::ApplicationOptions>( );
     options->Load( );
-    Application application( options );
-    application.Start( );
+    auto application = std::make_shared<Application>( options );
+    application->Start( );
 
     try
     {
@@ -57,8 +57,8 @@ int main( )
         {
             // HCC_ERROR( backendLogger, "Level:{level}, Timestamp:{timestamp:%Y-%m-%d %H:%M:%S}, RDTSC:{rdtsc}, Thread:{thread}, first:{}, second:{}, third:{}\n", intValue1, intValue2, dblValue1 );
             // HCC_ERROR( backendLogger, "Level:{level}, Timestamp:{timestamp:%Y-%m-%d %H:%M:%S}, RDTSC:{rdtsc}, Thread:{thread}, first:{}, second:{}, third:{}\n", intValue1 );
-            //HCC_ERROR( *BackendLogger::Instance(), "first:{}\n", intValue1 );
-            HCC_ERROR( *BackendLogger::Instance( ), "Logging int: {}, int: {}, double: {}", intValue1, intValue2, dblValue1 );
+            HCC_ERROR( *BackendLogger::Instance(), "first:{}\n", intValue1 );
+            //HCC_ERROR( *BackendLogger::Instance( ), "Logging int: {}, int: {}, double: {}", intValue1, intValue2, dblValue1 );
             //HCC_ERROR( backendLogger, "Level:{level}, Timestamp:{timestamp:%Y-%m-%d %H:%M:%S}, RDTSC:{rdtsc}, Thread:{thread}, first:{}, second:{}, third:{}\n", strValue );
             //HCC_ERROR( backendLogger, "first:{}\n", strValue );
         }
@@ -79,7 +79,7 @@ int main( )
         auto message = exception.Message( );
         wprintf( L"Caught %s Exception\nMessage:%s\n", typeName.c_str( ), message.c_str( ) );
     }
-    application.Stop( );
+    application->Stop( );
 
 }
 

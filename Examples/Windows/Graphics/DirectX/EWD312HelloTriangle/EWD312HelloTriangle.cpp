@@ -11,8 +11,8 @@ int main()
 {
     try
     {
-        Windows::DXApplication application;
-        application.Start( );
+        auto application = std::make_shared<Windows::DXApplication>();
+        application->Start( );
 
         Windows::DXForm form;
         form.SetText( L"Hello Triangle Demo" );
@@ -22,9 +22,9 @@ int main()
             
         } );
 
-        auto result = application.Run( form );
+        auto result = application->Run( form );
 
-        application.Stop( );
+        application->Stop( );
 
         return result;
     }

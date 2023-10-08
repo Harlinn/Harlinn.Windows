@@ -558,8 +558,8 @@ int main()
 {
     auto options = std::make_shared<Harlinn::Common::Core::ApplicationOptions>( );
     options->Load( );
-    Application application( options );
-    application.Start( );
+    auto application = std::make_shared<Application>( options );
+    application->Start( );
 
     ArrayAssignTest1a( );
     ArrayAssignTest1b( );
@@ -582,6 +582,6 @@ int main()
     auto frequency2 = static_cast<double>( 2712 ) * 1000.0 * 1000.0033444;
     printf( "TSC frequency: %f (%f)\n", frequency, frequency2 );
     */
-    application.Stop( );
+    application->Stop( );
 
 }

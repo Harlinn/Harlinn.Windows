@@ -8,8 +8,8 @@ int main()
 {
     auto options = std::make_shared<Harlinn::Common::Core::ApplicationOptions>( );
     options->Load( );
-    Application application( options );
-    application.Start( );
+    auto application = std::make_shared<Application>( options );
+    application->Start( );
 
     size_t Iterations = 10000;
     size_t Values = 100000;
@@ -33,6 +33,6 @@ int main()
 
     printf( "Wrote %zu bytes in %f seconds, %f bytes per second\n", bytesWritten, duration, bytesPerSecond );
 
-    application.Stop( );
+    application->Stop( );
 }
 

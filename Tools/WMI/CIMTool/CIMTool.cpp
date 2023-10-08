@@ -18,8 +18,8 @@ int main( )
     hcc::Com::InitializeClientSecurity( );
 
 
-    Windows::ImGui::Application application;
-    application.Start( );
+    auto application = std::make_shared<Windows::ImGui::Application>();
+    application->Start( );
 
     try
     {
@@ -33,8 +33,8 @@ int main( )
             mainUI.Render( );
         } );
 
-        result = application.Run( form );
-        application.Stop( );
+        result = application->Run( form );
+        application->Stop( );
         result = 0;
     }
     catch ( std::exception& exc )

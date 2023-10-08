@@ -175,17 +175,17 @@ int main( )
     {
         SetThreadDpiAwarenessContext( DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2 );
 
-        Harlinn::Windows::Application application;
-        application.Start( );
+        auto application = std::make_shared<Harlinn::Windows::Application>( );
+        application->Start( );
 
         SkGraphics::Init( );
 
         SkiaMaterialShadowsForm form;
         form.Initialize( );
 
-        auto result = application.Run( form );
+        auto result = application->Run( form );
 
-        application.Stop( );
+        application->Stop( );
 
         return result;
 

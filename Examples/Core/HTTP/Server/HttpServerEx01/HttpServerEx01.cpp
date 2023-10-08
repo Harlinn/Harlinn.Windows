@@ -11,8 +11,8 @@ int main()
 {
     auto options = std::make_shared<Harlinn::Common::Core::ApplicationOptions>( );
     options->Load( );
-    Application application( options );
-    application.Start( );
+    auto application = std::make_shared<Application>( options );
+    application->Start( );
     try
     {
         Http::Application httpApplication;
@@ -55,7 +55,7 @@ int main()
     }
 
 
-    application.Stop( );
+    application->Stop( );
     return 0;
 }
 

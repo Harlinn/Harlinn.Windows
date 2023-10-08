@@ -276,15 +276,15 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 
     try
     {
-        Harlinn::Windows::Application application;
-        application.Start( );
+        auto application = std::make_shared<Harlinn::Windows::Application>();
+        application->Start( );
 
         UNREFERENCED_PARAMETER( hPrevInstance );
         UNREFERENCED_PARAMETER( lpCmdLine );
         SetThreadDpiAwarenessContext( DPI_AWARENESS_CONTEXT_SYSTEM_AWARE );
         
-        auto result = application.Run<MyForm>();
-        application.Stop( );
+        auto result = application->Run<MyForm>();
+        application->Stop( );
         return result;
     }
     catch ( std::exception& exc )

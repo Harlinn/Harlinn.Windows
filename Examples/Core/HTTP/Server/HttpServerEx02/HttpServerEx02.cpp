@@ -11,8 +11,8 @@ int main()
 {
     auto options = std::make_shared<Harlinn::Common::Core::ApplicationOptions>( );
     options->Load( );
-    Application application( options );
-    application.Start( );
+    auto application = std::make_shared<Application>( options );
+    application->Start( );
     try
     {
         constexpr size_t NumberOfConcurrentRequests = 12;
@@ -51,6 +51,6 @@ int main()
         std::string message = exc.what( );
         printf( "Exception: %s", message.c_str( ) );
     }
-    application.Stop( );
+    application->Stop( );
     return 0;
 }

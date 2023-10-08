@@ -14,8 +14,8 @@ int main()
 {
     auto options = std::make_shared<Harlinn::Common::Core::ApplicationOptions>( );
     options->Load( );
-    Application application( options );
-    application.Start( );
+    auto application = std::make_shared<Application>( options );
+    application->Start( );
 
     WSAInitTerm wsa;
 #ifdef _DEBUG
@@ -46,7 +46,7 @@ int main()
     //puts( "Press enter to exit" );
     //while ( getc( stdin ) != '\n' );
 
-    application.Stop( );
+    application->Stop( );
 
 }
 

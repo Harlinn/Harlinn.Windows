@@ -140,15 +140,15 @@ int main()
 {
     try
     {
-        Harlinn::Windows::Application application;
-        application.Start();
+        auto application = std::make_shared<Harlinn::Windows::Application>();
+        application->Start();
 
         SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_SYSTEM_AWARE);
         // Initialization/Shutdown of the Media Foundation platform
         MF::MediaFoundation mediaFoundation;
 
-        auto result = application.Run<MyForm>();
-        application.Stop();
+        auto result = application->Run<MyForm>();
+        application->Stop();
         return result;
     }
     catch (std::exception& exc)

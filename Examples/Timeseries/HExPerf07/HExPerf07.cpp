@@ -58,8 +58,8 @@ int main( )
 {
     auto applicationOptions = std::make_shared<ApplicationOptions>( );
     applicationOptions->Load( );
-    Application application( applicationOptions );
-    application.Start( );
+    auto application = std::make_shared<Application>( applicationOptions );
+    application->Start( );
 
 #ifdef _DEBUG
     constexpr size_t NumberOfPoints = 30;
@@ -146,7 +146,7 @@ int main( )
     pointsPrSeconds = static_cast<double>( totalPoints ) / totalSeconds;
     printf( "Inserted %llu timeseries points into %zu timeseries in %f seconds\n\t - points pr. second: %f\n", totalPoints, TimeseriesCount, totalSeconds, pointsPrSeconds );
 
-    application.Stop( );
+    application->Stop( );
 
 
 }

@@ -954,8 +954,8 @@ int main()
 {
     auto applicationOptions = std::make_shared<ApplicationOptions>( );
     applicationOptions->Load( );
-    Application application( applicationOptions );
-    application.Start( );
+    auto application = std::make_shared<Application>( applicationOptions );
+    application->Start( );
 
 
     std::wstring DataSource = L"Ajaworks";
@@ -979,6 +979,6 @@ int main()
     test.Run2( );
 
 
-    application.Stop( );
+    application->Stop( );
 }
 

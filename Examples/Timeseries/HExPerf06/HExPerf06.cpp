@@ -99,8 +99,8 @@ int main( )
 {
     auto applicationOptions = std::make_shared<ApplicationOptions>( );
     applicationOptions->Load( );
-    Application application( applicationOptions );
-    application.Start( );
+    auto application = std::make_shared<Application>( applicationOptions );
+    application->Start( );
 #ifdef _DEBUG
     constexpr size_t NumberOfPoints = 30;
     using Engine = Timeseries::Engine<Trade, 6>;
@@ -190,7 +190,7 @@ int main( )
     printf( "Sum inserted:%lld,\n"
         "Sum read:    %lld\n", sumWritten.Value(), sumRead.Value( ) );
 
-    application.Stop( );
+    application->Stop( );
 
 }
 

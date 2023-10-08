@@ -24,8 +24,8 @@ int main( )
 {
     auto applicationOptions = std::make_shared<ApplicationOptions>( );
     applicationOptions->Load( );
-    Application application( applicationOptions );
-    application.Start( );
+    auto application = std::make_shared<Application>( applicationOptions );
+    application->Start( );
 
 #ifdef _DEBUG
     using Engine = Timeseries::Engine<Timeseries::TimeseriesPoint, 6>;
@@ -134,7 +134,7 @@ int main( )
     printf( "Sum inserted:%lld,\n"
             "Sum read:    %lld\n", sumWritten, sumRead );
 
-    application.Stop( );
+    application->Stop( );
 
 }
 

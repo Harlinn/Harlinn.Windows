@@ -77,8 +77,8 @@ int main()
 {
     auto applicationOptions = std::make_shared<ApplicationOptions>( );
     applicationOptions->Load( );
-    Application application( applicationOptions );
-    application.Start( );
+    auto application = std::make_shared<Application>( applicationOptions );
+    application->Start( );
 
     CoInitializeEx( nullptr, COINIT_MULTITHREADED );
     auto loginInfo = GetLoginInfo( );
@@ -117,7 +117,7 @@ int main()
     serviceContext.SessionEnd( );
     CoUninitialize( );
 
-    application.Stop( );
+    application->Stop( );
 
 }
 

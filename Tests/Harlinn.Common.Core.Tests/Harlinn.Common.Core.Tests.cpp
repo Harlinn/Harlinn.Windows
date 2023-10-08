@@ -8,10 +8,10 @@
 
 int main( int argc, char* argv[], char* envp[] )
 {
-    Harlinn::Common::Core::Application application;
-    application.Start( );
+    auto application = std::make_shared<Harlinn::Common::Core::Application>( );
+    application->Start( );
     auto result = boost::unit_test::unit_test_main( &init_unit_test, argc, argv );
-    application.Stop( );
+    application->Stop( );
     return result;
 }
 

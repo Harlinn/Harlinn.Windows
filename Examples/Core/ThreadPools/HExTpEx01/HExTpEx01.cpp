@@ -14,8 +14,8 @@ int main()
 {
     ApplicationOptions options;
     options.Load( );
-    Application application( options );
-    application.Start( );
+    auto application = std::make_shared<Application>( options );
+    application->Start( );
 
     std::set_terminate( []( ) {printf( "C++ terminate\n" ); } );
     try
@@ -176,6 +176,6 @@ int main()
         auto what = exc.what( );
         printf( "Exception caught in main:%s\n", what );
     }
-    application.Stop( );
+    application->Stop( );
 }
 */

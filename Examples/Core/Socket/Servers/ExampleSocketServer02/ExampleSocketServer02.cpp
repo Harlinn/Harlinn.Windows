@@ -9,8 +9,8 @@ int main( int argc, char* argv[] )
 {
     auto options = std::make_shared<ApplicationOptions>( );
     options->Load( );
-    Application application( options );
-    application.Start( );
+    auto application = std::make_shared<Application>( options );
+    application->Start( );
 
     try
     {
@@ -43,7 +43,7 @@ int main( int argc, char* argv[] )
         printf( "Exception: %s", message.c_str( ) );
     }
 
-    application.Stop( );
+    application->Stop( );
     return 0;
 }
 

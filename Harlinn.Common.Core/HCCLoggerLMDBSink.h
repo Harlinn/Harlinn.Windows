@@ -7,20 +7,30 @@
 
 namespace Harlinn::Common::Core::Logging::Sinks
 {
+    enum class LMDBSinkMessageType
+    {
+        Unknown,
+        Stop
+    };
+
+    using LMDBSinkMessage = Concurrency::Messages::Message<LMDBSinkMessageType>;
+    template<LMDBSinkMessageType messageId>
+    using SimpleMessage = Concurrency::Messages::SimpleMessage<LMDBSinkMessageType, messageId>;
 
 
-    class LMDBSink : public ActiveObject<LMDBSink>
+    class LMDBSink : public Concurrency::ActiveObject<std::shared_ptr<LMDBSinkMessage>>
     {
     public:
-        using Base = ActiveObject<LMDBSink>;
+        using Base = Concurrency::ActiveObject<std::shared_ptr<LMDBSinkMessage>>;
     private:
         LMDBSinkOptions options_;
     public:
-        LMDBSink()
+        LMDBSink( const WideString& threadName )
+            : Base( threadName )
         { }
 
-        LMDBSink( const LMDBSinkOptions& options )
-            : options_( options )
+        LMDBSink( const WideString& threadName, const LMDBSinkOptions& options )
+            : Base( threadName ), options_( options )
         {
         }
 
@@ -28,7 +38,7 @@ namespace Harlinn::Common::Core::Logging::Sinks
         HCC_EXPORT void Start( );
         HCC_EXPORT void Stop( );
 
-        HCC_EXPORT void Process( const Message& message ) noexcept;
+        HCC_EXPORT virtual void ProcessMessage( const MessageType& message ) override;
     };
 }
 

@@ -8,11 +8,17 @@ namespace Harlinn::Common::Core
     HCC_EXPORT Application* Application::instance_ = nullptr;
 
     Application::Application( const std::shared_ptr<ApplicationOptions>& options )
-        : options_( options ),
-          loggingBackend_( options->LoggingBackendOptions() )
+        : Base(L"Core::Application" ), options_( options ),
+          loggingBackend_( std::make_shared<Logging::Backend>( options->LoggingBackendOptions() ) )
     {
         instance_ = this;
     }
+
+    HCC_EXPORT Application::Application( )
+        : Application( ApplicationOptions::LoadFromFile( ) )
+    {
+    }
+
     Application::~Application( )
     {
         instance_ = nullptr;
@@ -43,8 +49,9 @@ namespace Harlinn::Common::Core
         }
     }
 
-    void Application::Process( const Message& message ) noexcept
+    void Application::ProcessMessage( const MessageType& message )
     {
+        Base::ProcessMessage( message );
     }
 
     

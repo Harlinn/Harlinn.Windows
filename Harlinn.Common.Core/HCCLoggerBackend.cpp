@@ -42,7 +42,7 @@ namespace Harlinn::Common::Core::Logging
     HCC_EXPORT Backend* Backend::instance_ = nullptr;
 
     Backend::Backend( const std::shared_ptr<BackendOptions>& options )
-        : options_( options ), processInfo_( BackendProcessInfo::Create( ) ), bufferManager_( this )
+        : Base( L"Logging::Backend" ), options_( options ), processInfo_( BackendProcessInfo::Create( ) ), bufferManager_( this )
     {
         instance_ = this;
     }
@@ -60,17 +60,21 @@ namespace Harlinn::Common::Core::Logging
         }
     }
 
-    void Backend::Process( const Message& message ) noexcept
+    void Backend::ProcessMessage( const MessageType& message )
     {
-        UInt64 messageId = message.Id( );
-        switch ( messageId )
+        Base::ProcessMessage( message );
+        auto messageType = message->MessageType( );
+        switch ( messageType )
         {
-            case BackendMessageIds::ProcessBuffer:
-                if ( message.overlapped_ )
+            case BackendMessageType::ProcessBuffer:
+            {
+                auto* processBufferMessage = static_cast< ProcessBufferMessage* >( message.get() );
+                if ( processBufferMessage->Value() )
                 {
-                    ProcessBuffer( static_cast<BackendBuffer*>( message.Overlapped() ) );
+                    ProcessBuffer( processBufferMessage->Value( ) );
                 }
                 break;
+            }
         }
     }
 

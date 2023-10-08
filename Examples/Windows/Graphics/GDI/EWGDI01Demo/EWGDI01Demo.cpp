@@ -687,12 +687,12 @@ int APIENTRY _tWinMain( _In_ HINSTANCE hInstance,
     UNREFERENCED_PARAMETER( lpCmdLine );
     try
     {
-        Harlinn::Windows::Application application;
-        application.Start( );
+        auto application = std::make_shared<Harlinn::Windows::Application>( );
+        application->Start( );
 
-        auto result = application.Run<DeviceContextExampleForm>( );
+        auto result = application->Run<DeviceContextExampleForm>( );
 
-        application.Stop( );
+        application->Stop( );
 
         return result;
 

@@ -23,8 +23,8 @@ int main()
 {
     auto applicationOptions = std::make_shared<ApplicationOptions>( );
     applicationOptions->Load( );
-    Application application( applicationOptions );
-    application.Start( );
+    auto application = std::make_shared<Application>( applicationOptions );
+    application->Start( );
 
     using Engine = Timeseries::Engine<>;
     using Point = typename Engine::Point;
@@ -70,5 +70,5 @@ int main()
     timeseriesCursor.Close( );
     transaction.Commit( );
 
-    application.Stop( );
+    application->Stop( );
 }

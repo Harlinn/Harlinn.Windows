@@ -25,8 +25,8 @@ int main( )
 {
     auto applicationOptions = std::make_shared<ApplicationOptions>( );
     applicationOptions->Load( );
-    Application application( applicationOptions );
-    application.Start( );
+    auto application = std::make_shared<Application>( applicationOptions );
+    application->Start( );
 #ifdef _DEBUG
     constexpr size_t NumberOfPoints = 30;
     using Engine = Timeseries::Engine<Timeseries::TimeseriesPoint, 6>;
@@ -83,7 +83,7 @@ int main( )
     printf( "Read  %llu timeseries points from %zu timeseries in %f seconds\n\t - points pr. second: %f\n", totalRows, TimeseriesCount, totalSeconds, pointsPrSeconds );
     printf( "Sum read:    %f\n", sumRead );
 
-    application.Stop( );
+    application->Stop( );
 
 }
 

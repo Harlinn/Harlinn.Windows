@@ -24,8 +24,8 @@ int main()
 {
     auto applicationOptions = std::make_shared<ApplicationOptions>( );
     applicationOptions->Load( );
-    Application application( applicationOptions );
-    application.Start( );
+    auto application = std::make_shared<Application>( applicationOptions );
+    application->Start( );
 
     using Engine = Timeseries::TimeseriesEngine;
     using Point = typename Engine::Point;
@@ -84,7 +84,7 @@ int main()
     printf( "Read  %llu timeseries points in %f seconds - points pr. second: %f\n", rows, totalSeconds, pointsPrSeconds );
     printf( "Sum inserted:%f,\n"
         "Sum read:    %f\n", sumWritten, sumRead );
-    application.Stop( );
+    application->Stop( );
 
         
 }

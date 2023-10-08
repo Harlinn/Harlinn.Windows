@@ -11,8 +11,8 @@ int main( )
 
     auto options = std::make_shared<Harlinn::Common::Core::ApplicationOptions>( );
     options->Load( );
-    Application application( options );
-    application.Start( );
+    auto application = std::make_shared<Application>( options );
+    application->Start( );
 
     Stopwatch stopwatch;
     stopwatch.Start( );
@@ -32,6 +32,6 @@ int main( )
 
     printf( "Wrote %zu bytes in %f seconds, %f bytes per second\n", bytesWritten, duration, bytesPerSecond );
 
-    application.Stop( );
+    application->Stop( );
 }
 

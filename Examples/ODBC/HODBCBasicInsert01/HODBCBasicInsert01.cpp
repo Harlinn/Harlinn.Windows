@@ -119,8 +119,8 @@ int main()
 {
     auto applicationOptions = std::make_shared<ApplicationOptions>( );
     applicationOptions->Load( );
-    Application application( applicationOptions );
-    application.Start( );
+    auto application = std::make_shared<Application>( applicationOptions );
+    application->Start( );
 
 //#define SELECT_ONLY 1
     std::wstring DataSource = L"Ajaworks";
@@ -214,6 +214,6 @@ int main()
     printf( "Selected %zu rows in %f seconds - %f rows per second.\n", selectedCount, duration, perSecond );
     flushall( );
 
-    application.Stop( );
+    application->Stop( );
 
 }

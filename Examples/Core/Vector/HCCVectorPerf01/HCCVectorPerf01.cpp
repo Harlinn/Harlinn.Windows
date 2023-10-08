@@ -3252,8 +3252,8 @@ int main()
 {
     auto options = std::make_shared<ApplicationOptions>( );
     options->Load( );
-    Application application( options );
-    application.Start( );
+    auto application = std::make_shared<Application>( options );
+    application->Start( );
 
 #define RUN_ALL 1
 #ifdef RUN_ALL
@@ -3326,6 +3326,6 @@ int main()
     VectorEmplaceTest4a( );
     VectorEmplaceTest5a( );
 #endif
-    application.Stop( );
+    application->Stop( );
 }
 

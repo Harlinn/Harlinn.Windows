@@ -50,8 +50,8 @@ int main( )
 {
     auto applicationOptions = std::make_shared<ApplicationOptions>( );
     applicationOptions->Load( );
-    Application application( applicationOptions );
-    application.Start( );
+    auto application = std::make_shared<Application>( applicationOptions );
+    application->Start( );
 
     // Number of rows to insert
     constexpr size_t count = 1'000'000;
@@ -107,5 +107,5 @@ int main( )
     serviceContext.SessionEnd( );
     CoUninitialize( );
 
-    application.Stop( );
+    application->Stop( );
 }

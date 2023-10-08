@@ -10,8 +10,8 @@ int main()
 {
     try
     {
-        Windows::ImGui::Application application;
-        application.Start( );
+        auto application = std::make_shared<Windows::ImGui::Application>();
+        application->Start( );
 
         Windows::ImGui::Form form;
         form.SetText( L"ImGui & ImPlot Demo" );
@@ -33,9 +33,9 @@ int main()
 
         } );
 
-        auto result = application.Run( form );
+        auto result = application->Run( form );
 
-        application.Stop( );
+        application->Stop( );
 
         return result;
     }

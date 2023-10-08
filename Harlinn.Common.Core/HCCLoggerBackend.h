@@ -154,32 +154,43 @@ namespace Harlinn::Common::Core::Logging
         class BackendQueue;
     }
 
-    namespace BackendMessageIds
+    enum class BackendMessageType
     {
+        Unknown,
         /// <summary>
         /// Tell the backend object to exit its
         /// background processing thread.
         /// </summary>
-        constexpr UInt32 BackendStop = ActiveObjectMessageIds::Stop;
+        Stop,
 
         /// <summary>
         /// Param1: Id of thread that has terminated
         /// </summary>
-        constexpr UInt32 ThreadDetached = ActiveObjectMessageIds::Last + 1;
+        ThreadDetached,
 
         /// <summary>
         /// Param1: pointer to reference counted BackendBuffer*
         /// </summary>
-        constexpr UInt32 ProcessBuffer = ActiveObjectMessageIds::Last + 2;
-    }
+        ProcessBuffer
+    };
+
+    using BackendMessage = Concurrency::Messages::Message<BackendMessageType>;
+    
+    template<BackendMessageType messageId>
+    using SimpleBackendMessage = Concurrency::Messages::SimpleMessage<BackendMessageType, messageId>;
+    
+    template<typename ValueT, BackendMessageType messageId>
+    using SimpleBackendValueMessage = Concurrency::Messages::SimpleValueMessage<ValueT, BackendMessageType, messageId>;
+
+    using ProcessBufferMessage = SimpleBackendValueMessage<BackendBuffer*, BackendMessageType::ProcessBuffer>;
 
 
 
-    class Backend : public ActiveObject<Backend>
+    class Backend : public Concurrency::ActiveObject<std::shared_ptr<BackendMessage>>
     {
         friend class BackendLogger;
     public:
-        using Base = ActiveObject<Backend>;
+        using Base = Concurrency::ActiveObject<std::shared_ptr<BackendMessage>>;
     private:
         HCC_EXPORT static Backend* instance_;
         std::shared_ptr<BackendOptions> options_;
@@ -209,12 +220,23 @@ namespace Harlinn::Common::Core::Logging
         // Transfers ownership of the buffer to the queue
         void Post( BackendBuffer* buffer )
         {
-            Base::Post( BackendMessageIds::ProcessBuffer, buffer );
+            auto message = std::make_shared< ProcessBufferMessage >( buffer );
+            PostMessage( message );
         }
 
 
-
-        HCC_EXPORT void Process( const Message& message ) noexcept;
+        HCC_EXPORT virtual void ProcessMessage( const MessageType& message ) override;
+    protected:
+        virtual bool IsStopMessage( const MessageType& message ) const noexcept override
+        {
+            return message->MessageType( ) == BackendMessageType::Stop;
+        }
+        virtual void PostStopMessage( ) override
+        {
+            auto message = std::make_shared< SimpleBackendMessage<BackendMessageType::Stop > >( );
+            PostMessage( message );
+        }
+    protected:
     private:
         void ProcessBuffer( BackendBuffer* buffer );
     public:

@@ -70,10 +70,10 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
     try
     {
-        Harlinn::Windows::Application application;
-        application.Start( );
-        auto result = application.Run<TextEditForm>();
-        application.Stop( );
+        auto application = std::make_shared<Harlinn::Windows::Application>();
+        application->Start( );
+        auto result = application->Run<TextEditForm>();
+        application->Stop( );
 
         return result;
     }
