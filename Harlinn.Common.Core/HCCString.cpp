@@ -236,6 +236,11 @@ namespace Harlinn::Common::Core
         return value.AsWideString( );
     }
 
+    [[nodiscard]] WideString ToWideString( const FixedSizeMemoryManagerStatistics& statistics )
+    {
+        return Format( L"Free count={}, Malloc calls={}, Free calls={}, Aligned Malloc calls={}, Aligned Free calls={}", statistics.FreeCount, statistics.MallocCalls, statistics.FreeCalls, statistics.AlignedMallocCalls, statistics.AlignedFreeCalls );
+    }
+
 
     
 
@@ -381,6 +386,11 @@ namespace Harlinn::Common::Core
     AnsiString ToAnsiString( const Variant& value )
     {
         return ToAnsiString( value.AsWideString( ) );
+    }
+
+    [[nodiscard]] AnsiString ToAnsiString( const FixedSizeMemoryManagerStatistics& statistics )
+    {
+        return Format( "Free count={}, Malloc calls={}, Free calls={}, Aligned Malloc calls={}, Aligned Free calls={}", statistics.FreeCount, statistics.MallocCalls, statistics.FreeCalls, statistics.AlignedMallocCalls, statistics.AlignedFreeCalls );
     }
 
 

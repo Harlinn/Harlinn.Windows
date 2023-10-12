@@ -1,17 +1,22 @@
 #include "pch.h"
 #include <HCCApplication.h>
+#include <HCCLoggerImpl.h>
 #include <HCCSync.h>
 
 namespace Harlinn::Common::Core
 {
 
+    static UInt64 applicationThreadId = 0xFFFFFFFFFFFFFFFF;
+    static UInt64 mainThreadId = 0xFFFFFFFFFFFFFFFF;
     HCC_EXPORT Application* Application::instance_ = nullptr;
 
     Application::Application( const std::shared_ptr<ApplicationOptions>& options )
-        : Base(L"Core::Application" ), options_( options ),
-          loggingBackend_( std::make_shared<Logging::Backend>( options->LoggingBackendOptions() ) )
+        : Base(L"Core::Application" ), options_( options )
     {
+        Logging::LogManager::SetOptions( options->LoggerOptions( ) );
+
         instance_ = this;
+        mainThreadId = CurrentThread::Id( );
     }
 
     HCC_EXPORT Application::Application( )
@@ -24,6 +29,11 @@ namespace Harlinn::Common::Core
         instance_ = nullptr;
     }
 
+    UInt64 Application::MainThreadId( ) noexcept
+    {
+        return mainThreadId;
+    }
+
     void Application::HandleDllMainEvent( HMODULE moduleHandle, DWORD reason, LPVOID freeLibrary ) noexcept
     {
         try
@@ -33,13 +43,26 @@ namespace Harlinn::Common::Core
                 case DLL_PROCESS_ATTACH:
                     break;
                 case DLL_THREAD_ATTACH:
-                    break;
-                case DLL_THREAD_DETACH:
+                {
                     if ( instance_ )
                     {
-
+                        instance_->PostThreadAttachedMessage( );
                     }
-                    break;
+                }
+                break;
+                case DLL_THREAD_DETACH:
+                {
+                    if ( instance_ )
+                    {
+                        instance_->PostThreadDetachedMessage( );
+                    }
+                    auto logManager = Logging::LogManager::Instance( );
+                    if ( logManager )
+                    {
+                        logManager->PostThreadDetachedMessage( );
+                    }
+                }
+                break;
                 case DLL_PROCESS_DETACH:
                     break;
             }
@@ -52,8 +75,60 @@ namespace Harlinn::Common::Core
     void Application::ProcessMessage( const MessageType& message )
     {
         Base::ProcessMessage( message );
+        auto messageType = message->MessageType( );
+        switch ( messageType )
+        {
+            case ApplicationMessageType::ThreadAttached:
+            {
+                ProcessThreadAttachedMessage( std::static_pointer_cast< ApplicationThreadAttachedMessage >( message ) );
+            }
+            break;
+            case ApplicationMessageType::ThreadDetached:
+            {
+                ProcessThreadDetachedMessage( std::static_pointer_cast< ApplicationThreadDetachedMessage >( message ) );
+            }
+            break;
+        }
     }
 
-    
+    void Application::BeforeProcessMessages( )
+    {
+        Base::BeforeProcessMessages( );
+        applicationThreadId = CurrentThread::Id( );
+    }
+
+    void Application::PostThreadAttachedMessage( )
+    {
+        auto threadId = CurrentThread::Id( );
+        if ( applicationThreadId != threadId && mainThreadId != threadId )
+        {
+            auto message = std::make_shared< ApplicationThreadAttachedMessage >( static_cast< UInt32 >( threadId ) );
+            PostMessage( message );
+        }
+    }
+
+    void Application::ProcessThreadAttachedMessage( const std::shared_ptr<ApplicationThreadAttachedMessage>& message )
+    {
+        auto attachedThreadId = message->Value( );
+        OnThreadAttached( attachedThreadId );
+    }
+
+    void Application::PostThreadDetachedMessage( )
+    {
+        auto threadId = CurrentThread::Id( );
+        if ( applicationThreadId != threadId && mainThreadId != threadId )
+        {
+            auto message = std::make_shared< ApplicationThreadDetachedMessage >( static_cast< UInt32 >( threadId ) );
+            PostMessage( message );
+        }
+    }
+
+    void Application::ProcessThreadDetachedMessage( const std::shared_ptr<ApplicationThreadDetachedMessage>& message )
+    {
+        auto detachedThreadId = message->Value( );
+        OnThreadDetached( detachedThreadId );
+    }
+
+
 
 }

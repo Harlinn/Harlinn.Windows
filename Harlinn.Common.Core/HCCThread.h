@@ -5,6 +5,7 @@
 #include <HCCDef.h>
 #include <HCCSync.h>
 
+
 namespace Harlinn::Common::Core
 {
     
@@ -362,7 +363,14 @@ namespace Harlinn::Common::Core
             return OpenToken( mask, useProcessSecurityContext );
         }
 
+        HCC_EXPORT void FlushLogger( Logging::FlushType flushType = Logging::FlushType::Normal ) noexcept;
+
+        HCC_EXPORT Logging::ThreadLogger* ThreadLogger( ) noexcept;
+
+
     }
+
+
 
 
     class Thread : public WaitableHandle
@@ -822,6 +830,16 @@ namespace Harlinn::Common::Core
             Security::TokenAccessMask mask( desiredAccess );
             return OpenToken( mask, useProcessSecurityContext );
         }
+
+        static size_t HardwareConcurrency( )
+        {
+            SYSTEM_INFO systemInfo{};
+            GetNativeSystemInfo( &systemInfo );
+            return systemInfo.dwNumberOfProcessors;
+        }
+
+
+
 
 
     };

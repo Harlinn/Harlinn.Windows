@@ -86,7 +86,12 @@ namespace Harlinn::Common::Core
     static_assert( AnsiStringLike< std::string > );
     static_assert( WideStringLike< std::wstring > );
 
-    
+    template<typename ValueT>
+    concept SimpleComLike = requires( ValueT v )
+    {
+        { v.AddRef( ) } ->std::convertible_to<UInt32>;
+        { v.Release( ) } ->std::convertible_to<UInt32>;
+    };
 
     
 

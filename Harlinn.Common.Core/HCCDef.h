@@ -287,6 +287,10 @@
 #include <boost/icl/split_interval_set.hpp>
 #include <boost/icl/split_interval_map.hpp>
 
+#include <boost/lockfree/queue.hpp>
+#include <boost/lockfree/stack.hpp>
+#include <boost/lockfree/spsc_queue.hpp>
+
 #include <HCCWinError.h>
 
 namespace Harlinn::Common::Core

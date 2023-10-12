@@ -45,7 +45,7 @@ namespace
     template<typename SessionRefT>
     bool InitializeLogSite( SessionRefT& session, int line, const char* file, const char* function )
     {
-        const char* fmt = "%d";
+        const char* fmt = "{}";
         Int32 arg1 = 0;
 
         bool isFixedSize = Harlinn::Common::Core::Persistent::IsFixedSize( arg1 );
@@ -115,7 +115,7 @@ BOOST_AUTO_TEST_CASE( InsertLogSiteTest1 )
     logsiteTable->MoveFirst( );
     do
     {
-        Logging::LogSite logSite;
+        Logging::Types::LogSiteData logSite;
         logsiteTable->Read( logSite );
         auto id = logSite.Id( );
         if ( id < minId )
@@ -150,7 +150,7 @@ BOOST_AUTO_TEST_CASE( InsertBackendComputerInfoTest1 )
     auto found = table->Find( machineId );
     BOOST_CHECK( found == false );
 
-    auto backendComputerInfo = Logging::GetBackendComputerInfo( );
+    auto backendComputerInfo = Logging::Types::GetComputerInfo( );
     bool inserted1 = table->Insert( &backendComputerInfo );
     BOOST_CHECK( inserted1 == true );
     bool inserted2 = table->Insert( &backendComputerInfo );
@@ -169,10 +169,10 @@ BOOST_AUTO_TEST_CASE( InsertBackendUserInfoTest1 )
 
     auto table = session->GetLogUserTable( );
 
-    auto backendUserInfo1 = Logging::GetBackendUserInfo( );
+    auto backendUserInfo1 = Logging::Types::GetUserInfo( );
     bool inserted1 = table->Insert( &backendUserInfo1 );
     BOOST_CHECK( inserted1 == true );
-    auto backendUserInfo2 = Logging::GetBackendUserInfo( );
+    auto backendUserInfo2 = Logging::Types::GetUserInfo( );
     bool inserted2 = table->Insert( &backendUserInfo2 );
     BOOST_CHECK( inserted2 == false );
 }

@@ -26,9 +26,14 @@ namespace Harlinn::Common::Core::Logging
         {
             StringT result;
             int count = 0;
-            if ( (level & Level::Trace) == Level::Trace )
+            if ( (level & Level::Verbose) == Level::Verbose )
             {
-                result = L"Trace";
+                result = L"Verbose";
+                count++;
+            }
+            if ( ( level & Level::Trace ) == Level::Trace )
+            {
+                result += count ? L"|Trace" : L"Trace";
                 count++;
             }
             if ( ( level & Level::Debug ) == Level::Debug )
@@ -112,9 +117,14 @@ namespace Harlinn::Common::Core::Logging
         {
             StringT result;
             int count = 0;
+            if ( ( level & Level::Verbose ) == Level::Verbose )
+            {
+                result = "Verbose";
+                count++;
+            }
             if ( ( level & Level::Trace ) == Level::Trace )
             {
-                result = "Trace";
+                result += count ? "|Trace" : "Trace";
                 count++;
             }
             if ( ( level & Level::Debug ) == Level::Debug )
@@ -209,7 +219,11 @@ namespace Harlinn::Common::Core::Logging
 
             for ( auto& flag : flags )
             {
-                if ( flag == L"Trace" )
+                if ( flag == L"Verbose" )
+                {
+                    result |= Level::Verbose;
+                }
+                else if ( flag == L"Trace" )
                 {
                     result |= Level::Trace;
                 }
@@ -296,7 +310,11 @@ namespace Harlinn::Common::Core::Logging
 
             for ( auto& flag : flags )
             {
-                if ( flag == "Trace" )
+                if ( flag == "Verbose" )
+                {
+                    result |= Level::Verbose;
+                }
+                else if ( flag == "Trace" )
                 {
                     result |= Level::Trace;
                 }

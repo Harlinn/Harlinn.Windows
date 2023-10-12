@@ -161,6 +161,14 @@ namespace Harlinn::Common::Core::IO
             }
         }
 
+        template<typename T>
+            requires ( std::is_same_v<char,T> || std::is_same_v<wchar_t, T> )
+        void Write( const T* str )
+        {
+            std::basic_string_view stringView( str );
+            Write( stringView );
+        }
+
 
         void WriteSize( size_t size )
         {

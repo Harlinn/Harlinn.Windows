@@ -1,6 +1,6 @@
 #pragma once
-#ifndef __HCCLOGGERBACKENDOPTIONS_H__
-#define __HCCLOGGERBACKENDOPTIONS_H__
+#ifndef __HCCLOGGEROPTIONS_H__
+#define __HCCLOGGEROPTIONS_H__
 
 #include <HCCLoggerLMDBSinkOptions.h>
 #include <HCCLoggerLevel.h>
@@ -8,21 +8,19 @@
 
 namespace Harlinn::Common::Core::Logging
 {
-    class Backend;
-
-
-    class BackendOptions : public std::enable_shared_from_this<BackendOptions>
+    class LoggerOptions : public std::enable_shared_from_this<LoggerOptions>
     {
         Level enabledLevels_ = Level::Default;
+        TimeSpan pollInterval_{ TimeSpan::TicksPerSecond * 5 };
         //ConsoleSinkOptions consoleSinkOptions_;
         std::shared_ptr<Sinks::LMDBSinkOptions> lmdbSinkOptions_;
     public:
         using Element = Xml::Dom::Element;
-        BackendOptions()
+        LoggerOptions()
             : lmdbSinkOptions_( std::make_shared<Sinks::LMDBSinkOptions>( ) )
         { }
 
-        explicit BackendOptions( Level enabledLevels )
+        explicit LoggerOptions( Level enabledLevels )
             : enabledLevels_( enabledLevels ), lmdbSinkOptions_( std::make_shared<Sinks::LMDBSinkOptions>() )
         {
         }
@@ -56,6 +54,12 @@ namespace Harlinn::Common::Core::Logging
         {
             return enabledLevels_;
         }
+
+        TimeSpan PollInterval( ) const noexcept
+        {
+            return pollInterval_;
+        }
+
         //ConsoleSinkOptions consoleSinkOptions_;
         const std::shared_ptr<Sinks::LMDBSinkOptions>& LMDBSinkOptions( ) const noexcept
         {

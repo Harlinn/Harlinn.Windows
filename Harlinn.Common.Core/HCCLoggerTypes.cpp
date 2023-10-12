@@ -1,19 +1,19 @@
 #include "pch.h"
-#include <HCCLoggerBackendDataTypes.h>
+#include <HCCLoggerTypes.h>
 #include <HCCEnvironment.h>
 
-namespace Harlinn::Common::Core::Logging
+namespace Harlinn::Common::Core::Logging::Types
 {
 
-    HCC_EXPORT BackendComputerInfo GetBackendComputerInfo( )
+    HCC_EXPORT ComputerInfo GetComputerInfo( )
     {
         Guid machineGuid = Environment::MachineGuid( );
         WideString domainName = Environment::DomainName( );
         WideString computerName = Environment::ComputerName( Environment::ComputerNameFormat::NetBIOS );
-        BackendComputerInfo result( machineGuid, domainName, computerName );
+        ComputerInfo result( machineGuid, domainName, computerName );
         return result;
     }
-    HCC_EXPORT BackendUserInfo GetBackendUserInfo( )
+    HCC_EXPORT UserInfo GetUserInfo( )
     {
         Guid userId;
         if ( Environment::IsComputerDomainJoined( ) )
@@ -23,11 +23,11 @@ namespace Harlinn::Common::Core::Logging
         }
         WideString domainName = Environment::DomainName( );
         WideString userName = Environment::UserName( Environment::UserNameFormat::SamCompatible );
-        BackendUserInfo result( userId, domainName, userName );
+        UserInfo result( userId, domainName, userName );
         return result;
     }
 
-    HCC_EXPORT BackendExecutableInfo GetBackendExecutableInfo( )
+    HCC_EXPORT ExecutableInfo GetExecutableInfo( )
     {
         wchar_t buffer[512];
 
@@ -37,15 +37,15 @@ namespace Harlinn::Common::Core::Logging
             ThrowLastOSError( );
         }
 
-        BackendExecutableInfo result( Guid( ), WideString( buffer, static_cast<size_t>(rc) ) );
+        ExecutableInfo result( Guid( ), WideString( buffer, static_cast<size_t>(rc) ) );
         return result;
     }
 
 
     // ------------------------------------------------------------------------
-    //  BackendProcessInfo
+    //  ProcessInfo
     // ------------------------------------------------------------------------
-    BackendProcessInfo BackendProcessInfo::Create( )
+    ProcessInfo ProcessInfo::Create( )
     {
         /*
         Guid id = Guid::NewGuid( );
@@ -54,7 +54,7 @@ namespace Harlinn::Common::Core::Logging
         WideString computerName = Environment::ComputerName( Environment::ComputerNameFormat::NetBIOS );
         WideString userName = Environment::UserName( Environment::UserNameFormat::SamCompatible );
         */
-        return BackendProcessInfo( );
+        return ProcessInfo( );
     }
 
 }

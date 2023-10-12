@@ -189,13 +189,13 @@
     <ClInclude Include="HCCIOBase.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="HCCLoggerBackend.h">
+    <ClInclude Include="HCCLoggerImpl.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="HCCApplication.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="HCCLoggerBackendOptions.h">
+    <ClInclude Include="HCCLoggerOptions.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="HCCLoggerLevel.h">
@@ -216,7 +216,7 @@
     <ClInclude Include="HCCLoggerLMDBSinkStorage.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="HCCLoggerBackendBuffer.h">
+    <ClInclude Include="HCCLoggerBuffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="HCCIOCompletionPort.h">
@@ -225,7 +225,7 @@
     <ClInclude Include="HCCIORequest.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="HCCLoggerBackendDataTypes.h">
+    <ClInclude Include="HCCLoggerTypes.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="HCCTypeDescriptorCursor.h">
@@ -372,6 +372,9 @@
     <ClInclude Include="HCCPersistentPrinter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="HCCLoggerStorage.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -443,13 +446,13 @@
     <ClCompile Include="HCCApplication.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="HCCLoggerBackend.cpp">
+    <ClCompile Include="HCCLoggerImpl.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="HCCLoggerLMDBSink.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="HCCLoggerBackendDataTypes.cpp">
+    <ClCompile Include="HCCLoggerTypes.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="xxh_x86dispatch.c">

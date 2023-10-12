@@ -472,10 +472,17 @@ namespace Harlinn::Common::Core
         ConditionVariable queueEmpty_;
         ConditionVariable queueFull_;
         CriticalSection criticalSection_;
+        /*
         size_t lastItemProduced_ = 0;
         size_t queueSize_ = 0;
         size_t startOffset_ = 0;
         bool closed_ = false;
+        */
+        std::atomic<size_t> lastItemProduced_ = 0;
+        std::atomic<size_t> queueSize_ = 0;
+        std::atomic<size_t> startOffset_ = 0;
+        std::atomic<bool> closed_ = false;
+
     public:
         static constexpr size_t MaxQueueSize = maxQueueSize;
         using Container = std::array<T, MaxQueueSize>;
@@ -549,7 +556,16 @@ namespace Harlinn::Common::Core
     private:
         void PopValue(T& value )
         {
-            value = std::move( conatainer_[startOffset_] );
+            if constexpr ( std::is_move_assignable_v<T> )
+            {
+                value = std::move(conatainer_[ startOffset_ ]);
+            }
+            else
+            {
+                value = conatainer_[ startOffset_ ];
+                conatainer_[ startOffset_ ] = {};
+            }
+            
 
             queueSize_--;
             startOffset_++;
@@ -1899,8 +1915,6 @@ namespace Harlinn::Common::Core
             }
             return *this;
         }
-
-
     };
 
     class TimerQueue
@@ -1930,6 +1944,16 @@ namespace Harlinn::Common::Core
             {
                 DeleteTimerQueueEx( handle_, INVALID_HANDLE_VALUE );
             }
+        }
+
+        static TimerQueue Create( )
+        {
+            auto handle = CreateTimerQueue( );
+            if ( !handle )
+            {
+                ThrowLastOSError( );
+            }
+            return TimerQueue( handle );
         }
 
 
@@ -2017,27 +2041,26 @@ namespace Harlinn::Common::Core
         }
 
     private:
-        private:
-            template <class TupleType, size_t... indices>
-            static void __stdcall Invoke( void* callbackArgs, BOOLEAN TimerOrWaitFired ) noexcept
+        template <class TupleType, size_t... indices>
+        static void __stdcall Invoke( void* callbackArgs, BOOLEAN TimerOrWaitFired ) noexcept
+        {
+            TupleType* callableAndArgs( static_cast<TupleType*>( callbackArgs ) );
+            TupleType& tuple = *callableAndArgs;
+            try
             {
-                TupleType* callableAndArgs( static_cast<TupleType*>( callbackArgs ) );
-                TupleType& tuple = *callableAndArgs;
-                try
-                {
-                    std::invoke( std::move( std::get<indices>( tuple ) )... );
-                }
-                catch ( ... )
-                {
+                std::invoke( std::move( std::get<indices>( tuple ) )... );
+            }
+            catch ( ... )
+            {
                     
-                }
             }
+        }
 
-            template <class TupleType, size_t... indices>
-            static constexpr auto MakeInvoke( std::index_sequence<indices...> ) noexcept
-            {
-                return &Invoke<TupleType, indices...>;
-            }
+        template <class TupleType, size_t... indices>
+        static constexpr auto MakeInvoke( std::index_sequence<indices...> ) noexcept
+        {
+            return &Invoke<TupleType, indices...>;
+        }
     public:
 
 
@@ -2056,8 +2079,35 @@ namespace Harlinn::Common::Core
                 ThrowLastOSError( );
             }
             return TimerQueueTimer( queueHandle, timerHandle, std::move( decayCopied ) );
-
         }
+
+        template <class Function, class... Args>
+            requires ( std::is_same_v<std::remove_cvref_t<Function>, TimerQueue> == false )
+        [[nodiscard]] TimerQueueTimer CreateTimer( TimeSpan period, TimerQueueTimerFlags flags, Function&& function, Args&&... args )
+        {
+            ULONG periodInMillis = static_cast< ULONG >( period.TotalMilliseconds( ) );
+            return CreateTimer( periodInMillis, periodInMillis, flags, std::forward<Function>( function ), std::forward<Args>( args )... );
+        }
+
+        template <class Function, class... Args>
+            requires ( std::is_same_v<std::remove_cvref_t<Function>, TimerQueue> == false )
+        [[nodiscard]] TimerQueueTimer CreateTimer( DateTime dueTime, TimerQueueTimerFlags flags, Function&& function, Args&&... args )
+        {
+            TimeSpan timeSpan = dueTime - DateTime::UtcNow( );
+            ULONG dueTimeInMillis = static_cast< ULONG >( timeSpan.TotalMilliseconds( ) );
+            return CreateTimer( dueTimeInMillis, 0, flags, std::forward<Function>( function ), std::forward<Args>( args )... );
+        }
+
+        template <class Function, class... Args>
+            requires ( std::is_same_v<std::remove_cvref_t<Function>, TimerQueue> == false )
+        [[nodiscard]] TimerQueueTimer CreateTimer( DateTime dueTime, TimeSpan period, TimerQueueTimerFlags flags, Function&& function, Args&&... args )
+        {
+            TimeSpan timeSpan = dueTime - DateTime::UtcNow( );
+            ULONG dueTimeInMillis = static_cast< ULONG >( timeSpan.TotalMilliseconds( ) );
+            ULONG periodInMillis = static_cast< ULONG >( period.TotalMilliseconds( ) );
+            return CreateTimer( dueTimeInMillis, periodInMillis, flags, std::forward<Function>( function ), std::forward<Args>( args )... );
+        }
+
 
     };
 

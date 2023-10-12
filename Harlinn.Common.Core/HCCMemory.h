@@ -4,6 +4,7 @@
 
 #include <HCCLinkedList.h>
 #include <HCCString.h>
+#include <HCCSync.h>
 
 namespace Harlinn::Common::Core
 {
@@ -109,15 +110,40 @@ namespace Harlinn::Common::Core
     HCC_DEFINE_ENUM_FLAG_OPERATORS( SectionFlags, DWORD );
 
 
+    struct FixedSizeMemoryManagerStatistics
+    {
+        size_t FreeCount;
+        size_t MallocCalls;
+        size_t FreeCalls;
+        size_t AlignedMallocCalls;
+        size_t AlignedFreeCalls;
+
+        void Print( )
+        {
+            printf( "Free count=%zu, Malloc calls=%zu, Free calls=%zu, Aligned Malloc calls=%zu, Aligned Free calls=%zu\n", FreeCount, MallocCalls, FreeCalls, AlignedMallocCalls, AlignedFreeCalls );
+        }
+    };
+
+    
+
+
+
     template<size_t blockSize, size_t maxFreeCount >
     class FixedSizeMemoryManager
     {
     public:
+        using StatisticsType = FixedSizeMemoryManagerStatistics;
         static constexpr size_t BlockSize = blockSize;
         static constexpr size_t MaxFreeCount = maxFreeCount;
     private:
         InterlockedLinkedList freeList_;
+        
         std::atomic_size_t freeCount_;
+        std::atomic_size_t mallocCalls_;
+        std::atomic_size_t freeCalls_;
+        std::atomic_size_t alignedMallocCalls_;
+        std::atomic_size_t alignedFreeCalls_;
+
     public:
         FixedSizeMemoryManager( )
         {
@@ -135,12 +161,72 @@ namespace Harlinn::Common::Core
             Reset( );
         }
 
+        size_t FreeCount( ) const noexcept
+        {
+            return freeCount_;
+        }
+        size_t MallocCalls( ) const noexcept
+        {
+            return mallocCalls_;
+        }
+        size_t FreeCalls( ) const noexcept
+        {
+            return freeCalls_;
+        }
+
+        size_t AlignedMallocCalls( ) const noexcept
+        {
+            return alignedMallocCalls_;
+        }
+        size_t AlignedFreeCalls( ) const noexcept
+        {
+            return alignedFreeCalls_;
+        }
+
+        
+        [[nodiscard]] StatisticsType Statistics( ) const noexcept
+        {
+            StatisticsType result
+            {
+                .FreeCount = FreeCount(),
+                .MallocCalls = MallocCalls(),
+                .FreeCalls = FreeCalls(),
+                .AlignedMallocCalls = AlignedMallocCalls(),
+                .AlignedFreeCalls = AlignedFreeCalls()
+            };
+            return result;
+        }
+
+        void PrintStatistics( )
+        {
+            auto freeCount = FreeCount( );
+            auto mallocCalls = MallocCalls( );
+            auto freeCalls = FreeCalls( );
+            auto alignedMallocCalls = AlignedMallocCalls( );
+            auto alignedFreeCalls = AlignedFreeCalls( );
+
+            printf( "Free count=%zu, Malloc calls=%zu, Free calls=%zu, Aligned Malloc calls=%zu, Aligned Free calls=%zu\n", freeCount, mallocCalls, freeCalls, alignedMallocCalls, alignedFreeCalls );
+        }
+    private:
+        void* AlignedMalloc( )
+        {
+            ++alignedMallocCalls_;
+            return _aligned_malloc( BlockSize, MEMORY_ALLOCATION_ALIGNMENT );
+        }
+        void AlignedFree( void* ptr )
+        {
+            ++alignedFreeCalls_;
+            _aligned_free( ptr );
+        }
+    public:
+
         void* Malloc( ) noexcept
         {
+            ++mallocCalls_;
             void* result = freeList_.Pop( );
             if ( !result )
             {
-                result = _aligned_malloc( BlockSize, MEMORY_ALLOCATION_ALIGNMENT );
+                result = AlignedMalloc( );
             }
             else
             {
@@ -151,17 +237,25 @@ namespace Harlinn::Common::Core
 
         void Free( void* ptr ) noexcept
         {
-            size_t freeCount = freeCount_;
-            if ( freeCount >= MaxFreeCount )
+            ++freeCalls_;
+            if ( ptr )
             {
-                _aligned_free( ptr );
+                size_t freeCount = freeCount_;
+                if ( freeCount >= MaxFreeCount )
+                {
+                    AlignedFree( ptr );
+                }
+                else
+                {
+                    auto* entry = ( InterlockedLinkedList::Entry* )ptr;
+                    entry->Next = nullptr;
+                    freeList_.Push( entry );
+                    ++freeCount_;
+                }
             }
             else
             {
-                auto* entry = ( InterlockedLinkedList::Entry* )ptr;
-                entry->Next = nullptr;
-                freeList_.Push( entry );
-                ++freeCount_;
+                DebugBreak( );
             }
         }
 
@@ -170,11 +264,14 @@ namespace Harlinn::Common::Core
             InterlockedLinkedList::Entry* entry = freeList_.Pop( );
             while ( entry )
             {
-                _aligned_free( entry );
+                AlignedFree( entry );
                 --freeCount_;
+                if ( !freeCount_ )
+                {
+                    break;
+                }
                 entry = freeList_.Pop( );
             } 
-
         }
     };
 
@@ -536,7 +633,7 @@ namespace Harlinn::Common::Core
     };
 
 
-
+    
 
 
 }

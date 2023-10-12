@@ -10,6 +10,40 @@
 #define HCCLIB_IMPLEMENTS_MIN_MAX_CLAMP 1
 #define HCCLIB_IMPLEMENTS_FLOOR_CEIL_TRUNC 1
 
+namespace Harlinn::Common::Core::Logging
+{
+    /// <summary>
+    /// Fully declared in HCCLoggerImpl.h
+    /// </summary>
+    class ThreadLogger;
+
+    /// <summary>
+    /// Passed to ThreadLogger::Flush,
+    /// either directly or indirectly through
+    /// CurrentThread::FlushLogger
+    /// </summary>
+    enum class FlushType
+    {
+        /// <summary>
+        /// Normal flush operation
+        /// </summary>
+        Normal,
+        /// <summary>
+        /// Flush was called while the LogManager checks 
+        /// each ThreadLogger for uncommitted data.
+        /// </summary>
+        Poll,
+        /// <summary>
+        /// Flush was called because the LogManager
+        /// detected that the thread has exited.
+        /// 
+        /// In this case the Buffer will have its Final flag set.
+        /// </summary>
+        Final
+    };
+}
+
+
 namespace Harlinn::Common::Core
 {
 #pragma pack(push,1)
@@ -798,10 +832,11 @@ namespace Harlinn::Common::Core
         using CanonicalType = XXH64_canonical_t;
         using ErrorCode = XXH_errorcode;
     private:
-        StateType* state_;
+        //StateType* state_;
+        StateType state_{};
     public:
         XXH64Hasher( HashType seed = 0)
-            : state_( XXH64_createState( ) )
+            //: state_( XXH64_createState( ) )
         {
             Reset( seed );
         }
@@ -811,10 +846,12 @@ namespace Harlinn::Common::Core
 
         ~XXH64Hasher( )
         {
+            /*
             if ( state_ )
             {
                 XXH64_freeState( state_ );
             }
+            */
         }
 
         XXH64Hasher& operator =( const XXH64Hasher& other ) = delete;
@@ -822,17 +859,17 @@ namespace Harlinn::Common::Core
 
         ErrorCode Reset( HashType seed = 0 )
         {
-            return XXH64_reset( state_, seed );
+            return XXH64_reset( &state_, seed );
         }
 
         HashType Digest( )
         {
-            return XXH64_digest( state_ );
+            return XXH64_digest( &state_ );
         }
 
         void Update( const void* input, size_t length )
         {
-            XXH64_update( state_, input, length );
+            XXH64_update( &state_, input, length );
         }
 
         template<typename T>
@@ -859,6 +896,15 @@ namespace Harlinn::Common::Core
             Update( &value, sizeof( std::remove_cvref_t<T> ) );
         }
 
+
+        void Add( const Byte* value, size_t size )
+        {
+            if ( size )
+            {
+                Update( value, size );
+            }
+        }
+
         template<typename T>
             requires std::is_same_v<char,T> || std::is_same_v<wchar_t, T>
         void Add( const T* value, size_t size )
@@ -869,13 +915,14 @@ namespace Harlinn::Common::Core
             }
         }
 
-        void Add( const Byte* value, size_t size )
+        template<SimpleStringLike StringT>
+        void Add( const StringT& str )
         {
-            if ( size )
-            {
-                Update( value, size );
-            }
+            Add( str.c_str( ), str.size( ) );
         }
+
+        
+
 
         template<typename T>
             requires std::is_same_v<char,T> || std::is_same_v<wchar_t, T>
@@ -889,19 +936,11 @@ namespace Harlinn::Common::Core
         }
 
         template<typename T>
-            requires IsSpecializationOf<T, std::basic_string> || IsSpecializationOf<T, std::basic_string_view>
+            requires IsSpecializationOf<T, std::basic_string_view>
         void Add( const T& str )
         { 
-            Add( str.data(), str.size() * sizeof(typename T::value_type) );
+            Add( str.data(), str.size() );
         }
-
-        template<typename T>
-            requires IsWideString<T> || IsAnsiString<T>
-        void Add( const T& str )
-        {
-            Add( str.data( ), str.size( ) * sizeof( typename T::value_type ) );
-        }
-
     };
 
 
@@ -1194,9 +1233,165 @@ namespace Harlinn::Common::Core
         }
     };
 
+    template<SimpleComLike ValueT>
+    class SimpleSharedPointer
+    {
+    public:
+        using ValueType = ValueT;
+        using value_type = ValueT;
+    private:
+        ValueType* pointer_ = nullptr;
+    public:
+        constexpr SimpleSharedPointer( ) noexcept = default;
 
-    
+        explicit SimpleSharedPointer( ValueType* pointer, bool addRef = false ) noexcept
+            : pointer_( pointer )
+        {
+            if ( addRef && ( pointer_ != nullptr ) )
+            {
+                pointer_->AddRef( );
+            }
+        }
 
+        SimpleSharedPointer( const SimpleSharedPointer& other ) noexcept
+            : pointer_( other.pointer_ )
+        {
+            if ( pointer_ )
+            {
+                pointer_->AddRef( );
+            }
+        }
+
+        SimpleSharedPointer( SimpleSharedPointer&& other ) noexcept
+            : pointer_( other.pointer_ )
+        {
+            if ( pointer_ )
+            {
+                other.pointer_ = nullptr;
+            }
+        }
+
+        ~SimpleSharedPointer( ) noexcept
+        {
+            ValueType* tmp = pointer_;
+            pointer_ = nullptr;
+            if ( tmp )
+            {
+                tmp->Release( );
+            }
+        }
+
+        constexpr operator bool( ) const noexcept
+        {
+            return pointer_ != nullptr;
+        }
+
+        SimpleSharedPointer& operator = ( const SimpleSharedPointer& other ) noexcept
+        {
+            if ( pointer_ != other.pointer_ )
+            {
+                if ( pointer_ )
+                {
+                    pointer_->Release( );
+                }
+                pointer_ = other.pointer_;
+                if ( pointer_ )
+                {
+                    pointer_->AddRef( );
+                }
+            }
+            return *this;
+        }
+
+        SimpleSharedPointer& operator = ( SimpleSharedPointer&& other ) noexcept
+        {
+            std::swap( pointer_, other.pointer_ );
+            return *this;
+        }
+
+        void swap( SimpleSharedPointer& other ) noexcept
+        {
+            std::swap( pointer_, other.pointer_ );
+        }
+
+        friend void swap( SimpleSharedPointer& first, SimpleSharedPointer& second ) noexcept
+        {
+            first.swap( second );
+        }
+
+        void ResetPtr( ValueType* other = nullptr, bool addRef = false ) noexcept
+        {
+            if ( pointer_ != other )
+            {
+                if ( pointer_ )
+                {
+                    pointer_->Release( );
+                }
+                pointer_ = other;
+                if ( addRef && ( pointer_ != nullptr ) )
+                {
+                    pointer_->AddRef( );
+                }
+            }
+        }
+
+        SimpleSharedPointer& operator = ( nullptr_t )
+        {
+            if ( pointer_ )
+            {
+                auto tmp = pointer_;
+                pointer_ = nullptr;
+                tmp->Release( );
+            }
+            return *this;
+        }
+
+        ValueType* Detach( )
+        {
+            auto tmp = pointer_;
+            pointer_ = nullptr;
+            return tmp;
+        }
+
+        constexpr bool operator == ( const SimpleSharedPointer& other ) const noexcept
+        {
+            return pointer_ == other.pointer_;
+        }
+        constexpr bool operator != ( const SimpleSharedPointer& other ) const noexcept
+        {
+            return pointer_ != other.pointer_;
+        }
+
+        constexpr bool operator == ( const ValueType* other ) const noexcept
+        {
+            return pointer_ == other;
+        }
+        constexpr bool operator != ( const ValueType* other ) const noexcept
+        {
+            return pointer_ != other;
+        }
+
+        ValueType* operator -> ( ) const noexcept
+        {
+            return ( ValueType* )pointer_;
+        }
+        std::add_lvalue_reference_t<ValueType> operator* ( ) const noexcept
+        {
+            return *pointer_;
+        }
+
+
+    };
+
+}
+
+namespace std
+{
+    template<Harlinn::Common::Core::SimpleComLike ValueT>
+    inline void swap( Harlinn::Common::Core::SimpleSharedPointer<ValueT>& first, Harlinn::Common::Core::SimpleSharedPointer<ValueT>& second ) noexcept
+    {
+        first.swap( second );
+    }
 }
 
 #endif

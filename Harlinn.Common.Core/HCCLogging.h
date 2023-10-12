@@ -12,33 +12,69 @@
 
 
 #if defined (HCC_COMMON_CORE_NLOGGING)
+
+#if !defined (HCC_INTERNAL_VERBOSE)
+#define HCC_INTERNAL_VERBOSE(fmt,...) do {} while (0)
+#endif
 #if !defined (HCC_INTERNAL_DEBUG)
-#define HCC_INTERNAL_DEBUG(logger, fmt,...) do {} while (0)
+#define HCC_INTERNAL_DEBUG(fmt,...) do {} while (0)
 #endif
 #if !defined (HCC_INTERNAL_INFO)
-#define HCC_INTERNAL_INFO(logger, fmt,...) do {} while (0)
+#define HCC_INTERNAL_INFO(fmt,...) do {} while (0)
 #endif
 #if !defined (HCC_INTERNAL_NOTICE)
-#define HCC_INTERNAL_NOTICE(logger, fmt,...) do {} while (0)
+#define HCC_INTERNAL_NOTICE(fmt,...) do {} while (0)
 #endif
 #if !defined (HCC_INTERNAL_WARNING)
-#define HCC_INTERNAL_WARNING(logger, fmt,...) do {} while (0)
+#define HCC_INTERNAL_WARNING(fmt,...) do {} while (0)
 #endif
 #if !defined (HCC_INTERNAL_ERROR)
-#define HCC_INTERNAL_ERROR(logger, fmt,...) do {} while (0)
+#define HCC_INTERNAL_ERROR(fmt,...) do {} while (0)
 #endif
 #if !defined (HCC_INTERNAL_CRITICAL)
-#define HCC_INTERNAL_CRITICAL(logger, fmt,...) do {} while (0)
+#define HCC_INTERNAL_CRITICAL(fmt,...) do {} while (0)
 #endif
 #if !defined (HCC_INTERNAL_ALERT)
-#define HCC_INTERNAL_ALERT(logger, fmt,...) do {} while (0)
+#define HCC_INTERNAL_ALERT(fmt,...) do {} while (0)
 #endif
 #if !defined (HCC_INTERNAL_EMERGENCY)
-#define HCC_INTERNAL_EMERGENCY(logger, fmt,...) do {} while (0)
+#define HCC_INTERNAL_EMERGENCY(fmt,...) do {} while (0)
 #endif
 #if !defined (HCC_INTERNAL_TRACE)
-# define HCC_INTERNAL_TRACE(logger, fmt,...) do {} while (0)
+# define HCC_INTERNAL_TRACE(fmt,...) do {} while (0)
 #endif
+
+#if !defined (HCC_INTERNAL_VERBOSE_EX)
+#define HCC_INTERNAL_VERBOSE_EX(logger, fmt,...) do {} while (0)
+#endif
+#if !defined (HCC_INTERNAL_DEBUG_EX)
+#define HCC_INTERNAL_DEBUG_EX(logger, fmt,...) do {} while (0)
+#endif
+#if !defined (HCC_INTERNAL_INFO_EX)
+#define HCC_INTERNAL_INFO_EX(logger, fmt,...) do {} while (0)
+#endif
+#if !defined (HCC_INTERNAL_NOTICE_EX)
+#define HCC_INTERNAL_NOTICE_EX(logger, fmt,...) do {} while (0)
+#endif
+#if !defined (HCC_INTERNAL_WARNING_EX)
+#define HCC_INTERNAL_WARNING_EX(logger, fmt,...) do {} while (0)
+#endif
+#if !defined (HCC_INTERNAL_ERROR_EX)
+#define HCC_INTERNAL_ERROR_EX(logger, fmt,...) do {} while (0)
+#endif
+#if !defined (HCC_INTERNAL_CRITICAL_EX)
+#define HCC_INTERNAL_CRITICAL_EX(logger, fmt,...) do {} while (0)
+#endif
+#if !defined (HCC_INTERNAL_ALERT_EX)
+#define HCC_INTERNAL_ALERT_EX(logger, fmt,...) do {} while (0)
+#endif
+#if !defined (HCC_INTERNAL_EMERGENCY_EX)
+#define HCC_INTERNAL_EMERGENCY_EX(logger, fmt,...) do {} while (0)
+#endif
+#if !defined (HCC_INTERNAL_TRACE_EX)
+# define HCC_INTERNAL_TRACE_EX(logger, fmt,...) do {} while (0)
+#endif
+
 
 
 #if !defined (HCC_INTERNAL_THROW)
@@ -48,73 +84,265 @@
 #else
 
 
-#if !defined (HCC_INTERNAL_DEBUG)
-#define HCC_INTERNAL_DEBUG(loggerExpr, fmt, ...) \
+#if !defined (HCC_INTERNAL_VERBOSE)
+#define HCC_INTERNAL_VERBOSE(fmt, ...) \
 do \
 { \
-    auto& logger = (loggerExpr);\
-    if( (logger).IsDebugEnabled( ) ) \
+    auto& logger = *Harlinn::Common::Core::Logging::ThreadLogger::Instance( );\
+    if( logger.IsVerboseEnabled( ) ) \
     { \
         constexpr bool isFixedSize = Harlinn::Common::Core::Persistent::IsFixedSize( __VA_ARGS__ ); \
-        size_t fixedSize = isFixedSize ? Harlinn::Common::Core::Persistent::BufferSize( __VA_ARGS__ ) : 0; \
-        auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
-        static const Harlinn::Common::Core::Logging::LogSite logSite(Harlinn::Common::Core::Logging::Level::Debug, fmt, reinterpret_cast<const Byte*>(&argDescriptor), sizeof(argDescriptor), isFixedSize, fixedSize, __LINE__, 0, __FILE__, __FUNCTION__); \
-        (logger).Debug(&logSite, __VA_ARGS__ ); \
-    } \
-} while (0)
-#endif
-#if !defined (HCC_INTERNAL_INFO)
-#define HCC_INTERNAL_INFO(loggerExpr, fmt,...) \
-do \
-{ \
-    auto& logger = (loggerExpr);\
-    if( logger.IsInfoEnabled( ) ) \
-    { \
-        constexpr bool isFixedSize = Harlinn::Common::Core::Persistent::IsFixedSize( __VA_ARGS__ ); \
-        size_t fixedSize = isFixedSize ? Harlinn::Common::Core::Persistent::BufferSize( __VA_ARGS__ ) : 0; \
-        auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
-        static const Harlinn::Common::Core::Logging::LogSite logSite(Harlinn::Common::Core::Logging::Level::Info, fmt, reinterpret_cast<const Byte*>(&argDescriptor), sizeof(argDescriptor), isFixedSize, fixedSize, __LINE__, 0, __FILE__, __FUNCTION__); \
-        logger.Info(&logSite, __VA_ARGS__ ); \
-    } \
-} while (0)
-#endif
-#if !defined (HCC_INTERNAL_NOTICE)
-#define HCC_INTERNAL_NOTICE(loggerExpr, fmt,...) \
-do \
-{ \
-    auto& logger = (loggerExpr);\
-    if( logger.IsNoticeEnabled( ) ) \
-    { \
-        constexpr bool isFixedSize = Harlinn::Common::Core::Persistent::IsFixedSize( __VA_ARGS__ ); \
-        size_t fixedSize = isFixedSize ? Harlinn::Common::Core::Persistent::BufferSize( __VA_ARGS__ ) : 0; \
-        auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
-        static const Harlinn::Common::Core::Logging::LogSite logSite(Harlinn::Common::Core::Logging::Level::Notice, fmt, reinterpret_cast<const Byte*>(&argDescriptor), sizeof(argDescriptor), isFixedSize, fixedSize, __LINE__, 0, __FILE__, __FUNCTION__); \
-        logger.Notice(&logSite, __VA_ARGS__ ); \
-    } \
-} while (0)
-#endif
-#if !defined (HCC_INTERNAL_WARNING)
-#define HCC_INTERNAL_WARNING(loggerExpr, fmt,...) \
-do \
-{ \
-    auto& logger = (loggerExpr);\
-    if( logger.IsWarningEnabled( ) ) \
-    { \
-        constexpr bool isFixedSize = Harlinn::Common::Core::Persistent::IsFixedSize( __VA_ARGS__ ); \
-        size_t fixedSize = isFixedSize ? Harlinn::Common::Core::Persistent::BufferSize( __VA_ARGS__ ) : 0; \
-        auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
-        static const Harlinn::Common::Core::Logging::LogSite logSite(Harlinn::Common::Core::Logging::Level::Warning, fmt, reinterpret_cast<const Byte*>(&argDescriptor), sizeof(argDescriptor), isFixedSize, fixedSize, __LINE__, 0, __FILE__, __FUNCTION__); \
-        logger.Warning(&logSite, __VA_ARGS__ ); \
+        if constexpr (isFixedSize) \
+        { \
+            constexpr size_t fixedSize = Harlinn::Common::Core::Persistent::BufferSize( __VA_ARGS__ ); \
+            constexpr auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
+            static const Harlinn::Common::Core::Logging::LogSite logSite(Harlinn::Common::Core::Logging::Level::Debug, fmt, argDescriptor, true, fixedSize, __LINE__, 0, __FILE__, __FUNCTION__); \
+            logger.Verbose(&logSite, __VA_ARGS__ ); \
+        } \
+        else \
+        { \
+            constexpr auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
+            static const Harlinn::Common::Core::Logging::LogSite logSite(Harlinn::Common::Core::Logging::Level::Debug, fmt, argDescriptor, false, 0, __LINE__, 0, __FILE__, __FUNCTION__); \
+            logger.Verbose(&logSite, __VA_ARGS__ ); \
+        } \
     } \
 } while (0)
 #endif
 
-/* */
-#if !defined (HCC_INTERNAL_ERROR)
-#define HCC_INTERNAL_ERROR(loggerExpr, fmt,...) \
+#if !defined (HCC_INTERNAL_VERBOSE_EX)
+#define HCC_INTERNAL_VERBOSE_EX( loggerExpr, fmt, ...) \
 do \
 { \
-    auto& logger = (loggerExpr);\
+    auto& logger = ( loggerExpr );\
+    if( logger.IsVerboseEnabled( ) ) \
+    { \
+        constexpr bool isFixedSize = Harlinn::Common::Core::Persistent::IsFixedSize( __VA_ARGS__ ); \
+        if constexpr (isFixedSize) \
+        { \
+            constexpr size_t fixedSize = Harlinn::Common::Core::Persistent::BufferSize( __VA_ARGS__ ); \
+            constexpr auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
+            static const Harlinn::Common::Core::Logging::LogSite logSite(Harlinn::Common::Core::Logging::Level::Debug, fmt, argDescriptor, true, fixedSize, __LINE__, 0, __FILE__, __FUNCTION__); \
+            logger.Verbose(&logSite, __VA_ARGS__ ); \
+        } \
+        else \
+        { \
+            constexpr auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
+            static const Harlinn::Common::Core::Logging::LogSite logSite(Harlinn::Common::Core::Logging::Level::Debug, fmt, argDescriptor, false, 0, __LINE__, 0, __FILE__, __FUNCTION__); \
+            logger.Verbose(&logSite, __VA_ARGS__ ); \
+        } \
+    } \
+} while (0)
+#endif
+
+
+
+#if !defined (HCC_INTERNAL_DEBUG)
+#define HCC_INTERNAL_DEBUG(fmt, ...) \
+do \
+{ \
+    auto& logger = *Harlinn::Common::Core::Logging::ThreadLogger::Instance( );\
+    if( logger.IsDebugEnabled( ) ) \
+    { \
+        constexpr bool isFixedSize = Harlinn::Common::Core::Persistent::IsFixedSize( __VA_ARGS__ ); \
+        if constexpr (isFixedSize) \
+        { \
+            constexpr size_t fixedSize = Harlinn::Common::Core::Persistent::BufferSize( __VA_ARGS__ ); \
+            constexpr auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
+            static const Harlinn::Common::Core::Logging::LogSite logSite(Harlinn::Common::Core::Logging::Level::Debug, fmt, argDescriptor, true, fixedSize, __LINE__, 0, __FILE__, __FUNCTION__); \
+            logger.Debug(&logSite, __VA_ARGS__ ); \
+        } \
+        else \
+        { \
+            constexpr auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
+            static const Harlinn::Common::Core::Logging::LogSite logSite(Harlinn::Common::Core::Logging::Level::Debug, fmt, argDescriptor, false, 0, __LINE__, 0, __FILE__, __FUNCTION__); \
+            logger.Debug(&logSite, __VA_ARGS__ ); \
+        } \
+    } \
+} while (0)
+#endif
+
+#if !defined (HCC_INTERNAL_DEBUG_EX)
+#define HCC_INTERNAL_DEBUG_EX(loggerExpr, fmt, ...) \
+do \
+{ \
+    auto& logger = ( loggerExpr );\
+    if( logger.IsDebugEnabled( ) ) \
+    { \
+        constexpr bool isFixedSize = Harlinn::Common::Core::Persistent::IsFixedSize( __VA_ARGS__ ); \
+        if constexpr (isFixedSize) \
+        { \
+            constexpr size_t fixedSize = Harlinn::Common::Core::Persistent::BufferSize( __VA_ARGS__ ); \
+            constexpr auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
+            static const Harlinn::Common::Core::Logging::LogSite logSite(Harlinn::Common::Core::Logging::Level::Debug, fmt, argDescriptor, true, fixedSize, __LINE__, 0, __FILE__, __FUNCTION__); \
+            logger.Debug(&logSite, __VA_ARGS__ ); \
+        } \
+        else \
+        { \
+            constexpr auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
+            static const Harlinn::Common::Core::Logging::LogSite logSite(Harlinn::Common::Core::Logging::Level::Debug, fmt, argDescriptor, false, 0, __LINE__, 0, __FILE__, __FUNCTION__); \
+            logger.Debug(&logSite, __VA_ARGS__ ); \
+        } \
+    } \
+} while (0)
+#endif
+
+
+#if !defined (HCC_INTERNAL_INFO)
+#define HCC_INTERNAL_INFO(fmt,...) \
+do \
+{ \
+    auto& logger = *Harlinn::Common::Core::Logging::ThreadLogger::Instance( );\
+    if( logger.IsInfoEnabled( ) ) \
+    { \
+        constexpr bool isFixedSize = Harlinn::Common::Core::Persistent::IsFixedSize( __VA_ARGS__ ); \
+        if constexpr (isFixedSize) \
+        { \
+            constexpr size_t fixedSize = Harlinn::Common::Core::Persistent::BufferSize( __VA_ARGS__ ); \
+            constexpr auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
+            static const Harlinn::Common::Core::Logging::LogSite logSite(Harlinn::Common::Core::Logging::Level::Info, fmt, argDescriptor, true, fixedSize, __LINE__, 0, __FILE__, __FUNCTION__); \
+            logger.Info(&logSite, __VA_ARGS__ ); \
+        } \
+        else \
+        { \
+            constexpr auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
+            static const Harlinn::Common::Core::Logging::LogSite logSite(Harlinn::Common::Core::Logging::Level::Info, fmt, argDescriptor, false, 0, __LINE__, 0, __FILE__, __FUNCTION__); \
+            logger.Info(&logSite, __VA_ARGS__ ); \
+        } \
+    } \
+} while (0)
+#endif
+
+#if !defined (HCC_INTERNAL_INFO_EX)
+#define HCC_INTERNAL_INFO_EX(loggerExpr, fmt,...) \
+do \
+{ \
+    auto& logger = ( loggerExpr );\
+    if( logger.IsInfoEnabled( ) ) \
+    { \
+        constexpr bool isFixedSize = Harlinn::Common::Core::Persistent::IsFixedSize( __VA_ARGS__ ); \
+        if constexpr (isFixedSize) \
+        { \
+            constexpr size_t fixedSize = Harlinn::Common::Core::Persistent::BufferSize( __VA_ARGS__ ); \
+            constexpr auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
+            static const Harlinn::Common::Core::Logging::LogSite logSite(Harlinn::Common::Core::Logging::Level::Info, fmt, argDescriptor, true, fixedSize, __LINE__, 0, __FILE__, __FUNCTION__); \
+            logger.Info(&logSite, __VA_ARGS__ ); \
+        } \
+        else \
+        { \
+            constexpr auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
+            static const Harlinn::Common::Core::Logging::LogSite logSite(Harlinn::Common::Core::Logging::Level::Info, fmt, argDescriptor, false, 0, __LINE__, 0, __FILE__, __FUNCTION__); \
+            logger.Info(&logSite, __VA_ARGS__ ); \
+        } \
+    } \
+} while (0)
+#endif
+
+#if !defined (HCC_INTERNAL_NOTICE)
+#define HCC_INTERNAL_NOTICE(fmt,...) \
+do \
+{ \
+    auto& logger = *Harlinn::Common::Core::Logging::ThreadLogger::Instance( );\
+    if( logger.IsNoticeEnabled( ) ) \
+    { \
+        constexpr bool isFixedSize = Harlinn::Common::Core::Persistent::IsFixedSize( __VA_ARGS__ ); \
+        if constexpr (isFixedSize) \
+        { \
+            constexpr size_t fixedSize = Harlinn::Common::Core::Persistent::BufferSize( __VA_ARGS__ ); \
+            constexpr auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
+            static const Harlinn::Common::Core::Logging::LogSite logSite(Harlinn::Common::Core::Logging::Level::Notice, fmt, argDescriptor, true, fixedSize, __LINE__, 0, __FILE__, __FUNCTION__); \
+            logger.Notice(&logSite, __VA_ARGS__ ); \
+        } \
+        else \
+        { \
+            constexpr auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
+            static const Harlinn::Common::Core::Logging::LogSite logSite(Harlinn::Common::Core::Logging::Level::Notice, fmt, argDescriptor, false, 0, __LINE__, 0, __FILE__, __FUNCTION__); \
+            logger.Notice(&logSite, __VA_ARGS__ ); \
+        } \
+    } \
+} while (0)
+#endif
+
+#if !defined (HCC_INTERNAL_NOTICE_EX)
+#define HCC_INTERNAL_NOTICE_EX(loggerExpr, fmt,...) \
+do \
+{ \
+    auto& logger = ( loggerExpr );\
+    if( logger.IsNoticeEnabled( ) ) \
+    { \
+        constexpr bool isFixedSize = Harlinn::Common::Core::Persistent::IsFixedSize( __VA_ARGS__ ); \
+        if constexpr (isFixedSize) \
+        { \
+            constexpr size_t fixedSize = Harlinn::Common::Core::Persistent::BufferSize( __VA_ARGS__ ); \
+            constexpr auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
+            static const Harlinn::Common::Core::Logging::LogSite logSite(Harlinn::Common::Core::Logging::Level::Notice, fmt, argDescriptor, true, fixedSize, __LINE__, 0, __FILE__, __FUNCTION__); \
+            logger.Notice(&logSite, __VA_ARGS__ ); \
+        } \
+        else \
+        { \
+            constexpr auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
+            static const Harlinn::Common::Core::Logging::LogSite logSite(Harlinn::Common::Core::Logging::Level::Notice, fmt, argDescriptor, false, 0, __LINE__, 0, __FILE__, __FUNCTION__); \
+            logger.Notice(&logSite, __VA_ARGS__ ); \
+        } \
+    } \
+} while (0)
+#endif
+
+#if !defined (HCC_INTERNAL_WARNING)
+#define HCC_INTERNAL_WARNING(fmt,...) \
+do \
+{ \
+    auto& logger = *Harlinn::Common::Core::Logging::ThreadLogger::Instance( );\
+    if( logger.IsWarningEnabled( ) ) \
+    { \
+        constexpr bool isFixedSize = Harlinn::Common::Core::Persistent::IsFixedSize( __VA_ARGS__ ); \
+        if constexpr (isFixedSize) \
+        { \
+            constexpr size_t fixedSize = Harlinn::Common::Core::Persistent::BufferSize( __VA_ARGS__ ); \
+            constexpr auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
+            static const Harlinn::Common::Core::Logging::LogSite logSite(Harlinn::Common::Core::Logging::Level::Warning, fmt, argDescriptor, true, fixedSize, __LINE__, 0, __FILE__, __FUNCTION__); \
+            logger.Warning(&logSite, __VA_ARGS__ ); \
+        } \
+        else \
+        { \
+            constexpr auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
+            static const Harlinn::Common::Core::Logging::LogSite logSite(Harlinn::Common::Core::Logging::Level::Warning, fmt, argDescriptor, false, 0, __LINE__, 0, __FILE__, __FUNCTION__); \
+            logger.Warning(&logSite, __VA_ARGS__ ); \
+        } \
+    } \
+} while (0)
+#endif
+
+#if !defined (HCC_INTERNAL_WARNING_EX)
+#define HCC_INTERNAL_WARNING_EX(loggerExpr, fmt,...) \
+do \
+{ \
+    auto& logger = ( loggerExpr );\
+    if( logger.IsWarningEnabled( ) ) \
+    { \
+        constexpr bool isFixedSize = Harlinn::Common::Core::Persistent::IsFixedSize( __VA_ARGS__ ); \
+        if constexpr (isFixedSize) \
+        { \
+            constexpr size_t fixedSize = Harlinn::Common::Core::Persistent::BufferSize( __VA_ARGS__ ); \
+            constexpr auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
+            static const Harlinn::Common::Core::Logging::LogSite logSite(Harlinn::Common::Core::Logging::Level::Warning, fmt, argDescriptor, true, fixedSize, __LINE__, 0, __FILE__, __FUNCTION__); \
+            logger.Warning(&logSite, __VA_ARGS__ ); \
+        } \
+        else \
+        { \
+            constexpr auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
+            static const Harlinn::Common::Core::Logging::LogSite logSite(Harlinn::Common::Core::Logging::Level::Warning, fmt, argDescriptor, false, 0, __LINE__, 0, __FILE__, __FUNCTION__); \
+            logger.Warning(&logSite, __VA_ARGS__ ); \
+        } \
+    } \
+} while (0)
+#endif
+
+
+#if !defined (HCC_INTERNAL_ERROR)
+#define HCC_INTERNAL_ERROR(fmt,...) \
+do \
+{ \
+    auto& logger = *Harlinn::Common::Core::Logging::ThreadLogger::Instance();\
     if( logger.IsErrorEnabled( ) ) \
     { \
         constexpr bool isFixedSize = Harlinn::Common::Core::Persistent::IsFixedSize( __VA_ARGS__ ); \
@@ -122,99 +350,272 @@ do \
         { \
             constexpr size_t fixedSize = Harlinn::Common::Core::Persistent::BufferSize( __VA_ARGS__ ); \
             constexpr auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
-            static const Harlinn::Common::Core::Logging::LogSite logSite(Harlinn::Common::Core::Logging::Level::Error, fmt, reinterpret_cast<const Byte*>(&argDescriptor), sizeof(argDescriptor), isFixedSize, fixedSize, __LINE__, 0, __FILE__, __FUNCTION__); \
+            static const Harlinn::Common::Core::Logging::LogSite logSite(Harlinn::Common::Core::Logging::Level::Error, fmt, argDescriptor, true, fixedSize, __LINE__, 0, __FILE__, __FUNCTION__); \
             logger.Error(&logSite, __VA_ARGS__ ); \
         } \
         else \
         { \
-            constexpr size_t fixedSize = 0; \
             constexpr auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
-            static const Harlinn::Common::Core::Logging::LogSite logSite(Harlinn::Common::Core::Logging::Level::Error, fmt, reinterpret_cast<const Byte*>(&argDescriptor), sizeof(argDescriptor), isFixedSize, fixedSize, __LINE__, 0, __FILE__, __FUNCTION__); \
+            static const Harlinn::Common::Core::Logging::LogSite logSite(Harlinn::Common::Core::Logging::Level::Error, fmt, argDescriptor, false, 0, __LINE__, 0, __FILE__, __FUNCTION__); \
             logger.Error(&logSite, __VA_ARGS__ ); \
         } \
     } \
 } while (0)
 #endif
-/* */
 
-/* * /
-#if !defined (HCC_INTERNAL_ERROR)
-#define HCC_INTERNAL_ERROR(loggerExpr, fmt,...) \
+#if !defined (HCC_INTERNAL_ERROR_EX)
+#define HCC_INTERNAL_ERROR_EX(loggerExpr, fmt,...) \
 do \
 { \
-    auto& logger = (loggerExpr);\
+    auto& logger = ( loggerExpr );\
     if( logger.IsErrorEnabled( ) ) \
     { \
         constexpr bool isFixedSize = Harlinn::Common::Core::Persistent::IsFixedSize( __VA_ARGS__ ); \
-        size_t fixedSize = isFixedSize ? Harlinn::Common::Core::Persistent::BufferSize( __VA_ARGS__ ) : 0; \
-        auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
-        static const Harlinn::Common::Core::Logging::LogSite logSite(Harlinn::Common::Core::Logging::Level::Error, fmt, reinterpret_cast<const Byte*>(&argDescriptor), sizeof(argDescriptor), isFixedSize, fixedSize, __LINE__, 0, __FILE__, __FUNCTION__); \
-        logger.Error(&logSite, __VA_ARGS__ ); \
+        if constexpr (isFixedSize) \
+        { \
+            constexpr size_t fixedSize = Harlinn::Common::Core::Persistent::BufferSize( __VA_ARGS__ ); \
+            constexpr auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
+            static const Harlinn::Common::Core::Logging::LogSite logSite(Harlinn::Common::Core::Logging::Level::Error, fmt, argDescriptor, true, fixedSize, __LINE__, 0, __FILE__, __FUNCTION__); \
+            logger.Error(&logSite, __VA_ARGS__ ); \
+        } \
+        else \
+        { \
+            constexpr auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
+            static const Harlinn::Common::Core::Logging::LogSite logSite(Harlinn::Common::Core::Logging::Level::Error, fmt, argDescriptor, false, 0, __LINE__, 0, __FILE__, __FUNCTION__); \
+            logger.Error(&logSite, __VA_ARGS__ ); \
+        } \
     } \
 } while (0)
 #endif
-/ * */
+
 
 #if !defined (HCC_INTERNAL_CRITICAL)
-#define HCC_INTERNAL_CRITICAL(loggerExpr, fmt,...) \
+#define HCC_INTERNAL_CRITICAL(fmt,...) \
 do \
 { \
-    auto& logger = (loggerExpr);\
+    auto& logger = *Harlinn::Common::Core::Logging::ThreadLogger::Instance();\
     if( logger.IsCriticalEnabled( ) ) \
     { \
         constexpr bool isFixedSize = Harlinn::Common::Core::Persistent::IsFixedSize( __VA_ARGS__ ); \
-        size_t fixedSize = isFixedSize ? Harlinn::Common::Core::Persistent::BufferSize( __VA_ARGS__ ) : 0; \
-        auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
-        static const Harlinn::Common::Core::Logging::LogSite logSite(Harlinn::Common::Core::Logging::Level::Critical, fmt, reinterpret_cast<const Byte*>(&argDescriptor), sizeof(argDescriptor), isFixedSize, fixedSize, __LINE__, 0, __FILE__, __FUNCTION__); \
-        logger.Critical(&logSite, __VA_ARGS__ ); \
+        if constexpr (isFixedSize) \
+        { \
+            constexpr size_t fixedSize = Harlinn::Common::Core::Persistent::BufferSize( __VA_ARGS__ ); \
+            constexpr auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
+            static const Harlinn::Common::Core::Logging::LogSite logSite(Harlinn::Common::Core::Logging::Level::Critical, fmt, argDescriptor, true, fixedSize, __LINE__, 0, __FILE__, __FUNCTION__); \
+            logger.Critical(&logSite, __VA_ARGS__ ); \
+        } \
+        else \
+        { \
+            constexpr auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
+            static const Harlinn::Common::Core::Logging::LogSite logSite(Harlinn::Common::Core::Logging::Level::Critical, fmt, argDescriptor, false, 0, __LINE__, 0, __FILE__, __FUNCTION__); \
+            logger.Critical(&logSite, __VA_ARGS__ ); \
+        } \
     } \
 } while (0)
 #endif
-#if !defined (HCC_INTERNAL_ALERT)
-#define HCC_INTERNAL_ALERT(loggerExpr, fmt,...) \
+
+#if !defined (HCC_INTERNAL_CRITICAL_EX)
+#define HCC_INTERNAL_CRITICAL_EX(loggerExpr, fmt,...) \
 do \
 { \
-    auto& logger = (loggerExpr);\
+    auto& logger = ( loggerExpr );\
+    if( logger.IsCriticalEnabled( ) ) \
+    { \
+        constexpr bool isFixedSize = Harlinn::Common::Core::Persistent::IsFixedSize( __VA_ARGS__ ); \
+        if constexpr (isFixedSize) \
+        { \
+            constexpr size_t fixedSize = Harlinn::Common::Core::Persistent::BufferSize( __VA_ARGS__ ); \
+            constexpr auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
+            static const Harlinn::Common::Core::Logging::LogSite logSite(Harlinn::Common::Core::Logging::Level::Critical, fmt, argDescriptor, true, fixedSize, __LINE__, 0, __FILE__, __FUNCTION__); \
+            logger.Critical(&logSite, __VA_ARGS__ ); \
+        } \
+        else \
+        { \
+            constexpr auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
+            static const Harlinn::Common::Core::Logging::LogSite logSite(Harlinn::Common::Core::Logging::Level::Critical, fmt, argDescriptor, false, 0, __LINE__, 0, __FILE__, __FUNCTION__); \
+            logger.Critical(&logSite, __VA_ARGS__ ); \
+        } \
+    } \
+} while (0)
+#endif
+
+#if !defined (HCC_INTERNAL_ALERT)
+#define HCC_INTERNAL_ALERT(fmt,...) \
+do \
+{ \
+    auto& logger = *Harlinn::Common::Core::Logging::ThreadLogger::Instance( );\
     if( logger.IsAlertEnabled( ) ) \
     { \
         constexpr bool isFixedSize = Harlinn::Common::Core::Persistent::IsFixedSize( __VA_ARGS__ ); \
-        size_t fixedSize = isFixedSize ? Harlinn::Common::Core::Persistent::BufferSize( __VA_ARGS__ ) : 0; \
-        auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
-        static const Harlinn::Common::Core::Logging::LogSite logSite(Harlinn::Common::Core::Logging::Level::Alert, fmt, reinterpret_cast<const Byte*>(&argDescriptor), sizeof(argDescriptor), isFixedSize, fixedSize, __LINE__, 0, __FILE__, __FUNCTION__); \
-        logger.Alert(&logSite, __VA_ARGS__ ); \
+        if constexpr (isFixedSize) \
+        { \
+            constexpr size_t fixedSize = Harlinn::Common::Core::Persistent::BufferSize( __VA_ARGS__ ); \
+            constexpr auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
+            static const Harlinn::Common::Core::Logging::LogSite logSite(Harlinn::Common::Core::Logging::Level::Alert, fmt, argDescriptor, true, fixedSize, __LINE__, 0, __FILE__, __FUNCTION__); \
+            logger.Alert(&logSite, __VA_ARGS__ ); \
+        } \
+        else \
+        { \
+            constexpr auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
+            static const Harlinn::Common::Core::Logging::LogSite logSite(Harlinn::Common::Core::Logging::Level::Alert, fmt, argDescriptor, false, 0, __LINE__, 0, __FILE__, __FUNCTION__); \
+            logger.Alert(&logSite, __VA_ARGS__ ); \
+        } \
     } \
 } while (0)
 #endif
-#if !defined (HCC_INTERNAL_EMERGENCY)
-#define HCC_INTERNAL_EMERGENCY(loggerExpr, fmt,...) \
+
+#if !defined (HCC_INTERNAL_ALERT_EX)
+#define HCC_INTERNAL_ALERT_EX(loggerExpr,fmt,...) \
 do \
 { \
-    auto& logger = (loggerExpr);\
+    auto& logger = ( loggerExpr );\
+    if( logger.IsAlertEnabled( ) ) \
+    { \
+        constexpr bool isFixedSize = Harlinn::Common::Core::Persistent::IsFixedSize( __VA_ARGS__ ); \
+        if constexpr (isFixedSize) \
+        { \
+            constexpr size_t fixedSize = Harlinn::Common::Core::Persistent::BufferSize( __VA_ARGS__ ); \
+            constexpr auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
+            static const Harlinn::Common::Core::Logging::LogSite logSite(Harlinn::Common::Core::Logging::Level::Alert, fmt, argDescriptor, true, fixedSize, __LINE__, 0, __FILE__, __FUNCTION__); \
+            logger.Alert(&logSite, __VA_ARGS__ ); \
+        } \
+        else \
+        { \
+            constexpr auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
+            static const Harlinn::Common::Core::Logging::LogSite logSite(Harlinn::Common::Core::Logging::Level::Alert, fmt, argDescriptor, false, 0, __LINE__, 0, __FILE__, __FUNCTION__); \
+            logger.Alert(&logSite, __VA_ARGS__ ); \
+        } \
+    } \
+} while (0)
+#endif
+
+#if !defined (HCC_INTERNAL_EMERGENCY)
+#define HCC_INTERNAL_EMERGENCY(fmt,...) \
+do \
+{ \
+    auto& logger = *Harlinn::Common::Core::Logging::ThreadLogger::Instance( );\
     if( logger.IsEmergencyEnabled( ) ) \
     { \
         constexpr bool isFixedSize = Harlinn::Common::Core::Persistent::IsFixedSize( __VA_ARGS__ ); \
-        size_t fixedSize = isFixedSize ? Harlinn::Common::Core::Persistent::BufferSize( __VA_ARGS__ ) : 0; \
-        auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
-        static const Harlinn::Common::Core::Logging::LogSite logSite(Harlinn::Common::Core::Logging::Level::Emergency, fmt, reinterpret_cast<const Byte*>(&argDescriptor), sizeof(argDescriptor), isFixedSize, fixedSize, __LINE__, 0, __FILE__, __FUNCTION__); \
-        logger.Emergency(&logSite, __VA_ARGS__ ); \
+        if constexpr (isFixedSize) \
+        { \
+            constexpr size_t fixedSize = Harlinn::Common::Core::Persistent::BufferSize( __VA_ARGS__ ); \
+            constexpr auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
+            static const Harlinn::Common::Core::Logging::LogSite logSite(Harlinn::Common::Core::Logging::Level::Emergency, fmt, argDescriptor, true, fixedSize, __LINE__, 0, __FILE__, __FUNCTION__); \
+            logger.Emergency(&logSite, __VA_ARGS__ ); \
+        } \
+        else \
+        { \
+            constexpr auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
+            static const Harlinn::Common::Core::Logging::LogSite logSite(Harlinn::Common::Core::Logging::Level::Emergency, fmt, argDescriptor, false, 0, __LINE__, 0, __FILE__, __FUNCTION__); \
+            logger.Emergency(&logSite, __VA_ARGS__ ); \
+        } \
     } \
 } while (0)
 #endif
-#if !defined (HCC_INTERNAL_TRACE)
-# define HCC_INTERNAL_TRACE(loggerExpr, fmt,...) \
+
+#if !defined (HCC_INTERNAL_EMERGENCY_EX)
+#define HCC_INTERNAL_EMERGENCY_EX(loggerExpr,fmt,...) \
 do \
 { \
-    auto& logger = (loggerExpr);\
+    auto& logger = ( loggerExpr );\
+    if( logger.IsEmergencyEnabled( ) ) \
+    { \
+        constexpr bool isFixedSize = Harlinn::Common::Core::Persistent::IsFixedSize( __VA_ARGS__ ); \
+        if constexpr (isFixedSize) \
+        { \
+            constexpr size_t fixedSize = Harlinn::Common::Core::Persistent::BufferSize( __VA_ARGS__ ); \
+            constexpr auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
+            static const Harlinn::Common::Core::Logging::LogSite logSite(Harlinn::Common::Core::Logging::Level::Emergency, fmt, argDescriptor, true, fixedSize, __LINE__, 0, __FILE__, __FUNCTION__); \
+            logger.Emergency(&logSite, __VA_ARGS__ ); \
+        } \
+        else \
+        { \
+            constexpr auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
+            static const Harlinn::Common::Core::Logging::LogSite logSite(Harlinn::Common::Core::Logging::Level::Emergency, fmt, argDescriptor, false, 0, __LINE__, 0, __FILE__, __FUNCTION__); \
+            logger.Emergency(&logSite, __VA_ARGS__ ); \
+        } \
+    } \
+} while (0)
+#endif
+
+#if !defined (HCC_INTERNAL_TRACE)
+# define HCC_INTERNAL_TRACE(fmt,...) \
+do \
+{ \
+    auto& logger = *Harlinn::Common::Core::Logging::ThreadLogger::Instance( );\
     if( logger.IsTraceEnabled( ) ) \
     { \
         constexpr bool isFixedSize = Harlinn::Common::Core::Persistent::IsFixedSize( __VA_ARGS__ ); \
-        size_t fixedSize = isFixedSize ? Harlinn::Common::Core::Persistent::BufferSize( __VA_ARGS__ ) : 0; \
-        auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
-        static const Harlinn::Common::Core::Logging::LogSite logSite(Harlinn::Common::Core::Logging::Level::Trace, fmt, reinterpret_cast<const Byte*>(&argDescriptor), sizeof(argDescriptor), isFixedSize, fixedSize, __LINE__, 0, __FILE__, __FUNCTION__); \
-        logger.Trace(&logSite, __VA_ARGS__ ); \
+        if constexpr (isFixedSize) \
+        { \
+            constexpr size_t fixedSize = Harlinn::Common::Core::Persistent::BufferSize( __VA_ARGS__ ); \
+            constexpr auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
+            static const Harlinn::Common::Core::Logging::LogSite logSite(Harlinn::Common::Core::Logging::Level::Trace, fmt, argDescriptor, true, fixedSize, __LINE__, 0, __FILE__, __FUNCTION__); \
+            logger.Trace(&logSite, __VA_ARGS__ ); \
+        } \
+        else \
+        { \
+            constexpr auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
+            static const Harlinn::Common::Core::Logging::LogSite logSite(Harlinn::Common::Core::Logging::Level::Trace, fmt, argDescriptor, false, 0, __LINE__, 0, __FILE__, __FUNCTION__); \
+            logger.Trace(&logSite, __VA_ARGS__ ); \
+        } \
     } \
 } while (0)
 #endif
+
+#if !defined (HCC_INTERNAL_TRACE_EX)
+# define HCC_INTERNAL_TRACE_EX(loggerExpr, fmt,...) \
+do \
+{ \
+    auto& logger = ( loggerExpr );\
+    if( logger.IsTraceEnabled( ) ) \
+    { \
+        constexpr bool isFixedSize = Harlinn::Common::Core::Persistent::IsFixedSize( __VA_ARGS__ ); \
+        if constexpr (isFixedSize) \
+        { \
+            constexpr size_t fixedSize = Harlinn::Common::Core::Persistent::BufferSize( __VA_ARGS__ ); \
+            constexpr auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
+            static const Harlinn::Common::Core::Logging::LogSite logSite(Harlinn::Common::Core::Logging::Level::Trace, fmt, argDescriptor, true, fixedSize, __LINE__, 0, __FILE__, __FUNCTION__); \
+            logger.Trace(&logSite, __VA_ARGS__ ); \
+        } \
+        else \
+        { \
+            constexpr auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
+            static const Harlinn::Common::Core::Logging::LogSite logSite(Harlinn::Common::Core::Logging::Level::Trace, fmt, argDescriptor, false, 0, __LINE__, 0, __FILE__, __FUNCTION__); \
+            logger.Trace(&logSite, __VA_ARGS__ ); \
+        } \
+    } \
+} while (0)
+#endif
+
+
+
+#if !defined (HCC_INTERNAL_ENTERING)
+# define HCC_INTERNAL_ENTERING(fmt,...) \
+do \
+{ \
+    auto& logger = *Harlinn::Common::Core::Logging::ThreadLogger::Instance( );\
+    if( logger.IsTraceEnabled( ) ) \
+    { \
+        constexpr bool isFixedSize = Harlinn::Common::Core::Persistent::IsFixedSize( __VA_ARGS__ ); \
+        if constexpr (isFixedSize) \
+        { \
+            constexpr size_t fixedSize = Harlinn::Common::Core::Persistent::BufferSize( __VA_ARGS__ ); \
+            constexpr auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
+            static const Harlinn::Common::Core::Logging::LogSite logSite(Harlinn::Common::Core::Logging::Level::Entering, fmt, argDescriptor, true, fixedSize, __LINE__, 0, __FILE__, __FUNCTION__); \
+            logger.Entering(&logSite, __VA_ARGS__ ); \
+        } \
+        else \
+        { \
+            constexpr auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
+            static const Harlinn::Common::Core::Logging::LogSite logSite(Harlinn::Common::Core::Logging::Level::Entering, fmt, argDescriptor, false, 0, __LINE__, 0, __FILE__, __FUNCTION__); \
+            logger.Entering(&logSite, __VA_ARGS__ ); \
+        } \
+    } \
+} while (0)
+#endif
+
 
 
 #if !defined (HCC_INTERNAL_THROW)
@@ -225,12 +626,46 @@ do \
 
 
 #ifdef _DEBUG
+#ifndef HCC_VERBOSE
+#define HCC_VERBOSE( fmt, ... ) HCC_INTERNAL_VERBOSE( fmt, __VA_ARGS__ )
+#endif
+#ifndef HCC_VERBOSE_EX
+#define HCC_VERBOSE_EX( loggerExpr, fmt, ... ) HCC_INTERNAL_VERBOSE_EX( loggerExpr, fmt, __VA_ARGS__ )
+#endif
+#else
+#ifndef HCC_VERBOSE
+#define HCC_VERBOSE( fmt, ... )  \
+  __pragma( warning(push) ) \
+  __pragma( warning(disable:4127) ) \
+  do {} while (0) \
+  __pragma( warning(pop) )
+#endif
+#ifndef HCC_VERBOSE_EX
+#define HCC_VERBOSE_EX( loggerExpr, fmt, ... )  \
+  __pragma( warning(push) ) \
+  __pragma( warning(disable:4127) ) \
+  do {} while (0) \
+  __pragma( warning(pop) )
+#endif
+#endif
+
+#ifdef _DEBUG
 #ifndef HCC_DEBUG
-#define HCC_DEBUG( logger, fmt, ... ) HCC_INTERNAL_DEBUG( logger, fmt, __VA_ARGS__ )
+#define HCC_DEBUG( fmt, ... ) HCC_INTERNAL_DEBUG( fmt, __VA_ARGS__ )
+#endif
+#ifndef HCC_DEBUG_EX
+#define HCC_DEBUG_EX( loggerExpr, fmt, ... ) HCC_INTERNAL_DEBUG_EX( loggerExpr, fmt, __VA_ARGS__ )
 #endif
 #else
 #ifndef HCC_DEBUG
-#define HCC_DEBUG( logger, fmt, ... )  \
+#define HCC_DEBUG( fmt, ... )  \
+  __pragma( warning(push) ) \
+  __pragma( warning(disable:4127) ) \
+  do {} while (0) \
+  __pragma( warning(pop) )
+#endif
+#ifndef HCC_DEBUG_EX
+#define HCC_DEBUG_EX( loggerExpr, fmt, ... )  \
   __pragma( warning(push) ) \
   __pragma( warning(disable:4127) ) \
   do {} while (0) \
@@ -239,40 +674,81 @@ do \
 #endif
 
 #ifndef HCC_INFO
-#define HCC_INFO( logger, fmt, ... ) HCC_INTERNAL_INFO( logger, fmt, __VA_ARGS__ )
+#define HCC_INFO( fmt, ... ) HCC_INTERNAL_INFO( fmt, __VA_ARGS__ )
+#endif
+
+#ifndef HCC_INFO_EX
+#define HCC_INFO_EX( loggerExpr, fmt, ... ) HCC_INTERNAL_INFO_EX( loggerExpr, fmt, __VA_ARGS__ )
 #endif
 
 #ifndef HCC_NOTICE
-#define HCC_NOTICE( logger, fmt, ... ) HCC_INTERNAL_NOTICE( logger, fmt, __VA_ARGS__ )
+#define HCC_NOTICE( fmt, ... ) HCC_INTERNAL_NOTICE( fmt, __VA_ARGS__ )
+#endif
+
+#ifndef HCC_NOTICE_EX
+#define HCC_NOTICE_EX( loggerExpr, fmt, ... ) HCC_INTERNAL_NOTICE_EX( loggerExpr, fmt, __VA_ARGS__ )
 #endif
 
 #ifndef HCC_WARNING
-#define HCC_WARNING( logger, fmt, ... ) HCC_INTERNAL_WARNING( logger, fmt, __VA_ARGS__ )
+#define HCC_WARNING( fmt, ... ) HCC_INTERNAL_WARNING( fmt, __VA_ARGS__ )
+#endif
+
+#ifndef HCC_WARNING_EX
+#define HCC_WARNING_EX( loggerExpr, fmt, ... ) HCC_INTERNAL_WARNING_EX( loggerExpr, fmt, __VA_ARGS__ )
 #endif
 
 #ifndef HCC_ERROR
-#define HCC_ERROR( logger, fmt, ... ) HCC_INTERNAL_ERROR( logger, fmt, __VA_ARGS__ )
+#define HCC_ERROR( fmt, ... ) HCC_INTERNAL_ERROR( fmt, __VA_ARGS__ )
+#endif
+
+#ifndef HCC_ERROR_EX
+#define HCC_ERROR_EX( loggerExpr, fmt, ... ) HCC_INTERNAL_ERROR_EX( loggerExpr, fmt, __VA_ARGS__ )
 #endif
 
 #ifndef HCC_CRITICAL
-#define HCC_CRITICAL( logger, fmt, ... ) HCC_INTERNAL_CRITICAL( logger, fmt, __VA_ARGS__ )
+#define HCC_CRITICAL( fmt, ... ) HCC_INTERNAL_CRITICAL( fmt, __VA_ARGS__ )
+#endif
+
+#ifndef HCC_CRITICAL_EX
+#define HCC_CRITICAL_EX( loggerExpr, fmt, ... ) HCC_INTERNAL_CRITICAL( loggerExpr, fmt, __VA_ARGS__ )
 #endif
 
 #ifndef HCC_ALERT
-#define HCC_ALERT( logger, fmt, ... ) HCC_INTERNAL_ALERT( logger, fmt, __VA_ARGS__ )
+#define HCC_ALERT( fmt, ... ) HCC_INTERNAL_ALERT( fmt, __VA_ARGS__ )
+#endif
+
+#ifndef HCC_ALERT_EX
+#define HCC_ALERT_EX( loggerExpr, fmt, ... ) HCC_INTERNAL_ALERT_EX( loggerExpr, fmt, __VA_ARGS__ )
 #endif
 
 #ifndef HCC_EMERGENCY
-#define HCC_EMERGENCY( logger, fmt, ... ) HCC_INTERNAL_EMERGENCY( logger, fmt, __VA_ARGS__ )
+#define HCC_EMERGENCY( fmt, ... ) HCC_INTERNAL_EMERGENCY( fmt, __VA_ARGS__ )
 #endif
+
+#ifndef HCC_EMERGENCY_EX
+#define HCC_EMERGENCY_EX( loggerExpr, fmt, ... ) HCC_INTERNAL_EMERGENCY_EX( loggerExpr, fmt, __VA_ARGS__ )
+#endif
+
 
 #ifdef _DEBUG
 #ifndef HCC_TRACE
-#define HCC_TRACE( logger, fmt,...) HCC_INTERNAL_TRACE( logger, fmt, __VA_ARGS__)
+#define HCC_TRACE( fmt,...) HCC_INTERNAL_TRACE( fmt, __VA_ARGS__)
 #endif
+
+#ifndef HCC_TRACE_EX
+#define HCC_TRACE_EX( loggerExpr, fmt,...) HCC_INTERNAL_TRACE_EX( loggerExpr, fmt, __VA_ARGS__)
+#endif
+
 #else
 #ifndef HCC_TRACE 
-#define HCC_TRACE( logger, fmt,... ) \
+#define HCC_TRACE( fmt,... ) \
+  __pragma( warning(push) ) \
+  __pragma( warning(disable:4127) ) \
+  do {} while (0) \
+  __pragma( warning(pop) )
+#endif
+#ifndef HCC_TRACE_EX 
+#define HCC_TRACE_EX( loggerExpr, fmt,... ) \
   __pragma( warning(push) ) \
   __pragma( warning(disable:4127) ) \
   do {} while (0) \

@@ -5190,6 +5190,10 @@ namespace Harlinn::Common::Core
     HCC_EXPORT WideString ToWideString( const Guid& value );
     HCC_EXPORT WideString ToWideString( const Currency& value );
     HCC_EXPORT WideString ToWideString( const Variant& value );
+
+    struct FixedSizeMemoryManagerStatistics;
+
+    HCC_EXPORT [[nodiscard]] WideString ToWideString( const FixedSizeMemoryManagerStatistics& statistics );
     
 
     template<AnsiStringLike StringT>
@@ -5321,6 +5325,8 @@ namespace Harlinn::Common::Core
     HCC_EXPORT AnsiString ToAnsiString( const Guid& value );
     HCC_EXPORT AnsiString ToAnsiString( const Currency& value );
     HCC_EXPORT AnsiString ToAnsiString( const Variant& value );
+
+    HCC_EXPORT [[nodiscard]] AnsiString ToAnsiString( const FixedSizeMemoryManagerStatistics& statistics );
 
     
 

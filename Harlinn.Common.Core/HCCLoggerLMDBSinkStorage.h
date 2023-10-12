@@ -4,8 +4,8 @@
 
 #include <HCCLMDBEx.h>
 #include <HCCLogger.h>
-#include <HCCLoggerBackendBuffer.h>
-#include <HCCLoggerBackendDataTypes.h>
+#include <HCCLoggerBuffer.h>
+#include <HCCLoggerTypes.h>
 #include <HCCIOBufferStream.h>
 #include <HCCBinaryReader.h>
 #include <HCCBinaryWriter.h>
@@ -286,7 +286,7 @@ namespace Harlinn::Common::Core::Logging::Sinks::Storage
         }
 
 
-        bool Read( LogSite& logSite )
+        bool Read( Types::LogSiteData& logSite )
         {
             auto& cursor = Cursor( );
             if ( cursor.IsPositioned( ) )
@@ -726,7 +726,7 @@ namespace Harlinn::Common::Core::Logging::Sinks::Storage
     public:
         using Base = LMDBEx::Table;
         
-        static constexpr size_t KeyEncodingSize = sizeof( BackendBufferKey );
+        static constexpr size_t KeyEncodingSize = sizeof( Internal::BufferKey );
         using KeyEncodingBufferType = ByteArray<KeyEncodingSize>;
     private:
         KeyEncodingBufferType keyEncodingBuffer_;
@@ -737,7 +737,7 @@ namespace Harlinn::Common::Core::Logging::Sinks::Storage
         }
 
 
-        void Insert( const BackendBuffer* logBuffer )
+        void Insert( const Internal::Buffer* logBuffer )
         {
             /*
             auto count = logBuffer->RecordCount( );
@@ -767,7 +767,7 @@ namespace Harlinn::Common::Core::Logging::Sinks::Storage
             }
             */
         }
-        const BackendBuffer* Value( )
+        const Internal::Buffer* Value( )
         {
             /*
             auto& cursor = Cursor( );
@@ -777,13 +777,13 @@ namespace Harlinn::Common::Core::Logging::Sinks::Storage
             return nullptr;
         }
 
-        BackendBufferKey Key( )
+        Internal::BufferKey Key( )
         {
 
             auto& cursor = Cursor( );
             auto value = cursor.Key( );
 #ifdef USE_MEMCMP_ENCODING
-            BackendBufferKey result;
+            Internal::BufferKey result;
             IO::BufferStream stream( (Byte*)value.mv_data, value.mv_size );
             IO::BinaryReader< IO::BufferStream, true> reader( stream );
             result.Read( reader );
@@ -799,7 +799,7 @@ namespace Harlinn::Common::Core::Logging::Sinks::Storage
 
     using LogComputerTableInfo = LogTableInfoT
         <
-            BackendComputerInfo,Guid,
+            Types::ComputerInfo,Guid,
             Persistent::DescriptorType<Guid, WideString, WideString>
         >;
     using LogComputerTable = LogComputerTableInfo::TableType;
@@ -808,7 +808,7 @@ namespace Harlinn::Common::Core::Logging::Sinks::Storage
 
     using LogUserTableInfo = LogTableInfoT
         <
-            BackendUserInfo, Guid,
+            Types::UserInfo, Guid,
             Persistent::DescriptorType<Guid, WideString, WideString>
         >;
     using LogUserTable = LogUserTableInfo::TableType;
@@ -816,7 +816,7 @@ namespace Harlinn::Common::Core::Logging::Sinks::Storage
 
     using LogExecutableTableInfo = LogTableInfoT
         <
-            BackendExecutableInfo, Guid,
+            Types::ExecutableInfo, Guid,
             Persistent::DescriptorType<Guid, WideString>
         >;
     using LogExecutableTable = LogExecutableTableInfo::TableType;
@@ -824,7 +824,7 @@ namespace Harlinn::Common::Core::Logging::Sinks::Storage
 
     using LogConfigurationFileTableInfo = LogTableInfoT
         <
-            BackendConfigurationFileInfo, Guid,
+            Types::ConfigurationFileInfo, Guid,
             Persistent::DescriptorType<Guid, WideString, WideString>
         >;
     using LogConfigurationFileTable = LogConfigurationFileTableInfo::TableType;
@@ -832,7 +832,7 @@ namespace Harlinn::Common::Core::Logging::Sinks::Storage
 
     using LogWindowsVersionTableInfo = LogTableInfoT
         <
-            BackendWindowsVersionInfo, Guid,
+            Types::WindowsVersionInfo, Guid,
             Persistent::DescriptorType<Guid, DateTime, Guid, UInt32, UInt32, UInt32, UInt32, WideString, UInt16, UInt16, UInt16, Byte>
         >;
     using LogWindowsVersionTable = LogWindowsVersionTableInfo::TableType;
@@ -840,7 +840,7 @@ namespace Harlinn::Common::Core::Logging::Sinks::Storage
 
     using LogProcessTableInfo = LogTableInfoT
         <
-            BackendProcessInfo, Guid,
+            Types::ProcessInfo, Guid,
             Persistent::DescriptorType<Guid, WideString, WideString>
         >;
     using LogProcessTable = LogProcessTableInfo::TableType;
@@ -886,7 +886,7 @@ namespace Harlinn::Common::Core::Logging::Sinks::Storage
             logLocationTable->Insert( level, message, argumentsDescriptor, argumentsDescriptorSize, isFixedSize, fixedSize, line, column, file, function );
         }
 
-        void InsertLogBuffer( const BackendBuffer* logBuffer )
+        void InsertLogBuffer( const Internal::Buffer* logBuffer )
         {
             auto* logDataTable = GetLogDataTable( );
             logDataTable->Insert( logBuffer );
@@ -1086,7 +1086,7 @@ namespace Harlinn::Common::Core::Logging::Sinks::Storage
         }
 
 
-        void Process( BackendBuffer* logBuffer ) noexcept
+        void Process( Internal::Buffer* logBuffer ) noexcept
         {
             try
             {

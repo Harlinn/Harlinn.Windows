@@ -293,7 +293,7 @@ namespace Harlinn::Windows::MF
     void Attributes::Add(const MFAttributes& attributes)
     {
         auto count = attributes.GetCount();
-        for(int i = 0; i < count; i++)
+        for(UInt32 i = 0; i < count; i++)
         { 
             Add(attributes, i);
         }

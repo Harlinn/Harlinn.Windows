@@ -1,21 +1,21 @@
 #pragma once
-#ifndef __HCCLOGGERBACKENDDATATYPES_H__
-#define __HCCLOGGERBACKENDDATATYPES_H__
+#ifndef __HCCLOGGERDATATYPES_H__
+#define __HCCLOGGERDATATYPES_H__
 
 #include <HCCDateTime.h>
 #include <HCCGuid.h>
 #include <HCCString.h>
 
-namespace Harlinn::Common::Core::Logging
+namespace Harlinn::Common::Core::Logging::Types
 {
 
     template<typename DerivedT>
-    class BackendObject
+    class LoggerObject
     {
     public:
         using DerivedType = DerivedT;
 
-        BackendObject( )
+        LoggerObject( )
         { }
 
         const DerivedType& Derived( ) const noexcept
@@ -46,10 +46,10 @@ namespace Harlinn::Common::Core::Logging
     };
 
     template<typename DerivedT>
-    class Identified : public BackendObject< DerivedT >
+    class Identified : public LoggerObject< DerivedT >
     {
     public:
-        using Base = BackendObject< DerivedT >;
+        using Base = LoggerObject< DerivedT >;
     private:
         Guid id_;
     public:
@@ -105,19 +105,19 @@ namespace Harlinn::Common::Core::Logging
 
 
 
-    class BackendDomainObject : public Identified<BackendDomainObject>
+    class DomainObject : public Identified<DomainObject>
     {
     public:
-        using Base = Identified<BackendDomainObject>;
+        using Base = Identified<DomainObject>;
     private:
         WideString domainName_;
         WideString name_;
     public:
-        BackendDomainObject( )
+        DomainObject( )
         {
         }
 
-        BackendDomainObject( const Guid& id, const WideString& domainName, const WideString& name )
+        DomainObject( const Guid& id, const WideString& domainName, const WideString& name )
             : Base( id ), domainName_( domainName ), name_( name )
         {
         }
@@ -176,24 +176,24 @@ namespace Harlinn::Common::Core::Logging
             name_ = name;
         }
     };
-    using BackendComputerInfo = BackendDomainObject;
-    using BackendUserInfo = BackendDomainObject;
+    using ComputerInfo = DomainObject;
+    using UserInfo = DomainObject;
 
-    HCC_EXPORT BackendComputerInfo GetBackendComputerInfo( );
-    HCC_EXPORT BackendUserInfo GetBackendUserInfo( );
+    HCC_EXPORT ComputerInfo GetComputerInfo( );
+    HCC_EXPORT UserInfo GetUserInfo( );
 
 
-    class BackendExecutableInfo : public Identified<BackendExecutableInfo>
+    class ExecutableInfo : public Identified<ExecutableInfo>
     {
     public:
-        using Base = Identified<BackendExecutableInfo>;
+        using Base = Identified<ExecutableInfo>;
     private:
         WideString path_;
     public:
-        BackendExecutableInfo()
+        ExecutableInfo()
         { }
 
-        BackendExecutableInfo( const Guid& id, const WideString& path )
+        ExecutableInfo( const Guid& id, const WideString& path )
             : Base(id), path_( path )
         {
         }
@@ -240,24 +240,24 @@ namespace Harlinn::Common::Core::Logging
         }
     };
 
-    HCC_EXPORT BackendExecutableInfo GetBackendExecutableInfo( );
+    HCC_EXPORT ExecutableInfo GetExecutableInfo( );
 
 
 
 
-    class BackendConfigurationFileInfo : public Identified<BackendConfigurationFileInfo>
+    class ConfigurationFileInfo : public Identified<ConfigurationFileInfo>
     {
     public:
-        using Base = Identified<BackendConfigurationFileInfo>;
+        using Base = Identified<ConfigurationFileInfo>;
     private:
         WideString path_;
         WideString data_;
     public:
-        BackendConfigurationFileInfo( )
+        ConfigurationFileInfo( )
         {
         }
 
-        BackendConfigurationFileInfo( const Guid& id, const WideString& path, const WideString& data )
+        ConfigurationFileInfo( const Guid& id, const WideString& path, const WideString& data )
             : Base( id ), path_( path ), data_( data )
         {
         }
@@ -320,20 +320,20 @@ namespace Harlinn::Common::Core::Logging
 
 
 
-    class BackendWindowsVersionInfoKey
+    class WindowsVersionInfoKey
     {
         Guid id_;
         DateTime timeStamp_;
     public:
-        BackendWindowsVersionInfoKey()
+        WindowsVersionInfoKey()
         { }
 
-        BackendWindowsVersionInfoKey( const Guid& id, const DateTime& timeStamp )
+        WindowsVersionInfoKey( const Guid& id, const DateTime& timeStamp )
             : id_( id ), timeStamp_( timeStamp )
         {
         }
 
-        auto operator<=>( const BackendWindowsVersionInfoKey& ) const = default;
+        auto operator<=>( const WindowsVersionInfoKey& ) const = default;
 
         void Assign( Guid id, const DateTime& timeStamp )
         {
@@ -376,10 +376,10 @@ namespace Harlinn::Common::Core::Logging
 
     };
 
-    class BackendWindowsVersionInfo : public BackendObject<BackendWindowsVersionInfo>
+    class WindowsVersionInfo : public LoggerObject<WindowsVersionInfo>
     {
     public:
-        using PrimaryKeyType = BackendWindowsVersionInfoKey;
+        using PrimaryKeyType = WindowsVersionInfoKey;
     private:
         PrimaryKeyType primaryKey_;
         UInt32 majorVersion_ = 0;
@@ -392,17 +392,17 @@ namespace Harlinn::Common::Core::Logging
         UInt16 suiteMask_ = 0;
         Byte  productType_ = 0;
     public:
-        using PrimaryKeyType = BackendWindowsVersionInfoKey;
+        
 
 
-        BackendWindowsVersionInfo( )
+        WindowsVersionInfo( )
         { }
 
-        BackendWindowsVersionInfo( Guid id, const DateTime& timeStamp, UInt32 majorVersion, UInt32 minorVersion, UInt32 buildNumber, UInt32 platformId, WideString csdVersion, UInt16 servicePackMajor, UInt16 servicePackMinor, UInt16 suiteMask, Byte  productType )
+        WindowsVersionInfo( Guid id, const DateTime& timeStamp, UInt32 majorVersion, UInt32 minorVersion, UInt32 buildNumber, UInt32 platformId, WideString csdVersion, UInt16 servicePackMajor, UInt16 servicePackMinor, UInt16 suiteMask, Byte  productType )
             : primaryKey_( id, timeStamp ), majorVersion_( majorVersion ), minorVersion_( minorVersion ), buildNumber_( buildNumber ), platformId_( platformId ), csdVersion_( csdVersion ), servicePackMajor_( servicePackMajor ), servicePackMinor_( servicePackMinor ), suiteMask_( suiteMask ), productType_( productType )
         {}
 
-        BackendWindowsVersionInfo( const OSVERSIONINFOEXW& info )
+        WindowsVersionInfo( const OSVERSIONINFOEXW& info )
             : majorVersion_( info.dwMajorVersion ), minorVersion_( info.dwMinorVersion ), buildNumber_( info.dwBuildNumber ), platformId_( info.dwPlatformId ), csdVersion_( info.szCSDVersion ), servicePackMajor_( info.wServicePackMajor ), servicePackMinor_( info.wServicePackMinor ), suiteMask_( info.wSuiteMask ), productType_( info.wProductType )
         {
         }
@@ -563,16 +563,14 @@ namespace Harlinn::Common::Core::Logging
         {
             return productType_;
         }
-
-
     };
 
 
 
-    class BackendProcessInfo : Identified<BackendProcessInfo>
+    class ProcessInfo : Identified<ProcessInfo>
     {
     public:
-        using Base = Identified<BackendProcessInfo>;
+        using Base = Identified<ProcessInfo>;
     private:
         DateTime startTime_;
         UInt32 processId_;
@@ -580,20 +578,20 @@ namespace Harlinn::Common::Core::Logging
         Guid userId_;
         Guid windowsVersionId_;
         Guid configurationFileId_;
-        WideString commandlineArguments_;
+        WideString commandLineArguments_;
     public:
-        BackendProcessInfo( )
+        ProcessInfo( )
             : processId_( 0 )
         {
         }
 
-        BackendProcessInfo( const Guid& id, const DateTime& startTime, UInt32 processId, const Guid& computerId, const Guid& userId, const Guid& windowsVersionId, const Guid& configurationFileId, const WideString& commandlineArguments )
-            : Base( id ), startTime_( startTime ), processId_( processId ), computerId_( computerId ), userId_( userId ), windowsVersionId_( windowsVersionId ), configurationFileId_( configurationFileId ), commandlineArguments_( commandlineArguments )
+        ProcessInfo( const Guid& id, const DateTime& startTime, UInt32 processId, const Guid& computerId, const Guid& userId, const Guid& windowsVersionId, const Guid& configurationFileId, const WideString& commandLineArguments )
+            : Base( id ), startTime_( startTime ), processId_( processId ), computerId_( computerId ), userId_( userId ), windowsVersionId_( windowsVersionId ), configurationFileId_( configurationFileId ), commandLineArguments_( commandLineArguments )
         {
         }
 
 
-        static HCC_EXPORT BackendProcessInfo Create( );
+        static HCC_EXPORT ProcessInfo Create( );
 
 
 
@@ -606,7 +604,7 @@ namespace Harlinn::Common::Core::Logging
             reader.Read( userId_ );
             reader.Read( windowsVersionId_ );
             reader.Read( configurationFileId_ );
-            reader.Read( commandlineArguments_ );
+            reader.Read( commandLineArguments_ );
         }
 
         template<typename WriterT>
@@ -618,7 +616,7 @@ namespace Harlinn::Common::Core::Logging
             writer.Write( userId_ );
             writer.Write( windowsVersionId_ );
             writer.Write( configurationFileId_ );
-            writer.Write( commandlineArguments_ );
+            writer.Write( commandLineArguments_ );
         }
 
         void AddTo( XXH64Hasher& hasher ) const noexcept
@@ -629,7 +627,7 @@ namespace Harlinn::Common::Core::Logging
             hasher.Add( userId_ );
             hasher.Add( windowsVersionId_ );
             hasher.Add( configurationFileId_ );
-            hasher.Add( commandlineArguments_.c_str( ), commandlineArguments_.size( ) * sizeof( WideString::value_type ) );
+            hasher.Add( commandLineArguments_ );
         }
 
         size_t Hash( ) const noexcept
@@ -686,9 +684,9 @@ namespace Harlinn::Common::Core::Logging
         {
             return configurationFileId_;
         }
-        constexpr const WideString& CommandlineArguments( ) const noexcept
+        constexpr const WideString& CommandLineArguments( ) const noexcept
         {
-            return commandlineArguments_;
+            return commandLineArguments_;
         }
 
 

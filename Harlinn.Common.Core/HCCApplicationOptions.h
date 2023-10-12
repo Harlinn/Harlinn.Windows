@@ -3,21 +3,21 @@
 #define __HCCAPPLICATIONOPTIONS_H__
 
 #include <HCCDef.h>
-#include <HCCLoggerBackendOptions.h>
+#include <HCCLoggerOptions.h>
 
 namespace Harlinn::Common::Core
 {
     class ApplicationOptions : public std::enable_shared_from_this<ApplicationOptions>
     {
-        std::shared_ptr<Logging::BackendOptions> loggingBackendOptions_;
+        std::shared_ptr<Logging::LoggerOptions> loggerOptions_;
     public:
         using Element = Xml::Dom::Element;
         ApplicationOptions()
-            : loggingBackendOptions_( std::make_shared<Logging::BackendOptions>() )
+            : loggerOptions_( std::make_shared<Logging::LoggerOptions>() )
         { }
 
-        ApplicationOptions( const std::shared_ptr<Logging::BackendOptions>& loggingBackendOptions )
-            : loggingBackendOptions_( loggingBackendOptions )
+        ApplicationOptions( const std::shared_ptr<Logging::LoggerOptions>& loggerOptions )
+            : loggerOptions_( loggerOptions )
         {
         }
 
@@ -31,11 +31,11 @@ namespace Harlinn::Common::Core
             auto loggingElement = element.FindElement( L"Logging" );
             if ( loggingElement )
             {
-                if ( loggingBackendOptions_ == nullptr )
+                if ( loggerOptions_ == nullptr )
                 {
-                    loggingBackendOptions_ = std::make_shared<Logging::BackendOptions>( );
+                    loggerOptions_ = std::make_shared<Logging::LoggerOptions>( );
                 }
-                loggingBackendOptions_->ReadFrom( loggingElement );
+                loggerOptions_->ReadFrom( loggingElement );
             }
         }
 
@@ -136,9 +136,9 @@ namespace Harlinn::Common::Core
 
 
 
-        const std::shared_ptr<Logging::BackendOptions>& LoggingBackendOptions( ) const noexcept
+        const std::shared_ptr<Logging::LoggerOptions>& LoggerOptions( ) const noexcept
         {
-            return loggingBackendOptions_;
+            return loggerOptions_;
         }
 
 

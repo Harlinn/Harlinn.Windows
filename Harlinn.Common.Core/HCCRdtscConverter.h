@@ -14,15 +14,15 @@ namespace Harlinn::Common::Core
         DateTime end_;
         UInt64 rdtscStart_;
         UInt64 rdtscEnd_;
-        double rdtscFrequency_;
+        UInt64 rdtscCyclesPerTick_;
     public:
-        RdtscConverter( const TimeSpan& callibrationTime = TimeSpan::FromMilliseconds(100) ) noexcept
-            : callibrationTime_( callibrationTime ), rdtscStart_( 0 ), rdtscEnd_( 0 ), rdtscFrequency_( 0.0 )
+        RdtscConverter( const TimeSpan& callibrationTime = TimeSpan::FromMilliseconds(200) ) noexcept
+            : callibrationTime_( callibrationTime ), rdtscStart_( 0 ), rdtscEnd_( 0 ), rdtscCyclesPerTick_( 0 )
         {
-            Callibrate( );
+            Calibrate( );
         }
     private:
-        void Callibrate( )
+        void Calibrate( )
         {
             Int64 ftStart, ftEnd;
             unsigned int ui = 0;
@@ -47,10 +47,10 @@ namespace Harlinn::Common::Core
             UInt64 interval = ftEnd - ftStart;
 
             UInt64 rdtscInterval = rdtscEnd_ - rdtscStart_;
-            rdtscFrequency_ = static_cast<double>( rdtscInterval ) / static_cast<double>( interval );
+            rdtscCyclesPerTick_ = rdtscInterval / interval;
         }
     public:
-        void Recallibrate( )
+        void Recalibrate( )
         {
             Int64 ftNow;
             unsigned int ui = 0;
@@ -67,19 +67,19 @@ namespace Harlinn::Common::Core
             rdtscEnd_ = rdtscNow;
         }
 
-        static constexpr DateTime ToDateTime( UInt64 rdtsc, const DateTime& epoch, UInt64 rdtscEpoch, double rdtscFrequency ) noexcept
+        static constexpr DateTime ToDateTime( UInt64 rdtsc, const DateTime& epoch, UInt64 rdtscEpoch, UInt64 rdtscCyclesPerTick ) noexcept
         {
             if ( rdtsc < rdtscEpoch )
             {
                 Int64 rdtscOffset = static_cast<Int64>( rdtscEpoch - rdtsc );
-                Int64 offset = static_cast<Int64>( rdtscOffset / rdtscFrequency );
+                Int64 offset = static_cast<Int64>( rdtscOffset / rdtscCyclesPerTick );
                 DateTime result( epoch.Ticks( ) - offset );
                 return result;
             }
             else
             {
                 Int64 rdtscOffset = static_cast<Int64>( rdtsc - rdtscEpoch );
-                Int64 offset = static_cast<Int64>( rdtscOffset / rdtscFrequency );
+                Int64 offset = static_cast<Int64>( rdtscOffset / rdtscCyclesPerTick );
                 DateTime result( epoch.Ticks( ) + offset );
                 return result;
             }
@@ -88,7 +88,7 @@ namespace Harlinn::Common::Core
 
         constexpr DateTime ToDateTime( UInt64 rdtsc ) const noexcept
         {
-            return ToDateTime( rdtsc, start_, rdtscStart_, rdtscFrequency_ );
+            return ToDateTime( rdtsc, start_, rdtscStart_, rdtscCyclesPerTick_ );
         }
 
         constexpr const DateTime& Start( ) const noexcept
@@ -104,14 +104,14 @@ namespace Harlinn::Common::Core
         {
             return rdtscStart_;
         }
-        constexpr UInt64 rdtscEnd( ) const noexcept
+        constexpr UInt64 RdtscEnd( ) const noexcept
         {
             return rdtscEnd_;
         }
 
-        constexpr double RdtscFrequency( ) const noexcept
+        constexpr UInt64 RdtscCyclesPerTick( ) const noexcept
         {
-            return rdtscFrequency_;
+            return rdtscCyclesPerTick_;
         }
 
 

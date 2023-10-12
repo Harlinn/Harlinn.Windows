@@ -7,12 +7,14 @@
 
 namespace Harlinn::Common::Core::Logging
 {
-    class Backend;
 
     enum class Level : UInt16
     {
         None = 0,
-        Trace = 0x0010,
+        Trace = 0x0008,
+        Entering = Trace | 0x0001,
+        Leaving = Trace | 0x0002,
+        Verbose = 0x0010,
         Debug = 0x0020,
         Info = 0x0040,
         Notice = 0x0080,
@@ -25,9 +27,9 @@ namespace Harlinn::Common::Core::Logging
         System = 0x8000,
         SystemStart = System | 0x0001,
         SystemStop = System | 0x0002,
-        All = Trace | Debug | Info | Notice | Warning | Error | Exception | Critical | Alert | Emergency | System,
+        All = Trace | Verbose | Debug | Info | Notice | Warning | Error | Exception | Critical | Alert | Emergency | System,
 #ifdef _DEBUG
-        Default = Trace | Debug | Info | Notice | Warning | Error | Exception | Critical | Alert | Emergency | System
+        Default = Trace | Verbose | Debug | Info | Notice | Warning | Error | Exception | Critical | Alert | Emergency | System
 #else
         Default = Info | Notice | Warning | Error | Exception | Critical | Alert | Emergency
 #endif

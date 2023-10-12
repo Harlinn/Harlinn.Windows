@@ -224,6 +224,7 @@
     <ClInclude Include="HCCIOBase.h" />
     <ClInclude Include="HCCIOCompletionPort.h" />
     <ClInclude Include="HCCIORequest.h" />
+    <ClInclude Include="HCCLoggerStorage.h" />
     <ClInclude Include="HCCNetwork.h" />
     <ClInclude Include="HCCIStreamOnStreamImpl.h" />
     <ClInclude Include="HCCIterator.h" />
@@ -231,10 +232,10 @@
     <ClInclude Include="HCCLMDBEx.h" />
     <ClInclude Include="HCCLocationAPI.h" />
     <ClInclude Include="HCCLogger.h" />
-    <ClInclude Include="HCCLoggerBackend.h" />
-    <ClInclude Include="HCCLoggerBackendBuffer.h" />
-    <ClInclude Include="HCCLoggerBackendOptions.h" />
-    <ClInclude Include="HCCLoggerBackendDataTypes.h" />
+    <ClInclude Include="HCCLoggerImpl.h" />
+    <ClInclude Include="HCCLoggerBuffer.h" />
+    <ClInclude Include="HCCLoggerOptions.h" />
+    <ClInclude Include="HCCLoggerTypes.h" />
     <ClInclude Include="HCCLib.h" />
     <ClInclude Include="HCCConverters.h" />
     <ClInclude Include="HCCCRC.h" />
@@ -329,8 +330,8 @@
     <ClCompile Include="HCCIOContext.cpp" />
     <ClCompile Include="HCCIStreamOnStreamImpl.cpp" />
     <ClCompile Include="HCCLMDB.cpp" />
-    <ClCompile Include="HCCLoggerBackend.cpp" />
-    <ClCompile Include="HCCLoggerBackendDataTypes.cpp" />
+    <ClCompile Include="HCCLoggerImpl.cpp" />
+    <ClCompile Include="HCCLoggerTypes.cpp" />
     <ClCompile Include="HCCLoggerLevel.cpp" />
     <ClCompile Include="HCCLoggerLMDBSink.cpp" />
     <ClCompile Include="HCCMemory.cpp" />

@@ -151,15 +151,7 @@ namespace Harlinn::Common::Core
 
         Unknown& operator = ( Unknown&& other ) noexcept
         {
-            if ( unknown_ != other.unknown_ )
-            {
-                if ( unknown_ )
-                {
-                    unknown_->Release( );
-                }
-                unknown_ = other.unknown_;
-                other.unknown_ = nullptr;
-            }
+            std::swap( unknown_, other.unknown_ );
             return *this;
         }
 
@@ -552,9 +544,9 @@ public: \
         {
             return (T*)unknown_;
         }
-        constexpr operator T* ( ) const noexcept
+        std::add_lvalue_reference_t<T> operator* ( ) const noexcept
         {
-            return (T*)unknown_;
+            return *unknown_;
         }
 
 

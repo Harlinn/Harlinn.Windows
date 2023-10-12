@@ -4,7 +4,7 @@
 
 #include <HCCDef.h>
 #include <HCCApplicationOptions.h>
-#include <HCCLoggerBackend.h>
+#include <HCCLoggerImpl.h>
 
 namespace Harlinn::Common::Core
 {
@@ -13,6 +13,7 @@ namespace Harlinn::Common::Core
     {
         Unknown,
         Stop,
+        ThreadAttached,
         ThreadDetached
     };
 
@@ -25,6 +26,11 @@ namespace Harlinn::Common::Core
     template<typename ValueT, ApplicationMessageType messageId>
     using SimpleApplicationValueMessage = Concurrency::Messages::SimpleValueMessage<ValueT, ApplicationMessageType, messageId>;
 
+    using ApplicationStopMessage = SimpleApplicationMessage<ApplicationMessageType::Stop>;
+    using ApplicationThreadAttachedMessage = SimpleApplicationValueMessage<UInt32, ApplicationMessageType::ThreadAttached>;
+    using ApplicationThreadDetachedMessage = SimpleApplicationValueMessage<UInt32, ApplicationMessageType::ThreadDetached>;
+
+
     class Application : public Concurrency::ActiveObject<std::shared_ptr<ApplicationMessage>>
     {
     public:
@@ -33,8 +39,10 @@ namespace Harlinn::Common::Core
     private:
         HCC_EXPORT static Application* instance_;
         const std::shared_ptr<ApplicationOptions> options_;
-        std::shared_ptr<Logging::Backend> loggingBackend_;
+        
     public:
+        boost::signals2::signal<void( UInt32 attachedThreadId )> OnThreadAttached;
+        boost::signals2::signal<void( UInt32 detachedThreadId )> OnThreadDetached;
         HCC_EXPORT Application( const std::shared_ptr<ApplicationOptions>& options );
         HCC_EXPORT Application( );
         HCC_EXPORT ~Application( );
@@ -53,6 +61,9 @@ namespace Harlinn::Common::Core
         {
             return *instance_;
         }
+        
+
+        HCC_EXPORT static UInt64 MainThreadId( ) noexcept;
 
         HCC_EXPORT static void HandleDllMainEvent( HMODULE moduleHandle, DWORD reason, LPVOID freeLibrary ) noexcept;
         HCC_EXPORT virtual void ProcessMessage( const MessageType& message ) override;
@@ -60,16 +71,17 @@ namespace Harlinn::Common::Core
         void Start( )
         {
             Base::Start( );
-            loggingBackend_->Start( );
+            auto logManager = Logging::LogManager::Instance( );
+            logManager->Start( );
 
         }
 
         void Stop( )
         {
-            loggingBackend_->Stop( );
+            auto logManager = Logging::LogManager::Instance( );
+            logManager->Stop( );
             Base::Stop( );
         }
-
 
     protected:
         virtual bool IsStopMessage( const MessageType& message ) const noexcept override
@@ -81,8 +93,15 @@ namespace Harlinn::Common::Core
             auto message = std::make_shared< SimpleApplicationMessage<ApplicationMessageType::Stop > >( );
             PostMessage( message );
         }
+        HCC_EXPORT virtual void BeforeProcessMessages( ) override;
+    public:
+        HCC_EXPORT void PostThreadAttachedMessage( );
     protected:
-
+        HCC_EXPORT virtual void ProcessThreadAttachedMessage( const std::shared_ptr<ApplicationThreadAttachedMessage>& message );
+    public:
+        HCC_EXPORT void PostThreadDetachedMessage( );
+    protected:
+        HCC_EXPORT virtual void ProcessThreadDetachedMessage( const std::shared_ptr<ApplicationThreadDetachedMessage>& message );
 
     };
 
