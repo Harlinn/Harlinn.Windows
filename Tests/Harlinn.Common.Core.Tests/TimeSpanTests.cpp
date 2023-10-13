@@ -137,7 +137,39 @@ BOOST_AUTO_TEST_CASE( TimeSpanTryParseTest2 )
     BOOST_CHECK( totalDays == 1.0 );
 }
 
+// --run_test=TimeSpanTests/TimeSpanTryParseTest3
+BOOST_AUTO_TEST_CASE( TimeSpanTryParseTest3 )
+{
+    TimeSpan timeSpan;
+    bool success = TimeSpan::TryParse( L"90:10:11:12", timeSpan );
+    BOOST_CHECK( success );
+    auto days = timeSpan.Days( );
+    BOOST_CHECK( days == 90 );
+    auto hours = timeSpan.Hours( );
+    BOOST_CHECK( hours == 10 );
+    auto minutes = timeSpan.Minutes( );
+    BOOST_CHECK( minutes == 11 );
+    auto seconds = timeSpan.Seconds( );
+    BOOST_CHECK( seconds == 12 );
 
+}
+
+// --run_test=TimeSpanTests/TimeSpanTryParseTest4
+BOOST_AUTO_TEST_CASE( TimeSpanTryParseTest4 )
+{
+    TimeSpan timeSpan;
+    bool success = TimeSpan::TryParse( L"0:0:10", timeSpan );
+    BOOST_CHECK( success );
+    auto days = timeSpan.Days( );
+    BOOST_CHECK( days == 0 );
+    auto hours = timeSpan.Hours( );
+    BOOST_CHECK( hours == 0 );
+    auto minutes = timeSpan.Minutes( );
+    BOOST_CHECK( minutes == 10 );
+    auto seconds = timeSpan.Seconds( );
+    BOOST_CHECK( seconds == 0 );
+
+}
 
 
 

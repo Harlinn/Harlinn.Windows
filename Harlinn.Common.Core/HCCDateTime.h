@@ -1074,7 +1074,9 @@ namespace Harlinn::Common::Core
 
 
     /// <summary>
-    /// A closed/open interval that works well with the boost Interval Container Library
+    /// A closed/open interval that works well with the boost Interval Container Library.
+    /// 
+    /// boost::icl::interval_set<DateTime,std::less,Interval>
     /// </summary>
     class Interval : public boost::icl::right_open_interval<DateTime>
     {
@@ -1095,6 +1097,42 @@ namespace Harlinn::Common::Core
             : Base( lowerBound, upperBound )
         {
         }
+
+        static Interval Infinite( )
+        {
+            return Interval( DateTime( DateTime::MinTicks ), DateTime( DateTime::MaxTicks ) );
+        }
+
+        static Interval From( const DateTime& lowerBound )
+        {
+            return Interval( lowerBound, DateTime( DateTime::MaxTicks ) );
+        }
+
+        static Interval Until( const DateTime& upperBound )
+        {
+            return Interval( DateTime( DateTime::MinTicks ), upperBound );
+        }
+
+        constexpr bool IsInfinite( ) const noexcept
+        {
+            return ( lower( ).Ticks( ) == DateTime::MinTicks ) && ( upper( ).Ticks( ) == DateTime::MaxTicks );
+        }
+
+        constexpr bool IsUntil( ) const noexcept
+        {
+            return ( lower( ).Ticks( ) == DateTime::MinTicks ) && ( upper( ).Ticks( ) != DateTime::MaxTicks );
+        }
+
+        constexpr bool IsFrom( ) const noexcept
+        {
+            return ( lower( ).Ticks( ) != DateTime::MinTicks ) && ( upper( ).Ticks( ) == DateTime::MaxTicks );
+        }
+
+        constexpr bool IsOver( ) const noexcept
+        {
+            return ( lower( ).Ticks( ) != DateTime::MinTicks ) && ( upper( ).Ticks( ) != DateTime::MaxTicks );
+        }
+
 
         TimeSpan Duration( ) const noexcept
         {
