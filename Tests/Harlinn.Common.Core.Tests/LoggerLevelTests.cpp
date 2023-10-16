@@ -21,7 +21,7 @@ BOOST_AUTO_TEST_CASE( LevelOStreamOperatorTest1A )
 {
     using StringType = AnsiString;
     Level level = Level::All & ~Level::System;
-    std::string expectedResult = "Trace|Debug|Info|Notice|Warning|Error|Exception|Critical|Alert|Emergency";
+    std::string expectedResult = "Verbose|Trace|Debug|Info|Notice|Warning|Error|Exception|Critical|Alert|Emergency";
 
     std::ostringstream dest;
 

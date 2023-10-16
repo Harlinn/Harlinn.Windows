@@ -166,6 +166,7 @@ BOOST_AUTO_TEST_CASE( TimeSpanTryParseTest4 )
     BOOST_CHECK( hours == 0 );
     auto minutes = timeSpan.Minutes( );
     BOOST_CHECK( minutes == 10 );
+    printf( "Minutes: %d\n", minutes );
     auto seconds = timeSpan.Seconds( );
     BOOST_CHECK( seconds == 0 );
 

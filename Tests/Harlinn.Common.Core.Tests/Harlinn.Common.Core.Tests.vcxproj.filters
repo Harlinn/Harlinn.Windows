@@ -232,8 +232,8 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Xml Include="EseOptionsTests.xml">
+    <CopyFileToFolders Include="EseOptionsTests.xml">
       <Filter>Source Files</Filter>
-    </Xml>
+    </CopyFileToFolders>
   </ItemGroup>
 </Project>

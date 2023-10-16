@@ -165,6 +165,7 @@ namespace Harlinn::Common::Core
                 }
                 if ( *start )
                 {
+                    _set_errno( 0 );
                     CharType* end = nullptr;
                     int days = ToInt32( start, &end, 10 );
                     if ( days || errno == 0 )
