@@ -736,6 +736,35 @@ namespace Harlinn::Common::Core::Logging
         };
     }
 
+    namespace Sinks
+    {
+        class TextSink : public RecordHandler
+        {
+            std::shared_ptr<TextSinkOptions> options_;
+            IO::FileStream fileStream_;
+            using FormatterType = Formatters::TextFormatter<IO::FileStream>;
+            std::shared_ptr<FormatterType> formatter_;
+        public:
+            TextSink( const std::shared_ptr<TextSinkOptions>& options )
+                : options_( options ), fileStream_( options->Filename(), IO::FileAccess::ReadWrite | IO::FileAccess::Append, IO::FileShare::Read, IO::FileMode::Append, IO::FileAttributes::Normal, IO::FileOptions::Default )
+            { 
+                formatter_ = std::make_shared<FormatterType>( fileStream_ );
+            }
+
+            virtual void Process( const LogRecord& logRecord ) noexcept override
+            {
+                formatter_->Process( logRecord );
+            }
+
+            virtual void Final( const Guid& processId, UInt32 threadId ) noexcept override
+            {
+                formatter_->Final( processId, threadId );
+            }
+
+        };
+    }
+
+
 }
 
 namespace Harlinn::Common::Core::Logging::Internal

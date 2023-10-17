@@ -375,6 +375,12 @@
     <ClInclude Include="HCCLoggerStorage.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="HCCLoggerTextSinkOptions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HCCServiceRunner.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">

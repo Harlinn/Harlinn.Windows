@@ -3,6 +3,7 @@
 #define __HCCLOGGEROPTIONS_H__
 
 #include <HCCLoggerLMDBSinkOptions.h>
+#include <HCCLoggerTextSinkOptions.h>
 #include <HCCLoggerLevel.h>
 
 
@@ -14,14 +15,18 @@ namespace Harlinn::Common::Core::Logging
         TimeSpan pollInterval_{ TimeSpan::TicksPerSecond * 5 };
         //ConsoleSinkOptions consoleSinkOptions_;
         std::shared_ptr<Sinks::LMDBSinkOptions> lmdbSinkOptions_;
+        std::shared_ptr<Sinks::TextSinkOptions> textSinkOptions_;
     public:
         using Element = Xml::Dom::Element;
         LoggerOptions()
-            : lmdbSinkOptions_( std::make_shared<Sinks::LMDBSinkOptions>( ) )
+            : lmdbSinkOptions_( std::make_shared<Sinks::LMDBSinkOptions>( ) ),
+              textSinkOptions_( std::make_shared<Sinks::TextSinkOptions>( ) )
         { }
 
         explicit LoggerOptions( Level enabledLevels )
-            : enabledLevels_( enabledLevels ), lmdbSinkOptions_( std::make_shared<Sinks::LMDBSinkOptions>() )
+            : enabledLevels_( enabledLevels ), 
+              lmdbSinkOptions_( std::make_shared<Sinks::LMDBSinkOptions>( ) ),
+              textSinkOptions_( std::make_shared<Sinks::TextSinkOptions>( ) )
         {
         }
 
@@ -35,6 +40,11 @@ namespace Harlinn::Common::Core::Logging
                 if ( lmdbElement )
                 {
                     lmdbSinkOptions_->ReadFrom( lmdbElement );
+                }
+                auto textElement = sinksElement.FindElement( L"Text" );
+                if ( textElement )
+                {
+                    textSinkOptions_->ReadFrom( textElement );
                 }
             }
 
@@ -64,6 +74,11 @@ namespace Harlinn::Common::Core::Logging
         const std::shared_ptr<Sinks::LMDBSinkOptions>& LMDBSinkOptions( ) const noexcept
         {
             return lmdbSinkOptions_;
+        }
+
+        const std::shared_ptr<Sinks::TextSinkOptions>& TextSinkOptions( ) const noexcept
+        {
+            return textSinkOptions_;
         }
 
     };

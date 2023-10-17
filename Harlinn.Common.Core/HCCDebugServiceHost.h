@@ -14,7 +14,7 @@ namespace Harlinn::Common::Core::Services
             size_t handle_ = 0;
             LPSERVICE_MAIN_FUNCTIONW mainFunction_ = nullptr;
             LPHANDLER_FUNCTION_EX serviceHandler_ = nullptr;
-            void* serviceContext_;
+            void* serviceContext_ = nullptr;
             SERVICE_STATUS serviceStatus_{};
             Thread serviceThread_;
             std::vector<WideString> arguments_;
@@ -36,6 +36,10 @@ namespace Harlinn::Common::Core::Services
                 if ( serviceStatus )
                 {
                     serviceStatus_ = *serviceStatus;
+                    ServiceState currentState = static_cast< ServiceState >( serviceStatus_.dwCurrentState );
+                    auto currentStateStr = Format( "{}", currentState );
+                    auto name = ToAnsiString( name_ );
+                    HCC_DEBUG( "{} {}", name, currentStateStr );
                 }
             }
 
@@ -64,6 +68,7 @@ namespace Harlinn::Common::Core::Services
                 if ( serviceHandler_ )
                 {
                     serviceHandler_( SERVICE_CONTROL_STOP, 0, nullptr, serviceContext_ );
+                    serviceThread_.Wait( );
                 }
             }
 
@@ -120,6 +125,7 @@ namespace Harlinn::Common::Core::Services
                 counter++;
                 WideString serviceName = serviceStartTable->lpServiceName;
                 serviceNameMap_.emplace( serviceName, std::make_unique<Internal::ServiceEntry>( serviceName, counter, serviceStartTable->lpServiceProc ) );
+                serviceStartTable++;
             }
 
             for ( auto& entry : serviceNameMap_ )
@@ -138,7 +144,7 @@ namespace Harlinn::Common::Core::Services
 
         virtual void Run( )
         {
-            puts( "Press any key to exit" );
+            puts( "Press ENTER to exit" );
             getc( stdin );
             Stop( );
         }

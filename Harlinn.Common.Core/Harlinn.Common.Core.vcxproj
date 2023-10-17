@@ -225,6 +225,7 @@
     <ClInclude Include="HCCIOCompletionPort.h" />
     <ClInclude Include="HCCIORequest.h" />
     <ClInclude Include="HCCLoggerStorage.h" />
+    <ClInclude Include="HCCLoggerTextSinkOptions.h" />
     <ClInclude Include="HCCNetwork.h" />
     <ClInclude Include="HCCIStreamOnStreamImpl.h" />
     <ClInclude Include="HCCIterator.h" />
@@ -285,6 +286,7 @@
     <ClInclude Include="HCCSerializationDataType.h" />
     <ClInclude Include="HCCSerializationDataWriter.h" />
     <ClInclude Include="HCCService.h" />
+    <ClInclude Include="HCCServiceRunner.h" />
     <ClInclude Include="HCCShell.h" />
     <ClInclude Include="HCCSIMD.h" />
     <ClInclude Include="HCCSocket.h" />

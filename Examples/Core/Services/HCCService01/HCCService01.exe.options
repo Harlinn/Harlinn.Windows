@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<configuration>
+  <Logging EnabledLevels="Trace|Debug|Info|Notice|Warning|Error|Exception|Critical|Alert|Emergency|System">
+    <Sinks>
+      <Text Enabled="True" 
+            Filename="c:\Logs\HCCService01.log"
+            EnabledLevels="Verbose|Trace|Debug|Info|Notice|Warning|Error|Exception|Critical|Alert|Emergency|System">
+      </Text>
+    </Sinks>  
+  </Logging>
+</configuration>

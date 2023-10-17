@@ -375,6 +375,7 @@ namespace Harlinn::Common::Core::Logging
         else
         {
             auto statistics = std::make_shared<LogManagerStatistics>( this, bufferManager_.Statistics(), loggers_.size( ) );
+            return statistics;
         }
     }
     

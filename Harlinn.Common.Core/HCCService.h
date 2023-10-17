@@ -9,9 +9,23 @@
 #include <HCCSync.h>
 #include <HCCArray.h>
 #include <HCCApplication.h>
+#include <HCCIterator.h>
 
 namespace Harlinn::Common::Core::Services
 {
+#ifdef USE_REPORTSERVICEMESSAGE
+    inline void ReportServiceMessage( const char* message )
+    {
+        if ( message && message[ 0 ] )
+        {
+            size_t length = strlen( message );
+            IO::FileStream fileStream( L"C:\\Logs\\simple.log", IO::FileAccess::ReadWrite | IO::FileAccess::Append, IO::FileShare::Read, IO::FileMode::Append, IO::FileAttributes::Normal, IO::FileOptions::Default );
+            fileStream.Write( message, length );
+            fileStream.Write( "\r\n", 2 );
+        }
+    }
+#endif
+
     enum class ServiceAccessRights : DWORD
     {
         HCC_COMMON_CORE_SECURITY_BASE_ENUM_ACCESS_RIGHTS,
@@ -238,6 +252,15 @@ namespace Harlinn::Common::Core::Services
         PausePending = SERVICE_PAUSE_PENDING,
         Paused = SERVICE_PAUSED,
     };
+
+    enum class ServiceErrorControl : DWORD
+    {
+        Ignore = SERVICE_ERROR_IGNORE,
+        Normal = SERVICE_ERROR_NORMAL,
+        Severe = SERVICE_ERROR_SEVERE,
+        Critical = SERVICE_ERROR_CRITICAL
+    };
+
 
 
     /// <summary>
@@ -471,12 +494,269 @@ namespace Harlinn::Common::Core::Services
         Suspend = PBT_APMSUSPEND
     };
 
+    enum class ServiceFlags : DWORD
+    {
+
+        None = 0,
+        /// <summary>
+        /// The service runs in a system process that must always be running.
+        /// </summary>
+        RunsInSystemProcess = SERVICE_RUNS_IN_SYSTEM_PROCESS
+    };
+    HCC_DEFINE_ENUM_FLAG_OPERATORS( ServiceFlags, DWORD );
+
+    enum class ServiceEnumFlags : DWORD
+    {
+        Active = SERVICE_ACTIVE,
+        Inactive = SERVICE_INACTIVE,
+        All = SERVICE_STATE_ALL
+    };
+    HCC_DEFINE_ENUM_FLAG_OPERATORS( ServiceEnumFlags, DWORD );
+
+
+    struct ServiceStatus
+    {
+        Services::ServiceType ServiceType = Services::ServiceType::None;
+        Services::ServiceState CurrentState = Services::ServiceState::Unknown;
+        Services::ServiceControlAccepted ControlsAccepted = Services::ServiceControlAccepted::None;
+        DWORD ExitCode = 0;
+        DWORD ServiceSpecificExitCode = 0;
+        DWORD CheckPoint = 0;
+        DWORD WaitHint = 0;
+
+        DWORD WaitTime( )
+        {
+            DWORD waitTime = WaitHint / 10;
+
+            if ( waitTime < 1000 )
+            {
+                waitTime = 1000;
+            }
+            else if ( waitTime > 10000 )
+            {
+                waitTime = 10000;
+            }
+            return waitTime;
+        }
+
+    };
+    static_assert( sizeof( ServiceStatus ) == sizeof( SERVICE_STATUS ) );
+
+    struct ServiceStatusProcess : public ServiceStatus
+    {
+        DWORD ProcessId = 0;
+        Services::ServiceFlags ServiceFlags = Services::ServiceFlags::None;
+    };
+    static_assert( sizeof( ServiceStatusProcess ) == sizeof( SERVICE_STATUS_PROCESS ));
+
+    
 
 
 
+    struct ServiceStatusEntry
+    {
+        LPWSTR ServiceName;
+        LPWSTR DisplayName;
+        Services::ServiceStatus ServiceStatus;
+    };
+    static_assert( sizeof( ServiceStatusEntry ) == sizeof( ENUM_SERVICE_STATUSW ) );
 
+    class ServiceHandle;
+    class ServiceStatusEntries
+    {
+        size_t memorySize_ = 0;
+        size_t size_ = 0;
+        ServiceStatusEntry* data_ = nullptr;
+    public:
+        using value_type = ServiceStatusEntry;
+        using size_type = size_t;
+        using difference_type = SSizeT;
+        using pointer = value_type*;
+        using reference = value_type&;
+        using const_pointer = const value_type*;
+        using const_reference = const value_type&;
+        using iterator = Core::Internal::PointerIterator<ServiceStatusEntries>;
+        using const_iterator = Core::Internal::ConstPointerIterator<ServiceStatusEntries>;
+        using reverse_iterator = std::reverse_iterator<iterator>;
+        using const_reverse_iterator = std::reverse_iterator<const_iterator>;
+
+        ServiceStatusEntries( ) = default;
+        ServiceStatusEntries( const ServiceStatusEntries& other ) = delete;
+        ServiceStatusEntries& operator = ( const ServiceStatusEntries& other ) = delete;
+
+        ServiceStatusEntries( ServiceStatusEntries&& other ) noexcept
+            : memorySize_( other.memorySize_ ), size_( other.size_ ), data_( other.data_ )
+        {
+            other.memorySize_ = 0;
+            other.size_ = 0;
+            other.data_ = nullptr;
+        }
+        ServiceStatusEntries& operator = ( ServiceStatusEntries&& other ) noexcept
+        {
+            std::swap( memorySize_, other.memorySize_ );
+            std::swap( size_, other.size_ );
+            std::swap( data_, other.data_ );
+            return *this;
+        }
+        ~ServiceStatusEntries( )
+        {
+            if ( data_ )
+            {
+                free( data_ );
+            }
+        }
+
+        void Clear( )
+        {
+            if ( data_ )
+            {
+                free( data_ );
+                data_ = nullptr;
+                memorySize_ = 0;
+                size_ = 0;
+            }
+        }
+        void clear( )
+        {
+            Clear( );
+        }
+
+        void Resize( size_t memorySize, size_t size )
+        {
+            if ( memorySize_ != memorySize )
+            {
+                Clear( );
+                data_ = reinterpret_cast< ServiceStatusEntry* >( malloc( memorySize ) );
+                memorySize_ = memorySize;
+            }
+            size_ = size;
+        }
+        void resize( size_t memorySize, size_t size )
+        {
+            Resize( memorySize, size );
+        }
+
+        [[nodiscard]] constexpr bool empty( ) const noexcept
+        {
+            return size_ == 0;
+        }
+        [[nodiscard]] constexpr size_type size( ) const noexcept
+        {
+            return size_;
+        }
+        [[nodiscard]] constexpr size_type size_in_bytes( ) const noexcept
+        {
+            return memorySize_;
+        }
+        [[nodiscard]] constexpr size_type max_size( ) const noexcept
+        {
+            return std::numeric_limits<size_type>::max( ) / static_cast< size_type >( sizeof( value_type ) );
+        }
+        [[nodiscard]] constexpr size_type capacity( ) const noexcept
+        {
+            return size_;
+        }
+        [[nodiscard]] constexpr reference operator[]( size_type i ) noexcept
+        {
+            return data_[ i ];
+        }
+        [[nodiscard]] constexpr const_reference operator[]( size_type i ) const noexcept
+        {
+            return data_[ i ];
+        }
+
+        [[nodiscard]] constexpr iterator begin( ) noexcept
+        {
+            return iterator( data_ );
+        }
+        [[nodiscard]] constexpr const_iterator begin( ) const noexcept
+        {
+            return const_iterator( const_cast< value_type* >( data_ ) );
+        }
+
+        [[nodiscard]] constexpr const_iterator cbegin( ) const noexcept
+        {
+            return const_iterator( const_cast< value_type* >( data_ ) );
+        }
+
+        [[nodiscard]] constexpr iterator end( ) noexcept
+        {
+            return iterator( data_ + size_ );
+        }
+        [[nodiscard]] constexpr const_iterator end( ) const noexcept
+        {
+            return const_iterator( const_cast< value_type* >( data_ + size_ ) );
+        }
+        [[nodiscard]] constexpr const_iterator cend( ) const noexcept
+        {
+            return const_iterator( const_cast< value_type* >( data_ + size_ ) );
+        }
+
+
+        [[nodiscard]] constexpr reverse_iterator rbegin( ) noexcept
+        {
+            return reverse_iterator( end( ) );
+        }
+
+        [[nodiscard]] constexpr const_reverse_iterator rbegin( ) const noexcept
+        {
+            return const_reverse_iterator( end( ) );
+        }
+
+        [[nodiscard]] constexpr reverse_iterator rend( ) noexcept
+        {
+            return reverse_iterator( begin( ) );
+        }
+
+        [[nodiscard]] constexpr const_reverse_iterator rend( ) const noexcept
+        {
+            return const_reverse_iterator( begin( ) );
+        }
+
+        [[nodiscard]] constexpr const_reverse_iterator crbegin( ) const noexcept
+        {
+            return rbegin( );
+        }
+
+        [[nodiscard]] constexpr const_reverse_iterator crend( ) const noexcept
+        {
+            return rend( );
+        }
+
+
+        [[nodiscard]] constexpr pointer data( ) noexcept
+        {
+            return data_;
+        }
+        [[nodiscard]] constexpr const_pointer data( ) const noexcept
+        {
+            return data_;
+        }
+
+        [[nodiscard]] constexpr reference front( ) noexcept
+        {
+            return *data_;
+        }
+        [[nodiscard]] constexpr const_reference front( ) const noexcept
+        {
+            return *data_;
+        }
+        [[nodiscard]] constexpr reference back( ) noexcept
+        {
+            return *( data_ + (size_ - 1) );
+        }
+        [[nodiscard]] constexpr const_reference back( ) const noexcept
+        {
+            return *( data_ + ( size_ - 1 ) );
+        }
+
+
+    };
+
+    class ServiceControlManager;
     class ServiceHandle
     {
+        friend class ServiceControlManager;
         SC_HANDLE handle_ = nullptr;
     public:
         constexpr ServiceHandle( ) = default;
@@ -507,6 +787,205 @@ namespace Harlinn::Common::Core::Services
             std::swap( handle_, other.handle_ );
             return *this;
         }
+
+        /// <summary>
+        /// Marks the service for deletion from the service control manager database.
+        /// </summary>
+        void DeleteService( ) const
+        {
+            auto rc = ::DeleteService( handle_ );
+            if ( rc == FALSE )
+            {
+                auto errorCode = GetLastError( );
+                if ( errorCode != ERROR_SERVICE_DOES_NOT_EXIST && errorCode != ERROR_SERVICE_MARKED_FOR_DELETE )
+                {
+                    ThrowOSError( errorCode );
+                }
+            }
+        }
+
+        /// <summary>
+        /// Starts the service.
+        /// </summary>
+        /// <param name="serviceArgumentCount">
+        /// The number of strings in the serviceArguments array. If serviceArguments is NULL, this parameter can be zero.
+        /// </param>
+        /// <param name="serviceArguments">
+        /// The null-terminated strings to be passed to the ServiceMain function for the service as arguments. 
+        /// If there are no arguments, this parameter can be NULL. Otherwise, the first argument 
+        /// (serviceArguments[0]) is the name of the service, followed by any additional arguments 
+        /// (serviceArguments[1] through serviceArguments[serviceArgumentCount-1]).
+        /// </param>
+        void StartService( DWORD serviceArgumentCount = 0, LPCWSTR* serviceArguments = nullptr ) const
+        {
+            auto rc = ::StartServiceW( handle_, serviceArgumentCount, serviceArguments );
+            if ( rc == FALSE )
+            {
+                ThrowLastOSError( );
+            }
+        }
+    private:
+        bool WaitForServiceState( ServiceStatusProcess& serviceStatusProcess, ServiceState currentState, ServiceState stateToWaitFor ) const
+        {
+            auto startTickCount = GetTickCount64( );
+            auto previousCheckPoint = serviceStatusProcess.CheckPoint;
+
+            while ( serviceStatusProcess.CurrentState == currentState )
+            {
+                auto waitTime = serviceStatusProcess.WaitTime( );
+                CurrentThread::Sleep( waitTime );
+                if ( QueryServiceStatus( serviceStatusProcess ) == false )
+                {
+                    return false;
+                }
+                if ( serviceStatusProcess.CurrentState == currentState )
+                {
+                    if ( serviceStatusProcess.CheckPoint > previousCheckPoint )
+                    {
+                        startTickCount = GetTickCount64( );
+                        previousCheckPoint = serviceStatusProcess.CheckPoint;
+                    }
+                    else
+                    {
+                        if ( ( GetTickCount64( ) - startTickCount ) > static_cast< ULONGLONG >( serviceStatusProcess.WaitHint ) )
+                        {
+                            // Wait timeout
+                            return false;
+                        }
+                    }
+                }
+            }
+            return serviceStatusProcess.CurrentState == stateToWaitFor;
+        }
+    public:
+
+        bool Start( DWORD serviceArgumentCount = 0, LPCWSTR* serviceArguments = nullptr ) const
+        {
+            ServiceStatusProcess serviceStatusProcess{};
+            if ( QueryServiceStatus( serviceStatusProcess ) )
+            {
+                if ( serviceStatusProcess.CurrentState == ServiceState::Stopped || serviceStatusProcess.CurrentState == ServiceState::StopPending )
+                {
+                    WaitForServiceState( serviceStatusProcess, ServiceState::StopPending, ServiceState::Stopped );
+                    
+                    if ( serviceStatusProcess.CurrentState == ServiceState::Stopped )
+                    {
+                        StartService( serviceArgumentCount, serviceArguments );
+                        return WaitForServiceState( serviceStatusProcess, ServiceState::StartPending, ServiceState::Running );
+                    }
+                }
+            }
+            return false;
+        }
+
+        template<typename ServiceStatusT>
+            requires std::is_same_v< ServiceStatusT, ServiceStatus > || std::is_same_v< ServiceStatusT, ServiceStatusProcess >
+        void ControlService( Services::ServiceControl serviceControl, ServiceStatusT& serviceStatus ) const
+        {
+            auto rc = ::ControlService( handle_, static_cast< DWORD >( serviceControl ), reinterpret_cast< LPSERVICE_STATUS >( &serviceStatus ) );
+            if ( rc == false )
+            {
+                ThrowLastOSError( );
+            }
+        }
+
+
+
+        ServiceStatusProcess QueryServiceStatus( ) const
+        {
+            ServiceStatusProcess serviceStatusProcess{};
+            DWORD bytesRequired = 0;
+            auto rc = QueryServiceStatusEx( handle_, SC_STATUS_PROCESS_INFO, reinterpret_cast<LPBYTE>(&serviceStatusProcess), sizeof( ServiceStatusProcess ), &bytesRequired );
+            if ( rc == FALSE )
+            {
+                ThrowLastOSError( );
+            }
+            return serviceStatusProcess;
+        }
+
+        bool QueryServiceStatus( ServiceStatusProcess& serviceStatusProcess ) const
+        {
+            DWORD bytesRequired = 0;
+            auto rc = QueryServiceStatusEx( handle_, SC_STATUS_PROCESS_INFO, reinterpret_cast< LPBYTE >( &serviceStatusProcess ), sizeof( ServiceStatusProcess ), &bytesRequired );
+            if ( rc == FALSE )
+            {
+                auto errorCode = GetLastError( );
+                if ( errorCode != ERROR_SERVICE_DOES_NOT_EXIST )
+                {
+                    ThrowOSError( errorCode );
+                }
+                return false;
+            }
+            return true;
+        }
+
+        ServiceState CurrentState( ) const
+        {
+            ServiceStatusProcess serviceStatusProcess{};
+            if ( QueryServiceStatus( serviceStatusProcess ) )
+            {
+                return serviceStatusProcess.CurrentState;
+            }
+            return ServiceState::Unknown;
+        }
+
+        bool IsStopped( ) const
+        {
+            return CurrentState( ) == ServiceState::Stopped;
+        }
+
+        bool IsRunning( ) const
+        {
+            return CurrentState( ) == ServiceState::Running;
+        }
+
+        bool HasActiveDependentServices( ) const
+        {
+            DWORD bytesNeeded = 0;
+            DWORD count = 0;
+            auto rc = EnumDependentServicesW( handle_, SERVICE_ACTIVE, nullptr, 0, &bytesNeeded, &count );
+            if ( rc == FALSE )
+            {
+                auto errorCode = GetLastError( );
+                if ( errorCode != ERROR_MORE_DATA )
+                {
+                    ThrowOSError( errorCode );
+                }
+                return true;
+            }
+            return false;
+        }
+        ServiceStatusEntries DependentServices( ServiceEnumFlags serviceEnumFlags ) const
+        {
+            DWORD bytesNeeded = 0;
+            DWORD count = 0;
+            auto rc = EnumDependentServicesW( handle_, static_cast<DWORD>( serviceEnumFlags ), nullptr, 0, &bytesNeeded, &count );
+            if ( rc == FALSE )
+            {
+                auto errorCode = GetLastError( );
+                if ( errorCode != ERROR_MORE_DATA )
+                {
+                    ThrowOSError( errorCode );
+                }
+                ServiceStatusEntries result;
+                result.Resize( bytesNeeded, count );
+
+                auto bufferSize = bytesNeeded;
+                rc = EnumDependentServicesW( handle_, static_cast< DWORD >( serviceEnumFlags ), reinterpret_cast< LPENUM_SERVICE_STATUSW >( result.data() ), bufferSize, &bytesNeeded, &count );
+                if ( rc == FALSE )
+                {
+                    ThrowLastOSError( );
+                }
+                return result;
+            }
+            return {};
+        }
+        ServiceStatusEntries ActiveDependentServices( ) const
+        {
+            return DependentServices( ServiceEnumFlags::Active );
+        }
+
+
     };
     
 
@@ -515,6 +994,11 @@ namespace Harlinn::Common::Core::Services
     {
         SC_HANDLE handle_ = nullptr;
     public:
+        static constexpr wchar_t LocalService[ ] = L"NT AUTHORITY\\LocalService";
+        static constexpr wchar_t LocalSystem[ ] = L".\\LocalSystem";
+        static constexpr wchar_t NetworkService[ ] = L"NT AUTHORITY\\NetworkService";
+        static constexpr wchar_t DefaultServiceDependencies[ ] = L"RpcSs\x0";
+
         constexpr ServiceControlManager( ) = default;
 
         constexpr explicit ServiceControlManager( SC_HANDLE handle )
@@ -602,6 +1086,173 @@ namespace Harlinn::Common::Core::Services
         {
             return Open( machineName.c_str( ), nullptr, desiredAccessRights );
         }
+
+        ServiceHandle OpenService( const wchar_t* serviceName, ServiceAccessRights desiredAccessRights ) const
+        {
+            auto serviceHandle = ::OpenServiceW( handle_, serviceName, static_cast< DWORD >( desiredAccessRights ) );
+            if ( serviceHandle == nullptr )
+            {
+                ThrowLastOSError( );
+            }
+            return ServiceHandle{ serviceHandle };
+        }
+
+        bool IsServiceRegistered( const wchar_t* serviceName ) const
+        {
+            auto serviceHandle = ::OpenServiceW( handle_, serviceName, static_cast< DWORD >( ServiceAccessRights::QueryConfig ) );
+            if ( serviceHandle )
+            {
+                CloseServiceHandle( serviceHandle );
+                return true;
+            }
+            else
+            {
+                auto errorCode = GetLastError( );
+                if ( errorCode != ERROR_SERVICE_DOES_NOT_EXIST )
+                {
+                    ThrowOSError( errorCode );
+                }
+                return false;
+            }
+        }
+
+        bool QueryServiceStatus( const wchar_t* serviceName, ServiceStatusProcess& serviceStatusProcess ) const
+        {
+            serviceStatusProcess = {};
+            auto serviceHandle = ::OpenServiceW( handle_, serviceName, static_cast< DWORD >( ServiceAccessRights::QueryConfig | ServiceAccessRights::QueryStatus ) );
+            if ( serviceHandle )
+            {
+                ServiceHandle sh( serviceHandle );
+                return sh.QueryServiceStatus( serviceStatusProcess );
+            }
+            else
+            {
+                auto errorCode = GetLastError( );
+                if ( errorCode != ERROR_SERVICE_DOES_NOT_EXIST )
+                {
+                    ThrowOSError( errorCode );
+                }
+                return false;
+            }
+        }
+
+
+
+        bool IsServiceRunning( const wchar_t* serviceName ) const
+        {
+            ServiceStatusProcess serviceStatusProcess{};
+            if ( QueryServiceStatus( serviceName, serviceStatusProcess ) )
+            {
+                return serviceStatusProcess.CurrentState == ServiceState::Running;
+            }
+            return false;
+        }
+
+        bool IsServiceStopped( const wchar_t* serviceName ) const
+        {
+            ServiceStatusProcess serviceStatusProcess{};
+            if ( QueryServiceStatus( serviceName, serviceStatusProcess ) )
+            {
+                return serviceStatusProcess.CurrentState == ServiceState::Stopped;
+            }
+            return false;
+        }
+
+
+        ServiceHandle CreateService( _In_ LPCWSTR serviceName,
+            _In_opt_ LPCWSTR displayName,
+            _In_opt_ LPCWSTR binaryPathName,
+            _In_opt_ LPCWSTR serviceStartName = NetworkService,
+            _In_opt_ LPCWSTR password = nullptr,
+            _In_opt_ LPCWSTR dependencies = DefaultServiceDependencies,
+            _In_ ServiceAccessRights desiredAccess = ServiceAccessRights::FullControl,
+            _In_ ServiceType serviceType = ServiceType::WindowsOwnProcess,
+            _In_ ServiceStartType startType = ServiceStartType::AutoStart,
+            _In_ ServiceErrorControl errorControl = ServiceErrorControl::Normal,
+            _In_opt_ LPCWSTR loadOrderGroup = nullptr,
+            _Out_opt_ LPDWORD tagId = nullptr )
+        {
+            auto serviceHandle = ::CreateServiceW( handle_, serviceName, displayName, static_cast< DWORD >( desiredAccess ), static_cast< DWORD >( serviceType ), static_cast< DWORD >( startType ), static_cast< DWORD >( errorControl ), binaryPathName, loadOrderGroup, tagId, dependencies, serviceStartName, password );
+            if ( serviceHandle == nullptr )
+            {
+                ThrowLastOSError( );
+            }
+            return ServiceHandle{ serviceHandle };
+        }
+
+
+        bool StopDependentServices( const ServiceHandle& serviceHandle ) const
+        {
+            auto activeDependentServices = serviceHandle.ActiveDependentServices( );
+            if ( activeDependentServices.size( ) )
+            {
+                for ( auto& entry : activeDependentServices )
+                {
+                    auto dependentService = OpenService( entry.ServiceName, ServiceAccessRights::Stop | ServiceAccessRights::QueryStatus );
+                    ServiceStatusProcess serviceStatusProcess;
+                    dependentService.ControlService( ServiceControl::Stop, serviceStatusProcess );
+                    if ( dependentService.WaitForServiceState( serviceStatusProcess, ServiceState::StopPending, ServiceState::Stopped ) == false )
+                    {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+
+        bool StopService( const ServiceHandle& serviceHandle ) const
+        {
+            ServiceStatusProcess serviceStatusProcess;
+            if ( serviceHandle.QueryServiceStatus( serviceStatusProcess ) )
+            {
+                if ( serviceStatusProcess.CurrentState == ServiceState::Stopped )
+                {
+                    return true;
+                }
+                else if ( serviceStatusProcess.CurrentState == ServiceState::StopPending )
+                {
+                    return serviceHandle.WaitForServiceState( serviceStatusProcess, ServiceState::StopPending, ServiceState::Stopped );
+                }
+                else
+                {
+                    if ( StopDependentServices( serviceHandle ) )
+                    {
+                        ServiceStatusProcess serviceStatusProcess;
+                        serviceHandle.ControlService( ServiceControl::Stop, serviceStatusProcess );
+                        return serviceHandle.WaitForServiceState( serviceStatusProcess, ServiceState::StopPending, ServiceState::Stopped );
+                    }
+                }
+            }
+            return false;
+        }
+
+        bool StopService( const wchar_t* serviceName ) const
+        {
+            auto serviceHandle = OpenService( serviceName, ServiceAccessRights::Stop | ServiceAccessRights::QueryStatus | ServiceAccessRights::EnumerateDependents );
+            return StopService( serviceHandle );
+        }
+
+        bool DeleteService( const wchar_t* serviceName ) const
+        {
+            auto serviceHandle = OpenService( serviceName, ServiceAccessRights::Stop | ServiceAccessRights::QueryStatus | ServiceAccessRights::EnumerateDependents | ServiceAccessRights::Delete );
+            if ( serviceHandle.IsStopped( ) == false )
+            {
+                if ( StopService( serviceHandle ) == false )
+                {
+                    return false;
+                }
+            }
+            serviceHandle.DeleteService( );
+            return true;
+        }
+
+        bool StartService( const wchar_t* serviceName, DWORD serviceArgumentCount = 0, LPCWSTR* serviceArguments = nullptr ) const
+        {
+            auto serviceHandle = OpenService( serviceName, ServiceAccessRights::Start | ServiceAccessRights::QueryStatus );
+            return serviceHandle.Start( serviceArgumentCount, serviceArguments );
+        }
+
+
     };
 
 
@@ -625,12 +1276,23 @@ namespace Harlinn::Common::Core::Services
     public:
         virtual bool StartDispatcher( const SERVICE_TABLE_ENTRYW* serviceStartTable ) override
         {
+#ifdef USE_REPORTSERVICEMESSAGE
+            ReportServiceMessage( "In WindowsServiceHost::StartDispatcher" );
+#endif
             return StartServiceCtrlDispatcherW( serviceStartTable ) != FALSE;
         }
 
         virtual SERVICE_STATUS_HANDLE RegisterHandler( _In_ LPCWSTR serviceName, _In_ __callback LPHANDLER_FUNCTION_EX handlerProc, _In_opt_ LPVOID context ) override
         {
-            return RegisterServiceCtrlHandlerExW( serviceName, handlerProc, context );
+#ifdef USE_REPORTSERVICEMESSAGE
+            ReportServiceMessage( "In WindowsServiceHost::RegisterHandler" );
+#endif
+            auto result = RegisterServiceCtrlHandlerExW( serviceName, handlerProc, context );
+#ifdef USE_REPORTSERVICEMESSAGE
+            auto message = Format( "SERVICE_STATUS_HANDLE:{:X}", reinterpret_cast<size_t>(result) );
+            ReportServiceMessage( message.c_str() );
+#endif
+            return result;
         }
 
         virtual bool SupportsRequestDeviceNotifications( )
@@ -649,7 +1311,23 @@ namespace Harlinn::Common::Core::Services
 
         virtual bool SetStatus( _In_ SERVICE_STATUS_HANDLE serviceStatusHandle, _In_ LPSERVICE_STATUS serviceStatus ) override
         {
-            return SetServiceStatus( serviceStatusHandle, serviceStatus ) != FALSE;
+#ifdef USE_REPORTSERVICEMESSAGE
+            ServiceState currentState = static_cast< ServiceState >( serviceStatus->dwCurrentState );
+            ServiceControlAccepted serviceControlAccepted = static_cast< ServiceControlAccepted >( serviceStatus->dwControlsAccepted );
+            auto messageStr = Format( "In ServiceBase::SetStatus - serviceStatusHandle:{:X}, CurrentState:{}, ControlsAccepted:{}, CheckPoint:{}, WaitHint:{}", reinterpret_cast< size_t >( serviceStatusHandle ), currentState, serviceControlAccepted, serviceStatus->dwCheckPoint, serviceStatus->dwWaitHint );
+            ReportServiceMessage( messageStr.c_str( ) );
+#endif
+            auto rc = ::SetServiceStatus( serviceStatusHandle, serviceStatus );
+            if ( rc == FALSE )
+            {
+#ifdef USE_REPORTSERVICEMESSAGE
+                auto errorCode = GetLastError( );
+                messageStr = FormatErrorA( errorCode );
+                ReportServiceMessage( messageStr.c_str( ) );
+#endif
+                return false;
+            }
+            return true;
         }
     };
 
@@ -657,22 +1335,25 @@ namespace Harlinn::Common::Core::Services
 
 
 
-    class ServiceApplication;
-    class ServiceBase
+    class Application;
+    class ServiceBase : public std::enable_shared_from_this<ServiceBase>
     {
-        friend class ServiceApplication;
+        friend class Services::Application;
         WideString name_;
+        WideString displayName_;
         Services::ServiceControlAccepted serviceControlAccepted_;
         Services::ServiceType serviceType_;
 
         SERVICE_STATUS_HANDLE serviceStatusHandle_ = nullptr;
         SERVICE_STATUS serviceStatus_{};
-        EventWaitHandle serviceStoppedEventWaitHandle_;
+        EventWaitHandle serviceStoppedEventWaitHandle_{true};
+        EventWaitHandle serviceStopCompletedEventWaitHandle_{ true };
+        HANDLE waitForSingleObjectHandle_ = nullptr;
         IServiceHost* serviceHost_ = nullptr;
         DWORD argc_ = 0;
         LPWSTR* argv_ = nullptr;
     public:
-        ServiceBase( const WideString& name, Services::ServiceControlAccepted serviceControlAccepted = Services::ServiceControlAccepted::Stop, Services::ServiceType serviceType = Services::ServiceType::WindowsOwnProcess );
+        ServiceBase( const WideString& name, const WideString& displayName, Services::ServiceControlAccepted serviceControlAccepted = Services::ServiceControlAccepted::Stop, Services::ServiceType serviceType = Services::ServiceType::WindowsOwnProcess );
         
         virtual ~ServiceBase( )
         {
@@ -685,7 +1366,7 @@ namespace Harlinn::Common::Core::Services
 
         bool RegisterServiceControlHandler( )
         {
-            serviceStatusHandle_ = serviceHost_->RegisterHandler( name_.c_str( ), ServiceHandlerFunctionEx, this );
+            serviceStatusHandle_ = serviceHost_->RegisterHandler( name_.c_str( ), &ServiceHandlerFunctionEx, this );
             return serviceStatusHandle_ != nullptr;
         }
     protected:
@@ -704,7 +1385,9 @@ namespace Harlinn::Common::Core::Services
                 serviceStatus_.dwControlsAccepted = static_cast< DWORD >( serviceControlAccepted_ );
             }
 
-            if ( ( currentState == Services::ServiceState::Running ) || ( currentState == Services::ServiceState::Stopped ) )
+            if ( ( currentState == Services::ServiceState::Running ) ||
+                ( currentState == Services::ServiceState::Stopped ) ||
+                ( currentState == Services::ServiceState::Paused ) )
             {
                 serviceStatus_.dwCheckPoint = 0;
             }
@@ -713,11 +1396,16 @@ namespace Harlinn::Common::Core::Services
                 serviceStatus_.dwCheckPoint++;
             }
             serviceHost_->SetStatus( serviceStatusHandle_, &serviceStatus_ );
+
+            
         }
 
     public:
         virtual void Execute( DWORD argc, LPWSTR* argv )
         {
+#ifdef USE_REPORTSERVICEMESSAGE
+            ReportServiceMessage( "In ServiceBase::Execute" );
+#endif
             argc_ = argc;
             argv_ = argv;
 
@@ -739,22 +1427,52 @@ namespace Harlinn::Common::Core::Services
     protected:
         virtual bool Initialize( )
         {
+#ifdef USE_REPORTSERVICEMESSAGE
+            ReportServiceMessage( "In ServiceBase::Initialize" );
+#endif
             SetServiceStatus( Services::ServiceState::StartPending );
             return true;
         }
 
-
+    private: 
+        
+        static void __stdcall ServiceDoneCallback( PVOID self, BOOLEAN timerOrWaitFired )
+        {
+            auto serviceBase = reinterpret_cast< ServiceBase* >( self );
+            serviceBase->Done( );
+        }
+        
+    protected:
+        
+        virtual void Done( )
+        {
+            (void)UnregisterWait( waitForSingleObjectHandle_ );
+            serviceStopCompletedEventWaitHandle_.Signal( );
+        }
+        
         virtual void Run( )
         {
+#ifdef USE_REPORTSERVICEMESSAGE
+            ReportServiceMessage( "In ServiceBase::Run" );
+#endif
+
+            
+            auto rc = RegisterWaitForSingleObject( &waitForSingleObjectHandle_, serviceStoppedEventWaitHandle_.GetHandle( ), ( WAITORTIMERCALLBACK )&ServiceDoneCallback, this, INFINITE, WT_EXECUTEDEFAULT );
+            if ( rc == FALSE )
+            {
+                ThrowLastOSError( );
+            }
+            
             SetServiceStatus( Services::ServiceState::Running );
-            serviceStoppedEventWaitHandle_.Wait( );
-            SetServiceStatus( Services::ServiceState::Stopped );
         }
         
     protected:
         virtual WinError HandleStop( ) noexcept
         {
+            SetServiceStatus( Services::ServiceState::StopPending,0,15000 );
             this->Stop( );
+            serviceStopCompletedEventWaitHandle_.Wait( );
+            SetServiceStatus( Services::ServiceState::Stopped );
             return WinError::NoError;
         }
         virtual WinError HandlePause( )
@@ -839,6 +1557,10 @@ namespace Harlinn::Common::Core::Services
     protected:
         virtual WinError HandleControl( ServiceControl serviceControl, DWORD eventType, LPVOID eventData )
         {
+#ifdef USE_REPORTSERVICEMESSAGE
+            auto messageStr = Format( "In ServiceBase::HandleControl:{}", serviceControl );
+            ReportServiceMessage( messageStr.c_str( ) );
+#endif
             WinError result = WinError::CallNotImplemented;
 
             switch ( serviceControl )
@@ -910,6 +1632,11 @@ namespace Harlinn::Common::Core::Services
     protected:
         static DWORD WINAPI ServiceHandlerFunctionEx( DWORD control, DWORD eventType, LPVOID eventData, LPVOID context )
         {
+#ifdef USE_REPORTSERVICEMESSAGE
+            auto serviceControl = static_cast< ServiceControl >( control );
+            auto messageStr = Format( "In ServiceBase::ServiceHandlerFunctionEx:{}", serviceControl );
+            ReportServiceMessage( messageStr.c_str() );
+#endif
             DWORD result = ERROR_CALL_NOT_IMPLEMENTED;
             if ( context )
             {
@@ -942,7 +1669,13 @@ namespace Harlinn::Common::Core::Services
 
 
     /// <summary>
-    /// Derived classes must implement a parameterless constructor.
+    /// Derived classes must: 
+    ///   1. implement a parameterless constructor.
+    ///   2. implement two static functions with the following signatures:
+    /// 
+    ///         static const wchar_t* ServiceName( );
+    ///         static const wchar_t* ServiceDisplayName( );
+    /// 
     /// </summary>
     template<typename DerivedT>
     class Service : public ServiceBase
@@ -954,40 +1687,97 @@ namespace Harlinn::Common::Core::Services
         
     public:
         Service( Services::ServiceControlAccepted serviceControlAccepted = Services::ServiceControlAccepted::Stop, Services::ServiceType serviceType = Services::ServiceType::WindowsOwnProcess )
-            : Base( DerivedType::ServiceName( ), serviceControlAccepted, serviceType )
+            : Base( DerivedType::ServiceName( ), DerivedType::ServiceDisplayName(), serviceControlAccepted, serviceType )
         {
         }
 
-        static void __stdcall Main( DWORD argc, LPWSTR* argv )
+        static void __stdcall Main( DWORD argc, LPWSTR* argv );
+
+        static bool IsRegistered( )
         {
-            auto service = std::make_unique<DerivedType>( );
-            if ( service->RegisterServiceControlHandler( ) )
+            const wchar_t* serviceName = DerivedType::ServiceName( );
+            auto scm = ServiceControlManager::Open( ServiceControlManagerAccessRights::Connect | ServiceControlManagerAccessRights::Enumerate );
+            return scm.IsServiceRegistered( serviceName );
+        }
+
+        static bool IsRunning( )
+        {
+            const wchar_t* serviceName = DerivedType::ServiceName( );
+            auto scm = ServiceControlManager::Open( ServiceControlManagerAccessRights::Connect | ServiceControlManagerAccessRights::Enumerate );
+            return scm.IsServiceRunning( serviceName );
+        }
+
+        static bool IsStopped( )
+        {
+            const wchar_t* serviceName = DerivedType::ServiceName( );
+            auto scm = ServiceControlManager::Open( ServiceControlManagerAccessRights::Connect | ServiceControlManagerAccessRights::Enumerate );
+            return scm.IsServiceRunning( serviceName );
+        }
+
+        static bool RegisterService( const wchar_t* account, const wchar_t* password )
+        {
+            const wchar_t* serviceName = DerivedType::ServiceName( );
+            auto scm = ServiceControlManager::Open( ServiceControlManagerAccessRights::FullControl );
+            if ( scm.IsServiceRegistered( serviceName ) == false )
             {
-                service->Execute( argc, argv );
+                const wchar_t* serviceDisplayName = DerivedType::ServiceDisplayName( );
+                auto executable = IO::File::GetExecutableFilename<WideString>( );
+                auto executablePtr = executable.c_str( );
+                auto serviceHandle = scm.CreateService( serviceName, serviceDisplayName, executablePtr, account, password );
             }
+            return true;
         }
 
-        // static constexpr const wchar_t* ServiceName( ) { return L""; }
+        static bool UnregisterService( )
+        {
+            const wchar_t* serviceName = DerivedType::ServiceName( );
+            auto scm = ServiceControlManager::Open( ServiceControlManagerAccessRights::FullControl );
+            if ( scm.IsServiceRegistered( serviceName ) )
+            {
+                scm.DeleteService( serviceName );
+            }
+            return true;
+        }
+
+        static bool StartService( )
+        {
+            const wchar_t* serviceName = DerivedType::ServiceName( );
+            auto scm = ServiceControlManager::Open( ServiceControlManagerAccessRights::FullControl );
+            if ( scm.IsServiceRegistered( serviceName ) )
+            {
+                return scm.StartService( serviceName );
+            }
+            return false;
+        }
+
+        static bool StopService( )
+        {
+            const wchar_t* serviceName = DerivedType::ServiceName( );
+            auto scm = ServiceControlManager::Open( ServiceControlManagerAccessRights::FullControl );
+            if ( scm.IsServiceRegistered( serviceName ) )
+            {
+                return scm.StopService( serviceName );
+            }
+            return false;
+        }
 
     };
-
-
-
-
 
     class Application : public Core::Application
     {
         IServiceHost* serviceHost_ = nullptr;
+        size_t registeredServiceCount_ = 0;
         std::vector<SERVICE_TABLE_ENTRYW> serviceEntries_;
+        std::vector<std::shared_ptr<ServiceBase>> services_;
     public:
         using Base = Core::Application;
 
         HCC_EXPORT Application( const std::shared_ptr<ApplicationOptions>& options, IServiceHost* serviceHost );
         HCC_EXPORT ~Application( );
 
-        static Application& Instance( ) noexcept
+        static Services::Application& Instance( ) noexcept
         {
-            return static_cast< Application& >( Base::Instance( ) );
+            return static_cast< Services::Application& >( Base::Instance( ) );
         }
 
         IServiceHost* ServiceHost( ) const
@@ -995,28 +1785,75 @@ namespace Harlinn::Common::Core::Services
             return serviceHost_;
         }
 
-        template<typename ServiceT>
-        void RegisterService( )
+        void RegisterService( const std::shared_ptr<ServiceBase>& serviceBase )
         {
+            services_.emplace_back( serviceBase );
+        }
+
+        void Stop( )
+        {
+            for ( auto& service : services_ )
+            {
+                service->serviceStopCompletedEventWaitHandle_.Wait( );
+            }
+            services_.clear( );
+            Base::Stop( );
+        }
+
+
+        template<typename ServiceT>
+        void RegisterServiceType( )
+        {
+            registeredServiceCount_++;
             SERVICE_TABLE_ENTRYW& entry = serviceEntries_.emplace_back();
-            entry.lpServiceName = ServiceT::ServiceName( );
+            entry.lpServiceName = const_cast<wchar_t*>(ServiceT::ServiceName( ));
             entry.lpServiceProc = &ServiceT::Main;
         }
 
         void Run( )
         {
+#ifdef USE_REPORTSERVICEMESSAGE
+            ReportServiceMessage( "In Application::Run" );
+#endif
+            // Add final empty entry, which marks the end of the SERVICE_TABLE_ENTRYW array.
             SERVICE_TABLE_ENTRYW& entry = serviceEntries_.emplace_back( );
             entry.lpServiceName = nullptr;
             entry.lpServiceProc = nullptr;
-            serviceHost_->StartDispatcher( serviceEntries_.data( ) );
+            serviceHost_->StartDispatcher( serviceEntries_.data() );
+#ifdef USE_REPORTSERVICEMESSAGE
+            ReportServiceMessage( "Leaving Application::Run" );
+#endif
         }
-
     };
 
-    inline ServiceBase::ServiceBase( const WideString& name, Services::ServiceControlAccepted serviceControlAccepted, Services::ServiceType serviceType )
-        : name_( name ), serviceControlAccepted_( serviceControlAccepted ), serviceType_( serviceType ), serviceStoppedEventWaitHandle_( true ), serviceHost_( Application::Instance().ServiceHost() )
+    inline ServiceBase::ServiceBase( const WideString& name, const WideString& displayName, Services::ServiceControlAccepted serviceControlAccepted, Services::ServiceType serviceType )
+        : name_( name ), displayName_( displayName ), serviceControlAccepted_( serviceControlAccepted ), serviceType_( serviceType ), serviceStoppedEventWaitHandle_( true ), serviceHost_( Application::Instance( ).ServiceHost( ) )
     {
+        serviceStatus_.dwServiceType = static_cast< DWORD >( serviceType );
     }
+
+    template<typename DerivedT>
+    inline void __stdcall Service<DerivedT>::Main( DWORD argc, LPWSTR* argv )
+    {
+#ifdef USE_REPORTSERVICEMESSAGE
+        ReportServiceMessage( "In Service::Main" );
+#endif
+        Com::Initialize( );
+        auto service = std::make_shared<DerivedType>( );
+        Services::Application::Instance( ).RegisterService( service );
+        if ( service->RegisterServiceControlHandler( ) )
+        {
+            service->Execute( argc, argv );
+        }
+        Com::Uninitialize( );
+#ifdef USE_REPORTSERVICEMESSAGE
+        ReportServiceMessage( "Leaving Service::Main" );
+#endif
+    }
+
+
+
+
 }
 
 namespace Harlinn::Common::Core
