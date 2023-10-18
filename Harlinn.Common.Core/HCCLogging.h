@@ -91,17 +91,17 @@ do \
     auto& logger = *Harlinn::Common::Core::Logging::ThreadLogger::Instance( );\
     if( logger.IsVerboseEnabled( ) ) \
     { \
-        constexpr bool isFixedSize = Harlinn::Common::Core::Persistent::IsFixedSize( __VA_ARGS__ ); \
-        if constexpr (isFixedSize) \
+        static const bool isFixedSize = Harlinn::Common::Core::Persistent::IsFixedSize( __VA_ARGS__ ); \
+        if (isFixedSize) \
         { \
-            constexpr size_t fixedSize = Harlinn::Common::Core::Persistent::BufferSize( __VA_ARGS__ ); \
-            constexpr auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
+            static const size_t fixedSize = Harlinn::Common::Core::Persistent::BufferSize( __VA_ARGS__ ); \
+            static const auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
             static const Harlinn::Common::Core::Logging::LogSite logSite(Harlinn::Common::Core::Logging::Level::Debug, fmt, argDescriptor, true, fixedSize, __LINE__, 0, __FILE__, __FUNCTION__); \
             logger.Verbose(&logSite, __VA_ARGS__ ); \
         } \
         else \
         { \
-            constexpr auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
+            static const auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
             static const Harlinn::Common::Core::Logging::LogSite logSite(Harlinn::Common::Core::Logging::Level::Debug, fmt, argDescriptor, false, 0, __LINE__, 0, __FILE__, __FUNCTION__); \
             logger.Verbose(&logSite, __VA_ARGS__ ); \
         } \
@@ -116,17 +116,17 @@ do \
     auto& logger = ( loggerExpr );\
     if( logger.IsVerboseEnabled( ) ) \
     { \
-        constexpr bool isFixedSize = Harlinn::Common::Core::Persistent::IsFixedSize( __VA_ARGS__ ); \
-        if constexpr (isFixedSize) \
+        static const bool isFixedSize = Harlinn::Common::Core::Persistent::IsFixedSize( __VA_ARGS__ ); \
+        if (isFixedSize) \
         { \
-            constexpr size_t fixedSize = Harlinn::Common::Core::Persistent::BufferSize( __VA_ARGS__ ); \
-            constexpr auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
+            static const size_t fixedSize = Harlinn::Common::Core::Persistent::BufferSize( __VA_ARGS__ ); \
+            static const auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
             static const Harlinn::Common::Core::Logging::LogSite logSite(Harlinn::Common::Core::Logging::Level::Debug, fmt, argDescriptor, true, fixedSize, __LINE__, 0, __FILE__, __FUNCTION__); \
             logger.Verbose(&logSite, __VA_ARGS__ ); \
         } \
         else \
         { \
-            constexpr auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
+            static const auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
             static const Harlinn::Common::Core::Logging::LogSite logSite(Harlinn::Common::Core::Logging::Level::Debug, fmt, argDescriptor, false, 0, __LINE__, 0, __FILE__, __FUNCTION__); \
             logger.Verbose(&logSite, __VA_ARGS__ ); \
         } \
@@ -146,14 +146,14 @@ do \
         static bool isFixedSize = Harlinn::Common::Core::Persistent::IsFixedSize( __VA_ARGS__ ); \
         if (isFixedSize) \
         { \
-            static size_t fixedSize = Harlinn::Common::Core::Persistent::BufferSize( __VA_ARGS__ ); \
-            static auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
+            static const size_t fixedSize = Harlinn::Common::Core::Persistent::BufferSize( __VA_ARGS__ ); \
+            static const auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
             static const Harlinn::Common::Core::Logging::LogSite logSite(Harlinn::Common::Core::Logging::Level::Debug, fmt, argDescriptor, true, fixedSize, __LINE__, 0, __FILE__, __FUNCTION__); \
             logger.Debug(&logSite, __VA_ARGS__ ); \
         } \
         else \
         { \
-            static auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
+            static const auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
             static const Harlinn::Common::Core::Logging::LogSite logSite(Harlinn::Common::Core::Logging::Level::Debug, fmt, argDescriptor, false, 0, __LINE__, 0, __FILE__, __FUNCTION__); \
             logger.Debug(&logSite, __VA_ARGS__ ); \
         } \
@@ -168,17 +168,17 @@ do \
     auto& logger = ( loggerExpr );\
     if( logger.IsDebugEnabled( ) ) \
     { \
-        constexpr bool isFixedSize = Harlinn::Common::Core::Persistent::IsFixedSize( __VA_ARGS__ ); \
-        if constexpr (isFixedSize) \
+        static const bool isFixedSize = Harlinn::Common::Core::Persistent::IsFixedSize( __VA_ARGS__ ); \
+        if (isFixedSize) \
         { \
-            constexpr size_t fixedSize = Harlinn::Common::Core::Persistent::BufferSize( __VA_ARGS__ ); \
-            constexpr auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
+            static const size_t fixedSize = Harlinn::Common::Core::Persistent::BufferSize( __VA_ARGS__ ); \
+            static const auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
             static const Harlinn::Common::Core::Logging::LogSite logSite(Harlinn::Common::Core::Logging::Level::Debug, fmt, argDescriptor, true, fixedSize, __LINE__, 0, __FILE__, __FUNCTION__); \
             logger.Debug(&logSite, __VA_ARGS__ ); \
         } \
         else \
         { \
-            constexpr auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
+            static const auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
             static const Harlinn::Common::Core::Logging::LogSite logSite(Harlinn::Common::Core::Logging::Level::Debug, fmt, argDescriptor, false, 0, __LINE__, 0, __FILE__, __FUNCTION__); \
             logger.Debug(&logSite, __VA_ARGS__ ); \
         } \
@@ -194,17 +194,17 @@ do \
     auto& logger = *Harlinn::Common::Core::Logging::ThreadLogger::Instance( );\
     if( logger.IsInfoEnabled( ) ) \
     { \
-        constexpr bool isFixedSize = Harlinn::Common::Core::Persistent::IsFixedSize( __VA_ARGS__ ); \
-        if constexpr (isFixedSize) \
+        static const bool isFixedSize = Harlinn::Common::Core::Persistent::IsFixedSize( __VA_ARGS__ ); \
+        if (isFixedSize) \
         { \
-            constexpr size_t fixedSize = Harlinn::Common::Core::Persistent::BufferSize( __VA_ARGS__ ); \
-            constexpr auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
+            static const size_t fixedSize = Harlinn::Common::Core::Persistent::BufferSize( __VA_ARGS__ ); \
+            static const auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
             static const Harlinn::Common::Core::Logging::LogSite logSite(Harlinn::Common::Core::Logging::Level::Info, fmt, argDescriptor, true, fixedSize, __LINE__, 0, __FILE__, __FUNCTION__); \
             logger.Info(&logSite, __VA_ARGS__ ); \
         } \
         else \
         { \
-            constexpr auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
+            static const auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
             static const Harlinn::Common::Core::Logging::LogSite logSite(Harlinn::Common::Core::Logging::Level::Info, fmt, argDescriptor, false, 0, __LINE__, 0, __FILE__, __FUNCTION__); \
             logger.Info(&logSite, __VA_ARGS__ ); \
         } \
@@ -219,17 +219,17 @@ do \
     auto& logger = ( loggerExpr );\
     if( logger.IsInfoEnabled( ) ) \
     { \
-        constexpr bool isFixedSize = Harlinn::Common::Core::Persistent::IsFixedSize( __VA_ARGS__ ); \
-        if constexpr (isFixedSize) \
+        static const bool isFixedSize = Harlinn::Common::Core::Persistent::IsFixedSize( __VA_ARGS__ ); \
+        if (isFixedSize) \
         { \
-            constexpr size_t fixedSize = Harlinn::Common::Core::Persistent::BufferSize( __VA_ARGS__ ); \
-            constexpr auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
+            static const size_t fixedSize = Harlinn::Common::Core::Persistent::BufferSize( __VA_ARGS__ ); \
+            static const auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
             static const Harlinn::Common::Core::Logging::LogSite logSite(Harlinn::Common::Core::Logging::Level::Info, fmt, argDescriptor, true, fixedSize, __LINE__, 0, __FILE__, __FUNCTION__); \
             logger.Info(&logSite, __VA_ARGS__ ); \
         } \
         else \
         { \
-            constexpr auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
+            static const auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
             static const Harlinn::Common::Core::Logging::LogSite logSite(Harlinn::Common::Core::Logging::Level::Info, fmt, argDescriptor, false, 0, __LINE__, 0, __FILE__, __FUNCTION__); \
             logger.Info(&logSite, __VA_ARGS__ ); \
         } \
@@ -244,17 +244,17 @@ do \
     auto& logger = *Harlinn::Common::Core::Logging::ThreadLogger::Instance( );\
     if( logger.IsNoticeEnabled( ) ) \
     { \
-        constexpr bool isFixedSize = Harlinn::Common::Core::Persistent::IsFixedSize( __VA_ARGS__ ); \
-        if constexpr (isFixedSize) \
+        static const bool isFixedSize = Harlinn::Common::Core::Persistent::IsFixedSize( __VA_ARGS__ ); \
+        if (isFixedSize) \
         { \
-            constexpr size_t fixedSize = Harlinn::Common::Core::Persistent::BufferSize( __VA_ARGS__ ); \
-            constexpr auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
+            static const size_t fixedSize = Harlinn::Common::Core::Persistent::BufferSize( __VA_ARGS__ ); \
+            static const auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
             static const Harlinn::Common::Core::Logging::LogSite logSite(Harlinn::Common::Core::Logging::Level::Notice, fmt, argDescriptor, true, fixedSize, __LINE__, 0, __FILE__, __FUNCTION__); \
             logger.Notice(&logSite, __VA_ARGS__ ); \
         } \
         else \
         { \
-            constexpr auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
+            static const auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
             static const Harlinn::Common::Core::Logging::LogSite logSite(Harlinn::Common::Core::Logging::Level::Notice, fmt, argDescriptor, false, 0, __LINE__, 0, __FILE__, __FUNCTION__); \
             logger.Notice(&logSite, __VA_ARGS__ ); \
         } \
@@ -269,17 +269,17 @@ do \
     auto& logger = ( loggerExpr );\
     if( logger.IsNoticeEnabled( ) ) \
     { \
-        constexpr bool isFixedSize = Harlinn::Common::Core::Persistent::IsFixedSize( __VA_ARGS__ ); \
-        if constexpr (isFixedSize) \
+        static const bool isFixedSize = Harlinn::Common::Core::Persistent::IsFixedSize( __VA_ARGS__ ); \
+        if (isFixedSize) \
         { \
-            constexpr size_t fixedSize = Harlinn::Common::Core::Persistent::BufferSize( __VA_ARGS__ ); \
-            constexpr auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
+            static const size_t fixedSize = Harlinn::Common::Core::Persistent::BufferSize( __VA_ARGS__ ); \
+            static const auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
             static const Harlinn::Common::Core::Logging::LogSite logSite(Harlinn::Common::Core::Logging::Level::Notice, fmt, argDescriptor, true, fixedSize, __LINE__, 0, __FILE__, __FUNCTION__); \
             logger.Notice(&logSite, __VA_ARGS__ ); \
         } \
         else \
         { \
-            constexpr auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
+            static const auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
             static const Harlinn::Common::Core::Logging::LogSite logSite(Harlinn::Common::Core::Logging::Level::Notice, fmt, argDescriptor, false, 0, __LINE__, 0, __FILE__, __FUNCTION__); \
             logger.Notice(&logSite, __VA_ARGS__ ); \
         } \
@@ -294,17 +294,17 @@ do \
     auto& logger = *Harlinn::Common::Core::Logging::ThreadLogger::Instance( );\
     if( logger.IsWarningEnabled( ) ) \
     { \
-        constexpr bool isFixedSize = Harlinn::Common::Core::Persistent::IsFixedSize( __VA_ARGS__ ); \
-        if constexpr (isFixedSize) \
+        static const bool isFixedSize = Harlinn::Common::Core::Persistent::IsFixedSize( __VA_ARGS__ ); \
+        if (isFixedSize) \
         { \
-            constexpr size_t fixedSize = Harlinn::Common::Core::Persistent::BufferSize( __VA_ARGS__ ); \
-            constexpr auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
+            static const size_t fixedSize = Harlinn::Common::Core::Persistent::BufferSize( __VA_ARGS__ ); \
+            static const auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
             static const Harlinn::Common::Core::Logging::LogSite logSite(Harlinn::Common::Core::Logging::Level::Warning, fmt, argDescriptor, true, fixedSize, __LINE__, 0, __FILE__, __FUNCTION__); \
             logger.Warning(&logSite, __VA_ARGS__ ); \
         } \
         else \
         { \
-            constexpr auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
+            static const auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
             static const Harlinn::Common::Core::Logging::LogSite logSite(Harlinn::Common::Core::Logging::Level::Warning, fmt, argDescriptor, false, 0, __LINE__, 0, __FILE__, __FUNCTION__); \
             logger.Warning(&logSite, __VA_ARGS__ ); \
         } \
@@ -319,17 +319,17 @@ do \
     auto& logger = ( loggerExpr );\
     if( logger.IsWarningEnabled( ) ) \
     { \
-        constexpr bool isFixedSize = Harlinn::Common::Core::Persistent::IsFixedSize( __VA_ARGS__ ); \
-        if constexpr (isFixedSize) \
+        static const bool isFixedSize = Harlinn::Common::Core::Persistent::IsFixedSize( __VA_ARGS__ ); \
+        if (isFixedSize) \
         { \
-            constexpr size_t fixedSize = Harlinn::Common::Core::Persistent::BufferSize( __VA_ARGS__ ); \
-            constexpr auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
+            static const size_t fixedSize = Harlinn::Common::Core::Persistent::BufferSize( __VA_ARGS__ ); \
+            static const auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
             static const Harlinn::Common::Core::Logging::LogSite logSite(Harlinn::Common::Core::Logging::Level::Warning, fmt, argDescriptor, true, fixedSize, __LINE__, 0, __FILE__, __FUNCTION__); \
             logger.Warning(&logSite, __VA_ARGS__ ); \
         } \
         else \
         { \
-            constexpr auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
+            static const auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
             static const Harlinn::Common::Core::Logging::LogSite logSite(Harlinn::Common::Core::Logging::Level::Warning, fmt, argDescriptor, false, 0, __LINE__, 0, __FILE__, __FUNCTION__); \
             logger.Warning(&logSite, __VA_ARGS__ ); \
         } \
@@ -345,17 +345,17 @@ do \
     auto& logger = *Harlinn::Common::Core::Logging::ThreadLogger::Instance();\
     if( logger.IsErrorEnabled( ) ) \
     { \
-        constexpr bool isFixedSize = Harlinn::Common::Core::Persistent::IsFixedSize( __VA_ARGS__ ); \
-        if constexpr (isFixedSize) \
+        static const bool isFixedSize = Harlinn::Common::Core::Persistent::IsFixedSize( __VA_ARGS__ ); \
+        if (isFixedSize) \
         { \
-            constexpr size_t fixedSize = Harlinn::Common::Core::Persistent::BufferSize( __VA_ARGS__ ); \
-            constexpr auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
+            static const size_t fixedSize = Harlinn::Common::Core::Persistent::BufferSize( __VA_ARGS__ ); \
+            static const auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
             static const Harlinn::Common::Core::Logging::LogSite logSite(Harlinn::Common::Core::Logging::Level::Error, fmt, argDescriptor, true, fixedSize, __LINE__, 0, __FILE__, __FUNCTION__); \
             logger.Error(&logSite, __VA_ARGS__ ); \
         } \
         else \
         { \
-            constexpr auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
+            static const auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
             static const Harlinn::Common::Core::Logging::LogSite logSite(Harlinn::Common::Core::Logging::Level::Error, fmt, argDescriptor, false, 0, __LINE__, 0, __FILE__, __FUNCTION__); \
             logger.Error(&logSite, __VA_ARGS__ ); \
         } \
@@ -370,17 +370,17 @@ do \
     auto& logger = ( loggerExpr );\
     if( logger.IsErrorEnabled( ) ) \
     { \
-        constexpr bool isFixedSize = Harlinn::Common::Core::Persistent::IsFixedSize( __VA_ARGS__ ); \
-        if constexpr (isFixedSize) \
+        static const bool isFixedSize = Harlinn::Common::Core::Persistent::IsFixedSize( __VA_ARGS__ ); \
+        if (isFixedSize) \
         { \
-            constexpr size_t fixedSize = Harlinn::Common::Core::Persistent::BufferSize( __VA_ARGS__ ); \
-            constexpr auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
+            static const size_t fixedSize = Harlinn::Common::Core::Persistent::BufferSize( __VA_ARGS__ ); \
+            static const auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
             static const Harlinn::Common::Core::Logging::LogSite logSite(Harlinn::Common::Core::Logging::Level::Error, fmt, argDescriptor, true, fixedSize, __LINE__, 0, __FILE__, __FUNCTION__); \
             logger.Error(&logSite, __VA_ARGS__ ); \
         } \
         else \
         { \
-            constexpr auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
+            static const auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
             static const Harlinn::Common::Core::Logging::LogSite logSite(Harlinn::Common::Core::Logging::Level::Error, fmt, argDescriptor, false, 0, __LINE__, 0, __FILE__, __FUNCTION__); \
             logger.Error(&logSite, __VA_ARGS__ ); \
         } \
@@ -396,17 +396,17 @@ do \
     auto& logger = *Harlinn::Common::Core::Logging::ThreadLogger::Instance();\
     if( logger.IsCriticalEnabled( ) ) \
     { \
-        constexpr bool isFixedSize = Harlinn::Common::Core::Persistent::IsFixedSize( __VA_ARGS__ ); \
-        if constexpr (isFixedSize) \
+        static const bool isFixedSize = Harlinn::Common::Core::Persistent::IsFixedSize( __VA_ARGS__ ); \
+        if (isFixedSize) \
         { \
-            constexpr size_t fixedSize = Harlinn::Common::Core::Persistent::BufferSize( __VA_ARGS__ ); \
-            constexpr auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
+            static const size_t fixedSize = Harlinn::Common::Core::Persistent::BufferSize( __VA_ARGS__ ); \
+            static const auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
             static const Harlinn::Common::Core::Logging::LogSite logSite(Harlinn::Common::Core::Logging::Level::Critical, fmt, argDescriptor, true, fixedSize, __LINE__, 0, __FILE__, __FUNCTION__); \
             logger.Critical(&logSite, __VA_ARGS__ ); \
         } \
         else \
         { \
-            constexpr auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
+            static const auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
             static const Harlinn::Common::Core::Logging::LogSite logSite(Harlinn::Common::Core::Logging::Level::Critical, fmt, argDescriptor, false, 0, __LINE__, 0, __FILE__, __FUNCTION__); \
             logger.Critical(&logSite, __VA_ARGS__ ); \
         } \
@@ -421,17 +421,17 @@ do \
     auto& logger = ( loggerExpr );\
     if( logger.IsCriticalEnabled( ) ) \
     { \
-        constexpr bool isFixedSize = Harlinn::Common::Core::Persistent::IsFixedSize( __VA_ARGS__ ); \
-        if constexpr (isFixedSize) \
+        static const bool isFixedSize = Harlinn::Common::Core::Persistent::IsFixedSize( __VA_ARGS__ ); \
+        if (isFixedSize) \
         { \
-            constexpr size_t fixedSize = Harlinn::Common::Core::Persistent::BufferSize( __VA_ARGS__ ); \
-            constexpr auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
+            static const size_t fixedSize = Harlinn::Common::Core::Persistent::BufferSize( __VA_ARGS__ ); \
+            static const auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
             static const Harlinn::Common::Core::Logging::LogSite logSite(Harlinn::Common::Core::Logging::Level::Critical, fmt, argDescriptor, true, fixedSize, __LINE__, 0, __FILE__, __FUNCTION__); \
             logger.Critical(&logSite, __VA_ARGS__ ); \
         } \
         else \
         { \
-            constexpr auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
+            static const auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
             static const Harlinn::Common::Core::Logging::LogSite logSite(Harlinn::Common::Core::Logging::Level::Critical, fmt, argDescriptor, false, 0, __LINE__, 0, __FILE__, __FUNCTION__); \
             logger.Critical(&logSite, __VA_ARGS__ ); \
         } \
@@ -446,17 +446,17 @@ do \
     auto& logger = *Harlinn::Common::Core::Logging::ThreadLogger::Instance( );\
     if( logger.IsAlertEnabled( ) ) \
     { \
-        constexpr bool isFixedSize = Harlinn::Common::Core::Persistent::IsFixedSize( __VA_ARGS__ ); \
-        if constexpr (isFixedSize) \
+        static const bool isFixedSize = Harlinn::Common::Core::Persistent::IsFixedSize( __VA_ARGS__ ); \
+        if (isFixedSize) \
         { \
-            constexpr size_t fixedSize = Harlinn::Common::Core::Persistent::BufferSize( __VA_ARGS__ ); \
-            constexpr auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
+            static const size_t fixedSize = Harlinn::Common::Core::Persistent::BufferSize( __VA_ARGS__ ); \
+            static const auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
             static const Harlinn::Common::Core::Logging::LogSite logSite(Harlinn::Common::Core::Logging::Level::Alert, fmt, argDescriptor, true, fixedSize, __LINE__, 0, __FILE__, __FUNCTION__); \
             logger.Alert(&logSite, __VA_ARGS__ ); \
         } \
         else \
         { \
-            constexpr auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
+            static const auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
             static const Harlinn::Common::Core::Logging::LogSite logSite(Harlinn::Common::Core::Logging::Level::Alert, fmt, argDescriptor, false, 0, __LINE__, 0, __FILE__, __FUNCTION__); \
             logger.Alert(&logSite, __VA_ARGS__ ); \
         } \
@@ -471,17 +471,17 @@ do \
     auto& logger = ( loggerExpr );\
     if( logger.IsAlertEnabled( ) ) \
     { \
-        constexpr bool isFixedSize = Harlinn::Common::Core::Persistent::IsFixedSize( __VA_ARGS__ ); \
-        if constexpr (isFixedSize) \
+        static const bool isFixedSize = Harlinn::Common::Core::Persistent::IsFixedSize( __VA_ARGS__ ); \
+        if (isFixedSize) \
         { \
-            constexpr size_t fixedSize = Harlinn::Common::Core::Persistent::BufferSize( __VA_ARGS__ ); \
-            constexpr auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
+            static const size_t fixedSize = Harlinn::Common::Core::Persistent::BufferSize( __VA_ARGS__ ); \
+            static const auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
             static const Harlinn::Common::Core::Logging::LogSite logSite(Harlinn::Common::Core::Logging::Level::Alert, fmt, argDescriptor, true, fixedSize, __LINE__, 0, __FILE__, __FUNCTION__); \
             logger.Alert(&logSite, __VA_ARGS__ ); \
         } \
         else \
         { \
-            constexpr auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
+            static const auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
             static const Harlinn::Common::Core::Logging::LogSite logSite(Harlinn::Common::Core::Logging::Level::Alert, fmt, argDescriptor, false, 0, __LINE__, 0, __FILE__, __FUNCTION__); \
             logger.Alert(&logSite, __VA_ARGS__ ); \
         } \
@@ -496,17 +496,17 @@ do \
     auto& logger = *Harlinn::Common::Core::Logging::ThreadLogger::Instance( );\
     if( logger.IsEmergencyEnabled( ) ) \
     { \
-        constexpr bool isFixedSize = Harlinn::Common::Core::Persistent::IsFixedSize( __VA_ARGS__ ); \
-        if constexpr (isFixedSize) \
+        static const bool isFixedSize = Harlinn::Common::Core::Persistent::IsFixedSize( __VA_ARGS__ ); \
+        if (isFixedSize) \
         { \
-            constexpr size_t fixedSize = Harlinn::Common::Core::Persistent::BufferSize( __VA_ARGS__ ); \
-            constexpr auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
+            static const size_t fixedSize = Harlinn::Common::Core::Persistent::BufferSize( __VA_ARGS__ ); \
+            static const auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
             static const Harlinn::Common::Core::Logging::LogSite logSite(Harlinn::Common::Core::Logging::Level::Emergency, fmt, argDescriptor, true, fixedSize, __LINE__, 0, __FILE__, __FUNCTION__); \
             logger.Emergency(&logSite, __VA_ARGS__ ); \
         } \
         else \
         { \
-            constexpr auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
+            static const auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
             static const Harlinn::Common::Core::Logging::LogSite logSite(Harlinn::Common::Core::Logging::Level::Emergency, fmt, argDescriptor, false, 0, __LINE__, 0, __FILE__, __FUNCTION__); \
             logger.Emergency(&logSite, __VA_ARGS__ ); \
         } \
@@ -521,17 +521,17 @@ do \
     auto& logger = ( loggerExpr );\
     if( logger.IsEmergencyEnabled( ) ) \
     { \
-        constexpr bool isFixedSize = Harlinn::Common::Core::Persistent::IsFixedSize( __VA_ARGS__ ); \
-        if constexpr (isFixedSize) \
+        static const bool isFixedSize = Harlinn::Common::Core::Persistent::IsFixedSize( __VA_ARGS__ ); \
+        if (isFixedSize) \
         { \
-            constexpr size_t fixedSize = Harlinn::Common::Core::Persistent::BufferSize( __VA_ARGS__ ); \
-            constexpr auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
+            static const size_t fixedSize = Harlinn::Common::Core::Persistent::BufferSize( __VA_ARGS__ ); \
+            static const auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
             static const Harlinn::Common::Core::Logging::LogSite logSite(Harlinn::Common::Core::Logging::Level::Emergency, fmt, argDescriptor, true, fixedSize, __LINE__, 0, __FILE__, __FUNCTION__); \
             logger.Emergency(&logSite, __VA_ARGS__ ); \
         } \
         else \
         { \
-            constexpr auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
+            static const auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
             static const Harlinn::Common::Core::Logging::LogSite logSite(Harlinn::Common::Core::Logging::Level::Emergency, fmt, argDescriptor, false, 0, __LINE__, 0, __FILE__, __FUNCTION__); \
             logger.Emergency(&logSite, __VA_ARGS__ ); \
         } \
@@ -546,17 +546,17 @@ do \
     auto& logger = *Harlinn::Common::Core::Logging::ThreadLogger::Instance( );\
     if( logger.IsTraceEnabled( ) ) \
     { \
-        constexpr bool isFixedSize = Harlinn::Common::Core::Persistent::IsFixedSize( __VA_ARGS__ ); \
-        if constexpr (isFixedSize) \
+        static const bool isFixedSize = Harlinn::Common::Core::Persistent::IsFixedSize( __VA_ARGS__ ); \
+        if (isFixedSize) \
         { \
-            constexpr size_t fixedSize = Harlinn::Common::Core::Persistent::BufferSize( __VA_ARGS__ ); \
-            constexpr auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
+            static const size_t fixedSize = Harlinn::Common::Core::Persistent::BufferSize( __VA_ARGS__ ); \
+            static const auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
             static const Harlinn::Common::Core::Logging::LogSite logSite(Harlinn::Common::Core::Logging::Level::Trace, fmt, argDescriptor, true, fixedSize, __LINE__, 0, __FILE__, __FUNCTION__); \
             logger.Trace(&logSite, __VA_ARGS__ ); \
         } \
         else \
         { \
-            constexpr auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
+            static const auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
             static const Harlinn::Common::Core::Logging::LogSite logSite(Harlinn::Common::Core::Logging::Level::Trace, fmt, argDescriptor, false, 0, __LINE__, 0, __FILE__, __FUNCTION__); \
             logger.Trace(&logSite, __VA_ARGS__ ); \
         } \
@@ -571,17 +571,17 @@ do \
     auto& logger = ( loggerExpr );\
     if( logger.IsTraceEnabled( ) ) \
     { \
-        constexpr bool isFixedSize = Harlinn::Common::Core::Persistent::IsFixedSize( __VA_ARGS__ ); \
-        if constexpr (isFixedSize) \
+        static const bool isFixedSize = Harlinn::Common::Core::Persistent::IsFixedSize( __VA_ARGS__ ); \
+        if (isFixedSize) \
         { \
-            constexpr size_t fixedSize = Harlinn::Common::Core::Persistent::BufferSize( __VA_ARGS__ ); \
-            constexpr auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
+            static const size_t fixedSize = Harlinn::Common::Core::Persistent::BufferSize( __VA_ARGS__ ); \
+            static const auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
             static const Harlinn::Common::Core::Logging::LogSite logSite(Harlinn::Common::Core::Logging::Level::Trace, fmt, argDescriptor, true, fixedSize, __LINE__, 0, __FILE__, __FUNCTION__); \
             logger.Trace(&logSite, __VA_ARGS__ ); \
         } \
         else \
         { \
-            constexpr auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
+            static const auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
             static const Harlinn::Common::Core::Logging::LogSite logSite(Harlinn::Common::Core::Logging::Level::Trace, fmt, argDescriptor, false, 0, __LINE__, 0, __FILE__, __FUNCTION__); \
             logger.Trace(&logSite, __VA_ARGS__ ); \
         } \
@@ -598,17 +598,17 @@ do \
     auto& logger = *Harlinn::Common::Core::Logging::ThreadLogger::Instance( );\
     if( logger.IsTraceEnabled( ) ) \
     { \
-        constexpr bool isFixedSize = Harlinn::Common::Core::Persistent::IsFixedSize( __VA_ARGS__ ); \
-        if constexpr (isFixedSize) \
+        static const bool isFixedSize = Harlinn::Common::Core::Persistent::IsFixedSize( __VA_ARGS__ ); \
+        if (isFixedSize) \
         { \
-            constexpr size_t fixedSize = Harlinn::Common::Core::Persistent::BufferSize( __VA_ARGS__ ); \
-            constexpr auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
+            static const size_t fixedSize = Harlinn::Common::Core::Persistent::BufferSize( __VA_ARGS__ ); \
+            static const auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
             static const Harlinn::Common::Core::Logging::LogSite logSite(Harlinn::Common::Core::Logging::Level::Entering, fmt, argDescriptor, true, fixedSize, __LINE__, 0, __FILE__, __FUNCTION__); \
             logger.Entering(&logSite, __VA_ARGS__ ); \
         } \
         else \
         { \
-            constexpr auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
+            static const auto argDescriptor = Harlinn::Common::Core::Persistent::Descriptor( __VA_ARGS__ ); \
             static const Harlinn::Common::Core::Logging::LogSite logSite(Harlinn::Common::Core::Logging::Level::Entering, fmt, argDescriptor, false, 0, __LINE__, 0, __FILE__, __FUNCTION__); \
             logger.Entering(&logSite, __VA_ARGS__ ); \
         } \
