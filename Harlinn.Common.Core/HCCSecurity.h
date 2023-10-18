@@ -2086,7 +2086,7 @@ StandardRightsExecute = STANDARD_RIGHTS_EXECUTE
         {
         }
 
-        /* */
+        /* * /
         constexpr auto operator <=>( const DerivedType& other ) const noexcept
         {
             return mask_ <=> other.mask_;
@@ -2101,14 +2101,16 @@ StandardRightsExecute = STANDARD_RIGHTS_EXECUTE
         {
             return mask_ <=> other;
         }
-        /* */
+        / * */
         
+        // Still true for version 17.7.5:
+        // 
         // For version 16.8.5 the code below must be used
         // to implement the comparision. Since the code below 
         // *is* working, I would have expected the code above to
         // work too
 
-        /*
+        /* */
         
         constexpr bool operator == ( const DerivedType& other ) const noexcept
         {
@@ -2184,7 +2186,7 @@ StandardRightsExecute = STANDARD_RIGHTS_EXECUTE
         {
             return mask_ > static_cast<ACCESS_MASK>( other );
         }
-        */
+        /* */
 
 
         constexpr DerivedType& operator = ( const Rights rights ) noexcept
