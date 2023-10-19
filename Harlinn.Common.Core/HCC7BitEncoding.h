@@ -79,7 +79,7 @@ namespace Harlinn::Common::Core
 
     inline constexpr size_t SizeOf7BitEncodedValue( Int64 value ) noexcept
     {
-        return SizeOf7BitEncodedValue( std::bit_cast<UInt64>( value ) );
+        return SizeOf7BitEncodedValue( ( std::bit_cast<UInt64>( value ) << 1 ) | ( std::bit_cast< UInt64 >( value ) >> 63) );
     }
 
 
@@ -119,7 +119,7 @@ namespace Harlinn::Common::Core
 
     inline constexpr size_t SizeOf7BitEncodedValue( Int32 value ) noexcept
     {
-        return SizeOf7BitEncodedValue( std::bit_cast<UInt32>( value ) );
+        return SizeOf7BitEncodedValue( ( std::bit_cast< UInt32 >( value ) << 1 ) | ( std::bit_cast< UInt32 >( value ) >> 31 ) );
     }
 
     inline constexpr size_t SizeOf7BitEncodedValue( UInt16 value ) noexcept
@@ -143,7 +143,7 @@ namespace Harlinn::Common::Core
 
     inline constexpr size_t SizeOf7BitEncodedValue( Int16 value ) noexcept
     {
-        return SizeOf7BitEncodedValue( std::bit_cast<UInt16>( value ) );
+        return SizeOf7BitEncodedValue( ( std::bit_cast< UInt16 >( value ) << 1 ) | ( std::bit_cast< UInt16 >( value ) >> 15 ) );
     }
 
     inline constexpr size_t SizeOf7BitEncodedValue( wchar_t value ) noexcept
@@ -165,7 +165,7 @@ namespace Harlinn::Common::Core
 
     inline constexpr size_t SizeOf7BitEncodedValue( SByte value ) noexcept
     {
-        return SizeOf7BitEncodedValue( std::bit_cast<Byte>( value ) );
+        return SizeOf7BitEncodedValue( ( std::bit_cast< Byte >( value ) << 1 ) | ( std::bit_cast< Byte >( value ) >> 7 ) );
     }
 
     inline constexpr size_t SizeOf7BitEncodedValue( char value ) noexcept
@@ -274,7 +274,7 @@ namespace Harlinn::Common::Core
 
     inline constexpr size_t Write7BitEncodedValue( Int64 value, Byte* dest ) noexcept
     {
-        return Write7BitEncodedValue( std::bit_cast<UInt64>( value ), dest );
+        return Write7BitEncodedValue( ( std::bit_cast< UInt64 >( value ) << 1 ) | ( std::bit_cast< UInt64 >( value ) >> 63 ), dest );
     }
 
     inline constexpr size_t Write7BitEncodedValue( UInt32 value, Byte* dest ) noexcept
@@ -329,7 +329,7 @@ namespace Harlinn::Common::Core
 
     inline constexpr size_t Write7BitEncodedValue( Int32 value, Byte* dest ) noexcept
     {
-        return Write7BitEncodedValue( std::bit_cast<UInt32>( value ), dest );
+        return Write7BitEncodedValue( ( std::bit_cast< UInt32 >( value ) << 1 ) | ( std::bit_cast< UInt32 >( value ) >> 31 ), dest );
     }
 
 
@@ -363,7 +363,7 @@ namespace Harlinn::Common::Core
 
     inline constexpr size_t Write7BitEncodedValue( Int16 value, Byte* dest ) noexcept
     {
-        return Write7BitEncodedValue( std::bit_cast<UInt16>( value ), dest );
+        return Write7BitEncodedValue( ( std::bit_cast< UInt16 >( value ) << 1 ) | ( std::bit_cast< UInt16 >( value ) >> 15 ), dest );
     }
     inline constexpr size_t Write7BitEncodedValue( wchar_t value, Byte* dest ) noexcept
     {
@@ -389,11 +389,11 @@ namespace Harlinn::Common::Core
 
     inline constexpr size_t Write7BitEncodedValue( SByte value, Byte* dest ) noexcept
     {
-        return Write7BitEncodedValue( std::bit_cast<Byte>( value ), dest );
+        return Write7BitEncodedValue( ( std::bit_cast< Byte >( value ) << 1 ) | ( std::bit_cast< Byte >( value ) >> 7 ), dest );
     }
     inline constexpr size_t Write7BitEncodedValue( char value, Byte* dest ) noexcept
     {
-        return Write7BitEncodedValue( std::bit_cast<Byte>( value ), dest );
+        return Write7BitEncodedValue( ( std::bit_cast< Byte >( value ) << 1 ) | ( std::bit_cast< Byte >( value ) >> 7 ), dest );
     }
 
 
@@ -476,8 +476,16 @@ namespace Harlinn::Common::Core
         }
     }
 
+    inline constexpr size_t Read7BitEncodedValue( const Byte* buffer, size_t offset, Int64& resultValue ) noexcept
+    {
+        UInt64 resVal = 0;
+        auto result = Read7BitEncodedValue( buffer, offset, resVal );
+        resultValue = std::bit_cast< Int64 >( ( resVal >> 1 ) | ( resVal << 63 ) );
+        return result;
+    }
+
     template<typename Reader>
-    inline UInt64 Read7BitEncodedValue( Reader& reader) noexcept
+    inline constexpr UInt64 Read7BitEncodedUInt64( Reader& reader) noexcept
     {
         UInt64 resultValue = 0;
         Byte byteValue = 0;
@@ -526,15 +534,15 @@ namespace Harlinn::Common::Core
         return resultValue;
     }
 
-
-
-    inline constexpr size_t Read7BitEncodedValue( const Byte* buffer, size_t offset, Int64& resultValue ) noexcept
+    template<typename Reader>
+    inline constexpr Int64 Read7BitEncodedInt64( Reader& reader ) noexcept
     {
-        UInt64 resVal = 0;
-        auto result = Read7BitEncodedValue( buffer, offset, resVal );
-        resultValue = static_cast<Int64>( resVal );
-        return result;
+        UInt64 resVal = Read7BitEncodedUInt64( reader );
+        Int64 resultValue = std::bit_cast< Int64 >( ( resVal >> 1 ) | ( resVal << 63 ) );
+        return resultValue;
     }
+
+    
 
     inline constexpr size_t Read7BitEncodedValue( const Byte* buffer, size_t offset, UInt32& resultValue ) noexcept
     {
@@ -583,9 +591,48 @@ namespace Harlinn::Common::Core
     {
         UInt32 resVal = 0;
         auto result = Read7BitEncodedValue( buffer, offset, resVal );
-        resultValue = static_cast<Int32>( resVal );
+        resultValue = std::bit_cast< Int32 >( ( resVal >> 1 ) | ( resVal << 31 ) );
         return result;
     }
+
+    template<typename Reader>
+    inline constexpr UInt32 Read7BitEncodedUInt32( Reader& reader ) noexcept
+    {
+        UInt32 resultValue = 0;
+        Byte byteValue = 0;
+        reader.Read( byteValue );
+        resultValue = byteValue & 0x7F;
+        if ( byteValue & 0x80 )
+        {
+            reader.Read( byteValue );
+            resultValue |= static_cast< UInt32 >( byteValue & 0x7F ) << 7;
+            if ( byteValue & 0x80 )
+            {
+                reader.Read( byteValue );
+                resultValue |= static_cast< UInt32 >( byteValue & 0x7F ) << 14;
+                if ( byteValue & 0x80 )
+                {
+                    reader.Read( byteValue );
+                    resultValue |= static_cast< UInt32 >( byteValue & 0x7F ) << 21;
+                    if ( byteValue & 0x80 )
+                    {
+                        reader.Read( byteValue );
+                        resultValue |= static_cast< UInt32 >( byteValue & 0x7F ) << 28;
+                    }
+                }
+            }
+        }
+        return resultValue;
+    }
+
+    template<typename Reader>
+    inline constexpr Int32 Read7BitEncodedInt32( Reader& reader ) noexcept
+    {
+        UInt32 resVal = Read7BitEncodedUInt32( reader );
+        Int32 resultValue = std::bit_cast< Int32 >( ( resVal >> 1 ) | ( resVal << 31 ) );
+        return resultValue;
+    }
+
 
     inline constexpr size_t Read7BitEncodedValue( const Byte* buffer, size_t offset, UInt16& resultValue ) noexcept
     {
@@ -615,7 +662,7 @@ namespace Harlinn::Common::Core
     {
         UInt16 resVal = 0;
         auto result = Read7BitEncodedValue( buffer, offset, resVal );
-        resultValue = static_cast<Int16>( resVal );
+        resultValue = std::bit_cast< Int16 >( static_cast<UInt16>(( resVal >> 1 ) | ( resVal << 15 )) );
         return result;
     }
     inline constexpr size_t Read7BitEncodedValue( const Byte* buffer, size_t offset, wchar_t& resultValue ) noexcept
@@ -625,6 +672,41 @@ namespace Harlinn::Common::Core
         resultValue = static_cast<wchar_t>( resVal );
         return result;
     }
+
+    template<typename Reader>
+    inline constexpr UInt16 Read7BitEncodedUInt16( Reader& reader ) noexcept
+    {
+        UInt16 resultValue = 0;
+        Byte byteValue = 0;
+        reader.Read( byteValue );
+        resultValue = byteValue & 0x7F;
+        if ( byteValue & 0x80 )
+        {
+            reader.Read( byteValue );
+            resultValue |= static_cast< UInt16 >( byteValue & 0x7F ) << 7;
+            if ( byteValue & 0x80 )
+            {
+                reader.Read( byteValue );
+                resultValue |= static_cast< UInt16 >( byteValue & 0x7F ) << 14;
+            }
+        }
+        return resultValue;
+    }
+
+    template<typename Reader>
+    inline constexpr Int16 Read7BitEncodedInt16( Reader& reader ) noexcept
+    {
+        UInt16 resVal = Read7BitEncodedUInt16( reader );
+        Int16 resultValue = std::bit_cast< Int16 >( ( resVal >> 1 ) | ( resVal << 15 ) );
+        return resultValue;
+    }
+    template<typename Reader>
+    inline constexpr wchar_t Read7BitEncodedWChar( Reader& reader ) noexcept
+    {
+        return std::bit_cast< wchar_t >( Read7BitEncodedUInt16( reader ) );
+    }
+
+
 
     inline constexpr size_t Read7BitEncodedValue( const Byte* buffer, size_t offset, Byte& resultValue ) noexcept
     {
@@ -645,15 +727,45 @@ namespace Harlinn::Common::Core
     {
         Byte resVal = 0;
         auto result = Read7BitEncodedValue( buffer, offset, resVal );
-        resultValue = static_cast<SByte>( resVal );
+        resultValue = std::bit_cast< SByte >( static_cast<Byte>(( resVal >> 1 ) | ( resVal << 7 )) );
         return result;
     }
     inline constexpr size_t Read7BitEncodedValue( const Byte* buffer, size_t offset, char& resultValue ) noexcept
     {
         Byte resVal = 0;
         auto result = Read7BitEncodedValue( buffer, offset, resVal );
-        resultValue = static_cast<char>( resVal );
+        resultValue = std::bit_cast< char >( static_cast< Byte >( ( resVal >> 1 ) | ( resVal << 7 ) ) );
         return result;
+    }
+
+    template<typename Reader>
+    inline constexpr Byte Read7BitEncodedByte( Reader& reader ) noexcept
+    {
+        Byte resultValue = 0;
+        Byte byteValue = 0;
+        reader.Read( byteValue );
+        resultValue = byteValue & 0x7F;
+        if ( byteValue & 0x80 )
+        {
+            reader.Read( byteValue );
+            resultValue |= static_cast< Byte >( byteValue & 0x7F ) << 7;
+        }
+        return resultValue;
+    }
+
+    template<typename Reader>
+    inline constexpr SByte Read7BitEncodedSByte( Reader& reader ) noexcept
+    {
+        Byte resVal = Read7BitEncodedByte( reader );
+        SByte resultValue = std::bit_cast< SByte >( ( resVal >> 1 ) | ( resVal << 7 ) );
+        return resultValue;
+    }
+    template<typename Reader>
+    inline constexpr char Read7BitEncodedChar( Reader& reader ) noexcept
+    {
+        Byte resVal = Read7BitEncodedByte( reader );
+        SByte resultValue = std::bit_cast< SByte >( ( resVal >> 1 ) | ( resVal << 7 ) );
+        return resultValue;
     }
 
 

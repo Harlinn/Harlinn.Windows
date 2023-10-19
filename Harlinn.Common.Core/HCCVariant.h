@@ -281,7 +281,8 @@ namespace Harlinn::Common::Core
         {
         }
 
-        explicit SysString( const WideString& str )
+        template<WideStringLike StringT>
+        explicit SysString( const StringT& str )
             : bstr_( 0 )
         {
             bstr_ = SysAllocStringLen( str.c_str( ), UINT( str.length( ) ) );
@@ -291,8 +292,8 @@ namespace Harlinn::Common::Core
             }
         }
 
-
-        explicit SysString( const AnsiString& str )
+        template<AnsiStringLike StringT>
+        explicit SysString( const StringT& str )
             : bstr_( 0 )
         {
             auto wstr = Core::ToWideString( str );
@@ -401,6 +402,10 @@ namespace Harlinn::Common::Core
                 return true;
             }
         }
+        bool operator != ( const SysString& other ) const
+        {
+            return !( *this == other );
+        }
 
         bool operator == ( const wchar_t* other ) const
         {
@@ -422,8 +427,13 @@ namespace Harlinn::Common::Core
                 return true;
             }
         }
+        bool operator != ( const wchar_t* other ) const
+        {
+            return !( *this == other );
+        }
 
-        bool operator == ( const WideString& other ) const
+        template<WideStringLike StringT>
+        bool operator == ( const StringT& other ) const
         {
             if ( bstr_ )
             {
@@ -439,6 +449,11 @@ namespace Harlinn::Common::Core
             {
                 return other.empty( );
             }
+        }
+        template<WideStringLike StringT>
+        bool operator != ( const StringT& other ) const
+        {
+            return !( *this == other );
         }
 
         bool empty( ) const
@@ -475,6 +490,23 @@ namespace Harlinn::Common::Core
                 return 0;
             }
         }
+        bool operator < ( const SysString & other ) const
+        {
+            return CompareTo( other ) < 0;
+        }
+        bool operator <= ( const SysString& other ) const
+        {
+            return CompareTo( other ) <= 0;
+        }
+        bool operator > ( const SysString& other ) const
+        {
+            return CompareTo( other ) > 0;
+        }
+        bool operator >= ( const SysString& other ) const
+        {
+            return CompareTo( other ) >= 0;
+        }
+
 
         int CompareTo( const wchar_t* other ) const
         {
@@ -499,8 +531,26 @@ namespace Harlinn::Common::Core
                 return 0;
             }
         }
+        bool operator < ( const wchar_t* other ) const
+        {
+            return CompareTo( other ) < 0;
+        }
+        bool operator <= ( const wchar_t* other ) const
+        {
+            return CompareTo( other ) <= 0;
+        }
+        bool operator > ( const wchar_t* other ) const
+        {
+            return CompareTo( other ) > 0;
+        }
+        bool operator >= ( const wchar_t* other ) const
+        {
+            return CompareTo( other ) >= 0;
+        }
 
-        int CompareTo( const WideString& other ) const
+
+        template<WideStringLike StringT>
+        int CompareTo( const StringT& other ) const
         {
             if ( bstr_ != other )
             {
@@ -524,6 +574,26 @@ namespace Harlinn::Common::Core
             }
         }
 
+        template<WideStringLike StringT>
+        bool operator < ( const StringT& other ) const
+        {
+            return CompareTo( other ) < 0;
+        }
+        template<WideStringLike StringT>
+        bool operator <= ( const StringT& other ) const
+        {
+            return CompareTo( other ) <= 0;
+        }
+        template<WideStringLike StringT>
+        bool operator > ( const StringT& other ) const
+        {
+            return CompareTo( other ) > 0;
+        }
+        template<WideStringLike StringT>
+        bool operator >= ( const StringT& other ) const
+        {
+            return CompareTo( other ) >= 0;
+        }
 
 
 

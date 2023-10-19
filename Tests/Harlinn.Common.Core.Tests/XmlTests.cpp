@@ -118,21 +118,21 @@ BOOST_AUTO_TEST_CASE( LoadTest1 )
     document.SetResolveExternals( false );
     document.SetPreserveWhiteSpace( true );
 
-    auto xmlFilename = IO::Directory::GetExecutableDirectory<WideString>() + L"Harlinn.OCI.Tests.xml";
+    
 
-    auto success = document.Load( xmlFilename );
+    auto success = document.Load( L"EseOptionsTests.xml" );
     BOOST_CHECK( success );
 
 
     auto documentElement = document.DocumentElement( );
-    auto list = documentElement.ElementsByTagName( L"Oracle" );
+    auto list = documentElement.ElementsByTagName( L"StorageEngine" );
     if ( list.size( ) )
     {
         Dom::Element element = list[0];
 
-        auto username = element.Attribute( L"Username" );
-        auto password = element.Attribute( L"Password" );
-        auto alias = element.Attribute( L"Alias" );
+        auto name = element.Read<WideString>( L"Name" );
+        auto createPathIfNotExist = element.Read<bool>( L"CreatePathIfNotExist" );
+        auto exceptionAction = element.Read<WideString>( L"ExceptionAction" );
         
     }
 

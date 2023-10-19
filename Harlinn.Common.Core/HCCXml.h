@@ -70,7 +70,9 @@ namespace Harlinn::Common::Core::Xml
 
         typedef SysString XmlString;
 
+        template<typename NodeT>
         class NodeList;
+        template<typename NodeT>
         class NamedNodeMap;
         class Document;
 
@@ -126,89 +128,208 @@ namespace Harlinn::Common::Core::Xml
                 return Core::Xml::Dom::NodeType(result);
             }
         
-            Node ParentNode( ) const
+            template<typename NodeT = Node>
+            NodeT ParentNode( ) const
             {
                 auto pInterface = GetInterface();
                 IXMLDOMNode *result;
                 auto hr = pInterface->get_parentNode(&result);
                 HCC_COM_CHECK_HRESULT2( hr, pInterface );
-                return Node(result);
+                if constexpr ( std::is_same_v<std::remove_cvref_t<NodeT>, Node> )
+                {
+                    return NodeT( result );
+                }
+                else
+                {
+                    typename NodeT::InterfaceType* pNodeType = nullptr;
+                    hr = result->QueryInterface<NodeT::InterfaceType>( &pNodeType );
+                    HCC_COM_CHECK_HRESULT2( hr, result );
+                    NodeT node( pNodeType );
+                    result->Release( );
+                    return node;
+                }
             }
         
-            NodeList ChildNodes( ) const;
+            template<typename NodeT = Node>
+            NodeList<NodeT> ChildNodes( ) const;
         
-            Node FirstChild( ) const
+            template<typename NodeT = Node>
+            NodeT FirstChild( ) const
             {
                 auto pInterface = GetInterface();
                 IXMLDOMNode *result;
                 auto hr = pInterface->get_firstChild(&result);
                 HCC_COM_CHECK_HRESULT2( hr, pInterface );
-                return Node(result);
+                if constexpr ( std::is_same_v<std::remove_cvref_t<NodeT>, Node> )
+                {
+                    return NodeT( result );
+                }
+                else
+                {
+                    typename NodeT::InterfaceType* pNodeType = nullptr;
+                    hr = result->QueryInterface<NodeT::InterfaceType>( &pNodeType );
+                    HCC_COM_CHECK_HRESULT2( hr, result );
+                    NodeT node( pNodeType );
+                    result->Release( );
+                    return node;
+                }
             }
         
-            Node LastChild( ) const
+            template<typename NodeT = Node>
+            NodeT LastChild( ) const
             {
                 auto pInterface = GetInterface();
                 IXMLDOMNode *result;
                 auto hr = pInterface->get_lastChild(&result);
                 HCC_COM_CHECK_HRESULT2( hr, pInterface );
-                return Node(result);
+                if constexpr ( std::is_same_v<std::remove_cvref_t<NodeT>, Node> )
+                {
+                    return NodeT( result );
+                }
+                else
+                {
+                    typename NodeT::InterfaceType* pNodeType = nullptr;
+                    hr = result->QueryInterface<NodeT::InterfaceType>( &pNodeType );
+                    HCC_COM_CHECK_HRESULT2( hr, result );
+                    NodeT node( pNodeType );
+                    result->Release( );
+                    return node;
+                }
             }
         
-            Node PreviousSibling( ) const
+            template<typename NodeT = Node>
+            NodeT PreviousSibling( ) const
             {
                 auto pInterface = GetInterface();
                 IXMLDOMNode *result;
                 auto hr = pInterface->get_previousSibling(&result);
                 HCC_COM_CHECK_HRESULT2( hr, pInterface );
-                return Node(result);
+                if constexpr ( std::is_same_v<std::remove_cvref_t<NodeT>, Node> )
+                {
+                    return NodeT( result );
+                }
+                else
+                {
+                    typename NodeT::InterfaceType* pNodeType = nullptr;
+                    hr = result->QueryInterface<NodeT::InterfaceType>( &pNodeType );
+                    HCC_COM_CHECK_HRESULT2( hr, result );
+                    NodeT node( pNodeType );
+                    result->Release( );
+                    return node;
+                }
             }
         
-            Node NextSibling( ) const
+            template<typename NodeT = Node>
+            NodeT NextSibling( ) const
             {
                 auto pInterface = GetInterface();
                 IXMLDOMNode *result;
                 auto hr = pInterface->get_nextSibling(&result);
                 HCC_COM_CHECK_HRESULT2( hr, pInterface );
-                return Node(result);
+                if constexpr ( std::is_same_v<std::remove_cvref_t<NodeT>, Node> )
+                {
+                    return NodeT( result );
+                }
+                else
+                {
+                    typename NodeT::InterfaceType* pNodeType = nullptr;
+                    hr = result->QueryInterface<NodeT::InterfaceType>( &pNodeType );
+                    HCC_COM_CHECK_HRESULT2( hr, result );
+                    NodeT node( pNodeType );
+                    result->Release( );
+                    return node;
+                }
             }
         
-            NamedNodeMap Attributes() const;
+            template<typename NodeT = Node>
+            NamedNodeMap<NodeT> Attributes() const;
         
-            Node InsertBefore( IXMLDOMNode *newChild,const VARIANT& refChild) const
+            template<typename NodeT = Node>
+            NodeT InsertBefore( IXMLDOMNode *newChild,const VARIANT& refChild) const
             {
                 auto pInterface = GetInterface();
                 IXMLDOMNode *result;
                 auto hr = pInterface->insertBefore( newChild, refChild,&result);
                 HCC_COM_CHECK_HRESULT2( hr, pInterface );
-                return Node(result);
+                if constexpr ( std::is_same_v<std::remove_cvref_t<NodeT>, Node> )
+                {
+                    return NodeT( result );
+                }
+                else
+                {
+                    typename NodeT::InterfaceType* pNodeType = nullptr;
+                    hr = result->QueryInterface<NodeT::InterfaceType>( &pNodeType );
+                    HCC_COM_CHECK_HRESULT2( hr, result );
+                    NodeT node( pNodeType );
+                    result->Release( );
+                    return node;
+                }
             }
         
-            Node ReplaceChild( IXMLDOMNode *newChild,IXMLDOMNode *oldChild) const
+            template<typename NodeT = Node>
+            NodeT ReplaceChild( IXMLDOMNode *newChild,IXMLDOMNode *oldChild) const
             {
                 auto pInterface = GetInterface();
                 IXMLDOMNode *result;
                 auto hr = pInterface->replaceChild( newChild, oldChild,&result);
                 HCC_COM_CHECK_HRESULT2( hr, pInterface );
-                return Node(result);
+                if constexpr ( std::is_same_v<std::remove_cvref_t<NodeT>, Node> )
+                {
+                    return NodeT( result );
+                }
+                else
+                {
+                    typename NodeT::InterfaceType* pNodeType = nullptr;
+                    hr = result->QueryInterface<NodeT::InterfaceType>( &pNodeType );
+                    HCC_COM_CHECK_HRESULT2( hr, result );
+                    NodeT node( pNodeType );
+                    result->Release( );
+                    return node;
+                }
             }
         
-            Node RemoveChild( IXMLDOMNode *childNode ) const
+            template<typename NodeT = Node>
+            NodeT RemoveChild( IXMLDOMNode *childNode ) const
             {
                 auto pInterface = GetInterface();
                 IXMLDOMNode *result;
                 auto hr = pInterface->removeChild( childNode,&result);
                 HCC_COM_CHECK_HRESULT2( hr, pInterface );
-                return Node(result);
+                if constexpr ( std::is_same_v<std::remove_cvref_t<NodeT>, Node> )
+                {
+                    return NodeT( result );
+                }
+                else
+                {
+                    typename NodeT::InterfaceType* pNodeType = nullptr;
+                    hr = result->QueryInterface<NodeT::InterfaceType>( &pNodeType );
+                    HCC_COM_CHECK_HRESULT2( hr, result );
+                    NodeT node( pNodeType );
+                    result->Release( );
+                    return node;
+                }
             }
         
-            Node AppendChild( IXMLDOMNode *newChild ) const
+            template<typename NodeT = Node>
+            NodeT AppendChild( IXMLDOMNode *newChild ) const
             {
                 auto pInterface = GetInterface();
                 IXMLDOMNode *result;
                 auto hr = pInterface->appendChild( newChild,&result);
                 HCC_COM_CHECK_HRESULT2( hr, pInterface );
-                return Node(result);
+                if constexpr ( std::is_same_v<std::remove_cvref_t<NodeT>, Node> )
+                {
+                    return NodeT( result );
+                }
+                else
+                {
+                    typename NodeT::InterfaceType* pNodeType = nullptr;
+                    hr = result->QueryInterface<NodeT::InterfaceType>( &pNodeType );
+                    HCC_COM_CHECK_HRESULT2( hr, result );
+                    NodeT node( pNodeType );
+                    result->Release( );
+                    return node;
+                }
             }
 
             bool HasChildNodes( ) const
@@ -222,13 +343,26 @@ namespace Harlinn::Common::Core::Xml
         
             Document OwnerDocument( ) const;
         
-            Node CloneNode( bool deep = true) const
+            template<typename NodeT = Node>
+            NodeT CloneNode( bool deep = true) const
             {
                 auto pInterface = GetInterface();
                 IXMLDOMNode *result;
                 auto hr = pInterface->cloneNode( deep?VARIANT_TRUE:VARIANT_FALSE,&result);
                 HCC_COM_CHECK_HRESULT2( hr, pInterface );
-                return Node(result);
+                if constexpr ( std::is_same_v<std::remove_cvref_t<NodeT>, Node> )
+                {
+                    return NodeT( result );
+                }
+                else
+                {
+                    typename NodeT::InterfaceType* pNodeType = nullptr;
+                    hr = result->QueryInterface<NodeT::InterfaceType>( &pNodeType );
+                    HCC_COM_CHECK_HRESULT2( hr, result );
+                    NodeT node( pNodeType );
+                    result->Release( );
+                    return node;
+                }
             }
         
             XmlString NodeTypeString( ) const
@@ -289,13 +423,26 @@ namespace Harlinn::Common::Core::Xml
                 return result != VARIANT_FALSE;
             }
         
-            Node Definition( ) const
+            template<typename NodeT = Node>
+            NodeT Definition( ) const
             {
                 auto pInterface = GetInterface();
                 IXMLDOMNode *result;
                 auto hr = pInterface->get_definition( &result);
                 HCC_COM_CHECK_HRESULT2( hr, pInterface );
-                return Node(result);
+                if constexpr ( std::is_same_v<std::remove_cvref_t<NodeT>, Node> )
+                {
+                    return NodeT( result );
+                }
+                else
+                {
+                    typename NodeT::InterfaceType* pNodeType = nullptr;
+                    hr = result->QueryInterface<NodeT::InterfaceType>( &pNodeType );
+                    HCC_COM_CHECK_HRESULT2( hr, result );
+                    NodeT node( pNodeType );
+                    result->Release( );
+                    return node;
+                }
             }
         
             Variant NodeTypedValue( ) const
@@ -348,15 +495,29 @@ namespace Harlinn::Common::Core::Xml
                 return XmlString(result,true);
             }
         
-            NodeList SelectNodes( BSTR queryString ) const;
+            template<typename NodeT = Node>
+            NodeList<NodeT> SelectNodes( BSTR queryString ) const;
 
-            Node SelectSingleNode( BSTR queryString ) const
+            template<typename NodeT = Node>
+            NodeT SelectSingleNode( BSTR queryString ) const
             {
                 auto pInterface = GetInterface();
                 IXMLDOMNode *result;
                 auto hr = pInterface->selectSingleNode( queryString,&result);
                 HCC_COM_CHECK_HRESULT2( hr, pInterface );
-                return Node(result);
+                if constexpr ( std::is_same_v<std::remove_cvref_t<NodeT>, Node> )
+                {
+                    return NodeT( result );
+                }
+                else
+                {
+                    typename NodeT::InterfaceType* pNodeType = nullptr;
+                    hr = result->QueryInterface<NodeT::InterfaceType>( &pNodeType );
+                    HCC_COM_CHECK_HRESULT2( hr, result );
+                    NodeT node( pNodeType );
+                    result->Release( );
+                    return node;
+                }
             }
         
             bool Parsed( ) const
@@ -417,6 +578,7 @@ namespace Harlinn::Common::Core::Xml
         {
         public:
             using CollectionType = NCT;
+            using NodeType = NodeT;
             using iterator_category = std::random_access_iterator_tag;
             using value_type = NodeT;
             using difference_type = SSIZE_T;
@@ -426,7 +588,7 @@ namespace Harlinn::Common::Core::Xml
             CollectionType* collection_;
             size_t index_;
             size_t size_;
-            Node node_;
+            NodeType node_;
         public:
             explicit NodeIterator( )
                 : collection_( nullptr ), index_( 0 ), size_( 0 )
@@ -441,7 +603,7 @@ namespace Harlinn::Common::Core::Xml
                     size_ = collection_->size( );
                     if ( size_ )
                     {
-                        node_ = collection_->Item( static_cast<long>( 0 ) );
+                        node_ = collection_->Item( static_cast< long >( 0 ) );
                     }
                 }
             }
@@ -546,12 +708,14 @@ namespace Harlinn::Common::Core::Xml
             }
         };
 
-
+        template<typename NodeT = Node>
         class NodeList : public Dispatch
         {
         public:
-            using const_iterator = NodeIterator<const NodeList, const Node>;
-            using iterator = NodeIterator<NodeList, Node>;
+            using NodeType = NodeT;
+            using value_type = NodeType;
+            using const_iterator = NodeIterator<const NodeList<NodeType>, const NodeType>;
+            using iterator = NodeIterator<NodeList<NodeType>, NodeType>;
             using reverse_iterator = std::reverse_iterator<iterator>;
             using const_reverse_iterator = std::reverse_iterator<const_iterator>;
 
@@ -603,14 +767,26 @@ namespace Harlinn::Common::Core::Xml
                 return const_reverse_iterator( begin( ) );
             }
 
-
-            Node Item( long index ) const
+            template<typename NodeT2 = NodeType>
+            NodeT2 Item( long index ) const
             {
                 auto pInterface = GetInterface();
                 IXMLDOMNode *result;
                 auto hr = pInterface->get_item(index,&result);
                 HCC_COM_CHECK_HRESULT2( hr, pInterface );
-                return Node(result);
+                if constexpr ( std::is_same_v<std::remove_cvref_t<NodeT2>, Node> )
+                {
+                    return NodeT2( result );
+                }
+                else
+                {
+                    typename NodeT2::InterfaceType* pNodeType = nullptr;
+                    hr = result->QueryInterface<NodeT2::InterfaceType>( &pNodeType );
+                    HCC_COM_CHECK_HRESULT2( hr, result );
+                    NodeT2 node( pNodeType );
+                    result->Release( );
+                    return node;
+                }
             }
         
             long Length( ) const
@@ -631,20 +807,32 @@ namespace Harlinn::Common::Core::Xml
                 return static_cast<size_t>( Length( ) );
             }
 
-            Node operator[]( size_t index ) const
+            NodeType operator[]( size_t index ) const
             {
                 return Item( static_cast<long>( index ) );
             }
 
 
-        
-            Node NextNode( ) const
+            template<typename NodeT2 = NodeType>
+            NodeT2 NextNode( ) const
             {
                 auto pInterface = GetInterface();
                 IXMLDOMNode *result = nullptr;
                 auto hr = pInterface->nextNode(&result);
                 HCC_COM_CHECK_HRESULT2( hr, pInterface );
-                return Node(result);
+                if constexpr ( std::is_same_v<std::remove_cvref_t<NodeT2>, Node> )
+                {
+                    return NodeT2( result );
+                }
+                else
+                {
+                    typename NodeT2::InterfaceType* pNodeType = nullptr;
+                    hr = result->QueryInterface<NodeT2::InterfaceType>( &pNodeType );
+                    HCC_COM_CHECK_HRESULT2( hr, result );
+                    NodeT2 node( pNodeType );
+                    result->Release( );
+                    return node;
+                }
             }
         
             void Reset( void ) const
@@ -670,29 +858,32 @@ namespace Harlinn::Common::Core::Xml
         
         };
 
-        inline NodeList Node::ChildNodes( ) const
+        template<typename NodeT>
+        inline NodeList<NodeT> Node::ChildNodes( ) const
         {
             auto pInterface = GetInterface();
             IXMLDOMNodeList *result = nullptr;
             auto hr = pInterface->get_childNodes(&result);
             HCC_COM_CHECK_HRESULT2( hr, pInterface );
-            return NodeList(result);
+            return NodeList<NodeT>(result);
         }
 
-
-        inline NodeList Node::SelectNodes( BSTR queryString ) const
+        template<typename NodeT>
+        inline NodeList<NodeT> Node::SelectNodes( BSTR queryString ) const
         {
             auto pInterface = GetInterface();
             IXMLDOMNodeList *result;
             auto hr = pInterface->selectNodes(queryString, &result);
             HCC_COM_CHECK_HRESULT2( hr, pInterface );
-            return NodeList(result);
+            return NodeList<NodeT>(result);
         }
 
-
+        template<typename NodeT = Node>
         class NamedNodeMap : public Dispatch
         {
         public:
+            using NodeType = NodeT;
+            using value_type = NodeT;
             using const_iterator = NodeIterator<const NamedNodeMap, const Node>;
             using iterator = NodeIterator<NamedNodeMap, Node>;
             using reverse_iterator = std::reverse_iterator<iterator>;
@@ -747,40 +938,92 @@ namespace Harlinn::Common::Core::Xml
                 return const_reverse_iterator( begin( ) );
             }
 
-            Node NamedItem( BSTR name ) const
+            template<typename NodeT2 = NodeType>
+            NodeT2 NamedItem( BSTR name ) const
             {
                 auto pInterface = GetInterface();
                 IXMLDOMNode *result = nullptr;
                 auto hr = pInterface->getNamedItem(name,&result);
                 HCC_COM_CHECK_HRESULT2( hr, pInterface );
-                return Node(result);
+                if constexpr ( std::is_same_v<std::remove_cvref_t<NodeT2>, Node> )
+                {
+                    return NodeT2( result );
+                }
+                else
+                {
+                    typename NodeT2::InterfaceType* pNodeType = nullptr;
+                    hr = result->QueryInterface<NodeT2::InterfaceType>( &pNodeType );
+                    HCC_COM_CHECK_HRESULT2( hr, result );
+                    NodeT2 node( pNodeType );
+                    result->Release( );
+                    return node;
+                }
             }
         
-            Node SetNamedItem( IXMLDOMNode *newItem) const
+            template<typename NodeT2 = NodeType>
+            NodeT2 SetNamedItem( IXMLDOMNode *newItem) const
             {
                 auto pInterface = GetInterface();
                 IXMLDOMNode *result = nullptr;
                 auto hr = pInterface->setNamedItem(newItem,&result);
                 HCC_COM_CHECK_HRESULT2( hr, pInterface );
-                return Node(result);
+                if constexpr ( std::is_same_v<std::remove_cvref_t<NodeT2>, Node> )
+                {
+                    return NodeT2( result );
+                }
+                else
+                {
+                    typename NodeT2::InterfaceType* pNodeType = nullptr;
+                    hr = result->QueryInterface<NodeT2::InterfaceType>( &pNodeType );
+                    HCC_COM_CHECK_HRESULT2( hr, result );
+                    NodeT2 node( pNodeType );
+                    result->Release( );
+                    return node;
+                }
             }
         
-            Node RemoveNamedItem( BSTR name ) const
+            template<typename NodeT2 = NodeType>
+            NodeT2 RemoveNamedItem( BSTR name ) const
             {
                 auto pInterface = GetInterface();
                 IXMLDOMNode *result = nullptr;
                 auto hr = pInterface->removeNamedItem(name,&result);
                 HCC_COM_CHECK_HRESULT2( hr, pInterface );
-                return Node(result);
+                if constexpr ( std::is_same_v<std::remove_cvref_t<NodeT2>, Node> )
+                {
+                    return NodeT2( result );
+                }
+                else
+                {
+                    typename NodeT2::InterfaceType* pNodeType = nullptr;
+                    hr = result->QueryInterface<NodeT2::InterfaceType>( &pNodeType );
+                    HCC_COM_CHECK_HRESULT2( hr, result );
+                    NodeT2 node( pNodeType );
+                    result->Release( );
+                    return node;
+                }
             }
         
-            Node Item( long index ) const
+            template<typename NodeT2 = NodeType>
+            NodeT2 Item( long index ) const
             {
                 auto pInterface = GetInterface();
                 IXMLDOMNode *result;
                 auto hr = pInterface->get_item(index,&result);
                 HCC_COM_CHECK_HRESULT2( hr, pInterface );
-                return Node(result);
+                if constexpr ( std::is_same_v<std::remove_cvref_t<NodeT2>, Node> )
+                {
+                    return NodeT2( result );
+                }
+                else
+                {
+                    typename NodeT2::InterfaceType* pNodeType = nullptr;
+                    hr = result->QueryInterface<NodeT2::InterfaceType>( &pNodeType );
+                    HCC_COM_CHECK_HRESULT2( hr, result );
+                    NodeT2 node( pNodeType );
+                    result->Release( );
+                    return node;
+                }
             }
         
             long Length( ) const
@@ -801,37 +1044,76 @@ namespace Harlinn::Common::Core::Xml
                 return static_cast<size_t>( Length( ) );
             }
 
-            Node operator[]( size_t index ) const
+            NodeType operator[]( size_t index ) const
             {
                 return Item( static_cast<long>( index ) );
             }
 
         
-            Node QualifiedItem( BSTR baseName,BSTR namespaceURI) const
+            template<typename NodeT2 = NodeType>
+            NodeT2 QualifiedItem( BSTR baseName,BSTR namespaceURI) const
             {
                 auto pInterface = GetInterface();
                 IXMLDOMNode *result = nullptr;
                 auto hr = pInterface->getQualifiedItem(baseName,namespaceURI,&result);
                 HCC_COM_CHECK_HRESULT2( hr, pInterface );
-                return Node(result);
+                if constexpr ( std::is_same_v<std::remove_cvref_t<NodeT2>, Node> )
+                {
+                    return NodeT2( result );
+                }
+                else
+                {
+                    typename NodeT2::InterfaceType* pNodeType = nullptr;
+                    hr = result->QueryInterface<NodeT2::InterfaceType>( &pNodeType );
+                    HCC_COM_CHECK_HRESULT2( hr, result );
+                    NodeT2 node( pNodeType );
+                    result->Release( );
+                    return node;
+                }
             }
 
-            Node RemoveQualifiedItem( BSTR baseName,BSTR namespaceURI) const
+            template<typename NodeT2 = NodeType>
+            NodeT2 RemoveQualifiedItem( BSTR baseName,BSTR namespaceURI) const
             {
                 auto pInterface = GetInterface();
                 IXMLDOMNode *result = nullptr;
                 auto hr = pInterface->removeQualifiedItem(baseName,namespaceURI,&result);
                 HCC_COM_CHECK_HRESULT2( hr, pInterface );
-                return Node(result);
+                if constexpr ( std::is_same_v<std::remove_cvref_t<NodeT2>, Node> )
+                {
+                    return NodeT2( result );
+                }
+                else
+                {
+                    typename NodeT2::InterfaceType* pNodeType = nullptr;
+                    hr = result->QueryInterface<NodeT2::InterfaceType>( &pNodeType );
+                    HCC_COM_CHECK_HRESULT2( hr, result );
+                    NodeT2 node( pNodeType );
+                    result->Release( );
+                    return node;
+                }
             }
 
-            Node NextNode( ) const
+            template<typename NodeT2 = NodeType>
+            NodeT2 NextNode( ) const
             {
                 auto pInterface = GetInterface();
                 IXMLDOMNode *result = nullptr;
                 auto hr = pInterface->nextNode(&result);
                 HCC_COM_CHECK_HRESULT2( hr, pInterface );
-                return Node(result);
+                if constexpr ( std::is_same_v<std::remove_cvref_t<NodeT2>, Node> )
+                {
+                    return NodeT2( result );
+                }
+                else
+                {
+                    typename NodeT2::InterfaceType* pNodeType = nullptr;
+                    hr = result->QueryInterface<NodeT2::InterfaceType>( &pNodeType );
+                    HCC_COM_CHECK_HRESULT2( hr, result );
+                    NodeT2 node( pNodeType );
+                    result->Release( );
+                    return node;
+                }
             }
         
             void Reset( void ) const
@@ -857,13 +1139,14 @@ namespace Harlinn::Common::Core::Xml
         
         };
 
-        inline NamedNodeMap Node::Attributes() const
+        template<typename NodeT>
+        inline NamedNodeMap<NodeT> Node::Attributes() const
         {
             auto pInterface = GetInterface();
             IXMLDOMNamedNodeMap *result = nullptr;
             auto hr = pInterface->get_attributes(&result);
             HCC_COM_CHECK_HRESULT2( hr, pInterface );
-            return NamedNodeMap(result);
+            return NamedNodeMap<NodeT>(result);
         }
 
 
@@ -882,22 +1165,24 @@ namespace Harlinn::Common::Core::Xml
                 return XmlString(result,true);
             }
         
-            NamedNodeMap Entities( ) const
+            template<typename NodeT = Node>
+            NamedNodeMap<NodeT> Entities( ) const
             {
                 auto pInterface = GetInterface();
                 IXMLDOMNamedNodeMap *result = nullptr;
                 auto hr = pInterface->get_entities(&result);
                 HCC_COM_CHECK_HRESULT2( hr, pInterface );
-                return NamedNodeMap(result);
+                return NamedNodeMap<NodeT>(result);
             }
         
-            NamedNodeMap get_notations( ) const
+            template<typename NodeT = Node>
+            NamedNodeMap<NodeT> get_notations( ) const
             {
                 auto pInterface = GetInterface();
                 IXMLDOMNamedNodeMap *result = nullptr;
                 auto hr = pInterface->get_notations(&result);
                 HCC_COM_CHECK_HRESULT2( hr, pInterface );
-                return NamedNodeMap(result);
+                return NamedNodeMap<NodeT>(result);
             }
         
         };
@@ -1046,18 +1331,20 @@ namespace Harlinn::Common::Core::Xml
                 return Core::Xml::Dom::Attribute(result);
             }
 
-            NodeList ElementsByTagName( BSTR tagName ) const
+            template<typename ElementT = Element>
+            NodeList<ElementT> ElementsByTagName( BSTR tagName ) const
             {
                 auto pInterface = GetInterface();
                 IXMLDOMNodeList *result = nullptr;
                 auto hr = pInterface->getElementsByTagName(tagName,&result);
                 HCC_COM_CHECK_HRESULT2( hr, pInterface );
-                return NodeList(result);
+                return NodeList<ElementT>(result);
             }
 
-            NodeList ElementsByTagName( const wchar_t* tagName ) const
+            template<typename ElementT = Element>
+            NodeList<ElementT> ElementsByTagName( const wchar_t* tagName ) const
             {
-                return ElementsByTagName( (BSTR)tagName );
+                return ElementsByTagName<ElementT>( (BSTR)tagName );
             }
 
             Element FindElement( BSTR tagName ) const
@@ -1618,7 +1905,8 @@ namespace Harlinn::Common::Core::Xml
                 LoadXML( xml );
             }
 
-            explicit Document( const WideString& xml, bool validateOnParse = false, bool resolveExternals = false, bool preserveWhiteSpace = false, bool async = false )
+            template<WideStringLike StringT>
+            explicit Document( const StringT& xml, bool validateOnParse = false, bool resolveExternals = false, bool preserveWhiteSpace = false, bool async = false )
                 : Document( xml.c_str(), validateOnParse, resolveExternals, preserveWhiteSpace, async )
             {
             }
@@ -1693,6 +1981,15 @@ namespace Harlinn::Common::Core::Xml
                 HCC_COM_CHECK_HRESULT2( hr, pInterface );
                 return Core::Xml::Dom::Text(result);
             }
+            Core::Xml::Dom::Text CreateTextNode( const wchar_t* data ) const
+            {
+                return CreateTextNode( (BSTR)data );
+            }
+            template<WideStringLike StringT>
+            Core::Xml::Dom::Text CreateTextNode( const StringT& data ) const
+            {
+                return CreateTextNode( data.c_str( ) );
+            }
         
             Comment CreateComment( BSTR data ) const
             {
@@ -1739,31 +2036,154 @@ namespace Harlinn::Common::Core::Xml
                 return EntityReference(result);
             }
         
-            NodeList ElementsByTagName( BSTR tagName ) const
+            template<typename ElementT = Element>
+            NodeList<ElementT> ElementsByTagName( BSTR tagName ) const
             {
                 auto pInterface = GetInterface();
                 IXMLDOMNodeList *result = nullptr;
                 auto hr = pInterface->getElementsByTagName(tagName,&result);
                 HCC_COM_CHECK_HRESULT2( hr, pInterface );
-                return NodeList(result);
+                return NodeList<ElementT>(result);
             }
 
-            Node CreateNode( const VARIANT& Type,BSTR name,BSTR namespaceURI,IXMLDOMNode **node) const
+            /// <summary>
+            /// Creates a node using the supplied type, name, and namespace.
+            /// </summary>
+            /// <typeparam name="NodeT">
+            /// The interface wrapper type corresponding to the type argument.
+            /// </typeparam>
+            /// <param name="Type">
+            /// A value that uniquely identifies the node type. This can be specified 
+            /// using either the integer value or the string value.
+            /// </param>
+            /// <param name="name">
+            /// 
+            /// </param>
+            /// <param name="namespaceURI">
+            /// The namespace URI. If specified, the node is created in the context of the 
+            /// namespaceURI parameter with the prefix specified on the node name. If the name 
+            /// parameter does not have a prefix, this is treated as the default namespace.
+            /// </param>
+            /// <returns>
+            /// A wrapper object for the new node.
+            /// </returns>
+            /// <remarks>
+            /// <para>
+            /// The name parameter depends on the value of the Type parameter:
+            /// </para>
+            /// <list type="table">
+            ///     <item>
+            ///         <term>NodeType::Attribute</term>
+            ///         <description>The name of the attribute.</description>
+            ///     </item>
+            ///      <item>
+            ///         <term>NodeType::CDataSection, NodeType::Comment, NodeType::Document, NodeType::DocumentFragment and NodeType::Text</term>
+            ///         <description>The nodeName property for these node types is a constant value; the name parameter is ignored.</description>
+            ///     </item>
+            ///     <item>
+            ///         <term>NodeType::Element</term>
+            ///         <description>The name of the XML tag, with any namespace prefix included if present.</description>
+            ///     </item>
+            ///      <item>
+            ///         <term>NodeType::Entity</term>
+            ///         <description>The name of the entity.</description>
+            ///     </item>
+            ///       <item>
+            ///         <term>NodeType::EntityReference</term>
+            ///         <description>
+            ///             The name of the entity referenced. The name does not include the leading ampersand or the trailing semicolon. The name includes the namespace, if one is present.
+            ///         </description>
+            ///     </item>
+            ///     <item>
+            ///         <term>NodeType::Notation</term>
+            ///         <description>
+            ///             The name of the notation.
+            ///         </description>
+            ///     </item>
+            ///     <item>
+            ///         <term>NodeType::ProcessingInstruction</term>
+            ///         <description>
+            ///             The target, the first token following the &lt;? characters.
+            ///         </description>
+            ///     </item>
+            /// </list>
+            /// <para>
+            /// You cannot create a node of type NodeType::Document, NodeType::DocumentType, NodeType::Entity, or NodeType::Notation.
+            /// </para>
+            /// <para>
+            /// When a node is created, it is created in the context of a namespace if one is supplied (if the namespaceURI parameter 
+            /// is supplied). If one is not supplied, the node is created in the namespace of the document. If the namespaceURI 
+            /// parameter is specified, the node is created in the context of the namespaceURI parameter with the prefix specified on 
+            /// the node name.
+            /// </para>
+            /// <para>
+            /// For node types that do not have names, the empty string, L"", should be passed as the name parameter.
+            /// </para>
+            /// <para>
+            /// For elements and entity references, when the value of the namespaceURI parameter is anything other 
+            /// than L"", and the value of the name parameter does not contain a prefix (xxx in xxx:yyy), the value 
+            /// of the namespaceURI parameter is treated as the default namespace.
+            /// </para>
+            /// <para>
+            /// Attributes cannot be scoped to a default namespace, and other elements are not qualified to a particular 
+            /// namespace; they are treated as being from the namespace defined by the document itself.
+            /// </para>
+            /// <para>
+            /// When the value of namespaceURI parameter is the empty string, L"", the node is created without a namespace. 
+            /// Creating a qualified node without specifying a nonempty namespaceURI returns an error. This member is an 
+            /// extension of the Worldwide Web Consortium (W3C) Document Object Model (DOM).
+            /// </para>
+            /// </remarks>
+            template<typename NodeT = Node>
+            NodeT CreateNode( const VARIANT& type,BSTR name,BSTR namespaceURI) const
             {
                 auto pInterface = GetInterface();
                 IXMLDOMNode *result = nullptr;
-                auto hr = pInterface->createNode(Type,name,namespaceURI,&result);
+                auto hr = pInterface->createNode(type,name,namespaceURI,&result);
                 HCC_COM_CHECK_HRESULT2( hr, pInterface );
-                return Node(result);
+                if constexpr ( std::is_same_v<std::remove_cvref_t<NodeT>, Node> )
+                {
+                    return NodeT( result );
+                }
+                else
+                {
+                    typename NodeT::InterfaceType* pNodeType = nullptr;
+                    hr = result->QueryInterface<NodeT::InterfaceType>( &pNodeType );
+                    HCC_COM_CHECK_HRESULT2( hr, result );
+                    NodeT node( pNodeType );
+                    result->Release( );
+                    return node;
+                }
             }
 
-            Node NodeFromID( BSTR idString ) const
+            template<typename NodeT = Node>
+            NodeT CreateNode( const Dom::NodeType type, BSTR name, BSTR namespaceURI ) const
+            {
+                Variant typeVar( static_cast< Int32 >( type ) );
+                NodeT CreateNode( typeVar, name, namespaceURI );
+            }
+
+
+            template<typename NodeT = Node>
+            NodeT NodeFromID( BSTR idString ) const
             {
                 auto pInterface = GetInterface();
                 IXMLDOMNode *result = nullptr;
                 auto hr = pInterface->nodeFromID(idString,&result);
                 HCC_COM_CHECK_HRESULT2( hr, pInterface );
-                return Node(result);
+                if constexpr ( std::is_same_v<std::remove_cvref_t<NodeT>, Node> )
+                {
+                    return NodeT( result );
+                }
+                else
+                {
+                    typename NodeT::InterfaceType* pNodeType = nullptr;
+                    hr = result->QueryInterface<NodeT::InterfaceType>( &pNodeType );
+                    HCC_COM_CHECK_HRESULT2( hr, result );
+                    NodeT node( pNodeType );
+                    result->Release( );
+                    return node;
+                }
             }
         
             bool Load(const VARIANT& xmlSource) const
