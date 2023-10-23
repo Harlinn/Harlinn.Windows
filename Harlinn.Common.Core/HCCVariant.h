@@ -258,10 +258,28 @@ namespace Harlinn::Common::Core
     // ----------------------------------------------------------------------
     class SysString
     {
-        BSTR bstr_;
+    public:
+        using CharType = OLECHAR;
+        using value_type = CharType;
+
+        using pointer = CharType*;
+        using const_pointer = const CharType*;
+        using reference = CharType&;
+        using const_reference = const CharType&;
+        using size_type = size_t;
+        using difference_type = ptrdiff_t;
+
+        using iterator = Internal::PointerIterator<SysString>;
+        using const_iterator = Internal::ConstPointerIterator<SysString>;
+        using reverse_iterator = std::reverse_iterator<iterator>;
+        using const_reverse_iterator = std::reverse_iterator<const_iterator>;
+
+        static constexpr size_type npos = MAXUINT64;
+    private:
+        BSTR bstr_ = nullptr;
     public:
 
-        static BSTR Copy( const BSTR bstr )
+        [[nodiscard]] static BSTR Copy( const BSTR bstr )
         {
             if ( bstr )
             {
@@ -352,6 +370,34 @@ namespace Harlinn::Common::Core
             }
         }
 
+        [[nodiscard]] constexpr const CharType* c_str( ) const noexcept
+        {
+            return bstr_ ? bstr_ : L"";
+        }
+
+        [[nodiscard]] constexpr const CharType* data( ) const noexcept
+        {
+            return bstr_;
+        }
+
+        [[nodiscard]] constexpr CharType* data( ) noexcept
+        {
+            return bstr_;
+        }
+
+        [[nodiscard]] size_t Hash( ) const noexcept
+        {
+            if ( bstr_ )
+            {
+                return XXH3_64bits( bstr_, length( ) * sizeof( CharType ) );
+            }
+            else
+            {
+                return 0;
+            }
+        }
+
+
 
         SysString& operator = ( const SysString& other )
         {
@@ -379,6 +425,85 @@ namespace Harlinn::Common::Core
                 other.bstr_ = nullptr;
             }
             return *this;
+        }
+
+        [[nodiscard]] constexpr iterator begin( ) noexcept
+        {
+            return bstr_;
+        }
+
+        [[nodiscard]] constexpr iterator end( ) noexcept
+        {
+            return bstr_ + length();
+        }
+
+        [[nodiscard]] constexpr const_iterator begin( ) const noexcept
+        {
+            return bstr_;
+        }
+
+        [[nodiscard]] constexpr const_iterator end( ) const noexcept
+        {
+            return bstr_ + length( );
+        }
+
+        [[nodiscard]] constexpr const_iterator cbegin( ) const noexcept
+        {
+            return begin( );
+        }
+
+        [[nodiscard]] constexpr const_iterator cend( ) const noexcept
+        {
+            return end( );
+        }
+
+        [[nodiscard]] constexpr reverse_iterator rbegin( ) noexcept
+        {
+            return reverse_iterator( end( ) );
+        }
+
+        [[nodiscard]] constexpr reverse_iterator rend( ) noexcept
+        {
+            return reverse_iterator( begin( ) );
+        }
+
+        [[nodiscard]] constexpr const_reverse_iterator rbegin( ) const noexcept
+        {
+            return const_reverse_iterator( end( ) );
+        }
+
+        [[nodiscard]] constexpr const_reverse_iterator rend( ) const noexcept
+        {
+            return const_reverse_iterator( begin( ) );
+        }
+
+        [[nodiscard]] constexpr const_reverse_iterator crbegin( ) const noexcept
+        {
+            return rbegin( );
+        }
+
+        [[nodiscard]] constexpr const_reverse_iterator crend( ) const noexcept
+        {
+            return rend( );
+        }
+
+
+
+        [[nodiscard]] constexpr const CharType front( ) const
+        {
+            return *begin( );
+        }
+        [[nodiscard]] constexpr CharType front( )
+        {
+            return *begin( );
+        }
+        [[nodiscard]] constexpr CharType back( ) const
+        {
+            return *( end( ) - 1 );
+        }
+        [[nodiscard]] constexpr CharType back( )
+        {
+            return *( end( ) - 1 );
         }
 
 
@@ -455,6 +580,32 @@ namespace Harlinn::Common::Core
         {
             return !( *this == other );
         }
+
+        bool operator == ( const std::wstring_view& other ) const
+        {
+            if ( bstr_ != other.data() )
+            {
+                if ( bstr_ && ( other.empty() == false ) )
+                {
+                    auto len = SysStringLen( bstr_ );
+                    auto lenOther = other.size();
+                    if ( len == lenOther )
+                    {
+                        return wmemcmp( bstr_, other.data(), len ) == 0;
+                    }
+                }
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+        bool operator != ( const std::wstring_view& other ) const
+        {
+            return !( *this == other );
+        }
+
 
         bool empty( ) const
         {
@@ -595,6 +746,46 @@ namespace Harlinn::Common::Core
             return CompareTo( other ) >= 0;
         }
 
+        int CompareTo( const std::wstring_view& other ) const
+        {
+            if ( bstr_ != other )
+            {
+                auto len = length( );
+                auto otherLen = other.size( );
+                auto maxCompareLength = std::min( len, otherLen );
+                auto result = wmemcmp( bstr_, other.data( ), maxCompareLength );
+                if ( result == 0 )
+                {
+                    if ( len == otherLen )
+                    {
+                        return 0;
+                    }
+                    return len < otherLen ? -1 : 1;
+                }
+                return result;
+            }
+            else
+            {
+                return 0;
+            }
+        }
+        bool operator < ( const std::wstring_view& other ) const
+        {
+            return CompareTo( other ) < 0;
+        }
+        bool operator <= ( const std::wstring_view& other ) const
+        {
+            return CompareTo( other ) <= 0;
+        }
+        bool operator > ( const std::wstring_view& other ) const
+        {
+            return CompareTo( other ) > 0;
+        }
+        bool operator >= ( const std::wstring_view& other ) const
+        {
+            return CompareTo( other ) >= 0;
+        }
+
 
 
         SysString& Attach( BSTR other ) noexcept
@@ -615,7 +806,7 @@ namespace Harlinn::Common::Core
             return bstr_ != nullptr;
         }
 
-        BSTR Detach( ) noexcept
+        [[nodiscard]] BSTR Detach( ) noexcept
         {
             auto result = bstr_;
             bstr_ = nullptr;
@@ -624,21 +815,58 @@ namespace Harlinn::Common::Core
 
 
 
-        BSTR Copy( ) const
+        [[nodiscard]] BSTR Copy( ) const
         {
             return Copy( bstr_ );
         }
 
-
-        const BSTR c_str( ) const noexcept
+        SysString clone() const
         {
-            return bstr_;
+            return SysString( bstr_ );
         }
 
-        const BSTR data( ) const noexcept
+        void resize( size_type newLength )
         {
-            return bstr_;
+            if ( newLength )
+            {
+                if ( bstr_ )
+                {
+                    auto size = size_t( SysStringLen( bstr_ ) );
+                    if ( newLength > size )
+                    {
+                        auto tmp = SysAllocStringByteLen( nullptr, static_cast< UInt32 >( newLength * sizeof( CharType ) ) );
+                        if ( tmp == nullptr )
+                        {
+                            CheckHRESULT( E_OUTOFMEMORY );
+                        }
+                        wmemcpy_s( tmp, newLength, bstr_, size );
+                        SysFreeString( bstr_ );
+                        bstr_ = tmp;
+                    }
+                    else if ( newLength < size )
+                    {
+                        auto tmp = SysAllocStringLen( bstr_, static_cast< UInt32 >( newLength ) );
+                        if ( tmp == nullptr )
+                        {
+                            CheckHRESULT( E_OUTOFMEMORY );
+                        }
+                        SysFreeString( bstr_ );
+                        bstr_ = tmp;
+                    }
+                }
+                else
+                {
+                    bstr_ = SysAllocStringByteLen( nullptr, static_cast< UInt32 >( newLength * sizeof( CharType ) ) );
+                }
+            }
+            else if ( bstr_ )
+            {
+                auto tmp = bstr_;
+                bstr_ = nullptr;
+                SysFreeString( tmp );
+            }
         }
+
 
         size_t length( ) const noexcept
         {
@@ -675,7 +903,7 @@ namespace Harlinn::Common::Core
             return bstr_[index];
         }
 
-        WideString ToString( )
+        WideString ToWideString( ) const
         {
             if ( bstr_ )
             {
@@ -684,6 +912,26 @@ namespace Harlinn::Common::Core
             }
             return {};
         }
+
+        WideString ToString( ) const
+        {
+            return ToWideString( );
+        }
+
+        AnsiString ToAnsiString( ) const
+        {
+            if ( bstr_ )
+            {
+                auto size = size_t( SysStringLen( bstr_ ) );
+                AnsiString result;
+                Core::ToAnsiString( reinterpret_cast<const wchar_t*>( bstr_ ), size, result );
+                return result;
+            }
+            return {};
+        }
+
+
+
 
     };
 
@@ -700,7 +948,7 @@ namespace Harlinn::Common::Core
 
         ~AttachedSysString( )
         {
-            Detach( );
+            (void)Detach( );
         }
 
     };
@@ -3753,6 +4001,44 @@ namespace Harlinn::Common::Core
     static_assert(sizeof(Variant) == sizeof(PropertyVariant));
 
 
+
+}
+
+namespace std
+{
+    template<> struct hash<Harlinn::Common::Core::SysString>
+    {
+        std::size_t operator()( const Harlinn::Common::Core::SysString& s ) const noexcept
+        {
+            return s.Hash( );
+        }
+    };
+
+    template<typename CharT>
+    struct formatter<Harlinn::Common::Core::SysString, CharT>
+    {
+        formatter<std::basic_string_view<CharT>, CharT> viewFormatter;
+        constexpr auto parse( basic_format_parse_context<CharT>& ctx )
+        {
+            return viewFormatter.parse( ctx );
+        }
+
+        template <typename FormatContext>
+        auto format( const Harlinn::Common::Core::SysString& v, FormatContext& ctx )
+        {
+            if constexpr ( sizeof( CharT ) == 1 )
+            {
+                auto str = v.ToAnsiString( );
+                basic_string_view<CharT> view( str.data( ), str.size( ) );
+                return viewFormatter.format( view, ctx );
+            }
+            else
+            {
+                basic_string_view<CharT> view( v.data( ), v.size( ) );
+                return viewFormatter.format( view, ctx );
+            }
+        }
+    };
 
 }
 

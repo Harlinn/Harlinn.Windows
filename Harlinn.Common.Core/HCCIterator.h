@@ -277,5 +277,157 @@ namespace std
     };
 }
 
+namespace Harlinn::Common::Core::Internal
+{
+
+    template<typename CollectionT, typename ValueT = typename CollectionT::value_type, typename ReferenceT = std::reference_wrapper<ValueT>>
+    ReferenceT GetCollectionElement( const CollectionT* collection, size_t index )
+    {
+        return (*collection )[ index ];
+    }
+
+    template<typename CollectionT, typename ValueT = typename CollectionT::value_type, typename ReferenceT = std::reference_wrapper<ValueT> >
+    class IndexIterator
+    {
+    public:
+        using CollectionType = CollectionT;
+        using ValueType = ValueT;
+        using iterator_category = std::random_access_iterator_tag;
+        using value_type = ValueT;
+        using difference_type = SSIZE_T;
+        using pointer = const value_type*;
+        using reference = const value_type&;
+    private:
+        CollectionType* collection_;
+        size_t index_;
+        size_t size_;
+        using ReferenceType = ReferenceT;
+        ReferenceType valueReference_;
+    public:
+        explicit IndexIterator( )
+            : collection_( nullptr ), index_( 0 ), size_( 0 )
+        {
+        }
+
+        explicit IndexIterator( CollectionType* collection )
+            : collection_( collection ), index_( 0 ), size_( 0 )
+        {
+            if ( collection_ )
+            {
+                size_ = collection_->size( );
+                if ( size_ )
+                {
+                    valueReference_ = (*collection_)[0];
+                }
+            }
+        }
+
+        explicit IndexIterator( CollectionType* collection, bool end )
+            : collection_( collection ), index_( 0 ), size_( 0 )
+        {
+            if ( collection_ )
+            {
+                size_ = collection_->size( );
+                index_ = size_;
+            }
+        }
+    private:
+        size_t size( ) const
+        {
+            return std::size( *collection_ );
+        }
+    public:
+
+        reference operator*( ) const
+        {
+            return valueReference_;
+        }
+        pointer operator->( ) const
+        {
+            return &valueReference_;
+        }
+
+        IndexIterator& operator++( )
+        {
+            ++index_;
+            valueReference_ = ( *collection_ )[ index_ ];
+            return *this;
+        }
+
+        IndexIterator operator++( int )
+        {
+            auto tmp = *this;
+            ++*this;
+            return tmp;
+        }
+        IndexIterator& operator--( )
+        {
+            --index_;
+            valueReference_ = ( *collection_ )[ index_ ];
+            return *this;
+        }
+
+        IndexIterator operator--( int )
+        {
+            auto tmp = *this;
+            --*this;
+            return tmp;
+        }
+
+        IndexIterator& operator += ( const difference_type offset )
+        {
+            index_ += static_cast< size_t >( offset );
+            valueReference_ = ( *collection_ )[ index_ ];
+            return *this;
+        }
+
+        [[nodiscard]] IndexIterator operator+( const difference_type offset ) const
+        {
+            IndexIterator tmp = *this;
+            tmp += offset;
+            return tmp;
+        }
+
+        IndexIterator& operator-=( const difference_type offset )
+        {
+            index_ -= static_cast< size_t >( offset );
+            valueReference_ = ( *collection_ )[ index_ ];
+            return *this;
+        }
+
+        [[nodiscard]] IndexIterator operator-( const difference_type offset ) const
+        {
+            IndexIterator tmp = *this;
+            tmp -= offset;
+            return tmp;
+        }
+
+        constexpr bool operator == ( const IndexIterator& other ) const noexcept
+        {
+            return index_ == other.index_;
+        }
+        constexpr bool operator != ( const IndexIterator& other ) const noexcept
+        {
+            return index_ != other.index_;
+        }
+        constexpr bool operator < ( const IndexIterator& other ) const noexcept
+        {
+            return index_ < other.index_;
+        }
+        constexpr bool operator <= ( const IndexIterator& other ) const noexcept
+        {
+            return index_ <= other.index_;
+        }
+        constexpr bool operator > ( const IndexIterator& other ) const noexcept
+        {
+            return index_ > other.index_;
+        }
+        constexpr bool operator >= ( const IndexIterator& other ) const noexcept
+        {
+            return index_ >= other.index_;
+        }
+    };
+}
+
 
 #endif

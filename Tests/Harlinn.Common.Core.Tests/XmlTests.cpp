@@ -126,14 +126,18 @@ BOOST_AUTO_TEST_CASE( LoadTest1 )
 
     auto documentElement = document.DocumentElement( );
     auto list = documentElement.ElementsByTagName( L"StorageEngine" );
+    BOOST_CHECK( list.size( ) > 0 );
     if ( list.size( ) )
     {
-        Dom::Element element = list[0];
+        auto element = list[0];
 
         auto name = element.Read<WideString>( L"Name" );
+        BOOST_CHECK( name.size( ) > 0 );
         auto createPathIfNotExist = element.Read<bool>( L"CreatePathIfNotExist" );
-        auto exceptionAction = element.Read<WideString>( L"ExceptionAction" );
-        
+        BOOST_CHECK( createPathIfNotExist );
+        auto exceptionAction = element.Read<Ese::ExceptionAction>( L"ExceptionAction" );
+        BOOST_CHECK( exceptionAction == Ese::ExceptionAction::None );
+
     }
 
 

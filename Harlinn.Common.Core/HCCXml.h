@@ -76,6 +76,9 @@ namespace Harlinn::Common::Core::Xml
         class NamedNodeMap;
         class Document;
 
+        /// <summary>
+        /// Represents a single node in the XML document.
+        /// </summary>
         class Node : public Dispatch
         {
         public:
@@ -90,6 +93,13 @@ namespace Harlinn::Common::Core::Xml
                 HCC_COM_CHECK_HRESULT2( hr, pInterface );
             }
 
+            /// <summary>
+            /// Returns the qualified name for attribute, document type, element, 
+            /// entity, or notation nodes. Returns a fixed string for all other node types.
+            /// </summary>
+            /// <returns>
+            /// Node name, which varies depending on the node type.
+            /// </returns>
             XmlString NodeName( ) const
             {
                 BSTR result = 0;
@@ -104,6 +114,12 @@ namespace Harlinn::Common::Core::Xml
                 HCC_COM_CHECK_HRESULT2( hr, pInterface );
             }
 
+            /// <summary>
+            /// Retrieves the text associated with the node.
+            /// </summary>
+            /// <returns>
+            /// Node value; depends on the NodeType property.
+            /// </returns>
             Variant NodeValue( ) const
             {
                 Variant result;
@@ -390,22 +406,20 @@ namespace Harlinn::Common::Core::Xml
                 HCC_COM_CHECK_HRESULT2( hr, pInterface );
             }
 
-            void SetText( const XmlString& text ) const
-            {
-                auto pInterface = GetInterface( );
-                auto hr = pInterface->put_text( text.c_str() );
-                HCC_COM_CHECK_HRESULT2( hr, pInterface );
-            }
-
             void SetText( const wchar_t* text ) const
             {
-                XmlString xmlString( text );
-                SetText( xmlString );
+                SetText( ( BSTR )text );
             }
+
+            void SetText( const XmlString& text ) const
+            {
+                SetText( text.c_str( ) );
+            }
+
+            
             void SetText( const WideString& text ) const
             {
-                XmlString xmlString( text );
-                SetText( xmlString );
+                SetText( text.c_str() );
             }
             void SetText( const AnsiString& text ) const
             {
@@ -1184,8 +1198,69 @@ namespace Harlinn::Common::Core::Xml
                 HCC_COM_CHECK_HRESULT2( hr, pInterface );
                 return NamedNodeMap<NodeT>(result);
             }
-        
         };
+
+        class Notation : public Node
+        {
+        public:
+            typedef Node Base;
+            HCC_COM_STANDARD_METHODS_IMPL( Notation, Node, IXMLDOMNotation, IXMLDOMNode )
+
+            Variant PublicId( ) const
+            {
+                auto pInterface = GetInterface( );
+                Variant result;
+                auto hr = pInterface->get_publicId( &result );
+                HCC_COM_CHECK_HRESULT2( hr, pInterface );
+                return result;
+            }
+
+            Variant SystemId( ) const
+            {
+                auto pInterface = GetInterface( );
+                Variant result;
+                auto hr = pInterface->get_systemId( &result );
+                HCC_COM_CHECK_HRESULT2( hr, pInterface );
+                return result;
+            }
+        };
+
+        class Entity : public Node
+        {
+        public:
+            typedef Node Base;
+            HCC_COM_STANDARD_METHODS_IMPL( Entity, Node, IXMLDOMEntity, IXMLDOMNode )
+
+                Variant PublicId( ) const
+            {
+                auto pInterface = GetInterface( );
+                Variant result;
+                auto hr = pInterface->get_publicId( &result );
+                HCC_COM_CHECK_HRESULT2( hr, pInterface );
+                return result;
+            }
+
+            Variant SystemId( ) const
+            {
+                auto pInterface = GetInterface( );
+                Variant result;
+                auto hr = pInterface->get_systemId( &result );
+                HCC_COM_CHECK_HRESULT2( hr, pInterface );
+                return result;
+            }
+
+            XmlString NotationName( ) const
+            {
+                auto pInterface = GetInterface( );
+                BSTR result = nullptr;
+                auto hr = pInterface->get_notationName( &result );
+                HCC_COM_CHECK_HRESULT2( hr, pInterface );
+                return XmlString( result, true );
+            }
+
+        };
+
+
 
 
         class Attribute : public Node
@@ -1472,7 +1547,7 @@ namespace Harlinn::Common::Core::Xml
                 return {};
             }
 
-
+            
             template<typename T>
                 requires std::is_enum_v<T> &&
                 requires( T& value, const WideString& str)
@@ -1485,7 +1560,7 @@ namespace Harlinn::Common::Core::Xml
                 if ( TryGetAttribute( attributeName, variant ) )
                 {
                     auto str = variant.As<WideString>( );
-                    typename T::value_type value;
+                    T value;
                     if ( TryParse( str, value ) )
                     {
                         return value;
@@ -1493,6 +1568,7 @@ namespace Harlinn::Common::Core::Xml
                 }
                 throw ArgumentException( L"attributeName" );
             }
+            
 
             template<typename T, SimpleWideStringLike StringT>
                 requires std::is_enum_v<T>&&
@@ -1505,8 +1581,8 @@ namespace Harlinn::Common::Core::Xml
                 Variant variant;
                 if ( TryGetAttribute( attributeName.c_str(), variant ) )
                 {
-                    auto str = variant.As<WideString>( );
-                    typename T::value_type value;
+                    auto str = variant.As<StringT>( );
+                    T value;
                     if ( TryParse( str, value ) )
                     {
                         return value;
@@ -1802,6 +1878,65 @@ namespace Harlinn::Common::Core::Xml
         
         };
 
+        class ParseErrorCollection;
+        class ParseError2 : public ParseError
+        {
+        public:
+            using Base = ParseError;
+            HCC_COM_STANDARD_METHODS_IMPL( ParseError2, ParseError, IXMLDOMParseError2, IXMLDOMParseError )
+
+            XmlString ErrorXPath( ) const
+            {
+                auto pInterface = GetInterface( );
+                BSTR result = 0;
+                auto hr = pInterface->get_errorXPath( &result );
+                HCC_COM_CHECK_HRESULT2( hr, pInterface );
+                return XmlString( result, true );
+            }
+
+            inline ParseErrorCollection AllErrors( ) const;
+
+            XmlString ErrorParameters( size_t index ) const
+            {
+                auto pInterface = GetInterface( );
+                BSTR result = 0;
+                auto hr = pInterface->errorParameters( static_cast<long>( index ), &result );
+                HCC_COM_CHECK_HRESULT2( hr, pInterface );
+                return XmlString( result, true );
+            }
+
+            size_t ErrorParametersCount( ) const
+            {
+                auto pInterface = GetInterface( );
+                long result = 0;
+                auto hr = pInterface->get_errorParametersCount( &result );
+                HCC_COM_CHECK_HRESULT2( hr, pInterface );
+                return static_cast<size_t>( result );
+            }
+
+
+        };
+
+
+        class ParseErrorCollection : public Dispatch
+        {
+        public:
+            typedef Dispatch Base;
+            HCC_COM_STANDARD_METHODS_IMPL( ParseErrorCollection, Dispatch, IXMLDOMParseErrorCollection, IDispatch )
+
+                
+        };
+
+        inline ParseErrorCollection ParseError2::AllErrors( ) const
+        {
+            auto pInterface = GetInterface( );
+            IXMLDOMParseErrorCollection* result = nullptr;
+            auto hr = pInterface->get_allErrors( &result );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+            return ParseErrorCollection( result );
+        }
+        
+
 
         class SchemaCollection : public Dispatch
         {
@@ -1891,11 +2026,18 @@ namespace Harlinn::Common::Core::Xml
             typedef Node Base;
             HCC_COM_STANDARD_METHODS_IMPL(Document, Node,IXMLDOMDocument3,IXMLDOMNode)
 
-
-            explicit Document( const wchar_t* xml, bool validateOnParse = false, bool resolveExternals = false, bool preserveWhiteSpace = false, bool async = false )
+            explicit Document( bool freeThreaded, const wchar_t* xml, bool validateOnParse = false, bool resolveExternals = false, bool preserveWhiteSpace = false, bool async = false )
             {
                 IXMLDOMDocument3* pInterface = nullptr;
-                HRESULT hr = CoCreateInstance( __uuidof( DOMDocument60 ), NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS( &pInterface ) );
+                HRESULT hr = 0;
+                if ( freeThreaded )
+                {
+                    hr = CoCreateInstance( __uuidof( FreeThreadedDOMDocument60 ), NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS( &pInterface ) );
+                }
+                else
+                {
+                    hr = CoCreateInstance( __uuidof( DOMDocument60 ), NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS( &pInterface ) );
+                }
                 HCC_COM_CHECK_HRESULT2( hr, pInterface );
                 ResetPtr( pInterface );
                 SetValidateOnParse( validateOnParse );
@@ -1905,18 +2047,36 @@ namespace Harlinn::Common::Core::Xml
                 LoadXML( xml );
             }
 
+            explicit Document( const wchar_t* xml, bool validateOnParse = false, bool resolveExternals = false, bool preserveWhiteSpace = false, bool async = false )
+                : Document( false, xml, validateOnParse, resolveExternals, preserveWhiteSpace, async )
+            {
+            }
+
+
             template<WideStringLike StringT>
             explicit Document( const StringT& xml, bool validateOnParse = false, bool resolveExternals = false, bool preserveWhiteSpace = false, bool async = false )
                 : Document( xml.c_str(), validateOnParse, resolveExternals, preserveWhiteSpace, async )
             {
             }
 
+            template<WideStringLike StringT>
+            explicit Document( bool freeThreaded, const StringT& xml, bool validateOnParse = false, bool resolveExternals = false, bool preserveWhiteSpace = false, bool async = false )
+                : Document( freeThreaded, xml.c_str( ), validateOnParse, resolveExternals, preserveWhiteSpace, async )
+            {
+            }
 
-
-            static Document Create( )
+            static Document Create( bool freeThreaded = false )
             {
                 IXMLDOMDocument3* pInterface = nullptr;
-                HRESULT hr = CoCreateInstance( __uuidof( DOMDocument60 ), NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS( &pInterface ) );
+                HRESULT hr = 0;
+                if ( freeThreaded )
+                {
+                    hr = CoCreateInstance( __uuidof( FreeThreadedDOMDocument60 ), NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS( &pInterface ) );
+                }
+                else
+                {
+                    hr = CoCreateInstance( __uuidof( DOMDocument60 ), NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS( &pInterface ) );
+                }
                 HCC_COM_CHECK_HRESULT2( hr, pInterface );
                 return Document( pInterface );
             }
@@ -2431,12 +2591,98 @@ namespace Harlinn::Common::Core::Xml
 
             return Document(pDocument3);
         }
-
-
-
-
-
     }
+
+    class XTLRuntime : public Dom::Node
+    {
+    public:
+        using XmlString = Dom::XmlString;
+        typedef Dom::Node Base;
+        HCC_COM_STANDARD_METHODS_IMPL( XTLRuntime, Node, IXTLRuntime, IXMLDOMNode )
+
+
+            Int32 UniqueID( IXMLDOMNode* node ) const
+        {
+            auto pInterface = GetInterface( );
+            long result = 0;
+            auto hr = pInterface->uniqueID( node, &result );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+            return result;
+        }
+
+        Int32 Depth( IXMLDOMNode* node ) const
+        {
+            auto pInterface = GetInterface( );
+            long result = 0;
+            auto hr = pInterface->depth( node, &result );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+            return result;
+        }
+
+        Int32 ChildNumber( IXMLDOMNode* node ) const
+        {
+            auto pInterface = GetInterface( );
+            long result = 0;
+            auto hr = pInterface->childNumber( node, &result );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+            return result;
+        }
+
+        Int32 AncestorChildNumber( BSTR nodeName, IXMLDOMNode* node ) const
+        {
+            auto pInterface = GetInterface( );
+            long result = 0;
+            auto hr = pInterface->ancestorChildNumber( nodeName, node, &result );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+            return result;
+        }
+
+        Int32 AbsoluteChildNumber( IXMLDOMNode* node ) const
+        {
+            auto pInterface = GetInterface( );
+            long result = 0;
+            auto hr = pInterface->absoluteChildNumber( node, &result );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+            return result;
+        }
+
+        XmlString FormatIndex( Int32 index, BSTR format ) const
+        {
+            auto pInterface = GetInterface( );
+            BSTR result = nullptr;
+            auto hr = pInterface->formatIndex( index, format, &result );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+            return XmlString( result, true );
+        }
+
+        XmlString FormatNumber( double number, BSTR format ) const
+        {
+            auto pInterface = GetInterface( );
+            BSTR result = nullptr;
+            auto hr = pInterface->formatNumber( number, format, &result );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+            return XmlString( result, true );
+        }
+
+        XmlString FormatDate( const VARIANT& date, BSTR format, const VARIANT& destLocale ) const
+        {
+            auto pInterface = GetInterface( );
+            BSTR result = nullptr;
+            auto hr = pInterface->formatDate( date, format, destLocale, &result );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+            return XmlString( result, true );
+        }
+
+        XmlString FormatTime( const VARIANT& date, BSTR format, const VARIANT& destLocale ) const
+        {
+            auto pInterface = GetInterface( );
+            BSTR result = nullptr;
+            auto hr = pInterface->formatTime( date, format, destLocale, &result );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+            return XmlString( result, true );
+        }
+    };
+
 
     namespace Sax
     {
