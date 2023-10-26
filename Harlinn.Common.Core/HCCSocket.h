@@ -1808,7 +1808,11 @@ namespace Harlinn::Common::Core::IO::Sockets
             return result;
         }
     public:
-
+        [[nodiscard]]
+        SOCKET Detach( )
+        {
+            return Release( );
+        }
 
         /// <summary>
         /// No copy assignment allowed.
