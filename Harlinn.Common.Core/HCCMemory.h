@@ -138,11 +138,11 @@ namespace Harlinn::Common::Core
     private:
         InterlockedLinkedList freeList_;
         
-        std::atomic_size_t freeCount_;
-        std::atomic_size_t mallocCalls_;
-        std::atomic_size_t freeCalls_;
-        std::atomic_size_t alignedMallocCalls_;
-        std::atomic_size_t alignedFreeCalls_;
+        std::atomic_size_t freeCount_{};
+        std::atomic_size_t mallocCalls_{};
+        std::atomic_size_t freeCalls_{};
+        std::atomic_size_t alignedMallocCalls_{};
+        std::atomic_size_t alignedFreeCalls_{};
 
     public:
         FixedSizeMemoryManager( )

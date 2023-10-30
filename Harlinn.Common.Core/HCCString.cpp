@@ -23,12 +23,14 @@ namespace Harlinn::Common::Core
     {
         namespace
         {
-            constexpr size_t MemoryManagerBlockSize = AnsiString::AllocationGranularity;
-            FixedSizeMemoryManager<MemoryManagerBlockSize, 20480> fixedSizeMemoryManager;
+            //constexpr size_t MemoryManagerBlockSize = AnsiString::AllocationGranularity;
+            //FixedSizeMemoryManager<MemoryManagerBlockSize, 20480> fixedSizeMemoryManager;
         }
 
         HCC_EXPORT char* AllocateBytes( size_t count )
         {
+            return ( char* )malloc( count );
+            /*
             if ( count <= MemoryManagerBlockSize )
             {
                 return (char*)fixedSizeMemoryManager.Malloc( );
@@ -37,9 +39,12 @@ namespace Harlinn::Common::Core
             {
                 return (char*)malloc( count );
             }
+            */
         }
         HCC_EXPORT void FreeBytes( char* bytes, size_t size )
         {
+            free( bytes );
+            /*
             if ( size <= MemoryManagerBlockSize )
             {
                 fixedSizeMemoryManager.Free( bytes );
@@ -48,11 +53,12 @@ namespace Harlinn::Common::Core
             {
                 free( bytes );
             }
+            */
         }
 
         HCC_EXPORT void ResetStringFixedSizeMemoryManager( )
         {
-            fixedSizeMemoryManager.Reset( );
+            //fixedSizeMemoryManager.Reset( );
         }
 
         WideString From( const char* text, size_t textLength, unsigned codePage, unsigned flags )
