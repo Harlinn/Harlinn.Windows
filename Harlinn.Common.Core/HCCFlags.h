@@ -292,12 +292,10 @@ namespace Harlinn::Common::Core
         }
 
     };
-
-
-    
-
-
 }
+
+
+
 
 
 #endif

@@ -4141,6 +4141,23 @@ namespace Harlinn::Common::Core
             return false;
         }
 
+        [[nodiscard]] bool IsEmptyOrWhiteSpace( ) const
+        {
+            if ( data_ )
+            {
+                for ( size_t i = 0; i < data_->size_; ++i )
+                {
+                    if ( Internal::IsWhiteSpace( data_->buffer_[ i ] ) == 0 )
+                    {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+
+
+
         [[nodiscard]] bool StartsWith( const CharType ch ) const
         {
             if ( data_ )

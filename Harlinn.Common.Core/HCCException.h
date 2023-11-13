@@ -346,41 +346,41 @@ exp explicit className (); \
 exp className (const className & theException);  \
 exp explicit className (const char* theMessage);  \
 exp explicit className (const wchar_t* theMessage);  \
-exp explicit className (const Common:: AnsiString& theMessage);  \
-exp explicit className (const Common:: WideString& theMessage);  \
+exp explicit className (const Harlinn::Common::Core:: AnsiString& theMessage);  \
+exp explicit className (const Harlinn::Common::Core:: WideString& theMessage);  \
 exp className ( long long theCode, const char* theMessage ); \
 exp className ( long long theCode, const wchar_t* theMessage ); \
-exp className ( long long theCode, const Common:: AnsiString& theMessage );  \
-exp className ( long long theCode, const Common:: WideString& theMessage );  \
+exp className ( long long theCode, const Harlinn::Common::Core:: AnsiString& theMessage );  \
+exp className ( long long theCode, const Harlinn::Common::Core:: WideString& theMessage );  \
 exp className ( HRESULT hResult, long long theCode, const char* theMessage );  \
 exp className ( HRESULT hResult, long long theCode, const wchar_t* theMessage );  \
-exp className ( HRESULT hResult, long long theCode, const Common:: AnsiString& theMessage );  \
-exp className ( HRESULT hResult, long long theCode, const Common:: WideString& theMessage );  \
-exp className (const char* theMessage, const Common:: Exception& theInnerException);  \
-exp className (const wchar_t* theMessage, const Common:: Exception& theInnerException);  \
-exp explicit className (const Common:: ExceptionLocation& theLocation ); \
-exp className (const Common:: ExceptionLocation& theLocation, const char* theMessage);  \
-exp className (const Common:: ExceptionLocation& theLocation, const wchar_t* theMessage);  \
-exp className (const Common:: ExceptionLocation& theLocation, const Common:: AnsiString& theMessage);  \
-exp className (const Common:: ExceptionLocation& theLocation, const Common:: WideString& theMessage);  \
-exp className ( const Common:: ExceptionLocation& theLocation, long long theCode, const char* theMessage ); \
-exp className ( const Common:: ExceptionLocation& theLocation, long long theCode, const wchar_t* theMessage ); \
-exp className ( const Common:: ExceptionLocation& theLocation, long long theCode, const Common:: AnsiString& theMessage );  \
-exp className ( const Common:: ExceptionLocation& theLocation, long long theCode, const Common:: WideString& theMessage );  \
-exp className ( const Common:: ExceptionLocation& theLocation, HRESULT hResult, long long theCode, const char* theMessage );  \
-exp className ( const Common:: ExceptionLocation& theLocation, HRESULT hResult, long long theCode, const wchar_t* theMessage );  \
-exp className ( const Common:: ExceptionLocation& theLocation, HRESULT hResult, long long theCode, const Common:: AnsiString& theMessage );  \
-exp className ( const Common:: ExceptionLocation& theLocation, HRESULT hResult, long long theCode, const Common:: WideString& theMessage );  \
-exp className (const Common:: ExceptionLocation& theLocation, const char* theMessage, const Exception& theInnerException);  \
-exp className (const Common:: ExceptionLocation& theLocation, const wchar_t* theMessage, const Exception& theInnerException);  \
+exp className ( HRESULT hResult, long long theCode, const Harlinn::Common::Core:: AnsiString& theMessage );  \
+exp className ( HRESULT hResult, long long theCode, const Harlinn::Common::Core:: WideString& theMessage );  \
+exp className (const char* theMessage, const Harlinn::Common::Core:: Exception& theInnerException);  \
+exp className (const wchar_t* theMessage, const Harlinn::Common::Core:: Exception& theInnerException);  \
+exp explicit className (const Harlinn::Common::Core:: ExceptionLocation& theLocation ); \
+exp className (const Harlinn::Common::Core:: ExceptionLocation& theLocation, const char* theMessage);  \
+exp className (const Harlinn::Common::Core:: ExceptionLocation& theLocation, const wchar_t* theMessage);  \
+exp className (const Harlinn::Common::Core:: ExceptionLocation& theLocation, const Harlinn::Common::Core:: AnsiString& theMessage);  \
+exp className (const Harlinn::Common::Core:: ExceptionLocation& theLocation, const Harlinn::Common::Core:: WideString& theMessage);  \
+exp className ( const Harlinn::Common::Core:: ExceptionLocation& theLocation, long long theCode, const char* theMessage ); \
+exp className ( const Harlinn::Common::Core:: ExceptionLocation& theLocation, long long theCode, const wchar_t* theMessage ); \
+exp className ( const Harlinn::Common::Core:: ExceptionLocation& theLocation, long long theCode, const Harlinn::Common::Core:: AnsiString& theMessage );  \
+exp className ( const Harlinn::Common::Core:: ExceptionLocation& theLocation, long long theCode, const Harlinn::Common::Core:: WideString& theMessage );  \
+exp className ( const Harlinn::Common::Core:: ExceptionLocation& theLocation, HRESULT hResult, long long theCode, const char* theMessage );  \
+exp className ( const Harlinn::Common::Core:: ExceptionLocation& theLocation, HRESULT hResult, long long theCode, const wchar_t* theMessage );  \
+exp className ( const Harlinn::Common::Core:: ExceptionLocation& theLocation, HRESULT hResult, long long theCode, const Harlinn::Common::Core:: AnsiString& theMessage );  \
+exp className ( const Harlinn::Common::Core:: ExceptionLocation& theLocation, HRESULT hResult, long long theCode, const Harlinn::Common::Core:: WideString& theMessage );  \
+exp className (const Harlinn::Common::Core:: ExceptionLocation& theLocation, const char* theMessage, const Harlinn::Common::Core::Exception& theInnerException);  \
+exp className (const Harlinn::Common::Core:: ExceptionLocation& theLocation, const wchar_t* theMessage, const Harlinn::Common::Core::Exception& theInnerException);  \
 protected: \
-bool _IsA( Common:: ExceptionType theKind ) const \
+bool _IsA( Harlinn::Common::Core:: ExceptionType theKind ) const \
 {  \
     return theKind == KIND || Base::_IsA( theKind );  \
 } \
 public: \
-exp virtual bool IsA( Common:: ExceptionType theKind ) const override; \
-exp virtual Common:: ExceptionType Kind( ) const override; \
+exp virtual bool IsA( Harlinn::Common::Core:: ExceptionType theKind ) const override; \
+exp virtual Harlinn::Common::Core:: ExceptionType Kind( ) const override; \
 protected: \
 exp virtual std::unique_ptr<Harlinn::Common::Core::Exception> CreateClone( ) const override; \
 public: \
