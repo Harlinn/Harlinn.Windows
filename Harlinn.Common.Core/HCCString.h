@@ -12,262 +12,28 @@
 
 namespace Harlinn::Common::Core
 {
-#pragma pack(push,1)
-    template <typename SizeT,typename CharT, size_t maxSize, bool zeroTerminated >
-    class BasicFixedString
-    {
-    public:
-        using SizeType = SizeT;
-        using CharType = CharT;
-        static constexpr size_t MaxSize = maxSize;
-        static constexpr bool ZeroTerminated = zeroTerminated;
-        static constexpr size_t ArraySize = maxSize + (ZeroTerminated ? 1 : 0);
-        using ArrayType = std::array<CharType, ArraySize>;
-        using ViewType = std::basic_string_view<CharType>;
-        using SpanType = std::span<CharType>;
-
-        using iterator = typename ArrayType::iterator;
-        using const_iterator = typename ArrayType::const_iterator;
-    private:
-        SizeType size_;
-        ArrayType data_;
-    public:
-        constexpr BasicFixedString() noexcept
-            : size_( 0 ), data_{}
-        {}
-
-        constexpr BasicFixedString(const CharType* str, size_t strLength )
-            : size_( static_cast<SizeType>(strLength) ), data_{}
-        {
-            std::copy( str, str + strLength, data_.begin( ) );
-        }
-
-        BasicFixedString( const CharType* str )
-            : BasicFixedString( str, LengthOf( str ) )
-        {
-        }
-
-        template<typename T>
-            requires ( IsSpecializationOf<T, std::basic_string>&& std::is_same_v<typename T::value_type, CharType> )
-        BasicFixedString( const T& str )
-            : BasicFixedString( str.c_str(), str.length() )
-        {
-        }
-
-        template<typename T>
-            requires ( IsSpecializationOf<T, std::basic_string_view>&& std::is_same_v<typename T::value_type, CharType> )
-        BasicFixedString( const T& str )
-            : BasicFixedString( str.data(), str.length() )
-        {
-        }
-
-        constexpr BasicFixedString( size_t count, CharType val )
-            : size_( static_cast<SizeType>( count ) ), data_{}
-        {
-            std::fill( data_.begin( ), data_.begin( )+count, val );
-        }
-
-        constexpr const CharType* c_str( ) const noexcept
-        {
-            return data_.data( );
-        }
-        constexpr const CharType* data( ) const noexcept
-        {
-            return data_.data( );
-        }
-        constexpr CharType* data( ) noexcept
-        {
-            return data_.data( );
-        }
-
-        constexpr size_t length( ) const noexcept
-        {
-            return static_cast<size_t>(size_);
-        }
-
-        constexpr iterator begin( ) noexcept
-        {
-            data_.begin( );
-        }
-        constexpr iterator end( ) noexcept
-        {
-            data_.begin( ) + length( );
-        }
-        constexpr const_iterator begin( ) const noexcept
-        {
-            data_.begin( );
-        }
-        constexpr const_iterator end( ) const noexcept
-        {
-            data_.begin( ) + length( );
-        }
-
-        constexpr CharType& operator[]( size_t index ) const noexcept
-        {
-            return data_[index];
-        }
-        constexpr CharType& operator[]( size_t index ) noexcept
-        {
-            return data_[index];
-        }
-        constexpr CharType& at( size_t index ) const noexcept
-        {
-            return data_[index];
-        }
-        constexpr CharType& at( size_t index ) noexcept
-        {
-            return data_[index];
-        }
-
-        constexpr CharType& front( ) const noexcept
-        {
-            return data_[0];
-        }
-        constexpr CharType& front( ) noexcept
-        {
-            return data_[0];
-        }
-        constexpr CharType& back( ) const noexcept
-        {
-            return data_[size_ - 1];
-        }
-        constexpr CharType& back( ) noexcept
-        {
-            return data_[size_ - 1];
-        }
-
-        template<typename T>
-            requires (IsSpecializationOf<T, std::basic_string> && std::is_same_v<typename T::value_type,CharType> )
-        BasicFixedString& operator = ( const T& other )
-        {
-            std::copy( other.begin(),other.end(), data_.data() );
-            size_ = other.length( );
-            data_[size_] = static_cast<CharType>( 0 );
-            return *this;
-        }
-
-        template<typename T>
-            requires (IsSpecializationOf<T, std::basic_string_view> && std::is_same_v<typename T::value_type,CharType> )
-        BasicFixedString& operator = ( const T& other )
-        {
-            std::copy( other.begin(),other.end(), data_.data() );
-            size_ = other.length( );
-            data_[size_] = static_cast<CharType>( 0 );
-            return *this;
-        }
-
-        BasicFixedString& operator = ( const CharType* str )
-        {
-            size_t len = LengthOf( str );
-            std::copy( str, str + len, data_.data( ) );
-            size_ = len;
-            data_[size_] = static_cast<CharType>( 0 );
-            return *this;
-        }
-
-
-        constexpr const ViewType View( ) const noexcept
-        {
-            return ViewType( data_.data( ), size_ );
-        }
-        constexpr ViewType View( ) noexcept
-        {
-            return ViewType( data_.data( ), size_ );
-        }
-        constexpr const SpanType Span( ) const noexcept
-        {
-            return SpanType( data_.data( ), size_ );
-        }
-        constexpr SpanType Span( ) noexcept
-        {
-            return SpanType( data_.data( ), size_ );
-        }
-
-        size_t Hash( ) const noexcept
-        {
-            if ( size_ )
-            {
-                return XXH3_64bits( data_.data( ), size_ * sizeof( CharType ) );
-            }
-            else
-            {
-                return 0;
-            }
-        }
-    };
-
-#pragma pack(pop)
-
-    template <typename SizeT, size_t maxSize>
-    using FixedWideString = BasicFixedString<SizeT, wchar_t, maxSize,false>;
-
-
-    template <typename SizeT, size_t maxSize>
-    using FixedString = BasicFixedString<SizeT, char, maxSize, false>;
-    template <typename SizeT, size_t maxSize>
-    using FixedWideZString = BasicFixedString<SizeT, wchar_t, maxSize, true>;
-    template <typename SizeT, size_t maxSize>
-    using FixedZString = BasicFixedString<SizeT, char, maxSize, true>;
-
-
-
-
-
 
 #ifdef HCC_WITH_BASIC_STRING
     namespace Internal
     {
-        HCC_EXPORT char* AllocateBytes( size_t count );
-        HCC_EXPORT void FreeBytes( char* bytes, size_t size );
-        HCC_EXPORT void ResetStringFixedSizeMemoryManager( );
-
+        inline char* AllocateBytes( size_t count )
+        {
+            return ( char* )malloc( count );
+        }
+        inline void FreeBytes( char* bytes, size_t size )
+        {
+            free( bytes );
+        }
         
-        inline void MemCopy( char* dest, const char* source, size_t length ) noexcept
-        {
-            memcpy( dest, source, length );
-        }
-        inline void MemCopy( wchar_t* dest, const wchar_t* source, size_t length ) noexcept
-        {
-            wmemcpy( dest, source, length );
-        }
-
-        inline void MemMove( char* dest, const char* source, size_t length ) noexcept
-        {
-            memmove( dest, source, length );
-        }
-        inline void MemMove( wchar_t* dest, const wchar_t* source, size_t length ) noexcept
-        {
-            wmemmove( dest, source, length );
-        }
-
-        inline void MemSet( char* dest, char value, size_t length ) noexcept
-        {
-            memset( dest, value, length );
-        }
-        inline void MemSet( wchar_t* dest, wchar_t value, size_t length ) noexcept
-        {
-            wmemset( dest, value, length );
-        }
-
-
-        inline int MemCmp( const char* first, const char* second, size_t length )
-        {
-            return memcmp( first, second, length );
-        }
-
-        inline int MemCmp( const wchar_t* first, const wchar_t* second, size_t length )
-        {
-            return wmemcmp( first, second, length );
-        }
-
-
-        inline bool AreEqual( const char* first, int firstLength, const char* second, int secondLength )
+        template<typename CharT>
+            requires std::is_same_v<CharT, char> || std::is_same_v<CharT, wchar_t>
+        inline bool AreEqual( const CharT* first, int firstLength, const CharT* second, int secondLength )
         {
             if ( firstLength == secondLength )
             {
                 if ( first != second )
                 {
-                    return memcmp( first, second, firstLength ) == 0;
+                    return MemCmp( first, second, firstLength ) == 0;
                 }
                 else
                 {
@@ -276,23 +42,6 @@ namespace Harlinn::Common::Core
             }
             return false;
         }
-
-        inline bool AreEqual( const wchar_t* first, int firstLength, const wchar_t* second, int secondLength )
-        {
-            if ( firstLength == secondLength )
-            {
-                if ( first != second )
-                {
-                    return wmemcmp( first, second, firstLength ) == 0;
-                }
-                else
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-
 
         inline int Compare( DWORD compareFlags, const char* first, int firstLength, const char* second, int secondLength )
         {
@@ -420,178 +169,13 @@ namespace Harlinn::Common::Core
         }
 
 
-        inline char* MemChr( char* buffer, int value, size_t bufferSize ) noexcept
-        {
-            return (char*)memchr( buffer, value, bufferSize );
-        }
-        inline const char* MemChr( const char* buffer, int value, size_t bufferSize ) noexcept
-        {
-            return (const char*)memchr( buffer, value, bufferSize );
-        }
-        inline wchar_t* MemChr( wchar_t* buffer, int value, size_t bufferSize ) noexcept
-        {
-            return (wchar_t*)wmemchr( buffer, value, bufferSize );
-        }
-        inline const wchar_t* MemChr( const wchar_t* buffer, int value, size_t bufferSize ) noexcept
-        {
-            return (const wchar_t*)wmemchr( buffer, value, bufferSize );
-        }
+        
 
         
 
 
 
 
-        inline char ToUpper( char c ) noexcept
-        {
-#pragma warning(push)
-#pragma warning(disable:4302)
-            return (char)CharUpperA( ( (LPSTR)( c ) ) );
-#pragma warning(pop)
-        }
-        inline wchar_t ToUpper( wchar_t c ) noexcept
-        {
-#pragma warning(push)
-#pragma warning(disable:4302)
-            return (wchar_t)CharUpperW( ( (LPWSTR)( c ) ) );
-#pragma warning(pop)
-        }
-        inline char ToLower( char c ) noexcept
-        {
-#pragma warning(push)
-#pragma warning(disable:4302)
-            return (char)CharLowerA( ( (LPSTR)( c ) ) );
-#pragma warning(pop)
-        }
-        inline wchar_t ToLower( wchar_t c ) noexcept
-        {
-#pragma warning(push)
-#pragma warning(disable:4302)
-            return (wchar_t)CharLowerW( ( (LPWSTR)( c ) ) );
-#pragma warning(pop)
-        }
-
-        inline void ToUpper( char* s )
-        {
-            CharUpperA( s );
-        }
-
-        inline void ToUpper( wchar_t* s )
-        {
-            CharUpperW( s );
-        }
-
-        inline void ToLower( char* s )
-        {
-            CharLowerA( s );
-        }
-
-        inline void ToLower( wchar_t* s )
-        {
-            CharLowerW( s );
-        }
-
-        inline void ToUpper( char* s, size_t size )
-        {
-            CharUpperBuffA( s, static_cast<DWORD>( size ) );
-        }
-
-        inline void ToUpper( wchar_t* s, size_t size )
-        {
-            CharUpperBuffW( s, static_cast<DWORD>( size ) );
-        }
-
-        inline void ToLower( char* s, size_t size )
-        {
-            CharLowerBuffA( s, static_cast<DWORD>( size ) );
-        }
-
-        inline void ToLower( wchar_t* s, size_t size )
-        {
-            CharLowerBuffW( s, static_cast<DWORD>( size ) );
-        }
-
-
-        inline char* MemIChr( char* buffer, int value, size_t bufferSize ) noexcept
-        {
-            auto lowerValue = ToLower( static_cast<char>( value ) );
-            auto ptr = buffer;
-            auto endPtr = buffer + bufferSize;
-            while ( ptr < endPtr )
-            {
-                if ( ToLower( static_cast< char >( *ptr ) ) == lowerValue )
-                {
-                    return ptr;
-                }
-                ptr++;
-            }
-            return nullptr;
-        }
-        inline const char* MemIChr( const char* buffer, int value, size_t bufferSize ) noexcept
-        {
-            auto lowerValue = ToLower( static_cast< char >( value ) );
-            auto ptr = buffer;
-            auto endPtr = buffer + bufferSize;
-            while ( ptr < endPtr )
-            {
-                if ( ToLower( static_cast< char >( *ptr ) ) == lowerValue )
-                {
-                    return ptr;
-                }
-                ptr++;
-            }
-            return nullptr;
-        }
-        inline wchar_t* MemIChr( wchar_t* buffer, int value, size_t bufferSize ) noexcept
-        {
-            auto lowerValue = ToLower( static_cast< wchar_t >( value ) );
-            auto ptr = buffer;
-            auto endPtr = buffer + bufferSize;
-            while ( ptr < endPtr )
-            {
-                if ( ToLower( static_cast< wchar_t >( *ptr ) ) == lowerValue )
-                {
-                    return ptr;
-                }
-                ptr++;
-            }
-            return nullptr;
-        }
-        inline const wchar_t* MemIChr( const wchar_t* buffer, int value, size_t bufferSize ) noexcept
-        {
-            auto lowerValue = ToLower( static_cast< wchar_t >( value ) );
-            auto ptr = buffer;
-            auto endPtr = buffer + bufferSize;
-            while ( ptr < endPtr )
-            {
-                if ( ToLower( static_cast< wchar_t >( *ptr ) ) == lowerValue )
-                {
-                    return ptr;
-                }
-                ptr++;
-            }
-            return nullptr;
-        }
-
-
-
-        inline int BufferSizeForFormat( const char* fmt, va_list argPtr ) noexcept
-        {
-            return _vscprintf( fmt, argPtr );
-        }
-        inline int BufferSizeForFormat( const wchar_t* fmt, va_list argPtr ) noexcept
-        {
-            return _vscwprintf( fmt, argPtr );
-        }
-
-        inline int Format( char* destination, size_t destinationSize, const char* fmt, va_list argPtr ) noexcept
-        {
-            return vsprintf_s( destination, destinationSize, fmt, argPtr );
-        }
-        inline int Format( wchar_t* destination, size_t destinationSize, const wchar_t* fmt, va_list argPtr ) noexcept
-        {
-            return vswprintf_s( destination, destinationSize, fmt, argPtr );
-        }
 
         inline bool IsSpace( char c ) noexcept
         {
@@ -904,10 +488,6 @@ namespace Harlinn::Common::Core
     ///        fine, but sharing a reference/pointer to a string object 
     ///        between threads is not OK when editing functions will 
     ///        be called. 
-    /// 
-    /// Small strings, with 24 wide characters, or less, are allocated from
-    /// a pool that is lock-free to enhance the performance for small strings.
-    /// 
     /// </remarks>
     /// <typeparam name="T">The character type of the string</typeparam>
     template<typename T>
@@ -984,9 +564,9 @@ namespace Harlinn::Common::Core
             auto currentSize = data_->size_;
             auto newSize = currentSize + expandSize;
             auto newData = Allocate( newSize );
-            Internal::MemCopy( newData->buffer_, data_->buffer_, offset );
+            MemCopy( newData->buffer_, data_->buffer_, offset );
             auto remaining = currentSize - offset;
-            Internal::MemCopy( &newData->buffer_[offset + expandSize], &data_->buffer_[offset], remaining );
+            MemCopy( &newData->buffer_[offset + expandSize], &data_->buffer_[offset], remaining );
             auto* tmp = data_;
             data_ = newData;
             ReleaseData( tmp );
@@ -997,7 +577,7 @@ namespace Harlinn::Common::Core
         {
             auto currentSize = data_->size_;
             auto remaining = currentSize - offset;
-            Internal::MemMove( &data_->buffer_[offset + expandSize], &data_->buffer_[offset], remaining );
+            MemMove( &data_->buffer_[offset + expandSize], &data_->buffer_[offset], remaining );
             data_->size_ += expandSize;
             data_->buffer_[data_->size_] = 0;
             return &data_->buffer_[offset];
@@ -1041,7 +621,7 @@ namespace Harlinn::Common::Core
             auto currentSize = data_->size_;
             auto newSize = currentSize + extendSize;
             auto newData = Allocate( newSize );
-            Internal::MemCopy( newData->buffer_, data_->buffer_, currentSize );
+            MemCopy( newData->buffer_, data_->buffer_, currentSize );
             auto* tmp = data_;
             data_ = newData;
             ReleaseData( tmp );
@@ -1134,7 +714,7 @@ namespace Harlinn::Common::Core
                             if ( remainingSize )
                             {
                                 auto* dest = &data_->buffer_[offset];
-                                Internal::MemCopy( dest, dest + numberOfCharactersToErase, remainingSize );
+                                MemCopy( dest, dest + numberOfCharactersToErase, remainingSize );
                             }
                             data_->buffer_[newSize] = 0;
                             data_->size_ = newSize;
@@ -1144,12 +724,12 @@ namespace Harlinn::Common::Core
                             auto* newData = Allocate( newSize );
                             if ( offset )
                             {
-                                Internal::MemCopy( newData->buffer_, data_->buffer_, offset );
+                                MemCopy( newData->buffer_, data_->buffer_, offset );
                             }
                             size_t remainingSize = currentSize - ( offset + numberOfCharactersToErase );
                             if ( remainingSize )
                             {
-                                Internal::MemCopy( &newData->buffer_[offset], &data_->buffer_[offset + numberOfCharactersToErase], remainingSize );
+                                MemCopy( &newData->buffer_[offset], &data_->buffer_[offset + numberOfCharactersToErase], remainingSize );
                             }
                             ReleaseData( data_ );
                             data_ = newData;
@@ -1177,7 +757,7 @@ namespace Harlinn::Common::Core
             if ( size )
             {
                 Data* data = Allocate( size );
-                Internal::MemCopy( data->buffer_, string, size );
+                MemCopy( data->buffer_, string, size );
                 return data;
             }
             else
@@ -1192,8 +772,8 @@ namespace Harlinn::Common::Core
             if ( size )
             {
                 Data* data = Allocate( size );
-                Internal::MemCopy( data->buffer_, string1, size1 );
-                Internal::MemCopy( data->buffer_ + size1, string2, size2 );
+                MemCopy( data->buffer_, string1, size1 );
+                MemCopy( data->buffer_ + size1, string2, size2 );
                 return data;
             }
             else
@@ -1208,8 +788,8 @@ namespace Harlinn::Common::Core
             if ( size )
             {
                 Data* data = Allocate( size );
-                Internal::MemSet( data->buffer_, value, count );
-                Internal::MemCopy( data->buffer_ + count, string2, size2 );
+                MemSet( data->buffer_, value, count );
+                MemCopy( data->buffer_ + count, string2, size2 );
                 return data;
             }
             else
@@ -1224,8 +804,8 @@ namespace Harlinn::Common::Core
             if ( size )
             {
                 Data* data = Allocate( size );
-                Internal::MemCopy( data->buffer_, string1, size1 );
-                Internal::MemSet( data->buffer_ + size1, value, count );
+                MemCopy( data->buffer_, string1, size1 );
+                MemSet( data->buffer_ + size1, value, count );
                 return data;
             }
             else
@@ -1242,9 +822,9 @@ namespace Harlinn::Common::Core
             if ( size )
             {
                 Data* data = Allocate( size );
-                Internal::MemCopy( data->buffer_, string1, size1 );
-                Internal::MemCopy( data->buffer_ + size1, string2, size2 );
-                Internal::MemCopy( data->buffer_ + size1 + size2, string3, size3 );
+                MemCopy( data->buffer_, string1, size1 );
+                MemCopy( data->buffer_ + size1, string2, size2 );
+                MemCopy( data->buffer_ + size1 + size2, string3, size3 );
                 return data;
             }
             else
@@ -1259,9 +839,9 @@ namespace Harlinn::Common::Core
             if ( size )
             {
                 Data* data = Allocate( size );
-                Internal::MemSet( data->buffer_, value, count );
-                Internal::MemCopy( data->buffer_ + count, string2, size2 );
-                Internal::MemCopy( data->buffer_ + count + size2, string3, size3 );
+                MemSet( data->buffer_, value, count );
+                MemCopy( data->buffer_ + count, string2, size2 );
+                MemCopy( data->buffer_ + count + size2, string3, size3 );
                 return data;
             }
             else
@@ -1277,9 +857,9 @@ namespace Harlinn::Common::Core
             if ( size )
             {
                 Data* data = Allocate( size );
-                Internal::MemCopy( data->buffer_, string1, size1 );
-                Internal::MemSet( data->buffer_ + size1, value, count );
-                Internal::MemCopy( data->buffer_ + size1 + count, string3, size3 );
+                MemCopy( data->buffer_, string1, size1 );
+                MemSet( data->buffer_ + size1, value, count );
+                MemCopy( data->buffer_ + size1 + count, string3, size3 );
                 return data;
             }
             else
@@ -1294,9 +874,9 @@ namespace Harlinn::Common::Core
             if ( size )
             {
                 Data* data = Allocate( size );
-                Internal::MemCopy( data->buffer_, string1, size1 );
-                Internal::MemCopy( data->buffer_ + size1, string2, size2 );
-                Internal::MemSet( data->buffer_ + size1 + size2, value, count );
+                MemCopy( data->buffer_, string1, size1 );
+                MemCopy( data->buffer_ + size1, string2, size2 );
+                MemSet( data->buffer_ + size1 + size2, value, count );
                 return data;
             }
             else
@@ -1335,7 +915,7 @@ namespace Harlinn::Common::Core
             if ( count )
             {
                 Data* data = Allocate( count );
-                Internal::MemSet( data->buffer_, value, count );
+                MemSet( data->buffer_, value, count );
                 return data;
             }
             else
@@ -1948,7 +1528,7 @@ namespace Harlinn::Common::Core
                         auto tmp = data_;
                         data_ = Allocate( newLength );
                         auto copyLength = std::min( newLength, tmp->size_ );
-                        Internal::MemCopy( data_->buffer_, tmp->buffer_, copyLength );
+                        MemCopy( data_->buffer_, tmp->buffer_, copyLength );
                         ReleaseData( tmp );
                     }
                     else
@@ -1966,7 +1546,7 @@ namespace Harlinn::Common::Core
                             auto tmp = data_;
                             data_ = Allocate( newLength );
                             auto copyLength = std::min( newLength, tmp->size_ );
-                            Internal::MemCopy( data_->buffer_, tmp->buffer_, copyLength );
+                            MemCopy( data_->buffer_, tmp->buffer_, copyLength );
                             ReleaseData( tmp );
                         }
                     }
@@ -2073,7 +1653,7 @@ namespace Harlinn::Common::Core
         {
             auto otherLength = Internal::LengthOf( other );
             auto* dest = Extend( otherLength );
-            Internal::MemCopy( dest, other, otherLength );
+            MemCopy( dest, other, otherLength );
         }
         void append( const CharType* other )
         {
@@ -2084,7 +1664,7 @@ namespace Harlinn::Common::Core
         void Append( const CharType* other, size_t otherLength )
         {
             auto* dest = Extend( otherLength );
-            Internal::MemCopy( dest, other, otherLength );
+            MemCopy( dest, other, otherLength );
         }
 
         void append( const CharType* other, size_t otherLength )
@@ -2109,7 +1689,7 @@ namespace Harlinn::Common::Core
         {
             auto otherLength = other.size( );
             auto* dest = Extend( otherLength );
-            Internal::MemCopy( dest, other.data( ), otherLength );
+            MemCopy( dest, other.data( ), otherLength );
         }
 
         void append( const BasicString<CharType>& other )
@@ -2150,7 +1730,7 @@ namespace Harlinn::Common::Core
             iterator end_ = Extend( 1 );
             if ( position < end_ )
             {
-                Internal::MemMove( position + 1, position, static_cast< size_t >( end_ - position ) );
+                MemMove( position + 1, position, static_cast< size_t >( end_ - position ) );
             }
             *position = ch;
             return position;
@@ -2168,9 +1748,9 @@ namespace Harlinn::Common::Core
             iterator end_ = Extend( count );
             if ( position < end_ )
             {
-                Internal::MemMove( position + count, position, static_cast< size_t >( end_ - position ) );
+                MemMove( position + count, position, static_cast< size_t >( end_ - position ) );
             }
-            Internal::MemSet( position, ch, count );
+            MemSet( position, ch, count );
             return position;
         }
 
@@ -2197,9 +1777,9 @@ namespace Harlinn::Common::Core
             iterator end_ = Extend( bufferLength );
             if ( position < end_ )
             {
-                Internal::MemMove( position + bufferLength, position, static_cast< size_t >( end_ - position ) );
+                MemMove( position + bufferLength, position, static_cast< size_t >( end_ - position ) );
             }
-            Internal::MemCopy( position, buffer, bufferLength );
+            MemCopy( position, buffer, bufferLength );
             return position;
         }
 
@@ -2237,7 +1817,7 @@ namespace Harlinn::Common::Core
                         size_type secondSize = Internal::LengthOf( second );
                         if ( first->size_ == secondSize )
                         {
-                            return Internal::MemCmp( first->buffer_, second, secondSize ) == 0;
+                            return MemCmp( first->buffer_, second, secondSize ) == 0;
                         }
                     }
                     return false;
@@ -2254,7 +1834,7 @@ namespace Harlinn::Common::Core
                     size_type firstSize = Internal::LengthOf( first );
                     if ( second->size_ == firstSize )
                     {
-                        return Internal::MemCmp( second->buffer_, first, firstSize ) == 0;
+                        return MemCmp( second->buffer_, first, firstSize ) == 0;
                     }
                 }
                 return false;
@@ -2936,7 +2516,7 @@ namespace Harlinn::Common::Core
         {
             if ( data_ )
             {
-                auto* foundAt = Internal::MemChr( data_->buffer_, c, data_->size_ );
+                auto* foundAt = MemChr( data_->buffer_, c, data_->size_ );
                 return foundAt ? foundAt - data_->buffer_ : npos;
             }
             else
@@ -2949,7 +2529,7 @@ namespace Harlinn::Common::Core
         {
             if ( data_ )
             {
-                auto* foundAt = Internal::MemIChr( data_->buffer_, c, data_->size_ );
+                auto* foundAt = MemIChr( data_->buffer_, c, data_->size_ );
                 return foundAt ? foundAt - data_->buffer_ : npos;
             }
             else
@@ -2981,7 +2561,7 @@ namespace Harlinn::Common::Core
                 auto endPtr = data_->buffer_ + data_->size_;
                 if ( numberOfSearchChars == 1 && ptr < endPtr )
                 {
-                    auto p = Internal::MemChr( ptr, *searchChars, data_->size_ - start );
+                    auto p = MemChr( ptr, *searchChars, data_->size_ - start );
                     if ( p )
                     {
                         return static_cast< size_type >( p - data_->buffer_ );
@@ -3018,7 +2598,7 @@ namespace Harlinn::Common::Core
                 auto endPtr = data_->buffer_ + data_->size_;
                 if ( numberOfSearchChars == 1 && ptr < endPtr )
                 {
-                    auto p = Internal::MemIChr( ptr, *searchChars, data_->size_ - start );
+                    auto p = MemIChr( ptr, *searchChars, data_->size_ - start );
                     if ( p )
                     {
                         return static_cast< size_type >( p - data_->buffer_ );
@@ -3031,10 +2611,10 @@ namespace Harlinn::Common::Core
                     while ( ptr < endPtr )
                     {
                         auto searchPtr = searchChars;
-                        auto c = Internal::ToUpper( *ptr );
+                        auto c = Core::ToUpper( *ptr );
                         while ( searchPtr < searchEndPtr )
                         {
-                            auto sc = Internal::ToUpper( *searchPtr );
+                            auto sc = Core::ToUpper( *searchPtr );
                             if ( c == sc )
                             {
                                 return static_cast< size_type >( ptr - data_->buffer_ );
@@ -3116,11 +2696,11 @@ namespace Harlinn::Common::Core
     private:
         static bool Contains( const CharType* buffer, size_type bufferLength, CharType value )
         {
-            return Internal::MemChr( buffer, value, bufferLength ) != nullptr;
+            return MemChr( buffer, value, bufferLength ) != nullptr;
         }
         static bool IContains( const CharType* buffer, size_type bufferLength, CharType value )
         {
-            return Internal::MemIChr( buffer, value, bufferLength ) != nullptr;
+            return MemIChr( buffer, value, bufferLength ) != nullptr;
         }
     public:
 
@@ -3268,7 +2848,7 @@ namespace Harlinn::Common::Core
                 }
                 do
                 {
-                    const auto* p = Internal::MemChr( searchChars, data_->buffer_[start], static_cast<size_t>( numberOfSearchChars ) );
+                    const auto* p = MemChr( searchChars, data_->buffer_[start], static_cast<size_t>( numberOfSearchChars ) );
                     if ( p )
                     {
                         return start;
@@ -3288,10 +2868,10 @@ namespace Harlinn::Common::Core
                 }
                 do
                 {
-                    auto c = Internal::ToUpper( data_->buffer_[start] );
+                    auto c = Core::ToUpper( data_->buffer_[start] );
                     for ( size_t i = 0; i < numberOfSearchChars; i++ )
                     {
-                        auto sc = Internal::ToUpper( searchChars[i] );
+                        auto sc = Core::ToUpper( searchChars[i] );
                         if ( c == sc )
                         {
                             return start;
@@ -3392,7 +2972,7 @@ namespace Harlinn::Common::Core
                 }
                 do
                 {
-                    const auto* p = Internal::MemChr( searchChars, data_->buffer_[start], static_cast<size_t>( numberOfSearchChars ) );
+                    const auto* p = MemChr( searchChars, data_->buffer_[start], static_cast<size_t>( numberOfSearchChars ) );
                     if ( !p )
                     {
                         return start;
@@ -3412,11 +2992,11 @@ namespace Harlinn::Common::Core
                 }
                 do
                 {
-                    auto c = Internal::ToUpper( data_->buffer_[start] );
+                    auto c = Core::ToUpper( data_->buffer_[start] );
                     size_t i = 0;
                     for ( ; i < numberOfSearchChars; i++ )
                     {
-                        auto sc = Internal::ToUpper( searchChars[i] );
+                        auto sc = Core::ToUpper( searchChars[i] );
                         if ( c == sc )
                         {
                             break;
@@ -3515,7 +3095,7 @@ namespace Harlinn::Common::Core
 
                     while ( ptr <= endPtr )
                     {
-                        auto* p = Internal::MemChr( ptr, *searchString, static_cast< size_type >( endPtr - ptr ) + searchStringLength );
+                        auto* p = MemChr( ptr, *searchString, static_cast< size_type >( endPtr - ptr ) + searchStringLength );
                         if ( p && p <= endPtr )
                         {
                             auto compareLength = searchStringLength - 1;
@@ -3549,7 +3129,7 @@ namespace Harlinn::Common::Core
 
                     while ( ptr <= endPtr )
                     {
-                        auto* p = Internal::MemIChr( ptr, *searchString, static_cast< size_type >( endPtr - ptr ) + searchStringLength );
+                        auto* p = MemIChr( ptr, *searchString, static_cast< size_type >( endPtr - ptr ) + searchStringLength );
                         if ( p && p <= endPtr )
                         {
                             auto compareLength = searchStringLength - 1;
@@ -3656,7 +3236,7 @@ namespace Harlinn::Common::Core
                 const CharType* pEnd = &data_->buffer_[data_->size_];
                 while ( pStart < pEnd )
                 {
-                    auto* p = Internal::MemChr( pStart, *searchString, pEnd - pStart );
+                    auto* p = MemChr( pStart, *searchString, pEnd - pStart );
                     if ( p )
                     {
                         const CharType* pSearchChar = searchString + 1;
@@ -3699,7 +3279,7 @@ namespace Harlinn::Common::Core
                 const CharType* pEnd = &data_->buffer_[data_->size_];
                 while ( pStart < pEnd )
                 {
-                    auto* p = Internal::MemIChr( pStart, *searchString, pEnd - pStart );
+                    auto* p = MemIChr( pStart, *searchString, pEnd - pStart );
                     if ( p )
                     {
                         const CharType* pSearchChar = searchString + 1;
@@ -3733,7 +3313,7 @@ namespace Harlinn::Common::Core
         {
             if ( data_ && start < data_->size_ )
             {
-                auto* foundAt = Internal::MemChr( data_->buffer_ + start, c, data_->size_ - start );
+                auto* foundAt = MemChr( data_->buffer_ + start, c, data_->size_ - start );
                 return foundAt ? foundAt - data_->buffer_ : npos;
             }
             else
@@ -3746,7 +3326,7 @@ namespace Harlinn::Common::Core
         {
             if ( data_ && start < data_->size_ )
             {
-                auto* foundAt = Internal::MemIChr( data_->buffer_ + start, c, data_->size_ - start );
+                auto* foundAt = MemIChr( data_->buffer_ + start, c, data_->size_ - start );
                 return foundAt ? foundAt - data_->buffer_ : npos;
             }
             else
@@ -3864,10 +3444,10 @@ namespace Harlinn::Common::Core
 
                 if ( searchStringLength == 1 )
                 {
-                    auto c = Internal::ToUpper( *searchString );
+                    auto c = Core::ToUpper( *searchString );
                     do
                     {
-                        if ( Internal::ToUpper( data_->buffer_[start] ) == c )
+                        if ( Core::ToUpper( data_->buffer_[start] ) == c )
                         {
                             return start;
                         }
@@ -3977,7 +3557,7 @@ namespace Harlinn::Common::Core
 
         [[nodiscard]] size_type ILastIndexOf( CharType c, size_type start = npos ) const
         {
-            c = Internal::ToUpper( c );
+            c = Core::ToUpper( c );
             if ( data_ )
             {
                 if ( start >= data_->size_ )
@@ -3987,7 +3567,7 @@ namespace Harlinn::Common::Core
 
                 do
                 {
-                    if ( Internal::ToUpper( data_->buffer_[start] ) == c )
+                    if ( Core::ToUpper( data_->buffer_[start] ) == c )
                     {
                         return start;
                     }
@@ -4225,7 +3805,7 @@ namespace Harlinn::Common::Core
                 const CharType* p = data_->buffer_;
                 while ( *p && *str )
                 {
-                    if ( Internal::ToUpper( *p ) != Internal::ToUpper( *str ) )
+                    if ( Core::ToUpper( *p ) != Core::ToUpper( *str ) )
                     {
                         break;
                     }
@@ -4542,11 +4122,11 @@ namespace Harlinn::Common::Core
                 if ( data_->referenceCount_ > 1 )
                 {
                     auto newData = Allocate( data_->size_ );
-                    Internal::MemCopy( newData->buffer_, data_->buffer_, data_->size_ );
+                    MemCopy( newData->buffer_, data_->buffer_, data_->size_ );
                     ReleaseData( data_ );
                     data_ = newData;
                 }
-                Internal::ToUpper( data_->buffer_, data_->size_ );
+                Core::ToUpper( data_->buffer_, data_->size_ );
             }
             return *this;
         }
@@ -4558,11 +4138,11 @@ namespace Harlinn::Common::Core
                 if ( data_->referenceCount_ > 1 )
                 {
                     auto newData = Allocate( data_->size_ );
-                    Internal::MemCopy( newData->buffer_, data_->buffer_, data_->size_ );
+                    MemCopy( newData->buffer_, data_->buffer_, data_->size_ );
                     ReleaseData( data_ );
                     data_ = newData;
                 }
-                Internal::ToLower( data_->buffer_, data_->size_ );
+                Core::ToLower( data_->buffer_, data_->size_ );
             }
             return *this;
         }
@@ -4572,8 +4152,8 @@ namespace Harlinn::Common::Core
             if ( data_ )
             {
                 auto newData = Allocate( data_->size_ );
-                Internal::MemCopy( newData->buffer_, data_->buffer_, data_->size_ );
-                Internal::ToLower( newData->buffer_, newData->size_ );
+                MemCopy( newData->buffer_, data_->buffer_, data_->size_ );
+                Core::ToLower( newData->buffer_, newData->size_ );
                 return BasicString( newData );
             }
             else
@@ -4587,8 +4167,8 @@ namespace Harlinn::Common::Core
             if ( data_ )
             {
                 auto newData = Allocate( data_->size_ );
-                Internal::MemCopy( newData->buffer_, data_->buffer_, data_->size_ );
-                Internal::ToUpper( newData->buffer_, newData->size_ );
+                MemCopy( newData->buffer_, data_->buffer_, data_->size_ );
+                Core::ToUpper( newData->buffer_, newData->size_ );
                 return BasicString( newData );
             }
             else
@@ -4655,7 +4235,7 @@ namespace Harlinn::Common::Core
                     {
                         auto currentSize = data_->size_;
                         auto* newData = Allocate( currentSize );
-                        Internal::MemCopy( newData->buffer_, data_->buffer_, index );
+                        MemCopy( newData->buffer_, data_->buffer_, index );
                         auto endIt = data_->buffer_ + currentSize;
                         auto it = data_->buffer_ + index;
                         auto destIt = newData->buffer_ + index;
@@ -4697,7 +4277,7 @@ namespace Harlinn::Common::Core
                     {
                         auto currentSize = data_->size_;
                         auto* newData = Allocate( currentSize );
-                        Internal::MemCopy( newData->buffer_, data_->buffer_, index );
+                        MemCopy( newData->buffer_, data_->buffer_, index );
                         auto endIt = data_->buffer_ + currentSize;
                         auto it = data_->buffer_ + index;
                         auto destIt = newData->buffer_ + index;
@@ -4774,17 +4354,17 @@ namespace Harlinn::Common::Core
                             size_type newAllocationSize = AllocationByteCount( newLength );
                             if ( newAllocationSize == currentAllocationSize )
                             {
-                                Internal::MemMove( data_->buffer_ + newRemainingPosition, data_->buffer_ + curentRemainingPosition, remainingLength );
-                                Internal::MemMove( data_->buffer_ + replaceAtPosition, with, withLength );
+                                MemMove( data_->buffer_ + newRemainingPosition, data_->buffer_ + curentRemainingPosition, remainingLength );
+                                MemMove( data_->buffer_ + replaceAtPosition, with, withLength );
                                 data_->size_ = newLength;
                                 data_->buffer_[ newLength ] = static_cast< CharType >( 0 );
                             }
                             else
                             {
                                 std::unique_ptr<Data> tmp( Allocate( newAllocationSize, newLength ) );
-                                Internal::MemCopy( tmp->buffer_, data_->buffer_, replaceAtPosition );
-                                Internal::MemCopy( tmp->buffer_ + newRemainingPosition, data_->buffer_ + curentRemainingPosition, remainingLength );
-                                Internal::MemCopy( tmp->buffer_ + replaceAtPosition, with, withLength );
+                                MemCopy( tmp->buffer_, data_->buffer_, replaceAtPosition );
+                                MemCopy( tmp->buffer_ + newRemainingPosition, data_->buffer_ + curentRemainingPosition, remainingLength );
+                                MemCopy( tmp->buffer_ + replaceAtPosition, with, withLength );
                                 ReleaseData( data_ );
                                 data_ = tmp.release( );
                             }
@@ -4792,7 +4372,7 @@ namespace Harlinn::Common::Core
                         else
                         {
                             // No change in size, just overwrite
-                            Internal::MemMove( data_->buffer_ + replaceAtPosition, with, withLength );
+                            MemMove( data_->buffer_ + replaceAtPosition, with, withLength );
                         }
                     }
                     else
@@ -4803,8 +4383,8 @@ namespace Harlinn::Common::Core
                             size_type newAllocationSize = AllocationByteCount( newLength );
                             if ( newAllocationSize == currentAllocationSize )
                             {
-                                Internal::MemSet( data_->buffer_ + data_->size_, padCharacter, replaceAtPosition - data_->size_ );
-                                Internal::MemCopy( data_->buffer_ + replaceAtPosition, with, withLength );
+                                MemSet( data_->buffer_ + data_->size_, padCharacter, replaceAtPosition - data_->size_ );
+                                MemCopy( data_->buffer_ + replaceAtPosition, with, withLength );
                                 data_->size_ = newLength;
                                 data_->buffer_[ newLength ] = static_cast< CharType >( 0 );
                             }
@@ -4834,9 +4414,9 @@ namespace Harlinn::Common::Core
                         size_type newAllocationSize = AllocationByteCount( newLength );
 
                         std::unique_ptr<Data> tmp( Allocate( newAllocationSize, newLength ) );
-                        Internal::MemCopy( tmp->buffer_, data_->buffer_, replaceAtPosition );
-                        Internal::MemCopy( tmp->buffer_ + newRemainingPosition, data_->buffer_ + curentRemainingPosition, remainingLength );
-                        Internal::MemCopy( tmp->buffer_ + replaceAtPosition, with, withLength );
+                        MemCopy( tmp->buffer_, data_->buffer_, replaceAtPosition );
+                        MemCopy( tmp->buffer_ + newRemainingPosition, data_->buffer_ + curentRemainingPosition, remainingLength );
+                        MemCopy( tmp->buffer_ + replaceAtPosition, with, withLength );
                         ReleaseData( data_ );
                         data_ = tmp.release( );
                     }
@@ -6138,29 +5718,11 @@ namespace Harlinn::Common::Core
         return result;
     }
 
-    inline char ToLower( char c )
-    {
-        return static_cast< char >( std::tolower( c ) );
-    }
-
-    inline wchar_t ToLower( wchar_t c )
-    {
-        return static_cast< wchar_t >( std::towlower( c ) );
-    }
-
-    inline char ToUpper( char c )
-    {
-        return static_cast< char >( std::toupper( c ) );
-    }
-
-    inline wchar_t ToUpper( wchar_t c )
-    {
-        return static_cast< wchar_t >( std::towupper( c ) );
-    }
+    
 
 
     template<typename T >
-        requires ( IsStdBasicString<T> || IsBasicString<T> )
+        requires ( IsStdBasicString<T> )
     inline T ToLower( const T& str )
     {
         using StringType = T;
@@ -6186,9 +5748,17 @@ namespace Harlinn::Common::Core
         }
         return result;
     }
+    template<typename T >
+        requires ( IsBasicString<T> )
+    inline T ToLower( const T& str )
+    {
+        return str.ToLower( );
+    }
+
+
 
     template<typename T >
-        requires ( IsStdBasicString<T> || IsBasicString<T> )
+        requires ( IsStdBasicString<T> )
     inline T ToUpper( const T& str )
     {
         using StringType = T;
@@ -6211,6 +5781,13 @@ namespace Harlinn::Common::Core
             ++begin;
         }
         return result;
+    }
+
+    template<typename T >
+        requires ( IsBasicString<T> )
+    inline T ToUpper( const T& str )
+    {
+        return str.ToUpper( );
     }
 
 
@@ -6364,7 +5941,7 @@ namespace std
         }
     };
 
-
+    
     template<typename CharT>
     struct formatter<Harlinn::Common::Core::BasicString<CharT>, CharT>
     {
@@ -6375,13 +5952,13 @@ namespace std
         }
 
         template <typename FormatContext>
-        auto format( const Harlinn::Common::Core::BasicString<CharT>& v, FormatContext& ctx )
+        auto format( const Harlinn::Common::Core::BasicString<CharT>& v, FormatContext& ctx ) const
         {
             basic_string_view<CharT> view( v.data( ), v.size( ) );
             return viewFormatter.format( view, ctx );
         }
     };
-
+    
     template<typename CharT>
     struct formatter<Harlinn::Common::Core::BasicStringView<CharT>, CharT>
     {
@@ -6392,7 +5969,7 @@ namespace std
         }
 
         template <typename FormatContext>
-        auto format( const Harlinn::Common::Core::BasicStringView<CharT>& view, FormatContext& ctx )
+        auto format( const Harlinn::Common::Core::BasicStringView<CharT>& view, FormatContext& ctx ) const
         {
             return viewFormatter.format( view, ctx );
         }

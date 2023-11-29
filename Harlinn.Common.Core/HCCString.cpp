@@ -21,46 +21,6 @@ namespace Harlinn::Common::Core
 #ifdef HCC_WITH_BASIC_STRING
     namespace Internal
     {
-        namespace
-        {
-            //constexpr size_t MemoryManagerBlockSize = AnsiString::AllocationGranularity;
-            //FixedSizeMemoryManager<MemoryManagerBlockSize, 20480> fixedSizeMemoryManager;
-        }
-
-        HCC_EXPORT char* AllocateBytes( size_t count )
-        {
-            return ( char* )malloc( count );
-            /*
-            if ( count <= MemoryManagerBlockSize )
-            {
-                return (char*)fixedSizeMemoryManager.Malloc( );
-            }
-            else
-            {
-                return (char*)malloc( count );
-            }
-            */
-        }
-        HCC_EXPORT void FreeBytes( char* bytes, size_t size )
-        {
-            free( bytes );
-            /*
-            if ( size <= MemoryManagerBlockSize )
-            {
-                fixedSizeMemoryManager.Free( bytes );
-            }
-            else
-            {
-                free( bytes );
-            }
-            */
-        }
-
-        HCC_EXPORT void ResetStringFixedSizeMemoryManager( )
-        {
-            //fixedSizeMemoryManager.Reset( );
-        }
-
         WideString From( const char* text, size_t textLength, unsigned codePage, unsigned flags )
         {
             auto byteCount = static_cast<int>( textLength );

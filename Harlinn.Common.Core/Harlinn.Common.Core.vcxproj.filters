@@ -381,6 +381,9 @@
     <ClInclude Include="HCCServiceRunner.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="HCCFixedString.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">

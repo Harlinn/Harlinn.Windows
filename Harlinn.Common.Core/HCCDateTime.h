@@ -1297,7 +1297,7 @@ namespace std
         }
 
         template<typename FormatContextT>
-        auto format( const Harlinn::Common::Core::DateTime& dateTime, FormatContextT& ctx )
+        auto format( const Harlinn::Common::Core::DateTime& dateTime, FormatContextT& ctx ) const
         {
             auto timePoint = dateTime.ToTimePoint( );
             return chronoFormatter_.format( timePoint, ctx );
@@ -1316,7 +1316,7 @@ namespace std
         }
 
         template<typename FormatContextT>
-        auto format( const Harlinn::Common::Core::TimeSpan& timeSpan, FormatContextT& ctx )
+        auto format( const Harlinn::Common::Core::TimeSpan& timeSpan, FormatContextT& ctx ) const
         {
             std::chrono::system_clock::duration duration( timeSpan.Ticks() - Harlinn::Common::Core::TimeSpan::UnixEpoch );
             return chronoFormatter_.format( duration, ctx );

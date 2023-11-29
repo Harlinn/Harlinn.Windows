@@ -488,12 +488,199 @@ namespace Harlinn::Common::Core
     }
 
 
+    inline void MemCopy( char* dest, const char* source, size_t length ) noexcept
+    {
+        memcpy( dest, source, length );
+    }
+    inline void MemCopy( wchar_t* dest, const wchar_t* source, size_t length ) noexcept
+    {
+        wmemcpy( dest, source, length );
+    }
+
+    inline void MemMove( char* dest, const char* source, size_t length ) noexcept
+    {
+        memmove( dest, source, length );
+    }
+    inline void MemMove( wchar_t* dest, const wchar_t* source, size_t length ) noexcept
+    {
+        wmemmove( dest, source, length );
+    }
+
+    inline void MemSet( char* dest, char value, size_t length ) noexcept
+    {
+        memset( dest, value, length );
+    }
+    inline void MemSet( wchar_t* dest, wchar_t value, size_t length ) noexcept
+    {
+        wmemset( dest, value, length );
+    }
+
+
+    [[nodiscard]] inline int MemCmp( const char* first, const char* second, size_t length )
+    {
+        return memcmp( first, second, length );
+    }
+
+    [[nodiscard]] inline int MemCmp( const wchar_t* first, const wchar_t* second, size_t length )
+    {
+        return wmemcmp( first, second, length );
+    }
+
+    [[nodiscard]] inline char* MemChr( char* buffer, int value, size_t bufferSize ) noexcept
+    {
+        return ( char* )memchr( buffer, value, bufferSize );
+    }
+    [[nodiscard]] inline const char* MemChr( const char* buffer, int value, size_t bufferSize ) noexcept
+    {
+        return ( const char* )memchr( buffer, value, bufferSize );
+    }
+    [[nodiscard]] inline wchar_t* MemChr( wchar_t* buffer, int value, size_t bufferSize ) noexcept
+    {
+        return ( wchar_t* )wmemchr( buffer, value, bufferSize );
+    }
+    [[nodiscard]] inline const wchar_t* MemChr( const wchar_t* buffer, int value, size_t bufferSize ) noexcept
+    {
+        return ( const wchar_t* )wmemchr( buffer, value, bufferSize );
+    }
+
+    [[nodiscard]] inline char ToUpper( char c ) noexcept
+    {
+#pragma warning(push)
+#pragma warning(disable:4302)
+        return ( char )CharUpperA( ( ( LPSTR )( c ) ) );
+#pragma warning(pop)
+    }
+    [[nodiscard]] inline wchar_t ToUpper( wchar_t c ) noexcept
+    {
+#pragma warning(push)
+#pragma warning(disable:4302)
+        return ( wchar_t )CharUpperW( ( ( LPWSTR )( c ) ) );
+#pragma warning(pop)
+    }
+    [[nodiscard]] inline char ToLower( char c ) noexcept
+    {
+#pragma warning(push)
+#pragma warning(disable:4302)
+        return ( char )CharLowerA( ( ( LPSTR )( c ) ) );
+#pragma warning(pop)
+    }
+    [[nodiscard]] inline wchar_t ToLower( wchar_t c ) noexcept
+    {
+#pragma warning(push)
+#pragma warning(disable:4302)
+        return ( wchar_t )CharLowerW( ( ( LPWSTR )( c ) ) );
+#pragma warning(pop)
+    }
+
+    inline void ToUpper( char* s )
+    {
+        CharUpperA( s );
+    }
+
+    inline void ToUpper( wchar_t* s )
+    {
+        CharUpperW( s );
+    }
+
+    inline void ToLower( char* s )
+    {
+        CharLowerA( s );
+    }
+
+    inline void ToLower( wchar_t* s )
+    {
+        CharLowerW( s );
+    }
+
+    inline void ToUpper( char* s, size_t size )
+    {
+        CharUpperBuffA( s, static_cast< DWORD >( size ) );
+    }
+
+    inline void ToUpper( wchar_t* s, size_t size )
+    {
+        CharUpperBuffW( s, static_cast< DWORD >( size ) );
+    }
+
+    inline void ToLower( char* s, size_t size )
+    {
+        CharLowerBuffA( s, static_cast< DWORD >( size ) );
+    }
+
+    inline void ToLower( wchar_t* s, size_t size )
+    {
+        CharLowerBuffW( s, static_cast< DWORD >( size ) );
+    }
+
+
+    [[nodiscard]] inline char* MemIChr( char* buffer, int value, size_t bufferSize ) noexcept
+    {
+        auto lowerValue = ToLower( static_cast< char >( value ) );
+        auto ptr = buffer;
+        auto endPtr = buffer + bufferSize;
+        while ( ptr < endPtr )
+        {
+            if ( ToLower( static_cast< char >( *ptr ) ) == lowerValue )
+            {
+                return ptr;
+            }
+            ptr++;
+        }
+        return nullptr;
+    }
+    [[nodiscard]] inline const char* MemIChr( const char* buffer, int value, size_t bufferSize ) noexcept
+    {
+        auto lowerValue = ToLower( static_cast< char >( value ) );
+        auto ptr = buffer;
+        auto endPtr = buffer + bufferSize;
+        while ( ptr < endPtr )
+        {
+            if ( ToLower( static_cast< char >( *ptr ) ) == lowerValue )
+            {
+                return ptr;
+            }
+            ptr++;
+        }
+        return nullptr;
+    }
+    [[nodiscard]] inline wchar_t* MemIChr( wchar_t* buffer, int value, size_t bufferSize ) noexcept
+    {
+        auto lowerValue = ToLower( static_cast< wchar_t >( value ) );
+        auto ptr = buffer;
+        auto endPtr = buffer + bufferSize;
+        while ( ptr < endPtr )
+        {
+            if ( ToLower( static_cast< wchar_t >( *ptr ) ) == lowerValue )
+            {
+                return ptr;
+            }
+            ptr++;
+        }
+        return nullptr;
+    }
+    [[nodiscard]] inline const wchar_t* MemIChr( const wchar_t* buffer, int value, size_t bufferSize ) noexcept
+    {
+        auto lowerValue = ToLower( static_cast< wchar_t >( value ) );
+        auto ptr = buffer;
+        auto endPtr = buffer + bufferSize;
+        while ( ptr < endPtr )
+        {
+            if ( ToLower( static_cast< wchar_t >( *ptr ) ) == lowerValue )
+            {
+                return ptr;
+            }
+            ptr++;
+        }
+        return nullptr;
+    }
+
+
 
 
 
     template<typename T, size_t N>
         requires ( std::is_same_v<char,std::remove_cv_t<T>> == false && std::is_same_v<wchar_t, std::remove_cv_t<T>> == false )
-    inline constexpr size_t LengthOf( T ( &array )[N] ) noexcept
+    [[nodiscard]] inline constexpr size_t LengthOf( T ( &array )[N] ) noexcept
     {
         return N;
     }
@@ -503,14 +690,14 @@ namespace Harlinn::Common::Core
         {
             { container.size( ) } -> std::convertible_to<size_t>;
         }
-    inline constexpr size_t LengthOf( const T& container ) noexcept
+    [[nodiscard]] inline constexpr size_t LengthOf( const T& container ) noexcept
     {
         return container.size( );
     }
 
     namespace Internal
     {
-        inline constexpr size_t LengthOf( const char* s ) noexcept
+        [[nodiscard]] inline constexpr size_t LengthOf( const char* s ) noexcept
         {
             if ( std::is_constant_evaluated( ) )
             {
@@ -521,7 +708,7 @@ namespace Harlinn::Common::Core
                 return s && s[0] ? strlen( s ) : 0;
             }
         }
-        inline constexpr size_t LengthOf( const wchar_t* s ) noexcept
+        [[nodiscard]] inline constexpr size_t LengthOf( const wchar_t* s ) noexcept
         {
             if ( std::is_constant_evaluated( ) )
             {
@@ -536,19 +723,9 @@ namespace Harlinn::Common::Core
 
     template<typename T>
         requires ( std::is_pointer_v<T> && ( std::is_same_v<char, std::remove_const_t< std::remove_pointer_t<T> > > || std::is_same_v<wchar_t, std::remove_const_t< std::remove_pointer_t<T> > > ) )
-    inline constexpr size_t LengthOf( T str ) noexcept
+    [[nodiscard]] inline constexpr size_t LengthOf( T str ) noexcept
     {
         return Core::Internal::LengthOf( str );
-    }
-
-
-    inline void Copy( char* dest, const char* source, size_t length ) noexcept
-    {
-        memcpy( dest, source, length );
-    }
-    inline void Copy( wchar_t* dest, const wchar_t* source, size_t length ) noexcept
-    {
-        wmemcpy( dest, source, length );
     }
 
     inline constexpr int Compare( nullptr_t s1, nullptr_t s2 ) noexcept
@@ -832,11 +1009,9 @@ namespace Harlinn::Common::Core
         using CanonicalType = XXH64_canonical_t;
         using ErrorCode = XXH_errorcode;
     private:
-        //StateType* state_;
         StateType state_{};
     public:
         XXH64Hasher( HashType seed = 0)
-            //: state_( XXH64_createState( ) )
         {
             Reset( seed );
         }
@@ -846,12 +1021,6 @@ namespace Harlinn::Common::Core
 
         ~XXH64Hasher( )
         {
-            /*
-            if ( state_ )
-            {
-                XXH64_freeState( state_ );
-            }
-            */
         }
 
         XXH64Hasher& operator =( const XXH64Hasher& other ) = delete;
@@ -1379,9 +1548,8 @@ namespace Harlinn::Common::Core
         {
             return *pointer_;
         }
-
-
     };
+
 
 }
 

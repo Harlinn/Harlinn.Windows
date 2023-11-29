@@ -215,6 +215,7 @@
     <ClInclude Include="HCCDemangle.h" />
     <ClInclude Include="HCCDirectoryUtils.h" />
     <ClInclude Include="HCCEseOptions.h" />
+    <ClInclude Include="HCCFixedString.h" />
     <ClInclude Include="HCCFlags.h" />
     <ClInclude Include="HCCFormatStringParser.h" />
     <ClInclude Include="HCCIOBufferStream.h" />

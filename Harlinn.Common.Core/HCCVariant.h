@@ -4024,7 +4024,7 @@ namespace std
         }
 
         template <typename FormatContext>
-        auto format( const Harlinn::Common::Core::SysString& v, FormatContext& ctx )
+        auto format( const Harlinn::Common::Core::SysString& v, FormatContext& ctx ) const
         {
             if constexpr ( sizeof( CharT ) == 1 )
             {

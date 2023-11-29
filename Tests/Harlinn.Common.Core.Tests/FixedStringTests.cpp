@@ -1,4 +1,5 @@
 #include "pch.h"
+#include <HCCFixedString.h>
 
 using namespace Harlinn::Common::Core;
 namespace

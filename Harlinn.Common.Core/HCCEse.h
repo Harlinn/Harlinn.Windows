@@ -5586,7 +5586,7 @@ namespace Harlinn::Common::Core
             }
 
             template <typename FormatContext>
-            auto format( EnumT value, FormatContext& ctx )
+            auto format( EnumT value, FormatContext& ctx ) const
             {
                 if constexpr ( sizeof( CharT ) == 2 )
                 {
