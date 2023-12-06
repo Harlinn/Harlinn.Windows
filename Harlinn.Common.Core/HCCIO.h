@@ -623,6 +623,16 @@ namespace Harlinn::Common::Core::IO
                 return data_;
             }
 
+            constexpr const std::span<const Byte> BufferSpan( ) const noexcept
+            {
+                return std::span<const Byte>(data_, size_ );
+            }
+
+            constexpr std::span<Byte> BufferSpan( ) noexcept
+            {
+                return std::span<Byte>( data_, size_ );
+            }
+
             Byte* Detach( )
             {
                 if ( ownsData_ == false )
@@ -882,6 +892,24 @@ namespace Harlinn::Common::Core::IO
             }
             return nullptr;
         }
+        constexpr const std::span<Byte> BufferSpan( ) const noexcept
+        {
+            if ( data_ )
+            {
+                return data_->BufferSpan( );
+            }
+            return {};
+        }
+        constexpr std::span<Byte> BufferSpan( ) noexcept
+        {
+            if ( data_ )
+            {
+                return data_->BufferSpan( );
+            }
+            return {};
+        }
+
+
         /// <summary>
         /// Releases ownership of the internal buffer to the caller.
         /// </summary>
