@@ -1159,7 +1159,7 @@ namespace Harlinn::Common::Core
             constexpr auto variantType = TraitsType::VariantType;
             auto containerSize = container.size( );
 
-            ptr_ = SafeArrayCreateVectorEx( static_cast< VARTYPE >( variantType ), 0, static_cast<ULONG>( containerSize ), nullptr );
+            ptr_ = SafeArrayCreateVector( static_cast< VARTYPE >( variantType ), 0, static_cast<ULONG>( containerSize ) );
             if ( !ptr_ )
             {
                 CheckHRESULT( E_OUTOFMEMORY );
@@ -1189,7 +1189,7 @@ namespace Harlinn::Common::Core
         explicit SafeArray( VariantType variantType, LONG lowerBound, UINT numberOfElements )
             : ptr_( 0 )
         {
-            ptr_ = SafeArrayCreateVectorEx( VARTYPE( variantType ), lowerBound, numberOfElements, nullptr );
+            ptr_ = SafeArrayCreateVector( VARTYPE( variantType ), lowerBound, numberOfElements );
             if ( !ptr_ )
             {
                 CheckHRESULT( E_OUTOFMEMORY );

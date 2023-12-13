@@ -1057,7 +1057,10 @@ public: \
                     ThrowOSError( ERROR_OUTOFMEMORY );
                 }
                 data_ = reinterpret_cast<wchar_t*>( ptr );
+#pragma warning(push)
+#pragma warning(disable:6011)
                 data_[size] = L'\x0';
+#pragma warning(pop)
             }
         }
 
@@ -1110,7 +1113,10 @@ public: \
                     }
                     data_ = reinterpret_cast<wchar_t*>( ptr );
                 }
+#pragma warning(push)
+#pragma warning(disable:6011)
                 data_[newSize] = L'\x0';
+#pragma warning(pop)
             }
             else
             {

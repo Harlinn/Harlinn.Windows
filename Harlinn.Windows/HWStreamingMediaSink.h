@@ -2,6 +2,7 @@
 #ifndef HARLINN_WINDOWS_HWSTREAMINGMEDIASINK_H_
 #define HARLINN_WINDOWS_HWSTREAMINGMEDIASINK_H_
 
+#include <HCCComImpl.h>
 #include "HWMediaFoundation.h"
 
 namespace Harlinn::Windows::MF
@@ -673,7 +674,7 @@ namespace Harlinn::Windows::MF
         }
     };
 
-    class StreamingMediaSink : public Com::IUknownImpl<StreamingMediaSink, IMFFinalizableMediaSink, IMFClockStateSink, IMFAsyncCallback>
+    class StreamingMediaSink : public Harlinn::Common::Core::Com::IUknownImpl<StreamingMediaSink, IMFFinalizableMediaSink, IMFClockStateSink, IMFAsyncCallback>
     {
     public:
         // IMFMediaSink interface:

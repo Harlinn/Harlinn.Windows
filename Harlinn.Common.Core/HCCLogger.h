@@ -41,8 +41,8 @@ namespace Harlinn::Common::Core::Logging
         size_t fixedSize_ = 0;
         UInt32 line_ = 0;
         UInt32 column_ = 0;
-        const char* file_;
-        const char* function_;
+        const char* file_ = nullptr;
+        const char* function_ = nullptr;
     public:
         using PrimaryKeyType = UInt64;
 
