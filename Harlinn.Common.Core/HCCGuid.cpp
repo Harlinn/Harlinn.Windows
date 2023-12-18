@@ -161,6 +161,59 @@ namespace Harlinn::Common::Core
         return Core::ToAnsiString( ToString( ) );
     }
 
+    namespace
+    {
+        bool IsHexadecimal( wchar_t value )
+        {
+            if ( value >= L'0' && value <= L'9' )
+            {
+                return true;
+            }
+            if ( value >= L'A' && value <= L'F' )
+            {
+                return true;
+            }
+            if ( value >= L'a' && value <= L'f' )
+            {
+                return true;
+            }
+            return false;
+        }
+        bool IsGuidImpl( const wchar_t* ptr )
+        {
+            // 8        4    4    4    12
+            //"97AF57A2-4079-4C9A-8033-8A254E021C12"
+            return IsHexadecimal( ptr[ 0 ] ) && IsHexadecimal( ptr[ 1 ] ) && IsHexadecimal( ptr[ 2 ] ) && IsHexadecimal( ptr[ 3 ] ) &&
+                IsHexadecimal( ptr[ 4 ] ) && IsHexadecimal( ptr[ 5 ] ) && IsHexadecimal( ptr[ 6 ] ) && IsHexadecimal( ptr[ 7 ] ) &&
+                ptr[ 8 ] == L'-' &&
+                IsHexadecimal( ptr[ 9 ] ) && IsHexadecimal( ptr[ 10 ] ) && IsHexadecimal( ptr[ 11 ] ) && IsHexadecimal( ptr[ 12 ] ) &&
+                ptr[ 13 ] == L'-' &&
+                IsHexadecimal( ptr[ 14 ] ) && IsHexadecimal( ptr[ 15 ] ) && IsHexadecimal( ptr[ 16 ] ) && IsHexadecimal( ptr[ 17 ] ) &&
+                ptr[ 18 ] == L'-' &&
+                IsHexadecimal( ptr[ 19 ] ) && IsHexadecimal( ptr[ 20 ] ) && IsHexadecimal( ptr[ 21 ] ) && IsHexadecimal( ptr[ 22 ] ) &&
+                ptr[ 23 ] == L'-' &&
+                IsHexadecimal( ptr[ 24 ] ) && IsHexadecimal( ptr[ 25 ] ) && IsHexadecimal( ptr[ 26 ] ) && IsHexadecimal( ptr[ 27 ] ) &&
+                IsHexadecimal( ptr[ 28 ] ) && IsHexadecimal( ptr[ 29 ] ) && IsHexadecimal( ptr[ 30 ] ) && IsHexadecimal( ptr[ 31 ] ) &&
+                IsHexadecimal( ptr[ 32 ] ) && IsHexadecimal( ptr[ 33 ] ) && IsHexadecimal( ptr[ 34 ] ) && IsHexadecimal( ptr[ 35 ] );
+        }
+    }
+    bool Guid::IsGuid( const WideString& uuid )
+    {
+        //"{97AF57A2-4079-4C9A-8033-8A254E021C12}"
+        auto length = uuid.Length( );
+        auto ptr = uuid.c_str( );
+        if ( length == 38 && ptr[ 0 ] == L'{' && ptr[ 37 ] == L'}' )
+        {
+            return IsGuidImpl( ptr + 1 );
+        }
+        else if ( length == 36 )
+        {
+            return IsGuidImpl( ptr );
+        }
+        return false;
+
+    }
+
 
     Guid Guid::NewGuid( )
     {

@@ -229,6 +229,7 @@ namespace Harlinn::Common::Core
             return data_;
         }
 
+        HCC_EXPORT static bool IsGuid( const WideString& uuid );
 
         HCC_EXPORT friend std::ostream& operator << ( std::ostream& stream, const Guid& guid );
 

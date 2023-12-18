@@ -1446,7 +1446,12 @@ namespace Harlinn::Common::Core::Services
         
         virtual void Done( )
         {
-            (void)UnregisterWait( waitForSingleObjectHandle_ );
+            try
+            {
+                ( void )UnregisterWait( waitForSingleObjectHandle_ );
+            }
+            catch(...)
+            { }
             serviceStopCompletedEventWaitHandle_.Signal( );
         }
         
