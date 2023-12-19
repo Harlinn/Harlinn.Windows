@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Label="Globals">
+    <MSBuildAllProjects Condition="'$(MSBuildVersion)' == '' Or '$(MSBuildVersion)' &lt; '16.0'">$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <ItemsProjectGuid>{62c8b9c5-851b-466f-90e9-87856728e63e}</ItemsProjectGuid>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);$(MSBuildThisFileDirectory)</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ProjectCapability Include="SourceItemsFromImports" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\utf8.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\utf8\checked.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\utf8\core.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\utf8\cpp11.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\utf8\cpp17.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\utf8\cpp20.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\utf8\unchecked.h" />
+  </ItemGroup>
+</Project>

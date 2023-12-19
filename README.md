@@ -1244,6 +1244,15 @@ Skia Color Management
 > Vorbis is a general purpose audio and music encoding format contemporary to MPEG-4's AAC 
 > and TwinVQ, the next generation beyond MPEG audio layer 3.
 
+**Project:** Harlinn.utfcpp
+
+### [utfcpp](https://github.com/nemtrif/utfcpp)
+**Version:** 4.0.4
+
+**Description:**
+> UTF8-CPP: UTF-8 with C++ in a Portable Way.
+
+
 **Project:** Harlinn.vorbis
 
 ### [Vulkan header files](https://github.com/KhronosGroup/Vulkan-Headers)
