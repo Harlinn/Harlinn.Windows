@@ -717,6 +717,14 @@ Packages Dear ImGui and ImPlot as a single dll.
 
 **Project:** Harlinn.libde265
 
+### [libebml](https://github.com/Matroska-Org/libebml)
+**Version:** 1.4.5 
+
+**Description:**
+> A C++ library to parse EBML files
+
+**Project:** Harlinn.libebml
+
 ### [FLAC - Free Lossless Audio Codec](https://github.com/xiph/flac)
 **Version:** 1.3.2 
 
