@@ -1,6 +1,6 @@
 ﻿# Harlinn.Windows
 
-This repository contains a Visual Studio Solution currently containing 565 projects.
+This repository contains a Visual Studio Solution currently containing 570 projects.
 
 Most of the projects are open source projects that I have found useful at work, and a few are my own.
 
@@ -9,9 +9,9 @@ Most of the projects are open source projects that I have found useful at work, 
 
 
 ## 3rd party libraries
-This solution contains a few useful C and C++ libraries located under the 3rdParty folder.
+This solution contains many useful C and C++ libraries that are located under the 3rdParty folder.
 
-Header only libraries are contained within ''Static library (.lib)'' projects, everything else creates a dll.
+Header only libraries are contained within ''Static library (.lib)'' or shared files projects, everything else creates a dll.
 
 All C++ code compiles using [/std:c++latest](https://docs.microsoft.com/en-us/cpp/build/reference/std-specify-language-standard-version?view=msvc-170) and [/Zc:__cplusplus](https://docs.microsoft.com/en-us/cpp/build/reference/zc-cplusplus?view=msvc-170)
 
