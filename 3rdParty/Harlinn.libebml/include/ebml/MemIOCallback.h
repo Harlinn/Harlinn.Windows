@@ -48,25 +48,25 @@ namespace libebml {
 class EBML_DLL_API MemIOCallback : public IOCallback
 {
 public:
-  MemIOCallback(uint64 DefaultSize = 128);
-  ~MemIOCallback() override;
+  EBML_EXPORT MemIOCallback(uint64 DefaultSize = 128);
+  EBML_EXPORT ~MemIOCallback() override;
 
   /*!
     Use this to copy some data to the Buffer from this classes data
   */
-  uint32 read(void *Buffer, size_t Size) override;
+  EBML_EXPORT uint32 read(void *Buffer, size_t Size) override;
 
   /*!
     Seek to the specified position. The mode can have either SEEK_SET, SEEK_CUR
     or SEEK_END. The callback should return true(1) if the seek operation succeeded
     or false (0), when the seek fails.
   */
-  void setFilePointer(int64 Offset, seek_mode Mode=seek_beginning) override;
+  EBML_EXPORT void setFilePointer(int64 Offset, seek_mode Mode=seek_beginning) override;
 
   /*!
     This callback just works like its read pendant. It returns the number of bytes written.
   */
-  size_t write(const void *Buffer, size_t Size) override;
+  EBML_EXPORT size_t write(const void *Buffer, size_t Size) override;
 
   /*!
     Although the position is always positive, the return value of this callback is signed to
@@ -75,7 +75,7 @@ public:
 
     If an error occurs, an exception should be thrown.
   */
-  uint64 getFilePointer() override {return dataBufferPos;}
+  EBML_EXPORT uint64 getFilePointer() override {return dataBufferPos;}
 
   /*!
     The close callback flushes the file buffers to disk and closes the file. When using the stdio
@@ -90,7 +90,7 @@ public:
   /*!
     Use this to write some data from another IOCallback
   */
-  uint32 write(IOCallback & IOToRead, size_t Size);
+  EBML_EXPORT uint32 write(IOCallback & IOToRead, size_t Size);
 
   bool IsOk() { return mOk; }
   const std::string &GetLastErrorStr() { return mLastErrorStr; }

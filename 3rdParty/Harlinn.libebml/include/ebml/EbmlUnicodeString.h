@@ -54,29 +54,29 @@ class EBML_DLL_API UTFstring {
 public:
   using value_type = wchar_t;
 
-  UTFstring();
-  UTFstring(const wchar_t *); // should be NULL terminated
-  UTFstring(const UTFstring &);
-  UTFstring(std::wstring const &);
+  EBML_EXPORT UTFstring();
+  EBML_EXPORT UTFstring(const wchar_t *); // should be NULL terminated
+  EBML_EXPORT UTFstring(const UTFstring &);
+  EBML_EXPORT UTFstring(std::wstring const &);
 
-  virtual ~UTFstring();
-  bool operator==(const UTFstring&) const;
+  EBML_EXPORT virtual ~UTFstring();
+  EBML_EXPORT bool operator==(const UTFstring&) const;
   inline bool operator!=(const UTFstring &cmp) const
   {
     return !(*this == cmp);
   }
-  UTFstring & operator=(const UTFstring &);
-  UTFstring & operator=(const wchar_t *);
-  UTFstring & operator=(wchar_t);
+  EBML_EXPORT UTFstring & operator=(const UTFstring &);
+  EBML_EXPORT UTFstring & operator=(const wchar_t *);
+  EBML_EXPORT UTFstring & operator=(wchar_t);
 
   /// Return length of string
   size_t length() const {return _Length;}
 
-  operator const wchar_t*() const;
-  const wchar_t* c_str() const {return _Data;}
+  EBML_EXPORT operator const wchar_t*() const;
+  EBML_EXPORT const wchar_t* c_str() const {return _Data;}
 
   const std::string & GetUTF8() const {return UTF8string;}
-  void SetUTF8(const std::string &);
+  EBML_EXPORT void SetUTF8(const std::string &);
 
 #if defined(EBML_STRICT_API)
     private:
@@ -86,9 +86,9 @@ public:
   size_t _Length; ///< length of the UCS string excluding the \0
   wchar_t* _Data; ///< internal UCS representation
   std::string UTF8string;
-  static bool wcscmp_internal(const wchar_t *str1, const wchar_t *str2);
-  void UpdateFromUTF8();
-  void UpdateFromUCS2();
+  EBML_EXPORT static bool wcscmp_internal(const wchar_t *str1, const wchar_t *str2);
+  EBML_EXPORT void UpdateFromUTF8();
+  EBML_EXPORT void UpdateFromUCS2();
 };
 
 
@@ -99,28 +99,28 @@ public:
 */
 class EBML_DLL_API EbmlUnicodeString : public EbmlElement {
   public:
-    EbmlUnicodeString();
-    EbmlUnicodeString(const UTFstring & DefaultValue);
+    EBML_EXPORT EbmlUnicodeString();
+    EBML_EXPORT EbmlUnicodeString(const UTFstring & DefaultValue);
     EbmlUnicodeString(const EbmlUnicodeString & ElementToClone) = default;
 
     ~EbmlUnicodeString() override = default;
 
     bool ValidateSize() const override {return IsFiniteSize();} // any size is possible
-    filepos_t RenderData(IOCallback & output, bool bForceRender, bool bWithDefault = false) override;
-    filepos_t ReadData(IOCallback & input, ScopeMode ReadFully = SCOPE_ALL_DATA) override;
-    filepos_t UpdateSize(bool bWithDefault = false, bool bForceRender = false) override;
+    EBML_EXPORT filepos_t RenderData(IOCallback & output, bool bForceRender, bool bWithDefault = false) override;
+    EBML_EXPORT filepos_t ReadData(IOCallback & input, ScopeMode ReadFully = SCOPE_ALL_DATA) override;
+    EBML_EXPORT filepos_t UpdateSize(bool bWithDefault = false, bool bForceRender = false) override;
 
-    EbmlUnicodeString & operator=(const UTFstring &); ///< platform dependant code
-    operator const UTFstring &() const;
+    EBML_EXPORT EbmlUnicodeString & operator=(const UTFstring &); ///< platform dependant code
+    EBML_EXPORT operator const UTFstring &() const;
 
-    EbmlUnicodeString &SetValue(UTFstring const &NewValue);
-    EbmlUnicodeString &SetValueUTF8(std::string const &NewValue);
-    UTFstring GetValue() const;
-    std::string GetValueUTF8() const;
+    EBML_EXPORT EbmlUnicodeString &SetValue(UTFstring const &NewValue);
+    EBML_EXPORT EbmlUnicodeString &SetValueUTF8(std::string const &NewValue);
+    EBML_EXPORT UTFstring GetValue() const;
+    EBML_EXPORT std::string GetValueUTF8() const;
 
-    void SetDefaultValue(UTFstring &);
+    EBML_EXPORT void SetDefaultValue(UTFstring &);
 
-    const UTFstring & DefaultVal() const;
+    EBML_EXPORT const UTFstring & DefaultVal() const;
 
     bool IsDefaultValue() const override {
       return (DefaultISset() && Value == DefaultValue);

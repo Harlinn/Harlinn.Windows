@@ -55,8 +55,8 @@ private:
 
 // Methoden...
 public:
-  CRTError(int Error,const std::string&Description);
-  CRTError(const std::string&Description,int Error=errno);
+  EBML_EXPORT CRTError(int Error,const std::string&Description);
+  EBML_EXPORT CRTError(const std::string&Description,int Error=errno);
 
   int getError() const noexcept { return Error; }
 };
@@ -70,30 +70,30 @@ class EBML_DLL_API StdIOCallback:public IOCallback
 
     public:
 //  StdIOCallback(const char*Path,const char*Mode);
-  StdIOCallback(const char*Path, open_mode Mode);
-  ~StdIOCallback() noexcept override;
+  EBML_EXPORT StdIOCallback(const char*Path, open_mode Mode);
+  EBML_EXPORT ~StdIOCallback() noexcept override;
 
-  uint32 read(void*Buffer,size_t Size) override;
+  EBML_EXPORT uint32 read(void*Buffer,size_t Size) override;
 
   // Seek to the specified position. The mode can have either SEEK_SET, SEEK_CUR
   // or SEEK_END. The callback should return true(1) if the seek operation succeeded
   // or false (0), when the seek fails.
-  void setFilePointer(int64 Offset,seek_mode Mode=seek_beginning) override;
+  EBML_EXPORT void setFilePointer(int64 Offset,seek_mode Mode=seek_beginning) override;
 
   // This callback just works like its read pendant. It returns the number of bytes written.
-  size_t write(const void*Buffer,size_t Size) override;
+  EBML_EXPORT size_t write(const void*Buffer,size_t Size) override;
 
   // Although the position is always positive, the return value of this callback is signed to
   // easily allow negative values for returning errors. When an error occurs, the implementor
   // should return -1 and the file pointer otherwise.
   //
   // If an error occurs, an exception should be thrown.
-  uint64 getFilePointer() override;
+  EBML_EXPORT uint64 getFilePointer() override;
 
   // The close callback flushes the file buffers to disk and closes the file. When using the stdio
   // library, this is equivalent to calling fclose. When the close is not successful, an exception
   // should be thrown.
-  void close() override;
+  EBML_EXPORT void close() override;
 };
 
 } // namespace libebml

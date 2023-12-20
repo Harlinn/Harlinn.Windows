@@ -43,13 +43,13 @@ protected:
   uint8 const *mStart, *mEnd, *mPtr;
 
 public:
-  MemReadIOCallback(void const *Ptr, size_t Size);
-  MemReadIOCallback(EbmlBinary const &Binary);
-  MemReadIOCallback(MemReadIOCallback const &Mem);
-  ~MemReadIOCallback() override = default;
+  EBML_EXPORT MemReadIOCallback(void const *Ptr, size_t Size);
+  EBML_EXPORT MemReadIOCallback(EbmlBinary const &Binary);
+  EBML_EXPORT MemReadIOCallback(MemReadIOCallback const &Mem);
+  EBML_EXPORT ~MemReadIOCallback() override = default;
 
-  uint32 read(void *Buffer, size_t Size) override;
-  void setFilePointer(int64 Offset, seek_mode Mode = seek_beginning) override;
+  EBML_EXPORT uint32 read(void *Buffer, size_t Size) override;
+  EBML_EXPORT void setFilePointer(int64 Offset, seek_mode Mode = seek_beginning) override;
   size_t write(void const *, size_t) override { return 0; }
   uint64 getFilePointer() override { return mPtr - mStart; }
   void close() override {}
@@ -57,7 +57,7 @@ public:
   uint64 GetDataBufferSize() const { return mEnd - mStart; }
 
 protected:
-  void Init(void const *Ptr, size_t Size);
+  EBML_EXPORT void Init(void const *Ptr, size_t Size);
 };
 
 } // namespace libebml

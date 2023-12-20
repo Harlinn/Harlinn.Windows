@@ -51,9 +51,9 @@ const int DEFAULT_UINT_SIZE = 0; ///< optimal size stored
 */
 class EBML_DLL_API EbmlUInteger : public EbmlElement {
   public:
-    EbmlUInteger();
-    EbmlUInteger(uint64 DefaultValue);
-    EbmlUInteger(const EbmlUInteger & ElementToClone) = default;
+    EBML_EXPORT EbmlUInteger();
+    EBML_EXPORT EbmlUInteger(uint64 DefaultValue);
+    EBML_EXPORT EbmlUInteger(const EbmlUInteger & ElementToClone) = default;
 
     EbmlUInteger & operator=(uint64 NewValue) {Value = NewValue; SetValueIsSet(); return *this;}
 
@@ -63,23 +63,23 @@ class EBML_DLL_API EbmlUInteger : public EbmlElement {
     void SetDefaultSize(uint64 nDefaultSize = DEFAULT_UINT_SIZE) override {EbmlElement::SetDefaultSize(nDefaultSize); SetSize_(nDefaultSize);}
 
     bool ValidateSize() const override {return IsFiniteSize() && (GetSize() <= 8);}
-    filepos_t RenderData(IOCallback & output, bool bForceRender, bool bWithDefault = false) override;
-    filepos_t ReadData(IOCallback & input, ScopeMode ReadFully = SCOPE_ALL_DATA) override;
-    filepos_t UpdateSize(bool bWithDefault = false, bool bForceRender = false) override;
+    EBML_EXPORT filepos_t RenderData(IOCallback & output, bool bForceRender, bool bWithDefault = false) override;
+    EBML_EXPORT filepos_t ReadData(IOCallback & input, ScopeMode ReadFully = SCOPE_ALL_DATA) override;
+    EBML_EXPORT filepos_t UpdateSize(bool bWithDefault = false, bool bForceRender = false) override;
 
-    bool IsSmallerThan(const EbmlElement *Cmp) const override;
+    EBML_EXPORT bool IsSmallerThan(const EbmlElement *Cmp) const override;
 
-    operator uint8()  const;
-    operator uint16() const;
-    operator uint32() const;
-    operator uint64() const;
+    EBML_EXPORT operator uint8()  const;
+    EBML_EXPORT operator uint16() const;
+    EBML_EXPORT operator uint32() const;
+    EBML_EXPORT operator uint64() const;
 
-    EbmlUInteger &SetValue(uint64 NewValue);
-    uint64 GetValue() const;
+    EBML_EXPORT EbmlUInteger &SetValue(uint64 NewValue);
+    EBML_EXPORT uint64 GetValue() const;
 
-    void SetDefaultValue(uint64);
+    EBML_EXPORT void SetDefaultValue(uint64);
 
-    uint64 DefaultVal() const;
+    EBML_EXPORT uint64 DefaultVal() const;
 
     bool IsDefaultValue() const override {
       return (DefaultISset() && Value == DefaultValue);

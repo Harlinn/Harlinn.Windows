@@ -47,7 +47,7 @@ public:
   class EBML_DLL_API EndOfStreamX {
   public:
     size_t mMissingBytes;
-    EndOfStreamX(std::size_t MissingBytes);
+    EBML_EXPORT EndOfStreamX(std::size_t MissingBytes);
   };
 
 private:
@@ -56,33 +56,33 @@ private:
   size_t mSize;
 
 public:
-  SafeReadIOCallback(IOCallback *IO, bool DeleteIO);
-  SafeReadIOCallback(void const *Mem, size_t Size);
-  SafeReadIOCallback(EbmlBinary const &Binary);
-  ~SafeReadIOCallback();
+  EBML_EXPORT SafeReadIOCallback(IOCallback *IO, bool DeleteIO);
+  EBML_EXPORT SafeReadIOCallback(void const *Mem, size_t Size);
+  EBML_EXPORT SafeReadIOCallback(EbmlBinary const &Binary);
+  EBML_EXPORT ~SafeReadIOCallback();
 
-  size_t GetPosition() const;
-  size_t GetSize() const;
-  size_t GetRemainingBytes() const;
-  bool IsEmpty() const;
+  EBML_EXPORT size_t GetPosition() const;
+  EBML_EXPORT size_t GetSize() const;
+  EBML_EXPORT size_t GetRemainingBytes() const;
+  EBML_EXPORT bool IsEmpty() const;
 
-  uint8  GetUInt8();
-  uint64 GetUIntBE(size_t NumBytes);
-  uint16 GetUInt16BE();
-  uint32 GetUInt24BE();
-  uint32 GetUInt32BE();
-  uint64 GetUInt64BE();
+  EBML_EXPORT uint8  GetUInt8();
+  EBML_EXPORT uint64 GetUIntBE(size_t NumBytes);
+  EBML_EXPORT uint16 GetUInt16BE();
+  EBML_EXPORT uint32 GetUInt24BE();
+  EBML_EXPORT uint32 GetUInt32BE();
+  EBML_EXPORT uint64 GetUInt64BE();
 
-  void Read(void *Dst, size_t Count);
+  EBML_EXPORT void Read(void *Dst, size_t Count);
 
-  void Skip(size_t Count);
-  void Seek(size_t Position);
+  EBML_EXPORT void Skip(size_t Count);
+  EBML_EXPORT void Seek(size_t Position);
 
 private:
   SafeReadIOCallback(SafeReadIOCallback const &) { }
 
 protected:
-  void Init(IOCallback *IO, bool DeleteIO);
+  EBML_EXPORT void Init(IOCallback *IO, bool DeleteIO);
 };
 
 } // namespace libebml

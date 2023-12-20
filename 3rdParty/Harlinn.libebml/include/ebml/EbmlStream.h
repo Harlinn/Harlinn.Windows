@@ -48,17 +48,17 @@ namespace libebml {
 */
 class EBML_DLL_API EbmlStream {
   public:
-    EbmlStream(IOCallback & DataStream);
-    ~EbmlStream() = default;
+    EBML_EXPORT EbmlStream(IOCallback & DataStream);
+    EBML_EXPORT ~EbmlStream() = default;
 
     /*!
       \brief Find a possible next ID in the data stream
       \param MaxDataSize The maximum possible of the data in the element (for sanity checks)
       \note the user will have to delete that element later
     */
-    EbmlElement * FindNextID(const EbmlCallbacks & ClassInfos, uint64 MaxDataSize);
+    EBML_EXPORT EbmlElement * FindNextID(const EbmlCallbacks & ClassInfos, uint64 MaxDataSize);
 
-    EbmlElement * FindNextElement(const EbmlSemanticContext & Context, int & UpperLevel, uint64 MaxDataSize, bool AllowDummyElt, unsigned int MaxLowerLevel = 1);
+    EBML_EXPORT EbmlElement * FindNextElement(const EbmlSemanticContext & Context, int & UpperLevel, uint64 MaxDataSize, bool AllowDummyElt, unsigned int MaxLowerLevel = 1);
 
     inline IOCallback & I_O() {return Stream;}
         operator IOCallback &() {return Stream;}

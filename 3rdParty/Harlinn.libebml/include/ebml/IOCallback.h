@@ -85,11 +85,11 @@ public:
   // The readFully is made virtual to allow derived classes to use another
   // implementation for this method, which e.g. does not read any data
   // unlike this does
-  void readFully(void*Buffer,size_t Size);
+  EBML_EXPORT void readFully(void*Buffer,size_t Size);
 
   template<class STRUCT> void readStruct(STRUCT&Struct){readFully(&Struct,sizeof(Struct));}
 
-  void writeFully(const void*Buffer,size_t Size);
+  EBML_EXPORT void writeFully(const void*Buffer,size_t Size);
 
   template<class STRUCT> void writeStruct(const STRUCT&Struct){writeFully(&Struct,sizeof(Struct));}
 };

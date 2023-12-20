@@ -49,26 +49,26 @@ namespace libebml {
 */
 class EBML_DLL_API EbmlString : public EbmlElement {
   public:
-    EbmlString();
-    EbmlString(const std::string & aDefaultValue);
-    EbmlString(const EbmlString & ElementToClone) = default;
+    EBML_EXPORT EbmlString();
+    EBML_EXPORT EbmlString(const std::string & aDefaultValue);
+    EBML_EXPORT EbmlString(const EbmlString & ElementToClone) = default;
 
-    ~EbmlString() override = default;
+    EBML_EXPORT ~EbmlString() override = default;
 
     bool ValidateSize() const override {return IsFiniteSize() && GetSize() < 0x7FFFFFFF;} // any size is possible
-    filepos_t RenderData(IOCallback & output, bool bForceRender, bool bWithDefault = false) override;
-    filepos_t ReadData(IOCallback & input, ScopeMode ReadFully = SCOPE_ALL_DATA) override;
-    filepos_t UpdateSize(bool bWithDefault = false, bool bForceRender = false) override;
+    EBML_EXPORT filepos_t RenderData(IOCallback & output, bool bForceRender, bool bWithDefault = false) override;
+    EBML_EXPORT filepos_t ReadData(IOCallback & input, ScopeMode ReadFully = SCOPE_ALL_DATA) override;
+    EBML_EXPORT filepos_t UpdateSize(bool bWithDefault = false, bool bForceRender = false) override;
 
-    EbmlString & operator=(const std::string &);
-    operator const std::string &() const;
+    EBML_EXPORT EbmlString & operator=(const std::string &);
+    EBML_EXPORT operator const std::string &() const;
 
-    EbmlString &SetValue(std::string const &NewValue);
-    std::string GetValue() const;
+    EBML_EXPORT EbmlString &SetValue(std::string const &NewValue);
+    EBML_EXPORT std::string GetValue() const;
 
-    void SetDefaultValue(std::string &);
+    EBML_EXPORT void SetDefaultValue(std::string &);
 
-    const std::string & DefaultVal() const;
+    EBML_EXPORT const std::string & DefaultVal() const;
 
     bool IsDefaultValue() const override {
       return (DefaultISset() && Value == DefaultValue);
