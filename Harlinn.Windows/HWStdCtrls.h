@@ -1523,7 +1523,7 @@ namespace Harlinn::Windows
         HW_EXPORT TextEditBase( );
     };
 
-    enum class TextEditStyles
+    enum class TextEditStyles : UInt32
     {
         AlignLeft = ES_LEFT,
         AlignCenter = ES_CENTER,
@@ -1540,16 +1540,17 @@ namespace Harlinn::Windows
         WantReturn = ES_WANTRETURN,
         Numeric = ES_NUMBER
     };
+    HCC_DEFINE_ENUM_FLAG_OPERATORS( TextEditStyles, UInt32 );
 
     // --------------------------------------------------------------------
     // TextEdit
     // --------------------------------------------------------------------
     class TextEdit : public TextEditBase
     {
-        HorizontalAlignment alignment;
+        TextEditStyles editStyle_ = TextEditStyles::AlignLeft;
     public:
         using Base=TextEditBase;
-        HW_EXPORT TextEdit( );
+        HW_EXPORT TextEdit( TextEditStyles editStyle = TextEditStyles::AlignLeft );
 
 
 

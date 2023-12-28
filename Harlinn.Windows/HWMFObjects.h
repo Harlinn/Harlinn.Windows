@@ -1834,6 +1834,12 @@ namespace Harlinn::Windows
             auto hr = MFSetAttributeRatio(pInterface, MF_MT_FRAME_RATE, numerator, denominator);
             HCC_COM_CHECK_HRESULT(hr);
         }
+
+        void SetFrameRate( const std::pair<UINT32, UINT32>& frameRate ) const
+        {
+            SetFrameRate( frameRate.first, frameRate.second );
+        }
+
         void GetFrameRate(UINT32* numerator, UINT32* denominator) const
         {
             InterfaceType* pInterface = GetInterface();
@@ -1841,19 +1847,37 @@ namespace Harlinn::Windows
             HCC_COM_CHECK_HRESULT(hr);
         }
 
+        std::pair<UINT32, UINT32> GetFrameRate( ) const
+        {
+            std::pair<UINT32, UINT32> result;
+            GetFrameRate( &result.first, &result.second );
+            return result;
+        }
+
+
         void SetPixelAspectRatio( UINT32 horizontal, UINT32 vertical ) const
         {
             InterfaceType* pInterface = GetInterface( );
             auto hr = MFSetAttributeRatio( pInterface, MF_MT_PIXEL_ASPECT_RATIO, horizontal, vertical );
             HCC_COM_CHECK_HRESULT( hr );
         }
+        void SetPixelAspectRatio( const std::pair<UINT32, UINT32>& pixelAspectRatio ) const
+        {
+            SetFrameRate( pixelAspectRatio.first, pixelAspectRatio.second );
+        }
+
         void GetPixelAspectRatio( UINT32* horizontal, UINT32* vertical ) const
         {
             InterfaceType* pInterface = GetInterface( );
             auto hr = MFGetAttributeRatio( pInterface, MF_MT_PIXEL_ASPECT_RATIO, horizontal, vertical );
             HCC_COM_CHECK_HRESULT( hr );
         }
-
+        std::pair<UINT32, UINT32> GetPixelAspectRatio( ) const
+        {
+            std::pair<UINT32, UINT32> result;
+            GetPixelAspectRatio( &result.first, &result.second );
+            return result;
+        }
 
         void SetFrameSize(UINT32 width, UINT32 height) const
         {

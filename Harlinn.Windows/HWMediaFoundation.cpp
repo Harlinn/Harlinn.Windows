@@ -110,8 +110,17 @@ namespace Harlinn::Windows::MF
         IF_EQUAL_RETURN(guid, MFMediaType_Binary);
         IF_EQUAL_RETURN(guid, MFMediaType_FileTransfer);
 
+        IF_EQUAL_RETURN(guid, MFVideoFormat_RGB32 );
+        IF_EQUAL_RETURN(guid, MFVideoFormat_ARGB32 );
+        IF_EQUAL_RETURN(guid, MFVideoFormat_RGB24 );
+        IF_EQUAL_RETURN(guid, MFVideoFormat_RGB555 );
+        IF_EQUAL_RETURN(guid, MFVideoFormat_RGB565 );
+        IF_EQUAL_RETURN(guid, MFVideoFormat_RGB8 );
+        IF_EQUAL_RETURN(guid, MFVideoFormat_L8 );
+        IF_EQUAL_RETURN(guid, MFVideoFormat_L16 );
+        IF_EQUAL_RETURN(guid, MFVideoFormat_D16 );
         IF_EQUAL_RETURN(guid, MFVideoFormat_AI44); //     FCC('AI44')
-        IF_EQUAL_RETURN(guid, MFVideoFormat_ARGB32); //   D3DFMT_A8R8G8B8 
+        
         IF_EQUAL_RETURN(guid, MFVideoFormat_AYUV); //     FCC('AYUV')
         IF_EQUAL_RETURN(guid, MFVideoFormat_DV25); //     FCC('dv25')
         IF_EQUAL_RETURN(guid, MFVideoFormat_DV50); //     FCC('dv50')
@@ -156,6 +165,12 @@ namespace Harlinn::Windows::MF
         IF_EQUAL_RETURN(guid, MFVideoFormat_YUY2); //     FCC('YUY2')
         IF_EQUAL_RETURN(guid, MFVideoFormat_YV12); //     FCC('YV12')
         IF_EQUAL_RETURN(guid, MFVideoFormat_YVYU);
+        IF_EQUAL_RETURN( guid, MFVideoFormat_H263 );
+        IF_EQUAL_RETURN( guid, MFVideoFormat_A2R10G10B10 );
+        IF_EQUAL_RETURN( guid, MFVideoFormat_A16B16G16R16F );
+        IF_EQUAL_RETURN( guid, MFVideoFormat_VP10 );
+        IF_EQUAL_RETURN( guid, MFVideoFormat_AV1 );
+        IF_EQUAL_RETURN( guid, MFVideoFormat_420O );
 
         IF_EQUAL_RETURN( guid, MEDIASUBTYPE_I420 );
         IF_EQUAL_RETURN( guid, MEDIASUBTYPE_IYUV );
@@ -640,7 +655,7 @@ namespace Harlinn::Windows::MF
         IF_EQUAL_RETURN( guid, MF_VIDEO_PROCESSOR_ALGORITHM );
         IF_EQUAL_RETURN( guid, MF_VIDEODSP_MODE );
         IF_EQUAL_RETURN( guid, MF_VIRTUALCAMERA_ASSOCIATED_CAMERA_SOURCES );
-        //IF_EQUAL_RETURN( guid, MF_VIRTUALCAMERA_APP_PACKAGE_FAMILY_NAME );
+        IF_EQUAL_RETURN( guid, MF_VIRTUALCAMERA_CONFIGURATION_APP_PACKAGE_FAMILY_NAME );
         IF_EQUAL_RETURN( guid, MF_VIRTUALCAMERA_PROVIDE_ASSOCIATED_CAMERA_SOURCES );
         IF_EQUAL_RETURN( guid, MF_XVP_CALLER_ALLOCATES_OUTPUT );
         IF_EQUAL_RETURN( guid, MF_XVP_DISABLE_FRC );
@@ -754,11 +769,107 @@ namespace Harlinn::Windows::MF
             }
             return result;
         }
+        else if ( attributeKey == MF_MT_FRAME_SIZE )
+        {
+            auto attributeValue = attributes.GetUINT64( attributeKey );
+            UInt32 width = static_cast< UInt32 >( attributeValue >> 32 );
+            UInt32 height = static_cast< UInt32 >( attributeValue );
+            auto result = Format( L"W:{},H:{}", width, height );
+            return result;
+        }
+        else if ( attributeKey == MF_MT_FRAME_RATE || attributeKey == MF_MT_FRAME_RATE_RANGE_MIN || attributeKey == MF_MT_FRAME_RATE_RANGE_MAX )
+        {
+            auto attributeValue = attributes.GetUINT64( attributeKey );
+            UInt32 numerator = static_cast< UInt32 >( attributeValue >> 32 );
+            UInt32 denominator = static_cast< UInt32 >( attributeValue );
+            double rate = static_cast< double >( numerator ) / static_cast< double >( denominator );
+            auto result = Format(std::locale::classic(), L"{}/{} ({})", numerator, denominator, rate );
+            return result;
+        }
+        else if ( attributeKey == MF_MT_PIXEL_ASPECT_RATIO )
+        {
+            auto attributeValue = attributes.GetUINT64( attributeKey );
+            UInt32 width = static_cast< UInt32 >( attributeValue >> 32 );
+            UInt32 height = static_cast< UInt32 >( attributeValue );
+            auto result = Format( L"W:{}/H:{}", width, height );
+            return result;
+        }
         else
         {
-            PropertyVariant attributeValue;
-            attributes.GetItem( attributeKey, &attributeValue );
-            return attributeValue.AsWideString( );
+            WideString result;
+            auto attributeType = attributes.GetItemType( attributeKey );
+            switch ( attributeType )
+            {
+                case MF_ATTRIBUTE_TYPE::MF_ATTRIBUTE_UINT32:
+                {
+                    auto attributeValue = attributes.GetUINT32( attributeKey );
+                    result = ToWideString( attributeValue );
+                }
+                break;
+                case MF_ATTRIBUTE_TYPE::MF_ATTRIBUTE_UINT64:
+                {
+                    auto attributeValue = attributes.GetUINT64( attributeKey );
+                    result = ToWideString( attributeValue );
+                }
+                break;
+                case MF_ATTRIBUTE_TYPE::MF_ATTRIBUTE_DOUBLE:
+                {
+                    auto attributeValue = attributes.GetDouble( attributeKey );
+                    result = ToWideString( attributeValue );
+                }
+                break;
+                case MF_ATTRIBUTE_TYPE::MF_ATTRIBUTE_GUID:
+                {
+                    auto attributeValue = attributes.GetGUID( attributeKey );
+                    result = GetGUIDNameConst( attributeValue );
+                }
+                break;
+                case MF_ATTRIBUTE_TYPE::MF_ATTRIBUTE_STRING:
+                {
+                    auto attributeValue = attributes.GetString( attributeKey );
+                    result = attributeValue;
+                }
+                break;
+                case MF_ATTRIBUTE_TYPE::MF_ATTRIBUTE_BLOB:
+                {
+                    auto attributeSize = attributes.GetBlobSize( attributeKey );
+                    if ( attributeSize )
+                    {
+                        std::vector<Byte> blobData;
+                        blobData.resize( attributeSize );
+                        attributes.GetBlob( attributeKey, blobData.data( ), attributeSize );
+
+                        result.SetLength( attributeSize * 2 );
+                        auto textPtr = result.data( );
+                        for ( size_t i = 0; i < attributeSize; i++ )
+                        {
+                            wchar_t buffer[ 5 ];
+                            auto byteValue = blobData[ i ];
+                            _ultow( byteValue, buffer, 16 );
+                            *textPtr = buffer[ 0 ];
+                            textPtr++;
+                            *textPtr = buffer[ 1 ];
+                            textPtr++;
+                        }
+
+                    }
+                }
+                break;
+                case MF_ATTRIBUTE_TYPE::MF_ATTRIBUTE_IUNKNOWN:
+                {
+                    auto attributeValue = attributes.GetUnknown<Unknown>( attributeKey );
+                    if ( attributeValue )
+                    {
+                        auto interfaceNames = Com::GetSupportedKnownInterfaces( attributeValue.GetInterfacePointer( ) );
+                        for ( const auto& interfaceName : interfaceNames )
+                        {
+                            result += interfaceName + ',';
+                        }
+                    }
+                }
+                break;
+            }
+            return result;
         }
     }
     
@@ -795,15 +906,18 @@ namespace Harlinn::Windows::MF
         {
             auto attributeKey = mediaType.GetItemKeyByIndex(i);
             auto attrType = mediaType.GetItemType(attributeKey);
-
+            
             
             auto attributeKeyStr = GetGUIDNameConst(attributeKey);
             if (attributeKeyStr.empty())
             {
                 attributeKeyStr = attributeKey.ToString();
             }
+
+            auto attributeValue = GetAttributeValue( mediaType, attributeKey );
             
-            description += L"    " + attributeKeyStr + L"=";
+            description += L"    " + attributeKeyStr + L"=" + attributeValue;
+            /*
             switch (attrType)
             {
                 case MF_ATTRIBUTE_UINT32:
@@ -880,7 +994,7 @@ namespace Harlinn::Windows::MF
                     break;
                 }
             }
-
+            */
             description += L"\n";
         }
 

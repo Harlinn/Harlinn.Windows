@@ -1833,8 +1833,8 @@ namespace Harlinn::Windows
         SetProcedure( procedure );
     }
 
-    TextEdit::TextEdit( )
-        : Base( )
+    TextEdit::TextEdit( TextEditStyles editStyle )
+        : Base( ), editStyle_( editStyle )
     {
 
     }
@@ -1854,7 +1854,7 @@ namespace Harlinn::Windows
 
     DWORD TextEdit::GetStyle( ) const
     {
-        return Base::GetStyle( );
+        return Base::GetStyle( ) + static_cast<UInt32>( editStyle_ );
     }
 
 

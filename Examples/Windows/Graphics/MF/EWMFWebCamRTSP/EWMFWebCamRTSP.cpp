@@ -14,17 +14,13 @@ int main()
     Harlinn::Common::Core::ComInitialize initialize;
     MF::MediaFoundation mediaFoundation;
 
-    _putws( L"Video Encoders:" );
-    MF::PrintVideoEncoders( );
-    _putws( L"Video Decoders:" );
-    MF::PrintVideoDecoders( );
+    OutPacketBuffer::maxSize = 300000;
 
     TaskScheduler* taskScheduler = BasicTaskScheduler::createNew( );
     auto* usageEnvironment = BasicUsageEnvironment::createNew( *taskScheduler );
 
     auto mediaFoundationRTSPServer = MediaFoundationRTSPServer::Create( *usageEnvironment, 39000 );
     
-    OutPacketBuffer::maxSize = 600000;
     auto sms = ServerMediaSession::createNew( *usageEnvironment, "Camera", "Camera", "Camera Stream" );
     sms->addSubsession( MediaFoundationMediaSubsession::createNew( *usageEnvironment, True ) );
     mediaFoundationRTSPServer-> addServerMediaSession( sms );

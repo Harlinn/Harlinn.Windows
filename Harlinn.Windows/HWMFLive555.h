@@ -12,26 +12,17 @@
 
 namespace Harlinn::Windows::LiveMedia
 {
+
 	class MediaFoundationH264LiveSource : public FramedSource
 	{
 	public:
 		using Base = FramedSource;
-		static constexpr size_t BufferSize = 300'000;
+	public:
+		static constexpr int DeviceIndex = 0;
 	private:
-		
-		// Note that this if the video device does not support this frame rate the video source reader will fail to initialise.
-		static const int TARGET_FRAME_RATE = 30; // 5; 15; 30
-		
-		// Adjusting this affects the quality of the H264 bit stream.
-		static const int TARGET_AVERAGE_BIT_RATE = 5000000; 
-		
-		// Set to 0 to use default system webcam.
-		static const int WEBCAM_DEVICE_INDEX = 0;
-
-		bool _isInitialised = false;
-		EventTriggerId eventTriggerId = 0;
-		int _frameCount = 0;
-		long int _lastSendAt;
+		bool initialised_ = false;
+		EventTriggerId eventTriggerId_ = 0;
+		int frameCount_ = 0;
 
 		MFMediaSource videoSource_;
 		MFSourceReader videoSourceReader_;
@@ -39,24 +30,19 @@ namespace Harlinn::Windows::LiveMedia
 		// The H264 Encoder MFT
 		MFTransform encoderTransform_; 
 		
-		MFT_OUTPUT_DATA_BUFFER outputDataBuffer_;
-		
 		MFMediaType videoSourceReaderMediaType_;
 		MFMediaType encoderTransformInputMediaType_; 
 		MFMediaType encoderTransformOutputMediaType_;
-		DWORD mftStatus = 0;
-
 	public:
 		static MediaFoundationH264LiveSource* createNew( UsageEnvironment& env )
 		{
 			return new MediaFoundationH264LiveSource( env );
 		}
 
-		MediaFoundationH264LiveSource( UsageEnvironment& env ) :
-			Base( env )
+		MediaFoundationH264LiveSource( UsageEnvironment& env ) 
+			: Base( env )
 		{
-			_lastSendAt = GetTickCount( );
-			eventTriggerId = envir( ).taskScheduler( ).createEventTrigger( deliverFrame0 );
+			eventTriggerId_ = envir( ).taskScheduler( ).createEventTrigger( deliverFrame0 );
 		}
 
 		~MediaFoundationH264LiveSource( )
@@ -68,159 +54,117 @@ namespace Harlinn::Windows::LiveMedia
 			return true;
 		}
 
+		virtual unsigned maxFrameSize( ) const override
+		{
+			return 150000; 
+		}
+
 		static void deliverFrame0( void* clientData )
 		{
 			( ( MediaFoundationH264LiveSource* )clientData )->doGetNextFrame( );
 		}
 
-		bool initialise( )
+		bool Initialise( )
 		{
-			// Get the first available webcam.
-			MFAttributes videoSourceConfig = MFAttributes::Create( 1 );
-
-			// Request video capture devices.
-			videoSourceConfig.SetGUID( MF_DEVSOURCE_ATTRIBUTE_SOURCE_TYPE, MF_DEVSOURCE_ATTRIBUTE_SOURCE_TYPE_VIDCAP_GUID );
-
 			auto deviceSources = MF::DeviceSources::CreateVideoDeviceSources( );
-			auto deviceSource = deviceSources[ WEBCAM_DEVICE_INDEX ];
+			
+			// Get the first available webcam.
+			auto deviceSource = deviceSources[ DeviceIndex ];
 			auto webcamFriendlyName = deviceSource.GetString( MF_DEVSOURCE_ATTRIBUTE_FRIENDLY_NAME );
-
-			wprintf( L"First available webcam: %s\n", webcamFriendlyName.c_str() );
 			
 			videoSource_ = deviceSource.ActivateObject<MFMediaSource>( );
-
-			//auto videoSourceKnownInterfaces = Com::GetSupportedKnownInterfaces( videoSource_.GetInterfacePointer( ) );
+			
+			// Request video capture devices.
+			MFAttributes videoSourceConfig = MFAttributes::Create( 1 );
+			videoSourceConfig.SetGUID( MF_DEVSOURCE_ATTRIBUTE_SOURCE_TYPE, MF_DEVSOURCE_ATTRIBUTE_SOURCE_TYPE_VIDCAP_GUID );
 
 			videoSourceReader_ = MFSourceReader::CreateSourceReaderFromMediaSource( videoSource_, videoSourceConfig );
 
-			//auto videoSourceReaderKnownInterfaces = Com::GetSupportedKnownInterfaces( videoSourceReader_.GetInterfacePointer( ) );
-
-			//MF::PrintMediaTypeDescriptions( 0, videoSourceReader_ );
-
-
 			videoSourceReaderMediaType_ = videoSourceReader_.GetCurrentMediaType( 0 );
-
-			MF::PrintMediaTypeDescription( videoSourceReaderMediaType_ );
 			 
 			encoderTransform_ = Unknown::CoCreateInstanceFromClassId<MFTransform>( CLSID_CMSH264EncoderMFT );
 
-			//auto encoderTransformKnownInterfaces = Com::GetSupportedKnownInterfaces( videoSource_.GetInterfacePointer( ) );
-			Com::PrintSupportedKnownInterfaces( videoSource_.GetInterfacePointer( ) );
-
-			puts( "Transform output type descritions;" );
-			MF::PrintOutputMediaTypeDescriptions( 0, encoderTransform_ );
-
-			//auto codecAPI = encoderTransform_.As<DirectShow::CodecAPI>( );
-			//codecAPI.SetValue( CODECAPI_AVLowLatencyMode, true );
-			
-
 			encoderTransformOutputMediaType_ = MFMediaType::Create( MFMediaType_Video, MFVideoFormat_H264 );
-			//encoderTransformOutputMediaType_.SetAverageBitRate( videoSourceReaderMediaType_.GetAverageBitRate() );
-			encoderTransformOutputMediaType_.SetAverageBitRate( 4423680000 );
+			encoderTransformOutputMediaType_.SetAverageBitRate( 442368000 );
 			encoderTransformOutputMediaType_.SetFrameSize( videoSourceReaderMediaType_.GetFrameSize() );
-			encoderTransformOutputMediaType_.SetFrameRate( TARGET_FRAME_RATE );
+			encoderTransformOutputMediaType_.SetFrameRate( videoSourceReaderMediaType_.GetFrameRate() );
 			encoderTransformOutputMediaType_.SetPixelAspectRatio( 1, 1 );
 			encoderTransformOutputMediaType_.SetInterlaceMode( MFVideoInterlaceMode::MFVideoInterlace_Progressive );
 			encoderTransformOutputMediaType_.SetAllSamplesIndependent( );
 
 			encoderTransform_.SetOutputType(0, encoderTransformOutputMediaType_ );
 
-			puts( "Transform Input type descritions;" );
-			MF::PrintInputMediaTypeDescriptions( 0, encoderTransform_ );
-
-			
 			encoderTransformInputMediaType_ = videoSourceReaderMediaType_.Clone( );
 			
 			encoderTransform_.SetInputType( 0, encoderTransformInputMediaType_ );
 
+			auto encoderTransformStatus = encoderTransform_.GetInputStatus( 0 );
 
-			mftStatus = encoderTransform_.GetInputStatus( 0 );
-
-			if ( MFT_INPUT_STATUS_ACCEPT_DATA != mftStatus )
-			{
-				printf( "E: ApplyTransform() pTransform->GetInputStatus() not accept data.\n" );
-				printf( "MediaFoundationH264LiveSource initialisation failed.\n" );
-				return false;
-			}
-			encoderTransform_.ProcessMessage( MFT_MESSAGE_NOTIFY_BEGIN_STREAMING );
-			encoderTransform_.ProcessMessage( MFT_MESSAGE_NOTIFY_START_OF_STREAM );
-
-			auto hr = MFTRegisterLocalByCLSID(__uuidof( CColorConvertDMO ), MFT_CATEGORY_VIDEO_PROCESSOR, L"", MFT_ENUM_FLAG_SYNCMFT, 0, nullptr, 0, nullptr );
-			HCC_COM_CHECK_HRESULT( hr );
-			
-			memset( &outputDataBuffer_, 0, sizeof outputDataBuffer_ );
-
-			return true;
+			return encoderTransformStatus == MFT_INPUT_STATUS_ACCEPT_DATA;
 
 		}
 
 		virtual void doGetNextFrame( )
 		{
-			if ( !_isInitialised )
+			if ( !initialised_ )
 			{
-				_isInitialised = true;
-				if ( !initialise( ) )
+				initialised_ = true;
+				if ( !Initialise( ) )
 				{
 					printf( "Video device initialisation failed, stopping." );
 					return;
 				}
 			}
 
-			if ( !isCurrentlyAwaitingData( ) ) return;
-
-			DWORD processOutputStatus = 0;
-			DWORD streamIndex, flags;
-			LONGLONG llVideoTimeStamp, llSampleDuration;
+			if ( isCurrentlyAwaitingData( ) == 0 )
+			{
+				return;
+			}
+			
+			DWORD streamIndex; 
+			DWORD flags;
+			LONGLONG videoTimeStamp;
 			bool frameSent = false;
 
-			auto videoSample = videoSourceReader_.ReadSample( MF_SOURCE_READER_FIRST_VIDEO_STREAM, 0, &streamIndex, &flags, &llVideoTimeStamp );
-
-
+			auto videoSample = videoSourceReader_.ReadSample( MF_SOURCE_READER_FIRST_VIDEO_STREAM, 0, &streamIndex, &flags, &videoTimeStamp );
 			if ( videoSample )
 			{
-				_frameCount++;
-				videoSample.SetSampleTime( llVideoTimeStamp );
-				videoSample.GetSampleDuration( &llSampleDuration );
+				frameCount_++;
+				videoSample.SetSampleTime( videoTimeStamp );
+				auto sampleDuration = videoSample.GetSampleDuration( );
 
 				// Pass the video sample to the H.264 transform.
 				encoderTransform_.ProcessInput( 0, videoSample, 0 );
 
-				auto mftOutFlags = encoderTransform_.GetOutputStatus( );
+				auto encoderTransformOutputStatus = encoderTransform_.GetOutputStatus( );
 
-				if ( mftOutFlags == MFT_OUTPUT_STATUS_SAMPLE_READY )
+				if ( encoderTransformOutputStatus == MFT_OUTPUT_STATUS_SAMPLE_READY )
 				{
-					//printf( "Sample ready.\n" );
+					auto outputStreamInfo = encoderTransform_.GetOutputStreamInfo( 0 );
 
-					auto StreamInfo = encoderTransform_.GetOutputStreamInfo( 0 );
+					auto outSample = MFSample::Create( );
 
-					auto mftOutSample = MFSample::Create( );
-
-					auto pBuffer = MFMediaBuffer::CreateMemoryBuffer( StreamInfo.cbSize );
-					mftOutSample.AddBuffer( pBuffer );
+					auto memoryBuffer = MFMediaBuffer::CreateMemoryBuffer( outputStreamInfo.cbSize );
+					outSample.AddBuffer( memoryBuffer );
 
 					while ( true )
 					{
-						outputDataBuffer_.dwStreamID = 0;
-						outputDataBuffer_.dwStatus = 0;
-						outputDataBuffer_.pEvents = NULL;
-						outputDataBuffer_.pSample = mftOutSample;
+						MFT_OUTPUT_DATA_BUFFER outputDataBuffer{};
+						outputDataBuffer.pSample = outSample;
 
-						auto mftProcessOutput = encoderTransform_.ProcessOutput( 0, 1, &outputDataBuffer_, &processOutputStatus );
+						DWORD processOutputStatus = 0;
+
+						auto mftProcessOutput = encoderTransform_.ProcessOutput( 0, 1, &outputDataBuffer, &processOutputStatus );
 
 						if ( mftProcessOutput != MF::TransformOutputResult::NeedMoreInput )
 						{
-							mftOutSample.SetSampleTime( llVideoTimeStamp );
-							mftOutSample.SetSampleDuration( llSampleDuration );
+							outSample.SetSampleTime( videoTimeStamp );
+							outSample.SetSampleDuration( sampleDuration );
 
-							auto buf = mftOutSample.ConvertToContiguousBuffer( );
+							auto buf = outSample.ConvertToContiguousBuffer( );
 							auto bufLength = buf.GetCurrentLength( );
 							BYTE* rawBuffer = NULL;
 
-							auto now = GetTickCount( );
-
-							//printf( "Writing sample %i, spacing %I64dms, sample time %I64d, sample duration %I64d, sample size %i.\n", _frameCount, now - _lastSendAt, llVideoTimeStamp, llSampleDuration, bufLength );
-
-							
 							fDurationInMicroseconds = 0;
 							gettimeofday( &fPresentationTime, NULL );
 
@@ -238,24 +182,19 @@ namespace Harlinn::Windows::LiveMedia
 								memmove( fTo, rawBuffer, fMaxSize );
 								fNumTruncatedBytes = bufLength - fMaxSize;
 							}
-
-							FramedSource::afterGetting( this );
+							
 							buf.Unlock( );
+							FramedSource::afterGetting( this );
 							frameSent = true;
-							_lastSendAt = GetTickCount( );
 						}
 						break;
 					}
-				}
-				else
-				{
-					//printf( "No sample.\n" );
 				}
 			}
 
 			if ( !frameSent )
 			{
-				envir( ).taskScheduler( ).triggerEvent( eventTriggerId, this );
+				envir( ).taskScheduler( ).triggerEvent( eventTriggerId_, this );
 			}
 
 			return;
@@ -265,11 +204,11 @@ namespace Harlinn::Windows::LiveMedia
 
 	class MediaFoundationMediaSubsession : public OnDemandServerMediaSubsession
 	{
-		char* auxSDPLine_;
+		char* auxSDPLine_ = nullptr;
 
 		// used when setting up "auxSDPLine_"
-		char doneFlag_; 
-		RTPSink* dummyRTPSink_; 
+		char doneFlag_ = 0; 
+		RTPSink* dummyRTPSink_ = nullptr;
 		
 	public:
 		using Base = OnDemandServerMediaSubsession;
@@ -366,8 +305,6 @@ namespace Harlinn::Windows::LiveMedia
 		}
 		virtual FramedSource* createNewStreamSource( unsigned clientSessionId, unsigned& estBitrate ) override
 		{
-			estBitrate = 500; // kbps, estimate
-
 			// Create the video source:
 			auto* result = MediaFoundationH264LiveSource::createNew( envir( ) );
 
@@ -382,10 +319,10 @@ namespace Harlinn::Windows::LiveMedia
 	private:
 		void setDoneFlag( ) 
 		{ 
-			doneFlag_ = 0xFF;
-			puts( "setDoneFlag!!!!!" );
+			doneFlag_ = static_cast<Byte>(0xFF);
 		}
 	};
+
 
 	class MediaFoundationRTSPServer : public RTSPServer
 	{

@@ -411,7 +411,7 @@ namespace Harlinn::Windows::MF
     };
 
 
-    void PrintAttribute( const MFAttributes& attributes, const Guid& attributeKey )
+    inline void PrintAttribute( const MFAttributes& attributes, const Guid& attributeKey )
     {
         auto keyName = GetGUIDNameConst( attributeKey );
         if ( !keyName )
@@ -431,7 +431,7 @@ namespace Harlinn::Windows::MF
         }
     }
 
-    void PrintAttributes( const MFAttributes& attributes )
+    inline void PrintAttributes( const MFAttributes& attributes )
     {
         if ( attributes )
         {
@@ -446,7 +446,7 @@ namespace Harlinn::Windows::MF
     }
 
 
-    void PrintTransforms( const Transforms& transforms )
+    inline void PrintTransforms( const Transforms& transforms )
     {
         auto transformCount = transforms.size( );
         for ( size_t i = 0; i < transformCount; i++ )
@@ -474,12 +474,12 @@ namespace Harlinn::Windows::MF
         }
     }
 
-    void PrintVideoEncoders( )
+    inline void PrintVideoEncoders( )
     {
         auto transforms = Transforms::VideoEncoders( );
         PrintTransforms( transforms );
     }
-    void PrintVideoDecoders( )
+    inline void PrintVideoDecoders( )
     {
         auto transforms = Transforms::VideoDecoders( );
         PrintTransforms( transforms );
