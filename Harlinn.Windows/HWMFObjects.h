@@ -1763,10 +1763,33 @@ namespace Harlinn::Windows
             HCC_COM_CHECK_HRESULT(hr);
             return MFMediaType(itf);
         }
+
+        static MFMediaType Create( const Guid& majorType )
+        {
+            auto result = Create( );
+            result.SetMajorType( majorType );
+            return result;
+        }
+
+        static MFMediaType Create( const Guid& majorType, const Guid& subType )
+        {
+            auto result = Create( );
+            result.SetMajorType( majorType );
+            result.SetSubType( subType );
+            return result;
+        }
+
         static MFMediaType Clone(const MFMediaType& source)
         {
             auto result = Create();
             source.CopyAllItems(result);
+            return result;
+        }
+
+        MFMediaType Clone( ) const
+        {
+            auto result = Create( );
+            CopyAllItems( result );
             return result;
         }
 
@@ -1818,6 +1841,19 @@ namespace Harlinn::Windows
             HCC_COM_CHECK_HRESULT(hr);
         }
 
+        void SetPixelAspectRatio( UINT32 horizontal, UINT32 vertical ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            auto hr = MFSetAttributeRatio( pInterface, MF_MT_PIXEL_ASPECT_RATIO, horizontal, vertical );
+            HCC_COM_CHECK_HRESULT( hr );
+        }
+        void GetPixelAspectRatio( UINT32* horizontal, UINT32* vertical ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            auto hr = MFGetAttributeRatio( pInterface, MF_MT_PIXEL_ASPECT_RATIO, horizontal, vertical );
+            HCC_COM_CHECK_HRESULT( hr );
+        }
+
 
         void SetFrameSize(UINT32 width, UINT32 height) const
         {
@@ -1831,6 +1867,20 @@ namespace Harlinn::Windows
             auto hr = MFGetAttributeSize(pInterface, MF_MT_FRAME_SIZE, width, height);
             HCC_COM_CHECK_HRESULT(hr);
         }
+
+        void SetFrameSize( const Size& size ) const
+        {
+            SetFrameSize( static_cast< UINT32 >( size.Width( ) ), static_cast< UINT32 >( size.Height( ) ) );
+        }
+
+        Size GetFrameSize( ) const
+        {
+            UINT32 width;
+            UINT32 height;
+            GetFrameSize( &width, &height );
+            return Size( width, height );
+        }
+        
 
         void SetAverageBitRate(UINT32 bitsPerSecond) const
         {
@@ -1849,6 +1899,16 @@ namespace Harlinn::Windows
         {
             return static_cast<MFVideoInterlaceMode>( GetUINT32(MF_MT_INTERLACE_MODE) );
         }
+
+        void SetAllSamplesIndependent( bool allSamplesIndependent = true ) const
+        {
+            SetUINT32( MF_MT_ALL_SAMPLES_INDEPENDENT, allSamplesIndependent ? TRUE : FALSE );
+        }
+        bool GetAllSamplesIndependent( ) const
+        {
+            return GetUINT32( MF_MT_ALL_SAMPLES_INDEPENDENT ) ? true : false;
+        }
+
 
         void SetMPEG2Profile(eAVEncH264VProfile profile) const
         {
@@ -2595,11 +2655,16 @@ namespace Harlinn::Windows
 
 
 
-        void ActivateObject( const Guid& riid, void** result) const
+        bool ActivateObject( const Guid& riid, void** result) const
         {
             InterfaceType* pInterface = GetInterface();
             HRESULT hr = pInterface->ActivateObject(riid, result);
-            HCC_COM_CHECK_HRESULT2(hr, pInterface);
+            if ( SUCCEEDED( hr ) )
+            {
+                return true;
+            }
+            return false;
+            //HCC_COM_CHECK_HRESULT2(hr, pInterface);
         }
 
 
@@ -2610,8 +2675,11 @@ namespace Harlinn::Windows
             using ItfT = typename T::InterfaceType;
             ItfT* itf = nullptr;
             InterfaceType* pInterface = GetInterface();
-            ActivateObject(__uuidof(ItfT), (void**)&itf);
-            return T(itf);
+            if ( ActivateObject( __uuidof( ItfT ), ( void** )&itf ) )
+            {
+                return T( itf );
+            }
+            return {};
         }
 
 

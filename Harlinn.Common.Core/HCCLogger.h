@@ -34,7 +34,7 @@ namespace Harlinn::Common::Core::Logging
     {
         UInt64 id_ = 0;
         Logging::Level level_ = Logging::Level::None;
-        const char* formatString_;
+        const char* formatString_ = nullptr;
         const Byte* argumentsDescriptor_ = nullptr;
         size_t argumentsDescriptorSize_ = 0;
         bool isFixedSize_ = false;

@@ -35,7 +35,7 @@ Before building you need to set a few environment variables:
 - **HCC_HOME** must point to the directory containing Harlinn.Windows.sln.
 - **PROJ_LIB** must point to ***%HCC_HOME%**\\Share\\proj*
 - **GDAL_DATA** must point to ***%HCC_HOME%**\\Share\\gdal*
-- **OPENSSL_HOME** must point to the root of your openssl installation, which is the directory containing the bin, include and lib directories.
+- **OPENSSL_HOME** must point to the root of your openssl 3.x installation, which is the directory containing the bin, include and lib directories.
 
 The PATH environment variable must be updated to reference:
 - **%BOOST_ROOT%**\stage\lib

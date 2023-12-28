@@ -8,9 +8,13 @@
 #include <HCCCurrency.h>
 #include <HCCLogging.h>
 
+#pragma comment(lib,"Propsys.lib")
+
 namespace Harlinn::Common::Core
 {
     class RecordInfo;
+    class Variant;
+    class PropertyVariant;
 
     // ----------------------------------------------------------------------
     // VariantType
@@ -958,8 +962,8 @@ namespace Harlinn::Common::Core
     // ----------------------------------------------------------------------
     class SafeArray
     {
-        template<typename T>
-        friend class VariantT;
+        friend class PropertyVariant;
+        friend class Variant;
         SAFEARRAY* ptr_ = nullptr;
     public:
         class Bound : public SAFEARRAYBOUND
@@ -1903,27 +1907,31 @@ namespace Harlinn::Common::Core
     };
 
 
-
-
+    
 
     // ----------------------------------------------------------------------
-    // VariantT
+    // Variant
     // ----------------------------------------------------------------------
-    template<typename BaseType>
-    class VariantT : public BaseType
+    class Variant : public VARIANT
     {
     public:
-        using Base = BaseType;
+        using Base = VARIANT;
+        
         static constexpr LANGID InvariantLanguageId = MAKELANGID( LANG_INVARIANT, SUBLANG_NEUTRAL );
         static constexpr LCID InvariantLocaleId = MAKELCID( InvariantLanguageId, SORT_DEFAULT );
+        
     private:
         void SetVariantType( VariantType variantType ) noexcept
         {
             Base::vt = USHORT( variantType );
         }
+        
     public:
-        static int Compare( const BaseType& first, const BaseType& second )
+        
+
+        static int Compare( const VARIANT& first, const VARIANT& second )
         {
+            
             if ( first.vt == USHORT( VariantType::Empty ) )
             {
                 if ( second.vt == USHORT( VariantType::Empty ) )
@@ -1948,9 +1956,8 @@ namespace Harlinn::Common::Core
             {
                 return 1;
             }
-
             auto lcid = GetUserDefaultLCID( );
-            auto result = VarCmp( (VARIANT*)&first, (VARIANT*)&second, lcid );
+            auto result = VarCmp( ( VARIANT* )&first, ( VARIANT* )&second, lcid );
             if ( FAILED( result ) )
             {
                 CheckHRESULT( result );
@@ -1990,38 +1997,38 @@ namespace Harlinn::Common::Core
 
 
 
-        constexpr VariantT( ) noexcept
+        constexpr Variant( ) noexcept
             : Base( )
         {
             Base::vt = static_cast<USHORT>(VariantType::Empty);
         }
-        constexpr explicit VariantT( Int64 value ) noexcept
+        constexpr explicit Variant( Int64 value ) noexcept
             : Base( )
         {
             Base::vt = static_cast<USHORT>( VariantType::Int64 );
             Base::llVal = value;
         }
-        constexpr explicit VariantT( UInt64 value ) noexcept
+        constexpr explicit Variant( UInt64 value ) noexcept
             : Base( )
         {
             Base::vt = static_cast<USHORT>( VariantType::UInt64 );
             Base::ullVal = value;
         }
-        constexpr explicit VariantT( LONG value ) noexcept
+        constexpr explicit Variant( LONG value ) noexcept
             : Base( )
         {
             Base::vt = static_cast<USHORT>( VariantType::Long );
             Base::lVal = value;
         }
 
-        constexpr explicit VariantT( Int32 value ) noexcept
+        constexpr explicit Variant( Int32 value ) noexcept
             : Base( )
         {
             Base::vt = static_cast<USHORT>( VariantType::Long );
             Base::lVal = value;
         }
 
-        explicit VariantT( LONG value, VariantType variantType )
+        explicit Variant( LONG value, VariantType variantType )
             : Base( )
         {
             if ( variantType == VariantType::Long || variantType == VariantType::Error )
@@ -2037,32 +2044,32 @@ namespace Harlinn::Common::Core
             }
         }
 
-        constexpr explicit VariantT( BYTE value ) noexcept
+        constexpr explicit Variant( BYTE value ) noexcept
             : Base( )
         {
             Base::vt = static_cast<USHORT>( VariantType::Byte );
             Base::bVal = value;
         }
-        constexpr explicit VariantT( SHORT value ) noexcept
+        constexpr explicit Variant( SHORT value ) noexcept
             : Base( )
         {
             Base::vt = static_cast<USHORT>( VariantType::Short );
             Base::iVal = value;
         }
-        constexpr explicit VariantT( FLOAT Value ) noexcept
+        constexpr explicit Variant( FLOAT Value ) noexcept
             : Base( )
         {
             Base::vt = static_cast<USHORT>( VariantType::Float );
             Base::fltVal = Value;
         }
-        constexpr explicit VariantT( DOUBLE value ) noexcept
+        constexpr explicit Variant( DOUBLE value ) noexcept
             : Base( )
         {
             Base::vt = static_cast<USHORT>( VariantType::Double );
             Base::dblVal = value;
         }
 
-        explicit VariantT( DOUBLE value, VariantType variantType )
+        explicit Variant( DOUBLE value, VariantType variantType )
             : Base( )
         {
             if ( variantType == VariantType::Double || variantType == VariantType::DateTime )
@@ -2078,27 +2085,27 @@ namespace Harlinn::Common::Core
             }
         }
 
-        constexpr explicit VariantT( bool value ) noexcept
+        constexpr explicit Variant( bool value ) noexcept
             : Base( )
         {
             Base::vt = static_cast<USHORT>( VariantType::Bool );
             Base::boolVal = value ? VARIANT_TRUE : VARIANT_FALSE;
         }
 
-        constexpr explicit VariantT( const CY& value ) noexcept
+        constexpr explicit Variant( const CY& value ) noexcept
             : Base( )
         {
             Base::vt = static_cast<USHORT>( VariantType::Currency );
             Base::cyVal = value;
         }
-        constexpr explicit VariantT( const Currency& value ) noexcept
+        constexpr explicit Variant( const Currency& value ) noexcept
             : Base( )
         {
             Base::vt = static_cast<USHORT>( VariantType::Currency );
             Base::cyVal.int64 = value.Value();
         }
 
-        explicit VariantT( const DateTime& value )
+        explicit Variant( const DateTime& value )
             : Base( )
         {
             Base::vt = static_cast<USHORT>( VariantType::DateTime );
@@ -2106,7 +2113,7 @@ namespace Harlinn::Common::Core
         }
 
 
-        constexpr explicit VariantT( const TimeSpan& value ) noexcept
+        constexpr explicit Variant( const TimeSpan& value ) noexcept
             : Base( )
         {
             Base::vt = static_cast<USHORT>( VariantType::DateTime );
@@ -2114,21 +2121,21 @@ namespace Harlinn::Common::Core
         }
 
 
-        explicit VariantT( const SysString& value )
+        explicit Variant( const SysString& value )
             : Base( )
         {
             Base::vt = static_cast<USHORT>( VariantType::BStr );
             Base::bstrVal = value.Copy( );
         }
 
-        explicit VariantT( SysString&& value ) noexcept
+        explicit Variant( SysString&& value ) noexcept
             : Base( )
         {
             Base::vt = static_cast<USHORT>( VariantType::BStr );
             Base::bstrVal = value.Detach();
         }
 
-        explicit VariantT( const WideString& value )
+        explicit Variant( const WideString& value )
             : Base( )
         {
             Base::vt = static_cast<USHORT>( VariantType::BStr );
@@ -2143,7 +2150,7 @@ namespace Harlinn::Common::Core
             }
         }
 
-        explicit VariantT( const wchar_t* value )
+        explicit Variant( const wchar_t* value )
             : Base( )
         {
             if ( value && value[0] )
@@ -2160,7 +2167,7 @@ namespace Harlinn::Common::Core
 
 
 
-        explicit VariantT( IUnknown* pInterface ) noexcept
+        explicit Variant( IUnknown* pInterface ) noexcept
             : Base( )
         {
             Base::vt = static_cast<USHORT>( VariantType::Unknown );
@@ -2171,7 +2178,7 @@ namespace Harlinn::Common::Core
             }
         }
 
-        explicit VariantT( IDispatch* pInterface ) noexcept
+        explicit Variant( IDispatch* pInterface ) noexcept
             : Base( )
         {
             Base::vt = static_cast<USHORT>( VariantType::Dispatch );
@@ -2182,7 +2189,7 @@ namespace Harlinn::Common::Core
             }
         }
 
-        explicit VariantT( SAFEARRAY* safeArray )
+        explicit Variant( SAFEARRAY* safeArray )
             : Base( )
         {
             Base::vt = static_cast<USHORT>( VariantType::Array );
@@ -2190,16 +2197,16 @@ namespace Harlinn::Common::Core
             {
                 auto vType = SafeArray::GetElementVariantType( safeArray );
                 Base::vt |= static_cast<USHORT>( vType );
-                auto hr = SafeArrayCopy( safeArray, &Base::parray );
+                auto hr = SafeArrayCopy( safeArray, &parray );
                 CheckHRESULT( hr );
             }
             else
             {
-                Base::parray = nullptr;
+                parray = nullptr;
             }
         }
 
-        explicit VariantT( const SafeArray& safeArray )
+        explicit Variant( const SafeArray& safeArray )
             : Base( )
         {
             Base::vt = static_cast<USHORT>( VariantType::Array );
@@ -2207,7 +2214,7 @@ namespace Harlinn::Common::Core
             {
                 auto vType = SafeArray::GetElementVariantType( safeArray.ptr_ );
                 Base::vt |= static_cast<USHORT>( vType );
-                auto hr = SafeArrayCopy( safeArray.ptr_, &Base::parray );
+                auto hr = SafeArrayCopy( safeArray.ptr_, &parray );
                 CheckHRESULT( hr );
             }
             else
@@ -2215,7 +2222,7 @@ namespace Harlinn::Common::Core
                 Base::parray = nullptr;
             }
         }
-        explicit VariantT( SafeArray&& safeArray )
+        explicit Variant( SafeArray&& safeArray )
             : Base( )
         {
             Base::vt = static_cast<USHORT>( VariantType::Array );
@@ -2234,40 +2241,40 @@ namespace Harlinn::Common::Core
 
 
 
-        constexpr explicit VariantT( char value ) noexcept
+        constexpr explicit Variant( char value ) noexcept
             : Base( )
         {
             Base::vt = static_cast<USHORT>( VariantType::SByte );
             Base::cVal = value;
         }
-        constexpr explicit VariantT( signed char value ) noexcept
+        constexpr explicit Variant( signed char value ) noexcept
             : Base( )
         {
             Base::vt = static_cast<USHORT>( VariantType::SByte );
             Base::cVal = value;
         }
 
-        constexpr explicit VariantT( USHORT value ) noexcept
+        constexpr explicit Variant( USHORT value ) noexcept
             : Base( )
         {
             Base::vt = static_cast<USHORT>( VariantType::UShort );
             Base::uiVal = value;
         }
 
-        constexpr explicit VariantT( ULONG value ) noexcept
+        constexpr explicit Variant( ULONG value ) noexcept
             : Base( )
         {
             Base::vt = static_cast<USHORT>( VariantType::ULong );
             Base::ulVal = value;
         }
-        constexpr explicit VariantT( UInt32 value ) noexcept
+        constexpr explicit Variant( UInt32 value ) noexcept
             : Base( )
         {
             Base::vt = static_cast<USHORT>( VariantType::ULong );
             Base::ulVal = value;
         }
 
-        explicit VariantT( IRecordInfo* recordInfo, void* value, bool addRef = false ) noexcept
+        explicit Variant( IRecordInfo* recordInfo, void* value, bool addRef = false ) noexcept
             : Base( )
         {
             Base::vt = static_cast< USHORT >( VariantType::Record );
@@ -2280,7 +2287,7 @@ namespace Harlinn::Common::Core
         }
 
 
-        VariantT( const VariantT& other )
+        Variant( const Variant& other )
         {
             switch ( other.vt )
             {
@@ -2303,14 +2310,14 @@ namespace Harlinn::Common::Core
                     break;
                 default:
                     VariantInit( this );
-                    auto hr = VariantCopy( (VARIANT*)this, &other );
+                    auto hr = VariantCopy( ( VARIANT* )this, &other );
                     CheckHRESULT( hr );
                     break;
 
             }
         }
 
-        VariantT( VariantT&& other ) noexcept
+        Variant( Variant&& other ) noexcept
         {
             Base* self = this;
             Base* otherPtr = &other;
@@ -2339,26 +2346,26 @@ namespace Harlinn::Common::Core
                     Base::vt = VT_EMPTY;
                     break;
                 default:
-                    auto hr = VariantClear( (VARIANT*)this );
+                    auto hr = VariantClear( ( VARIANT* )this );
                     CheckHRESULT( hr );
                     break;
 
             }
         }
 
-        ~VariantT( )
+        ~Variant( )
         {
-            if ( Base::vt != VT_EMPTY )
+            if ( vt != VT_EMPTY )
             {
                 Clear( );
             }
         }
 
-        VariantT& operator = ( const VariantT& other )
+        Variant& operator = ( const Variant& other )
         {
-            if ( &Base::vt != &other.vt )
+            if ( &vt != &other.vt )
             {
-                if ( Base::vt != VT_EMPTY )
+                if ( vt != VT_EMPTY )
                 {
                     Clear( );
                 }
@@ -2378,8 +2385,8 @@ namespace Harlinn::Common::Core
                     case VT_R8:
                     case VT_CY:
                     case VT_DATE:
-                        Base::vt = other.vt;
-                        Base::ullVal = other.ullVal;
+                        vt = other.vt;
+                        ullVal = other.ullVal;
                         break;
                     default:
                         auto hr = VariantCopy( this, &other );
@@ -2391,7 +2398,7 @@ namespace Harlinn::Common::Core
             return *this;
         }
 
-        VariantT& operator = ( VariantT&& other ) noexcept
+        Variant& operator = ( Variant&& other ) noexcept
         {
             if ( this != &other )
             {
@@ -2402,36 +2409,36 @@ namespace Harlinn::Common::Core
 
                 Base* self = this;
                 Base* otherPtr = &other;
-
                 memcpy( self, otherPtr, sizeof( VARIANT ) );
+                
                 other.vt = VT_EMPTY;
             }
             return *this;
         }
 
-        int CompareTo( const BaseType& other ) const
+        int CompareTo( const VARIANT& other ) const
         {
             return Compare( *this, other );
         }
 
-        int CompareTo( const VariantT& other ) const
+        int CompareTo( const Variant& other ) const
         {
             return Compare( *this, other );
         }
 
-        bool operator == ( const BaseType& other ) const { return CompareTo( other ) == 0; }
-        bool operator != ( const BaseType& other ) const { return CompareTo( other ) != 0; }
-        bool operator <= ( const BaseType& other ) const { return CompareTo( other ) <= 0; }
-        bool operator <  ( const BaseType& other ) const { return CompareTo( other ) < 0; }
-        bool operator >  ( const BaseType& other ) const { return CompareTo( other ) > 0; }
-        bool operator >= ( const BaseType& other ) const { return CompareTo( other ) >= 0; }
+        bool operator == ( const VARIANT& other ) const { return CompareTo( other ) == 0; }
+        bool operator != ( const VARIANT& other ) const { return CompareTo( other ) != 0; }
+        bool operator <= ( const VARIANT& other ) const { return CompareTo( other ) <= 0; }
+        bool operator <  ( const VARIANT& other ) const { return CompareTo( other ) < 0; }
+        bool operator >  ( const VARIANT& other ) const { return CompareTo( other ) > 0; }
+        bool operator >= ( const VARIANT& other ) const { return CompareTo( other ) >= 0; }
 
-        bool operator == ( const VariantT& other ) const { return CompareTo( other ) == 0; }
-        bool operator != ( const VariantT& other ) const { return CompareTo( other ) != 0; }
-        bool operator <= ( const VariantT& other ) const { return CompareTo( other ) <= 0; }
-        bool operator <  ( const VariantT& other ) const { return CompareTo( other ) < 0; }
-        bool operator >  ( const VariantT& other ) const { return CompareTo( other ) > 0; }
-        bool operator >= ( const VariantT& other ) const { return CompareTo( other ) >= 0; }
+        bool operator == ( const Variant& other ) const { return CompareTo( other ) == 0; }
+        bool operator != ( const Variant& other ) const { return CompareTo( other ) != 0; }
+        bool operator <= ( const Variant& other ) const { return CompareTo( other ) <= 0; }
+        bool operator <  ( const Variant& other ) const { return CompareTo( other ) < 0; }
+        bool operator >  ( const Variant& other ) const { return CompareTo( other ) > 0; }
+        bool operator >= ( const Variant& other ) const { return CompareTo( other ) >= 0; }
 
 
         HRESULT AssignTo( VARIANT& other ) const
@@ -2616,7 +2623,7 @@ namespace Harlinn::Common::Core
             {
                 auto vType = SafeArray::GetElementVariantType( safeArray );
                 SetVariantType( VariantType::Array | vType );
-                auto hr = SafeArrayCopy( safeArray, &Base::parray );
+                auto hr = SafeArrayCopy( safeArray, &parray );
                 CheckHRESULT( hr );
             }
             else
@@ -2655,7 +2662,7 @@ namespace Harlinn::Common::Core
         }
 
         template <typename T>
-        VariantT& operator = ( const T& value )
+        Variant& operator = ( const T& value )
         {
             Assign( value );
             return *this;
@@ -2665,115 +2672,60 @@ namespace Harlinn::Common::Core
         template<VariantType variantType>
         void ChangeType( VARIANT& destination ) const
         {
-            auto hr = VariantChangeType( &destination, (VARIANT*)this, 0, static_cast<VARTYPE>( variantType ) );
+            auto hr = VariantChangeType( &destination, ( VARIANT* )this, 0, static_cast< VARTYPE >( variantType ) );
             CheckHRESULT( hr );
         }
     public:
         bool AsBoolean( ) const
         {
-            if constexpr ( std::is_same_v<BaseType, PROPVARIANT> )
+            switch ( Type( ) )
             {
-                switch ( Type( ) )
-                {
-                    case VariantType::Empty:
-                        return false;
-                        break;
-                    case VariantType::Null:
-                        return false;
-                        break;
-                    case VariantType::Bool:
-                        return Base::boolVal != VARIANT_FALSE;
-                        break;
-                    case VariantType::Int1:
-                        return Base::cVal != 0;
-                        break;
-                    case VariantType::UInt1:
-                        return Base::bVal != 0;
-                        break;
-                    case VariantType::Int2:
-                        return Base::iVal != 0;
-                        break;
-                    case VariantType::UInt2:
-                        return Base::uiVal != 0;
-                        break;
-                    case VariantType::Int4:
-                        return Base::lVal != 0;
-                        break;
-                    case VariantType::UInt4:
-                        return Base::ulVal != 0;
-                        break;
-                    case VariantType::Int8:
-                        return Base::hVal.QuadPart != 0;
-                        break;
-                    case VariantType::UInt8:
-                        return Base::uhVal.QuadPart != 0;
-                        break;
-                    case VariantType::Real4:
-                        return Base::fltVal != 0.0f;
-                        break;
-                    case VariantType::Real8:
-                        return Base::dblVal != 0.0;
-                        break;
-                    default:
-                    {
-                        VARIANT result = { 0, };
-                        ChangeType<VariantType::Bool>( result );
-                        return result.boolVal != VARIANT_FALSE;
-                    }
+                case VariantType::Empty:
+                    return false;
                     break;
-                }
-            }
-            else
-            {
-                switch ( Type( ) )
-                {
-                    case VariantType::Empty:
-                        return false;
-                        break;
-                    case VariantType::Null:
-                        return false;
-                        break;
-                    case VariantType::Bool:
-                        return Base::boolVal != VARIANT_FALSE;
-                        break;
-                    case VariantType::Int1:
-                        return Base::cVal != 0;
-                        break;
-                    case VariantType::UInt1:
-                        return Base::bVal != 0;
-                        break;
-                    case VariantType::Int2:
-                        return Base::iVal != 0;
-                        break;
-                    case VariantType::UInt2:
-                        return Base::uiVal != 0;
-                        break;
-                    case VariantType::Int4:
-                        return Base::lVal != 0;
-                        break;
-                    case VariantType::UInt4:
-                        return Base::ulVal != 0;
-                        break;
-                    case VariantType::Int8:
-                        return Base::llVal != 0;
-                        break;
-                    case VariantType::UInt8:
-                        return Base::ullVal != 0;
-                        break;
-                    case VariantType::Real4:
-                        return Base::fltVal != 0.0f;
-                        break;
-                    case VariantType::Real8:
-                        return Base::dblVal != 0.0;
-                        break;
-                    default:
-                    {
-                        VARIANT result = { 0, };
-                        ChangeType<VariantType::Bool>( result );
-                        return result.boolVal != VARIANT_FALSE;
-                    }
+                case VariantType::Null:
+                    return false;
                     break;
+                case VariantType::Bool:
+                    return Base::boolVal != VARIANT_FALSE;
+                    break;
+                case VariantType::Int1:
+                    return Base::cVal != 0;
+                    break;
+                case VariantType::UInt1:
+                    return Base::bVal != 0;
+                    break;
+                case VariantType::Int2:
+                    return Base::iVal != 0;
+                    break;
+                case VariantType::UInt2:
+                    return Base::uiVal != 0;
+                    break;
+                case VariantType::Int4:
+                    return Base::lVal != 0;
+                    break;
+                case VariantType::UInt4:
+                    return Base::ulVal != 0;
+                    break;
+                case VariantType::Int8:
+                    return Base::llVal != 0;
+                    break;
+                case VariantType::UInt8:
+                    return Base::ullVal != 0;
+                    break;
+                case VariantType::Real4:
+                    return Base::fltVal != 0.0f;
+                    break;
+                case VariantType::Real8:
+                    return Base::dblVal != 0.0;
+                    break;
+                default:
+                {
+                    VARIANT result = { 0, };
+                    ChangeType<VariantType::Bool>( result );
+                    return result.boolVal != VARIANT_FALSE;
                 }
+                break;
             }
         }
         template<typename T>
@@ -2803,105 +2755,52 @@ namespace Harlinn::Common::Core
         template<typename T>
         bool ConvertTo( T& result ) const noexcept
         {
-            if constexpr ( std::is_same_v<BaseType, PROPVARIANT> )
+            switch ( Type( ) )
             {
-                switch ( Type( ) )
-                {
-                    case VariantType::Bool:
-                        result = Base::boolVal != VARIANT_FALSE ? 1 : 0;
-                        return true;
-                        break;
-                    case VariantType::Int1:
-                        result = static_cast<T>( Base::cVal );
-                        return true;
-                        break;
-                    case VariantType::UInt1:
-                        result = static_cast<T>( Base::bVal );
-                        return true;
-                        break;
-                    case VariantType::Int2:
-                        result = static_cast<T>( Base::iVal );
-                        return true;
-                        break;
-                    case VariantType::UInt2:
-                        result = static_cast<T>( Base::uiVal );
-                        return true;
-                        break;
-                    case VariantType::Int4:
-                        result = static_cast<T>( Base::lVal );
-                        return true;
-                        break;
-                    case VariantType::UInt4:
-                        result = static_cast<T>( Base::ulVal );
-                        return true;
-                        break;
-                    case VariantType::Int8:
-                        result = static_cast<T>( Base::hVal.QuadPart );
-                        return true;
-                        break;
-                    case VariantType::UInt8:
-                        result = static_cast<T>( Base::uhVal.QuadPart );
-                        return true;
-                        break;
-                    case VariantType::Real4:
-                        result = static_cast<T>( Base::fltVal );
-                        return true;
-                        break;
-                    case VariantType::Real8:
-                        result = static_cast<T>( Base::dblVal );
-                        return true;
-                        break;
-                }
-            }
-            else
-            {
-                switch ( Type( ) )
-                {
-                    case VariantType::Bool:
-                        result = static_cast<T>( Base::boolVal != VARIANT_FALSE ? 1 : 0);
-                        return true;
-                        break;
-                    case VariantType::Int1:
-                        result = static_cast<T>( Base::cVal );
-                        return true;
-                        break;
-                    case VariantType::UInt1:
-                        result = static_cast<T>( Base::bVal );
-                        return true;
-                        break;
-                    case VariantType::Int2:
-                        result = static_cast<T>( Base::iVal );
-                        return true;
-                        break;
-                    case VariantType::UInt2:
-                        result = static_cast<T>( Base::uiVal );
-                        return true;
-                        break;
-                    case VariantType::Int4:
-                        result = static_cast<T>( Base::lVal );
-                        return true;
-                        break;
-                    case VariantType::UInt4:
-                        result = static_cast<T>( Base::ulVal );
-                        return true;
-                        break;
-                    case VariantType::Int8:
-                        result = static_cast<T>( Base::llVal );
-                        return true;
-                        break;
-                    case VariantType::UInt8:
-                        result = static_cast<T>( Base::ullVal );
-                        return true;
-                        break;
-                    case VariantType::Real4:
-                        result = static_cast<T>( Base::fltVal );
-                        return true;
-                        break;
-                    case VariantType::Real8:
-                        result = static_cast<T>( Base::dblVal );
-                        return true;
-                        break;
-                }
+                case VariantType::Bool:
+                    result = static_cast<T>( Base::boolVal != VARIANT_FALSE ? 1 : 0);
+                    return true;
+                    break;
+                case VariantType::Int1:
+                    result = static_cast<T>( Base::cVal );
+                    return true;
+                    break;
+                case VariantType::UInt1:
+                    result = static_cast<T>( Base::bVal );
+                    return true;
+                    break;
+                case VariantType::Int2:
+                    result = static_cast<T>( Base::iVal );
+                    return true;
+                    break;
+                case VariantType::UInt2:
+                    result = static_cast<T>( Base::uiVal );
+                    return true;
+                    break;
+                case VariantType::Int4:
+                    result = static_cast<T>( Base::lVal );
+                    return true;
+                    break;
+                case VariantType::UInt4:
+                    result = static_cast<T>( Base::ulVal );
+                    return true;
+                    break;
+                case VariantType::Int8:
+                    result = static_cast<T>( Base::llVal );
+                    return true;
+                    break;
+                case VariantType::UInt8:
+                    result = static_cast<T>( Base::ullVal );
+                    return true;
+                    break;
+                case VariantType::Real4:
+                    result = static_cast<T>( Base::fltVal );
+                    return true;
+                    break;
+                case VariantType::Real8:
+                    result = static_cast<T>( Base::dblVal );
+                    return true;
+                    break;
             }
             return false;
         }
@@ -3352,8 +3251,8 @@ namespace Harlinn::Common::Core
             }
             else
             {
-                VariantT result;
-                auto hr = VariantChangeType( (VARIANT*)&result, (VARIANT*)this, 0, (VARTYPE)VariantType::BStr );
+                Variant result;
+                auto hr = VariantChangeType( ( VARIANT* )&result, ( VARIANT* )this, 0, ( VARTYPE )VariantType::BStr );
                 CheckHRESULT( hr );
                 if ( result.bstrVal )
                 {
@@ -3397,7 +3296,7 @@ namespace Harlinn::Common::Core
             }
             else
             {
-                VariantT result;
+                Variant result;
                 auto hr = VariantChangeType( ( VARIANT* )&result, ( VARIANT* )this, 0, ( VARTYPE )VariantType::BStr );
                 CheckHRESULT( hr );
                 if ( result.bstrVal )
@@ -3490,7 +3389,7 @@ namespace Harlinn::Common::Core
             }
             else
             {
-                VariantT result;
+                Variant result;
                 auto hr = VariantChangeType( (VARIANT*)&result, (VARIANT*)this, 0, (VARTYPE)VariantType::BStr );
                 CheckHRESULT( hr );
                 if ( result.bstrVal )
@@ -3537,7 +3436,7 @@ namespace Harlinn::Common::Core
                     return dateTime;
                 }
             }
-            VariantT result;
+            Variant result;
             auto hr = VariantChangeTypeEx( (VARIANT*)&result, (const VARIANT*)this, localeId, 0, (VARTYPE)VariantType::DateTime );
             CheckHRESULT( hr );
             return DateTime::FromOADate( result.date );
@@ -3579,7 +3478,7 @@ namespace Harlinn::Common::Core
                     return timeSpan;
                 }
             }
-            VariantT result;
+            Variant result;
             auto hr = VariantChangeTypeEx( (VARIANT*)&result, (const VARIANT*)this, localeId, 0, (VARTYPE)VariantType::Real8 );
             CheckHRESULT( hr );
             return TimeSpan::FromDays( result.dblVal );
@@ -3625,105 +3524,52 @@ namespace Harlinn::Common::Core
         Currency AsCurrency( ) const
         {
             Currency result;
-            if constexpr ( std::is_same_v<BaseType, PROPVARIANT> )
+            switch ( Type( ) )
             {
-                switch ( Type( ) )
-                {
-                    case VariantType::Bool:
-                        result = Base::boolVal != VARIANT_FALSE ? 1 : 0;
-                        break;
-                    case VariantType::Int1:
-                        result = Base::cVal;
-                        break;
-                    case VariantType::UInt1:
-                        result = Base::bVal;
-                        break;
-                    case VariantType::Int2:
-                        result = Base::iVal;
-                        break;
-                    case VariantType::UInt2:
-                        result = Base::uiVal;
-                        break;
-                    case VariantType::Int4:
-                        result = Base::lVal;
-                        break;
-                    case VariantType::UInt4:
-                        result = Base::ulVal;
-                        break;
-                    case VariantType::Int8:
-                        result = Base::hVal.QuadPart;
-                        break;
-                    case VariantType::UInt8:
-                        result = Base::uhVal.QuadPart;
-                        break;
-                    case VariantType::Real4:
-                        result = Base::fltVal;
-                        break;
-                    case VariantType::Real8:
-                        result = Base::dblVal;
-                        break;
-                    case VariantType::Currency:
-                        result = Base::cyVal;
-                        break;
-                    default:
-                    {
-                        VARIANT variant = { 0, };
-                        auto hr = VariantChangeType( &variant, (const VARIANT*)this, 0, (VARTYPE)VariantType::Currency );
-                        CheckHRESULT( hr );
-                        result = variant.cyVal;
-                    }
+                case VariantType::Bool:
+                    result = Base::boolVal != VARIANT_FALSE ? 1 : 0;
                     break;
-                }
-            }
-            else
-            {
-                switch ( Type( ) )
-                {
-                    case VariantType::Bool:
-                        result = Base::boolVal != VARIANT_FALSE ? 1 : 0;
-                        break;
-                    case VariantType::Int1:
-                        result = Base::cVal;
-                        break;
-                    case VariantType::UInt1:
-                        result = Base::bVal;
-                        break;
-                    case VariantType::Int2:
-                        result = Base::iVal;
-                        break;
-                    case VariantType::UInt2:
-                        result = Base::uiVal;
-                        break;
-                    case VariantType::Int4:
-                        result = Base::lVal;
-                        break;
-                    case VariantType::UInt4:
-                        result = Base::ulVal;
-                        break;
-                    case VariantType::Int8:
-                        result = Base::llVal;
-                        break;
-                    case VariantType::UInt8:
-                        result = Base::ullVal;
-                        break;
-                    case VariantType::Real4:
-                        result = Base::fltVal;
-                        break;
-                    case VariantType::Real8:
-                        result = Base::dblVal;
-                        break;
-                    case VariantType::Currency:
-                        result = Base::cyVal;
-                        break;
-                    default:
-                    {
-                        VARIANT variant = { 0, };
-                        auto hr = VariantChangeType( &variant, (const VARIANT*)this, 0, (VARTYPE)VariantType::Currency );
-                        CheckHRESULT( hr );
-                        result = variant.cyVal;
-                    }
+                case VariantType::Int1:
+                    result = Base::cVal;
                     break;
+                case VariantType::UInt1:
+                    result = Base::bVal;
+                    break;
+                case VariantType::Int2:
+                    result = Base::iVal;
+                    break;
+                case VariantType::UInt2:
+                    result = Base::uiVal;
+                    break;
+                case VariantType::Int4:
+                    result = Base::lVal;
+                    break;
+                case VariantType::UInt4:
+                    result = Base::ulVal;
+                    break;
+                case VariantType::Int8:
+                    result = Base::llVal;
+                    break;
+                case VariantType::UInt8:
+                    result = Base::ullVal;
+                    break;
+                case VariantType::Real4:
+                    result = Base::fltVal;
+                    break;
+                case VariantType::Real8:
+                    result = Base::dblVal;
+                    break;
+                case VariantType::Currency:
+                    result = Base::cyVal;
+                    break;
+                default:
+                {
+                    VARIANT variant = { 0, };
+                    auto hr = VariantChangeType( &variant, (const VARIANT*)this, 0, (VARTYPE)VariantType::Currency );
+                    CheckHRESULT( hr );
+                    result = variant.cyVal;
                 }
+                break;
             }
             return result;
         }
@@ -3747,9 +3593,9 @@ namespace Harlinn::Common::Core
 
 
 
-        VariantT Abs( ) const
+        Variant Abs( ) const
         {
-            VariantT result;
+            Variant result;
             auto hr = VarAbs( (LPVARIANT)this, (LPVARIANT)&result );
             if ( FAILED( hr ) )
             {
@@ -3758,9 +3604,9 @@ namespace Harlinn::Common::Core
             return result;
         }
 
-        VariantT Add( const VariantT& other ) const
+        Variant Add( const Variant& other ) const
         {
-            VariantT result;
+            Variant result;
             auto hr = VarAdd( (LPVARIANT)this, (LPVARIANT)&other, (LPVARIANT)&result );
             if ( FAILED( hr ) )
             {
@@ -3769,14 +3615,14 @@ namespace Harlinn::Common::Core
             return result;
         }
 
-        friend VariantT operator + ( const VariantT& left, const VariantT& right )
+        friend Variant operator + ( const Variant& left, const Variant& right )
         {
             return left.Add( right );
         }
 
-        VariantT And( const VariantT& other ) const
+        Variant And( const Variant& other ) const
         {
-            VariantT result;
+            Variant result;
             auto hr = VarAnd( (LPVARIANT)this, (LPVARIANT)&other, (LPVARIANT)&result );
             if ( FAILED( hr ) )
             {
@@ -3785,14 +3631,14 @@ namespace Harlinn::Common::Core
             return result;
         }
 
-        friend VariantT operator & ( const VariantT& left, const VariantT& right )
+        friend Variant operator & ( const Variant& left, const Variant& right )
         {
             return left.And( right );
         }
 
-        VariantT Concatenate( const VariantT& other ) const
+        Variant Concatenate( const Variant& other ) const
         {
-            VariantT result;
+            Variant result;
             auto hr = VarCat( (LPVARIANT)this, (LPVARIANT)&other, (LPVARIANT)&result );
             if ( FAILED( hr ) )
             {
@@ -3802,9 +3648,9 @@ namespace Harlinn::Common::Core
         }
 
 
-        VariantT Div( const VariantT& other ) const
+        Variant Div( const Variant& other ) const
         {
-            VariantT result;
+            Variant result;
             auto hr = VarDiv( (LPVARIANT)this, (LPVARIANT)&other, (LPVARIANT)&result );
             if ( FAILED( hr ) )
             {
@@ -3813,15 +3659,15 @@ namespace Harlinn::Common::Core
             return result;
         }
 
-        friend VariantT operator / ( const VariantT& left, const VariantT& right )
+        friend Variant operator / ( const Variant& left, const Variant& right )
         {
             return left.Div( right );
         }
 
 
-        VariantT IDiv( const VariantT& other ) const
+        Variant IDiv( const Variant& other ) const
         {
-            VariantT result;
+            Variant result;
             auto hr = VarIdiv( (LPVARIANT)this, (LPVARIANT)&other, (LPVARIANT)&result );
             if ( FAILED( hr ) )
             {
@@ -3830,9 +3676,9 @@ namespace Harlinn::Common::Core
             return result;
         }
 
-        VariantT Trunc( ) const
+        Variant Trunc( ) const
         {
-            VariantT result;
+            Variant result;
             auto hr = VarFix( (LPVARIANT)this, (LPVARIANT)&result );
             if ( FAILED( hr ) )
             {
@@ -3841,9 +3687,9 @@ namespace Harlinn::Common::Core
             return result;
         }
 
-        VariantT Mod( const VariantT& other ) const
+        Variant Mod( const Variant& other ) const
         {
-            VariantT result;
+            Variant result;
             auto hr = VarMod( (LPVARIANT)this, (LPVARIANT)&other, (LPVARIANT)&result );
             if ( FAILED( hr ) )
             {
@@ -3853,14 +3699,14 @@ namespace Harlinn::Common::Core
         }
 
 
-        friend VariantT operator % ( const VariantT& left, const VariantT& right )
+        friend Variant operator % ( const Variant& left, const Variant& right )
         {
             return left.Mod( right );
         }
 
-        VariantT Mul( const VariantT& other ) const
+        Variant Mul( const Variant& other ) const
         {
-            VariantT result;
+            Variant result;
             auto hr = VarMul( (LPVARIANT)this, (LPVARIANT)&other, (LPVARIANT)&result );
             if ( FAILED( hr ) )
             {
@@ -3869,14 +3715,14 @@ namespace Harlinn::Common::Core
             return result;
         }
 
-        friend VariantT operator * ( const VariantT& left, const VariantT& right )
+        friend Variant operator * ( const Variant& left, const Variant& right )
         {
             return left.Mul( right );
         }
 
-        VariantT Neg( ) const
+        Variant Neg( ) const
         {
-            VariantT result;
+            Variant result;
             auto hr = VarNeg( (LPVARIANT)this, (LPVARIANT)&result );
             if ( FAILED( hr ) )
             {
@@ -3885,9 +3731,9 @@ namespace Harlinn::Common::Core
             return result;
         }
         // Performs the bitwise not negation operation on a variant
-        VariantT Not( ) const
+        Variant Not( ) const
         {
-            VariantT result;
+            Variant result;
             auto hr = VarNot( (LPVARIANT)this, (LPVARIANT)&result );
             if ( FAILED( hr ) )
             {
@@ -3896,15 +3742,15 @@ namespace Harlinn::Common::Core
             return result;
         }
 
-        VariantT operator ~ ( ) const
+        Variant operator ~ ( ) const
         {
             return Not( );
         }
 
 
-        VariantT Or( const VariantT& other ) const
+        Variant Or( const Variant& other ) const
         {
-            VariantT result;
+            Variant result;
             auto hr = VarOr( (LPVARIANT)this, (LPVARIANT)&other, (LPVARIANT)&result );
             if ( FAILED( hr ) )
             {
@@ -3913,14 +3759,14 @@ namespace Harlinn::Common::Core
             return result;
         }
 
-        friend VariantT operator | ( const VariantT& left, const VariantT& right )
+        friend Variant operator | ( const Variant& left, const Variant& right )
         {
             return left.Or( right );
         }
 
-        VariantT Sub( const VariantT& other ) const
+        Variant Sub( const Variant& other ) const
         {
-            VariantT result;
+            Variant result;
             auto hr = VarSub( (LPVARIANT)this, (LPVARIANT)&other, (LPVARIANT)&result );
             if ( FAILED( hr ) )
             {
@@ -3929,14 +3775,14 @@ namespace Harlinn::Common::Core
             return result;
         }
 
-        friend VariantT operator - ( const VariantT& left, const VariantT& right )
+        friend Variant operator - ( const Variant& left, const Variant& right )
         {
             return left.Sub( right );
         }
 
-        VariantT Pow( const VariantT& other ) const
+        Variant Pow( const Variant& other ) const
         {
-            VariantT result;
+            Variant result;
             auto hr = VarPow( (LPVARIANT)this, (LPVARIANT)&other, (LPVARIANT)&result );
             if ( FAILED( hr ) )
             {
@@ -3946,9 +3792,9 @@ namespace Harlinn::Common::Core
         }
 
         // Performs a bitwise equivalence on two variants.
-        VariantT Eqv( const VariantT& other ) const
+        Variant Eqv( const Variant& other ) const
         {
-            VariantT result;
+            Variant result;
             auto hr = VarEqv( (LPVARIANT)this, (LPVARIANT)&other, (LPVARIANT)&result );
             if ( FAILED( hr ) )
             {
@@ -3965,9 +3811,9 @@ namespace Harlinn::Common::Core
         /// greater than or equal to the variant is returned
         /// </remarks>
         /// <returns>the integer portion of the variant</returns>
-        VariantT Fix( ) const
+        Variant Fix( ) const
         {
-            VariantT result;
+            Variant result;
             auto hr = VarFix( (LPVARIANT)this, (LPVARIANT)&result );
             if ( FAILED( hr ) )
             {
@@ -3981,9 +3827,9 @@ namespace Harlinn::Common::Core
         /// </summary>
         /// <param name="other">the argument variant</param>
         /// <returns>the result</returns>
-        VariantT Imp( const VariantT& other ) const
+        Variant Imp( const Variant& other ) const
         {
-            VariantT result;
+            Variant result;
             auto hr = VarImp( (LPVARIANT)this, (LPVARIANT)&other, (LPVARIANT)&result );
             if ( FAILED( hr ) )
             {
@@ -3995,10 +3841,9 @@ namespace Harlinn::Common::Core
 
     };
 
-    using Variant = VariantT<tagVARIANT>;
-    using PropertyVariant = VariantT<PROPVARIANT>;
+    
 
-    static_assert(sizeof(Variant) == sizeof(PropertyVariant));
+    static_assert(sizeof( Variant ) == sizeof(VARIANT));
 
 
 

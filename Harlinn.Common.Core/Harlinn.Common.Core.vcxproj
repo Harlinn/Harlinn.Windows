@@ -279,6 +279,7 @@
     <ClInclude Include="HCCPipe.h" />
     <ClInclude Include="HCCPortableDeviceTypes.h" />
     <ClInclude Include="HCCProcess.h" />
+    <ClInclude Include="HCCPropertyVariant.h" />
     <ClInclude Include="HCCPropSys.h" />
     <ClInclude Include="HCCRdtscConverter.h" />
     <ClInclude Include="HCCReference.h" />

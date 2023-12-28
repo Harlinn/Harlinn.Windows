@@ -170,6 +170,9 @@ namespace Harlinn::Common::Core
         return Format( locale, L"{:0{}.{}f}", value, width, precision );
     }
 
+    
+
+
     WideString ToWideString( Double value )
     {
 #ifdef HCC_WITH_BASIC_STRING

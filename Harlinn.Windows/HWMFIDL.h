@@ -354,11 +354,12 @@ namespace Harlinn::Windows
             HCC_COM_CHECK_HRESULT(hr);
             return MFMediaSource(itf);
         }
-        void GetCharacteristics( DWORD* characteristics) const
+        
+        void GetCharacteristics( DWORD* characteristics ) const
         {
-            InterfaceType* pInterface = GetInterface();
-            HRESULT hr = pInterface->GetCharacteristics(characteristics);
-            HCC_COM_CHECK_HRESULT2(hr, pInterface);
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->GetCharacteristics( characteristics );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
         }
 
         void CreatePresentationDescriptor( IMFPresentationDescriptor** presentationDescriptor) const

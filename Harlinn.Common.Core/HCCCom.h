@@ -1479,6 +1479,16 @@ public: \
         }
 
         HCC_EXPORT std::vector<WideString> GetSupportedKnownInterfaces(IUnknown* unknown);
+        
+        inline void PrintSupportedKnownInterfaces( IUnknown* unknown )
+        {
+            auto comInterfaces = GetSupportedKnownInterfaces( unknown );
+            for ( auto& comInterface : comInterfaces )
+            {
+                _putws( comInterface.c_str() );
+            }
+        }
+
         HCC_EXPORT std::vector<Guid> GetSupportedKnownInterfaceIds(IUnknown* unknown);
 
     }

@@ -3,7 +3,9 @@
 #define HARLINN_WINDOWS_HWMEDIAFOUNDATION_H_
 
 #include <HWMFIDL.h>
+#include <HWMFReadWrite.h>
 #include <HCCComImpl.h>
+#include <HCCCom.h>
 
 namespace Harlinn::Windows::MF
 {
@@ -230,8 +232,259 @@ namespace Harlinn::Windows::MF
 
     
     HW_EXPORT WideString GetGUIDNameConst(const Guid& id);
+    HW_EXPORT WideString GetAttributeValue( const MFAttributes& attributes, const Guid& attributeKey );
     HW_EXPORT WideString GetMediaTypeDescription(const MFMediaType& mediaType);
 
+    inline void PrintMediaTypeDescriptions( const std::vector<MFMediaType>& mediaTypes )
+    {
+        for ( const auto& mediaType : mediaTypes )
+        {
+            auto mediaTypeDescription = GetMediaTypeDescription( mediaType );
+            _putws( mediaTypeDescription.c_str( ) );
+        }
+    }
+
+    inline void PrintMediaTypeDescription( const MFMediaType& mediaType )
+    {
+        auto mediaTypeDescription = GetMediaTypeDescription( mediaType );
+        _putws( mediaTypeDescription.c_str( ) );
+    }
+
+    inline void PrintMediaTypeDescriptions( DWORD streamIndex, const Harlinn::Windows::MFSourceReader& sourceReader )
+    {
+        auto nativeMediaTypes = sourceReader.GetNativeMediaTypes( streamIndex );
+        PrintMediaTypeDescriptions( nativeMediaTypes );
+    }
+
+    inline void PrintInputMediaTypeDescriptions( DWORD streamIndex, const Harlinn::Windows::MFTransform& transform )
+    {
+        auto mediaTypes = transform.GetInputAvailableTypes( streamIndex );
+        PrintMediaTypeDescriptions( mediaTypes );
+    }
+
+    inline void PrintOutputMediaTypeDescriptions( DWORD streamIndex, const Harlinn::Windows::MFTransform& transform )
+    {
+        auto mediaTypes = transform.GetOutputAvailableTypes( streamIndex );
+        PrintMediaTypeDescriptions( mediaTypes );
+    }
+
+
+    enum class EnumTransformsFlags : UInt32
+    {
+        None = 0,
+        Synchronous = _MFT_ENUM_FLAG::MFT_ENUM_FLAG_SYNCMFT,
+        Asynchronous = _MFT_ENUM_FLAG::MFT_ENUM_FLAG_ASYNCMFT,
+        Hardware = _MFT_ENUM_FLAG::MFT_ENUM_FLAG_HARDWARE,
+        FieldOfUse = _MFT_ENUM_FLAG::MFT_ENUM_FLAG_FIELDOFUSE,
+        Local = _MFT_ENUM_FLAG::MFT_ENUM_FLAG_LOCALMFT,
+        TranscodeOnly = _MFT_ENUM_FLAG::MFT_ENUM_FLAG_TRANSCODE_ONLY,
+        SortAndFilter = _MFT_ENUM_FLAG::MFT_ENUM_FLAG_SORTANDFILTER,
+        SortAndFilterApprovedOnly = _MFT_ENUM_FLAG::MFT_ENUM_FLAG_SORTANDFILTER_APPROVED_ONLY,
+        SortAndFilterWebOnly = _MFT_ENUM_FLAG::MFT_ENUM_FLAG_SORTANDFILTER_WEB_ONLY,
+        SortAndFilterWebOnlyEdgeMode = _MFT_ENUM_FLAG::MFT_ENUM_FLAG_SORTANDFILTER_WEB_ONLY_EDGEMODE,
+        UntrustedStore = _MFT_ENUM_FLAG::MFT_ENUM_FLAG_UNTRUSTED_STOREMFT,
+        All = _MFT_ENUM_FLAG::MFT_ENUM_FLAG_ALL
+    };
+    HCC_DEFINE_ENUM_FLAG_OPERATORS( EnumTransformsFlags, UInt32 );
+
+
+    using TransformRegisterTypeInfo = MFT_REGISTER_TYPE_INFO;
+
+
+    class Transforms
+    {
+        IMFActivate** transforms_ = nullptr;
+        UINT32 transformCount_ = 0;
+    public:
+        Transforms( ) = default;
+        Transforms( const GUID& transformCategory, EnumTransformsFlags flags, const TransformRegisterTypeInfo* inputType = nullptr, const TransformRegisterTypeInfo* outputType = nullptr )
+        {
+             auto hr = MFTEnumEx( transformCategory, static_cast< UINT32 >( flags ), inputType, outputType, &transforms_, &transformCount_ );
+             HCC_COM_CHECK_HRESULT( hr );
+        }
+
+
+        Transforms( const Transforms& ) = delete;
+        Transforms& operator = ( const Transforms& ) = delete;
+
+        Transforms( Transforms&& other ) noexcept
+            : transforms_( other.transforms_ ), transformCount_( other.transformCount_ )
+        {
+            other.transforms_ = nullptr;
+            other.transformCount_ = 0;
+        }
+        Transforms& operator = ( Transforms&& other ) noexcept
+        {
+            if ( &other != this )
+            {
+                std::swap( transforms_, other.transforms_ );
+                std::swap( transformCount_, other.transformCount_ );
+            }
+            return *this;
+        }
+
+        ~Transforms()
+        {
+            clear( );
+        }
+
+        static Transforms AudioDecoders( EnumTransformsFlags flags = EnumTransformsFlags::All, const TransformRegisterTypeInfo* inputType = nullptr, const TransformRegisterTypeInfo* outputType = nullptr )
+        {
+            return Transforms( MFT_CATEGORY_AUDIO_DECODER, flags, inputType, outputType );
+        }
+        static Transforms AudioEffects( EnumTransformsFlags flags = EnumTransformsFlags::All, const TransformRegisterTypeInfo* inputType = nullptr, const TransformRegisterTypeInfo* outputType = nullptr )
+        {
+            return Transforms( MFT_CATEGORY_AUDIO_EFFECT, flags, inputType, outputType );
+        }
+        static Transforms AudioEncoders( EnumTransformsFlags flags = EnumTransformsFlags::All, const TransformRegisterTypeInfo* inputType = nullptr, const TransformRegisterTypeInfo* outputType = nullptr )
+        {
+            return Transforms( MFT_CATEGORY_AUDIO_ENCODER, flags, inputType, outputType );
+        }
+        static Transforms Demultiplexers( EnumTransformsFlags flags = EnumTransformsFlags::All, const TransformRegisterTypeInfo* inputType = nullptr, const TransformRegisterTypeInfo* outputType = nullptr )
+        {
+            return Transforms( MFT_CATEGORY_DEMULTIPLEXER, flags, inputType, outputType );
+        }
+        static Transforms Multiplexers( EnumTransformsFlags flags = EnumTransformsFlags::All, const TransformRegisterTypeInfo* inputType = nullptr, const TransformRegisterTypeInfo* outputType = nullptr )
+        {
+            return Transforms( MFT_CATEGORY_MULTIPLEXER, flags, inputType, outputType );
+        }
+        static Transforms OtherTransforms( EnumTransformsFlags flags = EnumTransformsFlags::All, const TransformRegisterTypeInfo* inputType = nullptr, const TransformRegisterTypeInfo* outputType = nullptr )
+        {
+            return Transforms( MFT_CATEGORY_OTHER, flags, inputType, outputType );
+        }
+        static Transforms VideoDecoders( EnumTransformsFlags flags = EnumTransformsFlags::All, const TransformRegisterTypeInfo* inputType = nullptr, const TransformRegisterTypeInfo* outputType = nullptr )
+        {
+            return Transforms( MFT_CATEGORY_VIDEO_DECODER, flags, inputType, outputType );
+        }
+        static Transforms VideoEffects( EnumTransformsFlags flags = EnumTransformsFlags::All, const TransformRegisterTypeInfo* inputType = nullptr, const TransformRegisterTypeInfo* outputType = nullptr )
+        {
+            return Transforms( MFT_CATEGORY_VIDEO_EFFECT, flags, inputType, outputType );
+        }
+        static Transforms VideoRendererEffects( EnumTransformsFlags flags = EnumTransformsFlags::All, const TransformRegisterTypeInfo* inputType = nullptr, const TransformRegisterTypeInfo* outputType = nullptr )
+        {
+            return Transforms( MFT_CATEGORY_VIDEO_RENDERER_EFFECT, flags, inputType, outputType );
+        }
+        static Transforms VideoEncoders( EnumTransformsFlags flags = EnumTransformsFlags::Hardware | EnumTransformsFlags::Asynchronous | EnumTransformsFlags::Synchronous, const TransformRegisterTypeInfo* inputType = nullptr, const TransformRegisterTypeInfo* outputType = nullptr )
+        {
+            return Transforms( MFT_CATEGORY_VIDEO_ENCODER, flags, inputType, outputType );
+        }
+        static Transforms VideoProcessors( EnumTransformsFlags flags = EnumTransformsFlags::All, const TransformRegisterTypeInfo* inputType = nullptr, const TransformRegisterTypeInfo* outputType = nullptr )
+        {
+            return Transforms( MFT_CATEGORY_VIDEO_PROCESSOR, flags, inputType, outputType );
+        }
+
+
+        void clear( )
+        {
+            if ( transforms_ )
+            {
+                for ( UINT32 i = 0; i < transformCount_; i++ )
+                {
+                    auto tmp = transforms_[ i ];
+                    transforms_[ i ] = nullptr;
+                    if ( tmp )
+                    {
+                        tmp->Release( );
+                    }
+                }
+                CoTaskMemFree( transforms_ );
+            }
+        }
+
+        size_t size( ) const
+        {
+            return static_cast< size_t >( transformCount_ );
+        }
+
+        MFActivate operator[]( size_t index ) const
+        {
+            if ( index < transformCount_ )
+            {
+                auto itf = transforms_[ index ];
+                return MFActivate( itf, true );
+            }
+            else
+            {
+                return MFActivate( );
+            }
+        }
+    };
+
+
+    void PrintAttribute( const MFAttributes& attributes, const Guid& attributeKey )
+    {
+        auto keyName = GetGUIDNameConst( attributeKey );
+        if ( !keyName )
+        {
+            keyName = attributeKey.ToString( );
+        }
+        auto value = GetAttributeValue( attributes, attributeKey );
+        if ( value )
+        {
+            auto text = Format( L"{}: {}", keyName, value );
+            _putws( text.c_str() );
+        }
+        else
+        {
+            auto text = Format( L"{}: <Unsupported type>", keyName );
+            _putws( text.c_str( ) );
+        }
+    }
+
+    void PrintAttributes( const MFAttributes& attributes )
+    {
+        if ( attributes )
+        {
+            auto attributeCount = attributes.GetCount( );
+            for ( size_t j = 0; j < attributeCount; j++ )
+            {
+                Guid attributeKey;
+                attributes.GetItemByIndex( static_cast< UINT32 >( j ), &attributeKey, nullptr );
+                PrintAttribute( attributes, attributeKey );
+            }
+        }
+    }
+
+
+    void PrintTransforms( const Transforms& transforms )
+    {
+        auto transformCount = transforms.size( );
+        for ( size_t i = 0; i < transformCount; i++ )
+        {
+            auto mfActivate = transforms[ i ];
+            _putws( L"mfActivate Interfaces:" );
+            Com::PrintSupportedKnownInterfaces( mfActivate.GetInterfacePointer( ) );
+
+            _putws( L"mfActivate Attributes:" );
+            PrintAttributes( mfActivate );
+
+            auto transform = mfActivate.ActivateObject<MFTransform>( );
+            if ( transform )
+            {
+                _putws( L"transform Interfaces:" );
+                Com::PrintSupportedKnownInterfaces( transform.GetInterfacePointer( ) );
+
+                MFAttributes transformAttributes = transform.GetAttributes( );
+                if ( transformAttributes )
+                {
+                    _putws( L"transform Attributes:" );
+                    PrintAttributes( transformAttributes );
+                }
+            }
+        }
+    }
+
+    void PrintVideoEncoders( )
+    {
+        auto transforms = Transforms::VideoEncoders( );
+        PrintTransforms( transforms );
+    }
+    void PrintVideoDecoders( )
+    {
+        auto transforms = Transforms::VideoDecoders( );
+        PrintTransforms( transforms );
+    }
+    
 
 }
 

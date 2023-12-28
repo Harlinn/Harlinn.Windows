@@ -81,7 +81,7 @@ protected:
 
 private:
   // redefined virtual functions:
-  virtual Boolean isFramedSource() const;
+  LIVE555_EXPORT virtual Boolean isFramedSource() const;
 
 private:
   afterGettingFunc* fAfterGettingFunc;

@@ -200,17 +200,28 @@ namespace Harlinn::Windows
         }
 
 
-        void GetAttributes( __RPC__deref_out_opt IMFAttributes** pAttributes) const
+        bool GetAttributes( __RPC__deref_out_opt IMFAttributes** pAttributes) const
         {
             InterfaceType* pInterface = GetInterface();
             HRESULT hr = pInterface->GetAttributes(pAttributes);
-            HCC_COM_CHECK_HRESULT2(hr, pInterface);
+            if ( hr != E_NOTIMPL )
+            {
+                HCC_COM_CHECK_HRESULT2( hr, pInterface );
+                return true;
+            }
+            return false;
         }
         MFAttributes GetAttributes() const
         {
             IMFAttributes* itf = nullptr;
-            GetAttributes(&itf);
-            return MFAttributes(itf);
+            if ( GetAttributes( &itf ) )
+            {
+                return MFAttributes( itf );
+            }
+            else
+            {
+                return {};
+            }
         }
 
 
@@ -256,30 +267,84 @@ namespace Harlinn::Windows
             HCC_COM_CHECK_HRESULT2(hr, pInterface);
         }
 
-        void GetInputAvailableType( DWORD dwInputStreamID, DWORD dwTypeIndex, __RPC__deref_out_opt IMFMediaType** ppType) const
+        bool GetInputAvailableType( DWORD inputStreamID, DWORD typeIndex, __RPC__deref_out_opt IMFMediaType** ppType) const
         {
             InterfaceType* pInterface = GetInterface();
-            HRESULT hr = pInterface->GetInputAvailableType(dwInputStreamID, dwTypeIndex, ppType);
-            HCC_COM_CHECK_HRESULT2(hr, pInterface);
+            HRESULT hr = pInterface->GetInputAvailableType( inputStreamID, typeIndex, ppType);
+            if ( hr != MF_E_NO_MORE_TYPES )
+            {
+                HCC_COM_CHECK_HRESULT2( hr, pInterface );
+                return true;
+            }
+            return false;
         }
-        MFMediaType GetInputAvailableType(DWORD dwInputStreamID, DWORD dwTypeIndex) const
+        MFMediaType GetInputAvailableType( DWORD inputStreamID, DWORD typeIndex ) const
         {
             IMFMediaType* itf = nullptr;
-            GetInputAvailableType(dwInputStreamID, dwTypeIndex,&itf);
-            return MFMediaType(itf);
+            if ( GetInputAvailableType( inputStreamID, typeIndex, &itf ) )
+            {
+                return MFMediaType( itf );
+            }
+            return {};
+        }
+        std::vector<MFMediaType> GetInputAvailableTypes( DWORD inputStreamID ) const
+        {
+            std::vector<MFMediaType> result;
+            DWORD i = 0;
+            while ( true )
+            {
+                auto mediaType = GetInputAvailableType( inputStreamID, i );
+                if ( mediaType )
+                {
+                    result.emplace_back( std::move( mediaType ) );
+                    i++;
+                }
+                else
+                {
+                    break;
+                }
+            }
+            return result;
         }
 
-        void GetOutputAvailableType( DWORD dwOutputStreamID, DWORD dwTypeIndex, __RPC__deref_out_opt IMFMediaType** ppType) const
+        bool GetOutputAvailableType( DWORD dwOutputStreamID, DWORD dwTypeIndex, __RPC__deref_out_opt IMFMediaType** ppType) const
         {
             InterfaceType* pInterface = GetInterface();
             HRESULT hr = pInterface->GetOutputAvailableType(dwOutputStreamID, dwTypeIndex, ppType);
-            HCC_COM_CHECK_HRESULT2(hr, pInterface);
+            if ( hr != MF_E_NO_MORE_TYPES )
+            {
+                HCC_COM_CHECK_HRESULT2( hr, pInterface );
+                return true;
+            }
+            return false;
         }
         MFMediaType GetOutputAvailableType(DWORD dwOutputStreamID, DWORD dwTypeIndex) const
         {
             IMFMediaType* itf = nullptr;
-            GetOutputAvailableType(dwOutputStreamID, dwTypeIndex, &itf);
-            return MFMediaType(itf);
+            if ( GetOutputAvailableType( dwOutputStreamID, dwTypeIndex, &itf ) )
+            {
+                return MFMediaType( itf );
+            }
+            return {};
+        }
+        std::vector<MFMediaType> GetOutputAvailableTypes( DWORD inputStreamID ) const
+        {
+            std::vector<MFMediaType> result;
+            DWORD i = 0;
+            while ( true )
+            {
+                auto mediaType = GetOutputAvailableType( inputStreamID, i );
+                if ( mediaType )
+                {
+                    result.emplace_back( std::move( mediaType ) );
+                    i++;
+                }
+                else
+                {
+                    break;
+                }
+            }
+            return result;
         }
 
         void SetInputType( DWORD dwInputStreamID, __RPC__in_opt IMFMediaType* pType, DWORD dwFlags = 0) const

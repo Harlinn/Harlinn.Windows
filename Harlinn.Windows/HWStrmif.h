@@ -978,11 +978,17 @@ namespace Harlinn::Windows::DirectShow
             HCC_COM_CHECK_HRESULT2(hr, pInterface);
         }
 
-        void SetValue( const Guid* api, _In_  VARIANT* value) const
+        void SetValue( const GUID* api, _In_  VARIANT* value) const
         {
             InterfaceType* pInterface = GetInterface();
             HRESULT hr = pInterface->SetValue((const GUID*) api, value);
             HCC_COM_CHECK_HRESULT2(hr, pInterface);
+        }
+
+        void SetValue( const GUID& api, bool value ) const
+        {
+            Variant var( value );
+            SetValue( &api, &var );
         }
 
         void RegisterForEvent( const Guid* api, LONG_PTR userData) const

@@ -4,6 +4,7 @@
 
 #include <HWDef.h>
 #include <HCCCOM.h>
+#include <HWCommon.h>
 
 namespace Harlinn::Windows
 {

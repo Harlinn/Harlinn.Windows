@@ -4,7 +4,7 @@
 
 #include <HCCCOM.h>
 #include <HCCException.h>
-#include <HCCVariant.h>
+#include <HCCPropertyVariant.h>
 #include <HCCObj.h>
 
 namespace Harlinn::Common::Core

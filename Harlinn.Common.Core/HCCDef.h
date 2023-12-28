@@ -139,6 +139,7 @@
 #include <Credssp.h>
 #include <Schnlsp.h>
 #include <Dbt.h>
+#include <propvarutil.h>
 
 #include <msxml2.h>
 #include <msxml6.h>
@@ -399,9 +400,10 @@ namespace Harlinn::Common::Core
     class DateTime;
     class TimeSpan;
     class Currency;
-    template<typename BaseType>
-    class VariantT;
-    using Variant = VariantT<tagVARIANT>;
+    
+    class Variant;
+    class PropertyVariant;
+    
 
     using Boolean = bool;
     using Int8 = signed char;
