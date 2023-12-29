@@ -27,6 +27,8 @@ protected:
 private:
     void InitializeMenuBar();
     void OnOpenFile();
+    void OnRTSP( );
+    void OnCamera( );
 };
 
 void MyForm::DoOnInitialize()
@@ -44,6 +46,14 @@ void MyForm::InitializeMenuBar()
         {
             OnOpenFile();
         });
+    fileSubMenu->AddMenuItem( L"RTSP", [ & ]( MenuItem* sender )
+        {
+            OnRTSP( );
+        } );
+    fileSubMenu->AddMenuItem( L"Camera", [ & ]( MenuItem* sender )
+        {
+            OnCamera( );
+        } );
 
     SetMenu(std::move(menuBar));
 }
@@ -132,6 +142,23 @@ void MyForm::OnOpenFile()
         {
             player_->OpenURL(ofn.lpstrFile);
         }
+    }
+}
+
+
+void MyForm::OnRTSP( )
+{
+    if ( player_ != nullptr )
+    {
+        player_->OpenURL( L"rtsp://127.0.0.1:39000/Camera" );
+    }
+}
+
+void MyForm::OnCamera( )
+{
+    if ( player_ != nullptr )
+    {
+        player_->OpenURL( L"" );
     }
 }
 

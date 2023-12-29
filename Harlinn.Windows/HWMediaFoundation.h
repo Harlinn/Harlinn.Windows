@@ -283,7 +283,8 @@ namespace Harlinn::Windows::MF
         SortAndFilterWebOnly = _MFT_ENUM_FLAG::MFT_ENUM_FLAG_SORTANDFILTER_WEB_ONLY,
         SortAndFilterWebOnlyEdgeMode = _MFT_ENUM_FLAG::MFT_ENUM_FLAG_SORTANDFILTER_WEB_ONLY_EDGEMODE,
         UntrustedStore = _MFT_ENUM_FLAG::MFT_ENUM_FLAG_UNTRUSTED_STOREMFT,
-        All = _MFT_ENUM_FLAG::MFT_ENUM_FLAG_ALL
+        All = _MFT_ENUM_FLAG::MFT_ENUM_FLAG_ALL,
+        Default = Hardware | Asynchronous | Synchronous
     };
     HCC_DEFINE_ENUM_FLAG_OPERATORS( EnumTransformsFlags, UInt32 );
 
@@ -328,47 +329,47 @@ namespace Harlinn::Windows::MF
             clear( );
         }
 
-        static Transforms AudioDecoders( EnumTransformsFlags flags = EnumTransformsFlags::All, const TransformRegisterTypeInfo* inputType = nullptr, const TransformRegisterTypeInfo* outputType = nullptr )
+        static Transforms AudioDecoders( EnumTransformsFlags flags = EnumTransformsFlags::Default, const TransformRegisterTypeInfo* inputType = nullptr, const TransformRegisterTypeInfo* outputType = nullptr )
         {
             return Transforms( MFT_CATEGORY_AUDIO_DECODER, flags, inputType, outputType );
         }
-        static Transforms AudioEffects( EnumTransformsFlags flags = EnumTransformsFlags::All, const TransformRegisterTypeInfo* inputType = nullptr, const TransformRegisterTypeInfo* outputType = nullptr )
+        static Transforms AudioEffects( EnumTransformsFlags flags = EnumTransformsFlags::Default, const TransformRegisterTypeInfo* inputType = nullptr, const TransformRegisterTypeInfo* outputType = nullptr )
         {
             return Transforms( MFT_CATEGORY_AUDIO_EFFECT, flags, inputType, outputType );
         }
-        static Transforms AudioEncoders( EnumTransformsFlags flags = EnumTransformsFlags::All, const TransformRegisterTypeInfo* inputType = nullptr, const TransformRegisterTypeInfo* outputType = nullptr )
+        static Transforms AudioEncoders( EnumTransformsFlags flags = EnumTransformsFlags::Default, const TransformRegisterTypeInfo* inputType = nullptr, const TransformRegisterTypeInfo* outputType = nullptr )
         {
             return Transforms( MFT_CATEGORY_AUDIO_ENCODER, flags, inputType, outputType );
         }
-        static Transforms Demultiplexers( EnumTransformsFlags flags = EnumTransformsFlags::All, const TransformRegisterTypeInfo* inputType = nullptr, const TransformRegisterTypeInfo* outputType = nullptr )
+        static Transforms Demultiplexers( EnumTransformsFlags flags = EnumTransformsFlags::Default, const TransformRegisterTypeInfo* inputType = nullptr, const TransformRegisterTypeInfo* outputType = nullptr )
         {
             return Transforms( MFT_CATEGORY_DEMULTIPLEXER, flags, inputType, outputType );
         }
-        static Transforms Multiplexers( EnumTransformsFlags flags = EnumTransformsFlags::All, const TransformRegisterTypeInfo* inputType = nullptr, const TransformRegisterTypeInfo* outputType = nullptr )
+        static Transforms Multiplexers( EnumTransformsFlags flags = EnumTransformsFlags::Default, const TransformRegisterTypeInfo* inputType = nullptr, const TransformRegisterTypeInfo* outputType = nullptr )
         {
             return Transforms( MFT_CATEGORY_MULTIPLEXER, flags, inputType, outputType );
         }
-        static Transforms OtherTransforms( EnumTransformsFlags flags = EnumTransformsFlags::All, const TransformRegisterTypeInfo* inputType = nullptr, const TransformRegisterTypeInfo* outputType = nullptr )
+        static Transforms OtherTransforms( EnumTransformsFlags flags = EnumTransformsFlags::Default, const TransformRegisterTypeInfo* inputType = nullptr, const TransformRegisterTypeInfo* outputType = nullptr )
         {
             return Transforms( MFT_CATEGORY_OTHER, flags, inputType, outputType );
         }
-        static Transforms VideoDecoders( EnumTransformsFlags flags = EnumTransformsFlags::All, const TransformRegisterTypeInfo* inputType = nullptr, const TransformRegisterTypeInfo* outputType = nullptr )
+        static Transforms VideoDecoders( EnumTransformsFlags flags = EnumTransformsFlags::Default, const TransformRegisterTypeInfo* inputType = nullptr, const TransformRegisterTypeInfo* outputType = nullptr )
         {
             return Transforms( MFT_CATEGORY_VIDEO_DECODER, flags, inputType, outputType );
         }
-        static Transforms VideoEffects( EnumTransformsFlags flags = EnumTransformsFlags::All, const TransformRegisterTypeInfo* inputType = nullptr, const TransformRegisterTypeInfo* outputType = nullptr )
+        static Transforms VideoEffects( EnumTransformsFlags flags = EnumTransformsFlags::Default, const TransformRegisterTypeInfo* inputType = nullptr, const TransformRegisterTypeInfo* outputType = nullptr )
         {
             return Transforms( MFT_CATEGORY_VIDEO_EFFECT, flags, inputType, outputType );
         }
-        static Transforms VideoRendererEffects( EnumTransformsFlags flags = EnumTransformsFlags::All, const TransformRegisterTypeInfo* inputType = nullptr, const TransformRegisterTypeInfo* outputType = nullptr )
+        static Transforms VideoRendererEffects( EnumTransformsFlags flags = EnumTransformsFlags::Default, const TransformRegisterTypeInfo* inputType = nullptr, const TransformRegisterTypeInfo* outputType = nullptr )
         {
             return Transforms( MFT_CATEGORY_VIDEO_RENDERER_EFFECT, flags, inputType, outputType );
         }
-        static Transforms VideoEncoders( EnumTransformsFlags flags = EnumTransformsFlags::Hardware | EnumTransformsFlags::Asynchronous | EnumTransformsFlags::Synchronous, const TransformRegisterTypeInfo* inputType = nullptr, const TransformRegisterTypeInfo* outputType = nullptr )
+        static Transforms VideoEncoders( EnumTransformsFlags flags = EnumTransformsFlags::Default, const TransformRegisterTypeInfo* inputType = nullptr, const TransformRegisterTypeInfo* outputType = nullptr )
         {
             return Transforms( MFT_CATEGORY_VIDEO_ENCODER, flags, inputType, outputType );
         }
-        static Transforms VideoProcessors( EnumTransformsFlags flags = EnumTransformsFlags::All, const TransformRegisterTypeInfo* inputType = nullptr, const TransformRegisterTypeInfo* outputType = nullptr )
+        static Transforms VideoProcessors( EnumTransformsFlags flags = EnumTransformsFlags::Default, const TransformRegisterTypeInfo* inputType = nullptr, const TransformRegisterTypeInfo* outputType = nullptr )
         {
             return Transforms( MFT_CATEGORY_VIDEO_PROCESSOR, flags, inputType, outputType );
         }

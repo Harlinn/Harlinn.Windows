@@ -31,7 +31,7 @@ public:
     };
 
     // create a topology for the URL that will be rendered in the specified window
-    void RenderURL(PCWSTR url, HWND videoHwnd);
+    void RenderURL(const WideString& url, HWND videoHwnd);
 
     // get the created topology
     const MFTopology& GetTopology() const
@@ -45,7 +45,7 @@ public:
 private:
 
 
-    void CreateMediaSource(PCWSTR sURL);
+    void CreateMediaSource( const WideString& url );
     void CreateTopology();
 
     void AddBranchToPartialTopology(const MFPresentationDescriptor& presDescriptor, DWORD streamIndex);

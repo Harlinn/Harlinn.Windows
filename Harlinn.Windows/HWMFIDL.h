@@ -288,6 +288,12 @@ namespace Harlinn::Windows
             CreateObjectFromURL(url, flags, &itf);
             return Unknown(itf);
         }
+        Unknown CreateObjectFromURL( const WideString& url, DWORD flags ) const
+        {
+            IUnknown* itf = nullptr;
+            CreateObjectFromURL( url.c_str(), flags, &itf );
+            return Unknown( itf );
+        }
 
 
 

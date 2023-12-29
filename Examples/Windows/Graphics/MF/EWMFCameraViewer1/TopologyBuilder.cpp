@@ -5,13 +5,13 @@
 // Initiates topology building from the file URL by first creating a media source, and then
 // adding source and sink nodes for every stream found in the file.
 //
-void TopologyBuilder::RenderURL(PCWSTR fileUrl, HWND videoHwnd)
+void TopologyBuilder::RenderURL( const WideString& url, HWND videoHwnd)
 {
     videoHwnd_ = videoHwnd;
 
     // first create the media source for the file/stream passed in.  Fail and fall out if
     // the media source creation fails (e.g. if the file format is not recognized)
-    CreateMediaSource(fileUrl);
+    CreateMediaSource( url );
 
     CreateTopology();
 }
@@ -22,28 +22,32 @@ void TopologyBuilder::RenderURL(PCWSTR fileUrl, HWND videoHwnd)
 // Create a media source for the specified URL string.  The URL can be a path to a stream, 
 // or it can be a path to a local file.
 //
-void TopologyBuilder::CreateMediaSource(PCWSTR sURL)
+void TopologyBuilder::CreateMediaSource( const WideString& url )
 {
-    /*
-    // Create the source resolver.
-    auto sourceResolver = MFSourceResolver::Create();
-
-    // Use the synchronous source resolver to create the media source.
-    // indicate that we want a source object, and 
-    // pass in optional source search parameters
-    auto source = sourceResolver.CreateObjectFromURL(sURL, MF_RESOLUTION_MEDIASOURCE | MF_RESOLUTION_CONTENT_DOES_NOT_HAVE_TO_MATCH_EXTENSION_OR_MIME_TYPE);
-    */
-    auto videoDeviceSources = MF::DeviceSources::CreateVideoDeviceSources();
-
-    //for (size_t i = 0; i < videoDeviceSources.size(); i++)
-    if(videoDeviceSources.size())
+    if ( url.IStartsWith( L"rtsp://" ) )
     {
-        auto activate = videoDeviceSources[0];
-        // Get the MFMediaSource from the media source.
-        source_ = activate.ActivateObject<MFMediaSource>();
+
+        // Create the source resolver.
+        auto sourceResolver = MFSourceResolver::Create( );
+
+        // Use the synchronous source resolver to create the media source.
+        // indicate that we want a source object, and 
+        // pass in optional source search parameters
+        auto source = sourceResolver.CreateObjectFromURL( url, MF_RESOLUTION_MEDIASOURCE | MF_RESOLUTION_CONTENT_DOES_NOT_HAVE_TO_MATCH_EXTENSION_OR_MIME_TYPE );
+
+        source_ = source.As<MFMediaSource>( );
     }
-    
-    //source_ = source.As<MFMediaSource>();
+    else
+    { 
+        auto videoDeviceSources = MF::DeviceSources::CreateVideoDeviceSources();
+
+        if(videoDeviceSources.size())
+        {
+            auto activate = videoDeviceSources[0];
+            // Get the MFMediaSource from the media source.
+            source_ = activate.ActivateObject<MFMediaSource>();
+        }
+    }
 }
 
 
