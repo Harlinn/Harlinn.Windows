@@ -443,7 +443,7 @@ namespace Harlinn::Common::Core::Logging::Internal
         }
     };
     
-    using BufferPointer = SimpleSharedPointer<Buffer>;
+    using BufferPointer = ReferenceCountedPtr<Buffer>;
 
 
     class BufferManager

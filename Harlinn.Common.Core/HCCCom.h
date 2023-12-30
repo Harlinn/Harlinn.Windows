@@ -7,6 +7,7 @@
 #include <HCCGuid.h>
 #include <HCCString.h>
 #include <HCCComInterfaces.h>
+#include <HCCHandle.h>
 
 namespace Harlinn::Common::Core
 {
@@ -398,6 +399,11 @@ namespace Harlinn::Common::Core
         {
             return CoCreateInstanceFromProgId( progId, classContext );
         }
+
+        template<typename T>
+            requires std::is_base_of_v<Unknown, T>
+        static T CoCreateInstanceFromDll( const ModuleHandle& dll, const CLSID& clsid );
+
 
     };
 
@@ -862,8 +868,38 @@ public: \
             auto hr = pInterface->LockServer( lock ? TRUE : FALSE );
             HCC_COM_CHECK_HRESULT2( hr, pInterface );
         }
-        
     };
+
+#pragma warning( push ) 
+#pragma warning( disable: 4191 ) 
+    template<typename T>
+        requires std::is_base_of_v<Unknown, T>
+    inline T Unknown::CoCreateInstanceFromDll( const ModuleHandle& dll, const CLSID& clsid )
+    {
+        typename T::InterfaceType* result = nullptr;
+
+        if ( !dll )
+        {
+            CheckHRESULT( E_INVALIDARG );
+        }
+        using GetClassObject = HRESULT( WINAPI* )( const CLSID& clsid, const IID& iid, void** object );
+
+        GetClassObject dllGetClassObject = reinterpret_cast< GetClassObject >( dll.GetProcAddress( L"DllGetClassObject" ) );
+        if ( dllGetClassObject == nullptr )
+        {
+            CheckHRESULT( E_NOTIMPL );
+        }
+
+        IClassFactory factoryPtr = nullptr;
+        HRESULT hr = dllGetClassObject( clsid, __uuidof( IClassFactory ), (void**)&factoryPtr );
+        CheckHRESULT( hr );
+        ClassFactory factory( factoryPtr );
+
+        hr = factory.CreateInstance( NULL, __uuidof( typename T::InterfaceType ), ( void** )&result );
+        CheckHRESULT( hr );
+        return T( result );
+    }
+#pragma warning( pop ) 
 
     class EnumString : public Unknown
     {

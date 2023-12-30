@@ -81,18 +81,24 @@ namespace Harlinn::Windows::LiveMedia
 			videoSourceReader_ = MFSourceReader::CreateSourceReaderFromMediaSource( videoSource_, videoSourceConfig );
 
 			videoSourceReaderMediaType_ = videoSourceReader_.GetCurrentMediaType( 0 );
-			 
+			
+
 			encoderTransform_ = Unknown::CoCreateInstanceFromClassId<MFTransform>( CLSID_CMSH264EncoderMFT );
+
+			//MF::PrintOutputMediaTypeDescriptions( 0, encoderTransform_ );
 
 			encoderTransformOutputMediaType_ = MFMediaType::Create( MFMediaType_Video, MFVideoFormat_H264 );
 			encoderTransformOutputMediaType_.SetAverageBitRate( 442368000 );
 			encoderTransformOutputMediaType_.SetFrameSize( videoSourceReaderMediaType_.GetFrameSize() );
 			encoderTransformOutputMediaType_.SetFrameRate( videoSourceReaderMediaType_.GetFrameRate() );
 			encoderTransformOutputMediaType_.SetPixelAspectRatio( 1, 1 );
+			encoderTransformOutputMediaType_.SetUINT32( MF_MT_MPEG2_PROFILE, eAVEncH264VProfile::eAVEncH264VProfile_High );
 			encoderTransformOutputMediaType_.SetInterlaceMode( MFVideoInterlaceMode::MFVideoInterlace_Progressive );
 			encoderTransformOutputMediaType_.SetAllSamplesIndependent( );
 
 			encoderTransform_.SetOutputType(0, encoderTransformOutputMediaType_ );
+
+			//MF::PrintInputMediaTypeDescriptions( 0, encoderTransform_ );
 
 			encoderTransformInputMediaType_ = videoSourceReaderMediaType_.Clone( );
 			

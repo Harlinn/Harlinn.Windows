@@ -8,8 +8,8 @@
 #include <HCCSecurity.h>
 #include <HCCLogging.h>
 #include <HCCIOBufferStream.h>
-#include <HCCReference.h>
-#include <HCCConcepts.h>
+#include <HCCLib.h>
+
 
 
 namespace Harlinn::Common::Core::IO
@@ -549,10 +549,10 @@ namespace Harlinn::Common::Core::IO
     /// </remarks>
     class MemoryStream
     {
-        class Data : public ReferenceCountedBase<Data>
+        class Data : public ReferenceCountedThreadSafe
         {
         public:
-            using Base = ReferenceCountedBase<Data>;
+            using Base = ReferenceCountedThreadSafe;
         private:
             bool ownsData_;
             size_t capacity_;

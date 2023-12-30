@@ -1329,81 +1329,257 @@ namespace Harlinn::Common::Core
     }
 
 
-
-    enum class LocaleCategory : Int32
+    namespace Atomic
     {
-        All = LC_ALL,
-        Collate = LC_COLLATE,
-        CharType = LC_CTYPE,
-        Monetary = LC_MONETARY,
-        Numeric = LC_NUMERIC,
-        Time = LC_TIME
-    };
-
-    class Locale
-    {
-    public:
-        
-    private:
-        _locale_t locale_ = nullptr;
-        bool ownsLocale_ = false;
-    public:
-        Locale( ) = default;
-
-        explicit Locale( _locale_t locale, bool ownsLocale )
-            : locale_( locale ), ownsLocale_( ownsLocale )
+        template<typename T>
+            requires std::is_same_v<T,SByte> || std::is_same_v<T, Byte> || std::is_same_v<T, char>
+        inline T Increment( volatile T* value )
         {
-        }
-
-        explicit Locale( LocaleCategory category, const char* localeSpecifier )
-            : locale_( _create_locale( static_cast<int>( category ), localeSpecifier ) ), ownsLocale_(true)
-        { }
-        explicit Locale( LocaleCategory category, const wchar_t* localeSpecifier )
-            : locale_( _wcreate_locale( static_cast< int >( category ), localeSpecifier ) ), ownsLocale_( true )
-        {
-        }
-
-        ~Locale( )
-        {
-            if ( locale_ && ownsLocale_ )
+            char previousValue;
+            do
             {
-                _free_locale( locale_ );
-            }
+                previousValue = std::bit_cast<char>(*value);
+            } while ( _InterlockedCompareExchange8( reinterpret_cast<volatile char*>(value), previousValue + 1, previousValue ) != previousValue );
+            return std::bit_cast< T >( previousValue + 1 );
+        }
+        template<typename T>
+            requires std::is_same_v<T, SByte> || std::is_same_v<T, Byte> || std::is_same_v<T, char>
+        inline T Decrement( volatile T* value )
+        {
+            char previousValue;
+            do
+            {
+                previousValue = std::bit_cast< char >( *value );
+            } while ( _InterlockedCompareExchange8( reinterpret_cast< volatile char* >( value ), previousValue - 1, previousValue ) != previousValue );
+            return std::bit_cast<T>( previousValue - 1 );
         }
 
-        Locale( const Locale& other ) = delete;
-        Locale& operator = ( const Locale& other ) = delete;
-
-
-        Locale( Locale&& other ) noexcept
-            : locale_( other.locale_ ), ownsLocale_( other.ownsLocale_ )
+        template<typename T>
+            requires std::is_same_v<T, Int16> || std::is_same_v<T, UInt16>
+        inline T Increment( volatile T* value )
         {
-            other.locale_ = nullptr;
-            other.ownsLocale_ = false;
+            return std::bit_cast< T >( _InterlockedIncrement16( reinterpret_cast< volatile short* >( value ) ) );
         }
-        Locale& operator = ( Locale&& other ) noexcept
+        template<typename T>
+            requires std::is_same_v<T, Int16> || std::is_same_v<T, UInt16>
+        inline T Decrement( volatile T* value )
         {
-            std::swap( locale_, other.locale_ );
-            std::swap( ownsLocale_, other.ownsLocale_ );
-            return *this;
+            return std::bit_cast< T >( _InterlockedDecrement16( reinterpret_cast< volatile short* >( value ) ) );
         }
 
-
-
-        constexpr operator _locale_t( ) const
+        template<typename T>
+            requires std::is_same_v<T, Int32> || std::is_same_v<T, UInt32> || std::is_same_v<T, long> || std::is_same_v<T, unsigned long>
+        inline T Increment( volatile T* value )
         {
-            return locale_;
+            return std::bit_cast< T >( _InterlockedIncrement( reinterpret_cast< volatile unsigned int* >( value ) ) );
+        }
+        template<typename T>
+            requires std::is_same_v<T, Int32> || std::is_same_v<T, UInt32> || std::is_same_v<T, long> || std::is_same_v<T, unsigned long>
+        inline T Decrement( volatile T* value )
+        {
+            return std::bit_cast< T >( _InterlockedDecrement( reinterpret_cast< volatile unsigned int* >( value ) ) );
         }
 
-        static const Locale& InvariantLocale( )
+        template<typename T>
+            requires std::is_same_v<T, Int64> || std::is_same_v<T, UInt64> 
+        inline T Increment( volatile T* value )
         {
-            static Locale invariantLocale( LocaleCategory::All, L"en-US" );
-            return invariantLocale;
+            return std::bit_cast< T >( _InterlockedIncrement64( reinterpret_cast< volatile short* >( value ) ) );
+        }
+        template<typename T>
+            requires std::is_same_v<T, Int64> || std::is_same_v<T, UInt64>
+        inline T Decrement( volatile T* value )
+        {
+            return std::bit_cast< T >( _InterlockedDecrement64( reinterpret_cast< volatile short* >( value ) ) );
+        }
+
+        template<typename T>
+            requires std::is_same_v<T, SByte> || std::is_same_v<T, Byte> || std::is_same_v<T, char>
+        inline T Load( const volatile T* value )
+        {
+            return std::bit_cast< T >( __iso_volatile_load8( reinterpret_cast< const volatile __int8* >( value ) ) );
+        }
+        template<typename T>
+            requires std::is_same_v<T, SByte> || std::is_same_v<T, Byte> || std::is_same_v<T, char>
+        void Store( volatile T* location, T value )
+        {
+            __iso_volatile_store8( reinterpret_cast< volatile __int8* >( location ), std::bit_cast<__int8>( value ) );
+        }
+
+        template<typename T>
+            requires std::is_same_v<T, Int16> || std::is_same_v<T, UInt16>
+        inline T Load( const volatile T* value )
+        {
+            return std::bit_cast< T >( __iso_volatile_load16( reinterpret_cast< const volatile __int16* >( value ) ) );
+        }
+        template<typename T>
+            requires std::is_same_v<T, Int16> || std::is_same_v<T, UInt16>
+        void Store( volatile T* location, T value )
+        {
+            __iso_volatile_store16( reinterpret_cast< volatile __int16* >( location ), std::bit_cast< __int16 >( value ) );
+        }
+
+        template<typename T>
+            requires std::is_same_v<T, Int32> || std::is_same_v<T, UInt32> || std::is_same_v<T, long> || std::is_same_v<T, unsigned long>
+        inline T Load( const volatile T* value )
+        {
+            return std::bit_cast< T >( __iso_volatile_load32( reinterpret_cast< const volatile __int32* >( value ) ) );
+        }
+        template<typename T>
+            requires std::is_same_v<T, Int32> || std::is_same_v<T, UInt32> || std::is_same_v<T, long> || std::is_same_v<T, unsigned long>
+        void Store( volatile T* location, T value )
+        {
+            __iso_volatile_store32( reinterpret_cast< volatile __int32* >( location ), std::bit_cast< __int32 >( value ) );
+        }
+
+        template<typename T>
+            requires std::is_same_v<T, Int64> || std::is_same_v<T, UInt64>
+        inline T Load( const volatile T* value )
+        {
+            return std::bit_cast< T >( __iso_volatile_load64( reinterpret_cast< const volatile __int64* >( value ) ) );
+        }
+        template<typename T>
+            requires std::is_same_v<T, Int64> || std::is_same_v<T, UInt64>
+        void Store( volatile T* location, T value )
+        {
+            __iso_volatile_store64( reinterpret_cast< volatile __int64* >( location ), std::bit_cast< __int64 >( value ) );
+        }
+    }
+
+
+    template<typename T>
+        requires std::is_integral_v<T>
+    class AtomicReferenceCount
+    {
+    public:
+        using value_type = T;
+    private:
+        value_type referenceCount_{ static_cast< value_type >( 0 ) };
+    public:
+        constexpr AtomicReferenceCount( ) = default;
+            
+        explicit constexpr AtomicReferenceCount( value_type initialValue )
+            : referenceCount_( initialValue )
+        {}
+
+        /// <summary>
+        /// Increments the reference count by 1.
+        /// </summary>
+        /// <returns>Returns the resulting incremented value.</returns>
+        value_type Increment( ) 
+        { 
+            return Atomic::Increment( &referenceCount_ );
+        }
+
+        /// <summary>
+        /// Decrements the reference count by 1. 
+        /// </summary>
+        /// <returns>Returns the resulting decremented value.</returns>
+        value_type Decrement( )
+        {
+            return Atomic::Increment( &referenceCount_ );
+        }
+
+        /// <summary>
+        /// Tests if the reference count is 1. By convention the calling thread owns 
+        /// the reference, and no other thread should alter the state of the
+        /// reference counted object.
+        /// </summary>
+        /// <returns>true if the reference count is 1, otherwise false.</returns>
+        bool IsOne( ) const 
+        { 
+            return Atomic::Load( &referenceCount_ ) == 1;
+        }
+
+        /// <summary>
+        /// Tests if the reference count is zero. By convention any
+        /// object with a reference count of 0 will be destroyed.
+        /// </summary>
+        /// <returns>true if the reference count is 1, otherwise false.</returns>
+        bool IsZero( ) const
+        {
+            return Atomic::Load( &referenceCount_ ) == 0;
         }
     };
+
+
+    class ReferenceCounted
+    {
+        mutable UInt32 referenceCount_ = 1;
+    public:
+        constexpr ReferenceCounted( ) = default;
+            
+        ReferenceCounted( const ReferenceCounted& ) = delete;
+        ReferenceCounted& operator=( const ReferenceCounted& ) = delete;
+
+        bool HasOneRef( ) const { return referenceCount_ == 1; }
+        bool HasAtLeastOneRef( ) const { return referenceCount_ >= 1; }
+
+        virtual ~ReferenceCounted( ) = default;
+
+        UInt32 AddRef( ) const
+        {
+            return ++referenceCount_;
+        }
+
+        /// <summary>
+        /// Returns zero if the object was destroyed.
+        /// </summary>
+        /// <returns>zero if the object was destroyed.</returns>
+        UInt32 Release( ) const
+        {
+            auto result = --referenceCount_;
+            if ( result == 0 )
+            {
+                delete this;
+            }
+            return result;
+        }
+    };
+
+    class ReferenceCountedThreadSafe
+    {
+        mutable AtomicReferenceCount<UInt32> referenceCount_{1};
+    public:
+        explicit constexpr ReferenceCountedThreadSafe( ) = default;
+        ReferenceCountedThreadSafe( const ReferenceCountedThreadSafe& ) = delete;
+        ReferenceCountedThreadSafe& operator=( const ReferenceCountedThreadSafe& ) = delete;
+
+        bool HasOneRef( ) const
+        {
+            return referenceCount_.IsOne( );
+        }
+        bool HasAtLeastOneRef( ) const
+        {
+            return referenceCount_.IsZero() == false;
+        }
+        
+        virtual ~ReferenceCountedThreadSafe( ) = default;
+
+        UInt32 AddRef( ) const
+        {
+            return referenceCount_.Increment( );
+        }
+
+        /// <summary>
+        /// Returns zero if the object was destroyed.
+        /// </summary>
+        /// <returns>zero if the object was destroyed.</returns>
+        UInt32 Release( ) const
+        { 
+            auto result = referenceCount_.Decrement( );
+            if ( result == 0 )
+            {
+                delete this;
+            }
+            return result;
+        }
+    };
+
+
 
     template<SimpleComLike ValueT>
-    class SimpleSharedPointer
+    class ReferenceCountedPtr
     {
     public:
         using ValueType = ValueT;
@@ -1411,9 +1587,9 @@ namespace Harlinn::Common::Core
     private:
         ValueType* pointer_ = nullptr;
     public:
-        constexpr SimpleSharedPointer( ) noexcept = default;
+        constexpr ReferenceCountedPtr( ) noexcept = default;
 
-        explicit SimpleSharedPointer( ValueType* pointer, bool addRef = false ) noexcept
+        explicit ReferenceCountedPtr( ValueType* pointer, bool addRef = false ) noexcept
             : pointer_( pointer )
         {
             if ( addRef && ( pointer_ != nullptr ) )
@@ -1422,7 +1598,7 @@ namespace Harlinn::Common::Core
             }
         }
 
-        SimpleSharedPointer( const SimpleSharedPointer& other ) noexcept
+        ReferenceCountedPtr( const ReferenceCountedPtr& other ) noexcept
             : pointer_( other.pointer_ )
         {
             if ( pointer_ )
@@ -1431,7 +1607,7 @@ namespace Harlinn::Common::Core
             }
         }
 
-        SimpleSharedPointer( SimpleSharedPointer&& other ) noexcept
+        ReferenceCountedPtr( ReferenceCountedPtr&& other ) noexcept
             : pointer_( other.pointer_ )
         {
             if ( pointer_ )
@@ -1440,7 +1616,7 @@ namespace Harlinn::Common::Core
             }
         }
 
-        ~SimpleSharedPointer( ) noexcept
+        ~ReferenceCountedPtr( ) noexcept
         {
             ValueType* tmp = pointer_;
             pointer_ = nullptr;
@@ -1455,7 +1631,7 @@ namespace Harlinn::Common::Core
             return pointer_ != nullptr;
         }
 
-        SimpleSharedPointer& operator = ( const SimpleSharedPointer& other ) noexcept
+        ReferenceCountedPtr& operator = ( const ReferenceCountedPtr& other ) noexcept
         {
             if ( pointer_ != other.pointer_ )
             {
@@ -1472,18 +1648,18 @@ namespace Harlinn::Common::Core
             return *this;
         }
 
-        SimpleSharedPointer& operator = ( SimpleSharedPointer&& other ) noexcept
+        ReferenceCountedPtr& operator = ( ReferenceCountedPtr&& other ) noexcept
         {
             std::swap( pointer_, other.pointer_ );
             return *this;
         }
 
-        void swap( SimpleSharedPointer& other ) noexcept
+        void swap( ReferenceCountedPtr& other ) noexcept
         {
             std::swap( pointer_, other.pointer_ );
         }
 
-        friend void swap( SimpleSharedPointer& first, SimpleSharedPointer& second ) noexcept
+        friend void swap( ReferenceCountedPtr& first, ReferenceCountedPtr& second ) noexcept
         {
             first.swap( second );
         }
@@ -1504,7 +1680,7 @@ namespace Harlinn::Common::Core
             }
         }
 
-        SimpleSharedPointer& operator = ( nullptr_t )
+        ReferenceCountedPtr& operator = ( nullptr_t )
         {
             if ( pointer_ )
             {
@@ -1522,11 +1698,11 @@ namespace Harlinn::Common::Core
             return tmp;
         }
 
-        constexpr bool operator == ( const SimpleSharedPointer& other ) const noexcept
+        constexpr bool operator == ( const ReferenceCountedPtr& other ) const noexcept
         {
             return pointer_ == other.pointer_;
         }
-        constexpr bool operator != ( const SimpleSharedPointer& other ) const noexcept
+        constexpr bool operator != ( const ReferenceCountedPtr& other ) const noexcept
         {
             return pointer_ != other.pointer_;
         }
@@ -1556,7 +1732,7 @@ namespace Harlinn::Common::Core
 namespace std
 {
     template<Harlinn::Common::Core::SimpleComLike ValueT>
-    inline void swap( Harlinn::Common::Core::SimpleSharedPointer<ValueT>& first, Harlinn::Common::Core::SimpleSharedPointer<ValueT>& second ) noexcept
+    inline void swap( Harlinn::Common::Core::ReferenceCountedPtr<ValueT>& first, Harlinn::Common::Core::ReferenceCountedPtr<ValueT>& second ) noexcept
     {
         first.swap( second );
     }

@@ -19,7 +19,15 @@ int main()
     {
         auto activate = videoEncoders[i];
         auto friendlyName = activate.GetString( MFT_FRIENDLY_NAME_Attribute );
-        std::wcout << friendlyName << std::endl;
+        if ( activate.HasAttribute( MFT_TRANSFORM_CLSID_Attribute ) )
+        {
+            auto clsid = activate.GetGUID( MFT_TRANSFORM_CLSID_Attribute );
+            std::wcout << friendlyName << L":" << clsid.ToString( ) << std::endl;
+        }
+        else
+        {
+            std::wcout << friendlyName << L": <missing>" << std::endl;
+        }
     }
     
 }

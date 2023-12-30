@@ -127,6 +127,18 @@ namespace Harlinn::Windows
             return hr == S_OK;
         }
 
+        bool HasAttribute( const Guid& key ) const
+        {
+            MF_ATTRIBUTE_TYPE type;
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->GetItemType( key, &type );
+            if ( hr != MF_E_ATTRIBUTENOTFOUND )
+            {
+                HCC_COM_CHECK_HRESULT2( hr, pInterface );
+            }
+            return hr == S_OK;
+        }
+
         MF_ATTRIBUTE_TYPE GetItemType(const Guid& key) const
         {
             MF_ATTRIBUTE_TYPE result{};

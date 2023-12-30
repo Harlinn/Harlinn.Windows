@@ -282,7 +282,6 @@
     <ClInclude Include="HCCPropertyVariant.h" />
     <ClInclude Include="HCCPropSys.h" />
     <ClInclude Include="HCCRdtscConverter.h" />
-    <ClInclude Include="HCCReference.h" />
     <ClInclude Include="HCCRegistry.h" />
     <ClInclude Include="HCCRtWorkQ.h" />
     <ClInclude Include="HCCSecurity.h" />

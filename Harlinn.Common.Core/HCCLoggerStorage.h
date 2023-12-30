@@ -136,28 +136,28 @@ namespace Harlinn::Common::Core::Logging
         using BufferPointer = Internal::BufferPointer;
 
         using ComputerInfoCursor = Cursors::ComputerInfoCursor;
-        using ComputerInfoCursorPtr = SimpleSharedPointer<ComputerInfoCursor>;
+        using ComputerInfoCursorPtr = ReferenceCountedPtr<ComputerInfoCursor>;
 
         using UserInfoCursor = Cursors::UserInfoCursor;
-        using UserInfoCursorPtr = SimpleSharedPointer<UserInfoCursor>;
+        using UserInfoCursorPtr = ReferenceCountedPtr<UserInfoCursor>;
 
         using ExecutableInfoCursor = Cursors::ExecutableInfoCursor;
-        using ExecutableInfoCursorPtr = SimpleSharedPointer<ExecutableInfoCursor>;
+        using ExecutableInfoCursorPtr = ReferenceCountedPtr<ExecutableInfoCursor>;
 
         using ConfigurationFileInfoCursor = Cursors::ConfigurationFileInfoCursor;
-        using ConfigurationFileInfoCursorPtr = SimpleSharedPointer<ConfigurationFileInfoCursor>;
+        using ConfigurationFileInfoCursorPtr = ReferenceCountedPtr<ConfigurationFileInfoCursor>;
 
         using WindowsVersionInfoCursor = Cursors::WindowsVersionInfoCursor;
-        using WindowsVersionInfoCursorPtr = SimpleSharedPointer<WindowsVersionInfoCursor>;
+        using WindowsVersionInfoCursorPtr = ReferenceCountedPtr<WindowsVersionInfoCursor>;
 
         using ProcessInfoCursor = Cursors::ProcessInfoCursor;
-        using ProcessInfoCursorPtr = SimpleSharedPointer<ProcessInfoCursor>;
+        using ProcessInfoCursorPtr = ReferenceCountedPtr<ProcessInfoCursor>;
 
         using LogSiteDataCursor = Cursors::LogSiteDataCursor;
-        using LogSiteDataCursorPtr = SimpleSharedPointer<LogSiteDataCursor>;
+        using LogSiteDataCursorPtr = ReferenceCountedPtr<LogSiteDataCursor>;
 
         using BufferCursor = Cursors::BufferCursor;
-        using BufferCursorPtr = SimpleSharedPointer<BufferCursor>;
+        using BufferCursorPtr = ReferenceCountedPtr<BufferCursor>;
 
 
         Storage( ) = default;

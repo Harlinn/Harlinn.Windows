@@ -255,9 +255,6 @@
     <ClInclude Include="HCCObservable.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="HCCReference.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="HCCDataSource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
