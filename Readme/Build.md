@@ -18,6 +18,7 @@ To build the solution you need:
 - [perl](https://www.perl.org/)
 - [OpenSSL](https://www.openssl.org/)
 - [nVidia CUDA toolkit](https://developer.nvidia.com/cuda-toolkit)
+- [VLC media player source code](https://www.videolan.org/vlc/download-sources.html)
 
 Make sure you install 64-bit binaries, libraries and headers.
 
@@ -36,6 +37,7 @@ Before building you need to set a few environment variables:
 - **PROJ_LIB** must point to ***%HCC_HOME%**\\Share\\proj*
 - **GDAL_DATA** must point to ***%HCC_HOME%**\\Share\\gdal*
 - **OPENSSL_HOME** must point to the root of your openssl 3.x installation, which is the directory containing the bin, include and lib directories.
+- **VLC_SOURCE** must point to the directory that contains the source code for the VLC media player.
 
 The PATH environment variable must be updated to reference:
 - **%BOOST_ROOT%**\stage\lib
@@ -93,6 +95,31 @@ environment variable to point to the root of your oracle installation.
 
 Before running the unit tests in Harlinn.OCI.Tests you need to create the tables
 defined in *$(SolutionDir)Tests\Harlinn.OCI.Tests\SQL\TestTables.sql* 
+
+
+## Harlinn.Media and the VLC media player source code
+
+The `Harlinn.Media` project creates a dll that locates the installation of the 64-bit 
+version of the VLC media player from the registry. `Harlinn.Media.dll` exports most of the
+entry points exported by the `libvlc.dll` and forwards the calls to the dynamically
+located `libvlc.dll`.
+
+Make sure that the `$(VLC_SOURCE)\include\vlc` contains a valid `libvlc_version.h`. If you don't want to build
+VLC media player from the source code, you will need to make the appropriate changes to `libvlc_version.h.in`
+and save it as `libvlc_version.h`. 
+
+```C++
+/** LibVLC major version number */
+# define LIBVLC_VERSION_MAJOR    3
+
+/** LibVLC minor version number */
+# define LIBVLC_VERSION_MINOR    0
+
+/** LibVLC revision */
+# define LIBVLC_VERSION_REVISION 20
+```
+
+ 
 
 
 

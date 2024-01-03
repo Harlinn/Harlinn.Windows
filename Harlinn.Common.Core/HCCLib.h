@@ -1,6 +1,21 @@
 #pragma once
 #ifndef __HCCLIB_H__
 #define __HCCLIB_H__
+/*
+   Copyright 2024 Espen Harlinn
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+*/
 
 #include <HCCDef.h>
 #include <HCCTraits.h>
@@ -1536,6 +1551,7 @@ namespace Harlinn::Common::Core
             return result;
         }
     };
+    static_assert( SimpleComLike<ReferenceCounted> );
 
     class ReferenceCountedThreadSafe
     {
@@ -1575,8 +1591,45 @@ namespace Harlinn::Common::Core
             return result;
         }
     };
+    static_assert( SimpleComLike<ReferenceCountedThreadSafe> );
+    
 
+    template<typename T>
+    class ReferenceCountedData : public ReferenceCountedThreadSafe
+    {
+    public:
+        using Base = ReferenceCountedThreadSafe;
+        using value_type = T;
+    private:
+        value_type data_;
+    public:
+        template<typename... Args >
+            requires std::is_constructible_v< value_type, Args...>
+        ReferenceCountedData( Args&& ... args )
+            : data_( std::forward<Args>( args )... )
+        {
+        }
 
+        const value_type& Data( ) const
+        {
+            return data_;
+        }
+        value_type& Data( )
+        {
+            return data_;
+        }
+
+        void Assign( const value_type& data )
+        {
+            data_ = data;
+        }
+        void Assign( value_type&& data )
+        {
+            data_ = std::move(data);
+        }
+
+    };
+    
 
     template<SimpleComLike ValueT>
     class ReferenceCountedPtr
@@ -1616,6 +1669,28 @@ namespace Harlinn::Common::Core
             }
         }
 
+        template<SimpleComLike U>
+            requires ( std::is_base_of_v<ValueType, U> && std::is_same_v<ValueType, U> == false)
+        ReferenceCountedPtr( const ReferenceCountedPtr<U>& other ) noexcept
+            : pointer_( other.pointer_ )
+        {
+            if ( pointer_ )
+            {
+                pointer_->AddRef( );
+            }
+        }
+
+        template<SimpleComLike U>
+            requires ( std::is_base_of_v<ValueType, U>&& std::is_same_v<ValueType, U> == false )
+        ReferenceCountedPtr( ReferenceCountedPtr<U>&& other ) noexcept
+            : pointer_( other.pointer_ )
+        {
+            if ( pointer_ )
+            {
+                other.pointer_ = nullptr;
+            }
+        }
+
         ~ReferenceCountedPtr( ) noexcept
         {
             ValueType* tmp = pointer_;
@@ -1631,7 +1706,25 @@ namespace Harlinn::Common::Core
             return pointer_ != nullptr;
         }
 
-        ReferenceCountedPtr& operator = ( const ReferenceCountedPtr& other ) noexcept
+        template<SimpleComLike U>
+            requires (std::is_base_of_v<ValueType, U> && std::is_same_v<ValueType, U> == false)
+        ReferenceCountedPtr& operator = ( const ReferenceCountedPtr<U>& other ) 
+        {
+            if ( pointer_ != other.pointer_ )
+            {
+                if ( pointer_ )
+                {
+                    pointer_->Release( );
+                }
+                pointer_ = other.pointer_;
+                if ( pointer_ )
+                {
+                    pointer_->AddRef( );
+                }
+            }
+            return *this;
+        }
+        ReferenceCountedPtr& operator = ( const ReferenceCountedPtr& other )
         {
             if ( pointer_ != other.pointer_ )
             {
@@ -1698,6 +1791,12 @@ namespace Harlinn::Common::Core
             return tmp;
         }
 
+        ValueType* get( ) const
+        {
+            return pointer_;
+        }
+
+
         constexpr bool operator == ( const ReferenceCountedPtr& other ) const noexcept
         {
             return pointer_ == other.pointer_;
@@ -1726,7 +1825,26 @@ namespace Harlinn::Common::Core
         }
     };
 
+    template<SimpleComLike T, typename... Args>
+    inline ReferenceCountedPtr<T> MakeReferenceCounted( Args&& ... args )
+    {
+        T* obj = new T( std::forward<Args>( args )... );
+        ReferenceCountedPtr<T> result( obj );
+        return result;
+    }
 
+    template<SimpleComLike T>
+    inline ReferenceCountedPtr<T> WrapReferenceCounted( T* ptr, bool addRef = false )
+    {
+        ReferenceCountedPtr<T> result( ptr );
+        return result;
+    }
+
+    
+
+
+
+    
 }
 
 namespace std

@@ -1,6 +1,22 @@
 #pragma once
 #ifndef HARLINN_SCENEGRAPH_SKSCENEGRAPH_H_
 #define HARLINN_SCENEGRAPH_SKSCENEGRAPH_H_
+/*
+   Copyright 2024 Espen Harlinn
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+*/
+
 
 #include <HWDef.h>
 
@@ -283,10 +299,6 @@ namespace Harlinn::Windows::Skia::SceneGraph
             : color_( color )
         { }
     public:
-        static Reference<ColorStyle> Make( SkColor color )
-        {
-            return Reference<ColorStyle>( new ColorStyle( color ) );
-        }
         SCENEGRAPH_IMPLEMENT_PROPERTY( SkColor, Color, color_ );
     protected:
         virtual void DoOnApplyToPaint( SkPaint& paint ) const override
@@ -295,8 +307,7 @@ namespace Harlinn::Windows::Skia::SceneGraph
             paint.setColor( color_ );
         }
     };
-
-
+    
     
 
 
@@ -312,10 +323,6 @@ namespace Harlinn::Windows::Skia::SceneGraph
             : shader_( shader )
         { }
     public:
-        static Reference<ShaderStyle> Make( sk_sp<SkShader> shader )
-        {
-            return Reference<ShaderStyle>( new ShaderStyle(std::move( shader )) );
-        }
         SCENEGRAPH_IMPLEMENT_PROPERTY( sk_sp<SkShader>, Shader, shader_ );
     protected:
         virtual void DoOnApplyToPaint( SkPaint& paint ) const override
@@ -340,16 +347,16 @@ namespace Harlinn::Windows::Skia::SceneGraph
         using Base = Node;
         using ThisType = Geometry;
     private:
-        Reference<SceneGraph::Style> style_;
+        ReferenceCountedPtr<SceneGraph::Style> style_;
     protected:
-        Geometry( Node* owner, Reference<SceneGraph::Style> style )
+        Geometry( Node* owner, ReferenceCountedPtr<SceneGraph::Style> style )
             : Base( owner ), style_( std::move( style ) )
         { }
-        Geometry( Node* owner, const SceneGraph::Matrix& matrix, Reference<SceneGraph::Style> style )
+        Geometry( Node* owner, const SceneGraph::Matrix& matrix, ReferenceCountedPtr<SceneGraph::Style> style )
             : Base( owner, matrix ), style_( std::move( style ) )
         { }
     public:
-        SCENEGRAPH_IMPLEMENT_PROPERTY( Reference<SceneGraph::Style>, Style, style_ );
+        SCENEGRAPH_IMPLEMENT_PROPERTY( ReferenceCountedPtr<SceneGraph::Style>, Style, style_ );
 
         SkPath AsPath( ) const
         {
@@ -413,10 +420,10 @@ namespace Harlinn::Windows::Skia::SceneGraph
     private:
         SkPathDirection pathDirection_ = SkPathDirection::kCW;
     protected:
-        SimpleGeometry( Node* owner, Reference<SceneGraph::Style> style )
+        SimpleGeometry( Node* owner, ReferenceCountedPtr<SceneGraph::Style> style )
             : Base( owner, std::move( style ) )
         { }
-        SimpleGeometry( Node* owner, const SceneGraph::Matrix& matrix, Reference<SceneGraph::Style> style )
+        SimpleGeometry( Node* owner, const SceneGraph::Matrix& matrix, ReferenceCountedPtr<SceneGraph::Style> style )
             : Base( owner, matrix, std::move( style ) )
         { }
     public:
@@ -434,21 +441,13 @@ namespace Harlinn::Windows::Skia::SceneGraph
         SkSize size_;
         uint32_t initialPointIndex_ = 0;
     protected:
-        Rectangle( Node* owner, Reference<SceneGraph::Style> style, const SkSize& size )
+        Rectangle( Node* owner, ReferenceCountedPtr<SceneGraph::Style> style, const SkSize& size )
             : Base( owner, std::move( style ) ), size_( size )
         { }
-        Rectangle( Node* owner, const SceneGraph::Matrix& matrix, Reference<SceneGraph::Style> style, const SkSize& size )
+        Rectangle( Node* owner, const SceneGraph::Matrix& matrix, ReferenceCountedPtr<SceneGraph::Style> style, const SkSize& size )
             : Base( owner, matrix, std::move( style ) ), size_( size )
         { }
     public:
-        static Reference<Rectangle> Make( Node* owner, Reference<SceneGraph::Style> style, const SkSize& size )
-        {
-            return Reference<Rectangle>( new Rectangle( owner, std::move( style ), size ) );
-        }
-        static Reference<Rectangle> Make( Node* owner, const SceneGraph::Matrix& matrix, Reference<SceneGraph::Style> style, const SkSize& size )
-        {
-            return Reference<Rectangle>( new Rectangle( owner, matrix, std::move(style), size ) );
-        }
         SCENEGRAPH_IMPLEMENT_PROPERTY( SkSize, Size, size_ );
         SCENEGRAPH_IMPLEMENT_PROPERTY( uint32_t, InitialPointIndex, initialPointIndex_ );
     protected:
@@ -485,23 +484,15 @@ namespace Harlinn::Windows::Skia::SceneGraph
         SkRRect data_;
         uint32_t initialPointIndex_ = 0;
     protected:
-        RoundedRectangle( Node* owner, Reference<SceneGraph::Style> style, const SkRRect& data )
+        RoundedRectangle( Node* owner, ReferenceCountedPtr<SceneGraph::Style> style, const SkRRect& data )
             : Base( owner, std::move( style ) ), data_( data )
         {
         }
-        RoundedRectangle( Node* owner, const SceneGraph::Matrix& matrix, Reference<SceneGraph::Style> style, const SkRRect& data )
+        RoundedRectangle( Node* owner, const SceneGraph::Matrix& matrix, ReferenceCountedPtr<SceneGraph::Style> style, const SkRRect& data )
             : Base( owner, matrix, std::move( style ) ), data_( data )
         {
         }
     public:
-        static Reference<RoundedRectangle> Make( Node* owner, Reference<SceneGraph::Style> style, const SkRRect& data )
-        {
-            return Reference<RoundedRectangle>( new RoundedRectangle( owner, std::move( style ), data ) );
-        }
-        static Reference<RoundedRectangle> Make( Node* owner, const SceneGraph::Matrix& matrix, Reference<SceneGraph::Style> style, const SkRRect& data )
-        {
-            return Reference<RoundedRectangle>( new RoundedRectangle( owner, matrix, std::move( style ), data ) );
-        }
         SCENEGRAPH_IMPLEMENT_PROPERTY( SkRRect, Data, data_ );
         SCENEGRAPH_IMPLEMENT_PROPERTY( uint32_t, InitialPointIndex, initialPointIndex_ );
     protected:
@@ -526,23 +517,15 @@ namespace Harlinn::Windows::Skia::SceneGraph
         SkSize size_;
         uint32_t initialPointIndex_ = 0;
     protected:
-        Oval( Node* owner, Reference<SceneGraph::Style> style, const SkSize& size )
+        Oval( Node* owner, ReferenceCountedPtr<SceneGraph::Style> style, const SkSize& size )
             : Base( owner, std::move( style ) ), size_( size )
         {
         }
-        Oval( Node* owner, const SceneGraph::Matrix& matrix, Reference<SceneGraph::Style> style, const SkSize& size )
+        Oval( Node* owner, const SceneGraph::Matrix& matrix, ReferenceCountedPtr<SceneGraph::Style> style, const SkSize& size )
             : Base( owner, matrix, std::move( style ) ), size_( size )
         {
         }
     public:
-        static Reference<Oval> Make( Node* owner, Reference<SceneGraph::Style> style, const SkSize& size )
-        {
-            return Reference<Oval>( new Oval( owner, std::move( style ), size ) );
-        }
-        static Reference<Oval> Make( Node* owner, const SceneGraph::Matrix& matrix, Reference<SceneGraph::Style> style, const SkSize& size )
-        {
-            return Reference<Oval>( new Oval( owner, matrix, std::move( style ), size ) );
-        }
         SCENEGRAPH_IMPLEMENT_PROPERTY( SkSize, Size, size_ );
         SCENEGRAPH_IMPLEMENT_PROPERTY( uint32_t, InitialPointIndex, initialPointIndex_ );
     protected:
@@ -571,23 +554,15 @@ namespace Harlinn::Windows::Skia::SceneGraph
     private:
         SkScalar radius_;
     protected:
-        Circle( Node* owner, Reference<SceneGraph::Style> style, SkScalar radius )
+        Circle( Node* owner, ReferenceCountedPtr<SceneGraph::Style> style, SkScalar radius )
             : Base( owner, std::move( style ) ), radius_( radius )
         {
         }
-        Circle( Node* owner, const SceneGraph::Matrix& matrix, Reference<SceneGraph::Style> style, SkScalar radius )
+        Circle( Node* owner, const SceneGraph::Matrix& matrix, ReferenceCountedPtr<SceneGraph::Style> style, SkScalar radius )
             : Base( owner, matrix, std::move( style ) ), radius_( radius )
         {
         }
     public:
-        static Reference<Circle> Make( Node* owner, Reference<SceneGraph::Style> style, SkScalar radius )
-        {
-            return Reference<Circle>( new Circle( owner, std::move( style ), radius ) );
-        }
-        static Reference<Circle> Make( Node* owner, const SceneGraph::Matrix& matrix, Reference<SceneGraph::Style> style, SkScalar radius )
-        {
-            return Reference<Circle>( new Circle( owner, matrix, std::move( style ), radius ) );
-        }
         SCENEGRAPH_IMPLEMENT_PROPERTY( SkScalar, Radius, radius_ );
     protected:
         virtual HitTestResult DoOnSimpleHitTest( const SkPoint& point, const SkPaint& paint ) const
@@ -623,23 +598,15 @@ namespace Harlinn::Windows::Skia::SceneGraph
     private:
         SkPath data_;
     protected:
-        Path( Node* owner, Reference<SceneGraph::Style> style, const SkPath& path )
+        Path( Node* owner, ReferenceCountedPtr<SceneGraph::Style> style, const SkPath& path )
             : Base( owner, std::move( style ) ), data_( path )
         {
         }
-        Path( Node* owner, const SceneGraph::Matrix& matrix, Reference<SceneGraph::Style> style, const SkPath& path )
+        Path( Node* owner, const SceneGraph::Matrix& matrix, ReferenceCountedPtr<SceneGraph::Style> style, const SkPath& path )
             : Base( owner, matrix, std::move( style ) ), data_( path )
         {
         }
     public:
-        static Reference<Path> Make( Node* owner, Reference<SceneGraph::Style> style, const SkPath& path )
-        {
-            return Reference<Path>( new Path( owner, std::move( style ), path ) );
-        }
-        static Reference<Path> Make( Node* owner, const SceneGraph::Matrix& matrix, Reference<SceneGraph::Style> style, const SkPath& path )
-        {
-            return Reference<Path>( new Path( owner, matrix, std::move( style ), path ) );
-        }
         SCENEGRAPH_IMPLEMENT_PROPERTY( SkPath, Data, data_ );
     protected:
         virtual void OnRender( SkCanvas* canvas ) const override
@@ -673,21 +640,13 @@ namespace Harlinn::Windows::Skia::SceneGraph
         // cached text blob
         mutable sk_sp<SkTextBlob> blob_;
     protected:
-        Text( Node* owner, Reference<SceneGraph::Style> style, sk_sp<SkTypeface> typeface, const SkString& data )
+        Text( Node* owner, ReferenceCountedPtr<SceneGraph::Style> style, sk_sp<SkTypeface> typeface, const SkString& data )
             : Base( owner, std::move( style ) ), typeface_( std::move(typeface) ), data_( data )
         { }
-        Text( Node* owner, const SceneGraph::Matrix& matrix, Reference<SceneGraph::Style> style, sk_sp<SkTypeface> typeface, const SkString& data )
+        Text( Node* owner, const SceneGraph::Matrix& matrix, ReferenceCountedPtr<SceneGraph::Style> style, sk_sp<SkTypeface> typeface, const SkString& data )
             : Base( owner, matrix, std::move( style ) ), typeface_( std::move( typeface ) ), data_( data )
         { }
     public:
-        static Reference<Text> Make( Node* owner, Reference<SceneGraph::Style> style, sk_sp<SkTypeface> typeface, const SkString& data )
-        {
-            return Reference<Text>( new Text( owner, std::move( style ), std::move( typeface ), data ) );
-        }
-        static Reference<Text> Make( Node* owner, const SceneGraph::Matrix& matrix, Reference<SceneGraph::Style> style, sk_sp<SkTypeface> typeface, const SkString& data )
-        {
-            return Reference<Text>( new Text( owner, matrix, std::move( style ), std::move( typeface ), data ) );
-        }
         SCENEGRAPH_IMPLEMENT_PROPERTY( sk_sp<SkTypeface>, Typeface, typeface_ );
         SCENEGRAPH_IMPLEMENT_PROPERTY( SkString, Data, data_ );
         SCENEGRAPH_IMPLEMENT_PROPERTY( SkScalar, FontSize, fontSize_);
@@ -768,14 +727,6 @@ namespace Harlinn::Windows::Skia::SceneGraph
         {
         }
     public:
-        static Reference<Image> Make( Node* owner, sk_sp<SkImage> data, const SkSamplingOptions& samplingOptions )
-        {
-            return Reference<Image>( new Image( owner, std::move( data ), samplingOptions ) );
-        }
-        static Reference<Image> Make( Node* owner, const SceneGraph::Matrix& matrix, sk_sp<SkImage> data, const SkSamplingOptions& samplingOptions )
-        {
-            return Reference<Image>( new Image( owner, matrix, std::move( data ), samplingOptions ) );
-        }
 
 
         SCENEGRAPH_IMPLEMENT_PROPERTY( sk_sp<SkImage>, Data, data_ );
@@ -857,13 +808,13 @@ namespace Harlinn::Windows::Skia::SceneGraph
             using ThisType = SeriesBase;
         private:
             SeriesCollection* collection_;
-            Reference<SeriesLabelBase> label_;
+            ReferenceCountedPtr<SeriesLabelBase> label_;
         public:
             SeriesBase( SeriesCollection* collection ) 
                 : collection_( collection )
             { }
 
-            SCENEGRAPH_IMPLEMENT_PROPERTY( Reference<SeriesLabelBase>, Label, label_ );
+            SCENEGRAPH_IMPLEMENT_PROPERTY( ReferenceCountedPtr<SeriesLabelBase>, Label, label_ );
         protected:
             inline virtual void DoOnChanged( uint64_t key = 0, void* data = nullptr ) override;
         };
@@ -875,14 +826,14 @@ namespace Harlinn::Windows::Skia::SceneGraph
             using Base = SeriesBase;
             using ThisType = Series;
         private:
-            Reference<Core::DataSource> dataSource_;
+            ReferenceCountedPtr<Core::DataSource> dataSource_;
         public:
             Series( SeriesCollection* collection )
                 : Base( collection )
             { }
             virtual ~Series( ) noexcept override = default;
 
-            SCENEGRAPH_IMPLEMENT_PROPERTY( Reference<Core::DataSource>, DataSource, dataSource_ );
+            SCENEGRAPH_IMPLEMENT_PROPERTY( ReferenceCountedPtr<Core::DataSource>, DataSource, dataSource_ );
         };
 
 
@@ -891,7 +842,7 @@ namespace Harlinn::Windows::Skia::SceneGraph
             friend class SeriesBase;
         private:
             Chart::Diagram* diagram_;
-            std::vector< Reference<SeriesBase> > items_;
+            std::vector< ReferenceCountedPtr<SeriesBase> > items_;
         public:
             SeriesCollection( Chart::Diagram* diagram )
                 : diagram_( diagram )
@@ -1021,7 +972,7 @@ namespace Harlinn::Windows::Skia::SceneGraph
         {
         private:
             Chart::Diagram* diagram_;
-            std::vector< Reference<ViewBase> > items_;
+            std::vector< ReferenceCountedPtr<ViewBase> > items_;
         public:
             ViewCollection( Chart::Diagram* diagram )
                 : diagram_( diagram )
@@ -1042,17 +993,17 @@ namespace Harlinn::Windows::Skia::SceneGraph
             using Base = Node;
             using ThisType = Diagram;
         private:
-            Reference<Chart::DiagramStyle> style_;
+            ReferenceCountedPtr<Chart::DiagramStyle> style_;
             SeriesCollection series_;
             ViewCollection views_;
             boost::signals2::connection styleConnection_;
         protected:
-            Diagram( Node* owner, Reference<Chart::DiagramStyle> style )
+            Diagram( Node* owner, ReferenceCountedPtr<Chart::DiagramStyle> style )
                 : Base( owner ), style_( std::move( style ) ), series_( this ), views_( this )
             {
                 AttachToStyle( );
             }
-            Diagram( Node* owner, const SceneGraph::Matrix& matrix, Reference<Chart::DiagramStyle> style, sk_sp<DataSource> dataSource )
+            Diagram( Node* owner, const SceneGraph::Matrix& matrix, ReferenceCountedPtr<Chart::DiagramStyle> style, sk_sp<DataSource> dataSource )
                 : Base( owner, matrix ), style_( std::move( style ) ), series_( this ), views_( this )
             {
                 AttachToStyle( );
@@ -1082,7 +1033,7 @@ namespace Harlinn::Windows::Skia::SceneGraph
                 {
                     styleConnection_.disconnect( );
                 }
-                style_.reset( );
+                style_.ResetPtr( );
                 this->DoOnStyleChanged( nullptr );
             }
 
@@ -1091,11 +1042,11 @@ namespace Harlinn::Windows::Skia::SceneGraph
             }
 
         public:
-            const Reference<DiagramStyle>& Style( ) const
+            const ReferenceCountedPtr<DiagramStyle>& Style( ) const
             {
                 return style_;
             }
-            void SetStyle( const Reference<DiagramStyle>& style )
+            void SetStyle( const ReferenceCountedPtr<DiagramStyle>& style )
             {
                 if ( style_ != style )
                 {
@@ -1120,23 +1071,15 @@ namespace Harlinn::Windows::Skia::SceneGraph
         int lineCount_ = 12;
         int circleCount_ = 6;
     protected:
-        Radar( Node* owner, Reference<SceneGraph::Style> style, SkScalar radius )
+        Radar( Node* owner, ReferenceCountedPtr<SceneGraph::Style> style, SkScalar radius )
             : Base( owner, std::move( style ) ), radius_( radius )
         {
         }
-        Radar( Node* owner, const SceneGraph::Matrix& matrix, Reference<SceneGraph::Style> style, SkScalar radius )
+        Radar( Node* owner, const SceneGraph::Matrix& matrix, ReferenceCountedPtr<SceneGraph::Style> style, SkScalar radius )
             : Base( owner, matrix, std::move( style ) ), radius_( radius )
         {
         }
     public:
-        static Reference<Radar> Make( Node* owner, Reference<SceneGraph::Style> style, SkScalar radius )
-        {
-            return Reference<Radar>( new Radar( owner, std::move( style ), radius ) );
-        }
-        static Reference<Radar> Make( Node* owner, const SceneGraph::Matrix& matrix, Reference<SceneGraph::Style> style, SkScalar radius )
-        {
-            return Reference<Radar>( new Radar( owner, matrix, std::move( style ), radius ) );
-        }
         SCENEGRAPH_IMPLEMENT_PROPERTY( SkScalar, Radius, radius_ );
     protected:
         void PolarToCartesian( SkScalar r, SkScalar q, SkScalar& x, SkScalar& y )
@@ -1205,7 +1148,7 @@ namespace Harlinn::Windows::Skia::SceneGraph
         using Base = Node;
         using ThisType = Group;
     private:
-        std::vector< Reference<Node> > nodes_;
+        std::vector< ReferenceCountedPtr<Node> > nodes_;
 
     protected:
         Group( )
@@ -1220,34 +1163,22 @@ namespace Harlinn::Windows::Skia::SceneGraph
             : Base( owner, matrix )
         { }
     public:
-        static Reference<Group> Make( Node* owner )
-        {
-            return Reference<Group>( new Group( owner ) );
-        }
-        static Reference<Group> Make( const SceneGraph::Matrix& matrix )
-        {
-            return Reference<Group>( new Group( matrix ) );
-        }
-        static Reference<Group> Make( Node* owner, const SceneGraph::Matrix& matrix )
-        { 
-            return Reference<Group>( new Group( owner, matrix ) );
-        }
 
     protected:
-        void AddNode( Reference<Node> node )
+        void AddNode( ReferenceCountedPtr<Node> node )
         {
             nodes_.emplace_back( std::move( node ) );
         }
     public:
         template<typename T, typename ...Args>
-        Reference<T> Add( const SceneGraph::Matrix& matrix, Reference<Style> style, Args&&... args )
+        ReferenceCountedPtr<T> Add( const SceneGraph::Matrix& matrix, ReferenceCountedPtr<Style> style, Args&&... args )
         {
-            auto result = T::Make( this, matrix, std::move( style ), std::forward<Args>( args )... );
+            auto result = MakeReferenceCounted<T>( this, matrix, std::move( style ), std::forward<Args>( args )... );
             AddNode( result );
             return result;
         }
         template<typename T, typename ...Args>
-        Reference<T> Add( SkScalar x, SkScalar y, Reference<Style> style, Args&&... args )
+        ReferenceCountedPtr<T> Add( SkScalar x, SkScalar y, ReferenceCountedPtr<Style> style, Args&&... args )
         {
             auto m = SceneGraph::Matrix::Translate( x, y );
             return Add<T>( m, std::move( style ), std::forward<Args>( args )... );
@@ -1255,28 +1186,28 @@ namespace Harlinn::Windows::Skia::SceneGraph
 
 
 
-        Reference<Rectangle> AddRectangle( const SceneGraph::Matrix& matrix, Reference<Style> style, const SkSize& size )
+        ReferenceCountedPtr<Rectangle> AddRectangle( const SceneGraph::Matrix& matrix, ReferenceCountedPtr<Style> style, const SkSize& size )
         {
-            auto result = Rectangle::Make( this, matrix, std::move( style ), size );
+            auto result = MakeReferenceCounted<Rectangle>( this, matrix, std::move( style ), size );
             AddNode( result );
             return result;
         }
 
-        Reference<Rectangle> AddRectangle( const SkRect& rect, Reference<Style> style )
+        ReferenceCountedPtr<Rectangle> AddRectangle( const SkRect& rect, ReferenceCountedPtr<Style> style )
         {
             auto m = SceneGraph::Matrix::Translate( rect.left( ), rect.top( ) );
             SkSize size( rect.width(), rect.height() );
             return AddRectangle(m, std::move( style ), size );
         }
 
-        Reference<Oval> AddOval( const SceneGraph::Matrix& matrix, Reference<Style> style, const SkSize& size )
+        ReferenceCountedPtr<Oval> AddOval( const SceneGraph::Matrix& matrix, ReferenceCountedPtr<Style> style, const SkSize& size )
         {
-            auto result = Oval::Make( this, matrix, std::move( style ), size );
+            auto result = MakeReferenceCounted<Oval>( this, matrix, std::move( style ), size );
             AddNode( result );
             return result;
         }
 
-        Reference<Oval> AddOval( const SkRect& rect, Reference<Style> style )
+        ReferenceCountedPtr<Oval> AddOval( const SkRect& rect, ReferenceCountedPtr<Style> style )
         {
             auto m = SceneGraph::Matrix::Translate( rect.left( ), rect.top( ) );
             SkSize size( rect.width( ), rect.height( ) );
@@ -1285,58 +1216,58 @@ namespace Harlinn::Windows::Skia::SceneGraph
 
 
 
-        Reference<Circle> AddCircle( const SceneGraph::Matrix& matrix, Reference<Style> style, const SkScalar& radius )
+        ReferenceCountedPtr<Circle> AddCircle( const SceneGraph::Matrix& matrix, ReferenceCountedPtr<Style> style, const SkScalar& radius )
         {
-            auto result = Circle::Make( this, matrix, std::move( style ), radius );
+            auto result = MakeReferenceCounted<Circle>( this, matrix, std::move( style ), radius );
             AddNode( result );
             return result;
         }
-        Reference<Circle> AddCircle( SkScalar centerX, SkScalar centerY, SkScalar radius, Reference<Style> style )
+        ReferenceCountedPtr<Circle> AddCircle( SkScalar centerX, SkScalar centerY, SkScalar radius, ReferenceCountedPtr<Style> style )
         {
             auto m = SceneGraph::Matrix::Translate( centerX, centerY );
             return AddCircle(m, std::move( style ), radius );
         }
 
-        Reference<Path> AddPath( const SceneGraph::Matrix& matrix, Reference<Style> style, const SkPath& path )
+        ReferenceCountedPtr<Path> AddPath( const SceneGraph::Matrix& matrix, ReferenceCountedPtr<Style> style, const SkPath& path )
         {
-            auto result = Path::Make( this, matrix, std::move( style ), path );
+            auto result = MakeReferenceCounted<Path>( this, matrix, std::move( style ), path );
             AddNode( result );
             return result;
         }
 
-        Reference<Path> AddPath( SkScalar x, SkScalar y, Reference<Style> style, const SkPath& path )
+        ReferenceCountedPtr<Path> AddPath( SkScalar x, SkScalar y, ReferenceCountedPtr<Style> style, const SkPath& path )
         {
             auto m = SceneGraph::Matrix::Translate( x, y );
             return AddPath( m, std::move( style ), path );
         }
 
-        Reference<Text> AddText( const SceneGraph::Matrix& matrix, Reference<Style> style, sk_sp<SkTypeface> typeface, const SkString& data )
+        ReferenceCountedPtr<Text> AddText( const SceneGraph::Matrix& matrix, ReferenceCountedPtr<Style> style, sk_sp<SkTypeface> typeface, const SkString& data )
         {
-            auto result = Text::Make( this, matrix, std::move( style ), std::move( typeface ), data );
+            auto result = MakeReferenceCounted<Text>( this, matrix, std::move( style ), std::move( typeface ), data );
             AddNode( result );
             return result;
         }
 
-        Reference<Text> AddText( SkScalar x, SkScalar y, Reference<Style> style, sk_sp<SkTypeface> typeface, const SkString& data )
+        ReferenceCountedPtr<Text> AddText( SkScalar x, SkScalar y, ReferenceCountedPtr<Style> style, sk_sp<SkTypeface> typeface, const SkString& data )
         {
             auto m = SceneGraph::Matrix::Translate( x, y );
             return AddText( m, std::move( style ), std::move( typeface ), data );
         }
 
 
-        Reference<Image> AddImage( const SceneGraph::Matrix& matrix, sk_sp<SkImage> data, const SkSamplingOptions& samplingOptions = SkSamplingOptions() )
+        ReferenceCountedPtr<Image> AddImage( const SceneGraph::Matrix& matrix, sk_sp<SkImage> data, const SkSamplingOptions& samplingOptions = SkSamplingOptions() )
         {
-            auto result = Image::Make( this, matrix, std::move( data ), samplingOptions );
+            auto result = MakeReferenceCounted<Image>( this, matrix, std::move( data ), samplingOptions );
             AddNode( result );
             return result;
         }
-        Reference<Image> AddImage( SkScalar x, SkScalar y, sk_sp<SkImage> data, const SkSamplingOptions& samplingOptions = SkSamplingOptions( ) )
+        ReferenceCountedPtr<Image> AddImage( SkScalar x, SkScalar y, sk_sp<SkImage> data, const SkSamplingOptions& samplingOptions = SkSamplingOptions( ) )
         {
             auto m = SceneGraph::Matrix::Translate( x, y );
             return AddImage( m, std::move( data ), samplingOptions );
         }
 
-        Reference<Image> AddImage( const SceneGraph::Matrix& matrix, const char* resourceName, const SkSamplingOptions& samplingOptions = SkSamplingOptions( ) )
+        ReferenceCountedPtr<Image> AddImage( const SceneGraph::Matrix& matrix, const char* resourceName, const SkSamplingOptions& samplingOptions = SkSamplingOptions( ) )
         {
             SkBitmap bm;
             decode_file( GetResourceAsData( resourceName ), &bm );
@@ -1344,7 +1275,7 @@ namespace Harlinn::Windows::Skia::SceneGraph
             return AddImage( matrix, std::move( data ), samplingOptions );
         }
 
-        Reference<Image> AddImage( SkScalar x, SkScalar y, const char* resourceName, const SkSamplingOptions& samplingOptions = SkSamplingOptions( ) )
+        ReferenceCountedPtr<Image> AddImage( SkScalar x, SkScalar y, const char* resourceName, const SkSamplingOptions& samplingOptions = SkSamplingOptions( ) )
         {
             auto m = SceneGraph::Matrix::Translate( x, y );
             return AddImage( m, resourceName, samplingOptions );
@@ -1354,19 +1285,19 @@ namespace Harlinn::Windows::Skia::SceneGraph
         
 
 
-        Reference<Group> AddGroup( const SceneGraph::Matrix& matrix )
+        ReferenceCountedPtr<Group> AddGroup( const SceneGraph::Matrix& matrix )
         {
-            auto result = Group::Make( this, matrix );
+            auto result = MakeReferenceCounted<Group>( this, matrix );
             AddNode( result );
             return result;
         }
 
-        Reference<Group> AddGroup(SkScalar x, SkScalar y )
+        ReferenceCountedPtr<Group> AddGroup(SkScalar x, SkScalar y )
         {
             auto m = SceneGraph::Matrix::Translate( x, y );
             return AddGroup( m );
         }
-        Reference<Group> AddGroup( const SkPoint& point )
+        ReferenceCountedPtr<Group> AddGroup( const SkPoint& point )
         {
             return AddGroup( point.x(), point.y() );
         }
@@ -1417,14 +1348,7 @@ namespace Harlinn::Windows::Skia::SceneGraph
             : Base( matrix )
         { }
     public:
-        static Reference<Scene> Make( )
-        {
-            return Reference<Scene>( new Scene( ) );
-        }
-        static Reference<Scene> Make( const SceneGraph::Matrix& matrix )
-        {
-            return Reference<Scene>( new Scene( matrix ) );
-        }
+        
     protected:
         virtual SceneGraph::Group* DoOnGroup( ) const override
         {
