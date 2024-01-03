@@ -56,6 +56,7 @@ namespace Harlinn::Windows::Skia::SceneGraph
     class Scene;
     class Node : public Observable<Node>
     {
+        
     public:
         using Base = Observable<Node>;
         using ThisType = Node;
@@ -294,7 +295,7 @@ namespace Harlinn::Windows::Skia::SceneGraph
         using ThisType = ColorStyle;
     private:
         SkColor color_;
-    protected:
+    public:
         ColorStyle( SkColor color )
             : color_( color )
         { }
@@ -318,7 +319,7 @@ namespace Harlinn::Windows::Skia::SceneGraph
         using ThisType = ShaderStyle;
     private:
         sk_sp<SkShader> shader_;
-    protected:
+    public:
         ShaderStyle( sk_sp<SkShader> shader )
             : shader_( shader )
         { }
@@ -348,7 +349,7 @@ namespace Harlinn::Windows::Skia::SceneGraph
         using ThisType = Geometry;
     private:
         ReferenceCountedPtr<SceneGraph::Style> style_;
-    protected:
+    public:
         Geometry( Node* owner, ReferenceCountedPtr<SceneGraph::Style> style )
             : Base( owner ), style_( std::move( style ) )
         { }
@@ -419,7 +420,7 @@ namespace Harlinn::Windows::Skia::SceneGraph
         using ThisType = SimpleGeometry;
     private:
         SkPathDirection pathDirection_ = SkPathDirection::kCW;
-    protected:
+    public:
         SimpleGeometry( Node* owner, ReferenceCountedPtr<SceneGraph::Style> style )
             : Base( owner, std::move( style ) )
         { }
@@ -440,7 +441,7 @@ namespace Harlinn::Windows::Skia::SceneGraph
     private:
         SkSize size_;
         uint32_t initialPointIndex_ = 0;
-    protected:
+    public:
         Rectangle( Node* owner, ReferenceCountedPtr<SceneGraph::Style> style, const SkSize& size )
             : Base( owner, std::move( style ) ), size_( size )
         { }
@@ -483,7 +484,7 @@ namespace Harlinn::Windows::Skia::SceneGraph
     private:
         SkRRect data_;
         uint32_t initialPointIndex_ = 0;
-    protected:
+    public:
         RoundedRectangle( Node* owner, ReferenceCountedPtr<SceneGraph::Style> style, const SkRRect& data )
             : Base( owner, std::move( style ) ), data_( data )
         {
@@ -516,7 +517,7 @@ namespace Harlinn::Windows::Skia::SceneGraph
     private:
         SkSize size_;
         uint32_t initialPointIndex_ = 0;
-    protected:
+    public:
         Oval( Node* owner, ReferenceCountedPtr<SceneGraph::Style> style, const SkSize& size )
             : Base( owner, std::move( style ) ), size_( size )
         {
@@ -553,7 +554,7 @@ namespace Harlinn::Windows::Skia::SceneGraph
         using ThisType = Circle;
     private:
         SkScalar radius_;
-    protected:
+    public:
         Circle( Node* owner, ReferenceCountedPtr<SceneGraph::Style> style, SkScalar radius )
             : Base( owner, std::move( style ) ), radius_( radius )
         {
@@ -597,7 +598,7 @@ namespace Harlinn::Windows::Skia::SceneGraph
         using ThisType = Path;
     private:
         SkPath data_;
-    protected:
+    public:
         Path( Node* owner, ReferenceCountedPtr<SceneGraph::Style> style, const SkPath& path )
             : Base( owner, std::move( style ) ), data_( path )
         {
@@ -639,7 +640,7 @@ namespace Harlinn::Windows::Skia::SceneGraph
 
         // cached text blob
         mutable sk_sp<SkTextBlob> blob_;
-    protected:
+    public:
         Text( Node* owner, ReferenceCountedPtr<SceneGraph::Style> style, sk_sp<SkTypeface> typeface, const SkString& data )
             : Base( owner, std::move( style ) ), typeface_( std::move(typeface) ), data_( data )
         { }
@@ -717,7 +718,7 @@ namespace Harlinn::Windows::Skia::SceneGraph
         sk_sp<SkImage> data_;
         SkSamplingOptions samplingOptions_;
         bool antiAlias_ = true;
-    protected:
+    public:
         Image( Node* owner, sk_sp<SkImage> data, const SkSamplingOptions& samplingOptions )
             : Base( owner ), data_( std::move( data ) ), samplingOptions_( samplingOptions )
         {
@@ -997,13 +998,13 @@ namespace Harlinn::Windows::Skia::SceneGraph
             SeriesCollection series_;
             ViewCollection views_;
             boost::signals2::connection styleConnection_;
-        protected:
+        public:
             Diagram( Node* owner, ReferenceCountedPtr<Chart::DiagramStyle> style )
                 : Base( owner ), style_( std::move( style ) ), series_( this ), views_( this )
             {
                 AttachToStyle( );
             }
-            Diagram( Node* owner, const SceneGraph::Matrix& matrix, ReferenceCountedPtr<Chart::DiagramStyle> style, sk_sp<DataSource> dataSource )
+            Diagram( Node* owner, const SceneGraph::Matrix& matrix, ReferenceCountedPtr<Chart::DiagramStyle> style, ReferenceCountedPtr<DataSource> dataSource )
                 : Base( owner, matrix ), style_( std::move( style ) ), series_( this ), views_( this )
             {
                 AttachToStyle( );
@@ -1070,7 +1071,7 @@ namespace Harlinn::Windows::Skia::SceneGraph
         SkScalar radius_;
         int lineCount_ = 12;
         int circleCount_ = 6;
-    protected:
+    public:
         Radar( Node* owner, ReferenceCountedPtr<SceneGraph::Style> style, SkScalar radius )
             : Base( owner, std::move( style ) ), radius_( radius )
         {
@@ -1150,7 +1151,7 @@ namespace Harlinn::Windows::Skia::SceneGraph
     private:
         std::vector< ReferenceCountedPtr<Node> > nodes_;
 
-    protected:
+    public:
         Group( )
         { }
         Group( Node* owner )
@@ -1341,7 +1342,7 @@ namespace Harlinn::Windows::Skia::SceneGraph
         using Base = Group;
         using ThisType = Scene;
     private:
-    protected:
+    public:
         Scene( )
         { }
         Scene( const SceneGraph::Matrix& matrix )

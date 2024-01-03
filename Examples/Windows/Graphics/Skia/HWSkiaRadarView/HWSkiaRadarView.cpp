@@ -32,43 +32,43 @@ class RadarView : public Sample
 public:
     using Base = Sample;
 private:
-    Reference<SceneGraph::Scene> scene_;
-    Reference<SceneGraph::Group> rectGroup_;
-    Reference<SceneGraph::Rectangle> rect1_;
-    Reference<SceneGraph::Rectangle> rect2_;
-    Reference<SceneGraph::Group> circleGroup_;
-    Reference<SceneGraph::Circle> circle1_;
-    Reference<SceneGraph::Circle> circle2_;
-    Reference<SceneGraph::Image> image1_;
-    Reference<SceneGraph::Radar> radar1_;
+    ReferenceCountedPtr<SceneGraph::Scene> scene_;
+    ReferenceCountedPtr<SceneGraph::Group> rectGroup_;
+    ReferenceCountedPtr<SceneGraph::Rectangle> rect1_;
+    ReferenceCountedPtr<SceneGraph::Rectangle> rect2_;
+    ReferenceCountedPtr<SceneGraph::Group> circleGroup_;
+    ReferenceCountedPtr<SceneGraph::Circle> circle1_;
+    ReferenceCountedPtr<SceneGraph::Circle> circle2_;
+    ReferenceCountedPtr<SceneGraph::Image> image1_;
+    ReferenceCountedPtr<SceneGraph::Radar> radar1_;
 public:
     RadarView()
     { 
-        scene_ = SceneGraph::Scene::Make( );
+        scene_ = MakeReferenceCounted<SceneGraph::Scene>( );
         rectGroup_ = scene_->AddGroup( 300, 300 );
 
         circleGroup_ = scene_->AddGroup( 600, 600 );
 
-        auto redStrokeStyle = SceneGraph::ColorStyle::Make( SK_ColorRED );
+        auto redStrokeStyle = MakeReferenceCounted<SceneGraph::ColorStyle>( SK_ColorRED );
         redStrokeStyle->SetAntiAlias( true );
         redStrokeStyle->SetPaintStyle( SkPaint::Style::kStroke_Style );
         redStrokeStyle->SetStrokeWidth( 4 );
 
-        auto greenStrokeStyle = SceneGraph::ColorStyle::Make( SK_ColorGREEN );
+        auto greenStrokeStyle = MakeReferenceCounted<SceneGraph::ColorStyle>( SK_ColorGREEN );
         greenStrokeStyle->SetAntiAlias( true );
         greenStrokeStyle->SetPaintStyle( SkPaint::Style::kStroke_Style );
         greenStrokeStyle->SetStrokeWidth( 4 );
 
-        auto blackStrokeStyle = SceneGraph::ColorStyle::Make( SK_ColorBLACK );
+        auto blackStrokeStyle = MakeReferenceCounted<SceneGraph::ColorStyle>( SK_ColorBLACK );
         blackStrokeStyle->SetAntiAlias( true );
         blackStrokeStyle->SetPaintStyle( SkPaint::Style::kStroke_Style );
         blackStrokeStyle->SetStrokeWidth( 4 );
 
 
-        auto yellowFillStyle = SceneGraph::ColorStyle::Make( SK_ColorYELLOW );
+        auto yellowFillStyle = MakeReferenceCounted<SceneGraph::ColorStyle>( SK_ColorYELLOW );
         yellowFillStyle->SetAntiAlias( true );
 
-        auto cyanFillStyle = SceneGraph::ColorStyle::Make( SK_ColorCYAN );
+        auto cyanFillStyle = MakeReferenceCounted<SceneGraph::ColorStyle>( SK_ColorCYAN );
         cyanFillStyle->SetAntiAlias( true );
 
 

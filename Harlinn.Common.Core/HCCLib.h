@@ -1631,9 +1631,11 @@ namespace Harlinn::Common::Core
     };
     
 
-    template<SimpleComLike ValueT>
+    template<typename ValueT>
     class ReferenceCountedPtr
     {
+        template<typename U>
+        friend class ReferenceCountedPtr;
     public:
         using ValueType = ValueT;
         using value_type = ValueT;
