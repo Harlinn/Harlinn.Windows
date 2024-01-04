@@ -84,7 +84,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(VLC_SOURCE)\include;$(SolutionDir)Harlinn.Windows;$(SolutionDir)Harlinn.Common.Core;$(SolutionDir)3rdParty\Harlinn.skia\include;$(SolutionDir)3rdParty\Harlinn.skia;$(SolutionDir)3rdParty\Harlinn.skcms\include;$(SolutionDir)3rdParty\Harlinn.ImGui;$(BOOST_ROOT);$(SolutionDir)3rdParty\Harlinn.live555\include\live555;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(VLC_SOURCE)\include;$(SolutionDir)Harlinn.Windows;$(SolutionDir)Harlinn.Common.Core;$(SolutionDir)3rdParty\Harlinn.skia\include;$(SolutionDir)3rdParty\Harlinn.skia;$(SolutionDir)3rdParty\Harlinn.skcms\include;$(SolutionDir)3rdParty\Harlinn.ImGui;$(BOOST_ROOT);$(SolutionDir)3rdParty\Harlinn.live555\include\live555;$(GSTREAMER_1_0_ROOT_MSVC_X86_64)\include\gstreamer-1.0;$(GSTREAMER_1_0_ROOT_MSVC_X86_64)\include\glib-2.0;$(GSTREAMER_1_0_ROOT_MSVC_X86_64)\lib\glib-2.0\include;$(GSTREAMER_1_0_ROOT_MSVC_X86_64)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <LanguageStandard>stdcpplatest</LanguageStandard>
@@ -95,7 +95,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalLibraryDirectories>$(OutDir);$(BOOST_ROOT)\stage\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(OutDir);$(BOOST_ROOT)\stage\lib;$(GSTREAMER_1_0_ROOT_MSVC_X86_64)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -107,7 +107,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(VLC_SOURCE)\include;$(SolutionDir)Harlinn.Windows;$(SolutionDir)Harlinn.Common.Core;$(SolutionDir)3rdParty\Harlinn.skia\include;$(SolutionDir)3rdParty\Harlinn.skia;$(SolutionDir)3rdParty\Harlinn.skcms\include;$(SolutionDir)3rdParty\Harlinn.ImGui;$(BOOST_ROOT);$(SolutionDir)3rdParty\Harlinn.live555\include\live555;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(VLC_SOURCE)\include;$(SolutionDir)Harlinn.Windows;$(SolutionDir)Harlinn.Common.Core;$(SolutionDir)3rdParty\Harlinn.skia\include;$(SolutionDir)3rdParty\Harlinn.skia;$(SolutionDir)3rdParty\Harlinn.skcms\include;$(SolutionDir)3rdParty\Harlinn.ImGui;$(BOOST_ROOT);$(SolutionDir)3rdParty\Harlinn.live555\include\live555;$(GSTREAMER_1_0_ROOT_MSVC_X86_64)\include\gstreamer-1.0;$(GSTREAMER_1_0_ROOT_MSVC_X86_64)\include\glib-2.0;$(GSTREAMER_1_0_ROOT_MSVC_X86_64)\lib\glib-2.0\include;$(GSTREAMER_1_0_ROOT_MSVC_X86_64)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <LanguageStandard>stdcpplatest</LanguageStandard>
@@ -119,7 +119,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalLibraryDirectories>$(OutDir);$(BOOST_ROOT)\stage\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(OutDir);$(BOOST_ROOT)\stage\lib;$(GSTREAMER_1_0_ROOT_MSVC_X86_64)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -130,7 +130,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(VLC_SOURCE)\include;$(SolutionDir)Harlinn.Windows;$(SolutionDir)Harlinn.Common.Core;$(SolutionDir)3rdParty\Harlinn.skia\include;$(SolutionDir)3rdParty\Harlinn.skia;$(SolutionDir)3rdParty\Harlinn.skcms\include;$(SolutionDir)3rdParty\Harlinn.ImGui;$(BOOST_ROOT);$(SolutionDir)3rdParty\Harlinn.live555\include\live555;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(VLC_SOURCE)\include;$(SolutionDir)Harlinn.Windows;$(SolutionDir)Harlinn.Common.Core;$(SolutionDir)3rdParty\Harlinn.skia\include;$(SolutionDir)3rdParty\Harlinn.skia;$(SolutionDir)3rdParty\Harlinn.skcms\include;$(SolutionDir)3rdParty\Harlinn.ImGui;$(BOOST_ROOT);$(SolutionDir)3rdParty\Harlinn.live555\include\live555;$(GSTREAMER_1_0_ROOT_MSVC_X86_64)\include\gstreamer-1.0;$(GSTREAMER_1_0_ROOT_MSVC_X86_64)\include\glib-2.0;$(GSTREAMER_1_0_ROOT_MSVC_X86_64)\lib\glib-2.0\include;$(GSTREAMER_1_0_ROOT_MSVC_X86_64)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <LanguageStandard>stdcpplatest</LanguageStandard>
@@ -141,7 +141,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalLibraryDirectories>$(OutDir);$(BOOST_ROOT)\stage\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(OutDir);$(BOOST_ROOT)\stage\lib;$(GSTREAMER_1_0_ROOT_MSVC_X86_64)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -153,7 +153,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(VLC_SOURCE)\include;$(SolutionDir)Harlinn.Windows;$(SolutionDir)Harlinn.Common.Core;$(SolutionDir)3rdParty\Harlinn.skia\include;$(SolutionDir)3rdParty\Harlinn.skia;$(SolutionDir)3rdParty\Harlinn.skcms\include;$(SolutionDir)3rdParty\Harlinn.ImGui;$(BOOST_ROOT);$(SolutionDir)3rdParty\Harlinn.live555\include\live555;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(VLC_SOURCE)\include;$(SolutionDir)Harlinn.Windows;$(SolutionDir)Harlinn.Common.Core;$(SolutionDir)3rdParty\Harlinn.skia\include;$(SolutionDir)3rdParty\Harlinn.skia;$(SolutionDir)3rdParty\Harlinn.skcms\include;$(SolutionDir)3rdParty\Harlinn.ImGui;$(BOOST_ROOT);$(SolutionDir)3rdParty\Harlinn.live555\include\live555;$(GSTREAMER_1_0_ROOT_MSVC_X86_64)\include\gstreamer-1.0;$(GSTREAMER_1_0_ROOT_MSVC_X86_64)\include\glib-2.0;$(GSTREAMER_1_0_ROOT_MSVC_X86_64)\lib\glib-2.0\include;$(GSTREAMER_1_0_ROOT_MSVC_X86_64)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <LanguageStandard>stdcpplatest</LanguageStandard>
@@ -165,11 +165,17 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalLibraryDirectories>$(OutDir);$(BOOST_ROOT)\stage\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(OutDir);$(BOOST_ROOT)\stage\lib;$(GSTREAMER_1_0_ROOT_MSVC_X86_64)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="glib\HWMgerror.h" />
+    <ClInclude Include="glib\HWMgoption.h" />
+    <ClInclude Include="glib\HWMgquark.h" />
+    <ClInclude Include="glib\HWMgtypes.h" />
     <ClInclude Include="HWMDef.h" />
+    <ClInclude Include="HWMGlib.h" />
+    <ClInclude Include="HWMGst.h" />
     <ClInclude Include="HWMVlc.h" />
     <ClInclude Include="HWMVlcCommon.h" />
     <ClInclude Include="pch.h" />
@@ -177,6 +183,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="glib\HWMgerror.cpp" />
+    <ClCompile Include="glib\HWMGlib.cpp" />
+    <ClCompile Include="glib\HWMgoption.cpp" />
+    <ClCompile Include="glib\HWMgquark.cpp" />
+    <ClCompile Include="gst\HWMGst.cpp" />
     <ClCompile Include="HWMVlc.cpp" />
     <ClCompile Include="HWMVlcArguments.cpp" />
     <ClCompile Include="pch.cpp">
@@ -195,6 +206,7 @@
     <ClCompile Include="vlc\libvlc_media_list.cpp" />
     <ClCompile Include="vlc\libvlc_media_list_player.cpp" />
     <ClCompile Include="vlc\libvlc_media_player.cpp" />
+    <ClCompile Include="vlc\libvlc_renderer_discoverer.cpp" />
     <ClCompile Include="vlc\libvlc_vlm.cpp" />
   </ItemGroup>
   <ItemGroup>

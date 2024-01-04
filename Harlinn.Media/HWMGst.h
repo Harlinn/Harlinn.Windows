@@ -1,6 +1,6 @@
 #pragma once
-#ifndef HARLINN_MEDIA_HWMVLCCOMMON_H_
-#define HARLINN_MEDIA_HWMVLCCOMMON_H_
+#ifndef HARLINN_MEDIA_HWMGST_H_
+#define HARLINN_MEDIA_HWMGST_H_
 /*
    Copyright 2024 Espen Harlinn
 
@@ -17,16 +17,17 @@
    limitations under the License.
 */
 
-#include "HWMDef.h"
 
-struct libvlc_instance_t;
-typedef int64_t libvlc_time_t;
-struct libvlc_event_manager_t;
-struct libvlc_event_t;
-typedef int libvlc_event_type_t;
-typedef void ( *libvlc_callback_t )( const struct libvlc_event_t* p_event, void* p_data );
-typedef struct vlc_log_t libvlc_log_t;
-typedef void ( *libvlc_log_cb )( void* data, int level, const libvlc_log_t* ctx, const char* fmt, va_list args );
-struct libvlc_module_description_t;
+#include "HWMDef.h"
+#include "HWMGLib.h"
+
+namespace Harlinn::Media::GStreamer
+{
+    using namespace GLib;
+    HWM_EXPORT void Init( int* argc, char** argv[ ] );
+    HWM_EXPORT Bool32 Init( int* argc, char** argv[ ], Error** error );
+    HWM_EXPORT Bool32 IsInitialized( );
+
+}
 
 #endif

@@ -16,6 +16,12 @@
     <Filter Include="vlc">
       <UniqueIdentifier>{bdc333a8-28e9-4352-af8c-2fb5dabec7e1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="gst">
+      <UniqueIdentifier>{2899f046-603d-4c4e-8309-3ef5700d7a9d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="glib">
+      <UniqueIdentifier>{5da76478-826c-46f8-85f4-1251184460ab}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -32,6 +38,24 @@
     </ClInclude>
     <ClInclude Include="HWMVlcCommon.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HWMGst.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HWMGlib.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\HWMgerror.h">
+      <Filter>glib</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\HWMgquark.h">
+      <Filter>glib</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\HWMgtypes.h">
+      <Filter>glib</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\HWMgoption.h">
+      <Filter>glib</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -79,6 +103,24 @@
     </ClCompile>
     <ClCompile Include="vlc\libvlc_media_player.cpp">
       <Filter>vlc</Filter>
+    </ClCompile>
+    <ClCompile Include="vlc\libvlc_renderer_discoverer.cpp">
+      <Filter>vlc</Filter>
+    </ClCompile>
+    <ClCompile Include="gst\HWMGst.cpp">
+      <Filter>gst</Filter>
+    </ClCompile>
+    <ClCompile Include="glib\HWMGlib.cpp">
+      <Filter>glib</Filter>
+    </ClCompile>
+    <ClCompile Include="glib\HWMgquark.cpp">
+      <Filter>glib</Filter>
+    </ClCompile>
+    <ClCompile Include="glib\HWMgerror.cpp">
+      <Filter>glib</Filter>
+    </ClCompile>
+    <ClCompile Include="glib\HWMgoption.cpp">
+      <Filter>glib</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

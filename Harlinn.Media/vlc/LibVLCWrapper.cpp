@@ -332,6 +332,21 @@ void LibVLC::Initialize( )
     media_player_get_role_ = ( libvlc_media_player_get_role_func_t )moduleHandle_.GetProcAddress( "libvlc_media_player_get_role" );
     media_player_set_role_ = ( libvlc_media_player_set_role_func_t )moduleHandle_.GetProcAddress( "libvlc_media_player_set_role" );
 
+    // Renderer discoverer
+    renderer_item_hold_ = ( libvlc_renderer_item_hold_func_t )moduleHandle_.GetProcAddress( "libvlc_renderer_item_hold" );
+    renderer_item_release_ = ( libvlc_renderer_item_release_func_t )moduleHandle_.GetProcAddress( "libvlc_renderer_item_release" );
+    renderer_item_name_ = ( libvlc_renderer_item_name_func_t )moduleHandle_.GetProcAddress( "libvlc_renderer_item_name" );
+    renderer_item_type_ = ( libvlc_renderer_item_type_func_t )moduleHandle_.GetProcAddress( "libvlc_renderer_item_type" );
+    renderer_item_icon_uri_ = ( libvlc_renderer_item_icon_uri_func_t )moduleHandle_.GetProcAddress( "libvlc_renderer_item_icon_uri" );
+    renderer_item_flags_ = ( libvlc_renderer_item_flags_func_t )moduleHandle_.GetProcAddress( "libvlc_renderer_item_flags" );
+    renderer_discoverer_new_ = ( libvlc_renderer_discoverer_new_func_t )moduleHandle_.GetProcAddress( "libvlc_renderer_discoverer_new" );
+    renderer_discoverer_release_ = ( libvlc_renderer_discoverer_release_func_t )moduleHandle_.GetProcAddress( "libvlc_renderer_discoverer_release" );
+    renderer_discoverer_start_ = ( libvlc_renderer_discoverer_start_func_t )moduleHandle_.GetProcAddress( "libvlc_renderer_discoverer_start" );
+    renderer_discoverer_stop_ = ( libvlc_renderer_discoverer_stop_func_t )moduleHandle_.GetProcAddress( "libvlc_renderer_discoverer_stop" );
+    renderer_discoverer_event_manager_ = ( libvlc_renderer_discoverer_event_manager_func_t )moduleHandle_.GetProcAddress( "libvlc_renderer_discoverer_event_manager" );
+    renderer_discoverer_list_get_ = ( libvlc_renderer_discoverer_list_get_func_t )moduleHandle_.GetProcAddress( "libvlc_renderer_discoverer_list_get" );
+    renderer_discoverer_list_release_ = ( libvlc_renderer_discoverer_list_release_func_t )moduleHandle_.GetProcAddress( "libvlc_renderer_discoverer_list_release" );
+
     // VLM
     vlm_release_ = (libvlc_vlm_release_func_t)moduleHandle_.GetProcAddress( "libvlc_vlm_release" );
     vlm_add_broadcast_ = ( libvlc_vlm_add_broadcast_func_t )moduleHandle_.GetProcAddress( "libvlc_vlm_add_broadcast" );

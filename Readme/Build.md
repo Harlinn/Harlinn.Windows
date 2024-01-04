@@ -5,20 +5,21 @@ The provided code has been tried and tested on Windows 11 and Windows 2019 serve
  
 ## Requirements
 To build the solution you need:
-- [Visual Studio 17.8.2](https://visualstudio.microsoft.com/vs/) Ensure that you have installed support for .Net 6, 64-bit C++ development and 64-bit python development. 
+- [Visual Studio 17.8.3](https://visualstudio.microsoft.com/vs/) Ensure that you have installed support for .Net 6, 64-bit C++ development and 64-bit python development. 
 - [boost c++ libraries](https://www.boost.org/)
 - [nasm](https://www.nasm.us/) 
 - [yasm](https://yasm.tortall.net/)
 - [ICU4C](https://icu.unicode.org/)
-- [julia](https://julialang.org/) version 1.9
-- [Oracle OCI](https://www.oracle.com/downloads/)
+- [julia](https://julialang.org/) version 1.9 - Only needed to build `Harlinn.Julia` and related projects.
+- [Oracle OCI](https://www.oracle.com/downloads/) - Only needed to build `Harlinn.OCI` and related projects.
 - [Intel® oneAPI Base Toolkit](https://software.intel.com/content/www/us/en/develop/tools/oneapi/base-toolkit/download.html)
 - [WinFlexBison - Flex and Bison for Microsoft Windows](https://github.com/lexxmark/winflexbison)
 - [swig](http://www.swig.org/)
 - [perl](https://www.perl.org/)
 - [OpenSSL](https://www.openssl.org/)
 - [nVidia CUDA toolkit](https://developer.nvidia.com/cuda-toolkit)
-- [VLC media player source code](https://www.videolan.org/vlc/download-sources.html)
+- [VLC media player source code](https://www.videolan.org/vlc/download-sources.html) - Only needed to build `Harlinn.Media` and related projects.
+- [GStreamer](https://gstreamer.freedesktop.org/download/) - Only needed to build `Harlinn.Media` and related projects.
 
 Make sure you install 64-bit binaries, libraries and headers.
 

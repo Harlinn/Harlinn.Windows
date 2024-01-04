@@ -323,6 +323,22 @@ using libvlc_media_player_set_equalizer_func_t = int (*)( libvlc_media_player_t*
 using libvlc_media_player_get_role_func_t = int (*)( libvlc_media_player_t* p_mi );
 using libvlc_media_player_set_role_func_t = int (*)( libvlc_media_player_t* p_mi, unsigned role );
 
+// Renderer discoverer
+using libvlc_renderer_item_hold_func_t = libvlc_renderer_item_t* (*)( libvlc_renderer_item_t* p_item );
+using libvlc_renderer_item_release_func_t = void (*)( libvlc_renderer_item_t* p_item );
+using libvlc_renderer_item_name_func_t = const char* (*)( const libvlc_renderer_item_t* p_item );
+using libvlc_renderer_item_type_func_t = const char* (*)( const libvlc_renderer_item_t* p_item );
+using libvlc_renderer_item_icon_uri_func_t = const char* (*)( const libvlc_renderer_item_t* p_item );
+using libvlc_renderer_item_flags_func_t = int (*)( const libvlc_renderer_item_t* p_item );
+using libvlc_renderer_discoverer_new_func_t = libvlc_renderer_discoverer_t* (*)( libvlc_instance_t* p_inst, const char* psz_name );
+using libvlc_renderer_discoverer_release_func_t = void (*)( libvlc_renderer_discoverer_t* p_rd );
+using libvlc_renderer_discoverer_start_func_t = int (*)( libvlc_renderer_discoverer_t* p_rd );
+using libvlc_renderer_discoverer_stop_func_t = void (*)( libvlc_renderer_discoverer_t* p_rd );
+using libvlc_renderer_discoverer_event_manager_func_t = libvlc_event_manager_t* (*)( libvlc_renderer_discoverer_t* p_rd );
+using libvlc_renderer_discoverer_list_get_func_t = size_t (*)( libvlc_instance_t* p_inst, libvlc_rd_description_t*** ppp_services );
+using libvlc_renderer_discoverer_list_release_func_t = void (*)( libvlc_rd_description_t** pp_services, size_t i_count );
+
+
 // VLM
 using libvlc_vlm_release_func_t = void (*)( libvlc_instance_t* p_instance );
 using libvlc_vlm_add_broadcast_func_t = int (*)( libvlc_instance_t* p_instance, const char* psz_name, const char* psz_input, const char* psz_output, int i_options, const char* const* ppsz_options, int b_enabled, int b_loop );
@@ -647,6 +663,21 @@ private:
     libvlc_media_player_set_equalizer_func_t media_player_set_equalizer_ = nullptr;
     libvlc_media_player_get_role_func_t media_player_get_role_ = nullptr;
     libvlc_media_player_set_role_func_t media_player_set_role_ = nullptr;
+
+    // Renderer discoverer
+    libvlc_renderer_item_hold_func_t renderer_item_hold_ = nullptr;
+    libvlc_renderer_item_release_func_t renderer_item_release_ = nullptr;
+    libvlc_renderer_item_name_func_t renderer_item_name_ = nullptr;
+    libvlc_renderer_item_type_func_t renderer_item_type_ = nullptr;
+    libvlc_renderer_item_icon_uri_func_t renderer_item_icon_uri_ = nullptr;
+    libvlc_renderer_item_flags_func_t renderer_item_flags_ = nullptr;
+    libvlc_renderer_discoverer_new_func_t renderer_discoverer_new_ = nullptr;
+    libvlc_renderer_discoverer_release_func_t renderer_discoverer_release_ = nullptr;
+    libvlc_renderer_discoverer_start_func_t renderer_discoverer_start_ = nullptr;
+    libvlc_renderer_discoverer_stop_func_t renderer_discoverer_stop_ = nullptr;
+    libvlc_renderer_discoverer_event_manager_func_t renderer_discoverer_event_manager_ = nullptr;
+    libvlc_renderer_discoverer_list_get_func_t renderer_discoverer_list_get_ = nullptr;
+    libvlc_renderer_discoverer_list_release_func_t renderer_discoverer_list_release_ = nullptr;
 
     // VLM:
     libvlc_vlm_release_func_t vlm_release_ = nullptr;
@@ -1848,6 +1879,60 @@ public:
         return media_player_set_role_( p_mi, role );
     }
 
+
+    // Renderer discoverer
+    libvlc_renderer_item_t* libvlc_renderer_item_hold( libvlc_renderer_item_t* p_item )
+    {
+        return renderer_item_hold_( p_item );
+    }
+    void libvlc_renderer_item_release( libvlc_renderer_item_t* p_item )
+    {
+        renderer_item_release_( p_item );
+    }
+    const char* libvlc_renderer_item_name( const libvlc_renderer_item_t* p_item )
+    {
+        return renderer_item_name_( p_item );
+    }
+    const char* libvlc_renderer_item_type( const libvlc_renderer_item_t* p_item )
+    {
+        return renderer_item_type_( p_item );
+    }
+    const char* libvlc_renderer_item_icon_uri( const libvlc_renderer_item_t* p_item )
+    {
+        return renderer_item_icon_uri_( p_item );
+    }
+    int libvlc_renderer_item_flags( const libvlc_renderer_item_t* p_item )
+    {
+        return renderer_item_flags_( p_item );
+    }
+    libvlc_renderer_discoverer_t* libvlc_renderer_discoverer_new( libvlc_instance_t* p_inst, const char* psz_name )
+    {
+        return renderer_discoverer_new_( p_inst, psz_name );
+    }
+    void libvlc_renderer_discoverer_release( libvlc_renderer_discoverer_t* p_rd )
+    {
+        renderer_discoverer_release_( p_rd );
+    }
+    int libvlc_renderer_discoverer_start( libvlc_renderer_discoverer_t* p_rd )
+    {
+        return renderer_discoverer_start_( p_rd );
+    }
+    void libvlc_renderer_discoverer_stop( libvlc_renderer_discoverer_t* p_rd )
+    {
+        renderer_discoverer_stop_( p_rd );
+    }
+    libvlc_event_manager_t* libvlc_renderer_discoverer_event_manager( libvlc_renderer_discoverer_t* p_rd )
+    {
+        return renderer_discoverer_event_manager_( p_rd );
+    }
+    size_t libvlc_renderer_discoverer_list_get( libvlc_instance_t* p_inst, libvlc_rd_description_t*** ppp_services )
+    {
+        return renderer_discoverer_list_get_( p_inst, ppp_services );
+    }
+    void libvlc_renderer_discoverer_list_release( libvlc_rd_description_t** pp_services, size_t i_count )
+    {
+        renderer_discoverer_list_release_( pp_services, i_count );
+    }
 
     // VLM
     void libvlc_vlm_release( libvlc_instance_t* p_instance )

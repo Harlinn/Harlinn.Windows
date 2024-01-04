@@ -22,6 +22,7 @@
 namespace Harlinn::Media::Vlc
 {
     using ExitHandler = void ( * ) ( void* userData );
+    using StringPtr = std::unique_ptr<char[ ], void( * )( void* )>;
 
     class ModuleDescription
     {
