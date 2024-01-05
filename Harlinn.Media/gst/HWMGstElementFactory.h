@@ -1,7 +1,6 @@
 #pragma once
-#ifndef HARLINN_MEDIA_HWMGLIB_H_
-#define HARLINN_MEDIA_HWMGLIB_H_
-
+#ifndef HARLINN_MEDIA_HWMGSTELEMENTFACTORY_H_
+#define HARLINN_MEDIA_HWMGSTELEMENTFACTORY_H_
 /*
    Copyright 2024 Espen Harlinn
 
@@ -18,10 +17,13 @@
    limitations under the License.
 */
 
+#include "HWMGstConstants.h"
 
-#include <glib/HWMgtypes.h>
-#include <glib/HWMgerror.h>
-#include <glib/HWMgoption.h>
+namespace Harlinn::Media::GStreamer
+{
+
+
+}
 
 
 #endif

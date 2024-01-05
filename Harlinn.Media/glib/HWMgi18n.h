@@ -1,7 +1,6 @@
 #pragma once
-#ifndef HARLINN_MEDIA_HWMGLIB_H_
-#define HARLINN_MEDIA_HWMGLIB_H_
-
+#ifndef HARLINN_MEDIA_GLIB_HWM _H_
+#define 
 /*
    Copyright 2024 Espen Harlinn
 
@@ -19,9 +18,11 @@
 */
 
 
-#include <glib/HWMgtypes.h>
-#include <glib/HWMgerror.h>
-#include <glib/HWMgoption.h>
 
+namespace Harlinn::Media::GLib
+{
+
+
+}
 
 #endif

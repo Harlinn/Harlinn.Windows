@@ -1,7 +1,6 @@
 #pragma once
-#ifndef HARLINN_MEDIA_HWMGLIB_H_
-#define HARLINN_MEDIA_HWMGLIB_H_
-
+#ifndef HARLINN_MEDIA_GLIB_HWMGALLOCA_H_
+#define HARLINN_MEDIA_GLIB_HWMGALLOCA_H_
 /*
    Copyright 2024 Espen Harlinn
 
@@ -18,10 +17,15 @@
    limitations under the License.
 */
 
+#include <HWMDef.h>
 
-#include <glib/HWMgtypes.h>
-#include <glib/HWMgerror.h>
-#include <glib/HWMgoption.h>
+namespace Harlinn::Media::GLib
+{
+    #define Alloca(sizeInBytes) _alloca (sizeInBytes)
+    #define Alloca0(sizeInBytes) ((sizeInBytes) == 0 ? nullptr : memset (Alloca (sizeInBytes), 0, (sizeInBytes)))
+    #define NewA(structType, numberOfStructs) static_cast<structType*>( Alloca (sizeof (structType) * static_cast<size_t>(numberOfStructs)))
+    #define NewA0(structType, numberOfStructs) static_cast<structType*>( AllocaA (sizeof (structType) * static_cast<size_t>(numberOfStructs)))
 
+}
 
 #endif

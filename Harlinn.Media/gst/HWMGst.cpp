@@ -37,5 +37,50 @@ namespace Harlinn::Media::GStreamer
         return gst_is_initialized( );
     }
 
+    HWM_EXPORT OptionGroup* InitGetOptionGroup( )
+    {
+        return reinterpret_cast< OptionGroup* >( gst_init_get_option_group( ) );
+    }
+
+    HWM_EXPORT void Deinit( )
+    {
+        gst_deinit( );
+    }
+
+    HWM_EXPORT void Version( UInt32* major, UInt32* minor, UInt32* micro, UInt32* nano )
+    {
+        gst_version( major, minor, micro, nano );
+    }
+
+    HWM_EXPORT const char* VersionString( )
+    {
+        return gst_version_string( );
+    }
+
+    HWM_EXPORT Bool32 SegtrapIsEnabled( )
+    {
+        return gst_segtrap_is_enabled( );
+    }
+    HWM_EXPORT void SegtrapSetEnabled( Bool32 enabled )
+    {
+        gst_segtrap_set_enabled( enabled );
+    }
+    HWM_EXPORT Bool32 RegistryForkIsEnabled( )
+    {
+        return gst_registry_fork_is_enabled( );
+    }
+    HWM_EXPORT void RegistryForkSetEnabled( Bool32 enabled )
+    {
+        gst_registry_fork_set_enabled( enabled );
+    }
+    HWM_EXPORT void UpdateRegistry( )
+    {
+        gst_update_registry( );
+    }
+    HWM_EXPORT const char* MainExecutablePath( )
+    {
+        return gst_get_main_executable_path( );
+    }
+
 
 }

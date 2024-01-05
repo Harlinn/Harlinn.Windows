@@ -22,6 +22,12 @@
     <Filter Include="glib">
       <UniqueIdentifier>{5da76478-826c-46f8-85f4-1251184460ab}</UniqueIdentifier>
     </Filter>
+    <Filter Include="glib\gobject">
+      <UniqueIdentifier>{c68ed161-294c-4659-b809-82ceda22b068}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="glib\gio">
+      <UniqueIdentifier>{1193799d-495f-4ecc-8fc6-684152f1df0e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -55,6 +61,249 @@
       <Filter>glib</Filter>
     </ClInclude>
     <ClInclude Include="glib\HWMgoption.h">
+      <Filter>glib</Filter>
+    </ClInclude>
+    <ClInclude Include="gst\HWMGstElement.h">
+      <Filter>gst</Filter>
+    </ClInclude>
+    <ClInclude Include="gst\HWMGstConstants.h">
+      <Filter>gst</Filter>
+    </ClInclude>
+    <ClInclude Include="HWMgobject.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="gst\HWMGstBus.h">
+      <Filter>gst</Filter>
+    </ClInclude>
+    <ClInclude Include="gst\HWMGstObject.h">
+      <Filter>gst</Filter>
+    </ClInclude>
+    <ClInclude Include="gst\HWMGstPad.h">
+      <Filter>gst</Filter>
+    </ClInclude>
+    <ClInclude Include="gst\HWMGstClock.h">
+      <Filter>gst</Filter>
+    </ClInclude>
+    <ClInclude Include="gst\HWMGstElementFactory.h">
+      <Filter>gst</Filter>
+    </ClInclude>
+    <ClInclude Include="gst\HWMGstPlugin.h">
+      <Filter>gst</Filter>
+    </ClInclude>
+    <ClInclude Include="gst\HWMGstPluginFeature.h">
+      <Filter>gst</Filter>
+    </ClInclude>
+    <ClInclude Include="gst\HWMGstIterator.h">
+      <Filter>gst</Filter>
+    </ClInclude>
+    <ClInclude Include="gst\HWMGstMessage.h">
+      <Filter>gst</Filter>
+    </ClInclude>
+    <ClInclude Include="gst\HWMGstQuery.h">
+      <Filter>gst</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\HWMgwin32.h">
+      <Filter>glib</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\HWMgalloca.h">
+      <Filter>glib</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\HWMgarray.h">
+      <Filter>glib</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\HWMgasynqueue.h">
+      <Filter>glib</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\HWMgatomic.h">
+      <Filter>glib</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\HWMgbacktrace.h">
+      <Filter>glib</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\HWMgbase64.h">
+      <Filter>glib</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\HWMgbitlock.h">
+      <Filter>glib</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\HWMgbookmarkfile.h">
+      <Filter>glib</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\HWMgbytes.h">
+      <Filter>glib</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\HWMgcharset.h">
+      <Filter>glib</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\HWMgchecksum.h">
+      <Filter>glib</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\HWMgconvert.h">
+      <Filter>glib</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\HWMgdataset.h">
+      <Filter>glib</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\HWMgdate.h">
+      <Filter>glib</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\HWMgdatetime.h">
+      <Filter>glib</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\HWMgdir.h">
+      <Filter>glib</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\HWMgenviron.h">
+      <Filter>glib</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\HWMgfileutils.h">
+      <Filter>glib</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\HWMggettext.h">
+      <Filter>glib</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\HWMghash.h">
+      <Filter>glib</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\HWMghmac.h">
+      <Filter>glib</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\HWMghook.h">
+      <Filter>glib</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\HWMghostutils.h">
+      <Filter>glib</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\HWMgi18n.h">
+      <Filter>glib</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\HWMgi18n-lib.h">
+      <Filter>glib</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\HWMgiochannel.h">
+      <Filter>glib</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\HWMgkeyfile.h">
+      <Filter>glib</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\HWMgmappedfile.h">
+      <Filter>glib</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\HWMgmarkup.h">
+      <Filter>glib</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\HWMgmem.h">
+      <Filter>glib</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\HWMgmessages.h">
+      <Filter>glib</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\HWMgnode.h">
+      <Filter>glib</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\HWMgpattern.h">
+      <Filter>glib</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\HWMgpoll.h">
+      <Filter>glib</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\HWMgprimes.h">
+      <Filter>glib</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\HWMgprintf.h">
+      <Filter>glib</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\HWMgqsort.h">
+      <Filter>glib</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\HWMgqueue.h">
+      <Filter>glib</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\HWMgrand.h">
+      <Filter>glib</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\HWMgrcbox.h">
+      <Filter>glib</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\HWMgrefcount.h">
+      <Filter>glib</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\HWMgrefstring.h">
+      <Filter>glib</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\HWMgregex.h">
+      <Filter>glib</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\HWMgscanner.h">
+      <Filter>glib</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\HWMgsequence.h">
+      <Filter>glib</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\HWMgshell.h">
+      <Filter>glib</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\HWMgslice.h">
+      <Filter>glib</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\HWMgslist.h">
+      <Filter>glib</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\HWMgspawn.h">
+      <Filter>glib</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\HWMgstdio.h">
+      <Filter>glib</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\HWMgstrfuncs.h">
+      <Filter>glib</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\HWMgstring.h">
+      <Filter>glib</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\HWMgstringchunk.h">
+      <Filter>glib</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\HWMgstrvbuilder.h">
+      <Filter>glib</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\HWMgtestutils.h">
+      <Filter>glib</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\HWMgthread.h">
+      <Filter>glib</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\HWMgthreadpool.h">
+      <Filter>glib</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\HWMgtimer.h">
+      <Filter>glib</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\HWMgtimezone.h">
+      <Filter>glib</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\HWMgtrashstack.h">
+      <Filter>glib</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\HWMgtree.h">
+      <Filter>glib</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\HWMgunicode.h">
+      <Filter>glib</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\HWMguri.h">
+      <Filter>glib</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\HWMgutils.h">
+      <Filter>glib</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\HWMguuid.h">
+      <Filter>glib</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\HWMgvariant.h">
+      <Filter>glib</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\HWMgversion.h">
       <Filter>glib</Filter>
     </ClInclude>
   </ItemGroup>
@@ -120,6 +369,15 @@
       <Filter>glib</Filter>
     </ClCompile>
     <ClCompile Include="glib\HWMgoption.cpp">
+      <Filter>glib</Filter>
+    </ClCompile>
+    <ClCompile Include="gst\HWMGstElement.cpp">
+      <Filter>gst</Filter>
+    </ClCompile>
+    <ClCompile Include="glib\HWMgarray.cpp">
+      <Filter>glib</Filter>
+    </ClCompile>
+    <ClCompile Include="glib\HWMgasynqueue.cpp">
       <Filter>glib</Filter>
     </ClCompile>
   </ItemGroup>

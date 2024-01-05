@@ -1,7 +1,3 @@
-#pragma once
-#ifndef HARLINN_MEDIA_HWMGLIB_H_
-#define HARLINN_MEDIA_HWMGLIB_H_
-
 /*
    Copyright 2024 Espen Harlinn
 
@@ -18,10 +14,11 @@
    limitations under the License.
 */
 
+#include "pch.h"
+#include "HWMGstElement.h"
+#include <gst/gst.h>
 
-#include <glib/HWMgtypes.h>
-#include <glib/HWMgerror.h>
-#include <glib/HWMgoption.h>
+namespace Harlinn::Media::GStreamer
+{
 
-
-#endif
+}

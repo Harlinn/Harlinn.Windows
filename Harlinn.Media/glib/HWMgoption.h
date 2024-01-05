@@ -54,7 +54,7 @@ namespace Harlinn::Media::GLib
     };
 
     using OptionArgFunc = Bool32( * ) ( const char* optionName, const char* value, Pointer userData, Error** error );
-    using OptionParseFunc = Bool32( * ) ( OptionContext* context, OptionGroup* group, Pointer	userData, Error** error );
+    using OptionParseFunc = Bool32( * ) ( OptionContext* context, OptionGroup* group, Pointer userData, Error** error );
     using OptionErrorFunc = void ( * ) ( OptionContext* context, OptionGroup* group, Pointer userData, Error** error );
 
     enum class OptionError
@@ -96,7 +96,7 @@ namespace Harlinn::Media::GLib
     HWM_EXPORT void OptionContextAddMainEntries( OptionContext* context, const OptionEntry* entries, const char* translationDomain );
     HWM_EXPORT Bool32 OptionContextParse( OptionContext* context, Int32* argc, char*** argv, Error** error );
     HWM_EXPORT Bool32 OptionContextParseSTrv( OptionContext* context, char*** arguments, Error** error );
-    HWM_EXPORT void OptionContextSetTranslateFunc( OptionContext* context, TranslateFunc func, Pointer data, DestroyNotify destroy_notify );
+    HWM_EXPORT void OptionContextSetTranslateFunc( OptionContext* context, TranslateFunc func, Pointer data, DestroyNotify destroyNotify );
     HWM_EXPORT void OptionContextSetTranslationDomain( OptionContext* context, const char* domain );
     HWM_EXPORT void OptionContextAddGroup( OptionContext* context, OptionGroup* group );
     HWM_EXPORT void OptionContextSetMainGroup( OptionContext* context, OptionGroup* group );

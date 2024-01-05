@@ -447,8 +447,10 @@ namespace Harlinn::Common::Core
     using ULongLong = unsigned long long;
     using DWord64 = unsigned long;
 
-    using SSizeT = ptrdiff_t;
+    using ssize_t = std::make_signed_t<size_t>;
+    using SSizeT = ssize_t;
     using SizeT = size_t;
+    
 
     using Char = char;
     using WideChar = wchar_t;
