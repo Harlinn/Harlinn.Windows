@@ -1,6 +1,6 @@
 #pragma once
-#ifndef HARLINN_MEDIA_GLIB_HWM _H_
-#define 
+#ifndef HARLINN_MEDIA_GLIB_HWMGDATETIME_H_
+#define HARLINN_MEDIA_GLIB_HWMGDATETIME_H_
 /*
    Copyright 2024 Espen Harlinn
 
@@ -17,10 +17,15 @@
    limitations under the License.
 */
 
+#include "HWMgtimezone.h"
 
+typedef struct _GDateTime GDateTime;
 
 namespace Harlinn::Media::GLib
 {
+
+    
+
 
 
 }

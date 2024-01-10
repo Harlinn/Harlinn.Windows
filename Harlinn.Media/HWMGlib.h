@@ -18,10 +18,6 @@
    limitations under the License.
 */
 
-
-#include <glib/HWMgtypes.h>
-#include <glib/HWMgerror.h>
-#include <glib/HWMgoption.h>
-
+#include <glib/HWMglib.h>
 
 #endif

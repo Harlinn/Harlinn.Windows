@@ -18,17 +18,15 @@
    limitations under the License.
 */
 
-#include "HWMGstConstants.h"
+#include "HWMGstObject.h"
 
 namespace Harlinn::Media::GStreamer
 {
-
-
-
-
-
+    class Bus : public Object
+    {
+    public:
+        using Base = Object;
+        HWM_GOBJECT_IMPLEMENT_STANDARD_MEMBERS( Bus, GstBus )
+    };
 }
-
-
-
 #endif

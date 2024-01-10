@@ -17,11 +17,27 @@
    limitations under the License.
 */
 
-#include "HWMGstConstants.h"
+#include <glib/HWMgmemory.h>
 
 namespace Harlinn::Media::GStreamer
 {
+    class Iterator : public GLib::Internal::Base<Iterator, GstIterator>
+    {
+    public:
+        using Base = GLib::Internal::Base<Iterator, GstIterator>;
 
+        Iterator( ) = default;
+        explicit Iterator( InnerType* impl )
+            : Base( impl )
+        { }
+
+
+        static void ReleaseInner( InnerType* impl )
+        {
+            gst_iterator_free( impl );
+        }
+
+    };
 
 }
 

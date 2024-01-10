@@ -17,13 +17,15 @@
    limitations under the License.
 */
 
-#include "HWMGstConstants.h"
+#include "HWMGstPluginFeature.h"
 
 namespace Harlinn::Media::GStreamer
 {
-
-
+    class ElementFactory : public PluginFeature
+    {
+    public:
+        using Base = PluginFeature;
+        HWM_GOBJECT_IMPLEMENT_STANDARD_MEMBERS( ElementFactory, GstElementFactory )
+    };
 }
-
-
 #endif

@@ -28,6 +28,18 @@
     <Filter Include="glib\gio">
       <UniqueIdentifier>{1193799d-495f-4ecc-8fc6-684152f1df0e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Server">
+      <UniqueIdentifier>{efefc815-1cb9-400d-b0e2-4a81efa293f0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Server\Impl">
+      <UniqueIdentifier>{26e6fb9f-3342-4767-8a11-19838585792d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="gst\rtsp-server">
+      <UniqueIdentifier>{b8a30c72-5822-440e-8eb1-d00491d053b3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="gst\rtsp">
+      <UniqueIdentifier>{65913916-19c0-4aba-a8b0-dc5cbf25f79d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -111,7 +123,7 @@
     <ClInclude Include="glib\HWMgarray.h">
       <Filter>glib</Filter>
     </ClInclude>
-    <ClInclude Include="glib\HWMgasynqueue.h">
+    <ClInclude Include="glib\HWMgasyncqueue.h">
       <Filter>glib</Filter>
     </ClInclude>
     <ClInclude Include="glib\HWMgatomic.h">
@@ -306,6 +318,150 @@
     <ClInclude Include="glib\HWMgversion.h">
       <Filter>glib</Filter>
     </ClInclude>
+    <ClInclude Include="glib\HWMgmemory.h">
+      <Filter>glib</Filter>
+    </ClInclude>
+    <ClInclude Include="Server\MediaServer.h">
+      <Filter>Server</Filter>
+    </ClInclude>
+    <ClInclude Include="Server\Impl\MediaServerImpl.h">
+      <Filter>Server\Impl</Filter>
+    </ClInclude>
+    <ClInclude Include="Server\MediaServerOptions.h">
+      <Filter>Server</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\gobject\HWMgobject.h">
+      <Filter>glib\gobject</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\gobject\HWMgtype.h">
+      <Filter>glib\gobject</Filter>
+    </ClInclude>
+    <ClInclude Include="gst\rtsp-server\HWMrtsp-auth.h">
+      <Filter>gst\rtsp-server</Filter>
+    </ClInclude>
+    <ClInclude Include="gst\rtsp-server\HWMrtsp-address-pool.h">
+      <Filter>gst\rtsp-server</Filter>
+    </ClInclude>
+    <ClInclude Include="gst\rtsp-server\HWMrtsp-client.h">
+      <Filter>gst\rtsp-server</Filter>
+    </ClInclude>
+    <ClInclude Include="gst\rtsp-server\HWMrtsp-context.h">
+      <Filter>gst\rtsp-server</Filter>
+    </ClInclude>
+    <ClInclude Include="gst\rtsp-server\HWMrtsp-media.h">
+      <Filter>gst\rtsp-server</Filter>
+    </ClInclude>
+    <ClInclude Include="gst\rtsp-server\HWMrtsp-media-factory.h">
+      <Filter>gst\rtsp-server</Filter>
+    </ClInclude>
+    <ClInclude Include="gst\rtsp-server\HWMrtsp-media-factory-uri.h">
+      <Filter>gst\rtsp-server</Filter>
+    </ClInclude>
+    <ClInclude Include="gst\rtsp-server\HWMrtsp-mount-points.h">
+      <Filter>gst\rtsp-server</Filter>
+    </ClInclude>
+    <ClInclude Include="gst\rtsp-server\HWMrtsp-onvif-client.h">
+      <Filter>gst\rtsp-server</Filter>
+    </ClInclude>
+    <ClInclude Include="gst\rtsp-server\HWMrtsp-onvif-media.h">
+      <Filter>gst\rtsp-server</Filter>
+    </ClInclude>
+    <ClInclude Include="gst\rtsp-server\HWMrtsp-onvif-media-factory.h">
+      <Filter>gst\rtsp-server</Filter>
+    </ClInclude>
+    <ClInclude Include="gst\rtsp-server\HWMrtsp-onvif-server.h">
+      <Filter>gst\rtsp-server</Filter>
+    </ClInclude>
+    <ClInclude Include="gst\rtsp-server\HWMrtsp-params.h">
+      <Filter>gst\rtsp-server</Filter>
+    </ClInclude>
+    <ClInclude Include="gst\rtsp-server\HWMrtsp-permissions.h">
+      <Filter>gst\rtsp-server</Filter>
+    </ClInclude>
+    <ClInclude Include="gst\rtsp-server\HWMrtsp-sdp.h">
+      <Filter>gst\rtsp-server</Filter>
+    </ClInclude>
+    <ClInclude Include="gst\rtsp-server\HWMrtsp-server.h">
+      <Filter>gst\rtsp-server</Filter>
+    </ClInclude>
+    <ClInclude Include="gst\rtsp-server\HWMrtsp-server-object.h">
+      <Filter>gst\rtsp-server</Filter>
+    </ClInclude>
+    <ClInclude Include="gst\rtsp-server\HWMrtsp-session.h">
+      <Filter>gst\rtsp-server</Filter>
+    </ClInclude>
+    <ClInclude Include="gst\rtsp-server\HWMrtsp-session-media.h">
+      <Filter>gst\rtsp-server</Filter>
+    </ClInclude>
+    <ClInclude Include="gst\rtsp-server\HWMrtsp-session-pool.h">
+      <Filter>gst\rtsp-server</Filter>
+    </ClInclude>
+    <ClInclude Include="gst\rtsp-server\HWMrtsp-stream.h">
+      <Filter>gst\rtsp-server</Filter>
+    </ClInclude>
+    <ClInclude Include="gst\rtsp-server\HWMrtsp-stream-transport.h">
+      <Filter>gst\rtsp-server</Filter>
+    </ClInclude>
+    <ClInclude Include="gst\rtsp-server\HWMrtsp-thread-pool.h">
+      <Filter>gst\rtsp-server</Filter>
+    </ClInclude>
+    <ClInclude Include="gst\rtsp-server\HWMrtsp-token.h">
+      <Filter>gst\rtsp-server</Filter>
+    </ClInclude>
+    <ClInclude Include="gst\rtsp\HWMgstrtsp.h">
+      <Filter>gst\rtsp</Filter>
+    </ClInclude>
+    <ClInclude Include="gst\rtsp\HWMgstrtspconnection.h">
+      <Filter>gst\rtsp</Filter>
+    </ClInclude>
+    <ClInclude Include="gst\rtsp\HWMgstrtspdefs.h">
+      <Filter>gst\rtsp</Filter>
+    </ClInclude>
+    <ClInclude Include="gst\rtsp\HWMgstrtsp-enumtypes.h">
+      <Filter>gst\rtsp</Filter>
+    </ClInclude>
+    <ClInclude Include="gst\rtsp\HWMgstrtspextension.h">
+      <Filter>gst\rtsp</Filter>
+    </ClInclude>
+    <ClInclude Include="gst\rtsp\HWMgstrtspmessage.h">
+      <Filter>gst\rtsp</Filter>
+    </ClInclude>
+    <ClInclude Include="gst\rtsp\HWMgstrtsprange.h">
+      <Filter>gst\rtsp</Filter>
+    </ClInclude>
+    <ClInclude Include="gst\rtsp\HWMgstrtsptransport.h">
+      <Filter>gst\rtsp</Filter>
+    </ClInclude>
+    <ClInclude Include="gst\rtsp\HWMgstrtspurl.h">
+      <Filter>gst\rtsp</Filter>
+    </ClInclude>
+    <ClInclude Include="gst\rtsp\HWMrtsp.h">
+      <Filter>gst\rtsp</Filter>
+    </ClInclude>
+    <ClInclude Include="gst\HWMGstMiniObject.h">
+      <Filter>gst</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\gobject\HWMgvalue.h">
+      <Filter>glib\gobject</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\gobject\HWMgparam.h">
+      <Filter>glib\gobject</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\HWMglib.h">
+      <Filter>glib</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\HWMglist.h">
+      <Filter>glib</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\HWMgmain.h">
+      <Filter>glib</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\gobject\HWMgbinding.h">
+      <Filter>glib\gobject</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\gobject\HWMgclosure.h">
+      <Filter>glib\gobject</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -371,13 +527,130 @@
     <ClCompile Include="glib\HWMgoption.cpp">
       <Filter>glib</Filter>
     </ClCompile>
-    <ClCompile Include="gst\HWMGstElement.cpp">
-      <Filter>gst</Filter>
-    </ClCompile>
     <ClCompile Include="glib\HWMgarray.cpp">
       <Filter>glib</Filter>
     </ClCompile>
     <ClCompile Include="glib\HWMgasynqueue.cpp">
+      <Filter>glib</Filter>
+    </ClCompile>
+    <ClCompile Include="glib\HWMgatomic.cpp">
+      <Filter>glib</Filter>
+    </ClCompile>
+    <ClCompile Include="glib\HWMgbacktrace.cpp">
+      <Filter>glib</Filter>
+    </ClCompile>
+    <ClCompile Include="glib\HWMgbase64.cpp">
+      <Filter>glib</Filter>
+    </ClCompile>
+    <ClCompile Include="glib\HWMgbitlock.cpp">
+      <Filter>glib</Filter>
+    </ClCompile>
+    <ClCompile Include="glib\HWMgtimezone.cpp">
+      <Filter>glib</Filter>
+    </ClCompile>
+    <ClCompile Include="glib\HWMgdatetime.cpp">
+      <Filter>glib</Filter>
+    </ClCompile>
+    <ClCompile Include="glib\HWMgmemory.cpp">
+      <Filter>glib</Filter>
+    </ClCompile>
+    <ClCompile Include="Server\MediaServer.cpp">
+      <Filter>Server</Filter>
+    </ClCompile>
+    <ClCompile Include="Server\Impl\MediaServerImpl.cpp">
+      <Filter>Server\Impl</Filter>
+    </ClCompile>
+    <ClCompile Include="Server\MediaServerOptions.cpp">
+      <Filter>Server</Filter>
+    </ClCompile>
+    <ClCompile Include="glib\gobject\HWMgobject.cpp">
+      <Filter>glib\gobject</Filter>
+    </ClCompile>
+    <ClCompile Include="gst\HWMGstElement.cpp">
+      <Filter>gst</Filter>
+    </ClCompile>
+    <ClCompile Include="gst\HWMGstObject.cpp">
+      <Filter>gst</Filter>
+    </ClCompile>
+    <ClCompile Include="gst\rtsp-server\HWMrtsp-address-pool.cpp">
+      <Filter>gst\rtsp-server</Filter>
+    </ClCompile>
+    <ClCompile Include="gst\rtsp-server\HWMrtsp-auth.cpp">
+      <Filter>gst\rtsp-server</Filter>
+    </ClCompile>
+    <ClCompile Include="gst\rtsp-server\HWMrtsp-client.cpp">
+      <Filter>gst\rtsp-server</Filter>
+    </ClCompile>
+    <ClCompile Include="gst\rtsp-server\HWMrtsp-context.cpp">
+      <Filter>gst\rtsp-server</Filter>
+    </ClCompile>
+    <ClCompile Include="gst\rtsp-server\HWMrtsp-media.cpp">
+      <Filter>gst\rtsp-server</Filter>
+    </ClCompile>
+    <ClCompile Include="gst\rtsp-server\HWMrtsp-media-factory.cpp">
+      <Filter>gst\rtsp-server</Filter>
+    </ClCompile>
+    <ClCompile Include="gst\rtsp-server\HWMrtsp-media-factory-uri.cpp">
+      <Filter>gst\rtsp-server</Filter>
+    </ClCompile>
+    <ClCompile Include="gst\rtsp-server\HWMrtsp-mount-points.cpp">
+      <Filter>gst\rtsp-server</Filter>
+    </ClCompile>
+    <ClCompile Include="gst\rtsp-server\HWMrtsp-onvif-client.cpp">
+      <Filter>gst\rtsp-server</Filter>
+    </ClCompile>
+    <ClCompile Include="gst\rtsp-server\HWMrtsp-onvif-media.cpp">
+      <Filter>gst\rtsp-server</Filter>
+    </ClCompile>
+    <ClCompile Include="gst\rtsp-server\HWMrtsp-onvif-media-factory.cpp">
+      <Filter>gst\rtsp-server</Filter>
+    </ClCompile>
+    <ClCompile Include="gst\rtsp-server\HWMrtsp-onvif-server.cpp">
+      <Filter>gst\rtsp-server</Filter>
+    </ClCompile>
+    <ClCompile Include="gst\rtsp-server\HWMrtsp-params.cpp">
+      <Filter>gst\rtsp-server</Filter>
+    </ClCompile>
+    <ClCompile Include="gst\rtsp-server\HWMrtsp-permissions.cpp">
+      <Filter>gst\rtsp-server</Filter>
+    </ClCompile>
+    <ClCompile Include="gst\rtsp-server\HWMrtsp-sdp.cpp">
+      <Filter>gst\rtsp-server</Filter>
+    </ClCompile>
+    <ClCompile Include="gst\rtsp-server\HWMrtsp-server.cpp">
+      <Filter>gst\rtsp-server</Filter>
+    </ClCompile>
+    <ClCompile Include="gst\rtsp-server\HWMrtsp-server-object.cpp">
+      <Filter>gst\rtsp-server</Filter>
+    </ClCompile>
+    <ClCompile Include="gst\rtsp-server\HWMrtsp-session.cpp">
+      <Filter>gst\rtsp-server</Filter>
+    </ClCompile>
+    <ClCompile Include="gst\rtsp-server\HWMrtsp-session-media.cpp">
+      <Filter>gst\rtsp-server</Filter>
+    </ClCompile>
+    <ClCompile Include="gst\rtsp-server\HWMrtsp-session-pool.cpp">
+      <Filter>gst\rtsp-server</Filter>
+    </ClCompile>
+    <ClCompile Include="gst\rtsp-server\HWMrtsp-stream.cpp">
+      <Filter>gst\rtsp-server</Filter>
+    </ClCompile>
+    <ClCompile Include="gst\rtsp-server\HWMrtsp-stream-transport.cpp">
+      <Filter>gst\rtsp-server</Filter>
+    </ClCompile>
+    <ClCompile Include="gst\rtsp-server\HWMrtsp-thread-pool.cpp">
+      <Filter>gst\rtsp-server</Filter>
+    </ClCompile>
+    <ClCompile Include="gst\rtsp-server\HWMrtsp-token.cpp">
+      <Filter>gst\rtsp-server</Filter>
+    </ClCompile>
+    <ClCompile Include="gst\rtsp\HWMgstrtspconnection.cpp">
+      <Filter>gst\rtsp</Filter>
+    </ClCompile>
+    <ClCompile Include="glib\gobject\HWMgvalue.cpp">
+      <Filter>glib\gobject</Filter>
+    </ClCompile>
+    <ClCompile Include="glib\HWMgvariant.cpp">
       <Filter>glib</Filter>
     </ClCompile>
   </ItemGroup>

@@ -17,13 +17,15 @@
    limitations under the License.
 */
 
-#include "HWMGstConstants.h"
+#include "HWMGstObject.h"
 
 namespace Harlinn::Media::GStreamer
 {
-
-
+    class Clock : public Object
+    {
+    public:
+        using Base = Object;
+        HWM_GOBJECT_IMPLEMENT_STANDARD_MEMBERS( Clock, GstClock )
+    };
 }
-
-
 #endif

@@ -20,31 +20,6 @@
 
 namespace Harlinn::Media::GLib
 {
-    using Quark = Int32;
-
-    HWM_EXPORT Quark QuarkTryString( const char* string )
-    {
-        return g_quark_try_string( string );
-    }
-    HWM_EXPORT Quark QuarkFromStaticString( const char* string )
-    {
-        return g_quark_from_static_string( string );
-    }
-    HWM_EXPORT Quark QuarkFromString( const char* string )
-    {
-        return g_quark_from_string( string );
-    }
-    HWM_EXPORT const char* QuarkToString( Quark quark )
-    {
-        return g_quark_to_string( quark );
-    }
-    HWM_EXPORT const char* InternString( const char* string )
-    {
-        return g_intern_string( string );
-    }
-    HWM_EXPORT const char* InternStaticString( const char* string )
-    {
-        return g_intern_static_string( string );
-    }
+    
 
 }

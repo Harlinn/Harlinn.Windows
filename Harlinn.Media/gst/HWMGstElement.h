@@ -1,6 +1,6 @@
 #pragma once
-#ifndef HARLINN_MEDIA_HWMGSTELEMENT_H_
-#define HARLINN_MEDIA_HWMGSTELEMENT_H_
+#ifndef HARLINN_MEDIA_GST_HWMGSTELEMENT_H_
+#define HARLINN_MEDIA_GST_HWMGSTELEMENT_H_
 
 /*
    Copyright 2024 Espen Harlinn
@@ -20,10 +20,17 @@
 
 
 #include "HWMGstConstants.h"
+#include "HWMGstObject.h"
 
 namespace Harlinn::Media::GStreamer
 {
-    
+    class Element : public Object
+    {
+    public:
+        using Base = Object;
+        HWM_GOBJECT_IMPLEMENT_STANDARD_MEMBERS( Element, GstElement )
+
+    };
 
 
 

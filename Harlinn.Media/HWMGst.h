@@ -25,19 +25,7 @@
 namespace Harlinn::Media::GStreamer
 {
     using namespace GLib;
-    HWM_EXPORT void Init( int* argc, char** argv[ ] );
-    HWM_EXPORT Bool32 Init( int* argc, char** argv[ ], Error** error );
-    HWM_EXPORT Bool32 IsInitialized( );
-    HWM_EXPORT OptionGroup* InitGetOptionGroup( );
-    HWM_EXPORT void Deinit( );
-    HWM_EXPORT void Version( UInt32* major, UInt32* minor, UInt32* micro, UInt32* nano );
-    HWM_EXPORT const char* VersionString( );
-    HWM_EXPORT Bool32 SegtrapIsEnabled( );
-    HWM_EXPORT void SegtrapSetEnabled( Bool32 enabled );
-    HWM_EXPORT Bool32 RegistryForkIsEnabled( );
-    HWM_EXPORT void RegistryForkSetEnabled( Bool32 enabled );
-    HWM_EXPORT void UpdateRegistry( );
-    HWM_EXPORT const char* MainExecutablePath( );
+    
 
 }
 

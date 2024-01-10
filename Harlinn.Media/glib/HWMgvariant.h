@@ -1,6 +1,6 @@
 #pragma once
-#ifndef HARLINN_MEDIA_GLIB_HWM _H_
-#define 
+#ifndef HARLINN_MEDIA_GLIB_HWMGVARIANT_H_
+#define HARLINN_MEDIA_GLIB_HWMGVARIANT_H_
 /*
    Copyright 2024 Espen Harlinn
 
@@ -17,11 +17,63 @@
    limitations under the License.
 */
 
-
+#include "HWMgmemory.h"
 
 namespace Harlinn::Media::GLib
 {
+    class Variant
+    {
+        GVariant* impl_ = nullptr;
+    public:
+        Variant( ) = default;
+        explicit Variant( GVariant* impl, bool addRef = false )
+            : impl_( impl )
+        {
+            if ( impl_ && addRef )
+            {
+                if ( g_variant_is_floating( impl_ ) )
+                {
+                    g_variant_ref_sink( impl_ );
+                }
+                else
+                {
+                    g_variant_ref( impl_ );
+                }
+            }
+        }
 
+        Variant( const Variant& other )
+            : impl_( other.impl_ )
+        {
+            if ( impl_ )
+            {
+                if ( g_variant_is_floating( impl_ ) )
+                {
+                    g_variant_ref_sink( impl_ );
+                }
+                else
+                {
+                    g_variant_ref( impl_ );
+                }
+            }
+        }
+
+        Variant( Variant&& other ) noexcept
+            : impl_( other.impl_ )
+        {
+            other.impl_ = nullptr;
+        }
+
+
+        ~Variant( )
+        {
+            if ( impl_ )
+            {
+                g_variant_unref( impl_ );
+            }
+        }
+
+    };
 
 }
 

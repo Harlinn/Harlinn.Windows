@@ -3043,6 +3043,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "EWMFListDecoders", "Example
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Harlinn.Media", "Harlinn.Media\Harlinn.Media.vcxproj", "{05933A6C-07F6-4420-84ED-A8A95E6CA804}"
+	ProjectSection(ProjectDependencies) = postProject
+		{32225BC1-FE82-4716-9EA7-27FA4E517AF3} = {32225BC1-FE82-4716-9EA7-27FA4E517AF3}
+		{B47470E4-2B24-4119-BAC1-4E8BC52FB19D} = {B47470E4-2B24-4119-BAC1-4E8BC52FB19D}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Harlinn.Media.Tests", "Tests\Harlinn.Media.Tests\Harlinn.Media.Tests.vcxproj", "{0962ECEF-7AAB-44C0-B4E4-3BB17A0CE1DA}"
 	ProjectSection(ProjectDependencies) = postProject

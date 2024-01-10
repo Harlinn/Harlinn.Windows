@@ -1,6 +1,6 @@
 #pragma once
-#ifndef HARLINN_MEDIA_GLIB_HWM _H_
-#define 
+#ifndef HARLINN_MEDIA_GLIB_HWMGTHREAD_H_
+#define HARLINN_MEDIA_GLIB_HWMGTHREAD_H_
 /*
    Copyright 2024 Espen Harlinn
 
@@ -17,11 +17,51 @@
    limitations under the License.
 */
 
-
+#include "HWMgtypes.h"
 
 namespace Harlinn::Media::GLib
 {
+    class Thread
+    {
 
+    };
+
+    class Mutex
+    {
+        GMutex impl_;
+    public:
+        Mutex( )
+            : impl_{}
+        {
+            g_mutex_init( &impl_ );
+        }
+
+        Mutex( const Mutex& other ) = delete;
+        Mutex( Mutex&& other ) = delete;
+
+        ~Mutex( )
+        {
+            g_mutex_clear( &impl_ );
+        }
+
+        Mutex& operator = ( const Mutex& other ) = delete;
+        Mutex& operator = ( Mutex&& other ) = delete;
+
+        void lock( )
+        {
+            g_mutex_lock( &impl_ );
+        }
+        bool try_lock( )
+        {
+            return g_mutex_trylock( &impl_ ) != 0;
+        }
+        void unlock( )
+        {
+            g_mutex_unlock( &impl_ );
+        }
+    };
+
+    static_assert( sizeof( Mutex ) == sizeof( GMutex ) );
 
 }
 

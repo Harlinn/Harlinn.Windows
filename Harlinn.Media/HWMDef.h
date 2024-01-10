@@ -20,6 +20,9 @@
 #include <HWDef.h>
 #include <HCCRegistry.h>
 #include <HCCIO.h>
+#include <gst/gst.h>
+#include <gst/rtsp/rtsp.h>
+#include <gst/rtsp-server/rtsp-server.h>
 
 #ifdef BUILDING_HARLINN_MEDIA
 #define HWM_EXPORT __declspec(dllexport)

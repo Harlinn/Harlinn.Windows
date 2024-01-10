@@ -20,5 +20,5 @@
 
 namespace Harlinn::Media::GStreamer
 {
-
+    
 }

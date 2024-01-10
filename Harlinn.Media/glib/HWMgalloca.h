@@ -21,10 +21,7 @@
 
 namespace Harlinn::Media::GLib
 {
-    #define Alloca(sizeInBytes) _alloca (sizeInBytes)
-    #define Alloca0(sizeInBytes) ((sizeInBytes) == 0 ? nullptr : memset (Alloca (sizeInBytes), 0, (sizeInBytes)))
-    #define NewA(structType, numberOfStructs) static_cast<structType*>( Alloca (sizeof (structType) * static_cast<size_t>(numberOfStructs)))
-    #define NewA0(structType, numberOfStructs) static_cast<structType*>( AllocaA (sizeof (structType) * static_cast<size_t>(numberOfStructs)))
+    
 
 }
 

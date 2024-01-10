@@ -1,6 +1,6 @@
 #pragma once
-#ifndef HARLINN_MEDIA_GLIB_HWM _H_
-#define 
+#ifndef HARLINN_MEDIA_GLIB_HWMGMEM_H_
+#define HARLINN_MEDIA_GLIB_HWMGMEM_H_
 /*
    Copyright 2024 Espen Harlinn
 
