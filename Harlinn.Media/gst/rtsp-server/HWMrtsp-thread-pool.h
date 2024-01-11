@@ -22,13 +22,20 @@
 
 namespace Harlinn::Media::GStreamer::RtspServer
 {
-    class RTSPThreadPool : public GLib::Object
+    namespace Internal
     {
-    public:
-        using Base = GLib::Object;
-        HWM_GOBJECT_IMPLEMENT_STANDARD_MEMBERS( RTSPThreadPool, GstRTSPThreadPool )
+        template<typename BaseT>
+        class RTSPThreadPool : public BaseT
+        {
+        public:
+            using Base = BaseT;
+            HWM_GOBJECT_IMPLEMENT_STANDARD_MEMBERS( RTSPThreadPool, GstRTSPThreadPool )
+        };
+    }
 
-    };
+    using BasicRTSPThreadPool = Internal::RTSPThreadPool<GLib::BasicObject>;
+    using RTSPThreadPool = Internal::RTSPThreadPool<GLib::Object>;
+
 }
 #endif
 

@@ -22,13 +22,20 @@
 
 namespace Harlinn::Media::GStreamer::RtspServer
 {
-    class RTSPSessionMedia : public GLib::Object
+    namespace Internal
     {
-    public:
-        using Base = GLib::Object;
-        HWM_GOBJECT_IMPLEMENT_STANDARD_MEMBERS( RTSPSessionMedia, GstRTSPSessionMedia )
+        template<typename BaseT>
+        class RTSPSessionMedia : public BaseT
+        {
+        public:
+            using Base = BaseT;
+            HWM_GOBJECT_IMPLEMENT_STANDARD_MEMBERS( RTSPSessionMedia, GstRTSPSessionMedia )
+        };
+    }
 
-    };
+    using BasicRTSPSessionMedia = Internal::RTSPSessionMedia<GLib::BasicObject>;
+    using RTSPSessionMedia = Internal::RTSPSessionMedia<GLib::Object>;
+
 }
 #endif
 

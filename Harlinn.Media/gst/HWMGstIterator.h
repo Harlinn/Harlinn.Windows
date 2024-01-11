@@ -21,21 +21,15 @@
 
 namespace Harlinn::Media::GStreamer
 {
-    class Iterator : public GLib::Internal::Base<Iterator, GstIterator>
+    class Iterator : public GLib::ReferenceBase<Iterator, GstIterator>
     {
     public:
-        using Base = GLib::Internal::Base<Iterator, GstIterator>;
+        using Base = GLib::ReferenceBase<Iterator, GstIterator>;
 
         Iterator( ) = default;
-        explicit Iterator( InnerType* impl )
+        explicit Iterator( WrappedType* impl, GLib::ReferenceType referenceType = GLib::ReferenceType::None )
             : Base( impl )
         { }
-
-
-        static void ReleaseInner( InnerType* impl )
-        {
-            gst_iterator_free( impl );
-        }
 
     };
 

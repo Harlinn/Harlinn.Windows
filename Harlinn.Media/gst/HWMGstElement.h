@@ -21,18 +21,85 @@
 
 #include "HWMGstConstants.h"
 #include "HWMGstObject.h"
+#include "HWMGstBus.h"
+#include "HWMGstPad.h"
+#include "HWMGstClock.h"
 
 namespace Harlinn::Media::GStreamer
 {
-    class Element : public Object
+    namespace Internal
     {
-    public:
-        using Base = Object;
-        HWM_GOBJECT_IMPLEMENT_STANDARD_MEMBERS( Element, GstElement )
+        template<typename BaseT>
+        class Element : public BaseT
+        {
+        public:
+            using Base = BaseT;
+            HWM_GOBJECT_IMPLEMENT_STANDARD_MEMBERS( Element, GstElement )
 
-    };
+            GLib::RecMutex& StateLock( ) const
+            {
+                return reinterpret_cast< GLib::RecMutex& >( get( )->state_lock );
+            }
+            GLib::Cond& StateCond( ) const
+            {
+                return reinterpret_cast< GLib::Cond& >( get( )->state_cond );
+            }
 
+            GstState TargetState( ) const
+            {
+                return get( )->target_state;
+            }
+            GstState CurrentState( ) const
+            {
+                return get( )->current_state;
+            }
+            GstState NextState( ) const
+            {
+                return get( )->next_state;
+            }
+            GstState PendingState( ) const
+            {
+                return get( )->pending_state;
+            }
+            GstStateChangeReturn LastReturn( ) const
+            {
+                return get( )->last_return;
+            }
 
+            BasicBus Bus( GLib::ReferenceType referenceType = GLib::ReferenceType::None ) const
+            {
+                auto bus = get( )->bus;
+                if ( bus )
+                {
+                    return BasicBus( bus, referenceType );
+                }
+                return {};
+            }
+
+            BasicClock Clock( GLib::ReferenceType referenceType = GLib::ReferenceType::None ) const
+            {
+                auto clock = get( )->clock;
+                if ( clock )
+                {
+                    return BasicClock( clock, referenceType );
+                }
+                return {};
+            }
+
+            GstClockTimeDiff BaseTime( ) const
+            {
+                return get( )->base_time;
+            }
+
+            GstClockTime StartTime( ) const
+            {
+                return get( )->start_time;
+            }
+        };
+    }
+
+    using BasicElement = Internal::Element<BasicObject>;
+    using Element = Internal::Element<Object>;
 
 
 }

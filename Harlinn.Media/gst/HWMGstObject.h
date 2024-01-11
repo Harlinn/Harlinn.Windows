@@ -18,112 +18,77 @@
    limitations under the License.
 */
 
-#include "HWMGstConstants.h"
+#include "HWMGstMemory.h"
 #include <glib/gobject/HWMgobject.h>
 #include <glib/HWMgthread.h>
 
 namespace Harlinn::Media::GStreamer
 {
-    class ObjectBase : public GLib::InitiallyUnowned
+    namespace Internal
     {
-    public:
-        using Base = GLib::InitiallyUnowned;
-        using WrappedType = GstObject;
-
-        ObjectBase( ) = default;
-
-        explicit ObjectBase( WrappedType* impl, bool disableObjectUnref = false )
-            : Base( reinterpret_cast< Base::WrappedType* >( impl ), disableObjectUnref )
-        { }
-
-        ObjectBase( ObjectBase&& other ) noexcept
-            : Base( std::move( other ) )
-        { }
-
-        ~ObjectBase( )
+        template<typename BaseT>
+        class Object : public BaseT
         {
-            auto impl = Detach( );
-            if ( impl && DisableObjectUnref( ) == false )
+        public:
+            using Base = BaseT;
+            HWM_GOBJECT_IMPLEMENT_STANDARD_MEMBERS( Object, GstObject )
+
+            GLib::Mutex& Lock( ) const
             {
-                gst_object_unref( impl );
+                return reinterpret_cast< GLib::Mutex& >( get( )->lock );
             }
-        }
 
-        ObjectBase& operator = ( ObjectBase&& other ) noexcept
-        {
-            Base::operator=( std::move( other ) );
-            return *this;
-        }
+            const char* Name( ) const
+            {
+                return get( )->name;
+            }
 
-        void Assign( WrappedType* impl, bool disableObjectUnref = false ) noexcept 
-        { 
-            Base::Assign( reinterpret_cast< Base::WrappedType* >( impl ), disableObjectUnref ); 
-        }
+            Object Parent( GLib::ReferenceType referenceType = GLib::ReferenceType::None ) const
+            {
+                auto parent = get( )->parent;
+                if ( parent )
+                {
+                    return Object( parent, referenceType );
+                }
+                return {};
+            }
 
-        ObjectBase& operator = ( WrappedType* impl ) noexcept
-        {
-            Assign( impl );
-            return *this;
-        }
+            template<typename T>
+                requires std::is_base_of_v<Object, T>
+            T Parent( GLib::ReferenceType referenceType = GLib::ReferenceType::None ) const
+            {
+                auto parent = reinterpret_cast< typename T::WrappedType* >( get( )->parent );
+                if ( parent )
+                {
+                    return T( parent, referenceType );
+                }
+                return {};
+            }
+        };
+    }
+    using BasicObject = Internal::Object<GLib::BasicInitiallyUnowned>;
 
-        [[nodiscard]] 
-        WrappedType* get( ) const 
-        { 
-            return reinterpret_cast< WrappedType* >( Base::get( ) ); 
-        } 
-
-        [[nodiscard]] 
-        WrappedType* Detach( ) 
-        {
-            return reinterpret_cast< WrappedType* >( Base::Detach( ) );
-        }
-        operator WrappedType* ( ) const
-        {
-            return reinterpret_cast< WrappedType* >( Base::get( ) );
-        }
-    };
-
-
-    class Object : public ObjectBase
+    class Object : public Internal::Object<GLib::InitiallyUnowned>
     {
     public:
-        using Base = ObjectBase;
-        
+        using Base = Internal::Object<GLib::InitiallyUnowned>;
         HWM_GOBJECT_IMPLEMENT_STANDARD_MEMBERS( Object, GstObject )
-        
-        GLib::Mutex& Lock( ) const
+        ~Object( )
         {
-            return reinterpret_cast< GLib::Mutex& >( get( )->lock );
-        }
-
-        const char* Name( ) const
-        {
-            return get( )->name;
-        }
-
-        Object Parent( ) const
-        {
-            auto parent = get( )->parent;
-            if ( parent )
+            auto tmp = Detach( );
+            if ( tmp )
             {
-                return Object( parent, true );
+                GLib::ObjectTraits<WrappedType>::Unref( tmp );
             }
-            return {};
         }
 
-        template<typename T>
-            requires std::is_base_of_v<Object,T>
-        T Parent( ) const
+        Object& operator = ( WrappedType* wrapped )
         {
-            auto parent = reinterpret_cast<typename T::WrappedType* >( get( )->parent );
-            if ( parent )
-            {
-                return T( parent, true );
-            }
-            return {};
+            Assign<true, WrappedType>( wrapped );
+            return *this;
         }
-
     };
+    static_assert( sizeof( Object ) == sizeof( GstObject* ) );
     
 }
 

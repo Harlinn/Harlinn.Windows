@@ -22,11 +22,19 @@
 
 namespace Harlinn::Media::GStreamer
 {
-    class Bus : public Object
+    namespace Internal
     {
-    public:
-        using Base = Object;
-        HWM_GOBJECT_IMPLEMENT_STANDARD_MEMBERS( Bus, GstBus )
-    };
+        template<typename BaseT>
+        class Bus : public BaseT
+        {
+        public:
+            using Base = BaseT;
+            HWM_GOBJECT_IMPLEMENT_STANDARD_MEMBERS( Bus, GstBus )
+        };
+    }
+
+    using BasicBus = Internal::Bus<BasicObject>;
+    using Bus = Internal::Bus<Object>;
+
 }
 #endif

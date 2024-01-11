@@ -22,12 +22,19 @@
 
 namespace Harlinn::Media::GStreamer::RtspServer
 {
-    class RTSPStreamTransport : public GLib::Object
+    namespace Internal
     {
-    public:
-        using Base = GLib::Object;
-        HWM_GOBJECT_IMPLEMENT_STANDARD_MEMBERS( RTSPStreamTransport, GstRTSPStreamTransport )
+        template<typename BaseT>
+        class RTSPStreamTransport : public BaseT
+        {
+        public:
+            using Base = BaseT;
+            HWM_GOBJECT_IMPLEMENT_STANDARD_MEMBERS( RTSPStreamTransport, GstRTSPStreamTransport )
+        };
+    }
 
-    };
+    using BasicRTSPStreamTransport = Internal::RTSPStreamTransport<GLib::BasicObject>;
+    using RTSPStreamTransport = Internal::RTSPStreamTransport<GLib::Object>;
+
 }
 #endif

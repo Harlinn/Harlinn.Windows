@@ -17,10 +17,62 @@
    limitations under the License.
 */
 
-#include <HWMDef.h>
+#include "HWMgmemory.h"
 
 namespace Harlinn::Media::GLib
 {
+    class MainContext : public ReferenceBase<MainContext, GMainContext>
+    {
+    public:
+        using Base = ReferenceBase<MainContext, GMainContext>;
+
+        MainContext( ) = default;
+        explicit MainContext( WrappedType* impl, ReferenceType referenceType = ReferenceType::None )
+            : Base( impl, referenceType )
+        {
+        }
+
+        static MainContext Create( )
+        {
+            return MainContext( g_main_context_new( ) );
+        }
+        static MainContext Create( GMainContextFlags flags )
+        {
+            return MainContext( g_main_context_new_with_flags( flags ) );
+        }
+
+        static Attached<MainContext> Default( )
+        {
+            return Attached<MainContext>( g_main_context_default( ) );
+        }
+
+
+    };
+
+    class MainLoop : public ReferenceBase<MainLoop, GMainLoop>
+    {
+    public:
+        using Base = ReferenceBase<MainLoop, GMainLoop>;
+
+        MainLoop( ) = default;
+        explicit MainLoop( WrappedType* impl, ReferenceType referenceType = ReferenceType::None )
+            : Base( impl, referenceType )
+        { }
+
+    };
+
+    class Source : public ReferenceBase<Source, GSource>
+    {
+    public:
+        using Base = ReferenceBase<Source, GSource>;
+
+        Source( ) = default;
+        explicit Source( WrappedType* impl, ReferenceType referenceType = ReferenceType::None )
+            : Base( impl, referenceType )
+        {
+        }
+
+    };
 
 
 }

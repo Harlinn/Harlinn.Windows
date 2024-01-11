@@ -22,26 +22,16 @@
 
 namespace Harlinn::Media::GLib
 {
-    class Closure : public Internal::Base<Closure, GClosure>
+    class Closure : public ReferenceBase<Closure, GClosure>
     {
     public:
-        using Base = Internal::Base<Closure, GClosure>;
+        using Base = ReferenceBase<Closure, GClosure>;
 
         Closure( ) = default;
-        Closure( InnerType* impl, bool sink = false )
-            : Base( impl )
+        Closure( WrappedType* impl, ReferenceType referenceType = ReferenceType::None )
+            : Base( impl, referenceType )
         {
-            if ( impl && sink )
-            {
-                g_closure_sink( impl );
-            }
         }
-
-        static void ReleaseInner( InnerType* impl )
-        {
-            g_closure_unref( impl );
-        }
-
     };
 }
 #endif

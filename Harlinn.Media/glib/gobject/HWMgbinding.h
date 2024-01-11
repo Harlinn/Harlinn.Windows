@@ -22,16 +22,16 @@
 
 namespace Harlinn::Media::GLib
 {
-    class Object;
+    class ObjectBase;
     class Value;
 
-    class Binding : public Internal::Base<Binding, GBinding>
+    class Binding : public ReferenceBase<Binding, GBinding>
     {
     public:
-        using Base = Internal::Base<Binding, GBinding>;
+        using Base = ReferenceBase<Binding, GBinding>;
 
         Binding( ) = default;
-        Binding( InnerType* impl )
+        Binding( WrappedType* impl )
             : Base( impl )
         {
         }
@@ -40,24 +40,29 @@ namespace Harlinn::Media::GLib
             : Base( g_object_bind_property( source, sourceProperty, target, targetProperty, flags ) )
         { }
 
-        Binding( const Object& source, const char* sourceProperty, const Object& target, const char* targetProperty, GBindingFlags flags );
+        template< typename ObjectT1, typename ObjectT2 >
+        Binding( const ObjectT1& source, const char* sourceProperty, const ObjectT2& target, const char* targetProperty, GBindingFlags flags )
+            : Base( g_object_bind_property( source.get( ), sourceProperty, target.get( ), targetProperty, flags ) )
+        { }
 
         Binding( gpointer source, const char* sourceProperty, gpointer target, const char* targetProperty, GBindingFlags flags, GBindingTransformFunc transformTo, GBindingTransformFunc transformFrom, gpointer userData, GDestroyNotify notify )
             : Base( g_object_bind_property_full( source, sourceProperty, target, targetProperty, flags, transformTo, transformFrom, userData, notify ) )
         { }
 
-        Binding( const Object& source, const char* sourceProperty, const Object& target, const char* targetProperty, GBindingFlags flags, GBindingTransformFunc transformTo, GBindingTransformFunc transformFrom, gpointer userData, GDestroyNotify notify );
+        template< typename ObjectT1, typename ObjectT2 >
+        Binding( const ObjectT1& source, const char* sourceProperty, const ObjectT2& target, const char* targetProperty, GBindingFlags flags, GBindingTransformFunc transformTo, GBindingTransformFunc transformFrom, gpointer userData, GDestroyNotify notify )
+            : Base( g_object_bind_property_full( source.get( ), sourceProperty, target.get( ), targetProperty, flags, transformTo, transformFrom, userData, notify ) )
+        { }
 
         Binding( gpointer source, const char* sourceProperty, gpointer target, const char* targetProperty, GBindingFlags flags, GClosure* transformTo, GClosure* transformFrom )
             : Base( g_object_bind_property_with_closures( source, sourceProperty, target, targetProperty, flags, transformTo, transformFrom ) )
         {
         }
 
-        Binding( const Object& source, const char* sourceProperty, const Object& target, const char* targetProperty, GBindingFlags flags, const Closure& transformTo, const Closure& transformFrom );
-
-        static void ReleaseInner( InnerType* impl )
+        template< typename ObjectT1, typename ObjectT2 >
+        Binding( const ObjectT1& source, const char* sourceProperty, const ObjectT2& target, const char* targetProperty, GBindingFlags flags, const Closure& transformTo, const Closure& transformFrom )
+            : Base( g_object_bind_property_with_closures( source.get( ), sourceProperty, target.get( ), targetProperty, flags, transformTo.get( ), transformFrom.get( ) ) )
         {
-            g_binding_unbind( impl );
         }
 
         GBindingFlags Flags( ) const
@@ -66,8 +71,16 @@ namespace Harlinn::Media::GLib
         }
 
         template<typename T>
-            requires std::is_base_of_v<Object,T>
-        T Source( ) const;
+            requires std::is_base_of_v<ObjectBase, T>
+        inline T Source( ) const
+        {
+            auto source = reinterpret_cast< typename T::WrappedType* >( g_binding_dup_source( get( ) ) );
+            if ( source )
+            {
+                return T( source );
+            }
+            return {};
+        }
 
         const char* SourceProperty( ) const
         {
@@ -75,8 +88,16 @@ namespace Harlinn::Media::GLib
         }
 
         template<typename T>
-            requires std::is_base_of_v<Object, T>
-        T Target( ) const;
+            requires std::is_base_of_v<ObjectBase, T>
+        inline T Target( ) const
+        {
+            auto source = reinterpret_cast< typename T::WrappedType* >( g_binding_dup_target( get( ) ) );
+            if ( source )
+            {
+                return T( source );
+            }
+            return {};
+        }
 
         const char* TargetProperty( ) const
         {

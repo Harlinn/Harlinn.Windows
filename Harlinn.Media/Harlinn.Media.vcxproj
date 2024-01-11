@@ -90,6 +90,7 @@
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -112,6 +113,7 @@
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -136,6 +138,7 @@
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -158,6 +161,7 @@
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -169,6 +173,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="glib\gio\HWMgiotypes.h" />
     <ClInclude Include="glib\gobject\HWMgbinding.h" />
     <ClInclude Include="glib\gobject\HWMgclosure.h" />
     <ClInclude Include="glib\gobject\HWMgobject.h" />
@@ -257,6 +262,7 @@
     <ClInclude Include="gst\HWMGstElement.h" />
     <ClInclude Include="gst\HWMGstElementFactory.h" />
     <ClInclude Include="gst\HWMGstIterator.h" />
+    <ClInclude Include="gst\HWMGstMemory.h" />
     <ClInclude Include="gst\HWMGstMessage.h" />
     <ClInclude Include="gst\HWMGstMiniObject.h" />
     <ClInclude Include="gst\HWMGstObject.h" />
@@ -293,6 +299,7 @@
     <ClInclude Include="gst\rtsp\HWMgstrtspconnection.h" />
     <ClInclude Include="gst\rtsp\HWMgstrtspdefs.h" />
     <ClInclude Include="gst\rtsp\HWMgstrtspextension.h" />
+    <ClInclude Include="gst\rtsp\HWMgstrtspmemory.h" />
     <ClInclude Include="gst\rtsp\HWMgstrtspmessage.h" />
     <ClInclude Include="gst\rtsp\HWMgstrtsprange.h" />
     <ClInclude Include="gst\rtsp\HWMgstrtsptransport.h" />

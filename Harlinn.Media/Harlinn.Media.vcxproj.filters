@@ -462,6 +462,15 @@
     <ClInclude Include="glib\gobject\HWMgclosure.h">
       <Filter>glib\gobject</Filter>
     </ClInclude>
+    <ClInclude Include="glib\gio\HWMgiotypes.h">
+      <Filter>glib\gio</Filter>
+    </ClInclude>
+    <ClInclude Include="gst\rtsp\HWMgstrtspmemory.h">
+      <Filter>gst\rtsp</Filter>
+    </ClInclude>
+    <ClInclude Include="gst\HWMGstMemory.h">
+      <Filter>gst</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">

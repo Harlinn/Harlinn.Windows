@@ -23,20 +23,15 @@
 namespace Harlinn::Media::GLib
 {
     class Value;
-    class ParamSpec : public Internal::Base<ParamSpec, GParamSpec>
+    class ParamSpec : public ReferenceBase<ParamSpec, GParamSpec>
     {
     public:
-        using Base = Internal::Base<ParamSpec, GParamSpec>;
+        using Base = ReferenceBase<ParamSpec, GParamSpec>;
 
         ParamSpec( ) = default;
-        explicit ParamSpec( InnerType* impl )
-            : Base( impl )
+        explicit ParamSpec( WrappedType* impl, ReferenceType referenceType = ReferenceType::None )
+            : Base( impl, referenceType )
         { }
-
-        static void ReleaseInner( InnerType* impl )
-        {
-            g_param_spec_unref( impl );
-        }
 
         const char* Blurb( ) const
         {

@@ -19,10 +19,24 @@
 */
 
 #include <glib/gobject/HWMgobject.h>
+#include "HWMrtsp-media.h"
+
 
 namespace Harlinn::Media::GStreamer::RtspServer
 {
-    
+    namespace Internal
+    {
+        template<typename BaseT>
+        class RTSPOnvifMedia : public BaseT
+        {
+        public:
+            using Base = BaseT;
+            HWM_GOBJECT_IMPLEMENT_STANDARD_MEMBERS( RTSPOnvifMedia, GstRTSPOnvifMedia )
+        };
+    }
+
+    using BasicRTSPOnvifMedia = Internal::RTSPOnvifMedia<BasicRTSPMedia>;
+    using RTSPOnvifMedia = Internal::RTSPOnvifMedia<RTSPMedia>;
 }
 #endif
 

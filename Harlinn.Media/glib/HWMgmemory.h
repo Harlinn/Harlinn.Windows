@@ -69,86 +69,347 @@ namespace Harlinn::Media::GLib
     template<typename T>
     using FreeMemoryPtr = std::unique_ptr<T, FreeMemoryDeleter<T>>;
 
-
-    namespace Internal
+    template<typename T>
+    struct ObjectTraits : std::false_type
     {
-        template<typename DerivedT, typename InnerT>
-        class Base
+        using WrappedType = void;
+    };
+
+
+    template<typename DerivedTraitsT, typename T>
+    struct SimpleObjectTraits : public std::true_type
+    {
+        using DerivedTraitsType = DerivedTraitsT;
+        using WrappedType = T;
+
+        static constexpr bool IsFloating( WrappedType* wrapped )
         {
-        public:
-            using DerivedType = DerivedT;
-            using InnerType = InnerT;
-        private:
-            InnerType* impl_ = nullptr;
-        public:
-            Base( ) = default;
-            Base( InnerType* impl )
-                : impl_( impl )
-            { }
-            Base( const Base& other ) = delete;
-            Base( Base&& other ) noexcept
-                : impl_( other.impl_ )
-            {
-                other.impl_ = nullptr;
-            }
+            return false;
+        }
 
-            ~Base( )
+        static constexpr WrappedType* RefSink( WrappedType* wrapped )
+        {
+            return wrapped;
+        }
+
+        static constexpr WrappedType* TakeRef( WrappedType* wrapped )
+        {
+            return DerivedTraitsType::Ref( wrapped );
+        }
+
+        static constexpr WrappedType* Ref( WrappedType* wrapped )
+        {
+            return wrapped;
+        }
+
+
+        static constexpr void Unref( WrappedType* wrapped )
+        {
+            
+        }
+    };
+
+    template<>
+    struct ObjectTraits<GObject> : std::true_type
+    {
+        using WrappedType = GObject;
+
+        static bool IsFloating( WrappedType* wrapped )
+        {
+            return g_object_is_floating( wrapped ) != 0;
+        }
+
+        static WrappedType* RefSink( WrappedType* wrapped )
+        {
+            return reinterpret_cast< WrappedType* >( g_object_ref_sink( wrapped ) );
+        }
+
+        static WrappedType* TakeRef( WrappedType* wrapped )
+        {
+            return reinterpret_cast< WrappedType* >( g_object_take_ref( wrapped ) );
+        }
+
+        static WrappedType* Ref( WrappedType* wrapped )
+        {
+            return reinterpret_cast< WrappedType* >( g_object_ref( wrapped ) );
+        }
+
+        static void Unref( WrappedType* wrapped )
+        {
+            g_object_unref( wrapped );
+        }
+    };
+
+    
+
+    template<>
+    struct ObjectTraits<GBinding> : public SimpleObjectTraits< ObjectTraits<GBinding>, GBinding >
+    {
+        static void Unref( WrappedType* wrapped )
+        {
+            g_binding_unbind( wrapped );
+        }
+    };
+
+    template<>
+    struct ObjectTraits<GClosure> : public SimpleObjectTraits< ObjectTraits<GClosure>, GClosure >
+    {
+        static WrappedType* RefSink( WrappedType* wrapped )
+        {
+            if ( wrapped )
             {
-                if ( impl_ )
+                g_closure_ref( wrapped );
+                g_closure_sink( wrapped );
+            }
+            return wrapped;
+        }
+
+        static WrappedType* Ref( WrappedType* wrapped )
+        {
+            return reinterpret_cast< WrappedType* >( g_closure_ref( wrapped ) );
+        }
+
+        static void Unref( WrappedType* wrapped )
+        {
+            g_closure_unref( wrapped );
+        }
+    };
+
+    template<>
+    struct ObjectTraits<GParamSpec> : public SimpleObjectTraits< ObjectTraits<GParamSpec>, GParamSpec >
+    {
+        static WrappedType* RefSink( WrappedType* wrapped )
+        {
+            if ( wrapped )
+            {
+                return g_param_spec_ref_sink( wrapped );
+            }
+            return wrapped;
+        }
+
+        static WrappedType* Ref( WrappedType* wrapped )
+        {
+            return reinterpret_cast< WrappedType* >( g_param_spec_ref( wrapped ) );
+        }
+
+        static void Unref( WrappedType* wrapped )
+        {
+            g_param_spec_unref( wrapped );
+        }
+    };
+
+    template<>
+    struct ObjectTraits<GMainContext> : public SimpleObjectTraits< ObjectTraits<GMainContext>, GMainContext >
+    {
+        static WrappedType* Ref( WrappedType* wrapped )
+        {
+            return reinterpret_cast< WrappedType* >( g_main_context_ref( wrapped ) );
+        }
+
+        static void Unref( WrappedType* wrapped )
+        {
+            g_main_context_unref( wrapped );
+        }
+    };
+
+    template<>
+    struct ObjectTraits<GMainLoop> : public SimpleObjectTraits< ObjectTraits<GMainLoop>, GMainLoop >
+    {
+        static WrappedType* Ref( WrappedType* wrapped )
+        {
+            return reinterpret_cast< WrappedType* >( g_main_loop_ref( wrapped ) );
+        }
+
+        static void Unref( WrappedType* wrapped )
+        {
+            g_main_loop_unref( wrapped );
+        }
+    };
+
+    template<>
+    struct ObjectTraits<GSource> : public SimpleObjectTraits< ObjectTraits<GSource>, GSource >
+    {
+        static WrappedType* Ref( WrappedType* wrapped )
+        {
+            return reinterpret_cast< WrappedType* >( g_source_ref( wrapped ) );
+        }
+
+        static void Unref( WrappedType* wrapped )
+        {
+            g_source_unref( wrapped );
+        }
+    };
+
+    template<>
+    struct ObjectTraits<GstIterator> : public SimpleObjectTraits< ObjectTraits<GstIterator>, GstIterator >
+    {
+        static void Unref( WrappedType* wrapped )
+        {
+            gst_iterator_free( wrapped );
+        }
+    };
+
+    template<>
+    struct ObjectTraits<GThread> : public SimpleObjectTraits< ObjectTraits<GThread>, GThread >
+    {
+        static WrappedType* Ref( WrappedType* wrapped )
+        {
+            return reinterpret_cast< WrappedType* >( g_thread_ref( wrapped ) );
+        }
+
+        static void Unref( WrappedType* wrapped )
+        {
+            g_thread_unref( wrapped );
+        }
+    };
+
+
+    template<typename T>
+    constexpr bool ObjectTraits_v = ObjectTraits<T>::value;
+
+    enum class ReferenceType
+    {
+        None,
+        Ref,
+        RefSink,
+        TakeRef
+    };
+
+
+    template<typename DerivedT, typename WrappedT, typename WrappedTraitsT = ObjectTraits<WrappedT> >
+    class ReferenceBase
+    {
+    public:
+        using DerivedType = DerivedT;
+        using WrappedType = WrappedT;
+        using WrappedTraits = WrappedTraitsT;
+    private:
+        WrappedType* wrapped_ = nullptr;
+    public:
+        ReferenceBase( ) = default;
+        ReferenceBase( WrappedType* wrapped, ReferenceType referenceType = ReferenceType::None )
+            : wrapped_( wrapped )
+        { 
+            if ( wrapped_ )
+            {
+                switch ( referenceType )
                 {
-                    DerivedType::ReleaseInner( impl_ );
+                    case ReferenceType::Ref:
+                        WrappedTraits::Ref( wrapped_ );
+                        break;
+                    case ReferenceType::RefSink:
+                        WrappedTraits::RefSink( wrapped_ );
+                        break;
+                    case ReferenceType::TakeRef:
+                        WrappedTraits::TakeRef( wrapped_ );
+                        break;
                 }
             }
+        }
+        ReferenceBase( const ReferenceBase& other ) = delete;
+        ReferenceBase( ReferenceBase&& other ) noexcept
+            : wrapped_( other.wrapped_ )
+        {
+            other.wrapped_ = nullptr;
+        }
 
-            Base& operator = ( const Base& other ) = delete;
-
-            Base& operator = ( Base&& other ) noexcept
+        ~ReferenceBase( )
+        {
+            if ( wrapped_ )
             {
-                std::swap( impl_, other.impl_ );
-                return *this;
+                WrappedTraits::Unref( wrapped_ );
             }
+        }
 
-            Base& operator = ( InnerType* impl ) noexcept
+        ReferenceBase& operator = ( const ReferenceBase& other ) = delete;
+
+        ReferenceBase& operator = ( ReferenceBase&& other ) noexcept
+        {
+            std::swap( wrapped_, other.wrapped_ );
+            return *this;
+        }
+
+        void Assign( WrappedType* wrapped, ReferenceType referenceType = ReferenceType::None )
+        {
+            if ( wrapped_ != wrapped )
             {
-                if ( impl_ != impl )
+                if ( wrapped_ )
                 {
-                    if ( impl_ )
+                    WrappedTraits::Unref( wrapped_ );
+                }
+                wrapped_ = wrapped;
+                if ( wrapped_ )
+                {
+                    switch ( referenceType )
                     {
-                        DerivedType::ReleaseInner( impl_ );
+                        case ReferenceType::Ref:
+                            WrappedTraits::Ref( wrapped_ );
+                            break;
+                        case ReferenceType::RefSink:
+                            WrappedTraits::RefSink( wrapped_ );
+                            break;
+                        case ReferenceType::TakeRef:
+                            WrappedTraits::TakeRef( wrapped_ );
+                            break;
                     }
-                    impl_ = impl;
                 }
-                return *this;
             }
+        }
 
-            InnerType* get( ) const
-            {
-                return impl_;
-            }
+        ReferenceBase& operator = ( WrappedType* wrapped ) noexcept
+        {
+            Assign( wrapped );
+            return *this;
+        }
 
-            explicit operator bool( ) const noexcept
-            {
-                return impl_ != nullptr;
-            }
+        [[nodiscard]]
+        WrappedType* get( ) const
+        {
+            return wrapped_;
+        }
 
-            InnerType* Detach( )
-            {
-                InnerType* tmp = impl_;
-                impl_ = nullptr;
-                return tmp;
-            }
+        [[nodiscard]]
+        explicit operator bool( ) const noexcept
+        {
+            return wrapped_ != nullptr;
+        }
 
-            operator InnerType* ( ) const
-            {
-                return impl_;
-            }
-        };
+        [[nodiscard]]
+        WrappedType* Detach( )
+        {
+            WrappedType* tmp = wrapped_;
+            wrapped_ = nullptr;
+            return tmp;
+        }
 
-        
+        [[nodiscard]]
+        operator WrappedType* ( ) const
+        {
+            return wrapped_;
+        }
+    };
+
+    template<typename T>
+    class Attached : public T
+    {
+    public:
+        using Base = T;
+        using WrappedType = typename T::WrappedType;
+        using WrappedTraits = typename T::WrappedTraits;
+
+        template<typename ... Args>
+            requires std::is_constructible_v<T, Args...>
+        Attached( Args&& ... args )
+            : Base( std::forward<Args>( args ) ... )
+        { }
 
 
-    }
+        ~Attached( )
+        {
+            (void)Base::Detach( );
+        }
 
+    };
 
 }
 

@@ -19,26 +19,20 @@
 */
 
 
-#include <glib/HWMgmemory.h>
+#include "HWMgstrtspmemory.h"
 
 namespace Harlinn::Media::GStreamer::Rtsp
 {
-    class RTSPTransport : public GLib::Internal::Base< RTSPTransport, GstRTSPTransport>
+    class RTSPTransport : public GLib::ReferenceBase< RTSPTransport, GstRTSPTransport>
     {
     public:
-        using Base = GLib::Internal::Base< RTSPTransport, GstRTSPTransport>;
+        using Base = GLib::ReferenceBase< RTSPTransport, GstRTSPTransport>;
 
         RTSPTransport( ) = default;
-        RTSPTransport( InnerType* impl )
-            : Base( impl )
+        explicit RTSPTransport( WrappedType* impl, GLib::ReferenceType referenceType = GLib::ReferenceType::None )
+            : Base( impl, referenceType )
         {
         }
-
-        static void ReleaseInner( InnerType* impl )
-        {
-            gst_rtsp_transport_free( impl );
-        }
-
     };
     
 }

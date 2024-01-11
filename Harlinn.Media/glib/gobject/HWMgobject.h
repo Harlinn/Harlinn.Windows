@@ -24,189 +24,110 @@
 
 namespace Harlinn::Media::GLib
 {
-    
-
-    class ObjectBase
+    class BasicObject
     {
     public:
-        
-    private:
-        gpointer impl_ = nullptr;
-        bool disableObjectUnref_ = false;
-    public:
         using WrappedType = void;
-        ObjectBase( ) = default;
-        explicit ObjectBase( gpointer impl, bool disableObjectUnref = false )
-            : impl_( impl ), disableObjectUnref_( disableObjectUnref )
+    private:
+        GObject* wrapped_ = nullptr;
+    public:
+        BasicObject( ) = default;
+    
+        template<typename T, typename WrappedTraitsT = ObjectTraits<T>>
+            requires ObjectTraits_v<T>
+        explicit BasicObject( T* wrapped, ReferenceType referenceType = ReferenceType::None )
+            : wrapped_( reinterpret_cast< GObject* >( wrapped ) )
         {
-        }
-        ObjectBase( const ObjectBase& other ) = delete;
-        ObjectBase( ObjectBase&& other ) noexcept
-            : impl_( other.impl_ ), disableObjectUnref_( other.disableObjectUnref_ )
-        {
-            other.impl_ = nullptr;
-            other.disableObjectUnref_ = false;
-        }
-
-        ~ObjectBase( )
-        {
-            if ( impl_ && disableObjectUnref_ == false )
+            if ( wrapped_ )
             {
-                g_object_unref( impl_ );
-            }
-        }
-
-        ObjectBase& operator = ( const ObjectBase& other ) = delete;
-
-        ObjectBase& operator = ( ObjectBase&& other ) noexcept
-        {
-            std::swap( impl_, other.impl_ );
-            std::swap( disableObjectUnref_, other.disableObjectUnref_ );
-            return *this;
-        }
-
-        void Assign( gpointer impl, bool disableObjectUnref = false ) noexcept
-        {
-            if ( impl_ != impl )
-            {
-                if ( impl_ && disableObjectUnref_ == false )
+                using WrappedTraits = WrappedTraitsT;
+                switch ( referenceType )
                 {
-                    g_object_unref( impl_ );
+                    case ReferenceType::Ref:
+                        WrappedTraits::Ref( reinterpret_cast< T* >( wrapped_ ) );
+                        break;
+                    case ReferenceType::RefSink:
+                        WrappedTraits::RefSink( reinterpret_cast< T* >( wrapped_ ) );
+                        break;
+                    case ReferenceType::TakeRef:
+                        WrappedTraits::TakeRef( reinterpret_cast< T* >( wrapped_ ) );
+                        break;
                 }
-                impl_ = impl;
             }
-            disableObjectUnref_ = disableObjectUnref;
+        }
+    
+        BasicObject( const BasicObject& other ) = delete;
+        BasicObject( BasicObject&& other ) noexcept
+            : wrapped_( other.wrapped_ )
+        {
+            other.wrapped_ = nullptr;
         }
 
 
-        ObjectBase& operator = ( gpointer impl ) noexcept
+        BasicObject& operator = ( const BasicObject& other ) = delete;
+
+        BasicObject& operator = ( BasicObject&& other ) noexcept
         {
-            Assign( impl );
+            std::swap( wrapped_, other.wrapped_ );
             return *this;
         }
-
-        [[nodiscard]]
-        gpointer get( ) const
+    protected:
+        template<bool unref, typename T, typename WrappedTraitsT = ObjectTraits<T>>
+            requires ObjectTraits_v<T>
+        void Assign( T* wrapped, ReferenceType referenceType = ReferenceType::None ) noexcept
         {
-            return impl_;
+            if ( reinterpret_cast< T* >( wrapped_ ) != wrapped )
+            {
+                using WrappedTraits = WrappedTraitsT;
+                if constexpr ( unref )
+                {
+                    if ( wrapped_ )
+                    {
+                        WrappedTraits::Unref( reinterpret_cast< T* >( wrapped_ ) );
+                    }
+                }
+                wrapped_ = reinterpret_cast<GObject*>( wrapped );
+                if ( wrapped_ )
+                {
+                    using WrappedTraits = WrappedTraitsT;
+                    switch ( referenceType )
+                    {
+                        case ReferenceType::Ref:
+                            WrappedTraits::Ref( reinterpret_cast< T* >( wrapped_ ) );
+                            break;
+                        case ReferenceType::RefSink:
+                            WrappedTraits::RefSink( reinterpret_cast< T* >( wrapped_ ) );
+                            break;
+                        case ReferenceType::TakeRef:
+                            WrappedTraits::TakeRef( reinterpret_cast< T* >( wrapped_ ) );
+                            break;
+                    }
+                }
+            }
+        }
+    public:
+        [[nodiscard]]
+        GObject* get( ) const
+        {
+            return reinterpret_cast< GObject* >( wrapped_ );
         }
 
         explicit operator bool( ) const noexcept
         {
-            return impl_ != nullptr;
+            return wrapped_ != nullptr;
         }
 
         [[nodiscard]]
-        gpointer Detach( )
+        GObject* Detach( )
         {
-            gpointer tmp = impl_;
-            impl_ = nullptr;
-            disableObjectUnref_ = false;
+            auto tmp = reinterpret_cast< GObject* >( wrapped_ );
+            wrapped_ = nullptr;
             return tmp;
         }
 
-        operator gpointer ( ) const
+        operator GObject* ( ) const
         {
-            return impl_;
-        }
-
-        [[nodiscard]]
-        bool DisableObjectUnref( ) const
-        {
-            return disableObjectUnref_;
-        }
-        void SetDisableObjectUnref( bool disableObjectUnref = true )
-        {
-            disableObjectUnref_ = disableObjectUnref;
-        }
-    protected:
-
-    };
-
-#define HWM_GOBJECT_IMPLEMENT_STANDARD_MEMBERS( TypeName, WrappedTypeName ) \
-    using WrappedType = WrappedTypeName; \
-    TypeName( ) = default; \
-    explicit TypeName( WrappedType* impl, bool disableObjectUnref = false ) \
-        : Base( reinterpret_cast< Base::WrappedType* >( impl ), disableObjectUnref ) \
-    { \
-    } \
-    TypeName( TypeName&& other ) noexcept \
-        : Base( std::move( other ) ) \
-    { \
-    } \
-    TypeName& operator = ( TypeName&& other ) noexcept \
-    { \
-        Base::operator=( std::move( other ) ); \
-        return *this; \
-    } \
-    void Assign( WrappedType* impl, bool disableObjectUnref = false ) noexcept \
-    { \
-        Base::Assign( reinterpret_cast< Base::WrappedType* >( impl ), disableObjectUnref ); \
-    } \
-    TypeName& operator = ( WrappedType* impl ) noexcept \
-    { \
-        Assign( impl ); \
-        return *this; \
-    } \
-    [[nodiscard]] \
-    WrappedType* get( ) const \
-    { \
-        return reinterpret_cast< WrappedType* >( Base::get( ) ); \
-    } \
-    [[nodiscard]] \
-    WrappedType* Detach( ) \
-    { \
-        return reinterpret_cast< WrappedType* >( Base::Detach( ) ); \
-    } \
-    operator WrappedType* ( ) const \
-    { \
-        return reinterpret_cast< WrappedType* >( Base::get( ) ); \
-    }
-
-
-    class Object : public ObjectBase
-    {
-    public:
-        using Base = ObjectBase;
-        HWM_GOBJECT_IMPLEMENT_STANDARD_MEMBERS( Object, GObject )
-
-        template<typename T>
-            requires std::is_base_of_v<Object, T>
-        static T Create( GType objectType, const gchar* first_property_name, ... )
-        {
-            va_list args;
-            va_start( args, first_property_name );
-            auto newObject = g_object_new_valist( objectType, first_property_name, args );
-            va_end( args );
-            if ( newObject )
-            {
-                return T( reinterpret_cast<typename T::WrappedType*>( newObject ) );
-            }
-            return {};
-        }
-
-        template<typename T>
-            requires std::is_base_of_v<Object, T>
-        static T CreateV( GType objectType, const gchar* first_property_name, va_list args )
-        {
-            auto newObject = g_object_new_valist( objectType, first_property_name, args );
-            if ( newObject )
-            {
-                return T( reinterpret_cast< typename T::WrappedType* >( newObject ) );
-            }
-            return {};
-        }
-
-        template<typename T>
-            requires std::is_base_of_v<Object, T>
-        static T CreateWithProperties( GType objectType, guint numberOfProperties, const char* names[ ], const GValue values[ ] )
-        {
-            auto newObject = g_object_new_with_properties( objectType, numberOfProperties, names, values );
-            if ( newObject )
-            {
-                return T( reinterpret_cast< typename T::WrappedType* >( newObject ) );
-            }
-            return {};
+            return reinterpret_cast< GObject* >( wrapped_ );
         }
 
         void AddToggleRef( GToggleNotify notify, gpointer userData = nullptr ) const
@@ -218,8 +139,6 @@ namespace Harlinn::Media::GLib
         {
             g_object_add_weak_pointer( get( ), weakPointerLocation );
         }
-
-
 
 
         void GetProperty( const char* propertyName, GValue* value ) const
@@ -268,54 +187,115 @@ namespace Harlinn::Media::GLib
             g_object_disconnect( get( ), signalSpec, std::forward<Args>( args )... );
 
         }
-        
-
-
-
     };
 
+#define HWM_GOBJECT_IMPLEMENT_STANDARD_MEMBERS( TypeName, WrappedTypeName ) \
+    using WrappedType = WrappedTypeName; \
+    TypeName( ) = default; \
+    template<typename T, typename WrappedTraitsT = ObjectTraits<T>> \
+        requires Harlinn::Media::GLib::ObjectTraits_v<T> \
+    explicit TypeName( T* wrapped, Harlinn::Media::GLib::ReferenceType referenceType = Harlinn::Media::GLib::ReferenceType::None ) \
+        : Base( wrapped, referenceType ) \
+    { \
+    } \
+    TypeName( TypeName&& other ) noexcept \
+        : Base( std::move( other ) ) \
+    { \
+    } \
+    TypeName& operator = ( TypeName&& other ) noexcept \
+    { \
+        Base::operator=( std::move( other ) ); \
+        return *this; \
+    } \
+    [[nodiscard]] \
+    WrappedType* get( ) const \
+    { \
+        return reinterpret_cast< WrappedType* >( Base::get( ) ); \
+    } \
+    [[nodiscard]] \
+    WrappedType* Detach( ) \
+    { \
+        return reinterpret_cast< WrappedType* >( Base::Detach( ) ); \
+    } \
+    operator WrappedType* ( ) const \
+    { \
+        return reinterpret_cast< WrappedType* >( Base::get( ) ); \
+    }
+
+
+    class Object : public BasicObject
+    {
+    public:
+        using Base = BasicObject;
+        HWM_GOBJECT_IMPLEMENT_STANDARD_MEMBERS( Object, GObject )
+
+        ~Object( )
+        {
+            auto tmp = Detach( );
+            if ( tmp )
+            {
+                ObjectTraits<WrappedType>::Unref( tmp );
+            }
+        }
+
+        Object& operator = ( WrappedType* wrapped )
+        {
+            Assign<true, WrappedType>( wrapped );
+            return *this;
+        }
+    };
+    static_assert( sizeof( Object ) == sizeof( GObject* ) );
+
+    class ObjectFactory
+    {
+    public:
+        template<typename T>
+            requires std::is_base_of_v<Object, T>
+        static T Create( GType objectType, const gchar* first_property_name, ... )
+        {
+            va_list args;
+            va_start( args, first_property_name );
+            auto newObject = g_object_new_valist( objectType, first_property_name, args );
+            va_end( args );
+            if ( newObject )
+            {
+                return T( reinterpret_cast< typename T::WrappedType* >( newObject ) );
+            }
+            return {};
+        }
+
+        template<typename T>
+            requires std::is_base_of_v<Object, T>
+        static T CreateV( GType objectType, const gchar* first_property_name, va_list args )
+        {
+            auto newObject = g_object_new_valist( objectType, first_property_name, args );
+            if ( newObject )
+            {
+                return T( reinterpret_cast< typename T::WrappedType* >( newObject ) );
+            }
+            return {};
+        }
+
+        template<typename T>
+            requires std::is_base_of_v<Object, T>
+        static T CreateWithProperties( GType objectType, guint numberOfProperties, const char* names[ ], const GValue values[ ] )
+        {
+            auto newObject = g_object_new_with_properties( objectType, numberOfProperties, names, values );
+            if ( newObject )
+            {
+                return T( reinterpret_cast< typename T::WrappedType* >( newObject ) );
+            }
+            return {};
+        }
+    };
+
+
+    using BasicInitiallyUnowned = BasicObject;
     using InitiallyUnowned = Object;
 
 
 
-    inline Binding::Binding( const Object& source, const gchar* sourceProperty, const Object& target, const gchar* targetProperty, GBindingFlags flags )
-        : Base( g_object_bind_property( source.get(), sourceProperty, target.get( ), targetProperty, flags ) )
-    {
-    }
-
-    inline Binding::Binding( const Object& source, const char* sourceProperty, const Object& target, const char* targetProperty, GBindingFlags flags, GBindingTransformFunc transformTo, GBindingTransformFunc transformFrom, gpointer userData, GDestroyNotify notify )
-        : Base( g_object_bind_property_full( source.get(), sourceProperty, target.get( ), targetProperty, flags, transformTo, transformFrom, userData, notify ) )
-    {
-    }
-
-    inline Binding::Binding( const Object& source, const char* sourceProperty, const Object& target, const char* targetProperty, GBindingFlags flags, const Closure& transformTo, const Closure& transformFrom )
-        : Base( g_object_bind_property_with_closures( source.get(), sourceProperty, target.get( ), targetProperty, flags, transformTo.get( ), transformFrom.get( ) ) )
-    {
-    }
-
-    template<typename T>
-        requires std::is_base_of_v<Object, T>
-    inline T Binding::Source( ) const
-    {
-        auto source = reinterpret_cast<typename T::WrappedType* >( g_binding_dup_source( get( ) ) );
-        if ( source )
-        {
-            return T( source );
-        }
-        return {};
-    }
-
-    template<typename T>
-        requires std::is_base_of_v<Object, T>
-    inline T Binding::Target( ) const
-    {
-        auto source = reinterpret_cast< typename T::WrappedType* >( g_binding_dup_target( get( ) ) );
-        if ( source )
-        {
-            return T( source );
-        }
-        return {};
-    }
+    
     
 
 

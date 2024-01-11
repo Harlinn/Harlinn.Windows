@@ -1,6 +1,6 @@
-#pragma once
-#ifndef HARLINN_MEDIA_HWMGSTPAD_H_
-#define HARLINN_MEDIA_HWMGSTPAD_H_
+#pragma once  
+#ifndef HARLINN_MEDIA_GLIB_GIO_HWMGIOTYPES_H_
+#define HARLINN_MEDIA_GLIB_GIO_HWMGIOTYPES_H_
 /*
    Copyright 2024 Espen Harlinn
 
@@ -17,25 +17,15 @@
    limitations under the License.
 */
 
-#include "HWMGstObject.h"
+#include <glib/HWMglib.h>
 
-namespace Harlinn::Media::GStreamer
+namespace Harlinn::Media::GLib::GIO
 {
-    namespace Internal
-    {
-        template<typename BaseT>
-        class Pad : public BaseT
-        {
-        public:
-            using Base = BaseT;
-            HWM_GOBJECT_IMPLEMENT_STANDARD_MEMBERS( Pad, GstPad )
-        };
-    }
-
-    using BasicPad = Internal::Pad<BasicObject>;
-    using Pad = Internal::Pad<Object>;
+    class AppLaunchContext;
+    class AppInfo;
+    class BufferedInputStream;
 
 }
 
-
 #endif
+

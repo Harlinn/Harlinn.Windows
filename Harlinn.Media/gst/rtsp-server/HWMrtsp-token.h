@@ -22,13 +22,20 @@
 
 namespace Harlinn::Media::GStreamer::RtspServer
 {
-    class RTSPToken : public MiniObject
+    namespace Internal
     {
-    public:
-        using Base = MiniObject;
-        HWM_GSTMINIOBJECT_IMPLEMENT_STANDARD_MEMBERS( RTSPToken, GstRTSPToken )
+        template<typename BaseT>
+        class RTSPToken : public BaseT
+        {
+        public:
+            using Base = BaseT;
+            HWM_GSTMINIOBJECT_IMPLEMENT_STANDARD_MEMBERS( RTSPToken, GstRTSPToken )
+        };
+    }
 
-    };
+    using BasicRTSPToken = Internal::RTSPToken<BasicMiniObject>;
+    using RTSPToken = Internal::RTSPToken<MiniObject>;
+
 }
 #endif
 

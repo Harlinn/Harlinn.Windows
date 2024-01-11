@@ -18,25 +18,19 @@
    limitations under the License.
 */
 
-#include <glib/HWMgmemory.h>
+#include "HWMgstrtspmemory.h"
 
 namespace Harlinn::Media::GStreamer::Rtsp
 {
-    class RTSPAuthCredential : public GLib::Internal::Base< RTSPAuthCredential, GstRTSPAuthCredential>
+    class RTSPAuthCredential : public GLib::ReferenceBase< RTSPAuthCredential, GstRTSPAuthCredential>
     {
     public:
-        using Base = GLib::Internal::Base< RTSPAuthCredential, GstRTSPAuthCredential>;
+        using Base = GLib::ReferenceBase< RTSPAuthCredential, GstRTSPAuthCredential>;
 
         RTSPAuthCredential( ) = default;
-        RTSPAuthCredential( InnerType* impl )
-            : Base( impl )
+        explicit RTSPAuthCredential( WrappedType* impl, GLib::ReferenceType referenceType = GLib::ReferenceType::None )
+            : Base( impl, referenceType )
         {
-        }
-
-        static void ReleaseInner( InnerType* impl )
-        {
-            auto tmp = impl;
-            gst_rtsp_auth_credentials_free( &tmp );
         }
 
         GstRTSPAuthMethod Scheme( ) const
@@ -87,20 +81,15 @@ namespace Harlinn::Media::GStreamer::Rtsp
 
     };
 
-    class RTSPMessage : public GLib::Internal::Base< RTSPMessage, GstRTSPMessage>
+    class RTSPMessage : public GLib::ReferenceBase< RTSPMessage, GstRTSPMessage>
     {
     public:
-        using Base = GLib::Internal::Base< RTSPMessage, GstRTSPMessage>;
+        using Base = GLib::ReferenceBase< RTSPMessage, GstRTSPMessage>;
 
         RTSPMessage( ) = default;
-        RTSPMessage( InnerType* impl )
-            : Base( impl )
+        explicit RTSPMessage( WrappedType* impl, GLib::ReferenceType referenceType = GLib::ReferenceType::None )
+            : Base( impl, referenceType )
         {
-        }
-
-        static void ReleaseInner( InnerType* impl )
-        {
-            gst_rtsp_message_free( impl );
         }
 
         GstRTSPMsgType MessageType( ) const

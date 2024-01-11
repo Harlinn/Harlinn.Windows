@@ -22,13 +22,20 @@
 
 namespace Harlinn::Media::GStreamer::RtspServer
 {
-    class RTSPAuth : public GLib::Object
+    namespace Internal
     {
-    public:
-        using Base = GLib::Object;
-        HWM_GOBJECT_IMPLEMENT_STANDARD_MEMBERS( RTSPAuth, GstRTSPAuth )
+        template<typename BaseT>
+        class RTSPAuth : public BaseT
+        {
+        public:
+            using Base = BaseT;
+            HWM_GOBJECT_IMPLEMENT_STANDARD_MEMBERS( RTSPAuth, GstRTSPAuth )
+        };
+    }
 
-    };
+    using BasicRTSPAuth = Internal::RTSPAuth<GLib::BasicObject>;
+    using RTSPAuth = Internal::RTSPAuth<GLib::Object>;
+
 }
 #endif
 

@@ -18,6 +18,7 @@
    limitations under the License.
 */
 #include "HWMGstConstants.h"
+#include "HWMGstMemory.h"
 
 namespace Harlinn::Media::GStreamer
 {
@@ -37,15 +38,6 @@ namespace Harlinn::Media::GStreamer
         Base::operator=( std::move( other ) ); \
         return *this; \
     } \
-    void Assign( WrappedType* impl ) noexcept \
-    { \
-        Base::Assign( reinterpret_cast< Base::WrappedType* >( impl ) ); \
-    } \
-    TypeName& operator = ( WrappedType* impl ) noexcept \
-    { \
-        Assign( impl ); \
-        return *this; \
-    } \
     WrappedType* get( ) const \
     { \
         return reinterpret_cast< WrappedType* >( Base::get( ) ); \
@@ -61,7 +53,7 @@ namespace Harlinn::Media::GStreamer
 
 
 
-    class MiniObject
+    class BasicMiniObject
     {
     public:
         using WrappedType = GstMiniObject;
@@ -69,53 +61,45 @@ namespace Harlinn::Media::GStreamer
         WrappedType* impl_ = nullptr;
     public:
         
-        MiniObject( ) = default;
-        MiniObject( WrappedType* impl )
+        BasicMiniObject( ) = default;
+        explicit BasicMiniObject( WrappedType* impl )
             : impl_( impl )
         {
         }
-        MiniObject( const MiniObject& other ) = delete;
-        MiniObject( MiniObject&& other ) noexcept
+        BasicMiniObject( const BasicMiniObject& other ) = delete;
+        BasicMiniObject( BasicMiniObject&& other ) noexcept
             : impl_( other.impl_ )
         {
             other.impl_ = nullptr;
         }
 
-        ~MiniObject( )
-        {
-            if ( impl_ )
-            {
-                gst_mini_object_unref( impl_ );
-            }
-        }
+        
 
-        MiniObject& operator = ( const MiniObject& other ) = delete;
+        BasicMiniObject& operator = ( const BasicMiniObject& other ) = delete;
 
-        MiniObject& operator = ( MiniObject&& other ) noexcept
+        BasicMiniObject& operator = ( BasicMiniObject&& other ) noexcept
         {
             std::swap( impl_, other.impl_ );
             return *this;
         }
-
-        void Assign( WrappedType* impl ) noexcept
+    protected:
+        template<bool unref, typename T, typename WrappedTraitsT = GLib::ObjectTraits<T>>
+            requires GLib::ObjectTraits_v<T>
+        void Assign( T* impl ) noexcept
         {
             if ( impl_ != impl )
             {
-                if ( impl_ )
+                if constexpr ( unref )
                 {
-                    g_object_unref( impl_ );
+                    if ( impl_ )
+                    {
+                        WrappedTraitsT::Unref( impl_ );
+                    }
                 }
                 impl_ = impl;
             }
         }
-
-
-        MiniObject& operator = ( WrappedType* impl ) noexcept
-        {
-            Assign( impl );
-            return *this;
-        }
-
+    public:
         WrappedType* get( ) const
         {
             return impl_;
@@ -138,6 +122,46 @@ namespace Harlinn::Media::GStreamer
             return impl_;
         }
     };
+
+    class MiniObject : public BasicMiniObject
+    {
+    public:
+        using Base = BasicMiniObject;
+
+        MiniObject( ) = default;
+        explicit MiniObject( WrappedType* impl )
+            : Base( impl )
+        {
+        }
+
+        MiniObject( MiniObject&& other ) noexcept
+            : Base( std::move( other ) )
+        {
+        }
+
+        ~MiniObject( )
+        {
+            auto tmp = Detach( );
+            if ( tmp )
+            {
+                gst_mini_object_unref( tmp );
+            }
+        }
+
+        MiniObject& operator = ( MiniObject&& other ) noexcept
+        {
+            Base::operator=( std::move( other ) ); 
+            return *this;
+        }
+
+        MiniObject& operator = ( WrappedType* impl ) noexcept
+        {
+            Assign<true, WrappedType>( impl );
+            return *this;
+        }
+
+    };
+
 }
 
 #endif

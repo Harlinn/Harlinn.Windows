@@ -21,8 +21,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{0962ecef-7aab-44c0-b4e4-3bb17a0ce1da}</ProjectGuid>
-    <RootNamespace>HarlinnMediaTests</RootNamespace>
+    <ProjectGuid>{4f0832e3-245e-4fd3-9e14-ddca1c23626f}</ProjectGuid>
+    <RootNamespace>EWMGstLaunch</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -82,11 +82,12 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Harlinn.Media;$(SolutionDir)Harlinn.Windows;$(SolutionDir)Harlinn.Common.Core;$(SolutionDir)3rdParty\Harlinn.LMDB;$(BOOST_ROOT);$(SolutionDir)3rdParty\Harlinn.live555\include\live555;$(GSTREAMER_1_0_ROOT_MSVC_X86_64)\include\gstreamer-1.0;$(GSTREAMER_1_0_ROOT_MSVC_X86_64)\include\glib-2.0;$(GSTREAMER_1_0_ROOT_MSVC_X86_64)\lib\glib-2.0\include;$(GSTREAMER_1_0_ROOT_MSVC_X86_64)\include;$(VLC_SOURCE)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Harlinn.Media;$(SolutionDir)Harlinn.Windows;$(SolutionDir)Harlinn.Common.Core;$(SolutionDir)3rdParty\Harlinn.LMDB;$(BOOST_ROOT);$(SolutionDir)3rdParty\Harlinn.live555\include\live555;$(GSTREAMER_1_0_ROOT_MSVC_X86_64)\include\gstreamer-1.0;$(GSTREAMER_1_0_ROOT_MSVC_X86_64)\include\glib-2.0;$(GSTREAMER_1_0_ROOT_MSVC_X86_64)\lib\glib-2.0\include;$(GSTREAMER_1_0_ROOT_MSVC_X86_64)\include;$(VLC_SOURCE)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -101,8 +102,8 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Harlinn.Media;$(SolutionDir)Harlinn.Windows;$(SolutionDir)Harlinn.Common.Core;$(SolutionDir)3rdParty\Harlinn.LMDB;$(BOOST_ROOT);$(SolutionDir)3rdParty\Harlinn.live555\include\live555;$(GSTREAMER_1_0_ROOT_MSVC_X86_64)\include\gstreamer-1.0;$(GSTREAMER_1_0_ROOT_MSVC_X86_64)\include\glib-2.0;$(GSTREAMER_1_0_ROOT_MSVC_X86_64)\lib\glib-2.0\include;$(GSTREAMER_1_0_ROOT_MSVC_X86_64)\include;$(VLC_SOURCE)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Harlinn.Media;$(SolutionDir)Harlinn.Windows;$(SolutionDir)Harlinn.Common.Core;$(SolutionDir)3rdParty\Harlinn.LMDB;$(BOOST_ROOT);$(SolutionDir)3rdParty\Harlinn.live555\include\live555;$(GSTREAMER_1_0_ROOT_MSVC_X86_64)\include\gstreamer-1.0;$(GSTREAMER_1_0_ROOT_MSVC_X86_64)\include\glib-2.0;$(GSTREAMER_1_0_ROOT_MSVC_X86_64)\lib\glib-2.0\include;$(GSTREAMER_1_0_ROOT_MSVC_X86_64)\include;$(VLC_SOURCE)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
@@ -121,11 +122,12 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Harlinn.Media;$(SolutionDir)Harlinn.Windows;$(SolutionDir)Harlinn.Common.Core;$(SolutionDir)3rdParty\Harlinn.LMDB;$(BOOST_ROOT);$(SolutionDir)3rdParty\Harlinn.live555\include\live555;$(GSTREAMER_1_0_ROOT_MSVC_X86_64)\include\gstreamer-1.0;$(GSTREAMER_1_0_ROOT_MSVC_X86_64)\include\glib-2.0;$(GSTREAMER_1_0_ROOT_MSVC_X86_64)\lib\glib-2.0\include;$(GSTREAMER_1_0_ROOT_MSVC_X86_64)\include;$(VLC_SOURCE)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Harlinn.Media;$(SolutionDir)Harlinn.Windows;$(SolutionDir)Harlinn.Common.Core;$(SolutionDir)3rdParty\Harlinn.LMDB;$(BOOST_ROOT);$(SolutionDir)3rdParty\Harlinn.live555\include\live555;$(GSTREAMER_1_0_ROOT_MSVC_X86_64)\include\gstreamer-1.0;$(GSTREAMER_1_0_ROOT_MSVC_X86_64)\include\glib-2.0;$(GSTREAMER_1_0_ROOT_MSVC_X86_64)\lib\glib-2.0\include;$(GSTREAMER_1_0_ROOT_MSVC_X86_64)\include;$(VLC_SOURCE)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -140,8 +142,8 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Harlinn.Media;$(SolutionDir)Harlinn.Windows;$(SolutionDir)Harlinn.Common.Core;$(SolutionDir)3rdParty\Harlinn.LMDB;$(BOOST_ROOT);$(SolutionDir)3rdParty\Harlinn.live555\include\live555;$(GSTREAMER_1_0_ROOT_MSVC_X86_64)\include\gstreamer-1.0;$(GSTREAMER_1_0_ROOT_MSVC_X86_64)\include\glib-2.0;$(GSTREAMER_1_0_ROOT_MSVC_X86_64)\lib\glib-2.0\include;$(GSTREAMER_1_0_ROOT_MSVC_X86_64)\include;$(VLC_SOURCE)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Harlinn.Media;$(SolutionDir)Harlinn.Windows;$(SolutionDir)Harlinn.Common.Core;$(SolutionDir)3rdParty\Harlinn.LMDB;$(BOOST_ROOT);$(SolutionDir)3rdParty\Harlinn.live555\include\live555;$(GSTREAMER_1_0_ROOT_MSVC_X86_64)\include\gstreamer-1.0;$(GSTREAMER_1_0_ROOT_MSVC_X86_64)\include\glib-2.0;$(GSTREAMER_1_0_ROOT_MSVC_X86_64)\lib\glib-2.0\include;$(GSTREAMER_1_0_ROOT_MSVC_X86_64)\include;$(VLC_SOURCE)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
@@ -155,8 +157,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Harlinn.Media.Tests.cpp" />
-    <ClCompile Include="VlcInstanceTests.cpp" />
+    <ClCompile Include="EWMGstLaunch.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

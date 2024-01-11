@@ -22,13 +22,19 @@
 
 namespace Harlinn::Media::GStreamer::RtspServer
 {
-    class RTSPMediaFactory : public GLib::Object
+    namespace Internal
     {
-    public:
-        using Base = GLib::Object;
-        HWM_GOBJECT_IMPLEMENT_STANDARD_MEMBERS( RTSPMediaFactory, GstRTSPMediaFactory )
+        template<typename BaseT>
+        class RTSPMediaFactory : public BaseT
+        {
+        public:
+            using Base = BaseT;
+            HWM_GOBJECT_IMPLEMENT_STANDARD_MEMBERS( RTSPMediaFactory, GstRTSPMediaFactory )
+        };
+    }
 
-    };
+    using BasicRTSPMediaFactory = Internal::RTSPMediaFactory<GLib::BasicObject>;
+    using RTSPMediaFactory = Internal::RTSPMediaFactory<GLib::Object>;
 }
 #endif
 

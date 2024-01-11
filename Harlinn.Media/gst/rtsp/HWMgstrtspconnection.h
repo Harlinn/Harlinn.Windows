@@ -18,25 +18,19 @@
    limitations under the License.
 */
 
-#include <glib/HWMgmemory.h>
 #include "HWMgstrtspurl.h"
 
 namespace Harlinn::Media::GStreamer::Rtsp
 {
-    class RTSPConnection : public GLib::Internal::Base< RTSPConnection, GstRTSPConnection>
+    class RTSPConnection : public GLib::ReferenceBase< RTSPConnection, GstRTSPConnection>
     {
     public:
-        using Base = GLib::Internal::Base< RTSPConnection, GstRTSPConnection>;
+        using Base = GLib::ReferenceBase< RTSPConnection, GstRTSPConnection>;
 
         RTSPConnection( ) = default;
-        RTSPConnection( InnerType* impl )
-            : Base( impl )
+        explicit RTSPConnection( WrappedType* impl, GLib::ReferenceType referenceType = GLib::ReferenceType::None )
+            : Base( impl, referenceType )
         {
-        }
-
-        static void ReleaseInner( InnerType* impl )
-        {
-            gst_rtsp_connection_free( impl );
         }
 
     };

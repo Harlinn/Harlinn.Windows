@@ -18,24 +18,19 @@
    limitations under the License.
 */
 
-#include <glib/HWMgmemory.h>
+#include "HWMgstrtspmemory.h"
 
 namespace Harlinn::Media::GStreamer::Rtsp
 {
-    class RTSPUrl : public GLib::Internal::Base< RTSPUrl, GstRTSPUrl>
+    class RTSPUrl : public GLib::ReferenceBase< RTSPUrl, GstRTSPUrl>
     {
     public:
-        using Base = GLib::Internal::Base< RTSPUrl, GstRTSPUrl>;
+        using Base = GLib::ReferenceBase< RTSPUrl, GstRTSPUrl>;
 
         RTSPUrl( ) = default;
-        explicit RTSPUrl( InnerType* impl )
-            : Base( impl )
+        explicit RTSPUrl( WrappedType* impl, GLib::ReferenceType referenceType = GLib::ReferenceType::None )
+            : Base( impl, referenceType )
         {
-        }
-
-        static void ReleaseInner( InnerType* impl )
-        {
-            gst_rtsp_url_free( impl );
         }
 
         GstRTSPLowerTrans Transports( ) const

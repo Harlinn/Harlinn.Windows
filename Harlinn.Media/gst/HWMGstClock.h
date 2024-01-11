@@ -21,11 +21,17 @@
 
 namespace Harlinn::Media::GStreamer
 {
-    class Clock : public Object
+    namespace Internal
     {
-    public:
-        using Base = Object;
-        HWM_GOBJECT_IMPLEMENT_STANDARD_MEMBERS( Clock, GstClock )
-    };
+        template<typename BaseT>
+        class Clock : public BaseT
+        {
+        public:
+            using Base = BaseT;
+            HWM_GOBJECT_IMPLEMENT_STANDARD_MEMBERS( Clock, GstClock )
+        };
+    }
+    using BasicClock = Internal::Clock<BasicObject>;
+    using Clock = Internal::Clock<Object>;
 }
 #endif

@@ -21,12 +21,18 @@
 
 namespace Harlinn::Media::GStreamer
 {
-    class PluginFeature : public Object
+    namespace Internal
     {
-    public:
-        using Base = Object;
-        HWM_GOBJECT_IMPLEMENT_STANDARD_MEMBERS( PluginFeature, GstPluginFeature )
-    };
+        template<typename BaseT>
+        class PluginFeature : public BaseT
+        {
+        public:
+            using Base = BaseT;
+            HWM_GOBJECT_IMPLEMENT_STANDARD_MEMBERS( PluginFeature, GstPluginFeature )
+        };
+    }
+    using BasicPluginFeature = Internal::PluginFeature<BasicObject>;
+    using PluginFeature = Internal::PluginFeature<Object>;
 
 }
 
