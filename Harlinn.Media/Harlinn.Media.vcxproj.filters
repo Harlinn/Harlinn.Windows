@@ -471,6 +471,30 @@
     <ClInclude Include="gst\HWMGstMemory.h">
       <Filter>gst</Filter>
     </ClInclude>
+    <ClInclude Include="gst\HWMGstPadTemplate.h">
+      <Filter>gst</Filter>
+    </ClInclude>
+    <ClInclude Include="gst\HWMGstAllocator.h">
+      <Filter>gst</Filter>
+    </ClInclude>
+    <ClInclude Include="gst\HWMGstAtomicQueue.h">
+      <Filter>gst</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\HWMgtraits.h">
+      <Filter>glib</Filter>
+    </ClInclude>
+    <ClInclude Include="gst\HWMGstTraits.h">
+      <Filter>gst</Filter>
+    </ClInclude>
+    <ClInclude Include="gst\HWMGstBin.h">
+      <Filter>gst</Filter>
+    </ClInclude>
+    <ClInclude Include="gst\HWMGstPipeline.h">
+      <Filter>gst</Filter>
+    </ClInclude>
+    <ClInclude Include="gst\HWMGstBuffer.h">
+      <Filter>gst</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -661,6 +685,12 @@
     </ClCompile>
     <ClCompile Include="glib\HWMgvariant.cpp">
       <Filter>glib</Filter>
+    </ClCompile>
+    <ClCompile Include="gst\HWMGstAllocator.cpp">
+      <Filter>gst</Filter>
+    </ClCompile>
+    <ClCompile Include="gst\HWMGstBuffer.cpp">
+      <Filter>gst</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

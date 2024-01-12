@@ -1,6 +1,3 @@
-#pragma once
-#ifndef HARLINN_MEDIA_GLIB_HWMGLIST_H_
-#define HARLINN_MEDIA_GLIB_HWMGLIST_H_
 /*
    Copyright 2024 Espen Harlinn
 
@@ -17,20 +14,37 @@
    limitations under the License.
 */
 
-#include <HWMDef.h>
+#include <gst/HWMGstBuffer.h>
 
-namespace Harlinn::Media::GLib
+#define BOOST_TEST_DYN_LINK
+#include <boost/test/unit_test.hpp>
+
+using namespace Harlinn::Media;
+namespace gst = Harlinn::Media::GStreamer;
+
+namespace
 {
-    template<typename T>
-    struct List
+    class LocalFixture
     {
-        T* data;
-        List* next;
-        List* prev;
+    public:
+        LocalFixture( ) {}
+        ~LocalFixture( ) {}
     };
+}
 
-    static_assert( sizeof( List<void> ) == sizeof( GList ) );
+BOOST_FIXTURE_TEST_SUITE( HWMGstBufferTests, LocalFixture )
+
+// --run_test=HWMGstBufferTests/CreateTest1
+BOOST_AUTO_TEST_CASE( CreateTest1 )
+{
+    bool notNull = false;
+    {
+        auto buffer = gst::Buffer::Create( );
+        notNull = buffer != nullptr;
+    }
+    BOOST_CHECK( notNull );
 
 }
 
-#endif
+
+BOOST_AUTO_TEST_SUITE_END( )

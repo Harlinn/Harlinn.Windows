@@ -18,7 +18,7 @@
    limitations under the License.
 */
 
-#include "HWMGstMemory.h"
+#include "HWMGstTraits.h"
 #include <glib/gobject/HWMgobject.h>
 #include <glib/HWMgthread.h>
 
@@ -66,7 +66,12 @@ namespace Harlinn::Media::GStreamer
             }
         };
     }
-    using BasicObject = Internal::Object<GLib::BasicInitiallyUnowned>;
+    class BasicObject : public Internal::Object<GLib::BasicInitiallyUnowned>
+    {
+    public:
+        using Base = Internal::Object<GLib::BasicInitiallyUnowned>;
+        HWM_GOBJECT_IMPLEMENT_STANDARD_MEMBERS( BasicObject, GstObject )
+    };
 
     class Object : public Internal::Object<GLib::InitiallyUnowned>
     {

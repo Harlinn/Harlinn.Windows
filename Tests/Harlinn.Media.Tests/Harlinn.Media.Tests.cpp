@@ -20,8 +20,17 @@
 #define BOOST_TEST_NO_MAIN
 #include <boost/test/unit_test.hpp>
 
+#include <gst/gst.h>
+
+#pragma comment(lib,"glib-2.0.lib")
+#pragma comment(lib,"gobject-2.0.lib")
+#pragma comment(lib,"gio-2.0.lib")
+#pragma comment(lib,"gstreamer-1.0.lib")
+//#pragma comment(lib,"gstbase-1.0.lib")
+
 int main( int argc, char* argv[ ], char* envp[ ] )
 {
+    gst_init( &argc, &argv );
     auto application = std::make_shared<Harlinn::Common::Core::Application>( );
     application->Start( );
     auto result = boost::unit_test::unit_test_main( &init_unit_test, argc, argv );

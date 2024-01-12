@@ -1,6 +1,6 @@
-#pragma once
-#ifndef HARLINN_MEDIA_GLIB_HWMGLIST_H_
-#define HARLINN_MEDIA_GLIB_HWMGLIST_H_
+#pragma once 
+#ifndef HARLINN_MEDIA_HWMGSTPADTEMPLATE_H_
+#define HARLINN_MEDIA_HWMGSTPADTEMPLATE_H_
 /*
    Copyright 2024 Espen Harlinn
 
@@ -17,20 +17,27 @@
    limitations under the License.
 */
 
-#include <HWMDef.h>
+#include "HWMGstObject.h"
 
-namespace Harlinn::Media::GLib
+namespace Harlinn::Media::GStreamer
 {
-    template<typename T>
-    struct List
-    {
-        T* data;
-        List* next;
-        List* prev;
-    };
 
-    static_assert( sizeof( List<void> ) == sizeof( GList ) );
+    namespace Internal
+    {
+        template<typename BaseT>
+        class PadTemplate : public BaseT
+        {
+        public:
+            using Base = BaseT;
+            HWM_GOBJECT_IMPLEMENT_STANDARD_MEMBERS( PadTemplate, GstPadTemplate )
+        };
+    }
+
+    using BasicPadTemplate = Internal::PadTemplate<BasicObject>;
+    using PadTemplate = Internal::PadTemplate<Object>;
 
 }
 
+
 #endif
+

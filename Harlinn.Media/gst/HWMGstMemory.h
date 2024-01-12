@@ -18,79 +18,77 @@
    limitations under the License.
 */
 
-#include <glib/HWMgmemory.h>
-
-namespace Harlinn::Media::GLib
-{
-    template<>
-    struct ObjectTraits<GstObject> : std::true_type
-    {
-        using WrappedType = GstObject;
-
-        static bool IsFloating( WrappedType* wrapped )
-        {
-            return g_object_is_floating( wrapped ) != 0;
-        }
-
-        static WrappedType* RefSink( WrappedType* wrapped )
-        {
-            return reinterpret_cast< WrappedType* >( gst_object_ref_sink( wrapped ) );
-        }
-
-        static WrappedType* TakeRef( WrappedType* wrapped )
-        {
-            return reinterpret_cast< WrappedType* >( g_object_take_ref( wrapped ) );
-        }
-
-        static WrappedType* Ref( WrappedType* wrapped )
-        {
-            return reinterpret_cast< WrappedType* >( gst_object_ref( wrapped ) );
-        }
-
-
-        static void Unref( WrappedType* wrapped )
-        {
-            gst_object_unref( wrapped );
-        }
-    };
-
-    template<>
-    struct ObjectTraits<GstMiniObject> : std::true_type
-    {
-        using WrappedType = GstMiniObject;
-
-        static constexpr bool IsFloating( WrappedType* wrapped )
-        {
-            return false;
-        }
-
-        static WrappedType* RefSink( WrappedType* wrapped )
-        {
-            return wrapped;
-        }
-
-        static WrappedType* TakeRef( WrappedType* wrapped )
-        {
-            return Ref( wrapped );
-        }
-
-        static WrappedType* Ref( WrappedType* wrapped )
-        {
-            return reinterpret_cast< WrappedType* >( gst_mini_object_ref( wrapped ) );
-        }
-
-
-        static void Unref( WrappedType* wrapped )
-        {
-            gst_mini_object_unref( wrapped );
-        }
-    };
-}
-
+#include "HWMGstMiniObject.h"
 
 namespace Harlinn::Media::GStreamer
 {
+    class BasicObject;
+    class Object;
+    namespace Internal
+    {
+        template<typename BaseT>
+        class Allocator;
+        template<typename BaseT>
+        class Memory;
+    }
 
+    using BasicAllocator = Internal::Allocator<BasicObject>;
+    using Allocator = Internal::Allocator<Object>;
+
+    using BasicMemory = Internal::Memory<BasicMiniObject>;
+    using Memory = Internal::Memory<MiniObject>;
+
+
+    namespace Internal
+    {
+        template<typename BaseT>
+        class Memory : public BaseT
+        {
+        public:
+            using Base = BaseT;
+            HWM_GSTMINIOBJECT_IMPLEMENT_STANDARD_MEMBERS( Memory, GstMemory )
+
+            BasicAllocator Allocator( GLib::ReferenceType referenceType = GLib::ReferenceType::None ) const;
+
+            BasicMemory Parent( GLib::ReferenceType referenceType = GLib::ReferenceType::None ) const
+            {
+                return BasicMemory( get( )->parent, referenceType );
+            }
+
+            size_t MaxSize( ) const
+            {
+                return get( )->maxsize;
+            }
+            size_t Align( ) const
+            {
+                return get( )->align;
+            }
+
+            size_t Offset( ) const
+            {
+                return get( )->offset;
+            }
+            size_t Size( ) const
+            {
+                return get( )->size;
+            }
+
+            size_t SizeInfo( size_t* offset, size_t* maxsize ) const
+            {
+                return gst_memory_get_sizes( get(), offset, maxsize );
+            }
+
+            void Resize( ssize_t offset, size_t size ) const
+            {
+                gst_memory_resize( get( ), offset, size );
+            }
+
+
+
+        };
+    }
+    static_assert( sizeof( BasicMemory ) == sizeof( GstMemory* ) );
+    static_assert( sizeof( Memory ) == sizeof( GstMemory* ) );
 }
 
 #endif

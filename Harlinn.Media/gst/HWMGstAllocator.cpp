@@ -1,6 +1,4 @@
-#pragma once
-#ifndef HARLINN_MEDIA_GLIB_HWMGLIST_H_
-#define HARLINN_MEDIA_GLIB_HWMGLIST_H_
+#include "pch.h"
 /*
    Copyright 2024 Espen Harlinn
 
@@ -16,21 +14,4 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-
-#include <HWMDef.h>
-
-namespace Harlinn::Media::GLib
-{
-    template<typename T>
-    struct List
-    {
-        T* data;
-        List* next;
-        List* prev;
-    };
-
-    static_assert( sizeof( List<void> ) == sizeof( GList ) );
-
-}
-
-#endif
+#include "HWMGstAllocator.h"

@@ -246,6 +246,7 @@
     <ClInclude Include="glib\HWMgthreadpool.h" />
     <ClInclude Include="glib\HWMgtimer.h" />
     <ClInclude Include="glib\HWMgtimezone.h" />
+    <ClInclude Include="glib\HWMgtraits.h" />
     <ClInclude Include="glib\HWMgtrashstack.h" />
     <ClInclude Include="glib\HWMgtree.h" />
     <ClInclude Include="glib\HWMgtypes.h" />
@@ -256,6 +257,11 @@
     <ClInclude Include="glib\HWMgvariant.h" />
     <ClInclude Include="glib\HWMgversion.h" />
     <ClInclude Include="glib\HWMgwin32.h" />
+    <ClInclude Include="gst\HWMGstAllocator.h" />
+    <ClInclude Include="gst\HWMGstAtomicQueue.h" />
+    <ClInclude Include="gst\HWMGstBin.h" />
+    <ClInclude Include="gst\HWMGstBuffer.h" />
+    <ClInclude Include="gst\HWMGstPadTemplate.h" />
     <ClInclude Include="gst\HWMGstBus.h" />
     <ClInclude Include="gst\HWMGstClock.h" />
     <ClInclude Include="gst\HWMGstConstants.h" />
@@ -267,9 +273,11 @@
     <ClInclude Include="gst\HWMGstMiniObject.h" />
     <ClInclude Include="gst\HWMGstObject.h" />
     <ClInclude Include="gst\HWMGstPad.h" />
+    <ClInclude Include="gst\HWMGstPipeline.h" />
     <ClInclude Include="gst\HWMGstPlugin.h" />
     <ClInclude Include="gst\HWMGstPluginFeature.h" />
     <ClInclude Include="gst\HWMGstQuery.h" />
+    <ClInclude Include="gst\HWMGstTraits.h" />
     <ClInclude Include="gst\rtsp-server\HWMrtsp-address-pool.h" />
     <ClInclude Include="gst\rtsp-server\HWMrtsp-auth.h" />
     <ClInclude Include="gst\rtsp-server\HWMrtsp-client.h" />
@@ -336,6 +344,8 @@
     <ClCompile Include="glib\HWMgtimezone.cpp" />
     <ClCompile Include="glib\HWMgvariant.cpp" />
     <ClCompile Include="gst\HWMGst.cpp" />
+    <ClCompile Include="gst\HWMGstAllocator.cpp" />
+    <ClCompile Include="gst\HWMGstBuffer.cpp" />
     <ClCompile Include="gst\HWMGstElement.cpp" />
     <ClCompile Include="gst\HWMGstObject.cpp" />
     <ClCompile Include="gst\rtsp-server\HWMrtsp-address-pool.cpp" />

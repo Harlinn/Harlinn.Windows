@@ -1,6 +1,7 @@
-#pragma once
-#ifndef HARLINN_MEDIA_GLIB_HWMGLIST_H_
-#define HARLINN_MEDIA_GLIB_HWMGLIST_H_
+#pragma once 
+#ifndef HARLINN_MEDIA_GST_HWMGSTBIN_H_
+#define HARLINN_MEDIA_GST_HWMGSTBIN_H_
+
 /*
    Copyright 2024 Espen Harlinn
 
@@ -17,20 +18,23 @@
    limitations under the License.
 */
 
-#include <HWMDef.h>
 
-namespace Harlinn::Media::GLib
+#include "HWMGstElement.h"
+
+namespace Harlinn::Media::GStreamer
 {
-    template<typename T>
-    struct List
+    namespace Internal
     {
-        T* data;
-        List* next;
-        List* prev;
-    };
+        template<typename BaseT>
+        class Bin : public BaseT
+        {
+        public:
+            using Base = BaseT;
+            HWM_GOBJECT_IMPLEMENT_STANDARD_MEMBERS( Bin, GstBin )
+        };
+    }
 
-    static_assert( sizeof( List<void> ) == sizeof( GList ) );
-
+    using BasicBin = Internal::Bin<BasicElement>;
+    using Bin = Internal::Bin<Element>;
 }
-
 #endif

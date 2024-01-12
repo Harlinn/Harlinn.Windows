@@ -18,7 +18,8 @@
    limitations under the License.
 */
 #include "HWMGstConstants.h"
-#include "HWMGstMemory.h"
+#include "HWMGstTraits.h"
+#include <glib/HWMgmemory.h>
 
 namespace Harlinn::Media::GStreamer
 {
@@ -51,7 +52,7 @@ namespace Harlinn::Media::GStreamer
         return reinterpret_cast< WrappedType* >( Base::get( ) ); \
     }
 
-
+    class MiniObject;
 
     class BasicMiniObject
     {
@@ -72,8 +73,6 @@ namespace Harlinn::Media::GStreamer
         {
             other.impl_ = nullptr;
         }
-
-        
 
         BasicMiniObject& operator = ( const BasicMiniObject& other ) = delete;
 
@@ -121,6 +120,82 @@ namespace Harlinn::Media::GStreamer
         {
             return impl_;
         }
+
+        constexpr bool operator == ( nullptr_t ) const noexcept
+        {
+            return impl_ == nullptr;
+        }
+        constexpr bool operator != ( nullptr_t ) const noexcept
+        {
+            return impl_ != nullptr;
+        }
+
+        constexpr bool operator == ( const WrappedType* other ) const noexcept
+        {
+            return impl_ == other;
+        }
+        constexpr bool operator != ( const WrappedType* other ) const noexcept
+        {
+            return impl_ != other;
+        }
+
+        bool Lock( GstLockFlags flags ) const
+        {
+            return gst_mini_object_lock( get( ), flags ) != 0;
+        }
+
+        void Unlock( GstLockFlags flags ) const
+        {
+            gst_mini_object_unlock( get( ), flags );
+        }
+
+        bool IsWritable( ) const
+        {
+            return gst_mini_object_is_writable( get( ) );
+        }
+
+        template<typename T>
+            requires std::is_base_of_v<MiniObject,T>
+        T MakeWritable( ) const
+        {
+            auto obj = reinterpret_cast< typename T::WrappedType* >( gst_mini_object_make_writable( get() ) );
+            if ( obj )
+            {
+                return T( obj );
+            }
+            return {};
+        }
+
+        template<typename T>
+            requires std::is_base_of_v<MiniObject, T>
+        T Copy( ) const
+        {
+            auto obj = reinterpret_cast< typename T::WrappedType* >( gst_mini_object_copy( get( ) ) );
+            if ( obj )
+            {
+                return T( obj );
+            }
+            return {};
+        }
+
+        void AddParent( GstMiniObject* parent ) const
+        {
+            gst_mini_object_add_parent( get(), parent );
+        }
+
+        void AddParent( const BasicMiniObject& parent ) const
+        {
+            gst_mini_object_add_parent( get( ), parent.get() );
+        }
+
+        void RemoveParent( GstMiniObject* parent ) const
+        {
+            gst_mini_object_remove_parent( get( ), parent );
+        }
+        void RemoveParent( const BasicMiniObject& parent ) const
+        {
+            gst_mini_object_remove_parent( get( ), parent.get() );
+        }
     };
 
     class MiniObject : public BasicMiniObject
@@ -159,8 +234,10 @@ namespace Harlinn::Media::GStreamer
             Assign<true, WrappedType>( impl );
             return *this;
         }
-
     };
+
+    static_assert( sizeof( BasicMiniObject ) == sizeof( GstMiniObject* ) );
+    static_assert( sizeof( MiniObject ) == sizeof( GstMiniObject* ) );
 
 }
 
