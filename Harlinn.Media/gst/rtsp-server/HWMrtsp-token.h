@@ -25,16 +25,16 @@ namespace Harlinn::Media::GStreamer::RtspServer
     namespace Internal
     {
         template<typename BaseT>
-        class RTSPToken : public BaseT
+        class RTSPTokenImpl : public BaseT
         {
         public:
             using Base = BaseT;
-            HWM_GSTMINIOBJECT_IMPLEMENT_STANDARD_MEMBERS( RTSPToken, GstRTSPToken )
+            HWM_GSTMINIOBJECT_IMPLEMENT_STANDARD_MEMBERS( RTSPTokenImpl, GstRTSPToken )
         };
     }
 
-    using BasicRTSPToken = Internal::RTSPToken<BasicMiniObject>;
-    using RTSPToken = Internal::RTSPToken<MiniObject>;
+    using BasicRTSPToken = Internal::RTSPTokenImpl<BasicMiniObject>;
+    using RTSPToken = Internal::RTSPTokenImpl<MiniObject>;
 
 }
 #endif

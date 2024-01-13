@@ -25,19 +25,19 @@ namespace Harlinn::Media::GStreamer
     namespace Internal
     {
         template<typename BaseT>
-        class Buffer;
+        class BufferImpl;
     }
-    using BasicBuffer = Internal::Buffer<BasicMiniObject>;
-    using Buffer = Internal::Buffer<MiniObject>;
+    using BasicBuffer = Internal::BufferImpl<BasicMiniObject>;
+    using Buffer = Internal::BufferImpl<MiniObject>;
 
     namespace Internal
     {
         template<typename BaseT>
-        class Buffer : public BaseT
+        class BufferImpl : public BaseT
         {
         public:
             using Base = BaseT;
-            HWM_GSTMINIOBJECT_IMPLEMENT_STANDARD_MEMBERS( Buffer, GstBuffer )
+            HWM_GSTMINIOBJECT_IMPLEMENT_STANDARD_MEMBERS( BufferImpl, GstBuffer )
 
             /// <summary>
             /// Creates a newly allocated buffer without any data.
@@ -205,7 +205,7 @@ namespace Harlinn::Media::GStreamer
             }
             template<typename T>
                 requires std::is_base_of_v<GStreamer::BasicMemory,T> || std::is_base_of_v<GStreamer::Memory, T>
-            void Insert( Int32 index, T& mem ) const
+            void Insert( Int32 index, T&& mem ) const
             {
                 gst_buffer_insert_memory( get( ), index, mem.Detach() );
             }
@@ -237,7 +237,7 @@ namespace Harlinn::Media::GStreamer
             }
             template<typename T>
                 requires std::is_base_of_v<GStreamer::BasicMemory, T> || std::is_base_of_v<GStreamer::Memory, T>
-            void Replace( UInt32 index, Int32 length, T& mem ) const
+            void Replace( UInt32 index, Int32 length, T&& mem ) const
             {
                 gst_buffer_replace_memory_range( get( ), index, length, mem.Detach() );
             }
@@ -262,7 +262,7 @@ namespace Harlinn::Media::GStreamer
             }
             template<typename T>
                 requires std::is_base_of_v<GStreamer::BasicMemory, T> || std::is_base_of_v<GStreamer::Memory, T>
-            void Replace( UInt32 index, T& mem ) const
+            void Replace( UInt32 index, T&& mem ) const
             {
                 gst_buffer_replace_memory( get( ), index, mem.Detach() );
             }
@@ -284,7 +284,7 @@ namespace Harlinn::Media::GStreamer
             }
             template<typename T>
                 requires std::is_base_of_v<GStreamer::BasicMemory, T> || std::is_base_of_v<GStreamer::Memory, T>
-            void Replace( T& mem ) const
+            void Replace( T&& mem ) const
             {
                 gst_buffer_replace_all_memory( get( ), mem.Detach() );
             }
@@ -394,7 +394,7 @@ namespace Harlinn::Media::GStreamer
             }
             template<typename T>
                 requires std::is_base_of_v<GStreamer::BasicMemory, T> || std::is_base_of_v<GStreamer::Memory, T>
-            void Prepend( T& mem ) const
+            void Prepend( T&& mem ) const
             {
                 gst_buffer_prepend_memory( get( ), mem.Detach() );
             }
@@ -417,7 +417,7 @@ namespace Harlinn::Media::GStreamer
             }
             template<typename T>
                 requires std::is_base_of_v<GStreamer::BasicMemory, T> || std::is_base_of_v<GStreamer::Memory, T>
-            void Append( T& mem ) const
+            void Append( T&& mem ) const
             {
                 gst_buffer_append_memory( get( ), mem.Detach() );
             }
@@ -713,7 +713,7 @@ namespace Harlinn::Media::GStreamer
             }
 
             template<typename T>
-                requires std::is_base_of_v<GStreamer::BasicMemory, T> || std::is_base_of_v<GStreamer::Memory, T>
+                requires std::is_base_of_v<GStreamer::BasicBuffer, T> || std::is_base_of_v<GStreamer::Buffer, T>
             bool CopyTo( const T& dest, GstBufferCopyFlags flags, size_t offset, size_t size ) const
             {
                 return gst_buffer_copy_into( dest.get(), get( ), flags, offset, size );
@@ -724,7 +724,7 @@ namespace Harlinn::Media::GStreamer
                 return gst_buffer_copy_into( get( ), source, flags, offset, size );
             }
             template<typename T>
-                requires std::is_base_of_v<GStreamer::BasicMemory, T> || std::is_base_of_v<GStreamer::Memory, T>
+                requires std::is_base_of_v<GStreamer::BasicBuffer, T> || std::is_base_of_v<GStreamer::Buffer, T>
             bool CopyFrom( const T& source, GstBufferCopyFlags flags, size_t offset, size_t size ) const
             {
                 return gst_buffer_copy_into( get( ), source.get(), flags, offset, size );
@@ -767,9 +767,9 @@ namespace Harlinn::Media::GStreamer
             }
 
             template<typename T1, typename T2>
-                requires ((std::is_base_of_v<GStreamer::BasicMemory, T1> || std::is_base_of_v<GStreamer::Memory, T1>) &&
-                            ( std::is_base_of_v<GStreamer::BasicMemory, T2> || std::is_base_of_v<GStreamer::Memory, T2> ))
-            static GStreamer::Buffer Append( T1& buf1, T2& buf2, ssize_t offset, ssize_t size )
+                requires ((std::is_base_of_v<GStreamer::BasicBuffer, T1> || std::is_base_of_v<GStreamer::Buffer, T1>) &&
+                            ( std::is_base_of_v<GStreamer::BasicBuffer, T2> || std::is_base_of_v<GStreamer::Buffer, T2> ))
+            static GStreamer::Buffer Append( T1&& buf1, T2&& buf2, ssize_t offset, ssize_t size )
             {
                 auto buffer = gst_buffer_append_region( buf1.Detach(), buf2.Detach( ), offset, size );
                 if ( buffer )
@@ -790,9 +790,9 @@ namespace Harlinn::Media::GStreamer
             }
 
             template<typename T1, typename T2>
-                requires ( ( std::is_base_of_v<GStreamer::BasicMemory, T1> || std::is_base_of_v<GStreamer::Memory, T1> ) &&
-                    ( std::is_base_of_v<GStreamer::BasicMemory, T2> || std::is_base_of_v<GStreamer::Memory, T2> ) )
-            static GStreamer::Buffer Append( T1& buf1, T2& buf2 )
+                requires ((std::is_base_of_v<GStreamer::BasicBuffer, T1> || std::is_base_of_v<GStreamer::Buffer, T1>) &&
+                            ( std::is_base_of_v<GStreamer::BasicBuffer, T2> || std::is_base_of_v<GStreamer::Buffer, T2> ))
+            static GStreamer::Buffer Append( T1&& buf1, T2&& buf2 )
             {
                 auto buffer = gst_buffer_append( buf1.Detach( ), buf2.Detach( ) );
                 if ( buffer )
@@ -809,6 +809,8 @@ namespace Harlinn::Media::GStreamer
 
     static_assert( sizeof( BasicBuffer ) == sizeof( GstBuffer* ) );
     static_assert( sizeof( Buffer ) == sizeof( GstBuffer* ) );
+    static_assert( std::is_base_of_v<BasicMiniObject, BasicBuffer> );
+    static_assert( std::is_base_of_v<MiniObject, Buffer> );
 
 
 

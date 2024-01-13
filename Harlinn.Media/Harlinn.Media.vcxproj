@@ -261,6 +261,8 @@
     <ClInclude Include="gst\HWMGstAtomicQueue.h" />
     <ClInclude Include="gst\HWMGstBin.h" />
     <ClInclude Include="gst\HWMGstBuffer.h" />
+    <ClInclude Include="gst\HWMGstControlBinding.h" />
+    <ClInclude Include="gst\HWMGstForwards.h" />
     <ClInclude Include="gst\HWMGstPadTemplate.h" />
     <ClInclude Include="gst\HWMGstBus.h" />
     <ClInclude Include="gst\HWMGstClock.h" />
@@ -277,6 +279,8 @@
     <ClInclude Include="gst\HWMGstPlugin.h" />
     <ClInclude Include="gst\HWMGstPluginFeature.h" />
     <ClInclude Include="gst\HWMGstQuery.h" />
+    <ClInclude Include="gst\HWMGstStructure.h" />
+    <ClInclude Include="gst\HWMGstTagList.h" />
     <ClInclude Include="gst\HWMGstTraits.h" />
     <ClInclude Include="gst\rtsp-server\HWMrtsp-address-pool.h" />
     <ClInclude Include="gst\rtsp-server\HWMrtsp-auth.h" />
@@ -346,7 +350,10 @@
     <ClCompile Include="gst\HWMGst.cpp" />
     <ClCompile Include="gst\HWMGstAllocator.cpp" />
     <ClCompile Include="gst\HWMGstBuffer.cpp" />
+    <ClCompile Include="gst\HWMGstControlBinding.cpp" />
     <ClCompile Include="gst\HWMGstElement.cpp" />
+    <ClCompile Include="gst\HWMGstMemory.cpp" />
+    <ClCompile Include="gst\HWMGstMessage.cpp" />
     <ClCompile Include="gst\HWMGstObject.cpp" />
     <ClCompile Include="gst\rtsp-server\HWMrtsp-address-pool.cpp" />
     <ClCompile Include="gst\rtsp-server\HWMrtsp-auth.cpp" />

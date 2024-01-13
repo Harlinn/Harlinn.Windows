@@ -24,30 +24,18 @@ namespace Harlinn::Media::GStreamer
     namespace Internal
     {
         template<typename BaseT>
-        class Pad : public BaseT
+        class PadImpl : public BaseT
         {
         public:
             using Base = BaseT;
-            HWM_GOBJECT_IMPLEMENT_STANDARD_MEMBERS( Pad, GstPad )
+            HWM_GOBJECT_IMPLEMENT_STANDARD_MEMBERS( PadImpl, GstPad )
         };
     }
 
-    using BasicPad = Internal::Pad<BasicObject>;
-    using Pad = Internal::Pad<Object>;
+    using BasicPad = Internal::PadImpl<BasicObject>;
+    using Pad = Internal::PadImpl<Object>;
 
-    namespace Internal
-    {
-        template<typename BaseT>
-        class PadTemplate : public BaseT
-        {
-        public:
-            using Base = BaseT;
-            HWM_GOBJECT_IMPLEMENT_STANDARD_MEMBERS( PadTemplate, GstPadTemplate )
-        };
-    }
-
-    using BasicPad = Internal::Pad<BasicObject>;
-    using Pad = Internal::Pad<Object>;
+    
 
 }
 

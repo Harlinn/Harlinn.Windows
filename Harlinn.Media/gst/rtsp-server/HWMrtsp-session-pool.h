@@ -25,16 +25,16 @@ namespace Harlinn::Media::GStreamer::RtspServer
     namespace Internal
     {
         template<typename BaseT>
-        class RTSPSessionPool : public BaseT
+        class RTSPSessionPoolImpl : public BaseT
         {
         public:
             using Base = BaseT;
-            HWM_GOBJECT_IMPLEMENT_STANDARD_MEMBERS( RTSPSessionPool, GstRTSPSessionPool )
+            HWM_GOBJECT_IMPLEMENT_STANDARD_MEMBERS( RTSPSessionPoolImpl, GstRTSPSessionPool )
         };
     }
 
-    using BasicRTSPSessionPool = Internal::RTSPSessionPool<GLib::BasicObject>;
-    using RTSPSessionPool = Internal::RTSPSessionPool<GLib::Object>;
+    using BasicRTSPSessionPool = Internal::RTSPSessionPoolImpl<GLib::BasicObject>;
+    using RTSPSessionPool = Internal::RTSPSessionPoolImpl<GLib::Object>;
 
 }
 #endif

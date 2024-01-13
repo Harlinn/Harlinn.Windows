@@ -495,6 +495,18 @@
     <ClInclude Include="gst\HWMGstBuffer.h">
       <Filter>gst</Filter>
     </ClInclude>
+    <ClInclude Include="gst\HWMGstControlBinding.h">
+      <Filter>gst</Filter>
+    </ClInclude>
+    <ClInclude Include="gst\HWMGstForwards.h">
+      <Filter>gst</Filter>
+    </ClInclude>
+    <ClInclude Include="gst\HWMGstStructure.h">
+      <Filter>gst</Filter>
+    </ClInclude>
+    <ClInclude Include="gst\HWMGstTagList.h">
+      <Filter>gst</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -690,6 +702,15 @@
       <Filter>gst</Filter>
     </ClCompile>
     <ClCompile Include="gst\HWMGstBuffer.cpp">
+      <Filter>gst</Filter>
+    </ClCompile>
+    <ClCompile Include="gst\HWMGstControlBinding.cpp">
+      <Filter>gst</Filter>
+    </ClCompile>
+    <ClCompile Include="gst\HWMGstMemory.cpp">
+      <Filter>gst</Filter>
+    </ClCompile>
+    <ClCompile Include="gst\HWMGstMessage.cpp">
       <Filter>gst</Filter>
     </ClCompile>
   </ItemGroup>

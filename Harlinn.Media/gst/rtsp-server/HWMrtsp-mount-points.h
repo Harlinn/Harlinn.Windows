@@ -25,16 +25,16 @@ namespace Harlinn::Media::GStreamer::RtspServer
     namespace Internal
     {
         template<typename BaseT>
-        class RTSPMountPoints : public BaseT
+        class RTSPMountPointsImpl : public BaseT
         {
         public:
             using Base = BaseT;
-            HWM_GOBJECT_IMPLEMENT_STANDARD_MEMBERS( RTSPMountPoints, GstRTSPMountPoints )
+            HWM_GOBJECT_IMPLEMENT_STANDARD_MEMBERS( RTSPMountPointsImpl, GstRTSPMountPoints )
         };
     }
 
-    using BasicRTSPMountPoints = Internal::RTSPMountPoints<GLib::BasicObject>;
-    using RTSPMountPoints = Internal::RTSPMountPoints<GLib::Object>;
+    using BasicRTSPMountPoints = Internal::RTSPMountPointsImpl<GLib::BasicObject>;
+    using RTSPMountPoints = Internal::RTSPMountPointsImpl<GLib::Object>;
 }
 #endif
 

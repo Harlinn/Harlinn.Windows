@@ -25,16 +25,16 @@ namespace Harlinn::Media::GStreamer
     namespace Internal
     {
         template<typename BaseT>
-        class Bus : public BaseT
+        class BusImpl : public BaseT
         {
         public:
             using Base = BaseT;
-            HWM_GOBJECT_IMPLEMENT_STANDARD_MEMBERS( Bus, GstBus )
+            HWM_GOBJECT_IMPLEMENT_STANDARD_MEMBERS( BusImpl, GstBus )
         };
     }
 
-    using BasicBus = Internal::Bus<BasicObject>;
-    using Bus = Internal::Bus<Object>;
+    using BasicBus = Internal::BusImpl<BasicObject>;
+    using Bus = Internal::BusImpl<Object>;
 
 }
 #endif

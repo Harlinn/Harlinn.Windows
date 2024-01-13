@@ -24,15 +24,15 @@ namespace Harlinn::Media::GStreamer
     namespace Internal
     {
         template<typename BaseT>
-        class PluginFeature : public BaseT
+        class PluginFeatureImpl : public BaseT
         {
         public:
             using Base = BaseT;
-            HWM_GOBJECT_IMPLEMENT_STANDARD_MEMBERS( PluginFeature, GstPluginFeature )
+            HWM_GOBJECT_IMPLEMENT_STANDARD_MEMBERS( PluginFeatureImpl, GstPluginFeature )
         };
     }
-    using BasicPluginFeature = Internal::PluginFeature<BasicObject>;
-    using PluginFeature = Internal::PluginFeature<Object>;
+    using BasicPluginFeature = Internal::PluginFeatureImpl<BasicObject>;
+    using PluginFeature = Internal::PluginFeatureImpl<Object>;
 
 }
 

@@ -18,7 +18,7 @@
    limitations under the License.
 */
 #include "HWMGstConstants.h"
-#include "HWMGstTraits.h"
+#include "HWMGstForwards.h"
 #include <glib/HWMgmemory.h>
 
 namespace Harlinn::Media::GStreamer
@@ -51,6 +51,7 @@ namespace Harlinn::Media::GStreamer
     { \
         return reinterpret_cast< WrappedType* >( Base::get( ) ); \
     }
+    
 
     class MiniObject;
 
@@ -138,6 +139,22 @@ namespace Harlinn::Media::GStreamer
         {
             return impl_ != other;
         }
+
+        template<typename T> 
+            requires std::is_base_of_v<BasicMiniObject, T> && (std::is_base_of_v<MiniObject, T> == false)
+        T As( ) const
+        {
+            return T( impl_ );
+        }
+
+        template<typename T>
+            requires std::is_base_of_v<MiniObject, T>
+        T As( ) const
+        {
+            gst_mini_object_ref( impl_ );
+            return T( impl_ );
+        }
+
 
         bool Lock( GstLockFlags flags ) const
         {

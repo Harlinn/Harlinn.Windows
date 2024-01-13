@@ -1,6 +1,7 @@
 #pragma once 
-#ifndef HARLINN_MEDIA_HWMGSTPADTEMPLATE_H_
-#define HARLINN_MEDIA_HWMGSTPADTEMPLATE_H_
+#ifndef HARLINN_MEDIA_HWMGSTCONTROLBINDING_H_
+#define HARLINN_MEDIA_HWMGSTCONTROLBINDING_H_
+
 /*
    Copyright 2024 Espen Harlinn
 
@@ -21,23 +22,34 @@
 
 namespace Harlinn::Media::GStreamer
 {
+    namespace Internal
+    {
+        template<typename BaseT>
+        class ControlBindingImpl : public BaseT
+        {
+        public:
+            using Base = BaseT;
+            HWM_GOBJECT_IMPLEMENT_STANDARD_MEMBERS( ControlBindingImpl, GstControlBinding )
+        };
+    }
+
+    using BasicControlBinding = Internal::ControlBindingImpl<BasicObject>;
+    using ControlBinding = Internal::ControlBindingImpl<Object>;
 
     namespace Internal
     {
         template<typename BaseT>
-        class PadTemplateImpl : public BaseT
+        inline GStreamer::ControlBinding ObjectImpl<BaseT>::ControlBinding( const char* propertyName ) const
         {
-        public:
-            using Base = BaseT;
-            HWM_GOBJECT_IMPLEMENT_STANDARD_MEMBERS( PadTemplateImpl, GstPadTemplate )
-        };
+            auto controlBinding = gst_object_get_control_binding( get( ), propertyName );
+            if ( controlBinding )
+            {
+                return GStreamer::ControlBinding( controlBinding );
+            }
+            return {};
+        }
     }
 
-    using BasicPadTemplate = Internal::PadTemplateImpl<BasicObject>;
-    using PadTemplate = Internal::PadTemplateImpl<Object>;
-
 }
-
-
 #endif
 

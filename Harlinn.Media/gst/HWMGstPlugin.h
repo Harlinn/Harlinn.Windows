@@ -17,11 +17,23 @@
    limitations under the License.
 */
 
-#include "HWMGstConstants.h"
+#include "HWMGstObject.h"
 
 namespace Harlinn::Media::GStreamer
 {
+    namespace Internal
+    {
+        template<typename BaseT>
+        class PluginImpl : public BaseT
+        {
+        public:
+            using Base = BaseT;
+            HWM_GOBJECT_IMPLEMENT_STANDARD_MEMBERS( PluginImpl, GstPlugin )
+        };
+    }
 
+    using BasicPlugin = Internal::PluginImpl<BasicObject>;
+    using Plugin = Internal::PluginImpl<Object>;
 
 }
 

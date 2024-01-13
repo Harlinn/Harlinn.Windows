@@ -24,14 +24,14 @@ namespace Harlinn::Media::GStreamer
     namespace Internal
     {
         template<typename BaseT>
-        class ElementFactory : public BaseT
+        class ElementFactoryImpl : public BaseT
         {
         public:
             using Base = BaseT;
-            HWM_GOBJECT_IMPLEMENT_STANDARD_MEMBERS( ElementFactory, GstElementFactory )
+            HWM_GOBJECT_IMPLEMENT_STANDARD_MEMBERS( ElementFactoryImpl, GstElementFactory )
         };
     }
-    using BasicElementFactory = Internal::ElementFactory<BasicPluginFeature>;
-    using ElementFactory = Internal::ElementFactory<PluginFeature>;
+    using BasicElementFactory = Internal::ElementFactoryImpl<BasicPluginFeature>;
+    using ElementFactory = Internal::ElementFactoryImpl<PluginFeature>;
 }
 #endif

@@ -26,16 +26,16 @@ namespace Harlinn::Media::GStreamer::RtspServer
     namespace Internal
     {
         template<typename BaseT>
-        class RTSPMediaFactoryURI : public BaseT
+        class RTSPMediaFactoryURIImpl : public BaseT
         {
         public:
             using Base = BaseT;
-            HWM_GOBJECT_IMPLEMENT_STANDARD_MEMBERS( RTSPMediaFactoryURI, GstRTSPMediaFactoryURI )
+            HWM_GOBJECT_IMPLEMENT_STANDARD_MEMBERS( RTSPMediaFactoryURIImpl, GstRTSPMediaFactoryURI )
         };
     }
 
-    using BasicRTSPMediaFactoryURI = Internal::RTSPMediaFactoryURI<BasicRTSPMediaFactory>;
-    using RTSPMediaFactoryURI = Internal::RTSPMediaFactoryURI<RTSPMediaFactory>;
+    using BasicRTSPMediaFactoryURI = Internal::RTSPMediaFactoryURIImpl<BasicRTSPMediaFactory>;
+    using RTSPMediaFactoryURI = Internal::RTSPMediaFactoryURIImpl<RTSPMediaFactory>;
 }
 #endif
 

@@ -37,11 +37,11 @@ namespace Harlinn::Media::GStreamer
     namespace Internal
     {
         template<typename BaseT>
-        class Allocator : public BaseT
+        class AllocatorImpl : public BaseT
         {
         public:
             using Base = BaseT;
-            HWM_GOBJECT_IMPLEMENT_STANDARD_MEMBERS( Allocator, GstAllocator )
+            HWM_GOBJECT_IMPLEMENT_STANDARD_MEMBERS( AllocatorImpl, GstAllocator )
 
             GStreamer::Buffer AllocateBuffer( size_t size, const GstAllocationParams* params ) const
             {
@@ -60,7 +60,7 @@ namespace Harlinn::Media::GStreamer
         };
 
         template<typename BaseT>
-        inline BasicAllocator Memory<BaseT>::Allocator( GLib::ReferenceType referenceType ) const
+        inline BasicAllocator MemoryImpl<BaseT>::Allocator( GLib::ReferenceType referenceType ) const
         {
             return BasicAllocator( get( )->allocator, referenceType );
         }

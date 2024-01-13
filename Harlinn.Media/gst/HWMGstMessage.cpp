@@ -1,6 +1,4 @@
-#pragma once
-#ifndef HARLINN_MEDIA_HWMGSTCLOCK_H_
-#define HARLINN_MEDIA_HWMGSTCLOCK_H_
+#include "pch.h"
 /*
    Copyright 2024 Espen Harlinn
 
@@ -17,21 +15,4 @@
    limitations under the License.
 */
 
-#include "HWMGstObject.h"
-
-namespace Harlinn::Media::GStreamer
-{
-    namespace Internal
-    {
-        template<typename BaseT>
-        class ClockImpl : public BaseT
-        {
-        public:
-            using Base = BaseT;
-            HWM_GOBJECT_IMPLEMENT_STANDARD_MEMBERS( ClockImpl, GstClock )
-        };
-    }
-    using BasicClock = Internal::ClockImpl<BasicObject>;
-    using Clock = Internal::ClockImpl<Object>;
-}
-#endif
+#include "HWMGstMessage.h"

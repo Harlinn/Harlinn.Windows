@@ -27,26 +27,26 @@ namespace Harlinn::Media::GStreamer
     namespace Internal
     {
         template<typename BaseT>
-        class Allocator;
+        class AllocatorImpl;
         template<typename BaseT>
-        class Memory;
+        class MemoryImpl;
     }
 
-    using BasicAllocator = Internal::Allocator<BasicObject>;
-    using Allocator = Internal::Allocator<Object>;
+    using BasicAllocator = Internal::AllocatorImpl<BasicObject>;
+    using Allocator = Internal::AllocatorImpl<Object>;
 
-    using BasicMemory = Internal::Memory<BasicMiniObject>;
-    using Memory = Internal::Memory<MiniObject>;
+    using BasicMemory = Internal::MemoryImpl<BasicMiniObject>;
+    using Memory = Internal::MemoryImpl<MiniObject>;
 
 
     namespace Internal
     {
         template<typename BaseT>
-        class Memory : public BaseT
+        class MemoryImpl : public BaseT
         {
         public:
             using Base = BaseT;
-            HWM_GSTMINIOBJECT_IMPLEMENT_STANDARD_MEMBERS( Memory, GstMemory )
+            HWM_GSTMINIOBJECT_IMPLEMENT_STANDARD_MEMBERS( MemoryImpl, GstMemory )
 
             BasicAllocator Allocator( GLib::ReferenceType referenceType = GLib::ReferenceType::None ) const;
 
@@ -83,12 +83,74 @@ namespace Harlinn::Media::GStreamer
                 gst_memory_resize( get( ), offset, size );
             }
 
+            GStreamer::Memory MakeWritable( ) const
+            {
+                //return Base::MakeWritable<GStreamer::Buffer>( );
+                auto memory = gst_memory_make_writable( get( ) );
+                if ( memory )
+                {
+                    return GStreamer::Memory( memory );
+                }
+                return {};
+            }
 
+            GStreamer::Memory MakeMapped( GstMapInfo* info, GstMapFlags flags ) const
+            {
+                auto memory = gst_memory_make_mapped( get( ), info, flags );
+                if ( memory )
+                {
+                    return GStreamer::Memory( memory );
+                }
+                return {};
+            }
+
+            bool Map( GstMapInfo* info, GstMapFlags flags ) const
+            {
+                return gst_memory_map( get( ), info, flags ) != 0;
+            }
+
+            void Map( GstMapInfo* info ) const
+            {
+                gst_memory_unmap( get( ), info ) != 0;
+            }
+
+            GStreamer::Memory Share( ssize_t offset, ssize_t size ) const
+            {
+                auto memory = gst_memory_share( get( ), offset, size );
+                if ( memory )
+                {
+                    return GStreamer::Memory( memory );
+                }
+                return {};
+            }
+
+            GStreamer::Memory Copy( ssize_t offset, ssize_t size ) const
+            {
+                auto memory = gst_memory_copy( get( ), offset, size );
+                if ( memory )
+                {
+                    return GStreamer::Memory( memory );
+                }
+                return {};
+            }
+
+            bool IsSpan( GstMemory* mem, size_t* offset ) const
+            {
+                return gst_memory_is_span( get( ), mem, offset ) != 0;
+            }
+            template<typename T>
+                requires std::is_base_of_v<GStreamer::BasicMemory, T> || std::is_base_of_v<GStreamer::Memory, T>
+            bool IsSpan( const T& mem, size_t* offset ) const
+            {
+                return gst_memory_is_span( get( ), mem.get(), offset ) != 0;
+            }
 
         };
     }
     static_assert( sizeof( BasicMemory ) == sizeof( GstMemory* ) );
     static_assert( sizeof( Memory ) == sizeof( GstMemory* ) );
+    static_assert( std::is_base_of_v<BasicMiniObject, BasicMemory> );
+    static_assert( std::is_base_of_v<MiniObject, Memory> );
 }
 
 #endif

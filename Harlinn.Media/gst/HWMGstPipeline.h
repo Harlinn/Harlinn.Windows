@@ -26,16 +26,16 @@ namespace Harlinn::Media::GStreamer
     namespace Internal
     {
         template<typename BaseT>
-        class Pipeline : public BaseT
+        class PipelineImpl : public BaseT
         {
         public:
             using Base = BaseT;
-            HWM_GOBJECT_IMPLEMENT_STANDARD_MEMBERS( Pipeline, GstPipeline )
+            HWM_GOBJECT_IMPLEMENT_STANDARD_MEMBERS( PipelineImpl, GstPipeline )
         };
     }
 
-    using BasicPipeline = Internal::Pipeline<BasicBin>;
-    using Pipeline = Internal::Pipeline<Bin>;
+    using BasicPipeline = Internal::PipelineImpl<BasicBin>;
+    using Pipeline = Internal::PipelineImpl<Bin>;
 }
 #endif
 

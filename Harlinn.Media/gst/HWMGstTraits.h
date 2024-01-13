@@ -113,4 +113,14 @@ namespace Harlinn::Media::GLib
         }
     };
 
+    template<>
+    struct ObjectTraits<GstStructure> : public SimpleObjectTraits< ObjectTraits<GstStructure>, GstStructure >
+    {
+        static void Unref( WrappedType* wrapped )
+        {
+            gst_structure_free( wrapped );
+        }
+    };
+
+
 }

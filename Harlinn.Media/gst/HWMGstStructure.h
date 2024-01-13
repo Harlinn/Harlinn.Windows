@@ -1,6 +1,6 @@
-#pragma once
-#ifndef HARLINN_MEDIA_GST_RTSP_SERVER_HWMRTSP_AUTH_H_
-#define HARLINN_MEDIA_GST_RTSP_SERVER_HWMRTSP_AUTH_H_
+#pragma once 
+#ifndef HARLINN_MEDIA_GST_HWMGSTSTRUCTURE_H_
+#define HARLINN_MEDIA_GST_HWMGSTSTRUCTURE_H_
 
 /*
    Copyright 2024 Espen Harlinn
@@ -18,24 +18,24 @@
    limitations under the License.
 */
 
-#include <glib/gobject/HWMgobject.h>
 
-namespace Harlinn::Media::GStreamer::RtspServer
+#include "HWMGstForwards.h"
+#include <glib/HWMgmemory.h>
+
+namespace Harlinn::Media::GStreamer
 {
-    namespace Internal
+    class Structure : GLib::ReferenceBase<Structure,GstStructure>
     {
-        template<typename BaseT>
-        class RTSPAuthImpl : public BaseT
-        {
-        public:
-            using Base = BaseT;
-            HWM_GOBJECT_IMPLEMENT_STANDARD_MEMBERS( RTSPAuthImpl, GstRTSPAuth )
-        };
-    }
+    public:
+        using Base = GLib::ReferenceBase<Structure, GstStructure>;
 
-    using BasicRTSPAuth = Internal::RTSPAuthImpl<GLib::BasicObject>;
-    using RTSPAuth = Internal::RTSPAuthImpl<GLib::Object>;
+        Structure( ) = default;
+        explicit Structure( GstStructure* structure )
+            : Base( structure )
+        { }
 
+
+
+    };
 }
 #endif
-

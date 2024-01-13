@@ -25,16 +25,16 @@ namespace Harlinn::Media::GStreamer::RtspServer
     namespace Internal
     {
         template<typename BaseT>
-        class RTSPClient : public BaseT
+        class RTSPClientImpl : public BaseT
         {
         public:
             using Base = BaseT;
-            HWM_GOBJECT_IMPLEMENT_STANDARD_MEMBERS( RTSPClient, GstRTSPClient )
+            HWM_GOBJECT_IMPLEMENT_STANDARD_MEMBERS( RTSPClientImpl, GstRTSPClient )
         };
     }
 
-    using BasicRTSPClient = Internal::RTSPClient<GLib::BasicObject>;
-    using RTSPClient = Internal::RTSPClient<GLib::Object>;
+    using BasicRTSPClient = Internal::RTSPClientImpl<GLib::BasicObject>;
+    using RTSPClient = Internal::RTSPClientImpl<GLib::Object>;
 }
 #endif
 

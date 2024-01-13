@@ -30,11 +30,11 @@ namespace Harlinn::Media::GStreamer
     namespace Internal
     {
         template<typename BaseT>
-        class Element : public BaseT
+        class ElementImpl : public BaseT
         {
         public:
             using Base = BaseT;
-            HWM_GOBJECT_IMPLEMENT_STANDARD_MEMBERS( Element, GstElement )
+            HWM_GOBJECT_IMPLEMENT_STANDARD_MEMBERS( ElementImpl, GstElement )
 
             GLib::RecMutex& StateLock( ) const
             {
@@ -98,8 +98,8 @@ namespace Harlinn::Media::GStreamer
         };
     }
 
-    using BasicElement = Internal::Element<BasicObject>;
-    using Element = Internal::Element<Object>;
+    using BasicElement = Internal::ElementImpl<BasicObject>;
+    using Element = Internal::ElementImpl<Object>;
 
 
 }

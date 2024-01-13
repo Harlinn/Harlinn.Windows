@@ -26,15 +26,15 @@ namespace Harlinn::Media::GStreamer
     namespace Internal
     {
         template<typename BaseT>
-        class Bin : public BaseT
+        class BinImpl : public BaseT
         {
         public:
             using Base = BaseT;
-            HWM_GOBJECT_IMPLEMENT_STANDARD_MEMBERS( Bin, GstBin )
+            HWM_GOBJECT_IMPLEMENT_STANDARD_MEMBERS( BinImpl, GstBin )
         };
     }
 
-    using BasicBin = Internal::Bin<BasicElement>;
-    using Bin = Internal::Bin<Element>;
+    using BasicBin = Internal::BinImpl<BasicElement>;
+    using Bin = Internal::BinImpl<Element>;
 }
 #endif

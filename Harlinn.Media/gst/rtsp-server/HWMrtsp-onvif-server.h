@@ -26,16 +26,16 @@ namespace Harlinn::Media::GStreamer::RtspServer
     namespace Internal
     {
         template<typename BaseT>
-        class RTSPOnvifServer : public BaseT
+        class RTSPOnvifServerImpl : public BaseT
         {
         public:
             using Base = BaseT;
-            HWM_GOBJECT_IMPLEMENT_STANDARD_MEMBERS( RTSPOnvifServer, GstRTSPOnvifServer )
+            HWM_GOBJECT_IMPLEMENT_STANDARD_MEMBERS( RTSPOnvifServerImpl, GstRTSPOnvifServer )
         };
     }
 
-    using BasicRTSPOnvifServer = Internal::RTSPOnvifServer<BasicRTSPServer>;
-    using RTSPOnvifServer = Internal::RTSPOnvifServer<RTSPServer>;
+    using BasicRTSPOnvifServer = Internal::RTSPOnvifServerImpl<BasicRTSPServer>;
+    using RTSPOnvifServer = Internal::RTSPOnvifServerImpl<RTSPServer>;
 }
 #endif
 

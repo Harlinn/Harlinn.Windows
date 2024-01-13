@@ -1,6 +1,6 @@
-#pragma once
-#ifndef HARLINN_MEDIA_GST_RTSP_SERVER_HWMRTSP_SESSION_H_
-#define HARLINN_MEDIA_GST_RTSP_SERVER_HWMRTSP_SESSION_H_
+#pragma once 
+#ifndef HARLINN_MEDIA_GST_HWMGSTTAGLIST_H_
+#define HARLINN_MEDIA_GST_HWMGSTTAGLIST_H_
 
 /*
    Copyright 2024 Espen Harlinn
@@ -18,24 +18,22 @@
    limitations under the License.
 */
 
-#include <glib/gobject/HWMgobject.h>
+#include "HWMGstMiniObject.h"
 
-namespace Harlinn::Media::GStreamer::RtspServer
+namespace Harlinn::Media::GStreamer
 {
     namespace Internal
     {
         template<typename BaseT>
-        class RTSPSessionImpl : public BaseT
+        class TagListImpl : public BaseT
         {
         public:
             using Base = BaseT;
-            HWM_GOBJECT_IMPLEMENT_STANDARD_MEMBERS( RTSPSessionImpl, GstRTSPSession )
+            HWM_GSTMINIOBJECT_IMPLEMENT_STANDARD_MEMBERS( TagListImpl, GstTagList )
         };
     }
 
-    using BasicRTSPSession = Internal::RTSPSessionImpl<GLib::BasicObject>;
-    using RTSPSession = Internal::RTSPSessionImpl<GLib::Object>;
+    
 
 }
 #endif
-
