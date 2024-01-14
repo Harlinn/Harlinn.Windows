@@ -122,5 +122,19 @@ namespace Harlinn::Media::GLib
         }
     };
 
+    template<>
+    struct ObjectTraits<GstBufferList> : public SimpleObjectTraits< ObjectTraits<GstBufferList>, GstBufferList >
+    {
+        static WrappedType* Ref( WrappedType* wrapped )
+        {
+            return gst_buffer_list_ref( wrapped );
+        }
+
+        static void Unref( WrappedType* wrapped )
+        {
+            gst_buffer_list_unref( wrapped );
+        }
+    };
+
 
 }

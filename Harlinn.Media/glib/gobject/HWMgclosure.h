@@ -19,6 +19,7 @@
 */
 
 #include <glib/HWMgmemory.h>
+#include "HWMgforwards.h"
 
 namespace Harlinn::Media::GLib
 {

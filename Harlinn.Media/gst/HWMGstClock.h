@@ -33,5 +33,19 @@ namespace Harlinn::Media::GStreamer
     }
     using BasicClock = Internal::ClockImpl<BasicObject>;
     using Clock = Internal::ClockImpl<Object>;
+
+    namespace Internal
+    {
+        template<typename BaseT>
+        class SystemClockImpl : public BaseT
+        {
+        public:
+            using Base = BaseT;
+            HWM_GOBJECT_IMPLEMENT_STANDARD_MEMBERS( SystemClockImpl, GstSystemClock )
+        };
+    }
+    using BasicSystemClock = Internal::SystemClockImpl<BasicClock>;
+    using SystemClock = Internal::SystemClockImpl<Clock>;
+
 }
 #endif

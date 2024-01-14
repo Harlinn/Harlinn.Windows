@@ -20,6 +20,7 @@
 #include "HWMGstMiniObject.h"
 #include "HWMGstStructure.h"
 #include "HWMGstTagList.h"
+#include <glib/gobject/HWMgvalue.h>
 
 namespace Harlinn::Media::GStreamer
 {
@@ -59,6 +60,11 @@ namespace Harlinn::Media::GStreamer
                 return GST_MESSAGE_SEQNUM( get( ) );
             }
 
+            void SetSequenceNumber( UInt32 sequenceNumber ) const
+            {
+                gst_message_set_seqnum( get( ), sequenceNumber );
+            }
+
             Message Copy( ) const
             {
                 return Message( gst_message_copy( get( ) ) );
@@ -68,6 +74,263 @@ namespace Harlinn::Media::GStreamer
             {
                 return gst_message_has_name( get( ), name ) != 0;
             }
+
+            GStreamer::Structure Structure( ) const
+            {
+                return GStreamer::Structure( gst_message_get_structure( get( ) ) );
+            }
+
+            GStreamer::Structure WritableStructure( ) const
+            {
+                return GStreamer::Structure( gst_message_writable_structure( get( ) ) );
+            }
+
+
+            void ParseError( GError** gerror, char** debug ) const
+            {
+                gst_message_parse_error( get(), gerror, debug );
+            }
+            void ParseErrorDetails( const GstStructure** structure ) const
+            {
+                gst_message_parse_error_details( get(), structure );
+            }
+
+            void ParseWarning( GError** gerror, char** debug ) const
+            {
+                gst_message_parse_warning( get( ), gerror, debug );
+            }
+            void ParseWarningDetails( const GstStructure** structure ) const
+            {
+                gst_message_parse_warning_details( get( ), structure );
+            }
+
+            void ParseInfo( GError** gerror, char** debug ) const
+            {
+                gst_message_parse_info( get( ), gerror, debug );
+            }
+            void ParseInfoDetails( const GstStructure** structure ) const
+            {
+                gst_message_parse_info_details( get( ), structure );
+            }
+
+            void ParseTag( GstTagList** tagList ) const
+            {
+                gst_message_parse_tag( get(), tagList );
+            }
+
+            void ParseBuffering( Int32* percent ) const
+            {
+                gst_message_parse_buffering( get( ), percent );
+            }
+
+            void SetBufferingStats( GstMessage* message, GstBufferingMode mode, Int32 avgIn, Int32 avgOut, Int64 bufferingLeft ) const
+            {
+                gst_message_set_buffering_stats( get(), mode, avgIn, avgOut, bufferingLeft );
+            }
+
+            void ParseBufferingStats( GstBufferingMode* mode, Int32* avgIn, Int32* avgOut, Int64* bufferingLeft ) const
+            {
+                gst_message_parse_buffering_stats( get( ), mode, avgIn, avgOut, bufferingLeft );
+            }
+
+            void ParseStateChanged( GstState* oldstate, GstState* newstate, GstState* pending ) const
+            {
+                gst_message_parse_state_changed( get(), oldstate, newstate, pending );
+            }
+
+            void ParseStepDone( GstMessage* message, GstFormat* format, Int64* amount, double* rate, bool* flush, bool* intermediate, Int64* duration, bool* eos ) const
+            {
+                gst_message_parse_step_done( get(), format, amount, rate, flush, intermediate, duration, eos );
+            }
+
+            void ParseClockProvide( GstClock** clock, bool* ready ) const
+            {
+                gst_message_parse_clock_provide( get(), clock, ready );
+            }
+
+            void ParseClockLost( GstClock** clock ) const
+            {
+                gst_message_parse_clock_lost( get(), clock );
+            }
+
+            void ParseNewClock( GstClock** clock ) const
+            {
+                gst_message_parse_new_clock( get( ), clock );
+            }
+
+            void ParseSegmentStart( GstFormat* format, Int64* position ) const
+            {
+                gst_message_parse_segment_start( get(), format, position );
+            }
+
+            void parse_segment_done( GstFormat* format, Int64* position ) const
+            {
+                gst_message_parse_segment_done( get(), format, position );
+            }
+
+            void ParseAsyncDone( GstClockTime* runningTime ) const
+            {
+                gst_message_parse_async_done( get(), runningTime );
+            }
+
+            void ParseStructureChange( GstStructureChangeType* type, GstElement** owner, bool* busy ) const
+            {
+                gst_message_parse_structure_change( get(), type, owner, busy );
+            }
+
+            void ParseStreamStatus( GstStreamStatusType* type, GstElement** owner ) const
+            {
+                gst_message_parse_stream_status( get( ), type, owner );
+            }
+
+            void SetStreamStatusObject( const GValue* object ) const
+            {
+                gst_message_set_stream_status_object( get(), object );
+            }
+
+            void SetStreamStatusObject( GLib::Value& object ) const
+            {
+                gst_message_set_stream_status_object( get( ), object );
+            }
+
+            const GLib::Value* StreamStatusObject( ) const
+            {
+                return reinterpret_cast< const GLib::Value* >( gst_message_get_stream_status_object( get( ) ) );
+            }
+
+            void ParseRequestState( GstState* state ) const
+            {
+                gst_message_parse_request_state( get( ), state );
+            }
+
+            void ParseStepStart( bool* active, GstFormat* format, UInt64* amount, double* rate, bool* flush, bool* intermediate ) const
+            {
+                gst_message_parse_step_start( get( ), active, format, amount, rate, flush, intermediate );
+            }
+
+            void SetQosValues( Int64 jitter, double proportion, Int32 quality ) const
+            {
+                gst_message_set_qos_values( get( ), jitter, proportion, quality );
+            }
+            void SetQosStats( GstFormat format, UInt64 processed, UInt64 dropped ) const
+            {
+                gst_message_set_qos_stats( get( ), format, processed, dropped );
+            }
+            void ParseQos( bool* live, UInt64* runningTime, UInt64* streamTime, UInt64* timestamp, UInt64* duration ) const
+            {
+                gst_message_parse_qos( get( ), live, runningTime, streamTime, timestamp, duration );
+            }
+            void ParseQosValues( Int64* jitter, double* proportion, Int32* quality ) const
+            {
+                gst_message_parse_qos_values( get( ), jitter, proportion, quality );
+            }
+            void ParseQosStats( GstFormat* format, UInt64* processed, UInt64* dropped ) const
+            {
+                gst_message_parse_qos_stats( get( ), format, processed, dropped );
+            }
+
+            void ParseProgress( GstProgressType* type, char** code, char** text ) const
+            {
+                gst_message_parse_progress( get( ), type, code, text );
+            }
+
+            void ParseToc( GstToc** toc, bool* updated ) const
+            {
+                gst_message_parse_toc( get( ), toc, updated );
+            }
+
+            void ParseResetTime( GstClockTime* runningTime ) const
+            {
+                gst_message_parse_reset_time( get( ), runningTime );
+            }
+
+            void SetGroupId( UInt32 groupId ) const
+            {
+                gst_message_set_group_id( get( ), groupId );
+            }
+
+            bool ParseGroupId( UInt32* groupId ) const
+            {
+                return gst_message_parse_group_id( get(), groupId ) != 0;
+            }
+
+            bool gst_message_parse_context_type( const char** contextType ) const
+            {
+                return gst_message_parse_context_type( get(), contextType ) != 0;
+            }
+
+            void ParseHaveContext( GstContext** context ) const
+            {
+                void gst_message_parse_have_context( get(), context );
+            }
+
+            void ParseDeviceAdded( GstDevice** device ) const
+            {
+                gst_message_parse_device_added( get( ), device );
+            }
+
+            void ParseDeviceRemoved( GstDevice** device ) const
+            {
+                gst_message_parse_device_removed( get( ), device );
+            }
+
+            void ParseDeviceChanged( GstDevice** device, GstDevice** changedDevice ) const
+            {
+                gst_message_parse_device_changed( get( ), device, changedDevice );
+            }
+
+            void ParsePropertyNotify( GstObject** object, const char** propertyName, const GValue** propertyValue ) const
+            {
+                gst_message_parse_property_notify( get(), object, propertyName, propertyValue );
+            }
+
+            void ParseStreamCollection( GstStreamCollection** collection ) const
+            {
+                gst_message_parse_stream_collection( get(), collection );
+            }
+
+            void StreamsSelectedAdd( GstStream* stream ) const
+            {
+                gst_message_streams_selected_add( get( ), stream );
+            }
+
+            void StreamsSelected( GstStreamCollection** collection ) const
+            {
+                gst_message_parse_streams_selected( get(), collection );
+            }
+
+
+            UInt32 StreamsSelectedSize( ) const
+            {
+                return gst_message_streams_selected_get_size( get( ) );
+            }
+
+            GstStream* StreamsSelectedStream( UInt32 idx ) const
+            {
+                return gst_message_streams_selected_get_stream( get(), idx );
+            }
+
+            void AddRedirectEntry( const char* location, GstTagList* tagList, const GstStructure* entryStruct ) const
+            {
+                gst_message_add_redirect_entry( get( ), location, tagList, entryStruct );
+            }
+
+            void ParseRedirectEntry( size_t entryIndex, const char** location, GstTagList** tagList, const GstStructure** entryStruct ) const
+            {
+                gst_message_parse_redirect_entry( get( ), entryIndex, location, tagList, entryStruct );
+            }
+
+            size_t NumberOfRedirectEntries( ) const
+            {
+                return gst_message_get_num_redirect_entries( get( ) );
+            }
+
+            void ParseInstantRateRequest( GstMessage* message, double* rateMultiplier ) const
+            {
+                gst_message_parse_instant_rate_request( get( ), rateMultiplier );
+            }
+
+
         };
     }
 
@@ -76,6 +339,17 @@ namespace Harlinn::Media::GStreamer
 
     namespace Messages
     {
+
+        inline Message Custom( GstMessageType type, GstObject* src, GstStructure* structure )
+        {
+            return Message( gst_message_new_custom( type, src, structure ) );
+        }
+        inline BasicMessage BasicCustom( GstMessageType type, GstObject* src, GstStructure* structure )
+        {
+            return BasicMessage( gst_message_new_custom( type, src, structure ) );
+        }
+
+
         inline Message Eos( GstObject* src )
         {
             return Message( gst_message_new_eos( src ) );
@@ -319,6 +593,144 @@ namespace Harlinn::Media::GStreamer
         {
             return BasicMessage( gst_message_new_step_start( src, active, format, amount, rate, flush, intermediate ) );
         }
+
+        inline Message Qos( GstObject* src, bool live, UInt64 runningTime, UInt64 streamTime, UInt64 timestamp, UInt64 duration )
+        {
+            return Message( gst_message_new_qos( src, live, runningTime, streamTime, timestamp, duration ) );
+        }
+        inline BasicMessage BasicQos( GstObject* src, bool live, UInt64 runningTime, UInt64 streamTime, UInt64 timestamp, UInt64 duration )
+        {
+            return BasicMessage( gst_message_new_qos( src, live, runningTime, streamTime, timestamp, duration ) );
+        }
+
+        inline Message Progress( GstObject* src, GstProgressType type, const char* code, const char* text )
+        {
+            return Message( gst_message_new_progress( src, type, code, text ) );
+        }
+        inline BasicMessage BasicProgress( GstObject* src, GstProgressType type, const char* code, const char* text )
+        {
+            return BasicMessage( gst_message_new_progress( src, type, code, text ) );
+        }
+
+        inline Message Toc( GstObject* src, GstToc* toc, bool updated )
+        {
+            return Message( gst_message_new_toc( src, toc, updated ) );
+        }
+        inline BasicMessage BasicToc( GstObject* src, GstToc* toc, bool updated )
+        {
+            return BasicMessage( gst_message_new_toc( src, toc, updated ) );
+        }
+
+        inline Message ResetTime( GstObject* src, GstClockTime runningTime )
+        {
+            return Message( gst_message_new_reset_time( src, runningTime ) );
+        }
+        inline BasicMessage BasicResetTime( GstObject* src, GstClockTime runningTime )
+        {
+            return BasicMessage( gst_message_new_reset_time( src, runningTime ) );
+        }
+
+        inline Message StreamStart( GstObject* src )
+        {
+            return Message( gst_message_new_stream_start( src ) );
+        }
+        inline BasicMessage BasicStreamStart( GstObject* src )
+        {
+            return BasicMessage( gst_message_new_stream_start( src ) );
+        }
+
+        inline Message NeedContext( GstObject* src, const char* contextType )
+        {
+            return Message( gst_message_new_need_context( src, contextType )  );
+        }
+        inline BasicMessage BasicNeedContext( GstObject* src, const char* contextType )
+        {
+            return BasicMessage( gst_message_new_need_context( src, contextType ) );
+        }
+
+        inline Message HaveContext( GstObject* src, GstContext* context )
+        {
+            return Message( gst_message_new_have_context( src, context ) );
+        }
+        inline BasicMessage BasicHaveContext( GstObject* src, GstContext* context )
+        {
+            return BasicMessage( gst_message_new_have_context( src, context ) );
+        }
+
+        inline Message DeviceAdded( GstObject* src, GstDevice* device )
+        {
+            return Message( gst_message_new_device_added( src, device ) );
+        }
+        inline BasicMessage BasicDeviceAdded( GstObject* src, GstDevice* device )
+        {
+            return BasicMessage( gst_message_new_device_added( src, device ) );
+        }
+
+        inline Message DeviceRemoved( GstObject* src, GstDevice* device )
+        {
+            return Message( gst_message_new_device_removed( src, device ) );
+        }
+        inline BasicMessage BasicDeviceRemoved( GstObject* src, GstDevice* device )
+        {
+            return BasicMessage( gst_message_new_device_removed( src, device ) );
+        }
+
+        inline Message DeviceChanged( GstObject* src, GstDevice* device, GstDevice* changedDevice )
+        {
+            return Message( gst_message_new_device_changed( src, device, changedDevice ) );
+        }
+        inline BasicMessage BasicDeviceChanged( GstObject* src, GstDevice* device, GstDevice* changedDevice )
+        {
+            return BasicMessage( gst_message_new_device_changed( src, device, changedDevice ) );
+        }
+
+        inline Message PropertyNotify( GstObject* src, const char* propertyName, GValue* propertyValue )
+        {
+            return Message( gst_message_new_property_notify( src, propertyName, propertyValue ) );
+        }
+        inline BasicMessage BasicPropertyNotify( GstObject* src, const char* propertyName, GValue* propertyValue )
+        {
+            return BasicMessage( gst_message_new_property_notify( src, propertyName, propertyValue ) );
+        }
+
+        inline Message StreamCollection( GstObject* src, GstStreamCollection* collection )
+        {
+            return Message( gst_message_new_stream_collection( src, collection ) );
+        }
+        inline BasicMessage BasicStreamCollection( GstObject* src, GstStreamCollection* collection )
+        {
+            return BasicMessage( gst_message_new_stream_collection( src, collection ) );
+        }
+
+        inline Message StreamsSelected( GstObject* src, GstStreamCollection* collection )
+        {
+            return Message( gst_message_new_streams_selected( src, collection ) );
+        }
+        inline BasicMessage BasicStreamsSelected( GstObject* src, GstStreamCollection* collection )
+        {
+            return BasicMessage( gst_message_new_streams_selected( src, collection ) );
+        }
+
+        inline Message Redirect( GstObject* src, const char* location, GstTagList* tagList, const GstStructure* entryStruct )
+        {
+            return Message( gst_message_new_redirect( src, location, tagList, entryStruct ) );
+        }
+        inline BasicMessage BasicRedirect( GstObject* src, const char* location, GstTagList* tagList, const GstStructure* entryStruct )
+        {
+            return BasicMessage( gst_message_new_redirect( src, location, tagList, entryStruct ) );
+        }
+
+        inline Message InstantRateRequest( GstObject* src, double rateMultiplier )
+        {
+            return Message( gst_message_new_instant_rate_request( src, rateMultiplier ) );
+        }
+        inline BasicMessage BasicInstantRateRequest( GstObject* src, double rateMultiplier )
+        {
+            return BasicMessage( gst_message_new_instant_rate_request( src, rateMultiplier ) );
+        }
+
+
+
     }
 
 

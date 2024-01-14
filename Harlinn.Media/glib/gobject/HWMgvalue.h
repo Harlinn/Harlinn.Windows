@@ -18,14 +18,12 @@
    limitations under the License.
 */
 
-#include "HWMgparam.h"
+#include "HWMgforwards.h"
 #include <glib/HWMgvariant.h>
 
 
 namespace Harlinn::Media::GLib
 {
-    class Object;
-
     enum class ValueType
     {
         Invalid = G_TYPE_INVALID,
@@ -647,33 +645,6 @@ namespace Harlinn::Media::GLib
     };
 
     static_assert( sizeof( Value ) == sizeof( GValue ) );
-
-    inline Value ParamSpec::DefaultValue( ) const
-    {
-        Value result( g_param_spec_get_default_value( get( ) ) );
-        return result;
-    }
-
-    inline void ParamSpec::SetDefaultValue( const Value& defaultValue )
-    {
-        g_param_value_set_default( get( ), const_cast<Value*>( &defaultValue ) );
-    }
-
-    inline bool ParamSpec::IsDefault( const Value& value ) const
-    {
-        return g_param_value_defaults( get( ), &value ) != 0;
-    }
-
-    inline bool ParamSpec::EnsureValid( Value& value ) const
-    {
-        return g_param_value_validate( get( ), &value );
-    }
-
-    inline bool ParamSpec::IsValid( const Value& value ) const
-    {
-        return g_param_value_is_valid( get( ), &value );
-    }
-
 
 
 }

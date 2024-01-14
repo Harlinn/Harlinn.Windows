@@ -35,7 +35,42 @@ namespace Harlinn::Media::GStreamer
     using BasicPad = Internal::PadImpl<BasicObject>;
     using Pad = Internal::PadImpl<Object>;
 
-    
+    static_assert( IsPad<BasicPad> );
+    static_assert( IsPad<Pad> );
+
+
+    namespace Internal
+    {
+        template<typename BaseT>
+        class ProxyPadImpl : public BaseT
+        {
+        public:
+            using Base = BaseT;
+            HWM_GOBJECT_IMPLEMENT_STANDARD_MEMBERS( ProxyPadImpl, GstProxyPad )
+        };
+    }
+    using BasicProxyPad = Internal::ProxyPadImpl<BasicPad>;
+    using ProxyPad = Internal::ProxyPadImpl<Pad>;
+
+    static_assert( IsProxyPad<BasicProxyPad> );
+    static_assert( IsProxyPad<ProxyPad> );
+
+    namespace Internal
+    {
+        template<typename BaseT>
+        class GhostPadImpl : public BaseT
+        {
+        public:
+            using Base = BaseT;
+            HWM_GOBJECT_IMPLEMENT_STANDARD_MEMBERS( GhostPadImpl, GstGhostPad )
+        };
+    }
+    using BasicGhostPad = Internal::GhostPadImpl<BasicProxyPad>;
+    using GhostPad = Internal::GhostPadImpl<ProxyPad>;
+
+    static_assert( IsGhostPad<BasicGhostPad> );
+    static_assert( IsGhostPad<GhostPad> );
+
 
 }
 

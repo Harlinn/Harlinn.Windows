@@ -20,7 +20,7 @@
 
 #include "HWMgtype.h"
 #include "HWMgvalue.h"
-#include "HWMgbinding.h"
+
 
 namespace Harlinn::Media::GLib
 {

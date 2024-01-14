@@ -1,7 +1,6 @@
 #pragma once 
 #ifndef HARLINN_MEDIA_GLIB_GOBJECT_HWMGPARAM_H_
 #define HARLINN_MEDIA_GLIB_GOBJECT_HWMGPARAM_H_
-
 /*
    Copyright 2024 Espen Harlinn
 
@@ -18,92 +17,109 @@
    limitations under the License.
 */
 
-#include <glib/HWMgmemory.h>
+#include "HWMgobject.h"
 
 namespace Harlinn::Media::GLib
 {
-    class Value;
-    class ParamSpec : public ReferenceBase<ParamSpec, GParamSpec>
+    namespace Internal
     {
-    public:
-        using Base = ReferenceBase<ParamSpec, GParamSpec>;
-
-        ParamSpec( ) = default;
-        explicit ParamSpec( WrappedType* impl, ReferenceType referenceType = ReferenceType::None )
-            : Base( impl, referenceType )
-        { }
-
-        const char* Blurb( ) const
+        template<typename BaseT>
+        class ParamSpecImpl : public BaseT
         {
-            return g_param_spec_get_blurb( get( ) );
-        }
+        public:
+            using Base = BaseT;
+            HWM_GOBJECT_IMPLEMENT_STANDARD_MEMBERS( ParamSpecImpl, GParamSpec )
 
-        Value DefaultValue( ) const;
-        void SetDefaultValue( const Value& defaultValue );
+            const char* Blurb( ) const
+            {
+                return g_param_spec_get_blurb( get( ) );
+            }
 
-        const char* Name( ) const
-        {
-            return g_param_spec_get_name( get( ) );
-        }
+            Value DefaultValue( ) const
+            {
+                Value result( g_param_spec_get_default_value( get( ) ) );
+                return result;
+            }
+            void SetDefaultValue( const Value& defaultValue ) const
+            {
+                g_param_value_set_default( get( ), const_cast< Value* >( &defaultValue ) );
+            }
 
-        GQuark NameQuark( ) const
-        {
-            return g_param_spec_get_name_quark( get( ) );
-        }
+            const char* Name( ) const
+            {
+                return g_param_spec_get_name( get( ) );
+            }
 
-        const char* Nick( ) const
-        {
-            return g_param_spec_get_nick( get( ) );
-        }
+            GQuark NameQuark( ) const
+            {
+                return g_param_spec_get_name_quark( get( ) );
+            }
 
-        gpointer QData( GQuark quark ) const
-        {
-            return g_param_spec_get_qdata( get( ), quark );
-        }
+            const char* Nick( ) const
+            {
+                return g_param_spec_get_nick( get( ) );
+            }
 
-        gpointer StealQData( GQuark quark ) const
-        {
-            return g_param_spec_steal_qdata( get( ), quark );
-        }
+            gpointer QData( GQuark quark ) const
+            {
+                return g_param_spec_get_qdata( get( ), quark );
+            }
 
-        void SetQData( GQuark quark, gpointer qdata )
-        {
-            g_param_spec_set_qdata( get( ), quark, qdata );
-        }
+            gpointer StealQData( GQuark quark ) const
+            {
+                return g_param_spec_steal_qdata( get( ), quark );
+            }
 
-        void SetQData( GQuark quark, gpointer qdata, GDestroyNotify destroyNotify )
-        {
-            g_param_spec_set_qdata_full( get( ), quark, qdata, destroyNotify );
-        }
+            void SetQData( GQuark quark, gpointer qdata ) const
+            {
+                g_param_spec_set_qdata( get( ), quark, qdata );
+            }
 
-        GParamSpec* GetRedirectTarget( ) const
-        {
-            return g_param_spec_get_redirect_target( get( ) );
-        }
+            void SetQData( GQuark quark, gpointer qdata, GDestroyNotify destroyNotify ) const
+            {
+                g_param_spec_set_qdata_full( get( ), quark, qdata, destroyNotify );
+            }
 
-
-        bool IsDefault( const GValue* value ) const
-        {
-            return g_param_value_defaults( get( ), value ) != 0;
-        }
-        bool IsDefault( const Value& value ) const;
-
-        bool EnsureValid( GValue* value ) const
-        {
-            return g_param_value_validate( get( ), value );
-        }
-
-        bool EnsureValid( Value& value ) const;
-        
-
-        bool IsValid( const GValue* value ) const
-        {
-            return g_param_value_is_valid( get( ), value );
-        }
-        bool IsValid( const Value& value ) const;
+            GParamSpec* GetRedirectTarget( ) const
+            {
+                return g_param_spec_get_redirect_target( get( ) );
+            }
 
 
-    };
+            bool IsDefault( const GValue* value ) const
+            {
+                return g_param_value_defaults( get( ), value ) != 0;
+            }
+            bool IsDefault( const Value& value ) const
+            {
+                return g_param_value_defaults( get( ), &value ) != 0;
+            }
+
+            bool EnsureValid( GValue* value ) const
+            {
+                return g_param_value_validate( get( ), value );
+            }
+
+            bool EnsureValid( Value& value ) const
+            {
+                return g_param_value_validate( get( ), &value );
+            }
+
+
+            bool IsValid( const GValue* value ) const
+            {
+                return g_param_value_is_valid( get( ), value );
+            }
+            bool IsValid( const Value& value ) const
+            {
+                return g_param_value_is_valid( get( ), &value );
+            }
+
+
+        };
+    }
+    using BasicParamSpec = Internal::ParamSpecImpl<BasicObject>;
+    using ParamSpec = Internal::ParamSpecImpl<Object>;
 }
 
 #endif

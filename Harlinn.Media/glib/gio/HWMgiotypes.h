@@ -21,9 +21,7 @@
 
 namespace Harlinn::Media::GLib::GIO
 {
-    class AppLaunchContext;
-    class AppInfo;
-    class BufferedInputStream;
+    
 
 }
 

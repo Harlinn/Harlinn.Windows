@@ -103,6 +103,8 @@ namespace Harlinn::Media::GLib
         }
     };
 
+
+
     template<>
     struct ObjectTraits<GClosure> : public SimpleObjectTraits< ObjectTraits<GClosure>, GClosure >
     {
@@ -214,6 +216,10 @@ namespace Harlinn::Media::GLib
             g_thread_unref( wrapped );
         }
     };
+
+
+
+
 
 
     template<typename T>

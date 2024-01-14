@@ -507,6 +507,144 @@
     <ClInclude Include="gst\HWMGstTagList.h">
       <Filter>gst</Filter>
     </ClInclude>
+    <ClInclude Include="gst\HWMGstStream.h">
+      <Filter>gst</Filter>
+    </ClInclude>
+    <ClInclude Include="gst\HWMGstBufferList.h">
+      <Filter>gst</Filter>
+    </ClInclude>
+    <ClInclude Include="gst\HWMGstBufferPool.h">
+      <Filter>gst</Filter>
+    </ClInclude>
+    <ClInclude Include="gst\HWMGstCaps.h">
+      <Filter>gst</Filter>
+    </ClInclude>
+    <ClInclude Include="gst\HWMGstControlSource.h">
+      <Filter>gst</Filter>
+    </ClInclude>
+    <ClInclude Include="gst\HWMGstDevice.h">
+      <Filter>gst</Filter>
+    </ClInclude>
+    <ClInclude Include="gst\HWMGstDeviceMonitor.h">
+      <Filter>gst</Filter>
+    </ClInclude>
+    <ClInclude Include="gst\HWMGstDeviceProvider.h">
+      <Filter>gst</Filter>
+    </ClInclude>
+    <ClInclude Include="gst\HWMGstDeviceProviderFactory.h">
+      <Filter>gst</Filter>
+    </ClInclude>
+    <ClInclude Include="gst\HWMGstDynamicTypeFactory.h">
+      <Filter>gst</Filter>
+    </ClInclude>
+    <ClInclude Include="gst\HWMGstEvent.h">
+      <Filter>gst</Filter>
+    </ClInclude>
+    <ClInclude Include="gst\HWMGstPromise.h">
+      <Filter>gst</Filter>
+    </ClInclude>
+    <ClInclude Include="gst\HWMGstTask.h">
+      <Filter>gst</Filter>
+    </ClInclude>
+    <ClInclude Include="gst\HWMGstTaskPool.h">
+      <Filter>gst</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\gobject\HWMgforwards.h">
+      <Filter>glib\gobject</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\gio\HWMgioforwards.h">
+      <Filter>glib\gio</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\gobject\HWMgbindinggroup.h">
+      <Filter>glib\gobject</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\gio\HWMgiostream.h">
+      <Filter>glib\gio</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\gio\HWMGInputStream.h">
+      <Filter>glib\gio</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\gio\HWMGOutputStream.h">
+      <Filter>glib\gio</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\gio\HWMGApplication.h">
+      <Filter>glib\gio</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\gio\HWMGAppInfoMonitor.h">
+      <Filter>glib\gio</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\gio\HWMGAppLaunchContext.h">
+      <Filter>glib\gio</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\gio\HWMGApplicationCommandLine.h">
+      <Filter>glib\gio</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\gio\HWMGFilterInputStream.h">
+      <Filter>glib\gio</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\gio\HWMGFilterOutputStream.h">
+      <Filter>glib\gio</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\gio\HWMGBufferedInputStream.h">
+      <Filter>glib\gio</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\gio\HWMGBufferedOutputStream.h">
+      <Filter>glib\gio</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\gio\HWMGCancellable.h">
+      <Filter>glib\gio</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\gio\HWMGCharsetConverter.h">
+      <Filter>glib\gio</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\gio\HWMGConverterInputStream.h">
+      <Filter>glib\gio</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\gio\HWMGConverterOutputStream.h">
+      <Filter>glib\gio</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\gio\HWMGDataInputStream.h">
+      <Filter>glib\gio</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\gio\HWMGDataOutputStream.h">
+      <Filter>glib\gio</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\gio\HWMGSocket.h">
+      <Filter>glib\gio</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\gio\HWMGSocketConnection.h">
+      <Filter>glib\gio</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\gio\HWMGSocketClient.h">
+      <Filter>glib\gio</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\gio\HWMGSocketListener.h">
+      <Filter>glib\gio</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\gio\HWMGSocketControlMessage.h">
+      <Filter>glib\gio</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\gio\HWMGTask.h">
+      <Filter>glib\gio</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\gio\HWMGSocketService.h">
+      <Filter>glib\gio</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\gio\HWMGResolver.h">
+      <Filter>glib\gio</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\gio\HWMGTlsCertificate.h">
+      <Filter>glib\gio</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\gio\HWMGTcpConnection.h">
+      <Filter>glib\gio</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\gio\HWMGTlsConnection.h">
+      <Filter>glib\gio</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\gio\HWMGTlsDatabase.h">
+      <Filter>glib\gio</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -712,6 +850,150 @@
     </ClCompile>
     <ClCompile Include="gst\HWMGstMessage.cpp">
       <Filter>gst</Filter>
+    </ClCompile>
+    <ClCompile Include="gst\HWMGstBufferList.cpp">
+      <Filter>gst</Filter>
+    </ClCompile>
+    <ClCompile Include="gst\HWMGstBufferPool.cpp">
+      <Filter>gst</Filter>
+    </ClCompile>
+    <ClCompile Include="gst\HWMGstCaps.cpp">
+      <Filter>gst</Filter>
+    </ClCompile>
+    <ClCompile Include="gst\HWMGstControlSource.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="gst\HWMGstDevice.cpp">
+      <Filter>gst</Filter>
+    </ClCompile>
+    <ClCompile Include="gst\HWMGstDeviceMonitor.cpp">
+      <Filter>gst</Filter>
+    </ClCompile>
+    <ClCompile Include="gst\HWMGstDeviceProvider.cpp">
+      <Filter>gst</Filter>
+    </ClCompile>
+    <ClCompile Include="gst\HWMGstDeviceProviderFactory.cpp">
+      <Filter>gst</Filter>
+    </ClCompile>
+    <ClCompile Include="gst\HWMGstDynamicTypeFactory.cpp">
+      <Filter>gst</Filter>
+    </ClCompile>
+    <ClCompile Include="gst\HWMGstElementFactory.cpp">
+      <Filter>gst</Filter>
+    </ClCompile>
+    <ClCompile Include="gst\HWMGstEvent.cpp">
+      <Filter>gst</Filter>
+    </ClCompile>
+    <ClCompile Include="gst\HWMGstPromise.cpp">
+      <Filter>gst</Filter>
+    </ClCompile>
+    <ClCompile Include="gst\HWMGstStream.cpp">
+      <Filter>gst</Filter>
+    </ClCompile>
+    <ClCompile Include="gst\HWMGstClock.cpp">
+      <Filter>gst</Filter>
+    </ClCompile>
+    <ClCompile Include="gst\HWMGstTask.cpp">
+      <Filter>gst</Filter>
+    </ClCompile>
+    <ClCompile Include="gst\HWMGstTaskPool.cpp">
+      <Filter>gst</Filter>
+    </ClCompile>
+    <ClCompile Include="glib\gobject\HWMgbinding.cpp">
+      <Filter>glib\gobject</Filter>
+    </ClCompile>
+    <ClCompile Include="glib\gobject\HWMgbindinggroup.cpp">
+      <Filter>glib\gobject</Filter>
+    </ClCompile>
+    <ClCompile Include="glib\gobject\HWMgparam.cpp">
+      <Filter>glib\gobject</Filter>
+    </ClCompile>
+    <ClCompile Include="glib\gio\HWMgiostream.cpp">
+      <Filter>glib\gio</Filter>
+    </ClCompile>
+    <ClCompile Include="glib\gio\HWMGApplication.cpp">
+      <Filter>glib\gio</Filter>
+    </ClCompile>
+    <ClCompile Include="glib\gio\HWMGInputStream.cpp">
+      <Filter>glib\gio</Filter>
+    </ClCompile>
+    <ClCompile Include="glib\gio\HWMGOutputStream.cpp">
+      <Filter>glib\gio</Filter>
+    </ClCompile>
+    <ClCompile Include="glib\gio\HWMGAppInfoMonitor.cpp">
+      <Filter>glib\gio</Filter>
+    </ClCompile>
+    <ClCompile Include="glib\gio\HWMGAppLaunchContext.cpp">
+      <Filter>glib\gio</Filter>
+    </ClCompile>
+    <ClCompile Include="glib\gio\HWMGApplicationCommandLine.cpp">
+      <Filter>glib\gio</Filter>
+    </ClCompile>
+    <ClCompile Include="glib\gio\HWMGFilterInputStream.cpp">
+      <Filter>glib\gio</Filter>
+    </ClCompile>
+    <ClCompile Include="glib\gio\HWMGFilterOutputStream.cpp">
+      <Filter>glib\gio</Filter>
+    </ClCompile>
+    <ClCompile Include="glib\gio\HWMGBufferedInputStream.cpp">
+      <Filter>glib\gio</Filter>
+    </ClCompile>
+    <ClCompile Include="glib\gio\HWMGBufferedOutputStream.cpp">
+      <Filter>glib\gio</Filter>
+    </ClCompile>
+    <ClCompile Include="glib\gio\HWMGCancellable.cpp">
+      <Filter>glib\gio</Filter>
+    </ClCompile>
+    <ClCompile Include="glib\gio\HWMGCharsetConverter.cpp">
+      <Filter>glib\gio</Filter>
+    </ClCompile>
+    <ClCompile Include="glib\gio\HWMGConverterInputStream.cpp">
+      <Filter>glib\gio</Filter>
+    </ClCompile>
+    <ClCompile Include="glib\gio\HWMGConverterOutputStream.cpp">
+      <Filter>glib\gio</Filter>
+    </ClCompile>
+    <ClCompile Include="glib\gio\HWMGDataInputStream.cpp">
+      <Filter>glib\gio</Filter>
+    </ClCompile>
+    <ClCompile Include="glib\gio\HWMGDataOutputStream.cpp">
+      <Filter>glib\gio</Filter>
+    </ClCompile>
+    <ClCompile Include="glib\gio\HWMGSocket.cpp">
+      <Filter>glib\gio</Filter>
+    </ClCompile>
+    <ClCompile Include="glib\gio\HWMGSocketConnection.cpp">
+      <Filter>glib\gio</Filter>
+    </ClCompile>
+    <ClCompile Include="glib\gio\HWMGSocketClient.cpp">
+      <Filter>glib\gio</Filter>
+    </ClCompile>
+    <ClCompile Include="glib\gio\HWMGSocketListener.cpp">
+      <Filter>glib\gio</Filter>
+    </ClCompile>
+    <ClCompile Include="glib\gio\HWMGSocketControlMessage.cpp">
+      <Filter>glib\gio</Filter>
+    </ClCompile>
+    <ClCompile Include="glib\gio\HWMGTask.cpp">
+      <Filter>glib\gio</Filter>
+    </ClCompile>
+    <ClCompile Include="glib\gio\HWMGSocketService.cpp">
+      <Filter>glib\gio</Filter>
+    </ClCompile>
+    <ClCompile Include="glib\gio\HWMGResolver.cpp">
+      <Filter>glib\gio</Filter>
+    </ClCompile>
+    <ClCompile Include="glib\gio\HWMGTlsCertificate.cpp">
+      <Filter>glib\gio</Filter>
+    </ClCompile>
+    <ClCompile Include="glib\gio\HWMGTcpConnection.cpp">
+      <Filter>glib\gio</Filter>
+    </ClCompile>
+    <ClCompile Include="glib\gio\HWMGTlsConnection.cpp">
+      <Filter>glib\gio</Filter>
+    </ClCompile>
+    <ClCompile Include="glib\gio\HWMGTlsDatabase.cpp">
+      <Filter>glib\gio</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

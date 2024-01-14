@@ -24,8 +24,15 @@ namespace Harlinn::Media::GStreamer
 {
     class BasicObject;
     class Object;
+
+    template<typename T>
+    constexpr bool IsObject = std::is_base_of_v<BasicObject, T>;
+
     class BasicMiniObject;
     class MiniObject;
+
+    template<typename T>
+    constexpr bool IsMiniObject = std::is_base_of_v<BasicMiniObject, T>;
 
     class BasicAtomicQueue;
     class AtomicQueue;
@@ -71,6 +78,17 @@ namespace Harlinn::Media::GStreamer
     namespace Internal
     {
         template<typename BaseT>
+        class BufferPoolImpl;
+    }
+    using BasicBufferPool = Internal::BufferPoolImpl<BasicObject>;
+    using BufferPool = Internal::BufferPoolImpl<Object>;
+
+    template<typename T>
+    constexpr bool IsBufferPool = std::is_base_of_v<BasicBufferPool, T> || std::is_base_of_v<BufferPool, T>;
+
+    namespace Internal
+    {
+        template<typename BaseT>
         class BusImpl;
     }
     using BasicBus = Internal::BusImpl<BasicObject>;
@@ -94,6 +112,17 @@ namespace Harlinn::Media::GStreamer
     namespace Internal
     {
         template<typename BaseT>
+        class SystemClockImpl;
+    }
+    using BasicSystemClock = Internal::SystemClockImpl<BasicClock>;
+    using SystemClock = Internal::SystemClockImpl<Clock>;
+
+    template<typename T>
+    constexpr bool IsSystemClock = std::is_base_of_v<BasicSystemClock, T> || std::is_base_of_v<SystemClock, T>;
+
+    namespace Internal
+    {
+        template<typename BaseT>
         class ControlBindingImpl;
     }
 
@@ -106,6 +135,50 @@ namespace Harlinn::Media::GStreamer
     namespace Internal
     {
         template<typename BaseT>
+        class ControlSourceImpl;
+    }
+    using BasicControlSource = Internal::ControlSourceImpl<BasicObject>;
+    using ControlSource = Internal::ControlSourceImpl<Object>;
+
+    template<typename T>
+    constexpr bool IsControlSource = std::is_base_of_v<BasicControlSource, T> || std::is_base_of_v<ControlSource, T>;
+
+    namespace Internal
+    {
+        template<typename BaseT>
+        class DeviceImpl;
+    }
+    using BasicDevice = Internal::DeviceImpl<BasicObject>;
+    using Device = Internal::DeviceImpl<Object>;
+
+    template<typename T>
+    constexpr bool IsDevice = std::is_base_of_v<BasicDevice, T> || std::is_base_of_v<Device, T>;
+
+    namespace Internal
+    {
+        template<typename BaseT>
+        class DeviceMonitorImpl;
+    }
+    using BasicDeviceMonitor = Internal::DeviceMonitorImpl<BasicObject>;
+    using DeviceMonitor = Internal::DeviceMonitorImpl<Object>;
+
+    template<typename T>
+    constexpr bool IsDeviceMonitor = std::is_base_of_v<BasicDeviceMonitor, T> || std::is_base_of_v<DeviceMonitor, T>;
+
+    namespace Internal
+    {
+        template<typename BaseT>
+        class DeviceProviderImpl;
+    }
+    using BasicDeviceProvider = Internal::DeviceProviderImpl<BasicObject>;
+    using DeviceProvider = Internal::DeviceProviderImpl<Object>;
+
+    template<typename T>
+    constexpr bool IsDeviceProvider = std::is_base_of_v<BasicDeviceProvider, T> || std::is_base_of_v<DeviceProvider, T>;
+
+    namespace Internal
+    {
+        template<typename BaseT>
         class PluginFeatureImpl;
     }
     using BasicPluginFeature = Internal::PluginFeatureImpl<BasicObject>;
@@ -113,6 +186,30 @@ namespace Harlinn::Media::GStreamer
 
     template<typename T>
     constexpr bool IsPluginFeature = std::is_base_of_v<BasicPluginFeature, T> || std::is_base_of_v<PluginFeature, T>;
+
+
+    namespace Internal
+    {
+        template<typename BaseT>
+        class DeviceProviderFactoryImpl;
+    }
+    using BasicDeviceProviderFactory = Internal::DeviceProviderFactoryImpl<BasicPluginFeature>;
+    using DeviceProviderFactory = Internal::DeviceProviderFactoryImpl<PluginFeature>;
+
+    template<typename T>
+    constexpr bool IsDeviceProviderFactory = std::is_base_of_v<BasicDeviceProviderFactory, T> || std::is_base_of_v<DeviceProviderFactory, T>;
+
+    namespace Internal
+    {
+        template<typename BaseT>
+        class DynamicTypeFactoryImpl;
+    }
+    using BasicDynamicTypeFactory = Internal::DynamicTypeFactoryImpl<BasicPluginFeature>;
+    using DynamicTypeFactory = Internal::DynamicTypeFactoryImpl<PluginFeature>;
+
+    template<typename T>
+    constexpr bool IsDynamicTypeFactory = std::is_base_of_v<BasicDynamicTypeFactory, T> || std::is_base_of_v<DynamicTypeFactory, T>;
+
 
     namespace Internal
     {
@@ -124,6 +221,8 @@ namespace Harlinn::Media::GStreamer
 
     template<typename T>
     constexpr bool IsElementFactory = std::is_base_of_v<BasicElementFactory, T> || std::is_base_of_v<ElementFactory, T>;
+
+    
 
 
     namespace Internal
@@ -137,6 +236,28 @@ namespace Harlinn::Media::GStreamer
 
     template<typename T>
     constexpr bool IsPad = std::is_base_of_v<BasicPad, T> || std::is_base_of_v<Pad, T>;
+
+    namespace Internal
+    {
+        template<typename BaseT>
+        class ProxyPadImpl;
+    }
+    using BasicProxyPad = Internal::ProxyPadImpl<BasicPad>;
+    using ProxyPad = Internal::ProxyPadImpl<Pad>;
+
+    template<typename T>
+    constexpr bool IsProxyPad = std::is_base_of_v<BasicProxyPad, T> || std::is_base_of_v<ProxyPad, T>;
+
+    namespace Internal
+    {
+        template<typename BaseT>
+        class GhostPadImpl;
+    }
+    using BasicGhostPad = Internal::GhostPadImpl<BasicProxyPad>;
+    using GhostPad = Internal::GhostPadImpl<ProxyPad>;
+
+    template<typename T>
+    constexpr bool IsGhostPad = std::is_base_of_v<BasicGhostPad, T> || std::is_base_of_v<GhostPad, T>;
 
     namespace Internal
     {
@@ -175,6 +296,50 @@ namespace Harlinn::Media::GStreamer
     template<typename T>
     constexpr bool IsPipeline = std::is_base_of_v<BasicPipeline, T> || std::is_base_of_v<Pipeline, T>;
 
+    namespace Internal
+    {
+        template<typename BaseT>
+        class StreamImpl;
+    }
+    using BasicStream = Internal::StreamImpl<BasicObject>;
+    using Stream = Internal::StreamImpl<Object>;
+
+    template<typename T>
+    constexpr bool IsStream = std::is_base_of_v<BasicStream, T> || std::is_base_of_v<Stream, T>;
+
+    namespace Internal
+    {
+        template<typename BaseT>
+        class TaskImpl;
+    }
+    using BasicTask = Internal::TaskImpl<BasicObject>;
+    using Task = Internal::TaskImpl<Object>;
+
+    template<typename T>
+    constexpr bool IsTask = std::is_base_of_v<BasicTask, T> || std::is_base_of_v<Task, T>;
+
+    namespace Internal
+    {
+        template<typename BaseT>
+        class TaskPoolImpl;
+    }
+    using BasicTaskPool = Internal::TaskPoolImpl<BasicObject>;
+    using TaskPool = Internal::TaskPoolImpl<Object>;
+
+    template<typename T>
+    constexpr bool IsTaskPool = std::is_base_of_v<BasicTaskPool, T> || std::is_base_of_v<TaskPool, T>;
+
+    namespace Internal
+    {
+        template<typename BaseT>
+        class SharedTaskPoolImpl;
+    }
+    using BasicSharedTaskPool = Internal::SharedTaskPoolImpl<BasicTaskPool>;
+    using SharedTaskPool = Internal::SharedTaskPoolImpl<TaskPool>;
+
+    template<typename T>
+    constexpr bool IsSharedTaskPool = std::is_base_of_v<BasicSharedTaskPool, T> || std::is_base_of_v<SharedTaskPool, T>;
+
 
     // Mini objects
 
@@ -200,6 +365,38 @@ namespace Harlinn::Media::GStreamer
     template<typename T>
     constexpr bool IsBuffer = std::is_base_of_v<BasicBuffer, T> || std::is_base_of_v<Buffer, T>;
 
+    namespace Internal
+    {
+        template<typename BaseT>
+        class BufferListImpl;
+    }
+    using BasicBufferList = Internal::BufferListImpl<BasicMiniObject>;
+    using BufferList = Internal::BufferListImpl<MiniObject>;
+
+    template<typename T>
+    constexpr bool IsBufferList = std::is_base_of_v<BasicBufferList, T> || std::is_base_of_v<BufferList, T>;
+
+    namespace Internal
+    {
+        template<typename BaseT>
+        class CapsImpl;
+    }
+    using BasicCaps = Internal::CapsImpl<BasicMiniObject>;
+    using Caps = Internal::CapsImpl<MiniObject>;
+
+    template<typename T>
+    constexpr bool IsCaps = std::is_base_of_v<BasicCaps, T> || std::is_base_of_v<Caps, T>;
+
+    namespace Internal
+    {
+        template<typename BaseT>
+        class EventImpl;
+    }
+    using BasicEvent = Internal::EventImpl<BasicMiniObject>;
+    using Event = Internal::EventImpl<MiniObject>;
+
+    template<typename T>
+    constexpr bool IsEvent = std::is_base_of_v<BasicEvent, T> || std::is_base_of_v<Event, T>;
 
     namespace Internal
     {
@@ -215,6 +412,17 @@ namespace Harlinn::Media::GStreamer
     namespace Internal
     {
         template<typename BaseT>
+        class PromiseImpl;
+    }
+    using BasicPromise = Internal::PromiseImpl<BasicMiniObject>;
+    using Promise = Internal::PromiseImpl<MiniObject>;
+
+    template<typename T>
+    constexpr bool IsPromise = std::is_base_of_v<BasicPromise, T> || std::is_base_of_v<Promise, T>;
+
+    namespace Internal
+    {
+        template<typename BaseT>
         class TagListImpl;
     }
 
@@ -223,6 +431,7 @@ namespace Harlinn::Media::GStreamer
 
     template<typename T>
     constexpr bool IsTagList = std::is_base_of_v<BasicTagList, T> || std::is_base_of_v<TagList, T>;
+
 
 }
 #endif
