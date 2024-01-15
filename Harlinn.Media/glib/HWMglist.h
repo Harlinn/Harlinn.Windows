@@ -18,18 +18,76 @@
 */
 
 #include <HWMDef.h>
+#include "HWMgtraits.h"
 
 namespace Harlinn::Media::GLib
 {
     template<typename T>
-    struct List
+    struct ListPointerEntry
     {
         T* data;
-        List* next;
-        List* prev;
+        ListPointerEntry* next;
+        ListPointerEntry* prev;
     };
 
-    static_assert( sizeof( List<void> ) == sizeof( GList ) );
+    static_assert( sizeof( ListPointerEntry<void> ) == sizeof( GList ) );
+
+    template<typename T>
+    class List
+    {
+    public:
+        using value_type = T;
+        using ValueType = value_type;
+        using EntryType = ListPointerEntry<ValueType>;
+        using Traits = ObjectTraits<ValueType>;
+    private:
+        EntryType* head_ = nullptr;
+    public:
+        List( ) = default;
+        List( EntryType* head )
+            : head_( head )
+        { }
+        List( GList* head )
+            : head_( reinterpret_cast< EntryType* >( head ) )
+        { }
+        List( const List& other ) = delete;
+        List( List&& other ) noexcept
+            : head_( other.head_ )
+        {
+            other.head_ = nullptr;
+        }
+
+
+        ~List( )
+        {
+            if ( head_ )
+            {
+                auto head = reinterpret_cast< GList* >( head_ );
+                head_ = nullptr;
+                g_list_free_full( g_steal_pointer( &head_ ), Traits::Unref );
+            }
+        }
+
+        List& operator = ( const List& other ) = delete;
+        List& operator = ( List&& other ) noexcept
+        {
+            std::swap( head_, other.head_ );
+            return *this;
+        }
+
+        EntryType* Head( ) const
+        {
+            return head_;
+        }
+
+        GList* get( ) const
+        {
+            return reinterpret_cast< GList* >( head_ );
+        }
+
+    };
+    
+
 
 }
 

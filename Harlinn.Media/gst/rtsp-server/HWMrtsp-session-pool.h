@@ -18,6 +18,8 @@
    limitations under the License.
 */
 
+#include <glib/HWMglist.h>
+#include <glib/HWMgmain.h>
 #include <glib/gobject/HWMgobject.h>
 #include "HWMrtsp-server-forwards.h"
 #include "HWMrtsp-session.h"
@@ -54,25 +56,72 @@ namespace Harlinn::Media::GStreamer::RtspServer
             {
                 return gst_rtsp_session_pool_get_max_sessions( get() );
             }
-            /*
-            guint gst_rtsp_session_pool_get_n_sessions( GstRTSPSessionPool* pool );
+
+            UInt32 NumberOfSessions( ) const
+            {
+                return gst_rtsp_session_pool_get_n_sessions( get( ) );
+            }
 
             // managing sessions 
+            RTSPSession Add( ) const
+            {
+                auto session = gst_rtsp_session_pool_create( get( ) );
+                if ( session )
+                {
+                    return RTSPSession( session );
+                }
+                return {};
+            }
 
-            GstRTSPSession* gst_rtsp_session_pool_create( GstRTSPSessionPool* pool );
+            RTSPSession Find( const char* sessionId ) const
+            {
+                auto session = gst_rtsp_session_pool_find( get( ), sessionId );
+                if ( session )
+                {
+                    return RTSPSession( session );
+                }
+                return {};
+            }
 
-            GstRTSPSession* gst_rtsp_session_pool_find( GstRTSPSessionPool* pool, const char* sessionid );
+            bool Remove( GstRTSPSession* session ) const
+            {
+                return gst_rtsp_session_pool_remove( get(), session ) != 0;
+            }
+            template<typename T>
+                requires IsRTSPSession<T>
+            bool Remove( const T& session ) const
+            {
+                Remove( reinterpret_cast< GstRTSPSession* >( session.get() ) );
+            }
 
-            gboolean gst_rtsp_session_pool_remove( GstRTSPSessionPool* pool, GstRTSPSession* sess );
 
             // perform session maintenance 
+            GLib::List<GstRTSPSession> SessionPoolFilterList( GstRTSPSessionPoolFilterFunc func, gpointer userData ) const
+            {
+                auto list = gst_rtsp_session_pool_filter( get( ), func, userData );
+                if ( list )
+                {
+                    return GLib::List<GstRTSPSession>( list );
+                }
+                return {};
+            }
 
-            GList* gst_rtsp_session_pool_filter( GstRTSPSessionPool* pool, GstRTSPSessionPoolFilterFunc func, gpointer userData );
 
-            guint gst_rtsp_session_pool_cleanup( GstRTSPSessionPool* pool );
+            UInt32 Cleanup( ) const
+            {
+                return gst_rtsp_session_pool_cleanup( get( ) );
+            }
 
-            GSource* gst_rtsp_session_pool_create_watch( GstRTSPSessionPool* pool );
-            */
+            GLib::Source CreateSource( ) const
+            {
+                auto source = gst_rtsp_session_pool_create_watch( get( ) );
+                if ( source )
+                {
+                    return GLib::Source( source );
+                }
+                return {};
+            }
+
         };
     }
 

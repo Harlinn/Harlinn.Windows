@@ -245,6 +245,21 @@ namespace Harlinn::Media::GStreamer::RtspServer
                 return Attach( context.get( ) );
             }
 
+            GLib::List<GstRTSPClient> ClientFilterList( GstRTSPServerClientFilterFunc func, gpointer userData ) const
+            {
+                auto list = gst_rtsp_server_client_filter( get( ), func, userData );
+                if ( list )
+                {
+                    return GLib::List<GstRTSPClient>( list );
+                }
+                return {};
+            }
+
+            GLib::List<GstRTSPClient> ClientList( ) const
+            {
+                return ClientFilterList( nullptr, nullptr );
+            }
+
         };
     }
 
