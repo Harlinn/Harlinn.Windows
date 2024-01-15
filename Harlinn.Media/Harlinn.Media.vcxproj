@@ -185,6 +185,9 @@
     <ClInclude Include="glib\gio\HWMGConverterInputStream.h" />
     <ClInclude Include="glib\gio\HWMGConverterOutputStream.h" />
     <ClInclude Include="glib\gio\HWMGDataOutputStream.h" />
+    <ClInclude Include="glib\gio\HWMGFileEnumerator.h" />
+    <ClInclude Include="glib\gio\HWMGFileInputStream.h" />
+    <ClInclude Include="glib\gio\HWMGFileOutputStream.h" />
     <ClInclude Include="glib\gio\HWMGFilterInputStream.h" />
     <ClInclude Include="glib\gio\HWMGFilterOutputStream.h" />
     <ClInclude Include="glib\gio\HWMGInputStream.h" />
@@ -193,6 +196,7 @@
     <ClInclude Include="glib\gio\HWMgiotypes.h" />
     <ClInclude Include="glib\gio\HWMGOutputStream.h" />
     <ClInclude Include="glib\gio\HWMGResolver.h" />
+    <ClInclude Include="glib\gio\HWMGSettings.h" />
     <ClInclude Include="glib\gio\HWMGSocket.h" />
     <ClInclude Include="glib\gio\HWMGSocketClient.h" />
     <ClInclude Include="glib\gio\HWMGSocketConnection.h" />
@@ -343,6 +347,7 @@
     <ClInclude Include="gst\rtsp-server\HWMrtsp-params.h" />
     <ClInclude Include="gst\rtsp-server\HWMrtsp-permissions.h" />
     <ClInclude Include="gst\rtsp-server\HWMrtsp-sdp.h" />
+    <ClInclude Include="gst\rtsp-server\HWMrtsp-server-forwards.h" />
     <ClInclude Include="gst\rtsp-server\HWMrtsp-server-object.h" />
     <ClInclude Include="gst\rtsp-server\HWMrtsp-server.h" />
     <ClInclude Include="gst\rtsp-server\HWMrtsp-session-media.h" />
@@ -389,12 +394,16 @@
     <ClCompile Include="glib\gio\HWMGConverterOutputStream.cpp" />
     <ClCompile Include="glib\gio\HWMGDataInputStream.cpp" />
     <ClCompile Include="glib\gio\HWMGDataOutputStream.cpp" />
+    <ClCompile Include="glib\gio\HWMGFileEnumerator.cpp" />
+    <ClCompile Include="glib\gio\HWMGFileInputStream.cpp" />
+    <ClCompile Include="glib\gio\HWMGFileOutputStream.cpp" />
     <ClCompile Include="glib\gio\HWMGFilterInputStream.cpp" />
     <ClCompile Include="glib\gio\HWMGFilterOutputStream.cpp" />
     <ClCompile Include="glib\gio\HWMGInputStream.cpp" />
     <ClCompile Include="glib\gio\HWMgiostream.cpp" />
     <ClCompile Include="glib\gio\HWMGOutputStream.cpp" />
     <ClCompile Include="glib\gio\HWMGResolver.cpp" />
+    <ClCompile Include="glib\gio\HWMGSettings.cpp" />
     <ClCompile Include="glib\gio\HWMGSocket.cpp" />
     <ClCompile Include="glib\gio\HWMGSocketClient.cpp" />
     <ClCompile Include="glib\gio\HWMGSocketConnection.cpp" />

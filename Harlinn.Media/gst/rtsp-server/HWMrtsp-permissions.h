@@ -19,6 +19,7 @@
 */
 
 #include "gst/HWMGstMiniObject.h"
+#include "HWMrtsp-server-forwards.h"
 
 namespace Harlinn::Media::GStreamer::RtspServer
 {

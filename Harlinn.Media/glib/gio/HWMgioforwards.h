@@ -147,6 +147,28 @@ namespace Harlinn::Media::GLib::GIO
     namespace Internal
     {
         template<typename BaseT>
+        class FileInputStreamImpl;
+    }
+    using BasicFileInputStream = Internal::FileInputStreamImpl<BasicInputStream>;
+    using FileInputStream = Internal::FileInputStreamImpl<InputStream>;
+
+    template<typename T>
+    constexpr bool IsFileInputStream = std::is_base_of_v<BasicFileInputStream, T> || std::is_base_of_v<FileInputStream, T>;
+
+    namespace Internal
+    {
+        template<typename BaseT>
+        class FileOutputStreamImpl;
+    }
+    using BasicFileOutputStream = Internal::FileOutputStreamImpl<BasicOutputStream>;
+    using FileOutputStream = Internal::FileOutputStreamImpl<OutputStream>;
+
+    template<typename T>
+    constexpr bool IsFileOutputStream = std::is_base_of_v<BasicFileOutputStream, T> || std::is_base_of_v<FileOutputStream, T>;
+
+    namespace Internal
+    {
+        template<typename BaseT>
         class ApplicationImpl;
     }
     using BasicApplication = Internal::ApplicationImpl<BasicObject>;
@@ -213,6 +235,17 @@ namespace Harlinn::Media::GLib::GIO
     namespace Internal
     {
         template<typename BaseT>
+        class FileEnumeratorImpl;
+    }
+    using BasicFileEnumerator = Internal::FileEnumeratorImpl<BasicObject>;
+    using FileEnumerator = Internal::FileEnumeratorImpl<Object>;
+
+    template<typename T>
+    constexpr bool IsFileEnumerator = std::is_base_of_v<BasicFileEnumerator, T> || std::is_base_of_v<FileEnumerator, T>;
+
+    namespace Internal
+    {
+        template<typename BaseT>
         class ResolverImpl;
     }
     using BasicResolver = Internal::ResolverImpl<BasicObject>;
@@ -220,6 +253,17 @@ namespace Harlinn::Media::GLib::GIO
 
     template<typename T>
     constexpr bool IsResolver = std::is_base_of_v<BasicResolver, T> || std::is_base_of_v<Resolver, T>;
+
+    namespace Internal
+    {
+        template<typename BaseT>
+        class SettingsImpl;
+    }
+    using BasicSettings = Internal::SettingsImpl<BasicObject>;
+    using Settings = Internal::SettingsImpl<Object>;
+
+    template<typename T>
+    constexpr bool IsSettings = std::is_base_of_v<BasicSettings, T> || std::is_base_of_v<Settings, T>;
 
     namespace Internal
     {

@@ -1,7 +1,6 @@
-#pragma once
-#ifndef HARLINN_MEDIA_GST_RTSP_SERVER_HWMRTSP_THREAD_POOL_H_
-#define HARLINN_MEDIA_GST_RTSP_SERVER_HWMRTSP_THREAD_POOL_H_
-
+#pragma once //HWMGFileInputStream.h
+#ifndef HARLINN_MEDIA_GLIB_GIO_HWMGFILEINPUTSTREAM_H_
+#define HARLINN_MEDIA_GLIB_GIO_HWMGFILEINPUTSTREAM_H_
 /*
    Copyright 2024 Espen Harlinn
 
@@ -18,25 +17,21 @@
    limitations under the License.
 */
 
-#include <glib/gobject/HWMgobject.h>
-#include "HWMrtsp-server-forwards.h"
+#include "HWMGInputStream.h"
 
-namespace Harlinn::Media::GStreamer::RtspServer
+namespace Harlinn::Media::GLib::GIO
 {
     namespace Internal
     {
         template<typename BaseT>
-        class RTSPThreadPoolImpl : public BaseT
+        class FileInputStreamImpl : public BaseT
         {
         public:
             using Base = BaseT;
-            HWM_GOBJECT_IMPLEMENT_STANDARD_MEMBERS( RTSPThreadPoolImpl, GstRTSPThreadPool )
+            HWM_GOBJECT_IMPLEMENT_STANDARD_MEMBERS( FileInputStreamImpl, GFileInputStream )
         };
     }
-
-    using BasicRTSPThreadPool = Internal::RTSPThreadPoolImpl<GLib::BasicObject>;
-    using RTSPThreadPool = Internal::RTSPThreadPoolImpl<GLib::Object>;
-
+    using BasicFileInputStream = Internal::FileInputStreamImpl<BasicInputStream>;
+    using FileInputStream = Internal::FileInputStreamImpl<InputStream>;
 }
 #endif
-

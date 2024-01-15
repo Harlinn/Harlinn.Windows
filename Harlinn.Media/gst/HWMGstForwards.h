@@ -19,6 +19,7 @@
 
 #include <HWMDef.h>
 #include "HWMGstTraits.h"
+#include <glib/gio/HWMgioforwards.h>
 
 namespace Harlinn::Media::GStreamer
 {

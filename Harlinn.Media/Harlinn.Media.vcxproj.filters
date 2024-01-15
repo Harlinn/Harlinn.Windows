@@ -645,6 +645,21 @@
     <ClInclude Include="glib\gio\HWMGTlsDatabase.h">
       <Filter>glib\gio</Filter>
     </ClInclude>
+    <ClInclude Include="glib\gio\HWMGSettings.h">
+      <Filter>glib\gio</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\gio\HWMGFileInputStream.h">
+      <Filter>glib\gio</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\gio\HWMGFileOutputStream.h">
+      <Filter>glib\gio</Filter>
+    </ClInclude>
+    <ClInclude Include="glib\gio\HWMGFileEnumerator.h">
+      <Filter>glib\gio</Filter>
+    </ClInclude>
+    <ClInclude Include="gst\rtsp-server\HWMrtsp-server-forwards.h">
+      <Filter>gst\rtsp-server</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -993,6 +1008,18 @@
       <Filter>glib\gio</Filter>
     </ClCompile>
     <ClCompile Include="glib\gio\HWMGTlsDatabase.cpp">
+      <Filter>glib\gio</Filter>
+    </ClCompile>
+    <ClCompile Include="glib\gio\HWMGSettings.cpp">
+      <Filter>glib\gio</Filter>
+    </ClCompile>
+    <ClCompile Include="glib\gio\HWMGFileInputStream.cpp">
+      <Filter>glib\gio</Filter>
+    </ClCompile>
+    <ClCompile Include="glib\gio\HWMGFileOutputStream.cpp">
+      <Filter>glib\gio</Filter>
+    </ClCompile>
+    <ClCompile Include="glib\gio\HWMGFileEnumerator.cpp">
       <Filter>glib\gio</Filter>
     </ClCompile>
   </ItemGroup>

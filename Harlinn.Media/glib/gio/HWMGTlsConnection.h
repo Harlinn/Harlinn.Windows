@@ -33,5 +33,6 @@ namespace Harlinn::Media::GLib::GIO
     }
     using BasicTlsConnection = Internal::TlsConnectionImpl<BasicIOStream>;
     using TlsConnection = Internal::TlsConnectionImpl<IOStream>;
+
 }
 #endif

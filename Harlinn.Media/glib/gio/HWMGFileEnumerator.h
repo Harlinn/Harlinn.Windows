@@ -1,7 +1,6 @@
-#pragma once
-#ifndef HARLINN_MEDIA_GST_RTSP_SERVER_HWMRTSP_THREAD_POOL_H_
-#define HARLINN_MEDIA_GST_RTSP_SERVER_HWMRTSP_THREAD_POOL_H_
-
+#pragma once //HWMGFileEnumerator.h
+#ifndef HARLINN_MEDIA_GLIB_GIO_HWMGFILEENUMERATOR_H_
+#define HARLINN_MEDIA_GLIB_GIO_HWMGFILEENUMERATOR_H_
 /*
    Copyright 2024 Espen Harlinn
 
@@ -18,25 +17,23 @@
    limitations under the License.
 */
 
+#include "HWMgioforwards.h"
+#include "HWMgiotypes.h"
 #include <glib/gobject/HWMgobject.h>
-#include "HWMrtsp-server-forwards.h"
 
-namespace Harlinn::Media::GStreamer::RtspServer
+namespace Harlinn::Media::GLib::GIO
 {
     namespace Internal
     {
         template<typename BaseT>
-        class RTSPThreadPoolImpl : public BaseT
+        class FileEnumeratorImpl : public BaseT
         {
         public:
             using Base = BaseT;
-            HWM_GOBJECT_IMPLEMENT_STANDARD_MEMBERS( RTSPThreadPoolImpl, GstRTSPThreadPool )
+            HWM_GOBJECT_IMPLEMENT_STANDARD_MEMBERS( FileEnumeratorImpl, GFileEnumerator )
         };
     }
-
-    using BasicRTSPThreadPool = Internal::RTSPThreadPoolImpl<GLib::BasicObject>;
-    using RTSPThreadPool = Internal::RTSPThreadPoolImpl<GLib::Object>;
-
+    using BasicFileEnumerator = Internal::FileEnumeratorImpl<BasicObject>;
+    using FileEnumerator = Internal::FileEnumeratorImpl<Object>;
 }
 #endif
-
