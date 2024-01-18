@@ -56,6 +56,7 @@ namespace Harlinn::Common::Core::Ese
     }
 
     HARLINN_COMMON_IMPLEMENT_STANDARD_EXCEPTION_MEMBERS( Exception )
+    
 }
 
 namespace Harlinn::Common::Core

@@ -660,6 +660,15 @@
     <ClInclude Include="gst\rtsp-server\HWMrtsp-server-forwards.h">
       <Filter>gst\rtsp-server</Filter>
     </ClInclude>
+    <ClInclude Include="glib\HWMgexception.h">
+      <Filter>glib</Filter>
+    </ClInclude>
+    <ClInclude Include="gst\HWMGstException.h">
+      <Filter>gst</Filter>
+    </ClInclude>
+    <ClInclude Include="gst\rtsp\HWMGstRTSPException.h">
+      <Filter>gst\rtsp</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -1021,6 +1030,15 @@
     </ClCompile>
     <ClCompile Include="glib\gio\HWMGFileEnumerator.cpp">
       <Filter>glib\gio</Filter>
+    </ClCompile>
+    <ClCompile Include="glib\HWMgexception.cpp">
+      <Filter>glib</Filter>
+    </ClCompile>
+    <ClCompile Include="gst\HWMGstException.cpp">
+      <Filter>gst</Filter>
+    </ClCompile>
+    <ClCompile Include="gst\rtsp\HWMGstRTSPException.cpp">
+      <Filter>gst\rtsp</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

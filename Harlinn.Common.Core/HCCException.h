@@ -315,41 +315,41 @@ HCC_EXPORT explicit className (); \
 HCC_EXPORT className (const className & other );  \
 HCC_EXPORT explicit className (const char* message);  \
 HCC_EXPORT explicit className (const wchar_t* message);  \
-HCC_EXPORT explicit className (const AnsiString& message);  \
-HCC_EXPORT explicit className (const WideString& message);  \
+HCC_EXPORT explicit className (const Harlinn::Common::Core::AnsiString& message);  \
+HCC_EXPORT explicit className (const Harlinn::Common::Core::WideString& message);  \
 HCC_EXPORT className ( long long code, const char* message ); \
 HCC_EXPORT className ( long long code, const wchar_t* message ); \
-HCC_EXPORT className ( long long code, const AnsiString& message );  \
-HCC_EXPORT className ( long long code, const WideString& message );  \
+HCC_EXPORT className ( long long code, const Harlinn::Common::Core::AnsiString& message );  \
+HCC_EXPORT className ( long long code, const Harlinn::Common::Core::WideString& message );  \
 HCC_EXPORT className ( HRESULT hResult, long long code, const char* message );  \
 HCC_EXPORT className ( HRESULT hResult, long long code, const wchar_t* message );  \
-HCC_EXPORT className ( HRESULT hResult, long long code, const AnsiString& message );  \
-HCC_EXPORT className ( HRESULT hResult, long long code, const WideString& message );  \
-HCC_EXPORT className (const char* message, const Exception& innerException);  \
-HCC_EXPORT className (const wchar_t* message, const Exception& innerException);  \
-HCC_EXPORT explicit className (const ExceptionLocation& location ); \
-HCC_EXPORT className (const ExceptionLocation& location, const char* message);  \
-HCC_EXPORT className (const ExceptionLocation& location, const wchar_t* message);  \
-HCC_EXPORT className (const ExceptionLocation& location, const AnsiString& message);  \
-HCC_EXPORT className (const ExceptionLocation& location, const WideString& message);  \
-HCC_EXPORT className ( const ExceptionLocation& location, long long code, const char* message ); \
-HCC_EXPORT className ( const ExceptionLocation& location, long long code, const wchar_t* message ); \
-HCC_EXPORT className ( const ExceptionLocation& location, long long code, const AnsiString& message );  \
-HCC_EXPORT className ( const ExceptionLocation& location, long long code, const WideString& message );  \
-HCC_EXPORT className ( const ExceptionLocation& location, HRESULT hResult, long long theCode, const char* message );  \
-HCC_EXPORT className ( const ExceptionLocation& location, HRESULT hResult, long long theCode, const wchar_t* message );  \
-HCC_EXPORT className ( const ExceptionLocation& location, HRESULT hResult, long long theCode, const AnsiString& message );  \
-HCC_EXPORT className ( const ExceptionLocation& location, HRESULT hResult, long long theCode, const WideString& message );  \
-HCC_EXPORT className (const ExceptionLocation& location, const char* message, const Exception& innerException);  \
-HCC_EXPORT className (const ExceptionLocation& location, const wchar_t* message, const Exception& innerException);  \
+HCC_EXPORT className ( HRESULT hResult, long long code, const Harlinn::Common::Core::AnsiString& message );  \
+HCC_EXPORT className ( HRESULT hResult, long long code, const Harlinn::Common::Core::WideString& message );  \
+HCC_EXPORT className (const char* message, const Harlinn::Common::Core::Exception& innerException);  \
+HCC_EXPORT className (const wchar_t* message, const Harlinn::Common::Core::Exception& innerException);  \
+HCC_EXPORT explicit className (const Harlinn::Common::Core::ExceptionLocation& location ); \
+HCC_EXPORT className (const Harlinn::Common::Core::ExceptionLocation& location, const char* message);  \
+HCC_EXPORT className (const Harlinn::Common::Core::ExceptionLocation& location, const wchar_t* message);  \
+HCC_EXPORT className (const Harlinn::Common::Core::ExceptionLocation& location, const Harlinn::Common::Core::AnsiString& message);  \
+HCC_EXPORT className (const Harlinn::Common::Core::ExceptionLocation& location, const Harlinn::Common::Core::WideString& message);  \
+HCC_EXPORT className ( const Harlinn::Common::Core::ExceptionLocation& location, long long code, const char* message ); \
+HCC_EXPORT className ( const Harlinn::Common::Core::ExceptionLocation& location, long long code, const wchar_t* message ); \
+HCC_EXPORT className ( const Harlinn::Common::Core::ExceptionLocation& location, long long code, const Harlinn::Common::Core::AnsiString& message );  \
+HCC_EXPORT className ( const Harlinn::Common::Core::ExceptionLocation& location, long long code, const Harlinn::Common::Core::WideString& message );  \
+HCC_EXPORT className ( const Harlinn::Common::Core::ExceptionLocation& location, HRESULT hResult, long long theCode, const char* message );  \
+HCC_EXPORT className ( const Harlinn::Common::Core::ExceptionLocation& location, HRESULT hResult, long long theCode, const wchar_t* message );  \
+HCC_EXPORT className ( const Harlinn::Common::Core::ExceptionLocation& location, HRESULT hResult, long long theCode, const Harlinn::Common::Core::AnsiString& message );  \
+HCC_EXPORT className ( const Harlinn::Common::Core::ExceptionLocation& location, HRESULT hResult, long long theCode, const Harlinn::Common::Core::WideString& message );  \
+HCC_EXPORT className (const Harlinn::Common::Core::ExceptionLocation& location, const char* message, const Harlinn::Common::Core::Exception& innerException);  \
+HCC_EXPORT className (const Harlinn::Common::Core::ExceptionLocation& location, const wchar_t* message, const Harlinn::Common::Core::Exception& innerException);  \
 protected: \
-bool _IsA( ExceptionType kind ) const \
+bool _IsA( Harlinn::Common::Core::ExceptionType kind ) const \
 {  \
     return kind == KIND || Base::_IsA( kind );  \
 } \
 public: \
-HCC_EXPORT virtual bool IsA( ExceptionType kind ) const override; \
-HCC_EXPORT virtual ExceptionType Kind( ) const override; \
+HCC_EXPORT virtual bool IsA( Harlinn::Common::Core::ExceptionType kind ) const override; \
+HCC_EXPORT virtual Harlinn::Common::Core::ExceptionType Kind( ) const override; \
 protected: \
 HCC_EXPORT virtual std::unique_ptr<Harlinn::Common::Core::Exception> CreateClone( ) const override; \
 public: \
@@ -407,35 +407,35 @@ className :: className () : Base() { SetHRESULT( className :: HRESULTForExceptio
 className :: className (const className & theException) : Base(theException) { }  \
 className :: className (const char* theMessage) : Base(theMessage) { SetHRESULT( className :: HRESULTForExceptionType); }  \
 className :: className (const wchar_t* theMessage) : Base(theMessage) { SetHRESULT( className :: HRESULTForExceptionType); }  \
-className :: className (const AnsiString& theMessage) : Base(theMessage) { SetHRESULT( className :: HRESULTForExceptionType); }  \
-className :: className (const WideString& theMessage) : Base(theMessage) { SetHRESULT( className :: HRESULTForExceptionType); }  \
-className :: className (const char* theMessage, const Exception& theInnerException) : Base(theMessage,theInnerException) { SetHRESULT( className :: HRESULTForExceptionType); }  \
-className :: className (const wchar_t* theMessage, const Exception& theInnerException) : Base(theMessage,theInnerException) { SetHRESULT( className :: HRESULTForExceptionType); }  \
+className :: className (const Harlinn::Common::Core::AnsiString& theMessage) : Base(theMessage) { SetHRESULT( className :: HRESULTForExceptionType); }  \
+className :: className (const Harlinn::Common::Core::WideString& theMessage) : Base(theMessage) { SetHRESULT( className :: HRESULTForExceptionType); }  \
+className :: className (const char* theMessage, const Harlinn::Common::Core::Exception& theInnerException) : Base(theMessage,theInnerException) { SetHRESULT( className :: HRESULTForExceptionType); }  \
+className :: className (const wchar_t* theMessage, const Harlinn::Common::Core::Exception& theInnerException) : Base(theMessage,theInnerException) { SetHRESULT( className :: HRESULTForExceptionType); }  \
 className :: className ( long long theCode, const char* theMessage ) : Base(className :: HRESULTForExceptionType, theCode, theMessage) { }  \
 className :: className ( long long theCode, const wchar_t* theMessage ) : Base(className :: HRESULTForExceptionType, theCode, theMessage) { }  \
-className :: className ( long long theCode, const AnsiString& theMessage ) : Base(className :: HRESULTForExceptionType, theCode, theMessage) { }  \
-className :: className ( long long theCode, const WideString& theMessage ) : Base(className :: HRESULTForExceptionType, theCode, theMessage) { }  \
+className :: className ( long long theCode, const Harlinn::Common::Core::AnsiString& theMessage ) : Base(className :: HRESULTForExceptionType, theCode, theMessage) { }  \
+className :: className ( long long theCode, const Harlinn::Common::Core::WideString& theMessage ) : Base(className :: HRESULTForExceptionType, theCode, theMessage) { }  \
 className :: className ( HRESULT hResult, long long theCode, const char* theMessage ) : Base(hResult, theCode, theMessage) { }  \
 className :: className ( HRESULT hResult, long long theCode, const wchar_t* theMessage ) : Base(hResult, theCode, theMessage) { }  \
-className :: className ( HRESULT hResult, long long theCode, const AnsiString& theMessage ) : Base(hResult, theCode, theMessage) { }  \
-className :: className ( HRESULT hResult, long long theCode, const WideString& theMessage ) : Base(hResult, theCode, theMessage) { }  \
-className :: className ( const ExceptionLocation& theLocation ) : Base( theLocation ) { SetHRESULT( className :: HRESULTForExceptionType); } \
-className :: className ( const ExceptionLocation& theLocation, const char* theMessage) : Base(theLocation, theMessage) { SetHRESULT( className :: HRESULTForExceptionType); }  \
-className :: className ( const ExceptionLocation& theLocation, const wchar_t* theMessage) : Base(theLocation, theMessage) { SetHRESULT( className :: HRESULTForExceptionType); }  \
-className :: className ( const ExceptionLocation& theLocation, const AnsiString& theMessage) : Base(theLocation, theMessage) { SetHRESULT( className :: HRESULTForExceptionType); }  \
-className :: className ( const ExceptionLocation& theLocation, const WideString& theMessage) : Base(theLocation, theMessage) { SetHRESULT( className :: HRESULTForExceptionType); }  \
-className :: className ( const ExceptionLocation& theLocation, const char* theMessage, const Exception& theInnerException) : Base(theLocation, theMessage,theInnerException) { SetHRESULT( className :: HRESULTForExceptionType); }  \
-className :: className ( const ExceptionLocation& theLocation, const wchar_t* theMessage, const Exception& theInnerException) : Base(theLocation, theMessage,theInnerException) { SetHRESULT( className :: HRESULTForExceptionType); }  \
-className :: className ( const ExceptionLocation& theLocation, long long theCode, const char* theMessage ) : Base(theLocation, className :: HRESULTForExceptionType, theCode, theMessage) { }  \
-className :: className ( const ExceptionLocation& theLocation, long long theCode, const wchar_t* theMessage ) : Base(theLocation, className :: HRESULTForExceptionType, theCode, theMessage) { }  \
-className :: className ( const ExceptionLocation& theLocation, long long theCode, const AnsiString& theMessage ) : Base(theLocation, className :: HRESULTForExceptionType, theCode, theMessage) { }  \
-className :: className ( const ExceptionLocation& theLocation, long long theCode, const WideString& theMessage ) : Base(theLocation, className :: HRESULTForExceptionType, theCode, theMessage) { }  \
-className :: className ( const ExceptionLocation& theLocation, HRESULT hResult, long long theCode, const char* theMessage ) : Base(theLocation, hResult, theCode, theMessage) { }  \
-className :: className ( const ExceptionLocation& theLocation, HRESULT hResult, long long theCode, const wchar_t* theMessage ) : Base(theLocation, hResult, theCode, theMessage) { }  \
-className :: className ( const ExceptionLocation& theLocation, HRESULT hResult, long long theCode, const AnsiString& theMessage ) : Base(theLocation, hResult, theCode, theMessage) { }  \
-className :: className ( const ExceptionLocation& theLocation, HRESULT hResult, long long theCode, const WideString& theMessage ) : Base(theLocation, hResult, theCode, theMessage) { }  \
-bool className :: IsA( ExceptionType theKind ) const { return _IsA(theKind); } \
-ExceptionType className :: Kind( ) const { return KIND; } \
+className :: className ( HRESULT hResult, long long theCode, const Harlinn::Common::Core::AnsiString& theMessage ) : Base(hResult, theCode, theMessage) { }  \
+className :: className ( HRESULT hResult, long long theCode, const Harlinn::Common::Core::WideString& theMessage ) : Base(hResult, theCode, theMessage) { }  \
+className :: className ( const Harlinn::Common::Core::ExceptionLocation& theLocation ) : Base( theLocation ) { SetHRESULT( className :: HRESULTForExceptionType); } \
+className :: className ( const Harlinn::Common::Core::ExceptionLocation& theLocation, const char* theMessage) : Base(theLocation, theMessage) { SetHRESULT( className :: HRESULTForExceptionType); }  \
+className :: className ( const Harlinn::Common::Core::ExceptionLocation& theLocation, const wchar_t* theMessage) : Base(theLocation, theMessage) { SetHRESULT( className :: HRESULTForExceptionType); }  \
+className :: className ( const Harlinn::Common::Core::ExceptionLocation& theLocation, const Harlinn::Common::Core::AnsiString& theMessage) : Base(theLocation, theMessage) { SetHRESULT( className :: HRESULTForExceptionType); }  \
+className :: className ( const Harlinn::Common::Core::ExceptionLocation& theLocation, const Harlinn::Common::Core::WideString& theMessage) : Base(theLocation, theMessage) { SetHRESULT( className :: HRESULTForExceptionType); }  \
+className :: className ( const Harlinn::Common::Core::ExceptionLocation& theLocation, const char* theMessage, const Harlinn::Common::Core::Exception& theInnerException) : Base(theLocation, theMessage,theInnerException) { SetHRESULT( className :: HRESULTForExceptionType); }  \
+className :: className ( const Harlinn::Common::Core::ExceptionLocation& theLocation, const wchar_t* theMessage, const Harlinn::Common::Core::Exception& theInnerException) : Base(theLocation, theMessage,theInnerException) { SetHRESULT( className :: HRESULTForExceptionType); }  \
+className :: className ( const Harlinn::Common::Core::ExceptionLocation& theLocation, long long theCode, const char* theMessage ) : Base(theLocation, className :: HRESULTForExceptionType, theCode, theMessage) { }  \
+className :: className ( const Harlinn::Common::Core::ExceptionLocation& theLocation, long long theCode, const wchar_t* theMessage ) : Base(theLocation, className :: HRESULTForExceptionType, theCode, theMessage) { }  \
+className :: className ( const Harlinn::Common::Core::ExceptionLocation& theLocation, long long theCode, const Harlinn::Common::Core::AnsiString& theMessage ) : Base(theLocation, className :: HRESULTForExceptionType, theCode, theMessage) { }  \
+className :: className ( const Harlinn::Common::Core::ExceptionLocation& theLocation, long long theCode, const Harlinn::Common::Core::WideString& theMessage ) : Base(theLocation, className :: HRESULTForExceptionType, theCode, theMessage) { }  \
+className :: className ( const Harlinn::Common::Core::ExceptionLocation& theLocation, HRESULT hResult, long long theCode, const char* theMessage ) : Base(theLocation, hResult, theCode, theMessage) { }  \
+className :: className ( const Harlinn::Common::Core::ExceptionLocation& theLocation, HRESULT hResult, long long theCode, const wchar_t* theMessage ) : Base(theLocation, hResult, theCode, theMessage) { }  \
+className :: className ( const Harlinn::Common::Core::ExceptionLocation& theLocation, HRESULT hResult, long long theCode, const Harlinn::Common::Core::AnsiString& theMessage ) : Base(theLocation, hResult, theCode, theMessage) { }  \
+className :: className ( const Harlinn::Common::Core::ExceptionLocation& theLocation, HRESULT hResult, long long theCode, const Harlinn::Common::Core::WideString& theMessage ) : Base(theLocation, hResult, theCode, theMessage) { }  \
+bool className :: IsA( Harlinn::Common::Core::ExceptionType theKind ) const { return _IsA(theKind); } \
+Harlinn::Common::Core::ExceptionType className :: Kind( ) const { return KIND; } \
 className & className :: operator = (const className & theException ) { Base :: operator = ( reinterpret_cast< const Base & > (theException) ); return *this; }  \
 std::unique_ptr<Harlinn::Common::Core::Exception> className::CreateClone( ) const { return std::make_unique<className>( *this ); }
 

@@ -234,6 +234,7 @@
     <ClInclude Include="glib\HWMgdir.h" />
     <ClInclude Include="glib\HWMgenviron.h" />
     <ClInclude Include="glib\HWMgerror.h" />
+    <ClInclude Include="glib\HWMgexception.h" />
     <ClInclude Include="glib\HWMgfileutils.h" />
     <ClInclude Include="glib\HWMggettext.h" />
     <ClInclude Include="glib\HWMghash.h" />
@@ -308,6 +309,7 @@
     <ClInclude Include="gst\HWMGstDeviceProviderFactory.h" />
     <ClInclude Include="gst\HWMGstDynamicTypeFactory.h" />
     <ClInclude Include="gst\HWMGstEvent.h" />
+    <ClInclude Include="gst\HWMGstException.h" />
     <ClInclude Include="gst\HWMGstForwards.h" />
     <ClInclude Include="gst\HWMGstPadTemplate.h" />
     <ClInclude Include="gst\HWMGstBus.h" />
@@ -361,6 +363,7 @@
     <ClInclude Include="gst\rtsp\HWMgstrtsp.h" />
     <ClInclude Include="gst\rtsp\HWMgstrtspconnection.h" />
     <ClInclude Include="gst\rtsp\HWMgstrtspdefs.h" />
+    <ClInclude Include="gst\rtsp\HWMGstRTSPException.h" />
     <ClInclude Include="gst\rtsp\HWMgstrtspextension.h" />
     <ClInclude Include="gst\rtsp\HWMgstrtspmemory.h" />
     <ClInclude Include="gst\rtsp\HWMgstrtspmessage.h" />
@@ -428,6 +431,7 @@
     <ClCompile Include="glib\HWMgbitlock.cpp" />
     <ClCompile Include="glib\HWMgdatetime.cpp" />
     <ClCompile Include="glib\HWMgerror.cpp" />
+    <ClCompile Include="glib\HWMgexception.cpp" />
     <ClCompile Include="glib\HWMGlib.cpp" />
     <ClCompile Include="glib\HWMgmemory.cpp" />
     <ClCompile Include="glib\HWMgoption.cpp" />
@@ -451,6 +455,7 @@
     <ClCompile Include="gst\HWMGstElement.cpp" />
     <ClCompile Include="gst\HWMGstElementFactory.cpp" />
     <ClCompile Include="gst\HWMGstEvent.cpp" />
+    <ClCompile Include="gst\HWMGstException.cpp" />
     <ClCompile Include="gst\HWMGstMemory.cpp" />
     <ClCompile Include="gst\HWMGstMessage.cpp" />
     <ClCompile Include="gst\HWMGstObject.cpp" />
@@ -483,6 +488,7 @@
     <ClCompile Include="gst\rtsp-server\HWMrtsp-thread-pool.cpp" />
     <ClCompile Include="gst\rtsp-server\HWMrtsp-token.cpp" />
     <ClCompile Include="gst\rtsp\HWMgstrtspconnection.cpp" />
+    <ClCompile Include="gst\rtsp\HWMGstRTSPException.cpp" />
     <ClCompile Include="HWMVlc.cpp" />
     <ClCompile Include="HWMVlcArguments.cpp" />
     <ClCompile Include="pch.cpp">

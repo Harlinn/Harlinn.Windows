@@ -19,6 +19,7 @@
 */
 
 #include "HWMgstrtspmemory.h"
+#include "HWMGstRTSPException.h"
 
 namespace Harlinn::Media::GStreamer::Rtsp
 {

@@ -42,7 +42,7 @@ namespace Harlinn::Media::GStreamer::Rtsp
             }
             return GstRTSPAuthMethod::GST_RTSP_AUTH_NONE;
         }
-        const GstRTSPAuthParam** ParamsPtr( ) const
+        GstRTSPAuthParam** ParamsPtr( ) const
         {
             auto impl = get( );
             if ( impl )

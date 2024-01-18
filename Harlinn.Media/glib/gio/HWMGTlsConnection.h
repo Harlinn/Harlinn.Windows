@@ -34,5 +34,8 @@ namespace Harlinn::Media::GLib::GIO
     using BasicTlsConnection = Internal::TlsConnectionImpl<BasicIOStream>;
     using TlsConnection = Internal::TlsConnectionImpl<IOStream>;
 
+    constexpr bool value = Harlinn::Media::GLib::ObjectTraits_v<GTlsConnection>;
+    constexpr bool value2 = Harlinn::Media::GLib::ObjectTraits_v<GObject>;
+
 }
 #endif
