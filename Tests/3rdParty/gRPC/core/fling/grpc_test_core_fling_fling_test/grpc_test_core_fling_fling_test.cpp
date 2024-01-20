@@ -34,6 +34,10 @@
 
 using namespace Harlinn::Common::Core;
 
+#ifdef StrCat
+#undef StrCat
+#endif
+
 int main( int /*argc*/, const char** argv )
 {
     auto executableDirectory = IO::Directory::GetExecutableDirectoryA( );

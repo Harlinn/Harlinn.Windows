@@ -29,6 +29,10 @@
 #include <HCCEnvironment.h>
 #include <HCCIO.h>
 
+#ifdef StrCat
+#undef StrCat
+#endif
+
 using namespace Harlinn::Common::Core;
 
 int main( int /*argc*/, char** argv )

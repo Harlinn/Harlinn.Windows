@@ -805,14 +805,16 @@ namespace Harlinn::Media::GStreamer
         };
     }
 
-    
-
+    static_assert( IsBuffer<BasicMiniObject> == false );
+    static_assert( IsBuffer<MiniObject> == false );
+    static_assert( IsBuffer<BasicBuffer> );
+    static_assert( IsBuffer<Buffer> );
     static_assert( sizeof( BasicBuffer ) == sizeof( GstBuffer* ) );
     static_assert( sizeof( Buffer ) == sizeof( GstBuffer* ) );
     static_assert( std::is_base_of_v<BasicMiniObject, BasicBuffer> );
     static_assert( std::is_base_of_v<MiniObject, Buffer> );
-
-
+    static_assert( std::is_base_of_v<GLib::ObjectTraits<GstMiniObject>, GLib::ObjectTraits<GstBuffer>> );
+    
 
 }
 #endif

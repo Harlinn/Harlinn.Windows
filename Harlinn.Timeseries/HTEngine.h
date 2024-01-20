@@ -1376,7 +1376,7 @@ namespace Harlinn::Timeseries
         }
 
         template<typename ...Args>
-        requires( std::is_constructible_v<Point, Args> && !std::is_same_v<Point, Args> )
+        requires( std::is_constructible_v<Point, Args...> && ( (sizeof...( Args ) > 1) || (std::is_same_v<Point, Args...> == false)) )
             void Insert( Args&&... args )
         {
             Insert( Point( std::forward<Args>( args )... ) );
@@ -1496,7 +1496,7 @@ namespace Harlinn::Timeseries
         }
 
         template<typename Func, typename ...Args>
-        requires std::is_invocable_v<Func, const Point&, Args>
+        requires std::is_invocable_v<Func, const Point&, Args...>
             __forceinline size_t ForEach( Func&& func, Args&& ...args )
         {
             size_t result = 0;
@@ -1511,7 +1511,7 @@ namespace Harlinn::Timeseries
         }
 
         template<typename Func, typename ...Args>
-        requires std::is_invocable_v<Func, const Point&, Args>
+        requires std::is_invocable_v<Func, const Point&, Args...>
             __forceinline size_t ForEach( const DateTime& start, Func&& func, Args&& ...args )
         {
             size_t result = 0;
@@ -1531,7 +1531,7 @@ namespace Harlinn::Timeseries
         }
 
         template<typename Func, typename ...Args>
-        requires std::is_invocable_v<Func, const Point&, Args>
+        requires std::is_invocable_v<Func, const Point&, Args...>
             __forceinline size_t ForEach( const DateTime& start, const DateTime& end, Func&& func, Args&& ...args )
         {
             size_t result = 0;

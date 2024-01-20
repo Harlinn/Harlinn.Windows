@@ -301,10 +301,12 @@ namespace Harlinn::Julia
         {
             return jl_is_ssavalue( value_ );
         }
+        /*
         bool IsSlot( ) const
         {
             return jl_is_slot( value_ );
         }
+        */
         bool IsExpression( ) const
         {
             return jl_is_expr( value_ );

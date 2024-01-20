@@ -84,7 +84,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NOMINMAX=1;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Harlinn.Media;$(SolutionDir)Harlinn.Windows;$(SolutionDir)Harlinn.Common.Core;$(SolutionDir)3rdParty\Harlinn.LMDB;$(BOOST_ROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Harlinn.Media;$(SolutionDir)Harlinn.Windows;$(SolutionDir)Harlinn.Common.Core;$(SolutionDir)3rdParty\Harlinn.LMDB;$(BOOST_ROOT);$(GSTREAMER_1_0_ROOT_MSVC_X86_64)\include\gstreamer-1.0;$(GSTREAMER_1_0_ROOT_MSVC_X86_64)\include\glib-2.0;$(GSTREAMER_1_0_ROOT_MSVC_X86_64)\lib\glib-2.0\include;$(GSTREAMER_1_0_ROOT_MSVC_X86_64)\include;$(VLC_SOURCE)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
       <LanguageStandard>stdcpplatest</LanguageStandard>
@@ -103,7 +103,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NOMINMAX=1;WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Harlinn.Media;$(SolutionDir)Harlinn.Windows;$(SolutionDir)Harlinn.Common.Core;$(SolutionDir)3rdParty\Harlinn.LMDB;$(BOOST_ROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Harlinn.Media;$(SolutionDir)Harlinn.Windows;$(SolutionDir)Harlinn.Common.Core;$(SolutionDir)3rdParty\Harlinn.LMDB;$(BOOST_ROOT);$(GSTREAMER_1_0_ROOT_MSVC_X86_64)\include\gstreamer-1.0;$(GSTREAMER_1_0_ROOT_MSVC_X86_64)\include\glib-2.0;$(GSTREAMER_1_0_ROOT_MSVC_X86_64)\lib\glib-2.0\include;$(GSTREAMER_1_0_ROOT_MSVC_X86_64)\include;$(VLC_SOURCE)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
@@ -122,7 +122,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NOMINMAX=1;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Harlinn.Media;$(SolutionDir)Harlinn.Windows;$(SolutionDir)Harlinn.Common.Core;$(SolutionDir)3rdParty\Harlinn.LMDB;$(BOOST_ROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Harlinn.Media;$(SolutionDir)Harlinn.Windows;$(SolutionDir)Harlinn.Common.Core;$(SolutionDir)3rdParty\Harlinn.LMDB;$(BOOST_ROOT);$(GSTREAMER_1_0_ROOT_MSVC_X86_64)\include\gstreamer-1.0;$(GSTREAMER_1_0_ROOT_MSVC_X86_64)\include\glib-2.0;$(GSTREAMER_1_0_ROOT_MSVC_X86_64)\lib\glib-2.0\include;$(GSTREAMER_1_0_ROOT_MSVC_X86_64)\include;$(VLC_SOURCE)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
       <LanguageStandard>stdcpplatest</LanguageStandard>
@@ -141,7 +141,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NOMINMAX=1;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Harlinn.Media;$(SolutionDir)Harlinn.Windows;$(SolutionDir)Harlinn.Common.Core;$(SolutionDir)3rdParty\Harlinn.LMDB;$(BOOST_ROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Harlinn.Media;$(SolutionDir)Harlinn.Windows;$(SolutionDir)Harlinn.Common.Core;$(SolutionDir)3rdParty\Harlinn.LMDB;$(BOOST_ROOT);$(GSTREAMER_1_0_ROOT_MSVC_X86_64)\include\gstreamer-1.0;$(GSTREAMER_1_0_ROOT_MSVC_X86_64)\include\glib-2.0;$(GSTREAMER_1_0_ROOT_MSVC_X86_64)\lib\glib-2.0\include;$(GSTREAMER_1_0_ROOT_MSVC_X86_64)\include;$(VLC_SOURCE)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>

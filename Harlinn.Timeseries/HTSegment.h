@@ -488,7 +488,7 @@ namespace Harlinn::Timeseries
 
 
         template<typename Func, typename ...Args>
-        requires std::is_invocable_v<Func, const Point&, Args>
+        requires std::is_invocable_v<Func, const Point&, Args...>
             __forceinline size_t ForEach( Func&& func, Args&& ...args )
         {
             if ( full( ) )
@@ -509,7 +509,7 @@ namespace Harlinn::Timeseries
         }
 
         template<typename Func, typename ...Args>
-        requires std::is_invocable_v<Func, const Point&, Args>
+        requires std::is_invocable_v<Func, const Point&, Args...>
             __forceinline size_t ForEach1st( size_t index, Func&& func, Args&& ...args )
         {
             if ( index < size_ )
@@ -537,7 +537,7 @@ namespace Harlinn::Timeseries
         }
 
         template<typename Func, typename ...Args>
-        requires std::is_invocable_v<Func, const Point&, Args>
+        requires std::is_invocable_v<Func, const Point&, Args...>
             __forceinline size_t ForEach( const DateTime& end, Func&& func, Args&& ...args )
         {
             size_t result = 0;
@@ -577,7 +577,7 @@ namespace Harlinn::Timeseries
         }
 
         template<typename Func, typename ...Args>
-        requires std::is_invocable_v<Func, const Point&, Args>
+        requires std::is_invocable_v<Func, const Point&, Args...>
             __forceinline size_t ForEach1st( size_t index, const DateTime& end, Func&& func, Args&& ...args )
         {
             size_t result = 0;

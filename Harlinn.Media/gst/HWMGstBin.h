@@ -36,5 +36,17 @@ namespace Harlinn::Media::GStreamer
 
     using BasicBin = Internal::BinImpl<BasicElement>;
     using Bin = Internal::BinImpl<Element>;
+
+    static_assert( IsBin<BasicElement> == false );
+    static_assert( IsBin<Element> == false );
+    static_assert( IsBin<BasicBin> );
+    static_assert( IsBin<Bin> );
+    static_assert( IsBin<BasicPipeline> );
+    static_assert( IsBin<Pipeline> );
+    static_assert( sizeof( BasicBin ) == sizeof( GstBin* ) );
+    static_assert( sizeof( Bin ) == sizeof( GstBin* ) );
+    static_assert( std::is_base_of_v<BasicElement, BasicBin> );
+    static_assert( std::is_base_of_v<Element, Bin> );
+    static_assert( std::is_base_of_v<GLib::ObjectTraits<GstElement>, GLib::ObjectTraits<GstBin>> );
 }
 #endif

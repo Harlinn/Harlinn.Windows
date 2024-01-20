@@ -259,7 +259,7 @@ namespace Harlinn::Media::GLib
     };
 
     template<>
-    struct ObjectTraits<GstBuffer > : public DerivedObjectTraits< GstBuffer, GstMiniObject>
+    struct ObjectTraits<GstBuffer> : public DerivedObjectTraits< GstBuffer, GstMiniObject>
     {
 
     };
