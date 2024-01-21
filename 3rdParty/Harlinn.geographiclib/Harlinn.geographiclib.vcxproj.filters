@@ -162,6 +162,9 @@
     <ClInclude Include="include\GeographicLib\UTMUPS.hpp">
       <Filter>include\GeographicLib</Filter>
     </ClInclude>
+    <ClInclude Include="include\GeographicLib\Intersect.hpp">
+      <Filter>include\GeographicLib</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -288,6 +291,9 @@
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="src\UTMUPS.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Intersect.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>

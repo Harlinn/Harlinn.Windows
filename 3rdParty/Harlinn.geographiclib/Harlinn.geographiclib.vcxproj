@@ -183,6 +183,7 @@
     <ClInclude Include="include\GeographicLib\Gnomonic.hpp" />
     <ClInclude Include="include\GeographicLib\GravityCircle.hpp" />
     <ClInclude Include="include\GeographicLib\GravityModel.hpp" />
+    <ClInclude Include="include\GeographicLib\Intersect.hpp" />
     <ClInclude Include="include\GeographicLib\LambertConformalConic.hpp" />
     <ClInclude Include="include\GeographicLib\LocalCartesian.hpp" />
     <ClInclude Include="include\GeographicLib\MagneticCircle.hpp" />
@@ -231,6 +232,7 @@
     <ClCompile Include="src\Gnomonic.cpp" />
     <ClCompile Include="src\GravityCircle.cpp" />
     <ClCompile Include="src\GravityModel.cpp" />
+    <ClCompile Include="src\Intersect.cpp" />
     <ClCompile Include="src\LambertConformalConic.cpp" />
     <ClCompile Include="src\LocalCartesian.cpp" />
     <ClCompile Include="src\MagneticCircle.cpp" />

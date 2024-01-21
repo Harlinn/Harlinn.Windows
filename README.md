@@ -338,7 +338,7 @@ The abseil_test contains the unit tests for the Harlinn.abseil project
 **Project:** Harlinn.gdal
 
 ### [GeographicLib](https://github.com/geographiclib/geographiclib)
-**Version:** 2.2
+**Version:** 2.3
 
 **Description:**
 > GeographicLib is a small C++ library for 
