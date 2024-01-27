@@ -423,4 +423,9 @@
       <Filter>include\libde265</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Readme\COPYING">
+      <Filter>Readme</Filter>
+    </None>
+  </ItemGroup>
 </Project>

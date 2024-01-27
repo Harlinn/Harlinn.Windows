@@ -669,6 +669,9 @@
     <ClInclude Include="gst\rtsp\HWMGstRTSPException.h">
       <Filter>gst\rtsp</Filter>
     </ClInclude>
+    <ClInclude Include="gst\HWMGstContext.h">
+      <Filter>gst</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">

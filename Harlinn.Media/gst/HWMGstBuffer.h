@@ -19,6 +19,7 @@
 */
 
 #include "HWMGstMemory.h"
+#include "HWMGstMiniObject.h"
 
 namespace Harlinn::Media::GStreamer
 {

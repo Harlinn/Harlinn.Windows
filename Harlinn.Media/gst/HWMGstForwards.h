@@ -391,6 +391,17 @@ namespace Harlinn::Media::GStreamer
     namespace Internal
     {
         template<typename BaseT>
+        class ContextImpl;
+    }
+    using BasicContext = Internal::ContextImpl<BasicMiniObject>;
+    using Context = Internal::ContextImpl<MiniObject>;
+
+    template<typename T>
+    constexpr bool IsContext = std::is_base_of_v<BasicContext, T> || std::is_base_of_v<Context, T>;
+
+    namespace Internal
+    {
+        template<typename BaseT>
         class EventImpl;
     }
     using BasicEvent = Internal::EventImpl<BasicMiniObject>;
@@ -424,6 +435,17 @@ namespace Harlinn::Media::GStreamer
     namespace Internal
     {
         template<typename BaseT>
+        class QueryImpl;
+    }
+    using BasicQuery = Internal::QueryImpl<BasicMiniObject>;
+    using Query = Internal::QueryImpl<MiniObject>;
+
+    template<typename T>
+    constexpr bool IsQuery = std::is_base_of_v<BasicQuery, T> || std::is_base_of_v<Query, T>;
+
+    namespace Internal
+    {
+        template<typename BaseT>
         class TagListImpl;
     }
 
@@ -432,6 +454,8 @@ namespace Harlinn::Media::GStreamer
 
     template<typename T>
     constexpr bool IsTagList = std::is_base_of_v<BasicTagList, T> || std::is_base_of_v<TagList, T>;
+
+
 
 
 }

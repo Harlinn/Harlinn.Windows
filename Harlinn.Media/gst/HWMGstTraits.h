@@ -271,6 +271,20 @@ namespace Harlinn::Media::GLib
     };
 
     template<>
+    struct ObjectTraits<GstContext> : public DerivedObjectTraits< GstContext, GstMiniObject>
+    {
+        static WrappedType* Ref( WrappedType* wrapped )
+        {
+            return gst_context_ref( wrapped );
+        }
+
+        static void Unref( WrappedType* wrapped )
+        {
+            gst_context_unref( wrapped );
+        }
+    };
+
+    template<>
     struct ObjectTraits<GstEvent> : public DerivedObjectTraits<GstEvent, GstMiniObject>
     {
 
@@ -308,6 +322,8 @@ namespace Harlinn::Media::GLib
     {
 
     };
+
+    
 
     template<>
     struct ObjectTraits<GstSample> : public DerivedObjectTraits<GstSample, GstMiniObject>
@@ -375,19 +391,7 @@ namespace Harlinn::Media::GLib
         }
     };
 
-    template<>
-    struct ObjectTraits<GstContext> : public SimpleObjectTraits< ObjectTraits<GstContext>, GstContext>
-    {
-        static WrappedType* Ref( WrappedType* wrapped )
-        {
-            return gst_context_ref( wrapped );
-        }
-
-        static void Unref( WrappedType* wrapped )
-        {
-            gst_context_unref( wrapped );
-        }
-    };
+    
 
 
     

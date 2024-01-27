@@ -304,6 +304,9 @@
     <ClInclude Include="include\libde265\x86\sse-motion.h" />
     <ClInclude Include="include\libde265\x86\sse.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Readme\COPYING" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

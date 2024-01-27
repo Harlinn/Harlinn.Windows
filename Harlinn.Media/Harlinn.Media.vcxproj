@@ -301,6 +301,7 @@
     <ClInclude Include="gst\HWMGstBufferList.h" />
     <ClInclude Include="gst\HWMGstBufferPool.h" />
     <ClInclude Include="gst\HWMGstCaps.h" />
+    <ClInclude Include="gst\HWMGstContext.h" />
     <ClInclude Include="gst\HWMGstControlBinding.h" />
     <ClInclude Include="gst\HWMGstControlSource.h" />
     <ClInclude Include="gst\HWMGstDevice.h" />

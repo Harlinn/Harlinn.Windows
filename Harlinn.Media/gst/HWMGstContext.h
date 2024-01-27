@@ -1,6 +1,6 @@
-#pragma once
-#ifndef HARLINN_MEDIA_HWMGSTQUERY_H_
-#define HARLINN_MEDIA_HWMGSTQUERY_H_
+#pragma once 
+#ifndef HARLINN_MEDIA_HWMGSTCONTEXT_H_
+#define HARLINN_MEDIA_HWMGSTCONTEXT_H_
 /*
    Copyright 2024 Espen Harlinn
 
@@ -25,22 +25,23 @@ namespace Harlinn::Media::GStreamer
     namespace Internal
     {
         template<typename BaseT>
-        class QueryImpl;
+        class ContextImpl;
     }
-    using BasicQuery = Internal::QueryImpl<BasicMiniObject>;
-    using Query = Internal::QueryImpl<MiniObject>;
+    using BasicContext = Internal::ContextImpl<BasicMiniObject>;
+    using Context = Internal::ContextImpl<MiniObject>;
 
     namespace Internal
     {
         template<typename BaseT>
-        class QueryImpl : public BaseT
+        class ContextImpl : public BaseT
         {
         public:
             using Base = BaseT;
-            HWM_GSTMINIOBJECT_IMPLEMENT_STANDARD_MEMBERS( QueryImpl, GstQuery )
+            HWM_GSTMINIOBJECT_IMPLEMENT_STANDARD_MEMBERS( ContextImpl, GstContext )
+
+
         };
     }
 
 }
-
 #endif

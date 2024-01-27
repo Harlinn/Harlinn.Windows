@@ -36,6 +36,11 @@ namespace Harlinn::Media::GStreamer
     using BasicPadTemplate = Internal::PadTemplateImpl<BasicObject>;
     using PadTemplate = Internal::PadTemplateImpl<Object>;
 
+    namespace Internal
+    {
+
+    }
+
 }
 
 
