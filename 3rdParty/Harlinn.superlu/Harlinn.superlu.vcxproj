@@ -159,6 +159,7 @@
       <EnableUAC>false</EnableUAC>
       <AdditionalLibraryDirectories>$(ONEAPI_ROOT)\mkl\latest\lib\intel64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>mkl_core_dll.lib;mkl_intel_lp64_dll.lib;mkl_sequential_dll.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)$(TargetName)-x64d$(TargetExt)</OutputFile>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -185,6 +186,7 @@
       <EnableUAC>false</EnableUAC>
       <AdditionalLibraryDirectories>$(ONEAPI_ROOT)\mkl\latest\lib\intel64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>mkl_core_dll.lib;mkl_intel_lp64_dll.lib;mkl_sequential_dll.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)$(TargetName)-x64r$(TargetExt)</OutputFile>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
