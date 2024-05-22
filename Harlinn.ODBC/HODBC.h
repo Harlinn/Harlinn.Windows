@@ -248,9 +248,9 @@ namespace Harlinn::ODBC
 
     namespace Internal
     {
-        HODBC_EXPORT void ThrowException( SQLRETURN sqlReturn, ODBC::HandleType handleType, SQLHANDLE sqlHandle, const char* function, const char* file, int line );
+        HODBC_EXPORT void ThrowException( SQLRETURN sqlReturn, ODBC::HandleType handleType, SQLHANDLE sqlHandle, const wchar_t* function, const wchar_t* file, int line );
         HODBC_EXPORT void ThrowException( SQLRETURN sqlReturn, ODBC::HandleType handleType, SQLHANDLE sqlHandle );
-        HODBC_EXPORT void ThrowExceptionNoDiagnostic( SQLRETURN sqlReturn, ODBC::HandleType handleType, SQLHANDLE sqlHandle, const char* function, const char* file, int line );
+        HODBC_EXPORT void ThrowExceptionNoDiagnostic( SQLRETURN sqlReturn, ODBC::HandleType handleType, SQLHANDLE sqlHandle, const wchar_t* function, const wchar_t* file, int line );
         HODBC_EXPORT void ThrowExceptionNoDiagnostic( SQLRETURN sqlReturn, ODBC::HandleType handleType, SQLHANDLE sqlHandle );
 
         Result GetDiagnosticFieldW( ODBC::HandleType handleType, SQLHANDLE handle,
@@ -263,7 +263,7 @@ namespace Harlinn::ODBC
             auto rc = SQLGetDiagFieldW( static_cast<SQLSMALLINT>( handleType ), handle, recordNumber, diagnosticFieldId, diagnosticInfo, diagnosticInfoMaxLength, diagnosticInfoActualLength );
             if ( rc < SQL_SUCCESS )
             {
-                ThrowExceptionNoDiagnostic( rc, handleType, handle, __FUNCTION__, __FILE__, __LINE__ );
+                ThrowExceptionNoDiagnostic( rc, handleType, handle, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
             return static_cast<Result>( rc );
         }
@@ -277,7 +277,7 @@ namespace Harlinn::ODBC
             auto rc = SQLGetDiagFieldA( static_cast<SQLSMALLINT>( handleType ), handle, recordNumber, diagnosticFieldId, diagnosticInfo, diagnosticInfoMaxLength, diagnosticInfoActualLength );
             if ( rc < SQL_SUCCESS )
             {
-                ThrowExceptionNoDiagnostic( rc, handleType, handle, __FUNCTION__, __FILE__, __LINE__ );
+                ThrowExceptionNoDiagnostic( rc, handleType, handle, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
             return static_cast<Result>( rc );
         }
@@ -287,7 +287,7 @@ namespace Harlinn::ODBC
             auto rc = SQLGetDiagRecW( static_cast<SQLSMALLINT>( handleType ), handle, recordNumber, sqlState, nativeError, message, messageMaxLength, messageActualLength );
             if ( rc < SQL_SUCCESS )
             {
-                ThrowExceptionNoDiagnostic( rc, handleType, handle, __FUNCTION__, __FILE__, __LINE__ );
+                ThrowExceptionNoDiagnostic( rc, handleType, handle, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
             return static_cast<Result>( rc );
         }
@@ -296,7 +296,7 @@ namespace Harlinn::ODBC
             auto rc = SQLGetDiagRecA( static_cast<SQLSMALLINT>( handleType ), handle, recordNumber, sqlState, nativeError, message, messageMaxLength, messageActualLength );
             if ( rc < SQL_SUCCESS )
             {
-                ThrowExceptionNoDiagnostic( rc, handleType, handle, __FUNCTION__, __FILE__, __LINE__ );
+                ThrowExceptionNoDiagnostic( rc, handleType, handle, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
             return static_cast<Result>( rc );
         }
@@ -452,7 +452,7 @@ namespace Harlinn::ODBC
             }
         }
 
-        void ThrowException( SQLRETURN sqlReturn, const char* function, const char* file, int line ) const
+        void ThrowException( SQLRETURN sqlReturn, const wchar_t* function, const wchar_t* file, int line ) const
         {
             if ( sqlReturn < SQL_SUCCESS )
             {
@@ -466,7 +466,7 @@ namespace Harlinn::ODBC
             auto rc = SQLAllocHandle( static_cast<SQLSMALLINT>(HandleType), inputHandle, &result );
             if ( rc != SQL_SUCCESS )
             {
-                Internal::ThrowException( rc, HandleType, result, __FUNCTION__, __FILE__, __LINE__ );
+                Internal::ThrowException( rc, HandleType, result, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
             return result;
         }
@@ -487,7 +487,7 @@ namespace Harlinn::ODBC
             auto rc = SQLCancelHandle( static_cast<SQLSMALLINT>( HandleType ), sqlHandle_ );
             if ( rc < SQL_SUCCESS )
             {
-                Internal::ThrowException( rc, HandleType, Handle( ), __FUNCTION__, __FILE__, __LINE__ );
+                Internal::ThrowException( rc, HandleType, Handle( ), CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
             return static_cast<Result>( rc );
         }
@@ -497,7 +497,7 @@ namespace Harlinn::ODBC
             auto rc = SQLCompleteAsync( static_cast<SQLSMALLINT>( HandleType ), sqlHandle_, asyncRetCode );
             if ( rc < SQL_SUCCESS )
             {
-                Internal::ThrowException( rc, HandleType, Handle( ), __FUNCTION__, __FILE__, __LINE__ );
+                Internal::ThrowException( rc, HandleType, Handle( ), CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
             return static_cast<Result>( rc );
         }
@@ -534,7 +534,7 @@ namespace Harlinn::ODBC
             auto rc = SQLCopyDesc( Handle( ), other.Handle( ) );
             if ( rc < SQL_SUCCESS )
             {
-                ThrowException( rc, __FUNCTION__, __FILE__, __LINE__ );
+                ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
             return static_cast<Result>( rc );
         }
@@ -548,7 +548,7 @@ namespace Harlinn::ODBC
             auto rc = SQLCopyDesc( other.Handle( ), Handle( ) );
             if ( rc < SQL_SUCCESS )
             {
-                ThrowException( rc, __FUNCTION__, __FILE__, __LINE__ );
+                ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
             return static_cast<Result>( rc );
         }
@@ -567,7 +567,7 @@ namespace Harlinn::ODBC
             auto rc = SQLGetDescFieldW( Handle( ), recordNumber, fieldIdentifier, value, valueMaxLength, valueActualLength );
             if ( rc < SQL_SUCCESS )
             {
-                ThrowException( rc, __FUNCTION__, __FILE__, __LINE__ );
+                ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
             return static_cast<Result>( rc );
         }
@@ -576,7 +576,7 @@ namespace Harlinn::ODBC
             auto rc = SQLGetDescFieldA( Handle( ), recordNumber, fieldIdentifier, value, valueMaxLength, valueActualLength );
             if ( rc < SQL_SUCCESS )
             {
-                ThrowException( rc, __FUNCTION__, __FILE__, __LINE__ );
+                ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
             return static_cast<Result>( rc );
         }
@@ -586,7 +586,7 @@ namespace Harlinn::ODBC
             auto rc = SQLGetDescRecW( Handle( ), recordNumber, name, nameMaxLength, nameActualLength, type, subType, length, precision, scale, nullable );
             if ( rc < SQL_SUCCESS )
             {
-                ThrowException( rc, __FUNCTION__, __FILE__, __LINE__ );
+                ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
             return static_cast<Result>( rc );
         }
@@ -596,7 +596,7 @@ namespace Harlinn::ODBC
             auto rc = SQLGetDescRecA( Handle( ), recordNumber, name, nameMaxLength, nameActualLength, type, subType, length, precision, scale, nullable );
             if ( rc < SQL_SUCCESS )
             {
-                ThrowException( rc, __FUNCTION__, __FILE__, __LINE__ );
+                ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
             return static_cast<Result>( rc );
         }
@@ -606,7 +606,7 @@ namespace Harlinn::ODBC
             auto rc = SQLSetDescFieldW( Handle( ), recordNumber, fieldIdentifier, value, valueLength );
             if ( rc < SQL_SUCCESS )
             {
-                ThrowException( rc, __FUNCTION__, __FILE__, __LINE__ );
+                ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
             return static_cast<Result>( rc );
         }
@@ -620,7 +620,7 @@ namespace Harlinn::ODBC
             auto rc = SQLSetDescField( Handle( ), recordNumber, fieldIdentifier, value, valueLength );
             if ( rc < SQL_SUCCESS )
             {
-                ThrowException( rc, __FUNCTION__, __FILE__, __LINE__ );
+                ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
             return static_cast<Result>( rc );
 #ifdef SQLSetDescFieldUndeffed
@@ -633,7 +633,7 @@ namespace Harlinn::ODBC
             auto rc = SQLSetDescRec( Handle( ), recordNumber, type, subType, length, precision, scale, data, dataLength, indicator );
             if ( rc < SQL_SUCCESS )
             {
-                ThrowException( rc, __FUNCTION__, __FILE__, __LINE__ );
+                ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
             return static_cast<Result>( rc );
         }
@@ -800,7 +800,7 @@ namespace Harlinn::ODBC
             auto rc = SQLBindCol( Handle( ), columnNumber, targetType, targetValue, targetValueMaxLength, nullIndicatorOrLength );
             if ( rc < SQL_SUCCESS )
             {
-                ThrowException( rc, __FUNCTION__, __FILE__, __LINE__ );
+                ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
             return static_cast<Result>( rc );
         }
@@ -878,7 +878,7 @@ namespace Harlinn::ODBC
             auto rc = SQLBindParameter( Handle( ), parameterNumber, static_cast<SQLSMALLINT>( parameterDirection ), valueType, parameterType, columnSize, decimalDigits, parameterValue, parameterValueBufferLength, lengthOrIndicator );
             if ( rc < SQL_SUCCESS )
             {
-                ThrowException( rc, __FUNCTION__, __FILE__, __LINE__ );
+                ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
             return static_cast<Result>( rc );
         }
@@ -977,7 +977,7 @@ namespace Harlinn::ODBC
             auto rc = SQLBulkOperations( Handle( ), static_cast<SQLSMALLINT>( bulkOperation ) );
             if ( rc < SQL_SUCCESS )
             {
-                ThrowException( rc, __FUNCTION__, __FILE__, __LINE__ );
+                ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
             return static_cast<Result>( rc );
         }
@@ -987,7 +987,7 @@ namespace Harlinn::ODBC
             auto rc = SQLCloseCursor( Handle( ) );
             if ( rc < SQL_SUCCESS )
             {
-                ThrowException( rc, __FUNCTION__, __FILE__, __LINE__ );
+                ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
             return static_cast<Result>( rc );
         }
@@ -998,7 +998,7 @@ namespace Harlinn::ODBC
             auto rc = SQLColAttributeW( Handle( ), columnNumber, fieldIdentifier, value, valueMaxLength, valueActualLength, numericAttributeValue );
             if ( rc < SQL_SUCCESS )
             {
-                ThrowException( rc, __FUNCTION__, __FILE__, __LINE__ );
+                ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
             return static_cast<Result>( rc );
         }
@@ -1009,7 +1009,7 @@ namespace Harlinn::ODBC
             auto rc = SQLColumnPrivilegesW( Handle( ), const_cast<SQLWCHAR*>(catalogName), catalogNameMaxLength, const_cast<SQLWCHAR*>( schemaName ), schemaNameMaxLength, const_cast<SQLWCHAR*>( tableName ), tableNameMaxLength, const_cast<SQLWCHAR*>( columnName ), columnNameMaxLength );
             if ( rc < SQL_SUCCESS )
             {
-                ThrowException( rc, __FUNCTION__, __FILE__, __LINE__ );
+                ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
             return static_cast<Result>( rc );
         }
@@ -1019,7 +1019,7 @@ namespace Harlinn::ODBC
             auto rc = SQLColumnPrivilegesA( Handle( ), const_cast<SQLCHAR*>( catalogName ), catalogNameMaxLength, const_cast<SQLCHAR*>( schemaName ), schemaNameMaxLength, const_cast<SQLCHAR*>( tableName ), tableNameMaxLength, const_cast<SQLCHAR*>( columnName ), columnNameMaxLength );
             if ( rc < SQL_SUCCESS )
             {
-                ThrowException( rc, __FUNCTION__, __FILE__, __LINE__ );
+                ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
             return static_cast<Result>( rc );
         }
@@ -1029,7 +1029,7 @@ namespace Harlinn::ODBC
             auto rc = SQLColumnsW( Handle( ), const_cast<SQLWCHAR*>( catalogName ), catalogNameMaxLength, const_cast<SQLWCHAR*>( schemaName ), schemaNameMaxLength, const_cast<SQLWCHAR*>( tableName ), tableNameMaxLength, const_cast<SQLWCHAR*>( columnName ), columnNameMaxLength );
             if ( rc < SQL_SUCCESS )
             {
-                ThrowException( rc, __FUNCTION__, __FILE__, __LINE__ );
+                ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
             return static_cast<Result>( rc );
         }
@@ -1038,7 +1038,7 @@ namespace Harlinn::ODBC
             auto rc = SQLColumnsA( Handle( ), const_cast<SQLCHAR*>( catalogName ), catalogNameMaxLength, const_cast<SQLCHAR*>( schemaName ), schemaNameMaxLength, const_cast<SQLCHAR*>( tableName ), tableNameMaxLength, const_cast<SQLCHAR*>( columnName ), columnNameMaxLength );
             if ( rc < SQL_SUCCESS )
             {
-                ThrowException( rc, __FUNCTION__, __FILE__, __LINE__ );
+                ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
             return static_cast<Result>( rc );
         }
@@ -1048,7 +1048,7 @@ namespace Harlinn::ODBC
             auto rc = SQLDescribeColW( Handle( ), columnNumber, columnName, columnNameMaxLength, columnNameActualLength, dataType, columnSize, decimalDigits, (SQLSMALLINT*)nullable );
             if ( rc < SQL_SUCCESS )
             {
-                ThrowException( rc, __FUNCTION__, __FILE__, __LINE__ );
+                ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
             return static_cast<Result>( rc );
         }
@@ -1057,7 +1057,7 @@ namespace Harlinn::ODBC
             auto rc = SQLDescribeColA( Handle( ), columnNumber, columnName, columnNameMaxLength, columnNameActualLength, dataType, columnSize, decimalDigits, (SQLSMALLINT*)nullable );
             if ( rc < SQL_SUCCESS )
             {
-                ThrowException( rc, __FUNCTION__, __FILE__, __LINE__ );
+                ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
             return static_cast<Result>( rc );
         }
@@ -1067,7 +1067,7 @@ namespace Harlinn::ODBC
             auto rc = SQLDescribeParam( Handle( ), parameterNumber, dataType, parameterSize, decimalDigits, (SQLSMALLINT*)nullable );
             if ( rc < SQL_SUCCESS )
             {
-                ThrowException( rc, __FUNCTION__, __FILE__, __LINE__ );
+                ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
             return static_cast<Result>( rc );
         }
@@ -1077,7 +1077,7 @@ namespace Harlinn::ODBC
             auto rc = SQLExecDirectW( Handle( ), const_cast<SQLWCHAR*>( statementText ), statementTextLength );
             if ( rc < SQL_SUCCESS )
             {
-                ThrowException( rc, __FUNCTION__, __FILE__, __LINE__ );
+                ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
             return static_cast<Result>( rc );
         }
@@ -1086,7 +1086,7 @@ namespace Harlinn::ODBC
             auto rc = SQLExecDirectA( Handle( ), const_cast<SQLCHAR*>( statementText ), statementTextLength );
             if ( rc < SQL_SUCCESS )
             {
-                ThrowException( rc, __FUNCTION__, __FILE__, __LINE__ );
+                ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
             return static_cast<Result>( rc );
         }
@@ -1096,7 +1096,7 @@ namespace Harlinn::ODBC
             auto rc = SQLExecute( Handle( ) );
             if ( rc < SQL_SUCCESS )
             {
-                ThrowException( rc, __FUNCTION__, __FILE__, __LINE__ );
+                ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
             return static_cast<Result>( rc );
         }
@@ -1142,7 +1142,7 @@ namespace Harlinn::ODBC
             auto rc = SQLFetch( Handle( ) );
             if ( rc < SQL_SUCCESS )
             {
-                ThrowException( rc, __FUNCTION__, __FILE__, __LINE__ );
+                ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
             return static_cast<Result>( rc );
         }
@@ -1152,7 +1152,7 @@ namespace Harlinn::ODBC
             auto rc = SQLFetchScroll( Handle( ), static_cast<SQLSMALLINT>( fetchOrientation ), fetchOffset );
             if ( rc < SQL_SUCCESS )
             {
-                ThrowException( rc, __FUNCTION__, __FILE__, __LINE__ );
+                ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
             return static_cast<Result>( rc );
         }
@@ -1172,7 +1172,7 @@ namespace Harlinn::ODBC
                 const_cast<SQLWCHAR*>( foreignKeyTableName ), foreignKeyTableNameLength );
             if ( rc < SQL_SUCCESS )
             {
-                ThrowException( rc, __FUNCTION__, __FILE__, __LINE__ );
+                ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
             return static_cast<Result>( rc );
         }
@@ -1192,7 +1192,7 @@ namespace Harlinn::ODBC
                 const_cast<SQLCHAR*>( foreignKeyTableName ), foreignKeyTableNameLength );
             if ( rc < SQL_SUCCESS )
             {
-                ThrowException( rc, __FUNCTION__, __FILE__, __LINE__ );
+                ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
             return static_cast<Result>( rc );
         }
@@ -1203,7 +1203,7 @@ namespace Harlinn::ODBC
             auto rc = SQLFreeStmt( Handle( ), option );
             if ( rc < SQL_SUCCESS )
             {
-                ThrowException( rc, __FUNCTION__, __FILE__, __LINE__ );
+                ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
             return static_cast<Result>( rc );
         }
@@ -1244,7 +1244,7 @@ namespace Harlinn::ODBC
             auto rc = SQLGetCursorNameW( Handle(), cursorName, cursorNameMaxLength, cursorNameActualLength );
             if ( rc < SQL_SUCCESS )
             {
-                ThrowException( rc, __FUNCTION__, __FILE__, __LINE__ );
+                ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
             return static_cast<Result>( rc );
         }
@@ -1253,7 +1253,7 @@ namespace Harlinn::ODBC
             auto rc = SQLGetCursorNameA( Handle( ), cursorName, cursorNameMaxLength, cursorNameActualLength );
             if ( rc < SQL_SUCCESS )
             {
-                ThrowException( rc, __FUNCTION__, __FILE__, __LINE__ );
+                ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
             return static_cast<Result>( rc );
         }
@@ -1263,17 +1263,32 @@ namespace Harlinn::ODBC
             auto rc = SQLGetData( Handle( ), columnOrParameterNumber, targetValueDataType, targetValue, targetValueMaxLength, nullIndicatorOrTargetValueActualLength );
             if ( rc < SQL_SUCCESS )
             {
-                ThrowException( rc, __FUNCTION__, __FILE__, __LINE__ );
+                ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
             return static_cast<Result>( rc );
         }
+
+
+        bool GetBoolean( SQLUSMALLINT columnOrParameterNumber ) const
+        {
+            Byte value = 0;
+            SQLLEN nullIndicator = 0;
+            GetData( columnOrParameterNumber, NativeType::Boolean, &value, sizeof( value ), &nullIndicator );
+            if ( nullIndicator != SQL_NULL_DATA )
+            {
+                return value != SQL_FALSE;
+            }
+        }
+
+
+
 
         Result GetAttributeW( SQLINTEGER attributeId, SQLPOINTER value, SQLINTEGER valueBufferLength, SQLINTEGER* valueActualLength ) const
         {
             auto rc = SQLGetStmtAttrW( Handle( ), attributeId, value, valueBufferLength, valueActualLength );
             if ( rc < SQL_SUCCESS )
             {
-                ThrowException( rc, __FUNCTION__, __FILE__, __LINE__ );
+                ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
             return static_cast<Result>( rc );
         }
@@ -1282,7 +1297,7 @@ namespace Harlinn::ODBC
             auto rc = SQLGetStmtAttrA( Handle( ), attributeId, value, valueBufferLength, valueActualLength );
             if ( rc < SQL_SUCCESS )
             {
-                ThrowException( rc, __FUNCTION__, __FILE__, __LINE__ );
+                ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
             return static_cast<Result>( rc );
         }
@@ -1292,7 +1307,7 @@ namespace Harlinn::ODBC
             auto rc = SQLSetStmtAttrW( Handle( ), attributeId, value, valueLength );
             if ( rc < SQL_SUCCESS )
             {
-                ThrowException( rc, __FUNCTION__, __FILE__, __LINE__ );
+                ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
             return static_cast<Result>( rc );
         }
@@ -1306,7 +1321,7 @@ namespace Harlinn::ODBC
             auto rc = SQLSetStmtAttr( Handle( ), attributeId, value, valueLength );
             if ( rc < SQL_SUCCESS )
             {
-                ThrowException( rc, __FUNCTION__, __FILE__, __LINE__ );
+                ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
             return static_cast<Result>( rc );
 #ifdef SQLSetStmtAttrUndeffed
@@ -1375,7 +1390,7 @@ namespace Harlinn::ODBC
             auto rc = SQLGetTypeInfoW( Handle( ), dataType );
             if ( rc < SQL_SUCCESS )
             {
-                ThrowException( rc, __FUNCTION__, __FILE__, __LINE__ );
+                ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
             return static_cast<Result>( rc );
         }
@@ -1384,7 +1399,7 @@ namespace Harlinn::ODBC
             auto rc = SQLGetTypeInfoA( Handle( ), dataType );
             if ( rc < SQL_SUCCESS )
             {
-                ThrowException( rc, __FUNCTION__, __FILE__, __LINE__ );
+                ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
             return static_cast<Result>( rc );
         }
@@ -1394,7 +1409,7 @@ namespace Harlinn::ODBC
             auto rc = SQLMoreResults( Handle( ) );
             if ( rc < SQL_SUCCESS )
             {
-                ThrowException( rc, __FUNCTION__, __FILE__, __LINE__ );
+                ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
             return static_cast<Result>( rc );
         }
@@ -1404,7 +1419,7 @@ namespace Harlinn::ODBC
             auto rc = SQLNumParams( Handle( ), result );
             if ( rc < SQL_SUCCESS )
             {
-                ThrowException( rc, __FUNCTION__, __FILE__, __LINE__ );
+                ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
             return static_cast<Result>( rc );
         }
@@ -1414,7 +1429,7 @@ namespace Harlinn::ODBC
             auto rc = SQLNumResultCols( Handle( ), result );
             if ( rc < SQL_SUCCESS )
             {
-                ThrowException( rc, __FUNCTION__, __FILE__, __LINE__ );
+                ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
             return static_cast<Result>( rc );
         }
@@ -1424,7 +1439,7 @@ namespace Harlinn::ODBC
             auto rc = SQLParamData( Handle( ), valuePointer );
             if ( rc < SQL_SUCCESS )
             {
-                ThrowException( rc, __FUNCTION__, __FILE__, __LINE__ );
+                ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
             return static_cast<Result>( rc );
         }
@@ -1434,7 +1449,7 @@ namespace Harlinn::ODBC
             auto rc = SQLPrepareW( Handle( ), const_cast<SQLWCHAR*>( statement ), statementLength );
             if ( rc < SQL_SUCCESS )
             {
-                ThrowException( rc, __FUNCTION__, __FILE__, __LINE__ );
+                ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
             return static_cast<Result>( rc );
         }
@@ -1444,7 +1459,7 @@ namespace Harlinn::ODBC
             auto rc = SQLPrepareA( Handle( ), const_cast<SQLCHAR*>( statement ), statementLength );
             if ( rc < SQL_SUCCESS )
             {
-                ThrowException( rc, __FUNCTION__, __FILE__, __LINE__ );
+                ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
             return static_cast<Result>( rc );
         }
@@ -1455,7 +1470,7 @@ namespace Harlinn::ODBC
             auto rc = SQLPrimaryKeysW( Handle( ), const_cast<SQLWCHAR*>( catalogName ), catalogNameLength, const_cast<SQLWCHAR*>( schemaName ), schemaNameLength, const_cast<SQLWCHAR*>( tableName ), tableNameLength );
             if ( rc < SQL_SUCCESS )
             {
-                ThrowException( rc, __FUNCTION__, __FILE__, __LINE__ );
+                ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
             return static_cast<Result>( rc );
         }
@@ -1464,7 +1479,7 @@ namespace Harlinn::ODBC
             auto rc = SQLPrimaryKeysA( Handle( ), const_cast<SQLCHAR*>( catalogName ), catalogNameLength, const_cast<SQLCHAR*>( schemaName ), schemaNameLength, const_cast<SQLCHAR*>( tableName ), tableNameLength );
             if ( rc < SQL_SUCCESS )
             {
-                ThrowException( rc, __FUNCTION__, __FILE__, __LINE__ );
+                ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
             return static_cast<Result>( rc );
         }
@@ -1474,7 +1489,7 @@ namespace Harlinn::ODBC
             auto rc = SQLProcedureColumnsW( Handle( ), const_cast<SQLWCHAR*>( catalogName ), catalogNameLength, const_cast<SQLWCHAR*>( schemaName ), schemaNameLength, const_cast<SQLWCHAR*>( procedureName ), procedureNameLength, const_cast<SQLWCHAR*>( columnName ), columnNameLength );
             if ( rc < SQL_SUCCESS )
             {
-                ThrowException( rc, __FUNCTION__, __FILE__, __LINE__ );
+                ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
             return static_cast<Result>( rc );
         }
@@ -1483,7 +1498,7 @@ namespace Harlinn::ODBC
             auto rc = SQLProcedureColumnsA( Handle( ), const_cast<SQLCHAR*>( catalogName ), catalogNameLength, const_cast<SQLCHAR*>( schemaName ), schemaNameLength, const_cast<SQLCHAR*>( procedureName ), procedureNameLength, const_cast<SQLCHAR*>( columnName ), columnNameLength );
             if ( rc < SQL_SUCCESS )
             {
-                ThrowException( rc, __FUNCTION__, __FILE__, __LINE__ );
+                ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
             return static_cast<Result>( rc );
         }
@@ -1493,7 +1508,7 @@ namespace Harlinn::ODBC
             auto rc = SQLProceduresW( Handle(), const_cast<SQLWCHAR*>( catalogName ), catalogNameLength, const_cast<SQLWCHAR*>( schemaName ), schemaNameLength, const_cast<SQLWCHAR*>( procedureName ), procedureNameLength );
             if ( rc < SQL_SUCCESS )
             {
-                ThrowException( rc, __FUNCTION__, __FILE__, __LINE__ );
+                ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
             return static_cast<Result>( rc );
         }
@@ -1502,7 +1517,7 @@ namespace Harlinn::ODBC
             auto rc = SQLProceduresA( Handle( ), const_cast<SQLCHAR*>( catalogName ), catalogNameLength, const_cast<SQLCHAR*>( schemaName ), schemaNameLength, const_cast<SQLCHAR*>( procedureName ), procedureNameLength );
             if ( rc < SQL_SUCCESS )
             {
-                ThrowException( rc, __FUNCTION__, __FILE__, __LINE__ );
+                ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
             return static_cast<Result>( rc );
         }
@@ -1512,7 +1527,7 @@ namespace Harlinn::ODBC
             auto rc = SQLPutData( Handle(), data, nullIndicatorOrDataLength );
             if ( rc < SQL_SUCCESS )
             {
-                ThrowException( rc, __FUNCTION__, __FILE__, __LINE__ );
+                ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
             return static_cast<Result>( rc );
         }
@@ -1523,7 +1538,7 @@ namespace Harlinn::ODBC
             auto rc = SQLRowCount( Handle( ), result );
             if ( rc < SQL_SUCCESS )
             {
-                ThrowException( rc, __FUNCTION__, __FILE__, __LINE__ );
+                ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
             return static_cast<Result>( rc );
         }
@@ -1533,7 +1548,7 @@ namespace Harlinn::ODBC
             auto rc = SQLSetCursorNameW( Handle( ), const_cast<SQLWCHAR*>( cursorName ), cursorNameLength );
             if ( rc < SQL_SUCCESS )
             {
-                ThrowException( rc, __FUNCTION__, __FILE__, __LINE__ );
+                ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
             return static_cast<Result>( rc );
         }
@@ -1543,7 +1558,7 @@ namespace Harlinn::ODBC
             auto rc = SQLSetCursorNameA( Handle( ), const_cast<SQLCHAR*>( cursorName ), cursorNameLength );
             if ( rc < SQL_SUCCESS )
             {
-                ThrowException( rc, __FUNCTION__, __FILE__, __LINE__ );
+                ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
             return static_cast<Result>( rc );
         }
@@ -1553,7 +1568,7 @@ namespace Harlinn::ODBC
             auto rc = SQLSetPos( Handle( ), rowNumber, operation, lockType );
             if ( rc < SQL_SUCCESS )
             {
-                ThrowException( rc, __FUNCTION__, __FILE__, __LINE__ );
+                ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
             return static_cast<Result>( rc );
         }
@@ -1563,7 +1578,7 @@ namespace Harlinn::ODBC
             auto rc = SQLSpecialColumnsW( Handle( ), identifierType, const_cast<SQLWCHAR*>( catalogName ), catalogNameLength, const_cast<SQLWCHAR*>( schemaName ), schemaNameLength, const_cast<SQLWCHAR*>( tableName ), tableNameLength, scope, nullable );
             if ( rc < SQL_SUCCESS )
             {
-                ThrowException( rc, __FUNCTION__, __FILE__, __LINE__ );
+                ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
             return static_cast<Result>( rc );
         }
@@ -1572,7 +1587,7 @@ namespace Harlinn::ODBC
             auto rc = SQLSpecialColumnsA( Handle( ), identifierType, const_cast<SQLCHAR*>( catalogName ), catalogNameLength, const_cast<SQLCHAR*>( schemaName ), schemaNameLength, const_cast<SQLCHAR*>( tableName ), tableNameLength, scope, nullable );
             if ( rc < SQL_SUCCESS )
             {
-                ThrowException( rc, __FUNCTION__, __FILE__, __LINE__ );
+                ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
             return static_cast<Result>( rc );
         }
@@ -1582,7 +1597,7 @@ namespace Harlinn::ODBC
             auto rc = SQLStatisticsW( Handle( ), const_cast<SQLWCHAR*>( catalogName ), catalogNameLength, const_cast<SQLWCHAR*>( schemaName ), schemaNameLength, const_cast<SQLWCHAR*>( tableName ), tableNameLength, unique, options );
             if ( rc < SQL_SUCCESS )
             {
-                ThrowException( rc, __FUNCTION__, __FILE__, __LINE__ );
+                ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
             return static_cast<Result>( rc );
         }
@@ -1591,7 +1606,7 @@ namespace Harlinn::ODBC
             auto rc = SQLStatisticsA( Handle( ), const_cast<SQLCHAR*>( catalogName ), catalogNameLength, const_cast<SQLCHAR*>( schemaName ), schemaNameLength, const_cast<SQLCHAR*>( tableName ), tableNameLength, unique, options );
             if ( rc < SQL_SUCCESS )
             {
-                ThrowException( rc, __FUNCTION__, __FILE__, __LINE__ );
+                ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
             return static_cast<Result>( rc );
         }
@@ -1601,7 +1616,7 @@ namespace Harlinn::ODBC
             auto rc = SQLTablePrivilegesW( Handle( ), const_cast<SQLWCHAR*>( catalogName ), catalogNameLength, const_cast<SQLWCHAR*>( schemaName ), schemaNameLength, const_cast<SQLWCHAR*>( tableName ), tableNameLength );
             if ( rc < SQL_SUCCESS )
             {
-                ThrowException( rc, __FUNCTION__, __FILE__, __LINE__ );
+                ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
             return static_cast<Result>( rc );
         }
@@ -1611,7 +1626,7 @@ namespace Harlinn::ODBC
             auto rc = SQLTablePrivilegesA( Handle( ), const_cast<SQLCHAR*>( catalogName ), catalogNameLength, const_cast<SQLCHAR*>( schemaName ), schemaNameLength, const_cast<SQLCHAR*>( tableName ), tableNameLength );
             if ( rc < SQL_SUCCESS )
             {
-                ThrowException( rc, __FUNCTION__, __FILE__, __LINE__ );
+                ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
             return static_cast<Result>( rc );
         }
@@ -1621,7 +1636,7 @@ namespace Harlinn::ODBC
             auto rc = SQLTablesW( Handle( ), const_cast<SQLWCHAR*>( catalogName ), catalogNameLength, const_cast<SQLWCHAR*>( schemaName ), schemaNameLength, const_cast<SQLWCHAR*>( tableName ), tableNameLength, const_cast<SQLWCHAR*>( tableTypes ), tableTypesLength );
             if ( rc < SQL_SUCCESS )
             {
-                ThrowException( rc, __FUNCTION__, __FILE__, __LINE__ );
+                ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
             return static_cast<Result>( rc );
         }
@@ -1630,7 +1645,7 @@ namespace Harlinn::ODBC
             auto rc = SQLTablesA( Handle( ), const_cast<SQLCHAR*>( catalogName ), catalogNameLength, const_cast<SQLCHAR*>( schemaName ), schemaNameLength, const_cast<SQLCHAR*>( tableName ), tableNameLength, const_cast<SQLCHAR*>( tableTypes ), tableTypesLength );
             if ( rc < SQL_SUCCESS )
             {
-                ThrowException( rc, __FUNCTION__, __FILE__, __LINE__ );
+                ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
             return static_cast<Result>( rc );
         }
@@ -1675,7 +1690,7 @@ namespace Harlinn::ODBC
             auto rc = SQLBrowseConnectW( Handle( ), const_cast<SQLWCHAR*>(inputConnectionString), inputConnectionStringLength, resultConnectionString, resultConnectionStringMaxLength, resultConnectionStringActualLength );
             if ( rc != SQL_SUCCESS )
             {
-                ThrowException( rc, __FUNCTION__, __FILE__, __LINE__ );
+                ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
         }
         void BrowseConnect( const SQLCHAR* inputConnectionString, SQLSMALLINT inputConnectionStringLength, SQLCHAR* resultConnectionString, SQLSMALLINT resultConnectionStringMaxLength, SQLSMALLINT* resultConnectionStringActualLength ) const
@@ -1683,7 +1698,7 @@ namespace Harlinn::ODBC
             auto rc = SQLBrowseConnectA( Handle( ), const_cast<SQLCHAR*>( inputConnectionString ), inputConnectionStringLength, resultConnectionString, resultConnectionStringMaxLength, resultConnectionStringActualLength );
             if ( rc != SQL_SUCCESS )
             {
-                ThrowException( rc, __FUNCTION__, __FILE__, __LINE__ );
+                ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
         }
 
@@ -1692,7 +1707,7 @@ namespace Harlinn::ODBC
             auto rc = SQLConnectW( Handle( ), const_cast<SQLWCHAR*>( datasourceName ), datasourceNameLength, const_cast<SQLWCHAR*>( userName ), userNameLength, const_cast<SQLWCHAR*>( authenticationString ), authenticationStringLength );
             if ( rc < SQL_SUCCESS )
             {
-                ThrowException( rc, __FUNCTION__, __FILE__, __LINE__ );
+                ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
             return static_cast<Result>( rc );
         }
@@ -1719,7 +1734,7 @@ namespace Harlinn::ODBC
             auto rc = SQLConnectA( Handle( ), const_cast<SQLCHAR*>( datasourceName ), datasourceNameLength, const_cast<SQLCHAR*>( userName ), userNameLength, const_cast<SQLCHAR*>( authenticationString ), authenticationStringLength );
             if ( rc < SQL_SUCCESS )
             {
-                ThrowException( rc, __FUNCTION__, __FILE__, __LINE__ );
+                ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
             return static_cast<Result>( rc );
         }
@@ -1737,7 +1752,7 @@ namespace Harlinn::ODBC
             auto rc = SQLDisconnect( Handle() );
             if ( rc < SQL_SUCCESS )
             {
-                ThrowException( rc, __FUNCTION__, __FILE__, __LINE__ );
+                ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
             return static_cast<Result>( rc );
         }
@@ -1747,7 +1762,7 @@ namespace Harlinn::ODBC
             auto rc = SQLDriverConnectW( Handle( ), windowHandle, const_cast<SQLWCHAR*>( initialConnectionString ), initialConnectionStringLength, resultConnectionString, resultConnectionStringMaxLength, resultConnectionStringActualLength, static_cast<SQLSMALLINT>( driverCompletion ) );
             if ( rc < SQL_SUCCESS )
             {
-                ThrowException( rc, __FUNCTION__, __FILE__, __LINE__ );
+                ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
             return static_cast<Result>( rc );
         }
@@ -1756,7 +1771,7 @@ namespace Harlinn::ODBC
             auto rc = SQLDriverConnectA( Handle( ), windowHandle, const_cast<SQLCHAR*>( initialConnectionString ), initialConnectionStringLength, resultConnectionString, resultConnectionStringMaxLength, resultConnectionStringActualLength, static_cast<SQLSMALLINT>( driverCompletion ) );
             if ( rc < SQL_SUCCESS )
             {
-                ThrowException( rc, __FUNCTION__, __FILE__, __LINE__ );
+                ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
             return static_cast<Result>( rc );
         }
@@ -1766,7 +1781,7 @@ namespace Harlinn::ODBC
             auto rc = SQLEndTran( static_cast<SQLSMALLINT>( Base::HandleType ), Handle( ), static_cast<SQLSMALLINT>( completionType ) );
             if ( rc < SQL_SUCCESS )
             {
-                ThrowException( rc, __FUNCTION__, __FILE__, __LINE__ );
+                ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
             return static_cast<Result>( rc );
         }
@@ -1785,7 +1800,7 @@ namespace Harlinn::ODBC
             auto rc = SQLGetConnectAttrW( Handle( ), attributeId, value, valueBufferLength, valueActualLength );
             if ( rc < SQL_SUCCESS )
             {
-                ThrowException( rc, __FUNCTION__, __FILE__, __LINE__ );
+                ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
             return static_cast<Result>( rc );
         }
@@ -1819,7 +1834,7 @@ namespace Harlinn::ODBC
             auto rc = SQLGetConnectAttrW( Handle( ), attributeId, value, valueBufferLength, valueActualLength );
             if ( rc < SQL_SUCCESS )
             {
-                ThrowException( rc, __FUNCTION__, __FILE__, __LINE__ );
+                ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
             return static_cast<Result>( rc );
         }
@@ -1829,7 +1844,7 @@ namespace Harlinn::ODBC
             auto rc = SQLSetConnectAttrW( Handle( ), attributeId, value, valueLength );
             if ( rc < SQL_SUCCESS )
             {
-                ThrowException( rc, __FUNCTION__, __FILE__, __LINE__ );
+                ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
             return static_cast<Result>( rc );
         }
@@ -1858,7 +1873,7 @@ namespace Harlinn::ODBC
             auto rc = SQLSetConnectAttrA( Handle( ), attributeId, value, valueLength );
             if ( rc < SQL_SUCCESS )
             {
-                ThrowException( rc, __FUNCTION__, __FILE__, __LINE__ );
+                ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
             return static_cast<Result>( rc );
         }
@@ -1908,7 +1923,7 @@ namespace Harlinn::ODBC
             auto rc = SQLGetFunctions( Handle( ), functionId, supported );
             if ( rc < SQL_SUCCESS )
             {
-                ThrowException( rc, __FUNCTION__, __FILE__, __LINE__ );
+                ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
             return static_cast<Result>( rc );
         }
@@ -1918,7 +1933,7 @@ namespace Harlinn::ODBC
             auto rc = SQLGetInfoW( Handle( ), infoType, infoValue, infoValueMaxLength, infoValueActualLength );
             if ( rc < SQL_SUCCESS )
             {
-                ThrowException( rc, __FUNCTION__, __FILE__, __LINE__ );
+                ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
             return static_cast<Result>( rc );
         }
@@ -1927,7 +1942,7 @@ namespace Harlinn::ODBC
             auto rc = SQLGetInfoA( Handle( ), infoType, infoValue, infoValueMaxLength, infoValueActualLength );
             if ( rc < SQL_SUCCESS )
             {
-                ThrowException( rc, __FUNCTION__, __FILE__, __LINE__ );
+                ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
             return static_cast<Result>( rc );
         }
@@ -1938,7 +1953,7 @@ namespace Harlinn::ODBC
             auto rc = SQLNativeSqlW( Handle( ), const_cast<SQLWCHAR*>( inStatement ), inStatementLength, outStatement, outStatementMaxLength, outStatementActualLength );
             if ( rc < SQL_SUCCESS )
             {
-                ThrowException( rc, __FUNCTION__, __FILE__, __LINE__ );
+                ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
             return static_cast<Result>( rc );
         }
@@ -1947,7 +1962,7 @@ namespace Harlinn::ODBC
             auto rc = SQLNativeSqlA( Handle( ), const_cast<SQLCHAR*>( inStatement ), inStatementLength, outStatement, outStatementMaxLength, outStatementActualLength );
             if ( rc < SQL_SUCCESS )
             {
-                ThrowException( rc, __FUNCTION__, __FILE__, __LINE__ );
+                ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
             return static_cast<Result>( rc );
         }
@@ -1988,7 +2003,7 @@ namespace Harlinn::ODBC
             auto rc = SQLSetEnvAttr( Handle( ), attributeId, value, valueLength );
             if ( rc != SQL_SUCCESS )
             {
-                ThrowException( rc, __FUNCTION__, __FILE__, __LINE__ );
+                ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
         }
 
@@ -1997,7 +2012,7 @@ namespace Harlinn::ODBC
             auto rc = SQLGetEnvAttr( Handle( ), attributeId, value, allocatedLength, valueLength );
             if ( rc != SQL_SUCCESS )
             {
-                ThrowException( rc, __FUNCTION__, __FILE__, __LINE__ );
+                ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
         }
 
@@ -2029,7 +2044,7 @@ namespace Harlinn::ODBC
             auto rc = SQLDataSourcesW( Handle( ), static_cast<SQLUSMALLINT>( direction ), datasourceName, datasourceNameMaxLength, datasourceNameActualLength, datasourceDescription, datasourceDescriptionMaxLength, datasourceDescriptionActualLength );
             if ( rc < SQL_SUCCESS )
             {
-                ThrowException( rc, __FUNCTION__, __FILE__, __LINE__ );
+                ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
             return static_cast<Result>( rc );
         }
@@ -2039,7 +2054,7 @@ namespace Harlinn::ODBC
             auto rc = SQLDataSourcesA( Handle( ), static_cast<SQLUSMALLINT>( direction ), datasourceName, datasourceNameMaxLength, datasourceNameActualLength, datasourceDescription, datasourceDescriptionMaxLength, datasourceDescriptionActualLength );
             if ( rc < SQL_SUCCESS )
             {
-                ThrowException( rc, __FUNCTION__, __FILE__, __LINE__ );
+                ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
             return static_cast<Result>( rc );
         }
@@ -2069,7 +2084,7 @@ namespace Harlinn::ODBC
             auto rc = SQLDriversW( Handle( ), static_cast<SQLUSMALLINT>( direction ), driverDescription, driverDescriptionMaxLength, driverDescriptionActualLength, driverAttributes, driverAttributesMaxLength, driverAttributesActualLength );
             if ( rc < SQL_SUCCESS )
             {
-                ThrowException( rc, __FUNCTION__, __FILE__, __LINE__ );
+                ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
             return static_cast<Result>( rc );
         }
@@ -2099,7 +2114,7 @@ namespace Harlinn::ODBC
             auto rc = SQLEndTran( static_cast<SQLSMALLINT>( Base::HandleType ), Handle( ), static_cast<SQLSMALLINT>( completionType ) );
             if ( rc < SQL_SUCCESS )
             {
-                ThrowException( rc, __FUNCTION__, __FILE__, __LINE__ );
+                ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
             return static_cast<Result>( rc );
         }

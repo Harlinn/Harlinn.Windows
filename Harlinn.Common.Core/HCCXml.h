@@ -172,8 +172,9 @@ namespace Harlinn::Common::Core::Xml
                 }
                 else
                 {
-                    typename NodeT::InterfaceType* pNodeType = nullptr;
-                    hr = result->QueryInterface<NodeT::InterfaceType>( &pNodeType );
+                    using InterfaceType = typename NodeT::InterfaceType;
+                    InterfaceType* pNodeType = nullptr;
+                    hr = result->QueryInterface<InterfaceType>( &pNodeType );
                     HCC_COM_CHECK_HRESULT2( hr, result );
                     NodeT node( pNodeType );
                     result->Release( );
@@ -197,8 +198,9 @@ namespace Harlinn::Common::Core::Xml
                 }
                 else
                 {
-                    typename NodeT::InterfaceType* pNodeType = nullptr;
-                    hr = result->QueryInterface<NodeT::InterfaceType>( &pNodeType );
+                    using InterfaceType = typename NodeT::InterfaceType;
+                    InterfaceType* pNodeType = nullptr;
+                    hr = result->QueryInterface<InterfaceType>( &pNodeType );
                     HCC_COM_CHECK_HRESULT2( hr, result );
                     NodeT node( pNodeType );
                     result->Release( );
@@ -219,8 +221,9 @@ namespace Harlinn::Common::Core::Xml
                 }
                 else
                 {
-                    typename NodeT::InterfaceType* pNodeType = nullptr;
-                    hr = result->QueryInterface<NodeT::InterfaceType>( &pNodeType );
+                    using InterfaceType = typename NodeT::InterfaceType;
+                    InterfaceType* pNodeType = nullptr;
+                    hr = result->QueryInterface<InterfaceType>( &pNodeType );
                     HCC_COM_CHECK_HRESULT2( hr, result );
                     NodeT node( pNodeType );
                     result->Release( );
@@ -241,8 +244,9 @@ namespace Harlinn::Common::Core::Xml
                 }
                 else
                 {
-                    typename NodeT::InterfaceType* pNodeType = nullptr;
-                    hr = result->QueryInterface<NodeT::InterfaceType>( &pNodeType );
+                    using InterfaceType = typename NodeT::InterfaceType;
+                    InterfaceType* pNodeType = nullptr;
+                    hr = result->QueryInterface<InterfaceType>( &pNodeType );
                     HCC_COM_CHECK_HRESULT2( hr, result );
                     NodeT node( pNodeType );
                     result->Release( );
@@ -263,8 +267,9 @@ namespace Harlinn::Common::Core::Xml
                 }
                 else
                 {
-                    typename NodeT::InterfaceType* pNodeType = nullptr;
-                    hr = result->QueryInterface<NodeT::InterfaceType>( &pNodeType );
+                    using InterfaceType = typename NodeT::InterfaceType;
+                    InterfaceType* pNodeType = nullptr;
+                    hr = result->QueryInterface<InterfaceType>( &pNodeType );
                     HCC_COM_CHECK_HRESULT2( hr, result );
                     NodeT node( pNodeType );
                     result->Release( );
@@ -288,8 +293,9 @@ namespace Harlinn::Common::Core::Xml
                 }
                 else
                 {
-                    typename NodeT::InterfaceType* pNodeType = nullptr;
-                    hr = result->QueryInterface<NodeT::InterfaceType>( &pNodeType );
+                    using InterfaceType = typename NodeT::InterfaceType;
+                    InterfaceType* pNodeType = nullptr;
+                    hr = result->QueryInterface<InterfaceType>( &pNodeType );
                     HCC_COM_CHECK_HRESULT2( hr, result );
                     NodeT node( pNodeType );
                     result->Release( );
@@ -310,8 +316,9 @@ namespace Harlinn::Common::Core::Xml
                 }
                 else
                 {
-                    typename NodeT::InterfaceType* pNodeType = nullptr;
-                    hr = result->QueryInterface<NodeT::InterfaceType>( &pNodeType );
+                    using InterfaceType = typename NodeT::InterfaceType;
+                    InterfaceType* pNodeType = nullptr;
+                    hr = result->QueryInterface<InterfaceType>( &pNodeType );
                     HCC_COM_CHECK_HRESULT2( hr, result );
                     NodeT node( pNodeType );
                     result->Release( );
@@ -332,8 +339,9 @@ namespace Harlinn::Common::Core::Xml
                 }
                 else
                 {
-                    typename NodeT::InterfaceType* pNodeType = nullptr;
-                    hr = result->QueryInterface<NodeT::InterfaceType>( &pNodeType );
+                    using InterfaceType = typename NodeT::InterfaceType;
+                    InterfaceType* pNodeType = nullptr;
+                    hr = result->QueryInterface<InterfaceType>( &pNodeType );
                     HCC_COM_CHECK_HRESULT2( hr, result );
                     NodeT node( pNodeType );
                     result->Release( );
@@ -354,8 +362,9 @@ namespace Harlinn::Common::Core::Xml
                 }
                 else
                 {
-                    typename NodeT::InterfaceType* pNodeType = nullptr;
-                    hr = result->QueryInterface<NodeT::InterfaceType>( &pNodeType );
+                    using InterfaceType = typename NodeT::InterfaceType;
+                    InterfaceType* pNodeType = nullptr;
+                    hr = result->QueryInterface<InterfaceType>( &pNodeType );
                     HCC_COM_CHECK_HRESULT2( hr, result );
                     NodeT node( pNodeType );
                     result->Release( );
@@ -387,8 +396,9 @@ namespace Harlinn::Common::Core::Xml
                 }
                 else
                 {
-                    typename NodeT::InterfaceType* pNodeType = nullptr;
-                    hr = result->QueryInterface<NodeT::InterfaceType>( &pNodeType );
+                    using InterfaceType = typename NodeT::InterfaceType;
+                    InterfaceType* pNodeType = nullptr;
+                    hr = result->QueryInterface<InterfaceType>( &pNodeType );
                     HCC_COM_CHECK_HRESULT2( hr, result );
                     NodeT node( pNodeType );
                     result->Release( );
@@ -465,8 +475,9 @@ namespace Harlinn::Common::Core::Xml
                 }
                 else
                 {
-                    typename NodeT::InterfaceType* pNodeType = nullptr;
-                    hr = result->QueryInterface<NodeT::InterfaceType>( &pNodeType );
+                    using InterfaceType = typename NodeT::InterfaceType;
+                    InterfaceType* pNodeType = nullptr;
+                    hr = result->QueryInterface<InterfaceType>( &pNodeType );
                     HCC_COM_CHECK_HRESULT2( hr, result );
                     NodeT node( pNodeType );
                     result->Release( );
@@ -540,8 +551,9 @@ namespace Harlinn::Common::Core::Xml
                 }
                 else
                 {
-                    typename NodeT::InterfaceType* pNodeType = nullptr;
-                    hr = result->QueryInterface<NodeT::InterfaceType>( &pNodeType );
+                    using InterfaceType = typename NodeT::InterfaceType;
+                    InterfaceType* pNodeType = nullptr;
+                    hr = result->QueryInterface<InterfaceType>( &pNodeType );
                     HCC_COM_CHECK_HRESULT2( hr, result );
                     NodeT node( pNodeType );
                     result->Release( );
@@ -809,8 +821,9 @@ namespace Harlinn::Common::Core::Xml
                 }
                 else
                 {
-                    typename NodeT2::InterfaceType* pNodeType = nullptr;
-                    hr = result->QueryInterface<NodeT2::InterfaceType>( &pNodeType );
+                    using InterfaceType = typename NodeT::InterfaceType;
+                    InterfaceType* pNodeType = nullptr;
+                    hr = result->QueryInterface<InterfaceType>( &pNodeType );
                     HCC_COM_CHECK_HRESULT2( hr, result );
                     NodeT2 node( pNodeType );
                     result->Release( );
@@ -855,8 +868,9 @@ namespace Harlinn::Common::Core::Xml
                 }
                 else
                 {
-                    typename NodeT2::InterfaceType* pNodeType = nullptr;
-                    hr = result->QueryInterface<NodeT2::InterfaceType>( &pNodeType );
+                    using InterfaceType = typename NodeT::InterfaceType;
+                    InterfaceType* pNodeType = nullptr;
+                    hr = result->QueryInterface<InterfaceType>( &pNodeType );
                     HCC_COM_CHECK_HRESULT2( hr, result );
                     NodeT2 node( pNodeType );
                     result->Release( );
@@ -980,8 +994,9 @@ namespace Harlinn::Common::Core::Xml
                 }
                 else
                 {
-                    typename NodeT2::InterfaceType* pNodeType = nullptr;
-                    hr = result->QueryInterface<NodeT2::InterfaceType>( &pNodeType );
+                    using InterfaceType = typename NodeT::InterfaceType;
+                    InterfaceType* pNodeType = nullptr;
+                    hr = result->QueryInterface<InterfaceType>( &pNodeType );
                     HCC_COM_CHECK_HRESULT2( hr, result );
                     NodeT2 node( pNodeType );
                     result->Release( );
@@ -1002,8 +1017,9 @@ namespace Harlinn::Common::Core::Xml
                 }
                 else
                 {
-                    typename NodeT2::InterfaceType* pNodeType = nullptr;
-                    hr = result->QueryInterface<NodeT2::InterfaceType>( &pNodeType );
+                    using InterfaceType = typename NodeT::InterfaceType;
+                    InterfaceType* pNodeType = nullptr;
+                    hr = result->QueryInterface<InterfaceType>( &pNodeType );
                     HCC_COM_CHECK_HRESULT2( hr, result );
                     NodeT2 node( pNodeType );
                     result->Release( );
@@ -1024,8 +1040,9 @@ namespace Harlinn::Common::Core::Xml
                 }
                 else
                 {
-                    typename NodeT2::InterfaceType* pNodeType = nullptr;
-                    hr = result->QueryInterface<NodeT2::InterfaceType>( &pNodeType );
+                    using InterfaceType = typename NodeT::InterfaceType;
+                    InterfaceType* pNodeType = nullptr;
+                    hr = result->QueryInterface<InterfaceType>( &pNodeType );
                     HCC_COM_CHECK_HRESULT2( hr, result );
                     NodeT2 node( pNodeType );
                     result->Release( );
@@ -1046,8 +1063,9 @@ namespace Harlinn::Common::Core::Xml
                 }
                 else
                 {
-                    typename NodeT2::InterfaceType* pNodeType = nullptr;
-                    hr = result->QueryInterface<NodeT2::InterfaceType>( &pNodeType );
+                    using InterfaceType = typename NodeT::InterfaceType;
+                    InterfaceType* pNodeType = nullptr;
+                    hr = result->QueryInterface<InterfaceType>( &pNodeType );
                     HCC_COM_CHECK_HRESULT2( hr, result );
                     NodeT2 node( pNodeType );
                     result->Release( );
@@ -1092,8 +1110,9 @@ namespace Harlinn::Common::Core::Xml
                 }
                 else
                 {
-                    typename NodeT2::InterfaceType* pNodeType = nullptr;
-                    hr = result->QueryInterface<NodeT2::InterfaceType>( &pNodeType );
+                    using InterfaceType = typename NodeT::InterfaceType;
+                    InterfaceType* pNodeType = nullptr;
+                    hr = result->QueryInterface<InterfaceType>( &pNodeType );
                     HCC_COM_CHECK_HRESULT2( hr, result );
                     NodeT2 node( pNodeType );
                     result->Release( );
@@ -1114,8 +1133,9 @@ namespace Harlinn::Common::Core::Xml
                 }
                 else
                 {
-                    typename NodeT2::InterfaceType* pNodeType = nullptr;
-                    hr = result->QueryInterface<NodeT2::InterfaceType>( &pNodeType );
+                    using InterfaceType = typename NodeT::InterfaceType;
+                    InterfaceType* pNodeType = nullptr;
+                    hr = result->QueryInterface<InterfaceType>( &pNodeType );
                     HCC_COM_CHECK_HRESULT2( hr, result );
                     NodeT2 node( pNodeType );
                     result->Release( );
@@ -1136,8 +1156,9 @@ namespace Harlinn::Common::Core::Xml
                 }
                 else
                 {
-                    typename NodeT2::InterfaceType* pNodeType = nullptr;
-                    hr = result->QueryInterface<NodeT2::InterfaceType>( &pNodeType );
+                    using InterfaceType = typename NodeT::InterfaceType;
+                    InterfaceType* pNodeType = nullptr;
+                    hr = result->QueryInterface<InterfaceType>( &pNodeType );
                     HCC_COM_CHECK_HRESULT2( hr, result );
                     NodeT2 node( pNodeType );
                     result->Release( );
@@ -2322,8 +2343,9 @@ namespace Harlinn::Common::Core::Xml
                 }
                 else
                 {
-                    typename NodeT::InterfaceType* pNodeType = nullptr;
-                    hr = result->QueryInterface<NodeT::InterfaceType>( &pNodeType );
+                    using InterfaceType = typename NodeT::InterfaceType;
+                    InterfaceType* pNodeType = nullptr;
+                    hr = result->QueryInterface<InterfaceType>( &pNodeType );
                     HCC_COM_CHECK_HRESULT2( hr, result );
                     NodeT node( pNodeType );
                     result->Release( );
@@ -2352,8 +2374,9 @@ namespace Harlinn::Common::Core::Xml
                 }
                 else
                 {
-                    typename NodeT::InterfaceType* pNodeType = nullptr;
-                    hr = result->QueryInterface<NodeT::InterfaceType>( &pNodeType );
+                    using InterfaceType = typename NodeT::InterfaceType;
+                    InterfaceType* pNodeType = nullptr;
+                    hr = result->QueryInterface<InterfaceType>( &pNodeType );
                     HCC_COM_CHECK_HRESULT2( hr, result );
                     NodeT node( pNodeType );
                     result->Release( );

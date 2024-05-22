@@ -23,7 +23,7 @@ namespace Harlinn::ODBC
 {
     namespace Internal
     {
-        void ThrowException( SQLRETURN sqlReturn, ODBC::HandleType handleType, SQLHANDLE sqlHandle, const char* function, const char* file, int line )
+        void ThrowException( SQLRETURN sqlReturn, ODBC::HandleType handleType, SQLHANDLE sqlHandle, const wchar_t* function, const wchar_t* file, int line )
         {
             ExceptionLocation location( function, file, line );
             SQLWCHAR sqlState[6] = {};
@@ -48,7 +48,7 @@ namespace Harlinn::ODBC
             throw exc;
         }
 
-        void ThrowExceptionNoDiagnostic( SQLRETURN sqlReturn, ODBC::HandleType handleType, SQLHANDLE sqlHandle, const char* function, const char* file, int line )
+        void ThrowExceptionNoDiagnostic( SQLRETURN sqlReturn, ODBC::HandleType handleType, SQLHANDLE sqlHandle, const wchar_t* function, const wchar_t* file, int line )
         {
             ExceptionLocation location( function, file, line );
             Data::DbException exc( location, sqlReturn, L"Unknown" );
