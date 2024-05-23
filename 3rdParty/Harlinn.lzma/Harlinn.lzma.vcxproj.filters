@@ -188,6 +188,9 @@
     <MASM Include="asm\x86\7zCrcOpt.asm">
       <Filter>asm\x86</Filter>
     </MASM>
+    <MASM Include="asm\x86\7zAsm.asm">
+      <Filter>asm\x86</Filter>
+    </MASM>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="c\7z.h">

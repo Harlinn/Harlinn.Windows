@@ -247,6 +247,7 @@
     <ClCompile Include="dllmain.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <MASM Include="asm\x86\7zAsm.asm" />
     <MASM Include="asm\x86\7zCrcOpt.asm" />
     <MASM Include="asm\x86\AesOpt.asm" />
     <MASM Include="asm\x86\LzFindOpt.asm" />
