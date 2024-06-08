@@ -33,9 +33,9 @@ int main( int argc, char** argv )
 
     absl::InitializeSymbolizer( argv[0] );
 
-    (void)absl::GetFlag( FLAGS_undefok );  // Force linking of parse.cc
+    //(void)absl::GetFlag( FLAGS_undefok );  // Force linking of parse.cc
     absl::flags_internal::SetProgramInvocationName( "usage_test" );
-    absl::SetProgramUsageMessage( kTestUsageMessage );
+    //absl::SetProgramUsageMessage( kTestUsageMessage );
 
     testing::InitGoogleTest( &argc, argv );
     return RUN_ALL_TESTS( );
