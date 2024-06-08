@@ -18,6 +18,6 @@
 
 namespace absl {
 ABSL_NAMESPACE_BEGIN
-void LogSink::KeyFunction() const {}
+ABSEIL_EXPORT void LogSink::KeyFunction() const {}
 ABSL_NAMESPACE_END
 }  // namespace absl

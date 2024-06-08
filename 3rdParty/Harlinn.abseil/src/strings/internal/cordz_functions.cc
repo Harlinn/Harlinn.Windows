@@ -83,11 +83,11 @@ void cordz_set_next_sample_for_testing(int64_t next_sample) {
 
 #endif  // ABSL_INTERNAL_CORDZ_ENABLED
 
-int32_t get_cordz_mean_interval() {
+ABSEIL_EXPORT int32_t get_cordz_mean_interval() {
   return g_cordz_mean_interval.load(std::memory_order_acquire);
 }
 
-void set_cordz_mean_interval(int32_t mean_interval) {
+ABSEIL_EXPORT void set_cordz_mean_interval(int32_t mean_interval) {
   g_cordz_mean_interval.store(mean_interval, std::memory_order_release);
 }
 

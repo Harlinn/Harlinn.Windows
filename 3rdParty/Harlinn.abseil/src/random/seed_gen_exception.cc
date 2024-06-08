@@ -24,15 +24,15 @@ ABSL_NAMESPACE_BEGIN
 static constexpr const char kExceptionMessage[] =
     "Failed generating seed-material for URBG.";
 
-SeedGenException::~SeedGenException() = default;
+ABSEIL_EXPORT SeedGenException::~SeedGenException() = default;
 
-const char* SeedGenException::what() const noexcept {
+ABSEIL_EXPORT const char* SeedGenException::what() const noexcept {
   return kExceptionMessage;
 }
 
 namespace random_internal {
 
-void ThrowSeedGenException() {
+ABSEIL_EXPORT void ThrowSeedGenException() {
 #ifdef ABSL_HAVE_EXCEPTIONS
   throw absl::SeedGenException();
 #else

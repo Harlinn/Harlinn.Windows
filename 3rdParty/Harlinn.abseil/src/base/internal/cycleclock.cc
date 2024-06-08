@@ -40,16 +40,16 @@ constexpr int32_t CycleClock::kShift;
 constexpr double CycleClock::kFrequencyScale;
 #endif
 
-ABSL_CONST_INIT std::atomic<CycleClockSourceFunc>
+ABSEIL_EXPORT ABSL_CONST_INIT std::atomic<CycleClockSourceFunc>
     CycleClock::cycle_clock_source_{nullptr};
 
-void CycleClockSource::Register(CycleClockSourceFunc source) {
+ABSEIL_EXPORT void CycleClockSource::Register(CycleClockSourceFunc source) {
   // Corresponds to the load(std::memory_order_acquire) in LoadCycleClockSource.
   CycleClock::cycle_clock_source_.store(source, std::memory_order_release);
 }
 
 #ifdef _WIN32
-int64_t CycleClock::Now() {
+ABSEIL_EXPORT int64_t CycleClock::Now() {
   auto fn = LoadCycleClockSource();
   if (fn == nullptr) {
     return base_internal::UnscaledCycleClock::Now() >> kShift;

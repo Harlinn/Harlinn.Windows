@@ -418,7 +418,7 @@ namespace absl {
 ABSL_NAMESPACE_BEGIN
 namespace random_internal {
 
-const void* RandenSlow::GetKeys() {
+ABSEIL_EXPORT const void* RandenSlow::GetKeys() {
   // Round keys for one AES per Feistel round and branch.
   // The canonical implementation uses first digits of Pi.
 #ifdef ABSL_IS_LITTLE_ENDIAN

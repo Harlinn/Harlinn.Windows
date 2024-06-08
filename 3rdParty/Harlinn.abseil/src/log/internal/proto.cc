@@ -40,7 +40,7 @@ constexpr uint64_t MakeTagType(uint64_t tag, WireType type) {
 }
 }  // namespace
 
-bool EncodeVarint(uint64_t tag, uint64_t value, absl::Span<char> *buf) {
+ABSEIL_EXPORT bool EncodeVarint(uint64_t tag, uint64_t value, absl::Span<char> *buf) {
   const uint64_t tag_type = MakeTagType(tag, WireType::kVarint);
   const size_t tag_type_size = VarintSize(tag_type);
   const size_t value_size = VarintSize(value);
@@ -53,7 +53,7 @@ bool EncodeVarint(uint64_t tag, uint64_t value, absl::Span<char> *buf) {
   return true;
 }
 
-bool Encode64Bit(uint64_t tag, uint64_t value, absl::Span<char> *buf) {
+ABSEIL_EXPORT bool Encode64Bit(uint64_t tag, uint64_t value, absl::Span<char> *buf) {
   const uint64_t tag_type = MakeTagType(tag, WireType::k64Bit);
   const size_t tag_type_size = VarintSize(tag_type);
   if (tag_type_size + sizeof(value) > buf->size()) {
@@ -69,7 +69,7 @@ bool Encode64Bit(uint64_t tag, uint64_t value, absl::Span<char> *buf) {
   return true;
 }
 
-bool Encode32Bit(uint64_t tag, uint32_t value, absl::Span<char> *buf) {
+ABSEIL_EXPORT bool Encode32Bit(uint64_t tag, uint32_t value, absl::Span<char> *buf) {
   const uint64_t tag_type = MakeTagType(tag, WireType::k32Bit);
   const size_t tag_type_size = VarintSize(tag_type);
   if (tag_type_size + sizeof(value) > buf->size()) {
@@ -85,7 +85,7 @@ bool Encode32Bit(uint64_t tag, uint32_t value, absl::Span<char> *buf) {
   return true;
 }
 
-bool EncodeBytes(uint64_t tag, absl::Span<const char> value,
+ABSEIL_EXPORT bool EncodeBytes(uint64_t tag, absl::Span<const char> value,
                  absl::Span<char> *buf) {
   const uint64_t tag_type = MakeTagType(tag, WireType::kLengthDelimited);
   const size_t tag_type_size = VarintSize(tag_type);
@@ -102,7 +102,7 @@ bool EncodeBytes(uint64_t tag, absl::Span<const char> value,
   return true;
 }
 
-bool EncodeBytesTruncate(uint64_t tag, absl::Span<const char> value,
+ABSEIL_EXPORT bool EncodeBytesTruncate(uint64_t tag, absl::Span<const char> value,
                          absl::Span<char> *buf) {
   const uint64_t tag_type = MakeTagType(tag, WireType::kLengthDelimited);
   const size_t tag_type_size = VarintSize(tag_type);
@@ -126,7 +126,7 @@ bool EncodeBytesTruncate(uint64_t tag, absl::Span<const char> value,
   return true;
 }
 
-ABSL_MUST_USE_RESULT absl::Span<char> EncodeMessageStart(
+ABSL_MUST_USE_RESULT ABSEIL_EXPORT absl::Span<char> EncodeMessageStart(
     uint64_t tag, uint64_t max_size, absl::Span<char> *buf) {
   const uint64_t tag_type = MakeTagType(tag, WireType::kLengthDelimited);
   const size_t tag_type_size = VarintSize(tag_type);
@@ -142,7 +142,7 @@ ABSL_MUST_USE_RESULT absl::Span<char> EncodeMessageStart(
   return ret;
 }
 
-void EncodeMessageLength(absl::Span<char> msg, const absl::Span<char> *buf) {
+ABSEIL_EXPORT void EncodeMessageLength(absl::Span<char> msg, const absl::Span<char> *buf) {
   if (!msg.data()) return;
   assert(buf->data() >= msg.data());
   if (buf->data() < msg.data()) return;

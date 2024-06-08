@@ -37,7 +37,7 @@ constexpr uint32_t kCRC32Xor = 0xffffffffU;
 
 namespace crc_internal {
 
-crc32c_t UnextendCrc32cByZeroes(crc32c_t initial_crc, size_t length) {
+ABSEIL_EXPORT crc32c_t UnextendCrc32cByZeroes(crc32c_t initial_crc, size_t length) {
   uint32_t crc = static_cast<uint32_t>(initial_crc) ^ kCRC32Xor;
   CrcEngine()->UnextendByZeroes(&crc, length);
   return static_cast<crc32c_t>(crc ^ kCRC32Xor);
@@ -45,7 +45,7 @@ crc32c_t UnextendCrc32cByZeroes(crc32c_t initial_crc, size_t length) {
 
 // Called by `absl::ExtendCrc32c()` on strings with size > 64 or when hardware
 // CRC32C support is missing.
-crc32c_t ExtendCrc32cInternal(crc32c_t initial_crc,
+ABSEIL_EXPORT crc32c_t ExtendCrc32cInternal(crc32c_t initial_crc,
                               absl::string_view buf_to_add) {
   uint32_t crc = static_cast<uint32_t>(initial_crc) ^ kCRC32Xor;
   CrcEngine()->Extend(&crc, buf_to_add.data(), buf_to_add.size());
@@ -54,27 +54,27 @@ crc32c_t ExtendCrc32cInternal(crc32c_t initial_crc,
 
 }  // namespace crc_internal
 
-crc32c_t ComputeCrc32c(absl::string_view buf) {
+ABSEIL_EXPORT crc32c_t ComputeCrc32c(absl::string_view buf) {
   return ExtendCrc32c(crc32c_t{0}, buf);
 }
 
-crc32c_t ExtendCrc32cByZeroes(crc32c_t initial_crc, size_t length) {
+ABSEIL_EXPORT crc32c_t ExtendCrc32cByZeroes(crc32c_t initial_crc, size_t length) {
   uint32_t crc = static_cast<uint32_t>(initial_crc) ^ kCRC32Xor;
   CrcEngine()->ExtendByZeroes(&crc, length);
   return static_cast<crc32c_t>(crc ^ kCRC32Xor);
 }
 
-crc32c_t ConcatCrc32c(crc32c_t lhs_crc, crc32c_t rhs_crc, size_t rhs_len) {
+ABSEIL_EXPORT crc32c_t ConcatCrc32c(crc32c_t lhs_crc, crc32c_t rhs_crc, size_t rhs_len) {
   uint32_t result = static_cast<uint32_t>(lhs_crc);
   CrcEngine()->ExtendByZeroes(&result, rhs_len);
   return crc32c_t{result ^ static_cast<uint32_t>(rhs_crc)};
 }
 
-crc32c_t RemoveCrc32cPrefix(crc32c_t crc_a, crc32c_t crc_ab, size_t length_b) {
+ABSEIL_EXPORT crc32c_t RemoveCrc32cPrefix(crc32c_t crc_a, crc32c_t crc_ab, size_t length_b) {
   return ConcatCrc32c(crc_a, crc_ab, length_b);
 }
 
-crc32c_t MemcpyCrc32c(void* dest, const void* src, size_t count,
+ABSEIL_EXPORT crc32c_t MemcpyCrc32c(void* dest, const void* src, size_t count,
                       crc32c_t initial_crc) {
   return static_cast<crc32c_t>(
       crc_internal::Crc32CAndCopy(dest, src, count, initial_crc, false));
@@ -87,7 +87,7 @@ crc32c_t MemcpyCrc32c(void* dest, const void* src, size_t count,
 // `suffix_len` return the CRC32C of the buffer with suffix removed
 //
 // This operation has a runtime cost of O(log(`suffix_len`))
-crc32c_t RemoveCrc32cSuffix(crc32c_t full_string_crc, crc32c_t suffix_crc,
+ABSEIL_EXPORT crc32c_t RemoveCrc32cSuffix(crc32c_t full_string_crc, crc32c_t suffix_crc,
                             size_t suffix_len) {
   uint32_t result = static_cast<uint32_t>(full_string_crc) ^
                     static_cast<uint32_t>(suffix_crc);

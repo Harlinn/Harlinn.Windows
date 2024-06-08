@@ -16,7 +16,11 @@
 
 #if !defined(_WIN32) || defined(__MINGW32__)
 #include <pthread.h>
+#ifndef __wasi__
+// WASI does not provide this header, either way we disable use
+// of signals with it below.
 #include <signal.h>
+#endif
 #endif
 
 #include <atomic>
@@ -58,18 +62,19 @@ void AllocateThreadIdentityKey(ThreadIdentityReclaimerFunction reclaimer) {
 // that protected visibility is unsupported.
 ABSL_CONST_INIT  // Must come before __attribute__((visibility("protected")))
 #if ABSL_HAVE_ATTRIBUTE(visibility) && !defined(__APPLE__)
-__attribute__((visibility("protected")))
+    __attribute__((visibility("protected")))
 #endif  // ABSL_HAVE_ATTRIBUTE(visibility) && !defined(__APPLE__)
 #if ABSL_PER_THREAD_TLS
-// Prefer __thread to thread_local as benchmarks indicate it is a bit faster.
-ABSL_PER_THREAD_TLS_KEYWORD ThreadIdentity* thread_identity_ptr = nullptr;
+    // Prefer __thread to thread_local as benchmarks indicate it is a bit
+    // faster.
+    ABSL_PER_THREAD_TLS_KEYWORD ThreadIdentity* thread_identity_ptr = nullptr;
 #elif defined(ABSL_HAVE_THREAD_LOCAL)
-thread_local ThreadIdentity* thread_identity_ptr = nullptr;
+    thread_local ThreadIdentity* thread_identity_ptr = nullptr;
 #endif  // ABSL_PER_THREAD_TLS
 #endif  // TLS or CPP11
 
-void SetCurrentThreadIdentity(
-    ThreadIdentity* identity, ThreadIdentityReclaimerFunction reclaimer) {
+ABSEIL_EXPORT void SetCurrentThreadIdentity(ThreadIdentity* identity,
+                              ThreadIdentityReclaimerFunction reclaimer) {
   assert(CurrentThreadIdentityIfPresent() == nullptr);
   // Associate our destructor.
   // NOTE: This call to pthread_setspecific is currently the only immovable
@@ -79,10 +84,12 @@ void SetCurrentThreadIdentity(
   absl::call_once(init_thread_identity_key_once, AllocateThreadIdentityKey,
                   reclaimer);
 
-#if defined(__EMSCRIPTEN__) || defined(__MINGW32__)
-  // Emscripten and MinGW pthread implementations does not support signals.
-  // See https://kripken.github.io/emscripten-site/docs/porting/pthreads.html
-  // for more information.
+#if defined(__wasi__) || defined(__EMSCRIPTEN__) || defined(__MINGW32__) || \
+    defined(__hexagon__)
+  // Emscripten, WASI and MinGW pthread implementations does not support
+  // signals. See
+  // https://kripken.github.io/emscripten-site/docs/porting/pthreads.html for
+  // more information.
   pthread_setspecific(thread_identity_pthread_key,
                       reinterpret_cast<void*>(identity));
 #else
@@ -125,16 +132,16 @@ void SetCurrentThreadIdentity(
 // headers, we opt for the correct-but-slower option of not inlining this
 // function.
 #ifndef ABSL_INTERNAL_INLINE_CURRENT_THREAD_IDENTITY_IF_PRESENT
-ThreadIdentity* CurrentThreadIdentityIfPresent() { return thread_identity_ptr; }
+ABSEIL_EXPORT ThreadIdentity* CurrentThreadIdentityIfPresent() { return thread_identity_ptr; }
 #endif
 #endif
 
-void ClearCurrentThreadIdentity() {
+ABSEIL_EXPORT void ClearCurrentThreadIdentity() {
 #if ABSL_THREAD_IDENTITY_MODE == ABSL_THREAD_IDENTITY_MODE_USE_TLS || \
     ABSL_THREAD_IDENTITY_MODE == ABSL_THREAD_IDENTITY_MODE_USE_CPP11
   thread_identity_ptr = nullptr;
 #elif ABSL_THREAD_IDENTITY_MODE == \
-      ABSL_THREAD_IDENTITY_MODE_USE_POSIX_SETSPECIFIC
+    ABSL_THREAD_IDENTITY_MODE_USE_POSIX_SETSPECIFIC
   // pthread_setspecific expected to clear value on destruction
   assert(CurrentThreadIdentityIfPresent() == nullptr);
 #endif

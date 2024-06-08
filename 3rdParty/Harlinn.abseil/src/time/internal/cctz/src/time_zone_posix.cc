@@ -133,7 +133,7 @@ const char* ParseDateTime(const char* p, PosixTransition* res) {
 }  // namespace
 
 // spec = std offset [ dst [ offset ] , datetime , datetime ]
-bool ParsePosixSpec(const std::string& spec, PosixTimeZone* res) {
+ABSEIL_EXPORT bool ParsePosixSpec(const std::string& spec, PosixTimeZone* res) {
   const char* p = spec.c_str();
   if (*p == ':') return false;
 

@@ -14,14 +14,17 @@
 
 #include "absl/log/globals.h"
 
-#include <stddef.h>
-#include <stdint.h>
-
 #include <atomic>
+#include <cstddef>
+#include <cstdint>
+#include <cstdlib>
+#include <cstring>
+#include <string>
 
 #include "absl/base/attributes.h"
 #include "absl/base/config.h"
 #include "absl/base/internal/atomic_hook.h"
+#include "absl/base/internal/raw_logging.h"
 #include "absl/base/log_severity.h"
 #include "absl/hash/hash.h"
 #include "absl/strings/string_view.h"
@@ -43,6 +46,9 @@ ABSL_CONST_INIT std::atomic<int> stderrthreshold{
 ABSL_CONST_INIT std::atomic<size_t> log_backtrace_at_hash{0};
 ABSL_CONST_INIT std::atomic<bool> prepend_log_prefix{true};
 
+constexpr char kDefaultAndroidTag[] = "native";
+ABSL_CONST_INIT std::atomic<const char*> android_log_tag{kDefaultAndroidTag};
+
 ABSL_INTERNAL_ATOMIC_HOOK_ATTRIBUTES
 absl::base_internal::AtomicHook<log_internal::LoggingGlobalsListener>
     logging_globals_listener;
@@ -60,30 +66,30 @@ void TriggerLoggingGlobalsListener() {
 
 namespace log_internal {
 
-void RawSetMinLogLevel(absl::LogSeverityAtLeast severity) {
+ABSEIL_EXPORT void RawSetMinLogLevel(absl::LogSeverityAtLeast severity) {
   min_log_level.store(static_cast<int>(severity), std::memory_order_release);
 }
 
-void RawSetStderrThreshold(absl::LogSeverityAtLeast severity) {
+ABSEIL_EXPORT void RawSetStderrThreshold(absl::LogSeverityAtLeast severity) {
   stderrthreshold.store(static_cast<int>(severity), std::memory_order_release);
 }
 
-void RawEnableLogPrefix(bool on_off) {
+ABSEIL_EXPORT void RawEnableLogPrefix(bool on_off) {
   prepend_log_prefix.store(on_off, std::memory_order_release);
 }
 
-void SetLoggingGlobalsListener(LoggingGlobalsListener l) {
+ABSEIL_EXPORT void SetLoggingGlobalsListener(LoggingGlobalsListener l) {
   logging_globals_listener.Store(l);
 }
 
 }  // namespace log_internal
 
-absl::LogSeverityAtLeast MinLogLevel() {
+ABSEIL_EXPORT absl::LogSeverityAtLeast MinLogLevel() {
   return static_cast<absl::LogSeverityAtLeast>(
       min_log_level.load(std::memory_order_acquire));
 }
 
-void SetMinLogLevel(absl::LogSeverityAtLeast severity) {
+ABSEIL_EXPORT void SetMinLogLevel(absl::LogSeverityAtLeast severity) {
   log_internal::RawSetMinLogLevel(severity);
   TriggerLoggingGlobalsListener();
 }
@@ -100,46 +106,70 @@ ScopedMinLogLevel::~ScopedMinLogLevel() {
 
 }  // namespace log_internal
 
-absl::LogSeverityAtLeast StderrThreshold() {
+ABSEIL_EXPORT absl::LogSeverityAtLeast StderrThreshold() {
   return static_cast<absl::LogSeverityAtLeast>(
       stderrthreshold.load(std::memory_order_acquire));
 }
 
-void SetStderrThreshold(absl::LogSeverityAtLeast severity) {
+ABSEIL_EXPORT void SetStderrThreshold(absl::LogSeverityAtLeast severity) {
   log_internal::RawSetStderrThreshold(severity);
   TriggerLoggingGlobalsListener();
 }
 
-ScopedStderrThreshold::ScopedStderrThreshold(absl::LogSeverityAtLeast severity)
+ABSEIL_EXPORT ScopedStderrThreshold::ScopedStderrThreshold(absl::LogSeverityAtLeast severity)
     : saved_severity_(absl::StderrThreshold()) {
   absl::SetStderrThreshold(severity);
 }
 
-ScopedStderrThreshold::~ScopedStderrThreshold() {
+ABSEIL_EXPORT ScopedStderrThreshold::~ScopedStderrThreshold() {
   absl::SetStderrThreshold(saved_severity_);
 }
 
 namespace log_internal {
 
-bool ShouldLogBacktraceAt(absl::string_view file, int line) {
+ABSEIL_EXPORT const char* GetAndroidNativeTag() {
+  return android_log_tag.load(std::memory_order_acquire);
+}
+
+}  // namespace log_internal
+
+ABSEIL_EXPORT void SetAndroidNativeTag(const char* tag) {
+  ABSL_CONST_INIT static std::atomic<const std::string*> user_log_tag(nullptr);
+  ABSL_INTERNAL_CHECK(tag, "tag must be non-null.");
+
+  const std::string* tag_str = new std::string(tag);
+  ABSL_INTERNAL_CHECK(
+      android_log_tag.exchange(tag_str->c_str(), std::memory_order_acq_rel) ==
+          kDefaultAndroidTag,
+      "SetAndroidNativeTag() must only be called once per process!");
+  user_log_tag.store(tag_str, std::memory_order_relaxed);
+}
+
+namespace log_internal {
+
+ABSEIL_EXPORT bool ShouldLogBacktraceAt(absl::string_view file, int line) {
   const size_t flag_hash =
-      log_backtrace_at_hash.load(std::memory_order_acquire);
+      log_backtrace_at_hash.load(std::memory_order_relaxed);
 
   return flag_hash != 0 && flag_hash == HashSiteForLogBacktraceAt(file, line);
 }
 
 }  // namespace log_internal
 
-void SetLogBacktraceLocation(absl::string_view file, int line) {
+ABSEIL_EXPORT void SetLogBacktraceLocation(absl::string_view file, int line) {
   log_backtrace_at_hash.store(HashSiteForLogBacktraceAt(file, line),
-                              std::memory_order_release);
+                              std::memory_order_relaxed);
 }
 
-bool ShouldPrependLogPrefix() {
+ABSEIL_EXPORT void ClearLogBacktraceLocation() {
+  log_backtrace_at_hash.store(0, std::memory_order_relaxed);
+}
+
+ABSEIL_EXPORT bool ShouldPrependLogPrefix() {
   return prepend_log_prefix.load(std::memory_order_acquire);
 }
 
-void EnableLogPrefix(bool on_off) {
+ABSEIL_EXPORT void EnableLogPrefix(bool on_off) {
   log_internal::RawEnableLogPrefix(on_off);
   TriggerLoggingGlobalsListener();
 }

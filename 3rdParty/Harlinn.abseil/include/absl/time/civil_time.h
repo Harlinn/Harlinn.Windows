@@ -462,6 +462,32 @@ ABSEIL_EXPORT std::string FormatCivilTime(CivilDay c);
 ABSEIL_EXPORT std::string FormatCivilTime(CivilMonth c);
 ABSEIL_EXPORT std::string FormatCivilTime(CivilYear c);
 
+// Support for StrFormat(), StrCat(), etc
+template <typename Sink>
+void AbslStringify(Sink& sink, CivilSecond c) {
+  sink.Append(FormatCivilTime(c));
+}
+template <typename Sink>
+void AbslStringify(Sink& sink, CivilMinute c) {
+  sink.Append(FormatCivilTime(c));
+}
+template <typename Sink>
+void AbslStringify(Sink& sink, CivilHour c) {
+  sink.Append(FormatCivilTime(c));
+}
+template <typename Sink>
+void AbslStringify(Sink& sink, CivilDay c) {
+  sink.Append(FormatCivilTime(c));
+}
+template <typename Sink>
+void AbslStringify(Sink& sink, CivilMonth c) {
+  sink.Append(FormatCivilTime(c));
+}
+template <typename Sink>
+void AbslStringify(Sink& sink, CivilYear c) {
+  sink.Append(FormatCivilTime(c));
+}
+
 // absl::ParseCivilTime()
 //
 // Parses a civil-time value from the specified `absl::string_view` into the

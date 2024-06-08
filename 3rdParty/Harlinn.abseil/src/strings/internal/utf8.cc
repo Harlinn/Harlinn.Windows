@@ -20,7 +20,7 @@ namespace absl {
 ABSL_NAMESPACE_BEGIN
 namespace strings_internal {
 
-size_t EncodeUTF8Char(char *buffer, char32_t utf8_char) {
+ABSEIL_EXPORT size_t EncodeUTF8Char(char *buffer, char32_t utf8_char) {
   if (utf8_char <= 0x7F) {
     *buffer = static_cast<char>(utf8_char);
     return 1;

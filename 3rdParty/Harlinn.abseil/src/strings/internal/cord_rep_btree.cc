@@ -14,6 +14,7 @@
 
 #include "absl/strings/internal/cord_rep_btree.h"
 
+#include <atomic>
 #include <cassert>
 #include <cstdint>
 #include <iostream>
@@ -49,9 +50,7 @@ using CopyResult = CordRepBtree::CopyResult;
 constexpr auto kFront = CordRepBtree::kFront;
 constexpr auto kBack = CordRepBtree::kBack;
 
-inline bool exhaustive_validation() {
-  return cord_btree_exhaustive_validation.load(std::memory_order_relaxed);
-}
+ABSL_CONST_INIT std::atomic<bool> cord_btree_exhaustive_validation(false);
 
 // Implementation of the various 'Dump' functions.
 // Prints the entire tree structure or 'rep'. External callers should
@@ -362,6 +361,15 @@ struct StackOperations {
 
 }  // namespace
 
+ABSEIL_EXPORT void SetCordBtreeExhaustiveValidation(bool do_exaustive_validation) {
+  cord_btree_exhaustive_validation.store(do_exaustive_validation,
+                                         std::memory_order_relaxed);
+}
+
+ABSEIL_EXPORT bool IsCordBtreeExhaustiveValidationEnabled() {
+  return cord_btree_exhaustive_validation.load(std::memory_order_relaxed);
+}
+
 void CordRepBtree::Dump(const CordRep* rep, absl::string_view label,
                         bool include_contents, std::ostream& stream) {
   stream << "===================================\n";
@@ -450,7 +458,8 @@ bool CordRepBtree::IsValid(const CordRepBtree* tree, bool shallow) {
     child_length += edge->length;
   }
   NODE_CHECK_EQ(child_length, tree->length);
-  if ((!shallow || exhaustive_validation()) && tree->height() > 0) {
+  if ((!shallow || IsCordBtreeExhaustiveValidationEnabled()) &&
+      tree->height() > 0) {
     for (CordRep* edge : tree->Edges()) {
       if (!IsValid(edge->btree(), shallow)) return false;
     }
@@ -597,7 +606,7 @@ ABSEIL_EXPORT absl::string_view CordRepBtree::AddData<kFront>(absl::string_view 
 }
 
 template <EdgeType edge_type>
-ABSEIL_EXPORT CordRepBtree* CordRepBtree::AddData(CordRepBtree* tree, absl::string_view data,
+CordRepBtree* CordRepBtree::AddData(CordRepBtree* tree, absl::string_view data,
                                     size_t extra) {
   if (ABSL_PREDICT_FALSE(data.empty())) return tree;
 

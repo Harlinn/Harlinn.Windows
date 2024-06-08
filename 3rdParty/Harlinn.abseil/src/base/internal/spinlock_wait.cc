@@ -36,7 +36,7 @@ ABSL_NAMESPACE_BEGIN
 namespace base_internal {
 
 // See spinlock_wait.h for spec.
-uint32_t SpinLockWait(std::atomic<uint32_t> *w, int n,
+ABSEIL_EXPORT uint32_t SpinLockWait(std::atomic<uint32_t> *w, int n,
                       const SpinLockWaitTransition trans[],
                       base_internal::SchedulingMode scheduling_mode) {
   int loop = 0;

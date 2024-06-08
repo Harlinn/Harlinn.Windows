@@ -60,13 +60,13 @@ ABSL_NAMESPACE_END
 
 namespace absl {
 ABSL_NAMESPACE_BEGIN
-bool HaveLeakSanitizer() { return false; }
-bool LeakCheckerIsActive() { return false; }
-void DoIgnoreLeak(const void*) { }
-void RegisterLivePointers(const void*, size_t) { }
-void UnRegisterLivePointers(const void*, size_t) { }
-LeakCheckDisabler::LeakCheckDisabler() { }
-LeakCheckDisabler::~LeakCheckDisabler() { }
+ABSEIL_EXPORT bool HaveLeakSanitizer() { return false; }
+ABSEIL_EXPORT bool LeakCheckerIsActive() { return false; }
+ABSEIL_EXPORT void DoIgnoreLeak(const void*) { }
+ABSEIL_EXPORT void RegisterLivePointers(const void*, size_t) { }
+ABSEIL_EXPORT void UnRegisterLivePointers(const void*, size_t) { }
+ABSEIL_EXPORT LeakCheckDisabler::LeakCheckDisabler() = default;
+ABSEIL_EXPORT LeakCheckDisabler::~LeakCheckDisabler() = default;
 ABSL_NAMESPACE_END
 }  // namespace absl
 

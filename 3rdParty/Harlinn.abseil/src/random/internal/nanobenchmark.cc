@@ -361,7 +361,7 @@ void CountingSort(T* values, size_t num_values) {
   // Write that many copies of each unique value to the array.
   T* ABSL_RANDOM_INTERNAL_RESTRICT p = values;
   for (const auto& value_count : unique) {
-    std::fill(p, p + value_count.second, value_count.first);
+    std::fill_n(p, value_count.second, value_count.first);
     p += value_count.second;
   }
   ABSL_RAW_CHECK(p == values + num_values, "Did not produce enough output");
@@ -688,7 +688,7 @@ Ticks Overhead(const void* arg, const InputVec* inputs, const Params& p) {
 
 }  // namespace
 
-void PinThreadToCPU(int cpu) {
+ABSEIL_EXPORT void PinThreadToCPU(int cpu) {
   // We might migrate to another CPU before pinning below, but at least cpu
   // will be one of the CPUs on which this thread ran.
 #if defined(ABSL_OS_WIN)
@@ -724,7 +724,7 @@ void PinThreadToCPU(int cpu) {
 
 // Returns tick rate. Invariant means the tick counter frequency is independent
 // of CPU throttling or sleep. May be expensive, caller should cache the result.
-double InvariantTicksPerSecond() {
+ABSEIL_EXPORT double InvariantTicksPerSecond() {
 #if defined(ABSL_ARCH_PPC)
   return __ppc_get_timebase_freq();
 #elif defined(ABSL_ARCH_X86_64)
@@ -777,7 +777,7 @@ size_t MeasureImpl(const Func func, const void* arg, const size_t num_skip,
   return unique.size();
 }
 
-size_t Measure(const Func func, const void* arg, const FuncInput* inputs,
+ABSEIL_EXPORT size_t Measure(const Func func, const void* arg, const FuncInput* inputs,
                const size_t num_inputs, Result* results, const Params& p) {
   ABSL_RAW_CHECK(num_inputs != 0, "No inputs");
 

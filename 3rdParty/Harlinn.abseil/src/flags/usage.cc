@@ -21,6 +21,7 @@
 #include "absl/base/attributes.h"
 #include "absl/base/config.h"
 #include "absl/base/const_init.h"
+#include "absl/base/internal/raw_logging.h"
 #include "absl/base/thread_annotations.h"
 #include "absl/flags/internal/usage.h"
 #include "absl/strings/string_view.h"
@@ -38,7 +39,7 @@ ABSL_CONST_INIT std::string* program_usage_message
 
 // --------------------------------------------------------------------
 // Sets the "usage" message to be used by help reporting routines.
-void SetProgramUsageMessage(absl::string_view new_usage_message) {
+ABSEIL_EXPORT void SetProgramUsageMessage(absl::string_view new_usage_message) {
   absl::MutexLock l(&flags_internal::usage_message_guard);
 
   if (flags_internal::program_usage_message != nullptr) {
@@ -53,7 +54,7 @@ void SetProgramUsageMessage(absl::string_view new_usage_message) {
 // Returns the usage message set by SetProgramUsageMessage().
 // Note: We able to return string_view here only because calling
 // SetProgramUsageMessage twice is prohibited.
-absl::string_view ProgramUsageMessage() {
+ABSEIL_EXPORT absl::string_view ProgramUsageMessage() {
   absl::MutexLock l(&flags_internal::usage_message_guard);
 
   return flags_internal::program_usage_message != nullptr

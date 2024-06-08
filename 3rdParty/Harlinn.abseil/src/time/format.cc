@@ -72,7 +72,7 @@ absl::Time Join(const cctz_parts& parts) {
 
 }  // namespace
 
-std::string FormatTime(absl::string_view format, absl::Time t,
+ABSEIL_EXPORT std::string FormatTime(absl::string_view format, absl::Time t,
                        absl::TimeZone tz) {
   if (t == absl::InfiniteFuture()) return std::string(kInfiniteFutureStr);
   if (t == absl::InfinitePast()) return std::string(kInfinitePastStr);
@@ -81,22 +81,22 @@ std::string FormatTime(absl::string_view format, absl::Time t,
                               cctz::time_zone(tz));
 }
 
-std::string FormatTime(absl::Time t, absl::TimeZone tz) {
+ABSEIL_EXPORT std::string FormatTime(absl::Time t, absl::TimeZone tz) {
   return FormatTime(RFC3339_full, t, tz);
 }
 
-std::string FormatTime(absl::Time t) {
+ABSEIL_EXPORT std::string FormatTime(absl::Time t) {
   return absl::FormatTime(RFC3339_full, t, absl::LocalTimeZone());
 }
 
-bool ParseTime(absl::string_view format, absl::string_view input,
+ABSEIL_EXPORT bool ParseTime(absl::string_view format, absl::string_view input,
                absl::Time* time, std::string* err) {
   return absl::ParseTime(format, input, absl::UTCTimeZone(), time, err);
 }
 
 // If the input string does not contain an explicit UTC offset, interpret
 // the fields with respect to the given TimeZone.
-bool ParseTime(absl::string_view format, absl::string_view input,
+ABSEIL_EXPORT bool ParseTime(absl::string_view format, absl::string_view input,
                absl::TimeZone tz, absl::Time* time, std::string* err) {
   auto strip_leading_space = [](absl::string_view* sv) {
     while (!sv->empty()) {
@@ -142,18 +142,18 @@ bool ParseTime(absl::string_view format, absl::string_view input,
 }
 
 // Functions required to support absl::Time flags.
-bool AbslParseFlag(absl::string_view text, absl::Time* t, std::string* error) {
+ABSEIL_EXPORT bool AbslParseFlag(absl::string_view text, absl::Time* t, std::string* error) {
   return absl::ParseTime(RFC3339_full, text, absl::UTCTimeZone(), t, error);
 }
 
-std::string AbslUnparseFlag(absl::Time t) {
+ABSEIL_EXPORT std::string AbslUnparseFlag(absl::Time t) {
   return absl::FormatTime(RFC3339_full, t, absl::UTCTimeZone());
 }
-bool ParseFlag(const std::string& text, absl::Time* t, std::string* error) {
+ABSEIL_EXPORT bool ParseFlag(const std::string& text, absl::Time* t, std::string* error) {
   return absl::ParseTime(RFC3339_full, text, absl::UTCTimeZone(), t, error);
 }
 
-std::string UnparseFlag(absl::Time t) {
+ABSEIL_EXPORT std::string UnparseFlag(absl::Time t) {
   return absl::FormatTime(RFC3339_full, t, absl::UTCTimeZone());
 }
 

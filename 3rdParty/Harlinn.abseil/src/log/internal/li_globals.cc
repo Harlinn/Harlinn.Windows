@@ -17,11 +17,16 @@
 #include <atomic>
 #include <cstdio>
 
+#if defined(__EMSCRIPTEN__)
+#include <emscripten/console.h>
+#endif
+
 #include "absl/base/attributes.h"
 #include "absl/base/config.h"
 #include "absl/base/internal/raw_logging.h"
 #include "absl/base/log_severity.h"
 #include "absl/strings/string_view.h"
+#include "absl/strings/strip.h"
 #include "absl/time/time.h"
 
 namespace absl {
@@ -46,18 +51,33 @@ ABSL_CONST_INIT std::atomic<bool> exit_on_dfatal(true);
 ABSL_CONST_INIT std::atomic<bool> suppress_sigabort_trace(false);
 }  // namespace
 
-bool IsInitialized() {
+ABSEIL_EXPORT bool IsInitialized() {
   return logging_initialized.load(std::memory_order_acquire);
 }
 
-void SetInitialized() {
+ABSEIL_EXPORT void SetInitialized() {
   logging_initialized.store(true, std::memory_order_release);
 }
 
-void WriteToStderr(absl::string_view message, absl::LogSeverity severity) {
+ABSEIL_EXPORT void WriteToStderr(absl::string_view message, absl::LogSeverity severity) {
+  if (message.empty()) return;
+#if defined(__EMSCRIPTEN__)
+  // In WebAssembly, bypass filesystem emulation via fwrite.
+  // Skip a trailing newline character as emscripten_errn adds one itself.
+  const auto message_minus_newline = absl::StripSuffix(message, "\n");
+  // emscripten_errn was introduced in 3.1.41 but broken in standalone mode
+  // until 3.1.43.
+#if ABSL_INTERNAL_EMSCRIPTEN_VERSION >= 3001043
+  emscripten_errn(message_minus_newline.data(), message_minus_newline.size());
+#else
+  std::string null_terminated_message(message_minus_newline);
+  _emscripten_err(null_terminated_message.c_str());
+#endif
+#else
   // Avoid using std::cerr from this module since we may get called during
   // exit code, and cerr may be partially or fully destroyed by then.
   std::fwrite(message.data(), message.size(), 1, stderr);
+#endif
 
 #if defined(_WIN64) || defined(_WIN32) || defined(_WIN16)
   // C99 requires stderr to not be fully-buffered by default (7.19.3.7), but
@@ -74,7 +94,7 @@ void WriteToStderr(absl::string_view message, absl::LogSeverity severity) {
 #endif
 }
 
-void SetTimeZone(absl::TimeZone tz) {
+ABSEIL_EXPORT void SetTimeZone(absl::TimeZone tz) {
   absl::TimeZone* expected = nullptr;
   absl::TimeZone* new_tz = new absl::TimeZone(tz);
   // timezone_ptr can only be set once, otherwise new_tz is leaked.
@@ -86,37 +106,37 @@ void SetTimeZone(absl::TimeZone tz) {
   }
 }
 
-const absl::TimeZone* TimeZone() {
+ABSEIL_EXPORT const absl::TimeZone* TimeZone() {
   return timezone_ptr.load(std::memory_order_acquire);
 }
 
-bool ShouldSymbolizeLogStackTrace() {
+ABSEIL_EXPORT bool ShouldSymbolizeLogStackTrace() {
   return symbolize_stack_trace.load(std::memory_order_acquire);
 }
 
-void EnableSymbolizeLogStackTrace(bool on_off) {
+ABSEIL_EXPORT void EnableSymbolizeLogStackTrace(bool on_off) {
   symbolize_stack_trace.store(on_off, std::memory_order_release);
 }
 
-int MaxFramesInLogStackTrace() {
+ABSEIL_EXPORT int MaxFramesInLogStackTrace() {
   return max_frames_in_stack_trace.load(std::memory_order_acquire);
 }
 
-void SetMaxFramesInLogStackTrace(int max_num_frames) {
+ABSEIL_EXPORT void SetMaxFramesInLogStackTrace(int max_num_frames) {
   max_frames_in_stack_trace.store(max_num_frames, std::memory_order_release);
 }
 
-bool ExitOnDFatal() { return exit_on_dfatal.load(std::memory_order_acquire); }
+ABSEIL_EXPORT bool ExitOnDFatal() { return exit_on_dfatal.load(std::memory_order_acquire); }
 
-void SetExitOnDFatal(bool on_off) {
+ABSEIL_EXPORT void SetExitOnDFatal(bool on_off) {
   exit_on_dfatal.store(on_off, std::memory_order_release);
 }
 
-bool SuppressSigabortTrace() {
+ABSEIL_EXPORT bool SuppressSigabortTrace() {
   return suppress_sigabort_trace.load(std::memory_order_acquire);
 }
 
-bool SetSuppressSigabortTrace(bool on_off) {
+ABSEIL_EXPORT bool SetSuppressSigabortTrace(bool on_off) {
   return suppress_sigabort_trace.exchange(on_off);
 }
 

@@ -21,6 +21,7 @@
 #include <string>
 
 #include "absl/base/config.h"
+#include "absl/base/no_destructor.h"
 #include "absl/base/thread_annotations.h"
 #include "absl/container/flat_hash_map.h"
 #include "absl/flags/commandlineflag.h"
@@ -57,7 +58,7 @@ class FlagRegistry {
 
   // Returns the flag object for the specified name, or nullptr if not found.
   // Will emit a warning if a 'retired' flag is specified.
-  CommandLineFlag* FindFlag(absl::string_view name);
+  ABSEIL_EXPORT CommandLineFlag* FindFlag(absl::string_view name);
 
   static FlagRegistry& GlobalRegistry();  // returns a singleton registry
 
@@ -95,7 +96,7 @@ class FlagRegistryLock {
 
 }  // namespace
 
-CommandLineFlag* FlagRegistry::FindFlag(absl::string_view name) {
+ABSEIL_EXPORT CommandLineFlag* FlagRegistry::FindFlag(absl::string_view name) {
   if (finalized_flags_.load(std::memory_order_acquire)) {
     // We could save some gcus here if we make `Name()` be non-virtual.
     // We could move the `const char*` name to the base class.
@@ -169,7 +170,7 @@ void FlagRegistry::RegisterFlag(CommandLineFlag& flag, const char* filename) {
 }
 
 FlagRegistry& FlagRegistry::GlobalRegistry() {
-  static FlagRegistry* global_registry = new FlagRegistry;
+  static absl::NoDestructor<FlagRegistry> global_registry;
   return *global_registry;
 }
 

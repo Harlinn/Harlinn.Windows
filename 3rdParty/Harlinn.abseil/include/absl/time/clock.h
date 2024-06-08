@@ -22,6 +22,9 @@
 #ifndef ABSL_TIME_CLOCK_H_
 #define ABSL_TIME_CLOCK_H_
 
+#include <cstdint>
+
+#include "absl/base/config.h"
 #include "absl/base/macros.h"
 #include "absl/time/time.h"
 
@@ -48,7 +51,7 @@ ABSEIL_EXPORT int64_t GetCurrentTimeNanos();
 // Notes:
 // * Signal interruptions will not reduce the sleep duration.
 // * Returns immediately when passed a nonpositive duration.
-ABSEIL_EXPORT void SleepFor(absl::Duration duration);
+void SleepFor(absl::Duration duration);
 
 ABSL_NAMESPACE_END
 }  // namespace absl
@@ -64,7 +67,8 @@ ABSL_NAMESPACE_END
 // By changing our extension points to be extern "C", we dodge this
 // check.
 extern "C" {
-ABSEIL_EXPORT void ABSL_INTERNAL_C_SYMBOL(AbslInternalSleepFor)(absl::Duration duration);
+ABSL_DLL void ABSL_INTERNAL_C_SYMBOL(AbslInternalSleepFor)(
+    absl::Duration duration);
 }  // extern "C"
 
 inline void absl::SleepFor(absl::Duration duration) {

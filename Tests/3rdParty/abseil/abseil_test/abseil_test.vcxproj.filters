@@ -91,9 +91,6 @@
     <Filter Include="types">
       <UniqueIdentifier>{e8148093-c5de-4eb5-912f-f8c3ea3094b6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="types\internal">
-      <UniqueIdentifier>{717a9825-adde-48ca-90b9-113a1031f938}</UniqueIdentifier>
-    </Filter>
     <Filter Include="hash\internal">
       <UniqueIdentifier>{abcafd06-4386-4aba-a860-698808187517}</UniqueIdentifier>
     </Filter>
@@ -171,12 +168,6 @@
     </Filter>
     <Filter Include="include\absl\time\internal">
       <UniqueIdentifier>{9152ecc8-9d48-4437-8c5a-48efaaf085a9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="include\absl\types">
-      <UniqueIdentifier>{32aa3109-7f83-436e-bee7-97c327e90844}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="include\absl\types\internal">
-      <UniqueIdentifier>{5d3145bf-6b8f-4cb1-a876-c57b07c0a478}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -262,9 +253,6 @@
       <Filter>cleanup</Filter>
     </ClCompile>
     <ClCompile Include="base\internal\low_level_alloc_test.cc">
-      <Filter>base\internal</Filter>
-    </ClCompile>
-    <ClCompile Include="base\internal\prefetch_test.cc">
       <Filter>base\internal</Filter>
     </ClCompile>
     <ClCompile Include="container\internal\common_policy_traits_test.cc">
@@ -606,9 +594,6 @@
     <ClCompile Include="strings\internal\str_format\parser_test.cc">
       <Filter>strings\internal\str_format</Filter>
     </ClCompile>
-    <ClCompile Include="strings\internal\char_map_test.cc">
-      <Filter>strings\internal</Filter>
-    </ClCompile>
     <ClCompile Include="strings\internal\charconv_bigint_test.cc">
       <Filter>strings\internal</Filter>
     </ClCompile>
@@ -682,15 +667,6 @@
       <Filter>strings</Filter>
     </ClCompile>
     <ClCompile Include="strings\cord_buffer_test.cc">
-      <Filter>strings</Filter>
-    </ClCompile>
-    <ClCompile Include="strings\cord_ring_reader_test.cc">
-      <Filter>strings</Filter>
-    </ClCompile>
-    <ClCompile Include="strings\cord_ring_test.cc">
-      <Filter>strings</Filter>
-    </ClCompile>
-    <ClCompile Include="strings\cord_test.cc">
       <Filter>strings</Filter>
     </ClCompile>
     <ClCompile Include="strings\cordz_test.cc">
@@ -780,9 +756,6 @@
     <ClCompile Include="time\time_zone_test.cc">
       <Filter>time</Filter>
     </ClCompile>
-    <ClCompile Include="types\internal\conformance_testing_test.cc">
-      <Filter>types\internal</Filter>
-    </ClCompile>
     <ClCompile Include="types\any_exception_safety_test.cc">
       <Filter>types</Filter>
     </ClCompile>
@@ -861,6 +834,48 @@
     <ClCompile Include="container\internal\test_instance_tracker.cc">
       <Filter>container\internal</Filter>
     </ClCompile>
+    <ClCompile Include="base\no_destructor_test.cc">
+      <Filter>base</Filter>
+    </ClCompile>
+    <ClCompile Include="base\nullability_test.cc">
+      <Filter>base</Filter>
+    </ClCompile>
+    <ClCompile Include="base\prefetch_test.cc">
+      <Filter>base</Filter>
+    </ClCompile>
+    <ClCompile Include="flags\flag_test_defs.cc">
+      <Filter>flags</Filter>
+    </ClCompile>
+    <ClCompile Include="functional\overload_test.cc">
+      <Filter>functional</Filter>
+    </ClCompile>
+    <ClCompile Include="hash\hash_instantiated_test.cc">
+      <Filter>hash</Filter>
+    </ClCompile>
+    <ClCompile Include="log\vlog_is_on_test.cc">
+      <Filter>log</Filter>
+    </ClCompile>
+    <ClCompile Include="strings\char_formatting_test.cc">
+      <Filter>strings</Filter>
+    </ClCompile>
+    <ClCompile Include="strings\charset_test.cc">
+      <Filter>strings</Filter>
+    </ClCompile>
+    <ClCompile Include="strings\has_absl_stringify_test.cc">
+      <Filter>strings</Filter>
+    </ClCompile>
+    <ClCompile Include="strings\has_ostream_operator_test.cc">
+      <Filter>strings</Filter>
+    </ClCompile>
+    <ClCompile Include="synchronization\internal\kernel_timeout_test.cc">
+      <Filter>synchronization\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="synchronization\internal\waiter_test.cc">
+      <Filter>synchronization\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="time\t_flag_test.cc">
+      <Filter>time</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\absl\base\internal\atomic_hook_test_helper.h">
@@ -917,9 +932,6 @@
     <ClInclude Include="include\absl\hash\hash_testing.h">
       <Filter>include\absl\hash</Filter>
     </ClInclude>
-    <ClInclude Include="include\absl\log\log_basic_test_impl.h">
-      <Filter>include\absl\log</Filter>
-    </ClInclude>
     <ClInclude Include="include\absl\log\internal\test_actions.h">
       <Filter>include\absl\log\internal</Filter>
     </ClInclude>
@@ -928,9 +940,6 @@
     </ClInclude>
     <ClInclude Include="include\absl\log\internal\test_matchers.h">
       <Filter>include\absl\log\internal</Filter>
-    </ClInclude>
-    <ClInclude Include="include\absl\log\check_test_impl.h">
-      <Filter>include\absl\log</Filter>
     </ClInclude>
     <ClInclude Include="include\absl\log\scoped_mock_log.h">
       <Filter>include\absl\log</Filter>
@@ -953,11 +962,25 @@
     <ClInclude Include="include\absl\time\internal\test_util.h">
       <Filter>include\absl\time\internal</Filter>
     </ClInclude>
-    <ClInclude Include="include\absl\types\internal\conformance_testing.h">
-      <Filter>include\absl\types\internal</Filter>
+    <ClInclude Include="include\absl\container\internal\test_allocator.h">
+      <Filter>include\absl\container\internal</Filter>
     </ClInclude>
-    <ClInclude Include="include\absl\types\internal\conformance_testing_helpers.h">
-      <Filter>include\absl\types\internal</Filter>
+    <ClInclude Include="include\absl\container\internal\test_instance_tracker.h">
+      <Filter>include\absl\container\internal</Filter>
     </ClInclude>
+    <ClInclude Include="include\absl\container\internal\tracked.h">
+      <Filter>include\absl\container\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\random\internal\distribution_test_util.h">
+      <Filter>include\absl\random\internal</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="include\absl\log\check_test_impl.inc">
+      <Filter>include\absl\log</Filter>
+    </None>
+    <None Include="include\absl\log\log_basic_test_impl.inc">
+      <Filter>include\absl\log</Filter>
+    </None>
   </ItemGroup>
 </Project>

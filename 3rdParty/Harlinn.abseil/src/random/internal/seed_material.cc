@@ -202,7 +202,7 @@ bool ReadSeedMaterialFromOSEntropyImpl(absl::Span<uint32_t> values) {
 
 }  // namespace
 
-bool ReadSeedMaterialFromOSEntropy(absl::Span<uint32_t> values) {
+ABSEIL_EXPORT bool ReadSeedMaterialFromOSEntropy(absl::Span<uint32_t> values) {
   assert(values.data() != nullptr);
   if (values.data() == nullptr) {
     return false;
@@ -213,7 +213,7 @@ bool ReadSeedMaterialFromOSEntropy(absl::Span<uint32_t> values) {
   return ReadSeedMaterialFromOSEntropyImpl(values);
 }
 
-void MixIntoSeedMaterial(absl::Span<const uint32_t> sequence,
+ABSEIL_EXPORT void MixIntoSeedMaterial(absl::Span<const uint32_t> sequence,
                          absl::Span<uint32_t> seed_material) {
   // Algorithm is based on code available at
   // https://gist.github.com/imneme/540829265469e673d045
@@ -245,7 +245,7 @@ void MixIntoSeedMaterial(absl::Span<const uint32_t> sequence,
   }
 }
 
-absl::optional<uint32_t> GetSaltMaterial() {
+ABSEIL_EXPORT absl::optional<uint32_t> GetSaltMaterial() {
   // Salt must be common for all generators within the same process so read it
   // only once and store in static variable.
   static const auto salt_material = []() -> absl::optional<uint32_t> {

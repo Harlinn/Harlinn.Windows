@@ -36,7 +36,7 @@ inline double fma(double x, double y, double z) { return (x * y) + z; }
 
 }  // namespace
 
-DistributionMoments ComputeDistributionMoments(
+ABSEIL_EXPORT DistributionMoments ComputeDistributionMoments(
     absl::Span<const double> data_points) {
   DistributionMoments result;
 
@@ -71,19 +71,19 @@ DistributionMoments ComputeDistributionMoments(
   // 1.65 * stddev  = 90% CI
 }
 
-std::ostream& operator<<(std::ostream& os, const DistributionMoments& moments) {
+ABSEIL_EXPORT std::ostream& operator<<(std::ostream& os, const DistributionMoments& moments) {
   return os << absl::StrFormat("mean=%f, stddev=%f, skewness=%f, kurtosis=%f",
                                moments.mean, std::sqrt(moments.variance),
                                moments.skewness, moments.kurtosis);
 }
 
-double InverseNormalSurvival(double x) {
+ABSEIL_EXPORT double InverseNormalSurvival(double x) {
   // inv_sf(u) = -sqrt(2) * erfinv(2u-1)
   static constexpr double kSqrt2 = 1.4142135623730950488;
   return -kSqrt2 * absl::random_internal::erfinv(2 * x - 1.0);
 }
 
-bool Near(absl::string_view msg, double actual, double expected, double bound) {
+ABSEIL_EXPORT bool Near(absl::string_view msg, double actual, double expected, double bound) {
   assert(bound > 0.0);
   double delta = fabs(expected - actual);
   if (delta < bound) {
@@ -99,7 +99,7 @@ bool Near(absl::string_view msg, double actual, double expected, double bound) {
 // TODO(absl-team): Replace with an "ABSL_HAVE_SPECIAL_MATH" and try
 // to use std::beta().  As of this writing P0226R1 is not implemented
 // in libc++: http://libcxx.llvm.org/cxx1z_status.html
-double beta(double p, double q) {
+ABSEIL_EXPORT double beta(double p, double q) {
   // Beta(x, y) = Gamma(x) * Gamma(y) / Gamma(x+y)
   double lbeta = std::lgamma(p) + std::lgamma(q) - std::lgamma(p + q);
   return std::exp(lbeta);
@@ -107,7 +107,7 @@ double beta(double p, double q) {
 
 // Approximation to inverse of the Error Function in double precision.
 // (http://people.maths.ox.ac.uk/gilesm/files/gems_erfinv.pdf)
-double erfinv(double x) {
+ABSEIL_EXPORT double erfinv(double x) {
 #if !defined(__EMSCRIPTEN__)
   using std::fma;
 #endif
@@ -213,7 +213,7 @@ double BetaIncompleteImpl(const double x, const double p, const double q,
   double result = 1.;
   int ns = static_cast<int>(q + xc * psq);
 
-  // Use the soper reduction forumla.
+  // Use the soper reduction formula.
   double rx = (ns == 0) ? x : x / xc;
   double temp = q - ai;
   for (;;) {
@@ -236,7 +236,7 @@ double BetaIncompleteImpl(const double x, const double p, const double q,
     }
   }
 
-  // NOTE: See also TOMS Alogrithm 708.
+  // NOTE: See also TOMS Algorithm 708.
   // http://www.netlib.org/toms/index.html
   //
   // NOTE: The NWSC library also includes BRATIO / ISUBX (p87)
@@ -247,7 +247,7 @@ double BetaIncompleteImpl(const double x, const double p, const double q,
 // https://www.jstor.org/stable/2346798?read-now=1&seq=4#page_scan_tab_contents
 // https://www.jstor.org/stable/2346887?seq=1#page_scan_tab_contents
 //
-// XINBTA(p, q, beta, alhpa)
+// XINBTA(p, q, beta, alpha)
 //  p:     the value of the parameter p.
 //  q:     the value of the parameter q.
 //  beta:  the value of ln B(p, q)
@@ -364,7 +364,7 @@ double BetaIncompleteInvImpl(const double p, const double q, const double beta,
 
 }  // namespace
 
-double BetaIncomplete(const double x, const double p, const double q) {
+ABSEIL_EXPORT double BetaIncomplete(const double x, const double p, const double q) {
   // Error cases.
   if (p < 0 || q < 0 || x < 0 || x > 1.0) {
     return std::numeric_limits<double>::infinity();
@@ -377,7 +377,7 @@ double BetaIncomplete(const double x, const double p, const double q) {
   return BetaIncompleteImpl(x, p, q, beta);
 }
 
-double BetaIncompleteInv(const double p, const double q, const double alpha) {
+ABSEIL_EXPORT double BetaIncompleteInv(const double p, const double q, const double alpha) {
   // Error cases.
   if (p < 0 || q < 0 || alpha < 0 || alpha > 1.0) {
     return std::numeric_limits<double>::infinity();
@@ -394,19 +394,19 @@ double BetaIncompleteInv(const double p, const double q, const double alpha) {
 // probability of no failures is `p^k`. To ensure the probability of a failure
 // is no more than `p_fail`, it must be that `p^k == 1 - p_fail`. This function
 // computes `p` from that equation.
-double RequiredSuccessProbability(const double p_fail, const int num_trials) {
+ABSEIL_EXPORT double RequiredSuccessProbability(const double p_fail, const int num_trials) {
   double p = std::exp(std::log(1.0 - p_fail) / static_cast<double>(num_trials));
   ABSL_ASSERT(p > 0);
   return p;
 }
 
-double ZScore(double expected_mean, const DistributionMoments& moments) {
+ABSEIL_EXPORT double ZScore(double expected_mean, const DistributionMoments& moments) {
   return (moments.mean - expected_mean) /
          (std::sqrt(moments.variance) /
           std::sqrt(static_cast<double>(moments.n)));
 }
 
-double MaxErrorTolerance(double acceptance_probability) {
+ABSEIL_EXPORT double MaxErrorTolerance(double acceptance_probability) {
   double one_sided_pvalue = 0.5 * (1.0 - acceptance_probability);
   const double max_err = InverseNormalSurvival(one_sided_pvalue);
   ABSL_ASSERT(max_err > 0);

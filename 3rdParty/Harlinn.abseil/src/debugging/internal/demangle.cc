@@ -21,7 +21,15 @@
 
 #include <cstdint>
 #include <cstdio>
+#include <cstdlib>
 #include <limits>
+#include <string>
+
+#include "absl/base/config.h"
+
+#if ABSL_INTERNAL_HAS_CXA_DEMANGLE
+#include <cxxabi.h>
+#endif
 
 namespace absl {
 ABSL_NAMESPACE_BEGIN
@@ -1976,11 +1984,27 @@ static bool Overflowed(const State *state) {
 }
 
 // The demangler entry point.
-bool Demangle(const char* mangled, char* out, size_t out_size) {
+ABSEIL_EXPORT bool Demangle(const char* mangled, char* out, size_t out_size) {
   State state;
   InitState(&state, mangled, out, out_size);
   return ParseTopLevelMangledName(&state) && !Overflowed(&state) &&
          state.parse_state.out_cur_idx > 0;
+}
+
+ABSEIL_EXPORT std::string DemangleString(const char* mangled) {
+  std::string out;
+  int status = 0;
+  char* demangled = nullptr;
+#if ABSL_INTERNAL_HAS_CXA_DEMANGLE
+  demangled = abi::__cxa_demangle(mangled, nullptr, nullptr, &status);
+#endif
+  if (status == 0 && demangled != nullptr) {
+    out.append(demangled);
+    free(demangled);
+  } else {
+    out.append(mangled);
+  }
+  return out;
 }
 
 }  // namespace debugging_internal

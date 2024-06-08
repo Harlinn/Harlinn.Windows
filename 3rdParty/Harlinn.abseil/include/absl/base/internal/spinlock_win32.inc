@@ -34,7 +34,7 @@ void ABSL_INTERNAL_C_SYMBOL(AbslInternalSpinLockDelay)(
   }
 }
 
-void ABSL_INTERNAL_C_SYMBOL(AbslInternalSpinLockWake)(
+ABSEIL_EXPORT void ABSL_INTERNAL_C_SYMBOL(AbslInternalSpinLockWake)(
     std::atomic<uint32_t>* /* lock_word */, bool /* all */) {}
 
 }  // extern "C"

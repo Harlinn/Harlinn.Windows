@@ -74,7 +74,7 @@ class ABSL_LOCKABLE CordzInfo : public CordzHandle {
   // Maybe sample the cord identified by 'cord' for method 'method'.
   // Uses `cordz_should_profile` to randomly pick cords to be sampled, and if
   // so, invokes `TrackCord` to start sampling `cord`.
-  static void MaybeTrackCord(InlineData& cord, MethodIdentifier method);
+  ABSEIL_EXPORT static void MaybeTrackCord(InlineData& cord, MethodIdentifier method);
 
   // Maybe sample the cord identified by 'cord' for method 'method'.
   // `src` identifies a 'parent' cord which is assigned to `cord`, typically the
@@ -102,7 +102,7 @@ class ABSL_LOCKABLE CordzInfo : public CordzHandle {
   //     //              ==> x converges to 'always profiled'
   //     x = y;
   //   }
-  static void MaybeTrackCord(InlineData& cord, const InlineData& src,
+  ABSEIL_EXPORT static void MaybeTrackCord(InlineData& cord, const InlineData& src,
                              MethodIdentifier method);
 
   // Stops tracking changes for a sampled cord, and deletes the provided info.
@@ -113,7 +113,7 @@ class ABSL_LOCKABLE CordzInfo : public CordzHandle {
   ABSEIL_EXPORT void Untrack();
 
   // Invokes UntrackCord() on `info` if `info` is not null.
-  static void MaybeUntrackCord(CordzInfo* info);
+  ABSEIL_EXPORT static void MaybeUntrackCord(CordzInfo* info);
 
   CordzInfo() = delete;
   CordzInfo(const CordzInfo&) = delete;

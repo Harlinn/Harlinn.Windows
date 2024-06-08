@@ -295,7 +295,7 @@ static uint64_t HashLen33to64(const char *s, size_t len) {
   return b + x;
 }
 
-uint64_t CityHash64(const char *s, size_t len) {
+ABSEIL_EXPORT uint64_t CityHash64(const char *s, size_t len) {
   if (len <= 32) {
     if (len <= 16) {
       return HashLen0to16(s, len);
@@ -335,11 +335,11 @@ uint64_t CityHash64(const char *s, size_t len) {
                    HashLen16(v.second, w.second) + x);
 }
 
-uint64_t CityHash64WithSeed(const char *s, size_t len, uint64_t seed) {
+ABSEIL_EXPORT uint64_t CityHash64WithSeed(const char *s, size_t len, uint64_t seed) {
   return CityHash64WithSeeds(s, len, k2, seed);
 }
 
-uint64_t CityHash64WithSeeds(const char *s, size_t len, uint64_t seed0,
+ABSEIL_EXPORT uint64_t CityHash64WithSeeds(const char *s, size_t len, uint64_t seed0,
                              uint64_t seed1) {
   return HashLen16(CityHash64(s, len) - seed0, seed1);
 }

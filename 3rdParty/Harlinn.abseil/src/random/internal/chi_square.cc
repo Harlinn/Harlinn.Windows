@@ -103,7 +103,7 @@ double normal_survival(double z) {
 
 // Calculates the critical chi-square value given degrees-of-freedom and a
 // p-value, usually using bisection. Also known by the name CRITCHI.
-double ChiSquareValue(int dof, double p) {
+ABSEIL_EXPORT double ChiSquareValue(int dof, double p) {
   static constexpr double kChiEpsilon =
       0.000001;  // Accuracy of the approximation.
   static constexpr double kChiMax =
@@ -154,7 +154,7 @@ double ChiSquareValue(int dof, double p) {
 //     Hill, I. D. and Pike, M. C.  Algorithm 299
 //     Collected Algorithms of the CACM 1963 p. 243
 //
-double ChiSquarePValue(double chi_square, int dof) {
+ABSEIL_EXPORT double ChiSquarePValue(double chi_square, int dof) {
   static constexpr double kLogSqrtPi =
       0.5723649429247000870717135;  // Log[Sqrt[Pi]]
   static constexpr double kInverseSqrtPi =

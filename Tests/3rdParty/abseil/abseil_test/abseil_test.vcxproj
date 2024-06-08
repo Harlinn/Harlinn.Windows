@@ -194,7 +194,6 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="base\internal\prefetch_test.cc" />
     <ClCompile Include="base\internal\scoped_set_env_test.cc" />
     <ClCompile Include="base\internal\strerror_test.cc" />
     <ClCompile Include="base\internal\sysinfo_test.cc" />
@@ -202,7 +201,10 @@
     <ClCompile Include="base\internal\unique_small_name_test.cc" />
     <ClCompile Include="base\invoke_test.cc" />
     <ClCompile Include="base\log_severity_test.cc" />
+    <ClCompile Include="base\no_destructor_test.cc" />
+    <ClCompile Include="base\nullability_test.cc" />
     <ClCompile Include="base\optimization_test.cc" />
+    <ClCompile Include="base\prefetch_test.cc" />
     <ClCompile Include="base\raw_logging_test.cc" />
     <ClCompile Include="base\throw_delegate_test.cc" />
     <ClCompile Include="cleanup\cleanup_test.cc" />
@@ -253,34 +255,20 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="flags\commandlineflag_test.cc">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="flags\fl_config_test.cc">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="flags\flag_test.cc">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClCompile>
+    <ClCompile Include="flags\commandlineflag_test.cc" />
+    <ClCompile Include="flags\flag_test_defs.cc" />
+    <ClCompile Include="flags\fl_config_test.cc" />
+    <ClCompile Include="flags\flag_test.cc" />
     <ClCompile Include="flags\internal\path_util_test.cc" />
     <ClCompile Include="flags\internal\program_name_test.cc" />
     <ClCompile Include="flags\internal\sequence_lock_test.cc" />
-    <ClCompile Include="flags\internal\usage_test.cc" />
-    <ClCompile Include="flags\marshalling_test.cc">
+    <ClCompile Include="flags\internal\usage_test.cc">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="flags\marshalling_test.cc" />
     <ClCompile Include="flags\parse_test.cc">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
@@ -293,15 +281,12 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="flags\usage_config_test.cc">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClCompile>
+    <ClCompile Include="flags\usage_config_test.cc" />
     <ClCompile Include="functional\any_invocable_test.cc" />
     <ClCompile Include="functional\bind_front_test.cc" />
     <ClCompile Include="functional\function_ref_test.cc" />
+    <ClCompile Include="functional\overload_test.cc" />
+    <ClCompile Include="hash\hash_instantiated_test.cc" />
     <ClCompile Include="hash\hash_test.cc" />
     <ClCompile Include="hash\internal\city_test.cc" />
     <ClCompile Include="hash\internal\low_level_hash_test.cc" />
@@ -330,12 +315,7 @@
     <ClCompile Include="log\internal\test_actions.cc" />
     <ClCompile Include="log\internal\test_helpers.cc" />
     <ClCompile Include="log\internal\test_matchers.cc" />
-    <ClCompile Include="log\log_basic_test.cc">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClCompile>
+    <ClCompile Include="log\log_basic_test.cc" />
     <ClCompile Include="log\log_entry_test.cc" />
     <ClCompile Include="log\log_format_test.cc" />
     <ClCompile Include="log\log_macro_hygiene_test.cc" />
@@ -344,8 +324,14 @@
     <ClCompile Include="log\log_streamer_test.cc" />
     <ClCompile Include="log\scoped_mock_log.cc" />
     <ClCompile Include="log\scoped_mock_log_test.cc" />
-    <ClCompile Include="log\stripping_test.cc" />
+    <ClCompile Include="log\stripping_test.cc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="log\structured_test.cc" />
+    <ClCompile Include="log\vlog_is_on_test.cc" />
     <ClCompile Include="memory\memory_test.cc" />
     <ClCompile Include="meta\type_traits_test.cc" />
     <ClCompile Include="numeric\bits_test.cc" />
@@ -386,12 +372,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="random\internal\randen_slow_test.cc">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClCompile>
+    <ClCompile Include="random\internal\randen_slow_test.cc" />
     <ClCompile Include="random\internal\randen_test.cc" />
     <ClCompile Include="random\internal\salted_seed_seq_test.cc" />
     <ClCompile Include="random\internal\seed_material_test.cc" />
@@ -416,18 +397,23 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="strings\charconv_test.cc" />
+    <ClCompile Include="strings\charset_test.cc" />
+    <ClCompile Include="strings\char_formatting_test.cc" />
     <ClCompile Include="strings\cordz_test.cc" />
     <ClCompile Include="strings\cord_buffer_test.cc" />
-    <ClCompile Include="strings\cord_ring_reader_test.cc" />
-    <ClCompile Include="strings\cord_ring_test.cc" />
-    <ClCompile Include="strings\cord_test.cc" />
     <ClCompile Include="strings\escaping_test.cc" />
+    <ClCompile Include="strings\has_absl_stringify_test.cc" />
+    <ClCompile Include="strings\has_ostream_operator_test.cc" />
     <ClCompile Include="strings\internal\charconv_bigint_test.cc" />
     <ClCompile Include="strings\internal\charconv_parse_test.cc" />
-    <ClCompile Include="strings\internal\char_map_test.cc" />
     <ClCompile Include="strings\internal\cordz_functions_test.cc" />
     <ClCompile Include="strings\internal\cordz_handle_test.cc" />
-    <ClCompile Include="strings\internal\cordz_info_statistics_test.cc" />
+    <ClCompile Include="strings\internal\cordz_info_statistics_test.cc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="strings\internal\cordz_info_test.cc" />
     <ClCompile Include="strings\internal\cordz_sample_token_test.cc" />
     <ClCompile Include="strings\internal\cordz_update_scope_test.cc" />
@@ -464,7 +450,9 @@
     <ClCompile Include="synchronization\barrier_test.cc" />
     <ClCompile Include="synchronization\blocking_counter_test.cc" />
     <ClCompile Include="synchronization\internal\graphcycles_test.cc" />
+    <ClCompile Include="synchronization\internal\kernel_timeout_test.cc" />
     <ClCompile Include="synchronization\internal\per_thread_sem_test.cc" />
+    <ClCompile Include="synchronization\internal\waiter_test.cc" />
     <ClCompile Include="synchronization\lifetime_test.cc">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
@@ -477,6 +465,7 @@
     <ClCompile Include="time\civil_time_test.cc" />
     <ClCompile Include="time\clock_test.cc" />
     <ClCompile Include="time\duration_test.cc" />
+    <ClCompile Include="time\t_flag_test.cc" />
     <ClCompile Include="time\format_test.cc" />
     <ClCompile Include="time\internal\cctz\src\i_civil_time_test.cc" />
     <ClCompile Include="time\internal\cctz\src\time_zone_format_test.cc" />
@@ -487,7 +476,6 @@
     <ClCompile Include="types\any_exception_safety_test.cc" />
     <ClCompile Include="types\any_test.cc" />
     <ClCompile Include="types\compare_test.cc" />
-    <ClCompile Include="types\internal\conformance_testing_test.cc" />
     <ClCompile Include="types\optional_exception_safety_test.cc" />
     <ClCompile Include="types\optional_test.cc" />
     <ClCompile Include="types\span_test.cc" />
@@ -503,6 +491,9 @@
     <ClInclude Include="include\absl\container\btree_test.h" />
     <ClInclude Include="include\absl\container\internal\hash_generator_testing.h" />
     <ClInclude Include="include\absl\container\internal\hash_policy_testing.h" />
+    <ClInclude Include="include\absl\container\internal\test_allocator.h" />
+    <ClInclude Include="include\absl\container\internal\test_instance_tracker.h" />
+    <ClInclude Include="include\absl\container\internal\tracked.h" />
     <ClInclude Include="include\absl\container\internal\unordered_map_constructor_test.h" />
     <ClInclude Include="include\absl\container\internal\unordered_map_lookup_test.h" />
     <ClInclude Include="include\absl\container\internal\unordered_map_members_test.h" />
@@ -512,12 +503,11 @@
     <ClInclude Include="include\absl\container\internal\unordered_set_members_test.h" />
     <ClInclude Include="include\absl\container\internal\unordered_set_modifiers_test.h" />
     <ClInclude Include="include\absl\hash\hash_testing.h" />
-    <ClInclude Include="include\absl\log\check_test_impl.h" />
     <ClInclude Include="include\absl\log\internal\test_actions.h" />
     <ClInclude Include="include\absl\log\internal\test_helpers.h" />
     <ClInclude Include="include\absl\log\internal\test_matchers.h" />
-    <ClInclude Include="include\absl\log\log_basic_test_impl.h" />
     <ClInclude Include="include\absl\log\scoped_mock_log.h" />
+    <ClInclude Include="include\absl\random\internal\distribution_test_util.h" />
     <ClInclude Include="include\absl\random\internal\mock_helpers.h" />
     <ClInclude Include="include\absl\random\internal\mock_overload_set.h" />
     <ClInclude Include="include\absl\strings\cordz_test_helpers.h" />
@@ -526,8 +516,10 @@
     <ClInclude Include="include\absl\strings\internal\escaping_test_common.h" />
     <ClInclude Include="include\absl\strings\internal\numbers_test_common.h" />
     <ClInclude Include="include\absl\time\internal\test_util.h" />
-    <ClInclude Include="include\absl\types\internal\conformance_testing.h" />
-    <ClInclude Include="include\absl\types\internal\conformance_testing_helpers.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="include\absl\log\check_test_impl.inc" />
+    <None Include="include\absl\log\log_basic_test_impl.inc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

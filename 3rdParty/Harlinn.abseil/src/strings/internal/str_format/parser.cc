@@ -34,12 +34,12 @@ namespace str_format_internal {
 // Define the array for non-constexpr uses.
 constexpr ConvTag ConvTagHolder::value[256];
 
-ABSL_ATTRIBUTE_NOINLINE const char* ConsumeUnboundConversionNoInline(
+ABSL_ATTRIBUTE_NOINLINE ABSEIL_EXPORT const char* ConsumeUnboundConversionNoInline(
     const char* p, const char* end, UnboundConversion* conv, int* next_arg) {
   return ConsumeUnboundConversion(p, end, conv, next_arg);
 }
 
-std::string LengthModToString(LengthMod v) {
+ABSEIL_EXPORT std::string LengthModToString(LengthMod v) {
   switch (v) {
     case LengthMod::h:
       return "h";

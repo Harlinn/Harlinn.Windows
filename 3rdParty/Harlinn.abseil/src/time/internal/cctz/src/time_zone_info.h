@@ -18,6 +18,7 @@
 #include <atomic>
 #include <cstddef>
 #include <cstdint>
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -64,12 +65,9 @@ struct TransitionType {
 // A time zone backed by the IANA Time Zone Database (zoneinfo).
 class TimeZoneInfo : public TimeZoneIf {
  public:
-  TimeZoneInfo() = default;
-  TimeZoneInfo(const TimeZoneInfo&) = delete;
-  TimeZoneInfo& operator=(const TimeZoneInfo&) = delete;
-
-  // Loads the zoneinfo for the given name, returning true if successful.
-  ABSEIL_EXPORT bool Load(const std::string& name);
+  // Factories.
+  ABSEIL_EXPORT static std::unique_ptr<TimeZoneInfo> UTC();  // never fails
+  ABSEIL_EXPORT static std::unique_ptr<TimeZoneInfo> Make(const std::string& name);
 
   // TimeZoneIf implementations.
   ABSEIL_EXPORT time_zone::absolute_lookup BreakTime(
@@ -83,17 +81,9 @@ class TimeZoneInfo : public TimeZoneIf {
   ABSEIL_EXPORT std::string Description() const override;
 
  private:
-  struct Header {            // counts of:
-    std::size_t timecnt;     // transition times
-    std::size_t typecnt;     // transition types
-    std::size_t charcnt;     // zone abbreviation characters
-    std::size_t leapcnt;     // leap seconds (we expect none)
-    std::size_t ttisstdcnt;  // UTC/local indicators (unused)
-    std::size_t ttisutcnt;   // standard/wall indicators (unused)
-
-    ABSEIL_EXPORT bool Build(const tzhead& tzh);
-    ABSEIL_EXPORT std::size_t DataLength(std::size_t time_len) const;
-  };
+  TimeZoneInfo() = default;
+  TimeZoneInfo(const TimeZoneInfo&) = delete;
+  TimeZoneInfo& operator=(const TimeZoneInfo&) = delete;
 
   ABSEIL_EXPORT bool GetTransitionType(std::int_fast32_t utc_offset, bool is_dst,
                          const std::string& abbr, std::uint_least8_t* index);
@@ -102,6 +92,7 @@ class TimeZoneInfo : public TimeZoneIf {
   ABSEIL_EXPORT bool ExtendTransitions();
 
   ABSEIL_EXPORT bool ResetToBuiltinUTC(const seconds& offset);
+  ABSEIL_EXPORT bool Load(const std::string& name);
   ABSEIL_EXPORT bool Load(ZoneInfoSource* zip);
 
   // Helpers for BreakTime() and MakeTime().

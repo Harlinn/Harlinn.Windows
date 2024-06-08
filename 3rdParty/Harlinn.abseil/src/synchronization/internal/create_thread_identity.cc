@@ -13,10 +13,12 @@
 // limitations under the License.
 
 #include <stdint.h>
+
 #include <new>
 
 // This file is a no-op if the required LowLevelAlloc support is missing.
 #include "absl/base/internal/low_level_alloc.h"
+#include "absl/synchronization/internal/waiter.h"
 #ifndef ABSL_LOW_LEVEL_ALLOC_MISSING
 
 #include <string.h>
@@ -69,8 +71,11 @@ static intptr_t RoundUp(intptr_t addr, intptr_t align) {
   return (addr + align - 1) & ~(align - 1);
 }
 
-void OneTimeInitThreadIdentity(base_internal::ThreadIdentity* identity) {
+ABSEIL_EXPORT void OneTimeInitThreadIdentity(base_internal::ThreadIdentity* identity) {
   PerThreadSem::Init(identity);
+  identity->ticker.store(0, std::memory_order_relaxed);
+  identity->wait_start.store(0, std::memory_order_relaxed);
+  identity->is_idle.store(false, std::memory_order_relaxed);
 }
 
 static void ResetThreadIdentityBetweenReuse(
@@ -129,7 +134,7 @@ static base_internal::ThreadIdentity* NewThreadIdentity() {
 // Allocates and attaches ThreadIdentity object for the calling thread.  Returns
 // the new identity.
 // REQUIRES: CurrentThreadIdentity(false) == nullptr
-base_internal::ThreadIdentity* CreateThreadIdentity() {
+ABSEIL_EXPORT base_internal::ThreadIdentity* CreateThreadIdentity() {
   base_internal::ThreadIdentity* identity = NewThreadIdentity();
   // Associate the value with the current thread, and attach our destructor.
   base_internal::SetCurrentThreadIdentity(identity, ReclaimThreadIdentity);

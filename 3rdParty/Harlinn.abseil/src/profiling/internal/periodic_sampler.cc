@@ -22,7 +22,7 @@ namespace absl {
 ABSL_NAMESPACE_BEGIN
 namespace profiling_internal {
 
-int64_t PeriodicSamplerBase::GetExponentialBiased(int period) noexcept {
+ABSEIL_EXPORT int64_t PeriodicSamplerBase::GetExponentialBiased(int period) noexcept {
   return rng_.GetStride(period);
 }
 

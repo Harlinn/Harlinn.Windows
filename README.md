@@ -16,7 +16,7 @@ Header only libraries are contained within ''Static library (.lib)'' or shared f
 All C++ code compiles using [/std:c++latest](https://docs.microsoft.com/en-us/cpp/build/reference/std-specify-language-standard-version?view=msvc-170) and [/Zc:__cplusplus](https://docs.microsoft.com/en-us/cpp/build/reference/zc-cplusplus?view=msvc-170)
 
 ### [abseil](https://abseil.io/)
-**Version:** 20230125.3
+**Version:** 20240116.2
 
 **Description:**
 > Abseil is an open source collection of C++ libraries drawn from the most fundamental pieces of Google’s 
@@ -527,7 +527,7 @@ The abseil_test contains the unit tests for the Harlinn.abseil project
 **Project:** Harlinn.gta
 
 ### [GoogleTest](https://github.com/google/googletest)
-**Version:** 1.13.0
+**Version:** As of 2024.06.06 (Post 1.14.0)
 
 **Description:**
 > GoogleTest is Google’s C++ testing and mocking framework.

@@ -80,7 +80,7 @@ class CycleClock {
   static constexpr int32_t kShift = kCycleClockShift;
   static constexpr double kFrequencyScale = kCycleClockFrequencyScale;
 
-  ABSL_CONST_INIT static std::atomic<CycleClockSourceFunc> cycle_clock_source_;
+  ABSEIL_EXPORT ABSL_CONST_INIT static std::atomic<CycleClockSourceFunc> cycle_clock_source_;
 #endif  //  ABSL_USE_UNSCALED_CYCLECLOC
 
   CycleClock() = delete;  // no instances

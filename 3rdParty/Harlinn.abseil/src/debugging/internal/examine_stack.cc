@@ -24,6 +24,9 @@
 
 #ifdef ABSL_HAVE_MMAP
 #include <sys/mman.h>
+#if defined(MAP_ANON) && !defined(MAP_ANONYMOUS)
+#define MAP_ANONYMOUS MAP_ANON
+#endif
 #endif
 
 #if defined(__linux__) || defined(__APPLE__)
@@ -142,16 +145,16 @@ void DumpPCAndFrameSizeAndSymbol(OutputWriter* writer, void* writer_arg,
 
 }  // namespace
 
-void RegisterDebugStackTraceHook(SymbolizeUrlEmitter hook) {
+ABSEIL_EXPORT void RegisterDebugStackTraceHook(SymbolizeUrlEmitter hook) {
   debug_stack_trace_hook = hook;
 }
 
-SymbolizeUrlEmitter GetDebugStackTraceHook() { return debug_stack_trace_hook; }
+ABSEIL_EXPORT SymbolizeUrlEmitter GetDebugStackTraceHook() { return debug_stack_trace_hook; }
 
 // Returns the program counter from signal context, nullptr if
 // unknown. vuc is a ucontext_t*. We use void* to avoid the use of
 // ucontext_t on non-POSIX systems.
-void* GetProgramCounter(void* const vuc) {
+ABSEIL_EXPORT void* GetProgramCounter(void* const vuc) {
 #ifdef __linux__
   if (vuc != nullptr) {
     ucontext_t* context = reinterpret_cast<ucontext_t*>(vuc);
@@ -233,7 +236,7 @@ void* GetProgramCounter(void* const vuc) {
   return nullptr;
 }
 
-void DumpPCAndFrameSizesAndStackTrace(void* const pc, void* const stack[],
+ABSEIL_EXPORT void DumpPCAndFrameSizesAndStackTrace(void* const pc, void* const stack[],
                                       int frame_sizes[], int depth,
                                       int min_dropped_frames,
                                       bool symbolize_stacktrace,
@@ -271,7 +274,7 @@ void DumpPCAndFrameSizesAndStackTrace(void* const pc, void* const stack[],
 // Dump current stack trace as directed by writer.
 // Make sure this function is not inlined to avoid skipping too many top frames.
 ABSL_ATTRIBUTE_NOINLINE
-void DumpStackTrace(int min_dropped_frames, int max_num_frames,
+ABSEIL_EXPORT void DumpStackTrace(int min_dropped_frames, int max_num_frames,
                     bool symbolize_stacktrace, OutputWriter* writer,
                     void* writer_arg) {
   // Print stack trace

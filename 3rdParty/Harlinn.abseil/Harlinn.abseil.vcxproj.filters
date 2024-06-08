@@ -241,6 +241,12 @@
     <Filter Include="src\log\internal">
       <UniqueIdentifier>{6896a35f-5f27-4bf5-96a2-8c11b72ba00b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="include\absl\utility\internal">
+      <UniqueIdentifier>{b4feb3b9-6f36-497c-bbb2-21e07ebfec47}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\status\internal">
+      <UniqueIdentifier>{9beaa8fb-9d63-4a19-a95d-42a7d6689063}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -300,9 +306,6 @@
     <ClCompile Include="src\crc\internal\crc_memcpy_fallback.cc">
       <Filter>src\crc\internal</Filter>
     </ClCompile>
-    <ClCompile Include="src\crc\internal\crc_memcpy_x86_64.cc">
-      <Filter>src\crc\internal</Filter>
-    </ClCompile>
     <ClCompile Include="src\crc\internal\crc_non_temporal_memcpy.cc">
       <Filter>src\crc\internal</Filter>
     </ClCompile>
@@ -328,9 +331,6 @@
       <Filter>src\flags\internal</Filter>
     </ClCompile>
     <ClCompile Include="src\flags\commandlineflag.cc">
-      <Filter>src\flags</Filter>
-    </ClCompile>
-    <ClCompile Include="src\flags\flag.cc">
       <Filter>src\flags</Filter>
     </ClCompile>
     <ClCompile Include="src\flags\marshalling.cc">
@@ -525,9 +525,6 @@
     <ClCompile Include="src\strings\internal\cord_rep_crc.cc">
       <Filter>src\strings\internal</Filter>
     </ClCompile>
-    <ClCompile Include="src\strings\internal\cord_rep_ring.cc">
-      <Filter>src\strings\internal</Filter>
-    </ClCompile>
     <ClCompile Include="src\strings\internal\cordz_functions.cc">
       <Filter>src\strings\internal</Filter>
     </ClCompile>
@@ -609,9 +606,6 @@
     <ClCompile Include="src\synchronization\internal\per_thread_sem.cc">
       <Filter>src\synchronization\internal</Filter>
     </ClCompile>
-    <ClCompile Include="src\synchronization\internal\waiter.cc">
-      <Filter>src\synchronization\internal</Filter>
-    </ClCompile>
     <ClCompile Include="src\synchronization\barrier.cc">
       <Filter>src\synchronization</Filter>
     </ClCompile>
@@ -684,6 +678,39 @@
     <ClCompile Include="src\log\die_if_null.cc">
       <Filter>src\log</Filter>
     </ClCompile>
+    <ClCompile Include="src\crc\internal\crc_memcpy_x86_arm_combined.cc">
+      <Filter>src\crc\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\log\internal\fnmatch.cc">
+      <Filter>src\log\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\status\internal\status_internal.cc">
+      <Filter>src\status\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\synchronization\internal\futex_waiter.cc">
+      <Filter>src\synchronization\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\synchronization\internal\kernel_timeout.cc">
+      <Filter>src\synchronization\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\synchronization\internal\pthread_waiter.cc">
+      <Filter>src\synchronization\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\synchronization\internal\sem_waiter.cc">
+      <Filter>src\synchronization\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\synchronization\internal\stdcpp_waiter.cc">
+      <Filter>src\synchronization\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\synchronization\internal\waiter_base.cc">
+      <Filter>src\synchronization\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\synchronization\internal\win32_waiter.cc">
+      <Filter>src\synchronization\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\log\internal\vlog_config.cc">
+      <Filter>src\log\internal</Filter>
+    </ClCompile>
     <ClCompile Include="src\random\internal\distribution_test_util.cc">
       <Filter>src\random\internal</Filter>
     </ClCompile>
@@ -740,9 +767,6 @@
     <ClInclude Include="include\absl\base\internal\per_thread_tls.h">
       <Filter>include\absl\base\internal</Filter>
     </ClInclude>
-    <ClInclude Include="include\absl\base\internal\prefetch.h">
-      <Filter>include\absl\base\internal</Filter>
-    </ClInclude>
     <ClInclude Include="include\absl\base\internal\pretty_function.h">
       <Filter>include\absl\base\internal</Filter>
     </ClInclude>
@@ -765,9 +789,6 @@
       <Filter>include\absl\base\internal</Filter>
     </ClInclude>
     <ClInclude Include="include\absl\base\internal\sysinfo.h">
-      <Filter>include\absl\base\internal</Filter>
-    </ClInclude>
-    <ClInclude Include="include\absl\base\internal\thread_annotations.h">
       <Filter>include\absl\base\internal</Filter>
     </ClInclude>
     <ClInclude Include="include\absl\base\internal\thread_identity.h">
@@ -851,9 +872,6 @@
     <ClInclude Include="include\absl\container\internal\container_memory.h">
       <Filter>include\absl\container\internal</Filter>
     </ClInclude>
-    <ClInclude Include="include\absl\container\internal\counting_allocator.h">
-      <Filter>include\absl\container\internal</Filter>
-    </ClInclude>
     <ClInclude Include="include\absl\container\internal\hash_function_defaults.h">
       <Filter>include\absl\container\internal</Filter>
     </ClInclude>
@@ -882,9 +900,6 @@
       <Filter>include\absl\container\internal</Filter>
     </ClInclude>
     <ClInclude Include="include\absl\container\internal\raw_hash_set.h">
-      <Filter>include\absl\container\internal</Filter>
-    </ClInclude>
-    <ClInclude Include="include\absl\container\internal\tracked.h">
       <Filter>include\absl\container\internal</Filter>
     </ClInclude>
     <ClInclude Include="include\absl\container\btree_map.h">
@@ -1340,9 +1355,6 @@
     <ClInclude Include="include\absl\strings\internal\str_format\parser.h">
       <Filter>include\absl\strings\internal\str_format</Filter>
     </ClInclude>
-    <ClInclude Include="include\absl\strings\internal\char_map.h">
-      <Filter>include\absl\strings\internal</Filter>
-    </ClInclude>
     <ClInclude Include="include\absl\strings\internal\charconv_bigint.h">
       <Filter>include\absl\strings\internal</Filter>
     </ClInclude>
@@ -1371,12 +1383,6 @@
       <Filter>include\absl\strings\internal</Filter>
     </ClInclude>
     <ClInclude Include="include\absl\strings\internal\cord_rep_flat.h">
-      <Filter>include\absl\strings\internal</Filter>
-    </ClInclude>
-    <ClInclude Include="include\absl\strings\internal\cord_rep_ring.h">
-      <Filter>include\absl\strings\internal</Filter>
-    </ClInclude>
-    <ClInclude Include="include\absl\strings\internal\cord_rep_ring_reader.h">
       <Filter>include\absl\strings\internal</Filter>
     </ClInclude>
     <ClInclude Include="include\absl\strings\internal\cordz_functions.h">
@@ -1541,25 +1547,10 @@
     <ClInclude Include="include\absl\time\time.h">
       <Filter>include\absl\time</Filter>
     </ClInclude>
-    <ClInclude Include="include\absl\types\internal\conformance_aliases.h">
-      <Filter>include\absl\types\internal</Filter>
-    </ClInclude>
-    <ClInclude Include="include\absl\types\internal\conformance_archetype.h">
-      <Filter>include\absl\types\internal</Filter>
-    </ClInclude>
-    <ClInclude Include="include\absl\types\internal\conformance_profile.h">
-      <Filter>include\absl\types\internal</Filter>
-    </ClInclude>
     <ClInclude Include="include\absl\types\internal\optional.h">
       <Filter>include\absl\types\internal</Filter>
     </ClInclude>
-    <ClInclude Include="include\absl\types\internal\parentheses.h">
-      <Filter>include\absl\types\internal</Filter>
-    </ClInclude>
     <ClInclude Include="include\absl\types\internal\span.h">
-      <Filter>include\absl\types\internal</Filter>
-    </ClInclude>
-    <ClInclude Include="include\absl\types\internal\transform_args.h">
       <Filter>include\absl\types\internal</Filter>
     </ClInclude>
     <ClInclude Include="include\absl\types\internal\variant.h">
@@ -1621,6 +1612,60 @@
     </ClInclude>
     <ClInclude Include="include\absl\random\internal\randen_traits.h">
       <Filter>include\absl\random\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\base\internal\nullability_impl.h">
+      <Filter>include\absl\base\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\base\no_destructor.h">
+      <Filter>include\absl\base</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\base\nullability.h">
+      <Filter>include\absl\base</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\base\prefetch.h">
+      <Filter>include\absl\base</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\functional\overload.h">
+      <Filter>include\absl\functional</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\log\internal\fnmatch.h">
+      <Filter>include\absl\log\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\log\internal\vlog_config.h">
+      <Filter>include\absl\log\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\log\absl_vlog_is_on.h">
+      <Filter>include\absl\log</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\log\vlog_is_on.h">
+      <Filter>include\absl\log</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\strings\charset.h">
+      <Filter>include\absl\strings</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\strings\has_absl_stringify.h">
+      <Filter>include\absl\strings</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\strings\has_ostream_operator.h">
+      <Filter>include\absl\strings</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\synchronization\internal\futex_waiter.h">
+      <Filter>include\absl\synchronization\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\synchronization\internal\pthread_waiter.h">
+      <Filter>include\absl\synchronization\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\synchronization\internal\sem_waiter.h">
+      <Filter>include\absl\synchronization\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\synchronization\internal\stdcpp_waiter.h">
+      <Filter>include\absl\synchronization\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\synchronization\internal\waiter_base.h">
+      <Filter>include\absl\synchronization\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\absl\synchronization\internal\win32_waiter.h">
+      <Filter>include\absl\synchronization\internal</Filter>
     </ClInclude>
     <ClInclude Include="include\absl\random\internal\distribution_test_util.h">
       <Filter>include\absl\random\internal</Filter>
@@ -1693,9 +1738,6 @@
     <None Include="include\absl\debugging\symbolize_win32.inc">
       <Filter>include\absl\debugging</Filter>
     </None>
-    <None Include="include\absl\flags\internal\flag_msvc.inc">
-      <Filter>include\absl\flags\internal</Filter>
-    </None>
     <None Include="include\absl\numeric\int128_have_intrinsic.inc">
       <Filter>include\absl\numeric</Filter>
     </None>
@@ -1707,6 +1749,9 @@
     </None>
     <None Include="include\absl\time\internal\get_current_time_posix.inc">
       <Filter>include\absl\time\internal</Filter>
+    </None>
+    <None Include="abseil.def">
+      <Filter>Source Files</Filter>
     </None>
   </ItemGroup>
 </Project>

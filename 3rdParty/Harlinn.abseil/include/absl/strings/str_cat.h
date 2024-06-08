@@ -87,15 +87,23 @@
 #ifndef ABSL_STRINGS_STR_CAT_H_
 #define ABSL_STRINGS_STR_CAT_H_
 
+#include <algorithm>
 #include <array>
+#include <cassert>
+#include <cstddef>
 #include <cstdint>
+#include <cstring>
 #include <string>
 #include <type_traits>
 #include <utility>
 #include <vector>
 
+#include "absl/base/attributes.h"
+#include "absl/base/nullability.h"
 #include "absl/base/port.h"
-#include "absl/strings/internal/has_absl_stringify.h"
+#include "absl/meta/type_traits.h"
+#include "absl/strings/has_absl_stringify.h"
+#include "absl/strings/internal/resize_uninitialized.h"
 #include "absl/strings/internal/stringify_sink.h"
 #include "absl/strings/numbers.h"
 #include "absl/strings/string_view.h"
@@ -198,8 +206,29 @@ struct Hex {
                               !std::is_pointer<Int>::value>::type* = nullptr)
       : Hex(spec, static_cast<uint64_t>(v)) {}
   template <typename Pointee>
-  explicit Hex(Pointee* v, PadSpec spec = absl::kNoPad)
+  explicit Hex(absl::Nullable<Pointee*> v, PadSpec spec = absl::kNoPad)
       : Hex(spec, reinterpret_cast<uintptr_t>(v)) {}
+
+  template <typename S>
+  friend void AbslStringify(S& sink, Hex hex) {
+    static_assert(
+        numbers_internal::kFastToBufferSize >= 32,
+        "This function only works when output buffer >= 32 bytes long");
+    char buffer[numbers_internal::kFastToBufferSize];
+    char* const end = &buffer[numbers_internal::kFastToBufferSize];
+    auto real_width =
+        absl::numbers_internal::FastHexToBufferZeroPad16(hex.value, end - 16);
+    if (real_width >= hex.width) {
+      sink.Append(absl::string_view(end - real_width, real_width));
+    } else {
+      // Pad first 16 chars because FastHexToBufferZeroPad16 pads only to 16 and
+      // max pad width can be up to 20.
+      std::memset(end - 32, hex.fill, 16);
+      // Patch up everything else up to the real_width.
+      std::memset(end - real_width - 16, hex.fill, 16);
+      sink.Append(absl::string_view(end - hex.width, hex.width));
+    }
+  }
 
  private:
   Hex(PadSpec spec, uint64_t v)
@@ -229,12 +258,43 @@ struct Dec {
                typename std::enable_if<(sizeof(Int) <= 8)>::type* = nullptr)
       : value(v >= 0 ? static_cast<uint64_t>(v)
                      : uint64_t{0} - static_cast<uint64_t>(v)),
-        width(spec == absl::kNoPad
-                  ? 1
-                  : spec >= absl::kSpacePad2 ? spec - absl::kSpacePad2 + 2
-                                             : spec - absl::kZeroPad2 + 2),
+        width(spec == absl::kNoPad       ? 1
+              : spec >= absl::kSpacePad2 ? spec - absl::kSpacePad2 + 2
+                                         : spec - absl::kZeroPad2 + 2),
         fill(spec >= absl::kSpacePad2 ? ' ' : '0'),
         neg(v < 0) {}
+
+  template <typename S>
+  friend void AbslStringify(S& sink, Dec dec) {
+    assert(dec.width <= numbers_internal::kFastToBufferSize);
+    char buffer[numbers_internal::kFastToBufferSize];
+    char* const end = &buffer[numbers_internal::kFastToBufferSize];
+    char* const minfill = end - dec.width;
+    char* writer = end;
+    uint64_t val = dec.value;
+    while (val > 9) {
+      *--writer = '0' + (val % 10);
+      val /= 10;
+    }
+    *--writer = '0' + static_cast<char>(val);
+    if (dec.neg) *--writer = '-';
+
+    ptrdiff_t fillers = writer - minfill;
+    if (fillers > 0) {
+      // Tricky: if the fill character is ' ', then it's <fill><+/-><digits>
+      // But...: if the fill character is '0', then it's <+/-><fill><digits>
+      bool add_sign_again = false;
+      if (dec.neg && dec.fill == '0') {  // If filling with '0',
+        ++writer;                    // ignore the sign we just added
+        add_sign_again = true;       // and re-add the sign later.
+      }
+      writer -= fillers;
+      std::fill_n(writer, fillers, dec.fill);
+      if (add_sign_again) *--writer = '-';
+    }
+
+    sink.Append(absl::string_view(writer, static_cast<size_t>(end - writer)));
+  }
 };
 
 // -----------------------------------------------------------------------------
@@ -282,28 +342,30 @@ class AlphaNum {
   AlphaNum(double f)  // NOLINT(runtime/explicit)
       : piece_(digits_, numbers_internal::SixDigitsToBuffer(f, digits_)) {}
 
-  ABSEIL_EXPORT AlphaNum(Hex hex);  // NOLINT(runtime/explicit)
-  ABSEIL_EXPORT AlphaNum(Dec dec);  // NOLINT(runtime/explicit)
-
   template <size_t size>
   AlphaNum(  // NOLINT(runtime/explicit)
-      const strings_internal::AlphaNumBuffer<size>& buf)
+      const strings_internal::AlphaNumBuffer<size>& buf
+          ABSL_ATTRIBUTE_LIFETIME_BOUND)
       : piece_(&buf.data[0], buf.size) {}
 
-  AlphaNum(const char* c_str)                     // NOLINT(runtime/explicit)
-      : piece_(NullSafeStringView(c_str)) {}      // NOLINT(runtime/explicit)
-  AlphaNum(absl::string_view pc) : piece_(pc) {}  // NOLINT(runtime/explicit)
+  AlphaNum(absl::Nullable<const char*> c_str  // NOLINT(runtime/explicit)
+               ABSL_ATTRIBUTE_LIFETIME_BOUND)
+      : piece_(NullSafeStringView(c_str)) {}
+  AlphaNum(absl::string_view pc  // NOLINT(runtime/explicit)
+               ABSL_ATTRIBUTE_LIFETIME_BOUND)
+      : piece_(pc) {}
 
   template <typename T, typename = typename std::enable_if<
-                            strings_internal::HasAbslStringify<T>::value>::type>
-  AlphaNum(                                         // NOLINT(runtime/explicit)
-      const T& v,                                   // NOLINT(runtime/explicit)
-      strings_internal::StringifySink&& sink = {})  // NOLINT(runtime/explicit)
+                            HasAbslStringify<T>::value>::type>
+  AlphaNum(  // NOLINT(runtime/explicit)
+      const T& v ABSL_ATTRIBUTE_LIFETIME_BOUND,
+      strings_internal::StringifySink&& sink ABSL_ATTRIBUTE_LIFETIME_BOUND = {})
       : piece_(strings_internal::ExtractStringification(sink, v)) {}
 
   template <typename Allocator>
   AlphaNum(  // NOLINT(runtime/explicit)
-      const std::basic_string<char, std::char_traits<char>, Allocator>& str)
+      const std::basic_string<char, std::char_traits<char>, Allocator>& str
+          ABSL_ATTRIBUTE_LIFETIME_BOUND)
       : piece_(str) {}
 
   // Use string literals ":" instead of character literals ':'.
@@ -313,17 +375,27 @@ class AlphaNum {
   AlphaNum& operator=(const AlphaNum&) = delete;
 
   absl::string_view::size_type size() const { return piece_.size(); }
-  const char* data() const { return piece_.data(); }
+  absl::Nullable<const char*> data() const { return piece_.data(); }
   absl::string_view Piece() const { return piece_; }
 
-  // Normal enums are already handled by the integer formatters.
-  // This overload matches only scoped enums.
+  // Match unscoped enums.  Use integral promotion so that a `char`-backed
+  // enum becomes a wider integral type AlphaNum will accept.
   template <typename T,
             typename = typename std::enable_if<
-                std::is_enum<T>{} && !std::is_convertible<T, int>{} &&
-                !strings_internal::HasAbslStringify<T>::value>::type>
+                std::is_enum<T>{} && std::is_convertible<T, int>{} &&
+                !HasAbslStringify<T>::value>::type>
   AlphaNum(T e)  // NOLINT(runtime/explicit)
-      : AlphaNum(static_cast<typename std::underlying_type<T>::type>(e)) {}
+      : AlphaNum(+e) {}
+
+  // This overload matches scoped enums.  We must explicitly cast to the
+  // underlying type, but use integral promotion for the same reason as above.
+  template <typename T,
+            typename std::enable_if<std::is_enum<T>{} &&
+                                        !std::is_convertible<T, int>{} &&
+                                        !HasAbslStringify<T>::value,
+                                    char*>::type = nullptr>
+  AlphaNum(T e)  // NOLINT(runtime/explicit)
+      : AlphaNum(+static_cast<typename std::underlying_type<T>::type>(e)) {}
 
   // vector<bool>::reference and const_reference require special help to
   // convert to `AlphaNum` because it requires two user defined conversions.
@@ -373,21 +445,56 @@ namespace strings_internal {
 
 // Do not call directly - this is not part of the public API.
 ABSEIL_EXPORT std::string CatPieces(std::initializer_list<absl::string_view> pieces);
-ABSEIL_EXPORT void AppendPieces(std::string* dest,
+ABSEIL_EXPORT void AppendPieces(absl::Nonnull<std::string*> dest,
                   std::initializer_list<absl::string_view> pieces);
+
+ABSEIL_EXPORT void STLStringAppendUninitializedAmortized(std::string* dest, size_t to_append);
+
+// `SingleArgStrCat` overloads take built-in `int`, `long` and `long long` types
+// (signed / unsigned) to avoid ambiguity on the call side. If we used int32_t
+// and int64_t, then at least one of the three (`int` / `long` / `long long`)
+// would have been ambiguous when passed to `SingleArgStrCat`.
+ABSEIL_EXPORT std::string SingleArgStrCat(int x);
+ABSEIL_EXPORT std::string SingleArgStrCat(unsigned int x);
+ABSEIL_EXPORT std::string SingleArgStrCat(long x);                // NOLINT
+ABSEIL_EXPORT std::string SingleArgStrCat(unsigned long x);       // NOLINT
+ABSEIL_EXPORT std::string SingleArgStrCat(long long x);           // NOLINT
+ABSEIL_EXPORT std::string SingleArgStrCat(unsigned long long x);  // NOLINT
+ABSEIL_EXPORT std::string SingleArgStrCat(float x);
+ABSEIL_EXPORT std::string SingleArgStrCat(double x);
+
+// `SingleArgStrAppend` overloads are defined here for the same reasons as with
+// `SingleArgStrCat` above.
+ABSEIL_EXPORT void SingleArgStrAppend(std::string& str, int x);
+ABSEIL_EXPORT void SingleArgStrAppend(std::string& str, unsigned int x);
+ABSEIL_EXPORT void SingleArgStrAppend(std::string& str, long x);                // NOLINT
+ABSEIL_EXPORT void SingleArgStrAppend(std::string& str, unsigned long x);       // NOLINT
+ABSEIL_EXPORT void SingleArgStrAppend(std::string& str, long long x);           // NOLINT
+ABSEIL_EXPORT void SingleArgStrAppend(std::string& str, unsigned long long x);  // NOLINT
+
+template <typename T,
+          typename = std::enable_if_t<std::is_arithmetic<T>::value &&
+                                      !std::is_same<T, char>::value &&
+                                      !std::is_same<T, bool>::value>>
+using EnableIfFastCase = T;
 
 }  // namespace strings_internal
 
 ABSL_MUST_USE_RESULT inline std::string StrCat() { return std::string(); }
 
+template <typename T>
+ABSL_MUST_USE_RESULT inline std::string StrCat(
+    strings_internal::EnableIfFastCase<T> a) {
+  return strings_internal::SingleArgStrCat(a);
+}
 ABSL_MUST_USE_RESULT inline std::string StrCat(const AlphaNum& a) {
   return std::string(a.data(), a.size());
 }
 
-ABSEIL_EXPORT ABSL_MUST_USE_RESULT std::string StrCat(const AlphaNum& a, const AlphaNum& b);
-ABSEIL_EXPORT ABSL_MUST_USE_RESULT std::string StrCat(const AlphaNum& a, const AlphaNum& b,
+ABSL_MUST_USE_RESULT ABSEIL_EXPORT std::string StrCat(const AlphaNum& a, const AlphaNum& b);
+ABSL_MUST_USE_RESULT ABSEIL_EXPORT std::string StrCat(const AlphaNum& a, const AlphaNum& b,
                                         const AlphaNum& c);
-ABSEIL_EXPORT ABSL_MUST_USE_RESULT std::string StrCat(const AlphaNum& a, const AlphaNum& b,
+ABSL_MUST_USE_RESULT ABSEIL_EXPORT std::string StrCat(const AlphaNum& a, const AlphaNum& b,
                                         const AlphaNum& c, const AlphaNum& d);
 
 // Support 5 or more arguments
@@ -427,22 +534,84 @@ ABSL_MUST_USE_RESULT inline std::string StrCat(
 //   absl::string_view p = s;
 //   StrAppend(&s, p);
 
-inline void StrAppend(std::string*) {}
-ABSEIL_EXPORT void StrAppend(std::string* dest, const AlphaNum& a);
-ABSEIL_EXPORT void StrAppend(std::string* dest, const AlphaNum& a, const AlphaNum& b);
-ABSEIL_EXPORT void StrAppend(std::string* dest, const AlphaNum& a, const AlphaNum& b,
-               const AlphaNum& c);
-ABSEIL_EXPORT void StrAppend(std::string* dest, const AlphaNum& a, const AlphaNum& b,
-               const AlphaNum& c, const AlphaNum& d);
+inline void StrAppend(absl::Nonnull<std::string*>) {}
+ABSEIL_EXPORT void StrAppend(absl::Nonnull<std::string*> dest, const AlphaNum& a);
+ABSEIL_EXPORT void StrAppend(absl::Nonnull<std::string*> dest, const AlphaNum& a,
+               const AlphaNum& b);
+ABSEIL_EXPORT void StrAppend(absl::Nonnull<std::string*> dest, const AlphaNum& a,
+               const AlphaNum& b, const AlphaNum& c);
+ABSEIL_EXPORT void StrAppend(absl::Nonnull<std::string*> dest, const AlphaNum& a,
+               const AlphaNum& b, const AlphaNum& c, const AlphaNum& d);
 
 // Support 5 or more arguments
 template <typename... AV>
-inline void StrAppend(std::string* dest, const AlphaNum& a, const AlphaNum& b,
-                      const AlphaNum& c, const AlphaNum& d, const AlphaNum& e,
-                      const AV&... args) {
+inline void StrAppend(absl::Nonnull<std::string*> dest, const AlphaNum& a,
+                      const AlphaNum& b, const AlphaNum& c, const AlphaNum& d,
+                      const AlphaNum& e, const AV&... args) {
   strings_internal::AppendPieces(
       dest, {a.Piece(), b.Piece(), c.Piece(), d.Piece(), e.Piece(),
              static_cast<const AlphaNum&>(args).Piece()...});
+}
+
+template <class String, class T>
+std::enable_if_t<
+    std::is_integral<absl::strings_internal::EnableIfFastCase<T>>::value, void>
+StrAppend(absl::Nonnull<String*> result, T i) {
+  return absl::strings_internal::SingleArgStrAppend(*result, i);
+}
+
+// This overload is only selected if all the parameters are numbers that can be
+// handled quickly.
+// Later we can look into how we can extend this to more general argument
+// mixtures without bloating codegen too much, or copying unnecessarily.
+template <typename String, typename... T>
+std::enable_if_t<
+    (sizeof...(T) > 1),
+    std::common_type_t<std::conditional_t<
+        true, void, absl::strings_internal::EnableIfFastCase<T>>...>>
+StrAppend(absl::Nonnull<String*> str, T... args) {
+  // Do not add unnecessary variables, logic, or even "free" lambdas here.
+  // They can add overhead for the compiler and/or at run time.
+  // Furthermore, assume this function will be inlined.
+  // This function is carefully tailored to be able to be largely optimized away
+  // so that it becomes near-equivalent to the caller handling each argument
+  // individually while minimizing register pressure, so that the compiler
+  // can inline it with minimal overhead.
+
+  // First, calculate the total length, so we can perform just a single resize.
+  // Save all the lengths for later.
+  size_t total_length = 0;
+  const ptrdiff_t lengths[] = {
+      absl::numbers_internal::GetNumDigitsOrNegativeIfNegative(args)...};
+  for (const ptrdiff_t possibly_negative_length : lengths) {
+    // Lengths are negative for negative numbers. Keep them for later use, but
+    // take their absolute values for calculating total lengths;
+    total_length += possibly_negative_length < 0
+                        ? static_cast<size_t>(-possibly_negative_length)
+                        : static_cast<size_t>(possibly_negative_length);
+  }
+
+  // Now reserve space for all the arguments.
+  const size_t old_size = str->size();
+  absl::strings_internal::STLStringAppendUninitializedAmortized(str,
+                                                                total_length);
+
+  // Finally, output each argument one-by-one, from left to right.
+  size_t i = 0;  // The current argument we're processing
+  ptrdiff_t n;   // The length of the current argument
+  typename String::pointer pos = &(*str)[old_size];
+  using SomeTrivialEmptyType = std::false_type;
+  const SomeTrivialEmptyType dummy;
+  // Ugly code due to the lack of C++17 fold expressions
+  const SomeTrivialEmptyType dummies[] = {
+      (/* Comma expressions are poor man's C++17 fold expression for C++14 */
+       (void)(n = lengths[i]),
+       (void)(n < 0 ? (void)(*pos++ = '-'), (n = ~n) : 0),
+       (void)absl::numbers_internal::FastIntToBufferBackward(
+           absl::numbers_internal::UnsignedAbsoluteValue(std::move(args)),
+           pos += n, static_cast<uint32_t>(n)),
+       (void)++i, dummy)...};
+  (void)dummies;  // Remove & migrate to fold expressions in C++17
 }
 
 // Helper function for the future StrCat default floating-point format, %.6g

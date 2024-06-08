@@ -78,7 +78,11 @@ class time_zone::Impl {
   std::string Description() const { return zone_->Description(); }
 
  private:
-  ABSEIL_EXPORT explicit Impl(const std::string& name);
+  ABSEIL_EXPORT Impl();
+  explicit ABSEIL_EXPORT Impl(const std::string& name);
+  Impl(const Impl&) = delete;
+  Impl& operator=(const Impl&) = delete;
+
   ABSEIL_EXPORT static const Impl* UTCImpl();
 
   const std::string name_;

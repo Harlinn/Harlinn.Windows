@@ -31,7 +31,7 @@
 // a hardware accelerated implementation of randen, or whether it
 // will contain stubs that exit the process.
 #if ABSL_HAVE_ACCELERATED_AES
-// The following plaforms have implemented RandenHwAes.
+// The following platforms have implemented RandenHwAes.
 #if defined(ABSL_ARCH_X86_64) || defined(ABSL_ARCH_X86_32) || \
     defined(ABSL_ARCH_PPC) || defined(ABSL_ARCH_ARM) ||       \
     defined(ABSL_ARCH_AARCH64)
@@ -405,7 +405,7 @@ namespace absl {
 ABSL_NAMESPACE_BEGIN
 namespace random_internal {
 
-bool HasRandenHwAesImplementation() { return true; }
+ABSEIL_EXPORT bool HasRandenHwAesImplementation() { return true; }
 
 const void* ABSL_TARGET_CRYPTO RandenHwAes::GetKeys() {
   // Round keys for one AES per Feistel round and branch.

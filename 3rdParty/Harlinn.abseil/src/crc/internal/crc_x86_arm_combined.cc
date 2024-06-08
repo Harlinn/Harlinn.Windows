@@ -16,14 +16,14 @@
 
 #include <cstddef>
 #include <cstdint>
+#include <memory>
+#include <vector>
 
 #include "absl/base/attributes.h"
 #include "absl/base/config.h"
-#include "absl/base/dynamic_annotations.h"
 #include "absl/base/internal/endian.h"
-#include "absl/base/internal/prefetch.h"
+#include "absl/base/prefetch.h"
 #include "absl/crc/internal/cpu_detect.h"
-#include "absl/crc/internal/crc.h"
 #include "absl/crc/internal/crc32_x86_arm_combined_simd.h"
 #include "absl/crc/internal/crc_internal.h"
 #include "absl/memory/memory.h"
@@ -429,11 +429,11 @@ class CRC32AcceleratedX86ARMCombinedMultipleStreams
           ABSL_INTERNAL_STEP8BY3(l64, l641, l642, p, p1, p2);
           ABSL_INTERNAL_STEP8BY3(l64, l641, l642, p, p1, p2);
           ABSL_INTERNAL_STEP8BY3(l64, l641, l642, p, p1, p2);
-          base_internal::PrefetchT0(
+          PrefetchToLocalCache(
               reinterpret_cast<const char*>(p + kPrefetchHorizonMedium));
-          base_internal::PrefetchT0(
+          PrefetchToLocalCache(
               reinterpret_cast<const char*>(p1 + kPrefetchHorizonMedium));
-          base_internal::PrefetchT0(
+          PrefetchToLocalCache(
               reinterpret_cast<const char*>(p2 + kPrefetchHorizonMedium));
         }
         // Don't run crc on last 8 bytes.
@@ -515,14 +515,14 @@ class CRC32AcceleratedX86ARMCombinedMultipleStreams
       }
 
       for (size_t i = 1; i < bs; i++) {
-        // Prefetch data for next itterations.
+        // Prefetch data for next iterations.
         for (size_t j = 0; j < num_crc_streams; j++) {
-          base_internal::PrefetchT0(
+          PrefetchToLocalCache(
               reinterpret_cast<const char*>(crc_streams[j] + kPrefetchHorizon));
         }
         for (size_t j = 0; j < num_pclmul_streams; j++) {
-          base_internal::PrefetchT0(reinterpret_cast<const char*>(
-              pclmul_streams[j] + kPrefetchHorizon));
+          PrefetchToLocalCache(reinterpret_cast<const char*>(pclmul_streams[j] +
+                                                             kPrefetchHorizon));
         }
 
         // We process each stream in 64 byte blocks. This can be written as
@@ -611,7 +611,7 @@ class CRC32AcceleratedX86ARMCombinedMultipleStreams
 
 // Intel processors with SSE4.2 have an instruction for one particular
 // 32-bit CRC polynomial:  crc32c
-CRCImpl* TryNewCRC32AcceleratedX86ARMCombined() {
+ABSEIL_EXPORT CRCImpl* TryNewCRC32AcceleratedX86ARMCombined() {
   CpuType type = GetCpuType();
   switch (type) {
     case CpuType::kIntelHaswell:
@@ -634,8 +634,16 @@ CRCImpl* TryNewCRC32AcceleratedX86ARMCombined() {
       return new CRC32AcceleratedX86ARMCombinedMultipleStreams<
           3, 0, CutoffStrategy::Fold3>();
     case CpuType::kArmNeoverseN1:
+    case CpuType::kArmNeoverseN2:
+    case CpuType::kArmNeoverseV1:
       return new CRC32AcceleratedX86ARMCombinedMultipleStreams<
           1, 1, CutoffStrategy::Unroll64CRC>();
+    case CpuType::kAmpereSiryn:
+      return new CRC32AcceleratedX86ARMCombinedMultipleStreams<
+          3, 2, CutoffStrategy::Fold3>();
+    case CpuType::kArmNeoverseV2:
+      return new CRC32AcceleratedX86ARMCombinedMultipleStreams<
+          1, 2, CutoffStrategy::Unroll64CRC>();
 #if defined(__aarch64__)
     default:
       // Not all ARM processors support the needed instructions, so check here
@@ -655,7 +663,7 @@ CRCImpl* TryNewCRC32AcceleratedX86ARMCombined() {
   }
 }
 
-std::vector<std::unique_ptr<CRCImpl>> NewCRC32AcceleratedX86ARMCombinedAll() {
+ABSEIL_EXPORT std::vector<std::unique_ptr<CRCImpl>> NewCRC32AcceleratedX86ARMCombinedAll() {
   auto ret = std::vector<std::unique_ptr<CRCImpl>>();
   ret.push_back(absl::make_unique<CRC32AcceleratedX86ARMCombinedMultipleStreams<
                     1, 0, CutoffStrategy::Fold3>>());

@@ -96,102 +96,102 @@ bool ParseLenient(string_view s, CivilT* c) {
 }
 }  // namespace
 
-std::string FormatCivilTime(CivilSecond c) {
+ABSEIL_EXPORT std::string FormatCivilTime(CivilSecond c) {
   return FormatYearAnd("-%m-%d%ET%H:%M:%S", c);
 }
-std::string FormatCivilTime(CivilMinute c) {
+ABSEIL_EXPORT std::string FormatCivilTime(CivilMinute c) {
   return FormatYearAnd("-%m-%d%ET%H:%M", c);
 }
-std::string FormatCivilTime(CivilHour c) {
+ABSEIL_EXPORT std::string FormatCivilTime(CivilHour c) {
   return FormatYearAnd("-%m-%d%ET%H", c);
 }
-std::string FormatCivilTime(CivilDay c) { return FormatYearAnd("-%m-%d", c); }
-std::string FormatCivilTime(CivilMonth c) { return FormatYearAnd("-%m", c); }
-std::string FormatCivilTime(CivilYear c) { return FormatYearAnd("", c); }
+ABSEIL_EXPORT std::string FormatCivilTime(CivilDay c) { return FormatYearAnd("-%m-%d", c); }
+ABSEIL_EXPORT std::string FormatCivilTime(CivilMonth c) { return FormatYearAnd("-%m", c); }
+ABSEIL_EXPORT std::string FormatCivilTime(CivilYear c) { return FormatYearAnd("", c); }
 
-bool ParseCivilTime(string_view s, CivilSecond* c) {
+ABSEIL_EXPORT bool ParseCivilTime(string_view s, CivilSecond* c) {
   return ParseYearAnd("-%m-%d%ET%H:%M:%S", s, c);
 }
-bool ParseCivilTime(string_view s, CivilMinute* c) {
+ABSEIL_EXPORT bool ParseCivilTime(string_view s, CivilMinute* c) {
   return ParseYearAnd("-%m-%d%ET%H:%M", s, c);
 }
-bool ParseCivilTime(string_view s, CivilHour* c) {
+ABSEIL_EXPORT bool ParseCivilTime(string_view s, CivilHour* c) {
   return ParseYearAnd("-%m-%d%ET%H", s, c);
 }
-bool ParseCivilTime(string_view s, CivilDay* c) {
+ABSEIL_EXPORT bool ParseCivilTime(string_view s, CivilDay* c) {
   return ParseYearAnd("-%m-%d", s, c);
 }
-bool ParseCivilTime(string_view s, CivilMonth* c) {
+ABSEIL_EXPORT bool ParseCivilTime(string_view s, CivilMonth* c) {
   return ParseYearAnd("-%m", s, c);
 }
-bool ParseCivilTime(string_view s, CivilYear* c) {
+ABSEIL_EXPORT bool ParseCivilTime(string_view s, CivilYear* c) {
   return ParseYearAnd("", s, c);
 }
 
-bool ParseLenientCivilTime(string_view s, CivilSecond* c) {
+ABSEIL_EXPORT bool ParseLenientCivilTime(string_view s, CivilSecond* c) {
   return ParseLenient(s, c);
 }
-bool ParseLenientCivilTime(string_view s, CivilMinute* c) {
+ABSEIL_EXPORT bool ParseLenientCivilTime(string_view s, CivilMinute* c) {
   return ParseLenient(s, c);
 }
-bool ParseLenientCivilTime(string_view s, CivilHour* c) {
+ABSEIL_EXPORT bool ParseLenientCivilTime(string_view s, CivilHour* c) {
   return ParseLenient(s, c);
 }
-bool ParseLenientCivilTime(string_view s, CivilDay* c) {
+ABSEIL_EXPORT bool ParseLenientCivilTime(string_view s, CivilDay* c) {
   return ParseLenient(s, c);
 }
-bool ParseLenientCivilTime(string_view s, CivilMonth* c) {
+ABSEIL_EXPORT bool ParseLenientCivilTime(string_view s, CivilMonth* c) {
   return ParseLenient(s, c);
 }
-bool ParseLenientCivilTime(string_view s, CivilYear* c) {
+ABSEIL_EXPORT bool ParseLenientCivilTime(string_view s, CivilYear* c) {
   return ParseLenient(s, c);
 }
 
 namespace time_internal {
 
-std::ostream& operator<<(std::ostream& os, CivilYear y) {
+ABSEIL_EXPORT std::ostream& operator<<(std::ostream& os, CivilYear y) {
   return os << FormatCivilTime(y);
 }
-std::ostream& operator<<(std::ostream& os, CivilMonth m) {
+ABSEIL_EXPORT std::ostream& operator<<(std::ostream& os, CivilMonth m) {
   return os << FormatCivilTime(m);
 }
-std::ostream& operator<<(std::ostream& os, CivilDay d) {
+ABSEIL_EXPORT std::ostream& operator<<(std::ostream& os, CivilDay d) {
   return os << FormatCivilTime(d);
 }
-std::ostream& operator<<(std::ostream& os, CivilHour h) {
+ABSEIL_EXPORT std::ostream& operator<<(std::ostream& os, CivilHour h) {
   return os << FormatCivilTime(h);
 }
-std::ostream& operator<<(std::ostream& os, CivilMinute m) {
+ABSEIL_EXPORT std::ostream& operator<<(std::ostream& os, CivilMinute m) {
   return os << FormatCivilTime(m);
 }
-std::ostream& operator<<(std::ostream& os, CivilSecond s) {
+ABSEIL_EXPORT std::ostream& operator<<(std::ostream& os, CivilSecond s) {
   return os << FormatCivilTime(s);
 }
 
-bool AbslParseFlag(string_view s, CivilSecond* c, std::string*) {
+ABSEIL_EXPORT bool AbslParseFlag(string_view s, CivilSecond* c, std::string*) {
   return ParseLenientCivilTime(s, c);
 }
-bool AbslParseFlag(string_view s, CivilMinute* c, std::string*) {
+ABSEIL_EXPORT bool AbslParseFlag(string_view s, CivilMinute* c, std::string*) {
   return ParseLenientCivilTime(s, c);
 }
-bool AbslParseFlag(string_view s, CivilHour* c, std::string*) {
+ABSEIL_EXPORT bool AbslParseFlag(string_view s, CivilHour* c, std::string*) {
   return ParseLenientCivilTime(s, c);
 }
-bool AbslParseFlag(string_view s, CivilDay* c, std::string*) {
+ABSEIL_EXPORT bool AbslParseFlag(string_view s, CivilDay* c, std::string*) {
   return ParseLenientCivilTime(s, c);
 }
-bool AbslParseFlag(string_view s, CivilMonth* c, std::string*) {
+ABSEIL_EXPORT bool AbslParseFlag(string_view s, CivilMonth* c, std::string*) {
   return ParseLenientCivilTime(s, c);
 }
-bool AbslParseFlag(string_view s, CivilYear* c, std::string*) {
+ABSEIL_EXPORT bool AbslParseFlag(string_view s, CivilYear* c, std::string*) {
   return ParseLenientCivilTime(s, c);
 }
-std::string AbslUnparseFlag(CivilSecond c) { return FormatCivilTime(c); }
-std::string AbslUnparseFlag(CivilMinute c) { return FormatCivilTime(c); }
-std::string AbslUnparseFlag(CivilHour c) { return FormatCivilTime(c); }
-std::string AbslUnparseFlag(CivilDay c) { return FormatCivilTime(c); }
-std::string AbslUnparseFlag(CivilMonth c) { return FormatCivilTime(c); }
-std::string AbslUnparseFlag(CivilYear c) { return FormatCivilTime(c); }
+ABSEIL_EXPORT std::string AbslUnparseFlag(CivilSecond c) { return FormatCivilTime(c); }
+ABSEIL_EXPORT std::string AbslUnparseFlag(CivilMinute c) { return FormatCivilTime(c); }
+ABSEIL_EXPORT std::string AbslUnparseFlag(CivilHour c) { return FormatCivilTime(c); }
+ABSEIL_EXPORT std::string AbslUnparseFlag(CivilDay c) { return FormatCivilTime(c); }
+ABSEIL_EXPORT std::string AbslUnparseFlag(CivilMonth c) { return FormatCivilTime(c); }
+ABSEIL_EXPORT std::string AbslUnparseFlag(CivilYear c) { return FormatCivilTime(c); }
 
 }  // namespace time_internal
 

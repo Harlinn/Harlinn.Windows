@@ -62,7 +62,7 @@ ABSL_INTERNAL_ATOMIC_HOOK_ATTRIBUTES static base_internal::AtomicHook<void (*)(
     const void *lock, int64_t wait_cycles)>
     submit_profile_data;
 
-void RegisterSpinLockProfiler(void (*fn)(const void *contendedlock,
+ABSEIL_EXPORT void RegisterSpinLockProfiler(void (*fn)(const void *contendedlock,
                                          int64_t wait_cycles)) {
   submit_profile_data.Store(fn);
 }

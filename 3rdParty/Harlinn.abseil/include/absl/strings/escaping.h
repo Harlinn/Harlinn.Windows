@@ -121,7 +121,7 @@ ABSEIL_EXPORT std::string Utf8SafeCHexEscape(absl::string_view src);
 //
 // Encodes a `src` string into a base64-encoded 'dest' string with padding
 // characters. This function conforms with RFC 4648 section 4 (base64) and RFC
-// 2045. See also CalculateBase64EscapedLen().
+// 2045.
 ABSEIL_EXPORT void Base64Escape(absl::string_view src, std::string* dest);
 ABSEIL_EXPORT std::string Base64Escape(absl::string_view src);
 

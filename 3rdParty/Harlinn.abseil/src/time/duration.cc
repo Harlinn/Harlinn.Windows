@@ -55,8 +55,7 @@
 
 #include <algorithm>
 #include <cassert>
-#include <cctype>
-#include <cerrno>
+#include <chrono>  // NOLINT(build/c++11)
 #include <cmath>
 #include <cstdint>
 #include <cstdlib>
@@ -66,8 +65,9 @@
 #include <limits>
 #include <string>
 
+#include "absl/base/attributes.h"
 #include "absl/base/casts.h"
-#include "absl/base/macros.h"
+#include "absl/base/config.h"
 #include "absl/numeric/int128.h"
 #include "absl/strings/string_view.h"
 #include "absl/strings/strip.h"
@@ -94,13 +94,6 @@ inline bool IsFinite(double d) {
 inline bool IsValidDivisor(double d) {
   if (std::isnan(d)) return false;
   return d != 0.0;
-}
-
-// Can't use std::round() because it is only available in C++11.
-// Note that we ignore the possibility of floating-point over/underflow.
-template <typename Double>
-inline double Round(Double d) {
-  return d < 0 ? std::ceil(d - 0.5) : std::floor(d + 0.5);
 }
 
 // *sec may be positive or negative.  *ticks must be in the range
@@ -260,7 +253,7 @@ inline Duration ScaleDouble(Duration d, double r) {
   double lo_frac = std::modf(lo_doub, &lo_int);
 
   // Rolls lo into hi if necessary.
-  int64_t lo64 = Round(lo_frac * kTicksPerSecond);
+  int64_t lo64 = std::round(lo_frac * kTicksPerSecond);
 
   Duration ans;
   if (!SafeAddRepHi(hi_int, lo_int, &ans)) return ans;
@@ -355,7 +348,7 @@ namespace time_internal {
 // bounds of int64_t.  If it does saturate, the difference will spill over to
 // the remainder.  If it does not saturate, the remainder remain accurate,
 // but the returned quotient will over/underflow int64_t and should not be used.
-int64_t IDivDuration(bool satq, const Duration num, const Duration den,
+ABSEIL_EXPORT int64_t IDivDuration(bool satq, const Duration num, const Duration den,
                      Duration* rem) {
   int64_t q = 0;
   if (IDivFastPath(num, den, &q, rem)) {
@@ -407,16 +400,18 @@ int64_t IDivDuration(bool satq, const Duration num, const Duration den,
 Duration& Duration::operator+=(Duration rhs) {
   if (time_internal::IsInfiniteDuration(*this)) return *this;
   if (time_internal::IsInfiniteDuration(rhs)) return *this = rhs;
-  const int64_t orig_rep_hi = rep_hi_;
-  rep_hi_ =
-      DecodeTwosComp(EncodeTwosComp(rep_hi_) + EncodeTwosComp(rhs.rep_hi_));
+  const int64_t orig_rep_hi = rep_hi_.Get();
+  rep_hi_ = DecodeTwosComp(EncodeTwosComp(rep_hi_.Get()) +
+                           EncodeTwosComp(rhs.rep_hi_.Get()));
   if (rep_lo_ >= kTicksPerSecond - rhs.rep_lo_) {
-    rep_hi_ = DecodeTwosComp(EncodeTwosComp(rep_hi_) + 1);
+    rep_hi_ = DecodeTwosComp(EncodeTwosComp(rep_hi_.Get()) + 1);
     rep_lo_ -= kTicksPerSecond;
   }
   rep_lo_ += rhs.rep_lo_;
-  if (rhs.rep_hi_ < 0 ? rep_hi_ > orig_rep_hi : rep_hi_ < orig_rep_hi) {
-    return *this = rhs.rep_hi_ < 0 ? -InfiniteDuration() : InfiniteDuration();
+  if (rhs.rep_hi_.Get() < 0 ? rep_hi_.Get() > orig_rep_hi
+                            : rep_hi_.Get() < orig_rep_hi) {
+    return *this =
+               rhs.rep_hi_.Get() < 0 ? -InfiniteDuration() : InfiniteDuration();
   }
   return *this;
 }
@@ -424,18 +419,21 @@ Duration& Duration::operator+=(Duration rhs) {
 Duration& Duration::operator-=(Duration rhs) {
   if (time_internal::IsInfiniteDuration(*this)) return *this;
   if (time_internal::IsInfiniteDuration(rhs)) {
-    return *this = rhs.rep_hi_ >= 0 ? -InfiniteDuration() : InfiniteDuration();
+    return *this = rhs.rep_hi_.Get() >= 0 ? -InfiniteDuration()
+                                          : InfiniteDuration();
   }
-  const int64_t orig_rep_hi = rep_hi_;
-  rep_hi_ =
-      DecodeTwosComp(EncodeTwosComp(rep_hi_) - EncodeTwosComp(rhs.rep_hi_));
+  const int64_t orig_rep_hi = rep_hi_.Get();
+  rep_hi_ = DecodeTwosComp(EncodeTwosComp(rep_hi_.Get()) -
+                           EncodeTwosComp(rhs.rep_hi_.Get()));
   if (rep_lo_ < rhs.rep_lo_) {
-    rep_hi_ = DecodeTwosComp(EncodeTwosComp(rep_hi_) - 1);
+    rep_hi_ = DecodeTwosComp(EncodeTwosComp(rep_hi_.Get()) - 1);
     rep_lo_ += kTicksPerSecond;
   }
   rep_lo_ -= rhs.rep_lo_;
-  if (rhs.rep_hi_ < 0 ? rep_hi_ < orig_rep_hi : rep_hi_ > orig_rep_hi) {
-    return *this = rhs.rep_hi_ >= 0 ? -InfiniteDuration() : InfiniteDuration();
+  if (rhs.rep_hi_.Get() < 0 ? rep_hi_.Get() < orig_rep_hi
+                            : rep_hi_.Get() > orig_rep_hi) {
+    return *this = rhs.rep_hi_.Get() >= 0 ? -InfiniteDuration()
+                                          : InfiniteDuration();
   }
   return *this;
 }
@@ -446,7 +444,7 @@ Duration& Duration::operator-=(Duration rhs) {
 
 Duration& Duration::operator*=(int64_t r) {
   if (time_internal::IsInfiniteDuration(*this)) {
-    const bool is_neg = (r < 0) != (rep_hi_ < 0);
+    const bool is_neg = (r < 0) != (rep_hi_.Get() < 0);
     return *this = is_neg ? -InfiniteDuration() : InfiniteDuration();
   }
   return *this = ScaleFixed<SafeMultiply>(*this, r);
@@ -454,7 +452,7 @@ Duration& Duration::operator*=(int64_t r) {
 
 Duration& Duration::operator*=(double r) {
   if (time_internal::IsInfiniteDuration(*this) || !IsFinite(r)) {
-    const bool is_neg = (std::signbit(r) != 0) != (rep_hi_ < 0);
+    const bool is_neg = std::signbit(r) != (rep_hi_.Get() < 0);
     return *this = is_neg ? -InfiniteDuration() : InfiniteDuration();
   }
   return *this = ScaleDouble<std::multiplies>(*this, r);
@@ -462,7 +460,7 @@ Duration& Duration::operator*=(double r) {
 
 Duration& Duration::operator/=(int64_t r) {
   if (time_internal::IsInfiniteDuration(*this) || r == 0) {
-    const bool is_neg = (r < 0) != (rep_hi_ < 0);
+    const bool is_neg = (r < 0) != (rep_hi_.Get() < 0);
     return *this = is_neg ? -InfiniteDuration() : InfiniteDuration();
   }
   return *this = ScaleFixed<std::divides>(*this, r);
@@ -470,7 +468,7 @@ Duration& Duration::operator/=(int64_t r) {
 
 Duration& Duration::operator/=(double r) {
   if (time_internal::IsInfiniteDuration(*this) || !IsValidDivisor(r)) {
-    const bool is_neg = (std::signbit(r) != 0) != (rep_hi_ < 0);
+    const bool is_neg = std::signbit(r) != (rep_hi_.Get() < 0);
     return *this = is_neg ? -InfiniteDuration() : InfiniteDuration();
   }
   return *this = ScaleDouble<std::divides>(*this, r);
@@ -481,7 +479,7 @@ Duration& Duration::operator%=(Duration rhs) {
   return *this;
 }
 
-double FDivDuration(Duration num, Duration den) {
+ABSEIL_EXPORT double FDivDuration(Duration num, Duration den) {
   // Arithmetic with infinity is sticky.
   if (time_internal::IsInfiniteDuration(num) || den == ZeroDuration()) {
     return (num < ZeroDuration()) == (den < ZeroDuration())
@@ -503,16 +501,16 @@ double FDivDuration(Duration num, Duration den) {
 // Trunc/Floor/Ceil.
 //
 
-Duration Trunc(Duration d, Duration unit) {
+ABSEIL_EXPORT Duration Trunc(Duration d, Duration unit) {
   return d - (d % unit);
 }
 
-Duration Floor(const Duration d, const Duration unit) {
+ABSEIL_EXPORT Duration Floor(const Duration d, const Duration unit) {
   const absl::Duration td = Trunc(d, unit);
   return td <= d ? td : td - AbsDuration(unit);
 }
 
-Duration Ceil(const Duration d, const Duration unit) {
+ABSEIL_EXPORT Duration Ceil(const Duration d, const Duration unit) {
   const absl::Duration td = Trunc(d, unit);
   return td >= d ? td : td + AbsDuration(unit);
 }
@@ -521,7 +519,7 @@ Duration Ceil(const Duration d, const Duration unit) {
 // Factory functions.
 //
 
-Duration DurationFromTimespec(timespec ts) {
+ABSEIL_EXPORT Duration DurationFromTimespec(timespec ts) {
   if (static_cast<uint64_t>(ts.tv_nsec) < 1000 * 1000 * 1000) {
     int64_t ticks = ts.tv_nsec * kTicksPerNanosecond;
     return time_internal::MakeDuration(ts.tv_sec, ticks);
@@ -529,7 +527,7 @@ Duration DurationFromTimespec(timespec ts) {
   return Seconds(ts.tv_sec) + Nanoseconds(ts.tv_nsec);
 }
 
-Duration DurationFromTimeval(timeval tv) {
+ABSEIL_EXPORT Duration DurationFromTimeval(timeval tv) {
   if (static_cast<uint64_t>(tv.tv_usec) < 1000 * 1000) {
     int64_t ticks = tv.tv_usec * 1000 * kTicksPerNanosecond;
     return time_internal::MakeDuration(tv.tv_sec, ticks);
@@ -541,7 +539,7 @@ Duration DurationFromTimeval(timeval tv) {
 // Conversion to other duration types.
 //
 
-int64_t ToInt64Nanoseconds(Duration d) {
+ABSEIL_EXPORT int64_t ToInt64Nanoseconds(Duration d) {
   if (time_internal::GetRepHi(d) >= 0 &&
       time_internal::GetRepHi(d) >> 33 == 0) {
     return (time_internal::GetRepHi(d) * 1000 * 1000 * 1000) +
@@ -549,7 +547,7 @@ int64_t ToInt64Nanoseconds(Duration d) {
   }
   return d / Nanoseconds(1);
 }
-int64_t ToInt64Microseconds(Duration d) {
+ABSEIL_EXPORT int64_t ToInt64Microseconds(Duration d) {
   if (time_internal::GetRepHi(d) >= 0 &&
       time_internal::GetRepHi(d) >> 43 == 0) {
     return (time_internal::GetRepHi(d) * 1000 * 1000) +
@@ -557,7 +555,7 @@ int64_t ToInt64Microseconds(Duration d) {
   }
   return d / Microseconds(1);
 }
-int64_t ToInt64Milliseconds(Duration d) {
+ABSEIL_EXPORT int64_t ToInt64Milliseconds(Duration d) {
   if (time_internal::GetRepHi(d) >= 0 &&
       time_internal::GetRepHi(d) >> 53 == 0) {
     return (time_internal::GetRepHi(d) * 1000) +
@@ -565,41 +563,41 @@ int64_t ToInt64Milliseconds(Duration d) {
   }
   return d / Milliseconds(1);
 }
-int64_t ToInt64Seconds(Duration d) {
+ABSEIL_EXPORT int64_t ToInt64Seconds(Duration d) {
   int64_t hi = time_internal::GetRepHi(d);
   if (time_internal::IsInfiniteDuration(d)) return hi;
   if (hi < 0 && time_internal::GetRepLo(d) != 0) ++hi;
   return hi;
 }
-int64_t ToInt64Minutes(Duration d) {
+ABSEIL_EXPORT int64_t ToInt64Minutes(Duration d) {
   int64_t hi = time_internal::GetRepHi(d);
   if (time_internal::IsInfiniteDuration(d)) return hi;
   if (hi < 0 && time_internal::GetRepLo(d) != 0) ++hi;
   return hi / 60;
 }
-int64_t ToInt64Hours(Duration d) {
+ABSEIL_EXPORT int64_t ToInt64Hours(Duration d) {
   int64_t hi = time_internal::GetRepHi(d);
   if (time_internal::IsInfiniteDuration(d)) return hi;
   if (hi < 0 && time_internal::GetRepLo(d) != 0) ++hi;
   return hi / (60 * 60);
 }
 
-double ToDoubleNanoseconds(Duration d) {
+ABSEIL_EXPORT double ToDoubleNanoseconds(Duration d) {
   return FDivDuration(d, Nanoseconds(1));
 }
-double ToDoubleMicroseconds(Duration d) {
+ABSEIL_EXPORT double ToDoubleMicroseconds(Duration d) {
   return FDivDuration(d, Microseconds(1));
 }
-double ToDoubleMilliseconds(Duration d) {
+ABSEIL_EXPORT double ToDoubleMilliseconds(Duration d) {
   return FDivDuration(d, Milliseconds(1));
 }
-double ToDoubleSeconds(Duration d) {
+ABSEIL_EXPORT double ToDoubleSeconds(Duration d) {
   return FDivDuration(d, Seconds(1));
 }
-double ToDoubleMinutes(Duration d) {
+ABSEIL_EXPORT double ToDoubleMinutes(Duration d) {
   return FDivDuration(d, Minutes(1));
 }
-double ToDoubleHours(Duration d) {
+ABSEIL_EXPORT double ToDoubleHours(Duration d) {
   return FDivDuration(d, Hours(1));
 }
 
@@ -660,22 +658,22 @@ timeval ToTimeval(Duration d) {
   return tv;
 }
 
-std::chrono::nanoseconds ToChronoNanoseconds(Duration d) {
+ABSEIL_EXPORT std::chrono::nanoseconds ToChronoNanoseconds(Duration d) {
   return time_internal::ToChronoDuration<std::chrono::nanoseconds>(d);
 }
-std::chrono::microseconds ToChronoMicroseconds(Duration d) {
+ABSEIL_EXPORT std::chrono::microseconds ToChronoMicroseconds(Duration d) {
   return time_internal::ToChronoDuration<std::chrono::microseconds>(d);
 }
-std::chrono::milliseconds ToChronoMilliseconds(Duration d) {
+ABSEIL_EXPORT std::chrono::milliseconds ToChronoMilliseconds(Duration d) {
   return time_internal::ToChronoDuration<std::chrono::milliseconds>(d);
 }
-std::chrono::seconds ToChronoSeconds(Duration d) {
+ABSEIL_EXPORT std::chrono::seconds ToChronoSeconds(Duration d) {
   return time_internal::ToChronoDuration<std::chrono::seconds>(d);
 }
-std::chrono::minutes ToChronoMinutes(Duration d) {
+ABSEIL_EXPORT std::chrono::minutes ToChronoMinutes(Duration d) {
   return time_internal::ToChronoDuration<std::chrono::minutes>(d);
 }
-std::chrono::hours ToChronoHours(Duration d) {
+ABSEIL_EXPORT std::chrono::hours ToChronoHours(Duration d) {
   return time_internal::ToChronoDuration<std::chrono::hours>(d);
 }
 
@@ -741,7 +739,7 @@ void AppendNumberUnit(std::string* out, double n, DisplayUnit unit) {
   char buf[kBufferSize];  // also large enough to hold integer part
   char* ep = buf + sizeof(buf);
   double d = 0;
-  int64_t frac_part = Round(std::modf(n, &d) * unit.pow10);
+  int64_t frac_part = std::round(std::modf(n, &d) * unit.pow10);
   int64_t int_part = d;
   if (int_part != 0 || frac_part != 0) {
     char* bp = Format64(ep, 0, int_part);  // always < 1000
@@ -765,7 +763,7 @@ void AppendNumberUnit(std::string* out, double n, DisplayUnit unit) {
 //   (milli-, micro-, or nanoseconds) to ensure that the leading digit
 //   is non-zero.
 // Unlike Go, we format the zero duration as 0, with no unit.
-std::string FormatDuration(Duration d) {
+ABSEIL_EXPORT std::string FormatDuration(Duration d) {
   constexpr Duration kMinDuration = Seconds(kint64min);
   std::string s;
   if (d == kMinDuration) {
@@ -899,7 +897,7 @@ bool ConsumeDurationUnit(const char** start, const char* end, Duration* unit) {
 //   a possibly signed sequence of decimal numbers, each with optional
 //   fraction and a unit suffix, such as "300ms", "-1.5h" or "2h45m".
 //   Valid time units are "ns", "us" "ms", "s", "m", "h".
-bool ParseDuration(absl::string_view dur_sv, Duration* d) {
+ABSEIL_EXPORT bool ParseDuration(absl::string_view dur_sv, Duration* d) {
   int sign = 1;
   if (absl::ConsumePrefix(&dur_sv, "-")) {
     sign = -1;
@@ -940,16 +938,16 @@ bool ParseDuration(absl::string_view dur_sv, Duration* d) {
   return true;
 }
 
-bool AbslParseFlag(absl::string_view text, Duration* dst, std::string*) {
+ABSEIL_EXPORT bool AbslParseFlag(absl::string_view text, Duration* dst, std::string*) {
   return ParseDuration(text, dst);
 }
 
-std::string AbslUnparseFlag(Duration d) { return FormatDuration(d); }
-bool ParseFlag(const std::string& text, Duration* dst, std::string* ) {
+ABSEIL_EXPORT std::string AbslUnparseFlag(Duration d) { return FormatDuration(d); }
+ABSEIL_EXPORT bool ParseFlag(const std::string& text, Duration* dst, std::string* ) {
   return ParseDuration(text, dst);
 }
 
-std::string UnparseFlag(Duration d) { return FormatDuration(d); }
+ABSEIL_EXPORT std::string UnparseFlag(Duration d) { return FormatDuration(d); }
 
 ABSL_NAMESPACE_END
 }  // namespace absl

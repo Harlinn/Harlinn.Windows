@@ -17,16 +17,17 @@
 #include <ostream>
 
 #include "absl/base/attributes.h"
+#include "absl/base/config.h"
 
 namespace absl {
 ABSL_NAMESPACE_BEGIN
 
-std::ostream& operator<<(std::ostream& os, absl::LogSeverity s) {
+ABSEIL_EXPORT std::ostream& operator<<(std::ostream& os, absl::LogSeverity s) {
   if (s == absl::NormalizeLogSeverity(s)) return os << absl::LogSeverityName(s);
   return os << "absl::LogSeverity(" << static_cast<int>(s) << ")";
 }
 
-std::ostream& operator<<(std::ostream& os, absl::LogSeverityAtLeast s) {
+ABSEIL_EXPORT std::ostream& operator<<(std::ostream& os, absl::LogSeverityAtLeast s) {
   switch (s) {
     case absl::LogSeverityAtLeast::kInfo:
     case absl::LogSeverityAtLeast::kWarning:
@@ -39,7 +40,7 @@ std::ostream& operator<<(std::ostream& os, absl::LogSeverityAtLeast s) {
   return os;
 }
 
-std::ostream& operator<<(std::ostream& os, absl::LogSeverityAtMost s) {
+ABSEIL_EXPORT std::ostream& operator<<(std::ostream& os, absl::LogSeverityAtMost s) {
   switch (s) {
     case absl::LogSeverityAtMost::kInfo:
     case absl::LogSeverityAtMost::kWarning:

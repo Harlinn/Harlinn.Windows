@@ -178,5 +178,8 @@
     <None Include="include\gtest\internal\custom\README.md">
       <Filter>include\gtest\internal\custom</Filter>
     </None>
+    <None Include="gtest.def">
+      <Filter>Source Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

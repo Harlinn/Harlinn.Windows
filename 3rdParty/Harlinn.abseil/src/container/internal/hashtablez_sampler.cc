@@ -23,11 +23,13 @@
 
 #include "absl/base/attributes.h"
 #include "absl/base/config.h"
+#include "absl/base/internal/raw_logging.h"
 #include "absl/debugging/stacktrace.h"
 #include "absl/memory/memory.h"
 #include "absl/profiling/internal/exponential_biased.h"
 #include "absl/profiling/internal/sample_recorder.h"
 #include "absl/synchronization/mutex.h"
+#include "absl/time/clock.h"
 #include "absl/utility/utility.h"
 
 namespace absl {
@@ -61,7 +63,7 @@ void TriggerHashtablezConfigListener() {
 ABSL_PER_THREAD_TLS_KEYWORD SamplingState global_next_sample = {0, 0};
 #endif  // defined(ABSL_INTERNAL_HASHTABLEZ_SAMPLE)
 
-HashtablezSampler& GlobalHashtablezSampler() {
+ABSEIL_EXPORT HashtablezSampler& GlobalHashtablezSampler() {
   static auto* sampler = new HashtablezSampler();
   return *sampler;
 }
@@ -112,7 +114,7 @@ static bool ShouldForceSampling() {
   return state == kForce;
 }
 
-HashtablezInfo* SampleSlow(SamplingState& next_sample,
+ABSEIL_EXPORT HashtablezInfo* SampleSlow(SamplingState& next_sample,
                            size_t inline_element_size) {
   if (ABSL_PREDICT_FALSE(ShouldForceSampling())) {
     next_sample.next_sample = 1;
@@ -155,11 +157,11 @@ HashtablezInfo* SampleSlow(SamplingState& next_sample,
 #endif
 }
 
-void UnsampleSlow(HashtablezInfo* info) {
+ABSEIL_EXPORT void UnsampleSlow(HashtablezInfo* info) {
   GlobalHashtablezSampler().Unregister(info);
 }
 
-void RecordRehashSlow(HashtablezInfo* info, size_t total_probe_length) {
+ABSEIL_EXPORT void RecordRehashSlow(HashtablezInfo* info, size_t total_probe_length) {
 #ifdef ABSL_INTERNAL_HAVE_SSE2
   total_probe_length /= 16;
 #else
@@ -174,18 +176,18 @@ void RecordRehashSlow(HashtablezInfo* info, size_t total_probe_length) {
       std::memory_order_relaxed);
 }
 
-void RecordReservationSlow(HashtablezInfo* info, size_t target_capacity) {
+ABSEIL_EXPORT void RecordReservationSlow(HashtablezInfo* info, size_t target_capacity) {
   info->max_reserve.store(
       (std::max)(info->max_reserve.load(std::memory_order_relaxed),
                  target_capacity),
       std::memory_order_relaxed);
 }
 
-void RecordClearedReservationSlow(HashtablezInfo* info) {
+ABSEIL_EXPORT void RecordClearedReservationSlow(HashtablezInfo* info) {
   info->max_reserve.store(0, std::memory_order_relaxed);
 }
 
-void RecordStorageChangedSlow(HashtablezInfo* info, size_t size,
+ABSEIL_EXPORT void RecordStorageChangedSlow(HashtablezInfo* info, size_t size,
                               size_t capacity) {
   info->size.store(size, std::memory_order_relaxed);
   info->capacity.store(capacity, std::memory_order_relaxed);
@@ -196,7 +198,7 @@ void RecordStorageChangedSlow(HashtablezInfo* info, size_t size,
   }
 }
 
-void RecordInsertSlow(HashtablezInfo* info, size_t hash,
+ABSEIL_EXPORT void RecordInsertSlow(HashtablezInfo* info, size_t hash,
                       size_t distance_from_desired) {
   // SwissTables probe in groups of 16, so scale this to count items probes and
   // not offset from desired.
@@ -218,7 +220,7 @@ void RecordInsertSlow(HashtablezInfo* info, size_t hash,
   info->size.fetch_add(1, std::memory_order_relaxed);
 }
 
-void RecordEraseSlow(HashtablezInfo* info) {
+ABSEIL_EXPORT void RecordEraseSlow(HashtablezInfo* info) {
   info->size.fetch_sub(1, std::memory_order_relaxed);
   // There is only one concurrent writer, so `load` then `store` is sufficient
   // instead of using `fetch_add`.
@@ -226,33 +228,33 @@ void RecordEraseSlow(HashtablezInfo* info) {
                          std::memory_order_relaxed);
 }
 
-void SetHashtablezConfigListener(HashtablezConfigListener l) {
+ABSEIL_EXPORT void SetHashtablezConfigListener(HashtablezConfigListener l) {
   g_hashtablez_config_listener.store(l, std::memory_order_release);
 }
 
-bool IsHashtablezEnabled() {
+ABSEIL_EXPORT bool IsHashtablezEnabled() {
   return g_hashtablez_enabled.load(std::memory_order_acquire);
 }
 
-void SetHashtablezEnabled(bool enabled) {
+ABSEIL_EXPORT void SetHashtablezEnabled(bool enabled) {
   SetHashtablezEnabledInternal(enabled);
   TriggerHashtablezConfigListener();
 }
 
-void SetHashtablezEnabledInternal(bool enabled) {
+ABSEIL_EXPORT void SetHashtablezEnabledInternal(bool enabled) {
   g_hashtablez_enabled.store(enabled, std::memory_order_release);
 }
 
-int32_t GetHashtablezSampleParameter() {
+ABSEIL_EXPORT int32_t GetHashtablezSampleParameter() {
   return g_hashtablez_sample_parameter.load(std::memory_order_acquire);
 }
 
-void SetHashtablezSampleParameter(int32_t rate) {
+ABSEIL_EXPORT void SetHashtablezSampleParameter(int32_t rate) {
   SetHashtablezSampleParameterInternal(rate);
   TriggerHashtablezConfigListener();
 }
 
-void SetHashtablezSampleParameterInternal(int32_t rate) {
+ABSEIL_EXPORT void SetHashtablezSampleParameterInternal(int32_t rate) {
   if (rate > 0) {
     g_hashtablez_sample_parameter.store(rate, std::memory_order_release);
   } else {
@@ -261,16 +263,16 @@ void SetHashtablezSampleParameterInternal(int32_t rate) {
   }
 }
 
-size_t GetHashtablezMaxSamples() {
+ABSEIL_EXPORT size_t GetHashtablezMaxSamples() {
   return GlobalHashtablezSampler().GetMaxSamples();
 }
 
-void SetHashtablezMaxSamples(size_t max) {
+ABSEIL_EXPORT void SetHashtablezMaxSamples(size_t max) {
   SetHashtablezMaxSamplesInternal(max);
   TriggerHashtablezConfigListener();
 }
 
-void SetHashtablezMaxSamplesInternal(size_t max) {
+ABSEIL_EXPORT void SetHashtablezMaxSamplesInternal(size_t max) {
   if (max > 0) {
     GlobalHashtablezSampler().SetMaxSamples(max);
   } else {

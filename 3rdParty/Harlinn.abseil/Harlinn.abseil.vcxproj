@@ -105,6 +105,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
+      <ModuleDefinitionFile>abseil.def</ModuleDefinitionFile>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -129,6 +130,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
+      <ModuleDefinitionFile>abseil.def</ModuleDefinitionFile>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -150,6 +152,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
       <OutputFile>$(OutDir)$(TargetName)-x64d$(TargetExt)</OutputFile>
+      <ModuleDefinitionFile>abseil.def</ModuleDefinitionFile>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -175,6 +178,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
       <OutputFile>$(OutDir)$(TargetName)-x64r$(TargetExt)</OutputFile>
+      <ModuleDefinitionFile>abseil.def</ModuleDefinitionFile>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -199,7 +203,7 @@
     <ClCompile Include="src\crc\internal\crc.cc" />
     <ClCompile Include="src\crc\internal\crc_cord_state.cc" />
     <ClCompile Include="src\crc\internal\crc_memcpy_fallback.cc" />
-    <ClCompile Include="src\crc\internal\crc_memcpy_x86_64.cc" />
+    <ClCompile Include="src\crc\internal\crc_memcpy_x86_arm_combined.cc" />
     <ClCompile Include="src\crc\internal\crc_non_temporal_memcpy.cc" />
     <ClCompile Include="src\crc\internal\crc_x86_arm_combined.cc" />
     <ClCompile Include="src\debugging\failure_signal_handler.cc" />
@@ -213,7 +217,6 @@
     <ClCompile Include="src\debugging\stacktrace.cc" />
     <ClCompile Include="src\debugging\symbolize.cc" />
     <ClCompile Include="src\flags\commandlineflag.cc" />
-    <ClCompile Include="src\flags\flag.cc" />
     <ClCompile Include="src\flags\internal\fi_commandlineflag.cc" />
     <ClCompile Include="src\flags\internal\fi_flag.cc" />
     <ClCompile Include="src\flags\internal\fi_private_handle_accessor.cc" />
@@ -233,12 +236,14 @@
     <ClCompile Include="src\log\initialize.cc" />
     <ClCompile Include="src\log\internal\check_op.cc" />
     <ClCompile Include="src\log\internal\conditions.cc" />
+    <ClCompile Include="src\log\internal\fnmatch.cc" />
     <ClCompile Include="src\log\internal\li_globals.cc" />
     <ClCompile Include="src\log\internal\log_format.cc" />
     <ClCompile Include="src\log\internal\log_message.cc" />
     <ClCompile Include="src\log\internal\log_sink_set.cc" />
     <ClCompile Include="src\log\internal\nullguard.cc" />
     <ClCompile Include="src\log\internal\proto.cc" />
+    <ClCompile Include="src\log\internal\vlog_config.cc" />
     <ClCompile Include="src\log\log_entry.cc" />
     <ClCompile Include="src\log\log_sink.cc" />
     <ClCompile Include="src\numeric\int128.cc" />
@@ -258,6 +263,7 @@
     <ClCompile Include="src\random\internal\seed_material.cc" />
     <ClCompile Include="src\random\seed_gen_exception.cc" />
     <ClCompile Include="src\random\seed_sequences.cc" />
+    <ClCompile Include="src\status\internal\status_internal.cc" />
     <ClCompile Include="src\status\status.cc" />
     <ClCompile Include="src\status\statusor.cc" />
     <ClCompile Include="src\status\status_payload_printer.cc" />
@@ -279,7 +285,6 @@
     <ClCompile Include="src\strings\internal\cord_rep_btree_reader.cc" />
     <ClCompile Include="src\strings\internal\cord_rep_consume.cc" />
     <ClCompile Include="src\strings\internal\cord_rep_crc.cc" />
-    <ClCompile Include="src\strings\internal\cord_rep_ring.cc" />
     <ClCompile Include="src\strings\internal\damerau_levenshtein_distance.cc" />
     <ClCompile Include="src\strings\internal\memutil.cc" />
     <ClCompile Include="src\strings\internal\ostringstream.cc" />
@@ -303,9 +308,15 @@
     <ClCompile Include="src\synchronization\barrier.cc" />
     <ClCompile Include="src\synchronization\blocking_counter.cc" />
     <ClCompile Include="src\synchronization\internal\create_thread_identity.cc" />
+    <ClCompile Include="src\synchronization\internal\futex_waiter.cc" />
     <ClCompile Include="src\synchronization\internal\graphcycles.cc" />
+    <ClCompile Include="src\synchronization\internal\kernel_timeout.cc" />
     <ClCompile Include="src\synchronization\internal\per_thread_sem.cc" />
-    <ClCompile Include="src\synchronization\internal\waiter.cc" />
+    <ClCompile Include="src\synchronization\internal\pthread_waiter.cc" />
+    <ClCompile Include="src\synchronization\internal\sem_waiter.cc" />
+    <ClCompile Include="src\synchronization\internal\stdcpp_waiter.cc" />
+    <ClCompile Include="src\synchronization\internal\waiter_base.cc" />
+    <ClCompile Include="src\synchronization\internal\win32_waiter.cc" />
     <ClCompile Include="src\synchronization\mutex.cc" />
     <ClCompile Include="src\synchronization\notification.cc" />
     <ClCompile Include="src\time\civil_time.cc" />
@@ -351,8 +362,8 @@
     <ClInclude Include="include\absl\base\internal\invoke.h" />
     <ClInclude Include="include\absl\base\internal\low_level_alloc.h" />
     <ClInclude Include="include\absl\base\internal\low_level_scheduling.h" />
+    <ClInclude Include="include\absl\base\internal\nullability_impl.h" />
     <ClInclude Include="include\absl\base\internal\per_thread_tls.h" />
-    <ClInclude Include="include\absl\base\internal\prefetch.h" />
     <ClInclude Include="include\absl\base\internal\pretty_function.h" />
     <ClInclude Include="include\absl\base\internal\raw_logging.h" />
     <ClInclude Include="include\absl\base\internal\scheduling_mode.h" />
@@ -361,7 +372,6 @@
     <ClInclude Include="include\absl\base\internal\spinlock_wait.h" />
     <ClInclude Include="include\absl\base\internal\strerror.h" />
     <ClInclude Include="include\absl\base\internal\sysinfo.h" />
-    <ClInclude Include="include\absl\base\internal\thread_annotations.h" />
     <ClInclude Include="include\absl\base\internal\thread_identity.h" />
     <ClInclude Include="include\absl\base\internal\throw_delegate.h" />
     <ClInclude Include="include\absl\base\internal\tsan_mutex_interface.h" />
@@ -370,10 +380,13 @@
     <ClInclude Include="include\absl\base\internal\unscaledcycleclock_config.h" />
     <ClInclude Include="include\absl\base\log_severity.h" />
     <ClInclude Include="include\absl\base\macros.h" />
+    <ClInclude Include="include\absl\base\no_destructor.h" />
+    <ClInclude Include="include\absl\base\nullability.h" />
     <ClInclude Include="include\absl\base\optimization.h" />
     <ClInclude Include="include\absl\base\options.h" />
     <ClInclude Include="include\absl\base\policy_checks.h" />
     <ClInclude Include="include\absl\base\port.h" />
+    <ClInclude Include="include\absl\base\prefetch.h" />
     <ClInclude Include="include\absl\base\thread_annotations.h" />
     <ClInclude Include="include\absl\cleanup\cleanup.h" />
     <ClInclude Include="include\absl\cleanup\internal\cleanup.h" />
@@ -389,7 +402,6 @@
     <ClInclude Include="include\absl\container\internal\common_policy_traits.h" />
     <ClInclude Include="include\absl\container\internal\compressed_tuple.h" />
     <ClInclude Include="include\absl\container\internal\container_memory.h" />
-    <ClInclude Include="include\absl\container\internal\counting_allocator.h" />
     <ClInclude Include="include\absl\container\internal\hashtablez_sampler.h" />
     <ClInclude Include="include\absl\container\internal\hashtable_debug.h" />
     <ClInclude Include="include\absl\container\internal\hashtable_debug_hooks.h" />
@@ -400,7 +412,6 @@
     <ClInclude Include="include\absl\container\internal\node_slot_policy.h" />
     <ClInclude Include="include\absl\container\internal\raw_hash_map.h" />
     <ClInclude Include="include\absl\container\internal\raw_hash_set.h" />
-    <ClInclude Include="include\absl\container\internal\tracked.h" />
     <ClInclude Include="include\absl\container\node_hash_map.h" />
     <ClInclude Include="include\absl\container\node_hash_set.h" />
     <ClInclude Include="include\absl\crc\crc32c.h" />
@@ -450,6 +461,7 @@
     <ClInclude Include="include\absl\functional\internal\any_invocable.h" />
     <ClInclude Include="include\absl\functional\internal\front_binder.h" />
     <ClInclude Include="include\absl\functional\internal\function_ref.h" />
+    <ClInclude Include="include\absl\functional\overload.h" />
     <ClInclude Include="include\absl\hash\hash.h" />
     <ClInclude Include="include\absl\hash\internal\city.h" />
     <ClInclude Include="include\absl\hash\internal\hash.h" />
@@ -457,6 +469,7 @@
     <ClInclude Include="include\absl\hash\internal\spy_hash_state.h" />
     <ClInclude Include="include\absl\log\absl_check.h" />
     <ClInclude Include="include\absl\log\absl_log.h" />
+    <ClInclude Include="include\absl\log\absl_vlog_is_on.h" />
     <ClInclude Include="include\absl\log\check.h" />
     <ClInclude Include="include\absl\log\die_if_null.h" />
     <ClInclude Include="include\absl\log\flags.h" />
@@ -468,6 +481,7 @@
     <ClInclude Include="include\absl\log\internal\conditions.h" />
     <ClInclude Include="include\absl\log\internal\config.h" />
     <ClInclude Include="include\absl\log\internal\flags.h" />
+    <ClInclude Include="include\absl\log\internal\fnmatch.h" />
     <ClInclude Include="include\absl\log\internal\globals.h" />
     <ClInclude Include="include\absl\log\internal\log_format.h" />
     <ClInclude Include="include\absl\log\internal\log_impl.h" />
@@ -478,6 +492,7 @@
     <ClInclude Include="include\absl\log\internal\proto.h" />
     <ClInclude Include="include\absl\log\internal\strip.h" />
     <ClInclude Include="include\absl\log\internal\structured.h" />
+    <ClInclude Include="include\absl\log\internal\vlog_config.h" />
     <ClInclude Include="include\absl\log\internal\voidify.h" />
     <ClInclude Include="include\absl\log\log.h" />
     <ClInclude Include="include\absl\log\log_entry.h" />
@@ -485,6 +500,7 @@
     <ClInclude Include="include\absl\log\log_sink_registry.h" />
     <ClInclude Include="include\absl\log\log_streamer.h" />
     <ClInclude Include="include\absl\log\structured.h" />
+    <ClInclude Include="include\absl\log\vlog_is_on.h" />
     <ClInclude Include="include\absl\memory\memory.h" />
     <ClInclude Include="include\absl\meta\type_traits.h" />
     <ClInclude Include="include\absl\numeric\bits.h" />
@@ -543,13 +559,15 @@
     <ClInclude Include="include\absl\status\status_payload_printer.h" />
     <ClInclude Include="include\absl\strings\ascii.h" />
     <ClInclude Include="include\absl\strings\charconv.h" />
+    <ClInclude Include="include\absl\strings\charset.h" />
     <ClInclude Include="include\absl\strings\cord.h" />
     <ClInclude Include="include\absl\strings\cord_analysis.h" />
     <ClInclude Include="include\absl\strings\cord_buffer.h" />
     <ClInclude Include="include\absl\strings\escaping.h" />
+    <ClInclude Include="include\absl\strings\has_absl_stringify.h" />
+    <ClInclude Include="include\absl\strings\has_ostream_operator.h" />
     <ClInclude Include="include\absl\strings\internal\charconv_bigint.h" />
     <ClInclude Include="include\absl\strings\internal\charconv_parse.h" />
-    <ClInclude Include="include\absl\strings\internal\char_map.h" />
     <ClInclude Include="include\absl\strings\internal\cordz_functions.h" />
     <ClInclude Include="include\absl\strings\internal\cordz_handle.h" />
     <ClInclude Include="include\absl\strings\internal\cordz_info.h" />
@@ -565,8 +583,6 @@
     <ClInclude Include="include\absl\strings\internal\cord_rep_consume.h" />
     <ClInclude Include="include\absl\strings\internal\cord_rep_crc.h" />
     <ClInclude Include="include\absl\strings\internal\cord_rep_flat.h" />
-    <ClInclude Include="include\absl\strings\internal\cord_rep_ring.h" />
-    <ClInclude Include="include\absl\strings\internal\cord_rep_ring_reader.h" />
     <ClInclude Include="include\absl\strings\internal\damerau_levenshtein_distance.h" />
     <ClInclude Include="include\absl\strings\internal\escaping.h" />
     <ClInclude Include="include\absl\strings\internal\has_absl_stringify.h" />
@@ -602,11 +618,17 @@
     <ClInclude Include="include\absl\synchronization\blocking_counter.h" />
     <ClInclude Include="include\absl\synchronization\internal\create_thread_identity.h" />
     <ClInclude Include="include\absl\synchronization\internal\futex.h" />
+    <ClInclude Include="include\absl\synchronization\internal\futex_waiter.h" />
     <ClInclude Include="include\absl\synchronization\internal\graphcycles.h" />
     <ClInclude Include="include\absl\synchronization\internal\kernel_timeout.h" />
     <ClInclude Include="include\absl\synchronization\internal\per_thread_sem.h" />
+    <ClInclude Include="include\absl\synchronization\internal\pthread_waiter.h" />
+    <ClInclude Include="include\absl\synchronization\internal\sem_waiter.h" />
+    <ClInclude Include="include\absl\synchronization\internal\stdcpp_waiter.h" />
     <ClInclude Include="include\absl\synchronization\internal\thread_pool.h" />
     <ClInclude Include="include\absl\synchronization\internal\waiter.h" />
+    <ClInclude Include="include\absl\synchronization\internal\waiter_base.h" />
+    <ClInclude Include="include\absl\synchronization\internal\win32_waiter.h" />
     <ClInclude Include="include\absl\synchronization\mutex.h" />
     <ClInclude Include="include\absl\synchronization\notification.h" />
     <ClInclude Include="include\absl\time\civil_time.h" />
@@ -621,13 +643,8 @@
     <ClInclude Include="include\absl\types\bad_optional_access.h" />
     <ClInclude Include="include\absl\types\bad_variant_access.h" />
     <ClInclude Include="include\absl\types\compare.h" />
-    <ClInclude Include="include\absl\types\internal\conformance_aliases.h" />
-    <ClInclude Include="include\absl\types\internal\conformance_archetype.h" />
-    <ClInclude Include="include\absl\types\internal\conformance_profile.h" />
     <ClInclude Include="include\absl\types\internal\optional.h" />
-    <ClInclude Include="include\absl\types\internal\parentheses.h" />
     <ClInclude Include="include\absl\types\internal\span.h" />
-    <ClInclude Include="include\absl\types\internal\transform_args.h" />
     <ClInclude Include="include\absl\types\internal\variant.h" />
     <ClInclude Include="include\absl\types\optional.h" />
     <ClInclude Include="include\absl\types\span.h" />
@@ -642,6 +659,7 @@
     <ClInclude Include="src\time\internal\cctz\src\tzfile.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="abseil.def" />
     <None Include="include\absl\base\internal\spinlock_akaros.inc" />
     <None Include="include\absl\base\internal\spinlock_linux.inc" />
     <None Include="include\absl\base\internal\spinlock_posix.inc" />
@@ -660,7 +678,6 @@
     <None Include="include\absl\debugging\symbolize_emscripten.inc" />
     <None Include="include\absl\debugging\symbolize_unimplemented.inc" />
     <None Include="include\absl\debugging\symbolize_win32.inc" />
-    <None Include="include\absl\flags\internal\flag_msvc.inc" />
     <None Include="include\absl\numeric\int128_have_intrinsic.inc" />
     <None Include="include\absl\numeric\int128_no_intrinsic.inc" />
     <None Include="include\absl\time\internal\get_current_time_chrono.inc" />

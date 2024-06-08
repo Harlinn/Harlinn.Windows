@@ -43,5 +43,4 @@
 #pragma comment(lib,"Harlinn.gtest.lib") 
 #endif
 
-
 #endif  // GOOGLETEST_INCLUDE_GTEST_INTERNAL_CUSTOM_GTEST_PORT_H_

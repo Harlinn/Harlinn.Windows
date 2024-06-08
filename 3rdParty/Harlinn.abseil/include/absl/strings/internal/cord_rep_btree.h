@@ -32,6 +32,14 @@ namespace absl {
 ABSL_NAMESPACE_BEGIN
 namespace cord_internal {
 
+// `SetCordBtreeExhaustiveValidation()` can be set to force exhaustive
+// validation in debug assertions, and code that calls `IsValid()`
+// explicitly. By default, assertions should be relatively cheap and
+// AssertValid() can easily lead to O(n^2) complexity as recursive / full tree
+// validation is O(n).
+ABSEIL_EXPORT void SetCordBtreeExhaustiveValidation(bool do_exaustive_validation);
+ABSEIL_EXPORT bool IsCordBtreeExhaustiveValidationEnabled();
+
 class CordRepBtreeNavigator;
 
 // CordRepBtree is as the name implies a btree implementation of a Cordrep tree.
@@ -349,7 +357,7 @@ class CordRepBtree : public CordRep {
   // - {kPopped, New(edge, height())}
   //   A new leg with the edge was created as this node has no extra capacity.
   template <EdgeType edge_type>
-  ABSEIL_EXPORT inline OpResult AddEdge(bool owned, CordRep* edge, size_t delta);
+  inline OpResult AddEdge(bool owned, CordRep* edge, size_t delta);
 
   // Replaces the front or back edge with the provided new edge. Returns:
   // - {kSelf, <this>}
@@ -358,7 +366,7 @@ class CordRepBtree : public CordRep {
   //   A copy of this node was created with the new edge value.
   // In both cases, the function adopts a reference on `edge`.
   template <EdgeType edge_type>
-  ABSEIL_EXPORT OpResult SetEdge(bool owned, CordRep* edge, size_t delta);
+  OpResult SetEdge(bool owned, CordRep* edge, size_t delta);
 
   // Creates a new empty node at the specified height.
   static CordRepBtree* New(int height = 0);
@@ -555,19 +563,19 @@ class CordRepBtree : public CordRep {
 
   // Adds `rep` to the specified tree, returning the modified tree.
   template <EdgeType edge_type>
-  ABSEIL_EXPORT static CordRepBtree* AddCordRep(CordRepBtree* tree, CordRep* rep);
+  static CordRepBtree* AddCordRep(CordRepBtree* tree, CordRep* rep);
 
   // Adds `data` to the specified tree, returning the modified tree.
   // See the `Append/Prepend` function for the meaning and purpose of `extra`.
   template <EdgeType edge_type>
-  ABSEIL_EXPORT static CordRepBtree* AddData(CordRepBtree* tree, absl::string_view data,
+  static CordRepBtree* AddData(CordRepBtree* tree, absl::string_view data,
                                size_t extra = 0);
 
   // Merges `src` into `dst` with `src` being added either before (kFront) or
   // after (kBack) `dst`. Requires the height of `dst` to be greater than or
   // equal to the height of `src`.
   template <EdgeType edge_type>
-  ABSEIL_EXPORT static CordRepBtree* Merge(CordRepBtree* dst, CordRepBtree* src);
+  static CordRepBtree* Merge(CordRepBtree* dst, CordRepBtree* src);
 
   // Fallback version of GetAppendBuffer for large trees: GetAppendBuffer()
   // implements an inlined version for trees of limited height (3 levels),

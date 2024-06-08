@@ -14,7 +14,16 @@
 
 #include "absl/strings/str_replace.h"
 
+#include <cstddef>
+#include <initializer_list>
+#include <string>
+#include <utility>
+#include <vector>
+
+#include "absl/base/config.h"
+#include "absl/base/nullability.h"
 #include "absl/strings/str_cat.h"
+#include "absl/strings/string_view.h"
 
 namespace absl {
 ABSL_NAMESPACE_BEGIN
@@ -26,10 +35,10 @@ using FixedMapping =
 // Applies the ViableSubstitutions in subs_ptr to the absl::string_view s, and
 // stores the result in *result_ptr. Returns the number of substitutions that
 // occurred.
-int ApplySubstitutions(
+ABSEIL_EXPORT int ApplySubstitutions(
     absl::string_view s,
-    std::vector<strings_internal::ViableSubstitution>* subs_ptr,
-    std::string* result_ptr) {
+    absl::Nonnull<std::vector<strings_internal::ViableSubstitution>*> subs_ptr,
+    absl::Nonnull<std::string*> result_ptr) {
   auto& subs = *subs_ptr;
   int substitutions = 0;
   size_t pos = 0;
@@ -68,13 +77,13 @@ int ApplySubstitutions(
 // Note that we implement them here, rather than in the header, so that they
 // aren't inlined.
 
-std::string StrReplaceAll(absl::string_view s,
+ABSEIL_EXPORT std::string StrReplaceAll(absl::string_view s,
                           strings_internal::FixedMapping replacements) {
   return StrReplaceAll<strings_internal::FixedMapping>(s, replacements);
 }
 
-int StrReplaceAll(strings_internal::FixedMapping replacements,
-                  std::string* target) {
+ABSEIL_EXPORT int StrReplaceAll(strings_internal::FixedMapping replacements,
+                  absl::Nonnull<std::string*> target) {
   return StrReplaceAll<strings_internal::FixedMapping>(replacements, target);
 }
 

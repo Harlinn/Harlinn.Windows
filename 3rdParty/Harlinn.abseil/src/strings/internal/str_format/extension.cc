@@ -23,7 +23,7 @@ namespace absl {
 ABSL_NAMESPACE_BEGIN
 namespace str_format_internal {
 
-std::string FlagsToString(Flags v) {
+ABSEIL_EXPORT std::string FlagsToString(Flags v) {
   std::string s;
   s.append(FlagsContains(v, Flags::kLeft) ? "-" : "");
   s.append(FlagsContains(v, Flags::kShowPos) ? "+" : "");

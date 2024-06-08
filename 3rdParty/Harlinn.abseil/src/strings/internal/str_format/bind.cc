@@ -14,10 +14,24 @@
 
 #include "absl/strings/internal/str_format/bind.h"
 
+#include <algorithm>
+#include <cassert>
 #include <cerrno>
+#include <cstddef>
+#include <cstdio>
+#include <ios>
 #include <limits>
+#include <ostream>
 #include <sstream>
 #include <string>
+#include "absl/base/config.h"
+#include "absl/base/optimization.h"
+#include "absl/strings/internal/str_format/arg.h"
+#include "absl/strings/internal/str_format/constexpr_parser.h"
+#include "absl/strings/internal/str_format/extension.h"
+#include "absl/strings/internal/str_format/output.h"
+#include "absl/strings/string_view.h"
+#include "absl/types/span.h"
 
 namespace absl {
 ABSL_NAMESPACE_BEGIN
@@ -90,6 +104,8 @@ inline bool ArgContext::Bind(const UnboundConversion* unbound,
     } else {
       FormatConversionSpecImplFriend::SetFlags(unbound->flags, bound);
     }
+
+    FormatConversionSpecImplFriend::SetLengthMod(unbound->length_mod, bound);
   } else {
     FormatConversionSpecImplFriend::SetFlags(unbound->flags, bound);
     FormatConversionSpecImplFriend::SetWidth(-1, bound);
@@ -172,13 +188,13 @@ class SummarizingConverter {
 
 }  // namespace
 
-bool BindWithPack(const UnboundConversion* props,
+ABSEIL_EXPORT bool BindWithPack(const UnboundConversion* props,
                   absl::Span<const FormatArgImpl> pack,
                   BoundConversion* bound) {
   return ArgContext(pack).Bind(props, bound);
 }
 
-std::string Summarize(const UntypedFormatSpecImpl format,
+ABSEIL_EXPORT std::string Summarize(const UntypedFormatSpecImpl format,
                       absl::Span<const FormatArgImpl> args) {
   typedef SummarizingConverter Converter;
   std::string out;
@@ -193,7 +209,7 @@ std::string Summarize(const UntypedFormatSpecImpl format,
   return out;
 }
 
-bool FormatUntyped(FormatRawSinkImpl raw_sink,
+ABSEIL_EXPORT bool FormatUntyped(FormatRawSinkImpl raw_sink,
                    const UntypedFormatSpecImpl format,
                    absl::Span<const FormatArgImpl> args) {
   FormatSinkImpl sink(raw_sink);
@@ -206,7 +222,7 @@ std::ostream& Streamable::Print(std::ostream& os) const {
   return os;
 }
 
-std::string& AppendPack(std::string* out, const UntypedFormatSpecImpl format,
+ABSEIL_EXPORT std::string& AppendPack(std::string* out, const UntypedFormatSpecImpl format,
                         absl::Span<const FormatArgImpl> args) {
   size_t orig = out->size();
   if (ABSL_PREDICT_FALSE(!FormatUntyped(out, format, args))) {
@@ -215,7 +231,7 @@ std::string& AppendPack(std::string* out, const UntypedFormatSpecImpl format,
   return *out;
 }
 
-std::string FormatPack(const UntypedFormatSpecImpl format,
+ABSEIL_EXPORT std::string FormatPack(UntypedFormatSpecImpl format,
                        absl::Span<const FormatArgImpl> args) {
   std::string out;
   if (ABSL_PREDICT_FALSE(!FormatUntyped(&out, format, args))) {
@@ -224,7 +240,7 @@ std::string FormatPack(const UntypedFormatSpecImpl format,
   return out;
 }
 
-int FprintF(std::FILE* output, const UntypedFormatSpecImpl format,
+ABSEIL_EXPORT int FprintF(std::FILE* output, const UntypedFormatSpecImpl format,
             absl::Span<const FormatArgImpl> args) {
   FILERawSink sink(output);
   if (!FormatUntyped(&sink, format, args)) {
@@ -242,7 +258,7 @@ int FprintF(std::FILE* output, const UntypedFormatSpecImpl format,
   return static_cast<int>(sink.count());
 }
 
-int SnprintF(char* output, size_t size, const UntypedFormatSpecImpl format,
+ABSEIL_EXPORT int SnprintF(char* output, size_t size, const UntypedFormatSpecImpl format,
              absl::Span<const FormatArgImpl> args) {
   BufferRawSink sink(output, size ? size - 1 : 0);
   if (!FormatUntyped(&sink, format, args)) {

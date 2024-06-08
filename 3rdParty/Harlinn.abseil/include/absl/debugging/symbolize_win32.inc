@@ -35,7 +35,7 @@ ABSL_NAMESPACE_BEGIN
 
 static HANDLE process = NULL;
 
-void InitializeSymbolizer(const char*) {
+ABSEIL_EXPORT void InitializeSymbolizer(const char*) {
   if (process != nullptr) {
     return;
   }
@@ -54,7 +54,7 @@ void InitializeSymbolizer(const char*) {
   }
 }
 
-bool Symbolize(const void* pc, char* out, int out_size) {
+ABSEIL_EXPORT bool Symbolize(const void* pc, char* out, int out_size) {
   if (out_size <= 0) {
     return false;
   }

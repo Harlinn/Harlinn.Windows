@@ -40,7 +40,7 @@
 #include "absl/log/internal/nullguard.h"
 #include "absl/log/log_entry.h"
 #include "absl/log/log_sink.h"
-#include "absl/strings/internal/has_absl_stringify.h"
+#include "absl/strings/has_absl_stringify.h"
 #include "absl/strings/string_view.h"
 #include "absl/time/time.h"
 
@@ -51,9 +51,21 @@ constexpr int kLogMessageBufferSize = 15000;
 
 class LogMessage {
  public:
+  struct InfoTag {};
+  struct WarningTag {};
+  struct ErrorTag {};
+
   // Used for `LOG`.
   ABSEIL_EXPORT LogMessage(const char* file, int line,
              absl::LogSeverity severity) ABSL_ATTRIBUTE_COLD;
+  // These constructors are slightly smaller/faster to call; the severity is
+  // curried into the function pointer.
+  ABSEIL_EXPORT LogMessage(const char* file, int line,
+             InfoTag) ABSL_ATTRIBUTE_COLD ABSL_ATTRIBUTE_NOINLINE;
+  ABSEIL_EXPORT LogMessage(const char* file, int line,
+             WarningTag) ABSL_ATTRIBUTE_COLD ABSL_ATTRIBUTE_NOINLINE;
+  ABSEIL_EXPORT LogMessage(const char* file, int line,
+             ErrorTag) ABSL_ATTRIBUTE_COLD ABSL_ATTRIBUTE_NOINLINE;
   LogMessage(const LogMessage&) = delete;
   LogMessage& operator=(const LogMessage&) = delete;
   ABSEIL_EXPORT ~LogMessage() ABSL_ATTRIBUTE_COLD;
@@ -158,15 +170,15 @@ class LogMessage {
 
   // Types that support `AbslStringify()` are serialized that way.
   template <typename T,
-            typename std::enable_if<
-                strings_internal::HasAbslStringify<T>::value, int>::type = 0>
+            typename std::enable_if<absl::HasAbslStringify<T>::value,
+                                    int>::type = 0>
   LogMessage& operator<<(const T& v) ABSL_ATTRIBUTE_NOINLINE;
 
   // Types that don't support `AbslStringify()` but do support streaming into a
   // `std::ostream&` are serialized that way.
   template <typename T,
-            typename std::enable_if<
-                !strings_internal::HasAbslStringify<T>::value, int>::type = 0>
+            typename std::enable_if<!absl::HasAbslStringify<T>::value,
+                                    int>::type = 0>
   LogMessage& operator<<(const T& v) ABSL_ATTRIBUTE_NOINLINE;
 
   // Note: We explicitly do not support `operator<<` for non-const references
@@ -175,11 +187,11 @@ class LogMessage {
  protected:
   // Call `abort()` or similar to perform `LOG(FATAL)` crash.  It is assumed
   // that the caller has already generated and written the trace as appropriate.
-  ABSEIL_EXPORT ABSL_ATTRIBUTE_NORETURN static void FailWithoutStackTrace();
+  ABSL_ATTRIBUTE_NORETURN static ABSEIL_EXPORT void FailWithoutStackTrace();
 
   // Similar to `FailWithoutStackTrace()`, but without `abort()`.  Terminates
   // the process with an error exit code.
-  ABSEIL_EXPORT ABSL_ATTRIBUTE_NORETURN static void FailQuietly();
+  ABSL_ATTRIBUTE_NORETURN static ABSEIL_EXPORT void FailQuietly();
 
   // Dispatches the completed `absl::LogEntry` to applicable `absl::LogSink`s.
   // This might as well be inlined into `~LogMessage` except that
@@ -202,7 +214,7 @@ class LogMessage {
   // filled in by `~OstreamView`.
   class OstreamView final : public std::streambuf {
    public:
-    ABSEIL_EXPORT explicit OstreamView(LogMessageData& message_data);
+    explicit ABSEIL_EXPORT OstreamView(LogMessageData& message_data);
     ABSEIL_EXPORT ~OstreamView() override;
     OstreamView(const OstreamView&) = delete;
     OstreamView& operator=(const OstreamView&) = delete;
@@ -219,22 +231,22 @@ class LogMessage {
     kLiteral,
     kNotLiteral,
   };
-  ABSEIL_EXPORT void CopyToEncodedBuffer(absl::string_view str,
-                           StringType str_type) ABSL_ATTRIBUTE_NOINLINE;
-  ABSEIL_EXPORT void CopyToEncodedBuffer(char ch, size_t num,
-                           StringType str_type) ABSL_ATTRIBUTE_NOINLINE;
+  template <StringType str_type>
+  void CopyToEncodedBuffer(absl::string_view str) ABSL_ATTRIBUTE_NOINLINE;
+  template <StringType str_type>
+  void CopyToEncodedBuffer(char ch, size_t num) ABSL_ATTRIBUTE_NOINLINE;
 
   // Returns `true` if the message is fatal or enabled debug-fatal.
-  bool IsFatal() const;
+  ABSEIL_EXPORT bool IsFatal() const;
 
   // Records some tombstone-type data in anticipation of `Die`.
-  void PrepareToDie();
-  void Die();
+  ABSEIL_EXPORT void PrepareToDie();
+  ABSEIL_EXPORT void Die();
 
-  void SendToLog();
+  ABSEIL_EXPORT void SendToLog();
 
   // Checks `FLAGS_log_backtrace_at` and appends a backtrace if appropriate.
-  void LogBacktraceIfNeeded();
+  ABSEIL_EXPORT void LogBacktraceIfNeeded();
 
   // This should be the first data member so that its initializer captures errno
   // before any other initializers alter it (e.g. with calls to new) and so that
@@ -252,12 +264,12 @@ class StringifySink final {
   explicit StringifySink(LogMessage& message) : message_(message) {}
 
   void Append(size_t count, char ch) {
-    message_.CopyToEncodedBuffer(ch, count,
-                                 LogMessage::StringType::kNotLiteral);
+    message_.CopyToEncodedBuffer<LogMessage::StringType::kNotLiteral>(ch,
+                                                                      count);
   }
 
   void Append(absl::string_view v) {
-    message_.CopyToEncodedBuffer(v, LogMessage::StringType::kNotLiteral);
+    message_.CopyToEncodedBuffer<LogMessage::StringType::kNotLiteral>(v);
   }
 
   // For types that implement `AbslStringify` using `absl::Format()`.
@@ -271,8 +283,7 @@ class StringifySink final {
 
 // Note: the following is declared `ABSL_ATTRIBUTE_NOINLINE`
 template <typename T,
-          typename std::enable_if<strings_internal::HasAbslStringify<T>::value,
-                                  int>::type>
+          typename std::enable_if<absl::HasAbslStringify<T>::value, int>::type>
 LogMessage& LogMessage::operator<<(const T& v) {
   StringifySink sink(*this);
   // Replace with public API.
@@ -282,8 +293,7 @@ LogMessage& LogMessage::operator<<(const T& v) {
 
 // Note: the following is declared `ABSL_ATTRIBUTE_NOINLINE`
 template <typename T,
-          typename std::enable_if<!strings_internal::HasAbslStringify<T>::value,
-                                  int>::type>
+          typename std::enable_if<!absl::HasAbslStringify<T>::value, int>::type>
 LogMessage& LogMessage::operator<<(const T& v) {
   OstreamView view(*data_);
   view.stream() << log_internal::NullGuard<T>().Guard(v);
@@ -292,40 +302,50 @@ LogMessage& LogMessage::operator<<(const T& v) {
 
 template <int SIZE>
 LogMessage& LogMessage::operator<<(const char (&buf)[SIZE]) {
-  CopyToEncodedBuffer(buf, StringType::kLiteral);
+  CopyToEncodedBuffer<StringType::kLiteral>(buf);
   return *this;
 }
 
 // Note: the following is declared `ABSL_ATTRIBUTE_NOINLINE`
 template <int SIZE>
 LogMessage& LogMessage::operator<<(char (&buf)[SIZE]) {
-  CopyToEncodedBuffer(buf, StringType::kNotLiteral);
+  CopyToEncodedBuffer<StringType::kNotLiteral>(buf);
   return *this;
 }
 // We instantiate these specializations in the library's TU to save space in
 // other TUs.  Since the template is marked `ABSL_ATTRIBUTE_NOINLINE` we will be
 // emitting a function call either way.
-extern template ABSEIL_EXPORT LogMessage& LogMessage::operator<<(const char& v);
-extern template ABSEIL_EXPORT LogMessage& LogMessage::operator<<(const signed char& v);
-extern template ABSEIL_EXPORT LogMessage& LogMessage::operator<<(const unsigned char& v);
-extern template ABSEIL_EXPORT LogMessage& LogMessage::operator<<(const short& v);  // NOLINT
-extern template ABSEIL_EXPORT LogMessage& LogMessage::operator<<(
+extern template ABSEIL_TEMPLATE_EXPORT_DECL LogMessage& LogMessage::operator<<(const char& v);
+extern template ABSEIL_TEMPLATE_EXPORT_DECL LogMessage& LogMessage::operator<<(const signed char& v);
+extern template ABSEIL_TEMPLATE_EXPORT_DECL LogMessage& LogMessage::operator<<(const unsigned char& v);
+extern template ABSEIL_TEMPLATE_EXPORT_DECL LogMessage& LogMessage::operator<<(const short& v);  // NOLINT
+extern template ABSEIL_TEMPLATE_EXPORT_DECL LogMessage& LogMessage::operator<<(
     const unsigned short& v);  // NOLINT
-extern template ABSEIL_EXPORT LogMessage& LogMessage::operator<<(const int& v);
-extern template ABSEIL_EXPORT LogMessage& LogMessage::operator<<(
+extern template ABSEIL_TEMPLATE_EXPORT_DECL LogMessage& LogMessage::operator<<(const int& v);
+extern template ABSEIL_TEMPLATE_EXPORT_DECL LogMessage& LogMessage::operator<<(
     const unsigned int& v);                                         // NOLINT
-extern template ABSEIL_EXPORT LogMessage& LogMessage::operator<<(const long& v);  // NOLINT
-extern template ABSEIL_EXPORT LogMessage& LogMessage::operator<<(
+extern template ABSEIL_TEMPLATE_EXPORT_DECL LogMessage& LogMessage::operator<<(const long& v);  // NOLINT
+extern template ABSEIL_TEMPLATE_EXPORT_DECL LogMessage& LogMessage::operator<<(
     const unsigned long& v);  // NOLINT
-extern template ABSEIL_EXPORT LogMessage& LogMessage::operator<<(
+extern template ABSEIL_TEMPLATE_EXPORT_DECL LogMessage& LogMessage::operator<<(
     const long long& v);  // NOLINT
-extern template ABSEIL_EXPORT LogMessage& LogMessage::operator<<(
+extern template ABSEIL_TEMPLATE_EXPORT_DECL LogMessage& LogMessage::operator<<(
     const unsigned long long& v);  // NOLINT
-extern template ABSEIL_EXPORT LogMessage& LogMessage::operator<<(void* const& v);
-extern template ABSEIL_EXPORT LogMessage& LogMessage::operator<<(const void* const& v);
-extern template ABSEIL_EXPORT LogMessage& LogMessage::operator<<(const float& v);
-extern template ABSEIL_EXPORT LogMessage& LogMessage::operator<<(const double& v);
-extern template ABSEIL_EXPORT LogMessage& LogMessage::operator<<(const bool& v);
+extern template ABSEIL_TEMPLATE_EXPORT_DECL LogMessage& LogMessage::operator<<(void* const& v);
+extern template ABSEIL_TEMPLATE_EXPORT_DECL LogMessage& LogMessage::operator<<(const void* const& v);
+extern template ABSEIL_TEMPLATE_EXPORT_DECL LogMessage& LogMessage::operator<<(const float& v);
+extern template ABSEIL_TEMPLATE_EXPORT_DECL LogMessage& LogMessage::operator<<(const double& v);
+extern template ABSEIL_TEMPLATE_EXPORT_DECL LogMessage& LogMessage::operator<<(const bool& v);
+
+extern template ABSEIL_TEMPLATE_EXPORT_DECL void LogMessage::CopyToEncodedBuffer<
+    LogMessage::StringType::kLiteral>(absl::string_view str);
+extern template ABSEIL_TEMPLATE_EXPORT_DECL void LogMessage::CopyToEncodedBuffer<
+    LogMessage::StringType::kNotLiteral>(absl::string_view str);
+extern template ABSEIL_TEMPLATE_EXPORT_DECL void
+LogMessage::CopyToEncodedBuffer<LogMessage::StringType::kLiteral>(char ch,
+                                                                  size_t num);
+extern template ABSEIL_TEMPLATE_EXPORT_DECL void LogMessage::CopyToEncodedBuffer<
+    LogMessage::StringType::kNotLiteral>(char ch, size_t num);
 
 // `LogMessageFatal` ensures the process will exit in failure after logging this
 // message.
@@ -334,7 +354,7 @@ class LogMessageFatal final : public LogMessage {
   ABSEIL_EXPORT LogMessageFatal(const char* file, int line) ABSL_ATTRIBUTE_COLD;
   ABSEIL_EXPORT LogMessageFatal(const char* file, int line,
                   absl::string_view failure_msg) ABSL_ATTRIBUTE_COLD;
-  ABSEIL_EXPORT ABSL_ATTRIBUTE_NORETURN ~LogMessageFatal();
+  ABSL_ATTRIBUTE_NORETURN ABSEIL_EXPORT ~LogMessageFatal();
 };
 
 class LogMessageQuietlyFatal final : public LogMessage {
@@ -342,14 +362,14 @@ class LogMessageQuietlyFatal final : public LogMessage {
   ABSEIL_EXPORT LogMessageQuietlyFatal(const char* file, int line) ABSL_ATTRIBUTE_COLD;
   ABSEIL_EXPORT LogMessageQuietlyFatal(const char* file, int line,
                          absl::string_view failure_msg) ABSL_ATTRIBUTE_COLD;
-  ABSEIL_EXPORT ABSL_ATTRIBUTE_NORETURN ~LogMessageQuietlyFatal();
+  ABSL_ATTRIBUTE_NORETURN ABSEIL_EXPORT ~LogMessageQuietlyFatal();
 };
 
 }  // namespace log_internal
 ABSL_NAMESPACE_END
 }  // namespace absl
 
-extern "C" ABSEIL_EXPORT ABSL_ATTRIBUTE_WEAK void ABSL_INTERNAL_C_SYMBOL(
+extern "C" ABSL_ATTRIBUTE_WEAK ABSEIL_EXPORT void ABSL_INTERNAL_C_SYMBOL(
     AbslInternalOnFatalLogMessage)(const absl::LogEntry&);
 
 #endif  // ABSL_LOG_INTERNAL_LOG_MESSAGE_H_

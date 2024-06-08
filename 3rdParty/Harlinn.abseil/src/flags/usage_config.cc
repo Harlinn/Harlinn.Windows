@@ -34,7 +34,7 @@ extern "C" {
 
 // Additional report of fatal usage error message before we std::exit. Error is
 // fatal if is_fatal argument to ReportUsageError is true.
-ABSL_ATTRIBUTE_WEAK void ABSL_INTERNAL_C_SYMBOL(
+ABSEIL_EXPORT ABSL_ATTRIBUTE_WEAK void ABSL_INTERNAL_C_SYMBOL(
     AbslInternalReportFatalUsageError)(absl::string_view) {}
 
 }  // extern "C"
@@ -110,7 +110,7 @@ ABSL_CONST_INIT FlagsUsageConfig* custom_usage_config
 
 }  // namespace
 
-FlagsUsageConfig GetUsageConfig() {
+ABSEIL_EXPORT FlagsUsageConfig GetUsageConfig() {
   absl::MutexLock l(&custom_usage_config_guard);
 
   if (custom_usage_config) return *custom_usage_config;
@@ -125,7 +125,7 @@ FlagsUsageConfig GetUsageConfig() {
   return default_config;
 }
 
-void ReportUsageError(absl::string_view msg, bool is_fatal) {
+ABSEIL_EXPORT void ReportUsageError(absl::string_view msg, bool is_fatal) {
   std::cerr << "ERROR: " << msg << std::endl;
 
   if (is_fatal) {
@@ -135,7 +135,7 @@ void ReportUsageError(absl::string_view msg, bool is_fatal) {
 
 }  // namespace flags_internal
 
-void SetFlagsUsageConfig(FlagsUsageConfig usage_config) {
+ABSEIL_EXPORT void SetFlagsUsageConfig(FlagsUsageConfig usage_config) {
   absl::MutexLock l(&flags_internal::custom_usage_config_guard);
 
   if (!usage_config.contains_helpshort_flags)

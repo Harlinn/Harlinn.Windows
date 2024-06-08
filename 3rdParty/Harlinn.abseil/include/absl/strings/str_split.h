@@ -123,11 +123,29 @@ ABSL_NAMESPACE_BEGIN
 //   // v[0] == "a", v[1] == "b", v[2] == "c"
 class ByString {
  public:
-  ABSEIL_EXPORT explicit ByString(absl::string_view sp);
+  explicit ABSEIL_EXPORT ByString(absl::string_view sp);
   ABSEIL_EXPORT absl::string_view Find(absl::string_view text, size_t pos) const;
 
  private:
   const std::string delimiter_;
+};
+
+// ByAsciiWhitespace
+//
+// A sub-string delimiter that splits by ASCII whitespace
+// (space, tab, vertical tab, formfeed, linefeed, or carriage return).
+// Note: you probably want to use absl::SkipEmpty() as well!
+//
+// This class is equivalent to ByAnyChar with ASCII whitespace chars.
+//
+// Example:
+//
+//   std::vector<std::string> v = absl::StrSplit(
+//       "a b\tc\n  d  \n", absl::ByAsciiWhitespace(), absl::SkipEmpty());
+//   // v[0] == "a", v[1] == "b", v[2] == "c", v[3] == "d"
+class ByAsciiWhitespace {
+ public:
+  ABSEIL_EXPORT absl::string_view Find(absl::string_view text, size_t pos) const;
 };
 
 // ByChar
