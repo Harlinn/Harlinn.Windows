@@ -5,14 +5,15 @@
 #ifndef RE2_BITMAP256_H_
 #define RE2_BITMAP256_H_
 
-#ifdef _MSC_VER
-#include <intrin.h>
-#endif
 #include <stdint.h>
 #include <string.h>
 
-#include "util/util.h"
-#include "util/logging.h"
+#include "absl/log/absl_check.h"
+#include "absl/log/absl_log.h"
+
+#ifdef _MSC_VER
+#include <intrin.h>
+#endif
 
 namespace re2 {
 
@@ -29,16 +30,16 @@ class Bitmap256 {
 
   // Tests the bit with index c.
   bool Test(int c) const {
-    DCHECK_GE(c, 0);
-    DCHECK_LE(c, 255);
+    ABSL_DCHECK_GE(c, 0);
+    ABSL_DCHECK_LE(c, 255);
 
     return (words_[c / 64] & (uint64_t{1} << (c % 64))) != 0;
   }
 
   // Sets the bit with index c.
   void Set(int c) {
-    DCHECK_GE(c, 0);
-    DCHECK_LE(c, 255);
+    ABSL_DCHECK_GE(c, 0);
+    ABSL_DCHECK_LE(c, 255);
 
     words_[c / 64] |= (uint64_t{1} << (c % 64));
   }
@@ -50,7 +51,7 @@ class Bitmap256 {
  private:
   // Finds the least significant non-zero bit in n.
   static int FindLSBSet(uint64_t n) {
-    DCHECK_NE(n, 0);
+    ABSL_DCHECK_NE(n, 0);
 #if defined(__GNUC__)
     return __builtin_ctzll(n);
 #elif defined(_MSC_VER) && defined(_M_X64)
@@ -81,36 +82,6 @@ class Bitmap256 {
 
   uint64_t words_[4];
 };
-
-int Bitmap256::FindNextSetBit(int c) const {
-  DCHECK_GE(c, 0);
-  DCHECK_LE(c, 255);
-
-  // Check the word that contains the bit. Mask out any lower bits.
-  int i = c / 64;
-  uint64_t word = words_[i] & (~uint64_t{0} << (c % 64));
-  if (word != 0)
-    return (i * 64) + FindLSBSet(word);
-
-  // Check any following words.
-  i++;
-  switch (i) {
-    case 1:
-      if (words_[1] != 0)
-        return (1 * 64) + FindLSBSet(words_[1]);
-      FALLTHROUGH_INTENDED;
-    case 2:
-      if (words_[2] != 0)
-        return (2 * 64) + FindLSBSet(words_[2]);
-      FALLTHROUGH_INTENDED;
-    case 3:
-      if (words_[3] != 0)
-        return (3 * 64) + FindLSBSet(words_[3]);
-      FALLTHROUGH_INTENDED;
-    default:
-      return -1;
-  }
-}
 
 }  // namespace re2
 

@@ -33,11 +33,8 @@
     <ClCompile Include="dllmain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\util\rune.cc">
-      <Filter>src\util</Filter>
-    </ClCompile>
-    <ClCompile Include="src\util\strutil.cc">
-      <Filter>src\util</Filter>
+    <ClCompile Include="src\bitmap256.cc">
+      <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="src\bitstate.cc">
       <Filter>src</Filter>
@@ -87,9 +84,6 @@
     <ClCompile Include="src\simplify.cc">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\stringpiece.cc">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="src\tostring.cc">
       <Filter>src</Filter>
     </ClCompile>
@@ -99,9 +93,21 @@
     <ClCompile Include="src\unicode_groups.cc">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\util\rune.cc">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\strutil.cc">
+      <Filter>src\util</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\re2\filtered_re2.h">
+      <Filter>include\re2</Filter>
+    </ClInclude>
     <ClInclude Include="include\re2\re2.h">
+      <Filter>include\re2</Filter>
+    </ClInclude>
+    <ClInclude Include="include\re2\set.h">
       <Filter>include\re2</Filter>
     </ClInclude>
     <ClInclude Include="include\re2\stringpiece.h">
@@ -113,11 +119,14 @@
     <ClInclude Include="src\util\utf.h">
       <Filter>src\util</Filter>
     </ClInclude>
-    <ClInclude Include="src\util\util.h">
-      <Filter>src\util</Filter>
+    <ClInclude Include="include\re2\bitmap256.h">
+      <Filter>include\re2</Filter>
     </ClInclude>
-    <ClInclude Include="src\util\logging.h">
-      <Filter>src\util</Filter>
+    <ClInclude Include="include\re2\prefilter.h">
+      <Filter>include\re2</Filter>
+    </ClInclude>
+    <ClInclude Include="include\re2\prefilter_tree.h">
+      <Filter>include\re2</Filter>
     </ClInclude>
     <ClInclude Include="include\re2\prog.h">
       <Filter>include\re2</Filter>
@@ -128,31 +137,7 @@
     <ClInclude Include="include\re2\sparse_array.h">
       <Filter>include\re2</Filter>
     </ClInclude>
-    <ClInclude Include="include\re2\pod_array.h">
-      <Filter>include\re2</Filter>
-    </ClInclude>
     <ClInclude Include="include\re2\sparse_set.h">
-      <Filter>include\re2</Filter>
-    </ClInclude>
-    <ClInclude Include="src\util\mix.h">
-      <Filter>src\util</Filter>
-    </ClInclude>
-    <ClInclude Include="src\util\mutex.h">
-      <Filter>src\util</Filter>
-    </ClInclude>
-    <ClInclude Include="include\re2\bitmap256.h">
-      <Filter>include\re2</Filter>
-    </ClInclude>
-    <ClInclude Include="include\re2\filtered_re2.h">
-      <Filter>include\re2</Filter>
-    </ClInclude>
-    <ClInclude Include="include\re2\prefilter.h">
-      <Filter>include\re2</Filter>
-    </ClInclude>
-    <ClInclude Include="include\re2\prefilter_tree.h">
-      <Filter>include\re2</Filter>
-    </ClInclude>
-    <ClInclude Include="include\re2\set.h">
       <Filter>include\re2</Filter>
     </ClInclude>
     <ClInclude Include="include\re2\unicode_casefold.h">
@@ -162,6 +147,9 @@
       <Filter>include\re2</Filter>
     </ClInclude>
     <ClInclude Include="include\re2\walker-inl.h">
+      <Filter>include\re2</Filter>
+    </ClInclude>
+    <ClInclude Include="include\re2\pod_array.h">
       <Filter>include\re2</Filter>
     </ClInclude>
   </ItemGroup>

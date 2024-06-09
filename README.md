@@ -1046,7 +1046,7 @@ C++ class to parse NMEA0183 sentences
 **Project:** Harlinn.RapidJSON
 
 ### [RE2 - a regular expression library](https://github.com/google/re2)
-**Version:** 2021-09-01
+**Version:** 2024-06-01
 
 **Description:**
 > RE2 was designed and implemented with an explicit goal of being able to 
