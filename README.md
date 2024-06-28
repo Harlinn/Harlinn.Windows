@@ -1,6 +1,6 @@
 ﻿# Harlinn.Windows
 
-This repository contains a Visual Studio Solution currently containing 575 projects.
+This repository contains a Visual Studio Solution currently containing 589 projects.
 
 Most of the projects are open source projects that I have found useful at work, and a few are my own.
 
