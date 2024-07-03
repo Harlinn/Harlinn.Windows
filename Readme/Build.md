@@ -39,6 +39,8 @@ Before building you need to set a few environment variables:
 - **GDAL_DATA** must point to ***%HCC_HOME%**\\Share\\gdal*
 - **OPENSSL_HOME** must point to the root of your openssl 3.x installation, which is the directory containing the bin, include and lib directories.
 - **VLC_SOURCE** must point to the directory that contains the source code for the VLC media player.
+- **INTEL_MKL_INCLUDE** must point to the directory containing the Intel Math Kernel Library include files
+- **INTEL_MKL_LIB** must point to the directory containing the Intel Math Kernel Library *.lib files
 
 The PATH environment variable must be updated to reference:
 - **%BOOST_ROOT%**\stage\lib
@@ -53,6 +55,13 @@ The PATH environment variable must be updated to reference:
 - The directory containing swig.exe
 - The directory containing the MKL redistributable dlls
 
+## Visual Studio sometimes hangs while building 
+Visual Studio sometimes hangs while building the entire solution. The work-around is to split the build, 
+and this can be done by first building 3rdParty\Harlinn.skia and then 3rdParty\Harlinn.gdal separately,
+before building the rest of the solution.
+
+It looks like this is caused by a race inside Visual Studio. When it hangs, Visual Studio uses 100% of one core, 
+and the devenv.exe process must be killed and restarted before continuing the build.
 
 ## Command line for building the boost libraries
 After downloading the boost libraries, you need to build boost using the following commands:
