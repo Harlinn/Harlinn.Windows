@@ -5,7 +5,7 @@ The provided code has been tried and tested on Windows 11 and Windows 2019 serve
  
 ## Requirements
 To build the solution you need:
-- [Visual Studio 17.8.5](https://visualstudio.microsoft.com/vs/) Ensure that you have installed support for .Net 6, 64-bit C++ development and 64-bit python development. 
+- [Visual Studio 17.10.3](https://visualstudio.microsoft.com/vs/) Ensure that you have installed support for .Net 6, 64-bit C++ development and 64-bit python development. 
 - [boost c++ libraries](https://www.boost.org/)
 - [nasm](https://www.nasm.us/) 
 - [yasm](https://yasm.tortall.net/)
