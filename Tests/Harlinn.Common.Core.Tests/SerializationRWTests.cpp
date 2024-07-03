@@ -432,6 +432,7 @@ BOOST_AUTO_TEST_CASE(TimeSpanTest1)
     BOOST_CHECK(v5.value() == value2);
 }
 
+
 // --run_test=SerializationRWTests/GuidTest1
 BOOST_AUTO_TEST_CASE(GuidTest1)
 {
@@ -503,6 +504,7 @@ BOOST_AUTO_TEST_CASE(BoolTest2)
     BOOST_CHECK(values2[0] == true);
     BOOST_CHECK(values2[1] == false);
 }
+
 
 // --run_test=SerializationRWTests/BoolTest3
 BOOST_AUTO_TEST_CASE(BoolTest3)

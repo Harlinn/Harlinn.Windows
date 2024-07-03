@@ -7,9 +7,11 @@
 
 #include <string>
 
+#include "re2/stringpiece.h"
+
 namespace re2 {
 
-void PrefixSuccessor(std::string* prefix);
+HRE2_EXPORT void PrefixSuccessor(std::string* prefix);
 
 }  // namespace re2
 

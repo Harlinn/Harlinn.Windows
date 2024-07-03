@@ -57,8 +57,8 @@ class Regexp;
 // Compiled form of regexp program.
 class Prog {
  public:
-  Prog();
-  ~Prog();
+  HRE2_EXPORT Prog();
+  HRE2_EXPORT ~Prog();
 
   // Single instruction in regexp program.
   class Inst {
@@ -258,24 +258,24 @@ class Prog {
   }
 
   // Configures prefix accel using the analysis performed during compilation.
-  void ConfigurePrefixAccel(const std::string& prefix, bool prefix_foldcase);
+  HRE2_EXPORT void ConfigurePrefixAccel(const std::string& prefix, bool prefix_foldcase);
 
   // An implementation of prefix accel that uses prefix_dfa_ to perform
   // case-insensitive search.
-  const void* PrefixAccel_ShiftDFA(const void* data, size_t size);
+  HRE2_EXPORT const void* PrefixAccel_ShiftDFA(const void* data, size_t size);
 
   // An implementation of prefix accel that looks for prefix_front_ and
   // prefix_back_ to return fewer false positives than memchr(3) alone.
-  const void* PrefixAccel_FrontAndBack(const void* data, size_t size);
+  HRE2_EXPORT const void* PrefixAccel_FrontAndBack(const void* data, size_t size);
 
   // Returns string representation of program for debugging.
-  std::string Dump();
-  std::string DumpUnanchored();
-  std::string DumpByteMap();
+  HRE2_EXPORT std::string Dump();
+  HRE2_EXPORT std::string DumpUnanchored();
+  HRE2_EXPORT std::string DumpByteMap();
 
   // Returns the set of kEmpty flags that are in effect at
   // position p within context.
-  static uint32_t EmptyFlags(absl::string_view context, const char* p);
+  HRE2_EXPORT static uint32_t EmptyFlags(absl::string_view context, const char* p);
 
   // Returns whether byte c is a word character: ASCII only.
   // Used by the implementation of \b and \B.
@@ -306,7 +306,7 @@ class Prog {
   // match anything.  Either way, match[i] == NULL.
 
   // Search using NFA: can find submatches but kind of slow.
-  bool SearchNFA(absl::string_view text, absl::string_view context,
+  HRE2_EXPORT bool SearchNFA(absl::string_view text, absl::string_view context,
                  Anchor anchor, MatchKind kind, absl::string_view* match,
                  int nmatch);
 
@@ -316,7 +316,7 @@ class Prog {
   // If the DFA runs out of memory, sets *failed to true and returns false.
   // If matches != NULL and kind == kManyMatch and there is a match,
   // SearchDFA fills matches with the match IDs of the final matching state.
-  bool SearchDFA(absl::string_view text, absl::string_view context,
+  HRE2_EXPORT bool SearchDFA(absl::string_view text, absl::string_view context,
                  Anchor anchor, MatchKind kind, absl::string_view* match0,
                  bool* failed, SparseSet* matches);
 
@@ -335,26 +335,26 @@ class Prog {
   // If cb is not empty, it receives one callback per state built.
   // Returns the number of states built.
   // FOR TESTING OR EXPERIMENTAL PURPOSES ONLY.
-  int BuildEntireDFA(MatchKind kind, const DFAStateCallback& cb);
+  HRE2_EXPORT int BuildEntireDFA(MatchKind kind, const DFAStateCallback& cb);
 
   // Compute bytemap.
-  void ComputeByteMap();
+  HRE2_EXPORT void ComputeByteMap();
 
   // Run peep-hole optimizer on program.
-  void Optimize();
+  HRE2_EXPORT void Optimize();
 
   // One-pass NFA: only correct if IsOnePass() is true,
   // but much faster than NFA (competitive with PCRE)
   // for those expressions.
-  bool IsOnePass();
-  bool SearchOnePass(absl::string_view text, absl::string_view context,
+  HRE2_EXPORT bool IsOnePass();
+  HRE2_EXPORT bool SearchOnePass(absl::string_view text, absl::string_view context,
                      Anchor anchor, MatchKind kind, absl::string_view* match,
                      int nmatch);
 
   // Bit-state backtracking.  Fast on small cases but uses memory
   // proportional to the product of the list count and the text size.
   bool CanBitState() { return list_heads_.data() != NULL; }
-  bool SearchBitState(absl::string_view text, absl::string_view context,
+  HRE2_EXPORT bool SearchBitState(absl::string_view text, absl::string_view context,
                       Anchor anchor, MatchKind kind, absl::string_view* match,
                       int nmatch);
 
@@ -384,23 +384,23 @@ class Prog {
   // do not compile down to infinite repetitions.
   //
   // Returns true on success, false on error.
-  bool PossibleMatchRange(std::string* min, std::string* max, int maxlen);
+  HRE2_EXPORT bool PossibleMatchRange(std::string* min, std::string* max, int maxlen);
 
   // Outputs the program fanout into the given sparse array.
-  void Fanout(SparseArray<int>* fanout);
+  HRE2_EXPORT void Fanout(SparseArray<int>* fanout);
 
   // Compiles a collection of regexps to Prog.  Each regexp will have
   // its own Match instruction recording the index in the output vector.
-  static Prog* CompileSet(Regexp* re, RE2::Anchor anchor, int64_t max_mem);
+  HRE2_EXPORT static Prog* CompileSet(Regexp* re, RE2::Anchor anchor, int64_t max_mem);
 
   // Flattens the Prog from "tree" form to "list" form. This is an in-place
   // operation in the sense that the old instructions are lost.
-  void Flatten();
+  HRE2_EXPORT void Flatten();
 
   // Walks the Prog; the "successor roots" or predecessors of the reachable
   // instructions are marked in rootmap or predmap/predvec, respectively.
   // reachable and stk are preallocated scratch structures.
-  void MarkSuccessors(SparseArray<int>* rootmap,
+  HRE2_EXPORT void MarkSuccessors(SparseArray<int>* rootmap,
                       SparseArray<int>* predmap,
                       std::vector<std::vector<int>>* predvec,
                       SparseSet* reachable, std::vector<int>* stk);
@@ -408,7 +408,7 @@ class Prog {
   // Walks the Prog from the given "root" instruction; the "dominator root"
   // of the reachable instructions (if such exists) is marked in rootmap.
   // reachable and stk are preallocated scratch structures.
-  void MarkDominator(int root, SparseArray<int>* rootmap,
+  HRE2_EXPORT void MarkDominator(int root, SparseArray<int>* rootmap,
                      SparseArray<int>* predmap,
                      std::vector<std::vector<int>>* predvec,
                      SparseSet* reachable, std::vector<int>* stk);
@@ -416,22 +416,22 @@ class Prog {
   // Walks the Prog from the given "root" instruction; the reachable
   // instructions are emitted in "list" form and appended to flat.
   // reachable and stk are preallocated scratch structures.
-  void EmitList(int root, SparseArray<int>* rootmap,
+  HRE2_EXPORT void EmitList(int root, SparseArray<int>* rootmap,
                 std::vector<Inst>* flat,
                 SparseSet* reachable, std::vector<int>* stk);
 
   // Computes hints for ByteRange instructions in [begin, end).
-  void ComputeHints(std::vector<Inst>* flat, int begin, int end);
+  HRE2_EXPORT void ComputeHints(std::vector<Inst>* flat, int begin, int end);
 
   // Controls whether the DFA should bail out early if the NFA would be faster.
   // FOR TESTING ONLY.
-  static void TESTING_ONLY_set_dfa_should_bail_when_slow(bool b);
+  HRE2_EXPORT static void TESTING_ONLY_set_dfa_should_bail_when_slow(bool b);
 
  private:
   friend class Compiler;
 
-  DFA* GetDFA(MatchKind kind);
-  void DeleteDFA(DFA* dfa);
+  HRE2_EXPORT DFA* GetDFA(MatchKind kind);
+  HRE2_EXPORT void DeleteDFA(DFA* dfa);
 
   bool anchor_start_;       // regexp has explicit start anchor
   bool anchor_end_;         // regexp has explicit end anchor

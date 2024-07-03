@@ -162,16 +162,10 @@ class PolymorphicManualConstructor {
     GPR_ASSERT(static_cast<BaseType*>(p) == p);
   }
 
-  /*
   typename std::aligned_storage<
       grpc_core::manual_ctor_impl::max_size_of<DerivedTypes...>::value,
       grpc_core::manual_ctor_impl::max_align_of<DerivedTypes...>::value>::type
       space_;
-  */
-
-  __declspec( align( grpc_core::manual_ctor_impl::max_align_of<DerivedTypes...>::value ) ) std::byte space_[ grpc_core::manual_ctor_impl::max_size_of<DerivedTypes...>::value ];
-
-
 };
 
 template <typename Type>
@@ -214,8 +208,7 @@ class ManualConstructor {
   void Destroy() { Destruct(get()); }
 
  private:
-  //typename std::aligned_storage<sizeof(Type), alignof(Type)>::type space_;
-  alignas( Type ) std::byte space_[ sizeof( Type ) ];
+  typename std::aligned_storage<sizeof(Type), alignof(Type)>::type space_;
 };
 
 }  // namespace grpc_core

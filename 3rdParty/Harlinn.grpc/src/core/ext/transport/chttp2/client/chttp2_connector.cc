@@ -37,7 +37,7 @@
 #include "src/core/lib/iomgr/tcp_client.h"
 #include "src/core/lib/slice/slice_internal.h"
 
-#include <absl/strings/str_cat.h>
+#include "absl/strings/str_cat.h"
 
 namespace grpc_core {
 
@@ -185,7 +185,7 @@ void Chttp2Connector::OnHandshakeDone(void* arg, grpc_error_handle error) {
           grpc_resource_user_create(
               self->resource_quota_,
               absl::StrCat(grpc_endpoint_get_peer(args->endpoint),
-                           std::string_view(":connector_transport"))));
+                           ":connector_transport")));
       self->result_->socket_node =
           grpc_chttp2_transport_get_socket_node(self->result_->transport);
       self->result_->channel_args = args->args;

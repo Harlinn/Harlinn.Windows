@@ -31,7 +31,6 @@
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
-    <EnableASAN>true</EnableASAN>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -45,7 +44,6 @@
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
-    <EnableASAN>true</EnableASAN>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -73,13 +71,13 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <LinkIncremental>false</LinkIncremental>
+    <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LinkIncremental>false</LinkIncremental>
+    <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -91,7 +89,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>BUILDING_HARLINN_GRPC=1;GRPC_EXPORT=__declspec(dllexport);_CRT_SECURE_NO_WARNINGS=1;_SILENCE_CXX23_DENORM_DEPRECATION_WARNING=1;_SILENCE_CXX17_ITERATOR_BASE_CLASS_DEPRECATION_WARNING=1;_SILENCE_CXX23_ALIGNED_STORAGE_DEPRECATION_WARNING=1;WIN32;_DEBUG;HARLINNGRPC_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>BUILDING_HARLINN_GRPC=1;GRPC_EXPORT=__declspec(dllexport);_CRT_SECURE_NO_WARNINGS=1;_SILENCE_CXX17_ITERATOR_BASE_CLASS_DEPRECATION_WARNING=1;_SILENCE_CXX23_ALIGNED_STORAGE_DEPRECATION_WARNING=1;_SILENCE_CXX23_DENORM_DEPRECATION_WARNING=1;WIN32;_DEBUG;HARLINNGRPC_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -100,7 +98,6 @@
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.abseil\include;$(SolutionDir)3rdParty\Harlinn.boringssl\include;$(SolutionDir)3rdParty\Harlinn.c-ares\include;$(SolutionDir)3rdParty\Harlinn.opencensus\include;$(SolutionDir)3rdParty\Harlinn.protobuf\include;$(SolutionDir)3rdParty\Harlinn.re2\include;$(SolutionDir)3rdParty\Harlinn.zlib;$(SolutionDir)Harlinn.Common.Core;$(ProjectDir)include;$(ProjectDir)src\core\ext\upb-generated;$(ProjectDir)src\core\ext\upbdefs-generated;$(ProjectDir);$(ProjectDir)src;$(ProjectDir)src\third_party\address_sorting\include;$(SolutionDir)3rdParty\Harlinn.upb\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -117,7 +114,7 @@
       <WarningLevel>Level3</WarningLevel>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>BUILDING_HARLINN_GRPC=1;GRPC_EXPORT=__declspec(dllexport);_CRT_SECURE_NO_WARNINGS=1;_SILENCE_CXX23_DENORM_DEPRECATION_WARNING=1;_SILENCE_CXX17_ITERATOR_BASE_CLASS_DEPRECATION_WARNING=1;_SILENCE_CXX23_ALIGNED_STORAGE_DEPRECATION_WARNING=1;WIN32;NDEBUG;HARLINNGRPC_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>BUILDING_HARLINN_GRPC=1;GRPC_EXPORT=__declspec(dllexport);_CRT_SECURE_NO_WARNINGS=1;_SILENCE_CXX17_ITERATOR_BASE_CLASS_DEPRECATION_WARNING=1;_SILENCE_CXX23_ALIGNED_STORAGE_DEPRECATION_WARNING=1;_SILENCE_CXX23_DENORM_DEPRECATION_WARNING=1;WIN32;NDEBUG;HARLINNGRPC_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -145,7 +142,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>BUILDING_HARLINN_GRPC=1;GRPC_EXPORT=__declspec(dllexport);_CRT_SECURE_NO_WARNINGS=1;_SILENCE_CXX23_DENORM_DEPRECATION_WARNING=1;_SILENCE_CXX17_ITERATOR_BASE_CLASS_DEPRECATION_WARNING=1;_SILENCE_CXX23_ALIGNED_STORAGE_DEPRECATION_WARNING=1;_DEBUG;HARLINNGRPC_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>BUILDING_HARLINN_GRPC=1;GRPC_EXPORT=__declspec(dllexport);_CRT_SECURE_NO_WARNINGS=1;_SILENCE_CXX17_ITERATOR_BASE_CLASS_DEPRECATION_WARNING=1;_SILENCE_CXX23_ALIGNED_STORAGE_DEPRECATION_WARNING=1;_SILENCE_CXX23_DENORM_DEPRECATION_WARNING=1;_DEBUG;HARLINNGRPC_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -154,7 +151,6 @@
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.abseil\include;$(SolutionDir)3rdParty\Harlinn.boringssl\include;$(SolutionDir)3rdParty\Harlinn.c-ares\include;$(SolutionDir)3rdParty\Harlinn.opencensus\include;$(SolutionDir)3rdParty\Harlinn.protobuf\include;$(SolutionDir)3rdParty\Harlinn.re2\include;$(SolutionDir)3rdParty\Harlinn.zlib;$(SolutionDir)Harlinn.Common.Core;$(ProjectDir)include;$(ProjectDir)src\core\ext\upb-generated;$(ProjectDir)src\core\ext\upbdefs-generated;$(ProjectDir);$(ProjectDir)src;$(ProjectDir)src\third_party\address_sorting\include;$(SolutionDir)3rdParty\Harlinn.upb\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -164,7 +160,6 @@
       <AdditionalDependencies>Ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ModuleDefinitionFile>
       </ModuleDefinitionFile>
-      <OutputFile>$(OutDir)$(TargetName)-x64d$(TargetExt)</OutputFile>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -172,7 +167,7 @@
       <WarningLevel>Level3</WarningLevel>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>BUILDING_HARLINN_GRPC=1;GRPC_EXPORT=__declspec(dllexport);_CRT_SECURE_NO_WARNINGS=1;_SILENCE_CXX23_DENORM_DEPRECATION_WARNING=1;_SILENCE_CXX17_ITERATOR_BASE_CLASS_DEPRECATION_WARNING=1;_SILENCE_CXX23_ALIGNED_STORAGE_DEPRECATION_WARNING=1;NDEBUG;HARLINNGRPC_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>BUILDING_HARLINN_GRPC=1;GRPC_EXPORT=__declspec(dllexport);_CRT_SECURE_NO_WARNINGS=1;_SILENCE_CXX17_ITERATOR_BASE_CLASS_DEPRECATION_WARNING=1;_SILENCE_CXX23_ALIGNED_STORAGE_DEPRECATION_WARNING=1;_SILENCE_CXX23_DENORM_DEPRECATION_WARNING=1;NDEBUG;HARLINNGRPC_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -194,7 +189,6 @@
       <AdditionalDependencies>Ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ModuleDefinitionFile>
       </ModuleDefinitionFile>
-      <OutputFile>$(OutDir)$(TargetName)-x64r$(TargetExt)</OutputFile>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>

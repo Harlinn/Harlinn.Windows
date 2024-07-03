@@ -19,6 +19,7 @@
 #define UTIL_UTF_H_
 
 #include <stdint.h>
+#include "re2/stringpiece.h"
 
 namespace re2 {
 
@@ -33,11 +34,11 @@ enum
   Runemax	= 0x10FFFF,	/* maximum rune value */
 };
 
-int runetochar(char* s, const Rune* r);
-int chartorune(Rune* r, const char* s);
-int fullrune(const char* s, int n);
-int utflen(const char* s);
-char* utfrune(const char*, Rune);
+HRE2_EXPORT int runetochar(char* s, const Rune* r);
+HRE2_EXPORT int chartorune(Rune* r, const char* s);
+HRE2_EXPORT int fullrune(const char* s, int n);
+HRE2_EXPORT int utflen(const char* s);
+HRE2_EXPORT char* utfrune(const char*, Rune);
 
 }  // namespace re2
 

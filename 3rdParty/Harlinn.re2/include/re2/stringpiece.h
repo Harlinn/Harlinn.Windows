@@ -9,8 +9,12 @@
 
 #ifdef BUILDING_HARLINN_RE2
 #define HRE2_EXPORT __declspec(dllexport)
+#define HRE2_TEMPLATE_EXPORT __declspec(dllexport)
+#define HRE2_TEMPLATE_EXPORT_DECL
 #else
 #define HRE2_EXPORT __declspec(dllimport)
+#define HRE2_TEMPLATE_EXPORT __declspec(dllimport)
+#define HRE2_TEMPLATE_EXPORT_DECL __declspec(dllimport)
 #pragma comment(lib,"Harlinn.re2.lib")
 #endif
 

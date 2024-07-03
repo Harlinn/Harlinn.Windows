@@ -718,7 +718,7 @@ namespace Harlinn::Common::Core::IO::Serialization
         void Read(T& result)
         {
             using VectorType = std::remove_cvref_t<T>;
-            using ValueType = std::remove_cvref_t<T::value_type>;
+            using ValueType = std::remove_cvref_t<typename T::value_type>;
             using Resolver = Serialization::Internal::ArrayDataTypeResolver<bool>;
 
             result.clear();
@@ -793,7 +793,7 @@ namespace Harlinn::Common::Core::IO::Serialization
         void Read(T& result)
         {
             using VectorType = std::remove_cvref_t<T>;
-            using ValueType = std::remove_cvref_t<T::value_type>;
+            using ValueType = std::remove_cvref_t<typename T::value_type>;
             using Resolver = Serialization::Internal::ArrayDataTypeResolver<ValueType>;
 
             result.clear();

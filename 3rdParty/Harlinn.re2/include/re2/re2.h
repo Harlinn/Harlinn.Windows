@@ -826,7 +826,7 @@ template <> struct Parse3ary<float> : public std::true_type {};
 template <> struct Parse3ary<double> : public std::true_type {};
 
 template <typename T>
-bool Parse(const char* str, size_t n, T* dest);
+HRE2_TEMPLATE_EXPORT_DECL bool Parse(const char* str, size_t n, T* dest);
 
 // Types for which the 4-ary Parse() function template has specializations.
 template <typename T> struct Parse4ary : public std::false_type {};
@@ -840,7 +840,7 @@ template <> struct Parse4ary<long long> : public std::true_type {};
 template <> struct Parse4ary<unsigned long long> : public std::true_type {};
 
 template <typename T>
-bool Parse(const char* str, size_t n, T* dest, int radix);
+HRE2_TEMPLATE_EXPORT_DECL bool Parse(const char* str, size_t n, T* dest, int radix);
 
 // Support absl::optional<T> for all T with a stock parser.
 template <typename T> struct Parse3ary<absl::optional<T>> : public Parse3ary<T> {};

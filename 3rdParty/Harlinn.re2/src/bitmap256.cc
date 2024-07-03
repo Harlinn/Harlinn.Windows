@@ -11,7 +11,7 @@
 
 namespace re2 {
 
-int Bitmap256::FindNextSetBit(int c) const {
+HRE2_EXPORT int Bitmap256::FindNextSetBit(int c) const {
   ABSL_DCHECK_GE(c, 0);
   ABSL_DCHECK_LE(c, 255);
 

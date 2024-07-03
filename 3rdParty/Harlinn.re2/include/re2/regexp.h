@@ -380,7 +380,7 @@ class Regexp {
   // Parses string s to produce regular expression, returned.
   // Caller must release return value with re->Decref().
   // On failure, sets *status (if status != NULL) and returns NULL.
-  static Regexp* Parse(absl::string_view s, ParseFlags flags,
+  HRE2_EXPORT static Regexp* Parse(absl::string_view s, ParseFlags flags,
                        RegexpStatus* status);
 
   // Returns a _new_ simplified version of the current regexp.
@@ -448,8 +448,8 @@ class Regexp {
   // Construction and execution of prog will
   // stay within approximately max_mem bytes of memory.
   // If max_mem <= 0, a reasonable default is used.
-  Prog* CompileToProg(int64_t max_mem);
-  Prog* CompileToReverseProg(int64_t max_mem);
+  HRE2_EXPORT Prog* CompileToProg(int64_t max_mem);
+  HRE2_EXPORT Prog* CompileToReverseProg(int64_t max_mem);
 
   // Whether to expect this library to find exactly the same answer as PCRE
   // when running this regexp.  Most regexps do mimic PCRE exactly, but a few

@@ -47,7 +47,7 @@ enum
 	Bad	= Runeerror,
 };
 
-int
+HRE2_EXPORT int
 chartorune(Rune *rune, const char *str)
 {
 	int c, c1, c2, c3;
@@ -123,7 +123,7 @@ bad:
 	return 1;
 }
 
-int
+HRE2_EXPORT int
 runetochar(char *str, const Rune *rune)
 {
 	/* Runes are signed, so convert to unsigned for range check. */
@@ -188,7 +188,7 @@ runelen(Rune rune)
 	return runetochar(str, &rune);
 }
 
-int
+HRE2_EXPORT int
 fullrune(const char *str, int n)
 {
 	if (n > 0) {
@@ -208,7 +208,7 @@ fullrune(const char *str, int n)
 }
 
 
-int
+HRE2_EXPORT int
 utflen(const char *s)
 {
 	int c;
@@ -229,7 +229,7 @@ utflen(const char *s)
 	return 0;
 }
 
-char*
+HRE2_EXPORT char*
 utfrune(const char *s, Rune c)
 {
 	int c1;

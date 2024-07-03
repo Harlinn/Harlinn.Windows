@@ -1062,27 +1062,27 @@ bool RE2::Rewrite(std::string* out,
 namespace re2_internal {
 
 template <>
-bool Parse(const char* str, size_t n, void* dest) {
+HRE2_TEMPLATE_EXPORT bool Parse(const char* str, size_t n, void* dest) {
   // We fail if somebody asked us to store into a non-NULL void* pointer
   return (dest == NULL);
 }
 
 template <>
-bool Parse(const char* str, size_t n, std::string* dest) {
+HRE2_TEMPLATE_EXPORT bool Parse(const char* str, size_t n, std::string* dest) {
   if (dest == NULL) return true;
   dest->assign(str, n);
   return true;
 }
 
 template <>
-bool Parse(const char* str, size_t n, absl::string_view* dest) {
+HRE2_TEMPLATE_EXPORT bool Parse(const char* str, size_t n, absl::string_view* dest) {
   if (dest == NULL) return true;
   *dest = absl::string_view(str, n);
   return true;
 }
 
 template <>
-bool Parse(const char* str, size_t n, char* dest) {
+HRE2_TEMPLATE_EXPORT bool Parse(const char* str, size_t n, char* dest) {
   if (n != 1) return false;
   if (dest == NULL) return true;
   *dest = str[0];
@@ -1090,7 +1090,7 @@ bool Parse(const char* str, size_t n, char* dest) {
 }
 
 template <>
-bool Parse(const char* str, size_t n, signed char* dest) {
+HRE2_TEMPLATE_EXPORT bool Parse(const char* str, size_t n, signed char* dest) {
   if (n != 1) return false;
   if (dest == NULL) return true;
   *dest = str[0];
@@ -1098,7 +1098,7 @@ bool Parse(const char* str, size_t n, signed char* dest) {
 }
 
 template <>
-bool Parse(const char* str, size_t n, unsigned char* dest) {
+HRE2_TEMPLATE_EXPORT bool Parse(const char* str, size_t n, unsigned char* dest) {
   if (n != 1) return false;
   if (dest == NULL) return true;
   *dest = str[0];
@@ -1166,7 +1166,7 @@ static const char* TerminateNumber(char* buf, size_t nbuf, const char* str,
 }
 
 template <>
-bool Parse(const char* str, size_t n, float* dest) {
+HRE2_TEMPLATE_EXPORT bool Parse(const char* str, size_t n, float* dest) {
   if (n == 0) return false;
   static const int kMaxLength = 200;
   char buf[kMaxLength+1];
@@ -1182,7 +1182,7 @@ bool Parse(const char* str, size_t n, float* dest) {
 }
 
 template <>
-bool Parse(const char* str, size_t n, double* dest) {
+HRE2_TEMPLATE_EXPORT bool Parse(const char* str, size_t n, double* dest) {
   if (n == 0) return false;
   static const int kMaxLength = 200;
   char buf[kMaxLength+1];
@@ -1198,7 +1198,7 @@ bool Parse(const char* str, size_t n, double* dest) {
 }
 
 template <>
-bool Parse(const char* str, size_t n, long* dest, int radix) {
+HRE2_TEMPLATE_EXPORT bool Parse(const char* str, size_t n, long* dest, int radix) {
   if (n == 0) return false;
   char buf[kMaxNumberLength+1];
   str = TerminateNumber(buf, sizeof buf, str, &n, false);
@@ -1213,7 +1213,7 @@ bool Parse(const char* str, size_t n, long* dest, int radix) {
 }
 
 template <>
-bool Parse(const char* str, size_t n, unsigned long* dest, int radix) {
+HRE2_TEMPLATE_EXPORT bool Parse(const char* str, size_t n, unsigned long* dest, int radix) {
   if (n == 0) return false;
   char buf[kMaxNumberLength+1];
   str = TerminateNumber(buf, sizeof buf, str, &n, false);
@@ -1234,7 +1234,7 @@ bool Parse(const char* str, size_t n, unsigned long* dest, int radix) {
 }
 
 template <>
-bool Parse(const char* str, size_t n, short* dest, int radix) {
+HRE2_TEMPLATE_EXPORT bool Parse(const char* str, size_t n, short* dest, int radix) {
   long r;
   if (!Parse(str, n, &r, radix)) return false;  // Could not parse
   if ((short)r != r) return false;              // Out of range
@@ -1244,7 +1244,7 @@ bool Parse(const char* str, size_t n, short* dest, int radix) {
 }
 
 template <>
-bool Parse(const char* str, size_t n, unsigned short* dest, int radix) {
+HRE2_TEMPLATE_EXPORT bool Parse(const char* str, size_t n, unsigned short* dest, int radix) {
   unsigned long r;
   if (!Parse(str, n, &r, radix)) return false;  // Could not parse
   if ((unsigned short)r != r) return false;     // Out of range
@@ -1254,7 +1254,7 @@ bool Parse(const char* str, size_t n, unsigned short* dest, int radix) {
 }
 
 template <>
-bool Parse(const char* str, size_t n, int* dest, int radix) {
+HRE2_TEMPLATE_EXPORT bool Parse(const char* str, size_t n, int* dest, int radix) {
   long r;
   if (!Parse(str, n, &r, radix)) return false;  // Could not parse
   if ((int)r != r) return false;                // Out of range
@@ -1264,7 +1264,7 @@ bool Parse(const char* str, size_t n, int* dest, int radix) {
 }
 
 template <>
-bool Parse(const char* str, size_t n, unsigned int* dest, int radix) {
+HRE2_TEMPLATE_EXPORT bool Parse(const char* str, size_t n, unsigned int* dest, int radix) {
   unsigned long r;
   if (!Parse(str, n, &r, radix)) return false;  // Could not parse
   if ((unsigned int)r != r) return false;       // Out of range
@@ -1274,7 +1274,7 @@ bool Parse(const char* str, size_t n, unsigned int* dest, int radix) {
 }
 
 template <>
-bool Parse(const char* str, size_t n, long long* dest, int radix) {
+HRE2_TEMPLATE_EXPORT bool Parse(const char* str, size_t n, long long* dest, int radix) {
   if (n == 0) return false;
   char buf[kMaxNumberLength+1];
   str = TerminateNumber(buf, sizeof buf, str, &n, false);
@@ -1289,7 +1289,7 @@ bool Parse(const char* str, size_t n, long long* dest, int radix) {
 }
 
 template <>
-bool Parse(const char* str, size_t n, unsigned long long* dest, int radix) {
+HRE2_TEMPLATE_EXPORT bool Parse(const char* str, size_t n, unsigned long long* dest, int radix) {
   if (n == 0) return false;
   char buf[kMaxNumberLength+1];
   str = TerminateNumber(buf, sizeof buf, str, &n, false);

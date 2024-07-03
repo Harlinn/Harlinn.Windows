@@ -1,0 +1,754 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{c7a51304-f5d3-45e0-9113-9f0c1233eb57}</ProjectGuid>
+    <RootNamespace>Harlinnprotobuf</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+    <EnableASAN>true</EnableASAN>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+    <EnableASAN>true</EnableASAN>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Label="Vcpkg">
+    <VcpkgEnabled>false</VcpkgEnabled>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>BUILDING_HARLINN_PROTOBUF=1;_SILENCE_CXX23_DENORM_DEPRECATION_WARNING=1;_SILENCE_CXX23_ALIGNED_STORAGE_DEPRECATION_WARNING=1;_CRT_SECURE_NO_WARNINGS=1;_SILENCE_CXX17_ITERATOR_BASE_CLASS_DEPRECATION_WARNING=1;WIN32;_DEBUG;HARLINNPROTOBUF_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.abseil\include;$(SolutionDir)3rdParty\Harlinn.utf8_range\include\utf8_range;$(SolutionDir)3rdParty\Harlinn.zlib;$(ProjectDir)include;$(ProjectDir)src;$(BOOST_ROOT);$(ProjectDir)include\third_party\utf8_range;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <AdditionalOptions>/Zc:__cplusplus /w34996 %(AdditionalOptions)</AdditionalOptions>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+      <AdditionalLibraryDirectories>$(OutDir);$(BOOST_ROOT)\stage\lib</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>BUILDING_HARLINN_PROTOBUF=1;_SILENCE_CXX23_DENORM_DEPRECATION_WARNING=1;_SILENCE_CXX23_ALIGNED_STORAGE_DEPRECATION_WARNING=1;_CRT_SECURE_NO_WARNINGS=1;_SILENCE_CXX17_ITERATOR_BASE_CLASS_DEPRECATION_WARNING=1;WIN32;NDEBUG;HARLINNPROTOBUF_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.abseil\include;$(SolutionDir)3rdParty\Harlinn.utf8_range\include\utf8_range;$(SolutionDir)3rdParty\Harlinn.zlib;$(ProjectDir)include;$(ProjectDir)src;$(BOOST_ROOT);$(ProjectDir)include\third_party\utf8_range;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <AdditionalOptions>/Zc:__cplusplus /w34996 %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+      <AdditionalLibraryDirectories>$(OutDir);$(BOOST_ROOT)\stage\lib</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>BUILDING_HARLINN_PROTOBUF=1;_SILENCE_CXX23_DENORM_DEPRECATION_WARNING=1;_SILENCE_CXX23_ALIGNED_STORAGE_DEPRECATION_WARNING=1;_CRT_SECURE_NO_WARNINGS=1;_SILENCE_CXX17_ITERATOR_BASE_CLASS_DEPRECATION_WARNING=1;_DEBUG;HARLINNPROTOBUF_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.abseil\include;$(SolutionDir)3rdParty\Harlinn.utf8_range\include\utf8_range;$(SolutionDir)3rdParty\Harlinn.zlib;$(ProjectDir)include;$(ProjectDir)src;$(BOOST_ROOT);$(ProjectDir)include\third_party\utf8_range;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <AdditionalOptions>/Zc:__cplusplus /w34996 %(AdditionalOptions)</AdditionalOptions>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+      <OutputFile>$(OutDir)$(TargetName)-x64d$(TargetExt)</OutputFile>
+      <AdditionalLibraryDirectories>$(OutDir);$(BOOST_ROOT)\stage\lib</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>BUILDING_HARLINN_PROTOBUF=1;_SILENCE_CXX23_DENORM_DEPRECATION_WARNING=1;_SILENCE_CXX23_ALIGNED_STORAGE_DEPRECATION_WARNING=1;_CRT_SECURE_NO_WARNINGS=1;_SILENCE_CXX17_ITERATOR_BASE_CLASS_DEPRECATION_WARNING=1;NDEBUG;HARLINNPROTOBUF_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.abseil\include;$(SolutionDir)3rdParty\Harlinn.utf8_range\include\utf8_range;$(SolutionDir)3rdParty\Harlinn.zlib;$(ProjectDir)include;$(ProjectDir)src;$(BOOST_ROOT);$(ProjectDir)include\third_party\utf8_range;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <AdditionalOptions>/Zc:__cplusplus /w34996 %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+      <OutputFile>$(OutDir)$(TargetName)-x64r$(TargetExt)</OutputFile>
+      <AdditionalLibraryDirectories>$(OutDir);$(BOOST_ROOT)\stage\lib</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="src\google\protobuf\any.cc" />
+    <ClCompile Include="src\google\protobuf\any.pb.cc" />
+    <ClCompile Include="src\google\protobuf\any_lite.cc" />
+    <ClCompile Include="src\google\protobuf\api.pb.cc" />
+    <ClCompile Include="src\google\protobuf\arena.cc" />
+    <ClCompile Include="src\google\protobuf\arenastring.cc" />
+    <ClCompile Include="src\google\protobuf\arenaz_sampler.cc" />
+    <ClCompile Include="src\google\protobuf\arena_align.cc" />
+    <ClCompile Include="src\google\protobuf\arena_test_util.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\code_generator.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\command_line_interface.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\cpp\cpp_enum.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\cpp\cpp_extension.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\cpp\cpp_field.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\cpp\field_generators\cpp_field_generators_cord_field.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\cpp\field_generators\cpp_field_generators_enum_field.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\cpp\field_generators\cpp_field_generators_map_field.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\cpp\field_generators\cpp_field_generators_message_field.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\cpp\field_generators\cpp_field_generators_primitive_field.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\cpp\field_generators\cpp_field_generators_string_field.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\cpp\field_generators\cpp_field_generators_string_view_field.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\cpp\cpp_file.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\cpp\cpp_generator.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\cpp\cpp_helpers.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\cpp\cpp_ifndef_guard.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\cpp\cpp_message.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\cpp\cpp_namespace_printer.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\cpp\cpp_padding_optimizer.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\cpp\cpp_parse_function_generator.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\cpp\cpp_service.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\cpp\cpp_tracker.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\csharp\csharp_doc_comment.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\csharp\csharp_enum.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\csharp\csharp_enum_field.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\csharp\csharp_field_base.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\csharp\csharp_generator.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\csharp\csharp_helpers.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\csharp\csharp_map_field.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\csharp\csharp_message.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\csharp\csharp_message_field.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\csharp\csharp_primitive_field.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\csharp\csharp_reflection_class.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\csharp\csharp_repeated_enum_field.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\csharp\csharp_repeated_message_field.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\csharp\csharp_repeated_primitive_field.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\csharp\csharp_source_generator_base.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\csharp\csharp_wrapper_field.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\csharp\csharp__names.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\importer.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\java\java_context.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\java\java_doc_comment.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\java\java_field_common.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\java\java_file.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\java\full\java_full_enum.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\java\full\java_full_enum_field.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\java\full\java_full_extension.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\java\full\java_full_generator_factory.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\java\full\java_full_make_field_gens.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\java\full\java_full_map_field.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\java\full\java_full_message.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\java\full\java_full_message_builder.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\java\full\java_full_message_field.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\java\full\java_full_primitive_field.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\java\full\java_full_service.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\java\full\java_full_string_field.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\java\java_generator.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\java\java_helpers.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\java\java_internal_helpers.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\java\java_java_features.pb.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\java\java_kotlin_generator.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\java\lite\java_lite_enum.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\java\lite\java_lite_enum_field.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\java\lite\java_lite_extension.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\java\lite\java_lite_generator_factory.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\java\lite\java_lite_make_field_gens.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\java\lite\java_lite_map_field.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\java\lite\java_lite_message.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\java\lite\java_lite_message_builder.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\java\lite\java_lite_message_field.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\java\lite\java_lite_primitive_field.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\java\lite\java_lite_string_field.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\java\java_message_serialization.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\java\java_names.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\java\java_name_resolver.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\java\java_shared_code_generator.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\main.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\objectivec\objectivec_enum.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\objectivec\objectivec_enum_field.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\objectivec\objectivec_extension.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\objectivec\objectivec_field.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\objectivec\objectivec_file.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\objectivec\objectivec_generator.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\objectivec\objectivec_helpers.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\objectivec\objectivec_import_writer.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\objectivec\objectivec_line_consumer.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\objectivec\objectivec_map_field.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\objectivec\objectivec_message.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\objectivec\objectivec_message_field.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\objectivec\objectivec_names.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\objectivec\objectivec_oneof.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\objectivec\objectivec_primitive_field.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\objectivec\objectivec_tf_decode_data.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\parser.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\php\php_names.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\php\php_generator.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\plugin.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\plugin.pb.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\python\python_generator.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\python\python_helpers.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\python\python_pyi_generator.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\retention.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\ruby\ruby_generator.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\rust\accessors\rust_accessors_accessors.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\rust\accessors\rust_accessors_accessor_case.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\rust\accessors\rust_accessors_helpers.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\rust\accessors\rust_accessors_map.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\rust\accessors\rust_accessors_repeated_field.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\rust\accessors\rust_accessors_singular_message.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\rust\accessors\rust_accessors_singular_scalar.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\rust\accessors\rust_accessors_singular_string.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\rust\accessors\rust_accessors_unsupported_field.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\rust\rust_context.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\rust\rust_crate_mapping.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\rust\rust_enum.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\rust\rust_generator.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\rust\rust_message.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\rust\rust_naming.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\rust\rust_oneof.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\rust\rust_relative_path.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\rust\rust_field_type.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\rust\rust_keywords.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\subprocess.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\versions.cc" />
+    <ClCompile Include="src\google\protobuf\compiler\zip_writer.cc" />
+    <ClCompile Include="src\google\protobuf\cpp_features.pb.cc" />
+    <ClCompile Include="src\google\protobuf\descriptor.cc" />
+    <ClCompile Include="src\google\protobuf\descriptor.pb.cc" />
+    <ClCompile Include="src\google\protobuf\descriptor_database.cc" />
+    <ClCompile Include="src\google\protobuf\duration.pb.cc" />
+    <ClCompile Include="src\google\protobuf\dynamic_message.cc" />
+    <ClCompile Include="src\google\protobuf\empty.pb.cc" />
+    <ClCompile Include="src\google\protobuf\extension_set.cc" />
+    <ClCompile Include="src\google\protobuf\extension_set_heavy.cc" />
+    <ClCompile Include="src\google\protobuf\feature_resolver.cc" />
+    <ClCompile Include="src\google\protobuf\field_mask.pb.cc" />
+    <ClCompile Include="src\google\protobuf\fully_verify_message_sets_opt_out.cc" />
+    <ClCompile Include="src\google\protobuf\generated_enum_util.cc" />
+    <ClCompile Include="src\google\protobuf\generated_message_bases.cc" />
+    <ClCompile Include="src\google\protobuf\generated_message_reflection.cc" />
+    <ClCompile Include="src\google\protobuf\generated_message_tctable_full.cc" />
+    <ClCompile Include="src\google\protobuf\generated_message_tctable_gen.cc" />
+    <ClCompile Include="src\google\protobuf\generated_message_tctable_lite.cc" />
+    <ClCompile Include="src\google\protobuf\generated_message_util.cc" />
+    <ClCompile Include="src\google\protobuf\implicit_weak_message.cc" />
+    <ClCompile Include="src\google\protobuf\inlined_string_field.cc" />
+    <ClCompile Include="src\google\protobuf\io\coded_stream.cc" />
+    <ClCompile Include="src\google\protobuf\io\gzip_stream.cc" />
+    <ClCompile Include="src\google\protobuf\io\io_win32.cc" />
+    <ClCompile Include="src\google\protobuf\io\printer.cc" />
+    <ClCompile Include="src\google\protobuf\io\strtod.cc" />
+    <ClCompile Include="src\google\protobuf\io\tokenizer.cc" />
+    <ClCompile Include="src\google\protobuf\io\zero_copy_sink.cc" />
+    <ClCompile Include="src\google\protobuf\io\zero_copy_stream.cc" />
+    <ClCompile Include="src\google\protobuf\io\zero_copy_stream_impl.cc" />
+    <ClCompile Include="src\google\protobuf\io\zero_copy_stream_impl_lite.cc" />
+    <ClCompile Include="src\google\protobuf\json\internal\json_internal_lexer.cc" />
+    <ClCompile Include="src\google\protobuf\json\internal\json_internal_message_path.cc" />
+    <ClCompile Include="src\google\protobuf\json\internal\json_internal_parser.cc" />
+    <ClCompile Include="src\google\protobuf\json\internal\json_internal_unparser.cc" />
+    <ClCompile Include="src\google\protobuf\json\internal\json_internal_untyped_message.cc" />
+    <ClCompile Include="src\google\protobuf\json\internal\json_internal_writer.cc" />
+    <ClCompile Include="src\google\protobuf\json\internal\json_internal_zero_copy_buffered_stream.cc" />
+    <ClCompile Include="src\google\protobuf\json\json.cc" />
+    <ClCompile Include="src\google\protobuf\map.cc" />
+    <ClCompile Include="src\google\protobuf\map_field.cc" />
+    <ClCompile Include="src\google\protobuf\message.cc" />
+    <ClCompile Include="src\google\protobuf\message_lite.cc" />
+    <ClCompile Include="src\google\protobuf\parse_context.cc" />
+    <ClCompile Include="src\google\protobuf\port.cc" />
+    <ClCompile Include="src\google\protobuf\raw_ptr.cc" />
+    <ClCompile Include="src\google\protobuf\reflection_mode.cc" />
+    <ClCompile Include="src\google\protobuf\reflection_ops.cc" />
+    <ClCompile Include="src\google\protobuf\repeated_field.cc" />
+    <ClCompile Include="src\google\protobuf\repeated_ptr_field.cc" />
+    <ClCompile Include="src\google\protobuf\service.cc" />
+    <ClCompile Include="src\google\protobuf\source_context.pb.cc" />
+    <ClCompile Include="src\google\protobuf\struct.pb.cc" />
+    <ClCompile Include="src\google\protobuf\stubs\common.cc" />
+    <ClCompile Include="src\google\protobuf\testing\file.cc" />
+    <ClCompile Include="src\google\protobuf\text_format.cc" />
+    <ClCompile Include="src\google\protobuf\timestamp.pb.cc" />
+    <ClCompile Include="src\google\protobuf\type.pb.cc" />
+    <ClCompile Include="src\google\protobuf\unknown_field_set.cc" />
+    <ClCompile Include="src\google\protobuf\util\delimited_message_util.cc" />
+    <ClCompile Include="src\google\protobuf\util\field_comparator.cc" />
+    <ClCompile Include="src\google\protobuf\util\field_mask_util.cc" />
+    <ClCompile Include="src\google\protobuf\util\message_differencer.cc" />
+    <ClCompile Include="src\google\protobuf\util\time_util.cc" />
+    <ClCompile Include="src\google\protobuf\util\type_resolver_util.cc" />
+    <ClCompile Include="src\google\protobuf\wire_format.cc" />
+    <ClCompile Include="src\google\protobuf\wire_format_lite.cc" />
+    <ClCompile Include="src\google\protobuf\wrappers.pb.cc" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="include\google\protobuf\any.proto" />
+    <None Include="include\google\protobuf\any_test.proto" />
+    <None Include="include\google\protobuf\api.proto" />
+    <None Include="include\google\protobuf\bridge\message_set.proto" />
+    <None Include="include\google\protobuf\compiler\cpp\test_bad_identifiers.proto" />
+    <None Include="include\google\protobuf\compiler\cpp\test_large_enum_value.proto" />
+    <None Include="include\google\protobuf\compiler\cpp\unittest.inc" />
+    <None Include="include\google\protobuf\compiler\java\message_serialization_unittest.proto" />
+    <None Include="include\google\protobuf\compiler\objectivec\method_dump.sh" />
+    <None Include="include\google\protobuf\compiler\plugin.proto" />
+    <None Include="include\google\protobuf\compiler\ruby\ruby_generated_code.proto" />
+    <None Include="include\google\protobuf\compiler\ruby\ruby_generated_code_pb.rb" />
+    <None Include="include\google\protobuf\compiler\ruby\ruby_generated_code_proto2.proto" />
+    <None Include="include\google\protobuf\compiler\ruby\ruby_generated_code_proto2_import.proto" />
+    <None Include="include\google\protobuf\compiler\ruby\ruby_generated_code_proto2_pb.rb" />
+    <None Include="include\google\protobuf\compiler\ruby\ruby_generated_pkg_explicit.proto" />
+    <None Include="include\google\protobuf\compiler\ruby\ruby_generated_pkg_explicit_legacy.proto" />
+    <None Include="include\google\protobuf\compiler\ruby\ruby_generated_pkg_explicit_legacy_pb.rb" />
+    <None Include="include\google\protobuf\compiler\ruby\ruby_generated_pkg_explicit_pb.rb" />
+    <None Include="include\google\protobuf\compiler\ruby\ruby_generated_pkg_implicit.proto" />
+    <None Include="include\google\protobuf\compiler\ruby\ruby_generated_pkg_implicit_pb.rb" />
+    <None Include="include\google\protobuf\compiler\test_plugin_injection.bzl" />
+    <None Include="include\google\protobuf\compiler\zip_output_unittest.sh" />
+    <None Include="include\google\protobuf\cpp_features.proto" />
+    <None Include="include\google\protobuf\descriptor.proto" />
+    <None Include="include\google\protobuf\duration.proto" />
+    <None Include="include\google\protobuf\edition_unittest.proto" />
+    <None Include="include\google\protobuf\empty.proto" />
+    <None Include="include\google\protobuf\field_mask.proto" />
+    <None Include="include\google\protobuf\map_lite_unittest.proto" />
+    <None Include="include\google\protobuf\map_proto2_unittest.proto" />
+    <None Include="include\google\protobuf\map_proto3_unittest.proto" />
+    <None Include="include\google\protobuf\map_test.inc" />
+    <None Include="include\google\protobuf\map_test_util.inc" />
+    <None Include="include\google\protobuf\map_unittest.proto" />
+    <None Include="include\google\protobuf\message_unittest.inc" />
+    <None Include="include\google\protobuf\message_unittest_legacy_apis.inc" />
+    <None Include="include\google\protobuf\port_def.inc" />
+    <None Include="include\google\protobuf\port_undef.inc" />
+    <None Include="include\google\protobuf\proto3_lite_unittest.inc" />
+    <None Include="include\google\protobuf\repeated_field_reflection_unittest.inc" />
+    <None Include="include\google\protobuf\sample_messages_edition.proto" />
+    <None Include="include\google\protobuf\source_context.proto" />
+    <None Include="include\google\protobuf\struct.proto" />
+    <None Include="include\google\protobuf\test_messages_proto2.proto" />
+    <None Include="include\google\protobuf\test_messages_proto3.proto" />
+    <None Include="include\google\protobuf\test_util.inc" />
+    <None Include="include\google\protobuf\timestamp.proto" />
+    <None Include="include\google\protobuf\type.proto" />
+    <None Include="include\google\protobuf\unittest.proto" />
+    <None Include="include\google\protobuf\unittest_arena.proto" />
+    <None Include="include\google\protobuf\unittest_custom_options.proto" />
+    <None Include="include\google\protobuf\unittest_delimited.proto" />
+    <None Include="include\google\protobuf\unittest_delimited_import.proto" />
+    <None Include="include\google\protobuf\unittest_drop_unknown_fields.proto" />
+    <None Include="include\google\protobuf\unittest_embed_optimize_for.proto" />
+    <None Include="include\google\protobuf\unittest_empty.proto" />
+    <None Include="include\google\protobuf\unittest_enormous_descriptor.proto" />
+    <None Include="include\google\protobuf\unittest_extension_set.proto" />
+    <None Include="include\google\protobuf\unittest_features.proto" />
+    <None Include="include\google\protobuf\unittest_import.proto" />
+    <None Include="include\google\protobuf\unittest_import_lite.proto" />
+    <None Include="include\google\protobuf\unittest_import_public.proto" />
+    <None Include="include\google\protobuf\unittest_import_public_lite.proto" />
+    <None Include="include\google\protobuf\unittest_invalid_features.proto" />
+    <None Include="include\google\protobuf\unittest_lazy_dependencies.proto" />
+    <None Include="include\google\protobuf\unittest_lazy_dependencies_custom_option.proto" />
+    <None Include="include\google\protobuf\unittest_lazy_dependencies_enum.proto" />
+    <None Include="include\google\protobuf\unittest_legacy_features.proto" />
+    <None Include="include\google\protobuf\unittest_lite.proto" />
+    <None Include="include\google\protobuf\unittest_lite_imports_nonlite.proto" />
+    <None Include="include\google\protobuf\unittest_mset.proto" />
+    <None Include="include\google\protobuf\unittest_mset_wire_format.proto" />
+    <None Include="include\google\protobuf\unittest_no_field_presence.proto" />
+    <None Include="include\google\protobuf\unittest_no_generic_services.proto" />
+    <None Include="include\google\protobuf\unittest_optimize_for.proto" />
+    <None Include="include\google\protobuf\unittest_preserve_unknown_enum.proto" />
+    <None Include="include\google\protobuf\unittest_preserve_unknown_enum2.proto" />
+    <None Include="include\google\protobuf\unittest_proto3.proto" />
+    <None Include="include\google\protobuf\unittest_proto3_arena.proto" />
+    <None Include="include\google\protobuf\unittest_proto3_arena_lite.proto" />
+    <None Include="include\google\protobuf\unittest_proto3_bad_macros.proto" />
+    <None Include="include\google\protobuf\unittest_proto3_extensions.proto" />
+    <None Include="include\google\protobuf\unittest_proto3_lite.proto" />
+    <None Include="include\google\protobuf\unittest_proto3_optional.proto" />
+    <None Include="include\google\protobuf\unittest_retention.proto" />
+    <None Include="include\google\protobuf\unittest_string_type.proto" />
+    <None Include="include\google\protobuf\unittest_string_view.proto" />
+    <None Include="include\google\protobuf\unittest_well_known_types.proto" />
+    <None Include="include\google\protobuf\util\json_format.proto" />
+    <None Include="include\google\protobuf\util\json_format_proto3.proto" />
+    <None Include="include\google\protobuf\util\message_differencer_unittest.proto" />
+    <None Include="include\google\protobuf\util\message_differencer_unittest_proto3.proto" />
+    <None Include="include\google\protobuf\wire_format_unittest.inc" />
+    <None Include="include\google\protobuf\wrappers.proto" />
+    <None Include="src\google\protobuf\compiler\objectivec\method_dump.sh" />
+    <None Include="src\google\protobuf\compiler\ruby\ruby_generated_code_pb.rb" />
+    <None Include="src\google\protobuf\compiler\ruby\ruby_generated_code_proto2_pb.rb" />
+    <None Include="src\google\protobuf\compiler\ruby\ruby_generated_pkg_explicit_legacy_pb.rb" />
+    <None Include="src\google\protobuf\compiler\ruby\ruby_generated_pkg_explicit_pb.rb" />
+    <None Include="src\google\protobuf\compiler\ruby\ruby_generated_pkg_implicit_pb.rb" />
+    <None Include="src\google\protobuf\wire_format_unittest.inc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\google\protobuf\any.h" />
+    <ClInclude Include="include\google\protobuf\any.pb.h" />
+    <ClInclude Include="include\google\protobuf\api.pb.h" />
+    <ClInclude Include="include\google\protobuf\arena.h" />
+    <ClInclude Include="include\google\protobuf\arenastring.h" />
+    <ClInclude Include="include\google\protobuf\arenaz_sampler.h" />
+    <ClInclude Include="include\google\protobuf\arena_align.h" />
+    <ClInclude Include="include\google\protobuf\arena_allocation_policy.h" />
+    <ClInclude Include="include\google\protobuf\arena_cleanup.h" />
+    <ClInclude Include="include\google\protobuf\arena_test_util.h" />
+    <ClInclude Include="include\google\protobuf\compiler\code_generator.h" />
+    <ClInclude Include="include\google\protobuf\compiler\command_line_interface.h" />
+    <ClInclude Include="include\google\protobuf\compiler\cpp\cpp_generator.h" />
+    <ClInclude Include="include\google\protobuf\compiler\cpp\enum.h" />
+    <ClInclude Include="include\google\protobuf\compiler\cpp\extension.h" />
+    <ClInclude Include="include\google\protobuf\compiler\cpp\field.h" />
+    <ClInclude Include="include\google\protobuf\compiler\cpp\field_generators\generators.h" />
+    <ClInclude Include="include\google\protobuf\compiler\cpp\file.h" />
+    <ClInclude Include="include\google\protobuf\compiler\cpp\generator.h" />
+    <ClInclude Include="include\google\protobuf\compiler\cpp\helpers.h" />
+    <ClInclude Include="include\google\protobuf\compiler\cpp\ifndef_guard.h" />
+    <ClInclude Include="include\google\protobuf\compiler\cpp\message.h" />
+    <ClInclude Include="include\google\protobuf\compiler\cpp\message_layout_helper.h" />
+    <ClInclude Include="include\google\protobuf\compiler\cpp\names.h" />
+    <ClInclude Include="include\google\protobuf\compiler\cpp\namespace_printer.h" />
+    <ClInclude Include="include\google\protobuf\compiler\cpp\options.h" />
+    <ClInclude Include="include\google\protobuf\compiler\cpp\padding_optimizer.h" />
+    <ClInclude Include="include\google\protobuf\compiler\cpp\parse_function_generator.h" />
+    <ClInclude Include="include\google\protobuf\compiler\cpp\service.h" />
+    <ClInclude Include="include\google\protobuf\compiler\cpp\tracker.h" />
+    <ClInclude Include="include\google\protobuf\compiler\cpp\unittest.h" />
+    <ClInclude Include="include\google\protobuf\compiler\csharp\csharp_doc_comment.h" />
+    <ClInclude Include="include\google\protobuf\compiler\csharp\csharp_enum.h" />
+    <ClInclude Include="include\google\protobuf\compiler\csharp\csharp_enum_field.h" />
+    <ClInclude Include="include\google\protobuf\compiler\csharp\csharp_field_base.h" />
+    <ClInclude Include="include\google\protobuf\compiler\csharp\csharp_generator.h" />
+    <ClInclude Include="include\google\protobuf\compiler\csharp\csharp_helpers.h" />
+    <ClInclude Include="include\google\protobuf\compiler\csharp\csharp_map_field.h" />
+    <ClInclude Include="include\google\protobuf\compiler\csharp\csharp_message.h" />
+    <ClInclude Include="include\google\protobuf\compiler\csharp\csharp_message_field.h" />
+    <ClInclude Include="include\google\protobuf\compiler\csharp\csharp_options.h" />
+    <ClInclude Include="include\google\protobuf\compiler\csharp\csharp_primitive_field.h" />
+    <ClInclude Include="include\google\protobuf\compiler\csharp\csharp_reflection_class.h" />
+    <ClInclude Include="include\google\protobuf\compiler\csharp\csharp_repeated_enum_field.h" />
+    <ClInclude Include="include\google\protobuf\compiler\csharp\csharp_repeated_message_field.h" />
+    <ClInclude Include="include\google\protobuf\compiler\csharp\csharp_repeated_primitive_field.h" />
+    <ClInclude Include="include\google\protobuf\compiler\csharp\csharp_source_generator_base.h" />
+    <ClInclude Include="include\google\protobuf\compiler\csharp\csharp_wrapper_field.h" />
+    <ClInclude Include="include\google\protobuf\compiler\csharp\names.h" />
+    <ClInclude Include="include\google\protobuf\compiler\importer.h" />
+    <ClInclude Include="include\google\protobuf\compiler\java\context.h" />
+    <ClInclude Include="include\google\protobuf\compiler\java\doc_comment.h" />
+    <ClInclude Include="include\google\protobuf\compiler\java\field_common.h" />
+    <ClInclude Include="include\google\protobuf\compiler\java\file.h" />
+    <ClInclude Include="include\google\protobuf\compiler\java\full\enum.h" />
+    <ClInclude Include="include\google\protobuf\compiler\java\full\enum_field.h" />
+    <ClInclude Include="include\google\protobuf\compiler\java\full\extension.h" />
+    <ClInclude Include="include\google\protobuf\compiler\java\full\field_generator.h" />
+    <ClInclude Include="include\google\protobuf\compiler\java\full\generator_factory.h" />
+    <ClInclude Include="include\google\protobuf\compiler\java\full\make_field_gens.h" />
+    <ClInclude Include="include\google\protobuf\compiler\java\full\map_field.h" />
+    <ClInclude Include="include\google\protobuf\compiler\java\full\message.h" />
+    <ClInclude Include="include\google\protobuf\compiler\java\full\message_builder.h" />
+    <ClInclude Include="include\google\protobuf\compiler\java\full\message_field.h" />
+    <ClInclude Include="include\google\protobuf\compiler\java\full\primitive_field.h" />
+    <ClInclude Include="include\google\protobuf\compiler\java\full\service.h" />
+    <ClInclude Include="include\google\protobuf\compiler\java\full\string_field.h" />
+    <ClInclude Include="include\google\protobuf\compiler\java\generator.h" />
+    <ClInclude Include="include\google\protobuf\compiler\java\generator_common.h" />
+    <ClInclude Include="include\google\protobuf\compiler\java\generator_factory.h" />
+    <ClInclude Include="include\google\protobuf\compiler\java\helpers.h" />
+    <ClInclude Include="include\google\protobuf\compiler\java\internal_helpers.h" />
+    <ClInclude Include="include\google\protobuf\compiler\java\java_features.pb.h" />
+    <ClInclude Include="include\google\protobuf\compiler\java\java_generator.h" />
+    <ClInclude Include="include\google\protobuf\compiler\java\kotlin_generator.h" />
+    <ClInclude Include="include\google\protobuf\compiler\java\lite\enum.h" />
+    <ClInclude Include="include\google\protobuf\compiler\java\lite\enum_field.h" />
+    <ClInclude Include="include\google\protobuf\compiler\java\lite\extension.h" />
+    <ClInclude Include="include\google\protobuf\compiler\java\lite\field_generator.h" />
+    <ClInclude Include="include\google\protobuf\compiler\java\lite\generator_factory.h" />
+    <ClInclude Include="include\google\protobuf\compiler\java\lite\make_field_gens.h" />
+    <ClInclude Include="include\google\protobuf\compiler\java\lite\map_field.h" />
+    <ClInclude Include="include\google\protobuf\compiler\java\lite\message.h" />
+    <ClInclude Include="include\google\protobuf\compiler\java\lite\message_builder.h" />
+    <ClInclude Include="include\google\protobuf\compiler\java\lite\message_field.h" />
+    <ClInclude Include="include\google\protobuf\compiler\java\lite\primitive_field.h" />
+    <ClInclude Include="include\google\protobuf\compiler\java\lite\string_field.h" />
+    <ClInclude Include="include\google\protobuf\compiler\java\message_serialization.h" />
+    <ClInclude Include="include\google\protobuf\compiler\java\names.h" />
+    <ClInclude Include="include\google\protobuf\compiler\java\name_resolver.h" />
+    <ClInclude Include="include\google\protobuf\compiler\java\options.h" />
+    <ClInclude Include="include\google\protobuf\compiler\java\shared_code_generator.h" />
+    <ClInclude Include="include\google\protobuf\compiler\objectivec\enum.h" />
+    <ClInclude Include="include\google\protobuf\compiler\objectivec\enum_field.h" />
+    <ClInclude Include="include\google\protobuf\compiler\objectivec\extension.h" />
+    <ClInclude Include="include\google\protobuf\compiler\objectivec\field.h" />
+    <ClInclude Include="include\google\protobuf\compiler\objectivec\file.h" />
+    <ClInclude Include="include\google\protobuf\compiler\objectivec\generator.h" />
+    <ClInclude Include="include\google\protobuf\compiler\objectivec\helpers.h" />
+    <ClInclude Include="include\google\protobuf\compiler\objectivec\import_writer.h" />
+    <ClInclude Include="include\google\protobuf\compiler\objectivec\line_consumer.h" />
+    <ClInclude Include="include\google\protobuf\compiler\objectivec\map_field.h" />
+    <ClInclude Include="include\google\protobuf\compiler\objectivec\message.h" />
+    <ClInclude Include="include\google\protobuf\compiler\objectivec\message_field.h" />
+    <ClInclude Include="include\google\protobuf\compiler\objectivec\names.h" />
+    <ClInclude Include="include\google\protobuf\compiler\objectivec\nsobject_methods.h" />
+    <ClInclude Include="include\google\protobuf\compiler\objectivec\oneof.h" />
+    <ClInclude Include="include\google\protobuf\compiler\objectivec\options.h" />
+    <ClInclude Include="include\google\protobuf\compiler\objectivec\primitive_field.h" />
+    <ClInclude Include="include\google\protobuf\compiler\objectivec\tf_decode_data.h" />
+    <ClInclude Include="include\google\protobuf\compiler\package_info.h" />
+    <ClInclude Include="include\google\protobuf\compiler\parser.h" />
+    <ClInclude Include="include\google\protobuf\compiler\php\names.h" />
+    <ClInclude Include="include\google\protobuf\compiler\php\php_generator.h" />
+    <ClInclude Include="include\google\protobuf\compiler\plugin.h" />
+    <ClInclude Include="include\google\protobuf\compiler\plugin.pb.h" />
+    <ClInclude Include="include\google\protobuf\compiler\python\generator.h" />
+    <ClInclude Include="include\google\protobuf\compiler\python\helpers.h" />
+    <ClInclude Include="include\google\protobuf\compiler\python\pyi_generator.h" />
+    <ClInclude Include="include\google\protobuf\compiler\python\python_generator.h" />
+    <ClInclude Include="include\google\protobuf\compiler\retention.h" />
+    <ClInclude Include="include\google\protobuf\compiler\ruby\ruby_generator.h" />
+    <ClInclude Include="include\google\protobuf\compiler\rust\accessors\accessors.h" />
+    <ClInclude Include="include\google\protobuf\compiler\rust\accessors\accessor_case.h" />
+    <ClInclude Include="include\google\protobuf\compiler\rust\accessors\generator.h" />
+    <ClInclude Include="include\google\protobuf\compiler\rust\accessors\helpers.h" />
+    <ClInclude Include="include\google\protobuf\compiler\rust\context.h" />
+    <ClInclude Include="include\google\protobuf\compiler\rust\crate_mapping.h" />
+    <ClInclude Include="include\google\protobuf\compiler\rust\enum.h" />
+    <ClInclude Include="include\google\protobuf\compiler\rust\generator.h" />
+    <ClInclude Include="include\google\protobuf\compiler\rust\message.h" />
+    <ClInclude Include="include\google\protobuf\compiler\rust\naming.h" />
+    <ClInclude Include="include\google\protobuf\compiler\rust\oneof.h" />
+    <ClInclude Include="include\google\protobuf\compiler\rust\relative_path.h" />
+    <ClInclude Include="include\google\protobuf\compiler\rust\rust_field_type.h" />
+    <ClInclude Include="include\google\protobuf\compiler\rust\rust_keywords.h" />
+    <ClInclude Include="include\google\protobuf\compiler\scc.h" />
+    <ClInclude Include="include\google\protobuf\compiler\subprocess.h" />
+    <ClInclude Include="include\google\protobuf\compiler\versions.h" />
+    <ClInclude Include="include\google\protobuf\compiler\zip_writer.h" />
+    <ClInclude Include="include\google\protobuf\cpp_edition_defaults.h" />
+    <ClInclude Include="include\google\protobuf\cpp_features.pb.h" />
+    <ClInclude Include="include\google\protobuf\descriptor.h" />
+    <ClInclude Include="include\google\protobuf\descriptor.pb.h" />
+    <ClInclude Include="include\google\protobuf\descriptor_database.h" />
+    <ClInclude Include="include\google\protobuf\descriptor_legacy.h" />
+    <ClInclude Include="include\google\protobuf\descriptor_lite.h" />
+    <ClInclude Include="include\google\protobuf\descriptor_visitor.h" />
+    <ClInclude Include="include\google\protobuf\duration.pb.h" />
+    <ClInclude Include="include\google\protobuf\dynamic_message.h" />
+    <ClInclude Include="include\google\protobuf\empty.pb.h" />
+    <ClInclude Include="include\google\protobuf\endian.h" />
+    <ClInclude Include="include\google\protobuf\explicitly_constructed.h" />
+    <ClInclude Include="include\google\protobuf\extension_set.h" />
+    <ClInclude Include="include\google\protobuf\extension_set_inl.h" />
+    <ClInclude Include="include\google\protobuf\feature_resolver.h" />
+    <ClInclude Include="include\google\protobuf\field_access_listener.h" />
+    <ClInclude Include="include\google\protobuf\field_mask.pb.h" />
+    <ClInclude Include="include\google\protobuf\generated_enum_reflection.h" />
+    <ClInclude Include="include\google\protobuf\generated_enum_util.h" />
+    <ClInclude Include="include\google\protobuf\generated_message_bases.h" />
+    <ClInclude Include="include\google\protobuf\generated_message_reflection.h" />
+    <ClInclude Include="include\google\protobuf\generated_message_tctable_decl.h" />
+    <ClInclude Include="include\google\protobuf\generated_message_tctable_gen.h" />
+    <ClInclude Include="include\google\protobuf\generated_message_tctable_impl.h" />
+    <ClInclude Include="include\google\protobuf\generated_message_util.h" />
+    <ClInclude Include="include\google\protobuf\has_bits.h" />
+    <ClInclude Include="include\google\protobuf\implicit_weak_message.h" />
+    <ClInclude Include="include\google\protobuf\inlined_string_field.h" />
+    <ClInclude Include="include\google\protobuf\internal_visibility.h" />
+    <ClInclude Include="include\google\protobuf\internal_visibility_for_testing.h" />
+    <ClInclude Include="include\google\protobuf\io\coded_stream.h" />
+    <ClInclude Include="include\google\protobuf\io\gzip_stream.h" />
+    <ClInclude Include="include\google\protobuf\io\io_win32.h" />
+    <ClInclude Include="include\google\protobuf\io\package_info.h" />
+    <ClInclude Include="include\google\protobuf\io\printer.h" />
+    <ClInclude Include="include\google\protobuf\io\strtod.h" />
+    <ClInclude Include="include\google\protobuf\io\test_zero_copy_stream.h" />
+    <ClInclude Include="include\google\protobuf\io\tokenizer.h" />
+    <ClInclude Include="include\google\protobuf\io\zero_copy_sink.h" />
+    <ClInclude Include="include\google\protobuf\io\zero_copy_stream.h" />
+    <ClInclude Include="include\google\protobuf\io\zero_copy_stream_impl.h" />
+    <ClInclude Include="include\google\protobuf\io\zero_copy_stream_impl_lite.h" />
+    <ClInclude Include="include\google\protobuf\json\internal\descriptor_traits.h" />
+    <ClInclude Include="include\google\protobuf\json\internal\lexer.h" />
+    <ClInclude Include="include\google\protobuf\json\internal\message_path.h" />
+    <ClInclude Include="include\google\protobuf\json\internal\parser.h" />
+    <ClInclude Include="include\google\protobuf\json\internal\parser_traits.h" />
+    <ClInclude Include="include\google\protobuf\json\internal\unparser.h" />
+    <ClInclude Include="include\google\protobuf\json\internal\unparser_traits.h" />
+    <ClInclude Include="include\google\protobuf\json\internal\untyped_message.h" />
+    <ClInclude Include="include\google\protobuf\json\internal\writer.h" />
+    <ClInclude Include="include\google\protobuf\json\internal\zero_copy_buffered_stream.h" />
+    <ClInclude Include="include\google\protobuf\json\json.h" />
+    <ClInclude Include="include\google\protobuf\map.h" />
+    <ClInclude Include="include\google\protobuf\map_entry.h" />
+    <ClInclude Include="include\google\protobuf\map_field.h" />
+    <ClInclude Include="include\google\protobuf\map_field_inl.h" />
+    <ClInclude Include="include\google\protobuf\map_field_lite.h" />
+    <ClInclude Include="include\google\protobuf\map_lite_test_util.h" />
+    <ClInclude Include="include\google\protobuf\map_test_util.h" />
+    <ClInclude Include="include\google\protobuf\map_test_util_impl.h" />
+    <ClInclude Include="include\google\protobuf\map_type_handler.h" />
+    <ClInclude Include="include\google\protobuf\message.h" />
+    <ClInclude Include="include\google\protobuf\message_lite.h" />
+    <ClInclude Include="include\google\protobuf\metadata.h" />
+    <ClInclude Include="include\google\protobuf\metadata_lite.h" />
+    <ClInclude Include="include\google\protobuf\package_info.h" />
+    <ClInclude Include="include\google\protobuf\parse_context.h" />
+    <ClInclude Include="include\google\protobuf\port.h" />
+    <ClInclude Include="include\google\protobuf\raw_ptr.h" />
+    <ClInclude Include="include\google\protobuf\reflection.h" />
+    <ClInclude Include="include\google\protobuf\reflection_internal.h" />
+    <ClInclude Include="include\google\protobuf\reflection_mode.h" />
+    <ClInclude Include="include\google\protobuf\reflection_ops.h" />
+    <ClInclude Include="include\google\protobuf\reflection_tester.h" />
+    <ClInclude Include="include\google\protobuf\reflection_visit_fields.h" />
+    <ClInclude Include="include\google\protobuf\reflection_visit_field_info.h" />
+    <ClInclude Include="include\google\protobuf\repeated_field.h" />
+    <ClInclude Include="include\google\protobuf\repeated_ptr_field.h" />
+    <ClInclude Include="include\google\protobuf\runtime_version.h" />
+    <ClInclude Include="include\google\protobuf\serial_arena.h" />
+    <ClInclude Include="include\google\protobuf\service.h" />
+    <ClInclude Include="include\google\protobuf\source_context.pb.h" />
+    <ClInclude Include="include\google\protobuf\string_block.h" />
+    <ClInclude Include="include\google\protobuf\string_member_robber.h" />
+    <ClInclude Include="include\google\protobuf\struct.pb.h" />
+    <ClInclude Include="include\google\protobuf\stubs\callback.h" />
+    <ClInclude Include="include\google\protobuf\stubs\common.h" />
+    <ClInclude Include="include\google\protobuf\stubs\platform_macros.h" />
+    <ClInclude Include="include\google\protobuf\stubs\port.h" />
+    <ClInclude Include="include\google\protobuf\stubs\status_macros.h" />
+    <ClInclude Include="include\google\protobuf\testing\file.h" />
+    <ClInclude Include="include\google\protobuf\test_textproto.h" />
+    <ClInclude Include="include\google\protobuf\test_util.h" />
+    <ClInclude Include="include\google\protobuf\test_util2.h" />
+    <ClInclude Include="include\google\protobuf\test_util_lite.h" />
+    <ClInclude Include="include\google\protobuf\text_format.h" />
+    <ClInclude Include="include\google\protobuf\thread_safe_arena.h" />
+    <ClInclude Include="include\google\protobuf\timestamp.pb.h" />
+    <ClInclude Include="include\google\protobuf\type.pb.h" />
+    <ClInclude Include="include\google\protobuf\unknown_field_set.h" />
+    <ClInclude Include="include\google\protobuf\unredacted_debug_format_for_test.h" />
+    <ClInclude Include="include\google\protobuf\util\delimited_message_util.h" />
+    <ClInclude Include="include\google\protobuf\util\field_comparator.h" />
+    <ClInclude Include="include\google\protobuf\util\field_mask_util.h" />
+    <ClInclude Include="include\google\protobuf\util\json_util.h" />
+    <ClInclude Include="include\google\protobuf\util\message_differencer.h" />
+    <ClInclude Include="include\google\protobuf\util\package_info.h" />
+    <ClInclude Include="include\google\protobuf\util\time_util.h" />
+    <ClInclude Include="include\google\protobuf\util\type_resolver.h" />
+    <ClInclude Include="include\google\protobuf\util\type_resolver_util.h" />
+    <ClInclude Include="include\google\protobuf\varint_shuffle.h" />
+    <ClInclude Include="include\google\protobuf\wire_format.h" />
+    <ClInclude Include="include\google\protobuf\wire_format_lite.h" />
+    <ClInclude Include="include\google\protobuf\wrappers.pb.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
