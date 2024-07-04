@@ -192,7 +192,6 @@
     <ClCompile Include="png.c" />
     <ClCompile Include="pngerror.c" />
     <ClCompile Include="pngget.c" />
-    <ClCompile Include="pnglibconf.c" />
     <ClCompile Include="pngmem.c" />
     <ClCompile Include="pngpread.c" />
     <ClCompile Include="pngread.c" />
@@ -207,19 +206,18 @@
     <ClCompile Include="pngwutil.c" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Readme\AUTHORS" />
+    <None Include="Readme\LICENSE" />
+    <None Include="Readme\README" />
+  </ItemGroup>
+  <ItemGroup>
     <ClInclude Include="png.h" />
     <ClInclude Include="pngconf.h" />
     <ClInclude Include="pngdebug.h" />
     <ClInclude Include="pnginfo.h" />
     <ClInclude Include="pnglibconf.h" />
-    <ClInclude Include="pngprefix.h" />
     <ClInclude Include="pngpriv.h" />
     <ClInclude Include="pngstruct.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Readme\AUTHORS" />
-    <None Include="Readme\LICENSE" />
-    <None Include="Readme\README" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -980,7 +980,7 @@ C++ class to parse NMEA0183 sentences
 **Project:** Harlinn.piex
 
 ### [libpng](http://www.libpng.org/pub/png/libpng.html)
-**Version:** 1.6.37
+**Version:** 1.6.43
 
 **Description:**
 > libpng is the official PNG reference library. It supports almost all PNG features, 
@@ -1326,7 +1326,7 @@ Skia Color Management
 **Project:** Harlinn.yuv
 
 ### [zlib](http://zlib.net/)
-**Version:** 1.2.11
+**Version:** 1.3.1
 
 **Description:**
 > zlib is designed to be a free, general-purpose, legally unencumbered -- that is, not 
