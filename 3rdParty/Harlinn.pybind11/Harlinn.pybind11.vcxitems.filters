@@ -1,0 +1,135 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="include">
+      <UniqueIdentifier>{f238c436-a630-44f0-bc32-f3f8f902365f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\pybind11">
+      <UniqueIdentifier>{37a411ae-e176-4ecd-adfb-91923afd7b7d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\pybind11\detail">
+      <UniqueIdentifier>{9794c3c8-fce4-492f-b2c5-f7152614f86c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\pybind11\eigen">
+      <UniqueIdentifier>{142f66a9-132d-458d-8334-353b69766f04}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\pybind11\stl">
+      <UniqueIdentifier>{79d28acd-a75c-4f6c-b4c6-cf1ac9fd8796}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Readme">
+      <UniqueIdentifier>{746f5632-4a91-451e-9f13-ee37f5b2aa3e}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\pybind11\detail\class.h">
+      <Filter>include\pybind11\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\pybind11\detail\common.h">
+      <Filter>include\pybind11\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\pybind11\detail\descr.h">
+      <Filter>include\pybind11\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\pybind11\detail\init.h">
+      <Filter>include\pybind11\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\pybind11\detail\internals.h">
+      <Filter>include\pybind11\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\pybind11\detail\type_caster_base.h">
+      <Filter>include\pybind11\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\pybind11\detail\typeid.h">
+      <Filter>include\pybind11\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\pybind11\eigen\common.h">
+      <Filter>include\pybind11\eigen</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\pybind11\eigen\matrix.h">
+      <Filter>include\pybind11\eigen</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\pybind11\eigen\tensor.h">
+      <Filter>include\pybind11\eigen</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\pybind11\stl\filesystem.h">
+      <Filter>include\pybind11\stl</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\pybind11\attr.h">
+      <Filter>include\pybind11</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\pybind11\buffer_info.h">
+      <Filter>include\pybind11</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\pybind11\cast.h">
+      <Filter>include\pybind11</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\pybind11\chrono.h">
+      <Filter>include\pybind11</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\pybind11\common.h">
+      <Filter>include\pybind11</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\pybind11\complex.h">
+      <Filter>include\pybind11</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\pybind11\eigen.h">
+      <Filter>include\pybind11</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\pybind11\embed.h">
+      <Filter>include\pybind11</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\pybind11\eval.h">
+      <Filter>include\pybind11</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\pybind11\functional.h">
+      <Filter>include\pybind11</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\pybind11\gil.h">
+      <Filter>include\pybind11</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\pybind11\gil_safe_call_once.h">
+      <Filter>include\pybind11</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\pybind11\iostream.h">
+      <Filter>include\pybind11</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\pybind11\numpy.h">
+      <Filter>include\pybind11</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\pybind11\operators.h">
+      <Filter>include\pybind11</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\pybind11\options.h">
+      <Filter>include\pybind11</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\pybind11\pybind11.h">
+      <Filter>include\pybind11</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\pybind11\pytypes.h">
+      <Filter>include\pybind11</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\pybind11\stl.h">
+      <Filter>include\pybind11</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\pybind11\stl_bind.h">
+      <Filter>include\pybind11</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\pybind11\type_caster_pyobject_ptr.h">
+      <Filter>include\pybind11</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\pybind11\typing.h">
+      <Filter>include\pybind11</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)Readme\LICENSE">
+      <Filter>Readme</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)Readme\README.rst">
+      <Filter>Readme</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)Readme\SECURITY.md">
+      <Filter>Readme</Filter>
+    </None>
+  </ItemGroup>
+</Project>

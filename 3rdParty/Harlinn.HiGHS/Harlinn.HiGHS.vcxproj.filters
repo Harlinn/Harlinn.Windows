@@ -1,0 +1,1393 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="include">
+      <UniqueIdentifier>{5d8d4d8b-a584-4334-83a3-28f7d8d29ca7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{ca2f564c-dd81-4770-875b-df627e2139d1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="extern">
+      <UniqueIdentifier>{5560d7e5-407a-4514-99b7-c4f4d138dd08}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="extern\filereaderlp">
+      <UniqueIdentifier>{b0cff1c3-1837-4199-af08-7bd9028bf41e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="extern\pdqsort">
+      <UniqueIdentifier>{144129f7-84c2-4c50-87b6-dd9d37c63dd2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="extern\zstr">
+      <UniqueIdentifier>{0fa60b47-a0bc-43a5-847d-d49c7b338075}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\HiGHS">
+      <UniqueIdentifier>{6fe7ad5c-d30e-4def-b678-b71b0ccfe909}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\HiGHS\interfaces">
+      <UniqueIdentifier>{c6042f54-4537-444b-887b-8cf662646329}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\HiGHS\io">
+      <UniqueIdentifier>{466dec97-0829-4c76-829b-da6872218a8f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\HiGHS\ipm">
+      <UniqueIdentifier>{ccc37fb4-60b6-4cab-9860-5c6a227aad95}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\HiGHS\lp_data">
+      <UniqueIdentifier>{2fb874bb-4784-4852-84dd-844155f52134}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\HiGHS\mip">
+      <UniqueIdentifier>{272bb1c1-f95a-4449-9f3b-caa54c2410bc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\HiGHS\model">
+      <UniqueIdentifier>{80936034-b9fc-4066-bcd7-7e94b0e9fd9e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\HiGHS\parallel">
+      <UniqueIdentifier>{c5a2348e-af22-4c98-971c-cf44c6036283}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\HiGHS\pdlp">
+      <UniqueIdentifier>{f6e96745-05b4-4f32-8ea5-acbe9292f474}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\HiGHS\presolve">
+      <UniqueIdentifier>{9eedd8e6-ce4b-4e7e-b6ba-6ffb61d2c37c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\HiGHS\qpsolver">
+      <UniqueIdentifier>{b90acdc1-e810-4c5c-a4ff-f41538639f25}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\HiGHS\simplex">
+      <UniqueIdentifier>{c81c41a2-d3c6-4025-8d1b-42ffe27e8241}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\HiGHS\test">
+      <UniqueIdentifier>{97826eb4-51b7-4dde-beb0-92b7c27647f0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\HiGHS\util">
+      <UniqueIdentifier>{7ca26bd0-8f13-419a-97df-a4d4ca5b1b64}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\HiGHS\ipm\basiclu">
+      <UniqueIdentifier>{89444221-e566-473e-85f2-755b85f02ed1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\HiGHS\ipm\ipx">
+      <UniqueIdentifier>{a594f804-59f9-4272-b7b8-d0ca6041d1d0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\HiGHS\pdlp\cupdlp">
+      <UniqueIdentifier>{5cbd224f-387d-4366-bd01-8957085f218b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\interfaces">
+      <UniqueIdentifier>{17004341-8af3-489b-b508-3739feee9937}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\io">
+      <UniqueIdentifier>{c4ea1ba4-9097-4446-834f-a067911d2e3b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\ipm">
+      <UniqueIdentifier>{77a19e77-a147-424c-a43e-6a726f5a140b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\lp_data">
+      <UniqueIdentifier>{316ebc6e-09a3-43bf-b87b-3f74dcb1d018}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\mip">
+      <UniqueIdentifier>{447a4c6e-fef9-47f7-b1da-903a315bbcdf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\model">
+      <UniqueIdentifier>{0addc652-196c-40d2-8125-f1807d9f7c65}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\parallel">
+      <UniqueIdentifier>{329a9c92-d1f5-474f-a8e4-63e9b65e4ea9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\pdlp">
+      <UniqueIdentifier>{2bcb7315-b835-4202-98ec-9390dd1c8a45}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\presolve">
+      <UniqueIdentifier>{dd53d938-d009-498b-93d6-84e23fc6d64d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\qpsolver">
+      <UniqueIdentifier>{b7b85582-1a6d-4f7b-81c9-2fcc1e962908}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\simplex">
+      <UniqueIdentifier>{7d7596a5-a8fc-45cf-afff-a39c694f15de}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\test">
+      <UniqueIdentifier>{c8e005bd-339a-4ca4-81e9-9c38b28c9c66}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\util">
+      <UniqueIdentifier>{8ed18c5d-13f0-47d1-a617-038a706b2bbd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\ipm\basiclu">
+      <UniqueIdentifier>{506ae1ed-905b-4f19-b97c-fd6b4499d8ca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\ipm\ipx">
+      <UniqueIdentifier>{9b679183-e9e5-4738-a3d1-f7cf38bc1eb8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\pdlp\cupdlp">
+      <UniqueIdentifier>{cca13a8f-e8bd-4655-8220-59b68ccb57e7}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="dllmain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\interfaces\highs_c_api.cpp">
+      <Filter>src\interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="src\io\Filereader.cpp">
+      <Filter>src\io</Filter>
+    </ClCompile>
+    <ClCompile Include="src\io\FilereaderEms.cpp">
+      <Filter>src\io</Filter>
+    </ClCompile>
+    <ClCompile Include="src\io\FilereaderLp.cpp">
+      <Filter>src\io</Filter>
+    </ClCompile>
+    <ClCompile Include="src\io\FilereaderMps.cpp">
+      <Filter>src\io</Filter>
+    </ClCompile>
+    <ClCompile Include="src\io\HighsIO.cpp">
+      <Filter>src\io</Filter>
+    </ClCompile>
+    <ClCompile Include="src\io\HMpsFF.cpp">
+      <Filter>src\io</Filter>
+    </ClCompile>
+    <ClCompile Include="src\io\HMPSIO.cpp">
+      <Filter>src\io</Filter>
+    </ClCompile>
+    <ClCompile Include="src\io\LoadOptions.cpp">
+      <Filter>src\io</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ipm\basiclu\basiclu_factorize.c">
+      <Filter>src\ipm\basiclu</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ipm\basiclu\basiclu_get_factors.c">
+      <Filter>src\ipm\basiclu</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ipm\basiclu\basiclu_initialize.c">
+      <Filter>src\ipm\basiclu</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ipm\basiclu\basiclu_object.c">
+      <Filter>src\ipm\basiclu</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ipm\basiclu\basiclu_solve_dense.c">
+      <Filter>src\ipm\basiclu</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ipm\basiclu\basiclu_solve_for_update.c">
+      <Filter>src\ipm\basiclu</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ipm\basiclu\basiclu_solve_sparse.c">
+      <Filter>src\ipm\basiclu</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ipm\basiclu\basiclu_update.c">
+      <Filter>src\ipm\basiclu</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ipm\basiclu\lu_build_factors.c">
+      <Filter>src\ipm\basiclu</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ipm\basiclu\lu_condest.c">
+      <Filter>src\ipm\basiclu</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ipm\basiclu\lu_dfs.c">
+      <Filter>src\ipm\basiclu</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ipm\basiclu\lu_factorize_bump.c">
+      <Filter>src\ipm\basiclu</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ipm\basiclu\lu_file.c">
+      <Filter>src\ipm\basiclu</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ipm\basiclu\lu_garbage_perm.c">
+      <Filter>src\ipm\basiclu</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ipm\basiclu\lu_initialize.c">
+      <Filter>src\ipm\basiclu</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ipm\basiclu\lu_internal.c">
+      <Filter>src\ipm\basiclu</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ipm\basiclu\lu_markowitz.c">
+      <Filter>src\ipm\basiclu</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ipm\basiclu\lu_matrix_norm.c">
+      <Filter>src\ipm\basiclu</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ipm\basiclu\lu_pivot.c">
+      <Filter>src\ipm\basiclu</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ipm\basiclu\lu_residual_test.c">
+      <Filter>src\ipm\basiclu</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ipm\basiclu\lu_setup_bump.c">
+      <Filter>src\ipm\basiclu</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ipm\basiclu\lu_singletons.c">
+      <Filter>src\ipm\basiclu</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ipm\basiclu\lu_solve_dense.c">
+      <Filter>src\ipm\basiclu</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ipm\basiclu\lu_solve_for_update.c">
+      <Filter>src\ipm\basiclu</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ipm\basiclu\lu_solve_sparse.c">
+      <Filter>src\ipm\basiclu</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ipm\basiclu\lu_solve_symbolic.c">
+      <Filter>src\ipm\basiclu</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ipm\basiclu\lu_solve_triangular.c">
+      <Filter>src\ipm\basiclu</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ipm\basiclu\lu_update.c">
+      <Filter>src\ipm\basiclu</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ipm\ipx\basiclu_kernel.cc">
+      <Filter>src\ipm\ipx</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ipm\ipx\basiclu_wrapper.cc">
+      <Filter>src\ipm\ipx</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ipm\ipx\ipx_basis.cc">
+      <Filter>src\ipm\ipx</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ipm\ipx\conjugate_residuals.cc">
+      <Filter>src\ipm\ipx</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ipm\ipx\control.cc">
+      <Filter>src\ipm\ipx</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ipm\ipx\crossover.cc">
+      <Filter>src\ipm\ipx</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ipm\ipx\diagonal_precond.cc">
+      <Filter>src\ipm\ipx</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ipm\ipx\forrest_tomlin.cc">
+      <Filter>src\ipm\ipx</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ipm\ipx\guess_basis.cc">
+      <Filter>src\ipm\ipx</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ipm\ipx\indexed_vector.cc">
+      <Filter>src\ipm\ipx</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ipm\ipx\info.cc">
+      <Filter>src\ipm\ipx</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ipm\ipx\ipm.cc">
+      <Filter>src\ipm\ipx</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ipm\ipx\ipx_c.cc">
+      <Filter>src\ipm\ipx</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ipm\ipx\iterate.cc">
+      <Filter>src\ipm\ipx</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ipm\ipx\kkt_solver.cc">
+      <Filter>src\ipm\ipx</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ipm\ipx\kkt_solver_basis.cc">
+      <Filter>src\ipm\ipx</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ipm\ipx\kkt_solver_diag.cc">
+      <Filter>src\ipm\ipx</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ipm\ipx\linear_operator.cc">
+      <Filter>src\ipm\ipx</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ipm\ipx\lp_solver.cc">
+      <Filter>src\ipm\ipx</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ipm\ipx\lu_factorization.cc">
+      <Filter>src\ipm\ipx</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ipm\ipx\ipx_lu_update.cc">
+      <Filter>src\ipm\ipx</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ipm\ipx\maxvolume.cc">
+      <Filter>src\ipm\ipx</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ipm\ipx\model.cc">
+      <Filter>src\ipm\ipx</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ipm\ipx\normal_matrix.cc">
+      <Filter>src\ipm\ipx</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ipm\ipx\sparse_matrix.cc">
+      <Filter>src\ipm\ipx</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ipm\ipx\sparse_utils.cc">
+      <Filter>src\ipm\ipx</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ipm\ipx\splitted_normal_matrix.cc">
+      <Filter>src\ipm\ipx</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ipm\ipx\starting_basis.cc">
+      <Filter>src\ipm\ipx</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ipm\ipx\symbolic_invert.cc">
+      <Filter>src\ipm\ipx</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ipm\ipx\timer.cc">
+      <Filter>src\ipm\ipx</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ipm\ipx\utils.cc">
+      <Filter>src\ipm\ipx</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ipm\IpxWrapper.cpp">
+      <Filter>src\ipm</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lp_data\Highs.cpp">
+      <Filter>src\lp_data</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lp_data\HighsCallback.cpp">
+      <Filter>src\lp_data</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lp_data\HighsDebug.cpp">
+      <Filter>src\lp_data</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lp_data\HighsDeprecated.cpp">
+      <Filter>src\lp_data</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lp_data\HighsInfo.cpp">
+      <Filter>src\lp_data</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lp_data\HighsInfoDebug.cpp">
+      <Filter>src\lp_data</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lp_data\HighsInterface.cpp">
+      <Filter>src\lp_data</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lp_data\HighsLp.cpp">
+      <Filter>src\lp_data</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lp_data\HighsLpUtils.cpp">
+      <Filter>src\lp_data</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lp_data\HighsModelUtils.cpp">
+      <Filter>src\lp_data</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lp_data\HighsOptions.cpp">
+      <Filter>src\lp_data</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lp_data\HighsRanging.cpp">
+      <Filter>src\lp_data</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lp_data\HighsSolution.cpp">
+      <Filter>src\lp_data</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lp_data\HighsSolutionDebug.cpp">
+      <Filter>src\lp_data</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lp_data\HighsSolve.cpp">
+      <Filter>src\lp_data</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lp_data\HighsStatus.cpp">
+      <Filter>src\lp_data</Filter>
+    </ClCompile>
+    <ClCompile Include="src\mip\HighsCliqueTable.cpp">
+      <Filter>src\mip</Filter>
+    </ClCompile>
+    <ClCompile Include="src\mip\HighsConflictPool.cpp">
+      <Filter>src\mip</Filter>
+    </ClCompile>
+    <ClCompile Include="src\mip\HighsCutGeneration.cpp">
+      <Filter>src\mip</Filter>
+    </ClCompile>
+    <ClCompile Include="src\mip\HighsCutPool.cpp">
+      <Filter>src\mip</Filter>
+    </ClCompile>
+    <ClCompile Include="src\mip\HighsDebugSol.cpp">
+      <Filter>src\mip</Filter>
+    </ClCompile>
+    <ClCompile Include="src\mip\HighsDomain.cpp">
+      <Filter>src\mip</Filter>
+    </ClCompile>
+    <ClCompile Include="src\mip\HighsDynamicRowMatrix.cpp">
+      <Filter>src\mip</Filter>
+    </ClCompile>
+    <ClCompile Include="src\mip\HighsGFkSolve.cpp">
+      <Filter>src\mip</Filter>
+    </ClCompile>
+    <ClCompile Include="src\mip\HighsImplications.cpp">
+      <Filter>src\mip</Filter>
+    </ClCompile>
+    <ClCompile Include="src\mip\HighsLpAggregator.cpp">
+      <Filter>src\mip</Filter>
+    </ClCompile>
+    <ClCompile Include="src\mip\HighsLpRelaxation.cpp">
+      <Filter>src\mip</Filter>
+    </ClCompile>
+    <ClCompile Include="src\mip\HighsMipSolver.cpp">
+      <Filter>src\mip</Filter>
+    </ClCompile>
+    <ClCompile Include="src\mip\HighsMipSolverData.cpp">
+      <Filter>src\mip</Filter>
+    </ClCompile>
+    <ClCompile Include="src\mip\HighsModkSeparator.cpp">
+      <Filter>src\mip</Filter>
+    </ClCompile>
+    <ClCompile Include="src\mip\HighsNodeQueue.cpp">
+      <Filter>src\mip</Filter>
+    </ClCompile>
+    <ClCompile Include="src\mip\HighsObjectiveFunction.cpp">
+      <Filter>src\mip</Filter>
+    </ClCompile>
+    <ClCompile Include="src\mip\HighsPathSeparator.cpp">
+      <Filter>src\mip</Filter>
+    </ClCompile>
+    <ClCompile Include="src\mip\HighsPrimalHeuristics.cpp">
+      <Filter>src\mip</Filter>
+    </ClCompile>
+    <ClCompile Include="src\mip\HighsPseudocost.cpp">
+      <Filter>src\mip</Filter>
+    </ClCompile>
+    <ClCompile Include="src\mip\HighsRedcostFixing.cpp">
+      <Filter>src\mip</Filter>
+    </ClCompile>
+    <ClCompile Include="src\mip\HighsSearch.cpp">
+      <Filter>src\mip</Filter>
+    </ClCompile>
+    <ClCompile Include="src\mip\HighsSeparation.cpp">
+      <Filter>src\mip</Filter>
+    </ClCompile>
+    <ClCompile Include="src\mip\HighsSeparator.cpp">
+      <Filter>src\mip</Filter>
+    </ClCompile>
+    <ClCompile Include="src\mip\HighsTableauSeparator.cpp">
+      <Filter>src\mip</Filter>
+    </ClCompile>
+    <ClCompile Include="src\mip\HighsTransformedLp.cpp">
+      <Filter>src\mip</Filter>
+    </ClCompile>
+    <ClCompile Include="src\model\HighsHessian.cpp">
+      <Filter>src\model</Filter>
+    </ClCompile>
+    <ClCompile Include="src\model\HighsHessianUtils.cpp">
+      <Filter>src\model</Filter>
+    </ClCompile>
+    <ClCompile Include="src\model\HighsModel.cpp">
+      <Filter>src\model</Filter>
+    </ClCompile>
+    <ClCompile Include="src\parallel\HighsTaskExecutor.cpp">
+      <Filter>src\parallel</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pdlp\cupdlp\cupdlp_cs.c">
+      <Filter>src\pdlp\cupdlp</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pdlp\cupdlp\cupdlp_linalg.c">
+      <Filter>src\pdlp\cupdlp</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pdlp\cupdlp\cupdlp_proj.c">
+      <Filter>src\pdlp\cupdlp</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pdlp\cupdlp\cupdlp_restart.c">
+      <Filter>src\pdlp\cupdlp</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pdlp\cupdlp\cupdlp_scaling_cuda.c">
+      <Filter>src\pdlp\cupdlp</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pdlp\cupdlp\cupdlp_solver.c">
+      <Filter>src\pdlp\cupdlp</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pdlp\cupdlp\cupdlp_step.c">
+      <Filter>src\pdlp\cupdlp</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pdlp\cupdlp\cupdlp_utils.c">
+      <Filter>src\pdlp\cupdlp</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pdlp\CupdlpWrapper.cpp">
+      <Filter>src\pdlp</Filter>
+    </ClCompile>
+    <ClCompile Include="src\presolve\HighsPostsolveStack.cpp">
+      <Filter>src\presolve</Filter>
+    </ClCompile>
+    <ClCompile Include="src\presolve\HighsSymmetry.cpp">
+      <Filter>src\presolve</Filter>
+    </ClCompile>
+    <ClCompile Include="src\presolve\HPresolve.cpp">
+      <Filter>src\presolve</Filter>
+    </ClCompile>
+    <ClCompile Include="src\presolve\HPresolveAnalysis.cpp">
+      <Filter>src\presolve</Filter>
+    </ClCompile>
+    <ClCompile Include="src\presolve\ICrash.cpp">
+      <Filter>src\presolve</Filter>
+    </ClCompile>
+    <ClCompile Include="src\presolve\ICrashUtil.cpp">
+      <Filter>src\presolve</Filter>
+    </ClCompile>
+    <ClCompile Include="src\presolve\ICrashX.cpp">
+      <Filter>src\presolve</Filter>
+    </ClCompile>
+    <ClCompile Include="src\presolve\PresolveComponent.cpp">
+      <Filter>src\presolve</Filter>
+    </ClCompile>
+    <ClCompile Include="src\qpsolver\a_asm.cpp">
+      <Filter>src\qpsolver</Filter>
+    </ClCompile>
+    <ClCompile Include="src\qpsolver\a_quass.cpp">
+      <Filter>src\qpsolver</Filter>
+    </ClCompile>
+    <ClCompile Include="src\qpsolver\basis.cpp">
+      <Filter>src\qpsolver</Filter>
+    </ClCompile>
+    <ClCompile Include="src\qpsolver\perturbation.cpp">
+      <Filter>src\qpsolver</Filter>
+    </ClCompile>
+    <ClCompile Include="src\qpsolver\quass.cpp">
+      <Filter>src\qpsolver</Filter>
+    </ClCompile>
+    <ClCompile Include="src\qpsolver\ratiotest.cpp">
+      <Filter>src\qpsolver</Filter>
+    </ClCompile>
+    <ClCompile Include="src\qpsolver\scaling.cpp">
+      <Filter>src\qpsolver</Filter>
+    </ClCompile>
+    <ClCompile Include="src\simplex\HEkk.cpp">
+      <Filter>src\simplex</Filter>
+    </ClCompile>
+    <ClCompile Include="src\simplex\HEkkControl.cpp">
+      <Filter>src\simplex</Filter>
+    </ClCompile>
+    <ClCompile Include="src\simplex\HEkkDebug.cpp">
+      <Filter>src\simplex</Filter>
+    </ClCompile>
+    <ClCompile Include="src\simplex\HEkkDual.cpp">
+      <Filter>src\simplex</Filter>
+    </ClCompile>
+    <ClCompile Include="src\simplex\HEkkDualMulti.cpp">
+      <Filter>src\simplex</Filter>
+    </ClCompile>
+    <ClCompile Include="src\simplex\HEkkDualRHS.cpp">
+      <Filter>src\simplex</Filter>
+    </ClCompile>
+    <ClCompile Include="src\simplex\HEkkDualRow.cpp">
+      <Filter>src\simplex</Filter>
+    </ClCompile>
+    <ClCompile Include="src\simplex\HEkkInterface.cpp">
+      <Filter>src\simplex</Filter>
+    </ClCompile>
+    <ClCompile Include="src\simplex\HEkkPrimal.cpp">
+      <Filter>src\simplex</Filter>
+    </ClCompile>
+    <ClCompile Include="src\simplex\HighsSimplexAnalysis.cpp">
+      <Filter>src\simplex</Filter>
+    </ClCompile>
+    <ClCompile Include="src\simplex\HSimplex.cpp">
+      <Filter>src\simplex</Filter>
+    </ClCompile>
+    <ClCompile Include="src\simplex\HSimplexDebug.cpp">
+      <Filter>src\simplex</Filter>
+    </ClCompile>
+    <ClCompile Include="src\simplex\HSimplexNla.cpp">
+      <Filter>src\simplex</Filter>
+    </ClCompile>
+    <ClCompile Include="src\simplex\HSimplexNlaDebug.cpp">
+      <Filter>src\simplex</Filter>
+    </ClCompile>
+    <ClCompile Include="src\simplex\HSimplexNlaFreeze.cpp">
+      <Filter>src\simplex</Filter>
+    </ClCompile>
+    <ClCompile Include="src\simplex\HSimplexNlaProductForm.cpp">
+      <Filter>src\simplex</Filter>
+    </ClCompile>
+    <ClCompile Include="src\simplex\HSimplexReport.cpp">
+      <Filter>src\simplex</Filter>
+    </ClCompile>
+    <ClCompile Include="src\test\DevKkt.cpp">
+      <Filter>src\test</Filter>
+    </ClCompile>
+    <ClCompile Include="src\test\KktCh2.cpp">
+      <Filter>src\test</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\HFactor.cpp">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\HFactorDebug.cpp">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\HFactorExtend.cpp">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\HFactorRefactor.cpp">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\HFactorUtils.cpp">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\HighsHash.cpp">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\HighsLinearSumBounds.cpp">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\HighsMatrixPic.cpp">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\HighsMatrixUtils.cpp">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\HighsSort.cpp">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\HighsSparseMatrix.cpp">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\HighsUtils.cpp">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\HSet.cpp">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\HVectorBase.cpp">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\stringutil.cpp">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\highs_bindings.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\highs_options.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="extern\filereaderlp\reader.cpp">
+      <Filter>extern\filereaderlp</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\HiGHS\interfaces\highs_c_api.h">
+      <Filter>include\HiGHS\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\io\Filereader.h">
+      <Filter>include\HiGHS\io</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\io\FilereaderEms.h">
+      <Filter>include\HiGHS\io</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\io\FilereaderLp.h">
+      <Filter>include\HiGHS\io</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\io\FilereaderMps.h">
+      <Filter>include\HiGHS\io</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\io\HighsIO.h">
+      <Filter>include\HiGHS\io</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\io\HMpsFF.h">
+      <Filter>include\HiGHS\io</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\io\HMPSIO.h">
+      <Filter>include\HiGHS\io</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\io\LoadOptions.h">
+      <Filter>include\HiGHS\io</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\ipm\basiclu\basiclu.h">
+      <Filter>include\HiGHS\ipm\basiclu</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\ipm\basiclu\basiclu_factorize.h">
+      <Filter>include\HiGHS\ipm\basiclu</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\ipm\basiclu\basiclu_get_factors.h">
+      <Filter>include\HiGHS\ipm\basiclu</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\ipm\basiclu\basiclu_initialize.h">
+      <Filter>include\HiGHS\ipm\basiclu</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\ipm\basiclu\basiclu_obj_factorize.h">
+      <Filter>include\HiGHS\ipm\basiclu</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\ipm\basiclu\basiclu_obj_free.h">
+      <Filter>include\HiGHS\ipm\basiclu</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\ipm\basiclu\basiclu_obj_get_factors.h">
+      <Filter>include\HiGHS\ipm\basiclu</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\ipm\basiclu\basiclu_obj_initialize.h">
+      <Filter>include\HiGHS\ipm\basiclu</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\ipm\basiclu\basiclu_obj_solve_dense.h">
+      <Filter>include\HiGHS\ipm\basiclu</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\ipm\basiclu\basiclu_obj_solve_for_update.h">
+      <Filter>include\HiGHS\ipm\basiclu</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\ipm\basiclu\basiclu_obj_solve_sparse.h">
+      <Filter>include\HiGHS\ipm\basiclu</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\ipm\basiclu\basiclu_obj_update.h">
+      <Filter>include\HiGHS\ipm\basiclu</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\ipm\basiclu\basiclu_object.h">
+      <Filter>include\HiGHS\ipm\basiclu</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\ipm\basiclu\basiclu_solve_dense.h">
+      <Filter>include\HiGHS\ipm\basiclu</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\ipm\basiclu\basiclu_solve_for_update.h">
+      <Filter>include\HiGHS\ipm\basiclu</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\ipm\basiclu\basiclu_solve_sparse.h">
+      <Filter>include\HiGHS\ipm\basiclu</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\ipm\basiclu\basiclu_update.h">
+      <Filter>include\HiGHS\ipm\basiclu</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\ipm\basiclu\lu_def.h">
+      <Filter>include\HiGHS\ipm\basiclu</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\ipm\basiclu\lu_file.h">
+      <Filter>include\HiGHS\ipm\basiclu</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\ipm\basiclu\lu_internal.h">
+      <Filter>include\HiGHS\ipm\basiclu</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\ipm\basiclu\lu_list.h">
+      <Filter>include\HiGHS\ipm\basiclu</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\ipm\ipx\basiclu_kernel.h">
+      <Filter>include\HiGHS\ipm\ipx</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\ipm\ipx\basiclu_wrapper.h">
+      <Filter>include\HiGHS\ipm\ipx</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\ipm\ipx\basis.h">
+      <Filter>include\HiGHS\ipm\ipx</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\ipm\ipx\conjugate_residuals.h">
+      <Filter>include\HiGHS\ipm\ipx</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\ipm\ipx\control.h">
+      <Filter>include\HiGHS\ipm\ipx</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\ipm\ipx\crossover.h">
+      <Filter>include\HiGHS\ipm\ipx</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\ipm\ipx\diagonal_precond.h">
+      <Filter>include\HiGHS\ipm\ipx</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\ipm\ipx\forrest_tomlin.h">
+      <Filter>include\HiGHS\ipm\ipx</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\ipm\ipx\guess_basis.h">
+      <Filter>include\HiGHS\ipm\ipx</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\ipm\ipx\indexed_vector.h">
+      <Filter>include\HiGHS\ipm\ipx</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\ipm\ipx\info.h">
+      <Filter>include\HiGHS\ipm\ipx</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\ipm\ipx\ipm.h">
+      <Filter>include\HiGHS\ipm\ipx</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\ipm\ipx\ipx_c.h">
+      <Filter>include\HiGHS\ipm\ipx</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\ipm\ipx\ipx_config.h">
+      <Filter>include\HiGHS\ipm\ipx</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\ipm\ipx\ipx_info.h">
+      <Filter>include\HiGHS\ipm\ipx</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\ipm\ipx\ipx_internal.h">
+      <Filter>include\HiGHS\ipm\ipx</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\ipm\ipx\ipx_parameters.h">
+      <Filter>include\HiGHS\ipm\ipx</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\ipm\ipx\ipx_status.h">
+      <Filter>include\HiGHS\ipm\ipx</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\ipm\ipx\iterate.h">
+      <Filter>include\HiGHS\ipm\ipx</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\ipm\ipx\kkt_solver.h">
+      <Filter>include\HiGHS\ipm\ipx</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\ipm\ipx\kkt_solver_basis.h">
+      <Filter>include\HiGHS\ipm\ipx</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\ipm\ipx\kkt_solver_diag.h">
+      <Filter>include\HiGHS\ipm\ipx</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\ipm\ipx\linear_operator.h">
+      <Filter>include\HiGHS\ipm\ipx</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\ipm\ipx\lp_solver.h">
+      <Filter>include\HiGHS\ipm\ipx</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\ipm\ipx\lu_factorization.h">
+      <Filter>include\HiGHS\ipm\ipx</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\ipm\ipx\lu_update.h">
+      <Filter>include\HiGHS\ipm\ipx</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\ipm\ipx\maxvolume.h">
+      <Filter>include\HiGHS\ipm\ipx</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\ipm\ipx\model.h">
+      <Filter>include\HiGHS\ipm\ipx</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\ipm\ipx\multistream.h">
+      <Filter>include\HiGHS\ipm\ipx</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\ipm\ipx\normal_matrix.h">
+      <Filter>include\HiGHS\ipm\ipx</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\ipm\ipx\power_method.h">
+      <Filter>include\HiGHS\ipm\ipx</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\ipm\ipx\sparse_matrix.h">
+      <Filter>include\HiGHS\ipm\ipx</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\ipm\ipx\sparse_utils.h">
+      <Filter>include\HiGHS\ipm\ipx</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\ipm\ipx\splitted_normal_matrix.h">
+      <Filter>include\HiGHS\ipm\ipx</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\ipm\ipx\starting_basis.h">
+      <Filter>include\HiGHS\ipm\ipx</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\ipm\ipx\symbolic_invert.h">
+      <Filter>include\HiGHS\ipm\ipx</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\ipm\ipx\timer.h">
+      <Filter>include\HiGHS\ipm\ipx</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\ipm\ipx\utils.h">
+      <Filter>include\HiGHS\ipm\ipx</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\ipm\IpxSolution.h">
+      <Filter>include\HiGHS\ipm</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\ipm\IpxWrapper.h">
+      <Filter>include\HiGHS\ipm</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\lp_data\HConst.h">
+      <Filter>include\HiGHS\lp_data</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\lp_data\HighsAnalysis.h">
+      <Filter>include\HiGHS\lp_data</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\lp_data\HighsCallback.h">
+      <Filter>include\HiGHS\lp_data</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\lp_data\HighsCallbackStruct.h">
+      <Filter>include\HiGHS\lp_data</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\lp_data\HighsDebug.h">
+      <Filter>include\HiGHS\lp_data</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\lp_data\HighsInfo.h">
+      <Filter>include\HiGHS\lp_data</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\lp_data\HighsInfoDebug.h">
+      <Filter>include\HiGHS\lp_data</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\lp_data\HighsLp.h">
+      <Filter>include\HiGHS\lp_data</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\lp_data\HighsLpSolverObject.h">
+      <Filter>include\HiGHS\lp_data</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\lp_data\HighsLpUtils.h">
+      <Filter>include\HiGHS\lp_data</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\lp_data\HighsModelUtils.h">
+      <Filter>include\HiGHS\lp_data</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\lp_data\HighsOptions.h">
+      <Filter>include\HiGHS\lp_data</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\lp_data\HighsRanging.h">
+      <Filter>include\HiGHS\lp_data</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\lp_data\HighsRuntimeOptions.h">
+      <Filter>include\HiGHS\lp_data</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\lp_data\HighsSolution.h">
+      <Filter>include\HiGHS\lp_data</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\lp_data\HighsSolutionDebug.h">
+      <Filter>include\HiGHS\lp_data</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\lp_data\HighsSolve.h">
+      <Filter>include\HiGHS\lp_data</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\lp_data\HighsStatus.h">
+      <Filter>include\HiGHS\lp_data</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\lp_data\HStruct.h">
+      <Filter>include\HiGHS\lp_data</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\mip\HighsCliqueTable.h">
+      <Filter>include\HiGHS\mip</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\mip\HighsConflictPool.h">
+      <Filter>include\HiGHS\mip</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\mip\HighsCutGeneration.h">
+      <Filter>include\HiGHS\mip</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\mip\HighsCutPool.h">
+      <Filter>include\HiGHS\mip</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\mip\HighsDebugSol.h">
+      <Filter>include\HiGHS\mip</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\mip\HighsDomain.h">
+      <Filter>include\HiGHS\mip</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\mip\HighsDomainChange.h">
+      <Filter>include\HiGHS\mip</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\mip\HighsDynamicRowMatrix.h">
+      <Filter>include\HiGHS\mip</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\mip\HighsGFkSolve.h">
+      <Filter>include\HiGHS\mip</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\mip\HighsImplications.h">
+      <Filter>include\HiGHS\mip</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\mip\HighsLpAggregator.h">
+      <Filter>include\HiGHS\mip</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\mip\HighsLpRelaxation.h">
+      <Filter>include\HiGHS\mip</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\mip\HighsMipSolver.h">
+      <Filter>include\HiGHS\mip</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\mip\HighsMipSolverData.h">
+      <Filter>include\HiGHS\mip</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\mip\HighsModkSeparator.h">
+      <Filter>include\HiGHS\mip</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\mip\HighsNodeQueue.h">
+      <Filter>include\HiGHS\mip</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\mip\HighsObjectiveFunction.h">
+      <Filter>include\HiGHS\mip</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\mip\HighsPathSeparator.h">
+      <Filter>include\HiGHS\mip</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\mip\HighsPrimalHeuristics.h">
+      <Filter>include\HiGHS\mip</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\mip\HighsPseudocost.h">
+      <Filter>include\HiGHS\mip</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\mip\HighsRedcostFixing.h">
+      <Filter>include\HiGHS\mip</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\mip\HighsSearch.h">
+      <Filter>include\HiGHS\mip</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\mip\HighsSeparation.h">
+      <Filter>include\HiGHS\mip</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\mip\HighsSeparator.h">
+      <Filter>include\HiGHS\mip</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\mip\HighsTableauSeparator.h">
+      <Filter>include\HiGHS\mip</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\mip\HighsTransformedLp.h">
+      <Filter>include\HiGHS\mip</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\model\HighsHessian.h">
+      <Filter>include\HiGHS\model</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\model\HighsHessianUtils.h">
+      <Filter>include\HiGHS\model</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\model\HighsModel.h">
+      <Filter>include\HiGHS\model</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\parallel\HighsBinarySemaphore.h">
+      <Filter>include\HiGHS\parallel</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\parallel\HighsCacheAlign.h">
+      <Filter>include\HiGHS\parallel</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\parallel\HighsCombinable.h">
+      <Filter>include\HiGHS\parallel</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\parallel\HighsMutex.h">
+      <Filter>include\HiGHS\parallel</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\parallel\HighsParallel.h">
+      <Filter>include\HiGHS\parallel</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\parallel\HighsRaceTimer.h">
+      <Filter>include\HiGHS\parallel</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\parallel\HighsSchedulerConstants.h">
+      <Filter>include\HiGHS\parallel</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\parallel\HighsSpinMutex.h">
+      <Filter>include\HiGHS\parallel</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\parallel\HighsSplitDeque.h">
+      <Filter>include\HiGHS\parallel</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\parallel\HighsTask.h">
+      <Filter>include\HiGHS\parallel</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\parallel\HighsTaskExecutor.h">
+      <Filter>include\HiGHS\parallel</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\pdlp\cupdlp\cupdlp.h">
+      <Filter>include\HiGHS\pdlp\cupdlp</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\pdlp\cupdlp\cupdlp_cs.h">
+      <Filter>include\HiGHS\pdlp\cupdlp</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\pdlp\cupdlp\cupdlp_defs.h">
+      <Filter>include\HiGHS\pdlp\cupdlp</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\pdlp\cupdlp\cupdlp_linalg.h">
+      <Filter>include\HiGHS\pdlp\cupdlp</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\pdlp\cupdlp\cupdlp_proj.h">
+      <Filter>include\HiGHS\pdlp\cupdlp</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\pdlp\cupdlp\cupdlp_restart.h">
+      <Filter>include\HiGHS\pdlp\cupdlp</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\pdlp\cupdlp\cupdlp_scaling_cuda.h">
+      <Filter>include\HiGHS\pdlp\cupdlp</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\pdlp\cupdlp\cupdlp_solver.h">
+      <Filter>include\HiGHS\pdlp\cupdlp</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\pdlp\cupdlp\cupdlp_step.h">
+      <Filter>include\HiGHS\pdlp\cupdlp</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\pdlp\cupdlp\cupdlp_utils.h">
+      <Filter>include\HiGHS\pdlp\cupdlp</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\pdlp\cupdlp\glbopts.h">
+      <Filter>include\HiGHS\pdlp\cupdlp</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\pdlp\CupdlpWrapper.h">
+      <Filter>include\HiGHS\pdlp</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\presolve\HighsPostsolveStack.h">
+      <Filter>include\HiGHS\presolve</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\presolve\HighsSymmetry.h">
+      <Filter>include\HiGHS\presolve</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\presolve\HPresolve.h">
+      <Filter>include\HiGHS\presolve</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\presolve\HPresolveAnalysis.h">
+      <Filter>include\HiGHS\presolve</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\presolve\ICrash.h">
+      <Filter>include\HiGHS\presolve</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\presolve\ICrashUtil.h">
+      <Filter>include\HiGHS\presolve</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\presolve\ICrashX.h">
+      <Filter>include\HiGHS\presolve</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\presolve\PresolveComponent.h">
+      <Filter>include\HiGHS\presolve</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\qpsolver\a_asm.hpp">
+      <Filter>include\HiGHS\qpsolver</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\qpsolver\a_quass.hpp">
+      <Filter>include\HiGHS\qpsolver</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\qpsolver\basis.hpp">
+      <Filter>include\HiGHS\qpsolver</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\qpsolver\crashsolution.hpp">
+      <Filter>include\HiGHS\qpsolver</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\qpsolver\dantzigpricing.hpp">
+      <Filter>include\HiGHS\qpsolver</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\qpsolver\devexharrispricing.hpp">
+      <Filter>include\HiGHS\qpsolver</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\qpsolver\devexpricing.hpp">
+      <Filter>include\HiGHS\qpsolver</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\qpsolver\eventhandler.hpp">
+      <Filter>include\HiGHS\qpsolver</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\qpsolver\factor.hpp">
+      <Filter>include\HiGHS\qpsolver</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\qpsolver\feasibility_bounded.hpp">
+      <Filter>include\HiGHS\qpsolver</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\qpsolver\feasibility_highs.hpp">
+      <Filter>include\HiGHS\qpsolver</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\qpsolver\gradient.hpp">
+      <Filter>include\HiGHS\qpsolver</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\qpsolver\instance.hpp">
+      <Filter>include\HiGHS\qpsolver</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\qpsolver\matrix.hpp">
+      <Filter>include\HiGHS\qpsolver</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\qpsolver\perturbation.hpp">
+      <Filter>include\HiGHS\qpsolver</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\qpsolver\pricing.hpp">
+      <Filter>include\HiGHS\qpsolver</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\qpsolver\qpconst.hpp">
+      <Filter>include\HiGHS\qpsolver</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\qpsolver\qpvector.hpp">
+      <Filter>include\HiGHS\qpsolver</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\qpsolver\quass.hpp">
+      <Filter>include\HiGHS\qpsolver</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\qpsolver\ratiotest.hpp">
+      <Filter>include\HiGHS\qpsolver</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\qpsolver\reducedcosts.hpp">
+      <Filter>include\HiGHS\qpsolver</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\qpsolver\reducedgradient.hpp">
+      <Filter>include\HiGHS\qpsolver</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\qpsolver\runtime.hpp">
+      <Filter>include\HiGHS\qpsolver</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\qpsolver\scaling.hpp">
+      <Filter>include\HiGHS\qpsolver</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\qpsolver\settings.hpp">
+      <Filter>include\HiGHS\qpsolver</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\qpsolver\snippets.hpp">
+      <Filter>include\HiGHS\qpsolver</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\qpsolver\statistics.hpp">
+      <Filter>include\HiGHS\qpsolver</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\qpsolver\steepestedgepricing.hpp">
+      <Filter>include\HiGHS\qpsolver</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\simplex\HApp.h">
+      <Filter>include\HiGHS\simplex</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\simplex\HEkk.h">
+      <Filter>include\HiGHS\simplex</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\simplex\HEkkDual.h">
+      <Filter>include\HiGHS\simplex</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\simplex\HEkkDualRHS.h">
+      <Filter>include\HiGHS\simplex</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\simplex\HEkkDualRow.h">
+      <Filter>include\HiGHS\simplex</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\simplex\HEkkPrimal.h">
+      <Filter>include\HiGHS\simplex</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\simplex\HighsSimplexAnalysis.h">
+      <Filter>include\HiGHS\simplex</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\simplex\HSimplex.h">
+      <Filter>include\HiGHS\simplex</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\simplex\HSimplexDebug.h">
+      <Filter>include\HiGHS\simplex</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\simplex\HSimplexNla.h">
+      <Filter>include\HiGHS\simplex</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\simplex\HSimplexReport.h">
+      <Filter>include\HiGHS\simplex</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\simplex\SimplexConst.h">
+      <Filter>include\HiGHS\simplex</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\simplex\SimplexStruct.h">
+      <Filter>include\HiGHS\simplex</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\simplex\SimplexTimer.h">
+      <Filter>include\HiGHS\simplex</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\test\DevKkt.h">
+      <Filter>include\HiGHS\test</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\test\KktCh2.h">
+      <Filter>include\HiGHS\test</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\util\FactorTimer.h">
+      <Filter>include\HiGHS\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\util\HFactor.h">
+      <Filter>include\HiGHS\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\util\HFactorConst.h">
+      <Filter>include\HiGHS\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\util\HFactorDebug.h">
+      <Filter>include\HiGHS\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\util\HighsCDouble.h">
+      <Filter>include\HiGHS\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\util\HighsComponent.h">
+      <Filter>include\HiGHS\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\util\HighsDataStack.h">
+      <Filter>include\HiGHS\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\util\HighsDisjointSets.h">
+      <Filter>include\HiGHS\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\util\HighsHash.h">
+      <Filter>include\HiGHS\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\util\HighsHashTree.h">
+      <Filter>include\HiGHS\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\util\HighsInt.h">
+      <Filter>include\HiGHS\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\util\HighsIntegers.h">
+      <Filter>include\HiGHS\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\util\HighsLinearSumBounds.h">
+      <Filter>include\HiGHS\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\util\HighsMatrixPic.h">
+      <Filter>include\HiGHS\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\util\HighsMatrixSlice.h">
+      <Filter>include\HiGHS\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\util\HighsMatrixUtils.h">
+      <Filter>include\HiGHS\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\util\HighsMemoryAllocation.h">
+      <Filter>include\HiGHS\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\util\HighsRandom.h">
+      <Filter>include\HiGHS\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\util\HighsRbTree.h">
+      <Filter>include\HiGHS\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\util\HighsSort.h">
+      <Filter>include\HiGHS\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\util\HighsSparseMatrix.h">
+      <Filter>include\HiGHS\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\util\HighsSparseVectorSum.h">
+      <Filter>include\HiGHS\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\util\HighsSplay.h">
+      <Filter>include\HiGHS\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\util\HighsTimer.h">
+      <Filter>include\HiGHS\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\util\HighsUtils.h">
+      <Filter>include\HiGHS\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\util\HSet.h">
+      <Filter>include\HiGHS\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\util\HVector.h">
+      <Filter>include\HiGHS\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\util\HVectorBase.h">
+      <Filter>include\HiGHS\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\util\stringutil.h">
+      <Filter>include\HiGHS\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\HConfig.h">
+      <Filter>include\HiGHS</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\Highs.h">
+      <Filter>include\HiGHS</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HiGHS\highs_export.h">
+      <Filter>include\HiGHS</Filter>
+    </ClInclude>
+    <ClInclude Include="extern\filereaderlp\builder.hpp">
+      <Filter>extern\filereaderlp</Filter>
+    </ClInclude>
+    <ClInclude Include="extern\filereaderlp\def.hpp">
+      <Filter>extern\filereaderlp</Filter>
+    </ClInclude>
+    <ClInclude Include="extern\filereaderlp\model.hpp">
+      <Filter>extern\filereaderlp</Filter>
+    </ClInclude>
+    <ClInclude Include="extern\filereaderlp\reader.hpp">
+      <Filter>extern\filereaderlp</Filter>
+    </ClInclude>
+    <ClInclude Include="extern\pdqsort\pdqsort.h">
+      <Filter>extern\pdqsort</Filter>
+    </ClInclude>
+    <ClInclude Include="extern\zstr\strict_fstream.hpp">
+      <Filter>extern\zstr</Filter>
+    </ClInclude>
+    <ClInclude Include="extern\zstr\zstr.hpp">
+      <Filter>extern\zstr</Filter>
+    </ClInclude>
+    <ClInclude Include="extern\catch.hpp">
+      <Filter>extern</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="include\HiGHS\pdlp\cupdlp\README.md">
+      <Filter>include\HiGHS\pdlp\cupdlp</Filter>
+    </None>
+    <None Include="src\pdlp\cupdlp\README.md">
+      <Filter>src\pdlp\cupdlp</Filter>
+    </None>
+    <None Include="DebugExports.def">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="ReleaseExports.def">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="extern\filereaderlp\LICENSE">
+      <Filter>extern\filereaderlp</Filter>
+    </None>
+    <None Include="extern\zstr\README">
+      <Filter>extern\zstr</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="extern\pdqsort\license.txt">
+      <Filter>extern\pdqsort</Filter>
+    </Text>
+    <Text Include="extern\LICENCE_1_0.txt">
+      <Filter>extern</Filter>
+    </Text>
+  </ItemGroup>
+</Project>

@@ -41,6 +41,7 @@ Before building you need to set a few environment variables:
 - **VLC_SOURCE** must point to the directory that contains the source code for the VLC media player.
 - **INTEL_MKL_INCLUDE** must point to the directory containing the Intel Math Kernel Library include files
 - **INTEL_MKL_LIB** must point to the directory containing the Intel Math Kernel Library *.lib files
+- **PYTHON_HOME** must point to the root folder of your python installation.
 
 The PATH environment variable must be updated to reference:
 - **%BOOST_ROOT%**\stage\lib

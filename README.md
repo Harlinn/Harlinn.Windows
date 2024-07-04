@@ -581,6 +581,15 @@ The abseil_test contains the unit tests for the Harlinn.abseil project
 
 **Project:** Harlinn.highway
 
+### [HiGHS](https://github.com/ERGO-Code/HiGHS)
+**Version:** 1.7.2
+
+**Description:**
+> HiGHS is a high performance serial and parallel solver for large scale sparse linear optimization problems.
+
+**Project:** Harlinn.HiGHS
+
+
 ### [Imath](https://github.com/AcademySoftwareFoundation/Imath)
 **Version:** master as of 2021.08.18
 
@@ -1037,6 +1046,15 @@ C++ class to parse NMEA0183 sentences
 - Harlinn.qpid-proton
 - Harlinn.qpid-proton-cpp
 
+### [pybind11](https://github.com/pybind/pybind11)
+**Version:** 2.13.1
+
+**Description:**
+> pybind11 is a lightweight header-only library that exposes C++ types in Python and vice versa, mainly to create Python bindings of existing C++ code.
+
+**Project:** Harlinn.pybind11
+
+ 
 ### [RapidJSON](https://github.com/Tencent/rapidjson)
 **Version:** master as of 2021.09.26
 

@@ -1,0 +1,615 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>17.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{8ca07e79-6a80-454d-b73a-c8d2f1de5697}</ProjectGuid>
+    <RootNamespace>HarlinnHiGHS</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+    <EnableASAN>true</EnableASAN>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+    <EnableASAN>true</EnableASAN>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>highs_EXPORTS;WIN32;_WINDOWS;_CRT_SECURE_NO_WARNINGS=1;_CRT_SECURE_NO_DEPRECATE=1;_SILENCE_CXX23_ALIGNED_STORAGE_DEPRECATION_WARNING=1;NOMINMAX;WIN32_LEAN_AND_MEAN=1;WIN32;_DEBUG;HARLINNHIGHS_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalIncludeDirectories>$(ProjectDir)include\HiGHS;$(ProjectDir)extern;$(ProjectDir)extern\filereader;$(ProjectDir)extern\pdqsort;$(ProjectDir)extern\zstr;$(ProjectDir)include\HiGHS\interfaces;$(ProjectDir)include\HiGHS\io;$(ProjectDir)include\HiGHS\ipm;$(ProjectDir)include\HiGHS\ipm\ipx;$(ProjectDir)include\HiGHS\ipm\basiclu;$(ProjectDir)include\HiGHS\lp_data;$(ProjectDir)include\HiGHS\mip;$(ProjectDir)include\HiGHS\model;$(ProjectDir)include\HiGHS\parallel;$(ProjectDir)include\HiGHS\pdlp;$(ProjectDir)include\HiGHS\pdlp\cupdlp;$(ProjectDir)include\HiGHS\presolve;$(ProjectDir)include\HiGHS\qpsolver;$(ProjectDir)include\HiGHS\simplex;$(ProjectDir)include\HiGHS\test;$(ProjectDir)include\HiGHS\util;$(SolutionDir)3rdParty\Harlinn.zlib;$(SolutionDir)3rdParty\Harlinn.pybind11\include;$(PYTHON_HOME)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+      <ModuleDefinitionFile>DebugExports.def</ModuleDefinitionFile>
+      <AdditionalLibraryDirectories>$(OutDir);$(PYTHON_HOME)\libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>python3.lib;python39.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <DelayLoadDLLs>python3.dll;python39.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>highs_EXPORTS;WIN32;_WINDOWS;_CRT_SECURE_NO_WARNINGS=1;_CRT_SECURE_NO_DEPRECATE=1;_SILENCE_CXX23_ALIGNED_STORAGE_DEPRECATION_WARNING=1;NOMINMAX;WIN32_LEAN_AND_MEAN=1;WIN32;NDEBUG;HARLINNHIGHS_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalIncludeDirectories>$(ProjectDir)include\HiGHS;$(ProjectDir)extern;$(ProjectDir)extern\filereader;$(ProjectDir)extern\pdqsort;$(ProjectDir)extern\zstr;$(ProjectDir)include\HiGHS\interfaces;$(ProjectDir)include\HiGHS\io;$(ProjectDir)include\HiGHS\ipm;$(ProjectDir)include\HiGHS\ipm\ipx;$(ProjectDir)include\HiGHS\ipm\basiclu;$(ProjectDir)include\HiGHS\lp_data;$(ProjectDir)include\HiGHS\mip;$(ProjectDir)include\HiGHS\model;$(ProjectDir)include\HiGHS\parallel;$(ProjectDir)include\HiGHS\pdlp;$(ProjectDir)include\HiGHS\pdlp\cupdlp;$(ProjectDir)include\HiGHS\presolve;$(ProjectDir)include\HiGHS\qpsolver;$(ProjectDir)include\HiGHS\simplex;$(ProjectDir)include\HiGHS\test;$(ProjectDir)include\HiGHS\util;$(SolutionDir)3rdParty\Harlinn.zlib;$(SolutionDir)3rdParty\Harlinn.pybind11\include;$(PYTHON_HOME)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+      <ModuleDefinitionFile>ReleaseExports.def</ModuleDefinitionFile>
+      <AdditionalLibraryDirectories>$(OutDir);$(PYTHON_HOME)\libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>python3.lib;python39.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <DelayLoadDLLs>python3.dll;python39.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>highs_EXPORTS;WIN32;_WINDOWS;_CRT_SECURE_NO_WARNINGS=1;_CRT_SECURE_NO_DEPRECATE=1;_SILENCE_CXX23_ALIGNED_STORAGE_DEPRECATION_WARNING=1;NOMINMAX;WIN32_LEAN_AND_MEAN=1;_DEBUG;HARLINNHIGHS_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <AdditionalOptions>/Zc:__cplusplus /bigobj %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalIncludeDirectories>$(ProjectDir)include\HiGHS;$(ProjectDir)extern;$(ProjectDir)extern\filereader;$(ProjectDir)extern\pdqsort;$(ProjectDir)extern\zstr;$(ProjectDir)include\HiGHS\interfaces;$(ProjectDir)include\HiGHS\io;$(ProjectDir)include\HiGHS\ipm;$(ProjectDir)include\HiGHS\ipm\ipx;$(ProjectDir)include\HiGHS\ipm\basiclu;$(ProjectDir)include\HiGHS\lp_data;$(ProjectDir)include\HiGHS\mip;$(ProjectDir)include\HiGHS\model;$(ProjectDir)include\HiGHS\parallel;$(ProjectDir)include\HiGHS\pdlp;$(ProjectDir)include\HiGHS\pdlp\cupdlp;$(ProjectDir)include\HiGHS\presolve;$(ProjectDir)include\HiGHS\qpsolver;$(ProjectDir)include\HiGHS\simplex;$(ProjectDir)include\HiGHS\test;$(ProjectDir)include\HiGHS\util;$(SolutionDir)3rdParty\Harlinn.zlib;$(SolutionDir)3rdParty\Harlinn.pybind11\include;$(PYTHON_HOME)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+      <ModuleDefinitionFile>DebugExports.def</ModuleDefinitionFile>
+      <AdditionalLibraryDirectories>$(OutDir);$(PYTHON_HOME)\libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>python3.lib;python39.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <DelayLoadDLLs>
+      </DelayLoadDLLs>
+      <OutputFile>$(OutDir)$(TargetName)-x64d$(TargetExt)</OutputFile>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>highs_EXPORTS;WIN32;_WINDOWS;_CRT_SECURE_NO_WARNINGS=1;_CRT_SECURE_NO_DEPRECATE=1;_SILENCE_CXX23_ALIGNED_STORAGE_DEPRECATION_WARNING=1;NOMINMAX;WIN32_LEAN_AND_MEAN=1;NDEBUG;HARLINNHIGHS_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <AdditionalOptions>/Zc:__cplusplus /bigobj %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalIncludeDirectories>$(ProjectDir)include\HiGHS;$(ProjectDir)extern;$(ProjectDir)extern\filereader;$(ProjectDir)extern\pdqsort;$(ProjectDir)extern\zstr;$(ProjectDir)include\HiGHS\interfaces;$(ProjectDir)include\HiGHS\io;$(ProjectDir)include\HiGHS\ipm;$(ProjectDir)include\HiGHS\ipm\ipx;$(ProjectDir)include\HiGHS\ipm\basiclu;$(ProjectDir)include\HiGHS\lp_data;$(ProjectDir)include\HiGHS\mip;$(ProjectDir)include\HiGHS\model;$(ProjectDir)include\HiGHS\parallel;$(ProjectDir)include\HiGHS\pdlp;$(ProjectDir)include\HiGHS\pdlp\cupdlp;$(ProjectDir)include\HiGHS\presolve;$(ProjectDir)include\HiGHS\qpsolver;$(ProjectDir)include\HiGHS\simplex;$(ProjectDir)include\HiGHS\test;$(ProjectDir)include\HiGHS\util;$(SolutionDir)3rdParty\Harlinn.zlib;$(SolutionDir)3rdParty\Harlinn.pybind11\include;$(PYTHON_HOME)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+      <ModuleDefinitionFile>ReleaseExports.def</ModuleDefinitionFile>
+      <AdditionalLibraryDirectories>$(OutDir);$(PYTHON_HOME)\libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>python3.lib;python39.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <DelayLoadDLLs>
+      </DelayLoadDLLs>
+      <OutputFile>$(OutDir)$(TargetName)-x64r$(TargetExt)</OutputFile>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="extern\filereaderlp\reader.cpp" />
+    <ClCompile Include="src\highs_bindings.cpp" />
+    <ClCompile Include="src\highs_options.cpp" />
+    <ClCompile Include="src\interfaces\highs_c_api.cpp" />
+    <ClCompile Include="src\io\Filereader.cpp" />
+    <ClCompile Include="src\io\FilereaderEms.cpp" />
+    <ClCompile Include="src\io\FilereaderLp.cpp" />
+    <ClCompile Include="src\io\FilereaderMps.cpp" />
+    <ClCompile Include="src\io\HighsIO.cpp" />
+    <ClCompile Include="src\io\HMpsFF.cpp" />
+    <ClCompile Include="src\io\HMPSIO.cpp" />
+    <ClCompile Include="src\io\LoadOptions.cpp" />
+    <ClCompile Include="src\ipm\basiclu\basiclu_factorize.c" />
+    <ClCompile Include="src\ipm\basiclu\basiclu_get_factors.c" />
+    <ClCompile Include="src\ipm\basiclu\basiclu_initialize.c" />
+    <ClCompile Include="src\ipm\basiclu\basiclu_object.c" />
+    <ClCompile Include="src\ipm\basiclu\basiclu_solve_dense.c" />
+    <ClCompile Include="src\ipm\basiclu\basiclu_solve_for_update.c" />
+    <ClCompile Include="src\ipm\basiclu\basiclu_solve_sparse.c" />
+    <ClCompile Include="src\ipm\basiclu\basiclu_update.c" />
+    <ClCompile Include="src\ipm\basiclu\lu_build_factors.c" />
+    <ClCompile Include="src\ipm\basiclu\lu_condest.c" />
+    <ClCompile Include="src\ipm\basiclu\lu_dfs.c" />
+    <ClCompile Include="src\ipm\basiclu\lu_factorize_bump.c" />
+    <ClCompile Include="src\ipm\basiclu\lu_file.c" />
+    <ClCompile Include="src\ipm\basiclu\lu_garbage_perm.c" />
+    <ClCompile Include="src\ipm\basiclu\lu_initialize.c" />
+    <ClCompile Include="src\ipm\basiclu\lu_internal.c" />
+    <ClCompile Include="src\ipm\basiclu\lu_markowitz.c" />
+    <ClCompile Include="src\ipm\basiclu\lu_matrix_norm.c" />
+    <ClCompile Include="src\ipm\basiclu\lu_pivot.c" />
+    <ClCompile Include="src\ipm\basiclu\lu_residual_test.c" />
+    <ClCompile Include="src\ipm\basiclu\lu_setup_bump.c" />
+    <ClCompile Include="src\ipm\basiclu\lu_singletons.c" />
+    <ClCompile Include="src\ipm\basiclu\lu_solve_dense.c" />
+    <ClCompile Include="src\ipm\basiclu\lu_solve_for_update.c" />
+    <ClCompile Include="src\ipm\basiclu\lu_solve_sparse.c" />
+    <ClCompile Include="src\ipm\basiclu\lu_solve_symbolic.c" />
+    <ClCompile Include="src\ipm\basiclu\lu_solve_triangular.c" />
+    <ClCompile Include="src\ipm\basiclu\lu_update.c" />
+    <ClCompile Include="src\ipm\IpxWrapper.cpp" />
+    <ClCompile Include="src\ipm\ipx\basiclu_kernel.cc" />
+    <ClCompile Include="src\ipm\ipx\basiclu_wrapper.cc" />
+    <ClCompile Include="src\ipm\ipx\ipx_basis.cc" />
+    <ClCompile Include="src\ipm\ipx\conjugate_residuals.cc" />
+    <ClCompile Include="src\ipm\ipx\control.cc" />
+    <ClCompile Include="src\ipm\ipx\crossover.cc" />
+    <ClCompile Include="src\ipm\ipx\diagonal_precond.cc" />
+    <ClCompile Include="src\ipm\ipx\forrest_tomlin.cc" />
+    <ClCompile Include="src\ipm\ipx\guess_basis.cc" />
+    <ClCompile Include="src\ipm\ipx\indexed_vector.cc" />
+    <ClCompile Include="src\ipm\ipx\info.cc" />
+    <ClCompile Include="src\ipm\ipx\ipm.cc" />
+    <ClCompile Include="src\ipm\ipx\ipx_c.cc" />
+    <ClCompile Include="src\ipm\ipx\iterate.cc" />
+    <ClCompile Include="src\ipm\ipx\kkt_solver.cc" />
+    <ClCompile Include="src\ipm\ipx\kkt_solver_basis.cc" />
+    <ClCompile Include="src\ipm\ipx\kkt_solver_diag.cc" />
+    <ClCompile Include="src\ipm\ipx\linear_operator.cc" />
+    <ClCompile Include="src\ipm\ipx\lp_solver.cc" />
+    <ClCompile Include="src\ipm\ipx\lu_factorization.cc" />
+    <ClCompile Include="src\ipm\ipx\ipx_lu_update.cc" />
+    <ClCompile Include="src\ipm\ipx\maxvolume.cc" />
+    <ClCompile Include="src\ipm\ipx\model.cc" />
+    <ClCompile Include="src\ipm\ipx\normal_matrix.cc" />
+    <ClCompile Include="src\ipm\ipx\sparse_matrix.cc" />
+    <ClCompile Include="src\ipm\ipx\sparse_utils.cc" />
+    <ClCompile Include="src\ipm\ipx\splitted_normal_matrix.cc" />
+    <ClCompile Include="src\ipm\ipx\starting_basis.cc" />
+    <ClCompile Include="src\ipm\ipx\symbolic_invert.cc" />
+    <ClCompile Include="src\ipm\ipx\timer.cc" />
+    <ClCompile Include="src\ipm\ipx\utils.cc" />
+    <ClCompile Include="src\lp_data\Highs.cpp" />
+    <ClCompile Include="src\lp_data\HighsCallback.cpp" />
+    <ClCompile Include="src\lp_data\HighsDebug.cpp" />
+    <ClCompile Include="src\lp_data\HighsDeprecated.cpp" />
+    <ClCompile Include="src\lp_data\HighsInfo.cpp" />
+    <ClCompile Include="src\lp_data\HighsInfoDebug.cpp" />
+    <ClCompile Include="src\lp_data\HighsInterface.cpp" />
+    <ClCompile Include="src\lp_data\HighsLp.cpp" />
+    <ClCompile Include="src\lp_data\HighsLpUtils.cpp" />
+    <ClCompile Include="src\lp_data\HighsModelUtils.cpp" />
+    <ClCompile Include="src\lp_data\HighsOptions.cpp" />
+    <ClCompile Include="src\lp_data\HighsRanging.cpp" />
+    <ClCompile Include="src\lp_data\HighsSolution.cpp" />
+    <ClCompile Include="src\lp_data\HighsSolutionDebug.cpp" />
+    <ClCompile Include="src\lp_data\HighsSolve.cpp" />
+    <ClCompile Include="src\lp_data\HighsStatus.cpp" />
+    <ClCompile Include="src\mip\HighsCliqueTable.cpp" />
+    <ClCompile Include="src\mip\HighsConflictPool.cpp" />
+    <ClCompile Include="src\mip\HighsCutGeneration.cpp" />
+    <ClCompile Include="src\mip\HighsCutPool.cpp" />
+    <ClCompile Include="src\mip\HighsDebugSol.cpp" />
+    <ClCompile Include="src\mip\HighsDomain.cpp" />
+    <ClCompile Include="src\mip\HighsDynamicRowMatrix.cpp" />
+    <ClCompile Include="src\mip\HighsGFkSolve.cpp" />
+    <ClCompile Include="src\mip\HighsImplications.cpp" />
+    <ClCompile Include="src\mip\HighsLpAggregator.cpp" />
+    <ClCompile Include="src\mip\HighsLpRelaxation.cpp" />
+    <ClCompile Include="src\mip\HighsMipSolver.cpp" />
+    <ClCompile Include="src\mip\HighsMipSolverData.cpp" />
+    <ClCompile Include="src\mip\HighsModkSeparator.cpp" />
+    <ClCompile Include="src\mip\HighsNodeQueue.cpp" />
+    <ClCompile Include="src\mip\HighsObjectiveFunction.cpp" />
+    <ClCompile Include="src\mip\HighsPathSeparator.cpp" />
+    <ClCompile Include="src\mip\HighsPrimalHeuristics.cpp" />
+    <ClCompile Include="src\mip\HighsPseudocost.cpp" />
+    <ClCompile Include="src\mip\HighsRedcostFixing.cpp" />
+    <ClCompile Include="src\mip\HighsSearch.cpp" />
+    <ClCompile Include="src\mip\HighsSeparation.cpp" />
+    <ClCompile Include="src\mip\HighsSeparator.cpp" />
+    <ClCompile Include="src\mip\HighsTableauSeparator.cpp" />
+    <ClCompile Include="src\mip\HighsTransformedLp.cpp" />
+    <ClCompile Include="src\model\HighsHessian.cpp" />
+    <ClCompile Include="src\model\HighsHessianUtils.cpp" />
+    <ClCompile Include="src\model\HighsModel.cpp" />
+    <ClCompile Include="src\parallel\HighsTaskExecutor.cpp" />
+    <ClCompile Include="src\pdlp\CupdlpWrapper.cpp" />
+    <ClCompile Include="src\pdlp\cupdlp\cupdlp_cs.c" />
+    <ClCompile Include="src\pdlp\cupdlp\cupdlp_linalg.c" />
+    <ClCompile Include="src\pdlp\cupdlp\cupdlp_proj.c" />
+    <ClCompile Include="src\pdlp\cupdlp\cupdlp_restart.c" />
+    <ClCompile Include="src\pdlp\cupdlp\cupdlp_scaling_cuda.c" />
+    <ClCompile Include="src\pdlp\cupdlp\cupdlp_solver.c" />
+    <ClCompile Include="src\pdlp\cupdlp\cupdlp_step.c" />
+    <ClCompile Include="src\pdlp\cupdlp\cupdlp_utils.c" />
+    <ClCompile Include="src\presolve\HighsPostsolveStack.cpp" />
+    <ClCompile Include="src\presolve\HighsSymmetry.cpp" />
+    <ClCompile Include="src\presolve\HPresolve.cpp" />
+    <ClCompile Include="src\presolve\HPresolveAnalysis.cpp" />
+    <ClCompile Include="src\presolve\ICrash.cpp" />
+    <ClCompile Include="src\presolve\ICrashUtil.cpp" />
+    <ClCompile Include="src\presolve\ICrashX.cpp" />
+    <ClCompile Include="src\presolve\PresolveComponent.cpp" />
+    <ClCompile Include="src\qpsolver\a_asm.cpp" />
+    <ClCompile Include="src\qpsolver\a_quass.cpp" />
+    <ClCompile Include="src\qpsolver\basis.cpp" />
+    <ClCompile Include="src\qpsolver\perturbation.cpp" />
+    <ClCompile Include="src\qpsolver\quass.cpp" />
+    <ClCompile Include="src\qpsolver\ratiotest.cpp" />
+    <ClCompile Include="src\qpsolver\scaling.cpp" />
+    <ClCompile Include="src\simplex\HEkk.cpp" />
+    <ClCompile Include="src\simplex\HEkkControl.cpp" />
+    <ClCompile Include="src\simplex\HEkkDebug.cpp" />
+    <ClCompile Include="src\simplex\HEkkDual.cpp" />
+    <ClCompile Include="src\simplex\HEkkDualMulti.cpp" />
+    <ClCompile Include="src\simplex\HEkkDualRHS.cpp" />
+    <ClCompile Include="src\simplex\HEkkDualRow.cpp" />
+    <ClCompile Include="src\simplex\HEkkInterface.cpp" />
+    <ClCompile Include="src\simplex\HEkkPrimal.cpp" />
+    <ClCompile Include="src\simplex\HighsSimplexAnalysis.cpp" />
+    <ClCompile Include="src\simplex\HSimplex.cpp" />
+    <ClCompile Include="src\simplex\HSimplexDebug.cpp" />
+    <ClCompile Include="src\simplex\HSimplexNla.cpp" />
+    <ClCompile Include="src\simplex\HSimplexNlaDebug.cpp" />
+    <ClCompile Include="src\simplex\HSimplexNlaFreeze.cpp" />
+    <ClCompile Include="src\simplex\HSimplexNlaProductForm.cpp" />
+    <ClCompile Include="src\simplex\HSimplexReport.cpp" />
+    <ClCompile Include="src\test\DevKkt.cpp" />
+    <ClCompile Include="src\test\KktCh2.cpp" />
+    <ClCompile Include="src\util\HFactor.cpp" />
+    <ClCompile Include="src\util\HFactorDebug.cpp" />
+    <ClCompile Include="src\util\HFactorExtend.cpp" />
+    <ClCompile Include="src\util\HFactorRefactor.cpp" />
+    <ClCompile Include="src\util\HFactorUtils.cpp" />
+    <ClCompile Include="src\util\HighsHash.cpp" />
+    <ClCompile Include="src\util\HighsLinearSumBounds.cpp" />
+    <ClCompile Include="src\util\HighsMatrixPic.cpp" />
+    <ClCompile Include="src\util\HighsMatrixUtils.cpp" />
+    <ClCompile Include="src\util\HighsSort.cpp" />
+    <ClCompile Include="src\util\HighsSparseMatrix.cpp" />
+    <ClCompile Include="src\util\HighsUtils.cpp" />
+    <ClCompile Include="src\util\HSet.cpp" />
+    <ClCompile Include="src\util\HVectorBase.cpp" />
+    <ClCompile Include="src\util\stringutil.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="extern\catch.hpp" />
+    <ClInclude Include="extern\filereaderlp\builder.hpp" />
+    <ClInclude Include="extern\filereaderlp\def.hpp" />
+    <ClInclude Include="extern\filereaderlp\model.hpp" />
+    <ClInclude Include="extern\filereaderlp\reader.hpp" />
+    <ClInclude Include="extern\pdqsort\pdqsort.h" />
+    <ClInclude Include="extern\zstr\strict_fstream.hpp" />
+    <ClInclude Include="extern\zstr\zstr.hpp" />
+    <ClInclude Include="include\HiGHS\HConfig.h" />
+    <ClInclude Include="include\HiGHS\Highs.h" />
+    <ClInclude Include="include\HiGHS\highs_export.h" />
+    <ClInclude Include="include\HiGHS\interfaces\highs_c_api.h" />
+    <ClInclude Include="include\HiGHS\io\Filereader.h" />
+    <ClInclude Include="include\HiGHS\io\FilereaderEms.h" />
+    <ClInclude Include="include\HiGHS\io\FilereaderLp.h" />
+    <ClInclude Include="include\HiGHS\io\FilereaderMps.h" />
+    <ClInclude Include="include\HiGHS\io\HighsIO.h" />
+    <ClInclude Include="include\HiGHS\io\HMpsFF.h" />
+    <ClInclude Include="include\HiGHS\io\HMPSIO.h" />
+    <ClInclude Include="include\HiGHS\io\LoadOptions.h" />
+    <ClInclude Include="include\HiGHS\ipm\basiclu\basiclu.h" />
+    <ClInclude Include="include\HiGHS\ipm\basiclu\basiclu_factorize.h" />
+    <ClInclude Include="include\HiGHS\ipm\basiclu\basiclu_get_factors.h" />
+    <ClInclude Include="include\HiGHS\ipm\basiclu\basiclu_initialize.h" />
+    <ClInclude Include="include\HiGHS\ipm\basiclu\basiclu_object.h" />
+    <ClInclude Include="include\HiGHS\ipm\basiclu\basiclu_obj_factorize.h" />
+    <ClInclude Include="include\HiGHS\ipm\basiclu\basiclu_obj_free.h" />
+    <ClInclude Include="include\HiGHS\ipm\basiclu\basiclu_obj_get_factors.h" />
+    <ClInclude Include="include\HiGHS\ipm\basiclu\basiclu_obj_initialize.h" />
+    <ClInclude Include="include\HiGHS\ipm\basiclu\basiclu_obj_solve_dense.h" />
+    <ClInclude Include="include\HiGHS\ipm\basiclu\basiclu_obj_solve_for_update.h" />
+    <ClInclude Include="include\HiGHS\ipm\basiclu\basiclu_obj_solve_sparse.h" />
+    <ClInclude Include="include\HiGHS\ipm\basiclu\basiclu_obj_update.h" />
+    <ClInclude Include="include\HiGHS\ipm\basiclu\basiclu_solve_dense.h" />
+    <ClInclude Include="include\HiGHS\ipm\basiclu\basiclu_solve_for_update.h" />
+    <ClInclude Include="include\HiGHS\ipm\basiclu\basiclu_solve_sparse.h" />
+    <ClInclude Include="include\HiGHS\ipm\basiclu\basiclu_update.h" />
+    <ClInclude Include="include\HiGHS\ipm\basiclu\lu_def.h" />
+    <ClInclude Include="include\HiGHS\ipm\basiclu\lu_file.h" />
+    <ClInclude Include="include\HiGHS\ipm\basiclu\lu_internal.h" />
+    <ClInclude Include="include\HiGHS\ipm\basiclu\lu_list.h" />
+    <ClInclude Include="include\HiGHS\ipm\IpxSolution.h" />
+    <ClInclude Include="include\HiGHS\ipm\IpxWrapper.h" />
+    <ClInclude Include="include\HiGHS\ipm\ipx\basiclu_kernel.h" />
+    <ClInclude Include="include\HiGHS\ipm\ipx\basiclu_wrapper.h" />
+    <ClInclude Include="include\HiGHS\ipm\ipx\basis.h" />
+    <ClInclude Include="include\HiGHS\ipm\ipx\conjugate_residuals.h" />
+    <ClInclude Include="include\HiGHS\ipm\ipx\control.h" />
+    <ClInclude Include="include\HiGHS\ipm\ipx\crossover.h" />
+    <ClInclude Include="include\HiGHS\ipm\ipx\diagonal_precond.h" />
+    <ClInclude Include="include\HiGHS\ipm\ipx\forrest_tomlin.h" />
+    <ClInclude Include="include\HiGHS\ipm\ipx\guess_basis.h" />
+    <ClInclude Include="include\HiGHS\ipm\ipx\indexed_vector.h" />
+    <ClInclude Include="include\HiGHS\ipm\ipx\info.h" />
+    <ClInclude Include="include\HiGHS\ipm\ipx\ipm.h" />
+    <ClInclude Include="include\HiGHS\ipm\ipx\ipx_c.h" />
+    <ClInclude Include="include\HiGHS\ipm\ipx\ipx_config.h" />
+    <ClInclude Include="include\HiGHS\ipm\ipx\ipx_info.h" />
+    <ClInclude Include="include\HiGHS\ipm\ipx\ipx_internal.h" />
+    <ClInclude Include="include\HiGHS\ipm\ipx\ipx_parameters.h" />
+    <ClInclude Include="include\HiGHS\ipm\ipx\ipx_status.h" />
+    <ClInclude Include="include\HiGHS\ipm\ipx\iterate.h" />
+    <ClInclude Include="include\HiGHS\ipm\ipx\kkt_solver.h" />
+    <ClInclude Include="include\HiGHS\ipm\ipx\kkt_solver_basis.h" />
+    <ClInclude Include="include\HiGHS\ipm\ipx\kkt_solver_diag.h" />
+    <ClInclude Include="include\HiGHS\ipm\ipx\linear_operator.h" />
+    <ClInclude Include="include\HiGHS\ipm\ipx\lp_solver.h" />
+    <ClInclude Include="include\HiGHS\ipm\ipx\lu_factorization.h" />
+    <ClInclude Include="include\HiGHS\ipm\ipx\lu_update.h" />
+    <ClInclude Include="include\HiGHS\ipm\ipx\maxvolume.h" />
+    <ClInclude Include="include\HiGHS\ipm\ipx\model.h" />
+    <ClInclude Include="include\HiGHS\ipm\ipx\multistream.h" />
+    <ClInclude Include="include\HiGHS\ipm\ipx\normal_matrix.h" />
+    <ClInclude Include="include\HiGHS\ipm\ipx\power_method.h" />
+    <ClInclude Include="include\HiGHS\ipm\ipx\sparse_matrix.h" />
+    <ClInclude Include="include\HiGHS\ipm\ipx\sparse_utils.h" />
+    <ClInclude Include="include\HiGHS\ipm\ipx\splitted_normal_matrix.h" />
+    <ClInclude Include="include\HiGHS\ipm\ipx\starting_basis.h" />
+    <ClInclude Include="include\HiGHS\ipm\ipx\symbolic_invert.h" />
+    <ClInclude Include="include\HiGHS\ipm\ipx\timer.h" />
+    <ClInclude Include="include\HiGHS\ipm\ipx\utils.h" />
+    <ClInclude Include="include\HiGHS\lp_data\HConst.h" />
+    <ClInclude Include="include\HiGHS\lp_data\HighsAnalysis.h" />
+    <ClInclude Include="include\HiGHS\lp_data\HighsCallback.h" />
+    <ClInclude Include="include\HiGHS\lp_data\HighsCallbackStruct.h" />
+    <ClInclude Include="include\HiGHS\lp_data\HighsDebug.h" />
+    <ClInclude Include="include\HiGHS\lp_data\HighsInfo.h" />
+    <ClInclude Include="include\HiGHS\lp_data\HighsInfoDebug.h" />
+    <ClInclude Include="include\HiGHS\lp_data\HighsLp.h" />
+    <ClInclude Include="include\HiGHS\lp_data\HighsLpSolverObject.h" />
+    <ClInclude Include="include\HiGHS\lp_data\HighsLpUtils.h" />
+    <ClInclude Include="include\HiGHS\lp_data\HighsModelUtils.h" />
+    <ClInclude Include="include\HiGHS\lp_data\HighsOptions.h" />
+    <ClInclude Include="include\HiGHS\lp_data\HighsRanging.h" />
+    <ClInclude Include="include\HiGHS\lp_data\HighsRuntimeOptions.h" />
+    <ClInclude Include="include\HiGHS\lp_data\HighsSolution.h" />
+    <ClInclude Include="include\HiGHS\lp_data\HighsSolutionDebug.h" />
+    <ClInclude Include="include\HiGHS\lp_data\HighsSolve.h" />
+    <ClInclude Include="include\HiGHS\lp_data\HighsStatus.h" />
+    <ClInclude Include="include\HiGHS\lp_data\HStruct.h" />
+    <ClInclude Include="include\HiGHS\mip\HighsCliqueTable.h" />
+    <ClInclude Include="include\HiGHS\mip\HighsConflictPool.h" />
+    <ClInclude Include="include\HiGHS\mip\HighsCutGeneration.h" />
+    <ClInclude Include="include\HiGHS\mip\HighsCutPool.h" />
+    <ClInclude Include="include\HiGHS\mip\HighsDebugSol.h" />
+    <ClInclude Include="include\HiGHS\mip\HighsDomain.h" />
+    <ClInclude Include="include\HiGHS\mip\HighsDomainChange.h" />
+    <ClInclude Include="include\HiGHS\mip\HighsDynamicRowMatrix.h" />
+    <ClInclude Include="include\HiGHS\mip\HighsGFkSolve.h" />
+    <ClInclude Include="include\HiGHS\mip\HighsImplications.h" />
+    <ClInclude Include="include\HiGHS\mip\HighsLpAggregator.h" />
+    <ClInclude Include="include\HiGHS\mip\HighsLpRelaxation.h" />
+    <ClInclude Include="include\HiGHS\mip\HighsMipSolver.h" />
+    <ClInclude Include="include\HiGHS\mip\HighsMipSolverData.h" />
+    <ClInclude Include="include\HiGHS\mip\HighsModkSeparator.h" />
+    <ClInclude Include="include\HiGHS\mip\HighsNodeQueue.h" />
+    <ClInclude Include="include\HiGHS\mip\HighsObjectiveFunction.h" />
+    <ClInclude Include="include\HiGHS\mip\HighsPathSeparator.h" />
+    <ClInclude Include="include\HiGHS\mip\HighsPrimalHeuristics.h" />
+    <ClInclude Include="include\HiGHS\mip\HighsPseudocost.h" />
+    <ClInclude Include="include\HiGHS\mip\HighsRedcostFixing.h" />
+    <ClInclude Include="include\HiGHS\mip\HighsSearch.h" />
+    <ClInclude Include="include\HiGHS\mip\HighsSeparation.h" />
+    <ClInclude Include="include\HiGHS\mip\HighsSeparator.h" />
+    <ClInclude Include="include\HiGHS\mip\HighsTableauSeparator.h" />
+    <ClInclude Include="include\HiGHS\mip\HighsTransformedLp.h" />
+    <ClInclude Include="include\HiGHS\model\HighsHessian.h" />
+    <ClInclude Include="include\HiGHS\model\HighsHessianUtils.h" />
+    <ClInclude Include="include\HiGHS\model\HighsModel.h" />
+    <ClInclude Include="include\HiGHS\parallel\HighsBinarySemaphore.h" />
+    <ClInclude Include="include\HiGHS\parallel\HighsCacheAlign.h" />
+    <ClInclude Include="include\HiGHS\parallel\HighsCombinable.h" />
+    <ClInclude Include="include\HiGHS\parallel\HighsMutex.h" />
+    <ClInclude Include="include\HiGHS\parallel\HighsParallel.h" />
+    <ClInclude Include="include\HiGHS\parallel\HighsRaceTimer.h" />
+    <ClInclude Include="include\HiGHS\parallel\HighsSchedulerConstants.h" />
+    <ClInclude Include="include\HiGHS\parallel\HighsSpinMutex.h" />
+    <ClInclude Include="include\HiGHS\parallel\HighsSplitDeque.h" />
+    <ClInclude Include="include\HiGHS\parallel\HighsTask.h" />
+    <ClInclude Include="include\HiGHS\parallel\HighsTaskExecutor.h" />
+    <ClInclude Include="include\HiGHS\pdlp\CupdlpWrapper.h" />
+    <ClInclude Include="include\HiGHS\pdlp\cupdlp\cupdlp.h" />
+    <ClInclude Include="include\HiGHS\pdlp\cupdlp\cupdlp_cs.h" />
+    <ClInclude Include="include\HiGHS\pdlp\cupdlp\cupdlp_defs.h" />
+    <ClInclude Include="include\HiGHS\pdlp\cupdlp\cupdlp_linalg.h" />
+    <ClInclude Include="include\HiGHS\pdlp\cupdlp\cupdlp_proj.h" />
+    <ClInclude Include="include\HiGHS\pdlp\cupdlp\cupdlp_restart.h" />
+    <ClInclude Include="include\HiGHS\pdlp\cupdlp\cupdlp_scaling_cuda.h" />
+    <ClInclude Include="include\HiGHS\pdlp\cupdlp\cupdlp_solver.h" />
+    <ClInclude Include="include\HiGHS\pdlp\cupdlp\cupdlp_step.h" />
+    <ClInclude Include="include\HiGHS\pdlp\cupdlp\cupdlp_utils.h" />
+    <ClInclude Include="include\HiGHS\pdlp\cupdlp\glbopts.h" />
+    <ClInclude Include="include\HiGHS\presolve\HighsPostsolveStack.h" />
+    <ClInclude Include="include\HiGHS\presolve\HighsSymmetry.h" />
+    <ClInclude Include="include\HiGHS\presolve\HPresolve.h" />
+    <ClInclude Include="include\HiGHS\presolve\HPresolveAnalysis.h" />
+    <ClInclude Include="include\HiGHS\presolve\ICrash.h" />
+    <ClInclude Include="include\HiGHS\presolve\ICrashUtil.h" />
+    <ClInclude Include="include\HiGHS\presolve\ICrashX.h" />
+    <ClInclude Include="include\HiGHS\presolve\PresolveComponent.h" />
+    <ClInclude Include="include\HiGHS\qpsolver\a_asm.hpp" />
+    <ClInclude Include="include\HiGHS\qpsolver\a_quass.hpp" />
+    <ClInclude Include="include\HiGHS\qpsolver\basis.hpp" />
+    <ClInclude Include="include\HiGHS\qpsolver\crashsolution.hpp" />
+    <ClInclude Include="include\HiGHS\qpsolver\dantzigpricing.hpp" />
+    <ClInclude Include="include\HiGHS\qpsolver\devexharrispricing.hpp" />
+    <ClInclude Include="include\HiGHS\qpsolver\devexpricing.hpp" />
+    <ClInclude Include="include\HiGHS\qpsolver\eventhandler.hpp" />
+    <ClInclude Include="include\HiGHS\qpsolver\factor.hpp" />
+    <ClInclude Include="include\HiGHS\qpsolver\feasibility_bounded.hpp" />
+    <ClInclude Include="include\HiGHS\qpsolver\feasibility_highs.hpp" />
+    <ClInclude Include="include\HiGHS\qpsolver\gradient.hpp" />
+    <ClInclude Include="include\HiGHS\qpsolver\instance.hpp" />
+    <ClInclude Include="include\HiGHS\qpsolver\matrix.hpp" />
+    <ClInclude Include="include\HiGHS\qpsolver\perturbation.hpp" />
+    <ClInclude Include="include\HiGHS\qpsolver\pricing.hpp" />
+    <ClInclude Include="include\HiGHS\qpsolver\qpconst.hpp" />
+    <ClInclude Include="include\HiGHS\qpsolver\qpvector.hpp" />
+    <ClInclude Include="include\HiGHS\qpsolver\quass.hpp" />
+    <ClInclude Include="include\HiGHS\qpsolver\ratiotest.hpp" />
+    <ClInclude Include="include\HiGHS\qpsolver\reducedcosts.hpp" />
+    <ClInclude Include="include\HiGHS\qpsolver\reducedgradient.hpp" />
+    <ClInclude Include="include\HiGHS\qpsolver\runtime.hpp" />
+    <ClInclude Include="include\HiGHS\qpsolver\scaling.hpp" />
+    <ClInclude Include="include\HiGHS\qpsolver\settings.hpp" />
+    <ClInclude Include="include\HiGHS\qpsolver\snippets.hpp" />
+    <ClInclude Include="include\HiGHS\qpsolver\statistics.hpp" />
+    <ClInclude Include="include\HiGHS\qpsolver\steepestedgepricing.hpp" />
+    <ClInclude Include="include\HiGHS\simplex\HApp.h" />
+    <ClInclude Include="include\HiGHS\simplex\HEkk.h" />
+    <ClInclude Include="include\HiGHS\simplex\HEkkDual.h" />
+    <ClInclude Include="include\HiGHS\simplex\HEkkDualRHS.h" />
+    <ClInclude Include="include\HiGHS\simplex\HEkkDualRow.h" />
+    <ClInclude Include="include\HiGHS\simplex\HEkkPrimal.h" />
+    <ClInclude Include="include\HiGHS\simplex\HighsSimplexAnalysis.h" />
+    <ClInclude Include="include\HiGHS\simplex\HSimplex.h" />
+    <ClInclude Include="include\HiGHS\simplex\HSimplexDebug.h" />
+    <ClInclude Include="include\HiGHS\simplex\HSimplexNla.h" />
+    <ClInclude Include="include\HiGHS\simplex\HSimplexReport.h" />
+    <ClInclude Include="include\HiGHS\simplex\SimplexConst.h" />
+    <ClInclude Include="include\HiGHS\simplex\SimplexStruct.h" />
+    <ClInclude Include="include\HiGHS\simplex\SimplexTimer.h" />
+    <ClInclude Include="include\HiGHS\test\DevKkt.h" />
+    <ClInclude Include="include\HiGHS\test\KktCh2.h" />
+    <ClInclude Include="include\HiGHS\util\FactorTimer.h" />
+    <ClInclude Include="include\HiGHS\util\HFactor.h" />
+    <ClInclude Include="include\HiGHS\util\HFactorConst.h" />
+    <ClInclude Include="include\HiGHS\util\HFactorDebug.h" />
+    <ClInclude Include="include\HiGHS\util\HighsCDouble.h" />
+    <ClInclude Include="include\HiGHS\util\HighsComponent.h" />
+    <ClInclude Include="include\HiGHS\util\HighsDataStack.h" />
+    <ClInclude Include="include\HiGHS\util\HighsDisjointSets.h" />
+    <ClInclude Include="include\HiGHS\util\HighsHash.h" />
+    <ClInclude Include="include\HiGHS\util\HighsHashTree.h" />
+    <ClInclude Include="include\HiGHS\util\HighsInt.h" />
+    <ClInclude Include="include\HiGHS\util\HighsIntegers.h" />
+    <ClInclude Include="include\HiGHS\util\HighsLinearSumBounds.h" />
+    <ClInclude Include="include\HiGHS\util\HighsMatrixPic.h" />
+    <ClInclude Include="include\HiGHS\util\HighsMatrixSlice.h" />
+    <ClInclude Include="include\HiGHS\util\HighsMatrixUtils.h" />
+    <ClInclude Include="include\HiGHS\util\HighsMemoryAllocation.h" />
+    <ClInclude Include="include\HiGHS\util\HighsRandom.h" />
+    <ClInclude Include="include\HiGHS\util\HighsRbTree.h" />
+    <ClInclude Include="include\HiGHS\util\HighsSort.h" />
+    <ClInclude Include="include\HiGHS\util\HighsSparseMatrix.h" />
+    <ClInclude Include="include\HiGHS\util\HighsSparseVectorSum.h" />
+    <ClInclude Include="include\HiGHS\util\HighsSplay.h" />
+    <ClInclude Include="include\HiGHS\util\HighsTimer.h" />
+    <ClInclude Include="include\HiGHS\util\HighsUtils.h" />
+    <ClInclude Include="include\HiGHS\util\HSet.h" />
+    <ClInclude Include="include\HiGHS\util\HVector.h" />
+    <ClInclude Include="include\HiGHS\util\HVectorBase.h" />
+    <ClInclude Include="include\HiGHS\util\stringutil.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="DebugExports.def" />
+    <None Include="extern\filereaderlp\LICENSE" />
+    <None Include="extern\zstr\README" />
+    <None Include="include\HiGHS\pdlp\cupdlp\README.md" />
+    <None Include="ReleaseExports.def" />
+    <None Include="src\pdlp\cupdlp\README.md" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="extern\LICENCE_1_0.txt" />
+    <Text Include="extern\pdqsort\license.txt" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
