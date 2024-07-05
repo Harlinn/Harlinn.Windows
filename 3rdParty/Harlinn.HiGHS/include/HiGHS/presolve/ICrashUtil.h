@@ -22,31 +22,31 @@
 class HighsLp;
 struct HighsSolution;
 
-void convertToMinimization(HighsLp& lp);
+HIGHS_EXPORT void convertToMinimization(HighsLp& lp);
 
-bool isEqualityProblem(const HighsLp& lp);
+HIGHS_EXPORT bool isEqualityProblem(const HighsLp& lp);
 
-double vectorProduct(const std::vector<double>& v1,
+HIGHS_EXPORT double vectorProduct(const std::vector<double>& v1,
                      const std::vector<double>& v2);
 
 // Calculates value of A^t*v in result.
-void muptiplyByTranspose(const HighsLp& lp, const std::vector<double>& v,
+HIGHS_EXPORT void muptiplyByTranspose(const HighsLp& lp, const std::vector<double>& v,
                          std::vector<double>& result);
 
-void printMinorIterationDetails(const double iteration, const double col,
+HIGHS_EXPORT void printMinorIterationDetails(const double iteration, const double col,
                                 const double old_value, const double update,
                                 const double ctx, const std::vector<double>& r,
                                 const double quadratic_objective,
                                 HighsLogOptions options);
 
-bool initialize(const HighsLp& lp, HighsSolution& solution,
+HIGHS_EXPORT bool initialize(const HighsLp& lp, HighsSolution& solution,
                 std::vector<double>& lambda);
 
-double minimizeComponentQP(const int col, const double mu, const HighsLp& lp,
+HIGHS_EXPORT double minimizeComponentQP(const int col, const double mu, const HighsLp& lp,
                            double& objective, std::vector<double>& residual,
                            HighsSolution& sol);
 
-double minimizeComponentIca(const int col, const double mu,
+HIGHS_EXPORT double minimizeComponentIca(const int col, const double mu,
                             const std::vector<double>& lambda,
                             const HighsLp& lp, double& objective,
                             std::vector<double>& residual, HighsSolution& sol);
@@ -54,12 +54,12 @@ double minimizeComponentIca(const int col, const double mu,
 // todo:
 double minimizeComponentBreakpoints();
 
-void updateResidual(bool piecewise, const HighsLp& lp, const HighsSolution& sol,
+HIGHS_EXPORT void updateResidual(bool piecewise, const HighsLp& lp, const HighsSolution& sol,
                     std::vector<double>& residual);
-void updateResidualFast(const HighsLp& lp, const HighsSolution& sol,
+HIGHS_EXPORT void updateResidualFast(const HighsLp& lp, const HighsSolution& sol,
                         std::vector<double>& residual);
 
 // Allows negative residuals
-void updateResidualIca(const HighsLp& lp, const HighsSolution& sol,
+HIGHS_EXPORT void updateResidualIca(const HighsLp& lp, const HighsSolution& sol,
                        std::vector<double>& residual);
 #endif

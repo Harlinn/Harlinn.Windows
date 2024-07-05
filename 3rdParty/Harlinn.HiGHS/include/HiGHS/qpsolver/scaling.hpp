@@ -3,6 +3,6 @@
 
 #include "runtime.hpp"
 
-void scale(Runtime& rt);
+HIGHS_EXPORT void scale(Runtime& rt);
 
 #endif

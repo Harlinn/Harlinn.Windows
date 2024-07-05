@@ -18,7 +18,7 @@
 
 #include "lp_data/HighsDebug.h"
 
-void debugDualChuzcFailNorms(
+HIGHS_EXPORT void debugDualChuzcFailNorms(
     const HighsInt workCount,
     const std::vector<std::pair<HighsInt, double>>& workData,
     double& workDataNorm, const HighsInt numVar, const double* workDual,
@@ -37,7 +37,7 @@ void debugDualChuzcFailNorms(
   workDualNorm = sqrt(workDualNorm);
 }
 
-HighsDebugStatus debugDualChuzcFailQuad0(
+HIGHS_EXPORT HighsDebugStatus debugDualChuzcFailQuad0(
     const HighsOptions& options, const HighsInt workCount,
     const std::vector<std::pair<HighsInt, double>>& workData,
     const HighsInt numVar, const double* workDual, const double selectTheta,
@@ -62,7 +62,7 @@ HighsDebugStatus debugDualChuzcFailQuad0(
   return HighsDebugStatus::kOk;
 }
 
-HighsDebugStatus debugDualChuzcFailQuad1(
+HIGHS_EXPORT HighsDebugStatus debugDualChuzcFailQuad1(
     const HighsOptions& options, const HighsInt workCount,
     const std::vector<std::pair<HighsInt, double>>& workData,
     const HighsInt numVar, const double* workDual, const double selectTheta,
@@ -88,7 +88,7 @@ HighsDebugStatus debugDualChuzcFailQuad1(
   return HighsDebugStatus::kOk;
 }
 
-HighsDebugStatus debugDualChuzcFailHeap(
+HIGHS_EXPORT HighsDebugStatus debugDualChuzcFailHeap(
     const HighsOptions& options, const HighsInt workCount,
     const std::vector<std::pair<HighsInt, double>>& workData,
     const HighsInt numVar, const double* workDual, const double selectTheta,
@@ -113,7 +113,7 @@ HighsDebugStatus debugDualChuzcFailHeap(
   return HighsDebugStatus::kOk;
 }
 
-HighsDebugStatus debugNonbasicFlagConsistent(const HighsOptions& options,
+HIGHS_EXPORT HighsDebugStatus debugNonbasicFlagConsistent(const HighsOptions& options,
                                              const HighsLp& lp,
                                              const SimplexBasis& basis) {
   if (options.highs_debug_level < kHighsDebugLevelCheap)

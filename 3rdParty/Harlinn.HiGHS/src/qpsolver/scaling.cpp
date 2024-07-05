@@ -111,7 +111,7 @@ void scale_cols(Runtime& rt) {
   }
 }
 
-void scale(Runtime& rt) {
+HIGHS_EXPORT void scale(Runtime& rt) {
   rt.scaled = rt.instance;
   scale_rows(rt);
   scale_cols(rt);

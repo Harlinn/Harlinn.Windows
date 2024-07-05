@@ -30,15 +30,15 @@ class HVectorBase {
   /**
    * @brief Initialise a vector
    */
-  void setup(HighsInt size_  //!< Dimension of the vector to be initialised
+  HIGHS_EXPORT void setup(HighsInt size_  //!< Dimension of the vector to be initialised
   );
 
   /**
    * @brief Clear the vector - or just its scalars
    *
    */
-  void clear();
-  void clearScalars();
+  HIGHS_EXPORT void clear();
+  HIGHS_EXPORT void clearScalars();
 
   HighsInt size;           //!< Dimension of the vector
   HighsInt count;          //!< Number of nonzeros
@@ -55,21 +55,21 @@ class HVectorBase {
   /*
    * Zero values in Vector.array that exceed kHighsTiny in magnitude
    */
-  void tight();
+  HIGHS_EXPORT void tight();
 
   /**
    * @brief Packing (if packFlag set): Pack values/indices in Vector.array into
    * packValue/Index
    *
    */
-  void pack();
+  HIGHS_EXPORT void pack();
 
   /**
    * @brief Possibly determine the indices from scratch by passing
    * through the array
    *
    */
-  void reIndex();
+  HIGHS_EXPORT void reIndex();
 
   bool packFlag;               //!< Flag to indicate whether to pack or not
   HighsInt packCount;          //!< Number of nonzeros packed
@@ -80,26 +80,26 @@ class HVectorBase {
    * @brief Copy from another HVector structure to this instanc
    */
   template <typename FromReal>
-  void copy(const HVectorBase<FromReal>*
+  HIGHS_EXPORT void copy(const HVectorBase<FromReal>*
                 from  //!< Source of HVector structure to be copied
   );
 
   /**
    * @brief Compute the squared 2-norm of the vector
    */
-  Real norm2() const;
+  HIGHS_EXPORT Real norm2() const;
 
   /**
    * @brief Add a multiple pivotX of *pivot into this vector,
    * maintaining indices of nonzeros but not tracking cancellation
    */
   template <typename RealPivX, typename RealPiv>
-  void saxpy(const RealPivX pivotX,  //!< The multiple of *pivot to be added
+  HIGHS_EXPORT void saxpy(const RealPivX pivotX,  //!< The multiple of *pivot to be added
              const HVectorBase<RealPiv>*
                  pivot  //!< The vector whose multiple is to be added
   );
 
-  bool isEqual(const HVectorBase<Real>& v0);
+  HIGHS_EXPORT bool isEqual(const HVectorBase<Real>& v0);
 };
 
 #endif /* UTIL_HVECTOR_BASE_H_ */

@@ -20,31 +20,31 @@
 
 // Methods for Ekk
 
-void debugDualChuzcFailNorms(
+HIGHS_EXPORT void debugDualChuzcFailNorms(
     const HighsInt workCount,
     const std::vector<std::pair<HighsInt, double>>& workData,
     double& workDataNorm, const HighsInt numVar, const double* workDual,
     double& workDualNorm);
 
-HighsDebugStatus debugDualChuzcFailQuad0(
+HIGHS_EXPORT HighsDebugStatus debugDualChuzcFailQuad0(
     const HighsOptions& options, const HighsInt workCount,
     const std::vector<std::pair<HighsInt, double>>& workData,
     const HighsInt numVar, const double* workDual, const double selectTheta,
     const double remainTheta, const bool force = false);
 
-HighsDebugStatus debugDualChuzcFailQuad1(
+HIGHS_EXPORT HighsDebugStatus debugDualChuzcFailQuad1(
     const HighsOptions& options, const HighsInt workCount,
     const std::vector<std::pair<HighsInt, double>>& workData,
     const HighsInt numVar, const double* workDual, const double selectTheta,
     const bool force = false);
 
-HighsDebugStatus debugDualChuzcFailHeap(
+HIGHS_EXPORT HighsDebugStatus debugDualChuzcFailHeap(
     const HighsOptions& options, const HighsInt workCount,
     const std::vector<std::pair<HighsInt, double>>& workData,
     const HighsInt numVar, const double* workDual, const double selectTheta,
     const bool force = false);
 
-HighsDebugStatus debugNonbasicFlagConsistent(const HighsOptions& options,
+HIGHS_EXPORT HighsDebugStatus debugNonbasicFlagConsistent(const HighsOptions& options,
                                              const HighsLp& lp,
                                              const SimplexBasis& basis);
 

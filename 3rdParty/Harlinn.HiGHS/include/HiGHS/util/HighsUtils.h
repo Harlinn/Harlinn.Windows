@@ -88,47 +88,47 @@ const double awful_regression_error = 2.0;
 const double bad_regression_error = 0.2;
 const double fair_regression_error = 0.02;
 
-HighsInt create(HighsIndexCollection& index_collection, const HighsInt from_col,
+HIGHS_EXPORT HighsInt create(HighsIndexCollection& index_collection, const HighsInt from_col,
                 const HighsInt to_col, const HighsInt dimension);
 
-HighsInt create(HighsIndexCollection& index_collection,
+HIGHS_EXPORT HighsInt create(HighsIndexCollection& index_collection,
                 const HighsInt num_set_entries, const HighsInt* set,
                 const HighsInt dimension);
 
-HighsInt create(HighsIndexCollection& index_collection, const HighsInt* mask,
+HIGHS_EXPORT HighsInt create(HighsIndexCollection& index_collection, const HighsInt* mask,
                 const HighsInt dimension);
 
-bool ok(const HighsIndexCollection& index_collection);
+HIGHS_EXPORT bool ok(const HighsIndexCollection& index_collection);
 
-void limits(const HighsIndexCollection& index_collection, HighsInt& from_k,
+HIGHS_EXPORT void limits(const HighsIndexCollection& index_collection, HighsInt& from_k,
             HighsInt& to_k);
 
-void updateOutInIndex(const HighsIndexCollection& index_collection,
+HIGHS_EXPORT void updateOutInIndex(const HighsIndexCollection& index_collection,
                       HighsInt& out_from_ix, HighsInt& out_to_ix,
                       HighsInt& in_from_ix, HighsInt& in_to_ix,
                       HighsInt& current_set_entry);
 
-HighsInt dataSize(const HighsIndexCollection& index_collection);
+HIGHS_EXPORT HighsInt dataSize(const HighsIndexCollection& index_collection);
 
-bool highsVarTypeUserDataNotNull(const HighsLogOptions& log_options,
+HIGHS_EXPORT bool highsVarTypeUserDataNotNull(const HighsLogOptions& log_options,
                                  const HighsVarType* user_data,
                                  const std::string name);
-bool intUserDataNotNull(const HighsLogOptions& log_options,
+HIGHS_EXPORT bool intUserDataNotNull(const HighsLogOptions& log_options,
                         const HighsInt* user_data, const std::string name);
-bool doubleUserDataNotNull(const HighsLogOptions& log_options,
+HIGHS_EXPORT bool doubleUserDataNotNull(const HighsLogOptions& log_options,
                            const double* user_data, const std::string name);
 
-double getNorm2(const std::vector<double> values);
+HIGHS_EXPORT double getNorm2(const std::vector<double> values);
 
 /**
  * @brief Logical check of double being +Infinity
  */
-bool highs_isInfinity(double val  //!< Value being tested against +Infinity
+HIGHS_EXPORT bool highs_isInfinity(double val  //!< Value being tested against +Infinity
 );
 /**
  * @brief Returns the relative difference of two doubles
  */
-double highsRelativeDifference(const double v0, const double v1);
+HIGHS_EXPORT double highsRelativeDifference(const double v0, const double v1);
 
 /**
  * @brief Analyse the values of a vector, assessing how many are in
@@ -137,7 +137,7 @@ double highsRelativeDifference(const double v0, const double v1);
  *
  * NB If log_options is a null pointer then printf is used
  */
-void analyseVectorValues(
+HIGHS_EXPORT void analyseVectorValues(
     const HighsLogOptions* log_options,
     const std::string message,       //!< Message to be printed
     HighsInt vecDim,                 //!< Dimension of vector
@@ -149,7 +149,7 @@ void analyseVectorValues(
                    //!< different values in the vector
 );
 
-void analyseVectorValues(
+HIGHS_EXPORT void analyseVectorValues(
     const HighsLogOptions* log_options,
     const std::string message,         //!< Message to be printed
     HighsInt vecDim,                   //!< Dimension of vector
@@ -159,7 +159,7 @@ void analyseVectorValues(
                    //!< different values in the vector
 );
 
-void analyseMatrixSparsity(
+HIGHS_EXPORT void analyseMatrixSparsity(
     const HighsLogOptions& log_options,
     const char* message,                  //!< Message to be printed
     HighsInt numCol,                      //!< Number of columns
@@ -168,43 +168,43 @@ void analyseMatrixSparsity(
     const std::vector<HighsInt>& Aindex   //!< Matrix row indices
 );
 
-bool initialiseValueDistribution(const std::string distribution_name,
+HIGHS_EXPORT bool initialiseValueDistribution(const std::string distribution_name,
                                  const std::string value_name,
                                  const double min_value_limit,
                                  const double max_value_limit,
                                  const double base_value_limit,
                                  HighsValueDistribution& value_distribution);
 
-bool updateValueDistribution(const double value,
+HIGHS_EXPORT bool updateValueDistribution(const double value,
                              HighsValueDistribution& value_distribution);
 
-HighsInt integerPercentage(const HighsInt of, const HighsInt in);
-double doublePercentage(const HighsInt of, const HighsInt in);
+HIGHS_EXPORT HighsInt integerPercentage(const HighsInt of, const HighsInt in);
+HIGHS_EXPORT double doublePercentage(const HighsInt of, const HighsInt in);
 
-bool logValueDistribution(const HighsLogOptions& log_options,
+HIGHS_EXPORT bool logValueDistribution(const HighsLogOptions& log_options,
                           const HighsValueDistribution& value_distribution,
                           const HighsInt mu = 0);
-bool initialiseScatterData(const HighsInt max_num_point,
+HIGHS_EXPORT bool initialiseScatterData(const HighsInt max_num_point,
                            HighsScatterData& scatter_data);
-bool updateScatterData(const double value0, const double value1,
+HIGHS_EXPORT bool updateScatterData(const double value0, const double value1,
                        HighsScatterData& scatter_data);
-bool regressScatterData(HighsScatterData& scatter_data);
-bool predictFromScatterData(const HighsScatterData& scatter_data,
+HIGHS_EXPORT bool regressScatterData(HighsScatterData& scatter_data);
+HIGHS_EXPORT bool predictFromScatterData(const HighsScatterData& scatter_data,
                             const double value0, double& predicted_value1,
                             const bool log_regression = false);
-bool printScatterData(std::string name, const HighsScatterData& scatter_data);
-void printScatterDataRegressionComparison(std::string name,
+HIGHS_EXPORT bool printScatterData(std::string name, const HighsScatterData& scatter_data);
+HIGHS_EXPORT void printScatterDataRegressionComparison(std::string name,
                                           const HighsScatterData& scatter_data);
-bool computeScatterDataRegressionError(HighsScatterData& scatter_data,
+HIGHS_EXPORT bool computeScatterDataRegressionError(HighsScatterData& scatter_data,
                                        const bool print = false);
 
-double nearestPowerOfTwoScale(const double value);
+HIGHS_EXPORT double nearestPowerOfTwoScale(const double value);
 
 // If assert_condition is false then, if NDEBUG is defined message is
 // printed and abort() is called, otherwise assert is called
-void highsAssert(const bool assert_condition, const std::string message = "");
+HIGHS_EXPORT void highsAssert(const bool assert_condition, const std::string message = "");
 
 // If pause_condition is true, then keyboard input is required. Allows
 // breakpoints in VScode where optimization might prevent them.
-bool highsPause(const bool pause_condition, const std::string message = "");
+HIGHS_EXPORT bool highsPause(const bool pause_condition, const std::string message = "");
 #endif  // UTIL_HIGHSUTILS_H_

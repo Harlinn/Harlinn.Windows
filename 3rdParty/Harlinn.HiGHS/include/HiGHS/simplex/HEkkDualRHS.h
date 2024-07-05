@@ -36,12 +36,12 @@ class HEkkDualRHS {
    * EdWt (for gathered DSE weights)
    * EdWtFull (for scattered SED weights)
    */
-  void setup();
+  HIGHS_EXPORT void setup();
 
   /**
    * @brief Choose the row index of a good variable to leave the basis (CHUZR)
    */
-  void chooseNormal(
+  HIGHS_EXPORT void chooseNormal(
       HighsInt* chIndex  //!< Row index of variable chosen to leave the basis
   );
 
@@ -49,7 +49,7 @@ class HEkkDualRHS {
    * @brief Choose a set of row indices of good variables to leave the basis
    * (Multiple CHUZR)
    */
-  void chooseMultiGlobal(HighsInt* chIndex,  //!< Set of indices of chosen rows
+  HIGHS_EXPORT void chooseMultiGlobal(HighsInt* chIndex,  //!< Set of indices of chosen rows
                          HighsInt* chCount,  //!< Number of chosen rows
                          HighsInt chLimit    //!< Limit on number of chosen rows
   );
@@ -58,7 +58,7 @@ class HEkkDualRHS {
    * @brief Choose a set of row indices of good variables to leave the basis
    * (Multiple CHUZR)
    */
-  void chooseMultiHyperGraphAuto(
+  HIGHS_EXPORT void chooseMultiHyperGraphAuto(
       HighsInt* chIndex,  //!< Set of indices of chosen rows
       HighsInt* chCount,  //!< Number of chosen rows
       HighsInt chLimit    //!< Limit on number of chosen rows
@@ -68,7 +68,7 @@ class HEkkDualRHS {
    * @brief Choose a set of row indices of good variables to leave the basis
    * (Multiple CHUZR)
    */
-  void chooseMultiHyperGraphPart(
+  HIGHS_EXPORT void chooseMultiHyperGraphPart(
       HighsInt* chIndex,  //!< Set of indices of chosen rows
       HighsInt* chCount,  //!< Number of chosen rows
       HighsInt chLimit    //!< Limit on number of chosen rows
@@ -78,7 +78,7 @@ class HEkkDualRHS {
    * @brief Update the primal values by adding a multiple of a given
    * std::vector, returning false if infinite values are created
    */
-  bool updatePrimal(
+  HIGHS_EXPORT bool updatePrimal(
       HVector* column,  //!< Column to add into primal values
       double theta      //!< Multiple of column to add into primal values
   );
@@ -87,7 +87,7 @@ class HEkkDualRHS {
    * @brief Update the primal value for the row where the basis change has
    * occurred
    */
-  void updatePivots(
+  HIGHS_EXPORT void updatePivots(
       const HighsInt iRow,  //!< row where the basis change has occurred
       const double value    //!< New primal value in this row
   );
@@ -96,21 +96,21 @@ class HEkkDualRHS {
    * @brief Update the list of primal infeasibilities using indices of primal
    * values which have changed
    */
-  void updateInfeasList(HVector* column  //!< Changes in primal values
+  HIGHS_EXPORT void updateInfeasList(HVector* column  //!< Changes in primal values
   );
 
   /**
    * @brief Create the list of greatest primal infeasibilities for efficient
    * CHUZR
    */
-  void createInfeasList(double columnDensity);
+  HIGHS_EXPORT void createInfeasList(double columnDensity);
   /**
    * @brief Create the std::vector of primal infeasibilities
    *
    */
-  void createArrayOfPrimalInfeasibilities();
+  HIGHS_EXPORT void createArrayOfPrimalInfeasibilities();
 
-  void assessOptimality();
+  HIGHS_EXPORT void assessOptimality();
 
   // References:
   HEkk& ekk_instance_;

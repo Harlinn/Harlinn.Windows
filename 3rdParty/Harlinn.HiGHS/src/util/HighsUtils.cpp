@@ -21,7 +21,7 @@
 
 #include "util/HighsSort.h"
 
-HighsInt create(HighsIndexCollection& index_collection, const HighsInt from_col,
+HIGHS_EXPORT HighsInt create(HighsIndexCollection& index_collection, const HighsInt from_col,
                 const HighsInt to_col, const HighsInt dimension) {
   if (from_col < 0) return kIndexCollectionCreateIllegalInterval;
   if (to_col >= dimension) return kIndexCollectionCreateIllegalInterval;
@@ -32,7 +32,7 @@ HighsInt create(HighsIndexCollection& index_collection, const HighsInt from_col,
   return kIndexCollectionCreateOk;
 }
 
-HighsInt create(HighsIndexCollection& index_collection,
+HIGHS_EXPORT HighsInt create(HighsIndexCollection& index_collection,
                 const HighsInt num_set_entries, const HighsInt* set,
                 const HighsInt dimension) {
   // Create an index collection for the given set - so long as it is strictly
@@ -50,7 +50,7 @@ HighsInt create(HighsIndexCollection& index_collection,
   return kIndexCollectionCreateOk;
 }
 
-HighsInt create(HighsIndexCollection& index_collection, const HighsInt* mask,
+HIGHS_EXPORT HighsInt create(HighsIndexCollection& index_collection, const HighsInt* mask,
                 const HighsInt dimension) {
   // Create an index collection for the given mask
   if (dimension < 0) return kIndexCollectionCreateIllegalMaskSize;
@@ -90,7 +90,7 @@ void highsSparseTranspose(HighsInt numRow, HighsInt numCol,
   }
 }
 
-bool ok(const HighsIndexCollection& index_collection) {
+HIGHS_EXPORT bool ok(const HighsIndexCollection& index_collection) {
   // Check parameter for each technique of defining an index collection
   if (index_collection.is_interval_) {
     // Changing by interval: check the parameters and that check set and mask
@@ -176,7 +176,7 @@ bool ok(const HighsIndexCollection& index_collection) {
   return true;
 }
 
-void limits(const HighsIndexCollection& index_collection, HighsInt& from_k,
+HIGHS_EXPORT void limits(const HighsIndexCollection& index_collection, HighsInt& from_k,
             HighsInt& to_k) {
   if (index_collection.is_interval_) {
     from_k = index_collection.from_;
@@ -192,7 +192,7 @@ void limits(const HighsIndexCollection& index_collection, HighsInt& from_k,
   }
 }
 
-void updateOutInIndex(const HighsIndexCollection& index_collection,
+HIGHS_EXPORT void updateOutInIndex(const HighsIndexCollection& index_collection,
                       HighsInt& out_from_ix, HighsInt& out_to_ix,
                       HighsInt& in_from_ix, HighsInt& in_to_ix,
                       HighsInt& current_set_entry) {
@@ -240,7 +240,7 @@ void updateOutInIndex(const HighsIndexCollection& index_collection,
   }
 }
 
-HighsInt dataSize(const HighsIndexCollection& index_collection) {
+HIGHS_EXPORT HighsInt dataSize(const HighsIndexCollection& index_collection) {
   if (index_collection.is_set_) {
     return index_collection.set_num_entries_;
   } else {
@@ -252,7 +252,7 @@ HighsInt dataSize(const HighsIndexCollection& index_collection) {
   }
 }
 
-bool highsVarTypeUserDataNotNull(const HighsLogOptions& log_options,
+HIGHS_EXPORT bool highsVarTypeUserDataNotNull(const HighsLogOptions& log_options,
                                  const HighsVarType* user_data,
                                  const std::string name) {
   bool null_data = false;
@@ -265,7 +265,7 @@ bool highsVarTypeUserDataNotNull(const HighsLogOptions& log_options,
   return null_data;
 }
 
-bool intUserDataNotNull(const HighsLogOptions& log_options,
+HIGHS_EXPORT bool intUserDataNotNull(const HighsLogOptions& log_options,
                         const HighsInt* user_data, const std::string name) {
   bool null_data = false;
   if (user_data == NULL) {
@@ -277,7 +277,7 @@ bool intUserDataNotNull(const HighsLogOptions& log_options,
   return null_data;
 }
 
-bool doubleUserDataNotNull(const HighsLogOptions& log_options,
+HIGHS_EXPORT bool doubleUserDataNotNull(const HighsLogOptions& log_options,
                            const double* user_data, const std::string name) {
   bool null_data = false;
   if (user_data == NULL) {
@@ -289,23 +289,23 @@ bool doubleUserDataNotNull(const HighsLogOptions& log_options,
   return null_data;
 }
 
-double getNorm2(const std::vector<double> values) {
+HIGHS_EXPORT double getNorm2(const std::vector<double> values) {
   double sum = 0;
   HighsInt values_size = values.size();
   for (HighsInt i = 0; i < values_size; i++) sum += values[i] * values[i];
   return sum;
 }
 
-bool highs_isInfinity(double val) {
+HIGHS_EXPORT bool highs_isInfinity(double val) {
   if (val >= kHighsInf) return true;
   return false;
 }
 
-double highsRelativeDifference(const double v0, const double v1) {
+HIGHS_EXPORT double highsRelativeDifference(const double v0, const double v1) {
   return fabs(v0 - v1) / std::max(v0, std::max(v1, 1.0));
 }
 
-void analyseVectorValues(const HighsLogOptions* log_options,
+HIGHS_EXPORT void analyseVectorValues(const HighsLogOptions* log_options,
                          const std::string message, HighsInt vecDim,
                          const std::vector<double>& vec, bool analyseValueList,
                          std::string model_name) {
@@ -485,7 +485,7 @@ void analyseVectorValues(const HighsLogOptions* log_options,
   }
 }
 
-void analyseVectorValues(const HighsLogOptions* log_options,
+HIGHS_EXPORT void analyseVectorValues(const HighsLogOptions* log_options,
                          const std::string message, HighsInt vecDim,
                          const std::vector<HighsInt>& vec,
                          std::string model_name) {
@@ -561,7 +561,7 @@ void analyseVectorValues(const HighsLogOptions* log_options,
   */
 }
 
-void analyseMatrixSparsity(const HighsLogOptions& log_options,
+HIGHS_EXPORT void analyseMatrixSparsity(const HighsLogOptions& log_options,
                            const char* message, HighsInt numCol,
                            HighsInt numRow, const std::vector<HighsInt>& Astart,
                            const std::vector<HighsInt>& Aindex) {
@@ -699,7 +699,7 @@ void analyseMatrixSparsity(const HighsLogOptions& log_options,
               maxRowCount, numCol);
 }
 
-bool initialiseValueDistribution(const std::string distribution_name,
+HIGHS_EXPORT bool initialiseValueDistribution(const std::string distribution_name,
                                  const std::string value_name,
                                  const double min_value_limit,
                                  const double max_value_limit,
@@ -749,7 +749,7 @@ bool initialiseValueDistribution(const std::string distribution_name,
   return true;
 }
 
-bool updateValueDistribution(const double value,
+HIGHS_EXPORT bool updateValueDistribution(const double value,
                              HighsValueDistribution& value_distribution) {
   if (value_distribution.num_count_ < 0) return false;
   value_distribution.sum_count_++;
@@ -776,16 +776,16 @@ bool updateValueDistribution(const double value,
   return true;
 }
 
-double doublePercentage(const HighsInt of, const HighsInt in) {
+HIGHS_EXPORT double doublePercentage(const HighsInt of, const HighsInt in) {
   return ((100.0 * of) / in);
 }
 
-HighsInt integerPercentage(const HighsInt of, const HighsInt in) {
+HIGHS_EXPORT HighsInt integerPercentage(const HighsInt of, const HighsInt in) {
   const double double_percentage = ((100.0 * of) / in) + 0.4999;
   return (HighsInt)double_percentage;
 }
 
-bool logValueDistribution(const HighsLogOptions& log_options,
+HIGHS_EXPORT bool logValueDistribution(const HighsLogOptions& log_options,
                           const HighsValueDistribution& value_distribution,
                           const HighsInt mu) {
   if (value_distribution.sum_count_ <= 0) return false;
@@ -964,7 +964,7 @@ bool logValueDistribution(const HighsLogOptions& log_options,
   return true;
 }
 
-bool initialiseScatterData(const HighsInt max_num_point,
+HIGHS_EXPORT bool initialiseScatterData(const HighsInt max_num_point,
                            HighsScatterData& scatter_data) {
   if (max_num_point < 1) return false;
   scatter_data.max_num_point_ = max_num_point;
@@ -985,7 +985,7 @@ bool initialiseScatterData(const HighsInt max_num_point,
   return true;
 }
 
-bool updateScatterData(const double value0, const double value1,
+HIGHS_EXPORT bool updateScatterData(const double value0, const double value1,
                        HighsScatterData& scatter_data) {
   if (value0 <= 0 || value1 <= 0) return false;
   scatter_data.num_point_++;
@@ -997,7 +997,7 @@ bool updateScatterData(const double value0, const double value1,
   return true;
 }
 
-bool regressScatterData(HighsScatterData& scatter_data) {
+HIGHS_EXPORT bool regressScatterData(HighsScatterData& scatter_data) {
   if (scatter_data.num_point_ < 5) return true;
   double log_x;
   double log_y;
@@ -1091,7 +1091,7 @@ bool regressScatterData(HighsScatterData& scatter_data) {
   return true;
 }
 
-bool predictFromScatterData(const HighsScatterData& scatter_data,
+HIGHS_EXPORT bool predictFromScatterData(const HighsScatterData& scatter_data,
                             const double value0, double& predicted_value1,
                             const bool log_regression) {
   if (!scatter_data.have_regression_coeff_) return false;
@@ -1106,7 +1106,7 @@ bool predictFromScatterData(const HighsScatterData& scatter_data,
   }
 }
 
-bool computeScatterDataRegressionError(HighsScatterData& scatter_data,
+HIGHS_EXPORT bool computeScatterDataRegressionError(HighsScatterData& scatter_data,
                                        const bool print) {
   if (!scatter_data.have_regression_coeff_) return false;
   if (scatter_data.num_point_ < scatter_data.max_num_point_) return false;
@@ -1156,7 +1156,7 @@ bool computeScatterDataRegressionError(HighsScatterData& scatter_data,
   return true;
 }
 
-bool printScatterData(std::string name, const HighsScatterData& scatter_data) {
+HIGHS_EXPORT bool printScatterData(std::string name, const HighsScatterData& scatter_data) {
   if (!scatter_data.num_point_) return true;
   double x;
   double y;
@@ -1186,7 +1186,7 @@ bool printScatterData(std::string name, const HighsScatterData& scatter_data) {
   return true;
 }
 
-void printScatterDataRegressionComparison(
+HIGHS_EXPORT void printScatterDataRegressionComparison(
     std::string name, const HighsScatterData& scatter_data) {
   if (!scatter_data.num_error_comparison_) return;
   printf("\n%s scatter data regression\n", name.c_str());
@@ -1210,7 +1210,7 @@ void printScatterDataRegressionComparison(
          scatter_data.num_better_log_);
 }
 
-double nearestPowerOfTwoScale(const double value) {
+HIGHS_EXPORT double nearestPowerOfTwoScale(const double value) {
   int exp_scale;
   // Decompose value into a normalized fraction and an integral power
   // of two.
@@ -1233,7 +1233,7 @@ double nearestPowerOfTwoScale(const double value) {
   return scale;
 }
 
-void highsAssert(const bool assert_condition, const std::string message) {
+HIGHS_EXPORT void highsAssert(const bool assert_condition, const std::string message) {
   if (assert_condition) return;
   printf("Failing highsAssert(\"%s\")\n", message.c_str());
 #ifdef NDEBUG
@@ -1247,7 +1247,7 @@ void highsAssert(const bool assert_condition, const std::string message) {
 #endif
 }
 
-bool highsPause(const bool pause_condition, const std::string message) {
+HIGHS_EXPORT bool highsPause(const bool pause_condition, const std::string message) {
   if (!pause_condition) return pause_condition;
   printf("Satisfying highsPause(\"%s\")\n", message.c_str());
   char str[100];

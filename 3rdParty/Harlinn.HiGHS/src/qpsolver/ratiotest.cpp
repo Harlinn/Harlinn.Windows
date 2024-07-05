@@ -95,7 +95,7 @@ static RatiotestResult ratiotest_twopass(Runtime& runtime, const QpVector& p,
 }
 
 
-Instance ratiotest_relax_instance(Runtime& runtime) {
+HIGHS_EXPORT Instance ratiotest_relax_instance(Runtime& runtime) {
   Instance relaxed_instance = runtime.instance;
       for (double& bound : relaxed_instance.con_lo) {
         if (bound != -std::numeric_limits<double>::infinity()) {
@@ -123,7 +123,7 @@ Instance ratiotest_relax_instance(Runtime& runtime) {
   return relaxed_instance;
 }
 
-RatiotestResult ratiotest(Runtime& runtime, const QpVector& p,
+HIGHS_EXPORT RatiotestResult ratiotest(Runtime& runtime, const QpVector& p,
                           const QpVector& rowmove, double alphastart) {
   switch (runtime.settings.ratiotest) {
     case RatiotestStrategy::Textbook:

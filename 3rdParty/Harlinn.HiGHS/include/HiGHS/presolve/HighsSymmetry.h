@@ -62,9 +62,9 @@ struct StabilizerOrbits {
   std::vector<HighsInt> stabilizedCols;
   const HighsSymmetries* symmetries;
 
-  HighsInt orbitalFixing(HighsDomain& domain) const;
+  HIGHS_EXPORT HighsInt orbitalFixing(HighsDomain& domain) const;
 
-  bool isStabilized(HighsInt col) const;
+  HIGHS_EXPORT bool isStabilized(HighsInt col) const;
 };
 
 struct HighsOrbitopeMatrix {
@@ -93,19 +93,19 @@ struct HighsOrbitopeMatrix {
     return entry(i, j);
   }
 
-  HighsInt orbitalFixing(HighsDomain& domain) const;
+  HIGHS_EXPORT HighsInt orbitalFixing(HighsDomain& domain) const;
 
-  void determineOrbitopeType(HighsCliqueTable& cliquetable);
+  HIGHS_EXPORT void determineOrbitopeType(HighsCliqueTable& cliquetable);
 
-  HighsInt getBranchingColumn(const std::vector<double>& colLower,
+  HIGHS_EXPORT HighsInt getBranchingColumn(const std::vector<double>& colLower,
                               const std::vector<double>& colUpper,
                               HighsInt col) const;
 
  private:
-  HighsInt orbitalFixingForFullOrbitope(const std::vector<HighsInt>& rows,
+  HIGHS_EXPORT HighsInt orbitalFixingForFullOrbitope(const std::vector<HighsInt>& rows,
                                         HighsDomain& domain) const;
 
-  HighsInt orbitalFixingForPackingOrbitope(const std::vector<HighsInt>& rows,
+  HIGHS_EXPORT HighsInt orbitalFixingForPackingOrbitope(const std::vector<HighsInt>& rows,
                                            HighsDomain& domain) const;
 };
 
@@ -121,11 +121,11 @@ struct HighsSymmetries {
   HighsInt numPerms = 0;
   HighsInt numGenerators = 0;
 
-  void clear();
-  void mergeOrbits(HighsInt col1, HighsInt col2);
-  HighsInt getOrbit(HighsInt col);
+  HIGHS_EXPORT void clear();
+  HIGHS_EXPORT void mergeOrbits(HighsInt col1, HighsInt col2);
+  HIGHS_EXPORT HighsInt getOrbit(HighsInt col);
 
-  HighsInt propagateOrbitopes(HighsDomain& domain) const;
+  HIGHS_EXPORT HighsInt propagateOrbitopes(HighsDomain& domain) const;
 
   HighsInt getBranchingColumn(const std::vector<double>& colLower,
                               const std::vector<double>& colUpper,
@@ -137,7 +137,7 @@ struct HighsSymmetries {
     return orbitopes[*orbitope].getBranchingColumn(colLower, colUpper, col);
   }
 
-  std::shared_ptr<const StabilizerOrbits> computeStabilizerOrbits(
+  HIGHS_EXPORT std::shared_ptr<const StabilizerOrbits> computeStabilizerOrbits(
       const HighsDomain& localdom);
 };
 
@@ -200,45 +200,45 @@ class HighsSymmetryDetection {
 
   std::vector<Node> nodeStack;
 
-  HighsInt getCellStart(HighsInt pos);
+  HIGHS_EXPORT HighsInt getCellStart(HighsInt pos);
 
-  void backtrack(HighsInt backtrackStackNewEnd, HighsInt backtrackStackEnd);
-  void cleanupBacktrack(HighsInt cellCreationStackPos);
+  HIGHS_EXPORT void backtrack(HighsInt backtrackStackNewEnd, HighsInt backtrackStackEnd);
+  HIGHS_EXPORT void cleanupBacktrack(HighsInt cellCreationStackPos);
 
-  void switchToNextNode(HighsInt backtrackDepth);
+  HIGHS_EXPORT void switchToNextNode(HighsInt backtrackDepth);
 
-  bool compareCurrentGraph(
+  HIGHS_EXPORT bool compareCurrentGraph(
       const HighsHashTable<std::tuple<HighsInt, HighsInt, HighsUInt>>&
           otherGraph,
       HighsInt& wrongCell);
 
-  void removeFixPoints();
-  void initializeGroundSet();
-  HighsHashTable<std::tuple<HighsInt, HighsInt, HighsUInt>> dumpCurrentGraph();
-  bool mergeOrbits(HighsInt v1, HighsInt v2);
-  HighsInt getOrbit(HighsInt vertex);
+  HIGHS_EXPORT void removeFixPoints();
+  HIGHS_EXPORT void initializeGroundSet();
+  HIGHS_EXPORT HighsHashTable<std::tuple<HighsInt, HighsInt, HighsUInt>> dumpCurrentGraph();
+  HIGHS_EXPORT bool mergeOrbits(HighsInt v1, HighsInt v2);
+  HIGHS_EXPORT HighsInt getOrbit(HighsInt vertex);
 
-  void initializeHashValues();
-  bool isomorphicToFirstLeave();
-  bool partitionRefinement();
-  bool checkStoredAutomorphism(HighsInt vertex);
-  u32 getVertexHash(HighsInt vertex);
-  HighsInt selectTargetCell();
+  HIGHS_EXPORT void initializeHashValues();
+  HIGHS_EXPORT bool isomorphicToFirstLeave();
+  HIGHS_EXPORT bool partitionRefinement();
+  HIGHS_EXPORT bool checkStoredAutomorphism(HighsInt vertex);
+  HIGHS_EXPORT u32 getVertexHash(HighsInt vertex);
+  HIGHS_EXPORT HighsInt selectTargetCell();
 
-  bool updateCellMembership(HighsInt vertex, HighsInt cell,
+  HIGHS_EXPORT bool updateCellMembership(HighsInt vertex, HighsInt cell,
                             bool markForRefinement = true);
-  bool splitCell(HighsInt cell, HighsInt splitPoint);
-  void markCellForRefinement(HighsInt cell);
+  HIGHS_EXPORT bool splitCell(HighsInt cell, HighsInt splitPoint);
+  HIGHS_EXPORT void markCellForRefinement(HighsInt cell);
 
-  bool distinguishVertex(HighsInt targetCell);
-  bool determineNextToDistinguish();
-  void createNode();
+  HIGHS_EXPORT bool distinguishVertex(HighsInt targetCell);
+  HIGHS_EXPORT bool determineNextToDistinguish();
+  HIGHS_EXPORT void createNode();
 
   HighsInt cellSize(HighsInt cell) const {
     return currentPartitionLinks[cell] - cell;
   }
 
-  bool isFromBinaryColumn(HighsInt vertex) const;
+  HIGHS_EXPORT bool isFromBinaryColumn(HighsInt vertex) const;
 
   struct ComponentData {
     HighsDisjointSets<> components;
@@ -268,17 +268,17 @@ class HighsSymmetryDetection {
     }
   };
 
-  ComponentData computeComponentData(const HighsSymmetries& symmetries);
+  HIGHS_EXPORT ComponentData computeComponentData(const HighsSymmetries& symmetries);
 
-  bool isFullOrbitope(const ComponentData& componentData, HighsInt component,
+  HIGHS_EXPORT bool isFullOrbitope(const ComponentData& componentData, HighsInt component,
                       HighsSymmetries& symmetries);
 
  public:
-  void loadModelAsGraph(const HighsLp& model, double epsilon);
+  HIGHS_EXPORT void loadModelAsGraph(const HighsLp& model, double epsilon);
 
-  bool initializeDetection();
+  HIGHS_EXPORT bool initializeDetection();
 
-  void run(HighsSymmetries& symmetries);
+  HIGHS_EXPORT void run(HighsSymmetries& symmetries);
 };
 
 #endif

@@ -75,34 +75,34 @@ class HighsLinearSumBounds {
     }
   }
 
-  void add(HighsInt sum, HighsInt var, double coefficient);
+  HIGHS_EXPORT void add(HighsInt sum, HighsInt var, double coefficient);
 
-  void remove(HighsInt sum, HighsInt var, double coefficient);
+  HIGHS_EXPORT void remove(HighsInt sum, HighsInt var, double coefficient);
 
-  void updatedVarUpper(HighsInt sum, HighsInt var, double coefficient,
+  HIGHS_EXPORT void updatedVarUpper(HighsInt sum, HighsInt var, double coefficient,
                        double oldVarUpper);
 
-  void updatedVarLower(HighsInt sum, HighsInt var, double coefficient,
+  HIGHS_EXPORT void updatedVarLower(HighsInt sum, HighsInt var, double coefficient,
                        double oldVarLower);
 
-  void updatedImplVarUpper(HighsInt sum, HighsInt var, double coefficient,
+  HIGHS_EXPORT void updatedImplVarUpper(HighsInt sum, HighsInt var, double coefficient,
                            double oldImplVarUpper,
                            HighsInt oldImplVarUpperSource);
 
-  void updatedImplVarLower(HighsInt sum, HighsInt var, double coefficient,
+  HIGHS_EXPORT void updatedImplVarLower(HighsInt sum, HighsInt var, double coefficient,
                            double oldImplVarLower,
                            HighsInt oldImplVarLowerSource);
 
-  double getResidualSumLower(HighsInt sum, HighsInt var,
+  HIGHS_EXPORT double getResidualSumLower(HighsInt sum, HighsInt var,
                              double coefficient) const;
 
-  double getResidualSumUpper(HighsInt sum, HighsInt var,
+  HIGHS_EXPORT double getResidualSumUpper(HighsInt sum, HighsInt var,
                              double coefficient) const;
 
-  double getResidualSumLowerOrig(HighsInt sum, HighsInt var,
+  HIGHS_EXPORT double getResidualSumLowerOrig(HighsInt sum, HighsInt var,
                                  double coefficient) const;
 
-  double getResidualSumUpperOrig(HighsInt sum, HighsInt var,
+  HIGHS_EXPORT double getResidualSumUpperOrig(HighsInt sum, HighsInt var,
                                  double coefficient) const;
 
   double getSumLowerOrig(HighsInt sum) const {
@@ -154,7 +154,7 @@ class HighsLinearSumBounds {
     return numInfSumUpperOrig[sum];
   }
 
-  void shrink(const std::vector<HighsInt>& newIndices, HighsInt newSize);
+  HIGHS_EXPORT void shrink(const std::vector<HighsInt>& newIndices, HighsInt newSize);
 };
 
 #endif

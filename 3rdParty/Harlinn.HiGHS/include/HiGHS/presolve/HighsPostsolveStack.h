@@ -75,9 +75,9 @@ class HighsPostsolveStack {
     double constant;
     HighsInt col;
 
-    void undo(const HighsOptions& options, HighsSolution& solution) const;
+    HIGHS_EXPORT void undo(const HighsOptions& options, HighsSolution& solution) const;
 
-    void transformToPresolvedSpace(std::vector<double>& primalSol) const;
+    HIGHS_EXPORT void transformToPresolvedSpace(std::vector<double>& primalSol) const;
   };
 
   struct FreeColSubstitution {
@@ -87,7 +87,7 @@ class HighsPostsolveStack {
     HighsInt col;
     RowType rowType;
 
-    void undo(const HighsOptions& options,
+    HIGHS_EXPORT void undo(const HighsOptions& options,
               const std::vector<Nonzero>& rowValues,
               const std::vector<Nonzero>& colValues, HighsSolution& solution,
               HighsBasis& basis);
@@ -107,7 +107,7 @@ class HighsPostsolveStack {
     bool upperTightened;
     RowType rowType;
 
-    void undo(const HighsOptions& options,
+    HIGHS_EXPORT void undo(const HighsOptions& options,
               const std::vector<Nonzero>& colValues, HighsSolution& solution,
               HighsBasis& basis) const;
   };
@@ -117,7 +117,7 @@ class HighsPostsolveStack {
     HighsInt addedEqRow;
     double eqRowScale;
 
-    void undo(const HighsOptions& options,
+    HIGHS_EXPORT void undo(const HighsOptions& options,
               const std::vector<Nonzero>& eqRowValues, HighsSolution& solution,
               HighsBasis& basis) const;
   };
@@ -125,7 +125,7 @@ class HighsPostsolveStack {
   struct EqualityRowAdditions {
     HighsInt addedEqRow;
 
-    void undo(const HighsOptions& options,
+    HIGHS_EXPORT void undo(const HighsOptions& options,
               const std::vector<Nonzero>& eqRowValues,
               const std::vector<Nonzero>& targetRows, HighsSolution& solution,
               HighsBasis& basis) const;
@@ -137,7 +137,7 @@ class HighsPostsolveStack {
     bool colLowerTightened;
     bool colUpperTightened;
 
-    void undo(const HighsOptions& options, HighsSolution& solution,
+    HIGHS_EXPORT void undo(const HighsOptions& options, HighsSolution& solution,
               HighsBasis& basis) const;
   };
 
@@ -148,7 +148,7 @@ class HighsPostsolveStack {
     HighsInt col;
     HighsBasisStatus fixType;
 
-    void undo(const HighsOptions& options,
+    HIGHS_EXPORT void undo(const HighsOptions& options,
               const std::vector<Nonzero>& colValues, HighsSolution& solution,
               HighsBasis& basis) const;
   };
@@ -156,7 +156,7 @@ class HighsPostsolveStack {
   struct RedundantRow {
     HighsInt row;
 
-    void undo(const HighsOptions& options, HighsSolution& solution,
+    HIGHS_EXPORT void undo(const HighsOptions& options, HighsSolution& solution,
               HighsBasis& basis) const;
   };
 
@@ -165,7 +165,7 @@ class HighsPostsolveStack {
     HighsInt row;
     RowType rowType;
 
-    void undo(const HighsOptions& options,
+    HIGHS_EXPORT void undo(const HighsOptions& options,
               const std::vector<Nonzero>& rowValues, HighsSolution& solution,
               HighsBasis& basis) const;
   };
@@ -177,7 +177,7 @@ class HighsPostsolveStack {
     bool atInfiniteUpper;
     bool colIntegral;
 
-    void undo(const HighsOptions& options,
+    HIGHS_EXPORT void undo(const HighsOptions& options,
               const std::vector<Nonzero>& colValues, HighsSolution& solution,
               HighsBasis& basis) const;
   };
@@ -185,7 +185,7 @@ class HighsPostsolveStack {
   struct ForcingColumnRemovedRow {
     double rhs;
     HighsInt row;
-    void undo(const HighsOptions& options,
+    HIGHS_EXPORT void undo(const HighsOptions& options,
               const std::vector<Nonzero>& rowValues, HighsSolution& solution,
               HighsBasis& basis) const;
   };
@@ -197,7 +197,7 @@ class HighsPostsolveStack {
     bool rowLowerTightened;
     bool rowUpperTightened;
 
-    void undo(const HighsOptions& options, HighsSolution& solution,
+    HIGHS_EXPORT void undo(const HighsOptions& options, HighsSolution& solution,
               HighsBasis& basis) const;
   };
 
@@ -212,11 +212,11 @@ class HighsPostsolveStack {
     bool colIntegral;
     bool duplicateColIntegral;
 
-    void undo(const HighsOptions& options, HighsSolution& solution,
+    HIGHS_EXPORT void undo(const HighsOptions& options, HighsSolution& solution,
               HighsBasis& basis) const;
-    bool okMerge(const double tolerance) const;
-    void undoFix(const HighsOptions& options, HighsSolution& solution) const;
-    void transformToPresolvedSpace(std::vector<double>& primalSol) const;
+    HIGHS_EXPORT bool okMerge(const double tolerance) const;
+    HIGHS_EXPORT void undoFix(const HighsOptions& options, HighsSolution& solution) const;
+    HIGHS_EXPORT void transformToPresolvedSpace(std::vector<double>& primalSol) const;
   };
 
   /// tags for reduction
@@ -291,9 +291,9 @@ class HighsPostsolveStack {
 
   HighsInt getOrigNumCol() const { return origNumCol; }
 
-  void initializeIndexMaps(HighsInt numRow, HighsInt numCol);
+  HIGHS_EXPORT void initializeIndexMaps(HighsInt numRow, HighsInt numCol);
 
-  void compressIndexMaps(const std::vector<HighsInt>& newRowIndex,
+  HIGHS_EXPORT void compressIndexMaps(const std::vector<HighsInt>& newRowIndex,
                          const std::vector<HighsInt>& newColIndex);
 
   /// transform a column x by a linear mapping with a new column x'.

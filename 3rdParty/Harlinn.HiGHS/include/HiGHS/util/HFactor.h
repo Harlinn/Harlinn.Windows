@@ -144,21 +144,21 @@ class HFactor {
    * count-link-list, L factor and U factor
    */
 
-  void setup(const HighsSparseMatrix& a_matrix,
+  HIGHS_EXPORT void setup(const HighsSparseMatrix& a_matrix,
              std::vector<HighsInt>& basic_index,
              const double pivot_threshold = kDefaultPivotThreshold,
              const double pivot_tolerance = kDefaultPivotTolerance,
              const HighsInt highs_debug_level = kHighsDebugLevelMin,
              const HighsLogOptions* log_options = NULL);
 
-  void setupGeneral(const HighsSparseMatrix* a_matrix, HighsInt num_basic,
+  HIGHS_EXPORT void setupGeneral(const HighsSparseMatrix* a_matrix, HighsInt num_basic,
                     HighsInt* basic_index,
                     const double pivot_threshold = kDefaultPivotThreshold,
                     const double pivot_tolerance = kDefaultPivotTolerance,
                     const HighsInt highs_debug_level = kHighsDebugLevelMin,
                     const HighsLogOptions* log_options = NULL);
 
-  void setup(const HighsInt num_col,   //!< Number of columns
+  HIGHS_EXPORT void setup(const HighsInt num_col,   //!< Number of columns
              const HighsInt num_row,   //!< Number of rows
              const HighsInt* a_start,  //!< Column starts of constraint matrix
              const HighsInt* a_index,  //!< Row indices of constraint matrix
@@ -173,7 +173,7 @@ class HFactor {
              const bool use_original_HFactor_logic = true,
              const HighsInt update_method = kUpdateMethodFt);
 
-  void setupGeneral(
+  HIGHS_EXPORT void setupGeneral(
       const HighsInt num_col,    //!< Number of columns
       const HighsInt num_row,    //!< Number of rows
       const HighsInt num_basic,  //!< Number of indices in basic_index
@@ -190,11 +190,11 @@ class HFactor {
       const bool use_original_HFactor_logic = true,
       const HighsInt update_method = kUpdateMethodFt);
 
-  void setupMatrix(
+  HIGHS_EXPORT void setupMatrix(
       const HighsInt* a_start,  //!< Column starts of constraint matrix
       const HighsInt* a_index,  //!< Row indices of constraint matrix
       const double* a_value);   //!< Row values of constraint matrix
-  void setupMatrix(const HighsSparseMatrix* a_matrix);
+  HIGHS_EXPORT void setupMatrix(const HighsSparseMatrix* a_matrix);
   /**
    * @brief Form \f$PBQ=LU\f$ for basis matrix \f$B\f$ or report degree of rank
    * deficiency.
@@ -202,35 +202,35 @@ class HFactor {
    * @return 0 if successful, otherwise rank_deficiency>0
    *
    */
-  HighsInt build(HighsTimerClock* factor_timer_clock_pointer = NULL);
+  HIGHS_EXPORT HighsInt build(HighsTimerClock* factor_timer_clock_pointer = NULL);
 
   /**
    * @brief Solve \f$B\mathbf{x}=\mathbf{b}\f$ (FTRAN)
    */
-  void ftranCall(
+  HIGHS_EXPORT void ftranCall(
       HVector& vector,                //!< RHS vector \f$\mathbf{b}\f$
       const double expected_density,  //!< Expected density of the result
       HighsTimerClock* factor_timer_clock_pointer = NULL) const;
 
-  void ftranCall(std::vector<double>& vector,
+  HIGHS_EXPORT void ftranCall(std::vector<double>& vector,
                  HighsTimerClock* factor_timer_clock_pointer = NULL);
 
   /**
    * @brief Solve \f$B^T\mathbf{x}=\mathbf{b}\f$ (BTRAN)
    */
-  void btranCall(
+  HIGHS_EXPORT void btranCall(
       HVector& vector,                //!< RHS vector \f$\mathbf{b}\f$
       const double expected_density,  //!< Expected density of the result
       HighsTimerClock* factor_timer_clock_pointer = NULL) const;
 
-  void btranCall(std::vector<double>& vector,
+  HIGHS_EXPORT void btranCall(std::vector<double>& vector,
                  HighsTimerClock* factor_timer_clock_pointer = NULL);
 
   /**
    * @brief Update according to
    * \f$B'=B+(\mathbf{a}_q-B\mathbf{e}_p)\mathbf{e}_p^T\f$
    */
-  void update(HVector* aq,     //!< Vector \f$B^{-1}\mathbf{a}_q\f$
+  HIGHS_EXPORT void update(HVector* aq,     //!< Vector \f$B^{-1}\mathbf{a}_q\f$
               HVector* ep,     //!< Vector \f$B^{-T}\mathbf{e}_p\f$
               HighsInt* iRow,  //!< Index of pivotal row
               HighsInt* hint   //!< Reinversion status
@@ -239,31 +239,31 @@ class HFactor {
   /**
    * @brief Sets pivoting threshold
    */
-  bool setPivotThreshold(
+  HIGHS_EXPORT bool setPivotThreshold(
       const double new_pivot_threshold = kDefaultPivotThreshold);
 
   /**
    * @brief Sets a time limit
    */
-  void setTimeLimit(const double time_limit);
+  HIGHS_EXPORT void setTimeLimit(const double time_limit);
 
   /**
    * @brief Updates instance with respect to new columns in the
    * constraint matrix (assuming columns are nonbasic)
    */
-  void addCols(const HighsInt num_new_col);
+  HIGHS_EXPORT void addCols(const HighsInt num_new_col);
 
   /**
    * @brief Updates instance with respect to nonbasic columns in the
    * constraint matrix being deleted
    */
-  void deleteNonbasicCols(const HighsInt num_deleted_col);
+  HIGHS_EXPORT void deleteNonbasicCols(const HighsInt num_deleted_col);
 
   /**
    * @brief Updates instance with respect to new rows in the
    * constraint matrix (assuming slacks are basic)
    */
-  void addRows(const HighsSparseMatrix* ar_matrix);
+  HIGHS_EXPORT void addRows(const HighsSparseMatrix* ar_matrix);
 
   /**
    * @brief Wall clock time for INVERT
@@ -317,12 +317,12 @@ class HFactor {
    */
   const double* getAvalue() const { return a_value; }
 
-  void reportLu(const HighsInt l_u_or_both = kReportLuBoth,
+  HIGHS_EXPORT void reportLu(const HighsInt l_u_or_both = kReportLuBoth,
                 const bool full = true) const;
-  void reportAsm();
+  HIGHS_EXPORT void reportAsm();
 
   InvertibleRepresentation getInvert() const;
-  void setInvert(const InvertibleRepresentation& invert);
+  HIGHS_EXPORT void setInvert(const InvertibleRepresentation& invert);
 
   void setDebugReport(const bool debug_report) {
     this->debug_report_ = debug_report;
@@ -458,49 +458,49 @@ class HFactor {
   HVector rhs_;
 
   // Implementation
-  void buildSimple();
+  HIGHS_EXPORT void buildSimple();
   //    void buildKernel();
-  HighsInt buildKernel();
-  void buildHandleRankDeficiency();
-  void buildReportRankDeficiency();
-  void buildMarkSingC();
-  void buildFinish();
-  void zeroCol(const HighsInt iCol);
-  void luClear();
+  HIGHS_EXPORT HighsInt buildKernel();
+  HIGHS_EXPORT void buildHandleRankDeficiency();
+  HIGHS_EXPORT void buildReportRankDeficiency();
+  HIGHS_EXPORT void buildMarkSingC();
+  HIGHS_EXPORT void buildFinish();
+  HIGHS_EXPORT void zeroCol(const HighsInt iCol);
+  HIGHS_EXPORT void luClear();
   // Rebuild using refactor information
-  HighsInt rebuild(HighsTimerClock* factor_timer_clock_pointer);
+  HIGHS_EXPORT HighsInt rebuild(HighsTimerClock* factor_timer_clock_pointer);
 
   // Action to take when pointers to the A matrix are no longer valid
-  void invalidAMatrixAction();
+  HIGHS_EXPORT void invalidAMatrixAction();
 
-  void reportIntVector(const std::string name,
+  HIGHS_EXPORT void reportIntVector(const std::string name,
                        const vector<HighsInt> entry) const;
-  void reportDoubleVector(const std::string name,
+  HIGHS_EXPORT void reportDoubleVector(const std::string name,
                           const vector<double> entry) const;
 
-  void ftranL(HVector& vector, const double expected_density,
+  HIGHS_EXPORT void ftranL(HVector& vector, const double expected_density,
               HighsTimerClock* factor_timer_clock_pointer = NULL) const;
-  void btranL(HVector& vector, const double expected_density,
+  HIGHS_EXPORT void btranL(HVector& vector, const double expected_density,
               HighsTimerClock* factor_timer_clock_pointer = NULL) const;
-  void ftranU(HVector& vector, const double expected_density,
+  HIGHS_EXPORT void ftranU(HVector& vector, const double expected_density,
               HighsTimerClock* factor_timer_clock_pointer = NULL) const;
-  void btranU(HVector& vector, const double expected_density,
+  HIGHS_EXPORT void btranU(HVector& vector, const double expected_density,
               HighsTimerClock* factor_timer_clock_pointer = NULL) const;
 
-  void ftranFT(HVector& vector) const;
-  void btranFT(HVector& vector) const;
-  void ftranPF(HVector& vector) const;
-  void btranPF(HVector& vector) const;
-  void ftranMPF(HVector& vector) const;
-  void btranMPF(HVector& vector) const;
-  void ftranAPF(HVector& vector) const;
-  void btranAPF(HVector& vector) const;
+  HIGHS_EXPORT void ftranFT(HVector& vector) const;
+  HIGHS_EXPORT void btranFT(HVector& vector) const;
+  HIGHS_EXPORT void ftranPF(HVector& vector) const;
+  HIGHS_EXPORT void btranPF(HVector& vector) const;
+  HIGHS_EXPORT void ftranMPF(HVector& vector) const;
+  HIGHS_EXPORT void btranMPF(HVector& vector) const;
+  HIGHS_EXPORT void ftranAPF(HVector& vector) const;
+  HIGHS_EXPORT void btranAPF(HVector& vector) const;
 
-  void updateCFT(HVector* aq, HVector* ep, HighsInt* iRow);
-  void updateFT(HVector* aq, HVector* ep, HighsInt iRow);
-  void updatePF(HVector* aq, HighsInt iRow, HighsInt* hint);
-  void updateMPF(HVector* aq, HVector* ep, HighsInt iRow, HighsInt* hint);
-  void updateAPF(HVector* aq, HVector* ep, HighsInt iRow);
+  HIGHS_EXPORT void updateCFT(HVector* aq, HVector* ep, HighsInt* iRow);
+  HIGHS_EXPORT void updateFT(HVector* aq, HVector* ep, HighsInt iRow);
+  HIGHS_EXPORT void updatePF(HVector* aq, HighsInt iRow, HighsInt* hint);
+  HIGHS_EXPORT void updateMPF(HVector* aq, HVector* ep, HighsInt iRow, HighsInt* hint);
+  HIGHS_EXPORT void updateAPF(HVector* aq, HVector* ep, HighsInt iRow);
 
   /**
    * Local in-line functions

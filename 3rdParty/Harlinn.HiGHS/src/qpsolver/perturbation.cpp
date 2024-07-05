@@ -2,7 +2,7 @@
 
 #include <random>
 
-void perturb(Runtime& rt) {
+HIGHS_EXPORT void perturb(Runtime& rt) {
   rt.perturbed = rt.instance;
   if (!rt.settings.perturbation) {
     return;

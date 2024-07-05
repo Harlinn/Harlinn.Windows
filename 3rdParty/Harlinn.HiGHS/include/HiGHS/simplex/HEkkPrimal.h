@@ -33,87 +33,87 @@ class HEkkPrimal {
   /**
    * @brief Solve a model instance
    */
-  HighsStatus solve(const bool force_phase2 = false);
+  HIGHS_EXPORT HighsStatus solve(const bool force_phase2 = false);
 
  private:
   /**
    * @brief Initialise a primal simplex instance
    */
-  void initialiseInstance();
+  HIGHS_EXPORT void initialiseInstance();
   /**
    * @brief Initialise a primal simplex solve
    */
-  void initialiseSolve();
-  void solvePhase1();
-  void solvePhase2();
-  void cleanup();
-  void rebuild();
+  HIGHS_EXPORT void initialiseSolve();
+  HIGHS_EXPORT void solvePhase1();
+  HIGHS_EXPORT void solvePhase2();
+  HIGHS_EXPORT void cleanup();
+  HIGHS_EXPORT void rebuild();
 
-  void iterate();
-  void chuzc();
-  void chooseColumn(const bool hyper_sparse = false);
-  bool useVariableIn();
-  void phase1ChooseRow();
-  void chooseRow();
+  HIGHS_EXPORT void iterate();
+  HIGHS_EXPORT void chuzc();
+  HIGHS_EXPORT void chooseColumn(const bool hyper_sparse = false);
+  HIGHS_EXPORT bool useVariableIn();
+  HIGHS_EXPORT void phase1ChooseRow();
+  HIGHS_EXPORT void chooseRow();
 
-  void considerBoundSwap();
-  void assessPivot();
+  HIGHS_EXPORT void considerBoundSwap();
+  HIGHS_EXPORT void assessPivot();
 
-  void update();
+  HIGHS_EXPORT void update();
 
-  void updateDual();
+  HIGHS_EXPORT void updateDual();
 
-  void hyperChooseColumn();
-  void hyperChooseColumnStart();
-  void hyperChooseColumnClear();
-  void hyperChooseColumnChangedInfeasibility(const double infeasibility,
+  HIGHS_EXPORT void hyperChooseColumn();
+  HIGHS_EXPORT void hyperChooseColumnStart();
+  HIGHS_EXPORT void hyperChooseColumnClear();
+  HIGHS_EXPORT void hyperChooseColumnChangedInfeasibility(const double infeasibility,
                                              const HighsInt iCol);
-  void hyperChooseColumnBasicFeasibilityChange();
-  void hyperChooseColumnDualChange();
+  HIGHS_EXPORT void hyperChooseColumnBasicFeasibilityChange();
+  HIGHS_EXPORT void hyperChooseColumnDualChange();
 
-  void phase1ComputeDual();
-  void phase1UpdatePrimal();
-  void basicFeasibilityChangeBtran();
-  void basicFeasibilityChangePrice();
-  void basicFeasibilityChangeUpdateDual();
+  HIGHS_EXPORT void phase1ComputeDual();
+  HIGHS_EXPORT void phase1UpdatePrimal();
+  HIGHS_EXPORT void basicFeasibilityChangeBtran();
+  HIGHS_EXPORT void basicFeasibilityChangePrice();
+  HIGHS_EXPORT void basicFeasibilityChangeUpdateDual();
 
-  void phase2UpdatePrimal(const bool initialise = false);
+  HIGHS_EXPORT void phase2UpdatePrimal(const bool initialise = false);
 
-  void considerInfeasibleValueIn();
+  HIGHS_EXPORT void considerInfeasibleValueIn();
 
-  void initialiseDevexFramework();
-  void updateDevex();
-  void computePrimalSteepestEdgeWeights();
-  double computePrimalSteepestEdgeWeight(const HighsInt iVar,
+  HIGHS_EXPORT void initialiseDevexFramework();
+  HIGHS_EXPORT void updateDevex();
+  HIGHS_EXPORT void computePrimalSteepestEdgeWeights();
+  HIGHS_EXPORT double computePrimalSteepestEdgeWeight(const HighsInt iVar,
                                          HVector& local_col_aq);
-  void updatePrimalSteepestEdgeWeights();
-  void updateDualSteepestEdgeWeights();
-  void updateFtranDSE(HVector& col_steepest_edge);
-  void updateBtranPSE(HVector& col_steepest_edge);
+  HIGHS_EXPORT void updatePrimalSteepestEdgeWeights();
+  HIGHS_EXPORT void updateDualSteepestEdgeWeights();
+  HIGHS_EXPORT void updateFtranDSE(HVector& col_steepest_edge);
+  HIGHS_EXPORT void updateBtranPSE(HVector& col_steepest_edge);
 
-  void updateVerify();
+  HIGHS_EXPORT void updateVerify();
 
-  void iterationAnalysisData();
-  void iterationAnalysis();
-  void localReportIterHeader();
-  void localReportIter(const bool header = false);
-  void reportRebuild(const HighsInt reason_for_rebuild = -1);
-  void getNonbasicFreeColumnSet();
-  void removeNonbasicFreeColumn();
-  void adjustPerturbedEquationOut();
-  void getBasicPrimalInfeasibility();
-  bool correctPrimal(const bool initialise = false);
-  void shiftBound(const bool lower, const HighsInt iVar, const double value,
+  HIGHS_EXPORT void iterationAnalysisData();
+  HIGHS_EXPORT void iterationAnalysis();
+  HIGHS_EXPORT void localReportIterHeader();
+  HIGHS_EXPORT void localReportIter(const bool header = false);
+  HIGHS_EXPORT void reportRebuild(const HighsInt reason_for_rebuild = -1);
+  HIGHS_EXPORT void getNonbasicFreeColumnSet();
+  HIGHS_EXPORT void removeNonbasicFreeColumn();
+  HIGHS_EXPORT void adjustPerturbedEquationOut();
+  HIGHS_EXPORT void getBasicPrimalInfeasibility();
+  HIGHS_EXPORT bool correctPrimal(const bool initialise = false);
+  HIGHS_EXPORT void shiftBound(const bool lower, const HighsInt iVar, const double value,
                   const double random_value, double& bound, double& shift,
                   const bool report = false);
-  void savePrimalRay();
-  HighsDebugStatus debugPrimalSimplex(const std::string message,
+  HIGHS_EXPORT void savePrimalRay();
+  HIGHS_EXPORT HighsDebugStatus debugPrimalSimplex(const std::string message,
                                       const bool initialise = false);
-  HighsDebugStatus debugPrimalSteepestEdgeWeights(const std::string message);
-  HighsDebugStatus debugPrimalSteepestEdgeWeights(
+  HIGHS_EXPORT HighsDebugStatus debugPrimalSteepestEdgeWeights(const std::string message);
+  HIGHS_EXPORT HighsDebugStatus debugPrimalSteepestEdgeWeights(
       const HighsInt alt_debug_level = -1);
 
-  bool isBadBasisChange();
+  HIGHS_EXPORT bool isBadBasisChange();
 
   // References:
   HEkk& ekk_instance_;

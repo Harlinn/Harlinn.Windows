@@ -8,7 +8,7 @@
 #include "qpsolver/settings.hpp"
 
 
-QpAsmStatus solveqp(Instance& instance,
+HIGHS_EXPORT QpAsmStatus solveqp(Instance& instance,
 		    Settings& settings,
 		    Statistics& stats,
 		    HighsModelStatus& highs_model_status,

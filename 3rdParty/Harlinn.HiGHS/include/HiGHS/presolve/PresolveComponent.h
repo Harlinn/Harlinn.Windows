@@ -69,16 +69,16 @@ struct PresolveComponentInfo : public HighsComponentInfo {
 
 class PresolveComponent : public HighsComponent {
  public:
-  void clear() override;
+  HIGHS_EXPORT void clear() override;
 
-  HighsStatus init(const HighsLp& lp, HighsTimer& timer, bool mip = false);
+  HIGHS_EXPORT HighsStatus init(const HighsLp& lp, HighsTimer& timer, bool mip = false);
 
-  HighsPresolveStatus run();
+  HIGHS_EXPORT HighsPresolveStatus run();
 
   HighsLp& getReducedProblem() { return data_.reduced_lp_; }
   HighsPresolveLog& getPresolveLog() { return data_.presolve_log_; }
 
-  void negateReducedLpColDuals();
+  HIGHS_EXPORT void negateReducedLpColDuals();
 
   PresolveComponentInfo info_;
   PresolveComponentData data_;

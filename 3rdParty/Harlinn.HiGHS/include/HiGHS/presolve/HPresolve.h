@@ -144,140 +144,140 @@ class HPresolve {
   // private functions for different shared functionality and matrix
   // modification
 
-  void link(HighsInt pos);
+  HIGHS_EXPORT void link(HighsInt pos);
 
-  void unlink(HighsInt pos);
+  HIGHS_EXPORT void unlink(HighsInt pos);
 
-  void markChangedRow(HighsInt row);
+  HIGHS_EXPORT void markChangedRow(HighsInt row);
 
-  void markChangedCol(HighsInt col);
+  HIGHS_EXPORT void markChangedCol(HighsInt col);
 
-  double getMaxAbsColVal(HighsInt col) const;
+  HIGHS_EXPORT double getMaxAbsColVal(HighsInt col) const;
 
-  double getMaxAbsRowVal(HighsInt row) const;
+  HIGHS_EXPORT double getMaxAbsRowVal(HighsInt row) const;
 
-  void updateColImpliedBounds(HighsInt row, HighsInt col, double val);
+  HIGHS_EXPORT void updateColImpliedBounds(HighsInt row, HighsInt col, double val);
 
-  void recomputeColImpliedBounds(HighsInt row);
+  HIGHS_EXPORT void recomputeColImpliedBounds(HighsInt row);
 
-  void recomputeRowDualImpliedBounds(HighsInt col);
+  HIGHS_EXPORT void recomputeRowDualImpliedBounds(HighsInt col);
 
-  void updateRowDualImpliedBounds(HighsInt row, HighsInt col, double val);
+  HIGHS_EXPORT void updateRowDualImpliedBounds(HighsInt row, HighsInt col, double val);
 
-  bool rowCoefficientsIntegral(HighsInt row, double scale) const;
+  HIGHS_EXPORT bool rowCoefficientsIntegral(HighsInt row, double scale) const;
 
-  bool isImpliedFree(HighsInt col) const;
+  HIGHS_EXPORT bool isImpliedFree(HighsInt col) const;
 
-  bool isDualImpliedFree(HighsInt row) const;
+  HIGHS_EXPORT bool isDualImpliedFree(HighsInt row) const;
 
-  void dualImpliedFreeGetRhsAndRowType(HighsInt row, double& rhs,
+  HIGHS_EXPORT void dualImpliedFreeGetRhsAndRowType(HighsInt row, double& rhs,
                                        HighsPostsolveStack::RowType& rowType,
                                        bool relaxRowDualBounds = false);
 
-  bool isImpliedIntegral(HighsInt col);
+  HIGHS_EXPORT bool isImpliedIntegral(HighsInt col);
 
-  bool isImpliedInteger(HighsInt col);
+  HIGHS_EXPORT bool isImpliedInteger(HighsInt col);
 
-  bool isLowerImplied(HighsInt col) const;
+  HIGHS_EXPORT bool isLowerImplied(HighsInt col) const;
 
-  bool isUpperImplied(HighsInt col) const;
+  HIGHS_EXPORT bool isUpperImplied(HighsInt col) const;
 
-  HighsInt countFillin(HighsInt row);
+  HIGHS_EXPORT HighsInt countFillin(HighsInt row);
 
-  bool checkFillin(HighsHashTable<HighsInt, HighsInt>& fillinCache,
+  HIGHS_EXPORT bool checkFillin(HighsHashTable<HighsInt, HighsInt>& fillinCache,
                    HighsInt row, HighsInt col);
 
-  void reinsertEquation(HighsInt row);
+  HIGHS_EXPORT void reinsertEquation(HighsInt row);
 
 #ifndef NDEBUG
-  void debugPrintRow(HighsPostsolveStack& postsolve_stack, HighsInt row);
+  HIGHS_EXPORT void debugPrintRow(HighsPostsolveStack& postsolve_stack, HighsInt row);
 #endif
 
-  HighsInt findNonzero(HighsInt row, HighsInt col);
+  HIGHS_EXPORT HighsInt findNonzero(HighsInt row, HighsInt col);
 
-  bool okFromCSC(const std::vector<double>& Aval,
+  HIGHS_EXPORT bool okFromCSC(const std::vector<double>& Aval,
                  const std::vector<HighsInt>& Aindex,
                  const std::vector<HighsInt>& Astart);
 
-  bool okFromCSR(const std::vector<double>& ARval,
+  HIGHS_EXPORT bool okFromCSR(const std::vector<double>& ARval,
                  const std::vector<HighsInt>& ARindex,
                  const std::vector<HighsInt>& ARstart);
 
-  void toCSC(std::vector<double>& Aval, std::vector<HighsInt>& Aindex,
+  HIGHS_EXPORT void toCSC(std::vector<double>& Aval, std::vector<HighsInt>& Aindex,
              std::vector<HighsInt>& Astart);
 
-  void toCSR(std::vector<double>& ARval, std::vector<HighsInt>& ARindex,
+  HIGHS_EXPORT void toCSR(std::vector<double>& ARval, std::vector<HighsInt>& ARindex,
              std::vector<HighsInt>& ARstart);
 
-  void storeRow(HighsInt row);
+  HIGHS_EXPORT void storeRow(HighsInt row);
 
-  HighsTripletPositionSlice getStoredRow() const;
+  HIGHS_EXPORT HighsTripletPositionSlice getStoredRow() const;
 
-  HighsTripletListSlice getColumnVector(HighsInt col) const;
+  HIGHS_EXPORT HighsTripletListSlice getColumnVector(HighsInt col) const;
 
-  HighsTripletTreeSlicePreOrder getRowVector(HighsInt row) const;
+  HIGHS_EXPORT HighsTripletTreeSlicePreOrder getRowVector(HighsInt row) const;
 
-  HighsTripletTreeSliceInOrder getSortedRowVector(HighsInt row) const;
+  HIGHS_EXPORT HighsTripletTreeSliceInOrder getSortedRowVector(HighsInt row) const;
 
-  void markRowDeleted(HighsInt row);
+  HIGHS_EXPORT void markRowDeleted(HighsInt row);
 
-  void markColDeleted(HighsInt col);
+  HIGHS_EXPORT void markColDeleted(HighsInt col);
 
-  void fixColToLower(HighsPostsolveStack& postsolve_stack, HighsInt col);
+  HIGHS_EXPORT void fixColToLower(HighsPostsolveStack& postsolve_stack, HighsInt col);
 
-  void fixColToUpper(HighsPostsolveStack& postsolve_stack, HighsInt col);
+  HIGHS_EXPORT void fixColToUpper(HighsPostsolveStack& postsolve_stack, HighsInt col);
 
-  void fixColToZero(HighsPostsolveStack& postsolve_stack, HighsInt col);
+  HIGHS_EXPORT void fixColToZero(HighsPostsolveStack& postsolve_stack, HighsInt col);
 
-  void transformColumn(HighsPostsolveStack& postsolve_stack, HighsInt col,
+  HIGHS_EXPORT void transformColumn(HighsPostsolveStack& postsolve_stack, HighsInt col,
                        double scale, double constant);
 
-  void scaleRow(HighsInt row, double scale, bool integral = false);
+  HIGHS_EXPORT void scaleRow(HighsInt row, double scale, bool integral = false);
 
-  void scaleStoredRow(HighsInt row, double scale, bool integral = false);
+  HIGHS_EXPORT void scaleStoredRow(HighsInt row, double scale, bool integral = false);
 
-  void substitute(HighsInt row, HighsInt col, double rhs);
+  HIGHS_EXPORT void substitute(HighsInt row, HighsInt col, double rhs);
 
-  void changeColUpper(HighsInt col, double newUpper);
+  HIGHS_EXPORT void changeColUpper(HighsInt col, double newUpper);
 
-  void changeColLower(HighsInt col, double newLower);
+  HIGHS_EXPORT void changeColLower(HighsInt col, double newLower);
 
-  void changeRowDualUpper(HighsInt row, double newUpper);
+  HIGHS_EXPORT void changeRowDualUpper(HighsInt row, double newUpper);
 
-  void changeRowDualLower(HighsInt row, double newLower);
+  HIGHS_EXPORT void changeRowDualLower(HighsInt row, double newLower);
 
-  void changeImplColUpper(HighsInt col, double newUpper, HighsInt originRow);
+  HIGHS_EXPORT void changeImplColUpper(HighsInt col, double newUpper, HighsInt originRow);
 
-  void changeImplColLower(HighsInt col, double newLower, HighsInt originRow);
+  HIGHS_EXPORT void changeImplColLower(HighsInt col, double newLower, HighsInt originRow);
 
-  void changeImplRowDualUpper(HighsInt row, double newUpper,
+  HIGHS_EXPORT void changeImplRowDualUpper(HighsInt row, double newUpper,
                               HighsInt originCol);
 
-  void changeImplRowDualLower(HighsInt row, double newLower,
+  HIGHS_EXPORT void changeImplRowDualLower(HighsInt row, double newLower,
                               HighsInt originCol);
 
-  void scaleMIP(HighsPostsolveStack& postsolve_stack);
+  HIGHS_EXPORT void scaleMIP(HighsPostsolveStack& postsolve_stack);
 
-  Result applyConflictGraphSubstitutions(HighsPostsolveStack& postsolve_stack);
+  HIGHS_EXPORT Result applyConflictGraphSubstitutions(HighsPostsolveStack& postsolve_stack);
 
-  Result fastPresolveLoop(HighsPostsolveStack& postsolve_stack);
+  HIGHS_EXPORT Result fastPresolveLoop(HighsPostsolveStack& postsolve_stack);
 
-  Result presolve(HighsPostsolveStack& postsolve_stack);
+  HIGHS_EXPORT Result presolve(HighsPostsolveStack& postsolve_stack);
 
-  Result checkLimits(HighsPostsolveStack& postsolve_stack);
+  HIGHS_EXPORT Result checkLimits(HighsPostsolveStack& postsolve_stack);
 
-  void storeCurrentProblemSize();
+  HIGHS_EXPORT void storeCurrentProblemSize();
 
-  double problemSizeReduction();
+  HIGHS_EXPORT double problemSizeReduction();
 
  public:
   // for LP presolve
-  bool okSetInput(HighsLp& model_, const HighsOptions& options_,
+  HIGHS_EXPORT bool okSetInput(HighsLp& model_, const HighsOptions& options_,
                   const HighsInt presolve_reduction_limit,
                   HighsTimer* timer = nullptr);
 
   // for MIP presolve
-  bool okSetInput(HighsMipSolver& mipsolver,
+  HIGHS_EXPORT bool okSetInput(HighsMipSolver& mipsolver,
                   const HighsInt presolve_reduction_limit);
 
   void setReductionLimit(size_t reductionLimit) {
@@ -286,67 +286,67 @@ class HPresolve {
 
   HighsInt numNonzeros() const { return int(Avalue.size() - freeslots.size()); }
 
-  void shrinkProblem(HighsPostsolveStack& postsolve_stack);
+  HIGHS_EXPORT void shrinkProblem(HighsPostsolveStack& postsolve_stack);
 
-  void addToMatrix(const HighsInt row, const HighsInt col, const double val);
+  HIGHS_EXPORT void addToMatrix(const HighsInt row, const HighsInt col, const double val);
 
-  Result runProbing(HighsPostsolveStack& postsolve_stack);
+  HIGHS_EXPORT Result runProbing(HighsPostsolveStack& postsolve_stack);
 
-  Result dominatedColumns(HighsPostsolveStack& postsolve_stack);
+  HIGHS_EXPORT Result dominatedColumns(HighsPostsolveStack& postsolve_stack);
 
-  Result doubletonEq(HighsPostsolveStack& postsolve_stack, HighsInt row,
+  HIGHS_EXPORT Result doubletonEq(HighsPostsolveStack& postsolve_stack, HighsInt row,
                      HighsPostsolveStack::RowType rowType);
 
-  Result singletonRow(HighsPostsolveStack& postsolve_stack, HighsInt row);
+  HIGHS_EXPORT Result singletonRow(HighsPostsolveStack& postsolve_stack, HighsInt row);
 
-  Result emptyCol(HighsPostsolveStack& postsolve_stack, HighsInt col);
+  HIGHS_EXPORT Result emptyCol(HighsPostsolveStack& postsolve_stack, HighsInt col);
 
-  Result singletonCol(HighsPostsolveStack& postsolve_stack, HighsInt col);
+  HIGHS_EXPORT Result singletonCol(HighsPostsolveStack& postsolve_stack, HighsInt col);
 
-  Result rowPresolve(HighsPostsolveStack& postsolve_stack, HighsInt row);
+  HIGHS_EXPORT Result rowPresolve(HighsPostsolveStack& postsolve_stack, HighsInt row);
 
-  Result colPresolve(HighsPostsolveStack& postsolve_stack, HighsInt col);
+  HIGHS_EXPORT Result colPresolve(HighsPostsolveStack& postsolve_stack, HighsInt col);
 
-  Result initialRowAndColPresolve(HighsPostsolveStack& postsolve_stack);
+  HIGHS_EXPORT Result initialRowAndColPresolve(HighsPostsolveStack& postsolve_stack);
 
-  HighsModelStatus run(HighsPostsolveStack& postsolve_stack);
+  HIGHS_EXPORT HighsModelStatus run(HighsPostsolveStack& postsolve_stack);
 
-  void computeIntermediateMatrix(std::vector<HighsInt>& flagRow,
+  HIGHS_EXPORT void computeIntermediateMatrix(std::vector<HighsInt>& flagRow,
                                  std::vector<HighsInt>& flagCol,
                                  size_t& numreductions);
 
-  void substitute(HighsInt substcol, HighsInt staycol, double offset,
+  HIGHS_EXPORT void substitute(HighsInt substcol, HighsInt staycol, double offset,
                   double scale);
 
-  void removeFixedCol(HighsInt col);
+  HIGHS_EXPORT void removeFixedCol(HighsInt col);
 
-  void removeRow(HighsInt row);
+  HIGHS_EXPORT void removeRow(HighsInt row);
 
-  Result removeDependentEquations(HighsPostsolveStack& postsolve_stack);
+  HIGHS_EXPORT Result removeDependentEquations(HighsPostsolveStack& postsolve_stack);
 
-  Result removeDependentFreeCols(HighsPostsolveStack& postsolve_stack);
+  HIGHS_EXPORT Result removeDependentFreeCols(HighsPostsolveStack& postsolve_stack);
 
-  Result aggregator(HighsPostsolveStack& postsolve_stack);
+  HIGHS_EXPORT Result aggregator(HighsPostsolveStack& postsolve_stack);
 
-  Result removeRowSingletons(HighsPostsolveStack& postsolve_stack);
+  HIGHS_EXPORT Result removeRowSingletons(HighsPostsolveStack& postsolve_stack);
 
-  Result presolveColSingletons(HighsPostsolveStack& postsolve_stack);
+  HIGHS_EXPORT Result presolveColSingletons(HighsPostsolveStack& postsolve_stack);
 
-  Result presolveChangedRows(HighsPostsolveStack& postsolve_stack);
+  HIGHS_EXPORT Result presolveChangedRows(HighsPostsolveStack& postsolve_stack);
 
-  Result presolveChangedCols(HighsPostsolveStack& postsolve_stack);
+  HIGHS_EXPORT Result presolveChangedCols(HighsPostsolveStack& postsolve_stack);
 
-  Result removeDoubletonEquations(HighsPostsolveStack& postsolve_stack);
+  HIGHS_EXPORT Result removeDoubletonEquations(HighsPostsolveStack& postsolve_stack);
 
-  HighsInt strengthenInequalities();
+  HIGHS_EXPORT HighsInt strengthenInequalities();
 
-  HighsInt detectImpliedIntegers();
+  HIGHS_EXPORT HighsInt detectImpliedIntegers();
 
-  Result detectParallelRowsAndCols(HighsPostsolveStack& postsolve_stack);
+  HIGHS_EXPORT Result detectParallelRowsAndCols(HighsPostsolveStack& postsolve_stack);
 
-  Result sparsify(HighsPostsolveStack& postsolve_stack);
+  HIGHS_EXPORT Result sparsify(HighsPostsolveStack& postsolve_stack);
 
-  void setRelaxedImpliedBounds();
+  HIGHS_EXPORT void setRelaxedImpliedBounds();
 
   const HighsPresolveLog& getPresolveLog() const {
     return analysis_.presolve_log_;
@@ -354,11 +354,11 @@ class HPresolve {
 
   HighsPresolveStatus getPresolveStatus() const { return presolve_status_; }
 
-  HighsInt debugGetCheckCol() const;
-  HighsInt debugGetCheckRow() const;
+  HIGHS_EXPORT HighsInt debugGetCheckCol() const;
+  HIGHS_EXPORT HighsInt debugGetCheckRow() const;
 
   // Not currently called
-  static void debug(const HighsLp& lp, const HighsOptions& options);
+  HIGHS_EXPORT static void debug(const HighsLp& lp, const HighsOptions& options);
 };
 
 }  // namespace presolve

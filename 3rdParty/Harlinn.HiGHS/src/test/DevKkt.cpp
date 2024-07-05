@@ -25,7 +25,7 @@ namespace dev_kkt_check {
 constexpr int dev_print = 1;
 constexpr double tol = 1e-07;
 
-KktInfo initInfo() {
+HIGHS_EXPORT KktInfo initInfo() {
   KktInfo info;
   info.rules[KktCondition::kColBounds] =
       KktConditionDetails(KktCondition::kColBounds);
@@ -42,7 +42,7 @@ KktInfo initInfo() {
   return info;
 }
 
-void checkPrimalBounds(const State& state, KktConditionDetails& details) {
+HIGHS_EXPORT void checkPrimalBounds(const State& state, KktConditionDetails& details) {
   details.type = KktCondition::kColBounds;
   details.checked = 0;
   details.violated = 0;
@@ -76,7 +76,7 @@ void checkPrimalBounds(const State& state, KktConditionDetails& details) {
   }
 }
 
-void checkPrimalFeasMatrix(const State& state, KktConditionDetails& details) {
+HIGHS_EXPORT void checkPrimalFeasMatrix(const State& state, KktConditionDetails& details) {
   details.type = KktCondition::kPrimalFeasibility;
   details.checked = 0;
   details.violated = 0;
@@ -124,7 +124,7 @@ void checkPrimalFeasMatrix(const State& state, KktConditionDetails& details) {
   }
 }
 
-void checkDualFeasibility(const State& state, KktConditionDetails& details) {
+HIGHS_EXPORT void checkDualFeasibility(const State& state, KktConditionDetails& details) {
   details.type = KktCondition::kPrimalFeasibility;
   details.checked = 0;
   details.violated = 0;
@@ -244,7 +244,7 @@ void checkDualFeasibility(const State& state, KktConditionDetails& details) {
   }
 }
 
-void checkComplementarySlackness(const State& state,
+HIGHS_EXPORT void checkComplementarySlackness(const State& state,
                                  KktConditionDetails& details) {
   details.type = KktCondition::kComplementarySlackness;
   details.checked = 0;
@@ -297,7 +297,7 @@ void checkComplementarySlackness(const State& state,
   }
 }
 
-void checkStationarityOfLagrangian(const State& state,
+HIGHS_EXPORT void checkStationarityOfLagrangian(const State& state,
                                    KktConditionDetails& details) {
   details.type = KktCondition::kStationarityOfLagrangian;
   details.checked = 0;
@@ -344,7 +344,7 @@ void checkStationarityOfLagrangian(const State& state,
   }
 }
 
-void checkBasicFeasibleSolution(const State& state,
+HIGHS_EXPORT void checkBasicFeasibleSolution(const State& state,
                                 KktConditionDetails& details) {
   // Go over cols and check that the duals of basic values are zero.
   assert((int)state.col_status.size() == state.numCol);
@@ -427,7 +427,7 @@ void checkBasicFeasibleSolution(const State& state,
   //  assert(current_n_cols_basic + current_n_rows_basic == current_n_rows);
 }
 
-bool checkKkt(const State& state, KktInfo& info) {
+HIGHS_EXPORT bool checkKkt(const State& state, KktInfo& info) {
   if (state.numCol == 0) {
     std::cout << "KKT warning: empty problem" << std::endl;
     return true;

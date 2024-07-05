@@ -190,37 +190,37 @@ class HighsSimplexAnalysis {
   // Pointer to timer
   HighsTimer* timer_;
 
-  void setup(const std::string lp_name, const HighsLp& lp,
+  HIGHS_EXPORT void setup(const std::string lp_name, const HighsLp& lp,
              const HighsOptions& options,
              const HighsInt simplex_iteration_count);
-  void setupSimplexTime(const HighsOptions& options);
-  void setupFactorTime(const HighsOptions& options);
-  void messaging(const HighsLogOptions& log_options_);
-  void iterationReport();
-  void invertReport();
-  void invertReport(const bool header);
-  void userInvertReport(const bool force);
-  void userInvertReport(const bool header, const bool force);
-  bool predictEndDensity(const HighsInt tran_stage_id,
+  HIGHS_EXPORT void setupSimplexTime(const HighsOptions& options);
+  HIGHS_EXPORT void setupFactorTime(const HighsOptions& options);
+  HIGHS_EXPORT void messaging(const HighsLogOptions& log_options_);
+  HIGHS_EXPORT void iterationReport();
+  HIGHS_EXPORT void invertReport();
+  HIGHS_EXPORT void invertReport(const bool header);
+  HIGHS_EXPORT void userInvertReport(const bool force);
+  HIGHS_EXPORT void userInvertReport(const bool header, const bool force);
+  HIGHS_EXPORT bool predictEndDensity(const HighsInt tran_stage_id,
                          const double start_density, double& end_density);
-  void afterTranStage(const HighsInt tran_stage_id, const double start_density,
+  HIGHS_EXPORT void afterTranStage(const HighsInt tran_stage_id, const double start_density,
                       const double end_density, const double historical_density,
                       const double predicted_end_density,
                       const bool use_solve_sparse_original_HFactor_logic,
                       const bool use_solve_sparse_new_HFactor_logic);
 
-  void simplexTimerStart(const HighsInt simplex_clock,
+  HIGHS_EXPORT void simplexTimerStart(const HighsInt simplex_clock,
                          const HighsInt thread_id = 0);
-  void simplexTimerStop(const HighsInt simplex_clock,
+  HIGHS_EXPORT void simplexTimerStop(const HighsInt simplex_clock,
                         const HighsInt thread_id = 0);
-  bool simplexTimerRunning(const HighsInt simplex_clock,
+  HIGHS_EXPORT bool simplexTimerRunning(const HighsInt simplex_clock,
                            const HighsInt thread_id = 0);
-  HighsInt simplexTimerNumCall(const HighsInt simplex_clock,
+  HIGHS_EXPORT HighsInt simplexTimerNumCall(const HighsInt simplex_clock,
                                const HighsInt thread_id = 0);
-  double simplexTimerRead(const HighsInt simplex_clock,
+  HIGHS_EXPORT double simplexTimerRead(const HighsInt simplex_clock,
                           const HighsInt thread_id = 0);
 
-  HighsTimerClock* getThreadFactorTimerClockPointer();
+  HIGHS_EXPORT HighsTimerClock* getThreadFactorTimerClockPointer();
 
   const std::vector<HighsTimerClock>& getThreadSimplexTimerClocks() {
     return thread_simplex_clocks;
@@ -238,27 +238,27 @@ class HighsSimplexAnalysis {
     return &thread_factor_clocks[i];
   }
 
-  void iterationRecord();
-  void iterationRecordMajor();
-  void operationRecordBefore(const HighsInt operation_type,
+  HIGHS_EXPORT void iterationRecord();
+  HIGHS_EXPORT void iterationRecordMajor();
+  HIGHS_EXPORT void operationRecordBefore(const HighsInt operation_type,
                              const HVector& vector,
                              const double historical_density);
-  void operationRecordBefore(const HighsInt operation_type,
+  HIGHS_EXPORT void operationRecordBefore(const HighsInt operation_type,
                              const HighsInt current_count,
                              const double historical_density);
-  void operationRecordAfter(const HighsInt operation_type,
+  HIGHS_EXPORT void operationRecordAfter(const HighsInt operation_type,
                             const HVector& vector);
-  void operationRecordAfter(const HighsInt operation_type,
+  HIGHS_EXPORT void operationRecordAfter(const HighsInt operation_type,
                             const HighsInt result_count);
-  void summaryReport();
-  void summaryReportFactor();
-  void reportSimplexTimer();
-  void reportFactorTimer();
-  void updateInvertFormData(const HFactor& factor);
-  void reportInvertFormData();
+  HIGHS_EXPORT void summaryReport();
+  HIGHS_EXPORT void summaryReportFactor();
+  HIGHS_EXPORT void reportSimplexTimer();
+  HIGHS_EXPORT void reportFactorTimer();
+  HIGHS_EXPORT void updateInvertFormData(const HFactor& factor);
+  HIGHS_EXPORT void reportInvertFormData();
 
   // Control methods to be moved to HEkkControl
-  void dualSteepestEdgeWeightError(const double computed_edge_weight,
+  HIGHS_EXPORT void dualSteepestEdgeWeightError(const double computed_edge_weight,
                                    const double updated_edge_weight);
   //  bool switchToDevex();
 
@@ -398,22 +398,22 @@ class HighsSimplexAnalysis {
   std::unique_ptr<std::stringstream> analysis_log;
 
  private:
-  void iterationReport(const bool header);
-  void reportAlgorithmPhase(const bool header);
-  void reportIterationObjective(const bool header);
-  void reportInfeasibility(const bool header);
-  void reportThreads(const bool header);
-  void reportMulti(const bool header);
-  void reportOneDensity(const double density);
-  void printOneDensity(const double density);
-  void reportDensity(const bool header);
-  void reportInvert(const bool header);
+  HIGHS_EXPORT void iterationReport(const bool header);
+  HIGHS_EXPORT void reportAlgorithmPhase(const bool header);
+  HIGHS_EXPORT void reportIterationObjective(const bool header);
+  HIGHS_EXPORT void reportInfeasibility(const bool header);
+  HIGHS_EXPORT void reportThreads(const bool header);
+  HIGHS_EXPORT void reportMulti(const bool header);
+  HIGHS_EXPORT void reportOneDensity(const double density);
+  HIGHS_EXPORT void printOneDensity(const double density);
+  HIGHS_EXPORT void reportDensity(const bool header);
+  HIGHS_EXPORT void reportInvert(const bool header);
   //  void reportCondition(const bool header);
-  void reportIterationData(const bool header);
-  void reportRunTime(const bool header, const double run_time);
-  void reportFreeListSize(const bool header);
-  HighsInt intLog10(const double v);
-  bool dualAlgorithm();
+  HIGHS_EXPORT void reportIterationData(const bool header);
+  HIGHS_EXPORT void reportRunTime(const bool header, const double run_time);
+  HIGHS_EXPORT void reportFreeListSize(const bool header);
+  HIGHS_EXPORT HighsInt intLog10(const double v);
+  HIGHS_EXPORT bool dualAlgorithm();
 
   //  double AnIterCostlyDseFq;  //!< Frequency of iterations when DSE is costly
   //  double AnIterCostlyDseMeasure;

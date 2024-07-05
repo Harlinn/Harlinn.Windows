@@ -2,7 +2,7 @@
 #include "qpsolver/quass.hpp"
 #include "util/HighsCDouble.h"
 
-QpAsmStatus solveqp_actual(Instance& instance, Settings& settings, QpHotstartInformation& startinfo, Statistics& stats, QpModelStatus& status, QpSolution& solution, HighsTimer& qp_timer) {
+HIGHS_EXPORT QpAsmStatus solveqp_actual(Instance& instance, Settings& settings, QpHotstartInformation& startinfo, Statistics& stats, QpModelStatus& status, QpSolution& solution, HighsTimer& qp_timer) {
   Runtime rt(instance, stats);
   rt.settings = settings;
   Quass quass(rt);
@@ -24,7 +24,7 @@ QpAsmStatus solveqp_actual(Instance& instance, Settings& settings, QpHotstartInf
 
 }
 
-std::string qpBasisStatusToString(const BasisStatus qp_basis_status) {
+HIGHS_EXPORT std::string qpBasisStatusToString(const BasisStatus qp_basis_status) {
   switch (qp_basis_status) {
   case BasisStatus::kInactive:
     return "Inactive";
@@ -39,7 +39,7 @@ std::string qpBasisStatusToString(const BasisStatus qp_basis_status) {
   }
 }
 
-std::string qpModelStatusToString(const QpModelStatus qp_model_status) {
+HIGHS_EXPORT std::string qpModelStatusToString(const QpModelStatus qp_model_status) {
   switch (qp_model_status) {
   case QpModelStatus::kNotset:
     return "Not set";
@@ -64,7 +64,7 @@ std::string qpModelStatusToString(const QpModelStatus qp_model_status) {
   }
 }
 
-void assessQpPrimalFeasibility(const Instance& instance, const double primal_feasibility_tolerance,
+HIGHS_EXPORT void assessQpPrimalFeasibility(const Instance& instance, const double primal_feasibility_tolerance,
 			       const std::vector<double>& var_value, const std::vector<double>& con_value,
 			       HighsInt& num_var_infeasibilities, double& max_var_infeasibility, double& sum_var_infeasibilities,
 			       HighsInt& num_con_infeasibilities, double& max_con_infeasibility, double& sum_con_infeasibilities,

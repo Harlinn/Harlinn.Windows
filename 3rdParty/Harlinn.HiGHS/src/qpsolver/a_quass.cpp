@@ -109,7 +109,7 @@ static QpAsmStatus quass2highs(Instance& instance,
   return qp_asm_return_status;
 }
 
-QpAsmStatus solveqp(Instance& instance,
+HIGHS_EXPORT QpAsmStatus solveqp(Instance& instance,
 		    Settings& settings,
 		    Statistics& stats, 
 		    HighsModelStatus& highs_model_status,

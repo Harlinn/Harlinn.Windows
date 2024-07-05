@@ -35,8 +35,8 @@ struct SimplexBasis {
   HighsInt debug_id = -1;
   HighsInt debug_update_count = -1;
   std::string debug_origin_name = "";
-  void clear();
-  void setup(const HighsInt num_col, const HighsInt num_row);
+  HIGHS_EXPORT void clear();
+  HIGHS_EXPORT void setup(const HighsInt num_col, const HighsInt num_row);
 };
 
 struct HighsSimplexStatus {

@@ -48,7 +48,7 @@ class HEkkDual {
   /**
    * @brief Solve a model instance
    */
-  HighsStatus solve(const bool force_phase2 = false);
+  HIGHS_EXPORT HighsStatus solve(const bool force_phase2 = false);
 
   const SimplexAlgorithm algorithm = SimplexAlgorithm::kDual;
 
@@ -61,14 +61,14 @@ class HEkkDual {
    * (columnDSE, columnBFRT, column, row_ep and row_ap), and buffers
    * for dualRow and dualRHS.
    */
-  void initialiseInstance();
+  HIGHS_EXPORT void initialiseInstance();
 
   /**
    * @brief Initialise parallel aspects of a dual simplex instance
    *
    * Sets up data structures for SIP or PAMI
    */
-  void initialiseInstanceParallel(HEkk& simplex);
+  HIGHS_EXPORT void initialiseInstanceParallel(HEkk& simplex);
 
   /**
    * @brief Initialise matrix slices and slices of row_ap or dualRow for SIP or
@@ -77,7 +77,7 @@ class HEkkDual {
    * TODO generalise call slice_matrix[i].setup_lgBs so slice can be
    * used with non-logical initial basis
    */
-  void initSlice(
+  HIGHS_EXPORT void initSlice(
       const HighsInt init_sliced_num  //!< Ideal number of slices - true number
                                       //!< is modified in light of limits
   );
@@ -85,17 +85,17 @@ class HEkkDual {
   /**
    * @brief Initialise a dual simplex solve
    */
-  void initialiseSolve();
+  HIGHS_EXPORT void initialiseSolve();
 
   /**
    * @brief Perform Phase 1 dual simplex iterations
    */
-  void solvePhase1();
+  HIGHS_EXPORT void solvePhase1();
 
   /**
    * @brief Perform Phase 2 dual simplex iterations
    */
-  void solvePhase2();
+  HIGHS_EXPORT void solvePhase2();
 
   /**
    * @brief Reinvert if INVERT not fresh, then recompute dual and primal values
@@ -103,14 +103,14 @@ class HEkkDual {
    * Also collects primal infeasibilities and computes the dual objective value
    */
 
-  void rebuild();
+  HIGHS_EXPORT void rebuild();
 
   /**
    * @brief Remove perturbation and recompute the dual solution
    *
    * Also collects primal infeasibilities and computes the dual objective value
    */
-  void cleanup();
+  HIGHS_EXPORT void cleanup();
 
   /**
    * @brief Perform a single serial dual simplex iteration
@@ -120,118 +120,118 @@ class HEkkDual {
    * finds no candidate. This causes a break from the inner loop of
    * solvePhase% and, hence, a call to rebuild().
    */
-  void iterate();
+  HIGHS_EXPORT void iterate();
 
   /**
    * @brief Perform a single SIP dual simplex iteration
    */
-  void iterateTasks();
+  HIGHS_EXPORT void iterateTasks();
 
   /**
    * @brief Perform a single PAMI dual simplex iteration - source code in
    * HEkkDualMulti.cpp
    */
-  void iterateMulti();  // in HEkkDualMulti.cpp
+  HIGHS_EXPORT void iterateMulti();  // in HEkkDualMulti.cpp
 
   /**
    * @brief Pass the data for the serial iteration analysis, report and rebuild
    * report
    */
-  void iterationAnalysisData();
+  HIGHS_EXPORT void iterationAnalysisData();
 
   /**
    * @brief Perform the serial iteration analysis
    */
-  void iterationAnalysis();
+  HIGHS_EXPORT void iterationAnalysis();
 
   /**
    * @brief Pass the data for the PAMI iteration analysis for a minor iteration,
    * report and rebuild report
    */
-  void iterationAnalysisMinorData();
+  HIGHS_EXPORT void iterationAnalysisMinorData();
 
   /**
    * @brief Perform the PAMI iteration analysis for a minor iteration
    */
-  void iterationAnalysisMinor();
+  HIGHS_EXPORT void iterationAnalysisMinor();
 
   /**
    * @brief Pass the data for the PAMI iteration analysis for a major iteration
    */
-  void iterationAnalysisMajorData();
+  HIGHS_EXPORT void iterationAnalysisMajorData();
 
   /**
    * @brief Perform the PAMI iteration analysis for a major iteration
    */
-  void iterationAnalysisMajor();
+  HIGHS_EXPORT void iterationAnalysisMajor();
 
   /**
    * @brief Single line report after rebuild or cleanup
    */
-  void reportRebuild(const HighsInt reason_for_rebuild);
+  HIGHS_EXPORT void reportRebuild(const HighsInt reason_for_rebuild);
 
   /**
    * @brief Choose the index of a good row to leave the basis (CHUZR)
    */
-  void chooseRow();
+  HIGHS_EXPORT void chooseRow();
 
   /**
    * @brief Determine whether the updated_edge_weight is accurate enough to
    * be accepted, and update the analysis of weight errors
    */
-  bool acceptDualSteepestEdgeWeight(const double updated_edge_weight);
+  HIGHS_EXPORT bool acceptDualSteepestEdgeWeight(const double updated_edge_weight);
 
   /**
    * @brief Determine whether the updated_edge_weight error should trigger a new
    * Devex framework
    */
-  bool newDevexFramework(const double updated_edge_weight);
+  HIGHS_EXPORT bool newDevexFramework(const double updated_edge_weight);
 
   /**
    * @brief Compute pivot row (PRICE) and choose the index of a good column to
    * enter the basis (CHUZC)
    */
-  void chooseColumn(HVector* row_ep);
-  void improveChooseColumnRow(HVector* row_ep);
+  HIGHS_EXPORT void chooseColumn(HVector* row_ep);
+  HIGHS_EXPORT void improveChooseColumnRow(HVector* row_ep);
 
   /**
    * @brief Choose the index of a good column to enter the basis (CHUZC) by
    * exploiting slices of the pivotal row - for SIP and PAMI
    */
-  void chooseColumnSlice(HVector* row_ep);
+  HIGHS_EXPORT void chooseColumnSlice(HVector* row_ep);
 
   /**
    * @brief Compute the pivotal column (FTRAN)
    */
-  void updateFtran();
+  HIGHS_EXPORT void updateFtran();
 
   /**
    * @brief Compute the RHS changes corresponding to the BFRT
    * (FTRAN-BFRT)
    */
-  void updateFtranBFRT();
+  HIGHS_EXPORT void updateFtranBFRT();
 
   /**
    * @brief Compute the std::vector required to update DSE weights - being
    * FTRAN applied to the pivotal column (FTRAN-DSE)
    */
-  void updateFtranDSE(HVector* DSE_Vector  //!< Pivotal column as RHS for FTRAN
+  HIGHS_EXPORT void updateFtranDSE(HVector* DSE_Vector  //!< Pivotal column as RHS for FTRAN
   );
   /**
    * @brief Compare the pivot value computed row-wise and column-wise
    * and determine whether reinversion is advisable
    */
-  void updateVerify();
+  HIGHS_EXPORT void updateVerify();
 
   /**
    * @brief Update the dual values
    */
-  void updateDual();
+  HIGHS_EXPORT void updateDual();
 
   /**
    * @brief Update the primal values and any edge weights
    */
-  void updatePrimal(HVector* DSE_Vector  //!< FTRANned pivotal column
+  HIGHS_EXPORT void updatePrimal(HVector* DSE_Vector  //!< FTRANned pivotal column
   );
 
   /**
@@ -244,135 +244,135 @@ class HEkkDual {
    * then determine whether to reinvert according to the synthetic
    * clock
    */
-  void updatePivots();
+  HIGHS_EXPORT void updatePivots();
 
-  void shiftCost(const HighsInt iCol, const double amount);
-  void shiftBack(const HighsInt iCol);
+  HIGHS_EXPORT void shiftCost(const HighsInt iCol, const double amount);
+  HIGHS_EXPORT void shiftBack(const HighsInt iCol);
 
   /**
    * @brief Initialise a Devex framework: reference set is all basic
    * variables
    */
-  void initialiseDevexFramework();
+  HIGHS_EXPORT void initialiseDevexFramework();
 
   /**
    * @brief Interpret the dual edge weight strategy as setting of a mode and
    * other actions
    */
-  void interpretDualEdgeWeightStrategy(
+  HIGHS_EXPORT void interpretDualEdgeWeightStrategy(
       const HighsInt simplex_dual_edge_weight_strategy);
 
-  bool reachedExactObjectiveBound();
-  double computeExactDualObjectiveValue(HVector& dual_col, HVector& dual_row);
+  HIGHS_EXPORT bool reachedExactObjectiveBound();
+  HIGHS_EXPORT double computeExactDualObjectiveValue(HVector& dual_col, HVector& dual_row);
 
   /**
    * @brief PAMI: Choose the indices of a good set of rows to leave the
    * basis (CHUZR)
    */
-  void majorChooseRow();
+  HIGHS_EXPORT void majorChooseRow();
 
   /**
    * @brief PAMI: Perform multiple BTRAN
    */
-  void majorChooseRowBtran();
+  HIGHS_EXPORT void majorChooseRowBtran();
 
   /**
    * @brief PAMI: Choose the index (from the set of indices) of a good
    * row to leave the basis (CHUZR-MI)
    */
-  void minorChooseRow();
+  HIGHS_EXPORT void minorChooseRow();
 
   /**
    * @brief PAMI: Update the data during minor iterations
    */
-  void minorUpdate();
+  HIGHS_EXPORT void minorUpdate();
 
   /**
    * @brief PAMI: Update the dual values during minor iterations
    */
-  void minorUpdateDual();
+  HIGHS_EXPORT void minorUpdateDual();
 
   /**
    * @brief PAMI: Update the primal values during minor iterations
    */
-  void minorUpdatePrimal();
+  HIGHS_EXPORT void minorUpdatePrimal();
 
   /**
    * @brief PAMI: Perform a basis change during minor iterations
    */
-  void minorUpdatePivots();
+  HIGHS_EXPORT void minorUpdatePivots();
 
   /**
    * @brief PAMI: Update the tableau rows during minor iterations
    */
-  void minorUpdateRows();
+  HIGHS_EXPORT void minorUpdateRows();
 
   /**
    * @brief PAMI: Initialise a new Devex framework during minor iterations
    */
-  void minorInitialiseDevexFramework();
+  HIGHS_EXPORT void minorInitialiseDevexFramework();
 
   /**
    * @brief PAMI: Perform updates after a set of minor iterations
    */
-  void majorUpdate();
+  HIGHS_EXPORT void majorUpdate();
 
   /**
    * @brief PAMI: Prepare for the FTRANs after a set of minor iterations
    */
-  void majorUpdateFtranPrepare();
+  HIGHS_EXPORT void majorUpdateFtranPrepare();
 
   /**
    * @brief PAMI: Perform the parallel part of multiple FTRANs after a
    * set of minor iterations
    */
-  void majorUpdateFtranParallel();
+  HIGHS_EXPORT void majorUpdateFtranParallel();
 
   /**
    * @brief PAMI: Perform the final part of multiple FTRANs after a set
    * of minor iterations
    */
-  void majorUpdateFtranFinal();
+  HIGHS_EXPORT void majorUpdateFtranFinal();
 
   /**
    * @brief PAMI: Update the primal values after a set of minor
    * iterations
    */
-  void majorUpdatePrimal();
+  HIGHS_EXPORT void majorUpdatePrimal();
 
   /**
    * @brief PAMI: Update the invertible representation of the basis
    * matrix after a set of minor iterations
    */
-  void majorUpdateFactor();
+  HIGHS_EXPORT void majorUpdateFactor();
 
   /**
    * @brief PAMI: Roll back some iterations if numerical trouble
    * detected when updating the invertible representation of the basis
    * matrix after a set of minor iterations
    */
-  void majorRollback();
+  HIGHS_EXPORT void majorRollback();
 
   // private:
-  void possiblyUseLiDualSteepestEdge();
-  void computeDualInfeasibilitiesWithFixedVariableFlips();
-  void correctDualInfeasibilities(HighsInt& free_infeasibility_count);
+  HIGHS_EXPORT void possiblyUseLiDualSteepestEdge();
+  HIGHS_EXPORT void computeDualInfeasibilitiesWithFixedVariableFlips();
+  HIGHS_EXPORT void correctDualInfeasibilities(HighsInt& free_infeasibility_count);
 
-  bool proofOfPrimalInfeasibility();
-  void saveDualRay();
-  void assessPhase1Optimality();
-  void assessPhase1OptimalityUnperturbed();
-  void exitPhase1ResetDuals();
-  void reportOnPossibleLpDualInfeasibility();
+  HIGHS_EXPORT bool proofOfPrimalInfeasibility();
+  HIGHS_EXPORT void saveDualRay();
+  HIGHS_EXPORT void assessPhase1Optimality();
+  HIGHS_EXPORT void assessPhase1OptimalityUnperturbed();
+  HIGHS_EXPORT void exitPhase1ResetDuals();
+  HIGHS_EXPORT void reportOnPossibleLpDualInfeasibility();
 
-  bool checkNonUnitWeightError(std::string message);
-  bool dualInfoOk(const HighsLp& lp);
-  bool bailoutOnDualObjective();
-  HighsDebugStatus debugDualSimplex(const std::string message,
+  HIGHS_EXPORT bool checkNonUnitWeightError(std::string message);
+  HIGHS_EXPORT bool dualInfoOk(const HighsLp& lp);
+  HIGHS_EXPORT bool bailoutOnDualObjective();
+  HIGHS_EXPORT HighsDebugStatus debugDualSimplex(const std::string message,
                                     const bool initialise = false);
 
-  bool isBadBasisChange();
-  void assessPossiblyDualUnbounded();
+  HIGHS_EXPORT bool isBadBasisChange();
+  HIGHS_EXPORT void assessPossiblyDualUnbounded();
 
   // Devex scalars
   HighsInt num_devex_iterations =

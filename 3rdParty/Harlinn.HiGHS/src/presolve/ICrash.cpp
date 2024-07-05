@@ -30,7 +30,7 @@
 
 constexpr double kExitTolerance = 0.00000001;
 
-bool parseICrashStrategy(const std::string& strategy,
+HIGHS_EXPORT bool parseICrashStrategy(const std::string& strategy,
                          ICrashStrategy& icrash_strategy) {
   std::string lower = strategy;
   trim(lower);
@@ -52,7 +52,7 @@ bool parseICrashStrategy(const std::string& strategy,
   return true;
 }
 
-bool checkOptions(const HighsLp& lp, const ICrashOptions options) {
+HIGHS_EXPORT bool checkOptions(const HighsLp& lp, const ICrashOptions options) {
   if (options.exact) {
     // std::cout << "ICrashError: exact subproblem solution not available "
     //              "at the moment." << std::endl;
@@ -90,7 +90,7 @@ bool checkOptions(const HighsLp& lp, const ICrashOptions options) {
   return true;
 }
 
-Quadratic parseOptions(const HighsLp& lp, const ICrashOptions options) {
+HIGHS_EXPORT Quadratic parseOptions(const HighsLp& lp, const ICrashOptions options) {
   HighsLp ilp = lp;
   HighsLp local_lp;
   // HighsStatus status;
@@ -130,7 +130,7 @@ Quadratic parseOptions(const HighsLp& lp, const ICrashOptions options) {
   return Quadratic{ilp, options};
 }
 
-double getQuadraticObjective(const Quadratic& idata) {
+HIGHS_EXPORT double getQuadraticObjective(const Quadratic& idata) {
   // c'x
   double quadratic = vectorProduct(idata.lp.col_cost_, idata.xk.col_value);
 
@@ -144,7 +144,7 @@ double getQuadraticObjective(const Quadratic& idata) {
   return quadratic;
 }
 
-bool initialize(Quadratic& idata, const ICrashOptions& options) {
+HIGHS_EXPORT bool initialize(Quadratic& idata, const ICrashOptions& options) {
   if (!initialize(idata.lp, idata.xk, idata.lambda)) return false;
 
   idata.mu = options.starting_weight;
@@ -153,7 +153,7 @@ bool initialize(Quadratic& idata, const ICrashOptions& options) {
   return true;
 }
 
-void update(Quadratic& idata) {
+HIGHS_EXPORT void update(Quadratic& idata) {
   // lp_objective
   idata.lp_objective = vectorProduct(idata.lp.col_cost_, idata.xk.col_value);
 
@@ -169,7 +169,7 @@ void update(Quadratic& idata) {
       vectorProduct(idata.residual, idata.residual) / (2 * idata.mu);
 }
 
-ICrashIterationDetails fillDetails(const int num, const Quadratic& idata) {
+HIGHS_EXPORT ICrashIterationDetails fillDetails(const int num, const Quadratic& idata) {
   double lambda_norm_2 = getNorm2(idata.lambda);
   return ICrashIterationDetails{num,
                                 idata.mu,
@@ -180,7 +180,7 @@ ICrashIterationDetails fillDetails(const int num, const Quadratic& idata) {
                                 0};
 }
 
-void fillICrashInfo(const int n_iterations, ICrashInfo& result) {
+HIGHS_EXPORT void fillICrashInfo(const int n_iterations, ICrashInfo& result) {
   assert((int)result.details.size() == n_iterations + 1);
   result.num_iterations = n_iterations;
 
@@ -193,7 +193,7 @@ void fillICrashInfo(const int n_iterations, ICrashInfo& result) {
   result.final_weight = result.details[n_iterations].weight;
 }
 
-void updateParameters(Quadratic& idata, const ICrashOptions& options,
+HIGHS_EXPORT void updateParameters(Quadratic& idata, const ICrashOptions& options,
                       const int iteration) {
   if (iteration == 1) return;
 
@@ -318,7 +318,7 @@ static void solveSubproblemQP(Quadratic& idata, const ICrashOptions& options) {
   }
 }
 
-bool solveSubproblem(Quadratic& idata, const ICrashOptions& options) {
+HIGHS_EXPORT bool solveSubproblem(Quadratic& idata, const ICrashOptions& options) {
   switch (options.strategy) {
     case ICrashStrategy::kUpdatePenalty:
     case ICrashStrategy::kUpdateAdmm:
@@ -343,7 +343,7 @@ bool solveSubproblem(Quadratic& idata, const ICrashOptions& options) {
   return true;
 }
 
-void reportSubproblem(const ICrashOptions options, const Quadratic& idata,
+HIGHS_EXPORT void reportSubproblem(const ICrashOptions options, const Quadratic& idata,
                       const int iteration) {
   std::stringstream ss;
   // Report outcome.
@@ -362,7 +362,7 @@ void reportSubproblem(const ICrashOptions options, const Quadratic& idata,
   highsLogUser(options.log_options, HighsLogType::kInfo, ss.str().c_str());
 }
 
-std::string ICrashtrategyToString(const ICrashStrategy strategy) {
+HIGHS_EXPORT std::string ICrashtrategyToString(const ICrashStrategy strategy) {
   switch (strategy) {
     case ICrashStrategy::kPenalty:
       return "Penalty";
@@ -378,7 +378,7 @@ std::string ICrashtrategyToString(const ICrashStrategy strategy) {
   return "ICrashError: Unknown strategy.\n";
 }
 
-void reportOptions(const ICrashOptions& options) {
+HIGHS_EXPORT void reportOptions(const ICrashOptions& options) {
   std::stringstream ss;
   // Report outcome.
   ss << "ICrashOptions \n"
@@ -399,7 +399,7 @@ void reportOptions(const ICrashOptions& options) {
   highsLogUser(options.log_options, HighsLogType::kInfo, ss.str().c_str());
 }
 
-HighsStatus callICrash(const HighsLp& lp, const ICrashOptions& options,
+HIGHS_EXPORT HighsStatus callICrash(const HighsLp& lp, const ICrashOptions& options,
                        ICrashInfo& result) {
   if (!checkOptions(lp, options)) return HighsStatus::kError;
   assert(lp.a_matrix_.isColwise());

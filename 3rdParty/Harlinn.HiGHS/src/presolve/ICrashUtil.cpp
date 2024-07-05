@@ -23,21 +23,21 @@
 #include "lp_data/HighsSolution.h"
 #include "util/HighsUtils.h"
 
-void convertToMinimization(HighsLp& lp) {
+HIGHS_EXPORT void convertToMinimization(HighsLp& lp) {
   if (lp.sense_ != ObjSense::kMinimize) {
     for (int col = 0; col < lp.num_col_; col++)
       lp.col_cost_[col] = -lp.col_cost_[col];
   }
 }
 
-bool isEqualityProblem(const HighsLp& lp) {
+HIGHS_EXPORT bool isEqualityProblem(const HighsLp& lp) {
   for (int row = 0; row < lp.num_row_; row++)
     if (lp.row_lower_[row] != lp.row_upper_[row]) return false;
 
   return true;
 }
 
-double vectorProduct(const std::vector<double>& v1,
+HIGHS_EXPORT double vectorProduct(const std::vector<double>& v1,
                      const std::vector<double>& v2) {
   assert(v1.size() == v2.size());
   double sum = 0;
@@ -45,7 +45,7 @@ double vectorProduct(const std::vector<double>& v1,
   return sum;
 }
 
-void muptiplyByTranspose(const HighsLp& lp, const std::vector<double>& v,
+HIGHS_EXPORT void muptiplyByTranspose(const HighsLp& lp, const std::vector<double>& v,
                          std::vector<double>& result) {
   assert((int)result.size() == lp.num_col_);
   assert((int)v.size() == lp.num_row_);
@@ -60,7 +60,7 @@ void muptiplyByTranspose(const HighsLp& lp, const std::vector<double>& v,
   }
 }
 
-void printMinorIterationDetails(const double iteration, const double col,
+HIGHS_EXPORT void printMinorIterationDetails(const double iteration, const double col,
                                 const double old_value, const double update,
                                 const double ctx, const std::vector<double>& r,
                                 const double quadratic_objective,
@@ -81,7 +81,7 @@ void printMinorIterationDetails(const double iteration, const double col,
   highsLogUser(options, HighsLogType::kInfo, ss.str().c_str());
 }
 
-bool initialize(const HighsLp& lp, HighsSolution& solution,
+HIGHS_EXPORT bool initialize(const HighsLp& lp, HighsSolution& solution,
                 std::vector<double>& lambda) {
   // Clear and resize primal column solution.
   solution.clear();
@@ -106,7 +106,7 @@ bool initialize(const HighsLp& lp, HighsSolution& solution,
   return true;
 }
 
-double minimizeComponentQP(const int col, const double mu, const HighsLp& lp,
+HIGHS_EXPORT double minimizeComponentQP(const int col, const double mu, const HighsLp& lp,
                            double& objective, std::vector<double>& residual,
                            HighsSolution& sol) {
   // Minimize quadratic for column col.
@@ -166,7 +166,7 @@ double minimizeComponentQP(const int col, const double mu, const HighsLp& lp,
   return delta_x;
 }
 
-double minimizeComponentIca(const int col, const double mu,
+HIGHS_EXPORT double minimizeComponentIca(const int col, const double mu,
                             const std::vector<double>& lambda,
                             const HighsLp& lp, double& objective,
                             std::vector<double>& residual, HighsSolution& sol) {
@@ -230,7 +230,7 @@ double minimizeComponentIca(const int col, const double mu,
   return delta_x;
 }
 
-void updateResidual(bool piecewise, const HighsLp& lp, const HighsSolution& sol,
+HIGHS_EXPORT void updateResidual(bool piecewise, const HighsLp& lp, const HighsSolution& sol,
                     std::vector<double>& residual) {
   residual.clear();
   residual.assign(lp.num_row_, 0);
@@ -253,7 +253,7 @@ void updateResidual(bool piecewise, const HighsLp& lp, const HighsSolution& sol,
   }
 }
 
-void updateResidualFast(const HighsLp& lp, const HighsSolution& sol,
+HIGHS_EXPORT void updateResidualFast(const HighsLp& lp, const HighsSolution& sol,
                         std::vector<double>& residual) {
   assert(isEqualityProblem(lp));
   for (int row = 0; row < lp.num_row_; row++) {
@@ -262,7 +262,7 @@ void updateResidualFast(const HighsLp& lp, const HighsSolution& sol,
 }
 
 // Allows negative residuals
-void updateResidualIca(const HighsLp& lp, const HighsSolution& sol,
+HIGHS_EXPORT void updateResidualIca(const HighsLp& lp, const HighsSolution& sol,
                        std::vector<double>& residual) {
   assert(isEqualityProblem(lp));
   for (int row = 0; row < lp.num_row_; row++)

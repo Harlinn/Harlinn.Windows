@@ -52,15 +52,15 @@ struct QpHotstartInformation {
 // 4) start from a qp solution that was attained from a perturbed instance and cleanup
 // 5) start from a qp solution and cleanup after recomputing basis and reduced hessian factorization
 
-std::string qpBasisStatusToString(const BasisStatus qp_basis_status);
-std::string qpModelStatusToString(const QpModelStatus qp_model_status);
-void assessQpPrimalFeasibility(const Instance& instance, const double primal_feasibility_tolerance,
+HIGHS_EXPORT std::string qpBasisStatusToString(const BasisStatus qp_basis_status);
+HIGHS_EXPORT std::string qpModelStatusToString(const QpModelStatus qp_model_status);
+HIGHS_EXPORT void assessQpPrimalFeasibility(const Instance& instance, const double primal_feasibility_tolerance,
 			       const std::vector<double>& var_value, const std::vector<double>& con_value,
 			       HighsInt& num_var_infeasibilities, double& max_var_infeasibility, double& sum_var_infeasibilities,
 			       HighsInt& num_con_infeasibilities, double& max_con_infeasibility, double& sum_con_infeasibilities,
 			       double& max_con_residual, double& sum_con_residuals);
 
-QpAsmStatus solveqp_actual(Instance& instance, Settings& settings, QpHotstartInformation& startinfo, Statistics& stats, QpModelStatus& status, QpSolution& solution, HighsTimer& qp_timer);
+HIGHS_EXPORT QpAsmStatus solveqp_actual(Instance& instance, Settings& settings, QpHotstartInformation& startinfo, Statistics& stats, QpModelStatus& status, QpSolution& solution, HighsTimer& qp_timer);
 
 
 

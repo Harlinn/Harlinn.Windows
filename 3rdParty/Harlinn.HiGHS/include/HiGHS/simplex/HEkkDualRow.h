@@ -38,7 +38,7 @@ class HEkkDualRow {
    * @brief Calls setupSlice to set up the packed indices and values for
    * the dual ratio test
    */
-  void setup();
+  HIGHS_EXPORT void setup();
 
   /**
    * @brief Set up the packed indices and values for the dual ratio test
@@ -46,19 +46,19 @@ class HEkkDualRow {
    * Done either for the whole pivotal row (see HEkkDualRow::setup), or
    * just for a slice (see HEkkDual::initSlice)
    */
-  void setupSlice(HighsInt size  //!< Dimension of slice
+  HIGHS_EXPORT void setupSlice(HighsInt size  //!< Dimension of slice
   );
   /**
    * @brief Clear the packed data by zeroing packCount and workCount
    */
-  void clear();
+  HIGHS_EXPORT void clear();
 
   /**
    * @brief Pack the indices and values for the row.
    *
    * Offset of numCol is used when packing row_ep
    */
-  void chooseMakepack(const HVector* row,    //!< Row to be packed
+  HIGHS_EXPORT void chooseMakepack(const HVector* row,    //!< Row to be packed
                       const HighsInt offset  //!< Offset for indices
   );
   /**
@@ -66,13 +66,13 @@ class HEkkDualRow {
    *
    * TODO: Check with Qi what this is doing
    */
-  void choosePossible();
+  HIGHS_EXPORT void choosePossible();
 
   /**
    * @brief Join pack of possible candidates in this row with possible
    * candidates in otherRow
    */
-  void chooseJoinpack(
+  HIGHS_EXPORT void chooseJoinpack(
       const HEkkDualRow* otherRow  //!< Other row to join with this
   );
   /**
@@ -82,74 +82,74 @@ class HEkkDualRow {
    * perturbation not being relatively too small, returns positive if
    * dual unboundedness is suspected
    */
-  HighsInt chooseFinal();
+  HIGHS_EXPORT HighsInt chooseFinal();
 
   /**
    * @brief Identifies the groups of degenerate nodes in BFRT after a
    * heap sort of ratios
    */
-  bool chooseFinalWorkGroupQuad();
-  bool quadChooseFinalWorkGroupQuad();
-  bool chooseFinalWorkGroupHeap();
+  HIGHS_EXPORT bool chooseFinalWorkGroupQuad();
+  HIGHS_EXPORT bool quadChooseFinalWorkGroupQuad();
+  HIGHS_EXPORT bool chooseFinalWorkGroupHeap();
 
-  void chooseFinalLargeAlpha(
+  HIGHS_EXPORT void chooseFinalLargeAlpha(
       HighsInt& breakIndex, HighsInt& breakGroup, HighsInt pass_workCount,
       const std::vector<std::pair<HighsInt, double>>& pass_workData,
       const std::vector<HighsInt>& pass_workGroup);
 
-  void reportWorkDataAndGroup(
+  HIGHS_EXPORT void reportWorkDataAndGroup(
       const std::string message, const HighsInt reportWorkCount,
       const std::vector<std::pair<HighsInt, double>>& reportWorkData,
       const std::vector<HighsInt>& reportWorkGroup);
-  bool compareWorkDataAndGroup();
+  HIGHS_EXPORT bool compareWorkDataAndGroup();
 
   /**
    * @brief Update bounds when flips have occurred, and accumulate the
    * RHS for the FTRAN required to update the primal values after BFRT
    */
-  void updateFlip(HVector* bfrtColumn  //!< RHS for FTRAN BFRT
+  HIGHS_EXPORT void updateFlip(HVector* bfrtColumn  //!< RHS for FTRAN BFRT
   );
   /**
    * @brief Update the dual values
    */
-  void updateDual(
+  HIGHS_EXPORT void updateDual(
       double theta  //!< Multiple of pivotal row to add HighsInt to duals
                     //      HighsInt variable_out  //!< Index of leaving column
   );
   /**
    * @brief Create a list of nonbasic free columns
    */
-  void createFreelist();
+  HIGHS_EXPORT void createFreelist();
 
   /**
    * @brief Set a value of nonbasicMove for all free columns to
    * prevent their dual values from being changed
    */
-  void createFreemove(HVector* row_ep  //!< Row of \f$B^{-1}\f$ to be used to
+  HIGHS_EXPORT void createFreemove(HVector* row_ep  //!< Row of \f$B^{-1}\f$ to be used to
                                        //!< compute pivotal row entry
   );
   /**
    * @brief Reset the nonbasicMove values for free columns
    */
-  void deleteFreemove();
+  HIGHS_EXPORT void deleteFreemove();
 
   /**
    * @brief Delete the list of nonbasic free columns
    */
-  void deleteFreelist(
+  HIGHS_EXPORT void deleteFreelist(
       HighsInt iColumn  //!< Index of column to remove from Freelist
   );
 
   /**
    * @brief Compute (contribution to) the Devex weight
    */
-  void computeDevexWeight(const HighsInt slice = -1);
+  HIGHS_EXPORT void computeDevexWeight(const HighsInt slice = -1);
 
-  HighsInt debugFindInWorkData(
+  HIGHS_EXPORT HighsInt debugFindInWorkData(
       const HighsInt iCol, const HighsInt count,
       const std::vector<std::pair<HighsInt, double>>& workData_);
-  HighsInt debugChooseColumnInfeasibilities() const;
-  void debugReportBfrtVar(
+  HIGHS_EXPORT HighsInt debugChooseColumnInfeasibilities() const;
+  HIGHS_EXPORT void debugReportBfrtVar(
       const HighsInt ix,
       const std::vector<std::pair<HighsInt, double>>& pass_workData) const;
   // References:

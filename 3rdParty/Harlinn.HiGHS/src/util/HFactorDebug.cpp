@@ -25,7 +25,7 @@ using std::fabs;
 using std::max;
 using std::min;
 
-void debugReportRankDeficiency(
+HIGHS_EXPORT void debugReportRankDeficiency(
     const HighsInt call_id, const HighsInt highs_debug_level,
     const HighsLogOptions& log_options, const HighsInt num_row,
     const vector<HighsInt>& permute, const vector<HighsInt>& iwork,
@@ -94,7 +94,7 @@ void debugReportRankDeficiency(
   }
 }
 
-void debugReportRankDeficientASM(
+HIGHS_EXPORT void debugReportRankDeficientASM(
     const HighsInt highs_debug_level, const HighsLogOptions& log_options,
     const HighsInt num_row, const vector<HighsInt>& mc_start,
     const vector<HighsInt>& mc_count_a, const vector<HighsInt>& mc_index,
@@ -158,7 +158,7 @@ void debugReportRankDeficientASM(
   }
 }
 
-void debugReportMarkSingC(const HighsInt call_id,
+HIGHS_EXPORT void debugReportMarkSingC(const HighsInt call_id,
                           const HighsInt highs_debug_level,
                           const HighsLogOptions& log_options,
                           const HighsInt num_row, const vector<HighsInt>& iwork,
@@ -193,7 +193,7 @@ void debugReportMarkSingC(const HighsInt call_id,
   }
 }
 
-void debugLogRankDeficiency(
+HIGHS_EXPORT void debugLogRankDeficiency(
     const HighsInt highs_debug_level, const HighsLogOptions& log_options,
     const HighsInt rank_deficiency, const HighsInt basis_matrix_num_el,
     const HighsInt invert_num_el, const HighsInt& kernel_dim,
@@ -210,7 +210,7 @@ void debugLogRankDeficiency(
       kernel_num_el, nwork);
 }
 
-void debugPivotValueAnalysis(const HighsInt highs_debug_level,
+HIGHS_EXPORT void debugPivotValueAnalysis(const HighsInt highs_debug_level,
                              const HighsLogOptions& log_options,
                              const HighsInt num_row,
                              const vector<double>& u_pivot_value) {

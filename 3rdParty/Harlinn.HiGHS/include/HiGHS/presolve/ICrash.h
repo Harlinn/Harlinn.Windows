@@ -95,32 +95,32 @@ struct Quadratic {
 };
 
 // Functions: Call.
-HighsStatus callICrash(const HighsLp& lp, const ICrashOptions& options,
+HIGHS_EXPORT HighsStatus callICrash(const HighsLp& lp, const ICrashOptions& options,
                        ICrashInfo& result);
 
 // Functions: Options.
-bool checkOptions(const HighsLp& lp, const ICrashOptions options);
-Quadratic parseOptions(const HighsLp& lp, const ICrashOptions options);
-bool parseICrashStrategy(const std::string& strategy,
+HIGHS_EXPORT bool checkOptions(const HighsLp& lp, const ICrashOptions options);
+HIGHS_EXPORT Quadratic parseOptions(const HighsLp& lp, const ICrashOptions options);
+HIGHS_EXPORT bool parseICrashStrategy(const std::string& strategy,
                          ICrashStrategy& icrash_strategy);
-std::string ICrashtrategyToString(const ICrashStrategy strategy);
+HIGHS_EXPORT std::string ICrashtrategyToString(const ICrashStrategy strategy);
 
 // Functions: Crash.
-bool initialize(Quadratic& idata, const ICrashOptions& options);
-void update(Quadratic& idata);
-void updateParameters(Quadratic& idata, const ICrashOptions& options,
+HIGHS_EXPORT bool initialize(Quadratic& idata, const ICrashOptions& options);
+HIGHS_EXPORT void update(Quadratic& idata);
+HIGHS_EXPORT void updateParameters(Quadratic& idata, const ICrashOptions& options,
                       const int iteration);
-bool solveSubproblem(Quadratic& idata, const ICrashOptions& options);
+HIGHS_EXPORT bool solveSubproblem(Quadratic& idata, const ICrashOptions& options);
 
 // Functions: Util.
-double getQuadraticObjective(const Quadratic& idata);
-ICrashIterationDetails fillDetails(const int num, const Quadratic& idata);
-void fillICrashInfo(const int n_iterations, ICrashInfo& result);
-void reportSubproblem(const ICrashOptions options, const Quadratic& idata,
+HIGHS_EXPORT double getQuadraticObjective(const Quadratic& idata);
+HIGHS_EXPORT ICrashIterationDetails fillDetails(const int num, const Quadratic& idata);
+HIGHS_EXPORT void fillICrashInfo(const int n_iterations, ICrashInfo& result);
+HIGHS_EXPORT void reportSubproblem(const ICrashOptions options, const Quadratic& idata,
                       const int iteration);
-void reportOptions(const ICrashOptions& options);
+HIGHS_EXPORT void reportOptions(const ICrashOptions& options);
 
-bool callCrossover(const HighsLp& lp, const HighsOptions& options,
+HIGHS_EXPORT bool callCrossover(const HighsLp& lp, const HighsOptions& options,
                    const std::vector<double>& x_values, HighsSolution& solution,
                    HighsBasis& basis, HighsCallback& callback);
 

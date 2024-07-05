@@ -72,7 +72,7 @@ class Basis {
   // constraint in basis (active or not)
   std::vector<HighsInt> constraintindexinbasisfactor;
 
-  void build();
+  HIGHS_EXPORT void build();
 
   // buffer to avoid recreating vectors
   QpVector buffer_column_aq;
@@ -88,12 +88,12 @@ class Basis {
  public:
 
 
-  Basis(Runtime& rt, std::vector<HighsInt> active,
+  HIGHS_EXPORT Basis(Runtime& rt, std::vector<HighsInt> active,
         std::vector<BasisStatus> atlower, std::vector<HighsInt> inactive);
 
   bool getreinversionhint() { return reinversion_hint; }
 
-  void rebuild();
+  HIGHS_EXPORT void rebuild();
 
   HighsInt getnupdatessinceinvert() { return updatessinceinvert; }
 
@@ -115,36 +115,36 @@ class Basis {
 
   BasisStatus getstatus(HighsInt conid) { return basisstatus[conid]; };
 
-  void report();
+  HIGHS_EXPORT void report();
 
   // move that constraint into V section basis (will correspond to
   // Nullspace from now on)
-  void deactivate(HighsInt conid);
+  HIGHS_EXPORT void deactivate(HighsInt conid);
 
-  QpSolverStatus activate(const Settings& settings, HighsInt conid, BasisStatus atlower,
+  HIGHS_EXPORT QpSolverStatus activate(const Settings& settings, HighsInt conid, BasisStatus atlower,
                           HighsInt nonactivetoremove, Pricing* pricing);
 
-  void updatebasis(const Settings& settings, HighsInt newactivecon, HighsInt droppedcon,
+  HIGHS_EXPORT void updatebasis(const Settings& settings, HighsInt newactivecon, HighsInt droppedcon,
                    Pricing* pricing);
 
-  QpVector btran(const QpVector& rhs, bool buffer = false, HighsInt p = -1);
+  HIGHS_EXPORT QpVector btran(const QpVector& rhs, bool buffer = false, HighsInt p = -1);
 
-  QpVector ftran(const QpVector& rhs, bool buffer = false, HighsInt q = -1);
+  HIGHS_EXPORT QpVector ftran(const QpVector& rhs, bool buffer = false, HighsInt q = -1);
 
-  QpVector& btran(const QpVector& rhs, QpVector& target, bool buffer = false,
+  HIGHS_EXPORT QpVector& btran(const QpVector& rhs, QpVector& target, bool buffer = false,
                 HighsInt p = -1);
 
-  QpVector& ftran(const QpVector& rhs, QpVector& target, bool buffer = false,
+  HIGHS_EXPORT QpVector& ftran(const QpVector& rhs, QpVector& target, bool buffer = false,
                 HighsInt q = -1);
 
-  QpVector recomputex(const Instance& inst);
+  HIGHS_EXPORT QpVector recomputex(const Instance& inst);
 
-  void write(std::string filename);
+  HIGHS_EXPORT void write(std::string filename);
 
-  QpVector& Ztprod(const QpVector& rhs, QpVector& target, bool buffer = false,
+  HIGHS_EXPORT QpVector& Ztprod(const QpVector& rhs, QpVector& target, bool buffer = false,
                  HighsInt q = -1);
 
-  QpVector& Zprod(const QpVector& rhs, QpVector& target);
+  HIGHS_EXPORT QpVector& Zprod(const QpVector& rhs, QpVector& target);
 };
 
 #endif

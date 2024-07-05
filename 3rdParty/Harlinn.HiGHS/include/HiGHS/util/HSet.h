@@ -37,7 +37,7 @@ class HSet {
    * @brief Initialise a set. Neither limit is binding, but more
    * efficient memory-wise if known in advance
    */
-  bool setup(const HighsInt size,  //!< Dimension of the set to be initialised
+  HIGHS_EXPORT bool setup(const HighsInt size,  //!< Dimension of the set to be initialised
              const HighsInt max_entry,  //!< Maximum entry to be in the set.
              const bool output_flag = false,  //!< Option for output
              FILE* log_stream = NULL,         //!< File stream for output
@@ -48,19 +48,19 @@ class HSet {
   /**
    * @brief Clear the set
    */
-  void clear();
+  HIGHS_EXPORT void clear();
   /**
    * @brief Add entry to the set
    */
-  bool add(const HighsInt entry);
+  HIGHS_EXPORT bool add(const HighsInt entry);
   /**
    * @brief Remove entry from the set
    */
-  bool remove(const HighsInt entry);
+  HIGHS_EXPORT bool remove(const HighsInt entry);
   /**
    * @brief Returns whether entry is in the set
    */
-  bool in(const HighsInt entry) const;
+  HIGHS_EXPORT bool in(const HighsInt entry) const;
   /**
    * @brief Returns the number of entries in the set
    */
@@ -72,11 +72,11 @@ class HSet {
   /**
    * @brief Print out the set and pointer entries not set to no_pointer
    */
-  void print() const;
+  HIGHS_EXPORT void print() const;
   /**
    * @brief Debug the set
    */
-  bool debug() const;
+  HIGHS_EXPORT bool debug() const;
 
  private:
   HighsInt count_ = 0;      //!< Number of entries

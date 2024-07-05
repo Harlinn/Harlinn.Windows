@@ -3,6 +3,6 @@
 
 #include "runtime.hpp"
 
-void perturb(Runtime& rt);
+HIGHS_EXPORT void perturb(Runtime& rt);
 
 #endif

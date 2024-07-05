@@ -52,16 +52,16 @@ class KktChStep {
   std::stack<std::vector<std::pair<HighsInt, double> > > costs;
 
   // full matrix
-  void setBoundsCostRHS(const std::vector<double>& colUpper_,
+  HIGHS_EXPORT void setBoundsCostRHS(const std::vector<double>& colUpper_,
                         const std::vector<double>& colLower_,
                         const std::vector<double>& cost,
                         const std::vector<double>& rowLower_,
                         const std::vector<double>& rowUpper_);
-  void addChange(int type, HighsInt row, HighsInt col, double valC,
+  HIGHS_EXPORT void addChange(int type, HighsInt row, HighsInt col, double valC,
                  double dualC, double dualR);
-  void addCost(HighsInt col, double value);
+  HIGHS_EXPORT void addCost(HighsInt col, double value);
 
-  dev_kkt_check::State initState(
+  HIGHS_EXPORT dev_kkt_check::State initState(
       const HighsInt numCol_, const HighsInt numRow_,
       const std::vector<HighsInt>& Astart_, const std::vector<HighsInt>& Aend_,
       const std::vector<HighsInt>& Aindex_, const std::vector<double>& Avalue_,

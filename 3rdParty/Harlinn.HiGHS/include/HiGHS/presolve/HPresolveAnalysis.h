@@ -40,14 +40,14 @@ class HPresolveAnalysis {
   //
   // Transform options->presolve_rule_off into logical settings in
   // allow_rule_[*], commenting on the rules switched off
-  void setup(const HighsLp* model_, const HighsOptions* options_,
+  HIGHS_EXPORT void setup(const HighsLp* model_, const HighsOptions* options_,
              const HighsInt& numDeletedRows_, const HighsInt& numDeletedCols_);
-  void resetNumDeleted();
+  HIGHS_EXPORT void resetNumDeleted();
 
-  std::string presolveReductionTypeToString(const HighsInt reduction_type);
-  void startPresolveRuleLog(const HighsInt rule_type);
-  void stopPresolveRuleLog(const HighsInt rule_type);
-  bool analysePresolveRuleLog(const bool report = false);
+  HIGHS_EXPORT std::string presolveReductionTypeToString(const HighsInt reduction_type);
+  HIGHS_EXPORT void startPresolveRuleLog(const HighsInt rule_type);
+  HIGHS_EXPORT void stopPresolveRuleLog(const HighsInt rule_type);
+  HIGHS_EXPORT bool analysePresolveRuleLog(const bool report = false);
   friend class HPresolve;
 };
 

@@ -33,11 +33,11 @@ struct ProductFormUpdate {
   vector<HighsInt> start_;
   vector<HighsInt> index_;
   vector<double> value_;
-  void clear();
-  void setup(const HighsInt num_row, const double expected_density);
-  HighsInt update(HVector* aq, HighsInt* iRow);
-  void btran(HVector& rhs) const;
-  void ftran(HVector& rhs) const;
+  HIGHS_EXPORT void clear();
+  HIGHS_EXPORT void setup(const HighsInt num_row, const double expected_density);
+  HIGHS_EXPORT HighsInt update(HVector* aq, HighsInt* iRow);
+  HIGHS_EXPORT void btran(HVector& rhs) const;
+  HIGHS_EXPORT void ftran(HVector& rhs) const;
 };
 
 struct FrozenBasis {
@@ -47,7 +47,7 @@ struct FrozenBasis {
   ProductFormUpdate update_;
   SimplexBasis basis_;
   std::vector<double> dual_edge_weight_;
-  void clear();
+  HIGHS_EXPORT void clear();
 };
 
 struct SimplexIterate {
@@ -55,97 +55,97 @@ struct SimplexIterate {
   SimplexBasis basis_;
   InvertibleRepresentation invert_;
   std::vector<double> dual_edge_weight_;
-  void clear();
+  HIGHS_EXPORT void clear();
 };
 
 class HSimplexNla {
  private:
-  void setup(const HighsLp* lp, HighsInt* basic_index,
+  HIGHS_EXPORT void setup(const HighsLp* lp, HighsInt* basic_index,
              const HighsOptions* options, HighsTimer* timer,
              HighsSimplexAnalysis* analysis,
              const HighsSparseMatrix* factor_a_matrix,
              const double factor_pivot_threshold);
 
-  void setLpAndScalePointers(const HighsLp* lp);
-  void setBasicIndexPointers(HighsInt* basic_index);
-  void setPointers(const HighsLp* for_lp,
+  HIGHS_EXPORT void setLpAndScalePointers(const HighsLp* lp);
+  HIGHS_EXPORT void setBasicIndexPointers(HighsInt* basic_index);
+  HIGHS_EXPORT void setPointers(const HighsLp* for_lp,
                    const HighsSparseMatrix* factor_a_matrix = NULL,
                    HighsInt* basic_index = NULL,
                    const HighsOptions* options = NULL, HighsTimer* timer = NULL,
                    HighsSimplexAnalysis* analysis = NULL);
-  void clear();
-  HighsInt invert();
-  void btran(HVector& rhs, const double expected_density,
+  HIGHS_EXPORT void clear();
+  HIGHS_EXPORT HighsInt invert();
+  HIGHS_EXPORT void btran(HVector& rhs, const double expected_density,
              HighsTimerClock* factor_timer_clock_pointer = NULL) const;
-  void ftran(HVector& rhs, const double expected_density,
+  HIGHS_EXPORT void ftran(HVector& rhs, const double expected_density,
              HighsTimerClock* factor_timer_clock_pointer = NULL) const;
-  void btranInScaledSpace(
+  HIGHS_EXPORT void btranInScaledSpace(
       HVector& rhs, const double expected_density,
       HighsTimerClock* factor_timer_clock_pointer = NULL) const;
-  void ftranInScaledSpace(
+  HIGHS_EXPORT void ftranInScaledSpace(
       HVector& rhs, const double expected_density,
       HighsTimerClock* factor_timer_clock_pointer = NULL) const;
-  void frozenBtran(HVector& rhs) const;
-  void frozenFtran(HVector& rhs) const;
-  void update(HVector* aq, HVector* ep, HighsInt* iRow, HighsInt* hint);
+  HIGHS_EXPORT void frozenBtran(HVector& rhs) const;
+  HIGHS_EXPORT void frozenFtran(HVector& rhs) const;
+  HIGHS_EXPORT void update(HVector* aq, HVector* ep, HighsInt* iRow, HighsInt* hint);
 
-  void frozenBasisClearAllData();
-  void frozenBasisClearAllUpdate();
-  bool frozenBasisAllDataClear();
-  bool frozenBasisIdValid(const HighsInt frozen_basis_id) const;
-  bool frozenBasisHasInvert(const HighsInt frozen_basis_id) const;
-  HighsInt freeze(const SimplexBasis& basis, const double col_aq_density);
-  void unfreeze(const HighsInt unfreeze_basis_id, SimplexBasis& basis);
-  void putInvert();
-  void getInvert();
+  HIGHS_EXPORT void frozenBasisClearAllData();
+  HIGHS_EXPORT void frozenBasisClearAllUpdate();
+  HIGHS_EXPORT bool frozenBasisAllDataClear();
+  HIGHS_EXPORT bool frozenBasisIdValid(const HighsInt frozen_basis_id) const;
+  HIGHS_EXPORT bool frozenBasisHasInvert(const HighsInt frozen_basis_id) const;
+  HIGHS_EXPORT HighsInt freeze(const SimplexBasis& basis, const double col_aq_density);
+  HIGHS_EXPORT void unfreeze(const HighsInt unfreeze_basis_id, SimplexBasis& basis);
+  HIGHS_EXPORT void putInvert();
+  HIGHS_EXPORT void getInvert();
 
-  void transformForUpdate(HVector* column, HVector* row_ep,
+  HIGHS_EXPORT void transformForUpdate(HVector* column, HVector* row_ep,
                           const HighsInt variable_in, const HighsInt row_out);
-  double variableScaleFactor(const HighsInt iVar) const;
-  double basicColScaleFactor(const HighsInt iCol) const;
-  double pivotInScaledSpace(const HVector* aq, const HighsInt variable_in,
+  HIGHS_EXPORT double variableScaleFactor(const HighsInt iVar) const;
+  HIGHS_EXPORT double basicColScaleFactor(const HighsInt iCol) const;
+  HIGHS_EXPORT double pivotInScaledSpace(const HVector* aq, const HighsInt variable_in,
                             const HighsInt row_out) const;
-  void setPivotThreshold(const double new_pivot_threshold);
+  HIGHS_EXPORT void setPivotThreshold(const double new_pivot_threshold);
 
-  void passLpPointer(const HighsLp* lp);
-  void passScalePointer(const HighsScale* scale);
-  void applyBasisMatrixColScale(HVector& rhs) const;
-  void applyBasisMatrixRowScale(HVector& rhs) const;
-  void unapplyBasisMatrixRowScale(HVector& rhs) const;
-  double rowEp2NormInScaledSpace(const HighsInt iRow,
+  HIGHS_EXPORT void passLpPointer(const HighsLp* lp);
+  HIGHS_EXPORT void passScalePointer(const HighsScale* scale);
+  HIGHS_EXPORT void applyBasisMatrixColScale(HVector& rhs) const;
+  HIGHS_EXPORT void applyBasisMatrixRowScale(HVector& rhs) const;
+  HIGHS_EXPORT void unapplyBasisMatrixRowScale(HVector& rhs) const;
+  HIGHS_EXPORT double rowEp2NormInScaledSpace(const HighsInt iRow,
                                  const HVector& row_ep) const;
-  void addCols(const HighsLp* updated_lp);
-  void addRows(const HighsLp* updated_lp, HighsInt* basic_index,
+  HIGHS_EXPORT void addCols(const HighsLp* updated_lp);
+  HIGHS_EXPORT void addRows(const HighsLp* updated_lp, HighsInt* basic_index,
                const HighsSparseMatrix* scaled_ar_matrix);
-  bool sparseLoopStyle(const HighsInt count, const HighsInt dim,
+  HIGHS_EXPORT bool sparseLoopStyle(const HighsInt count, const HighsInt dim,
                        HighsInt& to_entry) const;
-  void reportVector(const std::string message, const HighsInt num_index,
+  HIGHS_EXPORT void reportVector(const std::string message, const HighsInt num_index,
                     const vector<double> vector_value,
                     const vector<HighsInt> vector_index,
                     const bool force) const;
-  void reportArray(const std::string message, const HVector* vector,
+  HIGHS_EXPORT void reportArray(const std::string message, const HVector* vector,
                    const bool force = false) const;
-  void reportArray(const std::string message, const HighsInt offset,
+  HIGHS_EXPORT void reportArray(const std::string message, const HighsInt offset,
                    const HVector* vector, const bool force = false) const;
-  void reportArraySparse(const std::string message, const HVector* vector,
+  HIGHS_EXPORT void reportArraySparse(const std::string message, const HVector* vector,
                          const bool force = false) const;
-  void reportArraySparse(const std::string message, const HighsInt offset,
+  HIGHS_EXPORT void reportArraySparse(const std::string message, const HighsInt offset,
                          const HVector* vector, const bool force = false) const;
-  void reportPackValue(const std::string message, const HVector* vector,
+  HIGHS_EXPORT void reportPackValue(const std::string message, const HVector* vector,
                        const bool force = false) const;
   // Debug methods
-  HighsDebugStatus debugCheckData(const std::string message = "") const;
-  HighsDebugStatus debugCheckInvert(const std::string message,
+  HIGHS_EXPORT HighsDebugStatus debugCheckData(const std::string message = "") const;
+  HIGHS_EXPORT HighsDebugStatus debugCheckInvert(const std::string message,
                                     const HighsInt alt_debug_level = -1) const;
-  double debugInvertResidualError(const bool transposed,
+  HIGHS_EXPORT double debugInvertResidualError(const bool transposed,
                                   const HVector& solution,
                                   HVector& residual) const;
-  HighsDebugStatus debugReportInvertSolutionError(const bool transposed,
+  HIGHS_EXPORT HighsDebugStatus debugReportInvertSolutionError(const bool transposed,
                                                   const HVector& true_solution,
                                                   const HVector& solution,
                                                   HVector& residual,
                                                   const bool force) const;
-  HighsDebugStatus debugReportInvertSolutionError(
+  HIGHS_EXPORT HighsDebugStatus debugReportInvertSolutionError(
       const std::string source, const bool transposed,
       const double solve_error_norm, const double residual_error_norm,
       const bool force) const;

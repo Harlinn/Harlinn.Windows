@@ -21,17 +21,17 @@
 #include "lp_data/HighsLp.h"
 #include "lp_data/HighsOptions.h"
 
-HighsStatus writeLpMatrixPicToFile(const HighsOptions& options,
+HIGHS_EXPORT HighsStatus writeLpMatrixPicToFile(const HighsOptions& options,
                                    const std::string fileprefix,
                                    const HighsLp& lp);
 
-HighsStatus writeMatrixPicToFile(const HighsOptions& options,
+HIGHS_EXPORT HighsStatus writeMatrixPicToFile(const HighsOptions& options,
                                  const std::string fileprefix,
                                  const HighsInt numRow, const HighsInt numCol,
                                  const std::vector<HighsInt>& Astart,
                                  const std::vector<HighsInt>& Aindex);
 
-HighsStatus writeRmatrixPicToFile(const HighsOptions& options,
+HIGHS_EXPORT HighsStatus writeRmatrixPicToFile(const HighsOptions& options,
                                   const std::string fileprefix,
                                   const HighsInt numRow, const HighsInt numCol,
                                   const std::vector<HighsInt>& ARstart,

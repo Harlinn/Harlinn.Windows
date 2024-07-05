@@ -11,9 +11,9 @@ struct RatiotestResult {
   bool nowactiveatlower;
 };
 
-RatiotestResult ratiotest(Runtime& runtime, const QpVector& p,
+HIGHS_EXPORT RatiotestResult ratiotest(Runtime& runtime, const QpVector& p,
                           const QpVector& rowmove, double alphastart);
 
-Instance ratiotest_relax_instance(Runtime& runtime);
+HIGHS_EXPORT Instance ratiotest_relax_instance(Runtime& runtime);
 
 #endif
