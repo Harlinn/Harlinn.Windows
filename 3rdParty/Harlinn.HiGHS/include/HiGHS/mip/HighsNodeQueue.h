@@ -179,7 +179,7 @@ class HighsNodeQueue {
     OpenNode(const OpenNode&) = delete;
   };
 
-  void checkGlobalBounds(HighsInt col, double lb, double ub, double feastol,
+  HIGHS_EXPORT void checkGlobalBounds(HighsInt col, double lb, double ub, double feastol,
                          HighsCDouble& treeweight);
 
  private:
@@ -211,42 +211,42 @@ class HighsNodeQueue {
   double optimality_limit = kHighsInf;
   HighsInt numCol = 0;
 
-  void link_estim(int64_t node);
+  HIGHS_EXPORT void link_estim(int64_t node);
 
-  void unlink_estim(int64_t node);
+  HIGHS_EXPORT void unlink_estim(int64_t node);
 
-  void link_lower(int64_t node);
+  HIGHS_EXPORT void link_lower(int64_t node);
 
-  void unlink_lower(int64_t node);
+  HIGHS_EXPORT void unlink_lower(int64_t node);
 
-  void link_suboptimal(int64_t node);
+  HIGHS_EXPORT void link_suboptimal(int64_t node);
 
-  void unlink_suboptimal(int64_t node);
+  HIGHS_EXPORT void unlink_suboptimal(int64_t node);
 
-  void link_domchgs(int64_t node);
+  HIGHS_EXPORT void link_domchgs(int64_t node);
 
-  void unlink_domchgs(int64_t node);
+  HIGHS_EXPORT void unlink_domchgs(int64_t node);
 
-  double link(int64_t node);
+  HIGHS_EXPORT double link(int64_t node);
 
-  void unlink(int64_t node);
+  HIGHS_EXPORT void unlink(int64_t node);
 
  public:
   void setOptimalityLimit(double optimality_limit) {
     this->optimality_limit = optimality_limit;
   }
 
-  double performBounding(double upper_limit);
+  HIGHS_EXPORT double performBounding(double upper_limit);
 
-  void setNumCol(HighsInt numcol);
+  HIGHS_EXPORT void setNumCol(HighsInt numcol);
 
-  double emplaceNode(std::vector<HighsDomainChange>&& domchgs,
+  HIGHS_EXPORT double emplaceNode(std::vector<HighsDomainChange>&& domchgs,
                      std::vector<HighsInt>&& branchings, double lower_bound,
                      double estimate, HighsInt depth);
 
-  OpenNode&& popBestNode();
+  HIGHS_EXPORT OpenNode&& popBestNode();
 
-  OpenNode&& popBestBoundNode();
+  HIGHS_EXPORT OpenNode&& popBestBoundNode();
 
   int64_t numNodesUp(HighsInt col) const {
     return colLowerNodesPtr.get()[col].size();
@@ -280,15 +280,15 @@ class HighsNodeQueue {
     return colUpperNodesPtr.get()[col];
   }
 
-  double pruneInfeasibleNodes(HighsDomain& globaldomain, double feastol);
+  HIGHS_EXPORT double pruneInfeasibleNodes(HighsDomain& globaldomain, double feastol);
 
-  double pruneNode(int64_t nodeId);
+  HIGHS_EXPORT double pruneNode(int64_t nodeId);
 
-  double getBestLowerBound() const;
+  HIGHS_EXPORT double getBestLowerBound() const;
 
-  HighsInt getBestBoundDomchgStackSize() const;
+  HIGHS_EXPORT HighsInt getBestBoundDomchgStackSize() const;
 
-  void clear();
+  HIGHS_EXPORT void clear();
 
   int64_t numNodes() const { return nodes.size() - freeslots.size(); }
 

@@ -70,44 +70,44 @@ void strTrim(char* str) {
 //   return str;
 // }
 
-void tolower(std::string& str) {
+HIGHS_EXPORT void tolower(std::string& str) {
   std::transform(str.begin(), str.end(), str.begin(),
                  [](unsigned char c) { return std::tolower(c); });
 }
 
-std::string& ltrim(std::string& str, const std::string& chars) {
+HIGHS_EXPORT std::string& ltrim(std::string& str, const std::string& chars) {
   str.erase(0, str.find_first_not_of(chars));
   return str;
 }
 
-std::string& rtrim(std::string& str, const std::string& chars) {
+HIGHS_EXPORT std::string& rtrim(std::string& str, const std::string& chars) {
   str.erase(str.find_last_not_of(chars) + 1);
   return str;
 }
 
-std::string& trim(std::string& str, const std::string& chars) {
+HIGHS_EXPORT std::string& trim(std::string& str, const std::string& chars) {
   return ltrim(rtrim(str, chars), chars);
 }
 
-bool is_empty(char c, const std::string& chars) {
+HIGHS_EXPORT bool is_empty(char c, const std::string& chars) {
   size_t pos = chars.find_first_of(c);
   if (pos == std::string::npos || pos == chars.size()) return false;
   return true;
 }
 
-bool is_empty(std::string& str, const std::string& chars) {
+HIGHS_EXPORT bool is_empty(std::string& str, const std::string& chars) {
   size_t pos = str.find_first_not_of(chars);
   if (pos == std::string::npos || pos == str.size()) return true;
   return false;
 }
 
-bool is_end(std::string& str, size_t end, const std::string& chars) {
+HIGHS_EXPORT bool is_end(std::string& str, size_t end, const std::string& chars) {
   size_t pos = str.find_first_not_of(chars, end);
   if (pos == std::string::npos || pos == str.size()) return true;
   return false;
 }
 
-size_t first_word_end(std::string& str, size_t start) {
+HIGHS_EXPORT size_t first_word_end(std::string& str, size_t start) {
   const std::string chars = "\t\n\v\f\r ";
   size_t next_word_start = str.find_first_not_of(chars, start);
   size_t next_word_end = str.find_first_of(chars, next_word_start);
@@ -116,7 +116,7 @@ size_t first_word_end(std::string& str, size_t start) {
   return next_word_end;
 }
 
-std::string first_word(std::string& str, size_t start) {
+HIGHS_EXPORT std::string first_word(std::string& str, size_t start) {
   // If start is (at least) the length of str, then next_word_start is
   // negative, so there's no word, so return ""
   if (start >= str.length()) return "";

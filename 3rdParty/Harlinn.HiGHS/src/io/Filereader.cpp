@@ -73,7 +73,7 @@ Filereader* Filereader::getFilereader(const HighsLogOptions& log_options,
   return reader;
 }
 
-void interpretFilereaderRetcode(const HighsLogOptions& log_options,
+HIGHS_EXPORT void interpretFilereaderRetcode(const HighsLogOptions& log_options,
                                 const std::string filename,
                                 const FilereaderRetcode code) {
   switch (code) {
@@ -98,7 +98,7 @@ void interpretFilereaderRetcode(const HighsLogOptions& log_options,
   }
 }
 
-std::string extractModelName(const std::string filename) {
+HIGHS_EXPORT std::string extractModelName(const std::string filename) {
   // Extract model name
   std::string name = filename;
   std::size_t found = name.find_last_of("/\\");

@@ -33,12 +33,12 @@ class HighsObjectiveFunction {
   std::vector<HighsInt> colToPartition;
 
  public:
-  HighsObjectiveFunction(const HighsMipSolver& mipsolver);
+  HIGHS_EXPORT HighsObjectiveFunction(const HighsMipSolver& mipsolver);
 
-  void setupCliquePartition(const HighsDomain& globaldom,
+  HIGHS_EXPORT void setupCliquePartition(const HighsDomain& globaldom,
                             HighsCliqueTable& cliqueTable);
 
-  void checkIntegrality(double epsilon);
+  HIGHS_EXPORT void checkIntegrality(double epsilon);
 
   /// returns the vector of column indices with nonzero objective value
   /// They will be ordered so that binary columns come first

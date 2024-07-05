@@ -31,10 +31,10 @@ struct HighsCallback {
   std::vector<bool> active;
   HighsCallbackDataOut data_out;
   HighsCallbackDataIn data_in;
-  bool callbackActive(const int callback_type);
-  bool callbackAction(const int callback_type, std::string message = "");
-  void clearHighsCallbackDataOut();
-  void clearHighsCallbackDataIn();
-  void clear();
+  HIGHS_EXPORT bool callbackActive(const int callback_type);
+  HIGHS_EXPORT bool callbackAction(const int callback_type, std::string message = "");
+  HIGHS_EXPORT void clearHighsCallbackDataOut();
+  HIGHS_EXPORT void clearHighsCallbackDataIn();
+  HIGHS_EXPORT void clear();
 };
 #endif /* LP_DATA_HIGHSCALLBACK_H_ */

@@ -23,15 +23,15 @@
 
 // #include "lp_data/HighsOptions.h"
 
-HighsStatus debugDebugToHighsStatus(const HighsDebugStatus debug_status);
+HIGHS_EXPORT HighsStatus debugDebugToHighsStatus(const HighsDebugStatus debug_status);
 
-HighsDebugStatus debugWorseStatus(const HighsDebugStatus status0,
+HIGHS_EXPORT HighsDebugStatus debugWorseStatus(const HighsDebugStatus status0,
                                   const HighsDebugStatus status1);
 
-bool debugVectorRightSize(const std::vector<double> v,
+HIGHS_EXPORT bool debugVectorRightSize(const std::vector<double> v,
                           const HighsInt right_size);
 
-bool debugVectorRightSize(const std::vector<HighsInt> v,
+HIGHS_EXPORT bool debugVectorRightSize(const std::vector<HighsInt> v,
                           const HighsInt right_size);
 
 #endif  // SIMPLEX_HIGHSDEBUG_H_

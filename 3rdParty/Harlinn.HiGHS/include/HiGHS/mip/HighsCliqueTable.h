@@ -99,18 +99,18 @@ class HighsCliqueTable {
   HighsInt minEntriesForParallelism;
   bool inPresolve;
 
-  void unlink(HighsInt pos, HighsInt cliqueid);
+  HIGHS_EXPORT void unlink(HighsInt pos, HighsInt cliqueid);
 
-  void link(HighsInt pos, HighsInt cliqueid);
+  HIGHS_EXPORT void link(HighsInt pos, HighsInt cliqueid);
 
-  HighsInt findCommonCliqueId(int64_t& numQueries, CliqueVar v1,
+  HIGHS_EXPORT HighsInt findCommonCliqueId(int64_t& numQueries, CliqueVar v1,
                               CliqueVar v2) const;
 
   HighsInt findCommonCliqueId(CliqueVar v1, CliqueVar v2) {
     return findCommonCliqueId(numNeighbourhoodQueries, v1, v2);
   }
 
-  HighsInt runCliqueSubsumption(const HighsDomain& globaldom,
+  HIGHS_EXPORT HighsInt runCliqueSubsumption(const HighsDomain& globaldom,
                                 std::vector<CliqueVar>& clique);
   struct BronKerboschData {
     const std::vector<double>& sol;
@@ -137,20 +137,20 @@ class HighsCliqueTable {
     BronKerboschData(const std::vector<double>& sol) : sol(sol) {}
   };
 
-  void bronKerboschRecurse(BronKerboschData& data, HighsInt Plen,
+  HIGHS_EXPORT void bronKerboschRecurse(BronKerboschData& data, HighsInt Plen,
                            const CliqueVar* X, HighsInt Xlen) const;
 
-  void extractCliques(const HighsMipSolver& mipsolver,
+  HIGHS_EXPORT void extractCliques(const HighsMipSolver& mipsolver,
                       std::vector<HighsInt>& inds, std::vector<double>& vals,
                       std::vector<int8_t>& complementation, double rhs,
                       HighsInt nbin, std::vector<HighsInt>& perm,
                       std::vector<CliqueVar>& clique, double feastol);
 
-  void processInfeasibleVertices(HighsDomain& domain);
+  HIGHS_EXPORT void processInfeasibleVertices(HighsDomain& domain);
 
-  void propagateAndCleanup(HighsDomain& globaldom);
+  HIGHS_EXPORT void propagateAndCleanup(HighsDomain& globaldom);
 
-  void queryNeighbourhood(std::vector<HighsInt>& neighbourhoodInds,
+  HIGHS_EXPORT void queryNeighbourhood(std::vector<HighsInt>& neighbourhoodInds,
                           int64_t& numNeighbourhoodqueries, CliqueVar v,
                           CliqueVar* q, HighsInt N) const;
 
@@ -177,28 +177,28 @@ class HighsCliqueTable {
 
   HighsInt getNumEntries() const { return numEntries; }
 
-  HighsInt partitionNeighbourhood(std::vector<HighsInt>& neighbourhoodInds,
+  HIGHS_EXPORT HighsInt partitionNeighbourhood(std::vector<HighsInt>& neighbourhoodInds,
                                   int64_t& numNeighbourhoodqueries, CliqueVar v,
                                   CliqueVar* q, HighsInt N) const;
 
-  HighsInt shrinkToNeighbourhood(std::vector<HighsInt>& neighbourhoodInds,
+  HIGHS_EXPORT HighsInt shrinkToNeighbourhood(std::vector<HighsInt>& neighbourhoodInds,
                                  int64_t& numNeighbourhoodqueries, CliqueVar v,
                                  CliqueVar* q, HighsInt N);
 
-  bool processNewEdge(HighsDomain& globaldom, CliqueVar v1, CliqueVar v2);
+  HIGHS_EXPORT bool processNewEdge(HighsDomain& globaldom, CliqueVar v1, CliqueVar v2);
 
-  void doAddClique(const CliqueVar* cliquevars, HighsInt numcliquevars,
+  HIGHS_EXPORT void doAddClique(const CliqueVar* cliquevars, HighsInt numcliquevars,
                    bool equality = false, HighsInt origin = kHighsIInf);
 
-  void addClique(const HighsMipSolver& mipsolver, CliqueVar* cliquevars,
+  HIGHS_EXPORT void addClique(const HighsMipSolver& mipsolver, CliqueVar* cliquevars,
                  HighsInt numcliquevars, bool equality = false,
                  HighsInt origin = kHighsIInf);
 
-  void removeClique(HighsInt cliqueid);
+  HIGHS_EXPORT void removeClique(HighsInt cliqueid);
 
-  void resolveSubstitution(CliqueVar& v) const;
+  HIGHS_EXPORT void resolveSubstitution(CliqueVar& v) const;
 
-  void resolveSubstitution(HighsInt& col, double& val, double& rhs) const;
+  HIGHS_EXPORT void resolveSubstitution(HighsInt& col, double& val, double& rhs) const;
 
   std::vector<HighsInt>& getDeletedRows() { return deletedrows; }
 
@@ -236,24 +236,24 @@ class HighsCliqueTable {
 
   HighsInt getNumFixings() const { return nfixings; }
 
-  void cliquePartition(std::vector<CliqueVar>& clqVars,
+  HIGHS_EXPORT void cliquePartition(std::vector<CliqueVar>& clqVars,
                        std::vector<HighsInt>& partitionStart);
 
-  void cliquePartition(const std::vector<double>& objective,
+  HIGHS_EXPORT void cliquePartition(const std::vector<double>& objective,
                        std::vector<CliqueVar>& clqVars,
                        std::vector<HighsInt>& partitionStart);
 
-  bool foundCover(HighsDomain& globaldom, CliqueVar v1, CliqueVar v2);
+  HIGHS_EXPORT bool foundCover(HighsDomain& globaldom, CliqueVar v1, CliqueVar v2);
 
-  void extractCliques(HighsMipSolver& mipsolver, bool transformRows = true);
+  HIGHS_EXPORT void extractCliques(HighsMipSolver& mipsolver, bool transformRows = true);
 
-  void extractCliquesFromCut(const HighsMipSolver& mipsolver,
+  HIGHS_EXPORT void extractCliquesFromCut(const HighsMipSolver& mipsolver,
                              const HighsInt* inds, const double* vals,
                              HighsInt len, double rhs);
 
-  void extractObjCliques(HighsMipSolver& mipsolver);
+  HIGHS_EXPORT void extractObjCliques(HighsMipSolver& mipsolver);
 
-  void vertexInfeasible(HighsDomain& globaldom, HighsInt col, HighsInt val);
+  HIGHS_EXPORT void vertexInfeasible(HighsDomain& globaldom, HighsInt col, HighsInt val);
 
   bool haveCommonClique(CliqueVar v1, CliqueVar v2) {
     if (v1.col == v2.col) return false;
@@ -277,7 +277,7 @@ class HighsCliqueTable {
     return c;
   }
 
-  void separateCliques(const HighsMipSolver& mipsolver,
+  HIGHS_EXPORT void separateCliques(const HighsMipSolver& mipsolver,
                        const std::vector<double>& sol, HighsCutPool& cutpool,
                        double feastol);
 
@@ -285,26 +285,26 @@ class HighsCliqueTable {
       const std::vector<double>& sol, const HighsDomain& globaldom,
       double feastol);
 
-  void cleanupFixed(HighsDomain& globaldom);
+  HIGHS_EXPORT void cleanupFixed(HighsDomain& globaldom);
 
-  void addImplications(HighsDomain& domain, HighsInt col, HighsInt val);
+  HIGHS_EXPORT void addImplications(HighsDomain& domain, HighsInt col, HighsInt val);
 
-  HighsInt getNumImplications(HighsInt col);
+  HIGHS_EXPORT HighsInt getNumImplications(HighsInt col);
 
-  HighsInt getNumImplications(HighsInt col, bool val);
+  HIGHS_EXPORT HighsInt getNumImplications(HighsInt col, bool val);
 
-  void runCliqueMerging(HighsDomain& globaldomain);
+  HIGHS_EXPORT void runCliqueMerging(HighsDomain& globaldomain);
 
-  void runCliqueMerging(HighsDomain& globaldomain,
+  HIGHS_EXPORT void runCliqueMerging(HighsDomain& globaldomain,
                         std::vector<CliqueVar>& clique, bool equation = false);
 
-  void rebuild(HighsInt ncols,
+  HIGHS_EXPORT void rebuild(HighsInt ncols,
                const presolve::HighsPostsolveStack& postSolveStack,
                const HighsDomain& globaldomain,
                const std::vector<HighsInt>& cIndex,
                const std::vector<HighsInt>& rIndex);
 
-  void buildFrom(const HighsLp* origModel, const HighsCliqueTable& init);
+  HIGHS_EXPORT void buildFrom(const HighsLp* origModel, const HighsCliqueTable& init);
 
   HighsInt numCliques() const { return cliques.size() - freeslots.size(); }
 

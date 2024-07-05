@@ -24,7 +24,7 @@
 
 using std::fabs;
 
-HighsStatus assessHessian(HighsHessian& hessian, const HighsOptions& options) {
+HIGHS_EXPORT HighsStatus assessHessian(HighsHessian& hessian, const HighsOptions& options) {
   HighsStatus return_status = HighsStatus::kOk;
   HighsStatus call_status;
 
@@ -110,7 +110,7 @@ HighsStatus assessHessian(HighsHessian& hessian, const HighsOptions& options) {
   return return_status;
 }
 
-void completeHessianDiagonal(const HighsOptions& options,
+HIGHS_EXPORT void completeHessianDiagonal(const HighsOptions& options,
                              HighsHessian& hessian) {
   // Count the number of missing diagonal entries
   HighsInt num_missing_diagonal_entries = 0;
@@ -176,7 +176,7 @@ void completeHessianDiagonal(const HighsOptions& options,
   assert(to_iEl == 0);
 }
 
-bool okHessianDiagonal(const HighsOptions& options, HighsHessian& hessian,
+HIGHS_EXPORT bool okHessianDiagonal(const HighsOptions& options, HighsHessian& hessian,
                        const ObjSense sense) {
   double min_diagonal_value = kHighsInf;
   double max_diagonal_value = -kHighsInf;
@@ -216,7 +216,7 @@ bool okHessianDiagonal(const HighsOptions& options, HighsHessian& hessian,
   return !certainly_not_positive_semidefinite;
 }
 
-HighsStatus extractTriangularHessian(const HighsOptions& options,
+HIGHS_EXPORT HighsStatus extractTriangularHessian(const HighsOptions& options,
                                      HighsHessian& hessian) {
   // Viewing the Hessian column-wise, remove any entries in the strict
   // upper triangle
@@ -259,7 +259,7 @@ HighsStatus extractTriangularHessian(const HighsOptions& options,
   return return_status;
 }
 
-void triangularToSquareHessian(const HighsHessian& hessian,
+HIGHS_EXPORT void triangularToSquareHessian(const HighsHessian& hessian,
                                vector<HighsInt>& start, vector<HighsInt>& index,
                                vector<double>& value) {
   const HighsInt dim = hessian.dim_;
@@ -316,7 +316,7 @@ void triangularToSquareHessian(const HighsHessian& hessian,
     start[iCol + 1] = start[iCol] + length[iCol];
 }
 
-HighsStatus normaliseHessian(const HighsOptions& options,
+HIGHS_EXPORT HighsStatus normaliseHessian(const HighsOptions& options,
                              HighsHessian& hessian) {
   // Only relevant for a Hessian with format HessianFormat::kSquare
   assert(hessian.format_ == HessianFormat::kSquare);
@@ -475,7 +475,7 @@ HighsStatus normaliseHessian(const HighsOptions& options,
   return return_status;
 }
 
-void completeHessian(const HighsInt full_dim, HighsHessian& hessian) {
+HIGHS_EXPORT void completeHessian(const HighsInt full_dim, HighsHessian& hessian) {
   // Ensure that any non-zero Hessian of dimension less than the
   // number of columns in the model is completed with explicit zero
   // diagonal entries
@@ -493,7 +493,7 @@ void completeHessian(const HighsInt full_dim, HighsHessian& hessian) {
   assert(HighsInt(hessian.start_.size()) == hessian.dim_ + 1);
 }
 
-void reportHessian(const HighsLogOptions& log_options, const HighsInt dim,
+HIGHS_EXPORT void reportHessian(const HighsLogOptions& log_options, const HighsInt dim,
                    const HighsInt num_nz, const HighsInt* start,
                    const HighsInt* index, const double* value) {
   if (dim <= 0) return;

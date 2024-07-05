@@ -20,7 +20,7 @@
 enum class HighsLoadOptionsStatus { kError = -1, kOk = 0, kEmpty = 1 };
 
 // For extended options to be parsed from filename
-HighsLoadOptionsStatus loadOptionsFromFile(
+HIGHS_EXPORT HighsLoadOptionsStatus loadOptionsFromFile(
     const HighsLogOptions& report_log_options, HighsOptions& options,
     const std::string filename);
 

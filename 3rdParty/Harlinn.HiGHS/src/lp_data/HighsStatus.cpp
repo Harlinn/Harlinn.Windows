@@ -12,7 +12,7 @@
 
 #include <cassert>
 
-std::string highsStatusToString(HighsStatus status) {
+HIGHS_EXPORT std::string highsStatusToString(HighsStatus status) {
   switch (status) {
     case HighsStatus::kOk:
       return "OK";
@@ -26,7 +26,7 @@ std::string highsStatusToString(HighsStatus status) {
   }
 }
 
-HighsStatus interpretCallStatus(const HighsLogOptions log_options,
+HIGHS_EXPORT HighsStatus interpretCallStatus(const HighsLogOptions log_options,
                                 const HighsStatus call_status,
                                 const HighsStatus from_return_status,
                                 const std::string& message) {
@@ -39,7 +39,7 @@ HighsStatus interpretCallStatus(const HighsLogOptions log_options,
   return to_return_status;
 }
 
-HighsStatus worseStatus(const HighsStatus status0, const HighsStatus status1) {
+HIGHS_EXPORT HighsStatus worseStatus(const HighsStatus status0, const HighsStatus status1) {
   HighsStatus return_status = HighsStatus::kError;
   if (status0 == HighsStatus::kError || status1 == HighsStatus::kError)
     return_status = HighsStatus::kError;

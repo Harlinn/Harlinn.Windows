@@ -27,8 +27,8 @@ class HighsModel {
  public:
   HighsLp lp_;
   HighsHessian hessian_;
-  bool operator==(const HighsModel& model) const;
-  bool equalButForNames(const HighsModel& model) const;
+  HIGHS_EXPORT bool operator==(const HighsModel& model) const;
+  HIGHS_EXPORT bool equalButForNames(const HighsModel& model) const;
   bool isQp() const { return (this->hessian_.dim_ != 0); }
   bool isMip() const { return this->lp_.isMip(); }
   bool isEmpty() const {
@@ -38,14 +38,14 @@ class HighsModel {
     return this->lp_.needsMods(infinite_cost);
   }
   bool hasMods() const { return this->lp_.hasMods(); }
-  bool userCostScaleOk(const HighsInt user_cost_scale,
+  HIGHS_EXPORT bool userCostScaleOk(const HighsInt user_cost_scale,
                        const double small_matrix_value,
                        const double large_matrix_value,
                        const double infinite_cost) const;
-  void userCostScale(const HighsInt user_cost_scale);
-  void clear();
-  double objectiveValue(const std::vector<double>& solution) const;
-  void objectiveGradient(const std::vector<double>& solution,
+  HIGHS_EXPORT void userCostScale(const HighsInt user_cost_scale);
+  HIGHS_EXPORT void clear();
+  HIGHS_EXPORT double objectiveValue(const std::vector<double>& solution) const;
+  HIGHS_EXPORT void objectiveGradient(const std::vector<double>& solution,
                          std::vector<double>& gradient) const;
 };
 

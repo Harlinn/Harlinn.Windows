@@ -52,12 +52,12 @@ namespace free_format_parser {
 using wall_clock = std::chrono::high_resolution_clock;
 using time_point = wall_clock::time_point;
 
-double getWallTime();
+HIGHS_EXPORT double getWallTime();
 
 class HMpsFF {
  public:
   HMpsFF() {}
-  FreeFormatParserReturnCode loadProblem(const HighsLogOptions& log_options,
+  HIGHS_EXPORT FreeFormatParserReturnCode loadProblem(const HighsLogOptions& log_options,
                                          const std::string filename,
                                          HighsModel& model);
 
@@ -120,9 +120,9 @@ class HMpsFF {
   std::vector<bool> has_row_entry_;
 
   /// load LP from MPS file as transposed triplet matrix
-  HighsInt parseFile(std::string filename);
-  HighsInt fillMatrix(const HighsLogOptions& log_options);
-  HighsInt fillHessian(const HighsLogOptions& log_options);
+  HIGHS_EXPORT HighsInt parseFile(std::string filename);
+  HIGHS_EXPORT HighsInt fillMatrix(const HighsLogOptions& log_options);
+  HIGHS_EXPORT HighsInt fillHessian(const HighsLogOptions& log_options);
 
   const bool kAnyFirstNonBlankAsStarImpliesComment = false;
   /// how to treat variables that appear in COLUMNS section first
@@ -189,45 +189,45 @@ class HMpsFF {
 
   mutable std::string section_args;
 
-  FreeFormatParserReturnCode parse(const HighsLogOptions& log_options,
+  HIGHS_EXPORT FreeFormatParserReturnCode parse(const HighsLogOptions& log_options,
                                    const std::string& filename);
   // Checks first word of strline and wraps it by it_begin and it_end
-  HMpsFF::Parsekey checkFirstWord(std::string& strline, size_t& start,
+  HIGHS_EXPORT HMpsFF::Parsekey checkFirstWord(std::string& strline, size_t& start,
                                   size_t& end, std::string& word) const;
 
   // Get index of column from column name, possibly adding new column
   // if no index is found
-  HighsInt getColIdx(const std::string& colname, const bool add_if_new = true);
+  HIGHS_EXPORT HighsInt getColIdx(const std::string& colname, const bool add_if_new = true);
 
-  HMpsFF::Parsekey parseDefault(const HighsLogOptions& log_options,
+  HIGHS_EXPORT HMpsFF::Parsekey parseDefault(const HighsLogOptions& log_options,
                                 std::istream& file);
-  HMpsFF::Parsekey parseObjsense(const HighsLogOptions& log_options,
+  HIGHS_EXPORT HMpsFF::Parsekey parseObjsense(const HighsLogOptions& log_options,
                                  std::istream& file);
-  HMpsFF::Parsekey parseRows(const HighsLogOptions& log_options,
+  HIGHS_EXPORT HMpsFF::Parsekey parseRows(const HighsLogOptions& log_options,
                              std::istream& file);
-  HMpsFF::Parsekey parseCols(const HighsLogOptions& log_options,
+  HIGHS_EXPORT HMpsFF::Parsekey parseCols(const HighsLogOptions& log_options,
                              std::istream& file);
-  HMpsFF::Parsekey parseRhs(const HighsLogOptions& log_options,
+  HIGHS_EXPORT HMpsFF::Parsekey parseRhs(const HighsLogOptions& log_options,
                             std::istream& file);
-  HMpsFF::Parsekey parseRanges(const HighsLogOptions& log_options,
+  HIGHS_EXPORT HMpsFF::Parsekey parseRanges(const HighsLogOptions& log_options,
                                std::istream& file);
-  HMpsFF::Parsekey parseBounds(const HighsLogOptions& log_options,
+  HIGHS_EXPORT HMpsFF::Parsekey parseBounds(const HighsLogOptions& log_options,
                                std::istream& file);
-  HMpsFF::Parsekey parseHessian(const HighsLogOptions& log_options,
+  HIGHS_EXPORT HMpsFF::Parsekey parseHessian(const HighsLogOptions& log_options,
                                 std::istream& file,
                                 const HMpsFF::Parsekey keyword);
-  HMpsFF::Parsekey parseQuadRows(const HighsLogOptions& log_options,
+  HIGHS_EXPORT HMpsFF::Parsekey parseQuadRows(const HighsLogOptions& log_options,
                                  std::istream& file,
                                  const HMpsFF::Parsekey keyword);
-  HMpsFF::Parsekey parseCones(const HighsLogOptions& log_options,
+  HIGHS_EXPORT HMpsFF::Parsekey parseCones(const HighsLogOptions& log_options,
                               std::istream& file);
-  HMpsFF::Parsekey parseSos(const HighsLogOptions& log_options,
+  HIGHS_EXPORT HMpsFF::Parsekey parseSos(const HighsLogOptions& log_options,
                             std::istream& file, const HMpsFF::Parsekey keyword);
 
-  bool cannotParseSection(const HighsLogOptions& log_options,
+  HIGHS_EXPORT bool cannotParseSection(const HighsLogOptions& log_options,
                           const HMpsFF::Parsekey keyword);
-  bool allZeroed(const std::vector<double>& value);
-  double getValue(const std::string& word, bool& is_nan,
+  HIGHS_EXPORT bool allZeroed(const std::vector<double>& value);
+  HIGHS_EXPORT double getValue(const std::string& word, bool& is_nan,
                   const HighsInt id = -1) const;
 };
 

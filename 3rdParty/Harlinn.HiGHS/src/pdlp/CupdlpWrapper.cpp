@@ -23,14 +23,14 @@ void getUserParamsFromOptions(const HighsOptions& options,
 void analysePdlpSolution(const HighsOptions& options, const HighsLp& lp,
                          const HighsSolution& highs_solution);
 
-HighsStatus solveLpCupdlp(HighsLpSolverObject& solver_object) {
+HIGHS_EXPORT HighsStatus solveLpCupdlp(HighsLpSolverObject& solver_object) {
   return solveLpCupdlp(solver_object.options_, solver_object.timer_,
                        solver_object.lp_, solver_object.basis_,
                        solver_object.solution_, solver_object.model_status_,
                        solver_object.highs_info_, solver_object.callback_);
 }
 
-HighsStatus solveLpCupdlp(const HighsOptions& options, HighsTimer& timer,
+HIGHS_EXPORT HighsStatus solveLpCupdlp(const HighsOptions& options, HighsTimer& timer,
                           const HighsLp& lp, HighsBasis& highs_basis,
                           HighsSolution& highs_solution,
                           HighsModelStatus& model_status, HighsInfo& highs_info,
@@ -210,7 +210,7 @@ HighsStatus solveLpCupdlp(const HighsOptions& options, HighsTimer& timer,
   return HighsStatus::kOk;
 }
 
-int formulateLP_highs(const HighsLp& lp, double** cost, int* nCols, int* nRows,
+HIGHS_EXPORT int formulateLP_highs(const HighsLp& lp, double** cost, int* nCols, int* nRows,
                       int* nnz, int* nEqs, int** csc_beg, int** csc_idx,
                       double** csc_val, double** rhs, double** lower,
                       double** upper, double* offset, double* sense_origin,
@@ -379,7 +379,7 @@ int formulateLP_highs(const HighsLp& lp, double** cost, int* nCols, int* nRows,
   return retcode;
 }
 
-cupdlp_retcode problem_create(CUPDLPproblem** prob) {
+HIGHS_EXPORT cupdlp_retcode problem_create(CUPDLPproblem** prob) {
   cupdlp_retcode retcode = RETCODE_OK;
 
   cupdlp_init_problem(*prob, 1);
@@ -395,7 +395,7 @@ cupdlp_retcode problem_create(CUPDLPproblem** prob) {
 //   return retcode;
 // }
 
-cupdlp_retcode data_alloc(CUPDLPdata* data, cupdlp_int nRows, cupdlp_int nCols,
+HIGHS_EXPORT cupdlp_retcode data_alloc(CUPDLPdata* data, cupdlp_int nRows, cupdlp_int nCols,
                           void* matrix, CUPDLP_MATRIX_FORMAT src_matrix_format,
                           CUPDLP_MATRIX_FORMAT dst_matrix_format) {
   cupdlp_retcode retcode = RETCODE_OK;
@@ -441,7 +441,7 @@ cupdlp_retcode data_alloc(CUPDLPdata* data, cupdlp_int nRows, cupdlp_int nCols,
   return retcode;
 }
 
-cupdlp_retcode problem_alloc(
+HIGHS_EXPORT cupdlp_retcode problem_alloc(
     CUPDLPproblem* prob, cupdlp_int nRows, cupdlp_int nCols, cupdlp_int nEqs,
     cupdlp_float* cost, cupdlp_float offset, cupdlp_float sense_origin,
     void* matrix, CUPDLP_MATRIX_FORMAT src_matrix_format,
@@ -495,19 +495,19 @@ cupdlp_retcode problem_alloc(
 
 // ToDo: Why can linker not pick up infNorm, cupdlp_haslb and
 // cupdlp_hasub from pdlp/cupdlp/cupdlp_linalg.c?
-double infNorm(double* x, cupdlp_int n) {
+HIGHS_EXPORT double infNorm(double* x, cupdlp_int n) {
   double norm = 0;
   for (HighsInt iX = 0; iX < n; iX++) norm = std::max(std::fabs(x[iX]), norm);
   return norm;
 }
-void cupdlp_haslb(cupdlp_float* haslb, const cupdlp_float* lb,
+HIGHS_EXPORT void cupdlp_haslb(cupdlp_float* haslb, const cupdlp_float* lb,
                   const cupdlp_float bound, const cupdlp_int len) {
   for (int i = 0; i < len; i++) {
     haslb[i] = lb[i] > bound ? 1.0 : 0.0;
   }
 }
 
-void cupdlp_hasub(cupdlp_float* hasub, const cupdlp_float* ub,
+HIGHS_EXPORT void cupdlp_hasub(cupdlp_float* hasub, const cupdlp_float* ub,
                   const cupdlp_float bound, const cupdlp_int len) {
   for (int i = 0; i < len; i++) {
     hasub[i] = ub[i] < bound ? 1.0 : 0.0;
@@ -676,7 +676,7 @@ void analysePdlpSolution(const HighsOptions& options, const HighsLp& lp,
          max_dual_infeasibility);
 }
 
-cupdlp_int getCupdlpLogLevel(const HighsOptions& options) {
+HIGHS_EXPORT cupdlp_int getCupdlpLogLevel(const HighsOptions& options) {
   if (options.output_flag) {
     if (options.log_dev_level) {
       return 2;

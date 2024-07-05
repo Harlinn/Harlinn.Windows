@@ -166,7 +166,7 @@ double twoNorm(double *x, cupdlp_int n) { return nrm2(n, x, 1); }
 
 double twoNormSquared(double *x, cupdlp_int n) { return pow(twoNorm(x, n), 2); }
 
-double infNorm(double *x, cupdlp_int n) { return nrminf(n, x, 1); }
+HIGHS_EXPORT double infNorm(double *x, cupdlp_int n) { return nrminf(n, x, 1); }
 
 /*------------------------ new added --------------------*/
 double GenNorm(double *x, cupdlp_int n, cupdlp_float p) {
@@ -725,7 +725,7 @@ void cupdlp_projNeg(cupdlp_float *x, const cupdlp_int len) {
   cupdlp_projSameub(x, 0.0, len);
 }
 
-void cupdlp_haslb(cupdlp_float *haslb, const cupdlp_float *lb,
+HIGHS_EXPORT void cupdlp_haslb(cupdlp_float *haslb, const cupdlp_float *lb,
                   const cupdlp_float bound, const cupdlp_int len) {
 #ifndef CUPDLP_CPU
   cupdlp_haslb_cuda(haslb, lb, bound, len);
@@ -734,7 +734,7 @@ void cupdlp_haslb(cupdlp_float *haslb, const cupdlp_float *lb,
 #endif
 }
 
-void cupdlp_hasub(cupdlp_float *hasub, const cupdlp_float *ub,
+HIGHS_EXPORT void cupdlp_hasub(cupdlp_float *hasub, const cupdlp_float *ub,
                   const cupdlp_float bound, const cupdlp_int len) {
 #ifndef CUPDLP_CPU
   cupdlp_hasub_cuda(hasub, ub, bound, len);

@@ -59,43 +59,43 @@ class HighsLp {
   bool has_infinite_cost_;
   HighsLpMods mods_;
 
-  bool operator==(const HighsLp& lp) const;
-  bool equalButForNames(const HighsLp& lp) const;
-  bool equalNames(const HighsLp& lp) const;
-  bool isMip() const;
-  bool hasSemiVariables() const;
-  bool hasInfiniteCost(const double infinite_cost) const;
-  bool hasMods() const;
-  bool needsMods(const double infinite_cost) const;
-  double objectiveValue(const std::vector<double>& solution) const;
-  HighsCDouble objectiveCDoubleValue(const std::vector<double>& solution) const;
-  void setMatrixDimensions();
-  void setFormat(const MatrixFormat format);
-  void ensureColwise() { this->a_matrix_.ensureColwise(); };
-  void ensureRowwise() { this->a_matrix_.ensureRowwise(); };
-  void clearScaling();
-  void resetScale();
-  void clearScale();
-  void applyScale();
-  void unapplyScale();
-  void moveBackLpAndUnapplyScaling(HighsLp& lp);
-  bool userBoundScaleOk(const HighsInt user_bound_scale,
+  HIGHS_EXPORT bool operator==(const HighsLp& lp) const;
+  HIGHS_EXPORT bool equalButForNames(const HighsLp& lp) const;
+  HIGHS_EXPORT bool equalNames(const HighsLp& lp) const;
+  HIGHS_EXPORT bool isMip() const;
+  HIGHS_EXPORT bool hasSemiVariables() const;
+  HIGHS_EXPORT bool hasInfiniteCost(const double infinite_cost) const;
+  HIGHS_EXPORT bool hasMods() const;
+  HIGHS_EXPORT bool needsMods(const double infinite_cost) const;
+  HIGHS_EXPORT double objectiveValue(const std::vector<double>& solution) const;
+  HIGHS_EXPORT HighsCDouble objectiveCDoubleValue(const std::vector<double>& solution) const;
+  HIGHS_EXPORT void setMatrixDimensions();
+  HIGHS_EXPORT void setFormat(const MatrixFormat format);
+  HIGHS_EXPORT void ensureColwise() { this->a_matrix_.ensureColwise(); };
+  HIGHS_EXPORT void ensureRowwise() { this->a_matrix_.ensureRowwise(); };
+  HIGHS_EXPORT void clearScaling();
+  HIGHS_EXPORT void resetScale();
+  HIGHS_EXPORT void clearScale();
+  HIGHS_EXPORT void applyScale();
+  HIGHS_EXPORT void unapplyScale();
+  HIGHS_EXPORT void moveBackLpAndUnapplyScaling(HighsLp& lp);
+  HIGHS_EXPORT bool userBoundScaleOk(const HighsInt user_bound_scale,
                         const double infinite_bound) const;
-  void userBoundScale(const HighsInt user_bound_scale);
-  bool userCostScaleOk(const HighsInt user_cost_scale,
+  HIGHS_EXPORT void userBoundScale(const HighsInt user_bound_scale);
+  HIGHS_EXPORT bool userCostScaleOk(const HighsInt user_cost_scale,
                        const double infinite_cost) const;
-  void userCostScale(const HighsInt user_cost_scale);
-  void exactResize();
-  void addColNames(const std::string name, const HighsInt num_new_col = 1);
-  void addRowNames(const std::string name, const HighsInt num_new_row = 1);
-  void deleteColsFromVectors(HighsInt& new_num_col,
+  HIGHS_EXPORT void userCostScale(const HighsInt user_cost_scale);
+  HIGHS_EXPORT void exactResize();
+  HIGHS_EXPORT void addColNames(const std::string name, const HighsInt num_new_col = 1);
+  HIGHS_EXPORT void addRowNames(const std::string name, const HighsInt num_new_row = 1);
+  HIGHS_EXPORT void deleteColsFromVectors(HighsInt& new_num_col,
                              const HighsIndexCollection& index_collection);
-  void deleteRowsFromVectors(HighsInt& new_num_row,
+  HIGHS_EXPORT void deleteRowsFromVectors(HighsInt& new_num_row,
                              const HighsIndexCollection& index_collection);
-  void deleteCols(const HighsIndexCollection& index_collection);
-  void deleteRows(const HighsIndexCollection& index_collection);
-  void unapplyMods();
-  void clear();
+  HIGHS_EXPORT void deleteCols(const HighsIndexCollection& index_collection);
+  HIGHS_EXPORT void deleteRows(const HighsIndexCollection& index_collection);
+  HIGHS_EXPORT void unapplyMods();
+  HIGHS_EXPORT void clear();
 };
 
 #endif

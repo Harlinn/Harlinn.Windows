@@ -138,50 +138,50 @@ class HighsSearch {
     reliableatnode[col] |= kDownReliable;
   }
 
-  bool orbitsValidInChildNode(const HighsDomainChange& branchChg) const;
+  HIGHS_EXPORT bool orbitsValidInChildNode(const HighsDomainChange& branchChg) const;
 
  public:
-  HighsSearch(HighsMipSolver& mipsolver, HighsPseudocost& pseudocost);
+  HIGHS_EXPORT HighsSearch(HighsMipSolver& mipsolver, HighsPseudocost& pseudocost);
 
-  void setRINSNeighbourhood(const std::vector<double>& basesol,
+  HIGHS_EXPORT void setRINSNeighbourhood(const std::vector<double>& basesol,
                             const std::vector<double>& relaxsol);
 
-  void setRENSNeighbourhood(const std::vector<double>& lpsol);
+  HIGHS_EXPORT void setRENSNeighbourhood(const std::vector<double>& lpsol);
 
-  double getCutoffBound() const;
+  HIGHS_EXPORT double getCutoffBound() const;
 
   void setLpRelaxation(HighsLpRelaxation* lp) { this->lp = lp; }
 
-  double checkSol(const std::vector<double>& sol, bool& integerfeasible) const;
+  HIGHS_EXPORT double checkSol(const std::vector<double>& sol, bool& integerfeasible) const;
 
-  void createNewNode();
+  HIGHS_EXPORT void createNewNode();
 
-  void cutoffNode();
+  HIGHS_EXPORT void cutoffNode();
 
-  void branchDownwards(HighsInt col, double newub, double branchpoint);
+  HIGHS_EXPORT void branchDownwards(HighsInt col, double newub, double branchpoint);
 
-  void branchUpwards(HighsInt col, double newlb, double branchpoint);
+  HIGHS_EXPORT void branchUpwards(HighsInt col, double newlb, double branchpoint);
 
-  void setMinReliable(HighsInt minreliable);
+  HIGHS_EXPORT void setMinReliable(HighsInt minreliable);
 
   void setHeuristic(bool inheuristic) {
     this->inheuristic = inheuristic;
     if (inheuristic) childselrule = ChildSelectionRule::kHybridInferenceCost;
   }
 
-  void addBoundExceedingConflict();
+  HIGHS_EXPORT void addBoundExceedingConflict();
 
-  void resetLocalDomain();
+  HIGHS_EXPORT void resetLocalDomain();
 
-  int64_t getHeuristicLpIterations() const;
+  HIGHS_EXPORT int64_t getHeuristicLpIterations() const;
 
-  int64_t getTotalLpIterations() const;
+  HIGHS_EXPORT int64_t getTotalLpIterations() const;
 
-  int64_t getLocalLpIterations() const;
+  HIGHS_EXPORT int64_t getLocalLpIterations() const;
 
-  int64_t getLocalNodes() const;
+  HIGHS_EXPORT int64_t getLocalNodes() const;
 
-  int64_t getStrongBranchingLpIterations() const;
+  HIGHS_EXPORT int64_t getStrongBranchingLpIterations() const;
 
   bool hasNode() const { return !nodestack.empty(); }
 
@@ -193,42 +193,42 @@ class HighsSearch {
 
   HighsInt getCurrentDepth() const { return nodestack.size() + depthoffset; }
 
-  void openNodesToQueue(HighsNodeQueue& nodequeue);
+  HIGHS_EXPORT void openNodesToQueue(HighsNodeQueue& nodequeue);
 
-  void currentNodeToQueue(HighsNodeQueue& nodequeue);
+  HIGHS_EXPORT void currentNodeToQueue(HighsNodeQueue& nodequeue);
 
-  void flushStatistics();
+  HIGHS_EXPORT void flushStatistics();
 
-  void installNode(HighsNodeQueue::OpenNode&& node);
+  HIGHS_EXPORT void installNode(HighsNodeQueue::OpenNode&& node);
 
-  void addInfeasibleConflict();
+  HIGHS_EXPORT void addInfeasibleConflict();
 
-  HighsInt selectBranchingCandidate(int64_t maxSbIters, double& downNodeLb,
+  HIGHS_EXPORT HighsInt selectBranchingCandidate(int64_t maxSbIters, double& downNodeLb,
                                     double& upNodeLb);
 
-  void evalUnreliableBranchCands();
+  HIGHS_EXPORT void evalUnreliableBranchCands();
 
-  const NodeData* getParentNodeData() const;
+  HIGHS_EXPORT const NodeData* getParentNodeData() const;
 
-  NodeResult evaluateNode();
+  HIGHS_EXPORT NodeResult evaluateNode();
 
-  NodeResult branch();
+  HIGHS_EXPORT NodeResult branch();
 
   /// backtrack one level in DFS manner
-  bool backtrack(bool recoverBasis = true);
+  HIGHS_EXPORT bool backtrack(bool recoverBasis = true);
 
   /// backtrack an unspecified amount of depth level until the next
   /// node that seems worthwhile to continue the plunge. Put unpromising nodes
   /// to the node queue
-  bool backtrackPlunge(HighsNodeQueue& nodequeue);
+  HIGHS_EXPORT bool backtrackPlunge(HighsNodeQueue& nodequeue);
 
   /// for heuristics. Will discard nodes above targetDepth regardless of their
   /// status
-  bool backtrackUntilDepth(HighsInt targetDepth);
+  HIGHS_EXPORT bool backtrackUntilDepth(HighsInt targetDepth);
 
-  void printDisplayLine(char first, bool header = false);
+  HIGHS_EXPORT void printDisplayLine(char first, bool header = false);
 
-  NodeResult dive();
+  HIGHS_EXPORT NodeResult dive();
 
   HighsDomain& getLocalDomain() { return localdom; }
 
@@ -238,7 +238,7 @@ class HighsSearch {
 
   const HighsPseudocost& getPseudoCost() const { return pseudocost; }
 
-  void solveDepthFirst(int64_t maxbacktracks = 1);
+  HIGHS_EXPORT void solveDepthFirst(int64_t maxbacktracks = 1);
 };
 
 #endif

@@ -21,14 +21,14 @@
 
 using std::min;
 
-HighsStatus solveLpIpx(HighsLpSolverObject& solver_object) {
+HIGHS_EXPORT HighsStatus solveLpIpx(HighsLpSolverObject& solver_object) {
   return solveLpIpx(solver_object.options_, solver_object.timer_,
                     solver_object.lp_, solver_object.basis_,
                     solver_object.solution_, solver_object.model_status_,
                     solver_object.highs_info_, solver_object.callback_);
 }
 
-HighsStatus solveLpIpx(const HighsOptions& options, HighsTimer& timer,
+HIGHS_EXPORT HighsStatus solveLpIpx(const HighsOptions& options, HighsTimer& timer,
                        const HighsLp& lp, HighsBasis& highs_basis,
                        HighsSolution& highs_solution,
                        HighsModelStatus& model_status, HighsInfo& highs_info,
@@ -389,7 +389,7 @@ HighsStatus solveLpIpx(const HighsOptions& options, HighsTimer& timer,
   return return_status;
 }
 
-void fillInIpxData(const HighsLp& lp, ipx::Int& num_col, ipx::Int& num_row,
+HIGHS_EXPORT void fillInIpxData(const HighsLp& lp, ipx::Int& num_col, ipx::Int& num_row,
                    std::vector<double>& obj, std::vector<double>& col_lb,
                    std::vector<double>& col_ub, std::vector<ipx::Int>& Ap,
                    std::vector<ipx::Int>& Ai, std::vector<double>& Ax,
@@ -527,7 +527,7 @@ void fillInIpxData(const HighsLp& lp, ipx::Int& num_col, ipx::Int& num_row,
   obj.insert(obj.end(), num_slack, 0);
 }
 
-HighsStatus reportIpxSolveStatus(const HighsOptions& options,
+HIGHS_EXPORT HighsStatus reportIpxSolveStatus(const HighsOptions& options,
                                  const ipx::Int solve_status,
                                  const ipx::Int error_flag) {
   if (solve_status == IPX_STATUS_solved) {
@@ -571,7 +571,7 @@ HighsStatus reportIpxSolveStatus(const HighsOptions& options,
   return HighsStatus::kError;
 }
 
-HighsStatus reportIpxIpmCrossoverStatus(const HighsOptions& options,
+HIGHS_EXPORT HighsStatus reportIpxIpmCrossoverStatus(const HighsOptions& options,
                                         const ipx::Int status,
                                         const bool ipm_status) {
   std::string method_name;
@@ -638,7 +638,7 @@ HighsStatus reportIpxIpmCrossoverStatus(const HighsOptions& options,
   return HighsStatus::kError;
 }
 
-bool ipxStatusError(const bool status_error, const HighsOptions& options,
+HIGHS_EXPORT bool ipxStatusError(const bool status_error, const HighsOptions& options,
                     std::string message, const int value) {
   if (status_error) {
     if (value < 0) {
@@ -654,7 +654,7 @@ bool ipxStatusError(const bool status_error, const HighsOptions& options,
   return status_error;
 }
 
-bool illegalIpxSolvedStatus(const ipx::Info& ipx_info,
+HIGHS_EXPORT bool illegalIpxSolvedStatus(const ipx::Info& ipx_info,
                             const HighsOptions& options) {
   bool found_illegal_status = false;
   //========
@@ -738,7 +738,7 @@ bool illegalIpxSolvedStatus(const ipx::Info& ipx_info,
   return found_illegal_status;
 }
 
-bool illegalIpxStoppedIpmStatus(const ipx::Info& ipx_info,
+HIGHS_EXPORT bool illegalIpxStoppedIpmStatus(const ipx::Info& ipx_info,
                                 const HighsOptions& options) {
   bool found_illegal_status = false;
   // Cannot stop and be optimal
@@ -778,7 +778,7 @@ bool illegalIpxStoppedIpmStatus(const ipx::Info& ipx_info,
   return found_illegal_status;
 }
 
-bool illegalIpxStoppedCrossoverStatus(const ipx::Info& ipx_info,
+HIGHS_EXPORT bool illegalIpxStoppedCrossoverStatus(const ipx::Info& ipx_info,
                                       const HighsOptions& options) {
   bool found_illegal_status = false;
   // Cannot stop and be optimal
@@ -832,7 +832,7 @@ bool illegalIpxStoppedCrossoverStatus(const ipx::Info& ipx_info,
   return found_illegal_status;
 }
 
-void reportIpmNoProgress(const HighsOptions& options,
+HIGHS_EXPORT void reportIpmNoProgress(const HighsOptions& options,
                          const ipx::Info& ipx_info) {
   highsLogUser(options.log_options, HighsLogType::kWarning,
                "No progress: primal objective value       = %11.4g\n",
@@ -845,7 +845,7 @@ void reportIpmNoProgress(const HighsOptions& options,
                ipx_info.abs_dresidual);
 }
 
-void getHighsNonVertexSolution(const HighsOptions& options, const HighsLp& lp,
+HIGHS_EXPORT void getHighsNonVertexSolution(const HighsOptions& options, const HighsLp& lp,
                                const ipx::Int num_col, const ipx::Int num_row,
                                const std::vector<double>& rhs,
                                const std::vector<char>& constraint_type,
@@ -872,7 +872,7 @@ void getHighsNonVertexSolution(const HighsOptions& options, const HighsLp& lp,
                              highs_solution);
 }
 
-void reportSolveData(const HighsLogOptions& log_options,
+HIGHS_EXPORT void reportSolveData(const HighsLogOptions& log_options,
                      const ipx::Info& ipx_info) {
   highsLogDev(log_options, HighsLogType::kInfo, "\nIPX Solve data\n");
   highsLogDev(log_options, HighsLogType::kInfo, "    IPX       status = %4d\n",

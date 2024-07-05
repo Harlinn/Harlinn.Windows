@@ -50,7 +50,7 @@ static std::string infoEntryTypeToString(const HighsInfoType type) {
   }
 }
 
-InfoStatus getInfoIndex(const HighsLogOptions& report_log_options,
+HIGHS_EXPORT InfoStatus getInfoIndex(const HighsLogOptions& report_log_options,
                         const std::string& name,
                         const std::vector<InfoRecord*>& info_records,
                         HighsInt& index) {
@@ -62,7 +62,7 @@ InfoStatus getInfoIndex(const HighsLogOptions& report_log_options,
   return InfoStatus::kUnknownInfo;
 }
 
-InfoStatus checkInfo(const HighsLogOptions& report_log_options,
+HIGHS_EXPORT InfoStatus checkInfo(const HighsLogOptions& report_log_options,
                      const std::vector<InfoRecord*>& info_records) {
   bool error_found = false;
   HighsInt num_info = info_records.size();
@@ -154,7 +154,7 @@ InfoStatus checkInfo(const HighsLogOptions& report_log_options,
 }
 
 #ifndef HIGHSINT64
-InfoStatus getLocalInfoValue(const HighsLogOptions& report_log_options,
+HIGHS_EXPORT InfoStatus getLocalInfoValue(const HighsLogOptions& report_log_options,
                              const std::string& name, const bool valid,
                              const std::vector<InfoRecord*>& info_records,
                              int64_t& value) {
@@ -177,7 +177,7 @@ InfoStatus getLocalInfoValue(const HighsLogOptions& report_log_options,
 }
 #endif
 
-InfoStatus getLocalInfoValue(const HighsLogOptions& report_log_options,
+HIGHS_EXPORT InfoStatus getLocalInfoValue(const HighsLogOptions& report_log_options,
                              const std::string& name, const bool valid,
                              const std::vector<InfoRecord*>& info_records,
                              HighsInt& value) {
@@ -216,7 +216,7 @@ InfoStatus getLocalInfoValue(const HighsLogOptions& report_log_options,
   return InfoStatus::kOk;
 }
 
-InfoStatus getLocalInfoValue(const HighsLogOptions& report_log_options,
+HIGHS_EXPORT InfoStatus getLocalInfoValue(const HighsLogOptions& report_log_options,
                              const std::string& name, const bool valid,
                              const std::vector<InfoRecord*>& info_records,
                              double& value) {
@@ -238,7 +238,7 @@ InfoStatus getLocalInfoValue(const HighsLogOptions& report_log_options,
   return InfoStatus::kOk;
 }
 
-InfoStatus getLocalInfoType(const HighsLogOptions& report_log_options,
+HIGHS_EXPORT InfoStatus getLocalInfoType(const HighsLogOptions& report_log_options,
                             const std::string& name,
                             const std::vector<InfoRecord*>& info_records,
                             HighsInfoType& type) {
@@ -250,7 +250,7 @@ InfoStatus getLocalInfoType(const HighsLogOptions& report_log_options,
   return InfoStatus::kOk;
 }
 
-HighsStatus writeInfoToFile(FILE* file, const bool valid,
+HIGHS_EXPORT HighsStatus writeInfoToFile(FILE* file, const bool valid,
                             const std::vector<InfoRecord*>& info_records,
                             const HighsFileType file_type) {
   const bool html_file = file_type == HighsFileType::kHtml;
@@ -279,7 +279,7 @@ HighsStatus writeInfoToFile(FILE* file, const bool valid,
   return HighsStatus::kOk;
 }
 
-void reportInfo(FILE* file, const std::vector<InfoRecord*>& info_records,
+HIGHS_EXPORT void reportInfo(FILE* file, const std::vector<InfoRecord*>& info_records,
                 const HighsFileType file_type) {
   const bool html_file = file_type == HighsFileType::kHtml;
   HighsInt num_info = info_records.size();
@@ -297,7 +297,7 @@ void reportInfo(FILE* file, const std::vector<InfoRecord*>& info_records,
   }
 }
 
-void reportInfo(FILE* file, const InfoRecordInt64& info,
+HIGHS_EXPORT void reportInfo(FILE* file, const InfoRecordInt64& info,
                 const HighsFileType file_type) {
   const bool html_file = file_type == HighsFileType::kHtml;
   const bool md_file = file_type == HighsFileType::kMd;
@@ -317,7 +317,7 @@ void reportInfo(FILE* file, const InfoRecordInt64& info,
   }
 }
 
-void reportInfo(FILE* file, const InfoRecordInt& info,
+HIGHS_EXPORT void reportInfo(FILE* file, const InfoRecordInt& info,
                 const HighsFileType file_type) {
   const bool html_file = file_type == HighsFileType::kHtml;
   const bool md_file = file_type == HighsFileType::kMd;
@@ -337,7 +337,7 @@ void reportInfo(FILE* file, const InfoRecordInt& info,
   }
 }
 
-void reportInfo(FILE* file, const InfoRecordDouble& info,
+HIGHS_EXPORT void reportInfo(FILE* file, const InfoRecordDouble& info,
                 const HighsFileType file_type) {
   const bool html_file = file_type == HighsFileType::kHtml;
   const bool md_file = file_type == HighsFileType::kMd;

@@ -25,7 +25,7 @@ double twoNorm(double *x, cupdlp_int n);
 
 double twoNormSquared(double *x, cupdlp_int n);
 
-double infNorm(double *x, cupdlp_int n);
+HIGHS_EXPORT double infNorm(double *x, cupdlp_int n);
 
 cupdlp_int infNormIndex(double *x, cupdlp_int n);
 
@@ -162,10 +162,10 @@ void cupdlp_projPos(cupdlp_float *x, const cupdlp_int len);
 /* xout = min(x, 0) */
 void cupdlp_projNeg(cupdlp_float *x, const cupdlp_int len);
 
-void cupdlp_haslb(cupdlp_float *haslb, const cupdlp_float *lb,
+HIGHS_EXPORT void cupdlp_haslb(cupdlp_float *haslb, const cupdlp_float *lb,
                   const cupdlp_float bound, const cupdlp_int len);
 
-void cupdlp_hasub(cupdlp_float *hasub, const cupdlp_float *ub,
+HIGHS_EXPORT void cupdlp_hasub(cupdlp_float *hasub, const cupdlp_float *ub,
                   const cupdlp_float bound, const cupdlp_int len);
 
 void cupdlp_filterlb(cupdlp_float *x, const cupdlp_float *lb,

@@ -15,12 +15,12 @@
 #define LP_DATA_HIGHSSOLVE_H_
 
 #include "lp_data/HighsModelUtils.h"
-HighsStatus solveLp(HighsLpSolverObject& solver_object, const string message);
-HighsStatus solveUnconstrainedLp(HighsLpSolverObject& solver_object);
-HighsStatus solveUnconstrainedLp(const HighsOptions& options, const HighsLp& lp,
+HIGHS_EXPORT HighsStatus solveLp(HighsLpSolverObject& solver_object, const string message);
+HIGHS_EXPORT HighsStatus solveUnconstrainedLp(HighsLpSolverObject& solver_object);
+HIGHS_EXPORT HighsStatus solveUnconstrainedLp(const HighsOptions& options, const HighsLp& lp,
                                  HighsModelStatus& model_status,
                                  HighsInfo& highs_info, HighsSolution& solution,
                                  HighsBasis& basis);
-void assessExcessiveBoundCost(const HighsLogOptions log_options,
+HIGHS_EXPORT void assessExcessiveBoundCost(const HighsLogOptions log_options,
                               const HighsModel& model);
 #endif  // LP_DATA_HIGHSSOLVE_H_

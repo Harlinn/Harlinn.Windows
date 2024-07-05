@@ -51,7 +51,7 @@
 /// relaxation by substituting bounds and aggregating rows
 class HighsModkSeparator : public HighsSeparator {
  public:
-  void separateLpSolution(HighsLpRelaxation& lpRelaxation,
+  HIGHS_EXPORT void separateLpSolution(HighsLpRelaxation& lpRelaxation,
                           HighsLpAggregator& lpAggregator,
                           HighsTransformedLp& transLp,
                           HighsCutPool& cutpool) override;

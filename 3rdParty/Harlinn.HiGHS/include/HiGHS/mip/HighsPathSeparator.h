@@ -28,7 +28,7 @@ class HighsPathSeparator : public HighsSeparator {
   HighsRandom randgen;
 
  public:
-  void separateLpSolution(HighsLpRelaxation& lpRelaxation,
+  HIGHS_EXPORT void separateLpSolution(HighsLpRelaxation& lpRelaxation,
                           HighsLpAggregator& lpAggregator,
                           HighsTransformedLp& transLp,
                           HighsCutPool& cutpool) override;

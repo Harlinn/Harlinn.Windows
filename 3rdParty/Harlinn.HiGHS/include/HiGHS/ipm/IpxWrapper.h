@@ -22,45 +22,45 @@
 #include "ipm/ipx/lp_solver.h"
 #include "lp_data/HighsSolution.h"
 
-HighsStatus solveLpIpx(HighsLpSolverObject& solver_object);
+HIGHS_EXPORT HighsStatus solveLpIpx(HighsLpSolverObject& solver_object);
 
-HighsStatus solveLpIpx(const HighsOptions& options, HighsTimer& timer,
+HIGHS_EXPORT HighsStatus solveLpIpx(const HighsOptions& options, HighsTimer& timer,
                        const HighsLp& lp, HighsBasis& highs_basis,
                        HighsSolution& highs_solution,
                        HighsModelStatus& model_status, HighsInfo& highs_info,
                        HighsCallback& callback);
 
-void fillInIpxData(const HighsLp& lp, ipx::Int& num_col, ipx::Int& num_row,
+HIGHS_EXPORT void fillInIpxData(const HighsLp& lp, ipx::Int& num_col, ipx::Int& num_row,
                    std::vector<double>& obj, std::vector<double>& col_lb,
                    std::vector<double>& col_ub, std::vector<ipx::Int>& Ap,
                    std::vector<ipx::Int>& Ai, std::vector<double>& Ax,
                    std::vector<double>& rhs,
                    std::vector<char>& constraint_type);
 
-HighsStatus reportIpxSolveStatus(const HighsOptions& options,
+HIGHS_EXPORT HighsStatus reportIpxSolveStatus(const HighsOptions& options,
                                  const ipx::Int solve_status,
                                  const ipx::Int error_flag);
 
-HighsStatus reportIpxIpmCrossoverStatus(const HighsOptions& options,
+HIGHS_EXPORT HighsStatus reportIpxIpmCrossoverStatus(const HighsOptions& options,
                                         const ipx::Int status,
                                         const bool ipm_status);
 
-bool ipxStatusError(const bool status_error, const HighsOptions& options,
+HIGHS_EXPORT bool ipxStatusError(const bool status_error, const HighsOptions& options,
                     std::string message, const int value = -1);
 
-bool illegalIpxSolvedStatus(const ipx::Info& ipx_info,
+HIGHS_EXPORT bool illegalIpxSolvedStatus(const ipx::Info& ipx_info,
                             const HighsOptions& options);
 
-bool illegalIpxStoppedIpmStatus(const ipx::Info& ipx_info,
+HIGHS_EXPORT bool illegalIpxStoppedIpmStatus(const ipx::Info& ipx_info,
                                 const HighsOptions& options);
 
-bool illegalIpxStoppedCrossoverStatus(const ipx::Info& ipx_info,
+HIGHS_EXPORT bool illegalIpxStoppedCrossoverStatus(const ipx::Info& ipx_info,
                                       const HighsOptions& options);
 
-void reportIpmNoProgress(const HighsOptions& options,
+HIGHS_EXPORT void reportIpmNoProgress(const HighsOptions& options,
                          const ipx::Info& ipx_info);
 
-void getHighsNonVertexSolution(const HighsOptions& options, const HighsLp& lp,
+HIGHS_EXPORT void getHighsNonVertexSolution(const HighsOptions& options, const HighsLp& lp,
                                const ipx::Int num_col, const ipx::Int num_row,
                                const std::vector<double>& rhs,
                                const std::vector<char>& constraint_type,
@@ -68,6 +68,6 @@ void getHighsNonVertexSolution(const HighsOptions& options, const HighsLp& lp,
                                const HighsModelStatus model_status,
                                HighsSolution& highs_solution);
 
-void reportSolveData(const HighsLogOptions& log_options,
+HIGHS_EXPORT void reportSolveData(const HighsLogOptions& log_options,
                      const ipx::Info& ipx_info);
 #endif

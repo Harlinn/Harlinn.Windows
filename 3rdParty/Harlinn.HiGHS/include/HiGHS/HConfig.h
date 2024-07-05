@@ -1,6 +1,8 @@
 #ifndef HCONFIG_H_
 #define HCONFIG_H_
 
+#include "highs_export.h"
+
 #define FAST_BUILD
 #define ZLIB_FOUND
 /* #undef CUPDLP_CPU */

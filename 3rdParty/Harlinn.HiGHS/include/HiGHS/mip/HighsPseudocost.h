@@ -77,7 +77,7 @@ class HighsPseudocost {
 
  public:
   HighsPseudocost() = default;
-  HighsPseudocost(const HighsMipSolver& mipsolver);
+  HIGHS_EXPORT HighsPseudocost(const HighsMipSolver& mipsolver);
 
   void subtractBase(const HighsPseudocost& base) {
     HighsInt ncols = pseudocostup.size();

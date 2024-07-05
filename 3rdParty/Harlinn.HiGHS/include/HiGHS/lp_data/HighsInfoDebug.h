@@ -20,11 +20,11 @@
 #include "lp_data/HighsOptions.h"
 // #include "lp_data/HighsLp.h"
 
-HighsDebugStatus debugInfo(const HighsOptions& options, const HighsLp& lp,
+HIGHS_EXPORT HighsDebugStatus debugInfo(const HighsOptions& options, const HighsLp& lp,
                            const HighsBasis& basis,
                            const HighsSolution& solution, const HighsInfo& info,
                            const HighsModelStatus model_status);
 
-HighsDebugStatus debugNoInfo(const HighsInfo& info);
+HIGHS_EXPORT HighsDebugStatus debugNoInfo(const HighsInfo& info);
 
 #endif

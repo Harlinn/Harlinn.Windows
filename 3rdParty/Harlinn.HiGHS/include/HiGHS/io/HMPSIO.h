@@ -44,7 +44,7 @@ const HighsInt field_5_width = 8;
 const HighsInt field_6_start = 49;
 const HighsInt field_6_width = 12;
 
-FilereaderRetcode readMps(
+HIGHS_EXPORT FilereaderRetcode readMps(
     const HighsLogOptions& log_options, const std::string filename,
     HighsInt mxNumRow, HighsInt mxNumCol, HighsInt& numRow, HighsInt& numCol,
     ObjSense& objSense, double& objOffset, vector<HighsInt>& Astart,
@@ -57,7 +57,7 @@ FilereaderRetcode readMps(
     vector<double>& Qvalue, HighsInt& cost_row_location,
     const HighsInt keep_n_rows = 0);
 
-HighsStatus writeMps(
+HIGHS_EXPORT HighsStatus writeMps(
     const HighsLogOptions& log_options, const std::string filename,
     const std::string model_name, const HighsInt& num_row,
     const HighsInt& num_col, const HighsInt& q_dim, const ObjSense& sense,
@@ -71,10 +71,10 @@ HighsStatus writeMps(
     const vector<std::string>& col_names, const vector<std::string>& row_names,
     const bool use_free_format = true);
 
-bool load_mpsLine(std::istream& file, HighsVarType& integerVar, HighsInt lmax,
+HIGHS_EXPORT bool load_mpsLine(std::istream& file, HighsVarType& integerVar, HighsInt lmax,
                   char* line, char* flag, double* data);
 
-HighsStatus writeModelAsMps(const HighsOptions& options,
+HIGHS_EXPORT HighsStatus writeModelAsMps(const HighsOptions& options,
                             const std::string filename, const HighsModel& model,
                             const bool free = true);
 

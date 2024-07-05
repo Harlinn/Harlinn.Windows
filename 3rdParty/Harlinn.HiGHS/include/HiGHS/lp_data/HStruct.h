@@ -109,17 +109,17 @@ struct HighsLpMods {
   std::vector<double> save_inf_cost_variable_lower;
   std::vector<double> save_inf_cost_variable_upper;
 
-  void clear();
-  bool isClear();
+  HIGHS_EXPORT void clear();
+  HIGHS_EXPORT bool isClear();
 };
 
 struct HighsNameHash {
   std::unordered_map<std::string, int> name2index;
-  void form(const std::vector<std::string>& name);
-  bool hasDuplicate(const std::vector<std::string>& name);
-  void update(int index, const std::string& old_name,
+  HIGHS_EXPORT void form(const std::vector<std::string>& name);
+  HIGHS_EXPORT bool hasDuplicate(const std::vector<std::string>& name);
+  HIGHS_EXPORT void update(int index, const std::string& old_name,
               const std::string& new_name);
-  void clear();
+  HIGHS_EXPORT void clear();
 };
 
 struct HighsPresolveRuleLog {
@@ -130,7 +130,7 @@ struct HighsPresolveRuleLog {
 
 struct HighsPresolveLog {
   std::vector<HighsPresolveRuleLog> rule;
-  void clear();
+  HIGHS_EXPORT void clear();
 };
 
 struct HighsIllConditioningRecord {
@@ -140,7 +140,7 @@ struct HighsIllConditioningRecord {
 
 struct HighsIllConditioning {
   std::vector<HighsIllConditioningRecord> record;
-  void clear();
+  HIGHS_EXPORT void clear();
 };
 
 #endif /* LP_DATA_HSTRUCT_H_ */

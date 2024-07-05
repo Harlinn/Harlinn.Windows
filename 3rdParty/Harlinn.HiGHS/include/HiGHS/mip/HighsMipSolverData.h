@@ -173,9 +173,9 @@ struct HighsMipSolverData {
     domain.addConflictPool(conflictPool);
   }
 
-  void startAnalyticCenterComputation(
+  HIGHS_EXPORT void startAnalyticCenterComputation(
       const highs::parallel::TaskGroup& taskGroup);
-  void finishAnalyticCenterComputation(
+  HIGHS_EXPORT void finishAnalyticCenterComputation(
       const highs::parallel::TaskGroup& taskGroup);
 
   struct SymmetryDetectionData {
@@ -184,38 +184,38 @@ struct HighsMipSolverData {
     double detectionTime = 0.0;
   };
 
-  void startSymmetryDetection(const highs::parallel::TaskGroup& taskGroup,
+  HIGHS_EXPORT void startSymmetryDetection(const highs::parallel::TaskGroup& taskGroup,
                               std::unique_ptr<SymmetryDetectionData>& symData);
-  void finishSymmetryDetection(const highs::parallel::TaskGroup& taskGroup,
+  HIGHS_EXPORT void finishSymmetryDetection(const highs::parallel::TaskGroup& taskGroup,
                                std::unique_ptr<SymmetryDetectionData>& symData);
 
-  double computeNewUpperLimit(double upper_bound, double mip_abs_gap,
+  HIGHS_EXPORT double computeNewUpperLimit(double upper_bound, double mip_abs_gap,
                               double mip_rel_gap) const;
-  bool moreHeuristicsAllowed() const;
-  void removeFixedIndices();
-  void init();
-  void basisTransfer();
-  void checkObjIntegrality();
-  void runPresolve(const HighsInt presolve_reduction_limit);
-  void setupDomainPropagation();
-  void saveReportMipSolution(const double new_upper_limit = -kHighsInf);
-  void runSetup();
-  double transformNewIntegerFeasibleSolution(
+  HIGHS_EXPORT bool moreHeuristicsAllowed() const;
+  HIGHS_EXPORT void removeFixedIndices();
+  HIGHS_EXPORT void init();
+  HIGHS_EXPORT void basisTransfer();
+  HIGHS_EXPORT void checkObjIntegrality();
+  HIGHS_EXPORT void runPresolve(const HighsInt presolve_reduction_limit);
+  HIGHS_EXPORT void setupDomainPropagation();
+  HIGHS_EXPORT void saveReportMipSolution(const double new_upper_limit = -kHighsInf);
+  HIGHS_EXPORT void runSetup();
+  HIGHS_EXPORT double transformNewIntegerFeasibleSolution(
       const std::vector<double>& sol,
       const bool possibly_store_as_new_incumbent = true);
-  double percentageInactiveIntegers() const;
-  void performRestart();
-  bool checkSolution(const std::vector<double>& solution) const;
-  bool trySolution(const std::vector<double>& solution, char source = ' ');
-  bool rootSeparationRound(HighsSeparation& sepa, HighsInt& ncuts,
+  HIGHS_EXPORT double percentageInactiveIntegers() const;
+  HIGHS_EXPORT void performRestart();
+  HIGHS_EXPORT bool checkSolution(const std::vector<double>& solution) const;
+  HIGHS_EXPORT bool trySolution(const std::vector<double>& solution, char source = ' ');
+  HIGHS_EXPORT bool rootSeparationRound(HighsSeparation& sepa, HighsInt& ncuts,
                            HighsLpRelaxation::Status& status);
-  HighsLpRelaxation::Status evaluateRootLp();
-  void evaluateRootNode();
-  bool addIncumbent(const std::vector<double>& sol, double solobj, char source);
+  HIGHS_EXPORT HighsLpRelaxation::Status evaluateRootLp();
+  HIGHS_EXPORT void evaluateRootNode();
+  HIGHS_EXPORT bool addIncumbent(const std::vector<double>& sol, double solobj, char source);
 
-  const std::vector<double>& getSolution() const;
+  HIGHS_EXPORT const std::vector<double>& getSolution() const;
 
-  void printDisplayLine(char first = ' ');
+  HIGHS_EXPORT void printDisplayLine(char first = ' ');
 
   void getRow(HighsInt row, HighsInt& rowlen, const HighsInt*& rowinds,
               const double*& rowvals) const {
@@ -225,10 +225,10 @@ struct HighsMipSolverData {
     rowvals = ARvalue_.data() + start;
   }
 
-  bool checkLimits(int64_t nodeOffset = 0) const;
-  void limitsToBounds(double& dual_bound, double& primal_bound,
+  HIGHS_EXPORT bool checkLimits(int64_t nodeOffset = 0) const;
+  HIGHS_EXPORT void limitsToBounds(double& dual_bound, double& primal_bound,
                       double& mip_rel_gap) const;
-  bool interruptFromCallbackWithData(const int callback_type,
+  HIGHS_EXPORT bool interruptFromCallbackWithData(const int callback_type,
                                      const double mipsolver_objective_value,
                                      const std::string message = "") const;
 };

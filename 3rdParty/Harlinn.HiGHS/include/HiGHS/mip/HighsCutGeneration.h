@@ -57,39 +57,39 @@ class HighsCutGeneration {
   std::vector<HighsInt> integerinds;
   std::vector<double> deltas;
 
-  bool determineCover(bool lpSol = true);
+  HIGHS_EXPORT bool determineCover(bool lpSol = true);
 
-  void separateLiftedKnapsackCover();
+  HIGHS_EXPORT void separateLiftedKnapsackCover();
 
-  bool separateLiftedMixedBinaryCover();
+  HIGHS_EXPORT bool separateLiftedMixedBinaryCover();
 
-  bool separateLiftedMixedIntegerCover();
+  HIGHS_EXPORT bool separateLiftedMixedIntegerCover();
 
-  bool cmirCutGenerationHeuristic(double minEfficacy,
+  HIGHS_EXPORT bool cmirCutGenerationHeuristic(double minEfficacy,
                                   bool onlyInitialCMIRScale = false);
 
-  bool postprocessCut();
+  HIGHS_EXPORT bool postprocessCut();
 
-  bool preprocessBaseInequality(bool& hasUnboundedInts, bool& hasGeneralInts,
+  HIGHS_EXPORT bool preprocessBaseInequality(bool& hasUnboundedInts, bool& hasGeneralInts,
                                 bool& hasContinuous);
 
  public:
-  HighsCutGeneration(const HighsLpRelaxation& lpRelaxation,
+  HIGHS_EXPORT HighsCutGeneration(const HighsLpRelaxation& lpRelaxation,
                      HighsCutPool& cutpool);
 
   /// separates the LP solution for the given single row relaxation
-  bool generateCut(HighsTransformedLp& transLp, std::vector<HighsInt>& inds,
+  HIGHS_EXPORT bool generateCut(HighsTransformedLp& transLp, std::vector<HighsInt>& inds,
                    std::vector<double>& vals, double& rhs,
                    bool onlyInitialCMIRScale = false);
 
   /// generate a conflict from the given proof constraint which cuts of the
   /// given local domain
-  bool generateConflict(HighsDomain& localdom, std::vector<HighsInt>& proofinds,
+  HIGHS_EXPORT bool generateConflict(HighsDomain& localdom, std::vector<HighsInt>& proofinds,
                         std::vector<double>& proofvals, double& proofrhs);
 
   /// applies postprocessing to an externally generated cut and adds it to the
   /// cutpool if it is violated enough
-  bool finalizeAndAddCut(std::vector<HighsInt>& inds, std::vector<double>& vals,
+  HIGHS_EXPORT bool finalizeAndAddCut(std::vector<HighsInt>& inds, std::vector<double>& vals,
                          double& rhs);
 };
 

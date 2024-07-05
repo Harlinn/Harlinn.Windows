@@ -33,13 +33,13 @@ struct HighsRanging {
   HighsRangingRecord col_bound_dn;
   HighsRangingRecord row_bound_up;
   HighsRangingRecord row_bound_dn;
-  void invalidate();
-  void clear();
+  HIGHS_EXPORT void invalidate();
+  HIGHS_EXPORT void clear();
 };
 
-HighsStatus getRangingData(HighsRanging& ranging,
+HIGHS_EXPORT HighsStatus getRangingData(HighsRanging& ranging,
                            HighsLpSolverObject& solver_object);
-void writeRangingFile(FILE* file, const HighsLp& lp,
+HIGHS_EXPORT void writeRangingFile(FILE* file, const HighsLp& lp,
                       const double objective_function_value,
                       const HighsBasis& basis, const HighsSolution& solution,
                       const HighsRanging& ranging, const HighsInt style);

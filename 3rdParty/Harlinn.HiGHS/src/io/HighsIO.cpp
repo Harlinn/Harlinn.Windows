@@ -20,7 +20,7 @@
 #include "lp_data/HighsLp.h"
 #include "lp_data/HighsOptions.h"
 
-void highsLogHeader(const HighsLogOptions& log_options,
+HIGHS_EXPORT void highsLogHeader(const HighsLogOptions& log_options,
                     const bool log_githash) {
   const std::string githash_string(HIGHS_GITHASH);
   const std::string githash_text =
@@ -31,7 +31,7 @@ void highsLogHeader(const HighsLogOptions& log_options,
                githash_text.c_str(), kHighsCopyrightStatement.c_str());
 }
 
-std::array<char, 32> highsDoubleToString(const double val,
+HIGHS_EXPORT std::array<char, 32> highsDoubleToString(const double val,
                                          const double tolerance) {
   std::array<char, 32> printString;
   double l =
@@ -95,7 +95,7 @@ std::array<char, 32> highsDoubleToString(const double val,
   return printString;
 }
 
-void highsLogUser(const HighsLogOptions& log_options_, const HighsLogType type,
+HIGHS_EXPORT void highsLogUser(const HighsLogOptions& log_options_, const HighsLogType type,
                   const char* format, ...) {
   if (!*log_options_.output_flag ||
       (log_options_.log_stream == NULL && !*log_options_.log_to_console))
@@ -157,7 +157,7 @@ void highsLogUser(const HighsLogOptions& log_options_, const HighsLogType type,
   va_end(argptr);
 }
 
-void highsLogDev(const HighsLogOptions& log_options_, const HighsLogType type,
+HIGHS_EXPORT void highsLogDev(const HighsLogOptions& log_options_, const HighsLogType type,
                  const char* format, ...) {
   if (!*log_options_.output_flag ||
       (log_options_.log_stream == NULL && !*log_options_.log_to_console) ||
@@ -219,7 +219,7 @@ void highsLogDev(const HighsLogOptions& log_options_, const HighsLogType type,
   va_end(argptr);
 }
 
-void highsReportDevInfo(const HighsLogOptions* log_options,
+HIGHS_EXPORT void highsReportDevInfo(const HighsLogOptions* log_options,
                         const std::string line) {
   if (log_options) {
     highsLogDev(*log_options, HighsLogType::kInfo, "%s", line.c_str());
@@ -228,11 +228,11 @@ void highsReportDevInfo(const HighsLogOptions* log_options,
   }
 }
 
-void highsOpenLogFile(HighsOptions& options, const std::string log_file) {
+HIGHS_EXPORT void highsOpenLogFile(HighsOptions& options, const std::string log_file) {
   highsOpenLogFile(options.log_options, options.records, log_file);
 }
 
-void highsReportLogOptions(const HighsLogOptions& log_options_) {
+HIGHS_EXPORT void highsReportLogOptions(const HighsLogOptions& log_options_) {
   printf("\nHighs log options\n");
   if (log_options_.log_stream == NULL) {
     printf("   log_stream = NULL\n");
@@ -247,7 +247,7 @@ void highsReportLogOptions(const HighsLogOptions& log_options_) {
          *log_options_.log_dev_level);
 }
 
-std::string highsFormatToString(const char* format, ...) {
+HIGHS_EXPORT std::string highsFormatToString(const char* format, ...) {
   va_list argptr;
   va_start(argptr, format);
   int len;
@@ -262,7 +262,7 @@ std::string highsFormatToString(const char* format, ...) {
   return std::string(msgbuffer);
 }
 
-const std::string highsBoolToString(const bool b, const HighsInt field_width) {
+HIGHS_EXPORT const std::string highsBoolToString(const bool b, const HighsInt field_width) {
   const HighsInt abs_field_width = std::abs(field_width);
   if (abs_field_width <= 1) return b ? "T" : "F";
   if (abs_field_width <= 2) return b ? "true" : "false";
@@ -270,7 +270,7 @@ const std::string highsBoolToString(const bool b, const HighsInt field_width) {
   return b ? " true" : "false";
 }
 
-const std::string highsInsertMdEscapes(const std::string from_string) {
+HIGHS_EXPORT const std::string highsInsertMdEscapes(const std::string from_string) {
   std::string to_string = "";
   const char* underscore = "_";
   const char* backslash = "\\";

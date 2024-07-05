@@ -52,7 +52,7 @@ class HighsMipSolver {
 
   std::unique_ptr<HighsMipSolverData> mipdata_;
 
-  void run();
+  HIGHS_EXPORT void run();
 
   HighsInt numCol() const { return model_->num_col_; }
 
@@ -80,11 +80,11 @@ class HighsMipSolver {
     return model_->integrality_[col];
   }
 
-  HighsMipSolver(HighsCallback& callback, const HighsOptions& options,
+  HIGHS_EXPORT HighsMipSolver(HighsCallback& callback, const HighsOptions& options,
                  const HighsLp& lp, const HighsSolution& solution,
                  bool submip = false);
 
-  ~HighsMipSolver();
+  HIGHS_EXPORT ~HighsMipSolver();
 
   void setModel(const HighsLp& model) {
     model_ = &model;
@@ -92,14 +92,14 @@ class HighsMipSolver {
   }
 
   mutable HighsTimer timer_;
-  void cleanupSolve();
+  HIGHS_EXPORT void cleanupSolve();
 
-  void runPresolve(const HighsInt presolve_reduction_limit);
-  const HighsLp& getPresolvedModel() const;
-  HighsPresolveStatus getPresolveStatus() const;
-  presolve::HighsPostsolveStack getPostsolveStack() const;
+  HIGHS_EXPORT void runPresolve(const HighsInt presolve_reduction_limit);
+  HIGHS_EXPORT const HighsLp& getPresolvedModel() const;
+  HIGHS_EXPORT HighsPresolveStatus getPresolveStatus() const;
+  HIGHS_EXPORT presolve::HighsPostsolveStack getPostsolveStack() const;
 
-  void callbackGetCutPool() const;
+  HIGHS_EXPORT void callbackGetCutPool() const;
 };
 
 #endif

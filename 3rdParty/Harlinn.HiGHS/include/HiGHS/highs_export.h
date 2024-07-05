@@ -13,6 +13,7 @@
 #    else
         /* We are using this library */
 #      define HIGHS_EXPORT __declspec(dllimport)
+#pragma comment(lib,"Harlinn.HiGHS.lib")
 #    endif
 #  endif
 

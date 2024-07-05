@@ -26,20 +26,20 @@ enum class FilereaderRetcode {
   kTimeout
 };
 
-void interpretFilereaderRetcode(const HighsLogOptions& log_options,
+HIGHS_EXPORT void interpretFilereaderRetcode(const HighsLogOptions& log_options,
                                 const std::string filename,
                                 const FilereaderRetcode code);
-std::string extractModelName(const std::string filename);
+HIGHS_EXPORT std::string extractModelName(const std::string filename);
 
 class Filereader {
  public:
-  virtual FilereaderRetcode readModelFromFile(const HighsOptions& options,
+  HIGHS_EXPORT virtual FilereaderRetcode readModelFromFile(const HighsOptions& options,
                                               const std::string filename,
                                               HighsModel& model) = 0;
-  virtual HighsStatus writeModelToFile(const HighsOptions& options,
+  HIGHS_EXPORT virtual HighsStatus writeModelToFile(const HighsOptions& options,
                                        const std::string filename,
                                        const HighsModel& model) = 0;
-  static Filereader* getFilereader(const HighsLogOptions& log_options,
+  HIGHS_EXPORT static Filereader* getFilereader(const HighsLogOptions& log_options,
                                    const std::string filename);
 
   virtual ~Filereader(){};

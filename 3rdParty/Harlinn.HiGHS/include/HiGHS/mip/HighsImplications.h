@@ -33,7 +33,7 @@ class HighsImplications {
   std::vector<Implics> implications;
   int64_t numImplications;
 
-  bool computeImplications(HighsInt col, bool val);
+  HIGHS_EXPORT bool computeImplications(HighsInt col, bool val);
 
  public:
   struct VarBound {
@@ -102,10 +102,10 @@ class HighsImplications {
     return implications[loc].computed;
   }
 
-  void addVUB(HighsInt col, HighsInt vubcol, double vubcoef,
+  HIGHS_EXPORT void addVUB(HighsInt col, HighsInt vubcol, double vubcoef,
               double vubconstant);
 
-  void addVLB(HighsInt col, HighsInt vlbcol, double vlbcoef,
+  HIGHS_EXPORT void addVLB(HighsInt col, HighsInt vlbcol, double vlbcoef,
               double vlbconstant);
 
   void columnTransformed(HighsInt col, double scale, double constant) {
@@ -121,26 +121,26 @@ class HighsImplications {
     vubs[col].for_each(transformVbd);
   }
 
-  std::pair<HighsInt, VarBound> getBestVub(HighsInt col,
+  HIGHS_EXPORT std::pair<HighsInt, VarBound> getBestVub(HighsInt col,
                                            const HighsSolution& lpSolution,
                                            double& bestUb) const;
 
-  std::pair<HighsInt, VarBound> getBestVlb(HighsInt col,
+  HIGHS_EXPORT std::pair<HighsInt, VarBound> getBestVlb(HighsInt col,
                                            const HighsSolution& lpSolution,
                                            double& bestLb) const;
 
-  bool runProbing(HighsInt col, HighsInt& numReductions);
+  HIGHS_EXPORT bool runProbing(HighsInt col, HighsInt& numReductions);
 
-  void rebuild(HighsInt ncols, const std::vector<HighsInt>& cIndex,
+  HIGHS_EXPORT void rebuild(HighsInt ncols, const std::vector<HighsInt>& cIndex,
                const std::vector<HighsInt>& rIndex);
 
-  void buildFrom(const HighsImplications& init);
+  HIGHS_EXPORT void buildFrom(const HighsImplications& init);
 
-  void separateImpliedBounds(const HighsLpRelaxation& lpRelaxation,
+  HIGHS_EXPORT void separateImpliedBounds(const HighsLpRelaxation& lpRelaxation,
                              const std::vector<double>& sol,
                              HighsCutPool& cutpool, double feastol);
 
-  void cleanupVarbounds(HighsInt col);
+  HIGHS_EXPORT void cleanupVarbounds(HighsInt col);
 };
 
 #endif

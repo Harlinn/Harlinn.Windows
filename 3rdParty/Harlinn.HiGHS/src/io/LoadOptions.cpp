@@ -16,7 +16,7 @@
 
 // For extended options to be parsed from a file. Assuming options file is
 // specified.
-HighsLoadOptionsStatus loadOptionsFromFile(
+HIGHS_EXPORT HighsLoadOptionsStatus loadOptionsFromFile(
     const HighsLogOptions& report_log_options, HighsOptions& options,
     const std::string filename) {
   if (filename.size() == 0) return HighsLoadOptionsStatus::kEmpty;

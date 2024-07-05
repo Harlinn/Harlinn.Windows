@@ -33,15 +33,15 @@ class HighsSeparator {
   int clockIndex;
 
  public:
-  HighsSeparator(const HighsMipSolver& mipsolver, const char* name,
+  HIGHS_EXPORT HighsSeparator(const HighsMipSolver& mipsolver, const char* name,
                  const char* ch3_name);
 
-  virtual void separateLpSolution(HighsLpRelaxation& lpRelaxation,
+  HIGHS_EXPORT virtual void separateLpSolution(HighsLpRelaxation& lpRelaxation,
                                   HighsLpAggregator& lpAggregator,
                                   HighsTransformedLp& transLp,
                                   HighsCutPool& cutpool) = 0;
 
-  void run(HighsLpRelaxation& lpRelaxation, HighsLpAggregator& lpAggregator,
+  HIGHS_EXPORT void run(HighsLpRelaxation& lpRelaxation, HighsLpAggregator& lpAggregator,
            HighsTransformedLp& transLp, HighsCutPool& cutpool);
 
   HighsInt getNumCutsFound() const { return numCutsFound; }

@@ -27,23 +27,23 @@
 
 using std::vector;
 
-HighsStatus assessHessian(HighsHessian& hessian, const HighsOptions& options);
+HIGHS_EXPORT HighsStatus assessHessian(HighsHessian& hessian, const HighsOptions& options);
 HighsStatus assessHessianDimensions(const HighsOptions& options,
                                     HighsHessian& hessian);
-void completeHessianDiagonal(const HighsOptions& options,
+HIGHS_EXPORT void completeHessianDiagonal(const HighsOptions& options,
                              HighsHessian& hessian);
-bool okHessianDiagonal(const HighsOptions& options, HighsHessian& hessian,
+HIGHS_EXPORT bool okHessianDiagonal(const HighsOptions& options, HighsHessian& hessian,
                        const ObjSense sense = ObjSense::kMinimize);
-HighsStatus normaliseHessian(const HighsOptions& options,
+HIGHS_EXPORT HighsStatus normaliseHessian(const HighsOptions& options,
                              HighsHessian& hessian);
-HighsStatus extractTriangularHessian(const HighsOptions& options,
+HIGHS_EXPORT HighsStatus extractTriangularHessian(const HighsOptions& options,
                                      HighsHessian& hessian);
-void triangularToSquareHessian(const HighsHessian& hessian,
+HIGHS_EXPORT void triangularToSquareHessian(const HighsHessian& hessian,
                                vector<HighsInt>& start, vector<HighsInt>& index,
                                vector<double>& value);
-void completeHessian(const HighsInt full_dim, HighsHessian& hessian);
+HIGHS_EXPORT void completeHessian(const HighsInt full_dim, HighsHessian& hessian);
 
-void reportHessian(const HighsLogOptions& log_options, const HighsInt dim,
+HIGHS_EXPORT void reportHessian(const HighsLogOptions& log_options, const HighsInt dim,
                    const HighsInt num_nz, const HighsInt* start,
                    const HighsInt* index, const double* value);
 #endif  // MODEL_HIGHSHESSIANUTILS_H_

@@ -24,14 +24,14 @@ class HighsCliqueTable;
 
 class HighsSeparation {
  public:
-  HighsInt separationRound(HighsDomain& propdomain,
+  HIGHS_EXPORT HighsInt separationRound(HighsDomain& propdomain,
                            HighsLpRelaxation::Status& status);
 
-  void separate(HighsDomain& propdomain);
+  HIGHS_EXPORT void separate(HighsDomain& propdomain);
 
   void setLpRelaxation(HighsLpRelaxation* lp) { this->lp = lp; }
 
-  HighsSeparation(const HighsMipSolver& mipsolver);
+  HIGHS_EXPORT HighsSeparation(const HighsMipSolver& mipsolver);
 
  private:
   HighsInt implBoundClock;

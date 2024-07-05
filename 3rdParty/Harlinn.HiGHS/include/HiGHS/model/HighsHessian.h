@@ -32,23 +32,23 @@ class HighsHessian {
   std::vector<HighsInt> start_;
   std::vector<HighsInt> index_;
   std::vector<double> value_;
-  bool operator==(const HighsHessian& hessian) const;
-  void product(const std::vector<double>& solution,
+  HIGHS_EXPORT bool operator==(const HighsHessian& hessian) const;
+  HIGHS_EXPORT void product(const std::vector<double>& solution,
                std::vector<double>& product) const;
-  double objectiveValue(const std::vector<double>& solution) const;
-  HighsCDouble objectiveCDoubleValue(const std::vector<double>& solution) const;
-  void exactResize();
-  void deleteCols(const HighsIndexCollection& index_collection);
-  void clear();
+  HIGHS_EXPORT double objectiveValue(const std::vector<double>& solution) const;
+  HIGHS_EXPORT HighsCDouble objectiveCDoubleValue(const std::vector<double>& solution) const;
+  HIGHS_EXPORT void exactResize();
+  HIGHS_EXPORT void deleteCols(const HighsIndexCollection& index_collection);
+  HIGHS_EXPORT void clear();
   bool formatOk() const {
     return (this->format_ == HessianFormat::kTriangular ||
             this->format_ == HessianFormat::kSquare);
   };
-  bool scaleOk(const HighsInt cost_scale, const double small_matrix_value,
+  HIGHS_EXPORT bool scaleOk(const HighsInt cost_scale, const double small_matrix_value,
                const double large_matrix_value) const;
-  HighsInt numNz() const;
+  HIGHS_EXPORT HighsInt numNz() const;
 
-  void print() const;
+  HIGHS_EXPORT void print() const;
 };
 
 #endif

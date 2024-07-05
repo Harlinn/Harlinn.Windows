@@ -101,17 +101,17 @@ class HighsGFkSolve {
   std::priority_queue<HighsInt, std::vector<HighsInt>, std::greater<HighsInt>>
       freeslots;
 
-  void link(HighsInt pos);
+  HIGHS_EXPORT void link(HighsInt pos);
 
-  void unlink(HighsInt pos);
+  HIGHS_EXPORT void unlink(HighsInt pos);
 
   void dropIfZero(HighsInt pos) {
     if (Avalue[pos] == 0) unlink(pos);
   }
 
-  void storeRowPositions(HighsInt pos);
+  HIGHS_EXPORT void storeRowPositions(HighsInt pos);
 
-  void addNonzero(HighsInt row, HighsInt col, unsigned int val);
+  HIGHS_EXPORT void addNonzero(HighsInt row, HighsInt col, unsigned int val);
 
  public:
   struct SolutionEntry {

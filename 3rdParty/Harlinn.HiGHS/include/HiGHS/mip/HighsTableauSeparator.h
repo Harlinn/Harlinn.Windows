@@ -25,7 +25,7 @@ class HighsTableauSeparator : public HighsSeparator {
   int64_t numTries;
 
  public:
-  void separateLpSolution(HighsLpRelaxation& lpRelaxation,
+  HIGHS_EXPORT void separateLpSolution(HighsLpRelaxation& lpRelaxation,
                           HighsLpAggregator& lpAggregator,
                           HighsTransformedLp& transLp,
                           HighsCutPool& cutpool) override;

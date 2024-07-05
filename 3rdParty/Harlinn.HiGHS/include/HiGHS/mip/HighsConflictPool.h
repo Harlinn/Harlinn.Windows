@@ -52,19 +52,19 @@ class HighsConflictPool {
     ageDistribution_.resize(agelim_ + 1);
   }
 
-  void addConflictCut(const HighsDomain& domain,
+  HIGHS_EXPORT void addConflictCut(const HighsDomain& domain,
                       const std::set<HighsDomain::ConflictSet::LocalDomChg>&
                           reasonSideFrontier);
 
-  void addReconvergenceCut(
+  HIGHS_EXPORT void addReconvergenceCut(
       const HighsDomain& domain,
       const std::set<HighsDomain::ConflictSet::LocalDomChg>&
           reconvergenceFrontier,
       const HighsDomainChange& reconvergenceDomchg);
 
-  void removeConflict(HighsInt conflict);
+  HIGHS_EXPORT void removeConflict(HighsInt conflict);
 
-  void performAging();
+  HIGHS_EXPORT void performAging();
 
   void resetAge(HighsInt conflict) {
     if (ages_[conflict] > 0) {

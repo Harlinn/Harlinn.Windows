@@ -34,35 +34,35 @@ class HighsPrimalHeuristics {
   std::vector<HighsInt> intcols;
 
  public:
-  HighsPrimalHeuristics(HighsMipSolver& mipsolver);
+  HIGHS_EXPORT HighsPrimalHeuristics(HighsMipSolver& mipsolver);
 
-  void setupIntCols();
+  HIGHS_EXPORT void setupIntCols();
 
-  bool solveSubMip(const HighsLp& lp, const HighsBasis& basis,
+  HIGHS_EXPORT bool solveSubMip(const HighsLp& lp, const HighsBasis& basis,
                    double fixingRate, std::vector<double> colLower,
                    std::vector<double> colUpper, HighsInt maxleaves,
                    HighsInt maxnodes, HighsInt stallnodes);
 
-  double determineTargetFixingRate();
+  HIGHS_EXPORT double determineTargetFixingRate();
 
-  void rootReducedCost();
+  HIGHS_EXPORT void rootReducedCost();
 
-  void RENS(const std::vector<double>& relaxationsol);
+  HIGHS_EXPORT void RENS(const std::vector<double>& relaxationsol);
 
-  void RINS(const std::vector<double>& relaxationsol);
+  HIGHS_EXPORT void RINS(const std::vector<double>& relaxationsol);
 
-  void feasibilityPump();
+  HIGHS_EXPORT void feasibilityPump();
 
-  void centralRounding();
+  HIGHS_EXPORT void centralRounding();
 
-  void flushStatistics();
+  HIGHS_EXPORT void flushStatistics();
 
-  bool tryRoundedPoint(const std::vector<double>& point, char source);
+  HIGHS_EXPORT bool tryRoundedPoint(const std::vector<double>& point, char source);
 
-  bool linesearchRounding(const std::vector<double>& point1,
+  HIGHS_EXPORT bool linesearchRounding(const std::vector<double>& point1,
                           const std::vector<double>& point2, char source);
 
-  void randomizedRounding(const std::vector<double>& relaxationsol);
+  HIGHS_EXPORT void randomizedRounding(const std::vector<double>& relaxationsol);
 };
 
 #endif

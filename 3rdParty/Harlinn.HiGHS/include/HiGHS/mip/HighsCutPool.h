@@ -107,11 +107,11 @@ class HighsCutPool {
     }
   }
 
-  double getParallelism(HighsInt row1, HighsInt row2) const;
+  HIGHS_EXPORT double getParallelism(HighsInt row1, HighsInt row2) const;
 
-  void performAging();
+  HIGHS_EXPORT void performAging();
 
-  void lpCutRemoved(HighsInt cut);
+  HIGHS_EXPORT void lpCutRemoved(HighsInt cut);
 
   void addPropagationDomain(HighsDomain::CutpoolPropagation* domain) {
     propagationDomains.push_back(domain);
@@ -131,10 +131,10 @@ class HighsCutPool {
     ageDistribution.resize(agelim_ + 1);
   }
 
-  void separate(const std::vector<double>& sol, HighsDomain& domprop,
+  HIGHS_EXPORT void separate(const std::vector<double>& sol, HighsDomain& domprop,
                 HighsCutSet& cutset, double feastol);
 
-  void separateLpCutsAfterRestart(HighsCutSet& cutset);
+  HIGHS_EXPORT void separateLpCutsAfterRestart(HighsCutSet& cutset);
 
   bool cutIsIntegral(HighsInt cut) const { return (rowintegral[cut] != 0); }
 
@@ -150,7 +150,7 @@ class HighsCutPool {
     return rownormalization_[cut];
   }
 
-  HighsInt addCut(const HighsMipSolver& mipsolver, HighsInt* Rindex,
+  HIGHS_EXPORT HighsInt addCut(const HighsMipSolver& mipsolver, HighsInt* Rindex,
                   double* Rvalue, HighsInt Rlen, double rhs,
                   bool integral = false, bool propagate = true,
                   bool extractCliques = true, bool isConflict = false);

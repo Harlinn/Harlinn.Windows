@@ -51,10 +51,10 @@ typedef enum CONSTRAINT_TYPE { EQ = 0, LEQ, GEQ, BOUND } constraint_type;
 //     (var) = (CUPDLPcsc*)malloc((size) * sizeof(CUPDLPcsc));\
 //   }
 
-cupdlp_retcode problem_create(CUPDLPproblem** prob);
+HIGHS_EXPORT cupdlp_retcode problem_create(CUPDLPproblem** prob);
 // cupdlp_retcode csc_create(CUPDLPcsc **csc_cpu);
 
-cupdlp_retcode problem_alloc(
+HIGHS_EXPORT cupdlp_retcode problem_alloc(
     CUPDLPproblem* prob, cupdlp_int nRows, cupdlp_int nCols, cupdlp_int nEqs,
     cupdlp_float* cost, cupdlp_float offset, cupdlp_float sign_origin,
     void* matrix, CUPDLP_MATRIX_FORMAT src_matrix_format,
@@ -62,32 +62,32 @@ cupdlp_retcode problem_alloc(
     cupdlp_float* lower, cupdlp_float* upper, cupdlp_float* alloc_matrix_time,
     cupdlp_float* copy_vec_time);
 
-cupdlp_retcode data_alloc(CUPDLPdata* data, cupdlp_int nRows, cupdlp_int nCols,
+HIGHS_EXPORT cupdlp_retcode data_alloc(CUPDLPdata* data, cupdlp_int nRows, cupdlp_int nCols,
                           void* matrix, CUPDLP_MATRIX_FORMAT src_matrix_format,
                           CUPDLP_MATRIX_FORMAT dst_matrix_format);
 
-double infNorm(double* x, cupdlp_int n);
+HIGHS_EXPORT double infNorm(double* x, cupdlp_int n);
 
-void cupdlp_haslb(cupdlp_float* haslb, const cupdlp_float* lb,
+HIGHS_EXPORT void cupdlp_haslb(cupdlp_float* haslb, const cupdlp_float* lb,
                   const cupdlp_float bound, const cupdlp_int len);
 
-void cupdlp_hasub(cupdlp_float* hasub, const cupdlp_float* ub,
+HIGHS_EXPORT void cupdlp_hasub(cupdlp_float* hasub, const cupdlp_float* ub,
                   const cupdlp_float bound, const cupdlp_int len);
 
-HighsStatus solveLpCupdlp(HighsLpSolverObject& solver_object);
+HIGHS_EXPORT HighsStatus solveLpCupdlp(HighsLpSolverObject& solver_object);
 
-HighsStatus solveLpCupdlp(const HighsOptions& options, HighsTimer& timer,
+HIGHS_EXPORT HighsStatus solveLpCupdlp(const HighsOptions& options, HighsTimer& timer,
                           const HighsLp& lp, HighsBasis& highs_basis,
                           HighsSolution& highs_solution,
                           HighsModelStatus& model_status, HighsInfo& highs_info,
                           HighsCallback& callback);
-int formulateLP_highs(const HighsLp& lp, double** cost, int* nCols, int* nRows,
+HIGHS_EXPORT int formulateLP_highs(const HighsLp& lp, double** cost, int* nCols, int* nRows,
                       int* nnz, int* nEqs, int** csc_beg, int** csc_idx,
                       double** csc_val, double** rhs, double** lower,
                       double** upper, double* offset, double* sign_origin,
                       int* nCols_origin, int** constraint_new_idx,
                       int* constraint_type);
 
-cupdlp_int getCupdlpLogLevel(const HighsOptions& options);
+HIGHS_EXPORT cupdlp_int getCupdlpLogLevel(const HighsOptions& options);
 
 #endif

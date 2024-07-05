@@ -50,16 +50,16 @@ class HighsTransformedLp {
   HighsSparseVectorSum vectorsum;
 
  public:
-  HighsTransformedLp(const HighsLpRelaxation& lprelaxation,
+  HIGHS_EXPORT HighsTransformedLp(const HighsLpRelaxation& lprelaxation,
                      HighsImplications& implications);
 
   double boundDistance(HighsInt col) const { return boundDist[col]; }
 
-  bool transform(std::vector<double>& vals, std::vector<double>& upper,
+  HIGHS_EXPORT bool transform(std::vector<double>& vals, std::vector<double>& upper,
                  std::vector<double>& solval, std::vector<HighsInt>& inds,
                  double& rhs, bool& integralPositive, bool preferVbds = false);
 
-  bool untransform(std::vector<double>& vals, std::vector<HighsInt>& inds,
+  HIGHS_EXPORT bool untransform(std::vector<double>& vals, std::vector<HighsInt>& inds,
                    double& rhs, bool integral = false);
 };
 

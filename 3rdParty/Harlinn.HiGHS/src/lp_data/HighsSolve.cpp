@@ -18,7 +18,7 @@
 #include "simplex/HApp.h"
 
 // The method below runs simplex or ipx solver on the lp.
-HighsStatus solveLp(HighsLpSolverObject& solver_object, const string message) {
+HIGHS_EXPORT HighsStatus solveLp(HighsLpSolverObject& solver_object, const string message) {
   HighsStatus return_status = HighsStatus::kOk;
   HighsStatus call_status;
   HighsOptions& options = solver_object.options_;
@@ -202,7 +202,7 @@ HighsStatus solveLp(HighsLpSolverObject& solver_object, const string message) {
 
 // Solves an unconstrained LP without scaling, setting HighsBasis, HighsSolution
 // and HighsInfo
-HighsStatus solveUnconstrainedLp(HighsLpSolverObject& solver_object) {
+HIGHS_EXPORT HighsStatus solveUnconstrainedLp(HighsLpSolverObject& solver_object) {
   return (solveUnconstrainedLp(solver_object.options_, solver_object.lp_,
                                solver_object.model_status_,
                                solver_object.highs_info_,
@@ -211,7 +211,7 @@ HighsStatus solveUnconstrainedLp(HighsLpSolverObject& solver_object) {
 
 // Solves an unconstrained LP without scaling, setting HighsBasis, HighsSolution
 // and HighsInfo
-HighsStatus solveUnconstrainedLp(const HighsOptions& options, const HighsLp& lp,
+HIGHS_EXPORT HighsStatus solveUnconstrainedLp(const HighsOptions& options, const HighsLp& lp,
                                  HighsModelStatus& model_status,
                                  HighsInfo& highs_info, HighsSolution& solution,
                                  HighsBasis& basis) {
@@ -394,7 +394,7 @@ HighsStatus solveUnconstrainedLp(const HighsOptions& options, const HighsLp& lp,
   return HighsStatus::kOk;
 }
 
-void assessExcessiveBoundCost(const HighsLogOptions log_options,
+HIGHS_EXPORT void assessExcessiveBoundCost(const HighsLogOptions log_options,
                               const HighsModel& model) {
   auto assessFiniteNonzero = [&](const double value, double& min_value,
                                  double& max_value) {

@@ -87,44 +87,44 @@ class InfoRecordDouble : public InfoRecord {
   virtual ~InfoRecordDouble() {}
 };
 
-InfoStatus getInfoIndex(const HighsLogOptions& report_log_options,
+HIGHS_EXPORT InfoStatus getInfoIndex(const HighsLogOptions& report_log_options,
                         const std::string& name,
                         const std::vector<InfoRecord*>& info_records,
                         HighsInt& index);
 
-InfoStatus checkInfo(const HighsLogOptions& report_log_options,
+HIGHS_EXPORT InfoStatus checkInfo(const HighsLogOptions& report_log_options,
                      const std::vector<InfoRecord*>& info_records);
 InfoStatus checkInfo(const InfoRecordInt& info);
 InfoStatus checkInfo(const InfoRecordDouble& info);
 
-InfoStatus getLocalInfoValue(const HighsLogOptions& report_log_options,
+HIGHS_EXPORT InfoStatus getLocalInfoValue(const HighsLogOptions& report_log_options,
                              const std::string& name, const bool valid,
                              const std::vector<InfoRecord*>& info_records,
                              int64_t& value);
-InfoStatus getLocalInfoValue(const HighsLogOptions& report_log_options,
+HIGHS_EXPORT InfoStatus getLocalInfoValue(const HighsLogOptions& report_log_options,
                              const std::string& name, const bool valid,
                              const std::vector<InfoRecord*>& info_records,
                              HighsInt& value);
-InfoStatus getLocalInfoValue(const HighsLogOptions& report_log_options,
+HIGHS_EXPORT InfoStatus getLocalInfoValue(const HighsLogOptions& report_log_options,
                              const std::string& name, const bool valid,
                              const std::vector<InfoRecord*>& info_records,
                              double& value);
 
-InfoStatus getLocalInfoType(const HighsLogOptions& report_log_options,
+HIGHS_EXPORT InfoStatus getLocalInfoType(const HighsLogOptions& report_log_options,
                             const std::string& name,
                             const std::vector<InfoRecord*>& info_records,
                             HighsInfoType& type);
 
-HighsStatus writeInfoToFile(
+HIGHS_EXPORT HighsStatus writeInfoToFile(
     FILE* file, const bool valid, const std::vector<InfoRecord*>& info_records,
     const HighsFileType file_type = HighsFileType::kOther);
-void reportInfo(FILE* file, const std::vector<InfoRecord*>& info_records,
+HIGHS_EXPORT void reportInfo(FILE* file, const std::vector<InfoRecord*>& info_records,
                 const HighsFileType file_type = HighsFileType::kOther);
-void reportInfo(FILE* file, const InfoRecordInt64& info,
+HIGHS_EXPORT void reportInfo(FILE* file, const InfoRecordInt64& info,
                 const HighsFileType file_type = HighsFileType::kOther);
-void reportInfo(FILE* file, const InfoRecordInt& info,
+HIGHS_EXPORT void reportInfo(FILE* file, const InfoRecordInt& info,
                 const HighsFileType file_type = HighsFileType::kOther);
-void reportInfo(FILE* file, const InfoRecordDouble& info,
+HIGHS_EXPORT void reportInfo(FILE* file, const InfoRecordDouble& info,
                 const HighsFileType file_type = HighsFileType::kOther);
 
 // For now, but later change so HiGHS properties are string based so that new

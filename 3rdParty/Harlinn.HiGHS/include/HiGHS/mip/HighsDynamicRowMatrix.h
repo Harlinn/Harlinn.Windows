@@ -50,21 +50,21 @@ class HighsDynamicRowMatrix {
   std::vector<HighsInt> deletedrows_;
 
  public:
-  HighsDynamicRowMatrix(HighsInt ncols);
+  HIGHS_EXPORT HighsDynamicRowMatrix(HighsInt ncols);
 
   bool columnsLinked(HighsInt rowindex) const {
     return (colsLinked[rowindex] != 0);
   }
 
-  void unlinkColumns(HighsInt rowindex);
+  HIGHS_EXPORT void unlinkColumns(HighsInt rowindex);
 
   /// adds a row to the matrix with the given values and returns its index
-  HighsInt addRow(HighsInt* Rindex, double* Rvalue, HighsInt Rlen,
+  HIGHS_EXPORT HighsInt addRow(HighsInt* Rindex, double* Rvalue, HighsInt Rlen,
                   bool linkCols = true);
 
   /// removes the row with the given index from the matrix, afterwards the index
   /// can be reused for new rows
-  void removeRow(HighsInt rowindex);
+  HIGHS_EXPORT void removeRow(HighsInt rowindex);
 
   std::size_t nonzeroCapacity() const { return ARvalue_.size(); }
 

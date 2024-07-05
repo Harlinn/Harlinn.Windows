@@ -52,7 +52,7 @@ struct HighsLogOptions {
       user_callback;
   void* user_callback_data;
   bool user_callback_active;
-  void clear();
+  HIGHS_EXPORT void clear();
   HighsLogOptions()
       : log_stream(nullptr),
         output_flag(nullptr),
@@ -67,43 +67,43 @@ struct HighsLogOptions {
 /**
  * @brief Write the HiGHS version and copyright statement
  */
-void highsLogHeader(const HighsLogOptions& log_options, const bool log_githash);
+HIGHS_EXPORT void highsLogHeader(const HighsLogOptions& log_options, const bool log_githash);
 
 /**
  * @brief Convert a double number to a string using given tolerance
  */
-std::array<char, 32> highsDoubleToString(const double val,
+HIGHS_EXPORT std::array<char, 32> highsDoubleToString(const double val,
                                          const double tolerance);
 
 /**
  * @brief For _single-line_ user logging with message type notification
  */
 // Printing format: must contain exactly one "\n" at end of format
-void highsLogUser(const HighsLogOptions& log_options_, const HighsLogType type,
+HIGHS_EXPORT void highsLogUser(const HighsLogOptions& log_options_, const HighsLogType type,
                   const char* format, ...);
 
 /**
  * @brief For development logging
  */
-void highsLogDev(const HighsLogOptions& log_options_, const HighsLogType type,
+HIGHS_EXPORT void highsLogDev(const HighsLogOptions& log_options_, const HighsLogType type,
                  const char* format, ...);
 
 /**
  * @brief For development logging when true log_options may not be available -
  * indicated by null pointer
  */
-void highsReportDevInfo(const HighsLogOptions* log_options,
+HIGHS_EXPORT void highsReportDevInfo(const HighsLogOptions* log_options,
                         const std::string line);
 
-void highsOpenLogFile(HighsOptions& options, const std::string log_file);
+HIGHS_EXPORT void highsOpenLogFile(HighsOptions& options, const std::string log_file);
 
-void highsReportLogOptions(const HighsLogOptions& log_options_);
+HIGHS_EXPORT void highsReportLogOptions(const HighsLogOptions& log_options_);
 
-std::string highsFormatToString(const char* format, ...);
+HIGHS_EXPORT std::string highsFormatToString(const char* format, ...);
 
-const std::string highsBoolToString(const bool b,
+HIGHS_EXPORT const std::string highsBoolToString(const bool b,
                                     const HighsInt field_width = 2);
 
-const std::string highsInsertMdEscapes(const std::string from_string);
+HIGHS_EXPORT const std::string highsInsertMdEscapes(const std::string from_string);
 
 #endif

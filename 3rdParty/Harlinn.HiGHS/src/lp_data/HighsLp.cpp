@@ -559,7 +559,7 @@ void HighsLp::unapplyMods() {
   this->mods_.clear();
 }
 
-void HighsLpMods::clear() {
+HIGHS_EXPORT void HighsLpMods::clear() {
   this->save_non_semi_variable_index.clear();
   this->save_inconsistent_semi_variable_index.clear();
   this->save_inconsistent_semi_variable_lower_bound_value.clear();
@@ -575,7 +575,7 @@ void HighsLpMods::clear() {
   this->save_inf_cost_variable_upper.clear();
 }
 
-bool HighsLpMods::isClear() {
+HIGHS_EXPORT bool HighsLpMods::isClear() {
   if (this->save_non_semi_variable_index.size()) return false;
   if (this->save_inconsistent_semi_variable_index.size()) return false;
   if (this->save_inconsistent_semi_variable_lower_bound_value.size())

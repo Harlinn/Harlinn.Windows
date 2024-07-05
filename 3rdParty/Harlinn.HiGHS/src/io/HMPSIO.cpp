@@ -32,7 +32,7 @@ using std::map;
 //
 // Read file called filename. Returns 0 if OK and 1 if file can't be opened
 //
-FilereaderRetcode readMps(
+HIGHS_EXPORT FilereaderRetcode readMps(
     const HighsLogOptions& log_options, const std::string filename,
     HighsInt mxNumRow, HighsInt mxNumCol, HighsInt& numRow, HighsInt& numCol,
     ObjSense& objSense, double& objOffset, vector<HighsInt>& Astart,
@@ -460,7 +460,7 @@ FilereaderRetcode readMps(
   return FilereaderRetcode::kOk;
 }
 
-bool load_mpsLine(std::istream& file, HighsVarType& integerVar, HighsInt lmax,
+HIGHS_EXPORT bool load_mpsLine(std::istream& file, HighsVarType& integerVar, HighsInt lmax,
                   char* line, char* flag, double* data) {
   HighsInt F1 = 1, F2 = 4, F3 = 14, F4 = 24, F5 = 39, F6 = 49;
 
@@ -533,7 +533,7 @@ bool load_mpsLine(std::istream& file, HighsVarType& integerVar, HighsInt lmax,
   return true;
 }
 
-HighsStatus writeModelAsMps(const HighsOptions& options,
+HIGHS_EXPORT HighsStatus writeModelAsMps(const HighsOptions& options,
                             const std::string filename, const HighsModel& model,
                             const bool free_format) {
   bool warning_found = false;
@@ -599,7 +599,7 @@ HighsStatus writeModelAsMps(const HighsOptions& options,
   return write_status;
 }
 
-HighsStatus writeMps(
+HIGHS_EXPORT HighsStatus writeMps(
     const HighsLogOptions& log_options, const std::string filename,
     const std::string model_name, const HighsInt& num_row,
     const HighsInt& num_col, const HighsInt& q_dim, const ObjSense& sense,

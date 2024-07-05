@@ -70,7 +70,7 @@ static double possInfProduct(double poss_inf, double value) {
   }
 }
 
-HighsStatus getRangingData(HighsRanging& ranging,
+HIGHS_EXPORT HighsStatus getRangingData(HighsRanging& ranging,
                            HighsLpSolverObject& solver_object) {
   ranging.clear();
   if (solver_object.model_status_ != HighsModelStatus::kOptimal) {
@@ -603,7 +603,7 @@ HighsStatus getRangingData(HighsRanging& ranging,
   return HighsStatus::kOk;
 }
 
-void writeRangingFile(FILE* file, const HighsLp& lp,
+HIGHS_EXPORT void writeRangingFile(FILE* file, const HighsLp& lp,
                       const double objective_function_value,
                       const HighsBasis& basis, const HighsSolution& solution,
                       const HighsRanging& ranging, const HighsInt style) {

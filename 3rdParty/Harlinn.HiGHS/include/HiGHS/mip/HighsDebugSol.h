@@ -37,49 +37,49 @@ struct HighsDebugSol {
   std::unordered_map<const HighsDomain*, std::multiset<HighsDomainChange>>
       conflictingBounds;
 
-  HighsDebugSol(HighsMipSolver& mipsolver);
+  HIGHS_EXPORT HighsDebugSol(HighsMipSolver& mipsolver);
 
-  void newIncumbentFound();
+  HIGHS_EXPORT void newIncumbentFound();
 
-  void activate();
+  HIGHS_EXPORT void activate();
 
-  void shrink(const std::vector<HighsInt>& newColIndex);
+  HIGHS_EXPORT void shrink(const std::vector<HighsInt>& newColIndex);
 
-  void registerDomain(const HighsDomain& domain);
+  HIGHS_EXPORT void registerDomain(const HighsDomain& domain);
 
-  void boundChangeAdded(const HighsDomain& domain,
+  HIGHS_EXPORT void boundChangeAdded(const HighsDomain& domain,
                         const HighsDomainChange& domchg,
                         bool branching = false);
 
-  void boundChangeRemoved(const HighsDomain& domain,
+  HIGHS_EXPORT void boundChangeRemoved(const HighsDomain& domain,
                           const HighsDomainChange& domchg);
 
-  void resetDomain(const HighsDomain& domain);
+  HIGHS_EXPORT void resetDomain(const HighsDomain& domain);
 
-  void nodePruned(const HighsDomain& localdomain);
+  HIGHS_EXPORT void nodePruned(const HighsDomain& localdomain);
 
-  void checkCut(const HighsInt* Rindex, const double* Rvalue, HighsInt Rlen,
+  HIGHS_EXPORT void checkCut(const HighsInt* Rindex, const double* Rvalue, HighsInt Rlen,
                 double rhs);
 
-  void checkRow(const HighsInt* Rindex, const double* Rvalue, HighsInt Rlen,
+  HIGHS_EXPORT void checkRow(const HighsInt* Rindex, const double* Rvalue, HighsInt Rlen,
                 double Rlower, double Rupper);
 
-  void checkRowAggregation(const HighsLp& lp, const HighsInt* Rindex,
+  HIGHS_EXPORT void checkRowAggregation(const HighsLp& lp, const HighsInt* Rindex,
                            const double* Rvalue, HighsInt Rlen);
 
-  void checkClique(const HighsCliqueTable::CliqueVar* clq, HighsInt clqlen);
+  HIGHS_EXPORT void checkClique(const HighsCliqueTable::CliqueVar* clq, HighsInt clqlen);
 
-  void checkVub(HighsInt col, HighsInt vubcol, double vubcoef,
+  HIGHS_EXPORT void checkVub(HighsInt col, HighsInt vubcol, double vubcoef,
                 double vubconstant) const;
 
-  void checkVlb(HighsInt col, HighsInt vlbcol, double vlbcoef,
+  HIGHS_EXPORT void checkVlb(HighsInt col, HighsInt vlbcol, double vlbcoef,
                 double vlbconstant) const;
 
-  void checkConflictReasonFrontier(
+  HIGHS_EXPORT void checkConflictReasonFrontier(
       const std::set<HighsDomain::ConflictSet::LocalDomChg>& reasonSideFrontier,
       const std::vector<HighsDomainChange>& domchgstack) const;
 
-  void checkConflictReconvergenceFrontier(
+  HIGHS_EXPORT void checkConflictReconvergenceFrontier(
       const std::set<HighsDomain::ConflictSet::LocalDomChg>&
           reconvergenceFrontier,
       const HighsDomain::ConflictSet::LocalDomChg& reconvDomchgPos,

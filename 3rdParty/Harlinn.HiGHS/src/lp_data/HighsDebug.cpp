@@ -16,7 +16,7 @@
 #include <algorithm>  // For std::max
 #include <cassert>    // For std::max
 
-HighsStatus debugDebugToHighsStatus(const HighsDebugStatus debug_status) {
+HIGHS_EXPORT HighsStatus debugDebugToHighsStatus(const HighsDebugStatus debug_status) {
   switch (debug_status) {
     case HighsDebugStatus::kNotChecked:
     case HighsDebugStatus::kOk:
@@ -34,13 +34,13 @@ HighsStatus debugDebugToHighsStatus(const HighsDebugStatus debug_status) {
   }
 }
 
-HighsDebugStatus debugWorseStatus(const HighsDebugStatus status0,
+HIGHS_EXPORT HighsDebugStatus debugWorseStatus(const HighsDebugStatus status0,
                                   const HighsDebugStatus status1) {
   return static_cast<HighsDebugStatus>(
       std::max((HighsInt)status0, (HighsInt)status1));
 }
 
-bool debugVectorRightSize(const std::vector<double> v,
+HIGHS_EXPORT bool debugVectorRightSize(const std::vector<double> v,
                           const HighsInt right_size) {
   const HighsInt v_size = v.size();
   const bool is_right_size = v_size == right_size;
@@ -48,7 +48,7 @@ bool debugVectorRightSize(const std::vector<double> v,
   return is_right_size;
 }
 
-bool debugVectorRightSize(const std::vector<HighsInt> v,
+HIGHS_EXPORT bool debugVectorRightSize(const std::vector<HighsInt> v,
                           const HighsInt right_size) {
   const HighsInt v_size = v.size();
   const bool is_right_size = v_size == right_size;

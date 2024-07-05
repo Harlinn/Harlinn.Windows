@@ -13,7 +13,7 @@
  */
 #include "lp_data/HighsInfoDebug.h"
 
-HighsDebugStatus debugInfo(const HighsOptions& options, const HighsLp& lp,
+HIGHS_EXPORT HighsDebugStatus debugInfo(const HighsOptions& options, const HighsLp& lp,
                            const HighsBasis& basis,
                            const HighsSolution& solution, const HighsInfo& info,
                            const HighsModelStatus model_status) {
@@ -130,7 +130,7 @@ HighsDebugStatus debugInfo(const HighsOptions& options, const HighsLp& lp,
   return return_status;
 }
 
-HighsDebugStatus debugNoInfo(const HighsInfo& info) {
+HIGHS_EXPORT HighsDebugStatus debugNoInfo(const HighsInfo& info) {
   HighsInfo no_info;
   no_info.invalidate();
   bool error_found = false;

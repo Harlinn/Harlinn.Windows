@@ -45,17 +45,17 @@ class HighsLpRelaxation {
     HighsInt index;
     HighsInt age;
 
-    void get(const HighsMipSolver& mipsolver, HighsInt& len,
+    HIGHS_EXPORT void get(const HighsMipSolver& mipsolver, HighsInt& len,
              const HighsInt*& inds, const double*& vals) const;
 
-    HighsInt getRowLen(const HighsMipSolver& mipsolver) const;
+    HIGHS_EXPORT HighsInt getRowLen(const HighsMipSolver& mipsolver) const;
 
-    bool isIntegral(const HighsMipSolver& mipsolver) const;
+    HIGHS_EXPORT bool isIntegral(const HighsMipSolver& mipsolver) const;
 
-    double getMaxAbsVal(const HighsMipSolver& mipsolver) const;
+    HIGHS_EXPORT double getMaxAbsVal(const HighsMipSolver& mipsolver) const;
 
-    static LpRow cut(HighsInt index) { return LpRow{kCutPool, index, 0}; }
-    static LpRow model(HighsInt index) { return LpRow{kModel, index, 0}; }
+    HIGHS_EXPORT static LpRow cut(HighsInt index) { return LpRow{kCutPool, index, 0}; }
+    HIGHS_EXPORT static LpRow model(HighsInt index) { return LpRow{kModel, index, 0}; }
   };
 
   const HighsMipSolver& mipsolver;
@@ -85,18 +85,18 @@ class HighsLpRelaxation {
   Status status;
   bool adjustSymBranchingCol;
 
-  void storeDualInfProof();
+  HIGHS_EXPORT void storeDualInfProof();
 
-  void storeDualUBProof();
+  HIGHS_EXPORT void storeDualUBProof();
 
-  bool checkDualProof() const;
+  HIGHS_EXPORT bool checkDualProof() const;
 
  public:
-  HighsLpRelaxation(const HighsMipSolver& mip);
+  HIGHS_EXPORT HighsLpRelaxation(const HighsMipSolver& mip);
 
-  HighsLpRelaxation(const HighsLpRelaxation& other);
+  HIGHS_EXPORT HighsLpRelaxation(const HighsLpRelaxation& other);
 
-  void getCutPool(HighsInt& num_col, HighsInt& num_cut,
+  HIGHS_EXPORT void getCutPool(HighsInt& num_col, HighsInt& num_cut,
                   std::vector<double>& cut_lower,
                   std::vector<double>& cut_upper,
                   HighsSparseMatrix& cut_matrix) const;
@@ -148,7 +148,7 @@ class HighsLpRelaxation {
 
   Playground playground() { return Playground(this); }
 
-  void loadModel();
+  HIGHS_EXPORT void loadModel();
 
   void getRow(HighsInt row, HighsInt& len, const HighsInt*& inds,
               const double*& vals) const {
@@ -168,9 +168,9 @@ class HighsLpRelaxation {
     this->adjustSymBranchingCol = adjustSymBranchingCol;
   }
 
-  void resetToGlobalDomain();
+  HIGHS_EXPORT void resetToGlobalDomain();
 
-  void computeBasicDegenerateDuals(double threshold,
+  HIGHS_EXPORT void computeBasicDegenerateDuals(double threshold,
                                    HighsDomain* localdom = nullptr);
 
   double getAvgSolveIters() { return avgSolveIters; }
@@ -187,9 +187,9 @@ class HighsLpRelaxation {
 
   const HighsSolution& getSolution() const { return lpsolver.getSolution(); }
 
-  double slackUpper(HighsInt row) const;
+  HIGHS_EXPORT double slackUpper(HighsInt row) const;
 
-  double slackLower(HighsInt row) const;
+  HIGHS_EXPORT double slackLower(HighsInt row) const;
 
   double rowLower(HighsInt row) const {
     return lpsolver.getLp().row_lower_[row];
@@ -238,9 +238,9 @@ class HighsLpRelaxation {
     return false;
   }
 
-  double computeBestEstimate(const HighsPseudocost& ps) const;
+  HIGHS_EXPORT double computeBestEstimate(const HighsPseudocost& ps) const;
 
-  double computeLPDegneracy(const HighsDomain& localdomain) const;
+  HIGHS_EXPORT double computeLPDegneracy(const HighsDomain& localdomain) const;
 
   static bool scaledOptimal(Status status) {
     switch (status) {
@@ -274,9 +274,9 @@ class HighsLpRelaxation {
     }
   }
 
-  void recoverBasis();
+  HIGHS_EXPORT void recoverBasis();
 
-  void setObjectiveLimit(double objlim = kHighsInf);
+  HIGHS_EXPORT void setObjectiveLimit(double objlim = kHighsInf);
 
   void storeBasis() {
     if (!currentbasisstored && lpsolver.getBasis().valid) {
@@ -304,19 +304,19 @@ class HighsLpRelaxation {
 
   HighsInt numNonzeros() const { return lpsolver.getNumNz(); }
 
-  void addCuts(HighsCutSet& cutset);
+  HIGHS_EXPORT void addCuts(HighsCutSet& cutset);
 
-  void performAging(bool deleteRows = false);
+  HIGHS_EXPORT void performAging(bool deleteRows = false);
 
-  void resetAges();
+  HIGHS_EXPORT void resetAges();
 
-  void removeObsoleteRows(bool notifyPool = true);
+  HIGHS_EXPORT void removeObsoleteRows(bool notifyPool = true);
 
-  void removeCuts(HighsInt ndelcuts, std::vector<HighsInt>& deletemask);
+  HIGHS_EXPORT void removeCuts(HighsInt ndelcuts, std::vector<HighsInt>& deletemask);
 
-  void removeCuts();
+  HIGHS_EXPORT void removeCuts();
 
-  void flushDomain(HighsDomain& domain, bool continuous = false);
+  HIGHS_EXPORT void flushDomain(HighsDomain& domain, bool continuous = false);
 
   void getDualProof(const HighsInt*& inds, const double*& vals, double& rhs,
                     HighsInt& len) {
@@ -326,17 +326,17 @@ class HighsLpRelaxation {
     len = dualproofinds.size();
   }
 
-  bool computeDualProof(const HighsDomain& globaldomain, double upperbound,
+  HIGHS_EXPORT bool computeDualProof(const HighsDomain& globaldomain, double upperbound,
                         std::vector<HighsInt>& inds, std::vector<double>& vals,
                         double& rhs, bool extractCliques = true) const;
 
-  bool computeDualInfProof(const HighsDomain& globaldomain,
+  HIGHS_EXPORT bool computeDualInfProof(const HighsDomain& globaldomain,
                            std::vector<HighsInt>& inds,
                            std::vector<double>& vals, double& rhs);
 
-  Status resolveLp(HighsDomain* domain = nullptr);
+  HIGHS_EXPORT Status resolveLp(HighsDomain* domain = nullptr);
 
-  Status run(bool resolve_on_error = true);
+  HIGHS_EXPORT Status run(bool resolve_on_error = true);
 
   Highs& getLpSolver() { return lpsolver; }
   const Highs& getLpSolver() const { return lpsolver; }

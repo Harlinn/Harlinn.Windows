@@ -23,7 +23,7 @@
 #include "lp_data/HighsSolution.h"
 #include "util/stringutil.h"
 
-void analyseModelBounds(const HighsLogOptions& log_options, const char* message,
+HIGHS_EXPORT void analyseModelBounds(const HighsLogOptions& log_options, const char* message,
                         HighsInt numBd, const std::vector<double>& lower,
                         const std::vector<double>& upper) {
   if (numBd == 0) return;
@@ -90,7 +90,7 @@ void analyseModelBounds(const HighsLogOptions& log_options, const char* message,
               numBd, numFr, numLb, numUb, numBx, numFx);
 }
 
-std::string statusToString(const HighsBasisStatus status, const double lower,
+HIGHS_EXPORT std::string statusToString(const HighsBasisStatus status, const double lower,
                            const double upper) {
   switch (status) {
     case HighsBasisStatus::kLower:
@@ -116,7 +116,7 @@ std::string statusToString(const HighsBasisStatus status, const double lower,
   return "";
 }
 
-std::string typeToString(const HighsVarType type) {
+HIGHS_EXPORT std::string typeToString(const HighsVarType type) {
   switch (type) {
     case HighsVarType::kContinuous:
       return "Continuous";
@@ -132,7 +132,7 @@ std::string typeToString(const HighsVarType type) {
   return "";
 }
 
-void writeModelBoundSolution(
+HIGHS_EXPORT void writeModelBoundSolution(
     FILE* file, const bool columns, const HighsInt dim,
     const std::vector<double>& lower, const std::vector<double>& upper,
     const std::vector<std::string>& names, const bool have_primal,
@@ -189,7 +189,7 @@ void writeModelBoundSolution(
   }
 }
 
-void writeModelObjective(FILE* file, const HighsModel& model,
+HIGHS_EXPORT void writeModelObjective(FILE* file, const HighsModel& model,
                          const std::vector<double>& primal_solution) {
   HighsCDouble objective_value =
       model.lp_.objectiveCDoubleValue(primal_solution);
@@ -197,19 +197,19 @@ void writeModelObjective(FILE* file, const HighsModel& model,
   writeObjectiveValue(file, (double)objective_value);
 }
 
-void writeLpObjective(FILE* file, const HighsLp& lp,
+HIGHS_EXPORT void writeLpObjective(FILE* file, const HighsLp& lp,
                       const std::vector<double>& primal_solution) {
   HighsCDouble objective_value = lp.objectiveCDoubleValue(primal_solution);
   writeObjectiveValue(file, (double)objective_value);
 }
 
-void writeObjectiveValue(FILE* file, const double objective_value) {
+HIGHS_EXPORT void writeObjectiveValue(FILE* file, const double objective_value) {
   std::array<char, 32> objStr = highsDoubleToString(
       objective_value, kHighsSolutionValueToStringTolerance);
   fprintf(file, "Objective %s\n", objStr.data());
 }
 
-void writePrimalSolution(FILE* file, const HighsLp& lp,
+HIGHS_EXPORT void writePrimalSolution(FILE* file, const HighsLp& lp,
                          const std::vector<double>& primal_solution,
                          const bool sparse) {
   std::stringstream ss;
@@ -238,7 +238,7 @@ void writePrimalSolution(FILE* file, const HighsLp& lp,
     fprintf(file, "\n");
   }
 }
-void writeModelSolution(FILE* file, const HighsModel& model,
+HIGHS_EXPORT void writeModelSolution(FILE* file, const HighsModel& model,
                         const HighsSolution& solution, const HighsInfo& info,
                         const bool sparse) {
   const HighsLp& lp = model.lp_;
@@ -314,7 +314,7 @@ void writeModelSolution(FILE* file, const HighsModel& model,
   }
 }
 
-bool hasNamesWithSpaces(const HighsLogOptions& log_options,
+HIGHS_EXPORT bool hasNamesWithSpaces(const HighsLogOptions& log_options,
                         const HighsInt num_name,
                         const std::vector<std::string>& names) {
   HighsInt num_names_with_spaces = 0;
@@ -338,7 +338,7 @@ bool hasNamesWithSpaces(const HighsLogOptions& log_options,
   return num_names_with_spaces > 0;
 }
 
-HighsInt maxNameLength(const HighsInt num_name,
+HIGHS_EXPORT HighsInt maxNameLength(const HighsInt num_name,
                        const std::vector<std::string>& names) {
   HighsInt max_name_length = 0;
   for (HighsInt ix = 0; ix < num_name; ix++)
@@ -346,7 +346,7 @@ HighsInt maxNameLength(const HighsInt num_name,
   return max_name_length;
 }
 
-HighsStatus normaliseNames(const HighsLogOptions& log_options,
+HIGHS_EXPORT HighsStatus normaliseNames(const HighsLogOptions& log_options,
                            const std::string name_type, const HighsInt num_name,
                            std::vector<std::string>& names,
                            HighsInt& max_name_length) {
@@ -386,7 +386,7 @@ HighsStatus normaliseNames(const HighsLogOptions& log_options,
   return HighsStatus::kOk;
 }
 
-void writeSolutionFile(FILE* file, const HighsOptions& options,
+HIGHS_EXPORT void writeSolutionFile(FILE* file, const HighsOptions& options,
                        const HighsModel& model, const HighsBasis& basis,
                        const HighsSolution& solution, const HighsInfo& info,
                        const HighsModelStatus model_status,
@@ -429,7 +429,7 @@ void writeSolutionFile(FILE* file, const HighsOptions& options,
   }
 }
 
-void writeGlpsolCostRow(FILE* file, const bool raw, const bool is_mip,
+HIGHS_EXPORT void writeGlpsolCostRow(FILE* file, const bool raw, const bool is_mip,
                         const HighsInt row_id, const std::string objective_name,
                         const double objective_function_value) {
   if (raw) {
@@ -455,7 +455,7 @@ void writeGlpsolCostRow(FILE* file, const bool raw, const bool is_mip,
   }
 }
 
-void writeGlpsolSolution(FILE* file, const HighsOptions& options,
+HIGHS_EXPORT void writeGlpsolSolution(FILE* file, const HighsOptions& options,
                          const HighsModel& model, const HighsBasis& basis,
                          const HighsSolution& solution,
                          const HighsModelStatus model_status,
@@ -1056,7 +1056,7 @@ void writeGlpsolSolution(FILE* file, const HighsOptions& options,
   fprintf(file, "End of output\n");
 }
 
-void writeOldRawSolution(FILE* file, const HighsLp& lp, const HighsBasis& basis,
+HIGHS_EXPORT void writeOldRawSolution(FILE* file, const HighsLp& lp, const HighsBasis& basis,
                          const HighsSolution& solution) {
   const bool have_value = solution.value_valid;
   const bool have_dual = solution.dual_valid;
@@ -1121,7 +1121,7 @@ void writeOldRawSolution(FILE* file, const HighsLp& lp, const HighsBasis& basis,
   }
 }
 
-HighsBasisStatus checkedVarHighsNonbasicStatus(
+HIGHS_EXPORT HighsBasisStatus checkedVarHighsNonbasicStatus(
     const HighsBasisStatus ideal_status, const double lower,
     const double upper) {
   HighsBasisStatus checked_status;
@@ -1159,7 +1159,7 @@ HighsBasisStatus checkedVarHighsNonbasicStatus(
 }
 
 // Return a string representation of SolutionStatus
-std::string utilSolutionStatusToString(const HighsInt solution_status) {
+HIGHS_EXPORT std::string utilSolutionStatusToString(const HighsInt solution_status) {
   switch (solution_status) {
     case kSolutionStatusNone:
       return "None";
@@ -1177,7 +1177,7 @@ std::string utilSolutionStatusToString(const HighsInt solution_status) {
 }
 
 // Return a string representation of HighsBasisStatus
-std::string utilBasisStatusToString(const HighsBasisStatus basis_status) {
+HIGHS_EXPORT std::string utilBasisStatusToString(const HighsBasisStatus basis_status) {
   switch (basis_status) {
     case HighsBasisStatus::kLower:
       return "At lower/fixed bound";
@@ -1201,7 +1201,7 @@ std::string utilBasisStatusToString(const HighsBasisStatus basis_status) {
 }
 
 // Return a string representation of basis validity
-std::string utilBasisValidityToString(const HighsInt basis_validity) {
+HIGHS_EXPORT std::string utilBasisValidityToString(const HighsInt basis_validity) {
   if (basis_validity) {
     return "Valid";
   } else {
@@ -1210,7 +1210,7 @@ std::string utilBasisValidityToString(const HighsInt basis_validity) {
 }
 
 // Return a string representation of HighsModelStatus.
-std::string utilModelStatusToString(const HighsModelStatus model_status) {
+HIGHS_EXPORT std::string utilModelStatusToString(const HighsModelStatus model_status) {
   switch (model_status) {
     case HighsModelStatus::kNotset:
       return "Not Set";
@@ -1275,7 +1275,7 @@ std::string utilModelStatusToString(const HighsModelStatus model_status) {
   }
 }
 
-std::string utilPresolveRuleTypeToString(const HighsInt rule_type) {
+HIGHS_EXPORT std::string utilPresolveRuleTypeToString(const HighsInt rule_type) {
   if (rule_type == kPresolveRuleEmptyRow) {
     return "Empty row";
   } else if (rule_type == kPresolveRuleSingletonRow) {
@@ -1310,7 +1310,7 @@ std::string utilPresolveRuleTypeToString(const HighsInt rule_type) {
 }
 
 // Deduce the HighsStatus value corresponding to a HighsModelStatus value.
-HighsStatus highsStatusFromHighsModelStatus(HighsModelStatus model_status) {
+HIGHS_EXPORT HighsStatus highsStatusFromHighsModelStatus(HighsModelStatus model_status) {
   switch (model_status) {
     case HighsModelStatus::kNotset:
       return HighsStatus::kError;
@@ -1355,7 +1355,7 @@ HighsStatus highsStatusFromHighsModelStatus(HighsModelStatus model_status) {
   }
 }
 
-std::string findModelObjectiveName(const HighsLp* lp,
+HIGHS_EXPORT std::string findModelObjectiveName(const HighsLp* lp,
                                    const HighsHessian* hessian) {
   // Return any non-trivial current objective name
   if (lp->objective_name_ != "") return lp->objective_name_;

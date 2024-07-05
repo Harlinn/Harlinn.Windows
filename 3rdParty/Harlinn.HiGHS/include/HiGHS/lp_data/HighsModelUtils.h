@@ -24,13 +24,13 @@
 // #include "lp_data/HighsOptions.h"
 
 // Analyse lower and upper bounds of a model
-void analyseModelBounds(const HighsLogOptions& log_options, const char* message,
+HIGHS_EXPORT void analyseModelBounds(const HighsLogOptions& log_options, const char* message,
                         HighsInt numBd, const std::vector<double>& lower,
                         const std::vector<double>& upper);
-bool hasNamesWithSpaces(const HighsLogOptions& log_options,
+HIGHS_EXPORT bool hasNamesWithSpaces(const HighsLogOptions& log_options,
                         const HighsInt num_name,
                         const std::vector<std::string>& names);
-void writeModelBoundSolution(
+HIGHS_EXPORT void writeModelBoundSolution(
     FILE* file, const bool columns, const HighsInt dim,
     const std::vector<double>& lower, const std::vector<double>& upper,
     const std::vector<std::string>& names, const bool have_primal,
@@ -39,69 +39,69 @@ void writeModelBoundSolution(
     const std::vector<HighsBasisStatus>& status,
     const HighsVarType* integrality = NULL);
 
-void writeModelObjective(FILE* file, const HighsModel& model,
+HIGHS_EXPORT void writeModelObjective(FILE* file, const HighsModel& model,
                          const std::vector<double>& primal_solution);
 
-void writeLpObjective(FILE* file, const HighsLp& lp,
+HIGHS_EXPORT void writeLpObjective(FILE* file, const HighsLp& lp,
                       const std::vector<double>& primal_solution);
 
-void writeObjectiveValue(FILE* file, const double objective_value);
+HIGHS_EXPORT void writeObjectiveValue(FILE* file, const double objective_value);
 
-void writePrimalSolution(FILE* file, const HighsLp& lp,
+HIGHS_EXPORT void writePrimalSolution(FILE* file, const HighsLp& lp,
                          const std::vector<double>& primal_solution,
                          const bool sparse = false);
 
-void writeModelSolution(FILE* file, const HighsModel& model,
+HIGHS_EXPORT void writeModelSolution(FILE* file, const HighsModel& model,
                         const HighsSolution& solution, const HighsInfo& info,
                         const bool sparse = false);
 
-HighsInt maxNameLength(const HighsInt num_name,
+HIGHS_EXPORT HighsInt maxNameLength(const HighsInt num_name,
                        const std::vector<std::string>& names);
-HighsStatus normaliseNames(const HighsLogOptions& log_options,
+HIGHS_EXPORT HighsStatus normaliseNames(const HighsLogOptions& log_options,
                            const std::string name_type, const HighsInt num_name,
                            std::vector<std::string>& names,
                            HighsInt& max_name_length);
 
-void writeSolutionFile(FILE* file, const HighsOptions& options,
+HIGHS_EXPORT void writeSolutionFile(FILE* file, const HighsOptions& options,
                        const HighsModel& model, const HighsBasis& basis,
                        const HighsSolution& solution, const HighsInfo& info,
                        const HighsModelStatus model_status,
                        const HighsInt style);
 
-void writeGlpsolCostRow(FILE* file, const bool raw, const bool is_mip,
+HIGHS_EXPORT void writeGlpsolCostRow(FILE* file, const bool raw, const bool is_mip,
                         const HighsInt row_id, const std::string objective_name,
                         const double objective_function_value);
 
-void writeGlpsolSolution(FILE* file, const HighsOptions& options,
+HIGHS_EXPORT void writeGlpsolSolution(FILE* file, const HighsOptions& options,
                          const HighsModel& model, const HighsBasis& basis,
                          const HighsSolution& solution,
                          const HighsModelStatus model_status,
                          const HighsInfo& info, const bool raw);
 
-void writeOldRawSolution(FILE* file, const HighsLp& lp, const HighsBasis& basis,
+HIGHS_EXPORT void writeOldRawSolution(FILE* file, const HighsLp& lp, const HighsBasis& basis,
                          const HighsSolution& solution);
 
-HighsBasisStatus checkedVarHighsNonbasicStatus(
+HIGHS_EXPORT HighsBasisStatus checkedVarHighsNonbasicStatus(
     const HighsBasisStatus ideal_status, const double lower,
     const double upper);
 
-std::string utilModelStatusToString(const HighsModelStatus model_status);
+HIGHS_EXPORT std::string utilModelStatusToString(const HighsModelStatus model_status);
 
-std::string utilSolutionStatusToString(const HighsInt solution_status);
+HIGHS_EXPORT std::string utilSolutionStatusToString(const HighsInt solution_status);
 
-std::string utilBasisStatusToString(const HighsBasisStatus basis_status);
+HIGHS_EXPORT std::string utilBasisStatusToString(const HighsBasisStatus basis_status);
 
-std::string utilBasisValidityToString(const HighsInt basis_validity);
+HIGHS_EXPORT std::string utilBasisValidityToString(const HighsInt basis_validity);
 
-std::string utilPresolveRuleTypeToString(const HighsInt rule_type);
+HIGHS_EXPORT std::string utilPresolveRuleTypeToString(const HighsInt rule_type);
 
-HighsStatus highsStatusFromHighsModelStatus(HighsModelStatus model_status);
+HIGHS_EXPORT HighsStatus highsStatusFromHighsModelStatus(HighsModelStatus model_status);
 
-std::string statusToString(const HighsBasisStatus status, const double lower,
+HIGHS_EXPORT std::string statusToString(const HighsBasisStatus status, const double lower,
                            const double upper);
-std::string typeToString(const HighsVarType type);
+HIGHS_EXPORT std::string typeToString(const HighsVarType type);
 
-std::string findModelObjectiveName(const HighsLp* lp,
+HIGHS_EXPORT std::string findModelObjectiveName(const HighsLp* lp,
                                    const HighsHessian* hessian = nullptr);
 
 // bool repeatedNames(const std::vector<std::string> name);
