@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+// 
 // Copyright 2008-2016 Conrad Sanderson (http://conradsanderson.id.au)
 // Copyright 2008-2016 National ICT Australia (NICTA)
 // 
@@ -21,7 +23,6 @@
 
 //! for tiny square matrices (size <= 4x4)
 template<typename eT, typename TA>
-arma_cold
 inline
 void
 op_strans::apply_mat_noalias_tinysq(Mat<eT>& out, const TA& A)
@@ -96,7 +97,6 @@ op_strans::apply_mat_noalias_tinysq(Mat<eT>& out, const TA& A)
 
 
 template<typename eT>
-arma_hot
 inline
 void
 op_strans::block_worker(eT* Y, const eT* X, const uword X_n_rows, const uword Y_n_rows, const uword n_rows, const uword n_cols)
@@ -117,12 +117,11 @@ op_strans::block_worker(eT* Y, const eT* X, const uword X_n_rows, const uword Y_
 
 
 template<typename eT>
-arma_hot
 inline
 void
 op_strans::apply_mat_noalias_large(Mat<eT>& out, const Mat<eT>& A)
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   
   const uword n_rows = A.n_rows;
   const uword n_cols = A.n_cols;
@@ -174,12 +173,11 @@ op_strans::apply_mat_noalias_large(Mat<eT>& out, const Mat<eT>& A)
 
 //! Immediate transpose of a dense matrix
 template<typename eT, typename TA>
-arma_hot
 inline
 void
 op_strans::apply_mat_noalias(Mat<eT>& out, const TA& A)
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   
   const uword A_n_cols = A.n_cols;
   const uword A_n_rows = A.n_rows;
@@ -231,19 +229,18 @@ op_strans::apply_mat_noalias(Mat<eT>& out, const TA& A)
 
 
 template<typename eT>
-arma_hot
 inline
 void
 op_strans::apply_mat_inplace(Mat<eT>& out)
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   
   const uword n_rows = out.n_rows;
   const uword n_cols = out.n_cols;
   
   if(n_rows == n_cols)
     {
-    arma_extra_debug_print("op_strans::apply(): doing in-place transpose of a square matrix");
+    arma_debug_print("op_strans::apply_mat_inplace(): square matrix");
     
     const uword N = n_rows;
     
@@ -271,23 +268,32 @@ op_strans::apply_mat_inplace(Mat<eT>& out)
     }
   else
     {
-    Mat<eT> tmp;
-    
-    op_strans::apply_mat_noalias(tmp, out);
-    
-    out.steal_mem(tmp);
+    if( ((n_rows == 1) || (n_cols == 1)) && (out.vec_state == 0) && (out.mem_state == 0) )
+      {
+      arma_debug_print("op_strans::apply_mat_inplace(): swapping n_rows and n_cols");
+      
+      access::rw(out.n_rows) = n_cols;
+      access::rw(out.n_cols) = n_rows;
+      }
+    else
+      {
+      Mat<eT> tmp;
+      
+      op_strans::apply_mat_noalias(tmp, out);
+      
+      out.steal_mem(tmp);
+      }
     }
   }
 
 
 
 template<typename eT, typename TA>
-arma_hot
 inline
 void
 op_strans::apply_mat(Mat<eT>& out, const TA& A)
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   
   if(&out != &A)
     {
@@ -302,136 +308,68 @@ op_strans::apply_mat(Mat<eT>& out, const TA& A)
 
 
 template<typename T1>
-arma_hot
 inline
 void
-op_strans::apply_proxy(Mat<typename T1::elem_type>& out, const T1& X)
+op_strans::apply_proxy(Mat<typename T1::elem_type>& out, const Proxy<T1>& P)
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   
   typedef typename T1::elem_type eT;
-  
-  const Proxy<T1> P(X);
   
   const uword n_rows = P.get_n_rows();
   const uword n_cols = P.get_n_cols();
   
-  const bool is_alias = P.is_alias(out);
-  
   if( (resolves_to_vector<T1>::yes) && (Proxy<T1>::use_at == false) )
     {
-    if(is_alias == false)
+    out.set_size(n_cols, n_rows);
+    
+    eT* out_mem = out.memptr();
+    
+    const uword n_elem = P.get_n_elem();
+    
+    typename Proxy<T1>::ea_type Pea = P.get_ea();
+    
+    uword i,j;
+    for(i=0, j=1; j < n_elem; i+=2, j+=2)
       {
-      out.set_size(n_cols, n_rows);
+      const eT tmp_i = Pea[i];
+      const eT tmp_j = Pea[j];
       
-      eT* out_mem = out.memptr();
-      
-      const uword n_elem = P.get_n_elem();
-      
-      typename Proxy<T1>::ea_type Pea = P.get_ea();
-      
-      uword i,j;
-      for(i=0, j=1; j < n_elem; i+=2, j+=2)
-        {
-        const eT tmp_i = Pea[i];
-        const eT tmp_j = Pea[j];
-        
-        out_mem[i] = tmp_i;
-        out_mem[j] = tmp_j;
-        }
-      
-      if(i < n_elem)
-        {
-        out_mem[i] = Pea[i];
-        }
+      out_mem[i] = tmp_i;
+      out_mem[j] = tmp_j;
       }
-    else  // aliasing
+    
+    if(i < n_elem)
       {
-      Mat<eT> out2(n_cols, n_rows, arma_nozeros_indicator());
-      
-      eT* out_mem = out2.memptr();
-      
-      const uword n_elem = P.get_n_elem();
-      
-      typename Proxy<T1>::ea_type Pea = P.get_ea();
-      
-      uword i,j;
-      for(i=0, j=1; j < n_elem; i+=2, j+=2)
-        {
-        const eT tmp_i = Pea[i];
-        const eT tmp_j = Pea[j];
-        
-        out_mem[i] = tmp_i;
-        out_mem[j] = tmp_j;
-        }
-      
-      if(i < n_elem)
-        {
-        out_mem[i] = Pea[i];
-        }
-      
-      out.steal_mem(out2);
+      out_mem[i] = Pea[i];
       }
     }
   else   // general matrix transpose
     {
-    if(is_alias == false)
+    out.set_size(n_cols, n_rows);
+    
+    eT* outptr = out.memptr();
+    
+    for(uword k=0; k < n_rows; ++k)
       {
-      out.set_size(n_cols, n_rows);
-      
-      eT* outptr = out.memptr();
-      
-      for(uword k=0; k < n_rows; ++k)
+      uword j;
+      for(j=1; j < n_cols; j+=2)
         {
-        uword j;
-        for(j=1; j < n_cols; j+=2)
-          {
-          const uword i = j-1;
-          
-          const eT tmp_i = P.at(k,i);
-          const eT tmp_j = P.at(k,j);
-          
-          (*outptr) = tmp_i;  outptr++;
-          (*outptr) = tmp_j;  outptr++;
-          }
-        
         const uword i = j-1;
         
-        if(i < n_cols)
-          {
-          (*outptr) = P.at(k,i);  outptr++;
-          }
-        }
-      }
-    else // aliasing
-      {
-      Mat<eT> out2(n_cols, n_rows, arma_nozeros_indicator());
-      
-      eT* out2ptr = out2.memptr();
-      
-      for(uword k=0; k < n_rows; ++k)
-        {
-        uword j;
-        for(j=1; j < n_cols; j+=2)
-          {
-          const uword i = j-1;
-          
-          const eT tmp_i = P.at(k,i);
-          const eT tmp_j = P.at(k,j);
-          
-          (*out2ptr) = tmp_i;  out2ptr++;
-          (*out2ptr) = tmp_j;  out2ptr++;
-          }
+        const eT tmp_i = P.at(k,i);
+        const eT tmp_j = P.at(k,j);
         
-        const uword i = j-1;
-      
-        if(i < n_cols)
-          {
-          (*out2ptr) = P.at(k,i);  out2ptr++;
-          }
+        (*outptr) = tmp_i;  outptr++;
+        (*outptr) = tmp_j;  outptr++;
         }
       
-      out.steal_mem(out2);
+      const uword i = j-1;
+      
+      if(i < n_cols)
+        {
+        (*outptr) = P.at(k,i);  outptr++;
+        }
       }
     }
   }
@@ -439,15 +377,16 @@ op_strans::apply_proxy(Mat<typename T1::elem_type>& out, const T1& X)
 
 
 template<typename T1>
-arma_hot
 inline
 void
 op_strans::apply_direct(Mat<typename T1::elem_type>& out, const T1& X)
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
+  
+  typedef typename T1::elem_type eT;
   
   // allow detection of in-place transpose
-  if(is_Mat<T1>::value || is_Mat<typename Proxy<T1>::stored_type>::value || (arma_config::openmp && Proxy<T1>::use_mp))
+  if(is_Mat<T1>::value || (arma_config::openmp && Proxy<T1>::use_mp))
     {
     const unwrap<T1> U(X);
     
@@ -455,19 +394,53 @@ op_strans::apply_direct(Mat<typename T1::elem_type>& out, const T1& X)
     }
   else
     {
-    op_strans::apply_proxy(out, X);
+    const Proxy<T1> P(X);
+    
+    const bool is_alias = P.is_alias(out);
+    
+    if(is_Mat<typename Proxy<T1>::stored_type>::value)
+      {
+      const quasi_unwrap<typename Proxy<T1>::stored_type> U(P.Q);
+      
+      if(is_alias)
+        {
+        Mat<eT> tmp;
+        
+        op_strans::apply_mat_noalias(tmp, U.M);
+        
+        out.steal_mem(tmp);
+        }
+      else
+        {
+        op_strans::apply_mat_noalias(out, U.M);
+        }
+      }
+    else
+      {
+      if(is_alias)
+        {
+        Mat<eT> tmp;
+        
+        op_strans::apply_proxy(tmp, P);
+        
+        out.steal_mem(tmp);
+        }
+      else
+        {
+        op_strans::apply_proxy(out, P);
+        }
+      }
     }
   }
 
 
 
 template<typename T1>
-arma_hot
 inline
 void
 op_strans::apply(Mat<typename T1::elem_type>& out, const Op<T1,op_strans>& in)
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   
   op_strans::apply_direct(out, in.m);
   }

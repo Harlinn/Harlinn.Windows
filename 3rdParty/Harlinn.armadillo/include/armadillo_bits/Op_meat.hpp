@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+// 
 // Copyright 2008-2016 Conrad Sanderson (http://conradsanderson.id.au)
 // Copyright 2008-2016 National ICT Australia (NICTA)
 // 
@@ -24,7 +26,7 @@ inline
 Op<T1, op_type>::Op(const T1& in_m)
   : m(in_m)
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   }
   
 
@@ -35,7 +37,7 @@ Op<T1, op_type>::Op(const T1& in_m, const typename T1::elem_type in_aux)
   : m(in_m)
   , aux(in_aux)
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   }
   
 
@@ -48,7 +50,7 @@ Op<T1, op_type>::Op(const T1& in_m, const typename T1::elem_type in_aux, const u
   , aux_uword_a(in_aux_uword_a)
   , aux_uword_b(in_aux_uword_b)
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   }
   
 
@@ -60,20 +62,7 @@ Op<T1, op_type>::Op(const T1& in_m, const uword in_aux_uword_a, const uword in_a
   , aux_uword_a(in_aux_uword_a)
   , aux_uword_b(in_aux_uword_b)
   {
-  arma_extra_debug_sigprint();
-  }
-
-
-
-template<typename T1, typename op_type>
-inline
-Op<T1, op_type>::Op(const T1& in_m, const uword in_aux_uword_a, const uword in_aux_uword_b, const uword in_aux_uword_c, const char)
-  : m(in_m)
-  , aux_uword_a(in_aux_uword_a)
-  , aux_uword_b(in_aux_uword_b)
-  , aux_uword_c(in_aux_uword_c)
-  {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   }
 
 
@@ -82,7 +71,7 @@ template<typename T1, typename op_type>
 inline
 Op<T1, op_type>::~Op()
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   }
 
 

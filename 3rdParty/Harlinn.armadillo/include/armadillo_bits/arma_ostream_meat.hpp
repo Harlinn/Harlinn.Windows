@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+// 
 // Copyright 2008-2016 Conrad Sanderson (http://conradsanderson.id.au)
 // Copyright 2008-2016 National ICT Australia (NICTA)
 // 
@@ -188,7 +190,7 @@ inline
 std::streamsize
 arma_ostream::modify_stream(std::ostream& o, typename SpMat<eT>::const_iterator begin, const uword n_elem, const typename arma_not_cx<eT>::result* junk)
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   arma_ignore(junk);
   
   o.unsetf(ios::showbase);
@@ -423,12 +425,11 @@ arma_ostream::raw_print_elem(std::ostream& o, const std::complex<T>& x)
 
 //! Print a matrix to the specified stream
 template<typename eT>
-arma_cold
 inline
 void
 arma_ostream::print(std::ostream& o, const Mat<eT>& m, const bool modify)
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   
   const arma_ostream_state stream_state(o);
   
@@ -493,12 +494,11 @@ arma_ostream::print(std::ostream& o, const Mat<eT>& m, const bool modify)
 
 //! Print a cube to the specified stream
 template<typename eT>
-arma_cold
 inline
 void
 arma_ostream::print(std::ostream& o, const Cube<eT>& x, const bool modify)
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   
   const arma_ostream_state stream_state(o);
   
@@ -534,14 +534,13 @@ arma_ostream::print(std::ostream& o, const Cube<eT>& x, const bool modify)
 
 
 //! Print a field to the specified stream
-//! Assumes type oT can be printed, i.e. oT has std::ostream& operator<< (std::ostream&, const oT&) 
+//! Assumes type oT can be printed, ie. oT has std::ostream& operator<< (std::ostream&, const oT&) 
 template<typename oT>
-arma_cold
 inline
 void
 arma_ostream::print(std::ostream& o, const field<oT>& x)
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   
   const arma_ostream_state stream_state(o);
   
@@ -608,14 +607,13 @@ arma_ostream::print(std::ostream& o, const field<oT>& x)
 
 
 //! Print a subfield to the specified stream
-//! Assumes type oT can be printed, i.e. oT has std::ostream& operator<< (std::ostream&, const oT&) 
+//! Assumes type oT can be printed, ie. oT has std::ostream& operator<< (std::ostream&, const oT&) 
 template<typename oT>
-arma_cold
 inline
 void
 arma_ostream::print(std::ostream& o, const subview_field<oT>& x)
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   
   const arma_ostream_state stream_state(o);
   
@@ -681,12 +679,11 @@ arma_ostream::print(std::ostream& o, const subview_field<oT>& x)
 
 
 template<typename eT>
-arma_cold
 inline
 void
 arma_ostream::print_dense(std::ostream& o, const SpMat<eT>& m, const bool modify)
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   
   const arma_ostream_state stream_state(o);
   
@@ -764,12 +761,11 @@ arma_ostream::print_dense(std::ostream& o, const SpMat<eT>& m, const bool modify
 
 
 template<typename eT>
-arma_cold
 inline
 void
 arma_ostream::print(std::ostream& o, const SpMat<eT>& m, const bool modify)
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   
   const arma_ostream_state stream_state(o);
   
@@ -867,12 +863,11 @@ arma_ostream::print(std::ostream& o, const SpMat<eT>& m, const bool modify)
 
 
 
-arma_cold
 inline
 void
 arma_ostream::print(std::ostream& o, const SizeMat& S)
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   
   const arma_ostream_state stream_state(o);
   
@@ -889,12 +884,11 @@ arma_ostream::print(std::ostream& o, const SizeMat& S)
 
 
 
-arma_cold
 inline
 void
 arma_ostream::print(std::ostream& o, const SizeCube& S)
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   
   const arma_ostream_state stream_state(o);
   
@@ -912,12 +906,11 @@ arma_ostream::print(std::ostream& o, const SizeCube& S)
 
 
 template<typename eT>
-arma_cold
 inline
 void
 arma_ostream::brief_print(std::ostream& o, const Mat<eT>& m, const bool print_size)
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   
   const arma_ostream_state stream_state(o);
   
@@ -1071,12 +1064,11 @@ arma_ostream::brief_print(std::ostream& o, const Mat<eT>& m, const bool print_si
 
 
 template<typename eT>
-arma_cold
 inline
 void
 arma_ostream::brief_print(std::ostream& o, const Cube<eT>& x)
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   
   const arma_ostream_state stream_state(o);
   
@@ -1129,12 +1121,11 @@ arma_ostream::brief_print(std::ostream& o, const Cube<eT>& x)
 
 
 template<typename eT>
-arma_cold
 inline
 void
 arma_ostream::brief_print(std::ostream& o, const SpMat<eT>& m)
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   
   if(m.n_nonzero <= 10)  { arma_ostream::print(o, m, true); return; }
   

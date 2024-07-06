@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+// 
 // Copyright 2008-2016 Conrad Sanderson (http://conradsanderson.id.au)
 // Copyright 2008-2016 National ICT Australia (NICTA)
 // 
@@ -24,14 +26,14 @@ inline
 void
 spop_symmat::apply(SpMat<typename T1::elem_type>& out, const SpOp<T1,spop_symmat>& in)
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   
   typedef typename T1::elem_type eT;
   
   const unwrap_spmat<T1> U(in.m);
   const SpMat<eT>& X   = U.M;
   
-  arma_debug_check( (X.n_rows != X.n_cols), "symmatu()/symmatl(): given matrix must be square sized" );
+  arma_conform_check( (X.n_rows != X.n_cols), "symmatu()/symmatl(): given matrix must be square sized" );
   
   if(X.n_nonzero == uword(0))  { out.zeros(X.n_rows, X.n_cols); return; }
   
@@ -50,14 +52,14 @@ inline
 void
 spop_symmat_cx::apply(SpMat<typename T1::elem_type>& out, const SpOp<T1,spop_symmat_cx>& in)
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   
   typedef typename T1::elem_type eT;
   
   const unwrap_spmat<T1> U(in.m);
   const SpMat<eT>& X   = U.M;
   
-  arma_debug_check( (X.n_rows != X.n_cols), "symmatu()/symmatl(): given matrix must be square sized" );
+  arma_conform_check( (X.n_rows != X.n_cols), "symmatu()/symmatl(): given matrix must be square sized" );
   
   if(X.n_nonzero == uword(0))  { out.zeros(X.n_rows, X.n_cols); return; }
   

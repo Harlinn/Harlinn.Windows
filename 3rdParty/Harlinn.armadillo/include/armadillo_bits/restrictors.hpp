@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+// 
 // Copyright 2008-2016 Conrad Sanderson (http://conradsanderson.id.au)
 // Copyright 2008-2016 National ICT Australia (NICTA)
 // 
@@ -177,6 +179,21 @@ template<> struct arma_glue_rel_only< glue_rel_eq    > { typedef int result; };
 template<> struct arma_glue_rel_only< glue_rel_noteq > { typedef int result; };
 template<> struct arma_glue_rel_only< glue_rel_and   > { typedef int result; };
 template<> struct arma_glue_rel_only< glue_rel_or    > { typedef int result; };
+
+
+
+template<typename T> struct arma_spop_rel_only { };
+
+template<> struct arma_spop_rel_only< spop_rel_lt_pre    > { typedef int result; };
+template<> struct arma_spop_rel_only< spop_rel_lt_post   > { typedef int result; };
+template<> struct arma_spop_rel_only< spop_rel_gt_pre    > { typedef int result; };
+template<> struct arma_spop_rel_only< spop_rel_gt_post   > { typedef int result; };
+template<> struct arma_spop_rel_only< spop_rel_lteq_pre  > { typedef int result; };
+template<> struct arma_spop_rel_only< spop_rel_lteq_post > { typedef int result; };
+template<> struct arma_spop_rel_only< spop_rel_gteq_pre  > { typedef int result; };
+template<> struct arma_spop_rel_only< spop_rel_gteq_post > { typedef int result; };
+template<> struct arma_spop_rel_only< spop_rel_eq        > { typedef int result; };
+template<> struct arma_spop_rel_only< spop_rel_noteq     > { typedef int result; };
 
 
 

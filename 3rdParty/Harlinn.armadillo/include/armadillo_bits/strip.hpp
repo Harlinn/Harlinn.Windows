@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+// 
 // Copyright 2008-2016 Conrad Sanderson (http://conradsanderson.id.au)
 // Copyright 2008-2016 National ICT Australia (NICTA)
 // 
@@ -28,7 +30,7 @@ struct strip_diagmat
   strip_diagmat(const T1& X)
     : M(X)
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   static constexpr bool do_diagmat = false;
@@ -47,7 +49,7 @@ struct strip_diagmat< Op<T1, op_diagmat> >
   strip_diagmat(const Op<T1, op_diagmat>& X)
     : M(X.m)
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   static constexpr bool do_diagmat = true;
@@ -66,53 +68,53 @@ struct strip_inv
   strip_inv(const T1& X)
     : M(X)
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   const T1& M;
   
-  static constexpr bool do_inv       = false;
-  static constexpr bool do_inv_sympd = false;
+  static constexpr bool do_inv_gen = false;
+  static constexpr bool do_inv_spd = false;
   };
 
 
 
 template<typename T1>
-struct strip_inv< Op<T1, op_inv> >
+struct strip_inv< Op<T1, op_inv_gen_default> >
   {
   typedef T1 stored_type;
   
   inline
-  strip_inv(const Op<T1, op_inv>& X)
+  strip_inv(const Op<T1, op_inv_gen_default>& X)
     : M(X.m)
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   const T1& M;
   
-  static constexpr bool do_inv       = true;
-  static constexpr bool do_inv_sympd = false;
+  static constexpr bool do_inv_gen = true;
+  static constexpr bool do_inv_spd = false;
   };
 
 
 
 template<typename T1>
-struct strip_inv< Op<T1, op_inv_sympd> >
+struct strip_inv< Op<T1, op_inv_spd_default> >
   {
   typedef T1 stored_type;
   
   inline
-  strip_inv(const Op<T1, op_inv_sympd>& X)
+  strip_inv(const Op<T1, op_inv_spd_default>& X)
     : M(X.m)
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   const T1& M;
   
-  static constexpr bool do_inv       = true;
-  static constexpr bool do_inv_sympd = true;
+  static constexpr bool do_inv_gen = false;
+  static constexpr bool do_inv_spd = true;
   };
 
 
@@ -132,7 +134,7 @@ struct strip_trimat
   strip_trimat(const T1& X)
     : M(X)
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   };
 
@@ -156,8 +158,72 @@ struct strip_trimat< Op<T1, op_trimat> >
     , do_triu(X.aux_uword_a == 0)
     , do_tril(X.aux_uword_a == 1)
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
+  };
+
+
+
+//
+
+
+
+template<typename T1>
+struct sp_strip_trans
+  {
+  typedef T1 stored_type;
+  
+  inline
+  sp_strip_trans(const T1& X)
+    : M(X)
+    {
+    arma_debug_sigprint();
+    }
+  
+  static constexpr bool do_htrans = false;
+  static constexpr bool do_strans = false;
+  
+  const T1& M;
+  };
+
+
+
+template<typename T1>
+struct sp_strip_trans< SpOp<T1, spop_htrans> >
+  {
+  typedef T1 stored_type;
+  
+  inline
+  sp_strip_trans(const SpOp<T1, spop_htrans>& X)
+    : M(X.m)
+    {
+    arma_debug_sigprint();
+    }
+  
+  static constexpr bool do_htrans = true;
+  static constexpr bool do_strans = false;
+  
+  const T1& M;
+  };
+
+
+
+template<typename T1>
+struct sp_strip_trans< SpOp<T1, spop_strans> >
+  {
+  typedef T1 stored_type;
+  
+  inline
+  sp_strip_trans(const SpOp<T1, spop_strans>& X)
+    : M(X.m)
+    {
+    arma_debug_sigprint();
+    }
+  
+  static constexpr bool do_htrans = false;
+  static constexpr bool do_strans = true;
+  
+  const T1& M;
   };
 
 

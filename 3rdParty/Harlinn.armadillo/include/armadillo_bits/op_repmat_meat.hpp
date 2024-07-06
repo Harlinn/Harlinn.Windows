@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+// 
 // Copyright 2008-2016 Conrad Sanderson (http://conradsanderson.id.au)
 // Copyright 2008-2016 National ICT Australia (NICTA)
 // 
@@ -25,7 +27,7 @@ inline
 void
 op_repmat::apply_noalias(Mat<typename obj::elem_type>& out, const obj& X, const uword copies_per_row, const uword copies_per_col)
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   
   typedef typename obj::elem_type eT;
   
@@ -94,7 +96,7 @@ inline
 void
 op_repmat::apply(Mat<typename T1::elem_type>& out, const Op<T1,op_repmat>& in)
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   
   typedef typename T1::elem_type eT;
   

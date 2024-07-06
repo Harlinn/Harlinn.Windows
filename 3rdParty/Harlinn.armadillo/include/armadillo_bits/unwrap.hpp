@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+// 
 // Copyright 2008-2016 Conrad Sanderson (http://conradsanderson.id.au)
 // Copyright 2008-2016 National ICT Australia (NICTA)
 // 
@@ -32,7 +34,7 @@ struct unwrap_default
   unwrap_default(const T1& A)
     : M(A)
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   const Mat<eT> M;
@@ -49,7 +51,7 @@ struct unwrap_fixed
   unwrap_fixed(const T1& A)
     : M(A)
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   const T1& M;
@@ -88,7 +90,7 @@ struct unwrap< Mat<eT> >
   unwrap(const Mat<eT>& A)
     : M(A)
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   const Mat<eT>& M;
@@ -105,7 +107,7 @@ struct unwrap< Row<eT> >
   unwrap(const Row<eT>& A)
     : M(A)
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   const Row<eT>& M;
@@ -122,10 +124,44 @@ struct unwrap< Col<eT> >
   unwrap(const Col<eT>& A)
     : M(A)
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   const Col<eT>& M;
+  };
+
+
+
+template<typename eT>
+struct unwrap< subview_col<eT> >
+  {
+  typedef Col<eT> stored_type;
+
+  inline
+  unwrap(const subview_col<eT>& A)
+    : M(A.colmem, A.n_rows)
+    {
+    arma_debug_sigprint();
+    }
+  
+  const Col<eT> M;
+  };
+
+
+
+template<typename eT>
+struct unwrap< subview_cols<eT> >
+  {
+  typedef Mat<eT> stored_type;
+  
+  inline
+  unwrap(const subview_cols<eT>& A)
+    : M(A.colptr(0), A.n_rows, A.n_cols)
+    {
+    arma_debug_sigprint();
+    }
+  
+  const Mat<eT> M;
   };
 
 
@@ -139,7 +175,7 @@ struct unwrap< mtGlue<out_eT, T1, T2, glue_type> >
   unwrap(const mtGlue<out_eT, T1, T2, glue_type>& A)
     : M(A)
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   const Mat<out_eT> M;
@@ -156,7 +192,7 @@ struct unwrap< mtOp<out_eT, T1, op_type> >
   unwrap(const mtOp<out_eT, T1, op_type>& A)
     : M(A)
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   const Mat<out_eT> M;
@@ -179,7 +215,7 @@ struct quasi_unwrap_default
   quasi_unwrap_default(const T1& A)
     : M(A)
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   // NOTE: DO NOT DIRECTLY CHECK FOR ALIASING BY TAKING THE ADDRESS OF THE "M" OBJECT IN ANY quasi_unwrap CLASS !!!
@@ -204,7 +240,7 @@ struct quasi_unwrap_fixed
   quasi_unwrap_fixed(const T1& A)
     : M(A)
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   const T1& M;
@@ -257,7 +293,7 @@ struct quasi_unwrap< Mat<eT> >
   quasi_unwrap(const Mat<eT>& A)
     : M(A)
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   const Mat<eT>& M;
@@ -267,7 +303,7 @@ struct quasi_unwrap< Mat<eT> >
   static constexpr bool has_orig_mem = true;
   
   template<typename eT2>
-  arma_inline bool is_alias(const Mat<eT2>& X) const { return (void_ptr(&M) == void_ptr(&X)); }
+  arma_inline bool is_alias(const Mat<eT2>& X) const { return (is_same_type<eT,eT2>::yes) && (void_ptr(&M) == void_ptr(&X)); }
   };
 
 
@@ -280,7 +316,7 @@ struct quasi_unwrap< Row<eT> >
   quasi_unwrap(const Row<eT>& A)
     : M(A)
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   const Row<eT>& M;
@@ -290,7 +326,7 @@ struct quasi_unwrap< Row<eT> >
   static constexpr bool has_orig_mem = true;
   
   template<typename eT2>
-  arma_inline bool is_alias(const Mat<eT2>& X) const { return (void_ptr(&M) == void_ptr(&X)); }
+  arma_inline bool is_alias(const Mat<eT2>& X) const { return (is_same_type<eT,eT2>::yes) && (void_ptr(&M) == void_ptr(&X)); }
   };
 
 
@@ -302,7 +338,7 @@ struct quasi_unwrap< Col<eT> >
   quasi_unwrap(const Col<eT>& A)
     : M(A)
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   const Col<eT>& M;
@@ -312,7 +348,7 @@ struct quasi_unwrap< Col<eT> >
   static constexpr bool has_orig_mem = true;
   
   template<typename eT2>
-  arma_inline bool is_alias(const Mat<eT2>& X) const { return (void_ptr(&M) == void_ptr(&X)); }
+  arma_inline bool is_alias(const Mat<eT2>& X) const { return (is_same_type<eT,eT2>::yes) && (void_ptr(&M) == void_ptr(&X)); }
   };
 
 
@@ -325,7 +361,7 @@ struct quasi_unwrap< subview<eT> >
     : sv( A                                                  )
     , M ( A, ((A.aux_row1 == 0) && (A.n_rows == A.m.n_rows)) )  // reuse memory if the subview is a contiguous chunk
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   const subview<eT>& sv;
@@ -336,7 +372,7 @@ struct quasi_unwrap< subview<eT> >
   static constexpr bool has_orig_mem = false;  // NOTE: set to false as this is the general case; original memory is only used when the subview is a contiguous chunk
   
   template<typename eT2>
-  arma_inline bool is_alias(const Mat<eT2>& X) const { return ( ((sv.aux_row1 == 0) && (sv.n_rows == sv.m.n_rows)) ? (void_ptr(&(sv.m)) == void_ptr(&X)) : false ); }
+  arma_inline bool is_alias(const Mat<eT2>& X) const { return (is_same_type<eT,eT2>::yes) && ( ((sv.aux_row1 == 0) && (sv.n_rows == sv.m.n_rows)) ? (void_ptr(&(sv.m)) == void_ptr(&X)) : false ); }
   };
 
 
@@ -348,7 +384,7 @@ struct quasi_unwrap< subview_row<eT> >
   quasi_unwrap(const subview_row<eT>& A)
     : M(A)
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   Row<eT> M;
@@ -369,9 +405,9 @@ struct quasi_unwrap< subview_col<eT> >
   inline
   quasi_unwrap(const subview_col<eT>& A)
     : orig( A.m )
-    , M  ( const_cast<eT*>( A.colptr(0) ), A.n_rows, false, false )
+    , M  ( const_cast<eT*>( A.colmem ), A.n_rows, false, false )
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   const Mat<eT>& orig;
@@ -382,7 +418,31 @@ struct quasi_unwrap< subview_col<eT> >
   static constexpr bool has_orig_mem = true;
   
   template<typename eT2>
-  arma_inline bool is_alias(const Mat<eT2>& X) const { return (void_ptr(&orig) == void_ptr(&X)); }
+  arma_inline bool is_alias(const Mat<eT2>& X) const { return (is_same_type<eT,eT2>::yes) && (void_ptr(&orig) == void_ptr(&X)); }
+  };
+
+
+
+template<typename eT>
+struct quasi_unwrap< subview_cols<eT> >
+  {
+  inline
+  quasi_unwrap(const subview_cols<eT>& A)
+    : orig( A.m )
+    , M   ( const_cast<eT*>( A.colptr(0) ), A.n_rows, A.n_cols, false, false )
+    {
+    arma_debug_sigprint();
+    }
+  
+  const Mat<eT>& orig;
+  const Mat<eT>  M;
+  
+  static constexpr bool is_const     = true;
+  static constexpr bool has_subview  = true;
+  static constexpr bool has_orig_mem = true;
+  
+  template<typename eT2>
+  arma_inline bool is_alias(const Mat<eT2>& X) const { return (is_same_type<eT,eT2>::yes) && (void_ptr(&orig) == void_ptr(&X)); }
   };
 
 
@@ -394,7 +454,7 @@ struct quasi_unwrap< mtGlue<out_eT, T1, T2, glue_type> >
   quasi_unwrap(const mtGlue<out_eT, T1, T2, glue_type>& A)
     : M(A)
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   Mat<out_eT> M;
@@ -416,7 +476,7 @@ struct quasi_unwrap< mtOp<out_eT, T1, op_type> >
   quasi_unwrap(const mtOp<out_eT, T1, op_type>& A)
     : M(A)
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   Mat<out_eT> M;
@@ -441,18 +501,18 @@ struct quasi_unwrap< Op<T1, op_vectorise_col> >
     : U( A.m )
     , M( const_cast<eT*>(U.M.memptr()), U.M.n_elem, 1, false, false )
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
-  const unwrap<T1> U;
-  const Mat<eT>    M;
+  const quasi_unwrap<T1> U;
+  const Mat<eT>          M;
   
   static constexpr bool is_const     = true;
   static constexpr bool has_subview  = true;
   static constexpr bool has_orig_mem = true;
   
   template<typename eT2>
-  arma_inline bool is_alias(const Mat<eT2>& X) const { return (void_ptr(&(U.M)) == void_ptr(&X)); }
+  arma_inline bool is_alias(const Mat<eT2>& X) const { return U.is_alias(X); }
   };
 
 
@@ -465,7 +525,7 @@ struct quasi_unwrap< Op<Col<eT>, op_strans> >
     : orig(A.m)
     , M   (const_cast<eT*>(A.m.memptr()), A.m.n_elem, false, false)
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   const Col<eT>& orig;
@@ -476,7 +536,7 @@ struct quasi_unwrap< Op<Col<eT>, op_strans> >
   static constexpr bool has_orig_mem = true;
   
   template<typename eT2>
-  arma_inline bool is_alias(const Mat<eT2>& X) const { return (void_ptr(&orig) == void_ptr(&X)); }
+  arma_inline bool is_alias(const Mat<eT2>& X) const { return (is_same_type<eT,eT2>::yes) && (void_ptr(&orig) == void_ptr(&X)); }
   };
 
 
@@ -489,7 +549,7 @@ struct quasi_unwrap< Op<Row<eT>, op_strans> >
     : orig(A.m)
     , M   (const_cast<eT*>(A.m.memptr()), A.m.n_elem, false, false)
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   const Row<eT>& orig;
@@ -500,7 +560,7 @@ struct quasi_unwrap< Op<Row<eT>, op_strans> >
   static constexpr bool has_orig_mem = true;
   
   template<typename eT2>
-  arma_inline bool is_alias(const Mat<eT2>& X) const { return (void_ptr(&orig) == void_ptr(&X)); }
+  arma_inline bool is_alias(const Mat<eT2>& X) const { return (is_same_type<eT,eT2>::yes) && (void_ptr(&orig) == void_ptr(&X)); }
   };
 
 
@@ -511,9 +571,9 @@ struct quasi_unwrap< Op<subview_col<eT>, op_strans> >
   inline
   quasi_unwrap(const Op<subview_col<eT>, op_strans>& A)
     : orig( A.m.m )
-    , M   ( const_cast<eT*>( A.m.colptr(0) ), A.m.n_rows, false, false )
+    , M   ( const_cast<eT*>( A.m.colmem ), A.m.n_rows, false, false )
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   const Mat<eT>& orig;
@@ -524,7 +584,7 @@ struct quasi_unwrap< Op<subview_col<eT>, op_strans> >
   static constexpr bool has_orig_mem = true;
   
   template<typename eT2>
-  arma_inline bool is_alias(const Mat<eT2>& X) const { return (void_ptr(&X) == void_ptr(&orig)); }
+  arma_inline bool is_alias(const Mat<eT2>& X) const { return (is_same_type<eT,eT2>::yes) && (void_ptr(&X) == void_ptr(&orig)); }
   };
 
 
@@ -545,7 +605,7 @@ struct quasi_unwrap_Col_htrans< Op<Col<eT>, op_htrans> >
     : orig(A.m)
     , M   (const_cast<eT*>(A.m.memptr()), A.m.n_elem, false, false)
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   const Col<eT>& orig;
@@ -556,7 +616,7 @@ struct quasi_unwrap_Col_htrans< Op<Col<eT>, op_htrans> >
   static constexpr bool has_orig_mem = true;
   
   template<typename eT2>
-  arma_inline bool is_alias(const Mat<eT2>& X) const { return (void_ptr(&orig) == void_ptr(&X)); }
+  arma_inline bool is_alias(const Mat<eT2>& X) const { return (is_same_type<eT,eT2>::yes) && (void_ptr(&orig) == void_ptr(&X)); }
   };
 
 
@@ -609,7 +669,7 @@ struct quasi_unwrap_Row_htrans< Op<Row<eT>, op_htrans> >
     : orig(A.m)
     , M   (const_cast<eT*>(A.m.memptr()), A.m.n_elem, false, false)
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   const Row<eT>& orig;
@@ -620,7 +680,7 @@ struct quasi_unwrap_Row_htrans< Op<Row<eT>, op_htrans> >
   static constexpr bool has_orig_mem = true;
   
   template<typename eT2>
-  arma_inline bool is_alias(const Mat<eT2>& X) const { return (void_ptr(&orig) == void_ptr(&X)); }
+  arma_inline bool is_alias(const Mat<eT2>& X) const { return (is_same_type<eT,eT2>::yes) && (void_ptr(&orig) == void_ptr(&X)); }
   };
 
 
@@ -671,9 +731,9 @@ struct quasi_unwrap_subview_col_htrans< Op<subview_col<eT>, op_htrans> >
   inline
   quasi_unwrap_subview_col_htrans(const Op<subview_col<eT>, op_htrans>& A)
     : orig(A.m.m)
-    , M   (const_cast<eT*>(A.m.colptr(0)), A.m.n_rows, false, false)
+    , M   (const_cast<eT*>(A.m.colmem), A.m.n_rows, false, false)
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   const Mat<eT>& orig;
@@ -684,7 +744,7 @@ struct quasi_unwrap_subview_col_htrans< Op<subview_col<eT>, op_htrans> >
   static constexpr bool has_orig_mem = true;
   
   template<typename eT2>
-  arma_inline bool is_alias(const Mat<eT2>& X) const { return (void_ptr(&orig) == void_ptr(&X)); }
+  arma_inline bool is_alias(const Mat<eT2>& X) const { return (is_same_type<eT,eT2>::yes) && (void_ptr(&orig) == void_ptr(&X)); }
   };
 
 
@@ -731,7 +791,7 @@ struct quasi_unwrap< CubeToMatOp<T1, op_vectorise_cube_col> >
     : U( A.m )
     , M( const_cast<eT*>(U.M.memptr()), U.M.n_elem, 1, false, true )
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   const unwrap_cube<T1> U;
@@ -747,24 +807,22 @@ struct quasi_unwrap< CubeToMatOp<T1, op_vectorise_cube_col> >
 
 
 
-template<typename T1>
-struct quasi_unwrap< SpToDOp<T1, op_nonzeros_spmat> >
+template<typename eT>
+struct quasi_unwrap< SpToDOp<SpMat<eT>, op_sp_nonzeros> >
   {
-  typedef typename T1::elem_type eT;
-  
   inline
-  quasi_unwrap(const SpToDOp<T1, op_nonzeros_spmat>& A)
-    : U( A.m )
-    , M( const_cast<eT*>(U.M.values), U.M.n_nonzero, 1, false, true )
+  quasi_unwrap(const SpToDOp<SpMat<eT>, op_sp_nonzeros>& A)
+    : orig( A.m )
+    , M( const_cast<eT*>(orig.values), orig.n_nonzero, 1, false, true )
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
-  const unwrap_spmat<T1> U;
-  const Mat<eT>          M;
+  const SpMat<eT>& orig;
+  const Mat<eT>    M;
   
   static constexpr bool is_const     = true;
-  static constexpr bool has_subview  = true;
+  static constexpr bool has_subview  = false;
   static constexpr bool has_orig_mem = true;
   
   template<typename eT2>
@@ -789,14 +847,14 @@ struct unwrap_check_default
   unwrap_check_default(const T1& A, const Mat<eT>&)
     : M(A)
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   inline
   unwrap_check_default(const T1& A, const bool)
     : M(A)
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   const Mat<eT> M;
@@ -815,7 +873,7 @@ struct unwrap_check_fixed
     : M_local( (&A == &B) ? new T1(A) : nullptr )
     , M      ( (&A == &B) ? *M_local  : A       )
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   inline
@@ -823,13 +881,13 @@ struct unwrap_check_fixed
     : M_local( is_alias ? new T1(A) : nullptr )
     , M      ( is_alias ? *M_local  : A       )
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   inline
   ~unwrap_check_fixed()
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     
     if(M_local) { delete M_local; }
     }
@@ -878,7 +936,7 @@ struct unwrap_check< Mat<eT> >
     : M_local( (&A == &B) ? new Mat<eT>(A) : nullptr )
     , M      ( (&A == &B) ? (*M_local)     : A       )
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   inline
@@ -886,13 +944,13 @@ struct unwrap_check< Mat<eT> >
     : M_local( is_alias ? new Mat<eT>(A) : nullptr )
     , M      ( is_alias ? (*M_local)     : A       )
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   inline
   ~unwrap_check()
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     
     if(M_local) { delete M_local; }
     }
@@ -915,7 +973,7 @@ struct unwrap_check< Row<eT> >
     : M_local( (&A == &B) ? new Row<eT>(A) : nullptr )
     , M      ( (&A == &B) ? (*M_local)     : A       )
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   inline
@@ -923,13 +981,13 @@ struct unwrap_check< Row<eT> >
     : M_local( is_alias ? new Row<eT>(A) : nullptr )
     , M      ( is_alias ? (*M_local)     : A       )
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   inline
   ~unwrap_check()
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     
     if(M_local) { delete M_local; }
     }
@@ -952,7 +1010,7 @@ struct unwrap_check< Col<eT> >
     : M_local( (&A == &B) ? new Col<eT>(A) : nullptr )
     , M      ( (&A == &B) ? (*M_local)     : A       )
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   inline
@@ -960,13 +1018,13 @@ struct unwrap_check< Col<eT> >
     : M_local( is_alias ? new Col<eT>(A) : nullptr )
     , M      ( is_alias ? (*M_local)     : A       )
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   inline
   ~unwrap_check()
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     
     if(M_local) { delete M_local; }
     }
@@ -995,7 +1053,7 @@ struct unwrap_check_mixed
   unwrap_check_mixed(const T1& A, const Mat<eT2>&)
     : M(A)
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   //template<typename eT2>
@@ -1003,7 +1061,7 @@ struct unwrap_check_mixed
   unwrap_check_mixed(const T1& A, const bool)
     : M(A)
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   const Mat<eT1> M;
@@ -1020,7 +1078,7 @@ struct unwrap_check_mixed< Mat<eT1> >
     : M_local( (void_ptr(&A) == void_ptr(&B)) ? new Mat<eT1>(A) : nullptr )
     , M      ( (void_ptr(&A) == void_ptr(&B)) ? (*M_local)      : A       )
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   //template<typename eT2>
@@ -1029,13 +1087,13 @@ struct unwrap_check_mixed< Mat<eT1> >
     : M_local( is_alias ? new Mat<eT1>(A) : nullptr )
     , M      ( is_alias ? (*M_local)      : A       )
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   inline
   ~unwrap_check_mixed()
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     
     if(M_local) { delete M_local; }
     }
@@ -1057,7 +1115,7 @@ struct unwrap_check_mixed< Row<eT1> >
     : M_local( (void_ptr(&A) == void_ptr(&B)) ? new Row<eT1>(A) : nullptr )
     , M      ( (void_ptr(&A) == void_ptr(&B)) ? (*M_local)      : A       )
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   
@@ -1067,13 +1125,13 @@ struct unwrap_check_mixed< Row<eT1> >
     : M_local( is_alias ? new Row<eT1>(A) : nullptr )
     , M      ( is_alias ? (*M_local)      : A       )
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   inline
   ~unwrap_check_mixed()
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     
     if(M_local) { delete M_local; }
     }
@@ -1095,7 +1153,7 @@ struct unwrap_check_mixed< Col<eT1> >
     : M_local( (void_ptr(&A) == void_ptr(&B)) ? new Col<eT1>(A) : nullptr )
     , M      ( (void_ptr(&A) == void_ptr(&B)) ? (*M_local)      : A       )
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   //template<typename eT2>
@@ -1104,13 +1162,13 @@ struct unwrap_check_mixed< Col<eT1> >
     : M_local( is_alias ? new Col<eT1>(A) : nullptr )
     , M      ( is_alias ? (*M_local)      : A       )
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   inline
   ~unwrap_check_mixed()
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     
     if(M_local) { delete M_local; }
     }
@@ -1139,7 +1197,7 @@ struct partial_unwrap_default
   partial_unwrap_default(const T1& A)
     : M(A)
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   constexpr eT get_val() const { return eT(1); }
@@ -1149,6 +1207,7 @@ struct partial_unwrap_default
   
   static constexpr bool do_trans = false;
   static constexpr bool do_times = false;
+  static constexpr bool is_fast  = false;
   
   const Mat<eT> M;
   };
@@ -1164,7 +1223,7 @@ struct partial_unwrap_fixed
   partial_unwrap_fixed(const T1& A)
     : M(A)
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   constexpr eT get_val() const { return eT(1); }
@@ -1174,6 +1233,7 @@ struct partial_unwrap_fixed
   
   static constexpr bool do_trans = false;
   static constexpr bool do_times = false;
+  static constexpr bool is_fast  = true;
   
   const T1& M;
   };
@@ -1210,7 +1270,7 @@ struct partial_unwrap< Mat<eT> >
   partial_unwrap(const Mat<eT>& A)
     : M(A)
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   constexpr eT get_val() const { return eT(1); }
@@ -1220,6 +1280,7 @@ struct partial_unwrap< Mat<eT> >
   
   static constexpr bool do_trans = false;
   static constexpr bool do_times = false;
+  static constexpr bool is_fast  = true;
   
   const Mat<eT>& M;
   };
@@ -1235,7 +1296,7 @@ struct partial_unwrap< Row<eT> >
   partial_unwrap(const Row<eT>& A)
     : M(A)
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   constexpr eT get_val() const { return eT(1); }
@@ -1245,6 +1306,7 @@ struct partial_unwrap< Row<eT> >
   
   static constexpr bool do_trans = false;
   static constexpr bool do_times = false;
+  static constexpr bool is_fast  = true;
   
   const Row<eT>& M;
   };
@@ -1260,7 +1322,7 @@ struct partial_unwrap< Col<eT> >
   partial_unwrap(const Col<eT>& A)
     : M(A)
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   constexpr eT get_val() const { return eT(1); }
@@ -1270,6 +1332,7 @@ struct partial_unwrap< Col<eT> >
   
   static constexpr bool do_trans = false;
   static constexpr bool do_times = false;
+  static constexpr bool is_fast  = true;
   
   const Col<eT>& M;
   };
@@ -1286,7 +1349,7 @@ struct partial_unwrap< subview<eT> >
     : sv( A                                                  )
     , M ( A, ((A.aux_row1 == 0) && (A.n_rows == A.m.n_rows)) )  // reuse memory if the subview is a contiguous chunk
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   constexpr eT get_val() const { return eT(1); }
@@ -1296,6 +1359,7 @@ struct partial_unwrap< subview<eT> >
   
   static constexpr bool do_trans = false;
   static constexpr bool do_times = false;
+  static constexpr bool is_fast  = false;  // can't determine at compile time that memory is reused
   
   const subview<eT>& sv;
   const Mat<eT>      M;
@@ -1311,9 +1375,9 @@ struct partial_unwrap< subview_col<eT> >
   inline
   partial_unwrap(const subview_col<eT>& A)
     : orig( A.m )
-    , M   ( const_cast<eT*>( A.colptr(0) ), A.n_rows, false, false )
+    , M   ( const_cast<eT*>( A.colmem ), A.n_rows, false, false )
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   constexpr eT get_val() const { return eT(1); }
@@ -1323,9 +1387,38 @@ struct partial_unwrap< subview_col<eT> >
   
   static constexpr bool do_trans = false;
   static constexpr bool do_times = false;
+  static constexpr bool is_fast  = true;
   
   const Mat<eT>& orig;
   const Col<eT>  M;
+  };
+
+
+
+template<typename eT>
+struct partial_unwrap< subview_cols<eT> >
+  {
+  typedef Mat<eT> stored_type;
+  
+  inline
+  partial_unwrap(const subview_cols<eT>& A)
+    : orig( A.m )
+    , M   ( const_cast<eT*>( A.colptr(0) ), A.n_rows, A.n_cols, false, false )
+    {
+    arma_debug_sigprint();
+    }
+  
+  constexpr eT get_val() const { return eT(1); }
+  
+  template<typename eT2>
+  arma_inline bool is_alias(const Mat<eT2>& X) const { return (void_ptr(&X) == void_ptr(&orig)); }
+  
+  static constexpr bool do_trans = false;
+  static constexpr bool do_times = false;
+  static constexpr bool is_fast  = true;
+  
+  const Mat<eT>& orig;
+  const Mat<eT>  M;
   };
 
 
@@ -1339,7 +1432,7 @@ struct partial_unwrap< subview_row<eT> >
   partial_unwrap(const subview_row<eT>& A)
     : M(A)
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   constexpr eT get_val() const { return eT(1); }
@@ -1349,6 +1442,7 @@ struct partial_unwrap< subview_row<eT> >
   
   static constexpr bool do_trans = false;
   static constexpr bool do_times = false;
+  static constexpr bool is_fast  = false;
   
   const Row<eT> M;
   };
@@ -1365,7 +1459,7 @@ struct partial_unwrap_htrans_default
   partial_unwrap_htrans_default(const Op<T1, op_htrans>& A)
     : M(A.m)
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   constexpr eT get_val() const { return eT(1); }
@@ -1375,6 +1469,7 @@ struct partial_unwrap_htrans_default
   
   static constexpr bool do_trans = true;
   static constexpr bool do_times = false;
+  static constexpr bool is_fast  = false;
   
   const Mat<eT> M;
   };
@@ -1390,7 +1485,7 @@ struct partial_unwrap_htrans_fixed
   partial_unwrap_htrans_fixed(const Op<T1, op_htrans>& A)
     : M(A.m)
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   constexpr eT get_val() const { return eT(1); }
@@ -1400,6 +1495,7 @@ struct partial_unwrap_htrans_fixed
   
   static constexpr bool do_trans = true;
   static constexpr bool do_times = false;
+  static constexpr bool is_fast  = true;
   
   const T1& M;
   };
@@ -1435,7 +1531,7 @@ struct partial_unwrap< Op< Mat<eT>, op_htrans> >
   partial_unwrap(const Op< Mat<eT>, op_htrans>& A)
     : M(A.m)
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   constexpr eT get_val() const { return eT(1); }
@@ -1445,6 +1541,7 @@ struct partial_unwrap< Op< Mat<eT>, op_htrans> >
   
   static constexpr bool do_trans = true;
   static constexpr bool do_times = false;
+  static constexpr bool is_fast  = true;
   
   const Mat<eT>& M;
   };
@@ -1460,7 +1557,7 @@ struct partial_unwrap< Op< Row<eT>, op_htrans> >
   partial_unwrap(const Op< Row<eT>, op_htrans>& A)
     : M(A.m)
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   constexpr eT get_val() const { return eT(1); }
@@ -1470,6 +1567,7 @@ struct partial_unwrap< Op< Row<eT>, op_htrans> >
   
   static constexpr bool do_trans = true;
   static constexpr bool do_times = false;
+  static constexpr bool is_fast  = true;
   
   const Row<eT>& M;
   };
@@ -1485,7 +1583,7 @@ struct partial_unwrap< Op< Col<eT>, op_htrans> >
   partial_unwrap(const Op< Col<eT>, op_htrans>& A)
     : M(A.m)
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   constexpr eT get_val() const { return eT(1); }
@@ -1495,6 +1593,7 @@ struct partial_unwrap< Op< Col<eT>, op_htrans> >
   
   static constexpr bool do_trans = true;
   static constexpr bool do_times = false;
+  static constexpr bool is_fast  = true;
   
   const Col<eT>& M;
   };
@@ -1511,7 +1610,7 @@ struct partial_unwrap< Op< subview<eT>, op_htrans> >
     : sv( A.m                                                        )
     , M ( A.m, ((A.m.aux_row1 == 0) && (A.m.n_rows == A.m.m.n_rows)) )  // reuse memory if the subview is a contiguous chunk
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   constexpr eT get_val() const { return eT(1); }
@@ -1521,9 +1620,38 @@ struct partial_unwrap< Op< subview<eT>, op_htrans> >
   
   static constexpr bool do_trans = true;
   static constexpr bool do_times = false;
+  static constexpr bool is_fast  = false;  // can't determine at compile time that memory is reused
   
   const subview<eT>& sv;
   const Mat<eT>      M;
+  };
+
+
+
+template<typename eT>
+struct partial_unwrap< Op< subview_cols<eT>, op_htrans> >
+  {
+  typedef Mat<eT> stored_type;
+  
+  inline
+  partial_unwrap(const Op< subview_cols<eT>, op_htrans>& A)
+    : orig( A.m.m )
+    , M   ( const_cast<eT*>( A.m.colptr(0) ), A.m.n_rows, A.m.n_cols, false, false )
+    {
+    arma_debug_sigprint();
+    }
+  
+  constexpr eT get_val() const { return eT(1); }
+  
+  template<typename eT2>
+  arma_inline bool is_alias(const Mat<eT2>& X) const { return (void_ptr(&orig) == void_ptr(&X)); }
+  
+  static constexpr bool do_trans = true;
+  static constexpr bool do_times = false;
+  static constexpr bool is_fast  = true;
+  
+  const Mat<eT>& orig;
+  const Mat<eT>  M;
   };
 
 
@@ -1536,9 +1664,9 @@ struct partial_unwrap< Op< subview_col<eT>, op_htrans> >
   inline
   partial_unwrap(const Op< subview_col<eT>, op_htrans>& A)
     : orig( A.m.m )
-    , M   ( const_cast<eT*>( A.m.colptr(0) ), A.m.n_rows, false, false )
+    , M   ( const_cast<eT*>( A.m.colmem ), A.m.n_rows, false, false )
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   constexpr eT get_val() const { return eT(1); }
@@ -1548,6 +1676,7 @@ struct partial_unwrap< Op< subview_col<eT>, op_htrans> >
   
   static constexpr bool do_trans = true;
   static constexpr bool do_times = false;
+  static constexpr bool is_fast  = true;
   
   const Mat<eT>& orig;
   const Col<eT>  M;
@@ -1564,7 +1693,7 @@ struct partial_unwrap< Op< subview_row<eT>, op_htrans> >
   partial_unwrap(const Op< subview_row<eT>, op_htrans>& A)
     : M(A.m)
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   constexpr eT get_val() const { return eT(1); }
@@ -1574,6 +1703,7 @@ struct partial_unwrap< Op< subview_row<eT>, op_htrans> >
   
   static constexpr bool do_trans = true;
   static constexpr bool do_times = false;
+  static constexpr bool is_fast  = false;
   
   const Row<eT> M;
   };
@@ -1591,7 +1721,7 @@ struct partial_unwrap_htrans2_default
     : val(A.aux)
     , M  (A.m)
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   arma_inline eT get_val() const { return val; }
@@ -1601,6 +1731,7 @@ struct partial_unwrap_htrans2_default
   
   static constexpr bool do_trans = true;
   static constexpr bool do_times = true;
+  static constexpr bool is_fast  = false;
   
   const eT      val;
   const Mat<eT> M;
@@ -1618,7 +1749,7 @@ struct partial_unwrap_htrans2_fixed
     : val(A.aux)
     , M  (A.m)
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   arma_inline eT get_val() const { return val; }
@@ -1628,6 +1759,7 @@ struct partial_unwrap_htrans2_fixed
   
   static constexpr bool do_trans = true;
   static constexpr bool do_times = true;
+  static constexpr bool is_fast  = true;
   
   const eT  val;
   const T1& M;
@@ -1665,7 +1797,7 @@ struct partial_unwrap< Op< Mat<eT>, op_htrans2> >
     : val(A.aux)
     , M  (A.m)
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   inline eT get_val() const { return val; }
@@ -1675,6 +1807,7 @@ struct partial_unwrap< Op< Mat<eT>, op_htrans2> >
   
   static constexpr bool do_trans = true;
   static constexpr bool do_times = true;
+  static constexpr bool is_fast  = true;
   
   const eT       val;
   const Mat<eT>& M;
@@ -1692,7 +1825,7 @@ struct partial_unwrap< Op< Row<eT>, op_htrans2> >
     : val(A.aux)
     , M  (A.m)
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   inline eT get_val() const { return val; }
@@ -1702,6 +1835,7 @@ struct partial_unwrap< Op< Row<eT>, op_htrans2> >
   
   static constexpr bool do_trans = true;
   static constexpr bool do_times = true;
+  static constexpr bool is_fast  = true;
   
   const eT       val;
   const Row<eT>& M;
@@ -1719,7 +1853,7 @@ struct partial_unwrap< Op< Col<eT>, op_htrans2> >
     : val(A.aux)
     , M  (A.m)
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   inline eT get_val() const { return val; }
@@ -1729,9 +1863,70 @@ struct partial_unwrap< Op< Col<eT>, op_htrans2> >
   
   static constexpr bool do_trans = true;
   static constexpr bool do_times = true;
+  static constexpr bool is_fast  = true;
   
   const eT       val;
   const Col<eT>& M;
+  };
+
+
+
+template<typename eT>
+struct partial_unwrap< Op< subview<eT>, op_htrans2> >
+  {
+  typedef Mat<eT> stored_type;
+  
+  inline
+  partial_unwrap(const Op< subview<eT>, op_htrans2>& A)
+    : sv ( A.m   )
+    , val( A.aux )
+    , M  ( A.m, ((A.m.aux_row1 == 0) && (A.m.n_rows == A.m.m.n_rows)) )  // reuse memory if the subview is a contiguous chunk
+    {
+    arma_debug_sigprint();
+    }
+  
+  inline eT get_val() const { return val; }
+  
+  template<typename eT2>
+  arma_inline bool is_alias(const Mat<eT2>& X) const { return ( ((sv.aux_row1 == 0) && (sv.n_rows == sv.m.n_rows)) ? (void_ptr(&(sv.m)) == void_ptr(&X)) : false ); }
+  
+  static constexpr bool do_trans = true;
+  static constexpr bool do_times = true;
+  static constexpr bool is_fast  = false;  // can't determine at compile time that memory is reused
+  
+  const subview<eT>& sv;
+  const eT           val;
+  const Mat<eT>      M;
+  };
+
+
+
+template<typename eT>
+struct partial_unwrap< Op< subview_cols<eT>, op_htrans2> >
+  {
+  typedef Mat<eT> stored_type;
+  
+  inline
+  partial_unwrap(const Op< subview_cols<eT>, op_htrans2>& A)
+    : orig( A.m.m )
+    , val ( A.aux )
+    , M   ( const_cast<eT*>( A.m.colptr(0) ), A.m.n_rows, A.m.n_cols, false, false )
+    {
+    arma_debug_sigprint();
+    }
+  
+  inline eT get_val() const { return val; }
+  
+  template<typename eT2>
+  arma_inline bool is_alias(const Mat<eT2>& X) const { return (void_ptr(&orig) == void_ptr(&X)); }
+  
+  static constexpr bool do_trans = true;
+  static constexpr bool do_times = true;
+  static constexpr bool is_fast  = true;
+  
+  const Mat<eT>& orig;
+  const eT       val;
+  const Mat<eT>  M;
   };
 
 
@@ -1745,9 +1940,9 @@ struct partial_unwrap< Op< subview_col<eT>, op_htrans2> >
   partial_unwrap(const Op< subview_col<eT>, op_htrans2>& A)
     : orig( A.m.m )
     , val ( A.aux )
-    , M   ( const_cast<eT*>( A.m.colptr(0) ), A.m.n_rows, false, false )
+    , M   ( const_cast<eT*>( A.m.colmem ), A.m.n_rows, false, false )
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   inline eT get_val() const { return val; }
@@ -1757,6 +1952,7 @@ struct partial_unwrap< Op< subview_col<eT>, op_htrans2> >
   
   static constexpr bool do_trans = true;
   static constexpr bool do_times = true;
+  static constexpr bool is_fast  = true;
   
   const Mat<eT>& orig;
   
@@ -1776,7 +1972,7 @@ struct partial_unwrap< Op< subview_row<eT>, op_htrans2> >
     : val(A.aux)
     , M  (A.m  )
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   arma_inline eT get_val() const { return val; }
@@ -1786,6 +1982,7 @@ struct partial_unwrap< Op< subview_row<eT>, op_htrans2> >
   
   static constexpr bool do_trans = true;
   static constexpr bool do_times = true;
+  static constexpr bool is_fast  = false;
   
   const eT      val;
   const Row<eT> M;
@@ -1804,7 +2001,7 @@ struct partial_unwrap_scalar_times_default
     : val(A.aux)
     , M  (A.P.Q)
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   arma_inline eT get_val() const { return val; }
@@ -1814,6 +2011,7 @@ struct partial_unwrap_scalar_times_default
   
   static constexpr bool do_trans = false;
   static constexpr bool do_times = true;
+  static constexpr bool is_fast  = false;
   
   const eT      val;
   const Mat<eT> M;
@@ -1832,7 +2030,7 @@ struct partial_unwrap_scalar_times_fixed
     : val(A.aux)
     , M  (A.P.Q)
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   arma_inline eT get_val() const { return val; }
@@ -1842,6 +2040,7 @@ struct partial_unwrap_scalar_times_fixed
   
   static constexpr bool do_trans = false;
   static constexpr bool do_times = true;
+  static constexpr bool is_fast  = true;
   
   const eT  val;
   const T1& M;
@@ -1883,7 +2082,7 @@ struct partial_unwrap< eOp<Mat<eT>, eop_scalar_times> >
     : val(A.aux)
     , M  (A.P.Q)
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   inline eT get_val() const { return val; }
@@ -1893,6 +2092,7 @@ struct partial_unwrap< eOp<Mat<eT>, eop_scalar_times> >
   
   static constexpr bool do_trans = false;
   static constexpr bool do_times = true;
+  static constexpr bool is_fast  = true;
   
   const eT       val;
   const Mat<eT>& M;
@@ -1910,7 +2110,7 @@ struct partial_unwrap< eOp<Row<eT>, eop_scalar_times> >
     : val(A.aux)
     , M  (A.P.Q)
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   inline eT get_val() const { return val; }
@@ -1920,6 +2120,7 @@ struct partial_unwrap< eOp<Row<eT>, eop_scalar_times> >
   
   static constexpr bool do_trans = false;
   static constexpr bool do_times = true;
+  static constexpr bool is_fast  = true;
   
   const eT       val;
   const Row<eT>& M;
@@ -1937,7 +2138,7 @@ struct partial_unwrap< eOp<Col<eT>, eop_scalar_times> >
     : val(A.aux)
     , M  (A.P.Q)
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   inline eT get_val() const { return val; }
@@ -1947,6 +2148,7 @@ struct partial_unwrap< eOp<Col<eT>, eop_scalar_times> >
   
   static constexpr bool do_trans = false;
   static constexpr bool do_times = true;
+  static constexpr bool is_fast  = true;
   
   const eT       val;
   const Col<eT>& M;
@@ -1963,9 +2165,9 @@ struct partial_unwrap< eOp<subview_col<eT>, eop_scalar_times> >
   partial_unwrap(const eOp<subview_col<eT>,eop_scalar_times>& A)
     : orig( A.P.Q.m )
     , val ( A.aux   )
-    , M   ( const_cast<eT*>( A.P.Q.colptr(0) ), A.P.Q.n_rows, false, false )
+    , M   ( const_cast<eT*>( A.P.Q.colmem ), A.P.Q.n_rows, false, false )
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   arma_inline eT get_val() const { return val; }
@@ -1975,6 +2177,7 @@ struct partial_unwrap< eOp<subview_col<eT>, eop_scalar_times> >
   
   static constexpr bool do_trans = false;
   static constexpr bool do_times = true;
+  static constexpr bool is_fast  = true;
   
   const Mat<eT>& orig;
   
@@ -1994,7 +2197,7 @@ struct partial_unwrap< eOp<subview_row<eT>, eop_scalar_times> >
     : val(A.aux)
     , M  (A.P.Q)
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   arma_inline eT get_val() const { return val; }
@@ -2004,6 +2207,7 @@ struct partial_unwrap< eOp<subview_row<eT>, eop_scalar_times> >
   
   static constexpr bool do_trans = false;
   static constexpr bool do_times = true;
+  static constexpr bool is_fast  = false;
   
   const eT      val;
   const Row<eT> M;
@@ -2021,7 +2225,7 @@ struct partial_unwrap_neg_default
   partial_unwrap_neg_default(const eOp<T1, eop_neg>& A)
     : M(A.P.Q)
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   constexpr eT get_val() const { return eT(-1); }
@@ -2031,6 +2235,7 @@ struct partial_unwrap_neg_default
   
   static constexpr bool do_trans = false;
   static constexpr bool do_times = true;
+  static constexpr bool is_fast  = false;
   
   const Mat<eT> M;
   };
@@ -2047,7 +2252,7 @@ struct partial_unwrap_neg_fixed
   partial_unwrap_neg_fixed(const eOp<T1, eop_neg>& A)
     : M(A.P.Q)
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   constexpr eT get_val() const { return eT(-1); }
@@ -2057,6 +2262,7 @@ struct partial_unwrap_neg_fixed
   
   static constexpr bool do_trans = false;
   static constexpr bool do_times = true;
+  static constexpr bool is_fast  = true;
   
   const T1& M;
   };
@@ -2096,7 +2302,7 @@ struct partial_unwrap< eOp<Mat<eT>, eop_neg> >
   partial_unwrap(const eOp<Mat<eT>,eop_neg>& A)
     : M(A.P.Q)
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   constexpr eT get_val() const { return eT(-1); }
@@ -2106,6 +2312,7 @@ struct partial_unwrap< eOp<Mat<eT>, eop_neg> >
   
   static constexpr bool do_trans = false;
   static constexpr bool do_times = true;
+  static constexpr bool is_fast  = true;
   
   const Mat<eT>& M;
   };
@@ -2121,7 +2328,7 @@ struct partial_unwrap< eOp<Row<eT>, eop_neg> >
   partial_unwrap(const eOp<Row<eT>,eop_neg>& A)
     : M(A.P.Q)
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   constexpr eT get_val() const { return eT(-1); }
@@ -2131,6 +2338,7 @@ struct partial_unwrap< eOp<Row<eT>, eop_neg> >
   
   static constexpr bool do_trans = false;
   static constexpr bool do_times = true;
+  static constexpr bool is_fast  = true;
   
   const Row<eT>& M;
   };
@@ -2146,7 +2354,7 @@ struct partial_unwrap< eOp<Col<eT>, eop_neg> >
   partial_unwrap(const eOp<Col<eT>,eop_neg>& A)
     : M(A.P.Q)
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   constexpr eT get_val() const { return eT(-1); }
@@ -2156,6 +2364,7 @@ struct partial_unwrap< eOp<Col<eT>, eop_neg> >
   
   static constexpr bool do_trans = false;
   static constexpr bool do_times = true;
+  static constexpr bool is_fast  = true;
   
   const Col<eT>& M;
   };
@@ -2170,9 +2379,9 @@ struct partial_unwrap< eOp<subview_col<eT>, eop_neg> >
   inline
   partial_unwrap(const eOp<subview_col<eT>,eop_neg>& A)
     : orig( A.P.Q.m )
-    , M   ( const_cast<eT*>( A.P.Q.colptr(0) ), A.P.Q.n_rows, false, false )
+    , M   ( const_cast<eT*>( A.P.Q.colmem ), A.P.Q.n_rows, false, false )
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   constexpr eT get_val() const { return eT(-1); }
@@ -2182,6 +2391,7 @@ struct partial_unwrap< eOp<subview_col<eT>, eop_neg> >
   
   static constexpr bool do_trans = false;
   static constexpr bool do_times = true;
+  static constexpr bool is_fast  = true;
   
   const Mat<eT>& orig;
   const Col<eT>  M;
@@ -2198,7 +2408,7 @@ struct partial_unwrap< eOp<subview_row<eT>, eop_neg> >
   partial_unwrap(const eOp<subview_row<eT>,eop_neg>& A)
     : M(A.P.Q)
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   constexpr eT get_val() const { return eT(-1); }
@@ -2208,6 +2418,7 @@ struct partial_unwrap< eOp<subview_row<eT>, eop_neg> >
   
   static constexpr bool do_trans = false;
   static constexpr bool do_times = true;
+  static constexpr bool is_fast  = false;
   
   const Row<eT> M;
   };
@@ -2228,7 +2439,7 @@ struct partial_unwrap_check_default
   partial_unwrap_check_default(const T1& A, const Mat<eT>&)
     : M(A)
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   constexpr eT get_val() const { return eT(1); }
@@ -2251,13 +2462,13 @@ struct partial_unwrap_check_fixed
     : M_local( (&A == &B) ? new T1(A)  : nullptr )
     , M      ( (&A == &B) ? (*M_local) : A       )
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   inline
   ~partial_unwrap_check_fixed()
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     
     if(M_local) { delete M_local; }
     }
@@ -2305,14 +2516,14 @@ struct partial_unwrap_check< Mat<eT> >
     : M_local ( (&A == &B) ? new Mat<eT>(A) : nullptr )
     , M       ( (&A == &B) ? (*M_local)     : A       )
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   
   inline
   ~partial_unwrap_check()
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     
     if(M_local) { delete M_local; }
     }
@@ -2339,14 +2550,14 @@ struct partial_unwrap_check< Row<eT> >
     : M_local ( (&A == &B) ? new Row<eT>(A) : nullptr )
     , M       ( (&A == &B) ? (*M_local)     : A       )
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   
   inline
   ~partial_unwrap_check()
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     
     if(M_local) { delete M_local; }
     }
@@ -2373,14 +2584,14 @@ struct partial_unwrap_check< Col<eT> >
     : M_local ( (&A == &B) ? new Col<eT>(A) : nullptr )
     , M       ( (&A == &B) ? (*M_local)     : A       )
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   
   inline
   ~partial_unwrap_check()
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     
     if(M_local) { delete M_local; }
     }
@@ -2406,9 +2617,9 @@ struct partial_unwrap_check< subview_col<eT> >
   
   inline
   partial_unwrap_check(const subview_col<eT>& A, const Mat<eT>& B)
-    : M  ( const_cast<eT*>( A.colptr(0) ), A.n_rows, (&(A.m) == &B), false )
+    : M  ( const_cast<eT*>( A.colmem ), A.n_rows, (&(A.m) == &B), false )
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   constexpr eT get_val() const { return eT(1); }
@@ -2431,7 +2642,7 @@ struct partial_unwrap_check_htrans_default
   partial_unwrap_check_htrans_default(const Op<T1, op_htrans>& A, const Mat<eT>&)
     : M(A.m)
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   constexpr eT get_val() const { return eT(1); }
@@ -2454,13 +2665,13 @@ struct partial_unwrap_check_htrans_fixed
     : M_local( (&(A.m) == &B) ? new T1(A.m) : nullptr )
     , M      ( (&(A.m) == &B) ? (*M_local)  : A.m     )
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   inline
   ~partial_unwrap_check_htrans_fixed()
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     
     if(M_local) { delete M_local; }
     }
@@ -2509,13 +2720,13 @@ struct partial_unwrap_check< Op< Mat<eT>, op_htrans> >
     : M_local ( (&A.m == &B) ? new Mat<eT>(A.m) : nullptr )
     , M       ( (&A.m == &B) ? (*M_local)       : A.m     )
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   inline
   ~partial_unwrap_check()
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     
     if(M_local) { delete M_local; }
     }
@@ -2542,13 +2753,13 @@ struct partial_unwrap_check< Op< Row<eT>, op_htrans> >
     : M_local ( (&A.m == &B) ? new Row<eT>(A.m) : nullptr )
     , M       ( (&A.m == &B) ? (*M_local)       : A.m     )
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   inline
   ~partial_unwrap_check()
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     
     if(M_local) { delete M_local; }
     }
@@ -2575,13 +2786,13 @@ struct partial_unwrap_check< Op< Col<eT>, op_htrans> >
     : M_local ( (&A.m == &B) ? new Col<eT>(A.m) : nullptr )
     , M       ( (&A.m == &B) ? (*M_local)       : A.m     )
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   inline
   ~partial_unwrap_check()
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     
     if(M_local) { delete M_local; }
     }
@@ -2607,9 +2818,9 @@ struct partial_unwrap_check< Op< subview_col<eT>, op_htrans> >
   
   inline
   partial_unwrap_check(const Op< subview_col<eT>, op_htrans>& A, const Mat<eT>& B)
-    : M  ( const_cast<eT*>( A.m.colptr(0) ), A.m.n_rows, (&(A.m.m) == &B), false )
+    : M  ( const_cast<eT*>( A.m.colmem ), A.m.n_rows, (&(A.m.m) == &B), false )
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   constexpr eT get_val() const { return eT(1); }
@@ -2633,7 +2844,7 @@ struct partial_unwrap_check_htrans2_default
     : val(A.aux)
     , M  (A.m)
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   arma_inline eT get_val() const { return val; }
@@ -2659,13 +2870,13 @@ struct partial_unwrap_check_htrans2_fixed
     , M_local( (&(A.m) == &B) ? new T1(A.m) : nullptr )
     , M      ( (&(A.m) == &B) ? (*M_local)  : A.m     )
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   inline
   ~partial_unwrap_check_htrans2_fixed()
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     
     if(M_local) { delete M_local; }
     }
@@ -2716,13 +2927,13 @@ struct partial_unwrap_check< Op< Mat<eT>, op_htrans2> >
     , M_local ( (&A.m == &B) ? new Mat<eT>(A.m) : nullptr )
     , M       ( (&A.m == &B) ? (*M_local)       : A.m     )
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   inline
   ~partial_unwrap_check()
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     
     if(M_local) { delete M_local; }
     }
@@ -2751,13 +2962,13 @@ struct partial_unwrap_check< Op< Row<eT>, op_htrans2> >
     , M_local ( (&A.m == &B) ? new Row<eT>(A.m) : nullptr )
     , M       ( (&A.m == &B) ? (*M_local)       : A.m     )
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   inline
   ~partial_unwrap_check()
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     
     if(M_local) { delete M_local; }
     }
@@ -2786,13 +2997,13 @@ struct partial_unwrap_check< Op< Col<eT>, op_htrans2> >
     , M_local ( (&A.m == &B) ? new Col<eT>(A.m) : nullptr )
     , M       ( (&A.m == &B) ? (*M_local)       : A.m     )
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   inline
   ~partial_unwrap_check()
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     
     if(M_local) { delete M_local; }
     }
@@ -2820,9 +3031,9 @@ struct partial_unwrap_check< Op< subview_col<eT>, op_htrans2> >
   inline
   partial_unwrap_check(const Op< subview_col<eT>, op_htrans2>& A, const Mat<eT>& B)
     : val( A.aux )
-    , M  ( const_cast<eT*>( A.m.colptr(0) ), A.m.n_rows, (&(A.m.m) == &B), false )
+    , M  ( const_cast<eT*>( A.m.colmem ), A.m.n_rows, (&(A.m.m) == &B), false )
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   arma_inline eT get_val() const { return val; }
@@ -2847,7 +3058,7 @@ struct partial_unwrap_check_scalar_times_default
     : val(A.aux)
     , M  (A.P.Q)
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   arma_inline eT get_val() const { return val; }
@@ -2873,13 +3084,13 @@ struct partial_unwrap_check_scalar_times_fixed
     , M_local( (&(A.P.Q) == &B) ? new T1(A.P.Q) : nullptr )
     , M      ( (&(A.P.Q) == &B) ? (*M_local)    : A.P.Q   )
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   inline
   ~partial_unwrap_check_scalar_times_fixed()
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     
     if(M_local) { delete M_local; }
     }
@@ -2930,13 +3141,13 @@ struct partial_unwrap_check< eOp<Mat<eT>, eop_scalar_times> >
     , M_local( (&(A.P.Q) == &B) ? new Mat<eT>(A.P.Q) : nullptr )
     , M      ( (&(A.P.Q) == &B) ? *M_local           : A.P.Q   )
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   inline
   ~partial_unwrap_check()
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     
     if(M_local) { delete M_local; }
     }
@@ -2964,13 +3175,13 @@ struct partial_unwrap_check< eOp<Row<eT>, eop_scalar_times> >
     , M_local( (&(A.P.Q) == &B) ? new Row<eT>(A.P.Q) : nullptr )
     , M      ( (&(A.P.Q) == &B) ? *M_local           : A.P.Q   )
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   inline
   ~partial_unwrap_check()
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     
     if(M_local) { delete M_local; }
     }
@@ -2998,13 +3209,13 @@ struct partial_unwrap_check< eOp<Col<eT>, eop_scalar_times> >
     , M_local( (&(A.P.Q) == &B) ? new Col<eT>(A.P.Q) : nullptr )
     , M      ( (&(A.P.Q) == &B) ? *M_local           : A.P.Q   )
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   inline
   ~partial_unwrap_check()
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     
     if(M_local) { delete M_local; }
     }
@@ -3031,9 +3242,9 @@ struct partial_unwrap_check< eOp<subview_col<eT>, eop_scalar_times> >
   inline
   partial_unwrap_check(const eOp<subview_col<eT>,eop_scalar_times>& A, const Mat<eT>& B)
     : val( A.aux )
-    , M  ( const_cast<eT*>( A.P.Q.colptr(0) ), A.P.Q.n_rows, (&(A.P.Q.m) == &B), false )
+    , M  ( const_cast<eT*>( A.P.Q.colmem ), A.P.Q.n_rows, (&(A.P.Q.m) == &B), false )
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   arma_inline eT get_val() const { return val; }
@@ -3057,7 +3268,7 @@ struct partial_unwrap_check_neg_default
   partial_unwrap_check_neg_default(const eOp<T1, eop_neg>& A, const Mat<eT>&)
     : M(A.P.Q)
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   constexpr eT get_val() const { return eT(-1); }
@@ -3081,13 +3292,13 @@ struct partial_unwrap_check_neg_fixed
     : M_local( (&(A.P.Q) == &B) ? new T1(A.P.Q) : nullptr )
     , M      ( (&(A.P.Q) == &B) ? (*M_local)    : A.P.Q   )
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   inline
   ~partial_unwrap_check_neg_fixed()
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     
     if(M_local) { delete M_local; }
     }
@@ -3136,13 +3347,13 @@ struct partial_unwrap_check< eOp<Mat<eT>, eop_neg> >
     : M_local( (&(A.P.Q) == &B) ? new Mat<eT>(A.P.Q) : nullptr )
     , M      ( (&(A.P.Q) == &B) ? *M_local           : A.P.Q   )
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   inline
   ~partial_unwrap_check()
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     
     if(M_local) { delete M_local; }
     }
@@ -3168,13 +3379,13 @@ struct partial_unwrap_check< eOp<Row<eT>, eop_neg> >
     : M_local( (&(A.P.Q) == &B) ? new Row<eT>(A.P.Q) : nullptr )
     , M      ( (&(A.P.Q) == &B) ? *M_local           : A.P.Q   )
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   inline
   ~partial_unwrap_check()
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     
     if(M_local) { delete M_local; }
     }
@@ -3200,13 +3411,13 @@ struct partial_unwrap_check< eOp<Col<eT>, eop_neg> >
     : M_local( (&(A.P.Q) == &B) ? new Col<eT>(A.P.Q) : nullptr )
     , M      ( (&(A.P.Q) == &B) ? *M_local           : A.P.Q   )
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   inline
   ~partial_unwrap_check()
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     
     if(M_local) { delete M_local; }
     }
@@ -3231,9 +3442,9 @@ struct partial_unwrap_check< eOp<subview_col<eT>, eop_neg> >
   
   inline
   partial_unwrap_check(const eOp<subview_col<eT>,eop_neg>& A, const Mat<eT>& B)
-    : M  ( const_cast<eT*>( A.P.Q.colptr(0) ), A.P.Q.n_rows, (&(A.P.Q.m) == &B), false )
+    : M  ( const_cast<eT*>( A.P.Q.colmem ), A.P.Q.n_rows, (&(A.P.Q.m) == &B), false )
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   constexpr eT get_val() const { return eT(-1); }
@@ -3242,6 +3453,132 @@ struct partial_unwrap_check< eOp<subview_col<eT>, eop_neg> >
   static constexpr bool do_times = true;
   
   const Col<eT> M;
+  };
+
+
+
+//
+//
+//
+
+
+
+template<typename T1>
+struct sv_keep_unwrap
+  {
+  typedef typename T1::elem_type eT;
+  typedef Mat<eT>                stored_type;
+  
+  inline
+  sv_keep_unwrap(const T1& A)
+    : M(A)
+    {
+    arma_debug_sigprint();
+    }
+  
+  const Mat<eT> M;
+  };
+
+
+
+template<typename eT>
+struct sv_keep_unwrap< subview<eT> >
+  {
+  typedef subview<eT> stored_type;
+  
+  inline
+  sv_keep_unwrap(const subview<eT>& A)
+    : M(A)
+    {
+    arma_debug_sigprint();
+    }
+  
+  const subview<eT>& M;
+  };
+
+
+
+template<typename eT>
+struct sv_keep_unwrap< subview_row<eT> >
+  {
+  typedef subview_row<eT> stored_type;
+  
+  inline
+  sv_keep_unwrap(const subview_row<eT>& A)
+    : M(A)
+    {
+    arma_debug_sigprint();
+    }
+  
+  const subview_row<eT>& M;
+  };
+
+
+
+template<typename eT>
+struct sv_keep_unwrap< subview_col<eT> >
+  {
+  typedef subview_col<eT> stored_type;
+  
+  inline
+  sv_keep_unwrap(const subview_col<eT>& A)
+    : M(A)
+    {
+    arma_debug_sigprint();
+    }
+  
+  const subview_col<eT>& M;
+  };
+
+
+
+template<typename eT>
+struct sv_keep_unwrap< Mat<eT> >
+  {
+  typedef Mat<eT> stored_type;
+  
+  inline
+  sv_keep_unwrap(const Mat<eT>& A)
+    : M(A)
+    {
+    arma_debug_sigprint();
+    }
+  
+  const Mat<eT>& M;
+  };
+
+
+
+template<typename eT>
+struct sv_keep_unwrap< Row<eT> >
+  {
+  typedef Row<eT> stored_type;
+  
+  inline
+  sv_keep_unwrap(const Row<eT>& A)
+    : M(A)
+    {
+    arma_debug_sigprint();
+    }
+  
+  const Row<eT>& M;
+  };
+
+
+
+template<typename eT>
+struct sv_keep_unwrap< Col<eT> >
+  {
+  typedef Col<eT> stored_type;
+  
+  inline
+  sv_keep_unwrap(const Col<eT>& A)
+    : M(A)
+    {
+    arma_debug_sigprint();
+    }
+  
+  const Col<eT>& M;
   };
 
 

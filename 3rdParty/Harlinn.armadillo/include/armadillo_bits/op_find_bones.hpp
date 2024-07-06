@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+// 
 // Copyright 2008-2016 Conrad Sanderson (http://conradsanderson.id.au)
 // Copyright 2008-2016 National ICT Australia (NICTA)
 // 
@@ -110,6 +112,17 @@ class op_find_nonfinite
   
   template<typename T1>
   inline static void apply(Mat<uword>& out, const mtOp<uword, T1, op_find_nonfinite>& X);
+  };
+
+
+
+class op_find_nan
+  : public traits_op_col
+  {
+  public:
+  
+  template<typename T1>
+  inline static void apply(Mat<uword>& out, const mtOp<uword, T1, op_find_nan>& X);
   };
 
 

@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+// 
 // Copyright 2008-2016 Conrad Sanderson (http://conradsanderson.id.au)
 // Copyright 2008-2016 National ICT Australia (NICTA)
 // 
@@ -25,7 +27,7 @@ inline
 void
 op_orth::apply(Mat<typename T1::elem_type>& out, const Op<T1, op_orth>& expr)
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   
   typedef typename T1::pod_type T;
   
@@ -47,12 +49,12 @@ inline
 bool
 op_orth::apply_direct(Mat<typename T1::elem_type>& out, const Base<typename T1::elem_type,T1>& expr, typename T1::pod_type tol)
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   
   typedef typename T1::elem_type eT;
   typedef typename T1::pod_type   T;
   
-  arma_debug_check((tol < T(0)), "orth(): tolerance must be >= 0");
+  arma_conform_check((tol < T(0)), "orth(): tolerance must be >= 0");
   
   Mat<eT> A(expr.get_ref());
   
@@ -101,7 +103,7 @@ inline
 void
 op_null::apply(Mat<typename T1::elem_type>& out, const Op<T1, op_null>& expr)
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   
   typedef typename T1::pod_type T;
   
@@ -123,12 +125,12 @@ inline
 bool
 op_null::apply_direct(Mat<typename T1::elem_type>& out, const Base<typename T1::elem_type,T1>& expr, typename T1::pod_type tol)
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   
   typedef typename T1::elem_type eT;
   typedef typename T1::pod_type   T;
   
-  arma_debug_check((tol < T(0)), "null(): tolerance must be >= 0");
+  arma_conform_check((tol < T(0)), "null(): tolerance must be >= 0");
   
   Mat<eT> A(expr.get_ref());
   

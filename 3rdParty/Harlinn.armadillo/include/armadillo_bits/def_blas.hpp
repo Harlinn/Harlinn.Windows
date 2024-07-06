@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+// 
 // Copyright 2008-2016 Conrad Sanderson (http://conradsanderson.id.au)
 // Copyright 2008-2016 National ICT Australia (NICTA)
 // 
@@ -15,7 +17,7 @@
 
 
 
-#ifdef ARMA_USE_BLAS
+#if defined(ARMA_USE_BLAS)
 
 #if defined(dgemm) || defined(DGEMM)
   #pragma message ("WARNING: detected possible interference with definitions of BLAS functions;")

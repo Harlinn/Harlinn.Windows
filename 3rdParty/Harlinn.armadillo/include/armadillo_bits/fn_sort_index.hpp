@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+// 
 // Copyright 2008-2016 Conrad Sanderson (http://conradsanderson.id.au)
 // Copyright 2008-2016 National ICT Australia (NICTA)
 // 
@@ -28,7 +30,7 @@ sort_index
   const Base<typename T1::elem_type,T1>& X
   )
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   
   return mtOp<uword,T1,op_sort_index>(X.get_ref(), uword(0), uword(0));
   }
@@ -50,11 +52,11 @@ sort_index
   const T2* sort_direction
   )
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   
   const char sig = (sort_direction != nullptr) ? sort_direction[0] : char(0);
   
-  arma_debug_check( ((sig != 'a') && (sig != 'd')), "sort_index(): unknown sort direction" );
+  arma_conform_check( ((sig != 'a') && (sig != 'd')), "sort_index(): unknown sort direction" );
   
   return mtOp<uword,T1,op_sort_index>(X, ((sig == 'a') ? uword(0) : uword(1)), uword(0));
   }
@@ -74,7 +76,7 @@ stable_sort_index
   const Base<typename T1::elem_type,T1>& X
   )
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   
   return mtOp<uword,T1,op_stable_sort_index>(X.get_ref(), uword(0), uword(0));
   }
@@ -96,11 +98,11 @@ stable_sort_index
   const T2* sort_direction
   )
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   
   const char sig = (sort_direction != nullptr) ? sort_direction[0] : char(0);
   
-  arma_debug_check( ((sig != 'a') && (sig != 'd')), "stable_sort_index(): unknown sort direction" );
+  arma_conform_check( ((sig != 'a') && (sig != 'd')), "stable_sort_index(): unknown sort direction" );
   
   return mtOp<uword,T1,op_stable_sort_index>(X, ((sig == 'a') ? uword(0) : uword(1)), uword(0));
   }

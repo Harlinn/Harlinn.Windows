@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+// 
 // Copyright 2008-2016 Conrad Sanderson (http://conradsanderson.id.au)
 // Copyright 2008-2016 National ICT Australia (NICTA)
 // 
@@ -28,7 +30,7 @@ struct unwrap_cube
   unwrap_cube(const T1& A)
     : M(A)
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   const Cube<eT> M;
@@ -46,7 +48,7 @@ struct unwrap_cube< Cube<eT> >
   unwrap_cube(const Cube<eT>& A)
     : M(A)
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   const Cube<eT>& M;
@@ -72,7 +74,7 @@ struct unwrap_cube_check
   unwrap_cube_check(const T1& A, const Cube<eT>&)
     : M(A)
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     
     arma_type_check(( is_arma_cube_type<T1>::value == false ));
     }
@@ -81,7 +83,7 @@ struct unwrap_cube_check
   unwrap_cube_check(const T1& A, const bool)
     : M(A)
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     
     arma_type_check(( is_arma_cube_type<T1>::value == false ));
     }
@@ -99,7 +101,7 @@ struct unwrap_cube_check< Cube<eT> >
     : M_local( (&A == &B) ? new Cube<eT>(A) : nullptr )
     , M      ( (&A == &B) ? (*M_local)      : A       )
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   
@@ -108,14 +110,14 @@ struct unwrap_cube_check< Cube<eT> >
     : M_local( is_alias ? new Cube<eT>(A) : nullptr )
     , M      ( is_alias ? (*M_local)      : A       )
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     }
   
   
   inline
   ~unwrap_cube_check()
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     
     if(M_local)  { delete M_local; }
     }

@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+// 
 // Copyright 2008-2016 Conrad Sanderson (http://conradsanderson.id.au)
 // Copyright 2008-2016 National ICT Australia (NICTA)
 // 
@@ -25,10 +27,6 @@ class arrayops
   template<typename eT>
   arma_inline static void
   copy(eT* dest, const eT* src, const uword n_elem);
-  
-  template<typename eT>
-  arma_cold inline static void
-  copy_small(eT* dest, const eT* src, const uword n_elem);
   
   template<typename eT>
   inline static void
@@ -141,11 +139,6 @@ class arrayops
   arma_hot inline static
   void
   inplace_set_base(eT* dest, const eT val, const uword n_elem);
-  
-  template<typename eT>
-  arma_cold inline static
-  void
-  inplace_set_small(eT* dest, const eT val, const uword n_elem);
   
   template<typename eT, const uword n_elem>
   arma_hot inline static

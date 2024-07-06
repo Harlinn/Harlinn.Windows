@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+// 
 // Copyright 2008-2016 Conrad Sanderson (http://conradsanderson.id.au)
 // Copyright 2008-2016 National ICT Australia (NICTA)
 // 
@@ -26,7 +28,7 @@ xtrans_mat<eT,do_conj>::xtrans_mat(const Mat<eT>& in_X)
   , n_cols(in_X.n_rows)
   , n_elem(in_X.n_elem)
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   }
 
 
@@ -36,7 +38,7 @@ inline
 void
 xtrans_mat<eT,do_conj>::extract(Mat<eT>& out) const
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   
   really_do_conj ? op_htrans::apply_mat(out, X) : op_strans::apply_mat(out, X);
   }

@@ -1,6 +1,6 @@
 ﻿# Harlinn.Windows
 
-This repository contains a Visual Studio Solution currently containing 593 projects.
+This repository contains a Visual Studio Solution currently containing 594 projects.
 
 Most of the projects are open source projects that I have found useful at work, and a few are my own.
 
@@ -51,7 +51,7 @@ The abseil_test contains the unit tests for the Harlinn.abseil project
 
 
 ### [Armadillo: C++ Library for Linear Algebra & Scientific Computing](http://arma.sourceforge.net)
-**Version:** 10.6.x
+**Version:** 14.0.0
 
 **Description:**
 > Armadillo is a high quality linear algebra library (matrix maths) for the C++ language, aiming towards a good balance between speed and ease of use

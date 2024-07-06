@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+// 
 // Copyright 2008-2016 Conrad Sanderson (http://conradsanderson.id.au)
 // Copyright 2008-2016 National ICT Australia (NICTA)
 // 
@@ -25,7 +27,7 @@ GlueCube<T1,T2,glue_type>::GlueCube(const BaseCube<typename T1::elem_type, T1>& 
   : A(in_A.get_ref())
   , B(in_B.get_ref())
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   }
 
 
@@ -34,7 +36,7 @@ template<typename T1, typename T2, typename glue_type>
 inline
 GlueCube<T1,T2,glue_type>::~GlueCube()
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   }
 
 

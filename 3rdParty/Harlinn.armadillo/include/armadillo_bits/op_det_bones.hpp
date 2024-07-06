@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+// 
 // Copyright 2008-2016 Conrad Sanderson (http://conradsanderson.id.au)
 // Copyright 2008-2016 National ICT Australia (NICTA)
 // 
@@ -29,7 +31,6 @@ class op_det
     {
     static constexpr uword n2 = row + col*2;
     static constexpr uword n3 = row + col*3;
-    static constexpr uword n4 = row + col*4;
     };
   
   template<typename T1>
@@ -42,7 +43,10 @@ class op_det
   inline static typename T1::elem_type apply_trimat(const Base<typename T1::elem_type,T1>& expr);
   
   template<typename eT>
-  arma_cold inline static eT apply_tiny(const Mat<eT>& X);
+  arma_cold inline static eT apply_tiny_2x2(const Mat<eT>& X);
+  
+  template<typename eT>
+  arma_cold inline static eT apply_tiny_3x3(const Mat<eT>& X);
   };
 
 

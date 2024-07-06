@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+// 
 // Copyright 2008-2016 Conrad Sanderson (http://conradsanderson.id.au)
 // Copyright 2008-2016 National ICT Australia (NICTA)
 // 
@@ -25,7 +27,7 @@ inline
 void
 op_nonzeros::apply_noalias(Mat<typename T1::elem_type>& out, const Proxy<T1>& P)
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   
   typedef typename T1::elem_type eT;
   
@@ -72,7 +74,7 @@ inline
 void
 op_nonzeros::apply(Mat<typename T1::elem_type>& out, const Op<T1, op_nonzeros>& X)
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   
   typedef typename T1::elem_type eT;
   
@@ -91,42 +93,6 @@ op_nonzeros::apply(Mat<typename T1::elem_type>& out, const Op<T1, op_nonzeros>& 
   else
     {
     op_nonzeros::apply_noalias(out, P);
-    }
-  }
-
-
-
-template<typename T1>
-inline
-void
-op_nonzeros_spmat::apply(Mat<typename T1::elem_type>& out, const SpToDOp<T1, op_nonzeros_spmat>& X)
-  {
-  arma_extra_debug_sigprint();
-  
-  typedef typename T1::elem_type eT;
-  
-  const SpProxy<T1> P(X.m);
-  
-  const uword N = P.get_n_nonzero();
-  
-  out.set_size(N,1);
-  
-  if(N > 0)
-    {
-    if(is_SpMat<typename SpProxy<T1>::stored_type>::value)
-      {
-      const unwrap_spmat<typename SpProxy<T1>::stored_type> U(P.Q);
-      
-      arrayops::copy(out.memptr(), U.M.values, N);
-      }
-    else
-      {
-      eT* out_mem = out.memptr();
-      
-      typename SpProxy<T1>::const_iterator_type it = P.begin();
-      
-      for(uword i=0; i<N; ++i)  { out_mem[i] = (*it); ++it; }
-      }
     }
   }
 

@@ -96,7 +96,8 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <ModuleDefinitionFile>DebugExports.def</ModuleDefinitionFile>
+      <ModuleDefinitionFile>
+      </ModuleDefinitionFile>
       <AdditionalLibraryDirectories>$(OutDir);$(PYTHON_HOME)\libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>python3.lib;python39.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <DelayLoadDLLs>python3.dll;python39.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
@@ -123,7 +124,8 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <ModuleDefinitionFile>ReleaseExports.def</ModuleDefinitionFile>
+      <ModuleDefinitionFile>
+      </ModuleDefinitionFile>
       <AdditionalLibraryDirectories>$(OutDir);$(PYTHON_HOME)\libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>python3.lib;python39.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <DelayLoadDLLs>python3.dll;python39.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
@@ -147,7 +149,8 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <ModuleDefinitionFile>DebugExports.def</ModuleDefinitionFile>
+      <ModuleDefinitionFile>
+      </ModuleDefinitionFile>
       <AdditionalLibraryDirectories>$(OutDir);$(PYTHON_HOME)\libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>python3.lib;python39.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <DelayLoadDLLs>
@@ -176,7 +179,8 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <ModuleDefinitionFile>ReleaseExports.def</ModuleDefinitionFile>
+      <ModuleDefinitionFile>
+      </ModuleDefinitionFile>
       <AdditionalLibraryDirectories>$(OutDir);$(PYTHON_HOME)\libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>python3.lib;python39.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <DelayLoadDLLs>
@@ -598,11 +602,9 @@
     <ClInclude Include="include\HiGHS\util\stringutil.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="DebugExports.def" />
     <None Include="extern\filereaderlp\LICENSE" />
     <None Include="extern\zstr\README" />
     <None Include="include\HiGHS\pdlp\cupdlp\README.md" />
-    <None Include="ReleaseExports.def" />
     <None Include="src\pdlp\cupdlp\README.md" />
   </ItemGroup>
   <ItemGroup>

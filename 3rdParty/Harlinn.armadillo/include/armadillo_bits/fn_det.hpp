@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+// 
 // Copyright 2008-2016 Conrad Sanderson (http://conradsanderson.id.au)
 // Copyright 2008-2016 National ICT Australia (NICTA)
 // 
@@ -25,7 +27,7 @@ inline
 typename enable_if2< is_supported_blas_type<typename T1::elem_type>::value, typename T1::elem_type >::result
 det(const Base<typename T1::elem_type,T1>& X)
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   
   typedef typename T1::elem_type eT;
   
@@ -49,7 +51,7 @@ inline
 typename enable_if2< is_supported_blas_type<typename T1::elem_type>::value, bool >::result
 det(typename T1::elem_type& out_val, const Base<typename T1::elem_type,T1>& X)
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   
   typedef typename T1::elem_type eT;
   
@@ -58,7 +60,7 @@ det(typename T1::elem_type& out_val, const Base<typename T1::elem_type,T1>& X)
   if(status == false)
     {
     out_val = eT(0);
-    arma_debug_warn_level(3, "det(): failed to find determinant");
+    arma_warn(3, "det(): failed to find determinant");
     }
   
   return status;

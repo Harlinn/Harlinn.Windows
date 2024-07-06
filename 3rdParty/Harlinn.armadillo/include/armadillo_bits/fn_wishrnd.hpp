@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+// 
 // Copyright 2008-2016 Conrad Sanderson (http://conradsanderson.id.au)
 // Copyright 2008-2016 National ICT Australia (NICTA)
 // 
@@ -30,7 +32,7 @@ enable_if2
   >::result
 wishrnd(const Base<typename T1::elem_type, T1>& S, typename T1::elem_type df)
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   
   return Op<T1, op_wishrnd>(S.get_ref(), df, uword(1), uword(0));
   }
@@ -48,7 +50,7 @@ enable_if2
   >::result
 wishrnd(const Base<typename T1::elem_type, T1>& S, typename T1::elem_type df, const Base<typename T1::elem_type, T2>& D)
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   arma_ignore(S);
   
   return Op<T2, op_wishrnd>(D.get_ref(), df, uword(2), uword(0));
@@ -66,14 +68,14 @@ enable_if2
   >::result
 wishrnd(Mat<typename T1::elem_type>& W, const Base<typename T1::elem_type, T1>& S, typename T1::elem_type df)
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   
   const bool status = op_wishrnd::apply_direct(W, S.get_ref(), df, uword(1));
   
   if(status == false)
     {
     W.soft_reset();
-    arma_debug_warn_level(3, "wishrnd(): given matrix is not symmetric positive definite");
+    arma_warn(3, "wishrnd(): given matrix is not symmetric positive definite");
     }
   
   return status;
@@ -91,7 +93,7 @@ enable_if2
   >::result
 wishrnd(Mat<typename T1::elem_type>& W, const Base<typename T1::elem_type, T1>& S, typename T1::elem_type df, const Base<typename T1::elem_type, T2>& D)
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   arma_ignore(S);
   
   const bool status = op_wishrnd::apply_direct(W, D.get_ref(), df, uword(2));
@@ -99,7 +101,7 @@ wishrnd(Mat<typename T1::elem_type>& W, const Base<typename T1::elem_type, T1>& 
   if(status == false)
     {
     W.soft_reset();
-    arma_debug_warn_level(3, "wishrnd(): problem with given 'D' matrix");
+    arma_warn(3, "wishrnd(): problem with given 'D' matrix");
     }
   
   return status;
@@ -122,7 +124,7 @@ enable_if2
   >::result
 iwishrnd(const Base<typename T1::elem_type, T1>& T, typename T1::elem_type df)
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   
   return Op<T1, op_iwishrnd>(T.get_ref(), df, uword(1), uword(0));
   }
@@ -140,7 +142,7 @@ enable_if2
   >::result
 iwishrnd(const Base<typename T1::elem_type, T1>& T, typename T1::elem_type df, const Base<typename T1::elem_type, T2>& Dinv)
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   arma_ignore(T);
   
   return Op<T2, op_iwishrnd>(Dinv.get_ref(), df, uword(2), uword(0));
@@ -158,14 +160,14 @@ enable_if2
   >::result
 iwishrnd(Mat<typename T1::elem_type>& W, const Base<typename T1::elem_type, T1>& T, typename T1::elem_type df)
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   
   const bool status = op_iwishrnd::apply_direct(W, T.get_ref(), df, uword(1));
   
   if(status == false)
     {
     W.soft_reset();
-    arma_debug_warn_level(3, "iwishrnd(): given matrix is not symmetric positive definite and/or df is too low");
+    arma_warn(3, "iwishrnd(): given matrix is not symmetric positive definite and/or df is too low");
     }
   
   return status;
@@ -183,7 +185,7 @@ enable_if2
   >::result
 iwishrnd(Mat<typename T1::elem_type>& W, const Base<typename T1::elem_type, T1>& T, typename T1::elem_type df, const Base<typename T1::elem_type, T2>& Dinv)
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   arma_ignore(T);
   
   const bool status = op_iwishrnd::apply_direct(W, Dinv.get_ref(), df, uword(2));
@@ -191,7 +193,7 @@ iwishrnd(Mat<typename T1::elem_type>& W, const Base<typename T1::elem_type, T1>&
   if(status == false)
     {
     W.soft_reset();
-    arma_debug_warn_level(3, "wishrnd(): problem with given 'Dinv' matrix and/or df is too low");
+    arma_warn(3, "wishrnd(): problem with given 'Dinv' matrix and/or df is too low");
     }
   
   return status;

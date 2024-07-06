@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+// 
 // Copyright 2008-2016 Conrad Sanderson (http://conradsanderson.id.au)
 // Copyright 2008-2016 National ICT Australia (NICTA)
 // 
@@ -76,7 +78,7 @@ class syrk_vec
     const eT       beta  = eT(0)
     )
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     
     const uword A_n1 = (do_trans_A == false) ? A.n_rows : A.n_cols;
     const uword A_n2 = (do_trans_A == false) ? A.n_cols : A.n_rows;
@@ -204,7 +206,7 @@ class syrk_emul
     const eT       beta  = eT(0)
     )
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     
     // do_trans_A == false  ->   C = alpha * A   * A^T + beta*C
     // do_trans_A == true   ->   C = alpha * A^T * A   + beta*C
@@ -280,11 +282,11 @@ class syrk
   void
   apply_blas_type( Mat<eT>& C, const TA& A, const eT alpha = eT(1), const eT beta = eT(0) )
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     
     if(A.is_vec())
       {
-      // work around poor handling of vectors by syrk() in ATLAS 3.8.4 and standard BLAS
+      // work around poor handling of vectors by syrk() in standard BLAS
       
       syrk_vec<do_trans_A, use_alpha, use_beta>::apply(C,A,alpha,beta);
       
@@ -316,9 +318,9 @@ class syrk
         
         atlas::cblas_syrk<eT>
           (
-          atlas::CblasColMajor,
-          atlas::CblasUpper,
-          (do_trans_A) ? atlas::CblasTrans : atlas::CblasNoTrans,
+          atlas_CblasColMajor,
+          atlas_CblasUpper,
+          (do_trans_A) ? atlas_CblasTrans : atlas_CblasNoTrans,
           C.n_cols,
           (do_trans_A) ? A.n_rows : A.n_cols,
           (use_alpha) ? alpha : eT(1),
@@ -346,7 +348,7 @@ class syrk
           return;
           }
         
-        arma_extra_debug_print("blas::syrk()");
+        arma_debug_print("blas::syrk()");
         
         const char uplo = 'U';
         
@@ -360,7 +362,7 @@ class syrk
         
         const blas_int lda = (do_trans_A) ? k : n;
         
-        arma_extra_debug_print( arma_str::format("blas::syrk(): trans_A = %c") % trans_A );
+        arma_debug_print( arma_str::format("blas::syrk(): trans_A = %c") % trans_A );
         
         blas::syrk<eT>
           (

@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+// 
 // Copyright 2008-2016 Conrad Sanderson (http://conradsanderson.id.au)
 // Copyright 2008-2016 National ICT Australia (NICTA)
 // 
@@ -167,7 +169,7 @@ class SortEigenvalue
   SortEigenvalue(const eT* start, const uword size)
     : pair_sort(size)
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     
     for(uword i = 0; i < size; i++)
       {
@@ -185,7 +187,7 @@ class SortEigenvalue
   std::vector<uword>
   index()
     {
-    arma_extra_debug_sigprint();
+    arma_debug_sigprint();
     
     const uword len = pair_sort.size();
     

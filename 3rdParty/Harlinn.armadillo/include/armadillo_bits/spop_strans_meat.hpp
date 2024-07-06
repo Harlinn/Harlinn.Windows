@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+// 
 // Copyright 2008-2016 Conrad Sanderson (http://conradsanderson.id.au)
 // Copyright 2008-2016 National ICT Australia (NICTA)
 // 
@@ -24,7 +26,7 @@ inline
 void
 spop_strans::apply_noalias(SpMat<eT>& B, const SpMat<eT>& A)
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   
   B.reserve(A.n_cols, A.n_rows, A.n_nonzero);  // deliberately swapped
   
@@ -97,7 +99,7 @@ inline
 void
 spop_strans::apply(SpMat<typename T1::elem_type>& out, const SpOp<T1,spop_strans>& in)
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   
   typedef typename T1::elem_type eT;
   
@@ -125,7 +127,7 @@ inline
 void
 spop_strans::apply(SpMat<typename T1::elem_type>& out, const SpOp<T1,spop_htrans>& in)
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   
   typedef typename T1::elem_type eT;
   

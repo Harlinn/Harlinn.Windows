@@ -1369,12 +1369,6 @@
     <None Include="src\pdlp\cupdlp\README.md">
       <Filter>src\pdlp\cupdlp</Filter>
     </None>
-    <None Include="DebugExports.def">
-      <Filter>Source Files</Filter>
-    </None>
-    <None Include="ReleaseExports.def">
-      <Filter>Source Files</Filter>
-    </None>
     <None Include="extern\filereaderlp\LICENSE">
       <Filter>extern\filereaderlp</Filter>
     </None>

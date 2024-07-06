@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+// 
 // Copyright 2008-2016 Conrad Sanderson (http://conradsanderson.id.au)
 // Copyright 2008-2016 National ICT Australia (NICTA)
 // 
@@ -24,7 +26,7 @@ inline
 void
 op_chi2rnd::apply(Mat<typename T1::elem_type>& out, const Op<T1,op_chi2rnd>& in)
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   
   typedef typename T1::elem_type eT;
   
@@ -51,7 +53,7 @@ inline
 void
 op_chi2rnd::apply_noalias(Mat<typename T1::elem_type>& out, const Proxy<T1>& P)
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   
   typedef typename T1::elem_type eT;
   
@@ -92,7 +94,7 @@ inline
 void
 op_chi2rnd::fill_constant_df(Mat<eT>& out, const eT df)
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   
   if(df > eT(0))
     {
@@ -128,7 +130,7 @@ template<typename eT>
 inline
 op_chi2rnd_varying_df<eT>::~op_chi2rnd_varying_df()
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   }
 
 
@@ -137,7 +139,7 @@ template<typename eT>
 inline
 op_chi2rnd_varying_df<eT>::op_chi2rnd_varying_df()
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   
   typedef std::mt19937_64::result_type seed_type;
   
@@ -151,7 +153,7 @@ inline
 eT
 op_chi2rnd_varying_df<eT>::operator()(const eT df)
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   
   // as C++11 doesn't seem to provide a way to explicitly set the parameter
   // of an existing chi_squared_distribution object,

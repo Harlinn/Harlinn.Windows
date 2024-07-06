@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+// 
 // Copyright 2008-2016 Conrad Sanderson (http://conradsanderson.id.au)
 // Copyright 2008-2016 National ICT Australia (NICTA)
 // 
@@ -30,7 +32,7 @@ enable_if2
   >::result
 cumsum(const T1& X)
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   
   return Op<T1, op_cumsum_vec>(X);
   }
@@ -48,7 +50,7 @@ enable_if2
   >::result
 cumsum(const T1& X)
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   
   return Op<T1, op_cumsum>(X, 0, 0);
   }
@@ -66,7 +68,7 @@ enable_if2
   >::result
 cumsum(const T1& X, const uword dim)
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   
   return Op<T1, op_cumsum>(X, dim, 0);
   }

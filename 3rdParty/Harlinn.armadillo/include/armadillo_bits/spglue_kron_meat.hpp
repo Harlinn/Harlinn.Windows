@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+// 
 // Copyright 2008-2016 Conrad Sanderson (http://conradsanderson.id.au)
 // Copyright 2008-2016 National ICT Australia (NICTA)
 // 
@@ -24,7 +26,7 @@ inline
 void
 spglue_kron::apply(SpMat<typename T1::elem_type>& out, const SpGlue<T1,T2,spglue_kron>& X)
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   
   typedef typename T1::elem_type eT;
   
@@ -52,7 +54,7 @@ inline
 void
 spglue_kron::apply_noalias(SpMat<eT>& out, const SpMat<eT>& A, const SpMat<eT>& B)
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   
   const uword A_n_rows = A.n_rows;
   const uword A_n_cols = A.n_cols;
@@ -99,7 +101,7 @@ spglue_kron::apply_noalias(SpMat<eT>& out, const SpMat<eT>& A, const SpMat<eT>& 
 // void
 // spglue_kron::apply(SpMat<typename T1::elem_type>& out, const SpGlue<T1,T2,spglue_kron>& X)
 //   {
-//   arma_extra_debug_sigprint();
+//   arma_debug_sigprint();
 //   
 //   typedef typename T1::elem_type eT;
 //   

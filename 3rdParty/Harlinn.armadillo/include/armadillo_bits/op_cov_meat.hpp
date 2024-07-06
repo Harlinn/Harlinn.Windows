@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+// 
 // Copyright 2008-2016 Conrad Sanderson (http://conradsanderson.id.au)
 // Copyright 2008-2016 National ICT Australia (NICTA)
 // 
@@ -25,7 +27,7 @@ inline
 void
 op_cov::apply(Mat<typename T1::elem_type>& out, const Op<T1,op_cov>& in)
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   
   typedef typename T1::elem_type eT;
   
@@ -60,7 +62,7 @@ inline
 void
 op_cov::apply(Mat<typename T1::elem_type>& out, const Op< Op<T1,op_htrans>, op_cov>& in)
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   
   typedef typename T1::elem_type eT;
   

@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+// 
 // Copyright 2008-2016 Conrad Sanderson (http://conradsanderson.id.au)
 // Copyright 2008-2016 National ICT Australia (NICTA)
 // 
@@ -33,9 +35,8 @@
   #endif
 #endif
 
-// NOTE:
-// "char" is not guaranteed to be the same as "signed char" 
-// https://en.wikipedia.org/wiki/C_data_types
+// NOTE: "char" can be either "signed char" or "unsigned char"
+// NOTE: https://en.wikipedia.org/wiki/C_data_types
 
 
 #if   USHRT_MAX >= 0xffff
@@ -121,7 +122,7 @@ typedef void* void_ptr;
 //
 
 
-#ifdef ARMA_USE_MKL_TYPES
+#if defined(ARMA_USE_MKL_TYPES)
   // for compatibility with MKL
   typedef MKL_Complex8  blas_cxf;
   typedef MKL_Complex16 blas_cxd;

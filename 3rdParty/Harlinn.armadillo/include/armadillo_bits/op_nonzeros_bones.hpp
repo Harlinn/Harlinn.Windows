@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+// 
 // Copyright 2008-2016 Conrad Sanderson (http://conradsanderson.id.au)
 // Copyright 2008-2016 National ICT Australia (NICTA)
 // 
@@ -32,17 +34,6 @@ class op_nonzeros
   
   template<typename T1>
   static inline void apply(Mat<typename T1::elem_type>& out, const Op<T1, op_nonzeros>& X);
-  };
-
-
-
-class op_nonzeros_spmat
-  : public traits_op_col
-  {
-  public:
-  
-  template<typename T1>
-  static inline void apply(Mat<typename T1::elem_type>& out, const SpToDOp<T1, op_nonzeros_spmat>& X);
   };
 
 

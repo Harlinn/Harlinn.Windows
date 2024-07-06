@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+// 
 // Copyright 2008-2016 Conrad Sanderson (http://conradsanderson.id.au)
 // Copyright 2008-2016 National ICT Australia (NICTA)
 // 
@@ -27,7 +29,7 @@ inline
 subview_each_common<parent,mode>::subview_each_common(const parent& in_P)
   : P(in_P)
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   }
 
 
@@ -63,11 +65,12 @@ subview_each_common<parent,mode>::get_mat_ref() const
 
 
 template<typename parent, unsigned int mode>
+template<typename eT2>
 inline
 void
-subview_each_common<parent,mode>::check_size(const Mat<typename parent::elem_type>& A) const
+subview_each_common<parent,mode>::check_size(const Mat<eT2>& A) const
   {
-  if(arma_config::debug == true)
+  if(arma_config::check_conform)
     {
     if(mode == 0)
       {
@@ -89,10 +92,10 @@ subview_each_common<parent,mode>::check_size(const Mat<typename parent::elem_typ
 
 
 template<typename parent, unsigned int mode>
-arma_cold
+template<typename eT2>
 inline
 const std::string
-subview_each_common<parent,mode>::incompat_size_string(const Mat<typename parent::elem_type>& A) const
+subview_each_common<parent,mode>::incompat_size_string(const Mat<eT2>& A) const
   {
   std::ostringstream tmp;
   
@@ -120,7 +123,7 @@ template<typename parent, unsigned int mode>
 inline
 subview_each1<parent,mode>::~subview_each1()
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   }
 
 
@@ -130,7 +133,7 @@ inline
 subview_each1<parent,mode>::subview_each1(const parent& in_P)
   : subview_each_common<parent,mode>::subview_each_common(in_P)
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   }
 
 
@@ -141,7 +144,7 @@ inline
 void
 subview_each1<parent,mode>::operator= (const Base<eT,T1>& in)
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   
   parent& p = access::rw(subview_each_common<parent,mode>::P);
   
@@ -178,7 +181,7 @@ inline
 void
 subview_each1<parent,mode>::operator+= (const Base<eT,T1>& in)
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   
   parent& p = access::rw(subview_each_common<parent,mode>::P);
   
@@ -190,7 +193,7 @@ subview_each1<parent,mode>::operator+= (const Base<eT,T1>& in)
   const eT*   A_mem    = A.memptr();
   const uword p_n_rows = p.n_rows;
   const uword p_n_cols = p.n_cols;
-    
+  
   if(mode == 0) // each column
     {
     for(uword i=0; i < p_n_cols; ++i)
@@ -215,7 +218,7 @@ inline
 void
 subview_each1<parent,mode>::operator-= (const Base<eT,T1>& in)
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   
   parent& p = access::rw(subview_each_common<parent,mode>::P);
   
@@ -227,7 +230,7 @@ subview_each1<parent,mode>::operator-= (const Base<eT,T1>& in)
   const eT*   A_mem    = A.memptr();
   const uword p_n_rows = p.n_rows;
   const uword p_n_cols = p.n_cols;
-    
+  
   if(mode == 0) // each column
     {
     for(uword i=0; i < p_n_cols; ++i)
@@ -252,7 +255,7 @@ inline
 void
 subview_each1<parent,mode>::operator%= (const Base<eT,T1>& in)
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   
   parent& p = access::rw(subview_each_common<parent,mode>::P);
   
@@ -289,7 +292,7 @@ inline
 void
 subview_each1<parent,mode>::operator/= (const Base<eT,T1>& in)
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   
   parent& p = access::rw(subview_each_common<parent,mode>::P);
   
@@ -330,7 +333,7 @@ template<typename parent, unsigned int mode, typename TB>
 inline
 subview_each2<parent,mode,TB>::~subview_each2()
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   }
 
 
@@ -341,7 +344,7 @@ subview_each2<parent,mode,TB>::subview_each2(const parent& in_P, const Base<uwor
   : subview_each_common<parent,mode>::subview_each_common(in_P)
   , base_indices(in_indices)
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   }
 
 
@@ -353,11 +356,11 @@ subview_each2<parent,mode,TB>::check_indices(const Mat<uword>& indices) const
   {
   if(mode == 0)
     {
-    arma_debug_check( ((indices.is_vec() == false) && (indices.is_empty() == false)), "each_col(): list of indices must be a vector" );
+    arma_conform_check( ((indices.is_vec() == false) && (indices.is_empty() == false)), "each_col(): list of indices must be a vector" );
     }
   else
     {
-    arma_debug_check( ((indices.is_vec() == false) && (indices.is_empty() == false)), "each_row(): list of indices must be a vector" );
+    arma_conform_check( ((indices.is_vec() == false) && (indices.is_empty() == false)), "each_row(): list of indices must be a vector" );
     }
   }
 
@@ -369,7 +372,7 @@ inline
 void
 subview_each2<parent,mode,TB>::operator= (const Base<eT,T1>& in)
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   
   parent& p = access::rw(subview_each_common<parent,mode>::P);
   
@@ -395,7 +398,7 @@ subview_each2<parent,mode,TB>::operator= (const Base<eT,T1>& in)
       {
       const uword col = indices_mem[i];
       
-      arma_debug_check_bounds( (col >= p_n_cols), "each_col(): index out of bounds" );
+      arma_conform_check_bounds( (col >= p_n_cols), "each_col(): index out of bounds" );
       
       arrayops::copy( p.colptr(col), A_mem, p_n_rows );
       }
@@ -406,7 +409,7 @@ subview_each2<parent,mode,TB>::operator= (const Base<eT,T1>& in)
       {
       const uword row = indices_mem[i];
       
-      arma_debug_check_bounds( (row >= p_n_rows), "each_row(): index out of bounds" );
+      arma_conform_check_bounds( (row >= p_n_rows), "each_row(): index out of bounds" );
       
       for(uword col=0; col < p_n_cols; ++col)
         {
@@ -424,7 +427,7 @@ inline
 void
 subview_each2<parent,mode,TB>::operator+= (const Base<eT,T1>& in)
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   
   parent& p = access::rw(subview_each_common<parent,mode>::P);
   
@@ -451,7 +454,7 @@ subview_each2<parent,mode,TB>::operator+= (const Base<eT,T1>& in)
       {
       const uword col = indices_mem[i];
       
-      arma_debug_check_bounds( (col >= p_n_cols), "each_col(): index out of bounds" );
+      arma_conform_check_bounds( (col >= p_n_cols), "each_col(): index out of bounds" );
       
       arrayops::inplace_plus( p.colptr(col), A_mem, p_n_rows );
       }
@@ -462,7 +465,7 @@ subview_each2<parent,mode,TB>::operator+= (const Base<eT,T1>& in)
       {
       const uword row = indices_mem[i];
       
-      arma_debug_check_bounds( (row >= p_n_rows), "each_row(): index out of bounds" );
+      arma_conform_check_bounds( (row >= p_n_rows), "each_row(): index out of bounds" );
       
       p.row(row) += A;
       }
@@ -477,7 +480,7 @@ inline
 void
 subview_each2<parent,mode,TB>::operator-= (const Base<eT,T1>& in)
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   
   parent& p = access::rw(subview_each_common<parent,mode>::P);
   
@@ -504,7 +507,7 @@ subview_each2<parent,mode,TB>::operator-= (const Base<eT,T1>& in)
       {
       const uword col = indices_mem[i];
       
-      arma_debug_check_bounds( (col >= p_n_cols), "each_col(): index out of bounds" );
+      arma_conform_check_bounds( (col >= p_n_cols), "each_col(): index out of bounds" );
       
       arrayops::inplace_minus( p.colptr(col), A_mem, p_n_rows );
       }
@@ -515,7 +518,7 @@ subview_each2<parent,mode,TB>::operator-= (const Base<eT,T1>& in)
       {
       const uword row = indices_mem[i];
       
-      arma_debug_check_bounds( (row >= p_n_rows), "each_row(): index out of bounds" );
+      arma_conform_check_bounds( (row >= p_n_rows), "each_row(): index out of bounds" );
       
       p.row(row) -= A;
       }
@@ -530,7 +533,7 @@ inline
 void
 subview_each2<parent,mode,TB>::operator%= (const Base<eT,T1>& in)
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   
   parent& p = access::rw(subview_each_common<parent,mode>::P);
   
@@ -557,7 +560,7 @@ subview_each2<parent,mode,TB>::operator%= (const Base<eT,T1>& in)
       {
       const uword col = indices_mem[i];
       
-      arma_debug_check_bounds( (col >= p_n_cols), "each_col(): index out of bounds" );
+      arma_conform_check_bounds( (col >= p_n_cols), "each_col(): index out of bounds" );
       
       arrayops::inplace_mul( p.colptr(col), A_mem, p_n_rows );
       }
@@ -568,7 +571,7 @@ subview_each2<parent,mode,TB>::operator%= (const Base<eT,T1>& in)
       {
       const uword row = indices_mem[i];
       
-      arma_debug_check_bounds( (row >= p_n_rows), "each_row(): index out of bounds" );
+      arma_conform_check_bounds( (row >= p_n_rows), "each_row(): index out of bounds" );
       
       p.row(row) %= A;
       }
@@ -583,7 +586,7 @@ inline
 void
 subview_each2<parent,mode,TB>::operator/= (const Base<eT,T1>& in)
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   
   parent& p = access::rw(subview_each_common<parent,mode>::P);
   
@@ -610,7 +613,7 @@ subview_each2<parent,mode,TB>::operator/= (const Base<eT,T1>& in)
       {
       const uword col = indices_mem[i];
       
-      arma_debug_check_bounds( (col >= p_n_cols), "each_col(): index out of bounds" );
+      arma_conform_check_bounds( (col >= p_n_cols), "each_col(): index out of bounds" );
       
       arrayops::inplace_div( p.colptr(col), A_mem, p_n_rows );
       }
@@ -621,7 +624,7 @@ subview_each2<parent,mode,TB>::operator/= (const Base<eT,T1>& in)
       {
       const uword row = indices_mem[i];
       
-      arma_debug_check_bounds( (row >= p_n_rows), "each_row(): index out of bounds" );
+      arma_conform_check_bounds( (row >= p_n_rows), "each_row(): index out of bounds" );
       
       p.row(row) /= A;
       }
@@ -645,7 +648,7 @@ subview_each1_aux::operator_plus
   const Base<typename parent::elem_type,T2>& Y
   )
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   
   typedef typename parent::elem_type eT;
   
@@ -707,7 +710,7 @@ subview_each1_aux::operator_minus
   const Base<typename parent::elem_type,T2>& Y
   )
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   
   typedef typename parent::elem_type eT;
   
@@ -769,7 +772,7 @@ subview_each1_aux::operator_minus
   const subview_each1<parent,mode>&          Y
   )
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   
   typedef typename parent::elem_type eT;
   
@@ -831,7 +834,7 @@ subview_each1_aux::operator_schur
   const Base<typename parent::elem_type,T2>& Y
   )
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   
   typedef typename parent::elem_type eT;
   
@@ -893,7 +896,7 @@ subview_each1_aux::operator_div
   const Base<typename parent::elem_type,T2>& Y
   )
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   
   typedef typename parent::elem_type eT;
   
@@ -955,7 +958,7 @@ subview_each1_aux::operator_div
   const subview_each1<parent,mode>&          Y
   )
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   
   typedef typename parent::elem_type eT;
   
@@ -1023,7 +1026,7 @@ subview_each2_aux::operator_plus
   const Base<typename parent::elem_type,T2>& Y
   )
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   
   typedef typename parent::elem_type eT;
   
@@ -1053,7 +1056,7 @@ subview_each2_aux::operator_plus
       {
       const uword col = indices_mem[i];
       
-      arma_debug_check_bounds( (col >= p_n_cols), "each_col(): index out of bounds" );
+      arma_conform_check_bounds( (col >= p_n_cols), "each_col(): index out of bounds" );
       
       arrayops::inplace_plus( out.colptr(col), A_mem, p_n_rows );
       }
@@ -1065,7 +1068,7 @@ subview_each2_aux::operator_plus
       {
       const uword row = indices_mem[i];
       
-      arma_debug_check_bounds( (row >= p_n_rows), "each_row(): index out of bounds" );
+      arma_conform_check_bounds( (row >= p_n_rows), "each_row(): index out of bounds" );
       
       out.row(row) += A;
       }
@@ -1085,7 +1088,7 @@ subview_each2_aux::operator_minus
   const Base<typename parent::elem_type,T2>& Y
   )
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   
   typedef typename parent::elem_type eT;
   
@@ -1115,7 +1118,7 @@ subview_each2_aux::operator_minus
       {
       const uword col = indices_mem[i];
       
-      arma_debug_check_bounds( (col >= p_n_cols), "each_col(): index out of bounds" );
+      arma_conform_check_bounds( (col >= p_n_cols), "each_col(): index out of bounds" );
       
       arrayops::inplace_minus( out.colptr(col), A_mem, p_n_rows );
       }
@@ -1127,7 +1130,7 @@ subview_each2_aux::operator_minus
       {
       const uword row = indices_mem[i];
       
-      arma_debug_check_bounds( (row >= p_n_rows), "each_row(): index out of bounds" );
+      arma_conform_check_bounds( (row >= p_n_rows), "each_row(): index out of bounds" );
       
       out.row(row) -= A;
       }
@@ -1147,7 +1150,7 @@ subview_each2_aux::operator_minus
   const subview_each2<parent,mode,TB>&       Y
   )
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   
   typedef typename parent::elem_type eT;
   
@@ -1177,7 +1180,7 @@ subview_each2_aux::operator_minus
       {
       const uword col = indices_mem[i];
       
-      arma_debug_check_bounds( (col >= p_n_cols), "each_col(): index out of bounds" );
+      arma_conform_check_bounds( (col >= p_n_cols), "each_col(): index out of bounds" );
       
       const eT*   p_mem =   p.colptr(col);
             eT* out_mem = out.colptr(col);
@@ -1195,7 +1198,7 @@ subview_each2_aux::operator_minus
       {
       const uword row = indices_mem[i];
       
-      arma_debug_check_bounds( (row >= p_n_rows), "each_row(): index out of bounds" );
+      arma_conform_check_bounds( (row >= p_n_rows), "each_row(): index out of bounds" );
       
       out.row(row) = A - p.row(row);
       }
@@ -1215,7 +1218,7 @@ subview_each2_aux::operator_schur
   const Base<typename parent::elem_type,T2>& Y
   )
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   
   typedef typename parent::elem_type eT;
   
@@ -1245,7 +1248,7 @@ subview_each2_aux::operator_schur
       {
       const uword col = indices_mem[i];
       
-      arma_debug_check_bounds( (col >= p_n_cols), "each_col(): index out of bounds" );
+      arma_conform_check_bounds( (col >= p_n_cols), "each_col(): index out of bounds" );
       
       arrayops::inplace_mul( out.colptr(col), A_mem, p_n_rows );
       }
@@ -1257,7 +1260,7 @@ subview_each2_aux::operator_schur
       {
       const uword row = indices_mem[i];
       
-      arma_debug_check_bounds( (row >= p_n_rows), "each_row(): index out of bounds" );
+      arma_conform_check_bounds( (row >= p_n_rows), "each_row(): index out of bounds" );
       
       out.row(row) %= A;
       }
@@ -1277,7 +1280,7 @@ subview_each2_aux::operator_div
   const Base<typename parent::elem_type,T2>& Y
   )
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   
   typedef typename parent::elem_type eT;
   
@@ -1307,7 +1310,7 @@ subview_each2_aux::operator_div
       {
       const uword col = indices_mem[i];
       
-      arma_debug_check_bounds( (col >= p_n_cols), "each_col(): index out of bounds" );
+      arma_conform_check_bounds( (col >= p_n_cols), "each_col(): index out of bounds" );
       
       arrayops::inplace_div( out.colptr(col), A_mem, p_n_rows );
       }
@@ -1319,7 +1322,7 @@ subview_each2_aux::operator_div
       {
       const uword row = indices_mem[i];
       
-      arma_debug_check_bounds( (row >= p_n_rows), "each_row(): index out of bounds" );
+      arma_conform_check_bounds( (row >= p_n_rows), "each_row(): index out of bounds" );
       
       out.row(row) /= A;
       }
@@ -1339,7 +1342,7 @@ subview_each2_aux::operator_div
   const subview_each2<parent,mode,TB>&       Y
   )
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   
   typedef typename parent::elem_type eT;
   
@@ -1369,7 +1372,7 @@ subview_each2_aux::operator_div
       {
       const uword col = indices_mem[i];
       
-      arma_debug_check_bounds( (col >= p_n_cols), "each_col(): index out of bounds" );
+      arma_conform_check_bounds( (col >= p_n_cols), "each_col(): index out of bounds" );
       
       const eT*   p_mem =   p.colptr(col);
             eT* out_mem = out.colptr(col);
@@ -1387,7 +1390,7 @@ subview_each2_aux::operator_div
       {
       const uword row = indices_mem[i];
       
-      arma_debug_check_bounds( (row >= p_n_rows), "each_row(): index out of bounds" );
+      arma_conform_check_bounds( (row >= p_n_rows), "each_row(): index out of bounds" );
       
       out.row(row) = A / p.row(row);
       }

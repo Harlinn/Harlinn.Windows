@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+// 
 // Copyright 2008-2016 Conrad Sanderson (http://conradsanderson.id.au)
 // Copyright 2008-2016 National ICT Australia (NICTA)
 // 
@@ -26,53 +28,7 @@ arrayops::copy(eT* dest, const eT* src, const uword n_elem)
   {
   if( (dest == src) || (n_elem == 0) )  { return; }
   
-  if(is_cx<eT>::no)
-    {
-    if(n_elem <= 9)
-      {
-      arrayops::copy_small(dest, src, n_elem);
-      }
-    else
-      {
-      std::memcpy(dest, src, n_elem*sizeof(eT));
-      }
-    }
-  else
-    {
-    std::memcpy(dest, src, n_elem*sizeof(eT));
-    }
-  }
-
-
-
-template<typename eT>
-arma_cold
-inline
-void
-arrayops::copy_small(eT* dest, const eT* src, const uword n_elem)
-  {
-  switch(n_elem)
-    {
-    case  9:  dest[ 8] = src[ 8];
-    // fallthrough
-    case  8:  dest[ 7] = src[ 7];
-    // fallthrough
-    case  7:  dest[ 6] = src[ 6];
-    // fallthrough
-    case  6:  dest[ 5] = src[ 5];
-    // fallthrough
-    case  5:  dest[ 4] = src[ 4];
-    // fallthrough
-    case  4:  dest[ 3] = src[ 3];
-    // fallthrough
-    case  3:  dest[ 2] = src[ 2];
-    // fallthrough
-    case  2:  dest[ 1] = src[ 1];
-    // fallthrough
-    case  1:  dest[ 0] = src[ 0];
-    // fallthrough
-    default:  ;
-    }
+  std::memcpy(dest, src, n_elem*sizeof(eT));
   }
 
 
@@ -99,7 +55,6 @@ arrayops::fill_zeros(eT* dest, const uword n_elem)
 
 
 template<typename eT>
-arma_hot
 inline
 void
 arrayops::replace(eT* mem, const uword n_elem, const eT old_val, const eT new_val)
@@ -127,7 +82,6 @@ arrayops::replace(eT* mem, const uword n_elem, const eT old_val, const eT new_va
 
 
 template<typename eT>
-arma_hot
 inline
 void
 arrayops::clean(eT* mem, const uword n_elem, const eT abs_limit, const typename arma_not_cx<eT>::result* junk)
@@ -145,7 +99,6 @@ arrayops::clean(eT* mem, const uword n_elem, const eT abs_limit, const typename 
 
 
 template<typename T>
-arma_hot
 inline
 void
 arrayops::clean(std::complex<T>* mem, const uword n_elem, const T abs_limit)
@@ -278,7 +231,6 @@ arrayops::convert_cx_scalar
 
 
 template<typename out_eT, typename in_eT>
-arma_hot
 inline
 void
 arrayops::convert(out_eT* dest, const in_eT* src, const uword n_elem)
@@ -348,7 +300,6 @@ arrayops::convert(out_eT* dest, const in_eT* src, const uword n_elem)
 
 
 template<typename out_eT, typename in_eT>
-arma_hot
 inline
 void
 arrayops::convert_cx(out_eT* dest, const in_eT* src, const uword n_elem)
@@ -370,7 +321,6 @@ arrayops::convert_cx(out_eT* dest, const in_eT* src, const uword n_elem)
 
 
 template<typename eT>
-arma_hot
 inline
 void
 arrayops::inplace_plus(eT* dest, const eT* src, const uword n_elem)
@@ -408,7 +358,6 @@ arrayops::inplace_plus(eT* dest, const eT* src, const uword n_elem)
 
 
 template<typename eT>
-arma_hot
 inline
 void
 arrayops::inplace_minus(eT* dest, const eT* src, const uword n_elem)
@@ -446,7 +395,6 @@ arrayops::inplace_minus(eT* dest, const eT* src, const uword n_elem)
 
 
 template<typename eT>
-arma_hot
 inline
 void
 arrayops::inplace_mul(eT* dest, const eT* src, const uword n_elem)
@@ -484,7 +432,6 @@ arrayops::inplace_mul(eT* dest, const eT* src, const uword n_elem)
 
 
 template<typename eT>
-arma_hot
 inline
 void
 arrayops::inplace_div(eT* dest, const eT* src, const uword n_elem)
@@ -522,7 +469,6 @@ arrayops::inplace_div(eT* dest, const eT* src, const uword n_elem)
 
 
 template<typename eT>
-arma_hot
 inline
 void
 arrayops::inplace_plus_base(eT* dest, const eT* src, const uword n_elem)
@@ -558,7 +504,6 @@ arrayops::inplace_plus_base(eT* dest, const eT* src, const uword n_elem)
 
 
 template<typename eT>
-arma_hot
 inline
 void
 arrayops::inplace_minus_base(eT* dest, const eT* src, const uword n_elem)
@@ -594,7 +539,6 @@ arrayops::inplace_minus_base(eT* dest, const eT* src, const uword n_elem)
 
 
 template<typename eT>
-arma_hot
 inline
 void
 arrayops::inplace_mul_base(eT* dest, const eT* src, const uword n_elem)
@@ -630,7 +574,6 @@ arrayops::inplace_mul_base(eT* dest, const eT* src, const uword n_elem)
 
 
 template<typename eT>
-arma_hot
 inline
 void
 arrayops::inplace_div_base(eT* dest, const eT* src, const uword n_elem)
@@ -666,7 +609,6 @@ arrayops::inplace_div_base(eT* dest, const eT* src, const uword n_elem)
 
 
 template<typename eT>
-arma_hot
 inline
 void
 arrayops::inplace_set(eT* dest, const eT val, const uword n_elem)
@@ -677,21 +619,13 @@ arrayops::inplace_set(eT* dest, const eT val, const uword n_elem)
     }
   else
     {
-    if( (n_elem <= 9) && (is_cx<eT>::no) )
-      {
-      arrayops::inplace_set_small(dest, val, n_elem);
-      }
-    else
-      {
-      arrayops::inplace_set_simple(dest, val, n_elem);
-      }
+    arrayops::inplace_set_simple(dest, val, n_elem);
     }
   }
 
 
 
 template<typename eT>
-arma_hot
 inline
 void
 arrayops::inplace_set_simple(eT* dest, const eT val, const uword n_elem)
@@ -711,7 +645,6 @@ arrayops::inplace_set_simple(eT* dest, const eT val, const uword n_elem)
 
 
 template<typename eT>
-arma_hot
 inline
 void
 arrayops::inplace_set_base(eT* dest, const eT val, const uword n_elem)
@@ -743,40 +676,7 @@ arrayops::inplace_set_base(eT* dest, const eT val, const uword n_elem)
 
 
 
-template<typename eT>
-arma_cold
-inline
-void
-arrayops::inplace_set_small(eT* dest, const eT val, const uword n_elem)
-  {
-  switch(n_elem)
-    {
-    case  9: dest[ 8] = val;
-    // fallthrough
-    case  8: dest[ 7] = val;
-    // fallthrough
-    case  7: dest[ 6] = val;
-    // fallthrough
-    case  6: dest[ 5] = val;
-    // fallthrough
-    case  5: dest[ 4] = val;
-    // fallthrough
-    case  4: dest[ 3] = val;
-    // fallthrough
-    case  3: dest[ 2] = val;
-    // fallthrough
-    case  2: dest[ 1] = val;
-    // fallthrough
-    case  1: dest[ 0] = val;
-    // fallthrough
-    default:;
-    }
-  }
-
-
-
 template<typename eT, const uword n_elem>
-arma_hot
 inline
 void
 arrayops::inplace_set_fixed(eT* dest, const eT val)
@@ -790,7 +690,6 @@ arrayops::inplace_set_fixed(eT* dest, const eT val)
 
 
 template<typename eT>
-arma_hot
 inline
 void
 arrayops::inplace_plus(eT* dest, const eT val, const uword n_elem)
@@ -810,7 +709,6 @@ arrayops::inplace_plus(eT* dest, const eT val, const uword n_elem)
 
 
 template<typename eT>
-arma_hot
 inline
 void
 arrayops::inplace_minus(eT* dest, const eT val, const uword n_elem)
@@ -830,7 +728,6 @@ arrayops::inplace_minus(eT* dest, const eT val, const uword n_elem)
 
 
 template<typename eT>
-arma_hot
 inline
 void
 arrayops::inplace_mul(eT* dest, const eT val, const uword n_elem)
@@ -850,7 +747,6 @@ arrayops::inplace_mul(eT* dest, const eT val, const uword n_elem)
 
 
 template<typename eT>
-arma_hot
 inline
 void
 arrayops::inplace_div(eT* dest, const eT val, const uword n_elem)
@@ -870,7 +766,6 @@ arrayops::inplace_div(eT* dest, const eT val, const uword n_elem)
 
 
 template<typename eT>
-arma_hot
 inline
 void
 arrayops::inplace_plus_base(eT* dest, const eT val, const uword n_elem)
@@ -903,7 +798,6 @@ arrayops::inplace_plus_base(eT* dest, const eT val, const uword n_elem)
 
 
 template<typename eT>
-arma_hot
 inline
 void
 arrayops::inplace_minus_base(eT* dest, const eT val, const uword n_elem)
@@ -936,7 +830,6 @@ arrayops::inplace_minus_base(eT* dest, const eT val, const uword n_elem)
 
 
 template<typename eT>
-arma_hot
 inline
 void
 arrayops::inplace_mul_base(eT* dest, const eT val, const uword n_elem)
@@ -969,7 +862,6 @@ arrayops::inplace_mul_base(eT* dest, const eT val, const uword n_elem)
 
 
 template<typename eT>
-arma_hot
 inline
 void
 arrayops::inplace_div_base(eT* dest, const eT val, const uword n_elem)
@@ -1002,12 +894,11 @@ arrayops::inplace_div_base(eT* dest, const eT val, const uword n_elem)
 
 
 template<typename eT>
-arma_hot
 inline
 eT
 arrayops::accumulate(const eT* src, const uword n_elem)
   {
-  #if defined(__FINITE_MATH_ONLY__) && (__FINITE_MATH_ONLY__ > 0)
+  #if defined(__FAST_MATH__)
     {
     eT acc = eT(0);
     
@@ -1049,7 +940,6 @@ arrayops::accumulate(const eT* src, const uword n_elem)
 
 
 template<typename eT>
-arma_hot
 inline
 eT
 arrayops::product(const eT* src, const uword n_elem)
@@ -1076,7 +966,6 @@ arrayops::product(const eT* src, const uword n_elem)
 
 
 template<typename eT>
-arma_hot
 inline
 bool
 arrayops::is_zero(const eT* mem, const uword n_elem, const eT abs_limit, const typename arma_not_cx<eT>::result* junk)
@@ -1106,7 +995,6 @@ arrayops::is_zero(const eT* mem, const uword n_elem, const eT abs_limit, const t
 
 
 template<typename T>
-arma_hot
 inline
 bool
 arrayops::is_zero(const std::complex<T>* mem, const uword n_elem, const T abs_limit)
@@ -1142,7 +1030,6 @@ arrayops::is_zero(const std::complex<T>* mem, const uword n_elem, const T abs_li
 
 
 template<typename eT>
-arma_hot
 inline
 bool
 arrayops::is_finite(const eT* src, const uword n_elem)
@@ -1154,18 +1041,13 @@ arrayops::is_finite(const eT* src, const uword n_elem)
     const eT val_i = (*src);  src++;
     const eT val_j = (*src);  src++;
     
-    if( (arma_isfinite(val_i) == false) || (arma_isfinite(val_j) == false) )
-      {
-      return false;
-      }
+    if(arma_isfinite(val_i) == false)  { return false; }
+    if(arma_isfinite(val_j) == false)  { return false; }
     }
   
   if((j-1) < n_elem)
     {
-    if(arma_isfinite(*src) == false)
-      {
-      return false;
-      }
+    if(arma_isfinite(*src) == false)  { return false; }
     }
   
   return true;
@@ -1174,7 +1056,6 @@ arrayops::is_finite(const eT* src, const uword n_elem)
 
 
 template<typename eT>
-arma_hot
 inline
 bool
 arrayops::has_inf(const eT* src, const uword n_elem)
@@ -1200,7 +1081,6 @@ arrayops::has_inf(const eT* src, const uword n_elem)
 
 
 template<typename eT>
-arma_hot
 inline
 bool
 arrayops::has_nan(const eT* src, const uword n_elem)

@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+// 
 // Copyright 2008-2016 Conrad Sanderson (http://conradsanderson.id.au)
 // Copyright 2008-2016 National ICT Australia (NICTA)
 // 
@@ -29,7 +31,7 @@ svd
   const typename arma_blas_type_only<typename T1::elem_type>::result* junk = nullptr
   )
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   arma_ignore(junk);
   
   typedef typename T1::elem_type eT;
@@ -41,7 +43,7 @@ svd
   if(status == false)
     {
     S.soft_reset();
-    arma_debug_warn_level(3, "svd(): decomposition failed");
+    arma_warn(3, "svd(): decomposition failed");
     }
   
   return status;
@@ -59,7 +61,7 @@ svd
   const typename arma_blas_type_only<typename T1::elem_type>::result* junk = nullptr
   )
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   arma_ignore(junk);
   
   typedef typename T1::elem_type eT;
@@ -95,12 +97,12 @@ svd
   const typename arma_blas_type_only<typename T1::elem_type>::result* junk = nullptr
   )
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   arma_ignore(junk);
   
   typedef typename T1::elem_type eT;
   
-  arma_debug_check
+  arma_conform_check
     (
     ( ((void*)(&U) == (void*)(&S)) || (&U == &V) || ((void*)(&S) == (void*)(&V)) ),
     "svd(): two or more output objects are the same object"
@@ -108,7 +110,7 @@ svd
   
   const char sig = (method != nullptr) ? method[0] : char(0);
   
-  arma_debug_check( ((sig != 's') && (sig != 'd')), "svd(): unknown method specified" );
+  arma_conform_check( ((sig != 's') && (sig != 'd')), "svd(): unknown method specified" );
   
   Mat<eT> A(X.get_ref());
   
@@ -119,7 +121,7 @@ svd
     U.soft_reset();
     S.soft_reset();
     V.soft_reset();
-    arma_debug_warn_level(3, "svd(): decomposition failed");
+    arma_warn(3, "svd(): decomposition failed");
     }
   
   return status;
@@ -141,18 +143,18 @@ svd_econ
   const typename arma_blas_type_only<typename T1::elem_type>::result* junk = nullptr
   )
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   arma_ignore(junk);
   
   typedef typename T1::elem_type eT;
   
-  arma_debug_check
+  arma_conform_check
     (
     ( ((void*)(&U) == (void*)(&S)) || (&U == &V) || ((void*)(&S) == (void*)(&V)) ),
     "svd_econ(): two or more output objects are the same object"
     );
   
-  arma_debug_check
+  arma_conform_check
     (
     ( (mode != 'l') && (mode != 'r') && (mode != 'b') ),
     "svd_econ(): parameter 'mode' is incorrect"
@@ -160,7 +162,7 @@ svd_econ
   
   const char sig = (method != nullptr) ? method[0] : char(0);
   
-  arma_debug_check( ((sig != 's') && (sig != 'd')), "svd_econ(): unknown method specified" );
+  arma_conform_check( ((sig != 's') && (sig != 'd')), "svd_econ(): unknown method specified" );
   
   Mat<eT> A(X.get_ref());
   
@@ -171,7 +173,7 @@ svd_econ
     U.soft_reset();
     S.soft_reset();
     V.soft_reset();
-    arma_debug_warn_level(3, "svd_econ(): decomposition failed");
+    arma_warn(3, "svd_econ(): decomposition failed");
     }
   
   return status;
@@ -193,7 +195,7 @@ svd_econ
   const typename arma_blas_type_only<typename T1::elem_type>::result* junk = nullptr
   )
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   arma_ignore(junk);
   
   return svd_econ(U, S, V, X, ((mode != nullptr) ? mode[0] : char(0)), method);

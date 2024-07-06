@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+// 
 // Copyright 2008-2016 Conrad Sanderson (http://conradsanderson.id.au)
 // Copyright 2008-2016 National ICT Australia (NICTA)
 // 
@@ -28,7 +30,7 @@ op_cx_scalar_times::apply
   const mtOp<typename std::complex<typename T1::pod_type>, T1, op_cx_scalar_times>& X
   )
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   
   typedef typename std::complex<typename T1::pod_type> eT;
   
@@ -72,7 +74,7 @@ op_cx_scalar_plus::apply
   const mtOp<typename std::complex<typename T1::pod_type>, T1, op_cx_scalar_plus>& X
   )
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   
   typedef typename std::complex<typename T1::pod_type> eT;
   
@@ -116,7 +118,7 @@ op_cx_scalar_minus_pre::apply
   const mtOp<typename std::complex<typename T1::pod_type>, T1, op_cx_scalar_minus_pre>& X
   )
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   
   typedef typename std::complex<typename T1::pod_type> eT;
   
@@ -160,7 +162,7 @@ op_cx_scalar_minus_post::apply
   const mtOp<typename std::complex<typename T1::pod_type>, T1, op_cx_scalar_minus_post>& X
   )
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   
   typedef typename std::complex<typename T1::pod_type> eT;
   
@@ -204,7 +206,7 @@ op_cx_scalar_div_pre::apply
   const mtOp<typename std::complex<typename T1::pod_type>, T1, op_cx_scalar_div_pre>& X
   )
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   
   typedef typename std::complex<typename T1::pod_type> eT;
   
@@ -248,7 +250,7 @@ op_cx_scalar_div_post::apply
   const mtOp<typename std::complex<typename T1::pod_type>, T1, op_cx_scalar_div_post>& X
   )
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   
   typedef typename std::complex<typename T1::pod_type> eT;
   
@@ -298,7 +300,7 @@ op_cx_scalar_times::apply
   const mtOpCube<typename std::complex<typename T1::pod_type>, T1, op_cx_scalar_times>& X
   )
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   
   typedef typename std::complex<typename T1::pod_type> eT;
   
@@ -343,7 +345,7 @@ op_cx_scalar_plus::apply
   const mtOpCube<typename std::complex<typename T1::pod_type>, T1, op_cx_scalar_plus>& X
   )
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   
   typedef typename std::complex<typename T1::pod_type> eT;
   
@@ -388,7 +390,7 @@ op_cx_scalar_minus_pre::apply
   const mtOpCube<typename std::complex<typename T1::pod_type>, T1, op_cx_scalar_minus_pre>& X
   )
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   
   typedef typename std::complex<typename T1::pod_type> eT;
   
@@ -433,7 +435,7 @@ op_cx_scalar_minus_post::apply
   const mtOpCube<typename std::complex<typename T1::pod_type>, T1, op_cx_scalar_minus_post>& X
   )
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   
   typedef typename std::complex<typename T1::pod_type> eT;
   
@@ -478,7 +480,7 @@ op_cx_scalar_div_pre::apply
   const mtOpCube<typename std::complex<typename T1::pod_type>, T1, op_cx_scalar_div_pre>& X
   )
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   
   typedef typename std::complex<typename T1::pod_type> eT;
   
@@ -523,7 +525,7 @@ op_cx_scalar_div_post::apply
   const mtOpCube<typename std::complex<typename T1::pod_type>, T1, op_cx_scalar_div_post>& X
   )
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   
   typedef typename std::complex<typename T1::pod_type> eT;
   

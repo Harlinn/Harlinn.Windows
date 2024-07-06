@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+// 
 // Copyright 2008-2016 Conrad Sanderson (http://conradsanderson.id.au)
 // Copyright 2008-2016 National ICT Australia (NICTA)
 // 
@@ -30,7 +32,7 @@ strans
   const typename arma_cx_only<typename T1::elem_type>::result* junk2 = nullptr
   )
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   arma_ignore(junk1);
   arma_ignore(junk2);
   
@@ -52,7 +54,7 @@ strans
   const typename arma_not_cx<typename T1::elem_type>::result*  junk2 = nullptr
   )
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   arma_ignore(junk1);
   arma_ignore(junk2);
   
@@ -76,7 +78,7 @@ strans
   const typename arma_cx_only<typename T1::elem_type>::result*        junk2 = nullptr
   )
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   arma_ignore(junk1);
   arma_ignore(junk2);
   
@@ -96,7 +98,7 @@ strans
   const typename arma_not_cx<typename T1::elem_type>::result*         junk2 = nullptr
   )
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   arma_ignore(junk1);
   arma_ignore(junk2);
   

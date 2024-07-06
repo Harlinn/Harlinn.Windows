@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+// 
 // Copyright 2008-2016 Conrad Sanderson (http://conradsanderson.id.au)
 // Copyright 2008-2016 National ICT Australia (NICTA)
 // 
@@ -19,10 +21,10 @@
 
 
 
-#define ARMA_VERSION_MAJOR 10
-#define ARMA_VERSION_MINOR 6
-#define ARMA_VERSION_PATCH 2
-#define ARMA_VERSION_NAME  "Keep Calm"
+#define ARMA_VERSION_MAJOR 14
+#define ARMA_VERSION_MINOR 0
+#define ARMA_VERSION_PATCH 0
+#define ARMA_VERSION_NAME  "Stochastic Parrot"
 
 
 

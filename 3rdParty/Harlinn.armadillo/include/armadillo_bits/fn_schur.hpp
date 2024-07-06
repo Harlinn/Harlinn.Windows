@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+// 
 // Copyright 2008-2016 Conrad Sanderson (http://conradsanderson.id.au)
 // Copyright 2008-2016 National ICT Australia (NICTA)
 // 
@@ -28,7 +30,7 @@ schur
   const typename arma_blas_type_only<typename T1::elem_type>::result* junk = nullptr
   )
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   arma_ignore(junk);
   
   typedef typename T1::elem_type eT;
@@ -40,7 +42,7 @@ schur
   if(status == false)
     {
     S.soft_reset();
-    arma_debug_warn_level(3, "schur(): decomposition failed");
+    arma_warn(3, "schur(): decomposition failed");
     }
   
   return status;
@@ -58,7 +60,7 @@ schur
   const typename arma_blas_type_only<typename T1::elem_type>::result* junk = nullptr
   )
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   arma_ignore(junk);
   
   typedef typename T1::elem_type eT;
@@ -90,10 +92,10 @@ schur
   const typename arma_blas_type_only<typename T1::elem_type>::result* junk = nullptr
   )
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   arma_ignore(junk);
   
-  arma_debug_check( void_ptr(&U) == void_ptr(&S), "schur(): 'U' is an alias of 'S'" );
+  arma_conform_check( void_ptr(&U) == void_ptr(&S), "schur(): 'U' is an alias of 'S'" );
   
   const bool status = auxlib::schur(U, S, X.get_ref(), true);
   
@@ -101,7 +103,7 @@ schur
     {
     U.soft_reset();
     S.soft_reset();
-    arma_debug_warn_level(3, "schur(): decomposition failed");
+    arma_warn(3, "schur(): decomposition failed");
     }
   
   return status;

@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+// 
 // Copyright 2008-2016 Conrad Sanderson (http://conradsanderson.id.au)
 // Copyright 2008-2016 National ICT Australia (NICTA)
 // 
@@ -34,7 +36,7 @@ find_unique
   const bool ascending_indices = true
   )
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   
   return mtOp<uword,T1,op_find_unique>(X, ((ascending_indices) ? uword(1) : uword(0)), uword(0));
   }
@@ -51,7 +53,7 @@ find_unique
   const bool ascending_indices = true
   )
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   
   typedef typename T1::elem_type eT;
   

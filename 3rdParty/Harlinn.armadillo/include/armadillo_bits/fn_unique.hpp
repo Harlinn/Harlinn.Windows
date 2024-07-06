@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+// 
 // Copyright 2008-2016 Conrad Sanderson (http://conradsanderson.id.au)
 // Copyright 2008-2016 National ICT Australia (NICTA)
 // 
@@ -29,7 +31,7 @@ enable_if2
   >::result
 unique(const T1& A)
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   
   return Op<T1,op_unique_vec>(A);
   }
@@ -46,7 +48,7 @@ enable_if2
   >::result
 unique(const T1& A)
   {
-  arma_extra_debug_sigprint();
+  arma_debug_sigprint();
   
   return Op<T1,op_unique>(A);
   }

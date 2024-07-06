@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+// 
 // Copyright 2008-2016 Conrad Sanderson (http://conradsanderson.id.au)
 // Copyright 2008-2016 National ICT Australia (NICTA)
 // 
@@ -27,15 +29,11 @@ class op_sp_plus
   
   template<typename T1>
   inline static void apply(Mat<typename T1::elem_type>& out, const SpToDOp<T1,op_sp_plus>& in);
-
-  // force apply into an SpMat<>
-  template<typename T1>
-  inline static void apply(SpMat<typename T1::elem_type>& out, const SpToDOp<T1,op_sp_plus>& in);
-
+  
   // used for the optimization of sparse % (sparse + scalar)
   template<typename eT, typename T2, typename T3>
   inline static void apply_inside_schur(SpMat<eT>& out, const T2& x, const SpToDOp<T3, op_sp_plus>& y);
-
+  
   // used for the optimization of sparse / (sparse + scalar)
   template<typename eT, typename T2, typename T3>
   inline static void apply_inside_div(SpMat<eT>& out, const T2& x, const SpToDOp<T3, op_sp_plus>& y);

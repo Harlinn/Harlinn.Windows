@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+// 
 // Copyright 2008-2016 Conrad Sanderson (http://conradsanderson.id.au)
 // Copyright 2008-2016 National ICT Australia (NICTA)
 // 
@@ -55,10 +57,10 @@ class op_dot
   arma_hot inline static typename T1::elem_type apply(const T1& X, const T2& Y);
   
   template<typename T1, typename T2>
-  arma_hot inline static typename  arma_not_cx<typename T1::elem_type>::result apply_proxy(const Proxy<T1>& PA, const Proxy<T2>& PB);
+  arma_hot inline static typename  arma_not_cx<typename T1::elem_type>::result apply_proxy_linear(const Proxy<T1>& PA, const Proxy<T2>& PB);
   
   template<typename T1, typename T2>
-  arma_hot inline static typename arma_cx_only<typename T1::elem_type>::result apply_proxy(const Proxy<T1>& PA, const Proxy<T2>& PB);
+  arma_hot inline static typename arma_cx_only<typename T1::elem_type>::result apply_proxy_linear(const Proxy<T1>& PA, const Proxy<T2>& PB);
   };
 
 
