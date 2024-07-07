@@ -1219,6 +1219,15 @@ Skia Color Management
 
 **Project:** Harlinn.superlu
 
+### [SZIP](https://support.hdfgroup.org/doc_resource/SZIP/)
+**Version:** 2.1.1 
+
+**Description:**
+> Szip compression software, providing lossless compression of scientific data, has been provided with HDF software 
+> products as of HDF5 Release 1.6.0 and HDF4 Release 2.0.
+
+**Project:** Harlinn.szip
+
 ### [LibTIFF](https://libtiff.gitlab.io/libtiff/)
 **Version:** 4.3.0 
 
