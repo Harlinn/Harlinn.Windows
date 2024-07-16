@@ -1,4 +1,3 @@
-#pragma once
 /******************************************************************************
  *
  * Purpose:  Declaration of the MetadataSet class.
@@ -28,8 +27,8 @@
 #ifndef INCLUDE_PRIV_METADATASET_H
 #define INCLUDE_PRIV_METADATASET_H
 
-#include "../pcidsk_config.h"
-#include "../pcidsk_file.h"
+#include "pcidsk_config.h"
+#include "pcidsk_file.h"
 #include <vector>
 #include <string>
 #include <map>

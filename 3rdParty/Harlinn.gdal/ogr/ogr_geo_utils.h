@@ -30,7 +30,7 @@
 #ifndef OGR_GEO_UTILS_H_INCLUDED
 #define OGR_GEO_UTILS_H_INCLUDED
 
-#include "port/cpl_port.h"
+#include "cpl_port.h"
 
 /** The following functions provide computations based on great-circle/
  * orthodromic path, on a sphere with a radius of ~6366707 m.
@@ -49,7 +49,9 @@ double OGR_GreatCircle_InitialHeading(double dfLatA_deg, double dfLonA_deg,
 
 /* such as ExtendPosition(A, Distance(A,B), InitialHeading(A,B)) ~= B */
 int CPL_DLL OGR_GreatCircle_ExtendPosition(double dfLatA_deg, double dfLonA_deg,
-                                   double dfDistance, double dfHeadingInA,
-                                   double* pdfLatB_deg, double* pdfLonB_deg);
+                                           double dfDistance,
+                                           double dfHeadingInA,
+                                           double *pdfLatB_deg,
+                                           double *pdfLonB_deg);
 
 #endif /* ndef OGR_GEO_UTILS_H_INCLUDED */

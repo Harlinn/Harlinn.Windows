@@ -1,4 +1,3 @@
-#pragma once
 /**********************************************************************
  * Project:  CPL - Common Portability Library
  * Purpose:  Microsoft Azure Storage Blob routines
@@ -29,88 +28,100 @@
 #ifndef CPL_AZURE_INCLUDED_H
 #define CPL_AZURE_INCLUDED_H
 
-#include "..\hgdaldef.h"
-
 #ifndef DOXYGEN_SKIP
 
 #ifdef HAVE_CURL
 
 #include <curl/curl.h>
-#include <port/cpl_http.h>
+#include "cpl_http.h"
 #include "cpl_aws.h"
 #include <map>
 
-class VSIAzureBlobHandleHelper final: public IVSIS3LikeHandleHelper
+class VSIAzureBlobHandleHelper final : public IVSIS3LikeHandleHelper
 {
-        CPLString m_osURL;
-        CPLString m_osEndpoint;
-        CPLString m_osBucket;
-        CPLString m_osObjectKey;
-        CPLString m_osStorageAccount;
-        CPLString m_osStorageKey;
-        CPLString m_osSAS;
-        bool      m_bUseHTTPS;
-        bool      m_bFromManagedIdendities;
+    std::string m_osPathForOption;
+    std::string m_osURL;
+    std::string m_osEndpoint;
+    std::string m_osBucket;
+    std::string m_osObjectKey;
+    std::string m_osStorageAccount;
+    std::string m_osStorageKey;
+    std::string m_osSAS;
+    std::string m_osAccessToken;
+    bool m_bFromManagedIdentities;
+    bool m_bIncludeMSVersion = true;
 
-        enum class Service
-        {
-            BLOB,
-            ADLS,
-        };
+    enum class Service
+    {
+        SERVICE_BLOB,
+        SERVICE_ADLS,
+    };
 
-        HGDAL_EXPORT static bool     GetConfiguration(CSLConstList papszOptions,
-                                         Service eService,
-                                         bool& bUseHTTPS,
-                                         CPLString& osEndpoint,
-                                         CPLString& osStorageAccount,
-                                         CPLString& osStorageKey,
-                                         CPLString& osSAS,
-                                         bool& bFromManagedIdentities);
+    static bool GetConfiguration(const std::string &osPathForOption,
+                                 CSLConstList papszOptions, Service eService,
+                                 bool &bUseHTTPS, std::string &osEndpoint,
+                                 std::string &osStorageAccount,
+                                 std::string &osStorageKey, std::string &osSAS,
+                                 std::string &osAccessToken,
+                                 bool &bFromManagedIdentities);
 
-        HGDAL_EXPORT static bool     GetConfigurationFromManagedIdentities(
-                                                    CPLString& osAccessToken);
+    static std::string BuildURL(const std::string &osEndpoint,
+                                const std::string &osBucket,
+                                const std::string &osObjectKey,
+                                const std::string &osSAS);
 
-        HGDAL_EXPORT static CPLString BuildURL(const CPLString& osEndpoint,
-                                  const CPLString& osStorageAccount,
-                                  const CPLString& osBucket,
-                                  const CPLString& osObjectKey,
-                                  const CPLString& osSAS,
-                                  bool bUseHTTPS);
+    void RebuildURL() override;
 
-        HGDAL_EXPORT void RebuildURL() override;
+  public:
+    VSIAzureBlobHandleHelper(
+        const std::string &osPathForOption, const std::string &osEndpoint,
+        const std::string &osBucket, const std::string &osObjectKey,
+        const std::string &osStorageAccount, const std::string &osStorageKey,
+        const std::string &osSAS, const std::string &osAccessToken,
+        bool bFromManagedIdentities);
+    ~VSIAzureBlobHandleHelper();
 
-    public:
-        HGDAL_EXPORT VSIAzureBlobHandleHelper(const CPLString& osEndpoint,
-                                 const CPLString& osBucket,
-                                 const CPLString& osObjectKey,
-                                 const CPLString& osStorageAccount,
-                                 const CPLString& osStorageKey,
-                                 const CPLString& osSAS,
-                                 bool bUseHTTPS,
-                                 bool bFromManagedIdentities);
-        HGDAL_EXPORT ~VSIAzureBlobHandleHelper();
+    static VSIAzureBlobHandleHelper *
+    BuildFromURI(const char *pszURI, const char *pszFSPrefix,
+                 const char *pszURIForPathSpecificOption = nullptr,
+                 CSLConstList papszOptions = nullptr);
 
-        HGDAL_EXPORT static VSIAzureBlobHandleHelper* BuildFromURI(const char* pszURI,
-                                                      const char* pszFSPrefix,
-                                                      CSLConstList papszOptions = nullptr);
+    void SetIncludeMSVersion(bool bInclude)
+    {
+        m_bIncludeMSVersion = bInclude;
+    }
 
-        HGDAL_EXPORT struct curl_slist* GetCurlHeaders(const CPLString& osVerbosVerb,
-                                          const struct curl_slist* psExistingHeaders,
-                                          const void *pabyDataContent = nullptr,
-                                          size_t nBytesContent = 0) const override;
+    struct curl_slist *
+    GetCurlHeaders(const std::string &osVerbosVerb,
+                   const struct curl_slist *psExistingHeaders,
+                   const void *pabyDataContent = nullptr,
+                   size_t nBytesContent = 0) const override;
 
-        const CPLString& GetURL() const override { return m_osURL; }
+    const std::string &GetURL() const override
+    {
+        return m_osURL;
+    }
 
-        HGDAL_EXPORT CPLString GetSignedURL(CSLConstList papszOptions);
+    std::string GetSignedURL(CSLConstList papszOptions);
 
-        HGDAL_EXPORT static void ClearCache();
+    static void ClearCache();
 
-        HGDAL_EXPORT std::string GetSASQueryString() const;
+    std::string GetSASQueryString() const;
+
+    const std::string &GetStorageAccount() const
+    {
+        return m_osStorageAccount;
+    }
+
+    const std::string &GetBucket() const
+    {
+        return m_osBucket;
+    }
 };
 
 namespace cpl
 {
-    HGDAL_EXPORT int GetAzureBufferSize();
+int GetAzureBufferSize();
 }
 
 #endif /* HAVE_CURL */

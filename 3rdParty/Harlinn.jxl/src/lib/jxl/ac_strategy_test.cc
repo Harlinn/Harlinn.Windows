@@ -10,13 +10,15 @@
 #include <cmath>
 #include <hwy/aligned_allocator.h>
 #include <hwy/base.h>  // HWY_ALIGN_MAX
-#include <hwy/tests/test_util-inl.h>
+#include <hwy/tests/hwy_gtest.h>
 #include <utility>
 
-#include "lib/jxl/common.h"
+#include "lib/jxl/base/random.h"
 #include "lib/jxl/dct_scales.h"
 #include "lib/jxl/dec_transforms_testonly.h"
 #include "lib/jxl/enc_transforms.h"
+#include "lib/jxl/simd_util.h"
+#include "lib/jxl/testing.h"
 
 namespace jxl {
 namespace {
@@ -27,15 +29,22 @@ class AcStrategyRoundtrip : public ::hwy::TestWithParamTargetAndT<int> {
   void Run() {
     const AcStrategy::Type type = static_cast<AcStrategy::Type>(GetParam());
     const AcStrategy acs = AcStrategy::FromRawStrategy(type);
+    const size_t dct_scratch_size =
+        3 * (MaxVectorSize() / sizeof(float)) * AcStrategy::kMaxBlockDim;
 
-    auto mem = hwy::AllocateAligned<float>(4 * AcStrategy::kMaxCoeffArea);
-    float* scratch_space = mem.get();
-    float* coeffs = scratch_space + AcStrategy::kMaxCoeffArea;
+    auto mem = hwy::AllocateAligned<float>(4 * AcStrategy::kMaxCoeffArea +
+                                           dct_scratch_size);
+    float* coeffs = mem.get();
     float* idct = coeffs + AcStrategy::kMaxCoeffArea;
+    float* input = idct + AcStrategy::kMaxCoeffArea;
+    float* scratch_space = input + AcStrategy::kMaxCoeffArea;
 
-    for (size_t i = 0; i < std::min(1024u, 64u << acs.log2_covered_blocks());
-         i++) {
-      float* input = idct + AcStrategy::kMaxCoeffArea;
+    Rng rng(type * 65537 + 13);
+
+    for (size_t j = 0; j < 64; j++) {
+      size_t i = (acs.log2_covered_blocks()
+                      ? rng.UniformU(0, 64u << acs.log2_covered_blocks())
+                      : j);
       std::fill_n(input, AcStrategy::kMaxCoeffArea, 0);
       input[i] = 0.2f;
       TransformFromPixels(type, input, acs.covered_blocks_x() * 8, coeffs,
@@ -56,7 +65,8 @@ class AcStrategyRoundtrip : public ::hwy::TestWithParamTargetAndT<int> {
         float* dc = idct + AcStrategy::kMaxCoeffArea;
         std::fill_n(dc, AcStrategy::kMaxCoeffArea, 0);
         dc[y * acs.covered_blocks_x() * 8 + x] = 0.2;
-        LowestFrequenciesFromDC(type, dc, acs.covered_blocks_x() * 8, coeffs);
+        LowestFrequenciesFromDC(type, dc, acs.covered_blocks_x() * 8, coeffs,
+                                scratch_space);
         DCFromLowestFrequencies(type, coeffs, idct, acs.covered_blocks_x() * 8);
         std::fill_n(dc, AcStrategy::kMaxCoeffArea, 0);
         dc[y * acs.covered_blocks_x() * 8 + x] = 0.2;
@@ -71,7 +81,8 @@ class AcStrategyRoundtrip : public ::hwy::TestWithParamTargetAndT<int> {
 
 HWY_TARGET_INSTANTIATE_TEST_SUITE_P_T(
     AcStrategyRoundtrip,
-    ::testing::Range(0, int(AcStrategy::Type::kNumValidStrategies)));
+    ::testing::Range(0,
+                     static_cast<int>(AcStrategy::Type::kNumValidStrategies)));
 
 TEST_P(AcStrategyRoundtrip, Test) { Run(); }
 
@@ -82,19 +93,28 @@ class AcStrategyRoundtripDownsample
   void Run() {
     const AcStrategy::Type type = static_cast<AcStrategy::Type>(GetParam());
     const AcStrategy acs = AcStrategy::FromRawStrategy(type);
+    const size_t dct_scratch_size =
+        3 * (MaxVectorSize() / sizeof(float)) * AcStrategy::kMaxBlockDim;
 
-    auto mem = hwy::AllocateAligned<float>(4 * AcStrategy::kMaxCoeffArea);
-    float* scratch_space = mem.get();
-    float* coeffs = scratch_space + AcStrategy::kMaxCoeffArea;
-    std::fill_n(coeffs, AcStrategy::kMaxCoeffArea, 0.0f);
+    auto mem = hwy::AllocateAligned<float>(4 * AcStrategy::kMaxCoeffArea +
+                                           dct_scratch_size);
+    float* coeffs = mem.get();
     float* idct = coeffs + AcStrategy::kMaxCoeffArea;
+    float* dc = idct + AcStrategy::kMaxCoeffArea;
+    float* scratch_space = dc + AcStrategy::kMaxCoeffArea;
+
+    std::fill_n(coeffs, AcStrategy::kMaxCoeffArea, 0.0f);
+    Rng rng(type * 65537 + 13);
 
     for (size_t y = 0; y < acs.covered_blocks_y(); y++) {
       for (size_t x = 0; x < acs.covered_blocks_x(); x++) {
-        float* dc = idct + AcStrategy::kMaxCoeffArea;
+        if (x > 4 || y > 4) {
+          if (rng.Bernoulli(0.9f)) continue;
+        }
         std::fill_n(dc, AcStrategy::kMaxCoeffArea, 0);
         dc[y * acs.covered_blocks_x() * 8 + x] = 0.2f;
-        LowestFrequenciesFromDC(type, dc, acs.covered_blocks_x() * 8, coeffs);
+        LowestFrequenciesFromDC(type, dc, acs.covered_blocks_x() * 8, coeffs,
+                                scratch_space);
         TransformToPixels(type, coeffs, idct, acs.covered_blocks_x() * 8,
                           scratch_space);
         std::fill_n(coeffs, AcStrategy::kMaxCoeffArea, 0.0f);
@@ -122,7 +142,8 @@ class AcStrategyRoundtripDownsample
 
 HWY_TARGET_INSTANTIATE_TEST_SUITE_P_T(
     AcStrategyRoundtripDownsample,
-    ::testing::Range(0, int(AcStrategy::Type::kNumValidStrategies)));
+    ::testing::Range(0,
+                     static_cast<int>(AcStrategy::Type::kNumValidStrategies)));
 
 TEST_P(AcStrategyRoundtripDownsample, Test) { Run(); }
 
@@ -133,17 +154,26 @@ class AcStrategyDownsample : public ::hwy::TestWithParamTargetAndT<int> {
   void Run() {
     const AcStrategy::Type type = static_cast<AcStrategy::Type>(GetParam());
     const AcStrategy acs = AcStrategy::FromRawStrategy(type);
+    const size_t dct_scratch_size =
+        3 * (MaxVectorSize() / sizeof(float)) * AcStrategy::kMaxBlockDim;
     size_t cx = acs.covered_blocks_y();
     size_t cy = acs.covered_blocks_x();
     CoefficientLayout(&cy, &cx);
 
-    auto mem = hwy::AllocateAligned<float>(4 * AcStrategy::kMaxCoeffArea);
-    float* scratch_space = mem.get();
-    float* idct = scratch_space + AcStrategy::kMaxCoeffArea;
+    auto mem = hwy::AllocateAligned<float>(4 * AcStrategy::kMaxCoeffArea +
+                                           dct_scratch_size);
+    float* idct = mem.get();
     float* idct_acs_downsampled = idct + AcStrategy::kMaxCoeffArea;
+    float* coeffs = idct + AcStrategy::kMaxCoeffArea;
+    float* scratch_space = coeffs + AcStrategy::kMaxCoeffArea;
+
+    Rng rng(type * 65537 + 13);
 
     for (size_t y = 0; y < cy; y++) {
       for (size_t x = 0; x < cx; x++) {
+        if (x > 4 || y > 4) {
+          if (rng.Bernoulli(0.9f)) continue;
+        }
         float* coeffs = idct + AcStrategy::kMaxCoeffArea;
         std::fill_n(coeffs, AcStrategy::kMaxCoeffArea, 0);
         coeffs[y * cx * 8 + x] = 0.2f;
@@ -177,7 +207,8 @@ class AcStrategyDownsample : public ::hwy::TestWithParamTargetAndT<int> {
 
 HWY_TARGET_INSTANTIATE_TEST_SUITE_P_T(
     AcStrategyDownsample,
-    ::testing::Range(0, int(AcStrategy::Type::kNumValidStrategies)));
+    ::testing::Range(0,
+                     static_cast<int>(AcStrategy::Type::kNumValidStrategies)));
 
 TEST_P(AcStrategyDownsample, Test) { Run(); }
 
@@ -203,7 +234,10 @@ TEST_P(AcStrategyTargetTest, BenchmarkAFV) {
   const AcStrategy::Type type = AcStrategy::Type::AFV0;
   HWY_ALIGN_MAX float pixels[64] = {1};
   HWY_ALIGN_MAX float coeffs[64] = {};
-  HWY_ALIGN_MAX float scratch_space[64] = {};
+  const size_t dct_scratch_size =
+      3 * (MaxVectorSize() / sizeof(float)) * AcStrategy::kMaxBlockDim;
+  auto mem = hwy::AllocateAligned<float>(64 + dct_scratch_size);
+  float* scratch_space = mem.get();
   for (size_t i = 0; i < 1 << 14; i++) {
     TransformToPixels(type, coeffs, pixels, 8, scratch_space);
     TransformFromPixels(type, pixels, 8, coeffs, scratch_space);

@@ -27,10 +27,12 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
-#include "..\port\cpl_port.h"
-#include "alg/gdalpansharpen.h"
+#include "cpl_port.h"
+#include "cpl_worker_thread_pool.h"
+#include "gdalpansharpen.h"
 
 #include <algorithm>
+#include <array>
 #include <cstddef>
 #include <cstdio>
 #include <cstdlib>
@@ -38,20 +40,18 @@
 #include <limits>
 #include <new>
 
-#include "..\port\cpl_conv.h"
-#include "..\port\cpl_error.h"
-#include "..\port\cpl_multiproc.h"
-#include "..\port\cpl_vsi.h"
+#include "cpl_conv.h"
+#include "cpl_error.h"
+#include "cpl_multiproc.h"
+#include "cpl_vsi.h"
 #include "../frmts/mem/memdataset.h"
 #include "../frmts/vrt/vrtdataset.h"
-#include "..\gcore\gdal_priv.h"
-#include "..\gcore\gdal_priv_templates.hpp"
+#include "gdal_priv.h"
+#include "gdal_priv_templates.hpp"
 // #include "gdalsse_priv.h"
 
 // Limit types to practical use cases.
 #define LIMIT_TYPES 1
-
-CPL_CVSID("$Id$")
 
 /************************************************************************/
 /*                     GDALCreatePansharpenOptions()                    */
@@ -65,9 +65,9 @@ CPL_CVSID("$Id$")
  * @since GDAL 2.1
  */
 
-GDALPansharpenOptions * GDALCreatePansharpenOptions()
+GDALPansharpenOptions *GDALCreatePansharpenOptions()
 {
-    GDALPansharpenOptions* psOptions = static_cast<GDALPansharpenOptions *>(
+    GDALPansharpenOptions *psOptions = static_cast<GDALPansharpenOptions *>(
         CPLCalloc(1, sizeof(GDALPansharpenOptions)));
     psOptions->ePansharpenAlg = GDAL_PSH_WEIGHTED_BROVEY;
     psOptions->eResampleAlg = GRIORA_Cubic;
@@ -86,9 +86,9 @@ GDALPansharpenOptions * GDALCreatePansharpenOptions()
  * @since GDAL 2.1
  */
 
-void GDALDestroyPansharpenOptions( GDALPansharpenOptions* psOptions )
+void GDALDestroyPansharpenOptions(GDALPansharpenOptions *psOptions)
 {
-    if( psOptions == nullptr )
+    if (psOptions == nullptr)
         return;
     CPLFree(psOptions->padfWeights);
     CPLFree(psOptions->pahInputSpectralBands);
@@ -110,38 +110,36 @@ void GDALDestroyPansharpenOptions( GDALPansharpenOptions* psOptions )
  * @since GDAL 2.1
  */
 
-GDALPansharpenOptions* GDALClonePansharpenOptions(
-                                        const GDALPansharpenOptions* psOptions)
+GDALPansharpenOptions *
+GDALClonePansharpenOptions(const GDALPansharpenOptions *psOptions)
 {
-    GDALPansharpenOptions* psNewOptions = GDALCreatePansharpenOptions();
+    GDALPansharpenOptions *psNewOptions = GDALCreatePansharpenOptions();
     psNewOptions->ePansharpenAlg = psOptions->ePansharpenAlg;
     psNewOptions->eResampleAlg = psOptions->eResampleAlg;
     psNewOptions->nBitDepth = psOptions->nBitDepth;
     psNewOptions->nWeightCount = psOptions->nWeightCount;
-    if( psOptions->padfWeights )
+    if (psOptions->padfWeights)
     {
         psNewOptions->padfWeights = static_cast<double *>(
             CPLMalloc(sizeof(double) * psOptions->nWeightCount));
-        memcpy(psNewOptions->padfWeights,
-               psOptions->padfWeights,
+        memcpy(psNewOptions->padfWeights, psOptions->padfWeights,
                sizeof(double) * psOptions->nWeightCount);
     }
     psNewOptions->hPanchroBand = psOptions->hPanchroBand;
     psNewOptions->nInputSpectralBands = psOptions->nInputSpectralBands;
-    if( psOptions->pahInputSpectralBands )
+    if (psOptions->pahInputSpectralBands)
     {
-        const size_t nSize = sizeof(GDALRasterBandH) *
-                                psOptions->nInputSpectralBands;
-        psNewOptions->pahInputSpectralBands = static_cast<GDALRasterBandH *>(
-            CPLMalloc(nSize));
+        const size_t nSize =
+            sizeof(GDALRasterBandH) * psOptions->nInputSpectralBands;
+        psNewOptions->pahInputSpectralBands =
+            static_cast<GDALRasterBandH *>(CPLMalloc(nSize));
         memcpy(psNewOptions->pahInputSpectralBands,
-               psOptions->pahInputSpectralBands,
-               nSize);
+               psOptions->pahInputSpectralBands, nSize);
     }
     psNewOptions->nOutPansharpenedBands = psOptions->nOutPansharpenedBands;
-    if( psOptions->panOutPansharpenedBands )
+    if (psOptions->panOutPansharpenedBands)
     {
-        psNewOptions->panOutPansharpenedBands =  static_cast<int *>(
+        psNewOptions->panOutPansharpenedBands = static_cast<int *>(
             CPLMalloc(sizeof(int) * psOptions->nOutPansharpenedBands));
         memcpy(psNewOptions->panOutPansharpenedBands,
                psOptions->panOutPansharpenedBands,
@@ -150,8 +148,6 @@ GDALPansharpenOptions* GDALClonePansharpenOptions(
     psNewOptions->bHasNoData = psOptions->bHasNoData;
     psNewOptions->dfNoData = psOptions->dfNoData;
     psNewOptions->nThreads = psOptions->nThreads;
-    psNewOptions->dfMSShiftX = psOptions->dfMSShiftX;
-    psNewOptions->dfMSShiftY = psOptions->dfMSShiftY;
     return psNewOptions;
 }
 
@@ -175,7 +171,7 @@ GDALPansharpenOperation::GDALPansharpenOperation() = default;
 GDALPansharpenOperation::~GDALPansharpenOperation()
 {
     GDALDestroyPansharpenOptions(psOptions);
-    for( size_t i = 0; i < aVDS.size(); i++ )
+    for (size_t i = 0; i < aVDS.size(); i++)
         delete aVDS[i];
     delete poThreadPool;
 }
@@ -191,50 +187,172 @@ GDALPansharpenOperation::~GDALPansharpenOperation()
  * @return CE_None in case of success, CE_Failure in case of failure.
  */
 CPLErr
-GDALPansharpenOperation::Initialize( const GDALPansharpenOptions* psOptionsIn )
+GDALPansharpenOperation::Initialize(const GDALPansharpenOptions *psOptionsIn)
 {
-    if( psOptionsIn->hPanchroBand == nullptr )
+    if (psOptionsIn->hPanchroBand == nullptr)
     {
         CPLError(CE_Failure, CPLE_AppDefined, "hPanchroBand not set");
         return CE_Failure;
     }
-    if( psOptionsIn->nInputSpectralBands <= 0 )
+    if (psOptionsIn->nInputSpectralBands <= 0)
     {
         CPLError(CE_Failure, CPLE_AppDefined,
                  "No input spectral bands defined");
         return CE_Failure;
     }
-    if( psOptionsIn->padfWeights == nullptr ||
-        psOptionsIn->nWeightCount != psOptionsIn->nInputSpectralBands )
+    if (psOptionsIn->padfWeights == nullptr ||
+        psOptionsIn->nWeightCount != psOptionsIn->nInputSpectralBands)
     {
         CPLError(CE_Failure, CPLE_AppDefined,
                  "No weights defined, or not the same number as input "
                  "spectral bands");
         return CE_Failure;
     }
+
+    auto poPanchroBand = GDALRasterBand::FromHandle(psOptionsIn->hPanchroBand);
+    auto poPanchroDS = poPanchroBand->GetDataset();
+    if (poPanchroDS == nullptr)
+    {
+        CPLError(CE_Failure, CPLE_AppDefined,
+                 "Cannot retrieve dataset associated with hPanchroBand");
+        return CE_Failure;
+    }
+    // Make sure that the band is really a first level child of the owning dataset
+    if (poPanchroDS->GetRasterBand(poPanchroBand->GetBand()) != poPanchroBand)
+    {
+        CPLError(CE_Failure, CPLE_AppDefined,
+                 "poPanchroDS->GetRasterBand(poPanchroBand->GetBand()) != "
+                 "poPanchroBand");
+        return CE_Failure;
+    }
+    std::array<double, 6> adfPanchroGT;
+    if (poPanchroDS->GetGeoTransform(adfPanchroGT.data()) != CE_None)
+    {
+        CPLError(CE_Failure, CPLE_AppDefined,
+                 "Panchromatic band has no associated geotransform");
+        return CE_Failure;
+    }
+
     GDALRasterBandH hRefBand = psOptionsIn->pahInputSpectralBands[0];
-    int bSameDataset = psOptionsIn->nInputSpectralBands > 1;
-    if( bSameDataset )
+    auto poRefBand = GDALRasterBand::FromHandle(hRefBand);
+    auto poRefBandDS = poRefBand->GetDataset();
+    if (poRefBandDS == nullptr)
+    {
+        CPLError(
+            CE_Failure, CPLE_AppDefined,
+            "Cannot retrieve dataset associated with ahInputSpectralBands[0]");
+        return CE_Failure;
+    }
+    // Make sure that the band is really a first level child of the owning dataset
+    if (poRefBandDS->GetRasterBand(poRefBand->GetBand()) != poRefBand)
+    {
+        CPLError(
+            CE_Failure, CPLE_AppDefined,
+            "poRefBandDS->GetRasterBand(poRefBand->GetBand()) != poRefBand");
+        return CE_Failure;
+    }
+
+    std::array<double, 6> adfRefMSGT;
+    if (poRefBandDS->GetGeoTransform(adfRefMSGT.data()) != CE_None)
+    {
+        CPLError(CE_Failure, CPLE_AppDefined,
+                 "ahInputSpectralBands[0] band has no associated geotransform");
+        return CE_Failure;
+    }
+
+    std::array<double, 6> adfInvMSGT;
+    if (!GDALInvGeoTransform(adfRefMSGT.data(), adfInvMSGT.data()))
+    {
+        CPLError(CE_Failure, CPLE_AppDefined,
+                 "ahInputSpectralBands[0] geotransform is not invertible");
+        return CE_Failure;
+    }
+
+    // Do InvMSGT * PanchroGT multiplication
+    m_adfPanToMSGT[1] =
+        adfInvMSGT[1] * adfPanchroGT[1] + adfInvMSGT[2] * adfPanchroGT[4];
+    m_adfPanToMSGT[2] =
+        adfInvMSGT[1] * adfPanchroGT[2] + adfInvMSGT[2] * adfPanchroGT[5];
+    m_adfPanToMSGT[0] = adfInvMSGT[1] * adfPanchroGT[0] +
+                        adfInvMSGT[2] * adfPanchroGT[3] + adfInvMSGT[0];
+    m_adfPanToMSGT[4] =
+        adfInvMSGT[4] * adfPanchroGT[1] + adfInvMSGT[5] * adfPanchroGT[4];
+    m_adfPanToMSGT[5] =
+        adfInvMSGT[4] * adfPanchroGT[2] + adfInvMSGT[5] * adfPanchroGT[5];
+    m_adfPanToMSGT[3] = adfInvMSGT[4] * adfPanchroGT[0] +
+                        adfInvMSGT[5] * adfPanchroGT[3] + adfInvMSGT[3];
+#if 0
+    CPLDebug("GDAL", "m_adfPanToMSGT[] = %g %g %g %g %g %g",
+           m_adfPanToMSGT[0], m_adfPanToMSGT[1], m_adfPanToMSGT[2],
+           m_adfPanToMSGT[3], m_adfPanToMSGT[4], m_adfPanToMSGT[5]);
+#endif
+    if (std::fabs(m_adfPanToMSGT[2]) > 1e-10 ||
+        std::fabs(m_adfPanToMSGT[4]) > 1e-10)
+    {
+        CPLError(CE_Failure, CPLE_NotSupported,
+                 "Composition of panchromatic and multispectral geotransform "
+                 "has rotational terms");
+        return CE_Failure;
+    }
+
+    bool bSameDataset = psOptionsIn->nInputSpectralBands > 1;
+    if (bSameDataset)
         anInputBands.push_back(GDALGetBandNumber(hRefBand));
-    for( int i = 1; i < psOptionsIn->nInputSpectralBands; i++ )
+    for (int i = 1; i < psOptionsIn->nInputSpectralBands; i++)
     {
         GDALRasterBandH hBand = psOptionsIn->pahInputSpectralBands[i];
-        if( GDALGetRasterBandXSize(hBand) != GDALGetRasterBandXSize(hRefBand) ||
-            GDALGetRasterBandYSize(hBand) != GDALGetRasterBandYSize(hRefBand) )
+        if (GDALGetRasterBandXSize(hBand) != GDALGetRasterBandXSize(hRefBand) ||
+            GDALGetRasterBandYSize(hBand) != GDALGetRasterBandYSize(hRefBand))
         {
             CPLError(CE_Failure, CPLE_AppDefined,
                      "Dimensions of input spectral band %d different from "
                      "first spectral band",
-                     i);
+                     i + 1);
             return CE_Failure;
         }
-        if( bSameDataset )
+
+        auto poBand = GDALRasterBand::FromHandle(hBand);
+        auto poBandDS = poBand->GetDataset();
+        if (poBandDS == nullptr)
         {
-            if( GDALGetBandDataset(hBand) == nullptr ||
-                GDALGetBandDataset(hBand) != GDALGetBandDataset(hRefBand) )
+            CPLError(CE_Failure, CPLE_AppDefined,
+                     "Cannot retrieve dataset associated with "
+                     "input spectral band %d",
+                     i + 1);
+            return CE_Failure;
+        }
+        // Make sure that the band is really a first level child of the owning dataset
+        if (poBandDS->GetRasterBand(poBand->GetBand()) != poBand)
+        {
+            CPLError(CE_Failure, CPLE_AppDefined,
+                     "poBandDS->GetRasterBand(poBand->GetBand()) != poBand");
+            return CE_Failure;
+        }
+
+        std::array<double, 6> adfMSGT;
+        if (poBandDS->GetGeoTransform(adfMSGT.data()) != CE_None)
+        {
+            CPLError(
+                CE_Failure, CPLE_AppDefined,
+                "input spectral band %d band has no associated geotransform",
+                i + 1);
+            return CE_Failure;
+        }
+        if (adfMSGT != adfRefMSGT)
+        {
+            CPLError(CE_Failure, CPLE_AppDefined,
+                     "input spectral band %d has a different "
+                     "geotransform than the first spectral band",
+                     i + 1);
+            return CE_Failure;
+        }
+
+        if (bSameDataset)
+        {
+            if (GDALGetBandDataset(hBand) != GDALGetBandDataset(hRefBand))
             {
                 anInputBands.resize(0);
-                bSameDataset = FALSE;
+                bSameDataset = false;
             }
             else
             {
@@ -242,153 +360,147 @@ GDALPansharpenOperation::Initialize( const GDALPansharpenOptions* psOptionsIn )
             }
         }
     }
-    if( psOptionsIn->nOutPansharpenedBands == 0 )
+    if (psOptionsIn->nOutPansharpenedBands == 0)
     {
         CPLError(CE_Warning, CPLE_AppDefined,
                  "No output pansharpened band defined");
     }
-    for( int i = 0; i < psOptionsIn->nOutPansharpenedBands; i++ )
+    for (int i = 0; i < psOptionsIn->nOutPansharpenedBands; i++)
     {
-        if( psOptionsIn->panOutPansharpenedBands[i] < 0 ||
+        if (psOptionsIn->panOutPansharpenedBands[i] < 0 ||
             psOptionsIn->panOutPansharpenedBands[i] >=
-            psOptionsIn->nInputSpectralBands )
+                psOptionsIn->nInputSpectralBands)
         {
             CPLError(CE_Failure, CPLE_AppDefined,
-                     "Invalid value panOutPansharpenedBands[%d] = %d",
-                     i, psOptionsIn->panOutPansharpenedBands[i]);
+                     "Invalid value panOutPansharpenedBands[%d] = %d", i,
+                     psOptionsIn->panOutPansharpenedBands[i]);
             return CE_Failure;
         }
     }
 
-    GDALRasterBand* poPanchroBand = GDALRasterBand::FromHandle(
-                                                    psOptionsIn->hPanchroBand);
     GDALDataType eWorkDataType = poPanchroBand->GetRasterDataType();
-    if( psOptionsIn->nBitDepth )
+    if (psOptionsIn->nBitDepth)
     {
-        if( psOptionsIn->nBitDepth < 0 || psOptionsIn->nBitDepth > 31 ||
+        if (psOptionsIn->nBitDepth < 0 || psOptionsIn->nBitDepth > 31 ||
             (eWorkDataType == GDT_Byte && psOptionsIn->nBitDepth > 8) ||
-            (eWorkDataType == GDT_UInt16 && psOptionsIn->nBitDepth > 16) ||
-            (eWorkDataType == GDT_UInt32 && psOptionsIn->nBitDepth > 32) )
+            (eWorkDataType == GDT_UInt16 && psOptionsIn->nBitDepth > 16))
         {
             CPLError(CE_Failure, CPLE_AppDefined,
                      "Invalid value nBitDepth = %d for type %s",
-                     psOptionsIn->nBitDepth, GDALGetDataTypeName(eWorkDataType));
+                     psOptionsIn->nBitDepth,
+                     GDALGetDataTypeName(eWorkDataType));
             return CE_Failure;
         }
     }
 
     psOptions = GDALClonePansharpenOptions(psOptionsIn);
-    if( psOptions->nBitDepth == GDALGetDataTypeSize(eWorkDataType) )
+    if (psOptions->nBitDepth == GDALGetDataTypeSize(eWorkDataType))
         psOptions->nBitDepth = 0;
-    if( psOptions->nBitDepth &&
+    if (psOptions->nBitDepth &&
         !(eWorkDataType == GDT_Byte || eWorkDataType == GDT_UInt16 ||
-          eWorkDataType == GDT_UInt32) )
+          eWorkDataType == GDT_UInt32 || eWorkDataType == GDT_UInt64))
     {
         CPLError(CE_Warning, CPLE_AppDefined,
-                 "Ignoring nBitDepth = %d for type %s",
-                 psOptions->nBitDepth, GDALGetDataTypeName(eWorkDataType));
+                 "Ignoring nBitDepth = %d for type %s", psOptions->nBitDepth,
+                 GDALGetDataTypeName(eWorkDataType));
         psOptions->nBitDepth = 0;
     }
 
     // Detect negative weights.
-    for( int i = 0; i<psOptions->nInputSpectralBands; i++ )
+    for (int i = 0; i < psOptions->nInputSpectralBands; i++)
     {
-        if( psOptions->padfWeights[i] < 0.0 )
+        if (psOptions->padfWeights[i] < 0.0)
         {
             bPositiveWeights = FALSE;
             break;
         }
     }
 
-    for( int i = 0; i < psOptions->nInputSpectralBands; i++ )
+    for (int i = 0; i < psOptions->nInputSpectralBands; i++)
     {
-        aMSBands.push_back( GDALRasterBand::FromHandle(
-                                        psOptions->pahInputSpectralBands[i]) );
+        aMSBands.push_back(
+            GDALRasterBand::FromHandle(psOptions->pahInputSpectralBands[i]));
     }
 
-    if( psOptions->bHasNoData )
+    if (psOptions->bHasNoData)
     {
         bool bNeedToWrapInVRT = false;
-        for( int i = 0; i < psOptions->nInputSpectralBands; i++ )
+        for (int i = 0; i < psOptions->nInputSpectralBands; i++)
         {
-            GDALRasterBand* poBand = GDALRasterBand::FromHandle(
-                                        psOptions->pahInputSpectralBands[i]);
+            GDALRasterBand *poBand =
+                GDALRasterBand::FromHandle(psOptions->pahInputSpectralBands[i]);
             int bHasNoData = FALSE;
             double dfNoData = poBand->GetNoDataValue(&bHasNoData);
-            if( !bHasNoData || dfNoData != psOptions->dfNoData )
+            if (!bHasNoData || dfNoData != psOptions->dfNoData)
                 bNeedToWrapInVRT = true;
         }
 
-        if( bNeedToWrapInVRT )
+        if (bNeedToWrapInVRT)
         {
             // Wrap spectral bands in a VRT if they don't have the nodata value.
-            VRTDataset* poVDS = nullptr;
-            for( int i = 0; i < psOptions->nInputSpectralBands; i++ )
+            VRTDataset *poVDS = nullptr;
+            for (int i = 0; i < psOptions->nInputSpectralBands; i++)
             {
-                GDALRasterBand* poSrcBand = aMSBands[i];
+                GDALRasterBand *poSrcBand = aMSBands[i];
                 int iVRTBand = 1;
-                if( anInputBands.empty() || i == 0 )
+                if (anInputBands.empty() || i == 0)
                 {
-                    poVDS = new VRTDataset(poSrcBand->GetXSize(), poSrcBand->GetYSize());
+                    poVDS = new VRTDataset(poSrcBand->GetXSize(),
+                                           poSrcBand->GetYSize());
                     aVDS.push_back(poVDS);
                 }
-                if( !anInputBands.empty() )
+                if (!anInputBands.empty())
                 {
                     anInputBands[i] = i + 1;
                     iVRTBand = i + 1;
                 }
                 poVDS->AddBand(poSrcBand->GetRasterDataType(), nullptr);
-                VRTSourcedRasterBand* poVRTBand =
-                    dynamic_cast<VRTSourcedRasterBand*>(
+                VRTSourcedRasterBand *poVRTBand =
+                    dynamic_cast<VRTSourcedRasterBand *>(
                         poVDS->GetRasterBand(iVRTBand));
-                if( poVRTBand == nullptr )
+                if (poVRTBand == nullptr)
                     return CE_Failure;
                 aMSBands[i] = poVRTBand;
                 poVRTBand->SetNoDataValue(psOptions->dfNoData);
-                const char* pszNBITS =
+                const char *pszNBITS =
                     poSrcBand->GetMetadataItem("NBITS", "IMAGE_STRUCTURE");
-                if( pszNBITS )
+                if (pszNBITS)
                     poVRTBand->SetMetadataItem("NBITS", pszNBITS,
                                                "IMAGE_STRUCTURE");
 
-                VRTSimpleSource* poSimpleSource = new VRTSimpleSource();
-                poVRTBand->ConfigureSource(poSimpleSource,
-                                           poSrcBand,
-                                           FALSE,
-                                           0, 0,
-                                           poSrcBand->GetXSize(),
-                                           poSrcBand->GetYSize(),
-                                           0, 0,
-                                           poSrcBand->GetXSize(),
-                                           poSrcBand->GetYSize());
-                poVRTBand->AddSource( poSimpleSource );
+                VRTSimpleSource *poSimpleSource = new VRTSimpleSource();
+                poVRTBand->ConfigureSource(
+                    poSimpleSource, poSrcBand, FALSE, 0, 0,
+                    poSrcBand->GetXSize(), poSrcBand->GetYSize(), 0, 0,
+                    poSrcBand->GetXSize(), poSrcBand->GetYSize());
+                poVRTBand->AddSource(poSimpleSource);
             }
         }
     }
 
     // Setup thread pool.
     int nThreads = psOptions->nThreads;
-    if( nThreads == -1 )
+    if (nThreads == -1)
         nThreads = CPLGetNumCPUs();
-    else if( nThreads == 0 )
+    else if (nThreads == 0)
     {
-        const char* pszNumThreads =
+        const char *pszNumThreads =
             CPLGetConfigOption("GDAL_NUM_THREADS", nullptr);
-        if( pszNumThreads )
+        if (pszNumThreads)
         {
-            if( EQUAL(pszNumThreads, "ALL_CPUS") )
+            if (EQUAL(pszNumThreads, "ALL_CPUS"))
                 nThreads = CPLGetNumCPUs();
             else
                 nThreads = std::max(0, std::min(128, atoi(pszNumThreads)));
         }
     }
-    if( nThreads > 1 )
+    if (nThreads > 1)
     {
         CPLDebug("PANSHARPEN", "Using %d threads", nThreads);
         poThreadPool = new (std::nothrow) CPLWorkerThreadPool();
         // coverity[tainted_data]
-        if( poThreadPool == nullptr ||
-            !poThreadPool->Setup( nThreads, nullptr, nullptr ) )
+        if (poThreadPool == nullptr ||
+            !poThreadPool->Setup(nThreads, nullptr, nullptr))
         {
             delete poThreadPool;
             poThreadPool = nullptr;
@@ -396,17 +508,18 @@ GDALPansharpenOperation::Initialize( const GDALPansharpenOptions* psOptionsIn )
     }
 
     GDALRIOResampleAlg eResampleAlg = psOptions->eResampleAlg;
-    if( eResampleAlg != GRIORA_NearestNeighbour )
+    if (eResampleAlg != GRIORA_NearestNeighbour)
     {
-        const char* pszResampling =
-            (eResampleAlg == GRIORA_Bilinear) ? "BILINEAR" :
-            (eResampleAlg == GRIORA_Cubic) ? "CUBIC" :
-            (eResampleAlg == GRIORA_CubicSpline) ? "CUBICSPLINE" :
-            (eResampleAlg == GRIORA_Lanczos) ? "LANCZOS" :
-            (eResampleAlg == GRIORA_Average) ? "AVERAGE" :
-            (eResampleAlg == GRIORA_RMS) ? "RMS" :
-            (eResampleAlg == GRIORA_Mode) ? "MODE" :
-            (eResampleAlg == GRIORA_Gauss) ? "GAUSS" : "UNKNOWN";
+        const char *pszResampling =
+            (eResampleAlg == GRIORA_Bilinear)      ? "BILINEAR"
+            : (eResampleAlg == GRIORA_Cubic)       ? "CUBIC"
+            : (eResampleAlg == GRIORA_CubicSpline) ? "CUBICSPLINE"
+            : (eResampleAlg == GRIORA_Lanczos)     ? "LANCZOS"
+            : (eResampleAlg == GRIORA_Average)     ? "AVERAGE"
+            : (eResampleAlg == GRIORA_RMS)         ? "RMS"
+            : (eResampleAlg == GRIORA_Mode)        ? "MODE"
+            : (eResampleAlg == GRIORA_Gauss)       ? "GAUSS"
+                                                   : "UNKNOWN";
 
         GDALGetResampleFunction(pszResampling, &nKernelRadius);
     }
@@ -418,61 +531,56 @@ GDALPansharpenOperation::Initialize( const GDALPansharpenOptions* psOptionsIn )
 /*                    WeightedBroveyWithNoData()                        */
 /************************************************************************/
 
-template<class WorkDataType, class OutDataType>
-                    void GDALPansharpenOperation::WeightedBroveyWithNoData(
-                                                     const WorkDataType* pPanBuffer,
-                                                     const WorkDataType* pUpsampledSpectralBuffer,
-                                                     OutDataType* pDataBuf,
-                                                     size_t nValues,
-                                                     size_t nBandValues,
-                                                     WorkDataType nMaxValue) const
+template <class WorkDataType, class OutDataType>
+void GDALPansharpenOperation::WeightedBroveyWithNoData(
+    const WorkDataType *pPanBuffer,
+    const WorkDataType *pUpsampledSpectralBuffer, OutDataType *pDataBuf,
+    size_t nValues, size_t nBandValues, WorkDataType nMaxValue) const
 {
     WorkDataType noData, validValue;
     GDALCopyWord(psOptions->dfNoData, noData);
 
-    if( !(std::numeric_limits<WorkDataType>::is_integer) )
+    if constexpr (!(std::numeric_limits<WorkDataType>::is_integer))
         validValue = static_cast<WorkDataType>(noData + 1e-5);
-    else if( noData == std::numeric_limits<WorkDataType>::min() )
+    else if (noData == std::numeric_limits<WorkDataType>::min())
         validValue = std::numeric_limits<WorkDataType>::min() + 1;
     else
         validValue = noData - 1;
 
-    for( size_t j = 0; j < nValues; j++ )
+    for (size_t j = 0; j < nValues; j++)
     {
         double dfPseudoPanchro = 0.0;
-        for( int i = 0; i < psOptions->nInputSpectralBands; i++ )
+        for (int i = 0; i < psOptions->nInputSpectralBands; i++)
         {
             WorkDataType nSpectralVal =
                 pUpsampledSpectralBuffer[i * nBandValues + j];
-            if( nSpectralVal == noData )
+            if (nSpectralVal == noData)
             {
                 dfPseudoPanchro = 0.0;
                 break;
             }
             dfPseudoPanchro += psOptions->padfWeights[i] * nSpectralVal;
         }
-        if( dfPseudoPanchro != 0.0 && pPanBuffer[j] != noData )
+        if (dfPseudoPanchro != 0.0 && pPanBuffer[j] != noData)
         {
             const double dfFactor = pPanBuffer[j] / dfPseudoPanchro;
-            for( int i = 0; i < psOptions->nOutPansharpenedBands; i++ )
+            for (int i = 0; i < psOptions->nOutPansharpenedBands; i++)
             {
-                WorkDataType nRawValue =
-                    pUpsampledSpectralBuffer[
-                        psOptions->panOutPansharpenedBands[i] * nBandValues +
-                        j];
+                WorkDataType nRawValue = pUpsampledSpectralBuffer
+                    [psOptions->panOutPansharpenedBands[i] * nBandValues + j];
                 WorkDataType nPansharpenedValue;
                 GDALCopyWord(nRawValue * dfFactor, nPansharpenedValue);
-                if( nMaxValue != 0 && nPansharpenedValue > nMaxValue )
+                if (nMaxValue != 0 && nPansharpenedValue > nMaxValue)
                     nPansharpenedValue = nMaxValue;
                 // We don't want a valid value to be mapped to NoData.
-                if( nPansharpenedValue == noData )
+                if (nPansharpenedValue == noData)
                     nPansharpenedValue = validValue;
                 GDALCopyWord(nPansharpenedValue, pDataBuf[i * nBandValues + j]);
             }
         }
         else
         {
-            for( int i = 0; i < psOptions->nOutPansharpenedBands; i++ )
+            for (int i = 0; i < psOptions->nOutPansharpenedBands; i++)
             {
                 GDALCopyWord(noData, pDataBuf[i * nBandValues + j]);
             }
@@ -484,10 +592,10 @@ template<class WorkDataType, class OutDataType>
 /*                           ComputeFactor()                            */
 /************************************************************************/
 
-template<class T> static inline double ComputeFactor(T panValue,
-                                                     double dfPseudoPanchro)
+template <class T>
+static inline double ComputeFactor(T panValue, double dfPseudoPanchro)
 {
-    if( dfPseudoPanchro == 0.0 )
+    if (dfPseudoPanchro == 0.0)
         return 0.0;
 
     return panValue / dfPseudoPanchro;
@@ -497,9 +605,9 @@ template<class T> static inline double ComputeFactor(T panValue,
 /*                           ClampAndRound()                            */
 /************************************************************************/
 
-template<class T> static inline T ClampAndRound(double dfVal, T nMaxValue)
+template <class T> static inline T ClampAndRound(double dfVal, T nMaxValue)
 {
-    if( dfVal > nMaxValue )
+    if (dfVal > nMaxValue)
         return nMaxValue;
     else
         return static_cast<T>(dfVal + 0.5);
@@ -509,24 +617,21 @@ template<class T> static inline T ClampAndRound(double dfVal, T nMaxValue)
 /*                         WeightedBrovey()                             */
 /************************************************************************/
 
-template<class WorkDataType, class OutDataType, int bHasBitDepth>
+template <class WorkDataType, class OutDataType, int bHasBitDepth>
 void GDALPansharpenOperation::WeightedBrovey3(
-    const WorkDataType* pPanBuffer,
-    const WorkDataType* pUpsampledSpectralBuffer,
-    OutDataType* pDataBuf,
-    size_t nValues,
-    size_t nBandValues,
-    WorkDataType nMaxValue) const
+    const WorkDataType *pPanBuffer,
+    const WorkDataType *pUpsampledSpectralBuffer, OutDataType *pDataBuf,
+    size_t nValues, size_t nBandValues, WorkDataType nMaxValue) const
 {
-    if( psOptions->bHasNoData )
+    if (psOptions->bHasNoData)
     {
-        WeightedBroveyWithNoData<WorkDataType, OutDataType>
-                                (pPanBuffer, pUpsampledSpectralBuffer,
-                                 pDataBuf, nValues, nBandValues, nMaxValue);
+        WeightedBroveyWithNoData<WorkDataType, OutDataType>(
+            pPanBuffer, pUpsampledSpectralBuffer, pDataBuf, nValues,
+            nBandValues, nMaxValue);
         return;
     }
 
-    for( size_t j = 0; j < nValues; j++ )
+    for (size_t j = 0; j < nValues; j++)
     {
         double dfFactor = 0.0;
         // if( pPanBuffer[j] == 0 )
@@ -534,20 +639,26 @@ void GDALPansharpenOperation::WeightedBrovey3(
         // else
         {
             double dfPseudoPanchro = 0.0;
-            for( int i = 0; i < psOptions->nInputSpectralBands; i++ )
-                dfPseudoPanchro += psOptions->padfWeights[i] *
-                                pUpsampledSpectralBuffer[i * nBandValues + j];
+            for (int i = 0; i < psOptions->nInputSpectralBands; i++)
+                dfPseudoPanchro +=
+                    psOptions->padfWeights[i] *
+                    pUpsampledSpectralBuffer[i * nBandValues + j];
             dfFactor = ComputeFactor(pPanBuffer[j], dfPseudoPanchro);
         }
 
-        for( int i = 0; i < psOptions->nOutPansharpenedBands; i++ )
+        for (int i = 0; i < psOptions->nOutPansharpenedBands; i++)
         {
             WorkDataType nRawValue =
-                pUpsampledSpectralBuffer[psOptions->panOutPansharpenedBands[i] * nBandValues + j];
+                pUpsampledSpectralBuffer[psOptions->panOutPansharpenedBands[i] *
+                                             nBandValues +
+                                         j];
             WorkDataType nPansharpenedValue;
             GDALCopyWord(nRawValue * dfFactor, nPansharpenedValue);
-            if( bHasBitDepth && nPansharpenedValue > nMaxValue )
-                nPansharpenedValue = nMaxValue;
+            if constexpr (bHasBitDepth)
+            {
+                if (nPansharpenedValue > nMaxValue)
+                    nPansharpenedValue = nMaxValue;
+            }
             GDALCopyWord(nPansharpenedValue, pDataBuf[i * nBandValues + j]);
         }
     }
@@ -557,24 +668,25 @@ void GDALPansharpenOperation::WeightedBrovey3(
 /* Could possibly be used too on 32bit, but we would need to check at runtime */
 #if defined(__x86_64) || defined(_M_X64)
 
-#include <gcore/gdalsse_priv.h>
+#include "gdalsse_priv.h"
 
-template<class T, int NINPUT, int NOUTPUT>
+template <class T, int NINPUT, int NOUTPUT>
 size_t GDALPansharpenOperation::WeightedBroveyPositiveWeightsInternal(
-                                                     const T* pPanBuffer,
-                                                     const T* pUpsampledSpectralBuffer,
-                                                     T* pDataBuf,
-                                                     size_t nValues,
-                                                     size_t nBandValues,
-                                                     T nMaxValue) const
+    const T *pPanBuffer, const T *pUpsampledSpectralBuffer, T *pDataBuf,
+    size_t nValues, size_t nBandValues, T nMaxValue) const
 {
-    CPL_STATIC_ASSERT( NINPUT == 3 || NINPUT == 4 );
-    CPL_STATIC_ASSERT( NOUTPUT == 3 || NOUTPUT == 4 );
-    const XMMReg4Double w0 = XMMReg4Double::Load1ValHighAndLow(psOptions->padfWeights + 0);
-    const XMMReg4Double w1 = XMMReg4Double::Load1ValHighAndLow(psOptions->padfWeights + 1);
-    const XMMReg4Double w2 = XMMReg4Double::Load1ValHighAndLow(psOptions->padfWeights + 2);
-    const XMMReg4Double w3 = (NINPUT == 3) ? XMMReg4Double::Zero() :
-                    XMMReg4Double::Load1ValHighAndLow(psOptions->padfWeights + 3);
+    static_assert(NINPUT == 3 || NINPUT == 4);
+    static_assert(NOUTPUT == 3 || NOUTPUT == 4);
+    const XMMReg4Double w0 =
+        XMMReg4Double::Load1ValHighAndLow(psOptions->padfWeights + 0);
+    const XMMReg4Double w1 =
+        XMMReg4Double::Load1ValHighAndLow(psOptions->padfWeights + 1);
+    const XMMReg4Double w2 =
+        XMMReg4Double::Load1ValHighAndLow(psOptions->padfWeights + 2);
+    [[maybe_unused]] const XMMReg4Double w3 =
+        (NINPUT == 3)
+            ? XMMReg4Double::Zero()
+            : XMMReg4Double::Load1ValHighAndLow(psOptions->padfWeights + 3);
 
     const XMMReg4Double zero = XMMReg4Double::Zero();
     double dfMaxValue = nMaxValue;
@@ -582,41 +694,46 @@ size_t GDALPansharpenOperation::WeightedBroveyPositiveWeightsInternal(
         XMMReg4Double::Load1ValHighAndLow(&dfMaxValue);
 
     size_t j = 0;  // Used after for.
-    for( ; j + 3 < nValues; j += 4 )
+    for (; j + 3 < nValues; j += 4)
     {
         XMMReg4Double pseudoPanchro = zero;
 
-        XMMReg4Double val0 = XMMReg4Double::Load4Val(pUpsampledSpectralBuffer + 0 * nBandValues + j);
-        XMMReg4Double val1 = XMMReg4Double::Load4Val(pUpsampledSpectralBuffer + 1 * nBandValues + j);
-        XMMReg4Double val2 = XMMReg4Double::Load4Val(pUpsampledSpectralBuffer + 2 * nBandValues + j);
+        XMMReg4Double val0 = XMMReg4Double::Load4Val(pUpsampledSpectralBuffer +
+                                                     0 * nBandValues + j);
+        XMMReg4Double val1 = XMMReg4Double::Load4Val(pUpsampledSpectralBuffer +
+                                                     1 * nBandValues + j);
+        XMMReg4Double val2 = XMMReg4Double::Load4Val(pUpsampledSpectralBuffer +
+                                                     2 * nBandValues + j);
         XMMReg4Double val3;
-        if( NINPUT == 4 || NOUTPUT == 4 )
+        if constexpr (NINPUT == 4 || NOUTPUT == 4)
         {
-            val3 = XMMReg4Double::Load4Val(pUpsampledSpectralBuffer + 3 * nBandValues + j);
+            val3 = XMMReg4Double::Load4Val(pUpsampledSpectralBuffer +
+                                           3 * nBandValues + j);
         }
 
         pseudoPanchro += w0 * val0;
         pseudoPanchro += w1 * val1;
         pseudoPanchro += w2 * val2;
-        if( NINPUT == 4 )
+        if constexpr (NINPUT == 4)
             pseudoPanchro += w3 * val3;
 
-        /* Little trick to avoid use of ternary operator due to one of the branch being zero */
+        /* Little trick to avoid use of ternary operator due to one of the
+         * branch being zero */
         XMMReg4Double factor = XMMReg4Double::And(
             XMMReg4Double::NotEquals(pseudoPanchro, zero),
-            XMMReg4Double::Load4Val(pPanBuffer + j) / pseudoPanchro );
+            XMMReg4Double::Load4Val(pPanBuffer + j) / pseudoPanchro);
 
         val0 = XMMReg4Double::Min(val0 * factor, maxValue);
         val1 = XMMReg4Double::Min(val1 * factor, maxValue);
         val2 = XMMReg4Double::Min(val2 * factor, maxValue);
-        if( NOUTPUT == 4 )
+        if constexpr (NOUTPUT == 4)
         {
             val3 = XMMReg4Double::Min(val3 * factor, maxValue);
         }
         val0.Store4Val(pDataBuf + 0 * nBandValues + j);
         val1.Store4Val(pDataBuf + 1 * nBandValues + j);
         val2.Store4Val(pDataBuf + 2 * nBandValues + j);
-        if( NOUTPUT == 4 )
+        if constexpr (NOUTPUT == 4)
         {
             val3.Store4Val(pDataBuf + 3 * nBandValues + j);
         }
@@ -626,67 +743,58 @@ size_t GDALPansharpenOperation::WeightedBroveyPositiveWeightsInternal(
 
 #else
 
-template<class T, int NINPUT, int NOUTPUT>
+template <class T, int NINPUT, int NOUTPUT>
 size_t GDALPansharpenOperation::WeightedBroveyPositiveWeightsInternal(
-    const T* pPanBuffer,
-    const T* pUpsampledSpectralBuffer,
-    T* pDataBuf,
-    size_t nValues,
-    size_t nBandValues,
-    T nMaxValue) const
+    const T *pPanBuffer, const T *pUpsampledSpectralBuffer, T *pDataBuf,
+    size_t nValues, size_t nBandValues, T nMaxValue) const
 {
-    // cppcheck-suppress knownConditionTrueFalse
-    CPLAssert( NINPUT == 3 || NINPUT == 4 );
+    static_assert(NINPUT == 3 || NINPUT == 4);
     const double dfw0 = psOptions->padfWeights[0];
     const double dfw1 = psOptions->padfWeights[1];
     const double dfw2 = psOptions->padfWeights[2];
     // cppcheck-suppress knownConditionTrueFalse
-    const double dfw3 = (NINPUT == 3) ? 0 : psOptions->padfWeights[3];
+    [[maybe_unused]] const double dfw3 =
+        (NINPUT == 3) ? 0 : psOptions->padfWeights[3];
     size_t j = 0;  // Used after for.
-    for( ; j + 1 < nValues; j += 2 )
+    for (; j + 1 < nValues; j += 2)
     {
         double dfFactor = 0.0;
         double dfFactor2 = 0.0;
         double dfPseudoPanchro = 0.0;
         double dfPseudoPanchro2 = 0.0;
 
-        dfPseudoPanchro += dfw0 *
-                        pUpsampledSpectralBuffer[j];
-        dfPseudoPanchro2 += dfw0 *
-                        pUpsampledSpectralBuffer[j + 1];
+        dfPseudoPanchro += dfw0 * pUpsampledSpectralBuffer[j];
+        dfPseudoPanchro2 += dfw0 * pUpsampledSpectralBuffer[j + 1];
 
-        dfPseudoPanchro += dfw1 *
-                        pUpsampledSpectralBuffer[nBandValues + j];
-        dfPseudoPanchro2 += dfw1 *
-                        pUpsampledSpectralBuffer[nBandValues + j + 1];
+        dfPseudoPanchro += dfw1 * pUpsampledSpectralBuffer[nBandValues + j];
+        dfPseudoPanchro2 +=
+            dfw1 * pUpsampledSpectralBuffer[nBandValues + j + 1];
 
-        dfPseudoPanchro += dfw2 *
-                        pUpsampledSpectralBuffer[2 * nBandValues + j];
-        dfPseudoPanchro2 += dfw2 *
-                        pUpsampledSpectralBuffer[2 * nBandValues + j + 1];
+        dfPseudoPanchro += dfw2 * pUpsampledSpectralBuffer[2 * nBandValues + j];
+        dfPseudoPanchro2 +=
+            dfw2 * pUpsampledSpectralBuffer[2 * nBandValues + j + 1];
 
-        if( NINPUT == 4 )
+        if constexpr (NINPUT == 4)
         {
-            dfPseudoPanchro += dfw3 *
-                            pUpsampledSpectralBuffer[3 * nBandValues + j];
-            dfPseudoPanchro2 += dfw3 *
-                            pUpsampledSpectralBuffer[3 * nBandValues + j + 1];
+            dfPseudoPanchro +=
+                dfw3 * pUpsampledSpectralBuffer[3 * nBandValues + j];
+            dfPseudoPanchro2 +=
+                dfw3 * pUpsampledSpectralBuffer[3 * nBandValues + j + 1];
         }
 
         dfFactor = ComputeFactor(pPanBuffer[j], dfPseudoPanchro);
-        dfFactor2 = ComputeFactor(pPanBuffer[j+1], dfPseudoPanchro2);
+        dfFactor2 = ComputeFactor(pPanBuffer[j + 1], dfPseudoPanchro2);
 
-        for( int i = 0; i < NOUTPUT; i++ )
+        for (int i = 0; i < NOUTPUT; i++)
         {
-            T nRawValue =
-                pUpsampledSpectralBuffer[i * nBandValues + j];
+            T nRawValue = pUpsampledSpectralBuffer[i * nBandValues + j];
             double dfTmp = nRawValue * dfFactor;
             pDataBuf[i * nBandValues + j] = ClampAndRound(dfTmp, nMaxValue);
 
-            T nRawValue2 =
-                pUpsampledSpectralBuffer[i * nBandValues + j + 1];
+            T nRawValue2 = pUpsampledSpectralBuffer[i * nBandValues + j + 1];
             double dfTmp2 = nRawValue2 * dfFactor2;
-            pDataBuf[i * nBandValues + j + 1] = ClampAndRound(dfTmp2, nMaxValue);
+            pDataBuf[i * nBandValues + j + 1] =
+                ClampAndRound(dfTmp2, nMaxValue);
         }
     }
     return j;
@@ -695,50 +803,46 @@ size_t GDALPansharpenOperation::WeightedBroveyPositiveWeightsInternal(
 
 template <class T>
 void GDALPansharpenOperation::WeightedBroveyPositiveWeights(
-    const T* pPanBuffer,
-    const T* pUpsampledSpectralBuffer,
-    T* pDataBuf,
-    size_t nValues,
-    size_t nBandValues,
-    T nMaxValue) const
+    const T *pPanBuffer, const T *pUpsampledSpectralBuffer, T *pDataBuf,
+    size_t nValues, size_t nBandValues, T nMaxValue) const
 {
-    if( psOptions->bHasNoData )
+    if (psOptions->bHasNoData)
     {
-        WeightedBroveyWithNoData<T, T>
-                                (pPanBuffer, pUpsampledSpectralBuffer,
-                                 pDataBuf, nValues, nBandValues, nMaxValue);
+        WeightedBroveyWithNoData<T, T>(pPanBuffer, pUpsampledSpectralBuffer,
+                                       pDataBuf, nValues, nBandValues,
+                                       nMaxValue);
         return;
     }
 
-    if( nMaxValue == 0 )
+    if (nMaxValue == 0)
         nMaxValue = std::numeric_limits<T>::max();
     size_t j;
-    if( psOptions->nInputSpectralBands == 3 &&
+    if (psOptions->nInputSpectralBands == 3 &&
         psOptions->nOutPansharpenedBands == 3 &&
         psOptions->panOutPansharpenedBands[0] == 0 &&
         psOptions->panOutPansharpenedBands[1] == 1 &&
-        psOptions->panOutPansharpenedBands[2] == 2 )
+        psOptions->panOutPansharpenedBands[2] == 2)
     {
         j = WeightedBroveyPositiveWeightsInternal<T, 3, 3>(
             pPanBuffer, pUpsampledSpectralBuffer, pDataBuf, nValues,
             nBandValues, nMaxValue);
     }
-    else if( psOptions->nInputSpectralBands == 4 &&
-        psOptions->nOutPansharpenedBands == 4 &&
-        psOptions->panOutPansharpenedBands[0] == 0 &&
-        psOptions->panOutPansharpenedBands[1] == 1 &&
-        psOptions->panOutPansharpenedBands[2] == 2 &&
-        psOptions->panOutPansharpenedBands[3] == 3 )
+    else if (psOptions->nInputSpectralBands == 4 &&
+             psOptions->nOutPansharpenedBands == 4 &&
+             psOptions->panOutPansharpenedBands[0] == 0 &&
+             psOptions->panOutPansharpenedBands[1] == 1 &&
+             psOptions->panOutPansharpenedBands[2] == 2 &&
+             psOptions->panOutPansharpenedBands[3] == 3)
     {
         j = WeightedBroveyPositiveWeightsInternal<T, 4, 4>(
             pPanBuffer, pUpsampledSpectralBuffer, pDataBuf, nValues,
             nBandValues, nMaxValue);
     }
-    else if( psOptions->nInputSpectralBands == 4 &&
-        psOptions->nOutPansharpenedBands == 3 &&
-        psOptions->panOutPansharpenedBands[0] == 0 &&
-        psOptions->panOutPansharpenedBands[1] == 1 &&
-        psOptions->panOutPansharpenedBands[2] == 2 )
+    else if (psOptions->nInputSpectralBands == 4 &&
+             psOptions->nOutPansharpenedBands == 3 &&
+             psOptions->panOutPansharpenedBands[0] == 0 &&
+             psOptions->panOutPansharpenedBands[1] == 1 &&
+             psOptions->panOutPansharpenedBands[2] == 2)
     {
         j = WeightedBroveyPositiveWeightsInternal<T, 4, 3>(
             pPanBuffer, pUpsampledSpectralBuffer, pDataBuf, nValues,
@@ -746,13 +850,13 @@ void GDALPansharpenOperation::WeightedBroveyPositiveWeights(
     }
     else
     {
-        for( j = 0; j + 1 < nValues; j += 2 )
+        for (j = 0; j + 1 < nValues; j += 2)
         {
             double dfFactor = 0.0;
             double dfFactor2 = 0.0;
             double dfPseudoPanchro = 0.0;
             double dfPseudoPanchro2 = 0.0;
-            for( int i = 0; i < psOptions->nInputSpectralBands; i++ )
+            for (int i = 0; i < psOptions->nInputSpectralBands; i++)
             {
                 dfPseudoPanchro +=
                     psOptions->padfWeights[i] *
@@ -763,52 +867,52 @@ void GDALPansharpenOperation::WeightedBroveyPositiveWeights(
             }
 
             dfFactor = ComputeFactor(pPanBuffer[j], dfPseudoPanchro);
-            dfFactor2 = ComputeFactor(pPanBuffer[j+1], dfPseudoPanchro2);
+            dfFactor2 = ComputeFactor(pPanBuffer[j + 1], dfPseudoPanchro2);
 
-            for( int i = 0; i < psOptions->nOutPansharpenedBands; i++ )
+            for (int i = 0; i < psOptions->nOutPansharpenedBands; i++)
             {
-                const T nRawValue =
-                    pUpsampledSpectralBuffer[psOptions->panOutPansharpenedBands[i] * nBandValues + j];
+                const T nRawValue = pUpsampledSpectralBuffer
+                    [psOptions->panOutPansharpenedBands[i] * nBandValues + j];
                 const double dfTmp = nRawValue * dfFactor;
                 pDataBuf[i * nBandValues + j] = ClampAndRound(dfTmp, nMaxValue);
 
-                const T nRawValue2 =
-                    pUpsampledSpectralBuffer[psOptions->panOutPansharpenedBands[i] * nBandValues + j + 1];
+                const T nRawValue2 = pUpsampledSpectralBuffer
+                    [psOptions->panOutPansharpenedBands[i] * nBandValues + j +
+                     1];
                 const double dfTmp2 = nRawValue2 * dfFactor2;
-                pDataBuf[i * nBandValues + j + 1] = ClampAndRound(dfTmp2, nMaxValue);
+                pDataBuf[i * nBandValues + j + 1] =
+                    ClampAndRound(dfTmp2, nMaxValue);
             }
         }
     }
-    for( ;j<nValues ;j++)
+    for (; j < nValues; j++)
     {
         double dfFactor = 0.0;
         double dfPseudoPanchro = 0.0;
-        for( int i = 0; i < psOptions->nInputSpectralBands; i++ )
+        for (int i = 0; i < psOptions->nInputSpectralBands; i++)
             dfPseudoPanchro += psOptions->padfWeights[i] *
-                            pUpsampledSpectralBuffer[i * nBandValues + j];
+                               pUpsampledSpectralBuffer[i * nBandValues + j];
         dfFactor = ComputeFactor(pPanBuffer[j], dfPseudoPanchro);
 
-        for( int i = 0; i < psOptions->nOutPansharpenedBands; i++ )
+        for (int i = 0; i < psOptions->nOutPansharpenedBands; i++)
         {
             T nRawValue =
                 pUpsampledSpectralBuffer[psOptions->panOutPansharpenedBands[i] *
-                                         nBandValues + j];
+                                             nBandValues +
+                                         j];
             double dfTmp = nRawValue * dfFactor;
             pDataBuf[i * nBandValues + j] = ClampAndRound(dfTmp, nMaxValue);
         }
     }
 }
 
-template<class WorkDataType, class OutDataType> void
-GDALPansharpenOperation::WeightedBrovey(
-    const WorkDataType* pPanBuffer,
-    const WorkDataType* pUpsampledSpectralBuffer,
-    OutDataType* pDataBuf,
-    size_t nValues,
-    size_t nBandValues,
-    WorkDataType nMaxValue ) const
+template <class WorkDataType, class OutDataType>
+void GDALPansharpenOperation::WeightedBrovey(
+    const WorkDataType *pPanBuffer,
+    const WorkDataType *pUpsampledSpectralBuffer, OutDataType *pDataBuf,
+    size_t nValues, size_t nBandValues, WorkDataType nMaxValue) const
 {
-    if( nMaxValue == 0 )
+    if (nMaxValue == 0)
         WeightedBrovey3<WorkDataType, OutDataType, FALSE>(
             pPanBuffer, pUpsampledSpectralBuffer, pDataBuf, nValues,
             nBandValues, 0);
@@ -820,117 +924,117 @@ GDALPansharpenOperation::WeightedBrovey(
     }
 }
 
-template<class T>
+template <class T>
 void GDALPansharpenOperation::WeightedBroveyGByteOrUInt16(
-    const T* pPanBuffer,
-    const T* pUpsampledSpectralBuffer,
-    T* pDataBuf,
-    size_t nValues,
-    size_t nBandValues,
-    T nMaxValue ) const
+    const T *pPanBuffer, const T *pUpsampledSpectralBuffer, T *pDataBuf,
+    size_t nValues, size_t nBandValues, T nMaxValue) const
 {
-    if( bPositiveWeights )
+    if (bPositiveWeights)
     {
-        WeightedBroveyPositiveWeights(
-                pPanBuffer, pUpsampledSpectralBuffer, pDataBuf, nValues,
-                nBandValues, nMaxValue);
+        WeightedBroveyPositiveWeights(pPanBuffer, pUpsampledSpectralBuffer,
+                                      pDataBuf, nValues, nBandValues,
+                                      nMaxValue);
     }
-    else if( nMaxValue == 0 )
+    else if (nMaxValue == 0)
     {
-        WeightedBrovey3<T, T, FALSE>(
-                pPanBuffer, pUpsampledSpectralBuffer, pDataBuf, nValues,
-                nBandValues, 0);
+        WeightedBrovey3<T, T, FALSE>(pPanBuffer, pUpsampledSpectralBuffer,
+                                     pDataBuf, nValues, nBandValues, 0);
     }
     else
     {
-        WeightedBrovey3<T, T, TRUE>(
-            pPanBuffer, pUpsampledSpectralBuffer, pDataBuf, nValues,
-            nBandValues, nMaxValue);
+        WeightedBrovey3<T, T, TRUE>(pPanBuffer, pUpsampledSpectralBuffer,
+                                    pDataBuf, nValues, nBandValues, nMaxValue);
     }
 }
 
-
-template<>
+template <>
 void GDALPansharpenOperation::WeightedBrovey<GByte, GByte>(
-    const GByte* pPanBuffer,
-    const GByte* pUpsampledSpectralBuffer,
-    GByte* pDataBuf,
-    size_t nValues,
-    size_t nBandValues,
-    GByte nMaxValue ) const
+    const GByte *pPanBuffer, const GByte *pUpsampledSpectralBuffer,
+    GByte *pDataBuf, size_t nValues, size_t nBandValues, GByte nMaxValue) const
 {
-    WeightedBroveyGByteOrUInt16(pPanBuffer, pUpsampledSpectralBuffer,
-                                pDataBuf, nValues,
-                                nBandValues, nMaxValue);
+    WeightedBroveyGByteOrUInt16(pPanBuffer, pUpsampledSpectralBuffer, pDataBuf,
+                                nValues, nBandValues, nMaxValue);
 }
 
-template<>
+template <>
 void GDALPansharpenOperation::WeightedBrovey<GUInt16, GUInt16>(
-    const GUInt16* pPanBuffer,
-    const GUInt16* pUpsampledSpectralBuffer,
-    GUInt16* pDataBuf,
-    size_t nValues,
-    size_t nBandValues,
-    GUInt16 nMaxValue ) const
+    const GUInt16 *pPanBuffer, const GUInt16 *pUpsampledSpectralBuffer,
+    GUInt16 *pDataBuf, size_t nValues, size_t nBandValues,
+    GUInt16 nMaxValue) const
 {
-    WeightedBroveyGByteOrUInt16(pPanBuffer, pUpsampledSpectralBuffer,
-                                pDataBuf, nValues,
-                                nBandValues, nMaxValue);
+    WeightedBroveyGByteOrUInt16(pPanBuffer, pUpsampledSpectralBuffer, pDataBuf,
+                                nValues, nBandValues, nMaxValue);
 }
 
-template<class WorkDataType> CPLErr GDALPansharpenOperation::WeightedBrovey(
-    const WorkDataType* pPanBuffer,
-    const WorkDataType* pUpsampledSpectralBuffer,
-    void *pDataBuf,
-    GDALDataType eBufDataType,
-    size_t nValues,
-    size_t nBandValues,
-    WorkDataType nMaxValue ) const
+template <class WorkDataType>
+CPLErr GDALPansharpenOperation::WeightedBrovey(
+    const WorkDataType *pPanBuffer,
+    const WorkDataType *pUpsampledSpectralBuffer, void *pDataBuf,
+    GDALDataType eBufDataType, size_t nValues, size_t nBandValues,
+    WorkDataType nMaxValue) const
 {
-    switch( eBufDataType )
+    switch (eBufDataType)
     {
         case GDT_Byte:
             WeightedBrovey(pPanBuffer, pUpsampledSpectralBuffer,
-                           static_cast<GByte *>(pDataBuf),
-                           nValues, nBandValues, nMaxValue);
+                           static_cast<GByte *>(pDataBuf), nValues, nBandValues,
+                           nMaxValue);
             break;
 
         case GDT_UInt16:
             WeightedBrovey(pPanBuffer, pUpsampledSpectralBuffer,
-                           static_cast<GUInt16 *>(pDataBuf),
-                           nValues, nBandValues, nMaxValue);
+                           static_cast<GUInt16 *>(pDataBuf), nValues,
+                           nBandValues, nMaxValue);
             break;
 
 #ifndef LIMIT_TYPES
+        case GDT_Int8:
+            WeightedBrovey(pPanBuffer, pUpsampledSpectralBuffer,
+                           static_cast<GInt8 *>(pDataBuf), nValues, nBandValues,
+                           nMaxValue);
+            break;
+
         case GDT_Int16:
             WeightedBrovey(pPanBuffer, pUpsampledSpectralBuffer,
-                           static_cast<GInt16 *>(pDataBuf),
-                           nValues, nBandValues, nMaxValue);
+                           static_cast<GInt16 *>(pDataBuf), nValues,
+                           nBandValues, nMaxValue);
             break;
 
         case GDT_UInt32:
             WeightedBrovey(pPanBuffer, pUpsampledSpectralBuffer,
-                           static_cast<GUInt32 *>(pDataBuf),
-                           nValues, nBandValues, nMaxValue);
+                           static_cast<GUInt32 *>(pDataBuf), nValues,
+                           nBandValues, nMaxValue);
             break;
 
         case GDT_Int32:
             WeightedBrovey(pPanBuffer, pUpsampledSpectralBuffer,
-                           static_cast<GInt32 *>(pDataBuf),
-                           nValues, nBandValues, nMaxValue);
+                           static_cast<GInt32 *>(pDataBuf), nValues,
+                           nBandValues, nMaxValue);
+            break;
+
+        case GDT_UInt64:
+            WeightedBrovey(pPanBuffer, pUpsampledSpectralBuffer,
+                           static_cast<std::uint64_t *>(pDataBuf), nValues,
+                           nBandValues, nMaxValue);
+            break;
+
+        case GDT_Int64:
+            WeightedBrovey(pPanBuffer, pUpsampledSpectralBuffer,
+                           static_cast<std::int64_t *>(pDataBuf), nValues,
+                           nBandValues, nMaxValue);
             break;
 
         case GDT_Float32:
             WeightedBrovey(pPanBuffer, pUpsampledSpectralBuffer,
-                           static_cast<float *>(pDataBuf),
-                           nValues, nBandValues, nMaxValue);
+                           static_cast<float *>(pDataBuf), nValues, nBandValues,
+                           nMaxValue);
             break;
 #endif
 
         case GDT_Float64:
             WeightedBrovey(pPanBuffer, pUpsampledSpectralBuffer,
-                           static_cast<double *>(pDataBuf),
-                           nValues, nBandValues, nMaxValue);
+                           static_cast<double *>(pDataBuf), nValues,
+                           nBandValues, nMaxValue);
             break;
 
         default:
@@ -943,14 +1047,13 @@ template<class WorkDataType> CPLErr GDALPansharpenOperation::WeightedBrovey(
     return CE_None;
 }
 
-template<class WorkDataType> CPLErr GDALPansharpenOperation::WeightedBrovey(
-    const WorkDataType* pPanBuffer,
-    const WorkDataType* pUpsampledSpectralBuffer,
-    void *pDataBuf,
-    GDALDataType eBufDataType,
-    size_t nValues, size_t nBandValues ) const
+template <class WorkDataType>
+CPLErr GDALPansharpenOperation::WeightedBrovey(
+    const WorkDataType *pPanBuffer,
+    const WorkDataType *pUpsampledSpectralBuffer, void *pDataBuf,
+    GDALDataType eBufDataType, size_t nValues, size_t nBandValues) const
 {
-    switch( eBufDataType )
+    switch (eBufDataType)
     {
         case GDT_Byte:
             WeightedBrovey3<WorkDataType, GByte, FALSE>(
@@ -965,6 +1068,12 @@ template<class WorkDataType> CPLErr GDALPansharpenOperation::WeightedBrovey(
             break;
 
 #ifndef LIMIT_TYPES
+        case GDT_Int8:
+            WeightedBrovey3<WorkDataType, GInt8, FALSE>(
+                pPanBuffer, pUpsampledSpectralBuffer,
+                static_cast<GInt8 *>(pDataBuf), nValues, nBandValues, 0);
+            break;
+
         case GDT_Int16:
             WeightedBrovey3<WorkDataType, GInt16, FALSE>(
                 pPanBuffer, pUpsampledSpectralBuffer,
@@ -981,6 +1090,19 @@ template<class WorkDataType> CPLErr GDALPansharpenOperation::WeightedBrovey(
             WeightedBrovey3<WorkDataType, GInt32, FALSE>(
                 pPanBuffer, pUpsampledSpectralBuffer,
                 static_cast<GInt32 *>(pDataBuf), nValues, nBandValues, 0);
+            break;
+
+        case GDT_UInt64:
+            WeightedBrovey3<WorkDataType, std::uint64_t, FALSE>(
+                pPanBuffer, pUpsampledSpectralBuffer,
+                static_cast<std::uint64_t *>(pDataBuf), nValues, nBandValues,
+                0);
+            break;
+
+        case GDT_Int64:
+            WeightedBrovey3<WorkDataType, std::int64_t, FALSE>(
+                pPanBuffer, pUpsampledSpectralBuffer,
+                static_cast<std::int64_t *>(pDataBuf), nValues, nBandValues, 0);
             break;
 
         case GDT_Float32:
@@ -1010,12 +1132,12 @@ template<class WorkDataType> CPLErr GDALPansharpenOperation::WeightedBrovey(
 /*                           ClampValues()                              */
 /************************************************************************/
 
-template< class T >
-static void ClampValues( T* panBuffer, size_t nValues, T nMaxVal )
+template <class T>
+static void ClampValues(T *panBuffer, size_t nValues, T nMaxVal)
 {
-    for( size_t i = 0; i < nValues; i++ )
+    for (size_t i = 0; i < nValues; i++)
     {
-        if( panBuffer[i] > nMaxVal )
+        if (panBuffer[i] > nMaxVal)
             panBuffer[i] = nMaxVal;
     }
 }
@@ -1048,40 +1170,38 @@ static void ClampValues( T* panBuffer, size_t nValues, T nMaxVal )
  *
  * @since GDAL 2.1
  */
-CPLErr GDALPansharpenOperation::ProcessRegion( int nXOff, int nYOff,
-                                               int nXSize, int nYSize,
-                                               void *pDataBuf,
-                                               GDALDataType eBufDataType )
+CPLErr GDALPansharpenOperation::ProcessRegion(int nXOff, int nYOff, int nXSize,
+                                              int nYSize, void *pDataBuf,
+                                              GDALDataType eBufDataType)
 {
-    if( psOptions == nullptr )
+    if (psOptions == nullptr)
         return CE_Failure;
 
     // TODO: Avoid allocating buffers each time.
-    GDALRasterBand* poPanchroBand = GDALRasterBand::FromHandle(
-                                                    psOptions->hPanchroBand);
+    GDALRasterBand *poPanchroBand =
+        GDALRasterBand::FromHandle(psOptions->hPanchroBand);
     GDALDataType eWorkDataType = poPanchroBand->GetRasterDataType();
 #ifdef LIMIT_TYPES
-    if( eWorkDataType != GDT_Byte && eWorkDataType != GDT_UInt16 )
+    if (eWorkDataType != GDT_Byte && eWorkDataType != GDT_UInt16)
         eWorkDataType = GDT_Float64;
 #endif
     const int nDataTypeSize = GDALGetDataTypeSizeBytes(eWorkDataType);
-    GByte* pUpsampledSpectralBuffer = static_cast<GByte *>(
-        VSI_MALLOC3_VERBOSE(nXSize, nYSize,
-                            psOptions->nInputSpectralBands * nDataTypeSize));
-    GByte* pPanBuffer = static_cast<GByte *>(
+    GByte *pUpsampledSpectralBuffer = static_cast<GByte *>(VSI_MALLOC3_VERBOSE(
+        nXSize, nYSize,
+        cpl::fits_on<int>(psOptions->nInputSpectralBands * nDataTypeSize)));
+    GByte *pPanBuffer = static_cast<GByte *>(
         VSI_MALLOC3_VERBOSE(nXSize, nYSize, nDataTypeSize));
-    if( pUpsampledSpectralBuffer == nullptr || pPanBuffer == nullptr )
+    if (pUpsampledSpectralBuffer == nullptr || pPanBuffer == nullptr)
     {
         VSIFree(pUpsampledSpectralBuffer);
         VSIFree(pPanBuffer);
         return CE_Failure;
     }
 
-    CPLErr eErr =
-        poPanchroBand->RasterIO(GF_Read,
-                nXOff, nYOff, nXSize, nYSize, pPanBuffer, nXSize, nYSize,
-                eWorkDataType, 0, 0, nullptr);
-    if( eErr != CE_None )
+    CPLErr eErr = poPanchroBand->RasterIO(GF_Read, nXOff, nYOff, nXSize, nYSize,
+                                          pPanBuffer, nXSize, nYSize,
+                                          eWorkDataType, 0, 0, nullptr);
+    if (eErr != CE_None)
     {
         VSIFree(pUpsampledSpectralBuffer);
         VSIFree(pPanBuffer);
@@ -1089,10 +1209,10 @@ CPLErr GDALPansharpenOperation::ProcessRegion( int nXOff, int nYOff,
     }
 
     int nTasks = 0;
-    if( poThreadPool )
+    if (poThreadPool)
     {
         nTasks = poThreadPool->GetThreadCount();
-        if( nTasks > nYSize )
+        if (nTasks > nYSize)
             nTasks = nYSize;
     }
 
@@ -1102,33 +1222,27 @@ CPLErr GDALPansharpenOperation::ProcessRegion( int nXOff, int nYOff,
     // cppcheck-suppress redundantAssignment
     sExtraArg.eResampleAlg = eResampleAlg;
     sExtraArg.bFloatingPointWindowValidity = TRUE;
-    double dfRatioX =
-        static_cast<double>(poPanchroBand->GetXSize()) /
-        aMSBands[0]->GetXSize();
-    double dfRatioY =
-        static_cast<double>(poPanchroBand->GetYSize()) /
-        aMSBands[0]->GetYSize();
-    sExtraArg.dfXOff = (nXOff + psOptions->dfMSShiftX) / dfRatioX;
-    sExtraArg.dfYOff = (nYOff + psOptions->dfMSShiftY) / dfRatioY;
-    sExtraArg.dfXSize = nXSize / dfRatioX;
-    sExtraArg.dfYSize = nYSize / dfRatioY;
-    if( sExtraArg.dfXOff + sExtraArg.dfXSize > aMSBands[0]->GetXSize() )
+    sExtraArg.dfXOff = m_adfPanToMSGT[0] + nXOff * m_adfPanToMSGT[1];
+    sExtraArg.dfYOff = m_adfPanToMSGT[3] + nYOff * m_adfPanToMSGT[5];
+    sExtraArg.dfXSize = nXSize * m_adfPanToMSGT[1];
+    sExtraArg.dfYSize = nYSize * m_adfPanToMSGT[5];
+    if (sExtraArg.dfXOff + sExtraArg.dfXSize > aMSBands[0]->GetXSize())
         sExtraArg.dfXOff = aMSBands[0]->GetXSize() - sExtraArg.dfXSize;
-    if( sExtraArg.dfYOff + sExtraArg.dfYSize > aMSBands[0]->GetYSize() )
+    if (sExtraArg.dfYOff + sExtraArg.dfYSize > aMSBands[0]->GetYSize())
         sExtraArg.dfYOff = aMSBands[0]->GetYSize() - sExtraArg.dfYSize;
     int nSpectralXOff = static_cast<int>(sExtraArg.dfXOff);
     int nSpectralYOff = static_cast<int>(sExtraArg.dfYOff);
     int nSpectralXSize = static_cast<int>(0.49999 + sExtraArg.dfXSize);
     int nSpectralYSize = static_cast<int>(0.49999 + sExtraArg.dfYSize);
-    if( nSpectralXSize == 0 )
+    if (nSpectralXSize == 0)
         nSpectralXSize = 1;
-    if( nSpectralYSize == 0 )
+    if (nSpectralYSize == 0)
         nSpectralYSize = 1;
 
     // When upsampling, extract the multispectral data at
     // full resolution in a temp buffer, and then do the upsampling.
-    if( nSpectralXSize < nXSize && nSpectralYSize < nYSize &&
-        eResampleAlg != GRIORA_NearestNeighbour && nYSize > 1 )
+    if (nSpectralXSize < nXSize && nSpectralYSize < nYSize &&
+        eResampleAlg != GRIORA_NearestNeighbour && nYSize > 1)
     {
         // Take some margin to take into account the radius of the
         // resampling kernel.
@@ -1136,63 +1250,54 @@ CPLErr GDALPansharpenOperation::ProcessRegion( int nXOff, int nYOff,
         int nYOffExtract = nSpectralYOff - nKernelRadius;
         int nXSizeExtract = nSpectralXSize + 1 + 2 * nKernelRadius;
         int nYSizeExtract = nSpectralYSize + 1 + 2 * nKernelRadius;
-        if( nXOffExtract < 0 )
+        if (nXOffExtract < 0)
         {
             nXSizeExtract += nXOffExtract;
             nXOffExtract = 0;
         }
-        if( nYOffExtract < 0 )
+        if (nYOffExtract < 0)
         {
             nYSizeExtract += nYOffExtract;
             nYOffExtract = 0;
         }
-        if( nXOffExtract + nXSizeExtract > aMSBands[0]->GetXSize() )
+        if (nXOffExtract + nXSizeExtract > aMSBands[0]->GetXSize())
             nXSizeExtract = aMSBands[0]->GetXSize() - nXOffExtract;
-        if( nYOffExtract + nYSizeExtract > aMSBands[0]->GetYSize() )
+        if (nYOffExtract + nYSizeExtract > aMSBands[0]->GetYSize())
             nYSizeExtract = aMSBands[0]->GetYSize() - nYOffExtract;
 
-        GByte* pSpectralBuffer = static_cast<GByte *>(
-            VSI_MALLOC3_VERBOSE(
-                nXSizeExtract, nYSizeExtract,
-                psOptions->nInputSpectralBands * nDataTypeSize));
-        if( pSpectralBuffer == nullptr )
+        GByte *pSpectralBuffer = static_cast<GByte *>(VSI_MALLOC3_VERBOSE(
+            nXSizeExtract, nYSizeExtract,
+            cpl::fits_on<int>(psOptions->nInputSpectralBands * nDataTypeSize)));
+        if (pSpectralBuffer == nullptr)
         {
             VSIFree(pUpsampledSpectralBuffer);
             VSIFree(pPanBuffer);
             return CE_Failure;
         }
 
-        if( !anInputBands.empty() )
+        if (!anInputBands.empty())
         {
             // Use dataset RasterIO when possible.
             eErr = aMSBands[0]->GetDataset()->RasterIO(
-                GF_Read,
-                nXOffExtract, nYOffExtract,
-                nXSizeExtract, nYSizeExtract,
-                pSpectralBuffer,
-                nXSizeExtract, nYSizeExtract,
-                eWorkDataType,
-                static_cast<int>(anInputBands.size()), &anInputBands[0],
-                0, 0, 0, nullptr);
+                GF_Read, nXOffExtract, nYOffExtract, nXSizeExtract,
+                nYSizeExtract, pSpectralBuffer, nXSizeExtract, nYSizeExtract,
+                eWorkDataType, static_cast<int>(anInputBands.size()),
+                &anInputBands[0], 0, 0, 0, nullptr);
         }
         else
         {
-            for( int i = 0;
-                 eErr == CE_None && i < psOptions->nInputSpectralBands;
-                 i++ )
+            for (int i = 0;
+                 eErr == CE_None && i < psOptions->nInputSpectralBands; i++)
             {
                 eErr = aMSBands[i]->RasterIO(
-                    GF_Read,
-                    nXOffExtract, nYOffExtract,
-                    nXSizeExtract, nYSizeExtract,
-                    pSpectralBuffer +
-                    static_cast<size_t>(i) *
-                    nXSizeExtract * nYSizeExtract * nDataTypeSize,
-                    nXSizeExtract, nYSizeExtract,
-                    eWorkDataType, 0, 0, nullptr);
+                    GF_Read, nXOffExtract, nYOffExtract, nXSizeExtract,
+                    nYSizeExtract,
+                    pSpectralBuffer + static_cast<size_t>(i) * nXSizeExtract *
+                                          nYSizeExtract * nDataTypeSize,
+                    nXSizeExtract, nYSizeExtract, eWorkDataType, 0, 0, nullptr);
             }
         }
-        if( eErr != CE_None )
+        if (eErr != CE_None)
         {
             VSIFree(pSpectralBuffer);
             VSIFree(pUpsampledSpectralBuffer);
@@ -1201,63 +1306,40 @@ CPLErr GDALPansharpenOperation::ProcessRegion( int nXOff, int nYOff,
         }
 
         // Create a MEM dataset that wraps the input buffer.
-        GDALDataset* poMEMDS = MEMDataset::Create("", nXSizeExtract, nYSizeExtract, 0,
-                                                  eWorkDataType, nullptr);
+        auto poMEMDS = MEMDataset::Create("", nXSizeExtract, nYSizeExtract, 0,
+                                          eWorkDataType, nullptr);
 
-        char szBuffer0[64] = {};
-        char szBuffer1[64] = {};
-        char szBuffer2[64] = {};
-        snprintf(szBuffer1, sizeof(szBuffer1), "PIXELOFFSET=" CPL_FRMT_GIB,
-                 static_cast<GIntBig>(nDataTypeSize));
-        snprintf(szBuffer2, sizeof(szBuffer2), "LINEOFFSET=" CPL_FRMT_GIB,
-                 static_cast<GIntBig>(nDataTypeSize) * nXSizeExtract);
-        char* apszOptions[4] = {};
-        apszOptions[0] = szBuffer0;
-        apszOptions[1] = szBuffer1;
-        apszOptions[2] = szBuffer2;
-        apszOptions[3] = nullptr;
-
-        for( int i = 0; i < psOptions->nInputSpectralBands; i++ )
+        for (int i = 0; i < psOptions->nInputSpectralBands; i++)
         {
-            char szBuffer[32] = {};
-            int nRet = CPLPrintPointer(
-                szBuffer,
-                pSpectralBuffer +
-                static_cast<size_t>(i) * nDataTypeSize * nXSizeExtract *
-                nYSizeExtract,
-                sizeof(szBuffer));
-            szBuffer[nRet] = 0;
+            GByte *pabyBuffer =
+                pSpectralBuffer + static_cast<size_t>(i) * nDataTypeSize *
+                                      nXSizeExtract * nYSizeExtract;
+            GDALRasterBandH hMEMBand = MEMCreateRasterBandEx(
+                poMEMDS, i + 1, pabyBuffer, eWorkDataType, 0, 0, false);
+            poMEMDS->AddMEMBand(hMEMBand);
 
-            snprintf(szBuffer0, sizeof(szBuffer0), "DATAPOINTER=%s", szBuffer);
-
-            poMEMDS->AddBand(eWorkDataType, apszOptions);
-
-            const char* pszNBITS =
+            const char *pszNBITS =
                 aMSBands[i]->GetMetadataItem("NBITS", "IMAGE_STRUCTURE");
-            if( pszNBITS )
-                poMEMDS->GetRasterBand(i+1)->SetMetadataItem("NBITS", pszNBITS,
-                                                             "IMAGE_STRUCTURE");
+            if (pszNBITS)
+                poMEMDS->GetRasterBand(i + 1)->SetMetadataItem(
+                    "NBITS", pszNBITS, "IMAGE_STRUCTURE");
 
-            if( psOptions->bHasNoData )
-                poMEMDS->GetRasterBand(i+1)
-                    ->SetNoDataValue(psOptions->dfNoData);
+            if (psOptions->bHasNoData)
+                poMEMDS->GetRasterBand(i + 1)->SetNoDataValue(
+                    psOptions->dfNoData);
         }
 
-        if( nTasks <= 1 )
+        if (nTasks <= 1)
         {
             nSpectralXOff -= nXOffExtract;
             nSpectralYOff -= nYOffExtract;
             sExtraArg.dfXOff -= nXOffExtract;
             sExtraArg.dfYOff -= nYOffExtract;
-            CPL_IGNORE_RET_VAL(poMEMDS->RasterIO(GF_Read,
-                              nSpectralXOff,
-                              nSpectralYOff,
-                              nSpectralXSize, nSpectralYSize,
-                              pUpsampledSpectralBuffer, nXSize, nYSize,
-                              eWorkDataType,
-                              psOptions->nInputSpectralBands, nullptr,
-                              0, 0, 0,
-                              &sExtraArg));
+            CPL_IGNORE_RET_VAL(poMEMDS->RasterIO(
+                GF_Read, nSpectralXOff, nSpectralYOff, nSpectralXSize,
+                nSpectralYSize, pUpsampledSpectralBuffer, nXSize, nYSize,
+                eWorkDataType, psOptions->nInputSpectralBands, nullptr, 0, 0, 0,
+                &sExtraArg));
         }
         else
         {
@@ -1268,44 +1350,44 @@ CPLErr GDALPansharpenOperation::ProcessRegion( int nXOff, int nYOff,
 
             // To avoid races in threads, we query now the mask flags,
             // so that implicit mask bands are created now.
-            for( int i = 0; i < poMEMDS->GetRasterCount(); i++ )
+            for (int i = 0; i < poMEMDS->GetRasterCount(); i++)
             {
-                poMEMDS->GetRasterBand(i+1)->GetMaskFlags();
+                poMEMDS->GetRasterBand(i + 1)->GetMaskFlags();
             }
 
             std::vector<GDALPansharpenResampleJob> asJobs;
-            asJobs.resize( nTasks );
-            GDALPansharpenResampleJob* pasJobs = &(asJobs[0]);
+            asJobs.resize(nTasks);
+            GDALPansharpenResampleJob *pasJobs = &(asJobs[0]);
             {
-                std::vector<void*> ahJobData;
-                ahJobData.resize( nTasks );
+                std::vector<void *> ahJobData;
+                ahJobData.resize(nTasks);
 
 #ifdef DEBUG_TIMING
                 struct timeval tv;
 #endif
-                for( int i=0;i<nTasks;i++)
+                for (int i = 0; i < nTasks; i++)
                 {
                     const size_t iStartLine =
                         (static_cast<size_t>(i) * nYSize) / nTasks;
                     const size_t iNextStartLine =
-                        (static_cast<size_t>(i+1) * nYSize) / nTasks;
+                        (static_cast<size_t>(i + 1) * nYSize) / nTasks;
                     pasJobs[i].poMEMDS = poMEMDS;
                     pasJobs[i].eResampleAlg = eResampleAlg;
                     pasJobs[i].dfXOff = sExtraArg.dfXOff - nXOffExtract;
                     pasJobs[i].dfYOff =
-                        (nYOff + psOptions->dfMSShiftY + iStartLine) /
-                        dfRatioY - nYOffExtract;
+                        m_adfPanToMSGT[3] +
+                        (nYOff + iStartLine) * m_adfPanToMSGT[5] - nYOffExtract;
                     pasJobs[i].dfXSize = sExtraArg.dfXSize;
                     pasJobs[i].dfYSize =
-                        (iNextStartLine - iStartLine) / dfRatioY;
-                    if( pasJobs[i].dfXOff + pasJobs[i].dfXSize >
-                        aMSBands[0]->GetXSize() )
+                        (iNextStartLine - iStartLine) * m_adfPanToMSGT[5];
+                    if (pasJobs[i].dfXOff + pasJobs[i].dfXSize >
+                        aMSBands[0]->GetXSize())
                     {
                         pasJobs[i].dfXOff =
                             aMSBands[0]->GetXSize() - pasJobs[i].dfXSize;
                     }
-                    if( pasJobs[i].dfYOff + pasJobs[i].dfYSize >
-                        aMSBands[0]->GetYSize() )
+                    if (pasJobs[i].dfYOff + pasJobs[i].dfYSize >
+                        aMSBands[0]->GetYSize())
                     {
                         pasJobs[i].dfYOff =
                             aMSBands[0]->GetYSize() - pasJobs[i].dfYSize;
@@ -1316,14 +1398,13 @@ CPLErr GDALPansharpenOperation::ProcessRegion( int nXOff, int nYOff,
                         static_cast<int>(0.4999 + pasJobs[i].dfXSize);
                     pasJobs[i].nYSize =
                         static_cast<int>(0.4999 + pasJobs[i].dfYSize);
-                    if( pasJobs[i].nXSize == 0 )
+                    if (pasJobs[i].nXSize == 0)
                         pasJobs[i].nXSize = 1;
-                    if( pasJobs[i].nYSize == 0 )
+                    if (pasJobs[i].nYSize == 0)
                         pasJobs[i].nYSize = 1;
-                    pasJobs[i].pBuffer =
-                        pUpsampledSpectralBuffer +
-                        static_cast<size_t>(iStartLine) *
-                        nXSize * nDataTypeSize;
+                    pasJobs[i].pBuffer = pUpsampledSpectralBuffer +
+                                         static_cast<size_t>(iStartLine) *
+                                             nXSize * nDataTypeSize;
                     pasJobs[i].eDT = eWorkDataType;
                     pasJobs[i].nBufXSize = nXSize;
                     pasJobs[i].nBufYSize =
@@ -1351,36 +1432,29 @@ CPLErr GDALPansharpenOperation::ProcessRegion( int nXOff, int nYOff,
     }
     else
     {
-        if( !anInputBands.empty() )
+        if (!anInputBands.empty())
         {
             // Use dataset RasterIO when possible.
             eErr = aMSBands[0]->GetDataset()->RasterIO(
-                GF_Read,
-                nSpectralXOff, nSpectralYOff,
-                nSpectralXSize, nSpectralYSize,
-                pUpsampledSpectralBuffer,
-                nXSize, nYSize,
-                eWorkDataType,
-                static_cast<int>(anInputBands.size()), &anInputBands[0],
-                0, 0, 0, &sExtraArg);
+                GF_Read, nSpectralXOff, nSpectralYOff, nSpectralXSize,
+                nSpectralYSize, pUpsampledSpectralBuffer, nXSize, nYSize,
+                eWorkDataType, static_cast<int>(anInputBands.size()),
+                &anInputBands[0], 0, 0, 0, &sExtraArg);
         }
         else
         {
-            for( int i = 0;
-                 eErr == CE_None && i < psOptions->nInputSpectralBands;
-                 i++ )
+            for (int i = 0;
+                 eErr == CE_None && i < psOptions->nInputSpectralBands; i++)
             {
                 eErr = aMSBands[i]->RasterIO(
-                    GF_Read,
-                    nSpectralXOff, nSpectralYOff,
-                    nSpectralXSize, nSpectralYSize,
-                    pUpsampledSpectralBuffer +
-                    static_cast<size_t>(i) * nXSize * nYSize * nDataTypeSize,
-                    nXSize, nYSize,
-                    eWorkDataType, 0, 0, &sExtraArg);
+                    GF_Read, nSpectralXOff, nSpectralYOff, nSpectralXSize,
+                    nSpectralYSize,
+                    pUpsampledSpectralBuffer + static_cast<size_t>(i) * nXSize *
+                                                   nYSize * nDataTypeSize,
+                    nXSize, nYSize, eWorkDataType, 0, 0, &sExtraArg);
             }
         }
-        if( eErr != CE_None )
+        if (eErr != CE_None)
         {
             VSIFree(pUpsampledSpectralBuffer);
             VSIFree(pPanBuffer);
@@ -1391,34 +1465,38 @@ CPLErr GDALPansharpenOperation::ProcessRegion( int nXOff, int nYOff,
     // In case NBITS was not set on the spectral bands, clamp the values
     // if overshoot might have occurred.
     int nBitDepth = psOptions->nBitDepth;
-    if( nBitDepth && (eResampleAlg == GRIORA_Cubic ||
-                      eResampleAlg == GRIORA_CubicSpline ||
-                      eResampleAlg == GRIORA_Lanczos) )
+    if (nBitDepth &&
+        (eResampleAlg == GRIORA_Cubic || eResampleAlg == GRIORA_CubicSpline ||
+         eResampleAlg == GRIORA_Lanczos))
     {
-        for( int i = 0; i < psOptions->nInputSpectralBands; i++ )
+        for (int i = 0; i < psOptions->nInputSpectralBands; i++)
         {
-            GDALRasterBand* poBand = aMSBands[i];
+            GDALRasterBand *poBand = aMSBands[i];
             int nBandBitDepth = 0;
-            const char* pszNBITS =
+            const char *pszNBITS =
                 poBand->GetMetadataItem("NBITS", "IMAGE_STRUCTURE");
-            if( pszNBITS )
+            if (pszNBITS)
                 nBandBitDepth = atoi(pszNBITS);
-            if( nBandBitDepth < nBitDepth )
+            if (nBandBitDepth < nBitDepth)
             {
-                if( eWorkDataType == GDT_Byte )
+                if (eWorkDataType == GDT_Byte)
                 {
-                    ClampValues(reinterpret_cast<GByte*>(pUpsampledSpectralBuffer) + static_cast<size_t>(i) * nXSize * nYSize,
-                               static_cast<size_t>(nXSize)*nYSize,
-                               static_cast<GByte>((1 << nBitDepth)-1));
+                    ClampValues(
+                        reinterpret_cast<GByte *>(pUpsampledSpectralBuffer) +
+                            static_cast<size_t>(i) * nXSize * nYSize,
+                        static_cast<size_t>(nXSize) * nYSize,
+                        static_cast<GByte>((1 << nBitDepth) - 1));
                 }
-                else if( eWorkDataType == GDT_UInt16 )
+                else if (eWorkDataType == GDT_UInt16)
                 {
-                    ClampValues(reinterpret_cast<GUInt16*>(pUpsampledSpectralBuffer) + static_cast<size_t>(i) * nXSize * nYSize,
-                               static_cast<size_t>(nXSize)*nYSize,
-                               static_cast<GUInt16>((1 << nBitDepth)-1));
+                    ClampValues(
+                        reinterpret_cast<GUInt16 *>(pUpsampledSpectralBuffer) +
+                            static_cast<size_t>(i) * nXSize * nYSize,
+                        static_cast<size_t>(nXSize) * nYSize,
+                        static_cast<GUInt16>((1 << nBitDepth) - 1));
                 }
 #ifndef LIMIT_TYPES
-                else if( eWorkDataType == GDT_UInt32 )
+                else if (eWorkDataType == GDT_UInt32)
                 {
                     ClampValues(reinterpret_cast<GUInt32*>(pUpsampledSpectralBuffer) +
                                 static_cast<size_t>(i) * nXSize * nYSize,
@@ -1432,21 +1510,19 @@ CPLErr GDALPansharpenOperation::ProcessRegion( int nXOff, int nYOff,
 
     GUInt32 nMaxValue = (1 << nBitDepth) - 1;
 
-    double* padfTempBuffer = nullptr;
+    double *padfTempBuffer = nullptr;
     GDALDataType eBufDataTypeOri = eBufDataType;
-    void* pDataBufOri = pDataBuf;
+    void *pDataBufOri = pDataBuf;
     // CFloat64 is the query type used by gdallocationinfo...
 #ifdef LIMIT_TYPES
-    if( eBufDataType != GDT_Byte && eBufDataType != GDT_UInt16 )
+    if (eBufDataType != GDT_Byte && eBufDataType != GDT_UInt16)
 #else
-    if( eBufDataType == GDT_CFloat64 )
+    if (eBufDataType == GDT_CFloat64)
 #endif
     {
-        padfTempBuffer = static_cast<double * >(
-            VSI_MALLOC3_VERBOSE(
-                nXSize, nYSize,
-                psOptions->nOutPansharpenedBands * sizeof(double)));
-        if( padfTempBuffer == nullptr )
+        padfTempBuffer = static_cast<double *>(VSI_MALLOC3_VERBOSE(
+            nXSize, nYSize, psOptions->nOutPansharpenedBands * sizeof(double)));
+        if (padfTempBuffer == nullptr)
         {
             VSIFree(pUpsampledSpectralBuffer);
             VSIFree(pPanBuffer);
@@ -1456,18 +1532,18 @@ CPLErr GDALPansharpenOperation::ProcessRegion( int nXOff, int nYOff,
         eBufDataType = GDT_Float64;
     }
 
-    if( nTasks > 1 )
+    if (nTasks > 1)
     {
         std::vector<GDALPansharpenJob> asJobs;
-        asJobs.resize( nTasks );
-        GDALPansharpenJob* pasJobs = &(asJobs[0]);
+        asJobs.resize(nTasks);
+        GDALPansharpenJob *pasJobs = &(asJobs[0]);
         {
-            std::vector<void*> ahJobData;
-            ahJobData.resize( nTasks );
+            std::vector<void *> ahJobData;
+            ahJobData.resize(nTasks);
 #ifdef DEBUG_TIMING
             struct timeval tv;
 #endif
-            for( int i=0;i<nTasks;i++)
+            for (int i = 0; i < nTasks; i++)
             {
                 const size_t iStartLine =
                     (static_cast<size_t>(i) * nYSize) / nTasks;
@@ -1477,16 +1553,15 @@ CPLErr GDALPansharpenOperation::ProcessRegion( int nXOff, int nYOff,
                 pasJobs[i].eWorkDataType = eWorkDataType;
                 pasJobs[i].eBufDataType = eBufDataType;
                 pasJobs[i].pPanBuffer =
-                    pPanBuffer + iStartLine *  nXSize * nDataTypeSize;
+                    pPanBuffer + iStartLine * nXSize * nDataTypeSize;
                 pasJobs[i].pUpsampledSpectralBuffer =
                     pUpsampledSpectralBuffer +
                     iStartLine * nXSize * nDataTypeSize;
                 pasJobs[i].pDataBuf =
-                    static_cast<GByte*>(pDataBuf) +
+                    static_cast<GByte *>(pDataBuf) +
                     iStartLine * nXSize *
-                    GDALGetDataTypeSizeBytes(eBufDataType);
-                pasJobs[i].nValues =
-                    (iNextStartLine - iStartLine) * nXSize;
+                        GDALGetDataTypeSizeBytes(eBufDataType);
+                pasJobs[i].nValues = (iNextStartLine - iStartLine) * nXSize;
                 pasJobs[i].nBandValues = static_cast<size_t>(nXSize) * nYSize;
                 pasJobs[i].nMaxValue = nMaxValue;
 #ifdef DEBUG_TIMING
@@ -1502,29 +1577,27 @@ CPLErr GDALPansharpenOperation::ProcessRegion( int nXOff, int nYOff,
         }
 
         eErr = CE_None;
-        for( int i=0;i<nTasks;i++)
+        for (int i = 0; i < nTasks; i++)
         {
-            if( pasJobs[i].eErr != CE_None )
+            if (pasJobs[i].eErr != CE_None)
                 eErr = CE_Failure;
         }
     }
     else
     {
-        eErr = PansharpenChunk( eWorkDataType, eBufDataType,
-                                pPanBuffer,
-                                pUpsampledSpectralBuffer,
-                                pDataBuf,
-                                static_cast<size_t>(nXSize) * nYSize,
-                                static_cast<size_t>(nXSize) * nYSize,
-                                nMaxValue);
+        eErr = PansharpenChunk(eWorkDataType, eBufDataType, pPanBuffer,
+                               pUpsampledSpectralBuffer, pDataBuf,
+                               static_cast<size_t>(nXSize) * nYSize,
+                               static_cast<size_t>(nXSize) * nYSize, nMaxValue);
     }
 
-    if( padfTempBuffer )
+    if (padfTempBuffer)
     {
         GDALCopyWords64(padfTempBuffer, GDT_Float64, sizeof(double),
-                      pDataBufOri, eBufDataTypeOri,
-                      GDALGetDataTypeSizeBytes(eBufDataTypeOri),
-                      static_cast<size_t>(nXSize)*nYSize*psOptions->nOutPansharpenedBands);
+                        pDataBufOri, eBufDataTypeOri,
+                        GDALGetDataTypeSizeBytes(eBufDataTypeOri),
+                        static_cast<size_t>(nXSize) * nYSize *
+                            psOptions->nOutPansharpenedBands);
         VSIFree(padfTempBuffer);
     }
 
@@ -1540,9 +1613,10 @@ CPLErr GDALPansharpenOperation::ProcessRegion( int nXOff, int nYOff,
 
 // static int acc=0;
 
-void GDALPansharpenOperation::PansharpenResampleJobThreadFunc(void* pUserData)
+void GDALPansharpenOperation::PansharpenResampleJobThreadFunc(void *pUserData)
 {
-    GDALPansharpenResampleJob* psJob = static_cast<GDALPansharpenResampleJob*>(pUserData);
+    GDALPansharpenResampleJob *psJob =
+        static_cast<GDALPansharpenResampleJob *>(pUserData);
 
 #ifdef DEBUG_TIMING
     struct timeval tv;
@@ -1550,9 +1624,8 @@ void GDALPansharpenOperation::PansharpenResampleJobThreadFunc(void* pUserData)
     const GIntBig launch_time =
         static_cast<GIntBig>(psJob->ptv->tv_sec) * 1000000 +
         static_cast<GIntBig>(psJob->ptv->tv_usec);
-    const GIntBig start_job =
-        static_cast<GIntBig>(tv.tv_sec) * 1000000 +
-        static_cast<GIntBig>(tv.tv_usec);
+    const GIntBig start_job = static_cast<GIntBig>(tv.tv_sec) * 1000000 +
+                              static_cast<GIntBig>(tv.tv_usec);
 #endif
 
 #if 0
@@ -1569,31 +1642,21 @@ void GDALPansharpenOperation::PansharpenResampleJobThreadFunc(void* pUserData)
     sExtraArg.dfXSize = psJob->dfXSize;
     sExtraArg.dfYSize = psJob->dfYSize;
 
-    CPL_IGNORE_RET_VAL(psJob->poMEMDS->RasterIO(GF_Read,
-                             psJob->nXOff,
-                             psJob->nYOff,
-                             psJob->nXSize,
-                             psJob->nYSize,
-                             psJob->pBuffer,
-                             psJob->nBufXSize,
-                             psJob->nBufYSize,
-                             psJob->eDT,
-                             psJob->nBandCount,
-                             nullptr,
-                             0, 0, psJob->nBandSpace,
-                             &sExtraArg));
+    CPL_IGNORE_RET_VAL(psJob->poMEMDS->RasterIO(
+        GF_Read, psJob->nXOff, psJob->nYOff, psJob->nXSize, psJob->nYSize,
+        psJob->pBuffer, psJob->nBufXSize, psJob->nBufYSize, psJob->eDT,
+        psJob->nBandCount, nullptr, 0, 0, psJob->nBandSpace, &sExtraArg));
 #endif
 
 #ifdef DEBUG_TIMING
     struct timeval tv_end;
     gettimeofday(&tv_end, nullptr);
-    const GIntBig end =
-        static_cast<GIntBig>(tv_end.tv_sec) * 1000000 +
-        static_cast<GIntBig>(tv_end.tv_usec);
-    if( start_job - launch_time > 500 )
-        /*ok*/printf("Resample: Delay before start=" CPL_FRMT_GIB
-               ", completion time=" CPL_FRMT_GIB "\n",
-               start_job - launch_time, end - start_job);
+    const GIntBig end = static_cast<GIntBig>(tv_end.tv_sec) * 1000000 +
+                        static_cast<GIntBig>(tv_end.tv_usec);
+    if (start_job - launch_time > 500)
+        /*ok*/ printf("Resample: Delay before start=" CPL_FRMT_GIB
+                      ", completion time=" CPL_FRMT_GIB "\n",
+                      start_job - launch_time, end - start_job);
 #endif
 }
 
@@ -1601,9 +1664,9 @@ void GDALPansharpenOperation::PansharpenResampleJobThreadFunc(void* pUserData)
 /*                      PansharpenJobThreadFunc()                       */
 /************************************************************************/
 
-void GDALPansharpenOperation::PansharpenJobThreadFunc(void* pUserData)
+void GDALPansharpenOperation::PansharpenJobThreadFunc(void *pUserData)
 {
-    GDALPansharpenJob* psJob = static_cast<GDALPansharpenJob*>(pUserData);
+    GDALPansharpenJob *psJob = static_cast<GDALPansharpenJob *>(pUserData);
 
 #ifdef DEBUG_TIMING
     struct timeval tv;
@@ -1611,9 +1674,8 @@ void GDALPansharpenOperation::PansharpenJobThreadFunc(void* pUserData)
     const GIntBig launch_time =
         static_cast<GIntBig>(psJob->ptv->tv_sec) * 1000000 +
         static_cast<GIntBig>(psJob->ptv->tv_usec);
-    const GIntBig start_job =
-        static_cast<GIntBig>(tv.tv_sec) * 1000000 +
-        static_cast<GIntBig>(tv.tv_usec);
+    const GIntBig start_job = static_cast<GIntBig>(tv.tv_sec) * 1000000 +
+                              static_cast<GIntBig>(tv.tv_usec);
 #endif
 
 #if 0
@@ -1622,26 +1684,20 @@ void GDALPansharpenOperation::PansharpenJobThreadFunc(void* pUserData)
     psJob->eErr = CE_None;
 #else
     psJob->eErr = psJob->poPansharpenOperation->PansharpenChunk(
-        psJob->eWorkDataType,
-        psJob->eBufDataType,
-        psJob->pPanBuffer,
-        psJob->pUpsampledSpectralBuffer,
-        psJob->pDataBuf,
-        psJob->nValues,
-        psJob->nBandValues,
-        psJob->nMaxValue);
+        psJob->eWorkDataType, psJob->eBufDataType, psJob->pPanBuffer,
+        psJob->pUpsampledSpectralBuffer, psJob->pDataBuf, psJob->nValues,
+        psJob->nBandValues, psJob->nMaxValue);
 #endif
 
 #ifdef DEBUG_TIMING
     struct timeval tv_end;
     gettimeofday(&tv_end, nullptr);
-    const GIntBig end =
-        static_cast<GIntBig>(tv_end.tv_sec) * 1000000 +
-        static_cast<GIntBig>(tv_end.tv_usec);
-    if( start_job - launch_time > 500 )
-        /*ok*/printf("Pansharpen: Delay before start=" CPL_FRMT_GIB
-               ", completion time=" CPL_FRMT_GIB "\n",
-               start_job - launch_time, end - start_job);
+    const GIntBig end = static_cast<GIntBig>(tv_end.tv_sec) * 1000000 +
+                        static_cast<GIntBig>(tv_end.tv_usec);
+    if (start_job - launch_time > 500)
+        /*ok*/ printf("Pansharpen: Delay before start=" CPL_FRMT_GIB
+                      ", completion time=" CPL_FRMT_GIB "\n",
+                      start_job - launch_time, end - start_job);
 #endif
 }
 
@@ -1649,73 +1705,91 @@ void GDALPansharpenOperation::PansharpenJobThreadFunc(void* pUserData)
 /*                           PansharpenChunk()                          */
 /************************************************************************/
 
-CPLErr
-GDALPansharpenOperation::PansharpenChunk( GDALDataType eWorkDataType,
-                                          GDALDataType eBufDataType,
-                                          const void* pPanBuffer,
-                                          const void* pUpsampledSpectralBuffer,
-                                          void* pDataBuf,
-                                          size_t nValues,
-                                          size_t nBandValues,
-                                          GUInt32 nMaxValue) const
+CPLErr GDALPansharpenOperation::PansharpenChunk(
+    GDALDataType eWorkDataType, GDALDataType eBufDataType,
+    const void *pPanBuffer, const void *pUpsampledSpectralBuffer,
+    void *pDataBuf, size_t nValues, size_t nBandValues, GUInt32 nMaxValue) const
 {
     CPLErr eErr = CE_None;
 
-    switch( eWorkDataType )
+    switch (eWorkDataType)
     {
         case GDT_Byte:
-            eErr = WeightedBrovey(static_cast<const GByte*>(pPanBuffer),
-                                  static_cast<const GByte*>(pUpsampledSpectralBuffer),
-                                  pDataBuf, eBufDataType,
-                                  nValues, nBandValues, static_cast<GByte>(nMaxValue));
+            eErr = WeightedBrovey(
+                static_cast<const GByte *>(pPanBuffer),
+                static_cast<const GByte *>(pUpsampledSpectralBuffer), pDataBuf,
+                eBufDataType, nValues, nBandValues,
+                static_cast<GByte>(nMaxValue));
             break;
 
         case GDT_UInt16:
-            eErr = WeightedBrovey(static_cast<const GUInt16*>(pPanBuffer),
-                                  static_cast<const GUInt16*>(pUpsampledSpectralBuffer),
-                                  pDataBuf, eBufDataType,
-                                  nValues, nBandValues, static_cast<GUInt16>(nMaxValue));
+            eErr = WeightedBrovey(
+                static_cast<const GUInt16 *>(pPanBuffer),
+                static_cast<const GUInt16 *>(pUpsampledSpectralBuffer),
+                pDataBuf, eBufDataType, nValues, nBandValues,
+                static_cast<GUInt16>(nMaxValue));
             break;
 
 #ifndef LIMIT_TYPES
+        case GDT_Int8:
+            eErr = WeightedBrovey(
+                static_cast<const GInt8 *>(pPanBuffer),
+                static_cast<const GInt8 *>(pUpsampledSpectralBuffer), pDataBuf,
+                eBufDataType, nValues, nBandValues);
+            break;
+
         case GDT_Int16:
-            eErr = WeightedBrovey(static_cast<const GInt16*>(pPanBuffer),
-                                  static_cast<const GInt16*>(pUpsampledSpectralBuffer),
-                                  pDataBuf, eBufDataType,
-                                  nValues, nBandValues);
+            eErr = WeightedBrovey(
+                static_cast<const GInt16 *>(pPanBuffer),
+                static_cast<const GInt16 *>(pUpsampledSpectralBuffer), pDataBuf,
+                eBufDataType, nValues, nBandValues);
             break;
 
         case GDT_UInt32:
-            eErr = WeightedBrovey(static_cast<const GUInt32*>(pPanBuffer),
-                                  static_cast<const GUInt32*>(pUpsampledSpectralBuffer),
-                                  pDataBuf, eBufDataType,
-                                  nValues, nBandValues, nMaxValue);
+            eErr = WeightedBrovey(
+                static_cast<const GUInt32 *>(pPanBuffer),
+                static_cast<const GUInt32 *>(pUpsampledSpectralBuffer),
+                pDataBuf, eBufDataType, nValues, nBandValues, nMaxValue);
             break;
 
         case GDT_Int32:
-            eErr = WeightedBrovey(static_cast<const GInt32*>(pPanBuffer),
-                                  static_cast<const GInt32*>(pUpsampledSpectralBuffer),
-                                  pDataBuf, eBufDataType,
-                                  nValues, nBandValues);
+            eErr = WeightedBrovey(
+                static_cast<const GInt32 *>(pPanBuffer),
+                static_cast<const GInt32 *>(pUpsampledSpectralBuffer), pDataBuf,
+                eBufDataType, nValues, nBandValues);
+            break;
+
+        case GDT_UInt64:
+            eErr = WeightedBrovey(
+                static_cast<const std::uint64_t *>(pPanBuffer),
+                static_cast<const std::uint64_t *>(pUpsampledSpectralBuffer),
+                pDataBuf, eBufDataType, nValues, nBandValues, nMaxValue);
+            break;
+
+        case GDT_Int64:
+            eErr = WeightedBrovey(
+                static_cast<const std::int64_t *>(pPanBuffer),
+                static_cast<const std::int64_t *>(pUpsampledSpectralBuffer),
+                pDataBuf, eBufDataType, nValues, nBandValues);
             break;
 
         case GDT_Float32:
-            eErr = WeightedBrovey(static_cast<const float*>(pPanBuffer),
-                                  static_cast<const float*>(pUpsampledSpectralBuffer),
-                                  pDataBuf, eBufDataType,
-                                  nValues, nBandValues);
+            eErr = WeightedBrovey(
+                static_cast<const float *>(pPanBuffer),
+                static_cast<const float *>(pUpsampledSpectralBuffer), pDataBuf,
+                eBufDataType, nValues, nBandValues);
             break;
 #endif
         case GDT_Float64:
-            eErr = WeightedBrovey(static_cast<const double*>(pPanBuffer),
-                                  static_cast<const double*>(pUpsampledSpectralBuffer),
-                                  pDataBuf, eBufDataType,
-                                  nValues, nBandValues);
+            eErr = WeightedBrovey(
+                static_cast<const double *>(pPanBuffer),
+                static_cast<const double *>(pUpsampledSpectralBuffer), pDataBuf,
+                eBufDataType, nValues, nBandValues);
             break;
 
         default:
-            CPLError( CE_Failure, CPLE_NotSupported,
-                      "eWorkDataType not supported");
+            CPLError(CE_Failure, CPLE_NotSupported,
+                     "eWorkDataType not supported");
             eErr = CE_Failure;
             break;
     }
@@ -1730,7 +1804,7 @@ GDALPansharpenOperation::PansharpenChunk( GDALDataType eWorkDataType,
 /** Return options.
  * @return options.
  */
-GDALPansharpenOptions* GDALPansharpenOperation::GetOptions()
+GDALPansharpenOptions *GDALPansharpenOperation::GetOptions()
 {
     return psOptions;
 }
@@ -1750,11 +1824,11 @@ GDALPansharpenOptions* GDALPansharpenOperation::GetOptions()
  * @since GDAL 2.1
  */
 
-GDALPansharpenOperationH GDALCreatePansharpenOperation(
-    const GDALPansharpenOptions* psOptions )
+GDALPansharpenOperationH
+GDALCreatePansharpenOperation(const GDALPansharpenOptions *psOptions)
 {
-    GDALPansharpenOperation* psOperation = new GDALPansharpenOperation();
-    if( psOperation->Initialize(psOptions) == CE_None )
+    GDALPansharpenOperation *psOperation = new GDALPansharpenOperation();
+    if (psOperation->Initialize(psOptions) == CE_None)
         return reinterpret_cast<GDALPansharpenOperationH>(psOperation);
     delete psOperation;
     return nullptr;
@@ -1771,9 +1845,9 @@ GDALPansharpenOperationH GDALCreatePansharpenOperation(
  * @since GDAL 2.1
  */
 
-void GDALDestroyPansharpenOperation( GDALPansharpenOperationH hOperation )
+void GDALDestroyPansharpenOperation(GDALPansharpenOperationH hOperation)
 {
-    delete reinterpret_cast<GDALPansharpenOperation*>(hOperation);
+    delete reinterpret_cast<GDALPansharpenOperation *>(hOperation);
 }
 
 /************************************************************************/
@@ -1805,14 +1879,10 @@ void GDALDestroyPansharpenOperation( GDALPansharpenOperationH hOperation )
  *
  * @since GDAL 2.1
  */
-CPLErr GDALPansharpenProcessRegion( GDALPansharpenOperationH hOperation,
-                                    int nXOff, int nYOff,
-                                    int nXSize, int nYSize,
-                                    void *pDataBuf,
-                                    GDALDataType eBufDataType)
+CPLErr GDALPansharpenProcessRegion(GDALPansharpenOperationH hOperation,
+                                   int nXOff, int nYOff, int nXSize, int nYSize,
+                                   void *pDataBuf, GDALDataType eBufDataType)
 {
-    return reinterpret_cast<GDALPansharpenOperation*>(hOperation)->
-                                          ProcessRegion(nXOff, nYOff,
-                                                        nXSize, nYSize,
-                                                        pDataBuf, eBufDataType);
+    return reinterpret_cast<GDALPansharpenOperation *>(hOperation)
+        ->ProcessRegion(nXOff, nYOff, nXSize, nYSize, pDataBuf, eBufDataType);
 }

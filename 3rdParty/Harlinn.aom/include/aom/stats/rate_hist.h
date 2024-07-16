@@ -20,18 +20,18 @@ extern "C" {
 
 struct rate_hist;
 
-struct rate_hist *init_rate_histogram(const aom_codec_enc_cfg_t *cfg,
+HAOM_EXPORT struct rate_hist *init_rate_histogram(const aom_codec_enc_cfg_t *cfg,
                                       const aom_rational_t *fps);
 
-void destroy_rate_histogram(struct rate_hist *hist);
+HAOM_EXPORT void destroy_rate_histogram(struct rate_hist *hist);
 
-void update_rate_histogram(struct rate_hist *hist,
+HAOM_EXPORT void update_rate_histogram(struct rate_hist *hist,
                            const aom_codec_enc_cfg_t *cfg,
                            const aom_codec_cx_pkt_t *pkt);
 
-void show_q_histogram(const int counts[64], int max_buckets);
+HAOM_EXPORT void show_q_histogram(const int counts[64], int max_buckets);
 
-void show_rate_histogram(struct rate_hist *hist, const aom_codec_enc_cfg_t *cfg,
+HAOM_EXPORT void show_rate_histogram(struct rate_hist *hist, const aom_codec_enc_cfg_t *cfg,
                          int max_buckets);
 
 #ifdef __cplusplus

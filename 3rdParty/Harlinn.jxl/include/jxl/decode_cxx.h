@@ -3,6 +3,9 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
+/// @addtogroup libjxl_cpp
+/// @{
+///
 /// @file decode_cxx.h
 /// @brief C++ header-only helper for @ref decode.h.
 ///
@@ -12,9 +15,10 @@
 #ifndef JXL_DECODE_CXX_H_
 #define JXL_DECODE_CXX_H_
 
-#include <memory>
+#include <jxl/decode.h>
+#include <jxl/memory_manager.h>
 
-#include "jxl/decode.h"
+#include <memory>
 
 #if !(defined(__cplusplus) || defined(c_plusplus))
 #error "This a C++ only header. Use jxl/decode.h from C sources."
@@ -50,3 +54,5 @@ static inline JxlDecoderPtr JxlDecoderMake(
 }
 
 #endif  // JXL_DECODE_CXX_H_
+
+/// @}

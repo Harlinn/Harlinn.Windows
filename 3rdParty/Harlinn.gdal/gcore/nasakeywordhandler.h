@@ -36,8 +36,8 @@
 
 //! @cond Doxygen_Suppress
 
-#include "port/cpl_json.h"
-#include "port/cpl_string.h"
+#include "cpl_json.h"
+#include "cpl_string.h"
 
 /************************************************************************/
 /* ==================================================================== */
@@ -51,38 +51,39 @@ class CPL_DLL NASAKeywordHandler
 {
     CPLStringList aosKeywordList{};
 
-    CPLString osHeaderText{};
     const char *pszHeaderNext = nullptr;
 
     CPLJSONObject oJSon{};
 
     bool m_bStripSurroundingQuotes = false;
 
-    void    SkipWhite();
-    int     ReadWord( CPLString &osWord,
-                      bool bStripSurroundingQuotes = false,
-                      bool bParseList = false,
-                      bool* pbIsString = nullptr);
-    int     ReadPair( CPLString &osName, CPLString &osValue, CPLJSONObject &oCur );
-    int     ReadGroup( const std::string& osPathPrefix, CPLJSONObject &oCur, int nRecLevel );
+    void SkipWhite();
+    bool ReadWord(CPLString &osWord, bool bStripSurroundingQuotes = false,
+                  bool bParseList = false, bool *pbIsString = nullptr);
+    bool ReadPair(CPLString &osName, CPLString &osValue, CPLJSONObject &oCur);
+    bool ReadGroup(const std::string &osPathPrefix, CPLJSONObject &oCur,
+                   int nRecLevel);
 
-    NASAKeywordHandler(const NASAKeywordHandler&) = delete;
-    NASAKeywordHandler& operator=(const NASAKeywordHandler&) = delete;
+    NASAKeywordHandler(const NASAKeywordHandler &) = delete;
+    NASAKeywordHandler &operator=(const NASAKeywordHandler &) = delete;
 
-public:
+  public:
     NASAKeywordHandler();
     ~NASAKeywordHandler();
 
-    void SetStripSurroundingQuotes( bool bStripSurroundingQuotes )
-                { m_bStripSurroundingQuotes = bStripSurroundingQuotes; }
+    void SetStripSurroundingQuotes(bool bStripSurroundingQuotes)
+    {
+        m_bStripSurroundingQuotes = bStripSurroundingQuotes;
+    }
 
-    int     Ingest( VSILFILE *fp, int nOffset );
+    bool Ingest(VSILFILE *fp, int nOffset);
+    bool Parse(const char *pszStr);
 
-    const char *GetKeyword( const char *pszPath, const char *pszDefault );
+    const char *GetKeyword(const char *pszPath, const char *pszDefault);
     char **GetKeywordList();
     CPLJSONObject GetJsonObject() const;
 };
 
 //! @endcond
 
-#endif //  NASAKEYWORDHANDLER_H
+#endif  //  NASAKEYWORDHANDLER_H

@@ -1,4 +1,3 @@
-#pragma once
 /******************************************************************************
  *
  * Project:  CPL - Common Portability Library
@@ -30,27 +29,32 @@
 #ifndef CPL_CPU_FEATURES_H
 #define CPL_CPU_FEATURES_H
 
-#include <port/cpl_port.h>
-#include <port/cpl_string.h>
+#include "cpl_port.h"
+#include "cpl_string.h"
 
 //! @cond Doxygen_Suppress
 
 #ifdef HAVE_SSE_AT_COMPILE_TIME
 #if (defined(_M_X64) || defined(__x86_64))
 #define HAVE_INLINE_SSE
-static constexpr bool inline CPLHaveRuntimeSSE() { return true; }
+
+static bool inline CPLHaveRuntimeSSE()
+{
+    return true;
+}
 #else
-HGDAL_EXPORT bool CPLHaveRuntimeSSE();
+bool CPLHaveRuntimeSSE();
 #endif
 #endif
 
 #ifdef HAVE_SSSE3_AT_COMPILE_TIME
-#if (defined(__SSSE3__) || defined(__SSE3__))
+#if __SSSE3__
 #define HAVE_INLINE_SSSE3
-static constexpr bool inline CPLHaveRuntimeSSSE3()
+
+static bool inline CPLHaveRuntimeSSSE3()
 {
 #ifdef DEBUG
-    if( !CPLTestBool(CPLGetConfigOption("GDAL_USE_SSSE3", "YES")) )
+    if (!CPLTestBool(CPLGetConfigOption("GDAL_USE_SSSE3", "YES")))
         return false;
 #endif
     return true;
@@ -58,9 +62,13 @@ static constexpr bool inline CPLHaveRuntimeSSSE3()
 #else
 #if defined(__GNUC__) && !defined(DEBUG)
 extern bool bCPLHasSSSE3;
-static bool inline CPLHaveRuntimeSSSE3() { return bCPLHasSSSE3; }
+
+static bool inline CPLHaveRuntimeSSSE3()
+{
+    return bCPLHasSSSE3;
+}
 #else
-HGDAL_EXPORT bool CPLHaveRuntimeSSSE3();
+bool CPLHaveRuntimeSSSE3();
 #endif
 #endif
 #endif
@@ -68,15 +76,23 @@ HGDAL_EXPORT bool CPLHaveRuntimeSSSE3();
 #ifdef HAVE_AVX_AT_COMPILE_TIME
 #if __AVX__
 #define HAVE_INLINE_AVX
-static constexpr bool inline CPLHaveRuntimeAVX() { return true; }
+
+static bool inline CPLHaveRuntimeAVX()
+{
+    return true;
+}
 #elif defined(__GNUC__)
 extern bool bCPLHasAVX;
-static bool inline CPLHaveRuntimeAVX() { return bCPLHasAVX; }
+
+static bool inline CPLHaveRuntimeAVX()
+{
+    return bCPLHasAVX;
+}
 #else
-HGDAL_EXPORT bool CPLHaveRuntimeAVX();
+bool CPLHaveRuntimeAVX();
 #endif
 #endif
 
 //! @endcond
 
-#endif // CPL_CPU_FEATURES_H
+#endif  // CPL_CPU_FEATURES_H

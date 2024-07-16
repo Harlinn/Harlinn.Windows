@@ -29,11 +29,11 @@
 #ifndef OGR_GEOJSONUTILS_H_INCLUDED
 #define OGR_GEOJSONUTILS_H_INCLUDED
 
-#include "ogr/ogr_core.h"
+#include "ogr_core.h"
 
-#include "port/cpl_json_header.h"
-#include "port/cpl_vsi.h"
-#include "gcore/gdal_priv.h"
+#include "cpl_json_header.h"
+#include "cpl_vsi.h"
+#include "gdal_priv.h"
 
 class OGRGeometry;
 
@@ -49,38 +49,41 @@ enum GeoJSONSourceType
     eGeoJSONSourceService
 };
 
-GeoJSONSourceType GeoJSONGetSourceType( GDALOpenInfo* poOpenInfo );
-GeoJSONSourceType GeoJSONSeqGetSourceType( GDALOpenInfo* poOpenInfo );
-GeoJSONSourceType ESRIJSONDriverGetSourceType( GDALOpenInfo* poOpenInfo );
-GeoJSONSourceType TopoJSONDriverGetSourceType( GDALOpenInfo* poOpenInfo );
+GeoJSONSourceType GeoJSONGetSourceType(GDALOpenInfo *poOpenInfo);
+GeoJSONSourceType GeoJSONSeqGetSourceType(GDALOpenInfo *poOpenInfo);
+GeoJSONSourceType ESRIJSONDriverGetSourceType(GDALOpenInfo *poOpenInfo);
+GeoJSONSourceType TopoJSONDriverGetSourceType(GDALOpenInfo *poOpenInfo);
+GeoJSONSourceType JSONFGDriverGetSourceType(GDALOpenInfo *poOpenInfo);
 
 /************************************************************************/
 /*                           GeoJSONIsObject                            */
 /************************************************************************/
 
-bool GeoJSONIsObject( const char* pszText );
-bool GeoJSONSeqIsObject( const char* pszText );
+bool GeoJSONIsObject(const char *pszText, CSLConstList papszAllowedDrivers);
+bool GeoJSONSeqIsObject(const char *pszText);
 bool ESRIJSONIsObject(const char *pszText);
 bool TopoJSONIsObject(const char *pszText);
+bool JSONFGIsObject(const char *pszText);
 
 /************************************************************************/
 /*                           GeoJSONPropertyToFieldType                 */
 /************************************************************************/
 
-OGRFieldType CPL_DLL GeoJSONPropertyToFieldType( json_object* poObject,
-                                         OGRFieldSubType& eSubType,
-                                         bool bArrayAsString = false );
+OGRFieldType CPL_DLL GeoJSONPropertyToFieldType(json_object *poObject,
+                                                OGRFieldSubType &eSubType,
+                                                bool bArrayAsString = false);
 
 /************************************************************************/
 /*                      GeoJSONStringPropertyToFieldType                */
 /************************************************************************/
 
-OGRFieldType GeoJSONStringPropertyToFieldType( json_object* poObject );
+OGRFieldType GeoJSONStringPropertyToFieldType(json_object *poObject,
+                                              int &nTZFlag);
 
 /************************************************************************/
 /*                           OGRGeoJSONGetGeometryName                  */
 /************************************************************************/
 
-const char* OGRGeoJSONGetGeometryName( OGRGeometry const* poGeometry );
+const char *OGRGeoJSONGetGeometryName(OGRGeometry const *poGeometry);
 
 #endif  // OGR_GEOJSONUTILS_H_INCLUDED

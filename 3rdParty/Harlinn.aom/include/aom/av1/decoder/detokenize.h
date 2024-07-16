@@ -21,7 +21,7 @@
 extern "C" {
 #endif
 
-void av1_decode_palette_tokens(MACROBLOCKD *const xd, int plane, aom_reader *r);
+HAOM_EXPORT void av1_decode_palette_tokens(MACROBLOCKD *const xd, int plane, aom_reader *r);
 
 #ifdef __cplusplus
 }  // extern "C"

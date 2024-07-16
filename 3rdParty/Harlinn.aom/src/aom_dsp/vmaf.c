@@ -21,7 +21,6 @@
 #include <unistd.h>
 #endif
 
-#include <libvmaf/libvmaf.h>
 #include "aom_dsp/blend.h"
 
 static void vmaf_fatal_error(const char *message) {
@@ -29,7 +28,7 @@ static void vmaf_fatal_error(const char *message) {
   exit(EXIT_FAILURE);
 }
 
-void aom_init_vmaf_model(VmafModel **vmaf_model, const char *model_path) {
+HAOM_EXPORT void aom_init_vmaf_model(VmafModel **vmaf_model, const char *model_path) {
   if (*vmaf_model != NULL) return;
   VmafModelConfig model_cfg;
   model_cfg.flags = VMAF_MODEL_FLAG_DISABLE_CLIP;
@@ -40,7 +39,7 @@ void aom_init_vmaf_model(VmafModel **vmaf_model, const char *model_path) {
   }
 }
 
-void aom_close_vmaf_model(VmafModel *vmaf_model) {
+HAOM_EXPORT void aom_close_vmaf_model(VmafModel *vmaf_model) {
   vmaf_model_destroy(vmaf_model);
 }
 
@@ -70,7 +69,7 @@ static void copy_picture(const int bit_depth, const YV12_BUFFER_CONFIG *src,
   }
 }
 
-void aom_init_vmaf_context(VmafContext **vmaf_context, VmafModel *vmaf_model,
+HAOM_EXPORT void aom_init_vmaf_context(VmafContext **vmaf_context, VmafModel *vmaf_model,
                            bool cal_vmaf_neg) {
   // TODO(sdeng): make them CLI arguments.
   VmafConfiguration cfg;
@@ -118,13 +117,13 @@ void aom_init_vmaf_context(VmafContext **vmaf_context, VmafModel *vmaf_model,
   }
 }
 
-void aom_close_vmaf_context(VmafContext *vmaf_context) {
+HAOM_EXPORT void aom_close_vmaf_context(VmafContext *vmaf_context) {
   if (vmaf_close(vmaf_context)) {
     vmaf_fatal_error("Failed to close VMAF context.");
   }
 }
 
-void aom_calc_vmaf(VmafModel *vmaf_model, const YV12_BUFFER_CONFIG *source,
+HAOM_EXPORT void aom_calc_vmaf(VmafModel *vmaf_model, const YV12_BUFFER_CONFIG *source,
                    const YV12_BUFFER_CONFIG *distorted, int bit_depth,
                    bool cal_vmaf_neg, double *vmaf) {
   VmafContext *vmaf_context;
@@ -155,7 +154,7 @@ void aom_calc_vmaf(VmafModel *vmaf_model, const YV12_BUFFER_CONFIG *source,
   aom_close_vmaf_context(vmaf_context);
 }
 
-void aom_read_vmaf_image(VmafContext *vmaf_context,
+HAOM_EXPORT void aom_read_vmaf_image(VmafContext *vmaf_context,
                          const YV12_BUFFER_CONFIG *source,
                          const YV12_BUFFER_CONFIG *distorted, int bit_depth,
                          int frame_index) {
@@ -177,7 +176,7 @@ void aom_read_vmaf_image(VmafContext *vmaf_context,
   vmaf_picture_unref(&dist);
 }
 
-double aom_calc_vmaf_at_index(VmafContext *vmaf_context, VmafModel *vmaf_model,
+HAOM_EXPORT double aom_calc_vmaf_at_index(VmafContext *vmaf_context, VmafModel *vmaf_model,
                               int frame_index) {
   double vmaf;
   if (vmaf_score_at_index(vmaf_context, vmaf_model, &vmaf, frame_index)) {
@@ -186,7 +185,7 @@ double aom_calc_vmaf_at_index(VmafContext *vmaf_context, VmafModel *vmaf_model,
   return vmaf;
 }
 
-void aom_flush_vmaf_context(VmafContext *vmaf_context) {
+HAOM_EXPORT void aom_flush_vmaf_context(VmafContext *vmaf_context) {
   if (vmaf_read_pictures(vmaf_context, NULL, NULL, 0)) {
     vmaf_fatal_error("Failed to flush context.");
   }

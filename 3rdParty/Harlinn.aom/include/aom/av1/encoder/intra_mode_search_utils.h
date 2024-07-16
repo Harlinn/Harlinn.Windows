@@ -32,6 +32,11 @@ extern "C" {
 #endif
 
 /*!\cond */
+// Macro for computing the speed-preset dependent threshold which is used for
+// deciding whether to enable/disable variance calculations in
+// intra_rd_variance_factor().
+#define INTRA_RD_VAR_THRESH(X) (1.0 - (0.25 * (X)))
+
 #define BINS 32
 static const float av1_intra_hog_model_bias[DIRECTIONAL_MODES] = {
   0.450578f,  0.695518f,  -0.717944f, -0.639894f,
@@ -307,27 +312,39 @@ static AOM_INLINE void compute_gradient_info_sb(MACROBLOCK *const x,
   lowbd_compute_gradient_info_sb(x, sb_size, plane);
 }
 
+// Gradient caching at superblock level is allowed only if all of the following
+// conditions are satisfied:
+// (1) The current frame is an intra only frame
+// (2) Non-RD mode decisions are not enabled
+// (3) The sf partition_search_type is set to SEARCH_PARTITION
+// (4) Either intra_pruning_with_hog or chroma_intra_pruning_with_hog is enabled
+//
+// SB level caching of gradient data may not help in speedup for the following
+// cases:
+// (1) Inter frames (due to early intra gating)
+// (2) When partition_search_type is not SEARCH_PARTITION
+// Hence, gradient data is computed at block level in such cases.
+static AOM_INLINE bool is_gradient_caching_for_hog_enabled(
+    const AV1_COMP *const cpi) {
+  const SPEED_FEATURES *const sf = &cpi->sf;
+  return frame_is_intra_only(&cpi->common) && !sf->rt_sf.use_nonrd_pick_mode &&
+         (sf->part_sf.partition_search_type == SEARCH_PARTITION) &&
+         (sf->intra_sf.intra_pruning_with_hog ||
+          sf->intra_sf.chroma_intra_pruning_with_hog);
+}
+
 // Function to generate pixel level gradient information for a given superblock.
 // Sets the flags 'is_sb_gradient_cached' for the specific plane-type if
 // gradient info is generated for the same.
 static AOM_INLINE void produce_gradients_for_sb(AV1_COMP *cpi, MACROBLOCK *x,
                                                 BLOCK_SIZE sb_size, int mi_row,
                                                 int mi_col) {
-  const SPEED_FEATURES *sf = &cpi->sf;
   // Initialise flags related to hog data caching.
   x->is_sb_gradient_cached[PLANE_TYPE_Y] = false;
   x->is_sb_gradient_cached[PLANE_TYPE_UV] = false;
+  if (!is_gradient_caching_for_hog_enabled(cpi)) return;
 
-  // SB level caching of gradient data may not help in speedup for the following
-  // cases:
-  // (1) Inter frames (due to early intra gating)
-  // (2) When partition_search_type is not SEARCH_PARTITION
-  // Hence, gradient data is computed at block level in such cases.
-
-  if (!frame_is_intra_only(&cpi->common) ||
-      sf->part_sf.partition_search_type != SEARCH_PARTITION)
-    return;
-
+  const SPEED_FEATURES *sf = &cpi->sf;
   const int num_planes = av1_num_planes(&cpi->common);
 
   av1_setup_src_planes(x, cpi->source, mi_row, mi_col, num_planes, sb_size);
@@ -436,6 +453,38 @@ static AOM_INLINE void prune_intra_mode_with_hog(
 }
 #undef BINS
 
+int av1_calc_normalized_variance(aom_variance_fn_t vf, const uint8_t *const buf,
+                                 const int stride, const int is_hbd);
+
+// Returns whether caching of source variance for 4x4 sub-blocks is allowed.
+static AOM_INLINE bool is_src_var_for_4x4_sub_blocks_caching_enabled(
+    const AV1_COMP *const cpi) {
+  const SPEED_FEATURES *const sf = &cpi->sf;
+  if (cpi->oxcf.mode != ALLINTRA) return false;
+
+  if (sf->part_sf.partition_search_type == SEARCH_PARTITION) return true;
+
+  if (INTRA_RD_VAR_THRESH(cpi->oxcf.speed) <= 0 ||
+      (sf->rt_sf.use_nonrd_pick_mode && !sf->rt_sf.hybrid_intra_pickmode))
+    return false;
+
+  return true;
+}
+
+// Initialize the members of Block4x4VarInfo structure to -1 at the start
+// of every superblock.
+static AOM_INLINE void init_src_var_info_of_4x4_sub_blocks(
+    const AV1_COMP *const cpi, Block4x4VarInfo *src_var_info_of_4x4_sub_blocks,
+    const BLOCK_SIZE sb_size) {
+  if (!is_src_var_for_4x4_sub_blocks_caching_enabled(cpi)) return;
+
+  const int mi_count_in_sb = mi_size_wide[sb_size] * mi_size_high[sb_size];
+  for (int i = 0; i < mi_count_in_sb; i++) {
+    src_var_info_of_4x4_sub_blocks[i].var = -1;
+    src_var_info_of_4x4_sub_blocks[i].log_var = -1.0;
+  }
+}
+
 // Returns the cost needed to send a uniformly distributed r.v.
 static AOM_INLINE int write_uniform_cost(int n, int v) {
   const int l = get_unsigned_bits(n);
@@ -455,7 +504,8 @@ static AOM_INLINE int write_uniform_cost(int n, int v) {
 static AOM_INLINE int intra_mode_info_cost_y(const AV1_COMP *cpi,
                                              const MACROBLOCK *x,
                                              const MB_MODE_INFO *mbmi,
-                                             BLOCK_SIZE bsize, int mode_cost) {
+                                             BLOCK_SIZE bsize, int mode_cost,
+                                             int discount_color_cost) {
   int total_rate = mode_cost;
   const ModeCosts *mode_costs = &x->mode_costs;
   const int use_palette = mbmi->palette_mode_info.palette_size[0] > 0;
@@ -487,8 +537,10 @@ static AOM_INLINE int intra_mode_info_cost_y(const AV1_COMP *cpi,
       palette_mode_cost +=
           av1_palette_color_cost_y(&mbmi->palette_mode_info, color_cache,
                                    n_cache, cpi->common.seq_params->bit_depth);
-      palette_mode_cost +=
-          av1_cost_color_map(x, 0, bsize, mbmi->tx_size, PALETTE_MAP);
+      if (!discount_color_cost)
+        palette_mode_cost +=
+            av1_cost_color_map(x, 0, bsize, mbmi->tx_size, PALETTE_MAP);
+
       total_rate += palette_mode_cost;
     }
   }
@@ -524,13 +576,13 @@ static AOM_INLINE int intra_mode_info_cost_uv(const AV1_COMP *cpi,
   int total_rate = mode_cost;
   const ModeCosts *mode_costs = &x->mode_costs;
   const int use_palette = mbmi->palette_mode_info.palette_size[1] > 0;
-  const UV_PREDICTION_MODE mode = mbmi->uv_mode;
+  const UV_PREDICTION_MODE uv_mode = mbmi->uv_mode;
   // Can only activate one mode.
-  assert(((mode != UV_DC_PRED) + use_palette + mbmi->use_intrabc) <= 1);
+  assert(((uv_mode != UV_DC_PRED) + use_palette + mbmi->use_intrabc) <= 1);
 
   const int try_palette = av1_allow_palette(
       cpi->common.features.allow_screen_content_tools, mbmi->bsize);
-  if (try_palette && mode == UV_DC_PRED) {
+  if (try_palette && uv_mode == UV_DC_PRED) {
     const PALETTE_MODE_INFO *pmi = &mbmi->palette_mode_info;
     total_rate +=
         mode_costs->palette_uv_mode_cost[pmi->palette_size[0] > 0][use_palette];
@@ -552,10 +604,11 @@ static AOM_INLINE int intra_mode_info_cost_uv(const AV1_COMP *cpi,
       total_rate += palette_mode_cost;
     }
   }
-  if (av1_is_directional_mode(get_uv_mode(mode))) {
+  const PREDICTION_MODE intra_mode = get_uv_mode(uv_mode);
+  if (av1_is_directional_mode(intra_mode)) {
     if (av1_use_angle_delta(bsize)) {
       total_rate +=
-          mode_costs->angle_delta_cost[mode - V_PRED]
+          mode_costs->angle_delta_cost[intra_mode - V_PRED]
                                       [mbmi->angle_delta[PLANE_TYPE_UV] +
                                        MAX_ANGLE_DELTA];
     }

@@ -37,7 +37,7 @@ static AOM_INLINE void get_mv_projection(MV *output, MV ref, int num, int den) {
   output->col = (int16_t)clamp(mv_col, clamp_min, clamp_max);
 }
 
-void av1_copy_frame_mvs(const AV1_COMMON *const cm,
+HAOM_EXPORT void av1_copy_frame_mvs(const AV1_COMMON *const cm,
                         const MB_MODE_INFO *const mi, int mi_row, int mi_col,
                         int x_mis, int y_mis) {
   const int frame_mvs_stride = ROUND_POWER_OF_TWO(cm->mi_params.mi_cols, 1);
@@ -780,7 +780,7 @@ static AOM_INLINE void setup_ref_mv_list(
   }
 }
 
-void av1_find_mv_refs(const AV1_COMMON *cm, const MACROBLOCKD *xd,
+HAOM_EXPORT void av1_find_mv_refs(const AV1_COMMON *cm, const MACROBLOCKD *xd,
                       MB_MODE_INFO *mi, MV_REFERENCE_FRAME ref_frame,
                       uint8_t ref_mv_count[MODE_CTX_REF_FRAMES],
                       CANDIDATE_MV ref_mv_stack[][MAX_REF_MV_STACK_SIZE],
@@ -824,7 +824,7 @@ void av1_find_mv_refs(const AV1_COMMON *cm, const MACROBLOCKD *xd,
                     mi_col, mode_context);
 }
 
-void av1_find_best_ref_mvs(int allow_hp, int_mv *mvlist, int_mv *nearest_mv,
+HAOM_EXPORT void av1_find_best_ref_mvs(int allow_hp, int_mv *mvlist, int_mv *nearest_mv,
                            int_mv *near_mv, int is_integer) {
   int i;
   // Make sure all the candidates are properly clamped etc
@@ -835,12 +835,10 @@ void av1_find_best_ref_mvs(int allow_hp, int_mv *mvlist, int_mv *nearest_mv,
   *near_mv = mvlist[1];
 }
 
-void av1_setup_frame_buf_refs(AV1_COMMON *cm) {
+HAOM_EXPORT void av1_setup_frame_buf_refs(AV1_COMMON *cm) {
   cm->cur_frame->order_hint = cm->current_frame.order_hint;
   cm->cur_frame->display_order_hint = cm->current_frame.display_order_hint;
-#if CONFIG_FRAME_PARALLEL_ENCODE
   cm->cur_frame->pyramid_level = cm->current_frame.pyramid_level;
-#endif  // CONFIG_FRAME_PARALLEL_ENCODE
   MV_REFERENCE_FRAME ref_frame;
   for (ref_frame = LAST_FRAME; ref_frame <= ALTREF_FRAME; ++ref_frame) {
     const RefCntBuffer *const buf = get_ref_frame_buf(cm, ref_frame);
@@ -852,7 +850,7 @@ void av1_setup_frame_buf_refs(AV1_COMMON *cm) {
   }
 }
 
-void av1_setup_frame_sign_bias(AV1_COMMON *cm) {
+HAOM_EXPORT void av1_setup_frame_sign_bias(AV1_COMMON *cm) {
   MV_REFERENCE_FRAME ref_frame;
   for (ref_frame = LAST_FRAME; ref_frame <= ALTREF_FRAME; ++ref_frame) {
     const RefCntBuffer *const buf = get_ref_frame_buf(cm, ref_frame);
@@ -984,7 +982,7 @@ static int motion_field_projection(AV1_COMMON *cm,
 
 // cm->ref_frame_side is calculated here, and will be used in
 // av1_copy_frame_mvs() to affect how mvs are copied.
-void av1_calculate_ref_frame_side(AV1_COMMON *cm) {
+HAOM_EXPORT void av1_calculate_ref_frame_side(AV1_COMMON *cm) {
   const OrderHintInfo *const order_hint_info = &cm->seq_params->order_hint_info;
 
   memset(cm->ref_frame_side, 0, sizeof(cm->ref_frame_side));
@@ -1005,7 +1003,7 @@ void av1_calculate_ref_frame_side(AV1_COMMON *cm) {
   }
 }
 
-void av1_setup_motion_field(AV1_COMMON *cm) {
+HAOM_EXPORT void av1_setup_motion_field(AV1_COMMON *cm) {
   const OrderHintInfo *const order_hint_info = &cm->seq_params->order_hint_info;
 
   if (!order_hint_info->enable_order_hint) return;
@@ -1082,7 +1080,7 @@ static INLINE void record_samples(const MB_MODE_INFO *mbmi, int *pts,
 }
 
 // Select samples according to the motion vector difference.
-uint8_t av1_selectSamples(MV *mv, int *pts, int *pts_inref, int len,
+HAOM_EXPORT uint8_t av1_selectSamples(MV *mv, int *pts, int *pts_inref, int len,
                           BLOCK_SIZE bsize) {
   const int bw = block_size_wide[bsize];
   const int bh = block_size_high[bsize];
@@ -1108,7 +1106,7 @@ uint8_t av1_selectSamples(MV *mv, int *pts, int *pts_inref, int len,
 // Note: Samples returned are at 1/8-pel precision
 // Sample are the neighbor block center point's coordinates relative to the
 // left-top pixel of current block.
-uint8_t av1_findSamples(const AV1_COMMON *cm, MACROBLOCKD *xd, int *pts,
+HAOM_EXPORT uint8_t av1_findSamples(const AV1_COMMON *cm, MACROBLOCKD *xd, int *pts,
                         int *pts_inref) {
   const MB_MODE_INFO *const mbmi0 = xd->mi[0];
   const int ref_frame = mbmi0->ref_frame[0];
@@ -1236,7 +1234,7 @@ uint8_t av1_findSamples(const AV1_COMMON *cm, MACROBLOCKD *xd, int *pts,
   return np;
 }
 
-void av1_setup_skip_mode_allowed(AV1_COMMON *cm) {
+HAOM_EXPORT void av1_setup_skip_mode_allowed(AV1_COMMON *cm) {
   const OrderHintInfo *const order_hint_info = &cm->seq_params->order_hint_info;
   SkipModeInfo *const skip_mode_info = &cm->current_frame.skip_mode_info;
 
@@ -1336,7 +1334,7 @@ static AOM_INLINE void set_ref_frame_info(int *remapped_ref_idx, int frame_idx,
   remapped_ref_idx[frame_idx] = ref_info->map_idx;
 }
 
-void av1_set_frame_refs(AV1_COMMON *const cm, int *remapped_ref_idx,
+HAOM_EXPORT void av1_set_frame_refs(AV1_COMMON *const cm, int *remapped_ref_idx,
                         int lst_map_idx, int gld_map_idx) {
   int lst_frame_sort_idx = -1;
   int gld_frame_sort_idx = -1;

@@ -25,11 +25,11 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
-#include "blockdir.h"
-#include "blocklayer.h"
-#include "blockfile.h"
-#include "../core/pcidsk_utils.h"
-#include "../pcidsk_exception.h"
+#include "blockdir/blockdir.h"
+#include "blockdir/blocklayer.h"
+#include "blockdir/blockfile.h"
+#include "core/pcidsk_utils.h"
+#include "pcidsk_exception.h"
 #include <sstream>
 #include <cstring>
 #include <cassert>

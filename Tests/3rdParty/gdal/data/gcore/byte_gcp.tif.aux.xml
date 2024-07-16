@@ -1,5 +1,0 @@
-<PAMDataset>
-  <GCPList Projection="LOCAL_CS[&quot;PAM&quot;]">
-    <GCP Id="1" Pixel="0.0000" Line="0.0000" X="0" Y="0" />
-  </GCPList>
-</PAMDataset>

@@ -8,14 +8,15 @@
 #include "lib/jxl/ans_params.h"
 #include "lib/jxl/base/status.h"
 #include "lib/jxl/chroma_from_luma.h"
-#include "lib/jxl/common.h"
 #include "lib/jxl/dct_scales.h"
 #include "lib/jxl/enc_ans.h"
 #include "lib/jxl/entropy_coder.h"
-#include "lib/jxl/opsin_params.h"
+#include "lib/jxl/pack_signed.h"
 #include "lib/jxl/splines.h"
 
 namespace jxl {
+
+struct AuxOut;
 
 class QuantizedSplineEncoder {
  public:
@@ -72,24 +73,24 @@ void EncodeSplines(const Splines& splines, BitWriter* writer,
       splines.QuantizedSplines();
   std::vector<std::vector<Token>> tokens(1);
   tokens[0].emplace_back(kNumSplinesContext, quantized_splines.size() - 1);
-  EncodeAllStartingPoints(splines.StartingPoints(), &tokens[0]);
+  EncodeAllStartingPoints(splines.StartingPoints(), tokens.data());
 
   tokens[0].emplace_back(kQuantizationAdjustmentContext,
                          PackSigned(splines.GetQuantizationAdjustment()));
 
   for (const QuantizedSpline& spline : quantized_splines) {
-    QuantizedSplineEncoder::Tokenize(spline, &tokens[0]);
+    QuantizedSplineEncoder::Tokenize(spline, tokens.data());
   }
 
   EntropyEncodingData codes;
   std::vector<uint8_t> context_map;
   BuildAndEncodeHistograms(histogram_params, kNumSplineContexts, tokens, &codes,
                            &context_map, writer, layer, aux_out);
-  WriteTokens(tokens[0], codes, context_map, writer, layer, aux_out);
+  WriteTokens(tokens[0], codes, context_map, 0, writer, layer, aux_out);
 }
 
 Splines FindSplines(const Image3F& opsin) {
-  // TODO: implement spline detection.
+  // TODO(user): implement spline detection.
   return {};
 }
 

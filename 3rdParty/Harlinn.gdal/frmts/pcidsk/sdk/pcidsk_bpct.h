@@ -1,4 +1,3 @@
-#pragma once
 /******************************************************************************
  *
  * Purpose:  PCIDSK PCT segment interface class.

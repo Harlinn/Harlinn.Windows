@@ -1,4 +1,3 @@
-#pragma once
 /******************************************************************************
  *
  * Purpose:  Declaration of the CPCIDSKBitmap class.
@@ -29,11 +28,11 @@
 #ifndef INCLUDE_SEGMENT_PCIDSKBITMAP_H
 #define INCLUDE_SEGMENT_PCIDSKBITMAP_H
 
-#include "../pcidsk_config.h"
-#include "../pcidsk_types.h"
-#include "../pcidsk_buffer.h"
-#include "cpcidsksegment.h"
-#include "../pcidsk_channel.h"
+#include "pcidsk_config.h"
+#include "pcidsk_types.h"
+#include "pcidsk_buffer.h"
+#include "segment/cpcidsksegment.h"
+#include "pcidsk_channel.h"
 
 #include <string>
 

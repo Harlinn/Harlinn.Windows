@@ -42,10 +42,10 @@ struct AV1Common;
 struct CommonQuantParams;
 struct macroblockd;
 
-int16_t av1_dc_quant_QTX(int qindex, int delta, aom_bit_depth_t bit_depth);
-int16_t av1_ac_quant_QTX(int qindex, int delta, aom_bit_depth_t bit_depth);
+HAOM_EXPORT int16_t av1_dc_quant_QTX(int qindex, int delta, aom_bit_depth_t bit_depth);
+HAOM_EXPORT int16_t av1_ac_quant_QTX(int qindex, int delta, aom_bit_depth_t bit_depth);
 
-int av1_get_qindex(const struct segmentation *seg, int segment_id,
+HAOM_EXPORT int av1_get_qindex(const struct segmentation *seg, int segment_id,
                    int base_qindex);
 
 // Returns true if we are using quantization matrix.
@@ -59,21 +59,21 @@ static INLINE int aom_get_qmlevel(int qindex, int first, int last) {
 }
 
 // Initialize all global quant/dequant matrices.
-void av1_qm_init(struct CommonQuantParams *quant_params, int num_planes);
+HAOM_EXPORT void av1_qm_init(struct CommonQuantParams *quant_params, int num_planes);
 
 // Get global dequant matrix.
-const qm_val_t *av1_iqmatrix(const struct CommonQuantParams *quant_params,
+HAOM_EXPORT const qm_val_t *av1_iqmatrix(const struct CommonQuantParams *quant_params,
                              int qmlevel, int plane, TX_SIZE tx_size);
 // Get global quant matrix.
-const qm_val_t *av1_qmatrix(const struct CommonQuantParams *quant_params,
+HAOM_EXPORT const qm_val_t *av1_qmatrix(const struct CommonQuantParams *quant_params,
                             int qmlevel, int plane, TX_SIZE tx_size);
 
 // Get either local / global dequant matrix as appropriate.
-const qm_val_t *av1_get_iqmatrix(const struct CommonQuantParams *quant_params,
+HAOM_EXPORT const qm_val_t *av1_get_iqmatrix(const struct CommonQuantParams *quant_params,
                                  const struct macroblockd *xd, int plane,
                                  TX_SIZE tx_size, TX_TYPE tx_type);
 // Get either local / global quant matrix as appropriate.
-const qm_val_t *av1_get_qmatrix(const struct CommonQuantParams *quant_params,
+HAOM_EXPORT const qm_val_t *av1_get_qmatrix(const struct CommonQuantParams *quant_params,
                                 const struct macroblockd *xd, int plane,
                                 TX_SIZE tx_size, TX_TYPE tx_type);
 

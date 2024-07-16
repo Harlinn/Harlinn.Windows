@@ -1,9 +1,8 @@
-#pragma once
 #ifndef INCLUDED_CSFTYPES
 # define INCLUDED_CSFTYPES
 
 #ifdef USE_IN_GDAL
-#include <port/cpl_port.h>
+#include "cpl_port.h"
 #endif
 
 

@@ -71,6 +71,8 @@
 * Includes.
 \******************************************************************************/
 
+#define JAS_FOR_INTERNAL_USE_ONLY
+
 #include "jasper/jas_getopt.h"
 #include "jasper/jas_math.h"
 #include "jasper/jas_debug.h"
@@ -81,6 +83,7 @@
 * Global data.
 \******************************************************************************/
 
+/* MUTABLE_SHARED_STATE_TAG: This is mutable shared state. */
 int jas_optind = 0;
 int jas_opterr = 1;
 const char *jas_optarg = 0;

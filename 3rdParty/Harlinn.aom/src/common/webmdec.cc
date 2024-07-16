@@ -61,7 +61,7 @@ void rewind_and_reset(struct WebmInputContext *const webm_ctx,
 
 }  // namespace
 
-int file_is_webm(struct WebmInputContext *webm_ctx,
+HAOM_EXPORT int file_is_webm(struct WebmInputContext *webm_ctx,
                  struct AvxInputContext *aom_ctx) {
   mkvparser::MkvReader *const reader = new mkvparser::MkvReader(aom_ctx->file);
   webm_ctx->reader = reader;
@@ -118,7 +118,7 @@ int file_is_webm(struct WebmInputContext *webm_ctx,
   return 1;
 }
 
-int webm_read_frame(struct WebmInputContext *webm_ctx, uint8_t **buffer,
+HAOM_EXPORT int webm_read_frame(struct WebmInputContext *webm_ctx, uint8_t **buffer,
                     size_t *bytes_read, size_t *buffer_size) {
   assert(webm_ctx->buffer == *buffer);
   // This check is needed for frame parallel decoding, in which case this
@@ -208,7 +208,7 @@ static int gcd(int a, int b) {
   return a;
 }
 
-int webm_guess_framerate(struct WebmInputContext *webm_ctx,
+HAOM_EXPORT int webm_guess_framerate(struct WebmInputContext *webm_ctx,
                          struct AvxInputContext *aom_ctx) {
   uint32_t i = 0;
   uint8_t *buffer = NULL;
@@ -245,4 +245,4 @@ int webm_guess_framerate(struct WebmInputContext *webm_ctx,
   return 0;
 }
 
-void webm_free(struct WebmInputContext *webm_ctx) { reset(webm_ctx); }
+HAOM_EXPORT void webm_free(struct WebmInputContext *webm_ctx) { reset(webm_ctx); }

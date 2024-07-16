@@ -98,43 +98,6 @@ static void highbd_12_variance_sse2(const uint16_t *src, int src_stride,
   *sse = (uint32_t)ROUND_POWER_OF_TWO(sse_long, 8);
 }
 
-#define HIGH_GET_VAR(S)                                                       \
-  void aom_highbd_get##S##x##S##var_sse2(const uint8_t *src8, int src_stride, \
-                                         const uint8_t *ref8, int ref_stride, \
-                                         uint32_t *sse, int *sum) {           \
-    uint16_t *src = CONVERT_TO_SHORTPTR(src8);                                \
-    uint16_t *ref = CONVERT_TO_SHORTPTR(ref8);                                \
-    aom_highbd_calc##S##x##S##var_sse2(src, src_stride, ref, ref_stride, sse, \
-                                       sum);                                  \
-  }                                                                           \
-                                                                              \
-  void aom_highbd_10_get##S##x##S##var_sse2(                                  \
-      const uint8_t *src8, int src_stride, const uint8_t *ref8,               \
-      int ref_stride, uint32_t *sse, int *sum) {                              \
-    uint16_t *src = CONVERT_TO_SHORTPTR(src8);                                \
-    uint16_t *ref = CONVERT_TO_SHORTPTR(ref8);                                \
-    aom_highbd_calc##S##x##S##var_sse2(src, src_stride, ref, ref_stride, sse, \
-                                       sum);                                  \
-    *sum = ROUND_POWER_OF_TWO(*sum, 2);                                       \
-    *sse = ROUND_POWER_OF_TWO(*sse, 4);                                       \
-  }                                                                           \
-                                                                              \
-  void aom_highbd_12_get##S##x##S##var_sse2(                                  \
-      const uint8_t *src8, int src_stride, const uint8_t *ref8,               \
-      int ref_stride, uint32_t *sse, int *sum) {                              \
-    uint16_t *src = CONVERT_TO_SHORTPTR(src8);                                \
-    uint16_t *ref = CONVERT_TO_SHORTPTR(ref8);                                \
-    aom_highbd_calc##S##x##S##var_sse2(src, src_stride, ref, ref_stride, sse, \
-                                       sum);                                  \
-    *sum = ROUND_POWER_OF_TWO(*sum, 4);                                       \
-    *sse = ROUND_POWER_OF_TWO(*sse, 8);                                       \
-  }
-
-HIGH_GET_VAR(16);
-HIGH_GET_VAR(8);
-
-#undef HIGH_GET_VAR
-
 #define VAR_FN(w, h, block_size, shift)                                    \
   uint32_t aom_highbd_8_variance##w##x##h##_sse2(                          \
       const uint8_t *src8, int src_stride, const uint8_t *ref8,            \
@@ -176,23 +139,23 @@ HIGH_GET_VAR(8);
     return (var >= 0) ? (uint32_t)var : 0;                                 \
   }
 
-VAR_FN(128, 128, 16, 14);
-VAR_FN(128, 64, 16, 13);
-VAR_FN(64, 128, 16, 13);
-VAR_FN(64, 64, 16, 12);
-VAR_FN(64, 32, 16, 11);
-VAR_FN(32, 64, 16, 11);
-VAR_FN(32, 32, 16, 10);
-VAR_FN(32, 16, 16, 9);
-VAR_FN(16, 32, 16, 9);
-VAR_FN(16, 16, 16, 8);
-VAR_FN(16, 8, 8, 7);
-VAR_FN(8, 16, 8, 7);
-VAR_FN(8, 8, 8, 6);
-VAR_FN(8, 32, 8, 8);
-VAR_FN(32, 8, 8, 8);
-VAR_FN(16, 64, 16, 10);
-VAR_FN(64, 16, 16, 10);
+VAR_FN(128, 128, 16, 14)
+VAR_FN(128, 64, 16, 13)
+VAR_FN(64, 128, 16, 13)
+VAR_FN(64, 64, 16, 12)
+VAR_FN(64, 32, 16, 11)
+VAR_FN(32, 64, 16, 11)
+VAR_FN(32, 32, 16, 10)
+VAR_FN(32, 16, 16, 9)
+VAR_FN(16, 32, 16, 9)
+VAR_FN(16, 16, 16, 8)
+VAR_FN(16, 8, 8, 7)
+VAR_FN(8, 16, 8, 7)
+VAR_FN(8, 8, 8, 6)
+VAR_FN(8, 32, 8, 8)
+VAR_FN(32, 8, 8, 8)
+VAR_FN(16, 64, 16, 10)
+VAR_FN(64, 16, 16, 10)
 
 #undef VAR_FN
 
@@ -271,10 +234,10 @@ unsigned int aom_highbd_12_mse8x8_sse2(const uint8_t *src8, int src_stride,
       const uint16_t *dst, ptrdiff_t dst_stride, int height,                 \
       unsigned int *sse, void *unused0, void *unused);
 #define DECLS(opt) \
-  DECL(8, opt);    \
+  DECL(8, opt)     \
   DECL(16, opt)
 
-DECLS(sse2);
+DECLS(sse2)
 
 #undef DECLS
 #undef DECL
@@ -419,28 +382,28 @@ DECLS(sse2);
     return (var >= 0) ? (uint32_t)var : 0;                                     \
   }
 
-#define FNS(opt)                          \
-  FN(128, 128, 16, 7, 7, opt, (int64_t)); \
-  FN(128, 64, 16, 7, 6, opt, (int64_t));  \
-  FN(64, 128, 16, 6, 7, opt, (int64_t));  \
-  FN(64, 64, 16, 6, 6, opt, (int64_t));   \
-  FN(64, 32, 16, 6, 5, opt, (int64_t));   \
-  FN(32, 64, 16, 5, 6, opt, (int64_t));   \
-  FN(32, 32, 16, 5, 5, opt, (int64_t));   \
-  FN(32, 16, 16, 5, 4, opt, (int64_t));   \
-  FN(16, 32, 16, 4, 5, opt, (int64_t));   \
-  FN(16, 16, 16, 4, 4, opt, (int64_t));   \
-  FN(16, 8, 16, 4, 3, opt, (int64_t));    \
-  FN(8, 16, 8, 3, 4, opt, (int64_t));     \
-  FN(8, 8, 8, 3, 3, opt, (int64_t));      \
-  FN(8, 4, 8, 3, 2, opt, (int64_t));      \
-  FN(16, 4, 16, 4, 2, opt, (int64_t));    \
-  FN(8, 32, 8, 3, 5, opt, (int64_t));     \
-  FN(32, 8, 16, 5, 3, opt, (int64_t));    \
-  FN(16, 64, 16, 4, 6, opt, (int64_t));   \
+#define FNS(opt)                         \
+  FN(128, 128, 16, 7, 7, opt, (int64_t)) \
+  FN(128, 64, 16, 7, 6, opt, (int64_t))  \
+  FN(64, 128, 16, 6, 7, opt, (int64_t))  \
+  FN(64, 64, 16, 6, 6, opt, (int64_t))   \
+  FN(64, 32, 16, 6, 5, opt, (int64_t))   \
+  FN(32, 64, 16, 5, 6, opt, (int64_t))   \
+  FN(32, 32, 16, 5, 5, opt, (int64_t))   \
+  FN(32, 16, 16, 5, 4, opt, (int64_t))   \
+  FN(16, 32, 16, 4, 5, opt, (int64_t))   \
+  FN(16, 16, 16, 4, 4, opt, (int64_t))   \
+  FN(16, 8, 16, 4, 3, opt, (int64_t))    \
+  FN(8, 16, 8, 3, 4, opt, (int64_t))     \
+  FN(8, 8, 8, 3, 3, opt, (int64_t))      \
+  FN(8, 4, 8, 3, 2, opt, (int64_t))      \
+  FN(16, 4, 16, 4, 2, opt, (int64_t))    \
+  FN(8, 32, 8, 3, 5, opt, (int64_t))     \
+  FN(32, 8, 16, 5, 3, opt, (int64_t))    \
+  FN(16, 64, 16, 4, 6, opt, (int64_t))   \
   FN(64, 16, 16, 6, 4, opt, (int64_t))
 
-FNS(sse2);
+FNS(sse2)
 
 #undef FNS
 #undef FN
@@ -456,7 +419,7 @@ FNS(sse2);
   DECL(16, opt)    \
   DECL(8, opt)
 
-DECLS(sse2);
+DECLS(sse2)
 #undef DECL
 #undef DECLS
 
@@ -586,25 +549,25 @@ DECLS(sse2);
     return (var >= 0) ? (uint32_t)var : 0;                                     \
   }
 
-#define FNS(opt)                        \
-  FN(64, 64, 16, 6, 6, opt, (int64_t)); \
-  FN(64, 32, 16, 6, 5, opt, (int64_t)); \
-  FN(32, 64, 16, 5, 6, opt, (int64_t)); \
-  FN(32, 32, 16, 5, 5, opt, (int64_t)); \
-  FN(32, 16, 16, 5, 4, opt, (int64_t)); \
-  FN(16, 32, 16, 4, 5, opt, (int64_t)); \
-  FN(16, 16, 16, 4, 4, opt, (int64_t)); \
-  FN(16, 8, 16, 4, 3, opt, (int64_t));  \
-  FN(8, 16, 8, 3, 4, opt, (int64_t));   \
-  FN(8, 8, 8, 3, 3, opt, (int64_t));    \
-  FN(8, 4, 8, 3, 2, opt, (int64_t));    \
-  FN(16, 4, 16, 4, 2, opt, (int64_t));  \
-  FN(8, 32, 8, 3, 5, opt, (int64_t));   \
-  FN(32, 8, 16, 5, 3, opt, (int64_t));  \
-  FN(16, 64, 16, 4, 6, opt, (int64_t)); \
-  FN(64, 16, 16, 6, 4, opt, (int64_t));
+#define FNS(opt)                       \
+  FN(64, 64, 16, 6, 6, opt, (int64_t)) \
+  FN(64, 32, 16, 6, 5, opt, (int64_t)) \
+  FN(32, 64, 16, 5, 6, opt, (int64_t)) \
+  FN(32, 32, 16, 5, 5, opt, (int64_t)) \
+  FN(32, 16, 16, 5, 4, opt, (int64_t)) \
+  FN(16, 32, 16, 4, 5, opt, (int64_t)) \
+  FN(16, 16, 16, 4, 4, opt, (int64_t)) \
+  FN(16, 8, 16, 4, 3, opt, (int64_t))  \
+  FN(8, 16, 8, 3, 4, opt, (int64_t))   \
+  FN(8, 8, 8, 3, 3, opt, (int64_t))    \
+  FN(8, 4, 8, 3, 2, opt, (int64_t))    \
+  FN(16, 4, 16, 4, 2, opt, (int64_t))  \
+  FN(8, 32, 8, 3, 5, opt, (int64_t))   \
+  FN(32, 8, 16, 5, 3, opt, (int64_t))  \
+  FN(16, 64, 16, 4, 6, opt, (int64_t)) \
+  FN(64, 16, 16, 6, 4, opt, (int64_t))
 
-FNS(sse2);
+FNS(sse2)
 
 #undef FNS
 #undef FN
@@ -629,13 +592,12 @@ void aom_highbd_dist_wtd_comp_avg_pred_sse2(
     const uint8_t *ref8, int ref_stride,
     const DIST_WTD_COMP_PARAMS *jcp_param) {
   int i;
-  const uint16_t wt0 = (uint16_t)jcp_param->fwd_offset;
-  const uint16_t wt1 = (uint16_t)jcp_param->bck_offset;
-  const __m128i w0 = _mm_set_epi16(wt0, wt0, wt0, wt0, wt0, wt0, wt0, wt0);
-  const __m128i w1 = _mm_set_epi16(wt1, wt1, wt1, wt1, wt1, wt1, wt1, wt1);
-  const uint16_t round = ((1 << DIST_PRECISION_BITS) >> 1);
-  const __m128i r =
-      _mm_set_epi16(round, round, round, round, round, round, round, round);
+  const int16_t wt0 = (int16_t)jcp_param->fwd_offset;
+  const int16_t wt1 = (int16_t)jcp_param->bck_offset;
+  const __m128i w0 = _mm_set1_epi16(wt0);
+  const __m128i w1 = _mm_set1_epi16(wt1);
+  const int16_t round = (int16_t)((1 << DIST_PRECISION_BITS) >> 1);
+  const __m128i r = _mm_set1_epi16(round);
   uint16_t *pred = CONVERT_TO_SHORTPTR(pred8);
   uint16_t *ref = CONVERT_TO_SHORTPTR(ref8);
   uint16_t *comp_pred = CONVERT_TO_SHORTPTR(comp_pred8);
@@ -675,8 +637,8 @@ void aom_highbd_dist_wtd_comp_avg_pred_sse2(
   }
 }
 
-uint64_t aom_mse_4xh_16bit_highbd_sse2(uint16_t *dst, int dstride,
-                                       uint16_t *src, int sstride, int h) {
+static uint64_t mse_4xh_16bit_highbd_sse2(uint16_t *dst, int dstride,
+                                          uint16_t *src, int sstride, int h) {
   uint64_t sum = 0;
   __m128i reg0_4x16, reg1_4x16;
   __m128i src_8x16;
@@ -720,8 +682,8 @@ uint64_t aom_mse_4xh_16bit_highbd_sse2(uint16_t *dst, int dstride,
   return sum;
 }
 
-uint64_t aom_mse_8xh_16bit_highbd_sse2(uint16_t *dst, int dstride,
-                                       uint16_t *src, int sstride, int h) {
+static uint64_t mse_8xh_16bit_highbd_sse2(uint16_t *dst, int dstride,
+                                          uint16_t *src, int sstride, int h) {
   uint64_t sum = 0;
   __m128i src_8x16;
   __m128i dst_8x16;
@@ -766,8 +728,8 @@ uint64_t aom_mse_wxh_16bit_highbd_sse2(uint16_t *dst, int dstride,
   assert((w == 8 || w == 4) && (h == 8 || h == 4) &&
          "w=8/4 and h=8/4 must satisfy");
   switch (w) {
-    case 4: return aom_mse_4xh_16bit_highbd_sse2(dst, dstride, src, sstride, h);
-    case 8: return aom_mse_8xh_16bit_highbd_sse2(dst, dstride, src, sstride, h);
+    case 4: return mse_4xh_16bit_highbd_sse2(dst, dstride, src, sstride, h);
+    case 8: return mse_8xh_16bit_highbd_sse2(dst, dstride, src, sstride, h);
     default: assert(0 && "unsupported width"); return -1;
   }
 }

@@ -18,12 +18,22 @@
 extern "C" {
 #endif
 
+/*!\enum CDEF_CONTROL
+ * \brief This enum controls to which frames CDEF is applied.
+ */
+typedef enum {
+  CDEF_NONE = 0,      /*!< Disable CDEF on all frames. */
+  CDEF_ALL = 1,       /*!< Enable CDEF for all frames. */
+  CDEF_REFERENCE = 2, /*!< Disable CDEF on non reference frames. */
+} CDEF_CONTROL;
+
 /*!\cond */
 struct MultiThreadInfo;
 
 #define REDUCED_PRI_STRENGTHS_LVL1 8
 #define REDUCED_PRI_STRENGTHS_LVL2 5
 #define REDUCED_SEC_STRENGTHS_LVL3 2
+#define REDUCED_SEC_STRENGTHS_LVL5 1
 #define REDUCED_PRI_STRENGTHS_LVL4 2
 
 #define REDUCED_TOTAL_STRENGTHS_LVL1 \
@@ -34,23 +44,28 @@ struct MultiThreadInfo;
   (REDUCED_PRI_STRENGTHS_LVL2 * REDUCED_SEC_STRENGTHS_LVL3)
 #define REDUCED_TOTAL_STRENGTHS_LVL4 \
   (REDUCED_PRI_STRENGTHS_LVL4 * REDUCED_SEC_STRENGTHS_LVL3)
+#define REDUCED_TOTAL_STRENGTHS_LVL5 \
+  (REDUCED_PRI_STRENGTHS_LVL4 * REDUCED_SEC_STRENGTHS_LVL5)
 #define TOTAL_STRENGTHS (CDEF_PRI_STRENGTHS * CDEF_SEC_STRENGTHS)
 
 static const int priconv_lvl1[REDUCED_PRI_STRENGTHS_LVL1] = { 0, 1, 2,  3,
                                                               5, 7, 10, 13 };
 static const int priconv_lvl2[REDUCED_PRI_STRENGTHS_LVL2] = { 0, 2, 4, 8, 14 };
 static const int priconv_lvl4[REDUCED_PRI_STRENGTHS_LVL4] = { 0, 11 };
+static const int priconv_lvl5[REDUCED_PRI_STRENGTHS_LVL4] = { 0, 5 };
 static const int secconv_lvl3[REDUCED_SEC_STRENGTHS_LVL3] = { 0, 2 };
+static const int secconv_lvl5[REDUCED_SEC_STRENGTHS_LVL5] = { 0 };
 static const int nb_cdef_strengths[CDEF_PICK_METHODS] = {
   TOTAL_STRENGTHS,
   REDUCED_TOTAL_STRENGTHS_LVL1,
   REDUCED_TOTAL_STRENGTHS_LVL2,
   REDUCED_TOTAL_STRENGTHS_LVL3,
   REDUCED_TOTAL_STRENGTHS_LVL4,
+  REDUCED_TOTAL_STRENGTHS_LVL5,
   TOTAL_STRENGTHS
 };
 
-typedef void (*copy_fn_t)(uint16_t *dst, int dstride, const void *src,
+typedef void (*copy_fn_t)(uint16_t *dst, int dstride, const uint8_t *src,
                           int src_voffset, int src_hoffset, int sstride,
                           int vsize, int hsize);
 typedef uint64_t (*compute_cdef_dist_t)(void *dst, int dstride, uint16_t *src,
@@ -149,6 +164,11 @@ typedef struct {
    * Holds the count of cdef filtered blocks
    */
   int sb_count;
+  /*!
+   * Indicates if 16bit frame buffers are to be used i.e., the content bit-depth
+   * is > 8-bit
+   */
+  bool use_highbitdepth;
 } CdefSearchCtx;
 
 static INLINE int sb_all_skip(const CommonModeInfoParams *const mi_params,
@@ -193,8 +213,11 @@ static INLINE int cdef_sb_skip(const CommonModeInfoParams *const mi_params,
   return 0;
 }
 
-void av1_cdef_mse_calc_block(CdefSearchCtx *cdef_search_ctx, int fbr, int fbc,
-                             int sb_count);
+void av1_cdef_dealloc_data(CdefSearchCtx *cdef_search_ctx);
+
+void av1_cdef_mse_calc_block(CdefSearchCtx *cdef_search_ctx,
+                             struct aom_internal_error_info *error_info,
+                             int fbr, int fbc, int sb_count);
 /*!\endcond */
 
 /*!\brief AV1 CDEF parameter search
@@ -203,17 +226,9 @@ void av1_cdef_mse_calc_block(CdefSearchCtx *cdef_search_ctx, int fbr, int fbc,
  *
  * Searches for optimal CDEF parameters for frame
  *
- * \param[in]      mt_info      Pointer to multi-threading parameters
- * \param[in]      frame        Compressed frame buffer
- * \param[in]      ref          Source frame buffer
- * \param[in,out]  cm           Pointer to top level common structure
- * \param[in]      xd           Pointer to common current coding block structure
- * \param[in]      pick_method  The method used to select params
- * \param[in]      rdmult       rd multiplier to use in making param choices
- * \param[in]      skip_cdef_feature Speed feature to skip cdef
- * \param[in]      frames_since_key Number of frames since key frame
+ * \param[in,out]  cpi                 Top level encoder structure
  *
- * \return Nothing is returned. Instead, optimal CDEF parameters are stored
+ * \remark Nothing is returned. Instead, optimal CDEF parameters are stored
  * in the \c cdef_info structure of type \ref CdefInfo inside \c cm:
  * \arg \c cdef_bits: Bits of strength parameters
  * \arg \c nb_cdef_strengths: Number of strength parameters
@@ -224,11 +239,21 @@ void av1_cdef_mse_calc_block(CdefSearchCtx *cdef_search_ctx, int fbr, int fbc,
  * \arg \c damping_factor: CDEF damping factor.
  *
  */
-void av1_cdef_search(struct MultiThreadInfo *mt_info,
-                     const YV12_BUFFER_CONFIG *frame,
-                     const YV12_BUFFER_CONFIG *ref, AV1_COMMON *cm,
-                     MACROBLOCKD *xd, CDEF_PICK_METHOD pick_method, int rdmult,
-                     int skip_cdef_feature, int frames_since_key);
+void av1_cdef_search(struct AV1_COMP *cpi);
+
+/*!\brief AV1 CDEF level from QP
+ *
+ * \ingroup in_loop_cdef
+ *
+ * Calculates CDEF levels from frame QP. Only used for speed 7+ with RT mode.
+ *
+ * \param[in,out]  cm                 Pointer to top level common structure
+ * \param[in]      skip_cdef          Flag to skip CDEF filtering
+ * \param[in]      is_screen_content  Flag indicating screen content
+ *
+ */
+void av1_pick_cdef_from_qp(AV1_COMMON *const cm, int skip_cdef,
+                           int is_screen_content);
 
 #ifdef __cplusplus
 }  // extern "C"

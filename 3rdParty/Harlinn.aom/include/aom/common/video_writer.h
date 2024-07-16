@@ -26,19 +26,19 @@ extern "C" {
 // Finds and opens writer for specified container format.
 // Returns an opaque AvxVideoWriter* upon success, or NULL upon failure.
 // Right now only IVF format is supported.
-AvxVideoWriter *aom_video_writer_open(const char *filename,
+HAOM_EXPORT AvxVideoWriter *aom_video_writer_open(const char *filename,
                                       AvxContainer container,
                                       const AvxVideoInfo *info);
 
 // Frees all resources associated with AvxVideoWriter* returned from
 // aom_video_writer_open() call.
-void aom_video_writer_close(AvxVideoWriter *writer);
+HAOM_EXPORT void aom_video_writer_close(AvxVideoWriter *writer);
 
 // Writes frame bytes to the file.
-int aom_video_writer_write_frame(AvxVideoWriter *writer, const uint8_t *buffer,
+HAOM_EXPORT int aom_video_writer_write_frame(AvxVideoWriter *writer, const uint8_t *buffer,
                                  size_t size, int64_t pts);
 // Set fourcc.
-void aom_video_writer_set_fourcc(AvxVideoWriter *writer, uint32_t fourcc);
+HAOM_EXPORT void aom_video_writer_set_fourcc(AvxVideoWriter *writer, uint32_t fourcc);
 
 #ifdef __cplusplus
 }  // extern "C"

@@ -1,4 +1,3 @@
-#pragma once
 /******************************************************************************
  * $Id$
  *
@@ -35,40 +34,37 @@
 #include <set>
 #include <map>
 
-#include <port/cpl_minixml.h>
-#include <ogr/ogrsf_frmts/ogrsf_frmts.h>
-#include <ogr/ogrsf_frmts/gml/gmlreader.h>
-#include <port/cpl_http.h>
-#include <ogr/ogr_swq.h>
+#include "cpl_minixml.h"
+#include "ogrsf_frmts.h"
+#include "gmlreader.h"
+#include "cpl_http.h"
+#include "ogr_swq.h"
 
-CPLXMLNode* WFSFindNode(CPLXMLNode* psXML, const char* pszRootName);
-void OGRWFSRecursiveUnlink( const char *pszName );
-CPLString WFS_TurnSQLFilterToOGCFilter( const swq_expr_node* poExpr,
-                                        OGRDataSource* poDS,
-                                        OGRFeatureDefn* poFDefn,
-                                        int nVersion,
-                                        int bPropertyIsNotEqualToSupported,
-                                        int bUseFeatureId,
-                                        int bGmlObjectIdNeedsGMLPrefix,
-                                        const char* pszNSPrefix,
-                                        int* pbOutNeedsNullCheck);
-swq_custom_func_registrar* WFSGetCustomFuncRegistrar();
+const CPLXMLNode *WFSFindNode(const CPLXMLNode *psXML, const char *pszRootName);
+void OGRWFSRecursiveUnlink(const char *pszName);
+CPLString
+WFS_TurnSQLFilterToOGCFilter(const swq_expr_node *poExpr, OGRDataSource *poDS,
+                             OGRFeatureDefn *poFDefn, int nVersion,
+                             int bPropertyIsNotEqualToSupported,
+                             int bUseFeatureId, int bGmlObjectIdNeedsGMLPrefix,
+                             const char *pszNSPrefix, int *pbOutNeedsNullCheck);
+swq_custom_func_registrar *WFSGetCustomFuncRegistrar();
 
-const char* FindSubStringInsensitive(const char* pszStr,
-                                     const char* pszSubStr);
+const char *FindSubStringInsensitive(const char *pszStr, const char *pszSubStr);
 
-CPLString WFS_EscapeURL(const char* pszURL);
+CPLString WFS_EscapeURL(const char *pszURL);
 CPLString WFS_DecodeURL(const CPLString &osSrc);
 
 class OGRWFSSortDesc
 {
-    public:
-        CPLString osColumn;
-        bool      bAsc;
+  public:
+    CPLString osColumn;
+    bool bAsc;
 
-        OGRWFSSortDesc( const CPLString& osColumnIn, int bAscIn ) :
-            osColumn(osColumnIn),
-            bAsc(CPL_TO_BOOL(bAscIn)) {}
+    OGRWFSSortDesc(const CPLString &osColumnIn, int bAscIn)
+        : osColumn(osColumnIn), bAsc(CPL_TO_BOOL(bAscIn))
+    {
+    }
 };
 
 /************************************************************************/
@@ -77,349 +73,482 @@ class OGRWFSSortDesc
 
 class OGRWFSDataSource;
 
-class OGRWFSLayer final: public OGRLayer
+class OGRWFSLayer final : public OGRLayer
 {
-    OGRWFSDataSource*   poDS;
+    OGRWFSDataSource *poDS;
 
-    OGRFeatureDefn*     poFeatureDefn;
-    bool                bGotApproximateLayerDefn;
-    GMLFeatureClass*    poGMLFeatureClass;
+    OGRFeatureDefn *poFeatureDefn;
+    bool bGotApproximateLayerDefn;
+    GMLFeatureClass *poGMLFeatureClass;
 
-    int                 bAxisOrderAlreadyInverted;
-    OGRSpatialReference *poSRS;
+    int bAxisOrderAlreadyInverted;
+    OGRSpatialReference *m_poSRS;
+    std::string m_osSRSName{};
 
-    char*               pszBaseURL;
-    char*               pszName;
-    char*               pszNS;
-    char*               pszNSVal;
+    char *pszBaseURL;
+    char *pszName;
+    char *pszNS;
+    char *pszNSVal;
 
-    bool                bStreamingDS;
-    GDALDataset        *poBaseDS;
-    OGRLayer           *poBaseLayer;
-    bool                bHasFetched;
-    bool                bReloadNeeded;
+    bool bStreamingDS;
+    GDALDataset *poBaseDS;
+    OGRLayer *poBaseLayer;
+    bool bHasFetched;
+    bool bReloadNeeded;
 
-    CPLString           osGeometryColumnName;
-    OGRwkbGeometryType  eGeomType;
-    GIntBig             nFeatures;
-    bool                bCountFeaturesInGetNextFeature;
+    CPLString osGeometryColumnName;
+    OGRwkbGeometryType eGeomType;
+    GIntBig nFeatures;
+    GIntBig m_nNumberMatched = -1;
+    bool m_bHasReadAtLeastOneFeatureInThisPage = false;
+    bool bCountFeaturesInGetNextFeature;
 
-    int                 CanRunGetFeatureCountAndGetExtentTogether();
+    int CanRunGetFeatureCountAndGetExtentTogether();
 
-    CPLString           MakeGetFeatureURL(int nMaxFeatures, int bRequestHits);
-    bool                MustRetryIfNonCompliantServer( const char* pszServerAnswer );
-    GDALDataset*        FetchGetFeature(int nMaxFeatures);
-    OGRFeatureDefn*     DescribeFeatureType();
-    GIntBig             ExecuteGetFeatureResultTypeHits();
+    CPLString MakeGetFeatureURL(int nMaxFeatures, int bRequestHits);
+    bool MustRetryIfNonCompliantServer(const char *pszServerAnswer);
+    GDALDataset *FetchGetFeature(int nMaxFeatures);
+    OGRFeatureDefn *DescribeFeatureType();
+    GIntBig ExecuteGetFeatureResultTypeHits();
 
-    double              dfMinX;
-    double              dfMinY;
-    double              dfMaxX;
-    double              dfMaxY;
-    bool                bHasExtents;
+    OGREnvelope m_oWGS84Extents{};
+    OGREnvelope m_oExtents{};
 
-    OGRGeometry        *poFetchedFilterGeom;
+    OGRGeometry *poFetchedFilterGeom;
 
-    CPLString           osSQLWhere;
-    CPLString           osWFSWhere;
+    CPLString osSQLWhere;
+    CPLString osWFSWhere;
 
-    CPLString           osTargetNamespace;
-    CPLString           GetDescribeFeatureTypeURL(int bWithNS);
+    CPLString osTargetNamespace;
+    CPLString GetDescribeFeatureTypeURL(int bWithNS);
 
-    int                 nExpectedInserts;
-    CPLString           osGlobalInsert;
+    int nExpectedInserts;
+    CPLString osGlobalInsert;
     std::vector<CPLString> aosFIDList;
 
-    bool                bInTransaction;
+    bool bInTransaction;
 
-    CPLString           GetPostHeader();
+    CPLString GetPostHeader();
 
-    bool                bUseFeatureIdAtLayerLevel;
+    bool bUseFeatureIdAtLayerLevel;
 
-    bool                bPagingActive;
-    int                 nPagingStartIndex;
-    int                 nFeatureRead;
-    int                 nFeatureCountRequested;
+    bool bPagingActive;
+    int nPagingStartIndex;
+    int nFeatureRead;
 
-    OGRFeatureDefn*     BuildLayerDefnFromFeatureClass(GMLFeatureClass* poClass);
+    OGRFeatureDefn *BuildLayerDefnFromFeatureClass(GMLFeatureClass *poClass);
 
-    char                *pszRequiredOutputFormat;
+    char *pszRequiredOutputFormat;
 
     std::vector<OGRWFSSortDesc> aoSortColumns;
 
+    std::vector<std::string> m_aosSupportedCRSList{};
+    OGRLayer::GetSupportedSRSListRetType m_apoSupportedCRSList{};
+
   public:
-                        OGRWFSLayer(OGRWFSDataSource* poDS,
-                                    OGRSpatialReference* poSRS,
-                                    int bAxisOrderAlreadyInverted,
-                                    const char* pszBaseURL,
-                                    const char* pszName,
-                                    const char* pszNS,
-                                    const char* pszNSVal);
+    OGRWFSLayer(OGRWFSDataSource *poDS, OGRSpatialReference *poSRS,
+                int bAxisOrderAlreadyInverted, const char *pszBaseURL,
+                const char *pszName, const char *pszNS, const char *pszNSVal);
 
-                        virtual ~OGRWFSLayer();
+    virtual ~OGRWFSLayer();
 
-    OGRWFSLayer*                Clone();
+    OGRWFSLayer *Clone();
 
-    const char                 *GetName() override { return pszName; }
+    const char *GetName() override
+    {
+        return pszName;
+    }
 
-    virtual void                ResetReading() override;
-    virtual OGRFeature*         GetNextFeature() override;
-    virtual OGRFeature*         GetFeature(GIntBig nFID) override;
+    virtual void ResetReading() override;
+    virtual OGRFeature *GetNextFeature() override;
+    virtual OGRFeature *GetFeature(GIntBig nFID) override;
 
-    virtual OGRFeatureDefn *    GetLayerDefn() override;
+    virtual OGRFeatureDefn *GetLayerDefn() override;
 
-    virtual int                 TestCapability( const char * ) override;
+    virtual int TestCapability(const char *) override;
 
-    virtual void        SetSpatialFilter( OGRGeometry * ) override;
-    virtual void        SetSpatialFilter( int iGeomField, OGRGeometry *poGeom ) override
-                { OGRLayer::SetSpatialFilter(iGeomField, poGeom); }
+    virtual void SetSpatialFilter(OGRGeometry *) override;
 
-    virtual OGRErr      SetAttributeFilter( const char * ) override;
+    virtual void SetSpatialFilter(int iGeomField, OGRGeometry *poGeom) override
+    {
+        OGRLayer::SetSpatialFilter(iGeomField, poGeom);
+    }
 
-    virtual GIntBig     GetFeatureCount( int bForce = TRUE ) override;
+    virtual OGRErr SetAttributeFilter(const char *) override;
 
-    void                SetExtents(double dfMinX, double dfMinY, double dfMaxX, double dfMaxY);
-    virtual OGRErr      GetExtent(OGREnvelope *psExtent, int bForce = TRUE) override;
-    virtual OGRErr      GetExtent(int iGeomField, OGREnvelope *psExtent, int bForce) override
-                { return OGRLayer::GetExtent(iGeomField, psExtent, bForce); }
+    virtual GIntBig GetFeatureCount(int bForce = TRUE) override;
 
-    virtual OGRErr      ICreateFeature( OGRFeature *poFeature ) override;
-    virtual OGRErr      ISetFeature( OGRFeature *poFeature ) override;
-    virtual OGRErr      DeleteFeature( GIntBig nFID ) override;
+    void SetExtents(double dfMinX, double dfMinY, double dfMaxX, double dfMaxY);
+    void SetWGS84Extents(double dfMinX, double dfMinY, double dfMaxX,
+                         double dfMaxY);
+    virtual OGRErr GetExtent(OGREnvelope *psExtent, int bForce = TRUE) override;
 
-    virtual OGRErr      StartTransaction() override;
-    virtual OGRErr      CommitTransaction() override;
-    virtual OGRErr      RollbackTransaction() override;
+    virtual OGRErr GetExtent(int iGeomField, OGREnvelope *psExtent,
+                             int bForce) override
+    {
+        return OGRLayer::GetExtent(iGeomField, psExtent, bForce);
+    }
 
-    virtual OGRErr      SetIgnoredFields( const char **papszFields ) override;
+    virtual OGRErr ICreateFeature(OGRFeature *poFeature) override;
+    virtual OGRErr ISetFeature(OGRFeature *poFeature) override;
+    virtual OGRErr DeleteFeature(GIntBig nFID) override;
 
-    int                 HasLayerDefn() { return poFeatureDefn != nullptr; }
+    virtual OGRErr StartTransaction() override;
+    virtual OGRErr CommitTransaction() override;
+    virtual OGRErr RollbackTransaction() override;
 
-    OGRFeatureDefn*     ParseSchema(CPLXMLNode* psSchema);
-    OGRFeatureDefn*     BuildLayerDefn(OGRFeatureDefn* poSrcFDefn = nullptr);
+    virtual OGRErr SetIgnoredFields(CSLConstList papszFields) override;
 
-    OGRErr              DeleteFromFilter( CPLString osOGCFilter );
+    int HasLayerDefn()
+    {
+        return poFeatureDefn != nullptr;
+    }
 
-    const std::vector<CPLString>& GetLastInsertedFIDList() { return aosFIDList; }
+    OGRFeatureDefn *ParseSchema(const CPLXMLNode *psSchema);
+    OGRFeatureDefn *BuildLayerDefn(OGRFeatureDefn *poSrcFDefn = nullptr);
 
-    const char         *GetShortName();
+    OGRErr DeleteFromFilter(const std::string &osOGCFilter);
 
-    void                SetRequiredOutputFormat(const char* pszRequiredOutputFormatIn);
+    const std::vector<CPLString> &GetLastInsertedFIDList()
+    {
+        return aosFIDList;
+    }
 
-    const char         *GetRequiredOutputFormat() { return pszRequiredOutputFormat; }
+    const char *GetShortName();
 
-    void                SetOrderBy(const std::vector<OGRWFSSortDesc>& aoSortColumnsIn);
-    bool                HasGotApproximateLayerDefn() { GetLayerDefn(); return bGotApproximateLayerDefn; }
+    void SetRequiredOutputFormat(const char *pszRequiredOutputFormatIn);
 
-    const char*         GetNamespacePrefix() { return pszNS; }
-    const char*         GetNamespaceName() { return pszNSVal; }
+    const char *GetRequiredOutputFormat()
+    {
+        return pszRequiredOutputFormat;
+    }
+
+    void SetOrderBy(const std::vector<OGRWFSSortDesc> &aoSortColumnsIn);
+
+    bool HasGotApproximateLayerDefn()
+    {
+        GetLayerDefn();
+        return bGotApproximateLayerDefn;
+    }
+
+    const char *GetNamespacePrefix()
+    {
+        return pszNS;
+    }
+
+    const char *GetNamespaceName()
+    {
+        return pszNSVal;
+    }
+
+    void SetSupportedSRSList(
+        std::vector<std::string> &&aosSupportedCRSList,
+        OGRLayer::GetSupportedSRSListRetType &&apoSupportedCRSList)
+    {
+        m_aosSupportedCRSList = std::move(aosSupportedCRSList);
+        m_apoSupportedCRSList = std::move(apoSupportedCRSList);
+    }
+
+    const OGRLayer::GetSupportedSRSListRetType &
+    GetSupportedSRSList(int /*iGeomField*/) override
+    {
+        return m_apoSupportedCRSList;
+    }
+
+    OGRErr SetActiveSRS(int iGeomField,
+                        const OGRSpatialReference *poSRS) override;
 };
 
 /************************************************************************/
 /*                          OGRWFSJoinLayer                             */
 /************************************************************************/
 
-class OGRWFSJoinLayer final: public OGRLayer
+class OGRWFSJoinLayer final : public OGRLayer
 {
-    OGRWFSDataSource   *poDS;
-    OGRFeatureDefn     *poFeatureDefn;
+    OGRWFSDataSource *poDS;
+    OGRFeatureDefn *poFeatureDefn;
 
-    CPLString           osGlobalFilter;
-    CPLString           osSortBy;
-    int                 bDistinct;
+    CPLString osGlobalFilter;
+    CPLString osSortBy;
+    int bDistinct;
     std::set<CPLString> aoSetMD5;
 
-    std::vector<OGRWFSLayer*> apoLayers;
+    std::vector<OGRWFSLayer *> apoLayers;
 
-    GDALDataset        *poBaseDS;
-    OGRLayer           *poBaseLayer;
-    bool                bReloadNeeded;
-    bool                bHasFetched;
+    GDALDataset *poBaseDS;
+    OGRLayer *poBaseLayer;
+    bool bReloadNeeded;
+    bool bHasFetched;
 
-    bool                bPagingActive;
-    int                 nPagingStartIndex;
-    int                 nFeatureRead;
-    int                 nFeatureCountRequested;
+    bool bPagingActive;
+    int nPagingStartIndex;
+    int nFeatureRead;
+    int nFeatureCountRequested;
 
     std::vector<CPLString> aoSrcFieldNames;
     std::vector<CPLString> aoSrcGeomFieldNames;
 
-    CPLString           osFeatureTypes;
+    CPLString osFeatureTypes;
 
-                        OGRWFSJoinLayer(OGRWFSDataSource* poDS,
-                                        const swq_select* psSelectInfo,
-                                        const CPLString& osGlobalFilter);
-    CPLString           MakeGetFeatureURL(int bRequestHits = FALSE);
-    GDALDataset*        FetchGetFeature();
-    GIntBig             ExecuteGetFeatureResultTypeHits();
+    OGRWFSJoinLayer(OGRWFSDataSource *poDS, const swq_select *psSelectInfo,
+                    const CPLString &osGlobalFilter);
+    CPLString MakeGetFeatureURL(int bRequestHits = FALSE);
+    GDALDataset *FetchGetFeature();
+    GIntBig ExecuteGetFeatureResultTypeHits();
 
-    public:
+  public:
+    static OGRWFSJoinLayer *Build(OGRWFSDataSource *poDS,
+                                  const swq_select *psSelectInfo);
+    virtual ~OGRWFSJoinLayer();
 
-    static OGRWFSJoinLayer* Build(OGRWFSDataSource* poDS,
-                                  const swq_select* psSelectInfo);
-                       virtual ~OGRWFSJoinLayer();
+    virtual void ResetReading() override;
+    virtual OGRFeature *GetNextFeature() override;
 
-    virtual void                ResetReading() override;
-    virtual OGRFeature*         GetNextFeature() override;
+    virtual OGRFeatureDefn *GetLayerDefn() override;
 
-    virtual OGRFeatureDefn *    GetLayerDefn() override;
+    virtual int TestCapability(const char *) override;
 
-    virtual int                 TestCapability( const char * ) override;
+    virtual GIntBig GetFeatureCount(int bForce = TRUE) override;
 
-    virtual GIntBig             GetFeatureCount( int bForce = TRUE ) override;
+    virtual void SetSpatialFilter(OGRGeometry *) override;
 
-    virtual void        SetSpatialFilter( OGRGeometry * ) override;
-    virtual void        SetSpatialFilter( int iGeomField, OGRGeometry *poGeom ) override
-                { OGRLayer::SetSpatialFilter(iGeomField, poGeom); }
+    virtual void SetSpatialFilter(int iGeomField, OGRGeometry *poGeom) override
+    {
+        OGRLayer::SetSpatialFilter(iGeomField, poGeom);
+    }
 
-    virtual OGRErr      SetAttributeFilter( const char * ) override;
+    virtual OGRErr SetAttributeFilter(const char *) override;
 };
 
 /************************************************************************/
 /*                           OGRWFSDataSource                           */
 /************************************************************************/
 
-class OGRWFSDataSource final: public OGRDataSource
+class OGRWFSDataSource final : public OGRDataSource
 {
-    char*               pszName;
-    bool                bRewriteFile;
-    CPLXMLNode*         psFileXML;
+    char *pszName;
+    bool bRewriteFile;
+    CPLXMLNode *psFileXML;
 
-    OGRWFSLayer**       papoLayers;
-    int                 nLayers;
-    std::map<OGRLayer*, OGRLayer*> oMap;
+    OGRWFSLayer **papoLayers;
+    int nLayers;
+    std::map<OGRLayer *, OGRLayer *> oMap;
 
-    bool                bUpdate;
+    bool bUpdate;
 
-    bool                bGetFeatureSupportHits;
-    CPLString           osVersion;
-    bool                bNeedNAMESPACE;
-    bool                bHasMinOperators;
-    bool                bHasNullCheck;
-    bool                bPropertyIsNotEqualToSupported;
-    bool                bUseFeatureId;
-    bool                bGmlObjectIdNeedsGMLPrefix;
-    bool                bRequiresEnvelopeSpatialFilter;
-    static bool                DetectRequiresEnvelopeSpatialFilter( CPLXMLNode* psRoot );
+    bool bGetFeatureSupportHits;
+    CPLString osVersion;
+    bool bNeedNAMESPACE;
+    bool bHasMinOperators;
+    bool bHasNullCheck;
+    bool bPropertyIsNotEqualToSupported;
+    bool bUseFeatureId;
+    bool bGmlObjectIdNeedsGMLPrefix;
+    bool bRequiresEnvelopeSpatialFilter;
+    static bool DetectRequiresEnvelopeSpatialFilter(const CPLXMLNode *psRoot);
 
-    bool                bTransactionSupport;
-    char**              papszIdGenMethods;
-    bool                DetectTransactionSupport( CPLXMLNode* psRoot );
+    bool bTransactionSupport;
+    char **papszIdGenMethods;
+    bool DetectTransactionSupport(const CPLXMLNode *psRoot);
 
-    CPLString           osBaseURL;
-    CPLString           osPostTransactionURL;
+    CPLString osBaseURL;
+    CPLString osPostTransactionURL;
 
-    CPLXMLNode*         LoadFromFile( const char * pszFilename );
+    CPLXMLNode *LoadFromFile(const char *pszFilename);
 
-    bool                bUseHttp10;
+    bool bUseHttp10;
 
-    char**              papszHttpOptions;
+    char **papszHttpOptions;
 
-    bool                bPagingAllowed;
-    int                 nPageSize;
-    int                 nBaseStartIndex;
-    bool                DetectSupportPagingWFS2(CPLXMLNode* psRoot);
+    bool bPagingAllowed;
+    int nPageSize;
+    int nBaseStartIndex;
+    bool DetectSupportPagingWFS2(const CPLXMLNode *psGetCapabilitiesResponse,
+                                 const CPLXMLNode *psConfigurationRoot);
 
-    bool                bStandardJoinsWFS2;
-    bool                DetectSupportStandardJoinsWFS2( CPLXMLNode* psRoot );
+    bool bStandardJoinsWFS2;
+    bool DetectSupportStandardJoinsWFS2(const CPLXMLNode *psRoot);
 
-    bool                bLoadMultipleLayerDefn;
+    bool bLoadMultipleLayerDefn;
     std::set<CPLString> aoSetAlreadyTriedLayers;
 
-    CPLString           osLayerMetadataCSV;
-    CPLString           osLayerMetadataTmpFileName;
-    OGRDataSource      *poLayerMetadataDS;
-    OGRLayer           *poLayerMetadataLayer;
+    CPLString osLayerMetadataCSV;
+    CPLString osLayerMetadataTmpFileName;
+    OGRDataSource *poLayerMetadataDS;
+    OGRLayer *poLayerMetadataLayer;
 
-    CPLString           osGetCapabilities;
-    const char         *apszGetCapabilities[2];
-    GDALDataset        *poLayerGetCapabilitiesDS;
-    OGRLayer           *poLayerGetCapabilitiesLayer;
+    CPLString osGetCapabilities;
+    const char *apszGetCapabilities[2];
+    GDALDataset *poLayerGetCapabilitiesDS;
+    OGRLayer *poLayerGetCapabilitiesLayer;
 
-    bool                bKeepLayerNamePrefix;
+    bool bKeepLayerNamePrefix;
 
-    bool                bEmptyAsNull;
+    bool bEmptyAsNull;
 
-    bool                bInvertAxisOrderIfLatLong;
-    CPLString           osConsiderEPSGAsURN;
-    bool                bExposeGMLId;
+    bool bInvertAxisOrderIfLatLong;
+    CPLString osConsiderEPSGAsURN;
+    bool bExposeGMLId;
 
-    CPLHTTPResult*      SendGetCapabilities(const char* pszBaseURL,
-                                            CPLString& osTypeName);
+    CPLHTTPResult *SendGetCapabilities(const char *pszBaseURL,
+                                       CPLString &osTypeName);
 
-    int                 GetLayerIndex(const char* pszName);
+    int GetLayerIndex(const char *pszName);
 
   public:
-                        OGRWFSDataSource();
-                        virtual ~OGRWFSDataSource();
+    OGRWFSDataSource();
+    virtual ~OGRWFSDataSource();
 
-    int                 Open( const char * pszFilename,
-                              int bUpdate,
-                              char** papszOpenOptions );
+    int Open(const char *pszFilename, int bUpdate, char **papszOpenOptions);
 
-    virtual const char*         GetName() override { return pszName; }
+    virtual const char *GetName() override
+    {
+        return pszName;
+    }
 
-    virtual int                 GetLayerCount() override { return nLayers; }
-    virtual OGRLayer*           GetLayer( int ) override;
-    virtual OGRLayer*           GetLayerByName(const char* pszLayerName) override;
+    virtual int GetLayerCount() override
+    {
+        return nLayers;
+    }
 
-    virtual int                 TestCapability( const char * ) override;
+    virtual OGRLayer *GetLayer(int) override;
+    virtual OGRLayer *GetLayerByName(const char *pszLayerName) override;
 
-    virtual OGRLayer *          ExecuteSQL( const char *pszSQLCommand,
-                                        OGRGeometry *poSpatialFilter,
-                                        const char *pszDialect ) override;
-    virtual void                ReleaseResultSet( OGRLayer * poResultsSet ) override;
+    virtual int TestCapability(const char *) override;
 
-    bool                        UpdateMode() const { return bUpdate; }
-    bool                        SupportTransactions() const
-        { return bTransactionSupport; }
-    void                        DisableSupportHits() { bGetFeatureSupportHits = false; }
-    bool                        GetFeatureSupportHits() const
-        { return bGetFeatureSupportHits; }
-    const char                 *GetVersion() { return osVersion.c_str(); }
+    virtual OGRLayer *ExecuteSQL(const char *pszSQLCommand,
+                                 OGRGeometry *poSpatialFilter,
+                                 const char *pszDialect) override;
+    virtual void ReleaseResultSet(OGRLayer *poResultsSet) override;
 
-    bool                        IsOldDeegree( const char* pszErrorString );
-    bool                        GetNeedNAMESPACE() const { return bNeedNAMESPACE; }
-    bool                        HasMinOperators() const { return bHasMinOperators; }
-    bool                        HasNullCheck() const { return bHasNullCheck; }
-    bool                        UseFeatureId() const { return bUseFeatureId; }
-    bool                        RequiresEnvelopeSpatialFilter() const
-        { return bRequiresEnvelopeSpatialFilter; }
-    void                        SetGmlObjectIdNeedsGMLPrefix() { bGmlObjectIdNeedsGMLPrefix = true; }
-    int                         DoesGmlObjectIdNeedGMLPrefix() const
-        { return bGmlObjectIdNeedsGMLPrefix; }
+    bool UpdateMode() const
+    {
+        return bUpdate;
+    }
 
-    void                        SetPropertyIsNotEqualToUnSupported() { bPropertyIsNotEqualToSupported = false; }
-    bool                        PropertyIsNotEqualToSupported() const
-        { return bPropertyIsNotEqualToSupported; }
+    bool SupportTransactions() const
+    {
+        return bTransactionSupport;
+    }
 
-    CPLString                   GetPostTransactionURL();
+    void DisableSupportHits()
+    {
+        bGetFeatureSupportHits = false;
+    }
 
-    void                        SaveLayerSchema(const char* pszLayerName, CPLXMLNode* psSchema);
+    bool GetFeatureSupportHits() const
+    {
+        return bGetFeatureSupportHits;
+    }
 
-    CPLHTTPResult*              HTTPFetch( const char* pszURL, char** papszOptions );
+    const char *GetVersion()
+    {
+        return osVersion.c_str();
+    }
 
-    bool                        IsPagingAllowed() const { return bPagingAllowed; }
-    int                         GetPageSize() const { return nPageSize; }
-    int                         GetBaseStartIndex() const { return nBaseStartIndex; }
+    bool IsOldDeegree(const char *pszErrorString);
 
-    void                        LoadMultipleLayerDefn(const char* pszLayerName,
-                                                      char* pszNS, char* pszNSVal);
+    bool GetNeedNAMESPACE() const
+    {
+        return bNeedNAMESPACE;
+    }
 
-    bool                        GetKeepLayerNamePrefix() const
-        { return bKeepLayerNamePrefix; }
-    const CPLString&            GetBaseURL() { return osBaseURL; }
+    bool HasMinOperators() const
+    {
+        return bHasMinOperators;
+    }
 
-    bool                        IsEmptyAsNull() const
-        { return bEmptyAsNull; }
-    bool                        InvertAxisOrderIfLatLong() const
-        { return bInvertAxisOrderIfLatLong; }
-    const CPLString&            GetConsiderEPSGAsURN() const { return osConsiderEPSGAsURN; }
+    bool HasNullCheck() const
+    {
+        return bHasNullCheck;
+    }
 
-    bool                        ExposeGMLId() const { return bExposeGMLId; }
+    bool UseFeatureId() const
+    {
+        return bUseFeatureId;
+    }
 
-    virtual char**              GetMetadataDomainList() override;
-    virtual char**              GetMetadata( const char * pszDomain = "" ) override;
+    bool RequiresEnvelopeSpatialFilter() const
+    {
+        return bRequiresEnvelopeSpatialFilter;
+    }
+
+    void SetGmlObjectIdNeedsGMLPrefix()
+    {
+        bGmlObjectIdNeedsGMLPrefix = true;
+    }
+
+    int DoesGmlObjectIdNeedGMLPrefix() const
+    {
+        return bGmlObjectIdNeedsGMLPrefix;
+    }
+
+    void SetPropertyIsNotEqualToUnSupported()
+    {
+        bPropertyIsNotEqualToSupported = false;
+    }
+
+    bool PropertyIsNotEqualToSupported() const
+    {
+        return bPropertyIsNotEqualToSupported;
+    }
+
+    CPLString GetPostTransactionURL();
+
+    void SaveLayerSchema(const char *pszLayerName, const CPLXMLNode *psSchema);
+
+    CPLHTTPResult *HTTPFetch(const char *pszURL, char **papszOptions);
+
+    bool IsPagingAllowed() const
+    {
+        return bPagingAllowed;
+    }
+
+    int GetPageSize() const
+    {
+        return nPageSize;
+    }
+
+    int GetBaseStartIndex() const
+    {
+        return nBaseStartIndex;
+    }
+
+    void LoadMultipleLayerDefn(const char *pszLayerName, char *pszNS,
+                               char *pszNSVal);
+
+    bool GetKeepLayerNamePrefix() const
+    {
+        return bKeepLayerNamePrefix;
+    }
+
+    const CPLString &GetBaseURL()
+    {
+        return osBaseURL;
+    }
+
+    bool IsEmptyAsNull() const
+    {
+        return bEmptyAsNull;
+    }
+
+    bool InvertAxisOrderIfLatLong() const
+    {
+        return bInvertAxisOrderIfLatLong;
+    }
+
+    const CPLString &GetConsiderEPSGAsURN() const
+    {
+        return osConsiderEPSGAsURN;
+    }
+
+    bool ExposeGMLId() const
+    {
+        return bExposeGMLId;
+    }
+
+    virtual char **GetMetadataDomainList() override;
+    virtual char **GetMetadata(const char *pszDomain = "") override;
 };
 
 #endif /* ndef OGR_WFS_H_INCLUDED */

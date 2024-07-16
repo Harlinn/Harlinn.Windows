@@ -14,6 +14,7 @@
 
 #include "aom_scale/yv12config.h"
 
+
 // Returns a boolean that indicates success/failure.
 HAOM_EXPORT int aom_calc_butteraugli(const YV12_BUFFER_CONFIG *source,
                          const YV12_BUFFER_CONFIG *distorted, int bit_depth,

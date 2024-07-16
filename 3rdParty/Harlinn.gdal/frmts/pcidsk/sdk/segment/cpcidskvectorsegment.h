@@ -1,4 +1,3 @@
-#pragma once
 /******************************************************************************
  *
  * Purpose:  Declaration of the CPCIDSKVectorSegment class.
@@ -28,13 +27,13 @@
 #ifndef INCLUDE_SEGMENT_PCIDSKVECTORSEGMENT_H
 #define INCLUDE_SEGMENT_PCIDSKVECTORSEGMENT_H
 
-#include "../pcidsk_config.h"
-#include "../pcidsk_types.h"
-#include "../pcidsk_vectorsegment.h"
-#include "../pcidsk_buffer.h"
-#include "cpcidsksegment.h"
-#include "vecsegheader.h"
-#include "vecsegdataindex.h"
+#include "pcidsk_config.h"
+#include "pcidsk_types.h"
+#include "pcidsk_vectorsegment.h"
+#include "pcidsk_buffer.h"
+#include "segment/cpcidsksegment.h"
+#include "segment/vecsegheader.h"
+#include "segment/vecsegdataindex.h"
 
 #include <string>
 #include <map>
@@ -68,8 +67,8 @@ namespace PCIDSK
 
         std::string     GetRst() override { return ""; }
         std::vector<double> GetProjection( std::string &geosys ) override;
-        void            SetProjection(std::string geosys,
-                                      std::vector<double> params) override;
+        void            SetProjection(const std::string& geosys,
+                                      const std::vector<double>& params) override;
 
         int             GetFieldCount() override;
         std::string     GetFieldName(int) override;
@@ -89,9 +88,9 @@ namespace PCIDSK
         void            GetVertices( ShapeId, std::vector<ShapeVertex>& ) override;
         void            GetFields( ShapeId, std::vector<ShapeField>& ) override;
 
-        void            AddField( std::string name, ShapeFieldType type,
-                                  std::string description,
-                                  std::string format,
+        void            AddField( const std::string& name, ShapeFieldType type,
+                                  const std::string& description,
+                                  const std::string& format,
                                   ShapeField *default_value ) override;
 
         ShapeId         CreateShape( ShapeId id ) override;

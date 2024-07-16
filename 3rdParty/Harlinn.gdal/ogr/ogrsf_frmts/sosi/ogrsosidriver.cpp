@@ -31,8 +31,7 @@
 #include <mutex>
 
 #include "ogr_sosi.h"
-
-CPL_CVSID("$Id$")
+#include "ogrsosidrivercore.h"
 
 static int bFYBAInit = FALSE;
 static std::mutex oMutex;
@@ -44,9 +43,9 @@ static std::mutex oMutex;
 static void OGRSOSIInit()
 {
     std::lock_guard<std::mutex> oLock(oMutex);
-    if ( !bFYBAInit )
+    if (!bFYBAInit)
     {
-        LC_Init();  /* Init FYBA */
+        LC_Init(); /* Init FYBA */
         SOSIInitTypes();
         bFYBAInit = TRUE;
     }
@@ -56,9 +55,10 @@ static void OGRSOSIInit()
 /*                        OGRSOSIDriverUnload()                         */
 /************************************************************************/
 
-static void OGRSOSIDriverUnload(CPL_UNUSED GDALDriver* poDriver) {
+static void OGRSOSIDriverUnload(CPL_UNUSED GDALDriver *poDriver)
+{
 
-    if ( bFYBAInit )
+    if (bFYBAInit)
     {
         LC_Close(); /* Close FYBA */
         SOSICleanupTypes();
@@ -67,32 +67,19 @@ static void OGRSOSIDriverUnload(CPL_UNUSED GDALDriver* poDriver) {
 }
 
 /************************************************************************/
-/*                           Identify()                                 */
-/************************************************************************/
-
-static int OGRSOSIDriverIdentify( GDALOpenInfo* poOpenInfo )
-{
-    if( poOpenInfo->fpL == nullptr ||
-        strstr((const char*)poOpenInfo->pabyHeader, ".HODE") == nullptr )
-        return FALSE;
-
-    // TODO: add better identification
-    return -1;
-}
-
-/************************************************************************/
 /*                              Open()                                  */
 /************************************************************************/
 
-static GDALDataset *OGRSOSIDriverOpen( GDALOpenInfo* poOpenInfo )
+static GDALDataset *OGRSOSIDriverOpen(GDALOpenInfo *poOpenInfo)
 {
-    if( OGRSOSIDriverIdentify(poOpenInfo) == FALSE )
+    if (OGRSOSIDriverIdentify(poOpenInfo) == FALSE)
         return nullptr;
 
     OGRSOSIInit();
 
-    OGRSOSIDataSource   *poDS = new OGRSOSIDataSource();
-    if ( !poDS->Open( poOpenInfo->pszFilename, 0 ) ) {
+    OGRSOSIDataSource *poDS = new OGRSOSIDataSource();
+    if (!poDS->Open(poOpenInfo->pszFilename, 0))
+    {
         delete poDS;
         return nullptr;
     }
@@ -105,14 +92,15 @@ static GDALDataset *OGRSOSIDriverOpen( GDALOpenInfo* poOpenInfo )
 /*                              Create()                                */
 /************************************************************************/
 
-static GDALDataset *OGRSOSIDriverCreate( const char * pszName,
-                                         CPL_UNUSED int nBands, CPL_UNUSED int nXSize,
-                                         CPL_UNUSED int nYSize, CPL_UNUSED GDALDataType eDT,
-                                         CPL_UNUSED char **papszOptions )
+static GDALDataset *
+OGRSOSIDriverCreate(const char *pszName, CPL_UNUSED int nBands,
+                    CPL_UNUSED int nXSize, CPL_UNUSED int nYSize,
+                    CPL_UNUSED GDALDataType eDT, CPL_UNUSED char **papszOptions)
 {
     OGRSOSIInit();
-    OGRSOSIDataSource   *poDS = new OGRSOSIDataSource();
-    if ( !poDS->Create( pszName ) ) {
+    OGRSOSIDataSource *poDS = new OGRSOSIDataSource();
+    if (!poDS->Create(pszName))
+    {
         delete poDS;
         return NULL;
     }
@@ -124,27 +112,18 @@ static GDALDataset *OGRSOSIDriverCreate( const char * pszName,
 /*                         RegisterOGRSOSI()                            */
 /************************************************************************/
 
-void RegisterOGRSOSI() {
-    if( GDALGetDriverByName( "SOSI" ) != nullptr )
+void RegisterOGRSOSI()
+{
+    if (GDALGetDriverByName(DRIVER_NAME) != nullptr)
         return;
 
     GDALDriver *poDriver = new GDALDriver();
-
-    poDriver->SetDescription( "SOSI" );
-    poDriver->SetMetadataItem( GDAL_DCAP_VECTOR, "YES" );
-    poDriver->SetMetadataItem( GDAL_DMD_LONGNAME, "Norwegian SOSI Standard" );
-    poDriver->SetMetadataItem( GDAL_DMD_HELPTOPIC, "drivers/vector/sosi.html" );
-    poDriver->SetMetadataItem( GDAL_DMD_OPENOPTIONLIST,  "<OpenOptionList>"
-    "<Option name='appendFieldsMap' type='string' description='Default is that all rows for equal field names will be appended in a feature, but with this parameter you select what field this should be valid for. With appendFieldsMap=f1&amp;f2, Append will be done for field f1 and f2 using a comma as delimiter.'/>"
-    "</OpenOptionList>");
-
-
+    OGRSOSIDriverSetCommonMetadata(poDriver);
     poDriver->pfnOpen = OGRSOSIDriverOpen;
-    poDriver->pfnIdentify = OGRSOSIDriverIdentify;
 #ifdef WRITE_SUPPORT
     poDriver->pfnCreate = OGRSOSIDriverCreate;
 #endif
     poDriver->pfnUnloadDriver = OGRSOSIDriverUnload;
 
-    GetGDALDriverManager()->RegisterDriver( poDriver );
+    GetGDALDriverManager()->RegisterDriver(poDriver);
 }

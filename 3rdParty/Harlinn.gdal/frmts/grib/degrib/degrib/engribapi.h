@@ -1,4 +1,3 @@
-#pragma once
 #ifndef ENGRIBAPI_H
 #define ENGRIBAPI_H
 

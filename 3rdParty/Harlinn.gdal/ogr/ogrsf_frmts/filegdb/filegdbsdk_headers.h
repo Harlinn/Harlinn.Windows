@@ -1,4 +1,3 @@
-#pragma once
 /******************************************************************************
  *
  * Project:  FileGDB
@@ -30,7 +29,7 @@
 #ifndef FILEGDBSDK_HEADERS_H
 #define FILEGDBSDK_HEADERS_H
 
-#include <port/cpl_port.h>
+#include "cpl_port.h"
 
 #ifdef HAVE_GCC_SYSTEM_HEADER
 #pragma GCC system_header

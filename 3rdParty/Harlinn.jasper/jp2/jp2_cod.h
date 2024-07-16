@@ -80,10 +80,6 @@
 
 #include <stdio.h>
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
 /******************************************************************************\
 * Macros.
 \******************************************************************************/
@@ -274,7 +270,7 @@ typedef struct jp2_boxops_s {
 	void (*destroy)(jp2_box_t *box);
 	int (*getdata)(jp2_box_t *box, jas_stream_t *in);
 	int (*putdata)(const jp2_box_t *box, jas_stream_t *out);
-	void (*dumpdata)(const jp2_box_t *box, FILE *out);
+	void (*dumpdata)(const jp2_box_t *box);
 } jp2_boxops_t;
 
 /******************************************************************************\
@@ -292,10 +288,10 @@ typedef struct jp2_boxinfo_s {
 * Box class.
 \******************************************************************************/
 
-JAS_DLLEXPORT jp2_box_t *jp2_box_create(int type);
-JAS_DLLEXPORT void jp2_box_destroy(jp2_box_t *box);
-JAS_DLLEXPORT jp2_box_t *jp2_box_get(jas_stream_t *in);
-JAS_DLLEXPORT int jp2_box_put(jp2_box_t *box, jas_stream_t *out);
+jp2_box_t *jp2_box_create(int type);
+void jp2_box_destroy(jp2_box_t *box);
+jp2_box_t *jp2_box_get(jas_stream_t *in);
+int jp2_box_put(jp2_box_t *box, jas_stream_t *out);
 
 JAS_ATTRIBUTE_CONST
 static inline uint_least8_t JP2_DTYPETOBPC(uint_least8_t dtype)
@@ -314,9 +310,5 @@ static inline uint_least8_t JP2_BPCTODTYPE(uint_least8_t bpc)
 #define ICC_CS_GRAY	0x47524159
 
 const jp2_cdefchan_t *jp2_cdef_lookup(jp2_cdef_t *cdef, int channo);
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif

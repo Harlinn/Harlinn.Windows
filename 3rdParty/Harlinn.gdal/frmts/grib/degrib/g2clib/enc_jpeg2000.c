@@ -1,6 +1,6 @@
 #include "grib2.h"
 
-#include <port/cpl_port.h>
+#include "cpl_port.h"
 
 #ifndef USE_JPEG2000
 int enc_jpeg2000(CPL_UNUSED unsigned char *cin,
@@ -147,6 +147,7 @@ int enc_jpeg2000(unsigned char *cin,g2int width,g2int height,g2int nbits,
     image.clrspc_=JAS_CLRSPC_SGRAY;         /* grayscale Image */
     image.cmprof_=0;
 #endif
+    // This has been removed from JasPer
     //image.inmem_=1;
 
     cmpt.tlx_=0;

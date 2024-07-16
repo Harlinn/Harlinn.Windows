@@ -91,13 +91,13 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>BUILDING_HARLINN_PROJ=1;NOMINMAX=1;TIFF_ENABLED=1;CURL_ENABLED=1;PROJ_MSVC_DLL_EXPORT=1;_CRT_SECURE_NO_WARNINGS=1;MUTEX_win32=1;WIN32;_DEBUG;HARLINNPROJ_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>BUILDING_HARLINN_PROJ=1;NOMINMAX=1;TIFF_ENABLED=1;CURL_ENABLED=1;PROJ_MSVC_DLL_EXPORT=1;proj_EXPORTS=1;_CRT_SECURE_NO_WARNINGS=1;PROJ_DATA="C:/Program Files (x86)/PROJ/share/proj";WIN32;_DEBUG;HARLINNPROJ_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.curl\include;$(SolutionDir)3rdParty\Harlinn.SQLite3;$(SolutionDir)3rdParty\Harlinn.tiff;$(SolutionDir)3rdParty\Harlinn.nlohmann-json\include;$(ProjectDir);$(ProjectDir)include;$(ProjectDir)include\proj;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.curl\include;$(SolutionDir)3rdParty\Harlinn.SQLite3;$(SolutionDir)3rdParty\Harlinn.tiff;$(SolutionDir)3rdParty\Harlinn.nlohmann-json\include;$(ProjectDir)src;$(ProjectDir)include;$(ProjectDir)include\proj;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
@@ -114,13 +114,13 @@
       <WarningLevel>Level3</WarningLevel>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>BUILDING_HARLINN_PROJ=1;NOMINMAX=1;TIFF_ENABLED=1;CURL_ENABLED=1;PROJ_MSVC_DLL_EXPORT=1;_CRT_SECURE_NO_WARNINGS=1;MUTEX_win32=1;WIN32;NDEBUG;HARLINNPROJ_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>BUILDING_HARLINN_PROJ=1;NOMINMAX=1;TIFF_ENABLED=1;CURL_ENABLED=1;PROJ_MSVC_DLL_EXPORT=1;proj_EXPORTS=1;_CRT_SECURE_NO_WARNINGS=1;PROJ_DATA="C:/Program Files (x86)/PROJ/share/proj";WIN32;NDEBUG;HARLINNPROJ_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.curl\include;$(SolutionDir)3rdParty\Harlinn.SQLite3;$(SolutionDir)3rdParty\Harlinn.tiff;$(SolutionDir)3rdParty\Harlinn.nlohmann-json\include;$(ProjectDir);$(ProjectDir)include;$(ProjectDir)include\proj;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.curl\include;$(SolutionDir)3rdParty\Harlinn.SQLite3;$(SolutionDir)3rdParty\Harlinn.tiff;$(SolutionDir)3rdParty\Harlinn.nlohmann-json\include;$(ProjectDir)src;$(ProjectDir)include;$(ProjectDir)include\proj;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -139,13 +139,13 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>BUILDING_HARLINN_PROJ=1;NOMINMAX=1;TIFF_ENABLED=1;CURL_ENABLED=1;PROJ_MSVC_DLL_EXPORT=1;_CRT_SECURE_NO_WARNINGS=1;MUTEX_win32=1;_DEBUG;HARLINNPROJ_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>BUILDING_HARLINN_PROJ=1;NOMINMAX=1;TIFF_ENABLED=1;CURL_ENABLED=1;PROJ_MSVC_DLL_EXPORT=1;proj_EXPORTS=1;_CRT_SECURE_NO_WARNINGS=1;PROJ_DATA="C:/Program Files (x86)/PROJ/share/proj";_DEBUG;HARLINNPROJ_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.curl\include;$(SolutionDir)3rdParty\Harlinn.SQLite3;$(SolutionDir)3rdParty\Harlinn.tiff;$(SolutionDir)3rdParty\Harlinn.nlohmann-json\include;$(ProjectDir);$(ProjectDir)include;$(ProjectDir)include\proj;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.curl\include;$(SolutionDir)3rdParty\Harlinn.SQLite3;$(SolutionDir)3rdParty\Harlinn.tiff;$(SolutionDir)3rdParty\Harlinn.nlohmann-json\include;$(ProjectDir)src;$(ProjectDir)include;$(ProjectDir)include\proj;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
@@ -163,13 +163,13 @@
       <WarningLevel>Level3</WarningLevel>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>BUILDING_HARLINN_PROJ=1;NOMINMAX=1;TIFF_ENABLED=1;CURL_ENABLED=1;PROJ_MSVC_DLL_EXPORT=1;_CRT_SECURE_NO_WARNINGS=1;MUTEX_win32=1;NDEBUG;HARLINNPROJ_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>BUILDING_HARLINN_PROJ=1;NOMINMAX=1;TIFF_ENABLED=1;CURL_ENABLED=1;PROJ_MSVC_DLL_EXPORT=1;proj_EXPORTS=1;_CRT_SECURE_NO_WARNINGS=1;PROJ_DATA="C:/Program Files (x86)/PROJ/share/proj";NDEBUG;HARLINNPROJ_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.curl\include;$(SolutionDir)3rdParty\Harlinn.SQLite3;$(SolutionDir)3rdParty\Harlinn.tiff;$(SolutionDir)3rdParty\Harlinn.nlohmann-json\include;$(ProjectDir);$(ProjectDir)include;$(ProjectDir)include\proj;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.curl\include;$(SolutionDir)3rdParty\Harlinn.SQLite3;$(SolutionDir)3rdParty\Harlinn.tiff;$(SolutionDir)3rdParty\Harlinn.nlohmann-json\include;$(ProjectDir)src;$(ProjectDir)include;$(ProjectDir)include\proj;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -186,264 +186,268 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="4D_api.cpp" />
-    <ClCompile Include="aasincos.cpp" />
-    <ClCompile Include="adjlon.cpp" />
-    <ClCompile Include="auth.cpp" />
-    <ClCompile Include="conversions\axisswap.cpp" />
-    <ClCompile Include="conversions\cart.cpp" />
-    <ClCompile Include="conversions\geoc.cpp" />
-    <ClCompile Include="conversions\geocent.cpp" />
-    <ClCompile Include="conversions\noop.cpp" />
-    <ClCompile Include="conversions\set.cpp" />
-    <ClCompile Include="conversions\topocentric.cpp" />
-    <ClCompile Include="conversions\unitconvert.cpp" />
-    <ClCompile Include="ctx.cpp" />
-    <ClCompile Include="datums.cpp" />
-    <ClCompile Include="datum_set.cpp" />
-    <ClCompile Include="deriv.cpp" />
     <ClCompile Include="dllmain.cpp" />
-    <ClCompile Include="dmstor.cpp" />
-    <ClCompile Include="ellps.cpp" />
-    <ClCompile Include="ell_set.cpp" />
-    <ClCompile Include="factors.cpp" />
-    <ClCompile Include="filemanager.cpp" />
-    <ClCompile Include="fwd.cpp" />
-    <ClCompile Include="gauss.cpp" />
-    <ClCompile Include="generic_inverse.cpp" />
-    <ClCompile Include="geodesic.c" />
-    <ClCompile Include="grids.cpp" />
-    <ClCompile Include="init.cpp" />
-    <ClCompile Include="initcache.cpp" />
-    <ClCompile Include="internal.cpp" />
-    <ClCompile Include="inv.cpp" />
-    <ClCompile Include="iso19111\common.cpp" />
-    <ClCompile Include="iso19111\coordinatesystem.cpp" />
-    <ClCompile Include="iso19111\crs.cpp" />
-    <ClCompile Include="iso19111\c_api.cpp" />
-    <ClCompile Include="iso19111\datum.cpp" />
-    <ClCompile Include="iso19111\factory.cpp" />
-    <ClCompile Include="iso19111\internal2.cpp" />
-    <ClCompile Include="iso19111\io.cpp" />
-    <ClCompile Include="iso19111\metadata.cpp" />
-    <ClCompile Include="iso19111\operation\concatenatedoperation.cpp" />
-    <ClCompile Include="iso19111\operation\conversion.cpp" />
-    <ClCompile Include="iso19111\operation\coordinateoperationfactory.cpp" />
-    <ClCompile Include="iso19111\operation\esriparammappings.cpp" />
-    <ClCompile Include="iso19111\operation\oputils.cpp" />
-    <ClCompile Include="iso19111\operation\parammappings.cpp" />
-    <ClCompile Include="iso19111\operation\projbasedoperation.cpp" />
-    <ClCompile Include="iso19111\operation\singleoperation.cpp" />
-    <ClCompile Include="iso19111\operation\transformation.cpp" />
-    <ClCompile Include="iso19111\operation\vectorofvaluesparams.cpp" />
-    <ClCompile Include="iso19111\static.cpp" />
-    <ClCompile Include="iso19111\util.cpp" />
-    <ClCompile Include="list.cpp" />
-    <ClCompile Include="log.cpp" />
-    <ClCompile Include="malloc.cpp" />
-    <ClCompile Include="mlfn.cpp" />
-    <ClCompile Include="msfn.cpp" />
-    <ClCompile Include="mutex.cpp" />
-    <ClCompile Include="networkfilemanager.cpp" />
-    <ClCompile Include="param.cpp" />
-    <ClCompile Include="phi2.cpp" />
-    <ClCompile Include="pipeline.cpp" />
-    <ClCompile Include="projections\adams.cpp" />
-    <ClCompile Include="projections\aea.cpp" />
-    <ClCompile Include="projections\aeqd.cpp" />
-    <ClCompile Include="projections\airy.cpp" />
-    <ClCompile Include="projections\aitoff.cpp" />
-    <ClCompile Include="projections\august.cpp" />
-    <ClCompile Include="projections\bacon.cpp" />
-    <ClCompile Include="projections\bertin1953.cpp" />
-    <ClCompile Include="projections\bipc.cpp" />
-    <ClCompile Include="projections\boggs.cpp" />
-    <ClCompile Include="projections\bonne.cpp" />
-    <ClCompile Include="projections\calcofi.cpp" />
-    <ClCompile Include="projections\cass.cpp" />
-    <ClCompile Include="projections\cc.cpp" />
-    <ClCompile Include="projections\ccon.cpp" />
-    <ClCompile Include="projections\cea.cpp" />
-    <ClCompile Include="projections\chamb.cpp" />
-    <ClCompile Include="projections\collg.cpp" />
-    <ClCompile Include="projections\col_urban.cpp" />
-    <ClCompile Include="projections\comill.cpp" />
-    <ClCompile Include="projections\crast.cpp" />
-    <ClCompile Include="projections\denoy.cpp" />
-    <ClCompile Include="projections\eck1.cpp" />
-    <ClCompile Include="projections\eck2.cpp" />
-    <ClCompile Include="projections\eck3.cpp" />
-    <ClCompile Include="projections\eck4.cpp" />
-    <ClCompile Include="projections\eck5.cpp" />
-    <ClCompile Include="projections\eqc.cpp" />
-    <ClCompile Include="projections\eqdc.cpp" />
-    <ClCompile Include="projections\eqearth.cpp" />
-    <ClCompile Include="projections\fahey.cpp" />
-    <ClCompile Include="projections\fouc_s.cpp" />
-    <ClCompile Include="projections\gall.cpp" />
-    <ClCompile Include="projections\geos.cpp" />
-    <ClCompile Include="projections\gins8.cpp" />
-    <ClCompile Include="projections\gnom.cpp" />
-    <ClCompile Include="projections\gn_sinu.cpp" />
-    <ClCompile Include="projections\goode.cpp" />
-    <ClCompile Include="projections\gstmerc.cpp" />
-    <ClCompile Include="projections\hammer.cpp" />
-    <ClCompile Include="projections\hatano.cpp" />
-    <ClCompile Include="projections\healpix.cpp" />
-    <ClCompile Include="projections\igh.cpp" />
-    <ClCompile Include="projections\igh_o.cpp" />
-    <ClCompile Include="projections\imw_p.cpp" />
-    <ClCompile Include="projections\isea.cpp" />
-    <ClCompile Include="projections\krovak.cpp" />
-    <ClCompile Include="projections\labrd.cpp" />
-    <ClCompile Include="projections\laea.cpp" />
-    <ClCompile Include="projections\lagrng.cpp" />
-    <ClCompile Include="projections\larr.cpp" />
-    <ClCompile Include="projections\lask.cpp" />
-    <ClCompile Include="projections\latlong.cpp" />
-    <ClCompile Include="projections\lcc.cpp" />
-    <ClCompile Include="projections\lcca.cpp" />
-    <ClCompile Include="projections\loxim.cpp" />
-    <ClCompile Include="projections\lsat.cpp" />
-    <ClCompile Include="projections\mbtfpp.cpp" />
-    <ClCompile Include="projections\mbtfpq.cpp" />
-    <ClCompile Include="projections\mbt_fps.cpp" />
-    <ClCompile Include="projections\merc.cpp" />
-    <ClCompile Include="projections\mill.cpp" />
-    <ClCompile Include="projections\misrsom.cpp" />
-    <ClCompile Include="projections\mod_ster.cpp" />
-    <ClCompile Include="projections\moll.cpp" />
-    <ClCompile Include="projections\natearth.cpp" />
-    <ClCompile Include="projections\natearth2.cpp" />
-    <ClCompile Include="projections\nell.cpp" />
-    <ClCompile Include="projections\nell_h.cpp" />
-    <ClCompile Include="projections\nicol.cpp" />
-    <ClCompile Include="projections\nsper.cpp" />
-    <ClCompile Include="projections\nzmg.cpp" />
-    <ClCompile Include="projections\ob_tran.cpp" />
-    <ClCompile Include="projections\ocea.cpp" />
-    <ClCompile Include="projections\oea.cpp" />
-    <ClCompile Include="projections\omerc.cpp" />
-    <ClCompile Include="projections\ortho.cpp" />
-    <ClCompile Include="projections\patterson.cpp" />
-    <ClCompile Include="projections\poly.cpp" />
-    <ClCompile Include="projections\putp2.cpp" />
-    <ClCompile Include="projections\putp3.cpp" />
-    <ClCompile Include="projections\putp4p.cpp" />
-    <ClCompile Include="projections\putp5.cpp" />
-    <ClCompile Include="projections\putp6.cpp" />
-    <ClCompile Include="projections\qsc.cpp" />
-    <ClCompile Include="projections\robin.cpp" />
-    <ClCompile Include="projections\rouss.cpp" />
-    <ClCompile Include="projections\rpoly.cpp" />
-    <ClCompile Include="projections\sch.cpp" />
-    <ClCompile Include="projections\sconics.cpp" />
-    <ClCompile Include="projections\somerc.cpp" />
-    <ClCompile Include="projections\stere.cpp" />
-    <ClCompile Include="projections\sterea.cpp" />
-    <ClCompile Include="projections\sts.cpp" />
-    <ClCompile Include="projections\tcc.cpp" />
-    <ClCompile Include="projections\tcea.cpp" />
-    <ClCompile Include="projections\times.cpp" />
-    <ClCompile Include="projections\tmerc.cpp" />
-    <ClCompile Include="projections\tobmerc.cpp" />
-    <ClCompile Include="projections\tpeqd.cpp" />
-    <ClCompile Include="projections\urm5.cpp" />
-    <ClCompile Include="projections\urmfps.cpp" />
-    <ClCompile Include="projections\vandg.cpp" />
-    <ClCompile Include="projections\vandg2.cpp" />
-    <ClCompile Include="projections\vandg4.cpp" />
-    <ClCompile Include="projections\wag2.cpp" />
-    <ClCompile Include="projections\wag3.cpp" />
-    <ClCompile Include="projections\wag7.cpp" />
-    <ClCompile Include="projections\wink1.cpp" />
-    <ClCompile Include="projections\wink2.cpp" />
-    <ClCompile Include="proj_json_streaming_writer.cpp" />
-    <ClCompile Include="proj_mdist.cpp" />
-    <ClCompile Include="pr_list.cpp" />
-    <ClCompile Include="qsfn.cpp" />
-    <ClCompile Include="release.cpp" />
-    <ClCompile Include="rtodms.cpp" />
-    <ClCompile Include="sqlite3_utils.cpp" />
-    <ClCompile Include="strerrno.cpp" />
-    <ClCompile Include="strtod.cpp" />
-    <ClCompile Include="tracing.cpp" />
-    <ClCompile Include="transformations\affine.cpp" />
-    <ClCompile Include="transformations\defmodel.cpp" />
-    <ClCompile Include="transformations\deformation.cpp" />
-    <ClCompile Include="transformations\helmert.cpp" />
-    <ClCompile Include="transformations\hgridshift.cpp" />
-    <ClCompile Include="transformations\horner.cpp" />
-    <ClCompile Include="transformations\molodensky.cpp" />
-    <ClCompile Include="transformations\tinshift.cpp" />
-    <ClCompile Include="transformations\vgridshift.cpp" />
-    <ClCompile Include="transformations\xyzgridshift.cpp" />
-    <ClCompile Include="tsfn.cpp" />
-    <ClCompile Include="units.cpp" />
-    <ClCompile Include="wkt1_generated_parser.c" />
-    <ClCompile Include="wkt1_parser.cpp" />
-    <ClCompile Include="wkt2_generated_parser.c" />
-    <ClCompile Include="wkt2_parser.cpp" />
-    <ClCompile Include="wkt_parser.cpp" />
-    <ClCompile Include="zpoly1.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="filemanager.hpp" />
-    <ClInclude Include="geodesic.h" />
-    <ClInclude Include="grids.hpp" />
-    <ClInclude Include="include\proj\common.hpp" />
-    <ClInclude Include="include\proj\coordinateoperation.hpp" />
-    <ClInclude Include="include\proj\coordinatesystem.hpp" />
-    <ClInclude Include="include\proj\crs.hpp" />
-    <ClInclude Include="include\proj\datum.hpp" />
-    <ClInclude Include="include\proj\internal\coordinatesystem_internal.hpp" />
-    <ClInclude Include="include\proj\internal\include_nlohmann_json.hpp" />
-    <ClInclude Include="include\proj\internal\internal.hpp" />
-    <ClInclude Include="include\proj\internal\io_internal.hpp" />
-    <ClInclude Include="include\proj\internal\lru_cache.hpp" />
-    <ClInclude Include="include\proj\internal\mutex.hpp" />
-    <ClInclude Include="include\proj\internal\tracing.hpp" />
-    <ClInclude Include="include\proj\io.hpp" />
-    <ClInclude Include="include\proj\metadata.hpp" />
-    <ClInclude Include="include\proj\nn.hpp" />
-    <ClInclude Include="include\proj\proj.h" />
-    <ClInclude Include="include\proj\proj_constants.h" />
-    <ClInclude Include="include\proj\proj_experimental.h" />
-    <ClInclude Include="include\proj\proj_symbol_rename.h" />
-    <ClInclude Include="include\proj\util.hpp" />
-    <ClInclude Include="iso19111\operation\coordinateoperation_internal.hpp" />
-    <ClInclude Include="iso19111\operation\coordinateoperation_private.hpp" />
-    <ClInclude Include="iso19111\operation\esriparammappings.hpp" />
-    <ClInclude Include="iso19111\operation\operationmethod_private.hpp" />
-    <ClInclude Include="iso19111\operation\oputils.hpp" />
-    <ClInclude Include="iso19111\operation\parammappings.hpp" />
-    <ClInclude Include="iso19111\operation\vectorofvaluesparams.hpp" />
-    <ClInclude Include="mlfn.hpp" />
-    <ClInclude Include="pj_list.h" />
-    <ClInclude Include="proj_config.h" />
-    <ClInclude Include="proj_internal.h" />
-    <ClInclude Include="proj_json_streaming_writer.hpp" />
-    <ClInclude Include="quadtree.hpp" />
-    <ClInclude Include="sqlite3_utils.hpp" />
-    <ClInclude Include="transformations\defmodel.hpp" />
-    <ClInclude Include="transformations\defmodel_exceptions.hpp" />
-    <ClInclude Include="transformations\defmodel_impl.hpp" />
-    <ClInclude Include="transformations\tinshift.hpp" />
-    <ClInclude Include="transformations\tinshift_exceptions.hpp" />
-    <ClInclude Include="transformations\tinshift_impl.hpp" />
-    <ClInclude Include="wkt1_generated_parser.h" />
-    <ClInclude Include="wkt1_parser.h" />
-    <ClInclude Include="wkt2_generated_parser.h" />
-    <ClInclude Include="wkt2_parser.h" />
-    <ClInclude Include="wkt_parser.hpp" />
+    <ClCompile Include="src\4D_api.cpp" />
+    <ClCompile Include="src\aasincos.cpp" />
+    <ClCompile Include="src\adjlon.cpp" />
+    <ClCompile Include="src\auth.cpp" />
+    <ClCompile Include="src\conversions\axisswap.cpp" />
+    <ClCompile Include="src\conversions\cart.cpp" />
+    <ClCompile Include="src\conversions\geoc.cpp" />
+    <ClCompile Include="src\conversions\geocent.cpp" />
+    <ClCompile Include="src\conversions\noop.cpp" />
+    <ClCompile Include="src\conversions\set.cpp" />
+    <ClCompile Include="src\conversions\topocentric.cpp" />
+    <ClCompile Include="src\conversions\unitconvert.cpp" />
+    <ClCompile Include="src\ctx.cpp" />
+    <ClCompile Include="src\datums.cpp" />
+    <ClCompile Include="src\datum_set.cpp" />
+    <ClCompile Include="src\deriv.cpp" />
+    <ClCompile Include="src\dmstor.cpp" />
+    <ClCompile Include="src\ellps.cpp" />
+    <ClCompile Include="src\ell_set.cpp" />
+    <ClCompile Include="src\factors.cpp" />
+    <ClCompile Include="src\filemanager.cpp" />
+    <ClCompile Include="src\fwd.cpp" />
+    <ClCompile Include="src\gauss.cpp" />
+    <ClCompile Include="src\generic_inverse.cpp" />
+    <ClCompile Include="src\geodesic.c" />
+    <ClCompile Include="src\grids.cpp" />
+    <ClCompile Include="src\init.cpp" />
+    <ClCompile Include="src\initcache.cpp" />
+    <ClCompile Include="src\internal.cpp" />
+    <ClCompile Include="src\inv.cpp" />
+    <ClCompile Include="src\iso19111\common.cpp" />
+    <ClCompile Include="src\iso19111\coordinates.cpp" />
+    <ClCompile Include="src\iso19111\coordinatesystem.cpp" />
+    <ClCompile Include="src\iso19111\crs.cpp" />
+    <ClCompile Include="src\iso19111\c_api.cpp" />
+    <ClCompile Include="src\iso19111\datum.cpp" />
+    <ClCompile Include="src\iso19111\factory.cpp" />
+    <ClCompile Include="src\iso19111\iso19111_internal.cpp" />
+    <ClCompile Include="src\iso19111\io.cpp" />
+    <ClCompile Include="src\iso19111\metadata.cpp" />
+    <ClCompile Include="src\iso19111\operation\concatenatedoperation.cpp" />
+    <ClCompile Include="src\iso19111\operation\conversion.cpp" />
+    <ClCompile Include="src\iso19111\operation\coordinateoperationfactory.cpp" />
+    <ClCompile Include="src\iso19111\operation\esriparammappings.cpp" />
+    <ClCompile Include="src\iso19111\operation\oputils.cpp" />
+    <ClCompile Include="src\iso19111\operation\parammappings.cpp" />
+    <ClCompile Include="src\iso19111\operation\projbasedoperation.cpp" />
+    <ClCompile Include="src\iso19111\operation\singleoperation.cpp" />
+    <ClCompile Include="src\iso19111\operation\transformation.cpp" />
+    <ClCompile Include="src\iso19111\operation\vectorofvaluesparams.cpp" />
+    <ClCompile Include="src\iso19111\static.cpp" />
+    <ClCompile Include="src\iso19111\util.cpp" />
+    <ClCompile Include="src\list.cpp" />
+    <ClCompile Include="src\log.cpp" />
+    <ClCompile Include="src\malloc.cpp" />
+    <ClCompile Include="src\mlfn.cpp" />
+    <ClCompile Include="src\msfn.cpp" />
+    <ClCompile Include="src\mutex.cpp" />
+    <ClCompile Include="src\networkfilemanager.cpp" />
+    <ClCompile Include="src\param.cpp" />
+    <ClCompile Include="src\phi2.cpp" />
+    <ClCompile Include="src\pipeline.cpp" />
+    <ClCompile Include="src\projections\adams.cpp" />
+    <ClCompile Include="src\projections\aea.cpp" />
+    <ClCompile Include="src\projections\aeqd.cpp" />
+    <ClCompile Include="src\projections\airy.cpp" />
+    <ClCompile Include="src\projections\aitoff.cpp" />
+    <ClCompile Include="src\projections\august.cpp" />
+    <ClCompile Include="src\projections\bacon.cpp" />
+    <ClCompile Include="src\projections\bertin1953.cpp" />
+    <ClCompile Include="src\projections\bipc.cpp" />
+    <ClCompile Include="src\projections\boggs.cpp" />
+    <ClCompile Include="src\projections\bonne.cpp" />
+    <ClCompile Include="src\projections\calcofi.cpp" />
+    <ClCompile Include="src\projections\cass.cpp" />
+    <ClCompile Include="src\projections\cc.cpp" />
+    <ClCompile Include="src\projections\ccon.cpp" />
+    <ClCompile Include="src\projections\cea.cpp" />
+    <ClCompile Include="src\projections\chamb.cpp" />
+    <ClCompile Include="src\projections\collg.cpp" />
+    <ClCompile Include="src\projections\col_urban.cpp" />
+    <ClCompile Include="src\projections\comill.cpp" />
+    <ClCompile Include="src\projections\crast.cpp" />
+    <ClCompile Include="src\projections\denoy.cpp" />
+    <ClCompile Include="src\projections\eck1.cpp" />
+    <ClCompile Include="src\projections\eck2.cpp" />
+    <ClCompile Include="src\projections\eck3.cpp" />
+    <ClCompile Include="src\projections\eck4.cpp" />
+    <ClCompile Include="src\projections\eck5.cpp" />
+    <ClCompile Include="src\projections\eqc.cpp" />
+    <ClCompile Include="src\projections\eqdc.cpp" />
+    <ClCompile Include="src\projections\eqearth.cpp" />
+    <ClCompile Include="src\projections\fahey.cpp" />
+    <ClCompile Include="src\projections\fouc_s.cpp" />
+    <ClCompile Include="src\projections\gall.cpp" />
+    <ClCompile Include="src\projections\geos.cpp" />
+    <ClCompile Include="src\projections\gins8.cpp" />
+    <ClCompile Include="src\projections\gnom.cpp" />
+    <ClCompile Include="src\projections\gn_sinu.cpp" />
+    <ClCompile Include="src\projections\goode.cpp" />
+    <ClCompile Include="src\projections\gstmerc.cpp" />
+    <ClCompile Include="src\projections\hammer.cpp" />
+    <ClCompile Include="src\projections\hatano.cpp" />
+    <ClCompile Include="src\projections\healpix.cpp" />
+    <ClCompile Include="src\projections\igh.cpp" />
+    <ClCompile Include="src\projections\igh_o.cpp" />
+    <ClCompile Include="src\projections\imoll.cpp" />
+    <ClCompile Include="src\projections\imoll_o.cpp" />
+    <ClCompile Include="src\projections\imw_p.cpp" />
+    <ClCompile Include="src\projections\isea.cpp" />
+    <ClCompile Include="src\projections\krovak.cpp" />
+    <ClCompile Include="src\projections\labrd.cpp" />
+    <ClCompile Include="src\projections\laea.cpp" />
+    <ClCompile Include="src\projections\lagrng.cpp" />
+    <ClCompile Include="src\projections\larr.cpp" />
+    <ClCompile Include="src\projections\lask.cpp" />
+    <ClCompile Include="src\projections\latlong.cpp" />
+    <ClCompile Include="src\projections\lcc.cpp" />
+    <ClCompile Include="src\projections\lcca.cpp" />
+    <ClCompile Include="src\projections\loxim.cpp" />
+    <ClCompile Include="src\projections\mbtfpp.cpp" />
+    <ClCompile Include="src\projections\mbtfpq.cpp" />
+    <ClCompile Include="src\projections\mbt_fps.cpp" />
+    <ClCompile Include="src\projections\merc.cpp" />
+    <ClCompile Include="src\projections\mill.cpp" />
+    <ClCompile Include="src\projections\mod_ster.cpp" />
+    <ClCompile Include="src\projections\moll.cpp" />
+    <ClCompile Include="src\projections\natearth.cpp" />
+    <ClCompile Include="src\projections\natearth2.cpp" />
+    <ClCompile Include="src\projections\nell.cpp" />
+    <ClCompile Include="src\projections\nell_h.cpp" />
+    <ClCompile Include="src\projections\nicol.cpp" />
+    <ClCompile Include="src\projections\nsper.cpp" />
+    <ClCompile Include="src\projections\nzmg.cpp" />
+    <ClCompile Include="src\projections\ob_tran.cpp" />
+    <ClCompile Include="src\projections\ocea.cpp" />
+    <ClCompile Include="src\projections\oea.cpp" />
+    <ClCompile Include="src\projections\omerc.cpp" />
+    <ClCompile Include="src\projections\ortho.cpp" />
+    <ClCompile Include="src\projections\patterson.cpp" />
+    <ClCompile Include="src\projections\poly.cpp" />
+    <ClCompile Include="src\projections\putp2.cpp" />
+    <ClCompile Include="src\projections\putp3.cpp" />
+    <ClCompile Include="src\projections\putp4p.cpp" />
+    <ClCompile Include="src\projections\putp5.cpp" />
+    <ClCompile Include="src\projections\putp6.cpp" />
+    <ClCompile Include="src\projections\qsc.cpp" />
+    <ClCompile Include="src\projections\robin.cpp" />
+    <ClCompile Include="src\projections\rouss.cpp" />
+    <ClCompile Include="src\projections\rpoly.cpp" />
+    <ClCompile Include="src\projections\s2.cpp" />
+    <ClCompile Include="src\projections\sch.cpp" />
+    <ClCompile Include="src\projections\sconics.cpp" />
+    <ClCompile Include="src\projections\som.cpp" />
+    <ClCompile Include="src\projections\somerc.cpp" />
+    <ClCompile Include="src\projections\stere.cpp" />
+    <ClCompile Include="src\projections\sterea.cpp" />
+    <ClCompile Include="src\projections\sts.cpp" />
+    <ClCompile Include="src\projections\tcc.cpp" />
+    <ClCompile Include="src\projections\tcea.cpp" />
+    <ClCompile Include="src\projections\times.cpp" />
+    <ClCompile Include="src\projections\tmerc.cpp" />
+    <ClCompile Include="src\projections\tobmerc.cpp" />
+    <ClCompile Include="src\projections\tpeqd.cpp" />
+    <ClCompile Include="src\projections\urm5.cpp" />
+    <ClCompile Include="src\projections\urmfps.cpp" />
+    <ClCompile Include="src\projections\vandg.cpp" />
+    <ClCompile Include="src\projections\vandg2.cpp" />
+    <ClCompile Include="src\projections\vandg4.cpp" />
+    <ClCompile Include="src\projections\wag2.cpp" />
+    <ClCompile Include="src\projections\wag3.cpp" />
+    <ClCompile Include="src\projections\wag7.cpp" />
+    <ClCompile Include="src\projections\wink1.cpp" />
+    <ClCompile Include="src\projections\wink2.cpp" />
+    <ClCompile Include="src\proj_json_streaming_writer.cpp" />
+    <ClCompile Include="src\proj_mdist.cpp" />
+    <ClCompile Include="src\pr_list.cpp" />
+    <ClCompile Include="src\qsfn.cpp" />
+    <ClCompile Include="src\release.cpp" />
+    <ClCompile Include="src\rtodms.cpp" />
+    <ClCompile Include="src\sqlite3_utils.cpp" />
+    <ClCompile Include="src\strerrno.cpp" />
+    <ClCompile Include="src\strtod.cpp" />
+    <ClCompile Include="src\tracing.cpp" />
+    <ClCompile Include="src\transformations\affine.cpp" />
+    <ClCompile Include="src\transformations\defmodel.cpp" />
+    <ClCompile Include="src\transformations\deformation.cpp" />
+    <ClCompile Include="src\transformations\gridshift.cpp" />
+    <ClCompile Include="src\transformations\helmert.cpp" />
+    <ClCompile Include="src\transformations\hgridshift.cpp" />
+    <ClCompile Include="src\transformations\horner.cpp" />
+    <ClCompile Include="src\transformations\molodensky.cpp" />
+    <ClCompile Include="src\transformations\tinshift.cpp" />
+    <ClCompile Include="src\transformations\vertoffset.cpp" />
+    <ClCompile Include="src\transformations\vgridshift.cpp" />
+    <ClCompile Include="src\transformations\xyzgridshift.cpp" />
+    <ClCompile Include="src\tsfn.cpp" />
+    <ClCompile Include="src\units.cpp" />
+    <ClCompile Include="src\wkt1_generated_parser.c" />
+    <ClCompile Include="src\wkt1_parser.cpp" />
+    <ClCompile Include="src\wkt2_generated_parser.c" />
+    <ClCompile Include="src\wkt2_parser.cpp" />
+    <ClCompile Include="src\wkt_parser.cpp" />
+    <ClCompile Include="src\zpoly1.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Readme\AUTHORS" />
     <None Include="Readme\COPYING" />
     <None Include="Readme\README" />
     <None Include="Readme\README.md" />
-    <None Include="wkt1_grammar.y" />
-    <None Include="wkt2_grammar.y" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\proj\common.hpp" />
+    <ClInclude Include="include\proj\coordinateoperation.hpp" />
+    <ClInclude Include="include\proj\coordinates.hpp" />
+    <ClInclude Include="include\proj\coordinatesystem.hpp" />
+    <ClInclude Include="include\proj\crs.hpp" />
+    <ClInclude Include="include\proj\datum.hpp" />
+    <ClInclude Include="include\proj\geodesic.h" />
+    <ClInclude Include="include\proj\internal\coordinatesystem_internal.hpp" />
+    <ClInclude Include="include\proj\internal\crs_internal.hpp" />
+    <ClInclude Include="include\proj\internal\datum_internal.hpp" />
+    <ClInclude Include="include\proj\internal\include_nlohmann_json.hpp" />
+    <ClInclude Include="include\proj\internal\internal.hpp" />
+    <ClInclude Include="include\proj\internal\io_internal.hpp" />
+    <ClInclude Include="include\proj\internal\lru_cache.hpp" />
+    <ClInclude Include="include\proj\internal\tracing.hpp" />
+    <ClInclude Include="include\proj\io.hpp" />
+    <ClInclude Include="include\proj\metadata.hpp" />
+    <ClInclude Include="include\proj\nn.hpp" />
+    <ClInclude Include="include\proj\proj.h" />
+    <ClInclude Include="include\proj\proj_config.h" />
+    <ClInclude Include="include\proj\proj_constants.h" />
+    <ClInclude Include="include\proj\proj_experimental.h" />
+    <ClInclude Include="include\proj\util.hpp" />
+    <ClInclude Include="src\filemanager.hpp" />
+    <ClInclude Include="src\grids.hpp" />
+    <ClInclude Include="src\iso19111\operation\coordinateoperation_internal.hpp" />
+    <ClInclude Include="src\iso19111\operation\coordinateoperation_private.hpp" />
+    <ClInclude Include="src\iso19111\operation\esriparammappings.hpp" />
+    <ClInclude Include="src\iso19111\operation\operationmethod_private.hpp" />
+    <ClInclude Include="src\iso19111\operation\oputils.hpp" />
+    <ClInclude Include="src\iso19111\operation\parammappings.hpp" />
+    <ClInclude Include="src\iso19111\operation\vectorofvaluesparams.hpp" />
+    <ClInclude Include="src\pj_list.h" />
+    <ClInclude Include="src\proj_internal.h" />
+    <ClInclude Include="src\proj_json_streaming_writer.hpp" />
+    <ClInclude Include="src\proj_symbol_rename.h" />
+    <ClInclude Include="src\quadtree.hpp" />
+    <ClInclude Include="src\sqlite3_utils.hpp" />
+    <ClInclude Include="src\transformations\defmodel.hpp" />
+    <ClInclude Include="src\transformations\defmodel_exceptions.hpp" />
+    <ClInclude Include="src\transformations\defmodel_impl.hpp" />
+    <ClInclude Include="src\transformations\tinshift.hpp" />
+    <ClInclude Include="src\transformations\tinshift_exceptions.hpp" />
+    <ClInclude Include="src\transformations\tinshift_impl.hpp" />
+    <ClInclude Include="src\wkt1_generated_parser.h" />
+    <ClInclude Include="src\wkt1_parser.h" />
+    <ClInclude Include="src\wkt2_generated_parser.h" />
+    <ClInclude Include="src\wkt2_parser.h" />
+    <ClInclude Include="src\wkt_parser.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

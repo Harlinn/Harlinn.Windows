@@ -27,7 +27,7 @@ static InterpFilter get_ref_filter_type(const MB_MODE_INFO *ref_mbmi,
               : SWITCHABLE_FILTERS);
 }
 
-int av1_get_pred_context_switchable_interp(const MACROBLOCKD *xd, int dir) {
+HAOM_EXPORT int av1_get_pred_context_switchable_interp(const MACROBLOCKD *xd, int dir) {
   const MB_MODE_INFO *const mbmi = xd->mi[0];
   const int ctx_offset =
       (mbmi->ref_frame[1] > INTRA_FRAME) * INTER_FILTER_COMP_OFFSET;
@@ -70,7 +70,7 @@ static void palette_add_to_cache(uint16_t *cache, int *n, uint16_t val) {
   cache[(*n)++] = val;
 }
 
-int av1_get_palette_cache(const MACROBLOCKD *const xd, int plane,
+HAOM_EXPORT int av1_get_palette_cache(const MACROBLOCKD *const xd, int plane,
                           uint16_t *cache) {
   const int row = -xd->mb_to_top_edge >> 3;
   // Do not refer to above SB row when on SB boundary.
@@ -121,7 +121,7 @@ int av1_get_palette_cache(const MACROBLOCKD *const xd, int plane,
 // 1 - intra/inter, inter/intra
 // 2 - intra/--, --/intra
 // 3 - intra/intra
-int av1_get_intra_inter_context(const MACROBLOCKD *xd) {
+HAOM_EXPORT int av1_get_intra_inter_context(const MACROBLOCKD *xd) {
   const MB_MODE_INFO *const above_mbmi = xd->above_mbmi;
   const MB_MODE_INFO *const left_mbmi = xd->left_mbmi;
   const int has_above = xd->up_available;
@@ -142,7 +142,7 @@ int av1_get_intra_inter_context(const MACROBLOCKD *xd) {
   (((ref_frame) >= BWDREF_FRAME) && ((ref_frame) <= ALTREF_FRAME))
 #define IS_BACKWARD_REF_FRAME(ref_frame) CHECK_BACKWARD_REFS(ref_frame)
 
-int av1_get_reference_mode_context(const MACROBLOCKD *xd) {
+HAOM_EXPORT int av1_get_reference_mode_context(const MACROBLOCKD *xd) {
   int ctx;
   const MB_MODE_INFO *const above_mbmi = xd->above_mbmi;
   const MB_MODE_INFO *const left_mbmi = xd->left_mbmi;
@@ -184,7 +184,7 @@ int av1_get_reference_mode_context(const MACROBLOCKD *xd) {
   return ctx;
 }
 
-int av1_get_comp_reference_type_context(const MACROBLOCKD *xd) {
+HAOM_EXPORT int av1_get_comp_reference_type_context(const MACROBLOCKD *xd) {
   int pred_context;
   const MB_MODE_INFO *const above_mbmi = xd->above_mbmi;
   const MB_MODE_INFO *const left_mbmi = xd->left_mbmi;
@@ -262,7 +262,7 @@ int av1_get_comp_reference_type_context(const MACROBLOCKD *xd) {
 //
 // 3 contexts: Voting is used to compare the count of forward references with
 //             that of backward references from the spatial neighbors.
-int av1_get_pred_context_uni_comp_ref_p(const MACROBLOCKD *xd) {
+HAOM_EXPORT int av1_get_pred_context_uni_comp_ref_p(const MACROBLOCKD *xd) {
   const uint8_t *const ref_counts = &xd->neighbors_ref_counts[0];
 
   // Count of forward references (L, L2, L3, or G)
@@ -287,7 +287,7 @@ int av1_get_pred_context_uni_comp_ref_p(const MACROBLOCKD *xd) {
 //
 // 3 contexts: Voting is used to compare the count of LAST2_FRAME with the
 //             total count of LAST3/GOLDEN from the spatial neighbors.
-int av1_get_pred_context_uni_comp_ref_p1(const MACROBLOCKD *xd) {
+HAOM_EXPORT int av1_get_pred_context_uni_comp_ref_p1(const MACROBLOCKD *xd) {
   const uint8_t *const ref_counts = &xd->neighbors_ref_counts[0];
 
   // Count of LAST2
@@ -312,7 +312,7 @@ int av1_get_pred_context_uni_comp_ref_p1(const MACROBLOCKD *xd) {
 //
 // 3 contexts: Voting is used to compare the count of LAST3_FRAME with the
 //             total count of GOLDEN_FRAME from the spatial neighbors.
-int av1_get_pred_context_uni_comp_ref_p2(const MACROBLOCKD *xd) {
+HAOM_EXPORT int av1_get_pred_context_uni_comp_ref_p2(const MACROBLOCKD *xd) {
   const uint8_t *const ref_counts = &xd->neighbors_ref_counts[0];
 
   // Count of LAST3
@@ -418,33 +418,33 @@ static int get_pred_context_brf_or_arf2(const MACROBLOCKD *xd) {
 // Returns a context number for the given MB prediction signal
 // Signal the first reference frame for a compound mode be either
 // GOLDEN/LAST3, or LAST/LAST2.
-int av1_get_pred_context_comp_ref_p(const MACROBLOCKD *xd) {
+HAOM_EXPORT int av1_get_pred_context_comp_ref_p(const MACROBLOCKD *xd) {
   return get_pred_context_ll2_or_l3gld(xd);
 }
 
 // Returns a context number for the given MB prediction signal
 // Signal the first reference frame for a compound mode be LAST,
 // conditioning on that it is known either LAST/LAST2.
-int av1_get_pred_context_comp_ref_p1(const MACROBLOCKD *xd) {
+HAOM_EXPORT int av1_get_pred_context_comp_ref_p1(const MACROBLOCKD *xd) {
   return get_pred_context_last_or_last2(xd);
 }
 
 // Returns a context number for the given MB prediction signal
 // Signal the first reference frame for a compound mode be GOLDEN,
 // conditioning on that it is known either GOLDEN or LAST3.
-int av1_get_pred_context_comp_ref_p2(const MACROBLOCKD *xd) {
+HAOM_EXPORT int av1_get_pred_context_comp_ref_p2(const MACROBLOCKD *xd) {
   return get_pred_context_last3_or_gld(xd);
 }
 
 // Signal the 2nd reference frame for a compound mode be either
 // ALTREF, or ALTREF2/BWDREF.
-int av1_get_pred_context_comp_bwdref_p(const MACROBLOCKD *xd) {
+HAOM_EXPORT int av1_get_pred_context_comp_bwdref_p(const MACROBLOCKD *xd) {
   return get_pred_context_brfarf2_or_arf(xd);
 }
 
 // Signal the 2nd reference frame for a compound mode be either
 // ALTREF2 or BWDREF.
-int av1_get_pred_context_comp_bwdref_p1(const MACROBLOCKD *xd) {
+HAOM_EXPORT int av1_get_pred_context_comp_bwdref_p1(const MACROBLOCKD *xd) {
   return get_pred_context_brf_or_arf2(xd);
 }
 
@@ -452,7 +452,7 @@ int av1_get_pred_context_comp_bwdref_p1(const MACROBLOCKD *xd) {
 //
 // For the bit to signal whether the single reference is a forward reference
 // frame or a backward reference frame.
-int av1_get_pred_context_single_ref_p1(const MACROBLOCKD *xd) {
+HAOM_EXPORT int av1_get_pred_context_single_ref_p1(const MACROBLOCKD *xd) {
   const uint8_t *const ref_counts = &xd->neighbors_ref_counts[0];
 
   // Count of forward reference frames
@@ -472,30 +472,30 @@ int av1_get_pred_context_single_ref_p1(const MACROBLOCKD *xd) {
 // For the bit to signal whether the single reference is ALTREF_FRAME or
 // non-ALTREF backward reference frame, knowing that it shall be either of
 // these 2 choices.
-int av1_get_pred_context_single_ref_p2(const MACROBLOCKD *xd) {
+HAOM_EXPORT int av1_get_pred_context_single_ref_p2(const MACROBLOCKD *xd) {
   return get_pred_context_brfarf2_or_arf(xd);
 }
 
 // For the bit to signal whether the single reference is LAST3/GOLDEN or
 // LAST2/LAST, knowing that it shall be either of these 2 choices.
-int av1_get_pred_context_single_ref_p3(const MACROBLOCKD *xd) {
+HAOM_EXPORT int av1_get_pred_context_single_ref_p3(const MACROBLOCKD *xd) {
   return get_pred_context_ll2_or_l3gld(xd);
 }
 
 // For the bit to signal whether the single reference is LAST2_FRAME or
 // LAST_FRAME, knowing that it shall be either of these 2 choices.
-int av1_get_pred_context_single_ref_p4(const MACROBLOCKD *xd) {
+HAOM_EXPORT int av1_get_pred_context_single_ref_p4(const MACROBLOCKD *xd) {
   return get_pred_context_last_or_last2(xd);
 }
 
 // For the bit to signal whether the single reference is GOLDEN_FRAME or
 // LAST3_FRAME, knowing that it shall be either of these 2 choices.
-int av1_get_pred_context_single_ref_p5(const MACROBLOCKD *xd) {
+HAOM_EXPORT int av1_get_pred_context_single_ref_p5(const MACROBLOCKD *xd) {
   return get_pred_context_last3_or_gld(xd);
 }
 
 // For the bit to signal whether the single reference is ALTREF2_FRAME or
 // BWDREF_FRAME, knowing that it shall be either of these 2 choices.
-int av1_get_pred_context_single_ref_p6(const MACROBLOCKD *xd) {
+HAOM_EXPORT int av1_get_pred_context_single_ref_p6(const MACROBLOCKD *xd) {
   return get_pred_context_brf_or_arf2(xd);
 }

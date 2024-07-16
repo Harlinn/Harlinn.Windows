@@ -1,4 +1,3 @@
-#pragma once
 /******************************************************************************
  *
  * Purpose: Support for reading and manipulating PCIDSK link info Segments
@@ -28,8 +27,8 @@
 #ifndef INCLUDE_PCIDSK_SEGMENT_CLINKSEGMENT_H
 #define INCLUDE_PCIDSK_SEGMENT_CLINKSEGMENT_H
 
-#include "../segment/cpcidsksegment.h"
-#include "../pcidsk_buffer.h"
+#include "segment/cpcidsksegment.h"
+#include "pcidsk_buffer.h"
 
 namespace PCIDSK {
     class PCIDSKFile;

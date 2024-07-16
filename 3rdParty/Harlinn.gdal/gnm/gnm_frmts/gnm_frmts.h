@@ -1,4 +1,3 @@
-#pragma once
 /******************************************************************************
  * $Id$
  *
@@ -33,7 +32,7 @@
 #ifndef GNM_FRMTS
 #define GNM_FRMTS
 
-#include "../../gcore/gdal_priv.h"
+#include "gdal_priv.h"
 
 /* -------------------------------------------------------------------- */
 /*      Various available registration methods.                         */
@@ -46,5 +45,4 @@ void CPL_DLL RegisterGNMFile();
 void CPL_DLL RegisterGNMDatabase();
 CPL_C_END
 
-#endif // GNM_FRMTS
-
+#endif  // GNM_FRMTS

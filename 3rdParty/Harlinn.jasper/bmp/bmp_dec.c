@@ -71,6 +71,7 @@
 * Includes.
 \******************************************************************************/
 
+#include "jasper/jas_init.h"
 #include "jasper/jas_image.h"
 #include "jasper/jas_types.h"
 #include "jasper/jas_stream.h"
@@ -121,7 +122,7 @@ static int bmp_dec_parseopts(const char *optstr, bmp_dec_importopts_t *opts)
 {
 	jas_tvparser_t *tvp;
 
-	opts->max_samples = JAS_DEC_DEFAULT_MAX_SAMPLES;
+	opts->max_samples = jas_get_dec_default_max_samples();
 
 	if (!(tvp = jas_tvparser_create(optstr ? optstr : ""))) {
 		return -1;
@@ -134,7 +135,7 @@ static int bmp_dec_parseopts(const char *optstr, bmp_dec_importopts_t *opts)
 			opts->max_samples = strtoull(jas_tvparser_getval(tvp), 0, 10);
 			break;
 		default:
-			jas_eprintf("warning: ignoring invalid option %s\n",
+			jas_logwarnf("warning: ignoring invalid option %s\n",
 			  jas_tvparser_gettag(tvp));
 			break;
 		}
@@ -149,7 +150,7 @@ static int bmp_dec_parseopts(const char *optstr, bmp_dec_importopts_t *opts)
 * Interface functions.
 \******************************************************************************/
 
-jas_image_t *bmp_decode(jas_stream_t *in, const char *optstr)
+JAS_EXPORT jas_image_t *bmp_decode(jas_stream_t *in, const char *optstr)
 {
 	jas_image_t *image;
 	bmp_hdr_t hdr;
@@ -169,7 +170,7 @@ jas_image_t *bmp_decode(jas_stream_t *in, const char *optstr)
 		goto error;
 	}
 
-	jas_eprintf(
+	jas_logwarnf(
 	  "THE BMP FORMAT IS NOT FULLY SUPPORTED!\n"
 	  "THAT IS, THE JASPER SOFTWARE CANNOT DECODE ALL TYPES OF BMP DATA.\n"
 	  "IF YOU HAVE ANY PROBLEMS, PLEASE TRY CONVERTING YOUR IMAGE DATA\n"
@@ -178,68 +179,71 @@ jas_image_t *bmp_decode(jas_stream_t *in, const char *optstr)
 
 	/* Read the bitmap header. */
 	if (bmp_gethdr(in, &hdr)) {
-		jas_eprintf("cannot get header\n");
+		jas_logerrorf("cannot get header\n");
 		goto error;
 	}
-	JAS_DBGLOG(1, (
+	JAS_LOGDEBUGF(1,
 	  "BMP header: magic 0x%x; siz %d; res1 %d; res2 %d; off %d\n",
 	  hdr.magic, hdr.siz, hdr.reserved1, hdr.reserved2, hdr.off
-	  ));
+	  );
 
 	/* Read the bitmap information. */
 	if (!(info = bmp_getinfo(in, &opts))) {
-		jas_eprintf("cannot get info\n");
+		jas_logerrorf("cannot get info\n");
 		goto error;
 	}
-	JAS_DBGLOG(1,
-	  ("BMP information: len %ld; width %ld; height %ld; numplanes %d; "
+	JAS_LOGDEBUGF(1,
+	  "BMP information: len %ld; width %ld; height %ld; numplanes %d; "
 	  "depth %d; enctype %ld; siz %ld; hres %ld; vres %ld; numcolors %ld; "
 	  "mincolors %ld\n", JAS_CAST(long, info->len),
 	  JAS_CAST(long, info->width), JAS_CAST(long, info->height),
 	  JAS_CAST(long, info->numplanes), JAS_CAST(long, info->depth),
 	  JAS_CAST(long, info->enctype), JAS_CAST(long, info->siz),
 	  JAS_CAST(long, info->hres), JAS_CAST(long, info->vres),
-	  JAS_CAST(long, info->numcolors), JAS_CAST(long, info->mincolors)));
+	  JAS_CAST(long, info->numcolors), JAS_CAST(long, info->mincolors));
 
 	if (info->width < 0 || info->height < 0 || info->numplanes < 0 ||
 	  info->depth < 0 || info->siz < 0 || info->hres < 0 || info->vres < 0) {
-		jas_eprintf("corrupt bit stream\n");
+		jas_logerrorf("corrupt bit stream\n");
 		goto error;
 	}
 
 	if (!jas_safe_size_mul3(info->width, info->height, info->numplanes,
 	  &num_samples)) {
-		jas_eprintf("image size too large\n");
+		jas_logerrorf("image size too large\n");
 		goto error;
 	}
 
 	if (opts.max_samples > 0 && num_samples > opts.max_samples) {
-		jas_eprintf("maximum number of pixels exceeded (%zu)\n",
+		jas_logerrorf("maximum number of pixels exceeded (%zu)\n",
 		  opts.max_samples);
 		goto error;
 	}
 
 	/* Ensure that we support this type of BMP file. */
 	if (!bmp_issupported(&hdr, info)) {
-		jas_eprintf("error: unsupported BMP encoding\n");
+		jas_logerrorf("error: unsupported BMP encoding\n");
 		goto error;
 	}
 
 	/* Skip over any useless data between the end of the palette
 	  and start of the bitmap data. */
 	if ((n = hdr.off - (BMP_HDRLEN + BMP_INFOLEN + BMP_PALLEN(info))) < 0) {
-		jas_eprintf("error: possibly bad bitmap offset?\n");
+		jas_logerrorf("error: possibly bad bitmap offset?\n");
 		goto error;
 	}
 	if (n > 0) {
-		jas_eprintf("skipping unknown data in BMP file\n");
+		jas_logwarnf("skipping unknown data in BMP file\n");
 		if (bmp_gobble(in, n)) {
 			goto error;
 		}
 	}
 
 	/* Get the number of components. */
-	numcmpts = bmp_numcmpts(info);
+	if ((numcmpts = bmp_numcmpts(info)) < 0) {
+		jas_logerrorf("error: cannot determine number of components\n");
+		goto error;
+	}
 
 	for (cmptno = 0, cmptparm = cmptparms; cmptno < numcmpts; ++cmptno,
 	  ++cmptparm) {
@@ -292,21 +296,27 @@ error:
 	return 0;
 }
 
-int bmp_validate(jas_stream_t *in)
+JAS_EXPORT int bmp_validate(jas_stream_t *in)
 {
 	jas_uchar buf[2];
 
 	assert(JAS_STREAM_MAXPUTBACK >= 2);
 
 	/* Read the first two characters that constitute the signature. */
-	if (jas_stream_peek(in, buf, sizeof(buf)) != sizeof(buf))
+	if (jas_stream_peek(in, buf, sizeof(buf)) != sizeof(buf)) {
 		return -1;
+	}
+
+	unsigned magic = (buf[0] | (buf[1] << 8));
 
 	/* Is the signature correct for the BMP format? */
-	if (buf[0] == (BMP_MAGIC & 0xff) && buf[1] == (BMP_MAGIC >> 8)) {
-		return 0;
+	if (magic != BMP_MAGIC) {
+		JAS_LOGDEBUGF(20, "bad signature (0x%04lx != 0x%04lx)\n",
+		  JAS_CAST(unsigned long, magic),
+		  JAS_CAST(unsigned long, BMP_MAGIC));
+		return -1;
 	}
-	return -1;
+	return 0;
 }
 
 /******************************************************************************\
@@ -361,7 +371,7 @@ static bmp_info_t *bmp_getinfo(jas_stream_t *in, const bmp_dec_importopts_t *opt
 	}
 
 	if (info->depth != 8 && info->depth != 24) {
-		jas_eprintf(
+		jas_logerrorf(
 		  "BMP decoder only supports images with depth 8 or 24 "
 		  "(depth %d)\n", info->depth);
 		goto error;
@@ -369,18 +379,18 @@ static bmp_info_t *bmp_getinfo(jas_stream_t *in, const bmp_dec_importopts_t *opt
 
 	if (!jas_safe_size_mul(info->width, info->height, &num_pixels) ||
 	    (opts->max_samples > 0 && num_pixels > opts->max_samples)) {
-		jas_eprintf("image dimensions too large\n");
+		jas_logerrorf("image dimensions too large\n");
 		goto error;
 	}
 
 	if (info->enctype != BMP_ENC_RGB) {
-		jas_eprintf("unsupported BMP encoding\n");
+		jas_logerrorf("unsupported BMP encoding\n");
 		goto error;
 	}
 
 	/* Check for a palette whose size is unreasonably large. */
 	if ((uint_fast32_t)info->numcolors > 256 && (uint_fast32_t)info->numcolors > num_pixels) {
-		jas_eprintf("palette size is greater than 256 and "
+		jas_logerrorf("palette size is greater than 256 and "
 		  "greater than the number of pixels "
 		  "(%zu > %zu)\n",
 		  (uint_fast32_t)info->numcolors > num_pixels);

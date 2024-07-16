@@ -29,26 +29,28 @@
  * DEALINGS IN THE SOFTWARE.
  ******************************************************************************/
 #include "postgisraster.h"
-#include <port/cpl_multiproc.h>
+#include "cpl_multiproc.h"
 
-CPL_CVSID("$Id$")
+PostGISRasterDriver *PostGISRasterDriver::gpoPostGISRasterDriver = nullptr;
 
 /************************
  * \brief Constructor
  ************************/
-PostGISRasterDriver::PostGISRasterDriver() :
-    hMutex(nullptr)
-{}
+PostGISRasterDriver::PostGISRasterDriver()
+{
+    gpoPostGISRasterDriver = this;
+}
 
 /************************
  * \brief Destructor
  ************************/
-PostGISRasterDriver::~PostGISRasterDriver() {
-
-    if( hMutex != nullptr )
+PostGISRasterDriver::~PostGISRasterDriver()
+{
+    gpoPostGISRasterDriver = nullptr;
+    if (hMutex != nullptr)
         CPLDestroyMutex(hMutex);
-    std::map<CPLString, PGconn*>::iterator oIter = oMapConnection.begin();
-    for(; oIter != oMapConnection.end(); ++oIter )
+    std::map<CPLString, PGconn *>::iterator oIter = oMapConnection.begin();
+    for (; oIter != oMapConnection.end(); ++oIter)
         PQfinish(oIter->second);
 }
 
@@ -75,12 +77,15 @@ PGconn *PostGISRasterDriver::GetConnection(const char *pszConnectionString,
                                            const char *pszPortIn,
                                            const char *pszUserIn)
 {
-    PGconn * poConn = nullptr;
+    PGconn *poConn = nullptr;
 
-    if( pszHostIn == nullptr ) pszHostIn = "(null)";
-    if( pszPortIn == nullptr ) pszPortIn = "(null)";
-    if( pszUserIn == nullptr ) pszUserIn = "(null)";
-    CPLString osKey = ( pszServiceIn == nullptr ) ? pszDbnameIn : pszServiceIn;
+    if (pszHostIn == nullptr)
+        pszHostIn = "(null)";
+    if (pszPortIn == nullptr)
+        pszPortIn = "(null)";
+    if (pszUserIn == nullptr)
+        pszUserIn = "(null)";
+    CPLString osKey = (pszServiceIn == nullptr) ? pszDbnameIn : pszServiceIn;
     osKey += "-";
     osKey += pszHostIn;
     osKey += "-";
@@ -94,18 +99,18 @@ PGconn *PostGISRasterDriver::GetConnection(const char *pszConnectionString,
      * Look for an existing connection in the map
      **/
     CPLMutexHolderD(&hMutex);
-    std::map<CPLString, PGconn*>::iterator oIter = oMapConnection.find(osKey);
-    if( oIter != oMapConnection.end() )
+    std::map<CPLString, PGconn *>::iterator oIter = oMapConnection.find(osKey);
+    if (oIter != oMapConnection.end())
         return oIter->second;
 
     /**
      * There's no existing connection. Create a new one.
      **/
     poConn = PQconnectdb(pszConnectionString);
-    if (poConn == nullptr ||
-            PQstatus(poConn) == CONNECTION_BAD) {
+    if (poConn == nullptr || PQstatus(poConn) == CONNECTION_BAD)
+    {
         CPLError(CE_Failure, CPLE_AppDefined, "PQconnectdb failed: %s\n",
-                PQerrorMessage(poConn));
+                 PQerrorMessage(poConn));
         PQfinish(poConn);
         return nullptr;
     }

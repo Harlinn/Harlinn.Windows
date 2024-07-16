@@ -25,11 +25,11 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
-#include "../pcidsk_rpc.h"
-#include "cpcidsksegment.h"
-#include "../core/pcidsk_utils.h"
-#include "../pcidsk_exception.h"
-#include "cpcidskrpcmodel.h"
+#include "pcidsk_rpc.h"
+#include "segment/cpcidsksegment.h"
+#include "core/pcidsk_utils.h"
+#include "pcidsk_exception.h"
+#include "segment/cpcidskrpcmodel.h"
 
 #include <vector>
 #include <string>
@@ -37,54 +37,6 @@
 #include <cstring>
 
 using namespace PCIDSK;
-
-// Struct to store details of the RPC model
-struct CPCIDSKRPCModelSegment::PCIDSKRPCInfo
-{
-    bool userrpc; // whether or not the RPC was generated from GCPs
-    bool adjusted; // Whether or not the RPC has been adjusted
-    int downsample; // Epipolar Downsample factor
-
-    unsigned int pixels; // pixels in the image
-    unsigned int lines; // lines in the image
-
-    unsigned int num_coeffs; // number of coefficientsg
-
-    std::vector<double> pixel_num; // numerator, pixel direction
-    std::vector<double> pixel_denom; // denominator, pixel direction
-    std::vector<double> line_num; // numerator, line direction
-    std::vector<double> line_denom; // denominator, line direction
-
-    // Scale/offset coefficients in the ground domain
-    double x_off;
-    double x_scale;
-
-    double y_off;
-    double y_scale;
-
-    double z_off;
-    double z_scale;
-
-    // Scale/offset coefficients in the raster domain
-    double pix_off;
-    double pix_scale;
-
-    double line_off;
-    double line_scale;
-
-    std::vector<double> x_adj; // adjusted X values
-    std::vector<double> y_adj; // adjusted Y values
-
-    std::string sensor_name; // the name of the sensor
-
-    std::string map_units; // the map units string
-    std::string proj_parms; // Projection parameters encoded as text
-
-    // TODO: Projection Info
-
-    // The raw segment data
-    PCIDSKBuffer seg_data;
-};
 
 CPCIDSKRPCModelSegment::CPCIDSKRPCModelSegment(PCIDSKFile *fileIn, int segmentIn,const char *segment_pointer) :
     CPCIDSKSegment(fileIn, segmentIn, segment_pointer), pimpl_(new CPCIDSKRPCModelSegment::PCIDSKRPCInfo),
@@ -124,7 +76,7 @@ void CPCIDSKRPCModelSegment::Load()
 
     mbEmpty = false;
 
-    if( data_size - 1024 != 7 * 512 )
+    if( data_size != 1024 + 7 * 512 )
     {
         return ThrowPCIDSKException("Wrong data_size in CPCIDSKRPCModelSegment");
     }

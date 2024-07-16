@@ -1,0 +1,189 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{5609221B-13B3-4D9E-8297-83CAC10D1A1D}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{55EBA399-7B66-4313-AD20-F44C56AE7864}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{BB3A924D-86F9-4143-8CEC-9FAA29092D85}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="include">
+      <UniqueIdentifier>{345e8fd3-965a-498d-928f-49e85326c345}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\odbc">
+      <UniqueIdentifier>{30c0b527-9cd8-4dd1-a2c8-fd0d0783d4d8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\odbc\internal">
+      <UniqueIdentifier>{442532c6-a561-4186-831c-633a073a62e3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\odbc\internal\charset">
+      <UniqueIdentifier>{5e61c920-3e25-441a-849d-313651472500}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{b8f61e23-b250-4456-96d5-a71cdaf3a08d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\internal">
+      <UniqueIdentifier>{6c13a4c9-9358-4abd-a822-bd8d96f42110}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="dllmain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\internal\Batch.cpp">
+      <Filter>src\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\internal\ParameterData.cpp">
+      <Filter>src\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\internal\UtilInternal.cpp">
+      <Filter>src\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Connection.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DatabaseMetaData.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DatabaseMetaDataBase.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DatabaseMetaDataUnicode.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Environment.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Exception.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ParameterMetaData.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\PreparedStatement.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RefCounted.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ResultSet.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ResultSetMetaData.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ResultSetMetaDataBase.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ResultSetMetaDataUnicode.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Statement.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\StatementBase.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\StringConverter.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Types.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Util.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\odbc\internal\charset\Utf8.h">
+      <Filter>include\odbc\internal\charset</Filter>
+    </ClInclude>
+    <ClInclude Include="include\odbc\internal\charset\Utf16.h">
+      <Filter>include\odbc\internal\charset</Filter>
+    </ClInclude>
+    <ClInclude Include="include\odbc\internal\Batch.h">
+      <Filter>include\odbc\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\odbc\internal\Macros.h">
+      <Filter>include\odbc\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\odbc\internal\Odbc.h">
+      <Filter>include\odbc\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\odbc\internal\ParameterData.h">
+      <Filter>include\odbc\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\odbc\internal\TypeInfo.h">
+      <Filter>include\odbc\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\odbc\internal\UtilInternal.h">
+      <Filter>include\odbc\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\odbc\Config.h">
+      <Filter>include\odbc</Filter>
+    </ClInclude>
+    <ClInclude Include="include\odbc\Connection.h">
+      <Filter>include\odbc</Filter>
+    </ClInclude>
+    <ClInclude Include="include\odbc\DatabaseMetaData.h">
+      <Filter>include\odbc</Filter>
+    </ClInclude>
+    <ClInclude Include="include\odbc\DatabaseMetaDataBase.h">
+      <Filter>include\odbc</Filter>
+    </ClInclude>
+    <ClInclude Include="include\odbc\DatabaseMetaDataUnicode.h">
+      <Filter>include\odbc</Filter>
+    </ClInclude>
+    <ClInclude Include="include\odbc\Environment.h">
+      <Filter>include\odbc</Filter>
+    </ClInclude>
+    <ClInclude Include="include\odbc\Exception.h">
+      <Filter>include\odbc</Filter>
+    </ClInclude>
+    <ClInclude Include="include\odbc\Forwards.h">
+      <Filter>include\odbc</Filter>
+    </ClInclude>
+    <ClInclude Include="include\odbc\ParameterMetaData.h">
+      <Filter>include\odbc</Filter>
+    </ClInclude>
+    <ClInclude Include="include\odbc\PreparedStatement.h">
+      <Filter>include\odbc</Filter>
+    </ClInclude>
+    <ClInclude Include="include\odbc\RefCounted.h">
+      <Filter>include\odbc</Filter>
+    </ClInclude>
+    <ClInclude Include="include\odbc\ResultSet.h">
+      <Filter>include\odbc</Filter>
+    </ClInclude>
+    <ClInclude Include="include\odbc\ResultSetMetaData.h">
+      <Filter>include\odbc</Filter>
+    </ClInclude>
+    <ClInclude Include="include\odbc\ResultSetMetaDataBase.h">
+      <Filter>include\odbc</Filter>
+    </ClInclude>
+    <ClInclude Include="include\odbc\ResultSetMetaDataUnicode.h">
+      <Filter>include\odbc</Filter>
+    </ClInclude>
+    <ClInclude Include="include\odbc\Statement.h">
+      <Filter>include\odbc</Filter>
+    </ClInclude>
+    <ClInclude Include="include\odbc\StatementBase.h">
+      <Filter>include\odbc</Filter>
+    </ClInclude>
+    <ClInclude Include="include\odbc\StringConverter.h">
+      <Filter>include\odbc</Filter>
+    </ClInclude>
+    <ClInclude Include="include\odbc\Types.h">
+      <Filter>include\odbc</Filter>
+    </ClInclude>
+    <ClInclude Include="include\odbc\Util.h">
+      <Filter>include\odbc</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

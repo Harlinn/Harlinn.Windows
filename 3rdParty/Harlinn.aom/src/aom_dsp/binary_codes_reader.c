@@ -12,7 +12,7 @@
 #include "aom_dsp/binary_codes_reader.h"
 #include "aom_dsp/recenter.h"
 
-uint16_t aom_read_primitive_quniform_(aom_reader *r,
+HAOM_EXPORT uint16_t aom_read_primitive_quniform_(aom_reader *r,
                                       uint16_t n ACCT_STR_PARAM) {
   if (n <= 1) return 0;
   const int l = get_msb(n) + 1;
@@ -23,7 +23,7 @@ uint16_t aom_read_primitive_quniform_(aom_reader *r,
 
 // Decode finite subexponential code that for a symbol v in [0, n-1] with
 // parameter k
-uint16_t aom_read_primitive_subexpfin_(aom_reader *r, uint16_t n,
+HAOM_EXPORT uint16_t aom_read_primitive_subexpfin_(aom_reader *r, uint16_t n,
                                        uint16_t k ACCT_STR_PARAM) {
   int i = 0;
   int mk = 0;
@@ -48,7 +48,7 @@ uint16_t aom_read_primitive_subexpfin_(aom_reader *r, uint16_t n,
   return 0;
 }
 
-uint16_t aom_read_primitive_refsubexpfin_(aom_reader *r, uint16_t n, uint16_t k,
+HAOM_EXPORT uint16_t aom_read_primitive_refsubexpfin_(aom_reader *r, uint16_t n, uint16_t k,
                                           uint16_t ref ACCT_STR_PARAM) {
   return inv_recenter_finite_nonneg(
       n, ref, aom_read_primitive_subexpfin(r, n, k, ACCT_STR_NAME));

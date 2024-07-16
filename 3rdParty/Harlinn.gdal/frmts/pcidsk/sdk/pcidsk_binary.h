@@ -1,4 +1,3 @@
-#pragma once
 /******************************************************************************
  *
  * Purpose: Interface representing access to a PCIDSK Binary Segment

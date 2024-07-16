@@ -76,7 +76,7 @@
 * Code for validate operation.
 \******************************************************************************/
 
-int jpg_validate(jas_stream_t *in)
+JAS_EXPORT int jpg_validate(jas_stream_t *in)
 {
 	jas_uchar buf[JPG_MAGICLEN];
 

@@ -76,8 +76,14 @@
 #include <stddef.h> /* IWYU pragma: export */
 #include <stdint.h> /* IWYU pragma: export */
 
+#include <limits.h> /* IWYU pragma: export */
+
 #if defined(JAS_HAVE_SYS_TYPES_H)
 #include <sys/types.h> /* IWYU pragma: export */
+#endif
+
+#ifdef __cplusplus
+extern "C" {
 #endif
 
 #define jas_uchar unsigned char
@@ -85,6 +91,31 @@
 #define jas_ulong unsigned long
 #define jas_longlong long long
 #define jas_ulonglong unsigned long long
+
+#if !defined(JAS_NO_SET_SSIZE_T)
+#	if !defined(SSIZE_MAX)
+#		if (JAS_SIZEOF_INT == JAS_SIZEOF_SIZE_T)
+#			define ssize_t int
+#			define SSIZE_MAX INT_MAX
+#		elif (JAS_SIZEOF_LONG == JAS_SIZEOF_SIZE_T)
+#			define ssize_t long
+#			define SSIZE_MAX LONG_MAX
+#		else
+#			define ssize_t jas_longlong
+#			define SSIZE_MAX LLONG_MAX
+#		endif
+#	endif
+#endif
+
+#if 0
+#if defined(JAS_HAVE_SSIZE_T)
+#define jas_ssize_t ssize_t
+#define JAS_SSIZE_MAX SSIZE_MAX
+#else
+#define jas_ssize_t jas_longlong
+#define JAS_SSIZE_MAX LLONG_MAX
+#endif
+#endif
 
 #if defined(_MSC_VER) && (_MSC_VER < 1800)
 #define bool  int
@@ -125,9 +156,59 @@
 /* NOTE: This could underestimate the size on some exotic architectures. */
 #define JAS_UINTFAST32_NUMBITS (8 * sizeof(uint_fast32_t))
 
-#ifdef __cplusplus
-extern "C" {
+#if 0
+#if defined(JAS_HAVE_MAX_ALIGN_T)
+#define	jas_max_align_t	max_align_t
+#else
+#define	jas_max_align_t	long double
 #endif
+#endif
+
+/*
+Assume that a compiler claiming to be compliant with C11 or a later version
+of the C standard provides a suitable definition of max_align_t.
+The JAS_NO_SET_MAX_ALIGN_T preprocessor symbol can be used to override
+this behavior.
+*/
+#if defined(JAS_NO_SET_MAX_ALIGN_T)
+	/*
+	The user of this header is assuming responsibility for providing a
+	suitable definition for max_align_t.
+	*/
+#elif defined(_MSC_VER)
+	/*
+	Define max_align_t as a preprocessor symbol since using typedef will
+	cause problems.
+	*/
+#	define max_align_t long double
+#elif !(defined(__STDC_VERSION__) && (__STDC_VERSION__ - 0 >= 201112L))
+#	define max_align_t long double
+#endif
+
+#if 0
+#if defined(JAS_HAVE_UINTMAX_T)
+#define jas_uintmax_t uintmax_t
+#else
+#define jas_uintmax_t uint_fast64_t
+#endif
+#endif
+
+#if 0
+#if defined(JAS_HAVE_INTMAX_T)
+#define jas_intmax_t intmax_t
+#else
+#define jas_intmax_t int_fast64_t
+#endif
+#endif
+
+/* 32-bit unsigned integer type */
+typedef uint_least32_t jas_ui32_t;
+#define JAS_UI32_MAX UINT_LEAST32_MAX
+
+/* 32-bit signed integer type */
+typedef int_least32_t jas_i32_t;
+#define JAS_I32_MIN INT_LEAST32_MIN
+#define JAS_I32_MAX INT_LEAST32_MAX
 
 #ifdef __cplusplus
 }

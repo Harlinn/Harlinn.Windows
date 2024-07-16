@@ -1,4 +1,3 @@
-#pragma once
 /******************************************************************************
  * $Id$
  *
@@ -34,56 +33,55 @@
 
 #ifndef DOXYGEN_SKIP
 
-#include <gcore/gdal_pam.h>
+#include "gdal_pam.h"
 
-class GDALGeorefPamDataset : public GDALPamDataset
+class CPL_DLL GDALGeorefPamDataset : public GDALPamDataset
 {
   protected:
-    bool        bGeoTransformValid;
-    double      adfGeoTransform[6];
+    bool bGeoTransformValid;
+    double adfGeoTransform[6];
     OGRSpatialReference m_oSRS{};
-    int         nGCPCount;
-    GDAL_GCP    *pasGCPList;
-    char**      m_papszRPC;
-    bool        m_bPixelIsPoint;
+    int nGCPCount;
+    GDAL_GCP *pasGCPList;
+    char **m_papszRPC;
+    bool m_bPixelIsPoint;
 
-    int         m_nGeoTransformGeorefSrcIndex;
-    int         m_nGCPGeorefSrcIndex;
-    int         m_nProjectionGeorefSrcIndex;
-    int         m_nRPCGeorefSrcIndex;
-    int         m_nPixelIsPointGeorefSrcIndex;
+    int m_nGeoTransformGeorefSrcIndex;
+    int m_nGCPGeorefSrcIndex;
+    int m_nProjectionGeorefSrcIndex;
+    int m_nRPCGeorefSrcIndex;
+    int m_nPixelIsPointGeorefSrcIndex;
 
-    HGDAL_EXPORT int         GetPAMGeorefSrcIndex() const;
-    mutable bool        m_bGotPAMGeorefSrcIndex;
-    mutable int         m_nPAMGeorefSrcIndex;
+    int GetPAMGeorefSrcIndex() const;
+    mutable bool m_bGotPAMGeorefSrcIndex;
+    mutable int m_nPAMGeorefSrcIndex;
 
-    bool        m_bPAMLoaded;
-    char**      m_papszMainMD;
+    bool m_bPAMLoaded;
+    char **m_papszMainMD;
 
     CPL_DISALLOW_COPY_ASSIGN(GDALGeorefPamDataset)
 
   public:
-    HGDAL_EXPORT GDALGeorefPamDataset();
-    HGDAL_EXPORT ~GDALGeorefPamDataset() override;
+    GDALGeorefPamDataset();
+    ~GDALGeorefPamDataset() override;
 
-    HGDAL_EXPORT CPLErr TryLoadXML(char **papszSiblingFiles = nullptr) override;
+    CPLErr TryLoadXML(char **papszSiblingFiles = nullptr) override;
 
-    HGDAL_EXPORT CPLErr          GetGeoTransform( double * ) override;
+    CPLErr GetGeoTransform(double *) override;
 
-    HGDAL_EXPORT const OGRSpatialReference* GetSpatialRef() const override ;
+    const OGRSpatialReference *GetSpatialRef() const override;
 
-    HGDAL_EXPORT int             GetGCPCount() override;
-    HGDAL_EXPORT const OGRSpatialReference* GetGCPSpatialRef() const override;
-    HGDAL_EXPORT const GDAL_GCP *GetGCPs() override;
+    int GetGCPCount() override;
+    const OGRSpatialReference *GetGCPSpatialRef() const override;
+    const GDAL_GCP *GetGCPs() override;
 
-    HGDAL_EXPORT char      **GetMetadata( const char * pszDomain = "" ) override;
-    HGDAL_EXPORT const char *GetMetadataItem( const char * pszName,
-                                  const char * pszDomain = "" ) override;
-    HGDAL_EXPORT CPLErr      SetMetadata( char ** papszMetadata,
-                     const char * pszDomain = "" ) override;
-    HGDAL_EXPORT CPLErr      SetMetadataItem( const char * pszName,
-                         const char * pszValue,
-                         const char * pszDomain = "" ) override;
+    char **GetMetadata(const char *pszDomain = "") override;
+    const char *GetMetadataItem(const char *pszName,
+                                const char *pszDomain = "") override;
+    CPLErr SetMetadata(char **papszMetadata,
+                       const char *pszDomain = "") override;
+    CPLErr SetMetadataItem(const char *pszName, const char *pszValue,
+                           const char *pszDomain = "") override;
 };
 
 #endif /* #ifndef DOXYGEN_SKIP */

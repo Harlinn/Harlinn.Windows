@@ -4,7 +4,7 @@
 #include "hazard.h"
 #include "myassert.h"
 
-#include <port/cpl_port.h>
+#include "cpl_port.h"
 
 /*
  * Uncomment the following to have error messages sent to stdout.

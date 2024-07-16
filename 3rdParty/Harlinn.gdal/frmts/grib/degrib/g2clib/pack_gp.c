@@ -11,7 +11,7 @@
 */
 
 /*#include "f2c.h"*/
-#include <port/cpl_port.h>
+#include "cpl_port.h"
 #include <limits.h>
 #include <stdlib.h>
 #include "grib2.h"

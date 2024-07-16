@@ -25,10 +25,10 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
-#include "blocktiledir.h"
-#include "blocktilelayer.h"
-#include "blockfile.h"
-#include "../core/pcidsk_utils.h"
+#include "blockdir/blocktiledir.h"
+#include "blockdir/blocktilelayer.h"
+#include "blockdir/blockfile.h"
+#include "core/pcidsk_utils.h"
 #include <cassert>
 
 using namespace PCIDSK;

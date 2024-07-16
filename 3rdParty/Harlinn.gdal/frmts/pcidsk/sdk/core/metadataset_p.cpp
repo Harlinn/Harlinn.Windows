@@ -28,10 +28,10 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
-#include "../pcidsk_exception.h"
-#include "metadataset.h"
+#include "pcidsk_exception.h"
+#include "core/metadataset.h"
 
-#include "../segment/metadatasegment.h"
+#include "segment/metadatasegment.h"
 
 #include <string>
 

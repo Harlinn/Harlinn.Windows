@@ -1,4 +1,3 @@
-#pragma once
 /******************************************************************************
  *
  * Purpose: Support for reading and manipulating general PCIDSK Binary Segments
@@ -28,8 +27,8 @@
 #ifndef INCLUDE_PCIDSK_SEGMENT_PCIDSKBINARY_SEG_H
 #define INCLUDE_PCIDSK_SEGMENT_PCIDSKBINARY_SEG_H
 
-#include "../pcidsk_binary.h"
-#include "cpcidsksegment.h"
+#include "pcidsk_binary.h"
+#include "segment/cpcidsksegment.h"
 
 namespace PCIDSK {
     class PCIDSKFile;

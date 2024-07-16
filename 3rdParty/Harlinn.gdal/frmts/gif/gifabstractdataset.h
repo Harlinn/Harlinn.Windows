@@ -1,4 +1,3 @@
-#pragma once
 /******************************************************************************
  * $Id$
  *
@@ -31,11 +30,14 @@
 #ifndef GIFABSTRACTDATASET_H_INCLUDED
 #define GIFABSTRACTDATASET_H_INCLUDED
 
-#include "..\..\gcore\gdal_pam.h"
+#include "gdal_pam.h"
 
 CPL_C_START
 #include "gif_lib.h"
 CPL_C_END
+
+constexpr int InterlacedOffset[] = {0, 4, 2, 1};
+constexpr int InterlacedJumps[] = {8, 8, 4, 2};
 
 /************************************************************************/
 /* ==================================================================== */
@@ -43,58 +45,47 @@ CPL_C_END
 /* ==================================================================== */
 /************************************************************************/
 
-class GIFAbstractDataset CPL_NON_FINAL: public GDALPamDataset
+class GIFAbstractDataset CPL_NON_FINAL : public GDALPamDataset
 {
   protected:
-    friend class    GIFAbstractRasterBand;
+    friend class GIFAbstractRasterBand;
 
-    VSILFILE        *fp;
+    VSILFILE *fp;
 
     GifFileType *hGifFile;
 
-    char        *pszProjection;
-    int         bGeoTransformValid;
-    double      adfGeoTransform[6];
+    int bGeoTransformValid;
+    double adfGeoTransform[6];
 
-    int         nGCPCount;
-    GDAL_GCP    *pasGCPList;
+    int nGCPCount;
+    GDAL_GCP *pasGCPList;
 
-    int         bHasReadXMPMetadata;
-    void        CollectXMPMetadata();
+    int bHasReadXMPMetadata;
+    void CollectXMPMetadata();
 
-    CPLString   osWldFilename;
+    CPLString osWldFilename;
 
-    void        DetectGeoreferencing( GDALOpenInfo * poOpenInfo );
+    void DetectGeoreferencing(GDALOpenInfo *poOpenInfo);
 
   public:
     GIFAbstractDataset();
     ~GIFAbstractDataset() override;
 
-    const char *_GetProjectionRef() override;
-    const OGRSpatialReference* GetSpatialRef() const override {
-        return GetSpatialRefFromOldGetProjectionRef();
-    }
-    CPLErr GetGeoTransform( double * ) override;
+    CPLErr GetGeoTransform(double *) override;
     int GetGCPCount() override;
-    const char *_GetGCPProjection() override;
-    const OGRSpatialReference* GetGCPSpatialRef() const override {
-        return GetGCPSpatialRefFromOldGetGCPProjection();
-    }
     const GDAL_GCP *GetGCPs() override;
 
     char **GetMetadataDomainList() override;
-    char **GetMetadata( const char * pszDomain = "" ) override;
+    char **GetMetadata(const char *pszDomain = "") override;
 
     char **GetFileList() override;
 
-    static int          Identify( GDALOpenInfo * );
-
-    static GifFileType* myDGifOpen( void *userPtr, InputFunc readFunc );
-    static int          myDGifCloseFile( GifFileType *hGifFile );
-    static int          myEGifCloseFile( GifFileType *hGifFile );
-    static int          ReadFunc( GifFileType *psGFile, GifByteType *pabyBuffer,
-                                  int nBytesToRead );
-    static GifRecordType FindFirstImage( GifFileType* hGifFile );
+    static GifFileType *myDGifOpen(void *userPtr, InputFunc readFunc);
+    static int myDGifCloseFile(GifFileType *hGifFile);
+    static int myEGifCloseFile(GifFileType *hGifFile);
+    static int ReadFunc(GifFileType *psGFile, GifByteType *pabyBuffer,
+                        int nBytesToRead);
+    static GifRecordType FindFirstImage(GifFileType *hGifFile);
 };
 
 /************************************************************************/
@@ -103,24 +94,24 @@ class GIFAbstractDataset CPL_NON_FINAL: public GDALPamDataset
 /* ==================================================================== */
 /************************************************************************/
 
-class GIFAbstractRasterBand CPL_NON_FINAL: public GDALPamRasterBand
+class GIFAbstractRasterBand CPL_NON_FINAL : public GDALPamRasterBand
 {
   protected:
-    SavedImage  *psImage;
+    SavedImage *psImage;
 
-    int         *panInterlaceMap;
+    int *panInterlaceMap;
 
     GDALColorTable *poColorTable;
 
-    int         nTransparentColor;
+    int nTransparentColor;
 
   public:
     GIFAbstractRasterBand(GIFAbstractDataset *poDS, int nBand,
                           SavedImage *psSavedImage, int nBackground,
-                          int bAdvertiseInterlacedMDI );
+                          int bAdvertiseInterlacedMDI);
     ~GIFAbstractRasterBand() override;
 
-    double GetNoDataValue( int *pbSuccess = nullptr ) override;
+    double GetNoDataValue(int *pbSuccess = nullptr) override;
     GDALColorInterp GetColorInterpretation() override;
     GDALColorTable *GetColorTable() override;
 };

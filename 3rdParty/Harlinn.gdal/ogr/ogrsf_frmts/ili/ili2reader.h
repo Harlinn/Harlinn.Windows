@@ -1,4 +1,3 @@
-#pragma once
 /******************************************************************************
  * $Id$
  *
@@ -34,21 +33,24 @@
 #include "imdreader.h"
 #include <list>
 
+class OGRILI2DataSource;
+
 class IILI2Reader
 {
-public:
-    virtual     ~IILI2Reader();
+  public:
+    virtual ~IILI2Reader();
 
-    virtual void SetSourceFile( const char *pszFilename ) = 0;
+    virtual void SetSourceFile(const char *pszFilename) = 0;
 
-    virtual int  ReadModel( ImdReader *poImdReader, const char *modelFilename ) = 0;
-    virtual int  SaveClasses( const char *pszFilename ) = 0;
+    virtual int ReadModel(OGRILI2DataSource *poDS, ImdReader *poImdReader,
+                          const char *modelFilename) = 0;
+    virtual int SaveClasses(const char *pszFilename) = 0;
 
     virtual std::list<OGRLayer *> GetLayers() = 0;
     virtual int GetLayerCount() = 0;
 };
 
 IILI2Reader *CreateILI2Reader();
-void DestroyILI2Reader(IILI2Reader* reader);
+void DestroyILI2Reader(IILI2Reader *reader);
 
 #endif

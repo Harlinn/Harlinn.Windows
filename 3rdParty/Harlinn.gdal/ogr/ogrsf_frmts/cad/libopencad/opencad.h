@@ -1,4 +1,3 @@
-#pragma once
 /*******************************************************************************
  *  Project: libopencad
  *  Purpose: OpenSource CAD formats support library
@@ -50,10 +49,6 @@
     (OCAD_VERSION_MAJOR == (major) && OCAD_VERSION_MINOR == (minor) && OCAD_VERSION_REV >= (release)))
 
 #define DWG_VERSION_STR_SIZE  6
-
-#ifdef BUILDING_HARLINN_GDAL
-#define OCAD_EXPORTS
-#endif
 
 #ifndef OCAD_EXTERN
 #ifdef OCAD_STATIC

@@ -1,4 +1,3 @@
-#pragma once
 /******************************************************************************
  *
  * Project:  OpenGIS Simple Features Reference Implementation
@@ -30,7 +29,7 @@
 #ifndef DGNV8_HEADERS_H
 #define DGNV8_HEADERS_H
 
-#include <port/cpl_port.h>
+#include "cpl_port.h"
 
 #ifdef HAVE_GCC_SYSTEM_HEADER
 #pragma GCC system_header
@@ -77,4 +76,4 @@
 #include "DgText.h"
 #include "DgTextNode.h"
 
-#endif // DGNV8_HEADERS_H
+#endif  // DGNV8_HEADERS_H

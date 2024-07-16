@@ -12,7 +12,7 @@
 #ifndef AOM_AOM_DSP_NOISE_UTIL_H_
 #define AOM_AOM_DSP_NOISE_UTIL_H_
 
-#include "..\aom\haomdef.h"
+#include "config/haomdef.h"
 
 #ifdef __cplusplus
 extern "C" {

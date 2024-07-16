@@ -1,4 +1,3 @@
-#pragma once
 /*
  * $Id$
  *  keacopy.h
@@ -32,10 +31,11 @@
 #ifndef KEACOPY_H
 #define KEACOPY_H
 
-#include <gcore/gdal_priv.h>
+#include "gdal_priv.h"
 
 #include "libkea_headers.h"
 
-bool KEACopyFile( GDALDataset *pDataset, kealib::KEAImageIO *pImageIO, GDALProgressFunc pfnProgress, void *pProgressData );
+bool KEACopyFile(GDALDataset *pDataset, kealib::KEAImageIO *pImageIO,
+                 GDALProgressFunc pfnProgress, void *pProgressData);
 
 #endif

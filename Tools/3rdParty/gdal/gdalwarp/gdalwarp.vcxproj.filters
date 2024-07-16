@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="gdalwarp.cpp">
+    <ClCompile Include="gdalwarp_bin.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

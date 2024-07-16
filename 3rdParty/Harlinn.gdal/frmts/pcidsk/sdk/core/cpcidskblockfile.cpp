@@ -25,12 +25,12 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
-#include "cpcidskblockfile.h"
-#include "cpcidskfile.h"
-#include "../segment/systiledir.h"
-#include "../blockdir/asciitiledir.h"
-#include "../blockdir/binarytiledir.h"
-#include "../pcidsk_channel.h"
+#include "core/cpcidskblockfile.h"
+#include "core/cpcidskfile.h"
+#include "segment/systiledir.h"
+#include "blockdir/asciitiledir.h"
+#include "blockdir/binarytiledir.h"
+#include "pcidsk_channel.h"
 #include <cassert>
 #include <algorithm>
 
@@ -64,7 +64,7 @@ SysTileDir * CPCIDSKBlockFile::CreateTileDir(void)
     std::string oFileOptions = GetFileOptions();
 
     for (char & chIter : oFileOptions)
-        chIter = (char) toupper((uchar) chIter);
+        chIter = (char) toupper(static_cast<unsigned char>(chIter));
 
     // Check if we should create a TILEV1 or TILEV2 block directory.
     bool bTileV1 = oFileOptions.find("TILEV1") != std::string::npos;

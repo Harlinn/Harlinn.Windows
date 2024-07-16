@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="gdaltindex.cpp">
+    <ClCompile Include="gdaltindex_bin.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

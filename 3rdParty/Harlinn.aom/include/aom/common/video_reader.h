@@ -29,29 +29,29 @@ extern "C" {
 // Opens the input file for reading and inspects it to determine file type.
 // Returns an opaque AvxVideoReader* upon success, or NULL upon failure.
 // Right now only IVF format is supported.
-AvxVideoReader *aom_video_reader_open(const char *filename);
+HAOM_EXPORT AvxVideoReader *aom_video_reader_open(const char *filename);
 
 // Frees all resources associated with AvxVideoReader* returned from
 // aom_video_reader_open() call.
-void aom_video_reader_close(AvxVideoReader *reader);
+HAOM_EXPORT void aom_video_reader_close(AvxVideoReader *reader);
 
 // Reads frame from the file and stores it in internal buffer.
-int aom_video_reader_read_frame(AvxVideoReader *reader);
+HAOM_EXPORT int aom_video_reader_read_frame(AvxVideoReader *reader);
 
 // Returns the pointer to memory buffer with frame data read by last call to
 // aom_video_reader_read_frame().
-const uint8_t *aom_video_reader_get_frame(AvxVideoReader *reader, size_t *size);
+HAOM_EXPORT const uint8_t *aom_video_reader_get_frame(AvxVideoReader *reader, size_t *size);
 
 // Returns the pts of the frame.
-int64_t aom_video_reader_get_frame_pts(AvxVideoReader *reader);
+HAOM_EXPORT int64_t aom_video_reader_get_frame_pts(AvxVideoReader *reader);
 // Return the reader file.
-FILE *aom_video_reader_get_file(AvxVideoReader *reader);
+HAOM_EXPORT FILE *aom_video_reader_get_file(AvxVideoReader *reader);
 
 // Fills AvxVideoInfo with information from opened video file.
-const AvxVideoInfo *aom_video_reader_get_info(AvxVideoReader *reader);
+HAOM_EXPORT const AvxVideoInfo *aom_video_reader_get_info(AvxVideoReader *reader);
 
 // Set fourcc.
-void aom_video_reader_set_fourcc(AvxVideoReader *reader, uint32_t fourcc);
+HAOM_EXPORT void aom_video_reader_set_fourcc(AvxVideoReader *reader, uint32_t fourcc);
 
 #ifdef __cplusplus
 }  // extern "C"

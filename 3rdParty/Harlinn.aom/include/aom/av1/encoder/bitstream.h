@@ -21,6 +21,7 @@ extern "C" {
 #include "av1/common/enums.h"
 #include "av1/encoder/level.h"
 #include "aom_dsp/bitwriter.h"
+#include "aom_util/aom_pthread.h"
 
 struct aom_write_bit_buffer;
 struct AV1_COMP;
@@ -74,6 +75,9 @@ typedef struct {
 
   // Index of next job to be processed.
   int next_job_idx;
+  // Initialized to false, set to true by the worker thread that encounters an
+  // error in order to abort the processing of other worker threads.
+  bool pack_bs_mt_exit;
 } AV1EncPackBSSync;
 
 /*!\endcond */
@@ -125,6 +129,8 @@ void av1_write_obu_tg_tile_headers(struct AV1_COMP *const cpi,
                                    MACROBLOCKD *const xd,
                                    PackBSParams *const pack_bs_params,
                                    const int tile_idx);
+
+int av1_neg_interleave(int x, int ref, int max);
 #ifdef __cplusplus
 }  // extern "C"
 #endif

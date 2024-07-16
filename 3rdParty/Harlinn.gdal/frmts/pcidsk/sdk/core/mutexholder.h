@@ -1,4 +1,3 @@
-#pragma once
 /******************************************************************************
  *
  * Purpose:  MutexHolder class. Helper class for controlling the acquisition
@@ -29,7 +28,7 @@
 #ifndef INCLUDE_CORE_MUTEXHOLDER_H
 #define INCLUDE_CORE_MUTEXHOLDER_H
 
-#include "../pcidsk_mutex.h"
+#include "pcidsk_mutex.h"
 
 namespace PCIDSK
 {

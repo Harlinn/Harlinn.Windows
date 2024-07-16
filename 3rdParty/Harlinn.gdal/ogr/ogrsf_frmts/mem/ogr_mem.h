@@ -31,7 +31,7 @@
 #ifndef OGRMEM_H_INCLUDED
 #define OGRMEM_H_INCLUDED
 
-#include "ogr/ogrsf_frmts/ogrsf_frmts.h"
+#include "ogrsf_frmts.h"
 
 #include <map>
 
@@ -42,128 +42,199 @@ class OGRMemDataSource;
 
 class IOGRMemLayerFeatureIterator;
 
-class CPL_DLL OGRMemLayer CPL_NON_FINAL: public OGRLayer
+class CPL_DLL OGRMemLayer CPL_NON_FINAL : public OGRLayer
 {
     CPL_DISALLOW_COPY_ASSIGN(OGRMemLayer)
 
-    typedef std::map<GIntBig, OGRFeature*>           FeatureMap;
-    typedef std::map<GIntBig, OGRFeature*>::iterator FeatureIterator;
+    typedef std::map<GIntBig, std::unique_ptr<OGRFeature>> FeatureMap;
+    typedef FeatureMap::iterator FeatureIterator;
 
-    OGRFeatureDefn     *m_poFeatureDefn;
+    OGRFeatureDefn *m_poFeatureDefn = nullptr;
 
-    GIntBig             m_nFeatureCount;
+    GIntBig m_nFeatureCount = 0;
 
-    GIntBig             m_iNextReadFID;
-    GIntBig             m_nMaxFeatureCount;  // Max size of papoFeatures.
-    OGRFeature        **m_papoFeatures;
-    bool                m_bHasHoles;
+    GIntBig m_iNextReadFID = 0;
+    GIntBig m_nMaxFeatureCount = 0;  // Max size of papoFeatures.
+    OGRFeature **m_papoFeatures = nullptr;
+    bool m_bHasHoles = false;
 
-    FeatureMap          m_oMapFeatures;
-    FeatureIterator     m_oMapFeaturesIter;
+    FeatureMap m_oMapFeatures{};
+    FeatureIterator m_oMapFeaturesIter{};
 
-    GIntBig             m_iNextCreateFID;
+    GIntBig m_iNextCreateFID = 0;
 
-    bool                m_bUpdatable;
-    bool                m_bAdvertizeUTF8;
+    bool m_bUpdatable = true;
+    bool m_bAdvertizeUTF8 = false;
 
-    bool                m_bUpdated;
+    bool m_bUpdated = false;
+
+    std::string m_osFIDColumn{};
+
+    GDALDataset *m_poDS{};
 
     // Only use it in the lifetime of a function where the list of features
     // doesn't change.
-    IOGRMemLayerFeatureIterator* GetIterator();
+    IOGRMemLayerFeatureIterator *GetIterator();
+
+  protected:
+    OGRFeature *GetFeatureRef(GIntBig nFeatureId);
 
   public:
-                        OGRMemLayer( const char * pszName,
-                                     OGRSpatialReference *poSRS,
-                                     OGRwkbGeometryType eGeomType );
-    virtual            ~OGRMemLayer();
+    // Clone poSRS if not nullptr
+    OGRMemLayer(const char *pszName, const OGRSpatialReference *poSRS,
+                OGRwkbGeometryType eGeomType);
+    virtual ~OGRMemLayer();
 
-    void                ResetReading() override;
-    OGRFeature *        GetNextFeature() override;
-    virtual OGRErr      SetNextByIndex( GIntBig nIndex ) override;
+    void ResetReading() override;
+    OGRFeature *GetNextFeature() override;
+    virtual OGRErr SetNextByIndex(GIntBig nIndex) override;
 
-    OGRFeature         *GetFeature( GIntBig nFeatureId ) override;
-    OGRErr              ISetFeature( OGRFeature *poFeature ) override;
-    OGRErr              ICreateFeature( OGRFeature *poFeature ) override;
-    virtual OGRErr      DeleteFeature( GIntBig nFID ) override;
+    OGRFeature *GetFeature(GIntBig nFeatureId) override;
+    OGRErr ISetFeature(OGRFeature *poFeature) override;
+    OGRErr ICreateFeature(OGRFeature *poFeature) override;
+    OGRErr IUpsertFeature(OGRFeature *poFeature) override;
+    OGRErr IUpdateFeature(OGRFeature *poFeature, int nUpdatedFieldsCount,
+                          const int *panUpdatedFieldsIdx,
+                          int nUpdatedGeomFieldsCount,
+                          const int *panUpdatedGeomFieldsIdx,
+                          bool bUpdateStyleString) override;
+    virtual OGRErr DeleteFeature(GIntBig nFID) override;
 
-    OGRFeatureDefn *    GetLayerDefn() override { return m_poFeatureDefn; }
+    OGRFeatureDefn *GetLayerDefn() override
+    {
+        return m_poFeatureDefn;
+    }
 
-    GIntBig             GetFeatureCount( int ) override;
+    GIntBig GetFeatureCount(int) override;
 
-    virtual OGRErr      CreateField( OGRFieldDefn *poField,
-                                     int bApproxOK = TRUE ) override;
-    virtual OGRErr      DeleteField( int iField ) override;
-    virtual OGRErr      ReorderFields( int* panMap ) override;
-    virtual OGRErr      AlterFieldDefn( int iField,
-                                        OGRFieldDefn* poNewFieldDefn,
-                                        int nFlags ) override;
-    virtual OGRErr      CreateGeomField( OGRGeomFieldDefn *poGeomField,
-                                         int bApproxOK = TRUE ) override;
+    virtual OGRErr CreateField(const OGRFieldDefn *poField,
+                               int bApproxOK = TRUE) override;
+    virtual OGRErr DeleteField(int iField) override;
+    virtual OGRErr ReorderFields(int *panMap) override;
+    virtual OGRErr AlterFieldDefn(int iField, OGRFieldDefn *poNewFieldDefn,
+                                  int nFlags) override;
+    virtual OGRErr
+    AlterGeomFieldDefn(int iGeomField,
+                       const OGRGeomFieldDefn *poNewGeomFieldDefn,
+                       int nFlagsIn) override;
+    virtual OGRErr CreateGeomField(const OGRGeomFieldDefn *poGeomField,
+                                   int bApproxOK = TRUE) override;
 
-    int                 TestCapability( const char * ) override;
+    int TestCapability(const char *) override;
 
-    bool                IsUpdatable() const { return m_bUpdatable; }
-    void                SetUpdatable( bool bUpdatableIn )
-        { m_bUpdatable = bUpdatableIn; }
-    void                SetAdvertizeUTF8( bool bAdvertizeUTF8In )
-        { m_bAdvertizeUTF8 = bAdvertizeUTF8In; }
+    const char *GetFIDColumn() override
+    {
+        return m_osFIDColumn.c_str();
+    }
 
-    bool                HasBeenUpdated() const { return m_bUpdated; }
-    void                SetUpdated(bool bUpdated) { m_bUpdated = bUpdated; }
+    bool IsUpdatable() const
+    {
+        return m_bUpdatable;
+    }
 
-    GIntBig             GetNextReadFID() { return m_iNextReadFID; }
+    void SetUpdatable(bool bUpdatableIn)
+    {
+        m_bUpdatable = bUpdatableIn;
+    }
+
+    void SetAdvertizeUTF8(bool bAdvertizeUTF8In)
+    {
+        m_bAdvertizeUTF8 = bAdvertizeUTF8In;
+    }
+
+    void SetFIDColumn(const char *pszFIDColumn)
+    {
+        m_osFIDColumn = pszFIDColumn;
+    }
+
+    bool HasBeenUpdated() const
+    {
+        return m_bUpdated;
+    }
+
+    void SetUpdated(bool bUpdated)
+    {
+        m_bUpdated = bUpdated;
+    }
+
+    GIntBig GetNextReadFID()
+    {
+        return m_iNextReadFID;
+    }
+
+    void SetDataset(GDALDataset *poDS)
+    {
+        m_poDS = poDS;
+    }
+
+    GDALDataset *GetDataset() override
+    {
+        return m_poDS;
+    }
 };
 
 /************************************************************************/
 /*                           OGRMemDataSource                           */
 /************************************************************************/
 
-class OGRMemDataSource CPL_NON_FINAL: public OGRDataSource
+class OGRMemDataSource CPL_NON_FINAL : public OGRDataSource
 {
     CPL_DISALLOW_COPY_ASSIGN(OGRMemDataSource)
 
-    OGRMemLayer       **papoLayers;
-    int                 nLayers;
+    OGRMemLayer **papoLayers;
+    int nLayers;
 
-    char                *pszName;
+    char *pszName;
 
   public:
-                        OGRMemDataSource( const char *, char ** );
-                        virtual ~OGRMemDataSource();
+    OGRMemDataSource(const char *, char **);
+    virtual ~OGRMemDataSource();
 
-    const char          *GetName() override { return pszName; }
-    int                 GetLayerCount() override { return nLayers; }
-    OGRLayer            *GetLayer( int ) override;
+    const char *GetName() override
+    {
+        return pszName;
+    }
 
-    virtual OGRLayer    *ICreateLayer( const char *,
-                                       OGRSpatialReference * = nullptr,
-                                       OGRwkbGeometryType = wkbUnknown,
-                                       char ** = nullptr ) override;
-    OGRErr              DeleteLayer( int iLayer ) override;
+    int GetLayerCount() override
+    {
+        return nLayers;
+    }
 
-    int                 TestCapability( const char * ) override;
+    OGRLayer *GetLayer(int) override;
 
-    bool                AddFieldDomain(std::unique_ptr<OGRFieldDomain>&& domain,
-                                       std::string& failureReason) override;
+    OGRLayer *ICreateLayer(const char *pszName,
+                           const OGRGeomFieldDefn *poGeomFieldDefn,
+                           CSLConstList papszOptions) override;
+    OGRErr DeleteLayer(int iLayer) override;
+
+    int TestCapability(const char *) override;
+
+    bool AddFieldDomain(std::unique_ptr<OGRFieldDomain> &&domain,
+                        std::string &failureReason) override;
+
+    bool DeleteFieldDomain(const std::string &name,
+                           std::string &failureReason) override;
+
+    bool UpdateFieldDomain(std::unique_ptr<OGRFieldDomain> &&domain,
+                           std::string &failureReason) override;
 };
 
 /************************************************************************/
 /*                             OGRMemDriver                             */
 /************************************************************************/
 
-class OGRMemDriver final: public OGRSFDriver
+class OGRMemDriver final : public OGRSFDriver
 {
   public:
     virtual ~OGRMemDriver();
 
     const char *GetName() override;
-    OGRDataSource *Open( const char *, int ) override;
+    OGRDataSource *Open(const char *, int) override;
 
-    virtual OGRDataSource *CreateDataSource( const char *pszName,
-                                             char ** = nullptr ) override;
+    virtual OGRDataSource *CreateDataSource(const char *pszName,
+                                            char ** = nullptr) override;
 
-    int TestCapability( const char * ) override;
+    int TestCapability(const char *) override;
 };
 
 #endif  // ndef OGRMEM_H_INCLUDED

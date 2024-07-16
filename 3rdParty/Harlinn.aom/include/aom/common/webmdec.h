@@ -28,7 +28,7 @@ struct WebmInputContext {
   const void *block;
   int block_frame_index;
   int video_track_index;
-  uint64_t timestamp_ns;
+  int64_t timestamp_ns;
   int is_key_frame;
   int reached_eos;
 };
@@ -38,7 +38,7 @@ struct WebmInputContext {
 // Returns 1 on success and 0 on failure or input is not WebM file.
 // TODO(vigneshv): Refactor this function into two smaller functions specific
 // to their task.
-int file_is_webm(struct WebmInputContext *webm_ctx,
+HAOM_EXPORT int file_is_webm(struct WebmInputContext *webm_ctx,
                  struct AvxInputContext *aom_ctx);
 
 // Reads a WebM Video Frame. Memory for the buffer is created, owned and managed
@@ -54,15 +54,15 @@ int file_is_webm(struct WebmInputContext *webm_ctx,
 //      0 - Success
 //      1 - End of Stream
 //     -1 - Error
-int webm_read_frame(struct WebmInputContext *webm_ctx, uint8_t **buffer,
+HAOM_EXPORT int webm_read_frame(struct WebmInputContext *webm_ctx, uint8_t **buffer,
                     size_t *bytes_read, size_t *buffer_size);
 
 // Guesses the frame rate of the input file based on the container timestamps.
-int webm_guess_framerate(struct WebmInputContext *webm_ctx,
+HAOM_EXPORT int webm_guess_framerate(struct WebmInputContext *webm_ctx,
                          struct AvxInputContext *aom_ctx);
 
 // Resets the WebMInputContext.
-void webm_free(struct WebmInputContext *webm_ctx);
+HAOM_EXPORT void webm_free(struct WebmInputContext *webm_ctx);
 
 #ifdef __cplusplus
 }  // extern "C"

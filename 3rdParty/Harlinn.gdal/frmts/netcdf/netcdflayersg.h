@@ -1,4 +1,3 @@
-#pragma once
 /******************************************************************************
  *
  * Project:  netCDF read/write Driver
@@ -29,16 +28,16 @@
 #ifndef __NETCDFLAYERSG_H__
 #define __NETCDFLAYERSG_H__
 #include "netcdfsg.h"
-#include <ogr/ogr_core.h>
+#include "ogr_core.h"
 
 namespace nccfdriver
 {
-    OGRwkbGeometryType RawToOGR(geom_t type, int axis_count);
+OGRwkbGeometryType RawToOGR(geom_t type, int axis_count);
 
-    geom_t OGRtoRaw(OGRwkbGeometryType type);
+geom_t OGRtoRaw(OGRwkbGeometryType type);
 
-    bool OGRHasZandSupported(OGRwkbGeometryType type);
+bool OGRHasZandSupported(OGRwkbGeometryType type);
 
-}
+}  // namespace nccfdriver
 
 #endif

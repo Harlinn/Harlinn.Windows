@@ -181,7 +181,7 @@ static void calc_ab(int32_t *A, int32_t *B, const int32_t *C, const int32_t *D,
   const __m128i rnd_res = round_for_shift(SGRPROJ_RECIP_BITS);
 
   // Set up masks
-  const __m128i ones32 = _mm_set_epi32(0, 0, 0xffffffff, 0xffffffff);
+  const __m128i ones32 = _mm_set_epi32(0, 0, ~0, ~0);
   __m128i mask[4];
   for (int idx = 0; idx < 4; idx++) {
     const __m128i shift = _mm_cvtsi32_si128(8 * (4 - idx));
@@ -322,7 +322,7 @@ static void calc_ab_fast(int32_t *A, int32_t *B, const int32_t *C,
   const __m128i rnd_res = round_for_shift(SGRPROJ_RECIP_BITS);
 
   // Set up masks
-  const __m128i ones32 = _mm_set_epi32(0, 0, 0xffffffff, 0xffffffff);
+  const __m128i ones32 = _mm_set_epi32(0, 0, ~0, ~0);
   __m128i mask[4];
   for (int idx = 0; idx < 4; idx++) {
     const __m128i shift = _mm_cvtsi32_si128(8 * (4 - idx));
@@ -582,18 +582,17 @@ int av1_selfguided_restoration_sse4_1(const uint8_t *dgd8, int width,
   return 0;
 }
 
-void av1_apply_selfguided_restoration_sse4_1(const uint8_t *dat8, int width,
-                                             int height, int stride, int eps,
-                                             const int *xqd, uint8_t *dst8,
-                                             int dst_stride, int32_t *tmpbuf,
-                                             int bit_depth, int highbd) {
+int av1_apply_selfguided_restoration_sse4_1(const uint8_t *dat8, int width,
+                                            int height, int stride, int eps,
+                                            const int *xqd, uint8_t *dst8,
+                                            int dst_stride, int32_t *tmpbuf,
+                                            int bit_depth, int highbd) {
   int32_t *flt0 = tmpbuf;
   int32_t *flt1 = flt0 + RESTORATION_UNITPELS_MAX;
   assert(width * height <= RESTORATION_UNITPELS_MAX);
   const int ret = av1_selfguided_restoration_sse4_1(
       dat8, width, height, stride, flt0, flt1, width, eps, bit_depth, highbd);
-  (void)ret;
-  assert(!ret);
+  if (ret != 0) return ret;
   const sgr_params_type *const params = &av1_sgr_params[eps];
   int xq[2];
   av1_decode_xq(xqd, xq, params);
@@ -659,4 +658,5 @@ void av1_apply_selfguided_restoration_sse4_1(const uint8_t *dat8, int width,
       }
     }
   }
+  return 0;
 }

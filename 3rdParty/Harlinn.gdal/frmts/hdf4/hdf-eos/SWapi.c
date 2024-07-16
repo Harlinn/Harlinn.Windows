@@ -74,15 +74,15 @@ June 05, 2003 Abe Taaheri / Bruce Beaumont
 			      in SWgeomapinfo
 ******************************************************************************/
 
-#include <port/cpl_port.h> /* for M_PI */
-#include <port/cpl_string.h> /* for CPLsnprintf */
+#include "cpl_port.h" /* for M_PI */
+#include "cpl_string.h" /* for CPLsnprintf */
 
 #include "mfhdf.h"
 #include "hcomp.h"
 #include "HdfEosDef.h"
 #include <math.h>
 
-#include "..\hdf4compat.h"
+#include "hdf4compat.h"
 
 #define SWIDOFFSET 1048576
 
@@ -6940,7 +6940,7 @@ SWextractregion(int32 swathID, int32 regionID, const char *fieldname,
    /* which is found in Landsat 7 files.  It is used    */
    /* for some of the loops.                            */
    /* ================================================= */
-   if (SWXRegion[regionID]->scanflag == 1)
+   if (status == 0 && SWXRegion[regionID]->scanflag == 1)
    {
       land_status = SWattrinfo(swathID, "detector_count", &numtype, &count);
       if (land_status == 0)
@@ -8230,7 +8230,7 @@ SWregioninfo(int32 swathID, int32 regionID, const char *fieldname,
    /* which is found in Landsat 7 files.  It is used    */
    /* for some of the loops.                            */
    /* ================================================= */
-   if (SWXRegion[regionID]->scanflag == 1)
+   if (status == 0 && SWXRegion[regionID]->scanflag == 1)
    {
       land_status = SWattrinfo(swathID, "detector_count", &numtype, &count);
       if (land_status == 0)
@@ -9822,7 +9822,7 @@ SWgetfillvalue(int32 swathID, const char *fieldname, VOIDP fillval)
 |                                                                             |
 |  FUNCTION: SWdetach                                                         |
 |                                                                             |
-|  DESCRIPTION: Detachs swath structure and performs housekeeping             |
+|  DESCRIPTION: Detaches swath structure and performs housekeeping            |
 |                                                                             |
 |                                                                             |
 |  Return Value    Type     Units     Description                             |

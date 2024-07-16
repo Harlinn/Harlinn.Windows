@@ -25,14 +25,14 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
-#include "../pcidsk_exception.h"
-#include "cpcidskbpct.h"
+#include "pcidsk_exception.h"
+#include "segment/cpcidskbpct.h"
 #include <cassert>
 #include <cstring>
 #include <sstream>
 #include <cmath>
 #include <stdlib.h>
-#include "../core/pcidsk_utils.h"
+#include "core/pcidsk_utils.h"
 
 using namespace PCIDSK;
 

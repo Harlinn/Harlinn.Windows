@@ -6,16 +6,14 @@
 #ifndef LIB_JXL_HEADERS_H_
 #define LIB_JXL_HEADERS_H_
 
-// Codestream headers, also stored in CodecInOut.
+// Codestream headers.
 
 #include <stddef.h>
 #include <stdint.h>
 
-#include "lib/jxl/aux_out_fwd.h"
 #include "lib/jxl/base/compiler_specific.h"
 #include "lib/jxl/base/status.h"
 #include "lib/jxl/dec_bit_reader.h"
-#include "lib/jxl/enc_bit_writer.h"
 #include "lib/jxl/field_encodings.h"
 
 namespace jxl {
@@ -29,12 +27,8 @@ static constexpr uint8_t kCodestreamMarker = 0x0A;
 // can preallocate early.
 class SizeHeader : public Fields {
  public:
-  // All fields are valid after reading at most this many bits. WriteSizeHeader
-  // verifies this matches Bundle::MaxBits(SizeHeader).
-  static constexpr size_t kMaxBits = 78;
-
   SizeHeader();
-  const char* Name() const override { return "SizeHeader"; }
+  JXL_FIELDS_NAME(SizeHeader)
 
   Status VisitFields(Visitor* JXL_RESTRICT visitor) override;
 
@@ -60,7 +54,7 @@ class SizeHeader : public Fields {
 class PreviewHeader : public Fields {
  public:
   PreviewHeader();
-  const char* Name() const override { return "PreviewHeader"; }
+  JXL_FIELDS_NAME(PreviewHeader)
 
   Status VisitFields(Visitor* JXL_RESTRICT visitor) override;
 
@@ -82,7 +76,7 @@ class PreviewHeader : public Fields {
 
 struct AnimationHeader : public Fields {
   AnimationHeader();
-  const char* Name() const override { return "AnimationHeader"; }
+  JXL_FIELDS_NAME(AnimationHeader)
 
   Status VisitFields(Visitor* JXL_RESTRICT visitor) override;
 
@@ -97,9 +91,6 @@ struct AnimationHeader : public Fields {
 
 Status ReadSizeHeader(BitReader* JXL_RESTRICT reader,
                       SizeHeader* JXL_RESTRICT size);
-
-Status WriteSizeHeader(const SizeHeader& size, BitWriter* JXL_RESTRICT writer,
-                       size_t layer, AuxOut* aux_out);
 
 }  // namespace jxl
 

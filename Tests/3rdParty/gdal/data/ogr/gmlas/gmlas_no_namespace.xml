@@ -1,4 +1,0 @@
-<main_elt xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                  xsi:noNamespaceSchemaLocation="gmlas_no_namespace.xsd">
-    <foo>bar</foo>
-</main_elt>

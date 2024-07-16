@@ -1,4 +1,3 @@
-#pragma once
 /******************************************************************************
  *
  * Purpose:  Block directory API.
@@ -29,9 +28,9 @@
 #ifndef PCIDSK_BLOCK_TILE_LAYER_H
 #define PCIDSK_BLOCK_TILE_LAYER_H
 
-#include "blocklayer.h"
-#include "blocktiledir.h"
-#include "../pcidsk_mutex.h"
+#include "blockdir/blocklayer.h"
+#include "blockdir/blocktiledir.h"
+#include "pcidsk_mutex.h"
 #include <string>
 
 namespace PCIDSK

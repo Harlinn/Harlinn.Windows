@@ -69,6 +69,8 @@
 * Includes.
 \******************************************************************************/
 
+#define JAS_FOR_INTERNAL_USE_ONLY
+
 #include "jasper/jas_tmr.h"
 
 #include <stdlib.h>
@@ -144,4 +146,3 @@ double jas_tmr_get(jas_tmr_t *tmr)
 }
 
 #endif
-

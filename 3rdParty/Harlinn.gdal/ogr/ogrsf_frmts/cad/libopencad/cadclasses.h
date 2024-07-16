@@ -1,4 +1,3 @@
-#pragma once
 /*******************************************************************************
  *  Project: libopencad
  *  Purpose: OpenSource CAD formats support library

@@ -1,6 +1,6 @@
 ﻿# Harlinn.Windows
 
-This repository contains a Visual Studio Solution currently containing 594 projects.
+This repository contains a Visual Studio Solution currently containing 600 projects.
 
 Most of the projects are open source projects that I have found useful at work, and a few are my own.
 
@@ -42,7 +42,7 @@ The abseil_test contains the unit tests for the Harlinn.abseil project
 
 
 ### [Alliance for Open Media - AV1 Codec Library](https://aomedia.googlesource.com/aom)
-**Version:** 3.1.2 
+**Version:** 3.9.1 
 
 **Description:**
 > AV1 Codec Library
@@ -226,7 +226,7 @@ The abseil_test contains the unit tests for the Harlinn.abseil project
 **Project:** Harlinn.d3d12allocator
 
 ### [libdeflate](https://github.com/ebiggers/libdeflate)
-**Version:** 1.8
+**Version:** 1.20
 
 **Description:**
 > libdeflate is a library for fast, whole-buffer DEFLATE-based compression and decompression
@@ -303,6 +303,16 @@ The abseil_test contains the unit tests for the Harlinn.abseil project
 
 **Project:** Harlinn.expat
 
+### [fast_float_](https://github.com/fastfloat/fast_float/)
+**Version:** 6.1.1
+
+**Description:**
+> The fast_float library provides fast header-only implementations for the C++ from_chars 
+> functions for float and double types as well as integer types. These functions convert 
+> ASCII strings representing decimal values (e.g., 1.3e10) into binary types.
+
+**Project:** Harlinn.fast_float
+
 ### [FlatBuffers](https://google.github.io/flatbuffers/)
 **Version:** 2.0.0
 
@@ -327,7 +337,7 @@ The abseil_test contains the unit tests for the Harlinn.abseil project
 **Project:** Harlinn.freetype
 
 ### [GDAL - Geospatial Data Abstraction Library](https://gdal.org/)
-**Version:** 3.4.0
+**Version:** 3.9.1
 
 **Description:**
 > GDAL is a translator library for raster and vector geospatial data formats that is released under an 
@@ -356,6 +366,16 @@ The abseil_test contains the unit tests for the Harlinn.abseil project
 > GEOS is a C/C++ library for spatial computational geometry of the sort generally used by “geographic information systems” software.
 
 **Project:** Harlinn.geos
+
+### [libgeotiff](https://github.com/OSGeo/libgeotiff)
+**Version:** 1.7.3
+
+**Description:**
+> This library is designed to permit the extraction and parsing of the "GeoTIFF" Key directories, 
+> as well as definition and installation of GeoTIFF keys in new files.
+
+**Project:** Harlinn.geotiff
+
 
 ### [Google gflags](https://github.com/gflags/gflags)
 **Version:** 2.2.2
@@ -563,7 +583,7 @@ The abseil_test contains the unit tests for the Harlinn.abseil project
 **Project:** Harlinn.hdf4
 
 ### [HDF5](https://github.com/HDFGroup/hdf5)
-**Version:** 1.12.1
+**Version:** 1.14.4.3
 
 **Description:**
 > The HDF Group is the developer of HDF5®, a high-performance software library and data format 
@@ -573,11 +593,10 @@ The abseil_test contains the unit tests for the Harlinn.abseil project
 **Project:** Harlinn.hdf5
 
 ### [Highway](https://github.com/google/highway)
-**Version:** 0.14.2
+**Version:** 1.2.0
 
 **Description:**
-> Highway is a C++ library for SIMD (Single Instruction, Multiple Data), i.e. applying the same 
-> operation to multiple 'lanes' using a single CPU instruction.
+> Highway is a C++ library that provides portable SIMD/vector intrinsics.
 
 **Project:** Harlinn.highway
 
@@ -619,7 +638,7 @@ Packages Dear ImGui and ImPlot as a single dll.
 **Project:** Harlinn.ImGui
 
 ### [JasPer Image Processing/Coding Tool Kit](https://github.com/jasper-software/jasper)
-**Version:** 2.0.33
+**Version:** 4.2.4
 
 **Description:**
 > JasPer Image Processing/Coding Tool Kit
@@ -932,6 +951,16 @@ C++ class to parse NMEA0183 sentences
 
 **Project:** Harlinn.NMEA0183
 
+### [odbc-cpp-wrapper](https://github.com/SAP/odbc-cpp-wrapper)
+
+**Version:** 1.1
+
+**Description:**
+odbc-cpp-wrapper is an object-oriented C++-wrapper of the ODBC API.
+
+**Project:** Harlinn.odbc-cpp
+
+
 ### [OpenAL Soft is an LGPL-licensed, cross-platform, software implementation of the OpenAL 3D audio API.](http://openal-soft.org)
 **Version:** 1.21.1
 
@@ -998,7 +1027,7 @@ C++ class to parse NMEA0183 sentences
 **Project:** Harlinn.png
 
 ### [PROJ is a generic coordinate transformation software](https://proj.org/)
-**Version:** 8.1.0
+**Version:** 9.4.1
 
 **Description:**
 > PROJ is a generic coordinate transformation software that transforms geospatial 
@@ -1229,7 +1258,7 @@ Skia Color Management
 **Project:** Harlinn.szip
 
 ### [LibTIFF](https://libtiff.gitlab.io/libtiff/)
-**Version:** 4.3.0 
+**Version:** 4.6.0t 
 
 **Description:**
 > This software provides support for the Tag Image File Format (TIFF), a widely used format for storing image data.
@@ -1345,7 +1374,7 @@ Skia Color Management
 **Project:** Harlinn.xmptoolkitsdk
 
 ### [libyuv](https://chromium.googlesource.com/libyuv/libyuv/)
-**Version:** main as of 2021-09-07
+**Version:** 1891 (main as of 2024-07-14)
 
 **Description:**
 > libyuv is an open source project that includes YUV scaling and conversion functionality.

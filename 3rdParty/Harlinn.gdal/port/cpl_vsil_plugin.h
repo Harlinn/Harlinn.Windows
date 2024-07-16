@@ -1,4 +1,3 @@
-#pragma once
 /******************************************************************************
  *
  * Project:  CPL - Common Portability Library
@@ -30,14 +29,15 @@
 #ifndef CPL_VSIL_PLUGIN_H_INCLUDED
 #define CPL_VSIL_PLUGIN_H_INCLUDED
 
-#include <port/cpl_port.h>
-#include <port/cpl_string.h>
-#include <port/cpl_vsi.h>
-#include <port/cpl_vsi_virtual.h>
+#include "cpl_port.h"
+#include "cpl_string.h"
+#include "cpl_vsi.h"
+#include "cpl_vsi_virtual.h"
 
 //! @cond Doxygen_Suppress
 
-namespace cpl {
+namespace cpl
+{
 
 /************************************************************************/
 /*                     VSIPluginFilesystemHandler                         */
@@ -49,48 +49,50 @@ class VSIPluginFilesystemHandler : public VSIFilesystemHandler
 {
     CPL_DISALLOW_COPY_ASSIGN(VSIPluginFilesystemHandler)
 
-private:
-    const char*         m_Prefix;
-    const VSIFilesystemPluginCallbacksStruct* m_cb;
+  private:
+    const char *m_Prefix;
+    const VSIFilesystemPluginCallbacksStruct *m_cb;
+    bool m_bWarnedAdviseReadImplemented = false;
 
-protected:
+  protected:
     friend class VSIPluginHandle;
-    HGDAL_EXPORT VSIPluginHandle* CreatePluginHandle(void *cbData);
-    HGDAL_EXPORT const char* GetCallbackFilename(const char* pszFilename);
-    HGDAL_EXPORT bool IsValidFilename(const char *pszFilename);
+    VSIPluginHandle *CreatePluginHandle(void *cbData);
+    const char *GetCallbackFilename(const char *pszFilename);
+    bool IsValidFilename(const char *pszFilename);
 
-    HGDAL_EXPORT vsi_l_offset    Tell( void *pFile );
-    HGDAL_EXPORT int             Seek( void *pFile, vsi_l_offset nOffset, int nWhence );
-    HGDAL_EXPORT size_t          Read( void *pFile, void *pBuffer, size_t nSize, size_t nCount );
-    HGDAL_EXPORT int             ReadMultiRange( void *pFile, int nRanges, void ** ppData, const vsi_l_offset* panOffsets, const size_t* panSizes );
-    HGDAL_EXPORT VSIRangeStatus  GetRangeStatus( void *pFile, vsi_l_offset nOffset, vsi_l_offset nLength );
-    HGDAL_EXPORT int             Eof( void *pFile );
-    HGDAL_EXPORT size_t          Write( void *pFile, const void *pBuffer, size_t nSize,size_t nCount);
-    HGDAL_EXPORT int             Flush( void *pFile );
-    HGDAL_EXPORT int             Truncate( void *pFile, vsi_l_offset nNewSize );
-    HGDAL_EXPORT int             Close( void *pFile );
+    vsi_l_offset Tell(void *pFile);
+    int Seek(void *pFile, vsi_l_offset nOffset, int nWhence);
+    size_t Read(void *pFile, void *pBuffer, size_t nSize, size_t nCount);
+    int ReadMultiRange(void *pFile, int nRanges, void **ppData,
+                       const vsi_l_offset *panOffsets, const size_t *panSizes);
+    void AdviseRead(void *pFile, int nRanges, const vsi_l_offset *panOffsets,
+                    const size_t *panSizes);
+    VSIRangeStatus GetRangeStatus(void *pFile, vsi_l_offset nOffset,
+                                  vsi_l_offset nLength);
+    int Eof(void *pFile);
+    size_t Write(void *pFile, const void *pBuffer, size_t nSize, size_t nCount);
+    int Flush(void *pFile);
+    int Truncate(void *pFile, vsi_l_offset nNewSize);
+    int Close(void *pFile);
 
-public:
-    HGDAL_EXPORT VSIPluginFilesystemHandler( const char *pszPrefix,
-                                const VSIFilesystemPluginCallbacksStruct *cb);
-    HGDAL_EXPORT ~VSIPluginFilesystemHandler() override;
+  public:
+    VSIPluginFilesystemHandler(const char *pszPrefix,
+                               const VSIFilesystemPluginCallbacksStruct *cb);
+    ~VSIPluginFilesystemHandler() override;
 
-    HGDAL_EXPORT VSIVirtualHandle *Open( const char *pszFilename,
-                            const char *pszAccess,
-                            bool bSetError,
-                            CSLConstList /* papszOptions */ ) override;
+    VSIVirtualHandle *Open(const char *pszFilename, const char *pszAccess,
+                           bool bSetError,
+                           CSLConstList /* papszOptions */) override;
 
-    HGDAL_EXPORT int Stat        ( const char *pszFilename, VSIStatBufL *pStatBuf, int nFlags ) override;
-    HGDAL_EXPORT int Unlink      ( const char * pszFilename ) override;
-    HGDAL_EXPORT int Rename      ( const char * oldpath, const char * /*newpath*/ ) override;
-    HGDAL_EXPORT int Mkdir       ( const char * pszDirname, long nMode ) override;
-    HGDAL_EXPORT int Rmdir       ( const char * pszDirname ) override;
-    char **ReadDir  ( const char *pszDirname ) override
-                        { return ReadDirEx(pszDirname, 0); }
-    HGDAL_EXPORT char **ReadDirEx( const char * pszDirname, int nMaxFiles ) override;
-    HGDAL_EXPORT char **SiblingFiles( const char * pszFilename ) override;
-    HGDAL_EXPORT int HasOptimizedReadMultiRange(const char* pszPath ) override;
-    
+    int Stat(const char *pszFilename, VSIStatBufL *pStatBuf,
+             int nFlags) override;
+    int Unlink(const char *pszFilename) override;
+    int Rename(const char *oldpath, const char * /*newpath*/) override;
+    int Mkdir(const char *pszDirname, long nMode) override;
+    int Rmdir(const char *pszDirname) override;
+    char **ReadDirEx(const char *pszDirname, int nMaxFiles) override;
+    char **SiblingFiles(const char *pszFilename) override;
+    int HasOptimizedReadMultiRange(const char *pszPath) override;
 };
 
 /************************************************************************/
@@ -102,28 +104,32 @@ class VSIPluginHandle : public VSIVirtualHandle
     CPL_DISALLOW_COPY_ASSIGN(VSIPluginHandle)
 
   protected:
-    VSIPluginFilesystemHandler* poFS;
+    VSIPluginFilesystemHandler *poFS;
     void *cbData;
 
   public:
+    VSIPluginHandle(VSIPluginFilesystemHandler *poFS, void *cbData);
+    ~VSIPluginHandle() override;
 
-    HGDAL_EXPORT VSIPluginHandle( VSIPluginFilesystemHandler* poFS, void *cbData);
-    HGDAL_EXPORT ~VSIPluginHandle() override;
-
-    HGDAL_EXPORT vsi_l_offset    Tell() override;
-    HGDAL_EXPORT int             Seek( vsi_l_offset nOffset, int nWhence ) override;
-    HGDAL_EXPORT size_t          Read( void *pBuffer, size_t nSize, size_t nCount ) override;
-    HGDAL_EXPORT int             ReadMultiRange( int nRanges, void ** ppData, const vsi_l_offset* panOffsets, const size_t* panSizes ) override;
-    HGDAL_EXPORT VSIRangeStatus  GetRangeStatus( vsi_l_offset nOffset, vsi_l_offset nLength ) override;
-    HGDAL_EXPORT int             Eof() override;
-    HGDAL_EXPORT size_t          Write( const void *pBuffer, size_t nSize,size_t nCount) override;
-    HGDAL_EXPORT int             Flush() override;
-    HGDAL_EXPORT int             Truncate( vsi_l_offset nNewSize ) override;
-    HGDAL_EXPORT int             Close() override;
+    vsi_l_offset Tell() override;
+    int Seek(vsi_l_offset nOffset, int nWhence) override;
+    size_t Read(void *pBuffer, size_t nSize, size_t nCount) override;
+    int ReadMultiRange(int nRanges, void **ppData,
+                       const vsi_l_offset *panOffsets,
+                       const size_t *panSizes) override;
+    void AdviseRead(int nRanges, const vsi_l_offset *panOffsets,
+                    const size_t *panSizes) override;
+    VSIRangeStatus GetRangeStatus(vsi_l_offset nOffset,
+                                  vsi_l_offset nLength) override;
+    int Eof() override;
+    size_t Write(const void *pBuffer, size_t nSize, size_t nCount) override;
+    int Flush() override;
+    int Truncate(vsi_l_offset nNewSize) override;
+    int Close() override;
 };
 
-} // namespace cpl
+}  // namespace cpl
 
 //! @endcond
 
-#endif // CPL_VSIL_PLUGIN_H_INCLUDED
+#endif  // CPL_VSIL_PLUGIN_H_INCLUDED

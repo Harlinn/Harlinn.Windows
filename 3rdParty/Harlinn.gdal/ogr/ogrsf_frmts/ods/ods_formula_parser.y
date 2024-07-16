@@ -29,11 +29,10 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
-#include <port/cpl_conv.h>
-#include <port/cpl_string.h>
+#include "cpl_conv.h"
+#include "cpl_string.h"
 #include "ods_formula.h"
 
-CPL_CVSID("$Id$")
 
 #define YYSTYPE  ods_formula_node*
 

@@ -76,16 +76,72 @@
 /* The configuration header file should be included first. */
 #include <jasper/jas_config.h>
 
+#include <jasper/jas_types.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+/*!
+ * @addtogroup module_string
+ * @{
+ */
 
 /******************************************************************************\
 * Functions.
 \******************************************************************************/
 
-/* Copy a string (a la strdup). */
-JAS_DLLEXPORT char *jas_strdup(const char *);
+/*!
+@brief
+Create a copy of a null-terminated string.
+
+@details
+This function has a behavior similar to the well-known strdup function.
+*/
+JAS_EXPORT
+char *jas_strdup(const char *);
+
+/*!
+@brief
+Extract tokens from a string.
+
+@details
+This function has a similar behavior as @c strtok_r in the POSIX standard.
+*/
+JAS_EXPORT
+char *jas_strtok(char *str, const char *delim, char **saveptr);
+
+/*!
+@brief
+Split a string into tokens based on specified delimiters.
+
+@param string
+A pointer to a null-terminated string to be split into tokens.
+@param delim
+A pointer to a null-terminated string contained characters used to delimit
+tokens.
+@param tokens_buf
+A pointer to the output token array.
+@param max_tokens_buf
+A pointer to the allocated size of the token array.
+@param num_tokens_buf
+A pointer to the number of elements in the token array.
+
+@details
+The memory to hold token information is allocated via jas_malloc()
+and friends.
+
+@returns
+If successful, zero is returned.
+Otherwise, a nonzero value is returned.
+*/
+JAS_EXPORT
+int jas_stringtokenize(const char *string, const char *delim,
+  char ***tokens_buf, size_t *max_tokens_buf, size_t *num_tokens_buf);
+
+/*!
+ * @}
+ */
 
 #ifdef __cplusplus
 }

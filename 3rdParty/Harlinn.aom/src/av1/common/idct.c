@@ -21,7 +21,7 @@
 #include "av1/common/enums.h"
 #include "av1/common/idct.h"
 
-int av1_get_tx_scale(const TX_SIZE tx_size) {
+HAOM_EXPORT int av1_get_tx_scale(const TX_SIZE tx_size) {
   const int pels = tx_size_2d[tx_size];
   // Largest possible pels is 4096 (64x64).
   return (pels > 256) + (pels > 1024);
@@ -31,7 +31,7 @@ int av1_get_tx_scale(const TX_SIZE tx_size) {
 // that input and output could be the same buffer.
 
 // idct
-void av1_highbd_iwht4x4_add(const tran_low_t *input, uint8_t *dest, int stride,
+HAOM_EXPORT void av1_highbd_iwht4x4_add(const tran_low_t *input, uint8_t *dest, int stride,
                             int eob, int bd) {
   if (eob > 1)
     av1_highbd_iwht4x4_16_add(input, dest, stride, bd);
@@ -301,7 +301,7 @@ void av1_inv_txfm_add_c(const tran_low_t *dqcoeff, uint8_t *dst, int stride,
   }
 }
 
-void av1_inverse_transform_block(const MACROBLOCKD *xd,
+HAOM_EXPORT void av1_inverse_transform_block(const MACROBLOCKD *xd,
                                  const tran_low_t *dqcoeff, int plane,
                                  TX_TYPE tx_type, TX_SIZE tx_size, uint8_t *dst,
                                  int stride, int eob, int reduced_tx_set) {

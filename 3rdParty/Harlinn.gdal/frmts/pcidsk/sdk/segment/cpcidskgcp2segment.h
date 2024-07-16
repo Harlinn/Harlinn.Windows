@@ -1,4 +1,3 @@
-#pragma once
 /******************************************************************************
  *
  * Purpose: Declaration of access to a PCIDSK GCP2 Segment
@@ -28,9 +27,9 @@
 #ifndef INCLUDE_SEGMENT_CPCIDSKGCP2SEGMENT_H
 #define INCLUDE_SEGMENT_CPCIDSKGCP2SEGMENT_H
 
-#include "../pcidsk_gcp.h"
-#include "../pcidsk_gcpsegment.h"
-#include "cpcidsksegment.h"
+#include "pcidsk_gcp.h"
+#include "pcidsk_gcpsegment.h"
+#include "segment/cpcidsksegment.h"
 
 namespace PCIDSK {
     class CPCIDSKGCP2Segment : virtual public PCIDSKGCPSegment,
@@ -58,7 +57,19 @@ namespace PCIDSK {
         void Load();
         void RebuildSegmentData(void);
         bool loaded_;
-        struct PCIDSKGCP2SegInfo;
+
+        struct PCIDSKGCP2SegInfo
+        {
+            std::vector<PCIDSK::GCP> gcps;
+            unsigned int num_gcps;
+            PCIDSKBuffer seg_data;
+
+            std::string map_units;   ///< PCI mapunits string
+            std::string proj_parms;  ///< Additional projection parameters
+            unsigned int num_proj;
+            bool changed;
+        };
+
         PCIDSKGCP2SegInfo* pimpl_;
     };
 }

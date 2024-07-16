@@ -1,4 +1,3 @@
-#pragma once
 /******************************************************************************
  *
  * Purpose:  Declaration of the MetadataSegment class.
@@ -34,8 +33,8 @@
 #ifndef INCLUDE_SEGMENT_METADATASEGMENT_H
 #define INCLUDE_SEGMENT_METADATASEGMENT_H
 
-#include "../pcidsk_buffer.h"
-#include "cpcidsksegment.h"
+#include "pcidsk_buffer.h"
+#include "segment/cpcidsksegment.h"
 
 #include <map>
 #include <string>

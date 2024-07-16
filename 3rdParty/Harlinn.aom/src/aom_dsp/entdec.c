@@ -140,7 +140,7 @@ static int od_ec_dec_normalize(od_ec_dec *dec, od_ec_window dif, unsigned rng,
 /*Initializes the decoder.
   buf: The input buffer to use.
   storage: The size in bytes of the input buffer.*/
-void od_ec_dec_init(od_ec_dec *dec, const unsigned char *buf,
+HAOM_EXPORT void od_ec_dec_init(od_ec_dec *dec, const unsigned char *buf,
                     uint32_t storage) {
   dec->buf = buf;
   dec->tell_offs = 10 - (OD_EC_WINDOW_SIZE - 8);
@@ -155,7 +155,7 @@ void od_ec_dec_init(od_ec_dec *dec, const unsigned char *buf,
 /*Decode a single binary value.
   f: The probability that the bit is one, scaled by 32768.
   Return: The value decoded (0 or 1).*/
-int od_ec_decode_bool_q15(od_ec_dec *dec, unsigned f) {
+HAOM_EXPORT int od_ec_decode_bool_q15(od_ec_dec *dec, unsigned f) {
   od_ec_window dif;
   od_ec_window vw;
   unsigned r;
@@ -190,7 +190,7 @@ int od_ec_decode_bool_q15(od_ec_dec *dec, unsigned f) {
   nsyms: The number of symbols in the alphabet.
          This should be at most 16.
   Return: The decoded symbol s.*/
-int od_ec_decode_cdf_q15(od_ec_dec *dec, const uint16_t *icdf, int nsyms) {
+HAOM_EXPORT int od_ec_decode_cdf_q15(od_ec_dec *dec, const uint16_t *icdf, int nsyms) {
   od_ec_window dif;
   unsigned r;
   unsigned c;
@@ -205,14 +205,14 @@ int od_ec_decode_cdf_q15(od_ec_dec *dec, const uint16_t *icdf, int nsyms) {
   assert(dif >> (OD_EC_WINDOW_SIZE - 16) < r);
   assert(icdf[nsyms - 1] == OD_ICDF(CDF_PROB_TOP));
   assert(32768U <= r);
-  assert(7 - EC_PROB_SHIFT - CDF_SHIFT >= 0);
+  assert(7 - EC_PROB_SHIFT >= 0);
   c = (unsigned)(dif >> (OD_EC_WINDOW_SIZE - 16));
   v = r;
   ret = -1;
   do {
     u = v;
     v = ((r >> 8) * (uint32_t)(icdf[++ret] >> EC_PROB_SHIFT) >>
-         (7 - EC_PROB_SHIFT - CDF_SHIFT));
+         (7 - EC_PROB_SHIFT));
     v += EC_MIN_PROB * (N - ret);
   } while (c < v);
   assert(v < u);
@@ -228,7 +228,7 @@ int od_ec_decode_cdf_q15(od_ec_dec *dec, const uint16_t *icdf, int nsyms) {
   Return: The number of bits.
           This will always be slightly larger than the exact value (e.g., all
            rounding error is in the positive direction).*/
-int od_ec_dec_tell(const od_ec_dec *dec) {
+HAOM_EXPORT int od_ec_dec_tell(const od_ec_dec *dec) {
   /*There is a window of bits stored in dec->dif. The difference
      (dec->bptr - dec->buf) tells us how many bytes have been read into this
      window. The difference (dec->cnt - dec->tell_offs) tells us how many of
@@ -242,6 +242,6 @@ int od_ec_dec_tell(const od_ec_dec *dec) {
   Return: The number of bits scaled by 2**OD_BITRES.
           This will always be slightly larger than the exact value (e.g., all
            rounding error is in the positive direction).*/
-uint32_t od_ec_dec_tell_frac(const od_ec_dec *dec) {
+HAOM_EXPORT uint32_t od_ec_dec_tell_frac(const od_ec_dec *dec) {
   return od_ec_tell_frac(od_ec_dec_tell(dec), dec->rng);
 }

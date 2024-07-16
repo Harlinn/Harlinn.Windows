@@ -1,4 +1,3 @@
-#pragma once
 /******************************************************************************
  *
  * Purpose:  Declaration of the SysTileDir class.
@@ -36,9 +35,9 @@
 #ifndef PCIDSK_SEGMENT_SYSTEM_TILE_DIRECTORY_H
 #define PCIDSK_SEGMENT_SYSTEM_TILE_DIRECTORY_H
 
-#include "../pcidsk_config.h"
-#include "../pcidsk_segment.h"
-#include "cpcidsksegment.h"
+#include "pcidsk_config.h"
+#include "pcidsk_segment.h"
+#include "segment/cpcidsksegment.h"
 
 namespace PCIDSK
 {

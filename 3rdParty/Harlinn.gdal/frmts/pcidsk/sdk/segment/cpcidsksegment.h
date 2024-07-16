@@ -1,4 +1,3 @@
-#pragma once
 /******************************************************************************
  *
  * Purpose:  Declaration of the CPCIDSKSegment class.
@@ -29,10 +28,10 @@
 #ifndef INCLUDE_SEGMENT_PCIDSKSEGMENT_H
 #define INCLUDE_SEGMENT_PCIDSKSEGMENT_H
 
-#include "../pcidsk_config.h"
-#include "../pcidsk_types.h"
-#include "../pcidsk_buffer.h"
-#include "../pcidsk_segment.h"
+#include "pcidsk_config.h"
+#include "pcidsk_types.h"
+#include "pcidsk_buffer.h"
+#include "pcidsk_segment.h"
 
 #include <string>
 #include <vector>

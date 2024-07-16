@@ -1,4 +1,3 @@
-#pragma once
 #ifndef pdstemplates_H
 #define pdstemplates_H
 #include "grib2.h"

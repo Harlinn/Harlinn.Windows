@@ -23,12 +23,13 @@
 // Reads 'size' bytes from 'file' into 'buf' with some fault tolerance.
 // Returns true on success.
 static int file_read(void *buf, size_t size, FILE *file) {
-  const int kMaxRetries = 5;
-  int retry_count = 0;
-  int file_error;
+  const int kMaxTries = 5;
+  int try_count = 0;
+  int file_error = 0;
   size_t len = 0;
-  do {
+  while (!feof(file) && len < size && try_count < kMaxTries) {
     const size_t n = fread((uint8_t *)buf + len, 1, size - len, file);
+    ++try_count;
     len += n;
     file_error = ferror(file);
     if (file_error) {
@@ -41,13 +42,13 @@ static int file_read(void *buf, size_t size, FILE *file) {
         return 0;
       }
     }
-  } while (!feof(file) && len < size && ++retry_count < kMaxRetries);
+  }
 
   if (!feof(file) && len != size) {
     fprintf(stderr,
             "Error reading file: %u of %u bytes read,"
-            " error: %d, retries: %d, %d: %s\n",
-            (uint32_t)len, (uint32_t)size, file_error, retry_count, errno,
+            " error: %d, tries: %d, %d: %s\n",
+            (uint32_t)len, (uint32_t)size, file_error, try_count, errno,
             strerror(errno));
   }
   return len == size;
@@ -847,7 +848,7 @@ static void y4m_convert_null(y4m_input *_y4m, unsigned char *_dst,
 
 static const char TAG[] = "YUV4MPEG2";
 
-int y4m_input_open(y4m_input *y4m_ctx, FILE *file, char *skip_buffer,
+HAOM_EXPORT int y4m_input_open(y4m_input *y4m_ctx, FILE *file, char *skip_buffer,
                    int num_skip, aom_chroma_sample_position_t csp,
                    int only_420) {
   // File must start with |TAG|.
@@ -896,7 +897,7 @@ int y4m_input_open(y4m_input *y4m_ctx, FILE *file, char *skip_buffer,
     return -1;
   }
   if (csp == AOM_CSP_COLOCATED) {
-    // TODO(any): check the right way to handle this is y4m
+    // TODO(any): check the right way to handle this in y4m
     fprintf(stderr,
             "Ignoring colocated chroma sample position for reading in Y4M\n");
   }
@@ -1141,18 +1142,24 @@ int y4m_input_open(y4m_input *y4m_ctx, FILE *file, char *skip_buffer,
     y4m_ctx->dst_buf = (unsigned char *)malloc(y4m_ctx->dst_buf_sz);
   else
     y4m_ctx->dst_buf = (unsigned char *)malloc(2 * y4m_ctx->dst_buf_sz);
+  if (!y4m_ctx->dst_buf) return -1;
 
-  if (y4m_ctx->aux_buf_sz > 0)
+  if (y4m_ctx->aux_buf_sz > 0) {
     y4m_ctx->aux_buf = (unsigned char *)malloc(y4m_ctx->aux_buf_sz);
+    if (!y4m_ctx->aux_buf) {
+      free(y4m_ctx->dst_buf);
+      return -1;
+    }
+  }
   return 0;
 }
 
-void y4m_input_close(y4m_input *_y4m) {
+HAOM_EXPORT void y4m_input_close(y4m_input *_y4m) {
   free(_y4m->dst_buf);
   free(_y4m->aux_buf);
 }
 
-int y4m_input_fetch_frame(y4m_input *_y4m, FILE *_fin, aom_image_t *_img) {
+HAOM_EXPORT int y4m_input_fetch_frame(y4m_input *_y4m, FILE *_fin, aom_image_t *_img) {
   char frame[6];
   int pic_sz;
   int c_w;
@@ -1195,6 +1202,7 @@ int y4m_input_fetch_frame(y4m_input *_y4m, FILE *_fin, aom_image_t *_img) {
   _img->fmt = _y4m->aom_fmt;
   _img->w = _img->d_w = _y4m->pic_w;
   _img->h = _img->d_h = _y4m->pic_h;
+  _img->bit_depth = _y4m->bit_depth;
   _img->x_chroma_shift = _y4m->dst_c_dec_h >> 1;
   _img->y_chroma_shift = _y4m->dst_c_dec_v >> 1;
   _img->bps = _y4m->bps;

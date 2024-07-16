@@ -1,4 +1,3 @@
-#pragma once
 /******************************************************************************
  *
  * Purpose: Declaration of the PCIDSK::GCP class.

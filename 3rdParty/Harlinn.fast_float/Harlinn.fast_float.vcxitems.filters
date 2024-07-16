@@ -1,0 +1,66 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="include">
+      <UniqueIdentifier>{e77234f0-ae71-4e63-bc09-495e7b5fe968}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Readme">
+      <UniqueIdentifier>{726c250b-5b65-4fe2-a562-0f53a039ecbe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\fast_float">
+      <UniqueIdentifier>{178394cc-3f68-4e76-9207-a9b4130b97cf}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\fast_float\ascii_number.h">
+      <Filter>include\fast_float</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\fast_float\bigint.h">
+      <Filter>include\fast_float</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\fast_float\constexpr_feature_detect.h">
+      <Filter>include\fast_float</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\fast_float\decimal_to_binary.h">
+      <Filter>include\fast_float</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\fast_float\digit_comparison.h">
+      <Filter>include\fast_float</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\fast_float\fast_float.h">
+      <Filter>include\fast_float</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\fast_float\fast_table.h">
+      <Filter>include\fast_float</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\fast_float\float_common.h">
+      <Filter>include\fast_float</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\fast_float\parse_number.h">
+      <Filter>include\fast_float</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)Readme\AUTHORS">
+      <Filter>Readme</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)Readme\CONTRIBUTORS">
+      <Filter>Readme</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)Readme\LICENSE-APACHE">
+      <Filter>Readme</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)Readme\LICENSE-BOOST">
+      <Filter>Readme</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)Readme\LICENSE-MIT">
+      <Filter>Readme</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)Readme\README.md">
+      <Filter>Readme</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)Readme\SECURITY.md">
+      <Filter>Readme</Filter>
+    </None>
+  </ItemGroup>
+</Project>

@@ -3,6 +3,9 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
+/// @addtogroup libjxl_cpp
+///@{
+///
 /// @file encode_cxx.h
 /// @brief C++ header-only helper for @ref encode.h.
 ///
@@ -12,9 +15,10 @@
 #ifndef JXL_ENCODE_CXX_H_
 #define JXL_ENCODE_CXX_H_
 
-#include <memory>
+#include <jxl/encode.h>
+#include <jxl/memory_manager.h>
 
-#include "jxl/encode.h"
+#include <memory>
 
 #if !(defined(__cplusplus) || defined(c_plusplus))
 #error "This a C++ only header. Use jxl/encode.h from C sources."
@@ -50,3 +54,5 @@ static inline JxlEncoderPtr JxlEncoderMake(
 }
 
 #endif  // JXL_ENCODE_CXX_H_
+
+/// @}

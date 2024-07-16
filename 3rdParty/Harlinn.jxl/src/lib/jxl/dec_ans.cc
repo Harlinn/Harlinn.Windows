@@ -12,9 +12,8 @@
 #include "lib/jxl/ans_common.h"
 #include "lib/jxl/ans_params.h"
 #include "lib/jxl/base/bits.h"
-#include "lib/jxl/base/profiler.h"
+#include "lib/jxl/base/printf_macros.h"
 #include "lib/jxl/base/status.h"
-#include "lib/jxl/common.h"
 #include "lib/jxl/dec_context_map.h"
 #include "lib/jxl/fields.h"
 
@@ -47,7 +46,7 @@ inline int DecodeVarLenUint16(BitReader* input) {
   return 0;
 }
 
-Status ReadHistogram(int precision_bits, std::vector<int>* counts,
+Status ReadHistogram(int precision_bits, std::vector<int32_t>* counts,
                      BitReader* input) {
   int simple_code = input->ReadBits(1);
   if (simple_code == 1) {
@@ -73,9 +72,6 @@ Status ReadHistogram(int precision_bits, std::vector<int>* counts,
     int is_flat = input->ReadBits(1);
     if (is_flat == 1) {
       int alphabet_size = DecodeVarLenUint8(input) + 1;
-      if (alphabet_size == 0) {
-        return JXL_FAILURE("Invalid alphabet size for flat histogram.");
-      }
       *counts = CreateFlatHistogram(alphabet_size, 1 << precision_bits);
       return true;
     }
@@ -158,7 +154,7 @@ Status ReadHistogram(int precision_bits, std::vector<int>* counts,
         (*counts)[i] = prev;
         numsame--;
       } else {
-        int code = logcounts[i];
+        unsigned int code = logcounts[i];
         // omit_pos may not be negative at this point (checked before).
         if (i == static_cast<size_t>(omit_pos)) {
           continue;
@@ -168,7 +164,7 @@ Status ReadHistogram(int precision_bits, std::vector<int>* counts,
           (*counts)[i] = 1;
         } else {
           int bitcount = GetPopulationCountPrecision(code - 1, shift);
-          (*counts)[i] = (1 << (code - 1)) +
+          (*counts)[i] = (1u << (code - 1)) +
                          (input->ReadBits(bitcount) << (code - 1 - bitcount));
         }
       }
@@ -207,9 +203,9 @@ Status DecodeANSCodes(const size_t num_histograms,
             return JXL_STATUS(StatusCode::kNotEnoughBytes,
                               "Not enough bytes for huffman code");
           }
-          return JXL_FAILURE(
-              "Invalid huffman tree number %zu, alphabet size %u", c,
-              alphabet_sizes[c]);
+          return JXL_FAILURE("Invalid huffman tree number %" PRIuS
+                             ", alphabet size %u",
+                             c, alphabet_sizes[c]);
         }
       } else {
         // 0-bit codes does not require extension tables.
@@ -230,12 +226,12 @@ Status DecodeANSCodes(const size_t num_histograms,
     AliasTable::Entry* alias_tables =
         reinterpret_cast<AliasTable::Entry*>(result->alias_tables.get());
     for (size_t c = 0; c < num_histograms; ++c) {
-      std::vector<int> counts;
+      std::vector<int32_t> counts;
       if (!ReadHistogram(ANS_LOG_TAB_SIZE, &counts, in)) {
         return JXL_FAILURE("Invalid histogram bitstream.");
       }
       if (counts.size() > max_alphabet_size) {
-        return JXL_FAILURE("Alphabet size is too long: %zu", counts.size());
+        return JXL_FAILURE("Alphabet size is too long: %" PRIuS, counts.size());
       }
       while (!counts.empty() && counts.back() == 0) {
         counts.pop_back();
@@ -264,7 +260,8 @@ Status DecodeUintConfig(size_t log_alpha_size, HybridUintConfig* uint_config,
                         BitReader* br) {
   br->Refill();
   size_t split_exponent = br->ReadBits(CeilLog2Nonzero(log_alpha_size + 1));
-  size_t msb_in_token = 0, lsb_in_token = 0;
+  size_t msb_in_token = 0;
+  size_t lsb_in_token = 0;
   if (split_exponent != log_alpha_size) {
     // otherwise, msb/lsb don't matter.
     size_t nbits = CeilLog2Nonzero(split_exponent + 1);
@@ -288,9 +285,8 @@ Status DecodeUintConfigs(size_t log_alpha_size,
                          std::vector<HybridUintConfig>* uint_config,
                          BitReader* br) {
   // TODO(veluca): RLE?
-  for (size_t i = 0; i < uint_config->size(); i++) {
-    JXL_RETURN_IF_ERROR(
-        DecodeUintConfig(log_alpha_size, &(*uint_config)[i], br));
+  for (auto& cfg : *uint_config) {
+    JXL_RETURN_IF_ERROR(DecodeUintConfig(log_alpha_size, &cfg, br));
   }
   return true;
 }
@@ -331,7 +327,6 @@ void ANSCode::UpdateMaxNumBits(size_t ctx, size_t symbol) {
 
 Status DecodeHistograms(BitReader* br, size_t num_contexts, ANSCode* code,
                         std::vector<uint8_t>* context_map, bool disallow_lz77) {
-  PROFILER_FUNC;
   JXL_RETURN_IF_ERROR(Bundle::Read(br, &code->lz77));
   if (code->lz77.enabled) {
     num_contexts++;
@@ -346,8 +341,11 @@ Status DecodeHistograms(BitReader* br, size_t num_contexts, ANSCode* code,
   if (num_contexts > 1) {
     JXL_RETURN_IF_ERROR(DecodeContextMap(context_map, &num_histograms, br));
   }
+  JXL_DEBUG_V(
+      4, "Decoded context map of size %" PRIuS " and %" PRIuS " histograms",
+      num_contexts, num_histograms);
   code->lz77.nonserialized_distance_context = context_map->back();
-  code->use_prefix_code = br->ReadFixedBits<1>();
+  code->use_prefix_code = static_cast<bool>(br->ReadFixedBits<1>());
   if (code->use_prefix_code) {
     code->log_alpha_size = PREFIX_MAX_BITS;
   } else {
@@ -359,16 +357,6 @@ Status DecodeHistograms(BitReader* br, size_t num_contexts, ANSCode* code,
   const size_t max_alphabet_size = 1 << code->log_alpha_size;
   JXL_RETURN_IF_ERROR(
       DecodeANSCodes(num_histograms, max_alphabet_size, br, code));
-  // When using LZ77, flat codes might result in valid codestreams with
-  // histograms that potentially allow very large bit counts.
-  // TODO(veluca): in principle, a valid codestream might contain a histogram
-  // that could allow very large numbers of bits that is never used during ANS
-  // decoding. There's no benefit to doing that, though.
-  if (!code->lz77.enabled && code->max_num_bits > 32) {
-    // Just emit a warning as there are many opportunities for false positives.
-    JXL_WARNING("Histogram can represent numbers that are too large: %zu\n",
-                code->max_num_bits);
-  }
   return true;
 }
 

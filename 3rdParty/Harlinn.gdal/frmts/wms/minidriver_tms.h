@@ -1,4 +1,3 @@
-#pragma once
 /******************************************************************************
  * $Id$
  *
@@ -29,16 +28,24 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
-class WMSMiniDriver_TMS : public WMSMiniDriver {
+#ifndef MINIDRIVER_TMS_H_INCLUDED
+#define MINIDRIVER_TMS_H_INCLUDED
+
+class WMSMiniDriver_TMS : public WMSMiniDriver
+{
     int m_nTileXMultiplier = 1;
 
-public:
+  public:
     WMSMiniDriver_TMS();
     virtual ~WMSMiniDriver_TMS();
 
-public:
-    virtual CPLErr Initialize(CPLXMLNode *config, char **papszOpenOptions) override;
-    virtual CPLErr TiledImageRequest(WMSHTTPRequest &request,
-                                     const GDALWMSImageRequestInfo &iri,
-                                     const GDALWMSTiledImageRequestInfo &tiri) override;
+  public:
+    virtual CPLErr Initialize(CPLXMLNode *config,
+                              char **papszOpenOptions) override;
+    virtual CPLErr
+    TiledImageRequest(WMSHTTPRequest &request,
+                      const GDALWMSImageRequestInfo &iri,
+                      const GDALWMSTiledImageRequestInfo &tiri) override;
 };
+
+#endif /* MINIDRIVER_TMS_H_INCLUDED */

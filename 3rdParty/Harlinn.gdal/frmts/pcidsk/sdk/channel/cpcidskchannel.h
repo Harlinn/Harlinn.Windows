@@ -1,4 +1,3 @@
-#pragma once
 /******************************************************************************
  *
  * Purpose:  Declaration of the CPCIDSKChannel Abstract class.
@@ -28,11 +27,11 @@
 #ifndef INCLUDE_CHANNEL_CPCIDSKCHANNEL_H
 #define INCLUDE_CHANNEL_CPCIDSKCHANNEL_H
 
-#include "../pcidsk_config.h"
-#include "../pcidsk_buffer.h"
-#include "../pcidsk_channel.h"
-#include "../core/metadataset.h"
-#include "../core/mutexholder.h"
+#include "pcidsk_config.h"
+#include "pcidsk_buffer.h"
+#include "pcidsk_channel.h"
+#include "core/metadataset.h"
+#include "core/mutexholder.h"
 #include <vector>
 #include <string>
 

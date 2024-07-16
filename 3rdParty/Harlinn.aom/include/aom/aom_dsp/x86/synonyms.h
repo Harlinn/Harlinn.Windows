@@ -46,6 +46,13 @@ static INLINE __m128i xx_loadu_128(const void *a) {
   return _mm_loadu_si128((const __m128i *)a);
 }
 
+// Load 64 bits from each of hi and low, and pack into an SSE register
+// Since directly loading as `int64_t`s and using _mm_set_epi64 may violate
+// the strict aliasing rule, this takes a different approach
+static INLINE __m128i xx_loadu_2x64(const void *hi, const void *lo) {
+  return _mm_unpacklo_epi64(_mm_loadu_si64(lo), _mm_loadu_si64(hi));
+}
+
 static INLINE void xx_storel_32(void *const a, const __m128i v) {
   const int val = _mm_cvtsi128_si32(v);
   memcpy(a, &val, sizeof(val));
@@ -83,6 +90,16 @@ static INLINE __m128i xx_set1_64_from_32i(int32_t a) {
 #else
   return _mm_set1_epi64x((uint32_t)a);
 #endif
+}
+
+// Fill an SSE register using an interleaved pair of values, ie. set the
+// 8 channels to {a, b, a, b, a, b, a, b}, using the same channel ordering
+// as when a register is stored to / loaded from memory.
+//
+// This is useful for rearranging filter kernels for use with the _mm_madd_epi16
+// instruction
+static INLINE __m128i xx_set2_epi16(int16_t a, int16_t b) {
+  return _mm_setr_epi16(a, b, a, b, a, b, a, b);
 }
 
 static INLINE __m128i xx_round_epu16(__m128i v_val_w) {

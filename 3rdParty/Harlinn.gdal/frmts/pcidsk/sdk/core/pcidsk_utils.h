@@ -1,4 +1,3 @@
-#pragma once
 /******************************************************************************
  *
  * Purpose:  PCIDSK library utility functions - private
@@ -28,8 +27,8 @@
 #ifndef INCLUDE_CORE_PCIDSK_UTILS_H
 #define INCLUDE_CORE_PCIDSK_UTILS_H
 
-#include "../pcidsk_config.h"
-#include "../pcidsk_types.h"
+#include "pcidsk_config.h"
+#include "pcidsk_types.h"
 #include <string>
 #include <vector>
 
@@ -60,7 +59,7 @@ namespace PCIDSK
     bool   BigEndianSystem(void);
     void   GetCurrentDateTime( char *out_datetime );
 
-    void   ParseTileFormat(std::string oOptions, int & nTileSize,
+    void   ParseTileFormat(const std::string& oOptions, int & nTileSize,
                            std::string & oCompress);
 
     void   SwapPixels(void* const data,

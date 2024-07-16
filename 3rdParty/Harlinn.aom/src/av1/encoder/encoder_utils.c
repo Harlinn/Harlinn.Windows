@@ -310,7 +310,16 @@ static void configure_static_seg_features(AV1_COMP *cpi) {
   const RATE_CONTROL *const rc = &cpi->rc;
   struct segmentation *const seg = &cm->seg;
 
-  double avg_q = cpi->ppi->p_rc.avg_q;
+  double avg_q;
+#if CONFIG_FPMT_TEST
+  avg_q = ((cpi->ppi->gf_group.frame_parallel_level[cpi->gf_frame_index] > 0) &&
+           (cpi->ppi->fpmt_unit_test_cfg == PARALLEL_SIMULATION_ENCODE))
+              ? cpi->ppi->p_rc.temp_avg_q
+              : cpi->ppi->p_rc.avg_q;
+#else
+  avg_q = cpi->ppi->p_rc.avg_q;
+#endif
+
   int high_q = (int)(avg_q > 48.0);
   int qi_delta;
 
@@ -412,21 +421,22 @@ void av1_apply_active_map(AV1_COMP *cpi) {
   struct segmentation *const seg = &cpi->common.seg;
   unsigned char *const seg_map = cpi->enc_seg.map;
   const unsigned char *const active_map = cpi->active_map.map;
-  int i;
 
   assert(AM_SEGMENT_ID_ACTIVE == CR_SEGMENT_ID_BASE);
 
-  if (frame_is_intra_only(&cpi->common)) {
+  // Disable the active_maps on intra_only frames or if the
+  // input map for the current frame has no inactive blocks.
+  if (frame_is_intra_only(&cpi->common) ||
+      cpi->rc.percent_blocks_inactive == 0) {
     cpi->active_map.enabled = 0;
     cpi->active_map.update = 1;
   }
 
   if (cpi->active_map.update) {
     if (cpi->active_map.enabled) {
-      for (i = 0;
-           i < cpi->common.mi_params.mi_rows * cpi->common.mi_params.mi_cols;
-           ++i)
-        if (seg_map[i] == AM_SEGMENT_ID_ACTIVE) seg_map[i] = active_map[i];
+      const int num_mis =
+          cpi->common.mi_params.mi_rows * cpi->common.mi_params.mi_cols;
+      memcpy(seg_map, active_map, sizeof(active_map[0]) * num_mis);
       av1_enable_segmentation(seg);
       av1_enable_segfeature(seg, AM_SEGMENT_ID_INACTIVE, SEG_LVL_SKIP);
       av1_enable_segfeature(seg, AM_SEGMENT_ID_INACTIVE, SEG_LVL_ALT_LF_Y_H);
@@ -471,8 +481,9 @@ static void process_tpl_stats_frame(AV1_COMP *cpi) {
 
   if (tpl_frame->is_valid) {
     int tpl_stride = tpl_frame->stride;
-    int64_t intra_cost_base = 0;
-    int64_t mc_dep_cost_base = 0;
+    double intra_cost_base = 0;
+    double mc_dep_cost_base = 0;
+    double cbcmp_base = 1;
     const int step = 1 << tpl_data->tpl_stats_block_mis_log2;
     const int row_step = step;
     const int col_step_sr =
@@ -483,19 +494,21 @@ static void process_tpl_stats_frame(AV1_COMP *cpi) {
       for (int col = 0; col < mi_cols_sr; col += col_step_sr) {
         TplDepStats *this_stats = &tpl_stats[av1_tpl_ptr_pos(
             row, col, tpl_stride, tpl_data->tpl_stats_block_mis_log2)];
+        double cbcmp = (double)(this_stats->srcrf_dist);
         int64_t mc_dep_delta =
             RDCOST(tpl_frame->base_rdmult, this_stats->mc_dep_rate,
                    this_stats->mc_dep_dist);
-        intra_cost_base += (this_stats->recrf_dist << RDDIV_BITS);
-        mc_dep_cost_base +=
-            (this_stats->recrf_dist << RDDIV_BITS) + mc_dep_delta;
+        double dist_scaled = (double)(this_stats->recrf_dist << RDDIV_BITS);
+        intra_cost_base += log(dist_scaled) * cbcmp;
+        mc_dep_cost_base += log(dist_scaled + mc_dep_delta) * cbcmp;
+        cbcmp_base += cbcmp;
       }
     }
 
     if (mc_dep_cost_base == 0) {
       tpl_frame->is_valid = 0;
     } else {
-      cpi->rd.r0 = (double)intra_cost_base / mc_dep_cost_base;
+      cpi->rd.r0 = exp((intra_cost_base - mc_dep_cost_base) / cbcmp_base);
       if (is_frame_tpl_eligible(gf_group, cpi->gf_frame_index)) {
         if (cpi->ppi->lap_enabled) {
           double min_boost_factor = sqrt(cpi->ppi->p_rc.baseline_gf_interval);
@@ -509,7 +522,12 @@ static void process_tpl_stats_frame(AV1_COMP *cpi) {
               cpi->ppi->p_rc.gfu_boost, gfu_boost,
               cpi->ppi->p_rc.num_stats_used_for_gfu_boost);
         } else {
-          const int gfu_boost = (int)(200.0 / cpi->rd.r0);
+          // TPL may only look at a subset of frame in the gf group when the
+          // speed feature 'reduce_num_frames' is on, which affects the r0
+          // calcuation. Thus, to compensate for TPL not using all frames a
+          // factor to adjust r0 is used.
+          const int gfu_boost =
+              (int)(200.0 * cpi->ppi->tpl_data.r0_adjust_factor / cpi->rd.r0);
           cpi->ppi->p_rc.gfu_boost = combine_prior_with_tpl_boost(
               MIN_BOOST_COMBINE_FACTOR, MAX_BOOST_COMBINE_FACTOR,
               cpi->ppi->p_rc.gfu_boost, gfu_boost, cpi->rc.frames_to_key);
@@ -530,7 +548,7 @@ void av1_set_size_dependent_vars(AV1_COMP *cpi, int *q, int *bottom_index,
 #if !CONFIG_REALTIME_ONLY
   GF_GROUP *gf_group = &cpi->ppi->gf_group;
   if (cpi->oxcf.algo_cfg.enable_tpl_model &&
-      is_frame_tpl_eligible(gf_group, cpi->gf_frame_index)) {
+      av1_tpl_stats_ready(&cpi->ppi->tpl_data, cpi->gf_frame_index)) {
     process_tpl_stats_frame(cpi);
     av1_tpl_rdmult_setup(cpi);
   }
@@ -543,11 +561,12 @@ void av1_set_size_dependent_vars(AV1_COMP *cpi, int *q, int *bottom_index,
 #if !CONFIG_REALTIME_ONLY
   if (cpi->oxcf.rc_cfg.mode == AOM_Q &&
       cpi->ppi->tpl_data.tpl_frame[cpi->gf_frame_index].is_valid &&
-      is_frame_tpl_eligible(gf_group, cpi->gf_frame_index) &&
-      !is_lossless_requested(&cpi->oxcf.rc_cfg) && !frame_is_intra_only(cm)) {
-    *q = av1_tpl_get_q_index(&cpi->ppi->tpl_data, cpi->gf_frame_index,
-                             cpi->rc.active_worst_quality,
-                             cm->seq_params->bit_depth);
+      !is_lossless_requested(&cpi->oxcf.rc_cfg)) {
+    const RateControlCfg *const rc_cfg = &cpi->oxcf.rc_cfg;
+    const int tpl_q = av1_tpl_get_q_index(
+        &cpi->ppi->tpl_data, cpi->gf_frame_index, cpi->rc.active_worst_quality,
+        cm->seq_params->bit_depth);
+    *q = clamp(tpl_q, rc_cfg->best_allowed_q, rc_cfg->worst_allowed_q);
     *top_index = *bottom_index = *q;
     if (gf_group->update_type[cpi->gf_frame_index] == ARF_UPDATE)
       cpi->ppi->p_rc.arf_q = *q;
@@ -555,8 +574,11 @@ void av1_set_size_dependent_vars(AV1_COMP *cpi, int *q, int *bottom_index,
 
   if (cpi->oxcf.q_cfg.use_fixed_qp_offsets && cpi->oxcf.rc_cfg.mode == AOM_Q) {
     if (is_frame_tpl_eligible(gf_group, cpi->gf_frame_index)) {
+      const double qratio_grad =
+          cpi->ppi->p_rc.baseline_gf_interval > 20 ? 0.2 : 0.3;
       const double qstep_ratio =
-          0.2 + (1.0 - (double)cpi->rc.active_worst_quality / MAXQ) * 0.3;
+          0.2 +
+          (1.0 - (double)cpi->rc.active_worst_quality / MAXQ) * qratio_grad;
       *q = av1_get_q_index_from_qstep_ratio(
           cpi->rc.active_worst_quality, qstep_ratio, cm->seq_params->bit_depth);
       *top_index = *bottom_index = *q;
@@ -564,7 +586,8 @@ void av1_set_size_dependent_vars(AV1_COMP *cpi, int *q, int *bottom_index,
           gf_group->update_type[cpi->gf_frame_index] == KF_UPDATE ||
           gf_group->update_type[cpi->gf_frame_index] == GF_UPDATE)
         cpi->ppi->p_rc.arf_q = *q;
-    } else {
+    } else if (gf_group->layer_depth[cpi->gf_frame_index] <
+               gf_group->max_layer_depth) {
       int this_height = gf_group->layer_depth[cpi->gf_frame_index];
       int arf_q = cpi->ppi->p_rc.arf_q;
       while (this_height > 1) {
@@ -619,7 +642,6 @@ void av1_update_film_grain_parameters_seq(struct AV1_PRIMARY *ppi,
 void av1_update_film_grain_parameters(struct AV1_COMP *cpi,
                                       const AV1EncoderConfig *oxcf) {
   AV1_COMMON *const cm = &cpi->common;
-  cpi->oxcf = *oxcf;
   const TuneCfg *const tune_cfg = &oxcf->tune_cfg;
 
   if (cpi->film_grain_table) {
@@ -641,8 +663,8 @@ void av1_update_film_grain_parameters(struct AV1_COMP *cpi,
       }
     }
   } else if (tune_cfg->film_grain_table_filename) {
-    cpi->film_grain_table = aom_malloc(sizeof(*cpi->film_grain_table));
-    memset(cpi->film_grain_table, 0, sizeof(aom_film_grain_table_t));
+    CHECK_MEM_ERROR(cm, cpi->film_grain_table,
+                    aom_calloc(1, sizeof(*cpi->film_grain_table)));
 
     aom_film_grain_table_read(cpi->film_grain_table,
                               tune_cfg->film_grain_table_filename, cm->error);
@@ -675,6 +697,25 @@ void av1_scale_references(AV1_COMP *cpi, const InterpFilter filter,
         continue;
       }
 
+      // For RTC-SVC: if force_zero_mode_spatial_ref is enabled, check if the
+      // motion search can be skipped for the references: last, golden, altref.
+      // If so, we can skip scaling that reference.
+      if (cpi->ppi->use_svc && cpi->svc.force_zero_mode_spatial_ref &&
+          cpi->ppi->rtc_ref.set_ref_frame_config) {
+        if (ref_frame == LAST_FRAME && cpi->svc.skip_mvsearch_last) continue;
+        if (ref_frame == GOLDEN_FRAME && cpi->svc.skip_mvsearch_gf) continue;
+        if (ref_frame == ALTREF_FRAME && cpi->svc.skip_mvsearch_altref)
+          continue;
+      }
+      // For RTC with superres on: golden reference only needs to be scaled
+      // if it was refreshed in previous frame.
+      if (is_one_pass_rt_params(cpi) &&
+          cpi->oxcf.superres_cfg.enable_superres && ref_frame == GOLDEN_FRAME &&
+          cpi->rc.frame_num_last_gf_refresh <
+              (int)cm->current_frame.frame_number - 1) {
+        continue;
+      }
+
       if (ref->y_crop_width != cm->width || ref->y_crop_height != cm->height) {
         // Replace the reference buffer with a copy having a thicker border,
         // if the reference buffer is higher resolution than the current
@@ -685,7 +726,8 @@ void av1_scale_references(AV1_COMP *cpi, const InterpFilter filter,
           RefCntBuffer *ref_fb = get_ref_frame_buf(cm, ref_frame);
           if (aom_yv12_realloc_with_new_border(
                   &ref_fb->buf, AOM_BORDER_IN_PIXELS,
-                  cm->features.byte_alignment, num_planes) != 0) {
+                  cm->features.byte_alignment, cpi->alloc_pyramid,
+                  num_planes) != 0) {
             aom_internal_error(cm->error, AOM_CODEC_MEM_ERROR,
                                "Failed to allocate frame buffer");
           }
@@ -708,7 +750,7 @@ void av1_scale_references(AV1_COMP *cpi, const InterpFilter filter,
                   &new_fb->buf, cm->width, cm->height,
                   cm->seq_params->subsampling_x, cm->seq_params->subsampling_y,
                   cm->seq_params->use_highbitdepth, AOM_BORDER_IN_PIXELS,
-                  cm->features.byte_alignment, NULL, NULL, NULL, 0)) {
+                  cm->features.byte_alignment, NULL, NULL, NULL, false, 0)) {
             if (force_scaling) {
               // Release the reference acquired in the get_free_fb() call above.
               --new_fb->ref_count;
@@ -716,20 +758,37 @@ void av1_scale_references(AV1_COMP *cpi, const InterpFilter filter,
             aom_internal_error(cm->error, AOM_CODEC_MEM_ERROR,
                                "Failed to allocate frame buffer");
           }
+          bool has_optimized_scaler = av1_has_optimized_scaler(
+              ref->y_crop_width, ref->y_crop_height, new_fb->buf.y_crop_width,
+              new_fb->buf.y_crop_height);
+          if (num_planes > 1) {
+            has_optimized_scaler =
+                has_optimized_scaler &&
+                av1_has_optimized_scaler(
+                    ref->uv_crop_width, ref->uv_crop_height,
+                    new_fb->buf.uv_crop_width, new_fb->buf.uv_crop_height);
+          }
 #if CONFIG_AV1_HIGHBITDEPTH
-          if (use_optimized_scaler && cm->seq_params->bit_depth == AOM_BITS_8)
+          if (use_optimized_scaler && has_optimized_scaler &&
+              cm->seq_params->bit_depth == AOM_BITS_8) {
             av1_resize_and_extend_frame(ref, &new_fb->buf, filter, phase,
                                         num_planes);
-          else
-            av1_resize_and_extend_frame_nonnormative(
-                ref, &new_fb->buf, (int)cm->seq_params->bit_depth, num_planes);
+          } else if (!av1_resize_and_extend_frame_nonnormative(
+                         ref, &new_fb->buf, (int)cm->seq_params->bit_depth,
+                         num_planes)) {
+            aom_internal_error(cm->error, AOM_CODEC_MEM_ERROR,
+                               "Failed to allocate buffer during resize");
+          }
 #else
-          if (use_optimized_scaler)
+          if (use_optimized_scaler && has_optimized_scaler) {
             av1_resize_and_extend_frame(ref, &new_fb->buf, filter, phase,
                                         num_planes);
-          else
-            av1_resize_and_extend_frame_nonnormative(
-                ref, &new_fb->buf, (int)cm->seq_params->bit_depth, num_planes);
+          } else if (!av1_resize_and_extend_frame_nonnormative(
+                         ref, &new_fb->buf, (int)cm->seq_params->bit_depth,
+                         num_planes)) {
+            aom_internal_error(cm->error, AOM_CODEC_MEM_ERROR,
+                               "Failed to allocate buffer during resize");
+          }
 #endif
           cpi->scaled_ref_buf[ref_frame - 1] = new_fb;
           alloc_frame_mvs(cm, new_fb);
@@ -749,27 +808,47 @@ void av1_scale_references(AV1_COMP *cpi, const InterpFilter filter,
 
 BLOCK_SIZE av1_select_sb_size(const AV1EncoderConfig *const oxcf, int width,
                               int height, int number_spatial_layers) {
-  if (oxcf->tool_cfg.superblock_size == AOM_SUPERBLOCK_SIZE_64X64)
+  if (oxcf->tool_cfg.superblock_size == AOM_SUPERBLOCK_SIZE_64X64) {
     return BLOCK_64X64;
-  if (oxcf->tool_cfg.superblock_size == AOM_SUPERBLOCK_SIZE_128X128)
+  }
+  if (oxcf->tool_cfg.superblock_size == AOM_SUPERBLOCK_SIZE_128X128) {
     return BLOCK_128X128;
-
+  }
+#if CONFIG_TFLITE
+  if (oxcf->q_cfg.deltaq_mode == DELTA_Q_USER_RATING_BASED) return BLOCK_64X64;
+#endif
   // Force 64x64 superblock size to increase resolution in perceptual
   // AQ mode.
   if (oxcf->mode == ALLINTRA &&
       (oxcf->q_cfg.deltaq_mode == DELTA_Q_PERCEPTUAL_AI ||
-       oxcf->q_cfg.deltaq_mode == DELTA_Q_USER_RATING_BASED))
+       oxcf->q_cfg.deltaq_mode == DELTA_Q_USER_RATING_BASED)) {
     return BLOCK_64X64;
-
+  }
   assert(oxcf->tool_cfg.superblock_size == AOM_SUPERBLOCK_SIZE_DYNAMIC);
 
   if (number_spatial_layers > 1 ||
       oxcf->resize_cfg.resize_mode != RESIZE_NONE) {
     // Use the configured size (top resolution) for spatial layers or
     // on resize.
-    return AOMMIN(oxcf->frm_dim_cfg.width, oxcf->frm_dim_cfg.height) > 480
+    return AOMMIN(oxcf->frm_dim_cfg.width, oxcf->frm_dim_cfg.height) > 720
                ? BLOCK_128X128
                : BLOCK_64X64;
+  } else if (oxcf->mode == REALTIME) {
+    if (oxcf->tune_cfg.content == AOM_CONTENT_SCREEN) {
+      const TileConfig *const tile_cfg = &oxcf->tile_cfg;
+      const int num_tiles =
+          (1 << tile_cfg->tile_columns) * (1 << tile_cfg->tile_rows);
+      // For multi-thread encode: if the number of (128x128) superblocks
+      // per tile is low use 64X64 superblock.
+      if (oxcf->row_mt == 1 && oxcf->max_threads >= 4 &&
+          oxcf->max_threads >= num_tiles && AOMMIN(width, height) > 720 &&
+          (width * height) / (128 * 128 * num_tiles) <= 38)
+        return BLOCK_64X64;
+      else
+        return AOMMIN(width, height) >= 720 ? BLOCK_128X128 : BLOCK_64X64;
+    } else {
+      return AOMMIN(width, height) > 720 ? BLOCK_128X128 : BLOCK_64X64;
+    }
   }
 
   // TODO(any): Possibly could improve this with a heuristic.
@@ -779,11 +858,27 @@ BLOCK_SIZE av1_select_sb_size(const AV1EncoderConfig *const oxcf, int width,
   // pass encoding, which is why this heuristic is not configured as a
   // speed-feature.
   if (oxcf->superres_cfg.superres_mode == AOM_SUPERRES_NONE &&
-      oxcf->resize_cfg.resize_mode == RESIZE_NONE &&
-      (oxcf->speed >= 1 || oxcf->mode == REALTIME)) {
-    return AOMMIN(width, height) > 480 ? BLOCK_128X128 : BLOCK_64X64;
-  }
+      oxcf->resize_cfg.resize_mode == RESIZE_NONE) {
+    int is_480p_or_lesser = AOMMIN(width, height) <= 480;
+    if (oxcf->speed >= 1 && is_480p_or_lesser) return BLOCK_64X64;
 
+    // For 1080p and lower resolutions, choose SB size adaptively based on
+    // resolution and speed level for multi-thread encode.
+    int is_1080p_or_lesser = AOMMIN(width, height) <= 1080;
+    if (!is_480p_or_lesser && is_1080p_or_lesser && oxcf->mode == GOOD &&
+        oxcf->row_mt == 1 && oxcf->max_threads > 1 && oxcf->speed >= 5)
+      return BLOCK_64X64;
+
+    // For allintra encode, since the maximum partition size is set to 32X32 for
+    // speed>=6, superblock size is set to 64X64 instead of 128X128. This
+    // improves the multithread performance due to reduction in top right delay
+    // and thread sync wastage. Currently, this setting is selectively enabled
+    // only for speed>=9 and resolutions less than 4k since cost update
+    // frequency is set to INTERNAL_COST_UPD_OFF in these cases.
+    const int is_4k_or_larger = AOMMIN(width, height) >= 2160;
+    if (oxcf->mode == ALLINTRA && oxcf->speed >= 9 && !is_4k_or_larger)
+      return BLOCK_64X64;
+  }
   return BLOCK_128X128;
 }
 
@@ -805,7 +900,7 @@ void av1_setup_frame(AV1_COMP *cpi) {
     if (!cpi->ppi->seq_params_locked) {
       set_sb_size(cm->seq_params,
                   av1_select_sb_size(&cpi->oxcf, cm->width, cm->height,
-                                     cpi->svc.number_spatial_layers));
+                                     cpi->ppi->number_spatial_layers));
     }
   } else {
     const RefCntBuffer *const primary_ref_buf = get_primary_ref_frame_buf(cm);
@@ -884,7 +979,17 @@ static void screen_content_tools_determination(
     int *projected_size_pass, PSNR_STATS *psnr) {
   AV1_COMMON *const cm = &cpi->common;
   FeatureFlags *const features = &cm->features;
+
+#if CONFIG_FPMT_TEST
+  projected_size_pass[pass] =
+      ((cpi->ppi->gf_group.frame_parallel_level[cpi->gf_frame_index] > 0) &&
+       (cpi->ppi->fpmt_unit_test_cfg == PARALLEL_SIMULATION_ENCODE))
+          ? cpi->ppi->p_rc.temp_projected_frame_size
+          : cpi->rc.projected_frame_size;
+#else
   projected_size_pass[pass] = cpi->rc.projected_frame_size;
+#endif
+
 #if CONFIG_AV1_HIGHBITDEPTH
   const uint32_t in_bit_depth = cpi->oxcf.input_cfg.input_bit_depth;
   const uint32_t bit_depth = cpi->td.mb.e_mbd.bd;
@@ -896,7 +1001,13 @@ static void screen_content_tools_determination(
   if (pass != 1) return;
 
   const double psnr_diff = psnr[1].psnr[0] - psnr[0].psnr[0];
-  const int is_sc_encoding_much_better = psnr_diff > STRICT_PSNR_DIFF_THRESH;
+  // Calculate % of palette mode to be chosen in a frame from mode decision.
+  const double palette_ratio =
+      (double)cpi->palette_pixel_num / (double)(cm->height * cm->width);
+  const int psnr_diff_is_large = (psnr_diff > STRICT_PSNR_DIFF_THRESH);
+  const int ratio_is_large =
+      ((palette_ratio >= 0.0001) && ((psnr_diff / palette_ratio) > 4));
+  const int is_sc_encoding_much_better = (psnr_diff_is_large || ratio_is_large);
   if (is_sc_encoding_much_better) {
     // Use screen content tools, if we get coding gain.
     features->allow_screen_content_tools = 1;
@@ -975,13 +1086,14 @@ void av1_determine_sc_tools_with_encoding(AV1_COMP *cpi, const int q_orig) {
 
   // Setup necessary params for encoding, including frame source, etc.
 
-  cpi->source =
-      av1_scale_if_required(cm, cpi->unscaled_source, &cpi->scaled_source,
-                            cm->features.interp_filter, 0, false, false);
+  cpi->source = av1_realloc_and_scale_if_required(
+      cm, cpi->unscaled_source, &cpi->scaled_source, cm->features.interp_filter,
+      0, false, false, cpi->oxcf.border_in_pixels, cpi->alloc_pyramid);
   if (cpi->unscaled_last_source != NULL) {
-    cpi->last_source = av1_scale_if_required(
+    cpi->last_source = av1_realloc_and_scale_if_required(
         cm, cpi->unscaled_last_source, &cpi->scaled_last_source,
-        cm->features.interp_filter, 0, false, false);
+        cm->features.interp_filter, 0, false, false, cpi->oxcf.border_in_pixels,
+        cpi->alloc_pyramid);
   }
 
   av1_setup_frame(cpi);
@@ -1005,11 +1117,10 @@ void av1_determine_sc_tools_with_encoding(AV1_COMP *cpi, const int q_orig) {
     set_encoding_params_for_screen_content(cpi, pass);
     av1_set_quantizer(cm, q_cfg->qm_minlevel, q_cfg->qm_maxlevel,
                       q_for_screen_content_quick_run,
-                      q_cfg->enable_chroma_deltaq);
+                      q_cfg->enable_chroma_deltaq, q_cfg->enable_hdr_deltaq);
     av1_set_speed_features_qindex_dependent(cpi, oxcf->speed);
-    if (q_cfg->deltaq_mode != NO_DELTA_Q || q_cfg->enable_chroma_deltaq)
-      av1_init_quantizer(&cpi->enc_quant_dequant_params, &cm->quant_params,
-                         cm->seq_params->bit_depth);
+    av1_init_quantizer(&cpi->enc_quant_dequant_params, &cm->quant_params,
+                       cm->seq_params->bit_depth);
 
     av1_set_variance_partition_thresholds(cpi, q_for_screen_content_quick_run,
                                           0);
@@ -1025,6 +1136,10 @@ void av1_determine_sc_tools_with_encoding(AV1_COMP *cpi, const int q_orig) {
   // Set partition speed feature back.
   cpi->sf.part_sf.partition_search_type = partition_search_type_orig;
   cpi->sf.part_sf.fixed_partition_size = fixed_partition_block_size_orig;
+
+  // Free token related info if screen content coding tools are not enabled.
+  if (!cm->features.allow_screen_content_tools)
+    free_token_info(&cpi->token_info);
 }
 #endif  // CONFIG_REALTIME_ONLY
 
@@ -1043,7 +1158,7 @@ static void fix_interp_filter(InterpFilter *const interp_filter,
       // Only one filter is used. So set the filter at frame level
       for (int i = 0; i < SWITCHABLE_FILTERS; ++i) {
         if (count[i]) {
-          if (i == EIGHTTAP_REGULAR) *interp_filter = i;
+          *interp_filter = i;
           break;
         }
       }
@@ -1093,7 +1208,8 @@ void av1_finalize_encoded_frame(AV1_COMP *const cpi) {
     }
   }
 
-  fix_interp_filter(&cm->features.interp_filter, cpi->td.counts);
+  if (!frame_is_intra_only(cm))
+    fix_interp_filter(&cm->features.interp_filter, cpi->td.counts);
 }
 
 int av1_is_integer_mv(const YV12_BUFFER_CONFIG *cur_picture,
@@ -1208,9 +1324,7 @@ int av1_is_integer_mv(const YV12_BUFFER_CONFIG *cur_picture,
 
 void av1_set_mb_ssim_rdmult_scaling(AV1_COMP *cpi) {
   const CommonModeInfoParams *const mi_params = &cpi->common.mi_params;
-  ThreadData *td = &cpi->td;
-  MACROBLOCK *x = &td->mb;
-  MACROBLOCKD *xd = &x->e_mbd;
+  const MACROBLOCKD *const xd = &cpi->td.mb.e_mbd;
   uint8_t *y_buffer = cpi->source->y_buffer;
   const int y_stride = cpi->source->y_stride;
   const int block_size = BLOCK_16X16;
@@ -1220,7 +1334,6 @@ void av1_set_mb_ssim_rdmult_scaling(AV1_COMP *cpi) {
   const int num_cols = (mi_params->mi_cols + num_mi_w - 1) / num_mi_w;
   const int num_rows = (mi_params->mi_rows + num_mi_h - 1) / num_mi_h;
   double log_sum = 0.0;
-  const int use_hbd = cpi->source->flags & YV12_FLAG_HIGHBITDEPTH;
 
   // Loop through each 16x16 block.
   for (int row = 0; row < num_rows; ++row) {
@@ -1242,13 +1355,8 @@ void av1_set_mb_ssim_rdmult_scaling(AV1_COMP *cpi) {
           buf.buf = y_buffer + row_offset_y * y_stride + col_offset_y;
           buf.stride = y_stride;
 
-          if (use_hbd) {
-            var += av1_high_get_sby_perpixel_variance(cpi, &buf, BLOCK_8X8,
-                                                      xd->bd);
-          } else {
-            var += av1_get_sby_perpixel_variance(cpi, &buf, BLOCK_8X8);
-          }
-
+          var += av1_get_perpixel_variance_facade(cpi, xd, &buf, BLOCK_8X8,
+                                                  AOM_PLANE_Y);
           num_of_var += 1.0;
         }
       }
@@ -1257,10 +1365,22 @@ void av1_set_mb_ssim_rdmult_scaling(AV1_COMP *cpi) {
       // Curve fitting with an exponential model on all 16x16 blocks from the
       // midres dataset.
       var = 67.035434 * (1 - exp(-0.0021489 * var)) + 17.492222;
+
+      // As per the above computation, var will be in the range of
+      // [17.492222, 84.527656], assuming the data type is of infinite
+      // precision. The following assert conservatively checks if var is in the
+      // range of [17.0, 85.0] to avoid any issues due to the precision of the
+      // relevant data type.
+      assert(var > 17.0 && var < 85.0);
       cpi->ssim_rdmult_scaling_factors[index] = var;
       log_sum += log(var);
     }
   }
+
+  // As log_sum holds the geometric mean, it will be in the range
+  // [17.492222, 84.527656]. Hence, in the below loop, the value of
+  // cpi->ssim_rdmult_scaling_factors[index] would be in the range
+  // [0.2069, 4.8323].
   log_sum = exp(log_sum / (double)(num_rows * num_cols));
 
   for (int row = 0; row < num_rows; ++row) {

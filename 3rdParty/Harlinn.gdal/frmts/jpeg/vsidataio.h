@@ -1,4 +1,3 @@
-#pragma once
 /******************************************************************************
  * $Id$
  *
@@ -32,17 +31,17 @@
 #ifndef VSIDATAIO_H_INCLUDED
 #define VSIDATAIO_H_INCLUDED
 
-#include <port/cpl_vsi.h>
+#include "cpl_vsi.h"
 
 CPL_C_START
 #ifdef LIBJPEG_12_PATH
-#  include LIBJPEG_12_PATH
+#include LIBJPEG_12_PATH
 #else
-#  include "jpeglib.h"
+#include "jpeglib.h"
 #endif
 CPL_C_END
 
-void jpeg_vsiio_src (j_decompress_ptr cinfo, VSILFILE * infile);
-void jpeg_vsiio_dest (j_compress_ptr cinfo, VSILFILE * outfile);
+void jpeg_vsiio_src(j_decompress_ptr cinfo, VSILFILE *infile);
+void jpeg_vsiio_dest(j_compress_ptr cinfo, VSILFILE *outfile);
 
-#endif // VSIDATAIO_H_INCLUDED
+#endif  // VSIDATAIO_H_INCLUDED

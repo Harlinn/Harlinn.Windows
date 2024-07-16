@@ -14,19 +14,19 @@
 #include "av1/common/av1_common_int.h"
 #include "av1/common/blockd.h"
 
-PREDICTION_MODE av1_left_block_mode(const MB_MODE_INFO *left_mi) {
+HAOM_EXPORT PREDICTION_MODE av1_left_block_mode(const MB_MODE_INFO *left_mi) {
   if (!left_mi) return DC_PRED;
   assert(!is_inter_block(left_mi) || is_intrabc_block(left_mi));
   return left_mi->mode;
 }
 
-PREDICTION_MODE av1_above_block_mode(const MB_MODE_INFO *above_mi) {
+HAOM_EXPORT PREDICTION_MODE av1_above_block_mode(const MB_MODE_INFO *above_mi) {
   if (!above_mi) return DC_PRED;
   assert(!is_inter_block(above_mi) || is_intrabc_block(above_mi));
   return above_mi->mode;
 }
 
-void av1_set_entropy_contexts(const MACROBLOCKD *xd,
+HAOM_EXPORT void av1_set_entropy_contexts(const MACROBLOCKD *xd,
                               struct macroblockd_plane *pd, int plane,
                               BLOCK_SIZE plane_bsize, TX_SIZE tx_size,
                               int has_eob, int aoff, int loff) {
@@ -55,7 +55,7 @@ void av1_set_entropy_contexts(const MACROBLOCKD *xd,
     memset(l, has_eob, sizeof(*l) * txs_high);
   }
 }
-void av1_reset_entropy_context(MACROBLOCKD *xd, BLOCK_SIZE bsize,
+HAOM_EXPORT void av1_reset_entropy_context(MACROBLOCKD *xd, BLOCK_SIZE bsize,
                                const int num_planes) {
   assert(bsize < BLOCK_SIZES_ALL);
   const int nplanes = 1 + (num_planes - 1) * xd->is_chroma_ref;
@@ -70,7 +70,7 @@ void av1_reset_entropy_context(MACROBLOCKD *xd, BLOCK_SIZE bsize,
   }
 }
 
-void av1_reset_loop_filter_delta(MACROBLOCKD *xd, int num_planes) {
+HAOM_EXPORT void av1_reset_loop_filter_delta(MACROBLOCKD *xd, int num_planes) {
   xd->delta_lf_from_base = 0;
   const int frame_lf_count =
       num_planes > 1 ? FRAME_LF_COUNT : FRAME_LF_COUNT - 2;
@@ -84,7 +84,7 @@ void av1_reset_loop_restoration(MACROBLOCKD *xd, const int num_planes) {
   }
 }
 
-void av1_setup_block_planes(MACROBLOCKD *xd, int ss_x, int ss_y,
+HAOM_EXPORT void av1_setup_block_planes(MACROBLOCKD *xd, int ss_x, int ss_y,
                             const int num_planes) {
   int i;
 

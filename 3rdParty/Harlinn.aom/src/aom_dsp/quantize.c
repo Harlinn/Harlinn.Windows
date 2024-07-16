@@ -11,8 +11,10 @@
 
 #include "aom_dsp/quantize.h"
 #include "aom_mem/aom_mem.h"
+#include "config/aom_dsp_rtcd.h"
 
-void aom_quantize_b_adaptive_helper_c(
+#if !CONFIG_REALTIME_ONLY
+HAOM_EXPORT void aom_quantize_b_adaptive_helper_c(
     const tran_low_t *coeff_ptr, intptr_t n_coeffs, const int16_t *zbin_ptr,
     const int16_t *round_ptr, const int16_t *quant_ptr,
     const int16_t *quant_shift_ptr, tran_low_t *qcoeff_ptr,
@@ -102,8 +104,9 @@ void aom_quantize_b_adaptive_helper_c(
 #endif  // SKIP_EOB_FACTOR_ADJUST
   *eob_ptr = eob + 1;
 }
+#endif  // !CONFIG_REALTIME_ONLY
 
-void aom_quantize_b_helper_c(const tran_low_t *coeff_ptr, intptr_t n_coeffs,
+HAOM_EXPORT void aom_quantize_b_helper_c(const tran_low_t *coeff_ptr, intptr_t n_coeffs,
                              const int16_t *zbin_ptr, const int16_t *round_ptr,
                              const int16_t *quant_ptr,
                              const int16_t *quant_shift_ptr,
@@ -167,7 +170,8 @@ void aom_quantize_b_helper_c(const tran_low_t *coeff_ptr, intptr_t n_coeffs,
 }
 
 #if CONFIG_AV1_HIGHBITDEPTH
-void aom_highbd_quantize_b_adaptive_helper_c(
+#if !CONFIG_REALTIME_ONLY
+HAOM_EXPORT void aom_highbd_quantize_b_adaptive_helper_c(
     const tran_low_t *coeff_ptr, intptr_t n_coeffs, const int16_t *zbin_ptr,
     const int16_t *round_ptr, const int16_t *quant_ptr,
     const int16_t *quant_shift_ptr, tran_low_t *qcoeff_ptr,
@@ -253,8 +257,9 @@ void aom_highbd_quantize_b_adaptive_helper_c(
 #endif  // SKIP_EOB_FACTOR_ADJUST
   *eob_ptr = eob + 1;
 }
+#endif  // !CONFIG_REALTIME_ONLY
 
-void aom_highbd_quantize_b_helper_c(
+HAOM_EXPORT void aom_highbd_quantize_b_helper_c(
     const tran_low_t *coeff_ptr, intptr_t n_coeffs, const int16_t *zbin_ptr,
     const int16_t *round_ptr, const int16_t *quant_ptr,
     const int16_t *quant_shift_ptr, tran_low_t *qcoeff_ptr,
@@ -312,9 +317,10 @@ void aom_highbd_quantize_b_helper_c(
 }
 #endif  // CONFIG_AV1_HIGHBITDEPTH
 
+#if !CONFIG_REALTIME_ONLY
 /* These functions should only be called when quantisation matrices
    are not used. */
-void aom_quantize_b_adaptive_c(const tran_low_t *coeff_ptr, intptr_t n_coeffs,
+HAOM_EXPORT void aom_quantize_b_adaptive_c(const tran_low_t *coeff_ptr, intptr_t n_coeffs,
                                const int16_t *zbin_ptr,
                                const int16_t *round_ptr,
                                const int16_t *quant_ptr,
@@ -328,7 +334,7 @@ void aom_quantize_b_adaptive_c(const tran_low_t *coeff_ptr, intptr_t n_coeffs,
                                    iscan, NULL, NULL, 0);
 }
 
-void aom_quantize_b_32x32_adaptive_c(
+HAOM_EXPORT void aom_quantize_b_32x32_adaptive_c(
     const tran_low_t *coeff_ptr, intptr_t n_coeffs, const int16_t *zbin_ptr,
     const int16_t *round_ptr, const int16_t *quant_ptr,
     const int16_t *quant_shift_ptr, tran_low_t *qcoeff_ptr,
@@ -340,7 +346,7 @@ void aom_quantize_b_32x32_adaptive_c(
                                    iscan, NULL, NULL, 1);
 }
 
-void aom_quantize_b_64x64_adaptive_c(
+HAOM_EXPORT void aom_quantize_b_64x64_adaptive_c(
     const tran_low_t *coeff_ptr, intptr_t n_coeffs, const int16_t *zbin_ptr,
     const int16_t *round_ptr, const int16_t *quant_ptr,
     const int16_t *quant_shift_ptr, tran_low_t *qcoeff_ptr,
@@ -353,7 +359,7 @@ void aom_quantize_b_64x64_adaptive_c(
 }
 
 #if CONFIG_AV1_HIGHBITDEPTH
-void aom_highbd_quantize_b_adaptive_c(
+HAOM_EXPORT void aom_highbd_quantize_b_adaptive_c(
     const tran_low_t *coeff_ptr, intptr_t n_coeffs, const int16_t *zbin_ptr,
     const int16_t *round_ptr, const int16_t *quant_ptr,
     const int16_t *quant_shift_ptr, tran_low_t *qcoeff_ptr,
@@ -365,7 +371,7 @@ void aom_highbd_quantize_b_adaptive_c(
                                           eob_ptr, scan, iscan, NULL, NULL, 0);
 }
 
-void aom_highbd_quantize_b_32x32_adaptive_c(
+HAOM_EXPORT void aom_highbd_quantize_b_32x32_adaptive_c(
     const tran_low_t *coeff_ptr, intptr_t n_coeffs, const int16_t *zbin_ptr,
     const int16_t *round_ptr, const int16_t *quant_ptr,
     const int16_t *quant_shift_ptr, tran_low_t *qcoeff_ptr,
@@ -377,7 +383,7 @@ void aom_highbd_quantize_b_32x32_adaptive_c(
                                           eob_ptr, scan, iscan, NULL, NULL, 1);
 }
 
-void aom_highbd_quantize_b_64x64_adaptive_c(
+HAOM_EXPORT void aom_highbd_quantize_b_64x64_adaptive_c(
     const tran_low_t *coeff_ptr, intptr_t n_coeffs, const int16_t *zbin_ptr,
     const int16_t *round_ptr, const int16_t *quant_ptr,
     const int16_t *quant_shift_ptr, tran_low_t *qcoeff_ptr,
@@ -389,8 +395,9 @@ void aom_highbd_quantize_b_64x64_adaptive_c(
                                           eob_ptr, scan, iscan, NULL, NULL, 2);
 }
 #endif  // CONFIG_AV1_HIGHBITDEPTH
+#endif  // !CONFIG_REALTIME_ONLY
 
-void aom_quantize_b_c(const tran_low_t *coeff_ptr, intptr_t n_coeffs,
+HAOM_EXPORT void aom_quantize_b_c(const tran_low_t *coeff_ptr, intptr_t n_coeffs,
                       const int16_t *zbin_ptr, const int16_t *round_ptr,
                       const int16_t *quant_ptr, const int16_t *quant_shift_ptr,
                       tran_low_t *qcoeff_ptr, tran_low_t *dqcoeff_ptr,
@@ -426,7 +433,7 @@ void aom_quantize_b_64x64_c(const tran_low_t *coeff_ptr, intptr_t n_coeffs,
 }
 
 #if CONFIG_AV1_HIGHBITDEPTH
-void aom_highbd_quantize_b_c(const tran_low_t *coeff_ptr, intptr_t n_coeffs,
+HAOM_EXPORT void aom_highbd_quantize_b_c(const tran_low_t *coeff_ptr, intptr_t n_coeffs,
                              const int16_t *zbin_ptr, const int16_t *round_ptr,
                              const int16_t *quant_ptr,
                              const int16_t *quant_shift_ptr,

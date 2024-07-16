@@ -19,9 +19,9 @@
 #include "grib2api.h"
 #include "engribapi.h"
 #include "myassert.h"
-#include "..\g2clib\gridtemplates.h"
-#include "..\g2clib\pdstemplates.h"
-#include "..\g2clib\drstemplates.h"
+#include "gridtemplates.h"
+#include "pdstemplates.h"
+#include "drstemplates.h"
 
 #ifdef MEMWATCH
 #include "memwatch.h"

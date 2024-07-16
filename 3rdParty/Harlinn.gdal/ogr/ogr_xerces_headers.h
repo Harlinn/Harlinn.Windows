@@ -29,12 +29,14 @@
 #ifndef OGR_XERCES_HEADERS_H
 #define OGR_XERCES_HEADERS_H
 
-#if ((__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 2)) && !defined(_MSC_VER))
+#if ((__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 2)) &&               \
+     !defined(_MSC_VER))
 #pragma GCC system_header
 #endif
 
 #include <xercesc/framework/MemoryManager.hpp>
 #include <xercesc/sax/InputSource.hpp>
+#include <xercesc/sax/Locator.hpp>
 #include <xercesc/util/BinInputStream.hpp>
 #include <xercesc/util/OutOfMemoryException.hpp>
 #include <xercesc/util/PlatformUtils.hpp>

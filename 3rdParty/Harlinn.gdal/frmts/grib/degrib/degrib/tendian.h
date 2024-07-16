@@ -1,4 +1,3 @@
-#pragma once
 /*****************************************************************************
  * tendian.h
  *
@@ -20,7 +19,7 @@ extern "C" {
 #endif /* __cplusplus */
 
 #include "type.h"
-#include <port/cpl_port.h>
+#include "cpl_port.h"
 
 /*
  * MadeOnIntel    ==> LittleEndian
@@ -62,7 +61,7 @@ char memBitWrite (void *Src, size_t srcLen, void *Dst, size_t numBits,
 
 #ifdef __cplusplus
 
-#include <port/cpl_vsi.h>
+#include "cpl_vsi.h"
 
 /* The following #defines are used to make the code easier to read. */
 #ifdef BIG_ENDIAN

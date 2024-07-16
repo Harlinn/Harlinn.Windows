@@ -1,4 +1,3 @@
-#pragma once
 #ifndef EASE_H_
 #define EASE_H_
 

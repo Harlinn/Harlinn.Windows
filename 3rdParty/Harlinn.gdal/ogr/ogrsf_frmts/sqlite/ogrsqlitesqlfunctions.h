@@ -1,4 +1,3 @@
-#pragma once
 /******************************************************************************
  * $Id$
  *
@@ -31,9 +30,9 @@
 #ifndef OGR_SQLITE_SQL_FUNCTIONS_INCLUDED
 #define OGR_SQLITE_SQL_FUNCTIONS_INCLUDED
 
-#include <ogr/ogrsf_frmts/sqlite/ogr_sqlite.h>
+#include "ogr_sqlite.h"
 
-static void* OGRSQLiteRegisterSQLFunctions(sqlite3* hDB);
-static void OGRSQLiteUnregisterSQLFunctions(void* hHandle);
+static void *OGRSQLiteRegisterSQLFunctions(sqlite3 *hDB);
+static void OGRSQLiteUnregisterSQLFunctions(void *hHandle);
 
-#endif // OGR_SQLITE_SQL_FUNCTIONS_INCLUDED
+#endif  // OGR_SQLITE_SQL_FUNCTIONS_INCLUDED

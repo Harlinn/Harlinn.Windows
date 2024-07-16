@@ -1,4 +1,3 @@
-#pragma once
 /******************************************************************************
  * $Id$
  *
@@ -31,10 +30,10 @@
 #ifndef GDAL_JP2METADATA_GENERATOR_H_INCLUDED
 #define GDAL_JP2METADATA_GENERATOR_H_INCLUDED
 
-#include "../port/cpl_string.h"
-#include "../port/cpl_minixml.h"
+#include "cpl_string.h"
+#include "cpl_minixml.h"
 
-HGDAL_EXPORT CPLXMLNode* GDALGMLJP2GenerateMetadata(const CPLString& osTemplateFile,
-                                       const CPLString& osSourceFile);
+CPLXMLNode *GDALGMLJP2GenerateMetadata(const CPLString &osTemplateFile,
+                                       const CPLString &osSourceFile);
 
 #endif /* GDAL_JP2METADATA_GENERATOR_H_INCLUDED */

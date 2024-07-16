@@ -1,4 +1,3 @@
-#pragma once
 /*****************************************************************************
  * meta.h
  *
@@ -29,7 +28,7 @@ extern "C" {
 #endif
 
 #ifdef __cplusplus
-#include <port/cpl_vsi.h>
+#include "cpl_vsi.h"
 #endif
 
 #ifndef GRIB2BIT_ENUM

@@ -19,7 +19,7 @@
 #ifdef BUILDING_HARLINN_ARMADILLO
 #define ARMADILLO_EXPORT __declspec(dllexport)
 #else
-#define ARMADILLO_EXPORT /*__declspec(dllimport)*/
+#define ARMADILLO_EXPORT __declspec(dllimport)
 #pragma comment(lib,"Harlinn.armadillo.lib")
 #endif
 #else

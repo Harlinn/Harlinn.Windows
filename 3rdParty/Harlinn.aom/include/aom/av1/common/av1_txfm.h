@@ -31,13 +31,12 @@ extern "C" {
 #define DO_RANGE_CHECK_CLAMP 0
 #endif
 
-extern const int32_t av1_cospi_arr_data[7][64];
-extern const int32_t av1_sinpi_arr_data[7][5];
+extern const int32_t av1_cospi_arr_data[4][64];
+extern const int32_t av1_sinpi_arr_data[4][5];
 
 #define MAX_TXFM_STAGE_NUM 12
 
 static const int cos_bit_min = 10;
-static const int cos_bit_max = 16;
 
 #define NewSqrt2Bits ((int32_t)12)
 // 2^12 * sqrt(2)
@@ -52,6 +51,29 @@ static INLINE const int32_t *cospi_arr(int n) {
 static INLINE const int32_t *sinpi_arr(int n) {
   return av1_sinpi_arr_data[n - cos_bit_min];
 }
+
+// The reduced bit-width and permuted arrays are only used in the Arm Neon
+// implementations in av1_fwd_txfm2d_neon.c and highbd_fwd_txfm_neon.c for now.
+#if HAVE_NEON
+// Store cospi/sinpi costants in Q2.13 format.
+// See: https://en.wikipedia.org/wiki/Q_(number_format)
+extern const int16_t av1_cospi_arr_q13_data[4][128];
+extern const int16_t av1_sinpi_arr_q13_data[4][4];
+
+extern const int32_t av1_cospi_arr_s32_data[4][66];
+
+static INLINE const int16_t *cospi_arr_q13(int n) {
+  return av1_cospi_arr_q13_data[n - cos_bit_min];
+}
+
+static INLINE const int16_t *sinpi_arr_q13(int n) {
+  return av1_sinpi_arr_q13_data[n - cos_bit_min];
+}
+
+static INLINE const int32_t *cospi_arr_s32(int n) {
+  return av1_cospi_arr_s32_data[n - cos_bit_min];
+}
+#endif  // HAVE_NEON
 
 static INLINE int32_t range_check_value(int32_t value, int8_t bit) {
 #if CONFIG_COEFFICIENT_RANGE_CHECKING
@@ -81,7 +103,7 @@ static INLINE int32_t half_btf(int32_t w0, int32_t in0, int32_t w1, int32_t in1,
                                int bit) {
   int64_t result_64 = (int64_t)(w0 * in0) + (int64_t)(w1 * in1);
   int64_t intermediate = result_64 + (1LL << (bit - 1));
-  // NOTE(david.barker): The value 'result_64' may not necessarily fit
+  // NOTE(rachelbarker): The value 'result_64' may not necessarily fit
   // into 32 bits. However, the result of this function is nominally
   // ROUND_POWER_OF_TWO_64(result_64, bit)
   // and that is required to fit into stage_range[stage] many bits
@@ -204,19 +226,19 @@ static INLINE int get_rect_tx_log_ratio(int col, int row) {
   return 0;  // Invalid
 }
 
-void av1_gen_fwd_stage_range(int8_t *stage_range_col, int8_t *stage_range_row,
+HAOM_EXPORT void av1_gen_fwd_stage_range(int8_t *stage_range_col, int8_t *stage_range_row,
                              const TXFM_2D_FLIP_CFG *cfg, int bd);
 
-void av1_gen_inv_stage_range(int8_t *stage_range_col, int8_t *stage_range_row,
+HAOM_EXPORT void av1_gen_inv_stage_range(int8_t *stage_range_col, int8_t *stage_range_row,
                              const TXFM_2D_FLIP_CFG *cfg, TX_SIZE tx_size,
                              int bd);
 
-void av1_get_fwd_txfm_cfg(TX_TYPE tx_type, TX_SIZE tx_size,
+HAOM_EXPORT void av1_get_fwd_txfm_cfg(TX_TYPE tx_type, TX_SIZE tx_size,
                           TXFM_2D_FLIP_CFG *cfg);
-void av1_get_inv_txfm_cfg(TX_TYPE tx_type, TX_SIZE tx_size,
+HAOM_EXPORT void av1_get_inv_txfm_cfg(TX_TYPE tx_type, TX_SIZE tx_size,
                           TXFM_2D_FLIP_CFG *cfg);
-extern const TXFM_TYPE av1_txfm_type_ls[5][TX_TYPES_1D];
-extern const int8_t av1_txfm_stage_num_list[TXFM_TYPES];
+HAOM_EXPORT extern const TXFM_TYPE av1_txfm_type_ls[5][TX_TYPES_1D];
+HAOM_EXPORT extern const int8_t av1_txfm_stage_num_list[TXFM_TYPES];
 static INLINE int get_txw_idx(TX_SIZE tx_size) {
   return tx_size_wide_log2[tx_size] - tx_size_wide_log2[0];
 }
@@ -224,7 +246,7 @@ static INLINE int get_txh_idx(TX_SIZE tx_size) {
   return tx_size_high_log2[tx_size] - tx_size_high_log2[0];
 }
 
-void av1_range_check_buf(int32_t stage, const int32_t *input,
+HAOM_EXPORT void av1_range_check_buf(int32_t stage, const int32_t *input,
                          const int32_t *buf, int32_t size, int8_t bit);
 #define MAX_TXWH_IDX 5
 #ifdef __cplusplus

@@ -25,7 +25,7 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
-#include "pcidsk_scanint.h"
+#include "core/pcidsk_scanint.h"
 
 namespace PCIDSK
 {

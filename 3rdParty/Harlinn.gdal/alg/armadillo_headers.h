@@ -1,4 +1,3 @@
-#pragma once
 /******************************************************************************
  * $Id$
  *
@@ -31,7 +30,7 @@
 #ifndef ARMADILLO_HEADERS_H
 #define ARMADILLO_HEADERS_H
 
-#include "..\port\cpl_port.h"
+#include "cpl_port.h"
 
 #ifdef HAVE_GCC_SYSTEM_HEADER
 #pragma GCC system_header
@@ -39,4 +38,4 @@
 
 #include "armadillo"
 
-#endif // ARMADILLO_HEADERS_H
+#endif  // ARMADILLO_HEADERS_H

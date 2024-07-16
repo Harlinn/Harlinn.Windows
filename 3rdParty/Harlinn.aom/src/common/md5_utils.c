@@ -45,7 +45,7 @@ static void byteSwap(UWORD32 *buf, unsigned words) {
  * Start MD5 accumulation.  Set bit count to 0 and buffer to mysterious
  * initialization constants.
  */
-void MD5Init(struct MD5Context *ctx) {
+HAOM_EXPORT void MD5Init(struct MD5Context *ctx) {
   ctx->buf[0] = 0x67452301;
   ctx->buf[1] = 0xefcdab89;
   ctx->buf[2] = 0x98badcfe;
@@ -59,7 +59,7 @@ void MD5Init(struct MD5Context *ctx) {
  * Update context to reflect the concatenation of another buffer full
  * of bytes.
  */
-void MD5Update(struct MD5Context *ctx, md5byte const *buf, unsigned len) {
+HAOM_EXPORT void MD5Update(struct MD5Context *ctx, md5byte const *buf, unsigned len) {
   UWORD32 t;
 
   /* Update byte count */
@@ -100,7 +100,7 @@ void MD5Update(struct MD5Context *ctx, md5byte const *buf, unsigned len) {
  * Final wrapup - pad to 64-byte boundary with the bit pattern
  * 1 0* (64-bit count of bits processed, MSB-first)
  */
-void MD5Final(md5byte digest[16], struct MD5Context *ctx) {
+HAOM_EXPORT void MD5Final(md5byte digest[16], struct MD5Context *ctx) {
   int count = ctx->bytes[0] & 0x3f; /* Number of bytes in ctx->in */
   md5byte *p = (md5byte *)ctx->in + count;
 
@@ -150,10 +150,17 @@ void MD5Final(md5byte digest[16], struct MD5Context *ctx) {
 #define AOM_NO_UNSIGNED_OVERFLOW_CHECK \
   __attribute__((no_sanitize("unsigned-integer-overflow")))
 #endif
-#endif
+#if __clang_major__ >= 12
+#define VPX_NO_UNSIGNED_SHIFT_CHECK \
+  __attribute__((no_sanitize("unsigned-shift-base")))
+#endif  // __clang__ >= 12
+#endif  // __clang__
 
 #ifndef AOM_NO_UNSIGNED_OVERFLOW_CHECK
 #define AOM_NO_UNSIGNED_OVERFLOW_CHECK
+#endif
+#ifndef AOM_NO_UNSIGNED_SHIFT_CHECK
+#define AOM_NO_UNSIGNED_SHIFT_CHECK
 #endif
 
 /*
@@ -161,8 +168,8 @@ void MD5Final(md5byte digest[16], struct MD5Context *ctx) {
  * reflect the addition of 16 longwords of new data.  MD5Update blocks
  * the data and converts bytes into longwords for this routine.
  */
-AOM_NO_UNSIGNED_OVERFLOW_CHECK void MD5Transform(UWORD32 buf[4],
-                                                 UWORD32 const in[16]) {
+AOM_NO_UNSIGNED_OVERFLOW_CHECK AOM_NO_UNSIGNED_SHIFT_CHECK HAOM_EXPORT void MD5Transform(
+    UWORD32 buf[4], UWORD32 const in[16]) {
   register UWORD32 a, b, c, d;
 
   a = buf[0];
@@ -245,5 +252,6 @@ AOM_NO_UNSIGNED_OVERFLOW_CHECK void MD5Transform(UWORD32 buf[4],
 }
 
 #undef AOM_NO_UNSIGNED_OVERFLOW_CHECK
+#undef AOM_NO_UNSIGNED_SHIFT_CHECK
 
 #endif

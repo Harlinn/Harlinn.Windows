@@ -8,6 +8,10 @@
  * Media Patent License 1.0 was not distributed with this source code in the
  * PATENTS file, you can obtain it at www.aomedia.org/license/patent.
  */
+
+#include <stdio.h>
+#include <stdlib.h>
+
 #include "av1/decoder/decoder.h"
 #include "av1/decoder/inspection.h"
 #include "av1/common/enums.h"
@@ -18,22 +22,26 @@ static void ifd_init_mi_rc(insp_frame_data *fd, int mi_cols, int mi_rows) {
   fd->mi_rows = mi_rows;
   fd->mi_grid = (insp_mi_data *)aom_malloc(sizeof(insp_mi_data) * fd->mi_rows *
                                            fd->mi_cols);
+  if (!fd->mi_grid) {
+    fprintf(stderr, "Error allocating inspection data\n");
+    abort();
+  }
 }
 
-void ifd_init(insp_frame_data *fd, int frame_width, int frame_height) {
+HAOM_EXPORT void ifd_init(insp_frame_data *fd, int frame_width, int frame_height) {
   int mi_cols = ALIGN_POWER_OF_TWO(frame_width, 3) >> MI_SIZE_LOG2;
   int mi_rows = ALIGN_POWER_OF_TWO(frame_height, 3) >> MI_SIZE_LOG2;
   ifd_init_mi_rc(fd, mi_cols, mi_rows);
 }
 
-void ifd_clear(insp_frame_data *fd) {
+HAOM_EXPORT void ifd_clear(insp_frame_data *fd) {
   aom_free(fd->mi_grid);
   fd->mi_grid = NULL;
 }
 
 /* TODO(negge) This function may be called by more than one thread when using
                a multi-threaded decoder and this may cause a data race. */
-int ifd_inspect(insp_frame_data *fd, void *decoder, int skip_not_transform) {
+HAOM_EXPORT int ifd_inspect(insp_frame_data *fd, void *decoder, int skip_not_transform) {
   struct AV1Decoder *pbi = (struct AV1Decoder *)decoder;
   AV1_COMMON *const cm = &pbi->common;
   const CommonModeInfoParams *const mi_params = &cm->mi_params;

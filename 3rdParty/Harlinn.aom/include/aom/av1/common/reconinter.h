@@ -79,6 +79,8 @@ typedef struct SubpelParams {
   int ys;
   int subpel_x;
   int subpel_y;
+  int pos_x;
+  int pos_y;
 } SubpelParams;
 
 struct build_prediction_ctxt {
@@ -121,17 +123,112 @@ typedef struct InterPredParams {
   INTERINTER_COMPOUND_DATA mask_comp;
   BLOCK_SIZE sb_type;
   int is_intrabc;
+  int top;
+  int left;
 } InterPredParams;
 
-void av1_init_inter_params(InterPredParams *inter_pred_params, int block_width,
-                           int block_height, int pix_row, int pix_col,
-                           int subsampling_x, int subsampling_y, int bit_depth,
-                           int use_hbd_buf, int is_intrabc,
-                           const struct scale_factors *sf,
-                           const struct buf_2d *ref_buf,
-                           int_interpfilters interp_filters);
+// Initialize sub-pel params required for inter prediction.
+static AOM_INLINE void init_subpel_params(
+    const MV *const src_mv, InterPredParams *const inter_pred_params,
+    SubpelParams *subpel_params, int width, int height) {
+  const struct scale_factors *sf = inter_pred_params->scale_factors;
+  int ssx = inter_pred_params->subsampling_x;
+  int ssy = inter_pred_params->subsampling_y;
+  int orig_pos_y = inter_pred_params->pix_row << SUBPEL_BITS;
+  orig_pos_y += src_mv->row * (1 << (1 - ssy));
+  int orig_pos_x = inter_pred_params->pix_col << SUBPEL_BITS;
+  orig_pos_x += src_mv->col * (1 << (1 - ssx));
+  const int is_scaled = av1_is_scaled(sf);
+  int pos_x, pos_y;
+  if (LIKELY(!is_scaled)) {
+    pos_y = av1_unscaled_value(orig_pos_y, sf);
+    pos_x = av1_unscaled_value(orig_pos_x, sf);
+  } else {
+    pos_y = av1_scaled_y(orig_pos_y, sf);
+    pos_x = av1_scaled_x(orig_pos_x, sf);
+  }
 
-void av1_init_comp_mode(InterPredParams *inter_pred_params);
+  pos_x += SCALE_EXTRA_OFF;
+  pos_y += SCALE_EXTRA_OFF;
+
+  const int bottom = (height + AOM_INTERP_EXTEND) << SCALE_SUBPEL_BITS;
+  const int right = (width + AOM_INTERP_EXTEND) << SCALE_SUBPEL_BITS;
+  pos_y = clamp(pos_y, inter_pred_params->top, bottom);
+  pos_x = clamp(pos_x, inter_pred_params->left, right);
+
+  subpel_params->pos_x = pos_x;
+  subpel_params->pos_y = pos_y;
+  subpel_params->subpel_x = pos_x & SCALE_SUBPEL_MASK;
+  subpel_params->subpel_y = pos_y & SCALE_SUBPEL_MASK;
+  subpel_params->xs = sf->x_step_q4;
+  subpel_params->ys = sf->y_step_q4;
+}
+
+// Initialize interp filter required for inter prediction.
+static AOM_INLINE void init_interp_filter_params(
+    const InterpFilterParams *interp_filter_params[2],
+    const InterpFilters *filter, int block_width, int block_height,
+    int is_intrabc) {
+  if (UNLIKELY(is_intrabc)) {
+    interp_filter_params[0] = &av1_intrabc_filter_params;
+    interp_filter_params[1] = &av1_intrabc_filter_params;
+  } else {
+    interp_filter_params[0] = av1_get_interp_filter_params_with_block_size(
+        (InterpFilter)filter->x_filter, block_width);
+    interp_filter_params[1] = av1_get_interp_filter_params_with_block_size(
+        (InterpFilter)filter->y_filter, block_height);
+  }
+}
+
+// Initialize parameters required for inter prediction at mode level.
+static AOM_INLINE void init_inter_mode_params(
+    const MV *const src_mv, InterPredParams *const inter_pred_params,
+    SubpelParams *subpel_params, const struct scale_factors *sf, int width,
+    int height) {
+  inter_pred_params->scale_factors = sf;
+  init_subpel_params(src_mv, inter_pred_params, subpel_params, width, height);
+}
+
+// Initialize parameters required for inter prediction at block level.
+static AOM_INLINE void init_inter_block_params(
+    InterPredParams *inter_pred_params, int block_width, int block_height,
+    int pix_row, int pix_col, int subsampling_x, int subsampling_y,
+    int bit_depth, int use_hbd_buf, int is_intrabc) {
+  inter_pred_params->block_width = block_width;
+  inter_pred_params->block_height = block_height;
+  inter_pred_params->pix_row = pix_row;
+  inter_pred_params->pix_col = pix_col;
+  inter_pred_params->subsampling_x = subsampling_x;
+  inter_pred_params->subsampling_y = subsampling_y;
+  inter_pred_params->bit_depth = bit_depth;
+  inter_pred_params->use_hbd_buf = use_hbd_buf;
+  inter_pred_params->is_intrabc = is_intrabc;
+  inter_pred_params->mode = TRANSLATION_PRED;
+  inter_pred_params->comp_mode = UNIFORM_SINGLE;
+  inter_pred_params->top = -AOM_LEFT_TOP_MARGIN_SCALED(subsampling_y);
+  inter_pred_params->left = -AOM_LEFT_TOP_MARGIN_SCALED(subsampling_x);
+}
+
+// Initialize params required for inter prediction.
+static AOM_INLINE void av1_init_inter_params(
+    InterPredParams *inter_pred_params, int block_width, int block_height,
+    int pix_row, int pix_col, int subsampling_x, int subsampling_y,
+    int bit_depth, int use_hbd_buf, int is_intrabc,
+    const struct scale_factors *sf, const struct buf_2d *ref_buf,
+    int_interpfilters interp_filters) {
+  init_inter_block_params(inter_pred_params, block_width, block_height, pix_row,
+                          pix_col, subsampling_x, subsampling_y, bit_depth,
+                          use_hbd_buf, is_intrabc);
+  init_interp_filter_params(inter_pred_params->interp_filter_params,
+                            &interp_filters.as_filters, block_width,
+                            block_height, is_intrabc);
+  inter_pred_params->scale_factors = sf;
+  inter_pred_params->ref_frame_buf = *ref_buf;
+}
+
+static AOM_INLINE void av1_init_comp_mode(InterPredParams *inter_pred_params) {
+  inter_pred_params->comp_mode = UNIFORM_COMP;
+}
 
 void av1_init_warp_params(InterPredParams *inter_pred_params,
                           const WarpTypesAllowed *warp_types, int ref,
@@ -193,8 +290,8 @@ static INLINE void highbd_inter_predictor(
   }
 }
 
-void av1_modify_neighbor_predictor_for_obmc(MB_MODE_INFO *mbmi);
-int av1_skip_u4x4_pred_in_obmc(BLOCK_SIZE bsize,
+HAOM_EXPORT void av1_modify_neighbor_predictor_for_obmc(MB_MODE_INFO *mbmi);
+HAOM_EXPORT int av1_skip_u4x4_pred_in_obmc(BLOCK_SIZE bsize,
                                const struct macroblockd_plane *pd, int dir);
 
 static INLINE int is_interinter_compound_used(COMPOUND_TYPE type,
@@ -231,28 +328,14 @@ static INLINE int av1_is_wedge_used(BLOCK_SIZE sb_type) {
   return av1_wedge_params_lookup[sb_type].wedge_types > 0;
 }
 
-void av1_make_inter_predictor(const uint8_t *src, int src_stride, uint8_t *dst,
+HAOM_EXPORT void av1_make_inter_predictor(const uint8_t *src, int src_stride, uint8_t *dst,
                               int dst_stride,
                               InterPredParams *inter_pred_params,
                               const SubpelParams *subpel_params);
-
-typedef void (*CalcSubpelParamsFunc)(const MV *const src_mv,
-                                     InterPredParams *const inter_pred_params,
-                                     MACROBLOCKD *xd, int mi_x, int mi_y,
-                                     int ref, uint8_t **mc_buf, uint8_t **pre,
-                                     SubpelParams *subpel_params,
-                                     int *src_stride);
-
-void av1_build_one_inter_predictor(
-    uint8_t *dst, int dst_stride, const MV *const src_mv,
-    InterPredParams *inter_pred_params, MACROBLOCKD *xd, int mi_x, int mi_y,
-    int ref, uint8_t **mc_buf, CalcSubpelParamsFunc calc_subpel_params_func);
-
-void av1_build_inter_predictors(const AV1_COMMON *cm, MACROBLOCKD *xd,
-                                int plane, const MB_MODE_INFO *mi,
-                                int build_for_obmc, int bw, int bh, int mi_x,
-                                int mi_y, uint8_t **mc_buf,
-                                CalcSubpelParamsFunc calc_subpel_params_func);
+HAOM_EXPORT void av1_make_masked_inter_predictor(const uint8_t *pre, int pre_stride,
+                                     uint8_t *dst, int dst_stride,
+                                     InterPredParams *inter_pred_params,
+                                     const SubpelParams *subpel_params);
 
 // TODO(jkoleszar): yet another mv clamping function :-(
 static INLINE MV clamp_mv_to_umv_border_sb(const MACROBLOCKD *xd,
@@ -284,10 +367,17 @@ static INLINE MV clamp_mv_to_umv_border_sb(const MACROBLOCKD *xd,
 static INLINE int64_t scaled_buffer_offset(int x_offset, int y_offset,
                                            int stride,
                                            const struct scale_factors *sf) {
-  const int x =
-      sf ? sf->scale_value_x(x_offset, sf) >> SCALE_EXTRA_BITS : x_offset;
-  const int y =
-      sf ? sf->scale_value_y(y_offset, sf) >> SCALE_EXTRA_BITS : y_offset;
+  int x, y;
+  if (!sf) {
+    x = x_offset;
+    y = y_offset;
+  } else if (av1_is_scaled(sf)) {
+    x = av1_scaled_x(x_offset, sf) >> SCALE_EXTRA_BITS;
+    y = av1_scaled_y(y_offset, sf) >> SCALE_EXTRA_BITS;
+  } else {
+    x = av1_unscaled_value(x_offset, sf) >> SCALE_EXTRA_BITS;
+    y = av1_unscaled_value(y_offset, sf) >> SCALE_EXTRA_BITS;
+  }
   return (int64_t)y * stride + x;
 }
 
@@ -311,11 +401,11 @@ static INLINE void setup_pred_plane(struct buf_2d *dst, BLOCK_SIZE bsize,
   dst->stride = stride;
 }
 
-void av1_setup_dst_planes(struct macroblockd_plane *planes, BLOCK_SIZE bsize,
+HAOM_EXPORT void av1_setup_dst_planes(struct macroblockd_plane *planes, BLOCK_SIZE bsize,
                           const YV12_BUFFER_CONFIG *src, int mi_row, int mi_col,
                           const int plane_start, const int plane_end);
 
-void av1_setup_pre_planes(MACROBLOCKD *xd, int idx,
+HAOM_EXPORT void av1_setup_pre_planes(MACROBLOCKD *xd, int idx,
                           const YV12_BUFFER_CONFIG *src, int mi_row, int mi_col,
                           const struct scale_factors *sf, const int num_planes);
 
@@ -335,31 +425,31 @@ static INLINE int av1_is_interp_needed(const MACROBLOCKD *const xd) {
 
 // Sets up buffers 'dst_buf1' and 'dst_buf2' from relevant buffers in 'xd' for
 // subsequent use in OBMC prediction.
-void av1_setup_obmc_dst_bufs(MACROBLOCKD *xd, uint8_t **dst_buf1,
+HAOM_EXPORT void av1_setup_obmc_dst_bufs(MACROBLOCKD *xd, uint8_t **dst_buf1,
                              uint8_t **dst_buf2);
 
-void av1_setup_build_prediction_by_above_pred(
+HAOM_EXPORT void av1_setup_build_prediction_by_above_pred(
     MACROBLOCKD *xd, int rel_mi_col, uint8_t above_mi_width,
     MB_MODE_INFO *above_mbmi, struct build_prediction_ctxt *ctxt,
     const int num_planes);
-void av1_setup_build_prediction_by_left_pred(MACROBLOCKD *xd, int rel_mi_row,
+HAOM_EXPORT void av1_setup_build_prediction_by_left_pred(MACROBLOCKD *xd, int rel_mi_row,
                                              uint8_t left_mi_height,
                                              MB_MODE_INFO *left_mbmi,
                                              struct build_prediction_ctxt *ctxt,
                                              const int num_planes);
-void av1_build_obmc_inter_prediction(const AV1_COMMON *cm, MACROBLOCKD *xd,
+HAOM_EXPORT void av1_build_obmc_inter_prediction(const AV1_COMMON *cm, MACROBLOCKD *xd,
                                      uint8_t *above[MAX_MB_PLANE],
                                      int above_stride[MAX_MB_PLANE],
                                      uint8_t *left[MAX_MB_PLANE],
                                      int left_stride[MAX_MB_PLANE]);
 
-const uint8_t *av1_get_obmc_mask(int length);
-void av1_count_overlappable_neighbors(const AV1_COMMON *cm, MACROBLOCKD *xd);
+HAOM_EXPORT const uint8_t *av1_get_obmc_mask(int length);
+HAOM_EXPORT void av1_count_overlappable_neighbors(const AV1_COMMON *cm, MACROBLOCKD *xd);
 
 #define MASK_MASTER_SIZE ((MAX_WEDGE_SIZE) << 1)
 #define MASK_MASTER_STRIDE (MASK_MASTER_SIZE)
 
-void av1_init_wedge_masks();
+void av1_init_wedge_masks(void);
 
 static INLINE const uint8_t *av1_get_contiguous_soft_mask(int8_t wedge_index,
                                                           int8_t wedge_sign,
@@ -367,36 +457,30 @@ static INLINE const uint8_t *av1_get_contiguous_soft_mask(int8_t wedge_index,
   return av1_wedge_params_lookup[sb_type].masks[wedge_sign][wedge_index];
 }
 
-void av1_dist_wtd_comp_weight_assign(const AV1_COMMON *cm,
+HAOM_EXPORT void av1_dist_wtd_comp_weight_assign(const AV1_COMMON *cm,
                                      const MB_MODE_INFO *mbmi, int *fwd_offset,
                                      int *bck_offset,
                                      int *use_dist_wtd_comp_avg,
                                      int is_compound);
 
-const uint8_t *av1_get_compound_type_mask(
+HAOM_EXPORT const uint8_t *av1_get_compound_type_mask(
     const INTERINTER_COMPOUND_DATA *const comp_data, BLOCK_SIZE sb_type);
 
 // build interintra_predictors for one plane
-void av1_build_interintra_predictor(const AV1_COMMON *cm, MACROBLOCKD *xd,
+HAOM_EXPORT void av1_build_interintra_predictor(const AV1_COMMON *cm, MACROBLOCKD *xd,
                                     uint8_t *pred, int stride,
                                     const BUFFER_SET *ctx, int plane,
                                     BLOCK_SIZE bsize);
 
-void av1_build_intra_predictors_for_interintra(const AV1_COMMON *cm,
+HAOM_EXPORT void av1_build_intra_predictors_for_interintra(const AV1_COMMON *cm,
                                                MACROBLOCKD *xd,
                                                BLOCK_SIZE bsize, int plane,
                                                const BUFFER_SET *ctx,
                                                uint8_t *dst, int dst_stride);
 
-void av1_combine_interintra(MACROBLOCKD *xd, BLOCK_SIZE bsize, int plane,
+HAOM_EXPORT void av1_combine_interintra(MACROBLOCKD *xd, BLOCK_SIZE bsize, int plane,
                             const uint8_t *inter_pred, int inter_stride,
                             const uint8_t *intra_pred, int intra_stride);
-
-int av1_allow_warp(const MB_MODE_INFO *const mbmi,
-                   const WarpTypesAllowed *const warp_types,
-                   const WarpedMotionParams *const gm_params,
-                   int build_for_obmc, const struct scale_factors *const sf,
-                   WarpedMotionParams *final_warp_params);
 
 #ifdef __cplusplus
 }  // extern "C"

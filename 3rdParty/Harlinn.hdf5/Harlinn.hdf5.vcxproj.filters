@@ -1,14 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
-    </Filter>
     <Filter Include="Resource Files">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
@@ -16,1506 +8,1685 @@
     <Filter Include="Readme">
       <UniqueIdentifier>{dc790c20-7233-46a6-a3a8-f0a4bb5d30fd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="include">
+      <UniqueIdentifier>{c3eb4a1f-e822-438e-817d-98d20e0a8ee8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\hdf5">
+      <UniqueIdentifier>{e8ad5e6f-cd22-47ec-83d1-a09eaa4583b4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\hdf5\H5FDsubfiling">
+      <UniqueIdentifier>{d3434a3c-66c7-43c1-ae0c-fc48e069a235}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{a2710921-bd51-44ad-b0ff-6c739511f033}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\H5FDsubfiling">
+      <UniqueIdentifier>{b8b7ff0a-7a32-4853-a31c-7e93e053caab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\H5FDsubfiling\mercury">
+      <UniqueIdentifier>{ec609322-3ca0-46ee-b235-26adc98659b0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\H5FDsubfiling\mercury\src">
+      <UniqueIdentifier>{4f0f3804-a1f9-4890-af7f-d3a5aad3e63e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\H5FDsubfiling\mercury\src\util">
+      <UniqueIdentifier>{29815670-0609-4ab3-bfd8-d508cd1f8f40}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="H5.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5A.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Abtree2.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5AC.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5ACdbg.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5ACmpio.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5ACproxy_entry.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Adense.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Adeprec.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Aint.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Atest.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5B.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5B2.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5B2cache.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5B2dbg.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5B2hdr.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5B2int.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5B2internal.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5B2leaf.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5B2stat.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5B2test.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Bcache.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Bdbg.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5C.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Cdbg.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Cepoch.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5checksum.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Cimage.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Clog.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Clog_json.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Clog_trace.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Cmpio.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Cprefetched.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Cquery.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5CS.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Ctag.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Ctest.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5CX.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5D.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5dbg.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Dbtree.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Dbtree2.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Dchunk.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Dcompact.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Dcontig.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Ddbg.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Ddeprec.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Dearray.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Defl.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Dfarray.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Dfill.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Dint.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Dio.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Dlayout.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Dmpio.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Dnone.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Doh.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Dscatgath.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Dselect.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Dsingle.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Dtest.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Dvirtual.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5E.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5EA.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5EAcache.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5EAdbg.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5EAdblkpage.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5EAdblock.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5EAhdr.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5EAiblock.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5EAint.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5EAsblock.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5EAstat.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5EAtest.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Edeprec.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Eint.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5F.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5FA.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5FAcache.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Faccum.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5FAdbg.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5FAdblkpage.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5FAdblock.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5FAhdr.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5FAint.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5FAstat.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5FAtest.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Fcwfs.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5FD.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Fdbg.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5FDcore.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5FDdirect.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Fdeprec.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5FDfamily.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5FDhdfs.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5FDint.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5FDlog.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5FDmirror.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5FDmpi.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5FDmpio.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5FDmulti.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5FDros3.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5FDs3comms.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5FDsec2.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5FDspace.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5FDsplitter.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5FDstdio.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5FDtest.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5FDwindows.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Fefc.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Ffake.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Fint.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Fio.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5FL.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Fmount.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Fmpi.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5FO.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Fquery.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5FS.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5FScache.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5FSdbg.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Fsfile.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5FSint.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Fspace.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5FSsection.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5FSstat.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5FStest.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Fsuper.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Fsuper_cache.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Ftest.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5G.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Gbtree2.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Gcache.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Gcompact.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Gdense.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Gdeprec.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Gent.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Gint.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Glink.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Gloc.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Gname.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Gnode.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Gobj.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Goh.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Groot.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Gstab.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Gtest.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Gtraverse.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5HF.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5HFbtree2.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5HFcache.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5HFdbg.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5HFdblock.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5HFdtable.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5HFhdr.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5HFhuge.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5HFiblock.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5HFiter.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5HFman.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5HFsection.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5HFspace.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5HFstat.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5HFtest.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5HFtiny.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5HG.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5HGcache.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5HGdbg.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5HGquery.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5HL.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5HLcache.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5HLdbg.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5HLdblk.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5HLint.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5HLprfx.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5HP.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5I.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Idbg.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Iint.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Itest.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5L.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Ldeprec.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Lexternal.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5M.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5MF.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5MFaggr.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5MFdbg.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5MFsection.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5MM.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5MP.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5mpi.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5MPtest.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5O.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Oainfo.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Oalloc.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Oattr.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Oattribute.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Obogus.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Obtreek.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Ocache.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Ocache_image.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Ochunk.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Ocont.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Ocopy.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Ocopy_ref.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Odbg.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Odeprec.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Odrvinfo.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Odtype.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Oefl.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Ofill.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Oflush.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Ofsinfo.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Oginfo.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Oint.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Olayout.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Olinfo.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Olink.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Omessage.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Omtime.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Oname.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Onull.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Opline.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Orefcount.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Osdspace.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Oshared.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Oshmesg.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Ostab.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Otest.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Ounknown.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5P.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Pacpl.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5PB.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Pdapl.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Pdcpl.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Pdeprec.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Pdxpl.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Pencdec.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Pfapl.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Pfcpl.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Pfmpl.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Pgcpl.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Pint.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5PL.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Plapl.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Plcpl.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5PLint.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5PLpath.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5PLplugin_cache.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Pmapl.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Pmcpl.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Pocpl.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Pocpypl.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Pstrcpl.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Ptest.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5R.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Rdeprec.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Rint.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5RS.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5S.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Sall.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Sdbg.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Sdeprec.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Shyper.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5SL.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5SM.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5SMbtree2.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5SMcache.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5SMmessage.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Smpio.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5SMtest.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Snone.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Spoint.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Sselect.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Stest.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5system.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5T.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Tarray.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Tbit.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Tcommit.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Tcompound.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Tconv.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Tcset.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Tdbg.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Tdeprec.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Tenum.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Tfields.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Tfixed.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Tfloat.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5timer.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Tnative.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Toffset.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Toh.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Topaque.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Torder.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Tpad.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Tprecis.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5trace.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Tref.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5TS.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Tstrpad.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Tvisit.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Tvlen.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5UC.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5VL.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5VLcallback.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5VLint.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5VLnative.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5VLnative_attr.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5VLnative_blob.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5VLnative_dataset.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5VLnative_datatype.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5VLnative_file.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5VLnative_group.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5VLnative_introspect.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5VLnative_link.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5VLnative_object.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5VLnative_token.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5VLpassthru.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5VM.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5WB.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Z.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Zdeflate.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Zfletcher32.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Znbit.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Zscaleoffset.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Zshuffle.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Zszip.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Ztrans.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5lib_settings.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="H5Tinit.c">
-      <Filter>Source Files</Filter>
+    <ClInclude Include="src\H5FDsubfiling\mercury\src\util\mercury_compiler_attributes.h">
+      <Filter>src\H5FDsubfiling\mercury\src\util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\H5FDsubfiling\mercury\src\util\mercury_queue.h">
+      <Filter>src\H5FDsubfiling\mercury\src\util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\H5FDsubfiling\mercury\src\util\mercury_thread.h">
+      <Filter>src\H5FDsubfiling\mercury\src\util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\H5FDsubfiling\mercury\src\util\mercury_thread_annotation.h">
+      <Filter>src\H5FDsubfiling\mercury\src\util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\H5FDsubfiling\mercury\src\util\mercury_thread_condition.h">
+      <Filter>src\H5FDsubfiling\mercury\src\util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\H5FDsubfiling\mercury\src\util\mercury_thread_mutex.h">
+      <Filter>src\H5FDsubfiling\mercury\src\util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\H5FDsubfiling\mercury\src\util\mercury_thread_pool.h">
+      <Filter>src\H5FDsubfiling\mercury\src\util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\H5FDsubfiling\mercury\src\util\mercury_util_config.h">
+      <Filter>src\H5FDsubfiling\mercury\src\util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\H5FDsubfiling\mercury\src\util\mercury_util_error.h">
+      <Filter>src\H5FDsubfiling\mercury\src\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5FDsubfiling\H5FDioc.h">
+      <Filter>include\hdf5\H5FDsubfiling</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5FDsubfiling\H5FDioc_priv.h">
+      <Filter>include\hdf5\H5FDsubfiling</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5FDsubfiling\H5FDsubfiling.h">
+      <Filter>include\hdf5\H5FDsubfiling</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5FDsubfiling\H5FDsubfiling_priv.h">
+      <Filter>include\hdf5\H5FDsubfiling</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5FDsubfiling\H5subfiling_common.h">
+      <Filter>include\hdf5\H5FDsubfiling</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5FDsubfiling\H5subfiling_err.h">
+      <Filter>include\hdf5\H5FDsubfiling</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5ACmodule.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5ACpkg.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5ACprivate.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5ACpublic.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5Amodule.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5api_adpt.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5Apkg.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5Aprivate.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5Apublic.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5B2module.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5B2pkg.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5B2private.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5Bmodule.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5Bpkg.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5Bprivate.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5Clog.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5Cmodule.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5Cpkg.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5Cprivate.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5Cpublic.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5CSprivate.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5CXmodule.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5CXprivate.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5Dmodule.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5Dpkg.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5Dprivate.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5Dpublic.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5EAmodule.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5EApkg.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5EAprivate.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5Edefin.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5Einit.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5Emodule.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5encode.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5Epkg.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5Eprivate.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5Epubgen.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5Epublic.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5ESdevelop.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5ESmodule.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5ESpkg.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5ESprivate.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5ESpublic.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5Eterm.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5FAmodule.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5FApkg.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5FAprivate.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5FDcore.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5FDdevelop.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5FDdirect.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5FDdrvr_module.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5FDfamily.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5FDhdfs.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5FDlog.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5FDmirror.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5FDmirror_priv.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5FDmodule.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5FDmpi.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5FDmpio.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5FDmulti.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5FDonion.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5FDonion_header.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5FDonion_history.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5FDonion_index.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5FDonion_priv.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5FDpkg.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5FDprivate.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5FDpublic.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5FDros3.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5FDs3comms.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5FDsec2.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5FDsplitter.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5FDstdio.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5FDwindows.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5FLmodule.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5FLprivate.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5Fmodule.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5FOprivate.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5Fpkg.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5Fprivate.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5Fpublic.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5FSmodule.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5FSpkg.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5FSprivate.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5Gmodule.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5Gpkg.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5Gprivate.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5Gpublic.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5HFmodule.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5HFpkg.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5HFprivate.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5HGmodule.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5HGpkg.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5HGprivate.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5HLmodule.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5HLpkg.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5HLprivate.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5Idevelop.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5Imodule.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5Ipkg.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5Iprivate.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5Ipublic.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5Ldevelop.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5Lmodule.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5Lpkg.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5Lprivate.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5Lpublic.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5MFmodule.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5MFpkg.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5MFprivate.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5Mmodule.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5MMprivate.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5MMpublic.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5module.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5Mpkg.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5Mprivate.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5Mpublic.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5Omodule.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5Opkg.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5Oprivate.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5Opublic.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5Oshared.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5overflow.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5PBmodule.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5PBpkg.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5PBprivate.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5PLextern.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5PLmodule.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5PLpkg.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5PLprivate.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5PLpublic.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5Pmodule.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5Ppkg.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5Pprivate.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5Ppublic.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5private.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5public.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5Rmodule.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5Rpkg.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5Rprivate.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5Rpublic.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5RSmodule.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5RSprivate.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5SLmodule.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5SLprivate.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5SMmodule.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5Smodule.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5SMpkg.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5SMprivate.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5Spkg.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5Sprivate.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5Spublic.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5Tdevelop.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5Tmodule.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5Tpkg.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5Tprivate.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5Tpublic.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5TSdevelop.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5TSprivate.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5UCprivate.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5version.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5VLconnector.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5VLconnector_passthru.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5VLmodule.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5VLnative.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5VLnative_private.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5VLpassthru.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5VLpkg.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5VLprivate.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5VLpublic.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5VMprivate.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5WBprivate.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5win32defs.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5Zdevelop.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5Zmodule.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5Zpkg.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5Zprivate.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5Zpublic.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\hdf5.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\uthash.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5pubconf.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\H5FDsubfiling\mercury\src\util\mercury_thread.c">
+      <Filter>src\H5FDsubfiling\mercury\src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5FDsubfiling\mercury\src\util\mercury_thread_condition.c">
+      <Filter>src\H5FDsubfiling\mercury\src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5FDsubfiling\mercury\src\util\mercury_thread_mutex.c">
+      <Filter>src\H5FDsubfiling\mercury\src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5FDsubfiling\mercury\src\util\mercury_thread_pool.c">
+      <Filter>src\H5FDsubfiling\mercury\src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5FDsubfiling\H5FDioc.c">
+      <Filter>src\H5FDsubfiling</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5FDsubfiling\H5FDioc_int.c">
+      <Filter>src\H5FDsubfiling</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5FDsubfiling\H5FDioc_threads.c">
+      <Filter>src\H5FDsubfiling</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5FDsubfiling\H5FDsubfile_int.c">
+      <Filter>src\H5FDsubfiling</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5FDsubfiling\H5FDsubfiling.c">
+      <Filter>src\H5FDsubfiling</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5FDsubfiling\H5subfiling_common.c">
+      <Filter>src\H5FDsubfiling</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5A.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Abtree2.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5AC.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5ACdbg.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5ACmpio.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5ACproxy_entry.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Adense.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Adeprec.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Aint.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Atest.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5B.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5B2.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5B2cache.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5B2dbg.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5B2hdr.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5B2int.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5B2internal.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5B2leaf.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5B2stat.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5B2test.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Bcache.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Bdbg.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5C.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Cdbg.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Centry.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Cepoch.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5checksum.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Cimage.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Cint.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Clog.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Clog_json.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Clog_trace.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Cmpio.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Cprefetched.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Cquery.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5CS.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Ctag.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Ctest.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5CX.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5D.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5dbg.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Dbtree.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Dbtree2.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Dchunk.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Dcompact.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Dcontig.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Ddbg.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Ddeprec.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Dearray.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Defl.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Dfarray.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Dfill.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Dint.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Dio.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Dlayout.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Dmpio.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Dnone.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Doh.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Dscatgath.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Dselect.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Dsingle.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Dtest.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Dvirtual.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5E.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5EA.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5EAcache.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5EAdbg.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5EAdblkpage.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5EAdblock.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5EAhdr.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5EAiblock.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5EAint.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5EAsblock.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5EAstat.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5EAtest.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Edeprec.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Eint.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5ES.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5ESevent.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5ESint.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5ESlist.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5F.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5FA.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5FAcache.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Faccum.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5FAdbg.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5FAdblkpage.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5FAdblock.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5FAhdr.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5FAint.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5FAstat.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5FAtest.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Fcwfs.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5FD.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Fdbg.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5FDcore.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5FDdirect.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Fdeprec.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5FDfamily.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5FDhdfs.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5FDint.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5FDlog.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5FDmirror.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5FDmpi.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5FDmpio.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5FDmulti.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5FDonion.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5FDonion_header.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5FDonion_history.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5FDonion_index.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5FDperform.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5FDros3.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5FDs3comms.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5FDsec2.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5FDspace.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5FDsplitter.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5FDstdio.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5FDtest.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5FDwindows.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Fefc.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Ffake.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Fint.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Fio.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5FL.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Fmount.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Fmpi.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5FO.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Fquery.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5FS.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5FScache.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5FSdbg.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Fsfile.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5FSint.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Fspace.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5FSsection.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5FSstat.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5FStest.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Fsuper.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Fsuper_cache.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Ftest.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5G.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Gbtree2.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Gcache.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Gcompact.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Gdense.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Gdeprec.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Gent.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Gint.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Glink.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Gloc.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Gname.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Gnode.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Gobj.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Goh.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Groot.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Gstab.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Gtest.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Gtraverse.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5HF.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5HFbtree2.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5HFcache.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5HFdbg.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5HFdblock.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5HFdtable.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5HFhdr.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5HFhuge.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5HFiblock.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5HFiter.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5HFman.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5HFsection.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5HFspace.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5HFstat.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5HFtest.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5HFtiny.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5HG.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5HGcache.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5HGdbg.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5HGquery.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5HL.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5HLcache.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5HLdbg.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5HLdblk.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5HLint.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5HLprfx.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5I.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Idbg.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Iint.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Itest.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5L.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Ldeprec.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Lexternal.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Lint.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5M.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5MF.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5MFaggr.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5MFdbg.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5MFsection.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5MM.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5mpi.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5O.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Oainfo.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Oalloc.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Oattr.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Oattribute.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Obogus.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Obtreek.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Ocache.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Ocache_image.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Ochunk.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Ocont.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Ocopy.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Ocopy_ref.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Odbg.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Odeprec.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Odrvinfo.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Odtype.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Oefl.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Ofill.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Oflush.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Ofsinfo.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Oginfo.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Oint.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Olayout.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Olinfo.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Olink.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Omessage.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Omtime.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Oname.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Onull.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Opline.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Orefcount.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Osdspace.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Oshared.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Oshmesg.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Ostab.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Otest.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Ounknown.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5P.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Pacpl.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5PB.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Pdapl.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Pdcpl.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Pdeprec.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Pdxpl.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Pencdec.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Pfapl.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Pfcpl.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Pfmpl.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Pgcpl.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Pint.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5PL.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Plapl.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Plcpl.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5PLint.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5PLpath.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5PLplugin_cache.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Pmapl.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Pmcpl.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Pocpl.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Pocpypl.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Pstrcpl.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Ptest.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5R.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Rdeprec.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Rint.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5RS.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5S.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Sall.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Sdbg.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Sdeprec.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Shyper.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5SL.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5SM.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5SMbtree2.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5SMcache.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5SMmessage.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Smpio.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5SMtest.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Snone.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Spoint.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Sselect.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Stest.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5system.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5T.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Tarray.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Tbit.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Tcommit.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Tcompound.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Tconv.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Tcset.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Tdbg.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Tdeprec.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Tenum.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Tfields.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Tfixed.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Tfloat.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5timer.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Tinit_float.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Tnative.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Toffset.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Toh.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Topaque.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Torder.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Tpad.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Tprecis.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5trace.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Tref.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5TS.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Tstrpad.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Tvisit.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Tvlen.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5UC.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5VL.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5VLcallback.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5VLdyn_ops.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5VLint.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5VLnative.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5VLnative_attr.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5VLnative_blob.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5VLnative_dataset.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5VLnative_datatype.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5VLnative_file.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5VLnative_group.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5VLnative_introspect.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5VLnative_link.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5VLnative_object.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5VLnative_token.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5VLpassthru.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5VLtest.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5VM.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5WB.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Z.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Zdeflate.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Zfletcher32.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Znbit.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Zscaleoffset.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Zshuffle.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Zszip.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5Ztrans.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5build_settings.c">
+      <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="H5ACmodule.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5ACpkg.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5ACprivate.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5ACpublic.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5Amodule.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5api_adpt.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5Apkg.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5Aprivate.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5Apublic.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5B2module.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5B2pkg.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5B2private.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5Bmodule.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5Bpkg.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5Bprivate.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5Clog.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5Cmodule.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5config.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5Cpkg.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5Cprivate.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5Cpublic.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5CSprivate.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5CXmodule.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5CXprivate.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5Dmodule.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5Dpkg.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5Dprivate.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5Dpublic.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5EAmodule.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5EApkg.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5EAprivate.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5Edefin.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5Einit.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5Emodule.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5Epkg.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5Eprivate.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5Epubgen.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5Epublic.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5ESpublic.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5Eterm.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5FAmodule.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5FApkg.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5FAprivate.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5FDcore.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5FDdirect.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5FDdrvr_module.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5FDfamily.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5FDhdfs.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5FDlog.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5FDmirror.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5FDmirror_priv.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5FDmodule.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5FDmpi.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5FDmpio.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5FDmulti.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5FDpkg.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5FDprivate.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5FDpublic.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5FDros3.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5FDs3comms.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5FDsec2.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5FDsplitter.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5FDstdio.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5FDwindows.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5FLmodule.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5FLprivate.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5Fmodule.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5FOprivate.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5Fpkg.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5Fprivate.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5Fpublic.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5FSmodule.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5FSpkg.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5FSprivate.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5Gmodule.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5Gpkg.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5Gprivate.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5Gpublic.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5HFmodule.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5HFpkg.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5HFprivate.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5HGmodule.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5HGpkg.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5HGprivate.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5HLmodule.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5HLpkg.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5HLprivate.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5HPprivate.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5Imodule.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5Ipkg.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5Iprivate.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5Ipublic.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5Lmodule.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5Lpkg.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5Lprivate.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5Lpublic.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5MFmodule.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5MFpkg.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5MFprivate.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5Mmodule.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5MMprivate.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5MMpublic.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5module.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5Mpkg.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5MPmodule.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5MPpkg.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5MPprivate.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5Mprivate.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5Mpublic.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5Omodule.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5Opkg.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5Oprivate.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5Opublic.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5Oshared.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5overflow.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5PBmodule.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5PBpkg.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5PBprivate.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5PLextern.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5PLmodule.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5PLpkg.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5PLprivate.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5PLpublic.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5Pmodule.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5Ppkg.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5Pprivate.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5Ppublic.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5private.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5public.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5Rmodule.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5Rpkg.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5Rprivate.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5Rpublic.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5RSprivate.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5SLmodule.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5SLprivate.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5SMmodule.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5Smodule.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5SMpkg.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5SMprivate.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5Spkg.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5Sprivate.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5Spublic.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5Tmodule.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5Tpkg.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5Tprivate.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5Tpublic.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5TSprivate.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5UCprivate.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5version.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5VLconnector.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5VLconnector_passthru.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5VLmodule.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5VLnative.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5VLnative_private.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5VLpassthru.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5VLpkg.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5VLprivate.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5VLpublic.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5VMprivate.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5WBprivate.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5win32defs.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5Zmodule.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5Zpkg.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5Zprivate.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5Zpublic.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="hdf5.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="uthash.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="H5pubconf.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
+    <Text Include="include\hdf5\H5err.txt">
+      <Filter>include\hdf5</Filter>
+    </Text>
+    <Text Include="include\hdf5\H5overflow.txt">
+      <Filter>include\hdf5</Filter>
+    </Text>
+    <Text Include="include\hdf5\H5vers.txt">
+      <Filter>include\hdf5</Filter>
+    </Text>
   </ItemGroup>
 </Project>

@@ -56,6 +56,38 @@ extern "C" {
 // Factor to weigh the rate for switchable interp filters.
 #define SWITCHABLE_INTERP_RATE_FACTOR 1
 
+// Macros for common video resolutions: width x height
+// For example, 720p represents video resolution of 1280x720 pixels.
+#define RESOLUTION_288P 352 * 288
+#define RESOLUTION_360P 640 * 360
+#define RESOLUTION_480P 640 * 480
+#define RESOLUTION_720P 1280 * 720
+#define RESOLUTION_1080P 1920 * 1080
+#define RESOLUTION_1440P 2560 * 1440
+#define RESOLUTION_4K 3840 * 2160
+
+#define RTC_REFS 4
+static const MV_REFERENCE_FRAME real_time_ref_combos[RTC_REFS][2] = {
+  { LAST_FRAME, NONE_FRAME },
+  { ALTREF_FRAME, NONE_FRAME },
+  { GOLDEN_FRAME, NONE_FRAME },
+  { INTRA_FRAME, NONE_FRAME }
+};
+
+static INLINE int mode_offset(const PREDICTION_MODE mode) {
+  if (mode >= NEARESTMV) {
+    return INTER_OFFSET(mode);
+  } else {
+    switch (mode) {
+      case DC_PRED: return 0;
+      case V_PRED: return 1;
+      case H_PRED: return 2;
+      case SMOOTH_PRED: return 3;
+      default: assert(0); return -1;
+    }
+  }
+}
+
 enum {
   // Default initialization when we are not using winner mode framework. e.g.
   // intrabc
@@ -133,7 +165,9 @@ static INLINE void av1_merge_rd_stats(RD_STATS *rd_stats_dst,
   if (!rd_stats_dst->zero_rate)
     rd_stats_dst->zero_rate = rd_stats_src->zero_rate;
   rd_stats_dst->dist += rd_stats_src->dist;
-  rd_stats_dst->sse += rd_stats_src->sse;
+  if (rd_stats_dst->sse < INT64_MAX && rd_stats_src->sse < INT64_MAX) {
+    rd_stats_dst->sse += rd_stats_src->sse;
+  }
   rd_stats_dst->skip_txfm &= rd_stats_src->skip_txfm;
 #if CONFIG_RD_DEBUG
   // This may run into problems when monochrome video is
@@ -204,7 +238,12 @@ int av1_compute_rd_mult_based_on_qindex(aom_bit_depth_t bit_depth,
                                         FRAME_UPDATE_TYPE update_type,
                                         int qindex);
 
-int av1_compute_rd_mult(const struct AV1_COMP *cpi, int qindex);
+int av1_compute_rd_mult(const int qindex, const aom_bit_depth_t bit_depth,
+                        const FRAME_UPDATE_TYPE update_type,
+                        const int layer_depth, const int boost_index,
+                        const FRAME_TYPE frame_type,
+                        const int use_fixed_qp_offsets,
+                        const int is_stat_consumption_stage);
 
 void av1_initialize_rd_consts(struct AV1_COMP *cpi);
 
@@ -298,42 +337,12 @@ static INLINE void get_rd_opt_coeff_thresh(
   }
 }
 
-// Used to reset the state of tx/mb rd hash information
-static INLINE void reset_hash_records(TxfmSearchInfo *const txfm_info,
-                                      int use_inter_txb_hash) {
-  int32_t record_idx;
-  if (!txfm_info->txb_rd_records) return;
-  // Reset the state for use_inter_txb_hash
-  if (use_inter_txb_hash) {
-    for (record_idx = 0;
-         record_idx < ((MAX_MIB_SIZE >> 1) * (MAX_MIB_SIZE >> 1)); record_idx++)
-      txfm_info->txb_rd_records->txb_rd_record_8X8[record_idx].num =
-          txfm_info->txb_rd_records->txb_rd_record_8X8[record_idx].index_start =
-              0;
-    for (record_idx = 0;
-         record_idx < ((MAX_MIB_SIZE >> 2) * (MAX_MIB_SIZE >> 2)); record_idx++)
-      txfm_info->txb_rd_records->txb_rd_record_16X16[record_idx].num =
-          txfm_info->txb_rd_records->txb_rd_record_16X16[record_idx]
-              .index_start = 0;
-    for (record_idx = 0;
-         record_idx < ((MAX_MIB_SIZE >> 3) * (MAX_MIB_SIZE >> 3)); record_idx++)
-      txfm_info->txb_rd_records->txb_rd_record_32X32[record_idx].num =
-          txfm_info->txb_rd_records->txb_rd_record_32X32[record_idx]
-              .index_start = 0;
-    for (record_idx = 0;
-         record_idx < ((MAX_MIB_SIZE >> 4) * (MAX_MIB_SIZE >> 4)); record_idx++)
-      txfm_info->txb_rd_records->txb_rd_record_64X64[record_idx].num =
-          txfm_info->txb_rd_records->txb_rd_record_64X64[record_idx]
-              .index_start = 0;
-  }
-
-  // Reset the state for use_intra_txb_hash
-  txfm_info->txb_rd_records->txb_rd_record_intra.num =
-      txfm_info->txb_rd_records->txb_rd_record_intra.index_start = 0;
+// Used to reset the state of mb rd hash information
+static INLINE void reset_mb_rd_record(MB_RD_RECORD *const mb_rd_record) {
+  if (!mb_rd_record) return;
 
   // Reset the state for use_mb_rd_hash
-  txfm_info->txb_rd_records->mb_rd_record.num =
-      txfm_info->txb_rd_records->mb_rd_record.index_start = 0;
+  mb_rd_record->num = mb_rd_record->index_start = 0;
 }
 
 void av1_setup_pred_block(const MACROBLOCKD *xd,

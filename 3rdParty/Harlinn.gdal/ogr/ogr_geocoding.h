@@ -1,4 +1,3 @@
-#pragma once
 /******************************************************************************
  * $Id$
  *
@@ -31,8 +30,8 @@
 #ifndef OGR_GEOCODING_H_INCLUDED
 #define OGR_GEOCODING_H_INCLUDED
 
-#include <port/cpl_port.h>
-#include <ogr/ogr_api.h>
+#include "cpl_port.h"
+#include "ogr_api.h"
 
 /**
  * \file ogr_geocoding.h
@@ -45,21 +44,19 @@ CPL_C_START
 /** Opaque type for a geocoding session */
 typedef struct _OGRGeocodingSessionHS *OGRGeocodingSessionH;
 
-HGDAL_EXPORT OGRGeocodingSessionH OGRGeocodeCreateSession(char** papszOptions);
+OGRGeocodingSessionH CPL_DLL OGRGeocodeCreateSession(char **papszOptions);
 
-HGDAL_EXPORT void OGRGeocodeDestroySession(OGRGeocodingSessionH hSession);
+void CPL_DLL OGRGeocodeDestroySession(OGRGeocodingSessionH hSession);
 
-HGDAL_EXPORT OGRLayerH OGRGeocode(OGRGeocodingSessionH hSession,
-                             const char* pszQuery,
-                             char** papszStructuredQuery,
-                             char** papszOptions);
+OGRLayerH CPL_DLL OGRGeocode(OGRGeocodingSessionH hSession,
+                             const char *pszQuery, char **papszStructuredQuery,
+                             char **papszOptions);
 
-HGDAL_EXPORT OGRLayerH OGRGeocodeReverse(OGRGeocodingSessionH hSession,
-                                    double dfLon, double dfLat,
-                                    char** papszOptions);
+OGRLayerH CPL_DLL OGRGeocodeReverse(OGRGeocodingSessionH hSession, double dfLon,
+                                    double dfLat, char **papszOptions);
 
-HGDAL_EXPORT void OGRGeocodeFreeResult(OGRLayerH hLayer);
+void CPL_DLL OGRGeocodeFreeResult(OGRLayerH hLayer);
 
 CPL_C_END
 
-#endif // OGR_GEOCODING_H_INCLUDED
+#endif  // OGR_GEOCODING_H_INCLUDED

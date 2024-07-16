@@ -1,4 +1,3 @@
-#pragma once
 /******************************************************************************
  *
  * Purpose: Support for storing and manipulating Orbit information
@@ -644,11 +643,8 @@ namespace PCIDSK
          * Copy constructor
          * @param oES the ephemeris segment to copy
          */
-        EphemerisSeg_t(const EphemerisSeg_t& oES)
+        EphemerisSeg_t(const EphemerisSeg_t& oES): EphemerisSeg_t()
         {
-            AttitudeSeg = nullptr;
-            RadarSeg = nullptr;
-            AvhrrSeg = nullptr;
             Copy(oES);
         }
 

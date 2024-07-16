@@ -25,10 +25,9 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
-#include "../pcidsk_mutex.h"
-#include "../pcidsk_exception.h"
+#include "pcidsk_mutex.h"
+#include "pcidsk_exception.h"
 
-#define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 
 

@@ -254,7 +254,7 @@ static PREDICTION_MODE read_inter_compound_mode(MACROBLOCKD *xd, aom_reader *r,
   return NEAREST_NEARESTMV + mode;
 }
 
-int av1_neg_deinterleave(int diff, int ref, int max) {
+HAOM_EXPORT int av1_neg_deinterleave(int diff, int ref, int max) {
   if (!ref) return diff;
   if (ref >= (max - 1)) return max - diff - 1;
   if (2 * ref < max) {
@@ -279,7 +279,7 @@ int av1_neg_deinterleave(int diff, int ref, int max) {
 static int read_segment_id(AV1_COMMON *const cm, const MACROBLOCKD *const xd,
                            aom_reader *r, int skip) {
   int cdf_num;
-  const int pred = av1_get_spatial_seg_pred(cm, xd, &cdf_num);
+  const uint8_t pred = av1_get_spatial_seg_pred(cm, xd, &cdf_num, 0);
   if (skip) return pred;
 
   FRAME_CONTEXT *ec_ctx = xd->tile_ctx;
@@ -310,18 +310,8 @@ static int dec_get_segment_id(const AV1_COMMON *cm, const uint8_t *segment_ids,
   return segment_id;
 }
 
-static void set_segment_id(AV1_COMMON *cm, int mi_offset, int x_mis, int y_mis,
-                           int segment_id) {
-  assert(segment_id >= 0 && segment_id < MAX_SEGMENTS);
-
-  for (int y = 0; y < y_mis; y++)
-    for (int x = 0; x < x_mis; x++)
-      cm->cur_frame->seg_map[mi_offset + y * cm->mi_params.mi_cols + x] =
-          segment_id;
-}
-
 static int read_intra_segment_id(AV1_COMMON *const cm,
-                                 const MACROBLOCKD *const xd, int bsize,
+                                 const MACROBLOCKD *const xd, BLOCK_SIZE bsize,
                                  aom_reader *r, int skip) {
   struct segmentation *const seg = &cm->seg;
   if (!seg->enabled) return 0;  // Default for disabled segmentation
@@ -330,13 +320,15 @@ static int read_intra_segment_id(AV1_COMMON *const cm,
   const CommonModeInfoParams *const mi_params = &cm->mi_params;
   const int mi_row = xd->mi_row;
   const int mi_col = xd->mi_col;
-  const int mi_offset = mi_row * mi_params->mi_cols + mi_col;
+  const int mi_stride = cm->mi_params.mi_cols;
+  const int mi_offset = mi_row * mi_stride + mi_col;
   const int bw = mi_size_wide[bsize];
   const int bh = mi_size_high[bsize];
   const int x_mis = AOMMIN(mi_params->mi_cols - mi_col, bw);
   const int y_mis = AOMMIN(mi_params->mi_rows - mi_row, bh);
   const int segment_id = read_segment_id(cm, xd, r, skip);
-  set_segment_id(cm, mi_offset, x_mis, y_mis, segment_id);
+  set_segment_id(cm->cur_frame->seg_map, mi_offset, x_mis, y_mis, mi_stride,
+                 segment_id);
   return segment_id;
 }
 
@@ -344,12 +336,20 @@ static void copy_segment_id(const CommonModeInfoParams *const mi_params,
                             const uint8_t *last_segment_ids,
                             uint8_t *current_segment_ids, int mi_offset,
                             int x_mis, int y_mis) {
-  for (int y = 0; y < y_mis; y++)
-    for (int x = 0; x < x_mis; x++)
-      current_segment_ids[mi_offset + y * mi_params->mi_cols + x] =
-          last_segment_ids
-              ? last_segment_ids[mi_offset + y * mi_params->mi_cols + x]
-              : 0;
+  const int stride = mi_params->mi_cols;
+  if (last_segment_ids) {
+    assert(last_segment_ids != current_segment_ids);
+    for (int y = 0; y < y_mis; y++) {
+      memcpy(&current_segment_ids[mi_offset + y * stride],
+             &last_segment_ids[mi_offset + y * stride],
+             sizeof(current_segment_ids[0]) * x_mis);
+    }
+  } else {
+    for (int y = 0; y < y_mis; y++) {
+      memset(&current_segment_ids[mi_offset + y * stride], 0,
+             sizeof(current_segment_ids[0]) * x_mis);
+    }
+  }
 }
 
 static int get_predicted_segment_id(AV1_COMMON *const cm, int mi_offset,
@@ -382,7 +382,8 @@ static int read_inter_segment_id(AV1_COMMON *const cm, MACROBLOCKD *const xd,
     return get_predicted_segment_id(cm, mi_offset, x_mis, y_mis);
   }
 
-  int segment_id;
+  uint8_t segment_id;
+  const int mi_stride = cm->mi_params.mi_cols;
   if (preskip) {
     if (!seg->segid_preskip) return 0;
   } else {
@@ -391,13 +392,14 @@ static int read_inter_segment_id(AV1_COMMON *const cm, MACROBLOCKD *const xd,
         mbmi->seg_id_predicted = 0;
       }
       segment_id = read_segment_id(cm, xd, r, 1);
-      set_segment_id(cm, mi_offset, x_mis, y_mis, segment_id);
+      set_segment_id(cm->cur_frame->seg_map, mi_offset, x_mis, y_mis, mi_stride,
+                     segment_id);
       return segment_id;
     }
   }
 
   if (seg->temporal_update) {
-    const int ctx = av1_get_pred_context_seg_id(xd);
+    const uint8_t ctx = av1_get_pred_context_seg_id(xd);
     FRAME_CONTEXT *ec_ctx = xd->tile_ctx;
     struct segmentation_probs *const segp = &ec_ctx->seg;
     aom_cdf_prob *pred_cdf = segp->pred_cdf[ctx];
@@ -410,7 +412,8 @@ static int read_inter_segment_id(AV1_COMMON *const cm, MACROBLOCKD *const xd,
   } else {
     segment_id = read_segment_id(cm, xd, r, 0);
   }
-  set_segment_id(cm, mi_offset, x_mis, y_mis, segment_id);
+  set_segment_id(cm->cur_frame->seg_map, mi_offset, x_mis, y_mis, mi_stride,
+                 segment_id);
   return segment_id;
 }
 
@@ -619,7 +622,7 @@ static void read_filter_intra_mode_info(const AV1_COMMON *const cm,
   }
 }
 
-void av1_read_tx_type(const AV1_COMMON *const cm, MACROBLOCKD *xd, int blk_row,
+HAOM_EXPORT void av1_read_tx_type(const AV1_COMMON *const cm, MACROBLOCKD *xd, int blk_row,
                       int blk_col, TX_SIZE tx_size, aom_reader *r) {
   MB_MODE_INFO *mbmi = xd->mi[0];
   uint8_t *tx_type =
@@ -822,13 +825,13 @@ static void read_intra_frame_mode_info(AV1_COMMON *const cm,
     if (mbmi->uv_mode == UV_CFL_PRED) {
       mbmi->cfl_alpha_idx = read_cfl_alphas(ec_ctx, r, &mbmi->cfl_alpha_signs);
     }
+    const PREDICTION_MODE intra_mode = get_uv_mode(mbmi->uv_mode);
     mbmi->angle_delta[PLANE_TYPE_UV] =
-        (use_angle_delta && av1_is_directional_mode(get_uv_mode(mbmi->uv_mode)))
-            ? read_angle_delta(r,
-                               ec_ctx->angle_delta_cdf[mbmi->uv_mode - V_PRED])
+        (use_angle_delta && av1_is_directional_mode(intra_mode))
+            ? read_angle_delta(r, ec_ctx->angle_delta_cdf[intra_mode - V_PRED])
             : 0;
   } else {
-    // Avoid decoding angle_info if there is is no chroma prediction
+    // Avoid decoding angle_info if there is no chroma prediction
     mbmi->uv_mode = UV_DC_PRED;
   }
   xd->cfl.store_y = store_cfl_required(cm, xd);
@@ -1083,13 +1086,13 @@ static void read_intra_block_mode_info(AV1_COMMON *const cm,
       mbmi->cfl_alpha_idx =
           read_cfl_alphas(xd->tile_ctx, r, &mbmi->cfl_alpha_signs);
     }
+    const PREDICTION_MODE intra_mode = get_uv_mode(mbmi->uv_mode);
     mbmi->angle_delta[PLANE_TYPE_UV] =
-        use_angle_delta && av1_is_directional_mode(get_uv_mode(mbmi->uv_mode))
-            ? read_angle_delta(r,
-                               ec_ctx->angle_delta_cdf[mbmi->uv_mode - V_PRED])
+        use_angle_delta && av1_is_directional_mode(intra_mode)
+            ? read_angle_delta(r, ec_ctx->angle_delta_cdf[intra_mode - V_PRED])
             : 0;
   } else {
-    // Avoid decoding angle_info if there is is no chroma prediction
+    // Avoid decoding angle_info if there is no chroma prediction
     mbmi->uv_mode = UV_DC_PRED;
   }
   xd->cfl.store_y = store_cfl_required(cm, xd);
@@ -1204,7 +1207,9 @@ static INLINE int assign_mv(AV1_COMMON *cm, MACROBLOCKD *xd,
                          .as_int;
       break;
     }
-    default: { return 0; }
+    default: {
+      return 0;
+    }
   }
 
   int ret = is_mv_valid(&mv[0].as_mv);
@@ -1475,7 +1480,6 @@ static void read_inter_block_mode_info(AV1Decoder *const pbi,
   read_mb_interp_filter(xd, features->interp_filter,
                         cm->seq_params->enable_dual_filter, mbmi, r);
 
-#if !CONFIG_REALTIME_ONLY
   if (mbmi->motion_mode == WARPED_CAUSAL) {
     const int mi_row = xd->mi_row;
     const int mi_col = xd->mi_col;
@@ -1496,7 +1500,6 @@ static void read_inter_block_mode_info(AV1Decoder *const pbi,
       mbmi->wm_params.invalid = 1;
     }
   }
-#endif
 
   xd->cfl.store_y = store_cfl_required(cm, xd);
 
@@ -1564,7 +1567,7 @@ static void intra_copy_frame_mvs(AV1_COMMON *const cm, int mi_row, int mi_col,
   }
 }
 
-void av1_read_mode_info(AV1Decoder *const pbi, DecoderCodingBlock *dcb,
+HAOM_EXPORT void av1_read_mode_info(AV1Decoder *const pbi, DecoderCodingBlock *dcb,
                         aom_reader *r, int x_mis, int y_mis) {
   AV1_COMMON *const cm = &pbi->common;
   MACROBLOCKD *const xd = &dcb->xd;

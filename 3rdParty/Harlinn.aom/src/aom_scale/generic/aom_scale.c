@@ -472,7 +472,7 @@ static void Scale2D(
  *                  caching.
  *
  ****************************************************************************/
-void aom_scale_frame(YV12_BUFFER_CONFIG *src, YV12_BUFFER_CONFIG *dst,
+HAOM_EXPORT void aom_scale_frame(YV12_BUFFER_CONFIG *src, YV12_BUFFER_CONFIG *dst,
                      unsigned char *temp_area, unsigned char temp_height,
                      unsigned int hscale, unsigned int hratio,
                      unsigned int vscale, unsigned int vratio,

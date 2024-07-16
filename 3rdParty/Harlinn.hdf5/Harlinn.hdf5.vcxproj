@@ -18,6 +18,592 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\hdf5\H5ACmodule.h" />
+    <ClInclude Include="include\hdf5\H5ACpkg.h" />
+    <ClInclude Include="include\hdf5\H5ACprivate.h" />
+    <ClInclude Include="include\hdf5\H5ACpublic.h" />
+    <ClInclude Include="include\hdf5\H5Amodule.h" />
+    <ClInclude Include="include\hdf5\H5api_adpt.h" />
+    <ClInclude Include="include\hdf5\H5Apkg.h" />
+    <ClInclude Include="include\hdf5\H5Aprivate.h" />
+    <ClInclude Include="include\hdf5\H5Apublic.h" />
+    <ClInclude Include="include\hdf5\H5B2module.h" />
+    <ClInclude Include="include\hdf5\H5B2pkg.h" />
+    <ClInclude Include="include\hdf5\H5B2private.h" />
+    <ClInclude Include="include\hdf5\H5Bmodule.h" />
+    <ClInclude Include="include\hdf5\H5Bpkg.h" />
+    <ClInclude Include="include\hdf5\H5Bprivate.h" />
+    <ClInclude Include="include\hdf5\H5Clog.h" />
+    <ClInclude Include="include\hdf5\H5Cmodule.h" />
+    <ClInclude Include="include\hdf5\H5Cpkg.h" />
+    <ClInclude Include="include\hdf5\H5Cprivate.h" />
+    <ClInclude Include="include\hdf5\H5Cpublic.h" />
+    <ClInclude Include="include\hdf5\H5CSprivate.h" />
+    <ClInclude Include="include\hdf5\H5CXmodule.h" />
+    <ClInclude Include="include\hdf5\H5CXprivate.h" />
+    <ClInclude Include="include\hdf5\H5Dmodule.h" />
+    <ClInclude Include="include\hdf5\H5Dpkg.h" />
+    <ClInclude Include="include\hdf5\H5Dprivate.h" />
+    <ClInclude Include="include\hdf5\H5Dpublic.h" />
+    <ClInclude Include="include\hdf5\H5EAmodule.h" />
+    <ClInclude Include="include\hdf5\H5EApkg.h" />
+    <ClInclude Include="include\hdf5\H5EAprivate.h" />
+    <ClInclude Include="include\hdf5\H5Edefin.h" />
+    <ClInclude Include="include\hdf5\H5Einit.h" />
+    <ClInclude Include="include\hdf5\H5Emodule.h" />
+    <ClInclude Include="include\hdf5\H5encode.h" />
+    <ClInclude Include="include\hdf5\H5Epkg.h" />
+    <ClInclude Include="include\hdf5\H5Eprivate.h" />
+    <ClInclude Include="include\hdf5\H5Epubgen.h" />
+    <ClInclude Include="include\hdf5\H5Epublic.h" />
+    <ClInclude Include="include\hdf5\H5ESdevelop.h" />
+    <ClInclude Include="include\hdf5\H5ESmodule.h" />
+    <ClInclude Include="include\hdf5\H5ESpkg.h" />
+    <ClInclude Include="include\hdf5\H5ESprivate.h" />
+    <ClInclude Include="include\hdf5\H5ESpublic.h" />
+    <ClInclude Include="include\hdf5\H5Eterm.h" />
+    <ClInclude Include="include\hdf5\H5FAmodule.h" />
+    <ClInclude Include="include\hdf5\H5FApkg.h" />
+    <ClInclude Include="include\hdf5\H5FAprivate.h" />
+    <ClInclude Include="include\hdf5\H5FDcore.h" />
+    <ClInclude Include="include\hdf5\H5FDdevelop.h" />
+    <ClInclude Include="include\hdf5\H5FDdirect.h" />
+    <ClInclude Include="include\hdf5\H5FDdrvr_module.h" />
+    <ClInclude Include="include\hdf5\H5FDfamily.h" />
+    <ClInclude Include="include\hdf5\H5FDhdfs.h" />
+    <ClInclude Include="include\hdf5\H5FDlog.h" />
+    <ClInclude Include="include\hdf5\H5FDmirror.h" />
+    <ClInclude Include="include\hdf5\H5FDmirror_priv.h" />
+    <ClInclude Include="include\hdf5\H5FDmodule.h" />
+    <ClInclude Include="include\hdf5\H5FDmpi.h" />
+    <ClInclude Include="include\hdf5\H5FDmpio.h" />
+    <ClInclude Include="include\hdf5\H5FDmulti.h" />
+    <ClInclude Include="include\hdf5\H5FDonion.h" />
+    <ClInclude Include="include\hdf5\H5FDonion_header.h" />
+    <ClInclude Include="include\hdf5\H5FDonion_history.h" />
+    <ClInclude Include="include\hdf5\H5FDonion_index.h" />
+    <ClInclude Include="include\hdf5\H5FDonion_priv.h" />
+    <ClInclude Include="include\hdf5\H5FDpkg.h" />
+    <ClInclude Include="include\hdf5\H5FDprivate.h" />
+    <ClInclude Include="include\hdf5\H5FDpublic.h" />
+    <ClInclude Include="include\hdf5\H5FDros3.h" />
+    <ClInclude Include="include\hdf5\H5FDs3comms.h" />
+    <ClInclude Include="include\hdf5\H5FDsec2.h" />
+    <ClInclude Include="include\hdf5\H5FDsplitter.h" />
+    <ClInclude Include="include\hdf5\H5FDstdio.h" />
+    <ClInclude Include="include\hdf5\H5FDsubfiling\H5FDioc.h" />
+    <ClInclude Include="include\hdf5\H5FDsubfiling\H5FDioc_priv.h" />
+    <ClInclude Include="include\hdf5\H5FDsubfiling\H5FDsubfiling.h" />
+    <ClInclude Include="include\hdf5\H5FDsubfiling\H5FDsubfiling_priv.h" />
+    <ClInclude Include="include\hdf5\H5FDsubfiling\H5subfiling_common.h" />
+    <ClInclude Include="include\hdf5\H5FDsubfiling\H5subfiling_err.h" />
+    <ClInclude Include="include\hdf5\H5FDwindows.h" />
+    <ClInclude Include="include\hdf5\H5FLmodule.h" />
+    <ClInclude Include="include\hdf5\H5FLprivate.h" />
+    <ClInclude Include="include\hdf5\H5Fmodule.h" />
+    <ClInclude Include="include\hdf5\H5FOprivate.h" />
+    <ClInclude Include="include\hdf5\H5Fpkg.h" />
+    <ClInclude Include="include\hdf5\H5Fprivate.h" />
+    <ClInclude Include="include\hdf5\H5Fpublic.h" />
+    <ClInclude Include="include\hdf5\H5FSmodule.h" />
+    <ClInclude Include="include\hdf5\H5FSpkg.h" />
+    <ClInclude Include="include\hdf5\H5FSprivate.h" />
+    <ClInclude Include="include\hdf5\H5Gmodule.h" />
+    <ClInclude Include="include\hdf5\H5Gpkg.h" />
+    <ClInclude Include="include\hdf5\H5Gprivate.h" />
+    <ClInclude Include="include\hdf5\H5Gpublic.h" />
+    <ClInclude Include="include\hdf5\H5HFmodule.h" />
+    <ClInclude Include="include\hdf5\H5HFpkg.h" />
+    <ClInclude Include="include\hdf5\H5HFprivate.h" />
+    <ClInclude Include="include\hdf5\H5HGmodule.h" />
+    <ClInclude Include="include\hdf5\H5HGpkg.h" />
+    <ClInclude Include="include\hdf5\H5HGprivate.h" />
+    <ClInclude Include="include\hdf5\H5HLmodule.h" />
+    <ClInclude Include="include\hdf5\H5HLpkg.h" />
+    <ClInclude Include="include\hdf5\H5HLprivate.h" />
+    <ClInclude Include="include\hdf5\H5Idevelop.h" />
+    <ClInclude Include="include\hdf5\H5Imodule.h" />
+    <ClInclude Include="include\hdf5\H5Ipkg.h" />
+    <ClInclude Include="include\hdf5\H5Iprivate.h" />
+    <ClInclude Include="include\hdf5\H5Ipublic.h" />
+    <ClInclude Include="include\hdf5\H5Ldevelop.h" />
+    <ClInclude Include="include\hdf5\H5Lmodule.h" />
+    <ClInclude Include="include\hdf5\H5Lpkg.h" />
+    <ClInclude Include="include\hdf5\H5Lprivate.h" />
+    <ClInclude Include="include\hdf5\H5Lpublic.h" />
+    <ClInclude Include="include\hdf5\H5MFmodule.h" />
+    <ClInclude Include="include\hdf5\H5MFpkg.h" />
+    <ClInclude Include="include\hdf5\H5MFprivate.h" />
+    <ClInclude Include="include\hdf5\H5Mmodule.h" />
+    <ClInclude Include="include\hdf5\H5MMprivate.h" />
+    <ClInclude Include="include\hdf5\H5MMpublic.h" />
+    <ClInclude Include="include\hdf5\H5module.h" />
+    <ClInclude Include="include\hdf5\H5Mpkg.h" />
+    <ClInclude Include="include\hdf5\H5Mprivate.h" />
+    <ClInclude Include="include\hdf5\H5Mpublic.h" />
+    <ClInclude Include="include\hdf5\H5Omodule.h" />
+    <ClInclude Include="include\hdf5\H5Opkg.h" />
+    <ClInclude Include="include\hdf5\H5Oprivate.h" />
+    <ClInclude Include="include\hdf5\H5Opublic.h" />
+    <ClInclude Include="include\hdf5\H5Oshared.h" />
+    <ClInclude Include="include\hdf5\H5overflow.h" />
+    <ClInclude Include="include\hdf5\H5PBmodule.h" />
+    <ClInclude Include="include\hdf5\H5PBpkg.h" />
+    <ClInclude Include="include\hdf5\H5PBprivate.h" />
+    <ClInclude Include="include\hdf5\H5PLextern.h" />
+    <ClInclude Include="include\hdf5\H5PLmodule.h" />
+    <ClInclude Include="include\hdf5\H5PLpkg.h" />
+    <ClInclude Include="include\hdf5\H5PLprivate.h" />
+    <ClInclude Include="include\hdf5\H5PLpublic.h" />
+    <ClInclude Include="include\hdf5\H5Pmodule.h" />
+    <ClInclude Include="include\hdf5\H5Ppkg.h" />
+    <ClInclude Include="include\hdf5\H5Pprivate.h" />
+    <ClInclude Include="include\hdf5\H5Ppublic.h" />
+    <ClInclude Include="include\hdf5\H5private.h" />
+    <ClInclude Include="include\hdf5\H5pubconf.h" />
+    <ClInclude Include="include\hdf5\H5public.h" />
+    <ClInclude Include="include\hdf5\H5Rmodule.h" />
+    <ClInclude Include="include\hdf5\H5Rpkg.h" />
+    <ClInclude Include="include\hdf5\H5Rprivate.h" />
+    <ClInclude Include="include\hdf5\H5Rpublic.h" />
+    <ClInclude Include="include\hdf5\H5RSmodule.h" />
+    <ClInclude Include="include\hdf5\H5RSprivate.h" />
+    <ClInclude Include="include\hdf5\H5SLmodule.h" />
+    <ClInclude Include="include\hdf5\H5SLprivate.h" />
+    <ClInclude Include="include\hdf5\H5SMmodule.h" />
+    <ClInclude Include="include\hdf5\H5Smodule.h" />
+    <ClInclude Include="include\hdf5\H5SMpkg.h" />
+    <ClInclude Include="include\hdf5\H5SMprivate.h" />
+    <ClInclude Include="include\hdf5\H5Spkg.h" />
+    <ClInclude Include="include\hdf5\H5Sprivate.h" />
+    <ClInclude Include="include\hdf5\H5Spublic.h" />
+    <ClInclude Include="include\hdf5\H5Tdevelop.h" />
+    <ClInclude Include="include\hdf5\H5Tmodule.h" />
+    <ClInclude Include="include\hdf5\H5Tpkg.h" />
+    <ClInclude Include="include\hdf5\H5Tprivate.h" />
+    <ClInclude Include="include\hdf5\H5Tpublic.h" />
+    <ClInclude Include="include\hdf5\H5TSdevelop.h" />
+    <ClInclude Include="include\hdf5\H5TSprivate.h" />
+    <ClInclude Include="include\hdf5\H5UCprivate.h" />
+    <ClInclude Include="include\hdf5\H5version.h" />
+    <ClInclude Include="include\hdf5\H5VLconnector.h" />
+    <ClInclude Include="include\hdf5\H5VLconnector_passthru.h" />
+    <ClInclude Include="include\hdf5\H5VLmodule.h" />
+    <ClInclude Include="include\hdf5\H5VLnative.h" />
+    <ClInclude Include="include\hdf5\H5VLnative_private.h" />
+    <ClInclude Include="include\hdf5\H5VLpassthru.h" />
+    <ClInclude Include="include\hdf5\H5VLpkg.h" />
+    <ClInclude Include="include\hdf5\H5VLprivate.h" />
+    <ClInclude Include="include\hdf5\H5VLpublic.h" />
+    <ClInclude Include="include\hdf5\H5VMprivate.h" />
+    <ClInclude Include="include\hdf5\H5WBprivate.h" />
+    <ClInclude Include="include\hdf5\H5win32defs.h" />
+    <ClInclude Include="include\hdf5\H5Zdevelop.h" />
+    <ClInclude Include="include\hdf5\H5Zmodule.h" />
+    <ClInclude Include="include\hdf5\H5Zpkg.h" />
+    <ClInclude Include="include\hdf5\H5Zprivate.h" />
+    <ClInclude Include="include\hdf5\H5Zpublic.h" />
+    <ClInclude Include="include\hdf5\hdf5.h" />
+    <ClInclude Include="include\hdf5\uthash.h" />
+    <ClInclude Include="src\H5FDsubfiling\mercury\src\util\mercury_compiler_attributes.h" />
+    <ClInclude Include="src\H5FDsubfiling\mercury\src\util\mercury_queue.h" />
+    <ClInclude Include="src\H5FDsubfiling\mercury\src\util\mercury_thread.h" />
+    <ClInclude Include="src\H5FDsubfiling\mercury\src\util\mercury_thread_annotation.h" />
+    <ClInclude Include="src\H5FDsubfiling\mercury\src\util\mercury_thread_condition.h" />
+    <ClInclude Include="src\H5FDsubfiling\mercury\src\util\mercury_thread_mutex.h" />
+    <ClInclude Include="src\H5FDsubfiling\mercury\src\util\mercury_thread_pool.h" />
+    <ClInclude Include="src\H5FDsubfiling\mercury\src\util\mercury_util_config.h" />
+    <ClInclude Include="src\H5FDsubfiling\mercury\src\util\mercury_util_error.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\H5.c" />
+    <ClCompile Include="src\H5A.c" />
+    <ClCompile Include="src\H5Abtree2.c" />
+    <ClCompile Include="src\H5AC.c" />
+    <ClCompile Include="src\H5ACdbg.c" />
+    <ClCompile Include="src\H5ACmpio.c" />
+    <ClCompile Include="src\H5ACproxy_entry.c" />
+    <ClCompile Include="src\H5Adense.c" />
+    <ClCompile Include="src\H5Adeprec.c" />
+    <ClCompile Include="src\H5Aint.c" />
+    <ClCompile Include="src\H5Atest.c" />
+    <ClCompile Include="src\H5B.c" />
+    <ClCompile Include="src\H5B2.c" />
+    <ClCompile Include="src\H5B2cache.c" />
+    <ClCompile Include="src\H5B2dbg.c" />
+    <ClCompile Include="src\H5B2hdr.c" />
+    <ClCompile Include="src\H5B2int.c" />
+    <ClCompile Include="src\H5B2internal.c" />
+    <ClCompile Include="src\H5B2leaf.c" />
+    <ClCompile Include="src\H5B2stat.c" />
+    <ClCompile Include="src\H5B2test.c" />
+    <ClCompile Include="src\H5Bcache.c" />
+    <ClCompile Include="src\H5Bdbg.c" />
+    <ClCompile Include="src\H5build_settings.c" />
+    <ClCompile Include="src\H5C.c" />
+    <ClCompile Include="src\H5Cdbg.c" />
+    <ClCompile Include="src\H5Centry.c" />
+    <ClCompile Include="src\H5Cepoch.c" />
+    <ClCompile Include="src\H5checksum.c" />
+    <ClCompile Include="src\H5Cimage.c" />
+    <ClCompile Include="src\H5Cint.c" />
+    <ClCompile Include="src\H5Clog.c" />
+    <ClCompile Include="src\H5Clog_json.c" />
+    <ClCompile Include="src\H5Clog_trace.c" />
+    <ClCompile Include="src\H5Cmpio.c" />
+    <ClCompile Include="src\H5Cprefetched.c" />
+    <ClCompile Include="src\H5Cquery.c" />
+    <ClCompile Include="src\H5CS.c" />
+    <ClCompile Include="src\H5Ctag.c" />
+    <ClCompile Include="src\H5Ctest.c" />
+    <ClCompile Include="src\H5CX.c" />
+    <ClCompile Include="src\H5D.c" />
+    <ClCompile Include="src\H5dbg.c" />
+    <ClCompile Include="src\H5Dbtree.c" />
+    <ClCompile Include="src\H5Dbtree2.c" />
+    <ClCompile Include="src\H5Dchunk.c" />
+    <ClCompile Include="src\H5Dcompact.c" />
+    <ClCompile Include="src\H5Dcontig.c" />
+    <ClCompile Include="src\H5Ddbg.c" />
+    <ClCompile Include="src\H5Ddeprec.c" />
+    <ClCompile Include="src\H5Dearray.c" />
+    <ClCompile Include="src\H5Defl.c" />
+    <ClCompile Include="src\H5Dfarray.c" />
+    <ClCompile Include="src\H5Dfill.c" />
+    <ClCompile Include="src\H5Dint.c" />
+    <ClCompile Include="src\H5Dio.c" />
+    <ClCompile Include="src\H5Dlayout.c" />
+    <ClCompile Include="src\H5Dmpio.c" />
+    <ClCompile Include="src\H5Dnone.c" />
+    <ClCompile Include="src\H5Doh.c" />
+    <ClCompile Include="src\H5Dscatgath.c" />
+    <ClCompile Include="src\H5Dselect.c" />
+    <ClCompile Include="src\H5Dsingle.c" />
+    <ClCompile Include="src\H5Dtest.c" />
+    <ClCompile Include="src\H5Dvirtual.c" />
+    <ClCompile Include="src\H5E.c" />
+    <ClCompile Include="src\H5EA.c" />
+    <ClCompile Include="src\H5EAcache.c" />
+    <ClCompile Include="src\H5EAdbg.c" />
+    <ClCompile Include="src\H5EAdblkpage.c" />
+    <ClCompile Include="src\H5EAdblock.c" />
+    <ClCompile Include="src\H5EAhdr.c" />
+    <ClCompile Include="src\H5EAiblock.c" />
+    <ClCompile Include="src\H5EAint.c" />
+    <ClCompile Include="src\H5EAsblock.c" />
+    <ClCompile Include="src\H5EAstat.c" />
+    <ClCompile Include="src\H5EAtest.c" />
+    <ClCompile Include="src\H5Edeprec.c" />
+    <ClCompile Include="src\H5Eint.c" />
+    <ClCompile Include="src\H5ES.c" />
+    <ClCompile Include="src\H5ESevent.c" />
+    <ClCompile Include="src\H5ESint.c" />
+    <ClCompile Include="src\H5ESlist.c" />
+    <ClCompile Include="src\H5F.c" />
+    <ClCompile Include="src\H5FA.c" />
+    <ClCompile Include="src\H5FAcache.c" />
+    <ClCompile Include="src\H5Faccum.c" />
+    <ClCompile Include="src\H5FAdbg.c" />
+    <ClCompile Include="src\H5FAdblkpage.c" />
+    <ClCompile Include="src\H5FAdblock.c" />
+    <ClCompile Include="src\H5FAhdr.c" />
+    <ClCompile Include="src\H5FAint.c" />
+    <ClCompile Include="src\H5FAstat.c" />
+    <ClCompile Include="src\H5FAtest.c" />
+    <ClCompile Include="src\H5Fcwfs.c" />
+    <ClCompile Include="src\H5FD.c" />
+    <ClCompile Include="src\H5Fdbg.c" />
+    <ClCompile Include="src\H5FDcore.c" />
+    <ClCompile Include="src\H5FDdirect.c" />
+    <ClCompile Include="src\H5Fdeprec.c" />
+    <ClCompile Include="src\H5FDfamily.c" />
+    <ClCompile Include="src\H5FDhdfs.c" />
+    <ClCompile Include="src\H5FDint.c" />
+    <ClCompile Include="src\H5FDlog.c" />
+    <ClCompile Include="src\H5FDmirror.c" />
+    <ClCompile Include="src\H5FDmpi.c" />
+    <ClCompile Include="src\H5FDmpio.c" />
+    <ClCompile Include="src\H5FDmulti.c" />
+    <ClCompile Include="src\H5FDonion.c" />
+    <ClCompile Include="src\H5FDonion_header.c" />
+    <ClCompile Include="src\H5FDonion_history.c" />
+    <ClCompile Include="src\H5FDonion_index.c" />
+    <ClCompile Include="src\H5FDperform.c" />
+    <ClCompile Include="src\H5FDros3.c" />
+    <ClCompile Include="src\H5FDs3comms.c" />
+    <ClCompile Include="src\H5FDsec2.c" />
+    <ClCompile Include="src\H5FDspace.c" />
+    <ClCompile Include="src\H5FDsplitter.c" />
+    <ClCompile Include="src\H5FDstdio.c" />
+    <ClCompile Include="src\H5FDsubfiling\H5FDioc.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\H5FDsubfiling\H5FDioc_int.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\H5FDsubfiling\H5FDioc_threads.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\H5FDsubfiling\H5FDsubfile_int.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\H5FDsubfiling\H5FDsubfiling.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\H5FDsubfiling\H5subfiling_common.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\H5FDsubfiling\mercury\src\util\mercury_thread.c" />
+    <ClCompile Include="src\H5FDsubfiling\mercury\src\util\mercury_thread_condition.c" />
+    <ClCompile Include="src\H5FDsubfiling\mercury\src\util\mercury_thread_mutex.c" />
+    <ClCompile Include="src\H5FDsubfiling\mercury\src\util\mercury_thread_pool.c" />
+    <ClCompile Include="src\H5FDtest.c" />
+    <ClCompile Include="src\H5FDwindows.c" />
+    <ClCompile Include="src\H5Fefc.c" />
+    <ClCompile Include="src\H5Ffake.c" />
+    <ClCompile Include="src\H5Fint.c" />
+    <ClCompile Include="src\H5Fio.c" />
+    <ClCompile Include="src\H5FL.c" />
+    <ClCompile Include="src\H5Fmount.c" />
+    <ClCompile Include="src\H5Fmpi.c" />
+    <ClCompile Include="src\H5FO.c" />
+    <ClCompile Include="src\H5Fquery.c" />
+    <ClCompile Include="src\H5FS.c" />
+    <ClCompile Include="src\H5FScache.c" />
+    <ClCompile Include="src\H5FSdbg.c" />
+    <ClCompile Include="src\H5Fsfile.c" />
+    <ClCompile Include="src\H5FSint.c" />
+    <ClCompile Include="src\H5Fspace.c" />
+    <ClCompile Include="src\H5FSsection.c" />
+    <ClCompile Include="src\H5FSstat.c" />
+    <ClCompile Include="src\H5FStest.c" />
+    <ClCompile Include="src\H5Fsuper.c" />
+    <ClCompile Include="src\H5Fsuper_cache.c" />
+    <ClCompile Include="src\H5Ftest.c" />
+    <ClCompile Include="src\H5G.c" />
+    <ClCompile Include="src\H5Gbtree2.c" />
+    <ClCompile Include="src\H5Gcache.c" />
+    <ClCompile Include="src\H5Gcompact.c" />
+    <ClCompile Include="src\H5Gdense.c" />
+    <ClCompile Include="src\H5Gdeprec.c" />
+    <ClCompile Include="src\H5Gent.c" />
+    <ClCompile Include="src\H5Gint.c" />
+    <ClCompile Include="src\H5Glink.c" />
+    <ClCompile Include="src\H5Gloc.c" />
+    <ClCompile Include="src\H5Gname.c" />
+    <ClCompile Include="src\H5Gnode.c" />
+    <ClCompile Include="src\H5Gobj.c" />
+    <ClCompile Include="src\H5Goh.c" />
+    <ClCompile Include="src\H5Groot.c" />
+    <ClCompile Include="src\H5Gstab.c" />
+    <ClCompile Include="src\H5Gtest.c" />
+    <ClCompile Include="src\H5Gtraverse.c" />
+    <ClCompile Include="src\H5HF.c" />
+    <ClCompile Include="src\H5HFbtree2.c" />
+    <ClCompile Include="src\H5HFcache.c" />
+    <ClCompile Include="src\H5HFdbg.c" />
+    <ClCompile Include="src\H5HFdblock.c" />
+    <ClCompile Include="src\H5HFdtable.c" />
+    <ClCompile Include="src\H5HFhdr.c" />
+    <ClCompile Include="src\H5HFhuge.c" />
+    <ClCompile Include="src\H5HFiblock.c" />
+    <ClCompile Include="src\H5HFiter.c" />
+    <ClCompile Include="src\H5HFman.c" />
+    <ClCompile Include="src\H5HFsection.c" />
+    <ClCompile Include="src\H5HFspace.c" />
+    <ClCompile Include="src\H5HFstat.c" />
+    <ClCompile Include="src\H5HFtest.c" />
+    <ClCompile Include="src\H5HFtiny.c" />
+    <ClCompile Include="src\H5HG.c" />
+    <ClCompile Include="src\H5HGcache.c" />
+    <ClCompile Include="src\H5HGdbg.c" />
+    <ClCompile Include="src\H5HGquery.c" />
+    <ClCompile Include="src\H5HL.c" />
+    <ClCompile Include="src\H5HLcache.c" />
+    <ClCompile Include="src\H5HLdbg.c" />
+    <ClCompile Include="src\H5HLdblk.c" />
+    <ClCompile Include="src\H5HLint.c" />
+    <ClCompile Include="src\H5HLprfx.c" />
+    <ClCompile Include="src\H5I.c" />
+    <ClCompile Include="src\H5Idbg.c" />
+    <ClCompile Include="src\H5Iint.c" />
+    <ClCompile Include="src\H5Itest.c" />
+    <ClCompile Include="src\H5L.c" />
+    <ClCompile Include="src\H5Ldeprec.c" />
+    <ClCompile Include="src\H5Lexternal.c" />
+    <ClCompile Include="src\H5Lint.c" />
+    <ClCompile Include="src\H5M.c" />
+    <ClCompile Include="src\H5MF.c" />
+    <ClCompile Include="src\H5MFaggr.c" />
+    <ClCompile Include="src\H5MFdbg.c" />
+    <ClCompile Include="src\H5MFsection.c" />
+    <ClCompile Include="src\H5MM.c" />
+    <ClCompile Include="src\H5mpi.c" />
+    <ClCompile Include="src\H5O.c" />
+    <ClCompile Include="src\H5Oainfo.c" />
+    <ClCompile Include="src\H5Oalloc.c" />
+    <ClCompile Include="src\H5Oattr.c" />
+    <ClCompile Include="src\H5Oattribute.c" />
+    <ClCompile Include="src\H5Obogus.c" />
+    <ClCompile Include="src\H5Obtreek.c" />
+    <ClCompile Include="src\H5Ocache.c" />
+    <ClCompile Include="src\H5Ocache_image.c" />
+    <ClCompile Include="src\H5Ochunk.c" />
+    <ClCompile Include="src\H5Ocont.c" />
+    <ClCompile Include="src\H5Ocopy.c" />
+    <ClCompile Include="src\H5Ocopy_ref.c" />
+    <ClCompile Include="src\H5Odbg.c" />
+    <ClCompile Include="src\H5Odeprec.c" />
+    <ClCompile Include="src\H5Odrvinfo.c" />
+    <ClCompile Include="src\H5Odtype.c" />
+    <ClCompile Include="src\H5Oefl.c" />
+    <ClCompile Include="src\H5Ofill.c" />
+    <ClCompile Include="src\H5Oflush.c" />
+    <ClCompile Include="src\H5Ofsinfo.c" />
+    <ClCompile Include="src\H5Oginfo.c" />
+    <ClCompile Include="src\H5Oint.c" />
+    <ClCompile Include="src\H5Olayout.c" />
+    <ClCompile Include="src\H5Olinfo.c" />
+    <ClCompile Include="src\H5Olink.c" />
+    <ClCompile Include="src\H5Omessage.c" />
+    <ClCompile Include="src\H5Omtime.c" />
+    <ClCompile Include="src\H5Oname.c" />
+    <ClCompile Include="src\H5Onull.c" />
+    <ClCompile Include="src\H5Opline.c" />
+    <ClCompile Include="src\H5Orefcount.c" />
+    <ClCompile Include="src\H5Osdspace.c" />
+    <ClCompile Include="src\H5Oshared.c" />
+    <ClCompile Include="src\H5Oshmesg.c" />
+    <ClCompile Include="src\H5Ostab.c" />
+    <ClCompile Include="src\H5Otest.c" />
+    <ClCompile Include="src\H5Ounknown.c" />
+    <ClCompile Include="src\H5P.c" />
+    <ClCompile Include="src\H5Pacpl.c" />
+    <ClCompile Include="src\H5PB.c" />
+    <ClCompile Include="src\H5Pdapl.c" />
+    <ClCompile Include="src\H5Pdcpl.c" />
+    <ClCompile Include="src\H5Pdeprec.c" />
+    <ClCompile Include="src\H5Pdxpl.c" />
+    <ClCompile Include="src\H5Pencdec.c" />
+    <ClCompile Include="src\H5Pfapl.c" />
+    <ClCompile Include="src\H5Pfcpl.c" />
+    <ClCompile Include="src\H5Pfmpl.c" />
+    <ClCompile Include="src\H5Pgcpl.c" />
+    <ClCompile Include="src\H5Pint.c" />
+    <ClCompile Include="src\H5PL.c" />
+    <ClCompile Include="src\H5Plapl.c" />
+    <ClCompile Include="src\H5Plcpl.c" />
+    <ClCompile Include="src\H5PLint.c" />
+    <ClCompile Include="src\H5PLpath.c" />
+    <ClCompile Include="src\H5PLplugin_cache.c" />
+    <ClCompile Include="src\H5Pmapl.c" />
+    <ClCompile Include="src\H5Pmcpl.c" />
+    <ClCompile Include="src\H5Pocpl.c" />
+    <ClCompile Include="src\H5Pocpypl.c" />
+    <ClCompile Include="src\H5Pstrcpl.c" />
+    <ClCompile Include="src\H5Ptest.c" />
+    <ClCompile Include="src\H5R.c" />
+    <ClCompile Include="src\H5Rdeprec.c" />
+    <ClCompile Include="src\H5Rint.c" />
+    <ClCompile Include="src\H5RS.c" />
+    <ClCompile Include="src\H5S.c" />
+    <ClCompile Include="src\H5Sall.c" />
+    <ClCompile Include="src\H5Sdbg.c" />
+    <ClCompile Include="src\H5Sdeprec.c" />
+    <ClCompile Include="src\H5Shyper.c" />
+    <ClCompile Include="src\H5SL.c" />
+    <ClCompile Include="src\H5SM.c" />
+    <ClCompile Include="src\H5SMbtree2.c" />
+    <ClCompile Include="src\H5SMcache.c" />
+    <ClCompile Include="src\H5SMmessage.c" />
+    <ClCompile Include="src\H5Smpio.c" />
+    <ClCompile Include="src\H5SMtest.c" />
+    <ClCompile Include="src\H5Snone.c" />
+    <ClCompile Include="src\H5Spoint.c" />
+    <ClCompile Include="src\H5Sselect.c" />
+    <ClCompile Include="src\H5Stest.c" />
+    <ClCompile Include="src\H5system.c" />
+    <ClCompile Include="src\H5T.c" />
+    <ClCompile Include="src\H5Tarray.c" />
+    <ClCompile Include="src\H5Tbit.c" />
+    <ClCompile Include="src\H5Tcommit.c" />
+    <ClCompile Include="src\H5Tcompound.c" />
+    <ClCompile Include="src\H5Tconv.c" />
+    <ClCompile Include="src\H5Tcset.c" />
+    <ClCompile Include="src\H5Tdbg.c" />
+    <ClCompile Include="src\H5Tdeprec.c" />
+    <ClCompile Include="src\H5Tenum.c" />
+    <ClCompile Include="src\H5Tfields.c" />
+    <ClCompile Include="src\H5Tfixed.c" />
+    <ClCompile Include="src\H5Tfloat.c" />
+    <ClCompile Include="src\H5timer.c" />
+    <ClCompile Include="src\H5Tinit_float.c" />
+    <ClCompile Include="src\H5Tnative.c" />
+    <ClCompile Include="src\H5Toffset.c" />
+    <ClCompile Include="src\H5Toh.c" />
+    <ClCompile Include="src\H5Topaque.c" />
+    <ClCompile Include="src\H5Torder.c" />
+    <ClCompile Include="src\H5Tpad.c" />
+    <ClCompile Include="src\H5Tprecis.c" />
+    <ClCompile Include="src\H5trace.c" />
+    <ClCompile Include="src\H5Tref.c" />
+    <ClCompile Include="src\H5TS.c" />
+    <ClCompile Include="src\H5Tstrpad.c" />
+    <ClCompile Include="src\H5Tvisit.c" />
+    <ClCompile Include="src\H5Tvlen.c" />
+    <ClCompile Include="src\H5UC.c" />
+    <ClCompile Include="src\H5VL.c" />
+    <ClCompile Include="src\H5VLcallback.c" />
+    <ClCompile Include="src\H5VLdyn_ops.c" />
+    <ClCompile Include="src\H5VLint.c" />
+    <ClCompile Include="src\H5VLnative.c" />
+    <ClCompile Include="src\H5VLnative_attr.c" />
+    <ClCompile Include="src\H5VLnative_blob.c" />
+    <ClCompile Include="src\H5VLnative_dataset.c" />
+    <ClCompile Include="src\H5VLnative_datatype.c" />
+    <ClCompile Include="src\H5VLnative_file.c" />
+    <ClCompile Include="src\H5VLnative_group.c" />
+    <ClCompile Include="src\H5VLnative_introspect.c" />
+    <ClCompile Include="src\H5VLnative_link.c" />
+    <ClCompile Include="src\H5VLnative_object.c" />
+    <ClCompile Include="src\H5VLnative_token.c" />
+    <ClCompile Include="src\H5VLpassthru.c" />
+    <ClCompile Include="src\H5VLtest.c" />
+    <ClCompile Include="src\H5VM.c" />
+    <ClCompile Include="src\H5WB.c" />
+    <ClCompile Include="src\H5Z.c" />
+    <ClCompile Include="src\H5Zdeflate.c" />
+    <ClCompile Include="src\H5Zfletcher32.c" />
+    <ClCompile Include="src\H5Znbit.c" />
+    <ClCompile Include="src\H5Zscaleoffset.c" />
+    <ClCompile Include="src\H5Zshuffle.c" />
+    <ClCompile Include="src\H5Zszip.c" />
+    <ClCompile Include="src\H5Ztrans.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="include\hdf5\H5err.txt" />
+    <Text Include="include\hdf5\H5overflow.txt" />
+    <Text Include="include\hdf5\H5vers.txt" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
@@ -97,16 +683,19 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
-      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.zlib;$(SolutionDir)3rdParty\Harlinn.aec\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)include\hdf5;$(ProjectDir)include\hdf5\H5FDsubfiling;$(ProjectDir)src\H5FDsubfiling\mercury\src\util;$(ProjectDir)src;$(SolutionDir)3rdParty\Harlinn.zlib;$(SolutionDir)3rdParty\Harlinn.szip\include\szip;$(SolutionDir)3rdParty\Harlinn.aec\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/Zc:__cplusplus /experimental:c11atomics %(AdditionalOptions)</AdditionalOptions>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <OpenMPSupport>true</OpenMPSupport>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
       <AdditionalLibraryDirectories>$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -122,9 +711,11 @@
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <BufferSecurityCheck>false</BufferSecurityCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.zlib;$(SolutionDir)3rdParty\Harlinn.aec\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)include\hdf5;$(ProjectDir)include\hdf5\H5FDsubfiling;$(ProjectDir)src\H5FDsubfiling\mercury\src\util;$(ProjectDir)src;$(SolutionDir)3rdParty\Harlinn.zlib;$(SolutionDir)3rdParty\Harlinn.szip\include\szip;$(SolutionDir)3rdParty\Harlinn.aec\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/Zc:__cplusplus /experimental:c11atomics %(AdditionalOptions)</AdditionalOptions>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <OpenMPSupport>true</OpenMPSupport>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -133,6 +724,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
       <AdditionalLibraryDirectories>$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -145,10 +737,12 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
-      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.zlib;$(SolutionDir)3rdParty\Harlinn.aec\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)include\hdf5;$(ProjectDir)include\hdf5\H5FDsubfiling;$(ProjectDir)src\H5FDsubfiling\mercury\src\util;$(ProjectDir)src;$(SolutionDir)3rdParty\Harlinn.zlib;$(SolutionDir)3rdParty\Harlinn.szip\include\szip;$(SolutionDir)3rdParty\Harlinn.aec\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/Zc:__cplusplus /experimental:c11atomics %(AdditionalOptions)</AdditionalOptions>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <OpenMPSupport>true</OpenMPSupport>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -156,6 +750,7 @@
       <EnableUAC>false</EnableUAC>
       <AdditionalLibraryDirectories>$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <OutputFile>$(OutDir)$(TargetName)-x64d$(TargetExt)</OutputFile>
+      <AdditionalDependencies>Shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -171,9 +766,11 @@
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <BufferSecurityCheck>false</BufferSecurityCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.zlib;$(SolutionDir)3rdParty\Harlinn.aec\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)include\hdf5;$(ProjectDir)include\hdf5\H5FDsubfiling;$(ProjectDir)src\H5FDsubfiling\mercury\src\util;$(ProjectDir)src;$(SolutionDir)3rdParty\Harlinn.zlib;$(SolutionDir)3rdParty\Harlinn.szip\include\szip;$(SolutionDir)3rdParty\Harlinn.aec\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/Zc:__cplusplus /experimental:c11atomics %(AdditionalOptions)</AdditionalOptions>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <OpenMPSupport>true</OpenMPSupport>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -183,511 +780,9 @@
       <EnableUAC>false</EnableUAC>
       <AdditionalLibraryDirectories>$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <OutputFile>$(OutDir)$(TargetName)-x64r$(TargetExt)</OutputFile>
+      <AdditionalDependencies>Shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClCompile Include="H5.c" />
-    <ClCompile Include="H5A.c" />
-    <ClCompile Include="H5Abtree2.c" />
-    <ClCompile Include="H5AC.c" />
-    <ClCompile Include="H5ACdbg.c" />
-    <ClCompile Include="H5ACmpio.c" />
-    <ClCompile Include="H5ACproxy_entry.c" />
-    <ClCompile Include="H5Adense.c" />
-    <ClCompile Include="H5Adeprec.c" />
-    <ClCompile Include="H5Aint.c" />
-    <ClCompile Include="H5Atest.c" />
-    <ClCompile Include="H5B.c" />
-    <ClCompile Include="H5B2.c" />
-    <ClCompile Include="H5B2cache.c" />
-    <ClCompile Include="H5B2dbg.c" />
-    <ClCompile Include="H5B2hdr.c" />
-    <ClCompile Include="H5B2int.c" />
-    <ClCompile Include="H5B2internal.c" />
-    <ClCompile Include="H5B2leaf.c" />
-    <ClCompile Include="H5B2stat.c" />
-    <ClCompile Include="H5B2test.c" />
-    <ClCompile Include="H5Bcache.c" />
-    <ClCompile Include="H5Bdbg.c" />
-    <ClCompile Include="H5C.c" />
-    <ClCompile Include="H5Cdbg.c" />
-    <ClCompile Include="H5Cepoch.c" />
-    <ClCompile Include="H5checksum.c" />
-    <ClCompile Include="H5Cimage.c" />
-    <ClCompile Include="H5Clog.c" />
-    <ClCompile Include="H5Clog_json.c" />
-    <ClCompile Include="H5Clog_trace.c" />
-    <ClCompile Include="H5Cmpio.c" />
-    <ClCompile Include="H5Cprefetched.c" />
-    <ClCompile Include="H5Cquery.c" />
-    <ClCompile Include="H5CS.c" />
-    <ClCompile Include="H5Ctag.c" />
-    <ClCompile Include="H5Ctest.c" />
-    <ClCompile Include="H5CX.c" />
-    <ClCompile Include="H5D.c" />
-    <ClCompile Include="H5dbg.c" />
-    <ClCompile Include="H5Dbtree.c" />
-    <ClCompile Include="H5Dbtree2.c" />
-    <ClCompile Include="H5Dchunk.c" />
-    <ClCompile Include="H5Dcompact.c" />
-    <ClCompile Include="H5Dcontig.c" />
-    <ClCompile Include="H5Ddbg.c" />
-    <ClCompile Include="H5Ddeprec.c" />
-    <ClCompile Include="H5Dearray.c" />
-    <ClCompile Include="H5Defl.c" />
-    <ClCompile Include="H5Dfarray.c" />
-    <ClCompile Include="H5Dfill.c" />
-    <ClCompile Include="H5Dint.c" />
-    <ClCompile Include="H5Dio.c" />
-    <ClCompile Include="H5Dlayout.c" />
-    <ClCompile Include="H5Dmpio.c" />
-    <ClCompile Include="H5Dnone.c" />
-    <ClCompile Include="H5Doh.c" />
-    <ClCompile Include="H5Dscatgath.c" />
-    <ClCompile Include="H5Dselect.c" />
-    <ClCompile Include="H5Dsingle.c" />
-    <ClCompile Include="H5Dtest.c" />
-    <ClCompile Include="H5Dvirtual.c" />
-    <ClCompile Include="H5E.c" />
-    <ClCompile Include="H5EA.c" />
-    <ClCompile Include="H5EAcache.c" />
-    <ClCompile Include="H5EAdbg.c" />
-    <ClCompile Include="H5EAdblkpage.c" />
-    <ClCompile Include="H5EAdblock.c" />
-    <ClCompile Include="H5EAhdr.c" />
-    <ClCompile Include="H5EAiblock.c" />
-    <ClCompile Include="H5EAint.c" />
-    <ClCompile Include="H5EAsblock.c" />
-    <ClCompile Include="H5EAstat.c" />
-    <ClCompile Include="H5EAtest.c" />
-    <ClCompile Include="H5Edeprec.c" />
-    <ClCompile Include="H5Eint.c" />
-    <ClCompile Include="H5F.c" />
-    <ClCompile Include="H5FA.c" />
-    <ClCompile Include="H5FAcache.c" />
-    <ClCompile Include="H5Faccum.c" />
-    <ClCompile Include="H5FAdbg.c" />
-    <ClCompile Include="H5FAdblkpage.c" />
-    <ClCompile Include="H5FAdblock.c" />
-    <ClCompile Include="H5FAhdr.c" />
-    <ClCompile Include="H5FAint.c" />
-    <ClCompile Include="H5FAstat.c" />
-    <ClCompile Include="H5FAtest.c" />
-    <ClCompile Include="H5Fcwfs.c" />
-    <ClCompile Include="H5FD.c" />
-    <ClCompile Include="H5Fdbg.c" />
-    <ClCompile Include="H5FDcore.c" />
-    <ClCompile Include="H5FDdirect.c" />
-    <ClCompile Include="H5Fdeprec.c" />
-    <ClCompile Include="H5FDfamily.c" />
-    <ClCompile Include="H5FDhdfs.c" />
-    <ClCompile Include="H5FDint.c" />
-    <ClCompile Include="H5FDlog.c" />
-    <ClCompile Include="H5FDmirror.c" />
-    <ClCompile Include="H5FDmpi.c" />
-    <ClCompile Include="H5FDmpio.c" />
-    <ClCompile Include="H5FDmulti.c" />
-    <ClCompile Include="H5FDros3.c" />
-    <ClCompile Include="H5FDs3comms.c" />
-    <ClCompile Include="H5FDsec2.c" />
-    <ClCompile Include="H5FDspace.c" />
-    <ClCompile Include="H5FDsplitter.c" />
-    <ClCompile Include="H5FDstdio.c" />
-    <ClCompile Include="H5FDtest.c" />
-    <ClCompile Include="H5FDwindows.c" />
-    <ClCompile Include="H5Fefc.c" />
-    <ClCompile Include="H5Ffake.c" />
-    <ClCompile Include="H5Fint.c" />
-    <ClCompile Include="H5Fio.c" />
-    <ClCompile Include="H5FL.c" />
-    <ClCompile Include="H5Fmount.c" />
-    <ClCompile Include="H5Fmpi.c" />
-    <ClCompile Include="H5FO.c" />
-    <ClCompile Include="H5Fquery.c" />
-    <ClCompile Include="H5FS.c" />
-    <ClCompile Include="H5FScache.c" />
-    <ClCompile Include="H5FSdbg.c" />
-    <ClCompile Include="H5Fsfile.c" />
-    <ClCompile Include="H5FSint.c" />
-    <ClCompile Include="H5Fspace.c" />
-    <ClCompile Include="H5FSsection.c" />
-    <ClCompile Include="H5FSstat.c" />
-    <ClCompile Include="H5FStest.c" />
-    <ClCompile Include="H5Fsuper.c" />
-    <ClCompile Include="H5Fsuper_cache.c" />
-    <ClCompile Include="H5Ftest.c" />
-    <ClCompile Include="H5G.c" />
-    <ClCompile Include="H5Gbtree2.c" />
-    <ClCompile Include="H5Gcache.c" />
-    <ClCompile Include="H5Gcompact.c" />
-    <ClCompile Include="H5Gdense.c" />
-    <ClCompile Include="H5Gdeprec.c" />
-    <ClCompile Include="H5Gent.c" />
-    <ClCompile Include="H5Gint.c" />
-    <ClCompile Include="H5Glink.c" />
-    <ClCompile Include="H5Gloc.c" />
-    <ClCompile Include="H5Gname.c" />
-    <ClCompile Include="H5Gnode.c" />
-    <ClCompile Include="H5Gobj.c" />
-    <ClCompile Include="H5Goh.c" />
-    <ClCompile Include="H5Groot.c" />
-    <ClCompile Include="H5Gstab.c" />
-    <ClCompile Include="H5Gtest.c" />
-    <ClCompile Include="H5Gtraverse.c" />
-    <ClCompile Include="H5HF.c" />
-    <ClCompile Include="H5HFbtree2.c" />
-    <ClCompile Include="H5HFcache.c" />
-    <ClCompile Include="H5HFdbg.c" />
-    <ClCompile Include="H5HFdblock.c" />
-    <ClCompile Include="H5HFdtable.c" />
-    <ClCompile Include="H5HFhdr.c" />
-    <ClCompile Include="H5HFhuge.c" />
-    <ClCompile Include="H5HFiblock.c" />
-    <ClCompile Include="H5HFiter.c" />
-    <ClCompile Include="H5HFman.c" />
-    <ClCompile Include="H5HFsection.c" />
-    <ClCompile Include="H5HFspace.c" />
-    <ClCompile Include="H5HFstat.c" />
-    <ClCompile Include="H5HFtest.c" />
-    <ClCompile Include="H5HFtiny.c" />
-    <ClCompile Include="H5HG.c" />
-    <ClCompile Include="H5HGcache.c" />
-    <ClCompile Include="H5HGdbg.c" />
-    <ClCompile Include="H5HGquery.c" />
-    <ClCompile Include="H5HL.c" />
-    <ClCompile Include="H5HLcache.c" />
-    <ClCompile Include="H5HLdbg.c" />
-    <ClCompile Include="H5HLdblk.c" />
-    <ClCompile Include="H5HLint.c" />
-    <ClCompile Include="H5HLprfx.c" />
-    <ClCompile Include="H5HP.c" />
-    <ClCompile Include="H5I.c" />
-    <ClCompile Include="H5Idbg.c" />
-    <ClCompile Include="H5Iint.c" />
-    <ClCompile Include="H5Itest.c" />
-    <ClCompile Include="H5L.c" />
-    <ClCompile Include="H5Ldeprec.c" />
-    <ClCompile Include="H5Lexternal.c" />
-    <ClCompile Include="H5lib_settings.c" />
-    <ClCompile Include="H5M.c" />
-    <ClCompile Include="H5MF.c" />
-    <ClCompile Include="H5MFaggr.c" />
-    <ClCompile Include="H5MFdbg.c" />
-    <ClCompile Include="H5MFsection.c" />
-    <ClCompile Include="H5MM.c" />
-    <ClCompile Include="H5MP.c" />
-    <ClCompile Include="H5mpi.c" />
-    <ClCompile Include="H5MPtest.c" />
-    <ClCompile Include="H5O.c" />
-    <ClCompile Include="H5Oainfo.c" />
-    <ClCompile Include="H5Oalloc.c" />
-    <ClCompile Include="H5Oattr.c" />
-    <ClCompile Include="H5Oattribute.c" />
-    <ClCompile Include="H5Obogus.c" />
-    <ClCompile Include="H5Obtreek.c" />
-    <ClCompile Include="H5Ocache.c" />
-    <ClCompile Include="H5Ocache_image.c" />
-    <ClCompile Include="H5Ochunk.c" />
-    <ClCompile Include="H5Ocont.c" />
-    <ClCompile Include="H5Ocopy.c" />
-    <ClCompile Include="H5Ocopy_ref.c" />
-    <ClCompile Include="H5Odbg.c" />
-    <ClCompile Include="H5Odeprec.c" />
-    <ClCompile Include="H5Odrvinfo.c" />
-    <ClCompile Include="H5Odtype.c" />
-    <ClCompile Include="H5Oefl.c" />
-    <ClCompile Include="H5Ofill.c" />
-    <ClCompile Include="H5Oflush.c" />
-    <ClCompile Include="H5Ofsinfo.c" />
-    <ClCompile Include="H5Oginfo.c" />
-    <ClCompile Include="H5Oint.c" />
-    <ClCompile Include="H5Olayout.c" />
-    <ClCompile Include="H5Olinfo.c" />
-    <ClCompile Include="H5Olink.c" />
-    <ClCompile Include="H5Omessage.c" />
-    <ClCompile Include="H5Omtime.c" />
-    <ClCompile Include="H5Oname.c" />
-    <ClCompile Include="H5Onull.c" />
-    <ClCompile Include="H5Opline.c" />
-    <ClCompile Include="H5Orefcount.c" />
-    <ClCompile Include="H5Osdspace.c" />
-    <ClCompile Include="H5Oshared.c" />
-    <ClCompile Include="H5Oshmesg.c" />
-    <ClCompile Include="H5Ostab.c" />
-    <ClCompile Include="H5Otest.c" />
-    <ClCompile Include="H5Ounknown.c" />
-    <ClCompile Include="H5P.c" />
-    <ClCompile Include="H5Pacpl.c" />
-    <ClCompile Include="H5PB.c" />
-    <ClCompile Include="H5Pdapl.c" />
-    <ClCompile Include="H5Pdcpl.c" />
-    <ClCompile Include="H5Pdeprec.c" />
-    <ClCompile Include="H5Pdxpl.c" />
-    <ClCompile Include="H5Pencdec.c" />
-    <ClCompile Include="H5Pfapl.c" />
-    <ClCompile Include="H5Pfcpl.c" />
-    <ClCompile Include="H5Pfmpl.c" />
-    <ClCompile Include="H5Pgcpl.c" />
-    <ClCompile Include="H5Pint.c" />
-    <ClCompile Include="H5PL.c" />
-    <ClCompile Include="H5Plapl.c" />
-    <ClCompile Include="H5Plcpl.c" />
-    <ClCompile Include="H5PLint.c" />
-    <ClCompile Include="H5PLpath.c" />
-    <ClCompile Include="H5PLplugin_cache.c" />
-    <ClCompile Include="H5Pmapl.c" />
-    <ClCompile Include="H5Pmcpl.c" />
-    <ClCompile Include="H5Pocpl.c" />
-    <ClCompile Include="H5Pocpypl.c" />
-    <ClCompile Include="H5Pstrcpl.c" />
-    <ClCompile Include="H5Ptest.c" />
-    <ClCompile Include="H5R.c" />
-    <ClCompile Include="H5Rdeprec.c" />
-    <ClCompile Include="H5Rint.c" />
-    <ClCompile Include="H5RS.c" />
-    <ClCompile Include="H5S.c" />
-    <ClCompile Include="H5Sall.c" />
-    <ClCompile Include="H5Sdbg.c" />
-    <ClCompile Include="H5Sdeprec.c" />
-    <ClCompile Include="H5Shyper.c" />
-    <ClCompile Include="H5SL.c" />
-    <ClCompile Include="H5SM.c" />
-    <ClCompile Include="H5SMbtree2.c" />
-    <ClCompile Include="H5SMcache.c" />
-    <ClCompile Include="H5SMmessage.c" />
-    <ClCompile Include="H5Smpio.c" />
-    <ClCompile Include="H5SMtest.c" />
-    <ClCompile Include="H5Snone.c" />
-    <ClCompile Include="H5Spoint.c" />
-    <ClCompile Include="H5Sselect.c" />
-    <ClCompile Include="H5Stest.c" />
-    <ClCompile Include="H5system.c" />
-    <ClCompile Include="H5T.c" />
-    <ClCompile Include="H5Tarray.c" />
-    <ClCompile Include="H5Tbit.c" />
-    <ClCompile Include="H5Tcommit.c" />
-    <ClCompile Include="H5Tcompound.c" />
-    <ClCompile Include="H5Tconv.c" />
-    <ClCompile Include="H5Tcset.c" />
-    <ClCompile Include="H5Tdbg.c" />
-    <ClCompile Include="H5Tdeprec.c" />
-    <ClCompile Include="H5Tenum.c" />
-    <ClCompile Include="H5Tfields.c" />
-    <ClCompile Include="H5Tfixed.c" />
-    <ClCompile Include="H5Tfloat.c" />
-    <ClCompile Include="H5timer.c" />
-    <ClCompile Include="H5Tinit.c" />
-    <ClCompile Include="H5Tnative.c" />
-    <ClCompile Include="H5Toffset.c" />
-    <ClCompile Include="H5Toh.c" />
-    <ClCompile Include="H5Topaque.c" />
-    <ClCompile Include="H5Torder.c" />
-    <ClCompile Include="H5Tpad.c" />
-    <ClCompile Include="H5Tprecis.c" />
-    <ClCompile Include="H5trace.c" />
-    <ClCompile Include="H5Tref.c" />
-    <ClCompile Include="H5TS.c" />
-    <ClCompile Include="H5Tstrpad.c" />
-    <ClCompile Include="H5Tvisit.c" />
-    <ClCompile Include="H5Tvlen.c" />
-    <ClCompile Include="H5UC.c" />
-    <ClCompile Include="H5VL.c" />
-    <ClCompile Include="H5VLcallback.c" />
-    <ClCompile Include="H5VLint.c" />
-    <ClCompile Include="H5VLnative.c" />
-    <ClCompile Include="H5VLnative_attr.c" />
-    <ClCompile Include="H5VLnative_blob.c" />
-    <ClCompile Include="H5VLnative_dataset.c" />
-    <ClCompile Include="H5VLnative_datatype.c" />
-    <ClCompile Include="H5VLnative_file.c" />
-    <ClCompile Include="H5VLnative_group.c" />
-    <ClCompile Include="H5VLnative_introspect.c" />
-    <ClCompile Include="H5VLnative_link.c" />
-    <ClCompile Include="H5VLnative_object.c" />
-    <ClCompile Include="H5VLnative_token.c" />
-    <ClCompile Include="H5VLpassthru.c" />
-    <ClCompile Include="H5VM.c" />
-    <ClCompile Include="H5WB.c" />
-    <ClCompile Include="H5Z.c" />
-    <ClCompile Include="H5Zdeflate.c" />
-    <ClCompile Include="H5Zfletcher32.c" />
-    <ClCompile Include="H5Znbit.c" />
-    <ClCompile Include="H5Zscaleoffset.c" />
-    <ClCompile Include="H5Zshuffle.c" />
-    <ClCompile Include="H5Zszip.c" />
-    <ClCompile Include="H5Ztrans.c" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="H5ACmodule.h" />
-    <ClInclude Include="H5ACpkg.h" />
-    <ClInclude Include="H5ACprivate.h" />
-    <ClInclude Include="H5ACpublic.h" />
-    <ClInclude Include="H5Amodule.h" />
-    <ClInclude Include="H5api_adpt.h" />
-    <ClInclude Include="H5Apkg.h" />
-    <ClInclude Include="H5Aprivate.h" />
-    <ClInclude Include="H5Apublic.h" />
-    <ClInclude Include="H5B2module.h" />
-    <ClInclude Include="H5B2pkg.h" />
-    <ClInclude Include="H5B2private.h" />
-    <ClInclude Include="H5Bmodule.h" />
-    <ClInclude Include="H5Bpkg.h" />
-    <ClInclude Include="H5Bprivate.h" />
-    <ClInclude Include="H5Clog.h" />
-    <ClInclude Include="H5Cmodule.h" />
-    <ClInclude Include="H5config.h" />
-    <ClInclude Include="H5Cpkg.h" />
-    <ClInclude Include="H5Cprivate.h" />
-    <ClInclude Include="H5Cpublic.h" />
-    <ClInclude Include="H5CSprivate.h" />
-    <ClInclude Include="H5CXmodule.h" />
-    <ClInclude Include="H5CXprivate.h" />
-    <ClInclude Include="H5Dmodule.h" />
-    <ClInclude Include="H5Dpkg.h" />
-    <ClInclude Include="H5Dprivate.h" />
-    <ClInclude Include="H5Dpublic.h" />
-    <ClInclude Include="H5EAmodule.h" />
-    <ClInclude Include="H5EApkg.h" />
-    <ClInclude Include="H5EAprivate.h" />
-    <ClInclude Include="H5Edefin.h" />
-    <ClInclude Include="H5Einit.h" />
-    <ClInclude Include="H5Emodule.h" />
-    <ClInclude Include="H5Epkg.h" />
-    <ClInclude Include="H5Eprivate.h" />
-    <ClInclude Include="H5Epubgen.h" />
-    <ClInclude Include="H5Epublic.h" />
-    <ClInclude Include="H5ESpublic.h" />
-    <ClInclude Include="H5Eterm.h" />
-    <ClInclude Include="H5FAmodule.h" />
-    <ClInclude Include="H5FApkg.h" />
-    <ClInclude Include="H5FAprivate.h" />
-    <ClInclude Include="H5FDcore.h" />
-    <ClInclude Include="H5FDdirect.h" />
-    <ClInclude Include="H5FDdrvr_module.h" />
-    <ClInclude Include="H5FDfamily.h" />
-    <ClInclude Include="H5FDhdfs.h" />
-    <ClInclude Include="H5FDlog.h" />
-    <ClInclude Include="H5FDmirror.h" />
-    <ClInclude Include="H5FDmirror_priv.h" />
-    <ClInclude Include="H5FDmodule.h" />
-    <ClInclude Include="H5FDmpi.h" />
-    <ClInclude Include="H5FDmpio.h" />
-    <ClInclude Include="H5FDmulti.h" />
-    <ClInclude Include="H5FDpkg.h" />
-    <ClInclude Include="H5FDprivate.h" />
-    <ClInclude Include="H5FDpublic.h" />
-    <ClInclude Include="H5FDros3.h" />
-    <ClInclude Include="H5FDs3comms.h" />
-    <ClInclude Include="H5FDsec2.h" />
-    <ClInclude Include="H5FDsplitter.h" />
-    <ClInclude Include="H5FDstdio.h" />
-    <ClInclude Include="H5FDwindows.h" />
-    <ClInclude Include="H5FLmodule.h" />
-    <ClInclude Include="H5FLprivate.h" />
-    <ClInclude Include="H5Fmodule.h" />
-    <ClInclude Include="H5FOprivate.h" />
-    <ClInclude Include="H5Fpkg.h" />
-    <ClInclude Include="H5Fprivate.h" />
-    <ClInclude Include="H5Fpublic.h" />
-    <ClInclude Include="H5FSmodule.h" />
-    <ClInclude Include="H5FSpkg.h" />
-    <ClInclude Include="H5FSprivate.h" />
-    <ClInclude Include="H5Gmodule.h" />
-    <ClInclude Include="H5Gpkg.h" />
-    <ClInclude Include="H5Gprivate.h" />
-    <ClInclude Include="H5Gpublic.h" />
-    <ClInclude Include="H5HFmodule.h" />
-    <ClInclude Include="H5HFpkg.h" />
-    <ClInclude Include="H5HFprivate.h" />
-    <ClInclude Include="H5HGmodule.h" />
-    <ClInclude Include="H5HGpkg.h" />
-    <ClInclude Include="H5HGprivate.h" />
-    <ClInclude Include="H5HLmodule.h" />
-    <ClInclude Include="H5HLpkg.h" />
-    <ClInclude Include="H5HLprivate.h" />
-    <ClInclude Include="H5HPprivate.h" />
-    <ClInclude Include="H5Imodule.h" />
-    <ClInclude Include="H5Ipkg.h" />
-    <ClInclude Include="H5Iprivate.h" />
-    <ClInclude Include="H5Ipublic.h" />
-    <ClInclude Include="H5Lmodule.h" />
-    <ClInclude Include="H5Lpkg.h" />
-    <ClInclude Include="H5Lprivate.h" />
-    <ClInclude Include="H5Lpublic.h" />
-    <ClInclude Include="H5MFmodule.h" />
-    <ClInclude Include="H5MFpkg.h" />
-    <ClInclude Include="H5MFprivate.h" />
-    <ClInclude Include="H5Mmodule.h" />
-    <ClInclude Include="H5MMprivate.h" />
-    <ClInclude Include="H5MMpublic.h" />
-    <ClInclude Include="H5module.h" />
-    <ClInclude Include="H5Mpkg.h" />
-    <ClInclude Include="H5MPmodule.h" />
-    <ClInclude Include="H5MPpkg.h" />
-    <ClInclude Include="H5MPprivate.h" />
-    <ClInclude Include="H5Mprivate.h" />
-    <ClInclude Include="H5Mpublic.h" />
-    <ClInclude Include="H5Omodule.h" />
-    <ClInclude Include="H5Opkg.h" />
-    <ClInclude Include="H5Oprivate.h" />
-    <ClInclude Include="H5Opublic.h" />
-    <ClInclude Include="H5Oshared.h" />
-    <ClInclude Include="H5overflow.h" />
-    <ClInclude Include="H5PBmodule.h" />
-    <ClInclude Include="H5PBpkg.h" />
-    <ClInclude Include="H5PBprivate.h" />
-    <ClInclude Include="H5PLextern.h" />
-    <ClInclude Include="H5PLmodule.h" />
-    <ClInclude Include="H5PLpkg.h" />
-    <ClInclude Include="H5PLprivate.h" />
-    <ClInclude Include="H5PLpublic.h" />
-    <ClInclude Include="H5Pmodule.h" />
-    <ClInclude Include="H5Ppkg.h" />
-    <ClInclude Include="H5Pprivate.h" />
-    <ClInclude Include="H5Ppublic.h" />
-    <ClInclude Include="H5private.h" />
-    <ClInclude Include="H5pubconf.h" />
-    <ClInclude Include="H5public.h" />
-    <ClInclude Include="H5Rmodule.h" />
-    <ClInclude Include="H5Rpkg.h" />
-    <ClInclude Include="H5Rprivate.h" />
-    <ClInclude Include="H5Rpublic.h" />
-    <ClInclude Include="H5RSprivate.h" />
-    <ClInclude Include="H5SLmodule.h" />
-    <ClInclude Include="H5SLprivate.h" />
-    <ClInclude Include="H5SMmodule.h" />
-    <ClInclude Include="H5Smodule.h" />
-    <ClInclude Include="H5SMpkg.h" />
-    <ClInclude Include="H5SMprivate.h" />
-    <ClInclude Include="H5Spkg.h" />
-    <ClInclude Include="H5Sprivate.h" />
-    <ClInclude Include="H5Spublic.h" />
-    <ClInclude Include="H5Tmodule.h" />
-    <ClInclude Include="H5Tpkg.h" />
-    <ClInclude Include="H5Tprivate.h" />
-    <ClInclude Include="H5Tpublic.h" />
-    <ClInclude Include="H5TSprivate.h" />
-    <ClInclude Include="H5UCprivate.h" />
-    <ClInclude Include="H5version.h" />
-    <ClInclude Include="H5VLconnector.h" />
-    <ClInclude Include="H5VLconnector_passthru.h" />
-    <ClInclude Include="H5VLmodule.h" />
-    <ClInclude Include="H5VLnative.h" />
-    <ClInclude Include="H5VLnative_private.h" />
-    <ClInclude Include="H5VLpassthru.h" />
-    <ClInclude Include="H5VLpkg.h" />
-    <ClInclude Include="H5VLprivate.h" />
-    <ClInclude Include="H5VLpublic.h" />
-    <ClInclude Include="H5VMprivate.h" />
-    <ClInclude Include="H5WBprivate.h" />
-    <ClInclude Include="H5win32defs.h" />
-    <ClInclude Include="H5Zmodule.h" />
-    <ClInclude Include="H5Zpkg.h" />
-    <ClInclude Include="H5Zprivate.h" />
-    <ClInclude Include="H5Zpublic.h" />
-    <ClInclude Include="hdf5.h" />
-    <ClInclude Include="uthash.h" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

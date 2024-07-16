@@ -22,12 +22,6 @@
     <Filter Include="include\aom">
       <UniqueIdentifier>{732a06f0-39e2-43c8-8537-a63e6878b6f5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="include\aom\aom">
-      <UniqueIdentifier>{1f8f39b6-1c74-4520-8122-c0f9d23cc2f8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="include\aom\aom\internal">
-      <UniqueIdentifier>{db501ddf-1619-4b19-91fd-fc3d67da98e4}</UniqueIdentifier>
-    </Filter>
     <Filter Include="include\aom\aom_dsp">
       <UniqueIdentifier>{5137c977-1ab6-4081-b3b7-0f0c21569d40}</UniqueIdentifier>
     </Filter>
@@ -85,9 +79,6 @@
     <Filter Include="src\aom_mem">
       <UniqueIdentifier>{09a8cf03-38bb-4a55-9500-3ba39998d7cc}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\aom_mem\include">
-      <UniqueIdentifier>{d8de1253-2370-482d-8acc-8f20a80b221a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="src\aom_ports">
       <UniqueIdentifier>{94cbfeaa-4fe6-4bff-ad32-4b117e2b6cdd}</UniqueIdentifier>
     </Filter>
@@ -105,9 +96,6 @@
     </Filter>
     <Filter Include="src\av1\common">
       <UniqueIdentifier>{e4b9541b-acee-484a-bd37-fcfe86c5032f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\av1\common\x86">
-      <UniqueIdentifier>{d088e8c3-1205-4d96-a963-4c7bc45b9b37}</UniqueIdentifier>
     </Filter>
     <Filter Include="src\av1\decoder">
       <UniqueIdentifier>{00cb220e-f06e-40eb-805a-edc78fd618d5}</UniqueIdentifier>
@@ -141,6 +129,30 @@
     </Filter>
     <Filter Include="Readme">
       <UniqueIdentifier>{d4b1aa33-c37d-4584-9be4-dfaa2560d803}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\aom\internal">
+      <UniqueIdentifier>{a983b38e-f303-4696-a56d-9fe28a65820c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\aom\aom_dsp\flow_estimation">
+      <UniqueIdentifier>{a7a2d51d-9a34-4ed7-95ed-30a09c0172eb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\aom\aom_mem\include">
+      <UniqueIdentifier>{2f6e567c-096d-44f9-90ae-84713b7aa046}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\aom_dsp\flow_estimation">
+      <UniqueIdentifier>{a7bdedc1-77bc-43b9-b980-1a72a9670e6a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\aom_dsp\flow_estimation\x86">
+      <UniqueIdentifier>{2807525e-98bd-466b-8c78-559be1644985}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\third_party\SVT-AV1">
+      <UniqueIdentifier>{103cbb1e-55a8-415d-895e-4733a133a2da}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\third_party\x86inc">
+      <UniqueIdentifier>{4513f3f8-b339-4a9c-b90f-aa9242ac4fb7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\av1\common\x86">
+      <UniqueIdentifier>{4c253279-b279-448d-91fc-1f41050f1d98}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -183,9 +195,6 @@
     <ClCompile Include="src\aom_dsp\x86\aom_subpixel_8t_intrin_avx2.c">
       <Filter>src\aom_dsp\x86</Filter>
     </ClCompile>
-    <ClCompile Include="src\aom_dsp\x86\aom_subpixel_8t_intrin_sse2.c">
-      <Filter>src\aom_dsp\x86</Filter>
-    </ClCompile>
     <ClCompile Include="src\aom_dsp\x86\aom_subpixel_8t_intrin_ssse3.c">
       <Filter>src\aom_dsp\x86</Filter>
     </ClCompile>
@@ -193,6 +202,9 @@
       <Filter>src\aom_dsp\x86</Filter>
     </ClCompile>
     <ClCompile Include="src\aom_dsp\x86\avg_intrin_sse2.c">
+      <Filter>src\aom_dsp\x86</Filter>
+    </ClCompile>
+    <ClCompile Include="src\aom_dsp\x86\avg_intrin_sse4.c">
       <Filter>src\aom_dsp\x86</Filter>
     </ClCompile>
     <ClCompile Include="src\aom_dsp\x86\blend_a64_hmask_sse4.c">
@@ -252,6 +264,9 @@
     <ClCompile Include="src\aom_dsp\x86\highbd_quantize_intrin_sse2.c">
       <Filter>src\aom_dsp\x86</Filter>
     </ClCompile>
+    <ClCompile Include="src\aom_dsp\x86\highbd_sad_avx2.c">
+      <Filter>src\aom_dsp\x86</Filter>
+    </ClCompile>
     <ClCompile Include="src\aom_dsp\x86\highbd_subtract_sse2.c">
       <Filter>src\aom_dsp\x86</Filter>
     </ClCompile>
@@ -270,13 +285,19 @@
     <ClCompile Include="src\aom_dsp\x86\intrapred_sse2.c">
       <Filter>src\aom_dsp\x86</Filter>
     </ClCompile>
+    <ClCompile Include="src\aom_dsp\x86\intrapred_sse4.c">
+      <Filter>src\aom_dsp\x86</Filter>
+    </ClCompile>
     <ClCompile Include="src\aom_dsp\x86\intrapred_ssse3.c">
       <Filter>src\aom_dsp\x86</Filter>
     </ClCompile>
-    <ClCompile Include="src\aom_dsp\x86\jnt_sad_ssse3.c">
+    <ClCompile Include="src\aom_dsp\x86\jnt_sad_sse2.c">
       <Filter>src\aom_dsp\x86</Filter>
     </ClCompile>
     <ClCompile Include="src\aom_dsp\x86\jnt_variance_ssse3.c">
+      <Filter>src\aom_dsp\x86</Filter>
+    </ClCompile>
+    <ClCompile Include="src\aom_dsp\x86\loopfilter_avx2.c">
       <Filter>src\aom_dsp\x86</Filter>
     </ClCompile>
     <ClCompile Include="src\aom_dsp\x86\loopfilter_sse2.c">
@@ -306,6 +327,9 @@
     <ClCompile Include="src\aom_dsp\x86\obmc_variance_sse4.c">
       <Filter>src\aom_dsp\x86</Filter>
     </ClCompile>
+    <ClCompile Include="src\aom_dsp\x86\quantize_avx2.c">
+      <Filter>src\aom_dsp\x86</Filter>
+    </ClCompile>
     <ClCompile Include="src\aom_dsp\x86\quantize_sse2.c">
       <Filter>src\aom_dsp\x86</Filter>
     </ClCompile>
@@ -313,9 +337,6 @@
       <Filter>src\aom_dsp\x86</Filter>
     </ClCompile>
     <ClCompile Include="src\aom_dsp\x86\sad_avx2.c">
-      <Filter>src\aom_dsp\x86</Filter>
-    </ClCompile>
-    <ClCompile Include="src\aom_dsp\x86\sad_highbd_avx2.c">
       <Filter>src\aom_dsp\x86</Filter>
     </ClCompile>
     <ClCompile Include="src\aom_dsp\x86\sad_impl_avx2.c">
@@ -350,6 +371,33 @@
     </ClCompile>
     <ClCompile Include="src\aom_dsp\x86\variance_sse2.c">
       <Filter>src\aom_dsp\x86</Filter>
+    </ClCompile>
+    <ClCompile Include="src\aom_dsp\flow_estimation\x86\corner_match_avx2.c">
+      <Filter>src\aom_dsp\flow_estimation\x86</Filter>
+    </ClCompile>
+    <ClCompile Include="src\aom_dsp\flow_estimation\x86\corner_match_sse4.c">
+      <Filter>src\aom_dsp\flow_estimation\x86</Filter>
+    </ClCompile>
+    <ClCompile Include="src\aom_dsp\flow_estimation\x86\disflow_avx2.c">
+      <Filter>src\aom_dsp\flow_estimation\x86</Filter>
+    </ClCompile>
+    <ClCompile Include="src\aom_dsp\flow_estimation\x86\disflow_sse4.c">
+      <Filter>src\aom_dsp\flow_estimation\x86</Filter>
+    </ClCompile>
+    <ClCompile Include="src\aom_dsp\flow_estimation\corner_detect.c">
+      <Filter>src\aom_dsp\flow_estimation</Filter>
+    </ClCompile>
+    <ClCompile Include="src\aom_dsp\flow_estimation\corner_match.c">
+      <Filter>src\aom_dsp\flow_estimation</Filter>
+    </ClCompile>
+    <ClCompile Include="src\aom_dsp\flow_estimation\disflow.c">
+      <Filter>src\aom_dsp\flow_estimation</Filter>
+    </ClCompile>
+    <ClCompile Include="src\aom_dsp\flow_estimation\flow_estimation.c">
+      <Filter>src\aom_dsp\flow_estimation</Filter>
+    </ClCompile>
+    <ClCompile Include="src\aom_dsp\flow_estimation\ransac.c">
+      <Filter>src\aom_dsp\flow_estimation</Filter>
     </ClCompile>
     <ClCompile Include="src\aom_dsp\aom_convolve.c">
       <Filter>src\aom_dsp</Filter>
@@ -411,9 +459,6 @@
     <ClCompile Include="src\aom_dsp\fwd_txfm.c">
       <Filter>src\aom_dsp</Filter>
     </ClCompile>
-    <ClCompile Include="src\aom_dsp\grain_synthesis.c">
-      <Filter>src\aom_dsp</Filter>
-    </ClCompile>
     <ClCompile Include="src\aom_dsp\grain_table.c">
       <Filter>src\aom_dsp</Filter>
     </ClCompile>
@@ -436,6 +481,9 @@
       <Filter>src\aom_dsp</Filter>
     </ClCompile>
     <ClCompile Include="src\aom_dsp\psnrhvs.c">
+      <Filter>src\aom_dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="src\aom_dsp\pyramid.c">
       <Filter>src\aom_dsp</Filter>
     </ClCompile>
     <ClCompile Include="src\aom_dsp\quantize.c">
@@ -468,10 +516,7 @@
     <ClCompile Include="src\aom_mem\aom_mem.c">
       <Filter>src\aom_mem</Filter>
     </ClCompile>
-    <ClCompile Include="src\aom_ports\arm_cpudetect.c">
-      <Filter>src\aom_ports</Filter>
-    </ClCompile>
-    <ClCompile Include="src\aom_ports\ppc_cpudetect.c">
+    <ClCompile Include="src\aom_ports\aarch64_cpudetect.c">
       <Filter>src\aom_ports</Filter>
     </ClCompile>
     <ClCompile Include="src\aom_scale\generic\aom_scale.c">
@@ -494,123 +539,6 @@
     </ClCompile>
     <ClCompile Include="src\aom_util\debug_util.c">
       <Filter>src\aom_util</Filter>
-    </ClCompile>
-    <ClCompile Include="src\av1\common\x86\av1_convolve_horiz_rs_sse4.c">
-      <Filter>src\av1\common\x86</Filter>
-    </ClCompile>
-    <ClCompile Include="src\av1\common\x86\av1_convolve_scale_sse4.c">
-      <Filter>src\av1\common\x86</Filter>
-    </ClCompile>
-    <ClCompile Include="src\av1\common\x86\av1_inv_txfm_avx2.c">
-      <Filter>src\av1\common\x86</Filter>
-    </ClCompile>
-    <ClCompile Include="src\av1\common\x86\av1_inv_txfm_ssse3.c">
-      <Filter>src\av1\common\x86</Filter>
-    </ClCompile>
-    <ClCompile Include="src\av1\common\x86\av1_txfm_sse4.c">
-      <Filter>src\av1\common\x86</Filter>
-    </ClCompile>
-    <ClCompile Include="src\av1\common\x86\cfl_avx2.c">
-      <Filter>src\av1\common\x86</Filter>
-    </ClCompile>
-    <ClCompile Include="src\av1\common\x86\cfl_sse2.c">
-      <Filter>src\av1\common\x86</Filter>
-    </ClCompile>
-    <ClCompile Include="src\av1\common\x86\cfl_ssse3.c">
-      <Filter>src\av1\common\x86</Filter>
-    </ClCompile>
-    <ClCompile Include="src\av1\common\x86\convolve_2d_avx2.c">
-      <Filter>src\av1\common\x86</Filter>
-    </ClCompile>
-    <ClCompile Include="src\av1\common\x86\convolve_2d_sse2.c">
-      <Filter>src\av1\common\x86</Filter>
-    </ClCompile>
-    <ClCompile Include="src\av1\common\x86\convolve_avx2.c">
-      <Filter>src\av1\common\x86</Filter>
-    </ClCompile>
-    <ClCompile Include="src\av1\common\x86\convolve_sse2.c">
-      <Filter>src\av1\common\x86</Filter>
-    </ClCompile>
-    <ClCompile Include="src\av1\common\x86\filterintra_sse4.c">
-      <Filter>src\av1\common\x86</Filter>
-    </ClCompile>
-    <ClCompile Include="src\av1\common\x86\highbd_convolve_2d_avx2.c">
-      <Filter>src\av1\common\x86</Filter>
-    </ClCompile>
-    <ClCompile Include="src\av1\common\x86\highbd_convolve_2d_sse4.c">
-      <Filter>src\av1\common\x86</Filter>
-    </ClCompile>
-    <ClCompile Include="src\av1\common\x86\highbd_convolve_2d_ssse3.c">
-      <Filter>src\av1\common\x86</Filter>
-    </ClCompile>
-    <ClCompile Include="src\av1\common\x86\highbd_inv_txfm_avx2.c">
-      <Filter>src\av1\common\x86</Filter>
-    </ClCompile>
-    <ClCompile Include="src\av1\common\x86\highbd_inv_txfm_sse4.c">
-      <Filter>src\av1\common\x86</Filter>
-    </ClCompile>
-    <ClCompile Include="src\av1\common\x86\highbd_jnt_convolve_avx2.c">
-      <Filter>src\av1\common\x86</Filter>
-    </ClCompile>
-    <ClCompile Include="src\av1\common\x86\highbd_jnt_convolve_sse4.c">
-      <Filter>src\av1\common\x86</Filter>
-    </ClCompile>
-    <ClCompile Include="src\av1\common\x86\highbd_warp_affine_avx2.c">
-      <Filter>src\av1\common\x86</Filter>
-    </ClCompile>
-    <ClCompile Include="src\av1\common\x86\highbd_warp_plane_sse4.c">
-      <Filter>src\av1\common\x86</Filter>
-    </ClCompile>
-    <ClCompile Include="src\av1\common\x86\highbd_wiener_convolve_avx2.c">
-      <Filter>src\av1\common\x86</Filter>
-    </ClCompile>
-    <ClCompile Include="src\av1\common\x86\highbd_wiener_convolve_ssse3.c">
-      <Filter>src\av1\common\x86</Filter>
-    </ClCompile>
-    <ClCompile Include="src\av1\common\x86\intra_edge_sse4.c">
-      <Filter>src\av1\common\x86</Filter>
-    </ClCompile>
-    <ClCompile Include="src\av1\common\x86\jnt_convolve_avx2.c">
-      <Filter>src\av1\common\x86</Filter>
-    </ClCompile>
-    <ClCompile Include="src\av1\common\x86\jnt_convolve_sse2.c">
-      <Filter>src\av1\common\x86</Filter>
-    </ClCompile>
-    <ClCompile Include="src\av1\common\x86\jnt_convolve_ssse3.c">
-      <Filter>src\av1\common\x86</Filter>
-    </ClCompile>
-    <ClCompile Include="src\av1\common\x86\reconinter_avx2.c">
-      <Filter>src\av1\common\x86</Filter>
-    </ClCompile>
-    <ClCompile Include="src\av1\common\x86\reconinter_sse4.c">
-      <Filter>src\av1\common\x86</Filter>
-    </ClCompile>
-    <ClCompile Include="src\av1\common\x86\reconinter_ssse3.c">
-      <Filter>src\av1\common\x86</Filter>
-    </ClCompile>
-    <ClCompile Include="src\av1\common\x86\resize_ssse3.c">
-      <Filter>src\av1\common\x86</Filter>
-    </ClCompile>
-    <ClCompile Include="src\av1\common\x86\selfguided_avx2.c">
-      <Filter>src\av1\common\x86</Filter>
-    </ClCompile>
-    <ClCompile Include="src\av1\common\x86\selfguided_sse4.c">
-      <Filter>src\av1\common\x86</Filter>
-    </ClCompile>
-    <ClCompile Include="src\av1\common\x86\warp_plane_avx2.c">
-      <Filter>src\av1\common\x86</Filter>
-    </ClCompile>
-    <ClCompile Include="src\av1\common\x86\warp_plane_sse2.c">
-      <Filter>src\av1\common\x86</Filter>
-    </ClCompile>
-    <ClCompile Include="src\av1\common\x86\warp_plane_sse4.c">
-      <Filter>src\av1\common\x86</Filter>
-    </ClCompile>
-    <ClCompile Include="src\av1\common\x86\wiener_convolve_avx2.c">
-      <Filter>src\av1\common\x86</Filter>
-    </ClCompile>
-    <ClCompile Include="src\av1\common\x86\wiener_convolve_sse2.c">
-      <Filter>src\av1\common\x86</Filter>
     </ClCompile>
     <ClCompile Include="src\av1\common\alloccommon.c">
       <Filter>src\av1\common</Filter>
@@ -639,22 +567,10 @@
     <ClCompile Include="src\av1\common\cdef_block.c">
       <Filter>src\av1\common</Filter>
     </ClCompile>
-    <ClCompile Include="src\av1\common\cdef_block_avx2.c">
-      <Filter>src\av1\common</Filter>
-    </ClCompile>
-    <ClCompile Include="src\av1\common\cdef_block_neon.c">
-      <Filter>src\av1\common</Filter>
-    </ClCompile>
-    <ClCompile Include="src\av1\common\cdef_block_sse2.c">
-      <Filter>src\av1\common</Filter>
-    </ClCompile>
-    <ClCompile Include="src\av1\common\cdef_block_sse4.c">
-      <Filter>src\av1\common</Filter>
-    </ClCompile>
-    <ClCompile Include="src\av1\common\cdef_block_ssse3.c">
-      <Filter>src\av1\common</Filter>
-    </ClCompile>
     <ClCompile Include="src\av1\common\cfl.c">
+      <Filter>src\av1\common</Filter>
+    </ClCompile>
+    <ClCompile Include="src\av1\common\common_data.c">
       <Filter>src\av1\common</Filter>
     </ClCompile>
     <ClCompile Include="src\av1\common\convolve.c">
@@ -744,6 +660,9 @@
     <ClCompile Include="src\av1\decoder\detokenize.c">
       <Filter>src\av1\decoder</Filter>
     </ClCompile>
+    <ClCompile Include="src\av1\decoder\grain_synthesis.c">
+      <Filter>src\av1\decoder</Filter>
+    </ClCompile>
     <ClCompile Include="src\av1\decoder\inspection.c">
       <Filter>src\av1\decoder</Filter>
     </ClCompile>
@@ -786,12 +705,6 @@
     <ClCompile Include="src\av1\encoder\x86\cnn_avx2.c">
       <Filter>src\av1\encoder\x86</Filter>
     </ClCompile>
-    <ClCompile Include="src\av1\encoder\x86\corner_match_avx2.c">
-      <Filter>src\av1\encoder\x86</Filter>
-    </ClCompile>
-    <ClCompile Include="src\av1\encoder\x86\corner_match_sse4.c">
-      <Filter>src\av1\encoder\x86</Filter>
-    </ClCompile>
     <ClCompile Include="src\av1\encoder\x86\encodetxb_avx2.c">
       <Filter>src\av1\encoder\x86</Filter>
     </ClCompile>
@@ -802,6 +715,9 @@
       <Filter>src\av1\encoder\x86</Filter>
     </ClCompile>
     <ClCompile Include="src\av1\encoder\x86\error_intrin_avx2.c">
+      <Filter>src\av1\encoder\x86</Filter>
+    </ClCompile>
+    <ClCompile Include="src\av1\encoder\x86\error_intrin_sse2.c">
       <Filter>src\av1\encoder\x86</Filter>
     </ClCompile>
     <ClCompile Include="src\av1\encoder\x86\hash_sse42.c">
@@ -823,6 +739,9 @@
       <Filter>src\av1\encoder\x86</Filter>
     </ClCompile>
     <ClCompile Include="src\av1\encoder\x86\highbd_temporal_filter_sse2.c">
+      <Filter>src\av1\encoder\x86</Filter>
+    </ClCompile>
+    <ClCompile Include="src\av1\encoder\x86\ml_avx2.c">
       <Filter>src\av1\encoder\x86</Filter>
     </ClCompile>
     <ClCompile Include="src\av1\encoder\x86\ml_sse3.c">
@@ -900,13 +819,10 @@
     <ClCompile Include="src\av1\encoder\context_tree.c">
       <Filter>src\av1\encoder</Filter>
     </ClCompile>
-    <ClCompile Include="src\av1\encoder\corner_detect.c">
-      <Filter>src\av1\encoder</Filter>
-    </ClCompile>
-    <ClCompile Include="src\av1\encoder\corner_match.c">
-      <Filter>src\av1\encoder</Filter>
-    </ClCompile>
     <ClCompile Include="src\av1\encoder\cost.c">
+      <Filter>src\av1\encoder</Filter>
+    </ClCompile>
+    <ClCompile Include="src\av1\encoder\deltaq4_model.c">
       <Filter>src\av1\encoder</Filter>
     </ClCompile>
     <ClCompile Include="src\av1\encoder\dwt.c">
@@ -990,6 +906,9 @@
     <ClCompile Include="src\av1\encoder\mv_prec.c">
       <Filter>src\av1\encoder</Filter>
     </ClCompile>
+    <ClCompile Include="src\av1\encoder\nonrd_opt.c">
+      <Filter>src\av1\encoder</Filter>
+    </ClCompile>
     <ClCompile Include="src\av1\encoder\nonrd_pickmode.c">
       <Filter>src\av1\encoder</Filter>
     </ClCompile>
@@ -1017,9 +936,6 @@
     <ClCompile Include="src\av1\encoder\pickrst.c">
       <Filter>src\av1\encoder</Filter>
     </ClCompile>
-    <ClCompile Include="src\av1\encoder\ransac.c">
-      <Filter>src\av1\encoder</Filter>
-    </ClCompile>
     <ClCompile Include="src\av1\encoder\ratectrl.c">
       <Filter>src\av1\encoder</Filter>
     </ClCompile>
@@ -1030,6 +946,9 @@
       <Filter>src\av1\encoder</Filter>
     </ClCompile>
     <ClCompile Include="src\av1\encoder\reconinter_enc.c">
+      <Filter>src\av1\encoder</Filter>
+    </ClCompile>
+    <ClCompile Include="src\av1\encoder\saliency_map.c">
       <Filter>src\av1\encoder</Filter>
     </ClCompile>
     <ClCompile Include="src\av1\encoder\segmentation.c">
@@ -1122,29 +1041,20 @@
     <ClCompile Include="src\common\warnings.c">
       <Filter>src\common</Filter>
     </ClCompile>
-    <ClCompile Include="src\common\webmdec.cc">
-      <Filter>src\common</Filter>
-    </ClCompile>
-    <ClCompile Include="src\common\webmenc.cc">
-      <Filter>src\common</Filter>
-    </ClCompile>
     <ClCompile Include="src\common\y4menc.c">
       <Filter>src\common</Filter>
     </ClCompile>
     <ClCompile Include="src\common\y4minput.c">
       <Filter>src\common</Filter>
     </ClCompile>
+    <ClCompile Include="src\config\aom_config.c">
+      <Filter>src\config</Filter>
+    </ClCompile>
     <ClCompile Include="src\stats\aomstats.c">
       <Filter>src\stats</Filter>
     </ClCompile>
     <ClCompile Include="src\stats\rate_hist.c">
       <Filter>src\stats</Filter>
-    </ClCompile>
-    <ClCompile Include="src\config\aom_config.c">
-      <Filter>src\config</Filter>
-    </ClCompile>
-    <ClCompile Include="src\third_party\vector\vector.c">
-      <Filter>src\third_party\vector</Filter>
     </ClCompile>
     <ClCompile Include="src\third_party\fastfeat\fast.c">
       <Filter>src\third_party\fastfeat</Filter>
@@ -1155,48 +1065,144 @@
     <ClCompile Include="src\third_party\fastfeat\nonmax.c">
       <Filter>src\third_party\fastfeat</Filter>
     </ClCompile>
+    <ClCompile Include="src\third_party\vector\vector.c">
+      <Filter>src\third_party\vector</Filter>
+    </ClCompile>
+    <ClCompile Include="src\av1\common\x86\av1_convolve_horiz_rs_sse4.c">
+      <Filter>src\av1\common\x86</Filter>
+    </ClCompile>
+    <ClCompile Include="src\av1\common\x86\av1_convolve_scale_sse4.c">
+      <Filter>src\av1\common\x86</Filter>
+    </ClCompile>
+    <ClCompile Include="src\av1\common\x86\av1_inv_txfm_avx2.c">
+      <Filter>src\av1\common\x86</Filter>
+    </ClCompile>
+    <ClCompile Include="src\av1\common\x86\av1_inv_txfm_ssse3.c">
+      <Filter>src\av1\common\x86</Filter>
+    </ClCompile>
+    <ClCompile Include="src\av1\common\x86\av1_txfm_sse4.c">
+      <Filter>src\av1\common\x86</Filter>
+    </ClCompile>
+    <ClCompile Include="src\av1\common\x86\cdef_block_avx2.c">
+      <Filter>src\av1\common\x86</Filter>
+    </ClCompile>
+    <ClCompile Include="src\av1\common\x86\cdef_block_sse4.c">
+      <Filter>src\av1\common\x86</Filter>
+    </ClCompile>
+    <ClCompile Include="src\av1\common\x86\cdef_block_ssse3.c">
+      <Filter>src\av1\common\x86</Filter>
+    </ClCompile>
+    <ClCompile Include="src\av1\common\x86\cfl_avx2.c">
+      <Filter>src\av1\common\x86</Filter>
+    </ClCompile>
+    <ClCompile Include="src\av1\common\x86\cfl_sse2.c">
+      <Filter>src\av1\common\x86</Filter>
+    </ClCompile>
+    <ClCompile Include="src\av1\common\x86\cfl_ssse3.c">
+      <Filter>src\av1\common\x86</Filter>
+    </ClCompile>
+    <ClCompile Include="src\av1\common\x86\convolve_2d_avx2.c">
+      <Filter>src\av1\common\x86</Filter>
+    </ClCompile>
+    <ClCompile Include="src\av1\common\x86\convolve_2d_sse2.c">
+      <Filter>src\av1\common\x86</Filter>
+    </ClCompile>
+    <ClCompile Include="src\av1\common\x86\convolve_avx2.c">
+      <Filter>src\av1\common\x86</Filter>
+    </ClCompile>
+    <ClCompile Include="src\av1\common\x86\convolve_sse2.c">
+      <Filter>src\av1\common\x86</Filter>
+    </ClCompile>
+    <ClCompile Include="src\av1\common\x86\filterintra_sse4.c">
+      <Filter>src\av1\common\x86</Filter>
+    </ClCompile>
+    <ClCompile Include="src\av1\common\x86\highbd_convolve_2d_avx2.c">
+      <Filter>src\av1\common\x86</Filter>
+    </ClCompile>
+    <ClCompile Include="src\av1\common\x86\highbd_convolve_2d_sse4.c">
+      <Filter>src\av1\common\x86</Filter>
+    </ClCompile>
+    <ClCompile Include="src\av1\common\x86\highbd_convolve_2d_ssse3.c">
+      <Filter>src\av1\common\x86</Filter>
+    </ClCompile>
+    <ClCompile Include="src\av1\common\x86\highbd_inv_txfm_avx2.c">
+      <Filter>src\av1\common\x86</Filter>
+    </ClCompile>
+    <ClCompile Include="src\av1\common\x86\highbd_inv_txfm_sse4.c">
+      <Filter>src\av1\common\x86</Filter>
+    </ClCompile>
+    <ClCompile Include="src\av1\common\x86\highbd_jnt_convolve_avx2.c">
+      <Filter>src\av1\common\x86</Filter>
+    </ClCompile>
+    <ClCompile Include="src\av1\common\x86\highbd_jnt_convolve_sse4.c">
+      <Filter>src\av1\common\x86</Filter>
+    </ClCompile>
+    <ClCompile Include="src\av1\common\x86\highbd_warp_affine_avx2.c">
+      <Filter>src\av1\common\x86</Filter>
+    </ClCompile>
+    <ClCompile Include="src\av1\common\x86\highbd_warp_plane_sse4.c">
+      <Filter>src\av1\common\x86</Filter>
+    </ClCompile>
+    <ClCompile Include="src\av1\common\x86\highbd_wiener_convolve_avx2.c">
+      <Filter>src\av1\common\x86</Filter>
+    </ClCompile>
+    <ClCompile Include="src\av1\common\x86\highbd_wiener_convolve_ssse3.c">
+      <Filter>src\av1\common\x86</Filter>
+    </ClCompile>
+    <ClCompile Include="src\av1\common\x86\intra_edge_sse4.c">
+      <Filter>src\av1\common\x86</Filter>
+    </ClCompile>
+    <ClCompile Include="src\av1\common\x86\jnt_convolve_avx2.c">
+      <Filter>src\av1\common\x86</Filter>
+    </ClCompile>
+    <ClCompile Include="src\av1\common\x86\jnt_convolve_sse2.c">
+      <Filter>src\av1\common\x86</Filter>
+    </ClCompile>
+    <ClCompile Include="src\av1\common\x86\jnt_convolve_ssse3.c">
+      <Filter>src\av1\common\x86</Filter>
+    </ClCompile>
+    <ClCompile Include="src\av1\common\x86\reconinter_avx2.c">
+      <Filter>src\av1\common\x86</Filter>
+    </ClCompile>
+    <ClCompile Include="src\av1\common\x86\reconinter_sse4.c">
+      <Filter>src\av1\common\x86</Filter>
+    </ClCompile>
+    <ClCompile Include="src\av1\common\x86\reconinter_ssse3.c">
+      <Filter>src\av1\common\x86</Filter>
+    </ClCompile>
+    <ClCompile Include="src\av1\common\x86\resize_ssse3.c">
+      <Filter>src\av1\common\x86</Filter>
+    </ClCompile>
+    <ClCompile Include="src\av1\common\x86\selfguided_avx2.c">
+      <Filter>src\av1\common\x86</Filter>
+    </ClCompile>
+    <ClCompile Include="src\av1\common\x86\selfguided_sse4.c">
+      <Filter>src\av1\common\x86</Filter>
+    </ClCompile>
+    <ClCompile Include="src\av1\common\x86\warp_plane_avx2.c">
+      <Filter>src\av1\common\x86</Filter>
+    </ClCompile>
+    <ClCompile Include="src\av1\common\x86\warp_plane_sse4.c">
+      <Filter>src\av1\common\x86</Filter>
+    </ClCompile>
+    <ClCompile Include="src\av1\common\x86\wiener_convolve_avx2.c">
+      <Filter>src\av1\common\x86</Filter>
+    </ClCompile>
+    <ClCompile Include="src\av1\common\x86\wiener_convolve_sse2.c">
+      <Filter>src\av1\common\x86</Filter>
+    </ClCompile>
+    <ClCompile Include="src\common\usage_exit.c">
+      <Filter>src\common</Filter>
+    </ClCompile>
+    <ClCompile Include="src\common\webmdec.cc">
+      <Filter>src\common</Filter>
+    </ClCompile>
+    <ClCompile Include="src\common\webmenc.cc">
+      <Filter>src\common</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\aom\aom\internal\aom_codec_internal.h">
-      <Filter>include\aom\aom\internal</Filter>
-    </ClInclude>
-    <ClInclude Include="include\aom\aom\internal\aom_image_internal.h">
-      <Filter>include\aom\aom\internal</Filter>
-    </ClInclude>
-    <ClInclude Include="include\aom\aom\aom.h">
-      <Filter>include\aom\aom</Filter>
-    </ClInclude>
-    <ClInclude Include="include\aom\aom\aom_codec.h">
-      <Filter>include\aom\aom</Filter>
-    </ClInclude>
-    <ClInclude Include="include\aom\aom\aom_decoder.h">
-      <Filter>include\aom\aom</Filter>
-    </ClInclude>
-    <ClInclude Include="include\aom\aom\aom_encoder.h">
-      <Filter>include\aom\aom</Filter>
-    </ClInclude>
-    <ClInclude Include="include\aom\aom\aom_external_partition.h">
-      <Filter>include\aom\aom</Filter>
-    </ClInclude>
-    <ClInclude Include="include\aom\aom\aom_frame_buffer.h">
-      <Filter>include\aom\aom</Filter>
-    </ClInclude>
-    <ClInclude Include="include\aom\aom\aom_image.h">
-      <Filter>include\aom\aom</Filter>
-    </ClInclude>
-    <ClInclude Include="include\aom\aom\aom_integer.h">
-      <Filter>include\aom\aom</Filter>
-    </ClInclude>
-    <ClInclude Include="include\aom\aom\aomcx.h">
-      <Filter>include\aom\aom</Filter>
-    </ClInclude>
-    <ClInclude Include="include\aom\aom\aomdx.h">
-      <Filter>include\aom\aom</Filter>
-    </ClInclude>
     <ClInclude Include="include\aom\aom_dsp\simd\v64_intrinsics.h">
-      <Filter>include\aom\aom_dsp\simd</Filter>
-    </ClInclude>
-    <ClInclude Include="include\aom\aom_dsp\simd\v64_intrinsics_arm.h">
       <Filter>include\aom\aom_dsp\simd</Filter>
     </ClInclude>
     <ClInclude Include="include\aom\aom_dsp\simd\v64_intrinsics_c.h">
@@ -1208,9 +1214,6 @@
     <ClInclude Include="include\aom\aom_dsp\simd\v128_intrinsics.h">
       <Filter>include\aom\aom_dsp\simd</Filter>
     </ClInclude>
-    <ClInclude Include="include\aom\aom_dsp\simd\v128_intrinsics_arm.h">
-      <Filter>include\aom\aom_dsp\simd</Filter>
-    </ClInclude>
     <ClInclude Include="include\aom\aom_dsp\simd\v128_intrinsics_c.h">
       <Filter>include\aom\aom_dsp\simd</Filter>
     </ClInclude>
@@ -1218,9 +1221,6 @@
       <Filter>include\aom\aom_dsp\simd</Filter>
     </ClInclude>
     <ClInclude Include="include\aom\aom_dsp\simd\v256_intrinsics.h">
-      <Filter>include\aom\aom_dsp\simd</Filter>
-    </ClInclude>
-    <ClInclude Include="include\aom\aom_dsp\simd\v256_intrinsics_arm.h">
       <Filter>include\aom\aom_dsp\simd</Filter>
     </ClInclude>
     <ClInclude Include="include\aom\aom_dsp\simd\v256_intrinsics_c.h">
@@ -1271,6 +1271,9 @@
     <ClInclude Include="include\aom\aom_dsp\x86\fwd_txfm_sse2.h">
       <Filter>include\aom\aom_dsp\x86</Filter>
     </ClInclude>
+    <ClInclude Include="include\aom\aom_dsp\x86\intrapred_utils.h">
+      <Filter>include\aom\aom_dsp\x86</Filter>
+    </ClInclude>
     <ClInclude Include="include\aom\aom_dsp\x86\intrapred_x86.h">
       <Filter>include\aom\aom_dsp\x86</Filter>
     </ClInclude>
@@ -1312,6 +1315,21 @@
     </ClInclude>
     <ClInclude Include="include\aom\aom_dsp\x86\txfm_common_sse2.h">
       <Filter>include\aom\aom_dsp\x86</Filter>
+    </ClInclude>
+    <ClInclude Include="include\aom\aom_dsp\flow_estimation\corner_detect.h">
+      <Filter>include\aom\aom_dsp\flow_estimation</Filter>
+    </ClInclude>
+    <ClInclude Include="include\aom\aom_dsp\flow_estimation\corner_match.h">
+      <Filter>include\aom\aom_dsp\flow_estimation</Filter>
+    </ClInclude>
+    <ClInclude Include="include\aom\aom_dsp\flow_estimation\disflow.h">
+      <Filter>include\aom\aom_dsp\flow_estimation</Filter>
+    </ClInclude>
+    <ClInclude Include="include\aom\aom_dsp\flow_estimation\flow_estimation.h">
+      <Filter>include\aom\aom_dsp\flow_estimation</Filter>
+    </ClInclude>
+    <ClInclude Include="include\aom\aom_dsp\flow_estimation\ransac.h">
+      <Filter>include\aom\aom_dsp\flow_estimation</Filter>
     </ClInclude>
     <ClInclude Include="include\aom\aom_dsp\aom_dsp_common.h">
       <Filter>include\aom\aom_dsp</Filter>
@@ -1361,7 +1379,7 @@
     <ClInclude Include="include\aom\aom_dsp\fft_common.h">
       <Filter>include\aom\aom_dsp</Filter>
     </ClInclude>
-    <ClInclude Include="include\aom\aom_dsp\grain_synthesis.h">
+    <ClInclude Include="include\aom\aom_dsp\grain_params.h">
       <Filter>include\aom\aom_dsp</Filter>
     </ClInclude>
     <ClInclude Include="include\aom\aom_dsp\grain_table.h">
@@ -1388,6 +1406,9 @@
     <ClInclude Include="include\aom\aom_dsp\psnr.h">
       <Filter>include\aom\aom_dsp</Filter>
     </ClInclude>
+    <ClInclude Include="include\aom\aom_dsp\pyramid.h">
+      <Filter>include\aom\aom_dsp</Filter>
+    </ClInclude>
     <ClInclude Include="include\aom\aom_dsp\quantize.h">
       <Filter>include\aom\aom_dsp</Filter>
     </ClInclude>
@@ -1406,6 +1427,9 @@
     <ClInclude Include="include\aom\aom_dsp\vmaf.h">
       <Filter>include\aom\aom_dsp</Filter>
     </ClInclude>
+    <ClInclude Include="include\aom\aom_mem\include\aom_mem_intrnl.h">
+      <Filter>include\aom\aom_mem\include</Filter>
+    </ClInclude>
     <ClInclude Include="include\aom\aom_mem\aom_mem.h">
       <Filter>include\aom\aom_mem</Filter>
     </ClInclude>
@@ -1416,6 +1440,9 @@
       <Filter>include\aom\aom_ports</Filter>
     </ClInclude>
     <ClInclude Include="include\aom\aom_ports\arm.h">
+      <Filter>include\aom\aom_ports</Filter>
+    </ClInclude>
+    <ClInclude Include="include\aom\aom_ports\arm_cpudetect.h">
       <Filter>include\aom\aom_ports</Filter>
     </ClInclude>
     <ClInclude Include="include\aom\aom_ports\bitops.h">
@@ -1450,6 +1477,9 @@
     </ClInclude>
     <ClInclude Include="include\aom\aom_scale\yv12config.h">
       <Filter>include\aom\aom_scale</Filter>
+    </ClInclude>
+    <ClInclude Include="include\aom\aom_util\aom_pthread.h">
+      <Filter>include\aom\aom_util</Filter>
     </ClInclude>
     <ClInclude Include="include\aom\aom_util\aom_thread.h">
       <Filter>include\aom\aom_util</Filter>
@@ -1619,6 +1649,9 @@
     <ClInclude Include="include\aom\av1\decoder\dthread.h">
       <Filter>include\aom\av1\decoder</Filter>
     </ClInclude>
+    <ClInclude Include="include\aom\av1\decoder\grain_synthesis.h">
+      <Filter>include\aom\av1\decoder</Filter>
+    </ClInclude>
     <ClInclude Include="include\aom\av1\decoder\inspection.h">
       <Filter>include\aom\av1\decoder</Filter>
     </ClInclude>
@@ -1632,6 +1665,9 @@
       <Filter>include\aom\av1\encoder\x86</Filter>
     </ClInclude>
     <ClInclude Include="include\aom\av1\encoder\x86\av1_txfm1d_sse4.h">
+      <Filter>include\aom\av1\encoder\x86</Filter>
+    </ClInclude>
+    <ClInclude Include="include\aom\av1\encoder\x86\ml_sse3.h">
       <Filter>include\aom\av1\encoder\x86</Filter>
     </ClInclude>
     <ClInclude Include="include\aom\av1\encoder\allintra_vis.h">
@@ -1677,12 +1713,6 @@
       <Filter>include\aom\av1\encoder</Filter>
     </ClInclude>
     <ClInclude Include="include\aom\av1\encoder\context_tree.h">
-      <Filter>include\aom\av1\encoder</Filter>
-    </ClInclude>
-    <ClInclude Include="include\aom\av1\encoder\corner_detect.h">
-      <Filter>include\aom\av1\encoder</Filter>
-    </ClInclude>
-    <ClInclude Include="include\aom\av1\encoder\corner_match.h">
       <Filter>include\aom\av1\encoder</Filter>
     </ClInclude>
     <ClInclude Include="include\aom\av1\encoder\cost.h">
@@ -1775,6 +1805,9 @@
     <ClInclude Include="include\aom\av1\encoder\mcomp.h">
       <Filter>include\aom\av1\encoder</Filter>
     </ClInclude>
+    <ClInclude Include="include\aom\av1\encoder\mcomp_structs.h">
+      <Filter>include\aom\av1\encoder</Filter>
+    </ClInclude>
     <ClInclude Include="include\aom\av1\encoder\misc_model_weights.h">
       <Filter>include\aom\av1\encoder</Filter>
     </ClInclude>
@@ -1791,6 +1824,9 @@
       <Filter>include\aom\av1\encoder</Filter>
     </ClInclude>
     <ClInclude Include="include\aom\av1\encoder\mv_prec.h">
+      <Filter>include\aom\av1\encoder</Filter>
+    </ClInclude>
+    <ClInclude Include="include\aom\av1\encoder\nonrd_opt.h">
       <Filter>include\aom\av1\encoder</Filter>
     </ClInclude>
     <ClInclude Include="include\aom\av1\encoder\optical_flow.h">
@@ -1829,9 +1865,6 @@
     <ClInclude Include="include\aom\av1\encoder\random.h">
       <Filter>include\aom\av1\encoder</Filter>
     </ClInclude>
-    <ClInclude Include="include\aom\av1\encoder\ransac.h">
-      <Filter>include\aom\av1\encoder</Filter>
-    </ClInclude>
     <ClInclude Include="include\aom\av1\encoder\ratectrl.h">
       <Filter>include\aom\av1\encoder</Filter>
     </ClInclude>
@@ -1851,6 +1884,9 @@
       <Filter>include\aom\av1\encoder</Filter>
     </ClInclude>
     <ClInclude Include="include\aom\av1\encoder\reconinter_enc.h">
+      <Filter>include\aom\av1\encoder</Filter>
+    </ClInclude>
+    <ClInclude Include="include\aom\av1\encoder\saliency_map.h">
       <Filter>include\aom\av1\encoder</Filter>
     </ClInclude>
     <ClInclude Include="include\aom\av1\encoder\segmentation.h">
@@ -1907,7 +1943,13 @@
     <ClInclude Include="include\aom\av1\arg_defs.h">
       <Filter>include\aom\av1</Filter>
     </ClInclude>
+    <ClInclude Include="include\aom\av1\av1_cx_iface.h">
+      <Filter>include\aom\av1</Filter>
+    </ClInclude>
     <ClInclude Include="include\aom\av1\av1_iface_common.h">
+      <Filter>include\aom\av1</Filter>
+    </ClInclude>
+    <ClInclude Include="include\aom\av1\ratectrl_rtc.h">
       <Filter>include\aom\av1</Filter>
     </ClInclude>
     <ClInclude Include="include\aom\common\args.h">
@@ -1961,15 +2003,6 @@
     <ClInclude Include="include\aom\common\y4minput.h">
       <Filter>include\aom\common</Filter>
     </ClInclude>
-    <ClInclude Include="include\aom\stats\aomstats.h">
-      <Filter>include\aom\stats</Filter>
-    </ClInclude>
-    <ClInclude Include="include\aom\stats\rate_hist.h">
-      <Filter>include\aom\stats</Filter>
-    </ClInclude>
-    <ClInclude Include="src\aom_mem\include\aom_mem_intrnl.h">
-      <Filter>src\aom_mem\include</Filter>
-    </ClInclude>
     <ClInclude Include="include\aom\config\aom_config.h">
       <Filter>include\aom\config</Filter>
     </ClInclude>
@@ -1985,114 +2018,183 @@
     <ClInclude Include="include\aom\config\av1_rtcd.h">
       <Filter>include\aom\config</Filter>
     </ClInclude>
-    <ClInclude Include="src\third_party\vector\vector.h">
-      <Filter>src\third_party\vector</Filter>
+    <ClInclude Include="include\aom\internal\aom_codec_internal.h">
+      <Filter>include\aom\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\aom\internal\aom_image_internal.h">
+      <Filter>include\aom\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\aom\stats\aomstats.h">
+      <Filter>include\aom\stats</Filter>
+    </ClInclude>
+    <ClInclude Include="include\aom\stats\rate_hist.h">
+      <Filter>include\aom\stats</Filter>
+    </ClInclude>
+    <ClInclude Include="include\aom\aom_codec.h">
+      <Filter>include\aom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\aom\aom_decoder.h">
+      <Filter>include\aom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\aom\aom_encoder.h">
+      <Filter>include\aom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\aom\aom_external_partition.h">
+      <Filter>include\aom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\aom\aom_frame_buffer.h">
+      <Filter>include\aom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\aom\aom_image.h">
+      <Filter>include\aom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\aom\aom_integer.h">
+      <Filter>include\aom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\aom\aomcx.h">
+      <Filter>include\aom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\aom\aomdx.h">
+      <Filter>include\aom</Filter>
     </ClInclude>
     <ClInclude Include="src\third_party\fastfeat\fast.h">
       <Filter>src\third_party\fastfeat</Filter>
     </ClInclude>
-    <ClInclude Include="include\aom\aom\haomdef.h">
-      <Filter>include\aom\aom</Filter>
+    <ClInclude Include="src\third_party\SVT-AV1\convolve_2d_avx2.h">
+      <Filter>src\third_party\SVT-AV1</Filter>
+    </ClInclude>
+    <ClInclude Include="src\third_party\SVT-AV1\convolve_avx2.h">
+      <Filter>src\third_party\SVT-AV1</Filter>
+    </ClInclude>
+    <ClInclude Include="src\third_party\SVT-AV1\EbMemory_AVX2.h">
+      <Filter>src\third_party\SVT-AV1</Filter>
+    </ClInclude>
+    <ClInclude Include="src\third_party\SVT-AV1\EbMemory_SSE4_1.h">
+      <Filter>src\third_party\SVT-AV1</Filter>
+    </ClInclude>
+    <ClInclude Include="src\third_party\SVT-AV1\synonyms.h">
+      <Filter>src\third_party\SVT-AV1</Filter>
+    </ClInclude>
+    <ClInclude Include="src\third_party\vector\vector.h">
+      <Filter>src\third_party\vector</Filter>
+    </ClInclude>
+    <ClInclude Include="include\aom\aom.h">
+      <Filter>include\aom</Filter>
+    </ClInclude>
+    <ClInclude Include="include\aom\config\haomdef.h">
+      <Filter>include\aom\config</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="include\aom\config\aom_config.asm">
-      <Filter>include\aom\config</Filter>
-    </None>
-    <None Include="Readme\AUTHORS">
-      <Filter>Readme</Filter>
-    </None>
-    <None Include="Readme\CHANGELOG">
-      <Filter>Readme</Filter>
-    </None>
-    <None Include="Readme\LICENSE">
-      <Filter>Readme</Filter>
-    </None>
-    <None Include="Readme\PATENTS">
-      <Filter>Readme</Filter>
-    </None>
-    <None Include="Readme\README.md">
-      <Filter>Readme</Filter>
-    </None>
+    <NASM Include="src\aom_dsp\x86\aom_high_subpixel_8t_sse2.asm">
+      <Filter>src\aom_dsp\x86</Filter>
+    </NASM>
+    <NASM Include="src\aom_dsp\x86\aom_high_subpixel_bilinear_sse2.asm">
+      <Filter>src\aom_dsp\x86</Filter>
+    </NASM>
+    <NASM Include="src\aom_dsp\x86\aom_subpixel_8t_ssse3.asm">
+      <Filter>src\aom_dsp\x86</Filter>
+    </NASM>
+    <NASM Include="src\aom_dsp\x86\aom_subpixel_bilinear_ssse3.asm">
+      <Filter>src\aom_dsp\x86</Filter>
+    </NASM>
+    <NASM Include="src\aom_dsp\x86\fwd_txfm_ssse3_x86_64.asm">
+      <Filter>src\aom_dsp\x86</Filter>
+    </NASM>
+    <NASM Include="src\aom_dsp\x86\highbd_intrapred_asm_sse2.asm">
+      <Filter>src\aom_dsp\x86</Filter>
+    </NASM>
+    <NASM Include="src\aom_dsp\x86\highbd_sad_sse2.asm">
+      <Filter>src\aom_dsp\x86</Filter>
+    </NASM>
+    <NASM Include="src\aom_dsp\x86\highbd_sad4d_sse2.asm">
+      <Filter>src\aom_dsp\x86</Filter>
+    </NASM>
+    <NASM Include="src\aom_dsp\x86\highbd_subpel_variance_impl_sse2.asm">
+      <Filter>src\aom_dsp\x86</Filter>
+    </NASM>
+    <NASM Include="src\aom_dsp\x86\highbd_variance_impl_sse2.asm">
+      <Filter>src\aom_dsp\x86</Filter>
+    </NASM>
+    <NASM Include="src\aom_dsp\x86\intrapred_asm_sse2.asm">
+      <Filter>src\aom_dsp\x86</Filter>
+    </NASM>
+    <NASM Include="src\aom_dsp\x86\inv_wht_sse2.asm">
+      <Filter>src\aom_dsp\x86</Filter>
+    </NASM>
+    <NASM Include="src\aom_dsp\x86\quantize_ssse3_x86_64.asm">
+      <Filter>src\aom_dsp\x86</Filter>
+    </NASM>
+    <NASM Include="src\aom_dsp\x86\sad_sse2.asm">
+      <Filter>src\aom_dsp\x86</Filter>
+    </NASM>
+    <NASM Include="src\aom_dsp\x86\sad4d_sse2.asm">
+      <Filter>src\aom_dsp\x86</Filter>
+    </NASM>
+    <NASM Include="src\aom_dsp\x86\ssim_sse2_x86_64.asm">
+      <Filter>src\aom_dsp\x86</Filter>
+    </NASM>
+    <NASM Include="src\aom_dsp\x86\subpel_variance_ssse3.asm">
+      <Filter>src\aom_dsp\x86</Filter>
+    </NASM>
+    <NASM Include="src\aom_dsp\x86\subtract_sse2.asm">
+      <Filter>src\aom_dsp\x86</Filter>
+    </NASM>
+    <NASM Include="src\aom_ports\float.asm">
+      <Filter>src\aom_ports</Filter>
+    </NASM>
+    <NASM Include="src\aom_ports\x86_abi_support.asm">
+      <Filter>src\aom_ports</Filter>
+    </NASM>
+    <NASM Include="src\av1\encoder\x86\av1_quantize_ssse3_x86_64.asm">
+      <Filter>src\av1\encoder\x86</Filter>
+    </NASM>
+    <NASM Include="src\av1\encoder\x86\av1_ssim_opt_x86_64.asm">
+      <Filter>src\av1\encoder\x86</Filter>
+    </NASM>
+    <NASM Include="src\av1\encoder\x86\dct_sse2.asm">
+      <Filter>src\av1\encoder\x86</Filter>
+    </NASM>
+    <NASM Include="src\av1\encoder\x86\error_sse2.asm">
+      <Filter>src\av1\encoder\x86</Filter>
+    </NASM>
+    <NASM Include="src\config\aom_config.asm">
+      <Filter>src\config</Filter>
+    </NASM>
+    <NASM Include="src\third_party\x86inc\x86inc.asm">
+      <Filter>src\third_party\x86inc</Filter>
+    </NASM>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="src\aom_dsp\x86\aom_high_subpixel_8t_sse2.asm">
-      <Filter>src\aom_dsp\x86</Filter>
-    </CustomBuild>
-    <CustomBuild Include="src\aom_dsp\x86\aom_high_subpixel_bilinear_sse2.asm">
-      <Filter>src\aom_dsp\x86</Filter>
-    </CustomBuild>
-    <CustomBuild Include="src\aom_dsp\x86\aom_subpixel_8t_sse2.asm">
-      <Filter>src\aom_dsp\x86</Filter>
-    </CustomBuild>
-    <CustomBuild Include="src\aom_dsp\x86\aom_subpixel_8t_ssse3.asm">
-      <Filter>src\aom_dsp\x86</Filter>
-    </CustomBuild>
-    <CustomBuild Include="src\aom_dsp\x86\aom_subpixel_bilinear_sse2.asm">
-      <Filter>src\aom_dsp\x86</Filter>
-    </CustomBuild>
-    <CustomBuild Include="src\aom_dsp\x86\aom_subpixel_bilinear_ssse3.asm">
-      <Filter>src\aom_dsp\x86</Filter>
-    </CustomBuild>
-    <CustomBuild Include="src\aom_dsp\x86\fwd_txfm_ssse3_x86_64.asm">
-      <Filter>src\aom_dsp\x86</Filter>
-    </CustomBuild>
-    <CustomBuild Include="src\aom_dsp\x86\highbd_intrapred_asm_sse2.asm">
-      <Filter>src\aom_dsp\x86</Filter>
-    </CustomBuild>
-    <CustomBuild Include="src\aom_dsp\x86\highbd_sad_sse2.asm">
-      <Filter>src\aom_dsp\x86</Filter>
-    </CustomBuild>
-    <CustomBuild Include="src\aom_dsp\x86\highbd_sad4d_sse2.asm">
-      <Filter>src\aom_dsp\x86</Filter>
-    </CustomBuild>
-    <CustomBuild Include="src\aom_dsp\x86\highbd_subpel_variance_impl_sse2.asm">
-      <Filter>src\aom_dsp\x86</Filter>
-    </CustomBuild>
-    <CustomBuild Include="src\aom_dsp\x86\highbd_variance_impl_sse2.asm">
-      <Filter>src\aom_dsp\x86</Filter>
-    </CustomBuild>
-    <CustomBuild Include="src\aom_dsp\x86\intrapred_asm_sse2.asm">
-      <Filter>src\aom_dsp\x86</Filter>
-    </CustomBuild>
-    <CustomBuild Include="src\aom_dsp\x86\inv_wht_sse2.asm">
-      <Filter>src\aom_dsp\x86</Filter>
-    </CustomBuild>
-    <CustomBuild Include="src\aom_dsp\x86\quantize_ssse3_x86_64.asm">
-      <Filter>src\aom_dsp\x86</Filter>
-    </CustomBuild>
-    <CustomBuild Include="src\aom_dsp\x86\sad_sse2.asm">
-      <Filter>src\aom_dsp\x86</Filter>
-    </CustomBuild>
-    <CustomBuild Include="src\aom_dsp\x86\sad4d_sse2.asm">
-      <Filter>src\aom_dsp\x86</Filter>
-    </CustomBuild>
-    <CustomBuild Include="src\aom_dsp\x86\ssim_sse2_x86_64.asm">
-      <Filter>src\aom_dsp\x86</Filter>
-    </CustomBuild>
-    <CustomBuild Include="src\aom_dsp\x86\subpel_variance_sse2.asm">
-      <Filter>src\aom_dsp\x86</Filter>
-    </CustomBuild>
-    <CustomBuild Include="src\aom_dsp\x86\subtract_sse2.asm">
-      <Filter>src\aom_dsp\x86</Filter>
-    </CustomBuild>
-    <CustomBuild Include="src\aom_ports\float.asm">
-      <Filter>src\aom_ports</Filter>
-    </CustomBuild>
-    <CustomBuild Include="src\aom_ports\x86_abi_support.asm">
-      <Filter>src\aom_ports</Filter>
-    </CustomBuild>
-    <CustomBuild Include="src\av1\encoder\x86\av1_quantize_ssse3_x86_64.asm">
-      <Filter>src\av1\encoder\x86</Filter>
-    </CustomBuild>
-    <CustomBuild Include="src\av1\encoder\x86\av1_ssim_opt_x86_64.asm">
-      <Filter>src\av1\encoder\x86</Filter>
-    </CustomBuild>
-    <CustomBuild Include="src\av1\encoder\x86\dct_sse2.asm">
-      <Filter>src\av1\encoder\x86</Filter>
-    </CustomBuild>
-    <CustomBuild Include="src\av1\encoder\x86\error_sse2.asm">
-      <Filter>src\av1\encoder\x86</Filter>
-    </CustomBuild>
+    <None Include="src\third_party\fastfeat\LICENSE">
+      <Filter>src\third_party\fastfeat</Filter>
+    </None>
+    <None Include="src\third_party\fastfeat\README.libaom">
+      <Filter>src\third_party\fastfeat</Filter>
+    </None>
+    <None Include="src\third_party\x86inc\LICENSE">
+      <Filter>src\third_party\x86inc</Filter>
+    </None>
+    <None Include="src\third_party\x86inc\README.libaom">
+      <Filter>src\third_party\x86inc</Filter>
+    </None>
+    <None Include="src\third_party\SVT-AV1\LICENSE.md">
+      <Filter>src\third_party\SVT-AV1</Filter>
+    </None>
+    <None Include="src\third_party\SVT-AV1\PATENTS.md">
+      <Filter>src\third_party\SVT-AV1</Filter>
+    </None>
+    <None Include="src\third_party\SVT-AV1\README.libaom">
+      <Filter>src\third_party\SVT-AV1</Filter>
+    </None>
+    <None Include="src\third_party\vector\LICENSE">
+      <Filter>src\third_party\vector</Filter>
+    </None>
+    <None Include="src\third_party\vector\README.libaom">
+      <Filter>src\third_party\vector</Filter>
+    </None>
+    <None Include="include\aom\av1\common\reconinter_template.inc">
+      <Filter>include\aom\av1\common</Filter>
+    </None>
   </ItemGroup>
 </Project>

@@ -1,4 +1,3 @@
-#pragma once
 /******************************************************************************
  *
  * Purpose:  PCI raster namespace converter utilities.
@@ -29,9 +28,9 @@
 #ifndef INCLUDE_PCIDSK_RASTER_H
 #define INCLUDE_PCIDSK_RASTER_H
 
-#include "../pcidsk_config.h"
-#include "../pcidsk_types.h"
-#include "../raster/rastertypes.hh"
+#include "pcidsk_config.h"
+#include "pcidsk_types.h"
+#include "raster/rastertypes.hh"
 
 namespace PCIDSK
 {

@@ -51,7 +51,7 @@ static int bitrate_profile_factor[1 << PROFILE_BITS] = {
   1, 2, 3, 0, 0, 0, 0, 0
 };
 
-int64_t av1_max_level_bitrate(BITSTREAM_PROFILE seq_profile, int seq_level_idx,
+HAOM_EXPORT int64_t av1_max_level_bitrate(BITSTREAM_PROFILE seq_profile, int seq_level_idx,
                               int seq_tier) {
   int64_t bitrate;
 
@@ -64,13 +64,13 @@ int64_t av1_max_level_bitrate(BITSTREAM_PROFILE seq_profile, int seq_level_idx,
   return bitrate * 1000;
 }
 
-void av1_set_aom_dec_model_info(aom_dec_model_info_t *decoder_model) {
+HAOM_EXPORT void av1_set_aom_dec_model_info(aom_dec_model_info_t *decoder_model) {
   decoder_model->encoder_decoder_buffer_delay_length = 16;
   decoder_model->buffer_removal_time_length = 10;
   decoder_model->frame_presentation_time_length = 10;
 }
 
-void av1_set_dec_model_op_parameters(aom_dec_model_op_parameters_t *op_params) {
+HAOM_EXPORT void av1_set_dec_model_op_parameters(aom_dec_model_op_parameters_t *op_params) {
   op_params->decoder_model_param_present_flag = 1;
   op_params->decoder_buffer_delay = 90000 >> 1;  //  0.5 s
   op_params->encoder_buffer_delay = 90000 >> 1;  //  0.5 s
@@ -79,7 +79,7 @@ void av1_set_dec_model_op_parameters(aom_dec_model_op_parameters_t *op_params) {
   op_params->initial_display_delay = 8;  // 8 frames delay
 }
 
-void av1_set_resource_availability_parameters(
+HAOM_EXPORT void av1_set_resource_availability_parameters(
     aom_dec_model_op_parameters_t *op_params) {
   op_params->decoder_model_param_present_flag = 0;
   op_params->decoder_buffer_delay =

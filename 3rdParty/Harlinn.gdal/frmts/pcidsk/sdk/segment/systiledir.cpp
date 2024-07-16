@@ -32,12 +32,12 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
-#include "systiledir.h"
-#include "../blockdir/asciitiledir.h"
-#include "../blockdir/binarytiledir.h"
-#include "../blockdir/blocktilelayer.h"
-#include "../core/cpcidskblockfile.h"
-#include "../pcidsk_exception.h"
+#include "segment/systiledir.h"
+#include "blockdir/asciitiledir.h"
+#include "blockdir/binarytiledir.h"
+#include "blockdir/blocktilelayer.h"
+#include "core/cpcidskblockfile.h"
+#include "pcidsk_exception.h"
 
 using namespace PCIDSK;
 

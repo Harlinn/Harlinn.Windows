@@ -1,4 +1,3 @@
-#pragma once
 /******************************************************************************
  *
  * Purpose:  Enumerations and data types used within PCI Geomatics.
@@ -29,7 +28,7 @@
 #ifndef RASTER_TYPES_HH
 #define RASTER_TYPES_HH
 
-#include "rasterconfig.h"
+#include "raster/rasterconfig.h"
 #include <vector>
 #include <map>
 

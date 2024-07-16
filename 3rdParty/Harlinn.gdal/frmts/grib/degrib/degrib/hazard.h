@@ -1,4 +1,3 @@
-#pragma once
 #ifndef HAZARD_H
 #define HAZARD_H
 

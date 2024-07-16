@@ -26,32 +26,30 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
-#include <port/cpl_port.h>
+#include "cpl_port.h"
 #include "ogr_geojson.h"
 
 #include <stdlib.h>
 #include <string.h>
 
-#include <port/cpl_conv.h>
-#include <port/cpl_error.h>
-#include <gcore/gdal.h>
-#include <gcore/gdal_priv.h>
-#include <ogr/ogrsf_frmts/geojson/ogrgeojsonutils.h>
-#include <ogr/ogrsf_frmts/ogrsf_frmts.h>
-
-CPL_CVSID("$Id$")
+#include "cpl_conv.h"
+#include "cpl_error.h"
+#include "gdal.h"
+#include "gdal_priv.h"
+#include "ogrgeojsonutils.h"
+#include "ogrsf_frmts.h"
 
 /************************************************************************/
 /*                       OGRTopoJSONDriverIdentify()                    */
 /************************************************************************/
 
-static int OGRTopoJSONDriverIdentify( GDALOpenInfo* poOpenInfo )
+static int OGRTopoJSONDriverIdentify(GDALOpenInfo *poOpenInfo)
 {
     GeoJSONSourceType nSrcType = TopoJSONDriverGetSourceType(poOpenInfo);
-    if( nSrcType == eGeoJSONSourceUnknown )
+    if (nSrcType == eGeoJSONSourceUnknown)
         return FALSE;
-    if( nSrcType == eGeoJSONSourceService &&
-        !STARTS_WITH_CI(poOpenInfo->pszFilename, "TopoJSON:") )
+    if (nSrcType == eGeoJSONSourceService &&
+        !STARTS_WITH_CI(poOpenInfo->pszFilename, "TopoJSON:"))
     {
         return -1;
     }
@@ -62,10 +60,10 @@ static int OGRTopoJSONDriverIdentify( GDALOpenInfo* poOpenInfo )
 /*                           Open()                                     */
 /************************************************************************/
 
-static GDALDataset* OGRTopoJSONDriverOpen( GDALOpenInfo* poOpenInfo )
+static GDALDataset *OGRTopoJSONDriverOpen(GDALOpenInfo *poOpenInfo)
 {
     GeoJSONSourceType nSrcType = TopoJSONDriverGetSourceType(poOpenInfo);
-    if( nSrcType == eGeoJSONSourceUnknown )
+    if (nSrcType == eGeoJSONSourceUnknown)
         return nullptr;
     return OGRGeoJSONDriverOpenInternal(poOpenInfo, nSrcType, "TopoJSON");
 }
@@ -76,30 +74,30 @@ static GDALDataset* OGRTopoJSONDriverOpen( GDALOpenInfo* poOpenInfo )
 
 void RegisterOGRTopoJSON()
 {
-    if( !GDAL_CHECK_VERSION("OGR/TopoJSON driver") )
+    if (!GDAL_CHECK_VERSION("OGR/TopoJSON driver"))
         return;
 
-    if( GDALGetDriverByName( "TopoJSON" ) != nullptr )
+    if (GDALGetDriverByName("TopoJSON") != nullptr)
         return;
 
     GDALDriver *poDriver = new GDALDriver();
 
-    poDriver->SetDescription( "TopoJSON" );
-    poDriver->SetMetadataItem( GDAL_DCAP_VECTOR, "YES" );
-    poDriver->SetMetadataItem( GDAL_DMD_LONGNAME, "TopoJSON" );
-    poDriver->SetMetadataItem( GDAL_DMD_EXTENSIONS, "json topojson" );
-    poDriver->SetMetadataItem( GDAL_DMD_HELPTOPIC, "drivers/vector/topojson.html" );
+    poDriver->SetDescription("TopoJSON");
+    poDriver->SetMetadataItem(GDAL_DCAP_VECTOR, "YES");
+    poDriver->SetMetadataItem(GDAL_DMD_LONGNAME, "TopoJSON");
+    poDriver->SetMetadataItem(GDAL_DMD_EXTENSIONS, "json topojson");
+    poDriver->SetMetadataItem(GDAL_DMD_HELPTOPIC,
+                              "drivers/vector/topojson.html");
 
-    poDriver->SetMetadataItem( GDAL_DMD_OPENOPTIONLIST,
-"<OpenOptionList/>");
+    poDriver->SetMetadataItem(GDAL_DMD_OPENOPTIONLIST, "<OpenOptionList/>");
 
-    poDriver->SetMetadataItem( GDAL_DMD_CREATIONOPTIONLIST,
-                               "<CreationOptionList/>");
+    poDriver->SetMetadataItem(GDAL_DMD_CREATIONOPTIONLIST,
+                              "<CreationOptionList/>");
 
-    poDriver->SetMetadataItem( GDAL_DCAP_VIRTUALIO, "YES" );
+    poDriver->SetMetadataItem(GDAL_DCAP_VIRTUALIO, "YES");
 
     poDriver->pfnOpen = OGRTopoJSONDriverOpen;
     poDriver->pfnIdentify = OGRTopoJSONDriverIdentify;
 
-    GetGDALDriverManager()->RegisterDriver( poDriver );
+    GetGDALDriverManager()->RegisterDriver(poDriver);
 }

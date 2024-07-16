@@ -1,0 +1,149 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{F8E8C284-8F22-404A-AFB9-F82B3A987E94}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{8F2881C5-92FB-4F69-8D32-02AEEB2076AC}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{A1330F93-BB4E-4F80-9D9D-B7663167AB94}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="include">
+      <UniqueIdentifier>{8a89d2b6-7db9-4f7e-a094-5c4c610c7b4c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\geotiff">
+      <UniqueIdentifier>{4c9a36ff-15f9-41e0-8233-755946f77546}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{99a70ff0-95a3-4ae4-bc8f-863df760c2d4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\libxtiff">
+      <UniqueIdentifier>{7462bd19-bec5-4850-870c-0a675ee17793}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="dllmain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cpl_serv.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\geo_extra.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\geo_free.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\geo_get.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\geo_names.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\geo_new.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\geo_normalize.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\geo_print.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\geo_set.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\geo_simpletags.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\geo_tiffp.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\geo_trans.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\geo_write.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libxtiff\xtiff.c">
+      <Filter>src\libxtiff</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\geotiff\cpl_serv.h">
+      <Filter>include\geotiff</Filter>
+    </ClInclude>
+    <ClInclude Include="include\geotiff\geo_config.h">
+      <Filter>include\geotiff</Filter>
+    </ClInclude>
+    <ClInclude Include="include\geotiff\geo_keyp.h">
+      <Filter>include\geotiff</Filter>
+    </ClInclude>
+    <ClInclude Include="include\geotiff\geo_normalize.h">
+      <Filter>include\geotiff</Filter>
+    </ClInclude>
+    <ClInclude Include="include\geotiff\geo_simpletags.h">
+      <Filter>include\geotiff</Filter>
+    </ClInclude>
+    <ClInclude Include="include\geotiff\geo_tiffp.h">
+      <Filter>include\geotiff</Filter>
+    </ClInclude>
+    <ClInclude Include="include\geotiff\geokeys.h">
+      <Filter>include\geotiff</Filter>
+    </ClInclude>
+    <ClInclude Include="include\geotiff\geonames.h">
+      <Filter>include\geotiff</Filter>
+    </ClInclude>
+    <ClInclude Include="include\geotiff\geotiff.h">
+      <Filter>include\geotiff</Filter>
+    </ClInclude>
+    <ClInclude Include="include\geotiff\geotiffio.h">
+      <Filter>include\geotiff</Filter>
+    </ClInclude>
+    <ClInclude Include="include\geotiff\geovalues.h">
+      <Filter>include\geotiff</Filter>
+    </ClInclude>
+    <ClInclude Include="src\libxtiff\xtiffio.h">
+      <Filter>src\libxtiff</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="include\geotiff\epsg_datum.inc">
+      <Filter>include\geotiff</Filter>
+    </None>
+    <None Include="include\geotiff\epsg_ellipse.inc">
+      <Filter>include\geotiff</Filter>
+    </None>
+    <None Include="include\geotiff\epsg_gcs.inc">
+      <Filter>include\geotiff</Filter>
+    </None>
+    <None Include="include\geotiff\epsg_pcs.inc">
+      <Filter>include\geotiff</Filter>
+    </None>
+    <None Include="include\geotiff\epsg_pm.inc">
+      <Filter>include\geotiff</Filter>
+    </None>
+    <None Include="include\geotiff\epsg_proj.inc">
+      <Filter>include\geotiff</Filter>
+    </None>
+    <None Include="include\geotiff\epsg_units.inc">
+      <Filter>include\geotiff</Filter>
+    </None>
+    <None Include="include\geotiff\epsg_vertcs.inc">
+      <Filter>include\geotiff</Filter>
+    </None>
+    <None Include="include\geotiff\geo_ctrans.inc">
+      <Filter>include\geotiff</Filter>
+    </None>
+    <None Include="include\geotiff\geokeys.inc">
+      <Filter>include\geotiff</Filter>
+    </None>
+    <None Include="include\geotiff\geokeys_v1_1.inc">
+      <Filter>include\geotiff</Filter>
+    </None>
+  </ItemGroup>
+</Project>

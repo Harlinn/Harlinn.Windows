@@ -1,4 +1,3 @@
-#pragma once
 /**********************************************************************
  *
  * Project:  GDAL
@@ -30,10 +29,10 @@
 #ifndef GDAL_THREAD_POOL_H
 #define GDAL_THREAD_POOL_H
 
-#include "..\port\cpl_worker_thread_pool.h"
+#include "cpl_worker_thread_pool.h"
 
-HGDAL_EXPORT CPLWorkerThreadPool* GDALGetGlobalThreadPool(int nThreads);
+CPLWorkerThreadPool CPL_DLL *GDALGetGlobalThreadPool(int nThreads);
 
-HGDAL_EXPORT void GDALDestroyGlobalThreadPool();
+void GDALDestroyGlobalThreadPool();
 
-#endif // GDAL_THREAD_POOL_H
+#endif  // GDAL_THREAD_POOL_H

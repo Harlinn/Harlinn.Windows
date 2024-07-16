@@ -1,4 +1,3 @@
-#pragma once
 /******************************************************************************
  * $Id$
  *
@@ -31,15 +30,17 @@
 #ifndef RDB_DATASET_INCLUDED
 #define RDB_DATASET_INCLUDED
 
-#include "../vrt/vrtdataset.h"
-#include <gcore/gdal_pam.h>
+#include "../frmts/vrt/vrtdataset.h"
+#include "gdal_pam.h"
 
 #include <riegl/rdb.hpp>
 
 #include <algorithm>
+#include <limits>
 #include <memory>
 #include <mutex>
 #include <string>
+
 namespace rdb
 {
 class RDBRasterBand;
@@ -72,7 +73,7 @@ template <typename T> struct RDBCoordinatesPlusData
     T data;
 };
 
-class RDBDataset final: public GDALPamDataset
+class RDBDataset final : public GDALPamDataset
 {
     friend class RDBRasterBand;
     template <typename T> friend class RDBRasterBandInternal;
@@ -128,7 +129,7 @@ class RDBDataset final: public GDALPamDataset
     void ReadGeoreferencing();
 };
 
-class RDBRasterBand CPL_NON_FINAL: public GDALPamRasterBand
+class RDBRasterBand CPL_NON_FINAL : public GDALPamRasterBand
 {
   protected:
     CPLString osAttributeName;
@@ -146,6 +147,7 @@ class RDBRasterBand CPL_NON_FINAL: public GDALPamRasterBand
     virtual const char *GetDescription() const override;
 };
 }  // namespace rdb
+
 void GDALRegister_RDB();
 
 #endif  // RDB_DATASET_INCLUDED

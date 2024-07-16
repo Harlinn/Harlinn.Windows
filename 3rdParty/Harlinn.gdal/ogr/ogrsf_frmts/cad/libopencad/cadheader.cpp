@@ -29,8 +29,8 @@
  *  SOFTWARE.
  *******************************************************************************/
 
-#include <port/cpl_port.h>
-#include <port/cpl_safemaths.hpp>
+#include "cpl_port.h"
+#include "cpl_safemaths.hpp"
 #include "cadheader.h"
 #include "opencad_api.h"
 #include "dwg/io.h"
@@ -345,7 +345,15 @@ CADVariant::CADVariant( long julianday, long milliseconds ) :
     dateTimeVal = static_cast<time_t>( dfUnix + dfSeconds );
 
     char str_buff[256] = "Invalid date";
-    struct tm *poLocaltime = localtime(&dateTimeVal);
+#if HAVE_LOCALTIME_R
+    struct tm localtime_tm;
+    const struct tm *poLocaltime = localtime_r(&dateTimeVal, &localtime_tm);
+#elif defined(_WIN32)
+    struct tm localtime_tm;
+    const struct tm *poLocaltime = localtime_s(&localtime_tm, &dateTimeVal) == 0 ? &localtime_tm : nullptr;
+#else
+    const struct tm *poLocaltime = localtime(&dateTimeVal);
+#endif
     if(poLocaltime)
         strftime(str_buff, 255, "%Y-%m-%d %H:%M:%S", poLocaltime);
     stringVal = str_buff;
@@ -501,7 +509,7 @@ const char * CADHeader::getValueName( short code )
 void CADHeader::print() const
 {
     cout << "============ HEADER Section ============\n";
-    for( auto it : valuesMap )
+    for( const auto& it : valuesMap )
     {
         cout << getValueName( it.first ) << ": " << it.second.getString() << "\n";
     }

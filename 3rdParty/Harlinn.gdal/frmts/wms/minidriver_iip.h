@@ -1,4 +1,3 @@
-#pragma once
 /******************************************************************************
  * $Id$
  *
@@ -28,15 +27,23 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
-class WMSMiniDriver_IIP : public WMSMiniDriver {
-public:
+#ifndef MINIDRIVER_IIP_H_INCLUDED
+#define MINIDRIVER_IIP_H_INCLUDED
+
+class WMSMiniDriver_IIP : public WMSMiniDriver
+{
+  public:
     WMSMiniDriver_IIP();
     virtual ~WMSMiniDriver_IIP();
 
-public:
-    virtual CPLErr Initialize(CPLXMLNode *config, char **papszOpenOptions) override;
+  public:
+    virtual CPLErr Initialize(CPLXMLNode *config,
+                              char **papszOpenOptions) override;
     virtual void GetCapabilities(WMSMiniDriverCapabilities *caps) override;
-    virtual CPLErr TiledImageRequest(WMSHTTPRequest &request,
-                                     const GDALWMSImageRequestInfo &iri,
-                                     const GDALWMSTiledImageRequestInfo &tiri) override;
+    virtual CPLErr
+    TiledImageRequest(WMSHTTPRequest &request,
+                      const GDALWMSImageRequestInfo &iri,
+                      const GDALWMSTiledImageRequestInfo &tiri) override;
 };
+
+#endif /* MINIDRIVER_IIP_H_INCLUDED */

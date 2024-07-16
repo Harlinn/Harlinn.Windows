@@ -1,4 +1,3 @@
-#pragma once
 /******************************************************************************
  *
  * Project:  COG Driver
@@ -30,21 +29,22 @@
 #ifndef COGDRIVER_H_INCLUDED
 #define COGDRIVER_H_INCLUDED
 
-#include <gcore/gdal_priv.h>
-#include <port/cpl_string.h>
+#include "gdal_priv.h"
+#include "cpl_string.h"
 
 bool COGHasWarpingOptions(CSLConstList papszOptions);
 
-bool COGGetWarpingCharacteristics(GDALDataset* poSrcDS,
-                                  const char * const* papszOptions,
-                                  CPLString& osResampling,
-                                  CPLString& osTargetSRS,
-                                  int& nXSize,
-                                  int& nYSize,
-                                  double& dfMinX,
-                                  double& dfMinY,
-                                  double& dfMaxX,
-                                  double& dfMaxY);
-void COGRemoveWarpingOptions(CPLStringList& aosOptions);
+bool COGGetTargetSRS(const char *const *papszOptions, CPLString &osTargetSRS);
 
-#endif // COGDRIVER_H_INCLUDED
+std::string COGGetResampling(GDALDataset *poSrcDS,
+                             const char *const *papszOptions);
+
+bool COGGetWarpingCharacteristics(GDALDataset *poSrcDS,
+                                  const char *const *papszOptions,
+                                  CPLString &osResampling,
+                                  CPLString &osTargetSRS, int &nXSize,
+                                  int &nYSize, double &dfMinX, double &dfMinY,
+                                  double &dfMaxX, double &dfMaxY);
+void COGRemoveWarpingOptions(CPLStringList &aosOptions);
+
+#endif  // COGDRIVER_H_INCLUDED

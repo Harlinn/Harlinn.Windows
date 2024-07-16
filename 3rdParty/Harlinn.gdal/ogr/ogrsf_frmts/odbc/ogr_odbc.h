@@ -30,9 +30,11 @@
 #ifndef OGR_ODBC_H_INCLUDED
 #define OGR_ODBC_H_INCLUDED
 
-#include "ogr/ogrsf_frmts/ogrsf_frmts.h"
-#include "port/cpl_odbc.h"
-#include "port/cpl_error.h"
+#include "ogrsf_frmts.h"
+#include "cpl_odbc.h"
+#include "cpl_error.h"
+
+#include <map>
 #include <unordered_set>
 
 /************************************************************************/
@@ -41,99 +43,108 @@
 
 class OGRODBCDataSource;
 
-class OGRODBCLayer CPL_NON_FINAL: public OGRLayer
+class OGRODBCLayer CPL_NON_FINAL : public OGRLayer
 {
   protected:
-    OGRFeatureDefn     *poFeatureDefn;
+    OGRFeatureDefn *poFeatureDefn;
 
-    CPLODBCStatement   *poStmt;
+    int m_nStatementFlags = 0;
+    CPLODBCStatement *poStmt;
 
     // Layer spatial reference system, and srid.
     OGRSpatialReference *poSRS;
-    int                 nSRSId;
+    int nSRSId;
 
-    GIntBig             iNextShapeId;
+    GIntBig iNextShapeId;
 
-    OGRODBCDataSource    *poDS;
+    OGRODBCDataSource *poDS;
 
-    int                bGeomColumnWKB;
-    char               *pszGeomColumn;
-    char               *pszFIDColumn;
+    int bGeomColumnWKB;
+    char *pszGeomColumn;
+    char *pszFIDColumn;
 
-    int                *panFieldOrdinals;
+    int *panFieldOrdinals;
 
-    bool                m_bEOF = false;
+    bool m_bEOF = false;
 
-    CPLErr              BuildFeatureDefn( const char *pszLayerName,
-                                          CPLODBCStatement *poStmt );
+    CPLErr BuildFeatureDefn(const char *pszLayerName, CPLODBCStatement *poStmt);
 
-    virtual CPLODBCStatement *  GetStatement() { return poStmt; }
+    virtual CPLODBCStatement *GetStatement()
+    {
+        return poStmt;
+    }
 
   public:
-                        OGRODBCLayer();
-    virtual             ~OGRODBCLayer();
+    OGRODBCLayer();
+    virtual ~OGRODBCLayer();
 
-    virtual void        ResetReading() override;
+    virtual void ResetReading() override;
     virtual OGRFeature *GetNextRawFeature();
     virtual OGRFeature *GetNextFeature() override;
 
-    virtual OGRFeature *GetFeature( GIntBig nFeatureId ) override;
+    virtual OGRFeature *GetFeature(GIntBig nFeatureId) override;
 
-    OGRFeatureDefn *    GetLayerDefn() override { return poFeatureDefn; }
+    OGRFeatureDefn *GetLayerDefn() override
+    {
+        return poFeatureDefn;
+    }
 
     virtual OGRSpatialReference *GetSpatialRef() override;
 
-    virtual int         TestCapability( const char * ) override;
+    virtual int TestCapability(const char *) override;
 };
 
 /************************************************************************/
 /*                           OGRODBCTableLayer                          */
 /************************************************************************/
 
-class OGRODBCTableLayer final: public OGRODBCLayer
+class OGRODBCTableLayer final : public OGRODBCLayer
 {
-    char                *pszQuery;
+    char *pszQuery;
 
-    int                 bHaveSpatialExtents;
+    int bHaveSpatialExtents;
 
-    void                ClearStatement();
-    OGRErr              ResetStatement();
+    void ClearStatement();
+    OGRErr ResetStatement();
 
-    virtual CPLODBCStatement *  GetStatement() override;
+    virtual CPLODBCStatement *GetStatement() override;
 
-    char               *pszTableName;
-    char               *pszSchemaName;
+    char *pszTableName;
+    char *pszSchemaName;
 
   public:
-    explicit            OGRODBCTableLayer( OGRODBCDataSource * );
-                        virtual ~OGRODBCTableLayer();
+    explicit OGRODBCTableLayer(OGRODBCDataSource *, int);
+    virtual ~OGRODBCTableLayer();
 
-    CPLErr              Initialize( const char *pszTableName,
-                                    const char *pszGeomCol );
+    CPLErr Initialize(const char *pszTableName, const char *pszGeomCol);
 
-    virtual void        ResetReading() override;
-    virtual GIntBig     GetFeatureCount( int ) override;
+    virtual void ResetReading() override;
+    virtual GIntBig GetFeatureCount(int) override;
 
-    virtual OGRErr      SetAttributeFilter( const char * ) override;
+    virtual OGRErr SetAttributeFilter(const char *) override;
 #ifdef notdef
-    virtual OGRErr      ISetFeature( OGRFeature *poFeature );
-    virtual OGRErr      ICreateFeature( OGRFeature *poFeature );
+    virtual OGRErr ISetFeature(OGRFeature *poFeature);
+    virtual OGRErr ICreateFeature(OGRFeature *poFeature);
 
-    virtual OGRErr      CreateField( OGRFieldDefn *poField,
-                                     int bApproxOK = TRUE );
+    virtual OGRErr CreateField(OGRFieldDefn *poField, int bApproxOK = TRUE);
 #endif
-    virtual OGRFeature *GetFeature( GIntBig nFeatureId ) override;
+    virtual OGRFeature *GetFeature(GIntBig nFeatureId) override;
 
     virtual OGRSpatialReference *GetSpatialRef() override;
 
-    virtual int         TestCapability( const char * ) override;
+    virtual int TestCapability(const char *) override;
 
 #ifdef notdef
     // follow methods are not base class overrides
-    void                SetLaunderFlag( int bFlag )
-                                { bLaunderColumnNames = bFlag; }
-    void                SetPrecisionFlag( int bFlag )
-                                { bPreservePrecision = bFlag; }
+    void SetLaunderFlag(int bFlag)
+    {
+        bLaunderColumnNames = bFlag;
+    }
+
+    void SetPrecisionFlag(int bFlag)
+    {
+        bPreservePrecision = bFlag;
+    }
 #endif
 };
 
@@ -141,81 +152,100 @@ class OGRODBCTableLayer final: public OGRODBCLayer
 /*                          OGRODBCSelectLayer                          */
 /************************************************************************/
 
-class OGRODBCSelectLayer final: public OGRODBCLayer
+class OGRODBCSelectLayer final : public OGRODBCLayer
 {
-    char                *pszBaseStatement;
+    char *pszBaseStatement;
 
-    void                ClearStatement();
-    OGRErr              ResetStatement();
+    void ClearStatement();
+    OGRErr ResetStatement();
 
-    virtual CPLODBCStatement *  GetStatement() override;
+    virtual CPLODBCStatement *GetStatement() override;
 
   public:
-                        OGRODBCSelectLayer( OGRODBCDataSource *,
-                                           CPLODBCStatement * );
-                        virtual ~OGRODBCSelectLayer();
+    OGRODBCSelectLayer(OGRODBCDataSource *, CPLODBCStatement *);
+    virtual ~OGRODBCSelectLayer();
 
-    virtual void        ResetReading() override;
-    virtual GIntBig     GetFeatureCount( int ) override;
+    virtual void ResetReading() override;
+    virtual GIntBig GetFeatureCount(int) override;
 
-    virtual OGRFeature *GetFeature( GIntBig nFeatureId ) override;
+    virtual OGRFeature *GetFeature(GIntBig nFeatureId) override;
 
-    virtual OGRErr      GetExtent(OGREnvelope *psExtent, int bForce = TRUE) override;
-    virtual OGRErr      GetExtent(int iGeomField, OGREnvelope *psExtent, int bForce) override
-                { return OGRLayer::GetExtent(iGeomField, psExtent, bForce); }
+    virtual OGRErr GetExtent(OGREnvelope *psExtent, int bForce = TRUE) override;
 
-    virtual int         TestCapability( const char * ) override;
+    virtual OGRErr GetExtent(int iGeomField, OGREnvelope *psExtent,
+                             int bForce) override
+    {
+        return OGRLayer::GetExtent(iGeomField, psExtent, bForce);
+    }
+
+    virtual int TestCapability(const char *) override;
 };
 
 /************************************************************************/
 /*                           OGRODBCDataSource                          */
 /************************************************************************/
 
-class OGRODBCDataSource final: public OGRDataSource
+class OGRODBCDataSource final : public OGRDataSource
 {
-    OGRODBCLayer        **papoLayers;
-    int                 nLayers;
+    OGRODBCLayer **papoLayers;
+    int nLayers;
 
-    char               *pszName;
+    char *pszName;
 
-    CPLODBCSession      oSession;
+    CPLODBCSession oSession;
+
+#if 0
+    // NOTE: nothing uses the SRS cache currently. Hence disabled.
 
     // We maintain a list of known SRID to reduce the number of trips to
     // the database to get SRSes.
-    int                 nKnownSRID;
-    int                *panSRID;
-    OGRSpatialReference **papoSRS;
+    std::map<int,
+             std::unique_ptr<OGRSpatialReference, OGRSpatialReferenceReleaser>>
+        m_oSRSCache{};
+#endif
 
-    // set of all lowercase table names. Note that this is only used when opening MDB datasources, not generic ODBC ones.
-    std::unordered_set< std::string > m_aosAllLCTableNames;
+    // set of all lowercase table names. Note that this is only used when
+    // opening MDB datasources, not generic ODBC ones.
+    std::unordered_set<std::string> m_aosAllLCTableNames;
 
-    int                 OpenMDB(GDALOpenInfo *poOpenInfo );
-    static bool         IsPrivateLayerName( const CPLString& osName );
+    int m_nStatementFlags = 0;
+
+    int OpenMDB(GDALOpenInfo *poOpenInfo);
+    static bool IsPrivateLayerName(const CPLString &osName);
+
   public:
-                        OGRODBCDataSource();
-                        virtual ~OGRODBCDataSource();
+    OGRODBCDataSource();
+    virtual ~OGRODBCDataSource();
 
-    int                 Open( GDALOpenInfo* poOpenInfo );
-    int                 OpenTable( const char *pszTableName,
-                                   const char *pszGeomCol );
+    int Open(GDALOpenInfo *poOpenInfo);
+    int OpenTable(const char *pszTableName, const char *pszGeomCol);
 
-    const char          *GetName() override { return pszName; }
-    int                 GetLayerCount() override { return nLayers; }
-    OGRLayer            *GetLayer( int ) override;
-    OGRLayer            *GetLayerByName( const char* ) override;
-    bool                IsLayerPrivate( int ) const override;
+    const char *GetName() override
+    {
+        return pszName;
+    }
 
-    int                 TestCapability( const char * ) override;
+    int GetLayerCount() override
+    {
+        return nLayers;
+    }
 
-    virtual OGRLayer *  ExecuteSQL( const char *pszSQLCommand,
-                                    OGRGeometry *poSpatialFilter,
-                                    const char *pszDialect ) override;
-    virtual void        ReleaseResultSet( OGRLayer * poLayer ) override;
+    OGRLayer *GetLayer(int) override;
+    OGRLayer *GetLayerByName(const char *) override;
+    bool IsLayerPrivate(int) const override;
 
-    static bool         IsSupportedMsAccessFileExtension( const char* pszExtension );
+    int TestCapability(const char *) override;
+
+    virtual OGRLayer *ExecuteSQL(const char *pszSQLCommand,
+                                 OGRGeometry *poSpatialFilter,
+                                 const char *pszDialect) override;
+    virtual void ReleaseResultSet(OGRLayer *poLayer) override;
 
     // Internal use
-    CPLODBCSession     *GetSession() { return &oSession; }
+    CPLODBCSession *GetSession()
+    {
+        return &oSession;
+    }
 };
 
 #endif /* ndef OGR_ODBC_H_INCLUDED */

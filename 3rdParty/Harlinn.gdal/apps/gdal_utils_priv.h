@@ -32,143 +32,216 @@
 
 #ifndef DOXYGEN_SKIP
 
-#include "port/cpl_port.h"
-#include "apps/gdal_utils.h"
+#include "cpl_port.h"
+#include "cpl_string.h"
+#include "gdal_utils.h"
 
-/* This file is only meant at being used by the XXXX_bin.cpp and XXXX_lib.cpp files */
+/* This file is only meant at being used by the XXXX_bin.cpp and XXXX_lib.cpp
+ * files */
 
 CPL_C_START
 
 struct GDALInfoOptionsForBinary
 {
     /* Filename to open. */
-    char* pszFilename;
+    std::string osFilename{};
 
     /* Open options. */
-    char** papszOpenOptions;
+    CPLStringList aosOpenOptions{};
 
-    /* > for reporting on a particular subdataset */
-    int nSubdataset;
+    /* For reporting on a particular subdataset */
+    int nSubdataset = 0;
 
     /* Allowed input drivers. */
-    char** papszAllowInputDrivers;
+    CPLStringList aosAllowedInputDrivers{};
 };
 
-struct GDALTranslateOptionsForBinary
+struct GDALDEMProcessingOptionsForBinary
 {
-    char* pszSource;
-    char* pszDest;
+    char *pszProcessing;
+    char *pszSrcFilename;
+    char *pszColorFilename;
+    char *pszDstFilename;
     int bQuiet;
-    int bCopySubDatasets;
-    char** papszOpenOptions;
-    char* pszFormat;
-
-    /* Allowed input drivers. */
-    char** papszAllowInputDrivers;
 };
 
-struct GDALWarpAppOptionsForBinary
-{
-    char** papszSrcFiles;
-    char* pszDstFilename;
-    int bQuiet;
-    char** papszOpenOptions;
-
-    /*! output dataset open option (format specific) */
-    char **papszDestOpenOptions;
-
-    char **papszCreateOptions;
-
-    int bOverwrite;
-    int bCreateOutput;
-
-    /* Allowed input drivers. */
-    char** papszAllowInputDrivers;
-};
+CPL_C_END
 
 /* Access modes */
 typedef enum
 {
     ACCESS_CREATION,
-    ACCESS_UPDATE, /* open existing output datasource in update mode rather than trying to create a new one */
+    ACCESS_UPDATE, /* open existing output datasource in update mode rather than
+                      trying to create a new one */
     ACCESS_APPEND, /* append to existing layer instead of creating new */
     ACCESS_OVERWRITE /*  delete the output layer and recreate it empty */
 } GDALVectorTranslateAccessMode;
 
 struct GDALVectorTranslateOptionsForBinary
 {
-    char* pszDataSource;
-    char* pszDestDataSource;
-    int bQuiet;
-    char** papszOpenOptions;
-    char* pszFormat;
-    GDALVectorTranslateAccessMode eAccessMode;
-};
+    std::string osDataSource{};
+    std::string osDestDataSource{};
+    bool bQuiet = false;
+    CPLStringList aosOpenOptions{};
+    std::string osFormat;
+    GDALVectorTranslateAccessMode eAccessMode = ACCESS_CREATION;
 
-struct GDALDEMProcessingOptionsForBinary
-{
-    char* pszProcessing;
-    char* pszSrcFilename;
-    char* pszColorFilename;
-    char* pszDstFilename;
-    int bQuiet;
-};
-
-struct GDALNearblackOptionsForBinary
-{
-    char* pszInFile;
-    char* pszOutFile;
-    int bQuiet;
-};
-
-struct GDALGridOptionsForBinary
-{
-    char* pszSource;
-    char* pszDest;
-    int bQuiet;
-    char* pszFormat;
-};
-
-struct GDALRasterizeOptionsForBinary
-{
-    char* pszSource;
-    char* pszDest;
-    int bQuiet;
-    char* pszFormat;
-    int bCreateOutput;
-};
-
-struct GDALBuildVRTOptionsForBinary
-{
-    int nSrcFiles;
-    char** papszSrcFiles;
-    char* pszDstFilename;
-    int bQuiet;
-    int bOverwrite;
+    /* Allowed input drivers. */
+    CPLStringList aosAllowInputDrivers{};
 };
 
 struct GDALMultiDimInfoOptionsForBinary
 {
     /* Filename to open. */
-    char* pszFilename;
+    std::string osFilename{};
+
+    /* Allowed input drivers. */
+    CPLStringList aosAllowInputDrivers{};
 
     /* Open options. */
-    char** papszOpenOptions;
+    CPLStringList aosOpenOptions{};
 };
 
 struct GDALMultiDimTranslateOptionsForBinary
 {
-    char* pszSource;
-    char* pszDest;
-    char* pszFormat;
-    int   bQuiet;
-    int   bUpdate;
+    std::string osSource{};
+    std::string osDest{};
+    std::string osFormat{};
+    bool bQuiet = false;
+    bool bUpdate = false;
+
+    /* Allowed input drivers. */
+    CPLStringList aosAllowInputDrivers{};
 
     /* Open options. */
-    char** papszOpenOptions;
+    CPLStringList aosOpenOptions{};
 };
 
-CPL_C_END
+struct GDALVectorInfoOptionsForBinary
+{
+    /* Filename to open. */
+    std::string osFilename{};
+
+    bool bVerbose = true;
+
+    bool bReadOnly = false;
+
+    bool bUpdate = false;
+
+    std::string osSQLStatement{};
+
+    /* Open options. */
+    CPLStringList aosOpenOptions{};
+
+    /* Allowed input drivers. */
+    CPLStringList aosAllowInputDrivers{};
+};
+
+struct GDALGridOptionsForBinary
+{
+    std::string osSource{};
+    std::string osDest{};
+    bool bQuiet = false;
+    CPLStringList aosOpenOptions{};
+};
+
+struct GDALRasterizeOptionsForBinary
+{
+    std::string osSource{};
+    bool bDestSpecified = false;
+    std::string osDest{};
+    bool bQuiet = false;
+    CPLStringList aosOpenOptions{};
+    bool bCreateOutput = false;
+    std::string osFormat{};
+};
+
+struct GDALFootprintOptionsForBinary
+{
+    std::string osSource{};
+    bool bDestSpecified = false;
+    std::string osDest{};
+    bool bQuiet = false;
+    CPLStringList aosOpenOptions{};
+    bool bCreateOutput = false;
+    std::string osFormat{};
+
+    /*! whether to overwrite destination layer */
+    bool bOverwrite = false;
+
+    std::string osDestLayerName{};
+};
+
+struct GDALTileIndexOptionsForBinary
+{
+    CPLStringList aosSrcFiles{};
+    bool bDestSpecified = false;
+    std::string osDest{};
+    bool bQuiet = false;
+};
+
+struct GDALNearblackOptionsForBinary
+{
+    std::string osInFile{};
+    std::string osOutFile{};
+    bool bQuiet = false;
+};
+
+struct GDALTranslateOptionsForBinary
+{
+    std::string osSource{};
+    std::string osDest{};
+    bool bQuiet = false;
+    bool bCopySubDatasets = false;
+    CPLStringList aosOpenOptions{};
+    std::string osFormat{};
+
+    /* Allowed input drivers. */
+    CPLStringList aosAllowedInputDrivers{};
+};
+
+struct GDALWarpAppOptionsForBinary
+{
+    CPLStringList aosSrcFiles{};
+    std::string osDstFilename{};
+    bool bQuiet = false;
+    CPLStringList aosOpenOptions{};
+
+    /*! output dataset open option (format specific) */
+    CPLStringList aosDestOpenOptions{};
+
+    CPLStringList aosCreateOptions{};
+
+    bool bOverwrite = false;
+    bool bCreateOutput = false;
+
+    /* Allowed input drivers. */
+    CPLStringList aosAllowedInputDrivers{};
+};
+
+struct GDALBuildVRTOptionsForBinary
+{
+    CPLStringList aosSrcFiles{};
+    std::string osDstFilename{};
+    bool bQuiet = false;
+    bool bOverwrite = false;
+};
+
+std::string CPL_DLL GDALNearblackGetParserUsage();
+
+std::string CPL_DLL GDALVectorInfoGetParserUsage();
+
+std::string CPL_DLL GDALTranslateGetParserUsage();
+
+std::string CPL_DLL GDALVectorTranslateGetParserUsage();
+
+std::string CPL_DLL GDALWarpAppGetParserUsage();
+
+std::string CPL_DLL GDALInfoAppGetParserUsage();
+
+std::string CPL_DLL GDALGridGetParserUsage();
+
+std::string CPL_DLL GDALBuildVRTGetParserUsage();
 
 #endif /* #ifndef DOXYGEN_SKIP */
 

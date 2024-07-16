@@ -1,4 +1,3 @@
-#pragma once
 /******************************************************************************
  * $Id$
  *
@@ -34,10 +33,10 @@
 #ifndef OGR_KML_H_INCLUDED
 #define OGR_KML_H_INCLUDED
 
-#include <ogr/ogrsf_frmts/ogrsf_frmts.h>
+#include "ogrsf_frmts.h"
 
 #ifdef HAVE_EXPAT
-#  include "kmlvector.h"
+#include "kmlvector.h"
 #endif
 
 class OGRKMLDataSource;
@@ -46,53 +45,55 @@ class OGRKMLDataSource;
 /*                            OGRKMLLayer                               */
 /************************************************************************/
 
-class OGRKMLLayer final: public OGRLayer
+class OGRKMLLayer final : public OGRLayer
 {
   public:
-    OGRKMLLayer( const char* pszName_,
-                 OGRSpatialReference* poSRS,
-                 bool bWriter,
-                 OGRwkbGeometryType eType,
-                 OGRKMLDataSource* poDS );
+    OGRKMLLayer(const char *pszName_, const OGRSpatialReference *poSRS,
+                bool bWriter, OGRwkbGeometryType eType, OGRKMLDataSource *poDS);
     ~OGRKMLLayer();
 
     //
     // OGRLayer Interface
     //
-    OGRFeatureDefn* GetLayerDefn() override;
-    OGRErr ICreateFeature( OGRFeature* poFeature ) override;
-    OGRErr CreateField( OGRFieldDefn* poField, int bApproxOK = TRUE ) override;
+    OGRFeatureDefn *GetLayerDefn() override;
+    OGRErr ICreateFeature(OGRFeature *poFeature) override;
+    OGRErr CreateField(const OGRFieldDefn *poField,
+                       int bApproxOK = TRUE) override;
     void ResetReading() override;
-    OGRFeature* GetNextFeature() override;
-    GIntBig GetFeatureCount( int bForce = TRUE ) override;
-    int TestCapability( const char* pszCap ) override;
+    OGRFeature *GetNextFeature() override;
+    GIntBig GetFeatureCount(int bForce = TRUE) override;
+    int TestCapability(const char *pszCap) override;
+
+    GDALDataset *GetDataset() override;
 
     //
     // OGRKMLLayer Interface
     //
-    void SetLayerNumber( int nLayer );
+    void SetLayerNumber(int nLayer);
 
-    void SetClosedForWriting() { bClosedForWriting = true; }
+    void SetClosedForWriting()
+    {
+        bClosedForWriting = true;
+    }
 
     CPLString WriteSchema();
 
   private:
     friend class OGRKMLDataSource;
 
-    OGRKMLDataSource* poDS_;
-    OGRSpatialReference* poSRS_;
+    OGRKMLDataSource *poDS_;
+    OGRSpatialReference *poSRS_;
     OGRCoordinateTransformation *poCT_;
 
-    OGRFeatureDefn* poFeatureDefn_;
+    OGRFeatureDefn *poFeatureDefn_;
 
     int iNextKMLId_;
-    int nTotalKMLCount_;
     bool bWriter_;
     int nLayerNumber_;
     int nWroteFeatureCount_;
     bool bSchemaWritten_;
     bool bClosedForWriting;
-    char* pszName_;
+    char *pszName_;
 
     int nLastAsked;
     int nLastCount;
@@ -102,7 +103,7 @@ class OGRKMLLayer final: public OGRLayer
 /*                           OGRKMLDataSource                           */
 /************************************************************************/
 
-class OGRKMLDataSource final: public OGRDataSource
+class OGRKMLDataSource final : public OGRDataSource
 {
   public:
     OGRKMLDataSource();
@@ -111,53 +112,88 @@ class OGRKMLDataSource final: public OGRDataSource
     //
     // OGRDataSource Interface
     //
-    int Open( const char* pszName, int bTestOpen );
-    const char* GetName() override { return pszName_; }
-    int GetLayerCount() override { return nLayers_; }
-    OGRLayer* GetLayer( int nLayer ) override;
-    OGRLayer* ICreateLayer( const char* pszName,
-                           OGRSpatialReference* poSRS = nullptr,
-                           OGRwkbGeometryType eGType = wkbUnknown,
-                           char** papszOptions = nullptr ) override;
-    int TestCapability( const char* pszCap ) override;
+    int Open(const char *pszName, int bTestOpen);
+
+    const char *GetName() override
+    {
+        return pszName_;
+    }
+
+    int GetLayerCount() override
+    {
+        return nLayers_;
+    }
+
+    OGRLayer *GetLayer(int nLayer) override;
+    OGRLayer *ICreateLayer(const char *pszName,
+                           const OGRGeomFieldDefn *poGeomFieldDefn,
+                           CSLConstList papszOptions) override;
+    int TestCapability(const char *pszCap) override;
 
     //
     // OGRKMLDataSource Interface
     //
-    int Create( const char* pszName, char** papszOptions );
-    const char* GetNameField() const { return pszNameField_; }
-    const char* GetDescriptionField() const { return pszDescriptionField_; }
-    const char* GetAltitudeMode() { return pszAltitudeMode_; }
-    VSILFILE* GetOutputFP() { return fpOutput_; }
-    void GrowExtents( OGREnvelope *psGeomBounds );
+    int Create(const char *pszName, char **papszOptions);
+
+    const char *GetNameField() const
+    {
+        return pszNameField_;
+    }
+
+    const char *GetDescriptionField() const
+    {
+        return pszDescriptionField_;
+    }
+
+    const char *GetAltitudeMode()
+    {
+        return pszAltitudeMode_;
+    }
+
+    VSILFILE *GetOutputFP()
+    {
+        return fpOutput_;
+    }
+
+    void GrowExtents(OGREnvelope *psGeomBounds);
 #ifdef HAVE_EXPAT
-    KML* GetKMLFile() { return poKMLFile_; }
+    KML *GetKMLFile()
+    {
+        return poKMLFile_;
+    }
 #endif
 
-    bool IsFirstCTError() const { return !bIssuedCTError_; }
-    void IssuedFirstCTError() { bIssuedCTError_ = true; }
+    bool IsFirstCTError() const
+    {
+        return !bIssuedCTError_;
+    }
+
+    void IssuedFirstCTError()
+    {
+        bIssuedCTError_ = true;
+    }
 
   private:
 #ifdef HAVE_EXPAT
-    KML* poKMLFile_;
+    KML *poKMLFile_;
 #endif
 
-    char* pszName_;
+    char *pszName_;
 
-    OGRKMLLayer** papoLayers_;
+    OGRKMLLayer **papoLayers_;
     int nLayers_;
 
     // The name of the field to use for the KML name element.
-    char* pszNameField_;
-    char* pszDescriptionField_;
+    char *pszNameField_;
+    char *pszDescriptionField_;
 
     // The KML altitude mode to use.
-    char* pszAltitudeMode_;
+    char *pszAltitudeMode_;
 
-    char** papszCreateOptions_;
+    char **papszCreateOptions_;
 
     // Output related parameters.
-    VSILFILE* fpOutput_;
+    VSILFILE *fpOutput_;
 
     OGREnvelope oEnvelope_;
 

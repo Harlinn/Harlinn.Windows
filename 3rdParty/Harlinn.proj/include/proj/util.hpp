@@ -33,12 +33,17 @@
 #error Must have C++11 or newer.
 #endif
 
+// windows.h can conflict with Criterion::STRICT
+#ifdef STRICT
+#undef STRICT
+#endif
+
 #include <exception>
 #include <map>
 #include <memory>
 #include <string>
-#include <vector>
 #include <type_traits>
+#include <vector>
 
 #ifndef NS_PROJ
 /** osgeo namespace */
@@ -51,10 +56,13 @@ namespace proj {}
 //! @cond Doxygen_Suppress
 
 #ifndef PROJ_DLL
+#if defined(_MSC_VER)
 #ifdef PROJ_MSVC_DLL_EXPORT
 #define PROJ_DLL __declspec(dllexport)
-#elif defined(PROJ_MSVC_DLL_IMPORT)
+#else
 #define PROJ_DLL __declspec(dllimport)
+#pragma comment(lib,"Harlinn.proj.lib")
+#endif
 #elif defined(__GNUC__)
 #define PROJ_DLL __attribute__((visibility("default")))
 #else
@@ -63,12 +71,7 @@ namespace proj {}
 #endif
 
 #ifndef PROJ_MSVC_DLL
-
-#ifdef PROJ_MSVC_DLL_EXPORT
-#define PROJ_MSVC_DLL PROJ_DLL
-#define PROJ_GCC_DLL
-#define PROJ_INTERNAL
-#elif defined(PROJ_MSVC_DLL_IMPORT)
+#if defined(_MSC_VER)
 #define PROJ_MSVC_DLL PROJ_DLL
 #define PROJ_GCC_DLL
 #define PROJ_INTERNAL
@@ -85,9 +88,7 @@ namespace proj {}
 #define PROJ_GCC_DLL
 #define PROJ_INTERNAL
 #endif
-
 #define PROJ_FOR_TEST PROJ_DLL
-
 #endif
 
 #include "nn.hpp"
@@ -131,11 +132,11 @@ namespace proj {}
 // to be able to call make_shared on a protected/private constructor
 #define INLINED_MAKE_SHARED                                                    \
     template <typename T, typename... Args>                                    \
-    static std::shared_ptr<T> make_shared(Args &&... args) {                   \
+    static std::shared_ptr<T> make_shared(Args &&...args) {                    \
         return std::shared_ptr<T>(new T(std::forward<Args>(args)...));         \
     }                                                                          \
     template <typename T, typename... Args>                                    \
-    static util::nn_shared_ptr<T> nn_make_shared(Args &&... args) {            \
+    static util::nn_shared_ptr<T> nn_make_shared(Args &&...args) {             \
         return util::nn_shared_ptr<T>(                                         \
             util::i_promise_i_checked_for_null,                                \
             std::shared_ptr<T>(new T(std::forward<Args>(args)...)));           \
@@ -145,7 +146,7 @@ namespace proj {}
 // to be able to call make_unique on a protected/private constructor
 #define INLINED_MAKE_UNIQUE                                                    \
     template <typename T, typename... Args>                                    \
-    static std::unique_ptr<T> make_unique(Args &&... args) {                   \
+    static std::unique_ptr<T> make_unique(Args &&...args) {                    \
         return std::unique_ptr<T>(new T(std::forward<Args>(args)...));         \
     }
 
@@ -204,7 +205,25 @@ using ::dropbox::oxygen::nn_static_pointer_cast;
 
 template <typename T> using nn_shared_ptr = nn<std::shared_ptr<T>>;
 
-#define NN_NO_CHECK(p) ::dropbox::oxygen::nn<std::remove_const_t< std::remove_reference_t<decltype(p)>>>( dropbox::oxygen::i_promise_i_checked_for_null, (p))
+// Possible implementation of C++14 std::remove_reference_t
+// (cf https://en.cppreference.com/w/cpp/types/remove_cv)
+template <class T>
+using remove_reference_t = typename std::remove_reference<T>::type;
+
+// Possible implementation of C++14 std::remove_cv_t
+// (cf https://en.cppreference.com/w/cpp/types/remove_cv)
+template <class T> using remove_cv_t = typename std::remove_cv<T>::type;
+
+// Possible implementation of C++20 std::remove_cvref
+// (cf https://en.cppreference.com/w/cpp/types/remove_cvref)
+template <class T> struct remove_cvref {
+    typedef remove_cv_t<remove_reference_t<T>> type;
+};
+
+#define NN_NO_CHECK(p)                                                         \
+    ::dropbox::oxygen::nn<                                                     \
+        typename ::NS_PROJ::util::remove_cvref<decltype(p)>::type>(            \
+        ::dropbox::oxygen::i_promise_i_checked_for_null, (p))
 
 //! @endcond
 
@@ -554,8 +573,8 @@ using GenericNameNNPtr = util::nn<GenericNamePtr>;
 /** \brief A sequence of identifiers rooted within the context of a namespace.
  *
  * \remark Simplified version of [GenericName]
- * (http://www.geoapi.org/3.0/javadoc/org/opengis/util/GenericName.html) from
- * \ref GeoAPI
+ * (http://www.geoapi.org/3.0/javadoc/org.opengis.geoapi/org/opengis/util/GenericName.html)
+ * from \ref GeoAPI
  */
 class GenericName : public BaseObject {
   public:
@@ -589,8 +608,8 @@ class GenericName : public BaseObject {
 /** \brief A domain in which names given by strings are defined.
  *
  * \remark Simplified version of [NameSpace]
- * (http://www.geoapi.org/3.0/javadoc/org/opengis/util/NameSpace.html) from \ref
- * GeoAPI
+ * (http://www.geoapi.org/3.0/javadoc/org.opengis.geoapi/org/opengis/util/NameSpace.html)
+ * from \ref GeoAPI
  */
 class NameSpace {
   public:
@@ -626,8 +645,8 @@ class NameSpace {
  * NameSpace within which they are local, indicated by the scope.
  *
  * \remark Simplified version of [LocalName]
- * (http://www.geoapi.org/3.0/javadoc/org/opengis/util/LocalName.html) from \ref
- * GeoAPI
+ * (http://www.geoapi.org/3.0/javadoc/org.opengis.geoapi/org/opengis/util/LocalName.html)
+ * from \ref GeoAPI
  */
 class LocalName : public GenericName {
   public:
@@ -657,8 +676,8 @@ class LocalName : public GenericName {
 /** \brief Factory for generic names.
  *
  * \remark Simplified version of [NameFactory]
- * (http://www.geoapi.org/3.0/javadoc/org/opengis/util/NameFactory.html) from
- * \ref GeoAPI
+ * (http://www.geoapi.org/3.0/javadoc/org.opengis.geoapi/org/opengis/util/NameFactory.html)
+ * from \ref GeoAPI
  */
 class NameFactory {
   public:

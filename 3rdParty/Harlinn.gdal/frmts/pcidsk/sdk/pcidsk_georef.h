@@ -1,4 +1,3 @@
-#pragma once
 /******************************************************************************
  *
  * Purpose:  PCIDSK Georeferencing information storage class. Declaration.

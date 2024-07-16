@@ -1,4 +1,3 @@
-#pragma once
 /******************************************************************************
  *
  * Purpose: Interface through which a PCIDSK GCP Segment would be accessed

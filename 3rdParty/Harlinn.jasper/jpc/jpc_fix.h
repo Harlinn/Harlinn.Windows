@@ -83,22 +83,29 @@
 * Basic parameters of the fixed-point type.
 \******************************************************************************/
 
-/* The integral type used to represent a fixed-point number.  This
-  type must be capable of representing values from -(2^31) to 2^31-1
-  (inclusive). */
-#ifdef JAS_ENABLE_32BIT
-typedef int_least32_t jpc_fix_t;
-#else
-typedef int_fast32_t jpc_fix_t;
-#endif
+/*
+jpc_fix_t.
+The integral type used to represent a fixed-point number.  This
+type must be capable of representing values from -(2^31) to 2^31-1
+(inclusive).
 
-/* The integral type used to respresent higher-precision intermediate results.
-  This type should be capable of representing values from -(2^63) to 2^63-1
-  (inclusive). */
-typedef int_fast64_t jpc_fix_big_t;
+jpc_fix_big_t.
+The integral type used to respresent higher-precision intermediate results.
+This type should be capable of representing values from -(2^63) to 2^63-1
+(inclusive).
 
-/* The number of bits used for the fractional part of a fixed-point number. */
+JPC_FIX_FRACBITS.
+The number of bits used for the fractional part of a fixed-point number.
+*/
+
+typedef jas_fix_t jpc_fix_t;
+typedef jas_fix_big_t jpc_fix_big_t;
+
+#if defined(JAS_ENABLE_32BIT)
 #define JPC_FIX_FRACBITS	13
+#else
+#define JPC_FIX_FRACBITS	18
+#endif
 
 /******************************************************************************\
 * Instantiations of the generic fixed-point number macros for the
@@ -174,6 +181,7 @@ static inline jpc_fix_t jpc_fix_neg(jpc_fix_t x)
 //#define	jpc_fix_asl(x, n)	JAS_FIX_ASL(jpc_fix_t, JPC_FIX_FRACBITS, x, n)
 //#define	jpc_fix_asr(x, n)	JAS_FIX_ASR(jpc_fix_t, JPC_FIX_FRACBITS, x, n)
 
+#if 0
 #ifdef JAS_ENABLE_32BIT
 #define jpc_fix_asl jas_least32_asl
 #define jpc_fix_asr jas_least32_asr
@@ -181,9 +189,14 @@ static inline jpc_fix_t jpc_fix_neg(jpc_fix_t x)
 #define jpc_fix_asl jas_fast32_asl
 #define jpc_fix_asr jas_fast32_asr
 #endif
+#endif
+#define jpc_fix_asl jas_fix_asl
+#define jpc_fix_asr jas_fix_asr
 
-#define jpc_fix_pluseq(x, y)	JAS_FIX_PLUSEQ(jpc_fix_t, JPC_FIX_FRACBITS, x, y)
-#define jpc_fix_minuseq(x, y)	JAS_FIX_MINUSEQ(jpc_fix_t, JPC_FIX_FRACBITS, x, y)
+#define jpc_fix_pluseq(x, y) \
+	JAS_FIX_PLUSEQ(jpc_fix_t, JPC_FIX_FRACBITS, x, y)
+#define jpc_fix_minuseq(x, y) \
+	JAS_FIX_MINUSEQ(jpc_fix_t, JPC_FIX_FRACBITS, x, y)
 #define	jpc_fix_muleq(x, y)	\
 	JAS_FIX_MULEQ(jpc_fix_t, JPC_FIX_FRACBITS, jpc_fix_big_t, x, y)
 

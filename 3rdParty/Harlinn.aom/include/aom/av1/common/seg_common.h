@@ -53,14 +53,13 @@ struct segmentation {
 };
 
 struct segmentation_probs {
-  aom_cdf_prob tree_cdf[CDF_SIZE(MAX_SEGMENTS)];
   aom_cdf_prob pred_cdf[SEG_TEMPORAL_PRED_CTXS][CDF_SIZE(2)];
   aom_cdf_prob spatial_pred_seg_cdf[SPATIAL_PREDICTION_PROBS]
                                    [CDF_SIZE(MAX_SEGMENTS)];
 };
 
 static INLINE int segfeature_active(const struct segmentation *seg,
-                                    int segment_id,
+                                    uint8_t segment_id,
                                     SEG_LVL_FEATURES feature_id) {
   return seg->enabled && (seg->feature_mask[segment_id] & (1 << feature_id));
 }
@@ -78,23 +77,33 @@ static INLINE void segfeatures_copy(struct segmentation *dst,
   dst->last_active_segid = src->last_active_segid;
 }
 
-void av1_clearall_segfeatures(struct segmentation *seg);
+HAOM_EXPORT void av1_clearall_segfeatures(struct segmentation *seg);
 
-void av1_enable_segfeature(struct segmentation *seg, int segment_id,
+HAOM_EXPORT void av1_enable_segfeature(struct segmentation *seg, int segment_id,
                            SEG_LVL_FEATURES feature_id);
 
-void av1_calculate_segdata(struct segmentation *seg);
+HAOM_EXPORT void av1_calculate_segdata(struct segmentation *seg);
 
-int av1_seg_feature_data_max(SEG_LVL_FEATURES feature_id);
+HAOM_EXPORT int av1_seg_feature_data_max(SEG_LVL_FEATURES feature_id);
 
-int av1_is_segfeature_signed(SEG_LVL_FEATURES feature_id);
+HAOM_EXPORT int av1_is_segfeature_signed(SEG_LVL_FEATURES feature_id);
 
-void av1_set_segdata(struct segmentation *seg, int segment_id,
+HAOM_EXPORT void av1_set_segdata(struct segmentation *seg, int segment_id,
                      SEG_LVL_FEATURES feature_id, int seg_data);
 
 static INLINE int get_segdata(const struct segmentation *seg, int segment_id,
                               SEG_LVL_FEATURES feature_id) {
   return seg->feature_data[segment_id][feature_id];
+}
+
+static AOM_INLINE void set_segment_id(uint8_t *segment_ids, int mi_offset,
+                                      int x_mis, int y_mis, int mi_stride,
+                                      uint8_t segment_id) {
+  segment_ids += mi_offset;
+  for (int y = 0; y < y_mis; ++y) {
+    memset(&segment_ids[y * mi_stride], segment_id,
+           x_mis * sizeof(segment_ids[0]));
+  }
 }
 
 #ifdef __cplusplus

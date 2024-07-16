@@ -25,7 +25,7 @@
 #include "av1/decoder/decodeframe.h"
 #include "av1/decoder/obu.h"
 
-aom_codec_err_t aom_get_num_layers_from_operating_point_idc(
+HAOM_EXPORT aom_codec_err_t aom_get_num_layers_from_operating_point_idc(
     int operating_point_idc, unsigned int *number_spatial_layers,
     unsigned int *number_temporal_layers) {
   // derive number of spatial/temporal layers from operating_point_idc
@@ -76,7 +76,7 @@ static int byte_alignment(AV1_COMMON *const cm,
   return 0;
 }
 
-static uint32_t read_temporal_delimiter_obu() { return 0; }
+static uint32_t read_temporal_delimiter_obu(void) { return 0; }
 
 // Returns a boolean that indicates success.
 static int read_bitstream_level(AV1_LEVEL *seq_level_idx,
@@ -367,16 +367,13 @@ static uint32_t read_one_tile_group_obu(
   return header_size + tg_payload_size;
 }
 
-static void alloc_tile_list_buffer(AV1Decoder *pbi) {
+static void alloc_tile_list_buffer(AV1Decoder *pbi, int tile_width_in_pixels,
+                                   int tile_height_in_pixels) {
   // The resolution of the output frame is read out from the bitstream. The data
   // are stored in the order of Y plane, U plane and V plane. As an example, for
   // image format 4:2:0, the output frame of U plane and V plane is 1/4 of the
   // output frame.
   AV1_COMMON *const cm = &pbi->common;
-  int tile_width, tile_height;
-  av1_get_uniform_tile_size(cm, &tile_width, &tile_height);
-  const int tile_width_in_pixels = tile_width * MI_SIZE;
-  const int tile_height_in_pixels = tile_height * MI_SIZE;
   const int output_frame_width =
       (pbi->output_frame_width_in_tiles_minus_1 + 1) * tile_width_in_pixels;
   const int output_frame_height =
@@ -396,7 +393,7 @@ static void alloc_tile_list_buffer(AV1Decoder *pbi) {
                              cm->seq_params->subsampling_y,
                              (cm->seq_params->use_highbitdepth &&
                               (cm->seq_params->bit_depth > AOM_BITS_8)),
-                             0, cm->features.byte_alignment))
+                             0, cm->features.byte_alignment, false, 0))
     aom_internal_error(&pbi->error, AOM_CODEC_MEM_ERROR,
                        "Failed to allocate the tile list output buffer");
 }
@@ -424,13 +421,10 @@ static void yv12_tile_copy(const YV12_BUFFER_CONFIG *src, int hstart1,
   return;
 }
 
-static void copy_decoded_tile_to_tile_list_buffer(AV1Decoder *pbi,
-                                                  int tile_idx) {
+static void copy_decoded_tile_to_tile_list_buffer(AV1Decoder *pbi, int tile_idx,
+                                                  int tile_width_in_pixels,
+                                                  int tile_height_in_pixels) {
   AV1_COMMON *const cm = &pbi->common;
-  int tile_width, tile_height;
-  av1_get_uniform_tile_size(cm, &tile_width, &tile_height);
-  const int tile_width_in_pixels = tile_width * MI_SIZE;
-  const int tile_height_in_pixels = tile_height * MI_SIZE;
   const int ssy = cm->seq_params->subsampling_y;
   const int ssx = cm->seq_params->subsampling_x;
   const int num_planes = av1_num_planes(cm);
@@ -501,13 +495,31 @@ static uint32_t read_and_decode_one_tile_list(AV1Decoder *pbi,
   pbi->output_frame_width_in_tiles_minus_1 = aom_rb_read_literal(rb, 8);
   pbi->output_frame_height_in_tiles_minus_1 = aom_rb_read_literal(rb, 8);
   pbi->tile_count_minus_1 = aom_rb_read_literal(rb, 16);
+
+  // The output frame is used to store the decoded tile list. The decoded tile
+  // list has to fit into 1 output frame.
+  if ((pbi->tile_count_minus_1 + 1) >
+      (pbi->output_frame_width_in_tiles_minus_1 + 1) *
+          (pbi->output_frame_height_in_tiles_minus_1 + 1)) {
+    pbi->error.error_code = AOM_CODEC_CORRUPT_FRAME;
+    return 0;
+  }
+
   if (pbi->tile_count_minus_1 > MAX_TILES - 1) {
     pbi->error.error_code = AOM_CODEC_CORRUPT_FRAME;
     return 0;
   }
 
+  int tile_width, tile_height;
+  if (!av1_get_uniform_tile_size(cm, &tile_width, &tile_height)) {
+    pbi->error.error_code = AOM_CODEC_CORRUPT_FRAME;
+    return 0;
+  }
+  const int tile_width_in_pixels = tile_width * MI_SIZE;
+  const int tile_height_in_pixels = tile_height * MI_SIZE;
+
   // Allocate output frame buffer for the tile list.
-  alloc_tile_list_buffer(pbi);
+  alloc_tile_list_buffer(pbi, tile_width_in_pixels, tile_height_in_pixels);
 
   uint32_t tile_list_info_bytes = 4;
   tile_list_payload_size += tile_list_info_bytes;
@@ -558,7 +570,8 @@ static uint32_t read_and_decode_one_tile_list(AV1Decoder *pbi,
     assert(data <= data_end);
 
     // Copy the decoded tile to the tile list output buffer.
-    copy_decoded_tile_to_tile_list_buffer(pbi, tile_idx);
+    copy_decoded_tile_to_tile_list_buffer(pbi, tile_idx, tile_width_in_pixels,
+                                          tile_height_in_pixels);
     tile_idx++;
   }
 
@@ -844,7 +857,7 @@ static size_t read_padding(AV1_COMMON *const cm, const uint8_t *data,
 // On success, returns a boolean that indicates whether the decoding of the
 // current frame is finished. On failure, sets pbi->error.error_code and
 // returns -1.
-int aom_decode_frame_from_obus(struct AV1Decoder *pbi, const uint8_t *data,
+HAOM_EXPORT int aom_decode_frame_from_obus(struct AV1Decoder *pbi, const uint8_t *data,
                                const uint8_t *data_end,
                                const uint8_t **p_data_end) {
   AV1_COMMON *const cm = &pbi->common;
@@ -993,6 +1006,11 @@ int aom_decode_frame_from_obus(struct AV1Decoder *pbi, const uint8_t *data,
           }
           frame_decoding_finished = 1;
           pbi->seen_frame_header = 0;
+
+          if (cm->show_frame &&
+              !cm->seq_params->order_hint_info.enable_order_hint) {
+            ++cm->current_frame.frame_number;
+          }
           break;
         }
 

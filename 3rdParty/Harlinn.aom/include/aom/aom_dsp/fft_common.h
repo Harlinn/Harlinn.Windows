@@ -12,8 +12,6 @@
 #ifndef AOM_AOM_DSP_FFT_COMMON_H_
 #define AOM_AOM_DSP_FFT_COMMON_H_
 
-#include "..\aom\haomdef.h"
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -49,10 +47,16 @@ typedef void (*aom_fft_1d_func_t)(const float *input, float *output,
 
 // Declare some of the forward non-vectorized transforms which are used in some
 // of the vectorized implementations
-HAOM_EXPORT void aom_fft1d_4_float(const float *input, float *output, int stride);
-HAOM_EXPORT void aom_fft1d_8_float(const float *input, float *output, int stride);
-HAOM_EXPORT void aom_fft1d_16_float(const float *input, float *output, int stride);
-HAOM_EXPORT void aom_fft1d_32_float(const float *input, float *output, int stride);
+void aom_fft1d_2_float(const float *input, float *output, int stride);
+void aom_fft1d_4_float(const float *input, float *output, int stride);
+void aom_fft1d_8_float(const float *input, float *output, int stride);
+void aom_fft1d_16_float(const float *input, float *output, int stride);
+void aom_fft1d_32_float(const float *input, float *output, int stride);
+void aom_ifft1d_2_float(const float *input, float *output, int stride);
+void aom_ifft1d_4_float(const float *input, float *output, int stride);
+void aom_ifft1d_8_float(const float *input, float *output, int stride);
+void aom_ifft1d_16_float(const float *input, float *output, int stride);
+void aom_ifft1d_32_float(const float *input, float *output, int stride);
 
 /**\!brief Function pointer for transposing a matrix of floats.
  *

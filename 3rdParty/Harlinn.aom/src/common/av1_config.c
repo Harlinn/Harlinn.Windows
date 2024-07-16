@@ -383,7 +383,7 @@ static int parse_sequence_header(const uint8_t *const buffer, size_t length,
   return 0;
 }
 
-int get_av1config_from_obu(const uint8_t *buffer, size_t length, int is_annexb,
+HAOM_EXPORT int get_av1config_from_obu(const uint8_t *buffer, size_t length, int is_annexb,
                            Av1Config *config) {
   if (!buffer || length == 0 || !config) {
     return -1;
@@ -409,7 +409,7 @@ int get_av1config_from_obu(const uint8_t *buffer, size_t length, int is_annexb,
                                sequence_header_length, config);
 }
 
-int read_av1config(const uint8_t *buffer, size_t buffer_length,
+HAOM_EXPORT int read_av1config(const uint8_t *buffer, size_t buffer_length,
                    size_t *bytes_read, Av1Config *config) {
   if (!buffer || buffer_length < kAv1cSize || !bytes_read || !config) return -1;
 
@@ -471,7 +471,7 @@ int read_av1config(const uint8_t *buffer, size_t buffer_length,
   return 0;
 }
 
-int write_av1config(const Av1Config *config, size_t capacity,
+HAOM_EXPORT int write_av1config(const Av1Config *config, size_t capacity,
                     size_t *bytes_written, uint8_t *buffer) {
   if (!config || !buffer || capacity < kAv1cSize || !bytes_written) return -1;
 

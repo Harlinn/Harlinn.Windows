@@ -6,12 +6,14 @@
 #ifndef LIB_JXL_MODULAR_ENCODING_ENCODING_H_
 #define LIB_JXL_MODULAR_ENCODING_ENCODING_H_
 
-#include <stddef.h>
-#include <stdint.h>
-
+#include <array>
+#include <cstddef>
+#include <cstdint>
 #include <vector>
 
-#include "lib/jxl/dec_ans.h"
+#include "lib/jxl/base/compiler_specific.h"
+#include "lib/jxl/base/status.h"
+#include "lib/jxl/field_encodings.h"
 #include "lib/jxl/image.h"
 #include "lib/jxl/modular/encoding/context_predict.h"
 #include "lib/jxl/modular/encoding/dec_ma.h"
@@ -21,13 +23,16 @@
 
 namespace jxl {
 
+struct ANSCode;
+class BitReader;
+
 // Valid range of properties for using lookup tables instead of trees.
 constexpr int32_t kPropRangeFast = 512;
 
 struct GroupHeader : public Fields {
   GroupHeader();
 
-  const char *Name() const override { return "GroupHeader"; }
+  JXL_FIELDS_NAME(GroupHeader)
 
   Status VisitFields(Visitor *JXL_RESTRICT visitor) override {
     JXL_QUIET_RETURN_IF_ERROR(visitor->Bool(false, &use_global_tree));
@@ -54,11 +59,15 @@ FlatTree FilterTree(const Tree &global_tree,
                     size_t *num_props, bool *use_wp, bool *wp_only,
                     bool *gradient_only);
 
-template <typename T>
-bool TreeToLookupTable(const FlatTree &tree,
-                       T context_lookup[2 * kPropRangeFast],
-                       int8_t offsets[2 * kPropRangeFast],
-                       int8_t multipliers[2 * kPropRangeFast] = nullptr) {
+template <typename T, bool HAS_MULTIPLIERS>
+struct TreeLut {
+  std::array<T, 2 * kPropRangeFast> context_lookup;
+  std::array<int8_t, 2 * kPropRangeFast> offsets;
+  std::array<int8_t, HAS_MULTIPLIERS ? (2 * kPropRangeFast) : 0> multipliers;
+};
+
+template <typename T, bool HAS_MULTIPLIERS>
+bool TreeToLookupTable(const FlatTree &tree, TreeLut<T, HAS_MULTIPLIERS> &lut) {
   struct TreeRange {
     // Begin *excluded*, end *included*. This works best with > vs <= decision
     // nodes.
@@ -86,13 +95,15 @@ bool TreeToLookupTable(const FlatTree &tree,
           node.multiplier > std::numeric_limits<int8_t>::max()) {
         return false;
       }
-      if (multipliers == nullptr && node.multiplier != 1) {
+      if (!HAS_MULTIPLIERS && node.multiplier != 1) {
         return false;
       }
       for (int i = cur.begin + 1; i < cur.end + 1; i++) {
-        context_lookup[i + kPropRangeFast] = node.childID;
-        if (multipliers) multipliers[i + kPropRangeFast] = node.multiplier;
-        offsets[i + kPropRangeFast] = node.predictor_offset;
+        lut.context_lookup[i + kPropRangeFast] = node.childID;
+        if (HAS_MULTIPLIERS) {
+          lut.multipliers[i + kPropRangeFast] = node.multiplier;
+        }
+        lut.offsets[i + kPropRangeFast] = node.predictor_offset;
       }
       continue;
     }
@@ -122,15 +133,10 @@ bool TreeToLookupTable(const FlatTree &tree,
 Status ValidateChannelDimensions(const Image &image,
                                  const ModularOptions &options);
 
-// undo_transforms == N > 0: undo all transforms except the first N
-//                           (e.g. to represent YCbCr420 losslessly)
-// undo_transforms == 0: undo all transforms
-// undo_transforms == -1: undo all transforms but don't clamp to range
-// undo_transforms == -2: don't undo any transform
 Status ModularGenericDecompress(BitReader *br, Image &image,
                                 GroupHeader *header, size_t group_id,
                                 ModularOptions *options,
-                                int undo_transforms = -1,
+                                bool undo_transforms = true,
                                 const Tree *tree = nullptr,
                                 const ANSCode *code = nullptr,
                                 const std::vector<uint8_t> *ctx_map = nullptr,

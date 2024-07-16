@@ -26,26 +26,26 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
-#include "gcore/gdal_thread_pool.h"
+#include "gdal_thread_pool.h"
 
 #include <mutex>
 
 static std::mutex gMutexThreadPool;
 static CPLWorkerThreadPool *gpoCompressThreadPool = nullptr;
 
-CPLWorkerThreadPool* GDALGetGlobalThreadPool(int nThreads)
+CPLWorkerThreadPool *GDALGetGlobalThreadPool(int nThreads)
 {
     std::lock_guard<std::mutex> oGuard(gMutexThreadPool);
-    if( gpoCompressThreadPool == nullptr )
+    if (gpoCompressThreadPool == nullptr)
     {
         gpoCompressThreadPool = new CPLWorkerThreadPool();
-        if( !gpoCompressThreadPool->Setup(nThreads, nullptr, nullptr) )
+        if (!gpoCompressThreadPool->Setup(nThreads, nullptr, nullptr, false))
         {
             delete gpoCompressThreadPool;
             gpoCompressThreadPool = nullptr;
         }
     }
-    else if( nThreads > gpoCompressThreadPool->GetThreadCount() )
+    else if (nThreads > gpoCompressThreadPool->GetThreadCount())
     {
         // Increase size of thread pool
         gpoCompressThreadPool->Setup(nThreads, nullptr, nullptr, false);

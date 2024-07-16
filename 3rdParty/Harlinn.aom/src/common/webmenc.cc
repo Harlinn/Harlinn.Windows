@@ -45,7 +45,7 @@ int skip_input_output_arg(const char *arg, const char *input_fname) {
 
 }  // namespace
 
-char *extract_encoder_settings(const char *version, const char **argv, int argc,
+HAOM_EXPORT char *extract_encoder_settings(const char *version, const char **argv, int argc,
                                const char *input_fname) {
   // + 9 for "version:" prefix and for null terminator.
   size_t total_size = strlen(version) + 9;
@@ -77,7 +77,7 @@ char *extract_encoder_settings(const char *version, const char **argv, int argc,
   return result;
 }
 
-int write_webm_file_header(struct WebmOutputContext *webm_ctx,
+HAOM_EXPORT int write_webm_file_header(struct WebmOutputContext *webm_ctx,
                            aom_codec_ctx_t *encoder_ctx,
                            const aom_codec_enc_cfg_t *cfg,
                            stereo_format_t stereo_fmt, unsigned int fourcc,
@@ -195,7 +195,7 @@ int write_webm_file_header(struct WebmOutputContext *webm_ctx,
   return 0;
 }
 
-int write_webm_block(struct WebmOutputContext *webm_ctx,
+HAOM_EXPORT int write_webm_block(struct WebmOutputContext *webm_ctx,
                      const aom_codec_enc_cfg_t *cfg,
                      const aom_codec_cx_pkt_t *pkt) {
   if (!webm_ctx->segment) {
@@ -218,7 +218,7 @@ int write_webm_block(struct WebmOutputContext *webm_ctx,
   return 0;
 }
 
-int write_webm_file_footer(struct WebmOutputContext *webm_ctx) {
+HAOM_EXPORT int write_webm_file_footer(struct WebmOutputContext *webm_ctx) {
   if (!webm_ctx->writer || !webm_ctx->segment) {
     fprintf(stderr, "webmenc> segment or writer NULL.\n");
     return -1;

@@ -67,20 +67,57 @@
  * $Id$
  */
 
+/******************************************************************************\
+*
+\******************************************************************************/
+
 #include "jpc_t2cod.h"
 #include "jpc_cs.h"
 #include "jpc_math.h"
 
 #include "jasper/jas_math.h"
 #include "jasper/jas_malloc.h"
+#include "jasper/jas_debug.h"
 
 #include <assert.h>
+
+/******************************************************************************\
+*
+\******************************************************************************/
 
 static int jpc_pi_nextlrcp(jpc_pi_t *pi);
 static int jpc_pi_nextrlcp(jpc_pi_t *pi);
 static int jpc_pi_nextrpcl(jpc_pi_t *pi);
 static int jpc_pi_nextpcrl(jpc_pi_t *pi);
 static int jpc_pi_nextcprl(jpc_pi_t *pi);
+
+/******************************************************************************\
+*
+\******************************************************************************/
+
+static void jpc_pirlvl_destroy(jpc_pirlvl_t *rlvl)
+{
+	if (rlvl->prclyrnos) {
+		jas_free(rlvl->prclyrnos);
+	}
+}
+
+static void jpc_picomp_destroy(jpc_picomp_t *picomp)
+{
+	unsigned rlvlno;
+	jpc_pirlvl_t *pirlvl;
+	if (picomp->pirlvls) {
+		for (rlvlno = 0, pirlvl = picomp->pirlvls; rlvlno <
+		  picomp->numrlvls; ++rlvlno, ++pirlvl) {
+			jpc_pirlvl_destroy(pirlvl);
+		}
+		jas_free(picomp->pirlvls);
+	}
+}
+
+/******************************************************************************\
+*
+\******************************************************************************/
 
 int jpc_pi_next(jpc_pi_t *pi)
 {
@@ -97,11 +134,14 @@ int jpc_pi_next(jpc_pi_t *pi)
 			pi->prcno = 0;
 			pi->lyrno = 0;
 			pi->prgvolfirst = true;
-			if ((unsigned)pi->pchgno < jpc_pchglist_numpchgs(pi->pchglist)) {
+			if (JAS_CAST(unsigned, pi->pchgno) <
+			  jpc_pchglist_numpchgs(pi->pchglist)) {
 				pi->pchg = jpc_pchglist_get(pi->pchglist, pi->pchgno);
-			} else if ((unsigned)pi->pchgno == jpc_pchglist_numpchgs(pi->pchglist)) {
+			} else if (JAS_CAST(unsigned, pi->pchgno) ==
+			  jpc_pchglist_numpchgs(pi->pchglist)) {
 				pi->pchg = &pi->defaultpchg;
 			} else {
+				JAS_LOGDEBUGF(10, "jpc_pi_next returning 1\n");
 				return 1;
 			}
 		}
@@ -139,6 +179,8 @@ int jpc_pi_next(jpc_pi_t *pi)
 static int jpc_pi_nextlrcp(register jpc_pi_t *pi)
 {
 	unsigned *prclyrno;
+
+	JAS_LOGDEBUGF(10, "jpc_pi_nextlrcp\n");
 
 	const jpc_pchg_t *pchg = pi->pchg;
 	if (!pi->prgvolfirst) {
@@ -181,6 +223,7 @@ skip:
 static int jpc_pi_nextrlcp(register jpc_pi_t *pi)
 {
 	unsigned *prclyrno;
+	JAS_LOGDEBUGF(10, "jpc_pi_nextrlcp\n");
 
 	const jpc_pchg_t *pchg = pi->pchg;
 	if (!pi->prgvolfirst) {
@@ -232,6 +275,8 @@ static int jpc_pi_nextrpcl(register jpc_pi_t *pi)
 	uint_fast32_t trx0;
 	uint_fast32_t try0;
 
+	JAS_LOGDEBUGF(10, "jpc_pi_nextrpcl\n");
+
 	const jpc_pchg_t *pchg = pi->pchg;
 	if (!pi->prgvolfirst) {
 		goto skip;
@@ -262,9 +307,11 @@ static int jpc_pi_nextrpcl(register jpc_pi_t *pi)
 		pi->prgvolfirst = 0;
 	}
 
-	if (pi->xstep == 0 || pi->ystep == 0)
+	if (pi->xstep == 0 || pi->ystep == 0) {
 		/* avoid division by zero */
+		jas_logerrorf("xstep and ystep must be nonzero\n");
 		return -1;
+	}
 
 	for (pi->rlvlno = pchg->rlvlnostart; pi->rlvlno < pchg->rlvlnoend &&
 	  pi->rlvlno < pi->maxrlvls; ++pi->rlvlno) {
@@ -336,6 +383,8 @@ static int jpc_pi_nextpcrl(register jpc_pi_t *pi)
 	uint_fast32_t rpx;
 	uint_fast32_t rpy;
 
+	JAS_LOGDEBUGF(10, "jpc_pi_nextpcrl\n");
+
 	const jpc_pchg_t *pchg = pi->pchg;
 	if (!pi->prgvolfirst) {
 		goto skip;
@@ -366,9 +415,11 @@ static int jpc_pi_nextpcrl(register jpc_pi_t *pi)
 		pi->prgvolfirst = 0;
 	}
 
-	if (pi->xstep == 0 || pi->ystep == 0)
+	if (pi->xstep == 0 || pi->ystep == 0) {
 		/* avoid division by zero */
+		jas_logerrorf("xstep and ystep must be nonzero\n");
 		return -1;
+	}
 
 	for (pi->y = pi->ystart; pi->y < pi->yend; pi->y += pi->ystep -
 	  (pi->y % pi->ystep)) {
@@ -434,6 +485,8 @@ static int jpc_pi_nextcprl(register jpc_pi_t *pi)
 	uint_fast32_t rpx;
 	uint_fast32_t rpy;
 
+	JAS_LOGDEBUGF(10, "jpc_pi_nextcprl\n");
+
 	const jpc_pchg_t *pchg = pi->pchg;
 	if (!pi->prgvolfirst) {
 		goto skip;
@@ -441,9 +494,17 @@ static int jpc_pi_nextcprl(register jpc_pi_t *pi)
 		pi->prgvolfirst = 0;
 	}
 
-	if (pi->xstep == 0 || pi->ystep == 0)
-		/* avoid division by zero */
+#if 0
+	/*
+	This disabled code is wrong.  xstep and ystep need not be set yet.
+	This will cause some valid code streams to fail to be decoded.
+	*/
+	if (pi->xstep == 0 || pi->ystep == 0) {
+		/* avoid later division by zero */
+		jas_logerrorf("xstep and ystep must be nonzero\n");
 		return -1;
+	}
+#endif
 
 	for (pi->compno = pchg->compnostart, pi->picomp = &pi->picomps[pi->compno];
 	  pi->compno < pchg->compnoend && pi->compno < pi->numcomps;
@@ -454,6 +515,7 @@ static int jpc_pi_nextcprl(register jpc_pi_t *pi)
 		  JAS_UINTFAST32_NUMBITS - 2 ||
 		  pirlvl->prcheightexpn + pi->picomp->numrlvls >
 		  JAS_UINTFAST32_NUMBITS - 2) {
+			jas_logerrorf("overflow detected\n");
 			return -1;
 		}
 		pi->xstep = pi->picomp->hsamp * (JAS_CAST(uint_fast32_t, 1) <<
@@ -462,12 +524,37 @@ static int jpc_pi_nextcprl(register jpc_pi_t *pi)
 		  (pirlvl->prcheightexpn + pi->picomp->numrlvls - 1));
 		for (rlvlno = 1, pirlvl = &pi->picomp->pirlvls[1];
 		  rlvlno < pi->picomp->numrlvls; ++rlvlno, ++pirlvl) {
+			/* Perform the following calculation in an overflow-safe manner,
+			setting the result to zero upon overflow:
 			pi->xstep = JAS_MIN(pi->xstep, pi->picomp->hsamp *
 			  (JAS_CAST(uint_fast32_t, 1) << (pirlvl->prcwidthexpn +
 			  pi->picomp->numrlvls - rlvlno - 1)));
+			*/
+			pi->xstep = JAS_MIN(pi->xstep, jas_safeui64_to_int(
+			  jas_safeui64_mul(
+			    jas_safeui64_from_intmax(pi->picomp->hsamp),
+			    jas_safeui64_pow2_intmax(pirlvl->prcwidthexpn +
+			      pi->picomp->numrlvls - rlvlno - 1)), 0));
+			if (!pi->xstep) {
+				jas_logerrorf("overflow in x-step calculation\n");
+				return -1;
+			}
+
+			/* Perform the following calculation in an overflow-safe manner,
+			setting the result to zero upon overflow:
 			pi->ystep = JAS_MIN(pi->ystep, pi->picomp->vsamp *
 			  (JAS_CAST(uint_fast32_t, 1) << (pirlvl->prcheightexpn +
 			  pi->picomp->numrlvls - rlvlno - 1)));
+			*/
+			pi->ystep = JAS_MIN(pi->ystep, jas_safeui64_to_int(
+			  jas_safeui64_mul(
+			    jas_safeui64_from_intmax(pi->picomp->vsamp),
+			    jas_safeui64_pow2_intmax(pirlvl->prcheightexpn +
+			      pi->picomp->numrlvls - rlvlno - 1)), 0));
+			if (!pi->ystep) {
+				jas_logerrorf("overflow in y-step calculation\n");
+				return -1;
+			}
 		}
 		for (pi->y = pi->ystart; pi->y < pi->yend;
 		  pi->y += pi->ystep - (pi->y % pi->ystep)) {
@@ -518,25 +605,9 @@ skip:
 	return 1;
 }
 
-static void pirlvl_destroy(jpc_pirlvl_t *rlvl)
-{
-	if (rlvl->prclyrnos) {
-		jas_free(rlvl->prclyrnos);
-	}
-}
-
-static void jpc_picomp_destroy(jpc_picomp_t *picomp)
-{
-	unsigned rlvlno;
-	jpc_pirlvl_t *pirlvl;
-	if (picomp->pirlvls) {
-		for (rlvlno = 0, pirlvl = picomp->pirlvls; rlvlno <
-		  picomp->numrlvls; ++rlvlno, ++pirlvl) {
-			pirlvl_destroy(pirlvl);
-		}
-		jas_free(picomp->pirlvls);
-	}
-}
+/******************************************************************************\
+*
+\******************************************************************************/
 
 void jpc_pi_destroy(jpc_pi_t *pi)
 {
@@ -570,10 +641,67 @@ jpc_pi_t *jpc_pi_create0()
 	return pi;
 }
 
+int jpc_pi_init(jpc_pi_t *pi)
+{
+	unsigned compno;
+	unsigned rlvlno;
+	unsigned prcno;
+	unsigned *prclyrno;
+
+	pi->prgvolfirst = 0;
+	pi->valid = 0;
+	pi->pktno = -1;
+	pi->pchgno = -1;
+	pi->pchg = 0;
+
+	const jpc_picomp_t *picomp;
+	for (compno = 0, picomp = pi->picomps; compno < pi->numcomps;
+	  ++compno, ++picomp) {
+		const jpc_pirlvl_t *pirlvl;
+		for (rlvlno = 0, pirlvl = picomp->pirlvls; rlvlno <
+		  picomp->numrlvls; ++rlvlno, ++pirlvl) {
+			for (prcno = 0, prclyrno = pirlvl->prclyrnos;
+			  prcno < pirlvl->numprcs; ++prcno, ++prclyrno) {
+				*prclyrno = 0;
+			}
+		}
+	}
+	return 0;
+}
+
 int jpc_pi_addpchg(jpc_pi_t *pi, jpc_pocpchg_t *pchg)
 {
 	return jpc_pchglist_insert(pi->pchglist, -1, pchg);
 }
+
+/* For debugging only. */
+void jpc_pi_dump(const jpc_pi_t *pi)
+{
+	jas_eprintf("numlyrs=%d\n", pi->numlyrs);
+	jas_eprintf("maxrlvls=%d\n", pi->maxrlvls);
+	jas_eprintf("numcomps=%d\n", pi->numcomps);
+	jas_eprintf("compno=%d\n", pi->compno);
+	jas_eprintf("rlvlno=%d\n", pi->rlvlno);
+	jas_eprintf("prcno=%d\n", pi->prcno);
+	jas_eprintf("lyrno=%d\n", pi->lyrno);
+	jas_eprintf("x=%d\n", pi->x);
+	jas_eprintf("y=%d\n", pi->y);
+	jas_eprintf("xstep=%d\n", pi->xstep);
+	jas_eprintf("ystep=%d\n", pi->ystep);
+	jas_eprintf("xstart=%d\n", pi->xstart);
+	jas_eprintf("ystart=%d\n", pi->ystart);
+	jas_eprintf("xend=%d\n", pi->xend);
+	jas_eprintf("yend=%d\n", pi->yend);
+	jas_eprintf("defaultpchg=%d\n", pi->defaultpchg);
+	jas_eprintf("pchgno=%d\n", pi->pchgno);
+	jas_eprintf("prgvolfirst=%d\n", pi->prgvolfirst);
+	jas_eprintf("valid=%d\n", pi->valid);
+	jas_eprintf("pktno=%d\n", pi->pktno);
+}
+
+/******************************************************************************\
+*
+\******************************************************************************/
 
 jpc_pchglist_t *jpc_pchglist_create()
 {
@@ -673,32 +801,4 @@ const jpc_pchg_t *jpc_pchglist_get(const jpc_pchglist_t *pchglist, unsigned pchg
 unsigned jpc_pchglist_numpchgs(const jpc_pchglist_t *pchglist)
 {
 	return pchglist->numpchgs;
-}
-
-int jpc_pi_init(jpc_pi_t *pi)
-{
-	unsigned compno;
-	unsigned rlvlno;
-	unsigned prcno;
-	unsigned *prclyrno;
-
-	pi->prgvolfirst = 0;
-	pi->valid = 0;
-	pi->pktno = -1;
-	pi->pchgno = -1;
-	pi->pchg = 0;
-
-	const jpc_picomp_t *picomp;
-	for (compno = 0, picomp = pi->picomps; compno < pi->numcomps;
-	  ++compno, ++picomp) {
-		const jpc_pirlvl_t *pirlvl;
-		for (rlvlno = 0, pirlvl = picomp->pirlvls; rlvlno <
-		  picomp->numrlvls; ++rlvlno, ++pirlvl) {
-			for (prcno = 0, prclyrno = pirlvl->prclyrnos;
-			  prcno < pirlvl->numprcs; ++prcno, ++prclyrno) {
-				*prclyrno = 0;
-			}
-		}
-	}
-	return 0;
 }

@@ -10,6 +10,7 @@
  */
 
 #include "av1/common/av1_common_int.h"
+#include "av1/common/cfl.h"
 #include "av1/common/reconintra.h"
 
 #include "av1/encoder/intra_mode_search.h"
@@ -17,6 +18,19 @@
 #include "av1/encoder/palette.h"
 #include "av1/encoder/speed_features.h"
 #include "av1/encoder/tx_search.h"
+
+// Even though there are 7 delta angles, this macro is set to 9 to facilitate
+// the rd threshold check to prune -3 and 3 delta angles.
+#define SIZE_OF_ANGLE_DELTA_RD_COST_ARRAY (2 * MAX_ANGLE_DELTA + 3)
+
+// The order for evaluating delta angles while processing the luma directional
+// intra modes. Currently, this order of evaluation is applicable only when
+// speed feature prune_luma_odd_delta_angles_in_intra is enabled. In this case,
+// even angles are evaluated first in order to facilitate the pruning of odd
+// delta angles based on the rd costs of the neighboring delta angles.
+static const int8_t luma_delta_angles_order[2 * MAX_ANGLE_DELTA] = {
+  -2, 2, -3, -1, 1, 3,
+};
 
 /*!\cond */
 static const PREDICTION_MODE intra_rd_search_mode_order[INTRA_MODES] = {
@@ -83,6 +97,126 @@ static const uint16_t av1_derived_chroma_intra_mode_used_flag[INTRA_MODES] = {
   0x2a01,  // SMOOTH_H_PRED:     0010 1010 0000 0001
   0x3201   // PAETH_PRED:        0011 0010 0000 0001
 };
+
+DECLARE_ALIGNED(16, static const uint8_t, all_zeros[MAX_SB_SIZE]) = { 0 };
+DECLARE_ALIGNED(16, static const uint16_t,
+                highbd_all_zeros[MAX_SB_SIZE]) = { 0 };
+
+int av1_calc_normalized_variance(aom_variance_fn_t vf, const uint8_t *const buf,
+                                 const int stride, const int is_hbd) {
+  unsigned int sse;
+
+  if (is_hbd)
+    return vf(buf, stride, CONVERT_TO_BYTEPTR(highbd_all_zeros), 0, &sse);
+  else
+    return vf(buf, stride, all_zeros, 0, &sse);
+}
+
+// Computes average of log(1 + variance) across 4x4 sub-blocks for source and
+// reconstructed blocks.
+static void compute_avg_log_variance(const AV1_COMP *const cpi, MACROBLOCK *x,
+                                     const BLOCK_SIZE bs,
+                                     double *avg_log_src_variance,
+                                     double *avg_log_recon_variance) {
+  const MACROBLOCKD *const xd = &x->e_mbd;
+  const BLOCK_SIZE sb_size = cpi->common.seq_params->sb_size;
+  const int mi_row_in_sb = x->e_mbd.mi_row & (mi_size_high[sb_size] - 1);
+  const int mi_col_in_sb = x->e_mbd.mi_col & (mi_size_wide[sb_size] - 1);
+  const int right_overflow =
+      (xd->mb_to_right_edge < 0) ? ((-xd->mb_to_right_edge) >> 3) : 0;
+  const int bottom_overflow =
+      (xd->mb_to_bottom_edge < 0) ? ((-xd->mb_to_bottom_edge) >> 3) : 0;
+  const int bw = (MI_SIZE * mi_size_wide[bs] - right_overflow);
+  const int bh = (MI_SIZE * mi_size_high[bs] - bottom_overflow);
+  const int is_hbd = is_cur_buf_hbd(xd);
+
+  for (int i = 0; i < bh; i += MI_SIZE) {
+    const int r = mi_row_in_sb + (i >> MI_SIZE_LOG2);
+    for (int j = 0; j < bw; j += MI_SIZE) {
+      const int c = mi_col_in_sb + (j >> MI_SIZE_LOG2);
+      const int mi_offset = r * mi_size_wide[sb_size] + c;
+      Block4x4VarInfo *block_4x4_var_info =
+          &x->src_var_info_of_4x4_sub_blocks[mi_offset];
+      int src_var = block_4x4_var_info->var;
+      double log_src_var = block_4x4_var_info->log_var;
+      // Compute average of log(1 + variance) for the source block from 4x4
+      // sub-block variance values. Calculate and store 4x4 sub-block variance
+      // and log(1 + variance), if the values present in
+      // src_var_of_4x4_sub_blocks are invalid. Reuse the same if it is readily
+      // available with valid values.
+      if (src_var < 0) {
+        src_var = av1_calc_normalized_variance(
+            cpi->ppi->fn_ptr[BLOCK_4X4].vf,
+            x->plane[0].src.buf + i * x->plane[0].src.stride + j,
+            x->plane[0].src.stride, is_hbd);
+        block_4x4_var_info->var = src_var;
+        log_src_var = log1p(src_var / 16.0);
+        block_4x4_var_info->log_var = log_src_var;
+      } else {
+        // When source variance is already calculated and available for
+        // retrieval, check if log(1 + variance) is also available. If it is
+        // available, then retrieve from buffer. Else, calculate the same and
+        // store to the buffer.
+        if (log_src_var < 0) {
+          log_src_var = log1p(src_var / 16.0);
+          block_4x4_var_info->log_var = log_src_var;
+        }
+      }
+      *avg_log_src_variance += log_src_var;
+
+      const int recon_var = av1_calc_normalized_variance(
+          cpi->ppi->fn_ptr[BLOCK_4X4].vf,
+          xd->plane[0].dst.buf + i * xd->plane[0].dst.stride + j,
+          xd->plane[0].dst.stride, is_hbd);
+      *avg_log_recon_variance += log1p(recon_var / 16.0);
+    }
+  }
+
+  const int blocks = (bw * bh) / 16;
+  *avg_log_src_variance /= (double)blocks;
+  *avg_log_recon_variance /= (double)blocks;
+}
+
+// Returns a factor to be applied to the RD value based on how well the
+// reconstructed block variance matches the source variance.
+static double intra_rd_variance_factor(const AV1_COMP *cpi, MACROBLOCK *x,
+                                       BLOCK_SIZE bs) {
+  double threshold = INTRA_RD_VAR_THRESH(cpi->oxcf.speed);
+  // For non-positive threshold values, the comparison of source and
+  // reconstructed variances with threshold evaluates to false
+  // (src_var < threshold/rec_var < threshold) as these metrics are greater than
+  // than 0. Hence further calculations are skipped.
+  if (threshold <= 0) return 1.0;
+
+  double variance_rd_factor = 1.0;
+  double avg_log_src_variance = 0.0;
+  double avg_log_recon_variance = 0.0;
+  double var_diff = 0.0;
+
+  compute_avg_log_variance(cpi, x, bs, &avg_log_src_variance,
+                           &avg_log_recon_variance);
+
+  // Dont allow 0 to prevent / 0 below.
+  avg_log_src_variance += 0.000001;
+  avg_log_recon_variance += 0.000001;
+
+  if (avg_log_src_variance >= avg_log_recon_variance) {
+    var_diff = (avg_log_src_variance - avg_log_recon_variance);
+    if ((var_diff > 0.5) && (avg_log_recon_variance < threshold)) {
+      variance_rd_factor = 1.0 + ((var_diff * 2) / avg_log_src_variance);
+    }
+  } else {
+    var_diff = (avg_log_recon_variance - avg_log_src_variance);
+    if ((var_diff > 0.5) && (avg_log_src_variance < threshold)) {
+      variance_rd_factor = 1.0 + (var_diff / (2 * avg_log_src_variance));
+    }
+  }
+
+  // Limit adjustment;
+  variance_rd_factor = AOMMIN(3.0, variance_rd_factor);
+
+  return variance_rd_factor;
+}
 /*!\endcond */
 
 /*!\brief Search for the best filter_intra mode when coding intra frame.
@@ -95,7 +229,7 @@ static const uint16_t av1_derived_chroma_intra_mode_used_flag[INTRA_MODES] = {
  */
 static int rd_pick_filter_intra_sby(const AV1_COMP *const cpi, MACROBLOCK *x,
                                     int *rate, int *rate_tokenonly,
-                                    int64_t *distortion, int *skippable,
+                                    int64_t *distortion, uint8_t *skippable,
                                     BLOCK_SIZE bsize, int mode_cost,
                                     PREDICTION_MODE best_mode_so_far,
                                     int64_t *best_rd, int64_t *best_model_rd,
@@ -145,8 +279,13 @@ static int rd_pick_filter_intra_sby(const AV1_COMP *const cpi, MACROBLOCK *x,
     if (tokenonly_rd_stats.rate == INT_MAX) continue;
     const int this_rate =
         tokenonly_rd_stats.rate +
-        intra_mode_info_cost_y(cpi, x, mbmi, bsize, mode_cost);
+        intra_mode_info_cost_y(cpi, x, mbmi, bsize, mode_cost, 0);
     this_rd = RDCOST(x->rdmult, this_rate, tokenonly_rd_stats.dist);
+
+    // Visual quality adjustment based on recon vs source variance.
+    if ((cpi->oxcf.mode == ALLINTRA) && (this_rd != INT64_MAX)) {
+      this_rd = (int64_t)(this_rd * intra_rd_variance_factor(cpi, x, bsize));
+    }
 
     // Collect mode stats for multiwinner mode processing
     const int txfm_search_done = 1;
@@ -240,33 +379,76 @@ void av1_count_colors_highbd(const uint8_t *src8, int stride, int rows,
   }
 }
 
-void set_y_mode_and_delta_angle(const int mode_idx, MB_MODE_INFO *const mbmi) {
+void set_y_mode_and_delta_angle(const int mode_idx, MB_MODE_INFO *const mbmi,
+                                int reorder_delta_angle_eval) {
   if (mode_idx < INTRA_MODE_END) {
     mbmi->mode = intra_rd_search_mode_order[mode_idx];
     mbmi->angle_delta[PLANE_TYPE_Y] = 0;
   } else {
     mbmi->mode = (mode_idx - INTRA_MODE_END) / (MAX_ANGLE_DELTA * 2) + V_PRED;
-    int angle_delta = (mode_idx - INTRA_MODE_END) % (MAX_ANGLE_DELTA * 2);
-    mbmi->angle_delta[PLANE_TYPE_Y] =
-        (angle_delta < 3 ? (angle_delta - 3) : (angle_delta - 2));
+    int delta_angle_eval_idx =
+        (mode_idx - INTRA_MODE_END) % (MAX_ANGLE_DELTA * 2);
+    if (reorder_delta_angle_eval) {
+      mbmi->angle_delta[PLANE_TYPE_Y] =
+          luma_delta_angles_order[delta_angle_eval_idx];
+    } else {
+      mbmi->angle_delta[PLANE_TYPE_Y] =
+          (delta_angle_eval_idx < 3 ? (delta_angle_eval_idx - 3)
+                                    : (delta_angle_eval_idx - 2));
+    }
   }
 }
 
+static AOM_INLINE int get_model_rd_index_for_pruning(
+    const MACROBLOCK *const x,
+    const INTRA_MODE_SPEED_FEATURES *const intra_sf) {
+  const int top_intra_model_count_allowed =
+      intra_sf->top_intra_model_count_allowed;
+  if (!intra_sf->adapt_top_model_rd_count_using_neighbors)
+    return top_intra_model_count_allowed - 1;
+
+  const MACROBLOCKD *const xd = &x->e_mbd;
+  const PREDICTION_MODE mode = xd->mi[0]->mode;
+  int model_rd_index_for_pruning = top_intra_model_count_allowed - 1;
+  int is_left_mode_neq_cur_mode = 0, is_above_mode_neq_cur_mode = 0;
+  if (xd->left_available)
+    is_left_mode_neq_cur_mode = xd->left_mbmi->mode != mode;
+  if (xd->up_available)
+    is_above_mode_neq_cur_mode = xd->above_mbmi->mode != mode;
+  // The pruning of luma intra modes is made more aggressive at lower quantizers
+  // and vice versa. The value for model_rd_index_for_pruning is derived as
+  // follows.
+  // qidx 0 to 127: Reduce the index of a candidate used for comparison only if
+  // the current mode does not match either of the available neighboring modes.
+  // qidx 128 to 255: Reduce the index of a candidate used for comparison only
+  // if the current mode does not match both the available neighboring modes.
+  if (x->qindex <= 127) {
+    if (is_left_mode_neq_cur_mode || is_above_mode_neq_cur_mode)
+      model_rd_index_for_pruning = AOMMAX(model_rd_index_for_pruning - 1, 0);
+  } else {
+    if (is_left_mode_neq_cur_mode && is_above_mode_neq_cur_mode)
+      model_rd_index_for_pruning = AOMMAX(model_rd_index_for_pruning - 1, 0);
+  }
+  return model_rd_index_for_pruning;
+}
+
 int prune_intra_y_mode(int64_t this_model_rd, int64_t *best_model_rd,
-                       int64_t top_intra_model_rd[], int model_cnt_allowed) {
+                       int64_t top_intra_model_rd[], int max_model_cnt_allowed,
+                       int model_rd_index_for_pruning) {
   const double thresh_best = 1.50;
   const double thresh_top = 1.00;
-  for (int i = 0; i < model_cnt_allowed; i++) {
+  for (int i = 0; i < max_model_cnt_allowed; i++) {
     if (this_model_rd < top_intra_model_rd[i]) {
-      for (int j = model_cnt_allowed - 1; j > i; j--) {
+      for (int j = max_model_cnt_allowed - 1; j > i; j--) {
         top_intra_model_rd[j] = top_intra_model_rd[j - 1];
       }
       top_intra_model_rd[i] = this_model_rd;
       break;
     }
   }
-  if (top_intra_model_rd[model_cnt_allowed - 1] != INT64_MAX &&
-      this_model_rd > thresh_top * top_intra_model_rd[model_cnt_allowed - 1])
+  if (top_intra_model_rd[model_rd_index_for_pruning] != INT64_MAX &&
+      this_model_rd >
+          thresh_top * top_intra_model_rd[model_rd_index_for_pruning])
     return 1;
 
   if (this_model_rd != INT64_MAX &&
@@ -418,45 +600,64 @@ static int64_t cfl_compute_rd(const AV1_COMP *const cpi, MACROBLOCK *x,
   return cfl_cost;
 }
 
-static void cfl_pick_plane_parameter(const AV1_COMP *const cpi, MACROBLOCK *x,
-                                     int plane, TX_SIZE tx_size,
-                                     int cfl_search_range,
-                                     RD_STATS cfl_rd_arr[CFL_MAGS_SIZE]) {
+static const int cfl_dir_ls[2] = { 1, -1 };
+
+// If cfl_search_range is CFL_MAGS_SIZE, return zero. Otherwise return the index
+// of the best alpha found using intra_model_rd().
+static int cfl_pick_plane_parameter(const AV1_COMP *const cpi, MACROBLOCK *x,
+                                    int plane, TX_SIZE tx_size,
+                                    int cfl_search_range) {
   assert(cfl_search_range >= 1 && cfl_search_range <= CFL_MAGS_SIZE);
-  MACROBLOCKD *const xd = &x->e_mbd;
 
-  xd->cfl.use_dc_pred_cache = 1;
+  if (cfl_search_range == CFL_MAGS_SIZE) return CFL_INDEX_ZERO;
 
-  MB_MODE_INFO *const mbmi = xd->mi[0];
+  const MACROBLOCKD *const xd = &x->e_mbd;
+  const MB_MODE_INFO *const mbmi = xd->mi[0];
   assert(mbmi->uv_mode == UV_CFL_PRED);
   const MACROBLOCKD_PLANE *pd = &xd->plane[plane];
   const BLOCK_SIZE plane_bsize =
       get_plane_block_size(mbmi->bsize, pd->subsampling_x, pd->subsampling_y);
 
-  const int dir_ls[2] = { 1, -1 };
-
   int est_best_cfl_idx = CFL_INDEX_ZERO;
-  if (cfl_search_range < CFL_MAGS_SIZE) {
-    int fast_mode = 1;
-    int start_cfl_idx = CFL_INDEX_ZERO;
-    int64_t best_cfl_cost = cfl_compute_rd(cpi, x, plane, tx_size, plane_bsize,
-                                           start_cfl_idx, fast_mode, NULL);
-    for (int si = 0; si < 2; ++si) {
-      const int dir = dir_ls[si];
-      for (int i = 1; i < CFL_MAGS_SIZE; ++i) {
-        int cfl_idx = start_cfl_idx + dir * i;
-        if (cfl_idx < 0 || cfl_idx >= CFL_MAGS_SIZE) break;
-        int64_t cfl_cost = cfl_compute_rd(cpi, x, plane, tx_size, plane_bsize,
-                                          cfl_idx, fast_mode, NULL);
-        if (cfl_cost < best_cfl_cost) {
-          best_cfl_cost = cfl_cost;
-          est_best_cfl_idx = cfl_idx;
-        } else {
-          break;
-        }
+  int fast_mode = 1;
+  int start_cfl_idx = CFL_INDEX_ZERO;
+  int64_t best_cfl_cost = cfl_compute_rd(cpi, x, plane, tx_size, plane_bsize,
+                                         start_cfl_idx, fast_mode, NULL);
+  for (int si = 0; si < 2; ++si) {
+    const int dir = cfl_dir_ls[si];
+    for (int i = 1; i < CFL_MAGS_SIZE; ++i) {
+      int cfl_idx = start_cfl_idx + dir * i;
+      if (cfl_idx < 0 || cfl_idx >= CFL_MAGS_SIZE) break;
+      int64_t cfl_cost = cfl_compute_rd(cpi, x, plane, tx_size, plane_bsize,
+                                        cfl_idx, fast_mode, NULL);
+      if (cfl_cost < best_cfl_cost) {
+        best_cfl_cost = cfl_cost;
+        est_best_cfl_idx = cfl_idx;
+      } else {
+        break;
       }
     }
   }
+  return est_best_cfl_idx;
+}
+
+static AOM_INLINE void set_invalid_cfl_parameters(
+    uint8_t *best_cfl_alpha_idx, int8_t *best_cfl_alpha_signs) {
+  *best_cfl_alpha_idx = 0;
+  *best_cfl_alpha_signs = 0;
+}
+
+static void cfl_pick_plane_rd(const AV1_COMP *const cpi, MACROBLOCK *x,
+                              int plane, TX_SIZE tx_size, int cfl_search_range,
+                              RD_STATS cfl_rd_arr[CFL_MAGS_SIZE],
+                              int est_best_cfl_idx) {
+  assert(cfl_search_range >= 1 && cfl_search_range <= CFL_MAGS_SIZE);
+  const MACROBLOCKD *const xd = &x->e_mbd;
+  const MB_MODE_INFO *const mbmi = xd->mi[0];
+  assert(mbmi->uv_mode == UV_CFL_PRED);
+  const MACROBLOCKD_PLANE *pd = &xd->plane[plane];
+  const BLOCK_SIZE plane_bsize =
+      get_plane_block_size(mbmi->bsize, pd->subsampling_x, pd->subsampling_y);
 
   for (int cfl_idx = 0; cfl_idx < CFL_MAGS_SIZE; ++cfl_idx) {
     av1_invalid_rd_stats(&cfl_rd_arr[cfl_idx]);
@@ -466,8 +667,11 @@ static void cfl_pick_plane_parameter(const AV1_COMP *const cpi, MACROBLOCK *x,
   int start_cfl_idx = est_best_cfl_idx;
   cfl_compute_rd(cpi, x, plane, tx_size, plane_bsize, start_cfl_idx, fast_mode,
                  &cfl_rd_arr[start_cfl_idx]);
+
+  if (cfl_search_range == 1) return;
+
   for (int si = 0; si < 2; ++si) {
-    const int dir = dir_ls[si];
+    const int dir = cfl_dir_ls[si];
     for (int i = 1; i < cfl_search_range; ++i) {
       int cfl_idx = start_cfl_idx + dir * i;
       if (cfl_idx < 0 || cfl_idx >= CFL_MAGS_SIZE) break;
@@ -475,9 +679,6 @@ static void cfl_pick_plane_parameter(const AV1_COMP *const cpi, MACROBLOCK *x,
                      &cfl_rd_arr[cfl_idx]);
     }
   }
-  xd->cfl.use_dc_pred_cache = 0;
-  xd->cfl.dc_pred_is_cached[0] = 0;
-  xd->cfl.dc_pred_is_cached[1] = 0;
 }
 
 /*!\brief Pick the optimal parameters for Chroma to Luma (CFL) component
@@ -517,11 +718,60 @@ static int cfl_rd_pick_alpha(MACROBLOCK *const x, const AV1_COMP *const cpi,
   const ModeCosts *mode_costs = &x->mode_costs;
   RD_STATS cfl_rd_arr_u[CFL_MAGS_SIZE];
   RD_STATS cfl_rd_arr_v[CFL_MAGS_SIZE];
+  MACROBLOCKD *const xd = &x->e_mbd;
+  int est_best_cfl_idx_u, est_best_cfl_idx_v;
 
   av1_invalid_rd_stats(best_rd_stats);
 
-  cfl_pick_plane_parameter(cpi, x, 1, tx_size, cfl_search_range, cfl_rd_arr_u);
-  cfl_pick_plane_parameter(cpi, x, 2, tx_size, cfl_search_range, cfl_rd_arr_v);
+  // As the dc pred data is same for different values of alpha, enable the
+  // caching of dc pred data. Call clear_cfl_dc_pred_cache_flags() before
+  // returning to avoid the unintentional usage of cached dc pred data.
+  xd->cfl.use_dc_pred_cache = true;
+  // Evaluate alpha parameter of each chroma plane.
+  est_best_cfl_idx_u =
+      cfl_pick_plane_parameter(cpi, x, 1, tx_size, cfl_search_range);
+  est_best_cfl_idx_v =
+      cfl_pick_plane_parameter(cpi, x, 2, tx_size, cfl_search_range);
+
+  if (cfl_search_range == 1) {
+    // For cfl_search_range=1, further refinement of alpha is not enabled. Hence
+    // CfL index=0 for both the chroma planes implies invalid CfL mode.
+    if (est_best_cfl_idx_u == CFL_INDEX_ZERO &&
+        est_best_cfl_idx_v == CFL_INDEX_ZERO) {
+      set_invalid_cfl_parameters(best_cfl_alpha_idx, best_cfl_alpha_signs);
+      clear_cfl_dc_pred_cache_flags(&xd->cfl);
+      return 0;
+    }
+
+    int cfl_alpha_u, cfl_alpha_v;
+    CFL_SIGN_TYPE cfl_sign_u, cfl_sign_v;
+    const MB_MODE_INFO *mbmi = xd->mi[0];
+    cfl_idx_to_sign_and_alpha(est_best_cfl_idx_u, &cfl_sign_u, &cfl_alpha_u);
+    cfl_idx_to_sign_and_alpha(est_best_cfl_idx_v, &cfl_sign_v, &cfl_alpha_v);
+    const int joint_sign = cfl_sign_u * CFL_SIGNS + cfl_sign_v - 1;
+    // Compute alpha and mode signaling rate.
+    const int rate_overhead =
+        mode_costs->cfl_cost[joint_sign][CFL_PRED_U][cfl_alpha_u] +
+        mode_costs->cfl_cost[joint_sign][CFL_PRED_V][cfl_alpha_v] +
+        mode_costs
+            ->intra_uv_mode_cost[is_cfl_allowed(xd)][mbmi->mode][UV_CFL_PRED];
+    // Skip the CfL mode evaluation if the RD cost derived using the rate needed
+    // to signal the CfL mode and alpha parameter exceeds the ref_best_rd.
+    if (RDCOST(x->rdmult, rate_overhead, 0) > ref_best_rd) {
+      set_invalid_cfl_parameters(best_cfl_alpha_idx, best_cfl_alpha_signs);
+      clear_cfl_dc_pred_cache_flags(&xd->cfl);
+      return 0;
+    }
+  }
+
+  // Compute the rd cost of each chroma plane using the alpha parameters which
+  // were already evaluated.
+  cfl_pick_plane_rd(cpi, x, 1, tx_size, cfl_search_range, cfl_rd_arr_u,
+                    est_best_cfl_idx_u);
+  cfl_pick_plane_rd(cpi, x, 2, tx_size, cfl_search_range, cfl_rd_arr_v,
+                    est_best_cfl_idx_v);
+
+  clear_cfl_dc_pred_cache_flags(&xd->cfl);
 
   for (int ui = 0; ui < CFL_MAGS_SIZE; ++ui) {
     if (cfl_rd_arr_u[ui].rate == INT_MAX) continue;
@@ -558,16 +808,29 @@ static int cfl_rd_pick_alpha(MACROBLOCK *const x, const AV1_COMP *const cpi,
     av1_invalid_rd_stats(best_rd_stats);
     // Set invalid CFL parameters here since the rdcost is not better than
     // ref_best_rd.
-    *best_cfl_alpha_idx = 0;
-    *best_cfl_alpha_signs = 0;
+    set_invalid_cfl_parameters(best_cfl_alpha_idx, best_cfl_alpha_signs);
     return 0;
   }
   return 1;
 }
 
+static bool should_prune_chroma_smooth_pred_based_on_source_variance(
+    const AV1_COMP *cpi, const MACROBLOCK *x, BLOCK_SIZE bsize) {
+  if (!cpi->sf.intra_sf.prune_smooth_intra_mode_for_chroma) return false;
+
+  // If the source variance of both chroma planes is less than 20 (empirically
+  // derived), prune UV_SMOOTH_PRED.
+  for (int i = AOM_PLANE_U; i < av1_num_planes(&cpi->common); i++) {
+    const unsigned int variance = av1_get_perpixel_variance_facade(
+        cpi, &x->e_mbd, &x->plane[i].src, bsize, i);
+    if (variance >= 20) return false;
+  }
+  return true;
+}
+
 int64_t av1_rd_pick_intra_sbuv_mode(const AV1_COMP *const cpi, MACROBLOCK *x,
                                     int *rate, int *rate_tokenonly,
-                                    int64_t *distortion, int *skippable,
+                                    int64_t *distortion, uint8_t *skippable,
                                     BLOCK_SIZE bsize, TX_SIZE max_tx_size) {
   const AV1_COMMON *const cm = &cpi->common;
   MACROBLOCKD *xd = &x->e_mbd;
@@ -605,14 +868,23 @@ int64_t av1_rd_pick_intra_sbuv_mode(const AV1_COMP *const cpi, MACROBLOCK *x,
   }
   IntraModeSearchState intra_search_state;
   init_intra_mode_search_state(&intra_search_state);
+  const CFL_ALLOWED_TYPE cfl_allowed = is_cfl_allowed(xd);
 
   // Search through all non-palette modes.
   for (int mode_idx = 0; mode_idx < UV_INTRA_MODES; ++mode_idx) {
     int this_rate;
     RD_STATS tokenonly_rd_stats;
-    UV_PREDICTION_MODE mode = uv_rd_search_mode_order[mode_idx];
-    const int is_diagonal_mode = av1_is_diagonal_mode(get_uv_mode(mode));
-    const int is_directional_mode = av1_is_directional_mode(get_uv_mode(mode));
+    UV_PREDICTION_MODE uv_mode = uv_rd_search_mode_order[mode_idx];
+
+    // Skip the current mode evaluation if the RD cost derived using the mode
+    // signaling rate exceeds the best_rd so far.
+    const int mode_rate =
+        mode_costs->intra_uv_mode_cost[cfl_allowed][mbmi->mode][uv_mode];
+    if (RDCOST(x->rdmult, mode_rate, 0) > best_rd) continue;
+
+    PREDICTION_MODE intra_mode = get_uv_mode(uv_mode);
+    const int is_diagonal_mode = av1_is_diagonal_mode(intra_mode);
+    const int is_directional_mode = av1_is_directional_mode(intra_mode);
 
     if (is_diagonal_mode && !cpi->oxcf.intra_mode_cfg.enable_diagonal_intra)
       continue;
@@ -621,26 +893,27 @@ int64_t av1_rd_pick_intra_sbuv_mode(const AV1_COMP *const cpi, MACROBLOCK *x,
       continue;
 
     if (!(cpi->sf.intra_sf.intra_uv_mode_mask[txsize_sqr_up_map[max_tx_size]] &
-          (1 << mode)))
+          (1 << uv_mode)))
       continue;
-    if (!intra_mode_cfg->enable_smooth_intra && mode >= UV_SMOOTH_PRED &&
-        mode <= UV_SMOOTH_H_PRED)
+    if (!intra_mode_cfg->enable_smooth_intra && uv_mode >= UV_SMOOTH_PRED &&
+        uv_mode <= UV_SMOOTH_H_PRED)
       continue;
 
-    if (!intra_mode_cfg->enable_paeth_intra && mode == UV_PAETH_PRED) continue;
+    if (!intra_mode_cfg->enable_paeth_intra && uv_mode == UV_PAETH_PRED)
+      continue;
 
     assert(mbmi->mode < INTRA_MODES);
     if (cpi->sf.intra_sf.prune_chroma_modes_using_luma_winner &&
-        !(av1_derived_chroma_intra_mode_used_flag[mbmi->mode] & (1 << mode)))
+        !(av1_derived_chroma_intra_mode_used_flag[mbmi->mode] & (1 << uv_mode)))
       continue;
 
-    mbmi->uv_mode = mode;
+    mbmi->uv_mode = uv_mode;
 
     // Init variables for cfl and angle delta
     const SPEED_FEATURES *sf = &cpi->sf;
     mbmi->angle_delta[PLANE_TYPE_UV] = 0;
-    if (mode == UV_CFL_PRED) {
-      if (!is_cfl_allowed(xd) || !intra_mode_cfg->enable_cfl_intra) continue;
+    if (uv_mode == UV_CFL_PRED) {
+      if (!cfl_allowed || !intra_mode_cfg->enable_cfl_intra) continue;
       assert(!is_directional_mode);
       const TX_SIZE uv_tx_size = av1_get_tx_size(AOM_PLANE_U, xd);
       if (!cfl_rd_pick_alpha(x, cpi, uv_tx_size, best_rd,
@@ -665,24 +938,29 @@ int64_t av1_rd_pick_intra_sbuv_mode(const AV1_COMP *const cpi, MACROBLOCK *x,
             intra_search_state.directional_mode_skip_mask, is_chroma);
         intra_search_state.dir_mode_skip_mask_ready = 1;
       }
-      if (intra_search_state.directional_mode_skip_mask[mode]) {
+      if (intra_search_state.directional_mode_skip_mask[uv_mode]) {
         continue;
       }
 
       // Search through angle delta
       const int rate_overhead =
-          mode_costs->intra_uv_mode_cost[is_cfl_allowed(xd)][mbmi->mode][mode];
+          mode_costs->intra_uv_mode_cost[cfl_allowed][mbmi->mode][uv_mode];
       if (!rd_pick_intra_angle_sbuv(cpi, x, bsize, rate_overhead, best_rd,
                                     &this_rate, &tokenonly_rd_stats))
         continue;
     } else {
+      if (uv_mode == UV_SMOOTH_PRED &&
+          should_prune_chroma_smooth_pred_based_on_source_variance(cpi, x,
+                                                                   bsize))
+        continue;
+
       // Predict directly if we don't need to search for angle delta.
       if (!av1_txfm_uvrd(cpi, x, &tokenonly_rd_stats, bsize, best_rd)) {
         continue;
       }
     }
     const int mode_cost =
-        mode_costs->intra_uv_mode_cost[is_cfl_allowed(xd)][mbmi->mode][mode];
+        mode_costs->intra_uv_mode_cost[cfl_allowed][mbmi->mode][uv_mode];
     this_rate = tokenonly_rd_stats.rate +
                 intra_mode_info_cost_uv(cpi, x, mbmi, bsize, mode_cost);
     this_rd = RDCOST(x->rdmult, this_rate, tokenonly_rd_stats.dist);
@@ -706,8 +984,7 @@ int64_t av1_rd_pick_intra_sbuv_mode(const AV1_COMP *const cpi, MACROBLOCK *x,
     uint8_t *best_palette_color_map = x->palette_buffer->best_palette_color_map;
     av1_rd_pick_palette_intra_sbuv(
         cpi, x,
-        mode_costs
-            ->intra_uv_mode_cost[is_cfl_allowed(xd)][mbmi->mode][UV_DC_PRED],
+        mode_costs->intra_uv_mode_cost[cfl_allowed][mbmi->mode][UV_DC_PRED],
         best_palette_color_map, &best_mbmi, &best_rd, rate, rate_tokenonly,
         distortion, skippable);
   }
@@ -813,6 +1090,67 @@ int av1_search_palette_mode(IntraModeSearchState *intra_search_state,
   return skippable;
 }
 
+void av1_search_palette_mode_luma(const AV1_COMP *cpi, MACROBLOCK *x,
+                                  BLOCK_SIZE bsize, unsigned int ref_frame_cost,
+                                  PICK_MODE_CONTEXT *ctx,
+                                  RD_STATS *this_rd_cost, int64_t best_rd) {
+  MB_MODE_INFO *const mbmi = x->e_mbd.mi[0];
+  PALETTE_MODE_INFO *const pmi = &mbmi->palette_mode_info;
+  MACROBLOCKD *const xd = &x->e_mbd;
+  int64_t best_rd_palette = best_rd, this_rd;
+  uint8_t *const best_palette_color_map =
+      x->palette_buffer->best_palette_color_map;
+  uint8_t *const color_map = xd->plane[0].color_index_map;
+  MB_MODE_INFO best_mbmi_palette = *mbmi;
+  uint8_t best_blk_skip[MAX_MIB_SIZE * MAX_MIB_SIZE];
+  uint8_t best_tx_type_map[MAX_MIB_SIZE * MAX_MIB_SIZE];
+  const ModeCosts *mode_costs = &x->mode_costs;
+  const int *const intra_mode_cost =
+      mode_costs->mbmode_cost[size_group_lookup[bsize]];
+  const int rows = block_size_high[bsize];
+  const int cols = block_size_wide[bsize];
+
+  mbmi->mode = DC_PRED;
+  mbmi->uv_mode = UV_DC_PRED;
+  mbmi->ref_frame[0] = INTRA_FRAME;
+  mbmi->ref_frame[1] = NONE_FRAME;
+  av1_zero(pmi->palette_size);
+
+  RD_STATS rd_stats_y;
+  av1_invalid_rd_stats(&rd_stats_y);
+  av1_rd_pick_palette_intra_sby(cpi, x, bsize, intra_mode_cost[DC_PRED],
+                                &best_mbmi_palette, best_palette_color_map,
+                                &best_rd_palette, &rd_stats_y.rate, NULL,
+                                &rd_stats_y.dist, &rd_stats_y.skip_txfm, NULL,
+                                ctx, best_blk_skip, best_tx_type_map);
+  if (rd_stats_y.rate == INT_MAX || pmi->palette_size[0] == 0) {
+    this_rd_cost->rdcost = INT64_MAX;
+    return;
+  }
+
+  memcpy(x->txfm_search_info.blk_skip, best_blk_skip,
+         sizeof(best_blk_skip[0]) * bsize_to_num_blk(bsize));
+  av1_copy_array(xd->tx_type_map, best_tx_type_map, ctx->num_4x4_blk);
+  memcpy(color_map, best_palette_color_map,
+         rows * cols * sizeof(best_palette_color_map[0]));
+
+  rd_stats_y.rate += ref_frame_cost;
+
+  if (rd_stats_y.skip_txfm) {
+    rd_stats_y.rate =
+        ref_frame_cost +
+        mode_costs->skip_txfm_cost[av1_get_skip_txfm_context(xd)][1];
+  } else {
+    rd_stats_y.rate +=
+        mode_costs->skip_txfm_cost[av1_get_skip_txfm_context(xd)][0];
+  }
+  this_rd = RDCOST(x->rdmult, rd_stats_y.rate, rd_stats_y.dist);
+  this_rd_cost->rate = rd_stats_y.rate;
+  this_rd_cost->dist = rd_stats_y.dist;
+  this_rd_cost->rdcost = this_rd;
+  this_rd_cost->skip_txfm = rd_stats_y.skip_txfm;
+}
+
 /*!\brief Get the intra prediction by searching through tx_type and tx_size.
  *
  * \ingroup intra_mode_search
@@ -826,14 +1164,19 @@ static AOM_INLINE int intra_block_yrd(const AV1_COMP *const cpi, MACROBLOCK *x,
                                       BLOCK_SIZE bsize, const int *bmode_costs,
                                       int64_t *best_rd, int *rate,
                                       int *rate_tokenonly, int64_t *distortion,
-                                      int *skippable, MB_MODE_INFO *best_mbmi,
+                                      uint8_t *skippable,
+                                      MB_MODE_INFO *best_mbmi,
                                       PICK_MODE_CONTEXT *ctx) {
   MACROBLOCKD *const xd = &x->e_mbd;
   MB_MODE_INFO *const mbmi = xd->mi[0];
   RD_STATS rd_stats;
-  // In order to improve txfm search avoid rd based breakouts during winner
-  // mode evaluation. Hence passing ref_best_rd as a maximum value
-  av1_pick_uniform_tx_size_type_yrd(cpi, x, &rd_stats, bsize, INT64_MAX);
+  // In order to improve txfm search, avoid rd based breakouts during winner
+  // mode evaluation. Hence passing ref_best_rd as INT64_MAX by default when the
+  // speed feature use_rd_based_breakout_for_intra_tx_search is disabled.
+  int64_t ref_best_rd = cpi->sf.tx_sf.use_rd_based_breakout_for_intra_tx_search
+                            ? *best_rd
+                            : INT64_MAX;
+  av1_pick_uniform_tx_size_type_yrd(cpi, x, &rd_stats, bsize, ref_best_rd);
   if (rd_stats.rate == INT_MAX) return 0;
   int this_rate_tokenonly = rd_stats.rate;
   if (!xd->lossless[mbmi->segment_id] && block_signals_txsize(mbmi->bsize)) {
@@ -845,7 +1188,7 @@ static AOM_INLINE int intra_block_yrd(const AV1_COMP *const cpi, MACROBLOCK *x,
   }
   const int this_rate =
       rd_stats.rate +
-      intra_mode_info_cost_y(cpi, x, mbmi, bsize, bmode_costs[mbmi->mode]);
+      intra_mode_info_cost_y(cpi, x, mbmi, bsize, bmode_costs[mbmi->mode], 0);
   const int64_t this_rd = RDCOST(x->rdmult, this_rate, rd_stats.dist);
   if (this_rd < *best_rd) {
     *best_mbmi = *mbmi;
@@ -868,7 +1211,7 @@ static AOM_INLINE int intra_block_yrd(const AV1_COMP *const cpi, MACROBLOCK *x,
  * \callergraph
  * This function loops through all filter_intra modes to find the best one.
  *
- * \return Returns nothing, but updates the mbmi and rd_stats.
+ * \remark Returns nothing, but updates the mbmi and rd_stats.
  */
 static INLINE void handle_filter_intra_mode(const AV1_COMP *cpi, MACROBLOCK *x,
                                             BLOCK_SIZE bsize,
@@ -898,7 +1241,7 @@ static INLINE void handle_filter_intra_mode(const AV1_COMP *cpi, MACROBLOCK *x,
     if (rd_stats_y_fi.rate == INT_MAX) continue;
     const int this_rate_tmp =
         rd_stats_y_fi.rate +
-        intra_mode_info_cost_y(cpi, x, mbmi, bsize, mode_cost);
+        intra_mode_info_cost_y(cpi, x, mbmi, bsize, mode_cost, 0);
     const int64_t this_rd_tmp =
         RDCOST(x->rdmult, this_rate_tmp, rd_stats_y_fi.dist);
 
@@ -939,7 +1282,7 @@ int av1_handle_intra_y_mode(IntraModeSearchState *intra_search_state,
                             int64_t *best_model_rd,
                             int64_t top_intra_model_rd[]) {
   const AV1_COMMON *cm = &cpi->common;
-  const SPEED_FEATURES *const sf = &cpi->sf;
+  const INTRA_MODE_SPEED_FEATURES *const intra_sf = &cpi->sf.intra_sf;
   MACROBLOCKD *const xd = &x->e_mbd;
   MB_MODE_INFO *const mbmi = xd->mi[0];
   assert(mbmi->ref_frame[0] == INTRA_FRAME);
@@ -966,12 +1309,12 @@ int av1_handle_intra_y_mode(IntraModeSearchState *intra_search_state,
   const int is_directional_mode = av1_is_directional_mode(mode);
   if (is_directional_mode && av1_use_angle_delta(bsize) &&
       cpi->oxcf.intra_mode_cfg.enable_angle_delta) {
-    if (sf->intra_sf.intra_pruning_with_hog &&
+    if (intra_sf->intra_pruning_with_hog &&
         !intra_search_state->dir_mode_skip_mask_ready) {
       const float thresh[4] = { -1.2f, 0.0f, 0.0f, 1.2f };
       const int is_chroma = 0;
       prune_intra_mode_with_hog(x, bsize, cm->seq_params->sb_size,
-                                thresh[sf->intra_sf.intra_pruning_with_hog - 1],
+                                thresh[intra_sf->intra_pruning_with_hog - 1],
                                 intra_search_state->directional_mode_skip_mask,
                                 is_chroma);
       intra_search_state->dir_mode_skip_mask_ready = 1;
@@ -981,8 +1324,13 @@ int av1_handle_intra_y_mode(IntraModeSearchState *intra_search_state,
   const TX_SIZE tx_size = AOMMIN(TX_32X32, max_txsize_lookup[bsize]);
   const int64_t this_model_rd =
       intra_model_rd(&cpi->common, x, 0, bsize, tx_size, /*use_hadamard=*/1);
+
+  const int model_rd_index_for_pruning =
+      get_model_rd_index_for_pruning(x, intra_sf);
+
   if (prune_intra_y_mode(this_model_rd, best_model_rd, top_intra_model_rd,
-                         sf->intra_sf.top_intra_model_count_allowed))
+                         intra_sf->top_intra_model_count_allowed,
+                         model_rd_index_for_pruning))
     return 0;
   av1_init_rd_stats(rd_stats_y);
   av1_pick_uniform_tx_size_type_yrd(cpi, x, rd_stats_y, bsize, best_rd);
@@ -997,10 +1345,10 @@ int av1_handle_intra_y_mode(IntraModeSearchState *intra_search_state,
       mbmi->filter_intra_mode_info.use_filter_intra = 0;
       const int tmp_rate =
           rd_stats_y->rate +
-          intra_mode_info_cost_y(cpi, x, mbmi, bsize, mode_cost);
+          intra_mode_info_cost_y(cpi, x, mbmi, bsize, mode_cost, 0);
       best_rd_so_far = RDCOST(x->rdmult, tmp_rate, rd_stats_y->dist);
       try_filter_intra = (best_rd_so_far / 2) <= best_rd;
-    } else if (sf->intra_sf.skip_filter_intra_in_inter_frames >= 1) {
+    } else if (intra_sf->skip_filter_intra_in_inter_frames >= 1) {
       // As rd cost of luma intra dc mode is more than best_rd (i.e.,
       // rd_stats_y->rate = INT_MAX), skip the evaluation of filter intra modes.
       try_filter_intra = 0;
@@ -1014,7 +1362,7 @@ int av1_handle_intra_y_mode(IntraModeSearchState *intra_search_state,
 
   if (rd_stats_y->rate == INT_MAX) return 0;
 
-  *mode_cost_y = intra_mode_info_cost_y(cpi, x, mbmi, bsize, mode_cost);
+  *mode_cost_y = intra_mode_info_cost_y(cpi, x, mbmi, bsize, mode_cost, 0);
   const int rate_y = rd_stats_y->skip_txfm
                          ? mode_costs->skip_txfm_cost[skip_ctx][1]
                          : rd_stats_y->rate;
@@ -1086,88 +1434,36 @@ int av1_search_intra_uv_modes_in_interframe(
   return 1;
 }
 
-DECLARE_ALIGNED(16, static const uint8_t, all_zeros[MAX_SB_SIZE]) = { 0 };
-DECLARE_ALIGNED(16, static const uint16_t,
-                highbd_all_zeros[MAX_SB_SIZE]) = { 0 };
-// Returns a factor to be applied to the RD value based on how well the
-// reconstructed block variance matches the source variance.
-static double intra_rd_variance_factor(const AV1_COMP *cpi, MACROBLOCK *x,
-                                       BLOCK_SIZE bs) {
-  MACROBLOCKD *xd = &x->e_mbd;
-  double variance_rd_factor = 1.0;
-  double src_var = 0.0;
-  double rec_var = 0.0;
-  double var_diff = 0.0;
-  double threshold = 1.0 - (0.25 * cpi->oxcf.speed);
-  unsigned int sse;
-  int i, j;
-  int right_overflow =
-      (xd->mb_to_right_edge < 0) ? ((-xd->mb_to_right_edge) >> 3) : 0;
-  int bottom_overflow =
-      (xd->mb_to_bottom_edge < 0) ? ((-xd->mb_to_bottom_edge) >> 3) : 0;
+// Checks if odd delta angles can be pruned based on rdcosts of even delta
+// angles of the corresponding directional mode.
+static AOM_INLINE int prune_luma_odd_delta_angles_using_rd_cost(
+    const MB_MODE_INFO *const mbmi, const int64_t *const intra_modes_rd_cost,
+    int64_t best_rd, int prune_luma_odd_delta_angles_in_intra) {
+  const int luma_delta_angle = mbmi->angle_delta[PLANE_TYPE_Y];
+  if (!prune_luma_odd_delta_angles_in_intra ||
+      !av1_is_directional_mode(mbmi->mode) || !(abs(luma_delta_angle) & 1) ||
+      best_rd == INT64_MAX)
+    return 0;
 
-  const int bw = MI_SIZE * mi_size_wide[bs] - right_overflow;
-  const int bh = MI_SIZE * mi_size_high[bs] - bottom_overflow;
-  const int blocks = (bw * bh) / 16;
+  const int64_t rd_thresh = best_rd + (best_rd >> 3);
 
-  for (i = 0; i < bh; i += 4) {
-    for (j = 0; j < bw; j += 4) {
-      if (is_cur_buf_hbd(xd)) {
-        src_var +=
-            log(1.0 + cpi->ppi->fn_ptr[BLOCK_4X4].vf(
-                          x->plane[0].src.buf + i * x->plane[0].src.stride + j,
-                          x->plane[0].src.stride,
-                          CONVERT_TO_BYTEPTR(highbd_all_zeros), 0, &sse) /
-                          16);
-        rec_var += log(
-            1.0 + cpi->ppi->fn_ptr[BLOCK_4X4].vf(
-                      xd->plane[0].dst.buf + i * xd->plane[0].dst.stride + j,
-                      xd->plane[0].dst.stride,
-                      CONVERT_TO_BYTEPTR(highbd_all_zeros), 0, &sse) /
-                      16);
-      } else {
-        src_var +=
-            log(1.0 + cpi->ppi->fn_ptr[BLOCK_4X4].vf(
-                          x->plane[0].src.buf + i * x->plane[0].src.stride + j,
-                          x->plane[0].src.stride, all_zeros, 0, &sse) /
-                          16);
-        rec_var += log(
-            1.0 + cpi->ppi->fn_ptr[BLOCK_4X4].vf(
-                      xd->plane[0].dst.buf + i * xd->plane[0].dst.stride + j,
-                      xd->plane[0].dst.stride, all_zeros, 0, &sse) /
-                      16);
-      }
-    }
-  }
-  src_var /= (double)blocks;
-  rec_var /= (double)blocks;
-
-  // Only take action when the spatial complexity is low
-  if ((rec_var < threshold) || (src_var < threshold)) {
-    // Dont allow 0 to prevent / 0 below.
-    src_var += 0.000001;
-    rec_var += 0.000001;
-
-    // Heavier weigth if the reconstruction has lower variance.
-    if (src_var >= rec_var) {
-      var_diff = (src_var - rec_var) * 2;
-      variance_rd_factor = 1.0 + (var_diff / src_var);
-    } else {
-      var_diff = (rec_var - src_var) / 2;
-      variance_rd_factor = 1.0 + (var_diff / src_var);
-    }
-
-    // Limit adjustment;
-    variance_rd_factor = AOMMIN(3.0, variance_rd_factor);
-  }
-
-  return variance_rd_factor;
+  // Neighbour rdcosts are considered for pruning of odd delta angles as
+  // mentioned below:
+  // Delta angle      Delta angle rdcost
+  // to be pruned     to be considered
+  //    -3                   -2
+  //    -1                -2, 0
+  //     1                 0, 2
+  //     3                    2
+  return intra_modes_rd_cost[luma_delta_angle + MAX_ANGLE_DELTA] > rd_thresh &&
+         intra_modes_rd_cost[luma_delta_angle + MAX_ANGLE_DELTA + 2] >
+             rd_thresh;
 }
 
 // Finds the best non-intrabc mode on an intra frame.
 int64_t av1_rd_pick_intra_sby_mode(const AV1_COMP *const cpi, MACROBLOCK *x,
                                    int *rate, int *rate_tokenonly,
-                                   int64_t *distortion, int *skippable,
+                                   int64_t *distortion, uint8_t *skippable,
                                    BLOCK_SIZE bsize, int64_t best_rd,
                                    PICK_MODE_CONTEXT *ctx) {
   MACROBLOCKD *const xd = &x->e_mbd;
@@ -1180,6 +1476,7 @@ int64_t av1_rd_pick_intra_sby_mode(const AV1_COMP *const cpi, MACROBLOCK *x,
   // function
   int beat_best_rd = 0;
   const int *bmode_costs;
+  const IntraModeCfg *const intra_mode_cfg = &cpi->oxcf.intra_mode_cfg;
   PALETTE_MODE_INFO *const pmi = &mbmi->palette_mode_info;
   const int try_palette =
       cpi->oxcf.tool_cfg.enable_palette &&
@@ -1196,16 +1493,16 @@ int64_t av1_rd_pick_intra_sby_mode(const AV1_COMP *const cpi, MACROBLOCK *x,
   bmode_costs = x->mode_costs.y_mode_costs[above_ctx][left_ctx];
 
   mbmi->angle_delta[PLANE_TYPE_Y] = 0;
-  if (cpi->sf.intra_sf.intra_pruning_with_hog) {
+  const INTRA_MODE_SPEED_FEATURES *const intra_sf = &cpi->sf.intra_sf;
+  if (intra_sf->intra_pruning_with_hog) {
     // Less aggressive thresholds are used here than those used in inter frame
     // encoding in av1_handle_intra_y_mode() because we want key frames/intra
     // frames to have higher quality.
     const float thresh[4] = { -1.2f, -1.2f, -0.6f, 0.4f };
     const int is_chroma = 0;
-    prune_intra_mode_with_hog(
-        x, bsize, cpi->common.seq_params->sb_size,
-        thresh[cpi->sf.intra_sf.intra_pruning_with_hog - 1],
-        directional_mode_skip_mask, is_chroma);
+    prune_intra_mode_with_hog(x, bsize, cpi->common.seq_params->sb_size,
+                              thresh[intra_sf->intra_pruning_with_hog - 1],
+                              directional_mode_skip_mask, is_chroma);
   }
   mbmi->filter_intra_mode_info.use_filter_intra = 0;
   pmi->palette_size[0] = 0;
@@ -1214,8 +1511,9 @@ int64_t av1_rd_pick_intra_sby_mode(const AV1_COMP *const cpi, MACROBLOCK *x,
   set_mode_eval_params(cpi, x, MODE_EVAL);
 
   MB_MODE_INFO best_mbmi = *mbmi;
-  zero_winner_mode_stats(bsize, MAX_WINNER_MODE_COUNT_INTRA,
-                         x->winner_mode_stats);
+  const int max_winner_mode_count =
+      winner_mode_count_allowed[cpi->sf.winner_mode_sf.multi_winner_mode_type];
+  zero_winner_mode_stats(bsize, max_winner_mode_count, x->winner_mode_stats);
   x->winner_mode_count = 0;
 
   // Searches the intra-modes except for intrabc, palette, and filter_intra.
@@ -1223,41 +1521,56 @@ int64_t av1_rd_pick_intra_sby_mode(const AV1_COMP *const cpi, MACROBLOCK *x,
   for (int i = 0; i < TOP_INTRA_MODEL_COUNT; i++) {
     top_intra_model_rd[i] = INT64_MAX;
   }
+
+  // Initialize the rdcost corresponding to all the directional and
+  // non-directional intra modes.
+  // 1. For directional modes, it stores the rdcost values for delta angles -4,
+  // -3, ..., 3, 4.
+  // 2. The rdcost value for luma_delta_angle is stored at index
+  // luma_delta_angle + MAX_ANGLE_DELTA + 1.
+  // 3. The rdcost values for fictitious/nonexistent luma_delta_angle -4 and 4
+  // (array indices 0 and 8) are always set to INT64_MAX (the initial value).
+  int64_t intra_modes_rd_cost[INTRA_MODE_END]
+                             [SIZE_OF_ANGLE_DELTA_RD_COST_ARRAY];
+  for (int i = 0; i < INTRA_MODE_END; i++) {
+    for (int j = 0; j < SIZE_OF_ANGLE_DELTA_RD_COST_ARRAY; j++) {
+      intra_modes_rd_cost[i][j] = INT64_MAX;
+    }
+  }
+
   for (int mode_idx = INTRA_MODE_START; mode_idx < LUMA_MODE_COUNT;
        ++mode_idx) {
-    set_y_mode_and_delta_angle(mode_idx, mbmi);
+    set_y_mode_and_delta_angle(mode_idx, mbmi,
+                               intra_sf->prune_luma_odd_delta_angles_in_intra);
     RD_STATS this_rd_stats;
     int this_rate, this_rate_tokenonly, s;
     int is_diagonal_mode;
     int64_t this_distortion, this_rd;
+    const int luma_delta_angle = mbmi->angle_delta[PLANE_TYPE_Y];
 
     is_diagonal_mode = av1_is_diagonal_mode(mbmi->mode);
-    if (is_diagonal_mode && !cpi->oxcf.intra_mode_cfg.enable_diagonal_intra)
-      continue;
+    if (is_diagonal_mode && !intra_mode_cfg->enable_diagonal_intra) continue;
     if (av1_is_directional_mode(mbmi->mode) &&
-        !cpi->oxcf.intra_mode_cfg.enable_directional_intra)
+        !intra_mode_cfg->enable_directional_intra)
       continue;
 
     // The smooth prediction mode appears to be more frequently picked
     // than horizontal / vertical smooth prediction modes. Hence treat
     // them differently in speed features.
-    if ((!cpi->oxcf.intra_mode_cfg.enable_smooth_intra ||
-         cpi->sf.intra_sf.disable_smooth_intra) &&
+    if ((!intra_mode_cfg->enable_smooth_intra ||
+         intra_sf->disable_smooth_intra) &&
         (mbmi->mode == SMOOTH_H_PRED || mbmi->mode == SMOOTH_V_PRED))
       continue;
-    if (!cpi->oxcf.intra_mode_cfg.enable_smooth_intra &&
-        mbmi->mode == SMOOTH_PRED)
+    if (!intra_mode_cfg->enable_smooth_intra && mbmi->mode == SMOOTH_PRED)
       continue;
 
     // The functionality of filter intra modes and smooth prediction
     // overlap. Hence smooth prediction is pruned only if all the
     // filter intra modes are enabled.
-    if (cpi->sf.intra_sf.disable_smooth_intra &&
-        cpi->sf.intra_sf.prune_filter_intra_level == 0 &&
-        mbmi->mode == SMOOTH_PRED)
+    if (intra_sf->disable_smooth_intra &&
+        intra_sf->prune_filter_intra_level == 0 && mbmi->mode == SMOOTH_PRED)
       continue;
-    if (!cpi->oxcf.intra_mode_cfg.enable_paeth_intra &&
-        mbmi->mode == PAETH_PRED)
+    if (!intra_mode_cfg->enable_paeth_intra && mbmi->mode == PAETH_PRED)
       continue;
 
     // Skip the evaluation of modes that do not match with the winner mode in
@@ -1266,20 +1579,31 @@ int64_t av1_rd_pick_intra_sby_mode(const AV1_COMP *const cpi, MACROBLOCK *x,
 
     is_directional_mode = av1_is_directional_mode(mbmi->mode);
     if (is_directional_mode && directional_mode_skip_mask[mbmi->mode]) continue;
-    if (is_directional_mode && av1_use_angle_delta(bsize) == 0 &&
-        mbmi->angle_delta[PLANE_TYPE_Y] != 0)
+    if (is_directional_mode &&
+        !(av1_use_angle_delta(bsize) && intra_mode_cfg->enable_angle_delta) &&
+        luma_delta_angle != 0)
       continue;
 
     // Use intra_y_mode_mask speed feature to skip intra mode evaluation.
-    if (!(cpi->sf.intra_sf.intra_y_mode_mask[max_txsize_lookup[bsize]] &
+    if (!(intra_sf->intra_y_mode_mask[max_txsize_lookup[bsize]] &
           (1 << mbmi->mode)))
+      continue;
+
+    if (prune_luma_odd_delta_angles_using_rd_cost(
+            mbmi, intra_modes_rd_cost[mbmi->mode], best_rd,
+            intra_sf->prune_luma_odd_delta_angles_in_intra))
       continue;
 
     const TX_SIZE tx_size = AOMMIN(TX_32X32, max_txsize_lookup[bsize]);
     const int64_t this_model_rd =
         intra_model_rd(&cpi->common, x, 0, bsize, tx_size, /*use_hadamard=*/1);
+
+    const int model_rd_index_for_pruning =
+        get_model_rd_index_for_pruning(x, intra_sf);
+
     if (prune_intra_y_mode(this_model_rd, &best_model_rd, top_intra_model_rd,
-                           cpi->sf.intra_sf.top_intra_model_count_allowed))
+                           intra_sf->top_intra_model_count_allowed,
+                           model_rd_index_for_pruning))
       continue;
 
     // Builds the actual prediction. The prediction from
@@ -1302,13 +1626,16 @@ int64_t av1_rd_pick_intra_sby_mode(const AV1_COMP *const cpi, MACROBLOCK *x,
     }
     this_rate =
         this_rd_stats.rate +
-        intra_mode_info_cost_y(cpi, x, mbmi, bsize, bmode_costs[mbmi->mode]);
+        intra_mode_info_cost_y(cpi, x, mbmi, bsize, bmode_costs[mbmi->mode], 0);
     this_rd = RDCOST(x->rdmult, this_rate, this_distortion);
 
     // Visual quality adjustment based on recon vs source variance.
     if ((cpi->oxcf.mode == ALLINTRA) && (this_rd != INT64_MAX)) {
       this_rd = (int64_t)(this_rd * intra_rd_variance_factor(cpi, x, bsize));
     }
+
+    intra_modes_rd_cost[mbmi->mode][luma_delta_angle + MAX_ANGLE_DELTA + 1] =
+        this_rd;
 
     // Collect mode stats for multiwinner mode processing
     const int txfm_search_done = 1;
@@ -1366,7 +1693,7 @@ int64_t av1_rd_pick_intra_sby_mode(const AV1_COMP *const cpi, MACROBLOCK *x,
 
     for (int mode_idx = 0; mode_idx < x->winner_mode_count; mode_idx++) {
       *mbmi = x->winner_mode_stats[mode_idx].mbmi;
-      if (is_winner_mode_processing_enabled(cpi, mbmi, mbmi->mode)) {
+      if (is_winner_mode_processing_enabled(cpi, x, mbmi, 0)) {
         // Restore color_map of palette mode before winner mode processing
         if (mbmi->palette_mode_info.palette_size[0] > 0) {
           uint8_t *color_map_src =
@@ -1398,7 +1725,7 @@ int64_t av1_rd_pick_intra_sby_mode(const AV1_COMP *const cpi, MACROBLOCK *x,
     // If previous searches use only the default tx type/no R-D optimization of
     // quantized coeffs, do an extra search for the best tx type/better R-D
     // optimization of quantized coeffs
-    if (is_winner_mode_processing_enabled(cpi, mbmi, best_mbmi.mode)) {
+    if (is_winner_mode_processing_enabled(cpi, x, mbmi, 0)) {
       // Set params for winner mode evaluation
       set_mode_eval_params(cpi, x, WINNER_MODE_EVAL);
       *mbmi = best_mbmi;

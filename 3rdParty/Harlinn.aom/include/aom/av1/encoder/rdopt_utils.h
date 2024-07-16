@@ -23,6 +23,7 @@ extern "C" {
 #endif
 
 #define MAX_REF_MV_SEARCH 3
+#define MAX_TX_RD_GATE_LEVEL 5
 #define INTER_INTRA_RD_THRESH_SCALE 9
 #define INTER_INTRA_RD_THRESH_SHIFT 4
 
@@ -230,12 +231,29 @@ static const MODE_DEFINITION av1_mode_defs[MAX_MODES] = {
   { D45_PRED, { INTRA_FRAME, NONE_FRAME } },
 };
 
+// Number of winner modes allowed for different values of the speed feature
+// multi_winner_mode_type.
+static const int winner_mode_count_allowed[MULTI_WINNER_MODE_LEVELS] = {
+  1,  // MULTI_WINNER_MODE_OFF
+  2,  // MULTI_WINNER_MODE_FAST
+  3   // MULTI_WINNER_MODE_DEFAULT
+};
+
 static AOM_INLINE void restore_dst_buf(MACROBLOCKD *xd, const BUFFER_SET dst,
                                        const int num_planes) {
   for (int i = 0; i < num_planes; i++) {
     xd->plane[i].dst.buf = dst.plane[i];
     xd->plane[i].dst.stride = dst.stride[i];
   }
+}
+
+static AOM_INLINE void swap_dst_buf(MACROBLOCKD *xd,
+                                    const BUFFER_SET *dst_bufs[2],
+                                    int num_planes) {
+  const BUFFER_SET *buf0 = dst_bufs[0];
+  dst_bufs[0] = dst_bufs[1];
+  dst_bufs[1] = buf0;
+  restore_dst_buf(xd, *dst_bufs[0], num_planes);
 }
 
 /* clang-format on */
@@ -335,10 +353,12 @@ static INLINE int check_txfm_eval(MACROBLOCK *const x, BLOCK_SIZE bsize,
   // Derive aggressiveness factor for gating the transform search
   // Lower value indicates more aggressiveness. Be more conservative (high
   // value) for (i) low quantizers (ii) regions where prediction is poor
-  const int scale[5] = { INT_MAX, 4, 3, 2, 2 };
+  const int scale[MAX_TX_RD_GATE_LEVEL + 1] = { INT_MAX, 4, 3, 2, 2, 1 };
   const int qslope = 2 * (!is_luma_only);
-  const int level_to_qindex_map[5] = { 0, 0, 0, 80, 100 };
+  const int level_to_qindex_map[MAX_TX_RD_GATE_LEVEL + 1] = { 0,  0,   0,
+                                                              80, 100, 140 };
   int aggr_factor = 4;
+  assert(level <= MAX_TX_RD_GATE_LEVEL);
   const int pred_qindex_thresh = level_to_qindex_map[level];
   if (!is_luma_only && level <= 2) {
     aggr_factor = 4 * AOMMAX(1, ROUND_POWER_OF_TWO((MAXQ - x->qindex) * qslope,
@@ -357,7 +377,9 @@ static INLINE int check_txfm_eval(MACROBLOCK *const x, BLOCK_SIZE bsize,
   // since best_skip_rd is computed after and skip_rd is computed (with 8-bit
   // prediction signals blended for WEDGE/DIFFWTD rather than 16-bit) before
   // interpolation filter search
-  const int luma_mul[5] = { INT_MAX, 32, 29, 17, 17 };
+  const int luma_mul[MAX_TX_RD_GATE_LEVEL + 1] = {
+    INT_MAX, 32, 29, 17, 17, 17
+  };
   int mul_factor = is_luma_only ? luma_mul[level] : 16;
   int64_t rd_thresh =
       (best_skip_rd == INT64_MAX)
@@ -378,11 +400,59 @@ static TX_MODE select_tx_mode(
     return TX_MODE_SELECT;
   }
 }
+
+// Checks the conditions to disable winner mode processing
+static INLINE int bypass_winner_mode_processing(const MACROBLOCK *const x,
+                                                const SPEED_FEATURES *sf,
+                                                int use_txfm_skip,
+                                                int actual_txfm_skip,
+                                                PREDICTION_MODE best_mode) {
+  const int prune_winner_mode_eval_level =
+      sf->winner_mode_sf.prune_winner_mode_eval_level;
+
+  // Disable winner mode processing for blocks with low source variance.
+  // The aggressiveness of this pruning logic reduces as qindex increases.
+  // The threshold decreases linearly from 64 as qindex varies from 0 to 255.
+  if (prune_winner_mode_eval_level == 1) {
+    const unsigned int src_var_thresh = 64 - 48 * x->qindex / (MAXQ + 1);
+    if (x->source_variance < src_var_thresh) return 1;
+  } else if (prune_winner_mode_eval_level == 2) {
+    // Skip winner mode processing of blocks for which transform turns out to be
+    // skip due to nature of eob alone except NEWMV mode.
+    if (!have_newmv_in_inter_mode(best_mode) && actual_txfm_skip) return 1;
+  } else if (prune_winner_mode_eval_level == 3) {
+    // Skip winner mode processing of blocks for which transform turns out to be
+    // skip except NEWMV mode and considered based on the quantizer.
+    // At high quantizers: Take conservative approach by considering transform
+    // skip based on eob alone.
+    // At low quantizers: Consider transform skip based on eob nature or RD cost
+    // evaluation.
+    const int is_txfm_skip =
+        x->qindex > 127 ? actual_txfm_skip : actual_txfm_skip || use_txfm_skip;
+
+    if (!have_newmv_in_inter_mode(best_mode) && is_txfm_skip) return 1;
+  } else if (prune_winner_mode_eval_level >= 4) {
+    // Do not skip winner mode evaluation at low quantizers if normal mode's
+    // transform search was too aggressive.
+    if (sf->rd_sf.perform_coeff_opt >= 5 && x->qindex <= 70) return 0;
+
+    if (use_txfm_skip || actual_txfm_skip) return 1;
+  }
+
+  return 0;
+}
+
 // Checks the conditions to enable winner mode processing
-static INLINE int is_winner_mode_processing_enabled(
-    const struct AV1_COMP *cpi, MB_MODE_INFO *const mbmi,
-    const PREDICTION_MODE best_mode) {
+static INLINE int is_winner_mode_processing_enabled(const struct AV1_COMP *cpi,
+                                                    const MACROBLOCK *const x,
+                                                    MB_MODE_INFO *const mbmi,
+                                                    int actual_txfm_skip) {
   const SPEED_FEATURES *sf = &cpi->sf;
+  const PREDICTION_MODE best_mode = mbmi->mode;
+
+  if (bypass_winner_mode_processing(x, sf, mbmi->skip_txfm, actual_txfm_skip,
+                                    best_mode))
+    return 0;
 
   // TODO(any): Move block independent condition checks to frame level
   if (is_inter_block(mbmi)) {
@@ -445,6 +515,14 @@ static INLINE void set_tx_type_prune(const SPEED_FEATURES *sf,
 static INLINE void set_tx_domain_dist_params(
     const WinnerModeParams *winner_mode_params, TxfmSearchParams *txfm_params,
     int enable_winner_mode_for_tx_domain_dist, int is_winner_mode) {
+  if (txfm_params->use_qm_dist_metric) {
+    // QM-weighted PSNR is computed in transform space, so we need to forcibly
+    // enable the use of tx domain distortion.
+    txfm_params->use_transform_domain_distortion = 1;
+    txfm_params->tx_domain_dist_threshold = 0;
+    return;
+  }
+
   if (!enable_winner_mode_for_tx_domain_dist) {
     txfm_params->use_transform_domain_distortion =
         winner_mode_params->use_transform_domain_distortion[DEFAULT_EVAL];
@@ -474,7 +552,9 @@ static INLINE void set_mode_eval_params(const struct AV1_COMP *cpi,
   const SPEED_FEATURES *sf = &cpi->sf;
   const WinnerModeParams *winner_mode_params = &cpi->winner_mode_params;
   TxfmSearchParams *txfm_params = &x->txfm_search_params;
-  TxfmSearchInfo *txfm_info = &x->txfm_search_info;
+
+  txfm_params->use_qm_dist_metric =
+      cpi->oxcf.tune_cfg.dist_metric == AOM_DIST_METRIC_QM_PSNR;
 
   switch (mode_eval_type) {
     case DEFAULT_EVAL:
@@ -553,17 +633,17 @@ static INLINE void set_mode_eval_params(const struct AV1_COMP *cpi,
       set_tx_type_prune(sf, txfm_params,
                         sf->tx_sf.tx_type_search.winner_mode_tx_type_pruning,
                         1);
-
-      // Reset hash state for winner mode processing. Winner mode and subsequent
-      // transform/mode evaluations (palette/IntraBC) cann't reuse old data as
-      // the decisions would have been sub-optimal
-      // TODO(any): Move the evaluation of palette/IntraBC modes before winner
-      // mode is processed and clean-up the code below
-      reset_hash_records(txfm_info, cpi->sf.tx_sf.use_inter_txb_hash);
-
       break;
     default: assert(0);
   }
+
+  // Rd record collected at a specific mode evaluation stage can not be used
+  // across other evaluation stages as the transform parameters are different.
+  // Hence, reset mb rd record whenever mode evaluation stage type changes.
+  if (txfm_params->mode_eval_type != mode_eval_type)
+    reset_mb_rd_record(x->txfm_search_info.mb_rd_record);
+
+  txfm_params->mode_eval_type = mode_eval_type;
 }
 
 // Similar to store_cfl_required(), but for use during the RDO process,
@@ -610,12 +690,7 @@ static INLINE void store_winner_mode_stats(
   // mode in Inter frames. Clean-up the following code, once support is added
   if (!frame_is_intra_only(cm) && is_palette_mode) return;
 
-  int max_winner_mode_count = frame_is_intra_only(cm)
-                                  ? MAX_WINNER_MODE_COUNT_INTRA
-                                  : MAX_WINNER_MODE_COUNT_INTER;
-  max_winner_mode_count = (multi_winner_mode_type == MULTI_WINNER_MODE_FAST)
-                              ? AOMMIN(max_winner_mode_count, 2)
-                              : max_winner_mode_count;
+  int max_winner_mode_count = winner_mode_count_allowed[multi_winner_mode_type];
   assert(x->winner_mode_count >= 0 &&
          x->winner_mode_count <= max_winner_mode_count);
 
@@ -670,16 +745,49 @@ static INLINE void store_winner_mode_stats(
       AOMMIN(x->winner_mode_count + 1, max_winner_mode_count);
 }
 
-unsigned int av1_get_sby_perpixel_variance(const struct AV1_COMP *cpi,
-                                           const struct buf_2d *ref,
-                                           BLOCK_SIZE bs);
+unsigned int av1_get_perpixel_variance(const AV1_COMP *cpi,
+                                       const MACROBLOCKD *xd,
+                                       const struct buf_2d *ref,
+                                       BLOCK_SIZE bsize, int plane,
+                                       int use_hbd);
 
-unsigned int av1_high_get_sby_perpixel_variance(const struct AV1_COMP *cpi,
-                                                const struct buf_2d *ref,
-                                                BLOCK_SIZE bs, int bd);
+unsigned int av1_get_perpixel_variance_facade(const struct AV1_COMP *cpi,
+                                              const MACROBLOCKD *xd,
+                                              const struct buf_2d *ref,
+                                              BLOCK_SIZE bsize, int plane);
 
 static INLINE int is_mode_intra(PREDICTION_MODE mode) {
   return mode < INTRA_MODE_END;
+}
+
+// This function will copy usable ref_mv_stack[ref_frame][4] and
+// weight[ref_frame][4] information from ref_mv_stack[ref_frame][8] and
+// weight[ref_frame][8].
+static INLINE void av1_copy_usable_ref_mv_stack_and_weight(
+    const MACROBLOCKD *xd, MB_MODE_INFO_EXT *const mbmi_ext,
+    MV_REFERENCE_FRAME ref_frame) {
+  memcpy(mbmi_ext->weight[ref_frame], xd->weight[ref_frame],
+         USABLE_REF_MV_STACK_SIZE * sizeof(xd->weight[0][0]));
+  memcpy(mbmi_ext->ref_mv_stack[ref_frame], xd->ref_mv_stack[ref_frame],
+         USABLE_REF_MV_STACK_SIZE * sizeof(xd->ref_mv_stack[0][0]));
+}
+
+// Get transform rd gate level for the given transform search case.
+static INLINE int get_txfm_rd_gate_level(
+    const int is_masked_compound_enabled,
+    const int txfm_rd_gate_level[TX_SEARCH_CASES], BLOCK_SIZE bsize,
+    TX_SEARCH_CASE tx_search_case, int eval_motion_mode) {
+  assert(tx_search_case < TX_SEARCH_CASES);
+  if (tx_search_case == TX_SEARCH_MOTION_MODE && !eval_motion_mode &&
+      num_pels_log2_lookup[bsize] > 8)
+    return txfm_rd_gate_level[TX_SEARCH_MOTION_MODE];
+  // Enable aggressive gating of transform search only when masked compound type
+  // is enabled.
+  else if (tx_search_case == TX_SEARCH_COMP_TYPE_MODE &&
+           is_masked_compound_enabled)
+    return txfm_rd_gate_level[TX_SEARCH_COMP_TYPE_MODE];
+
+  return txfm_rd_gate_level[TX_SEARCH_DEFAULT];
 }
 
 #ifdef __cplusplus

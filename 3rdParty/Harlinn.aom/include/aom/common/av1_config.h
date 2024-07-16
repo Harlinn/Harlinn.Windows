@@ -65,18 +65,18 @@ typedef struct _Av1Config {
 // Attempts to parse a Sequence Header OBU and set the paramenters of 'config'.
 // Returns 0 upon success, and -1 upon failure. 'buffer' can contain multiple
 // OBUs, but the Sequence Header OBU must be the first OBU within the buffer.
-int get_av1config_from_obu(const uint8_t *buffer, size_t length, int is_annexb,
+HAOM_EXPORT int get_av1config_from_obu(const uint8_t *buffer, size_t length, int is_annexb,
                            Av1Config *config);
 
 // Attempts to parse an AV1 config from 'buffer'. Returns 0 upon success.
 // Returns -1 when 'buffer_length' is less than 4, when passed NULL pointers, or
 // when parsing of 'buffer' fails.
-int read_av1config(const uint8_t *buffer, size_t buffer_length,
+HAOM_EXPORT int read_av1config(const uint8_t *buffer, size_t buffer_length,
                    size_t *bytes_read, Av1Config *config);
 
 // Writes 'config' to 'buffer'. Returns 0 upon successful write to 'buffer'.
 // Returns -1 when passed NULL pointers or when 'capacity' insufficient.
-int write_av1config(const Av1Config *config, size_t capacity,
+HAOM_EXPORT int write_av1config(const Av1Config *config, size_t capacity,
                     size_t *bytes_written, uint8_t *buffer);
 
 #ifdef __cplusplus

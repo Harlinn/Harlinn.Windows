@@ -1,4 +1,3 @@
-#pragma once
 /******************************************************************************
  * $Id$
  *
@@ -32,93 +31,116 @@
 #define OGR_DGN_H_INCLUDED
 
 #include "dgnlib.h"
-#include <ogr/ogrsf_frmts/ogrsf_frmts.h>
+#include "ogrsf_frmts.h"
 
 /************************************************************************/
 /*                            OGRDGNLayer                               */
 /************************************************************************/
 
-class OGRDGNLayer final: public OGRLayer
+class OGRDGNLayer final : public OGRLayer
 {
-    OGRFeatureDefn     *poFeatureDefn;
+    GDALDataset *m_poDS = nullptr;
+    OGRFeatureDefn *poFeatureDefn;
 
-    int                 iNextShapeId;
+    int iNextShapeId;
 
-    DGNHandle           hDGN;
-    int                 bUpdate;
+    DGNHandle hDGN;
+    int bUpdate;
 
-    char               *pszLinkFormat;
+    char *pszLinkFormat;
 
-    OGRFeature         *ElementToFeature( DGNElemCore *, int nRecLevel );
+    OGRFeature *ElementToFeature(DGNElemCore *, int nRecLevel);
 
-    void                ConsiderBrush( DGNElemCore *, const char *pszPen,
-                                       OGRFeature *poFeature );
+    void ConsiderBrush(DGNElemCore *, const char *pszPen,
+                       OGRFeature *poFeature);
 
-    DGNElemCore       **LineStringToElementGroup( OGRLineString *, int );
-    DGNElemCore       **TranslateLabel( OGRFeature * );
+    DGNElemCore **LineStringToElementGroup(const OGRLineString *, int);
+    DGNElemCore **TranslateLabel(OGRFeature *);
 
     // Unused:
     // int                 bHaveSimpleQuery;
-    OGRFeature         *poEvalFeature;
+    OGRFeature *poEvalFeature;
 
-    OGRErr              CreateFeatureWithGeom( OGRFeature *, OGRGeometry * );
+    OGRErr CreateFeatureWithGeom(OGRFeature *, const OGRGeometry *);
 
   public:
-                        OGRDGNLayer( const char * pszName, DGNHandle hDGN,
-                                     int bUpdate );
-                        virtual ~OGRDGNLayer();
+    OGRDGNLayer(GDALDataset *poDS, const char *pszName, DGNHandle hDGN,
+                int bUpdate);
+    virtual ~OGRDGNLayer();
 
-    void                SetSpatialFilter( OGRGeometry * ) override;
-    virtual void        SetSpatialFilter( int iGeomField, OGRGeometry *poGeom ) override
-                { OGRLayer::SetSpatialFilter(iGeomField, poGeom); }
+    void SetSpatialFilter(OGRGeometry *) override;
 
-    void                ResetReading() override;
-    OGRFeature *        GetNextFeature() override;
-    OGRFeature *        GetFeature( GIntBig nFeatureId ) override;
+    virtual void SetSpatialFilter(int iGeomField, OGRGeometry *poGeom) override
+    {
+        OGRLayer::SetSpatialFilter(iGeomField, poGeom);
+    }
 
-    virtual GIntBig     GetFeatureCount( int bForce = TRUE ) override;
-    virtual OGRErr      GetExtent(OGREnvelope *psExtent, int bForce = TRUE) override;
-    virtual OGRErr      GetExtent(int iGeomField, OGREnvelope *psExtent, int bForce) override
-                { return OGRLayer::GetExtent(iGeomField, psExtent, bForce); }
+    void ResetReading() override;
+    OGRFeature *GetNextFeature() override;
+    OGRFeature *GetFeature(GIntBig nFeatureId) override;
 
-    OGRFeatureDefn *    GetLayerDefn() override { return poFeatureDefn; }
+    virtual GIntBig GetFeatureCount(int bForce = TRUE) override;
+    virtual OGRErr GetExtent(OGREnvelope *psExtent, int bForce = TRUE) override;
 
-    int                 TestCapability( const char * ) override;
+    virtual OGRErr GetExtent(int iGeomField, OGREnvelope *psExtent,
+                             int bForce) override
+    {
+        return OGRLayer::GetExtent(iGeomField, psExtent, bForce);
+    }
 
-    OGRErr              ICreateFeature( OGRFeature *poFeature ) override;
+    OGRFeatureDefn *GetLayerDefn() override
+    {
+        return poFeatureDefn;
+    }
+
+    int TestCapability(const char *) override;
+
+    OGRErr ICreateFeature(OGRFeature *poFeature) override;
+
+    GDALDataset *GetDataset() override
+    {
+        return m_poDS;
+    }
 };
 
 /************************************************************************/
 /*                          OGRDGNDataSource                            */
 /************************************************************************/
 
-class OGRDGNDataSource final: public OGRDataSource
+class OGRDGNDataSource final : public OGRDataSource
 {
-    OGRDGNLayer     **papoLayers;
-    int                 nLayers;
+    OGRDGNLayer **papoLayers;
+    int nLayers;
 
-    char                *pszName;
-    DGNHandle           hDGN;
+    char *pszName;
+    DGNHandle hDGN;
 
-    char                **papszOptions;
+    char **papszOptions;
 
   public:
-                        OGRDGNDataSource();
-                        ~OGRDGNDataSource();
+    OGRDGNDataSource();
+    ~OGRDGNDataSource();
 
-    int                 Open( const char *, int bTestOpen, int bUpdate );
-    bool                PreCreate( const char *, char ** );
+    int Open(const char *, int bTestOpen, int bUpdate);
+    bool PreCreate(const char *, char **);
 
-    OGRLayer           *ICreateLayer( const char *,
-                                     OGRSpatialReference * = nullptr,
-                                     OGRwkbGeometryType = wkbUnknown,
-                                     char ** = nullptr ) override;
+    OGRLayer *ICreateLayer(const char *pszName,
+                           const OGRGeomFieldDefn *poGeomFieldDefn,
+                           CSLConstList) override;
 
-    const char          *GetName() override { return pszName; }
-    int                 GetLayerCount() override { return nLayers; }
-    OGRLayer            *GetLayer( int ) override;
+    const char *GetName() override
+    {
+        return pszName;
+    }
 
-    int                 TestCapability( const char * ) override;
+    int GetLayerCount() override
+    {
+        return nLayers;
+    }
+
+    OGRLayer *GetLayer(int) override;
+
+    int TestCapability(const char *) override;
 };
 
 #endif /* ndef OGR_DGN_H_INCLUDED */

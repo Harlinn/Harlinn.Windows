@@ -27,16 +27,14 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
-#include <port/cpl_port.h>
-#include <ogr/ogr_geometry.h>
+#include "cpl_port.h"
+#include "ogr_geometry.h"
 
 #include <cstddef>
 
-#include <port/cpl_error.h>
-#include <ogr/ogr_core.h>
-#include <ogr/ogr_p.h>
-
-CPL_CVSID("$Id$")
+#include "cpl_error.h"
+#include "ogr_core.h"
+#include "ogr_p.h"
 
 /************************************************************************/
 /*                        OGRMultiLineString()                          */
@@ -61,7 +59,7 @@ OGRMultiLineString::OGRMultiLineString() = default;
  * @since GDAL 2.1
  */
 
-OGRMultiLineString::OGRMultiLineString( const OGRMultiLineString& ) = default;
+OGRMultiLineString::OGRMultiLineString(const OGRMultiLineString &) = default;
 
 /************************************************************************/
 /*                       ~OGRMultiLineString()                          */
@@ -83,11 +81,11 @@ OGRMultiLineString::~OGRMultiLineString() = default;
  */
 
 OGRMultiLineString &
-OGRMultiLineString::operator=( const OGRMultiLineString& other )
+OGRMultiLineString::operator=(const OGRMultiLineString &other)
 {
-    if( this != &other )
+    if (this != &other)
     {
-        OGRMultiCurve::operator=( other );
+        OGRMultiCurve::operator=(other);
     }
     return *this;
 }
@@ -109,11 +107,11 @@ OGRMultiLineString *OGRMultiLineString::clone() const
 OGRwkbGeometryType OGRMultiLineString::getGeometryType() const
 
 {
-    if( (flags & OGR_G_3D) && (flags & OGR_G_MEASURED) )
+    if ((flags & OGR_G_3D) && (flags & OGR_G_MEASURED))
         return wkbMultiLineStringZM;
-    else if( flags & OGR_G_MEASURED )
+    else if (flags & OGR_G_MEASURED)
         return wkbMultiLineStringM;
-    else if( flags & OGR_G_3D )
+    else if (flags & OGR_G_3D)
         return wkbMultiLineString25D;
     else
         return wkbMultiLineString;
@@ -123,7 +121,7 @@ OGRwkbGeometryType OGRMultiLineString::getGeometryType() const
 /*                          getGeometryName()                           */
 /************************************************************************/
 
-const char * OGRMultiLineString::getGeometryName() const
+const char *OGRMultiLineString::getGeometryName() const
 
 {
     return "MULTILINESTRING";
@@ -134,16 +132,56 @@ const char * OGRMultiLineString::getGeometryName() const
 /************************************************************************/
 
 OGRBoolean
-OGRMultiLineString::isCompatibleSubType( OGRwkbGeometryType eGeomType ) const
+OGRMultiLineString::isCompatibleSubType(OGRwkbGeometryType eGeomType) const
 {
     return wkbFlatten(eGeomType) == wkbLineString;
+}
+
+/************************************************************************/
+/*                           importFromWkb()                            */
+/************************************************************************/
+
+OGRErr OGRMultiLineString::importFromWkb(const unsigned char *pabyData,
+                                         size_t nSize,
+                                         OGRwkbVariant eWkbVariant,
+                                         size_t &nBytesConsumedOut)
+
+{
+    if (nGeomCount == 1 && nSize >= 9 && flags == 0 && pabyData[0] == wkbNDR &&
+        memcmp(pabyData + 1, "\x05\x00\x00\x00\x01\x00\x00\x00", 8) == 0)
+    {
+        // Optimization to import a Intel-ordered 1-part multilinestring on
+        // top of an existing 1-part multilinestring, to save dynamic memory
+        // allocations.
+        const size_t nDataOffset = 9;
+        size_t nBytesConsumedLineString = 0;
+        // cppcheck-suppress knownConditionTrueFalse
+        if (nSize != static_cast<size_t>(-1))
+            nSize -= nDataOffset;
+        OGRErr eErr = cpl::down_cast<OGRLineString *>(papoGeoms[0])
+                          ->OGRLineString::importFromWkb(
+                              pabyData + nDataOffset, nSize, eWkbVariant,
+                              nBytesConsumedLineString);
+        if (eErr == OGRERR_NONE)
+        {
+            nBytesConsumedOut = nDataOffset + nBytesConsumedLineString;
+        }
+        else
+        {
+            empty();
+        }
+        return eErr;
+    }
+
+    return OGRGeometryCollection::importFromWkbInternal(
+        pabyData, nSize, /*nRecLevel=*/0, eWkbVariant, nBytesConsumedOut);
 }
 
 /************************************************************************/
 /*                            exportToWkt()                             */
 /************************************************************************/
 
-std::string OGRMultiLineString::exportToWkt(const OGRWktOptions& opts,
+std::string OGRMultiLineString::exportToWkt(const OGRWktOptions &opts,
                                             OGRErr *err) const
 
 {
@@ -154,8 +192,8 @@ std::string OGRMultiLineString::exportToWkt(const OGRWktOptions& opts,
 /*                         hasCurveGeometry()                           */
 /************************************************************************/
 
-OGRBoolean OGRMultiLineString::hasCurveGeometry(
-    int /* bLookForNonLinear */ ) const
+OGRBoolean
+OGRMultiLineString::hasCurveGeometry(int /* bLookForNonLinear */) const
 {
     return false;
 }
@@ -173,9 +211,9 @@ OGRBoolean OGRMultiLineString::hasCurveGeometry(
  * @return new geometry.
  */
 
-OGRMultiCurve* OGRMultiLineString::CastToMultiCurve( OGRMultiLineString* poMLS )
+OGRMultiCurve *OGRMultiLineString::CastToMultiCurve(OGRMultiLineString *poMLS)
 {
-    OGRMultiCurve* poMLC = new OGRMultiCurve();
+    OGRMultiCurve *poMLC = new OGRMultiCurve();
     TransferMembersAndDestroy(poMLS, poMLC);
     return poMLC;
 }

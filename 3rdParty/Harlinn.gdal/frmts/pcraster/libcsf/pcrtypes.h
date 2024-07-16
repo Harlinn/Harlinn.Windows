@@ -1,4 +1,3 @@
-#pragma once
 #ifndef INCLUDED_PCRTYPES
 # define INCLUDED_PCRTYPES
 

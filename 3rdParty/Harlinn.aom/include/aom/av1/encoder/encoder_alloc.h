@@ -13,9 +13,13 @@
 #define AOM_AV1_ENCODER_ENCODER_ALLOC_H_
 
 #include "av1/encoder/block.h"
+#include "av1/encoder/encodeframe_utils.h"
 #include "av1/encoder/encoder.h"
 #include "av1/encoder/encodetxb.h"
 #include "av1/encoder/ethread.h"
+#include "av1/encoder/global_motion_facade.h"
+#include "av1/encoder/intra_mode_search_utils.h"
+#include "av1/encoder/pickcdef.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -23,11 +27,9 @@ extern "C" {
 
 static AOM_INLINE void dealloc_context_buffers_ext(
     MBMIExtFrameBufferInfo *mbmi_ext_info) {
-  if (mbmi_ext_info->frame_base) {
-    aom_free(mbmi_ext_info->frame_base);
-    mbmi_ext_info->frame_base = NULL;
-    mbmi_ext_info->alloc_size = 0;
-  }
+  aom_free(mbmi_ext_info->frame_base);
+  mbmi_ext_info->frame_base = NULL;
+  mbmi_ext_info->alloc_size = 0;
 }
 
 static AOM_INLINE void alloc_context_buffers_ext(
@@ -45,7 +47,7 @@ static AOM_INLINE void alloc_context_buffers_ext(
     dealloc_context_buffers_ext(mbmi_ext_info);
     CHECK_MEM_ERROR(
         cm, mbmi_ext_info->frame_base,
-        aom_calloc(new_ext_mi_size, sizeof(*mbmi_ext_info->frame_base)));
+        aom_malloc(new_ext_mi_size * sizeof(*mbmi_ext_info->frame_base)));
     mbmi_ext_info->alloc_size = new_ext_mi_size;
   }
   // The stride needs to be updated regardless of whether new allocation
@@ -55,43 +57,49 @@ static AOM_INLINE void alloc_context_buffers_ext(
 
 static AOM_INLINE void alloc_compressor_data(AV1_COMP *cpi) {
   AV1_COMMON *cm = &cpi->common;
-  TokenInfo *token_info = &cpi->token_info;
+  CommonModeInfoParams *const mi_params = &cm->mi_params;
 
-  if (av1_alloc_context_buffers(cm, cm->width, cm->height)) {
+  // Setup mi_params
+  mi_params->set_mb_mi(mi_params, cm->width, cm->height,
+                       cpi->sf.part_sf.default_min_partition_size);
+
+  if (!is_stat_generation_stage(cpi)) av1_alloc_txb_buf(cpi);
+
+  aom_free(cpi->td.mv_costs_alloc);
+  cpi->td.mv_costs_alloc = NULL;
+  // Avoid the memory allocation of 'mv_costs_alloc' for allintra encoding
+  // mode.
+  if (cpi->oxcf.kf_cfg.key_freq_max != 0) {
+    CHECK_MEM_ERROR(cm, cpi->td.mv_costs_alloc,
+                    (MvCosts *)aom_calloc(1, sizeof(*cpi->td.mv_costs_alloc)));
+    cpi->td.mb.mv_costs = cpi->td.mv_costs_alloc;
+  }
+
+  av1_setup_shared_coeff_buffer(cm->seq_params, &cpi->td.shared_coeff_buf,
+                                cm->error);
+  if (av1_setup_sms_tree(cpi, &cpi->td)) {
+    aom_internal_error(cm->error, AOM_CODEC_MEM_ERROR,
+                       "Failed to allocate SMS tree");
+  }
+  cpi->td.firstpass_ctx =
+      av1_alloc_pmc(cpi, BLOCK_16X16, &cpi->td.shared_coeff_buf);
+  if (!cpi->td.firstpass_ctx)
+    aom_internal_error(cm->error, AOM_CODEC_MEM_ERROR,
+                       "Failed to allocate PICK_MODE_CONTEXT");
+}
+
+// Allocate mbmi buffers which are used to store mode information at block
+// level.
+static AOM_INLINE void alloc_mb_mode_info_buffers(AV1_COMP *const cpi) {
+  AV1_COMMON *const cm = &cpi->common;
+  if (av1_alloc_context_buffers(cm, cm->width, cm->height,
+                                cpi->sf.part_sf.default_min_partition_size)) {
     aom_internal_error(cm->error, AOM_CODEC_MEM_ERROR,
                        "Failed to allocate context buffers");
   }
 
-  if (!is_stat_generation_stage(cpi)) {
-    av1_alloc_txb_buf(cpi);
-
+  if (!is_stat_generation_stage(cpi))
     alloc_context_buffers_ext(cm, &cpi->mbmi_ext_info);
-  }
-
-  free_token_info(token_info);
-
-  if (!is_stat_generation_stage(cpi)) {
-    alloc_token_info(cm, token_info);
-  }
-  if (cpi->td.mb.mv_costs) {
-    aom_free(cpi->td.mb.mv_costs);
-    cpi->td.mb.mv_costs = NULL;
-  }
-  CHECK_MEM_ERROR(cm, cpi->td.mb.mv_costs,
-                  (MvCosts *)aom_calloc(1, sizeof(MvCosts)));
-
-  if (cpi->td.mb.dv_costs) {
-    aom_free(cpi->td.mb.dv_costs);
-    cpi->td.mb.dv_costs = NULL;
-  }
-  CHECK_MEM_ERROR(cm, cpi->td.mb.dv_costs,
-                  (IntraBCMVCosts *)aom_malloc(sizeof(*cpi->td.mb.dv_costs)));
-
-  av1_setup_shared_coeff_buffer(cm->seq_params, &cpi->td.shared_coeff_buf,
-                                cm->error);
-  av1_setup_sms_tree(cpi, &cpi->td);
-  cpi->td.firstpass_ctx =
-      av1_alloc_pmc(cpi, BLOCK_16X16, &cpi->td.shared_coeff_buf);
 }
 
 static AOM_INLINE void realloc_segmentation_maps(AV1_COMP *cpi) {
@@ -177,11 +185,15 @@ static AOM_INLINE void release_compound_type_rd_buffers(
 static AOM_INLINE void dealloc_compressor_data(AV1_COMP *cpi) {
   AV1_COMMON *const cm = &cpi->common;
   TokenInfo *token_info = &cpi->token_info;
-
+  AV1EncRowMultiThreadInfo *const enc_row_mt = &cpi->mt_info.enc_row_mt;
+  const int num_planes = av1_num_planes(cm);
   dealloc_context_buffers_ext(&cpi->mbmi_ext_info);
 
   aom_free(cpi->tile_data);
   cpi->tile_data = NULL;
+  cpi->allocated_tiles = 0;
+  enc_row_mt->allocated_tile_cols = 0;
+  enc_row_mt->allocated_tile_rows = 0;
 
   // Delete sementation map
   aom_free(cpi->enc_seg.map);
@@ -196,6 +208,9 @@ static AOM_INLINE void dealloc_compressor_data(AV1_COMP *cpi) {
   aom_free(cpi->ssim_rdmult_scaling_factors);
   cpi->ssim_rdmult_scaling_factors = NULL;
 
+  aom_free(cpi->tpl_rdmult_scaling_factors);
+  cpi->tpl_rdmult_scaling_factors = NULL;
+
 #if CONFIG_TUNE_VMAF
   aom_free(cpi->vmaf_info.rdmult_scaling_factors);
   cpi->vmaf_info.rdmult_scaling_factors = NULL;
@@ -209,17 +224,32 @@ static AOM_INLINE void dealloc_compressor_data(AV1_COMP *cpi) {
   aom_free_frame_buffer(&cpi->butteraugli_info.resized_source);
 #endif
 
+#if CONFIG_SALIENCY_MAP
+  aom_free(cpi->saliency_map);
+  aom_free(cpi->sm_scaling_factor);
+#endif
+
   release_obmc_buffers(&cpi->td.mb.obmc_buffer);
 
-  if (cpi->td.mb.mv_costs) {
-    aom_free(cpi->td.mb.mv_costs);
-    cpi->td.mb.mv_costs = NULL;
-  }
+  aom_free(cpi->td.mv_costs_alloc);
+  cpi->td.mv_costs_alloc = NULL;
+  aom_free(cpi->td.dv_costs_alloc);
+  cpi->td.dv_costs_alloc = NULL;
 
-  if (cpi->td.mb.dv_costs) {
-    aom_free(cpi->td.mb.dv_costs);
-    cpi->td.mb.dv_costs = NULL;
-  }
+  aom_free(cpi->td.mb.sb_stats_cache);
+  cpi->td.mb.sb_stats_cache = NULL;
+
+  aom_free(cpi->td.mb.sb_fp_stats);
+  cpi->td.mb.sb_fp_stats = NULL;
+
+#if CONFIG_PARTITION_SEARCH_ORDER
+  aom_free(cpi->td.mb.rdcost);
+  cpi->td.mb.rdcost = NULL;
+#endif
+
+  av1_free_pc_tree_recursive(cpi->td.pc_root, num_planes, 0, 0,
+                             cpi->sf.part_sf.partition_search_type);
+  cpi->td.pc_root = NULL;
 
   for (int i = 0; i < 2; i++)
     for (int j = 0; j < 2; j++) {
@@ -227,21 +257,47 @@ static AOM_INLINE void dealloc_compressor_data(AV1_COMP *cpi) {
       cpi->td.mb.intrabc_hash_info.hash_value_buffer[i][j] = NULL;
     }
 
+  av1_hash_table_destroy(&cpi->td.mb.intrabc_hash_info.intrabc_hash_table);
+
   aom_free(cm->tpl_mvs);
   cm->tpl_mvs = NULL;
 
-  if (cpi->td.pixel_gradient_info) {
-    aom_free(cpi->td.pixel_gradient_info);
-    cpi->td.pixel_gradient_info = NULL;
-  }
+  aom_free(cpi->td.pixel_gradient_info);
+  cpi->td.pixel_gradient_info = NULL;
 
-  if (cpi->td.vt64x64) {
-    aom_free(cpi->td.vt64x64);
-    cpi->td.vt64x64 = NULL;
-  }
+  aom_free(cpi->td.src_var_info_of_4x4_sub_blocks);
+  cpi->td.src_var_info_of_4x4_sub_blocks = NULL;
 
-  av1_free_pmc(cpi->td.firstpass_ctx, av1_num_planes(cm));
+  aom_free(cpi->td.vt64x64);
+  cpi->td.vt64x64 = NULL;
+
+  av1_free_pmc(cpi->td.firstpass_ctx, num_planes);
   cpi->td.firstpass_ctx = NULL;
+
+  const int is_highbitdepth = cpi->tf_ctx.is_highbitdepth;
+  // This call ensures that the buffers allocated by tf_alloc_and_reset_data()
+  // in av1_temporal_filter() for single-threaded encode are freed in case an
+  // error is encountered during temporal filtering (due to early termination
+  // tf_dealloc_data() in av1_temporal_filter() would not be invoked).
+  tf_dealloc_data(&cpi->td.tf_data, is_highbitdepth);
+
+  // This call ensures that tpl_tmp_buffers for single-threaded encode are freed
+  // in case of an error during tpl.
+  tpl_dealloc_temp_buffers(&cpi->td.tpl_tmp_buffers);
+
+  // This call ensures that the global motion (gm) data buffers for
+  // single-threaded encode are freed in case of an error during gm.
+  gm_dealloc_data(&cpi->td.gm_data);
+
+  // This call ensures that CDEF search context buffers are deallocated in case
+  // of an error during cdef search.
+  av1_cdef_dealloc_data(cpi->cdef_search_ctx);
+  aom_free(cpi->cdef_search_ctx);
+  cpi->cdef_search_ctx = NULL;
+
+  av1_dealloc_mb_data(&cpi->td.mb, num_planes);
+
+  av1_dealloc_mb_wiener_var_pred_buf(&cpi->td);
 
   av1_free_txb_buf(cpi);
   av1_free_context_buffers(cm);
@@ -249,18 +305,26 @@ static AOM_INLINE void dealloc_compressor_data(AV1_COMP *cpi) {
   aom_free_frame_buffer(&cpi->last_frame_uf);
 #if !CONFIG_REALTIME_ONLY
   av1_free_restoration_buffers(cm);
+  av1_free_firstpass_data(&cpi->firstpass_data);
 #endif
 
   if (!is_stat_generation_stage(cpi)) {
-    int num_cdef_workers =
-        av1_get_num_mod_workers_for_alloc(&cpi->ppi->p_mt_info, MOD_CDEF);
     av1_free_cdef_buffers(cm, &cpi->ppi->p_mt_info.cdef_worker,
-                          &cpi->mt_info.cdef_sync, num_cdef_workers);
+                          &cpi->mt_info.cdef_sync);
   }
+
+  for (int plane = 0; plane < num_planes; plane++) {
+    aom_free(cpi->pick_lr_ctxt.rusi[plane]);
+    cpi->pick_lr_ctxt.rusi[plane] = NULL;
+  }
+  aom_free(cpi->pick_lr_ctxt.dgd_avg);
+  cpi->pick_lr_ctxt.dgd_avg = NULL;
 
   aom_free_frame_buffer(&cpi->trial_frame_rst);
   aom_free_frame_buffer(&cpi->scaled_source);
   aom_free_frame_buffer(&cpi->scaled_last_source);
+  aom_free_frame_buffer(&cpi->orig_source);
+  aom_free_frame_buffer(&cpi->svc.source_last_TL0);
 
   free_token_info(token_info);
 
@@ -282,35 +346,67 @@ static AOM_INLINE void dealloc_compressor_data(AV1_COMP *cpi) {
 #endif
   if (cpi->film_grain_table) {
     aom_film_grain_table_free(cpi->film_grain_table);
+    aom_free(cpi->film_grain_table);
     cpi->film_grain_table = NULL;
   }
 
   if (cpi->ppi->use_svc) av1_free_svc_cyclic_refresh(cpi);
+  aom_free(cpi->svc.layer_context);
+  cpi->svc.layer_context = NULL;
 
-  if (cpi->consec_zero_mv) {
-    aom_free(cpi->consec_zero_mv);
-    cpi->consec_zero_mv = NULL;
-  }
+  aom_free(cpi->consec_zero_mv);
+  cpi->consec_zero_mv = NULL;
+  cpi->consec_zero_mv_alloc_size = 0;
+
+  aom_free(cpi->src_sad_blk_64x64);
+  cpi->src_sad_blk_64x64 = NULL;
 
   aom_free(cpi->mb_weber_stats);
   cpi->mb_weber_stats = NULL;
+
+  if (cpi->oxcf.enable_rate_guide_deltaq) {
+    aom_free(cpi->prep_rate_estimates);
+    cpi->prep_rate_estimates = NULL;
+
+    aom_free(cpi->ext_rate_distribution);
+    cpi->ext_rate_distribution = NULL;
+  }
 
   aom_free(cpi->mb_delta_q);
   cpi->mb_delta_q = NULL;
 }
 
-static AOM_INLINE void allocate_gradient_info_for_hog(
-    PixelLevelGradientInfo **pixel_gradient_info, AV1_COMP *cpi) {
-  const AV1_COMMON *const cm = &cpi->common;
+static AOM_INLINE void allocate_gradient_info_for_hog(AV1_COMP *cpi) {
+  if (!is_gradient_caching_for_hog_enabled(cpi)) return;
 
-  if (!*pixel_gradient_info) {
+  PixelLevelGradientInfo *pixel_gradient_info = cpi->td.pixel_gradient_info;
+  if (!pixel_gradient_info) {
+    const AV1_COMMON *const cm = &cpi->common;
     const int plane_types = PLANE_TYPES >> cm->seq_params->monochrome;
-    CHECK_MEM_ERROR(cm, *pixel_gradient_info,
-                    aom_malloc(sizeof(**pixel_gradient_info) * plane_types *
-                               MAX_SB_SQUARE));
+    CHECK_MEM_ERROR(
+        cm, pixel_gradient_info,
+        aom_malloc(sizeof(*pixel_gradient_info) * plane_types * MAX_SB_SQUARE));
+    cpi->td.pixel_gradient_info = pixel_gradient_info;
   }
 
-  cpi->td.mb.pixel_gradient_info = *pixel_gradient_info;
+  cpi->td.mb.pixel_gradient_info = pixel_gradient_info;
+}
+
+static AOM_INLINE void allocate_src_var_of_4x4_sub_block_buf(AV1_COMP *cpi) {
+  if (!is_src_var_for_4x4_sub_blocks_caching_enabled(cpi)) return;
+
+  Block4x4VarInfo *source_variance_info =
+      cpi->td.src_var_info_of_4x4_sub_blocks;
+  if (!source_variance_info) {
+    const AV1_COMMON *const cm = &cpi->common;
+    const BLOCK_SIZE sb_size = cm->seq_params->sb_size;
+    const int mi_count_in_sb = mi_size_wide[sb_size] * mi_size_high[sb_size];
+    CHECK_MEM_ERROR(cm, source_variance_info,
+                    aom_malloc(sizeof(*source_variance_info) * mi_count_in_sb));
+    cpi->td.src_var_info_of_4x4_sub_blocks = source_variance_info;
+  }
+
+  cpi->td.mb.src_var_info_of_4x4_sub_blocks = source_variance_info;
 }
 
 static AOM_INLINE void variance_partition_alloc(AV1_COMP *cpi) {
@@ -329,79 +425,6 @@ static AOM_INLINE void variance_partition_alloc(AV1_COMP *cpi) {
   }
 }
 
-static AOM_INLINE void alloc_altref_frame_buffer(AV1_COMP *cpi) {
-  AV1_COMMON *cm = &cpi->common;
-  const SequenceHeader *const seq_params = cm->seq_params;
-  const AV1EncoderConfig *oxcf = &cpi->oxcf;
-
-  // When lag_in_frames <= 1, alt-ref frames are not enabled. In this case,
-  // temporal filtering of key frames is disabled as well. Hence alt_ref_buffer
-  // allocation is avoided.
-  if (oxcf->gf_cfg.lag_in_frames <= 1) return;
-
-  // TODO(agrange) Check if ARF is enabled and skip allocation if not.
-  if (aom_realloc_frame_buffer(
-          &cpi->ppi->alt_ref_buffer, oxcf->frm_dim_cfg.width,
-          oxcf->frm_dim_cfg.height, seq_params->subsampling_x,
-          seq_params->subsampling_y, seq_params->use_highbitdepth,
-          cpi->oxcf.border_in_pixels, cm->features.byte_alignment, NULL, NULL,
-          NULL, cpi->oxcf.tool_cfg.enable_global_motion))
-    aom_internal_error(cm->error, AOM_CODEC_MEM_ERROR,
-                       "Failed to allocate altref buffer");
-}
-
-static AOM_INLINE void alloc_util_frame_buffers(AV1_COMP *cpi) {
-  AV1_COMMON *const cm = &cpi->common;
-  const SequenceHeader *const seq_params = cm->seq_params;
-  const int byte_alignment = cm->features.byte_alignment;
-  if (aom_realloc_frame_buffer(
-          &cpi->last_frame_uf, cm->width, cm->height, seq_params->subsampling_x,
-          seq_params->subsampling_y, seq_params->use_highbitdepth,
-          cpi->oxcf.border_in_pixels, byte_alignment, NULL, NULL, NULL, 0))
-    aom_internal_error(cm->error, AOM_CODEC_MEM_ERROR,
-                       "Failed to allocate last frame buffer");
-
-  // The frame buffer trial_frame_rst is used during loop restoration filter
-  // search. Hence it is allocated only when loop restoration is used.
-  const int use_restoration = cm->seq_params->enable_restoration &&
-                              !cm->features.all_lossless &&
-                              !cm->tiles.large_scale;
-  if (use_restoration) {
-    if (aom_realloc_frame_buffer(
-            &cpi->trial_frame_rst, cm->superres_upscaled_width,
-            cm->superres_upscaled_height, seq_params->subsampling_x,
-            seq_params->subsampling_y, seq_params->use_highbitdepth,
-            AOM_RESTORATION_FRAME_BORDER, byte_alignment, NULL, NULL, NULL, 0))
-      aom_internal_error(cm->error, AOM_CODEC_MEM_ERROR,
-                         "Failed to allocate trial restored frame buffer");
-  }
-
-  if (aom_realloc_frame_buffer(
-          &cpi->scaled_source, cm->width, cm->height, seq_params->subsampling_x,
-          seq_params->subsampling_y, seq_params->use_highbitdepth,
-          cpi->oxcf.border_in_pixels, byte_alignment, NULL, NULL, NULL,
-          cpi->oxcf.tool_cfg.enable_global_motion))
-    aom_internal_error(cm->error, AOM_CODEC_MEM_ERROR,
-                       "Failed to allocate scaled source buffer");
-
-  // The frame buffer cpi->scaled_last_source is used to hold the previous
-  // source frame information. As the previous source frame buffer allocation in
-  // the lookahead queue is avoided for all-intra frame encoding,
-  // cpi->unscaled_last_source will be NULL in such cases. As
-  // cpi->unscaled_last_source is NULL, cpi->scaled_last_source will not be used
-  // for all-intra frame encoding. Hence, the buffer is allocated conditionally.
-  if (cpi->oxcf.kf_cfg.key_freq_max > 0) {
-    if (aom_realloc_frame_buffer(
-            &cpi->scaled_last_source, cm->width, cm->height,
-            seq_params->subsampling_x, seq_params->subsampling_y,
-            seq_params->use_highbitdepth, cpi->oxcf.border_in_pixels,
-            byte_alignment, NULL, NULL, NULL,
-            cpi->oxcf.tool_cfg.enable_global_motion))
-      aom_internal_error(cm->error, AOM_CODEC_MEM_ERROR,
-                         "Failed to allocate scaled last source buffer");
-  }
-}
-
 static AOM_INLINE YV12_BUFFER_CONFIG *realloc_and_scale_source(
     AV1_COMP *cpi, int scaled_width, int scaled_height) {
   AV1_COMMON *cm = &cpi->common;
@@ -416,16 +439,88 @@ static AOM_INLINE YV12_BUFFER_CONFIG *realloc_and_scale_source(
           &cpi->scaled_source, scaled_width, scaled_height,
           cm->seq_params->subsampling_x, cm->seq_params->subsampling_y,
           cm->seq_params->use_highbitdepth, AOM_BORDER_IN_PIXELS,
-          cm->features.byte_alignment, NULL, NULL, NULL,
-          cpi->oxcf.tool_cfg.enable_global_motion))
+          cm->features.byte_alignment, NULL, NULL, NULL, cpi->alloc_pyramid, 0))
     aom_internal_error(cm->error, AOM_CODEC_MEM_ERROR,
                        "Failed to reallocate scaled source buffer");
   assert(cpi->scaled_source.y_crop_width == scaled_width);
   assert(cpi->scaled_source.y_crop_height == scaled_height);
-  av1_resize_and_extend_frame_nonnormative(
-      cpi->unscaled_source, &cpi->scaled_source, (int)cm->seq_params->bit_depth,
-      num_planes);
+  if (!av1_resize_and_extend_frame_nonnormative(
+          cpi->unscaled_source, &cpi->scaled_source,
+          (int)cm->seq_params->bit_depth, num_planes))
+    aom_internal_error(cm->error, AOM_CODEC_MEM_ERROR,
+                       "Failed to reallocate buffers during resize");
   return &cpi->scaled_source;
+}
+
+// Deallocate allocated thread_data.
+static AOM_INLINE void free_thread_data(AV1_PRIMARY *ppi) {
+  PrimaryMultiThreadInfo *const p_mt_info = &ppi->p_mt_info;
+  const int num_tf_workers =
+      AOMMIN(p_mt_info->num_mod_workers[MOD_TF], p_mt_info->num_workers);
+  const int num_tpl_workers =
+      AOMMIN(p_mt_info->num_mod_workers[MOD_TPL], p_mt_info->num_workers);
+  const int is_highbitdepth = ppi->seq_params.use_highbitdepth;
+  const int num_planes = ppi->seq_params.monochrome ? 1 : MAX_MB_PLANE;
+  for (int t = 1; t < p_mt_info->num_workers; ++t) {
+    EncWorkerData *const thread_data = &p_mt_info->tile_thr_data[t];
+    thread_data->td = thread_data->original_td;
+    ThreadData *const td = thread_data->td;
+    if (!td) continue;
+    aom_free(td->tctx);
+    aom_free(td->palette_buffer);
+    aom_free(td->tmp_conv_dst);
+    release_compound_type_rd_buffers(&td->comp_rd_buffer);
+    for (int j = 0; j < 2; ++j) {
+      aom_free(td->tmp_pred_bufs[j]);
+    }
+    aom_free(td->pixel_gradient_info);
+    aom_free(td->src_var_info_of_4x4_sub_blocks);
+    release_obmc_buffers(&td->obmc_buffer);
+    aom_free(td->vt64x64);
+
+    for (int x = 0; x < 2; x++) {
+      for (int y = 0; y < 2; y++) {
+        aom_free(td->hash_value_buffer[x][y]);
+        td->hash_value_buffer[x][y] = NULL;
+      }
+    }
+    aom_free(td->mv_costs_alloc);
+    td->mv_costs_alloc = NULL;
+    aom_free(td->dv_costs_alloc);
+    td->dv_costs_alloc = NULL;
+    aom_free(td->counts);
+    av1_free_pmc(td->firstpass_ctx, num_planes);
+    td->firstpass_ctx = NULL;
+    av1_free_shared_coeff_buffer(&td->shared_coeff_buf);
+    av1_free_sms_tree(td);
+    // This call ensures that the buffers allocated by tf_alloc_and_reset_data()
+    // in prepare_tf_workers() for MT encode are freed in case an error is
+    // encountered during temporal filtering (due to early termination
+    // tf_dealloc_thread_data() in av1_tf_do_filtering_mt() would not be
+    // invoked).
+    if (t < num_tf_workers) tf_dealloc_data(&td->tf_data, is_highbitdepth);
+    // This call ensures that tpl_tmp_buffers for MT encode are freed in case of
+    // an error during tpl.
+    if (t < num_tpl_workers) tpl_dealloc_temp_buffers(&td->tpl_tmp_buffers);
+    // This call ensures that the buffers in gm_data for MT encode are freed in
+    // case of an error during gm.
+    gm_dealloc_data(&td->gm_data);
+    av1_dealloc_mb_data(&td->mb, num_planes);
+    aom_free(td->mb.sb_stats_cache);
+    td->mb.sb_stats_cache = NULL;
+    aom_free(td->mb.sb_fp_stats);
+    td->mb.sb_fp_stats = NULL;
+#if CONFIG_PARTITION_SEARCH_ORDER
+    aom_free(td->mb.rdcost);
+    td->mb.rdcost = NULL;
+#endif
+    av1_free_pc_tree_recursive(td->pc_root, num_planes, 0, 0, SEARCH_PARTITION);
+    td->pc_root = NULL;
+    av1_dealloc_mb_wiener_var_pred_buf(td);
+    aom_free(td);
+    thread_data->td = NULL;
+    thread_data->original_td = NULL;
+  }
 }
 
 #ifdef __cplusplus

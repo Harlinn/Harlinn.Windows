@@ -5,10 +5,13 @@
 
 #include "lib/jxl/enc_bit_writer.h"
 
+#include <jxl/types.h>
 #include <string.h>  // memcpy
 
 #include "lib/jxl/base/byte_order.h"
+#include "lib/jxl/base/printf_macros.h"
 #include "lib/jxl/dec_bit_reader.h"
+#include "lib/jxl/enc_aux_out.h"
 
 namespace jxl {
 
@@ -26,7 +29,7 @@ BitWriter::Allotment::Allotment(BitWriter* JXL_RESTRICT writer, size_t max_bits)
 BitWriter::Allotment::~Allotment() {
   if (!called_) {
     // Not calling is a bug - unused storage will not be reclaimed.
-    JXL_ABORT("Did not call Allotment::ReclaimUnused");
+    JXL_UNREACHABLE("Did not call Allotment::ReclaimUnused");
   }
 }
 
@@ -36,6 +39,26 @@ void BitWriter::Allotment::FinishedHistogram(BitWriter* JXL_RESTRICT writer) {
   JXL_ASSERT(histogram_bits_ == 0);  // Do not call twice
   JXL_ASSERT(writer->BitsWritten() >= prev_bits_written_);
   histogram_bits_ = writer->BitsWritten() - prev_bits_written_;
+}
+
+void BitWriter::Allotment::ReclaimAndCharge(BitWriter* JXL_RESTRICT writer,
+                                            size_t layer,
+                                            AuxOut* JXL_RESTRICT aux_out) {
+  size_t used_bits = 0;
+  size_t unused_bits = 0;
+  PrivateReclaim(writer, &used_bits, &unused_bits);
+
+#if JXL_FALSE
+  printf("Layer %s bits: max %" PRIuS " used %" PRIuS " unused %" PRIuS "\n",
+         LayerName(layer), MaxBits(), used_bits, unused_bits);
+#endif
+
+  // This may be a nested call with aux_out == null. Whenever we know that
+  // aux_out is null, we can call ReclaimUnused directly.
+  if (aux_out != nullptr) {
+    aux_out->layers[layer].total_bits += used_bits;
+    aux_out->layers[layer].histogram_bits += HistogramBits();
+  }
 }
 
 void BitWriter::Allotment::PrivateReclaim(BitWriter* JXL_RESTRICT writer,
@@ -56,7 +79,7 @@ void BitWriter::Allotment::PrivateReclaim(BitWriter* JXL_RESTRICT writer,
   writer->storage_.resize(writer->storage_.size() - unused_bytes);
   writer->current_allotment_ = parent_;
   // Ensure we don't also charge the parent for these bits.
-  auto parent = parent_;
+  auto* parent = parent_;
   while (parent != nullptr) {
     parent->prev_bits_written_ += *used_bits;
     parent = parent->parent_;
@@ -64,7 +87,7 @@ void BitWriter::Allotment::PrivateReclaim(BitWriter* JXL_RESTRICT writer,
 }
 
 void BitWriter::AppendByteAligned(const Span<const uint8_t>& span) {
-  if (!span.size()) return;
+  if (span.empty()) return;
   storage_.resize(storage_.size() + span.size() + 1);  // extra zero padding
 
   // Concatenate by copying bytes because both source and destination are bytes.
@@ -82,6 +105,20 @@ void BitWriter::AppendByteAligned(const BitWriter& other) {
   JXL_ASSERT(other.BitsWritten() / kBitsPerByte != 0);
 
   AppendByteAligned(other.GetSpan());
+}
+
+void BitWriter::AppendUnaligned(const BitWriter& other) {
+  Allotment allotment(this, other.BitsWritten());
+  size_t full_bytes = other.BitsWritten() / kBitsPerByte;
+  size_t remaining_bits = other.BitsWritten() % kBitsPerByte;
+  for (size_t i = 0; i < full_bytes; ++i) {
+    Write(8, other.storage_[i]);
+  }
+  if (remaining_bits > 0) {
+    Write(remaining_bits,
+          other.storage_[full_bytes] & ((1u << remaining_bits) - 1));
+  }
+  allotment.ReclaimAndCharge(this, 0, nullptr);
 }
 
 void BitWriter::AppendByteAligned(const std::vector<BitWriter>& others) {
@@ -104,8 +141,10 @@ void BitWriter::AppendByteAligned(const std::vector<BitWriter>& others) {
   size_t pos = BitsWritten() / kBitsPerByte;
   for (const BitWriter& writer : others) {
     const Span<const uint8_t> span = writer.GetSpan();
-    memcpy(storage_.data() + pos, span.data(), span.size());
-    pos += span.size();
+    if (!span.empty()) {
+      memcpy(storage_.data() + pos, span.data(), span.size());
+      pos += span.size();
+    }
   }
   storage_[pos++] = 0;  // for next Write
   JXL_ASSERT(pos <= storage_.size());
@@ -142,49 +181,6 @@ void BitWriter::AppendByteAligned(
   bits_written_ += other_bytes * kBitsPerByte;
 }
 
-BitWriter& BitWriter::operator+=(const BitWriter& other) {
-  // Required for correctness, otherwise owned[bits_written_] is out of bounds.
-  if (other.bits_written_ == 0) return *this;
-  const size_t other_bytes = DivCeil(other.bits_written_, kBitsPerByte);
-  const size_t prev_bytes = storage_.size();
-  storage_.resize(prev_bytes + other_bytes + 1);  // extra zero padding
-
-  if (bits_written_ % kBitsPerByte == 0) {
-    // Only copy fully-initialized bytes.
-    const size_t full_bytes = other.bits_written_ / kBitsPerByte;  // truncated
-    memcpy(&storage_[bits_written_ / kBitsPerByte], other.storage_.data(),
-           full_bytes);
-    storage_[bits_written_ / kBitsPerByte + full_bytes] = 0;  // for next Write
-    bits_written_ += full_bytes * kBitsPerByte;
-
-    const size_t leftovers = other.bits_written_ % kBitsPerByte;
-    if (leftovers != 0) {
-      BitReader reader(Span<const uint8_t>(other.storage_.data() + full_bytes,
-                                           other_bytes - full_bytes));
-      Write(leftovers, reader.ReadBits(leftovers));
-      JXL_CHECK(reader.Close());
-    }
-    return *this;
-  }
-
-  constexpr size_t N = kMaxBitsPerCall < BitReader::kMaxBitsPerCall
-                           ? kMaxBitsPerCall
-                           : BitReader::kMaxBitsPerCall;
-
-  // Do not use GetSpan because other may not be byte-aligned.
-  BitReader reader(other.storage_);
-  size_t i = 0;
-  for (; i + N <= other.bits_written_; i += N) {
-    Write(N, reader.ReadFixedBits<N>());
-  }
-  const size_t leftovers = other.bits_written_ - i;
-  if (leftovers != 0) {
-    Write(leftovers, reader.ReadBits(leftovers));
-  }
-  JXL_CHECK(reader.Close());
-  return *this;
-}
-
 // Example: let's assume that 3 bits (Rs below) have been written already:
 // BYTE+0       BYTE+1       BYTE+2
 // 0000 0RRR    ???? ????    ???? ????
@@ -218,33 +214,4 @@ void BitWriter::Write(size_t n_bits, uint64_t bits) {
 #endif
   bits_written_ += n_bits;
 }
-
-BitWriter& BitWriter::operator+=(const PaddedBytes& other) {
-  const size_t other_bytes = other.size();
-  // Required for correctness, otherwise owned[bits_written_] is out of bounds.
-  if (other_bytes == 0) return *this;
-  const size_t other_bits = other_bytes * kBitsPerByte;
-
-  storage_.resize(storage_.size() + other_bytes + 1);
-  if (bits_written_ % kBitsPerByte == 0) {
-    memcpy(&storage_[bits_written_ / kBitsPerByte], other.data(), other_bytes);
-    storage_[bits_written_ / kBitsPerByte + other_bytes] = 0;  // for next Write
-    bits_written_ += other_bits;
-    return *this;
-  }
-  constexpr size_t N = kMaxBitsPerCall < BitReader::kMaxBitsPerCall
-                           ? kMaxBitsPerCall
-                           : BitReader::kMaxBitsPerCall;
-
-  BitReader reader(other);
-  size_t i = 0;
-  for (; i + N <= other_bits; i += N) {
-    Write(N, reader.ReadFixedBits<N>());
-  }
-  const size_t leftovers = other_bits - i;
-  Write(leftovers, reader.ReadBits(leftovers));
-  JXL_CHECK(reader.Close());
-  return *this;
-}
-
 }  // namespace jxl

@@ -1,4 +1,3 @@
-#pragma once
 /******************************************************************************
  *
  * Purpose:  Declaration of the CTiledChannel raster access strategy
@@ -28,10 +27,10 @@
 #ifndef INCLUDE_CHANNEL_CTILEDCHANNEL_H
 #define INCLUDE_CHANNEL_CTILEDCHANNEL_H
 
-#include "../pcidsk_config.h"
-#include "../pcidsk_types.h"
-#include "../pcidsk_buffer.h"
-#include "cpcidskchannel.h"
+#include "pcidsk_config.h"
+#include "pcidsk_types.h"
+#include "pcidsk_buffer.h"
+#include "channel/cpcidskchannel.h"
 
 namespace PCIDSK
 {

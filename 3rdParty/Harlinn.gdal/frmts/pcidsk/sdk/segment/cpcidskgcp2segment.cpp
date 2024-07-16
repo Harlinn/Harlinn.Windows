@@ -24,12 +24,12 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
-#include "cpcidskgcp2segment.h"
+#include "segment/cpcidskgcp2segment.h"
 
-#include "../pcidsk_gcp.h"
-#include "../pcidsk_exception.h"
-#include "../pcidsk_file.h"
-#include "../core/pcidsk_utils.h"
+#include "pcidsk_gcp.h"
+#include "pcidsk_exception.h"
+#include "pcidsk_file.h"
+#include "core/pcidsk_utils.h"
 
 #include <cstring>
 #include <iostream>
@@ -37,18 +37,6 @@
 #include <string>
 
 using namespace PCIDSK;
-
-struct CPCIDSKGCP2Segment::PCIDSKGCP2SegInfo
-{
-    std::vector<PCIDSK::GCP> gcps;
-    unsigned int num_gcps;
-    PCIDSKBuffer seg_data;
-
-    std::string map_units;   ///< PCI mapunits string
-    std::string proj_parms;  ///< Additional projection parameters
-    unsigned int num_proj;
-    bool changed;
-};
 
 CPCIDSKGCP2Segment::CPCIDSKGCP2Segment(PCIDSKFile *fileIn, int segmentIn, const char *segment_pointer)
     : CPCIDSKSegment(fileIn, segmentIn, segment_pointer), loaded_(false)
@@ -145,11 +133,11 @@ void CPCIDSKGCP2Segment::Load()
         double x = pimpl_->seg_data.GetDouble(offset + 48, 22);
         double y = pimpl_->seg_data.GetDouble(offset + 70, 22);
 
-        char cElevDatum = (char)toupper(pimpl_->seg_data.buffer[offset + 47]);
+        char cElevDatum = (char)toupper(static_cast<unsigned char>(pimpl_->seg_data.buffer[offset + 47]));
         PCIDSK::GCP::EElevationDatum elev_datum = cElevDatum != 'M' ?
             GCP::EEllipsoidal : GCP::EMeanSeaLevel;
 
-        char elev_unit_c = (char)toupper(pimpl_->seg_data.buffer[offset + 46]);
+        char elev_unit_c = (char)toupper(static_cast<unsigned char>(pimpl_->seg_data.buffer[offset + 46]));
         PCIDSK::GCP::EElevationUnit elev_unit = elev_unit_c == 'M' ? GCP::EMetres :
             elev_unit_c == 'F' ? GCP::EInternationalFeet :
             elev_unit_c == 'A' ? GCP::EAmericanFeet : GCP::EUnknown;

@@ -1,4 +1,3 @@
-#pragma once
 /******************************************************************************
  * $Id: iso19115_srs.cpp 35951 2016-10-26 16:53:54Z goatbar $
  *
@@ -34,11 +33,11 @@
 #ifndef ISO19155_SRS_H_INCLUDED_
 #define ISO19155_SRS_H_INCLUDED_
 
-#include <port/cpl_port.h>
-#include <ogr/ogr_core.h>
-#include <ogr/ogr_spatialref.h>
+#include "cpl_port.h"
+#include "ogr_core.h"
+#include "ogr_spatialref.h"
 
-OGRErr OGR_SRS_ImportFromISO19115( OGRSpatialReference *poThis,
-                                   const char *pszISOXML );
+OGRErr OGR_SRS_ImportFromISO19115(OGRSpatialReference *poThis,
+                                  const char *pszISOXML);
 
 #endif  // ISO19155_SRS_H_INCLUDED_

@@ -116,6 +116,12 @@ extern "C" {
   set to one. */
 #define	JAS_ONES(n) \
   ((1 << (n)) - 1)
+#if 0
+#define	JAS_ONES_X(type, n) \
+  ((JAS_CAST(type, 1) << (n)) - 1)
+#endif
+#define	JAS_POW2_X(type, n) \
+  (JAS_CAST(type, 1) << (n))
 
 /******************************************************************************\
 *
@@ -129,78 +135,78 @@ extern "C" {
 #endif
 
 JAS_ATTRIBUTE_CONST
-JAS_ATTRIBUTE_DISABLE_USAN
+JAS_ATTRIBUTE_DISABLE_UBSAN
 inline static int jas_int_asr(int x, unsigned n)
 {
 	// Ensure that the shift of a negative value appears to behave as a
 	// signed arithmetic shift.
 	assert(((-1) >> 1) == -1);
-	// The behavior is undefined when x is negative. */
+	// The behavior is undefined when x is negative.
 	// We tacitly assume the behavior is equivalent to a signed
 	// arithmetic right shift.
 	return x >> n;
 }
 
 JAS_ATTRIBUTE_CONST
-JAS_ATTRIBUTE_DISABLE_USAN
+JAS_ATTRIBUTE_DISABLE_UBSAN
 inline static int jas_int_asl(int x, unsigned n)
 {
 	// Ensure that the shift of a negative value appears to behave as a
 	// signed arithmetic shift.
 	assert(((-1) << 1) == -2);
-	// The behavior is undefined when x is negative. */
+	// The behavior is undefined when x is negative.
 	// We tacitly assume the behavior is equivalent to a signed
 	// arithmetic left shift.
 	return x << n;
 }
 
 JAS_ATTRIBUTE_CONST
-JAS_ATTRIBUTE_DISABLE_USAN
+JAS_ATTRIBUTE_DISABLE_UBSAN
 inline static int_least32_t jas_least32_asr(int_least32_t x, unsigned n)
 {
 	// Ensure that the shift of a negative value appears to behave as a
 	// signed arithmetic shift.
 	assert(((JAS_CAST(int_least32_t, -1)) >> 1) == JAS_CAST(int_least32_t, -1));
-	// The behavior is undefined when x is negative. */
+	// The behavior is undefined when x is negative.
 	// We tacitly assume the behavior is equivalent to a signed
 	// arithmetic right shift.
 	return x >> n;
 }
 
 JAS_ATTRIBUTE_CONST
-JAS_ATTRIBUTE_DISABLE_USAN
+JAS_ATTRIBUTE_DISABLE_UBSAN
 inline static int_least32_t jas_least32_asl(int_least32_t x, unsigned n)
 {
 	// Ensure that the shift of a negative value appears to behave as a
 	// signed arithmetic shift.
 	assert(((JAS_CAST(int_least32_t, -1)) << 1) == JAS_CAST(int_least32_t, -2));
-	// The behavior is undefined when x is negative. */
+	// The behavior is undefined when x is negative.
 	// We tacitly assume the behavior is equivalent to a signed
 	// arithmetic left shift.
 	return x << n;
 }
 
 JAS_ATTRIBUTE_CONST
-JAS_ATTRIBUTE_DISABLE_USAN
+JAS_ATTRIBUTE_DISABLE_UBSAN
 inline static int_fast32_t jas_fast32_asr(int_fast32_t x, unsigned n)
 {
 	// Ensure that the shift of a negative value appears to behave as a
 	// signed arithmetic shift.
 	assert(((JAS_CAST(int_fast32_t, -1)) >> 1) == JAS_CAST(int_fast32_t, -1));
-	// The behavior is undefined when x is negative. */
+	// The behavior is undefined when x is negative.
 	// We tacitly assume the behavior is equivalent to a signed
 	// arithmetic right shift.
 	return x >> n;
 }
 
 JAS_ATTRIBUTE_CONST
-JAS_ATTRIBUTE_DISABLE_USAN
+JAS_ATTRIBUTE_DISABLE_UBSAN
 inline static int_fast32_t jas_fast32_asl(int_fast32_t x, unsigned n)
 {
 	// Ensure that the shift of a negative value appears to behave as a
 	// signed arithmetic shift.
 	assert(((JAS_CAST(int_fast32_t, -1)) << 1) == JAS_CAST(int_fast32_t, -2));
-	// The behavior is undefined when x is negative. */
+	// The behavior is undefined when x is negative.
 	// We tacitly assume the behavior is equivalent to a signed
 	// arithmetic left shift.
 	return x << n;
@@ -219,9 +225,11 @@ inline static bool jas_safe_size_mul(size_t x, size_t y, size_t *result)
 {
 #if jas_has_builtin(__builtin_mul_overflow) || (defined(__GNUC__) && __GNUC__ > 5)
 	size_t result_buffer;
-	if (!result)
-		result = &result_buffer;
-	return !__builtin_mul_overflow(x, y, result);
+	bool valid = !__builtin_mul_overflow(x, y, &result_buffer);
+	if (valid && result) {
+		*result = result_buffer;
+	}
+	return valid;
 #else
 	/* Check if overflow would occur */
 	if (x && y > SIZE_MAX / x) {
@@ -255,9 +263,11 @@ inline static bool jas_safe_size_add(size_t x, size_t y, size_t *result)
 {
 #if jas_has_builtin(__builtin_add_overflow) || (defined(__GNUC__) && __GNUC__ > 5)
 	size_t result_buffer;
-	if (!result)
-		result = &result_buffer;
-	return !__builtin_add_overflow(x, y, result);
+	bool valid = !__builtin_add_overflow(x, y, &result_buffer);
+	if (valid && result) {
+		*result = result_buffer;
+	}
+	return valid;
 #else
 	if (y > SIZE_MAX - x) {
 		return false;
@@ -274,9 +284,11 @@ inline static bool jas_safe_size_sub(size_t x, size_t y, size_t *result)
 {
 #if jas_has_builtin(__builtin_sub_overflow) || (defined(__GNUC__) && __GNUC__ > 5)
 	size_t result_buffer;
-	if (!result)
-		result = &result_buffer;
-	return !__builtin_sub_overflow(x, y, result);
+	bool valid = !__builtin_sub_overflow(x, y, &result_buffer);
+	if (valid && result) {
+		*result = result_buffer;
+	}
+	return valid;
 #else
 	if (y > x) {
 		return false;
@@ -294,9 +306,11 @@ inline static bool jas_safe_intfast32_mul(int_fast32_t x, int_fast32_t y,
 {
 #if jas_has_builtin(__builtin_mul_overflow) || (defined(__GNUC__) && __GNUC__ > 5)
 	int_fast32_t result_buffer;
-	if (!result)
-		result = &result_buffer;
-	return !__builtin_mul_overflow(x, y, result);
+	bool valid = !__builtin_mul_overflow(x, y, &result_buffer);
+	if (valid && result) {
+		*result = result_buffer;
+	}
+	return valid;
 #else
 	if (x > 0) {
 		/* x is positive */
@@ -353,9 +367,11 @@ inline static bool jas_safe_intfast32_add(int_fast32_t x, int_fast32_t y,
 {
 #if jas_has_builtin(__builtin_add_overflow) || (defined(__GNUC__) && __GNUC__ > 5)
 	int_fast32_t result_buffer;
-	if (!result)
-		result = &result_buffer;
-	return !__builtin_add_overflow(x, y, result);
+	bool valid = !__builtin_add_overflow(x, y, &result_buffer);
+	if (valid && result) {
+		*result = result_buffer;
+	}
+	return valid;
 #else
 	if ((y > 0 && x > INT_FAST32_MAX - y) ||
 	  (y < 0 && x < INT_FAST32_MIN - y)) {
@@ -386,6 +402,349 @@ inline static bool jas_safe_uint_mul(unsigned x, unsigned y, unsigned *result)
 	return true;
 }
 #endif
+
+/******************************************************************************\
+* Safe 32-bit unsigned integer arithmetic (i.e., with overflow checking).
+\******************************************************************************/
+
+#define JAS_SAFEUI32_MAX (0xffffffffUL)
+
+typedef struct {
+	bool valid;
+	uint_least32_t value;
+} jas_safeui32_t;
+
+JAS_ATTRIBUTE_CONST
+static inline jas_safeui32_t jas_safeui32_from_ulong(unsigned long x)
+{
+	jas_safeui32_t result;
+	if (x <= JAS_SAFEUI32_MAX) {
+		result.valid = 1;
+		result.value = JAS_CAST(uint_least32_t, x);
+	} else {
+		result.valid = 0;
+		result.value = 0;
+	}
+	return result;
+}
+
+JAS_ATTRIBUTE_PURE
+static inline bool jas_safeui32_to_intfast32(jas_safeui32_t x,
+  int_fast32_t* y)
+{
+	const long I32_MAX = 0x7fffffffL;
+	if (x.value <= I32_MAX) {
+		*y = x.value;
+		return true;
+	} else {
+		return false;
+	}
+}
+
+JAS_ATTRIBUTE_CONST
+static inline jas_safeui32_t jas_safeui32_add(jas_safeui32_t x,
+  jas_safeui32_t y)
+{
+	jas_safeui32_t result;
+	if (x.valid && y.valid && y.value <= UINT_LEAST32_MAX - x.value) {
+		result.valid = true;
+		result.value = x.value + y.value;
+	} else {
+		result.valid = false;
+		result.value = 0;
+	}
+	return result;
+}
+
+JAS_ATTRIBUTE_CONST
+static inline
+jas_safeui32_t jas_safeui32_sub(jas_safeui32_t x, jas_safeui32_t y)
+{
+	jas_safeui32_t result;
+	if (x.valid && y.valid && y.value <= x.value) {
+		result.valid = true;
+		result.value = x.value - y.value;
+	} else {
+		result.valid = false;
+		result.value = 0;
+	}
+	return result;
+}
+
+JAS_ATTRIBUTE_CONST
+static inline jas_safeui32_t jas_safeui32_mul(jas_safeui32_t x,
+  jas_safeui32_t y)
+{
+	jas_safeui32_t result;
+	if (!x.valid || !y.valid || (x.value && y.value > UINT_LEAST32_MAX /
+	  x.value)) {
+		result.valid = false;
+		result.value = 0;
+	} else {
+		result.valid = true;
+		result.value = x.value * y.value;
+	}
+	return result;
+}
+
+/******************************************************************************\
+* Safe 64-bit signed integer arithmetic (i.e., with overflow checking).
+\******************************************************************************/
+
+typedef struct {
+	bool valid;
+	int_least64_t value;
+} jas_safei64_t;
+
+JAS_ATTRIBUTE_CONST
+static inline
+jas_safei64_t jas_safei64_from_intmax(intmax_t x)
+{
+	jas_safei64_t result;
+	if (x >= INT_LEAST64_MIN && x <= INT_LEAST64_MAX) {
+		result.valid = true;
+		result.value = JAS_CAST(int_least64_t, x);
+	} else {
+		result.valid = false;
+		result.value = 0;
+	}
+	return result;
+}
+
+JAS_ATTRIBUTE_CONST
+static inline
+jas_safei64_t jas_safei64_add(jas_safei64_t x, jas_safei64_t y)
+{
+	jas_safei64_t result;
+	if (((y.value > 0) && (x.value > (INT_LEAST64_MAX - y.value))) ||
+	  ((y.value < 0) && (x.value < (INT_LEAST64_MIN - y.value)))) {
+		result.value = false;
+		result.value = 0;
+	} else {
+		result.valid = true;
+		result.value = x.value + y.value;
+	}
+	return result;
+}
+
+JAS_ATTRIBUTE_CONST
+static inline
+jas_safei64_t jas_safei64_sub(jas_safei64_t x, jas_safei64_t y)
+{
+	jas_safei64_t result;
+	if ((y.value > 0 && x.value < INT_LEAST64_MIN + y.value) ||
+	(y.value < 0 && x.value > INT_LEAST64_MAX + y.value)) {
+		result.valid = false;
+		result.value = 0;
+	} else {
+		result.valid = true;
+		result.value = x.value - y.value;
+	}
+	return result;
+}
+
+JAS_ATTRIBUTE_CONST
+static inline
+jas_safei64_t jas_safei64_mul(jas_safei64_t x, jas_safei64_t y)
+{
+	jas_safei64_t result;
+	if (x.value > 0) {  /* x.value is positive */
+		if (y.value > 0) {  /* x.value and y.value are positive */
+			if (x.value > (INT_LEAST64_MAX / y.value)) {
+				goto error;
+			}
+		} else { /* x.value positive, y.value nonpositive */
+			if (y.value < (INT_LEAST64_MIN / x.value)) {
+				goto error;
+			}
+		} /* x.value positive, y.value nonpositive */
+	} else { /* x.value is nonpositive */
+		if (y.value > 0) { /* x.value is nonpositive, y.value is positive */
+			if (x.value < (INT_LEAST64_MIN / y.value)) {
+				goto error;
+			}
+		} else { /* x.value and y.value are nonpositive */
+			if ( (x.value != 0) && (y.value < (INT_LEAST64_MAX / x.value))) {
+				goto error;
+			}
+		} /* End if x.value and y.value are nonpositive */
+	} /* End if x.value is nonpositive */
+	result.valid = true;
+	result.value = x.value * y.value;
+	return result;
+error:
+	result.valid = false;
+	result.value = 0;
+	return result;
+}
+
+#if 0
+JAS_ATTRIBUTE_CONST
+static inline
+jas_safei64_t jas_safei64_div(jas_safei64_t x, jas_safei64_t y)
+{
+	// TODO/FIXME: Not yet implemented.
+	jas_safei64_t result;
+	result.valid = false;
+	result.value = 0;
+	return result;
+}
+#endif
+
+JAS_ATTRIBUTE_CONST
+static inline
+jas_i32_t jas_safei64_to_i32(jas_safei64_t x, jas_i32_t invalid_value)
+{
+	jas_i32_t result;
+	if (x.valid && x.value >= JAS_I32_MIN && x.value <= JAS_I32_MAX) {
+		result = JAS_CAST(jas_i32_t, x.value);
+	} else {
+		result = invalid_value;
+	}
+	return result;
+}
+
+/******************************************************************************\
+* Safe 64-bit unsigned integer arithmetic (i.e., with overflow checking).
+\******************************************************************************/
+
+typedef struct {
+	bool valid;
+	uint_least64_t value;
+} jas_safeui64_t;
+
+JAS_ATTRIBUTE_CONST
+static inline
+jas_safeui64_t jas_safeui64_from_intmax(intmax_t x)
+{
+	jas_safeui64_t result;
+	if (x >= 0 && x <= UINT_LEAST64_MAX) {
+		result.valid = true;
+		result.value = JAS_CAST(uint_least64_t, x);
+	} else {
+		result.valid = false;
+		result.value = 0;
+	}
+	return result;
+}
+
+JAS_ATTRIBUTE_CONST
+static inline
+jas_safeui64_t jas_safeui64_add(jas_safeui64_t x, jas_safeui64_t y)
+{
+	jas_safeui64_t result;
+	if (x.valid && y.valid && y.value <= UINT_LEAST64_MAX - x.value) {
+		result.valid = true;
+		result.value = x.value + y.value;
+	} else {
+		result.valid = false;
+		result.value = 0;
+	}
+	return result;
+}
+
+JAS_ATTRIBUTE_CONST
+static inline
+jas_safeui64_t jas_safeui64_sub(jas_safeui64_t x, jas_safeui64_t y)
+{
+	jas_safeui64_t result;
+	if (x.valid && y.valid && y.value <= x.value) {
+		result.valid = true;
+		result.value = x.value - y.value;
+	} else {
+		result.valid = false;
+		result.value = 0;
+	}
+	return result;
+}
+
+JAS_ATTRIBUTE_CONST
+static inline
+jas_safeui64_t jas_safeui64_mul(jas_safeui64_t x, jas_safeui64_t y)
+{
+	jas_safeui64_t result;
+	if (!x.valid || !y.valid || (x.value && y.value > UINT_LEAST64_MAX /
+	  x.value)) {
+		result.valid = false;
+		result.value = 0;
+	} else {
+		result.valid = true;
+		result.value = x.value * y.value;
+	}
+	return result;
+}
+
+JAS_ATTRIBUTE_CONST
+static inline
+jas_safeui64_t jas_safeui64_div(jas_safeui64_t x, jas_safeui64_t y)
+{
+	jas_safeui64_t result;
+	if (x.valid && y.valid && y.value) {
+		result.valid = true;
+		result.value = x.value / y.value;
+	} else {
+		result.valid = false;
+		result.value = 0;
+	}
+	return result;
+}
+
+JAS_ATTRIBUTE_CONST
+static inline
+jas_safeui64_t jas_safeui64_pow2_intmax(intmax_t x)
+{
+	jas_safeui64_t result;
+	if (x >= 0 && x < 64) {
+		result.valid = true;
+		result.value = JAS_CAST(uint_least64_t, 1) << x;
+	} else {
+		result.valid = false;
+		result.value = 0;
+	}
+	return result;
+}
+
+JAS_ATTRIBUTE_CONST
+static inline
+int jas_safeui64_to_int(jas_safeui64_t x, int invalid_value)
+{
+	int result;
+	if (x.valid && x.value <= INT_MAX) {
+		result = JAS_CAST(int, x.value);
+	} else {
+		result = invalid_value;
+	}
+	return result;
+}
+
+JAS_ATTRIBUTE_CONST
+static inline
+jas_ui32_t jas_safeui64_to_ui32(jas_safeui64_t x, jas_ui32_t invalid_value)
+{
+	jas_ui32_t result;
+	if (x.valid && x.value <= JAS_UI32_MAX) {
+		result = JAS_CAST(jas_ui32_t, x.value);
+	} else {
+		result = invalid_value;
+	}
+	return result;
+}
+
+JAS_ATTRIBUTE_CONST
+static inline
+jas_i32_t jas_safeui64_to_i32(jas_safeui64_t x, jas_i32_t invalid_value)
+{
+	jas_i32_t result;
+	if (x.valid && x.value >= JAS_I32_MIN && x.value <= JAS_I32_MAX) {
+		result = JAS_CAST(jas_i32_t, x.value);
+	} else {
+		result = invalid_value;
+	}
+	return result;
+}
+
+/******************************************************************************\
+\******************************************************************************/
 
 #ifdef __cplusplus
 }

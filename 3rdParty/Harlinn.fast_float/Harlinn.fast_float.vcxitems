@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Label="Globals">
+    <MSBuildAllProjects Condition="'$(MSBuildVersion)' == '' Or '$(MSBuildVersion)' &lt; '16.0'">$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <ItemsProjectGuid>{a11efc36-6cf2-481c-8290-b56636d7fa31}</ItemsProjectGuid>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);$(MSBuildThisFileDirectory)</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ProjectCapability Include="SourceItemsFromImports" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\fast_float\ascii_number.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\fast_float\bigint.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\fast_float\constexpr_feature_detect.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\fast_float\decimal_to_binary.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\fast_float\digit_comparison.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\fast_float\fast_float.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\fast_float\fast_table.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\fast_float\float_common.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\fast_float\parse_number.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)Readme\AUTHORS" />
+    <None Include="$(MSBuildThisFileDirectory)Readme\CONTRIBUTORS" />
+    <None Include="$(MSBuildThisFileDirectory)Readme\LICENSE-APACHE" />
+    <None Include="$(MSBuildThisFileDirectory)Readme\LICENSE-BOOST" />
+    <None Include="$(MSBuildThisFileDirectory)Readme\LICENSE-MIT" />
+    <None Include="$(MSBuildThisFileDirectory)Readme\README.md" />
+    <None Include="$(MSBuildThisFileDirectory)Readme\SECURITY.md" />
+  </ItemGroup>
+</Project>

@@ -13,6 +13,7 @@
 
 #include <functional>
 
+#include "lib/jxl/jpeg/dec_jpeg_serialization_state.h"
 #include "lib/jxl/jpeg/jpeg_data.h"
 
 namespace jxl {

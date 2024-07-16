@@ -1,4 +1,3 @@
-#pragma once
 /******************************************************************************
  *
  * Project:  OpenGIS Simple Features Reference Implementation
@@ -37,9 +36,10 @@
 #ifndef RASTERLITE_HEADER_H
 #define RASTERLITE_HEADER_H
 
-#include <port/cpl_port.h>
+#include "cpl_port.h"
 
-#if ((__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 2)) && !defined(_MSC_VER))
+#if ((__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 2)) &&               \
+     !defined(_MSC_VER))
 #pragma GCC system_header
 #endif
 
@@ -47,4 +47,4 @@
 #include "rasterlite2/rasterlite2.h"
 #endif
 
-#endif // RASTERLITE_HEADER_H
+#endif  // RASTERLITE_HEADER_H

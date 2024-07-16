@@ -1,4 +1,3 @@
-#pragma once
 /******************************************************************************
  *
  * Project:  GDAL
@@ -30,7 +29,7 @@
 #ifndef TILEMATRIXSET_HPP_INCLUDED
 #define TILEMATRIXSET_HPP_INCLUDED
 
-#include "../port/cpl_port.h"
+#include "cpl_port.h"
 
 #include <memory>
 #include <limits>
@@ -43,81 +42,112 @@
 namespace gdal
 {
 
-class TileMatrixSet
+class CPL_DLL TileMatrixSet
 {
-        static constexpr double NaN = std::numeric_limits<double>::quiet_NaN();
+    static constexpr double NaN = std::numeric_limits<double>::quiet_NaN();
 
-    public:
-        const std::string& identifier() const { return mIdentifier; }
-        const std::string& title() const { return mTitle; }
-        const std::string& abstract() const { return mAbstract; }
+  public:
+    const std::string &identifier() const
+    {
+        return mIdentifier;
+    }
 
-        struct BoundingBox
-        {
-            std::string mCrs{};
-            double mLowerCornerX{NaN};
-            double mLowerCornerY{NaN};
-            double mUpperCornerX{NaN};
-            double mUpperCornerY{NaN};
-        };
-        const BoundingBox& bbox() const { return mBbox; }
-        const std::string& crs() const { return mCrs; }
-        const std::string& wellKnownScaleSet() const { return mWellKnownScaleSet; }
+    const std::string &title() const
+    {
+        return mTitle;
+    }
 
-        struct TileMatrix
-        {
-            std::string mId{};
-            double mScaleDenominator{NaN};
-            double mResX{NaN}; // computed from mScaleDenominator and CRS definition
-            double mResY{NaN}; // computed from mScaleDenominator and CRS definition
-            double mTopLeftX{NaN};
-            double mTopLeftY{NaN};
-            int mTileWidth{};
-            int mTileHeight{};
-            int mMatrixWidth{};
-            int mMatrixHeight{};
+    //! "abstract" in TMS v1 / "description" in TMS v2
+    const std::string &abstract() const
+    {
+        return mAbstract;
+    }
 
-            struct VariableMatrixWidth
-            {
-                int mCoalesce{};
-                int mMinTileRow{};
-                int mMaxTileRow{};
-            };
-            std::vector<VariableMatrixWidth> mVariableMatrixWidthList{};
-        };
-        HGDAL_EXPORT const std::vector<TileMatrix>& tileMatrixList() const { return mTileMatrixList; }
-
-        /** Parse a TileMatrixSet definition, passed inline or by filename,
-         * corresponding to the JSON encoding of the OGC Two Dimensional Tile Matrix Set:
-         * http://docs.opengeospatial.org/is/17-083r2/17-083r2.html */
-        HGDAL_EXPORT static std::unique_ptr<TileMatrixSet> parse(const char* fileOrDef);
-
-        /** Return hardcoded tile matrix set names (such as GoogleMapsCompatible), as
-         * well as XXX for each tms_XXXX.json in GDAL data directory */
-        HGDAL_EXPORT static std::set<std::string> listPredefinedTileMatrixSets();
-
-        HGDAL_EXPORT bool haveAllLevelsSameTopLeft() const;
-
-        HGDAL_EXPORT bool haveAllLevelsSameTileSize() const;
-
-        HGDAL_EXPORT bool hasOnlyPowerOfTwoVaryingScales() const;
-
-        HGDAL_EXPORT bool hasVariableMatrixWidth() const;
-
-    private:
-        TileMatrixSet() = default;
-
-        std::string mIdentifier{};
-        std::string mTitle{};
-        std::string mAbstract{};
-        BoundingBox mBbox{};
+    struct CPL_DLL BoundingBox
+    {
         std::string mCrs{};
-        std::string mWellKnownScaleSet{};
-        std::vector<TileMatrix> mTileMatrixList{};
+        double mLowerCornerX{NaN};
+        double mLowerCornerY{NaN};
+        double mUpperCornerX{NaN};
+        double mUpperCornerY{NaN};
+    };
+
+    const BoundingBox &bbox() const
+    {
+        return mBbox;
+    }
+
+    const std::string &crs() const
+    {
+        return mCrs;
+    }
+
+    const std::string &wellKnownScaleSet() const
+    {
+        return mWellKnownScaleSet;
+    }
+
+    struct CPL_DLL TileMatrix
+    {
+        std::string mId{};
+        double mScaleDenominator{NaN};
+        double mResX{
+            NaN};  // computed from mScaleDenominator and CRS definition
+        double mResY{
+            NaN};  // computed from mScaleDenominator and CRS definition
+        double mTopLeftX{NaN};
+        double mTopLeftY{NaN};
+        int mTileWidth{};
+        int mTileHeight{};
+        int mMatrixWidth{};
+        int mMatrixHeight{};
+
+        struct CPL_DLL VariableMatrixWidth
+        {
+            int mCoalesce{};
+            int mMinTileRow{};
+            int mMaxTileRow{};
+        };
+
+        std::vector<VariableMatrixWidth> mVariableMatrixWidthList{};
+    };
+
+    const std::vector<TileMatrix> &tileMatrixList() const
+    {
+        return mTileMatrixList;
+    }
+
+    /** Parse a TileMatrixSet definition, passed inline or by filename,
+     * corresponding to the JSON encoding of the OGC Two Dimensional Tile Matrix
+     * Set: http://docs.opengeospatial.org/is/17-083r2/17-083r2.html */
+    static std::unique_ptr<TileMatrixSet> parse(const char *fileOrDef);
+
+    /** Return hardcoded tile matrix set names (such as GoogleMapsCompatible),
+     * as well as XXX for each tms_XXXX.json in GDAL data directory */
+    static std::set<std::string> listPredefinedTileMatrixSets();
+
+    bool haveAllLevelsSameTopLeft() const;
+
+    bool haveAllLevelsSameTileSize() const;
+
+    bool hasOnlyPowerOfTwoVaryingScales() const;
+
+    bool hasVariableMatrixWidth() const;
+
+  private:
+    TileMatrixSet() = default;
+
+    std::string mIdentifier{};
+    std::string mTitle{};
+    std::string mAbstract{};
+    BoundingBox mBbox{};
+    std::string mCrs{};
+    std::string mWellKnownScaleSet{};
+    std::vector<TileMatrix> mTileMatrixList{};
 };
 
-} // namespace gdal
+}  // namespace gdal
 
 //! @endcond
 
-#endif // TILEMATRIXSET_HPP_INCLUDED
+#endif  // TILEMATRIXSET_HPP_INCLUDED

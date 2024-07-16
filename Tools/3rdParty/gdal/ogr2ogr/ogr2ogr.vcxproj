@@ -96,7 +96,7 @@
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.gdal;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.gdal\ogr\ogrsf_frmts;$(SolutionDir)3rdParty\Harlinn.gdal\apps;$(SolutionDir)3rdParty\Harlinn.gdal\port;$(SolutionDir)3rdParty\Harlinn.gdal\gcore;$(SolutionDir)3rdParty\Harlinn.gdal\ogr;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -116,7 +116,7 @@
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <BufferSecurityCheck>false</BufferSecurityCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.gdal;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.gdal\ogr\ogrsf_frmts;$(SolutionDir)3rdParty\Harlinn.gdal\apps;$(SolutionDir)3rdParty\Harlinn.gdal\port;$(SolutionDir)3rdParty\Harlinn.gdal\gcore;$(SolutionDir)3rdParty\Harlinn.gdal\ogr;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -135,7 +135,7 @@
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.gdal;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.gdal\ogr\ogrsf_frmts;$(SolutionDir)3rdParty\Harlinn.gdal\apps;$(SolutionDir)3rdParty\Harlinn.gdal\port;$(SolutionDir)3rdParty\Harlinn.gdal\gcore;$(SolutionDir)3rdParty\Harlinn.gdal\ogr;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -155,7 +155,7 @@
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <BufferSecurityCheck>false</BufferSecurityCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.gdal;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.gdal\ogr\ogrsf_frmts;$(SolutionDir)3rdParty\Harlinn.gdal\apps;$(SolutionDir)3rdParty\Harlinn.gdal\port;$(SolutionDir)3rdParty\Harlinn.gdal\gcore;$(SolutionDir)3rdParty\Harlinn.gdal\ogr;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -166,7 +166,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="ogr2ogr.cpp" />
+    <ClCompile Include="ogr2ogr_bin.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

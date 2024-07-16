@@ -97,7 +97,7 @@
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
-      <AdditionalIncludeDirectories>$(ProjectDir)include\libheif;$(ProjectDir)include;$(SolutionDir)3rdParty\Harlinn.aom\include\aom;$(SolutionDir)3rdParty\Harlinn.libde265\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)include\libheif;$(ProjectDir)include;$(SolutionDir)3rdParty\Harlinn.aom\include;$(SolutionDir)3rdParty\Harlinn.libde265\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
     </ClCompile>
     <Link>
@@ -120,7 +120,7 @@
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
-      <AdditionalIncludeDirectories>$(ProjectDir)include\libheif;$(ProjectDir)include;$(SolutionDir)3rdParty\Harlinn.aom\include\aom;$(SolutionDir)3rdParty\Harlinn.libde265\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)include\libheif;$(ProjectDir)include;$(SolutionDir)3rdParty\Harlinn.aom\include;$(SolutionDir)3rdParty\Harlinn.libde265\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -141,7 +141,7 @@
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
-      <AdditionalIncludeDirectories>$(ProjectDir)include\libheif;$(ProjectDir)include;$(SolutionDir)3rdParty\Harlinn.aom\include\aom;$(SolutionDir)3rdParty\Harlinn.libde265\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)include\libheif;$(ProjectDir)include;$(SolutionDir)3rdParty\Harlinn.aom\include;$(SolutionDir)3rdParty\Harlinn.libde265\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
     </ClCompile>
     <Link>
@@ -165,7 +165,7 @@
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
-      <AdditionalIncludeDirectories>$(ProjectDir)include\libheif;$(ProjectDir)include;$(SolutionDir)3rdParty\Harlinn.aom\include\aom;$(SolutionDir)3rdParty\Harlinn.libde265\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)include\libheif;$(ProjectDir)include;$(SolutionDir)3rdParty\Harlinn.aom\include;$(SolutionDir)3rdParty\Harlinn.libde265\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

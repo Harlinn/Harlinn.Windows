@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ogrinfo.cpp">
+    <ClCompile Include="ogrinfo_bin.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -144,7 +144,16 @@ typedef struct AV1DecRowMTSyncData {
 #endif
   int allocated_sb_rows;
   int *cur_sb_col;
+  // Denotes the superblock interval at which conditional signalling should
+  // happen. Also denotes the minimum number of extra superblocks of the top row
+  // to be complete to start decoding the current superblock. A value of 1
+  // indicates top-right dependency.
   int sync_range;
+  // Denotes the additional number of superblocks in the previous row to be
+  // complete to start decoding the current superblock when intraBC tool is
+  // enabled. This additional top-right delay is required to satisfy the
+  // hardware constraints for intraBC tool when row multithreading is enabled.
+  int intrabc_extra_top_right_sb_delay;
   int mi_rows;
   int mi_cols;
   int mi_rows_parse_done;
@@ -364,33 +373,33 @@ typedef struct AV1Decoder {
 
 // Returns 0 on success. Sets pbi->common.error.error_code to a nonzero error
 // code and returns a nonzero value on failure.
-int av1_receive_compressed_data(struct AV1Decoder *pbi, size_t size,
+HAOM_EXPORT int av1_receive_compressed_data(struct AV1Decoder *pbi, size_t size,
                                 const uint8_t **psource);
 
 // Get the frame at a particular index in the output queue
-int av1_get_raw_frame(AV1Decoder *pbi, size_t index, YV12_BUFFER_CONFIG **sd,
+HAOM_EXPORT int av1_get_raw_frame(AV1Decoder *pbi, size_t index, YV12_BUFFER_CONFIG **sd,
                       aom_film_grain_t **grain_params);
 
-int av1_get_frame_to_show(struct AV1Decoder *pbi, YV12_BUFFER_CONFIG *frame);
+HAOM_EXPORT int av1_get_frame_to_show(struct AV1Decoder *pbi, YV12_BUFFER_CONFIG *frame);
 
-aom_codec_err_t av1_copy_reference_dec(struct AV1Decoder *pbi, int idx,
+HAOM_EXPORT aom_codec_err_t av1_copy_reference_dec(struct AV1Decoder *pbi, int idx,
                                        YV12_BUFFER_CONFIG *sd);
 
-aom_codec_err_t av1_set_reference_dec(AV1_COMMON *cm, int idx,
+HAOM_EXPORT aom_codec_err_t av1_set_reference_dec(AV1_COMMON *cm, int idx,
                                       int use_external_ref,
                                       YV12_BUFFER_CONFIG *sd);
-aom_codec_err_t av1_copy_new_frame_dec(AV1_COMMON *cm,
+HAOM_EXPORT aom_codec_err_t av1_copy_new_frame_dec(AV1_COMMON *cm,
                                        YV12_BUFFER_CONFIG *new_frame,
                                        YV12_BUFFER_CONFIG *sd);
 
-struct AV1Decoder *av1_decoder_create(BufferPool *const pool);
+HAOM_EXPORT struct AV1Decoder *av1_decoder_create(BufferPool *const pool);
 
-void av1_decoder_remove(struct AV1Decoder *pbi);
-void av1_dealloc_dec_jobs(struct AV1DecTileMTData *tile_mt_info);
+HAOM_EXPORT void av1_decoder_remove(struct AV1Decoder *pbi);
+HAOM_EXPORT void av1_dealloc_dec_jobs(struct AV1DecTileMTData *tile_mt_info);
 
-void av1_dec_row_mt_dealloc(AV1DecRowMTSync *dec_row_mt_sync);
+HAOM_EXPORT void av1_dec_row_mt_dealloc(AV1DecRowMTSync *dec_row_mt_sync);
 
-void av1_dec_free_cb_buf(AV1Decoder *pbi);
+HAOM_EXPORT void av1_dec_free_cb_buf(AV1Decoder *pbi);
 
 static INLINE void decrease_ref_count(RefCntBuffer *const buf,
                                       BufferPool *const pool) {
@@ -427,7 +436,7 @@ static INLINE int av1_read_uniform(aom_reader *r, int n) {
 typedef void (*palette_visitor_fn_t)(MACROBLOCKD *const xd, int plane,
                                      aom_reader *r);
 
-void av1_visit_palette(AV1Decoder *const pbi, MACROBLOCKD *const xd,
+HAOM_EXPORT void av1_visit_palette(AV1Decoder *const pbi, MACROBLOCKD *const xd,
                        aom_reader *r, palette_visitor_fn_t visit);
 
 typedef void (*block_visitor_fn_t)(AV1Decoder *const pbi, ThreadData *const td,

@@ -5,30 +5,36 @@
 
 #include "lib/jxl/enc_butteraugli_comparator.h"
 
-#include <algorithm>
-#include <vector>
-
-#include "lib/jxl/color_management.h"
+#include "lib/jxl/base/status.h"
+#include "lib/jxl/enc_image_bundle.h"
 
 namespace jxl {
 
 JxlButteraugliComparator::JxlButteraugliComparator(
-    const ButteraugliParams& params)
-    : params_(params) {}
+    const ButteraugliParams& params, const JxlCmsInterface& cms)
+    : params_(params), cms_(cms) {}
 
 Status JxlButteraugliComparator::SetReferenceImage(const ImageBundle& ref) {
   const ImageBundle* ref_linear_srgb;
   ImageMetadata metadata = *ref.metadata();
   ImageBundle store(&metadata);
-  if (!TransformIfNeeded(ref, ColorEncoding::LinearSRGB(ref.IsGray()),
+  if (!TransformIfNeeded(ref, ColorEncoding::LinearSRGB(ref.IsGray()), cms_,
                          /*pool=*/nullptr, &store, &ref_linear_srgb)) {
     return false;
   }
-
-  comparator_.reset(
-      new ButteraugliComparator(ref_linear_srgb->color(), params_));
+  JXL_ASSIGN_OR_RETURN(comparator_, ButteraugliComparator::Make(
+                                        ref_linear_srgb->color(), params_));
   xsize_ = ref.xsize();
   ysize_ = ref.ysize();
+  return true;
+}
+
+Status JxlButteraugliComparator::SetLinearReferenceImage(
+    const Image3F& linear) {
+  JXL_ASSIGN_OR_RETURN(comparator_,
+                       ButteraugliComparator::Make(linear, params_));
+  xsize_ = linear.xsize();
+  ysize_ = linear.ysize();
   return true;
 }
 
@@ -45,12 +51,14 @@ Status JxlButteraugliComparator::CompareWith(const ImageBundle& actual,
   ImageMetadata metadata = *actual.metadata();
   ImageBundle store(&metadata);
   if (!TransformIfNeeded(actual, ColorEncoding::LinearSRGB(actual.IsGray()),
+                         cms_,
                          /*pool=*/nullptr, &store, &actual_linear_srgb)) {
     return false;
   }
 
-  ImageF temp_diffmap(xsize_, ysize_);
-  comparator_->Diffmap(actual_linear_srgb->color(), temp_diffmap);
+  JXL_ASSIGN_OR_RETURN(ImageF temp_diffmap, ImageF::Create(xsize_, ysize_));
+  JXL_RETURN_IF_ERROR(
+      comparator_->Diffmap(actual_linear_srgb->color(), temp_diffmap));
 
   if (score != nullptr) {
     *score = ButteraugliScoreFromDiffmap(temp_diffmap, &params_);
@@ -68,26 +76,6 @@ float JxlButteraugliComparator::GoodQualityScore() const {
 
 float JxlButteraugliComparator::BadQualityScore() const {
   return ButteraugliFuzzyInverse(0.5);
-}
-
-float ButteraugliDistance(const ImageBundle& rgb0, const ImageBundle& rgb1,
-                          const ButteraugliParams& params, ImageF* distmap,
-                          ThreadPool* pool) {
-  JxlButteraugliComparator comparator(params);
-  return ComputeScore(rgb0, rgb1, &comparator, distmap, pool);
-}
-
-float ButteraugliDistance(const CodecInOut& rgb0, const CodecInOut& rgb1,
-                          const ButteraugliParams& params, ImageF* distmap,
-                          ThreadPool* pool) {
-  JxlButteraugliComparator comparator(params);
-  JXL_ASSERT(rgb0.frames.size() == rgb1.frames.size());
-  float max_dist = 0.0f;
-  for (size_t i = 0; i < rgb0.frames.size(); ++i) {
-    max_dist = std::max(max_dist, ComputeScore(rgb0.frames[i], rgb1.frames[i],
-                                               &comparator, distmap, pool));
-  }
-  return max_dist;
 }
 
 }  // namespace jxl

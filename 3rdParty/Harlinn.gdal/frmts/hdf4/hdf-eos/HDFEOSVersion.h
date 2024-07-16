@@ -1,4 +1,3 @@
-#pragma once
 #include <stdlib.h>
  
 /* define strings that will be displayed by the using the UNIX "what" command

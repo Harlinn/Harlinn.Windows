@@ -8,8 +8,6 @@
 
 #include <stddef.h>
 #include <stdint.h>
-#include <type_traits>
-#include <bit>
 
 #include "lib/jxl/base/bits.h"
 #include "lib/jxl/base/compiler_specific.h"
@@ -23,14 +21,7 @@ using LehmerT = uint32_t;
 
 template <typename T>
 constexpr T ValueOfLowest1Bit(T t) {
-    if constexpr ( std::is_unsigned_v<T> )
-    {
-        return  std::bit_cast<T>( std::bit_cast<std::make_signed_t<T>>( t ) & -std::bit_cast<std::make_signed_t<T>>( t ) );
-    }
-    else
-    {
-        return  t & -t;
-    }
+  return t & std::bit_cast<T>(-static_cast<std::make_signed_t<T>>( t ));
 }
 
 // Computes the Lehmer (factorial basis) code of permutation, an array of n

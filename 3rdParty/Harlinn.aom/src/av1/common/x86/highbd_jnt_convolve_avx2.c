@@ -12,7 +12,7 @@
 #include <immintrin.h>
 #include <assert.h>
 
-#include "config/aom_dsp_rtcd.h"
+#include "config/av1_rtcd.h"
 
 #include "aom_dsp/x86/convolve_avx2.h"
 #include "aom_dsp/x86/convolve_common_intrin.h"
@@ -282,7 +282,7 @@ void av1_highbd_dist_wtd_convolve_2d_avx2(
       for (i = 0; i < im_h; i += 2) {
         const __m256i row0 =
             _mm256_loadu_si256((__m256i *)&src_ptr[i * src_stride + j]);
-        __m256i row1 = _mm256_set1_epi16(0);
+        __m256i row1 = _mm256_setzero_si256();
         if (i + 1 < im_h)
           row1 =
               _mm256_loadu_si256((__m256i *)&src_ptr[(i + 1) * src_stride + j]);

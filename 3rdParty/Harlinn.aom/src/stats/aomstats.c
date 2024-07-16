@@ -19,7 +19,7 @@
 #include "aom_dsp/aom_dsp_common.h"
 #include "common/tools_common.h"
 
-int stats_open_file(stats_io_t *stats, const char *fpf, int pass) {
+HAOM_EXPORT int stats_open_file(stats_io_t *stats, const char *fpf, int pass) {
   int res;
   stats->pass = pass;
 
@@ -44,7 +44,7 @@ int stats_open_file(stats_io_t *stats, const char *fpf, int pass) {
     stats->buf.buf = malloc(stats->buf_alloc_sz);
 
     if (!stats->buf.buf)
-      fatal("Failed to allocate first-pass stats buffer (%lu bytes)",
+      fatal("Failed to allocate first-pass stats buffer (%u bytes)",
             (unsigned int)stats->buf_alloc_sz);
 
     nbytes = fread(stats->buf.buf, 1, stats->buf.sz, stats->file);
@@ -54,7 +54,7 @@ int stats_open_file(stats_io_t *stats, const char *fpf, int pass) {
   return res;
 }
 
-int stats_open_mem(stats_io_t *stats, int pass) {
+HAOM_EXPORT int stats_open_mem(stats_io_t *stats, int pass) {
   int res;
   stats->pass = pass;
 
@@ -69,7 +69,7 @@ int stats_open_mem(stats_io_t *stats, int pass) {
   return res;
 }
 
-void stats_close(stats_io_t *stats, int last_pass) {
+HAOM_EXPORT void stats_close(stats_io_t *stats, int last_pass) {
   if (stats->file) {
     if (stats->pass == last_pass) {
       free(stats->buf.buf);
@@ -82,7 +82,7 @@ void stats_close(stats_io_t *stats, int last_pass) {
   }
 }
 
-void stats_write(stats_io_t *stats, const void *pkt, size_t len) {
+HAOM_EXPORT void stats_write(stats_io_t *stats, const void *pkt, size_t len) {
   if (stats->file) {
     (void)fwrite(pkt, 1, len, stats->file);
     return;
@@ -109,4 +109,4 @@ void stats_write(stats_io_t *stats, const void *pkt, size_t len) {
   stats->buf_ptr += len;
 }
 
-aom_fixed_buf_t stats_get(stats_io_t *stats) { return stats->buf; }
+HAOM_EXPORT aom_fixed_buf_t stats_get(stats_io_t *stats) { return stats->buf; }

@@ -1,4 +1,3 @@
-#pragma once
 /******************************************************************************
  *
  * Project:  netCDF read/write Driver
@@ -34,11 +33,12 @@
 
 #ifndef NETCDF_UFFD_UNMAP
 
-#define NETCDF_UFFD_UNMAP(context) { \
-  CPLDeleteUserFaultMapping(context); \
-  context = nullptr; \
-}
+#define NETCDF_UFFD_UNMAP(context)                                             \
+    {                                                                          \
+        CPLDeleteUserFaultMapping(context);                                    \
+        context = nullptr;                                                     \
+    }
 
-#endif // NETCDF_UFFD_UNMAP
+#endif  // NETCDF_UFFD_UNMAP
 
 #endif

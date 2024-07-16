@@ -1,4 +1,3 @@
-#pragma once
 /******************************************************************************
  * $Id$
  *
@@ -32,7 +31,7 @@
 #ifndef OGR_S57_H_INCLUDED
 #define OGR_S57_H_INCLUDED
 
-#include <ogr/ogrsf_frmts/ogrsf_frmts.h>
+#include "ogrsf_frmts.h"
 #include "s57.h"
 
 class OGRS57DataSource;
@@ -43,108 +42,133 @@ class OGRS57DataSource;
 /*      Represents all features of a particular S57 object class.       */
 /************************************************************************/
 
-class OGRS57Layer final: public OGRLayer
+class OGRS57Layer final : public OGRLayer
 {
-    OGRS57DataSource   *poDS;
+    OGRS57DataSource *poDS;
 
-    OGRFeatureDefn     *poFeatureDefn;
+    OGRFeatureDefn *poFeatureDefn;
 
-    int                 nCurrentModule;
-    int                 nRCNM;
-    int                 nOBJL;
-    int                 nNextFEIndex;
-    int                 nFeatureCount;
+    int nCurrentModule;
+    int nRCNM;
+    int nOBJL;
+    int nNextFEIndex;
+    int nFeatureCount;
 
   public:
-                        OGRS57Layer( OGRS57DataSource * poDS,
-                                     OGRFeatureDefn *, int nFeatureCount = -1,
-                                     int nOBJL = -1 );
-    virtual             ~OGRS57Layer();
+    OGRS57Layer(OGRS57DataSource *poDS, OGRFeatureDefn *,
+                int nFeatureCount = -1, int nOBJL = -1);
+    virtual ~OGRS57Layer();
 
-    void                ResetReading() override;
-    OGRFeature *        GetNextFeature() override;
-    OGRFeature *        GetNextUnfilteredFeature();
-    virtual OGRFeature *GetFeature( GIntBig nFeatureId ) override;
+    void ResetReading() override;
+    OGRFeature *GetNextFeature() override;
+    OGRFeature *GetNextUnfilteredFeature();
+    virtual OGRFeature *GetFeature(GIntBig nFeatureId) override;
 
-    virtual GIntBig     GetFeatureCount( int bForce = TRUE ) override;
-    virtual OGRErr      GetExtent(OGREnvelope *psExtent, int bForce = TRUE) override;
-    virtual OGRErr      GetExtent(int iGeomField, OGREnvelope *psExtent, int bForce) override
-                { return OGRLayer::GetExtent(iGeomField, psExtent, bForce); }
+    virtual GIntBig GetFeatureCount(int bForce = TRUE) override;
+    virtual OGRErr GetExtent(OGREnvelope *psExtent, int bForce = TRUE) override;
 
-    OGRFeatureDefn *    GetLayerDefn() override { return poFeatureDefn; }
+    virtual OGRErr GetExtent(int iGeomField, OGREnvelope *psExtent,
+                             int bForce) override
+    {
+        return OGRLayer::GetExtent(iGeomField, psExtent, bForce);
+    }
 
-    virtual OGRErr      ICreateFeature( OGRFeature *poFeature ) override;
-    int                 TestCapability( const char * ) override;
+    OGRFeatureDefn *GetLayerDefn() override
+    {
+        return poFeatureDefn;
+    }
+
+    virtual OGRErr ICreateFeature(OGRFeature *poFeature) override;
+    int TestCapability(const char *) override;
 };
 
 /************************************************************************/
 /*                          OGRS57DataSource                            */
 /************************************************************************/
 
-class OGRS57DataSource final: public OGRDataSource
+class OGRS57DataSource final : public OGRDataSource
 {
-    char                *pszName;
+    char *pszName;
 
-    int                 nLayers;
-    OGRS57Layer         **papoLayers;
+    int nLayers;
+    OGRS57Layer **papoLayers;
 
     OGRSpatialReference *poSpatialRef;
 
-    char                **papszOptions;
+    char **papszOptions;
 
-    int                 nModules;
-    S57Reader           **papoModules;
+    int nModules;
+    S57Reader **papoModules;
 
-    S57Writer           *poWriter;
+    S57Writer *poWriter;
 
-    S57ClassContentExplorer* poClassContentExplorer;
+    S57ClassContentExplorer *poClassContentExplorer;
 
-    bool                bExtentsSet;
-    OGREnvelope         oExtents;
+    bool bExtentsSet;
+    OGREnvelope oExtents;
 
     CPL_DISALLOW_COPY_ASSIGN(OGRS57DataSource)
 
   public:
-    explicit            OGRS57DataSource(char** papszOpenOptions = nullptr);
-                        ~OGRS57DataSource();
+    explicit OGRS57DataSource(char **papszOpenOptions = nullptr);
+    ~OGRS57DataSource();
 
-    void                SetOptionList( char ** );
-    const char         *GetOption( const char * );
+    void SetOptionList(char **);
+    const char *GetOption(const char *);
 
-    int                 Open( const char * pszName );
-    int                 Create( const char *pszName, char **papszOptions );
+    int Open(const char *pszName);
+    int Create(const char *pszName, char **papszOptions);
 
-    const char          *GetName() override { return pszName; }
-    int                 GetLayerCount() override { return nLayers; }
-    OGRLayer            *GetLayer( int ) override;
-    void                AddLayer( OGRS57Layer * );
-    int                 TestCapability( const char * ) override;
+    const char *GetName() override
+    {
+        return pszName;
+    }
 
-    OGRSpatialReference *DSGetSpatialRef() { return poSpatialRef; }
+    int GetLayerCount() override
+    {
+        return nLayers;
+    }
 
-    int                 GetModuleCount() { return nModules; }
-    S57Reader          *GetModule( int );
-    S57Writer          *GetWriter() { return poWriter; }
+    OGRLayer *GetLayer(int) override;
+    void AddLayer(OGRS57Layer *);
+    int TestCapability(const char *) override;
 
-    OGRErr      GetDSExtent(OGREnvelope *psExtent, int bForce = TRUE);
+    OGRSpatialReference *DSGetSpatialRef()
+    {
+        return poSpatialRef;
+    }
+
+    int GetModuleCount()
+    {
+        return nModules;
+    }
+
+    S57Reader *GetModule(int);
+
+    S57Writer *GetWriter()
+    {
+        return poWriter;
+    }
+
+    OGRErr GetDSExtent(OGREnvelope *psExtent, int bForce = TRUE);
 };
 
 /************************************************************************/
 /*                            OGRS57Driver                              */
 /************************************************************************/
 
-class OGRS57Driver final: public GDALDriver
+class OGRS57Driver final : public GDALDriver
 {
     static S57ClassRegistrar *poRegistrar;
 
   public:
-                 OGRS57Driver();
-                ~OGRS57Driver();
+    OGRS57Driver();
+    ~OGRS57Driver();
 
-    static GDALDataset *Open( GDALOpenInfo* poOpenInfo );
-    static GDALDataset *Create( const char * pszName,
-                                int nBands, int nXSize, int nYSize, GDALDataType eDT,
-                                char **papszOptions );
+    static GDALDataset *Open(GDALOpenInfo *poOpenInfo);
+    static GDALDataset *Create(const char *pszName, int nBands, int nXSize,
+                               int nYSize, GDALDataType eDT,
+                               char **papszOptions);
 
     static S57ClassRegistrar *GetS57Registrar();
 };

@@ -15,22 +15,14 @@
 #include <vector>
 
 #include "lib/jxl/ac_strategy.h"
-#include "lib/jxl/aux_out_fwd.h"
-#include "lib/jxl/base/cache_aligned.h"
+#include "lib/jxl/base/common.h"
 #include "lib/jxl/base/compiler_specific.h"
 #include "lib/jxl/base/span.h"
 #include "lib/jxl/base/status.h"
-#include "lib/jxl/common.h"
 #include "lib/jxl/dec_bit_reader.h"
 #include "lib/jxl/image.h"
 
 namespace jxl {
-
-template <typename T, size_t N>
-constexpr T ArraySum(T (&a)[N], size_t i = N - 1) {
-  static_assert(N > 0, "Trying to compute the sum of an empty array");
-  return i == 0 ? a[0] : a[i] + ArraySum(a, i - 1);
-}
 
 static constexpr size_t kMaxQuantTableSize = AcStrategy::kMaxCoeffArea;
 static constexpr size_t kNumPredefinedTables = 1;
@@ -248,8 +240,8 @@ class QuantEncoding final : public QuantEncodingInternal {
   // create a QuantEncodingInternal instance is if you need a constexpr version
   // of this class. Note that RAW() is not supported in that case since it uses
   // a std::vector.
-  static QuantEncoding Library(uint8_t predefined) {
-    return QuantEncoding(QuantEncodingInternal::Library(predefined));
+  static QuantEncoding Library(uint8_t predefined_arg) {
+    return QuantEncoding(QuantEncodingInternal::Library(predefined_arg));
   }
   static QuantEncoding Identity(const IdWeights& xybweights) {
     return QuantEncoding(QuantEncodingInternal::Identity(xybweights));
@@ -288,8 +280,8 @@ class QuantEncoding final : public QuantEncodingInternal {
   explicit QuantEncoding(const QuantEncodingInternal& other)
       : QuantEncodingInternal(other) {}
 
-  explicit QuantEncoding(QuantEncodingInternal::Mode mode)
-      : QuantEncodingInternal(mode) {}
+  explicit QuantEncoding(QuantEncodingInternal::Mode mode_arg)
+      : QuantEncodingInternal(mode_arg) {}
 };
 
 // A constexpr QuantEncodingInternal instance is often downcasted to the
@@ -363,26 +355,7 @@ class DequantMatrices {
                     sizeof(kQuantTable) / sizeof *kQuantTable,
                 "Update this array when adding or removing AC strategies.");
 
-  DequantMatrices() {
-    encodings_.resize(size_t(QuantTable::kNum), QuantEncoding::Library(0));
-    size_t pos = 0;
-    size_t offsets[kNum * 3];
-    for (size_t i = 0; i < size_t(QuantTable::kNum); i++) {
-      encodings_[i] = QuantEncoding::Library(0);
-      size_t num = required_size_[i] * kDCTBlockSize;
-      for (size_t c = 0; c < 3; c++) {
-        offsets[3 * i + c] = pos + c * num;
-      }
-      pos += 3 * num;
-    }
-    for (size_t i = 0; i < AcStrategy::kNumValidStrategies; i++) {
-      for (size_t c = 0; c < 3; c++) {
-        table_offsets_[i * 3 + c] = offsets[kQuantTable[i] * 3 + c];
-      }
-    }
-    // Default quantization tables need to be valid.
-    JXL_CHECK(Compute());
-  }
+  DequantMatrices();
 
   static const QuantEncoding* Library();
 
@@ -391,22 +364,19 @@ class DequantMatrices {
   // Return the array of library kNumPredefinedTables QuantEncoding entries as
   // a constexpr array. Use Library() to obtain a pointer to the copy in the
   // .cc file.
-  static const DequantLibraryInternal LibraryInit();
-
-  JXL_INLINE size_t MatrixOffset(size_t quant_kind, size_t c) const {
-    JXL_DASSERT(quant_kind < AcStrategy::kNumValidStrategies);
-    return table_offsets_[quant_kind * 3 + c];
-  }
+  static DequantLibraryInternal LibraryInit();
 
   // Returns aligned memory.
   JXL_INLINE const float* Matrix(size_t quant_kind, size_t c) const {
     JXL_DASSERT(quant_kind < AcStrategy::kNumValidStrategies);
-    return &table_[MatrixOffset(quant_kind, c)];
+    JXL_DASSERT((1 << quant_kind) & computed_mask_);
+    return &table_[table_offsets_[quant_kind * 3 + c]];
   }
 
   JXL_INLINE const float* InvMatrix(size_t quant_kind, size_t c) const {
     JXL_DASSERT(quant_kind < AcStrategy::kNumValidStrategies);
-    return &inv_table_[MatrixOffset(quant_kind, c)];
+    JXL_DASSERT((1 << quant_kind) & computed_mask_);
+    return &inv_table_[table_offsets_[quant_kind * 3 + c]];
   }
 
   // DC quants are used in modular mode for XYB multipliers.
@@ -418,6 +388,7 @@ class DequantMatrices {
   // For encoder.
   void SetEncodings(const std::vector<QuantEncoding>& encodings) {
     encodings_ = encodings;
+    computed_mask_ = 0;
   }
 
   // For encoder.
@@ -434,26 +405,25 @@ class DequantMatrices {
 
   const std::vector<QuantEncoding>& encodings() const { return encodings_; }
 
-  static constexpr size_t required_size_x[] = {1, 1, 1, 1, 2,  4, 1,  1, 2,
-                                               1, 1, 8, 4, 16, 8, 32, 16};
-  static_assert(kNum == sizeof(required_size_x) / sizeof(*required_size_x),
+  static constexpr auto required_size_x =
+      to_array<int>({1, 1, 1, 1, 2, 4, 1, 1, 2, 1, 1, 8, 4, 16, 8, 32, 16});
+  static_assert(kNum == required_size_x.size(),
                 "Update this array when adding or removing quant tables.");
 
-  static constexpr size_t required_size_y[] = {1, 1, 1, 1, 2,  4,  2,  4, 4,
-                                               1, 1, 8, 8, 16, 16, 32, 32};
-  static_assert(kNum == sizeof(required_size_y) / sizeof(*required_size_y),
+  static constexpr auto required_size_y =
+      to_array<int>({1, 1, 1, 1, 2, 4, 2, 4, 4, 1, 1, 8, 8, 16, 16, 32, 32});
+  static_assert(kNum == required_size_y.size(),
                 "Update this array when adding or removing quant tables.");
+
+  // MUST be equal `sum(dot(required_size_x, required_size_y))`.
+  static constexpr size_t kSumRequiredXy = 2056;
+
+  Status EnsureComputed(uint32_t acs_mask);
 
  private:
-  Status Compute();
+  static constexpr size_t kTotalTableSize = kSumRequiredXy * kDCTBlockSize * 3;
 
-  static constexpr size_t required_size_[] = {
-      1, 1, 1, 1, 4, 16, 2, 4, 8, 1, 1, 64, 32, 256, 128, 1024, 512};
-  static_assert(kNum == sizeof(required_size_) / sizeof(*required_size_),
-                "Update this array when adding or removing quant tables.");
-  static constexpr size_t kTotalTableSize =
-      ArraySum(required_size_) * kDCTBlockSize * 3;
-
+  uint32_t computed_mask_ = 0;
   // kTotalTableSize entries followed by kTotalTableSize for inv_table
   hwy::AlignedFreeUniquePtr<float[]> table_storage_;
   const float* table_;

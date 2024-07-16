@@ -18,7 +18,9 @@
 #include "av1/encoder/hybrid_fwd_txfm.h"
 
 /* 4-point reversible, orthonormal Walsh-Hadamard in 3.5 adds, 0.5 shifts per
-   pixel. */
+   pixel.
+   Shared for both high and low bit depth.
+ */
 void av1_fwht4x4_c(const int16_t *input, tran_low_t *output, int stride) {
   int i;
   tran_high_t a1, b1, c1, d1, e1;
@@ -40,21 +42,21 @@ void av1_fwht4x4_c(const int16_t *input, tran_low_t *output, int stride) {
     a1 -= c1;
     d1 += b1;
     op[0] = (tran_low_t)a1;
-    op[4] = (tran_low_t)c1;
-    op[8] = (tran_low_t)d1;
-    op[12] = (tran_low_t)b1;
+    op[1] = (tran_low_t)c1;
+    op[2] = (tran_low_t)d1;
+    op[3] = (tran_low_t)b1;
 
     ip_pass0++;
-    op++;
+    op += 4;
   }
   ip = output;
   op = output;
 
   for (i = 0; i < 4; i++) {
-    a1 = ip[0];
-    b1 = ip[1];
-    c1 = ip[2];
-    d1 = ip[3];
+    a1 = ip[4 * 0];
+    b1 = ip[4 * 1];
+    c1 = ip[4 * 2];
+    d1 = ip[4 * 3];
 
     a1 += b1;
     d1 -= c1;
@@ -63,19 +65,14 @@ void av1_fwht4x4_c(const int16_t *input, tran_low_t *output, int stride) {
     c1 = e1 - c1;
     a1 -= c1;
     d1 += b1;
-    op[0] = (tran_low_t)(a1 * UNIT_QUANT_FACTOR);
-    op[1] = (tran_low_t)(c1 * UNIT_QUANT_FACTOR);
-    op[2] = (tran_low_t)(d1 * UNIT_QUANT_FACTOR);
-    op[3] = (tran_low_t)(b1 * UNIT_QUANT_FACTOR);
+    op[4 * 0] = (tran_low_t)(a1 * UNIT_QUANT_FACTOR);
+    op[4 * 1] = (tran_low_t)(c1 * UNIT_QUANT_FACTOR);
+    op[4 * 2] = (tran_low_t)(d1 * UNIT_QUANT_FACTOR);
+    op[4 * 3] = (tran_low_t)(b1 * UNIT_QUANT_FACTOR);
 
-    ip += 4;
-    op += 4;
+    ip++;
+    op++;
   }
-}
-
-void av1_highbd_fwht4x4_c(const int16_t *input, tran_low_t *output,
-                          int stride) {
-  av1_fwht4x4_c(input, output, stride);
 }
 
 static void highbd_fwd_txfm_4x4(const int16_t *src_diff, tran_low_t *coeff,
@@ -85,7 +82,7 @@ static void highbd_fwd_txfm_4x4(const int16_t *src_diff, tran_low_t *coeff,
   const int bd = txfm_param->bd;
   if (txfm_param->lossless) {
     assert(tx_type == DCT_DCT);
-    av1_highbd_fwht4x4(src_diff, coeff, diff_stride);
+    av1_fwht4x4(src_diff, coeff, diff_stride);
     return;
   }
   av1_fwd_txfm2d_4x4(src_diff, dst_coeff, diff_stride, tx_type, bd);
@@ -315,17 +312,51 @@ void av1_highbd_fwd_txfm(const int16_t *src_diff, tran_low_t *coeff,
   }
 }
 
+#if CONFIG_AV1_HIGHBITDEPTH
+static INLINE void highbd_wht_fwd_txfm(TX_SIZE tx_size, const int16_t *src_diff,
+                                       ptrdiff_t src_stride,
+                                       tran_low_t *coeff) {
+  switch (tx_size) {
+    // As the output transform co-efficients of 4x4 Hadamard transform can be
+    // represented using 15 bits (for 12-bit clip) use lowbd variant of
+    // hadamard_4x4.
+    case TX_4X4: aom_hadamard_4x4(src_diff, src_stride, coeff); break;
+    case TX_8X8: aom_highbd_hadamard_8x8(src_diff, src_stride, coeff); break;
+    case TX_16X16:
+      aom_highbd_hadamard_16x16(src_diff, src_stride, coeff);
+      break;
+    case TX_32X32:
+      aom_highbd_hadamard_32x32(src_diff, src_stride, coeff);
+      break;
+    default: assert(0);
+  }
+}
+#endif  // CONFIG_AV1_HIGHBITDEPTH
+
+static INLINE void wht_fwd_txfm(TX_SIZE tx_size, const int16_t *src_diff,
+                                ptrdiff_t src_stride, tran_low_t *coeff) {
+  switch (tx_size) {
+    case TX_4X4: aom_hadamard_4x4(src_diff, src_stride, coeff); break;
+    case TX_8X8: aom_hadamard_8x8(src_diff, src_stride, coeff); break;
+    case TX_16X16: aom_hadamard_16x16(src_diff, src_stride, coeff); break;
+    case TX_32X32: aom_hadamard_32x32(src_diff, src_stride, coeff); break;
+    default: assert(0);
+  }
+}
+
 void av1_quick_txfm(int use_hadamard, TX_SIZE tx_size, BitDepthInfo bd_info,
                     const int16_t *src_diff, int src_stride,
                     tran_low_t *coeff) {
   if (use_hadamard) {
-    switch (tx_size) {
-      case TX_4X4: aom_hadamard_4x4(src_diff, src_stride, coeff); break;
-      case TX_8X8: aom_hadamard_8x8(src_diff, src_stride, coeff); break;
-      case TX_16X16: aom_hadamard_16x16(src_diff, src_stride, coeff); break;
-      case TX_32X32: aom_hadamard_32x32(src_diff, src_stride, coeff); break;
-      default: assert(0);
+#if CONFIG_AV1_HIGHBITDEPTH
+    if (bd_info.use_highbitdepth_buf) {
+      highbd_wht_fwd_txfm(tx_size, src_diff, src_stride, coeff);
+    } else {
+      wht_fwd_txfm(tx_size, src_diff, src_stride, coeff);
     }
+#else
+    wht_fwd_txfm(tx_size, src_diff, src_stride, coeff);
+#endif  // CONFIG_AV1_HIGHBITDEPTH
   } else {
     TxfmParam txfm_param;
     txfm_param.tx_type = DCT_DCT;

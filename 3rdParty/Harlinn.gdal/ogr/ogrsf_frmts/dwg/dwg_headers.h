@@ -1,4 +1,3 @@
-#pragma once
 /******************************************************************************
  *
  * Project:  GDAL
@@ -30,7 +29,7 @@
 #ifndef TEIGHA_HEADERS_H
 #define TEIGHA_HEADERS_H
 
-#include <port/cpl_port.h>
+#include "cpl_port.h"
 
 #ifdef HAVE_GCC_SYSTEM_HEADER
 #pragma GCC system_header
@@ -53,6 +52,7 @@
 
 #include "DbPolyline.h"
 #include "Db2dPolyline.h"
+#include "DbAttributeDefinition.h"
 #include "Db3dPolyline.h"
 #include "Db3dPolylineVertex.h"
 #include "DbLine.h"
@@ -63,6 +63,7 @@
 #include "DbText.h"
 #include "DbCircle.h"
 #include "DbSpline.h"
+#include "DbFace.h"
 #include "DbBlockReference.h"
 #include "DbAttribute.h"
 #include "DbFiler.h"
@@ -78,7 +79,6 @@
 #include "Ge/GeCircArc2d.h"
 #include "Ge/GeEllipArc2d.h"
 
-
 #include "OdCharMapper.h"
 #include "RxObjectImpl.h"
 
@@ -88,4 +88,4 @@
 #include "RxDynamicModule.h"
 #include "FdField.h"
 
-#endif // TEIGHA_HEADERS_H
+#endif  // TEIGHA_HEADERS_H

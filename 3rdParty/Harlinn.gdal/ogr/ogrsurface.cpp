@@ -26,24 +26,59 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
-#include <port/cpl_port.h>
-#include <ogr/ogr_geometry.h>
-#include <ogr/ogr_p.h>
-
-CPL_CVSID("$Id$")
+#include "cpl_port.h"
+#include "ogr_geometry.h"
+#include "ogr_p.h"
 
 /**
  * \fn double OGRSurface::get_Area() const;
  *
  * \brief Get the area of the surface object.
  *
+ * The returned area is a 2D Cartesian (planar) area in square units of the
+ * spatial reference system in use, so potentially "square degrees" for a
+ * geometry expressed in a geographic SRS.
+ *
  * For polygons the area is computed as the area of the outer ring less
  * the area of all internal rings.
  *
  * This method relates to the SFCOM ISurface::get_Area() method.
  *
- * @return the area of the feature in square units of the spatial reference
+ * @return the area of the geometry in square units of the spatial reference
  * system in use.
+ *
+ * @see get_GeodesicArea() for an alternative method returning areas
+ * computed on the ellipsoid, an in square meters.
+ */
+
+/**
+ * \fn double OGRSurface::get_GeodesicArea(const OGRSpatialReference* poSRSOverride = nullptr) const;
+ *
+ * \brief Get the area of the surface object, considered as a surface on the
+ * underlying ellipsoid of the SRS attached to the geometry.
+ *
+ * The returned area will always be in square meters, and assumes that
+ * polygon edges describe geodesic lines on the ellipsoid.
+ *
+ * If the geometry' SRS is not a geographic one, geometries are reprojected to
+ * the underlying geographic SRS of the geometry' SRS.
+ * OGRSpatialReference::GetDataAxisToSRSAxisMapping() is honored.
+ *
+ * For polygons the area is computed as the area of the outer ring less
+ * the area of all internal rings.
+ *
+ * Note that geometries with circular arcs will be linearized in their original
+ * coordinate space first, so the resulting geodesic area will be an
+ * approximation.
+ *
+ * @param poSRSOverride If not null, overrides OGRGeometry::getSpatialReference()
+ * @return the area of the geometry in square meters, or a negative value in case
+ * of error.
+ *
+ * @see get_Area() for an alternative method returning areas computed in
+ * 2D Cartesian space.
+ *
+ * @since GDAL 3.9
  */
 
 /**
@@ -74,7 +109,7 @@ CPL_CVSID("$Id$")
  * @return new geometry.
  */
 
-OGRPolygon* OGRSurface::CastToPolygon( OGRSurface* poSurface )
+OGRPolygon *OGRSurface::CastToPolygon(OGRSurface *poSurface)
 {
     OGRSurfaceCasterToPolygon pfn = poSurface->GetCasterToPolygon();
     return pfn(poSurface);
@@ -94,9 +129,10 @@ OGRPolygon* OGRSurface::CastToPolygon( OGRSurface* poSurface )
  * @return new geometry.
  */
 
-OGRCurvePolygon* OGRSurface::CastToCurvePolygon( OGRSurface* poSurface )
+OGRCurvePolygon *OGRSurface::CastToCurvePolygon(OGRSurface *poSurface)
 {
     OGRSurfaceCasterToCurvePolygon pfn = poSurface->GetCasterToCurvePolygon();
     return pfn(poSurface);
 }
+
 /*! @endcond */

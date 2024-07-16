@@ -1,4 +1,3 @@
-#pragma once
 /******************************************************************************
  * $Id$
  *
@@ -33,10 +32,10 @@
 #ifndef GDAL_CSV_H_INCLUDED
 #define GDAL_CSV_H_INCLUDED
 
-#include <port/cpl_port.h>
+#include "cpl_port.h"
 
 CPL_C_START
-HGDAL_EXPORT const char * GDALDefaultCSVFilename( const char *pszBasename );
+const char *GDALDefaultCSVFilename(const char *pszBasename);
 CPL_C_END
 
 #endif

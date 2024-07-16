@@ -30,9 +30,9 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
-#include "../pcidsk.h"
-#include "../core/pcidsk_utils.h"
-#include "cpcidskvectorsegment.h"
+#include "pcidsk.h"
+#include "core/pcidsk_utils.h"
+#include "segment/cpcidskvectorsegment.h"
 #include <cassert>
 #include <cstring>
 #include <cstdio>

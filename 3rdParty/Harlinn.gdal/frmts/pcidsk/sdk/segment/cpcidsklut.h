@@ -1,4 +1,3 @@
-#pragma once
 /******************************************************************************
  *
  * Purpose:  Declaration of the CPCIDSK_LUT class.
@@ -28,11 +27,11 @@
 #ifndef INCLUDE_SEGMENT_PCIDSK_LUT_H
 #define INCLUDE_SEGMENT_PCIDSK_LUT_H
 
-#include "../pcidsk_config.h"
-#include "../pcidsk_types.h"
-#include "../pcidsk_lut.h"
-#include "../pcidsk_buffer.h"
-#include "cpcidsksegment.h"
+#include "pcidsk_config.h"
+#include "pcidsk_types.h"
+#include "pcidsk_lut.h"
+#include "pcidsk_buffer.h"
+#include "segment/cpcidsksegment.h"
 
 #include <string>
 

@@ -27,21 +27,18 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
-#include <port/cpl_port.h>
-#include <ogr/ogr_feature.h>
+#include "cpl_port.h"
+#include "ogr_feature.h"
 
 #include <cstring>
 
-#include <ogr/ogr_api.h>
-#include <ogr/ogr_core.h>
-#include <ogr/ogr_p.h>
-#include <ogr/ograpispy.h>
-#include <port/cpl_conv.h>
-#include <port/cpl_error.h>
-#include <port/cpl_string.h>
-
-
-CPL_CVSID("$Id$")
+#include "ogr_api.h"
+#include "ogr_core.h"
+#include "ogr_p.h"
+#include "ograpispy.h"
+#include "cpl_conv.h"
+#include "cpl_error.h"
+#include "cpl_string.h"
 
 /************************************************************************/
 /*                            OGRFieldDefn()                            */
@@ -56,20 +53,15 @@ CPL_CVSID("$Id$")
  * @param eTypeIn the type of the new field.
  */
 
-OGRFieldDefn::OGRFieldDefn( const char * pszNameIn, OGRFieldType eTypeIn ) :
-    pszName(CPLStrdup(pszNameIn)),
-    pszAlternativeName(CPLStrdup("")),
-    eType(eTypeIn),
-    eJustify(OJUndefined),
-    // Should nWidth & nPrecision be defined in some particular way for numbers?
-    nWidth(0),
-    nPrecision(0),
-    pszDefault(nullptr),
-    bIgnore(FALSE),
-    eSubType(OFSTNone),
-    bNullable(TRUE),
-    bUnique(FALSE)
-{}
+OGRFieldDefn::OGRFieldDefn(const char *pszNameIn, OGRFieldType eTypeIn)
+    : pszName(CPLStrdup(pszNameIn)), pszAlternativeName(CPLStrdup("")),
+      eType(eTypeIn), eJustify(OJUndefined),
+      // Should nWidth & nPrecision be defined in some particular way for
+      // numbers?
+      nWidth(0), nPrecision(0), pszDefault(nullptr), bIgnore(FALSE),
+      eSubType(OFSTNone), bNullable(TRUE), bUnique(FALSE)
+{
+}
 
 /************************************************************************/
 /*                            OGRFieldDefn()                            */
@@ -83,19 +75,18 @@ OGRFieldDefn::OGRFieldDefn( const char * pszNameIn, OGRFieldType eTypeIn ) :
  * @param poPrototype the field definition to clone.
  */
 
-OGRFieldDefn::OGRFieldDefn( const OGRFieldDefn *poPrototype ) :
-    pszName(CPLStrdup(poPrototype->GetNameRef())),
-    pszAlternativeName(CPLStrdup(poPrototype->GetAlternativeNameRef())),
-    eType(poPrototype->GetType()),
-    eJustify(poPrototype->GetJustify()),
-    nWidth(poPrototype->GetWidth()),
-    nPrecision(poPrototype->GetPrecision()),
-    pszDefault(nullptr),
-    bIgnore(FALSE),  // TODO(schwehr): Can we use IsIgnored()?
-    eSubType(poPrototype->GetSubType()),
-    bNullable(poPrototype->IsNullable()),
-    bUnique(poPrototype->IsUnique()),
-    m_osDomainName(poPrototype->m_osDomainName)
+OGRFieldDefn::OGRFieldDefn(const OGRFieldDefn *poPrototype)
+    : pszName(CPLStrdup(poPrototype->GetNameRef())),
+      pszAlternativeName(CPLStrdup(poPrototype->GetAlternativeNameRef())),
+      eType(poPrototype->GetType()), eJustify(poPrototype->GetJustify()),
+      nWidth(poPrototype->GetWidth()), nPrecision(poPrototype->GetPrecision()),
+      pszDefault(nullptr),
+      bIgnore(FALSE),  // TODO(schwehr): Can we use IsIgnored()?
+      eSubType(poPrototype->GetSubType()), bNullable(poPrototype->IsNullable()),
+      bUnique(poPrototype->IsUnique()),
+      m_osDomainName(poPrototype->m_osDomainName),
+      m_osComment(poPrototype->GetComment()),
+      m_nTZFlag(poPrototype->GetTZFlag())
 {
     SetDefault(poPrototype->GetDefault());
 }
@@ -115,7 +106,7 @@ OGRFieldDefn::OGRFieldDefn( const OGRFieldDefn *poPrototype ) :
  * @return handle to the new field definition.
  */
 
-OGRFieldDefnH OGR_Fld_Create( const char *pszName, OGRFieldType eType )
+OGRFieldDefnH OGR_Fld_Create(const char *pszName, OGRFieldType eType)
 
 {
     return OGRFieldDefn::ToHandle(new OGRFieldDefn(pszName, eType));
@@ -142,7 +133,7 @@ OGRFieldDefn::~OGRFieldDefn()
  * @param hDefn handle to the field definition to destroy.
  */
 
-void OGR_Fld_Destroy( OGRFieldDefnH hDefn )
+void OGR_Fld_Destroy(OGRFieldDefnH hDefn)
 
 {
     delete OGRFieldDefn::FromHandle(hDefn);
@@ -157,13 +148,25 @@ void OGR_Fld_Destroy( OGRFieldDefnH hDefn )
  *
  * This method is the same as the C function OGR_Fld_SetName().
  *
+ * Note that once a OGRFieldDefn has been added to a layer definition with
+ * OGRLayer::AddFieldDefn(), its setter methods should not be called on the
+ * object returned with OGRLayer::GetLayerDefn()->GetFieldDefn(). Instead,
+ * OGRLayer::AlterFieldDefn() should be called on a new instance of
+ * OGRFieldDefn, for drivers that support AlterFieldDefn.
+ *
  * @param pszNameIn the new name to apply.
  */
 
-void OGRFieldDefn::SetName( const char * pszNameIn )
+void OGRFieldDefn::SetName(const char *pszNameIn)
 
 {
-    if( pszName != pszNameIn )
+    if (m_bSealed)
+    {
+        CPLError(CE_Failure, CPLE_AppDefined,
+                 "OGRFieldDefn::SetName() not allowed on a sealed object");
+        return;
+    }
+    if (pszName != pszNameIn)
     {
         CPLFree(pszName);
         pszName = CPLStrdup(pszNameIn);
@@ -178,11 +181,17 @@ void OGRFieldDefn::SetName( const char * pszNameIn )
  *
  * This function is the same as the CPP method OGRFieldDefn::SetName().
  *
+ * Note that once a OGRFieldDefn has been added to a layer definition with
+ * OGRLayer::AddFieldDefn(), its setter methods should not be called on the
+ * object returned with OGRLayer::GetLayerDefn()->GetFieldDefn(). Instead,
+ * OGRLayer::AlterFieldDefn() should be called on a new instance of
+ * OGRFieldDefn, for drivers that support AlterFieldDefn.
+ *
  * @param hDefn handle to the field definition to apply the new name to.
  * @param pszName the new name to apply.
  */
 
-void OGR_Fld_SetName( OGRFieldDefnH hDefn, const char *pszName )
+void OGR_Fld_SetName(OGRFieldDefnH hDefn, const char *pszName)
 
 {
     OGRFieldDefn::FromHandle(hDefn)->SetName(pszName);
@@ -216,18 +225,17 @@ void OGR_Fld_SetName( OGRFieldDefnH hDefn, const char *pszName )
  *
  */
 
-const char *OGR_Fld_GetNameRef( OGRFieldDefnH hDefn )
+const char *OGR_Fld_GetNameRef(OGRFieldDefnH hDefn)
 
 {
 
 #ifdef OGRAPISPY_ENABLED
-    if( bOGRAPISpyEnabled )
+    if (bOGRAPISpyEnabled)
         OGRAPISpy_Fld_GetXXXX(hDefn, "GetNameRef");
 #endif
 
     return OGRFieldDefn::FromHandle(hDefn)->GetNameRef();
 }
-
 
 /************************************************************************/
 /*                              SetAlternativeName()                    */
@@ -246,15 +254,28 @@ const char *OGR_Fld_GetNameRef( OGRFieldDefnH hDefn )
  *
  * This method is the same as the C function OGR_Fld_SetAlternativeName().
  *
+ * Note that once a OGRFieldDefn has been added to a layer definition with
+ * OGRLayer::AddFieldDefn(), its setter methods should not be called on the
+ * object returned with OGRLayer::GetLayerDefn()->GetFieldDefn(). Instead,
+ * OGRLayer::AlterFieldDefn() should be called on a new instance of
+ * OGRFieldDefn, for drivers that support AlterFieldDefn.
+ *
  * @param pszAlternativeNameIn the new alternative name to apply.
  *
  * @since GDAL 3.2
  */
 
-void OGRFieldDefn::SetAlternativeName( const char * pszAlternativeNameIn )
+void OGRFieldDefn::SetAlternativeName(const char *pszAlternativeNameIn)
 
 {
-    if( pszAlternativeName != pszAlternativeNameIn )
+    if (m_bSealed)
+    {
+        CPLError(CE_Failure, CPLE_AppDefined,
+                 "OGRFieldDefn::SetAlternativeName() not allowed on a sealed "
+                 "object");
+        return;
+    }
+    if (pszAlternativeName != pszAlternativeNameIn)
     {
         CPLFree(pszAlternativeName);
         pszAlternativeName = CPLStrdup(pszAlternativeNameIn);
@@ -275,15 +296,24 @@ void OGRFieldDefn::SetAlternativeName( const char * pszAlternativeNameIn )
  * be used in place of the actual field name during SQL queries or other
  * field name dependent API calls.
  *
- * This function is the same as the CPP method OGRFieldDefn::SetAlternativeName().
+ * This function is the same as the CPP method
+ * OGRFieldDefn::SetAlternativeName().
  *
- * @param hDefn handle to the field definition to apply the new alternative name to.
+ * Note that once a OGRFieldDefn has been added to a layer definition with
+ * OGRLayer::AddFieldDefn(), its setter methods should not be called on the
+ * object returned with OGRLayer::GetLayerDefn()->GetFieldDefn(). Instead,
+ * OGRLayer::AlterFieldDefn() should be called on a new instance of
+ * OGRFieldDefn, for drivers that support AlterFieldDefn.
+ *
+ * @param hDefn handle to the field definition to apply the new alternative name
+ * to.
  * @param pszAlternativeName the new alternative name to apply.
  *
  * @since GDAL 3.2
  */
 
-void OGR_Fld_SetAlternativeName( OGRFieldDefnH hDefn, const char *pszAlternativeName )
+void OGR_Fld_SetAlternativeName(OGRFieldDefnH hDefn,
+                                const char *pszAlternativeName)
 
 {
     OGRFieldDefn::FromHandle(hDefn)->SetAlternativeName(pszAlternativeName);
@@ -308,8 +338,8 @@ void OGR_Fld_SetAlternativeName( OGRFieldDefnH hDefn, const char *pszAlternative
  *
  * This method is the same as the C function OGR_Fld_GetAlternativeNameRef().
  *
- * @return pointer to an internal alternative name string that should not be freed or
- * modified.
+ * @return pointer to an internal alternative name string that should not be
+ * freed or modified.
  *
  * @since GDAL 3.2
  */
@@ -328,7 +358,8 @@ void OGR_Fld_SetAlternativeName( OGRFieldDefnH hDefn, const char *pszAlternative
  * be used in place of the actual field name during SQL queries or other
  * field name dependent API calls.
  *
- * This function is the same as the CPP method OGRFieldDefn::GetAlternativeNameRef().
+ * This function is the same as the CPP method
+ * OGRFieldDefn::GetAlternativeNameRef().
  *
  * @param hDefn handle to the field definition.
  * @return the alternative name of the field definition.
@@ -336,18 +367,17 @@ void OGR_Fld_SetAlternativeName( OGRFieldDefnH hDefn, const char *pszAlternative
  * @since GDAL 3.2
  */
 
-const char *OGR_Fld_GetAlternativeNameRef( OGRFieldDefnH hDefn )
+const char *OGR_Fld_GetAlternativeNameRef(OGRFieldDefnH hDefn)
 
 {
 
 #ifdef OGRAPISPY_ENABLED
-    if( bOGRAPISpyEnabled )
+    if (bOGRAPISpyEnabled)
         OGRAPISpy_Fld_GetXXXX(hDefn, "GetAlternativeNameRef");
 #endif
 
     return OGRFieldDefn::FromHandle(hDefn)->GetAlternativeNameRef();
 }
-
 
 /************************************************************************/
 /*                              GetType()                               */
@@ -375,12 +405,12 @@ const char *OGR_Fld_GetAlternativeNameRef( OGRFieldDefnH hDefn )
  * @return field type.
  */
 
-OGRFieldType OGR_Fld_GetType( OGRFieldDefnH hDefn )
+OGRFieldType OGR_Fld_GetType(OGRFieldDefnH hDefn)
 
 {
 
 #ifdef OGRAPISPY_ENABLED
-    if( bOGRAPISpyEnabled )
+    if (bOGRAPISpyEnabled)
         OGRAPISpy_Fld_GetXXXX(hDefn, "GetType");
 #endif
 
@@ -398,12 +428,24 @@ OGRFieldType OGR_Fld_GetType( OGRFieldDefnH hDefn )
  *
  * This method is the same as the C function OGR_Fld_SetType().
  *
+ * Note that once a OGRFieldDefn has been added to a layer definition with
+ * OGRLayer::AddFieldDefn(), its setter methods should not be called on the
+ * object returned with OGRLayer::GetLayerDefn()->GetFieldDefn(). Instead,
+ * OGRLayer::AlterFieldDefn() should be called on a new instance of
+ * OGRFieldDefn, for drivers that support AlterFieldDefn.
+ *
  * @param eTypeIn the new field type.
  */
 
-void OGRFieldDefn::SetType( OGRFieldType eTypeIn )
+void OGRFieldDefn::SetType(OGRFieldType eTypeIn)
 {
-    if( !OGR_AreTypeSubTypeCompatible(eTypeIn, eSubType) )
+    if (m_bSealed)
+    {
+        CPLError(CE_Failure, CPLE_AppDefined,
+                 "OGRFieldDefn::SetType() not allowed on a sealed object");
+        return;
+    }
+    if (!OGR_AreTypeSubTypeCompatible(eTypeIn, eSubType))
     {
         CPLError(CE_Warning, CPLE_AppDefined,
                  "Type and subtype of field definition are not compatible. "
@@ -423,11 +465,17 @@ void OGRFieldDefn::SetType( OGRFieldType eTypeIn )
  *
  * This function is the same as the CPP method OGRFieldDefn::SetType().
  *
+ * Note that once a OGRFieldDefn has been added to a layer definition with
+ * OGRLayer::AddFieldDefn(), its setter methods should not be called on the
+ * object returned with OGRLayer::GetLayerDefn()->GetFieldDefn(). Instead,
+ * OGRLayer::AlterFieldDefn() should be called on a new instance of
+ * OGRFieldDefn, for drivers that support AlterFieldDefn.
+ *
  * @param hDefn handle to the field definition to set type to.
  * @param eType the new field type.
  */
 
-void OGR_Fld_SetType( OGRFieldDefnH hDefn, OGRFieldType eType )
+void OGR_Fld_SetType(OGRFieldDefnH hDefn, OGRFieldType eType)
 
 {
     OGRFieldDefn::FromHandle(hDefn)->SetType(eType);
@@ -461,12 +509,12 @@ void OGR_Fld_SetType( OGRFieldDefnH hDefn, OGRFieldType eType )
  * @since GDAL 2.0
  */
 
-OGRFieldSubType OGR_Fld_GetSubType( OGRFieldDefnH hDefn )
+OGRFieldSubType OGR_Fld_GetSubType(OGRFieldDefnH hDefn)
 
 {
 
 #ifdef OGRAPISPY_ENABLED
-    if( bOGRAPISpyEnabled )
+    if (bOGRAPISpyEnabled)
         OGRAPISpy_Fld_GetXXXX(hDefn, "GetSubType");
 #endif
 
@@ -484,12 +532,24 @@ OGRFieldSubType OGR_Fld_GetSubType( OGRFieldDefnH hDefn )
  *
  * This method is the same as the C function OGR_Fld_SetSubType().
  *
+ * Note that once a OGRFieldDefn has been added to a layer definition with
+ * OGRLayer::AddFieldDefn(), its setter methods should not be called on the
+ * object returned with OGRLayer::GetLayerDefn()->GetFieldDefn(). Instead,
+ * OGRLayer::AlterFieldDefn() should be called on a new instance of
+ * OGRFieldDefn, for drivers that support AlterFieldDefn.
+ *
  * @param eSubTypeIn the new field subtype.
  * @since GDAL 2.0
  */
-void OGRFieldDefn::SetSubType( OGRFieldSubType eSubTypeIn )
+void OGRFieldDefn::SetSubType(OGRFieldSubType eSubTypeIn)
 {
-    if( !OGR_AreTypeSubTypeCompatible(eType, eSubTypeIn) )
+    if (m_bSealed)
+    {
+        CPLError(CE_Failure, CPLE_AppDefined,
+                 "OGRFieldDefn::SetSubType() not allowed on a sealed object");
+        return;
+    }
+    if (!OGR_AreTypeSubTypeCompatible(eType, eSubTypeIn))
     {
         CPLError(CE_Warning, CPLE_AppDefined,
                  "Type and subtype of field definition are not compatible. "
@@ -512,12 +572,18 @@ void OGRFieldDefn::SetSubType( OGRFieldSubType eSubTypeIn )
  *
  * This function is the same as the CPP method OGRFieldDefn::SetSubType().
  *
+ * Note that once a OGRFieldDefn has been added to a layer definition with
+ * OGRLayer::AddFieldDefn(), its setter methods should not be called on the
+ * object returned with OGRLayer::GetLayerDefn()->GetFieldDefn(). Instead,
+ * OGRLayer::AlterFieldDefn() should be called on a new instance of
+ * OGRFieldDefn, for drivers that support AlterFieldDefn.
+ *
  * @param hDefn handle to the field definition to set type to.
  * @param eSubType the new field subtype.
  * @since GDAL 2.0
  */
 
-void OGR_Fld_SetSubType( OGRFieldDefnH hDefn, OGRFieldSubType eSubType )
+void OGR_Fld_SetSubType(OGRFieldDefnH hDefn, OGRFieldSubType eSubType)
 
 {
     OGRFieldDefn::FromHandle(hDefn)->SetSubType(eSubType);
@@ -550,28 +616,40 @@ void OGR_Fld_SetSubType( OGRFieldDefnH hDefn, OGRFieldSubType eSubType )
  *
  * This function is the same as the C function OGR_Fld_SetDefault().
  *
+ * Note that once a OGRFieldDefn has been added to a layer definition with
+ * OGRLayer::AddFieldDefn(), its setter methods should not be called on the
+ * object returned with OGRLayer::GetLayerDefn()->GetFieldDefn(). Instead,
+ * OGRLayer::AlterFieldDefn() should be called on a new instance of
+ * OGRFieldDefn, for drivers that support AlterFieldDefn.
+ *
  * @param pszDefaultIn new default field value or NULL pointer.
  *
  * @since GDAL 2.0
  */
 
-void OGRFieldDefn::SetDefault( const char* pszDefaultIn )
+void OGRFieldDefn::SetDefault(const char *pszDefaultIn)
 
 {
+    if (m_bSealed)
+    {
+        CPLError(CE_Failure, CPLE_AppDefined,
+                 "OGRFieldDefn::SetDefault() not allowed on a sealed object");
+        return;
+    }
     CPLFree(pszDefault);
     pszDefault = nullptr;
 
-    if( pszDefaultIn && pszDefaultIn[0] == '\''  &&
-        pszDefaultIn[strlen(pszDefaultIn)-1] == '\'' )
+    if (pszDefaultIn && pszDefaultIn[0] == '\'' &&
+        pszDefaultIn[strlen(pszDefaultIn) - 1] == '\'')
     {
-        const char* pszPtr = pszDefaultIn + 1;  // Used after for.
-        for( ; *pszPtr != '\0'; pszPtr++ )
+        const char *pszPtr = pszDefaultIn + 1;  // Used after for.
+        for (; *pszPtr != '\0'; pszPtr++)
         {
-            if( *pszPtr == '\'' )
+            if (*pszPtr == '\'')
             {
-                if( pszPtr[1] == '\0' )
+                if (pszPtr[1] == '\0')
                     break;
-                if( pszPtr[1] != '\'' )
+                if (pszPtr[1] != '\'')
                 {
                     CPLError(CE_Failure, CPLE_AppDefined,
                              "Incorrectly quoted string literal");
@@ -580,7 +658,7 @@ void OGRFieldDefn::SetDefault( const char* pszDefaultIn )
                 pszPtr++;
             }
         }
-        if( *pszPtr == '\0' )
+        if (*pszPtr == '\0')
         {
             CPLError(CE_Failure, CPLE_AppDefined,
                      "Incorrectly quoted string literal");
@@ -618,13 +696,19 @@ void OGRFieldDefn::SetDefault( const char* pszDefaultIn )
  *
  * This function is the same as the C++ method OGRFieldDefn::SetDefault().
  *
+ * Note that once a OGRFieldDefn has been added to a layer definition with
+ * OGRLayer::AddFieldDefn(), its setter methods should not be called on the
+ * object returned with OGRLayer::GetLayerDefn()->GetFieldDefn(). Instead,
+ * OGRLayer::AlterFieldDefn() should be called on a new instance of
+ * OGRFieldDefn, for drivers that support AlterFieldDefn.
+ *
  * @param hDefn handle to the field definition.
  * @param pszDefault new default field value or NULL pointer.
  *
  * @since GDAL 2.0
  */
 
-void CPL_DLL OGR_Fld_SetDefault( OGRFieldDefnH hDefn, const char* pszDefault )
+void CPL_DLL OGR_Fld_SetDefault(OGRFieldDefnH hDefn, const char *pszDefault)
 {
     OGRFieldDefn::FromHandle(hDefn)->SetDefault(pszDefault);
 }
@@ -642,7 +726,7 @@ void CPL_DLL OGR_Fld_SetDefault( OGRFieldDefnH hDefn, const char* pszDefault )
  * @since GDAL 2.0
  */
 
-const char* OGRFieldDefn::GetDefault() const
+const char *OGRFieldDefn::GetDefault() const
 
 {
     return pszDefault;
@@ -662,7 +746,7 @@ const char* OGRFieldDefn::GetDefault() const
  * @since GDAL 2.0
  */
 
-const char *OGR_Fld_GetDefault( OGRFieldDefnH hDefn )
+const char *OGR_Fld_GetDefault(OGRFieldDefnH hDefn)
 {
     return OGRFieldDefn::FromHandle(hDefn)->GetDefault();
 }
@@ -688,21 +772,19 @@ const char *OGR_Fld_GetDefault( OGRFieldDefnH hDefn )
 
 int OGRFieldDefn::IsDefaultDriverSpecific() const
 {
-    if( pszDefault == nullptr )
+    if (pszDefault == nullptr)
         return FALSE;
 
-    if( EQUAL(pszDefault, "NULL") ||
-        EQUAL(pszDefault, "CURRENT_TIMESTAMP") ||
-        EQUAL(pszDefault, "CURRENT_TIME") ||
-        EQUAL(pszDefault, "CURRENT_DATE") )
+    if (EQUAL(pszDefault, "NULL") || EQUAL(pszDefault, "CURRENT_TIMESTAMP") ||
+        EQUAL(pszDefault, "CURRENT_TIME") || EQUAL(pszDefault, "CURRENT_DATE"))
         return FALSE;
 
-    if( pszDefault[0] == '\'' && pszDefault[strlen(pszDefault)-1] == '\'' )
+    if (pszDefault[0] == '\'' && pszDefault[strlen(pszDefault) - 1] == '\'')
         return FALSE;
 
-    char* pszEnd = nullptr;
+    char *pszEnd = nullptr;
     CPLStrtod(pszDefault, &pszEnd);
-    if( *pszEnd == '\0' )
+    if (*pszEnd == '\0')
         return FALSE;
 
     return TRUE;
@@ -728,7 +810,7 @@ int OGRFieldDefn::IsDefaultDriverSpecific() const
  * @since GDAL 2.0
  */
 
-int OGR_Fld_IsDefaultDriverSpecific( OGRFieldDefnH hDefn )
+int OGR_Fld_IsDefaultDriverSpecific(OGRFieldDefnH hDefn)
 {
     return OGRFieldDefn::FromHandle(hDefn)->IsDefaultDriverSpecific();
 }
@@ -748,50 +830,53 @@ int OGR_Fld_IsDefaultDriverSpecific( OGRFieldDefnH hDefn )
  * modified or freed.
  */
 
-const char * OGRFieldDefn::GetFieldTypeName( OGRFieldType eType )
+const char *OGRFieldDefn::GetFieldTypeName(OGRFieldType eType)
 
 {
-    switch( eType )
+    switch (eType)
     {
-      case OFTInteger:
-        return "Integer";
+        case OFTInteger:
+            return "Integer";
 
-      case OFTInteger64:
-        return "Integer64";
+        case OFTInteger64:
+            return "Integer64";
 
-      case OFTReal:
-        return "Real";
+        case OFTReal:
+            return "Real";
 
-      case OFTString:
-        return "String";
+        case OFTString:
+            return "String";
 
-      case OFTIntegerList:
-        return "IntegerList";
+        case OFTIntegerList:
+            return "IntegerList";
 
-      case OFTInteger64List:
-        return "Integer64List";
+        case OFTInteger64List:
+            return "Integer64List";
 
-      case OFTRealList:
-        return "RealList";
+        case OFTRealList:
+            return "RealList";
 
-      case OFTStringList:
-        return "StringList";
+        case OFTStringList:
+            return "StringList";
 
-      case OFTBinary:
-        return "Binary";
+        case OFTBinary:
+            return "Binary";
 
-      case OFTDate:
-        return "Date";
+        case OFTDate:
+            return "Date";
 
-      case OFTTime:
-        return "Time";
+        case OFTTime:
+            return "Time";
 
-      case OFTDateTime:
-        return "DateTime";
+        case OFTDateTime:
+            return "DateTime";
 
-      default:
-        return "(unknown)";
+        case OFTWideString:
+        case OFTWideStringList:
+            break;
     }
+
+    return "(unknown)";
 }
 
 /************************************************************************/
@@ -807,7 +892,7 @@ const char * OGRFieldDefn::GetFieldTypeName( OGRFieldType eType )
  * @return the name.
  */
 
-const char *OGR_GetFieldTypeName( OGRFieldType eType )
+const char *OGR_GetFieldTypeName(OGRFieldType eType)
 
 {
     return OGRFieldDefn::GetFieldTypeName(eType);
@@ -830,32 +915,30 @@ const char *OGR_GetFieldTypeName( OGRFieldType eType )
  * @since GDAL 2.0
  */
 
-const char * OGRFieldDefn::GetFieldSubTypeName( OGRFieldSubType eSubType )
+const char *OGRFieldDefn::GetFieldSubTypeName(OGRFieldSubType eSubType)
 
 {
-    switch( eSubType )
+    switch (eSubType)
     {
-      case OFSTNone:
-        return "None";
+        case OFSTNone:
+            break;
 
-      case OFSTBoolean:
-        return "Boolean";
+        case OFSTBoolean:
+            return "Boolean";
 
-      case OFSTInt16:
-        return "Int16";
+        case OFSTInt16:
+            return "Int16";
 
-      case OFSTFloat32:
-        return "Float32";
+        case OFSTFloat32:
+            return "Float32";
 
-      case OFSTJSON:
-        return "JSON";
+        case OFSTJSON:
+            return "JSON";
 
-      case OFSTUUID:
-        return "UUID";
-
-      default:
-        return "(unknown)";
+        case OFSTUUID:
+            return "UUID";
     }
+    return "None";
 }
 
 /************************************************************************/
@@ -873,7 +956,7 @@ const char * OGRFieldDefn::GetFieldSubTypeName( OGRFieldSubType eSubType )
  * @since GDAL 2.0
  */
 
-const char *OGR_GetFieldSubTypeName( OGRFieldSubType eSubType )
+const char *OGR_GetFieldSubTypeName(OGRFieldSubType eSubType)
 
 {
     return OGRFieldDefn::GetFieldSubTypeName(eSubType);
@@ -892,17 +975,17 @@ const char *OGR_GetFieldSubTypeName( OGRFieldSubType eSubType )
  * @since GDAL 2.0
  */
 
-int OGR_AreTypeSubTypeCompatible( OGRFieldType eType, OGRFieldSubType eSubType )
+int OGR_AreTypeSubTypeCompatible(OGRFieldType eType, OGRFieldSubType eSubType)
 {
-    if( eSubType == OFSTNone )
+    if (eSubType == OFSTNone)
         return TRUE;
-    if( eSubType == OFSTBoolean || eSubType == OFSTInt16 )
+    if (eSubType == OFSTBoolean || eSubType == OFSTInt16)
         return eType == OFTInteger || eType == OFTIntegerList;
-    if( eSubType == OFSTFloat32 )
+    if (eSubType == OFSTFloat32)
         return eType == OFTReal || eType == OFTRealList;
-    if( eSubType == OFSTJSON )
+    if (eSubType == OFSTJSON)
         return eType == OFTString;
-    if( eSubType == OFSTUUID )
+    if (eSubType == OFSTUUID)
         return eType == OFTString;
     return FALSE;
 }
@@ -937,7 +1020,7 @@ int OGR_AreTypeSubTypeCompatible( OGRFieldType eType, OGRFieldSubType eSubType )
  * @return the justification.
  */
 
-OGRJustification OGR_Fld_GetJustify( OGRFieldDefnH hDefn )
+OGRJustification OGR_Fld_GetJustify(OGRFieldDefnH hDefn)
 
 {
     return OGRFieldDefn::FromHandle(hDefn)->GetJustify();
@@ -973,7 +1056,7 @@ OGRJustification OGR_Fld_GetJustify( OGRFieldDefnH hDefn )
  * @param eJustify the new justification.
  */
 
-void OGR_Fld_SetJustify( OGRFieldDefnH hDefn, OGRJustification eJustify )
+void OGR_Fld_SetJustify(OGRFieldDefnH hDefn, OGRJustification eJustify)
 
 {
     OGRFieldDefn::FromHandle(hDefn)->SetJustify(eJustify);
@@ -1005,7 +1088,7 @@ void OGR_Fld_SetJustify( OGRFieldDefnH hDefn, OGRJustification eJustify )
  * @return the width, zero means no specified width.
  */
 
-int OGR_Fld_GetWidth( OGRFieldDefnH hDefn )
+int OGR_Fld_GetWidth(OGRFieldDefnH hDefn)
 
 {
     return OGRFieldDefn::FromHandle(hDefn)->GetWidth();
@@ -1016,14 +1099,28 @@ int OGR_Fld_GetWidth( OGRFieldDefnH hDefn )
 /************************************************************************/
 
 /**
- * \fn void OGRFieldDefn::SetWidth( int nWidth );
- *
  * \brief Set the formatting width for this field in characters.
  *
  * This method is the same as the C function OGR_Fld_SetWidth().
  *
- * @param nWidth the new width.
+ * Note that once a OGRFieldDefn has been added to a layer definition with
+ * OGRLayer::AddFieldDefn(), its setter methods should not be called on the
+ * object returned with OGRLayer::GetLayerDefn()->GetFieldDefn(). Instead,
+ * OGRLayer::AlterFieldDefn() should be called on a new instance of
+ * OGRFieldDefn, for drivers that support AlterFieldDefn.
+ *
+ * @param nWidthIn the new width.
  */
+void OGRFieldDefn::SetWidth(int nWidthIn)
+{
+    if (m_bSealed)
+    {
+        CPLError(CE_Failure, CPLE_AppDefined,
+                 "OGRFieldDefn::SetWidth() not allowed on a sealed object");
+        return;
+    }
+    nWidth = MAX(0, nWidthIn);
+}
 
 /************************************************************************/
 /*                          OGR_Fld_SetWidth()                          */
@@ -1033,11 +1130,17 @@ int OGR_Fld_GetWidth( OGRFieldDefnH hDefn )
  *
  * This function is the same as the CPP method OGRFieldDefn::SetWidth().
  *
+ * Note that once a OGRFieldDefn has been added to a layer definition with
+ * OGRLayer::AddFieldDefn(), its setter methods should not be called on the
+ * object returned with OGRLayer::GetLayerDefn()->GetFieldDefn(). Instead,
+ * OGRLayer::AlterFieldDefn() should be called on a new instance of
+ * OGRFieldDefn, for drivers that support AlterFieldDefn.
+ *
  * @param hDefn handle to the field definition to set width to.
  * @param nNewWidth the new width.
  */
 
-void OGR_Fld_SetWidth( OGRFieldDefnH hDefn, int nNewWidth )
+void OGR_Fld_SetWidth(OGRFieldDefnH hDefn, int nNewWidth)
 
 {
     OGRFieldDefn::FromHandle(hDefn)->SetWidth(nNewWidth);
@@ -1073,7 +1176,7 @@ void OGR_Fld_SetWidth( OGRFieldDefnH hDefn, int nNewWidth )
  * @return the precision.
  */
 
-int OGR_Fld_GetPrecision( OGRFieldDefnH hDefn )
+int OGR_Fld_GetPrecision(OGRFieldDefnH hDefn)
 
 {
     return OGRFieldDefn::FromHandle(hDefn)->GetPrecision();
@@ -1084,16 +1187,30 @@ int OGR_Fld_GetPrecision( OGRFieldDefnH hDefn )
 /************************************************************************/
 
 /**
- * \fn void OGRFieldDefn::SetPrecision( int nPrecision );
- *
  * \brief Set the formatting precision for this field in characters.
  *
  * This should normally be zero for fields of types other than OFTReal.
  *
  * This method is the same as the C function OGR_Fld_SetPrecision().
  *
- * @param nPrecision the new precision.
+ * Note that once a OGRFieldDefn has been added to a layer definition with
+ * OGRLayer::AddFieldDefn(), its setter methods should not be called on the
+ * object returned with OGRLayer::GetLayerDefn()->GetFieldDefn(). Instead,
+ * OGRLayer::AlterFieldDefn() should be called on a new instance of
+ * OGRFieldDefn, for drivers that support AlterFieldDefn.
+ *
+ * @param nPrecisionIn the new precision.
  */
+void OGRFieldDefn::SetPrecision(int nPrecisionIn)
+{
+    if (m_bSealed)
+    {
+        CPLError(CE_Failure, CPLE_AppDefined,
+                 "OGRFieldDefn::SetPrecision() not allowed on a sealed object");
+        return;
+    }
+    nPrecision = nPrecisionIn;
+}
 
 /************************************************************************/
 /*                        OGR_Fld_SetPrecision()                        */
@@ -1105,14 +1222,126 @@ int OGR_Fld_GetPrecision( OGRFieldDefnH hDefn )
  *
  * This function is the same as the CPP method OGRFieldDefn::SetPrecision().
  *
+ * Note that once a OGRFieldDefn has been added to a layer definition with
+ * OGRLayer::AddFieldDefn(), its setter methods should not be called on the
+ * object returned with OGRLayer::GetLayerDefn()->GetFieldDefn(). Instead,
+ * OGRLayer::AlterFieldDefn() should be called on a new instance of
+ * OGRFieldDefn, for drivers that support AlterFieldDefn.
+ *
  * @param hDefn handle to the field definition to set precision to.
  * @param nPrecision the new precision.
  */
 
-void OGR_Fld_SetPrecision( OGRFieldDefnH hDefn, int nPrecision )
+void OGR_Fld_SetPrecision(OGRFieldDefnH hDefn, int nPrecision)
 
 {
-    OGRFieldDefn::FromHandle(hDefn)->SetPrecision( nPrecision );
+    OGRFieldDefn::FromHandle(hDefn)->SetPrecision(nPrecision);
+}
+
+/************************************************************************/
+/*                            GetTZFlag()                               */
+/************************************************************************/
+
+/**
+ * \fn int OGRFieldDefn::GetTZFlag() const;
+ *
+ * \brief Get the time zone flag.
+ *
+ * Only applies to OFTTime, OFTDate and OFTDateTime fields.
+ *
+ * Cf OGR_TZFLAG_UNKNOWN, OGR_TZFLAG_LOCALTIME, OGR_TZFLAG_MIXED_TZ and
+ * OGR_TZFLAG_UTC
+ *
+ * This method is the same as the C function OGR_Fld_GetTZFlag().
+ *
+ * @return the time zone flag.
+ * @since GDAL 3.8
+ */
+
+/************************************************************************/
+/*                        OGR_Fld_GetTZFlag()                           */
+/************************************************************************/
+/**
+ * \brief Get the time zone flag.
+ *
+ * Only applies to OFTTime, OFTDate and OFTDateTime fields.
+ *
+ * Cf OGR_TZFLAG_UNKNOWN, OGR_TZFLAG_LOCALTIME, OGR_TZFLAG_MIXED_TZ and
+ * OGR_TZFLAG_UTC
+ *
+ * @param hDefn handle to the field definition .
+ * @return the time zone flag.
+ * @since GDAL 3.8
+ */
+
+int OGR_Fld_GetTZFlag(OGRFieldDefnH hDefn)
+
+{
+    return OGRFieldDefn::FromHandle(hDefn)->GetTZFlag();
+}
+
+/************************************************************************/
+/*                             SetTZFlag()                              */
+/************************************************************************/
+
+/**
+ * \brief Set the time zone flag.
+ *
+ * Only applies to OFTTime, OFTDate and OFTDateTime fields.
+ *
+ * Cf OGR_TZFLAG_UNKNOWN, OGR_TZFLAG_LOCALTIME, OGR_TZFLAG_MIXED_TZ and
+ * OGR_TZFLAG_UTC
+ *
+ * This method is the same as the C function OGR_Fld_SetTZFlag().
+ *
+ * Note that once a OGRFieldDefn has been added to a layer definition with
+ * OGRLayer::AddFieldDefn(), its setter methods should not be called on the
+ * object returned with OGRLayer::GetLayerDefn()->GetFieldDefn(). Instead,
+ * OGRLayer::AlterFieldDefn() should be called on a new instance of
+ * OGRFieldDefn, for drivers that support AlterFieldDefn.
+ *
+ * @param nTZFlag the new time zone flag.
+ * @since GDAL 3.8
+ */
+void OGRFieldDefn::SetTZFlag(int nTZFlag)
+{
+    if (m_bSealed)
+    {
+        CPLError(CE_Failure, CPLE_AppDefined,
+                 "OGRFieldDefn::SetTZFlag() not allowed on a sealed object");
+        return;
+    }
+    m_nTZFlag = nTZFlag;
+}
+
+/************************************************************************/
+/*                         OGR_Fld_SetTZFlag()                          */
+/************************************************************************/
+/**
+ * \brief Set the formatting precision for this field in characters.
+ *
+ * Set the time zone flag.
+ *
+ * Only applies to OFTTime, OFTDate and OFTDateTime fields.
+ *
+ * Cf OGR_TZFLAG_UNKNOWN, OGR_TZFLAG_LOCALTIME, OGR_TZFLAG_MIXED_TZ and
+ * OGR_TZFLAG_UTC
+ *
+ * Note that once a OGRFieldDefn has been added to a layer definition with
+ * OGRLayer::AddFieldDefn(), its setter methods should not be called on the
+ * object returned with OGRLayer::GetLayerDefn()->GetFieldDefn(). Instead,
+ * OGRLayer::AlterFieldDefn() should be called on a new instance of
+ * OGRFieldDefn, for drivers that support AlterFieldDefn.
+ *
+ * @param hDefn handle to the field definition to set precision to.
+ * @param nTZFlag the new time zone flag.
+ * @since GDAL 3.8
+ */
+
+void OGR_Fld_SetTZFlag(OGRFieldDefnH hDefn, int nTZFlag)
+
+{
+    OGRFieldDefn::FromHandle(hDefn)->SetTZFlag(nTZFlag);
 }
 
 /************************************************************************/
@@ -1124,6 +1353,12 @@ void OGR_Fld_SetPrecision( OGRFieldDefnH hDefn, int nPrecision )
  *
  * This method is the same as the C function OGR_Fld_Set().
  *
+ * Note that once a OGRFieldDefn has been added to a layer definition with
+ * OGRLayer::AddFieldDefn(), its setter methods should not be called on the
+ * object returned with OGRLayer::GetLayerDefn()->GetFieldDefn(). Instead,
+ * OGRLayer::AlterFieldDefn() should be called on a new instance of
+ * OGRFieldDefn, for drivers that support AlterFieldDefn.
+ *
  * @param pszNameIn the new name to assign.
  * @param eTypeIn the new type (one of the OFT values like OFTInteger).
  * @param nWidthIn the preferred formatting width.  Defaults to zero indicating
@@ -1134,11 +1369,16 @@ void OGR_Fld_SetPrecision( OGRFieldDefnH hDefn, int nPrecision )
  * to OJUndefined.
  */
 
-void OGRFieldDefn::Set( const char *pszNameIn,
-                        OGRFieldType eTypeIn,
-                        int nWidthIn, int nPrecisionIn,
-                        OGRJustification eJustifyIn )
+void OGRFieldDefn::Set(const char *pszNameIn, OGRFieldType eTypeIn,
+                       int nWidthIn, int nPrecisionIn,
+                       OGRJustification eJustifyIn)
 {
+    if (m_bSealed)
+    {
+        CPLError(CE_Failure, CPLE_AppDefined,
+                 "OGRFieldDefn::Set() not allowed on a sealed object");
+        return;
+    }
     SetName(pszNameIn);
     SetType(eTypeIn);
     SetWidth(nWidthIn);
@@ -1154,6 +1394,12 @@ void OGRFieldDefn::Set( const char *pszNameIn,
  *
  * This function is the same as the CPP method OGRFieldDefn::Set().
  *
+ * Note that once a OGRFieldDefn has been added to a layer definition with
+ * OGRLayer::AddFieldDefn(), its setter methods should not be called on the
+ * object returned with OGRLayer::GetLayerDefn()->GetFieldDefn(). Instead,
+ * OGRLayer::AlterFieldDefn() should be called on a new instance of
+ * OGRFieldDefn, for drivers that support AlterFieldDefn.
+ *
  * @param hDefn handle to the field definition to set to.
  * @param pszNameIn the new name to assign.
  * @param eTypeIn the new type (one of the OFT values like OFTInteger).
@@ -1165,14 +1411,13 @@ void OGRFieldDefn::Set( const char *pszNameIn,
  * to OJUndefined.
  */
 
-void OGR_Fld_Set( OGRFieldDefnH hDefn, const char *pszNameIn,
-                  OGRFieldType eTypeIn,
-                  int nWidthIn, int nPrecisionIn,
-                  OGRJustification eJustifyIn )
+void OGR_Fld_Set(OGRFieldDefnH hDefn, const char *pszNameIn,
+                 OGRFieldType eTypeIn, int nWidthIn, int nPrecisionIn,
+                 OGRJustification eJustifyIn)
 
 {
-    OGRFieldDefn::FromHandle(hDefn)->
-        Set(pszNameIn, eTypeIn, nWidthIn, nPrecisionIn, eJustifyIn);
+    OGRFieldDefn::FromHandle(hDefn)->Set(pszNameIn, eTypeIn, nWidthIn,
+                                         nPrecisionIn, eJustifyIn);
 }
 
 /************************************************************************/
@@ -1202,7 +1447,7 @@ void OGR_Fld_Set( OGRFieldDefnH hDefn, const char *pszNameIn,
  * @return ignore state
  */
 
-int OGR_Fld_IsIgnored( OGRFieldDefnH hDefn )
+int OGR_Fld_IsIgnored(OGRFieldDefnH hDefn)
 {
     return OGRFieldDefn::FromHandle(hDefn)->IsIgnored();
 }
@@ -1218,6 +1463,10 @@ int OGR_Fld_IsIgnored( OGRFieldDefnH hDefn )
  *
  * This method is the same as the C function OGR_Fld_SetIgnored().
  *
+ * This method should not be called on a object returned with
+ * OGRLayer::GetLayerDefn()->GetFieldDefn(). Instead, the
+ * OGRLayer::SetIgnoredFields() method should be called.
+ *
  * @param ignore ignore state
  */
 
@@ -1230,11 +1479,15 @@ int OGR_Fld_IsIgnored( OGRFieldDefnH hDefn )
  *
  * This method is the same as the C++ method OGRFieldDefn::SetIgnored().
  *
+ * This method should not be called on a object returned with
+ * OGRLayer::GetLayerDefn()->GetFieldDefn(). Instead, the
+ * OGRLayer::SetIgnoredFields() method should be called.
+ *
  * @param hDefn handle to the field definition
  * @param ignore ignore state
  */
 
-void OGR_Fld_SetIgnored( OGRFieldDefnH hDefn, int ignore )
+void OGR_Fld_SetIgnored(OGRFieldDefnH hDefn, int ignore)
 {
     OGRFieldDefn::FromHandle(hDefn)->SetIgnored(ignore);
 }
@@ -1250,16 +1503,18 @@ void OGR_Fld_SetIgnored( OGRFieldDefnH hDefn, int ignore )
  * @return TRUE if the field definition is identical to the other one.
  */
 
-int OGRFieldDefn::IsSame( const OGRFieldDefn * poOtherFieldDefn ) const
+int OGRFieldDefn::IsSame(const OGRFieldDefn *poOtherFieldDefn) const
 {
-    return
-        strcmp(pszName, poOtherFieldDefn->pszName) == 0 &&
-        strcmp(pszAlternativeName, poOtherFieldDefn->pszAlternativeName) == 0 &&
-        eType == poOtherFieldDefn->eType &&
-        eSubType == poOtherFieldDefn->eSubType &&
-        nWidth == poOtherFieldDefn->nWidth &&
-        nPrecision == poOtherFieldDefn->nPrecision &&
-        bNullable == poOtherFieldDefn->bNullable;
+    return strcmp(pszName, poOtherFieldDefn->pszName) == 0 &&
+           strcmp(pszAlternativeName, poOtherFieldDefn->pszAlternativeName) ==
+               0 &&
+           eType == poOtherFieldDefn->eType &&
+           eSubType == poOtherFieldDefn->eSubType &&
+           nWidth == poOtherFieldDefn->nWidth &&
+           nPrecision == poOtherFieldDefn->nPrecision &&
+           bNullable == poOtherFieldDefn->bNullable &&
+           m_osComment == poOtherFieldDefn->m_osComment &&
+           m_nTZFlag == poOtherFieldDefn->m_nTZFlag;
 }
 
 /************************************************************************/
@@ -1305,7 +1560,7 @@ int OGRFieldDefn::IsSame( const OGRFieldDefn * poOtherFieldDefn ) const
  * @since GDAL 2.0
  */
 
-int OGR_Fld_IsNullable( OGRFieldDefnH hDefn )
+int OGR_Fld_IsNullable(OGRFieldDefnH hDefn)
 {
     return OGRFieldDefn::FromHandle(hDefn)->IsNullable();
 }
@@ -1327,9 +1582,25 @@ int OGR_Fld_IsNullable( OGRFieldDefnH hDefn )
  *
  * This method is the same as the C function OGR_Fld_SetNullable().
  *
+ * Note that once a OGRFieldDefn has been added to a layer definition with
+ * OGRLayer::AddFieldDefn(), its setter methods should not be called on the
+ * object returned with OGRLayer::GetLayerDefn()->GetFieldDefn(). Instead,
+ * OGRLayer::AlterFieldDefn() should be called on a new instance of
+ * OGRFieldDefn, for drivers that support AlterFieldDefn().
+ *
  * @param bNullableIn FALSE if the field must have a not-null constraint.
  * @since GDAL 2.0
  */
+void OGRFieldDefn::SetNullable(int bNullableIn)
+{
+    if (m_bSealed)
+    {
+        CPLError(CE_Failure, CPLE_AppDefined,
+                 "OGRFieldDefn::SetNullable() not allowed on a sealed object");
+        return;
+    }
+    bNullable = bNullableIn;
+}
 
 /************************************************************************/
 /*                        OGR_Fld_SetNullable()                          */
@@ -1346,18 +1617,24 @@ int OGR_Fld_IsNullable( OGRFieldDefnH hDefn )
  *
  * This method is the same as the C++ method OGRFieldDefn::SetNullable().
  *
+ * Note that once a OGRFieldDefn has been added to a layer definition with
+ * OGRLayer::AddFieldDefn(), its setter methods should not be called on the
+ * object returned with OGRLayer::GetLayerDefn()->GetFieldDefn(). Instead,
+ * OGRLayer::AlterFieldDefn() should be called on a new instance of
+ * OGRFieldDefn, for drivers that support AlterFieldDefn().
+ *
  * @param hDefn handle to the field definition
  * @param bNullableIn FALSE if the field must have a not-null constraint.
  * @since GDAL 2.0
  */
 
-void OGR_Fld_SetNullable( OGRFieldDefnH hDefn, int bNullableIn )
+void OGR_Fld_SetNullable(OGRFieldDefnH hDefn, int bNullableIn)
 {
     OGRFieldDefn::FromHandle(hDefn)->SetNullable(bNullableIn);
 }
 
 /************************************************************************/
-/*                             IsUnique()                             */
+/*                             IsUnique()                               */
 /************************************************************************/
 
 /**
@@ -1389,41 +1666,55 @@ void OGR_Fld_SetNullable( OGRFieldDefnH hDefn, int bNullableIn )
  * @since GDAL 3.2
  */
 
-int OGR_Fld_IsUnique( OGRFieldDefnH hDefn )
+int OGR_Fld_IsUnique(OGRFieldDefnH hDefn)
 {
     return OGRFieldDefn::FromHandle(hDefn)->IsUnique();
 }
 
-/************************************************************************/
+/*********************************************************  ***************/
 /*                            SetUnique()                             */
 /************************************************************************/
 
 /**
- * \fn void OGRFieldDefn::SetUnique( int bUniqueIn );
- *
  * \brief Set whether this field has a unique constraint.
  *
- * By default, fields have no unique constraint, so this method is generally called with
- * TRUE to set a unique constraint.
+ * By default, fields have no unique constraint, so this method is generally
+ * called with TRUE to set a unique constraint.
  *
  * Drivers that support writing unique constraint will advertise the
  * GDAL_DCAP_UNIQUE_FIELDS driver metadata item.
  *
  * This method is the same as the C function OGR_Fld_SetUnique().
  *
+ * Note that once a OGRFieldDefn has been added to a layer definition with
+ * OGRLayer::AddFieldDefn(), its setter methods should not be called on the
+ * object returned with OGRLayer::GetLayerDefn()->GetFieldDefn(). Instead,
+ * OGRLayer::AlterFieldDefn() should be called on a new instance of
+ * OGRFieldDefn, for drivers that support AlterFieldDefn().
+ *
  * @param bUniqueIn TRUE if the field must have a unique constraint.
  * @since GDAL 3.2
  */
+void OGRFieldDefn::SetUnique(int bUniqueIn)
+{
+    if (m_bSealed)
+    {
+        CPLError(CE_Failure, CPLE_AppDefined,
+                 "OGRFieldDefn::SetUnique() not allowed on a sealed object");
+        return;
+    }
+    bUnique = bUniqueIn;
+}
 
 /************************************************************************/
-/*                        OGR_Fld_SetUnique()                          */
+/*                        OGR_Fld_SetUnique()                            */
 /************************************************************************/
 
 /**
  * \brief Set whether this field has a unique constraint.
  *
- * By default, fields have no unique constraint, so this method is generally called with
- * TRUE to set a unique constraint.
+ * By default, fields have no unique constraint, so this method is generally
+ *called with TRUE to set a unique constraint.
  *
  * Drivers that support writing unique constraint will advertise the
  * GDAL_DCAP_UNIQUE_FIELDS driver metadata item.
@@ -1431,12 +1722,18 @@ int OGR_Fld_IsUnique( OGRFieldDefnH hDefn )
  *
  * This method is the same as the C++ method OGRFieldDefn::SetUnique().
  *
+ * Note that once a OGRFieldDefn has been added to a layer definition with
+ * OGRLayer::AddFieldDefn(), its setter methods should not be called on the
+ * object returned with OGRLayer::GetLayerDefn()->GetFieldDefn(). Instead,
+ * OGRLayer::AlterFieldDefn() should be called on a new instance of
+ * OGRFieldDefn, for drivers that support AlterFieldDefn().
+ *
  * @param hDefn handle to the field definition
  * @param bUniqueIn TRUE if the field must have a unique constraint.
  * @since GDAL 3.2
  */
 
-void OGR_Fld_SetUnique( OGRFieldDefnH hDefn, int bUniqueIn )
+void OGR_Fld_SetUnique(OGRFieldDefnH hDefn, int bUniqueIn)
 {
     OGRFieldDefn::FromHandle(hDefn)->SetUnique(bUniqueIn);
 }
@@ -1480,7 +1777,7 @@ void OGR_Fld_SetUnique( OGRFieldDefnH hDefn, int bUniqueIn )
  * @since GDAL 3.3
  */
 
-const char* OGR_Fld_GetDomainName( OGRFieldDefnH hDefn )
+const char *OGR_Fld_GetDomainName(OGRFieldDefnH hDefn)
 {
     return OGRFieldDefn::FromHandle(hDefn)->GetDomainName().c_str();
 }
@@ -1490,17 +1787,32 @@ const char* OGR_Fld_GetDomainName( OGRFieldDefnH hDefn )
 /************************************************************************/
 
 /**
- * \fn void OGRFieldDefn::SetDomainName( const std:string& osDomainName );
- *
  * \brief Set the name of the field domain for this field.
  *
  * Field domains (OGRFieldDomain) are attached at the GDALDataset level.
  *
  * This method is the same as the C function OGR_Fld_SetDomainName().
  *
+ * Note that once a OGRFieldDefn has been added to a layer definition with
+ * OGRLayer::AddFieldDefn(), its setter methods should not be called on the
+ * object returned with OGRLayer::GetLayerDefn()->GetFieldDefn(). Instead,
+ * OGRLayer::AlterFieldDefn() should be called on a new instance of
+ * OGRFieldDefn, for drivers that support AlterFieldDefn().
+ *
  * @param osDomainName Field domain name.
  * @since GDAL 3.3
  */
+void OGRFieldDefn::SetDomainName(const std::string &osDomainName)
+{
+    if (m_bSealed)
+    {
+        CPLError(
+            CE_Failure, CPLE_AppDefined,
+            "OGRFieldDefn::SetDomainName() not allowed on a sealed object");
+        return;
+    }
+    m_osDomainName = osDomainName;
+}
 
 /************************************************************************/
 /*                      OGR_Fld_SetDomainName()                         */
@@ -1513,15 +1825,113 @@ const char* OGR_Fld_GetDomainName( OGRFieldDefnH hDefn )
  *
  * This method is the same as the C++ method OGRFieldDefn::SetDomainName().
  *
+ * Note that once a OGRFieldDefn has been added to a layer definition with
+ * OGRLayer::AddFieldDefn(), its setter methods should not be called on the
+ * object returned with OGRLayer::GetLayerDefn()->GetFieldDefn(). Instead,
+ * OGRLayer::AlterFieldDefn() should be called on a new instance of
+ * OGRFieldDefn, for drivers that support AlterFieldDefn().
+ *
  * @param hDefn handle to the field definition
  * @param pszFieldName Field domain name.
  * @since GDAL 3.3
  */
 
-void OGR_Fld_SetDomainName( OGRFieldDefnH hDefn, const char* pszFieldName )
+void OGR_Fld_SetDomainName(OGRFieldDefnH hDefn, const char *pszFieldName)
 {
-    OGRFieldDefn::FromHandle(hDefn)->SetDomainName(
-        pszFieldName ? pszFieldName : "");
+    OGRFieldDefn::FromHandle(hDefn)->SetDomainName(pszFieldName ? pszFieldName
+                                                                : "");
+}
+
+/************************************************************************/
+/*                           GetComment()                               */
+/************************************************************************/
+
+/**
+ * \fn const std::string& OGRFieldDefn::GetComment() const
+ *
+ * \brief Return the (optional) comment for this field.
+ *
+ * By default, none (empty string) is returned.
+ *
+ * This method is the same as the C function OGR_Fld_GetComment().
+ *
+ * @return the field comment, or an empty string if there is none.
+ * @since GDAL 3.7
+ */
+
+/************************************************************************/
+/*                      OGR_Fld_GetComment()                            */
+/************************************************************************/
+
+/**
+ * \brief Return the (optional) comment for this field.
+ *
+ * By default, none (empty string) is returned.
+ *
+ * This method is the same as the C++ method OGRFieldDefn::GetComment().
+ *
+ * @param hDefn handle to the field definition
+ * @return the comment, or an empty string if there is none.
+ * @since GDAL 3.7
+ */
+
+const char *OGR_Fld_GetComment(OGRFieldDefnH hDefn)
+{
+    return OGRFieldDefn::FromHandle(hDefn)->GetComment().c_str();
+}
+
+/************************************************************************/
+/*                           SetComment()                               */
+/************************************************************************/
+
+/**
+ * \brief Set the comment for this field.
+ *
+ * This method is the same as the C function OGR_Fld_SetComment().
+ *
+ * Note that once a OGRFieldDefn has been added to a layer definition with
+ * OGRLayer::AddFieldDefn(), its setter methods should not be called on the
+ * object returned with OGRLayer::GetLayerDefn()->GetFieldDefn(). Instead,
+ * OGRLayer::AlterFieldDefn() should be called on a new instance of
+ * OGRFieldDefn, for drivers that support AlterFieldDefn().
+ *
+ * @param osComment Field comment.
+ * @since GDAL 3.7
+ */
+void OGRFieldDefn::SetComment(const std::string &osComment)
+{
+    if (m_bSealed)
+    {
+        CPLError(CE_Failure, CPLE_AppDefined,
+                 "OGRFieldDefn::SetComment() not allowed on a sealed object");
+        return;
+    }
+    m_osComment = osComment;
+}
+
+/************************************************************************/
+/*                      OGR_Fld_SetComment()                            */
+/************************************************************************/
+
+/**
+ * \brief Set the comment for this field.
+ *
+ * This method is the same as the C++ method OGRFieldDefn::SetComment().
+ *
+ * Note that once a OGRFieldDefn has been added to a layer definition with
+ * OGRLayer::AddFieldDefn(), its setter methods should not be called on the
+ * object returned with OGRLayer::GetLayerDefn()->GetFieldDefn(). Instead,
+ * OGRLayer::AlterFieldDefn() should be called on a new instance of
+ * OGRFieldDefn, for drivers that support AlterFieldDefn().
+ *
+ * @param hDefn handle to the field definition
+ * @param pszComment Field comment.
+ * @since GDAL 3.7
+ */
+
+void OGR_Fld_SetComment(OGRFieldDefnH hDefn, const char *pszComment)
+{
+    OGRFieldDefn::FromHandle(hDefn)->SetComment(pszComment ? pszComment : "");
 }
 
 /************************************************************************/
@@ -1541,141 +1951,196 @@ void OGR_Fld_SetDomainName( OGRFieldDefnH hDefn, const char* pszFieldName )
  * @since GDAL 2.1
  */
 
-void OGRUpdateFieldType( OGRFieldDefn* poFDefn,
-                         OGRFieldType eNewType,
-                         OGRFieldSubType eNewSubType )
+void OGRUpdateFieldType(OGRFieldDefn *poFDefn, OGRFieldType eNewType,
+                        OGRFieldSubType eNewSubType)
 {
     OGRFieldType eType = poFDefn->GetType();
-    if( eType == OFTInteger )
+    if (eType == OFTInteger)
     {
-        if( eNewType == OFTInteger &&
-            poFDefn->GetSubType() == OFSTBoolean && eNewSubType != OFSTBoolean )
+        if (eNewType == OFTInteger && poFDefn->GetSubType() == OFSTBoolean &&
+            eNewSubType != OFSTBoolean)
         {
             poFDefn->SetSubType(OFSTNone);
         }
-        else if( eNewType == OFTInteger64 || eNewType == OFTReal )
+        else if (eNewType == OFTInteger64 || eNewType == OFTReal)
         {
             poFDefn->SetSubType(OFSTNone);
             poFDefn->SetType(eNewType);
         }
-        else if( eNewType == OFTIntegerList || eNewType == OFTInteger64List ||
-                 eNewType == OFTRealList || eNewType == OFTStringList )
+        else if (eNewType == OFTIntegerList || eNewType == OFTInteger64List ||
+                 eNewType == OFTRealList || eNewType == OFTStringList)
         {
-            if( eNewType != OFTIntegerList || eNewSubType != OFSTBoolean )
+            if (eNewType != OFTIntegerList || eNewSubType != OFSTBoolean)
                 poFDefn->SetSubType(OFSTNone);
             poFDefn->SetType(eNewType);
         }
-        else if( eNewType != OFTInteger )
+        else if (eNewType != OFTInteger)
         {
             poFDefn->SetSubType(OFSTNone);
             poFDefn->SetType(OFTString);
         }
     }
-    else if( eType == OFTInteger64 )
+    else if (eType == OFTInteger64)
     {
-        if( eNewType == OFTReal )
+        if (eNewType == OFTReal)
         {
             poFDefn->SetSubType(OFSTNone);
             poFDefn->SetType(eNewType);
         }
-        else if( eNewType == OFTIntegerList )
+        else if (eNewType == OFTIntegerList)
         {
             poFDefn->SetSubType(OFSTNone);
             poFDefn->SetType(OFTInteger64List);
         }
-        else if( eNewType == OFTInteger64List ||
-                 eNewType == OFTRealList || eNewType == OFTStringList )
+        else if (eNewType == OFTInteger64List || eNewType == OFTRealList ||
+                 eNewType == OFTStringList)
         {
             poFDefn->SetSubType(OFSTNone);
             poFDefn->SetType(eNewType);
         }
-        else if( eNewType != OFTInteger && eNewType != OFTInteger64 )
+        else if (eNewType != OFTInteger && eNewType != OFTInteger64)
         {
             poFDefn->SetSubType(OFSTNone);
             poFDefn->SetType(OFTString);
         }
     }
-    else if( eType == OFTReal )
+    else if (eType == OFTReal)
     {
-        if( eNewType == OFTIntegerList || eNewType == OFTInteger64List ||
-            eNewType == OFTRealList )
+        if (eNewType == OFTIntegerList || eNewType == OFTInteger64List ||
+            eNewType == OFTRealList)
         {
             poFDefn->SetType(OFTRealList);
         }
-        else if( eNewType == OFTStringList )
+        else if (eNewType == OFTStringList)
         {
             poFDefn->SetType(OFTStringList);
         }
-        else if( eNewType != OFTInteger && eNewType != OFTInteger64 &&
-                 eNewType != OFTReal )
+        else if (eNewType != OFTInteger && eNewType != OFTInteger64 &&
+                 eNewType != OFTReal)
         {
             poFDefn->SetSubType(OFSTNone);
             poFDefn->SetType(OFTString);
         }
     }
-    else if( eType == OFTIntegerList )
+    else if (eType == OFTIntegerList)
     {
-        if( eNewType == OFTIntegerList &&
-            poFDefn->GetSubType() == OFSTBoolean && eNewSubType != OFSTBoolean )
+        if (eNewType == OFTIntegerList &&
+            poFDefn->GetSubType() == OFSTBoolean && eNewSubType != OFSTBoolean)
         {
             poFDefn->SetSubType(OFSTNone);
         }
-        else if( eNewType == OFTInteger64 || eNewType == OFTInteger64List )
+        else if (eNewType == OFTInteger64 || eNewType == OFTInteger64List)
         {
             poFDefn->SetSubType(OFSTNone);
             poFDefn->SetType(OFTInteger64List);
         }
-        else if( eNewType == OFTReal || eNewType == OFTRealList )
+        else if (eNewType == OFTReal || eNewType == OFTRealList)
         {
             poFDefn->SetSubType(OFSTNone);
             poFDefn->SetType(OFTRealList);
         }
-        else if( eNewType != OFTInteger && eNewType != OFTIntegerList )
+        else if (eNewType != OFTInteger && eNewType != OFTIntegerList)
         {
             poFDefn->SetSubType(OFSTNone);
             poFDefn->SetType(OFTStringList);
         }
     }
-    else if( eType == OFTInteger64List )
+    else if (eType == OFTInteger64List)
     {
-        if( eNewType == OFTReal || eNewType == OFTRealList )
+        if (eNewType == OFTReal || eNewType == OFTRealList)
             poFDefn->SetType(OFTRealList);
-        else if( eNewType != OFTInteger && eNewType != OFTInteger64 &&
-                 eNewType != OFTIntegerList && eNewType != OFTInteger64List )
+        else if (eNewType != OFTInteger && eNewType != OFTInteger64 &&
+                 eNewType != OFTIntegerList && eNewType != OFTInteger64List)
         {
             poFDefn->SetSubType(OFSTNone);
             poFDefn->SetType(OFTStringList);
         }
     }
-    else if( eType == OFTRealList )
+    else if (eType == OFTRealList)
     {
-        if( eNewType != OFTInteger && eNewType != OFTInteger64 &&
-            eNewType != OFTReal &&
-            eNewType != OFTIntegerList && eNewType != OFTInteger64List &&
-            eNewType != OFTRealList )
+        if (eNewType != OFTInteger && eNewType != OFTInteger64 &&
+            eNewType != OFTReal && eNewType != OFTIntegerList &&
+            eNewType != OFTInteger64List && eNewType != OFTRealList)
         {
             poFDefn->SetSubType(OFSTNone);
             poFDefn->SetType(OFTStringList);
         }
     }
-    else if( eType == OFTDateTime )
+    else if (eType == OFTDateTime)
     {
-        if( eNewType != OFTDateTime && eNewType != OFTDate )
+        if (eNewType != OFTDateTime && eNewType != OFTDate)
         {
             poFDefn->SetType(OFTString);
         }
     }
-    else if( eType == OFTDate || eType == OFTTime )
+    else if (eType == OFTDate || eType == OFTTime)
     {
-        if( eNewType == OFTDateTime )
+        if (eNewType == OFTDateTime)
             poFDefn->SetType(OFTDateTime);
-        else if( eNewType != eType )
+        else if (eNewType != eType)
             poFDefn->SetType(OFTString);
     }
-    else if( eType == OFTString && eNewType == OFTStringList )
+    else if (eType == OFTString && eNewType == OFTStringList)
     {
         poFDefn->SetType(OFTStringList);
     }
+}
+
+/************************************************************************/
+/*                        OGRFieldDefn::Seal()                          */
+/************************************************************************/
+
+/** Seal a OGRFieldDefn.
+ *
+ * A sealed OGRFieldDefn can not be modified while it is sealed.
+ *
+ * This method should only be called by driver implementations.
+ *
+ * @since GDAL 3.9
+ */
+void OGRFieldDefn::Seal()
+{
+    m_bSealed = true;
+}
+
+/************************************************************************/
+/*                        OGRFieldDefn::Unseal()                        */
+/************************************************************************/
+
+/** Unseal a OGRFieldDefn.
+ *
+ * Undo OGRFieldDefn::Seal()
+ *
+ * Using GetTemporaryUnsealer() is recommended for most use cases.
+ *
+ * This method should only be called by driver implementations.
+ *
+ * @since GDAL 3.9
+ */
+void OGRFieldDefn::Unseal()
+{
+    m_bSealed = false;
+}
+
+/************************************************************************/
+/*                    OGRFieldDefn::GetTemporaryUnsealer()              */
+/************************************************************************/
+
+/** Return an object that temporary unseals the OGRFieldDefn
+ *
+ * The returned object calls Unseal() initially, and when it is destroyed
+ * it calls Seal().
+ *
+ * This method should only be called by driver implementations.
+ *
+ * It is also possible to use the helper method whileUnsealing(). Example:
+ * whileUnsealing(poFieldDefn)->some_method()
+ *
+ * @since GDAL 3.9
+ */
+OGRFieldDefn::TemporaryUnsealer OGRFieldDefn::GetTemporaryUnsealer()
+{
+    return TemporaryUnsealer(this);
 }
 
 /************************************************************************/
@@ -1683,18 +2148,17 @@ void OGRUpdateFieldType( OGRFieldDefn* poFDefn,
 /************************************************************************/
 
 /*! @cond Doxygen_Suppress */
-OGRFieldDomain::OGRFieldDomain(const std::string& osName,
-                               const std::string& osDescription,
+OGRFieldDomain::OGRFieldDomain(const std::string &osName,
+                               const std::string &osDescription,
                                OGRFieldDomainType eDomainType,
                                OGRFieldType eFieldType,
-                               OGRFieldSubType eFieldSubType):
-    m_osName(osName),
-    m_osDescription(osDescription),
-    m_eDomainType(eDomainType),
-    m_eFieldType(eFieldType),
-    m_eFieldSubType(eFieldSubType)
+                               OGRFieldSubType eFieldSubType)
+    : m_osName(osName), m_osDescription(osDescription),
+      m_eDomainType(eDomainType), m_eFieldType(eFieldType),
+      m_eFieldSubType(eFieldSubType)
 {
 }
+
 /*! @endcond */
 
 /************************************************************************/
@@ -1723,16 +2187,17 @@ void OGR_FldDomain_Destroy(OGRFieldDomainH hFieldDomain)
 /*                        OGRCodedFieldDomain()                         */
 /************************************************************************/
 
-OGRCodedFieldDomain::OGRCodedFieldDomain(const std::string& osName,
-                                         const std::string& osDescription,
+OGRCodedFieldDomain::OGRCodedFieldDomain(const std::string &osName,
+                                         const std::string &osDescription,
                                          OGRFieldType eFieldType,
                                          OGRFieldSubType eFieldSubType,
-                                         std::vector<OGRCodedValue>&& asValues):
-    OGRFieldDomain(osName, osDescription, OFDT_CODED, eFieldType, eFieldSubType),
-    m_asValues(std::move(asValues))
+                                         std::vector<OGRCodedValue> &&asValues)
+    : OGRFieldDomain(osName, osDescription, OFDT_CODED, eFieldType,
+                     eFieldSubType),
+      m_asValues(std::move(asValues))
 {
     // Guard
-    if( m_asValues.empty() || m_asValues.back().pszCode != nullptr )
+    if (m_asValues.empty() || m_asValues.back().pszCode != nullptr)
     {
         OGRCodedValue cv;
         cv.pszCode = nullptr;
@@ -1764,16 +2229,16 @@ OGRCodedFieldDomain::OGRCodedFieldDomain(const std::string& osName,
  *         or NULL in case of error.
  * @since GDAL 3.3
  */
-OGRFieldDomainH OGR_CodedFldDomain_Create(const char* pszName,
-                                          const char* pszDescription,
+OGRFieldDomainH OGR_CodedFldDomain_Create(const char *pszName,
+                                          const char *pszDescription,
                                           OGRFieldType eFieldType,
                                           OGRFieldSubType eFieldSubType,
-                                          const OGRCodedValue* enumeration)
+                                          const OGRCodedValue *enumeration)
 {
     VALIDATE_POINTER1(pszName, __func__, nullptr);
     VALIDATE_POINTER1(enumeration, __func__, nullptr);
     size_t count = 0;
-    for( int i = 0; enumeration[i].pszCode != nullptr; ++i )
+    for (int i = 0; enumeration[i].pszCode != nullptr; ++i)
     {
         ++count;
     }
@@ -1782,25 +2247,25 @@ OGRFieldDomainH OGR_CodedFldDomain_Create(const char* pszName,
     {
         asValues.reserve(count + 1);
     }
-    catch( const std::exception& e )
+    catch (const std::exception &e)
     {
         CPLError(CE_Failure, CPLE_OutOfMemory, "%s", e.what());
         return nullptr;
     }
     bool error = false;
-    for( int i = 0; enumeration[i].pszCode != nullptr; ++i )
+    for (int i = 0; enumeration[i].pszCode != nullptr; ++i)
     {
         OGRCodedValue cv;
         cv.pszCode = VSI_STRDUP_VERBOSE(enumeration[i].pszCode);
-        if( cv.pszCode == nullptr )
+        if (cv.pszCode == nullptr)
         {
             error = true;
             break;
         }
-        if( enumeration[i].pszValue )
+        if (enumeration[i].pszValue)
         {
             cv.pszValue = VSI_STRDUP_VERBOSE(enumeration[i].pszValue);
-            if( cv.pszValue == nullptr )
+            if (cv.pszValue == nullptr)
             {
                 VSIFree(cv.pszCode);
                 error = true;
@@ -1813,9 +2278,9 @@ OGRFieldDomainH OGR_CodedFldDomain_Create(const char* pszName,
         }
         asValues.emplace_back(cv);
     }
-    if( error )
+    if (error)
     {
-        for( auto& cv: asValues )
+        for (auto &cv : asValues)
         {
             VSIFree(cv.pszCode);
             VSIFree(cv.pszValue);
@@ -1830,23 +2295,23 @@ OGRFieldDomainH OGR_CodedFldDomain_Create(const char* pszName,
         asValues.emplace_back(cv);
     }
     return OGRFieldDomain::ToHandle(new OGRCodedFieldDomain(
-                                       pszName,
-                                       pszDescription ? pszDescription : "",
-                                       eFieldType,
-                                       eFieldSubType,
-                                       std::move(asValues)));
+        pszName, pszDescription ? pszDescription : "", eFieldType,
+        eFieldSubType, std::move(asValues)));
 }
 
 /************************************************************************/
 /*                   OGRCodedFieldDomain::Clone()                       */
 /************************************************************************/
 
-OGRCodedFieldDomain* OGRCodedFieldDomain::Clone() const
+OGRCodedFieldDomain *OGRCodedFieldDomain::Clone() const
 {
-    return cpl::down_cast<OGRCodedFieldDomain*>(
-            OGRFieldDomain::FromHandle(OGR_CodedFldDomain_Create(
-                m_osName.c_str(), m_osDescription.c_str(),
-                m_eFieldType, m_eFieldSubType, m_asValues.data())));
+    auto poDomain = cpl::down_cast<OGRCodedFieldDomain *>(
+        OGRFieldDomain::FromHandle(OGR_CodedFldDomain_Create(
+            m_osName.c_str(), m_osDescription.c_str(), m_eFieldType,
+            m_eFieldSubType, m_asValues.data())));
+    poDomain->SetMergePolicy(m_eMergePolicy);
+    poDomain->SetSplitPolicy(m_eSplitPolicy);
+    return poDomain;
 }
 
 /************************************************************************/
@@ -1855,7 +2320,7 @@ OGRCodedFieldDomain* OGRCodedFieldDomain::Clone() const
 
 OGRCodedFieldDomain::~OGRCodedFieldDomain()
 {
-    for( auto& cv: m_asValues )
+    for (auto &cv : m_asValues)
     {
         CPLFree(cv.pszCode);
         CPLFree(cv.pszValue);
@@ -1866,24 +2331,18 @@ OGRCodedFieldDomain::~OGRCodedFieldDomain()
 /*                       OGRRangeFieldDomain()                          */
 /************************************************************************/
 
-OGRRangeFieldDomain::OGRRangeFieldDomain(const std::string& osName,
-                                         const std::string& osDescription,
-                                         OGRFieldType eFieldType,
-                                         OGRFieldSubType eFieldSubType,
-                                         const OGRField& sMin,
-                                         bool        bMinIsInclusive,
-                                         const OGRField& sMax,
-                                         bool        bMaxIsInclusive):
-    OGRFieldDomain(osName, osDescription, OFDT_RANGE, eFieldType, eFieldSubType),
-    m_sMin(sMin),
-    m_sMax(sMax),
-    m_bMinIsInclusive(bMinIsInclusive),
-    m_bMaxIsInclusive(bMaxIsInclusive)
+OGRRangeFieldDomain::OGRRangeFieldDomain(
+    const std::string &osName, const std::string &osDescription,
+    OGRFieldType eFieldType, OGRFieldSubType eFieldSubType,
+    const OGRField &sMin, bool bMinIsInclusive, const OGRField &sMax,
+    bool bMaxIsInclusive)
+    : OGRFieldDomain(osName, osDescription, OFDT_RANGE, eFieldType,
+                     eFieldSubType),
+      m_sMin(sMin), m_sMax(sMax), m_bMinIsInclusive(bMinIsInclusive),
+      m_bMaxIsInclusive(bMaxIsInclusive)
 {
-    CPLAssert( eFieldType == OFTInteger ||
-               eFieldType == OFTInteger64 ||
-               eFieldType == OFTReal ||
-               eFieldType == OFTDateTime );
+    CPLAssert(eFieldType == OFTInteger || eFieldType == OFTInteger64 ||
+              eFieldType == OFTReal || eFieldType == OFTDateTime);
 }
 
 /************************************************************************/
@@ -1899,7 +2358,8 @@ static OGRField GetUnsetField()
 
 /** Creates a new range field domain.
  *
- * This is the same as the C++ method OGRRangeFieldDomain::OGRRangeFieldDomain().
+ * This is the same as the C++ method
+ * OGRRangeFieldDomain::OGRRangeFieldDomain().
  *
  * @param pszName        Domain name. Should not be NULL.
  * @param pszDescription Domain description (can be NULL)
@@ -1915,47 +2375,37 @@ static OGRField GetUnsetField()
  * @return a new handle that should be freed with OGR_FldDomain_Destroy()
  * @since GDAL 3.3
  */
-OGRFieldDomainH OGR_RangeFldDomain_Create(const char* pszName,
-                                          const char* pszDescription,
-                                          OGRFieldType eFieldType,
-                                          OGRFieldSubType eFieldSubType,
-                                          const OGRField* psMin,
-                                          bool bMinIsInclusive,
-                                          const OGRField* psMax,
-                                          bool bMaxIsInclusive)
+OGRFieldDomainH OGR_RangeFldDomain_Create(
+    const char *pszName, const char *pszDescription, OGRFieldType eFieldType,
+    OGRFieldSubType eFieldSubType, const OGRField *psMin, bool bMinIsInclusive,
+    const OGRField *psMax, bool bMaxIsInclusive)
 {
     VALIDATE_POINTER1(pszName, __func__, nullptr);
-    if( eFieldType != OFTInteger &&
-        eFieldType != OFTInteger64 &&
-        eFieldType != OFTReal &&
-        eFieldType != OFTDateTime )
+    if (eFieldType != OFTInteger && eFieldType != OFTInteger64 &&
+        eFieldType != OFTReal && eFieldType != OFTDateTime)
     {
         CPLError(CE_Failure, CPLE_NotSupported, "Unsupported field type");
         return nullptr;
     }
     const OGRField unsetField = GetUnsetField();
     return OGRFieldDomain::ToHandle(new OGRRangeFieldDomain(
-                                       pszName,
-                                       pszDescription ? pszDescription : "",
-                                       eFieldType,
-                                       eFieldSubType,
-                                       psMin ? *psMin : unsetField,
-                                       bMinIsInclusive,
-                                       psMax ? *psMax : unsetField,
-                                       bMaxIsInclusive));
+        pszName, pszDescription ? pszDescription : "", eFieldType,
+        eFieldSubType, psMin ? *psMin : unsetField, bMinIsInclusive,
+        psMax ? *psMax : unsetField, bMaxIsInclusive));
 }
 
 /************************************************************************/
 /*                        OGRGlobFieldDomain()                          */
 /************************************************************************/
 
-OGRGlobFieldDomain::OGRGlobFieldDomain(const std::string& osName,
-                                        const std::string& osDescription,
-                                        OGRFieldType eFieldType,
-                                        OGRFieldSubType eFieldSubType,
-                                        const std::string& osGlob):
-    OGRFieldDomain(osName, osDescription, OFDT_GLOB, eFieldType, eFieldSubType),
-    m_osGlob(osGlob)
+OGRGlobFieldDomain::OGRGlobFieldDomain(const std::string &osName,
+                                       const std::string &osDescription,
+                                       OGRFieldType eFieldType,
+                                       OGRFieldSubType eFieldSubType,
+                                       const std::string &osGlob)
+    : OGRFieldDomain(osName, osDescription, OFDT_GLOB, eFieldType,
+                     eFieldSubType),
+      m_osGlob(osGlob)
 {
 }
 
@@ -1963,7 +2413,7 @@ OGRGlobFieldDomain::OGRGlobFieldDomain(const std::string& osName,
 /*                       OGR_GlobFldDomain_Create()                     */
 /************************************************************************/
 
-/** Creates a new blob field domain.
+/** Creates a new glob field domain.
  *
  * This is the same as the C++ method OGRGlobFieldDomain::OGRGlobFieldDomain()
  *
@@ -1975,20 +2425,17 @@ OGRGlobFieldDomain::OGRGlobFieldDomain(const std::string& osName,
  * @return a new handle that should be freed with OGR_FldDomain_Destroy()
  * @since GDAL 3.3
  */
-OGRFieldDomainH OGR_GlobFldDomain_Create(const char* pszName,
-                                         const char* pszDescription,
+OGRFieldDomainH OGR_GlobFldDomain_Create(const char *pszName,
+                                         const char *pszDescription,
                                          OGRFieldType eFieldType,
                                          OGRFieldSubType eFieldSubType,
-                                         const char* pszGlob)
+                                         const char *pszGlob)
 {
     VALIDATE_POINTER1(pszName, __func__, nullptr);
     VALIDATE_POINTER1(pszGlob, __func__, nullptr);
-    return OGRFieldDomain::ToHandle(new OGRGlobFieldDomain(
-                                       pszName,
-                                       pszDescription ? pszDescription : "",
-                                       eFieldType,
-                                       eFieldSubType,
-                                       pszGlob));
+    return OGRFieldDomain::ToHandle(
+        new OGRGlobFieldDomain(pszName, pszDescription ? pszDescription : "",
+                               eFieldType, eFieldSubType, pszGlob));
 }
 
 /************************************************************************/
@@ -2003,7 +2450,7 @@ OGRFieldDomainH OGR_GlobFldDomain_Create(const char* pszName,
  * @return the field domain name.
  * @since GDAL 3.3
  */
-const char* OGR_FldDomain_GetName(OGRFieldDomainH hFieldDomain)
+const char *OGR_FldDomain_GetName(OGRFieldDomainH hFieldDomain)
 {
     return OGRFieldDomain::FromHandle(hFieldDomain)->GetName().c_str();
 }
@@ -2020,7 +2467,7 @@ const char* OGR_FldDomain_GetName(OGRFieldDomainH hFieldDomain)
  * @return the field domain description (might be empty string).
  * @since GDAL 3.3
  */
-const char* OGR_FldDomain_GetDescription(OGRFieldDomainH hFieldDomain)
+const char *OGR_FldDomain_GetDescription(OGRFieldDomainH hFieldDomain)
 {
     return OGRFieldDomain::FromHandle(hFieldDomain)->GetDescription().c_str();
 }
@@ -2089,7 +2536,8 @@ OGRFieldSubType OGR_FldDomain_GetFieldSubType(OGRFieldDomainH hFieldDomain)
  * @since GDAL 3.3
  */
 
-OGRFieldDomainSplitPolicy OGR_FldDomain_GetSplitPolicy(OGRFieldDomainH hFieldDomain)
+OGRFieldDomainSplitPolicy
+OGR_FldDomain_GetSplitPolicy(OGRFieldDomainH hFieldDomain)
 {
     return OGRFieldDomain::FromHandle(hFieldDomain)->GetSplitPolicy();
 }
@@ -2117,16 +2565,17 @@ void OGR_FldDomain_SetSplitPolicy(OGRFieldDomainH hFieldDomain,
 /*                    OGR_FldDomain_GetMergePolicy()                    */
 /************************************************************************/
 
-/** Get the split policy of the field domain.
+/** Get the merge policy of the field domain.
  *
  * This is the same as the C++ method OGRFieldDomain::GetMergePolicy()
  *
  * @param hFieldDomain Field domain handle.
- * @return the split policy of the field domain.
+ * @return the merge policy of the field domain.
  * @since GDAL 3.3
  */
 
-OGRFieldDomainMergePolicy OGR_FldDomain_GetMergePolicy(OGRFieldDomainH hFieldDomain)
+OGRFieldDomainMergePolicy
+OGR_FldDomain_GetMergePolicy(OGRFieldDomainH hFieldDomain)
 {
     return OGRFieldDomain::FromHandle(hFieldDomain)->GetMergePolicy();
 }
@@ -2135,12 +2584,12 @@ OGRFieldDomainMergePolicy OGR_FldDomain_GetMergePolicy(OGRFieldDomainH hFieldDom
 /*                    OGR_FldDomain_SetMergePolicy()                    */
 /************************************************************************/
 
-/** Set the split policy of the field domain.
+/** Set the merge policy of the field domain.
  *
  * This is the same as the C++ method OGRFieldDomain::SetMergePolicy()
  *
  * @param hFieldDomain Field domain handle.
- * @param policy the split policy of the field domain.
+ * @param policy the merge policy of the field domain.
  * @since GDAL 3.3
  */
 
@@ -2164,16 +2613,18 @@ void OGR_FldDomain_SetMergePolicy(OGRFieldDomainH hFieldDomain,
  * @return the (code, value) pairs, or nullptr in case of error.
  * @since GDAL 3.3
  */
-const OGRCodedValue* OGR_CodedFldDomain_GetEnumeration(OGRFieldDomainH hFieldDomain)
+const OGRCodedValue *
+OGR_CodedFldDomain_GetEnumeration(OGRFieldDomainH hFieldDomain)
 {
     // The user should normally only call us with the right object type, but
     // it doesn't hurt to check.
-    auto poFieldDomain = dynamic_cast<const OGRCodedFieldDomain*>(
-                                OGRFieldDomain::FromHandle(hFieldDomain));
-    if( !poFieldDomain )
+    auto poFieldDomain = dynamic_cast<const OGRCodedFieldDomain *>(
+        OGRFieldDomain::FromHandle(hFieldDomain));
+    if (!poFieldDomain)
     {
-        CPLError(CE_Failure, CPLE_AppDefined,
-                 "This function should be called with a coded field domain object");
+        CPLError(
+            CE_Failure, CPLE_AppDefined,
+            "This function should be called with a coded field domain object");
         return nullptr;
     }
     return poFieldDomain->GetEnumeration();
@@ -2185,7 +2636,8 @@ const OGRCodedValue* OGR_CodedFldDomain_GetEnumeration(OGRFieldDomainH hFieldDom
 
 /** Get the minimum value.
  *
- * Which member in the returned OGRField enum must be read depends on the field type.
+ * Which member in the returned OGRField enum must be read depends on the field
+ * type.
  *
  * If no minimum value is set, the OGR_RawField_IsUnset() will return true when
  * called on the result.
@@ -2198,22 +2650,23 @@ const OGRCodedValue* OGR_CodedFldDomain_GetEnumeration(OGRFieldDomainH hFieldDom
  * @since GDAL 3.3
  */
 const OGRField *OGR_RangeFldDomain_GetMin(OGRFieldDomainH hFieldDomain,
-                                          bool* pbIsInclusiveOut)
+                                          bool *pbIsInclusiveOut)
 {
     // The user should normally only call us with the right object type, but
     // it doesn't hurt to check.
-    auto poFieldDomain = dynamic_cast<const OGRRangeFieldDomain*>(
-                                OGRFieldDomain::FromHandle(hFieldDomain));
-    if( !poFieldDomain )
+    auto poFieldDomain = dynamic_cast<const OGRRangeFieldDomain *>(
+        OGRFieldDomain::FromHandle(hFieldDomain));
+    if (!poFieldDomain)
     {
-        CPLError(CE_Failure, CPLE_AppDefined,
-                 "This function should be called with a range field domain object");
+        CPLError(
+            CE_Failure, CPLE_AppDefined,
+            "This function should be called with a range field domain object");
         static const OGRField dummyField = GetUnsetField();
         return &dummyField;
     }
     bool bIsInclusive = false;
-    const auto& ret = poFieldDomain->GetMin(bIsInclusive);
-    if( pbIsInclusiveOut )
+    const auto &ret = poFieldDomain->GetMin(bIsInclusive);
+    if (pbIsInclusiveOut)
         *pbIsInclusiveOut = bIsInclusive;
     return &ret;
 }
@@ -2224,7 +2677,8 @@ const OGRField *OGR_RangeFldDomain_GetMin(OGRFieldDomainH hFieldDomain,
 
 /** Get the maximum value.
  *
- * Which member in the returned OGRField enum must be read depends on the field type.
+ * Which member in the returned OGRField enum must be read depends on the field
+ * type.
  *
  * If no maximum value is set, the OGR_RawField_IsUnset() will return true when
  * called on the result.
@@ -2237,22 +2691,23 @@ const OGRField *OGR_RangeFldDomain_GetMin(OGRFieldDomainH hFieldDomain,
  * @since GDAL 3.3
  */
 const OGRField *OGR_RangeFldDomain_GetMax(OGRFieldDomainH hFieldDomain,
-                                          bool* pbIsInclusiveOut)
+                                          bool *pbIsInclusiveOut)
 {
     // The user should normally only call us with the right object type, but
     // it doesn't hurt to check.
-    auto poFieldDomain = dynamic_cast<const OGRRangeFieldDomain*>(
-                                OGRFieldDomain::FromHandle(hFieldDomain));
-    if( !poFieldDomain )
+    auto poFieldDomain = dynamic_cast<const OGRRangeFieldDomain *>(
+        OGRFieldDomain::FromHandle(hFieldDomain));
+    if (!poFieldDomain)
     {
-        CPLError(CE_Failure, CPLE_AppDefined,
-                 "This function should be called with a range field domain object");
+        CPLError(
+            CE_Failure, CPLE_AppDefined,
+            "This function should be called with a range field domain object");
         static const OGRField dummyField = GetUnsetField();
         return &dummyField;
     }
     bool bIsInclusive = false;
-    const auto& ret = poFieldDomain->GetMax(bIsInclusive);
-    if( pbIsInclusiveOut )
+    const auto &ret = poFieldDomain->GetMax(bIsInclusive);
+    if (pbIsInclusiveOut)
         *pbIsInclusiveOut = bIsInclusive;
     return &ret;
 }
@@ -2273,14 +2728,14 @@ const char *OGR_GlobFldDomain_GetGlob(OGRFieldDomainH hFieldDomain)
 {
     // The user should normally only call us with the right object type, but
     // it doesn't hurt to check.
-    auto poFieldDomain = dynamic_cast<const OGRGlobFieldDomain*>(
-                                OGRFieldDomain::FromHandle(hFieldDomain));
-    if( !poFieldDomain )
+    auto poFieldDomain = dynamic_cast<const OGRGlobFieldDomain *>(
+        OGRFieldDomain::FromHandle(hFieldDomain));
+    if (!poFieldDomain)
     {
-        CPLError(CE_Failure, CPLE_AppDefined,
-                 "This function should be called with a glob field domain object");
+        CPLError(
+            CE_Failure, CPLE_AppDefined,
+            "This function should be called with a glob field domain object");
         return nullptr;
     }
     return poFieldDomain->GetGlob().c_str();
 }
-

@@ -245,7 +245,7 @@ static double calc_psnrhvs(const unsigned char *src, int _systride,
   return ret;
 }
 
-double aom_psnrhvs(const YV12_BUFFER_CONFIG *src, const YV12_BUFFER_CONFIG *dst,
+HAOM_EXPORT double aom_psnrhvs(const YV12_BUFFER_CONFIG *src, const YV12_BUFFER_CONFIG *dst,
                    double *y_psnrhvs, double *u_psnrhvs, double *v_psnrhvs,
                    uint32_t bd, uint32_t in_bd) {
   double psnrhvs;

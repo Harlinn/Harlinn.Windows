@@ -1,4 +1,3 @@
-#pragma once
 /******************************************************************************
  *
  * Project:  KML Translator
@@ -30,13 +29,16 @@
 #ifndef LIBKML_HEADERS_H
 #define LIBKML_HEADERS_H
 
-#if ((__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 2)) && !defined(_MSC_VER))
+#if ((__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 2)) &&               \
+     !defined(_MSC_VER))
 #pragma GCC system_header
 #endif
 
 #ifdef _MSC_VER
-#pragma warning( push )
-#pragma warning( disable : 4512 ) /* assignment operator could not be generated */
+#pragma warning(push)
+#pragma warning(                                                               \
+    disable : 4512) /* assignment operator could not be generated  \
+                                 */
 #endif
 
 #include <kml/engine.h>
@@ -45,7 +47,7 @@
 #include <kml/base/file.h>
 
 #ifdef _MSC_VER
-#pragma warning( pop )
+#pragma warning(pop)
 #endif
 
 #endif

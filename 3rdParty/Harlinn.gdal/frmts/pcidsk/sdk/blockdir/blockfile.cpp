@@ -25,7 +25,7 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
-#include "blockfile.h"
+#include "blockdir/blockfile.h"
 
 using namespace PCIDSK;
 

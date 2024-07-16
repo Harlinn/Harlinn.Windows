@@ -1,4 +1,3 @@
-#pragma once
 /******************************************************************************
  * $Id$
  *
@@ -31,65 +30,54 @@
 #ifndef GDALGRID_PRIV_H
 #define GDALGRID_PRIV_H
 
-#include "..\port\cpl_error.h"
-#include "..\port\cpl_quad_tree.h"
+#include "cpl_error.h"
+#include "cpl_quad_tree.h"
+
+#include "gdal_alg.h"
 
 //! @cond Doxygen_Suppress
 
 typedef struct
 {
-    const double* padfX;
-    const double* padfY;
+    const double *padfX;
+    const double *padfY;
 } GDALGridXYArrays;
 
 typedef struct
 {
-    GDALGridXYArrays* psXYArrays;
-    int               i;
+    GDALGridXYArrays *psXYArrays;
+    int i;
 } GDALGridPoint;
 
 typedef struct
 {
-    CPLQuadTree* hQuadTree;
-    double       dfInitialSearchRadius;
-    float *pafX; // Aligned to be usable with AVX
+    CPLQuadTree *hQuadTree;
+    double dfInitialSearchRadius;
+    float *pafX;  // Aligned to be usable with AVX
     float *pafY;
     float *pafZ;
-    GDALTriangulation* psTriangulation;
-    int                nInitialFacetIdx;
+    GDALTriangulation *psTriangulation;
+    int nInitialFacetIdx;
     /*! Weighting power divided by 2 (pre-computation). */
-    double  dfPowerDiv2PreComp;
+    double dfPowerDiv2PreComp;
     /*! The radius of search circle squared (pre-computation). */
-    double  dfRadiusPower2PreComp;
-    /*! The radius of search circle to power 4 (pre-computation). */
-    double  dfRadiusPower4PreComp;
+    double dfRadiusPower2PreComp;
 } GDALGridExtraParameters;
 
 #ifdef HAVE_SSE_AT_COMPILE_TIME
-CPLErr
-GDALGridInverseDistanceToAPower2NoSmoothingNoSearchSSE(
-                                        const void *poOptions,
-                                        GUInt32 nPoints,
-                                        const double *unused_padfX,
-                                        const double *unused_padfY,
-                                        const double *unused_padfZ,
-                                        double dfXPoint, double dfYPoint,
-                                        double *pdfValue,
-                                        void* hExtraParamsIn );
+CPLErr GDALGridInverseDistanceToAPower2NoSmoothingNoSearchSSE(
+    const void *poOptions, GUInt32 nPoints, const double *unused_padfX,
+    const double *unused_padfY, const double *unused_padfZ, double dfXPoint,
+    double dfYPoint, double *pdfValue, void *hExtraParamsIn);
 #endif
 
 #ifdef HAVE_AVX_AT_COMPILE_TIME
 CPLErr GDALGridInverseDistanceToAPower2NoSmoothingNoSearchAVX(
-                                        const void *poOptions,
-                                        GUInt32 nPoints,
-                                        const double *unused_padfX,
-                                        const double *unused_padfY,
-                                        const double *unused_padfZ,
-                                        double dfXPoint, double dfYPoint,
-                                        double *pdfValue,
-                                        void* hExtraParamsIn );
+    const void *poOptions, GUInt32 nPoints, const double *unused_padfX,
+    const double *unused_padfY, const double *unused_padfZ, double dfXPoint,
+    double dfYPoint, double *pdfValue, void *hExtraParamsIn);
 #endif
 
 //! @endcond
 
-#endif // GDALGRID_PRIV_H
+#endif  // GDALGRID_PRIV_H

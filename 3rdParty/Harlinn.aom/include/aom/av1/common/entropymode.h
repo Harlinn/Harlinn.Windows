@@ -12,11 +12,11 @@
 #ifndef AOM_AV1_COMMON_ENTROPYMODE_H_
 #define AOM_AV1_COMMON_ENTROPYMODE_H_
 
+#include "aom_ports/bitops.h"
 #include "av1/common/entropy.h"
 #include "av1/common/entropymv.h"
 #include "av1/common/filter.h"
 #include "av1/common/seg_common.h"
-#include "aom_dsp/aom_filter.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -32,7 +32,7 @@ extern "C" {
 // Number of possible contexts for a color index.
 // As can be seen from av1_get_palette_color_index_context(), the possible
 // contexts are (2,0,0), (2,2,1), (3,2,0), (4,1,0), (5,0,0). These are mapped to
-// a value from 0 to 4 using 'palette_color_index_context_lookup' table.
+// a value from 0 to 4 using 'av1_palette_color_index_context_lookup' table.
 #define PALETTE_COLOR_INDEX_CONTEXTS 5
 
 // Palette Y mode context for a block is determined by number of neighboring
@@ -55,6 +55,10 @@ extern "C" {
 //   ...
 // 4096(BLOCK_64X64)                        -> 6
 #define PALATTE_BSIZE_CTXS 7
+
+#define MAX_COLOR_CONTEXT_HASH 8
+
+#define NUM_PALETTE_NEIGHBORS 3  // left, top-left and top.
 
 #define KF_MODE_CONTEXTS 5
 
@@ -181,34 +185,26 @@ static const int av1_ext_tx_inv[EXT_TX_SET_TYPES][TX_TYPES] = {
   { 9, 10, 11, 12, 13, 14, 15, 0, 1, 2, 4, 5, 3, 6, 7, 8 },
 };
 
-void av1_set_default_ref_deltas(int8_t *ref_deltas);
-void av1_set_default_mode_deltas(int8_t *mode_deltas);
-void av1_setup_frame_contexts(struct AV1Common *cm);
-void av1_setup_past_independence(struct AV1Common *cm);
+HAOM_EXPORT void av1_set_default_ref_deltas(int8_t *ref_deltas);
+HAOM_EXPORT void av1_set_default_mode_deltas(int8_t *mode_deltas);
+HAOM_EXPORT void av1_setup_frame_contexts(struct AV1Common *cm);
+HAOM_EXPORT void av1_setup_past_independence(struct AV1Common *cm);
 
 // Returns (int)ceil(log2(n)).
-// NOTE: This implementation only works for n <= 2^30.
 static INLINE int av1_ceil_log2(int n) {
   if (n < 2) return 0;
-  int i = 1, p = 2;
-  while (p < n) {
-    i++;
-    p = p << 1;
-  }
-  return i;
+  return get_msb(n - 1) + 1;
 }
 
 // Returns the context for palette color index at row 'r' and column 'c',
 // along with the 'color_order' of neighbors and the 'color_idx'.
 // The 'color_map' is a 2D array with the given 'stride'.
-int av1_get_palette_color_index_context(const uint8_t *color_map, int stride,
+HAOM_EXPORT int av1_get_palette_color_index_context(const uint8_t *color_map, int stride,
                                         int r, int c, int palette_size,
                                         uint8_t *color_order, int *color_idx);
 
-// A faster version of av1_get_palette_color_index_context used by the encoder
-// exploiting the fact that the encoder does not need to maintain a color order.
-int av1_fast_palette_color_index_context(const uint8_t *color_map, int stride,
-                                         int r, int c, int *color_idx);
+HAOM_EXPORT extern const int
+    av1_palette_color_index_context_lookup[MAX_COLOR_CONTEXT_HASH + 1];
 
 #ifdef __cplusplus
 }  // extern "C"

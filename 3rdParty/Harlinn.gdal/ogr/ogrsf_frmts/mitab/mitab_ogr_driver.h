@@ -1,4 +1,3 @@
-#pragma once
 /**********************************************************************
  * $Id$
  *
@@ -32,7 +31,7 @@
  **********************************************************************/
 
 #include "mitab.h"
-#include <ogr/ogrsf_frmts/ogrsf_frmts.h>
+#include "ogrsf_frmts.h"
 
 #ifndef MITAB_OGR_DRIVER_H_INCLUDED_
 #define MITAB_OGR_DRIVER_H_INCLUDED_
@@ -48,44 +47,50 @@ class OGRTABDataSource : public OGRDataSource
     CPL_DISALLOW_COPY_ASSIGN(OGRTABDataSource)
 
   private:
-    char                *m_pszName;
-    char                *m_pszDirectory;
+    char *m_pszName;
+    char *m_pszDirectory;
 
-    int                 m_nLayerCount;
-    IMapInfoFile        **m_papoLayers;
+    int m_nLayerCount;
+    IMapInfoFile **m_papoLayers;
 
-    char                **m_papszOptions;
-    int                 m_bCreateMIF;
-    int                 m_bSingleFile;
-    int                 m_bSingleLayerAlreadyCreated;
-    GBool               m_bQuickSpatialIndexMode;
-    int                 m_nBlockSize;
-    
-  private:  
-    inline bool         GetUpdate() const { return eAccess == GA_Update; }
+    char **m_papszOptions;
+    int m_bCreateMIF;
+    int m_bSingleFile;
+    int m_bSingleLayerAlreadyCreated;
+    GBool m_bQuickSpatialIndexMode;
+    int m_nBlockSize;
+
+  private:
+    inline bool GetUpdate() const
+    {
+        return eAccess == GA_Update;
+    }
 
   public:
-                OGRTABDataSource();
-    virtual     ~OGRTABDataSource();
+    OGRTABDataSource();
+    virtual ~OGRTABDataSource();
 
-    int         Open( GDALOpenInfo* poOpenInfo, int bTestOpen );
-    int         Create( const char *pszName, char ** papszOptions );
+    int Open(GDALOpenInfo *poOpenInfo, int bTestOpen);
+    int Create(const char *pszName, char **papszOptions);
 
-    const char  *GetName() override { return m_pszName; }
-    int          GetLayerCount() override;
-    OGRLayer    *GetLayer( int ) override;
-    int          TestCapability( const char * ) override;
+    const char *GetName() override
+    {
+        return m_pszName;
+    }
 
-    OGRLayer    *ICreateLayer(const char *,
-                             OGRSpatialReference * = nullptr,
-                             OGRwkbGeometryType = wkbUnknown,
-                             char ** = nullptr ) override;
+    int GetLayerCount() override;
+    OGRLayer *GetLayer(int) override;
+    int TestCapability(const char *) override;
 
-    char        **GetFileList() override;
+    OGRLayer *ICreateLayer(const char *pszName,
+                           const OGRGeomFieldDefn *poGeomFieldDefn,
+                           CSLConstList papszOptions) override;
 
-    virtual OGRLayer *  ExecuteSQL( const char *pszStatement,
-                                    OGRGeometry *poSpatialFilter,
-                                    const char *pszDialect ) override;
+    char **GetFileList() override;
+
+    virtual OGRLayer *ExecuteSQL(const char *pszStatement,
+                                 OGRGeometry *poSpatialFilter,
+                                 const char *pszDialect) override;
 };
 
 void CPL_DLL RegisterOGRTAB();

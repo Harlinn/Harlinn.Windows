@@ -5,299 +5,227 @@
 
 #include "lib/jxl/enc_external_image.h"
 
+#include <jxl/types.h>
 #include <string.h>
 
-#include <algorithm>
-#include <array>
-#include <functional>
+#include <atomic>
 #include <utility>
-#include <vector>
 
-#include "lib/jxl/alpha.h"
 #include "lib/jxl/base/byte_order.h"
-#include "lib/jxl/color_management.h"
-#include "lib/jxl/common.h"
+#include "lib/jxl/base/common.h"
+#include "lib/jxl/base/float.h"
+#include "lib/jxl/base/printf_macros.h"
 
 namespace jxl {
 namespace {
 
-// Based on highway scalar implementation, for testing
-float LoadFloat16(uint16_t bits16) {
-  const uint32_t sign = bits16 >> 15;
-  const uint32_t biased_exp = (bits16 >> 10) & 0x1F;
-  const uint32_t mantissa = bits16 & 0x3FF;
-
-  // Subnormal or zero
-  if (biased_exp == 0) {
-    const float subnormal = (1.0f / 16384) * (mantissa * (1.0f / 1024));
-    return sign ? -subnormal : subnormal;
-  }
-
-  // Normalized: convert the representation directly (faster than ldexp/tables).
-  const uint32_t biased_exp32 = biased_exp + (127 - 15);
-  const uint32_t mantissa32 = mantissa << (23 - 10);
-  const uint32_t bits32 = (sign << 31) | (biased_exp32 << 23) | mantissa32;
-
-  float result;
-  memcpy(&result, &bits32, 4);
-  return result;
-}
-
-float LoadLEFloat16(const uint8_t* p) {
-  uint16_t bits16 = LoadLE16(p);
-  return LoadFloat16(bits16);
-}
-
-float LoadBEFloat16(const uint8_t* p) {
-  uint16_t bits16 = LoadBE16(p);
-  return LoadFloat16(bits16);
-}
-
-// Loads a float in big endian
-float LoadBEFloat(const uint8_t* p) {
-  float value;
-  const uint32_t u = LoadBE32(p);
-  memcpy(&value, &u, 4);
-  return value;
-}
-
-// Loads a float in little endian
-float LoadLEFloat(const uint8_t* p) {
-  float value;
-  const uint32_t u = LoadLE32(p);
-  memcpy(&value, &u, 4);
-  return value;
-}
-
-typedef uint32_t(LoadFuncType)(const uint8_t* p);
-template <LoadFuncType LoadFunc>
-void JXL_INLINE LoadFloatRow(float* JXL_RESTRICT row_out, const uint8_t* in,
-                             float mul, size_t xsize, size_t bytes_per_pixel) {
-  size_t i = 0;
-  for (size_t x = 0; x < xsize; ++x) {
-    row_out[x] = mul * LoadFunc(in + i);
-    i += bytes_per_pixel;
+size_t JxlDataTypeBytes(JxlDataType data_type) {
+  switch (data_type) {
+    case JXL_TYPE_UINT8:
+      return 1;
+    case JXL_TYPE_UINT16:
+      return 2;
+    case JXL_TYPE_FLOAT16:
+      return 2;
+    case JXL_TYPE_FLOAT:
+      return 4;
+    default:
+      return 0;
   }
 }
-
-uint32_t JXL_INLINE Load8(const uint8_t* p) { return *p; }
 
 }  // namespace
 
-Status ConvertFromExternal(Span<const uint8_t> bytes, size_t xsize,
-                           size_t ysize, const ColorEncoding& c_current,
-                           bool has_alpha, bool alpha_is_premultiplied,
-                           size_t bits_per_sample, JxlEndianness endianness,
-                           bool flipped_y, ThreadPool* pool, ImageBundle* ib,
-                           bool float_in) {
-  if (bits_per_sample < 1 || bits_per_sample > 32) {
-    return JXL_FAILURE("Invalid bits_per_sample value.");
-  }
-  // TODO(deymo): Implement 1-bit per sample as 8 samples per byte. In
-  // any other case we use DivCeil(bits_per_sample, 8) bytes per pixel per
-  // channel.
-  if (bits_per_sample == 1) {
-    return JXL_FAILURE("packed 1-bit per sample is not yet supported");
+Status ConvertFromExternalNoSizeCheck(const uint8_t* data, size_t xsize,
+                                      size_t ysize, size_t stride,
+                                      size_t bits_per_sample,
+                                      JxlPixelFormat format, size_t c,
+                                      ThreadPool* pool, ImageF* channel) {
+  if (format.data_type == JXL_TYPE_UINT8) {
+    JXL_RETURN_IF_ERROR(bits_per_sample > 0 && bits_per_sample <= 8);
+  } else if (format.data_type == JXL_TYPE_UINT16) {
+    JXL_RETURN_IF_ERROR(bits_per_sample > 8 && bits_per_sample <= 16);
+  } else if (format.data_type != JXL_TYPE_FLOAT16 &&
+             format.data_type != JXL_TYPE_FLOAT) {
+    JXL_FAILURE("unsupported pixel format data type %d", format.data_type);
   }
 
-  const size_t color_channels = c_current.Channels();
-  const size_t channels = color_channels + has_alpha;
+  JXL_ASSERT(channel->xsize() == xsize);
+  JXL_ASSERT(channel->ysize() == ysize);
 
-  // bytes_per_channel and bytes_per_pixel are only valid for
-  // bits_per_sample > 1.
-  const size_t bytes_per_channel = DivCeil(bits_per_sample, jxl::kBitsPerByte);
-  const size_t bytes_per_pixel = channels * bytes_per_channel;
-
-  const size_t row_size = xsize * bytes_per_pixel;
-  if (ysize && bytes.size() / ysize < row_size) {
-    return JXL_FAILURE("Buffer size is too small");
+  size_t bytes_per_channel = JxlDataTypeBytes(format.data_type);
+  size_t bytes_per_pixel = format.num_channels * bytes_per_channel;
+  size_t pixel_offset = c * bytes_per_channel;
+  // Only for uint8/16.
+  float scale = 1.0f;
+  if (format.data_type == JXL_TYPE_UINT8) {
+    // We will do an integer multiplication by 257 in LoadFloatRow so that a
+    // UINT8 value and the corresponding UINT16 value convert to the same float
+    scale = 1.0f / (257 * ((1ull << bits_per_sample) - 1));
+  } else {
+    scale = 1.0f / ((1ull << bits_per_sample) - 1);
   }
 
   const bool little_endian =
-      endianness == JXL_LITTLE_ENDIAN ||
-      (endianness == JXL_NATIVE_ENDIAN && IsLittleEndian());
+      format.endianness == JXL_LITTLE_ENDIAN ||
+      (format.endianness == JXL_NATIVE_ENDIAN && IsLittleEndian());
 
-  const uint8_t* const in = bytes.data();
+  std::atomic<size_t> error_count = {0};
 
-  Image3F color(xsize, ysize);
-  ImageF alpha;
-  if (has_alpha) {
-    alpha = ImageF(xsize, ysize);
-  }
-
-  const auto get_y = [flipped_y, ysize](const size_t y) {
-    return flipped_y ? ysize - 1 - y : y;
+  const auto convert_row = [&](const uint32_t task, size_t /*thread*/) {
+    const size_t y = task;
+    size_t offset = y * stride + pixel_offset;
+    float* JXL_RESTRICT row_out = channel->Row(y);
+    const auto save_value = [&](size_t index, float value) {
+      row_out[index] = value;
+    };
+    if (!LoadFloatRow(data + offset, xsize, bytes_per_pixel, format.data_type,
+                      little_endian, scale, save_value)) {
+      error_count++;
+    }
   };
+  JXL_RETURN_IF_ERROR(RunOnPool(pool, 0, static_cast<uint32_t>(ysize),
+                                ThreadPool::NoInit, convert_row,
+                                "ConvertExtraChannel"));
 
-  if (float_in) {
-    for (size_t c = 0; c < color_channels; ++c) {
-      RunOnPool(
-          pool, 0, static_cast<uint32_t>(ysize), ThreadPool::SkipInit(),
-          [&](const int task, int /*thread*/) {
-            const size_t y = get_y(task);
-            size_t i =
-                row_size * task + (c * bits_per_sample / jxl::kBitsPerByte);
-            float* JXL_RESTRICT row_out = color.PlaneRow(c, y);
-            if (bits_per_sample <= 16) {
-              if (little_endian) {
-                for (size_t x = 0; x < xsize; ++x) {
-                  row_out[x] = LoadLEFloat16(in + i);
-                  i += bytes_per_pixel;
-                }
-              } else {
-                for (size_t x = 0; x < xsize; ++x) {
-                  row_out[x] = LoadBEFloat16(in + i);
-                  i += bytes_per_pixel;
-                }
-              }
-            } else {
-              if (little_endian) {
-                for (size_t x = 0; x < xsize; ++x) {
-                  row_out[x] = LoadLEFloat(in + i);
-                  i += bytes_per_pixel;
-                }
-              } else {
-                for (size_t x = 0; x < xsize; ++x) {
-                  row_out[x] = LoadBEFloat(in + i);
-                  i += bytes_per_pixel;
-                }
-              }
-            }
-          },
-          "ConvertRGBFloat");
-    }
-  } else {
-    // Multiplier to convert from the integer range to floating point 0-1 range.
-    float mul = 1. / ((1ull << bits_per_sample) - 1);
-    for (size_t c = 0; c < color_channels; ++c) {
-      RunOnPool(
-          pool, 0, static_cast<uint32_t>(ysize), ThreadPool::SkipInit(),
-          [&](const int task, int /*thread*/) {
-            const size_t y = get_y(task);
-            size_t i = row_size * task + c * bytes_per_channel;
-            float* JXL_RESTRICT row_out = color.PlaneRow(c, y);
-            // TODO(deymo): add bits_per_sample == 1 case here. Also maybe
-            // implement masking if bits_per_sample is not a multiple of 8.
-            if (bits_per_sample <= 8) {
-              LoadFloatRow<Load8>(row_out, in + i, mul, xsize, bytes_per_pixel);
-            } else if (bits_per_sample <= 16) {
-              if (little_endian) {
-                LoadFloatRow<LoadLE16>(row_out, in + i, mul, xsize,
-                                       bytes_per_pixel);
-              } else {
-                LoadFloatRow<LoadBE16>(row_out, in + i, mul, xsize,
-                                       bytes_per_pixel);
-              }
-            } else if (bits_per_sample <= 24) {
-              if (little_endian) {
-                LoadFloatRow<LoadLE24>(row_out, in + i, mul, xsize,
-                                       bytes_per_pixel);
-              } else {
-                LoadFloatRow<LoadBE24>(row_out, in + i, mul, xsize,
-                                       bytes_per_pixel);
-              }
-            } else {
-              if (little_endian) {
-                LoadFloatRow<LoadLE32>(row_out, in + i, mul, xsize,
-                                       bytes_per_pixel);
-              } else {
-                LoadFloatRow<LoadBE32>(row_out, in + i, mul, xsize,
-                                       bytes_per_pixel);
-              }
-            }
-          },
-          "ConvertRGBUint");
-    }
+  if (error_count) {
+    JXL_FAILURE("unsupported pixel format data type");
   }
 
+  return true;
+}
+
+Status ConvertFromExternalNoSizeCheck(const uint8_t* data, size_t xsize,
+                                      size_t ysize, size_t stride,
+                                      const ColorEncoding& c_current,
+                                      size_t color_channels,
+                                      size_t bits_per_sample,
+                                      JxlPixelFormat format, ThreadPool* pool,
+                                      ImageBundle* ib) {
+  bool has_alpha = format.num_channels == 2 || format.num_channels == 4;
+  if (format.num_channels < color_channels) {
+    return JXL_FAILURE("Expected %" PRIuS
+                       " color channels, received only %u channels",
+                       color_channels, format.num_channels);
+  }
+
+  JXL_ASSIGN_OR_RETURN(Image3F color, Image3F::Create(xsize, ysize));
+  for (size_t c = 0; c < color_channels; ++c) {
+    JXL_RETURN_IF_ERROR(ConvertFromExternalNoSizeCheck(
+        data, xsize, ysize, stride, bits_per_sample, format, c, pool,
+        &color.Plane(c)));
+  }
   if (color_channels == 1) {
     CopyImageTo(color.Plane(0), &color.Plane(1));
     CopyImageTo(color.Plane(0), &color.Plane(2));
   }
-
   ib->SetFromImage(std::move(color), c_current);
 
-  if (has_alpha) {
-    if (float_in) {
-      RunOnPool(
-          pool, 0, static_cast<uint32_t>(ysize), ThreadPool::SkipInit(),
-          [&](const int task, int /*thread*/) {
-            const size_t y = get_y(task);
-            size_t i = row_size * task +
-                       (color_channels * bits_per_sample / jxl::kBitsPerByte);
-            float* JXL_RESTRICT row_out = alpha.Row(y);
-            if (bits_per_sample <= 16) {
-              if (little_endian) {
-                for (size_t x = 0; x < xsize; ++x) {
-                  row_out[x] = LoadLEFloat16(in + i);
-                  i += bytes_per_pixel;
-                }
-              } else {
-                for (size_t x = 0; x < xsize; ++x) {
-                  row_out[x] = LoadBEFloat16(in + i);
-                  i += bytes_per_pixel;
-                }
-              }
-            } else {
-              if (little_endian) {
-                for (size_t x = 0; x < xsize; ++x) {
-                  row_out[x] = LoadLEFloat(in + i);
-                  i += bytes_per_pixel;
-                }
-              } else {
-                for (size_t x = 0; x < xsize; ++x) {
-                  row_out[x] = LoadBEFloat(in + i);
-                  i += bytes_per_pixel;
-                }
-              }
-            }
-          },
-          "ConvertAlphaFloat");
-    } else {
-      float mul = 1. / ((1ull << bits_per_sample) - 1);
-      RunOnPool(
-          pool, 0, static_cast<uint32_t>(ysize), ThreadPool::SkipInit(),
-          [&](const int task, int /*thread*/) {
-            const size_t y = get_y(task);
-            size_t i = row_size * task + color_channels * bytes_per_channel;
-            float* JXL_RESTRICT row_out = alpha.Row(y);
-            // TODO(deymo): add bits_per_sample == 1 case here. Also maybe
-            // implement masking if bits_per_sample is not a multiple of 8.
-            if (bits_per_sample <= 8) {
-              LoadFloatRow<Load8>(row_out, in + i, mul, xsize, bytes_per_pixel);
-            } else if (bits_per_sample <= 16) {
-              if (little_endian) {
-                LoadFloatRow<LoadLE16>(row_out, in + i, mul, xsize,
-                                       bytes_per_pixel);
-              } else {
-                LoadFloatRow<LoadBE16>(row_out, in + i, mul, xsize,
-                                       bytes_per_pixel);
-              }
-            } else if (bits_per_sample <= 24) {
-              if (little_endian) {
-                LoadFloatRow<LoadLE24>(row_out, in + i, mul, xsize,
-                                       bytes_per_pixel);
-              } else {
-                LoadFloatRow<LoadBE24>(row_out, in + i, mul, xsize,
-                                       bytes_per_pixel);
-              }
-            } else {
-              if (little_endian) {
-                LoadFloatRow<LoadLE32>(row_out, in + i, mul, xsize,
-                                       bytes_per_pixel);
-              } else {
-                LoadFloatRow<LoadBE32>(row_out, in + i, mul, xsize,
-                                       bytes_per_pixel);
-              }
-            }
-          },
-          "ConvertAlphaUint");
-    }
-
-    ib->SetAlpha(std::move(alpha), alpha_is_premultiplied);
+  // Passing an interleaved image with an alpha channel to an image that doesn't
+  // have alpha channel just discards the passed alpha channel.
+  if (has_alpha && ib->HasAlpha()) {
+    JXL_ASSIGN_OR_RETURN(ImageF alpha, ImageF::Create(xsize, ysize));
+    JXL_RETURN_IF_ERROR(ConvertFromExternalNoSizeCheck(
+        data, xsize, ysize, stride, bits_per_sample, format,
+        format.num_channels - 1, pool, &alpha));
+    ib->SetAlpha(std::move(alpha));
+  } else if (!has_alpha && ib->HasAlpha()) {
+    // if alpha is not passed, but it is expected, then assume
+    // it is all-opaque
+    JXL_ASSIGN_OR_RETURN(ImageF alpha, ImageF::Create(xsize, ysize));
+    FillImage(1.0f, &alpha);
+    ib->SetAlpha(std::move(alpha));
   }
 
   return true;
+}
+
+Status ConvertFromExternal(const uint8_t* data, size_t size, size_t xsize,
+                           size_t ysize, size_t bits_per_sample,
+                           JxlPixelFormat format, size_t c, ThreadPool* pool,
+                           ImageF* channel) {
+  size_t bytes_per_channel = JxlDataTypeBytes(format.data_type);
+  size_t bytes_per_pixel = format.num_channels * bytes_per_channel;
+  const size_t last_row_size = xsize * bytes_per_pixel;
+  const size_t align = format.align;
+  const size_t row_size =
+      (align > 1 ? jxl::DivCeil(last_row_size, align) * align : last_row_size);
+  const size_t bytes_to_read = row_size * (ysize - 1) + last_row_size;
+  if (xsize == 0 || ysize == 0) return JXL_FAILURE("Empty image");
+  if (size > 0 && size < bytes_to_read) {
+    return JXL_FAILURE("Buffer size is too small, expected: %" PRIuS
+                       " got: %" PRIuS " (Image: %" PRIuS "x%" PRIuS
+                       "x%u, bytes_per_channel: %" PRIuS ")",
+                       bytes_to_read, size, xsize, ysize, format.num_channels,
+                       bytes_per_channel);
+  }
+  // Too large buffer is likely an application bug, so also fail for that.
+  // Do allow padding to stride in last row though.
+  if (size > row_size * ysize) {
+    return JXL_FAILURE("Buffer size is too large");
+  }
+  return ConvertFromExternalNoSizeCheck(
+      data, xsize, ysize, row_size, bits_per_sample, format, c, pool, channel);
+}
+Status ConvertFromExternal(Span<const uint8_t> bytes, size_t xsize,
+                           size_t ysize, const ColorEncoding& c_current,
+                           size_t color_channels, size_t bits_per_sample,
+                           JxlPixelFormat format, ThreadPool* pool,
+                           ImageBundle* ib) {
+  bool has_alpha = format.num_channels == 2 || format.num_channels == 4;
+  if (format.num_channels < color_channels) {
+    return JXL_FAILURE("Expected %" PRIuS
+                       " color channels, received only %u channels",
+                       color_channels, format.num_channels);
+  }
+
+  JXL_ASSIGN_OR_RETURN(Image3F color, Image3F::Create(xsize, ysize));
+  for (size_t c = 0; c < color_channels; ++c) {
+    JXL_RETURN_IF_ERROR(ConvertFromExternal(bytes.data(), bytes.size(), xsize,
+                                            ysize, bits_per_sample, format, c,
+                                            pool, &color.Plane(c)));
+  }
+  if (color_channels == 1) {
+    CopyImageTo(color.Plane(0), &color.Plane(1));
+    CopyImageTo(color.Plane(0), &color.Plane(2));
+  }
+  ib->SetFromImage(std::move(color), c_current);
+
+  // Passing an interleaved image with an alpha channel to an image that doesn't
+  // have alpha channel just discards the passed alpha channel.
+  if (has_alpha && ib->HasAlpha()) {
+    JXL_ASSIGN_OR_RETURN(ImageF alpha, ImageF::Create(xsize, ysize));
+    JXL_RETURN_IF_ERROR(ConvertFromExternal(
+        bytes.data(), bytes.size(), xsize, ysize, bits_per_sample, format,
+        format.num_channels - 1, pool, &alpha));
+    ib->SetAlpha(std::move(alpha));
+  } else if (!has_alpha && ib->HasAlpha()) {
+    // if alpha is not passed, but it is expected, then assume
+    // it is all-opaque
+    JXL_ASSIGN_OR_RETURN(ImageF alpha, ImageF::Create(xsize, ysize));
+    FillImage(1.0f, &alpha);
+    ib->SetAlpha(std::move(alpha));
+  }
+
+  return true;
+}
+
+Status ConvertFromExternal(Span<const uint8_t> bytes, size_t xsize,
+                           size_t ysize, const ColorEncoding& c_current,
+                           size_t bits_per_sample, JxlPixelFormat format,
+                           ThreadPool* pool, ImageBundle* ib) {
+  return ConvertFromExternal(bytes, xsize, ysize, c_current,
+                             c_current.Channels(), bits_per_sample, format,
+                             pool, ib);
+}
+
+Status BufferToImageF(const JxlPixelFormat& pixel_format, size_t xsize,
+                      size_t ysize, const void* buffer, size_t size,
+                      ThreadPool* pool, ImageF* channel) {
+  size_t bitdepth = JxlDataTypeBytes(pixel_format.data_type) * kBitsPerByte;
+  return ConvertFromExternal(reinterpret_cast<const uint8_t*>(buffer), size,
+                             xsize, ysize, bitdepth, pixel_format, 0, pool,
+                             channel);
 }
 
 Status BufferToImageBundle(const JxlPixelFormat& pixel_format, uint32_t xsize,
@@ -305,33 +233,10 @@ Status BufferToImageBundle(const JxlPixelFormat& pixel_format, uint32_t xsize,
                            jxl::ThreadPool* pool,
                            const jxl::ColorEncoding& c_current,
                            jxl::ImageBundle* ib) {
-  size_t bitdepth;
-  bool float_in;
-
-  // TODO(zond): Make this accept uint32.
-  if (pixel_format.data_type == JXL_TYPE_FLOAT) {
-    bitdepth = 32;
-    float_in = true;
-  } else if (pixel_format.data_type == JXL_TYPE_FLOAT16) {
-    bitdepth = 16;
-    float_in = true;
-  } else if (pixel_format.data_type == JXL_TYPE_UINT8) {
-    bitdepth = 8;
-    float_in = false;
-  } else if (pixel_format.data_type == JXL_TYPE_UINT16) {
-    bitdepth = 16;
-    float_in = false;
-  } else {
-    return JXL_FAILURE("unsupported bitdepth");
-  }
-
+  size_t bitdepth = JxlDataTypeBytes(pixel_format.data_type) * kBitsPerByte;
   JXL_RETURN_IF_ERROR(ConvertFromExternal(
-      jxl::Span<const uint8_t>(static_cast<const uint8_t*>(buffer), size),
-      xsize, ysize, c_current,
-      /*has_alpha=*/pixel_format.num_channels == 2 ||
-          pixel_format.num_channels == 4,
-      /*alpha_is_premultiplied=*/false, bitdepth, pixel_format.endianness,
-      /*flipped_y=*/false, pool, ib, float_in));
+      jxl::Bytes(static_cast<const uint8_t*>(buffer), size), xsize, ysize,
+      c_current, bitdepth, pixel_format, pool, ib));
   ib->VerifyMetadata();
 
   return true;

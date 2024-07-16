@@ -19,7 +19,7 @@
 #define SET_ERR_STRING(...) \
   if (err_msg) snprintf(err_msg, ARG_ERR_MSG_MAX_LEN, __VA_ARGS__)
 
-struct arg arg_init(char **argv) {
+HAOM_EXPORT struct arg arg_init(char **argv) {
   struct arg a;
 
   a.argv = argv;
@@ -30,7 +30,7 @@ struct arg arg_init(char **argv) {
   return a;
 }
 
-int arg_match_helper(struct arg *arg_, const struct arg_def *def, char **argv,
+HAOM_EXPORT int arg_match_helper(struct arg *arg_, const struct arg_def *def, char **argv,
                      char *err_msg) {
   struct arg arg;
 
@@ -84,7 +84,7 @@ int arg_match_helper(struct arg *arg_, const struct arg_def *def, char **argv,
   return 0;
 }
 
-unsigned int arg_parse_uint_helper(const struct arg *arg, char *err_msg) {
+HAOM_EXPORT unsigned int arg_parse_uint_helper(const struct arg *arg, char *err_msg) {
   char *endptr;
   const unsigned long rawval = strtoul(arg->val, &endptr, 10);  // NOLINT
 
@@ -100,7 +100,7 @@ unsigned int arg_parse_uint_helper(const struct arg *arg, char *err_msg) {
   return 0;
 }
 
-int arg_parse_int_helper(const struct arg *arg, char *err_msg) {
+HAOM_EXPORT int arg_parse_int_helper(const struct arg *arg, char *err_msg) {
   char *endptr;
   const long rawval = strtol(arg->val, &endptr, 10);  // NOLINT
 
@@ -116,7 +116,7 @@ int arg_parse_int_helper(const struct arg *arg, char *err_msg) {
   return 0;
 }
 
-struct aom_rational arg_parse_rational_helper(const struct arg *arg,
+HAOM_EXPORT struct aom_rational arg_parse_rational_helper(const struct arg *arg,
                                               char *err_msg) {
   long rawval;  // NOLINT
   char *endptr;
@@ -159,7 +159,7 @@ struct aom_rational arg_parse_rational_helper(const struct arg *arg,
   return rat;
 }
 
-int arg_parse_enum_helper(const struct arg *arg, char *err_msg) {
+HAOM_EXPORT int arg_parse_enum_helper(const struct arg *arg, char *err_msg) {
   const struct arg_enum_list *listptr;
   long rawval;  // NOLINT
   char *endptr;
@@ -182,14 +182,14 @@ int arg_parse_enum_helper(const struct arg *arg, char *err_msg) {
   return 0;
 }
 
-int arg_parse_enum_or_int_helper(const struct arg *arg, char *err_msg) {
+HAOM_EXPORT int arg_parse_enum_or_int_helper(const struct arg *arg, char *err_msg) {
   if (arg->def->enums) return arg_parse_enum_helper(arg, err_msg);
   return arg_parse_int_helper(arg, err_msg);
 }
 
 // parse a comma separated list of at most n integers
 // return the number of elements in the list
-int arg_parse_list_helper(const struct arg *arg, int *list, int n,
+HAOM_EXPORT int arg_parse_list_helper(const struct arg *arg, int *list, int n,
                           char *err_msg) {
   const char *ptr = arg->val;
   char *endptr;

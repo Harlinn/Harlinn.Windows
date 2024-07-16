@@ -186,7 +186,6 @@
     <ClCompile Include="src\compare.cc" />
     <ClCompile Include="src\compare_common.cc" />
     <ClCompile Include="src\compare_gcc.cc" />
-    <ClCompile Include="src\compare_mmi.cc" />
     <ClCompile Include="src\compare_msa.cc" />
     <ClCompile Include="src\compare_neon.cc" />
     <ClCompile Include="src\compare_neon64.cc" />
@@ -207,31 +206,40 @@
     <ClCompile Include="src\rotate_argb.cc" />
     <ClCompile Include="src\rotate_common.cc" />
     <ClCompile Include="src\rotate_gcc.cc" />
-    <ClCompile Include="src\rotate_mmi.cc" />
+    <ClCompile Include="src\rotate_lsx.cc" />
     <ClCompile Include="src\rotate_msa.cc" />
     <ClCompile Include="src\rotate_neon.cc" />
     <ClCompile Include="src\rotate_neon64.cc" />
+    <ClCompile Include="src\rotate_sme.cc" />
     <ClCompile Include="src\rotate_win.cc" />
     <ClCompile Include="src\row_any.cc" />
     <ClCompile Include="src\row_common.cc" />
     <ClCompile Include="src\row_gcc.cc" />
-    <ClCompile Include="src\row_mmi.cc" />
+    <ClCompile Include="src\row_lasx.cc" />
+    <ClCompile Include="src\row_lsx.cc" />
     <ClCompile Include="src\row_msa.cc" />
     <ClCompile Include="src\row_neon.cc" />
     <ClCompile Include="src\row_neon64.cc" />
+    <ClCompile Include="src\row_rvv.cc" />
+    <ClCompile Include="src\row_sve.cc" />
     <ClCompile Include="src\row_win.cc" />
     <ClCompile Include="src\scale.cc" />
     <ClCompile Include="src\scale_any.cc" />
     <ClCompile Include="src\scale_argb.cc" />
     <ClCompile Include="src\scale_common.cc" />
     <ClCompile Include="src\scale_gcc.cc" />
-    <ClCompile Include="src\scale_mmi.cc" />
+    <ClCompile Include="src\scale_lsx.cc" />
     <ClCompile Include="src\scale_msa.cc" />
     <ClCompile Include="src\scale_neon.cc" />
     <ClCompile Include="src\scale_neon64.cc" />
+    <ClCompile Include="src\scale_rgb.cc" />
+    <ClCompile Include="src\scale_rvv.cc" />
     <ClCompile Include="src\scale_uv.cc" />
     <ClCompile Include="src\scale_win.cc" />
     <ClCompile Include="src\video_common.cc" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="src\test.sh" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\libyuv.h" />
@@ -243,6 +251,7 @@
     <ClInclude Include="include\libyuv\convert_from.h" />
     <ClInclude Include="include\libyuv\convert_from_argb.h" />
     <ClInclude Include="include\libyuv\cpu_id.h" />
+    <ClInclude Include="include\libyuv\loongson_intrinsics.h" />
     <ClInclude Include="include\libyuv\macros_msa.h" />
     <ClInclude Include="include\libyuv\mjpeg_decoder.h" />
     <ClInclude Include="include\libyuv\planar_functions.h" />
@@ -252,6 +261,7 @@
     <ClInclude Include="include\libyuv\row.h" />
     <ClInclude Include="include\libyuv\scale.h" />
     <ClInclude Include="include\libyuv\scale_argb.h" />
+    <ClInclude Include="include\libyuv\scale_rgb.h" />
     <ClInclude Include="include\libyuv\scale_row.h" />
     <ClInclude Include="include\libyuv\scale_uv.h" />
     <ClInclude Include="include\libyuv\version.h" />

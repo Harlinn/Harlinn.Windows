@@ -1,4 +1,3 @@
-#pragma once
 /*
  * Copyright 2014 Google Inc. All rights reserved.
  *
@@ -97,8 +96,6 @@ class BaseGenerator {
   static std::string NamespaceDir(const Parser &parser, const std::string &path,
                                   const Namespace &ns,
                                   const bool dasherize = false);
-
-  static std::string ToDasherizedCase(const std::string pascal_case);
 
   std::string GeneratedFileName(const std::string &path,
                                 const std::string &file_name,

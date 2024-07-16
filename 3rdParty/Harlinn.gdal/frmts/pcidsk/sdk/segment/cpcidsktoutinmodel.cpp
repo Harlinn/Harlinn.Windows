@@ -25,11 +25,11 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
-#include "cpcidsksegment.h"
-#include "../core/pcidsk_utils.h"
-#include "cpcidsktoutinmodel.h"
-#include "../pcidsk_exception.h"
-#include "../core/pcidsk_utils.h"
+#include "segment/cpcidsksegment.h"
+#include "core/pcidsk_utils.h"
+#include "segment/cpcidsktoutinmodel.h"
+#include "pcidsk_exception.h"
+#include "core/pcidsk_utils.h"
 
 #include <vector>
 #include <string>
@@ -167,7 +167,6 @@ SRITInfo_t *
 CPCIDSKToutinModelSegment::BinaryToSRITInfo()
 {
     int             i,j,k,l;
-    SRITInfo_t     *SRITModel;
     bool            bVersion9;
 
 /* -------------------------------------------------------------------- */
@@ -196,9 +195,7 @@ CPCIDSKToutinModelSegment::BinaryToSRITInfo()
 /* -------------------------------------------------------------------- */
 /*      Allocate the SRITModel.                                         */
 /* -------------------------------------------------------------------- */
-    SRITModel = new SRITInfo_t();
-
-    std::unique_ptr<SRITInfo_t> oModelAutoPtr(SRITModel);
+    std::unique_ptr<SRITInfo_t> SRITModel( new SRITInfo_t());
 
     SRITModel->GCPMeanHtFlag = 0;
     SRITModel->nDownSample = 1;
@@ -354,9 +351,7 @@ CPCIDSKToutinModelSegment::BinaryToSRITInfo()
         SRITModel->Hdeltat.clear();
     }
 
-    oModelAutoPtr.release();
-
-    return SRITModel;
+    return SRITModel.release();
 }
 
 /************************************************************************/

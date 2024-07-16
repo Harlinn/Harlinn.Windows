@@ -39,9 +39,6 @@
     <ClCompile Include="src\compare_gcc.cc">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\compare_mmi.cc">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="src\compare_msa.cc">
       <Filter>src</Filter>
     </ClCompile>
@@ -102,7 +99,7 @@
     <ClCompile Include="src\rotate_gcc.cc">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\rotate_mmi.cc">
+    <ClCompile Include="src\rotate_lsx.cc">
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="src\rotate_msa.cc">
@@ -112,6 +109,9 @@
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="src\rotate_neon64.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\rotate_sme.cc">
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="src\rotate_win.cc">
@@ -126,7 +126,10 @@
     <ClCompile Include="src\row_gcc.cc">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\row_mmi.cc">
+    <ClCompile Include="src\row_lasx.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\row_lsx.cc">
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="src\row_msa.cc">
@@ -136,6 +139,12 @@
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="src\row_neon64.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\row_rvv.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\row_sve.cc">
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="src\row_win.cc">
@@ -156,7 +165,7 @@
     <ClCompile Include="src\scale_gcc.cc">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\scale_mmi.cc">
+    <ClCompile Include="src\scale_lsx.cc">
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="src\scale_msa.cc">
@@ -166,6 +175,12 @@
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="src\scale_neon64.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\scale_rgb.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\scale_rvv.cc">
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="src\scale_uv.cc">
@@ -179,6 +194,14 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="src\test.sh">
+      <Filter>src</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\libyuv.h">
+      <Filter>include</Filter>
+    </ClInclude>
     <ClInclude Include="include\libyuv\basic_types.h">
       <Filter>include\libyuv</Filter>
     </ClInclude>
@@ -201,6 +224,9 @@
       <Filter>include\libyuv</Filter>
     </ClInclude>
     <ClInclude Include="include\libyuv\cpu_id.h">
+      <Filter>include\libyuv</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libyuv\loongson_intrinsics.h">
       <Filter>include\libyuv</Filter>
     </ClInclude>
     <ClInclude Include="include\libyuv\macros_msa.h">
@@ -230,6 +256,9 @@
     <ClInclude Include="include\libyuv\scale_argb.h">
       <Filter>include\libyuv</Filter>
     </ClInclude>
+    <ClInclude Include="include\libyuv\scale_rgb.h">
+      <Filter>include\libyuv</Filter>
+    </ClInclude>
     <ClInclude Include="include\libyuv\scale_row.h">
       <Filter>include\libyuv</Filter>
     </ClInclude>
@@ -241,9 +270,6 @@
     </ClInclude>
     <ClInclude Include="include\libyuv\video_common.h">
       <Filter>include\libyuv</Filter>
-    </ClInclude>
-    <ClInclude Include="include\libyuv.h">
-      <Filter>include</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

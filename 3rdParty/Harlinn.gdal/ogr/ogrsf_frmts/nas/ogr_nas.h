@@ -1,4 +1,3 @@
-#pragma once
 /******************************************************************************
  * $Id$
  *
@@ -32,9 +31,9 @@
 #ifndef OGR_NAS_H_INCLUDED
 #define OGR_NAS_H_INCLUDED
 
-#include <ogr/ogrsf_frmts/ogrsf_frmts.h>
+#include "ogrsf_frmts.h"
 #include "nasreaderp.h"
-#include <ogr/ogr_api.h>
+#include "ogr_api.h"
 #include <vector>
 
 class OGRNASDataSource;
@@ -43,104 +42,86 @@ class OGRNASDataSource;
 /*                            OGRNASLayer                               */
 /************************************************************************/
 
-class OGRNASLayer final: public OGRLayer
+class OGRNASLayer final : public OGRLayer
 {
-    OGRFeatureDefn      *poFeatureDefn;
+    OGRFeatureDefn *poFeatureDefn;
 
-    int                 iNextNASId;
+    int iNextNASId;
 
-    OGRNASDataSource    *poDS;
+    OGRNASDataSource *poDS;
 
-    GMLFeatureClass     *poFClass;
+    GMLFeatureClass *poFClass;
 
   public:
-                        OGRNASLayer( const char * pszName,
-                                     OGRNASDataSource *poDS );
+    OGRNASLayer(const char *pszName, OGRNASDataSource *poDS);
 
-                        virtual ~OGRNASLayer();
+    virtual ~OGRNASLayer();
 
-    void                ResetReading() override;
-    OGRFeature *        GetNextFeature() override;
+    void ResetReading() override;
+    OGRFeature *GetNextFeature() override;
 
-    GIntBig             GetFeatureCount( int bForce = TRUE ) override;
-    OGRErr              GetExtent(OGREnvelope *psExtent, int bForce = TRUE) override;
-    virtual OGRErr      GetExtent(int iGeomField, OGREnvelope *psExtent, int bForce) override
-                { return OGRLayer::GetExtent(iGeomField, psExtent, bForce); }
+    GIntBig GetFeatureCount(int bForce = TRUE) override;
+    OGRErr GetExtent(OGREnvelope *psExtent, int bForce = TRUE) override;
 
-    OGRFeatureDefn *    GetLayerDefn() override { return poFeatureDefn; }
+    virtual OGRErr GetExtent(int iGeomField, OGREnvelope *psExtent,
+                             int bForce) override
+    {
+        return OGRLayer::GetExtent(iGeomField, psExtent, bForce);
+    }
 
-    int                 TestCapability( const char * ) override;
-};
+    OGRFeatureDefn *GetLayerDefn() override
+    {
+        return poFeatureDefn;
+    }
 
-/************************************************************************/
-/*                         OGRNASRelationLayer                          */
-/************************************************************************/
-
-class OGRNASRelationLayer final: public OGRLayer
-{
-    OGRFeatureDefn     *poFeatureDefn;
-    OGRNASDataSource    *poDS;
-
-    bool                 bPopulated;
-    int                  iNextFeature;
-    std::vector<CPLString> aoRelationCollection;
-
-  public:
-    explicit             OGRNASRelationLayer( OGRNASDataSource *poDS );
-                        ~OGRNASRelationLayer();
-
-    void                ResetReading() override;
-    OGRFeature *        GetNextFeature() override;
-
-    GIntBig             GetFeatureCount( int bForce = TRUE ) override;
-    OGRFeatureDefn *    GetLayerDefn() override { return poFeatureDefn; }
-    int                 TestCapability( const char * ) override;
-
-    // For use populating.
-    void                AddRelation( const char *pszFromID,
-                                     const char *pszType,
-                                     const char *pszToID );
-    void                MarkRelationsPopulated() { bPopulated = true; }
+    int TestCapability(const char *) override;
 };
 
 /************************************************************************/
 /*                           OGRNASDataSource                           */
 /************************************************************************/
 
-class OGRNASDataSource final: public OGRDataSource
+class OGRNASDataSource final : public OGRDataSource
 {
-    OGRLayer          **papoLayers;
-    int                 nLayers;
+    OGRLayer **papoLayers;
+    int nLayers;
 
-    OGRNASRelationLayer *poRelationLayer;
+    char *pszName;
 
-    char                *pszName;
-
-    OGRNASLayer         *TranslateNASSchema( GMLFeatureClass * );
+    OGRNASLayer *TranslateNASSchema(GMLFeatureClass *);
 
     // input related parameters.
-    IGMLReader          *poReader;
+    IGMLReader *poReader;
 
-    void                InsertHeader();
+    void InsertHeader();
 
   public:
-                        OGRNASDataSource();
-                        ~OGRNASDataSource();
+    OGRNASDataSource();
+    ~OGRNASDataSource();
 
-    int                 Open( const char * );
-    int                 Create( const char *pszFile, char **papszOptions );
+    int Open(const char *);
+    int Create(const char *pszFile, char **papszOptions);
 
-    const char          *GetName() override { return pszName; }
-    int                 GetLayerCount() override { return nLayers; }
-    OGRLayer            *GetLayer( int ) override;
+    const char *GetName() override
+    {
+        return pszName;
+    }
 
-    int                 TestCapability( const char * ) override;
+    int GetLayerCount() override
+    {
+        return nLayers;
+    }
 
-    IGMLReader          *GetReader() { return poReader; }
+    OGRLayer *GetLayer(int) override;
 
-    void                GrowExtents( OGREnvelope *psGeomBounds );
+    int TestCapability(const char *) override;
 
-    void                PopulateRelations();
+    IGMLReader *GetReader()
+    {
+        return poReader;
+    }
+
+    void GrowExtents(OGREnvelope *psGeomBounds);
 };
 
 #endif /* OGR_NAS_H_INCLUDED */

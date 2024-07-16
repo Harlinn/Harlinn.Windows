@@ -25,9 +25,9 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
-#include "blocklayer.h"
-#include "blockfile.h"
-#include "../pcidsk_exception.h"
+#include "blockdir/blocklayer.h"
+#include "blockdir/blockfile.h"
+#include "pcidsk_exception.h"
 
 using namespace PCIDSK;
 

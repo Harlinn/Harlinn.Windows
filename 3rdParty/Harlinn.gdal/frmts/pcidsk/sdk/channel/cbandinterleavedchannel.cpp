@@ -29,16 +29,16 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
-#include "../pcidsk_config.h"
-#include "../pcidsk_types.h"
-#include "../pcidsk_channel.h"
-#include "../pcidsk_buffer.h"
-#include "../pcidsk_exception.h"
-#include "../pcidsk_file.h"
-#include "../core/pcidsk_utils.h"
-#include "../core/cpcidskfile.h"
-#include "../core/clinksegment.h"
-#include "cbandinterleavedchannel.h"
+#include "pcidsk_config.h"
+#include "pcidsk_types.h"
+#include "pcidsk_channel.h"
+#include "pcidsk_buffer.h"
+#include "pcidsk_exception.h"
+#include "pcidsk_file.h"
+#include "core/pcidsk_utils.h"
+#include "core/cpcidskfile.h"
+#include "core/clinksegment.h"
+#include "channel/cbandinterleavedchannel.h"
 #include <cassert>
 #include <cstring>
 #include <cstdio>

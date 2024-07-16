@@ -12,6 +12,7 @@
 #include "av1/encoder/context_tree.h"
 #include "av1/encoder/encoder.h"
 #include "av1/encoder/rd.h"
+#include <assert.h>
 
 void av1_copy_tree_context(PICK_MODE_CONTEXT *dst_ctx,
                            PICK_MODE_CONTEXT *src_ctx) {
@@ -28,10 +29,6 @@ void av1_copy_tree_context(PICK_MODE_CONTEXT *dst_ctx,
          sizeof(uint8_t) * src_ctx->num_4x4_blk);
   av1_copy_array(dst_ctx->tx_type_map, src_ctx->tx_type_map,
                  src_ctx->num_4x4_blk);
-
-  dst_ctx->hybrid_pred_diff = src_ctx->hybrid_pred_diff;
-  dst_ctx->comp_pred_diff = src_ctx->comp_pred_diff;
-  dst_ctx->single_pred_diff = src_ctx->single_pred_diff;
 
   dst_ctx->rd_stats = src_ctx->rd_stats;
   dst_ctx->rd_mode_is_ready = src_ctx->rd_mode_is_ready;
@@ -70,9 +67,15 @@ void av1_free_shared_coeff_buffer(PC_TREE_SHARED_BUFFERS *shared_bufs) {
 PICK_MODE_CONTEXT *av1_alloc_pmc(const struct AV1_COMP *const cpi,
                                  BLOCK_SIZE bsize,
                                  PC_TREE_SHARED_BUFFERS *shared_bufs) {
-  PICK_MODE_CONTEXT *ctx = NULL;
+  PICK_MODE_CONTEXT *volatile ctx = NULL;
   const AV1_COMMON *const cm = &cpi->common;
   struct aom_internal_error_info error;
+
+  if (setjmp(error.jmp)) {
+    av1_free_pmc(ctx, av1_num_planes(cm));
+    return NULL;
+  }
+  error.setjmp = 1;
 
   AOM_CHECK_MEM_ERROR(&error, ctx, aom_calloc(1, sizeof(*ctx)));
   ctx->rd_mode_is_ready = 0;
@@ -100,7 +103,7 @@ PICK_MODE_CONTEXT *av1_alloc_pmc(const struct AV1_COMP *const cpi,
 
   if (num_pix <= MAX_PALETTE_SQUARE) {
     for (int i = 0; i < 2; ++i) {
-      if (!cpi->sf.rt_sf.use_nonrd_pick_mode || frame_is_intra_only(cm)) {
+      if (cm->features.allow_screen_content_tools) {
         AOM_CHECK_MEM_ERROR(
             &error, ctx->color_index_map[i],
             aom_memalign(32, num_pix * sizeof(*ctx->color_index_map[i])));
@@ -113,6 +116,12 @@ PICK_MODE_CONTEXT *av1_alloc_pmc(const struct AV1_COMP *const cpi,
   av1_invalid_rd_stats(&ctx->rd_stats);
 
   return ctx;
+}
+
+void av1_reset_pmc(PICK_MODE_CONTEXT *ctx) {
+  av1_zero_array(ctx->blk_skip, ctx->num_4x4_blk);
+  av1_zero_array(ctx->tx_type_map, ctx->num_4x4_blk);
+  av1_invalid_rd_stats(&ctx->rd_stats);
 }
 
 void av1_free_pmc(PICK_MODE_CONTEXT *ctx, int num_planes) {
@@ -142,31 +151,11 @@ void av1_free_pmc(PICK_MODE_CONTEXT *ctx, int num_planes) {
 }
 
 PC_TREE *av1_alloc_pc_tree_node(BLOCK_SIZE bsize) {
-  PC_TREE *pc_tree = NULL;
-  struct aom_internal_error_info error;
-
-  AOM_CHECK_MEM_ERROR(&error, pc_tree, aom_calloc(1, sizeof(*pc_tree)));
+  PC_TREE *pc_tree = aom_calloc(1, sizeof(*pc_tree));
+  if (pc_tree == NULL) return NULL;
 
   pc_tree->partitioning = PARTITION_NONE;
   pc_tree->block_size = bsize;
-  pc_tree->index = 0;
-
-  pc_tree->none = NULL;
-  for (int i = 0; i < 2; ++i) {
-    pc_tree->horizontal[i] = NULL;
-    pc_tree->vertical[i] = NULL;
-  }
-  for (int i = 0; i < 3; ++i) {
-    pc_tree->horizontala[i] = NULL;
-    pc_tree->horizontalb[i] = NULL;
-    pc_tree->verticala[i] = NULL;
-    pc_tree->verticalb[i] = NULL;
-  }
-  for (int i = 0; i < 4; ++i) {
-    pc_tree->horizontal4[i] = NULL;
-    pc_tree->vertical4[i] = NULL;
-    pc_tree->split[i] = NULL;
-  }
 
   return pc_tree;
 }
@@ -178,8 +167,44 @@ PC_TREE *av1_alloc_pc_tree_node(BLOCK_SIZE bsize) {
   } while (0)
 
 void av1_free_pc_tree_recursive(PC_TREE *pc_tree, int num_planes, int keep_best,
-                                int keep_none) {
+                                int keep_none,
+                                PARTITION_SEARCH_TYPE partition_search_type) {
   if (pc_tree == NULL) return;
+
+  // Avoid freeing of extended partitions as they are not supported when
+  // partition_search_type is VAR_BASED_PARTITION.
+  if (partition_search_type == VAR_BASED_PARTITION && !keep_best &&
+      !keep_none) {
+    FREE_PMC_NODE(pc_tree->none);
+
+    for (int i = 0; i < 2; ++i) {
+      FREE_PMC_NODE(pc_tree->horizontal[i]);
+      FREE_PMC_NODE(pc_tree->vertical[i]);
+    }
+
+#if !defined(NDEBUG) && !CONFIG_REALTIME_ONLY
+    for (int i = 0; i < 3; ++i) {
+      assert(pc_tree->horizontala[i] == NULL);
+      assert(pc_tree->horizontalb[i] == NULL);
+      assert(pc_tree->verticala[i] == NULL);
+      assert(pc_tree->verticalb[i] == NULL);
+    }
+    for (int i = 0; i < 4; ++i) {
+      assert(pc_tree->horizontal4[i] == NULL);
+      assert(pc_tree->vertical4[i] == NULL);
+    }
+#endif
+
+    for (int i = 0; i < 4; ++i) {
+      if (pc_tree->split[i] != NULL) {
+        av1_free_pc_tree_recursive(pc_tree->split[i], num_planes, 0, 0,
+                                   partition_search_type);
+        pc_tree->split[i] = NULL;
+      }
+    }
+    aom_free(pc_tree);
+    return;
+  }
 
   const PARTITION_TYPE partition = pc_tree->partitioning;
 
@@ -192,6 +217,7 @@ void av1_free_pc_tree_recursive(PC_TREE *pc_tree, int num_planes, int keep_best,
     if (!keep_best || (partition != PARTITION_VERT))
       FREE_PMC_NODE(pc_tree->vertical[i]);
   }
+#if !CONFIG_REALTIME_ONLY
   for (int i = 0; i < 3; ++i) {
     if (!keep_best || (partition != PARTITION_HORZ_A))
       FREE_PMC_NODE(pc_tree->horizontala[i]);
@@ -208,11 +234,12 @@ void av1_free_pc_tree_recursive(PC_TREE *pc_tree, int num_planes, int keep_best,
     if (!keep_best || (partition != PARTITION_VERT_4))
       FREE_PMC_NODE(pc_tree->vertical4[i]);
   }
-
+#endif
   if (!keep_best || (partition != PARTITION_SPLIT)) {
     for (int i = 0; i < 4; ++i) {
       if (pc_tree->split[i] != NULL) {
-        av1_free_pc_tree_recursive(pc_tree->split[i], num_planes, 0, 0);
+        av1_free_pc_tree_recursive(pc_tree->split[i], num_planes, 0, 0,
+                                   partition_search_type);
         pc_tree->split[i] = NULL;
       }
     }
@@ -221,7 +248,12 @@ void av1_free_pc_tree_recursive(PC_TREE *pc_tree, int num_planes, int keep_best,
   if (!keep_best && !keep_none) aom_free(pc_tree);
 }
 
-void av1_setup_sms_tree(AV1_COMP *const cpi, ThreadData *td) {
+int av1_setup_sms_tree(AV1_COMP *const cpi, ThreadData *td) {
+  // The structure 'sms_tree' is used to store the simple motion search data for
+  // partition pruning in inter frames. Hence, the memory allocations and
+  // initializations related to it are avoided for allintra encoding mode.
+  if (cpi->oxcf.kf_cfg.key_freq_max == 0) return 0;
+
   AV1_COMMON *const cm = &cpi->common;
   const int stat_generation_stage = is_stat_generation_stage(cpi);
   const int is_sb_size_128 = cm->seq_params->sb_size == BLOCK_128X128;
@@ -233,8 +265,9 @@ void av1_setup_sms_tree(AV1_COMP *const cpi, ThreadData *td) {
   int nodes;
 
   aom_free(td->sms_tree);
-  CHECK_MEM_ERROR(cm, td->sms_tree,
-                  aom_calloc(tree_nodes, sizeof(*td->sms_tree)));
+  td->sms_tree =
+      (SIMPLE_MOTION_DATA_TREE *)aom_calloc(tree_nodes, sizeof(*td->sms_tree));
+  if (!td->sms_tree) return -1;
   this_sms = &td->sms_tree[0];
 
   if (!stat_generation_stage) {
@@ -269,11 +302,10 @@ void av1_setup_sms_tree(AV1_COMP *const cpi, ThreadData *td) {
 
   // Set up the root node for the largest superblock size
   td->sms_root = &td->sms_tree[tree_nodes - 1];
+  return 0;
 }
 
 void av1_free_sms_tree(ThreadData *td) {
-  if (td->sms_tree != NULL) {
-    aom_free(td->sms_tree);
-    td->sms_tree = NULL;
-  }
+  aom_free(td->sms_tree);
+  td->sms_tree = NULL;
 }

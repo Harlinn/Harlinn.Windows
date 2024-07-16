@@ -24,39 +24,39 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
-#include "frmts/pcidsk/sdk/pcidsk_file.h"
-#include "frmts/pcidsk/sdk/pcidsk_exception.h"
-#include "frmts/pcidsk/sdk/pcidsk_channel.h"
-#include "frmts/pcidsk/sdk/pcidsk_segment.h"
-#include "frmts/pcidsk/sdk/core/mutexholder.h"
-#include "frmts/pcidsk/sdk/core/pcidsk_utils.h"
-#include "frmts/pcidsk/sdk/core/cpcidskfile.h"
-#include "frmts/pcidsk/sdk/core/cpcidskblockfile.h"
+#include "pcidsk_file.h"
+#include "pcidsk_exception.h"
+#include "pcidsk_channel.h"
+#include "pcidsk_segment.h"
+#include "core/mutexholder.h"
+#include "core/pcidsk_utils.h"
+#include "core/cpcidskfile.h"
+#include "core/cpcidskblockfile.h"
 
 // Channel types
-#include "frmts/pcidsk/sdk/channel/cbandinterleavedchannel.h"
-#include "frmts/pcidsk/sdk/channel/cpixelinterleavedchannel.h"
-#include "frmts/pcidsk/sdk/channel/ctiledchannel.h"
-#include "frmts/pcidsk/sdk/channel/cexternalchannel.h"
+#include "channel/cbandinterleavedchannel.h"
+#include "channel/cpixelinterleavedchannel.h"
+#include "channel/ctiledchannel.h"
+#include "channel/cexternalchannel.h"
 
 // Segment types
-#include "frmts/pcidsk/sdk/segment/cpcidskgeoref.h"
-#include "frmts/pcidsk/sdk/segment/cpcidskpct.h"
-#include "frmts/pcidsk/sdk/segment/cpcidskbpct.h"
-#include "frmts/pcidsk/sdk/segment/cpcidsklut.h"
-#include "frmts/pcidsk/sdk/segment/cpcidskblut.h"
-#include "frmts/pcidsk/sdk/segment/cpcidskvectorsegment.h"
-#include "frmts/pcidsk/sdk/segment/metadatasegment.h"
-#include "frmts/pcidsk/sdk/segment/systiledir.h"
-#include "frmts/pcidsk/sdk/segment/cpcidskrpcmodel.h"
-#include "frmts/pcidsk/sdk/segment/cpcidskgcp2segment.h"
-#include "frmts/pcidsk/sdk/segment/cpcidskbitmap.h"
-#include "frmts/pcidsk/sdk/segment/cpcidsk_tex.h"
-#include "frmts/pcidsk/sdk/segment/cpcidsk_array.h"
-#include "frmts/pcidsk/sdk/segment/cpcidsktoutinmodel.h"
-#include "frmts/pcidsk/sdk/segment/cpcidskpolymodel.h"
-#include "frmts/pcidsk/sdk/segment/cpcidskbinarysegment.h"
-#include "frmts/pcidsk/sdk/core/clinksegment.h"
+#include "segment/cpcidskgeoref.h"
+#include "segment/cpcidskpct.h"
+#include "segment/cpcidskbpct.h"
+#include "segment/cpcidsklut.h"
+#include "segment/cpcidskblut.h"
+#include "segment/cpcidskvectorsegment.h"
+#include "segment/metadatasegment.h"
+#include "segment/systiledir.h"
+#include "segment/cpcidskrpcmodel.h"
+#include "segment/cpcidskgcp2segment.h"
+#include "segment/cpcidskbitmap.h"
+#include "segment/cpcidsk_tex.h"
+#include "segment/cpcidsk_array.h"
+#include "segment/cpcidsktoutinmodel.h"
+#include "segment/cpcidskpolymodel.h"
+#include "segment/cpcidskbinarysegment.h"
+#include "core/clinksegment.h"
 
 #ifdef PCIDSK_IMP_PARAM_SUPPORT
 #define __INT16DEF__
@@ -95,7 +95,7 @@ using namespace PCIDSK;
 /*                             CPCIDSKFile()                             */
 /************************************************************************/
 
-CPCIDSKFile::CPCIDSKFile( std::string filename )
+CPCIDSKFile::CPCIDSKFile( const std::string& filename )
 
 {
     io_handle = nullptr;
@@ -1043,8 +1043,8 @@ void *CPCIDSKFile::ReadAndLockBlock( int block_index,
 
     ReadFromFile( last_block_data,
                   first_line_offset + block_index*block_size
-                  + win_xoff * pixel_group_size,
-                  pixel_group_size * win_xsize );
+                  + static_cast<uint64_t>(win_xoff) * pixel_group_size,
+                  static_cast<uint64_t>(pixel_group_size) * win_xsize );
     last_block_index = block_index;
     last_block_xoff = win_xoff;
     last_block_xsize = win_xsize;
@@ -1109,7 +1109,7 @@ void CPCIDSKFile::FlushBlock()
 
 bool CPCIDSKFile::GetEDBFileDetails( EDBFile** file_p,
                                      Mutex **io_mutex_p,
-                                     std::string filename )
+                                     const std::string& filename )
 
 {
     *file_p = nullptr;
@@ -1207,7 +1207,7 @@ std::string CPCIDSKFile::GetUniqueEDBFilename()
         //trigger call to AccessDB()
         poChannel->GetBlockWidth();
 
-        std::string oFilename = poExt->GetExternalFilename();
+        const std::string oFilename = poExt->GetExternalFilename();
 
         if(oEDBName.size() == 0)
         {
@@ -1276,7 +1276,7 @@ std::map<int,int> CPCIDSKFile::GetEDBChannelMap(std::string oExtFilename)
 
 void CPCIDSKFile::GetIODetails( void ***io_handle_pp,
                                 Mutex ***io_mutex_pp,
-                                std::string filename,
+                                const std::string& filename,
                                 bool writable )
 
 {
@@ -1763,7 +1763,7 @@ void CPCIDSKFile::MoveSegmentToEOF( int segment )
              method.
 */
 
-void CPCIDSKFile::CreateOverviews( int chan_count, int *chan_list,
+void CPCIDSKFile::CreateOverviews( int chan_count, const int *chan_list,
                                    int factor, std::string resampling )
 
 {

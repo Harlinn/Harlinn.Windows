@@ -25,10 +25,10 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
-#include "../pcidsk_exception.h"
-#include "cpcidskbitmap.h"
-#include "../pcidsk_file.h"
-#include "../core/pcidsk_utils.h"
+#include "pcidsk_exception.h"
+#include "segment/cpcidskbitmap.h"
+#include "pcidsk_file.h"
+#include "core/pcidsk_utils.h"
 #include <cassert>
 #include <cstring>
 #include <cstdlib>

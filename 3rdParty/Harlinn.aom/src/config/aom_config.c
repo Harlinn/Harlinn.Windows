@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, Alliance for Open Media. All rights reserved
+ * Copyright (c) 2024, Alliance for Open Media. All rights reserved
  *
  * This source code is subject to the terms of the BSD 2 Clause License and
  * the Alliance for Open Media Patent License 1.0. If the BSD 2 Clause License
@@ -9,5 +9,5 @@
  * PATENTS file, you can obtain it at www.aomedia.org/license/patent.
  */
 #include "aom/aom_codec.h"
-static const char* const cfg = "cmake ../ -G \"Visual Studio 16 2019\" -DAOM_TARGET_CPU=x86_64";
-const char *aom_codec_build_config(void) {return cfg;}
+static const char* const cfg = "cmake ../ -G \"Visual Studio 17 2022\" -DAOM_TARGET_CPU=x86_64";
+HAOM_EXPORT const char *aom_codec_build_config(void) {return cfg;}

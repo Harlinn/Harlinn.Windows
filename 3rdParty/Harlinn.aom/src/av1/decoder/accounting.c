@@ -29,7 +29,7 @@ static int accounting_hash(const char *str) {
 }
 
 /* Dictionary lookup based on an open-addressing hash table. */
-int aom_accounting_dictionary_lookup(Accounting *accounting, const char *str) {
+HAOM_EXPORT int aom_accounting_dictionary_lookup(Accounting *accounting, const char *str) {
   int hash;
   size_t len;
   AccountingDictionary *dictionary;
@@ -47,16 +47,18 @@ int aom_accounting_dictionary_lookup(Accounting *accounting, const char *str) {
   accounting->hash_dictionary[hash] = dictionary->num_strs;
   len = strlen(str);
   dictionary->strs[dictionary->num_strs] = malloc(len + 1);
+  if (!dictionary->strs[dictionary->num_strs]) abort();
   snprintf(dictionary->strs[dictionary->num_strs], len + 1, "%s", str);
   dictionary->num_strs++;
   return dictionary->num_strs - 1;
 }
 
-void aom_accounting_init(Accounting *accounting) {
+HAOM_EXPORT void aom_accounting_init(Accounting *accounting) {
   int i;
   accounting->num_syms_allocated = 1000;
   accounting->syms.syms =
       malloc(sizeof(AccountingSymbol) * accounting->num_syms_allocated);
+  if (!accounting->syms.syms) abort();
   accounting->syms.dictionary.num_strs = 0;
   assert(AOM_ACCOUNTING_HASH_SIZE > 2 * MAX_SYMBOL_TYPES);
   for (i = 0; i < AOM_ACCOUNTING_HASH_SIZE; i++)
@@ -64,7 +66,7 @@ void aom_accounting_init(Accounting *accounting) {
   aom_accounting_reset(accounting);
 }
 
-void aom_accounting_reset(Accounting *accounting) {
+HAOM_EXPORT void aom_accounting_reset(Accounting *accounting) {
   accounting->syms.num_syms = 0;
   accounting->syms.num_binary_syms = 0;
   accounting->syms.num_multi_syms = 0;
@@ -73,7 +75,7 @@ void aom_accounting_reset(Accounting *accounting) {
   accounting->last_tell_frac = 0;
 }
 
-void aom_accounting_clear(Accounting *accounting) {
+HAOM_EXPORT void aom_accounting_clear(Accounting *accounting) {
   int i;
   AccountingDictionary *dictionary;
   free(accounting->syms.syms);
@@ -83,12 +85,12 @@ void aom_accounting_clear(Accounting *accounting) {
   }
 }
 
-void aom_accounting_set_context(Accounting *accounting, int16_t x, int16_t y) {
+HAOM_EXPORT void aom_accounting_set_context(Accounting *accounting, int16_t x, int16_t y) {
   accounting->context.x = x;
   accounting->context.y = y;
 }
 
-void aom_accounting_record(Accounting *accounting, const char *str,
+HAOM_EXPORT void aom_accounting_record(Accounting *accounting, const char *str,
                            uint32_t bits) {
   AccountingSymbol sym;
   // Reuse previous symbol if it has the same context and symbol id.
@@ -116,12 +118,12 @@ void aom_accounting_record(Accounting *accounting, const char *str,
     accounting->syms.syms =
         realloc(accounting->syms.syms,
                 sizeof(AccountingSymbol) * accounting->num_syms_allocated);
-    assert(accounting->syms.syms != NULL);
+    if (!accounting->syms.syms) abort();
   }
   accounting->syms.syms[accounting->syms.num_syms++] = sym;
 }
 
-void aom_accounting_dump(Accounting *accounting) {
+HAOM_EXPORT void aom_accounting_dump(Accounting *accounting) {
   int i;
   AccountingSymbol *sym;
   printf("\n----- Number of recorded syntax elements = %d -----\n",

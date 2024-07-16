@@ -28,26 +28,248 @@
     <Filter Include="Readme">
       <UniqueIdentifier>{6f09ee42-4368-47b9-b38a-77393b4a1f95}</UniqueIdentifier>
     </Filter>
+    <Filter Include="include\hwy\contrib">
+      <UniqueIdentifier>{245c0bd9-b00e-48a9-9cde-b19aeaf43a8b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\contrib">
+      <UniqueIdentifier>{d333b9b0-b7c6-4007-bf84-5ebb1b35281c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\hwy\contrib\algo">
+      <UniqueIdentifier>{feedb46d-c286-4cfa-b11c-fb8cbbbc4ac5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\hwy\contrib\bit_pack">
+      <UniqueIdentifier>{3707e64d-9b92-405b-b2c1-05b4ab63a3a6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\hwy\contrib\dot">
+      <UniqueIdentifier>{3aa4ea45-900a-43ef-80a3-eb5c5710112a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\hwy\contrib\image">
+      <UniqueIdentifier>{41cc87f9-d40a-49a8-8b13-2d198c024697}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\hwy\contrib\math">
+      <UniqueIdentifier>{174164d5-a79e-4394-9830-e995c7583cd2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\hwy\contrib\matvec">
+      <UniqueIdentifier>{65a75c11-1911-4872-9cb2-88d5b9e6f5c0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\hwy\contrib\random">
+      <UniqueIdentifier>{194ce478-c2d5-4eac-8595-5e1a817a68c8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\hwy\contrib\sort">
+      <UniqueIdentifier>{fa45ec62-7287-4259-bf87-d793e6a4fd96}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\hwy\contrib\thread_pool">
+      <UniqueIdentifier>{6651b09e-369d-498b-982f-ce812cb72f98}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\hwy\contrib\unroller">
+      <UniqueIdentifier>{4d323677-1742-4b78-bf5b-924551efc1f3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\contrib\image">
+      <UniqueIdentifier>{0df4a093-223b-4809-9c6d-69485e7f8472}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\contrib\sort">
+      <UniqueIdentifier>{403ac177-ab00-4657-aeed-c034a068aa0c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\contrib\thread_pool">
+      <UniqueIdentifier>{1c8cce5a-febf-45b4-81b8-8a4732f6dc9b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\hwy\tests">
+      <UniqueIdentifier>{1ad7250e-e0d3-4511-873b-d72be583905f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\contrib\image\image.cc">
+      <Filter>src\contrib\image</Filter>
+    </ClCompile>
+    <ClCompile Include="src\contrib\thread_pool\topology.cc">
+      <Filter>src\contrib\thread_pool</Filter>
+    </ClCompile>
+    <ClCompile Include="src\contrib\sort\vqsort.cc">
+      <Filter>src\contrib\sort</Filter>
+    </ClCompile>
+    <ClCompile Include="src\contrib\sort\vqsort_128a.cc">
+      <Filter>src\contrib\sort</Filter>
+    </ClCompile>
+    <ClCompile Include="src\contrib\sort\vqsort_128d.cc">
+      <Filter>src\contrib\sort</Filter>
+    </ClCompile>
+    <ClCompile Include="src\contrib\sort\vqsort_f16a.cc">
+      <Filter>src\contrib\sort</Filter>
+    </ClCompile>
+    <ClCompile Include="src\contrib\sort\vqsort_f16d.cc">
+      <Filter>src\contrib\sort</Filter>
+    </ClCompile>
+    <ClCompile Include="src\contrib\sort\vqsort_f32a.cc">
+      <Filter>src\contrib\sort</Filter>
+    </ClCompile>
+    <ClCompile Include="src\contrib\sort\vqsort_f32d.cc">
+      <Filter>src\contrib\sort</Filter>
+    </ClCompile>
+    <ClCompile Include="src\contrib\sort\vqsort_f64a.cc">
+      <Filter>src\contrib\sort</Filter>
+    </ClCompile>
+    <ClCompile Include="src\contrib\sort\vqsort_f64d.cc">
+      <Filter>src\contrib\sort</Filter>
+    </ClCompile>
+    <ClCompile Include="src\contrib\sort\vqsort_i16a.cc">
+      <Filter>src\contrib\sort</Filter>
+    </ClCompile>
+    <ClCompile Include="src\contrib\sort\vqsort_i16d.cc">
+      <Filter>src\contrib\sort</Filter>
+    </ClCompile>
+    <ClCompile Include="src\contrib\sort\vqsort_i32a.cc">
+      <Filter>src\contrib\sort</Filter>
+    </ClCompile>
+    <ClCompile Include="src\contrib\sort\vqsort_i32d.cc">
+      <Filter>src\contrib\sort</Filter>
+    </ClCompile>
+    <ClCompile Include="src\contrib\sort\vqsort_i64a.cc">
+      <Filter>src\contrib\sort</Filter>
+    </ClCompile>
+    <ClCompile Include="src\contrib\sort\vqsort_i64d.cc">
+      <Filter>src\contrib\sort</Filter>
+    </ClCompile>
+    <ClCompile Include="src\contrib\sort\vqsort_kv64a.cc">
+      <Filter>src\contrib\sort</Filter>
+    </ClCompile>
+    <ClCompile Include="src\contrib\sort\vqsort_kv64d.cc">
+      <Filter>src\contrib\sort</Filter>
+    </ClCompile>
+    <ClCompile Include="src\contrib\sort\vqsort_kv128a.cc">
+      <Filter>src\contrib\sort</Filter>
+    </ClCompile>
+    <ClCompile Include="src\contrib\sort\vqsort_kv128d.cc">
+      <Filter>src\contrib\sort</Filter>
+    </ClCompile>
+    <ClCompile Include="src\contrib\sort\vqsort_u16a.cc">
+      <Filter>src\contrib\sort</Filter>
+    </ClCompile>
+    <ClCompile Include="src\contrib\sort\vqsort_u16d.cc">
+      <Filter>src\contrib\sort</Filter>
+    </ClCompile>
+    <ClCompile Include="src\contrib\sort\vqsort_u32a.cc">
+      <Filter>src\contrib\sort</Filter>
+    </ClCompile>
+    <ClCompile Include="src\contrib\sort\vqsort_u32d.cc">
+      <Filter>src\contrib\sort</Filter>
+    </ClCompile>
+    <ClCompile Include="src\contrib\sort\vqsort_u64a.cc">
+      <Filter>src\contrib\sort</Filter>
+    </ClCompile>
+    <ClCompile Include="src\contrib\sort\vqsort_u64d.cc">
+      <Filter>src\contrib\sort</Filter>
+    </ClCompile>
+    <ClCompile Include="src\abort.cc">
+      <Filter>src</Filter>
+    </ClCompile>
     <ClCompile Include="src\aligned_allocator.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\nanobenchmark.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\per_target.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\print.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\stats.cc">
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="src\targets.cc">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\timer.cc">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\hwy\contrib\algo\copy-inl.h">
+      <Filter>include\hwy\contrib\algo</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hwy\contrib\algo\find-inl.h">
+      <Filter>include\hwy\contrib\algo</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hwy\contrib\algo\transform-inl.h">
+      <Filter>include\hwy\contrib\algo</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hwy\contrib\bit_pack\bit_pack-inl.h">
+      <Filter>include\hwy\contrib\bit_pack</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hwy\contrib\dot\dot-inl.h">
+      <Filter>include\hwy\contrib\dot</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hwy\contrib\image\image.h">
+      <Filter>include\hwy\contrib\image</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hwy\contrib\math\math-inl.h">
+      <Filter>include\hwy\contrib\math</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hwy\contrib\matvec\matvec-inl.h">
+      <Filter>include\hwy\contrib\matvec</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hwy\contrib\unroller\unroller-inl.h">
+      <Filter>include\hwy\contrib\unroller</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hwy\contrib\thread_pool\futex.h">
+      <Filter>include\hwy\contrib\thread_pool</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hwy\contrib\thread_pool\thread_pool.h">
+      <Filter>include\hwy\contrib\thread_pool</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hwy\contrib\thread_pool\topology.h">
+      <Filter>include\hwy\contrib\thread_pool</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hwy\contrib\sort\algo-inl.h">
+      <Filter>include\hwy\contrib\sort</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hwy\contrib\sort\order.h">
+      <Filter>include\hwy\contrib\sort</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hwy\contrib\sort\result-inl.h">
+      <Filter>include\hwy\contrib\sort</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hwy\contrib\sort\shared-inl.h">
+      <Filter>include\hwy\contrib\sort</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hwy\contrib\sort\sorting_networks-inl.h">
+      <Filter>include\hwy\contrib\sort</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hwy\contrib\sort\traits128-inl.h">
+      <Filter>include\hwy\contrib\sort</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hwy\contrib\sort\traits-inl.h">
+      <Filter>include\hwy\contrib\sort</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hwy\contrib\sort\vqsort.h">
+      <Filter>include\hwy\contrib\sort</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hwy\contrib\sort\vqsort-inl.h">
+      <Filter>include\hwy\contrib\sort</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hwy\contrib\random\random-inl.h">
+      <Filter>include\hwy\contrib\random</Filter>
+    </ClInclude>
     <ClInclude Include="include\hwy\ops\arm_neon-inl.h">
       <Filter>include\hwy\ops</Filter>
     </ClInclude>
     <ClInclude Include="include\hwy\ops\arm_sve-inl.h">
       <Filter>include\hwy\ops</Filter>
     </ClInclude>
+    <ClInclude Include="include\hwy\ops\emu128-inl.h">
+      <Filter>include\hwy\ops</Filter>
+    </ClInclude>
     <ClInclude Include="include\hwy\ops\generic_ops-inl.h">
+      <Filter>include\hwy\ops</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hwy\ops\inside-inl.h">
+      <Filter>include\hwy\ops</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hwy\ops\ppc_vsx-inl.h">
       <Filter>include\hwy\ops</Filter>
     </ClInclude>
     <ClInclude Include="include\hwy\ops\rvv-inl.h">
@@ -65,6 +287,9 @@
     <ClInclude Include="include\hwy\ops\wasm_128-inl.h">
       <Filter>include\hwy\ops</Filter>
     </ClInclude>
+    <ClInclude Include="include\hwy\ops\wasm_256-inl.h">
+      <Filter>include\hwy\ops</Filter>
+    </ClInclude>
     <ClInclude Include="include\hwy\ops\x86_128-inl.h">
       <Filter>include\hwy\ops</Filter>
     </ClInclude>
@@ -74,10 +299,16 @@
     <ClInclude Include="include\hwy\ops\x86_512-inl.h">
       <Filter>include\hwy\ops</Filter>
     </ClInclude>
+    <ClInclude Include="include\hwy\abort.h">
+      <Filter>include\hwy</Filter>
+    </ClInclude>
     <ClInclude Include="include\hwy\aligned_allocator.h">
       <Filter>include\hwy</Filter>
     </ClInclude>
     <ClInclude Include="include\hwy\base.h">
+      <Filter>include\hwy</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hwy\bit_set.h">
       <Filter>include\hwy</Filter>
     </ClInclude>
     <ClInclude Include="include\hwy\cache_control.h">
@@ -95,11 +326,58 @@
     <ClInclude Include="include\hwy\highway.h">
       <Filter>include\hwy</Filter>
     </ClInclude>
+    <ClInclude Include="include\hwy\highway_export.h">
+      <Filter>include\hwy</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hwy\nanobenchmark.h">
+      <Filter>include\hwy</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hwy\per_target.h">
+      <Filter>include\hwy</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hwy\print.h">
+      <Filter>include\hwy</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hwy\print-inl.h">
+      <Filter>include\hwy</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hwy\profiler.h">
+      <Filter>include\hwy</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hwy\robust_statistics.h">
+      <Filter>include\hwy</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hwy\stats.h">
+      <Filter>include\hwy</Filter>
+    </ClInclude>
     <ClInclude Include="include\hwy\targets.h">
       <Filter>include\hwy</Filter>
     </ClInclude>
-    <ClInclude Include="include\hwy\highwaydef.h">
+    <ClInclude Include="include\hwy\timer.h">
       <Filter>include\hwy</Filter>
     </ClInclude>
+    <ClInclude Include="include\hwy\timer-inl.h">
+      <Filter>include\hwy</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hwy\tests\hwy_gtest.h">
+      <Filter>include\hwy\tests</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hwy\tests\test_util.h">
+      <Filter>include\hwy\tests</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hwy\tests\test_util-inl.h">
+      <Filter>include\hwy\tests</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="include\hwy\contrib\unroller\README.md">
+      <Filter>include\hwy\contrib\unroller</Filter>
+    </None>
+    <None Include="include\hwy\contrib\sort\README.md">
+      <Filter>include\hwy\contrib\sort</Filter>
+    </None>
+    <None Include="src\contrib\sort\README.md">
+      <Filter>src\contrib\sort</Filter>
+    </None>
   </ItemGroup>
 </Project>

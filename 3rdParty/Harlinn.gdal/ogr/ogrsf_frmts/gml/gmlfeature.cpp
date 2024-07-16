@@ -27,30 +27,24 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
-#include <port/cpl_port.h>
-#include <ogr/ogrsf_frmts/gml/gmlreader.h>
+#include "cpl_port.h"
+#include "gmlreader.h"
 
 #include <cstdio>
 
-#include <port/cpl_conv.h>
-#include <port/cpl_error.h>
-#include <port/cpl_minixml.h>
-#include <port/cpl_string.h>
-
-CPL_CVSID("$Id$")
+#include "cpl_conv.h"
+#include "cpl_error.h"
+#include "cpl_minixml.h"
+#include "cpl_string.h"
 
 /************************************************************************/
 /*                             GMLFeature()                             */
 /************************************************************************/
 
-GMLFeature::GMLFeature( GMLFeatureClass *poClass ) :
-    m_poClass(poClass),
-    m_pszFID(nullptr),
-    m_nPropertyCount(0),
-    m_pasProperties(nullptr),
-    m_nGeometryCount(0),
-    m_papsGeometry(m_apsGeometry),  // TODO(schwehr): Allowed in init list?
-    m_papszOBProperties(nullptr)
+GMLFeature::GMLFeature(GMLFeatureClass *poClass)
+    : m_poClass(poClass), m_pszFID(nullptr), m_nPropertyCount(0),
+      m_pasProperties(nullptr), m_nGeometryCount(0),
+      m_papsGeometry(m_apsGeometry)  // TODO(schwehr): Allowed in init list?
 {
     m_apsGeometry[0] = nullptr;
     m_apsGeometry[1] = nullptr;
@@ -65,7 +59,7 @@ GMLFeature::~GMLFeature()
 {
     CPLFree(m_pszFID);
 
-    for( int i = 0; i < m_nPropertyCount; i++ )
+    for (int i = 0; i < m_nPropertyCount; i++)
     {
         const int nSubProperties = m_pasProperties[i].nSubProperties;
         if (nSubProperties == 1)
@@ -74,7 +68,7 @@ GMLFeature::~GMLFeature()
         }
         else if (nSubProperties > 1)
         {
-            for( int j = 0; j < nSubProperties; j++)
+            for (int j = 0; j < nSubProperties; j++)
                 CPLFree(m_pasProperties[i].papszSubProperties[j]);
             CPLFree(m_pasProperties[i].papszSubProperties);
         }
@@ -86,24 +80,26 @@ GMLFeature::~GMLFeature()
     }
     else if (m_nGeometryCount > 1)
     {
-        for( int i = 0; i < m_nGeometryCount; i++ )
+        for (int i = 0; i < m_nGeometryCount; i++)
             CPLDestroyXMLNode(m_papsGeometry[i]);
         CPLFree(m_papsGeometry);
     }
 
+    if (m_psBoundedByGeometry)
+        CPLDestroyXMLNode(m_psBoundedByGeometry);
+
     CPLFree(m_pasProperties);
-    CSLDestroy(m_papszOBProperties);
 }
 
 /************************************************************************/
 /*                               SetFID()                               */
 /************************************************************************/
 
-void GMLFeature::SetFID( const char *pszFID )
+void GMLFeature::SetFID(const char *pszFID)
 
 {
     CPLFree(m_pszFID);
-    if( pszFID != nullptr )
+    if (pszFID != nullptr)
         m_pszFID = CPLStrdup(pszFID);
     else
         m_pszFID = nullptr;
@@ -113,16 +109,16 @@ void GMLFeature::SetFID( const char *pszFID )
 /*                        SetPropertyDirectly()                         */
 /************************************************************************/
 
-void GMLFeature::SetPropertyDirectly( int iIndex, char *pszValue )
+void GMLFeature::SetPropertyDirectly(int iIndex, char *pszValue)
 
 {
     CPLAssert(pszValue);
-    if( iIndex >= m_nPropertyCount )
+    if (iIndex >= m_nPropertyCount)
     {
         const int nClassPropertyCount = m_poClass->GetPropertyCount();
         m_pasProperties = static_cast<GMLProperty *>(CPLRealloc(
             m_pasProperties, sizeof(GMLProperty) * nClassPropertyCount));
-        for( int i = 0; i < m_nPropertyCount; i++ )
+        for (int i = 0; i < m_nPropertyCount; i++)
         {
             // Make sure papszSubProperties point to the right address in case
             // m_pasProperties has been relocated.
@@ -130,7 +126,7 @@ void GMLFeature::SetPropertyDirectly( int iIndex, char *pszValue )
                 m_pasProperties[i].papszSubProperties =
                     m_pasProperties[i].aszSubProperties;
         }
-        for( int i = m_nPropertyCount; i < nClassPropertyCount; i++ )
+        for (int i = m_nPropertyCount; i < nClassPropertyCount; i++)
         {
             m_pasProperties[i].nSubProperties = 0;
             m_pasProperties[i].papszSubProperties =
@@ -171,33 +167,33 @@ void GMLFeature::SetPropertyDirectly( int iIndex, char *pszValue )
 /*                                Dump()                                */
 /************************************************************************/
 
-void GMLFeature::Dump( CPL_UNUSED FILE * fp )
+void GMLFeature::Dump(CPL_UNUSED FILE *fp)
 {
-    printf("GMLFeature(%s):\n", m_poClass->GetName());  /*ok*/
+    printf("GMLFeature(%s):\n", m_poClass->GetName()); /*ok*/
 
-    if( m_pszFID != nullptr )
-        printf("  FID = %s\n", m_pszFID);  /*ok*/
+    if (m_pszFID != nullptr)
+        printf("  FID = %s\n", m_pszFID); /*ok*/
 
-    for( int i = 0; i < m_nPropertyCount; i++ )
+    for (int i = 0; i < m_nPropertyCount; i++)
     {
         const GMLProperty *psGMLProperty = GetProperty(i);
         printf("  %s = ", m_poClass->GetProperty(i)->GetName()); /*ok*/
-        if( psGMLProperty != nullptr )
+        if (psGMLProperty != nullptr)
         {
-            for ( int j = 0; j < psGMLProperty->nSubProperties; j ++)
+            for (int j = 0; j < psGMLProperty->nSubProperties; j++)
             {
                 if (j > 0)
-                    printf(", ");  /*ok*/
-                printf("%s", psGMLProperty->papszSubProperties[j]);  /*ok*/
+                    printf(", ");                                   /*ok*/
+                printf("%s", psGMLProperty->papszSubProperties[j]); /*ok*/
             }
-            printf("\n");/*ok*/
+            printf("\n"); /*ok*/
         }
     }
 
-    for( int i = 0; i < m_nGeometryCount; i++ )
+    for (int i = 0; i < m_nGeometryCount; i++)
     {
         char *pszXML = CPLSerializeXMLTree(m_papsGeometry[i]);
-        printf("  %s\n", pszXML);  /*ok*/
+        printf("  %s\n", pszXML); /*ok*/
         CPLFree(pszXML);
     }
 }
@@ -206,7 +202,7 @@ void GMLFeature::Dump( CPL_UNUSED FILE * fp )
 /*                        SetGeometryDirectly()                         */
 /************************************************************************/
 
-void GMLFeature::SetGeometryDirectly( CPLXMLNode* psGeom )
+void GMLFeature::SetGeometryDirectly(CPLXMLNode *psGeom)
 
 {
     if (m_apsGeometry[0] != nullptr)
@@ -219,15 +215,15 @@ void GMLFeature::SetGeometryDirectly( CPLXMLNode* psGeom )
 /*                        SetGeometryDirectly()                         */
 /************************************************************************/
 
-void GMLFeature::SetGeometryDirectly( int nIdx, CPLXMLNode* psGeom )
+void GMLFeature::SetGeometryDirectly(int nIdx, CPLXMLNode *psGeom)
 
 {
-    if( nIdx == 0 && m_nGeometryCount <= 1 )
+    if (nIdx == 0 && m_nGeometryCount <= 1)
     {
         SetGeometryDirectly(psGeom);
         return;
     }
-    else if( nIdx > 0 && m_nGeometryCount <= 1 )
+    else if (nIdx > 0 && m_nGeometryCount <= 1)
     {
         m_papsGeometry =
             static_cast<CPLXMLNode **>(CPLMalloc(2 * sizeof(CPLXMLNode *)));
@@ -236,11 +232,11 @@ void GMLFeature::SetGeometryDirectly( int nIdx, CPLXMLNode* psGeom )
         m_apsGeometry[0] = nullptr;
     }
 
-    if( nIdx >= m_nGeometryCount )
+    if (nIdx >= m_nGeometryCount)
     {
         m_papsGeometry = static_cast<CPLXMLNode **>(
             CPLRealloc(m_papsGeometry, (nIdx + 2) * sizeof(CPLXMLNode *)));
-        for( int i = m_nGeometryCount; i <= nIdx + 1; i++ )
+        for (int i = m_nGeometryCount; i <= nIdx + 1; i++)
             m_papsGeometry[i] = nullptr;
         m_nGeometryCount = nIdx + 1;
     }
@@ -253,9 +249,9 @@ void GMLFeature::SetGeometryDirectly( int nIdx, CPLXMLNode* psGeom )
 /*                          GetGeometryRef()                            */
 /************************************************************************/
 
-const CPLXMLNode *GMLFeature::GetGeometryRef( int nIdx ) const
+const CPLXMLNode *GMLFeature::GetGeometryRef(int nIdx) const
 {
-    if( nIdx < 0 || nIdx >= m_nGeometryCount )
+    if (nIdx < 0 || nIdx >= m_nGeometryCount)
         return nullptr;
     return m_papsGeometry[nIdx];
 }
@@ -264,7 +260,7 @@ const CPLXMLNode *GMLFeature::GetGeometryRef( int nIdx ) const
 /*                             AddGeometry()                            */
 /************************************************************************/
 
-void GMLFeature::AddGeometry( CPLXMLNode *psGeom )
+void GMLFeature::AddGeometry(CPLXMLNode *psGeom)
 
 {
     if (m_nGeometryCount == 0)
@@ -291,28 +287,13 @@ void GMLFeature::AddGeometry( CPLXMLNode *psGeom )
 }
 
 /************************************************************************/
-/*                           AddOBProperty()                            */
+/*                         SetBoundedByGeometry()                       */
 /************************************************************************/
 
-void GMLFeature::AddOBProperty( const char *pszName, const char *pszValue )
+void GMLFeature::SetBoundedByGeometry(CPLXMLNode *psGeom)
 
 {
-    m_papszOBProperties =
-        CSLAddNameValue(m_papszOBProperties, pszName, pszValue);
+    if (m_psBoundedByGeometry)
+        CPLDestroyXMLNode(m_psBoundedByGeometry);
+    m_psBoundedByGeometry = psGeom;
 }
-
-/************************************************************************/
-/*                           GetOBProperty()                            */
-/************************************************************************/
-
-const char *GMLFeature::GetOBProperty( const char *pszName )
-
-{
-    return CSLFetchNameValue(m_papszOBProperties, pszName);
-}
-
-/************************************************************************/
-/*                          GetOBProperties()                           */
-/************************************************************************/
-
-char **GMLFeature::GetOBProperties() { return m_papszOBProperties; }

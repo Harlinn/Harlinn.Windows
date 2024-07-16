@@ -16,7 +16,7 @@ copyright notice appear in all copies and that both that copyright notice and
 this permission notice appear in supporting documentation.
 */
 
-#include <port/cpl_port.h>
+#include "cpl_port.h"
 #include <errno.h>
 #include "mfhdf.h"
 #include "HdfEosDef.h"

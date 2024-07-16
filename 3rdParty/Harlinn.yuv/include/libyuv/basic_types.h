@@ -43,11 +43,11 @@ typedef int8_t int8;
 #endif  // INT_TYPES_DEFINED
 
 #ifdef BUILDING_HARLINN_YUV
-#define LIBYUV_BUILDING_SHARED_LIBRARY 1
+#define LIBYUV_BUILDING_SHARED_LIBRARY
 #else
-#define LIBYUV_USING_SHARED_LIBRARY 1
 #pragma comment(lib,"Harlinn.yuv.lib")
 #endif
+
 
 #if !defined(LIBYUV_API)
 #if defined(_WIN32) || defined(__CYGWIN__)

@@ -49,6 +49,9 @@
     <Filter Include="Readme">
       <UniqueIdentifier>{77218c92-5108-4395-9600-b3e246548bb6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="heic">
+      <UniqueIdentifier>{279cd42a-961c-4d2f-b691-96c0c59bb515}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -117,6 +120,9 @@
     <ClCompile Include="jpc\jpc_bs.c">
       <Filter>jpc</Filter>
     </ClCompile>
+    <ClCompile Include="jpc\jpc_cod.c">
+      <Filter>jpc</Filter>
+    </ClCompile>
     <ClCompile Include="jpc\jpc_cs.c">
       <Filter>jpc</Filter>
     </ClCompile>
@@ -183,14 +189,23 @@
     <ClCompile Include="mif\mif_cod.c">
       <Filter>mif</Filter>
     </ClCompile>
-    <ClCompile Include="ras\ras_cod.c">
-      <Filter>ras</Filter>
+    <ClCompile Include="heic\heic_dec.c">
+      <Filter>heic</Filter>
     </ClCompile>
-    <ClCompile Include="ras\ras_dec.c">
-      <Filter>ras</Filter>
+    <ClCompile Include="heic\heic_enc.c">
+      <Filter>heic</Filter>
     </ClCompile>
-    <ClCompile Include="ras\ras_enc.c">
-      <Filter>ras</Filter>
+    <ClCompile Include="heic\heic_val.c">
+      <Filter>heic</Filter>
+    </ClCompile>
+    <ClCompile Include="pgx\pgx_cod.c">
+      <Filter>pgx</Filter>
+    </ClCompile>
+    <ClCompile Include="pgx\pgx_dec.c">
+      <Filter>pgx</Filter>
+    </ClCompile>
+    <ClCompile Include="pgx\pgx_enc.c">
+      <Filter>pgx</Filter>
     </ClCompile>
     <ClCompile Include="pnm\pnm_cod.c">
       <Filter>pnm</Filter>
@@ -201,14 +216,14 @@
     <ClCompile Include="pnm\pnm_enc.c">
       <Filter>pnm</Filter>
     </ClCompile>
-    <ClCompile Include="pgx\pgx_cod.c">
-      <Filter>pgx</Filter>
+    <ClCompile Include="ras\ras_cod.c">
+      <Filter>ras</Filter>
     </ClCompile>
-    <ClCompile Include="pgx\pgx_dec.c">
-      <Filter>pgx</Filter>
+    <ClCompile Include="ras\ras_dec.c">
+      <Filter>ras</Filter>
     </ClCompile>
-    <ClCompile Include="pgx\pgx_enc.c">
-      <Filter>pgx</Filter>
+    <ClCompile Include="ras\ras_enc.c">
+      <Filter>ras</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -242,6 +257,9 @@
     <ClInclude Include="include\jasper\jas_init.h">
       <Filter>include\jasper</Filter>
     </ClInclude>
+    <ClInclude Include="include\jasper\jas_log.h">
+      <Filter>include\jasper</Filter>
+    </ClInclude>
     <ClInclude Include="include\jasper\jas_malloc.h">
       <Filter>include\jasper</Filter>
     </ClInclude>
@@ -255,6 +273,9 @@
       <Filter>include\jasper</Filter>
     </ClInclude>
     <ClInclude Include="include\jasper\jas_string.h">
+      <Filter>include\jasper</Filter>
+    </ClInclude>
+    <ClInclude Include="include\jasper\jas_thread.h">
       <Filter>include\jasper</Filter>
     </ClInclude>
     <ClInclude Include="include\jasper\jas_tmr.h">
@@ -362,11 +383,11 @@
     <ClInclude Include="mif\mif_cod.h">
       <Filter>mif</Filter>
     </ClInclude>
-    <ClInclude Include="ras\ras_cod.h">
-      <Filter>ras</Filter>
+    <ClInclude Include="pgx\pgx_cod.h">
+      <Filter>pgx</Filter>
     </ClInclude>
-    <ClInclude Include="ras\ras_enc.h">
-      <Filter>ras</Filter>
+    <ClInclude Include="pgx\pgx_enc.h">
+      <Filter>pgx</Filter>
     </ClInclude>
     <ClInclude Include="pnm\pnm_cod.h">
       <Filter>pnm</Filter>
@@ -374,11 +395,19 @@
     <ClInclude Include="pnm\pnm_enc.h">
       <Filter>pnm</Filter>
     </ClInclude>
-    <ClInclude Include="pgx\pgx_cod.h">
-      <Filter>pgx</Filter>
+    <ClInclude Include="ras\ras_cod.h">
+      <Filter>ras</Filter>
     </ClInclude>
-    <ClInclude Include="pgx\pgx_enc.h">
-      <Filter>pgx</Filter>
+    <ClInclude Include="ras\ras_enc.h">
+      <Filter>ras</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="jpg\README.txt">
+      <Filter>jpg</Filter>
+    </Text>
+    <Text Include="mif\README.txt">
+      <Filter>mif</Filter>
+    </Text>
   </ItemGroup>
 </Project>

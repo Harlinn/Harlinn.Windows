@@ -14,7 +14,7 @@
 #include "av1/common/frame_buffers.h"
 #include "aom_mem/aom_mem.h"
 
-int av1_alloc_internal_frame_buffers(InternalFrameBufferList *list) {
+HAOM_EXPORT int av1_alloc_internal_frame_buffers(InternalFrameBufferList *list) {
   assert(list != NULL);
   av1_free_internal_frame_buffers(list);
 
@@ -29,7 +29,7 @@ int av1_alloc_internal_frame_buffers(InternalFrameBufferList *list) {
   return 0;
 }
 
-void av1_free_internal_frame_buffers(InternalFrameBufferList *list) {
+HAOM_EXPORT void av1_free_internal_frame_buffers(InternalFrameBufferList *list) {
   int i;
 
   assert(list != NULL);
@@ -43,7 +43,7 @@ void av1_free_internal_frame_buffers(InternalFrameBufferList *list) {
   list->num_internal_frame_buffers = 0;
 }
 
-void av1_zero_unused_internal_frame_buffers(InternalFrameBufferList *list) {
+HAOM_EXPORT void av1_zero_unused_internal_frame_buffers(InternalFrameBufferList *list) {
   int i;
 
   assert(list != NULL);
@@ -54,7 +54,7 @@ void av1_zero_unused_internal_frame_buffers(InternalFrameBufferList *list) {
   }
 }
 
-int av1_get_frame_buffer(void *cb_priv, size_t min_size,
+HAOM_EXPORT int av1_get_frame_buffer(void *cb_priv, size_t min_size,
                          aom_codec_frame_buffer_t *fb) {
   int i;
   InternalFrameBufferList *const int_fb_list =
@@ -90,7 +90,7 @@ int av1_get_frame_buffer(void *cb_priv, size_t min_size,
   return 0;
 }
 
-int av1_release_frame_buffer(void *cb_priv, aom_codec_frame_buffer_t *fb) {
+HAOM_EXPORT int av1_release_frame_buffer(void *cb_priv, aom_codec_frame_buffer_t *fb) {
   InternalFrameBuffer *const int_fb = (InternalFrameBuffer *)fb->priv;
   (void)cb_priv;
   if (int_fb) int_fb->in_use = 0;

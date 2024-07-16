@@ -31,11 +31,11 @@ typedef struct {
   size_t buf_alloc_sz;
 } stats_io_t;
 
-int stats_open_file(stats_io_t *stats, const char *fpf, int pass);
-int stats_open_mem(stats_io_t *stats, int pass);
-void stats_close(stats_io_t *stats, int last_pass);
-void stats_write(stats_io_t *stats, const void *pkt, size_t len);
-aom_fixed_buf_t stats_get(stats_io_t *stats);
+HAOM_EXPORT int stats_open_file(stats_io_t *stats, const char *fpf, int pass);
+HAOM_EXPORT int stats_open_mem(stats_io_t *stats, int pass);
+HAOM_EXPORT void stats_close(stats_io_t *stats, int last_pass);
+HAOM_EXPORT void stats_write(stats_io_t *stats, const void *pkt, size_t len);
+HAOM_EXPORT aom_fixed_buf_t stats_get(stats_io_t *stats);
 
 #ifdef __cplusplus
 }  // extern "C"

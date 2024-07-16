@@ -20,9 +20,9 @@
 extern "C" {
 #endif
 
-void raw_write_image_file(const aom_image_t *img, const int *planes,
+HAOM_EXPORT void raw_write_image_file(const aom_image_t *img, const int *planes,
                           const int num_planes, FILE *file);
-void raw_update_image_md5(const aom_image_t *img, const int *planes,
+HAOM_EXPORT void raw_update_image_md5(const aom_image_t *img, const int *planes,
                           const int num_planes, MD5Context *md5);
 
 #ifdef __cplusplus

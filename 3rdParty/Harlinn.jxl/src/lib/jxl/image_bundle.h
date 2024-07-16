@@ -8,28 +8,25 @@
 
 // The main image or frame consists of a bundle of associated images.
 
+#include <jxl/cms_interface.h>
 #include <stddef.h>
 #include <stdint.h>
 
+#include <memory>
+#include <string>
+#include <utility>
 #include <vector>
 
-#include "lib/jxl/aux_out_fwd.h"
-#include "lib/jxl/base/compiler_specific.h"
+#include "lib/jxl/base/common.h"
 #include "lib/jxl/base/data_parallel.h"
 #include "lib/jxl/base/status.h"
 #include "lib/jxl/color_encoding_internal.h"
-#include "lib/jxl/common.h"
-#include "lib/jxl/dec_bit_reader.h"
-#include "lib/jxl/dec_xyb.h"
-#include "lib/jxl/enc_bit_writer.h"
-#include "lib/jxl/field_encodings.h"
+#include "lib/jxl/common.h"  // JPEGXL_ENABLE_TRANSCODE_JPEG
 #include "lib/jxl/frame_header.h"
-#include "lib/jxl/headers.h"
 #include "lib/jxl/image.h"
 #include "lib/jxl/image_metadata.h"
+#include "lib/jxl/image_ops.h"
 #include "lib/jxl/jpeg/jpeg_data.h"
-#include "lib/jxl/opsin_params.h"
-#include "lib/jxl/quantizer.h"
 
 namespace jxl {
 
@@ -45,13 +42,18 @@ class ImageBundle {
   ImageBundle(ImageBundle&&) = default;
   ImageBundle& operator=(ImageBundle&&) = default;
 
-  ImageBundle Copy() const {
+  StatusOr<ImageBundle> Copy() const {
     ImageBundle copy(metadata_);
-    copy.color_ = CopyImage(color_);
+    JXL_ASSIGN_OR_RETURN(copy.color_,
+                         Image3F::Create(color_.xsize(), color_.ysize()));
+    CopyImageTo(color_, &copy.color_);
     copy.c_current_ = c_current_;
     copy.extra_channels_.reserve(extra_channels_.size());
     for (const ImageF& plane : extra_channels_) {
-      copy.extra_channels_.emplace_back(CopyImage(plane));
+      JXL_ASSIGN_OR_RETURN(ImageF ec,
+                           ImageF::Create(plane.xsize(), plane.ysize()));
+      CopyImageTo(plane, &ec);
+      copy.extra_channels_.emplace_back(std::move(ec));
     }
 
     copy.jpeg_data =
@@ -131,10 +133,7 @@ class ImageBundle {
   bool IsGray() const { return c_current_.IsGray(); }
 
   bool IsSRGB() const { return c_current_.IsSRGB(); }
-  bool IsLinearSRGB() const {
-    return c_current_.white_point == WhitePoint::kD65 &&
-           c_current_.primaries == Primaries::kSRGB && c_current_.tf.IsLinear();
-  }
+  bool IsLinearSRGB() const { return c_current_.IsLinearSRGB(); }
 
   // Set the c_current profile without doing any transformation, e.g. if the
   // transformation was already applied.
@@ -148,15 +147,12 @@ class ImageBundle {
 
   // Transforms color to c_desired and sets c_current to c_desired. Alpha and
   // metadata remains unchanged.
-  Status TransformTo(const ColorEncoding& c_desired,
+  Status TransformTo(const ColorEncoding& c_desired, const JxlCmsInterface& cms,
                      ThreadPool* pool = nullptr);
   // Copies this:rect, converts to c_desired, and allocates+fills out.
-  Status CopyTo(const Rect& rect, const ColorEncoding& c_desired, Image3B* out,
+  Status CopyTo(const Rect& rect, const ColorEncoding& c_desired,
+                const JxlCmsInterface& cms, Image3F* out,
                 ThreadPool* pool = nullptr) const;
-  Status CopyTo(const Rect& rect, const ColorEncoding& c_desired, Image3F* out,
-                ThreadPool* pool = nullptr) const;
-  Status CopyToSRGB(const Rect& rect, Image3B* out,
-                    ThreadPool* pool = nullptr) const;
 
   // Detect 'real' bit depth, which can be lower than nominal bit depth
   // (this is common in PNG), returns 'real' bit depth
@@ -164,7 +160,7 @@ class ImageBundle {
 
   // -- ALPHA
 
-  void SetAlpha(ImageF&& alpha, bool alpha_is_premultiplied);
+  void SetAlpha(ImageF&& alpha);
   bool HasAlpha() const {
     return metadata_->Find(ExtraChannel::kAlpha) != nullptr;
   }
@@ -172,20 +168,14 @@ class ImageBundle {
     const ExtraChannelInfo* eci = metadata_->Find(ExtraChannel::kAlpha);
     return (eci == nullptr) ? false : eci->alpha_associated;
   }
-  // Premultiply alpha (if it isn't already premultiplied)
-  void PremultiplyAlpha();
-  // Unpremultiply alpha (if it isn't already non-premultiplied)
-  void UnpremultiplyAlpha();
   const ImageF& alpha() const;
   ImageF* alpha();
 
-  // -- DEPTH
-  bool HasDepth() const {
-    return metadata_->Find(ExtraChannel::kDepth) != nullptr;
-  }
-  const ImageF& depth() const;
-
   // -- EXTRA CHANNELS
+  bool HasBlack() const {
+    return metadata_->Find(ExtraChannel::kBlack) != nullptr;
+  }
+  const ImageF& black() const;
 
   // Extra channels of unknown interpretation (e.g. spot colors).
   void SetExtraChannels(std::vector<ImageF>&& extra_channels);
@@ -221,11 +211,22 @@ class ImageBundle {
   YCbCrChromaSubsampling chroma_subsampling;
 
   FrameOrigin origin{0, 0};
-  // Animation-related information. This assumes GIF- and APNG- like animation.
+
+  // Animation-related information, corresponding to the timecode and duration
+  // fields of the jxl::AnimationFrame of the jxl::FrameHeader.
+  // TODO(lode): ImageBundle is used here to carry the information from
+  // jxl::FrameHeader, consider instead passing a jxl::FrameHeader directly to
+  // EncodeFrame or having a field of that type here.
   uint32_t duration = 0;
+  uint32_t timecode = 0;
+
+  // TODO(lode): these fields do not match the JXL frame header, it should be
+  // possible to specify up to 4 (3 if nonzero duration) slots to save this
+  // frame as reference (see save_as_reference).
   bool use_for_next_frame = false;
   bool blend = false;
   BlendMode blendmode = BlendMode::kBlend;
+
   std::string name;
 
  private:
@@ -247,16 +248,6 @@ class ImageBundle {
   // How many bytes of the input were actually read.
   size_t decoded_bytes_ = 0;
 };
-
-// Does color transformation from in.c_current() to c_desired if the color
-// encodings are different, or nothing if they are already the same.
-// If color transformation is done, stores the transformed values into store and
-// sets the out pointer to store, else leaves store untouched and sets the out
-// pointer to &in.
-// Returns false if color transform fails.
-Status TransformIfNeeded(const ImageBundle& in, const ColorEncoding& c_desired,
-                         ThreadPool* pool, ImageBundle* store,
-                         const ImageBundle** out);
 
 }  // namespace jxl
 

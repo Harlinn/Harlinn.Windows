@@ -22,11 +22,11 @@
 extern "C" {
 #endif
 
-void av1_init_intra_predictors(void);
-void av1_predict_intra_block_facade(const AV1_COMMON *cm, MACROBLOCKD *xd,
+HAOM_EXPORT void av1_init_intra_predictors(void);
+HAOM_EXPORT void av1_predict_intra_block_facade(const AV1_COMMON *cm, MACROBLOCKD *xd,
                                     int plane, int blk_col, int blk_row,
                                     TX_SIZE tx_size);
-void av1_predict_intra_block(const MACROBLOCKD *xd, BLOCK_SIZE sb_size,
+HAOM_EXPORT void av1_predict_intra_block(const MACROBLOCKD *xd, BLOCK_SIZE sb_size,
                              int enable_intra_edge_filter, int wpx, int hpx,
                              TX_SIZE tx_size, PREDICTION_MODE mode,
                              int angle_delta, int use_palette,

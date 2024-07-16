@@ -209,10 +209,121 @@ static const AV1LevelSpec av1_level_defs[SEQ_LEVELS] = {
     .high_cr = 4.0,
     .max_tiles = 128,
     .max_tile_cols = 16 },
+#if CONFIG_CWG_C013
+  { .level = SEQ_LEVEL_7_0,
+    .max_picture_size = 142606336,
+    .max_h_size = 32768,
+    .max_v_size = 17408,
+    .max_display_rate = 4278190080L,
+    .max_decode_rate = 4706009088L,
+    .max_header_rate = 300,
+    .main_mbps = 160.0,
+    .high_mbps = 800.0,
+    .main_cr = 8.0,
+    .high_cr = 4.0,
+    .max_tiles = 256,
+    .max_tile_cols = 32 },
+  { .level = SEQ_LEVEL_7_1,
+    .max_picture_size = 142606336,
+    .max_h_size = 32768,
+    .max_v_size = 17408,
+    .max_display_rate = 8556380160L,
+    .max_decode_rate = 8758886400L,
+    .max_header_rate = 300,
+    .main_mbps = 200.0,
+    .high_mbps = 960.0,
+    .main_cr = 8.0,
+    .high_cr = 4.0,
+    .max_tiles = 256,
+    .max_tile_cols = 32 },
+  { .level = SEQ_LEVEL_7_2,
+    .max_picture_size = 142606336,
+    .max_h_size = 32768,
+    .max_v_size = 17408,
+    .max_display_rate = 17112760320L,
+    .max_decode_rate = 17517772800L,
+    .max_header_rate = 300,
+    .main_mbps = 320.0,
+    .high_mbps = 1600.0,
+    .main_cr = 8.0,
+    .high_cr = 4.0,
+    .max_tiles = 256,
+    .max_tile_cols = 32 },
+  { .level = SEQ_LEVEL_7_3,
+    .max_picture_size = 142606336,
+    .max_h_size = 32768,
+    .max_v_size = 17408,
+    .max_display_rate = 17112760320L,
+    .max_decode_rate = 18824036352L,
+    .max_header_rate = 300,
+    .main_mbps = 320.0,
+    .high_mbps = 1600.0,
+    .main_cr = 8.0,
+    .high_cr = 4.0,
+    .max_tiles = 256,
+    .max_tile_cols = 32 },
+  { .level = SEQ_LEVEL_8_0,
+    .max_picture_size = 530841600,
+    .max_h_size = 65536,
+    .max_v_size = 34816,
+    .max_display_rate = 17112760320L,
+    .max_decode_rate = 18824036352L,
+    .max_header_rate = 300,
+    .main_mbps = 320.0,
+    .high_mbps = 1600.0,
+    .main_cr = 8.0,
+    .high_cr = 4.0,
+    .max_tiles = 512,
+    .max_tile_cols = 64 },
+  { .level = SEQ_LEVEL_8_1,
+    .max_picture_size = 530841600,
+    .max_h_size = 65536,
+    .max_v_size = 34816,
+    .max_display_rate = 34225520640L,
+    .max_decode_rate = 34910031052L,
+    .max_header_rate = 300,
+    .main_mbps = 400.0,
+    .high_mbps = 1920.0,
+    .main_cr = 8.0,
+    .high_cr = 4.0,
+    .max_tiles = 512,
+    .max_tile_cols = 64 },
+  { .level = SEQ_LEVEL_8_2,
+    .max_picture_size = 530841600,
+    .max_h_size = 65536,
+    .max_v_size = 34816,
+    .max_display_rate = 68451041280L,
+    .max_decode_rate = 69820062105L,
+    .max_header_rate = 300,
+    .main_mbps = 640.0,
+    .high_mbps = 3200.0,
+    .main_cr = 8.0,
+    .high_cr = 4.0,
+    .max_tiles = 512,
+    .max_tile_cols = 64 },
+  { .level = SEQ_LEVEL_8_3,
+    .max_picture_size = 530841600,
+    .max_h_size = 65536,
+    .max_v_size = 34816,
+    .max_display_rate = 68451041280L,
+    .max_decode_rate = 75296145408L,
+    .max_header_rate = 300,
+    .main_mbps = 640.0,
+    .high_mbps = 3200.0,
+    .main_cr = 8.0,
+    .high_cr = 4.0,
+    .max_tiles = 512,
+    .max_tile_cols = 64 },
+#else   // !CONFIG_CWG_C013
   UNDEFINED_LEVEL,
   UNDEFINED_LEVEL,
   UNDEFINED_LEVEL,
   UNDEFINED_LEVEL,
+  UNDEFINED_LEVEL,
+  UNDEFINED_LEVEL,
+  UNDEFINED_LEVEL,
+  UNDEFINED_LEVEL,
+#endif  // CONFIG_CWG_C013
 };
 
 typedef enum {
@@ -411,18 +522,20 @@ static double get_presentation_time(const DECODER_MODEL *const decoder_model,
 }
 
 #define MAX_TIME 1e16
-double time_next_buffer_is_free(const DECODER_MODEL *const decoder_model) {
-  if (decoder_model->num_decoded_frame == 0) {
-    return (double)decoder_model->decoder_buffer_delay / 90000.0;
+static double time_next_buffer_is_free(int num_decoded_frame,
+                                       int decoder_buffer_delay,
+                                       const FRAME_BUFFER *frame_buffer_pool,
+                                       double current_time) {
+  if (num_decoded_frame == 0) {
+    return (double)decoder_buffer_delay / 90000.0;
   }
 
   double buf_free_time = MAX_TIME;
   for (int i = 0; i < BUFFER_POOL_MAX_SIZE; ++i) {
-    const FRAME_BUFFER *const this_buffer =
-        &decoder_model->frame_buffer_pool[i];
+    const FRAME_BUFFER *const this_buffer = &frame_buffer_pool[i];
     if (this_buffer->decoder_ref_count == 0) {
       if (this_buffer->player_ref_count == 0) {
-        return decoder_model->current_time;
+        return current_time;
       }
       const double presentation_time = this_buffer->presentation_time;
       if (presentation_time >= 0.0 && presentation_time < buf_free_time) {
@@ -434,12 +547,16 @@ double time_next_buffer_is_free(const DECODER_MODEL *const decoder_model) {
 }
 #undef MAX_TIME
 
-static double get_removal_time(const DECODER_MODEL *const decoder_model) {
-  if (decoder_model->mode == SCHEDULE_MODE) {
+static double get_removal_time(int mode, int num_decoded_frame,
+                               int decoder_buffer_delay,
+                               const FRAME_BUFFER *frame_buffer_pool,
+                               double current_time) {
+  if (mode == SCHEDULE_MODE) {
     assert(0 && "SCHEDULE_MODE IS NOT SUPPORTED YET");
     return INVALID_TIME;
   } else {
-    return time_next_buffer_is_free(decoder_model);
+    return time_next_buffer_is_free(num_decoded_frame, decoder_buffer_delay,
+                                    frame_buffer_pool, current_time);
   }
 }
 
@@ -520,6 +637,88 @@ void av1_decoder_model_init(const AV1_COMP *const cpi, AV1_LEVEL level,
   decoder_model->decode_rate = av1_level_defs[level].max_decode_rate;
 }
 
+DECODER_MODEL_STATUS av1_decoder_model_try_smooth_buf(
+    const AV1_COMP *const cpi, size_t coded_bits,
+    const DECODER_MODEL *const decoder_model) {
+  DECODER_MODEL_STATUS status = DECODER_MODEL_OK;
+
+  if (!decoder_model || decoder_model->status != DECODER_MODEL_OK) {
+    return status;
+  }
+
+  const AV1_COMMON *const cm = &cpi->common;
+  const int show_existing_frame = cm->show_existing_frame;
+
+  size_t cur_coded_bits = decoder_model->coded_bits + coded_bits;
+  int num_decoded_frame = decoder_model->num_decoded_frame;
+  if (!show_existing_frame) ++num_decoded_frame;
+
+  if (show_existing_frame) {
+    return status;
+  } else {
+    const double removal_time = get_removal_time(
+        decoder_model->mode, num_decoded_frame,
+        decoder_model->decoder_buffer_delay, decoder_model->frame_buffer_pool,
+        decoder_model->current_time);
+    if (removal_time < 0.0) {
+      status = DECODE_FRAME_BUF_UNAVAILABLE;
+      return status;
+    }
+
+    // A frame with show_existing_frame being false indicates the end of a DFG.
+    // Update the bits arrival time of this DFG.
+    const double buffer_delay = (decoder_model->encoder_buffer_delay +
+                                 decoder_model->decoder_buffer_delay) /
+                                90000.0;
+    const double latest_arrival_time = removal_time - buffer_delay;
+    const double first_bit_arrival_time =
+        AOMMAX(decoder_model->last_bit_arrival_time, latest_arrival_time);
+    const double last_bit_arrival_time =
+        first_bit_arrival_time +
+        (double)cur_coded_bits / decoder_model->bit_rate;
+    // Smoothing buffer underflows if the last bit arrives after the removal
+    // time.
+    if (last_bit_arrival_time > removal_time &&
+        !decoder_model->is_low_delay_mode) {
+      status = SMOOTHING_BUFFER_UNDERFLOW;
+      return status;
+    }
+
+    // Check if the smoothing buffer overflows.
+    const DFG_INTERVAL_QUEUE *const queue = &decoder_model->dfg_interval_queue;
+    if (queue->size >= DFG_INTERVAL_QUEUE_SIZE) {
+      assert(0);
+    }
+
+    double total_interval = queue->total_interval;
+    int qhead = queue->head;
+    int qsize = queue->size;
+    // Remove the DFGs with removal time earlier than last_bit_arrival_time.
+    while (queue->buf[qhead].removal_time <= last_bit_arrival_time &&
+           qsize > 0) {
+      if (queue->buf[qhead].removal_time - first_bit_arrival_time +
+              total_interval >
+          1.0) {
+        status = SMOOTHING_BUFFER_OVERFLOW;
+        return status;
+      }
+      total_interval -= queue->buf[qhead].last_bit_arrival_time -
+                        queue->buf[qhead].first_bit_arrival_time;
+      qhead = (qhead + 1) % DFG_INTERVAL_QUEUE_SIZE;
+      --qsize;
+    }
+    total_interval += last_bit_arrival_time - first_bit_arrival_time;
+    // The smoothing buffer can hold at most "bit_rate" bits, which is
+    // equivalent to 1 second of total interval.
+    if (total_interval > 1.0) {
+      status = SMOOTHING_BUFFER_OVERFLOW;
+      return status;
+    }
+
+    return status;
+  }
+}
+
 void av1_decoder_model_process_frame(const AV1_COMP *const cpi,
                                      size_t coded_bits,
                                      DECODER_MODEL *const decoder_model) {
@@ -545,7 +744,10 @@ void av1_decoder_model_process_frame(const AV1_COMP *const cpi,
       update_ref_buffers(decoder_model, display_idx, 0xFF);
     }
   } else {
-    const double removal_time = get_removal_time(decoder_model);
+    const double removal_time = get_removal_time(
+        decoder_model->mode, decoder_model->num_decoded_frame,
+        decoder_model->decoder_buffer_delay, decoder_model->frame_buffer_pool,
+        decoder_model->current_time);
     if (removal_time < 0.0) {
       decoder_model->status = DECODE_FRAME_BUF_UNAVAILABLE;
       return;
@@ -635,7 +837,7 @@ void av1_decoder_model_process_frame(const AV1_COMP *const cpi,
     if (decoder_model->initial_presentation_delay < 0.0) {
       // Display can begin after required number of frames have been buffered.
       if (frames_in_buffer_pool(decoder_model) >=
-          decoder_model->initial_display_delay) {
+          decoder_model->initial_display_delay - 1) {
         decoder_model->initial_presentation_delay = decoder_model->current_time;
         // Update presentation time for each shown frame in the frame buffer.
         for (int i = 0; i < BUFFER_POOL_MAX_SIZE; ++i) {
@@ -756,7 +958,6 @@ static void get_temporal_parallel_params(int scalability_mode_idc,
   }
 }
 
-#define MAX_TILE_SIZE (4096 * 2304)
 #define MIN_CROPPED_TILE_WIDTH 8
 #define MIN_CROPPED_TILE_HEIGHT 8
 #define MIN_FRAME_WIDTH 16
@@ -827,7 +1028,14 @@ static TARGET_LEVEL_FAIL_ID check_level_constraints(
       break;
     }
 
-    if (level_stats->max_tile_size > MAX_TILE_SIZE) {
+#if CONFIG_CWG_C013
+    const int max_tile_size = (level >= SEQ_LEVEL_7_0 && level <= SEQ_LEVEL_8_3)
+                                  ? MAX_TILE_AREA_LEVEL_7_AND_ABOVE
+                                  : MAX_TILE_AREA;
+#else
+    const int max_tile_size = MAX_TILE_AREA;
+#endif
+    if (level_stats->max_tile_size > max_tile_size) {
       fail_id = TILE_TOO_LARGE;
       break;
     }
@@ -1036,7 +1244,8 @@ static void scan_past_frames(const FrameWindowBuffer *const buffer,
       AOMMAX(level_spec->max_decode_rate, decoded_samples);
   level_spec->max_tile_rate = AOMMAX(level_spec->max_tile_rate, tiles);
   level_stats->max_bitrate =
-      AOMMAX(level_stats->max_bitrate, (int)encoded_size_in_bytes * 8);
+      AOMMAX(level_stats->max_bitrate,
+             (int)AOMMIN(encoded_size_in_bytes * 8, (size_t)INT_MAX));
 }
 
 void av1_update_level_info(AV1_COMP *cpi, size_t size, int64_t ts_start,
@@ -1133,7 +1342,7 @@ void av1_update_level_info(AV1_COMP *cpi, size_t size, int64_t ts_start,
 
     // Check whether target level is met.
     const AV1_LEVEL target_level = level_params->target_seq_level_idx[i];
-    if (target_level < SEQ_LEVELS) {
+    if (target_level < SEQ_LEVELS && cpi->oxcf.strict_level_conformance) {
       assert(is_valid_seq_level_idx(target_level));
       const int tier = seq_params->tier[i];
       const TARGET_LEVEL_FAIL_ID fail_id = check_level_constraints(
@@ -1170,6 +1379,18 @@ aom_codec_err_t av1_get_seq_level_idx(const SequenceHeader *seq_params,
         break;
       }
     }
+  }
+
+  return AOM_CODEC_OK;
+}
+
+aom_codec_err_t av1_get_target_seq_level_idx(const SequenceHeader *seq_params,
+                                             const AV1LevelParams *level_params,
+                                             int *target_seq_level_idx) {
+  for (int op = 0; op < seq_params->operating_points_cnt_minus_1 + 1; ++op) {
+    target_seq_level_idx[op] = (int)SEQ_LEVEL_MAX;
+    if (!((level_params->keep_level_stats >> op) & 1)) continue;
+    target_seq_level_idx[op] = level_params->target_seq_level_idx[op];
   }
 
   return AOM_CODEC_OK;

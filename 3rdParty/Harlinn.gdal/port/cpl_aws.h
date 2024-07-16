@@ -1,4 +1,3 @@
-#pragma once
 /**********************************************************************
  * $Id$
  *
@@ -32,8 +31,6 @@
 #ifndef CPL_AWS_INCLUDED_H
 #define CPL_AWS_INCLUDED_H
 
-#include "..\hgdaldef.h"
-
 #ifndef DOXYGEN_SKIP
 
 #ifdef HAVE_CURL
@@ -41,215 +38,297 @@
 #include <cstddef>
 #include <mutex>
 
-#include <port/cpl_string.h>
+#include "cpl_string.h"
 
 #include <curl/curl.h>
 #include <map>
 
-HGDAL_EXPORT CPLString CPLGetLowerCaseHexSHA256( const void *pabyData, size_t nBytes );
-HGDAL_EXPORT CPLString CPLGetLowerCaseHexSHA256( const CPLString& osStr );
+std::string CPLGetLowerCaseHexSHA256(const void *pabyData, size_t nBytes);
+std::string CPLGetLowerCaseHexSHA256(const std::string &osStr);
 
-HGDAL_EXPORT CPLString CPLGetAWS_SIGN4_Timestamp();
+std::string CPLGetAWS_SIGN4_Timestamp(GIntBig timestamp);
 
-HGDAL_EXPORT CPLString CPLAWSURLEncode(const CPLString& osURL, bool bEncodeSlash = true);
+std::string CPLAWSURLEncode(const std::string &osURL, bool bEncodeSlash = true);
 
-HGDAL_EXPORT CPLString CPLAWSGetHeaderVal(const struct curl_slist* psExistingHeaders,
-                             const char* pszKey);
+std::string CPLAWSGetHeaderVal(const struct curl_slist *psExistingHeaders,
+                               const char *pszKey);
 
-HGDAL_EXPORT CPLString
-CPLGetAWS_SIGN4_Signature( const CPLString& osSecretAccessKey,
-                               const CPLString& osAccessToken,
-                               const CPLString& osRegion,
-                               const CPLString& osRequestPayer,
-                               const CPLString& osService,
-                               const CPLString& osVerb,
-                               const struct curl_slist* psExistingHeaders,
-                               const CPLString& osHost,
-                               const CPLString& osCanonicalURI,
-                               const CPLString& osCanonicalQueryString,
-                               const CPLString& osXAMZContentSHA256,
-                               const CPLString& osTimestamp,
-                               CPLString& osSignedHeaders );
+std::string CPLGetAWS_SIGN4_Signature(
+    const std::string &osSecretAccessKey, const std::string &osAccessToken,
+    const std::string &osRegion, const std::string &osRequestPayer,
+    const std::string &osService, const std::string &osVerb,
+    const struct curl_slist *psExistingHeaders, const std::string &osHost,
+    const std::string &osCanonicalURI,
+    const std::string &osCanonicalQueryString,
+    const std::string &osXAMZContentSHA256, bool bAddHeaderAMZContentSHA256,
+    const std::string &osTimestamp, std::string &osSignedHeaders);
 
-HGDAL_EXPORT CPLString CPLGetAWS_SIGN4_Authorization(const CPLString& osSecretAccessKey,
-                                        const CPLString& osAccessKeyId,
-                                        const CPLString& osAccessToken,
-                                        const CPLString& osRegion,
-                                        const CPLString& osRequestPayer,
-                                        const CPLString& osService,
-                                        const CPLString& osVerb,
-                                        const struct curl_slist* psExistingHeaders,
-                                        const CPLString& osHost,
-                                        const CPLString& osCanonicalURI,
-                                        const CPLString& osCanonicalQueryString,
-                                        const CPLString& osXAMZContentSHA256,
-                                        const CPLString& osTimestamp);
+std::string CPLGetAWS_SIGN4_Authorization(
+    const std::string &osSecretAccessKey, const std::string &osAccessKeyId,
+    const std::string &osAccessToken, const std::string &osRegion,
+    const std::string &osRequestPayer, const std::string &osService,
+    const std::string &osVerb, const struct curl_slist *psExistingHeaders,
+    const std::string &osHost, const std::string &osCanonicalURI,
+    const std::string &osCanonicalQueryString,
+    const std::string &osXAMZContentSHA256, bool bAddHeaderAMZContentSHA256,
+    const std::string &osTimestamp);
 
 class IVSIS3LikeHandleHelper
 {
-        CPL_DISALLOW_COPY_ASSIGN(IVSIS3LikeHandleHelper)
+    CPL_DISALLOW_COPY_ASSIGN(IVSIS3LikeHandleHelper)
 
-protected:
-        std::map<CPLString, CPLString> m_oMapQueryParameters{};
+  protected:
+    std::map<std::string, std::string> m_oMapQueryParameters{};
 
-        virtual void RebuildURL() = 0;
-        HGDAL_EXPORT CPLString GetQueryString(bool bAddEmptyValueAfterEqual) const;
+    virtual void RebuildURL() = 0;
+    std::string GetQueryString(bool bAddEmptyValueAfterEqual) const;
 
-public:
-        IVSIS3LikeHandleHelper() = default;
-        virtual ~IVSIS3LikeHandleHelper() = default;
+  public:
+    IVSIS3LikeHandleHelper() = default;
+    virtual ~IVSIS3LikeHandleHelper() = default;
 
-        HGDAL_EXPORT void ResetQueryParameters();
-        HGDAL_EXPORT void AddQueryParameter(const CPLString& osKey, const CPLString& osValue);
+    void ResetQueryParameters();
+    void AddQueryParameter(const std::string &osKey,
+                           const std::string &osValue);
 
-        virtual struct curl_slist* GetCurlHeaders(const CPLString& osVerb,
-                                          const struct curl_slist* psExistingHeaders,
-                                          const void *pabyDataContent = nullptr,
-                                          size_t nBytesContent = 0) const = 0;
+    virtual struct curl_slist *
+    GetCurlHeaders(const std::string &osVerb,
+                   const struct curl_slist *psExistingHeaders,
+                   const void *pabyDataContent = nullptr,
+                   size_t nBytesContent = 0) const = 0;
 
-        virtual bool AllowAutomaticRedirection() { return true; }
-        virtual bool CanRestartOnError(const char*, const char* /* pszHeaders*/,
-                                       bool /*bSetError*/, bool* /*pbUpdateMap*/ = nullptr) { return false;}
+    virtual bool AllowAutomaticRedirection()
+    {
+        return true;
+    }
 
-        virtual const CPLString& GetURL() const = 0;
-        HGDAL_EXPORT CPLString GetURLNoKVP() const;
+    virtual bool CanRestartOnError(const char *, const char * /* pszHeaders*/,
+                                   bool /*bSetError*/)
+    {
+        return false;
+    }
 
-        virtual CPLString GetCopySourceHeader() const { return std::string(); }
-        virtual const char* GetMetadataDirectiveREPLACE() const { return ""; }
+    virtual const std::string &GetURL() const = 0;
+    std::string GetURLNoKVP() const;
 
-        HGDAL_EXPORT static bool GetBucketAndObjectKey(const char* pszURI,
-                                          const char* pszFSPrefix,
-                                          bool bAllowNoObject,
-                                          CPLString &osBucketOut,
-                                          CPLString &osObjectKeyOut);
+    virtual std::string GetCopySourceHeader() const
+    {
+        return std::string();
+    }
 
-        HGDAL_EXPORT static CPLString BuildCanonicalizedHeaders(
-                            std::map<CPLString, CPLString>& oSortedMapHeaders,
-                            const struct curl_slist* psExistingHeaders,
-                            const char* pszHeaderPrefix);
+    virtual const char *GetMetadataDirectiveREPLACE() const
+    {
+        return "";
+    }
 
-        HGDAL_EXPORT static CPLString GetRFC822DateTime();
+    static bool GetBucketAndObjectKey(const char *pszURI,
+                                      const char *pszFSPrefix,
+                                      bool bAllowNoObject,
+                                      std::string &osBucketOut,
+                                      std::string &osObjectKeyOut);
+
+    static std::string BuildCanonicalizedHeaders(
+        std::map<std::string, std::string> &oSortedMapHeaders,
+        const struct curl_slist *psExistingHeaders,
+        const char *pszHeaderPrefix);
+
+    static std::string GetRFC822DateTime();
 };
 
-class VSIS3HandleHelper final: public IVSIS3LikeHandleHelper
+enum class AWSCredentialsSource
 {
-        CPL_DISALLOW_COPY_ASSIGN(VSIS3HandleHelper)
+    REGULAR,       // credentials from env variables or ~/.aws/crediential
+    EC2,           // credentials from EC2 private networking
+    WEB_IDENTITY,  // credentials from Web Identity Token
+                   // See
+    // https://docs.aws.amazon.com/eks/latest/userguide/iam-roles-for-service-accounts.html
+    ASSUMED_ROLE  // credentials from an STS assumed role
+                  // See
+    // https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_use_switch-role-cli.html
+    // and
+    // https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_temp_request.html
+};
 
-        CPLString m_osURL{};
-        mutable CPLString m_osSecretAccessKey{};
-        mutable CPLString m_osAccessKeyId{};
-        mutable CPLString m_osSessionToken{};
-        CPLString m_osEndpoint{};
-        CPLString m_osRegion{};
-        CPLString m_osRequestPayer{};
-        CPLString m_osBucket{};
-        CPLString m_osObjectKey{};
-        bool m_bUseHTTPS = false;
-        bool m_bUseVirtualHosting = false;
-        bool m_bFromEC2 = false;
+class VSIS3HandleHelper final : public IVSIS3LikeHandleHelper
+{
+    CPL_DISALLOW_COPY_ASSIGN(VSIS3HandleHelper)
 
-        HGDAL_EXPORT void RebuildURL() override;
+    std::string m_osURL{};
+    mutable std::string m_osSecretAccessKey{};
+    mutable std::string m_osAccessKeyId{};
+    mutable std::string m_osSessionToken{};
+    std::string m_osEndpoint{};
+    std::string m_osRegion{};
+    std::string m_osRequestPayer{};
+    std::string m_osBucket{};
+    std::string m_osObjectKey{};
+    bool m_bUseHTTPS = false;
+    bool m_bUseVirtualHosting = false;
+    AWSCredentialsSource m_eCredentialsSource = AWSCredentialsSource::REGULAR;
 
-        HGDAL_EXPORT static bool GetConfigurationFromEC2(CPLString& osSecretAccessKey,
-                                            CPLString& osAccessKeyId,
-                                            CPLString& osSessionToken);
+    void RebuildURL() override;
 
-        HGDAL_EXPORT static bool GetConfigurationFromAWSConfigFiles(
-                                     CPLString& osSecretAccessKey,
-                                     CPLString& osAccessKeyId,
-                                     CPLString& osSessionToken,
-                                     CPLString& osRegion,
-                                     CPLString& osCredentials);
+    static bool GetOrRefreshTemporaryCredentialsForRole(
+        bool bForceRefresh, std::string &osSecretAccessKey,
+        std::string &osAccessKeyId, std::string &osSessionToken,
+        std::string &osRegion);
 
-        HGDAL_EXPORT static bool GetConfiguration(CSLConstList papszOptions,
-                                     CPLString& osSecretAccessKey,
-                                     CPLString& osAccessKeyId,
-                                     CPLString& osSessionToken,
-                                     CPLString& osRegion,
-                                     bool& bFromEC2);
+    static bool GetConfigurationFromAssumeRoleWithWebIdentity(
+        bool bForceRefresh, const std::string &osPathForOption,
+        const std::string &osRoleArnIn,
+        const std::string &osWebIdentityTokenFileIn,
+        std::string &osSecretAccessKey, std::string &osAccessKeyId,
+        std::string &osSessionToken);
+
+    static bool GetConfigurationFromEC2(bool bForceRefresh,
+                                        const std::string &osPathForOption,
+                                        std::string &osSecretAccessKey,
+                                        std::string &osAccessKeyId,
+                                        std::string &osSessionToken);
+
+    static bool GetConfigurationFromAWSConfigFiles(
+        const std::string &osPathForOption, const char *pszProfile,
+        std::string &osSecretAccessKey, std::string &osAccessKeyId,
+        std::string &osSessionToken, std::string &osRegion,
+        std::string &osCredentials, std::string &osRoleArn,
+        std::string &osSourceProfile, std::string &osExternalId,
+        std::string &osMFASerial, std::string &osRoleSessionName,
+        std::string &osWebIdentityTokenFile);
+
+    static bool GetConfiguration(const std::string &osPathForOption,
+                                 CSLConstList papszOptions,
+                                 std::string &osSecretAccessKey,
+                                 std::string &osAccessKeyId,
+                                 std::string &osSessionToken,
+                                 std::string &osRegion,
+                                 AWSCredentialsSource &eCredentialsSource);
+
+    void RefreshCredentials(const std::string &osPathForOption,
+                            bool bForceRefresh) const;
+
   protected:
+  public:
+    VSIS3HandleHelper(
+        const std::string &osSecretAccessKey, const std::string &osAccessKeyId,
+        const std::string &osSessionToken, const std::string &osEndpoint,
+        const std::string &osRegion, const std::string &osRequestPayer,
+        const std::string &osBucket, const std::string &osObjectKey,
+        bool bUseHTTPS, bool bUseVirtualHosting,
+        AWSCredentialsSource eCredentialsSource);
+    ~VSIS3HandleHelper();
 
-    public:
-        HGDAL_EXPORT VSIS3HandleHelper(const CPLString& osSecretAccessKey,
-                    const CPLString& osAccessKeyId,
-                    const CPLString& osSessionToken,
-                    const CPLString& osEndpoint,
-                    const CPLString& osRegion,
-                    const CPLString& osRequestPayer,
-                    const CPLString& osBucket,
-                    const CPLString& osObjectKey,
-                    bool bUseHTTPS, bool bUseVirtualHosting, bool bFromEC2);
-        HGDAL_EXPORT ~VSIS3HandleHelper();
+    static VSIS3HandleHelper *BuildFromURI(const char *pszURI,
+                                           const char *pszFSPrefix,
+                                           bool bAllowNoObject,
+                                           CSLConstList papszOptions = nullptr);
+    static std::string BuildURL(const std::string &osEndpoint,
+                                const std::string &osBucket,
+                                const std::string &osObjectKey, bool bUseHTTPS,
+                                bool bUseVirtualHosting);
 
-        HGDAL_EXPORT static VSIS3HandleHelper* BuildFromURI(const char* pszURI,
-                                               const char* pszFSPrefix,
-                                               bool bAllowNoObject,
-                                               CSLConstList papszOptions = nullptr);
-        HGDAL_EXPORT static CPLString BuildURL(const CPLString& osEndpoint,
-                                  const CPLString& osBucket,
-                                  const CPLString& osObjectKey,
-                                  bool bUseHTTPS, bool bUseVirtualHosting);
+    struct curl_slist *
+    GetCurlHeaders(const std::string &osVerb,
+                   const struct curl_slist *psExistingHeaders,
+                   const void *pabyDataContent = nullptr,
+                   size_t nBytesContent = 0) const override;
 
-        HGDAL_EXPORT struct curl_slist* GetCurlHeaders(
-            const CPLString& osVerb,
-            const struct curl_slist* psExistingHeaders,
-            const void *pabyDataContent = nullptr,
-            size_t nBytesContent = 0) const override;
+    bool AllowAutomaticRedirection() override
+    {
+        return false;
+    }
 
-        HGDAL_EXPORT bool AllowAutomaticRedirection() override { return false; }
-        HGDAL_EXPORT bool CanRestartOnError(const char*, const char* pszHeaders,
-                               bool bSetError,
-                               bool* pbUpdateMap = nullptr) override;
+    bool CanRestartOnError(const char *, const char *pszHeaders,
+                           bool bSetError) override;
 
-        HGDAL_EXPORT const CPLString& GetURL() const override { return m_osURL; }
-        HGDAL_EXPORT const CPLString& GetBucket() const { return m_osBucket; }
-        HGDAL_EXPORT const CPLString& GetObjectKey() const { return m_osObjectKey; }
-        HGDAL_EXPORT const CPLString& GetEndpoint()const  { return m_osEndpoint; }
-        HGDAL_EXPORT const CPLString& GetRegion() const { return m_osRegion; }
-        HGDAL_EXPORT const CPLString& GetRequestPayer() const { return m_osRequestPayer; }
-        HGDAL_EXPORT bool GetVirtualHosting() const { return m_bUseVirtualHosting; }
-        HGDAL_EXPORT void SetEndpoint(const CPLString &osStr);
-        HGDAL_EXPORT void SetRegion(const CPLString &osStr);
-        HGDAL_EXPORT void SetRequestPayer(const CPLString &osStr);
-        HGDAL_EXPORT void SetVirtualHosting(bool b);
+    const std::string &GetURL() const override
+    {
+        return m_osURL;
+    }
 
-        CPLString GetCopySourceHeader() const override { return "x-amz-copy-source"; }
-        const char* GetMetadataDirectiveREPLACE() const override { return "x-amz-metadata-directive: REPLACE"; }
+    const std::string &GetBucket() const
+    {
+        return m_osBucket;
+    }
 
-        HGDAL_EXPORT CPLString GetSignedURL(CSLConstList papszOptions);
+    const std::string &GetObjectKey() const
+    {
+        return m_osObjectKey;
+    }
 
-        HGDAL_EXPORT static void CleanMutex();
-        HGDAL_EXPORT static void ClearCache();
+    const std::string &GetEndpoint() const
+    {
+        return m_osEndpoint;
+    }
+
+    const std::string &GetRegion() const
+    {
+        return m_osRegion;
+    }
+
+    const std::string &GetRequestPayer() const
+    {
+        return m_osRequestPayer;
+    }
+
+    bool GetVirtualHosting() const
+    {
+        return m_bUseVirtualHosting;
+    }
+
+    void SetEndpoint(const std::string &osStr);
+    void SetRegion(const std::string &osStr);
+    void SetRequestPayer(const std::string &osStr);
+    void SetVirtualHosting(bool b);
+
+    std::string GetCopySourceHeader() const override
+    {
+        return "x-amz-copy-source";
+    }
+
+    const char *GetMetadataDirectiveREPLACE() const override
+    {
+        return "x-amz-metadata-directive: REPLACE";
+    }
+
+    std::string GetSignedURL(CSLConstList papszOptions);
+
+    static void CleanMutex();
+    static void ClearCache();
 };
 
 class VSIS3UpdateParams
 {
-    public:
-        CPLString m_osRegion{};
-        CPLString m_osEndpoint{};
-        CPLString m_osRequestPayer{};
-        bool m_bUseVirtualHosting = false;
+  private:
+    std::string m_osRegion{};
+    std::string m_osEndpoint{};
+    std::string m_osRequestPayer{};
+    bool m_bUseVirtualHosting = false;
 
-        VSIS3UpdateParams() = default;
+    explicit VSIS3UpdateParams(const VSIS3HandleHelper *poHelper)
+        : m_osRegion(poHelper->GetRegion()),
+          m_osEndpoint(poHelper->GetEndpoint()),
+          m_osRequestPayer(poHelper->GetRequestPayer()),
+          m_bUseVirtualHosting(poHelper->GetVirtualHosting())
+    {
+    }
 
-        explicit VSIS3UpdateParams(const VSIS3HandleHelper* poHelper) :
-            m_osRegion(poHelper->GetRegion()),
-            m_osEndpoint(poHelper->GetEndpoint()),
-            m_osRequestPayer(poHelper->GetRequestPayer()),
-            m_bUseVirtualHosting(poHelper->GetVirtualHosting()) {}
+    void UpdateHandlerHelper(VSIS3HandleHelper *poHelper)
+    {
+        poHelper->SetRegion(m_osRegion);
+        poHelper->SetEndpoint(m_osEndpoint);
+        poHelper->SetRequestPayer(m_osRequestPayer);
+        poHelper->SetVirtualHosting(m_bUseVirtualHosting);
+    }
 
-        void UpdateHandlerHelper(VSIS3HandleHelper* poHelper) {
-            poHelper->SetRegion(m_osRegion);
-            poHelper->SetEndpoint(m_osEndpoint);
-            poHelper->SetRequestPayer(m_osRequestPayer);
-            poHelper->SetVirtualHosting(m_bUseVirtualHosting);
-        }
+    static std::mutex gsMutex;
+    static std::map<std::string, VSIS3UpdateParams> goMapBucketsToS3Params;
 
-        static std::mutex gsMutex;
-        static std::map< CPLString, VSIS3UpdateParams > goMapBucketsToS3Params;
-        HGDAL_EXPORT static void UpdateMapFromHandle( IVSIS3LikeHandleHelper* poHandleHelper );
-        HGDAL_EXPORT static void UpdateHandleFromMap( IVSIS3LikeHandleHelper* poHandleHelper );
-        HGDAL_EXPORT static void ClearCache();
+  public:
+    VSIS3UpdateParams() = default;
+
+    static void UpdateMapFromHandle(VSIS3HandleHelper *poS3HandleHelper);
+    static void UpdateHandleFromMap(VSIS3HandleHelper *poS3HandleHelper);
+    static void ClearCache();
 };
 
 #endif /* HAVE_CURL */

@@ -1,4 +1,3 @@
-#pragma once
 /**********************************************************************
  * $Id$
  *
@@ -32,7 +31,7 @@
 #ifndef CPL_LIST_H_INCLUDED
 #define CPL_LIST_H_INCLUDED
 
-#include <port/cpl_port.h>
+#include "cpl_port.h"
 
 /**
  * \file cpl_list.h
@@ -54,22 +53,22 @@ struct _CPLList
     /*! Pointer to the data object. Should be allocated and freed by the
      * caller.
      * */
-    void        *pData;
+    void *pData;
     /*! Pointer to the next element in list. NULL, if current element is the
      * last one.
      */
-    struct _CPLList    *psNext;
+    struct _CPLList *psNext;
 };
 
-HGDAL_EXPORT CPLList *CPLListAppend( CPLList *psList, void * pData );
-HGDAL_EXPORT CPLList *CPLListInsert( CPLList *psList, void * pData, int nPosition );
-HGDAL_EXPORT CPLList *CPLListGetLast( CPLList *psList );
-HGDAL_EXPORT CPLList *CPLListGet( CPLList * const psList, int nPosition );
-HGDAL_EXPORT int CPLListCount( const CPLList *psList );
-HGDAL_EXPORT CPLList *CPLListRemove( CPLList *psList, int nPosition );
-HGDAL_EXPORT void CPLListDestroy( CPLList *psList );
-HGDAL_EXPORT CPLList *CPLListGetNext( const CPLList *psElement );
-HGDAL_EXPORT void *CPLListGetData( const CPLList *psElement );
+CPLList CPL_DLL *CPLListAppend(CPLList *psList, void *pData);
+CPLList CPL_DLL *CPLListInsert(CPLList *psList, void *pData, int nPosition);
+CPLList CPL_DLL *CPLListGetLast(CPLList *psList);
+CPLList CPL_DLL *CPLListGet(CPLList *const psList, int nPosition);
+int CPL_DLL CPLListCount(const CPLList *psList);
+CPLList CPL_DLL *CPLListRemove(CPLList *psList, int nPosition);
+void CPL_DLL CPLListDestroy(CPLList *psList);
+CPLList CPL_DLL *CPLListGetNext(const CPLList *psElement);
+void CPL_DLL *CPLListGetData(const CPLList *psElement);
 
 CPL_C_END
 

@@ -35,7 +35,7 @@ typedef uint32_t od_ec_window;
 
 /*See entcode.c for further documentation.*/
 
-OD_WARN_UNUSED_RESULT uint32_t HAOM_EXPORT od_ec_tell_frac(uint32_t nbits_total,
+OD_WARN_UNUSED_RESULT HAOM_EXPORT uint32_t od_ec_tell_frac(uint32_t nbits_total,
                                                uint32_t rng);
 
 #endif  // AOM_AOM_DSP_ENTCODE_H_

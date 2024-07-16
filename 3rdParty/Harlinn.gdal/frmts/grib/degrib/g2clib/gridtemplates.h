@@ -1,4 +1,3 @@
-#pragma once
 #ifndef gridtemplates_H
 #define gridtemplates_H
 #include "grib2.h"

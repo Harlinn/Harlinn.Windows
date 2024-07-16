@@ -71,6 +71,9 @@
 * Includes.
 \******************************************************************************/
 
+#define JAS_FOR_INTERNAL_USE_ONLY
+
+#include "jasper/jas_init.h"
 #include "jasper/jas_image.h"
 #include "jasper/jas_math.h"
 #include "jasper/jas_malloc.h"
@@ -110,22 +113,18 @@ static long uptomult(long x, long y);
 static long downtomult(long x, long y);
 static long convert(long val, bool oldsgnd, unsigned oldprec, bool newsgnd,
   unsigned newprec);
-static void jas_image_calcbbox2(const jas_image_t *image, jas_image_coord_t *tlx,
-  jas_image_coord_t *tly, jas_image_coord_t *brx, jas_image_coord_t *bry);
-
-/******************************************************************************\
-* Global data.
-\******************************************************************************/
-
-static unsigned jas_image_numfmts = 0;
-static jas_image_fmtinfo_t jas_image_fmtinfos[JAS_IMAGE_MAXFMTS];
+static void jas_image_calcbbox2(const jas_image_t *image,
+  jas_image_coord_t *tlx, jas_image_coord_t *tly, jas_image_coord_t *brx,
+  jas_image_coord_t *bry);
+static void jas_image_fmtinfo_init(jas_image_fmtinfo_t *fmtinfo);
+static void jas_image_fmtinfo_cleanup(jas_image_fmtinfo_t *fmtinfo);
 
 /******************************************************************************\
 * Create and destroy operations.
 \******************************************************************************/
 
-jas_image_t *jas_image_create(unsigned numcmpts, const jas_image_cmptparm_t *cmptparms,
-  jas_clrspc_t clrspc)
+jas_image_t *jas_image_create(unsigned numcmpts,
+  const jas_image_cmptparm_t *cmptparms, jas_clrspc_t clrspc)
 {
 	jas_image_t *image;
 	size_t rawsize;
@@ -134,8 +133,8 @@ jas_image_t *jas_image_create(unsigned numcmpts, const jas_image_cmptparm_t *cmp
 
 	image = 0;
 
-	JAS_DBGLOG(100, ("jas_image_create(%d, %p, %d)\n", numcmpts, cmptparms,
-	  clrspc));
+	JAS_LOGDEBUGF(100, "jas_image_create(%d, %p, %d)\n", numcmpts, cmptparms,
+	  clrspc);
 
 	if (!(image = jas_image_create0())) {
 		goto error;
@@ -233,7 +232,8 @@ jas_image_t *jas_image_copy(jas_image_t *image)
 		goto error;
 	}
 	for (unsigned cmptno = 0; cmptno < image->numcmpts_; ++cmptno) {
-		if (!(newimage->cmpts_[cmptno] = jas_image_cmpt_copy(image->cmpts_[cmptno]))) {
+		if (!(newimage->cmpts_[cmptno] = jas_image_cmpt_copy(
+		  image->cmpts_[cmptno]))) {
 			goto error;
 		}
 		++newimage->numcmpts_;
@@ -242,8 +242,9 @@ jas_image_t *jas_image_copy(jas_image_t *image)
 	jas_image_setbbox(newimage);
 
 	if (image->cmprof_) {
-		if (!(newimage->cmprof_ = jas_cmprof_copy(image->cmprof_)))
+		if (!(newimage->cmprof_ = jas_cmprof_copy(image->cmprof_))) {
 			goto error;
+		}
 	}
 
 	return newimage;
@@ -309,8 +310,9 @@ void jas_image_destroy(jas_image_t *image)
 		}
 		jas_free(image->cmpts_);
 	}
-	if (image->cmprof_)
+	if (image->cmprof_) {
 		jas_cmprof_destroy(image->cmprof_);
+	}
 	jas_free(image);
 }
 
@@ -322,7 +324,7 @@ static jas_image_cmpt_t *jas_image_cmpt_create(int_fast32_t tlx,
 	jas_image_cmpt_t *cmpt;
 	size_t size;
 
-	JAS_DBGLOG(100, (
+	JAS_LOGDEBUGF(100,
 	  "jas_image_cmpt_create(%ld, %ld, %ld, %ld, %ld, %ld, %d, %d, %d)\n",
 	  JAS_CAST(long, tlx),
 	  JAS_CAST(long, tly),
@@ -333,7 +335,7 @@ static jas_image_cmpt_t *jas_image_cmpt_create(int_fast32_t tlx,
 	  JAS_CAST(int, depth),
 	  sgnd,
 	  inmem
-	  ));
+	  );
 
 	if (depth < 1U + sgnd) {
 		/* we need at least 1 bit for unsigned samples and 2
@@ -368,13 +370,15 @@ static jas_image_cmpt_t *jas_image_cmpt_create(int_fast32_t tlx,
 	cmpt->stream_ = 0;
 	cmpt->cps_ = (depth + 7) / 8;
 
-	// Compute the number of samples in the image component, while protecting
-	// against overflow.
-	// size = cmpt->width_ * cmpt->height_ * cmpt->cps_;
+	/*
+	 * Compute the number of samples in the image component, while protecting
+	 * against overflow.
+	 * size = cmpt->width_ * cmpt->height_ * cmpt->cps_;
+	 */
 	if (!jas_safe_size_mul3(cmpt->width_, cmpt->height_, cmpt->cps_, &size)) {
 		goto error;
 	}
-	cmpt->stream_ = (inmem) ? jas_stream_memopen2(0, size) :
+	cmpt->stream_ = (inmem) ? jas_stream_memopen(0, size) :
 	  jas_stream_tmpfile();
 	if (!cmpt->stream_) {
 		goto error;
@@ -422,32 +426,43 @@ jas_image_t *jas_image_decode(jas_stream_t *in, int fmt, const char *optstr)
 
 	/* If possible, try to determine the format of the input data. */
 	if (fmt < 0) {
-		if ((fmt = jas_image_getfmt(in)) < 0)
+		if ((fmt = jas_image_getfmt(in)) < 0) {
+			jas_logerrorf("jas_image_decode: cannot determine image format\n");
 			goto error;
+		}
 	}
 
 	/* Is it possible to decode an image represented in this format? */
-	if (!(fmtinfo = jas_image_lookupfmtbyid(fmt)))
+	if (!(fmtinfo = jas_image_lookupfmtbyid(fmt))) {
 		goto error;
-	if (!fmtinfo->ops.decode)
+	}
+	if (!fmtinfo->ops.decode) {
+		jas_logerrorf("jas_image_decode: no decode operation available\n");
 		goto error;
+	}
 
 	/* Decode the image. */
-	if (!(image = (*fmtinfo->ops.decode)(in, optstr)))
+	if (!(image = (*fmtinfo->ops.decode)(in, optstr))) {
+		jas_logerrorf("jas_image_decode: decode operation failed\n");
 		goto error;
+	}
 
 	/* Create a color profile if needed. */
 	if (!jas_clrspc_isunknown(image->clrspc_) &&
 	  !jas_clrspc_isgeneric(image->clrspc_) && !image->cmprof_) {
 		if (!(image->cmprof_ =
-		  jas_cmprof_createfromclrspc(jas_image_clrspc(image))))
+		  jas_cmprof_createfromclrspc(jas_image_clrspc(image)))) {
+			jas_logerrorf("jas_image_decode: cannot create CM profile\n");
 			goto error;
+		}
 	}
 
 	return image;
+
 error:
-	if (image)
+	if (image) {
 		jas_image_destroy(image);
+	}
 	return 0;
 }
 
@@ -456,7 +471,7 @@ int jas_image_encode(jas_image_t *image, jas_stream_t *out, int fmt,
 {
 	const jas_image_fmtinfo_t *fmtinfo;
 	if (!(fmtinfo = jas_image_lookupfmtbyid(fmt))) {
-		jas_eprintf("format lookup failed\n");
+		jas_logerrorf("format lookup failed\n");
 		return -1;
 	}
 	return (fmtinfo->ops.encode) ? (*fmtinfo->ops.encode)(image, out,
@@ -479,9 +494,9 @@ int jas_image_readcmpt(jas_image_t *image, unsigned cmptno, jas_image_coord_t x,
 	jas_seqent_t *dr;
 	jas_seqent_t *d;
 
-	JAS_DBGLOG(100, ("jas_image_readcmpt(%p, %d, %ld, %ld, %ld, %ld, %p)\n",
+	JAS_LOGDEBUGF(100, "jas_image_readcmpt(%p, %d, %ld, %ld, %ld, %ld, %p)\n",
 	  image, cmptno, JAS_CAST(long, x), JAS_CAST(long, y),
-	  JAS_CAST(long, width), JAS_CAST(long, height), data));
+	  JAS_CAST(long, width), JAS_CAST(long, height), data);
 
 	if(data == NULL) {
 		return -1;
@@ -502,7 +517,8 @@ int jas_image_readcmpt(jas_image_t *image, unsigned cmptno, jas_image_coord_t x,
 		return -1;
 	}
 
-	if (jas_matrix_numrows(data) != height || jas_matrix_numcols(data) != width) {
+	if (jas_matrix_numrows(data) != height || jas_matrix_numcols(data) !=
+	  width) {
 		if (jas_matrix_resize(data, height, width)) {
 			return -1;
 		}
@@ -543,11 +559,13 @@ int jas_image_readcmpt(jas_image_t *image, unsigned cmptno, jas_image_coord_t x,
 			jas_uchar buffer[width];
 #endif
 
-			if (jas_stream_read(stream, buffer, width) != width)
+			if (jas_stream_read(stream, buffer, width) != width) {
 				return -1;
+			}
 
-			for (j = 0; j < width; ++j)
+			for (j = 0; j < width; ++j) {
 				d[j] = buffer[j];
+			}
 
 			continue;
 		}
@@ -567,9 +585,9 @@ int jas_image_readcmpt(jas_image_t *image, unsigned cmptno, jas_image_coord_t x,
 	return 0;
 }
 
-int jas_image_writecmpt(jas_image_t *image, unsigned cmptno, jas_image_coord_t x,
-  jas_image_coord_t y, jas_image_coord_t width, jas_image_coord_t height,
-  const jas_matrix_t *data)
+int jas_image_writecmpt(jas_image_t *image, unsigned cmptno,
+  jas_image_coord_t x, jas_image_coord_t y, jas_image_coord_t width,
+  jas_image_coord_t height, const jas_matrix_t *data)
 {
 	jas_image_cmpt_t *cmpt;
 	jas_image_coord_t i;
@@ -577,9 +595,9 @@ int jas_image_writecmpt(jas_image_t *image, unsigned cmptno, jas_image_coord_t x
 	jas_seqent_t v;
 	int c;
 
-	JAS_DBGLOG(100, ("jas_image_writecmpt(%p, %d, %ld, %ld, %ld, %ld, %p)\n",
+	JAS_LOGDEBUGF(100, "jas_image_writecmpt(%p, %d, %ld, %ld, %ld, %ld, %p)\n",
 	  image, cmptno, JAS_CAST(long, x), JAS_CAST(long, y),
-	  JAS_CAST(long, width), JAS_CAST(long, height), data));
+	  JAS_CAST(long, width), JAS_CAST(long, height), data);
 
 	if (cmptno >= image->numcmpts_) {
 		return -1;
@@ -663,57 +681,139 @@ int jas_image_writecmpt(jas_image_t *image, unsigned cmptno, jas_image_coord_t x
 * File format operations.
 \******************************************************************************/
 
-void jas_image_clearfmts()
+static void jas_image_fmtinfo_init(jas_image_fmtinfo_t *fmtinfo)
+{
+	fmtinfo->id = -1;
+	fmtinfo->name = 0;
+	fmtinfo->ext = 0;
+	fmtinfo->exts = 0;
+	fmtinfo->max_exts = 0;
+	fmtinfo->num_exts = 0;
+	fmtinfo->enabled = 0;
+	fmtinfo->desc = 0;
+	memset(&fmtinfo->ops, 0, sizeof(jas_image_fmtops_t));
+}
+
+static void jas_image_fmtinfo_cleanup(jas_image_fmtinfo_t *fmtinfo)
+{
+	if (fmtinfo->name) {
+		jas_free(fmtinfo->name);
+		fmtinfo->name = 0;
+	}
+	if (fmtinfo->ext) {
+		jas_free(fmtinfo->ext);
+		fmtinfo->ext = 0;
+	}
+	if (fmtinfo->exts) {
+		assert(fmtinfo->max_exts > 0);
+		for (int i = 0; i < fmtinfo->num_exts; ++i) {
+			jas_free(fmtinfo->exts[i]);
+		}
+		jas_free(fmtinfo->exts);
+		fmtinfo->exts = 0;
+	}
+	if (fmtinfo->desc) {
+		jas_free(fmtinfo->desc);
+		fmtinfo->desc = 0;
+	}
+}
+
+JAS_EXPORT
+const jas_image_fmtinfo_t *jas_image_getfmtbyind(int index)
+{
+	jas_ctx_t *ctx = jas_get_ctx();
+	assert(index >= 0 && index < ctx->image_numfmts);
+	return &ctx->image_fmtinfos[index];
+}
+
+JAS_EXPORT
+int jas_image_getnumfmts(void)
+{
+	jas_ctx_t *ctx = jas_get_ctx();
+	return ctx->image_numfmts;
+}
+
+JAS_EXPORT
+int jas_image_setfmtenable(int index, int enabled)
+{
+	jas_ctx_t *ctx = jas_get_ctx();
+	ctx->image_fmtinfos[index].enabled = enabled;
+	return 0;
+}
+
+void jas_image_clearfmts_internal(jas_image_fmtinfo_t *image_fmtinfos,
+  size_t *image_numfmts)
 {
 	jas_image_fmtinfo_t *fmtinfo;
-	for (unsigned i = 0; i < jas_image_numfmts; ++i) {
-		fmtinfo = &jas_image_fmtinfos[i];
-		if (fmtinfo->name) {
-			jas_free(fmtinfo->name);
-			fmtinfo->name = 0;
-		}
-		if (fmtinfo->ext) {
-			jas_free(fmtinfo->ext);
-			fmtinfo->ext = 0;
-		}
-		if (fmtinfo->desc) {
-			jas_free(fmtinfo->desc);
-			fmtinfo->desc = 0;
-		}
+	for (int fmtind = 0; fmtind < *image_numfmts; ++fmtind) {
+		fmtinfo = &image_fmtinfos[fmtind];
+		jas_image_fmtinfo_cleanup(fmtinfo);
 	}
-	jas_image_numfmts = 0;
+	*image_numfmts = 0;
+}
+
+void jas_image_clearfmts()
+{
+	jas_ctx_t *ctx = jas_get_ctx();
+	jas_image_clearfmts_internal(ctx->image_fmtinfos, &ctx->image_numfmts);
+}
+
+int jas_image_addfmt_internal(jas_image_fmtinfo_t *image_fmtinfos,
+  size_t *image_numfmts, int id, const char *name, const char *ext,
+  const char *desc, const jas_image_fmtops_t *ops)
+{
+	const char delim[] = " \t";
+	int ret = 0;
+	jas_image_fmtinfo_t *fmtinfo = 0;
+
+	assert(id >= 0 && name && ext && ops);
+	if (*image_numfmts >= JAS_IMAGE_MAXFMTS) {
+		ret = -1;
+		goto done;
+	}
+	fmtinfo = &image_fmtinfos[*image_numfmts];
+	jas_image_fmtinfo_init(fmtinfo);
+	fmtinfo->id = id;
+	if (jas_stringtokenize(ext, delim, &fmtinfo->exts, &fmtinfo->max_exts,
+	  &fmtinfo->num_exts)) {
+		assert(!fmtinfo->exts && !fmtinfo->max_exts && !fmtinfo->num_exts);
+		ret = -1;
+		goto done;
+	}
+	assert(fmtinfo->num_exts > 0);
+	char *primary_ext = fmtinfo->exts[0];
+	if (!(fmtinfo->name = jas_strdup(name))) {
+		ret = -1;
+		goto done;
+	}
+	if (!(fmtinfo->ext = jas_strdup(primary_ext))) {
+		ret = -1;
+		goto done;
+	}
+	if (!(fmtinfo->desc = jas_strdup(desc))) {
+		ret = -1;
+		goto done;
+	}
+	fmtinfo->ops = *ops;
+	++(*image_numfmts);
+done:
+	if (ret && fmtinfo) {
+		jas_image_fmtinfo_cleanup(fmtinfo);
+	}
+	return ret;
 }
 
 int jas_image_addfmt(int id, const char *name, const char *ext,
   const char *desc, const jas_image_fmtops_t *ops)
 {
-	jas_image_fmtinfo_t *fmtinfo;
-	assert(id >= 0 && name && ext && ops);
-	if (jas_image_numfmts >= JAS_IMAGE_MAXFMTS) {
-		return -1;
-	}
-	fmtinfo = &jas_image_fmtinfos[jas_image_numfmts];
-	fmtinfo->id = id;
-	if (!(fmtinfo->name = jas_strdup(name))) {
-		return -1;
-	}
-	if (!(fmtinfo->ext = jas_strdup(ext))) {
-		jas_free(fmtinfo->name);
-		return -1;
-	}
-	if (!(fmtinfo->desc = jas_strdup(desc))) {
-		jas_free(fmtinfo->name);
-		jas_free(fmtinfo->ext);
-		return -1;
-	}
-	fmtinfo->ops = *ops;
-	++jas_image_numfmts;
-	return 0;
+	jas_ctx_t *ctx = jas_get_ctx();
+	return jas_image_addfmt_internal(ctx->image_fmtinfos, &ctx->image_numfmts,
+	  id, name, ext, desc, ops);
 }
 
 /* This is for future consideration for addition to the library API. */
 #if 0
-JAS_DLLEXPORT
+JAS_EXPORT
 int jas_image_delfmt(int fmtid)
 {
 	if (fmtid < 0 || fmtid >= JAS_CAST(int, jas_image_numfmts)) {
@@ -752,20 +852,21 @@ const char *jas_image_fmttostr(int fmt)
 
 int jas_image_getfmt(jas_stream_t *in)
 {
+	jas_ctx_t *ctx = jas_get_ctx();
 	const jas_image_fmtinfo_t *fmtinfo;
 
 	/* Check for data in each of the supported formats. */
 	unsigned i;
-	for (i = 0, fmtinfo = jas_image_fmtinfos; i < jas_image_numfmts; ++i,
+	for (i = 0, fmtinfo = ctx->image_fmtinfos; i < ctx->image_numfmts; ++i,
 	  ++fmtinfo) {
-		if (fmtinfo->ops.validate) {
+		if (fmtinfo->enabled && fmtinfo->ops.validate) {
 			/* Is the input data valid for this format? */
-			JAS_DBGLOG(20, ("testing for format %s ... ", fmtinfo->name));
+			JAS_LOGDEBUGF(20, "testing for format %s\n", fmtinfo->name);
 			if (!(*fmtinfo->ops.validate)(in)) {
-				JAS_DBGLOG(20, ("test succeeded\n"));
+				JAS_LOGDEBUGF(20, "test succeeded\n");
 				return fmtinfo->id;
 			}
-			JAS_DBGLOG(20, ("test failed\n"));
+			JAS_LOGDEBUGF(20, "test failed\n");
 		}
 	}
 	return -1;
@@ -773,6 +874,7 @@ int jas_image_getfmt(jas_stream_t *in)
 
 int jas_image_fmtfromname(const char *name)
 {
+	jas_ctx_t *ctx = jas_get_ctx();
 	const char *ext;
 	const jas_image_fmtinfo_t *fmtinfo;
 	/* Get the file name extension. */
@@ -782,10 +884,10 @@ int jas_image_fmtfromname(const char *name)
 	++ext;
 	/* Try to find a format that uses this extension. */	
 	unsigned i;
-	for (i = 0, fmtinfo = jas_image_fmtinfos; i < jas_image_numfmts; ++i,
+	for (i = 0, fmtinfo = ctx->image_fmtinfos; i < ctx->image_numfmts; ++i,
 	  ++fmtinfo) {
 		/* Do we have a match? */
-		if (!strcmp(ext, fmtinfo->ext)) {
+		if (fmtinfo->enabled && !strcmp(ext, fmtinfo->ext)) {
 			return fmtinfo->id;
 		}
 	}
@@ -875,10 +977,12 @@ int jas_image_addcmpt(jas_image_t *image, int cmptno,
 
 const jas_image_fmtinfo_t *jas_image_lookupfmtbyid(int id)
 {
+	jas_ctx_t *ctx = jas_get_ctx();
 	unsigned i;
 	const jas_image_fmtinfo_t *fmtinfo;
 
-	for (i = 0, fmtinfo = jas_image_fmtinfos; i < jas_image_numfmts; ++i, ++fmtinfo) {
+	for (i = 0, fmtinfo = ctx->image_fmtinfos; i < ctx->image_numfmts;
+	  ++i, ++fmtinfo) {
 		if (fmtinfo->id == id) {
 			return fmtinfo;
 		}
@@ -888,10 +992,11 @@ const jas_image_fmtinfo_t *jas_image_lookupfmtbyid(int id)
 
 const jas_image_fmtinfo_t *jas_image_lookupfmtbyname(const char *name)
 {
+	jas_ctx_t *ctx = jas_get_ctx();
 	unsigned i;
 	const jas_image_fmtinfo_t *fmtinfo;
-
-	for (i = 0, fmtinfo = jas_image_fmtinfos; i < jas_image_numfmts; ++i, ++fmtinfo) {
+	for (i = 0, fmtinfo = ctx->image_fmtinfos; i < ctx->image_numfmts;
+	  ++i, ++fmtinfo) {
 		if (!strcmp(fmtinfo->name, name)) {
 			return fmtinfo;
 		}
@@ -902,7 +1007,9 @@ const jas_image_fmtinfo_t *jas_image_lookupfmtbyname(const char *name)
 static uint_fast32_t inttobits(jas_seqent_t v, unsigned prec, bool sgnd)
 {
 	uint_fast32_t ret;
-	ret = ((sgnd && v < 0) ? ((1 << prec) + v) : v) & JAS_ONES(prec);
+	assert(v >= 0 || sgnd);
+	ret = ((sgnd && v < 0) ? (JAS_POW2_X(jas_seqent_t, prec) + v) : v) &
+	  JAS_ONES(prec);
 	return ret;
 }
 
@@ -994,7 +1101,7 @@ int jas_image_copycmpt(jas_image_t *dstimage, unsigned dstcmptno,
 	return 0;
 }
 
-void jas_image_dump(jas_image_t *image, FILE *out)
+int jas_image_dump(jas_image_t *image, FILE *out)
 {
 	long buf[1024];
 	jas_image_cmpt_t *cmpt;
@@ -1006,24 +1113,27 @@ void jas_image_dump(jas_image_t *image, FILE *out)
 		const unsigned height = jas_image_cmptheight(image, cmptno);
 		const unsigned n = JAS_MIN(16, width);
 		if (jas_image_readcmpt2(image, cmptno, 0, 0, n, 1, buf)) {
-			abort();
+			return -1;
 		}
 		for (unsigned i = 0; i < n; ++i) {
 			fprintf(out, " f(%d,%d)=%ld", i, 0, buf[i]);
 		}
 		fprintf(out, "\n");
-		if (jas_image_readcmpt2(image, cmptno, width - n, height - 1, n, 1, buf)) {
-			abort();
+		if (jas_image_readcmpt2(image, cmptno, width - n, height - 1, n, 1,
+		  buf)) {
+			return -1;
 		}
 		for (unsigned i = 0; i < n; ++i) {
 			fprintf(out, " f(%d,%d)=%ld", width - n + i, height - 1, buf[i]);
 		}
 		fprintf(out, "\n");
 	}
+	return 0;
 }
 
-int jas_image_depalettize(jas_image_t *image, unsigned cmptno, unsigned numlutents,
-  const int_fast32_t *lutents, unsigned dtype, unsigned newcmptno)
+int jas_image_depalettize(jas_image_t *image, unsigned cmptno,
+  unsigned numlutents, const int_fast32_t *lutents, unsigned dtype,
+  unsigned newcmptno)
 {
 	jas_image_cmptparm_t cmptparms;
 	const jas_image_cmpt_t *cmpt = image->cmpts_[cmptno];
@@ -1109,7 +1219,8 @@ void jas_image_writecmptsample(jas_image_t *image, unsigned cmptno, unsigned x, 
 	}
 }
 
-int jas_image_getcmptbytype(const jas_image_t *image, jas_image_cmpttype_t ctype)
+int jas_image_getcmptbytype(const jas_image_t *image,
+  jas_image_cmpttype_t ctype)
 {
 	for (unsigned cmptno = 0; cmptno < image->numcmpts_; ++cmptno) {
 		if (image->cmpts_[cmptno]->type_ == ctype) {
@@ -1119,29 +1230,14 @@ int jas_image_getcmptbytype(const jas_image_t *image, jas_image_cmpttype_t ctype
 	return -1;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /***********************************************/
 /***********************************************/
 /***********************************************/
 /***********************************************/
 
-int jas_image_readcmpt2(jas_image_t *image, unsigned cmptno, jas_image_coord_t x,
-  jas_image_coord_t y, jas_image_coord_t width, jas_image_coord_t height,
-  long *buf)
+int jas_image_readcmpt2(jas_image_t *image, unsigned cmptno,
+  jas_image_coord_t x, jas_image_coord_t y, jas_image_coord_t width,
+  jas_image_coord_t height, long *buf)
 {
 	jas_image_cmpt_t *cmpt;
 	jas_image_coord_t i;
@@ -1149,22 +1245,26 @@ int jas_image_readcmpt2(jas_image_t *image, unsigned cmptno, jas_image_coord_t x
 	long v;
 	long *bufptr;
 
-	if (cmptno >= image->numcmpts_)
+	if (cmptno >= image->numcmpts_) {
 		goto error;
+	}
 	cmpt = image->cmpts_[cmptno];
 	if (x < 0 || x >= cmpt->width_ || y < 0 || y >= cmpt->height_ ||
 	  width < 0 || height < 0 || x + width > cmpt->width_ ||
-	  y + height > cmpt->height_)
+	  y + height > cmpt->height_) {
 		goto error;
+	}
 
 	bufptr = buf;
 	for (i = 0; i < height; ++i) {
 		if (jas_stream_seek(cmpt->stream_, (cmpt->width_ * (y + i) + x)
-		  * cmpt->cps_, SEEK_SET) < 0)
+		  * cmpt->cps_, SEEK_SET) < 0) {
 			goto error;
+		}
 		for (j = 0; j < width; ++j) {
-			if (getint(cmpt->stream_, cmpt->sgnd_, cmpt->prec_, &v))
+			if (getint(cmpt->stream_, cmpt->sgnd_, cmpt->prec_, &v)) {
 				goto error;
+			}
 			*bufptr++ = v;
 		}
 	}
@@ -1174,32 +1274,36 @@ error:
 	return -1;
 }
 
-int jas_image_writecmpt2(jas_image_t *image, unsigned cmptno, jas_image_coord_t x,
-  jas_image_coord_t y, jas_image_coord_t width, jas_image_coord_t height,
-  const long *buf)
+int jas_image_writecmpt2(jas_image_t *image, unsigned cmptno,
+  jas_image_coord_t x, jas_image_coord_t y, jas_image_coord_t width,
+  jas_image_coord_t height, const long *buf)
 {
 	jas_image_cmpt_t *cmpt;
 	jas_image_coord_t i;
 	jas_image_coord_t j;
 	long v;
 
-	if (cmptno >= image->numcmpts_)
+	if (cmptno >= image->numcmpts_) {
 		goto error;
+	}
 	cmpt = image->cmpts_[cmptno];
 	if (x < 0 || x >= cmpt->width_ || y < 0 || y >= cmpt->height_ ||
 	  width < 0 || height < 0 || x + width > cmpt->width_ ||
-	  y + height > cmpt->height_)
+	  y + height > cmpt->height_) {
 		goto error;
+	}
 
 	const long *bufptr = buf;
 	for (i = 0; i < height; ++i) {
 		if (jas_stream_seek(cmpt->stream_, (cmpt->width_ * (y + i) + x)
-		  * cmpt->cps_, SEEK_SET) < 0)
+		  * cmpt->cps_, SEEK_SET) < 0) {
 			goto error;
+		}
 		for (j = 0; j < width; ++j) {
 			v = *bufptr++;
-			if (putint(cmpt->stream_, cmpt->sgnd_, cmpt->prec_, v))
+			if (putint(cmpt->stream_, cmpt->sgnd_, cmpt->prec_, v)) {
 				goto error;
+			}
 		}
 	}
 
@@ -1247,10 +1351,11 @@ int jas_image_sampcmpt(jas_image_t *image, unsigned cmptno, unsigned newcmptno,
 	cmptparm.height = height;
 	cmptparm.prec = prec;
 	cmptparm.sgnd = sgnd;
-	if (jas_image_addcmpt(image, newcmptno, &cmptparm))
+	if (jas_image_addcmpt(image, newcmptno, &cmptparm)) {
 		goto error;
-cmptbrx = oldcmpt->tlx_ + (oldcmpt->width_ - 1) * oldcmpt->hstep_;
-cmptbry = oldcmpt->tly_ + (oldcmpt->height_ - 1) * oldcmpt->vstep_;
+	}
+	cmptbrx = oldcmpt->tlx_ + (oldcmpt->width_ - 1) * oldcmpt->hstep_;
+	cmptbry = oldcmpt->tly_ + (oldcmpt->height_ - 1) * oldcmpt->vstep_;
 	const jas_image_cmpt_t *const newcmpt = image->cmpts_[newcmptno];
 	jas_stream_rewind(newcmpt->stream_);
 	for (unsigned i = 0; i < height; ++i) {
@@ -1260,11 +1365,13 @@ cmptbry = oldcmpt->tly_ + (oldcmpt->height_ - 1) * oldcmpt->vstep_;
 			ax = downtomult(x - oldcmpt->tlx_, oldcmpt->hstep_) + oldcmpt->tlx_;
 			ay = downtomult(y - oldcmpt->tly_, oldcmpt->vstep_) + oldcmpt->tly_;
 			bx = uptomult(x - oldcmpt->tlx_, oldcmpt->hstep_) + oldcmpt->tlx_;
-			if (bx > cmptbrx)
+			if (bx > cmptbrx) {
 				bx = cmptbrx;
+			}
 			by = uptomult(y - oldcmpt->tly_, oldcmpt->vstep_) + oldcmpt->tly_;
-			if (by > cmptbry)
+			if (by > cmptbry) {
 				by = cmptbry;
+			}
 			d0 = (ax - x) * (ax - x) + (ay - y) * (ay - y);
 			d1 = (bx - x) * (bx - x) + (ay - y) * (ay - y);
 			d2 = (bx - x) * (bx - x) + (by - y) * (by - y);
@@ -1285,19 +1392,22 @@ cmptbry = oldcmpt->tly_ + (oldcmpt->height_ - 1) * oldcmpt->vstep_;
 			assert(oldx >= 0 && oldx < oldcmpt->width_ &&
 			  oldy >= 0 && oldy < oldcmpt->height_);
 			if (jas_stream_seek(oldcmpt->stream_, oldcmpt->cps_ *
-			  (oldy * oldcmpt->width_ + oldx), SEEK_SET) < 0)
+			  (oldy * oldcmpt->width_ + oldx), SEEK_SET) < 0) {
 				goto error;
+			}
 			if (getint(oldcmpt->stream_, oldcmpt->sgnd_,
-			  oldcmpt->prec_, &v))
+			  oldcmpt->prec_, &v)) {
 				goto error;
+			}
 			if (newcmpt->prec_ != oldcmpt->prec_ ||
 			  newcmpt->sgnd_ != oldcmpt->sgnd_) {
 				v = convert(v, oldcmpt->sgnd_, oldcmpt->prec_,
 				  newcmpt->sgnd_, newcmpt->prec_);
 			}
 			if (putint(newcmpt->stream_, newcmpt->sgnd_,
-			  newcmpt->prec_, v))
+			  newcmpt->prec_, v)) {
 				goto error;
+			}
 		}
 	}
 	return 0;
@@ -1324,8 +1434,9 @@ int jas_image_ishomosamp(const jas_image_t *image)
 }
 
 /* Note: This function defines a bounding box differently. */
-static void jas_image_calcbbox2(const jas_image_t *image, jas_image_coord_t *tlx,
-  jas_image_coord_t *tly, jas_image_coord_t *brx, jas_image_coord_t *bry)
+static void jas_image_calcbbox2(const jas_image_t *image,
+  jas_image_coord_t *tlx, jas_image_coord_t *tly, jas_image_coord_t *brx,
+  jas_image_coord_t *bry)
 {
 	jas_image_coord_t tmptlx;
 	jas_image_coord_t tmptly;
@@ -1340,16 +1451,20 @@ static void jas_image_calcbbox2(const jas_image_t *image, jas_image_coord_t *tlx
 		tmpbry = cmpt->tly_ + cmpt->vstep_ * (cmpt->height_ - 1);
 		for (unsigned i = 0; i < image->numcmpts_; ++i) {
 			cmpt = image->cmpts_[i];
-			if (cmpt->tlx_ < tmptlx)
+			if (cmpt->tlx_ < tmptlx) {
 				tmptlx = cmpt->tlx_;
-			if (cmpt->tly_ < tmptly)
+			}
+			if (cmpt->tly_ < tmptly) {
 				tmptly = cmpt->tly_;
+			}
 			t = cmpt->tlx_ + cmpt->hstep_ * (cmpt->width_ - 1);
-			if (t > tmpbrx)
+			if (t > tmpbrx) {
 				tmpbrx = t;
+			}
 			t = cmpt->tly_ + cmpt->vstep_ * (cmpt->height_ - 1);
-			if (t > tmpbry)
+			if (t > tmpbry) {
 				tmpbry = t;
+			}
 		}
 	} else {
 		tmptlx = 0;
@@ -1368,7 +1483,7 @@ static inline long decode_twos_comp(jas_ulong c, unsigned prec)
 {
 	long result;
 	assert(prec >= 2);
-	jas_eprintf("warning: support for signed data is untested\n");
+	jas_logwarnf("warning: support for signed data is untested\n");
 	// NOTE: Is this correct?
 	result = (c & ((1 << (prec - 1)) - 1)) - (c & (1 << (prec - 1)));
 	return result;
@@ -1379,7 +1494,7 @@ static inline jas_ulong encode_twos_comp(long n, unsigned prec)
 {
 	jas_ulong result;
 	assert(prec >= 2);
-	jas_eprintf("warning: support for signed data is untested\n");
+	jas_logwarnf("warning: support for signed data is untested\n");
 	// NOTE: Is this correct?
 	if (n < 0) {
 		result = -n;
@@ -1398,8 +1513,9 @@ static int getint(jas_stream_t *in, bool sgnd, unsigned prec, long *val)
 	assert((!sgnd && prec >= 1) || (sgnd && prec >= 2));
 	v = 0;
 	for (unsigned n = (prec + 7) / 8; n-- > 0;) {
-		if ((c = jas_stream_getc(in)) == EOF)
+		if ((c = jas_stream_getc(in)) == EOF) {
 			return -1;
+		}
 		v = (v << 8) | c;
 	}
 	v &= ((1 << prec) - 1);
@@ -1422,8 +1538,9 @@ static int putint(jas_stream_t *out, bool sgnd, unsigned prec, long val)
 	val &= (1 << prec) - 1;
 	for (unsigned n = (prec + 7) / 8; n-- > 0;) {
 		c = (val >> (n * 8)) & 0xff;
-		if (jas_stream_putc(out, c) != c)
+		if (jas_stream_putc(out, c) != c) {
 			return -1;
+		}
 	}
 	return 0;
 }
@@ -1431,6 +1548,7 @@ static int putint(jas_stream_t *out, bool sgnd, unsigned prec, long val)
 static long convert(long val, bool oldsgnd, unsigned oldprec, bool newsgnd,
   unsigned newprec)
 {
+	/* TODO: The following code looks suspicious (i.e., an empty if body). */
 	if (newsgnd != oldsgnd) {
 	}
 	if (newprec != oldprec) {
@@ -1455,8 +1573,8 @@ static long uptomult(long x, long y)
 	return ((x + y - 1) / y) * y;
 }
 
-jas_image_t *jas_image_chclrspc(jas_image_t *image, const jas_cmprof_t *outprof,
-  jas_cmxform_intent_t intent)
+jas_image_t *jas_image_chclrspc(jas_image_t *image,
+  const jas_cmprof_t *outprof, jas_cmxform_intent_t intent)
 {
 	jas_image_t *inimage;
 	int k;
@@ -1471,20 +1589,24 @@ jas_image_t *jas_image_chclrspc(jas_image_t *image, const jas_cmprof_t *outprof,
 	jas_cmcmptfmt_t *outcmptfmts;
 
 #if 0
-jas_eprintf("IMAGE\n");
-jas_image_dump(image, stderr);
+	jas_eprintf("IMAGE\n");
+	jas_image_dump(image, stderr);
 #endif
 
-	if (image->numcmpts_ == 0)
-		/* can't work with a file with no components;
-		   continuing would crash because we'd attempt to
-		   obtain information about the first component */
-		return NULL;
+	if (image->numcmpts_ == 0) {
+		/*
+		can't work with a file with no components;
+		continuing would crash because we'd attempt to
+		obtain information about the first component
+		*/
+		return 0;
+	}
 
 	outimage = 0;
 	xform = 0;
-	if (!(inimage = jas_image_copy(image)))
+	if (!(inimage = jas_image_copy(image))) {
 		goto error;
+	}
 	image = 0;
 
 	if (!jas_image_ishomosamp(inimage)) {
@@ -1503,10 +1625,12 @@ jas_image_dump(image, stderr);
 		unsigned n = jas_image_numcmpts(inimage);
 		for (unsigned i = 0; i < n; ++i) {
 			if (jas_image_sampcmpt(inimage, i, i + 1, 0, 0, minhstep, minvstep,
-			  jas_image_cmptsgnd(inimage, i), jas_image_cmptprec(inimage, i))) {
+			  jas_image_cmptsgnd(inimage, i), jas_image_cmptprec(inimage,
+			  i))) {
 				goto error;
 			}
-			const jas_image_cmpttype_t cmpttype = jas_image_cmpttype(inimage, i);
+			const jas_image_cmpttype_t cmpttype = jas_image_cmpttype(inimage,
+			  i);
 			jas_image_setcmpttype(inimage, i + 1, cmpttype);
 			jas_image_delcmpt(inimage, i);
 		}
@@ -1518,10 +1642,13 @@ jas_image_dump(image, stderr);
 	const unsigned vstep = jas_image_cmptvstep(inimage, 0);
 
 	if (!(inprof = jas_image_cmprof(inimage))) {
-		abort();
+		// formerly call to abort()
+		goto error;
 	}
-	const unsigned numinclrchans = jas_clrspc_numchans(jas_cmprof_clrspc(inprof));
-	const unsigned numoutclrchans = jas_clrspc_numchans(jas_cmprof_clrspc(outprof));
+	const unsigned numinclrchans =
+	  jas_clrspc_numchans(jas_cmprof_clrspc(inprof));
+	const unsigned numoutclrchans =
+	  jas_clrspc_numchans(jas_cmprof_clrspc(outprof));
 	const unsigned prec = 8;
 
 	if (!(outimage = jas_image_create0())) {
@@ -1538,8 +1665,9 @@ jas_image_dump(image, stderr);
 		cmptparm.height = height;
 		cmptparm.prec = prec;
 		cmptparm.sgnd = 0;
-		if (jas_image_addcmpt(outimage, -1, &cmptparm))
+		if (jas_image_addcmpt(outimage, -1, &cmptparm)) {
 			goto error;
+		}
 		jas_image_setcmpttype(outimage, i, JAS_IMAGE_CT_COLOR(i));
 	}
 #if 0
@@ -1552,8 +1680,9 @@ jas_image_dump(image, stderr);
 	}
 #endif
 
-	if (!(tmpprof = jas_cmprof_copy(outprof)))
+	if (!(tmpprof = jas_cmprof_copy(outprof))) {
 		goto error;
+	}
 	assert(!jas_image_cmprof(outimage));
 	jas_image_setcmprof(outimage, tmpprof);
 	tmpprof = 0;
@@ -1566,7 +1695,8 @@ jas_image_dump(image, stderr);
 
 	inpixmap.numcmpts = numinclrchans;
 	if (!(incmptfmts = jas_alloc2(numinclrchans, sizeof(jas_cmcmptfmt_t)))) {
-		abort();
+		// formerly call to abort()
+		goto error;
 	}
 	inpixmap.cmptfmts = incmptfmts;
 	for (unsigned i = 0; i < numinclrchans; ++i) {
@@ -1582,14 +1712,16 @@ jas_image_dump(image, stderr);
 
 	outpixmap.numcmpts = numoutclrchans;
 	if (!(outcmptfmts = jas_alloc2(numoutclrchans, sizeof(jas_cmcmptfmt_t)))) {
-		abort();
+		// formerly call to abort()
+		goto error;
 	}
 	outpixmap.cmptfmts = outcmptfmts;
 
 	for (unsigned i = 0; i < numoutclrchans; ++i) {
 		const int j = jas_image_getcmptbytype(outimage, JAS_IMAGE_CT_COLOR(i));
-		if (!(outcmptfmts[i].buf = jas_alloc2(width, sizeof(long))))
+		if (!(outcmptfmts[i].buf = jas_alloc2(width, sizeof(long)))) {
 			goto error;
+		}
 		outcmptfmts[i].prec = jas_image_cmptprec(outimage, j);
 		outcmptfmts[i].sgnd = jas_image_cmptsgnd(outimage, j);
 		outcmptfmts[i].width = width;
@@ -1600,15 +1732,17 @@ jas_image_dump(image, stderr);
 		for (unsigned j = 0; j < numinclrchans; ++j) {
 			k = jas_image_getcmptbytype(inimage, JAS_IMAGE_CT_COLOR(j));
 			if (jas_image_readcmpt2(inimage, k, 0, i, width, 1,
-			  incmptfmts[j].buf))
+			  incmptfmts[j].buf)) {
 				goto error;
+			}
 		}
 		jas_cmxform_apply(xform, &inpixmap, &outpixmap);
 		for (unsigned j = 0; j < numoutclrchans; ++j) {
 			k = jas_image_getcmptbytype(outimage, JAS_IMAGE_CT_COLOR(j));
 			if (jas_image_writecmpt2(outimage, k, 0, i, width, 1,
-			  outcmptfmts[j].buf))
+			  outcmptfmts[j].buf)) {
 				goto error;
+			}
 		}
 	}
 
@@ -1624,18 +1758,21 @@ jas_image_dump(image, stderr);
 	jas_image_destroy(inimage);
 
 #if 0
-jas_eprintf("INIMAGE\n");
-jas_image_dump(inimage, stderr);
-jas_eprintf("OUTIMAGE\n");
-jas_image_dump(outimage, stderr);
+	jas_eprintf("INIMAGE\n");
+	jas_image_dump(inimage, stderr);
+	jas_eprintf("OUTIMAGE\n");
+	jas_image_dump(outimage, stderr);
 #endif
 	return outimage;
 error:
-	if (xform)
+	if (xform) {
 		jas_cmxform_destroy(xform);
-	if (inimage)
+	}
+	if (inimage) {
 		jas_image_destroy(inimage);
-	if (outimage)
+	}
+	if (outimage) {
 		jas_image_destroy(outimage);
+	}
 	return 0;
 }

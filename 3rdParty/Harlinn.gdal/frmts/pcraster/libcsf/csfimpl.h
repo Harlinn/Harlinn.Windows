@@ -1,4 +1,3 @@
-#pragma once
 #ifndef CSF__IMPL_H
 #define CSF__IMPL_H
 

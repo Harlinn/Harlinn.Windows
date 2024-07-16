@@ -1,4 +1,3 @@
-#pragma once
 /******************************************************************************
  *
  * Purpose: Support for reading and manipulating PCIDSK Ephemeris Segments
@@ -28,8 +27,8 @@
 #ifndef INCLUDE_PCIDSK_SEGMENT_PCIDSKEPHEMERIS_SEG_H
 #define INCLUDE_PCIDSK_SEGMENT_PCIDSKEPHEMERIS_SEG_H
 
-#include "../pcidsk_ephemeris.h"
-#include "cpcidsksegment.h"
+#include "pcidsk_ephemeris.h"
+#include "segment/cpcidsksegment.h"
 
 namespace PCIDSK {
     class PCIDSKFile;

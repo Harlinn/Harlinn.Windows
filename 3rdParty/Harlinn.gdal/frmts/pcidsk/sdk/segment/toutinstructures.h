@@ -1,4 +1,3 @@
-#pragma once
 /******************************************************************************
  *
  * Purpose: Support for storing and manipulating Toutin information
@@ -29,7 +28,7 @@
 #define INCLUDE_PCIDSK_TOUTIN_INFORMATION_H
 
 #include <cstring>
-#include "orbitstructures.h"
+#include "segment/orbitstructures.h"
 
 namespace PCIDSK
 {
@@ -113,9 +112,8 @@ namespace PCIDSK
          * Copy constructor.
          * @param oSI the SRITInfo_t to copy
          */
-        SRITInfo_t(const SRITInfo_t& oSI)
+        SRITInfo_t(const SRITInfo_t& oSI): SRITInfo_t()
         {
-            OrbitPtr = nullptr;
             Copy(oSI);
         }
 

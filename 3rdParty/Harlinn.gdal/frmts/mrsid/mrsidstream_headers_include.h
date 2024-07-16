@@ -1,4 +1,3 @@
-#pragma once
 /******************************************************************************
  *
  * Project:  Multi-resolution Seamless Image Database (MrSID)
@@ -31,7 +30,7 @@
 #ifndef MRSIDSTREAM_HEADERS_INCLUDE_H
 #define MRSIDSTREAM_HEADERS_INCLUDE_H
 
-#include <port/cpl_port.h>
+#include "cpl_port.h"
 
 #ifdef HAVE_GCC_SYSTEM_HEADER
 #pragma GCC system_header
@@ -40,4 +39,4 @@
 #include "lt_base.h"
 #include "lt_ioStreamInf.h"
 
-#endif // MRSIDSTREAM_HEADERS_INCLUDE_H
+#endif  // MRSIDSTREAM_HEADERS_INCLUDE_H

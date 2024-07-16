@@ -1,4 +1,3 @@
-#pragma once
 /**********************************************************************
  * Project:  CPL - Common Portability Library
  * Purpose:  Google Cloud Storage routines
@@ -33,75 +32,83 @@
 
 #include <cstddef>
 
-#include <port/cpl_string.h>
+#include "cpl_string.h"
 
 #ifdef HAVE_CURL
 
 #include <curl/curl.h>
-#include <port/cpl_http.h>
+#include "cpl_http.h"
 #include "cpl_aws.h"
 #include <map>
 
-class VSIGSHandleHelper final: public IVSIS3LikeHandleHelper
+class VSIGSHandleHelper final : public IVSIS3LikeHandleHelper
 {
-        CPL_DISALLOW_COPY_ASSIGN(VSIGSHandleHelper)
+    CPL_DISALLOW_COPY_ASSIGN(VSIGSHandleHelper)
 
-        CPLString m_osURL;
-        CPLString m_osEndpoint;
-        CPLString m_osBucketObjectKey;
-        CPLString m_osSecretAccessKey;
-        CPLString m_osAccessKeyId;
-        bool      m_bUseHeaderFile;
-        GOA2Manager m_oManager;
-        std::string m_osUserProject{};
+    std::string m_osURL;
+    std::string m_osEndpoint;
+    std::string m_osBucketObjectKey;
+    std::string m_osSecretAccessKey;
+    std::string m_osAccessKeyId;
+    bool m_bUseAuthenticationHeader;
+    GOA2Manager m_oManager;
+    std::string m_osUserProject{};
 
-        HGDAL_EXPORT static bool     GetConfiguration(CSLConstList papszOptions,
-                                         CPLString& osSecretAccessKey,
-                                         CPLString& osAccessKeyId,
-                                         CPLString& osHeaderFile,
-                                         GOA2Manager& oManager);
+    static bool GetConfiguration(const std::string &osPathForOption,
+                                 CSLConstList papszOptions,
+                                 std::string &osSecretAccessKey,
+                                 std::string &osAccessKeyId,
+                                 bool &bUseAuthenticationHeader,
+                                 GOA2Manager &oManager);
 
-        HGDAL_EXPORT static bool     GetConfigurationFromConfigFile(
-                                         CPLString& osSecretAccessKey,
-                                         CPLString& osAccessKeyId,
-                                         CPLString& osOAuth2RefreshToken,
-                                         CPLString& osOAuth2ClientId,
-                                         CPLString& osOAuth2ClientSecret,
-                                         CPLString& osCredentials);
+    static bool GetConfigurationFromConfigFile(
+        std::string &osSecretAccessKey, std::string &osAccessKeyId,
+        std::string &osOAuth2RefreshToken, std::string &osOAuth2ClientId,
+        std::string &osOAuth2ClientSecret, std::string &osCredentials);
 
-        HGDAL_EXPORT void RebuildURL() override;
+    void RebuildURL() override;
 
-    public:
-        HGDAL_EXPORT VSIGSHandleHelper(const CPLString& osEndpoint,
-                          const CPLString& osBucketObjectKey,
-                          const CPLString& osSecretAccessKey,
-                          const CPLString& osAccessKeyId,
-                          bool bUseHeaderFile,
-                          const GOA2Manager& oManager,
-                          const std::string& osUserProject);
-        HGDAL_EXPORT ~VSIGSHandleHelper();
+  public:
+    VSIGSHandleHelper(const std::string &osEndpoint,
+                      const std::string &osBucketObjectKey,
+                      const std::string &osSecretAccessKey,
+                      const std::string &osAccessKeyId, bool bUseHeaderFile,
+                      const GOA2Manager &oManager,
+                      const std::string &osUserProject);
+    ~VSIGSHandleHelper();
 
-        HGDAL_EXPORT static VSIGSHandleHelper* BuildFromURI(const char* pszURI,
-                                               const char* pszFSPrefix,
-                                               CSLConstList papszOptions = nullptr);
+    static VSIGSHandleHelper *
+    BuildFromURI(const char *pszURI, const char *pszFSPrefix,
+                 const char *pszURIForPathSpecificOption = nullptr,
+                 CSLConstList papszOptions = nullptr);
 
-        HGDAL_EXPORT bool UsesHMACKey() const;
+    bool UsesHMACKey() const;
 
-        HGDAL_EXPORT struct curl_slist* GetCurlHeaders(
-            const CPLString& osVerbosVerb,
-            const  struct curl_slist* psExistingHeaders,
-            const void *pabyDataContent = nullptr,
-            size_t nBytesContent = 0) const override;
+    struct curl_slist *
+    GetCurlHeaders(const std::string &osVerbosVerb,
+                   const struct curl_slist *psExistingHeaders,
+                   const void *pabyDataContent = nullptr,
+                   size_t nBytesContent = 0) const override;
 
-        const CPLString& GetURL() const override { return m_osURL; }
+    const std::string &GetURL() const override
+    {
+        return m_osURL;
+    }
 
-        CPLString GetCopySourceHeader() const override { return "x-goog-copy-source"; }
-        const char* GetMetadataDirectiveREPLACE() const override { return "x-goog-metadata-directive: REPLACE"; }
+    std::string GetCopySourceHeader() const override
+    {
+        return "x-goog-copy-source";
+    }
 
-        HGDAL_EXPORT CPLString GetSignedURL(CSLConstList papszOptions);
+    const char *GetMetadataDirectiveREPLACE() const override
+    {
+        return "x-goog-metadata-directive: REPLACE";
+    }
 
-        HGDAL_EXPORT static void CleanMutex();
-        HGDAL_EXPORT static void ClearCache();
+    std::string GetSignedURL(CSLConstList papszOptions);
+
+    static void CleanMutex();
+    static void ClearCache();
 };
 
 #endif /* HAVE_CURL */

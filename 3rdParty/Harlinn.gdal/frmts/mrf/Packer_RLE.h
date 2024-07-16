@@ -1,4 +1,3 @@
-#pragma once
 /*
 Copyright 2016-2017 Esri
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,13 +13,21 @@ limitations under the License.
 Contributors:  Lucian Plesea
 */
 
+#ifndef PACKER_RLE_H_INCLUDED
+#define PACKER_RLE_H_INCLUDED
+
 #include "Packer.h"
 
 NAMESPACE_MRF_START
+
 // A RLE codec based on use of 0xC3 as marker code
-class RLEC3Packer:public Packer {
-public:
+class RLEC3Packer : public Packer
+{
+  public:
     virtual int load(storage_manager *src, storage_manager *dst) override;
     virtual int store(storage_manager *src, storage_manager *dst) override;
 };
+
 NAMESPACE_MRF_END
+
+#endif /* PACKER_RLE_H_INCLUDED */

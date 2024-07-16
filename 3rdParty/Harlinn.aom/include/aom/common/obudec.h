@@ -28,18 +28,18 @@ struct ObuDecInputContext {
 // Returns 1 when file data starts (if Annex B stream, after reading the
 // size of the OBU) with what appears to be a Temporal Delimiter
 // OBU as defined by Section 5 of the AV1 bitstream specification.
-int file_is_obu(struct ObuDecInputContext *obu_ctx);
+HAOM_EXPORT int file_is_obu(struct ObuDecInputContext *obu_ctx);
 
 // Reads one Temporal Unit from the input file. Returns 0 when a TU is
 // successfully read, 1 when end of file is reached, and less than 0 when an
 // error occurs. Stores TU data in 'buffer'. Reallocs buffer to match TU size,
 // returns buffer capacity via 'buffer_size', and returns size of buffered data
 // via 'bytes_read'.
-int obudec_read_temporal_unit(struct ObuDecInputContext *obu_ctx,
+HAOM_EXPORT int obudec_read_temporal_unit(struct ObuDecInputContext *obu_ctx,
                               uint8_t **buffer, size_t *bytes_read,
                               size_t *buffer_size);
 
-void obudec_free(struct ObuDecInputContext *obu_ctx);
+HAOM_EXPORT void obudec_free(struct ObuDecInputContext *obu_ctx);
 
 #ifdef __cplusplus
 } /* extern "C" */

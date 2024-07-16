@@ -31,27 +31,27 @@ typedef struct InternalFrameBufferList {
 } InternalFrameBufferList;
 
 // Initializes |list|. Returns 0 on success.
-int av1_alloc_internal_frame_buffers(InternalFrameBufferList *list);
+HAOM_EXPORT int av1_alloc_internal_frame_buffers(InternalFrameBufferList *list);
 
 // Free any data allocated to the frame buffers.
-void av1_free_internal_frame_buffers(InternalFrameBufferList *list);
+HAOM_EXPORT void av1_free_internal_frame_buffers(InternalFrameBufferList *list);
 
 // Zeros all unused internal frame buffers. In particular, this zeros the
 // frame borders. Call this function after a sequence header change to
 // re-initialize the frame borders for the different width, height, or bit
 // depth.
-void av1_zero_unused_internal_frame_buffers(InternalFrameBufferList *list);
+HAOM_EXPORT void av1_zero_unused_internal_frame_buffers(InternalFrameBufferList *list);
 
 // Callback used by libaom to request an external frame buffer. |cb_priv|
 // Callback private data, which points to an InternalFrameBufferList.
 // |min_size| is the minimum size in bytes needed to decode the next frame.
 // |fb| pointer to the frame buffer.
-int av1_get_frame_buffer(void *cb_priv, size_t min_size,
+HAOM_EXPORT int av1_get_frame_buffer(void *cb_priv, size_t min_size,
                          aom_codec_frame_buffer_t *fb);
 
 // Callback used by libaom when there are no references to the frame buffer.
 // |cb_priv| is not used. |fb| pointer to the frame buffer.
-int av1_release_frame_buffer(void *cb_priv, aom_codec_frame_buffer_t *fb);
+HAOM_EXPORT int av1_release_frame_buffer(void *cb_priv, aom_codec_frame_buffer_t *fb);
 
 #ifdef __cplusplus
 }  // extern "C"

@@ -32,7 +32,7 @@ void aom_bitstream_queue_set_frame_read(int frame_idx) {
 int aom_bitstream_queue_get_frame_read(void) { return frame_idx_r; }
 
 #if CONFIG_BITSTREAM_DEBUG
-#define QUEUE_MAX_SIZE 2000000
+#define QUEUE_MAX_SIZE 4000000
 static int result_queue[QUEUE_MAX_SIZE];
 static int nsymbs_queue[QUEUE_MAX_SIZE];
 static aom_cdf_prob cdf_queue[QUEUE_MAX_SIZE][16];
@@ -108,7 +108,7 @@ static uint16_t
 static int frame_stride = MAX_FRAME_STRIDE;
 static int frame_height = MAX_FRAME_HEIGHT;
 static int frame_size = MAX_FRAME_STRIDE * MAX_FRAME_HEIGHT;
-void mismatch_move_frame_idx_w() {
+void mismatch_move_frame_idx_w(void) {
   frame_buf_idx_w = (frame_buf_idx_w + 1) % max_frame_buf_num;
   if (frame_buf_idx_w == frame_buf_idx_r) {
     printf("frame_buf overflow\n");
@@ -125,7 +125,7 @@ void mismatch_reset_frame(int num_planes) {
   }
 }
 
-void mismatch_move_frame_idx_r() {
+void mismatch_move_frame_idx_r(void) {
   if (frame_buf_idx_w == frame_buf_idx_r) {
     printf("frame_buf underflow\n");
     assert(0);

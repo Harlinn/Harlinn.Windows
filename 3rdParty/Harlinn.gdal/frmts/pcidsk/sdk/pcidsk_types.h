@@ -1,4 +1,3 @@
-#pragma once
 /******************************************************************************
  *
  * Purpose:  Enumerations, data types and related helpers for the PCIDSK SDK

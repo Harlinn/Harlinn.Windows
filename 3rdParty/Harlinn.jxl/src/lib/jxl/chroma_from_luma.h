@@ -12,23 +12,15 @@
 #include <stddef.h>
 #include <stdint.h>
 
-#include <vector>
+#include <limits>
 
-#include "lib/jxl/aux_out.h"
-#include "lib/jxl/aux_out_fwd.h"
-#include "lib/jxl/base/compiler_specific.h"
-#include "lib/jxl/base/data_parallel.h"
 #include "lib/jxl/base/status.h"
-#include "lib/jxl/common.h"
-#include "lib/jxl/dec_ans.h"
+#include "lib/jxl/cms/opsin_params.h"
 #include "lib/jxl/dec_bit_reader.h"
-#include "lib/jxl/enc_bit_writer.h"
-#include "lib/jxl/entropy_coder.h"
 #include "lib/jxl/field_encodings.h"
 #include "lib/jxl/fields.h"
+#include "lib/jxl/frame_dimensions.h"
 #include "lib/jxl/image.h"
-#include "lib/jxl/opsin_params.h"
-#include "lib/jxl/quant_weights.h"
 
 namespace jxl {
 
@@ -59,7 +51,8 @@ struct ColorCorrelationMap {
   // xsize/ysize are in pixels
   // set XYB=false to do something close to no-op cmap (needed for now since
   // cmap is mandatory)
-  ColorCorrelationMap(size_t xsize, size_t ysize, bool XYB = true);
+  static StatusOr<ColorCorrelationMap> Create(size_t xsize, size_t ysize,
+                                              bool XYB = true);
 
   float YtoXRatio(int32_t x_factor) const {
     return base_correlation_x_ + x_factor * color_scale_;
@@ -100,7 +93,7 @@ struct ColorCorrelationMap {
            color_factor_ == kDefaultColorFactor;
   }
 
-  int32_t RatioJPEG(int32_t factor) const {
+  static int32_t RatioJPEG(int32_t factor) {
     return factor * (1 << kCFLFixedPointPrecision) / kDefaultColorFactor;
   }
 
@@ -141,7 +134,7 @@ struct ColorCorrelationMap {
   uint32_t color_factor_ = kDefaultColorFactor;
   float color_scale_ = 1.0f / color_factor_;
   float base_correlation_x_ = 0.0f;
-  float base_correlation_b_ = kYToBRatio;
+  float base_correlation_b_ = jxl::cms::kYToBRatio;
   int32_t ytox_dc_ = 0;
   int32_t ytob_dc_ = 0;
 };

@@ -41,7 +41,7 @@ static void ignore_end_spaces(char *str) {
   if (end >= str) end[1] = '\0';
 }
 
-int parse_cfg(const char *file, cfg_options_t *config) {
+HAOM_EXPORT int parse_cfg(const char *file, cfg_options_t *config) {
   char line[1024 * 10];
   FILE *f = fopen(file, "r");
   if (!f) return 1;
@@ -71,40 +71,40 @@ int parse_cfg(const char *file, cfg_options_t *config) {
     ignore_end_spaces(left);
     ignore_end_spaces(right);
 
-    GET_PARAMS(super_block_size);
-    GET_PARAMS(max_partition_size);
-    GET_PARAMS(min_partition_size);
-    GET_PARAMS(disable_ab_partition_type);
-    GET_PARAMS(disable_rect_partition_type);
-    GET_PARAMS(disable_1to4_partition_type);
-    GET_PARAMS(disable_flip_idtx);
-    GET_PARAMS(disable_cdef);
-    GET_PARAMS(disable_lr);
-    GET_PARAMS(disable_obmc);
-    GET_PARAMS(disable_warp_motion);
-    GET_PARAMS(disable_global_motion);
-    GET_PARAMS(disable_dist_wtd_comp);
-    GET_PARAMS(disable_diff_wtd_comp);
-    GET_PARAMS(disable_inter_intra_comp);
-    GET_PARAMS(disable_masked_comp);
-    GET_PARAMS(disable_one_sided_comp);
-    GET_PARAMS(disable_palette);
-    GET_PARAMS(disable_intrabc);
-    GET_PARAMS(disable_cfl);
-    GET_PARAMS(disable_smooth_intra);
-    GET_PARAMS(disable_filter_intra);
-    GET_PARAMS(disable_dual_filter);
-    GET_PARAMS(disable_intra_angle_delta);
-    GET_PARAMS(disable_intra_edge_filter);
-    GET_PARAMS(disable_tx_64x64);
-    GET_PARAMS(disable_smooth_inter_intra);
-    GET_PARAMS(disable_inter_inter_wedge);
-    GET_PARAMS(disable_inter_intra_wedge);
-    GET_PARAMS(disable_paeth_intra);
-    GET_PARAMS(disable_trellis_quant);
-    GET_PARAMS(disable_ref_frame_mv);
-    GET_PARAMS(reduced_reference_set);
-    GET_PARAMS(reduced_tx_type_set);
+    GET_PARAMS(super_block_size)
+    GET_PARAMS(max_partition_size)
+    GET_PARAMS(min_partition_size)
+    GET_PARAMS(disable_ab_partition_type)
+    GET_PARAMS(disable_rect_partition_type)
+    GET_PARAMS(disable_1to4_partition_type)
+    GET_PARAMS(disable_flip_idtx)
+    GET_PARAMS(disable_cdef)
+    GET_PARAMS(disable_lr)
+    GET_PARAMS(disable_obmc)
+    GET_PARAMS(disable_warp_motion)
+    GET_PARAMS(disable_global_motion)
+    GET_PARAMS(disable_dist_wtd_comp)
+    GET_PARAMS(disable_diff_wtd_comp)
+    GET_PARAMS(disable_inter_intra_comp)
+    GET_PARAMS(disable_masked_comp)
+    GET_PARAMS(disable_one_sided_comp)
+    GET_PARAMS(disable_palette)
+    GET_PARAMS(disable_intrabc)
+    GET_PARAMS(disable_cfl)
+    GET_PARAMS(disable_smooth_intra)
+    GET_PARAMS(disable_filter_intra)
+    GET_PARAMS(disable_dual_filter)
+    GET_PARAMS(disable_intra_angle_delta)
+    GET_PARAMS(disable_intra_edge_filter)
+    GET_PARAMS(disable_tx_64x64)
+    GET_PARAMS(disable_smooth_inter_intra)
+    GET_PARAMS(disable_inter_inter_wedge)
+    GET_PARAMS(disable_inter_intra_wedge)
+    GET_PARAMS(disable_paeth_intra)
+    GET_PARAMS(disable_trellis_quant)
+    GET_PARAMS(disable_ref_frame_mv)
+    GET_PARAMS(reduced_reference_set)
+    GET_PARAMS(reduced_tx_type_set)
 
     fprintf(stderr, "\nInvalid parameter: %s", left);
     exit(-1);
@@ -129,30 +129,31 @@ int parse_cfg(const char *file, cfg_options_t *config) {
   return 0;
 }
 
-int arg_match(struct arg *arg_, const struct arg_def *def, char **argv) {
+HAOM_EXPORT int arg_match(struct arg *arg_, const struct arg_def *def, char **argv) {
   char err_msg[ARG_ERR_MSG_MAX_LEN];
   int ret = arg_match_helper(arg_, def, argv, err_msg);
   if (err_msg[0] != '\0') {
-    die(err_msg);
+    die("%s", err_msg);
   }
   return ret;
 }
 
-const char *arg_next(struct arg *arg) {
+HAOM_EXPORT const char *arg_next(struct arg *arg) {
   if (arg->argv[0]) arg->argv += arg->argv_step;
 
   return *arg->argv;
 }
 
-char **argv_dup(int argc, const char **argv) {
+HAOM_EXPORT char **argv_dup(int argc, const char **argv) {
   char **new_argv = malloc((argc + 1) * sizeof(*argv));
+  if (!new_argv) return NULL;
 
   memcpy(new_argv, argv, argc * sizeof(*argv));
   new_argv[argc] = NULL;
   return new_argv;
 }
 
-void arg_show_usage(FILE *fp, const struct arg_def *const *defs) {
+HAOM_EXPORT void arg_show_usage(FILE *fp, const struct arg_def *const *defs) {
   for (; *defs; defs++) {
     const struct arg_def *def = *defs;
     char *short_val = def->has_val ? " <arg>" : "";
@@ -190,58 +191,58 @@ void arg_show_usage(FILE *fp, const struct arg_def *const *defs) {
   }
 }
 
-unsigned int arg_parse_uint(const struct arg *arg) {
+HAOM_EXPORT unsigned int arg_parse_uint(const struct arg *arg) {
   char err_msg[ARG_ERR_MSG_MAX_LEN];
   unsigned int ret = arg_parse_uint_helper(arg, err_msg);
   if (err_msg[0] != '\0') {
-    die(err_msg);
+    die("%s", err_msg);
   }
   return ret;
 }
 
-int arg_parse_int(const struct arg *arg) {
+HAOM_EXPORT int arg_parse_int(const struct arg *arg) {
   char err_msg[ARG_ERR_MSG_MAX_LEN];
   int ret = arg_parse_int_helper(arg, err_msg);
   if (err_msg[0] != '\0') {
-    die(err_msg);
+    die("%s", err_msg);
   }
   return ret;
 }
 
-struct aom_rational arg_parse_rational(const struct arg *arg) {
+HAOM_EXPORT struct aom_rational arg_parse_rational(const struct arg *arg) {
   char err_msg[ARG_ERR_MSG_MAX_LEN];
   struct aom_rational ret = arg_parse_rational_helper(arg, err_msg);
   if (err_msg[0] != '\0') {
-    die(err_msg);
+    die("%s", err_msg);
   }
   return ret;
 }
 
-int arg_parse_enum(const struct arg *arg) {
+HAOM_EXPORT int arg_parse_enum(const struct arg *arg) {
   char err_msg[ARG_ERR_MSG_MAX_LEN];
   int ret = arg_parse_enum_helper(arg, err_msg);
   if (err_msg[0] != '\0') {
-    die(err_msg);
+    die("%s", err_msg);
   }
   return ret;
 }
 
-int arg_parse_enum_or_int(const struct arg *arg) {
+HAOM_EXPORT int arg_parse_enum_or_int(const struct arg *arg) {
   char err_msg[ARG_ERR_MSG_MAX_LEN];
   int ret = arg_parse_enum_or_int_helper(arg, err_msg);
   if (err_msg[0] != '\0') {
-    die(err_msg);
+    die("%s", err_msg);
   }
   return ret;
 }
 
 // parse a comma separated list of at most n integers
 // return the number of elements in the list
-int arg_parse_list(const struct arg *arg, int *list, int n) {
+HAOM_EXPORT int arg_parse_list(const struct arg *arg, int *list, int n) {
   char err_msg[ARG_ERR_MSG_MAX_LEN];
   int ret = arg_parse_list_helper(arg, list, n, err_msg);
   if (err_msg[0] != '\0') {
-    die(err_msg);
+    die("%s", err_msg);
   }
   return ret;
 }

@@ -28,7 +28,7 @@ static int get_q_ctx(int q) {
   return 3;
 }
 
-void av1_default_coef_probs(AV1_COMMON *cm) {
+HAOM_EXPORT void av1_default_coef_probs(AV1_COMMON *cm) {
   const int index = get_q_ctx(cm->quant_params.base_qindex);
 #if CONFIG_ENTROPY_STATS
   cm->coef_cdf_category = index;
@@ -83,7 +83,7 @@ static AOM_INLINE void reset_nmv_counter(nmv_context *nmv) {
   }
 }
 
-void av1_reset_cdf_symbol_counters(FRAME_CONTEXT *fc) {
+HAOM_EXPORT void av1_reset_cdf_symbol_counters(FRAME_CONTEXT *fc) {
   RESET_CDF_COUNTER(fc->txb_skip_cdf, 2);
   RESET_CDF_COUNTER(fc->eob_extra_cdf, 2);
   RESET_CDF_COUNTER(fc->dc_sign_cdf, 2);
@@ -135,7 +135,6 @@ void av1_reset_cdf_symbol_counters(FRAME_CONTEXT *fc) {
   reset_nmv_counter(&fc->nmvc);
   reset_nmv_counter(&fc->ndvc);
   RESET_CDF_COUNTER(fc->intrabc_cdf, 2);
-  RESET_CDF_COUNTER(fc->seg.tree_cdf, MAX_SEGMENTS);
   RESET_CDF_COUNTER(fc->seg.pred_cdf, 2);
   RESET_CDF_COUNTER(fc->seg.spatial_pred_seg_cdf, MAX_SEGMENTS);
   RESET_CDF_COUNTER(fc->filter_intra_cdfs, 2);

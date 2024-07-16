@@ -1,4 +1,3 @@
-#pragma once
 #ifndef DEGRIB1_H
 #define DEGRIB1_H
 

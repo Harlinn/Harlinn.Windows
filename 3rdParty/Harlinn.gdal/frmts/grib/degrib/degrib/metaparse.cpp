@@ -30,7 +30,7 @@
 #include "tendian.h"
 #include "myutil.h"
 
-#include "port/cpl_string.h"
+#include "cpl_string.h"
 
 static void debug_printf(const char* fmt, ... ) CPL_PRINT_FUNC_FORMAT (1, 2);
 
@@ -836,6 +836,7 @@ static int ParseSect3 (sInt4 *is3, sInt4 ns3, grib_MetaData *meta)
    sInt4 angle;         /* For Lat/Lon, 92.1.6 may not hold, in which case,
                          * angle != 0, and unit = angle/subdivision. */
    sInt4 subdivision;   /* see angle explanation. */
+   int ret = 0;
 
    if (ns3 < 14) {
       return -1;
@@ -895,23 +896,29 @@ static int ParseSect3 (sInt4 *is3, sInt4 ns3, grib_MetaData *meta)
           * on: Y * 10^D = R, where Y = original value, D = scale factor, ___
           * R = scale value. */
 
-         if ((is3[16] != GRIB2MISSING_s4) && (is3[15] != GRIB2MISSING_s1)) {
+         // File of https://github.com/OSGeo/gdal/issues/7811
+         // has is3[16] == -1 and is3[15] = 255
+         if (is3[16] > 0 && is3[15] != 255 &&
+             (is3[16] != GRIB2MISSING_s4) && (is3[15] != GRIB2MISSING_s1)) {
             /* Assumes data is given in m (not km). */
             double denom = pow (10.0, is3[15]) * 1000.;
             if( denom == 0 )
             {
                 errSprintf ("Invalid radius.\n");
-                return -2;
+                ret = -2;
             }
-            meta->gds.majEarth = is3[16] / denom;
-            meta->gds.minEarth = meta->gds.majEarth;
+            else
+            {
+                meta->gds.majEarth = is3[16] / denom;
+                meta->gds.minEarth = meta->gds.majEarth;
+            }
          } else {
             errSprintf ("Missing info on radius of Earth.\n");
-            return -2;
+            ret = -2;
          }
          /* Check if our m assumption was valid. If it was not, they give us
           * 6371 km, which we convert to 6.371 < 6.4 */
-         if (meta->gds.majEarth < 6.4) {
+         if (ret == 0 && meta->gds.majEarth < 6.4) {
             meta->gds.majEarth = meta->gds.majEarth * 1000.;
             meta->gds.minEarth = meta->gds.minEarth * 1000.;
          }
@@ -946,13 +953,16 @@ static int ParseSect3 (sInt4 *is3, sInt4 ns3, grib_MetaData *meta)
             if( denomMaj == 0.0 || denomMin == 0.0 )
             {
                 errSprintf ("Invalid major / minor axis.\n");
-                return -2;
+                ret = -2;
             }
-            meta->gds.majEarth = is3[21] / denomMaj;
-            meta->gds.minEarth = is3[26] / denomMin;
+            else
+            {
+                meta->gds.majEarth = is3[21] / denomMaj;
+                meta->gds.minEarth = is3[26] / denomMin;
+            }
          } else {
             errSprintf ("Missing info on major / minor axis of Earth.\n");
-            return -2;
+            ret = -2;
          }
          /* Check if our km assumption was valid. If it was not, they give us
           * 6371000 m, which is > 6400. */
@@ -978,13 +988,16 @@ static int ParseSect3 (sInt4 *is3, sInt4 ns3, grib_MetaData *meta)
             if( denomMaj == 0.0 || denomMin == 0.0 )
             {
                 errSprintf ("Invalid major / minor axis.\n");
-                return -2;
+                ret = -2;
             }
-            meta->gds.majEarth = is3[21] / denomMaj;
-            meta->gds.minEarth = is3[26] / denomMin;
+            else
+            {
+                meta->gds.majEarth = is3[21] / denomMaj;
+                meta->gds.minEarth = is3[26] / denomMin;
+            }
          } else {
             errSprintf ("Missing info on major / minor axis of Earth.\n");
-            return -2;
+            ret = -2;
          }
          /* Check if our m assumption was valid. If it was not, they give us
           * 6371 km, which we convert to 6.371 < 6.4 */
@@ -1010,7 +1023,9 @@ static int ParseSect3 (sInt4 *is3, sInt4 ns3, grib_MetaData *meta)
        (meta->gds.minEarth > 6400) || (meta->gds.minEarth < 6300)) {
       errSprintf ("Bad shape of earth? %f %f\n", meta->gds.majEarth,
                   meta->gds.minEarth);
-      return -2;
+      meta->gds.majEarth = -1;
+      meta->gds.minEarth = -1;
+      ret = -2;
    }
    meta->gds.Nx = is3[30];
    meta->gds.Ny = is3[34];
@@ -1270,7 +1285,7 @@ static int ParseSect3 (sInt4 *is3, sInt4 ns3, grib_MetaData *meta)
       return -2;
 */
    }
-   return 0;
+   return ret;
 }
 
 /*****************************************************************************
@@ -1667,10 +1682,14 @@ static int ParseSect4 (sInt4 *is4, sInt4 ns4, grib_MetaData *meta)
       meta->pds2.sect4.f_validCutOff = 1;
       meta->pds2.sect4.cutOff = is4[14 + nOffset] * 3600 + is4[16 + nOffset] * 60;
    }
-   if (is4[18 + nOffset] == GRIB2MISSING_s4) {
-      errSprintf ("Missing 'forecast' time?\n");
-      return -5;
+/*   if (is4[18] == GRIB2MISSING_s4) */
+   if (is4[18] < -1 * (0x3fffffff)) {
+      //printf ("  Warning - Forecast time %ld is 'too' negative.\n", is4[18]);
+      //printf ("  Assuming incorrect decoding of 2s complement.");
+      is4[18] = -1 * (int)(((unsigned)is4[18])^(0x80000000));
+      //printf ("  Using %ld\n", is4[18]);
    }
+
    meta->pds2.sect4.foreUnit = is4[17 + nOffset];
    if (ParseSect4Time2sec (meta->pds2.refTime, is4[18 + nOffset], is4[17 + nOffset],
                            &(meta->pds2.sect4.foreSec)) != 0) {

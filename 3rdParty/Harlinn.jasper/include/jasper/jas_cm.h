@@ -67,18 +67,39 @@
 #ifndef JAS_CM_H
 #define JAS_CM_H
 
+/******************************************************************************\
+*
+\******************************************************************************/
+
 /* The configuration header file should be included first. */
 #include <jasper/jas_config.h>
 
+#include <jasper/jas_types.h>
 #include <jasper/jas_icc.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
+/*!
+ * @addtogroup module_cm
+ * @{
+ */
+
+/******************************************************************************\
+* Types and Macros.
+\******************************************************************************/
+
+/*!
+@brief
+Color space.
+*/
 typedef unsigned jas_clrspc_t;
 
-/* transform operations */
+/*!
+@brief
+Transform operations
+*/
 typedef enum {
 	JAS_CMXFORM_OP_FWD = 0,
 	JAS_CMXFORM_OP_REV = 1,
@@ -86,7 +107,10 @@ typedef enum {
 	JAS_CMXFORM_OP_GAMUT = 3,
 } jas_cmxform_op_t;
 
-/* rendering intents */
+/*!
+@brief
+Rendering intents.
+*/
 typedef enum {
 	JAS_CMXFORM_INTENT_PER = 0,
 	JAS_CMXFORM_INTENT_RELCLR = 1,
@@ -94,24 +118,58 @@ typedef enum {
 	JAS_CMXFORM_INTENT_SAT = 3,
 } jas_cmxform_intent_t;
 
+/*!
+@brief
+Number of rendering intents.
+*/
 #define	JAS_CMXFORM_NUMINTENTS		4
 
+/*!
+@brief
+Transform optimization.
+*/
 typedef enum {
 	JAS_CMXFORM_OPTM_SPEED = 0,
 	JAS_CMXFORM_OPTM_SIZE = 1,
 	JAS_CMXFORM_OPTM_ACC = 2,
 } jas_cmxform_optm_t;
 
-
+/*!
+@brief
+Create a color space.
+*/
 #define	jas_clrspc_create(fam, mbr)	(((fam) << 8) | (mbr))
+
+/*!
+@brief
+Get the family of a color space.
+*/
+
 #define	jas_clrspc_fam(clrspc)	((clrspc) >> 8)
+
+/*!
+@brief
+Get the (family) member of a color space.
+*/
 #define	jas_clrspc_mbr(clrspc)	((clrspc) & 0xff)
+
+/*!
+@brief
+Test if a color space is generic.
+*/
 #define	jas_clrspc_isgeneric(clrspc)	(!jas_clrspc_mbr(clrspc))
+
+/*!
+@brief
+Test if a color space is unknown.
+*/
 #define	jas_clrspc_isunknown(clrspc)	((clrspc) & JAS_CLRSPC_UNKNOWNMASK)
 
 #define	JAS_CLRSPC_UNKNOWNMASK	0x4000
 
-/* color space families */
+/*!
+@brief Color space families.
+*/
 #define	JAS_CLRSPC_FAM_UNKNOWN	0
 #define	JAS_CLRSPC_FAM_XYZ	1
 #define	JAS_CLRSPC_FAM_LAB	2
@@ -119,7 +177,9 @@ typedef enum {
 #define	JAS_CLRSPC_FAM_RGB	4
 #define	JAS_CLRSPC_FAM_YCBCR	5
 
-/* specific color spaces */
+/*!
+@brief Specific color spaces.
+*/
 #define	JAS_CLRSPC_UNKNOWN	JAS_CLRSPC_UNKNOWNMASK
 #define	JAS_CLRSPC_CIEXYZ	jas_clrspc_create(JAS_CLRSPC_FAM_XYZ, 1)
 #define	JAS_CLRSPC_CIELAB	jas_clrspc_create(JAS_CLRSPC_FAM_LAB, 1)
@@ -127,7 +187,9 @@ typedef enum {
 #define	JAS_CLRSPC_SRGB		jas_clrspc_create(JAS_CLRSPC_FAM_RGB, 1)
 #define	JAS_CLRSPC_SYCBCR	jas_clrspc_create(JAS_CLRSPC_FAM_YCBCR, 1)
 
-/* generic color spaces */
+/*!
+@brief Generic color spaces.
+*/
 #define	JAS_CLRSPC_GENRGB	jas_clrspc_create(JAS_CLRSPC_FAM_RGB, 0)
 #define	JAS_CLRSPC_GENGRAY	jas_clrspc_create(JAS_CLRSPC_FAM_GRAY, 0)
 #define	JAS_CLRSPC_GENYCBCR	jas_clrspc_create(JAS_CLRSPC_FAM_YCBCR, 0)
@@ -142,10 +204,17 @@ typedef enum {
 
 #define	JAS_CLRSPC_CHANIND_GRAY_Y	0
 
+/*!
+Real-number type.
+*/
 typedef double jas_cmreal_t;
 
 struct jas_cmpxform_s;
 
+/*!
+@brief
+Component format.
+*/
 typedef struct {
 	long *buf;
 	unsigned prec;
@@ -154,22 +223,38 @@ typedef struct {
 	unsigned height;
 } jas_cmcmptfmt_t;
 
+/*!
+@brief
+Pixmap (i.e., multicomponent) format.
+*/
 typedef struct {
 	unsigned numcmpts;
 	jas_cmcmptfmt_t *cmptfmts;
 } jas_cmpixmap_t;
 
+/*!
+@brief
+Transform operations.
+*/
 typedef struct {
 	void (*destroy)(struct jas_cmpxform_s *pxform);
 	int (*apply)(const struct jas_cmpxform_s *pxform, const jas_cmreal_t *in, jas_cmreal_t *out, unsigned  cnt);
 	void (*dump)(struct jas_cmpxform_s *pxform);
 } jas_cmpxformops_t;
 
+/*!
+@brief
+Shaper matrix look-up table (LUT).
+*/
 typedef struct {
 	jas_cmreal_t *data;
 	unsigned size;
 } jas_cmshapmatlut_t;
 
+/*!
+@brief
+Shaper matrix.
+*/
 typedef struct {
 	int mono;
 	int order;
@@ -179,36 +264,54 @@ typedef struct {
 	jas_cmreal_t mat[3][4];
 } jas_cmshapmat_t;
 
+/*!
+@brief
+Shaper look-up table (LUT).
+*/
 typedef struct {
 	int order;
 } jas_cmshaplut_t;
 
+/*!
+@brief
+Color space conversion.
+*/
 typedef struct {
 	unsigned inclrspc;
 	unsigned outclrspc;
 } jas_cmclrspcconv_t;
 
-#define	jas_align_t	double
-
+/*!
+@brief
+Transform class.
+*/
 typedef struct jas_cmpxform_s {
 	unsigned refcnt;
 	const jas_cmpxformops_t *ops;
 	unsigned numinchans;
 	unsigned numoutchans;
 	union {
-		jas_align_t dummy;
+		max_align_t dummy;
 		jas_cmshapmat_t shapmat;
 		jas_cmshaplut_t shaplut;
 		jas_cmclrspcconv_t clrspcconv;
 	} data;
 } jas_cmpxform_t;
 
+/*!
+@brief
+Primitive transform sequence class.
+*/
 typedef struct {
 	unsigned numpxforms;
 	unsigned maxpxforms;
 	jas_cmpxform_t **pxforms;
 } jas_cmpxformseq_t;
 
+/*!
+@brief
+Primitive transform class.
+*/
 typedef struct {
 	unsigned numinchans;
 	unsigned numoutchans;
@@ -220,6 +323,9 @@ typedef struct {
 
 #define	JAS_CMPROF_NUMPXFORMSEQS	13
 
+/*!
+Color-management (CM) profile.
+*/
 typedef struct {
 	jas_clrspc_t clrspc;
 	unsigned numchans;
@@ -228,6 +334,10 @@ typedef struct {
 	jas_iccprof_t *iccprof;
 	jas_cmpxformseq_t *pxformseqs[JAS_CMPROF_NUMPXFORMSEQS];
 } jas_cmprof_t;
+
+/******************************************************************************\
+*
+\******************************************************************************/
 
 #if 0
 typedef int_fast32_t jas_cmattrname_t;
@@ -243,27 +353,144 @@ int jas_cm_prof_setattr(jas_cm_prof_t *prof, jas_cm_attrname_t name, void *val);
 void *jas_cm_prof_getattr(jas_cm_prof_t *prof, jas_cm_attrname_t name);
 #endif
 
-JAS_DLLEXPORT jas_cmxform_t *jas_cmxform_create(const jas_cmprof_t *inprof, const jas_cmprof_t *outprof,
-  const jas_cmprof_t *proofprof, jas_cmxform_op_t op, jas_cmxform_intent_t intent, jas_cmxform_optm_t optimize);
+/******************************************************************************\
+* Color-management (CM) profile class.
+\******************************************************************************/
 
-JAS_DLLEXPORT void jas_cmxform_destroy(jas_cmxform_t *xform);
+/*!
+@brief
+Create a color-management profile from an ICC profile.
 
-/* Apply a transform to data. */
-JAS_DLLEXPORT int jas_cmxform_apply(const jas_cmxform_t *xform, const jas_cmpixmap_t *in,
+@details
+This function creates a CM profile from an ICC profile.
+
+@returns
+If successful, a pointer to the created CM profile is returned.
+Otherwise, a null pointer is returned.
+*/
+JAS_EXPORT
+jas_cmprof_t *jas_cmprof_createfromiccprof(const jas_iccprof_t *iccprof);
+
+/*!
+@brief
+Create a color-management profile from a color space.
+
+@details
+The function creates a CM profile from a color space.
+
+@returns
+If successful, a pointer to the created CM profile is returned.
+Otherwise, a null pointer is returned.
+*/
+JAS_EXPORT
+jas_cmprof_t *jas_cmprof_createfromclrspc(jas_clrspc_t clrspc);
+
+/*!
+@brief Destroy a color-management profile.
+
+@details
+*/
+JAS_EXPORT
+void jas_cmprof_destroy(jas_cmprof_t *prof);
+
+/*!
+@brief
+Copy a color-management profile.
+
+@details
+This function creates a clone (i.e., copy) of a CM profile.
+
+@returns
+If successful, a pointer to the newly created CM profile is returned.
+Otherwise, a null pointer is returned.
+*/
+JAS_EXPORT
+jas_cmprof_t *jas_cmprof_copy(const jas_cmprof_t *prof);
+
+/*!
+@brief
+Create a ICC profile from a CM profile.
+
+@details
+This function creates an ICC profile from a CM profile.
+
+@returns
+If successful, a pointer to the created ICC profile is returned.
+Otherwise, a null pointer is returned.
+*/
+JAS_EXPORT
+jas_iccprof_t *jas_iccprof_createfromcmprof(const jas_cmprof_t *prof);
+
+/******************************************************************************\
+* Color-Management (CM) Transform.
+\******************************************************************************/
+
+/*!
+@brief
+Create a transform from a CM profile.
+
+@details
+
+@returns
+If successful, a pointer to the created transform is returned.
+Otherwise, a null pointer is returned.
+*/
+JAS_EXPORT
+jas_cmxform_t *jas_cmxform_create(const jas_cmprof_t *inprof,
+  const jas_cmprof_t *outprof, const jas_cmprof_t *proofprof,
+  jas_cmxform_op_t op, jas_cmxform_intent_t intent,
+  jas_cmxform_optm_t optimize);
+
+/*!
+@brief
+Destroy a transform.
+
+@details
+*/
+JAS_EXPORT
+void jas_cmxform_destroy(jas_cmxform_t *xform);
+
+/*!
+@brief
+Apply a transform to data.
+
+@details
+
+@returns
+If successful, zero is returned.
+Otherwise, a nonzero value is returned.
+*/
+JAS_EXPORT
+int jas_cmxform_apply(const jas_cmxform_t *xform, const jas_cmpixmap_t *in,
   jas_cmpixmap_t *out);
 
-/* Create a profile. */
-JAS_DLLEXPORT jas_cmprof_t *jas_cmprof_createfromiccprof(const jas_iccprof_t *iccprof);
-JAS_DLLEXPORT jas_cmprof_t *jas_cmprof_createfromclrspc(jas_clrspc_t clrspc);
+/******************************************************************************\
+* Miscellany.
+\******************************************************************************/
 
-/* Destroy a profile. */
-JAS_DLLEXPORT void jas_cmprof_destroy(jas_cmprof_t *prof);
+/*!
+@brief
+Get the number of channels associated with a particular color space.
 
+@details
+
+@returns
+*/
 unsigned jas_clrspc_numchans(jas_clrspc_t clrspc);
-JAS_DLLEXPORT jas_iccprof_t *jas_iccprof_createfromcmprof(const jas_cmprof_t *prof);
 
+/*!
+@brief
+Get the color space associated with a color-management profile.
+
+@details
+
+@returns
+*/
 #define	jas_cmprof_clrspc(prof) ((prof)->clrspc)
-JAS_DLLEXPORT jas_cmprof_t *jas_cmprof_copy(const jas_cmprof_t *prof);
+
+/*!
+ * @}
+ */
 
 #ifdef __cplusplus
 }

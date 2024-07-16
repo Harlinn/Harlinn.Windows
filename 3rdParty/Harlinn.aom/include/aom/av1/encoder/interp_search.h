@@ -109,6 +109,11 @@ typedef struct HandleInterModeArgs {
    */
   int skip_motion_mode;
   /*!
+   * Initialized to false. If true, skips interpolation filter search and uses
+   * the default EIGHTTAP_REGULAR.
+   */
+  bool skip_ifs;
+  /*!
    * A pointer to the first element in an array of INTERINTRA_MODE types. This
    * contains the best inter_intra mode for each reference frame.
    */
@@ -119,6 +124,22 @@ typedef struct HandleInterModeArgs {
    * as a previous search.
    */
   INTERPOLATION_FILTER_STATS interp_filter_stats[MAX_INTERP_FILTER_STATS];
+
+  /*!
+   * Stack to store full pixel search start mv of NEWMV mode.
+   */
+  FULLPEL_MV start_mv_stack[(MAX_REF_MV_SEARCH - 1) * 2];
+
+  /*!
+   * Stack to store ref_mv_idx of NEWMV mode.
+   */
+  uint8_t ref_mv_idx_stack[(MAX_REF_MV_SEARCH - 1) * 2];
+
+  /*!
+   * Count of mvs in start mv stack.
+   */
+  int start_mv_cnt;
+
   /*!
    * Index of the last set of saved stats in the interp_filter_stats array.
    */
@@ -149,6 +170,11 @@ typedef struct HandleInterModeArgs {
    *    MACROBLOCK::pred_sse due to different interpolation filter used.
    */
   unsigned int best_single_sse_in_refs[REF_FRAMES];
+  /*!
+   * Holds the sse of best mode so far in the mode evaluation process. This is
+   * used in intermediate termination of NEWMV mode evaluation.
+   */
+  unsigned int best_pred_sse;
 } HandleInterModeArgs;
 
 /*!\cond */

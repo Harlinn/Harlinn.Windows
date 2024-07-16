@@ -34,18 +34,19 @@ static INLINE int noise_est_svc(const struct AV1_COMP *const cpi) {
 #endif
 
 void av1_noise_estimate_init(NOISE_ESTIMATE *const ne, int width, int height) {
+  const int64_t area = (int64_t)width * height;
   ne->enabled = 0;
-  ne->level = (width * height < 1280 * 720) ? kLowLow : kLow;
+  ne->level = (area < 1280 * 720) ? kLowLow : kLow;
   ne->value = 0;
   ne->count = 0;
   ne->thresh = 90;
   ne->last_w = 0;
   ne->last_h = 0;
-  if (width * height >= 1920 * 1080) {
+  if (area >= 1920 * 1080) {
     ne->thresh = 200;
-  } else if (width * height >= 1280 * 720) {
+  } else if (area >= 1280 * 720) {
     ne->thresh = 140;
-  } else if (width * height >= 640 * 360) {
+  } else if (area >= 640 * 360) {
     ne->thresh = 115;
   }
   ne->num_frames_estimate = 15;
@@ -53,12 +54,7 @@ void av1_noise_estimate_init(NOISE_ESTIMATE *const ne, int width, int height) {
 }
 
 static int enable_noise_estimation(AV1_COMP *const cpi) {
-  ResizePendingParams *const resize_pending_params =
-      &cpi->resize_pending_params;
-  const int resize_pending =
-      (resize_pending_params->width && resize_pending_params->height &&
-       (cpi->common.width != resize_pending_params->width ||
-        cpi->common.height != resize_pending_params->height));
+  const int resize_pending = is_frame_resize_pending(cpi);
 
 #if CONFIG_AV1_HIGHBITDEPTH
   if (cpi->common.seq_params->use_highbitdepth) return 0;
@@ -176,7 +172,7 @@ void av1_update_noise_estimate(AV1_COMP *const cpi) {
     unsigned int max_bin = 0;
     unsigned int max_bin_count = 0;
     unsigned int bin_cnt;
-    int bsize = BLOCK_16X16;
+    BLOCK_SIZE bsize = BLOCK_16X16;
     // Loop over sub-sample of 16x16 blocks of frame, and for blocks that have
     // been encoded as zero/small mv at least x consecutive frames, compute
     // the variance to update estimate of noise in the source.

@@ -27,8 +27,6 @@ extern "C" {
 
 /*!\cond */
 
-#undef MAX_SB_SIZE
-
 // Max superblock size
 #define MAX_SB_SIZE_LOG2 7
 #define MAX_SB_SIZE (1 << MAX_SB_SIZE_LOG2)
@@ -199,7 +197,7 @@ typedef char PARTITION_CONTEXT;
 #define TX_PAD_END 16
 #define TX_PAD_2D ((32 + TX_PAD_HOR) * (32 + TX_PAD_VER) + TX_PAD_END)
 
-// Number of maxium size transform blocks in the maximum size superblock
+// Number of maximum size transform blocks in the maximum size superblock
 #define MAX_TX_BLOCKS_IN_MAX_SB_LOG2 ((MAX_SB_SIZE_LOG2 - MAX_TX_SIZE_LOG2) * 2)
 #define MAX_TX_BLOCKS_IN_MAX_SB (1 << MAX_TX_BLOCKS_IN_MAX_SB_LOG2)
 
@@ -454,8 +452,13 @@ enum {
   SEQ_LEVEL_7_1,
   SEQ_LEVEL_7_2,
   SEQ_LEVEL_7_3,
+  SEQ_LEVEL_8_0,
+  SEQ_LEVEL_8_1,
+  SEQ_LEVEL_8_2,
+  SEQ_LEVEL_8_3,
   SEQ_LEVELS,
-  SEQ_LEVEL_MAX = 31
+  SEQ_LEVEL_MAX = 31,
+  SEQ_LEVEL_KEEP_STATS = 32,
 } UENUM1BYTE(AV1_LEVEL);
 
 #define LEVEL_BITS 5
@@ -495,6 +498,7 @@ enum {
 #define DELTA_Q_PROBS (DELTA_Q_SMALL)
 #define DEFAULT_DELTA_Q_RES_PERCEPTUAL 4
 #define DEFAULT_DELTA_Q_RES_OBJECTIVE 4
+#define DEFAULT_DELTA_Q_RES_DUCKY_ENCODE 4
 
 #define DELTA_LF_SMALL 3
 #define DELTA_LF_PROBS (DELTA_LF_SMALL)
@@ -552,7 +556,15 @@ enum {
 // REF_FRAMES for the cm->ref_frame_map array, 1 scratch frame for the new
 // frame in cm->cur_frame, INTER_REFS_PER_FRAME for scaled references on the
 // encoder in the cpi->scaled_ref_buf array.
+// The encoder uses FRAME_BUFFERS only in GOOD and REALTIME encoding modes.
+// The decoder also uses FRAME_BUFFERS.
 #define FRAME_BUFFERS (REF_FRAMES + 1 + INTER_REFS_PER_FRAME)
+
+// During allintra encoding, one reference frame buffer is free to be used again
+// only after another frame buffer is stored as the reference frame. Hence, it
+// is necessary and sufficient to maintain only two reference frame buffers in
+// this case.
+#define FRAME_BUFFERS_ALLINTRA 2
 
 #define FWD_RF_OFFSET(ref) (ref - LAST_FRAME)
 #define BWD_RF_OFFSET(ref) (ref - BWDREF_FRAME)
@@ -604,7 +616,7 @@ typedef enum {
 } RestorationType;
 
 /*!\cond */
-// Picture prediction structures (0-12 are predefined) in scalability metadata.
+// Picture prediction structures (0-13 are predefined) in scalability metadata.
 enum {
   SCALABILITY_L1T2 = 0,
   SCALABILITY_L1T3 = 1,

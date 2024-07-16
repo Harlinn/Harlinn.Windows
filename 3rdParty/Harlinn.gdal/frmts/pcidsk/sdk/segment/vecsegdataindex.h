@@ -1,4 +1,3 @@
-#pragma once
 /******************************************************************************
  *
  * Purpose:  Declaration of the VecSegIndex class.
@@ -34,9 +33,9 @@
 #ifndef INCLUDE_SEGMENT_VECSEGDATAINDEX_H
 #define INCLUDE_SEGMENT_VECSEGDATAINDEX_H
 
-#include "../pcidsk_config.h"
-#include "../pcidsk_types.h"
-#include "../pcidsk_vectorsegment.h"
+#include "pcidsk_config.h"
+#include "pcidsk_types.h"
+#include "pcidsk_vectorsegment.h"
 
 #include <map>
 #include <vector>

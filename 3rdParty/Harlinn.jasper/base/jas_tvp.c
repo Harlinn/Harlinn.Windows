@@ -69,6 +69,8 @@
 * Includes.
 \******************************************************************************/
 
+#define JAS_FOR_INTERNAL_USE_ONLY
+
 #include "jasper/jas_tvp.h"
 #include "jasper/jas_malloc.h"
 #include "jasper/jas_string.h"
@@ -125,7 +127,7 @@ int jas_tvparser_next(jas_tvparser_t *tvp)
 
 	/* Skip any leading whitespace. */
 	p = tvp->pos;
-	while (*p != '\0' && isspace(*p)) {
+	while (*p != '\0' && isspace(JAS_CAST(unsigned char, *p))) {
 		++p;
 	}
 
@@ -137,7 +139,7 @@ int jas_tvparser_next(jas_tvparser_t *tvp)
 	}
 
 	/* Does the tag name begin with a valid character? */
-	if (!JAS_TVP_ISTAG(*p)) {
+	if (!JAS_TVP_ISTAG(JAS_CAST(unsigned char, *p))) {
 		return -1;
 	}
 
@@ -145,7 +147,7 @@ int jas_tvparser_next(jas_tvparser_t *tvp)
 	tag = p;
 
 	/* Find the end of the tag name. */
-	while (*p != '\0' && JAS_TVP_ISTAG(*p)) {
+	while (*p != '\0' && JAS_TVP_ISTAG(JAS_CAST(unsigned char, *p))) {
 		++p;
 	}
 
@@ -160,7 +162,7 @@ int jas_tvparser_next(jas_tvparser_t *tvp)
 
 	/* Is a value field not present? */
 	if (*p != '=') {
-		if (*p != '\0' && !isspace(*p)) {
+		if (*p != '\0' && !isspace(JAS_CAST(unsigned char, *p))) {
 			return -1;
 		}
 		*p++ = '\0';
@@ -173,7 +175,7 @@ int jas_tvparser_next(jas_tvparser_t *tvp)
 	*p++ = '\0';
 
 	val = p;
-	while (*p != '\0' && !isspace(*p)) {
+	while (*p != '\0' && !isspace(JAS_CAST(unsigned char, *p))) {
 		++p;
 	}
 

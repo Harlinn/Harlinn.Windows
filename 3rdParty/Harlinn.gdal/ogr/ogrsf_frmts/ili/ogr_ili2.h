@@ -1,4 +1,3 @@
-#pragma once
 /******************************************************************************
  * $Id$
  *
@@ -31,7 +30,7 @@
 #ifndef OGR_ILI2_H_INCLUDED
 #define OGR_ILI2_H_INCLUDED
 
-#include <ogr/ogrsf_frmts/ogrsf_frmts.h>
+#include "ogrsf_frmts.h"
 #include "imdreader.h"
 #include "ili2reader.h"
 
@@ -44,78 +43,98 @@ class OGRILI2DataSource;
 /*                           OGRILI2Layer                               */
 /************************************************************************/
 
-class OGRILI2Layer final: public OGRLayer
+class OGRILI2Layer final : public OGRLayer
 {
   private:
-    OGRFeatureDefn     *poFeatureDefn;
-    GeomFieldInfos      oGeomFieldInfos;
-    std::list<OGRFeature *>    listFeature;
+    OGRFeatureDefn *poFeatureDefn;
+    GeomFieldInfos oGeomFieldInfos;
+    std::list<OGRFeature *> listFeature;
     std::list<OGRFeature *>::const_iterator listFeatureIt;
 
-    OGRILI2DataSource  *poDS;
+    OGRILI2DataSource *poDS;
 
   public:
-                        OGRILI2Layer( OGRFeatureDefn* poFeatureDefn,
-                                      const GeomFieldInfos& oGeomFieldInfos,
-                                      OGRILI2DataSource *poDS );
+    OGRILI2Layer(OGRFeatureDefn *poFeatureDefn,
+                 const GeomFieldInfos &oGeomFieldInfos,
+                 OGRILI2DataSource *poDS);
 
-                       ~OGRILI2Layer();
+    ~OGRILI2Layer();
 
-    void                AddFeature(OGRFeature *poFeature);
+    void AddFeature(OGRFeature *poFeature);
 
-    void                ResetReading() override;
-    OGRFeature *        GetNextFeature() override;
+    void ResetReading() override;
+    OGRFeature *GetNextFeature() override;
 
-    GIntBig             GetFeatureCount( int bForce = TRUE ) override;
+    GIntBig GetFeatureCount(int bForce = TRUE) override;
 
-    OGRErr              ICreateFeature( OGRFeature *poFeature ) override;
+    OGRErr ICreateFeature(OGRFeature *poFeature) override;
 
-    OGRFeatureDefn *    GetLayerDefn() override { return poFeatureDefn; }
+    OGRFeatureDefn *GetLayerDefn() override
+    {
+        return poFeatureDefn;
+    }
 
-    CPLString           GetIliGeomType( const char* cFieldName) { return oGeomFieldInfos[cFieldName].iliGeomType; }
+    CPLString GetIliGeomType(const char *cFieldName)
+    {
+        return oGeomFieldInfos[cFieldName].iliGeomType;
+    }
 
-    OGRErr              CreateField( OGRFieldDefn *poField, int bApproxOK = TRUE ) override;
+    OGRErr CreateField(const OGRFieldDefn *poField,
+                       int bApproxOK = TRUE) override;
 
-    int                 TestCapability( const char * ) override;
+    int TestCapability(const char *) override;
+
+    GDALDataset *GetDataset() override;
 };
 
 /************************************************************************/
 /*                          OGRILI2DataSource                           */
 /************************************************************************/
 
-class OGRILI2DataSource final: public OGRDataSource
+class OGRILI2DataSource final : public OGRDataSource
 {
   private:
     std::list<OGRLayer *> listLayer;
 
-    char        *pszName;
-    ImdReader   *poImdReader;
+    char *pszName;
+    ImdReader *poImdReader;
     IILI2Reader *poReader;
-    VSILFILE    *fpOutput;
+    VSILFILE *fpOutput;
 
-    int         nLayers;
-    OGRILI2Layer** papoLayers;
+    int nLayers;
+    OGRILI2Layer **papoLayers;
 
     CPL_DISALLOW_COPY_ASSIGN(OGRILI2DataSource)
 
   public:
-                OGRILI2DataSource();
-               virtual ~OGRILI2DataSource();
+    OGRILI2DataSource();
+    virtual ~OGRILI2DataSource();
 
-    int         Open( const char *, char** papszOpenOptions, int bTestOpen );
-    int         Create( const char *pszFile, char **papszOptions );
+    int Open(const char *, char **papszOpenOptions, int bTestOpen);
+    int Create(const char *pszFile, char **papszOptions);
 
-    const char *GetName() override { return pszName; }
-    int         GetLayerCount() override { return static_cast<int>(listLayer.size()); }
-    OGRLayer   *GetLayer( int ) override;
+    const char *GetName() override
+    {
+        return pszName;
+    }
 
-    virtual OGRLayer *ICreateLayer( const char *,
-                                      OGRSpatialReference * = nullptr,
-                                      OGRwkbGeometryType = wkbUnknown,
-                                      char ** = nullptr ) override;
+    int GetLayerCount() override
+    {
+        return static_cast<int>(listLayer.size());
+    }
 
-    VSILFILE *  GetOutputFP() { return fpOutput; }
-    int         TestCapability( const char * ) override;
+    OGRLayer *GetLayer(int) override;
+
+    OGRLayer *ICreateLayer(const char *pszName,
+                           const OGRGeomFieldDefn *poGeomFieldDefn,
+                           CSLConstList papszOptions) override;
+
+    VSILFILE *GetOutputFP()
+    {
+        return fpOutput;
+    }
+
+    int TestCapability(const char *) override;
 };
 
 #endif /* OGR_ILI2_H_INCLUDED */

@@ -25,10 +25,10 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
-#include "../pcidsk_file.h"
-#include "../pcidsk_exception.h"
-#include "../core/pcidsk_utils.h"
-#include "cpcidskvectorsegment.h"
+#include "pcidsk_file.h"
+#include "pcidsk_exception.h"
+#include "core/pcidsk_utils.h"
+#include "segment/cpcidskvectorsegment.h"
 #include <cassert>
 #include <cstring>
 #include <cstdio>
@@ -36,13 +36,6 @@
 #include <limits>
 
 using namespace PCIDSK;
-
-/* -------------------------------------------------------------------- */
-/*      Size of a block in the record/vertex block tables.  This is    */
-/*      determined by the PCIDSK format and may not be changed.         */
-/* -------------------------------------------------------------------- */
-static const int block_page_size = 8192;
-
 
 /* -------------------------------------------------------------------- */
 /*      Size of one page of loaded shapeids.  This is not related to    */
@@ -713,8 +706,8 @@ std::vector<double> CPCIDSKVectorSegment::GetProjection( std::string &geosys )
 /*                           SetProjection()                            */
 /************************************************************************/
 
-void CPCIDSKVectorSegment::SetProjection( std::string geosys,
-                                          std::vector<double> params )
+void CPCIDSKVectorSegment::SetProjection( const std::string& geosys,
+                                          const std::vector<double>& params )
 
 {
     LoadHeader();
@@ -1182,9 +1175,9 @@ void CPCIDSKVectorSegment::GetFields( ShapeId id,
 /*                              AddField()                              */
 /************************************************************************/
 
-void CPCIDSKVectorSegment::AddField( std::string name, ShapeFieldType type,
-                                     std::string description,
-                                     std::string format,
+void CPCIDSKVectorSegment::AddField( const std::string& name, ShapeFieldType type,
+                                     const std::string& description,
+                                     const std::string& format,
                                      ShapeField *default_value )
 
 {

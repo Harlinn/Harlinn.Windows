@@ -198,12 +198,12 @@ static INLINE uint8_t av1_drl_ctx(const uint16_t *ref_mv_weight, int ref_idx) {
   return 0;
 }
 
-void av1_setup_frame_buf_refs(AV1_COMMON *cm);
-void av1_setup_frame_sign_bias(AV1_COMMON *cm);
-void av1_setup_skip_mode_allowed(AV1_COMMON *cm);
-void av1_calculate_ref_frame_side(AV1_COMMON *cm);
-void av1_setup_motion_field(AV1_COMMON *cm);
-void av1_set_frame_refs(AV1_COMMON *const cm, int *remapped_ref_idx,
+HAOM_EXPORT void av1_setup_frame_buf_refs(AV1_COMMON *cm);
+HAOM_EXPORT void av1_setup_frame_sign_bias(AV1_COMMON *cm);
+HAOM_EXPORT void av1_setup_skip_mode_allowed(AV1_COMMON *cm);
+HAOM_EXPORT void av1_calculate_ref_frame_side(AV1_COMMON *cm);
+HAOM_EXPORT void av1_setup_motion_field(AV1_COMMON *cm);
+HAOM_EXPORT void av1_set_frame_refs(AV1_COMMON *const cm, int *remapped_ref_idx,
                         int lst_map_idx, int gld_map_idx);
 
 static INLINE void av1_collect_neighbors_ref_counts(MACROBLOCKD *const xd) {
@@ -233,14 +233,14 @@ static INLINE void av1_collect_neighbors_ref_counts(MACROBLOCKD *const xd) {
   }
 }
 
-void av1_copy_frame_mvs(const AV1_COMMON *const cm,
+HAOM_EXPORT void av1_copy_frame_mvs(const AV1_COMMON *const cm,
                         const MB_MODE_INFO *const mi, int mi_row, int mi_col,
                         int x_mis, int y_mis);
 
 // The global_mvs output parameter points to an array of REF_FRAMES elements.
 // The caller may pass a null global_mvs if it does not need the global_mvs
 // output.
-void av1_find_mv_refs(const AV1_COMMON *cm, const MACROBLOCKD *xd,
+HAOM_EXPORT void av1_find_mv_refs(const AV1_COMMON *cm, const MACROBLOCKD *xd,
                       MB_MODE_INFO *mi, MV_REFERENCE_FRAME ref_frame,
                       uint8_t ref_mv_count[MODE_CTX_REF_FRAMES],
                       CANDIDATE_MV ref_mv_stack[][MAX_REF_MV_STACK_SIZE],
@@ -251,12 +251,12 @@ void av1_find_mv_refs(const AV1_COMMON *cm, const MACROBLOCKD *xd,
 // check a list of motion vectors by sad score using a number rows of pixels
 // above and a number cols of pixels in the left to select the one with best
 // score to use as ref motion vector
-void av1_find_best_ref_mvs(int allow_hp, int_mv *mvlist, int_mv *nearest_mv,
+HAOM_EXPORT void av1_find_best_ref_mvs(int allow_hp, int_mv *mvlist, int_mv *nearest_mv,
                            int_mv *near_mv, int is_integer);
 
-uint8_t av1_selectSamples(MV *mv, int *pts, int *pts_inref, int len,
+HAOM_EXPORT uint8_t av1_selectSamples(MV *mv, int *pts, int *pts_inref, int len,
                           BLOCK_SIZE bsize);
-uint8_t av1_findSamples(const AV1_COMMON *cm, MACROBLOCKD *xd, int *pts,
+HAOM_EXPORT uint8_t av1_findSamples(const AV1_COMMON *cm, MACROBLOCKD *xd, int *pts,
                         int *pts_inref);
 
 #define INTRABC_DELAY_PIXELS 256  //  Delay of 256 pixels

@@ -1,4 +1,3 @@
-#pragma once
 #ifndef INCLUDED_CSF
 #define INCLUDED_CSF
 

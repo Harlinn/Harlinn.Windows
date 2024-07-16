@@ -30,9 +30,9 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
-#include "../pcidsk_exception.h"
-#include "../pcidsk_file.h"
-#include "metadatasegment.h"
+#include "pcidsk_exception.h"
+#include "pcidsk_file.h"
+#include "segment/metadatasegment.h"
 #include <cassert>
 #include <cstring>
 #include <cstdio>
@@ -172,7 +172,7 @@ void MetadataSegment::FetchGroupMetadata( const char *group, int id,
             else
                 value.assign( pszNext+i_split+1, i-i_split-1 );
 
-            md_set[key] = value;
+            md_set[key] = std::move(value);
         }
 
 /* -------------------------------------------------------------------- */

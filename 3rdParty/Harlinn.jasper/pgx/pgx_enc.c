@@ -86,7 +86,7 @@ static uint_fast32_t pgx_inttoword(jas_seqent_t val, int prec, bool sgnd);
 
 /* Save an image to a stream in the the PGX format. */
 
-int pgx_encode(jas_image_t *image, jas_stream_t *out, const char *optstr)
+JAS_EXPORT int pgx_encode(jas_image_t *image, jas_stream_t *out, const char *optstr)
 {
 	pgx_hdr_t hdr;
 	uint_fast32_t width;
@@ -96,19 +96,18 @@ int pgx_encode(jas_image_t *image, jas_stream_t *out, const char *optstr)
 	pgx_enc_t encbuf;
 	pgx_enc_t *enc = &encbuf;
 
-	/* Avoid compiler warnings about unused parameters. */
-	(void)optstr;
+	JAS_UNUSED(optstr);
 
 	switch (jas_clrspc_fam(jas_image_clrspc(image))) {
 	case JAS_CLRSPC_FAM_GRAY:
 		if ((enc->cmpt = jas_image_getcmptbytype(image,
 		  JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_GRAY_Y))) < 0) {
-			jas_eprintf("error: missing color component\n");
+			jas_logerrorf("error: missing color component\n");
 			return -1;
 		}
 		break;
 	default:
-		jas_eprintf("error: PGX format does not support color space\n");
+		jas_logerrorf("error: PGX format does not support color space\n");
 		return -1;
 	}
 
@@ -123,7 +122,7 @@ int pgx_encode(jas_image_t *image, jas_stream_t *out, const char *optstr)
 	  PGX format. */
 	/* There must be exactly one component. */
 	if (jas_image_numcmpts(image) > 1 || prec > 16) {
-		jas_eprintf("The PGX format cannot be used to represent an image with this geometry.\n");
+		jas_logerrorf("The PGX format cannot be used to represent an image with this geometry.\n");
 		return -1;
 	}
 
@@ -134,7 +133,7 @@ int pgx_encode(jas_image_t *image, jas_stream_t *out, const char *optstr)
 	hdr.width = width;
 	hdr.height = height;
 
-	if (jas_getdbglevel() >= 10) {
+	if (jas_get_debug_level() >= 10) {
 		pgx_dumphdr(stderr, &hdr);
 	}
 
@@ -220,6 +219,7 @@ static int pgx_putword(jas_stream_t *out, bool bigendian, int prec,
 static uint_fast32_t pgx_inttoword(jas_seqent_t v, int prec, bool sgnd)
 {
 	uint_fast32_t ret;
-	ret = ((sgnd && v < 0) ? ((1 << prec) + v) : v) & ((1 << prec) - 1);
+	ret = ((sgnd && v < 0) ? (JAS_POW2_X(jas_seqent_t, prec) + v) : v) &
+	  ((1 << prec) - 1);
 	return ret;
 }

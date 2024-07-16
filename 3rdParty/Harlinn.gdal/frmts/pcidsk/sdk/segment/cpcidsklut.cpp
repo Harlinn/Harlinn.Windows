@@ -25,8 +25,8 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
-#include "../pcidsk_exception.h"
-#include "cpcidsklut.h"
+#include "pcidsk_exception.h"
+#include "segment/cpcidsklut.h"
 #include <cassert>
 #include <cstring>
 

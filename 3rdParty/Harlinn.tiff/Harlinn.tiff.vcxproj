@@ -91,13 +91,13 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>BUILDING_HARLINN_TIFF=1;TIFF_DISABLE_DEPRECATED=1;_CRT_SECURE_NO_WARNINGS=1;WIN32;_DEBUG;HARLINNTIFF_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>BUILDING_HARLINN_TIFF=1;LIBJPEG_12_PATH="$(SolutionDir)3rdParty\Harlinn.jpeg12\jpeglib.h";TIFF_DISABLE_DEPRECATED=1;_CRT_SECURE_NO_WARNINGS=1;WIN32;_DEBUG;HARLINNTIFF_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
-      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.zlib;$(SolutionDir)3rdParty\Harlinn.deflate\include;$(SolutionDir)3rdParty\Harlinn.jpeg;$(SolutionDir)3rdParty\Harlinn.Lerc\include;$(SolutionDir)3rdParty\Harlinn.zstd;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.zlib;$(SolutionDir)3rdParty\Harlinn.deflate\include;$(SolutionDir)3rdParty\Harlinn.jpeg;$(SolutionDir)3rdParty\Harlinn.Lerc\include;$(SolutionDir)3rdParty\Harlinn.zstd;$(SolutionDir)3rdParty\Harlinn.liblzma\liblzma\api;$(SolutionDir)3rdParty\Harlinn.webp\src;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
@@ -107,8 +107,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
       <AdditionalLibraryDirectories>$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <ModuleDefinitionFile>
-      </ModuleDefinitionFile>
+      <ModuleDefinitionFile>$(ProjectDir)src\libtiff.def</ModuleDefinitionFile>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -116,7 +115,7 @@
       <WarningLevel>Level3</WarningLevel>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>BUILDING_HARLINN_TIFF=1;TIFF_DISABLE_DEPRECATED=1;_CRT_SECURE_NO_WARNINGS=1;WIN32;NDEBUG;HARLINNTIFF_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>BUILDING_HARLINN_TIFF=1;LIBJPEG_12_PATH="$(SolutionDir)3rdParty\Harlinn.jpeg12\jpeglib.h";TIFF_DISABLE_DEPRECATED=1;_CRT_SECURE_NO_WARNINGS=1;WIN32;NDEBUG;HARLINNTIFF_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -124,7 +123,7 @@
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <BufferSecurityCheck>false</BufferSecurityCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.zlib;$(SolutionDir)3rdParty\Harlinn.deflate\include;$(SolutionDir)3rdParty\Harlinn.jpeg;$(SolutionDir)3rdParty\Harlinn.Lerc\include;$(SolutionDir)3rdParty\Harlinn.zstd;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.zlib;$(SolutionDir)3rdParty\Harlinn.deflate\include;$(SolutionDir)3rdParty\Harlinn.jpeg;$(SolutionDir)3rdParty\Harlinn.Lerc\include;$(SolutionDir)3rdParty\Harlinn.zstd;$(SolutionDir)3rdParty\Harlinn.liblzma\liblzma\api;$(SolutionDir)3rdParty\Harlinn.webp\src;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
@@ -135,21 +134,20 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
       <AdditionalLibraryDirectories>$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <ModuleDefinitionFile>
-      </ModuleDefinitionFile>
+      <ModuleDefinitionFile>$(ProjectDir)src\libtiff.def</ModuleDefinitionFile>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>BUILDING_HARLINN_TIFF=1;TIFF_DISABLE_DEPRECATED=1;_CRT_SECURE_NO_WARNINGS=1;_DEBUG;HARLINNTIFF_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>BUILDING_HARLINN_TIFF=1;LIBJPEG_12_PATH="$(SolutionDir)3rdParty\Harlinn.jpeg12\jpeglib.h";TIFF_DISABLE_DEPRECATED=1;_CRT_SECURE_NO_WARNINGS=1;_DEBUG;HARLINNTIFF_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
-      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.zlib;$(SolutionDir)3rdParty\Harlinn.deflate\include;$(SolutionDir)3rdParty\Harlinn.jpeg;$(SolutionDir)3rdParty\Harlinn.Lerc\include;$(SolutionDir)3rdParty\Harlinn.zstd;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.zlib;$(SolutionDir)3rdParty\Harlinn.deflate\include;$(SolutionDir)3rdParty\Harlinn.jpeg;$(SolutionDir)3rdParty\Harlinn.Lerc\include;$(SolutionDir)3rdParty\Harlinn.zstd;$(SolutionDir)3rdParty\Harlinn.liblzma\liblzma\api;$(SolutionDir)3rdParty\Harlinn.webp\src;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
@@ -159,8 +157,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
       <AdditionalLibraryDirectories>$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <ModuleDefinitionFile>
-      </ModuleDefinitionFile>
+      <ModuleDefinitionFile>$(ProjectDir)src\libtiff.def</ModuleDefinitionFile>
       <OutputFile>$(OutDir)$(TargetName)-x64d$(TargetExt)</OutputFile>
     </Link>
   </ItemDefinitionGroup>
@@ -169,7 +166,7 @@
       <WarningLevel>Level3</WarningLevel>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>BUILDING_HARLINN_TIFF=1;TIFF_DISABLE_DEPRECATED=1;_CRT_SECURE_NO_WARNINGS=1;NDEBUG;HARLINNTIFF_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>BUILDING_HARLINN_TIFF=1;LIBJPEG_12_PATH="$(SolutionDir)3rdParty\Harlinn.jpeg12\jpeglib.h";TIFF_DISABLE_DEPRECATED=1;_CRT_SECURE_NO_WARNINGS=1;NDEBUG;HARLINNTIFF_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -177,7 +174,7 @@
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <BufferSecurityCheck>false</BufferSecurityCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.zlib;$(SolutionDir)3rdParty\Harlinn.deflate\include;$(SolutionDir)3rdParty\Harlinn.jpeg;$(SolutionDir)3rdParty\Harlinn.Lerc\include;$(SolutionDir)3rdParty\Harlinn.zstd;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.zlib;$(SolutionDir)3rdParty\Harlinn.deflate\include;$(SolutionDir)3rdParty\Harlinn.jpeg;$(SolutionDir)3rdParty\Harlinn.Lerc\include;$(SolutionDir)3rdParty\Harlinn.zstd;$(SolutionDir)3rdParty\Harlinn.liblzma\liblzma\api;$(SolutionDir)3rdParty\Harlinn.webp\src;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
@@ -188,55 +185,61 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
       <AdditionalLibraryDirectories>$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <ModuleDefinitionFile>
-      </ModuleDefinitionFile>
+      <ModuleDefinitionFile>$(ProjectDir)src\libtiff.def</ModuleDefinitionFile>
       <OutputFile>$(OutDir)$(TargetName)-x64r$(TargetExt)</OutputFile>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
-    <ClCompile Include="tif_aux.c" />
-    <ClCompile Include="tif_close.c" />
-    <ClCompile Include="tif_codec.c" />
-    <ClCompile Include="tif_color.c" />
-    <ClCompile Include="tif_compress.c" />
-    <ClCompile Include="tif_dir.c" />
-    <ClCompile Include="tif_dirinfo.c" />
-    <ClCompile Include="tif_dirread.c" />
-    <ClCompile Include="tif_dirwrite.c" />
-    <ClCompile Include="tif_dumpmode.c" />
-    <ClCompile Include="tif_error.c" />
-    <ClCompile Include="tif_extension.c" />
-    <ClCompile Include="tif_fax3.c" />
-    <ClCompile Include="tif_fax3sm.c" />
-    <ClCompile Include="tif_flush.c" />
-    <ClCompile Include="tif_getimage.c" />
-    <ClCompile Include="tif_jbig.c" />
-    <ClCompile Include="tif_jpeg.c" />
-    <ClCompile Include="tif_jpeg_12.c" />
-    <ClCompile Include="tif_lerc.c" />
-    <ClCompile Include="tif_luv.c" />
-    <ClCompile Include="tif_lzma.c" />
-    <ClCompile Include="tif_lzw.c" />
-    <ClCompile Include="tif_next.c" />
-    <ClCompile Include="tif_ojpeg.c" />
-    <ClCompile Include="tif_open.c" />
-    <ClCompile Include="tif_packbits.c" />
-    <ClCompile Include="tif_pixarlog.c" />
-    <ClCompile Include="tif_predict.c" />
-    <ClCompile Include="tif_print.c" />
-    <ClCompile Include="tif_read.c" />
-    <ClCompile Include="tif_strip.c" />
-    <ClCompile Include="tif_swab.c" />
-    <ClCompile Include="tif_thunder.c" />
-    <ClCompile Include="tif_tile.c" />
-    <ClCompile Include="tif_version.c" />
-    <ClCompile Include="tif_warning.c" />
-    <ClCompile Include="tif_webp.c" />
-    <ClCompile Include="tif_win32.c" />
-    <ClCompile Include="tif_write.c" />
-    <ClCompile Include="tif_zip.c" />
-    <ClCompile Include="tif_zstd.c" />
+    <ClCompile Include="src\tif_aux.c" />
+    <ClCompile Include="src\tif_close.c" />
+    <ClCompile Include="src\tif_codec.c" />
+    <ClCompile Include="src\tif_color.c" />
+    <ClCompile Include="src\tif_compress.c" />
+    <ClCompile Include="src\tif_dir.c" />
+    <ClCompile Include="src\tif_dirinfo.c" />
+    <ClCompile Include="src\tif_dirread.c" />
+    <ClCompile Include="src\tif_dirwrite.c" />
+    <ClCompile Include="src\tif_dumpmode.c" />
+    <ClCompile Include="src\tif_error.c" />
+    <ClCompile Include="src\tif_extension.c" />
+    <ClCompile Include="src\tif_fax3.c" />
+    <ClCompile Include="src\tif_fax3sm.c" />
+    <ClCompile Include="src\tif_flush.c" />
+    <ClCompile Include="src\tif_getimage.c" />
+    <ClCompile Include="src\tif_hash_set.c" />
+    <ClCompile Include="src\tif_jbig.c" />
+    <ClCompile Include="src\tif_jpeg.c" />
+    <ClCompile Include="src\tif_jpeg_12.c">
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)3rdParty\Harlinn.jpeg12;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)3rdParty\Harlinn.jpeg12;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)3rdParty\Harlinn.jpeg12;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(SolutionDir)3rdParty\Harlinn.jpeg12;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <ClCompile Include="src\tif_lerc.c" />
+    <ClCompile Include="src\tif_luv.c" />
+    <ClCompile Include="src\tif_lzma.c" />
+    <ClCompile Include="src\tif_lzw.c" />
+    <ClCompile Include="src\tif_next.c" />
+    <ClCompile Include="src\tif_ojpeg.c" />
+    <ClCompile Include="src\tif_open.c" />
+    <ClCompile Include="src\tif_packbits.c" />
+    <ClCompile Include="src\tif_pixarlog.c" />
+    <ClCompile Include="src\tif_predict.c" />
+    <ClCompile Include="src\tif_print.c" />
+    <ClCompile Include="src\tif_read.c" />
+    <ClCompile Include="src\tif_stream.cxx" />
+    <ClCompile Include="src\tif_strip.c" />
+    <ClCompile Include="src\tif_swab.c" />
+    <ClCompile Include="src\tif_thunder.c" />
+    <ClCompile Include="src\tif_tile.c" />
+    <ClCompile Include="src\tif_version.c" />
+    <ClCompile Include="src\tif_warning.c" />
+    <ClCompile Include="src\tif_webp.c" />
+    <ClCompile Include="src\tif_win32.c" />
+    <ClCompile Include="src\tif_write.c" />
+    <ClCompile Include="src\tif_zip.c" />
+    <ClCompile Include="src\tif_zstd.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="t4.h" />
@@ -249,8 +252,12 @@
     <ClInclude Include="tif_config.h" />
     <ClInclude Include="tif_dir.h" />
     <ClInclude Include="tif_fax3.h" />
+    <ClInclude Include="tif_hash_set.h" />
     <ClInclude Include="tif_predict.h" />
     <ClInclude Include="uvcode.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="src\libtiff.def" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

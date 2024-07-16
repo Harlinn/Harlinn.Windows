@@ -39,6 +39,12 @@ struct CYCLIC_REFRESH {
    * for cyclic refresh.
    */
   int percent_refresh;
+
+  /*!
+   * Active adjustment delta for cyclic refresh for rate control.
+   */
+  int percent_refresh_adjustment;
+
   /*!
    * Maximum q-delta as percentage of base q.
    */
@@ -47,6 +53,10 @@ struct CYCLIC_REFRESH {
    *Superblock starting index for cycling through the frame.
    */
   int sb_index;
+  /*!
+   *Superblock index cyclic refresh index last frame
+   */
+  int last_sb_index;
   /*!
    * Controls how long block will need to wait to be refreshed again, in
    * excess of the cycle time, i.e., in the case of all zero motion, block
@@ -72,17 +82,9 @@ struct CYCLIC_REFRESH {
    */
   int rdmult;
   /*!
-   * Count of zero motion vectors
-   */
-  int cnt_zeromv;
-  /*!
    * Cyclic refresh map.
    */
   int8_t *map;
-  /*!
-   * Map of the last q a block was coded at.
-   */
-  uint8_t *last_coded_q_map;
   /*!
    * Threshold applied to the projected rate of the coding block,
    * when deciding whether block should be refreshed.
@@ -102,6 +104,12 @@ struct CYCLIC_REFRESH {
    * Rate target ratio to set q delta.
    */
   double rate_ratio_qdelta;
+
+  /*!
+   * Active adjustment of qdelta rate ratio for enhanced rate control
+   */
+  double rate_ratio_qdelta_adjustment;
+
   /*!
    * Boost factor for rate target ratio, for segment CR_SEGMENT_ID_BOOST2.
    */
@@ -109,8 +117,10 @@ struct CYCLIC_REFRESH {
 
   /*!\cond */
   int qindex_delta[3];
-  double weight_segment;
   int apply_cyclic_refresh;
+  int skip_over4x4;
+  int counter_encode_maxq_scene_change;
+  int use_block_sad_scene_det;
   /*!\endcond */
 };
 
@@ -176,14 +186,16 @@ int av1_cyclic_refresh_rc_bits_per_mb(const struct AV1_COMP *cpi, int i,
  * \param[in]   mi_row    Row coordinate of the block in a step size of MI_SIZE
  * \param[in]   mi_col    Col coordinate of the block in a step size of MI_SIZE
  * \param[in]   bsize     Block size
+ * \param[in]   dry_run   A code indicating whether it is part of the final
+ *                        pass for reconstructing the superblock
  *
- * \return Update the \c mbmi->segment_id, the \c cpi->cyclic_refresh and
+ * \remark Update the \c mbmi->segment_id, the \c cpi->cyclic_refresh and
  * the \c cm->cpi->enc_seg.map.
  */
 
 void av1_cyclic_reset_segment_skip(const struct AV1_COMP *cpi,
                                    MACROBLOCK *const x, int mi_row, int mi_col,
-                                   BLOCK_SIZE bsize);
+                                   BLOCK_SIZE bsize, RUN_TYPE dry_run);
 
 /*!\brief Update segment_id for block based on mode selected.
  *
@@ -206,7 +218,7 @@ void av1_cyclic_reset_segment_skip(const struct AV1_COMP *cpi,
  * \param[in]   dry_run   A code indicating whether it is part of the final
  *                         pass for reconstructing the superblock
  *
- * \return Update the \c mbmi->segment_id, the \c cpi->cyclic_refresh and
+ * \remark Update the \c mbmi->segment_id, the \c cpi->cyclic_refresh and
  * the \c cm->cpi->enc_seg.map.
  */
 void av1_cyclic_refresh_update_segment(const struct AV1_COMP *cpi,
@@ -217,7 +229,7 @@ void av1_cyclic_refresh_update_segment(const struct AV1_COMP *cpi,
 
 /*!\brief Initialize counters used for cyclic refresh.
  *
- * Initializes cyclic refresh counters cnt_zeromv, actual_num_seg1_blocks and
+ * Initializes cyclic refresh counters actual_num_seg1_blocks and
  * actual_num_seg2_blocks.
  *
  * \ingroup cyclic_refresh
@@ -226,14 +238,14 @@ void av1_cyclic_refresh_update_segment(const struct AV1_COMP *cpi,
  *
  * \param[in]   x         Pointer to MACROBLOCK structure
  *
- * \return Update the \c x->cnt_zeromv, the \c x->actual_num_seg1_blocks and
- * the \c x->actual_num_seg1_blocks.
+ * \remark Update the \c x->actual_num_seg1_blocks and the
+ * \c x->actual_num_seg2_blocks.
  */
 void av1_init_cyclic_refresh_counters(MACROBLOCK *const x);
 
 /*!\brief Accumulate cyclic refresh counters.
  *
- * Accumulates cyclic refresh counters cnt_zeromv, actual_num_seg1_blocks and
+ * Accumulates cyclic refresh counters actual_num_seg1_blocks and
  * actual_num_seg2_blocks from MACROBLOCK strcture to CYCLIC_REFRESH strcture.
  *
  * \ingroup cyclic_refresh
@@ -243,27 +255,11 @@ void av1_init_cyclic_refresh_counters(MACROBLOCK *const x);
  * \param[in]   cyclic_refresh Pointer to CYCLIC_REFRESH structure
  * \param[in]   x              Pointer to MACROBLOCK structure
  *
- * \return Update the \c cyclic_refresh->cnt_zeromv, the \c
- * cyclic_refresh->actual_num_seg1_blocks and the \c
- * cyclic_refresh->actual_num_seg1_blocks.
+ * \remark Update the \c cyclic_refresh->actual_num_seg1_blocks and the
+ * \c cyclic_refresh->actual_num_seg2_blocks.
  */
 void av1_accumulate_cyclic_refresh_counters(
     CYCLIC_REFRESH *const cyclic_refresh, const MACROBLOCK *const x);
-
-/*!\brief Update stats after encoding frame.
- *
- * Update the number of block encoded with segment 1 and 2,
- * and update the number of blocks encoded with small/zero motion.
- *
- * \ingroup cyclic_refresh
- * \callgraph
- * \callergraph
- *
- * \param[in]   cpi       Top level encoder structure
- *
- * \return Updates the \c cpi->cyclic_refresh with the new stats.
- */
-void av1_cyclic_refresh_postencode(struct AV1_COMP *const cpi);
 
 /*!\brief Set golden frame update interval nased on cyclic refresh.
  *
@@ -273,7 +269,7 @@ void av1_cyclic_refresh_postencode(struct AV1_COMP *const cpi);
  *
  * \param[in]   cpi       Top level encoder structure
  *
- * \return Returns the interval in \c cpi->rc.baseline_gf_interval.
+ * \remark Returns the interval in \c cpi->rc.baseline_gf_interval.
  */
 void av1_cyclic_refresh_set_golden_update(struct AV1_COMP *const cpi);
 
@@ -290,7 +286,7 @@ void av1_cyclic_refresh_set_golden_update(struct AV1_COMP *const cpi);
  *
  * \param[in]       cpi          Top level encoder structure
  *
- * \return Updates the \c cpi->cyclic_refresh with the settings.
+ * \remark Updates the \c cpi->cyclic_refresh with the settings.
  */
 void av1_cyclic_refresh_update_parameters(struct AV1_COMP *const cpi);
 
@@ -304,7 +300,7 @@ void av1_cyclic_refresh_update_parameters(struct AV1_COMP *const cpi);
  *
  * \param[in]       cpi          Top level encoder structure
  *
- * \return Updates the \c cpi->cyclic_refresh with the cyclic refresh
+ * \remark Updates the \c cpi->cyclic_refresh with the cyclic refresh
  * parameters and the \c cm->seg with the segmentation data.
  */
 void av1_cyclic_refresh_setup(struct AV1_COMP *const cpi);
@@ -312,6 +308,8 @@ void av1_cyclic_refresh_setup(struct AV1_COMP *const cpi);
 int av1_cyclic_refresh_get_rdmult(const CYCLIC_REFRESH *cr);
 
 void av1_cyclic_refresh_reset_resize(struct AV1_COMP *const cpi);
+
+int av1_cyclic_refresh_disable_lf_cdef(struct AV1_COMP *const cpi);
 
 static INLINE int cyclic_refresh_segment_id_boosted(int segment_id) {
   return segment_id == CR_SEGMENT_ID_BOOST1 ||

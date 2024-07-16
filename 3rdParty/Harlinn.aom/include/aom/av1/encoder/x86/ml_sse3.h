@@ -14,15 +14,15 @@
 
 #include <pmmintrin.h>
 
-void av1_nn_propagate_4to1_sse3(const float *const inputs,
+HAOM_EXPORT void av1_nn_propagate_4to1_sse3(const float *const inputs,
                                 const float *const weights,
                                 __m128 *const output);
 
-void av1_nn_propagate_4to4_sse3(const float *const inputs,
+HAOM_EXPORT void av1_nn_propagate_4to4_sse3(const float *const inputs,
                                 const float *const weights,
                                 __m128 *const outputs, const int num_inputs);
 
-void av1_nn_propagate_4to8_sse3(const float *const inputs,
+HAOM_EXPORT void av1_nn_propagate_4to8_sse3(const float *const inputs,
                                 const float *const weights, __m128 *const out_h,
                                 __m128 *const out_l, const int num_inputs);
 

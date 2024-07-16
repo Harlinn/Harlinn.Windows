@@ -1,4 +1,3 @@
-#pragma once
 /******************************************************************************
  *
  * Purpose:  Declaration of the CBandInterleavedChannel class.
@@ -32,10 +31,10 @@
 #ifndef INCLUDE_CHANNEL_CBANDINTERLEAVEDCHANNEL_H
 #define INCLUDE_CHANNEL_CBANDINTERLEAVEDCHANNEL_H
 
-#include "../pcidsk_config.h"
-#include "../pcidsk_types.h"
-#include "../pcidsk_buffer.h"
-#include "cpcidskchannel.h"
+#include "pcidsk_config.h"
+#include "pcidsk_types.h"
+#include "pcidsk_buffer.h"
+#include "channel/cpcidskchannel.h"
 #include <string>
 
 namespace PCIDSK

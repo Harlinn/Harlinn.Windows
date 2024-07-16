@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="gdal_translate.cpp">
+    <ClCompile Include="gdal_translate_bin.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

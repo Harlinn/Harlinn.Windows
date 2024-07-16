@@ -1,4 +1,3 @@
-#pragma once
 /******************************************************************************
  * $Id$
  *
@@ -37,10 +36,10 @@
  * Public (C callable) entry points for virtual GDAL dataset objects.
  */
 
-#include <port/cpl_error.h>
-#include <port/cpl_minixml.h>
-#include <port/cpl_port.h>
-#include <gcore/gdal.h>
+#include "cpl_error.h"
+#include "cpl_minixml.h"
+#include "cpl_port.h"
+#include "gdal.h"
 
 /** Special value to indicate that nodata is not set */
 #define VRT_NODATA_UNSET -1234.56
@@ -48,10 +47,8 @@
 CPL_C_START
 
 /** Type for a function that returns the pixel data in a provided window */
-typedef CPLErr
-(*VRTImageReadFunc)( void *hCBData,
-                     int nXOff, int nYOff, int nXSize, int nYSize,
-                     void *pData );
+typedef CPLErr (*VRTImageReadFunc)(void *hCBData, int nXOff, int nYOff,
+                                   int nXSize, int nYSize, void *pData);
 
 /* -------------------------------------------------------------------- */
 /*      Define handle types related to various VRT dataset classes.     */
@@ -82,29 +79,26 @@ typedef void *VRTSourcedRasterBandH;
 /*      VRTDataset class.                                               */
 /* ==================================================================== */
 
-VRTDatasetH CPL_DLL CPL_STDCALL VRTCreate( int, int );
-void CPL_DLL CPL_STDCALL VRTFlushCache( VRTDatasetH );
-CPLXMLNode CPL_DLL * CPL_STDCALL VRTSerializeToXML( VRTDatasetH, const char * );
-int CPL_DLL CPL_STDCALL VRTAddBand( VRTDatasetH, GDALDataType, char ** );
+VRTDatasetH CPL_DLL CPL_STDCALL VRTCreate(int, int);
+void CPL_DLL CPL_STDCALL VRTFlushCache(VRTDatasetH);
+CPLXMLNode CPL_DLL *CPL_STDCALL VRTSerializeToXML(VRTDatasetH, const char *);
+int CPL_DLL CPL_STDCALL VRTAddBand(VRTDatasetH, GDALDataType, char **);
 
 /* ==================================================================== */
 /*      VRTSourcedRasterBand class.                                     */
 /* ==================================================================== */
 
-CPLErr CPL_STDCALL VRTAddSource( VRTSourcedRasterBandH, VRTSourceH );
-CPLErr CPL_DLL CPL_STDCALL VRTAddSimpleSource( VRTSourcedRasterBandH,
-                                               GDALRasterBandH,
-                                               int, int, int, int,
-                                               int, int, int, int,
-                                               const char *, double );
-CPLErr CPL_DLL CPL_STDCALL VRTAddComplexSource( VRTSourcedRasterBandH,
-                                                GDALRasterBandH,
-                                                int, int, int, int,
-                                                int, int, int, int,
-                                                double, double, double );
-CPLErr CPL_DLL CPL_STDCALL VRTAddFuncSource( VRTSourcedRasterBandH,
-                                             VRTImageReadFunc,
-                                             void *, double );
+CPLErr CPL_STDCALL VRTAddSource(VRTSourcedRasterBandH, VRTSourceH);
+CPLErr CPL_DLL CPL_STDCALL VRTAddSimpleSource(VRTSourcedRasterBandH,
+                                              GDALRasterBandH, int, int, int,
+                                              int, int, int, int, int,
+                                              const char *, double);
+CPLErr CPL_DLL CPL_STDCALL VRTAddComplexSource(VRTSourcedRasterBandH,
+                                               GDALRasterBandH, int, int, int,
+                                               int, int, int, int, int, double,
+                                               double, double);
+CPLErr CPL_DLL CPL_STDCALL VRTAddFuncSource(VRTSourcedRasterBandH,
+                                            VRTImageReadFunc, void *, double);
 
 CPL_C_END
 

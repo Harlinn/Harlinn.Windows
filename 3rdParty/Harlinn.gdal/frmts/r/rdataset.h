@@ -1,4 +1,3 @@
-#pragma once
 /******************************************************************************
  * $Id$
  *
@@ -29,30 +28,32 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
+#ifndef RDATASET_H_INCLUDED
+#define RDATASET_H_INCLUDED
+
 #include <cstddef>
 #include <cstdlib>
 #include <cstring>
 #include <string>
 #if HAVE_FCNTL_H
-#  include <fcntl.h>
+#include <fcntl.h>
 #endif
 
-#include <port/cpl_conv.h>
-#include <port/cpl_error.h>
-#include <port/cpl_port.h>
-#include <port/cpl_progress.h>
-#include <port/cpl_string.h>
-#include <port/cpl_vsi.h>
-#include <gcore/gdal.h>
-#include <gcore/gdal_frmts.h>
-#include <gcore/gdal_pam.h>
-#include <gcore/gdal_priv.h>
-#include <gcore/rawdataset.h>
+#include "cpl_conv.h"
+#include "cpl_error.h"
+#include "cpl_port.h"
+#include "cpl_progress.h"
+#include "cpl_string.h"
+#include "cpl_vsi.h"
+#include "gdal.h"
+#include "gdal_frmts.h"
+#include "gdal_pam.h"
+#include "gdal_priv.h"
+#include "rawdataset.h"
 
-GDALDataset *
-RCreateCopy( const char * pszFilename, GDALDataset *poSrcDS,
-             int bStrict, char ** papszOptions,
-             GDALProgressFunc pfnProgress, void * pProgressData );
+GDALDataset *RCreateCopy(const char *pszFilename, GDALDataset *poSrcDS,
+                         int bStrict, char **papszOptions,
+                         GDALProgressFunc pfnProgress, void *pProgressData);
 
 /************************************************************************/
 /* ==================================================================== */
@@ -60,29 +61,29 @@ RCreateCopy( const char * pszFilename, GDALDataset *poSrcDS,
 /* ==================================================================== */
 /************************************************************************/
 
-class RDataset final: public GDALPamDataset
+class RDataset final : public GDALPamDataset
 {
     friend class RRasterBand;
-    VSILFILE   *fp;
-    int         bASCII;
-    CPLString   osLastStringRead;
+    VSILFILE *fp;
+    int bASCII;
+    CPLString osLastStringRead;
 
     vsi_l_offset nStartOfData;
 
-    double     *padfMatrixValues;
+    double *padfMatrixValues;
 
     const char *ASCIIFGets();
-    int         ReadInteger();
-    double      ReadFloat();
+    int ReadInteger();
+    double ReadFloat();
     const char *ReadString();
-    bool        ReadPair( CPLString &osItemName, int &nItemType );
+    bool ReadPair(CPLString &osItemName, int &nItemType);
 
   public:
-                RDataset();
-                ~RDataset();
+    RDataset();
+    ~RDataset();
 
-    static GDALDataset  *Open( GDALOpenInfo * );
-    static int          Identify( GDALOpenInfo * );
+    static GDALDataset *Open(GDALOpenInfo *);
+    static int Identify(GDALOpenInfo *);
 };
 
 /************************************************************************/
@@ -91,15 +92,20 @@ class RDataset final: public GDALPamDataset
 /* ==================================================================== */
 /************************************************************************/
 
-class RRasterBand final: public GDALPamRasterBand
+class RRasterBand final : public GDALPamRasterBand
 {
     friend class RDataset;
 
     const double *padfMatrixValues;
 
   public:
-                RRasterBand( RDataset *, int, const double * );
-    virtual ~RRasterBand() {}
+    RRasterBand(RDataset *, int, const double *);
 
-    virtual CPLErr          IReadBlock( int, int, void * ) override;
+    virtual ~RRasterBand()
+    {
+    }
+
+    virtual CPLErr IReadBlock(int, int, void *) override;
 };
+
+#endif /* RDATASET_H_INCLUDED */

@@ -5,9 +5,13 @@
 
 #include "lib/jxl/modular/encoding/dec_ma.h"
 
+#include <limits>
+
+#include "lib/jxl/base/printf_macros.h"
 #include "lib/jxl/dec_ans.h"
 #include "lib/jxl/modular/encoding/ma_common.h"
 #include "lib/jxl/modular/modular_image.h"
+#include "lib/jxl/pack_signed.h"
 
 namespace jxl {
 
@@ -41,15 +45,14 @@ Status DecodeTree(BitReader *br, ANSSymbolReader *reader,
   while (to_decode > 0) {
     JXL_RETURN_IF_ERROR(br->AllReadsWithinBounds());
     if (tree->size() > tree_size_limit) {
-      return JXL_FAILURE("Tree is too large");
+      return JXL_FAILURE("Tree is too large: %" PRIuS " nodes vs %" PRIuS
+                         " max nodes",
+                         tree->size(), tree_size_limit);
     }
     to_decode--;
-    int property = static_cast<int>(reader->ReadHybridUint(kPropertyContext, br,
-                                                           context_map)) -
-                   1;
-    if (property < -1 || property >= 256) {
-      return JXL_FAILURE("Invalid tree property value");
-    }
+    uint32_t prop1 = reader->ReadHybridUint(kPropertyContext, br, context_map);
+    if (prop1 > 256) return JXL_FAILURE("Invalid tree property value");
+    int property = prop1 - 1;
     if (property == -1) {
       size_t predictor =
           reader->ReadHybridUint(kPredictorContext, br, context_map);
@@ -65,7 +68,7 @@ Status DecodeTree(BitReader *br, ANSSymbolReader *reader,
       }
       uint32_t mul_bits =
           reader->ReadHybridUint(kMultiplierBitsContext, br, context_map);
-      if (mul_bits + 1 >= 1u << (31u - mul_log)) {
+      if (mul_bits >= (1u << (31u - mul_log)) - 1u) {
         return JXL_FAILURE("Invalid multiplier");
       }
       uint32_t multiplier = (mul_bits + 1U) << mul_log;

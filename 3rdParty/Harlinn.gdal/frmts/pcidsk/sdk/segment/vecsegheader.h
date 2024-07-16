@@ -1,4 +1,3 @@
-#pragma once
 /******************************************************************************
  *
  * Purpose:  Declaration of the VecSegHeader class.
@@ -32,10 +31,10 @@
 #ifndef INCLUDE_SEGMENT_VECSEGHEADER_H
 #define INCLUDE_SEGMENT_VECSEGHEADER_H
 
-#include "../pcidsk_config.h"
-#include "../pcidsk_types.h"
-#include "../pcidsk_buffer.h"
-#include "../pcidsk_vectorsegment.h"
+#include "pcidsk_config.h"
+#include "pcidsk_types.h"
+#include "pcidsk_buffer.h"
+#include "pcidsk_vectorsegment.h"
 
 #include <string>
 #include <map>
@@ -52,6 +51,12 @@ namespace PCIDSK
     const int hsec_rst = 1;
     const int hsec_record = 2;
     const int hsec_shape = 3;
+
+/* -------------------------------------------------------------------- */
+/*      Size of a block in the record/vertex block tables.  This is    */
+/*      determined by the PCIDSK format and may not be changed.         */
+/* -------------------------------------------------------------------- */
+constexpr int block_page_size = 8192;
 
     class VecSegHeader
     {

@@ -65,34 +65,47 @@
 /* The configuration header file should be included first. */
 #include <jasper/jas_config.h>
 
-#ifndef JAS_DLL
-#define JAS_DLL 1
+#ifdef LIBJASPER_STATIC_DEFINE
+#  define JAS_EXPORT
+#  define JAS_LOCAL
+#else
+#  ifndef JAS_EXPORT
+#    ifdef libjasper_EXPORTS
+        /* We are building this library */
+#      define JAS_EXPORT __declspec(dllexport)
+#    else
+        /* We are using this library */
+#      define JAS_EXPORT __declspec(dllimport)
+#pragma comment(lib,"Harlinn.jasper.lib")
+#    endif
+#  endif
+
+#  ifndef JAS_LOCAL
+#    define JAS_LOCAL 
+#  endif
 #endif
 
-#if defined(JAS_DLL)
-	#if defined(_WIN32)
-		#if defined(JAS_BUILDING_DLL)
-			#define JAS_DLLEXPORT __declspec(dllexport)
-		#else
-			#define JAS_DLLEXPORT __declspec(dllimport)
-            #pragma comment(lib,"Harlinn.jasper.lib")
-		#endif
-		#define JAS_DLLLOCAL
-	#elif defined(JAS_HAVE_VISIBILITY)
-		#if defined(JAS_BUILDING_DLL)
-			#define JAS_DLLEXPORT __attribute__ ((visibility("default")))
-			#define JAS_DLLLOCAL __attribute__ ((visibility("hidden")))
-		#else
-			#define JAS_DLLEXPORT
-			#define JAS_DLLLOCAL
-		#endif
-	#else
-		#define JAS_DLLEXPORT
-		#define JAS_DLLLOCAL
-	#endif
-#else
-	#define JAS_DLLEXPORT
-	#define JAS_DLLLOCAL
+#ifndef LIBJASPER_DEPRECATED
+#  define LIBJASPER_DEPRECATED __declspec(deprecated)
 #endif
+
+#ifndef LIBJASPER_DEPRECATED_EXPORT
+#  define LIBJASPER_DEPRECATED_EXPORT JAS_EXPORT LIBJASPER_DEPRECATED
+#endif
+
+#ifndef LIBJASPER_DEPRECATED_NO_EXPORT
+#  define LIBJASPER_DEPRECATED_NO_EXPORT JAS_LOCAL LIBJASPER_DEPRECATED
+#endif
+
+#if 0 /* DEFINE_NO_DEPRECATED */
+#  ifndef LIBJASPER_NO_DEPRECATED
+#    define LIBJASPER_NO_DEPRECATED
+#  endif
+#endif
+
+/* For backward compatibility only. */
+#define JAS_DLLEXPORT JAS_EXPORT
+/* For backward compatibility only. */
+#define JAS_DLLLOCAL JAS_LOCAL
 
 #endif

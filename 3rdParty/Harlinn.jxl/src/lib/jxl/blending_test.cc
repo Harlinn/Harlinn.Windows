@@ -3,14 +3,19 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-#include "lib/jxl/blending.h"
+#include <jxl/types.h>
 
-#include "gmock/gmock.h"
-#include "gtest/gtest.h"
-#include "lib/extras/codec.h"
-#include "lib/jxl/dec_file.h"
-#include "lib/jxl/image_test_utils.h"
-#include "lib/jxl/testdata.h"
+#include <cstdint>
+#include <sstream>
+#include <utility>
+#include <vector>
+
+#include "lib/extras/dec/decode.h"
+#include "lib/extras/dec/jxl.h"
+#include "lib/extras/packed_image.h"
+#include "lib/jxl/base/span.h"
+#include "lib/jxl/test_utils.h"
+#include "lib/jxl/testing.h"
 
 namespace jxl {
 namespace {
@@ -18,80 +23,36 @@ namespace {
 using ::testing::SizeIs;
 
 TEST(BlendingTest, Crops) {
-  ThreadPool* pool = nullptr;
-
-  const PaddedBytes compressed =
-      ReadTestData("jxl/blending/cropped_traffic_light.jxl");
-  DecompressParams dparams;
-  CodecInOut decoded;
-  ASSERT_TRUE(DecodeFile(dparams, compressed, &decoded, pool));
+  const std::vector<uint8_t> compressed =
+      jxl::test::ReadTestData("jxl/blending/cropped_traffic_light.jxl");
+  extras::JXLDecompressParams dparams;
+  dparams.accepted_formats = {{3, JXL_TYPE_UINT16, JXL_LITTLE_ENDIAN, 0}};
+  extras::PackedPixelFile decoded;
+  ASSERT_TRUE(DecodeImageJXL(compressed.data(), compressed.size(), dparams,
+                             /*decoded_bytes=*/nullptr, &decoded));
   ASSERT_THAT(decoded.frames, SizeIs(4));
 
   int i = 0;
-  for (const ImageBundle& ib : decoded.frames) {
+  for (auto&& decoded_frame : decoded.frames) {
     std::ostringstream filename;
     filename << "jxl/blending/cropped_traffic_light_frame-" << i << ".png";
-    const PaddedBytes compressed_frame = ReadTestData(filename.str());
-    CodecInOut frame;
-    ASSERT_TRUE(SetFromBytes(Span<const uint8_t>(compressed_frame), &frame));
-    EXPECT_TRUE(SamePixels(ib.color(), *frame.Main().color()));
+    const std::vector<uint8_t> compressed_frame =
+        jxl::test::ReadTestData(filename.str());
+    extras::PackedPixelFile decoded_frame_ppf;
+    decoded_frame_ppf.info = decoded.info;
+    decoded_frame_ppf.primary_color_representation =
+        decoded.primary_color_representation;
+    decoded_frame_ppf.color_encoding = decoded.color_encoding;
+    decoded_frame_ppf.icc = decoded.icc;
+    decoded_frame_ppf.extra_channels_info = decoded.extra_channels_info;
+    decoded_frame_ppf.frames.emplace_back(std::move(decoded_frame));
+    extras::PackedPixelFile expected_frame_ppf;
+    ASSERT_TRUE(extras::DecodeBytes(Bytes(compressed_frame),
+                                    extras::ColorHints(), &expected_frame_ppf));
+    EXPECT_EQ(0.0f,
+              test::ComputeDistance2(decoded_frame_ppf, expected_frame_ppf));
     ++i;
   }
-}
-
-TEST(BlendingTest, Offset) {
-  const PaddedBytes background_bytes = ReadTestData("jxl/splines.png");
-  CodecInOut background;
-  ASSERT_TRUE(SetFromBytes(Span<const uint8_t>(background_bytes), &background));
-  const PaddedBytes foreground_bytes =
-      ReadTestData("jxl/grayscale_patches.png");
-  CodecInOut foreground;
-  ASSERT_TRUE(SetFromBytes(Span<const uint8_t>(foreground_bytes), &foreground));
-
-  ImageBlender blender;
-  CodecMetadata nonserialized_metadata;
-  ASSERT_TRUE(
-      nonserialized_metadata.size.Set(background.xsize(), background.ysize()));
-  PassesSharedState state;
-  state.frame_header.blending_info.mode = BlendMode::kReplace;
-  state.frame_header.blending_info.source = 0;
-  state.frame_header.nonserialized_metadata = &nonserialized_metadata;
-  state.metadata = &background.metadata;
-  state.reference_frames[0].frame = &background.Main();
-  PassesDecoderState dec_state;
-  dec_state.shared = &state;
-  const FrameOrigin foreground_origin = {-50, -50};
-  ImageBundle output(&background.metadata.m);
-  output.SetFromImage(Image3F(background.xsize(), background.ysize()),
-                      background.Main().c_current());
-  ASSERT_TRUE(blender.PrepareBlending(
-      &dec_state, foreground_origin, foreground.xsize(), foreground.ysize(),
-      &nonserialized_metadata.m.extra_channel_info,
-      background.Main().c_current(), Rect(background), output.color(),
-      Rect(*output.color()), {}, {}));
-
-  static constexpr int kStep = 20;
-  for (size_t x0 = 0; x0 < foreground.xsize(); x0 += kStep) {
-    for (size_t y0 = 0; y0 < foreground.ysize(); y0 += kStep) {
-      const Rect rect =
-          Rect(x0, y0, kStep, kStep).Intersection(Rect(foreground.Main()));
-      Image3F foreground_crop(rect.xsize(), rect.ysize());
-      CopyImageTo(rect, *foreground.Main().color(), Rect(foreground_crop),
-                  &foreground_crop);
-      auto rect_blender =
-          blender.PrepareRect(rect, foreground_crop, {}, Rect(foreground_crop));
-      for (size_t y = 0; y < rect.ysize(); ++y) {
-        ASSERT_TRUE(rect_blender.DoBlending(y));
-      }
-    }
-  }
-
-  const PaddedBytes expected_bytes =
-      ReadTestData("jxl/blending/grayscale_patches_on_splines.png");
-  CodecInOut expected;
-  ASSERT_TRUE(SetFromBytes(Span<const uint8_t>(expected_bytes), &expected));
-  VerifyRelativeError(*expected.Main().color(), *output.color(), 1. / (2 * 255),
-                      0);
 }
 
 }  // namespace

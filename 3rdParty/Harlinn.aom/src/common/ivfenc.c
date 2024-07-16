@@ -14,7 +14,7 @@
 #include "aom/aom_encoder.h"
 #include "aom_ports/mem_ops.h"
 
-void ivf_write_file_header(FILE *outfile, const struct aom_codec_enc_cfg *cfg,
+HAOM_EXPORT void ivf_write_file_header(FILE *outfile, const struct aom_codec_enc_cfg *cfg,
                            unsigned int fourcc, int frame_cnt) {
   char header[32];
 
@@ -35,7 +35,7 @@ void ivf_write_file_header(FILE *outfile, const struct aom_codec_enc_cfg *cfg,
   fwrite(header, 1, 32, outfile);
 }
 
-void ivf_write_frame_header(FILE *outfile, int64_t pts, size_t frame_size) {
+HAOM_EXPORT void ivf_write_frame_header(FILE *outfile, int64_t pts, size_t frame_size) {
   char header[12];
 
   mem_put_le32(header, (int)frame_size);
@@ -44,7 +44,7 @@ void ivf_write_frame_header(FILE *outfile, int64_t pts, size_t frame_size) {
   fwrite(header, 1, 12, outfile);
 }
 
-void ivf_write_frame_size(FILE *outfile, size_t frame_size) {
+HAOM_EXPORT void ivf_write_frame_size(FILE *outfile, size_t frame_size) {
   char header[4];
 
   mem_put_le32(header, (int)frame_size);

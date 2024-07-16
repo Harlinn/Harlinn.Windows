@@ -1,4 +1,3 @@
-#pragma once
 /******************************************************************************
  *
  * Purpose: Interface. Builder class for constructing a related PCIDSK segment

@@ -146,7 +146,7 @@ static const jas_taginfo_t mif_tags[] = {
 
 /* Load an image from a stream in the MIF format. */
 
-jas_image_t *mif_decode(jas_stream_t *in, const char *optstr)
+JAS_EXPORT jas_image_t *mif_decode(jas_stream_t *in, const char *optstr)
 {
 	mif_hdr_t *hdr;
 	jas_image_t *image;
@@ -160,8 +160,9 @@ jas_image_t *mif_decode(jas_stream_t *in, const char *optstr)
 	int_fast32_t y;
 	int bias;
 
-	/* Avoid warnings about unused parameters. */
-	(void)optstr;
+	JAS_LOGDEBUGF(10, "mif_decode(%p, \"%s\")\n", in, (optstr ? optstr : ""));
+
+	JAS_UNUSED(optstr);
 
 	hdr = 0;
 	image = 0;
@@ -169,22 +170,29 @@ jas_image_t *mif_decode(jas_stream_t *in, const char *optstr)
 	tmpstream = 0;
 	data = 0;
 
+	JAS_LOGDEBUGF(10, "getting MIF header\n");
 	if (!(hdr = mif_hdr_get(in))) {
+		jas_logerrorf("cannot get MIF header\n");
 		goto error;
 	}
 
 	if (!(image = jas_image_create0())) {
+		jas_logerrorf("cannot create image\n");
 		goto error;
 	}
 
 	for (cmptno = 0; cmptno < hdr->numcmpts; ++cmptno) {
+		JAS_LOGDEBUGF(10, "processing component %d of %d\n", cmptno,
+		  hdr->numcmpts);
 		cmpt = hdr->cmpts[cmptno];
 		tmpstream = cmpt->data ? jas_stream_fopen(cmpt->data, "rb") : in;
 		if (!tmpstream) {
-			jas_eprintf("cannot open component file %s\n", cmpt->data);
+			jas_logerrorf("cannot open component file %s\n", cmpt->data);
 			goto error;
 		}
+		JAS_LOGDEBUGF(10, "decoding component %d\n", cmptno);
 		if (!(tmpimage = jas_image_decode(tmpstream, -1, "allow_trunc=1"))) {
+			jas_logerrorf("cannot decode image\n");
 			goto error;
 		}
 		if (tmpstream != in) {
@@ -211,14 +219,20 @@ jas_image_t *mif_decode(jas_stream_t *in, const char *optstr)
 		cmptparm.height = cmpt->height;
 		cmptparm.prec = cmpt->prec;
 		cmptparm.sgnd = cmpt->sgnd;
+		JAS_LOGDEBUGF(10, "adding component %d\n", cmptno);
 		if (jas_image_addcmpt(image, jas_image_numcmpts(image), &cmptparm)) {
+			jas_logerrorf("cannot add component\n");
 			goto error;
 		}
+		JAS_LOGDEBUGF(10, "copying component %d\n", cmptno);
 		if (!(data = jas_seq2d_create(0, 0, cmpt->width, cmpt->height))) {
+			jas_logerrorf("cannot create sequence\n");
 			goto error;
 		}
+		JAS_LOGDEBUGF(10, "reading component %d\n", cmptno);
 		if (jas_image_readcmpt(tmpimage, 0, 0, 0, cmpt->width, cmpt->height,
 		  data)) {
+			jas_logerrorf("cannot read component\n");
 			goto error;
 		}
 		if (cmpt->sgnd) {
@@ -229,8 +243,10 @@ jas_image_t *mif_decode(jas_stream_t *in, const char *optstr)
 				}
 			}
 		}
+		JAS_LOGDEBUGF(10, "writing component %d\n", cmptno);
 		if (jas_image_writecmpt(image, jas_image_numcmpts(image) - 1, 0, 0,
 		  cmpt->width, cmpt->height, data)) {
+			jas_logerrorf("cannot write component\n");
 			goto error;
 		}
 		jas_seq2d_destroy(data);
@@ -268,7 +284,7 @@ error:
 
 /* Save an image to a stream in the the MIF format. */
 
-int mif_encode(jas_image_t *image, jas_stream_t *out, const char *optstr)
+JAS_EXPORT int mif_encode(jas_image_t *image, jas_stream_t *out, const char *optstr)
 {
 	mif_hdr_t *hdr;
 	jas_image_t *tmpimage;
@@ -281,23 +297,28 @@ int mif_encode(jas_image_t *image, jas_stream_t *out, const char *optstr)
 	int_fast32_t y;
 	int bias;
 
+	JAS_LOGDEBUGF(10, "mif_encode(%p, %p, \"%s\")\n", image, out,
+	  (optstr ? optstr : ""));
+
 	hdr = 0;
 	tmpimage = 0;
 	data = 0;
 
 	if (optstr && *optstr != '\0') {
-		jas_eprintf("warning: ignoring unsupported options\n");
+		jas_logwarnf("warning: ignoring unsupported options\n");
 	}
 
 	if ((fmt = jas_image_strtofmt("pnm")) < 0) {
-		jas_eprintf("error: PNM support required\n");
+		jas_logerrorf("error: PNM support required\n");
 		goto error;
 	}
 
 	if (!(hdr = mif_makehdrfromimage(image))) {
+		jas_logerrorf("cannot make MIF header\n");
 		goto error;
 	}
 	if (mif_hdr_put(hdr, out)) {
+		jas_logerrorf("cannot write MIF header\n");
 		goto error;
 	}
 
@@ -306,6 +327,7 @@ int mif_encode(jas_image_t *image, jas_stream_t *out, const char *optstr)
 		cmpt = hdr->cmpts[cmptno];
 		if (!cmpt->data) {
 			if (!(tmpimage = jas_image_create0())) {
+				jas_logerrorf("cannot create image\n");
 				goto error;
 			}	
 			cmptparm.tlx = 0;
@@ -318,16 +340,19 @@ int mif_encode(jas_image_t *image, jas_stream_t *out, const char *optstr)
 			cmptparm.sgnd = false;
 			if (jas_image_addcmpt(tmpimage, jas_image_numcmpts(tmpimage),
 			  &cmptparm)) {
+				jas_logerrorf("cannot add component\n");
 				goto error;
 			}
 			jas_image_setclrspc(tmpimage, JAS_CLRSPC_SGRAY);
 			jas_image_setcmpttype(tmpimage, 0,
 			  JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_GRAY_Y));
 			if (!(data = jas_seq2d_create(0, 0, cmpt->width, cmpt->height))) {
+				jas_logerrorf("cannot create sequence\n");
 				goto error;
 			}
 			if (jas_image_readcmpt(image, cmptno, 0, 0, cmpt->width,
 			  cmpt->height, data)) {
+				jas_logerrorf("cannot read component\n");
 				goto error;
 			}
 			if (cmpt->sgnd) {
@@ -340,11 +365,13 @@ int mif_encode(jas_image_t *image, jas_stream_t *out, const char *optstr)
 			}
 			if (jas_image_writecmpt(tmpimage, 0, 0, 0, cmpt->width,
 			  cmpt->height, data)) {
+				jas_logerrorf("cannot write component\n");
 				goto error;
 			}
 			jas_seq2d_destroy(data);
 			data = 0;
 			if (jas_image_encode(tmpimage, out, fmt, 0)) {
+				jas_logerrorf("cannot encode image\n");
 				goto error;
 			}
 			jas_image_destroy(tmpimage);
@@ -373,17 +400,22 @@ error:
 * Code for validate operation.
 \******************************************************************************/
 
-int mif_validate(jas_stream_t *in)
+JAS_EXPORT int mif_validate(jas_stream_t *in)
 {
 	jas_uchar buf[MIF_MAGICLEN];
 	uint_fast32_t magic;
+
+	JAS_LOGDEBUGF(10, "mif_validate(%p)\n", in);
 
 	assert(JAS_STREAM_MAXPUTBACK >= MIF_MAGICLEN);
 
 	/* Read the validation data (i.e., the data used for detecting
 	  the format). */
-	if (jas_stream_peek(in, buf, sizeof(buf)) != sizeof(buf))
+	if (jas_stream_peek(in, buf, sizeof(buf)) != sizeof(buf)) {
+		JAS_LOGDEBUGF(10, "mif_validate peek failed\n");
 		return -1;
+	}
+
 
 	/* Compute the signature value. */
 	magic = (JAS_CAST(uint_fast32_t, buf[0]) << 24) |
@@ -393,6 +425,8 @@ int mif_validate(jas_stream_t *in)
 
 	/* Ensure that the signature is correct for this format. */
 	if (magic != MIF_MAGIC) {
+		JAS_LOGDEBUGF(10, "mif_validate magic mismatch %x %x\n", magic,
+		  MIF_MAGIC);
 		return -1;
 	}
 
@@ -405,6 +439,8 @@ int mif_validate(jas_stream_t *in)
 
 static mif_hdr_t *mif_hdr_create(int maxcmpts)
 {
+	JAS_LOGDEBUGF(10, "mif_hdr_create(%d)\n", maxcmpts);
+
 	mif_hdr_t *hdr;
 	if (!(hdr = jas_malloc(sizeof(mif_hdr_t)))) {
 		return 0;
@@ -421,6 +457,7 @@ static mif_hdr_t *mif_hdr_create(int maxcmpts)
 
 static void mif_hdr_destroy(mif_hdr_t *hdr)
 {
+	JAS_LOGDEBUGF(10, "mif_hdr_destroy(%p)\n", hdr);
 	int cmptno;
 	if (hdr->cmpts) {
 		for (cmptno = 0; cmptno < hdr->numcmpts; ++cmptno) {
@@ -433,6 +470,8 @@ static void mif_hdr_destroy(mif_hdr_t *hdr)
 
 static int mif_hdr_growcmpts(mif_hdr_t *hdr, int maxcmpts)
 {
+	JAS_LOGDEBUGF(10, "mif_hdr_growcmpts(%p, %d)\n", hdr, maxcmpts);
+
 	int cmptno;
 	mif_cmpt_t **newcmpts;
 	assert(maxcmpts >= hdr->numcmpts);
@@ -458,41 +497,48 @@ static mif_hdr_t *mif_hdr_get(jas_stream_t *in)
 	jas_tvparser_t *tvp;
 	int id;
 
+	JAS_LOGDEBUGF(10, "mif_hdr_get(%p)\n", in);
+
 	hdr = 0;
 	tvp = 0;
 
 	if (jas_stream_read(in, magicbuf, MIF_MAGICLEN) != MIF_MAGICLEN) {
+		jas_logerrorf("cannot read MIF signature\n");
 		goto error;
 	}
 	if (magicbuf[0] != (MIF_MAGIC >> 24) || magicbuf[1] != ((MIF_MAGIC >> 16) &
 	  0xff) || magicbuf[2] != ((MIF_MAGIC >> 8) & 0xff) || magicbuf[3] !=
 	  (MIF_MAGIC & 0xff)) {
-		jas_eprintf("error: bad signature\n");
+		jas_logerrorf("bad signature\n");
 		goto error;
 	}
 
 	if (!(hdr = mif_hdr_create(0))) {
+		jas_logerrorf("cannot create MIF header\n");
 		goto error;
 	}
 
 	done = false;
 	do {
+		JAS_LOGDEBUGF(10, "top of loop\n");
 		if (!mif_getline(in, buf, sizeof(buf))) {
-			jas_eprintf("mif_getline failed\n");
+			jas_logerrorf("mif_hdr_get: mif_getline failed\n");
 			goto error;
 		}
 		if (buf[0] == '\0') {
 			continue;
 		}
-		JAS_DBGLOG(10, ("header line: len=%d; %s\n", strlen(buf), buf));
+		JAS_LOGDEBUGF(10, "header line: len=%d; %s\n", strlen(buf), buf);
 		if (!(tvp = jas_tvparser_create(buf))) {
-			jas_eprintf("jas_tvparser_create failed\n");
+			jas_logerrorf("mif_hdr_get: jas_tvparser_create failed\n");
 			goto error;
 		}
+		JAS_LOGDEBUGF(10, "mif_hdr_get: invoking jas_tvparser_next\n");
 		if (jas_tvparser_next(tvp)) {
-			jas_eprintf("cannot get record type\n");
+			jas_logerrorf("cannot get record type\n");
 			goto error;
 		}
+		JAS_LOGDEBUGF(10, "mif_hdr_get: looking up tag\n");
 		id = jas_taginfo_nonull(jas_taginfos_lookup(mif_tags2,
 		  jas_tvparser_gettag(tvp)))->id;
 		jas_tvparser_destroy(tvp);
@@ -500,7 +546,7 @@ static mif_hdr_t *mif_hdr_get(jas_stream_t *in)
 		switch (id) {
 		case MIF_CMPT:
 			if (mif_process_cmpt(hdr, buf)) {
-				jas_eprintf("cannot get component information\n");
+				jas_logerrorf("cannot get component information\n");
 				goto error;
 			}
 			break;
@@ -508,15 +554,17 @@ static mif_hdr_t *mif_hdr_get(jas_stream_t *in)
 			done = 1;
 			break;
 		default:
-			jas_eprintf("invalid header information: %s\n", buf);
+			jas_logerrorf("invalid header information: %s\n", buf);
 			goto error;
 			break;
 		}
 	} while (!done);
 
+	JAS_LOGDEBUGF(10, "mif_hdr_get: returning (success)\n");
 	return hdr;
 
 error:
+	JAS_LOGDEBUGF(10, "mif_hdr_get: returning (failure)\n");
 	if (hdr) {
 		mif_hdr_destroy(hdr);
 	}
@@ -535,8 +583,10 @@ static int mif_process_cmpt(mif_hdr_t *hdr, char *buf)
 	cmpt = 0;
 	tvp = 0;
 
+	JAS_LOGDEBUGF(10, "mif_process_cmpt(%p, %p)\n", hdr, buf);
+
 	if (!(cmpt = mif_cmpt_create())) {
-		jas_eprintf("cannot create component\n");
+		jas_logerrorf("cannot create component\n");
 		goto error;
 	}
 	cmpt->tlx = 0;
@@ -550,7 +600,7 @@ static int mif_process_cmpt(mif_hdr_t *hdr, char *buf)
 	cmpt->data = 0;
 
 	if (!(tvp = jas_tvparser_create(buf))) {
-		jas_eprintf("cannot create parser\n");
+		jas_logerrorf("cannot create parser\n");
 		goto error;
 	}
 
@@ -594,7 +644,7 @@ static int mif_process_cmpt(mif_hdr_t *hdr, char *buf)
 			}
 			break;
 		default:
-			jas_eprintf("invalid component information: %s\n", buf);
+			jas_logerrorf("invalid component information: %s\n", buf);
 			goto error;
 			break;
 		}
@@ -606,10 +656,12 @@ static int mif_process_cmpt(mif_hdr_t *hdr, char *buf)
 		goto error;
 	}
 	if (mif_hdr_addcmpt(hdr, hdr->numcmpts, cmpt)) {
-		jas_eprintf("cannot add component\n");
+		jas_logerrorf("cannot add component\n");
 		goto error;
 	}
 	jas_tvparser_destroy(tvp);
+
+	JAS_LOGDEBUGF(10, "mif_process_cmpt returning (success)\n");
 	return 0;
 
 error:
@@ -619,6 +671,7 @@ error:
 	if (tvp) {
 		jas_tvparser_destroy(tvp);
 	}
+	JAS_LOGDEBUGF(10, "mif_process_cmpt returning (error)\n");
 	return -1;
 }
 
@@ -626,6 +679,8 @@ static int mif_hdr_put(mif_hdr_t *hdr, jas_stream_t *out)
 {
 	int cmptno;
 	mif_cmpt_t *cmpt;
+
+	JAS_LOGDEBUGF(10, "mif_hdr_put(%p, %p)\n", hdr, out);
 
 	/* Output signature. */
 	if (jas_stream_putc(out, (MIF_MAGIC >> 24) & 0xff) == EOF ||
@@ -656,7 +711,9 @@ static int mif_hdr_put(mif_hdr_t *hdr, jas_stream_t *out)
 static int mif_hdr_addcmpt(mif_hdr_t *hdr, int cmptno, mif_cmpt_t *cmpt)
 {
 	assert(cmptno >= hdr->numcmpts);
-	(void)cmptno;
+
+	JAS_LOGDEBUGF(10, "mif_hdr_addcmpt(%p, %d, %p)\n", hdr, cmptno, cmpt);
+	JAS_UNUSED(cmptno);
 
 	if (hdr->numcmpts >= hdr->maxcmpts) {
 		if (mif_hdr_growcmpts(hdr, hdr->numcmpts + 128)) {
@@ -674,6 +731,7 @@ static int mif_hdr_addcmpt(mif_hdr_t *hdr, int cmptno, mif_cmpt_t *cmpt)
 
 static mif_cmpt_t *mif_cmpt_create()
 {
+	JAS_LOGDEBUGF(10, "mif_cmpt_create()\n");
 	mif_cmpt_t *cmpt;
 	if (!(cmpt = jas_malloc(sizeof(mif_cmpt_t)))) {
 		return 0;
@@ -684,6 +742,7 @@ static mif_cmpt_t *mif_cmpt_create()
 
 static void mif_cmpt_destroy(mif_cmpt_t *cmpt)
 {
+	JAS_LOGDEBUGF(10, "mif_cmpt_destroy(%p)\n", cmpt);
 	if (cmpt->data) {
 		jas_free(cmpt->data);
 	}
@@ -699,6 +758,8 @@ static char *mif_getline(jas_stream_t *stream, char *buf, int bufsize)
 	int c;
 	char *bufptr;
 	assert(bufsize > 0);
+
+	JAS_LOGDEBUGF(10, "mif_getline(%p, %p, %d)\n", stream, buf, bufsize);
 
 	bufptr = buf;
 	while (bufsize > 1) {
@@ -723,6 +784,8 @@ static int mif_getc(jas_stream_t *in)
 {
 	int c;
 	bool done;
+
+	JAS_LOGDEBUGF(10, "mif_getc(%p)\n", in);
 
 	done = false;
 	do {
@@ -753,6 +816,8 @@ static int mif_getc(jas_stream_t *in)
 		}
 	} while (!done);
 
+	JAS_LOGDEBUGF(10, "mif_getc(%p) returning %d\n", in, c);
+
 	return c;
 }
 
@@ -765,6 +830,8 @@ static mif_hdr_t *mif_makehdrfromimage(jas_image_t *image)
 	mif_hdr_t *hdr;
 	int cmptno;
 	mif_cmpt_t *cmpt;
+
+	JAS_LOGDEBUGF(10, "mif_makehdrfromimage(%p)\n", image);
 
 	if (!(hdr = mif_hdr_create(jas_image_numcmpts(image)))) {
 		return 0;

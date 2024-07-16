@@ -34,12 +34,12 @@ static const int seg_feature_data_max[SEG_LVL_MAX] = { MAXQ,
 // the coding mechanism is still subject to change so these provide a
 // convenient single point of change.
 
-void av1_clearall_segfeatures(struct segmentation *seg) {
+HAOM_EXPORT void av1_clearall_segfeatures(struct segmentation *seg) {
   av1_zero(seg->feature_data);
   av1_zero(seg->feature_mask);
 }
 
-void av1_calculate_segdata(struct segmentation *seg) {
+HAOM_EXPORT void av1_calculate_segdata(struct segmentation *seg) {
   seg->segid_preskip = 0;
   seg->last_active_segid = 0;
   for (int i = 0; i < MAX_SEGMENTS; i++) {
@@ -52,16 +52,16 @@ void av1_calculate_segdata(struct segmentation *seg) {
   }
 }
 
-void av1_enable_segfeature(struct segmentation *seg, int segment_id,
+HAOM_EXPORT void av1_enable_segfeature(struct segmentation *seg, int segment_id,
                            SEG_LVL_FEATURES feature_id) {
   seg->feature_mask[segment_id] |= 1 << feature_id;
 }
 
-int av1_seg_feature_data_max(SEG_LVL_FEATURES feature_id) {
+HAOM_EXPORT int av1_seg_feature_data_max(SEG_LVL_FEATURES feature_id) {
   return seg_feature_data_max[feature_id];
 }
 
-int av1_is_segfeature_signed(SEG_LVL_FEATURES feature_id) {
+HAOM_EXPORT int av1_is_segfeature_signed(SEG_LVL_FEATURES feature_id) {
   return seg_feature_data_signed[feature_id];
 }
 
@@ -76,7 +76,7 @@ int av1_is_segfeature_signed(SEG_LVL_FEATURES feature_id) {
 // abs_delta = SEGMENT_DELTADATA (deltas) abs_delta = SEGMENT_ABSDATA (use
 // the absolute values given).
 
-void av1_set_segdata(struct segmentation *seg, int segment_id,
+HAOM_EXPORT void av1_set_segdata(struct segmentation *seg, int segment_id,
                      SEG_LVL_FEATURES feature_id, int seg_data) {
   if (seg_data < 0) {
     assert(seg_feature_data_signed[feature_id]);

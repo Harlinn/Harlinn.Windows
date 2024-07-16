@@ -26,13 +26,13 @@ static uint32_t aom_highbd_var_filter_block2d_bil_avx2(
     const uint32_t xoffset, const uint32_t yoffset, const uint8_t *dst_ptr8,
     int dst_stride, uint32_t *sse) {
   const __m256i filter1 =
-      _mm256_set1_epi32((uint32_t)(bilinear_filters_2t[xoffset][1] << 16) |
+      _mm256_set1_epi32((int)(bilinear_filters_2t[xoffset][1] << 16) |
                         bilinear_filters_2t[xoffset][0]);
   const __m256i filter2 =
-      _mm256_set1_epi32((uint32_t)(bilinear_filters_2t[yoffset][1] << 16) |
+      _mm256_set1_epi32((int)(bilinear_filters_2t[yoffset][1] << 16) |
                         bilinear_filters_2t[yoffset][0]);
   const __m256i one = _mm256_set1_epi16(1);
-  const uint32_t bitshift = (uint32_t)0x40;
+  const int bitshift = 0x40;
   (void)pixel_step;
   unsigned int i, j, prev = 0, curr = 2;
   uint16_t *src_ptr = CONVERT_TO_SHORTPTR(src_ptr8);
@@ -618,9 +618,9 @@ static uint32_t aom_highbd_var_filter_block2d_bil_avx2(
   return (var > 0) ? var : 0;
 }
 
-void aom_highbd_calc8x8var_avx2(const uint16_t *src, int src_stride,
-                                const uint16_t *ref, int ref_stride,
-                                uint32_t *sse, int *sum) {
+static void highbd_calc8x8var_avx2(const uint16_t *src, int src_stride,
+                                   const uint16_t *ref, int ref_stride,
+                                   uint32_t *sse, int *sum) {
   __m256i v_sum_d = _mm256_setzero_si256();
   __m256i v_sse_d = _mm256_setzero_si256();
   for (int i = 0; i < 8; i += 2) {
@@ -653,9 +653,9 @@ void aom_highbd_calc8x8var_avx2(const uint16_t *src, int src_stride,
   *sse = _mm_extract_epi32(v_d, 1);
 }
 
-void aom_highbd_calc16x16var_avx2(const uint16_t *src, int src_stride,
-                                  const uint16_t *ref, int ref_stride,
-                                  uint32_t *sse, int *sum) {
+static void highbd_calc16x16var_avx2(const uint16_t *src, int src_stride,
+                                     const uint16_t *ref, int ref_stride,
+                                     uint32_t *sse, int *sum) {
   __m256i v_sum_d = _mm256_setzero_si256();
   __m256i v_sse_d = _mm256_setzero_si256();
   const __m256i one = _mm256_set1_epi16(1);
@@ -703,49 +703,52 @@ static void highbd_10_variance_avx2(const uint16_t *src, int src_stride,
   *sse = (uint32_t)ROUND_POWER_OF_TWO(sse_long, 4);
 }
 
-#define VAR_FN(w, h, block_size, shift)                                    \
-  uint32_t aom_highbd_10_variance##w##x##h##_avx2(                         \
-      const uint8_t *src8, int src_stride, const uint8_t *ref8,            \
-      int ref_stride, uint32_t *sse) {                                     \
-    int sum;                                                               \
-    int64_t var;                                                           \
-    uint16_t *src = CONVERT_TO_SHORTPTR(src8);                             \
-    uint16_t *ref = CONVERT_TO_SHORTPTR(ref8);                             \
-    highbd_10_variance_avx2(                                               \
-        src, src_stride, ref, ref_stride, w, h, sse, &sum,                 \
-        aom_highbd_calc##block_size##x##block_size##var_avx2, block_size); \
-    var = (int64_t)(*sse) - (((int64_t)sum * sum) >> shift);               \
-    return (var >= 0) ? (uint32_t)var : 0;                                 \
+#define VAR_FN(w, h, block_size, shift)                                        \
+  uint32_t aom_highbd_10_variance##w##x##h##_avx2(                             \
+      const uint8_t *src8, int src_stride, const uint8_t *ref8,                \
+      int ref_stride, uint32_t *sse) {                                         \
+    int sum;                                                                   \
+    int64_t var;                                                               \
+    uint16_t *src = CONVERT_TO_SHORTPTR(src8);                                 \
+    uint16_t *ref = CONVERT_TO_SHORTPTR(ref8);                                 \
+    highbd_10_variance_avx2(src, src_stride, ref, ref_stride, w, h, sse, &sum, \
+                            highbd_calc##block_size##x##block_size##var_avx2,  \
+                            block_size);                                       \
+    var = (int64_t)(*sse) - (((int64_t)sum * sum) >> shift);                   \
+    return (var >= 0) ? (uint32_t)var : 0;                                     \
   }
 
-VAR_FN(128, 128, 16, 14);
-VAR_FN(128, 64, 16, 13);
-VAR_FN(64, 128, 16, 13);
-VAR_FN(64, 64, 16, 12);
-VAR_FN(64, 32, 16, 11);
-VAR_FN(32, 64, 16, 11);
-VAR_FN(32, 32, 16, 10);
-VAR_FN(32, 16, 16, 9);
-VAR_FN(16, 32, 16, 9);
-VAR_FN(16, 16, 16, 8);
-VAR_FN(16, 8, 8, 7);
-VAR_FN(16, 4, 16, 6);
-VAR_FN(8, 32, 8, 8);
-VAR_FN(32, 8, 8, 8);
-VAR_FN(16, 64, 16, 10);
-VAR_FN(64, 16, 16, 10);
-VAR_FN(8, 16, 8, 7);
-VAR_FN(8, 8, 8, 6);
+VAR_FN(128, 128, 16, 14)
+VAR_FN(128, 64, 16, 13)
+VAR_FN(64, 128, 16, 13)
+VAR_FN(64, 64, 16, 12)
+VAR_FN(64, 32, 16, 11)
+VAR_FN(32, 64, 16, 11)
+VAR_FN(32, 32, 16, 10)
+VAR_FN(32, 16, 16, 9)
+VAR_FN(16, 32, 16, 9)
+VAR_FN(16, 16, 16, 8)
+VAR_FN(16, 8, 8, 7)
+VAR_FN(8, 16, 8, 7)
+VAR_FN(8, 8, 8, 6)
+
+#if !CONFIG_REALTIME_ONLY
+VAR_FN(16, 64, 16, 10)
+VAR_FN(32, 8, 8, 8)
+VAR_FN(64, 16, 16, 10)
+VAR_FN(8, 32, 8, 8)
+#endif  // !CONFIG_REALTIME_ONLY
 
 #undef VAR_FN
 
-#define SSE2_Height(H)                                                 \
+#define SSE2_HEIGHT(H)                                                 \
   uint32_t aom_highbd_10_sub_pixel_variance8x##H##_sse2(               \
       const uint8_t *src8, int src_stride, int x_offset, int y_offset, \
       const uint8_t *dst8, int dst_stride, uint32_t *sse_ptr);
 
-SSE2_Height(8);
-SSE2_Height(16);
+SSE2_HEIGHT(8)
+SSE2_HEIGHT(16)
+
 #undef SSE2_Height
 
 #define HIGHBD_SUBPIX_VAR(W, H)                                              \
@@ -763,23 +766,24 @@ SSE2_Height(16);
           src, src_stride, 1, H, W, xoffset, yoffset, dst, dst_stride, sse); \
   }
 
-HIGHBD_SUBPIX_VAR(128, 128);
-HIGHBD_SUBPIX_VAR(128, 64);
-HIGHBD_SUBPIX_VAR(64, 128);
-HIGHBD_SUBPIX_VAR(64, 64);
-HIGHBD_SUBPIX_VAR(64, 32);
-HIGHBD_SUBPIX_VAR(32, 64);
-HIGHBD_SUBPIX_VAR(32, 32);
-HIGHBD_SUBPIX_VAR(32, 16);
-HIGHBD_SUBPIX_VAR(16, 32);
-HIGHBD_SUBPIX_VAR(16, 16);
-HIGHBD_SUBPIX_VAR(16, 8);
-HIGHBD_SUBPIX_VAR(8, 16);
-HIGHBD_SUBPIX_VAR(8, 8);
+HIGHBD_SUBPIX_VAR(128, 128)
+HIGHBD_SUBPIX_VAR(128, 64)
+HIGHBD_SUBPIX_VAR(64, 128)
+HIGHBD_SUBPIX_VAR(64, 64)
+HIGHBD_SUBPIX_VAR(64, 32)
+HIGHBD_SUBPIX_VAR(32, 64)
+HIGHBD_SUBPIX_VAR(32, 32)
+HIGHBD_SUBPIX_VAR(32, 16)
+HIGHBD_SUBPIX_VAR(16, 32)
+HIGHBD_SUBPIX_VAR(16, 16)
+HIGHBD_SUBPIX_VAR(16, 8)
+HIGHBD_SUBPIX_VAR(8, 16)
+HIGHBD_SUBPIX_VAR(8, 8)
+
 #undef HIGHBD_SUBPIX_VAR
 
-uint64_t aom_mse_4xh_16bit_highbd_avx2(uint16_t *dst, int dstride,
-                                       uint16_t *src, int sstride, int h) {
+static uint64_t mse_4xh_16bit_highbd_avx2(uint16_t *dst, int dstride,
+                                          uint16_t *src, int sstride, int h) {
   uint64_t sum = 0;
   __m128i reg0_4x16, reg1_4x16, reg2_4x16, reg3_4x16;
   __m256i src0_8x16, src1_8x16, src_16x16;
@@ -836,8 +840,8 @@ uint64_t aom_mse_4xh_16bit_highbd_avx2(uint16_t *dst, int dstride,
   return sum;
 }
 
-uint64_t aom_mse_8xh_16bit_highbd_avx2(uint16_t *dst, int dstride,
-                                       uint16_t *src, int sstride, int h) {
+static uint64_t mse_8xh_16bit_highbd_avx2(uint16_t *dst, int dstride,
+                                          uint16_t *src, int sstride, int h) {
   uint64_t sum = 0;
   __m256i src0_8x16, src1_8x16, src_16x16;
   __m256i dst0_8x16, dst1_8x16, dst_16x16;
@@ -893,8 +897,8 @@ uint64_t aom_mse_wxh_16bit_highbd_avx2(uint16_t *dst, int dstride,
   assert((w == 8 || w == 4) && (h == 8 || h == 4) &&
          "w=8/4 and h=8/4 must satisfy");
   switch (w) {
-    case 4: return aom_mse_4xh_16bit_highbd_avx2(dst, dstride, src, sstride, h);
-    case 8: return aom_mse_8xh_16bit_highbd_avx2(dst, dstride, src, sstride, h);
+    case 4: return mse_4xh_16bit_highbd_avx2(dst, dstride, src, sstride, h);
+    case 8: return mse_8xh_16bit_highbd_avx2(dst, dstride, src, sstride, h);
     default: assert(0 && "unsupported width"); return -1;
   }
 }

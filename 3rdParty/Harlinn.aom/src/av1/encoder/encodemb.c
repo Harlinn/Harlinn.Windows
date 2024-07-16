@@ -43,7 +43,7 @@ void av1_subtract_block(BitDepthInfo bd_info, int rows, int cols, int16_t *diff,
 #if CONFIG_AV1_HIGHBITDEPTH
   if (bd_info.use_highbitdepth_buf) {
     aom_highbd_subtract_block(rows, cols, diff, diff_stride, src8, src_stride,
-                              pred8, pred_stride, bd_info.bit_depth);
+                              pred8, pred_stride);
     return;
   }
 #endif
@@ -167,7 +167,8 @@ void av1_dropout_qcoeff_num(MACROBLOCK *mb, int plane, int block,
   const SCAN_ORDER *const scan_order = get_scan(tx_size, tx_type);
 
   // Early return if there are not enough non-zero coefficients.
-  if (p->eobs[block] == 0 || p->eobs[block] <= dropout_num_before) {
+  if (p->eobs[block] == 0 || p->eobs[block] <= dropout_num_before ||
+      max_eob <= dropout_num_before + dropout_num_after) {
     return;
   }
 
@@ -286,7 +287,7 @@ void av1_xform_dc_only(MACROBLOCK *x, int plane, int block,
 
 void av1_xform_quant(MACROBLOCK *x, int plane, int block, int blk_row,
                      int blk_col, BLOCK_SIZE plane_bsize, TxfmParam *txfm_param,
-                     QUANT_PARAM *qparam) {
+                     const QUANT_PARAM *qparam) {
   av1_xform(x, plane, block, blk_row, blk_col, plane_bsize, txfm_param);
   av1_quant(x, plane, block, txfm_param, qparam);
 }
@@ -305,7 +306,7 @@ void av1_xform(MACROBLOCK *x, int plane, int block, int blk_row, int blk_col,
 }
 
 void av1_quant(MACROBLOCK *x, int plane, int block, TxfmParam *txfm_param,
-               QUANT_PARAM *qparam) {
+               const QUANT_PARAM *qparam) {
   const struct macroblock_plane *const p = &x->plane[plane];
   const SCAN_ORDER *const scan_order =
       get_scan(txfm_param->tx_size, txfm_param->tx_type);
@@ -402,8 +403,8 @@ static void encode_block(int plane, int block, int blk_row, int blk_col,
   l = &args->tl[blk_row];
 
   TX_TYPE tx_type = DCT_DCT;
-  if (!is_blk_skip(x->txfm_search_info.blk_skip, plane,
-                   blk_row * bw + blk_col) &&
+  const int blk_skip_idx = blk_row * bw + blk_col;
+  if (!is_blk_skip(x->txfm_search_info.blk_skip, plane, blk_skip_idx) &&
       !mbmi->skip_mode) {
     tx_type = av1_get_tx_type(xd, pd->plane_type, blk_row, blk_col, tx_size,
                               cm->features.reduced_tx_set_used);
@@ -448,10 +449,16 @@ static void encode_block(int plane, int block, int blk_row, int blk_col,
   av1_set_txb_context(x, plane, block, tx_size, a, l);
 
   if (p->eobs[block]) {
-    *(args->skip) = 0;
+    // As long as any YUV plane has non-zero quantized transform coefficients,
+    // mbmi->skip_txfm flag is set to 0.
+    mbmi->skip_txfm = 0;
     av1_inverse_transform_block(xd, dqcoeff, plane, tx_type, tx_size, dst,
                                 pd->dst.stride, p->eobs[block],
                                 cm->features.reduced_tx_set_used);
+  } else {
+    // Only when YUV planes all have zero quantized transform coefficients,
+    // mbmi->skip_txfm flag is set to 1.
+    mbmi->skip_txfm &= 1;
   }
 
   // TODO(debargha, jingning): Temporarily disable txk_type check for eob=0
@@ -552,6 +559,13 @@ void av1_foreach_transformed_block_in_plane(
   // 4x4=0, 8x8=2, 16x16=4, 32x32=6, 64x64=8
   // transform size varies per plane, look it up in a common way.
   const TX_SIZE tx_size = av1_get_tx_size(plane, xd);
+  const BLOCK_SIZE tx_bsize = txsize_to_bsize[tx_size];
+  // Call visit() directly with zero offsets if the current block size is the
+  // same as the transform block size.
+  if (plane_bsize == tx_bsize) {
+    visit(plane, 0, 0, 0, plane_bsize, tx_size, arg);
+    return;
+  }
   const uint8_t txw_unit = tx_size_wide_unit[tx_size];
   const uint8_t txh_unit = tx_size_high_unit[tx_size];
   const int step = txw_unit * txh_unit;
@@ -584,6 +598,8 @@ void av1_foreach_transformed_block_in_plane(
       }
     }
   }
+  // Check if visit() is invoked at least once.
+  assert(i >= 1);
 }
 
 typedef struct encode_block_pass1_args {
@@ -640,13 +656,19 @@ void av1_encode_sb(const struct AV1_COMP *cpi, MACROBLOCK *x, BLOCK_SIZE bsize,
   assert(bsize < BLOCK_SIZES_ALL);
   MACROBLOCKD *const xd = &x->e_mbd;
   MB_MODE_INFO *mbmi = xd->mi[0];
+  // In the current encoder implementation, for inter blocks,
+  // only when YUV planes all have zero quantized transform coefficients,
+  // mbmi->skip_txfm flag is set to 1.
+  // For intra blocks, this flag is set to 0 since skipped blocks are so rare
+  // that transmitting skip_txfm = 1 is very expensive.
+  // mbmi->skip_txfm is init to 1, and will be modified in encode_block() based
+  // on transform, quantization, and (if exists) trellis optimization.
   mbmi->skip_txfm = 1;
   if (x->txfm_search_info.skip_txfm) return;
 
   struct optimize_ctx ctx;
   struct encode_b_args arg = {
-    cpi,  x,    &ctx,    &mbmi->skip_txfm,
-    NULL, NULL, dry_run, cpi->optimize_seg_arr[mbmi->segment_id]
+    cpi, x, &ctx, NULL, NULL, dry_run, cpi->optimize_seg_arr[mbmi->segment_id]
   };
   const AV1_COMMON *const cm = &cpi->common;
   const int num_planes = av1_num_planes(cm);
@@ -717,6 +739,7 @@ void av1_encode_block_intra(int plane, int block, int blk_row, int blk_col,
   const AV1_COMMON *const cm = &cpi->common;
   MACROBLOCK *const x = args->x;
   MACROBLOCKD *const xd = &x->e_mbd;
+  MB_MODE_INFO *mbmi = xd->mi[0];
   struct macroblock_plane *const p = &x->plane[plane];
   struct macroblockd_plane *const pd = &xd->plane[plane];
   tran_low_t *dqcoeff = p->dqcoeff + BLOCK_OFFSET(block);
@@ -810,9 +833,9 @@ void av1_encode_block_intra(int plane, int block, int blk_row, int blk_col,
     update_txk_array(xd, blk_row, blk_col, tx_size, DCT_DCT);
   }
 
-  // For intra mode, skipped blocks are so rare that transmitting skip=1 is
-  // very expensive.
-  *(args->skip) = 0;
+  // For intra mode, skipped blocks are so rare that transmitting
+  // skip_txfm = 1 is very expensive.
+  mbmi->skip_txfm = 0;
 
   if (plane == AOM_PLANE_Y && xd->cfl.store_y) {
     cfl_store_tx(xd, blk_row, blk_col, tx_size, plane_bsize);
@@ -831,8 +854,9 @@ void av1_encode_intra_block_plane(const struct AV1_COMP *cpi, MACROBLOCK *x,
   const int ss_y = pd->subsampling_y;
   ENTROPY_CONTEXT ta[MAX_MIB_SIZE] = { 0 };
   ENTROPY_CONTEXT tl[MAX_MIB_SIZE] = { 0 };
-  struct encode_b_args arg = { cpi, x,  NULL,    &(xd->mi[0]->skip_txfm),
-                               ta,  tl, dry_run, enable_optimize_b };
+  struct encode_b_args arg = {
+    cpi, x, NULL, ta, tl, dry_run, enable_optimize_b
+  };
   const BLOCK_SIZE plane_bsize = get_plane_block_size(bsize, ss_x, ss_y);
   if (enable_optimize_b) {
     av1_get_entropy_contexts(plane_bsize, pd, ta, tl);

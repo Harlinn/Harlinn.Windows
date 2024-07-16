@@ -20,14 +20,16 @@
 extern "C" {
 #endif
 
-void av1_read_mode_info(AV1Decoder *const pbi, DecoderCodingBlock *dcb,
+HAOM_EXPORT int av1_neg_deinterleave(int diff, int ref, int max);
+
+HAOM_EXPORT void av1_read_mode_info(AV1Decoder *const pbi, DecoderCodingBlock *dcb,
                         aom_reader *r, int x_mis, int y_mis);
 
 #ifdef __cplusplus
 }  // extern "C"
 #endif
 
-void av1_read_tx_type(const AV1_COMMON *const cm, MACROBLOCKD *xd, int blk_row,
+HAOM_EXPORT void av1_read_tx_type(const AV1_COMMON *const cm, MACROBLOCKD *xd, int blk_row,
                       int blk_col, TX_SIZE tx_size, aom_reader *r);
 
 #endif  // AOM_AV1_DECODER_DECODEMV_H_

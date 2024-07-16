@@ -96,7 +96,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
-      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.hdf5;$(SolutionDir)3rdParty\Harlinn.gdal\ogr;$(SolutionDir)3rdParty\Harlinn.gdal\gcore;$(SolutionDir)3rdParty\Harlinn.gdal\alg;$(SolutionDir)3rdParty\Harlinn.gdal;$(SolutionDir)3rdParty\Harlinn.libxml2\include;$(SolutionDir)3rdParty\Harlinn.SQLite3;$(ICU4C_HOME)\include;$(ProjectDir)include\mdal;$(ProjectDir)include;$(ProjectDir)src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.hdf5\include\hdf5;$(SolutionDir)3rdParty\Harlinn.hdf5\include\hdf5\H5FDsubfiling;$(SolutionDir)3rdParty\Harlinn.gdal\ogr;$(SolutionDir)3rdParty\Harlinn.gdal\gcore;$(SolutionDir)3rdParty\Harlinn.gdal\alg;$(SolutionDir)3rdParty\Harlinn.gdal;$(SolutionDir)3rdParty\Harlinn.libxml2\include;$(SolutionDir)3rdParty\Harlinn.SQLite3;$(ICU4C_HOME)\include;$(ProjectDir)include\mdal;$(ProjectDir)include;$(ProjectDir)src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
     </ClCompile>
     <Link>
@@ -117,7 +117,7 @@
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
-      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.hdf5;$(SolutionDir)3rdParty\Harlinn.gdal\ogr;$(SolutionDir)3rdParty\Harlinn.gdal\gcore;$(SolutionDir)3rdParty\Harlinn.gdal\alg;$(SolutionDir)3rdParty\Harlinn.gdal;$(SolutionDir)3rdParty\Harlinn.libxml2\include;$(SolutionDir)3rdParty\Harlinn.SQLite3;$(ICU4C_HOME)\include;$(ProjectDir)include\mdal;$(ProjectDir)include;$(ProjectDir)src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.hdf5\include\hdf5;$(SolutionDir)3rdParty\Harlinn.hdf5\include\hdf5\H5FDsubfiling;$(SolutionDir)3rdParty\Harlinn.gdal\ogr;$(SolutionDir)3rdParty\Harlinn.gdal\gcore;$(SolutionDir)3rdParty\Harlinn.gdal\alg;$(SolutionDir)3rdParty\Harlinn.gdal;$(SolutionDir)3rdParty\Harlinn.libxml2\include;$(SolutionDir)3rdParty\Harlinn.SQLite3;$(ICU4C_HOME)\include;$(ProjectDir)include\mdal;$(ProjectDir)include;$(ProjectDir)src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -137,7 +137,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
-      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.hdf5;$(SolutionDir)3rdParty\Harlinn.gdal\ogr;$(SolutionDir)3rdParty\Harlinn.gdal\gcore;$(SolutionDir)3rdParty\Harlinn.gdal\alg;$(SolutionDir)3rdParty\Harlinn.gdal;$(SolutionDir)3rdParty\Harlinn.libxml2\include;$(SolutionDir)3rdParty\Harlinn.SQLite3;$(ICU4C_HOME)\include;$(ProjectDir)include\mdal;$(ProjectDir)include;$(ProjectDir)src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.hdf5\include\hdf5;$(SolutionDir)3rdParty\Harlinn.hdf5\include\hdf5\H5FDsubfiling;$(SolutionDir)3rdParty\Harlinn.gdal\ogr;$(SolutionDir)3rdParty\Harlinn.gdal\gcore;$(SolutionDir)3rdParty\Harlinn.gdal\alg;$(SolutionDir)3rdParty\Harlinn.gdal;$(SolutionDir)3rdParty\Harlinn.libxml2\include;$(SolutionDir)3rdParty\Harlinn.SQLite3;$(ICU4C_HOME)\include;$(ProjectDir)include\mdal;$(ProjectDir)include;$(ProjectDir)src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
     </ClCompile>
     <Link>
@@ -159,7 +159,7 @@
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
-      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.hdf5;$(SolutionDir)3rdParty\Harlinn.gdal\ogr;$(SolutionDir)3rdParty\Harlinn.gdal\gcore;$(SolutionDir)3rdParty\Harlinn.gdal\alg;$(SolutionDir)3rdParty\Harlinn.gdal;$(SolutionDir)3rdParty\Harlinn.libxml2\include;$(SolutionDir)3rdParty\Harlinn.SQLite3;$(ICU4C_HOME)\include;$(ProjectDir)include\mdal;$(ProjectDir)include;$(ProjectDir)src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.hdf5\include\hdf5;$(SolutionDir)3rdParty\Harlinn.hdf5\include\hdf5\H5FDsubfiling;$(SolutionDir)3rdParty\Harlinn.gdal\ogr;$(SolutionDir)3rdParty\Harlinn.gdal\gcore;$(SolutionDir)3rdParty\Harlinn.gdal\alg;$(SolutionDir)3rdParty\Harlinn.gdal;$(SolutionDir)3rdParty\Harlinn.libxml2\include;$(SolutionDir)3rdParty\Harlinn.SQLite3;$(ICU4C_HOME)\include;$(ProjectDir)include\mdal;$(ProjectDir)include;$(ProjectDir)src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

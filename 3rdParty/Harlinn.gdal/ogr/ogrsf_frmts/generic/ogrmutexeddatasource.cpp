@@ -29,53 +29,54 @@
 #ifndef DOXYGEN_SKIP
 
 #include "ogrmutexeddatasource.h"
-#include "port/cpl_multiproc.h"
+#include "cpl_multiproc.h"
 
-CPL_CVSID("$Id$")
-
-OGRMutexedDataSource::OGRMutexedDataSource( OGRDataSource* poBaseDataSource,
-                                            int bTakeOwnership,
-                                            CPLMutex* hMutexIn,
-                                            int bWrapLayersInMutexedLayer ) :
-    m_poBaseDataSource(poBaseDataSource),
-    m_bHasOwnership(bTakeOwnership),
-    m_hGlobalMutex(hMutexIn),
-    m_bWrapLayersInMutexedLayer(bWrapLayersInMutexedLayer)
-{}
+OGRMutexedDataSource::OGRMutexedDataSource(OGRDataSource *poBaseDataSource,
+                                           int bTakeOwnership,
+                                           CPLMutex *hMutexIn,
+                                           int bWrapLayersInMutexedLayer)
+    : m_poBaseDataSource(poBaseDataSource), m_bHasOwnership(bTakeOwnership),
+      m_hGlobalMutex(hMutexIn),
+      m_bWrapLayersInMutexedLayer(bWrapLayersInMutexedLayer)
+{
+    SetDescription(poBaseDataSource->GetDescription());
+    poDriver = poBaseDataSource->GetDriver();
+}
 
 OGRMutexedDataSource::~OGRMutexedDataSource()
 {
-    std::map<OGRLayer*, OGRMutexedLayer*>::iterator oIter =
+    std::map<OGRLayer *, OGRMutexedLayer *>::iterator oIter =
         m_oMapLayers.begin();
-    for( ; oIter != m_oMapLayers.end(); ++oIter )
+    for (; oIter != m_oMapLayers.end(); ++oIter)
         delete oIter->second;
 
-    if( m_bHasOwnership )
+    if (m_bHasOwnership)
         delete m_poBaseDataSource;
 }
 
-const char  *OGRMutexedDataSource::GetName()
+const char *OGRMutexedDataSource::GetName()
 {
     CPLMutexHolderOptionalLockD(m_hGlobalMutex);
     return m_poBaseDataSource->GetName();
 }
 
-int         OGRMutexedDataSource::GetLayerCount()
+int OGRMutexedDataSource::GetLayerCount()
 {
     CPLMutexHolderOptionalLockD(m_hGlobalMutex);
     return m_poBaseDataSource->GetLayerCount();
 }
 
-OGRLayer* OGRMutexedDataSource::WrapLayerIfNecessary(OGRLayer* poLayer)
+OGRLayer *OGRMutexedDataSource::WrapLayerIfNecessary(OGRLayer *poLayer)
 {
-    if( poLayer && m_bWrapLayersInMutexedLayer )
+    if (poLayer && m_bWrapLayersInMutexedLayer)
     {
-        OGRLayer* poWrappedLayer = m_oMapLayers[poLayer];
-        if( poWrappedLayer )
+        OGRLayer *poWrappedLayer = m_oMapLayers[poLayer];
+        if (poWrappedLayer)
             poLayer = poWrappedLayer;
         else
         {
-            OGRMutexedLayer* poMutexedLayer = new OGRMutexedLayer(poLayer, FALSE, m_hGlobalMutex);
+            OGRMutexedLayer *poMutexedLayer =
+                new OGRMutexedLayer(poLayer, FALSE, m_hGlobalMutex);
             m_oMapLayers[poLayer] = poMutexedLayer;
             m_oReverseMapLayers[poMutexedLayer] = poLayer;
             poLayer = poMutexedLayer;
@@ -84,27 +85,29 @@ OGRLayer* OGRMutexedDataSource::WrapLayerIfNecessary(OGRLayer* poLayer)
     return poLayer;
 }
 
-OGRLayer    *OGRMutexedDataSource::GetLayer(int iIndex)
+OGRLayer *OGRMutexedDataSource::GetLayer(int iIndex)
 {
     CPLMutexHolderOptionalLockD(m_hGlobalMutex);
     return WrapLayerIfNecessary(m_poBaseDataSource->GetLayer(iIndex));
 }
 
-OGRLayer    *OGRMutexedDataSource::GetLayerByName(const char *pszName)
+OGRLayer *OGRMutexedDataSource::GetLayerByName(const char *pszName)
 {
     CPLMutexHolderOptionalLockD(m_hGlobalMutex);
     return WrapLayerIfNecessary(m_poBaseDataSource->GetLayerByName(pszName));
 }
 
-OGRErr      OGRMutexedDataSource::DeleteLayer(int iIndex)
+OGRErr OGRMutexedDataSource::DeleteLayer(int iIndex)
 {
     CPLMutexHolderOptionalLockD(m_hGlobalMutex);
-    OGRLayer* poLayer = m_bWrapLayersInMutexedLayer ? GetLayer(iIndex) : nullptr;
+    OGRLayer *poLayer =
+        m_bWrapLayersInMutexedLayer ? GetLayer(iIndex) : nullptr;
     OGRErr eErr = m_poBaseDataSource->DeleteLayer(iIndex);
-    if( eErr == OGRERR_NONE && poLayer)
+    if (eErr == OGRERR_NONE && poLayer)
     {
-        std::map<OGRLayer*, OGRMutexedLayer*>::iterator oIter = m_oMapLayers.find(poLayer);
-        if(oIter != m_oMapLayers.end())
+        std::map<OGRLayer *, OGRMutexedLayer *>::iterator oIter =
+            m_oMapLayers.find(poLayer);
+        if (oIter != m_oMapLayers.end())
         {
             delete oIter->second;
             m_oReverseMapLayers.erase(oIter->second);
@@ -120,27 +123,29 @@ bool OGRMutexedDataSource::IsLayerPrivate(int iLayer) const
     return m_poBaseDataSource->IsLayerPrivate(iLayer);
 }
 
-int         OGRMutexedDataSource::TestCapability( const char * pszCap )
+int OGRMutexedDataSource::TestCapability(const char *pszCap)
 {
     CPLMutexHolderOptionalLockD(m_hGlobalMutex);
     return m_poBaseDataSource->TestCapability(pszCap);
 }
 
-OGRLayer   *OGRMutexedDataSource::ICreateLayer( const char *pszName,
-                                     OGRSpatialReference *poSpatialRef,
-                                     OGRwkbGeometryType eGType,
-                                     char ** papszOptions)
+OGRLayer *
+OGRMutexedDataSource::ICreateLayer(const char *pszName,
+                                   const OGRGeomFieldDefn *poGeomFieldDefn,
+                                   CSLConstList papszOptions)
 {
     CPLMutexHolderOptionalLockD(m_hGlobalMutex);
-    return WrapLayerIfNecessary(m_poBaseDataSource->CreateLayer(pszName, poSpatialRef, eGType, papszOptions));
+    return WrapLayerIfNecessary(m_poBaseDataSource->CreateLayer(
+        pszName, poGeomFieldDefn, papszOptions));
 }
 
-OGRLayer   *OGRMutexedDataSource::CopyLayer( OGRLayer *poSrcLayer,
-                                   const char *pszNewName,
-                                   char **papszOptions )
+OGRLayer *OGRMutexedDataSource::CopyLayer(OGRLayer *poSrcLayer,
+                                          const char *pszNewName,
+                                          char **papszOptions)
 {
     CPLMutexHolderOptionalLockD(m_hGlobalMutex);
-    return WrapLayerIfNecessary(m_poBaseDataSource->CopyLayer(poSrcLayer, pszNewName, papszOptions ));
+    return WrapLayerIfNecessary(
+        m_poBaseDataSource->CopyLayer(poSrcLayer, pszNewName, papszOptions));
 }
 
 OGRStyleTable *OGRMutexedDataSource::GetStyleTable()
@@ -149,34 +154,35 @@ OGRStyleTable *OGRMutexedDataSource::GetStyleTable()
     return m_poBaseDataSource->GetStyleTable();
 }
 
-void        OGRMutexedDataSource::SetStyleTableDirectly( OGRStyleTable *poStyleTable )
+void OGRMutexedDataSource::SetStyleTableDirectly(OGRStyleTable *poStyleTable)
 {
     CPLMutexHolderOptionalLockD(m_hGlobalMutex);
     m_poBaseDataSource->SetStyleTableDirectly(poStyleTable);
 }
 
-void        OGRMutexedDataSource::SetStyleTable(OGRStyleTable *poStyleTable)
+void OGRMutexedDataSource::SetStyleTable(OGRStyleTable *poStyleTable)
 {
     CPLMutexHolderOptionalLockD(m_hGlobalMutex);
     m_poBaseDataSource->SetStyleTable(poStyleTable);
 }
 
-OGRLayer *  OGRMutexedDataSource::ExecuteSQL( const char *pszStatement,
-                                    OGRGeometry *poSpatialFilter,
-                                    const char *pszDialect )
+OGRLayer *OGRMutexedDataSource::ExecuteSQL(const char *pszStatement,
+                                           OGRGeometry *poSpatialFilter,
+                                           const char *pszDialect)
 {
     CPLMutexHolderOptionalLockD(m_hGlobalMutex);
-    return WrapLayerIfNecessary(m_poBaseDataSource->ExecuteSQL(pszStatement, poSpatialFilter,
-                                          pszDialect));
+    return WrapLayerIfNecessary(m_poBaseDataSource->ExecuteSQL(
+        pszStatement, poSpatialFilter, pszDialect));
 }
 
-void        OGRMutexedDataSource::ReleaseResultSet( OGRLayer * poResultsSet )
+void OGRMutexedDataSource::ReleaseResultSet(OGRLayer *poResultsSet)
 {
     CPLMutexHolderOptionalLockD(m_hGlobalMutex);
-    if( poResultsSet && m_bWrapLayersInMutexedLayer )
+    if (poResultsSet && m_bWrapLayersInMutexedLayer)
     {
-        std::map<OGRMutexedLayer*, OGRLayer*>::iterator oIter =
-            m_oReverseMapLayers.find(cpl::down_cast<OGRMutexedLayer*>(poResultsSet));
+        std::map<OGRMutexedLayer *, OGRLayer *>::iterator oIter =
+            m_oReverseMapLayers.find(
+                cpl::down_cast<OGRMutexedLayer *>(poResultsSet));
         CPLAssert(oIter != m_oReverseMapLayers.end());
         delete poResultsSet;
         poResultsSet = oIter->second;
@@ -187,7 +193,7 @@ void        OGRMutexedDataSource::ReleaseResultSet( OGRLayer * poResultsSet )
     m_poBaseDataSource->ReleaseResultSet(poResultsSet);
 }
 
-void      OGRMutexedDataSource::FlushCache(bool bAtClosing)
+CPLErr OGRMutexedDataSource::FlushCache(bool bAtClosing)
 {
     CPLMutexHolderOptionalLockD(m_hGlobalMutex);
     return m_poBaseDataSource->FlushCache(bAtClosing);
@@ -211,45 +217,82 @@ OGRErr OGRMutexedDataSource::RollbackTransaction()
     return m_poBaseDataSource->RollbackTransaction();
 }
 
-char      **OGRMutexedDataSource::GetMetadata( const char * pszDomain )
+char **OGRMutexedDataSource::GetMetadata(const char *pszDomain)
 {
     CPLMutexHolderOptionalLockD(m_hGlobalMutex);
     return m_poBaseDataSource->GetMetadata(pszDomain);
 }
 
-CPLErr      OGRMutexedDataSource::SetMetadata( char ** papszMetadata,
-                                          const char * pszDomain )
+CPLErr OGRMutexedDataSource::SetMetadata(char **papszMetadata,
+                                         const char *pszDomain)
 {
     CPLMutexHolderOptionalLockD(m_hGlobalMutex);
     return m_poBaseDataSource->SetMetadata(papszMetadata, pszDomain);
 }
 
-const char *OGRMutexedDataSource::GetMetadataItem( const char * pszName,
-                                              const char * pszDomain )
+const char *OGRMutexedDataSource::GetMetadataItem(const char *pszName,
+                                                  const char *pszDomain)
 {
     CPLMutexHolderOptionalLockD(m_hGlobalMutex);
     return m_poBaseDataSource->GetMetadataItem(pszName, pszDomain);
 }
 
-CPLErr      OGRMutexedDataSource::SetMetadataItem( const char * pszName,
-                                              const char * pszValue,
-                                              const char * pszDomain )
+CPLErr OGRMutexedDataSource::SetMetadataItem(const char *pszName,
+                                             const char *pszValue,
+                                             const char *pszDomain)
 {
     CPLMutexHolderOptionalLockD(m_hGlobalMutex);
     return m_poBaseDataSource->SetMetadataItem(pszName, pszValue, pszDomain);
 }
 
-const OGRFieldDomain* OGRMutexedDataSource::GetFieldDomain(const std::string& name) const
+std::vector<std::string>
+OGRMutexedDataSource::GetFieldDomainNames(CSLConstList papszOptions) const
+{
+    CPLMutexHolderOptionalLockD(m_hGlobalMutex);
+    return m_poBaseDataSource->GetFieldDomainNames(papszOptions);
+}
+
+const OGRFieldDomain *
+OGRMutexedDataSource::GetFieldDomain(const std::string &name) const
 {
     CPLMutexHolderOptionalLockD(m_hGlobalMutex);
     return m_poBaseDataSource->GetFieldDomain(name);
 }
 
-bool OGRMutexedDataSource::AddFieldDomain(std::unique_ptr<OGRFieldDomain>&& domain,
-                                          std::string& failureReason)
+bool OGRMutexedDataSource::AddFieldDomain(
+    std::unique_ptr<OGRFieldDomain> &&domain, std::string &failureReason)
 {
     CPLMutexHolderOptionalLockD(m_hGlobalMutex);
     return m_poBaseDataSource->AddFieldDomain(std::move(domain), failureReason);
+}
+
+bool OGRMutexedDataSource::DeleteFieldDomain(const std::string &name,
+                                             std::string &failureReason)
+{
+    CPLMutexHolderOptionalLockD(m_hGlobalMutex);
+    return m_poBaseDataSource->DeleteFieldDomain(name, failureReason);
+}
+
+bool OGRMutexedDataSource::UpdateFieldDomain(
+    std::unique_ptr<OGRFieldDomain> &&domain, std::string &failureReason)
+{
+    CPLMutexHolderOptionalLockD(m_hGlobalMutex);
+    return m_poBaseDataSource->UpdateFieldDomain(std::move(domain),
+                                                 failureReason);
+}
+
+std::vector<std::string>
+OGRMutexedDataSource::GetRelationshipNames(CSLConstList papszOptions) const
+{
+    CPLMutexHolderOptionalLockD(m_hGlobalMutex);
+    return m_poBaseDataSource->GetRelationshipNames(papszOptions);
+}
+
+const GDALRelationship *
+OGRMutexedDataSource::GetRelationship(const std::string &name) const
+{
+    CPLMutexHolderOptionalLockD(m_hGlobalMutex);
+    return m_poBaseDataSource->GetRelationship(name);
 }
 
 std::shared_ptr<GDALGroup> OGRMutexedDataSource::GetRootGroup() const
@@ -258,11 +301,11 @@ std::shared_ptr<GDALGroup> OGRMutexedDataSource::GetRootGroup() const
     return m_poBaseDataSource->GetRootGroup();
 }
 
-
-#if defined(WIN32) && defined(_MSC_VER)
+#if defined(_WIN32) && defined(_MSC_VER)
 // Horrible hack: for some reason MSVC doesn't export the class
 // if it is not referenced from the DLL itself
 void OGRRegisterMutexedDataSource();
+
 void OGRRegisterMutexedDataSource()
 {
     delete new OGRMutexedDataSource(NULL, FALSE, NULL, FALSE);

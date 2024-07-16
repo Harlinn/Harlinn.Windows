@@ -1,4 +1,3 @@
-#pragma once
 /******************************************************************************
  *
  * Project:  GDAL
@@ -30,7 +29,7 @@
 #ifndef IDB_HEADERS_H
 #define IDB_HEADERS_H
 
-#include <port/cpl_port.h>
+#include "cpl_port.h"
 
 #ifdef HAVE_GCC_SYSTEM_HEADER
 #pragma GCC system_header
@@ -38,4 +37,4 @@
 
 #include <it.h>
 
-#endif // IDB_HEADERS_H
+#endif  // IDB_HEADERS_H

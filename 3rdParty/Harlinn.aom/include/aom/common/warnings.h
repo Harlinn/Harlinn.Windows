@@ -11,6 +11,8 @@
 #ifndef AOM_COMMON_WARNINGS_H_
 #define AOM_COMMON_WARNINGS_H_
 
+#include "config/haomdef.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -23,7 +25,7 @@ struct AvxEncoderConfig;
  * settings that will lead to poor output quality. Prompts user to continue
  * when warnings are issued.
  */
-void check_encoder_config(int disable_prompt,
+HAOM_EXPORT void check_encoder_config(int disable_prompt,
                           const struct AvxEncoderConfig *global_config,
                           const struct aom_codec_enc_cfg *stream_config);
 

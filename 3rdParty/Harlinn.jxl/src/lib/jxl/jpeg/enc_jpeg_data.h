@@ -6,22 +6,36 @@
 #ifndef LIB_JXL_JPEG_ENC_JPEG_DATA_H_
 #define LIB_JXL_JPEG_ENC_JPEG_DATA_H_
 
-#include "lib/jxl/base/padded_bytes.h"
-#include "lib/jxl/codec_in_out.h"
+#include <cstdint>
+#include <vector>
+
+#include "lib/jxl/base/status.h"
+#include "lib/jxl/color_encoding_internal.h"
+#include "lib/jxl/enc_params.h"
+#include "lib/jxl/frame_header.h"
 #include "lib/jxl/jpeg/jpeg_data.h"
 
 namespace jxl {
-namespace jpeg {
-Status EncodeJPEGData(JPEGData& jpeg_data, PaddedBytes* bytes);
 
-Status SetColorEncodingFromJpegData(const jpeg::JPEGData& jpg,
-                                    ColorEncoding* color_encoding);
+class CodecInOut;
+
+namespace jpeg {
+Status EncodeJPEGData(JPEGData& jpeg_data, std::vector<uint8_t>* bytes,
+                      const CompressParams& cparams);
+
+void SetColorEncodingFromJpegData(const jpeg::JPEGData& jpg,
+                                  ColorEncoding* color_encoding);
+Status SetChromaSubsamplingFromJpegData(const JPEGData& jpg,
+                                        YCbCrChromaSubsampling* cs);
+Status SetColorTransformFromJpegData(const JPEGData& jpg,
+                                     ColorTransform* color_transform);
 
 /**
  * Decodes bytes containing JPEG codestream into a CodecInOut as coefficients
  * only, for lossless JPEG transcoding.
  */
-Status DecodeImageJPG(const Span<const uint8_t> bytes, CodecInOut* io);
+Status DecodeImageJPG(Span<const uint8_t> bytes, CodecInOut* io);
+
 }  // namespace jpeg
 }  // namespace jxl
 

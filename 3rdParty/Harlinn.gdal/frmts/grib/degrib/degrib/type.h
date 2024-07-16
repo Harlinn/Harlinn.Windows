@@ -1,4 +1,3 @@
-#pragma once
 /*****************************************************************************
  * type.h
  *
@@ -13,6 +12,8 @@
  */
 #ifndef TYPE_H
 #define TYPE_H
+
+#include "gdal_degrib_symbol_rename.h"
 
 #ifndef SINT4_TYPE
  #define SINT4_TYPE

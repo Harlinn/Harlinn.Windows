@@ -81,9 +81,9 @@ struct insp_frame_data {
   int show_existing_frame;
 };
 
-void ifd_init(insp_frame_data *fd, int frame_width, int frame_height);
-void ifd_clear(insp_frame_data *fd);
-int ifd_inspect(insp_frame_data *fd, void *decoder, int skip_not_transform);
+HAOM_EXPORT void ifd_init(insp_frame_data *fd, int frame_width, int frame_height);
+HAOM_EXPORT void ifd_clear(insp_frame_data *fd);
+HAOM_EXPORT int ifd_inspect(insp_frame_data *fd, void *decoder, int skip_not_transform);
 
 #ifdef __cplusplus
 }  // extern "C"

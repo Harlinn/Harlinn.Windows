@@ -28,28 +28,9 @@
  ****************************************************************************/
 
 #include "ogrogdi.h"
-#include <port/cpl_conv.h>
+#include "ogrogdidrivercore.h"
 
-CPL_CVSID("$Id$")
-
-/************************************************************************/
-/*                           ~OGROGDIDriver()                           */
-/************************************************************************/
-
-OGROGDIDriver::~OGROGDIDriver()
-
-{
-}
-
-/************************************************************************/
-/*                              GetName()                               */
-/************************************************************************/
-
-const char *OGROGDIDriver::GetName()
-
-{
-    return "OGR_OGDI";
-}
+#include "cpl_conv.h"
 
 /************************************************************************/
 /*                         MyOGDIReportErrorFunction()                  */
@@ -58,9 +39,9 @@ const char *OGROGDIDriver::GetName()
 #if OGDI_RELEASEDATE >= 20160705
 static int MyOGDIReportErrorFunction(int errorcode, const char *error_message)
 {
-    CPLError(CE_Failure, CPLE_AppDefined, "OGDI error %d: %s",
-             errorcode, error_message);
-    return FALSE; // go on
+    CPLError(CE_Failure, CPLE_AppDefined, "OGDI error %d: %s", errorcode,
+             error_message);
+    return FALSE;  // go on
 }
 #endif
 
@@ -68,46 +49,37 @@ static int MyOGDIReportErrorFunction(int errorcode, const char *error_message)
 /*                                Open()                                */
 /************************************************************************/
 
-OGRDataSource *OGROGDIDriver::Open( const char * pszFilename,
-                                     int bUpdate )
+static GDALDataset *OGROGDIDriverOpen(GDALOpenInfo *poOpenInfo)
 
 {
-    if( !STARTS_WITH_CI(pszFilename, "gltp:") )
+    const char *pszFilename = poOpenInfo->pszFilename;
+    if (!STARTS_WITH_CI(pszFilename, "gltp:"))
         return nullptr;
 
 #if OGDI_RELEASEDATE >= 20160705
     // Available only in post OGDI 3.2.0beta2
     // and only called if env variable OGDI_STOP_ON_ERROR is set to NO
-    ecs_SetReportErrorFunction( MyOGDIReportErrorFunction );
+    ecs_SetReportErrorFunction(MyOGDIReportErrorFunction);
 #endif
 
     OGROGDIDataSource *poDS = new OGROGDIDataSource();
 
-    if( !poDS->Open( pszFilename ) )
+    if (!poDS->Open(pszFilename))
     {
         delete poDS;
         poDS = nullptr;
     }
 
-    if ( poDS != nullptr && bUpdate )
+    const bool bUpdate = (poOpenInfo->nOpenFlags & GDAL_OF_UPDATE) != 0;
+    if (poDS != nullptr && bUpdate)
     {
-        CPLError( CE_Failure, CPLE_OpenFailed,
-                  "OGDI Driver doesn't support update." );
+        CPLError(CE_Failure, CPLE_OpenFailed,
+                 "OGDI Driver doesn't support update.");
         delete poDS;
         poDS = nullptr;
     }
 
     return poDS;
-}
-
-/************************************************************************/
-/*                           TestCapability()                           */
-/************************************************************************/
-
-int OGROGDIDriver::TestCapability( CPL_UNUSED const char * pszCap )
-
-{
-    return FALSE;
 }
 
 /************************************************************************/
@@ -117,14 +89,16 @@ int OGROGDIDriver::TestCapability( CPL_UNUSED const char * pszCap )
 void RegisterOGROGDI()
 
 {
-    if( !GDAL_CHECK_VERSION("OGR/OGDI driver") )
+    if (!GDAL_CHECK_VERSION("OGR/OGDI driver"))
         return;
 
-    OGRSFDriver* poDriver = new OGROGDIDriver;
-    poDriver->SetMetadataItem( GDAL_DMD_LONGNAME,
-                               "OGDI Vectors (VPF, VMAP, DCW)" );
-    poDriver->SetMetadataItem( GDAL_DMD_HELPTOPIC, "drivers/vector/ogdi.html" );
-    poDriver->SetMetadataItem( GDAL_DCAP_MULTIPLE_VECTOR_LAYERS, "YES" );
+    if (GDALGetDriverByName(DRIVER_NAME) != nullptr)
+        return;
 
-    OGRSFDriverRegistrar::GetRegistrar()->RegisterDriver( poDriver );
+    GDALDriver *poDriver = new GDALDriver();
+    OGROGDIDriverSetCommonMetadata(poDriver);
+
+    poDriver->pfnOpen = OGROGDIDriverOpen;
+
+    GetGDALDriverManager()->RegisterDriver(poDriver);
 }

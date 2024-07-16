@@ -73,6 +73,7 @@
 
 #include "pnm_cod.h"
 
+#include "jasper/jas_init.h"
 #include "jasper/jas_types.h"
 #include "jasper/jas_stream.h"
 #include "jasper/jas_image.h"
@@ -130,7 +131,7 @@ static int pnm_dec_parseopts(const char *optstr, pnm_dec_importopts_t *opts)
 {
 	jas_tvparser_t *tvp;
 
-	opts->max_samples = JAS_DEC_DEFAULT_MAX_SAMPLES;
+	opts->max_samples = jas_get_dec_default_max_samples();
 	opts->allow_trunc = 0;
 
 	if (!(tvp = jas_tvparser_create(optstr ? optstr : ""))) {
@@ -147,7 +148,7 @@ static int pnm_dec_parseopts(const char *optstr, pnm_dec_importopts_t *opts)
 			opts->max_samples = strtoull(jas_tvparser_getval(tvp), 0, 10);
 			break;
 		default:
-			jas_eprintf("warning: ignoring invalid option %s\n",
+			jas_logwarnf("warning: ignoring invalid option %s\n",
 			  jas_tvparser_gettag(tvp));
 			break;
 		}
@@ -162,7 +163,7 @@ static int pnm_dec_parseopts(const char *optstr, pnm_dec_importopts_t *opts)
 * Load function.
 \******************************************************************************/
 
-jas_image_t *pnm_decode(jas_stream_t *in, const char *optstr)
+JAS_EXPORT jas_image_t *pnm_decode(jas_stream_t *in, const char *optstr)
 {
 	pnm_hdr_t hdr;
 	jas_image_t *image;
@@ -174,7 +175,7 @@ jas_image_t *pnm_decode(jas_stream_t *in, const char *optstr)
 
 	image = 0;
 
-	JAS_DBGLOG(10, ("pnm_decode(%p, \"%s\")\n", in, optstr ? optstr : ""));
+	JAS_LOGDEBUGF(10, "pnm_decode(%p, \"%s\")\n", in, optstr ? optstr : "");
 
 	if (pnm_dec_parseopts(optstr, &opts)) {
 		goto error;
@@ -184,11 +185,15 @@ jas_image_t *pnm_decode(jas_stream_t *in, const char *optstr)
 	if (pnm_gethdr(in, &hdr)) {
 		goto error;
 	}
-	JAS_DBGLOG(10, (
-	  "magic %lx; width %lu; height %ld; numcmpts %d; maxval %ld; sgnd %d\n",
-	  JAS_CAST(unsigned long, hdr.magic), JAS_CAST(long, hdr.width),
+	JAS_LOGDEBUGF(10,
+	  "magic %lx; format %s; "
+	  "width %lu; height %ld; "
+	  "numcmpts %d; maxval %ld; sgnd %d\n",
+	  JAS_CAST(unsigned long, hdr.magic),
+	  JAS_CAST(long, pnm_fmt(hdr.magic)) == PNM_FMT_BIN ? "binary" : "text",
+	  JAS_CAST(long, hdr.width),
 	  JAS_CAST(long, hdr.height), hdr.numcmpts, JAS_CAST(long, hdr.maxval),
-	  hdr.sgnd)
+	  hdr.sgnd
 	  );
 
 	if (hdr.width <= 0 || hdr.height <= 0) {
@@ -197,11 +202,11 @@ jas_image_t *pnm_decode(jas_stream_t *in, const char *optstr)
 
 	if (!jas_safe_size_mul3(hdr.width, hdr.height, hdr.numcmpts,
 	  &num_samples)) {
-		jas_eprintf("image too large\n");
+		jas_logerrorf("image too large\n");
 		goto error;
 	}
 	if (opts.max_samples > 0 && num_samples > opts.max_samples) {
-		jas_eprintf(
+		jas_logerrorf(
 		  "maximum number of samples would be exceeded (%zu > %zu)\n",
 		  num_samples, opts.max_samples);
 		goto error;
@@ -255,7 +260,7 @@ error:
 * Validation function.
 \******************************************************************************/
 
-int pnm_validate(jas_stream_t *in)
+JAS_EXPORT int pnm_validate(jas_stream_t *in)
 {
 	jas_uchar buf[2];
 
@@ -305,6 +310,9 @@ static int pnm_gethdr(jas_stream_t *in, pnm_hdr_t *hdr)
 	} else {
 		hdr->maxval = maxval;
 		hdr->sgnd = false;
+	}
+	if (maxval >= 65536) {
+		return -1;
 	}
 
 	switch (type) {
@@ -400,7 +408,7 @@ static int pnm_getdata(jas_stream_t *in, pnm_hdr_t *hdr, jas_image_t *image,
 								if (!allow_trunc) {
 									goto done;
 								}
-								jas_eprintf("bad sample data\n");
+								jas_logwarnf("bad sample data\n");
 								sv = 0;
 							}
 							v = sv;
@@ -411,7 +419,7 @@ static int pnm_getdata(jas_stream_t *in, pnm_hdr_t *hdr, jas_image_t *image,
 								if (!allow_trunc) {
 									goto done;
 								}
-								jas_eprintf("bad sample data\n");
+								jas_logwarnf("bad sample data\n");
 								uv = 0;
 							}
 							v = uv;
@@ -425,7 +433,7 @@ static int pnm_getdata(jas_stream_t *in, pnm_hdr_t *hdr, jas_image_t *image,
 								if (!allow_trunc) {
 									goto done;
 								}
-								jas_eprintf("bad sample data\n");
+								jas_logwarnf("bad sample data\n");
 								sv = 0;
 							}
 							v = sv;
@@ -436,7 +444,7 @@ static int pnm_getdata(jas_stream_t *in, pnm_hdr_t *hdr, jas_image_t *image,
 								if (!allow_trunc) {
 									goto done;
 								}
-								jas_eprintf("bad sample data\n");
+								jas_logwarnf("bad sample data\n");
 								uv = 0;
 							}
 							v = uv;
@@ -479,7 +487,7 @@ static int pnm_getsint(jas_stream_t *in, int wordsize, int_fast32_t *val)
 		return -1;
 	}
 	if ((tmpval & (1 << (wordsize - 1))) != 0) {
-		jas_eprintf("PNM decoder does not fully support signed data\n");
+		jas_logerrorf("PNM decoder does not fully support signed data\n");
 		return -1;
 	}
 	if (val) {
@@ -541,7 +549,6 @@ static int pnm_getbitstr(jas_stream_t *in, int *val)
 
 static int pnm_getuintstr(jas_stream_t *in, uint_fast32_t *val)
 {
-	uint_fast32_t v;
 	int c;
 
 	/* Discard any leading whitespace. */
@@ -549,19 +556,26 @@ static int pnm_getuintstr(jas_stream_t *in, uint_fast32_t *val)
 		if ((c = pnm_getc(in)) == EOF) {
 			return -1;
 		}
-	} while (isspace(c));
+	} while (isspace(JAS_CAST(unsigned char, c)));
 
 	/* Parse the number. */
-	v = 0;
-	while (isdigit(c)) {
-		v = 10 * v + c - '0';
+	jas_safeui64_t value = jas_safeui64_from_intmax(0);
+	while (isdigit(JAS_CAST(unsigned char, c))) {
+		int d = c - '0';
+		value = jas_safeui64_mul(value, jas_safeui64_from_intmax(10));
+		value = jas_safeui64_add(value, jas_safeui64_from_intmax(d));
 		if ((c = pnm_getc(in)) < 0) {
 			return -1;
 		}
 	}
 
+	uint_fast32_t v = jas_safeui64_to_ui32(value, JAS_UI32_MAX);
+	if (v == JAS_UI32_MAX) {
+		return -1;
+	}
+
 	/* The number must be followed by whitespace. */
-	if (!isspace(c)) {
+	if (!isspace(JAS_CAST(unsigned char, c))) {
 		return -1;
 	}
 
@@ -575,14 +589,13 @@ static int pnm_getsintstr(jas_stream_t *in, int_fast32_t *val)
 {
 	int c;
 	int s;
-	int_fast32_t v;
 
 	/* Discard any leading whitespace. */
 	do {
 		if ((c = pnm_getc(in)) == EOF) {
 			return -1;
 		}
-	} while (isspace(c));
+	} while (isspace(JAS_CAST(unsigned char, c)));
 
 	/* Get the number, allowing for a negative sign. */
 	s = 1;
@@ -596,16 +609,24 @@ static int pnm_getsintstr(jas_stream_t *in, int_fast32_t *val)
 			return -1;
 		}
 	}
-	v = 0;
-	while (isdigit(c)) {
-		v = 10 * v + c - '0';
+
+	jas_safei64_t sv = jas_safei64_from_intmax(0);
+	while (isdigit(JAS_CAST(unsigned char, c))) {
+		// sv = 10 * sv + c - '0';
+		int d = c - '0';
+		sv = jas_safei64_mul(sv, jas_safei64_from_intmax(10));
+		sv = jas_safei64_add(sv, jas_safei64_from_intmax(d));
 		if ((c = pnm_getc(in)) < 0) {
 			return -1;
 		}
 	}
+	int_fast32_t v = jas_safei64_to_i32(sv, JAS_I32_MAX);
+	if (v == JAS_I32_MAX) {
+		return -1;
+	}
 
 	/* The number must be followed by whitespace. */
-	if (!isspace(c)) {
+	if (!isspace(JAS_CAST(unsigned char, c))) {
 		return -1;
 	}
 

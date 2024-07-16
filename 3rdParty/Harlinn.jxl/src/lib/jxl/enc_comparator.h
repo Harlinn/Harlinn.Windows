@@ -43,9 +43,10 @@ class Comparator {
 
 // Computes the score given images in any RGB color model, optionally with
 // alpha channel.
-float ComputeScore(const ImageBundle& rgb0, const ImageBundle& rgb1,
-                   Comparator* comparator, ImageF* diffmap = nullptr,
-                   ThreadPool* pool = nullptr);
+Status ComputeScore(const ImageBundle& rgb0, const ImageBundle& rgb1,
+                    Comparator* comparator, const JxlCmsInterface& cms,
+                    float* score, ImageF* diffmap = nullptr,
+                    ThreadPool* pool = nullptr, bool ignore_alpha = false);
 
 }  // namespace jxl
 

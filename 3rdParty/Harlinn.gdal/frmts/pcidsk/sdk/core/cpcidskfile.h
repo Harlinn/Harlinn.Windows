@@ -27,14 +27,14 @@
 #ifndef INCLUDE_PRIV_CPCIDSKFILE_H
 #define INCLUDE_PRIV_CPCIDSKFILE_H
 
-#include "frmts/pcidsk/sdk/pcidsk_config.h"
-#include "frmts/pcidsk/sdk/pcidsk_types.h"
-#include "frmts/pcidsk/sdk/pcidsk_buffer.h"
-#include "frmts/pcidsk/sdk/pcidsk_file.h"
-#include "frmts/pcidsk/sdk/pcidsk_mutex.h"
-#include "frmts/pcidsk/sdk/pcidsk_interfaces.h"
-#include "frmts/pcidsk/sdk/core/metadataset.h"
-#include "frmts/pcidsk/sdk/core/protectedfile.h"
+#include "pcidsk_config.h"
+#include "pcidsk_types.h"
+#include "pcidsk_buffer.h"
+#include "pcidsk_file.h"
+#include "pcidsk_mutex.h"
+#include "pcidsk_interfaces.h"
+#include "core/metadataset.h"
+#include "core/protectedfile.h"
 
 #include <string>
 #include <vector>
@@ -49,11 +49,11 @@ namespace PCIDSK
 /************************************************************************/
     class CPCIDSKFile final: public PCIDSKFile
     {
-        friend PCIDSKFile PCIDSK_DLL *Open( std::string filename,
-            std::string access, const PCIDSKInterfaces *interfaces, int max_channel_count_allowed );
+        friend PCIDSKFile PCIDSK_DLL *Open( const std::string& filename,
+            const std::string& access, const PCIDSKInterfaces *interfaces, int max_channel_count_allowed );
     public:
 
-        CPCIDSKFile( std::string filename );
+        CPCIDSKFile( const std::string& filename );
         virtual ~CPCIDSKFile();
 
         virtual PCIDSKInterfaces *GetInterfaces() override { return &interfaces; }
@@ -71,7 +71,7 @@ namespace PCIDSK
         int  CreateSegment( std::string name, std::string description,
             eSegType seg_type, int data_blocks ) override;
         void DeleteSegment( int segment ) override;
-        void CreateOverviews( int chan_count, int *chan_list,
+        void CreateOverviews( int chan_count, const int *chan_list,
             int factor, std::string resampling ) override;
 
         int       GetWidth() const override { return width; }
@@ -94,10 +94,10 @@ namespace PCIDSK
         std::string GetFilename() const { return base_filename; }
 
         void      GetIODetails( void ***io_handle_pp, Mutex ***io_mutex_pp,
-                                std::string filename="", bool writable=false ) override;
+                                const std::string& filename=std::string(), bool writable=false ) override;
 
         bool      GetEDBFileDetails( EDBFile** file_p, Mutex **io_mutex_p,
-                                     std::string filename );
+                                     const std::string& filename );
 
         std::string GetUniqueEDBFilename() override;
 

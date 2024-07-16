@@ -32,23 +32,18 @@
 #include "vfkreader.h"
 #include "vfkreaderp.h"
 
-#include <port/cpl_conv.h>
-#include <port/cpl_error.h>
-
-CPL_CVSID("$Id$")
+#include "cpl_conv.h"
+#include "cpl_error.h"
 
 /*!
   \brief IVFKFeature constructor
 
   \param poDataBlock pointer to VFKDataBlock instance
 */
-IVFKFeature::IVFKFeature( IVFKDataBlock *poDataBlock ) :
-    m_poDataBlock(poDataBlock),
-    m_nFID(-1),
-    m_nGeometryType(poDataBlock->GetGeometryType()),
-    m_bGeometry(false),
-    m_bValid(false),
-    m_paGeom(nullptr)
+IVFKFeature::IVFKFeature(IVFKDataBlock *poDataBlock)
+    : m_poDataBlock(poDataBlock), m_nFID(-1),
+      m_nGeometryType(poDataBlock->GetGeometryType()), m_bGeometry(false),
+      m_bValid(false)
 {
     CPLAssert(nullptr != poDataBlock);
 }
@@ -58,9 +53,6 @@ IVFKFeature::IVFKFeature( IVFKDataBlock *poDataBlock ) :
 */
 IVFKFeature::~IVFKFeature()
 {
-    if( m_paGeom )
-        delete m_paGeom;
-
     m_poDataBlock = nullptr;
 }
 
@@ -81,12 +73,126 @@ void IVFKFeature::SetGeometryType(OGRwkbGeometryType nGeomType)
 */
 void IVFKFeature::SetFID(GIntBig nFID)
 {
-    if (m_nFID > 0) {
+    if (m_nFID > 0)
+    {
         m_nFID = nFID;
     }
-    else {
+    else
+    {
         m_nFID = m_poDataBlock->GetFeatureCount() + 1;
     }
+}
+
+/*!
+  \brief Compute determinant of matrix with columns x,y and z
+
+  Simple formula requires reasonable numbers
+
+  \param x first column array
+  \param y second column array
+  \param z third column array
+
+  \return double determinant value
+*/
+double IVFKFeature::GetDeterminatOfMatrixDim3(double x[3], double y[3],
+                                              double z[3])
+{
+    return x[0] * y[1] * z[2] - x[0] * z[1] * y[2] - y[0] * x[1] * z[2] +
+           y[0] * x[2] * z[1] + z[0] * x[1] * y[2] - z[0] * y[1] * x[2];
+}
+
+/*!
+  \brief Find circle center determined by three point
+
+  \param c_xy circle center coordinates array
+  \param x array of three x coordinates
+  \param y array of three x coordinates
+*/
+void IVFKFeature::GetCircleCenterFrom3Points(double c_xy[2], double x[3],
+                                             double y[3])
+{
+    /* reduce coordinates by average coordinate */
+    int n = 3;
+    double sum_x = 0.0f, sum_y = 0.0f;
+    for (int i = 0; i < n; i++)
+    {
+        sum_x += x[i];
+        sum_y += y[i];
+    }
+
+    const double x_t = sum_x / 3;
+    const double y_t = sum_y / 3;
+
+    double x_r[3], y_r[3];
+
+    for (int i = 0; i < n; i++)
+    {
+        x_r[i] = x[i] - x_t;
+        y_r[i] = y[i] - y_t;
+    }
+
+    /* limits to test reasonable value of determinant */
+    const double epsilon_min = 0.0001;
+    const double epsilon_max = 10000e6;
+
+    /* solve three linear equations */
+    double z[3] = {1.0, 1.0, 1.0};
+    double c[3] = {-(pow(x_r[0], 2) + pow(y_r[0], 2)),
+                   -(pow(x_r[1], 2) + pow(y_r[1], 2)),
+                   -(pow(x_r[2], 2) + pow(y_r[2], 2))};
+    const double det_A = GetDeterminatOfMatrixDim3(x_r, y_r, z);
+
+    if (epsilon_min <= std::fabs(det_A) && std::fabs(det_A) <= epsilon_max)
+    {
+        const double det_a = GetDeterminatOfMatrixDim3(c, y_r, z);
+        const double det_b = GetDeterminatOfMatrixDim3(x_r, c, z);
+        c_xy[0] = -det_a / det_A / 2 + x_t;
+        c_xy[1] = -det_b / det_A / 2 + y_t;
+    }
+    else
+    {
+        c_xy[0] = -1.0;
+        c_xy[1] = -1.0;
+    }
+}
+
+/*!
+  \brief Add points to circle geometry
+
+  \param poGeomString pointer to OGRCircularString
+  \param c_x circle center x coordinate
+  \param c_y circle center y coordinate
+  \param r circle radius
+*/
+void IVFKFeature::AddCirclePointsToGeomString(OGRCircularString &poGeomString,
+                                              double c_x, double c_y, double r)
+{
+    OGRPoint pt;
+
+    /* define first point on a circle */
+    pt.setX(c_x + r);
+    pt.setY(c_y);
+    poGeomString.addPoint(&pt);
+
+    /* define second point on a circle */
+    pt.setX(c_x);
+    pt.setY(c_y + r);
+    poGeomString.addPoint(&pt);
+
+    /* define third point on a circle */
+    pt.setX(c_x - r);
+    pt.setY(c_y);
+    poGeomString.addPoint(&pt);
+
+    /* define fourth point on a circle */
+    pt.setX(c_x);
+    pt.setY(c_y - r);
+    poGeomString.addPoint(&pt);
+
+    /* define last point (=first) on a circle */
+    pt.setX(c_x + r);
+    pt.setY(c_y);
+    poGeomString.addPoint(&pt);
 }
 
 /*!
@@ -99,33 +205,34 @@ void IVFKFeature::SetFID(GIntBig nFID)
 
   \return true on valid feature or otherwise false
 */
-bool IVFKFeature::SetGeometry( OGRGeometry *poGeom, const char *ftype )
+bool IVFKFeature::SetGeometry(const OGRGeometry *poGeom, const char *ftype)
 {
     m_bGeometry = true;
 
-    delete m_paGeom;
-    m_paGeom = nullptr;
     m_bValid = true;
 
-    if (!poGeom) {
+    if (!poGeom)
+    {
         return m_bValid;
     }
 
     /* check empty geometries */
-    if (m_nGeometryType == wkbNone && poGeom->IsEmpty()) {
-            CPLError(CE_Warning, CPLE_AppDefined,
-                     "%s: empty geometry fid = " CPL_FRMT_GIB,
-                     m_poDataBlock->GetName(), m_nFID);
+    if (m_nGeometryType == wkbNone && poGeom->IsEmpty())
+    {
+        CPLError(CE_Warning, CPLE_AppDefined,
+                 "%s: empty geometry fid = " CPL_FRMT_GIB,
+                 m_poDataBlock->GetName(), m_nFID);
         m_bValid = false;
     }
 
     /* check coordinates */
-    if (m_nGeometryType == wkbPoint) {
+    if (m_nGeometryType == wkbPoint)
+    {
         auto poPoint = poGeom->toPoint();
         const double x = poPoint->getX();
         const double y = poPoint->getY();
-        if (x > -430000 || x < -910000 ||
-            y > -930000 || y < -1230000) {
+        if (x > -430000 || x < -910000 || y > -930000 || y < -1230000)
+        {
             CPLDebug("OGR-VFK", "%s: invalid point fid = " CPL_FRMT_GIB,
                      m_poDataBlock->GetName(), m_nFID);
             m_bValid = false;
@@ -133,89 +240,104 @@ bool IVFKFeature::SetGeometry( OGRGeometry *poGeom, const char *ftype )
     }
 
     /* check degenerated polygons */
-    if (m_nGeometryType == wkbPolygon) {
-        OGRLinearRing *poRing = poGeom->toPolygon()->getExteriorRing();
-        if (!poRing || poRing->getNumPoints() < 3) {
+    if (m_nGeometryType == wkbPolygon)
+    {
+        const OGRLinearRing *poRing = poGeom->toPolygon()->getExteriorRing();
+        if (!poRing || poRing->getNumPoints() < 3)
+        {
             CPLDebug("OGR-VFK", "%s: invalid polygon fid = " CPL_FRMT_GIB,
                      m_poDataBlock->GetName(), m_nFID);
             m_bValid = false;
         }
     }
 
-    if( m_bValid )
+    std::unique_ptr<OGRGeometry> newGeom;
+    if (m_bValid)
     {
-        if( ftype )
+        if (ftype)
         {
             OGRPoint pt;
             OGRCircularString poGeomString;
 
             OGRGeometry *poGeomCurved = nullptr;
-            if (EQUAL(ftype, "15") || EQUAL(ftype, "16")) {         /* -> circle or arc */
+            if (EQUAL(ftype, "15") || EQUAL(ftype, "16"))
+            { /* -> circle or arc */
                 auto poLS = poGeom->toLineString();
                 const int npoints = poLS->getNumPoints();
-                for (int i = 0; i < npoints; i++) {
-                    poLS->getPoint(i, &pt);
-                    poGeomString.addPoint(&pt);
-                }
-                if (EQUAL(ftype, "15")) {
-                    if (npoints < 3) {
-                      CPLError(CE_Warning, CPLE_AppDefined,
-                               "npoints is %d.  expected 3", npoints);
+                if (!EQUAL(ftype, "15"))
+                {
+                    for (int i = 0; i < npoints; i++)
+                    {
+                        poLS->getPoint(i, &pt);
+                        poGeomString.addPoint(&pt);
                     }
-                    if (npoints > 3) {
+                }
+                if (EQUAL(ftype, "15"))
+                {
+                    if (npoints < 3)
+                    {
+                        CPLError(CE_Warning, CPLE_AppDefined,
+                                 "npoints is %d.  expected 3", npoints);
+                    }
+                    if (npoints > 3)
+                    {
                         CPLError(CE_Warning, CPLE_AppDefined,
                                  "npoints is %d.  Will overflow buffers.  "
-                                 "Cannot continue.", npoints);
+                                 "Cannot continue.",
+                                 npoints);
                         m_bValid = false;
                         return false;
                     }
 
                     /* compute center and radius of a circle */
-                    double x[3] = { 0.0, 0.0, 0.0 };
-                    double y[3] = { 0.0, 0.0, 0.0 };
+                    double x[3] = {0.0, 0.0, 0.0};
+                    double y[3] = {0.0, 0.0, 0.0};
 
-                    for( int i = 0; i < npoints; i++ )
+                    for (int i = 0; i < npoints; i++)
                     {
                         poLS->getPoint(i, &pt);
                         x[i] = pt.getX();
                         y[i] = pt.getY();
                     }
 
-                    const double m1 = (x[0] + x[1]) / 2.0;
-                    const double n1 = (y[0] + y[1]) / 2.0;
+                    /* solve as 3 linear equation x^2+y^2+2ax+2by+c=0 */
+                    double c_xy[2];
+                    double r = 0.0f;
+                    GetCircleCenterFrom3Points(c_xy, x, y);
 
-                    const double m2 = (x[0] + x[2]) / 2.0;
-                    const double n2 = (y[0] + y[2]) / 2.0;
+                    /* TODO (seidlmic) how to correctly handle invalid configuration */
+                    if (c_xy[0] == -1.0f && c_xy[1] == -1.0f)
+                    {
+                        CPLError(CE_Warning, CPLE_AppDefined,
+                                 "Invalid 3 points circle configuration. Can "
+                                 "not find circle center");
+                        m_bValid = false;
+                        return false;
+                    }
 
-                    const double c1 = (x[1] - x[0]) * m1 + (y[1] - y[0]) * n1;
-                    const double c2 = (x[2] - x[0]) * m2 + (y[2] - y[0]) * n2;
+                    r = pow(pow((c_xy[0] - x[0]), 2) + pow((c_xy[1] - y[0]), 2),
+                            0.5);
 
-                    const double mx =
-                        (x[1] - x[0]) * (y[2] - y[0]) +
-                        (y[1] - y[0]) * (x[0] - x[2]);
+                    CPLDebug(
+                        "OGR-VFK",
+                        "Circle center point (ftype 15) X: %f, Y: %f, r: %f",
+                        c_xy[0], c_xy[1], r);
 
-                    const double c_x =
-                        (c1 * (y[2] - y[0]) + c2 * (y[0] - y[1])) / mx;
-                    const double c_y =
-                        (c1 * (x[0] - x[2]) + c2 * (x[1] - x[0])) / mx;
-
-                    /* compute a new intermediate point */
-                    pt.setX(c_x - (x[1] - c_x));
-                    pt.setY(c_y - (y[1] - c_y));
-                    poGeomString.addPoint(&pt);
-
-                    /* add last point */
-                    poLS->getPoint(0, &pt);
-                    poGeomString.addPoint(&pt);
+                    AddCirclePointsToGeomString(poGeomString, c_xy[0], c_xy[1],
+                                                r);
                 }
             }
-            else if (strlen(ftype) > 2 && STARTS_WITH_CI(ftype, "15")) { /* -> circle with radius */
+            else if (strlen(ftype) > 2 && STARTS_WITH_CI(ftype, "15"))
+            {                   /* -> circle with radius */
                 char s[3] = {}; /* 15 */
 
                 float r = 0.0f;
-                if (2 != sscanf(ftype, "%2s %f", s, &r) || r < 0) {
-                    CPLDebug("OGR-VFK", "%s: invalid circle (unknown or negative radius) "
-                             "fid = " CPL_FRMT_GIB, m_poDataBlock->GetName(), m_nFID);
+                if (2 != sscanf(ftype, "%2s %f", s, &r) || r < 0)
+                {
+                    CPLDebug("OGR-VFK",
+                             "%s: invalid circle (unknown or negative radius) "
+                             "fid = " CPL_FRMT_GIB,
+                             m_poDataBlock->GetName(), m_nFID);
                     m_bValid = false;
                 }
                 else
@@ -225,37 +347,17 @@ bool IVFKFeature::SetGeometry( OGRGeometry *poGeom, const char *ftype )
                     const double c_x = pt.getX();
                     const double c_y = pt.getY();
 
-                    /* define first point on a circle */
-                    pt.setX(c_x + r);
-                    pt.setY(c_y);
-                    poGeomString.addPoint(&pt);
-
-                    /* define second point on a circle */
-                    pt.setX(c_x);
-                    pt.setY(c_y + r);
-                    poGeomString.addPoint(&pt);
-
-                    /* define third point on a circle */
-                    pt.setX(c_x - r);
-                    pt.setY(c_y);
-                    poGeomString.addPoint(&pt);
-
-                    /* define fourth point on a circle */
-                    pt.setX(c_x);
-                    pt.setY(c_y - r);
-                    poGeomString.addPoint(&pt);
-
-                    /* define last point (=first) on a circle */
-                    pt.setX(c_x + r);
-                    pt.setY(c_y);
-                    poGeomString.addPoint(&pt);
+                    AddCirclePointsToGeomString(poGeomString, c_x, c_y, r);
                 }
             }
-            else if (EQUAL(ftype, "11")) {                          /* curve */
+            else if (EQUAL(ftype, "11"))
+            { /* curve */
                 auto poLS = poGeom->toLineString();
                 const int npoints = poLS->getNumPoints();
-                if (npoints > 2) { /* circular otherwise line string */
-                    for (int i = 0; i < npoints; i++) {
+                if (npoints > 2)
+                { /* circular otherwise line string */
+                    for (int i = 0; i < npoints; i++)
+                    {
                         poLS->getPoint(i, &pt);
                         poGeomString.addPoint(&pt);
                     }
@@ -265,34 +367,43 @@ bool IVFKFeature::SetGeometry( OGRGeometry *poGeom, const char *ftype )
             if (!poGeomString.IsEmpty())
                 poGeomCurved = poGeomString.CurveToLine();
 
-            if (poGeomCurved) {
-                const int npoints = poGeomCurved->toLineString()->getNumPoints();
-                CPLDebug("OGR-VFK", "%s: curve (type=%s) to linestring (npoints=%d) fid = " CPL_FRMT_GIB,
-                         m_poDataBlock->GetName(), ftype,
-                         npoints, m_nFID);
+            if (poGeomCurved)
+            {
+                const int npoints =
+                    poGeomCurved->toLineString()->getNumPoints();
+                CPLDebug("OGR-VFK",
+                         "%s: curve (type=%s) to linestring (npoints=%d) fid "
+                         "= " CPL_FRMT_GIB,
+                         m_poDataBlock->GetName(), ftype, npoints, m_nFID);
                 if (npoints > 1)
-                    m_paGeom = poGeomCurved->clone();
+                    newGeom.reset(poGeomCurved->clone());
                 delete poGeomCurved;
             }
         }
 
-        if (!m_paGeom) {
+        if (!newGeom)
+        {
             /* check degenerated linestrings */
-            if (m_nGeometryType == wkbLineString) {
+            if (m_nGeometryType == wkbLineString)
+            {
                 auto poLS = poGeom->toLineString();
                 const int npoints = poLS->getNumPoints();
-                if (npoints < 2) {
+                if (npoints < 2)
+                {
                     CPLError(CE_Warning, CPLE_AppDefined,
-                             "%s: invalid linestring (%d vertices) fid = " CPL_FRMT_GIB,
+                             "%s: invalid linestring (%d vertices) fid "
+                             "= " CPL_FRMT_GIB,
                              m_poDataBlock->GetName(), npoints, m_nFID);
                     m_bValid = false;
                 }
             }
 
-            if( m_bValid )
-                m_paGeom = poGeom->clone(); /* make copy */
+            if (m_bValid)
+                newGeom.reset(poGeom->clone()); /* make copy */
         }
     }
+
+    m_paGeom = std::move(newGeom);
 
     return m_bValid;
 }
@@ -302,12 +413,12 @@ bool IVFKFeature::SetGeometry( OGRGeometry *poGeom, const char *ftype )
 
   \return pointer to OGRGeometry or NULL on error
 */
-OGRGeometry *IVFKFeature::GetGeometry()
+const OGRGeometry *IVFKFeature::GetGeometry()
 {
-    if( m_nGeometryType != wkbNone && !m_bGeometry )
+    if (m_nGeometryType != wkbNone && !m_bGeometry)
         LoadGeometry();
 
-    return m_paGeom;
+    return m_paGeom.get();
 }
 
 /*!
@@ -317,34 +428,32 @@ OGRGeometry *IVFKFeature::GetGeometry()
 */
 bool IVFKFeature::LoadGeometry()
 {
-    if( m_bGeometry )
+    if (m_bGeometry)
         return true;
 
     const char *pszName = m_poDataBlock->GetName();
 
-    if (EQUAL (pszName, "SOBR") ||
-        EQUAL (pszName, "OBBP") ||
-        EQUAL (pszName, "SPOL") ||
-        EQUAL (pszName, "OB") ||
-        EQUAL (pszName, "OP") ||
-        EQUAL (pszName, "OBPEJ")) {
+    if (EQUAL(pszName, "SOBR") || EQUAL(pszName, "OBBP") ||
+        EQUAL(pszName, "SPOL") || EQUAL(pszName, "OB") ||
+        EQUAL(pszName, "OP") || EQUAL(pszName, "OBPEJ"))
+    {
         /* -> wkbPoint */
 
         return LoadGeometryPoint();
     }
-    else if (EQUAL (pszName, "SBP") ||
-             EQUAL (pszName, "SBPG")) {
+    else if (EQUAL(pszName, "SBP") || EQUAL(pszName, "SBPG"))
+    {
         /* -> wkbLineString */
         return LoadGeometryLineStringSBP();
     }
-    else if (EQUAL (pszName, "HP") ||
-             EQUAL (pszName, "DPM") ||
-             EQUAL (pszName, "ZVB")) {
+    else if (EQUAL(pszName, "HP") || EQUAL(pszName, "DPM") ||
+             EQUAL(pszName, "ZVB"))
+    {
         /* -> wkbLineString */
         return LoadGeometryLineStringHP();
     }
-    else if (EQUAL (pszName, "PAR") ||
-             EQUAL (pszName, "BUD")) {
+    else if (EQUAL(pszName, "PAR") || EQUAL(pszName, "BUD"))
+    {
         /* -> wkbPolygon */
         return LoadGeometryPolygon();
     }
@@ -357,13 +466,12 @@ bool IVFKFeature::LoadGeometry()
 
   \param poDataBlock pointer to VFKDataBlock instance
 */
-VFKFeature::VFKFeature( IVFKDataBlock *poDataBlock, GIntBig iFID ) :
-    IVFKFeature(poDataBlock)
+VFKFeature::VFKFeature(IVFKDataBlock *poDataBlock, GIntBig iFID)
+    : IVFKFeature(poDataBlock)
 {
     m_nFID = iFID;
     m_propertyList.assign(poDataBlock->GetPropertyCount(), VFKProperty());
-    CPLAssert(
-        size_t (poDataBlock->GetPropertyCount()) == m_propertyList.size());
+    CPLAssert(size_t(poDataBlock->GetPropertyCount()) == m_propertyList.size());
 }
 
 /*!
@@ -376,10 +484,10 @@ VFKFeature::VFKFeature( IVFKDataBlock *poDataBlock, GIntBig iFID ) :
 bool VFKFeature::SetProperties(const char *pszLine)
 {
     const char *poChar = pszLine;  // Used after for.
-    for( ; *poChar != '\0' && *poChar != ';'; poChar++ )
+    for (; *poChar != '\0' && *poChar != ';'; poChar++)
         /* skip data block name */
         ;
-    if( *poChar == '\0' )
+    if (*poChar == '\0')
         return false; /* nothing to read */
 
     poChar++; /* skip ';' after data block name */
@@ -387,25 +495,30 @@ bool VFKFeature::SetProperties(const char *pszLine)
     /* remove extra quotes (otherwise due to buggy format the parsing is
      * almost impossible) */
     CPLString osLine;
-    while( *poChar != '\0' ) {
-        if( *poChar == '"' ) {
+    while (*poChar != '\0')
+    {
+        if (*poChar == '"')
+        {
             /* count quotes */
             int nQuotes = 1;
-            while( *(++poChar) == '"' )
+            while (*(++poChar) == '"')
                 nQuotes++;
 
-            if( nQuotes % 2 != 0 ) {
+            if (nQuotes % 2 != 0)
+            {
                 /* even number of quotes -> only last quote used */
                 poChar -= 1;
             }
-            else {
-                if( ( *poChar == ';' || *poChar == '\0') &&
-                    *(poChar-nQuotes-1) == ';' ) {
+            else
+            {
+                if ((*poChar == ';' || *poChar == '\0') &&
+                    *(poChar - nQuotes - 1) == ';')
+                {
                     /* empty values (;""; / ;"" / ;""""; / ...)
                        -> only last two quotes used */
                     poChar -= 2;
                 }
-                else if( *poChar == '\0' )
+                else if (*poChar == '\0')
                     break;
                 /* odd number of quotes -> none of quotes used */
             }
@@ -420,41 +533,49 @@ bool VFKFeature::SetProperties(const char *pszLine)
     unsigned int nLength = 0;
     unsigned int nQuotes = 0;
     bool inString = false;
-    char* pszProp = nullptr;
+    char *pszProp = nullptr;
     std::vector<CPLString> oPropList;
-    while( *poChar != '\0' )
+    while (*poChar != '\0')
     {
-        if ( ( !inString && *poChar == '"' ) ||                  /* begin of string */
-             ( inString && *poChar == '"' && nQuotes == 1 &&     /* end of string */
-              ( *(poChar+1) == ';' || *(poChar+1) == '\0') ) ) {
+        if ((!inString && *poChar == '"') ||               /* begin of string */
+            (inString && *poChar == '"' && nQuotes == 1 && /* end of string */
+             (*(poChar + 1) == ';' || *(poChar + 1) == '\0')))
+        {
 
             poChar++; /* skip '"' */
             inString = !inString;
-            if (inString) {
+            if (inString)
+            {
                 nQuotes = 1;
                 poProp = poChar;
-                if (*poChar == '"' && (*(poChar+1) == ';' || *(poChar+1) == '\0')) {
+                if (*poChar == '"' &&
+                    (*(poChar + 1) == ';' || *(poChar + 1) == '\0'))
+                {
                     /* process empty string */
                     poChar++;
                     inString = false;
                 }
-                else {
+                else
+                {
                     /* count number of starting quotes */
-                    while (*poChar == '"') {
+                    while (*poChar == '"')
+                    {
                         nQuotes++;
                         nLength++;
                         poChar++;
                     }
                 }
             }
-            if (*poChar == '\0') {
+            if (*poChar == '\0')
+            {
                 /* end of line */
                 break;
             }
         }
-        if (*poChar == ';' && !inString) {
+        if (*poChar == ';' && !inString)
+        {
             /* end of property */
-            pszProp = (char *) CPLRealloc(pszProp, nLength + 1);
+            pszProp = (char *)CPLRealloc(pszProp, nLength + 1);
             if (nLength > 0)
                 strncpy(pszProp, poProp, nLength);
             pszProp[nLength] = '\0';
@@ -466,7 +587,8 @@ bool VFKFeature::SetProperties(const char *pszLine)
             nLength = 0;
             nQuotes = 0;
         }
-        else {
+        else
+        {
             if (*poChar == '"' && nQuotes > 1)
                 nQuotes--;
 
@@ -476,29 +598,31 @@ bool VFKFeature::SetProperties(const char *pszLine)
         }
     }
     /* append last property */
-    if (inString && nLength > 0) {
+    if (inString && nLength > 0)
+    {
         nLength--; /* ignore '"' */
     }
-    pszProp = (char *) CPLRealloc(pszProp, nLength + 1);
+    pszProp = (char *)CPLRealloc(pszProp, nLength + 1);
     if (nLength > 0)
         strncpy(pszProp, poProp, nLength);
     pszProp[nLength] = '\0';
     oPropList.push_back(pszProp);
 
     /* set properties from the list */
-    if (oPropList.size() != (size_t) m_poDataBlock->GetPropertyCount()) {
+    if (oPropList.size() != (size_t)m_poDataBlock->GetPropertyCount())
+    {
         /* try to read also invalid records */
         CPLError(CE_Warning, CPLE_AppDefined,
                  "%s: invalid number of properties %d should be %d\n%s",
-                 m_poDataBlock->GetName(),
-                 (int) oPropList.size(), m_poDataBlock->GetPropertyCount(),
-                 pszLine);
+                 m_poDataBlock->GetName(), (int)oPropList.size(),
+                 m_poDataBlock->GetPropertyCount(), pszLine);
         CPLFree(pszProp);
         return false;
-   }
+    }
     iIndex = 0;
     for (std::vector<CPLString>::iterator ip = oPropList.begin();
-         ip != oPropList.end(); ++ip) {
+         ip != oPropList.end(); ++ip)
+    {
         SetProperty(iIndex++, (*ip).c_str());
     }
 
@@ -532,7 +656,7 @@ bool VFKFeature::SetProperties(const char *pszLine)
 
   \return true on success, false on failure
 */
-bool VFKFeature::SetProperty( int iIndex, const char *pszValue )
+bool VFKFeature::SetProperty(int iIndex, const char *pszValue)
 {
     if (iIndex < 0 || iIndex >= m_poDataBlock->GetPropertyCount() ||
         size_t(iIndex) >= m_propertyList.size())
@@ -544,45 +668,54 @@ bool VFKFeature::SetProperty( int iIndex, const char *pszValue )
         return true;
     }
 
-    const OGRFieldType fType =
-        m_poDataBlock->GetProperty(iIndex)->GetType();
+    const OGRFieldType fType = m_poDataBlock->GetProperty(iIndex)->GetType();
 
-    switch (fType) {
-    case OFTInteger:
-    case OFTInteger64: {
-        errno = 0;
-        int pbOverflow = 0;
-        char *pszLast = nullptr;
-        if( fType == OFTInteger )
-            m_propertyList[iIndex] = VFKProperty(static_cast<int>(strtol(pszValue, &pszLast, 10)));
-        else /* OFTInteger64 */
-            m_propertyList[iIndex] = VFKProperty(CPLAtoGIntBigEx(pszValue, true, &pbOverflow));
+    switch (fType)
+    {
+        case OFTInteger:
+        case OFTInteger64:
+        {
+            errno = 0;
+            int pbOverflow = 0;
+            char *pszLast = nullptr;
+            if (fType == OFTInteger)
+                m_propertyList[iIndex] = VFKProperty(
+                    static_cast<int>(strtol(pszValue, &pszLast, 10)));
+            else /* OFTInteger64 */
+                m_propertyList[iIndex] =
+                    VFKProperty(CPLAtoGIntBigEx(pszValue, true, &pbOverflow));
 
-        if( ( fType == OFTInteger && ( errno == ERANGE || !pszLast || *pszLast ) ) ||
-            CPLGetValueType(pszValue) != CPL_VALUE_INTEGER || pbOverflow )
-            CPLError( CE_Warning, CPLE_AppDefined,
-                      "Value '%s' parsed incompletely to integer " CPL_FRMT_GIB ".",
-                      pszValue,
-                      (fType == OFTInteger) ? m_propertyList[iIndex].GetValueI() :
-                      m_propertyList[iIndex].GetValueI64() );
-        break;
-    }
-    case OFTReal:
-        m_propertyList[iIndex] = VFKProperty(CPLAtof(pszValue));
-        break;
-    default:
-        const char *pszEncoding =
-            m_poDataBlock->GetProperty(iIndex)->GetEncoding();
-        if (pszEncoding) {
-            char *pszValueEnc =
-                CPLRecode(pszValue, pszEncoding, CPL_ENC_UTF8);
-            m_propertyList[iIndex] = VFKProperty(pszValueEnc);
-            CPLFree(pszValueEnc);
+            if ((fType == OFTInteger &&
+                 (errno == ERANGE || !pszLast || *pszLast)) ||
+                CPLGetValueType(pszValue) != CPL_VALUE_INTEGER || pbOverflow)
+                CPLError(
+                    CE_Warning, CPLE_AppDefined,
+                    "Value '%s' parsed incompletely to integer " CPL_FRMT_GIB
+                    ".",
+                    pszValue,
+                    (fType == OFTInteger)
+                        ? m_propertyList[iIndex].GetValueI()
+                        : m_propertyList[iIndex].GetValueI64());
+            break;
         }
-        else {
-            m_propertyList[iIndex] = VFKProperty(pszValue);
-        }
-        break;
+        case OFTReal:
+            m_propertyList[iIndex] = VFKProperty(CPLAtof(pszValue));
+            break;
+        default:
+            const char *pszEncoding =
+                m_poDataBlock->GetProperty(iIndex)->GetEncoding();
+            if (pszEncoding)
+            {
+                char *pszValueEnc =
+                    CPLRecode(pszValue, pszEncoding, CPL_ENC_UTF8);
+                m_propertyList[iIndex] = VFKProperty(pszValueEnc);
+                CPLFree(pszValueEnc);
+            }
+            else
+            {
+                m_propertyList[iIndex] = VFKProperty(pszValue);
+            }
+            break;
     }
 
     return true;
@@ -601,7 +734,7 @@ const VFKProperty *VFKFeature::GetProperty(int iIndex) const
         size_t(iIndex) >= m_propertyList.size())
         return nullptr;
 
-    const VFKProperty* poProperty = &m_propertyList[iIndex];
+    const VFKProperty *poProperty = &m_propertyList[iIndex];
     return poProperty;
 }
 
@@ -633,7 +766,7 @@ bool VFKFeature::LoadGeometryPoint()
 
     auto propertyY = GetProperty(i_idxY);
     auto propertyX = GetProperty(i_idxX);
-    if( !propertyY || !propertyX )
+    if (!propertyY || !propertyX)
         return false;
     const double x = -1.0 * propertyY->GetValueD();
     const double y = -1.0 * propertyX->GetValueD();
@@ -653,7 +786,7 @@ bool VFKFeature::LoadGeometryPoint()
 bool VFKFeature::LoadGeometryLineStringSBP()
 {
     VFKDataBlock *poDataBlockPoints =
-        (VFKDataBlock *) m_poDataBlock->GetReader()->GetDataBlock("SOBR");
+        (VFKDataBlock *)m_poDataBlock->GetReader()->GetDataBlock("SOBR");
     if (!poDataBlockPoints)
         return false;
 
@@ -665,13 +798,13 @@ bool VFKFeature::LoadGeometryLineStringSBP()
 
     VFKFeature *poLine = this;
     OGRLineString OGRLine;
-    while( true )
+    while (true)
     {
         auto property_idxBp_Id = poLine->GetProperty(idxBp_Id);
-        if( !property_idxBp_Id )
+        if (!property_idxBp_Id)
             break;
         auto property_idxPCB = poLine->GetProperty(idxPCB);
-        if( !property_idxPCB )
+        if (!property_idxPCB)
             break;
 
         const int id = property_idxBp_Id->GetValueI();
@@ -687,10 +820,10 @@ bool VFKFeature::LoadGeometryLineStringSBP()
         {
             continue;
         }
-        OGRPoint *pt = poPoint->GetGeometry()->toPoint();
+        const OGRPoint *pt = poPoint->GetGeometry()->toPoint();
         OGRLine.addPoint(pt);
 
-        poLine = (VFKFeature *) m_poDataBlock->GetNextFeature();
+        poLine = (VFKFeature *)m_poDataBlock->GetNextFeature();
         if (!poLine)
             break;
     };
@@ -714,7 +847,7 @@ bool VFKFeature::LoadGeometryLineStringSBP()
 bool VFKFeature::LoadGeometryLineStringHP()
 {
     VFKDataBlock *poDataBlockLines =
-        (VFKDataBlock *) m_poDataBlock->GetReader()->GetDataBlock("SBP");
+        (VFKDataBlock *)m_poDataBlock->GetReader()->GetDataBlock("SBP");
     if (!poDataBlockLines)
         return false;
 
@@ -724,7 +857,7 @@ bool VFKFeature::LoadGeometryLineStringHP()
         return false;
 
     auto property = GetProperty(idxId);
-    if( !property )
+    if (!property)
         return false;
     const int id = property->GetValueI();
     VFKFeature *poLine = poDataBlockLines->GetFeature(idxHp_Id, id);
@@ -749,24 +882,22 @@ bool VFKFeature::LoadGeometryPolygon()
     return false;
 }
 
-OGRErr VFKFeature::LoadProperties( OGRFeature *poFeature )
+OGRErr VFKFeature::LoadProperties(OGRFeature *poFeature)
 {
-    for( int iField = 0; iField < m_poDataBlock->GetPropertyCount(); iField++ )
+    for (int iField = 0; iField < m_poDataBlock->GetPropertyCount(); iField++)
     {
         auto property = GetProperty(iField);
-        if( !property || property->IsNull() )
+        if (!property || property->IsNull())
             continue;
 
-        OGRFieldType fType = poFeature->GetDefnRef()->GetFieldDefn(iField)->GetType();
+        OGRFieldType fType =
+            poFeature->GetDefnRef()->GetFieldDefn(iField)->GetType();
         if (fType == OFTInteger)
-            poFeature->SetField(iField,
-                                property->GetValueI());
+            poFeature->SetField(iField, property->GetValueI());
         else if (fType == OFTReal)
-            poFeature->SetField(iField,
-                                property->GetValueD());
+            poFeature->SetField(iField, property->GetValueD());
         else
-            poFeature->SetField(iField,
-                                property->GetValueS());
+            poFeature->SetField(iField, property->GetValueS());
     }
 
     return OGRERR_NONE;

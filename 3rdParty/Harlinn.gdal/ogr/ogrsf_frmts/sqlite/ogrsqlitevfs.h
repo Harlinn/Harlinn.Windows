@@ -30,12 +30,13 @@
 #ifndef OGR_SQLITE_VFS_H_INCLUDED
 #define OGR_SQLITE_VFS_H_INCLUDED
 
-#include "port/cpl_vsi.h"
+#include "cpl_vsi.h"
 
 #include <sqlite3.h>
 
-typedef void (*pfnNotifyFileOpenedType)(void* pfnUserData, const char* pszFilename, VSILFILE* fp);
+typedef void (*pfnNotifyFileOpenedType)(void *pfnUserData,
+                                        const char *pszFilename, VSILFILE *fp);
 
-sqlite3_vfs* OGRSQLiteCreateVFS(pfnNotifyFileOpenedType pfn, void* pfnUserData);
+sqlite3_vfs *OGRSQLiteCreateVFS(pfnNotifyFileOpenedType pfn, void *pfnUserData);
 
-#endif // OGR_SQLITE_VFS_H_INCLUDED
+#endif  // OGR_SQLITE_VFS_H_INCLUDED

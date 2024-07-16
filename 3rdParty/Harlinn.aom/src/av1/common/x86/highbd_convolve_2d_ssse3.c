@@ -12,7 +12,7 @@
 #include <tmmintrin.h>
 #include <assert.h>
 
-#include "config/aom_dsp_rtcd.h"
+#include "config/av1_rtcd.h"
 
 #include "aom_dsp/aom_dsp_common.h"
 #include "aom_dsp/aom_filter.h"
@@ -211,10 +211,10 @@ void av1_highbd_convolve_2d_sr_ssse3(
             res_a_round1 = _mm_min_epi16(res_a_round1, clip_pixel);
             res_a_round1 = _mm_max_epi16(res_a_round1, zero);
 
-            *((uint32_t *)(&dst[i * dst_stride + j])) =
+            *((int *)(&dst[i * dst_stride + j])) =
                 _mm_cvtsi128_si32(res_a_round0);
 
-            *((uint32_t *)(&dst[i * dst_stride + j + dst_stride])) =
+            *((int *)(&dst[i * dst_stride + j + dst_stride])) =
                 _mm_cvtsi128_si32(res_a_round1);
           }
           s[0] = s[1];
@@ -384,10 +384,10 @@ void av1_highbd_convolve_2d_sr_ssse3(
             res_a_round1 = _mm_min_epi16(res_a_round1, clip_pixel);
             res_a_round1 = _mm_max_epi16(res_a_round1, zero);
 
-            *((uint32_t *)(&dst[i * dst_stride + j])) =
+            *((int *)(&dst[i * dst_stride + j])) =
                 _mm_cvtsi128_si32(res_a_round0);
 
-            *((uint32_t *)(&dst[i * dst_stride + j + dst_stride])) =
+            *((int *)(&dst[i * dst_stride + j + dst_stride])) =
                 _mm_cvtsi128_si32(res_a_round1);
           }
           s[0] = s[1];

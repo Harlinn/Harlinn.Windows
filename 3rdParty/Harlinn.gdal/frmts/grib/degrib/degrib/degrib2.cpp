@@ -1074,14 +1074,22 @@ int ReadGrib2Record (VSILFILE *fp, sChar f_unit, double **Grib_Data,
          nrdat = nidat;
       }
       if (nidat > IS->nidat) {
-         IS->nidat = nidat;
          IS->idat = (sInt4 *) realloc ((void *) IS->idat,
-                                       IS->nidat * sizeof (sInt4));
+                                       nidat * sizeof (sInt4));
+         // Initialization needed to avoid use of uninitialized memory in
+         // ParseSect2_Unknown() on dataset of https://github.com/OSGeo/gdal/issues/5290
+         if( IS->nidat == 0 )
+             IS->idat[0] = 0;
+         IS->nidat = nidat;
       }
       if (nrdat > IS->nrdat) {
-         IS->nrdat = nrdat;
          IS->rdat = (float *) realloc ((void *) IS->rdat,
-                                       IS->nrdat * sizeof (float));
+                                       nrdat * sizeof (float));
+         // Initialization needed to avoid use of uninitialized memory in
+         // ParseSect2_Unknown() on dataset of https://github.com/OSGeo/gdal/issues/5290
+         if( IS->nrdat == 0 )
+             IS->rdat[0] = 0;
+         IS->nrdat = nrdat;
       }
       /* Make sure we have room for the GRID part of the output. */
       if (nd2x3 > IS->nd2x3) {
@@ -1367,6 +1375,13 @@ int ReadGrib2Record (VSILFILE *fp, sChar f_unit, double **Grib_Data,
             meta->pds2.sect2.wx.ugly[i].validIndex = -1;
          }
       }
+   } else {
+       // Simulate part of ParseGrid() "Resolve bitmap (if there is one) in the data"
+       // behavior just to set nodata value.
+       if (ibitmap && (meta->gridAttrib.f_miss != 1) && (meta->gridAttrib.f_miss != 2)) {
+           meta->gridAttrib.f_miss = 1;
+           meta->gridAttrib.missPri = 9999;
+       }
    }
 
    /* Figure out some other non-section oriented meta data. */

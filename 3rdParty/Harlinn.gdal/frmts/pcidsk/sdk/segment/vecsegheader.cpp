@@ -29,22 +29,16 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
-#include "../pcidsk.h"
-#include "../core/pcidsk_utils.h"
-#include "vecsegheader.h"
-#include "cpcidskvectorsegment.h"
+#include "pcidsk.h"
+#include "core/pcidsk_utils.h"
+#include "segment/vecsegheader.h"
+#include "segment/cpcidskvectorsegment.h"
 #include <cassert>
 #include <cstring>
 #include <cstdio>
 #include <limits>
 
 using namespace PCIDSK;
-
-/* -------------------------------------------------------------------- */
-/*      Size of a block in the record/vertex block tables.  This is    */
-/*      determined by the PCIDSK format and may not be changed.         */
-/* -------------------------------------------------------------------- */
-static const int block_page_size = 8192;
 
 /************************************************************************/
 /*                            VecSegHeader()                            */

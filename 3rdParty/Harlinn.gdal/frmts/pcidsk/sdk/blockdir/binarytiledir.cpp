@@ -25,17 +25,18 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
-#include "binarytiledir.h"
-#include "binarytilelayer.h"
-#include "blockfile.h"
-#include "../core/pcidsk_utils.h"
-#include "../core/pcidsk_scanint.h"
-#include "../pcidsk_exception.h"
-#include "../pcidsk_buffer.h"
+#include "blockdir/binarytiledir.h"
+#include "blockdir/binarytilelayer.h"
+#include "blockdir/blockfile.h"
+#include "core/pcidsk_utils.h"
+#include "core/pcidsk_scanint.h"
+#include "pcidsk_exception.h"
+#include "pcidsk_buffer.h"
 #include <cstdlib>
 #include <cstring>
 #include <cstdio>
 #include <algorithm>
+#include <limits>
 
 using namespace PCIDSK;
 

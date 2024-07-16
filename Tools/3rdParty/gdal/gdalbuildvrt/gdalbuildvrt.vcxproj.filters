@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="gdalbuildvrt.cpp">
+    <ClCompile Include="gdalbuildvrt_bin.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -1,4 +1,3 @@
-#pragma once
 /******************************************************************************
  * $Id$
  *
@@ -31,87 +30,104 @@
 #ifndef IMDREADER_H_INCLUDED
 #define IMDREADER_H_INCLUDED
 
-#include <port/cpl_vsi.h>
-#include <port/cpl_error.h>
-#include <ogr/ogr_feature.h>
+#include "cpl_vsi.h"
+#include "cpl_error.h"
+#include "ogr_feature.h"
 #include <list>
 #include <map>
 
 class GeomFieldInfo
 {
-    OGRFeatureDefn* geomTable; /* separate geometry table for Ili 1 */
-public:
-    CPLString       iliGeomType;
+    OGRFeatureDefn *geomTable; /* separate geometry table for Ili 1 */
+  public:
+    CPLString iliGeomType;
 
-    GeomFieldInfo() : geomTable(nullptr) {}
-    ~GeomFieldInfo() {
-       if( geomTable )
-           geomTable->Release();
+    GeomFieldInfo() : geomTable(nullptr)
+    {
     }
-    GeomFieldInfo(const GeomFieldInfo& other)
+
+    ~GeomFieldInfo()
+    {
+        if (geomTable)
+            geomTable->Release();
+    }
+
+    GeomFieldInfo(const GeomFieldInfo &other)
     {
         geomTable = other.geomTable;
-        if( geomTable )
+        if (geomTable)
             geomTable->Reference();
         iliGeomType = other.iliGeomType;
     }
 
-    GeomFieldInfo& operator= (const GeomFieldInfo& other)
+    GeomFieldInfo &operator=(const GeomFieldInfo &other)
     {
-        if( this != &other )
+        if (this != &other)
         {
-            if( geomTable )
+            if (geomTable)
                 geomTable->Release();
             geomTable = other.geomTable;
-            if( geomTable )
+            if (geomTable)
                 geomTable->Reference();
             iliGeomType = other.iliGeomType;
         }
         return *this;
     }
 
-    OGRFeatureDefn* GetGeomTableDefnRef() const { return geomTable; }
-    void            SetGeomTableDefn(OGRFeatureDefn* geomTableIn)
+    OGRFeatureDefn *GetGeomTableDefnRef() const
+    {
+        return geomTable;
+    }
+
+    void SetGeomTableDefn(OGRFeatureDefn *geomTableIn)
     {
         CPLAssert(geomTable == nullptr);
         geomTable = geomTableIn;
-        if( geomTable )
+        if (geomTable)
             geomTable->Reference();
     }
 };
 
-typedef std::map<CPLString,GeomFieldInfo> GeomFieldInfos; /* key: geom field name, value: ILI geom field info */
-typedef std::map<CPLString,CPLString> StructFieldInfos; /* key: struct field name, value: struct table */
+typedef std::map<CPLString, GeomFieldInfo>
+    GeomFieldInfos; /* key: geom field name, value: ILI geom field info */
+typedef std::map<CPLString, CPLString>
+    StructFieldInfos; /* key: struct field name, value: struct table */
 
 class FeatureDefnInfo
 {
-    OGRFeatureDefn* poTableDefn;
-public:
-    GeomFieldInfos  poGeomFieldInfos;
+    OGRFeatureDefn *poTableDefn;
+
+  public:
+    GeomFieldInfos poGeomFieldInfos;
     StructFieldInfos poStructFieldInfos;
 
-    FeatureDefnInfo() : poTableDefn(nullptr) {}
-    ~FeatureDefnInfo() {
-       if( poTableDefn )
-           poTableDefn->Release();
+    FeatureDefnInfo() : poTableDefn(nullptr)
+    {
     }
-    FeatureDefnInfo(const FeatureDefnInfo& other)
+
+    ~FeatureDefnInfo()
+    {
+        if (poTableDefn)
+            poTableDefn->Release();
+    }
+
+    FeatureDefnInfo(const FeatureDefnInfo &other)
     {
         poTableDefn = other.poTableDefn;
-        if( poTableDefn )
+        if (poTableDefn)
             poTableDefn->Reference();
         poGeomFieldInfos = other.poGeomFieldInfos;
         poStructFieldInfos = other.poStructFieldInfos;
     }
 
-    FeatureDefnInfo& operator= (const FeatureDefnInfo& other)
+    FeatureDefnInfo &operator=(const FeatureDefnInfo &other)
     {
-        if( this != &other )
+        if (this != &other)
         {
-            if( poTableDefn )
+            if (poTableDefn)
                 poTableDefn->Release();
             poTableDefn = other.poTableDefn;
-            if( poTableDefn )
+            if (poTableDefn)
                 poTableDefn->Reference();
             poGeomFieldInfos = other.poGeomFieldInfos;
             poStructFieldInfos = other.poStructFieldInfos;
@@ -119,43 +135,50 @@ public:
         return *this;
     }
 
-    OGRFeatureDefn* GetTableDefnRef() const { return poTableDefn; }
-    void            SetTableDefn(OGRFeatureDefn* poTableDefnIn)
+    OGRFeatureDefn *GetTableDefnRef() const
+    {
+        return poTableDefn;
+    }
+
+    void SetTableDefn(OGRFeatureDefn *poTableDefnIn)
     {
         CPLAssert(poTableDefn == nullptr);
-        poTableDefn= poTableDefnIn;
-        if( poTableDefn )
+        poTableDefn = poTableDefnIn;
+        if (poTableDefn)
             poTableDefn->Reference();
     }
 };
+
 typedef std::list<FeatureDefnInfo> FeatureDefnInfos;
 
 class IliModelInfo
 {
-public:
+  public:
     CPLString name;
     CPLString version;
     CPLString uri;
 };
+
 typedef std::list<IliModelInfo> IliModelInfos;
 
 class ImdReader
 {
-  public:  // TODO(schwehr): Private?
-    int                  iliVersion; /* 1 or 2 */
-    IliModelInfos        modelInfos;
-    CPLString            mainModelName;
-    CPLString            mainBasketName;
-    CPLString            mainTopicName;
-    FeatureDefnInfos     featureDefnInfos;
-    char                 codeBlank;
-    char                 codeUndefined;
-    char                 codeContinue;
+  public:           // TODO(schwehr): Private?
+    int iliVersion; /* 1 or 2 */
+    IliModelInfos modelInfos;
+    CPLString mainModelName;
+    CPLString mainBasketName;
+    CPLString mainTopicName;
+    FeatureDefnInfos featureDefnInfos;
+    char codeBlank;
+    char codeUndefined;
+    char codeContinue;
+
   public:
-    explicit             ImdReader(int iliVersion);
-                        ~ImdReader();
-    void                 ReadModel(const char *pszFilename);
-    FeatureDefnInfo      GetFeatureDefnInfo(const char *pszLayerName);
+    explicit ImdReader(int iliVersion);
+    ~ImdReader();
+    void ReadModel(const char *pszFilename);
+    FeatureDefnInfo GetFeatureDefnInfo(const char *pszLayerName);
 };
 
 #endif /* IMDREADER_H_INCLUDED */

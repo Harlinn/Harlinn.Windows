@@ -28,7 +28,7 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
-#include <ogr/ogr_srs_api.h>
+#include "ogr_srs_api.h"
 #include <stdlib.h>
 
 #include "mfhdf.h"

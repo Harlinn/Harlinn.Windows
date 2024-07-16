@@ -96,7 +96,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
-      <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
@@ -119,7 +119,7 @@
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <BufferSecurityCheck>false</BufferSecurityCheck>
-      <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
@@ -140,7 +140,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
-      <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
@@ -164,7 +164,7 @@
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <BufferSecurityCheck>false</BufferSecurityCheck>
-      <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
@@ -178,46 +178,41 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="adler32.c" />
-    <ClCompile Include="crc32.c" />
-    <ClCompile Include="deflate_compress.c" />
-    <ClCompile Include="deflate_decompress.c" />
     <ClCompile Include="dllmain.cpp" />
-    <ClCompile Include="gzip_compress.c" />
-    <ClCompile Include="gzip_decompress.c" />
-    <ClCompile Include="utils.c" />
-    <ClCompile Include="x86\cpu_features.c" />
-    <ClCompile Include="zlib_compress.c" />
-    <ClCompile Include="zlib_decompress.c" />
+    <ClCompile Include="lib\adler32.c" />
+    <ClCompile Include="lib\crc32.c" />
+    <ClCompile Include="lib\deflate_compress.c" />
+    <ClCompile Include="lib\deflate_decompress.c" />
+    <ClCompile Include="lib\gzip_compress.c" />
+    <ClCompile Include="lib\gzip_decompress.c" />
+    <ClCompile Include="lib\utils.c" />
+    <ClCompile Include="lib\x86\cpu_features.c" />
+    <ClCompile Include="lib\zlib_compress.c" />
+    <ClCompile Include="lib\zlib_decompress.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="adler32_vec_template.h" />
-    <ClInclude Include="bt_matchfinder.h" />
-    <ClInclude Include="common\common_defs.h" />
-    <ClInclude Include="common\compiler_msc.h" />
-    <ClInclude Include="cpu_features_common.h" />
-    <ClInclude Include="crc32_table.h" />
-    <ClInclude Include="crc32_vec_template.h" />
-    <ClInclude Include="decompress_template.h" />
-    <ClInclude Include="deflate_compress.h" />
-    <ClInclude Include="deflate_constants.h" />
-    <ClInclude Include="gzip_constants.h" />
-    <ClInclude Include="hc_matchfinder.h" />
+    <ClInclude Include="common_defs.h" />
     <ClInclude Include="include\libdeflate.h" />
-    <ClInclude Include="lib_common.h" />
-    <ClInclude Include="matchfinder_common.h" />
-    <ClInclude Include="unaligned.h" />
-    <ClInclude Include="x86\adler32_impl.h" />
-    <ClInclude Include="x86\cpu_features.h" />
-    <ClInclude Include="x86\crc32_impl.h" />
-    <ClInclude Include="x86\crc32_pclmul_template.h" />
-    <ClInclude Include="x86\decompress_impl.h" />
-    <ClInclude Include="x86\matchfinder_impl.h" />
-    <ClInclude Include="zlib_constants.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Readme\COPYING" />
-    <None Include="Readme\README.md" />
+    <ClInclude Include="lib\bt_matchfinder.h" />
+    <ClInclude Include="lib\cpu_features_common.h" />
+    <ClInclude Include="lib\crc32_multipliers.h" />
+    <ClInclude Include="lib\crc32_tables.h" />
+    <ClInclude Include="lib\decompress_template.h" />
+    <ClInclude Include="lib\deflate_compress.h" />
+    <ClInclude Include="lib\deflate_constants.h" />
+    <ClInclude Include="lib\gzip_constants.h" />
+    <ClInclude Include="lib\hc_matchfinder.h" />
+    <ClInclude Include="lib\ht_matchfinder.h" />
+    <ClInclude Include="lib\lib_common.h" />
+    <ClInclude Include="lib\matchfinder_common.h" />
+    <ClInclude Include="lib\x86\adler32_impl.h" />
+    <ClInclude Include="lib\x86\adler32_template.h" />
+    <ClInclude Include="lib\x86\cpu_features.h" />
+    <ClInclude Include="lib\x86\crc32_impl.h" />
+    <ClInclude Include="lib\x86\crc32_pclmul_template.h" />
+    <ClInclude Include="lib\x86\decompress_impl.h" />
+    <ClInclude Include="lib\x86\matchfinder_impl.h" />
+    <ClInclude Include="lib\zlib_constants.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

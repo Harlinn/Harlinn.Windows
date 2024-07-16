@@ -69,11 +69,11 @@ struct y4m_input {
  *
  * Returns 0 on success, -1 on failure.
  */
-int y4m_input_open(y4m_input *y4m_ctx, FILE *file, char *skip_buffer,
+HAOM_EXPORT int y4m_input_open(y4m_input *y4m_ctx, FILE *file, char *skip_buffer,
                    int num_skip, aom_chroma_sample_position_t csp,
                    int only_420);
-void y4m_input_close(y4m_input *_y4m);
-int y4m_input_fetch_frame(y4m_input *_y4m, FILE *_fin, aom_image_t *img);
+HAOM_EXPORT void y4m_input_close(y4m_input *_y4m);
+HAOM_EXPORT int y4m_input_fetch_frame(y4m_input *_y4m, FILE *_fin, aom_image_t *img);
 
 #ifdef __cplusplus
 }  // extern "C"

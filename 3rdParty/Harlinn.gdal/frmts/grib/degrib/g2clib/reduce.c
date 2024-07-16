@@ -14,7 +14,7 @@
 #include <stdlib.h>
 #include "grib2.h"
 
-#include <port/cpl_port.h>
+#include "cpl_port.h"
 
 /* Subroutine */ int reduce(CPL_UNUSED integer *kfildo, integer *jmin, integer *jmax,
 	integer *lbit, integer *nov, integer *lx, integer *ndg, integer *ibit,

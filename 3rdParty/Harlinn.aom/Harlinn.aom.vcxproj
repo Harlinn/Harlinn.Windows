@@ -26,6 +26,9 @@
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <ImportGroup Label="ExtensionSettings">
+    <Import Project="$(SolutionDir)\MSBuild\yasm\nasm.props" />
+  </ImportGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
@@ -97,7 +100,7 @@
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
-      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.webm\include;$(SolutionDir)3rdParty\Harlinn.jxl\include;$(SolutionDir)3rdParty\Harlinn.libvmaf\include;$(SolutionDir)3rdParty\Harlinn.yuv\include;$(ProjectDir)include\aom\aom;$(ProjectDir)include\aom\aom_dsp;$(ProjectDir)include\aom\aom_mem;$(ProjectDir)include\aom\aom_ports;$(ProjectDir)include\aom\aom_scale;$(ProjectDir)include\aom\aom_util;$(ProjectDir)include\aom\av1;$(ProjectDir)include\aom\common;$(ProjectDir)include\aom\config;$(ProjectDir)include\aom\stats;$(ProjectDir)include\aom;$(ProjectDir)include;$(ProjectDir)src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.webm\include;$(SolutionDir)3rdParty\Harlinn.jxl\include;$(SolutionDir)3rdParty\Harlinn.jxl\src\lib;$(SolutionDir)3rdParty\Harlinn.jxl\src;$(SolutionDir)3rdParty\Harlinn.libvmaf\include;$(SolutionDir)3rdParty\Harlinn.yuv\include;$(ProjectDir)include\aom;$(ProjectDir)include\aom\aom_dsp;$(ProjectDir)include\aom\aom_mem;$(ProjectDir)include\aom\aom_ports;$(ProjectDir)include\aom\aom_scale;$(ProjectDir)include\aom\aom_util;$(ProjectDir)include\aom\av1;$(ProjectDir)include\aom\common;$(ProjectDir)include\aom\config;$(ProjectDir)include\aom\stats;$(ProjectDir)include;$(ProjectDir)src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
     </ClCompile>
@@ -106,6 +109,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
       <AdditionalLibraryDirectories>$(OutDir)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Harlinn.webm.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -121,7 +125,7 @@
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <BufferSecurityCheck>false</BufferSecurityCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.webm\include;$(SolutionDir)3rdParty\Harlinn.jxl\include;$(SolutionDir)3rdParty\Harlinn.libvmaf\include;$(SolutionDir)3rdParty\Harlinn.yuv\include;$(ProjectDir)include\aom\aom;$(ProjectDir)include\aom\aom_dsp;$(ProjectDir)include\aom\aom_mem;$(ProjectDir)include\aom\aom_ports;$(ProjectDir)include\aom\aom_scale;$(ProjectDir)include\aom\aom_util;$(ProjectDir)include\aom\av1;$(ProjectDir)include\aom\common;$(ProjectDir)include\aom\config;$(ProjectDir)include\aom\stats;$(ProjectDir)include\aom;$(ProjectDir)include;$(ProjectDir)src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.webm\include;$(SolutionDir)3rdParty\Harlinn.jxl\include;$(SolutionDir)3rdParty\Harlinn.jxl\src\lib;$(SolutionDir)3rdParty\Harlinn.jxl\src;$(SolutionDir)3rdParty\Harlinn.libvmaf\include;$(SolutionDir)3rdParty\Harlinn.yuv\include;$(ProjectDir)include\aom;$(ProjectDir)include\aom\aom_dsp;$(ProjectDir)include\aom\aom_mem;$(ProjectDir)include\aom\aom_ports;$(ProjectDir)include\aom\aom_scale;$(ProjectDir)include\aom\aom_util;$(ProjectDir)include\aom\av1;$(ProjectDir)include\aom\common;$(ProjectDir)include\aom\config;$(ProjectDir)include\aom\stats;$(ProjectDir)include;$(ProjectDir)src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
@@ -131,6 +135,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
       <AdditionalLibraryDirectories>$(OutDir)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Harlinn.webm.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -143,7 +148,7 @@
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
-      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.webm\include;$(SolutionDir)3rdParty\Harlinn.jxl\include;$(SolutionDir)3rdParty\Harlinn.libvmaf\include;$(SolutionDir)3rdParty\Harlinn.yuv\include;$(ProjectDir)include\aom\aom;$(ProjectDir)include\aom\aom_dsp;$(ProjectDir)include\aom\aom_mem;$(ProjectDir)include\aom\aom_ports;$(ProjectDir)include\aom\aom_scale;$(ProjectDir)include\aom\aom_util;$(ProjectDir)include\aom\av1;$(ProjectDir)include\aom\common;$(ProjectDir)include\aom\config;$(ProjectDir)include\aom\stats;$(ProjectDir)include\aom;$(ProjectDir)include;$(ProjectDir)src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.webm\include;$(SolutionDir)3rdParty\Harlinn.jxl\include;$(SolutionDir)3rdParty\Harlinn.jxl\src\lib;$(SolutionDir)3rdParty\Harlinn.jxl\src;$(SolutionDir)3rdParty\Harlinn.libvmaf\include;$(SolutionDir)3rdParty\Harlinn.yuv\include;$(ProjectDir)include\aom;$(ProjectDir)include\aom\aom_dsp;$(ProjectDir)include\aom\aom_mem;$(ProjectDir)include\aom\aom_ports;$(ProjectDir)include\aom\aom_scale;$(ProjectDir)include\aom\aom_util;$(ProjectDir)include\aom\av1;$(ProjectDir)include\aom\common;$(ProjectDir)include\aom\config;$(ProjectDir)include\aom\stats;$(ProjectDir)include;$(ProjectDir)src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
     </ClCompile>
@@ -153,7 +158,12 @@
       <EnableUAC>false</EnableUAC>
       <AdditionalLibraryDirectories>$(OutDir)</AdditionalLibraryDirectories>
       <OutputFile>$(OutDir)$(TargetName)-x64d$(TargetExt)</OutputFile>
+      <AdditionalDependencies>Harlinn.webm.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <NASM>
+      <Outputswitch>1</Outputswitch>
+      <IncludePaths>$(ProjectDir)src</IncludePaths>
+    </NASM>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -168,7 +178,7 @@
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <BufferSecurityCheck>false</BufferSecurityCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.webm\include;$(SolutionDir)3rdParty\Harlinn.jxl\include;$(SolutionDir)3rdParty\Harlinn.libvmaf\include;$(SolutionDir)3rdParty\Harlinn.yuv\include;$(ProjectDir)include\aom\aom;$(ProjectDir)include\aom\aom_dsp;$(ProjectDir)include\aom\aom_mem;$(ProjectDir)include\aom\aom_ports;$(ProjectDir)include\aom\aom_scale;$(ProjectDir)include\aom\aom_util;$(ProjectDir)include\aom\av1;$(ProjectDir)include\aom\common;$(ProjectDir)include\aom\config;$(ProjectDir)include\aom\stats;$(ProjectDir)include\aom;$(ProjectDir)include;$(ProjectDir)src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\Harlinn.webm\include;$(SolutionDir)3rdParty\Harlinn.jxl\include;$(SolutionDir)3rdParty\Harlinn.jxl\src\lib;$(SolutionDir)3rdParty\Harlinn.jxl\src;$(SolutionDir)3rdParty\Harlinn.libvmaf\include;$(SolutionDir)3rdParty\Harlinn.yuv\include;$(ProjectDir)include\aom;$(ProjectDir)include\aom\aom_dsp;$(ProjectDir)include\aom\aom_mem;$(ProjectDir)include\aom\aom_ports;$(ProjectDir)include\aom\aom_scale;$(ProjectDir)include\aom\aom_util;$(ProjectDir)include\aom\av1;$(ProjectDir)include\aom\common;$(ProjectDir)include\aom\config;$(ProjectDir)include\aom\stats;$(ProjectDir)include;$(ProjectDir)src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
@@ -179,7 +189,12 @@
       <EnableUAC>false</EnableUAC>
       <AdditionalLibraryDirectories>$(OutDir)</AdditionalLibraryDirectories>
       <OutputFile>$(OutDir)$(TargetName)-x64r$(TargetExt)</OutputFile>
+      <AdditionalDependencies>Harlinn.webm.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <NASM>
+      <Outputswitch>1</Outputswitch>
+      <IncludePaths>$(ProjectDir)src</IncludePaths>
+    </NASM>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
@@ -201,14 +216,27 @@
     <ClCompile Include="src\aom_dsp\blend_a64_mask.c" />
     <ClCompile Include="src\aom_dsp\blend_a64_vmask.c" />
     <ClCompile Include="src\aom_dsp\blk_sse_sum.c" />
-    <ClCompile Include="src\aom_dsp\butteraugli.c" />
+    <ClCompile Include="src\aom_dsp\butteraugli.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="src\aom_dsp\entcode.c" />
     <ClCompile Include="src\aom_dsp\entdec.c" />
     <ClCompile Include="src\aom_dsp\entenc.c" />
     <ClCompile Include="src\aom_dsp\fastssim.c" />
     <ClCompile Include="src\aom_dsp\fft.c" />
+    <ClCompile Include="src\aom_dsp\flow_estimation\corner_detect.c" />
+    <ClCompile Include="src\aom_dsp\flow_estimation\corner_match.c" />
+    <ClCompile Include="src\aom_dsp\flow_estimation\disflow.c" />
+    <ClCompile Include="src\aom_dsp\flow_estimation\flow_estimation.c" />
+    <ClCompile Include="src\aom_dsp\flow_estimation\ransac.c" />
+    <ClCompile Include="src\aom_dsp\flow_estimation\x86\corner_match_avx2.c" />
+    <ClCompile Include="src\aom_dsp\flow_estimation\x86\corner_match_sse4.c" />
+    <ClCompile Include="src\aom_dsp\flow_estimation\x86\disflow_avx2.c" />
+    <ClCompile Include="src\aom_dsp\flow_estimation\x86\disflow_sse4.c" />
     <ClCompile Include="src\aom_dsp\fwd_txfm.c" />
-    <ClCompile Include="src\aom_dsp\grain_synthesis.c" />
     <ClCompile Include="src\aom_dsp\grain_table.c" />
     <ClCompile Include="src\aom_dsp\intrapred.c" />
     <ClCompile Include="src\aom_dsp\loopfilter.c" />
@@ -216,7 +244,13 @@
     <ClCompile Include="src\aom_dsp\noise_util.c" />
     <ClCompile Include="src\aom_dsp\odintrin.c" />
     <ClCompile Include="src\aom_dsp\psnr.c" />
-    <ClCompile Include="src\aom_dsp\psnrhvs.c" />
+    <ClCompile Include="src\aom_dsp\psnrhvs.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\aom_dsp\pyramid.c" />
     <ClCompile Include="src\aom_dsp\quantize.c" />
     <ClCompile Include="src\aom_dsp\sad.c" />
     <ClCompile Include="src\aom_dsp\sad_av1.c" />
@@ -233,10 +267,10 @@
     <ClCompile Include="src\aom_dsp\x86\aom_convolve_copy_sse2.c" />
     <ClCompile Include="src\aom_dsp\x86\aom_quantize_avx.c" />
     <ClCompile Include="src\aom_dsp\x86\aom_subpixel_8t_intrin_avx2.c" />
-    <ClCompile Include="src\aom_dsp\x86\aom_subpixel_8t_intrin_sse2.c" />
     <ClCompile Include="src\aom_dsp\x86\aom_subpixel_8t_intrin_ssse3.c" />
     <ClCompile Include="src\aom_dsp\x86\avg_intrin_avx2.c" />
     <ClCompile Include="src\aom_dsp\x86\avg_intrin_sse2.c" />
+    <ClCompile Include="src\aom_dsp\x86\avg_intrin_sse4.c" />
     <ClCompile Include="src\aom_dsp\x86\blend_a64_hmask_sse4.c" />
     <ClCompile Include="src\aom_dsp\x86\blend_a64_mask_avx2.c" />
     <ClCompile Include="src\aom_dsp\x86\blend_a64_mask_sse4.c" />
@@ -256,15 +290,18 @@
     <ClCompile Include="src\aom_dsp\x86\highbd_loopfilter_sse2.c" />
     <ClCompile Include="src\aom_dsp\x86\highbd_quantize_intrin_avx2.c" />
     <ClCompile Include="src\aom_dsp\x86\highbd_quantize_intrin_sse2.c" />
+    <ClCompile Include="src\aom_dsp\x86\highbd_sad_avx2.c" />
     <ClCompile Include="src\aom_dsp\x86\highbd_subtract_sse2.c" />
     <ClCompile Include="src\aom_dsp\x86\highbd_variance_avx2.c" />
     <ClCompile Include="src\aom_dsp\x86\highbd_variance_sse2.c" />
     <ClCompile Include="src\aom_dsp\x86\highbd_variance_sse4.c" />
     <ClCompile Include="src\aom_dsp\x86\intrapred_avx2.c" />
     <ClCompile Include="src\aom_dsp\x86\intrapred_sse2.c" />
+    <ClCompile Include="src\aom_dsp\x86\intrapred_sse4.c" />
     <ClCompile Include="src\aom_dsp\x86\intrapred_ssse3.c" />
-    <ClCompile Include="src\aom_dsp\x86\jnt_sad_ssse3.c" />
+    <ClCompile Include="src\aom_dsp\x86\jnt_sad_sse2.c" />
     <ClCompile Include="src\aom_dsp\x86\jnt_variance_ssse3.c" />
+    <ClCompile Include="src\aom_dsp\x86\loopfilter_avx2.c" />
     <ClCompile Include="src\aom_dsp\x86\loopfilter_sse2.c" />
     <ClCompile Include="src\aom_dsp\x86\masked_sad4d_ssse3.c" />
     <ClCompile Include="src\aom_dsp\x86\masked_sad_intrin_avx2.c" />
@@ -274,11 +311,11 @@
     <ClCompile Include="src\aom_dsp\x86\obmc_sad_sse4.c" />
     <ClCompile Include="src\aom_dsp\x86\obmc_variance_avx2.c" />
     <ClCompile Include="src\aom_dsp\x86\obmc_variance_sse4.c" />
+    <ClCompile Include="src\aom_dsp\x86\quantize_avx2.c" />
     <ClCompile Include="src\aom_dsp\x86\quantize_sse2.c" />
     <ClCompile Include="src\aom_dsp\x86\quantize_ssse3.c" />
     <ClCompile Include="src\aom_dsp\x86\sad4d_avx2.c" />
     <ClCompile Include="src\aom_dsp\x86\sad_avx2.c" />
-    <ClCompile Include="src\aom_dsp\x86\sad_highbd_avx2.c" />
     <ClCompile Include="src\aom_dsp\x86\sad_impl_avx2.c" />
     <ClCompile Include="src\aom_dsp\x86\sse_avx2.c" />
     <ClCompile Include="src\aom_dsp\x86\sse_sse4.c" />
@@ -290,18 +327,7 @@
     <ClCompile Include="src\aom_dsp\x86\variance_impl_ssse3.c" />
     <ClCompile Include="src\aom_dsp\x86\variance_sse2.c" />
     <ClCompile Include="src\aom_mem\aom_mem.c" />
-    <ClCompile Include="src\aom_ports\arm_cpudetect.c">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="src\aom_ports\ppc_cpudetect.c">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClCompile>
+    <ClCompile Include="src\aom_ports\aarch64_cpudetect.c" />
     <ClCompile Include="src\aom_scale\aom_scale_rtcd.c" />
     <ClCompile Include="src\aom_scale\generic\aom_scale.c" />
     <ClCompile Include="src\aom_scale\generic\gen_scalers.c" />
@@ -321,12 +347,8 @@
     <ClCompile Include="src\av1\common\blockd.c" />
     <ClCompile Include="src\av1\common\cdef.c" />
     <ClCompile Include="src\av1\common\cdef_block.c" />
-    <ClCompile Include="src\av1\common\cdef_block_avx2.c" />
-    <ClCompile Include="src\av1\common\cdef_block_neon.c" />
-    <ClCompile Include="src\av1\common\cdef_block_sse2.c" />
-    <ClCompile Include="src\av1\common\cdef_block_sse4.c" />
-    <ClCompile Include="src\av1\common\cdef_block_ssse3.c" />
     <ClCompile Include="src\av1\common\cfl.c" />
+    <ClCompile Include="src\av1\common\common_data.c" />
     <ClCompile Include="src\av1\common\convolve.c" />
     <ClCompile Include="src\av1\common\debugmodes.c" />
     <ClCompile Include="src\av1\common\entropy.c" />
@@ -355,6 +377,12 @@
     <ClCompile Include="src\av1\common\x86\av1_inv_txfm_avx2.c" />
     <ClCompile Include="src\av1\common\x86\av1_inv_txfm_ssse3.c" />
     <ClCompile Include="src\av1\common\x86\av1_txfm_sse4.c" />
+    <ClCompile Include="src\av1\common\x86\cdef_block_avx2.c" />
+    <ClCompile Include="src\av1\common\x86\cdef_block_sse4.c" />
+    <ClCompile Include="src\av1\common\x86\cdef_block_ssse3.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="src\av1\common\x86\cfl_avx2.c" />
     <ClCompile Include="src\av1\common\x86\cfl_sse2.c" />
     <ClCompile Include="src\av1\common\x86\cfl_ssse3.c" />
@@ -385,7 +413,6 @@
     <ClCompile Include="src\av1\common\x86\selfguided_avx2.c" />
     <ClCompile Include="src\av1\common\x86\selfguided_sse4.c" />
     <ClCompile Include="src\av1\common\x86\warp_plane_avx2.c" />
-    <ClCompile Include="src\av1\common\x86\warp_plane_sse2.c" />
     <ClCompile Include="src\av1\common\x86\warp_plane_sse4.c" />
     <ClCompile Include="src\av1\common\x86\wiener_convolve_avx2.c" />
     <ClCompile Include="src\av1\common\x86\wiener_convolve_sse2.c" />
@@ -395,6 +422,7 @@
     <ClCompile Include="src\av1\decoder\decoder.c" />
     <ClCompile Include="src\av1\decoder\decodetxb.c" />
     <ClCompile Include="src\av1\decoder\detokenize.c" />
+    <ClCompile Include="src\av1\decoder\grain_synthesis.c" />
     <ClCompile Include="src\av1\decoder\inspection.c" />
     <ClCompile Include="src\av1\decoder\obu.c" />
     <ClCompile Include="src\av1\encoder\allintra_vis.c" />
@@ -411,9 +439,8 @@
     <ClCompile Include="src\av1\encoder\cnn.c" />
     <ClCompile Include="src\av1\encoder\compound_type.c" />
     <ClCompile Include="src\av1\encoder\context_tree.c" />
-    <ClCompile Include="src\av1\encoder\corner_detect.c" />
-    <ClCompile Include="src\av1\encoder\corner_match.c" />
     <ClCompile Include="src\av1\encoder\cost.c" />
+    <ClCompile Include="src\av1\encoder\deltaq4_model.c" />
     <ClCompile Include="src\av1\encoder\dwt.c" />
     <ClCompile Include="src\av1\encoder\encodeframe.c" />
     <ClCompile Include="src\av1\encoder\encodeframe_utils.c" />
@@ -441,6 +468,7 @@
     <ClCompile Include="src\av1\encoder\ml.c" />
     <ClCompile Include="src\av1\encoder\motion_search_facade.c" />
     <ClCompile Include="src\av1\encoder\mv_prec.c" />
+    <ClCompile Include="src\av1\encoder\nonrd_opt.c" />
     <ClCompile Include="src\av1\encoder\nonrd_pickmode.c" />
     <ClCompile Include="src\av1\encoder\optical_flow.c" />
     <ClCompile Include="src\av1\encoder\palette.c" />
@@ -450,11 +478,11 @@
     <ClCompile Include="src\av1\encoder\pickcdef.c" />
     <ClCompile Include="src\av1\encoder\picklpf.c" />
     <ClCompile Include="src\av1\encoder\pickrst.c" />
-    <ClCompile Include="src\av1\encoder\ransac.c" />
     <ClCompile Include="src\av1\encoder\ratectrl.c" />
     <ClCompile Include="src\av1\encoder\rd.c" />
     <ClCompile Include="src\av1\encoder\rdopt.c" />
     <ClCompile Include="src\av1\encoder\reconinter_enc.c" />
+    <ClCompile Include="src\av1\encoder\saliency_map.c" />
     <ClCompile Include="src\av1\encoder\segmentation.c" />
     <ClCompile Include="src\av1\encoder\sparse_linear_solver.c" />
     <ClCompile Include="src\av1\encoder\speed_features.c" />
@@ -464,7 +492,12 @@
     <ClCompile Include="src\av1\encoder\thirdpass.c" />
     <ClCompile Include="src\av1\encoder\tokenize.c" />
     <ClCompile Include="src\av1\encoder\tpl_model.c" />
-    <ClCompile Include="src\av1\encoder\tune_butteraugli.c" />
+    <ClCompile Include="src\av1\encoder\tune_butteraugli.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="src\av1\encoder\tune_vmaf.c" />
     <ClCompile Include="src\av1\encoder\txb_rdopt.c" />
     <ClCompile Include="src\av1\encoder\tx_search.c" />
@@ -482,12 +515,11 @@
     <ClCompile Include="src\av1\encoder\x86\av1_quantize_sse2.c" />
     <ClCompile Include="src\av1\encoder\x86\av1_temporal_denoiser_sse2.c" />
     <ClCompile Include="src\av1\encoder\x86\cnn_avx2.c" />
-    <ClCompile Include="src\av1\encoder\x86\corner_match_avx2.c" />
-    <ClCompile Include="src\av1\encoder\x86\corner_match_sse4.c" />
     <ClCompile Include="src\av1\encoder\x86\encodetxb_avx2.c" />
     <ClCompile Include="src\av1\encoder\x86\encodetxb_sse2.c" />
     <ClCompile Include="src\av1\encoder\x86\encodetxb_sse4.c" />
     <ClCompile Include="src\av1\encoder\x86\error_intrin_avx2.c" />
+    <ClCompile Include="src\av1\encoder\x86\error_intrin_sse2.c" />
     <ClCompile Include="src\av1\encoder\x86\hash_sse42.c" />
     <ClCompile Include="src\av1\encoder\x86\highbd_block_error_intrin_avx2.c" />
     <ClCompile Include="src\av1\encoder\x86\highbd_block_error_intrin_sse2.c" />
@@ -495,6 +527,7 @@
     <ClCompile Include="src\av1\encoder\x86\highbd_fwd_txfm_sse4.c" />
     <ClCompile Include="src\av1\encoder\x86\highbd_temporal_filter_avx2.c" />
     <ClCompile Include="src\av1\encoder\x86\highbd_temporal_filter_sse2.c" />
+    <ClCompile Include="src\av1\encoder\x86\ml_avx2.c" />
     <ClCompile Include="src\av1\encoder\x86\ml_sse3.c" />
     <ClCompile Include="src\av1\encoder\x86\pickrst_avx2.c" />
     <ClCompile Include="src\av1\encoder\x86\pickrst_sse4.c" />
@@ -515,6 +548,7 @@
     <ClCompile Include="src\common\obudec.c" />
     <ClCompile Include="src\common\rawenc.c" />
     <ClCompile Include="src\common\tools_common.c" />
+    <ClCompile Include="src\common\usage_exit.c" />
     <ClCompile Include="src\common\video_reader.c" />
     <ClCompile Include="src\common\video_writer.c" />
     <ClCompile Include="src\common\warnings.c" />
@@ -531,19 +565,11 @@
     <ClCompile Include="src\third_party\vector\vector.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\aom\aom\aom.h" />
-    <ClInclude Include="include\aom\aom\aomcx.h" />
-    <ClInclude Include="include\aom\aom\aomdx.h" />
-    <ClInclude Include="include\aom\aom\aom_codec.h" />
-    <ClInclude Include="include\aom\aom\aom_decoder.h" />
-    <ClInclude Include="include\aom\aom\aom_encoder.h" />
-    <ClInclude Include="include\aom\aom\aom_external_partition.h" />
-    <ClInclude Include="include\aom\aom\aom_frame_buffer.h" />
-    <ClInclude Include="include\aom\aom\aom_image.h" />
-    <ClInclude Include="include\aom\aom\aom_integer.h" />
-    <ClInclude Include="include\aom\aom\haomdef.h" />
-    <ClInclude Include="include\aom\aom\internal\aom_codec_internal.h" />
-    <ClInclude Include="include\aom\aom\internal\aom_image_internal.h" />
+    <ClInclude Include="include\aom\aom.h" />
+    <ClInclude Include="include\aom\aomcx.h" />
+    <ClInclude Include="include\aom\aomdx.h" />
+    <ClInclude Include="include\aom\aom_codec.h" />
+    <ClInclude Include="include\aom\aom_decoder.h" />
     <ClInclude Include="include\aom\aom_dsp\aom_dsp_common.h" />
     <ClInclude Include="include\aom\aom_dsp\aom_filter.h" />
     <ClInclude Include="include\aom\aom_dsp\aom_simd.h" />
@@ -560,7 +586,12 @@
     <ClInclude Include="include\aom\aom_dsp\entdec.h" />
     <ClInclude Include="include\aom\aom_dsp\entenc.h" />
     <ClInclude Include="include\aom\aom_dsp\fft_common.h" />
-    <ClInclude Include="include\aom\aom_dsp\grain_synthesis.h" />
+    <ClInclude Include="include\aom\aom_dsp\flow_estimation\corner_detect.h" />
+    <ClInclude Include="include\aom\aom_dsp\flow_estimation\corner_match.h" />
+    <ClInclude Include="include\aom\aom_dsp\flow_estimation\disflow.h" />
+    <ClInclude Include="include\aom\aom_dsp\flow_estimation\flow_estimation.h" />
+    <ClInclude Include="include\aom\aom_dsp\flow_estimation\ransac.h" />
+    <ClInclude Include="include\aom\aom_dsp\grain_params.h" />
     <ClInclude Include="include\aom\aom_dsp\grain_table.h" />
     <ClInclude Include="include\aom\aom_dsp\intrapred_common.h" />
     <ClInclude Include="include\aom\aom_dsp\mathutils.h" />
@@ -569,19 +600,17 @@
     <ClInclude Include="include\aom\aom_dsp\odintrin.h" />
     <ClInclude Include="include\aom\aom_dsp\prob.h" />
     <ClInclude Include="include\aom\aom_dsp\psnr.h" />
+    <ClInclude Include="include\aom\aom_dsp\pyramid.h" />
     <ClInclude Include="include\aom\aom_dsp\quantize.h" />
     <ClInclude Include="include\aom\aom_dsp\recenter.h" />
     <ClInclude Include="include\aom\aom_dsp\simd\v128_intrinsics.h" />
-    <ClInclude Include="include\aom\aom_dsp\simd\v128_intrinsics_arm.h" />
     <ClInclude Include="include\aom\aom_dsp\simd\v128_intrinsics_c.h" />
     <ClInclude Include="include\aom\aom_dsp\simd\v128_intrinsics_x86.h" />
     <ClInclude Include="include\aom\aom_dsp\simd\v256_intrinsics.h" />
-    <ClInclude Include="include\aom\aom_dsp\simd\v256_intrinsics_arm.h" />
     <ClInclude Include="include\aom\aom_dsp\simd\v256_intrinsics_c.h" />
     <ClInclude Include="include\aom\aom_dsp\simd\v256_intrinsics_v128.h" />
     <ClInclude Include="include\aom\aom_dsp\simd\v256_intrinsics_x86.h" />
     <ClInclude Include="include\aom\aom_dsp\simd\v64_intrinsics.h" />
-    <ClInclude Include="include\aom\aom_dsp\simd\v64_intrinsics_arm.h" />
     <ClInclude Include="include\aom\aom_dsp\simd\v64_intrinsics_c.h" />
     <ClInclude Include="include\aom\aom_dsp\simd\v64_intrinsics_x86.h" />
     <ClInclude Include="include\aom\aom_dsp\ssim.h" />
@@ -601,6 +630,7 @@
     <ClInclude Include="include\aom\aom_dsp\x86\convolve_ssse3.h" />
     <ClInclude Include="include\aom\aom_dsp\x86\fwd_txfm_impl_sse2.h" />
     <ClInclude Include="include\aom\aom_dsp\x86\fwd_txfm_sse2.h" />
+    <ClInclude Include="include\aom\aom_dsp\x86\intrapred_utils.h" />
     <ClInclude Include="include\aom\aom_dsp\x86\intrapred_x86.h" />
     <ClInclude Include="include\aom\aom_dsp\x86\lpf_common_sse2.h" />
     <ClInclude Include="include\aom\aom_dsp\x86\masked_sad_intrin_ssse3.h" />
@@ -615,10 +645,17 @@
     <ClInclude Include="include\aom\aom_dsp\x86\transpose_sse2.h" />
     <ClInclude Include="include\aom\aom_dsp\x86\txfm_common_avx2.h" />
     <ClInclude Include="include\aom\aom_dsp\x86\txfm_common_sse2.h" />
+    <ClInclude Include="include\aom\aom_encoder.h" />
+    <ClInclude Include="include\aom\aom_external_partition.h" />
+    <ClInclude Include="include\aom\aom_frame_buffer.h" />
+    <ClInclude Include="include\aom\aom_image.h" />
+    <ClInclude Include="include\aom\aom_integer.h" />
     <ClInclude Include="include\aom\aom_mem\aom_mem.h" />
+    <ClInclude Include="include\aom\aom_mem\include\aom_mem_intrnl.h" />
     <ClInclude Include="include\aom\aom_ports\aom_once.h" />
     <ClInclude Include="include\aom\aom_ports\aom_timer.h" />
     <ClInclude Include="include\aom\aom_ports\arm.h" />
+    <ClInclude Include="include\aom\aom_ports\arm_cpudetect.h" />
     <ClInclude Include="include\aom\aom_ports\bitops.h" />
     <ClInclude Include="include\aom\aom_ports\emmintrin_compat.h" />
     <ClInclude Include="include\aom\aom_ports\mem.h" />
@@ -630,10 +667,12 @@
     <ClInclude Include="include\aom\aom_ports\x86.h" />
     <ClInclude Include="include\aom\aom_scale\aom_scale.h" />
     <ClInclude Include="include\aom\aom_scale\yv12config.h" />
+    <ClInclude Include="include\aom\aom_util\aom_pthread.h" />
     <ClInclude Include="include\aom\aom_util\aom_thread.h" />
     <ClInclude Include="include\aom\aom_util\debug_util.h" />
     <ClInclude Include="include\aom\aom_util\endian_inl.h" />
     <ClInclude Include="include\aom\av1\arg_defs.h" />
+    <ClInclude Include="include\aom\av1\av1_cx_iface.h" />
     <ClInclude Include="include\aom\av1\av1_iface_common.h" />
     <ClInclude Include="include\aom\av1\common\alloccommon.h" />
     <ClInclude Include="include\aom\av1\common\av1_common_int.h" />
@@ -688,6 +727,7 @@
     <ClInclude Include="include\aom\av1\decoder\decodetxb.h" />
     <ClInclude Include="include\aom\av1\decoder\detokenize.h" />
     <ClInclude Include="include\aom\av1\decoder\dthread.h" />
+    <ClInclude Include="include\aom\av1\decoder\grain_synthesis.h" />
     <ClInclude Include="include\aom\av1\decoder\inspection.h" />
     <ClInclude Include="include\aom\av1\decoder\obu.h" />
     <ClInclude Include="include\aom\av1\encoder\allintra_vis.h" />
@@ -705,8 +745,6 @@
     <ClInclude Include="include\aom\av1\encoder\cnn.h" />
     <ClInclude Include="include\aom\av1\encoder\compound_type.h" />
     <ClInclude Include="include\aom\av1\encoder\context_tree.h" />
-    <ClInclude Include="include\aom\av1\encoder\corner_detect.h" />
-    <ClInclude Include="include\aom\av1\encoder\corner_match.h" />
     <ClInclude Include="include\aom\av1\encoder\cost.h" />
     <ClInclude Include="include\aom\av1\encoder\dwt.h" />
     <ClInclude Include="include\aom\av1\encoder\encodeframe.h" />
@@ -737,12 +775,14 @@
     <ClInclude Include="include\aom\av1\encoder\level.h" />
     <ClInclude Include="include\aom\av1\encoder\lookahead.h" />
     <ClInclude Include="include\aom\av1\encoder\mcomp.h" />
+    <ClInclude Include="include\aom\av1\encoder\mcomp_structs.h" />
     <ClInclude Include="include\aom\av1\encoder\misc_model_weights.h" />
     <ClInclude Include="include\aom\av1\encoder\ml.h" />
     <ClInclude Include="include\aom\av1\encoder\model_rd.h" />
     <ClInclude Include="include\aom\av1\encoder\mode_prune_model_weights.h" />
     <ClInclude Include="include\aom\av1\encoder\motion_search_facade.h" />
     <ClInclude Include="include\aom\av1\encoder\mv_prec.h" />
+    <ClInclude Include="include\aom\av1\encoder\nonrd_opt.h" />
     <ClInclude Include="include\aom\av1\encoder\optical_flow.h" />
     <ClInclude Include="include\aom\av1\encoder\palette.h" />
     <ClInclude Include="include\aom\av1\encoder\partition_cnn_weights.h" />
@@ -755,7 +795,6 @@
     <ClInclude Include="include\aom\av1\encoder\pickrst.h" />
     <ClInclude Include="include\aom\av1\encoder\pustats.h" />
     <ClInclude Include="include\aom\av1\encoder\random.h" />
-    <ClInclude Include="include\aom\av1\encoder\ransac.h" />
     <ClInclude Include="include\aom\av1\encoder\ratectrl.h" />
     <ClInclude Include="include\aom\av1\encoder\rc_utils.h" />
     <ClInclude Include="include\aom\av1\encoder\rd.h" />
@@ -763,6 +802,7 @@
     <ClInclude Include="include\aom\av1\encoder\rdopt_data_defs.h" />
     <ClInclude Include="include\aom\av1\encoder\rdopt_utils.h" />
     <ClInclude Include="include\aom\av1\encoder\reconinter_enc.h" />
+    <ClInclude Include="include\aom\av1\encoder\saliency_map.h" />
     <ClInclude Include="include\aom\av1\encoder\segmentation.h" />
     <ClInclude Include="include\aom\av1\encoder\sorting_network.h" />
     <ClInclude Include="include\aom\av1\encoder\sparse_linear_solver.h" />
@@ -783,6 +823,8 @@
     <ClInclude Include="include\aom\av1\encoder\x86\av1_fwd_txfm_avx2.h" />
     <ClInclude Include="include\aom\av1\encoder\x86\av1_fwd_txfm_sse2.h" />
     <ClInclude Include="include\aom\av1\encoder\x86\av1_txfm1d_sse4.h" />
+    <ClInclude Include="include\aom\av1\encoder\x86\ml_sse3.h" />
+    <ClInclude Include="include\aom\av1\ratectrl_rtc.h" />
     <ClInclude Include="include\aom\common\args.h" />
     <ClInclude Include="include\aom\common\args_helper.h" />
     <ClInclude Include="include\aom\common\av1_config.h" />
@@ -805,203 +847,80 @@
     <ClInclude Include="include\aom\config\aom_scale_rtcd.h" />
     <ClInclude Include="include\aom\config\aom_version.h" />
     <ClInclude Include="include\aom\config\av1_rtcd.h" />
+    <ClInclude Include="include\aom\config\haomdef.h" />
+    <ClInclude Include="include\aom\internal\aom_codec_internal.h" />
+    <ClInclude Include="include\aom\internal\aom_image_internal.h" />
     <ClInclude Include="include\aom\stats\aomstats.h" />
     <ClInclude Include="include\aom\stats\rate_hist.h" />
-    <ClInclude Include="src\aom_mem\include\aom_mem_intrnl.h" />
     <ClInclude Include="src\third_party\fastfeat\fast.h" />
+    <ClInclude Include="src\third_party\SVT-AV1\convolve_2d_avx2.h" />
+    <ClInclude Include="src\third_party\SVT-AV1\convolve_avx2.h" />
+    <ClInclude Include="src\third_party\SVT-AV1\EbMemory_AVX2.h" />
+    <ClInclude Include="src\third_party\SVT-AV1\EbMemory_SSE4_1.h" />
+    <ClInclude Include="src\third_party\SVT-AV1\synonyms.h" />
     <ClInclude Include="src\third_party\vector\vector.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="include\aom\config\aom_config.asm" />
-    <CustomBuild Include="src\aom_dsp\x86\aom_high_subpixel_8t_sse2.asm">
-      <FileType>Document</FileType>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">yasm -I$(ProjectDir)include\aom -I$(ProjectDir)src -f win64 -o $(IntDirFullPath)%(Filename)_asm.obj %(FullPath)</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDirFullPath)%(Filename)_asm.obj</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">yasm -I$(ProjectDir)include\aom -I$(ProjectDir)src -f win64 -o $(IntDirFullPath)%(Filename)_asm.obj %(FullPath)</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDirFullPath)%(Filename)_asm.obj</Outputs>
-    </CustomBuild>
-    <CustomBuild Include="src\aom_dsp\x86\aom_high_subpixel_bilinear_sse2.asm">
-      <FileType>Document</FileType>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">yasm -I$(ProjectDir)include\aom -I$(ProjectDir)src -f win64 -o $(IntDirFullPath)%(Filename)_asm.obj %(FullPath)</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDirFullPath)%(Filename)_asm.obj</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">yasm -I$(ProjectDir)include\aom -I$(ProjectDir)src -f win64 -o $(IntDirFullPath)%(Filename)_asm.obj %(FullPath)</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDirFullPath)%(Filename)_asm.obj</Outputs>
-    </CustomBuild>
-    <CustomBuild Include="src\aom_dsp\x86\aom_subpixel_8t_sse2.asm">
-      <FileType>Document</FileType>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">yasm -I$(ProjectDir)include\aom -I$(ProjectDir)src -f win64 -o $(IntDirFullPath)%(Filename)_asm.obj %(FullPath)</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDirFullPath)%(Filename)_asm.obj</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">yasm -I$(ProjectDir)include\aom -I$(ProjectDir)src -f win64 -o $(IntDirFullPath)%(Filename)_asm.obj %(FullPath)</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDirFullPath)%(Filename)_asm.obj</Outputs>
-    </CustomBuild>
-    <CustomBuild Include="src\aom_dsp\x86\aom_subpixel_8t_ssse3.asm">
-      <FileType>Document</FileType>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">yasm -I$(ProjectDir)include\aom -I$(ProjectDir)src -f win64 -o $(IntDirFullPath)%(Filename)_asm.obj %(FullPath)</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDirFullPath)%(Filename)_asm.obj</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">yasm -I$(ProjectDir)include\aom -I$(ProjectDir)src -f win64 -o $(IntDirFullPath)%(Filename)_asm.obj %(FullPath)</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDirFullPath)%(Filename)_asm.obj</Outputs>
-    </CustomBuild>
-    <CustomBuild Include="src\aom_dsp\x86\aom_subpixel_bilinear_sse2.asm">
-      <FileType>Document</FileType>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">yasm -I$(ProjectDir)include\aom -I$(ProjectDir)src -f win64 -o $(IntDirFullPath)%(Filename)_asm.obj %(FullPath)</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDirFullPath)%(Filename)_asm.obj</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">yasm -I$(ProjectDir)include\aom -I$(ProjectDir)src -f win64 -o $(IntDirFullPath)%(Filename)_asm.obj %(FullPath)</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDirFullPath)%(Filename)_asm.obj</Outputs>
-    </CustomBuild>
-    <CustomBuild Include="src\aom_dsp\x86\aom_subpixel_bilinear_ssse3.asm">
-      <FileType>Document</FileType>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">yasm -I$(ProjectDir)include\aom -I$(ProjectDir)src -f win64 -o $(IntDirFullPath)%(Filename)_asm.obj %(FullPath)</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDirFullPath)%(Filename)_asm.obj</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">yasm -I$(ProjectDir)include\aom -I$(ProjectDir)src -f win64 -o $(IntDirFullPath)%(Filename)_asm.obj %(FullPath)</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDirFullPath)%(Filename)_asm.obj</Outputs>
-    </CustomBuild>
-    <CustomBuild Include="src\aom_dsp\x86\fwd_txfm_ssse3_x86_64.asm">
-      <FileType>Document</FileType>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">yasm -I$(ProjectDir)include\aom -I$(ProjectDir)src -f win64 -o $(IntDirFullPath)%(Filename)_asm.obj %(FullPath)</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDirFullPath)%(Filename)_asm.obj</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">yasm -I$(ProjectDir)include\aom -I$(ProjectDir)src -f win64 -o $(IntDirFullPath)%(Filename)_asm.obj %(FullPath)</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDirFullPath)%(Filename)_asm.obj</Outputs>
-    </CustomBuild>
-    <CustomBuild Include="src\aom_dsp\x86\highbd_intrapred_asm_sse2.asm">
-      <FileType>Document</FileType>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">yasm -I$(ProjectDir)include\aom -I$(ProjectDir)src -f win64 -o $(IntDirFullPath)%(Filename)_asm.obj %(FullPath)</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDirFullPath)%(Filename)_asm.obj</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">yasm -I$(ProjectDir)include\aom -I$(ProjectDir)src -f win64 -o $(IntDirFullPath)%(Filename)_asm.obj %(FullPath)</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDirFullPath)%(Filename)_asm.obj</Outputs>
-    </CustomBuild>
-    <CustomBuild Include="src\aom_dsp\x86\highbd_sad4d_sse2.asm">
-      <FileType>Document</FileType>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">yasm -I$(ProjectDir)include\aom -I$(ProjectDir)src -f win64 -o $(IntDirFullPath)%(Filename)_asm.obj %(FullPath)</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDirFullPath)%(Filename)_asm.obj</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">yasm -I$(ProjectDir)include\aom -I$(ProjectDir)src -f win64 -o $(IntDirFullPath)%(Filename)_asm.obj %(FullPath)</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDirFullPath)%(Filename)_asm.obj</Outputs>
-    </CustomBuild>
-    <CustomBuild Include="src\aom_dsp\x86\highbd_sad_sse2.asm">
-      <FileType>Document</FileType>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">yasm -I$(ProjectDir)include\aom -I$(ProjectDir)src -f win64 -o $(IntDirFullPath)%(Filename)_asm.obj %(FullPath)</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDirFullPath)%(Filename)_asm.obj</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">yasm -I$(ProjectDir)include\aom -I$(ProjectDir)src -f win64 -o $(IntDirFullPath)%(Filename)_asm.obj %(FullPath)</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDirFullPath)%(Filename)_asm.obj</Outputs>
-    </CustomBuild>
-    <CustomBuild Include="src\aom_dsp\x86\highbd_subpel_variance_impl_sse2.asm">
-      <FileType>Document</FileType>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">yasm -I$(ProjectDir)include\aom -I$(ProjectDir)src -f win64 -o $(IntDirFullPath)%(Filename)_asm.obj %(FullPath)</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDirFullPath)%(Filename)_asm.obj</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">yasm -I$(ProjectDir)include\aom -I$(ProjectDir)src -f win64 -o $(IntDirFullPath)%(Filename)_asm.obj %(FullPath)</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDirFullPath)%(Filename)_asm.obj</Outputs>
-    </CustomBuild>
-    <CustomBuild Include="src\aom_dsp\x86\highbd_variance_impl_sse2.asm">
-      <FileType>Document</FileType>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">yasm -I$(ProjectDir)include\aom -I$(ProjectDir)src -f win64 -o $(IntDirFullPath)%(Filename)_asm.obj %(FullPath)</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDirFullPath)%(Filename)_asm.obj</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">yasm -I$(ProjectDir)include\aom -I$(ProjectDir)src -f win64 -o $(IntDirFullPath)%(Filename)_asm.obj %(FullPath)</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDirFullPath)%(Filename)_asm.obj</Outputs>
-    </CustomBuild>
-    <CustomBuild Include="src\aom_dsp\x86\intrapred_asm_sse2.asm">
-      <FileType>Document</FileType>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">yasm -I$(ProjectDir)include\aom -I$(ProjectDir)src -f win64 -o $(IntDirFullPath)%(Filename)_asm.obj %(FullPath)</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDirFullPath)%(Filename)_asm.obj</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">yasm -I$(ProjectDir)include\aom -I$(ProjectDir)src -f win64 -o $(IntDirFullPath)%(Filename)_asm.obj %(FullPath)</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDirFullPath)%(Filename)_asm.obj</Outputs>
-    </CustomBuild>
-    <CustomBuild Include="src\aom_dsp\x86\inv_wht_sse2.asm">
-      <FileType>Document</FileType>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">yasm -I$(ProjectDir)include\aom -I$(ProjectDir)src -f win64 -o $(IntDirFullPath)%(Filename)_asm.obj %(FullPath)</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDirFullPath)%(Filename)_asm.obj</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">yasm -I$(ProjectDir)include\aom -I$(ProjectDir)src -f win64 -o $(IntDirFullPath)%(Filename)_asm.obj %(FullPath)</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDirFullPath)%(Filename)_asm.obj</Outputs>
-    </CustomBuild>
-    <CustomBuild Include="src\aom_dsp\x86\quantize_ssse3_x86_64.asm">
-      <FileType>Document</FileType>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">yasm -I$(ProjectDir)include\aom -I$(ProjectDir)src -f win64 -o $(IntDirFullPath)%(Filename)_asm.obj %(FullPath)</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDirFullPath)%(Filename)_asm.obj</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">yasm -I$(ProjectDir)include\aom -I$(ProjectDir)src -f win64 -o $(IntDirFullPath)%(Filename)_asm.obj %(FullPath)</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDirFullPath)%(Filename)_asm.obj</Outputs>
-    </CustomBuild>
-    <CustomBuild Include="src\aom_dsp\x86\sad4d_sse2.asm">
-      <FileType>Document</FileType>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">yasm -I$(ProjectDir)include\aom -I$(ProjectDir)src -f win64 -o $(IntDirFullPath)%(Filename)_asm.obj %(FullPath)</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDirFullPath)%(Filename)_asm.obj</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">yasm -I$(ProjectDir)include\aom -I$(ProjectDir)src -f win64 -o $(IntDirFullPath)%(Filename)_asm.obj %(FullPath)</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDirFullPath)%(Filename)_asm.obj</Outputs>
-    </CustomBuild>
-    <CustomBuild Include="src\aom_dsp\x86\sad_sse2.asm">
-      <FileType>Document</FileType>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">yasm -I$(ProjectDir)include\aom -I$(ProjectDir)src -f win64 -o $(IntDirFullPath)%(Filename)_asm.obj %(FullPath)</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDirFullPath)%(Filename)_asm.obj</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">yasm -I$(ProjectDir)include\aom -I$(ProjectDir)src -f win64 -o $(IntDirFullPath)%(Filename)_asm.obj %(FullPath)</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDirFullPath)%(Filename)_asm.obj</Outputs>
-    </CustomBuild>
-    <CustomBuild Include="src\aom_dsp\x86\ssim_sse2_x86_64.asm">
-      <FileType>Document</FileType>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">yasm -I$(ProjectDir)include\aom -I$(ProjectDir)src -f win64 -o $(IntDirFullPath)%(Filename)_asm.obj %(FullPath)</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDirFullPath)%(Filename)_asm.obj</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">yasm -I$(ProjectDir)include\aom -I$(ProjectDir)src -f win64 -o $(IntDirFullPath)%(Filename)_asm.obj %(FullPath)</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDirFullPath)%(Filename)_asm.obj</Outputs>
-    </CustomBuild>
-    <CustomBuild Include="src\aom_dsp\x86\subpel_variance_sse2.asm">
-      <FileType>Document</FileType>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">yasm -I$(ProjectDir)include\aom -I$(ProjectDir)src -f win64 -o $(IntDirFullPath)%(Filename)_asm.obj %(FullPath)</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDirFullPath)%(Filename)_asm.obj</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">yasm -I$(ProjectDir)include\aom -I$(ProjectDir)src -f win64 -o $(IntDirFullPath)%(Filename)_asm.obj %(FullPath)</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDirFullPath)%(Filename)_asm.obj</Outputs>
-    </CustomBuild>
-    <CustomBuild Include="src\aom_dsp\x86\subtract_sse2.asm">
-      <FileType>Document</FileType>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">yasm -I$(ProjectDir)include\aom -I$(ProjectDir)src -f win64 -o $(IntDirFullPath)%(Filename)_asm.obj %(FullPath)</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDirFullPath)%(Filename)_asm.obj</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">yasm -I$(ProjectDir)include\aom -I$(ProjectDir)src -f win64 -o $(IntDirFullPath)%(Filename)_asm.obj %(FullPath)</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDirFullPath)%(Filename)_asm.obj</Outputs>
-    </CustomBuild>
-    <CustomBuild Include="src\aom_ports\float.asm">
-      <FileType>Document</FileType>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">yasm -I$(ProjectDir)include\aom -I$(ProjectDir)src -f win64 -o $(IntDirFullPath)%(Filename)_asm.obj %(FullPath)</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDirFullPath)%(Filename)_asm.obj</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">yasm -I$(ProjectDir)include\aom -I$(ProjectDir)src -f win64 -o $(IntDirFullPath)%(Filename)_asm.obj %(FullPath)</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDirFullPath)%(Filename)_asm.obj</Outputs>
-    </CustomBuild>
-    <CustomBuild Include="src\aom_ports\x86_abi_support.asm">
-      <FileType>Document</FileType>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">yasm -I$(ProjectDir)include\aom -I$(ProjectDir)src -f win64 -o $(IntDirFullPath)%(Filename)_asm.obj %(FullPath)</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDirFullPath)%(Filename)_asm.obj</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">yasm -I$(ProjectDir)include\aom -I$(ProjectDir)src -f win64 -o $(IntDirFullPath)%(Filename)_asm.obj %(FullPath)</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDirFullPath)%(Filename)_asm.obj</Outputs>
-    </CustomBuild>
-    <CustomBuild Include="src\av1\encoder\x86\av1_quantize_ssse3_x86_64.asm">
-      <FileType>Document</FileType>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">yasm -I$(ProjectDir)include\aom -I$(ProjectDir)src -f win64 -o $(IntDirFullPath)%(Filename)_asm.obj %(FullPath)</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDirFullPath)%(Filename)_asm.obj</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">yasm -I$(ProjectDir)include\aom -I$(ProjectDir)src -f win64 -o $(IntDirFullPath)%(Filename)_asm.obj %(FullPath)</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDirFullPath)%(Filename)_asm.obj</Outputs>
-    </CustomBuild>
-    <CustomBuild Include="src\av1\encoder\x86\av1_ssim_opt_x86_64.asm">
-      <FileType>Document</FileType>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">yasm -I$(ProjectDir)include\aom -I$(ProjectDir)src -f win64 -o $(IntDirFullPath)%(Filename)_asm.obj %(FullPath)</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDirFullPath)%(Filename)_asm.obj</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">yasm -I$(ProjectDir)include\aom -I$(ProjectDir)src -f win64 -o $(IntDirFullPath)%(Filename)_asm.obj %(FullPath)</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDirFullPath)%(Filename)_asm.obj</Outputs>
-    </CustomBuild>
-    <CustomBuild Include="src\av1\encoder\x86\dct_sse2.asm">
-      <FileType>Document</FileType>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">yasm -I$(ProjectDir)include\aom -I$(ProjectDir)src -f win64 -o $(IntDirFullPath)%(Filename)_asm.obj %(FullPath)</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDirFullPath)%(Filename)_asm.obj</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">yasm -I$(ProjectDir)include\aom -I$(ProjectDir)src -f win64 -o $(IntDirFullPath)%(Filename)_asm.obj %(FullPath)</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDirFullPath)%(Filename)_asm.obj</Outputs>
-    </CustomBuild>
-    <CustomBuild Include="src\av1\encoder\x86\error_sse2.asm">
-      <FileType>Document</FileType>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">yasm -I$(ProjectDir)include\aom -I$(ProjectDir)src -f win64 -o $(IntDirFullPath)%(Filename)_asm.obj %(FullPath)</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDirFullPath)%(Filename)_asm.obj</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">yasm -I$(ProjectDir)include\aom -I$(ProjectDir)src -f win64 -o $(IntDirFullPath)%(Filename)_asm.obj %(FullPath)</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDirFullPath)%(Filename)_asm.obj</Outputs>
-    </CustomBuild>
-    <None Include="Readme\AUTHORS" />
-    <None Include="Readme\CHANGELOG" />
-    <None Include="Readme\LICENSE" />
-    <None Include="Readme\PATENTS" />
-    <None Include="Readme\README.md" />
+    <NASM Include="src\aom_dsp\x86\aom_high_subpixel_8t_sse2.asm">
+      <Outputswitch Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">1</Outputswitch>
+      <Outputswitch Condition="'$(Configuration)|$(Platform)'=='Release|x64'">1</Outputswitch>
+    </NASM>
+    <NASM Include="src\aom_dsp\x86\aom_high_subpixel_bilinear_sse2.asm" />
+    <NASM Include="src\aom_dsp\x86\aom_subpixel_8t_ssse3.asm" />
+    <NASM Include="src\aom_dsp\x86\aom_subpixel_bilinear_ssse3.asm">
+      <Outputswitch Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">1</Outputswitch>
+      <Outputswitch Condition="'$(Configuration)|$(Platform)'=='Release|x64'">1</Outputswitch>
+    </NASM>
+    <NASM Include="src\aom_dsp\x86\fwd_txfm_ssse3_x86_64.asm" />
+    <NASM Include="src\aom_dsp\x86\highbd_intrapred_asm_sse2.asm" />
+    <NASM Include="src\aom_dsp\x86\highbd_sad4d_sse2.asm" />
+    <NASM Include="src\aom_dsp\x86\highbd_sad_sse2.asm" />
+    <NASM Include="src\aom_dsp\x86\highbd_subpel_variance_impl_sse2.asm" />
+    <NASM Include="src\aom_dsp\x86\highbd_variance_impl_sse2.asm" />
+    <NASM Include="src\aom_dsp\x86\intrapred_asm_sse2.asm" />
+    <NASM Include="src\aom_dsp\x86\inv_wht_sse2.asm" />
+    <NASM Include="src\aom_dsp\x86\quantize_ssse3_x86_64.asm" />
+    <NASM Include="src\aom_dsp\x86\sad4d_sse2.asm" />
+    <NASM Include="src\aom_dsp\x86\sad_sse2.asm" />
+    <NASM Include="src\aom_dsp\x86\ssim_sse2_x86_64.asm" />
+    <NASM Include="src\aom_dsp\x86\subpel_variance_ssse3.asm" />
+    <NASM Include="src\aom_dsp\x86\subtract_sse2.asm" />
+    <NASM Include="src\aom_ports\float.asm" />
+    <NASM Include="src\aom_ports\x86_abi_support.asm">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </NASM>
+    <NASM Include="src\av1\encoder\x86\av1_quantize_ssse3_x86_64.asm" />
+    <NASM Include="src\av1\encoder\x86\av1_ssim_opt_x86_64.asm" />
+    <NASM Include="src\av1\encoder\x86\dct_sse2.asm" />
+    <NASM Include="src\av1\encoder\x86\error_sse2.asm" />
+    <NASM Include="src\config\aom_config.asm">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </NASM>
+    <NASM Include="src\third_party\x86inc\x86inc.asm">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </NASM>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="include\aom\av1\common\reconinter_template.inc" />
+    <None Include="src\third_party\fastfeat\LICENSE" />
+    <None Include="src\third_party\fastfeat\README.libaom" />
+    <None Include="src\third_party\SVT-AV1\LICENSE.md" />
+    <None Include="src\third_party\SVT-AV1\PATENTS.md" />
+    <None Include="src\third_party\SVT-AV1\README.libaom" />
+    <None Include="src\third_party\vector\LICENSE" />
+    <None Include="src\third_party\vector\README.libaom" />
+    <None Include="src\third_party\x86inc\LICENSE" />
+    <None Include="src\third_party\x86inc\README.libaom" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <Import Project="$(SolutionDir)MSBuild\nasm.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
 </Project>

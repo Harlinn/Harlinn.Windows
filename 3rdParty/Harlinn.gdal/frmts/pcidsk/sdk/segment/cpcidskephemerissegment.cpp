@@ -25,11 +25,11 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
-#include "cpcidsksegment.h"
-#include "../core/pcidsk_utils.h"
-#include "cpcidskephemerissegment.h"
-#include "../pcidsk_exception.h"
-#include "../core/pcidsk_utils.h"
+#include "segment/cpcidsksegment.h"
+#include "core/pcidsk_utils.h"
+#include "segment/cpcidskephemerissegment.h"
+#include "pcidsk_exception.h"
+#include "core/pcidsk_utils.h"
 
 #include <vector>
 #include <string>
@@ -557,13 +557,10 @@ EphemerisSeg_t *
 CPCIDSKEphemerisSegment::BinaryToEphemeris( int nStartBlock )
 
 {
-    EphemerisSeg_t *l_segment;
     int             i;
     int nPos = nStartBlock;
 
-    l_segment = new EphemerisSeg_t();
-
-    std::unique_ptr<EphemerisSeg_t> oSegmentAutoPtr(l_segment);
+    std::unique_ptr<EphemerisSeg_t> l_segment(new EphemerisSeg_t());
 
 /* -------------------------------------------------------------------- */
 /*      Process first block.                                            */
@@ -938,12 +935,10 @@ CPCIDSKEphemerisSegment::BinaryToEphemeris( int nStartBlock )
 /* -------------------------------------------------------------------- */
     else if (l_segment->Type == OrbAvhrr)
     {
-        ReadAvhrrEphemerisSegment( nStartBlock, l_segment);
+        ReadAvhrrEphemerisSegment( nStartBlock, l_segment.get());
     }
 
-    oSegmentAutoPtr.release();
-
-    return l_segment;
+    return l_segment.release();
 }
 
 /************************************************************************/

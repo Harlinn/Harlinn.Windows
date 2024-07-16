@@ -19,14 +19,14 @@ struct AV1Common;
 struct DecoderCodingBlock;
 struct txb_ctx;
 
-uint8_t av1_read_coeffs_txb(const struct AV1Common *const cm,
+HAOM_EXPORT uint8_t av1_read_coeffs_txb(const struct AV1Common *const cm,
                             struct DecoderCodingBlock *dcb,
                             struct aom_reader *const r, const int blk_row,
                             const int blk_col, const int plane,
                             const struct txb_ctx *const txb_ctx,
                             const TX_SIZE tx_size);
 
-void av1_read_coeffs_txb_facade(const struct AV1Common *const cm,
+HAOM_EXPORT void av1_read_coeffs_txb_facade(const struct AV1Common *const cm,
                                 struct DecoderCodingBlock *dcb,
                                 struct aom_reader *const r, const int plane,
                                 const int row, const int col,

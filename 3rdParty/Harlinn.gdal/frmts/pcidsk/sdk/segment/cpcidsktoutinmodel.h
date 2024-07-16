@@ -1,4 +1,3 @@
-#pragma once
 /******************************************************************************
  *
  * Purpose: Support for reading and manipulating PCIDSK Toutin Segments
@@ -28,9 +27,9 @@
 #ifndef INCLUDE_PCIDSK_SEGMENT_PCIDSKTOUTINMODEL_H
 #define INCLUDE_PCIDSK_SEGMENT_PCIDSKTOUTINMODEL_H
 
-#include "../pcidsk_toutin.h"
-#include "cpcidsksegment.h"
-#include "cpcidskephemerissegment.h"
+#include "pcidsk_toutin.h"
+#include "segment/cpcidsksegment.h"
+#include "segment/cpcidskephemerissegment.h"
 
 namespace PCIDSK {
     class PCIDSKFile;

@@ -26,39 +26,40 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
-#include "port/cpl_error.h"
-#include "port/cpl_multiproc.h"
-#include "port/cpl_string.h"
+#include "cpl_error.h"
+#include "cpl_multiproc.h"
+#include "cpl_string.h"
 
-#include "ogr/ogr_proj_p.h"
-#include "ogr/ogr_srs_api.h"
+#include "ogr_proj_p.h"
+#include "ogr_srs_api.h"
 
 #include "proj.h"
 
 #ifndef _WIN32
 #include <sys/types.h>
 #include <unistd.h>
+#if defined(HAVE_PTHREAD_ATFORK)
+#include <pthread.h>
+#endif
 #endif
 
 #include <mutex>
 #include <vector>
 
-//#define SIMUL_OLD_PROJ6
-
 /*! @cond Doxygen_Suppress */
 
-static void osr_proj_logger(void * /* user_data */,
-                            int level, const char * message)
+static void osr_proj_logger(void * /* user_data */, int level,
+                            const char *message)
 {
-    if( level == PJ_LOG_ERROR )
+    if (level == PJ_LOG_ERROR)
     {
         CPLError(CE_Failure, CPLE_AppDefined, "PROJ: %s", message);
     }
-    else if( level == PJ_LOG_DEBUG )
+    else if (level == PJ_LOG_DEBUG)
     {
         CPLDebug("PROJ", "%s", message);
     }
-    else if( level == PJ_LOG_TRACE )
+    else if (level == PJ_LOG_TRACE)
     {
         CPLDebug("PROJ_TRACE", "%s", message);
     }
@@ -74,6 +75,15 @@ static int g_projNetworkEnabled = -1;
 static unsigned g_projNetworkEnabledGenerationCounter = 0;
 #endif
 
+#if !defined(_WIN32) && defined(HAVE_PTHREAD_ATFORK)
+static bool g_bForkOccurred = false;
+
+static void ForkOccurred(void)
+{
+    g_bForkOccurred = true;
+}
+#endif
+
 struct OSRPJContextHolder
 {
     unsigned searchPathGenerationCounter = 0;
@@ -81,40 +91,113 @@ struct OSRPJContextHolder
 #if PROJ_VERSION_MAJOR >= 7
     unsigned projNetworkEnabledGenerationCounter = 0;
 #endif
-    PJ_CONTEXT* context = nullptr;
-    OSRProjTLSCache oCache{};
+    PJ_CONTEXT *context = nullptr;
+    OSRProjTLSCache oCache;
 #if !defined(_WIN32)
+#if !defined(HAVE_PTHREAD_ATFORK)
     pid_t curpid = 0;
-#if defined(SIMUL_OLD_PROJ6) || !(PROJ_VERSION_MAJOR > 6 || PROJ_VERSION_MINOR >= 2)
-    std::vector<PJ_CONTEXT*> oldcontexts{};
 #endif
 #endif
 
 #if !defined(_WIN32)
-    OSRPJContextHolder(): curpid(getpid()) { init(); }
+    OSRPJContextHolder()
+        : oCache(init())
+#if !defined(HAVE_PTHREAD_ATFORK)
+          ,
+          curpid(getpid())
+#endif
+    {
+#if HAVE_PTHREAD_ATFORK
+        static std::once_flag flag;
+        std::call_once(
+            flag,
+            []()
+            {
+                if (pthread_atfork(nullptr, nullptr, ForkOccurred) != 0)
+                {
+                    CPLError(CE_Failure, CPLE_OutOfMemory,
+                             "pthread_atfork() in ogr_proj_p failed");
+                }
+            });
+#endif
+        init();
+    }
 #else
-    OSRPJContextHolder() { init(); }
+    OSRPJContextHolder() : oCache(init())
+    {
+    }
 #endif
 
     ~OSRPJContextHolder();
 
-    void init();
+    PJ_CONTEXT *init();
     void deinit();
 
-private:
-    OSRPJContextHolder(const OSRPJContextHolder&) = delete;
-    OSRPJContextHolder& operator=(const OSRPJContextHolder&) = delete;
+  private:
+    OSRPJContextHolder(const OSRPJContextHolder &) = delete;
+    OSRPJContextHolder &operator=(const OSRPJContextHolder &) = delete;
 };
 
-void OSRPJContextHolder::init()
+static void OSRSetConfigOption(const char *pszKey, const char *pszValue,
+                               bool bThreadLocal, void *)
 {
-    if( !context )
+    if (!bThreadLocal && pszValue &&
+        (EQUAL(pszKey, "PROJ_LIB") || EQUAL(pszKey, "PROJ_DATA")))
     {
-        context = proj_context_create();
-        proj_log_func (context, nullptr, osr_proj_logger);
+        const char *const apszSearchPaths[] = {pszValue, nullptr};
+        OSRSetPROJSearchPaths(apszSearchPaths);
     }
 }
 
+static void OSRInstallSetConfigOptionCallback()
+{
+    static std::once_flag flag;
+    std::call_once(
+        flag,
+        []() { CPLSubscribeToSetConfigOption(OSRSetConfigOption, nullptr); });
+}
+
+PJ_CONTEXT *OSRPJContextHolder::init()
+{
+    if (!context)
+    {
+        static std::once_flag flag;
+        std::call_once(
+            flag,
+            []()
+            {
+                // Initialize g_aosSearchpaths from PROJ_DATA/PROJ_LIB configuration
+                // option.
+                std::lock_guard<std::mutex> oLock(g_oSearchPathMutex);
+                if (g_searchPathGenerationCounter == 0)
+                {
+                    const char *pszProjData =
+                        CPLGetConfigOption("PROJ_DATA", nullptr);
+                    if (pszProjData == nullptr)
+                        pszProjData = CPLGetConfigOption("PROJ_LIB", nullptr);
+                    if (pszProjData)
+                    {
+                        const char *pszSep =
+#ifdef _WIN32
+                            ";"
+#else
+                            ":"
+#endif
+                            ;
+                        g_aosSearchpaths =
+                            CSLTokenizeString2(pszProjData, pszSep, 0);
+                        g_searchPathGenerationCounter = 1;
+                    }
+                }
+
+                OSRInstallSetConfigOptionCallback();
+            });
+
+        context = proj_context_create();
+        proj_log_func(context, nullptr, osr_proj_logger);
+    }
+    return context;
+}
 
 OSRPJContextHolder::~OSRPJContextHolder()
 {
@@ -129,118 +212,114 @@ void OSRPJContextHolder::deinit()
     // Destroy context in last
     proj_context_destroy(context);
     context = nullptr;
-#if defined(SIMUL_OLD_PROJ6) || (!defined(_WIN32) && !(PROJ_VERSION_MAJOR > 6 || PROJ_VERSION_MINOR >= 2))
-    for( size_t i = 0; i < oldcontexts.size(); i++ )
-    {
-        proj_context_destroy(oldcontexts[i]);
-    }
-    oldcontexts.clear();
-#endif
 }
 
-#ifdef WIN32
+#ifdef _WIN32
 // Currently thread_local and C++ objects don't work well with DLL on Windows
-static void FreeProjTLSContextHolder( void* pData )
+static void FreeProjTLSContextHolder(void *pData)
 {
-    delete static_cast<OSRPJContextHolder*>(pData);
+    delete static_cast<OSRPJContextHolder *>(pData);
 }
 
-static OSRPJContextHolder& GetProjTLSContextHolder()
+static OSRPJContextHolder &GetProjTLSContextHolder()
 {
     static OSRPJContextHolder dummy;
     int bMemoryErrorOccurred = false;
-    void* pData = CPLGetTLSEx(CTLS_PROJCONTEXTHOLDER, &bMemoryErrorOccurred);
-    if( bMemoryErrorOccurred )
+    void *pData = CPLGetTLSEx(CTLS_PROJCONTEXTHOLDER, &bMemoryErrorOccurred);
+    if (bMemoryErrorOccurred)
     {
         return dummy;
     }
-    if( pData == nullptr)
+    if (pData == nullptr)
     {
         auto pHolder = new OSRPJContextHolder();
-        CPLSetTLSWithFreeFuncEx( CTLS_PROJCONTEXTHOLDER,
-                                 pHolder,
-                                 FreeProjTLSContextHolder, &bMemoryErrorOccurred );
-        if( bMemoryErrorOccurred )
+        CPLSetTLSWithFreeFuncEx(CTLS_PROJCONTEXTHOLDER, pHolder,
+                                FreeProjTLSContextHolder,
+                                &bMemoryErrorOccurred);
+        if (bMemoryErrorOccurred)
         {
             delete pHolder;
             return dummy;
         }
         return *pHolder;
     }
-    return *static_cast<OSRPJContextHolder*>(pData);
+    return *static_cast<OSRPJContextHolder *>(pData);
 }
 #else
 static thread_local OSRPJContextHolder g_tls_projContext;
-static OSRPJContextHolder& GetProjTLSContextHolder()
+
+static OSRPJContextHolder &GetProjTLSContextHolder()
 {
-    OSRPJContextHolder& l_projContext = g_tls_projContext;
+    OSRPJContextHolder &l_projContext = g_tls_projContext;
 
     // Detect if we are now running in a child process created by fork()
     // In that situation we must make sure *not* to use the same underlying
     // file open descriptor to the sqlite3 database, since seeks&reads in one
     // of the parent or child will affect the other end.
-    const pid_t curpid = getpid();
-    if( curpid != l_projContext.curpid )
-    {
-        l_projContext.curpid = curpid;
-#if defined(SIMUL_OLD_PROJ6) || !(PROJ_VERSION_MAJOR > 6 || PROJ_VERSION_MINOR >= 2)
-        // PROJ < 6.2 ? Recreate new context
-        l_projContext.oldcontexts.push_back(l_projContext.context);
-        l_projContext.context = nullptr;
-        l_projContext.init();
+#if defined(HAVE_PTHREAD_ATFORK)
+    if (g_bForkOccurred)
 #else
+    const pid_t curpid = getpid();
+    if (curpid != l_projContext.curpid)
+#endif
+    {
+#if defined(HAVE_PTHREAD_ATFORK)
+        g_bForkOccurred = false;
+#else
+        l_projContext.curpid = curpid;
+#endif
         const auto osr_proj_logger_none = [](void *, int, const char *) {};
-        proj_log_func (l_projContext.context, nullptr, osr_proj_logger_none);
+        proj_log_func(l_projContext.context, nullptr, osr_proj_logger_none);
         proj_context_set_autoclose_database(l_projContext.context, true);
         // dummy call to cause the database to be closed
         proj_context_get_database_path(l_projContext.context);
         proj_context_set_autoclose_database(l_projContext.context, false);
-        proj_log_func (l_projContext.context, nullptr, osr_proj_logger);
-#endif
+        proj_log_func(l_projContext.context, nullptr, osr_proj_logger);
     }
 
     return l_projContext;
 }
 #endif
 
-
-PJ_CONTEXT* OSRGetProjTLSContext()
+PJ_CONTEXT *OSRGetProjTLSContext()
 {
-    auto& l_projContext = GetProjTLSContextHolder();
+    auto &l_projContext = GetProjTLSContextHolder();
     // This .init() must be kept, even if OSRPJContextHolder constructor
     // calls it. The reason is that OSRCleanupTLSContext() calls deinit(),
     // so if reusing the object, we must re-init again.
     l_projContext.init();
     {
-        // If OSRSetPROJSearchPaths() has been called since we created the context,
-        // set the new search paths on the context.
+        // If OSRSetPROJSearchPaths() has been called since we created the
+        // context, set the new search paths on the context.
         std::lock_guard<std::mutex> oLock(g_oSearchPathMutex);
-        if( l_projContext.searchPathGenerationCounter !=
-                                        g_searchPathGenerationCounter )
+        if (l_projContext.searchPathGenerationCounter !=
+            g_searchPathGenerationCounter)
         {
             l_projContext.searchPathGenerationCounter =
-                                            g_searchPathGenerationCounter;
-            proj_context_set_search_paths(
-                l_projContext.context,
-                g_aosSearchpaths.Count(),
-                g_aosSearchpaths.List());
+                g_searchPathGenerationCounter;
+            proj_context_set_search_paths(l_projContext.context,
+                                          g_aosSearchpaths.Count(),
+                                          g_aosSearchpaths.List());
         }
-        if( l_projContext.auxDbPathsGenerationCounter !=
-                                        g_auxDbPathsGenerationCounter )
+        if (l_projContext.auxDbPathsGenerationCounter !=
+            g_auxDbPathsGenerationCounter)
         {
             l_projContext.auxDbPathsGenerationCounter =
-                                        g_auxDbPathsGenerationCounter;
-            std::string oMainPath(proj_context_get_database_path(l_projContext.context));
-            proj_context_set_database_path(l_projContext.context, oMainPath.c_str(),
+                g_auxDbPathsGenerationCounter;
+            std::string oMainPath(
+                proj_context_get_database_path(l_projContext.context));
+            proj_context_set_database_path(l_projContext.context,
+                                           oMainPath.c_str(),
                                            g_aosAuxDbPaths.List(), nullptr);
         }
 #if PROJ_VERSION_MAJOR >= 7
-        if( l_projContext.projNetworkEnabledGenerationCounter !=
-                                        g_projNetworkEnabledGenerationCounter )
+        if (l_projContext.projNetworkEnabledGenerationCounter !=
+            g_projNetworkEnabledGenerationCounter)
         {
             l_projContext.projNetworkEnabledGenerationCounter =
-                                        g_projNetworkEnabledGenerationCounter;
-            proj_context_set_enable_network(l_projContext.context, g_projNetworkEnabled);
+                g_projNetworkEnabledGenerationCounter;
+            proj_context_set_enable_network(l_projContext.context,
+                                            g_projNetworkEnabled);
         }
 #endif
     }
@@ -251,55 +330,58 @@ PJ_CONTEXT* OSRGetProjTLSContext()
 /*                         OSRGetProjTLSCache()                         */
 /************************************************************************/
 
-OSRProjTLSCache* OSRGetProjTLSCache()
+OSRProjTLSCache *OSRGetProjTLSCache()
 {
-    auto& l_projContext = GetProjTLSContextHolder();
+    auto &l_projContext = GetProjTLSContextHolder();
     return &l_projContext.oCache;
 }
-
-struct OSRPJDeleter
-{
-    void operator()(PJ* pj) const { proj_destroy(pj); }
-};
 
 void OSRProjTLSCache::clear()
 {
     m_oCacheEPSG.clear();
     m_oCacheWKT.clear();
+    m_tlsContext = nullptr;
 }
 
-PJ* OSRProjTLSCache::GetPJForEPSGCode(int nCode, bool bUseNonDeprecated, bool bAddTOWGS84)
+PJ_CONTEXT *OSRProjTLSCache::GetPJContext()
 {
-    std::shared_ptr<PJ> cached;
+    if (m_tlsContext == nullptr)
+        m_tlsContext = OSRGetProjTLSContext();
+    return m_tlsContext;
+}
+
+PJ *OSRProjTLSCache::GetPJForEPSGCode(int nCode, bool bUseNonDeprecated,
+                                      bool bAddTOWGS84)
+{
     const EPSGCacheKey key(nCode, bUseNonDeprecated, bAddTOWGS84);
-    if( m_oCacheEPSG.tryGet(key, cached) )
+    auto cached = m_oCacheEPSG.getPtr(key);
+    if (cached)
     {
-        return proj_clone(OSRGetProjTLSContext(), cached.get());
+        return proj_clone(GetPJContext(), cached->get());
     }
     return nullptr;
 }
 
-void OSRProjTLSCache::CachePJForEPSGCode(int nCode, bool bUseNonDeprecated, bool bAddTOWGS84, PJ* pj)
+void OSRProjTLSCache::CachePJForEPSGCode(int nCode, bool bUseNonDeprecated,
+                                         bool bAddTOWGS84, PJ *pj)
 {
     const EPSGCacheKey key(nCode, bUseNonDeprecated, bAddTOWGS84);
-    m_oCacheEPSG.insert(key, std::shared_ptr<PJ>(
-                    proj_clone(OSRGetProjTLSContext(), pj), OSRPJDeleter()));
+    m_oCacheEPSG.insert(key, UniquePtrPJ(proj_clone(GetPJContext(), pj)));
 }
 
-PJ* OSRProjTLSCache::GetPJForWKT(const std::string& wkt)
+PJ *OSRProjTLSCache::GetPJForWKT(const std::string &wkt)
 {
-    std::shared_ptr<PJ> cached;
-    if( m_oCacheWKT.tryGet(wkt, cached) )
+    auto cached = m_oCacheWKT.getPtr(wkt);
+    if (cached)
     {
-        return proj_clone(OSRGetProjTLSContext(), cached.get());
+        return proj_clone(GetPJContext(), cached->get());
     }
     return nullptr;
 }
 
-void OSRProjTLSCache::CachePJForWKT(const std::string& wkt, PJ* pj)
+void OSRProjTLSCache::CachePJForWKT(const std::string &wkt, PJ *pj)
 {
-    m_oCacheWKT.insert(wkt, std::shared_ptr<PJ>(
-                    proj_clone(OSRGetProjTLSContext(), pj), OSRPJDeleter()));
+    m_oCacheWKT.insert(wkt, UniquePtrPJ(proj_clone(GetPJContext(), pj)));
 }
 
 /************************************************************************/
@@ -319,14 +401,18 @@ void OSRCleanupTLSContext()
 
 /** \brief Set the search path(s) for PROJ resource files.
  *
+ * Note: starting with GDAL 3.7, CPLSetConfigOption("PROJ_DATA", ...) can
+ * also been used for the same effect.
+ *
  * @param papszPaths NULL terminated list of directory paths.
  * @since GDAL 3.0
  */
-void OSRSetPROJSearchPaths( const char* const * papszPaths )
+void OSRSetPROJSearchPaths(const char *const *papszPaths)
 {
     std::lock_guard<std::mutex> oLock(g_oSearchPathMutex);
-    g_searchPathGenerationCounter ++;
+    g_searchPathGenerationCounter++;
     g_aosSearchpaths.Assign(CSLDuplicate(papszPaths), true);
+    OSRInstallSetConfigOptionCallback();
 }
 
 /************************************************************************/
@@ -335,25 +421,26 @@ void OSRSetPROJSearchPaths( const char* const * papszPaths )
 
 /** \brief Get the search path(s) for PROJ resource files.
  *
- * @return NULL terminated list of directory paths. To be freed with CSLDestroy()
+ * @return NULL terminated list of directory paths. To be freed with
+ * CSLDestroy()
  * @since GDAL 3.0.3
  */
-char** OSRGetPROJSearchPaths()
+char **OSRGetPROJSearchPaths()
 {
     std::lock_guard<std::mutex> oLock(g_oSearchPathMutex);
-    if( g_searchPathGenerationCounter > 0 )
+    if (g_searchPathGenerationCounter > 0 && !g_aosSearchpaths.empty())
     {
         return CSLDuplicate(g_aosSearchpaths.List());
     }
 
-    const char* pszSep =
+    const char *pszSep =
 #ifdef _WIN32
-                        ";"
+        ";"
 #else
-                        ":"
+        ":"
 #endif
-    ;
-    return CSLTokenizeString2( proj_info().searchpath, pszSep, 0);
+        ;
+    return CSLTokenizeString2(proj_info().searchpath, pszSep, 0);
 }
 
 /************************************************************************/
@@ -367,10 +454,10 @@ char** OSRGetPROJSearchPaths()
  *
  * @see OSRGetPROJAuxDbPaths, proj_context_set_database_path
  */
-void OSRSetPROJAuxDbPaths( const char* const * papszAux )
+void OSRSetPROJAuxDbPaths(const char *const *papszAux)
 {
     std::lock_guard<std::mutex> oLock(g_oSearchPathMutex);
-    g_auxDbPathsGenerationCounter ++;
+    g_auxDbPathsGenerationCounter++;
     g_aosAuxDbPaths.Assign(CSLDuplicate(papszAux), true);
 }
 
@@ -380,16 +467,17 @@ void OSRSetPROJAuxDbPaths( const char* const * papszAux )
 
 /** \brief Get PROJ auxiliary database filenames.
  *
- * @return NULL terminated list of PROJ auxiliary database filenames. To be freed with CSLDestroy()
+ * @return NULL terminated list of PROJ auxiliary database filenames. To be
+ * freed with CSLDestroy()
  * @since GDAL 3.3.0
  *
  * @see OSRSetPROJAuxDbPaths, proj_context_set_database_path
  */
-char** OSRGetPROJAuxDbPaths( void )
+char **OSRGetPROJAuxDbPaths(void)
 {
     std::lock_guard<std::mutex> oLock(g_oSearchPathMutex);
-    //Unfortunately, there is no getter for auxiliary database list at PROJ.
-    //So, return our copy for now.
+    // Unfortunately, there is no getter for auxiliary database list at PROJ.
+    // So, return our copy for now.
     return CSLDuplicate(g_aosAuxDbPaths.List());
 }
 
@@ -404,17 +492,17 @@ char** OSRGetPROJAuxDbPaths( void )
  *
  * @see OSRGetPROJEnableNetwork, proj_context_set_enable_network
  */
-void OSRSetPROJEnableNetwork( int enabled )
+void OSRSetPROJEnableNetwork(int enabled)
 {
 #if PROJ_VERSION_MAJOR >= 7
     std::lock_guard<std::mutex> oLock(g_oSearchPathMutex);
-    if( g_projNetworkEnabled != enabled )
+    if (g_projNetworkEnabled != enabled)
     {
         g_projNetworkEnabled = enabled;
-        g_projNetworkEnabledGenerationCounter ++;
+        g_projNetworkEnabledGenerationCounter++;
     }
 #else
-    if( enabled )
+    if (enabled)
     {
         CPLError(CE_Failure, CPLE_NotSupported,
                  "OSRSetPROJEnableNetwork() requires PROJ >= 7");
@@ -433,11 +521,11 @@ void OSRSetPROJEnableNetwork( int enabled )
  *
  * @see OSRSetPROJEnableNetwork, proj_context_is_network_enabled
  */
-int OSRGetPROJEnableNetwork( void )
+int OSRGetPROJEnableNetwork(void)
 {
 #if PROJ_VERSION_MAJOR >= 7
     std::lock_guard<std::mutex> oLock(g_oSearchPathMutex);
-    if( g_projNetworkEnabled < 0 )
+    if (g_projNetworkEnabled < 0)
     {
         g_oSearchPathMutex.unlock();
         const int ret = proj_context_is_network_enabled(OSRGetProjTLSContext());
@@ -461,7 +549,7 @@ int OSRGetPROJEnableNetwork( void )
  * @param pnPatch Pointer to patch version number, or NULL
  * @since GDAL 3.0.1
  */
-void OSRGetPROJVersion( int* pnMajor, int* pnMinor, int* pnPatch )
+void OSRGetPROJVersion(int *pnMajor, int *pnMinor, int *pnPatch)
 {
     auto info = proj_info();
     if (pnMajor)

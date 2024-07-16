@@ -1,4 +1,3 @@
-#pragma once
 #ifndef TDLPACK_H
 #define TDLPACK_H
 

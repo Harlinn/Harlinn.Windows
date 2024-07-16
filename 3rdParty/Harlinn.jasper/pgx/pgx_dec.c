@@ -62,9 +62,10 @@
 /******************************************************************************\
 * Includes.
 \******************************************************************************/
-
+ 
 #include "pgx_cod.h"
 
+#include "jasper/jas_init.h"
 #include "jasper/jas_tvp.h"
 #include "jasper/jas_stream.h"
 #include "jasper/jas_image.h"
@@ -117,7 +118,7 @@ static int pgx_dec_parseopts(const char *optstr, pgx_dec_importopts_t *opts)
 {
 	jas_tvparser_t *tvp;
 
-	opts->max_samples = JAS_DEC_DEFAULT_MAX_SAMPLES;
+	opts->max_samples = jas_get_dec_default_max_samples();
 	opts->allow_trunc = 0;
 
 	if (!(tvp = jas_tvparser_create(optstr ? optstr : ""))) {
@@ -134,7 +135,7 @@ static int pgx_dec_parseopts(const char *optstr, pgx_dec_importopts_t *opts)
 			opts->max_samples = strtoull(jas_tvparser_getval(tvp), 0, 10);
 			break;
 		default:
-			jas_eprintf("warning: ignoring invalid option %s\n",
+			jas_logwarnf("warning: ignoring invalid option %s\n",
 			  jas_tvparser_gettag(tvp));
 			break;
 		}
@@ -151,7 +152,7 @@ static int pgx_dec_parseopts(const char *optstr, pgx_dec_importopts_t *opts)
 
 /* Load an image from a stream in the PGX format. */
 
-jas_image_t *pgx_decode(jas_stream_t *in, const char *optstr)
+JAS_EXPORT jas_image_t *pgx_decode(jas_stream_t *in, const char *optstr)
 {
 	jas_image_t *image;
 	pgx_hdr_t hdr;
@@ -161,31 +162,31 @@ jas_image_t *pgx_decode(jas_stream_t *in, const char *optstr)
 
 	image = 0;
 
-	JAS_DBGLOG(10, ("pgx_decode(%p, \"%s\")\n", in, optstr ? optstr : ""));
+	JAS_LOGDEBUGF(10, "pgx_decode(%p, \"%s\")\n", in, optstr ? optstr : "");
 
 	if (pgx_dec_parseopts(optstr, &opts)) {
 		goto error;
 	}
 
 	if (pgx_gethdr(in, &hdr)) {
-		jas_eprintf("cannot get header\n");
+		jas_logerrorf("cannot get header\n");
 		goto error;
 	}
 
-	if (jas_getdbglevel() >= 10) {
+	if (jas_get_debug_level() >= 10) {
 		pgx_dumphdr(stderr, &hdr);
 	}
 
 	if (!jas_safe_size_mul(hdr.width, hdr.height, &num_samples)) {
-		jas_eprintf("image too large\n");
+		jas_logerrorf("image too large\n");
 		goto error;
 	}
 	if (!num_samples) {
-		jas_eprintf("image has no samples\n");
+		jas_logerrorf("image has no samples\n");
 		goto error;
 	}
 	if (opts.max_samples > 0 && num_samples > opts.max_samples) {
-		jas_eprintf(
+		jas_logerrorf(
 		  "maximum number of samples would be exceeded (%zu > %zu)\n",
 		  num_samples, opts.max_samples);
 		goto error;
@@ -206,7 +207,7 @@ jas_image_t *pgx_decode(jas_stream_t *in, const char *optstr)
 		goto error;
 	}
 	if (pgx_getdata(in, &hdr, image)) {
-		jas_eprintf("cannot get data\n");
+		jas_logerrorf("cannot get data\n");
 		goto error;
 	}
 
@@ -227,7 +228,7 @@ error:
 * Code for validate operation.
 \******************************************************************************/
 
-int pgx_validate(jas_stream_t *in)
+JAS_EXPORT int pgx_validate(jas_stream_t *in)
 {
 	jas_uchar buf[PGX_MAGICLEN];
 	uint_fast32_t magic;
@@ -244,6 +245,9 @@ int pgx_validate(jas_stream_t *in)
 
 	/* Ensure that the signature is correct for this format. */
 	if (magic != PGX_MAGIC) {
+		JAS_LOGDEBUGF(20, "bad signature (0x%08lx != 0x%08lx)\n",
+		  JAS_CAST(unsigned long, magic),
+		  JAS_CAST(unsigned long, PGX_MAGIC));
 		return -1;
 	}
 
@@ -269,35 +273,38 @@ static int pgx_gethdr(jas_stream_t *in, pgx_hdr_t *hdr)
 	buf[1] = c;
 	hdr->magic = buf[0] << 8 | buf[1];
 	if (hdr->magic != PGX_MAGIC) {
-		jas_eprintf("invalid PGX signature\n");
+		jas_logerrorf("invalid PGX signature\n");
 		goto error;
 	}
-	if ((c = pgx_getc(in)) == EOF || !isspace(c)) {
+	if ((c = pgx_getc(in)) == EOF || !isspace(JAS_CAST(unsigned char, c))) {
 		goto error;
 	}
 	if (pgx_getbyteorder(in, &hdr->bigendian)) {
-		jas_eprintf("cannot get byte order\n");
+		jas_logerrorf("cannot get byte order\n");
 		goto error;
 	}
 	if (pgx_getsgnd(in, &hdr->sgnd)) {
-		jas_eprintf("cannot get signedness\n");
+		jas_logerrorf("cannot get signedness\n");
 		goto error;
 	}
 	if (pgx_getuint32(in, &hdr->prec)) {
-		jas_eprintf("cannot get precision\n");
-		goto error;
-	}
-	if (hdr->prec > 32) {
-		jas_eprintf("unsupported precision\n");
+		jas_logerrorf("cannot get precision\n");
 		goto error;
 	}
 	if (pgx_getuint32(in, &hdr->width)) {
-		jas_eprintf("cannot get width\n");
+		jas_logerrorf("cannot get width\n");
 		goto error;
 	}
 	if (pgx_getuint32(in, &hdr->height)) {
-		jas_eprintf("cannot get height\n");
+		jas_logerrorf("cannot get height\n");
 		goto error;
+	}
+	if (hdr->prec > 32) {
+		jas_logerrorf("unsupported precision (%d)\n", hdr->prec);
+		goto error;
+	}
+	if (jas_get_debug_level() >= 1) {
+		pgx_dumphdr(stderr, hdr);
 	}
 	return 0;
 
@@ -396,7 +403,7 @@ static int pgx_getbyteorder(jas_stream_t *in, bool *bigendian)
 		if ((c = pgx_getc(in)) == EOF) {
 			return -1;
 		}
-	} while (isspace(c));
+	} while (isspace(JAS_CAST(unsigned char, c)));
 
 	buf[0] = c;
 	if ((c = pgx_getc(in)) == EOF) {
@@ -411,7 +418,7 @@ static int pgx_getbyteorder(jas_stream_t *in, bool *bigendian)
 		goto error;
 	}
 
-	while ((c = pgx_getc(in)) != EOF && !isspace(c)) {
+	while ((c = pgx_getc(in)) != EOF && !isspace(JAS_CAST(unsigned char, c))) {
 		;
 	}
 	if (c == EOF) {
@@ -431,9 +438,9 @@ static int pgx_getsgnd(jas_stream_t *in, bool *sgnd)
 		if ((c = pgx_getc(in)) == EOF) {
 			return -1;
 		}
-	} while (isspace(c));
+	} while (isspace(JAS_CAST(unsigned char, c)));
 
-#if 0
+#if 1
 	if (c == '+') {
 		*sgnd = false;
 	} else if (c == '-') {
@@ -446,16 +453,29 @@ static int pgx_getsgnd(jas_stream_t *in, bool *sgnd)
 		return 0;
 	}
 
-	while ((c = pgx_getc(in)) != EOF && !isspace(c)) {
+#if 0
+	while ((c = pgx_getc(in)) != EOF && !isspace(JAS_CAST(unsigned char, c))) {
 		;
 	}
 	if (c == EOF) {
 		goto error;
 	}
 #else
+	while ((c = pgx_getc(in)) != EOF && isspace(JAS_CAST(unsigned char, c))) {
+		;
+	}
+	if (c == EOF) {
+		goto error;
+	}
+	if (jas_stream_ungetc(in, c)) {
+		goto error;
+	}
+#endif
+#else
 	if (c == '+' || c == '-') {
 		*sgnd = (c == '-');
-		while ((c = pgx_getc(in)) != EOF && !isspace(c)) {
+		while ((c = pgx_getc(in)) != EOF && !isspace(JAS_CAST(unsigned char,
+		  c))) {
 			;
 		}
 		if (c == EOF) {
@@ -484,16 +504,16 @@ static int pgx_getuint32(jas_stream_t *in, uint_fast32_t *val)
 		if ((c = pgx_getc(in)) == EOF) {
 			return -1;
 		}
-	} while (isspace(c));
+	} while (isspace(JAS_CAST(unsigned char, c)));
 
 	v = 0;
-	while (isdigit(c)) {
+	while (isdigit(JAS_CAST(unsigned char, c))) {
 		v = 10 * v + c - '0';
 		if ((c = pgx_getc(in)) < 0) {
 			return -1;
 		}
 	}
-	if (!isspace(c)) {
+	if (!isspace(JAS_CAST(unsigned char, c))) {
 		return -1;
 	}
 	*val = v;

@@ -10,13 +10,15 @@
  */
 
 #include <assert.h>
+#include <jxl/types.h>
 #include <jxl/butteraugli.h>
 
 #include "aom_dsp/butteraugli.h"
 #include "aom_mem/aom_mem.h"
 #include "libyuv/convert_argb.h"
 
-int aom_calc_butteraugli(const YV12_BUFFER_CONFIG *source,
+
+HAOM_EXPORT int aom_calc_butteraugli( const YV12_BUFFER_CONFIG* source,
                          const YV12_BUFFER_CONFIG *distorted, int bit_depth,
                          aom_matrix_coefficients_t matrix_coefficients,
                          aom_color_range_t color_range, float *dist_map) {
@@ -36,8 +38,8 @@ int aom_calc_butteraugli(const YV12_BUFFER_CONFIG *source,
                                                      : &kYuvI601Constants;
   }
 
-  const size_t stride_argb = width * 4;
-  const size_t buffer_size = height * stride_argb;
+  const int stride_argb = width * 4;
+  const size_t buffer_size = (size_t)height * stride_argb;
   uint8_t *src_argb = (uint8_t *)aom_malloc(buffer_size);
   uint8_t *distorted_argb = (uint8_t *)aom_malloc(buffer_size);
   if (!src_argb || !distorted_argb) {

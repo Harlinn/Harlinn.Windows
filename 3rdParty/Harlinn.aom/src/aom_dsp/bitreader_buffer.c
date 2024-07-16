@@ -17,11 +17,11 @@
 #include "aom_dsp/recenter.h"
 #include "aom_ports/bitops.h"
 
-size_t aom_rb_bytes_read(const struct aom_read_bit_buffer *rb) {
+HAOM_EXPORT size_t aom_rb_bytes_read(const struct aom_read_bit_buffer *rb) {
   return (rb->bit_offset + 7) >> 3;
 }
 
-int aom_rb_read_bit(struct aom_read_bit_buffer *rb) {
+HAOM_EXPORT int aom_rb_read_bit(struct aom_read_bit_buffer *rb) {
   const uint32_t off = rb->bit_offset;
   const uint32_t p = off >> 3;
   const int q = 7 - (int)(off & 0x7);
@@ -35,14 +35,14 @@ int aom_rb_read_bit(struct aom_read_bit_buffer *rb) {
   }
 }
 
-int aom_rb_read_literal(struct aom_read_bit_buffer *rb, int bits) {
+HAOM_EXPORT int aom_rb_read_literal(struct aom_read_bit_buffer *rb, int bits) {
   assert(bits <= 31);
   int value = 0, bit;
   for (bit = bits - 1; bit >= 0; bit--) value |= aom_rb_read_bit(rb) << bit;
   return value;
 }
 
-uint32_t aom_rb_read_unsigned_literal(struct aom_read_bit_buffer *rb,
+HAOM_EXPORT uint32_t aom_rb_read_unsigned_literal(struct aom_read_bit_buffer *rb,
                                       int bits) {
   assert(bits <= 32);
   uint32_t value = 0;
@@ -52,13 +52,13 @@ uint32_t aom_rb_read_unsigned_literal(struct aom_read_bit_buffer *rb,
   return value;
 }
 
-int aom_rb_read_inv_signed_literal(struct aom_read_bit_buffer *rb, int bits) {
+HAOM_EXPORT int aom_rb_read_inv_signed_literal(struct aom_read_bit_buffer *rb, int bits) {
   const int nbits = sizeof(unsigned) * 8 - bits - 1;
   const unsigned value = (unsigned)aom_rb_read_literal(rb, bits + 1) << nbits;
   return ((int)value) >> nbits;
 }
 
-uint32_t aom_rb_read_uvlc(struct aom_read_bit_buffer *rb) {
+HAOM_EXPORT uint32_t aom_rb_read_uvlc(struct aom_read_bit_buffer *rb) {
   int leading_zeros = 0;
   while (leading_zeros < 32 && !aom_rb_read_bit(rb)) ++leading_zeros;
   // Maximum 32 bits.
@@ -108,7 +108,7 @@ static uint16_t aom_rb_read_primitive_refsubexpfin(
                                     aom_rb_read_primitive_subexpfin(rb, n, k));
 }
 
-int16_t aom_rb_read_signed_primitive_refsubexpfin(
+HAOM_EXPORT int16_t aom_rb_read_signed_primitive_refsubexpfin(
     struct aom_read_bit_buffer *rb, uint16_t n, uint16_t k, int16_t ref) {
   ref += n - 1;
   const uint16_t scaled_n = (n << 1) - 1;

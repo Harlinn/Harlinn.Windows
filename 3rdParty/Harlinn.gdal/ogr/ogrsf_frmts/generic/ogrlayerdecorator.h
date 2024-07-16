@@ -32,89 +32,107 @@
 
 #ifndef DOXYGEN_SKIP
 
-#include <ogr/ogrsf_frmts/ogrsf_frmts.h>
+#include "ogrsf_frmts.h"
 
-class OGRLayerDecorator : public OGRLayer
+class CPL_DLL OGRLayerDecorator : public OGRLayer
 {
     CPL_DISALLOW_COPY_ASSIGN(OGRLayerDecorator)
 
   protected:
     OGRLayer *m_poDecoratedLayer;
-    int       m_bHasOwnership;
+    int m_bHasOwnership;
 
   public:
+    OGRLayerDecorator(OGRLayer *poDecoratedLayer, int bTakeOwnership);
+    virtual ~OGRLayerDecorator();
 
-    HGDAL_EXPORT                    OGRLayerDecorator(OGRLayer* poDecoratedLayer,
-                                         int bTakeOwnership);
-    HGDAL_EXPORT virtual           ~OGRLayerDecorator();
+    virtual OGRGeometry *GetSpatialFilter() override;
+    virtual void SetSpatialFilter(OGRGeometry *) override;
+    virtual void SetSpatialFilterRect(double dfMinX, double dfMinY,
+                                      double dfMaxX, double dfMaxY) override;
+    virtual void SetSpatialFilter(int iGeomField, OGRGeometry *) override;
+    virtual void SetSpatialFilterRect(int iGeomField, double dfMinX,
+                                      double dfMinY, double dfMaxX,
+                                      double dfMaxY) override;
 
-    HGDAL_EXPORT virtual OGRGeometry *GetSpatialFilter() override;
-    HGDAL_EXPORT virtual void        SetSpatialFilter( OGRGeometry * ) override;
-    HGDAL_EXPORT virtual void        SetSpatialFilterRect( double dfMinX, double dfMinY,
-                                              double dfMaxX, double dfMaxY ) override;
-    HGDAL_EXPORT virtual void        SetSpatialFilter( int iGeomField, OGRGeometry * ) override;
-    HGDAL_EXPORT virtual void        SetSpatialFilterRect( int iGeomField, double dfMinX, double dfMinY,
-                                              double dfMaxX, double dfMaxY ) override;
+    virtual OGRErr SetAttributeFilter(const char *) override;
 
-    HGDAL_EXPORT virtual OGRErr      SetAttributeFilter( const char * ) override;
+    virtual void ResetReading() override;
+    virtual OGRFeature *GetNextFeature() override;
+    virtual OGRErr SetNextByIndex(GIntBig nIndex) override;
+    virtual OGRFeature *GetFeature(GIntBig nFID) override;
+    virtual OGRErr ISetFeature(OGRFeature *poFeature) override;
+    virtual OGRErr ICreateFeature(OGRFeature *poFeature) override;
+    virtual OGRErr IUpsertFeature(OGRFeature *poFeature) override;
+    virtual OGRErr DeleteFeature(GIntBig nFID) override;
+    OGRErr IUpdateFeature(OGRFeature *poFeature, int nUpdatedFieldsCount,
+                          const int *panUpdatedFieldsIdx,
+                          int nUpdatedGeomFieldsCount,
+                          const int *panUpdatedGeomFieldsIdx,
+                          bool bUpdateStyleString) override;
 
-    HGDAL_EXPORT virtual void        ResetReading() override;
-    HGDAL_EXPORT virtual OGRFeature *GetNextFeature() override;
-    HGDAL_EXPORT virtual OGRErr      SetNextByIndex( GIntBig nIndex ) override;
-    HGDAL_EXPORT virtual OGRFeature *GetFeature( GIntBig nFID ) override;
-    HGDAL_EXPORT virtual OGRErr      ISetFeature( OGRFeature *poFeature ) override;
-    HGDAL_EXPORT virtual OGRErr      ICreateFeature( OGRFeature *poFeature ) override;
-    HGDAL_EXPORT virtual OGRErr      DeleteFeature( GIntBig nFID ) override;
+    virtual GDALDataset *GetDataset() override;
+    virtual bool GetArrowStream(struct ArrowArrayStream *out_stream,
+                                CSLConstList papszOptions = nullptr) override;
 
-    HGDAL_EXPORT virtual const char *GetName() override;
-    HGDAL_EXPORT virtual OGRwkbGeometryType GetGeomType() override;
-    HGDAL_EXPORT virtual OGRFeatureDefn *GetLayerDefn() override;
+    virtual const char *GetName() override;
+    virtual OGRwkbGeometryType GetGeomType() override;
+    virtual OGRFeatureDefn *GetLayerDefn() override;
 
-    HGDAL_EXPORT virtual OGRSpatialReference *GetSpatialRef() override;
+    virtual OGRSpatialReference *GetSpatialRef() override;
 
-    HGDAL_EXPORT virtual GIntBig     GetFeatureCount( int bForce = TRUE ) override;
-    HGDAL_EXPORT virtual OGRErr      GetExtent(int iGeomField, OGREnvelope *psExtent, int bForce = TRUE) override;
-    HGDAL_EXPORT virtual OGRErr      GetExtent(OGREnvelope *psExtent, int bForce = TRUE) override;
+    virtual GIntBig GetFeatureCount(int bForce = TRUE) override;
+    virtual OGRErr GetExtent(int iGeomField, OGREnvelope *psExtent,
+                             int bForce = TRUE) override;
+    virtual OGRErr GetExtent(OGREnvelope *psExtent, int bForce = TRUE) override;
 
-    HGDAL_EXPORT virtual int         TestCapability( const char * ) override;
+    virtual int TestCapability(const char *) override;
 
-    HGDAL_EXPORT virtual OGRErr      CreateField( OGRFieldDefn *poField,
-                                     int bApproxOK = TRUE ) override;
-    HGDAL_EXPORT virtual OGRErr      DeleteField( int iField ) override;
-    HGDAL_EXPORT virtual OGRErr      ReorderFields( int* panMap ) override;
-    HGDAL_EXPORT virtual OGRErr      AlterFieldDefn( int iField, OGRFieldDefn* poNewFieldDefn, int nFlags ) override;
+    virtual OGRErr CreateField(const OGRFieldDefn *poField,
+                               int bApproxOK = TRUE) override;
+    virtual OGRErr DeleteField(int iField) override;
+    virtual OGRErr ReorderFields(int *panMap) override;
+    virtual OGRErr AlterFieldDefn(int iField, OGRFieldDefn *poNewFieldDefn,
+                                  int nFlags) override;
+    virtual OGRErr
+    AlterGeomFieldDefn(int iGeomField,
+                       const OGRGeomFieldDefn *poNewGeomFieldDefn,
+                       int nFlags) override;
 
-    HGDAL_EXPORT virtual OGRErr      CreateGeomField( OGRGeomFieldDefn *poField,
-                                         int bApproxOK = TRUE ) override;
+    virtual OGRErr CreateGeomField(const OGRGeomFieldDefn *poField,
+                                   int bApproxOK = TRUE) override;
 
-    HGDAL_EXPORT virtual OGRErr      SyncToDisk() override;
+    virtual OGRErr SyncToDisk() override;
 
-    HGDAL_EXPORT virtual OGRStyleTable *GetStyleTable() override;
-    HGDAL_EXPORT virtual void        SetStyleTableDirectly( OGRStyleTable *poStyleTable ) override;
+    virtual OGRStyleTable *GetStyleTable() override;
+    virtual void SetStyleTableDirectly(OGRStyleTable *poStyleTable) override;
 
-    HGDAL_EXPORT virtual void        SetStyleTable(OGRStyleTable *poStyleTable) override;
+    virtual void SetStyleTable(OGRStyleTable *poStyleTable) override;
 
-    HGDAL_EXPORT virtual OGRErr      StartTransaction() override;
-    HGDAL_EXPORT virtual OGRErr      CommitTransaction() override;
-    HGDAL_EXPORT virtual OGRErr      RollbackTransaction() override;
+    virtual OGRErr StartTransaction() override;
+    virtual OGRErr CommitTransaction() override;
+    virtual OGRErr RollbackTransaction() override;
 
-    HGDAL_EXPORT virtual const char *GetFIDColumn() override;
-    HGDAL_EXPORT virtual const char *GetGeometryColumn() override;
+    virtual const char *GetFIDColumn() override;
+    virtual const char *GetGeometryColumn() override;
 
-    HGDAL_EXPORT virtual OGRErr      SetIgnoredFields( const char **papszFields ) override;
+    virtual OGRErr SetIgnoredFields(CSLConstList papszFields) override;
 
-    HGDAL_EXPORT virtual char      **GetMetadata( const char * pszDomain = "" ) override;
-    HGDAL_EXPORT virtual CPLErr      SetMetadata( char ** papszMetadata,
-                                     const char * pszDomain = "" ) override;
-    HGDAL_EXPORT virtual const char *GetMetadataItem( const char * pszName,
-                                         const char * pszDomain = "" ) override;
-    HGDAL_EXPORT virtual CPLErr      SetMetadataItem( const char * pszName,
-                                         const char * pszValue,
-                                         const char * pszDomain = "" ) override;
+    virtual char **GetMetadata(const char *pszDomain = "") override;
+    virtual CPLErr SetMetadata(char **papszMetadata,
+                               const char *pszDomain = "") override;
+    virtual const char *GetMetadataItem(const char *pszName,
+                                        const char *pszDomain = "") override;
+    virtual CPLErr SetMetadataItem(const char *pszName, const char *pszValue,
+                                   const char *pszDomain = "") override;
+    virtual OGRErr Rename(const char *pszNewName) override;
 
-    OGRLayer* GetBaseLayer() const { return m_poDecoratedLayer; }
+    OGRLayer *GetBaseLayer() const
+    {
+        return m_poDecoratedLayer;
+    }
 };
 
 #endif /* #ifndef DOXYGEN_SKIP */
 
-#endif // OGRLAYERDECORATOR_H_INCLUDED
+#endif  // OGRLAYERDECORATOR_H_INCLUDED

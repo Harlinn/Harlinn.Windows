@@ -30,15 +30,13 @@
 //! @cond Doxygen_Suppress
 
 #include "cpl_alibaba_oss.h"
-#include <port/cpl_vsi_error.h>
-#include <port/cpl_time.h>
-#include <port/cpl_minixml.h>
-#include <port/cpl_multiproc.h>
-#include <port/cpl_http.h>
+#include "cpl_vsi_error.h"
+#include "cpl_time.h"
+#include "cpl_minixml.h"
+#include "cpl_multiproc.h"
+#include "cpl_http.h"
 #include "cpl_sha1.h"
 #include <algorithm>
-
-CPL_CVSID("$Id$")
 
 // #define DEBUG_VERBOSE 1
 
@@ -48,19 +46,18 @@ CPL_CVSID("$Id$")
 /*                            GetSignature()                            */
 /************************************************************************/
 
-static CPLString GetSignature(const CPLString& osStringToSign,
-                              const CPLString& osSecretAccessKey )
+static std::string GetSignature(const std::string &osStringToSign,
+                                const std::string &osSecretAccessKey)
 {
 
-/* -------------------------------------------------------------------- */
-/*      Compute signature.                                              */
-/* -------------------------------------------------------------------- */
+    /* -------------------------------------------------------------------- */
+    /*      Compute signature.                                              */
+    /* -------------------------------------------------------------------- */
     GByte abySignature[CPL_SHA1_HASH_SIZE] = {};
-    CPL_HMAC_SHA1( osSecretAccessKey.c_str(), osSecretAccessKey.size(),
-                   osStringToSign, osStringToSign.size(),
-                   abySignature);
-    char* pszBase64 = CPLBase64Encode( sizeof(abySignature), abySignature );
-    CPLString osSignature(pszBase64);
+    CPL_HMAC_SHA1(osSecretAccessKey.c_str(), osSecretAccessKey.size(),
+                  osStringToSign.c_str(), osStringToSign.size(), abySignature);
+    char *pszBase64 = CPLBase64Encode(sizeof(abySignature), abySignature);
+    std::string osSignature(pszBase64);
     CPLFree(pszBase64);
 
     return osSignature;
@@ -72,30 +69,29 @@ static CPLString GetSignature(const CPLString& osStringToSign,
 
 // See:
 // https://www.alibabacloud.com/help/doc-detail/31951.htm?spm=a3c0i.o31982en.b99.178.5HUTqV
-static struct curl_slist*
-CPLGetOSSHeaders( const CPLString& osSecretAccessKey,
-                  const CPLString& osAccessKeyId,
-                  const CPLString& osVerb,
-                  const struct curl_slist* psExistingHeaders,
-                  const CPLString& osCanonicalizedResource )
+static struct curl_slist *
+CPLGetOSSHeaders(const std::string &osSecretAccessKey,
+                 const std::string &osAccessKeyId, const std::string &osVerb,
+                 const struct curl_slist *psExistingHeaders,
+                 const std::string &osCanonicalizedResource)
 {
-    CPLString osDate = CPLGetConfigOption("CPL_OSS_TIMESTAMP", "");
-    if( osDate.empty() )
+    std::string osDate = CPLGetConfigOption("CPL_OSS_TIMESTAMP", "");
+    if (osDate.empty())
     {
         osDate = IVSIS3LikeHandleHelper::GetRFC822DateTime();
     }
 
-    std::map<CPLString, CPLString> oSortedMapHeaders;
-    CPLString osCanonicalizedHeaders(
+    std::map<std::string, std::string> oSortedMapHeaders;
+    std::string osCanonicalizedHeaders(
         IVSIS3LikeHandleHelper::BuildCanonicalizedHeaders(
-                            oSortedMapHeaders,
-                            psExistingHeaders,
-                            "x-oss-"));
+            oSortedMapHeaders, psExistingHeaders, "x-oss-"));
 
-    CPLString osStringToSign;
+    std::string osStringToSign;
     osStringToSign += osVerb + "\n";
-    osStringToSign += CPLAWSGetHeaderVal(psExistingHeaders, "Content-MD5") + "\n";
-    osStringToSign += CPLAWSGetHeaderVal(psExistingHeaders, "Content-Type") + "\n";
+    osStringToSign +=
+        CPLAWSGetHeaderVal(psExistingHeaders, "Content-MD5") + "\n";
+    osStringToSign +=
+        CPLAWSGetHeaderVal(psExistingHeaders, "Content-Type") + "\n";
     osStringToSign += osDate + "\n";
     osStringToSign += osCanonicalizedHeaders;
     osStringToSign += osCanonicalizedResource;
@@ -103,11 +99,11 @@ CPLGetOSSHeaders( const CPLString& osSecretAccessKey,
     CPLDebug("OSS", "osStringToSign = %s", osStringToSign.c_str());
 #endif
 
-/* -------------------------------------------------------------------- */
-/*      Build authorization header.                                     */
-/* -------------------------------------------------------------------- */
+    /* -------------------------------------------------------------------- */
+    /*      Build authorization header.                                     */
+    /* -------------------------------------------------------------------- */
 
-    CPLString osAuthorization("OSS ");
+    std::string osAuthorization("OSS ");
     osAuthorization += osAccessKeyId;
     osAuthorization += ":";
     osAuthorization += GetSignature(osStringToSign, osSecretAccessKey);
@@ -116,9 +112,9 @@ CPLGetOSSHeaders( const CPLString& osSecretAccessKey,
     CPLDebug("OSS", "osAuthorization='%s'", osAuthorization.c_str());
 #endif
 
-    struct curl_slist *headers=nullptr;
-    headers = curl_slist_append(
-        headers, CPLSPrintf("Date: %s", osDate.c_str()));
+    struct curl_slist *headers = nullptr;
+    headers =
+        curl_slist_append(headers, CPLSPrintf("Date: %s", osDate.c_str()));
     headers = curl_slist_append(
         headers, CPLSPrintf("Authorization: %s", osAuthorization.c_str()));
     return headers;
@@ -127,23 +123,21 @@ CPLGetOSSHeaders( const CPLString& osSecretAccessKey,
 /************************************************************************/
 /*                         VSIOSSHandleHelper()                         */
 /************************************************************************/
-VSIOSSHandleHelper::VSIOSSHandleHelper( const CPLString& osSecretAccessKey,
-                                      const CPLString& osAccessKeyId,
-                                      const CPLString& osEndpoint,
-                                      const CPLString& osBucket,
-                                      const CPLString& osObjectKey,
-                                      bool bUseHTTPS,
-                                      bool bUseVirtualHosting ) :
-    m_osURL(BuildURL(osEndpoint, osBucket, osObjectKey, bUseHTTPS,
-                     bUseVirtualHosting)),
-    m_osSecretAccessKey(osSecretAccessKey),
-    m_osAccessKeyId(osAccessKeyId),
-    m_osEndpoint(osEndpoint),
-    m_osBucket(osBucket),
-    m_osObjectKey(osObjectKey),
-    m_bUseHTTPS(bUseHTTPS),
-    m_bUseVirtualHosting(bUseVirtualHosting)
-{}
+VSIOSSHandleHelper::VSIOSSHandleHelper(const std::string &osSecretAccessKey,
+                                       const std::string &osAccessKeyId,
+                                       const std::string &osEndpoint,
+                                       const std::string &osBucket,
+                                       const std::string &osObjectKey,
+                                       bool bUseHTTPS, bool bUseVirtualHosting)
+    : m_osURL(BuildURL(osEndpoint, osBucket, osObjectKey, bUseHTTPS,
+                       bUseVirtualHosting)),
+      m_osSecretAccessKey(osSecretAccessKey), m_osAccessKeyId(osAccessKeyId),
+      m_osEndpoint(osEndpoint), m_osBucket(osBucket),
+      m_osObjectKey(osObjectKey), m_bUseHTTPS(bUseHTTPS),
+      m_bUseVirtualHosting(bUseVirtualHosting)
+{
+    VSIOSSUpdateParams::UpdateHandleFromMap(this);
+}
 
 /************************************************************************/
 /*                        ~VSIOSSHandleHelper()                         */
@@ -151,7 +145,7 @@ VSIOSSHandleHelper::VSIOSSHandleHelper( const CPLString& osSecretAccessKey,
 
 VSIOSSHandleHelper::~VSIOSSHandleHelper()
 {
-    for( size_t i = 0; i < m_osSecretAccessKey.size(); i++ )
+    for (size_t i = 0; i < m_osSecretAccessKey.size(); i++)
         m_osSecretAccessKey[i] = 0;
 }
 
@@ -159,27 +153,25 @@ VSIOSSHandleHelper::~VSIOSSHandleHelper()
 /*                           BuildURL()                                 */
 /************************************************************************/
 
-CPLString VSIOSSHandleHelper::BuildURL(const CPLString& osEndpoint,
-                                       const CPLString& osBucket,
-                                       const CPLString& osObjectKey,
-                                       bool bUseHTTPS, bool bUseVirtualHosting)
+std::string VSIOSSHandleHelper::BuildURL(const std::string &osEndpoint,
+                                         const std::string &osBucket,
+                                         const std::string &osObjectKey,
+                                         bool bUseHTTPS,
+                                         bool bUseVirtualHosting)
 {
-    const char* pszProtocol = (bUseHTTPS) ? "https" : "http";
-    if( osBucket.empty()  )
+    const char *pszProtocol = (bUseHTTPS) ? "https" : "http";
+    if (osBucket.empty())
     {
-        return CPLSPrintf("%s://%s", pszProtocol,
-                          osEndpoint.c_str());
+        return CPLSPrintf("%s://%s", pszProtocol, osEndpoint.c_str());
     }
-    else if( bUseVirtualHosting )
-        return CPLSPrintf("%s://%s.%s/%s", pszProtocol,
-                                        osBucket.c_str(),
-                                        osEndpoint.c_str(),
-                                        CPLAWSURLEncode(osObjectKey, false).c_str());
+    else if (bUseVirtualHosting)
+        return CPLSPrintf("%s://%s.%s/%s", pszProtocol, osBucket.c_str(),
+                          osEndpoint.c_str(),
+                          CPLAWSURLEncode(osObjectKey, false).c_str());
     else
-        return CPLSPrintf("%s://%s/%s/%s", pszProtocol,
-                                        osEndpoint.c_str(),
-                                        osBucket.c_str(),
-                                        CPLAWSURLEncode(osObjectKey, false).c_str());
+        return CPLSPrintf("%s://%s/%s/%s", pszProtocol, osEndpoint.c_str(),
+                          osBucket.c_str(),
+                          CPLAWSURLEncode(osObjectKey, false).c_str());
 }
 
 /************************************************************************/
@@ -188,8 +180,8 @@ CPLString VSIOSSHandleHelper::BuildURL(const CPLString& osEndpoint,
 
 void VSIOSSHandleHelper::RebuildURL()
 {
-    m_osURL = BuildURL(m_osEndpoint, m_osBucket, m_osObjectKey,
-                       m_bUseHTTPS, m_bUseVirtualHosting);
+    m_osURL = BuildURL(m_osEndpoint, m_osBucket, m_osObjectKey, m_bUseHTTPS,
+                       m_bUseVirtualHosting);
     m_osURL += GetQueryString(false);
 }
 
@@ -197,23 +189,26 @@ void VSIOSSHandleHelper::RebuildURL()
 /*                        GetConfiguration()                            */
 /************************************************************************/
 
-bool VSIOSSHandleHelper::GetConfiguration(CSLConstList papszOptions,
-                                          CPLString& osSecretAccessKey,
-                                          CPLString& osAccessKeyId)
+bool VSIOSSHandleHelper::GetConfiguration(const std::string &osPathForOption,
+                                          CSLConstList papszOptions,
+                                          std::string &osSecretAccessKey,
+                                          std::string &osAccessKeyId)
 {
-    osSecretAccessKey = CSLFetchNameValueDef(papszOptions,
-        "OSS_SECRET_ACCESS_KEY",
-        CPLGetConfigOption("OSS_SECRET_ACCESS_KEY", ""));
+    osSecretAccessKey = CSLFetchNameValueDef(
+        papszOptions, "OSS_SECRET_ACCESS_KEY",
+        VSIGetPathSpecificOption(osPathForOption.c_str(),
+                                 "OSS_SECRET_ACCESS_KEY", ""));
 
-    if( !osSecretAccessKey.empty() )
+    if (!osSecretAccessKey.empty())
     {
-        osAccessKeyId = CSLFetchNameValueDef(papszOptions,
-            "OSS_ACCESS_KEY_ID",
-            CPLGetConfigOption("OSS_ACCESS_KEY_ID", ""));
-        if( osAccessKeyId.empty() )
+        osAccessKeyId = CSLFetchNameValueDef(
+            papszOptions, "OSS_ACCESS_KEY_ID",
+            VSIGetPathSpecificOption(osPathForOption.c_str(),
+                                     "OSS_ACCESS_KEY_ID", ""));
+        if (osAccessKeyId.empty())
         {
             VSIError(VSIE_AWSInvalidCredentials,
-                    "OSS_ACCESS_KEY_ID configuration option not defined");
+                     "OSS_ACCESS_KEY_ID configuration option not defined");
             return false;
         }
 
@@ -221,7 +216,7 @@ bool VSIOSSHandleHelper::GetConfiguration(CSLConstList papszOptions,
     }
 
     VSIError(VSIE_AWSInvalidCredentials,
-                "OSS_SECRET_ACCESS_KEY configuration option not defined");
+             "OSS_SECRET_ACCESS_KEY configuration option not defined");
     return false;
 }
 
@@ -229,146 +224,157 @@ bool VSIOSSHandleHelper::GetConfiguration(CSLConstList papszOptions,
 /*                          BuildFromURI()                              */
 /************************************************************************/
 
-VSIOSSHandleHelper* VSIOSSHandleHelper::BuildFromURI( const char* pszURI,
-                                                      const char* pszFSPrefix,
-                                                      bool bAllowNoObject,
-                                                      CSLConstList papszOptions )
+VSIOSSHandleHelper *VSIOSSHandleHelper::BuildFromURI(const char *pszURI,
+                                                     const char *pszFSPrefix,
+                                                     bool bAllowNoObject,
+                                                     CSLConstList papszOptions)
 {
-    CPLString osSecretAccessKey;
-    CPLString osAccessKeyId;
-    if( !GetConfiguration(papszOptions, osSecretAccessKey, osAccessKeyId) )
+    std::string osPathForOption("/vsioss/");
+    if (pszURI)
+        osPathForOption += pszURI;
+
+    std::string osSecretAccessKey;
+    std::string osAccessKeyId;
+    if (!GetConfiguration(osPathForOption, papszOptions, osSecretAccessKey,
+                          osAccessKeyId))
     {
         return nullptr;
     }
 
-    const CPLString osEndpoint = CSLFetchNameValueDef(papszOptions,
-        "OSS_ENDPOINT",
-        CPLGetConfigOption("OSS_ENDPOINT", "oss-us-east-1.aliyuncs.com"));
-    CPLString osBucket;
-    CPLString osObjectKey;
-    if( pszURI != nullptr && pszURI[0] != '\0' &&
-        !GetBucketAndObjectKey(pszURI, pszFSPrefix, bAllowNoObject,
-                               osBucket, osObjectKey) )
+    const std::string osEndpoint = CSLFetchNameValueDef(
+        papszOptions, "OSS_ENDPOINT",
+        VSIGetPathSpecificOption(osPathForOption.c_str(), "OSS_ENDPOINT",
+                                 "oss-us-east-1.aliyuncs.com"));
+    std::string osBucket;
+    std::string osObjectKey;
+    if (pszURI != nullptr && pszURI[0] != '\0' &&
+        !GetBucketAndObjectKey(pszURI, pszFSPrefix, bAllowNoObject, osBucket,
+                               osObjectKey))
     {
         return nullptr;
     }
-    const bool bUseHTTPS = CPLTestBool(CPLGetConfigOption("OSS_HTTPS", "YES"));
+    const bool bUseHTTPS = CPLTestBool(
+        VSIGetPathSpecificOption(osPathForOption.c_str(), "OSS_HTTPS", "YES"));
     const bool bIsValidNameForVirtualHosting =
         osBucket.find('.') == std::string::npos;
-    const bool bUseVirtualHosting = CPLTestBool(
-        CPLGetConfigOption("OSS_VIRTUAL_HOSTING",
-                           bIsValidNameForVirtualHosting ? "TRUE" : "FALSE"));
-    return new VSIOSSHandleHelper(osSecretAccessKey, osAccessKeyId,
-                                 osEndpoint,
-                                 osBucket, osObjectKey, bUseHTTPS,
-                                 bUseVirtualHosting);
+    const bool bUseVirtualHosting = CPLTestBool(VSIGetPathSpecificOption(
+        osPathForOption.c_str(), "OSS_VIRTUAL_HOSTING",
+        bIsValidNameForVirtualHosting ? "TRUE" : "FALSE"));
+    return new VSIOSSHandleHelper(osSecretAccessKey, osAccessKeyId, osEndpoint,
+                                  osBucket, osObjectKey, bUseHTTPS,
+                                  bUseVirtualHosting);
 }
 
 /************************************************************************/
 /*                           GetCurlHeaders()                           */
 /************************************************************************/
 
-struct curl_slist *
-VSIOSSHandleHelper::GetCurlHeaders( const CPLString& osVerb,
-                                   const struct curl_slist* psExistingHeaders,
-                                   const void * /*pabyDataContent*/,
-                                   size_t /*nBytesContent*/ ) const
+struct curl_slist *VSIOSSHandleHelper::GetCurlHeaders(
+    const std::string &osVerb, const struct curl_slist *psExistingHeaders,
+    const void * /*pabyDataContent*/, size_t /*nBytesContent*/) const
 {
-    CPLString osCanonicalQueryString;
-    if( !m_osObjectKey.empty() )
+    std::string osCanonicalQueryString;
+    if (!m_osObjectKey.empty())
     {
         osCanonicalQueryString = GetQueryString(false);
     }
 
-    CPLString osCanonicalizedResource( m_osBucket.empty() ? CPLString("/") :
-        "/" + m_osBucket +  "/" + m_osObjectKey );
+    std::string osCanonicalizedResource(
+        m_osBucket.empty() ? std::string("/")
+                           : "/" + m_osBucket + "/" + m_osObjectKey);
     osCanonicalizedResource += osCanonicalQueryString;
 
-    return CPLGetOSSHeaders(
-        m_osSecretAccessKey,
-        m_osAccessKeyId,
-        osVerb,
-        psExistingHeaders,
-        osCanonicalizedResource);
+    return CPLGetOSSHeaders(m_osSecretAccessKey, m_osAccessKeyId, osVerb,
+                            psExistingHeaders, osCanonicalizedResource);
 }
 
 /************************************************************************/
 /*                          CanRestartOnError()                         */
 /************************************************************************/
 
-bool VSIOSSHandleHelper::CanRestartOnError( const char* pszErrorMsg,
-                                            const char*,
-                                            bool bSetError,
-                                            bool* pbUpdateMap )
+bool VSIOSSHandleHelper::CanRestartOnError(const char *pszErrorMsg,
+                                           const char *, bool bSetError)
 {
 #ifdef DEBUG_VERBOSE
     CPLDebug("OSS", "%s", pszErrorMsg);
 #endif
 
-    if( pbUpdateMap != nullptr )
-        *pbUpdateMap = true;
-
-    if( !STARTS_WITH(pszErrorMsg, "<?xml") )
+    if (!STARTS_WITH(pszErrorMsg, "<?xml"))
     {
-        if( bSetError )
+        if (bSetError)
         {
             VSIError(VSIE_AWSError, "Invalid AWS response: %s", pszErrorMsg);
         }
         return false;
     }
 
-    CPLXMLNode* psTree = CPLParseXMLString(pszErrorMsg);
-    if( psTree == nullptr )
+    CPLXMLNode *psTree = CPLParseXMLString(pszErrorMsg);
+    if (psTree == nullptr)
     {
-        if( bSetError )
+        if (bSetError)
         {
-            VSIError(VSIE_AWSError,
-                     "Malformed AWS XML response: %s", pszErrorMsg);
+            VSIError(VSIE_AWSError, "Malformed AWS XML response: %s",
+                     pszErrorMsg);
         }
         return false;
     }
 
-    const char* pszCode = CPLGetXMLValue(psTree, "=Error.Code", nullptr);
-    if( pszCode == nullptr )
+    const char *pszCode = CPLGetXMLValue(psTree, "=Error.Code", nullptr);
+    if (pszCode == nullptr)
     {
         CPLDestroyXMLNode(psTree);
-        if( bSetError )
+        if (bSetError)
         {
-            VSIError(VSIE_AWSError,
-                     "Malformed AWS XML response: %s", pszErrorMsg);
+            VSIError(VSIE_AWSError, "Malformed AWS XML response: %s",
+                     pszErrorMsg);
         }
         return false;
     }
 
-    if( EQUAL(pszCode, "AccessDenied") )
+    if (EQUAL(pszCode, "AccessDenied"))
     {
-        const char* pszEndpoint =
+        const char *pszEndpoint =
             CPLGetXMLValue(psTree, "=Error.Endpoint", nullptr);
-        if( pszEndpoint && pszEndpoint != m_osEndpoint )
+        if (pszEndpoint && pszEndpoint != m_osEndpoint)
         {
             SetEndpoint(pszEndpoint);
             CPLDebug("OSS", "Switching to endpoint %s", m_osEndpoint.c_str());
             CPLDestroyXMLNode(psTree);
+
+            VSIOSSUpdateParams::UpdateMapFromHandle(this);
+
             return true;
         }
     }
 
-    if( bSetError )
+    if (bSetError)
     {
         // Translate AWS errors into VSI errors.
-        const char* pszMessage = CPLGetXMLValue(psTree, "=Error.Message", nullptr);
+        const char *pszMessage =
+            CPLGetXMLValue(psTree, "=Error.Message", nullptr);
 
-        if( pszMessage == nullptr ) {
+        if (pszMessage == nullptr)
+        {
             VSIError(VSIE_AWSError, "%s", pszErrorMsg);
-        } else if( EQUAL(pszCode, "AccessDenied") ) {
+        }
+        else if (EQUAL(pszCode, "AccessDenied"))
+        {
             VSIError(VSIE_AWSAccessDenied, "%s", pszMessage);
-        } else if( EQUAL(pszCode, "NoSuchBucket") ) {
+        }
+        else if (EQUAL(pszCode, "NoSuchBucket"))
+        {
             VSIError(VSIE_AWSBucketNotFound, "%s", pszMessage);
-        } else if( EQUAL(pszCode, "NoSuchKey") ) {
+        }
+        else if (EQUAL(pszCode, "NoSuchKey"))
+        {
             VSIError(VSIE_AWSObjectNotFound, "%s", pszMessage);
-        } else if( EQUAL(pszCode, "SignatureDoesNotMatch") ) {
+        }
+        else if (EQUAL(pszCode, "SignatureDoesNotMatch"))
+        {
             VSIError(VSIE_AWSSignatureDoesNotMatch, "%s", pszMessage);
-        } else {
+        }
+        else
+        {
             VSIError(VSIE_AWSError, "%s", pszMessage);
         }
     }
@@ -382,7 +388,7 @@ bool VSIOSSHandleHelper::CanRestartOnError( const char* pszErrorMsg,
 /*                            SetEndpoint()                             */
 /************************************************************************/
 
-void VSIOSSHandleHelper::SetEndpoint( const CPLString &osStr )
+void VSIOSSHandleHelper::SetEndpoint(const std::string &osStr)
 {
     m_osEndpoint = osStr;
     RebuildURL();
@@ -392,15 +398,15 @@ void VSIOSSHandleHelper::SetEndpoint( const CPLString &osStr )
 /*                           GetSignedURL()                             */
 /************************************************************************/
 
-CPLString VSIOSSHandleHelper::GetSignedURL(CSLConstList papszOptions)
+std::string VSIOSSHandleHelper::GetSignedURL(CSLConstList papszOptions)
 {
     GIntBig nStartDate = static_cast<GIntBig>(time(nullptr));
-    const char* pszStartDate = CSLFetchNameValue(papszOptions, "START_DATE");
-    if( pszStartDate )
+    const char *pszStartDate = CSLFetchNameValue(papszOptions, "START_DATE");
+    if (pszStartDate)
     {
         int nYear, nMonth, nDay, nHour, nMin, nSec;
-        if( sscanf(pszStartDate, "%04d%02d%02dT%02d%02d%02dZ",
-                   &nYear, &nMonth, &nDay, &nHour, &nMin, &nSec) == 6 )
+        if (sscanf(pszStartDate, "%04d%02d%02dT%02d%02d%02dZ", &nYear, &nMonth,
+                   &nDay, &nHour, &nMin, &nSec) == 6)
         {
             struct tm brokendowntime;
             brokendowntime.tm_year = nYear - 1900;
@@ -412,17 +418,19 @@ CPLString VSIOSSHandleHelper::GetSignedURL(CSLConstList papszOptions)
             nStartDate = CPLYMDHMSToUnixTime(&brokendowntime);
         }
     }
-    GIntBig nExpiresIn = nStartDate + atoi(
-        CSLFetchNameValueDef(papszOptions, "EXPIRATION_DELAY", "3600"));
-    CPLString osExpires(CSLFetchNameValueDef(papszOptions, "EXPIRES",
-                                    CPLSPrintf(CPL_FRMT_GIB, nExpiresIn)));
+    GIntBig nExpiresIn =
+        nStartDate +
+        atoi(CSLFetchNameValueDef(papszOptions, "EXPIRATION_DELAY", "3600"));
+    std::string osExpires(CSLFetchNameValueDef(
+        papszOptions, "EXPIRES", CPLSPrintf(CPL_FRMT_GIB, nExpiresIn)));
 
-    CPLString osVerb(CSLFetchNameValueDef(papszOptions, "VERB", "GET"));
+    std::string osVerb(CSLFetchNameValueDef(papszOptions, "VERB", "GET"));
 
-    CPLString osCanonicalizedResource( m_osBucket.empty() ? CPLString("/") :
-        "/" + m_osBucket +  "/" + m_osObjectKey );
+    std::string osCanonicalizedResource(
+        m_osBucket.empty() ? std::string("/")
+                           : "/" + m_osBucket + "/" + m_osObjectKey);
 
-    CPLString osStringToSign;
+    std::string osStringToSign;
     osStringToSign += osVerb + "\n";
     osStringToSign += "\n";
     osStringToSign += "\n";
@@ -433,16 +441,64 @@ CPLString VSIOSSHandleHelper::GetSignedURL(CSLConstList papszOptions)
     CPLDebug("OSS", "osStringToSign = %s", osStringToSign.c_str());
 #endif
 
-    CPLString osSignature(GetSignature(osStringToSign, m_osSecretAccessKey));
+    std::string osSignature(GetSignature(osStringToSign, m_osSecretAccessKey));
 
     ResetQueryParameters();
-    //  Note: https://www.alibabacloud.com/help/doc-detail/31952.htm?spm=a3c0i.o32002en.b99.294.6d70a0fc7cRJfJ is wrong on the name of the OSSAccessKeyId parameter !
+    //  Note:
+    //  https://www.alibabacloud.com/help/doc-detail/31952.htm?spm=a3c0i.o32002en.b99.294.6d70a0fc7cRJfJ
+    //  is wrong on the name of the OSSAccessKeyId parameter !
     AddQueryParameter("OSSAccessKeyId", m_osAccessKeyId);
     AddQueryParameter("Expires", osExpires);
     AddQueryParameter("Signature", osSignature);
     return m_osURL;
 }
 
-#endif // HAVE_CURL
+/************************************************************************/
+/*                         UpdateMapFromHandle()                        */
+/************************************************************************/
+
+std::mutex VSIOSSUpdateParams::gsMutex{};
+
+std::map<std::string, VSIOSSUpdateParams>
+    VSIOSSUpdateParams::goMapBucketsToOSSParams{};
+
+void VSIOSSUpdateParams::UpdateMapFromHandle(
+    VSIOSSHandleHelper *poOSSHandleHelper)
+{
+    std::lock_guard<std::mutex> guard(gsMutex);
+
+    goMapBucketsToOSSParams[poOSSHandleHelper->GetBucket()] =
+        VSIOSSUpdateParams(poOSSHandleHelper);
+}
+
+/************************************************************************/
+/*                         UpdateHandleFromMap()                        */
+/************************************************************************/
+
+void VSIOSSUpdateParams::UpdateHandleFromMap(
+    VSIOSSHandleHelper *poOSSHandleHelper)
+{
+    std::lock_guard<std::mutex> guard(gsMutex);
+
+    std::map<std::string, VSIOSSUpdateParams>::iterator oIter =
+        goMapBucketsToOSSParams.find(poOSSHandleHelper->GetBucket());
+    if (oIter != goMapBucketsToOSSParams.end())
+    {
+        oIter->second.UpdateHandlerHelper(poOSSHandleHelper);
+    }
+}
+
+/************************************************************************/
+/*                            ClearCache()                              */
+/************************************************************************/
+
+void VSIOSSUpdateParams::ClearCache()
+{
+    std::lock_guard<std::mutex> guard(gsMutex);
+
+    goMapBucketsToOSSParams.clear();
+}
+
+#endif  // HAVE_CURL
 
 //! @endcond

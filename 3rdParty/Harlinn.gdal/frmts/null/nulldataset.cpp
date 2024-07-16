@@ -5,7 +5,8 @@
  * Author:   Even Rouault, <even dot rouault at spatialys dot org>
  *
  ******************************************************************************
- * Copyright (c) 2012-2017, Even Rouault, <even dot rouault at spatialys dot org>
+ * Copyright (c) 2012-2017, Even Rouault, <even dot rouault at spatialys dot
+ *org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -26,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
-#include <gcore/gdal_priv.h>
-#include <ogr/ogrsf_frmts/ogrsf_frmts.h>
+#include "gdal_priv.h"
+#include "ogrsf_frmts.h"
 
 extern "C" void GDALRegister_NULL();
 
@@ -35,88 +36,99 @@ extern "C" void GDALRegister_NULL();
 /*                          GDALNullDataset                             */
 /************************************************************************/
 
-class GDALNullDataset final: public GDALDataset
+class GDALNullDataset final : public GDALDataset
 {
-            int                 m_nLayers;
-            OGRLayer**          m_papoLayers;
-
-    public:
-            GDALNullDataset();
-            virtual ~GDALNullDataset();
-
-            virtual int         GetLayerCount() override { return m_nLayers; }
-            virtual OGRLayer   *GetLayer( int ) override;
-
-            virtual OGRLayer    *ICreateLayer( const char *pszLayerName,
-                                            OGRSpatialReference *poSRS,
-                                            OGRwkbGeometryType eType,
-                                            char **papszOptions ) override;
-
-            virtual int         TestCapability( const char * ) override;
-
-            virtual CPLErr      _SetProjection(const char*) override;
-            CPLErr SetSpatialRef(const OGRSpatialReference* poSRS) override {
-                return OldSetProjectionFromSetSpatialRef(poSRS);
-            }
-
-            virtual CPLErr      SetGeoTransform(double*) override;
-
-            static GDALDataset* Open(GDALOpenInfo* poOpenInfo);
-            static GDALDataset* Create(const char *pszFilename,
-                                     int nXSize, int nYSize, int nBands,
-                                     GDALDataType eType, char **papszOptions);
-
-};
-
-/************************************************************************/
-/*                           GDALNullLayer                              */
-/************************************************************************/
-
-class GDALNullRasterBand final: public GDALRasterBand
-{
-    public:
-            explicit GDALNullRasterBand(GDALDataType eDT);
-
-            virtual CPLErr IReadBlock(int, int, void*) override;
-            virtual CPLErr IWriteBlock(int, int, void*) override;
-            virtual CPLErr IRasterIO( GDALRWFlag eRWFlag,
-                                  int nXOff, int nYOff, int nXSize, int nYSize,
-                                  void * pData, int nBufXSize, int nBufYSize,
-                                  GDALDataType eBufType,
-                                  GSpacing nPixelSpace, GSpacing nLineSpace,
-                                  GDALRasterIOExtraArg* psExtraArg ) override;
-
-};
-
-/************************************************************************/
-/*                           GDALNullLayer                              */
-/************************************************************************/
-
-class GDALNullLayer final: public OGRLayer
-{
-    OGRFeatureDefn      *poFeatureDefn;
-    OGRSpatialReference *poSRS;
+    int m_nLayers;
+    OGRLayer **m_papoLayers;
 
   public:
-                        GDALNullLayer( const char *pszLayerName,
-                                      OGRSpatialReference *poSRS,
-                                      OGRwkbGeometryType eType );
-    virtual             ~GDALNullLayer();
+    GDALNullDataset();
+    virtual ~GDALNullDataset();
 
-    virtual OGRFeatureDefn *GetLayerDefn() override {return poFeatureDefn;}
-    virtual OGRSpatialReference * GetSpatialRef() override { return poSRS; }
+    virtual int GetLayerCount() override
+    {
+        return m_nLayers;
+    }
 
-    virtual void        ResetReading() override {}
-    virtual int         TestCapability( const char * ) override;
+    virtual OGRLayer *GetLayer(int) override;
 
-    virtual OGRFeature *GetNextFeature() override { return nullptr; }
+    OGRLayer *ICreateLayer(const char *pszName,
+                           const OGRGeomFieldDefn *poGeomFieldDefn,
+                           CSLConstList papszOptions) override;
 
-    virtual OGRErr      ICreateFeature( OGRFeature * ) override { return OGRERR_NONE; }
+    virtual int TestCapability(const char *) override;
 
-    virtual OGRErr      CreateField( OGRFieldDefn *poField,
-                                     int bApproxOK = TRUE ) override;
+    CPLErr SetSpatialRef(const OGRSpatialReference *poSRS) override;
+
+    virtual CPLErr SetGeoTransform(double *) override;
+
+    static GDALDataset *Open(GDALOpenInfo *poOpenInfo);
+    static GDALDataset *Create(const char *pszFilename, int nXSize, int nYSize,
+                               int nBands, GDALDataType eType,
+                               char **papszOptions);
 };
 
+/************************************************************************/
+/*                           GDALNullLayer                              */
+/************************************************************************/
+
+class GDALNullRasterBand final : public GDALRasterBand
+{
+  public:
+    explicit GDALNullRasterBand(GDALDataType eDT);
+
+    virtual CPLErr IReadBlock(int, int, void *) override;
+    virtual CPLErr IWriteBlock(int, int, void *) override;
+    virtual CPLErr IRasterIO(GDALRWFlag eRWFlag, int nXOff, int nYOff,
+                             int nXSize, int nYSize, void *pData, int nBufXSize,
+                             int nBufYSize, GDALDataType eBufType,
+                             GSpacing nPixelSpace, GSpacing nLineSpace,
+                             GDALRasterIOExtraArg *psExtraArg) override;
+};
+
+/************************************************************************/
+/*                           GDALNullLayer                              */
+/************************************************************************/
+
+class GDALNullLayer final : public OGRLayer
+{
+    OGRFeatureDefn *poFeatureDefn;
+    OGRSpatialReference *poSRS = nullptr;
+
+  public:
+    GDALNullLayer(const char *pszLayerName, const OGRSpatialReference *poSRS,
+                  OGRwkbGeometryType eType);
+    virtual ~GDALNullLayer();
+
+    virtual OGRFeatureDefn *GetLayerDefn() override
+    {
+        return poFeatureDefn;
+    }
+
+    virtual OGRSpatialReference *GetSpatialRef() override
+    {
+        return poSRS;
+    }
+
+    virtual void ResetReading() override
+    {
+    }
+
+    virtual int TestCapability(const char *) override;
+
+    virtual OGRFeature *GetNextFeature() override
+    {
+        return nullptr;
+    }
+
+    virtual OGRErr ICreateFeature(OGRFeature *) override
+    {
+        return OGRERR_NONE;
+    }
+
+    virtual OGRErr CreateField(const OGRFieldDefn *poField,
+                               int bApproxOK = TRUE) override;
+};
 
 /************************************************************************/
 /*                           GDALNullRasterBand()                       */
@@ -133,38 +145,35 @@ GDALNullRasterBand::GDALNullRasterBand(GDALDataType eDT)
 /*                             IRasterIO()                              */
 /************************************************************************/
 
-CPLErr GDALNullRasterBand::IRasterIO( GDALRWFlag eRWFlag,
-                                  int nXOff, int nYOff, int nXSize, int nYSize,
-                                  void * pData, int nBufXSize, int nBufYSize,
-                                  GDALDataType eBufType,
-                                  GSpacing nPixelSpace, GSpacing nLineSpace,
-                                  GDALRasterIOExtraArg* psExtraArg )
+CPLErr GDALNullRasterBand::IRasterIO(GDALRWFlag eRWFlag, int nXOff, int nYOff,
+                                     int nXSize, int nYSize, void *pData,
+                                     int nBufXSize, int nBufYSize,
+                                     GDALDataType eBufType,
+                                     GSpacing nPixelSpace, GSpacing nLineSpace,
+                                     GDALRasterIOExtraArg *psExtraArg)
 {
-    if( eRWFlag == GF_Write )
+    if (eRWFlag == GF_Write)
         return CE_None;
-    if( psExtraArg->eResampleAlg != GRIORA_NearestNeighbour &&
-        (nBufXSize != nXSize || nBufYSize != nYSize) )
+    if (psExtraArg->eResampleAlg != GRIORA_NearestNeighbour &&
+        (nBufXSize != nXSize || nBufYSize != nYSize))
     {
         return GDALRasterBand::IRasterIO(eRWFlag, nXOff, nYOff, nXSize, nYSize,
-                                         pData, nBufXSize, nBufYSize,
-                                         eBufType,
-                                         nPixelSpace, nLineSpace,
-                                         psExtraArg);
+                                         pData, nBufXSize, nBufYSize, eBufType,
+                                         nPixelSpace, nLineSpace, psExtraArg);
     }
-    if( nPixelSpace == GDALGetDataTypeSizeBytes(eBufType) &&
-        nLineSpace == nPixelSpace * nBufXSize )
+    if (nPixelSpace == GDALGetDataTypeSizeBytes(eBufType) &&
+        nLineSpace == nPixelSpace * nBufXSize)
     {
         memset(pData, 0, nLineSpace * nBufYSize);
     }
     else
     {
-        for( int iY = 0; iY < nBufYSize; iY++ )
+        for (int iY = 0; iY < nBufYSize; iY++)
         {
             double dfZero = 0;
             GDALCopyWords(&dfZero, GDT_Float64, 0,
-                        reinterpret_cast<GByte*>(pData) + iY * nLineSpace,
-                        eBufType, static_cast<int>(nPixelSpace),
-                        nBufXSize);
+                          reinterpret_cast<GByte *>(pData) + iY * nLineSpace,
+                          eBufType, static_cast<int>(nPixelSpace), nBufXSize);
         }
     }
     return CE_None;
@@ -174,7 +183,7 @@ CPLErr GDALNullRasterBand::IRasterIO( GDALRWFlag eRWFlag,
 /*                             IReadBlock()                             */
 /************************************************************************/
 
-CPLErr GDALNullRasterBand::IReadBlock(int, int, void* pData)
+CPLErr GDALNullRasterBand::IReadBlock(int, int, void *pData)
 {
     memset(pData, 0,
            nBlockXSize * nBlockYSize * GDALGetDataTypeSizeBytes(eDataType));
@@ -185,7 +194,7 @@ CPLErr GDALNullRasterBand::IReadBlock(int, int, void* pData)
 /*                             IWriteBlock()                            */
 /************************************************************************/
 
-CPLErr GDALNullRasterBand::IWriteBlock(int, int, void*)
+CPLErr GDALNullRasterBand::IWriteBlock(int, int, void *)
 {
     return CE_None;
 }
@@ -194,9 +203,7 @@ CPLErr GDALNullRasterBand::IWriteBlock(int, int, void*)
 /*                          GDALNullDataset()                           */
 /************************************************************************/
 
-GDALNullDataset::GDALNullDataset() :
-    m_nLayers(0),
-    m_papoLayers(nullptr)
+GDALNullDataset::GDALNullDataset() : m_nLayers(0), m_papoLayers(nullptr)
 {
     eAccess = GA_Update;
 }
@@ -207,7 +214,7 @@ GDALNullDataset::GDALNullDataset() :
 
 GDALNullDataset::~GDALNullDataset()
 {
-    for(int i=0;i<m_nLayers;i++)
+    for (int i = 0; i < m_nLayers; i++)
         delete m_papoLayers[i];
     CPLFree(m_papoLayers);
 }
@@ -216,28 +223,31 @@ GDALNullDataset::~GDALNullDataset()
 /*                           ICreateLayer()                             */
 /************************************************************************/
 
-OGRLayer    *GDALNullDataset::ICreateLayer( const char *pszLayerName,
-                                             OGRSpatialReference *poSRS,
-                                             OGRwkbGeometryType eType,
-                                             char ** )
+OGRLayer *GDALNullDataset::ICreateLayer(const char *pszLayerName,
+                                        const OGRGeomFieldDefn *poGeomFieldDefn,
+                                        CSLConstList /*papszOptions */)
 {
-    m_papoLayers = static_cast<OGRLayer**>(CPLRealloc(m_papoLayers,
-                                    sizeof(OGRLayer*) * (m_nLayers + 1)));
+    const auto eType = poGeomFieldDefn ? poGeomFieldDefn->GetType() : wkbNone;
+    const auto poSRS =
+        poGeomFieldDefn ? poGeomFieldDefn->GetSpatialRef() : nullptr;
+
+    m_papoLayers = static_cast<OGRLayer **>(
+        CPLRealloc(m_papoLayers, sizeof(OGRLayer *) * (m_nLayers + 1)));
     m_papoLayers[m_nLayers] = new GDALNullLayer(pszLayerName, poSRS, eType);
-    m_nLayers ++;
-    return m_papoLayers[m_nLayers-1];
+    m_nLayers++;
+    return m_papoLayers[m_nLayers - 1];
 }
 
 /************************************************************************/
 /*                           TestCapability()                           */
 /************************************************************************/
 
-int GDALNullDataset::TestCapability( const char * pszCap )
+int GDALNullDataset::TestCapability(const char *pszCap)
 
 {
-    if( EQUAL(pszCap, ODsCCreateLayer) )
+    if (EQUAL(pszCap, ODsCCreateLayer))
         return TRUE;
-    if( EQUAL(pszCap, ODsCRandomLayerWrite) )
+    if (EQUAL(pszCap, ODsCRandomLayerWrite))
         return TRUE;
     return FALSE;
 }
@@ -246,20 +256,20 @@ int GDALNullDataset::TestCapability( const char * pszCap )
 /*                              GetLayer()                              */
 /************************************************************************/
 
-OGRLayer *GDALNullDataset::GetLayer( int iLayer )
+OGRLayer *GDALNullDataset::GetLayer(int iLayer)
 
 {
-    if( iLayer < 0 || iLayer >= m_nLayers )
+    if (iLayer < 0 || iLayer >= m_nLayers)
         return nullptr;
     else
         return m_papoLayers[iLayer];
 }
 
 /************************************************************************/
-/*                           SetProjection()                            */
+/*                           SetSpatialRef()                            */
 /************************************************************************/
 
-CPLErr GDALNullDataset::_SetProjection(const char*)
+CPLErr GDALNullDataset::SetSpatialRef(const OGRSpatialReference *)
 
 {
     return CE_None;
@@ -279,26 +289,25 @@ CPLErr GDALNullDataset::SetGeoTransform(double *)
 /*                               Open()                                 */
 /************************************************************************/
 
-GDALDataset* GDALNullDataset::Open(GDALOpenInfo* poOpenInfo)
+GDALDataset *GDALNullDataset::Open(GDALOpenInfo *poOpenInfo)
 {
-    if( !STARTS_WITH_CI(poOpenInfo->pszFilename, "NULL:") )
+    if (!STARTS_WITH_CI(poOpenInfo->pszFilename, "NULL:"))
         return nullptr;
 
-    const char* pszStr = poOpenInfo->pszFilename + strlen("NULL:");
-    char** papszTokens = CSLTokenizeString2(pszStr, ",", 0);
+    const char *pszStr = poOpenInfo->pszFilename + strlen("NULL:");
+    char **papszTokens = CSLTokenizeString2(pszStr, ",", 0);
     int nXSize = atoi(CSLFetchNameValueDef(papszTokens, "width", "512"));
     int nYSize = atoi(CSLFetchNameValueDef(papszTokens, "height", "512"));
     int nBands = atoi(CSLFetchNameValueDef(papszTokens, "bands", "1"));
-    const char* pszDTName = CSLFetchNameValueDef(papszTokens, "type", "Byte");
+    const char *pszDTName = CSLFetchNameValueDef(papszTokens, "type", "Byte");
     GDALDataType eDT = GDT_Byte;
-    for( int iType = 1; iType < GDT_TypeCount; iType++ )
+    for (int iType = 1; iType < GDT_TypeCount; iType++)
     {
-        if( GDALGetDataTypeName((GDALDataType)iType) != nullptr
-            && EQUAL(GDALGetDataTypeName((GDALDataType)iType),
-                        pszDTName) )
+        if (GDALGetDataTypeName((GDALDataType)iType) != nullptr &&
+            EQUAL(GDALGetDataTypeName((GDALDataType)iType), pszDTName))
         {
-           eDT = (GDALDataType) iType;
-           break;
+            eDT = (GDALDataType)iType;
+            break;
         }
     }
     CSLDestroy(papszTokens);
@@ -310,14 +319,13 @@ GDALDataset* GDALNullDataset::Open(GDALOpenInfo* poOpenInfo)
 /*                              Create()                                */
 /************************************************************************/
 
-GDALDataset *GDALNullDataset::Create(const char *,
-                                     int nXSize, int nYSize, int nBands,
-                                     GDALDataType eType, char **)
+GDALDataset *GDALNullDataset::Create(const char *, int nXSize, int nYSize,
+                                     int nBandsIn, GDALDataType eType, char **)
 {
-    GDALNullDataset* poDS = new GDALNullDataset();
+    GDALNullDataset *poDS = new GDALNullDataset();
     poDS->nRasterXSize = nXSize;
     poDS->nRasterYSize = nYSize;
-    for( int i = 0; i < nBands; i++ )
+    for (int i = 0; i < nBandsIn; i++)
         poDS->SetBand(i + 1, new GDALNullRasterBand(eType));
     return poDS;
 }
@@ -326,18 +334,17 @@ GDALDataset *GDALNullDataset::Create(const char *,
 /*                           GDALNullLayer()                            */
 /************************************************************************/
 
-GDALNullLayer::GDALNullLayer( const char *pszLayerName,
-                            OGRSpatialReference *poSRSIn,
-                            OGRwkbGeometryType eType ) :
-    poFeatureDefn(new OGRFeatureDefn(pszLayerName)),
-    poSRS(poSRSIn)
+GDALNullLayer::GDALNullLayer(const char *pszLayerName,
+                             const OGRSpatialReference *poSRSIn,
+                             OGRwkbGeometryType eType)
+    : poFeatureDefn(new OGRFeatureDefn(pszLayerName))
 {
-    SetDescription( poFeatureDefn->GetName() );
+    SetDescription(poFeatureDefn->GetName());
     poFeatureDefn->SetGeomType(eType);
     poFeatureDefn->Reference();
 
-    if( poSRS )
-        poSRS->Reference();
+    if (poSRSIn)
+        poSRS = poSRSIn->Clone();
 }
 
 /************************************************************************/
@@ -356,12 +363,12 @@ GDALNullLayer::~GDALNullLayer()
 /*                           TestCapability()                           */
 /************************************************************************/
 
-int GDALNullLayer::TestCapability( const char * pszCap )
+int GDALNullLayer::TestCapability(const char *pszCap)
 
 {
-    if( EQUAL(pszCap, OLCSequentialWrite) )
+    if (EQUAL(pszCap, OLCSequentialWrite))
         return TRUE;
-    if( EQUAL(pszCap, OLCCreateField) )
+    if (EQUAL(pszCap, OLCCreateField))
         return TRUE;
     return FALSE;
 }
@@ -370,7 +377,7 @@ int GDALNullLayer::TestCapability( const char * pszCap )
 /*                             CreateField()                            */
 /************************************************************************/
 
-OGRErr GDALNullLayer::CreateField( OGRFieldDefn *poField, int )
+OGRErr GDALNullLayer::CreateField(const OGRFieldDefn *poField, int)
 {
     poFeatureDefn->AddFieldDefn(poField);
     return OGRERR_NONE;
@@ -383,25 +390,29 @@ OGRErr GDALNullLayer::CreateField( OGRFieldDefn *poField, int )
 void GDALRegister_NULL()
 
 {
-    if( GDALGetDriverByName( "NULL" ) != nullptr )
+    if (GDALGetDriverByName("NULL") != nullptr)
         return;
 
-    GDALDriver  *poDriver;
+    GDALDriver *poDriver;
     poDriver = new GDALDriver();
 
-    poDriver->SetDescription( "NULL" );
-    poDriver->SetMetadataItem( GDAL_DMD_CONNECTION_PREFIX, "NULL: ");
-    poDriver->SetMetadataItem( GDAL_DCAP_RASTER, "YES" );
-    poDriver->SetMetadataItem( GDAL_DCAP_VECTOR, "YES" );
-    poDriver->SetMetadataItem( GDAL_DMD_LONGNAME, "NULL" );
+    poDriver->SetDescription("NULL");
+    poDriver->SetMetadataItem(GDAL_DMD_CONNECTION_PREFIX, "NULL: ");
+    poDriver->SetMetadataItem(GDAL_DCAP_RASTER, "YES");
+    poDriver->SetMetadataItem(GDAL_DCAP_VECTOR, "YES");
+    poDriver->SetMetadataItem(GDAL_DCAP_CREATE_LAYER, "YES");
+    poDriver->SetMetadataItem(GDAL_DCAP_CREATE_FIELD, "YES");
+    poDriver->SetMetadataItem(GDAL_DMD_LONGNAME, "NULL");
 
-    poDriver->SetMetadataItem( GDAL_DMD_CREATIONFIELDDATATYPES,
-                               "Integer Integer64 Real String Date DateTime "
-                               "Binary IntegerList Integer64List "
-                               "RealList StringList" );
+    poDriver->SetMetadataItem(GDAL_DMD_CREATIONFIELDDATATYPES,
+                              "Integer Integer64 Real String Date DateTime "
+                              "Binary IntegerList Integer64List "
+                              "RealList StringList");
+
+    poDriver->SetMetadataItem(GDAL_DMD_SUPPORTED_SQL_DIALECTS, "OGRSQL SQLITE");
 
     poDriver->pfnOpen = GDALNullDataset::Open;
     poDriver->pfnCreate = GDALNullDataset::Create;
 
-    GetGDALDriverManager()->RegisterDriver( poDriver );
+    GetGDALDriverManager()->RegisterDriver(poDriver);
 }

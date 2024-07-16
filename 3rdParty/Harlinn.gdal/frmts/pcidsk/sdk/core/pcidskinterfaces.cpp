@@ -25,11 +25,12 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
-#include "../pcidsk_config.h"
-#include "../pcidsk_types.h"
+#include "pcidsk_config.h"
+#include "pcidsk_types.h"
 #include "pcidsk_utils.h"
-#include "../pcidsk_interfaces.h"
-#include "../pcidsk_mutex.h"
+#include "pcidsk_interfaces.h"
+#include "pcidsk_mutex.h"
+#include "core/pcidsk_utils.h"
 
 using namespace PCIDSK;
 

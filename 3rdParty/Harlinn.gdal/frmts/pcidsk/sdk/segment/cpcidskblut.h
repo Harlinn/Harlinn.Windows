@@ -1,4 +1,3 @@
-#pragma once
 /******************************************************************************
  *
  * Purpose:  Declaration of the CPCIDSK_BLUT class.
@@ -28,10 +27,10 @@
 #ifndef INCLUDE_SEGMENT_PCIDSK_BLUT_H
 #define INCLUDE_SEGMENT_PCIDSK_BLUT_H
 
-#include "../pcidsk_config.h"
-#include "../pcidsk_blut.h"
-#include "../pcidsk_buffer.h"
-#include "cpcidsksegment.h"
+#include "pcidsk_config.h"
+#include "pcidsk_blut.h"
+#include "pcidsk_buffer.h"
+#include "segment/cpcidsksegment.h"
 
 
 namespace PCIDSK

@@ -1,4 +1,3 @@
-#pragma once
 /******************************************************************************
  *
  * Purpose:  Block directory API.
@@ -29,7 +28,7 @@
 #ifndef PCIDSK_BLOCK_TILE_DIR_H
 #define PCIDSK_BLOCK_TILE_DIR_H
 
-#include "blockdir.h"
+#include "blockdir/blockdir.h"
 
 namespace PCIDSK
 {

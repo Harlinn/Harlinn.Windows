@@ -28,45 +28,26 @@
  ****************************************************************************/
 
 #include "ogr_idb.h"
-#include <port/cpl_conv.h>
+#include "cpl_conv.h"
 
-CPL_CVSID("$Id$")
-
-/************************************************************************/
-/*                            ~OGRIDBDriver()                            */
-/************************************************************************/
-
-OGRIDBDriver::~OGRIDBDriver()
-
-{
-}
-
-/************************************************************************/
-/*                              GetName()                               */
-/************************************************************************/
-
-const char *OGRIDBDriver::GetName()
-
-{
-    return "IDB";
-}
+#include "ogridbdrivercore.h"
 
 /************************************************************************/
 /*                                Open()                                */
 /************************************************************************/
 
-OGRDataSource *OGRIDBDriver::Open( const char * pszFilename,
-                                     int bUpdate )
+static GDALDataset *OGRIDBDriverOpen(GDALOpenInfo *poOpenInfo)
 
 {
-    OGRIDBDataSource     *poDS;
+    OGRIDBDataSource *poDS;
 
-    if( !STARTS_WITH_CI(pszFilename, "IDB:") )
+    if (!STARTS_WITH_CI(poOpenInfo->pszFilename, "IDB:"))
         return nullptr;
 
     poDS = new OGRIDBDataSource();
 
-    if( !poDS->Open( pszFilename, bUpdate, TRUE ) )
+    if (!poDS->Open(poOpenInfo->pszFilename,
+                    (poOpenInfo->nOpenFlags & GDAL_OF_UPDATE) != 0, TRUE))
     {
         delete poDS;
         return nullptr;
@@ -79,39 +60,28 @@ OGRDataSource *OGRIDBDriver::Open( const char * pszFilename,
 /*                          CreateDataSource()                          */
 /************************************************************************/
 
-OGRDataSource *OGRIDBDriver::CreateDataSource( const char * pszName,
-                                              char ** /* papszOptions */ )
+static GDALDataset *OGRIDBDriverCreate(const char *pszName, int /* nBands */,
+                                       int /* nXSize */, int /* nYSize */,
+                                       GDALDataType /* eDT */,
+                                       char ** /*papszOptions*/)
 
 {
-    OGRIDBDataSource     *poDS;
+    OGRIDBDataSource *poDS;
 
-    if( !STARTS_WITH_CI(pszName, "IDB:") )
+    if (!STARTS_WITH_CI(pszName, "IDB:"))
         return nullptr;
 
     poDS = new OGRIDBDataSource();
 
-    if( !poDS->Open( pszName, TRUE, TRUE ) )
+    if (!poDS->Open(pszName, TRUE, TRUE))
     {
         delete poDS;
-        CPLError( CE_Failure, CPLE_AppDefined,
-         "IDB driver doesn't currently support database creation.");
+        CPLError(CE_Failure, CPLE_AppDefined,
+                 "IDB driver doesn't currently support database creation.");
         return nullptr;
     }
 
     return poDS;
-}
-
-/************************************************************************/
-/*                           TestCapability()                           */
-/************************************************************************/
-
-int OGRIDBDriver::TestCapability( const char * pszCap )
-
-{
-    if( EQUAL(pszCap,ODrCCreateDataSource) )
-        return TRUE;
-    else
-        return FALSE;
 }
 
 /************************************************************************/
@@ -121,7 +91,16 @@ int OGRIDBDriver::TestCapability( const char * pszCap )
 void RegisterOGRIDB()
 
 {
-    if( !GDAL_CHECK_VERSION("IDB driver") )
+    if (!GDAL_CHECK_VERSION("IDB driver"))
         return;
-    OGRSFDriverRegistrar::GetRegistrar()->RegisterDriver( new OGRIDBDriver );
+    if (GDALGetDriverByName(DRIVER_NAME) != nullptr)
+        return;
+
+    GDALDriver *poDriver = new GDALDriver();
+    OGRIDBDriverSetCommonMetadata(poDriver);
+
+    poDriver->pfnOpen = OGRIDBDriverOpen;
+    poDriver->pfnCreate = OGRIDBDriverCreate;
+
+    GetGDALDriverManager()->RegisterDriver(poDriver);
 }

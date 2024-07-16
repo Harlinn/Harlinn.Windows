@@ -26,10 +26,10 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
-#include "frmts/pcidsk/sdk/pcidsk_file.h"
-#include "frmts/pcidsk/sdk/pcidsk_exception.h"
-#include "frmts/pcidsk/sdk/core/pcidsk_utils.h"
-#include "frmts/pcidsk/sdk/segment/cpcidskvectorsegment.h"
+#include "pcidsk_file.h"
+#include "pcidsk_exception.h"
+#include "core/pcidsk_utils.h"
+#include "segment/cpcidskvectorsegment.h"
 #include <cstring>
 #include <cstdio>
 

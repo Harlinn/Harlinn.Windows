@@ -1,4 +1,3 @@
-#pragma once
 /******************************************************************************
  * $Id$
  *
@@ -28,7 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
-#include <ogr/ogrsf_frmts/ogrsf_frmts.h>
+#include "ogrsf_frmts.h"
+#include <sqlite3.h>
 
 #ifndef OGR_GEOPACKAGEUTILITY_H_INCLUDED
 #define OGR_GEOPACKAGEUTILITY_H_INCLUDED
@@ -51,13 +51,25 @@ typedef struct
     size_t nHeaderLen;
 } GPkgHeader;
 
-OGRFieldType        GPkgFieldToOGR(const char *pszGpkgType, OGRFieldSubType& eSubType, int& nMaxWidth);
-const char*         GPkgFieldFromOGR(OGRFieldType eType, OGRFieldSubType eSubType, int nMaxWidth);
-OGRwkbGeometryType  GPkgGeometryTypeToWKB(const char *pszGpkgType, bool bHasZ, bool bHasM);
+int GPkgFieldToOGR(const char *pszGpkgType, OGRFieldSubType &eSubType,
+                   int &nMaxWidth);
+const char *GPkgFieldFromOGR(OGRFieldType eType, OGRFieldSubType eSubType,
+                             int nMaxWidth);
+OGRwkbGeometryType GPkgGeometryTypeToWKB(const char *pszGpkgType, bool bHasZ,
+                                         bool bHasM);
 
-GByte*              GPkgGeometryFromOGR(const OGRGeometry *poGeometry, int iSrsId, size_t *pnWkbLen);
-OGRGeometry*        GPkgGeometryToOGR(const GByte *pabyGpkg, size_t nGpkgLen, OGRSpatialReference *poSrs);
+GByte *GPkgGeometryFromOGR(const OGRGeometry *poGeometry, int iSrsId,
+                           const OGRGeomCoordinateBinaryPrecision *psPrecision,
+                           size_t *pnWkbLen);
+OGRGeometry *GPkgGeometryToOGR(const GByte *pabyGpkg, size_t nGpkgLen,
+                               OGRSpatialReference *poSrs);
 
-OGRErr              GPkgHeaderFromWKB(const GByte *pabyGpkg, size_t nGpkgLen, GPkgHeader *poHeader);
+OGRErr GPkgHeaderFromWKB(const GByte *pabyGpkg, size_t nGpkgLen,
+                         GPkgHeader *poHeader);
+
+bool OGRGeoPackageGetHeader(sqlite3_context *pContext, int /*argc*/,
+                            sqlite3_value **argv, GPkgHeader *psHeader,
+                            bool bNeedExtent, bool bNeedExtent3D,
+                            int iGeomIdx = 0);
 
 #endif

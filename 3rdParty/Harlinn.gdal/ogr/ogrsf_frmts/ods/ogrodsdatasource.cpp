@@ -27,18 +27,19 @@
  ****************************************************************************/
 
 #include "ogr_ods.h"
-#include "ogr/ogrsf_frmts/mem/ogr_mem.h"
-#include "ogr/ogr_p.h"
-#include "port/cpl_conv.h"
-#include "port/cpl_vsi_error.h"
+#include "ogr_mem.h"
+#include "ogr_p.h"
+#include "cpl_conv.h"
+#include "cpl_vsi_error.h"
 #include "ods_formula.h"
 
 #include <algorithm>
 #include <set>
 
-CPL_CVSID("$Id$")
+namespace OGRODS
+{
 
-namespace OGRODS {
+constexpr int PARSER_BUF_SIZE = 8192;
 
 /************************************************************************/
 /*                          ODSCellEvaluator                            */
@@ -46,32 +47,33 @@ namespace OGRODS {
 
 class ODSCellEvaluator : public IODSCellEvaluator
 {
-private:
-        OGRODSLayer* poLayer;
-        std::set<std::pair<int,int> > oVisisitedCells;
+  private:
+    OGRODSLayer *poLayer;
+    std::set<std::pair<int, int>> oVisisitedCells;
 
-public:
-        explicit ODSCellEvaluator(OGRODSLayer* poLayerIn) : poLayer(poLayerIn) {}
+  public:
+    explicit ODSCellEvaluator(OGRODSLayer *poLayerIn) : poLayer(poLayerIn)
+    {
+    }
 
-        int EvaluateRange(int nRow1, int nCol1, int nRow2, int nCol2,
-                          std::vector<ods_formula_node>& aoOutValues) override;
+    int EvaluateRange(int nRow1, int nCol1, int nRow2, int nCol2,
+                      std::vector<ods_formula_node> &aoOutValues) override;
 
-        int Evaluate(int nRow, int nCol);
+    int Evaluate(int nRow, int nCol);
 };
 
 /************************************************************************/
 /*                            OGRODSLayer()                             */
 /************************************************************************/
 
-OGRODSLayer::OGRODSLayer( OGRODSDataSource* poDSIn,
-                          const char * pszName,
-                          bool bUpdatedIn) :
-    OGRMemLayer(pszName, nullptr, wkbNone),
-    poDS(poDSIn),
-    bUpdated(CPL_TO_BOOL(bUpdatedIn)),
-    bHasHeaderLine(false),
-    m_poAttrQueryODS(nullptr)
-{}
+OGRODSLayer::OGRODSLayer(OGRODSDataSource *poDSIn, const char *pszName,
+                         bool bUpdatedIn)
+    : OGRMemLayer(pszName, nullptr, wkbNone), poDS(poDSIn),
+      bUpdated(CPL_TO_BOOL(bUpdatedIn)), bHasHeaderLine(false),
+      m_poAttrQueryODS(nullptr)
+{
+    SetAdvertizeUTF8(true);
+}
 
 /************************************************************************/
 /*                            ~OGRODSLayer()                            */
@@ -110,19 +112,41 @@ OGRErr OGRODSLayer::SyncToDisk()
 }
 
 /************************************************************************/
+/*                      TranslateFIDFromMemLayer()                      */
+/************************************************************************/
+
+// Translate a FID from MEM convention (0-based) to ODS convention
+GIntBig OGRODSLayer::TranslateFIDFromMemLayer(GIntBig nFID) const
+{
+    return nFID + (1 + (bHasHeaderLine ? 1 : 0));
+}
+
+/************************************************************************/
+/*                        TranslateFIDToMemLayer()                      */
+/************************************************************************/
+
+// Translate a FID from ODS convention to MEM convention (0-based)
+GIntBig OGRODSLayer::TranslateFIDToMemLayer(GIntBig nFID) const
+{
+    if (nFID > 0)
+        return nFID - (1 + (bHasHeaderLine ? 1 : 0));
+    return OGRNullFID;
+}
+
+/************************************************************************/
 /*                          GetNextFeature()                            */
 /************************************************************************/
 
-OGRFeature* OGRODSLayer::GetNextFeature()
+OGRFeature *OGRODSLayer::GetNextFeature()
 {
-    while(true)
+    while (true)
     {
-        OGRFeature* poFeature = OGRMemLayer::GetNextFeature();
-        if (poFeature == nullptr )
+        OGRFeature *poFeature = OGRMemLayer::GetNextFeature();
+        if (poFeature == nullptr)
             return nullptr;
-        poFeature->SetFID(poFeature->GetFID() + 1 + (bHasHeaderLine ? 1 : 0));
-        if( m_poAttrQueryODS == nullptr
-               || m_poAttrQueryODS->Evaluate( poFeature ) )
+        poFeature->SetFID(TranslateFIDFromMemLayer(poFeature->GetFID()));
+        if (m_poAttrQueryODS == nullptr ||
+            m_poAttrQueryODS->Evaluate(poFeature))
         {
             return poFeature;
         }
@@ -134,10 +158,10 @@ OGRFeature* OGRODSLayer::GetNextFeature()
 /*                           GetFeature()                               */
 /************************************************************************/
 
-OGRFeature* OGRODSLayer::GetFeature( GIntBig nFeatureId )
+OGRFeature *OGRODSLayer::GetFeature(GIntBig nFeatureId)
 {
-    OGRFeature* poFeature =
-        OGRMemLayer::GetFeature(nFeatureId - (1 + (bHasHeaderLine ? 1 : 0)));
+    OGRFeature *poFeature =
+        OGRMemLayer::GetFeature(TranslateFIDToMemLayer(nFeatureId));
     if (poFeature)
         poFeature->SetFID(nFeatureId);
     return poFeature;
@@ -147,28 +171,82 @@ OGRFeature* OGRODSLayer::GetFeature( GIntBig nFeatureId )
 /*                          GetFeatureCount()                           */
 /************************************************************************/
 
-GIntBig OGRODSLayer::GetFeatureCount( int bForce )
+GIntBig OGRODSLayer::GetFeatureCount(int bForce)
 {
-    if( m_poAttrQueryODS == nullptr )
+    if (m_poAttrQueryODS == nullptr)
         return OGRMemLayer::GetFeatureCount(bForce);
-    return OGRLayer::GetFeatureCount( bForce );
+    return OGRLayer::GetFeatureCount(bForce);
 }
 
 /************************************************************************/
-/*                           ISetFeature()                               */
+/*                           ISetFeature()                              */
 /************************************************************************/
 
-OGRErr OGRODSLayer::ISetFeature( OGRFeature *poFeature )
+OGRErr OGRODSLayer::ISetFeature(OGRFeature *poFeature)
 {
-    if (poFeature == nullptr)
-        return OGRMemLayer::ISetFeature(poFeature);
-
-    GIntBig nFID = poFeature->GetFID();
-    if (nFID != OGRNullFID)
-        poFeature->SetFID(nFID - (1 + (bHasHeaderLine ? 1 : 0)));
+    const GIntBig nFIDOrigin = poFeature->GetFID();
+    if (nFIDOrigin > 0)
+    {
+        const GIntBig nFIDMemLayer = TranslateFIDToMemLayer(nFIDOrigin);
+        if (!GetFeatureRef(nFIDMemLayer))
+            return OGRERR_NON_EXISTING_FEATURE;
+        poFeature->SetFID(nFIDMemLayer);
+    }
+    else
+    {
+        return OGRERR_NON_EXISTING_FEATURE;
+    }
     SetUpdated();
     OGRErr eErr = OGRMemLayer::ISetFeature(poFeature);
-    poFeature->SetFID(nFID);
+    poFeature->SetFID(nFIDOrigin);
+    return eErr;
+}
+
+/************************************************************************/
+/*                         IUpdateFeature()                             */
+/************************************************************************/
+
+OGRErr OGRODSLayer::IUpdateFeature(OGRFeature *poFeature,
+                                   int nUpdatedFieldsCount,
+                                   const int *panUpdatedFieldsIdx,
+                                   int nUpdatedGeomFieldsCount,
+                                   const int *panUpdatedGeomFieldsIdx,
+                                   bool bUpdateStyleString)
+{
+    const GIntBig nFIDOrigin = poFeature->GetFID();
+    if (nFIDOrigin != OGRNullFID)
+        poFeature->SetFID(TranslateFIDToMemLayer(nFIDOrigin));
+    SetUpdated();
+    OGRErr eErr = OGRMemLayer::IUpdateFeature(
+        poFeature, nUpdatedFieldsCount, panUpdatedFieldsIdx,
+        nUpdatedGeomFieldsCount, panUpdatedGeomFieldsIdx, bUpdateStyleString);
+    poFeature->SetFID(nFIDOrigin);
+    return eErr;
+}
+
+/************************************************************************/
+/*                          ICreateFeature()                            */
+/************************************************************************/
+
+OGRErr OGRODSLayer::ICreateFeature(OGRFeature *poFeature)
+{
+    const GIntBig nFIDOrigin = poFeature->GetFID();
+    if (nFIDOrigin > 0)
+    {
+        const GIntBig nFIDModified = TranslateFIDToMemLayer(nFIDOrigin);
+        if (GetFeatureRef(nFIDModified))
+        {
+            SetUpdated();
+            poFeature->SetFID(nFIDModified);
+            OGRErr eErr = OGRMemLayer::ISetFeature(poFeature);
+            poFeature->SetFID(nFIDOrigin);
+            return eErr;
+        }
+    }
+    SetUpdated();
+    poFeature->SetFID(OGRNullFID);
+    OGRErr eErr = OGRMemLayer::ICreateFeature(poFeature);
+    poFeature->SetFID(TranslateFIDFromMemLayer(poFeature->GetFID()));
     return eErr;
 }
 
@@ -176,17 +254,17 @@ OGRErr OGRODSLayer::ISetFeature( OGRFeature *poFeature )
 /*                          DeleteFeature()                             */
 /************************************************************************/
 
-OGRErr OGRODSLayer::DeleteFeature( GIntBig nFID )
+OGRErr OGRODSLayer::DeleteFeature(GIntBig nFID)
 {
     SetUpdated();
-    return OGRMemLayer::DeleteFeature(nFID - (1 + (bHasHeaderLine ? 1 : 0)));
+    return OGRMemLayer::DeleteFeature(TranslateFIDToMemLayer(nFID));
 }
 
 /************************************************************************/
 /*                         SetAttributeFilter()                         */
 /************************************************************************/
 
-OGRErr OGRODSLayer::SetAttributeFilter( const char *pszQuery )
+OGRErr OGRODSLayer::SetAttributeFilter(const char *pszQuery)
 
 {
     // Intercept attribute filter since we mess up with FIDs
@@ -201,44 +279,40 @@ OGRErr OGRODSLayer::SetAttributeFilter( const char *pszQuery )
 /*                           TestCapability()                           */
 /************************************************************************/
 
-int OGRODSLayer::TestCapability( const char * pszCap )
+int OGRODSLayer::TestCapability(const char *pszCap)
 
 {
-    if( EQUAL(pszCap,OLCFastFeatureCount) )
+    if (EQUAL(pszCap, OLCFastFeatureCount))
         return m_poFilterGeom == nullptr && m_poAttrQueryODS == nullptr;
     return OGRMemLayer::TestCapability(pszCap);
+}
+
+/************************************************************************/
+/*                             GetDataset()                             */
+/************************************************************************/
+
+GDALDataset *OGRODSLayer::GetDataset()
+{
+    return poDS;
 }
 
 /************************************************************************/
 /*                          OGRODSDataSource()                          */
 /************************************************************************/
 
-OGRODSDataSource::OGRODSDataSource() :
-    pszName(nullptr),
-    bUpdatable(false),
-    bUpdated(false),
-    bAnalysedFile(false),
-    nLayers(0),
-    papoLayers(nullptr),
-    fpSettings(nullptr),
-    nFlags(0),
-    fpContent(nullptr),
-    bFirstLineIsHeaders(false),
-    bAutodetectTypes(
-        !EQUAL(CPLGetConfigOption("OGR_ODS_FIELD_TYPES", ""), "STRING")),
-    oParser(nullptr),
-    bStopParsing(false),
-    nWithoutEventCounter(0),
-    nDataHandlerCounter(0),
-    nCurLine(0),
-    nEmptyRowsAccumulated(0),
-    nRowsRepeated(1),
-    nCurCol(0),
-    nCellsRepeated(0),
-    bEndTableParsing(false),
-    poCurLayer(nullptr),
-    nStackDepth(0),
-    nDepth(0)
+OGRODSDataSource::OGRODSDataSource(CSLConstList papszOpenOptionsIn)
+    : pszName(nullptr), bUpdatable(false), bUpdated(false),
+      bAnalysedFile(false), nLayers(0), papoLayers(nullptr),
+      fpSettings(nullptr), nVerticalSplitFlags(0), fpContent(nullptr),
+      bFirstLineIsHeaders(false),
+      bAutodetectTypes(!EQUAL(
+          CSLFetchNameValueDef(papszOpenOptionsIn, "FIELD_TYPES",
+                               CPLGetConfigOption("OGR_ODS_FIELD_TYPES", "")),
+          "STRING")),
+      oParser(nullptr), bStopParsing(false), nWithoutEventCounter(0),
+      nDataHandlerCounter(0), nCurLine(0), nEmptyRowsAccumulated(0),
+      nRowsRepeated(1), nCurCol(0), nCellsRepeated(0), bEndTableParsing(false),
+      poCurLayer(nullptr), nStackDepth(0), nDepth(0)
 {
     stateStack[0].eVal = STATE_DEFAULT;
     stateStack[0].nBeginDepth = 0;
@@ -251,42 +325,68 @@ OGRODSDataSource::OGRODSDataSource() :
 OGRODSDataSource::~OGRODSDataSource()
 
 {
-    OGRODSDataSource::FlushCache(true);
+    OGRODSDataSource::Close();
+}
 
-    CPLFree( pszName );
+/************************************************************************/
+/*                              Close()                                 */
+/************************************************************************/
 
-    if (fpContent)
-        VSIFCloseL(fpContent);
-    if (fpSettings)
-        VSIFCloseL(fpSettings);
+CPLErr OGRODSDataSource::Close()
+{
+    CPLErr eErr = CE_None;
+    if (nOpenFlags != OPEN_FLAGS_CLOSED)
+    {
+        if (OGRODSDataSource::FlushCache(true) != CE_None)
+            eErr = CE_Failure;
 
-    for(int i=0;i<nLayers;i++)
-        delete papoLayers[i];
-    CPLFree( papoLayers );
+        CPLFree(pszName);
+
+        // Those are read-only files, so we can ignore VSIFCloseL() return
+        // value.
+        if (fpContent)
+            VSIFCloseL(fpContent);
+        if (fpSettings)
+            VSIFCloseL(fpSettings);
+
+        for (int i = 0; i < nLayers; i++)
+            delete papoLayers[i];
+        CPLFree(papoLayers);
+
+        if (GDALDataset::Close() != CE_None)
+            eErr = CE_Failure;
+    }
+    return eErr;
 }
 
 /************************************************************************/
 /*                           TestCapability()                           */
 /************************************************************************/
 
-int OGRODSDataSource::TestCapability( const char * pszCap )
+int OGRODSDataSource::TestCapability(const char *pszCap)
 
 {
-    if( EQUAL(pszCap,ODsCCreateLayer) )
+    if (EQUAL(pszCap, ODsCCreateLayer))
         return bUpdatable;
-    else if( EQUAL(pszCap,ODsCDeleteLayer) )
+    else if (EQUAL(pszCap, ODsCDeleteLayer))
         return bUpdatable;
-    else if( EQUAL(pszCap,ODsCRandomLayerWrite) )
+    else if (EQUAL(pszCap, ODsCRandomLayerWrite))
         return bUpdatable;
+    else if (EQUAL(pszCap, ODsCMeasuredGeometries))
+        return true;
+    else if (EQUAL(pszCap, ODsCZGeometries))
+        return true;
+    else if (EQUAL(pszCap, ODsCCurveGeometries))
+        return true;
     else
-        return FALSE;
+        return false;
 }
 
 /************************************************************************/
 /*                              GetLayer()                              */
 /************************************************************************/
 
-OGRLayer *OGRODSDataSource::GetLayer( int iLayer )
+OGRLayer *OGRODSDataSource::GetLayer(int iLayer)
 
 {
     AnalyseFile();
@@ -310,16 +410,14 @@ int OGRODSDataSource::GetLayerCount()
 /*                                Open()                                */
 /************************************************************************/
 
-int OGRODSDataSource::Open( const char * pszFilename,
-                            VSILFILE* fpContentIn,
-                            VSILFILE* fpSettingsIn,
-                            int bUpdatableIn)
+int OGRODSDataSource::Open(const char *pszFilename, VSILFILE *fpContentIn,
+                           VSILFILE *fpSettingsIn, int bUpdatableIn)
 
 {
     SetDescription(pszFilename);
     bUpdatable = CPL_TO_BOOL(bUpdatableIn);
 
-    pszName = CPLStrdup( pszFilename );
+    pszName = CPLStrdup(pszFilename);
     fpContent = fpContentIn;
     fpSettings = fpSettingsIn;
 
@@ -330,14 +428,14 @@ int OGRODSDataSource::Open( const char * pszFilename,
 /*                             Create()                                 */
 /************************************************************************/
 
-int OGRODSDataSource::Create( const char * pszFilename,
-                              char ** /* papszOptions */ )
+int OGRODSDataSource::Create(const char *pszFilename,
+                             char ** /* papszOptions */)
 {
     bUpdated = true;
     bUpdatable = true;
     bAnalysedFile = true;
 
-    pszName = CPLStrdup( pszFilename );
+    pszName = CPLStrdup(pszFilename);
 
     return TRUE;
 }
@@ -349,25 +447,35 @@ int OGRODSDataSource::Create( const char * pszFilename,
 static void XMLCALL startElementCbk(void *pUserData, const char *pszName,
                                     const char **ppszAttr)
 {
-  static_cast<OGRODSDataSource *>(pUserData)->
-      startElementCbk( pszName, ppszAttr );
+    static_cast<OGRODSDataSource *>(pUserData)->startElementCbk(pszName,
+                                                                ppszAttr);
 }
 
-void OGRODSDataSource::startElementCbk( const char *pszNameIn,
-                                        const char **ppszAttr)
+void OGRODSDataSource::startElementCbk(const char *pszNameIn,
+                                       const char **ppszAttr)
 {
-    if( bStopParsing )
+    if (bStopParsing)
         return;
 
     nWithoutEventCounter = 0;
-    switch(stateStack[nStackDepth].eVal)
+    switch (stateStack[nStackDepth].eVal)
     {
-        case STATE_DEFAULT: startElementDefault(pszNameIn, ppszAttr); break;
-        case STATE_TABLE:   startElementTable(pszNameIn, ppszAttr); break;
-        case STATE_ROW:     startElementRow(pszNameIn, ppszAttr); break;
-        case STATE_CELL:    startElementCell(pszNameIn, ppszAttr); break;
-        case STATE_TEXTP:   break;
-        default:            break;
+        case STATE_DEFAULT:
+            startElementDefault(pszNameIn, ppszAttr);
+            break;
+        case STATE_TABLE:
+            startElementTable(pszNameIn, ppszAttr);
+            break;
+        case STATE_ROW:
+            startElementRow(pszNameIn, ppszAttr);
+            break;
+        case STATE_CELL:
+            startElementCell(pszNameIn, ppszAttr);
+            break;
+        case STATE_TEXTP:
+            break;
+        default:
+            break;
     }
     nDepth++;
 }
@@ -378,7 +486,7 @@ void OGRODSDataSource::startElementCbk( const char *pszNameIn,
 
 static void XMLCALL endElementCbk(void *pUserData, const char *pszName)
 {
-    static_cast<OGRODSDataSource*>(pUserData)->endElementCbk(pszName);
+    static_cast<OGRODSDataSource *>(pUserData)->endElementCbk(pszName);
 }
 
 void OGRODSDataSource::endElementCbk(const char *pszNameIn)
@@ -389,18 +497,27 @@ void OGRODSDataSource::endElementCbk(const char *pszNameIn)
     nWithoutEventCounter = 0;
 
     nDepth--;
-    switch(stateStack[nStackDepth].eVal)
+    switch (stateStack[nStackDepth].eVal)
     {
-        case STATE_DEFAULT: break;
-        case STATE_TABLE:   endElementTable(pszNameIn); break;
-        case STATE_ROW:     endElementRow(pszNameIn); break;
-        case STATE_CELL:    endElementCell(pszNameIn); break;
-        case STATE_TEXTP:   break;
-        default:            break;
+        case STATE_DEFAULT:
+            break;
+        case STATE_TABLE:
+            endElementTable(pszNameIn);
+            break;
+        case STATE_ROW:
+            endElementRow(pszNameIn);
+            break;
+        case STATE_CELL:
+            endElementCell(pszNameIn);
+            break;
+        case STATE_TEXTP:
+            break;
+        default:
+            break;
     }
 
     if (stateStack[nStackDepth].nBeginDepth == nDepth)
-        nStackDepth --;
+        nStackDepth--;
 }
 
 /************************************************************************/
@@ -409,7 +526,7 @@ void OGRODSDataSource::endElementCbk(const char *pszNameIn)
 
 static void XMLCALL dataHandlerCbk(void *pUserData, const char *data, int nLen)
 {
-    static_cast<OGRODSDataSource*>(pUserData)->dataHandlerCbk(data, nLen);
+    static_cast<OGRODSDataSource *>(pUserData)->dataHandlerCbk(data, nLen);
 }
 
 void OGRODSDataSource::dataHandlerCbk(const char *data, int nLen)
@@ -417,8 +534,8 @@ void OGRODSDataSource::dataHandlerCbk(const char *data, int nLen)
     if (bStopParsing)
         return;
 
-    nDataHandlerCounter ++;
-    if (nDataHandlerCounter >= BUFSIZ)
+    nDataHandlerCounter++;
+    if (nDataHandlerCounter >= PARSER_BUF_SIZE)
     {
         CPLError(CE_Failure, CPLE_AppDefined,
                  "File probably corrupted (million laugh pattern)");
@@ -429,16 +546,21 @@ void OGRODSDataSource::dataHandlerCbk(const char *data, int nLen)
 
     nWithoutEventCounter = 0;
 
-    switch(stateStack[nStackDepth].eVal)
+    switch (stateStack[nStackDepth].eVal)
     {
-        case STATE_DEFAULT: break;
-        case STATE_TABLE:   break;
-        case STATE_ROW:     break;
-        case STATE_CELL:    break;
+        case STATE_DEFAULT:
+            break;
+        case STATE_TABLE:
+            break;
+        case STATE_ROW:
+            break;
+        case STATE_CELL:
+            break;
         case STATE_TEXTP:
             dataHandlerTextP(data, nLen);
             break;
-        default:            break;
+        default:
+            break;
     }
 }
 
@@ -453,7 +575,7 @@ void OGRODSDataSource::PushState(HandlerStateEnum eVal)
         bStopParsing = true;
         return;
     }
-    nStackDepth ++;
+    nStackDepth++;
     stateStack[nStackDepth].eVal = eVal;
     stateStack[nStackDepth].nBeginDepth = nDepth;
 }
@@ -462,11 +584,10 @@ void OGRODSDataSource::PushState(HandlerStateEnum eVal)
 /*                          GetAttributeValue()                         */
 /************************************************************************/
 
-static const char* GetAttributeValue(const char **ppszAttr,
-                                     const char* pszKey,
-                                     const char* pszDefaultVal)
+static const char *GetAttributeValue(const char **ppszAttr, const char *pszKey,
+                                     const char *pszDefaultVal)
 {
-    while(*ppszAttr)
+    while (*ppszAttr)
     {
         if (strcmp(ppszAttr[0], pszKey) == 0)
             return ppszAttr[1];
@@ -479,9 +600,9 @@ static const char* GetAttributeValue(const char **ppszAttr,
 /*                            GetOGRFieldType()                         */
 /************************************************************************/
 
-OGRFieldType OGRODSDataSource::GetOGRFieldType(const char* pszValue,
-                                               const char* pszValueType,
-                                               OGRFieldSubType& eSubType)
+OGRFieldType OGRODSDataSource::GetOGRFieldType(const char *pszValue,
+                                               const char *pszValueType,
+                                               OGRFieldSubType &eSubType)
 {
     eSubType = OFSTNone;
     if (!bAutodetectTypes || pszValueType == nullptr)
@@ -494,7 +615,7 @@ OGRFieldType OGRODSDataSource::GetOGRFieldType(const char* pszValue,
         if (CPLGetValueType(pszValue) == CPL_VALUE_INTEGER)
         {
             GIntBig nVal = CPLAtoGIntBig(pszValue);
-            if( !CPL_INT64_FITS_ON_INT32(nVal) )
+            if (!CPL_INT64_FITS_ON_INT32(nVal))
                 return OFTInteger64;
             else
                 return OFTInteger;
@@ -528,9 +649,7 @@ OGRFieldType OGRODSDataSource::GetOGRFieldType(const char* pszValue,
 /*                              SetField()                              */
 /************************************************************************/
 
-static void SetField(OGRFeature* poFeature,
-                     int i,
-                     const char* pszValue)
+static void SetField(OGRFeature *poFeature, int i, const char *pszValue)
 {
     if (pszValue[0] == '\0')
         return;
@@ -541,25 +660,27 @@ static void SetField(OGRFeature* poFeature,
         int nHour, nHourRepeated, nMinute, nSecond;
         char c = '\0';
         if (STARTS_WITH(pszValue, "PT") &&
-            sscanf(pszValue + 2, "%02d%c%02d%c%02d%c",
-                   &nHour, &c, &nMinute, &c, &nSecond, &c) == 6)
+            sscanf(pszValue + 2, "%02d%c%02d%c%02d%c", &nHour, &c, &nMinute, &c,
+                   &nSecond, &c) == 6)
         {
-            poFeature->SetField(i, 0, 0, 0, nHour, nMinute, static_cast<float>(nSecond), 0);
+            poFeature->SetField(i, 0, 0, 0, nHour, nMinute,
+                                static_cast<float>(nSecond), 0);
         }
         /* bug with kspread 2.1.2 ? */
         /* ex PT121234M56S */
         else if (STARTS_WITH(pszValue, "PT") &&
-                 sscanf(pszValue + 2, "%02d%02d%02d%c%02d%c",
-                        &nHour, &nHourRepeated, &nMinute, &c, &nSecond, &c) == 6 &&
+                 sscanf(pszValue + 2, "%02d%02d%02d%c%02d%c", &nHour,
+                        &nHourRepeated, &nMinute, &c, &nSecond, &c) == 6 &&
                  nHour == nHourRepeated)
         {
-            poFeature->SetField(i, 0, 0, 0, nHour, nMinute, static_cast<float>(nSecond), 0);
+            poFeature->SetField(i, 0, 0, 0, nHour, nMinute,
+                                static_cast<float>(nSecond), 0);
         }
     }
     else if (eType == OFTDate || eType == OFTDateTime)
     {
         OGRField sField;
-        if (OGRParseXMLDateTime( pszValue, &sField ))
+        if (OGRParseXMLDateTime(pszValue, &sField))
         {
             poFeature->SetField(i, &sField);
         }
@@ -577,7 +698,7 @@ void OGRODSDataSource::DetectHeaderLine()
 {
     bool bHeaderLineCandidate = true;
 
-    for( size_t i = 0; i < apoFirstLineTypes.size(); i++ )
+    for (size_t i = 0; i < apoFirstLineTypes.size(); i++)
     {
         if (apoFirstLineTypes[i] != "string")
         {
@@ -590,21 +711,23 @@ void OGRODSDataSource::DetectHeaderLine()
 
     size_t nCountTextOnCurLine = 0;
     size_t nCountNonEmptyOnCurLine = 0;
-    for( size_t i = 0; bHeaderLineCandidate && i < apoCurLineTypes.size(); i++ )
+    for (size_t i = 0; bHeaderLineCandidate && i < apoCurLineTypes.size(); i++)
     {
         if (apoCurLineTypes[i] == "string")
         {
-            /* If there are only text values on the second line, then we cannot */
+            /* If there are only text values on the second line, then we cannot
+             */
             /* know if it is a header line or just a regular line */
-            nCountTextOnCurLine ++;
+            nCountTextOnCurLine++;
         }
         else if (apoCurLineTypes[i] != "")
         {
-            nCountNonEmptyOnCurLine ++;
+            nCountNonEmptyOnCurLine++;
         }
     }
 
-    const char* pszODSHeaders = CPLGetConfigOption("OGR_ODS_HEADERS", "");
+    const char *pszODSHeaders = CSLFetchNameValueDef(
+        papszOpenOptions, "HEADERS", CPLGetConfigOption("OGR_ODS_HEADERS", ""));
     bFirstLineIsHeaders = false;
     if (EQUAL(pszODSHeaders, "FORCE"))
         bFirstLineIsHeaders = true;
@@ -615,16 +738,14 @@ void OGRODSDataSource::DetectHeaderLine()
     {
         bFirstLineIsHeaders = true;
     }
-    else if( bHeaderLineCandidate &&
-             !apoFirstLineTypes.empty() &&
+    else if (bHeaderLineCandidate && !apoFirstLineTypes.empty() &&
              apoFirstLineTypes.size() == apoCurLineTypes.size() &&
              nCountTextOnCurLine != apoFirstLineTypes.size() &&
-             nCountNonEmptyOnCurLine != 0 )
+             nCountNonEmptyOnCurLine != 0)
     {
         bFirstLineIsHeaders = true;
     }
-    CPLDebug("ODS", "%s %s",
-             poCurLayer->GetName(),
+    CPLDebug("ODS", "%s %s", poCurLayer->GetName(),
              bFirstLineIsHeaders ? "has header line" : "has no header line");
 }
 
@@ -637,11 +758,12 @@ void OGRODSDataSource::startElementDefault(const char *pszNameIn,
 {
     if (strcmp(pszNameIn, "table:table") == 0)
     {
-        const char* pszTableName =
+        const char *pszTableName =
             GetAttributeValue(ppszAttr, "table:name", "unnamed");
 
         poCurLayer = new OGRODSLayer(this, pszTableName);
-        papoLayers = (OGRLayer**)CPLRealloc(papoLayers, (nLayers + 1) * sizeof(OGRLayer*));
+        papoLayers = (OGRLayer **)CPLRealloc(
+            papoLayers, (nLayers + 1) * sizeof(OGRLayer *));
         papoLayers[nLayers++] = poCurLayer;
 
         nCurLine = 0;
@@ -660,11 +782,11 @@ void OGRODSDataSource::startElementDefault(const char *pszNameIn,
 void OGRODSDataSource::startElementTable(const char *pszNameIn,
                                          const char **ppszAttr)
 {
-    if( strcmp(pszNameIn, "table:table-row") == 0 && !bEndTableParsing )
+    if (strcmp(pszNameIn, "table:table-row") == 0 && !bEndTableParsing)
     {
         nRowsRepeated = atoi(
             GetAttributeValue(ppszAttr, "table:number-rows-repeated", "1"));
-        if( static_cast<GIntBig>(nCurLine) + nRowsRepeated + 2 >= 1048576 )
+        if (static_cast<GIntBig>(nCurLine) + nRowsRepeated + 2 >= 1048576)
         {
             // Typical of a XLSX converted to ODS
             bEndTableParsing = true;
@@ -681,9 +803,9 @@ void OGRODSDataSource::startElementTable(const char *pszNameIn,
         }
         const int nFields = std::max(
             static_cast<int>(apoFirstLineValues.size()),
-            poCurLayer != nullptr ?
-                poCurLayer->GetLayerDefn()->GetFieldCount() : 0);
-        if( nFields > 0 && nRowsRepeated > 100000 / nFields )
+            poCurLayer != nullptr ? poCurLayer->GetLayerDefn()->GetFieldCount()
+                                  : 0);
+        if (nFields > 0 && nRowsRepeated > 100000 / nFields)
         {
             CPLError(CE_Failure, CPLE_AppDefined,
                      "Too big gap with previous valid row");
@@ -704,24 +826,23 @@ void OGRODSDataSource::startElementTable(const char *pszNameIn,
 /*                      ReserveAndLimitFieldCount()                     */
 /************************************************************************/
 
-static void ReserveAndLimitFieldCount(OGRLayer* poLayer,
-                                      std::vector<std::string>& aosValues)
+static void ReserveAndLimitFieldCount(OGRLayer *poLayer,
+                                      std::vector<std::string> &aosValues)
 {
-    int nMaxCols = atoi(
-        CPLGetConfigOption("OGR_ODS_MAX_FIELD_COUNT", "2000"));
+    int nMaxCols = atoi(CPLGetConfigOption("OGR_ODS_MAX_FIELD_COUNT", "2000"));
     // Arbitrary limit to please Coverity Scan that would complain about
     // tainted_data to resize aosValues.
     constexpr int MAXCOLS_LIMIT = 1000000;
-    if( nMaxCols > MAXCOLS_LIMIT )
+    if (nMaxCols > MAXCOLS_LIMIT)
         nMaxCols = MAXCOLS_LIMIT;
-    if( static_cast<int>(aosValues.size()) > nMaxCols )
+    if (static_cast<int>(aosValues.size()) > nMaxCols)
     {
         CPLError(CE_Warning, CPLE_AppDefined,
                  "%d columns detected. Limiting to %d. "
                  "Set OGR_ODS_MAX_FIELD_COUNT configuration option "
                  "to allow more fields.",
-                 static_cast<int>(aosValues.size()),
-                 nMaxCols);
+                 static_cast<int>(aosValues.size()), nMaxCols);
+        // coverity[tainted_data]
         aosValues.resize(nMaxCols);
     }
 
@@ -733,19 +854,19 @@ static void ReserveAndLimitFieldCount(OGRLayer* poLayer,
 /*                           endElementTable()                          */
 /************************************************************************/
 
-void OGRODSDataSource::endElementTable( CPL_UNUSED /* in non-DEBUG*/ const char * pszNameIn )
+void OGRODSDataSource::endElementTable(
+    CPL_UNUSED /* in non-DEBUG*/ const char *pszNameIn)
 {
     if (stateStack[nStackDepth].nBeginDepth == nDepth)
     {
         // Only use of pszNameIn.
         CPLAssert(strcmp(pszNameIn, "table:table") == 0);
 
-        if (nCurLine == 0 ||
-            (nCurLine == 1 && apoFirstLineValues.empty()))
+        if (nCurLine == 0 || (nCurLine == 1 && apoFirstLineValues.empty()))
         {
             /* Remove empty sheet */
             delete poCurLayer;
-            nLayers --;
+            nLayers--;
             poCurLayer = nullptr;
         }
         else if (nCurLine == 1)
@@ -754,22 +875,23 @@ void OGRODSDataSource::endElementTable( CPL_UNUSED /* in non-DEBUG*/ const char 
 
             ReserveAndLimitFieldCount(poCurLayer, apoFirstLineValues);
 
-            for( size_t i = 0; i < apoFirstLineValues.size(); i++ )
+            for (size_t i = 0; i < apoFirstLineValues.size(); i++)
             {
-                const char* pszFieldName = CPLSPrintf("Field%d", (int)i + 1);
+                const char *pszFieldName = CPLSPrintf("Field%d", (int)i + 1);
                 OGRFieldSubType eSubType = OFSTNone;
-                OGRFieldType eType = GetOGRFieldType(apoFirstLineValues[i].c_str(),
-                                                     apoFirstLineTypes[i].c_str(),
-                                                     eSubType);
+                OGRFieldType eType =
+                    GetOGRFieldType(apoFirstLineValues[i].c_str(),
+                                    apoFirstLineTypes[i].c_str(), eSubType);
                 OGRFieldDefn oFieldDefn(pszFieldName, eType);
                 oFieldDefn.SetSubType(eSubType);
                 poCurLayer->CreateField(&oFieldDefn);
             }
 
-            OGRFeature* poFeature = new OGRFeature(poCurLayer->GetLayerDefn());
-            for( size_t i = 0; i < apoFirstLineValues.size(); i++ )
+            OGRFeature *poFeature = new OGRFeature(poCurLayer->GetLayerDefn());
+            for (size_t i = 0; i < apoFirstLineValues.size(); i++)
             {
-                SetField(poFeature, static_cast<int>(i), apoFirstLineValues[i].c_str());
+                SetField(poFeature, static_cast<int>(i),
+                         apoFirstLineValues[i].c_str());
             }
             CPL_IGNORE_RET_VAL(poCurLayer->CreateFeature(poFeature));
             delete poFeature;
@@ -777,20 +899,21 @@ void OGRODSDataSource::endElementTable( CPL_UNUSED /* in non-DEBUG*/ const char 
 
         if (poCurLayer)
         {
-            if( CPLTestBool(CPLGetConfigOption("ODS_RESOLVE_FORMULAS", "YES")) )
+            if (CPLTestBool(CPLGetConfigOption("ODS_RESOLVE_FORMULAS", "YES")))
             {
                 poCurLayer->ResetReading();
 
                 int nRow = 0;
-                OGRFeature* poFeature = poCurLayer->GetNextFeature();
+                OGRFeature *poFeature = poCurLayer->GetNextFeature();
                 while (poFeature)
                 {
-                    for( int i = 0; i < poFeature->GetFieldCount(); i++ )
+                    for (int i = 0; i < poFeature->GetFieldCount(); i++)
                     {
                         if (poFeature->IsFieldSetAndNotNull(i) &&
-                            poFeature->GetFieldDefnRef(i)->GetType() == OFTString)
+                            poFeature->GetFieldDefnRef(i)->GetType() ==
+                                OFTString)
                         {
-                            const char* pszVal = poFeature->GetFieldAsString(i);
+                            const char *pszVal = poFeature->GetFieldAsString(i);
                             if (STARTS_WITH(pszVal, "of:="))
                             {
                                 ODSCellEvaluator oCellEvaluator(poCurLayer);
@@ -801,16 +924,15 @@ void OGRODSDataSource::endElementTable( CPL_UNUSED /* in non-DEBUG*/ const char 
                     delete poFeature;
 
                     poFeature = poCurLayer->GetNextFeature();
-                    nRow ++;
+                    nRow++;
                 }
             }
 
             poCurLayer->ResetReading();
 
-            reinterpret_cast<OGRMemLayer*>(poCurLayer)->
-                SetUpdatable(bUpdatable);
-            reinterpret_cast<OGRMemLayer*>(poCurLayer)->SetAdvertizeUTF8(true);
-            reinterpret_cast<OGRODSLayer*>(poCurLayer)->SetUpdated(false);
+            reinterpret_cast<OGRMemLayer *>(poCurLayer)
+                ->SetUpdatable(bUpdatable);
+            reinterpret_cast<OGRODSLayer *>(poCurLayer)->SetUpdated(false);
         }
 
         poCurLayer = nullptr;
@@ -823,7 +945,7 @@ void OGRODSDataSource::endElementTable( CPL_UNUSED /* in non-DEBUG*/ const char 
 
 void OGRODSDataSource::FillRepeatedCells(bool wasLastCell)
 {
-    if( wasLastCell && osValue.empty() && osFormula.empty() )
+    if (wasLastCell && osValue.empty() && osFormula.empty())
     {
         nCellsRepeated = 0;
         return;
@@ -832,38 +954,54 @@ void OGRODSDataSource::FillRepeatedCells(bool wasLastCell)
     if (nCellsRepeated < 0 || nCellsRepeated > 10000)
     {
         CPLError(CE_Failure, CPLE_NotSupported,
-                    "Invalid value for number-columns-repeated = %d",
-                    nCellsRepeated);
+                 "Invalid value for number-columns-repeated = %d",
+                 nCellsRepeated);
         bEndTableParsing = true;
         nCellsRepeated = 0;
         return;
     }
-    const int nFields = nCellsRepeated +
-        (poCurLayer != nullptr ?
-            poCurLayer->GetLayerDefn()->GetFieldCount() : 0);
-    if( nFields > 0 && nRowsRepeated > 100000 / nFields )
+    const int nFields =
+        nCellsRepeated + (poCurLayer != nullptr
+                              ? poCurLayer->GetLayerDefn()->GetFieldCount()
+                              : 0);
+    if (nFields > 0 && nRowsRepeated > 100000 / nFields)
     {
         CPLError(CE_Failure, CPLE_AppDefined,
-                    "Too big gap with previous valid row");
+                 "Too big gap with previous valid row");
         bEndTableParsing = true;
         nCellsRepeated = 0;
         return;
     }
 
-    const size_t nCellMemSize =
-        (!osValue.empty()) ? osValue.size() : osFormula.size();
-    if( nCellMemSize > static_cast<size_t>(10 * 1024 * 1024) /
-            (std::max(nCellsRepeated, 1) * nRowsRepeated) )
+    // Use 16 as minimum cost for each allocation.
+    const size_t nCellMemSize = std::max<size_t>(
+        16, (!osValue.empty()) ? osValue.size() : osFormula.size());
+    if (nCellMemSize > static_cast<size_t>(10 * 1024 * 1024) /
+                           (std::max(nCellsRepeated, 1) * nRowsRepeated))
     {
         CPLError(CE_Failure, CPLE_NotSupported,
-                    "Too much memory for row/cell repetition");
+                 "Too much memory for row/cell repetition");
         bEndTableParsing = true;
         nCellsRepeated = 0;
         return;
     }
-    for(int i = 0; i < nCellsRepeated; i++)
+
+    m_nAccRepeatedMemory +=
+        nCellMemSize * std::max(nCellsRepeated, 1) * nRowsRepeated;
+    if (m_nAccRepeatedMemory > static_cast<size_t>(10 * 1024 * 1024))
     {
-        if( !osValue.empty() )
+        CPLError(CE_Failure, CPLE_NotSupported,
+                 "Too much accumulated memory for row/cell repetition. "
+                 "Parsing stopped");
+        bEndTableParsing = true;
+        nCellsRepeated = 0;
+        bStopParsing = true;
+        return;
+    }
+
+    for (int i = 0; i < nCellsRepeated; i++)
+    {
+        if (!osValue.empty())
             apoCurLineValues.push_back(osValue);
         else
             apoCurLineValues.push_back(osFormula);
@@ -888,13 +1026,13 @@ void OGRODSDataSource::startElementRow(const char *pszNameIn,
         PushState(STATE_CELL);
 
         osValueType = GetAttributeValue(ppszAttr, "office:value-type", "");
-        const char* pszValue =
+        const char *pszValue =
             GetAttributeValue(ppszAttr, "office:value", nullptr);
         if (pszValue)
             osValue = pszValue;
         else
         {
-            const char* pszDateValue =
+            const char *pszDateValue =
                 GetAttributeValue(ppszAttr, "office:date-value", nullptr);
             if (pszDateValue)
                 osValue = pszDateValue;
@@ -902,17 +1040,18 @@ void OGRODSDataSource::startElementRow(const char *pszNameIn,
                 osValue = GetAttributeValue(ppszAttr, "office:time-value", "");
         }
 
-        const char* pszFormula = GetAttributeValue(ppszAttr, "table:formula", nullptr);
+        const char *pszFormula =
+            GetAttributeValue(ppszAttr, "table:formula", nullptr);
         if (pszFormula && STARTS_WITH(pszFormula, "of:="))
         {
             osFormula = pszFormula;
-            if( osFormula == "of:=TRUE()" )
+            if (osFormula == "of:=TRUE()")
             {
                 osValue = "1";
                 osValueType = "bool";
                 osFormula.clear();
             }
-            else if( osFormula == "of:=FALSE()" )
+            else if (osFormula == "of:=FALSE()")
             {
                 osValue = "0";
                 osValueType = "bool";
@@ -925,6 +1064,7 @@ void OGRODSDataSource::startElementRow(const char *pszNameIn,
         }
         else
             osFormula = "";
+        m_bValueFromTableCellAttribute = !osValue.empty();
 
         nCellsRepeated = atoi(
             GetAttributeValue(ppszAttr, "table:number-columns-repeated", "1"));
@@ -943,7 +1083,8 @@ void OGRODSDataSource::startElementRow(const char *pszNameIn,
 /*                            endElementRow()                           */
 /************************************************************************/
 
-void OGRODSDataSource::endElementRow( CPL_UNUSED /*in non-DEBUG*/ const char * pszNameIn )
+void OGRODSDataSource::endElementRow(
+    CPL_UNUSED /*in non-DEBUG*/ const char *pszNameIn)
 {
     if (stateStack[nStackDepth].nBeginDepth == nDepth)
     {
@@ -954,9 +1095,9 @@ void OGRODSDataSource::endElementRow( CPL_UNUSED /*in non-DEBUG*/ const char * p
         /* Remove blank columns at the right to defer type evaluation */
         /* until necessary */
         size_t i = apoCurLineTypes.size();
-        while(i > 0)
+        while (i > 0)
         {
-            i --;
+            i--;
             if (apoCurLineTypes[i] == "")
             {
                 apoCurLineValues.resize(i);
@@ -970,7 +1111,7 @@ void OGRODSDataSource::endElementRow( CPL_UNUSED /*in non-DEBUG*/ const char * p
 
         /* Do not add immediately empty rows. Wait until there is another non */
         /* empty row */
-        OGRFeature* poFeature = nullptr;
+        OGRFeature *poFeature = nullptr;
 
         if (nCurLine >= 2 && apoCurLineTypes.empty())
         {
@@ -979,7 +1120,7 @@ void OGRODSDataSource::endElementRow( CPL_UNUSED /*in non-DEBUG*/ const char * p
         }
         else if (nEmptyRowsAccumulated > 0)
         {
-            for(i = 0; i < (size_t)nEmptyRowsAccumulated; i++)
+            for (i = 0; i < (size_t)nEmptyRowsAccumulated; i++)
             {
                 poFeature = new OGRFeature(poCurLayer->GetLayerDefn());
                 CPL_IGNORE_RET_VAL(poCurLayer->CreateFeature(poFeature));
@@ -995,7 +1136,7 @@ void OGRODSDataSource::endElementRow( CPL_UNUSED /*in non-DEBUG*/ const char * p
             apoFirstLineTypes = apoCurLineTypes;
             apoFirstLineValues = apoCurLineValues;
 
-    #if skip_leading_empty_rows
+#if skip_leading_empty_rows
             if (apoFirstLineTypes.empty())
             {
                 /* Skip leading empty rows */
@@ -1003,7 +1144,7 @@ void OGRODSDataSource::endElementRow( CPL_UNUSED /*in non-DEBUG*/ const char * p
                 apoFirstLineValues.resize(0);
                 return;
             }
-    #endif
+#endif
         }
 
         if (nCurLine == 1)
@@ -1016,9 +1157,9 @@ void OGRODSDataSource::endElementRow( CPL_UNUSED /*in non-DEBUG*/ const char * p
 
             if (bFirstLineIsHeaders)
             {
-                for(i = 0; i < apoFirstLineValues.size(); i++)
+                for (i = 0; i < apoFirstLineValues.size(); i++)
                 {
-                    const char* pszFieldName = apoFirstLineValues[i].c_str();
+                    const char *pszFieldName = apoFirstLineValues[i].c_str();
                     if (pszFieldName[0] == '\0')
                         pszFieldName = CPLSPrintf("Field%d", (int)i + 1);
                     OGRFieldType eType = OFTString;
@@ -1036,24 +1177,24 @@ void OGRODSDataSource::endElementRow( CPL_UNUSED /*in non-DEBUG*/ const char * p
             }
             else
             {
-                for(i = 0; i < apoFirstLineValues.size(); i++)
+                for (i = 0; i < apoFirstLineValues.size(); i++)
                 {
-                    const char* pszFieldName =
+                    const char *pszFieldName =
                         CPLSPrintf("Field%d", (int)i + 1);
                     OGRFieldSubType eSubType = OFSTNone;
-                    OGRFieldType eType = GetOGRFieldType(
-                                            apoFirstLineValues[i].c_str(),
-                                            apoFirstLineTypes[i].c_str(),
-                                            eSubType);
+                    OGRFieldType eType =
+                        GetOGRFieldType(apoFirstLineValues[i].c_str(),
+                                        apoFirstLineTypes[i].c_str(), eSubType);
                     OGRFieldDefn oFieldDefn(pszFieldName, eType);
                     oFieldDefn.SetSubType(eSubType);
                     poCurLayer->CreateField(&oFieldDefn);
                 }
 
                 poFeature = new OGRFeature(poCurLayer->GetLayerDefn());
-                for(i = 0; i < apoFirstLineValues.size(); i++)
+                for (i = 0; i < apoFirstLineValues.size(); i++)
                 {
-                    SetField(poFeature, static_cast<int>(i), apoFirstLineValues[i].c_str());
+                    SetField(poFeature, static_cast<int>(i),
+                             apoFirstLineValues[i].c_str());
                 }
                 CPL_IGNORE_RET_VAL(poCurLayer->CreateFeature(poFeature));
                 delete poFeature;
@@ -1067,10 +1208,11 @@ void OGRODSDataSource::endElementRow( CPL_UNUSED /*in non-DEBUG*/ const char * p
                 (size_t)poCurLayer->GetLayerDefn()->GetFieldCount())
             {
                 GIntBig nFeatureCount = poCurLayer->GetFeatureCount(false);
-                if( nFeatureCount > 0 &&
-                    static_cast<size_t>(apoCurLineValues.size() -
+                if (nFeatureCount > 0 &&
+                    static_cast<size_t>(
+                        apoCurLineValues.size() -
                         poCurLayer->GetLayerDefn()->GetFieldCount()) >
-                            static_cast<size_t>(100000 / nFeatureCount) )
+                        static_cast<size_t>(100000 / nFeatureCount))
                 {
                     CPLError(CE_Failure, CPLE_NotSupported,
                              "Adding too many columns to too many "
@@ -1081,18 +1223,16 @@ void OGRODSDataSource::endElementRow( CPL_UNUSED /*in non-DEBUG*/ const char * p
 
                 ReserveAndLimitFieldCount(poCurLayer, apoCurLineValues);
 
-                for( i = static_cast<size_t>(
+                for (i = static_cast<size_t>(
                          poCurLayer->GetLayerDefn()->GetFieldCount());
-                     i < apoCurLineValues.size();
-                     i++ )
+                     i < apoCurLineValues.size(); i++)
                 {
-                    const char* pszFieldName =
+                    const char *pszFieldName =
                         CPLSPrintf("Field%d", static_cast<int>(i) + 1);
                     OGRFieldSubType eSubType = OFSTNone;
-                    const OGRFieldType eType = GetOGRFieldType(
-                        apoCurLineValues[i].c_str(),
-                        apoCurLineTypes[i].c_str(),
-                        eSubType);
+                    const OGRFieldType eType =
+                        GetOGRFieldType(apoCurLineValues[i].c_str(),
+                                        apoCurLineTypes[i].c_str(), eSubType);
                     OGRFieldDefn oFieldDefn(pszFieldName, eType);
                     oFieldDefn.SetSubType(eSubType);
                     poCurLayer->CreateField(&oFieldDefn);
@@ -1102,78 +1242,77 @@ void OGRODSDataSource::endElementRow( CPL_UNUSED /*in non-DEBUG*/ const char * p
             /* Update field type if necessary */
             if (bAutodetectTypes)
             {
-                for(i = 0; i < apoCurLineValues.size(); i++)
+                for (i = 0; i < apoCurLineValues.size(); i++)
                 {
-                    if (!apoCurLineValues[i].empty() )
+                    if (!apoCurLineValues[i].empty())
                     {
                         OGRFieldSubType eValSubType = OFSTNone;
                         const OGRFieldType eValType = GetOGRFieldType(
                             apoCurLineValues[i].c_str(),
-                            apoCurLineTypes[i].c_str(),
-                            eValSubType);
-                        OGRFieldDefn* poFieldDefn =
+                            apoCurLineTypes[i].c_str(), eValSubType);
+                        OGRFieldDefn *poFieldDefn =
                             poCurLayer->GetLayerDefn()->GetFieldDefn(
                                 static_cast<int>(i));
                         const OGRFieldType eFieldType = poFieldDefn->GetType();
                         if (eFieldType == OFTDateTime &&
-                            (eValType == OFTDate || eValType == OFTTime) )
+                            (eValType == OFTDate || eValType == OFTTime))
                         {
                             /* ok */
                         }
-                        else if ( eFieldType == OFTReal &&
-                                  (eValType == OFTInteger ||
-                                   eValType == OFTInteger64))
-                        {
-                           /* ok */;
-                        }
-                        else if ( eFieldType == OFTInteger64 &&
-                                  eValType == OFTInteger )
+                        else if (eFieldType == OFTReal &&
+                                 (eValType == OFTInteger ||
+                                  eValType == OFTInteger64))
                         {
                             /* ok */;
                         }
-                        else if ( eFieldType != OFTString &&
-                                  eValType != eFieldType)
+                        else if (eFieldType == OFTInteger64 &&
+                                 eValType == OFTInteger)
+                        {
+                            /* ok */;
+                        }
+                        else if (eFieldType != OFTString &&
+                                 eValType != eFieldType)
                         {
                             OGRFieldDefn oNewFieldDefn(
                                 poCurLayer->GetLayerDefn()->GetFieldDefn(
                                     static_cast<int>(i)));
                             oNewFieldDefn.SetSubType(OFSTNone);
-                            if( ( eFieldType == OFTDate ||
-                                  eFieldType == OFTTime) &&
-                                eValType == OFTDateTime )
+                            if ((eFieldType == OFTDate ||
+                                 eFieldType == OFTTime) &&
+                                eValType == OFTDateTime)
                                 oNewFieldDefn.SetType(OFTDateTime);
-                            else if( (eFieldType == OFTInteger ||
-                                      eFieldType == OFTInteger64 ) &&
+                            else if ((eFieldType == OFTInteger ||
+                                      eFieldType == OFTInteger64) &&
                                      eValType == OFTReal)
                                 oNewFieldDefn.SetType(OFTReal);
-                            else if( eFieldType == OFTInteger &&
-                                     eValType == OFTInteger64 )
+                            else if (eFieldType == OFTInteger &&
+                                     eValType == OFTInteger64)
                                 oNewFieldDefn.SetType(OFTInteger64);
                             else
                                 oNewFieldDefn.SetType(OFTString);
-                            poCurLayer->AlterFieldDefn(
-                                static_cast<int>(i), &oNewFieldDefn,
-                                ALTER_TYPE_FLAG);
+                            poCurLayer->AlterFieldDefn(static_cast<int>(i),
+                                                       &oNewFieldDefn,
+                                                       ALTER_TYPE_FLAG);
                         }
-                        else if( eFieldType == OFTInteger &&
+                        else if (eFieldType == OFTInteger &&
                                  poFieldDefn->GetSubType() == OFSTBoolean &&
                                  eValType == OFTInteger &&
-                                 eValSubType != OFSTBoolean )
+                                 eValSubType != OFSTBoolean)
                         {
-                            poFieldDefn->SetSubType(OFSTNone);
+                            whileUnsealing(poFieldDefn)->SetSubType(OFSTNone);
                         }
                     }
                 }
             }
 
             /* Add feature for current line */
-            for(int j=0;j<nRowsRepeated;j++)
+            for (int j = 0; j < nRowsRepeated; j++)
             {
                 poFeature = new OGRFeature(poCurLayer->GetLayerDefn());
-                for(i = 0; i < apoCurLineValues.size(); i++)
+                for (i = 0; i < apoCurLineValues.size(); i++)
                 {
-                    SetField( poFeature, static_cast<int>(i),
-                              apoCurLineValues[i].c_str() );
+                    SetField(poFeature, static_cast<int>(i),
+                             apoCurLineValues[i].c_str());
                 }
                 CPL_IGNORE_RET_VAL(poCurLayer->CreateFeature(poFeature));
                 delete poFeature;
@@ -1191,8 +1330,10 @@ void OGRODSDataSource::endElementRow( CPL_UNUSED /*in non-DEBUG*/ const char * p
 void OGRODSDataSource::startElementCell(const char *pszNameIn,
                                         const char ** /*ppszAttr*/)
 {
-    if (osValue.empty() && strcmp(pszNameIn, "text:p") == 0)
+    if (!m_bValueFromTableCellAttribute && strcmp(pszNameIn, "text:p") == 0)
     {
+        if (!osValue.empty())
+            osValue += '\n';
         PushState(STATE_TEXTP);
     }
 }
@@ -1201,7 +1342,8 @@ void OGRODSDataSource::startElementCell(const char *pszNameIn,
 /*                            endElementCell()                          */
 /************************************************************************/
 
-void OGRODSDataSource::endElementCell( CPL_UNUSED /*in non-DEBUG*/ const char * pszNameIn )
+void OGRODSDataSource::endElementCell(
+    CPL_UNUSED /*in non-DEBUG*/ const char *pszNameIn)
 {
     if (stateStack[nStackDepth].nBeginDepth == nDepth)
     {
@@ -1232,8 +1374,8 @@ void OGRODSDataSource::AnalyseFile()
     AnalyseSettings();
 
     oParser = OGRCreateExpatXMLParser();
-    XML_SetElementHandler( oParser, OGRODS::startElementCbk,
-                           OGRODS::endElementCbk);
+    XML_SetElementHandler(oParser, OGRODS::startElementCbk,
+                          OGRODS::endElementCbk);
     XML_SetCharacterDataHandler(oParser, OGRODS::dataHandlerCbk);
     XML_SetUserData(oParser, this);
 
@@ -1243,28 +1385,27 @@ void OGRODSDataSource::AnalyseFile()
     bStopParsing = false;
     nWithoutEventCounter = 0;
 
-    VSIFSeekL( fpContent, 0, SEEK_SET );
+    VSIFSeekL(fpContent, 0, SEEK_SET);
 
-    char aBuf[BUFSIZ];
+    std::vector<char> aBuf(PARSER_BUF_SIZE);
     int nDone = 0;
     do
     {
         nDataHandlerCounter = 0;
-        unsigned int nLen =
-            static_cast<unsigned int>(
-                VSIFReadL( aBuf, 1, sizeof(aBuf), fpContent ) );
+        unsigned int nLen = static_cast<unsigned int>(
+            VSIFReadL(aBuf.data(), 1, aBuf.size(), fpContent));
         nDone = VSIFEofL(fpContent);
-        if (XML_Parse(oParser, aBuf, nLen, nDone) == XML_STATUS_ERROR)
+        if (XML_Parse(oParser, aBuf.data(), nLen, nDone) == XML_STATUS_ERROR)
         {
-            CPLError( CE_Failure, CPLE_AppDefined,
-                      "XML parsing of ODS file failed : %s at line %d, "
-                      "column %d",
-                      XML_ErrorString(XML_GetErrorCode(oParser)),
-                      static_cast<int>(XML_GetCurrentLineNumber(oParser)),
-                      static_cast<int>(XML_GetCurrentColumnNumber(oParser)));
+            CPLError(CE_Failure, CPLE_AppDefined,
+                     "XML parsing of ODS file failed : %s at line %d, "
+                     "column %d",
+                     XML_ErrorString(XML_GetErrorCode(oParser)),
+                     static_cast<int>(XML_GetCurrentLineNumber(oParser)),
+                     static_cast<int>(XML_GetCurrentColumnNumber(oParser)));
             bStopParsing = true;
         }
-        nWithoutEventCounter ++;
+        nWithoutEventCounter++;
     } while (!nDone && !bStopParsing && nWithoutEventCounter < 10);
 
     XML_ParserFree(oParser);
@@ -1287,15 +1428,15 @@ void OGRODSDataSource::AnalyseFile()
 /*                        startElementStylesCbk()                       */
 /************************************************************************/
 
-static void XMLCALL startElementStylesCbk( void *pUserData, const char *pszName,
-                                           const char **ppszAttr)
+static void XMLCALL startElementStylesCbk(void *pUserData, const char *pszName,
+                                          const char **ppszAttr)
 {
-    static_cast<OGRODSDataSource*>(pUserData)->
-        startElementStylesCbk( pszName, ppszAttr );
+    static_cast<OGRODSDataSource *>(pUserData)->startElementStylesCbk(pszName,
+                                                                      ppszAttr);
 }
 
-void OGRODSDataSource::startElementStylesCbk( const char *pszNameIn,
-                                              const char **ppszAttr)
+void OGRODSDataSource::startElementStylesCbk(const char *pszNameIn,
+                                             const char **ppszAttr)
 {
     if (bStopParsing)
         return;
@@ -1308,21 +1449,21 @@ void OGRODSDataSource::startElementStylesCbk( const char *pszNameIn,
     {
         stateStack[++nStackDepth].nBeginDepth = nDepth;
     }
-    else if( nStackDepth == 1 &&
-             strcmp(pszNameIn, "config:config-item-map-entry") == 0 )
+    else if (nStackDepth == 1 &&
+             strcmp(pszNameIn, "config:config-item-map-entry") == 0)
     {
-        const char* pszTableName =
+        const char *pszTableName =
             GetAttributeValue(ppszAttr, "config:name", nullptr);
         if (pszTableName)
         {
             osCurrentConfigTableName = pszTableName;
-            nFlags = 0;
+            nVerticalSplitFlags = 0;
             stateStack[++nStackDepth].nBeginDepth = nDepth;
         }
     }
     else if (nStackDepth == 2 && strcmp(pszNameIn, "config:config-item") == 0)
     {
-        const char* pszConfigName =
+        const char *pszConfigName =
             GetAttributeValue(ppszAttr, "config:name", nullptr);
         if (pszConfigName)
         {
@@ -1341,7 +1482,7 @@ void OGRODSDataSource::startElementStylesCbk( const char *pszNameIn,
 
 static void XMLCALL endElementStylesCbk(void *pUserData, const char *pszName)
 {
-    static_cast<OGRODSDataSource*>(pUserData)->endElementStylesCbk(pszName);
+    static_cast<OGRODSDataSource *>(pUserData)->endElementStylesCbk(pszName);
 }
 
 void OGRODSDataSource::endElementStylesCbk(const char * /*pszName*/)
@@ -1356,17 +1497,17 @@ void OGRODSDataSource::endElementStylesCbk(const char * /*pszName*/)
     {
         if (nStackDepth == 2)
         {
-            if (nFlags == (1 | 2))
+            if (nVerticalSplitFlags == (1 | 2))
                 osSetLayerHasSplitter.insert(osCurrentConfigTableName);
         }
         if (nStackDepth == 3)
         {
             if (osConfigName == "VerticalSplitMode" && osValue == "2")
-                nFlags |= 1;
+                nVerticalSplitFlags |= 1;
             else if (osConfigName == "VerticalSplitPosition" && osValue == "1")
-                nFlags |= 2;
+                nVerticalSplitFlags |= 2;
         }
-        nStackDepth --;
+        nStackDepth--;
     }
 }
 
@@ -1374,10 +1515,11 @@ void OGRODSDataSource::endElementStylesCbk(const char * /*pszName*/)
 /*                         dataHandlerStylesCbk()                       */
 /************************************************************************/
 
-static void XMLCALL dataHandlerStylesCbk( void *pUserData, const char *data,
-                                          int nLen )
+static void XMLCALL dataHandlerStylesCbk(void *pUserData, const char *data,
+                                         int nLen)
 {
-  static_cast<OGRODSDataSource *>(pUserData)->dataHandlerStylesCbk(data, nLen);
+    static_cast<OGRODSDataSource *>(pUserData)->dataHandlerStylesCbk(data,
+                                                                     nLen);
 }
 
 void OGRODSDataSource::dataHandlerStylesCbk(const char *data, int nLen)
@@ -1385,11 +1527,11 @@ void OGRODSDataSource::dataHandlerStylesCbk(const char *data, int nLen)
     if (bStopParsing)
         return;
 
-    nDataHandlerCounter ++;
-    if (nDataHandlerCounter >= BUFSIZ)
+    nDataHandlerCounter++;
+    if (nDataHandlerCounter >= PARSER_BUF_SIZE)
     {
-        CPLError( CE_Failure, CPLE_AppDefined,
-                  "File probably corrupted (million laugh pattern)");
+        CPLError(CE_Failure, CPLE_AppDefined,
+                 "File probably corrupted (million laugh pattern)");
         XML_StopParser(oParser, XML_FALSE);
         bStopParsing = true;
         return;
@@ -1416,8 +1558,8 @@ void OGRODSDataSource::AnalyseSettings()
         return;
 
     oParser = OGRCreateExpatXMLParser();
-    XML_SetElementHandler( oParser, OGRODS::startElementStylesCbk,
-                           OGRODS::endElementStylesCbk );
+    XML_SetElementHandler(oParser, OGRODS::startElementStylesCbk,
+                          OGRODS::endElementStylesCbk);
     XML_SetCharacterDataHandler(oParser, OGRODS::dataHandlerStylesCbk);
     XML_SetUserData(oParser, this);
 
@@ -1426,26 +1568,27 @@ void OGRODSDataSource::AnalyseSettings()
     bStopParsing = false;
     nWithoutEventCounter = 0;
 
-    VSIFSeekL( fpSettings, 0, SEEK_SET );
+    VSIFSeekL(fpSettings, 0, SEEK_SET);
 
-    char aBuf[BUFSIZ];
+    std::vector<char> aBuf(PARSER_BUF_SIZE);
     int nDone = 0;
     do
     {
         nDataHandlerCounter = 0;
         unsigned int nLen =
-            (unsigned int)VSIFReadL( aBuf, 1, sizeof(aBuf), fpSettings );
+            (unsigned int)VSIFReadL(aBuf.data(), 1, aBuf.size(), fpSettings);
         nDone = VSIFEofL(fpSettings);
-        if (XML_Parse(oParser, aBuf, nLen, nDone) == XML_STATUS_ERROR)
+        if (XML_Parse(oParser, aBuf.data(), nLen, nDone) == XML_STATUS_ERROR)
         {
             CPLError(CE_Failure, CPLE_AppDefined,
-                     "XML parsing of styles.xml file failed : %s at line %d, column %d",
+                     "XML parsing of styles.xml file failed : %s at line %d, "
+                     "column %d",
                      XML_ErrorString(XML_GetErrorCode(oParser)),
                      (int)XML_GetCurrentLineNumber(oParser),
                      (int)XML_GetCurrentColumnNumber(oParser));
             bStopParsing = true;
         }
-        nWithoutEventCounter ++;
+        nWithoutEventCounter++;
     } while (!nDone && !bStopParsing && nWithoutEventCounter < 10);
 
     XML_ParserFree(oParser);
@@ -1467,60 +1610,59 @@ void OGRODSDataSource::AnalyseSettings()
 /************************************************************************/
 
 OGRLayer *
-OGRODSDataSource::ICreateLayer( const char * pszLayerName,
-                                OGRSpatialReference * /* poSRS */,
-                                OGRwkbGeometryType /* eType */,
-                                char ** papszOptions )
+OGRODSDataSource::ICreateLayer(const char *pszLayerName,
+                               const OGRGeomFieldDefn * /*poGeomFieldDefn*/,
+                               CSLConstList papszOptions)
 {
-/* -------------------------------------------------------------------- */
-/*      Verify we are in update mode.                                   */
-/* -------------------------------------------------------------------- */
-    if( !bUpdatable )
+    /* -------------------------------------------------------------------- */
+    /*      Verify we are in update mode.                                   */
+    /* -------------------------------------------------------------------- */
+    if (!bUpdatable)
     {
-        CPLError( CE_Failure, CPLE_NoWriteAccess,
-                  "Data source %s opened read-only.\n"
-                  "New layer %s cannot be created.\n",
-                  pszName, pszLayerName );
+        CPLError(CE_Failure, CPLE_NoWriteAccess,
+                 "Data source %s opened read-only.\n"
+                 "New layer %s cannot be created.\n",
+                 pszName, pszLayerName);
 
         return nullptr;
     }
 
     AnalyseFile();
 
-/* -------------------------------------------------------------------- */
-/*      Do we already have this layer?  If so, should we blow it        */
-/*      away?                                                           */
-/* -------------------------------------------------------------------- */
-    for( int iLayer = 0; iLayer < nLayers; iLayer++ )
+    /* -------------------------------------------------------------------- */
+    /*      Do we already have this layer?  If so, should we blow it        */
+    /*      away?                                                           */
+    /* -------------------------------------------------------------------- */
+    for (int iLayer = 0; iLayer < nLayers; iLayer++)
     {
-        if( EQUAL(pszLayerName,papoLayers[iLayer]->GetName()) )
+        if (EQUAL(pszLayerName, papoLayers[iLayer]->GetName()))
         {
-            if( CSLFetchNameValue( papszOptions, "OVERWRITE" ) != nullptr
-                && !EQUAL(CSLFetchNameValue(papszOptions,"OVERWRITE"),"NO") )
+            if (CSLFetchNameValue(papszOptions, "OVERWRITE") != nullptr &&
+                !EQUAL(CSLFetchNameValue(papszOptions, "OVERWRITE"), "NO"))
             {
-                DeleteLayer( pszLayerName );
+                DeleteLayer(pszLayerName);
             }
             else
             {
-                CPLError( CE_Failure, CPLE_AppDefined,
-                          "Layer %s already exists, CreateLayer failed.\n"
-                          "Use the layer creation option OVERWRITE=YES to "
-                          "replace it.",
-                          pszLayerName );
+                CPLError(CE_Failure, CPLE_AppDefined,
+                         "Layer %s already exists, CreateLayer failed.\n"
+                         "Use the layer creation option OVERWRITE=YES to "
+                         "replace it.",
+                         pszLayerName);
                 return nullptr;
             }
         }
     }
 
-/* -------------------------------------------------------------------- */
-/*      Create the layer object.                                        */
-/* -------------------------------------------------------------------- */
-    OGRLayer* poLayer = new OGRODSLayer(this, pszLayerName, TRUE);
+    /* -------------------------------------------------------------------- */
+    /*      Create the layer object.                                        */
+    /* -------------------------------------------------------------------- */
+    OGRLayer *poLayer = new OGRODSLayer(this, pszLayerName, TRUE);
 
-    papoLayers = static_cast<OGRLayer**>(
-        CPLRealloc(papoLayers, (nLayers + 1) * sizeof(OGRLayer*)) );
+    papoLayers = static_cast<OGRLayer **>(
+        CPLRealloc(papoLayers, (nLayers + 1) * sizeof(OGRLayer *)));
     papoLayers[nLayers] = poLayer;
-    nLayers ++;
+    nLayers++;
 
     bUpdated = true;
 
@@ -1531,37 +1673,38 @@ OGRODSDataSource::ICreateLayer( const char * pszLayerName,
 /*                            DeleteLayer()                             */
 /************************************************************************/
 
-void OGRODSDataSource::DeleteLayer( const char *pszLayerName )
+void OGRODSDataSource::DeleteLayer(const char *pszLayerName)
 
 {
-/* -------------------------------------------------------------------- */
-/*      Verify we are in update mode.                                   */
-/* -------------------------------------------------------------------- */
-    if( !bUpdatable )
+    /* -------------------------------------------------------------------- */
+    /*      Verify we are in update mode.                                   */
+    /* -------------------------------------------------------------------- */
+    if (!bUpdatable)
     {
-        CPLError( CE_Failure, CPLE_NoWriteAccess,
-                  "Data source %s opened read-only.\n"
-                  "Layer %s cannot be deleted.\n",
-                  pszName, pszLayerName );
+        CPLError(CE_Failure, CPLE_NoWriteAccess,
+                 "Data source %s opened read-only.\n"
+                 "Layer %s cannot be deleted.\n",
+                 pszName, pszLayerName);
 
         return;
     }
 
-/* -------------------------------------------------------------------- */
-/*      Try to find layer.                                              */
-/* -------------------------------------------------------------------- */
+    /* -------------------------------------------------------------------- */
+    /*      Try to find layer.                                              */
+    /* -------------------------------------------------------------------- */
     int iLayer = 0;
-    for( ; iLayer < nLayers; iLayer++ )
+    for (; iLayer < nLayers; iLayer++)
     {
-        if( EQUAL(pszLayerName,papoLayers[iLayer]->GetName()) )
+        if (EQUAL(pszLayerName, papoLayers[iLayer]->GetName()))
             break;
     }
 
-    if( iLayer == nLayers )
+    if (iLayer == nLayers)
     {
-        CPLError( CE_Failure, CPLE_AppDefined,
-                  "Attempt to delete layer '%s', but this layer is not known to OGR.",
-                  pszLayerName );
+        CPLError(
+            CE_Failure, CPLE_AppDefined,
+            "Attempt to delete layer '%s', but this layer is not known to OGR.",
+            pszLayerName);
         return;
     }
 
@@ -1576,22 +1719,22 @@ OGRErr OGRODSDataSource::DeleteLayer(int iLayer)
 {
     AnalyseFile();
 
-    if( iLayer < 0 || iLayer >= nLayers )
+    if (iLayer < 0 || iLayer >= nLayers)
     {
-        CPLError( CE_Failure, CPLE_AppDefined,
-                  "Layer %d not in legal range of 0 to %d.",
-                  iLayer, nLayers-1 );
+        CPLError(CE_Failure, CPLE_AppDefined,
+                 "Layer %d not in legal range of 0 to %d.", iLayer,
+                 nLayers - 1);
         return OGRERR_FAILURE;
     }
 
-/* -------------------------------------------------------------------- */
-/*      Blow away our OGR structures related to the layer.  This is     */
-/*      pretty dangerous if anything has a reference to this layer!     */
-/* -------------------------------------------------------------------- */
+    /* -------------------------------------------------------------------- */
+    /*      Blow away our OGR structures related to the layer.  This is     */
+    /*      pretty dangerous if anything has a reference to this layer!     */
+    /* -------------------------------------------------------------------- */
 
     delete papoLayers[iLayer];
-    memmove( papoLayers + iLayer, papoLayers + iLayer + 1,
-             sizeof(void *) * (nLayers - iLayer - 1) );
+    memmove(papoLayers + iLayer, papoLayers + iLayer + 1,
+            sizeof(void *) * (nLayers - iLayer - 1));
     nLayers--;
 
     bUpdated = true;
@@ -1603,15 +1746,15 @@ OGRErr OGRODSDataSource::DeleteLayer(int iLayer)
 /*                           HasHeaderLine()                            */
 /************************************************************************/
 
-static bool HasHeaderLine(OGRLayer* poLayer)
+static bool HasHeaderLine(OGRLayer *poLayer)
 {
-    OGRFeatureDefn* poFDefn = poLayer->GetLayerDefn();
+    OGRFeatureDefn *poFDefn = poLayer->GetLayerDefn();
     bool bHasHeaders = false;
 
-    for(int j=0;j<poFDefn->GetFieldCount();j++)
+    for (int j = 0; j < poFDefn->GetFieldCount(); j++)
     {
         if (strcmp(poFDefn->GetFieldDefn(j)->GetNameRef(),
-                    CPLSPrintf("Field%d", j+1)) != 0)
+                   CPLSPrintf("Field%d", j + 1)) != 0)
             bHasHeaders = true;
     }
 
@@ -1622,39 +1765,40 @@ static bool HasHeaderLine(OGRLayer* poLayer)
 /*                            WriteLayer()                              */
 /************************************************************************/
 
-static void WriteLayer(VSILFILE* fp, OGRLayer* poLayer)
+static void WriteLayer(VSILFILE *fp, OGRLayer *poLayer)
 {
-    const char* pszLayerName = poLayer->GetName();
-    char* pszXML = OGRGetXML_UTF8_EscapedString(pszLayerName);
+    const char *pszLayerName = poLayer->GetName();
+    char *pszXML = OGRGetXML_UTF8_EscapedString(pszLayerName);
     VSIFPrintfL(fp, "<table:table table:name=\"%s\">\n", pszXML);
     CPLFree(pszXML);
 
     poLayer->ResetReading();
 
-    OGRFeature* poFeature = poLayer->GetNextFeature();
+    OGRFeature *poFeature = poLayer->GetNextFeature();
 
-    OGRFeatureDefn* poFDefn = poLayer->GetLayerDefn();
+    OGRFeatureDefn *poFDefn = poLayer->GetLayerDefn();
     const bool bHasHeaders = HasHeaderLine(poLayer);
 
-    for( int j=0; j<poFDefn->GetFieldCount(); j++ )
+    for (int j = 0; j < poFDefn->GetFieldCount(); j++)
     {
         int nStyleNumber = 1;
         if (poFDefn->GetFieldDefn(j)->GetType() == OFTDateTime)
             nStyleNumber = 2;
-        VSIFPrintfL(fp, "<table:table-column table:style-name=\"co%d\" "
-                        "table:default-cell-style-name=\"Default\"/>\n",
+        VSIFPrintfL(fp,
+                    "<table:table-column table:style-name=\"co%d\" "
+                    "table:default-cell-style-name=\"Default\"/>\n",
                     nStyleNumber);
     }
 
     if (bHasHeaders && poFeature != nullptr)
     {
         VSIFPrintfL(fp, "<table:table-row>\n");
-        for( int j=0; j<poFDefn->GetFieldCount(); j++)
+        for (int j = 0; j < poFDefn->GetFieldCount(); j++)
         {
-            const char* pszVal = poFDefn->GetFieldDefn(j)->GetNameRef();
+            const char *pszVal = poFDefn->GetFieldDefn(j)->GetNameRef();
 
-            VSIFPrintfL(
-                 fp, "<table:table-cell office:value-type=\"string\">\n" );
+            VSIFPrintfL(fp,
+                        "<table:table-cell office:value-type=\"string\">\n");
             pszXML = OGRGetXML_UTF8_EscapedString(pszVal);
             VSIFPrintfL(fp, "<text:p>%s</text:p>\n", pszXML);
             CPLFree(pszXML);
@@ -1663,51 +1807,50 @@ static void WriteLayer(VSILFILE* fp, OGRLayer* poLayer)
         VSIFPrintfL(fp, "</table:table-row>\n");
     }
 
-    while(poFeature != nullptr)
+    while (poFeature != nullptr)
     {
         VSIFPrintfL(fp, "<table:table-row>\n");
-        for( int j=0; j<poFeature->GetFieldCount(); j++ )
+        for (int j = 0; j < poFeature->GetFieldCount(); j++)
         {
             if (poFeature->IsFieldSetAndNotNull(j))
             {
-                OGRFieldDefn* poFieldDefn = poFDefn->GetFieldDefn(j);
+                OGRFieldDefn *poFieldDefn = poFDefn->GetFieldDefn(j);
                 const OGRFieldType eType = poFieldDefn->GetType();
 
                 if (eType == OFTReal)
                 {
-                    VSIFPrintfL(
-                        fp,
-                        "<table:table-cell office:value-type=\"float\" "
-                        "office:value=\"%.16f\"/>\n",
-                        poFeature->GetFieldAsDouble(j) );
+                    VSIFPrintfL(fp,
+                                "<table:table-cell office:value-type=\"float\" "
+                                "office:value=\"%.16f\"/>\n",
+                                poFeature->GetFieldAsDouble(j));
                 }
                 else if (eType == OFTInteger)
                 {
                     const int nVal = poFeature->GetFieldAsInteger(j);
-                    if( poFieldDefn->GetSubType() == OFSTBoolean )
+                    if (poFieldDefn->GetSubType() == OFSTBoolean)
                     {
-                        VSIFPrintfL(
-                            fp, "<table:table-cell "
-                            "table:formula=\"of:=%s()\" "
-                            "office:value-type=\"float\" "
-                            "office:value=\"%d\"/>\n",
-                            nVal ? "TRUE" : "FALSE",
-                            nVal);
+                        VSIFPrintfL(fp,
+                                    "<table:table-cell "
+                                    "table:formula=\"of:=%s()\" "
+                                    "office:value-type=\"float\" "
+                                    "office:value=\"%d\"/>\n",
+                                    nVal ? "TRUE" : "FALSE", nVal);
                     }
                     else
                     {
                         VSIFPrintfL(
-                            fp, "<table:table-cell office:value-type=\"float\" "
+                            fp,
+                            "<table:table-cell office:value-type=\"float\" "
                             "office:value=\"%d\"/>\n",
                             nVal);
                     }
                 }
                 else if (eType == OFTInteger64)
                 {
-                    VSIFPrintfL(
-                         fp, "<table:table-cell office:value-type=\"float\" "
-                         "office:value=\"" CPL_FRMT_GIB "\"/>\n",
-                         poFeature->GetFieldAsInteger64(j));
+                    VSIFPrintfL(fp,
+                                "<table:table-cell office:value-type=\"float\" "
+                                "office:value=\"" CPL_FRMT_GIB "\"/>\n",
+                                poFeature->GetFieldAsInteger64(j));
                 }
                 else if (eType == OFTDateTime)
                 {
@@ -1718,10 +1861,10 @@ static void WriteLayer(VSILFILE* fp, OGRLayer* poLayer)
                     int nMinute = 0;
                     int nTZFlag = 0;
                     float fSecond = 0.0f;
-                    poFeature->GetFieldAsDateTime(
-                        j, &nYear, &nMonth, &nDay,
-                        &nHour, &nMinute, &fSecond, &nTZFlag );
-                    if( OGR_GET_MS(fSecond) )
+                    poFeature->GetFieldAsDateTime(j, &nYear, &nMonth, &nDay,
+                                                  &nHour, &nMinute, &fSecond,
+                                                  &nTZFlag);
+                    if (OGR_GET_MS(fSecond))
                     {
                         VSIFPrintfL(
                             fp,
@@ -1730,29 +1873,28 @@ static void WriteLayer(VSILFILE* fp, OGRLayer* poLayer)
                             "office:value-type=\"date\" "
                             "office:date-value="
                             "\"%04d-%02d-%02dT%02d:%02d:%06.3f\">\n",
-                            nYear, nMonth, nDay, nHour, nMinute, fSecond );
-                        VSIFPrintfL(
-                            fp,
-                            "<text:p>%02d/%02d/%04d "
-                            "%02d:%02d:%06.3f</text:p>\n",
-                            nDay, nMonth, nYear, nHour, nMinute, fSecond );
+                            nYear, nMonth, nDay, nHour, nMinute, fSecond);
+                        VSIFPrintfL(fp,
+                                    "<text:p>%02d/%02d/%04d "
+                                    "%02d:%02d:%06.3f</text:p>\n",
+                                    nDay, nMonth, nYear, nHour, nMinute,
+                                    fSecond);
                     }
                     else
                     {
-                        VSIFPrintfL(
-                            fp,
-                            "<table:table-cell "
-                            "table:style-name=\"stDateTime\" "
-                            "office:value-type=\"date\" "
-                            "office:date-value="
-                            "\"%04d-%02d-%02dT%02d:%02d:%02d\">\n",
-                            nYear, nMonth, nDay, nHour, nMinute,
-                            static_cast<int>(fSecond) );
+                        VSIFPrintfL(fp,
+                                    "<table:table-cell "
+                                    "table:style-name=\"stDateTime\" "
+                                    "office:value-type=\"date\" "
+                                    "office:date-value="
+                                    "\"%04d-%02d-%02dT%02d:%02d:%02d\">\n",
+                                    nYear, nMonth, nDay, nHour, nMinute,
+                                    static_cast<int>(fSecond));
                         VSIFPrintfL(
                             fp,
                             "<text:p>%02d/%02d/%04d %02d:%02d:%02d</text:p>\n",
                             nDay, nMonth, nYear, nHour, nMinute,
-                            static_cast<int>(fSecond) );
+                            static_cast<int>(fSecond));
                     }
                     VSIFPrintfL(fp, "</table:table-cell>\n");
                 }
@@ -1765,16 +1907,16 @@ static void WriteLayer(VSILFILE* fp, OGRLayer* poLayer)
                     int nMinute = 0;
                     int nSecond = 0;
                     int nTZFlag = 0;
-                    poFeature->GetFieldAsDateTime(
-                        j, &nYear, &nMonth, &nDay,
-                        &nHour, &nMinute, &nSecond, &nTZFlag );
-                    VSIFPrintfL(
-                        fp, "<table:table-cell table:style-name=\"stDate\" "
-                        "office:value-type=\"date\" "
-                        "office:date-value=\"%04d-%02d-%02d\">\n",
-                        nYear, nMonth, nDay);
-                    VSIFPrintfL(fp, "<text:p>%02d/%02d/%04d</text:p>\n",
-                                nDay, nMonth, nYear);
+                    poFeature->GetFieldAsDateTime(j, &nYear, &nMonth, &nDay,
+                                                  &nHour, &nMinute, &nSecond,
+                                                  &nTZFlag);
+                    VSIFPrintfL(fp,
+                                "<table:table-cell table:style-name=\"stDate\" "
+                                "office:value-type=\"date\" "
+                                "office:date-value=\"%04d-%02d-%02d\">\n",
+                                nYear, nMonth, nDay);
+                    VSIFPrintfL(fp, "<text:p>%02d/%02d/%04d</text:p>\n", nDay,
+                                nMonth, nYear);
                     VSIFPrintfL(fp, "</table:table-cell>\n");
                 }
                 else if (eType == OFTTime)
@@ -1786,34 +1928,32 @@ static void WriteLayer(VSILFILE* fp, OGRLayer* poLayer)
                     int nMinute = 0;
                     int nSecond = 0;
                     int nTZFlag = 0;
-                    poFeature->GetFieldAsDateTime(
-                        j, &nYear, &nMonth, &nDay,
-                        &nHour, &nMinute, &nSecond, &nTZFlag );
-                    VSIFPrintfL(
-                        fp, "<table:table-cell table:style-name=\"stTime\" "
-                        "office:value-type=\"time\" "
-                        "office:time-value=\"PT%02dH%02dM%02dS\">\n",
-                        nHour, nMinute, nSecond );
-                    VSIFPrintfL(fp, "<text:p>%02d:%02d:%02d</text:p>\n",
+                    poFeature->GetFieldAsDateTime(j, &nYear, &nMonth, &nDay,
+                                                  &nHour, &nMinute, &nSecond,
+                                                  &nTZFlag);
+                    VSIFPrintfL(fp,
+                                "<table:table-cell table:style-name=\"stTime\" "
+                                "office:value-type=\"time\" "
+                                "office:time-value=\"PT%02dH%02dM%02dS\">\n",
                                 nHour, nMinute, nSecond);
+                    VSIFPrintfL(fp, "<text:p>%02d:%02d:%02d</text:p>\n", nHour,
+                                nMinute, nSecond);
                     VSIFPrintfL(fp, "</table:table-cell>\n");
                 }
                 else
                 {
-                    const char* pszVal = poFeature->GetFieldAsString(j);
+                    const char *pszVal = poFeature->GetFieldAsString(j);
                     pszXML = OGRGetXML_UTF8_EscapedString(pszVal);
                     if (STARTS_WITH(pszVal, "of:="))
                     {
                         VSIFPrintfL(
-                            fp,
-                            "<table:table-cell table:formula=\"%s\"/>\n",
+                            fp, "<table:table-cell table:formula=\"%s\"/>\n",
                             pszXML);
                     }
                     else
                     {
-                        VSIFPrintfL(
-                             fp, "<table:table-cell "
-                             "office:value-type=\"string\">\n");
+                        VSIFPrintfL(fp, "<table:table-cell "
+                                        "office:value-type=\"string\">\n");
                         VSIFPrintfL(fp, "<text:p>%s</text:p>\n", pszXML);
                         VSIFPrintfL(fp, "</table:table-cell>\n");
                     }
@@ -1838,10 +1978,10 @@ static void WriteLayer(VSILFILE* fp, OGRLayer* poLayer)
 /*                            FlushCache()                              */
 /************************************************************************/
 
-void OGRODSDataSource::FlushCache(bool /* bAtClosing */)
+CPLErr OGRODSDataSource::FlushCache(bool /* bAtClosing */)
 {
     if (!bUpdated)
-        return;
+        return CE_None;
 
     CPLAssert(fpSettings == nullptr);
     CPLAssert(fpContent == nullptr);
@@ -1849,11 +1989,10 @@ void OGRODSDataSource::FlushCache(bool /* bAtClosing */)
     VSIStatBufL sStat;
     if (VSIStatL(pszName, &sStat) == 0)
     {
-        if (VSIUnlink( pszName ) != 0)
+        if (VSIUnlink(pszName) != 0)
         {
-            CPLError( CE_Failure, CPLE_FileIO,
-                      "Cannot delete %s", pszName);
-            return;
+            CPLError(CE_Failure, CPLE_FileIO, "Cannot delete %s", pszName);
+            return CE_Failure;
         }
     }
 
@@ -1861,30 +2000,29 @@ void OGRODSDataSource::FlushCache(bool /* bAtClosing */)
 
     /* Maintain new ZIP files opened */
     void *hZIP = CPLCreateZip(pszName, nullptr);
-    if (hZIP == nullptr)
+    if (!hZIP)
     {
-        CPLError( CE_Failure, CPLE_FileIO,
-                  "Cannot create %s: %s", pszName, VSIGetLastErrorMsg() );
-        return;
+        CPLError(CE_Failure, CPLE_FileIO, "Cannot create %s: %s", pszName,
+                 VSIGetLastErrorMsg());
+        return CE_Failure;
     }
 
     /* Write uncompressed mimetype */
-    char** papszOptions = CSLAddString(nullptr, "COMPRESSED=NO");
-    if( CPLCreateFileInZip(hZIP, "mimetype", papszOptions ) != CE_None )
+    char **papszOptions = CSLAddString(nullptr, "COMPRESSED=NO");
+    if (CPLCreateFileInZip(hZIP, "mimetype", papszOptions) != CE_None)
     {
         CSLDestroy(papszOptions);
         CPLCloseZip(hZIP);
-        return;
+        return CE_Failure;
     }
     CSLDestroy(papszOptions);
-    if( CPLWriteFileInZip(
-        hZIP, "application/vnd.oasis.opendocument.spreadsheet",
-        static_cast<int>(
-            strlen("application/vnd.oasis.opendocument.spreadsheet")) )
-        != CE_None )
+    if (CPLWriteFileInZip(
+            hZIP, "application/vnd.oasis.opendocument.spreadsheet",
+            static_cast<int>(strlen(
+                "application/vnd.oasis.opendocument.spreadsheet"))) != CE_None)
     {
         CPLCloseZip(hZIP);
-        return;
+        return CE_Failure;
     }
     CPLCloseFileInZip(hZIP);
 
@@ -1894,27 +2032,25 @@ void OGRODSDataSource::FlushCache(bool /* bAtClosing */)
 
     /* Re-open with VSILFILE */
     CPLString osTmpFilename(CPLSPrintf("/vsizip/%s", pszName));
-    VSILFILE* fpZIP = VSIFOpenL(osTmpFilename, "ab");
+    VSILFILE *fpZIP = VSIFOpenL(osTmpFilename, "ab");
     if (fpZIP == nullptr)
-        return;
+        return CE_Failure;
 
     osTmpFilename = CPLSPrintf("/vsizip/%s/META-INF/manifest.xml", pszName);
-    VSILFILE* fp = VSIFOpenL(osTmpFilename, "wb");
-    if( fp == nullptr )
+    VSILFILE *fp = VSIFOpenL(osTmpFilename, "wb");
+    if (!fp)
     {
         VSIFCloseL(fpZIP);
-        return;
+        return CE_Failure;
     }
     VSIFPrintfL(fp, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
-    VSIFPrintfL(
-        fp,
-        "<manifest:manifest ""xmlns:manifest=\"urn:oasis:names:tc:"
-        "opendocument:xmlns:manifest:1.0\">\n");
-    VSIFPrintfL(
-         fp, "<manifest:file-entry "
-         "manifest:media-type=\"application/vnd.oasis."
-         "opendocument.spreadsheet\" "
-         "manifest:version=\"1.2\" manifest:full-path=\"/\"/>\n");
+    VSIFPrintfL(fp, "<manifest:manifest "
+                    "xmlns:manifest=\"urn:oasis:names:tc:"
+                    "opendocument:xmlns:manifest:1.0\">\n");
+    VSIFPrintfL(fp, "<manifest:file-entry "
+                    "manifest:media-type=\"application/vnd.oasis."
+                    "opendocument.spreadsheet\" "
+                    "manifest:version=\"1.2\" manifest:full-path=\"/\"/>\n");
     VSIFPrintfL(fp, "<manifest:file-entry manifest:media-type=\"text/xml\" "
                     "manifest:full-path=\"content.xml\"/>\n");
     VSIFPrintfL(fp, "<manifest:file-entry manifest:media-type=\"text/xml\" "
@@ -1928,69 +2064,64 @@ void OGRODSDataSource::FlushCache(bool /* bAtClosing */)
 
     osTmpFilename = CPLSPrintf("/vsizip/%s/meta.xml", pszName);
     fp = VSIFOpenL(osTmpFilename, "wb");
-    if( fp == nullptr )
+    if (!fp)
     {
         VSIFCloseL(fpZIP);
-        return;
+        return CE_Failure;
     }
     VSIFPrintfL(fp, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
     VSIFPrintfL(
         fp, "<office:document-meta "
-        "xmlns:office=\"urn:oasis:names:tc:opendocument:xmlns:office:1.0\" "
-        "office:version=\"1.2\">\n" );
+            "xmlns:office=\"urn:oasis:names:tc:opendocument:xmlns:office:1.0\" "
+            "office:version=\"1.2\">\n");
     VSIFPrintfL(fp, "</office:document-meta>\n");
     VSIFCloseL(fp);
 
     osTmpFilename = CPLSPrintf("/vsizip/%s/settings.xml", pszName);
     fp = VSIFOpenL(osTmpFilename, "wb");
-    if( fp == nullptr )
+    if (!fp)
     {
         VSIFCloseL(fpZIP);
-        return;
+        return CE_Failure;
     }
     VSIFPrintfL(fp, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
     VSIFPrintfL(
-         fp, "<office:document-settings "
-         "xmlns:office=\"urn:oasis:names:tc:opendocument:xmlns:office:1.0\" "
-         "xmlns:config=\"urn:oasis:names:tc:opendocument:xmlns:config:1.0\" "
-         "xmlns:ooo=\"http://openoffice.org/2004/office\" "
-         "office:version=\"1.2\">\n" );
+        fp, "<office:document-settings "
+            "xmlns:office=\"urn:oasis:names:tc:opendocument:xmlns:office:1.0\" "
+            "xmlns:config=\"urn:oasis:names:tc:opendocument:xmlns:config:1.0\" "
+            "xmlns:ooo=\"http://openoffice.org/2004/office\" "
+            "office:version=\"1.2\">\n");
     VSIFPrintfL(fp, "<office:settings>\n");
-    VSIFPrintfL(
-         fp, "<config:config-item-set config:name=\"ooo:view-settings\">\n");
+    VSIFPrintfL(fp,
+                "<config:config-item-set config:name=\"ooo:view-settings\">\n");
     VSIFPrintfL(fp, "<config:config-item-map-indexed config:name=\"Views\">\n");
     VSIFPrintfL(fp, "<config:config-item-map-entry>\n");
     VSIFPrintfL(fp, "<config:config-item-map-named config:name=\"Tables\">\n");
-    for(int i=0;i<nLayers;i++)
+    for (int i = 0; i < nLayers; i++)
     {
-        OGRLayer* poLayer = papoLayers[i];
+        OGRLayer *poLayer = papoLayers[i];
         if (HasHeaderLine(poLayer))
         {
             /* Add vertical splitter */
-            char* pszXML = OGRGetXML_UTF8_EscapedString(poLayer->GetName());
-            VSIFPrintfL(
-                 fp,
-                 "<config:config-item-map-entry config:name=\"%s\">\n", pszXML);
+            char *pszXML = OGRGetXML_UTF8_EscapedString(poLayer->GetName());
+            VSIFPrintfL(fp,
+                        "<config:config-item-map-entry config:name=\"%s\">\n",
+                        pszXML);
             CPLFree(pszXML);
+            VSIFPrintfL(fp,
+                        "<config:config-item config:name=\"VerticalSplitMode\" "
+                        "config:type=\"short\">2</config:config-item>\n");
             VSIFPrintfL(
-                 fp,
-                 "<config:config-item config:name=\"VerticalSplitMode\" "
-                 "config:type=\"short\">2</config:config-item>\n" );
-            VSIFPrintfL(
-                 fp,
-                 "<config:config-item config:name=\"VerticalSplitPosition\" "
-                 "config:type=\"int\">1</config:config-item>\n" );
-            VSIFPrintfL(
-                fp,
-                "<config:config-item config:name=\"ActiveSplitRange\" "
-                "config:type=\"short\">2</config:config-item>\n" );
-            VSIFPrintfL(
-                fp,
-                "<config:config-item config:name=\"PositionTop\" "
-                "config:type=\"int\">0</config:config-item>\n" );
-            VSIFPrintfL(
-                fp, "<config:config-item config:name=\"PositionBottom\" "
-                "config:type=\"int\">1</config:config-item>\n" );
+                fp, "<config:config-item config:name=\"VerticalSplitPosition\" "
+                    "config:type=\"int\">1</config:config-item>\n");
+            VSIFPrintfL(fp,
+                        "<config:config-item config:name=\"ActiveSplitRange\" "
+                        "config:type=\"short\">2</config:config-item>\n");
+            VSIFPrintfL(fp, "<config:config-item config:name=\"PositionTop\" "
+                            "config:type=\"int\">0</config:config-item>\n");
+            VSIFPrintfL(fp,
+                        "<config:config-item config:name=\"PositionBottom\" "
+                        "config:type=\"int\">1</config:config-item>\n");
             VSIFPrintfL(fp, "</config:config-item-map-entry>\n");
         }
     }
@@ -2004,17 +2135,17 @@ void OGRODSDataSource::FlushCache(bool /* bAtClosing */)
 
     osTmpFilename = CPLSPrintf("/vsizip/%s/styles.xml", pszName);
     fp = VSIFOpenL(osTmpFilename, "wb");
-    if( fp == nullptr )
+    if (!fp)
     {
         VSIFCloseL(fpZIP);
-        return;
+        return CE_Failure;
     }
     VSIFPrintfL(fp, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
     VSIFPrintfL(
-         fp, "<office:document-styles "
-         "xmlns:office=\"urn:oasis:names:tc:opendocument:xmlns:office:1.0\" "
-         "xmlns:style=\"urn:oasis:names:tc:opendocument:xmlns:style:1.0\" "
-         "office:version=\"1.2\">\n" );
+        fp, "<office:document-styles "
+            "xmlns:office=\"urn:oasis:names:tc:opendocument:xmlns:office:1.0\" "
+            "xmlns:style=\"urn:oasis:names:tc:opendocument:xmlns:style:1.0\" "
+            "office:version=\"1.2\">\n");
     VSIFPrintfL(fp, "<office:styles>\n");
     VSIFPrintfL(fp, "<style:style style:name=\"Default\" "
                     "style:family=\"table-cell\">\n");
@@ -2025,23 +2156,24 @@ void OGRODSDataSource::FlushCache(bool /* bAtClosing */)
 
     osTmpFilename = CPLSPrintf("/vsizip/%s/content.xml", pszName);
     fp = VSIFOpenL(osTmpFilename, "wb");
-    if( fp == nullptr )
+    if (!fp)
     {
         VSIFCloseL(fpZIP);
-        return;
+        return CE_Failure;
     }
     VSIFPrintfL(fp, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
     VSIFPrintfL(
-         fp, "<office:document-content "
-         "xmlns:office=\"urn:oasis:names:tc:opendocument:xmlns:office:1.0\" "
-         "xmlns:style=\"urn:oasis:names:tc:opendocument:xmlns:style:1.0\" "
-         "xmlns:text=\"urn:oasis:names:tc:opendocument:xmlns:text:1.0\" "
-         "xmlns:table=\"urn:oasis:names:tc:opendocument:xmlns:table:1.0\" "
-         "xmlns:number=\"urn:oasis:names:tc:opendocument:xmlns:datastyle:1.0\" "
-         "xmlns:fo=\"urn:oasis:names:tc:opendocument:xmlns:"
-         "xsl-fo-compatible:1.0\" "
-         "xmlns:of=\"urn:oasis:names:tc:opendocument:xmlns:of:1.2\" "
-         "office:version=\"1.2\">\n" );
+        fp,
+        "<office:document-content "
+        "xmlns:office=\"urn:oasis:names:tc:opendocument:xmlns:office:1.0\" "
+        "xmlns:style=\"urn:oasis:names:tc:opendocument:xmlns:style:1.0\" "
+        "xmlns:text=\"urn:oasis:names:tc:opendocument:xmlns:text:1.0\" "
+        "xmlns:table=\"urn:oasis:names:tc:opendocument:xmlns:table:1.0\" "
+        "xmlns:number=\"urn:oasis:names:tc:opendocument:xmlns:datastyle:1.0\" "
+        "xmlns:fo=\"urn:oasis:names:tc:opendocument:xmlns:"
+        "xsl-fo-compatible:1.0\" "
+        "xmlns:of=\"urn:oasis:names:tc:opendocument:xmlns:of:1.2\" "
+        "office:version=\"1.2\">\n");
     VSIFPrintfL(fp, "<office:scripts/>\n");
     VSIFPrintfL(fp, "<office:automatic-styles>\n");
     VSIFPrintfL(fp, "<style:style style:name=\"co1\" "
@@ -2085,8 +2217,8 @@ void OGRODSDataSource::FlushCache(bool /* bAtClosing */)
     VSIFPrintfL(fp, "<number:text>:</number:text>\n");
     VSIFPrintfL(fp, "<number:seconds number:style=\"long\"/>\n");
     VSIFPrintfL(fp, "</number:date-style>\n");
-    VSIFPrintfL(
-         fp, "<number:date-style style:name=\"nDateTimeMilliseconds\">\n");
+    VSIFPrintfL(fp,
+                "<number:date-style style:name=\"nDateTimeMilliseconds\">\n");
     VSIFPrintfL(fp, "<number:day number:style=\"long\"/>\n");
     VSIFPrintfL(fp, "<number:text>/</number:text>\n");
     VSIFPrintfL(fp, "<number:month number:style=\"long\"/>\n");
@@ -2097,10 +2229,8 @@ void OGRODSDataSource::FlushCache(bool /* bAtClosing */)
     VSIFPrintfL(fp, "<number:text>:</number:text>\n");
     VSIFPrintfL(fp, "<number:minutes number:style=\"long\"/>\n");
     VSIFPrintfL(fp, "<number:text>:</number:text>\n");
-    VSIFPrintfL(
-         fp,
-         "<number:seconds number:style=\"long\" "
-         "number:decimal-places=\"3\"/>\n" );
+    VSIFPrintfL(fp, "<number:seconds number:style=\"long\" "
+                    "number:decimal-places=\"3\"/>\n");
     VSIFPrintfL(fp, "</number:date-style>\n");
     VSIFPrintfL(fp, "<style:style style:name=\"stDate\" "
                     "style:family=\"table-cell\" "
@@ -2121,7 +2251,7 @@ void OGRODSDataSource::FlushCache(bool /* bAtClosing */)
     VSIFPrintfL(fp, "</office:automatic-styles>\n");
     VSIFPrintfL(fp, "<office:body>\n");
     VSIFPrintfL(fp, "<office:spreadsheet>\n");
-    for(int i=0;i<nLayers;i++)
+    for (int i = 0; i < nLayers; i++)
     {
         WriteLayer(fp, papoLayers[i]);
     }
@@ -2135,12 +2265,12 @@ void OGRODSDataSource::FlushCache(bool /* bAtClosing */)
 
     /* Reset updated flag at datasource and layer level */
     bUpdated = false;
-    for(int i = 0; i<nLayers; i++)
+    for (int i = 0; i < nLayers; i++)
     {
-        reinterpret_cast<OGRODSLayer*>(papoLayers[i])->SetUpdated(false);
+        reinterpret_cast<OGRODSLayer *>(papoLayers[i])->SetUpdated(false);
     }
 
-    return;
+    return CE_None;
 }
 
 /************************************************************************/
@@ -2148,21 +2278,21 @@ void OGRODSDataSource::FlushCache(bool /* bAtClosing */)
 /************************************************************************/
 
 int ODSCellEvaluator::EvaluateRange(int nRow1, int nCol1, int nRow2, int nCol2,
-                                    std::vector<ods_formula_node>& aoOutValues)
+                                    std::vector<ods_formula_node> &aoOutValues)
 {
-    if (nRow1 < 0 || nRow1 >= poLayer->GetFeatureCount(FALSE) ||
-        nCol1 < 0 || nCol1 >= poLayer->GetLayerDefn()->GetFieldCount())
+    if (nRow1 < 0 || nRow1 >= poLayer->GetFeatureCount(FALSE) || nCol1 < 0 ||
+        nCol1 >= poLayer->GetLayerDefn()->GetFieldCount())
     {
-        CPLError(CE_Failure, CPLE_AppDefined,
-                "Invalid cell (row=%d, col=%d)", nRow1 + 1, nCol1 + 1);
+        CPLError(CE_Failure, CPLE_AppDefined, "Invalid cell (row=%d, col=%d)",
+                 nRow1 + 1, nCol1 + 1);
         return FALSE;
     }
 
-    if (nRow2 < 0 || nRow2 >= poLayer->GetFeatureCount(FALSE) ||
-        nCol2 < 0 || nCol2 >= poLayer->GetLayerDefn()->GetFieldCount())
+    if (nRow2 < 0 || nRow2 >= poLayer->GetFeatureCount(FALSE) || nCol2 < 0 ||
+        nCol2 >= poLayer->GetLayerDefn()->GetFieldCount())
     {
-        CPLError(CE_Failure, CPLE_AppDefined,
-                "Invalid cell (row=%d, col=%d)", nRow2 + 1, nCol2 + 1);
+        CPLError(CE_Failure, CPLE_AppDefined, "Invalid cell (row=%d, col=%d)",
+                 nRow2 + 1, nCol2 + 1);
         return FALSE;
     }
 
@@ -2171,23 +2301,23 @@ int ODSCellEvaluator::EvaluateRange(int nRow1, int nCol1, int nRow2, int nCol2,
     if (poLayer->SetNextByIndex(nRow1) != OGRERR_NONE)
     {
         CPLError(CE_Failure, CPLE_AppDefined,
-                "Cannot fetch feature for row = %d", nRow1);
+                 "Cannot fetch feature for row = %d", nRow1);
         return FALSE;
     }
 
-    for(int nRow = nRow1; nRow <= nRow2; nRow ++)
+    for (int nRow = nRow1; nRow <= nRow2; nRow++)
     {
-        OGRFeature* poFeature = poLayer->GetNextFeatureWithoutFIDHack();
+        OGRFeature *poFeature = poLayer->GetNextFeatureWithoutFIDHack();
 
         if (poFeature == nullptr)
         {
             CPLError(CE_Failure, CPLE_AppDefined,
-                    "Cannot fetch feature for for row = %d", nRow);
+                     "Cannot fetch feature for for row = %d", nRow);
             poLayer->SetNextByIndex(nIndexBackup);
             return FALSE;
         }
 
-        for(int nCol = nCol1; nCol <= nCol2; nCol++)
+        for (int nCol = nCol1; nCol <= nCol2; nCol++)
         {
             if (!poFeature->IsFieldSetAndNotNull(nCol))
             {
@@ -2195,13 +2325,13 @@ int ODSCellEvaluator::EvaluateRange(int nRow1, int nCol1, int nRow2, int nCol2,
             }
             else if (poFeature->GetFieldDefnRef(nCol)->GetType() == OFTInteger)
             {
-                aoOutValues.push_back(ods_formula_node(
-                    poFeature->GetFieldAsInteger(nCol)));
+                aoOutValues.push_back(
+                    ods_formula_node(poFeature->GetFieldAsInteger(nCol)));
             }
             else if (poFeature->GetFieldDefnRef(nCol)->GetType() == OFTReal)
             {
-                aoOutValues.push_back(ods_formula_node(
-                    poFeature->GetFieldAsDouble(nCol)));
+                aoOutValues.push_back(
+                    ods_formula_node(poFeature->GetFieldAsDouble(nCol)));
             }
             else
             {
@@ -2214,10 +2344,10 @@ int ODSCellEvaluator::EvaluateRange(int nRow1, int nCol1, int nRow2, int nCol2,
                     if (!Evaluate(nRow, nCol))
                     {
 #ifdef DEBUG_VERBOSE
-                        CPLError( CE_Warning, CPLE_AppDefined,
-                                  "Formula at cell (%d, %d) "
-                                  "has not yet been resolved",
-                                  nRow + 1, nCol + 1 );
+                        CPLError(CE_Warning, CPLE_AppDefined,
+                                 "Formula at cell (%d, %d) "
+                                 "has not yet been resolved",
+                                 nRow + 1, nCol + 1);
 #endif
                         poLayer->SetNextByIndex(nIndexBackup);
                         return FALSE;
@@ -2230,13 +2360,17 @@ int ODSCellEvaluator::EvaluateRange(int nRow1, int nCol1, int nRow2, int nCol2,
                     {
                         aoOutValues.push_back(ods_formula_node());
                     }
-                    else if (poFeature->GetFieldDefnRef(nCol)->GetType() == OFTInteger)
+                    else if (poFeature->GetFieldDefnRef(nCol)->GetType() ==
+                             OFTInteger)
                     {
-                        aoOutValues.push_back(ods_formula_node(poFeature->GetFieldAsInteger(nCol)));
+                        aoOutValues.push_back(ods_formula_node(
+                            poFeature->GetFieldAsInteger(nCol)));
                     }
-                    else if (poFeature->GetFieldDefnRef(nCol)->GetType() == OFTReal)
+                    else if (poFeature->GetFieldDefnRef(nCol)->GetType() ==
+                             OFTReal)
                     {
-                        aoOutValues.push_back(ods_formula_node(poFeature->GetFieldAsDouble(nCol)));
+                        aoOutValues.push_back(ods_formula_node(
+                            poFeature->GetFieldAsDouble(nCol)));
                     }
                     else
                     {
@@ -2246,9 +2380,11 @@ int ODSCellEvaluator::EvaluateRange(int nRow1, int nCol1, int nRow2, int nCol2,
                             CPLValueType eType = CPLGetValueType(osVal.c_str());
                             /* Try to convert into numeric value if possible */
                             if (eType != CPL_VALUE_STRING)
-                                aoOutValues.push_back(ods_formula_node(CPLAtofM(osVal.c_str())));
+                                aoOutValues.push_back(
+                                    ods_formula_node(CPLAtofM(osVal.c_str())));
                             else
-                                aoOutValues.push_back(ods_formula_node(osVal.c_str()));
+                                aoOutValues.push_back(
+                                    ods_formula_node(osVal.c_str()));
                         }
                     }
                 }
@@ -2257,7 +2393,8 @@ int ODSCellEvaluator::EvaluateRange(int nRow1, int nCol1, int nRow2, int nCol2,
                     CPLValueType eType = CPLGetValueType(osVal.c_str());
                     /* Try to convert into numeric value if possible */
                     if (eType != CPL_VALUE_STRING)
-                        aoOutValues.push_back(ods_formula_node(CPLAtofM(osVal.c_str())));
+                        aoOutValues.push_back(
+                            ods_formula_node(CPLAtofM(osVal.c_str())));
                     else
                         aoOutValues.push_back(ods_formula_node(osVal.c_str()));
                 }
@@ -2278,35 +2415,36 @@ int ODSCellEvaluator::EvaluateRange(int nRow1, int nCol1, int nRow2, int nCol2,
 
 int ODSCellEvaluator::Evaluate(int nRow, int nCol)
 {
-    if (oVisisitedCells.find(std::pair<int,int>(nRow, nCol)) != oVisisitedCells.end())
+    if (oVisisitedCells.find(std::pair(nRow, nCol)) != oVisisitedCells.end())
     {
         CPLError(CE_Failure, CPLE_AppDefined,
-                "Circular dependency with (row=%d, col=%d)", nRow + 1, nCol + 1);
+                 "Circular dependency with (row=%d, col=%d)", nRow + 1,
+                 nCol + 1);
         return FALSE;
     }
 
-    oVisisitedCells.insert(std::pair<int,int>(nRow, nCol));
+    oVisisitedCells.insert(std::pair(nRow, nCol));
 
     if (poLayer->SetNextByIndex(nRow) != OGRERR_NONE)
     {
         CPLError(CE_Failure, CPLE_AppDefined,
-                "Cannot fetch feature for row = %d", nRow);
+                 "Cannot fetch feature for row = %d", nRow);
         return FALSE;
     }
 
-    OGRFeature* poFeature = poLayer->GetNextFeatureWithoutFIDHack();
+    OGRFeature *poFeature = poLayer->GetNextFeatureWithoutFIDHack();
     if (poFeature->IsFieldSetAndNotNull(nCol) &&
         poFeature->GetFieldDefnRef(nCol)->GetType() == OFTString)
     {
-        const char* pszVal = poFeature->GetFieldAsString(nCol);
+        const char *pszVal = poFeature->GetFieldAsString(nCol);
         if (STARTS_WITH(pszVal, "of:="))
         {
-            ods_formula_node* expr_out = ods_formula_compile( pszVal + 4 );
-            if (expr_out &&
-                expr_out->Evaluate(this) &&
+            ods_formula_node *expr_out = ods_formula_compile(pszVal + 4);
+            if (expr_out && expr_out->Evaluate(this) &&
                 expr_out->eNodeType == SNT_CONSTANT)
             {
-                /* Refetch feature in case Evaluate() modified another cell in this row */
+                /* Refetch feature in case Evaluate() modified another cell in
+                 * this row */
                 delete poFeature;
                 poLayer->SetNextByIndex(nRow);
                 poFeature = poLayer->GetNextFeatureWithoutFIDHack();
@@ -2341,4 +2479,4 @@ int ODSCellEvaluator::Evaluate(int nRow, int nCol)
     return TRUE;
 }
 
-} /* end of OGRODS namespace */
+}  // namespace OGRODS

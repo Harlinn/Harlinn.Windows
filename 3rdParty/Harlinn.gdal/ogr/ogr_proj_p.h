@@ -1,4 +1,3 @@
-#pragma once
 /******************************************************************************
  *
  * Project:  GDAL
@@ -30,9 +29,9 @@
 #ifndef OGR_PROJ_P_H_INCLUDED
 #define OGR_PROJ_P_H_INCLUDED
 
-#include <proj/proj.h>
+#include "proj.h"
 
-#include <port/cpl_mem_cache.h>
+#include "cpl_mem_cache.h"
 
 #include <unordered_map>
 #include <memory>
@@ -40,63 +39,85 @@
 
 /*! @cond Doxygen_Suppress */
 
-PJ_CONTEXT* OSRGetProjTLSContext();
+PJ_CONTEXT *OSRGetProjTLSContext();
 void OSRCleanupTLSContext();
 
 class OSRProjTLSCache
 {
-        struct EPSGCacheKey
+    struct OSRPJDeleter
+    {
+        void operator()(PJ *pj) const
         {
-            int nCode_;
-            bool bUseNonDeprecated_;
-            bool bAddTOWGS84_;
+            proj_destroy(pj);
+        }
+    };
 
-            EPSGCacheKey(int nCode, bool bUseNonDeprecated, bool bAddTOWGS84):
-                nCode_(nCode), bUseNonDeprecated_(bUseNonDeprecated), bAddTOWGS84_(bAddTOWGS84) {}
+    typedef std::unique_ptr<PJ, OSRPJDeleter> UniquePtrPJ;
 
-            bool operator==(const EPSGCacheKey& other) const
-            {
-                return nCode_ == other.nCode_ &&
-                       bUseNonDeprecated_ == other.bUseNonDeprecated_ &&
-                       bAddTOWGS84_ == other.bAddTOWGS84_;
-            }
-        };
-        struct EPSGCacheKeyHasher
+    struct EPSGCacheKey
+    {
+        int nCode_;
+        bool bUseNonDeprecated_;
+        bool bAddTOWGS84_;
+
+        EPSGCacheKey(int nCode, bool bUseNonDeprecated, bool bAddTOWGS84)
+            : nCode_(nCode), bUseNonDeprecated_(bUseNonDeprecated),
+              bAddTOWGS84_(bAddTOWGS84)
         {
-            std::size_t operator()(const EPSGCacheKey& k) const
-            {
-                return k.nCode_ |
-                       ((k.bUseNonDeprecated_ ? 1 : 0) << 16) |
-                       ((k.bAddTOWGS84_ ? 1 : 0) << 17);
-            }
-        };
+        }
 
-        lru11::Cache<EPSGCacheKey, std::shared_ptr<PJ>,
-                     lru11::NullLock,
-                      std::unordered_map<
-                        EPSGCacheKey,
-                        typename std::list<lru11::KeyValuePair<EPSGCacheKey,
-                            std::shared_ptr<PJ>>>::iterator,
-                            EPSGCacheKeyHasher>> m_oCacheEPSG{};
-        lru11::Cache<std::string, std::shared_ptr<PJ>> m_oCacheWKT{};
+        bool operator==(const EPSGCacheKey &other) const
+        {
+            return nCode_ == other.nCode_ &&
+                   bUseNonDeprecated_ == other.bUseNonDeprecated_ &&
+                   bAddTOWGS84_ == other.bAddTOWGS84_;
+        }
+    };
 
-    public:
-        OSRProjTLSCache() = default;
+    struct EPSGCacheKeyHasher
+    {
+        std::size_t operator()(const EPSGCacheKey &k) const
+        {
+            return k.nCode_ | ((k.bUseNonDeprecated_ ? 1 : 0) << 16) |
+                   ((k.bAddTOWGS84_ ? 1 : 0) << 17);
+        }
+    };
 
-        HGDAL_EXPORT void clear();
+    PJ_CONTEXT *m_tlsContext =
+        nullptr;  // never use it directly. use GetPJContext()
+    lru11::Cache<EPSGCacheKey, UniquePtrPJ, lru11::NullLock,
+                 std::unordered_map<EPSGCacheKey,
+                                    typename std::list<lru11::KeyValuePair<
+                                        EPSGCacheKey, UniquePtrPJ>>::iterator,
+                                    EPSGCacheKeyHasher>>
+        m_oCacheEPSG{};
+    lru11::Cache<std::string, UniquePtrPJ> m_oCacheWKT{};
 
-        HGDAL_EXPORT PJ* GetPJForEPSGCode(int nCode, bool bUseNonDeprecated, bool bAddTOWGS84);
-        HGDAL_EXPORT void CachePJForEPSGCode(int nCode, bool bUseNonDeprecated, bool bAddTOWGS84, PJ* pj);
+    PJ_CONTEXT *GetPJContext();
 
-        HGDAL_EXPORT PJ* GetPJForWKT(const std::string& wkt);
-        HGDAL_EXPORT void CachePJForWKT(const std::string& wkt, PJ* pj);
+    OSRProjTLSCache(const OSRProjTLSCache &) = delete;
+    OSRProjTLSCache &operator=(const OSRProjTLSCache &) = delete;
+
+  public:
+    explicit OSRProjTLSCache(PJ_CONTEXT *tlsContext) : m_tlsContext(tlsContext)
+    {
+    }
+
+    void clear();
+
+    PJ *GetPJForEPSGCode(int nCode, bool bUseNonDeprecated, bool bAddTOWGS84);
+    void CachePJForEPSGCode(int nCode, bool bUseNonDeprecated, bool bAddTOWGS84,
+                            PJ *pj);
+
+    PJ *GetPJForWKT(const std::string &wkt);
+    void CachePJForWKT(const std::string &wkt, PJ *pj);
 };
 
-HGDAL_EXPORT OSRProjTLSCache* OSRGetProjTLSCache();
+OSRProjTLSCache *OSRGetProjTLSCache();
 
-HGDAL_EXPORT void OGRCTDumpStatistics();
+void OGRCTDumpStatistics();
 
-HGDAL_EXPORT void OSRCTCleanCache();
+void OSRCTCleanCache();
 
 /*! @endcond Doxygen_Suppress */
 

@@ -1,4 +1,3 @@
-#pragma once
 /******************************************************************************
  * $Id$
  *
@@ -34,120 +33,140 @@
 #define OGDOGDI_H_INCLUDED
 
 #include <math.h>
-extern "C" {
+extern "C"
+{
 /* Older versions of OGDI have register keywords as qualifier for arguments
  * of functions, which is illegal in C++17 */
 #define register
 #include "ecs.h"
 #undef register
 }
-#include <ogr/ogrsf_frmts/ogrsf_frmts.h>
+#include "ogrsf_frmts.h"
 
 /************************************************************************/
 /*                             OGROGDILayer                             */
 /************************************************************************/
 class OGROGDIDataSource;
 
-class OGROGDILayer final: public OGRLayer
+class OGROGDILayer final : public OGRLayer
 {
-    OGROGDIDataSource  *m_poODS;
-    int                 m_nClientID;
-    char               *m_pszOGDILayerName;
-    ecs_Family          m_eFamily;
+    OGROGDIDataSource *m_poODS;
+    int m_nClientID;
+    char *m_pszOGDILayerName;
+    ecs_Family m_eFamily;
 
-    OGRFeatureDefn     *m_poFeatureDefn;
+    OGRFeatureDefn *m_poFeatureDefn;
     OGRSpatialReference *m_poSpatialRef;
-    ecs_Region          m_sFilterBounds;
+    ecs_Region m_sFilterBounds;
 
-    int                 m_iNextShapeId;
-    int                 m_nTotalShapeCount;
-    int                 m_nFilteredOutShapes;
+    int m_iNextShapeId;
+    int m_nTotalShapeCount;
+    int m_nFilteredOutShapes;
 
-    OGRFeature *        GetNextRawFeature();
+    OGRFeature *GetNextRawFeature();
 
   public:
-                        OGROGDILayer(OGROGDIDataSource *, const char *,
-                                     ecs_Family);
-                        virtual ~OGROGDILayer();
+    OGROGDILayer(OGROGDIDataSource *, const char *, ecs_Family);
+    virtual ~OGROGDILayer();
 
-    virtual void        SetSpatialFilter( OGRGeometry * ) override;
-    virtual void        SetSpatialFilter( int iGeomField, OGRGeometry *poGeom ) override
-                { OGRLayer::SetSpatialFilter(iGeomField, poGeom); }
-    virtual OGRErr      SetAttributeFilter( const char *pszQuery ) override;
+    virtual void SetSpatialFilter(OGRGeometry *) override;
 
-    void                ResetReading() override;
-    OGRFeature *        GetNextFeature() override;
+    virtual void SetSpatialFilter(int iGeomField, OGRGeometry *poGeom) override
+    {
+        OGRLayer::SetSpatialFilter(iGeomField, poGeom);
+    }
 
-    OGRFeature         *GetFeature( GIntBig nFeatureId ) override;
+    virtual OGRErr SetAttributeFilter(const char *pszQuery) override;
 
-    OGRFeatureDefn *    GetLayerDefn() override { return m_poFeatureDefn; }
+    void ResetReading() override;
+    OGRFeature *GetNextFeature() override;
 
-    GIntBig             GetFeatureCount( int ) override;
+    OGRFeature *GetFeature(GIntBig nFeatureId) override;
 
-    int                 TestCapability( const char * ) override;
+    OGRFeatureDefn *GetLayerDefn() override
+    {
+        return m_poFeatureDefn;
+    }
+
+    GIntBig GetFeatureCount(int) override;
+
+    int TestCapability(const char *) override;
 
   private:
-    void                BuildFeatureDefn();
+    void BuildFeatureDefn();
 };
 
 /************************************************************************/
 /*                          OGROGDIDataSource                           */
 /************************************************************************/
 
-class OGROGDIDataSource final: public OGRDataSource
+class OGROGDIDataSource final : public OGRDataSource
 {
-    OGROGDILayer      **m_papoLayers;
-    int                 m_nLayers;
+    OGROGDILayer **m_papoLayers;
+    int m_nLayers;
 
-    int                 m_nClientID;
+    int m_nClientID;
 
-    ecs_Region          m_sGlobalBounds;
+    ecs_Region m_sGlobalBounds;
     OGRSpatialReference *m_poSpatialRef;
 
-    OGROGDILayer        *m_poCurrentLayer;
+    OGROGDILayer *m_poCurrentLayer;
 
-    char                *m_pszFullName;
+    char *m_pszFullName;
 
-    int                 m_bLaunderLayerNames;
+    int m_bLaunderLayerNames;
 
-    void                IAddLayer( const char *pszLayerName,
-                                   ecs_Family eFamily );
+    void IAddLayer(const char *pszLayerName, ecs_Family eFamily);
 
   public:
-                        OGROGDIDataSource();
-                        ~OGROGDIDataSource();
+    OGROGDIDataSource();
+    ~OGROGDIDataSource();
 
-    int                 Open( const char * );
+    int Open(const char *);
 
-    const char          *GetName() override { return m_pszFullName; }
-    int                 GetLayerCount() override { return m_nLayers; }
-    OGRLayer            *GetLayer( int ) override;
+    const char *GetName() override
+    {
+        return m_pszFullName;
+    }
 
-    int                 TestCapability( const char * ) override;
+    int GetLayerCount() override
+    {
+        return m_nLayers;
+    }
 
-    ecs_Region         *GetGlobalBounds() { return &m_sGlobalBounds; }
-    OGRSpatialReference*DSGetSpatialRef() { return m_poSpatialRef; }
-    int                 GetClientID() { return m_nClientID; }
+    OGRLayer *GetLayer(int) override;
 
-    OGROGDILayer       *GetCurrentLayer() { return m_poCurrentLayer; }
-    void                SetCurrentLayer(OGROGDILayer* poLayer) { m_poCurrentLayer = poLayer ; }
+    int TestCapability(const char *) override;
 
-    int                 LaunderLayerNames() { return m_bLaunderLayerNames; }
-};
+    ecs_Region *GetGlobalBounds()
+    {
+        return &m_sGlobalBounds;
+    }
 
-/************************************************************************/
-/*                            OGROGDIDriver                             */
-/************************************************************************/
+    OGRSpatialReference *DSGetSpatialRef()
+    {
+        return m_poSpatialRef;
+    }
 
-class OGROGDIDriver final: public OGRSFDriver
-{
-  public:
-                ~OGROGDIDriver();
+    int GetClientID()
+    {
+        return m_nClientID;
+    }
 
-    const char *GetName() override;
-    OGRDataSource *Open( const char *, int ) override;
+    OGROGDILayer *GetCurrentLayer()
+    {
+        return m_poCurrentLayer;
+    }
 
-    int         TestCapability( const char * ) override;
+    void SetCurrentLayer(OGROGDILayer *poLayer)
+    {
+        m_poCurrentLayer = poLayer;
+    }
+
+    int LaunderLayerNames()
+    {
+        return m_bLaunderLayerNames;
+    }
 };
 
 #endif /* OGDOGDI_H_INCLUDED */

@@ -73,6 +73,7 @@
 
 #include "ras_cod.h"
 
+#include "jasper/jas_init.h"
 #include "jasper/jas_stream.h"
 #include "jasper/jas_image.h"
 #include "jasper/jas_debug.h"
@@ -124,7 +125,7 @@ static int ras_dec_parseopts(const char *optstr, ras_dec_importopts_t *opts)
 {
 	jas_tvparser_t *tvp;
 
-	opts->max_samples = JAS_DEC_DEFAULT_MAX_SAMPLES;
+	opts->max_samples = jas_get_dec_default_max_samples();
 	opts->allow_trunc = 0;
 
 	if (!(tvp = jas_tvparser_create(optstr ? optstr : ""))) {
@@ -141,7 +142,7 @@ static int ras_dec_parseopts(const char *optstr, ras_dec_importopts_t *opts)
 			opts->max_samples = strtoull(jas_tvparser_getval(tvp), 0, 10);
 			break;
 		default:
-			jas_eprintf("warning: ignoring invalid option %s\n",
+			jas_logwarnf("warning: ignoring invalid option %s\n",
 			  jas_tvparser_gettag(tvp));
 		}
 	}
@@ -155,7 +156,7 @@ static int ras_dec_parseopts(const char *optstr, ras_dec_importopts_t *opts)
 * Code.
 \******************************************************************************/
 
-jas_image_t *ras_decode(jas_stream_t *in, const char *optstr)
+JAS_EXPORT jas_image_t *ras_decode(jas_stream_t *in, const char *optstr)
 {
 	ras_hdr_t hdr;
 	ras_cmap_t cmap;
@@ -170,7 +171,7 @@ jas_image_t *ras_decode(jas_stream_t *in, const char *optstr)
 
 	image = 0;
 
-	JAS_DBGLOG(10, ("ras_decode(%p, %p, \"%s\"\n", in, optstr ? optstr : ""));
+	JAS_LOGDEBUGF(10, "ras_decode(%p, \"%s\")\n", in, (optstr ? optstr : ""));
 
 	if (ras_dec_parseopts(optstr, &opts)) {
 		goto error;
@@ -189,11 +190,11 @@ jas_image_t *ras_decode(jas_stream_t *in, const char *optstr)
 
 	if (!jas_safe_size_mul3(hdr.width, hdr.height, (hdr.depth + 7) / 8,
 	  &num_samples)) {
-		jas_eprintf("image too large\n");
+		jas_logerrorf("image too large\n");
 		goto error;
 	}
 	if (opts.max_samples > 0 && num_samples > opts.max_samples) {
-		jas_eprintf(
+		jas_logerrorf(
 		  "maximum number of samples would be exceeded (%zu > %zu)\n",
 		  num_samples, opts.max_samples);
 		goto error;
@@ -261,7 +262,7 @@ error:
 	return 0;
 }
 
-int ras_validate(jas_stream_t *in)
+JAS_EXPORT int ras_validate(jas_stream_t *in)
 {
 	jas_uchar buf[RAS_MAGICLEN];
 	uint_fast32_t magic;
@@ -270,8 +271,9 @@ int ras_validate(jas_stream_t *in)
 
 	/* Read the validation data (i.e., the data used for detecting
 	  the format). */
-	if (jas_stream_peek(in, buf, sizeof(buf)) != sizeof(buf))
+	if (jas_stream_peek(in, buf, sizeof(buf)) != sizeof(buf)) {
 		return -1;
+	}
 
 	magic = (JAS_CAST(uint_fast32_t, buf[0]) << 24) |
 	  (JAS_CAST(uint_fast32_t, buf[1]) << 16) |
@@ -280,6 +282,9 @@ int ras_validate(jas_stream_t *in)
 
 	/* Is the signature correct for the Sun Rasterfile format? */
 	if (magic != RAS_MAGIC) {
+		JAS_LOGDEBUGF(20, "bad signature (0x%08lx != 0x%08lx)\n",
+		  JAS_CAST(unsigned long, magic),
+		  JAS_CAST(unsigned long, RAS_MAGIC));
 		return -1;
 	}
 	return 0;
@@ -296,11 +301,11 @@ static int ras_getdata(jas_stream_t *in, ras_hdr_t *hdr, ras_cmap_t *cmap,
 		ret = ras_getdatastd(in, hdr, cmap, image);
 		break;
 	case RAS_TYPE_RLE:
-		jas_eprintf("error: RLE encoding method not supported\n");
+		jas_logerrorf("error: RLE encoding method not supported\n");
 		ret = -1;
 		break;
 	default:
-		jas_eprintf("error: encoding method not supported\n");
+		jas_logerrorf("error: encoding method not supported\n");
 		ret = -1;
 	}
 	return ret;
@@ -318,9 +323,9 @@ static int ras_getdatastd(jas_stream_t *in, ras_hdr_t *hdr, ras_cmap_t *cmap,
 	int v;
 	jas_matrix_t *data[3];
 
-/* Note: This function does not properly handle images with a colormap. */
-	/* Avoid compiler warnings about unused parameters. */
-	(void)cmap;
+	/* Note: This function does not properly handle images with a colormap. */
+
+	JAS_UNUSED(cmap);
 
 	assert(jas_image_numcmpts(image) <= 3);
 
@@ -403,7 +408,7 @@ static int ras_getcmap(jas_stream_t *in, ras_hdr_t *hdr, ras_cmap_t *cmap)
 		break;
 	case RAS_MT_EQUALRGB:
 		{
-		jas_eprintf("warning: palettized images not fully supported\n");
+		jas_logwarnf("warning: palettized images not fully supported\n");
 		numcolors = 1 << hdr->depth;
 		if (numcolors > RAS_CMAP_MAXSIZ) {
 			return -1;

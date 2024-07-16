@@ -5,6 +5,7 @@
 
 #include "benchmark/benchmark.h"
 #include "lib/jxl/dec_external_image.h"
+#include "lib/jxl/image.h"
 #include "lib/jxl/image_ops.h"
 
 namespace jxl {
@@ -20,12 +21,12 @@ void BM_DecExternalImage_ConvertImageRGBA(benchmark::State& state) {
   ImageMetadata im;
   im.SetAlphaBits(8);
   ImageBundle ib(&im);
-  Image3F color(xsize, ysize);
+  JXL_ASSIGN_OR_DIE(Image3F color, Image3F::Create(xsize, ysize));
   ZeroFillImage(&color);
   ib.SetFromImage(std::move(color), ColorEncoding::SRGB());
-  ImageF alpha(xsize, ysize);
+  JXL_ASSIGN_OR_DIE(ImageF alpha, ImageF::Create(xsize, ysize));
   ZeroFillImage(&alpha);
-  ib.SetAlpha(std::move(alpha), /*alpha_is_premultiplied=*/false);
+  ib.SetAlpha(std::move(alpha));
 
   const size_t bytes_per_row = xsize * num_channels;
   std::vector<uint8_t> interleaved(bytes_per_row * ysize);
@@ -38,7 +39,7 @@ void BM_DecExternalImage_ConvertImageRGBA(benchmark::State& state) {
           /*float_out=*/false, num_channels, JXL_NATIVE_ENDIAN,
           /*stride*/ bytes_per_row,
           /*thread_pool=*/nullptr, interleaved.data(), interleaved.size(),
-          /*out_callback=*/nullptr, /*out_opaque=*/nullptr,
+          /*out_callback=*/{},
           /*undo_orientation=*/jxl::Orientation::kIdentity));
     }
   }

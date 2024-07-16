@@ -1,4 +1,3 @@
-#pragma once
 /******************************************************************************
  * $Id$
  *
@@ -31,26 +30,26 @@
 #ifndef OGR_AUTOCAD_SERVICES_H_INCLUDED
 #define OGR_AUTOCAD_SERVICES_H_INCLUDED
 
-#include <port/cpl_conv.h>
-#include <port/cpl_string.h>
-#include <ogr/ogr_geometry.h>
-#include <ogr/ogr_feature.h>
+#include "cpl_conv.h"
+#include "cpl_string.h"
+#include "ogr_geometry.h"
+#include "ogr_feature.h"
 
 /* -------------------------------------------------------------------- */
 /*      Various Functions.                                              */
 /* -------------------------------------------------------------------- */
-CPLString ACTextUnescape( const char *pszInput, const char *pszEncoding,
-    bool bIsMText );
+CPLString ACTextUnescape(const char *pszInput, const char *pszEncoding,
+                         bool bIsMText);
 
-const unsigned char *ACGetColorTable( void );
+const unsigned char *ACGetColorTable(void);
 
-const int* ACGetKnownDimStyleCodes( void );
+const int *ACGetKnownDimStyleCodes(void);
 
-const char *ACGetDimStylePropertyName( const int iDimStyleCode );
+const char *ACGetDimStylePropertyName(const int iDimStyleCode);
 
-const char *ACGetDimStylePropertyDefault( const int iDimStyleCode );
+const char *ACGetDimStylePropertyDefault(const int iDimStyleCode);
 
-void ACAdjustText( const double dfAngle, const double dfScaleX,
-    const double dfScaleY, OGRFeature* const poFeature );
+void ACAdjustText(const double dfAngle, const double dfScaleX,
+                  const double dfScaleY, OGRFeature *const poFeature);
 
 #endif /* ndef OGR_AUTOCAD_SERVICES_H_INCLUDED */

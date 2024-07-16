@@ -1,4 +1,3 @@
-#pragma once
 /******************************************************************************
  * $Id$
  *
@@ -31,8 +30,10 @@
 #ifndef GDAL_PRIV_TEMPLATES_HPP_INCLUDED
 #define GDAL_PRIV_TEMPLATES_HPP_INCLUDED
 
-#include "..\port\cpl_port.h"
+#include "cpl_port.h"
 
+#include <cmath>
+#include <cstdint>
 #include <limits>
 
 /************************************************************************/
@@ -54,11 +55,13 @@ inline void GDALGetDataLimits(Tin &tMaxValue, Tin &tMinValue)
     tMinValue = std::numeric_limits<Tin>::min();
 
     // Compute the actual minimum value of Tout in terms of Tin.
-    if (std::numeric_limits<Tout>::is_signed && std::numeric_limits<Tout>::is_integer)
+    if constexpr (std::numeric_limits<Tout>::is_signed &&
+                  std::numeric_limits<Tout>::is_integer)
     {
         // the minimum value is less than zero
-        if (std::numeric_limits<Tout>::digits < std::numeric_limits<Tin>::digits ||
-                        !std::numeric_limits<Tin>::is_integer)
+        if constexpr (std::numeric_limits<Tout>::digits <
+                          std::numeric_limits<Tin>::digits ||
+                      !std::numeric_limits<Tin>::is_integer)
         {
             // Tout is smaller than Tin, so we need to clamp values in input
             // to the range of Tout's min/max values
@@ -69,11 +72,12 @@ inline void GDALGetDataLimits(Tin &tMaxValue, Tin &tMinValue)
             tMaxValue = static_cast<Tin>(std::numeric_limits<Tout>::max());
         }
     }
-    else if (std::numeric_limits<Tout>::is_integer)
+    else if constexpr (std::numeric_limits<Tout>::is_integer)
     {
         // the output is unsigned, so we just need to determine the max
         /* coverity[same_on_both_sides] */
-        if (std::numeric_limits<Tout>::digits <= std::numeric_limits<Tin>::digits)
+        if constexpr (std::numeric_limits<Tout>::digits <=
+                      std::numeric_limits<Tin>::digits)
         {
             // Tout is smaller than Tin, so we need to clamp the input values
             // to the range of Tout's max
@@ -81,7 +85,6 @@ inline void GDALGetDataLimits(Tin &tMaxValue, Tin &tMinValue)
         }
         tMinValue = 0;
     }
-
 }
 
 /************************************************************************/
@@ -97,8 +100,35 @@ inline void GDALGetDataLimits(Tin &tMaxValue, Tin &tMinValue)
 template <class T>
 inline T GDALClampValue(const T tValue, const T tMax, const T tMin)
 {
-    return tValue > tMax ? tMax :
-           tValue < tMin ? tMin : tValue;
+    return tValue > tMax ? tMax : tValue < tMin ? tMin : tValue;
+}
+
+/************************************************************************/
+/*                          GDALClampDoubleValue()                            */
+/************************************************************************/
+/**
+ * Clamp double values to a specified range, this uses the same
+ * argument ordering as std::clamp, returns TRUE if the value was clamped.
+ *
+ * @param tValue the value
+ * @param tMin the min value
+ * @param tMax the max value
+ *
+ */
+template <class T2, class T3>
+inline bool GDALClampDoubleValue(double &tValue, const T2 tMin, const T3 tMax)
+{
+    const double tMin2{static_cast<double>(tMin)};
+    const double tMax2{static_cast<double>(tMax)};
+    if (tValue > tMax2 || tValue < tMin2)
+    {
+        tValue = tValue > tMax2 ? tMax2 : tValue < tMin2 ? tMin2 : tValue;
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 }
 
 /************************************************************************/
@@ -113,8 +143,8 @@ inline T GDALClampValue(const T tValue, const T tMax, const T tMin)
  */
 template <class T> inline bool GDALIsValueInRange(double dfValue)
 {
-    return dfValue >= std::numeric_limits<T>::min() &&
-           dfValue <= std::numeric_limits<T>::max();
+    return dfValue >= static_cast<double>(std::numeric_limits<T>::lowest()) &&
+           dfValue <= static_cast<double>(std::numeric_limits<T>::max());
 }
 
 template <> inline bool GDALIsValueInRange<double>(double dfValue)
@@ -129,21 +159,73 @@ template <> inline bool GDALIsValueInRange<float>(double dfValue)
             dfValue <= std::numeric_limits<float>::max());
 }
 
+template <> inline bool GDALIsValueInRange<int64_t>(double dfValue)
+{
+    // Values in the range [INT64_MAX - 1023, INT64_MAX - 1]
+    // get converted to a double that once cast to int64_t is
+    // INT64_MAX + 1, hence the < strict comparison.
+    return dfValue >=
+               static_cast<double>(std::numeric_limits<int64_t>::min()) &&
+           dfValue < static_cast<double>(std::numeric_limits<int64_t>::max());
+}
+
+template <> inline bool GDALIsValueInRange<uint64_t>(double dfValue)
+{
+    // Values in the range [UINT64_MAX - 2047, UINT64_MAX - 1]
+    // get converted to a double that once cast to uint64_t is
+    // UINT64_MAX + 1, hence the < strict comparison.
+    return dfValue >= 0 &&
+           dfValue < static_cast<double>(std::numeric_limits<uint64_t>::max());
+}
+
+/************************************************************************/
+/*                         GDALIsValueExactAs()                         */
+/************************************************************************/
+/**
+ * Returns whether a value can be exactly represented on type T.
+ *
+ * That is static_cast\<double\>(static_cast\<T\>(dfValue)) is legal and is
+ * equal to dfValue.
+ *
+ * Note: for T=float or double, a NaN input leads to true
+ *
+ * @param dfValue the value
+ * @return whether the value can be exactly represented on type T.
+ */
+template <class T> inline bool GDALIsValueExactAs(double dfValue)
+{
+    return GDALIsValueInRange<T>(dfValue) &&
+           static_cast<double>(static_cast<T>(dfValue)) == dfValue;
+}
+
+template <> inline bool GDALIsValueExactAs<float>(double dfValue)
+{
+    return std::isnan(dfValue) ||
+           (GDALIsValueInRange<float>(dfValue) &&
+            static_cast<double>(static_cast<float>(dfValue)) == dfValue);
+}
+
+template <> inline bool GDALIsValueExactAs<double>(double)
+{
+    return true;
+}
+
 /************************************************************************/
 /*                          GDALCopyWord()                              */
 /************************************************************************/
 
-template<class Tin, class Tout> struct sGDALCopyWord
+template <class Tin, class Tout> struct sGDALCopyWord
 {
     static inline void f(const Tin tValueIn, Tout &tValueOut)
     {
         Tin tMaxVal, tMinVal;
         GDALGetDataLimits<Tin, Tout>(tMaxVal, tMinVal);
-        tValueOut = static_cast<Tout>(GDALClampValue(tValueIn, tMaxVal, tMinVal));
+        tValueOut =
+            static_cast<Tout>(GDALClampValue(tValueIn, tMaxVal, tMinVal));
     }
 };
 
-template<class Tin> struct sGDALCopyWord<Tin, float>
+template <class Tin> struct sGDALCopyWord<Tin, float>
 {
     static inline void f(const Tin tValueIn, float &fValueOut)
     {
@@ -151,15 +233,15 @@ template<class Tin> struct sGDALCopyWord<Tin, float>
     }
 };
 
-template<class Tin> struct sGDALCopyWord<Tin, double>
+template <class Tin> struct sGDALCopyWord<Tin, double>
 {
     static inline void f(const Tin tValueIn, double &dfValueOut)
     {
-        dfValueOut = tValueIn;
+        dfValueOut = static_cast<double>(tValueIn);
     }
 };
 
-template<> struct sGDALCopyWord<double, double>
+template <> struct sGDALCopyWord<double, double>
 {
     static inline void f(const double dfValueIn, double &dfValueOut)
     {
@@ -167,7 +249,7 @@ template<> struct sGDALCopyWord<double, double>
     }
 };
 
-template<> struct sGDALCopyWord<float, float>
+template <> struct sGDALCopyWord<float, float>
 {
     static inline void f(const float fValueIn, float &fValueOut)
     {
@@ -175,7 +257,7 @@ template<> struct sGDALCopyWord<float, float>
     }
 };
 
-template<> struct sGDALCopyWord<float, double>
+template <> struct sGDALCopyWord<float, double>
 {
     static inline void f(const float fValueIn, double &dfValueOut)
     {
@@ -183,16 +265,16 @@ template<> struct sGDALCopyWord<float, double>
     }
 };
 
-template<> struct sGDALCopyWord<double, float>
+template <> struct sGDALCopyWord<double, float>
 {
     static inline void f(const double dfValueIn, float &fValueOut)
     {
-        if( dfValueIn > std::numeric_limits<float>::max() )
+        if (dfValueIn > std::numeric_limits<float>::max())
         {
             fValueOut = std::numeric_limits<float>::infinity();
             return;
         }
-        if( dfValueIn < -std::numeric_limits<float>::max() )
+        if (dfValueIn < -std::numeric_limits<float>::max())
         {
             fValueOut = -std::numeric_limits<float>::infinity();
             return;
@@ -206,7 +288,7 @@ template <class Tout> struct sGDALCopyWord<float, Tout>
 {
     static inline void f(const float fValueIn, Tout &tValueOut)
     {
-        if( CPLIsNan(fValueIn) )
+        if (CPLIsNan(fValueIn))
         {
             tValueOut = 0;
             return;
@@ -218,29 +300,45 @@ template <class Tout> struct sGDALCopyWord<float, Tout>
     }
 };
 
-template<> struct sGDALCopyWord<float, short>
+template <> struct sGDALCopyWord<float, short>
 {
     static inline void f(const float fValueIn, short &nValueOut)
     {
-        if( CPLIsNan(fValueIn) )
+        if (CPLIsNan(fValueIn))
         {
             nValueOut = 0;
             return;
         }
         float fMaxVal, fMinVal;
         GDALGetDataLimits<float, short>(fMaxVal, fMinVal);
-        float fValue = fValueIn >= 0.0f ? fValueIn + 0.5f :
-            fValueIn - 0.5f;
-        nValueOut = static_cast<short>(
-            GDALClampValue(fValue, fMaxVal, fMinVal));
+        float fValue = fValueIn >= 0.0f ? fValueIn + 0.5f : fValueIn - 0.5f;
+        nValueOut =
+            static_cast<short>(GDALClampValue(fValue, fMaxVal, fMinVal));
     }
 };
 
-template<class Tout> struct sGDALCopyWord<double, Tout>
+template <> struct sGDALCopyWord<float, signed char>
+{
+    static inline void f(const float fValueIn, signed char &nValueOut)
+    {
+        if (CPLIsNan(fValueIn))
+        {
+            nValueOut = 0;
+            return;
+        }
+        float fMaxVal, fMinVal;
+        GDALGetDataLimits<float, signed char>(fMaxVal, fMinVal);
+        float fValue = fValueIn >= 0.0f ? fValueIn + 0.5f : fValueIn - 0.5f;
+        nValueOut =
+            static_cast<signed char>(GDALClampValue(fValue, fMaxVal, fMinVal));
+    }
+};
+
+template <class Tout> struct sGDALCopyWord<double, Tout>
 {
     static inline void f(const double dfValueIn, Tout &tValueOut)
     {
-        if( CPLIsNan(dfValueIn) )
+        if (CPLIsNan(dfValueIn))
         {
             tValueOut = 0;
             return;
@@ -252,45 +350,77 @@ template<class Tout> struct sGDALCopyWord<double, Tout>
     }
 };
 
-template<> struct sGDALCopyWord<double, int>
+template <> struct sGDALCopyWord<double, int>
 {
     static inline void f(const double dfValueIn, int &nValueOut)
     {
-        if( CPLIsNan(dfValueIn) )
+        if (CPLIsNan(dfValueIn))
         {
             nValueOut = 0;
             return;
         }
         double dfMaxVal, dfMinVal;
         GDALGetDataLimits<double, int>(dfMaxVal, dfMinVal);
-        double dfValue = dfValueIn >= 0.0 ? dfValueIn + 0.5 :
-            dfValueIn - 0.5;
-        nValueOut = static_cast<int>(
+        double dfValue = dfValueIn >= 0.0 ? dfValueIn + 0.5 : dfValueIn - 0.5;
+        nValueOut =
+            static_cast<int>(GDALClampValue(dfValue, dfMaxVal, dfMinVal));
+    }
+};
+
+template <> struct sGDALCopyWord<double, std::int64_t>
+{
+    static inline void f(const double dfValueIn, std::int64_t &nValueOut)
+    {
+        if (CPLIsNan(dfValueIn))
+        {
+            nValueOut = 0;
+            return;
+        }
+        double dfMaxVal, dfMinVal;
+        GDALGetDataLimits<double, std::int64_t>(dfMaxVal, dfMinVal);
+        double dfValue = dfValueIn >= 0.0 ? dfValueIn + 0.5 : dfValueIn - 0.5;
+        nValueOut = static_cast<std::int64_t>(
             GDALClampValue(dfValue, dfMaxVal, dfMinVal));
     }
 };
 
-template<> struct sGDALCopyWord<double, short>
+template <> struct sGDALCopyWord<double, short>
 {
     static inline void f(const double dfValueIn, short &nValueOut)
     {
-        if( CPLIsNan(dfValueIn) )
+        if (CPLIsNan(dfValueIn))
         {
             nValueOut = 0;
             return;
         }
         double dfMaxVal, dfMinVal;
         GDALGetDataLimits<double, short>(dfMaxVal, dfMinVal);
-        double dfValue = dfValueIn > 0.0 ? dfValueIn + 0.5 :
-            dfValueIn - 0.5;
-        nValueOut = static_cast<short>(
+        double dfValue = dfValueIn > 0.0 ? dfValueIn + 0.5 : dfValueIn - 0.5;
+        nValueOut =
+            static_cast<short>(GDALClampValue(dfValue, dfMaxVal, dfMinVal));
+    }
+};
+
+template <> struct sGDALCopyWord<double, signed char>
+{
+    static inline void f(const double dfValueIn, signed char &nValueOut)
+    {
+        if (CPLIsNan(dfValueIn))
+        {
+            nValueOut = 0;
+            return;
+        }
+        double dfMaxVal, dfMinVal;
+        GDALGetDataLimits<double, signed char>(dfMaxVal, dfMinVal);
+        double dfValue = dfValueIn > 0.0 ? dfValueIn + 0.5 : dfValueIn - 0.5;
+        nValueOut = static_cast<signed char>(
             GDALClampValue(dfValue, dfMaxVal, dfMinVal));
     }
 };
 
 // Roundoff occurs for Float32 -> int32 for max/min. Overload GDALCopyWord
 // specifically for this case.
-template<> struct sGDALCopyWord<float, int>
+template <> struct sGDALCopyWord<float, int>
 {
     static inline void f(const float fValueIn, int &nValueOut)
     {
@@ -298,35 +428,85 @@ template<> struct sGDALCopyWord<float, int>
         {
             nValueOut = std::numeric_limits<int>::max();
         }
-        else if (fValueIn <= static_cast<float>(std::numeric_limits<int>::min()))
+        else if (fValueIn <=
+                 static_cast<float>(std::numeric_limits<int>::min()))
         {
             nValueOut = std::numeric_limits<int>::min();
         }
         else
         {
-            nValueOut = static_cast<int>(fValueIn > 0.0f ?
-                fValueIn + 0.5f : fValueIn - 0.5f);
+            nValueOut = static_cast<int>(fValueIn > 0.0f ? fValueIn + 0.5f
+                                                         : fValueIn - 0.5f);
         }
     }
 };
 
 // Roundoff occurs for Float32 -> uint32 for max. Overload GDALCopyWord
 // specifically for this case.
-template<> struct sGDALCopyWord<float, unsigned int>
+template <> struct sGDALCopyWord<float, unsigned int>
 {
     static inline void f(const float fValueIn, unsigned int &nValueOut)
     {
-        if (fValueIn >= static_cast<float>(std::numeric_limits<unsigned int>::max()))
+        if (fValueIn >=
+            static_cast<float>(std::numeric_limits<unsigned int>::max()))
         {
             nValueOut = std::numeric_limits<unsigned int>::max();
         }
-        else if (fValueIn <= static_cast<float>(std::numeric_limits<unsigned int>::min()))
+        else if (fValueIn <=
+                 static_cast<float>(std::numeric_limits<unsigned int>::min()))
         {
             nValueOut = std::numeric_limits<unsigned int>::min();
         }
         else
         {
             nValueOut = static_cast<unsigned int>(fValueIn + 0.5f);
+        }
+    }
+};
+
+// Roundoff occurs for Float32 -> std::int64_t for max/min. Overload
+// GDALCopyWord specifically for this case.
+template <> struct sGDALCopyWord<float, std::int64_t>
+{
+    static inline void f(const float fValueIn, std::int64_t &nValueOut)
+    {
+        if (fValueIn >=
+            static_cast<float>(std::numeric_limits<std::int64_t>::max()))
+        {
+            nValueOut = std::numeric_limits<std::int64_t>::max();
+        }
+        else if (fValueIn <=
+                 static_cast<float>(std::numeric_limits<std::int64_t>::min()))
+        {
+            nValueOut = std::numeric_limits<std::int64_t>::min();
+        }
+        else
+        {
+            nValueOut = static_cast<std::int64_t>(
+                fValueIn > 0.0f ? fValueIn + 0.5f : fValueIn - 0.5f);
+        }
+    }
+};
+
+// Roundoff occurs for Float32 -> std::uint64_t for max. Overload GDALCopyWord
+// specifically for this case.
+template <> struct sGDALCopyWord<float, std::uint64_t>
+{
+    static inline void f(const float fValueIn, std::uint64_t &nValueOut)
+    {
+        if (fValueIn >=
+            static_cast<float>(std::numeric_limits<std::uint64_t>::max()))
+        {
+            nValueOut = std::numeric_limits<std::uint64_t>::max();
+        }
+        else if (fValueIn <=
+                 static_cast<float>(std::numeric_limits<std::uint64_t>::min()))
+        {
+            nValueOut = std::numeric_limits<std::uint64_t>::min();
+        }
+        else
+        {
+            nValueOut = static_cast<std::uint64_t>(fValueIn + 0.5f);
         }
     }
 };
@@ -358,7 +538,7 @@ inline void GDALCopyWord(const Tin tValueIn, Tout &tValueOut)
  */
 
 template <class Tin, class Tout>
-inline void GDALCopy4Words(const Tin* pValueIn, Tout* const pValueOut)
+inline void GDALCopy4Words(const Tin *pValueIn, Tout *const pValueOut)
 {
     GDALCopyWord(pValueIn[0], pValueOut[0]);
     GDALCopyWord(pValueIn[1], pValueOut[1]);
@@ -377,36 +557,27 @@ inline void GDALCopy4Words(const Tin* pValueIn, Tout* const pValueOut)
  * @param pValueOut pointer to 8 output values of type Tout.
  */
 
-template<class Tin, class Tout>
-inline void GDALCopy8Words(const Tin* pValueIn, Tout* const pValueOut)
+template <class Tin, class Tout>
+inline void GDALCopy8Words(const Tin *pValueIn, Tout *const pValueOut)
 {
     GDALCopy4Words(pValueIn, pValueOut);
-    GDALCopy4Words(pValueIn+4, pValueOut+4);
+    GDALCopy4Words(pValueIn + 4, pValueOut + 4);
 }
 
 // Needs SSE2
-#if (defined(__x86_64) || defined(_M_X64))
+#if defined(__x86_64) || defined(_M_X64) || defined(USE_SSE2)
 
 #include <emmintrin.h>
 
-static inline void GDALCopyXMMToInt32(const __m128i xmm, void* pDest)
+static inline void GDALCopyXMMToInt32(const __m128i xmm, void *pDest)
 {
-#ifdef CPL_CPU_REQUIRES_ALIGNED_ACCESS
-    int n32 = _mm_cvtsi128_si32 (xmm);     // Extract lower 32 bit word
+    int n32 = _mm_cvtsi128_si32(xmm);  // Extract lower 32 bit word
     memcpy(pDest, &n32, sizeof(n32));
-#else
-    *static_cast<int*>(pDest) = _mm_cvtsi128_si32 (xmm);
-#endif
 }
 
-static inline void GDALCopyXMMToInt64(const __m128i xmm, void* pDest)
+static inline void GDALCopyXMMToInt64(const __m128i xmm, void *pDest)
 {
-#ifdef CPL_CPU_REQUIRES_ALIGNED_ACCESS
-    GInt64 n64 = _mm_cvtsi128_si64 (xmm);   // Extract lower 64 bit word
-    memcpy(pDest, &n64, sizeof(n64));
-#else
-    *static_cast<GInt64*>(pDest) = _mm_cvtsi128_si64 (xmm);
-#endif
+    _mm_storel_epi64(reinterpret_cast<__m128i *>(pDest), xmm);
 }
 
 #if __SSSE3__
@@ -417,8 +588,8 @@ static inline void GDALCopyXMMToInt64(const __m128i xmm, void* pDest)
 #include <smmintrin.h>
 #endif
 
-template<>
-inline void GDALCopy4Words(const float* pValueIn, GByte* const pValueOut)
+template <>
+inline void GDALCopy4Words(const float *pValueIn, GByte *const pValueOut)
 {
     __m128 xmm = _mm_loadu_ps(pValueIn);
 
@@ -429,10 +600,11 @@ inline void GDALCopy4Words(const float* pValueIn, GByte* const pValueOut)
     xmm = _mm_add_ps(xmm, p0d5);
     xmm = _mm_min_ps(_mm_max_ps(xmm, p0d5), xmm_max);
 
-    __m128i xmm_i = _mm_cvttps_epi32 (xmm);
+    __m128i xmm_i = _mm_cvttps_epi32(xmm);
 
 #if __SSSE3__
-    xmm_i = _mm_shuffle_epi8(xmm_i, _mm_cvtsi32_si128(0 | (4 << 8) | (8 << 16) | (12 << 24)));
+    xmm_i = _mm_shuffle_epi8(
+        xmm_i, _mm_cvtsi32_si128(0 | (4 << 8) | (8 << 16) | (12 << 24)));
 #else
     xmm_i = _mm_packs_epi32(xmm_i, xmm_i);   // Pack int32 to int16
     xmm_i = _mm_packus_epi16(xmm_i, xmm_i);  // Pack int16 to uint8
@@ -440,8 +612,8 @@ inline void GDALCopy4Words(const float* pValueIn, GByte* const pValueOut)
     GDALCopyXMMToInt32(xmm_i, pValueOut);
 }
 
-template<>
-inline void GDALCopy4Words(const float* pValueIn, GInt16* const pValueOut)
+template <>
+inline void GDALCopy4Words(const float *pValueIn, GInt16 *const pValueOut)
 {
     __m128 xmm = _mm_loadu_ps(pValueIn);
 
@@ -453,17 +625,17 @@ inline void GDALCopy4Words(const float* pValueIn, GInt16* const pValueOut)
     const __m128 m0d5 = _mm_set1_ps(-0.5f);
     const __m128 mask = _mm_cmpge_ps(xmm, p0d5);
     // f >= 0.5f ? f + 0.5f : f - 0.5f
-    xmm = _mm_add_ps(xmm, _mm_or_ps(_mm_and_ps(mask, p0d5),
-                                    _mm_andnot_ps(mask, m0d5)));
+    xmm = _mm_add_ps(
+        xmm, _mm_or_ps(_mm_and_ps(mask, p0d5), _mm_andnot_ps(mask, m0d5)));
 
-    __m128i xmm_i = _mm_cvttps_epi32 (xmm);
+    __m128i xmm_i = _mm_cvttps_epi32(xmm);
 
-    xmm_i = _mm_packs_epi32(xmm_i, xmm_i);   // Pack int32 to int16
+    xmm_i = _mm_packs_epi32(xmm_i, xmm_i);  // Pack int32 to int16
     GDALCopyXMMToInt64(xmm_i, pValueOut);
 }
 
-template<>
-inline void GDALCopy4Words(const float* pValueIn, GUInt16* const pValueOut)
+template <>
+inline void GDALCopy4Words(const float *pValueIn, GUInt16 *const pValueOut)
 {
     __m128 xmm = _mm_loadu_ps(pValueIn);
 
@@ -472,14 +644,14 @@ inline void GDALCopy4Words(const float* pValueIn, GUInt16* const pValueOut)
     xmm = _mm_add_ps(xmm, p0d5);
     xmm = _mm_min_ps(_mm_max_ps(xmm, p0d5), xmm_max);
 
-    __m128i xmm_i = _mm_cvttps_epi32 (xmm);
+    __m128i xmm_i = _mm_cvttps_epi32(xmm);
 
 #if __SSE4_1__
-     xmm_i = _mm_packus_epi32(xmm_i, xmm_i);   // Pack int32 to uint16
+    xmm_i = _mm_packus_epi32(xmm_i, xmm_i);  // Pack int32 to uint16
 #else
     // Translate to int16 range because _mm_packus_epi32 is SSE4.1 only
     xmm_i = _mm_add_epi32(xmm_i, _mm_set1_epi32(-32768));
-    xmm_i = _mm_packs_epi32(xmm_i, xmm_i);   // Pack int32 to int16
+    xmm_i = _mm_packs_epi32(xmm_i, xmm_i);  // Pack int32 to int16
     // Translate back to uint16 range (actually -32768==32768 in int16)
     xmm_i = _mm_add_epi16(xmm_i, _mm_set1_epi16(-32768));
 #endif
@@ -489,8 +661,9 @@ inline void GDALCopy4Words(const float* pValueIn, GUInt16* const pValueOut)
 #ifdef __AVX2__
 
 #include <immintrin.h>
-template<>
-inline void GDALCopy8Words(const float* pValueIn, GByte* const pValueOut)
+
+template <>
+inline void GDALCopy8Words(const float *pValueIn, GByte *const pValueOut)
 {
     __m256 ymm = _mm256_loadu_ps(pValueIn);
 
@@ -499,18 +672,18 @@ inline void GDALCopy8Words(const float* pValueIn, GByte* const pValueOut)
     ymm = _mm256_add_ps(ymm, p0d5);
     ymm = _mm256_min_ps(_mm256_max_ps(ymm, p0d5), ymm_max);
 
-    __m256i ymm_i = _mm256_cvttps_epi32 (ymm);
+    __m256i ymm_i = _mm256_cvttps_epi32(ymm);
 
-    ymm_i = _mm256_packus_epi32(ymm_i, ymm_i);   // Pack int32 to uint16
-    ymm_i = _mm256_permute4x64_epi64(ymm_i, 0 | (2 << 2)); // AVX2
+    ymm_i = _mm256_packus_epi32(ymm_i, ymm_i);  // Pack int32 to uint16
+    ymm_i = _mm256_permute4x64_epi64(ymm_i, 0 | (2 << 2));  // AVX2
 
     __m128i xmm_i = _mm256_castsi256_si128(ymm_i);
     xmm_i = _mm_packus_epi16(xmm_i, xmm_i);
     GDALCopyXMMToInt64(xmm_i, pValueOut);
 }
 
-template<>
-inline void GDALCopy8Words(const float* pValueIn, GUInt16* const pValueOut)
+template <>
+inline void GDALCopy8Words(const float *pValueIn, GUInt16 *const pValueOut)
 {
     __m256 ymm = _mm256_loadu_ps(pValueIn);
 
@@ -519,19 +692,20 @@ inline void GDALCopy8Words(const float* pValueIn, GUInt16* const pValueOut)
     ymm = _mm256_add_ps(ymm, p0d5);
     ymm = _mm256_min_ps(_mm256_max_ps(ymm, p0d5), ymm_max);
 
-    __m256i ymm_i = _mm256_cvttps_epi32 (ymm);
+    __m256i ymm_i = _mm256_cvttps_epi32(ymm);
 
-    ymm_i = _mm256_packus_epi32(ymm_i, ymm_i);   // Pack int32 to uint16
-    ymm_i = _mm256_permute4x64_epi64(ymm_i, 0 | (2 << 2)); // AVX2
+    ymm_i = _mm256_packus_epi32(ymm_i, ymm_i);  // Pack int32 to uint16
+    ymm_i = _mm256_permute4x64_epi64(ymm_i, 0 | (2 << 2));  // AVX2
 
-    _mm_storeu_si128( reinterpret_cast<__m128i*>(pValueOut), _mm256_castsi256_si128(ymm_i) );
+    _mm_storeu_si128(reinterpret_cast<__m128i *>(pValueOut),
+                     _mm256_castsi256_si128(ymm_i));
 }
 #else
-template<>
-inline void GDALCopy8Words(const float* pValueIn, GUInt16* const pValueOut)
+template <>
+inline void GDALCopy8Words(const float *pValueIn, GUInt16 *const pValueOut)
 {
     __m128 xmm = _mm_loadu_ps(pValueIn);
-    __m128 xmm1 = _mm_loadu_ps(pValueIn+4);
+    __m128 xmm1 = _mm_loadu_ps(pValueIn + 4);
 
     const __m128 p0d5 = _mm_set1_ps(0.5f);
     const __m128 xmm_max = _mm_set1_ps(65535);
@@ -540,51 +714,54 @@ inline void GDALCopy8Words(const float* pValueIn, GUInt16* const pValueOut)
     xmm = _mm_min_ps(_mm_max_ps(xmm, p0d5), xmm_max);
     xmm1 = _mm_min_ps(_mm_max_ps(xmm1, p0d5), xmm_max);
 
-    __m128i xmm_i = _mm_cvttps_epi32 (xmm);
-    __m128i xmm1_i = _mm_cvttps_epi32 (xmm1);
+    __m128i xmm_i = _mm_cvttps_epi32(xmm);
+    __m128i xmm1_i = _mm_cvttps_epi32(xmm1);
 
 #if __SSE4_1__
-    xmm_i = _mm_packus_epi32(xmm_i, xmm1_i);   // Pack int32 to uint16
+    xmm_i = _mm_packus_epi32(xmm_i, xmm1_i);  // Pack int32 to uint16
 #else
     // Translate to int16 range because _mm_packus_epi32 is SSE4.1 only
     xmm_i = _mm_add_epi32(xmm_i, _mm_set1_epi32(-32768));
     xmm1_i = _mm_add_epi32(xmm1_i, _mm_set1_epi32(-32768));
-    xmm_i = _mm_packs_epi32(xmm_i, xmm1_i);   // Pack int32 to int16
+    xmm_i = _mm_packs_epi32(xmm_i, xmm1_i);  // Pack int32 to int16
     // Translate back to uint16 range (actually -32768==32768 in int16)
     xmm_i = _mm_add_epi16(xmm_i, _mm_set1_epi16(-32768));
 #endif
-    _mm_storeu_si128( reinterpret_cast<__m128i*>(pValueOut), xmm_i );
+    _mm_storeu_si128(reinterpret_cast<__m128i *>(pValueOut), xmm_i);
 }
 #endif
 
-
 #ifdef notdef_because_slightly_slower_than_default_implementation
-template<>
-inline void GDALCopy4Words(const double* pValueIn, float* const pValueOut)
+template <>
+inline void GDALCopy4Words(const double *pValueIn, float *const pValueOut)
 {
     __m128d float_posmax = _mm_set1_pd(std::numeric_limits<float>::max());
     __m128d float_negmax = _mm_set1_pd(-std::numeric_limits<float>::max());
     __m128d float_posinf = _mm_set1_pd(std::numeric_limits<float>::infinity());
     __m128d float_neginf = _mm_set1_pd(-std::numeric_limits<float>::infinity());
     __m128d val01 = _mm_loadu_pd(pValueIn);
-    __m128d val23 = _mm_loadu_pd(pValueIn+2);
-    __m128d mask_max = _mm_cmpge_pd( val01, float_posmax );
-    __m128d mask_max23 = _mm_cmpge_pd( val23, float_posmax );
-    val01 = _mm_or_pd(_mm_and_pd(mask_max, float_posinf), _mm_andnot_pd(mask_max, val01));
-    val23 = _mm_or_pd(_mm_and_pd(mask_max23, float_posinf), _mm_andnot_pd(mask_max23, val23));
-    __m128d mask_min = _mm_cmple_pd( val01, float_negmax );
-    __m128d mask_min23 = _mm_cmple_pd( val23, float_negmax );
-    val01 = _mm_or_pd(_mm_and_pd(mask_min, float_neginf), _mm_andnot_pd(mask_min, val01));
-    val23 = _mm_or_pd(_mm_and_pd(mask_min23, float_neginf), _mm_andnot_pd(mask_min23, val23));
-    __m128 val01_s =  _mm_cvtpd_ps ( val01);
-    __m128 val23_s =  _mm_cvtpd_ps ( val23);
+    __m128d val23 = _mm_loadu_pd(pValueIn + 2);
+    __m128d mask_max = _mm_cmpge_pd(val01, float_posmax);
+    __m128d mask_max23 = _mm_cmpge_pd(val23, float_posmax);
+    val01 = _mm_or_pd(_mm_and_pd(mask_max, float_posinf),
+                      _mm_andnot_pd(mask_max, val01));
+    val23 = _mm_or_pd(_mm_and_pd(mask_max23, float_posinf),
+                      _mm_andnot_pd(mask_max23, val23));
+    __m128d mask_min = _mm_cmple_pd(val01, float_negmax);
+    __m128d mask_min23 = _mm_cmple_pd(val23, float_negmax);
+    val01 = _mm_or_pd(_mm_and_pd(mask_min, float_neginf),
+                      _mm_andnot_pd(mask_min, val01));
+    val23 = _mm_or_pd(_mm_and_pd(mask_min23, float_neginf),
+                      _mm_andnot_pd(mask_min23, val23));
+    __m128 val01_s = _mm_cvtpd_ps(val01);
+    __m128 val23_s = _mm_cvtpd_ps(val23);
     __m128i val01_i = _mm_castps_si128(val01_s);
     __m128i val23_i = _mm_castps_si128(val23_s);
     GDALCopyXMMToInt64(val01_i, pValueOut);
-    GDALCopyXMMToInt64(val23_i, pValueOut+2);
+    GDALCopyXMMToInt64(val23_i, pValueOut + 2);
 }
 #endif
 
-#endif //  defined(__x86_64) || defined(_M_X64)
+#endif  //  defined(__x86_64) || defined(_M_X64)
 
-#endif // GDAL_PRIV_TEMPLATES_HPP_INCLUDED
+#endif  // GDAL_PRIV_TEMPLATES_HPP_INCLUDED

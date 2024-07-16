@@ -25,14 +25,14 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
-#include "blocktilelayer.h"
-#include "blockdir.h"
-#include "blockfile.h"
-#include "asciitiledir.h"
-#include "binarytiledir.h"
-#include "../core/mutexholder.h"
-#include "../pcidsk_types.h"
-#include "../pcidsk_exception.h"
+#include "blockdir/blocktilelayer.h"
+#include "blockdir/blockdir.h"
+#include "blockdir/blockfile.h"
+#include "blockdir/asciitiledir.h"
+#include "blockdir/binarytiledir.h"
+#include "core/mutexholder.h"
+#include "pcidsk_types.h"
+#include "pcidsk_exception.h"
 #include <cstdlib>
 #include <cstring>
 #include <cassert>
@@ -735,9 +735,6 @@ void BlockTileLayer::SetTileLayerInfo(uint32 nXSize, uint32 nYSize,
  */
 const char * BlockTileLayer::GetDataType(void) const
 {
-    if (*mszDataType)
-        return mszDataType;
-
     MutexHolder oLock(mpoTileListMutex);
 
     if (*mszDataType)
@@ -764,9 +761,6 @@ const char * BlockTileLayer::GetDataType(void) const
  */
 const char * BlockTileLayer::GetCompressType(void) const
 {
-    if (*mszCompress)
-        return mszCompress;
-
     MutexHolder oLock(mpoTileListMutex);
 
     if (*mszCompress)

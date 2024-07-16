@@ -1,4 +1,3 @@
-#pragma once
 /******************************************************************************
  * $Id$
  *
@@ -31,7 +30,7 @@
 #ifndef GT_WKT_SRS_PRIV_H_INCLUDED
 #define GT_WKT_SRS_PRIV_H_INCLUDED
 
-#include "libgeotiff/geotiff.h"
+#include "geotiff.h"
 
 #if LIBGEOTIFF_VERSION >= 1600
 
@@ -41,20 +40,15 @@
 
 #else
 
-int GDALGTIFKeyGetASCII( GTIF *hGTIF, geokey_t key,
-                                char* szStr,
-                                int szStrMaxLen );
+int GDALGTIFKeyGetASCII(GTIF *hGTIF, geokey_t key, char *szStr,
+                        int szStrMaxLen);
 
-int GDALGTIFKeyGetSHORT( GTIF *hGTIF, geokey_t key,
-                                unsigned short* pnVal,
-                                int nIndex,
-                                int nCount );
+int GDALGTIFKeyGetSHORT(GTIF *hGTIF, geokey_t key, unsigned short *pnVal,
+                        int nIndex, int nCount);
 
-int GDALGTIFKeyGetDOUBLE( GTIF *hGTIF, geokey_t key,
-                                 double* pdfVal,
-                                 int nIndex,
-                                 int nCount );
+int GDALGTIFKeyGetDOUBLE(GTIF *hGTIF, geokey_t key, double *pdfVal, int nIndex,
+                         int nCount);
 
 #endif
 
-#endif // GT_WKT_SRS_PRIV_H_INCLUDED
+#endif  // GT_WKT_SRS_PRIV_H_INCLUDED

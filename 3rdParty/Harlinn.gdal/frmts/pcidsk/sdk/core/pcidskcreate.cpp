@@ -24,16 +24,16 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
-#include "frmts/pcidsk/sdk/pcidsk.h"
-#include "frmts/pcidsk/sdk/pcidsk_config.h"
-#include "frmts/pcidsk/sdk/pcidsk_types.h"
-#include "frmts/pcidsk/sdk/pcidsk_exception.h"
-#include "frmts/pcidsk/sdk/pcidsk_file.h"
-#include "frmts/pcidsk/sdk/pcidsk_georef.h"
-#include "frmts/pcidsk/sdk/core/pcidsk_utils.h"
-#include "frmts/pcidsk/sdk/core/cpcidskblockfile.h"
-#include "frmts/pcidsk/sdk/core/clinksegment.h"
-#include "frmts/pcidsk/sdk/segment/systiledir.h"
+#include "pcidsk.h"
+#include "pcidsk_config.h"
+#include "pcidsk_types.h"
+#include "pcidsk_exception.h"
+#include "pcidsk_file.h"
+#include "pcidsk_georef.h"
+#include "core/pcidsk_utils.h"
+#include "core/cpcidskblockfile.h"
+#include "core/clinksegment.h"
+#include "segment/systiledir.h"
 #include <cassert>
 #include <cstdlib>
 #include <cstring>
@@ -65,9 +65,9 @@ using namespace PCIDSK;
  */
 
 PCIDSKFile PCIDSK_DLL *
-PCIDSK::Create( std::string filename, int pixels, int lines,
+PCIDSK::Create( const std::string&  filename, int pixels, int lines,
                 int channel_count, eChanType *channel_types,
-                std::string options, const PCIDSKInterfaces *interfaces )
+                const std::string& oOrigOptions, const PCIDSKInterfaces *interfaces )
 
 {
     if( pixels < 0 || pixels > 99999999 ||
@@ -105,7 +105,7 @@ PCIDSK::Create( std::string filename, int pixels, int lines,
     int  tilesize = PCIDSK_DEFAULT_TILE_SIZE;
     std::string oLinkFilename;
 
-    std::string oOrigOptions = options;
+    std::string options = oOrigOptions;
     UCaseStr( options );
     for(auto & c : options)
     {
@@ -579,9 +579,7 @@ PCIDSK::Create( std::string filename, int pixels, int lines,
 /* -------------------------------------------------------------------- */
     oHandleAutoPtr.Close();
 
-    PCIDSKFile *file = Open( filename, "r+", interfaces );
-
-    std::unique_ptr<PCIDSKFile> oFileAutoPtr(file);
+    auto file = std::unique_ptr<PCIDSKFile>(Open( filename, "r+", interfaces ));
 
     if(oLinkFilename.size() > 64)
     {
@@ -614,9 +612,8 @@ PCIDSK::Create( std::string filename, int pixels, int lines,
             file->WriteToFile( ih.buffer, ih_offset, 1024 );
         }
 
-        oFileAutoPtr.reset(nullptr);
-        file = Open( filename, "r+", interfaces );
-        oFileAutoPtr.reset(file);
+        file.reset();
+        file.reset(Open( filename, "r+", interfaces ));
     }
 
 /* -------------------------------------------------------------------- */
@@ -633,7 +630,7 @@ PCIDSK::Create( std::string filename, int pixels, int lines,
     {
         file->SetMetadataValue( "_DBLayout", options );
 
-        CPCIDSKBlockFile oBlockFile(file);
+        CPCIDSKBlockFile oBlockFile(file.get());
 
         SysTileDir * poTileDir = oBlockFile.CreateTileDir();
 
@@ -688,12 +685,10 @@ PCIDSK::Create( std::string filename, int pixels, int lines,
             interfaces->io->Close( band_io_handle );
 
             // Set the channel header information.
-            channel->SetChanInfo( relative_band_filename, 0, pixel_size,
-                                  pixel_size * pixels, true );
+            channel->SetChanInfo( std::move(relative_band_filename), 0, pixel_size,
+                                  static_cast<size_t>(pixel_size) * pixels, true );
         }
     }
 
-    oFileAutoPtr.release();
-
-    return file;
+    return file.release();
 }

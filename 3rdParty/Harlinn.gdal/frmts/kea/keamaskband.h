@@ -1,4 +1,3 @@
-#pragma once
 /*
  * $Id$
  *  keamaskband.h
@@ -32,24 +31,30 @@
 #ifndef KEAMASKBAND_H
 #define KEAMASKBAND_H
 
-#include <gcore/gdal_priv.h>
+#include "gdal_priv.h"
 
 #include "libkea_headers.h"
 #include "keadataset.h"
 
-class KEAMaskBand final: public GDALRasterBand
+class KEAMaskBand final : public GDALRasterBand
 {
     int m_nSrcBand;
-    kealib::KEAImageIO  *m_pImageIO; // our image access pointer - refcounted
-    LockedRefCount      *m_pRefCount; // reference count of m_pImageIO
-public:
-    KEAMaskBand(GDALRasterBand *pParent, kealib::KEAImageIO *pImageIO, LockedRefCount *pRefCount );
+    kealib::KEAImageIO *m_pImageIO;  // our image access pointer - refcounted
+    LockedRefCount *m_pRefCount;     // reference count of m_pImageIO
+  public:
+    KEAMaskBand(GDALRasterBand *pParent, kealib::KEAImageIO *pImageIO,
+                LockedRefCount *pRefCount);
     ~KEAMaskBand();
 
-protected:
+    virtual bool IsMaskBand() const override
+    {
+        return true;
+    }
+
+  protected:
     // we just override these functions from GDALRasterBand
-    virtual CPLErr IReadBlock( int, int, void * ) override;
-    virtual CPLErr IWriteBlock( int, int, void * ) override;
+    virtual CPLErr IReadBlock(int, int, void *) override;
+    virtual CPLErr IWriteBlock(int, int, void *) override;
 };
 
-#endif //KEAMASKBAND_H
+#endif  // KEAMASKBAND_H

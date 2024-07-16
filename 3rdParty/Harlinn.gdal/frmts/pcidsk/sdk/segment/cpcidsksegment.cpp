@@ -25,12 +25,12 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
-#include "cpcidsksegment.h"
-#include "../core/metadataset.h"
-#include "../core/cpcidskfile.h"
-#include "../core/pcidsk_utils.h"
-#include "../pcidsk_buffer.h"
-#include "../pcidsk_exception.h"
+#include "segment/cpcidsksegment.h"
+#include "core/metadataset.h"
+#include "core/cpcidskfile.h"
+#include "core/pcidsk_utils.h"
+#include "pcidsk_buffer.h"
+#include "pcidsk_exception.h"
 #include <cassert>
 #include <cstdlib>
 #include <cstring>
@@ -323,6 +323,7 @@ void CPCIDSKSegment::PushHistory( const std::string &app,
 
     std::vector<std::string> history_entries = GetHistoryEntries();
 
+    // coverity[string_null]
     history_entries.insert( history_entries.begin(), history );
     history_entries.resize(8);
 

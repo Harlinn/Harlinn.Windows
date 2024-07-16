@@ -27,12 +27,25 @@
 #include "av1/encoder/encoder.h"
 #include "av1/encoder/picklpf.h"
 
+// AV1 loop filter applies to the whole frame according to mi_rows and mi_cols,
+// which are calculated based on aligned width and aligned height,
+// In addition, if super res is enabled, it copies the whole frame
+// according to the aligned width and height (av1_superres_upscale()).
+// So we need to copy the whole filtered region, instead of the cropped region.
+// For example, input image size is: 160x90.
+// Then src->y_crop_width = 160, src->y_crop_height = 90.
+// The aligned frame size is: src->y_width = 160, src->y_height = 96.
+// AV1 aligns frame size to a multiple of 8, if there is
+// chroma subsampling, it is able to ensure the chroma is also
+// an integer number of mi units. mi unit is 4x4, 8 = 4 * 2, and 2 luma mi
+// units correspond to 1 chroma mi unit if there is subsampling.
+// See: aom_realloc_frame_buffer() in yv12config.c.
 static void yv12_copy_plane(const YV12_BUFFER_CONFIG *src_bc,
                             YV12_BUFFER_CONFIG *dst_bc, int plane) {
   switch (plane) {
-    case 0: aom_yv12_copy_y(src_bc, dst_bc); break;
-    case 1: aom_yv12_copy_u(src_bc, dst_bc); break;
-    case 2: aom_yv12_copy_v(src_bc, dst_bc); break;
+    case 0: aom_yv12_copy_y(src_bc, dst_bc, 0); break;
+    case 1: aom_yv12_copy_u(src_bc, dst_bc, 0); break;
+    case 2: aom_yv12_copy_v(src_bc, dst_bc, 0); break;
     default: assert(plane >= 0 && plane <= 2); break;
   }
 }
@@ -69,9 +82,12 @@ static int64_t try_filter_frame(const YV12_BUFFER_CONFIG *sd,
     case 2: cm->lf.filter_level_v = filter_level[0]; break;
   }
 
+  // lpf_opt_level = 1 : Enables dual/quad loop-filtering.
+  int lpf_opt_level = is_inter_tx_size_search_level_one(&cpi->sf.tx_sf);
+
   av1_loop_filter_frame_mt(&cm->cur_frame->buf, cm, &cpi->td.mb.e_mbd, plane,
                            plane + 1, partial_frame, mt_info->workers,
-                           num_workers, &mt_info->lf_row_sync, 0);
+                           num_workers, &mt_info->lf_row_sync, lpf_opt_level);
 
   filt_err = aom_get_sse_plane(sd, &cm->cur_frame->buf, plane,
                                cm->seq_params->use_highbitdepth);
@@ -84,15 +100,14 @@ static int64_t try_filter_frame(const YV12_BUFFER_CONFIG *sd,
 
 static int search_filter_level(const YV12_BUFFER_CONFIG *sd, AV1_COMP *cpi,
                                int partial_frame,
-                               const int *last_frame_filter_level,
-                               double *best_cost_ret, int plane, int dir) {
+                               const int *last_frame_filter_level, int plane,
+                               int dir) {
   const AV1_COMMON *const cm = &cpi->common;
   const int min_filter_level = 0;
   const int max_filter_level = av1_get_max_filter_level(cpi);
   int filt_direction = 0;
   int64_t best_err;
   int filt_best;
-  MACROBLOCK *x = &cpi->td.mb;
 
   // Start the search at the previous frame filter level unless it is now out of
   // range.
@@ -187,24 +202,33 @@ static int search_filter_level(const YV12_BUFFER_CONFIG *sd, AV1_COMP *cpi,
     }
   }
 
-  // Update best error
-  best_err = ss_err[filt_best];
-
-  if (best_cost_ret)
-    *best_cost_ret = RDCOST_DBL_WITH_NATIVE_BD_DIST(
-        x->rdmult, 0, (best_err << 4), cm->seq_params->bit_depth);
   return filt_best;
 }
 
 void av1_pick_filter_level(const YV12_BUFFER_CONFIG *sd, AV1_COMP *cpi,
                            LPF_PICK_METHOD method) {
   AV1_COMMON *const cm = &cpi->common;
+  const SequenceHeader *const seq_params = cm->seq_params;
   const int num_planes = av1_num_planes(cm);
   struct loopfilter *const lf = &cm->lf;
+  int disable_filter_rt_screen = 0;
   (void)sd;
 
   lf->sharpness_level = 0;
-  cpi->td.mb.rdmult = cpi->rd.RDMULT;
+
+  if (cpi->oxcf.tune_cfg.content == AOM_CONTENT_SCREEN &&
+      cpi->oxcf.q_cfg.aq_mode == CYCLIC_REFRESH_AQ &&
+      cpi->sf.rt_sf.skip_lf_screen)
+    disable_filter_rt_screen = av1_cyclic_refresh_disable_lf_cdef(cpi);
+
+  if (disable_filter_rt_screen ||
+      cpi->oxcf.algo_cfg.loopfilter_control == LOOPFILTER_NONE ||
+      (cpi->oxcf.algo_cfg.loopfilter_control == LOOPFILTER_REFERENCE &&
+       cpi->ppi->rtc_ref.non_reference_frame)) {
+    lf->filter_level[0] = 0;
+    lf->filter_level[1] = 0;
+    return;
+  }
 
   if (method == LPF_PICK_MINIMAL_LPF) {
     lf->filter_level[0] = 0;
@@ -213,7 +237,7 @@ void av1_pick_filter_level(const YV12_BUFFER_CONFIG *sd, AV1_COMP *cpi,
     const int min_filter_level = 0;
     const int max_filter_level = av1_get_max_filter_level(cpi);
     const int q = av1_ac_quant_QTX(cm->quant_params.base_qindex, 0,
-                                   cm->seq_params->bit_depth);
+                                   seq_params->bit_depth);
     // based on tests result for rtc test set
     // 0.04590 boosted or 0.02295 non-booseted in 18-bit fixed point
     const int strength_boost_q_treshold = 0;
@@ -223,6 +247,19 @@ void av1_pick_filter_level(const YV12_BUFFER_CONFIG *sd, AV1_COMP *cpi,
           cpi->common.width * cpi->common.height > 352 * 288))
             ? 12034
             : 6017;
+    // Increase strength on base TL0 for temporal layers, for low-resoln,
+    // based on frame source_sad.
+    if (cpi->svc.number_temporal_layers > 1 &&
+        cpi->svc.temporal_layer_id == 0 &&
+        cpi->common.width * cpi->common.height <= 352 * 288 &&
+        cpi->sf.rt_sf.use_nonrd_pick_mode) {
+      if (cpi->rc.frame_source_sad > 100000)
+        inter_frame_multiplier = inter_frame_multiplier << 1;
+      else if (cpi->rc.frame_source_sad > 50000)
+        inter_frame_multiplier = 3 * (inter_frame_multiplier >> 1);
+    } else if (cpi->sf.rt_sf.use_fast_fixed_part) {
+      inter_frame_multiplier = inter_frame_multiplier << 1;
+    }
     // These values were determined by linear fitting the result of the
     // searched level for 8 bit depth:
     // Keyframes: filt_guess = q * 0.06699 - 1.60817
@@ -231,7 +268,7 @@ void av1_pick_filter_level(const YV12_BUFFER_CONFIG *sd, AV1_COMP *cpi,
     // And high bit depth separately:
     // filt_guess = q * 0.316206 + 3.87252
     int filt_guess;
-    switch (cm->seq_params->bit_depth) {
+    switch (seq_params->bit_depth) {
       case AOM_BITS_8:
         filt_guess =
             (cm->current_frame.frame_type == KEY_FRAME)
@@ -250,7 +287,7 @@ void av1_pick_filter_level(const YV12_BUFFER_CONFIG *sd, AV1_COMP *cpi,
                "or AOM_BITS_12");
         return;
     }
-    if (cm->seq_params->bit_depth != AOM_BITS_8 &&
+    if (seq_params->bit_depth != AOM_BITS_8 &&
         cm->current_frame.frame_type == KEY_FRAME)
       filt_guess -= 4;
     // TODO(chengchen): retrain the model for Y, U, V filter levels
@@ -258,41 +295,60 @@ void av1_pick_filter_level(const YV12_BUFFER_CONFIG *sd, AV1_COMP *cpi,
     lf->filter_level[1] = clamp(filt_guess, min_filter_level, max_filter_level);
     lf->filter_level_u = clamp(filt_guess, min_filter_level, max_filter_level);
     lf->filter_level_v = clamp(filt_guess, min_filter_level, max_filter_level);
+    if (cpi->oxcf.algo_cfg.loopfilter_control == LOOPFILTER_SELECTIVELY &&
+        !frame_is_intra_only(cm) && !cpi->rc.high_source_sad) {
+      if (cpi->oxcf.tune_cfg.content == AOM_CONTENT_SCREEN) {
+        lf->filter_level[0] = 0;
+        lf->filter_level[1] = 0;
+      } else {
+        const int num4x4 = (cm->width >> 2) * (cm->height >> 2);
+        const int newmv_thresh = 7;
+        const int distance_since_key_thresh = 5;
+        if ((cpi->td.rd_counts.newmv_or_intra_blocks * 100 / num4x4) <
+                newmv_thresh &&
+            cpi->rc.frames_since_key > distance_since_key_thresh) {
+          lf->filter_level[0] = 0;
+          lf->filter_level[1] = 0;
+        }
+      }
+    }
   } else {
     int last_frame_filter_level[4] = { 0 };
     if (!frame_is_intra_only(cm)) {
-#if CONFIG_FRAME_PARALLEL_ENCODE
       last_frame_filter_level[0] = cpi->ppi->filter_level[0];
       last_frame_filter_level[1] = cpi->ppi->filter_level[1];
       last_frame_filter_level[2] = cpi->ppi->filter_level_u;
       last_frame_filter_level[3] = cpi->ppi->filter_level_v;
-#else
-      last_frame_filter_level[0] = lf->filter_level[0];
-      last_frame_filter_level[1] = lf->filter_level[1];
-      last_frame_filter_level[2] = lf->filter_level_u;
-      last_frame_filter_level[3] = lf->filter_level_v;
-#endif
     }
+    // The frame buffer last_frame_uf is used to store the non-loop filtered
+    // reconstructed frame in search_filter_level().
+    if (aom_realloc_frame_buffer(
+            &cpi->last_frame_uf, cm->width, cm->height,
+            seq_params->subsampling_x, seq_params->subsampling_y,
+            seq_params->use_highbitdepth, cpi->oxcf.border_in_pixels,
+            cm->features.byte_alignment, NULL, NULL, NULL, false, 0))
+      aom_internal_error(cm->error, AOM_CODEC_MEM_ERROR,
+                         "Failed to allocate last frame buffer");
 
     lf->filter_level[0] = lf->filter_level[1] =
         search_filter_level(sd, cpi, method == LPF_PICK_FROM_SUBIMAGE,
-                            last_frame_filter_level, NULL, 0, 2);
+                            last_frame_filter_level, 0, 2);
     if (method != LPF_PICK_FROM_FULL_IMAGE_NON_DUAL) {
       lf->filter_level[0] =
           search_filter_level(sd, cpi, method == LPF_PICK_FROM_SUBIMAGE,
-                              last_frame_filter_level, NULL, 0, 0);
+                              last_frame_filter_level, 0, 0);
       lf->filter_level[1] =
           search_filter_level(sd, cpi, method == LPF_PICK_FROM_SUBIMAGE,
-                              last_frame_filter_level, NULL, 0, 1);
+                              last_frame_filter_level, 0, 1);
     }
 
     if (num_planes > 1) {
       lf->filter_level_u =
           search_filter_level(sd, cpi, method == LPF_PICK_FROM_SUBIMAGE,
-                              last_frame_filter_level, NULL, 1, 0);
+                              last_frame_filter_level, 1, 0);
       lf->filter_level_v =
           search_filter_level(sd, cpi, method == LPF_PICK_FROM_SUBIMAGE,
-                              last_frame_filter_level, NULL, 2, 0);
+                              last_frame_filter_level, 2, 0);
     }
   }
 }

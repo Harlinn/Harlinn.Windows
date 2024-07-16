@@ -68,14 +68,14 @@ struct Accounting {
   uint32_t last_tell_frac;
 };
 
-void aom_accounting_init(Accounting *accounting);
-void aom_accounting_reset(Accounting *accounting);
-void aom_accounting_clear(Accounting *accounting);
-void aom_accounting_set_context(Accounting *accounting, int16_t x, int16_t y);
-int aom_accounting_dictionary_lookup(Accounting *accounting, const char *str);
-void aom_accounting_record(Accounting *accounting, const char *str,
+HAOM_EXPORT void aom_accounting_init(Accounting *accounting);
+HAOM_EXPORT void aom_accounting_reset(Accounting *accounting);
+HAOM_EXPORT void aom_accounting_clear(Accounting *accounting);
+HAOM_EXPORT void aom_accounting_set_context(Accounting *accounting, int16_t x, int16_t y);
+HAOM_EXPORT int aom_accounting_dictionary_lookup(Accounting *accounting, const char *str);
+HAOM_EXPORT void aom_accounting_record(Accounting *accounting, const char *str,
                            uint32_t bits);
-void aom_accounting_dump(Accounting *accounting);
+HAOM_EXPORT void aom_accounting_dump(Accounting *accounting);
 #ifdef __cplusplus
 }  // extern "C"
 #endif  // __cplusplus

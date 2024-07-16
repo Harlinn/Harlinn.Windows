@@ -62,7 +62,7 @@ static void decode_color_map_tokens(Av1ColorMapParam *param, aom_reader *r) {
   }
 }
 
-void av1_decode_palette_tokens(MACROBLOCKD *const xd, int plane,
+HAOM_EXPORT void av1_decode_palette_tokens(MACROBLOCKD *const xd, int plane,
                                aom_reader *r) {
   assert(plane == 0 || plane == 1);
   Av1ColorMapParam params;

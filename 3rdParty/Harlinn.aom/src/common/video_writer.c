@@ -32,7 +32,7 @@ static void write_header(FILE *file, const AvxVideoInfo *info,
   ivf_write_file_header(file, &cfg, info->codec_fourcc, frame_count);
 }
 
-AvxVideoWriter *aom_video_writer_open(const char *filename,
+HAOM_EXPORT AvxVideoWriter *aom_video_writer_open(const char *filename,
                                       AvxContainer container,
                                       const AvxVideoInfo *info) {
   if (container == kContainerIVF) {
@@ -57,7 +57,7 @@ AvxVideoWriter *aom_video_writer_open(const char *filename,
   return NULL;
 }
 
-void aom_video_writer_close(AvxVideoWriter *writer) {
+HAOM_EXPORT void aom_video_writer_close(AvxVideoWriter *writer) {
   if (writer) {
     // Rewriting frame header with real frame count
     rewind(writer->file);
@@ -68,7 +68,7 @@ void aom_video_writer_close(AvxVideoWriter *writer) {
   }
 }
 
-int aom_video_writer_write_frame(AvxVideoWriter *writer, const uint8_t *buffer,
+HAOM_EXPORT int aom_video_writer_write_frame(AvxVideoWriter *writer, const uint8_t *buffer,
                                  size_t size, int64_t pts) {
   ivf_write_frame_header(writer->file, pts, size);
   if (fwrite(buffer, 1, size, writer->file) != size) return 0;
@@ -78,6 +78,6 @@ int aom_video_writer_write_frame(AvxVideoWriter *writer, const uint8_t *buffer,
   return 1;
 }
 
-void aom_video_writer_set_fourcc(AvxVideoWriter *writer, uint32_t fourcc) {
+HAOM_EXPORT void aom_video_writer_set_fourcc(AvxVideoWriter *writer, uint32_t fourcc) {
   writer->info.codec_fourcc = fourcc;
 }

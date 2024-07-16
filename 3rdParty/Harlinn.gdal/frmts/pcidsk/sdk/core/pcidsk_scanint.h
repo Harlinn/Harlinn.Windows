@@ -1,4 +1,3 @@
-#pragma once
 /******************************************************************************
  *
  * Purpose:  Functions to convert an ascii string to an integer value.
@@ -29,7 +28,7 @@
 #ifndef PCIDSK_SCANINT_H
 #define PCIDSK_SCANINT_H
 
-#include "../pcidsk_config.h"
+#include "pcidsk_config.h"
 #include <cassert>
 #include <cmath>
 

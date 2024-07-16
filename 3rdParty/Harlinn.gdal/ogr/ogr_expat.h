@@ -1,4 +1,3 @@
-#pragma once
 /******************************************************************************
  * $Id$
  *
@@ -33,7 +32,7 @@
 
 #ifdef HAVE_EXPAT
 
-#include <port/cpl_port.h>
+#include "cpl_port.h"
 #include <expat.h>
 
 #include <memory>
@@ -43,32 +42,39 @@
 #define XMLCALL
 #endif
 #ifndef XML_STATUS_OK
-#define XML_STATUS_OK    1
+#define XML_STATUS_OK 1
 #define XML_STATUS_ERROR 0
 #endif
 
 /* XML_StopParser only available for expat >= 1.95.8 */
-#if !defined(XML_MAJOR_VERSION) || (XML_MAJOR_VERSION * 10000 + XML_MINOR_VERSION * 100 + XML_MICRO_VERSION) < 19508
+#if !defined(XML_MAJOR_VERSION) ||                                             \
+    (XML_MAJOR_VERSION * 10000 + XML_MINOR_VERSION * 100 +                     \
+     XML_MICRO_VERSION) < 19508
 #define XML_StopParser(parser, resumable)
-#warning "Expat version is too old and does not have XML_StopParser. Corrupted files could hang OGR"
+#warning                                                                       \
+    "Expat version is too old and does not have XML_StopParser. Corrupted files could hang OGR"
 #endif
 
 /* Only for internal use ! */
-HGDAL_EXPORT XML_Parser OGRCreateExpatXMLParser(void);
+XML_Parser CPL_DLL OGRCreateExpatXMLParser(void);
 
 //
 //! @cond Doxygen_Suppress
-struct OGRExpatUniquePtrDeleter
+struct CPL_DLL OGRExpatUniquePtrDeleter
 {
     void operator()(XML_Parser oParser) const
-        { XML_ParserFree(oParser); }
+    {
+        XML_ParserFree(oParser);
+    }
 };
+
 //! @endcond
 
 /** Unique pointer type for XML_Parser.
  * @since GDAL 3.2
  */
-using OGRExpatUniquePtr = std::unique_ptr<XML_ParserStruct, OGRExpatUniquePtrDeleter>;
+using OGRExpatUniquePtr =
+    std::unique_ptr<XML_ParserStruct, OGRExpatUniquePtrDeleter>;
 
 #endif /* HAVE_EXPAT */
 

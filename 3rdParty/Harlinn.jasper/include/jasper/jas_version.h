@@ -80,38 +80,28 @@ extern "C" {
 * Constants and types.
 \******************************************************************************/
 
-#if !defined(JAS_VERSION)
-/* The version information below should match that specified in
-  the "configure.in" file! */
-#define	JAS_VERSION		"unknown"
-#endif
-
 #define	JAS_COPYRIGHT \
-	"Copyright (c) 2001-2006 Michael David Adams.\n" \
+	"Copyright (c) 2001-2022 Michael David Adams.\n" \
 	"Copyright (c) 1999-2000 Image Power, Inc. and the University of\n" \
 	"  British Columbia.\n" \
 	"All rights reserved.\n"
 
 #define	JAS_NOTES \
-	"For more information about this software, please visit the following\n" \
-	"web sites/pages:\n" \
-	"    http://www.ece.uvic.ca/~mdadams/jasper\n" \
-	"    http://www.jpeg.org/software\n" \
-	"To be added to the (moderated) JasPer software announcements\n" \
-	"mailing list, send an email to:\n" \
-	"    jasper-announce-subscribe@yahoogroups.com\n" \
-	"To be added to the (unmoderated) JasPer software discussion\n" \
-	"mailing list, send an email to:\n" \
-	"    jasper-discussion-subscribe@yahoogroups.com\n" \
-	"Please send any bug reports to:\n" \
-	"    mdadams@ieee.org\n"
+	"For information about the JasPer project, see:\n" \
+	"    https://jasper-software.github.io/jasper\n" \
+	"    https://www.ece.uvic.ca/~mdadams/jasper\n" \
+	"For online documentation on the JasPer software, see:\n" \
+	"    https://jasper-software.github.io/jasper-manual\n" \
+	"Please submit bug reports using the bug-tracker at:\n" \
+	"    https://github.com/jasper-software/jasper/issues\n"
 
 /******************************************************************************\
 * Functions.
 \******************************************************************************/
 
 JAS_ATTRIBUTE_CONST
-JAS_DLLEXPORT const char *jas_getversion(void);
+JAS_EXPORT
+const char *jas_getversion(void);
 /* Get the version information for the JasPer library. */
 /* Note:  Since libjasper can be built as a shared library, the version
   returned by this function may not necessarily correspond to JAS_VERSION. */

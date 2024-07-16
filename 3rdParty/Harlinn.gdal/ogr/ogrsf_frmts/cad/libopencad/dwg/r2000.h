@@ -1,4 +1,3 @@
-#pragma once
 /*******************************************************************************
  *  Project: libopencad
  *  Purpose: OpenSource CAD formats support library
@@ -32,7 +31,7 @@
 #ifndef DWG_R2000_H_H
 #define DWG_R2000_H_H
 
-#include "../cadfile.h"
+#include "cadfile.h"
 #include "io.h"
 
 struct SectionLocatorRecord

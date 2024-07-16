@@ -22,6 +22,7 @@
 #include "av1/common/mvref_common.h"
 
 #include "av1/encoder/enc_enums.h"
+#include "av1/encoder/mcomp_structs.h"
 #if !CONFIG_REALTIME_ONLY
 #include "av1/encoder/partition_cnn_weights.h"
 #endif
@@ -36,17 +37,40 @@ extern "C" {
 #define MIN_TPL_BSIZE_1D 16
 //! Maximum number of tpl block in a super block
 #define MAX_TPL_BLK_IN_SB (MAX_SB_SIZE / MIN_TPL_BSIZE_1D)
-//! Number of intra winner modes kept
-#define MAX_WINNER_MODE_COUNT_INTRA 3
-//! Number of inter winner modes kept
-#define MAX_WINNER_MODE_COUNT_INTER 1
 //! Number of txfm hash records kept for the partition block.
 #define RD_RECORD_BUFFER_LEN 8
-//! Number of txfm hash records kept for the txfm block.
-#define TX_SIZE_RD_RECORD_BUFFER_LEN 256
 
 /*! Maximum value taken by transform type probabilities */
 #define MAX_TX_TYPE_PROB 1024
+
+//! Compute color sensitivity index for given plane
+#define COLOR_SENS_IDX(plane) ((plane)-1)
+
+//! Enable timer statistics of mode search in non-rd
+#define COLLECT_NONRD_PICK_MODE_STAT 0
+
+/*!\cond */
+#if COLLECT_NONRD_PICK_MODE_STAT
+#include "aom_ports/aom_timer.h"
+
+typedef struct _mode_search_stat_nonrd {
+  int32_t num_blocks[BLOCK_SIZES];
+  int64_t total_block_times[BLOCK_SIZES];
+  int32_t num_searches[BLOCK_SIZES][MB_MODE_COUNT];
+  int32_t num_nonskipped_searches[BLOCK_SIZES][MB_MODE_COUNT];
+  int64_t search_times[BLOCK_SIZES][MB_MODE_COUNT];
+  int64_t nonskipped_search_times[BLOCK_SIZES][MB_MODE_COUNT];
+  int64_t ms_time[BLOCK_SIZES][MB_MODE_COUNT];
+  int64_t ifs_time[BLOCK_SIZES][MB_MODE_COUNT];
+  int64_t model_rd_time[BLOCK_SIZES][MB_MODE_COUNT];
+  int64_t txfm_time[BLOCK_SIZES][MB_MODE_COUNT];
+  struct aom_usec_timer timer1;
+  struct aom_usec_timer timer2;
+  struct aom_usec_timer bsize_timer;
+} mode_search_stat_nonrd;
+#endif  // COLLECT_NONRD_PICK_MODE_STAT
+/*!\endcond */
+
 /*! \brief Superblock level encoder info
  *
  * SuperblockEnc stores superblock level information used by the encoder for
@@ -231,7 +255,7 @@ typedef struct {
   uint16_t cb_offset[PLANE_TYPES];
 } MB_MODE_INFO_EXT_FRAME;
 
-/*! \brief Txfm search results for a partition
+/*! \brief Inter-mode txfm results for a partition block.
  */
 typedef struct {
   //! Txfm size used if the current mode is intra mode.
@@ -248,56 +272,24 @@ typedef struct {
   uint32_t hash_value;
 } MB_RD_INFO;
 
-/*! \brief Hash records of txfm search results for the partition block.
+/*! \brief Hash records of the inter-mode transform results
+ *
+ * Hash records of the inter-mode transform results for a whole partition block
+ * based on the residue. Since this operates on the partition block level, this
+ * can give us a whole txfm partition tree.
  */
 typedef struct {
-  //! Circular buffer that stores the txfm search results.
-  MB_RD_INFO tx_rd_info[RD_RECORD_BUFFER_LEN];  // Circular buffer.
-  //! Index to insert the newest \ref TXB_RD_INFO.
+  /*! Circular buffer that stores the inter-mode txfm results of a partition
+   *  block.
+   */
+  MB_RD_INFO mb_rd_info[RD_RECORD_BUFFER_LEN];
+  //! Index to insert the newest rd record.
   int index_start;
   //! Number of info stored in this record.
   int num;
   //! Hash function
   CRC32C crc_calculator;
 } MB_RD_RECORD;
-
-/*! \brief Txfm search results for a tx block.
- */
-typedef struct {
-  //! Distortion after the txfm process
-  int64_t dist;
-  //! SSE of the prediction before the txfm process
-  int64_t sse;
-  //! Rate used to encode the txfm.
-  int rate;
-  //! Location of the end of non-zero entries.
-  uint16_t eob;
-  //! Transform type used on the current block.
-  TX_TYPE tx_type;
-  //! Unknown usage
-  uint16_t entropy_context;
-  //! Context used to code the coefficients.
-  uint8_t txb_entropy_ctx;
-  //! Whether the current info block contains  valid info
-  uint8_t valid;
-  //! Unused
-  uint8_t fast;
-  //! Whether trellis optimization is done.
-  uint8_t perform_block_coeff_opt;
-} TXB_RD_INFO;
-
-/*! \brief Hash records of txfm search result for each tx block.
- */
-typedef struct {
-  //! The hash values.
-  uint32_t hash_vals[TX_SIZE_RD_RECORD_BUFFER_LEN];
-  //! The txfm search results
-  TXB_RD_INFO tx_rd_info[TX_SIZE_RD_RECORD_BUFFER_LEN];
-  //! Index to insert the newest \ref TXB_RD_INFO.
-  int index_start;
-  //! Number of info stored in this record.
-  int num;
-} TXB_RD_RECORD;
 
 //! Number of compound rd stats
 #define MAX_COMP_RD_STATS 64
@@ -363,7 +355,7 @@ typedef struct {
   //! The best color map found.
   uint8_t best_palette_color_map[MAX_PALETTE_SQUARE];
   //! A temporary buffer used for k-means clustering.
-  int kmeans_data_buf[2 * MAX_PALETTE_SQUARE];
+  int16_t kmeans_data_buf[2 * MAX_PALETTE_SQUARE];
 } PALETTE_BUFFER;
 
 /*! \brief Contains buffers used by av1_compound_type_rd()
@@ -420,6 +412,23 @@ typedef struct {
   uint8_t variance_low[105];
 } PartitionSearchInfo;
 
+/*!\cond */
+enum {
+  /**
+   * Do not prune transform depths.
+   */
+  TX_PRUNE_NONE = 0,
+  /**
+   * Prune largest transform (depth 0) based on NN model.
+   */
+  TX_PRUNE_LARGEST = 1,
+  /**
+   * Prune split transforms (depth>=1) based on NN model.
+   */
+  TX_PRUNE_SPLIT = 2,
+} UENUM1BYTE(TX_PRUNE_TYPE);
+/*!\endcond */
+
 /*! \brief Defines the parameters used to perform txfm search.
  *
  * For the most part, this determines how various speed features are used.
@@ -468,9 +477,38 @@ typedef struct {
   TX_MODE tx_mode_search_type;
 
   /*!
-   * Flag to enable/disable DC block prediction.
+   * Determines whether a block can be predicted as transform skip or DC only
+   * based on residual mean and variance.
+   * Type 0 : No skip block or DC only block prediction
+   * Type 1 : Prediction of skip block based on residual mean and variance
+   * Type 2 : Prediction of skip block or DC only block based on residual mean
+   * and variance
    */
   unsigned int predict_dc_level;
+
+  /*!
+   * Whether or not we should use the quantization matrix as weights for PSNR
+   * during RD search.
+   */
+  int use_qm_dist_metric;
+
+  /*!
+   * Keep track of previous mode evaluation stage type. This will be used to
+   * reset mb rd hash record when mode evaluation type changes.
+   */
+  int mode_eval_type;
+
+#if !CONFIG_REALTIME_ONLY
+  //! Indicates the transform depths for which RD evaluation is skipped.
+  TX_PRUNE_TYPE nn_prune_depths_for_intra_tx;
+
+  /*! \brief Indicates if NN model should be invoked to prune transform depths.
+   *
+   * Used to signal whether NN model should be evaluated to prune the R-D
+   * evaluation of specific transform depths.
+   */
+  bool enable_nn_prune_intra_tx_depths;
+#endif
 } TxfmSearchParams;
 
 /*!\cond */
@@ -480,38 +518,6 @@ typedef struct {
 #define MAX_NUM_64X64_TXBS ((MAX_MIB_SIZE >> 4) * (MAX_MIB_SIZE >> 4))
 /*!\endcond */
 
-/*! \brief Txfm hash records
- *
- * Hash records of the transform search results based on the residue. There
- * are two main types here:
- * - MB_RD_RECORD: records a whole *partition block*'s inter-mode txfm result.
- *   Since this operates on the partition block level, this can give us a
- *   whole txfm partition tree.
- * - TXB_RD_RECORD: records a txfm search result within a transform block
- *   itself. This operates on txb level only and only applies to square
- *   txfms.
- */
-typedef struct {
-  /*****************************************************************************
-   * \name TXB RD Record
-   ****************************************************************************/
-  /**@{*/
-  //! Txfm hash record for the whole coding block.
-  MB_RD_RECORD mb_rd_record;
-
-  //! Inter mode txfm hash record for TX_8X8 blocks.
-  TXB_RD_RECORD txb_rd_record_8X8[MAX_NUM_8X8_TXBS];
-  //! Inter mode txfm hash record for TX_16X16 blocks.
-  TXB_RD_RECORD txb_rd_record_16X16[MAX_NUM_16X16_TXBS];
-  //! Inter mode txfm hash record for TX_32X32 blocks.
-  TXB_RD_RECORD txb_rd_record_32X32[MAX_NUM_32X32_TXBS];
-  //! Inter mode txfm hash record for TX_64X64 blocks.
-  TXB_RD_RECORD txb_rd_record_64X64[MAX_NUM_64X64_TXBS];
-  //! Intra mode txfm hash record for square tx blocks.
-  TXB_RD_RECORD txb_rd_record_intra;
-  /**@}*/
-} TxbRdRecords;
-
 /*! \brief Stores various encoding/search decisions related to txfm search.
  *
  * This struct contains a cache of previous txfm results, and some buffers for
@@ -519,7 +525,7 @@ typedef struct {
  */
 typedef struct {
   //! Whether to skip transform and quantization on a partition block level.
-  int skip_txfm;
+  uint8_t skip_txfm;
 
   /*! \brief Whether to skip transform and quantization on a txfm block level.
    *
@@ -541,18 +547,8 @@ typedef struct {
    */
   uint8_t tx_type_map_[MAX_MIB_SIZE * MAX_MIB_SIZE];
 
-  /*! \brief Txfm hash records
-   *
-   * Hash records of the transform search results based on the residue. There
-   * are two main types here:
-   * - MB_RD_RECORD: records a whole *partition block*'s inter-mode txfm result.
-   *   Since this operates on the partition block level, this can give us a
-   *   whole txfm partition tree.
-   * - TXB_RD_RECORD: records a txfm search result within a transform block
-   *   itself. This operates on txb level only and only applies to square
-   *   txfms.
-   */
-  TxbRdRecords *txb_rd_records;
+  //! Txfm hash records of inter-modes.
+  MB_RD_RECORD *mb_rd_record;
 
   /*! \brief Number of txb splits.
    *
@@ -745,6 +741,16 @@ typedef struct {
   //! sgrproj_restore_cost
   int sgrproj_restore_cost[2];
   /**@}*/
+
+  /*****************************************************************************
+   * \name Segmentation Mode Costs
+   ****************************************************************************/
+  /**@{*/
+  //! tmp_pred_cost
+  int tmp_pred_cost[SEG_TEMPORAL_PRED_CTXS][2];
+  //! spatial_pred_cost
+  int spatial_pred_cost[SPATIAL_PREDICTION_PROBS][MAX_SEGMENTS];
+  /**@}*/
 } ModeCosts;
 
 /*! \brief Holds mv costs for encoding and motion search.
@@ -823,14 +829,18 @@ typedef struct {
 
 /*!\cond */
 typedef enum {
-  kInvalid = 0,
-  kLowSad = 1,
-  kMedSad = 2,
-  kHighSad = 3
+  kZeroSad = 0,
+  kVeryLowSad = 1,
+  kLowSad = 2,
+  kMedSad = 3,
+  kHighSad = 4
 } SOURCE_SAD;
 
 typedef struct {
-  SOURCE_SAD source_sad;
+  //! SAD levels in non-rd path
+  SOURCE_SAD source_sad_nonrd;
+  //! SAD levels in rd-path for var-based part qindex thresholds
+  SOURCE_SAD source_sad_rd;
   int lighting_change;
   int low_sumdiff;
 } CONTENT_STATE_SB;
@@ -841,6 +851,20 @@ typedef struct {
   int8_t hist_bin_idx;
   bool is_dx_zero;
 } PixelLevelGradientInfo;
+
+// Structure to hold the variance and log(1 + variance) for 4x4 sub-blocks.
+typedef struct {
+  double log_var;
+  int var;
+} Block4x4VarInfo;
+
+#ifndef NDEBUG
+typedef struct SetOffsetsLoc {
+  int mi_row;
+  int mi_col;
+  BLOCK_SIZE bsize;
+} SetOffsetsLoc;
+#endif  // NDEBUG
 
 /*!\endcond */
 
@@ -948,6 +972,21 @@ typedef struct macroblock {
    */
   int delta_qindex;
 
+  /*! \brief Difference between frame-level qindex and qindex used to
+   * compute rdmult (lambda).
+   *
+   * rdmult_delta_qindex is assigned the same as delta_qindex before qp sweep.
+   * During qp sweep, delta_qindex is changed and used to calculate the actual
+   * quant params, while rdmult_delta_qindex remains the same, and is used to
+   * calculate the rdmult in "set_deltaq_rdmult".
+   */
+  int rdmult_delta_qindex;
+
+  /*! \brief Current qindex (before being adjusted by delta_q_res) used to
+   * derive rdmult_delta_qindex.
+   */
+  int rdmult_cur_qindex;
+
   /*! \brief Rate-distortion multiplier.
    *
    * The rd multiplier used to determine the rate-distortion trade-off. This is
@@ -957,6 +996,12 @@ typedef struct macroblock {
    * block.
    */
   int rdmult;
+
+  //! Intra only, per sb rd adjustment.
+  int intra_sb_rdmult_modifier;
+
+  //! Superblock level distortion propagation factor.
+  double rb;
 
   //! Energy in the current source coding block. Used to calculate \ref rdmult
   int mb_energy;
@@ -1015,6 +1060,22 @@ typedef struct macroblock {
   /*!\brief Number of zero motion vectors
    */
   int cnt_zeromv;
+
+  /*!\brief Flag to force zeromv-skip at superblock level, for nonrd path.
+   *
+   * 0/1 imply zeromv-skip is disabled/enabled. 2 implies that the blocks
+   * in the superblock may be marked as zeromv-skip at block level.
+   */
+  int force_zeromv_skip_for_sb;
+
+  /*!\brief Flag to force zeromv-skip at block level, for nonrd path.
+   */
+  int force_zeromv_skip_for_blk;
+
+  /*! \brief Previous segment id for which qmatrices were updated.
+   * This is used to bypass setting of qmatrices if no change in qindex.
+   */
+  int prev_segment_id;
   /**@}*/
 
   /*****************************************************************************
@@ -1042,8 +1103,12 @@ typedef struct macroblock {
    * This is used to measure how viable a reference frame is.
    */
   int pred_mv_sad[REF_FRAMES];
-  //! The minimum of \ref pred_mv_sad.
-  int best_pred_mv_sad;
+  /*! \brief The minimum of \ref pred_mv_sad.
+   *
+   * Index 0 stores the minimum \ref pred_mv_sad across past reference frames.
+   * Index 1 stores the minimum \ref pred_mv_sad across future reference frames.
+   */
+  int best_pred_mv_sad[2];
   //! The sad of the 1st mv ref (nearest).
   int pred_mv0_sad[REF_FRAMES];
   //! The sad of the 2nd mv ref (near).
@@ -1194,6 +1259,9 @@ typedef struct macroblock {
   PixelLevelGradientInfo *pixel_gradient_info;
   /*! \brief Flags indicating the availability of cached gradient info. */
   bool is_sb_gradient_cached[PLANE_TYPES];
+
+  /*! \brief Flag to reuse predicted samples of inter block. */
+  bool reuse_inter_pred;
   /**@}*/
 
   /*****************************************************************************
@@ -1213,6 +1281,15 @@ typedef struct macroblock {
    * extending outside the UMV borders
    */
   FullMvLimits mv_limits;
+
+  /*! \brief Buffer for storing the search site config.
+   *
+   * When resize mode or super resolution mode is on, the stride of the
+   * reference frame does not always match what's specified in \ref
+   * MotionVectorSearchParams::search_site_cfg. When his happens, we update the
+   * search_sine_config buffer here and use it for motion search.
+   */
+  search_site_config search_site_cfg_buf[NUM_DISTINCT_SEARCH_METHODS];
   /**@}*/
 
   /*****************************************************************************
@@ -1238,9 +1315,19 @@ typedef struct macroblock {
    * Used in REALTIME coding mode to enhance the visual quality at the boundary
    * of moving color objects.
    */
-  uint8_t color_sensitivity_sb[2];
+  uint8_t color_sensitivity_sb[MAX_MB_PLANE - 1];
+  //! Color sensitivity flag for the superblock for golden reference.
+  uint8_t color_sensitivity_sb_g[MAX_MB_PLANE - 1];
+  //! Color sensitivity flag for the superblock for altref reference.
+  uint8_t color_sensitivity_sb_alt[MAX_MB_PLANE - 1];
   //! Color sensitivity flag for the coding block.
-  uint8_t color_sensitivity[2];
+  uint8_t color_sensitivity[MAX_MB_PLANE - 1];
+  //! Coding block distortion value for uv/color, minimum over the inter modes.
+  int64_t min_dist_inter_uv;
+
+  //! The buffer used by search_tx_type() to swap dqcoeff in macroblockd_plane
+  // so we can keep dqcoeff of the best tx_type.
+  tran_low_t *dqcoeff_buf;
   /**@}*/
 
   /*****************************************************************************
@@ -1249,6 +1336,21 @@ typedef struct macroblock {
   /**@{*/
   //! Variance of the source frame.
   unsigned int source_variance;
+  //! Flag to indicate coding block is zero sad.
+  int block_is_zero_sad;
+  //! Flag to indicate superblock ME in variance partition is determined to be
+  // good/reliable, and so the superblock MV will be tested in the
+  // nonrd_pickmode. This is only used for LAST_FRAME.
+  int sb_me_partition;
+  //! Flag to indicate to test the superblock MV for the coding block in the
+  // nonrd_pickmode.
+  int sb_me_block;
+  //! Motion vector from superblock MV derived from int_pro_motion() in
+  // the variance_partitioning.
+  int_mv sb_me_mv;
+  //! Flag to indicate if a fixed partition should be used, only if the
+  // speed feature rt_sf->use_fast_fixed_part is enabled.
+  int sb_force_fixed_part;
   //! SSE of the current predictor.
   unsigned int pred_sse[REF_FRAMES];
   //! Prediction for ML based partition.
@@ -1264,6 +1366,44 @@ typedef struct macroblock {
    * partition is evaluated in the scheme.
    */
   int try_merge_partition;
+
+  /*! \brief Pointer to buffer which caches sub-block variances in a superblock.
+   *
+   *  Pointer to the array of structures to store source variance information of
+   *  each 4x4 sub-block in a superblock. Block4x4VarInfo structure is used to
+   *  store source variance and log of source variance of each 4x4 sub-block.
+   */
+  Block4x4VarInfo *src_var_info_of_4x4_sub_blocks;
+#ifndef NDEBUG
+  /*! \brief A hash to make sure av1_set_offsets is called */
+  SetOffsetsLoc last_set_offsets_loc;
+#endif  // NDEBUG
+
+#if COLLECT_NONRD_PICK_MODE_STAT
+  mode_search_stat_nonrd ms_stat_nonrd;
+#endif  // COLLECT_NONRD_PICK_MODE_STAT
+
+  /*!\brief Number of pixels in current thread that choose palette mode in the
+   * fast encoding stage for screen content tool detemination.
+   */
+  int palette_pixels;
+
+  /*!\brief Pointer to the structure which stores the statistics used by
+   * sb-level multi-pass encoding.
+   */
+  struct SB_FIRST_PASS_STATS *sb_stats_cache;
+
+  /*!\brief Pointer to the structure which stores the statistics used by
+   * first-pass when superblock is searched twice consecutively.
+   */
+  struct SB_FIRST_PASS_STATS *sb_fp_stats;
+
+#if CONFIG_PARTITION_SEARCH_ORDER
+  /*!\brief Pointer to RD_STATS structure to be used in
+   * av1_rd_partition_search().
+   */
+  RD_STATS *rdcost;
+#endif  // CONFIG_PARTITION_SEARCH_ORDER
 } MACROBLOCK;
 #undef SINGLE_REF_MODES
 
@@ -1273,6 +1413,10 @@ typedef struct macroblock {
 // size, not the whole array).
 static INLINE void zero_winner_mode_stats(BLOCK_SIZE bsize, int n_stats,
                                           WinnerModeStats *stats) {
+  // When winner mode stats are not required, the memory allocation is avoided
+  // for x->winner_mode_stats. The stats pointer will be NULL in such cases.
+  if (stats == NULL) return;
+
   const int block_height = block_size_high[bsize];
   const int block_width = block_size_wide[bsize];
   for (int i = 0; i < n_stats; ++i) {

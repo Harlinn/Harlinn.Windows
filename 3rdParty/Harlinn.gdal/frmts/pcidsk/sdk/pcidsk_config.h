@@ -1,5 +1,3 @@
-#pragma once
-#pragma once
 /******************************************************************************
  *
  * Purpose:  Primary include file for PCIDSK SDK.
@@ -34,7 +32,7 @@
 #ifdef PCIMAJORVERSION
 #define CPL_UNUSED
 #else
-#include <port/cpl_port.h>
+#include "cpl_port.h"
 #endif
 
 // Compatibility hack for non-C++11 compilers

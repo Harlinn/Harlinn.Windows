@@ -25,10 +25,10 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
-#include "clinksegment.h"
-#include "../segment/cpcidsksegment.h"
-#include "pcidsk_utils.h"
-#include "../pcidsk_exception.h"
+#include "core/clinksegment.h"
+#include "segment/cpcidsksegment.h"
+#include "core/pcidsk_utils.h"
+#include "pcidsk_exception.h"
 
 #include <vector>
 #include <string>

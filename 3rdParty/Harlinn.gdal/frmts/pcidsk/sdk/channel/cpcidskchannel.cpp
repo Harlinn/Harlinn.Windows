@@ -25,14 +25,14 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
-#include "../pcidsk_config.h"
-#include "../pcidsk_types.h"
-#include "../core/pcidsk_utils.h"
-#include "../pcidsk_exception.h"
-#include "../pcidsk_channel.h"
-#include "../core/cpcidskfile.h"
-#include "cpcidskchannel.h"
-#include "ctiledchannel.h"
+#include "pcidsk_config.h"
+#include "pcidsk_types.h"
+#include "core/pcidsk_utils.h"
+#include "pcidsk_exception.h"
+#include "pcidsk_channel.h"
+#include "core/cpcidskfile.h"
+#include "channel/cpcidskchannel.h"
+#include "channel/ctiledchannel.h"
 #include <cstring>
 #include <cassert>
 #include <cstdlib>
@@ -506,6 +506,7 @@ void CPCIDSKChannel::PushHistory( const std::string &app,
 
     std::vector<std::string> history_entries = GetHistoryEntries();
 
+    // coverity[string_null]
     history_entries.insert( history_entries.begin(), history );
     history_entries.resize(8);
 

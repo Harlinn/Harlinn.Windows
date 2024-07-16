@@ -1,4 +1,3 @@
-#pragma once
 /******************************************************************************
  * $Id$
  *
@@ -36,7 +35,7 @@
 #include <map>
 #include <string>
 
-#include <ogr/ogrsf_frmts/ogrsf_frmts.h>
+#include "ogrsf_frmts.h"
 #include "vfkreader.h"
 
 class OGRVFKDataSource;
@@ -45,74 +44,87 @@ class OGRVFKDataSource;
 /*                            OGRVFKLayer                               */
 /************************************************************************/
 
-class OGRVFKLayer:public OGRLayer
+class OGRVFKLayer : public OGRLayer
 {
-private:
+  private:
     /* spatial reference */
     OGRSpatialReference *poSRS;
 
     /* feature definition */
-    OGRFeatureDefn      *poFeatureDefn;
+    OGRFeatureDefn *poFeatureDefn;
 
     /* VFK data block */
-    IVFKDataBlock       *poDataBlock;
+    IVFKDataBlock *poDataBlock;
 
     /* get next feature */
-    int                  m_iNextFeature;
+    int m_iNextFeature;
 
     /* private methods */
-    OGRGeometry         *CreateGeometry(IVFKFeature *);
-    OGRFeature          *GetFeature(IVFKFeature *);
+    static const OGRGeometry *GetGeometry(IVFKFeature *);
+    OGRFeature *GetFeature(IVFKFeature *);
 
-public:
-    OGRVFKLayer(const char *, OGRSpatialReference *,
-                OGRwkbGeometryType, OGRVFKDataSource *);
+  public:
+    OGRVFKLayer(const char *, OGRSpatialReference *, OGRwkbGeometryType,
+                OGRVFKDataSource *);
     ~OGRVFKLayer();
 
-    OGRFeature          *GetNextFeature() override;
-    OGRFeature          *GetFeature(GIntBig) override;
+    OGRFeature *GetNextFeature() override;
+    OGRFeature *GetFeature(GIntBig) override;
 
-    OGRFeatureDefn      *GetLayerDefn() override { return poFeatureDefn; }
+    OGRFeatureDefn *GetLayerDefn() override
+    {
+        return poFeatureDefn;
+    }
 
-    void                 ResetReading() override;
+    void ResetReading() override;
 
-    int                  TestCapability(const char *) override;
+    int TestCapability(const char *) override;
 
-    GIntBig              GetFeatureCount(int = TRUE) override;
+    GIntBig GetFeatureCount(int = TRUE) override;
 };
 
 /************************************************************************/
 /*                           OGRVFKDataSource                           */
 /************************************************************************/
-class OGRVFKDataSource:public OGRDataSource
+class OGRVFKDataSource : public OGRDataSource
 {
-private:
+  private:
     /* list of available layers */
-    OGRVFKLayer  **papoLayers;
-    int            nLayers;
+    OGRVFKLayer **papoLayers;
+    int nLayers;
 
-    char *         pszName;
+    char *pszName;
 
     /* input related parameters */
-    IVFKReader    *poReader;
+    IVFKReader *poReader;
 
     /* private methods */
-    OGRVFKLayer   *CreateLayerFromBlock(const IVFKDataBlock *);
+    OGRVFKLayer *CreateLayerFromBlock(const IVFKDataBlock *);
 
-public:
+  public:
     OGRVFKDataSource();
     ~OGRVFKDataSource();
 
-    int            Open(GDALOpenInfo* poOpenInfo);
+    int Open(GDALOpenInfo *poOpenInfo);
 
-    const char    *GetName() override { return pszName; }
+    const char *GetName() override
+    {
+        return pszName;
+    }
 
-    int            GetLayerCount() override { return nLayers; }
-    OGRLayer      *GetLayer(int) override;
+    int GetLayerCount() override
+    {
+        return nLayers;
+    }
 
-    int            TestCapability(const char *) override;
+    OGRLayer *GetLayer(int) override;
 
-    IVFKReader    *GetReader() const { return poReader; }
+    int TestCapability(const char *) override;
+
+    IVFKReader *GetReader() const
+    {
+        return poReader;
+    }
 };
 
-#endif // GDAL_OGR_VFK_H_INCLUDED
+#endif  // GDAL_OGR_VFK_H_INCLUDED

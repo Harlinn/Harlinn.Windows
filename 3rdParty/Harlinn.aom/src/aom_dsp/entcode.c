@@ -20,7 +20,7 @@
   Return: The number of bits scaled by 2**OD_BITRES.
           This will always be slightly larger than the exact value (e.g., all
            rounding error is in the positive direction).*/
-uint32_t od_ec_tell_frac(uint32_t nbits_total, uint32_t rng) {
+HAOM_EXPORT uint32_t od_ec_tell_frac(uint32_t nbits_total, uint32_t rng) {
   uint32_t nbits;
   int l;
   int i;

@@ -13,6 +13,7 @@
  * \brief Provides the high level interface to wrap decoder algorithms.
  *
  */
+#include <assert.h>
 #include <stdarg.h>
 #include <stdlib.h>
 
@@ -22,17 +23,17 @@
 #include "aom/aom_integer.h"
 #include "aom/internal/aom_codec_internal.h"
 
-int aom_codec_version(void) { return VERSION_PACKED; }
+HAOM_EXPORT int aom_codec_version(void) { return VERSION_PACKED; }
 
-const char *aom_codec_version_str(void) { return VERSION_STRING_NOSP; }
+HAOM_EXPORT const char *aom_codec_version_str(void) { return VERSION_STRING_NOSP; }
 
-const char *aom_codec_version_extra_str(void) { return VERSION_EXTRA; }
+HAOM_EXPORT const char *aom_codec_version_extra_str(void) { return VERSION_EXTRA; }
 
-const char *aom_codec_iface_name(aom_codec_iface_t *iface) {
+HAOM_EXPORT const char *aom_codec_iface_name(aom_codec_iface_t *iface) {
   return iface ? iface->name : "<invalid interface>";
 }
 
-const char *aom_codec_err_to_string(aom_codec_err_t err) {
+HAOM_EXPORT const char *aom_codec_err_to_string(aom_codec_err_t err) {
   switch (err) {
     case AOM_CODEC_OK: return "Success";
     case AOM_CODEC_ERROR: return "Unspecified internal error";
@@ -52,19 +53,19 @@ const char *aom_codec_err_to_string(aom_codec_err_t err) {
   return "Unrecognized error code";
 }
 
-const char *aom_codec_error(aom_codec_ctx_t *ctx) {
+HAOM_EXPORT const char *aom_codec_error(const aom_codec_ctx_t *ctx) {
   return (ctx) ? aom_codec_err_to_string(ctx->err)
                : aom_codec_err_to_string(AOM_CODEC_INVALID_PARAM);
 }
 
-const char *aom_codec_error_detail(aom_codec_ctx_t *ctx) {
+HAOM_EXPORT const char *aom_codec_error_detail(const aom_codec_ctx_t *ctx) {
   if (ctx && ctx->err)
     return ctx->priv ? ctx->priv->err_detail : ctx->err_detail;
 
   return NULL;
 }
 
-aom_codec_err_t aom_codec_destroy(aom_codec_ctx_t *ctx) {
+HAOM_EXPORT aom_codec_err_t aom_codec_destroy(aom_codec_ctx_t *ctx) {
   if (!ctx) {
     return AOM_CODEC_INVALID_PARAM;
   }
@@ -80,11 +81,11 @@ aom_codec_err_t aom_codec_destroy(aom_codec_ctx_t *ctx) {
   return AOM_CODEC_OK;
 }
 
-aom_codec_caps_t aom_codec_get_caps(aom_codec_iface_t *iface) {
-  return (iface) ? iface->caps : 0;
+HAOM_EXPORT aom_codec_caps_t aom_codec_get_caps(aom_codec_iface_t *iface) {
+  return iface ? iface->caps : 0;
 }
 
-aom_codec_err_t aom_codec_control(aom_codec_ctx_t *ctx, int ctrl_id, ...) {
+HAOM_EXPORT aom_codec_err_t aom_codec_control(aom_codec_ctx_t *ctx, int ctrl_id, ...) {
   if (!ctx) {
     return AOM_CODEC_INVALID_PARAM;
   }
@@ -111,10 +112,11 @@ aom_codec_err_t aom_codec_control(aom_codec_ctx_t *ctx, int ctrl_id, ...) {
     }
   }
   ctx->err = AOM_CODEC_ERROR;
+  ctx->priv->err_detail = "Invalid control ID";
   return AOM_CODEC_ERROR;
 }
 
-aom_codec_err_t aom_codec_set_option(aom_codec_ctx_t *ctx, const char *name,
+HAOM_EXPORT aom_codec_err_t aom_codec_set_option(aom_codec_ctx_t *ctx, const char *name,
                                      const char *value) {
   if (!ctx) {
     return AOM_CODEC_INVALID_PARAM;
@@ -128,10 +130,9 @@ aom_codec_err_t aom_codec_set_option(aom_codec_ctx_t *ctx, const char *name,
   return ctx->err;
 }
 
-void aom_internal_error(struct aom_internal_error_info *info,
-                        aom_codec_err_t error, const char *fmt, ...) {
-  va_list ap;
-
+LIBAOM_FORMAT_PRINTF(3, 0)
+static void set_error(struct aom_internal_error_info *info,
+                      aom_codec_err_t error, const char *fmt, va_list ap) {
   info->error_code = error;
   info->has_detail = 0;
 
@@ -139,20 +140,50 @@ void aom_internal_error(struct aom_internal_error_info *info,
     size_t sz = sizeof(info->detail);
 
     info->has_detail = 1;
-    va_start(ap, fmt);
     vsnprintf(info->detail, sz - 1, fmt, ap);
-    va_end(ap);
     info->detail[sz - 1] = '\0';
   }
+}
+
+void aom_set_error(struct aom_internal_error_info *info, aom_codec_err_t error,
+                   const char *fmt, ...) {
+  va_list ap;
+
+  va_start(ap, fmt);
+  set_error(info, error, fmt, ap);
+  va_end(ap);
+
+  assert(!info->setjmp);
+}
+
+void aom_internal_error(struct aom_internal_error_info *info,
+                        aom_codec_err_t error, const char *fmt, ...) {
+  va_list ap;
+
+  va_start(ap, fmt);
+  set_error(info, error, fmt, ap);
+  va_end(ap);
 
   if (info->setjmp) longjmp(info->jmp, info->error_code);
+}
+
+void aom_internal_error_copy(struct aom_internal_error_info *info,
+                             const struct aom_internal_error_info *src) {
+  assert(info != src);
+  assert(!src->setjmp);
+
+  if (!src->has_detail) {
+    aom_internal_error(info, src->error_code, NULL);
+  } else {
+    aom_internal_error(info, src->error_code, "%s", src->detail);
+  }
 }
 
 void aom_merge_corrupted_flag(int *corrupted, int value) {
   *corrupted |= value;
 }
 
-const char *aom_obu_type_to_string(OBU_TYPE type) {
+HAOM_EXPORT const char *aom_obu_type_to_string(OBU_TYPE type) {
   switch (type) {
     case OBU_SEQUENCE_HEADER: return "OBU_SEQUENCE_HEADER";
     case OBU_TEMPORAL_DELIMITER: return "OBU_TEMPORAL_DELIMITER";

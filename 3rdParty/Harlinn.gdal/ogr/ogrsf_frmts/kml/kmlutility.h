@@ -1,4 +1,3 @@
-#pragma once
 /******************************************************************************
  * $Id$
  *
@@ -33,15 +32,24 @@
 
 #include <string>
 #include <vector>
-#include <ogr/ogr_geometry.h>
+#include "ogr_geometry.h"
 
 namespace OGRKML
 {
 
 enum Nodetype
 {
-    Unknown, Empty, Mixed, Point, LineString, Polygon, Rest, MultiGeometry,
-    MultiPoint, MultiLineString, MultiPolygon
+    Unknown,
+    Empty,
+    Mixed,
+    Point,
+    LineString,
+    Polygon,
+    Rest,
+    MultiGeometry,
+    MultiPoint,
+    MultiLineString,
+    MultiPolygon
 };
 
 struct Attribute
@@ -55,14 +63,11 @@ struct Coordinate
     double dfLongitude;
     double dfLatitude;
     double dfAltitude;
-    bool   bHasZ;
+    bool bHasZ;
 
-    Coordinate() :
-        dfLongitude(0),
-        dfLatitude(0),
-        dfAltitude(0),
-        bHasZ(false)
-    {}
+    Coordinate() : dfLongitude(0), dfLatitude(0), dfAltitude(0), bHasZ(false)
+    {
+    }
 };
 
 struct Feature
@@ -70,11 +75,11 @@ struct Feature
     Nodetype eType;
     std::string sName;
     std::string sDescription;
-    OGRGeometry* poGeom;
+    OGRGeometry *poGeom;
 
-    Feature()
-        : eType(Unknown), poGeom(nullptr)
-    {}
+    Feature() : eType(Unknown), poGeom(nullptr)
+    {
+    }
 
     ~Feature()
     {
@@ -82,9 +87,8 @@ struct Feature
     }
 };
 
-}
+}  // namespace OGRKML
 
 using namespace OGRKML;
 
 #endif /* OGR_KMLUTILITY_H_INCLUDED */
-

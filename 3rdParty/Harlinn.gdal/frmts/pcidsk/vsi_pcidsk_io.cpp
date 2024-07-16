@@ -27,32 +27,35 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
-#include <port/cpl_conv.h>
-#include <port/cpl_multiproc.h>
-#include "sdk/pcidsk.h"
+#include "cpl_conv.h"
+#include "cpl_multiproc.h"
+#include "pcidsk.h"
 
 using PCIDSK::IOInterfaces;
 using PCIDSK::PCIDSKInterfaces;
 using PCIDSK::ThrowPCIDSKException;
 using PCIDSK::uint64;
 
-CPL_CVSID("$Id$")
-
-PCIDSK::EDBFile *GDAL_EDBOpen( const std::string& osFilename, const std::string& osAccess );
+PCIDSK::EDBFile *GDAL_EDBOpen(const std::string &osFilename,
+                              const std::string &osAccess);
 const PCIDSK::PCIDSKInterfaces *PCIDSK2GetInterfaces();
 
 class VSI_IOInterface : public IOInterfaces
 {
-    virtual void   *Open( std::string filename, std::string access ) const override;
-    virtual uint64  Seek( void *io_handle, uint64 offset, int whence ) const override;
-    virtual uint64  Tell( void *io_handle ) const override;
-    virtual uint64  Read( void *buffer, uint64 size, uint64 nmemb, void *io_hanle ) const override;
-    virtual uint64  Write( const void *buffer, uint64 size, uint64 nmemb, void *io_handle ) const override;
-    virtual int     Eof( void *io_handle ) const override;
-    virtual int     Flush( void *io_handle ) const override;
-    virtual int     Close( void *io_handle ) const override;
+    virtual void *Open(const std::string &filename,
+                       std::string access) const override;
+    virtual uint64 Seek(void *io_handle, uint64 offset,
+                        int whence) const override;
+    virtual uint64 Tell(void *io_handle) const override;
+    virtual uint64 Read(void *buffer, uint64 size, uint64 nmemb,
+                        void *io_hanle) const override;
+    virtual uint64 Write(const void *buffer, uint64 size, uint64 nmemb,
+                         void *io_handle) const override;
+    virtual int Eof(void *io_handle) const override;
+    virtual int Flush(void *io_handle) const override;
+    virtual int Close(void *io_handle) const override;
 
-    const char     *LastError() const;
+    const char *LastError() const;
 };
 
 /************************************************************************/
@@ -74,15 +77,15 @@ const PCIDSK::PCIDSKInterfaces *PCIDSK2GetInterfaces()
 /*                                Open()                                */
 /************************************************************************/
 
-void *
-VSI_IOInterface::Open( std::string filename, std::string access ) const
+void *VSI_IOInterface::Open(const std::string &filename,
+                            std::string access) const
 
 {
-    VSILFILE *fp = VSIFOpenL( filename.c_str(), access.c_str() );
+    VSILFILE *fp = VSIFOpenL(filename.c_str(), access.c_str());
 
-    if( fp == nullptr )
-        ThrowPCIDSKException( "Failed to open %s: %s",
-                              filename.c_str(), LastError() );
+    if (fp == nullptr)
+        ThrowPCIDSKException("Failed to open %s: %s", filename.c_str(),
+                             LastError());
 
     return fp;
 }
@@ -91,18 +94,16 @@ VSI_IOInterface::Open( std::string filename, std::string access ) const
 /*                                Seek()                                */
 /************************************************************************/
 
-uint64
-VSI_IOInterface::Seek( void *io_handle, uint64 offset, int whence ) const
+uint64 VSI_IOInterface::Seek(void *io_handle, uint64 offset, int whence) const
 
 {
-    VSILFILE *fp = reinterpret_cast<VSILFILE *>( io_handle );
+    VSILFILE *fp = reinterpret_cast<VSILFILE *>(io_handle);
 
-    uint64 result = VSIFSeekL( fp, offset, whence );
+    uint64 result = VSIFSeekL(fp, offset, whence);
 
-    if( result == static_cast<uint64>( -1 ) )
-        ThrowPCIDSKException( "Seek(%d,%d): %s",
-                              static_cast<int>( offset ), whence,
-                              LastError() );
+    if (result == static_cast<uint64>(-1))
+        ThrowPCIDSKException("Seek(%d,%d): %s", static_cast<int>(offset),
+                             whence, LastError());
 
     return result;
 }
@@ -111,32 +112,31 @@ VSI_IOInterface::Seek( void *io_handle, uint64 offset, int whence ) const
 /*                                Tell()                                */
 /************************************************************************/
 
-uint64 VSI_IOInterface::Tell( void *io_handle ) const
+uint64 VSI_IOInterface::Tell(void *io_handle) const
 
 {
-    VSILFILE *fp = reinterpret_cast<VSILFILE *>( io_handle );
+    VSILFILE *fp = reinterpret_cast<VSILFILE *>(io_handle);
 
-    return VSIFTellL( fp );
+    return VSIFTellL(fp);
 }
 
 /************************************************************************/
 /*                                Read()                                */
 /************************************************************************/
 
-uint64 VSI_IOInterface::Read( void *buffer, uint64 size, uint64 nmemb,
-                               void *io_handle ) const
+uint64 VSI_IOInterface::Read(void *buffer, uint64 size, uint64 nmemb,
+                             void *io_handle) const
 
 {
-    VSILFILE *fp = reinterpret_cast<VSILFILE *>( io_handle );
+    VSILFILE *fp = reinterpret_cast<VSILFILE *>(io_handle);
 
     errno = 0;
 
-    uint64 result = VSIFReadL( buffer, (size_t) size, (size_t) nmemb, fp );
+    uint64 result = VSIFReadL(buffer, (size_t)size, (size_t)nmemb, fp);
 
-    if( errno != 0 && result == 0 && nmemb != 0 )
-        ThrowPCIDSKException( "Read(%d): %s",
-                              static_cast<int>( size * nmemb ),
-                              LastError() );
+    if (errno != 0 && result == 0 && nmemb != 0)
+        ThrowPCIDSKException("Read(%d): %s", static_cast<int>(size * nmemb),
+                             LastError());
 
     return result;
 }
@@ -145,21 +145,20 @@ uint64 VSI_IOInterface::Read( void *buffer, uint64 size, uint64 nmemb,
 /*                               Write()                                */
 /************************************************************************/
 
-uint64 VSI_IOInterface::Write( const void *buffer, uint64 size, uint64 nmemb,
-                                void *io_handle ) const
+uint64 VSI_IOInterface::Write(const void *buffer, uint64 size, uint64 nmemb,
+                              void *io_handle) const
 
 {
-    VSILFILE *fp = reinterpret_cast<VSILFILE *>( io_handle );
+    VSILFILE *fp = reinterpret_cast<VSILFILE *>(io_handle);
 
     errno = 0;
 
-    uint64 result = VSIFWriteL( buffer, static_cast<size_t>( size ),
-                                static_cast<size_t>( nmemb ), fp );
+    uint64 result = VSIFWriteL(buffer, static_cast<size_t>(size),
+                               static_cast<size_t>(nmemb), fp);
 
-    if( errno != 0 && result == 0 && nmemb != 0 )
-        ThrowPCIDSKException( "Write(%d): %s",
-                              static_cast<int>( size * nmemb ),
-                              LastError() );
+    if (errno != 0 && result == 0 && nmemb != 0)
+        ThrowPCIDSKException("Write(%d): %s", static_cast<int>(size * nmemb),
+                             LastError());
 
     return result;
 }
@@ -168,30 +167,30 @@ uint64 VSI_IOInterface::Write( const void *buffer, uint64 size, uint64 nmemb,
 /*                                Eof()                                 */
 /************************************************************************/
 
-int VSI_IOInterface::Eof( void *io_handle ) const
+int VSI_IOInterface::Eof(void *io_handle) const
 
 {
-    return VSIFEofL( reinterpret_cast<VSILFILE *>( io_handle ) );
+    return VSIFEofL(reinterpret_cast<VSILFILE *>(io_handle));
 }
 
 /************************************************************************/
 /*                               Flush()                                */
 /************************************************************************/
 
-int VSI_IOInterface::Flush( void *io_handle ) const
+int VSI_IOInterface::Flush(void *io_handle) const
 
 {
-    return VSIFFlushL( reinterpret_cast<VSILFILE *>( io_handle ) );
+    return VSIFFlushL(reinterpret_cast<VSILFILE *>(io_handle));
 }
 
 /************************************************************************/
 /*                               Close()                                */
 /************************************************************************/
 
-int VSI_IOInterface::Close( void *io_handle ) const
+int VSI_IOInterface::Close(void *io_handle) const
 
 {
-    return VSIFCloseL( reinterpret_cast<VSILFILE *>( io_handle ) );
+    return VSIFCloseL(reinterpret_cast<VSILFILE *>(io_handle));
 }
 
 /************************************************************************/
@@ -203,7 +202,7 @@ int VSI_IOInterface::Close( void *io_handle ) const
 const char *VSI_IOInterface::LastError() const
 
 {
-    return strerror( errno );
+    return strerror(errno);
 }
 
 /************************************************************************/
@@ -228,10 +227,10 @@ const IOInterfaces *PCIDSK::GetDefaultIOInterfaces()
 class CPLThreadMutex : public PCIDSK::Mutex
 
 {
-private:
-    CPLMutex    *hMutex;
+  private:
+    CPLMutex *hMutex;
 
-public:
+  public:
     CPLThreadMutex();
     ~CPLThreadMutex();
 
@@ -247,7 +246,7 @@ CPLThreadMutex::CPLThreadMutex()
 
 {
     hMutex = CPLCreateMutex();
-    CPLReleaseMutex( hMutex ); // it is created acquired, but we want it free.
+    CPLReleaseMutex(hMutex);  // it is created acquired, but we want it free.
 }
 
 /************************************************************************/
@@ -257,7 +256,7 @@ CPLThreadMutex::CPLThreadMutex()
 CPLThreadMutex::~CPLThreadMutex()
 
 {
-    CPLDestroyMutex( hMutex );
+    CPLDestroyMutex(hMutex);
 }
 
 /************************************************************************/
@@ -267,7 +266,7 @@ CPLThreadMutex::~CPLThreadMutex()
 int CPLThreadMutex::Release()
 
 {
-    CPLReleaseMutex( hMutex );
+    CPLReleaseMutex(hMutex);
     return 1;
 }
 
@@ -278,7 +277,7 @@ int CPLThreadMutex::Release()
 int CPLThreadMutex::Acquire()
 
 {
-    return CPLAcquireMutex( hMutex, 100.0 );
+    return CPLAcquireMutex(hMutex, 100.0);
 }
 
 /************************************************************************/

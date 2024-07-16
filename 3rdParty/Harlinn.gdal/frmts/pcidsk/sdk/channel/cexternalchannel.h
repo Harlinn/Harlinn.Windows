@@ -1,4 +1,3 @@
-#pragma once
 /******************************************************************************
  *
  * Purpose:  Declaration of the CExternalChannel class.
@@ -33,10 +32,10 @@
 #ifndef INCLUDE_CHANNEL_CEXTERNALCHANNEL_H
 #define INCLUDE_CHANNEL_CEXTERNALCHANNEL_H
 
-#include "../pcidsk_config.h"
-#include "../pcidsk_types.h"
-#include "../pcidsk_buffer.h"
-#include "cpcidskchannel.h"
+#include "pcidsk_config.h"
+#include "pcidsk_types.h"
+#include "pcidsk_buffer.h"
+#include "channel/cpcidskchannel.h"
 #include <string>
 
 namespace PCIDSK
@@ -53,7 +52,7 @@ namespace PCIDSK
         CExternalChannel( PCIDSKBuffer &image_header,
             uint64 ih_offset,
             PCIDSKBuffer &file_header,
-            std::string filename,
+            const std::string& filename,
             int channelnum,
             CPCIDSKFile *file,
             eChanType pixel_type );

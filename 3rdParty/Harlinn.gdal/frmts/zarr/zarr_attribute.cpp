@@ -32,12 +32,21 @@
 #include <cassert>
 #include <map>
 
+constexpr const char *ATTRIBUTE_GROUP_SUFFIX = "/_GLOBAL_";
+
 /************************************************************************/
 /*             ZarrAttributeGroup::ZarrAttributeGroup()                 */
 /************************************************************************/
 
-ZarrAttributeGroup::ZarrAttributeGroup(const std::string& osParentName):
-                                            m_oGroup(osParentName, nullptr)
+ZarrAttributeGroup::ZarrAttributeGroup(const std::string &osParentName,
+                                       bool bContainerIsGroup)
+    : m_bContainerIsGroup(bContainerIsGroup),
+      m_poGroup(MEMGroup::Create(
+          bContainerIsGroup
+              ? (osParentName == "/" ? ATTRIBUTE_GROUP_SUFFIX
+                                     : osParentName + ATTRIBUTE_GROUP_SUFFIX)
+              : osParentName,
+          nullptr))
 {
 }
 
@@ -45,65 +54,57 @@ ZarrAttributeGroup::ZarrAttributeGroup(const std::string& osParentName):
 /*                   ZarrAttributeGroup::Init()                         */
 /************************************************************************/
 
-void ZarrAttributeGroup::Init(const CPLJSONObject& obj, bool bUpdatable)
+void ZarrAttributeGroup::Init(const CPLJSONObject &obj, bool bUpdatable)
 {
-    if( obj.GetType() != CPLJSONObject::Type::Object )
+    if (obj.GetType() != CPLJSONObject::Type::Object)
         return;
     const auto children = obj.GetChildren();
-    for( const auto& item: children )
+    for (const auto &item : children)
     {
         const auto itemType = item.GetType();
         bool bDone = false;
         std::shared_ptr<GDALAttribute> poAttr;
-        if( itemType == CPLJSONObject::Type::String )
+        if (itemType == CPLJSONObject::Type::String)
         {
             bDone = true;
-            poAttr = m_oGroup.CreateAttribute(
-                item.GetName(), {},
-                GDALExtendedDataType::CreateString(), nullptr);
-            if( poAttr )
+            poAttr = m_poGroup->CreateAttribute(
+                item.GetName(), {}, GDALExtendedDataType::CreateString(),
+                nullptr);
+            if (poAttr)
             {
                 const GUInt64 arrayStartIdx = 0;
                 const size_t count = 1;
                 const GInt64 arrayStep = 0;
                 const GPtrDiff_t bufferStride = 0;
                 const std::string str = item.ToString();
-                const char* c_str = str.c_str();
-                poAttr->Write(&arrayStartIdx,
-                              &count,
-                              &arrayStep,
-                              &bufferStride,
-                              poAttr->GetDataType(),
-                              &c_str);
+                const char *c_str = str.c_str();
+                poAttr->Write(&arrayStartIdx, &count, &arrayStep, &bufferStride,
+                              poAttr->GetDataType(), &c_str);
             }
         }
-        else if( itemType == CPLJSONObject::Type::Integer ||
+        else if (itemType == CPLJSONObject::Type::Integer ||
                  itemType == CPLJSONObject::Type::Long ||
-                 itemType == CPLJSONObject::Type::Double )
+                 itemType == CPLJSONObject::Type::Double)
         {
             bDone = true;
-            poAttr = m_oGroup.CreateAttribute(
+            poAttr = m_poGroup->CreateAttribute(
                 item.GetName(), {},
                 GDALExtendedDataType::Create(
-                    itemType == CPLJSONObject::Type::Integer ?
-                        GDT_Int32 : GDT_Float64),
+                    itemType == CPLJSONObject::Type::Integer ? GDT_Int32
+                                                             : GDT_Float64),
                 nullptr);
-            if( poAttr )
+            if (poAttr)
             {
                 const GUInt64 arrayStartIdx = 0;
                 const size_t count = 1;
                 const GInt64 arrayStep = 0;
                 const GPtrDiff_t bufferStride = 0;
                 const double val = item.ToDouble();
-                poAttr->Write(&arrayStartIdx,
-                              &count,
-                              &arrayStep,
-                              &bufferStride,
-                              GDALExtendedDataType::Create(GDT_Float64),
-                              &val);
+                poAttr->Write(&arrayStartIdx, &count, &arrayStep, &bufferStride,
+                              GDALExtendedDataType::Create(GDT_Float64), &val);
             }
         }
-        else if( itemType == CPLJSONObject::Type::Array )
+        else if (itemType == CPLJSONObject::Type::Array)
         {
             const auto array = item.ToArray();
             bool isFirst = true;
@@ -113,40 +114,40 @@ void ZarrAttributeGroup::Init(const CPLJSONObject& obj, bool bUpdatable)
             bool foundDouble = false;
             bool mixedType = false;
             size_t countItems = 0;
-            for( const auto& subItem: array )
+            for (const auto &subItem : array)
             {
                 const auto subItemType = subItem.GetType();
-                if( subItemType == CPLJSONObject::Type::String )
+                if (subItemType == CPLJSONObject::Type::String)
                 {
-                    if( isFirst )
+                    if (isFirst)
                     {
                         isString = true;
                     }
-                    else if( !isString )
+                    else if (!isString)
                     {
                         mixedType = true;
                         break;
                     }
-                    countItems ++;
+                    countItems++;
                 }
-                else if( subItemType == CPLJSONObject::Type::Integer ||
+                else if (subItemType == CPLJSONObject::Type::Integer ||
                          subItemType == CPLJSONObject::Type::Long ||
-                         subItemType == CPLJSONObject::Type::Double )
+                         subItemType == CPLJSONObject::Type::Double)
                 {
-                    if( isFirst )
+                    if (isFirst)
                     {
                         isNumeric = true;
                     }
-                    else if( !isNumeric )
+                    else if (!isNumeric)
                     {
                         mixedType = true;
                         break;
                     }
-                    if( subItemType == CPLJSONObject::Type::Double )
+                    if (subItemType == CPLJSONObject::Type::Double)
                         foundDouble = true;
-                    else if( subItemType == CPLJSONObject::Type::Long )
+                    else if (subItemType == CPLJSONObject::Type::Long)
                         foundInt64 = true;
-                    countItems ++;
+                    countItems++;
                 }
                 else
                 {
@@ -156,48 +157,44 @@ void ZarrAttributeGroup::Init(const CPLJSONObject& obj, bool bUpdatable)
                 isFirst = false;
             }
 
-            if( !mixedType && !isFirst )
+            if (!mixedType && !isFirst)
             {
                 bDone = true;
-                poAttr = m_oGroup.CreateAttribute(
-                    item.GetName(), { countItems },
-                    isString ?
-                        GDALExtendedDataType::CreateString():
-                        GDALExtendedDataType::Create(
-                            (foundDouble || foundInt64) ? GDT_Float64 : GDT_Int32),
+                poAttr = m_poGroup->CreateAttribute(
+                    item.GetName(), {countItems},
+                    isString ? GDALExtendedDataType::CreateString()
+                             : GDALExtendedDataType::Create(
+                                   (foundDouble || foundInt64) ? GDT_Float64
+                                                               : GDT_Int32),
                     nullptr);
-                if( poAttr )
+                if (poAttr)
                 {
                     size_t idx = 0;
-                    for( const auto& subItem: array )
+                    for (const auto &subItem : array)
                     {
                         const GUInt64 arrayStartIdx = idx;
                         const size_t count = 1;
                         const GInt64 arrayStep = 0;
                         const GPtrDiff_t bufferStride = 0;
                         const auto subItemType = subItem.GetType();
-                        if( subItemType == CPLJSONObject::Type::String )
+                        if (subItemType == CPLJSONObject::Type::String)
                         {
                             const std::string str = subItem.ToString();
-                            const char* c_str = str.c_str();
-                            poAttr->Write(&arrayStartIdx,
-                                          &count,
-                                          &arrayStep,
-                                          &bufferStride,
-                                          poAttr->GetDataType(),
+                            const char *c_str = str.c_str();
+                            poAttr->Write(&arrayStartIdx, &count, &arrayStep,
+                                          &bufferStride, poAttr->GetDataType(),
                                           &c_str);
                         }
-                        else if( subItemType == CPLJSONObject::Type::Integer ||
+                        else if (subItemType == CPLJSONObject::Type::Integer ||
                                  subItemType == CPLJSONObject::Type::Long ||
-                                 subItemType == CPLJSONObject::Type::Double )
+                                 subItemType == CPLJSONObject::Type::Double)
                         {
                             const double val = subItem.ToDouble();
-                            poAttr->Write(&arrayStartIdx,
-                                          &count,
-                                          &arrayStep,
-                                          &bufferStride,
-                                          GDALExtendedDataType::Create(GDT_Float64),
-                                          &val);
+                            poAttr->Write(
+                                &arrayStartIdx, &count, &arrayStep,
+                                &bufferStride,
+                                GDALExtendedDataType::Create(GDT_Float64),
+                                &val);
                         }
                         ++idx;
                     }
@@ -205,31 +202,28 @@ void ZarrAttributeGroup::Init(const CPLJSONObject& obj, bool bUpdatable)
             }
         }
 
-        if( !bDone )
+        if (!bDone)
         {
             constexpr size_t nMaxStringLength = 0;
-            const auto eDT = GDALExtendedDataType::CreateString(nMaxStringLength, GEDTST_JSON);
-            poAttr = m_oGroup.CreateAttribute(
-                item.GetName(), {}, eDT, nullptr);
-            if( poAttr )
+            const auto eDT = GDALExtendedDataType::CreateString(
+                nMaxStringLength, GEDTST_JSON);
+            poAttr =
+                m_poGroup->CreateAttribute(item.GetName(), {}, eDT, nullptr);
+            if (poAttr)
             {
                 const GUInt64 arrayStartIdx = 0;
                 const size_t count = 1;
                 const GInt64 arrayStep = 0;
                 const GPtrDiff_t bufferStride = 0;
                 const std::string str = item.ToString();
-                const char* c_str = str.c_str();
-                poAttr->Write(&arrayStartIdx,
-                              &count,
-                              &arrayStep,
-                              &bufferStride,
-                              poAttr->GetDataType(),
-                              &c_str);
+                const char *c_str = str.c_str();
+                poAttr->Write(&arrayStartIdx, &count, &arrayStep, &bufferStride,
+                              poAttr->GetDataType(), &c_str);
             }
         }
 
         auto poMemAttr = std::dynamic_pointer_cast<MEMAttribute>(poAttr);
-        if( poMemAttr )
+        if (poMemAttr)
             poMemAttr->SetModified(false);
     }
     SetUpdatable(bUpdatable);
@@ -242,20 +236,21 @@ void ZarrAttributeGroup::Init(const CPLJSONObject& obj, bool bUpdatable)
 CPLJSONObject ZarrAttributeGroup::Serialize() const
 {
     CPLJSONObject o;
-    const auto attrs = m_oGroup.GetAttributes(nullptr);
-    for( const auto& attr: attrs )
+    const auto attrs = m_poGroup->GetAttributes(nullptr);
+    for (const auto &attr : attrs)
     {
-        const auto oType = attr->GetDataType();
-        if( oType.GetClass() == GEDTC_STRING )
+        const auto &oType = attr->GetDataType();
+        if (oType.GetClass() == GEDTC_STRING)
         {
             const auto anDims = attr->GetDimensionsSize();
-            if( anDims.size() == 0 )
+            if (anDims.size() == 0)
             {
-                const char* pszStr = attr->ReadAsString();
-                if( pszStr )
+                const char *pszStr = attr->ReadAsString();
+                if (pszStr)
                 {
                     CPLJSONDocument oDoc;
-                    if(  oType.GetSubType() == GEDTST_JSON && oDoc.LoadMemory(pszStr) )
+                    if (oType.GetSubType() == GEDTST_JSON &&
+                        oDoc.LoadMemory(pszStr))
                     {
                         o.Add(attr->GetName(), oDoc.GetRoot());
                     }
@@ -269,11 +264,11 @@ CPLJSONObject ZarrAttributeGroup::Serialize() const
                     o.AddNull(attr->GetName());
                 }
             }
-            else if ( anDims.size() == 1 )
+            else if (anDims.size() == 1)
             {
                 const auto list = attr->ReadAsStringArray();
                 CPLJSONArray arr;
-                for( int i = 0; i < list.size(); ++i )
+                for (int i = 0; i < list.size(); ++i)
                 {
                     arr.Add(list[i]);
                 }
@@ -281,20 +276,21 @@ CPLJSONObject ZarrAttributeGroup::Serialize() const
             }
             else
             {
-                CPLError(CE_Warning, CPLE_AppDefined,
-                         "Cannot serialize attribute %s of dimension count >= 2",
-                         attr->GetName().c_str());
+                CPLError(
+                    CE_Warning, CPLE_AppDefined,
+                    "Cannot serialize attribute %s of dimension count >= 2",
+                    attr->GetName().c_str());
             }
         }
-        else if( oType.GetClass() == GEDTC_NUMERIC )
+        else if (oType.GetClass() == GEDTC_NUMERIC)
         {
             const auto anDims = attr->GetDimensionsSize();
             const auto eDT = oType.GetNumericDataType();
-            if( anDims.size() == 0 )
+            if (anDims.size() == 0)
             {
                 const double dfVal = attr->ReadAsDouble();
-                if( eDT == GDT_Byte || eDT == GDT_UInt16 || eDT == GDT_UInt32 ||
-                    eDT == GDT_Int16 || eDT == GDT_Int32 )
+                if (eDT == GDT_Byte || eDT == GDT_UInt16 || eDT == GDT_UInt32 ||
+                    eDT == GDT_Int16 || eDT == GDT_Int32)
                 {
                     o.Add(attr->GetName(), static_cast<GInt64>(dfVal));
                 }
@@ -303,14 +299,15 @@ CPLJSONObject ZarrAttributeGroup::Serialize() const
                     o.Add(attr->GetName(), dfVal);
                 }
             }
-            else if ( anDims.size() == 1 )
+            else if (anDims.size() == 1)
             {
                 const auto list = attr->ReadAsDoubleArray();
                 CPLJSONArray arr;
-                for( const auto dfVal: list )
+                for (const auto dfVal : list)
                 {
-                    if( eDT == GDT_Byte || eDT == GDT_UInt16 || eDT == GDT_UInt32 ||
-                        eDT == GDT_Int16 || eDT == GDT_Int32 )
+                    if (eDT == GDT_Byte || eDT == GDT_UInt16 ||
+                        eDT == GDT_UInt32 || eDT == GDT_Int16 ||
+                        eDT == GDT_Int32)
                     {
                         arr.Add(static_cast<GInt64>(dfVal));
                     }
@@ -323,11 +320,38 @@ CPLJSONObject ZarrAttributeGroup::Serialize() const
             }
             else
             {
-                CPLError(CE_Warning, CPLE_AppDefined,
-                         "Cannot serialize attribute %s of dimension count >= 2",
-                         attr->GetName().c_str());
+                CPLError(
+                    CE_Warning, CPLE_AppDefined,
+                    "Cannot serialize attribute %s of dimension count >= 2",
+                    attr->GetName().c_str());
             }
         }
     }
     return o;
+}
+
+/************************************************************************/
+/*                          ParentRenamed()                             */
+/************************************************************************/
+
+void ZarrAttributeGroup::ParentRenamed(const std::string &osNewParentFullName)
+{
+    if (m_bContainerIsGroup)
+        m_poGroup->SetFullName(osNewParentFullName + ATTRIBUTE_GROUP_SUFFIX);
+    else
+        m_poGroup->SetFullName(osNewParentFullName);
+    const auto attrs = m_poGroup->GetAttributes(nullptr);
+    for (auto &attr : attrs)
+    {
+        attr->ParentRenamed(m_poGroup->GetFullName());
+    }
+}
+
+/************************************************************************/
+/*                          ParentDeleted()                             */
+/************************************************************************/
+
+void ZarrAttributeGroup::ParentDeleted()
+{
+    m_poGroup->Deleted();
 }

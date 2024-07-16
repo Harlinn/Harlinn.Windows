@@ -1,4 +1,3 @@
-#pragma once
 /**********************************************************************
  * $Id$
  *
@@ -32,7 +31,7 @@
 #ifndef CPL_HASH_SET_H_INCLUDED
 #define CPL_HASH_SET_H_INCLUDED
 
-#include <port/cpl_port.h>
+#include "cpl_port.h"
 
 /**
  * \file cpl_hash_set.h
@@ -53,47 +52,47 @@ CPL_C_START
 typedef struct _CPLHashSet CPLHashSet;
 
 /** CPLHashSetHashFunc */
-typedef unsigned long (*CPLHashSetHashFunc)(const void* elt);
+typedef unsigned long (*CPLHashSetHashFunc)(const void *elt);
 
 /** CPLHashSetEqualFunc */
-typedef int          (*CPLHashSetEqualFunc)(const void* elt1, const void* elt2);
+typedef int (*CPLHashSetEqualFunc)(const void *elt1, const void *elt2);
 
 /** CPLHashSetFreeEltFunc */
-typedef void         (*CPLHashSetFreeEltFunc)(void* elt);
+typedef void (*CPLHashSetFreeEltFunc)(void *elt);
 
 /** CPLHashSetIterEltFunc */
-typedef int          (*CPLHashSetIterEltFunc)(void* elt, void* user_data);
+typedef int (*CPLHashSetIterEltFunc)(void *elt, void *user_data);
 
 /* Functions */
 
-HGDAL_EXPORT CPLHashSet * CPLHashSetNew(CPLHashSetHashFunc fnHashFunc,
-                                   CPLHashSetEqualFunc fnEqualFunc,
-                                   CPLHashSetFreeEltFunc fnFreeEltFunc);
+CPLHashSet CPL_DLL *CPLHashSetNew(CPLHashSetHashFunc fnHashFunc,
+                                  CPLHashSetEqualFunc fnEqualFunc,
+                                  CPLHashSetFreeEltFunc fnFreeEltFunc);
 
-HGDAL_EXPORT void CPLHashSetDestroy(CPLHashSet* set);
+void CPL_DLL CPLHashSetDestroy(CPLHashSet *set);
 
-HGDAL_EXPORT void CPLHashSetClear(CPLHashSet* set);
+void CPL_DLL CPLHashSetClear(CPLHashSet *set);
 
-HGDAL_EXPORT int CPLHashSetSize(const CPLHashSet* set);
+int CPL_DLL CPLHashSetSize(const CPLHashSet *set);
 
-HGDAL_EXPORT void CPLHashSetForeach(CPLHashSet* set,
-                                       CPLHashSetIterEltFunc fnIterFunc,
-                                       void* user_data);
+void CPL_DLL CPLHashSetForeach(CPLHashSet *set,
+                               CPLHashSetIterEltFunc fnIterFunc,
+                               void *user_data);
 
-HGDAL_EXPORT int CPLHashSetInsert(CPLHashSet* set, void* elt);
+int CPL_DLL CPLHashSetInsert(CPLHashSet *set, void *elt);
 
-HGDAL_EXPORT void * CPLHashSetLookup(CPLHashSet* set, const void* elt);
+void CPL_DLL *CPLHashSetLookup(CPLHashSet *set, const void *elt);
 
-HGDAL_EXPORT int CPLHashSetRemove(CPLHashSet* set, const void* elt);
-HGDAL_EXPORT int CPLHashSetRemoveDeferRehash(CPLHashSet* set, const void* elt);
+int CPL_DLL CPLHashSetRemove(CPLHashSet *set, const void *elt);
+int CPL_DLL CPLHashSetRemoveDeferRehash(CPLHashSet *set, const void *elt);
 
-HGDAL_EXPORT unsigned long CPLHashSetHashPointer(const void* elt);
+unsigned long CPL_DLL CPLHashSetHashPointer(const void *elt);
 
-HGDAL_EXPORT int CPLHashSetEqualPointer(const void* elt1, const void* elt2);
+int CPL_DLL CPLHashSetEqualPointer(const void *elt1, const void *elt2);
 
-HGDAL_EXPORT unsigned long CPLHashSetHashStr(const void * pszStr);
+unsigned long CPL_DLL CPLHashSetHashStr(const void *pszStr);
 
-HGDAL_EXPORT int CPLHashSetEqualStr(const void* pszStr1, const void* pszStr2);
+int CPL_DLL CPLHashSetEqualStr(const void *pszStr1, const void *pszStr2);
 
 CPL_C_END
 

@@ -13,23 +13,8 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="conversions">
-      <UniqueIdentifier>{f0c7b613-b901-4e9a-95a5-2b2b691d5e98}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="core">
-      <UniqueIdentifier>{58b1409b-e422-48ee-82f4-763c939d5588}</UniqueIdentifier>
-    </Filter>
     <Filter Include="include">
       <UniqueIdentifier>{28fe5e19-6839-4799-af89-a264c3dedbfa}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="iso19111">
-      <UniqueIdentifier>{93c81037-3244-41e6-b208-8c78c13d2b9c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="projections">
-      <UniqueIdentifier>{5184a0aa-dee2-4ebe-a562-1db37b0ed1dc}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="transformations">
-      <UniqueIdentifier>{fe8c3ae5-651f-402f-b768-db3c56f0824f}</UniqueIdentifier>
     </Filter>
     <Filter Include="include\proj">
       <UniqueIdentifier>{e4a0adc6-482a-4a01-83fe-53711da512c0}</UniqueIdentifier>
@@ -37,665 +22,691 @@
     <Filter Include="include\proj\internal">
       <UniqueIdentifier>{83f9ea41-8eb9-40aa-b560-68b845f3cccb}</UniqueIdentifier>
     </Filter>
-    <Filter Include="iso19111\operation">
-      <UniqueIdentifier>{f09a65e4-b9bd-4b5e-aebb-d82db89fb767}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Readme">
       <UniqueIdentifier>{1043f0ea-5825-4a1e-9c6f-30dc3774ad51}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{335d7e70-a371-407a-818e-aa4fcec49e27}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\conversions">
+      <UniqueIdentifier>{332e899b-c5e0-4e65-90dd-8e1a3a08d75a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\iso19111">
+      <UniqueIdentifier>{afcecf04-2329-4916-a3fb-d0ec3f723505}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\projections">
+      <UniqueIdentifier>{8bcc1858-27a7-4240-a113-d73205b7bb1d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\transformations">
+      <UniqueIdentifier>{d524a368-6856-4393-a4ff-22470a15967e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\iso19111\operation">
+      <UniqueIdentifier>{9352f9c4-3843-4320-b6c2-9102e41a0bc2}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="conversions\axisswap.cpp">
-      <Filter>conversions</Filter>
+    <ClCompile Include="src\conversions\axisswap.cpp">
+      <Filter>src\conversions</Filter>
     </ClCompile>
-    <ClCompile Include="conversions\cart.cpp">
-      <Filter>conversions</Filter>
+    <ClCompile Include="src\conversions\cart.cpp">
+      <Filter>src\conversions</Filter>
     </ClCompile>
-    <ClCompile Include="conversions\geoc.cpp">
-      <Filter>conversions</Filter>
+    <ClCompile Include="src\conversions\geoc.cpp">
+      <Filter>src\conversions</Filter>
     </ClCompile>
-    <ClCompile Include="conversions\geocent.cpp">
-      <Filter>conversions</Filter>
+    <ClCompile Include="src\conversions\geocent.cpp">
+      <Filter>src\conversions</Filter>
     </ClCompile>
-    <ClCompile Include="conversions\noop.cpp">
-      <Filter>conversions</Filter>
+    <ClCompile Include="src\conversions\noop.cpp">
+      <Filter>src\conversions</Filter>
     </ClCompile>
-    <ClCompile Include="conversions\set.cpp">
-      <Filter>conversions</Filter>
+    <ClCompile Include="src\conversions\set.cpp">
+      <Filter>src\conversions</Filter>
     </ClCompile>
-    <ClCompile Include="conversions\topocentric.cpp">
-      <Filter>conversions</Filter>
+    <ClCompile Include="src\conversions\topocentric.cpp">
+      <Filter>src\conversions</Filter>
     </ClCompile>
-    <ClCompile Include="conversions\unitconvert.cpp">
-      <Filter>conversions</Filter>
+    <ClCompile Include="src\conversions\unitconvert.cpp">
+      <Filter>src\conversions</Filter>
     </ClCompile>
-    <ClCompile Include="4D_api.cpp">
-      <Filter>core</Filter>
+    <ClCompile Include="src\iso19111\operation\concatenatedoperation.cpp">
+      <Filter>src\iso19111\operation</Filter>
     </ClCompile>
-    <ClCompile Include="adjlon.cpp">
-      <Filter>core</Filter>
+    <ClCompile Include="src\iso19111\operation\conversion.cpp">
+      <Filter>src\iso19111\operation</Filter>
     </ClCompile>
-    <ClCompile Include="auth.cpp">
-      <Filter>core</Filter>
+    <ClCompile Include="src\iso19111\operation\coordinateoperationfactory.cpp">
+      <Filter>src\iso19111\operation</Filter>
     </ClCompile>
-    <ClCompile Include="ctx.cpp">
-      <Filter>core</Filter>
+    <ClCompile Include="src\iso19111\operation\esriparammappings.cpp">
+      <Filter>src\iso19111\operation</Filter>
     </ClCompile>
-    <ClCompile Include="datum_set.cpp">
-      <Filter>core</Filter>
+    <ClCompile Include="src\iso19111\operation\oputils.cpp">
+      <Filter>src\iso19111\operation</Filter>
     </ClCompile>
-    <ClCompile Include="datums.cpp">
-      <Filter>core</Filter>
+    <ClCompile Include="src\iso19111\operation\parammappings.cpp">
+      <Filter>src\iso19111\operation</Filter>
     </ClCompile>
-    <ClCompile Include="deriv.cpp">
-      <Filter>core</Filter>
+    <ClCompile Include="src\iso19111\operation\projbasedoperation.cpp">
+      <Filter>src\iso19111\operation</Filter>
     </ClCompile>
-    <ClCompile Include="dmstor.cpp">
-      <Filter>core</Filter>
+    <ClCompile Include="src\iso19111\operation\singleoperation.cpp">
+      <Filter>src\iso19111\operation</Filter>
     </ClCompile>
-    <ClCompile Include="ell_set.cpp">
-      <Filter>core</Filter>
+    <ClCompile Include="src\iso19111\operation\transformation.cpp">
+      <Filter>src\iso19111\operation</Filter>
     </ClCompile>
-    <ClCompile Include="ellps.cpp">
-      <Filter>core</Filter>
+    <ClCompile Include="src\iso19111\operation\vectorofvaluesparams.cpp">
+      <Filter>src\iso19111\operation</Filter>
     </ClCompile>
-    <ClCompile Include="factors.cpp">
-      <Filter>core</Filter>
+    <ClCompile Include="src\iso19111\c_api.cpp">
+      <Filter>src\iso19111</Filter>
     </ClCompile>
-    <ClCompile Include="filemanager.cpp">
-      <Filter>core</Filter>
+    <ClCompile Include="src\iso19111\common.cpp">
+      <Filter>src\iso19111</Filter>
     </ClCompile>
-    <ClCompile Include="fwd.cpp">
-      <Filter>core</Filter>
+    <ClCompile Include="src\iso19111\coordinates.cpp">
+      <Filter>src\iso19111</Filter>
     </ClCompile>
-    <ClCompile Include="gauss.cpp">
-      <Filter>core</Filter>
+    <ClCompile Include="src\iso19111\coordinatesystem.cpp">
+      <Filter>src\iso19111</Filter>
     </ClCompile>
-    <ClCompile Include="generic_inverse.cpp">
-      <Filter>core</Filter>
+    <ClCompile Include="src\iso19111\crs.cpp">
+      <Filter>src\iso19111</Filter>
     </ClCompile>
-    <ClCompile Include="geodesic.c">
-      <Filter>core</Filter>
+    <ClCompile Include="src\iso19111\datum.cpp">
+      <Filter>src\iso19111</Filter>
     </ClCompile>
-    <ClCompile Include="grids.cpp">
-      <Filter>core</Filter>
+    <ClCompile Include="src\iso19111\factory.cpp">
+      <Filter>src\iso19111</Filter>
     </ClCompile>
-    <ClCompile Include="init.cpp">
-      <Filter>core</Filter>
+    <ClCompile Include="src\iso19111\iso19111_internal.cpp">
+      <Filter>src\iso19111</Filter>
     </ClCompile>
-    <ClCompile Include="initcache.cpp">
-      <Filter>core</Filter>
+    <ClCompile Include="src\iso19111\io.cpp">
+      <Filter>src\iso19111</Filter>
     </ClCompile>
-    <ClCompile Include="internal.cpp">
-      <Filter>core</Filter>
+    <ClCompile Include="src\iso19111\metadata.cpp">
+      <Filter>src\iso19111</Filter>
     </ClCompile>
-    <ClCompile Include="inv.cpp">
-      <Filter>core</Filter>
+    <ClCompile Include="src\iso19111\static.cpp">
+      <Filter>src\iso19111</Filter>
     </ClCompile>
-    <ClCompile Include="list.cpp">
-      <Filter>core</Filter>
+    <ClCompile Include="src\iso19111\util.cpp">
+      <Filter>src\iso19111</Filter>
     </ClCompile>
-    <ClCompile Include="log.cpp">
-      <Filter>core</Filter>
+    <ClCompile Include="src\transformations\affine.cpp">
+      <Filter>src\transformations</Filter>
     </ClCompile>
-    <ClCompile Include="malloc.cpp">
-      <Filter>core</Filter>
+    <ClCompile Include="src\transformations\defmodel.cpp">
+      <Filter>src\transformations</Filter>
     </ClCompile>
-    <ClCompile Include="mlfn.cpp">
-      <Filter>core</Filter>
+    <ClCompile Include="src\transformations\deformation.cpp">
+      <Filter>src\transformations</Filter>
     </ClCompile>
-    <ClCompile Include="msfn.cpp">
-      <Filter>core</Filter>
+    <ClCompile Include="src\transformations\gridshift.cpp">
+      <Filter>src\transformations</Filter>
     </ClCompile>
-    <ClCompile Include="mutex.cpp">
-      <Filter>core</Filter>
+    <ClCompile Include="src\transformations\helmert.cpp">
+      <Filter>src\transformations</Filter>
     </ClCompile>
-    <ClCompile Include="networkfilemanager.cpp">
-      <Filter>core</Filter>
+    <ClCompile Include="src\transformations\hgridshift.cpp">
+      <Filter>src\transformations</Filter>
     </ClCompile>
-    <ClCompile Include="param.cpp">
-      <Filter>core</Filter>
+    <ClCompile Include="src\transformations\horner.cpp">
+      <Filter>src\transformations</Filter>
     </ClCompile>
-    <ClCompile Include="phi2.cpp">
-      <Filter>core</Filter>
+    <ClCompile Include="src\transformations\molodensky.cpp">
+      <Filter>src\transformations</Filter>
     </ClCompile>
-    <ClCompile Include="pipeline.cpp">
-      <Filter>core</Filter>
+    <ClCompile Include="src\transformations\tinshift.cpp">
+      <Filter>src\transformations</Filter>
     </ClCompile>
-    <ClCompile Include="pr_list.cpp">
-      <Filter>core</Filter>
+    <ClCompile Include="src\transformations\vertoffset.cpp">
+      <Filter>src\transformations</Filter>
     </ClCompile>
-    <ClCompile Include="proj_json_streaming_writer.cpp">
-      <Filter>core</Filter>
+    <ClCompile Include="src\transformations\vgridshift.cpp">
+      <Filter>src\transformations</Filter>
     </ClCompile>
-    <ClCompile Include="proj_mdist.cpp">
-      <Filter>core</Filter>
+    <ClCompile Include="src\transformations\xyzgridshift.cpp">
+      <Filter>src\transformations</Filter>
     </ClCompile>
-    <ClCompile Include="qsfn.cpp">
-      <Filter>core</Filter>
+    <ClCompile Include="src\projections\adams.cpp">
+      <Filter>src\projections</Filter>
     </ClCompile>
-    <ClCompile Include="release.cpp">
-      <Filter>core</Filter>
+    <ClCompile Include="src\projections\aea.cpp">
+      <Filter>src\projections</Filter>
     </ClCompile>
-    <ClCompile Include="rtodms.cpp">
-      <Filter>core</Filter>
+    <ClCompile Include="src\projections\aeqd.cpp">
+      <Filter>src\projections</Filter>
     </ClCompile>
-    <ClCompile Include="sqlite3_utils.cpp">
-      <Filter>core</Filter>
+    <ClCompile Include="src\projections\airy.cpp">
+      <Filter>src\projections</Filter>
     </ClCompile>
-    <ClCompile Include="strerrno.cpp">
-      <Filter>core</Filter>
+    <ClCompile Include="src\projections\aitoff.cpp">
+      <Filter>src\projections</Filter>
     </ClCompile>
-    <ClCompile Include="strtod.cpp">
-      <Filter>core</Filter>
+    <ClCompile Include="src\projections\august.cpp">
+      <Filter>src\projections</Filter>
     </ClCompile>
-    <ClCompile Include="tracing.cpp">
-      <Filter>core</Filter>
+    <ClCompile Include="src\projections\bacon.cpp">
+      <Filter>src\projections</Filter>
     </ClCompile>
-    <ClCompile Include="tsfn.cpp">
-      <Filter>core</Filter>
+    <ClCompile Include="src\projections\bertin1953.cpp">
+      <Filter>src\projections</Filter>
     </ClCompile>
-    <ClCompile Include="units.cpp">
-      <Filter>core</Filter>
+    <ClCompile Include="src\projections\bipc.cpp">
+      <Filter>src\projections</Filter>
     </ClCompile>
-    <ClCompile Include="wkt_parser.cpp">
-      <Filter>core</Filter>
+    <ClCompile Include="src\projections\boggs.cpp">
+      <Filter>src\projections</Filter>
     </ClCompile>
-    <ClCompile Include="wkt1_generated_parser.c">
-      <Filter>core</Filter>
+    <ClCompile Include="src\projections\bonne.cpp">
+      <Filter>src\projections</Filter>
     </ClCompile>
-    <ClCompile Include="wkt1_parser.cpp">
-      <Filter>core</Filter>
+    <ClCompile Include="src\projections\calcofi.cpp">
+      <Filter>src\projections</Filter>
     </ClCompile>
-    <ClCompile Include="wkt2_generated_parser.c">
-      <Filter>core</Filter>
+    <ClCompile Include="src\projections\cass.cpp">
+      <Filter>src\projections</Filter>
     </ClCompile>
-    <ClCompile Include="wkt2_parser.cpp">
-      <Filter>core</Filter>
+    <ClCompile Include="src\projections\cc.cpp">
+      <Filter>src\projections</Filter>
     </ClCompile>
-    <ClCompile Include="zpoly1.cpp">
-      <Filter>core</Filter>
+    <ClCompile Include="src\projections\ccon.cpp">
+      <Filter>src\projections</Filter>
     </ClCompile>
-    <ClCompile Include="aasincos.cpp">
-      <Filter>core</Filter>
+    <ClCompile Include="src\projections\cea.cpp">
+      <Filter>src\projections</Filter>
     </ClCompile>
-    <ClCompile Include="iso19111\c_api.cpp">
-      <Filter>iso19111</Filter>
+    <ClCompile Include="src\projections\chamb.cpp">
+      <Filter>src\projections</Filter>
     </ClCompile>
-    <ClCompile Include="iso19111\common.cpp">
-      <Filter>iso19111</Filter>
+    <ClCompile Include="src\projections\col_urban.cpp">
+      <Filter>src\projections</Filter>
     </ClCompile>
-    <ClCompile Include="iso19111\coordinatesystem.cpp">
-      <Filter>iso19111</Filter>
+    <ClCompile Include="src\projections\collg.cpp">
+      <Filter>src\projections</Filter>
     </ClCompile>
-    <ClCompile Include="iso19111\crs.cpp">
-      <Filter>iso19111</Filter>
+    <ClCompile Include="src\projections\comill.cpp">
+      <Filter>src\projections</Filter>
     </ClCompile>
-    <ClCompile Include="iso19111\datum.cpp">
-      <Filter>iso19111</Filter>
+    <ClCompile Include="src\projections\crast.cpp">
+      <Filter>src\projections</Filter>
     </ClCompile>
-    <ClCompile Include="iso19111\factory.cpp">
-      <Filter>iso19111</Filter>
+    <ClCompile Include="src\projections\denoy.cpp">
+      <Filter>src\projections</Filter>
     </ClCompile>
-    <ClCompile Include="iso19111\internal2.cpp">
-      <Filter>iso19111</Filter>
+    <ClCompile Include="src\projections\eck1.cpp">
+      <Filter>src\projections</Filter>
     </ClCompile>
-    <ClCompile Include="iso19111\io.cpp">
-      <Filter>iso19111</Filter>
+    <ClCompile Include="src\projections\eck2.cpp">
+      <Filter>src\projections</Filter>
     </ClCompile>
-    <ClCompile Include="iso19111\metadata.cpp">
-      <Filter>iso19111</Filter>
+    <ClCompile Include="src\projections\eck3.cpp">
+      <Filter>src\projections</Filter>
     </ClCompile>
-    <ClCompile Include="iso19111\static.cpp">
-      <Filter>iso19111</Filter>
+    <ClCompile Include="src\projections\eck4.cpp">
+      <Filter>src\projections</Filter>
     </ClCompile>
-    <ClCompile Include="iso19111\util.cpp">
-      <Filter>iso19111</Filter>
+    <ClCompile Include="src\projections\eck5.cpp">
+      <Filter>src\projections</Filter>
     </ClCompile>
-    <ClCompile Include="iso19111\operation\concatenatedoperation.cpp">
-      <Filter>iso19111\operation</Filter>
+    <ClCompile Include="src\projections\eqc.cpp">
+      <Filter>src\projections</Filter>
     </ClCompile>
-    <ClCompile Include="iso19111\operation\conversion.cpp">
-      <Filter>iso19111\operation</Filter>
+    <ClCompile Include="src\projections\eqdc.cpp">
+      <Filter>src\projections</Filter>
     </ClCompile>
-    <ClCompile Include="iso19111\operation\coordinateoperationfactory.cpp">
-      <Filter>iso19111\operation</Filter>
+    <ClCompile Include="src\projections\eqearth.cpp">
+      <Filter>src\projections</Filter>
     </ClCompile>
-    <ClCompile Include="iso19111\operation\esriparammappings.cpp">
-      <Filter>iso19111\operation</Filter>
+    <ClCompile Include="src\projections\fahey.cpp">
+      <Filter>src\projections</Filter>
     </ClCompile>
-    <ClCompile Include="iso19111\operation\oputils.cpp">
-      <Filter>iso19111\operation</Filter>
+    <ClCompile Include="src\projections\fouc_s.cpp">
+      <Filter>src\projections</Filter>
     </ClCompile>
-    <ClCompile Include="iso19111\operation\parammappings.cpp">
-      <Filter>iso19111\operation</Filter>
+    <ClCompile Include="src\projections\gall.cpp">
+      <Filter>src\projections</Filter>
     </ClCompile>
-    <ClCompile Include="iso19111\operation\projbasedoperation.cpp">
-      <Filter>iso19111\operation</Filter>
+    <ClCompile Include="src\projections\geos.cpp">
+      <Filter>src\projections</Filter>
     </ClCompile>
-    <ClCompile Include="iso19111\operation\singleoperation.cpp">
-      <Filter>iso19111\operation</Filter>
+    <ClCompile Include="src\projections\gins8.cpp">
+      <Filter>src\projections</Filter>
     </ClCompile>
-    <ClCompile Include="iso19111\operation\transformation.cpp">
-      <Filter>iso19111\operation</Filter>
+    <ClCompile Include="src\projections\gn_sinu.cpp">
+      <Filter>src\projections</Filter>
     </ClCompile>
-    <ClCompile Include="iso19111\operation\vectorofvaluesparams.cpp">
-      <Filter>iso19111\operation</Filter>
+    <ClCompile Include="src\projections\gnom.cpp">
+      <Filter>src\projections</Filter>
     </ClCompile>
-    <ClCompile Include="projections\adams.cpp">
-      <Filter>projections</Filter>
+    <ClCompile Include="src\projections\goode.cpp">
+      <Filter>src\projections</Filter>
     </ClCompile>
-    <ClCompile Include="projections\aea.cpp">
-      <Filter>projections</Filter>
+    <ClCompile Include="src\projections\gstmerc.cpp">
+      <Filter>src\projections</Filter>
     </ClCompile>
-    <ClCompile Include="projections\aeqd.cpp">
-      <Filter>projections</Filter>
+    <ClCompile Include="src\projections\hammer.cpp">
+      <Filter>src\projections</Filter>
     </ClCompile>
-    <ClCompile Include="projections\airy.cpp">
-      <Filter>projections</Filter>
+    <ClCompile Include="src\projections\hatano.cpp">
+      <Filter>src\projections</Filter>
     </ClCompile>
-    <ClCompile Include="projections\aitoff.cpp">
-      <Filter>projections</Filter>
+    <ClCompile Include="src\projections\healpix.cpp">
+      <Filter>src\projections</Filter>
     </ClCompile>
-    <ClCompile Include="projections\august.cpp">
-      <Filter>projections</Filter>
+    <ClCompile Include="src\projections\igh.cpp">
+      <Filter>src\projections</Filter>
     </ClCompile>
-    <ClCompile Include="projections\bacon.cpp">
-      <Filter>projections</Filter>
+    <ClCompile Include="src\projections\igh_o.cpp">
+      <Filter>src\projections</Filter>
     </ClCompile>
-    <ClCompile Include="projections\bertin1953.cpp">
-      <Filter>projections</Filter>
+    <ClCompile Include="src\projections\imoll.cpp">
+      <Filter>src\projections</Filter>
     </ClCompile>
-    <ClCompile Include="projections\bipc.cpp">
-      <Filter>projections</Filter>
+    <ClCompile Include="src\projections\imoll_o.cpp">
+      <Filter>src\projections</Filter>
     </ClCompile>
-    <ClCompile Include="projections\boggs.cpp">
-      <Filter>projections</Filter>
+    <ClCompile Include="src\projections\imw_p.cpp">
+      <Filter>src\projections</Filter>
     </ClCompile>
-    <ClCompile Include="projections\bonne.cpp">
-      <Filter>projections</Filter>
+    <ClCompile Include="src\projections\isea.cpp">
+      <Filter>src\projections</Filter>
     </ClCompile>
-    <ClCompile Include="projections\calcofi.cpp">
-      <Filter>projections</Filter>
+    <ClCompile Include="src\projections\krovak.cpp">
+      <Filter>src\projections</Filter>
     </ClCompile>
-    <ClCompile Include="projections\cass.cpp">
-      <Filter>projections</Filter>
+    <ClCompile Include="src\projections\labrd.cpp">
+      <Filter>src\projections</Filter>
     </ClCompile>
-    <ClCompile Include="projections\cc.cpp">
-      <Filter>projections</Filter>
+    <ClCompile Include="src\projections\laea.cpp">
+      <Filter>src\projections</Filter>
     </ClCompile>
-    <ClCompile Include="projections\ccon.cpp">
-      <Filter>projections</Filter>
+    <ClCompile Include="src\projections\lagrng.cpp">
+      <Filter>src\projections</Filter>
     </ClCompile>
-    <ClCompile Include="projections\cea.cpp">
-      <Filter>projections</Filter>
+    <ClCompile Include="src\projections\larr.cpp">
+      <Filter>src\projections</Filter>
     </ClCompile>
-    <ClCompile Include="projections\chamb.cpp">
-      <Filter>projections</Filter>
+    <ClCompile Include="src\projections\lask.cpp">
+      <Filter>src\projections</Filter>
     </ClCompile>
-    <ClCompile Include="projections\col_urban.cpp">
-      <Filter>projections</Filter>
+    <ClCompile Include="src\projections\latlong.cpp">
+      <Filter>src\projections</Filter>
     </ClCompile>
-    <ClCompile Include="projections\collg.cpp">
-      <Filter>projections</Filter>
+    <ClCompile Include="src\projections\lcc.cpp">
+      <Filter>src\projections</Filter>
     </ClCompile>
-    <ClCompile Include="projections\comill.cpp">
-      <Filter>projections</Filter>
+    <ClCompile Include="src\projections\lcca.cpp">
+      <Filter>src\projections</Filter>
     </ClCompile>
-    <ClCompile Include="projections\crast.cpp">
-      <Filter>projections</Filter>
+    <ClCompile Include="src\projections\loxim.cpp">
+      <Filter>src\projections</Filter>
     </ClCompile>
-    <ClCompile Include="projections\denoy.cpp">
-      <Filter>projections</Filter>
+    <ClCompile Include="src\projections\mbt_fps.cpp">
+      <Filter>src\projections</Filter>
     </ClCompile>
-    <ClCompile Include="projections\eck1.cpp">
-      <Filter>projections</Filter>
+    <ClCompile Include="src\projections\mbtfpp.cpp">
+      <Filter>src\projections</Filter>
     </ClCompile>
-    <ClCompile Include="projections\eck2.cpp">
-      <Filter>projections</Filter>
+    <ClCompile Include="src\projections\mbtfpq.cpp">
+      <Filter>src\projections</Filter>
     </ClCompile>
-    <ClCompile Include="projections\eck3.cpp">
-      <Filter>projections</Filter>
+    <ClCompile Include="src\projections\merc.cpp">
+      <Filter>src\projections</Filter>
     </ClCompile>
-    <ClCompile Include="projections\eck4.cpp">
-      <Filter>projections</Filter>
+    <ClCompile Include="src\projections\mill.cpp">
+      <Filter>src\projections</Filter>
     </ClCompile>
-    <ClCompile Include="projections\eck5.cpp">
-      <Filter>projections</Filter>
+    <ClCompile Include="src\projections\mod_ster.cpp">
+      <Filter>src\projections</Filter>
     </ClCompile>
-    <ClCompile Include="projections\eqc.cpp">
-      <Filter>projections</Filter>
+    <ClCompile Include="src\projections\moll.cpp">
+      <Filter>src\projections</Filter>
     </ClCompile>
-    <ClCompile Include="projections\eqdc.cpp">
-      <Filter>projections</Filter>
+    <ClCompile Include="src\projections\natearth.cpp">
+      <Filter>src\projections</Filter>
     </ClCompile>
-    <ClCompile Include="projections\eqearth.cpp">
-      <Filter>projections</Filter>
+    <ClCompile Include="src\projections\natearth2.cpp">
+      <Filter>src\projections</Filter>
     </ClCompile>
-    <ClCompile Include="projections\fahey.cpp">
-      <Filter>projections</Filter>
+    <ClCompile Include="src\projections\nell.cpp">
+      <Filter>src\projections</Filter>
     </ClCompile>
-    <ClCompile Include="projections\fouc_s.cpp">
-      <Filter>projections</Filter>
+    <ClCompile Include="src\projections\nell_h.cpp">
+      <Filter>src\projections</Filter>
     </ClCompile>
-    <ClCompile Include="projections\gall.cpp">
-      <Filter>projections</Filter>
+    <ClCompile Include="src\projections\nicol.cpp">
+      <Filter>src\projections</Filter>
     </ClCompile>
-    <ClCompile Include="projections\geos.cpp">
-      <Filter>projections</Filter>
+    <ClCompile Include="src\projections\nsper.cpp">
+      <Filter>src\projections</Filter>
     </ClCompile>
-    <ClCompile Include="projections\gins8.cpp">
-      <Filter>projections</Filter>
+    <ClCompile Include="src\projections\nzmg.cpp">
+      <Filter>src\projections</Filter>
     </ClCompile>
-    <ClCompile Include="projections\gn_sinu.cpp">
-      <Filter>projections</Filter>
+    <ClCompile Include="src\projections\ob_tran.cpp">
+      <Filter>src\projections</Filter>
     </ClCompile>
-    <ClCompile Include="projections\gnom.cpp">
-      <Filter>projections</Filter>
+    <ClCompile Include="src\projections\ocea.cpp">
+      <Filter>src\projections</Filter>
     </ClCompile>
-    <ClCompile Include="projections\goode.cpp">
-      <Filter>projections</Filter>
+    <ClCompile Include="src\projections\oea.cpp">
+      <Filter>src\projections</Filter>
     </ClCompile>
-    <ClCompile Include="projections\gstmerc.cpp">
-      <Filter>projections</Filter>
+    <ClCompile Include="src\projections\omerc.cpp">
+      <Filter>src\projections</Filter>
     </ClCompile>
-    <ClCompile Include="projections\hammer.cpp">
-      <Filter>projections</Filter>
+    <ClCompile Include="src\projections\ortho.cpp">
+      <Filter>src\projections</Filter>
     </ClCompile>
-    <ClCompile Include="projections\hatano.cpp">
-      <Filter>projections</Filter>
+    <ClCompile Include="src\projections\patterson.cpp">
+      <Filter>src\projections</Filter>
     </ClCompile>
-    <ClCompile Include="projections\healpix.cpp">
-      <Filter>projections</Filter>
+    <ClCompile Include="src\projections\poly.cpp">
+      <Filter>src\projections</Filter>
     </ClCompile>
-    <ClCompile Include="projections\igh.cpp">
-      <Filter>projections</Filter>
+    <ClCompile Include="src\projections\putp2.cpp">
+      <Filter>src\projections</Filter>
     </ClCompile>
-    <ClCompile Include="projections\igh_o.cpp">
-      <Filter>projections</Filter>
+    <ClCompile Include="src\projections\putp3.cpp">
+      <Filter>src\projections</Filter>
     </ClCompile>
-    <ClCompile Include="projections\imw_p.cpp">
-      <Filter>projections</Filter>
+    <ClCompile Include="src\projections\putp4p.cpp">
+      <Filter>src\projections</Filter>
     </ClCompile>
-    <ClCompile Include="projections\isea.cpp">
-      <Filter>projections</Filter>
+    <ClCompile Include="src\projections\putp5.cpp">
+      <Filter>src\projections</Filter>
     </ClCompile>
-    <ClCompile Include="projections\krovak.cpp">
-      <Filter>projections</Filter>
+    <ClCompile Include="src\projections\putp6.cpp">
+      <Filter>src\projections</Filter>
     </ClCompile>
-    <ClCompile Include="projections\labrd.cpp">
-      <Filter>projections</Filter>
+    <ClCompile Include="src\projections\qsc.cpp">
+      <Filter>src\projections</Filter>
     </ClCompile>
-    <ClCompile Include="projections\laea.cpp">
-      <Filter>projections</Filter>
+    <ClCompile Include="src\projections\robin.cpp">
+      <Filter>src\projections</Filter>
     </ClCompile>
-    <ClCompile Include="projections\lagrng.cpp">
-      <Filter>projections</Filter>
+    <ClCompile Include="src\projections\rouss.cpp">
+      <Filter>src\projections</Filter>
     </ClCompile>
-    <ClCompile Include="projections\larr.cpp">
-      <Filter>projections</Filter>
+    <ClCompile Include="src\projections\rpoly.cpp">
+      <Filter>src\projections</Filter>
     </ClCompile>
-    <ClCompile Include="projections\lask.cpp">
-      <Filter>projections</Filter>
+    <ClCompile Include="src\projections\s2.cpp">
+      <Filter>src\projections</Filter>
     </ClCompile>
-    <ClCompile Include="projections\latlong.cpp">
-      <Filter>projections</Filter>
+    <ClCompile Include="src\projections\sch.cpp">
+      <Filter>src\projections</Filter>
     </ClCompile>
-    <ClCompile Include="projections\lcc.cpp">
-      <Filter>projections</Filter>
+    <ClCompile Include="src\projections\sconics.cpp">
+      <Filter>src\projections</Filter>
     </ClCompile>
-    <ClCompile Include="projections\lcca.cpp">
-      <Filter>projections</Filter>
+    <ClCompile Include="src\projections\som.cpp">
+      <Filter>src\projections</Filter>
     </ClCompile>
-    <ClCompile Include="projections\loxim.cpp">
-      <Filter>projections</Filter>
+    <ClCompile Include="src\projections\somerc.cpp">
+      <Filter>src\projections</Filter>
     </ClCompile>
-    <ClCompile Include="projections\lsat.cpp">
-      <Filter>projections</Filter>
+    <ClCompile Include="src\projections\stere.cpp">
+      <Filter>src\projections</Filter>
     </ClCompile>
-    <ClCompile Include="projections\mbt_fps.cpp">
-      <Filter>projections</Filter>
+    <ClCompile Include="src\projections\sterea.cpp">
+      <Filter>src\projections</Filter>
     </ClCompile>
-    <ClCompile Include="projections\mbtfpp.cpp">
-      <Filter>projections</Filter>
+    <ClCompile Include="src\projections\sts.cpp">
+      <Filter>src\projections</Filter>
     </ClCompile>
-    <ClCompile Include="projections\mbtfpq.cpp">
-      <Filter>projections</Filter>
+    <ClCompile Include="src\projections\tcc.cpp">
+      <Filter>src\projections</Filter>
     </ClCompile>
-    <ClCompile Include="projections\merc.cpp">
-      <Filter>projections</Filter>
+    <ClCompile Include="src\projections\tcea.cpp">
+      <Filter>src\projections</Filter>
     </ClCompile>
-    <ClCompile Include="projections\mill.cpp">
-      <Filter>projections</Filter>
+    <ClCompile Include="src\projections\times.cpp">
+      <Filter>src\projections</Filter>
     </ClCompile>
-    <ClCompile Include="projections\misrsom.cpp">
-      <Filter>projections</Filter>
+    <ClCompile Include="src\projections\tmerc.cpp">
+      <Filter>src\projections</Filter>
     </ClCompile>
-    <ClCompile Include="projections\mod_ster.cpp">
-      <Filter>projections</Filter>
+    <ClCompile Include="src\projections\tobmerc.cpp">
+      <Filter>src\projections</Filter>
     </ClCompile>
-    <ClCompile Include="projections\moll.cpp">
-      <Filter>projections</Filter>
+    <ClCompile Include="src\projections\tpeqd.cpp">
+      <Filter>src\projections</Filter>
     </ClCompile>
-    <ClCompile Include="projections\natearth.cpp">
-      <Filter>projections</Filter>
+    <ClCompile Include="src\projections\urm5.cpp">
+      <Filter>src\projections</Filter>
     </ClCompile>
-    <ClCompile Include="projections\natearth2.cpp">
-      <Filter>projections</Filter>
+    <ClCompile Include="src\projections\urmfps.cpp">
+      <Filter>src\projections</Filter>
     </ClCompile>
-    <ClCompile Include="projections\nell.cpp">
-      <Filter>projections</Filter>
+    <ClCompile Include="src\projections\vandg.cpp">
+      <Filter>src\projections</Filter>
     </ClCompile>
-    <ClCompile Include="projections\nell_h.cpp">
-      <Filter>projections</Filter>
+    <ClCompile Include="src\projections\vandg2.cpp">
+      <Filter>src\projections</Filter>
     </ClCompile>
-    <ClCompile Include="projections\nicol.cpp">
-      <Filter>projections</Filter>
+    <ClCompile Include="src\projections\vandg4.cpp">
+      <Filter>src\projections</Filter>
     </ClCompile>
-    <ClCompile Include="projections\nsper.cpp">
-      <Filter>projections</Filter>
+    <ClCompile Include="src\projections\wag2.cpp">
+      <Filter>src\projections</Filter>
     </ClCompile>
-    <ClCompile Include="projections\nzmg.cpp">
-      <Filter>projections</Filter>
+    <ClCompile Include="src\projections\wag3.cpp">
+      <Filter>src\projections</Filter>
     </ClCompile>
-    <ClCompile Include="projections\ob_tran.cpp">
-      <Filter>projections</Filter>
+    <ClCompile Include="src\projections\wag7.cpp">
+      <Filter>src\projections</Filter>
     </ClCompile>
-    <ClCompile Include="projections\ocea.cpp">
-      <Filter>projections</Filter>
+    <ClCompile Include="src\projections\wink1.cpp">
+      <Filter>src\projections</Filter>
     </ClCompile>
-    <ClCompile Include="projections\oea.cpp">
-      <Filter>projections</Filter>
+    <ClCompile Include="src\projections\wink2.cpp">
+      <Filter>src\projections</Filter>
     </ClCompile>
-    <ClCompile Include="projections\omerc.cpp">
-      <Filter>projections</Filter>
+    <ClCompile Include="src\geodesic.c">
+      <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="projections\ortho.cpp">
-      <Filter>projections</Filter>
+    <ClCompile Include="src\wkt1_generated_parser.c">
+      <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="projections\patterson.cpp">
-      <Filter>projections</Filter>
+    <ClCompile Include="src\wkt2_generated_parser.c">
+      <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="projections\poly.cpp">
-      <Filter>projections</Filter>
+    <ClCompile Include="src\4D_api.cpp">
+      <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="projections\putp2.cpp">
-      <Filter>projections</Filter>
+    <ClCompile Include="src\aasincos.cpp">
+      <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="projections\putp3.cpp">
-      <Filter>projections</Filter>
+    <ClCompile Include="src\adjlon.cpp">
+      <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="projections\putp4p.cpp">
-      <Filter>projections</Filter>
+    <ClCompile Include="src\auth.cpp">
+      <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="projections\putp5.cpp">
-      <Filter>projections</Filter>
+    <ClCompile Include="src\ctx.cpp">
+      <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="projections\putp6.cpp">
-      <Filter>projections</Filter>
+    <ClCompile Include="src\datum_set.cpp">
+      <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="projections\qsc.cpp">
-      <Filter>projections</Filter>
+    <ClCompile Include="src\datums.cpp">
+      <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="projections\robin.cpp">
-      <Filter>projections</Filter>
+    <ClCompile Include="src\deriv.cpp">
+      <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="projections\rouss.cpp">
-      <Filter>projections</Filter>
+    <ClCompile Include="src\dmstor.cpp">
+      <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="projections\rpoly.cpp">
-      <Filter>projections</Filter>
+    <ClCompile Include="src\ell_set.cpp">
+      <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="projections\sch.cpp">
-      <Filter>projections</Filter>
+    <ClCompile Include="src\ellps.cpp">
+      <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="projections\sconics.cpp">
-      <Filter>projections</Filter>
+    <ClCompile Include="src\factors.cpp">
+      <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="projections\somerc.cpp">
-      <Filter>projections</Filter>
+    <ClCompile Include="src\filemanager.cpp">
+      <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="projections\stere.cpp">
-      <Filter>projections</Filter>
+    <ClCompile Include="src\fwd.cpp">
+      <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="projections\sterea.cpp">
-      <Filter>projections</Filter>
+    <ClCompile Include="src\gauss.cpp">
+      <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="projections\sts.cpp">
-      <Filter>projections</Filter>
+    <ClCompile Include="src\generic_inverse.cpp">
+      <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="projections\tcc.cpp">
-      <Filter>projections</Filter>
+    <ClCompile Include="src\grids.cpp">
+      <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="projections\tcea.cpp">
-      <Filter>projections</Filter>
+    <ClCompile Include="src\init.cpp">
+      <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="projections\times.cpp">
-      <Filter>projections</Filter>
+    <ClCompile Include="src\initcache.cpp">
+      <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="projections\tmerc.cpp">
-      <Filter>projections</Filter>
+    <ClCompile Include="src\inv.cpp">
+      <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="projections\tobmerc.cpp">
-      <Filter>projections</Filter>
+    <ClCompile Include="src\list.cpp">
+      <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="projections\tpeqd.cpp">
-      <Filter>projections</Filter>
+    <ClCompile Include="src\log.cpp">
+      <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="projections\urm5.cpp">
-      <Filter>projections</Filter>
+    <ClCompile Include="src\malloc.cpp">
+      <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="projections\urmfps.cpp">
-      <Filter>projections</Filter>
+    <ClCompile Include="src\mlfn.cpp">
+      <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="projections\vandg.cpp">
-      <Filter>projections</Filter>
+    <ClCompile Include="src\msfn.cpp">
+      <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="projections\vandg2.cpp">
-      <Filter>projections</Filter>
+    <ClCompile Include="src\mutex.cpp">
+      <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="projections\vandg4.cpp">
-      <Filter>projections</Filter>
+    <ClCompile Include="src\networkfilemanager.cpp">
+      <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="projections\wag2.cpp">
-      <Filter>projections</Filter>
+    <ClCompile Include="src\param.cpp">
+      <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="projections\wag3.cpp">
-      <Filter>projections</Filter>
+    <ClCompile Include="src\phi2.cpp">
+      <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="projections\wag7.cpp">
-      <Filter>projections</Filter>
+    <ClCompile Include="src\pipeline.cpp">
+      <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="projections\wink1.cpp">
-      <Filter>projections</Filter>
+    <ClCompile Include="src\pr_list.cpp">
+      <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="projections\wink2.cpp">
-      <Filter>projections</Filter>
+    <ClCompile Include="src\proj_json_streaming_writer.cpp">
+      <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="transformations\affine.cpp">
-      <Filter>transformations</Filter>
+    <ClCompile Include="src\proj_mdist.cpp">
+      <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="transformations\defmodel.cpp">
-      <Filter>transformations</Filter>
+    <ClCompile Include="src\qsfn.cpp">
+      <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="transformations\deformation.cpp">
-      <Filter>transformations</Filter>
+    <ClCompile Include="src\release.cpp">
+      <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="transformations\helmert.cpp">
-      <Filter>transformations</Filter>
+    <ClCompile Include="src\rtodms.cpp">
+      <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="transformations\hgridshift.cpp">
-      <Filter>transformations</Filter>
+    <ClCompile Include="src\sqlite3_utils.cpp">
+      <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="transformations\horner.cpp">
-      <Filter>transformations</Filter>
+    <ClCompile Include="src\strerrno.cpp">
+      <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="transformations\molodensky.cpp">
-      <Filter>transformations</Filter>
+    <ClCompile Include="src\strtod.cpp">
+      <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="transformations\tinshift.cpp">
-      <Filter>transformations</Filter>
+    <ClCompile Include="src\tracing.cpp">
+      <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="transformations\vgridshift.cpp">
-      <Filter>transformations</Filter>
+    <ClCompile Include="src\tsfn.cpp">
+      <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="transformations\xyzgridshift.cpp">
-      <Filter>transformations</Filter>
+    <ClCompile Include="src\units.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\wkt_parser.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\wkt1_parser.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\wkt2_parser.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zpoly1.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\internal.cpp">
+      <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="filemanager.hpp">
-      <Filter>core</Filter>
+    <None Include="Readme\AUTHORS">
+      <Filter>Readme</Filter>
+    </None>
+    <None Include="Readme\COPYING">
+      <Filter>Readme</Filter>
+    </None>
+    <None Include="Readme\README">
+      <Filter>Readme</Filter>
+    </None>
+    <None Include="Readme\README.md">
+      <Filter>Readme</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\proj\internal\coordinatesystem_internal.hpp">
+      <Filter>include\proj\internal</Filter>
     </ClInclude>
-    <ClInclude Include="geodesic.h">
-      <Filter>core</Filter>
+    <ClInclude Include="include\proj\internal\crs_internal.hpp">
+      <Filter>include\proj\internal</Filter>
     </ClInclude>
-    <ClInclude Include="grids.hpp">
-      <Filter>core</Filter>
+    <ClInclude Include="include\proj\internal\datum_internal.hpp">
+      <Filter>include\proj\internal</Filter>
     </ClInclude>
-    <ClInclude Include="mlfn.hpp">
-      <Filter>core</Filter>
+    <ClInclude Include="include\proj\internal\include_nlohmann_json.hpp">
+      <Filter>include\proj\internal</Filter>
     </ClInclude>
-    <ClInclude Include="pj_list.h">
-      <Filter>core</Filter>
+    <ClInclude Include="include\proj\internal\internal.hpp">
+      <Filter>include\proj\internal</Filter>
     </ClInclude>
-    <ClInclude Include="proj_config.h">
-      <Filter>core</Filter>
+    <ClInclude Include="include\proj\internal\io_internal.hpp">
+      <Filter>include\proj\internal</Filter>
     </ClInclude>
-    <ClInclude Include="proj_internal.h">
-      <Filter>core</Filter>
+    <ClInclude Include="include\proj\internal\lru_cache.hpp">
+      <Filter>include\proj\internal</Filter>
     </ClInclude>
-    <ClInclude Include="proj_json_streaming_writer.hpp">
-      <Filter>core</Filter>
-    </ClInclude>
-    <ClInclude Include="quadtree.hpp">
-      <Filter>core</Filter>
-    </ClInclude>
-    <ClInclude Include="sqlite3_utils.hpp">
-      <Filter>core</Filter>
-    </ClInclude>
-    <ClInclude Include="wkt_parser.hpp">
-      <Filter>core</Filter>
-    </ClInclude>
-    <ClInclude Include="wkt1_generated_parser.h">
-      <Filter>core</Filter>
-    </ClInclude>
-    <ClInclude Include="wkt1_parser.h">
-      <Filter>core</Filter>
-    </ClInclude>
-    <ClInclude Include="wkt2_generated_parser.h">
-      <Filter>core</Filter>
-    </ClInclude>
-    <ClInclude Include="wkt2_parser.h">
-      <Filter>core</Filter>
+    <ClInclude Include="include\proj\internal\tracing.hpp">
+      <Filter>include\proj\internal</Filter>
     </ClInclude>
     <ClInclude Include="include\proj\common.hpp">
       <Filter>include\proj</Filter>
     </ClInclude>
     <ClInclude Include="include\proj\coordinateoperation.hpp">
+      <Filter>include\proj</Filter>
+    </ClInclude>
+    <ClInclude Include="include\proj\coordinates.hpp">
       <Filter>include\proj</Filter>
     </ClInclude>
     <ClInclude Include="include\proj\coordinatesystem.hpp">
@@ -716,100 +727,101 @@
     <ClInclude Include="include\proj\nn.hpp">
       <Filter>include\proj</Filter>
     </ClInclude>
-    <ClInclude Include="include\proj\proj.h">
-      <Filter>include\proj</Filter>
-    </ClInclude>
-    <ClInclude Include="include\proj\proj_symbol_rename.h">
-      <Filter>include\proj</Filter>
-    </ClInclude>
     <ClInclude Include="include\proj\util.hpp">
       <Filter>include\proj</Filter>
     </ClInclude>
-    <ClInclude Include="include\proj\internal\coordinatesystem_internal.hpp">
-      <Filter>include\proj\internal</Filter>
+    <ClInclude Include="src\iso19111\operation\coordinateoperation_internal.hpp">
+      <Filter>src\iso19111\operation</Filter>
     </ClInclude>
-    <ClInclude Include="include\proj\internal\include_nlohmann_json.hpp">
-      <Filter>include\proj\internal</Filter>
+    <ClInclude Include="src\iso19111\operation\coordinateoperation_private.hpp">
+      <Filter>src\iso19111\operation</Filter>
     </ClInclude>
-    <ClInclude Include="include\proj\internal\internal.hpp">
-      <Filter>include\proj\internal</Filter>
+    <ClInclude Include="src\iso19111\operation\esriparammappings.hpp">
+      <Filter>src\iso19111\operation</Filter>
     </ClInclude>
-    <ClInclude Include="include\proj\internal\io_internal.hpp">
-      <Filter>include\proj\internal</Filter>
+    <ClInclude Include="src\iso19111\operation\operationmethod_private.hpp">
+      <Filter>src\iso19111\operation</Filter>
     </ClInclude>
-    <ClInclude Include="include\proj\internal\lru_cache.hpp">
-      <Filter>include\proj\internal</Filter>
+    <ClInclude Include="src\iso19111\operation\oputils.hpp">
+      <Filter>src\iso19111\operation</Filter>
     </ClInclude>
-    <ClInclude Include="include\proj\internal\mutex.hpp">
-      <Filter>include\proj\internal</Filter>
+    <ClInclude Include="src\iso19111\operation\parammappings.hpp">
+      <Filter>src\iso19111\operation</Filter>
     </ClInclude>
-    <ClInclude Include="include\proj\internal\tracing.hpp">
-      <Filter>include\proj\internal</Filter>
+    <ClInclude Include="src\iso19111\operation\vectorofvaluesparams.hpp">
+      <Filter>src\iso19111\operation</Filter>
     </ClInclude>
-    <ClInclude Include="iso19111\operation\coordinateoperation_internal.hpp">
-      <Filter>iso19111\operation</Filter>
+    <ClInclude Include="src\transformations\defmodel.hpp">
+      <Filter>src\transformations</Filter>
     </ClInclude>
-    <ClInclude Include="iso19111\operation\coordinateoperation_private.hpp">
-      <Filter>iso19111\operation</Filter>
+    <ClInclude Include="src\transformations\defmodel_exceptions.hpp">
+      <Filter>src\transformations</Filter>
     </ClInclude>
-    <ClInclude Include="iso19111\operation\esriparammappings.hpp">
-      <Filter>iso19111\operation</Filter>
+    <ClInclude Include="src\transformations\defmodel_impl.hpp">
+      <Filter>src\transformations</Filter>
     </ClInclude>
-    <ClInclude Include="iso19111\operation\operationmethod_private.hpp">
-      <Filter>iso19111\operation</Filter>
+    <ClInclude Include="src\transformations\tinshift.hpp">
+      <Filter>src\transformations</Filter>
     </ClInclude>
-    <ClInclude Include="iso19111\operation\oputils.hpp">
-      <Filter>iso19111\operation</Filter>
+    <ClInclude Include="src\transformations\tinshift_exceptions.hpp">
+      <Filter>src\transformations</Filter>
     </ClInclude>
-    <ClInclude Include="iso19111\operation\parammappings.hpp">
-      <Filter>iso19111\operation</Filter>
+    <ClInclude Include="src\transformations\tinshift_impl.hpp">
+      <Filter>src\transformations</Filter>
     </ClInclude>
-    <ClInclude Include="iso19111\operation\vectorofvaluesparams.hpp">
-      <Filter>iso19111\operation</Filter>
+    <ClInclude Include="src\filemanager.hpp">
+      <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="transformations\defmodel.hpp">
-      <Filter>transformations</Filter>
+    <ClInclude Include="src\grids.hpp">
+      <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="transformations\defmodel_exceptions.hpp">
-      <Filter>transformations</Filter>
+    <ClInclude Include="src\pj_list.h">
+      <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="transformations\defmodel_impl.hpp">
-      <Filter>transformations</Filter>
+    <ClInclude Include="src\proj_internal.h">
+      <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="transformations\tinshift.hpp">
-      <Filter>transformations</Filter>
+    <ClInclude Include="src\proj_json_streaming_writer.hpp">
+      <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="transformations\tinshift_exceptions.hpp">
-      <Filter>transformations</Filter>
+    <ClInclude Include="src\proj_symbol_rename.h">
+      <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="transformations\tinshift_impl.hpp">
-      <Filter>transformations</Filter>
+    <ClInclude Include="src\quadtree.hpp">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\sqlite3_utils.hpp">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\wkt_parser.hpp">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\wkt1_generated_parser.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\wkt1_parser.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\wkt2_generated_parser.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\wkt2_parser.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="include\proj\proj.h">
+      <Filter>include\proj</Filter>
+    </ClInclude>
+    <ClInclude Include="include\proj\proj_config.h">
+      <Filter>include\proj</Filter>
+    </ClInclude>
+    <ClInclude Include="include\proj\geodesic.h">
+      <Filter>include\proj</Filter>
+    </ClInclude>
+    <ClInclude Include="include\proj\proj_constants.h">
+      <Filter>include\proj</Filter>
     </ClInclude>
     <ClInclude Include="include\proj\proj_experimental.h">
       <Filter>include\proj</Filter>
     </ClInclude>
-    <ClInclude Include="include\proj\proj_constants.h">
-      <Filter>include\proj\internal</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="wkt1_grammar.y">
-      <Filter>core</Filter>
-    </None>
-    <None Include="wkt2_grammar.y">
-      <Filter>core</Filter>
-    </None>
-    <None Include="Readme\AUTHORS">
-      <Filter>Readme</Filter>
-    </None>
-    <None Include="Readme\COPYING">
-      <Filter>Readme</Filter>
-    </None>
-    <None Include="Readme\README">
-      <Filter>Readme</Filter>
-    </None>
-    <None Include="Readme\README.md">
-      <Filter>Readme</Filter>
-    </None>
   </ItemGroup>
 </Project>

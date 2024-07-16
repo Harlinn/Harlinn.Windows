@@ -19,15 +19,15 @@
 #include "aom_dsp/recenter.h"
 #include "aom_ports/bitops.h"
 
-int aom_wb_is_byte_aligned(const struct aom_write_bit_buffer *wb) {
+HAOM_EXPORT int aom_wb_is_byte_aligned(const struct aom_write_bit_buffer *wb) {
   return (wb->bit_offset % CHAR_BIT == 0);
 }
 
-uint32_t aom_wb_bytes_written(const struct aom_write_bit_buffer *wb) {
+HAOM_EXPORT uint32_t aom_wb_bytes_written(const struct aom_write_bit_buffer *wb) {
   return wb->bit_offset / CHAR_BIT + (wb->bit_offset % CHAR_BIT > 0);
 }
 
-void aom_wb_write_bit(struct aom_write_bit_buffer *wb, int bit) {
+HAOM_EXPORT void aom_wb_write_bit(struct aom_write_bit_buffer *wb, int bit) {
   const int off = (int)wb->bit_offset;
   const int p = off / CHAR_BIT;
   const int q = CHAR_BIT - 1 - off % CHAR_BIT;
@@ -41,7 +41,7 @@ void aom_wb_write_bit(struct aom_write_bit_buffer *wb, int bit) {
   wb->bit_offset = off + 1;
 }
 
-void aom_wb_overwrite_bit(struct aom_write_bit_buffer *wb, int bit) {
+HAOM_EXPORT void aom_wb_overwrite_bit(struct aom_write_bit_buffer *wb, int bit) {
   // Do not zero bytes but overwrite exisiting values
   const int off = (int)wb->bit_offset;
   const int p = off / CHAR_BIT;
@@ -51,32 +51,32 @@ void aom_wb_overwrite_bit(struct aom_write_bit_buffer *wb, int bit) {
   wb->bit_offset = off + 1;
 }
 
-void aom_wb_write_literal(struct aom_write_bit_buffer *wb, int data, int bits) {
+HAOM_EXPORT void aom_wb_write_literal(struct aom_write_bit_buffer *wb, int data, int bits) {
   assert(bits <= 31);
   int bit;
   for (bit = bits - 1; bit >= 0; bit--) aom_wb_write_bit(wb, (data >> bit) & 1);
 }
 
-void aom_wb_write_unsigned_literal(struct aom_write_bit_buffer *wb,
+HAOM_EXPORT void aom_wb_write_unsigned_literal(struct aom_write_bit_buffer *wb,
                                    uint32_t data, int bits) {
   assert(bits <= 32);
   int bit;
   for (bit = bits - 1; bit >= 0; bit--) aom_wb_write_bit(wb, (data >> bit) & 1);
 }
 
-void aom_wb_overwrite_literal(struct aom_write_bit_buffer *wb, int data,
+HAOM_EXPORT void aom_wb_overwrite_literal(struct aom_write_bit_buffer *wb, int data,
                               int bits) {
   int bit;
   for (bit = bits - 1; bit >= 0; bit--)
     aom_wb_overwrite_bit(wb, (data >> bit) & 1);
 }
 
-void aom_wb_write_inv_signed_literal(struct aom_write_bit_buffer *wb, int data,
+HAOM_EXPORT void aom_wb_write_inv_signed_literal(struct aom_write_bit_buffer *wb, int data,
                                      int bits) {
   aom_wb_write_literal(wb, data, bits + 1);
 }
 
-void aom_wb_write_uvlc(struct aom_write_bit_buffer *wb, uint32_t v) {
+HAOM_EXPORT void aom_wb_write_uvlc(struct aom_write_bit_buffer *wb, uint32_t v) {
   int64_t shift_val = ++v;
   int leading_zeroes = 1;
 
@@ -131,7 +131,7 @@ static void wb_write_primitive_refsubexpfin(struct aom_write_bit_buffer *wb,
   wb_write_primitive_subexpfin(wb, n, k, recenter_finite_nonneg(n, ref, v));
 }
 
-void aom_wb_write_signed_primitive_refsubexpfin(struct aom_write_bit_buffer *wb,
+HAOM_EXPORT void aom_wb_write_signed_primitive_refsubexpfin(struct aom_write_bit_buffer *wb,
                                                 uint16_t n, uint16_t k,
                                                 int16_t ref, int16_t v) {
   ref += n - 1;

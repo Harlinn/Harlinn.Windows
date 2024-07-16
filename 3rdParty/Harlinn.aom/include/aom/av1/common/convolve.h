@@ -31,6 +31,11 @@ typedef struct ConvolveParams {
   int bck_offset;
 } ConvolveParams;
 
+typedef struct WienerConvolveParams {
+  int round_0;
+  int round_1;
+} WienerConvolveParams;
+
 #define ROUND0_BITS 3
 #define COMPOUND_ROUND1_BITS 7
 #define WIENER_ROUND0_BITS 3
@@ -53,7 +58,7 @@ typedef void (*aom_highbd_convolve_fn_t)(
 struct AV1Common;
 struct scale_factors;
 
-void av1_convolve_2d_facade(const uint8_t *src, int src_stride, uint8_t *dst,
+HAOM_EXPORT void av1_convolve_2d_facade(const uint8_t *src, int src_stride, uint8_t *dst,
                             int dst_stride, int w, int h,
                             const InterpFilterParams *interp_filters[2],
                             const int subpel_x_qn, int x_step_q4,
@@ -72,12 +77,16 @@ static INLINE ConvolveParams get_conv_params_no_round(int cmp_index, int plane,
   conv_params.round_0 = ROUND0_BITS;
   conv_params.round_1 = is_compound ? COMPOUND_ROUND1_BITS
                                     : 2 * FILTER_BITS - conv_params.round_0;
+#if CONFIG_AV1_HIGHBITDEPTH
   const int intbufrange = bd + FILTER_BITS - conv_params.round_0 + 2;
   assert(IMPLIES(bd < 12, intbufrange <= 16));
   if (intbufrange > 16) {
     conv_params.round_0 += intbufrange - 16;
     if (!is_compound) conv_params.round_1 -= intbufrange - 16;
   }
+#else
+  (void)bd;
+#endif  // CONFIG_AV1_HIGHBITDEPTH
   // TODO(yunqing): The following dst should only be valid while
   // is_compound = 1;
   conv_params.dst = dst;
@@ -95,11 +104,8 @@ static INLINE ConvolveParams get_conv_params(int do_average, int plane,
   return get_conv_params_no_round(do_average, plane, NULL, 0, 0, bd);
 }
 
-static INLINE ConvolveParams get_conv_params_wiener(int bd) {
-  ConvolveParams conv_params;
-  (void)bd;
-  conv_params.do_average = 0;
-  conv_params.is_compound = 0;
+static INLINE WienerConvolveParams get_conv_params_wiener(int bd) {
+  WienerConvolveParams conv_params;
   conv_params.round_0 = WIENER_ROUND0_BITS;
   conv_params.round_1 = 2 * FILTER_BITS - conv_params.round_0;
   const int intbufrange = bd + FILTER_BITS - conv_params.round_0 + 2;
@@ -108,24 +114,16 @@ static INLINE ConvolveParams get_conv_params_wiener(int bd) {
     conv_params.round_0 += intbufrange - 16;
     conv_params.round_1 -= intbufrange - 16;
   }
-  conv_params.dst = NULL;
-  conv_params.dst_stride = 0;
-  conv_params.plane = 0;
   return conv_params;
 }
 
-void av1_highbd_convolve_2d_facade(const uint8_t *src8, int src_stride,
+HAOM_EXPORT void av1_highbd_convolve_2d_facade(const uint8_t *src8, int src_stride,
                                    uint8_t *dst, int dst_stride, int w, int h,
                                    const InterpFilterParams *interp_filters[2],
                                    const int subpel_x_qn, int x_step_q4,
                                    const int subpel_y_qn, int y_step_q4,
                                    int scaled, ConvolveParams *conv_params,
                                    int bd);
-
-// TODO(sarahparker) This will need to be integerized and optimized
-void av1_convolve_2d_sobel_y_c(const uint8_t *src, int src_stride, double *dst,
-                               int dst_stride, int w, int h, int dir,
-                               double norm);
 
 #ifdef __cplusplus
 }  // extern "C"

@@ -1,4 +1,3 @@
-#pragma once
 /******************************************************************************
  * $Id$
  *
@@ -33,8 +32,8 @@
 #ifndef CPL_VSI_ERROR_H_INCLUDED
 #define CPL_VSI_ERROR_H_INCLUDED
 
-#include <port/cpl_port.h>
-#include <port/cpl_error.h>
+#include "cpl_port.h"
+#include "cpl_error.h"
 
 /* ====================================================================
         Filesystem error codes.
@@ -44,27 +43,26 @@ CPL_C_START
 
 typedef int VSIErrorNum;
 
-#define VSIE_None                       0
-#define VSIE_FileError                  1
-#define VSIE_HttpError                  2
+#define VSIE_None 0
+#define VSIE_FileError 1
+#define VSIE_HttpError 2
 
-#define VSIE_AWSError                   5
-#define VSIE_AWSAccessDenied            6
-#define VSIE_AWSBucketNotFound          7
-#define VSIE_AWSObjectNotFound          8
-#define VSIE_AWSInvalidCredentials      9
-#define VSIE_AWSSignatureDoesNotMatch   10
+#define VSIE_AWSError 5
+#define VSIE_AWSAccessDenied 6
+#define VSIE_AWSBucketNotFound 7
+#define VSIE_AWSObjectNotFound 8
+#define VSIE_AWSInvalidCredentials 9
+#define VSIE_AWSSignatureDoesNotMatch 10
 
-HGDAL_EXPORT void VSIError( VSIErrorNum err_no,
-                       CPL_FORMAT_STRING(const char *fmt), ... )
-    CPL_PRINT_FUNC_FORMAT (2, 3);
+void CPL_DLL VSIError(VSIErrorNum err_no, CPL_FORMAT_STRING(const char *fmt),
+                      ...) CPL_PRINT_FUNC_FORMAT(2, 3);
 
-HGDAL_EXPORT void CPL_STDCALL VSIErrorReset( void );
-HGDAL_EXPORT VSIErrorNum CPL_STDCALL VSIGetLastErrorNo( void );
-HGDAL_EXPORT const char* CPL_STDCALL VSIGetLastErrorMsg( void );
+void CPL_DLL CPL_STDCALL VSIErrorReset(void);
+VSIErrorNum CPL_DLL CPL_STDCALL VSIGetLastErrorNo(void);
+const char CPL_DLL *CPL_STDCALL VSIGetLastErrorMsg(void);
 
-HGDAL_EXPORT int CPL_STDCALL VSIToCPLError( CPLErr eErrClass,
-                                       CPLErrorNum eDefaultErrorNo );
+int CPL_DLL CPL_STDCALL VSIToCPLError(CPLErr eErrClass,
+                                      CPLErrorNum eDefaultErrorNo);
 
 CPL_C_END
 

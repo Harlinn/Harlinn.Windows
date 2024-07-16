@@ -1,4 +1,3 @@
-#pragma once
 /******************************************************************************
  * $Id$
  *
@@ -35,32 +34,44 @@
 //! @cond Doxygen_Suppress
 #include "gdalgeorefpamdataset.h"
 
-class GDALJP2AbstractDataset: public GDALGeorefPamDataset
+class CPL_DLL GDALJP2AbstractDataset : public GDALGeorefPamDataset
 {
-    char*               pszWldFilename = nullptr;
+    char *pszWldFilename = nullptr;
 
-    GDALDataset*        poMemDS = nullptr;
-    char**              papszMetadataFiles = nullptr;
-    int                 m_nWORLDFILEIndex = -1;
+    GDALDataset *poMemDS = nullptr;
+    char **papszMetadataFiles = nullptr;
+    int m_nWORLDFILEIndex = -1;
+    CPLStringList m_aosImageStructureMetadata{};
 
     CPL_DISALLOW_COPY_ASSIGN(GDALJP2AbstractDataset)
 
   protected:
-    HGDAL_EXPORT int CloseDependentDatasets() override;
+    int CloseDependentDatasets() override;
+
+    virtual VSILFILE *GetFileHandle()
+    {
+        return nullptr;
+    }
 
   public:
-    HGDAL_EXPORT GDALJP2AbstractDataset();
-    HGDAL_EXPORT ~GDALJP2AbstractDataset() override;
+    GDALJP2AbstractDataset();
+    ~GDALJP2AbstractDataset() override;
 
-    HGDAL_EXPORT void LoadJP2Metadata( GDALOpenInfo* poOpenInfo,
-                          const char* pszOverrideFilename = nullptr );
-    HGDAL_EXPORT void LoadVectorLayers( int bOpenRemoteResources = FALSE );
+    void LoadJP2Metadata(GDALOpenInfo *poOpenInfo,
+                         const char *pszOverrideFilename = nullptr,
+                         VSILFILE *fpBox = nullptr);
+    void LoadVectorLayers(int bOpenRemoteResources = FALSE);
 
-    HGDAL_EXPORT char **GetFileList( void ) override;
+    char **GetFileList(void) override;
 
-    HGDAL_EXPORT int GetLayerCount() override;
-    HGDAL_EXPORT OGRLayer *GetLayer( int i ) override;
+    char **GetMetadata(const char *pszDomain = "") override;
+    const char *GetMetadataItem(const char *pszName,
+                                const char *pszDomain = "") override;
+
+    int GetLayerCount() override;
+    OGRLayer *GetLayer(int i) override;
 };
+
 //! @endcond
 
 #endif /* GDAL_JP2_ABSTRACT_DATASET_H_INCLUDED */

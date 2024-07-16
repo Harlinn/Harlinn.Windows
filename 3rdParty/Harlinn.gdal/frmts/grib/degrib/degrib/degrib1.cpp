@@ -28,8 +28,8 @@
 #include "degrib1.h"
 #include "metaname.h"
 #include "clock.h"
-#include "port/cpl_error.h"
-#include "port/cpl_string.h"
+#include "cpl_error.h"
+#include "cpl_string.h"
 
 /* default missing data value (see: bitmap GRIB1: sect3 and sect4) */
 /* UNDEFINED is default, UNDEFINED_PRIM is desired choice. */
@@ -1148,6 +1148,7 @@ static int ReadGrib1Sect2 (uChar *gds, uInt4 gribLen, uInt4 *curLoc,
          if (gdsMeta->center & GRIB2BIT_1) {
             /* South polar stereographic. */
             gdsMeta->scaleLat1 = gdsMeta->scaleLat2 = -90;
+            gdsMeta->meshLat = -gdsMeta->meshLat;
          } else {
             /* North polar stereographic. */
             gdsMeta->scaleLat1 = gdsMeta->scaleLat2 = 90;

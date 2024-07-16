@@ -1,4 +1,3 @@
-#pragma once
 #ifndef CSF__ATTR_H
 #define CSF__ATTR_H
 

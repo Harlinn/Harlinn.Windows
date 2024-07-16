@@ -15,7 +15,7 @@
 
 #include "config/av1_rtcd.h"
 
-void cfl_init(CFL_CTX *cfl, const SequenceHeader *seq_params) {
+HAOM_EXPORT void cfl_init(CFL_CTX *cfl, const SequenceHeader *seq_params) {
   assert(block_size_wide[CFL_MAX_BLOCK_SIZE] == CFL_BUF_LINE);
   assert(block_size_high[CFL_MAX_BLOCK_SIZE] == CFL_BUF_LINE);
 
@@ -27,12 +27,10 @@ void cfl_init(CFL_CTX *cfl, const SequenceHeader *seq_params) {
   cfl->store_y = 0;
   // The DC_PRED cache is disabled by default and is only enabled in
   // cfl_rd_pick_alpha
-  cfl->use_dc_pred_cache = 0;
-  cfl->dc_pred_is_cached[CFL_PRED_U] = 0;
-  cfl->dc_pred_is_cached[CFL_PRED_V] = 0;
+  clear_cfl_dc_pred_cache_flags(cfl);
 }
 
-void cfl_store_dc_pred(MACROBLOCKD *const xd, const uint8_t *input,
+HAOM_EXPORT void cfl_store_dc_pred(MACROBLOCKD *const xd, const uint8_t *input,
                        CFL_PRED_TYPE pred_plane, int width) {
   assert(pred_plane < CFL_PRED_PLANES);
   assert(width <= CFL_BUF_LINE);
@@ -62,7 +60,7 @@ static void cfl_load_dc_pred_hbd(const int16_t *dc_pred_cache, uint16_t *dst,
     dst += dst_stride;
   }
 }
-void cfl_load_dc_pred(MACROBLOCKD *const xd, uint8_t *dst, int dst_stride,
+HAOM_EXPORT void cfl_load_dc_pred(MACROBLOCKD *const xd, uint8_t *dst, int dst_stride,
                       TX_SIZE tx_size, CFL_PRED_TYPE pred_plane) {
   const int width = tx_size_wide[tx_size];
   const int height = tx_size_high[tx_size];
@@ -186,8 +184,8 @@ static void cfl_compute_parameters(MACROBLOCKD *const xd, TX_SIZE tx_size) {
   cfl->are_parameters_computed = 1;
 }
 
-void cfl_predict_block(MACROBLOCKD *const xd, uint8_t *dst, int dst_stride,
-                       TX_SIZE tx_size, int plane) {
+HAOM_EXPORT void av1_cfl_predict_block(MACROBLOCKD *const xd, uint8_t *dst, int dst_stride,
+                           TX_SIZE tx_size, int plane) {
   CFL_CTX *const cfl = &xd->cfl;
   MB_MODE_INFO *mbmi = xd->mi[0];
   assert(is_cfl_allowed(xd));
@@ -388,7 +386,7 @@ static INLINE void sub8x8_adjust_offset(const CFL_CTX *cfl, int mi_row,
   }
 }
 
-void cfl_store_tx(MACROBLOCKD *const xd, int row, int col, TX_SIZE tx_size,
+HAOM_EXPORT void cfl_store_tx(MACROBLOCKD *const xd, int row, int col, TX_SIZE tx_size,
                   BLOCK_SIZE bsize) {
   CFL_CTX *const cfl = &xd->cfl;
   struct macroblockd_plane *const pd = &xd->plane[AOM_PLANE_Y];
@@ -419,7 +417,7 @@ static INLINE int max_intra_block_height(const MACROBLOCKD *xd,
   return ALIGN_POWER_OF_TWO(max_blocks_high, tx_size_high_log2[tx_size]);
 }
 
-void cfl_store_block(MACROBLOCKD *const xd, BLOCK_SIZE bsize, TX_SIZE tx_size) {
+HAOM_EXPORT void cfl_store_block(MACROBLOCKD *const xd, BLOCK_SIZE bsize, TX_SIZE tx_size) {
   CFL_CTX *const cfl = &xd->cfl;
   struct macroblockd_plane *const pd = &xd->plane[AOM_PLANE_Y];
   int row = 0;

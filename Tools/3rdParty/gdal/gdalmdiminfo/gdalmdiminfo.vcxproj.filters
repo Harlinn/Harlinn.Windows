@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="gdalmdiminfo.cpp">
+    <ClCompile Include="gdalmdiminfo_bin.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

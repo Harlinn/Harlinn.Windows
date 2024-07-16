@@ -24,12 +24,12 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
-#include "frmts/pcidsk/sdk/pcidsk.h"
-#include "frmts/pcidsk/sdk/pcidsk_config.h"
-#include "frmts/pcidsk/sdk/pcidsk_types.h"
-#include "frmts/pcidsk/sdk/pcidsk_file.h"
-#include "frmts/pcidsk/sdk/pcidsk_interfaces.h"
-#include "frmts/pcidsk/sdk/core/cpcidskfile.h"
+#include "pcidsk.h"
+#include "pcidsk_config.h"
+#include "pcidsk_types.h"
+#include "pcidsk_file.h"
+#include "pcidsk_interfaces.h"
+#include "core/cpcidskfile.h"
 #include <string>
 #include <cstring>
 #include <cassert>
@@ -54,7 +54,7 @@ using namespace PCIDSK;
  * @return a pointer to a file object for accessing the PCIDSK file.
  */
 
-PCIDSKFile *PCIDSK::Open( std::string filename, std::string access,
+PCIDSKFile *PCIDSK::Open( const std::string& filename, const std::string& access,
                           const PCIDSKInterfaces *interfaces,
                           int max_channel_count )
 

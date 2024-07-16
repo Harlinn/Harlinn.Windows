@@ -26,10 +26,10 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
-#include "../pcidsk_config.h"
-#include "../pcidsk_buffer.h"
-#include "../pcidsk_exception.h"
-#include "pcidsk_utils.h"
+#include "pcidsk_config.h"
+#include "pcidsk_buffer.h"
+#include "pcidsk_exception.h"
+#include "core/pcidsk_utils.h"
 
 #include <cstdlib>
 #include <cstring>

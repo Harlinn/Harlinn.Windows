@@ -45,9 +45,8 @@ typedef struct {
   int damping;     /*!< CDEF damping factor */
   int coeff_shift; /*!< Bit-depth based shift for calculating filter strength */
   int level;       /*!< CDEF filtering level */
-  int sec_strength;  /*!< CDEF secondary strength */
-  int cdef_count;    /*!< Number of CDEF sub-blocks in superblock */
-  int is_zero_level; /*!< CDEF filtering level ON/OFF */
+  int sec_strength; /*!< CDEF secondary strength */
+  int cdef_count;   /*!< Number of CDEF sub-blocks in superblock */
   int dir[CDEF_NBLOCKS]
          [CDEF_NBLOCKS]; /*!< CDEF filter direction for all 8x8 sub-blocks*/
   int var[CDEF_NBLOCKS][CDEF_NBLOCKS]; /*!< variance for all 8x8 sub-blocks */
@@ -71,7 +70,7 @@ static INLINE int constrain(int diff, int threshold, int damping) {
 extern "C" {
 #endif
 
-int av1_cdef_compute_sb_list(const CommonModeInfoParams *const mi_params,
+HAOM_EXPORT int av1_cdef_compute_sb_list(const CommonModeInfoParams *const mi_params,
                              int mi_row, int mi_col, cdef_list *dlist,
                              BLOCK_SIZE bsize);
 
@@ -90,17 +89,18 @@ typedef void (*cdef_init_fb_row_t)(
  * \param[in]       xd        Pointer to common current coding block structure
  * \param[in]       cdef_init_fb_row_fn   Function Pointer
  *
- * \return Nothing is returned. Instead, the filtered frame is output in
+ * \remark Nothing is returned. Instead, the filtered frame is output in
  * \c frame.
  */
-void av1_cdef_frame(YV12_BUFFER_CONFIG *frame, AV1_COMMON *const cm,
+HAOM_EXPORT void av1_cdef_frame(YV12_BUFFER_CONFIG *frame, AV1_COMMON *const cm,
                     MACROBLOCKD *xd, cdef_init_fb_row_t cdef_init_fb_row_fn);
-void av1_cdef_fb_row(const AV1_COMMON *const cm, MACROBLOCKD *xd,
+HAOM_EXPORT void av1_cdef_fb_row(const AV1_COMMON *const cm, MACROBLOCKD *xd,
                      uint16_t **const linebuf, uint16_t **const colbuf,
                      uint16_t *const src, int fbr,
                      cdef_init_fb_row_t cdef_init_fb_row_fn,
-                     struct AV1CdefSyncData *const cdef_sync);
-void av1_cdef_init_fb_row(const AV1_COMMON *const cm,
+                     struct AV1CdefSyncData *const cdef_sync,
+                     struct aom_internal_error_info *error_info);
+HAOM_EXPORT void av1_cdef_init_fb_row(const AV1_COMMON *const cm,
                           const MACROBLOCKD *const xd,
                           CdefBlockInfo *const fb_info,
                           uint16_t **const linebuf, uint16_t *const src,

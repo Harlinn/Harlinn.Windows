@@ -28,9 +28,9 @@
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *  SOFTWARE.
  *******************************************************************************/
-#include "../cadgeometry.h"
-#include "../cadobjects.h"
-#include "../opencad_api.h"
+#include "cadgeometry.h"
+#include "cadobjects.h"
+#include "opencad_api.h"
 #include "r2000.h"
 
 #include <cassert>
@@ -738,7 +738,7 @@ int DWGFileR2000::ReadClasses( enum OpenOptions eOptions )
             stClass.bWasZombie       = buffer.ReadBIT();
             stClass.bIsEntity        = buffer.ReadBITSHORT() == 0x1F2;
 
-            oClasses.addClass( stClass );
+            oClasses.addClass( std::move(stClass) );
         }
 
         buffer.Seek(dSectionBitSize, CADBuffer::BEG);
@@ -1425,8 +1425,11 @@ CADGeometry * DWGFileR2000::GetGeometry( size_t iLayerIndex, long dHandle, long 
                 image->setImageSizeInPx( imageSizeInPx );
                 CADVector pixelSizeInACADUnits( cadImageDef->dfXPixelSize, cadImageDef->dfYPixelSize );
                 image->setPixelSizeInACADUnits( pixelSizeInACADUnits );
-                image->setResolutionUnits(
-                    static_cast<CADImage::ResolutionUnit>( cadImageDef->dResUnits ) );
+                if( CADImage::IsValidResolutionUnit( cadImageDef->dResUnits ) )
+                {
+                    image->setResolutionUnits(
+                        static_cast<CADImage::ResolutionUnit>( cadImageDef->dResUnits ) );
+                }
                 bool bTransparency = (cadImage->dDisplayProps & 0x08) != 0;
                 image->setOptions( bTransparency,
                                    cadImage->bClipping,
@@ -1765,14 +1768,13 @@ CADGeometry * DWGFileR2000::GetGeometry( size_t iLayerIndex, long dHandle, long 
                             break;
                         }
 
-                        CADAttrib * attrib = static_cast<CADAttrib *>(
-                                GetGeometry( iLayerIndex, dCurrentEntHandle ) );
-
+                        auto geometry = GetGeometry( iLayerIndex, dCurrentEntHandle );
+                        CADAttrib * attrib = dynamic_cast<CADAttrib *>(geometry);
                         if( attrib )
                         {
                             blockRefAttributes.push_back( CADAttrib( * attrib ) );
-                            delete attrib;
                         }
+                        delete geometry;
                         delete attDefObj;
                         break;
                     }
@@ -1784,14 +1786,13 @@ CADGeometry * DWGFileR2000::GetGeometry( size_t iLayerIndex, long dHandle, long 
                         else
                             dCurrentEntHandle = attDefObj->stChed.hNextEntity.getAsLong( attDefObj->stCed.hObjectHandle );
 
-                        CADAttrib * attrib = static_cast<CADAttrib *>(
-                                GetGeometry( iLayerIndex, dCurrentEntHandle ) );
-
+                        auto geometry = GetGeometry( iLayerIndex, dCurrentEntHandle );
+                        CADAttrib * attrib = dynamic_cast<CADAttrib *>(geometry);
                         if( attrib )
                         {
                             blockRefAttributes.push_back( CADAttrib( * attrib ) );
-                            delete attrib;
                         }
+                        delete geometry;
                         delete attDefObj;
                     }
                     else
@@ -3408,7 +3409,7 @@ CADDimensionObject * DWGFileR2000::getDimension(short dObjectType,
 
             dimension->setSize( dObjectSize );
             dimension->stCed = stCommonEntityData;
-            dimension->cdd   = stCDD;
+            dimension->cdd   = std::move(stCDD);
 
             CADVector vert10pt = buffer.ReadVector();
             dimension->vert10pt = vert10pt;
@@ -3437,7 +3438,7 @@ CADDimensionObject * DWGFileR2000::getDimension(short dObjectType,
 
             dimension->setSize( dObjectSize );
             dimension->stCed = stCommonEntityData;
-            dimension->cdd   = stCDD;
+            dimension->cdd   = std::move(stCDD);
 
             CADVector vert13pt = buffer.ReadVector();
             dimension->vert13pt = vert13pt;
@@ -3467,7 +3468,7 @@ CADDimensionObject * DWGFileR2000::getDimension(short dObjectType,
 
             dimension->setSize( dObjectSize );
             dimension->stCed = stCommonEntityData;
-            dimension->cdd   = stCDD;
+            dimension->cdd   = std::move(stCDD);
 
             CADVector vert13pt = buffer.ReadVector();
             dimension->vert13pt = vert13pt;
@@ -3496,7 +3497,7 @@ CADDimensionObject * DWGFileR2000::getDimension(short dObjectType,
 
             dimension->setSize( dObjectSize );
             dimension->stCed = stCommonEntityData;
-            dimension->cdd   = stCDD;
+            dimension->cdd   = std::move(stCDD);
 
             CADVector vert10pt = buffer.ReadVector();
             dimension->vert10pt = vert10pt;
@@ -3526,7 +3527,7 @@ CADDimensionObject * DWGFileR2000::getDimension(short dObjectType,
 
             dimension->setSize( dObjectSize );
             dimension->stCed = stCommonEntityData;
-            dimension->cdd   = stCDD;
+            dimension->cdd   = std::move(stCDD);
 
             CADVector vert16pt = buffer.ReadVector();
             dimension->vert16pt = vert16pt;
@@ -3559,7 +3560,7 @@ CADDimensionObject * DWGFileR2000::getDimension(short dObjectType,
 
             dimension->setSize( dObjectSize );
             dimension->stCed = stCommonEntityData;
-            dimension->cdd   = stCDD;
+            dimension->cdd   = std::move(stCDD);
 
             CADVector vert10pt = buffer.ReadVector();
             dimension->vert10pt = vert10pt;
@@ -3585,7 +3586,7 @@ CADDimensionObject * DWGFileR2000::getDimension(short dObjectType,
 
             dimension->setSize( dObjectSize );
             dimension->stCed = stCommonEntityData;
-            dimension->cdd   = stCDD;
+            dimension->cdd   = std::move(stCDD);
 
             CADVector vert15pt = buffer.ReadVector();
             dimension->vert15pt = vert15pt;

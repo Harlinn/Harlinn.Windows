@@ -22,7 +22,7 @@ static aom_codec_alg_priv_t *get_alg_priv(aom_codec_ctx_t *ctx) {
   return (aom_codec_alg_priv_t *)ctx->priv;
 }
 
-aom_codec_err_t aom_codec_dec_init_ver(aom_codec_ctx_t *ctx,
+HAOM_EXPORT aom_codec_err_t aom_codec_dec_init_ver(aom_codec_ctx_t *ctx,
                                        aom_codec_iface_t *iface,
                                        const aom_codec_dec_cfg_t *cfg,
                                        aom_codec_flags_t flags, int ver) {
@@ -54,7 +54,7 @@ aom_codec_err_t aom_codec_dec_init_ver(aom_codec_ctx_t *ctx,
   return SAVE_STATUS(ctx, res);
 }
 
-aom_codec_err_t aom_codec_peek_stream_info(aom_codec_iface_t *iface,
+HAOM_EXPORT aom_codec_err_t aom_codec_peek_stream_info(aom_codec_iface_t *iface,
                                            const uint8_t *data, size_t data_sz,
                                            aom_codec_stream_info_t *si) {
   aom_codec_err_t res;
@@ -72,7 +72,7 @@ aom_codec_err_t aom_codec_peek_stream_info(aom_codec_iface_t *iface,
   return res;
 }
 
-aom_codec_err_t aom_codec_get_stream_info(aom_codec_ctx_t *ctx,
+HAOM_EXPORT aom_codec_err_t aom_codec_get_stream_info(aom_codec_ctx_t *ctx,
                                           aom_codec_stream_info_t *si) {
   aom_codec_err_t res;
 
@@ -91,7 +91,7 @@ aom_codec_err_t aom_codec_get_stream_info(aom_codec_ctx_t *ctx,
   return SAVE_STATUS(ctx, res);
 }
 
-aom_codec_err_t aom_codec_decode(aom_codec_ctx_t *ctx, const uint8_t *data,
+HAOM_EXPORT aom_codec_err_t aom_codec_decode(aom_codec_ctx_t *ctx, const uint8_t *data,
                                  size_t data_sz, void *user_priv) {
   aom_codec_err_t res;
 
@@ -106,7 +106,7 @@ aom_codec_err_t aom_codec_decode(aom_codec_ctx_t *ctx, const uint8_t *data,
   return SAVE_STATUS(ctx, res);
 }
 
-aom_image_t *aom_codec_get_frame(aom_codec_ctx_t *ctx, aom_codec_iter_t *iter) {
+HAOM_EXPORT aom_image_t *aom_codec_get_frame(aom_codec_ctx_t *ctx, aom_codec_iter_t *iter) {
   aom_image_t *img;
 
   if (!ctx || !iter || !ctx->iface || !ctx->priv)
@@ -117,7 +117,7 @@ aom_image_t *aom_codec_get_frame(aom_codec_ctx_t *ctx, aom_codec_iter_t *iter) {
   return img;
 }
 
-aom_codec_err_t aom_codec_set_frame_buffer_functions(
+HAOM_EXPORT aom_codec_err_t aom_codec_set_frame_buffer_functions(
     aom_codec_ctx_t *ctx, aom_get_frame_buffer_cb_fn_t cb_get,
     aom_release_frame_buffer_cb_fn_t cb_release, void *cb_priv) {
   aom_codec_err_t res;

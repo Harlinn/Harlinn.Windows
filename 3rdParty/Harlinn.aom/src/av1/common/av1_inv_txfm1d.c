@@ -13,7 +13,7 @@
 #include "av1/common/av1_inv_txfm1d.h"
 #include "av1/common/av1_txfm.h"
 
-void av1_idct4(const int32_t *input, int32_t *output, int8_t cos_bit,
+HAOM_EXPORT void av1_idct4(const int32_t *input, int32_t *output, int8_t cos_bit,
                const int8_t *stage_range) {
   assert(output != input);
   const int32_t size = 4;
@@ -54,7 +54,7 @@ void av1_idct4(const int32_t *input, int32_t *output, int8_t cos_bit,
   bf1[3] = clamp_value(bf0[0] - bf0[3], stage_range[stage]);
 }
 
-void av1_idct8(const int32_t *input, int32_t *output, int8_t cos_bit,
+HAOM_EXPORT void av1_idct8(const int32_t *input, int32_t *output, int8_t cos_bit,
                const int8_t *stage_range) {
   assert(output != input);
   const int32_t size = 8;
@@ -135,7 +135,7 @@ void av1_idct8(const int32_t *input, int32_t *output, int8_t cos_bit,
   bf1[7] = clamp_value(bf0[0] - bf0[7], stage_range[stage]);
 }
 
-void av1_idct16(const int32_t *input, int32_t *output, int8_t cos_bit,
+HAOM_EXPORT void av1_idct16(const int32_t *input, int32_t *output, int8_t cos_bit,
                 const int8_t *stage_range) {
   assert(output != input);
   const int32_t size = 16;
@@ -300,7 +300,7 @@ void av1_idct16(const int32_t *input, int32_t *output, int8_t cos_bit,
   bf1[15] = clamp_value(bf0[0] - bf0[15], stage_range[stage]);
 }
 
-void av1_idct32(const int32_t *input, int32_t *output, int8_t cos_bit,
+HAOM_EXPORT void av1_idct32(const int32_t *input, int32_t *output, int8_t cos_bit,
                 const int8_t *stage_range) {
   assert(output != input);
   const int32_t size = 32;
@@ -653,7 +653,7 @@ void av1_idct32(const int32_t *input, int32_t *output, int8_t cos_bit,
   bf1[31] = clamp_value(bf0[0] - bf0[31], stage_range[stage]);
 }
 
-void av1_iadst4(const int32_t *input, int32_t *output, int8_t cos_bit,
+HAOM_EXPORT void av1_iadst4(const int32_t *input, int32_t *output, int8_t cos_bit,
                 const int8_t *stage_range) {
   int bit = cos_bit;
   const int32_t *sinpi = sinpi_arr(bit);
@@ -710,7 +710,7 @@ void av1_iadst4(const int32_t *input, int32_t *output, int8_t cos_bit,
   output[3] = round_shift(x3, bit);
 }
 
-void av1_iadst8(const int32_t *input, int32_t *output, int8_t cos_bit,
+HAOM_EXPORT void av1_iadst8(const int32_t *input, int32_t *output, int8_t cos_bit,
                 const int8_t *stage_range) {
   assert(output != input);
   const int32_t size = 8;
@@ -818,7 +818,7 @@ void av1_iadst8(const int32_t *input, int32_t *output, int8_t cos_bit,
   bf1[7] = -bf0[1];
 }
 
-void av1_iadst16(const int32_t *input, int32_t *output, int8_t cos_bit,
+HAOM_EXPORT void av1_iadst16(const int32_t *input, int32_t *output, int8_t cos_bit,
                  const int8_t *stage_range) {
   assert(output != input);
   const int32_t size = 16;
@@ -1026,7 +1026,7 @@ void av1_iadst16(const int32_t *input, int32_t *output, int8_t cos_bit,
   bf1[15] = -bf0[1];
 }
 
-void av1_iidentity4_c(const int32_t *input, int32_t *output, int8_t cos_bit,
+HAOM_EXPORT void av1_iidentity4_c(const int32_t *input, int32_t *output, int8_t cos_bit,
                       const int8_t *stage_range) {
   (void)cos_bit;
   (void)stage_range;
@@ -1036,14 +1036,14 @@ void av1_iidentity4_c(const int32_t *input, int32_t *output, int8_t cos_bit,
   assert(stage_range[0] + NewSqrt2Bits <= 32);
 }
 
-void av1_iidentity8_c(const int32_t *input, int32_t *output, int8_t cos_bit,
+HAOM_EXPORT void av1_iidentity8_c(const int32_t *input, int32_t *output, int8_t cos_bit,
                       const int8_t *stage_range) {
   (void)cos_bit;
   (void)stage_range;
   for (int i = 0; i < 8; ++i) output[i] = (int32_t)((int64_t)input[i] * 2);
 }
 
-void av1_iidentity16_c(const int32_t *input, int32_t *output, int8_t cos_bit,
+HAOM_EXPORT void av1_iidentity16_c(const int32_t *input, int32_t *output, int8_t cos_bit,
                        const int8_t *stage_range) {
   (void)cos_bit;
   (void)stage_range;
@@ -1052,14 +1052,14 @@ void av1_iidentity16_c(const int32_t *input, int32_t *output, int8_t cos_bit,
   assert(stage_range[0] + NewSqrt2Bits <= 32);
 }
 
-void av1_iidentity32_c(const int32_t *input, int32_t *output, int8_t cos_bit,
+HAOM_EXPORT void av1_iidentity32_c(const int32_t *input, int32_t *output, int8_t cos_bit,
                        const int8_t *stage_range) {
   (void)cos_bit;
   (void)stage_range;
   for (int i = 0; i < 32; ++i) output[i] = (int32_t)((int64_t)input[i] * 4);
 }
 
-void av1_idct64(const int32_t *input, int32_t *output, int8_t cos_bit,
+HAOM_EXPORT void av1_idct64(const int32_t *input, int32_t *output, int8_t cos_bit,
                 const int8_t *stage_range) {
   assert(output != input);
   const int32_t size = 64;

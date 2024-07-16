@@ -24,7 +24,8 @@ namespace jxl {
 static JXL_INLINE uint32_t GetPopulationCountPrecision(uint32_t logcount,
                                                        uint32_t shift) {
   int32_t r = std::min<int>(
-      logcount, int(shift) - int((ANS_LOG_TAB_SIZE - logcount) >> 1));
+      logcount, static_cast<int>(shift) -
+                    static_cast<int>((ANS_LOG_TAB_SIZE - logcount) >> 1));
   if (r < 0) return 0;
   return r;
 }
@@ -32,7 +33,7 @@ static JXL_INLINE uint32_t GetPopulationCountPrecision(uint32_t logcount,
 // Returns a histogram where the counts are positive, differ by at most 1,
 // and add up to total_count. The bigger counts (if any) are at the beginning
 // of the histogram.
-std::vector<int> CreateFlatHistogram(int length, int total_count);
+std::vector<int32_t> CreateFlatHistogram(int length, int total_count);
 
 // An alias table implements a mapping from the [0, ANS_TAB_SIZE) range into
 // the [0, ANS_MAX_ALPHABET_SIZE) range, satisfying the following conditions:
@@ -135,7 +136,7 @@ struct AliasTable {
 };
 
 // Computes an alias table for a given distribution.
-void InitAliasTable(std::vector<int> distribution, uint32_t range,
+void InitAliasTable(std::vector<int32_t> distribution, uint32_t range,
                     size_t log_alpha_size, AliasTable::Entry* JXL_RESTRICT a);
 
 }  // namespace jxl
