@@ -1255,7 +1255,7 @@ H5_get_option(int argc, const char *const *argv, const char *opts, const struct 
         /* long command line option */
         int        i;
         const char ch      = '=';
-        char      *arg     = strdup(&argv[H5_optind][2]);
+        char      *arg     = _strdup(&argv[H5_optind][2]);
         size_t     arg_len = 0;
 
         H5_optarg = strchr(&argv[H5_optind][2], ch);

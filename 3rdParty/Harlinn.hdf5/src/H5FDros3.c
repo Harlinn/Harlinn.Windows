@@ -667,7 +667,7 @@ H5FD__ros3_str_token_copy(const char H5_ATTR_UNUSED *name, size_t H5_ATTR_UNUSED
 #endif
 
     if (*value)
-        if (NULL == (*value = strdup(*value)))
+        if (NULL == (*value = _strdup(*value)))
             HGOTO_ERROR(H5E_RESOURCE, H5E_CANTALLOC, FAIL, "can't copy string property token");
 
 done:

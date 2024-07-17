@@ -831,7 +831,7 @@ init_subfiling(const char *base_filename, uint64_t file_id, H5FD_subfiling_param
     /* Check if a prefix has been set for the configuration file name */
     prefix_env = getenv(H5FD_SUBFILING_CONFIG_FILE_PREFIX);
     if (prefix_env && (strlen(prefix_env) > 0)) {
-        if (NULL == (new_context->config_file_prefix = strdup(prefix_env)))
+        if (NULL == (new_context->config_file_prefix = _strdup(prefix_env)))
             H5_SUBFILING_GOTO_ERROR(H5E_VFL, H5E_CANTCOPY, FAIL, "couldn't copy config file prefix string");
     }
 
@@ -1873,14 +1873,14 @@ init_subfiling_context(subfiling_context_t *sf_context, const char *base_filenam
     sf_context->sf_logfile = NULL;
 #endif
 
-    if (NULL == (sf_context->h5_filename = strdup(base_filename)))
+    if (NULL == (sf_context->h5_filename = _strdup(base_filename)))
         H5_SUBFILING_GOTO_ERROR(H5E_RESOURCE, H5E_CANTALLOC, FAIL,
                                 "couldn't allocate space for subfiling filename");
 
     /* Check for a subfile name prefix setting in the environment */
     env_value = getenv(H5FD_SUBFILING_SUBFILE_PREFIX);
     if (env_value && (strlen(env_value) > 0)) {
-        if (NULL == (sf_context->subfile_prefix = strdup(env_value)))
+        if (NULL == (sf_context->subfile_prefix = _strdup(env_value)))
             H5_SUBFILING_GOTO_ERROR(H5E_RESOURCE, H5E_CANTALLOC, FAIL, "couldn't copy subfile prefix value");
     }
 
@@ -2659,7 +2659,7 @@ H5_resolve_pathname(const char *filepath, MPI_Comm comm, char **resolved_filepat
                 }
                 else {
                     /* Otherwise, just use what was given as the pathname */
-                    if (NULL == (resolved_path = strdup(filepath)))
+                    if (NULL == (resolved_path = _strdup(filepath)))
                         H5_SUBFILING_GOTO_ERROR(H5E_RESOURCE, H5E_CANTALLOC, FAIL, "can't copy filename");
                 }
             }

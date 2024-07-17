@@ -7,11 +7,14 @@
 #ifndef NCEXTERNL_H
 #define NCEXTERNL_H
 
+#define DLL_NETCDF 1
+
 #if defined(DLL_NETCDF) /* define when library is a DLL */
-#  if defined(DLL_EXPORT) /* define when building the library */
+#  if defined(BUILDING_HARLINN_NETCDF_C) /* define when building the library */
 #   define MSC_EXTRA __declspec(dllexport)
 #  else
 #   define MSC_EXTRA __declspec(dllimport)
+#pragma comment(lib,"Harlinn.netcdf-c.lib")
 #  endif
 #else
 #  define MSC_EXTRA

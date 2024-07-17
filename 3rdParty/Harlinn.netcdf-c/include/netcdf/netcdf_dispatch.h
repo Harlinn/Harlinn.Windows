@@ -26,7 +26,7 @@
 /* This is the version of the dispatch table. It should be changed
  * when new functions are added to the dispatch table. */
 #ifndef NC_DISPATCH_VERSION
-#define NC_DISPATCH_VERSION @NC_DISPATCH_VERSION@
+#define NC_DISPATCH_VERSION 3
 #endif /*NC_DISPATCH_VERSION*/
 
 /* This is the dispatch table, with a pointer to each netCDF

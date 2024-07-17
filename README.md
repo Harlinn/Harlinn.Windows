@@ -932,7 +932,14 @@ Packages Dear ImGui and ImPlot as a single dll.
 **Project:** Harlinn.minizip
 
 ### [Unidata NetCDF](https://github.com/Unidata/netcdf-c)
-**Version:** TBD - this project is currently just a placeholder
+**Version:** 4.8.1
+
+**Description:**
+> The Unidata network Common Data Form (netCDF) is an interface for scientific data access and 
+> a freely-distributed software library that provides an implementation of the interface. The 
+> netCDF library also defines a machine-independent format for representing scientific data. 
+> Together, the interface, library, and format support the creation, access, and sharing of 
+> scientific data. 
 
 **Project:** Harlinn.netcdf-c
 

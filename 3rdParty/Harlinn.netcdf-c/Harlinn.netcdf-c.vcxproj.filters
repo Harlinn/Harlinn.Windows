@@ -25,10 +25,670 @@
     <Filter Include="Readme">
       <UniqueIdentifier>{30040eb3-7fc3-4efe-a9d9-086836fa5cbe}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\libdap2">
+      <UniqueIdentifier>{16087236-c41b-43b5-b2be-62e5523b05ea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\libdap4">
+      <UniqueIdentifier>{d84350c9-69b8-4ca4-9018-e232f2d3e167}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\libdispatch">
+      <UniqueIdentifier>{51f9afb2-57e1-453a-b0d8-abdeb1cbbc02}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\libhdf4">
+      <UniqueIdentifier>{ab1ebf59-db2b-4350-96fe-97d152287ce0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\libhdf5">
+      <UniqueIdentifier>{6693c73f-12b6-4277-935a-5bab9657eab7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\liblib">
+      <UniqueIdentifier>{8884778f-fa46-4498-b06f-eec5867feba5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\libnczarr">
+      <UniqueIdentifier>{d3c9d1c7-39c6-4244-91c7-0999941f59c1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\libsrc">
+      <UniqueIdentifier>{da451bf5-b554-40a2-b2a9-1dda4d96b4bc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\libsrc4">
+      <UniqueIdentifier>{0ca4c3d1-4063-4fbb-a7dc-5cf0ae0eee36}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\libsrcp">
+      <UniqueIdentifier>{fdc8be2f-560a-402b-b537-4b4a6e994fb4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\libdap2\obsolete">
+      <UniqueIdentifier>{1a5a1912-388e-445d-be27-1dfb53065b0f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\libnczarr\obsolete">
+      <UniqueIdentifier>{7b20a0a5-6c8a-4aa8-a2c2-39a19a17ab40}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\oc2">
+      <UniqueIdentifier>{6496d585-0a29-46ee-a882-08346921b2b7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libdap2\obsolete\cdf4.c">
+      <Filter>src\libdap2\obsolete</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libdap2\obsolete\constraints4.c">
+      <Filter>src\libdap2\obsolete</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libdap2\obsolete\getvara4.c">
+      <Filter>src\libdap2\obsolete</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libdap2\obsolete\ncdap4.c">
+      <Filter>src\libdap2\obsolete</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libdap2\obsolete\stubdap4.c">
+      <Filter>src\libdap2\obsolete</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libdap2\cache.c">
+      <Filter>src\libdap2</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libdap2\cdf.c">
+      <Filter>src\libdap2</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libdap2\common.c">
+      <Filter>src\libdap2</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libdap2\constraints.c">
+      <Filter>src\libdap2</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libdap2\dapattr.c">
+      <Filter>src\libdap2</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libdap2\dapcvt.c">
+      <Filter>src\libdap2</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libdap2\dapdebug.c">
+      <Filter>src\libdap2</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libdap2\dapdump.c">
+      <Filter>src\libdap2</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libdap2\dapodom.c">
+      <Filter>src\libdap2</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libdap2\daputil.c">
+      <Filter>src\libdap2</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libdap2\dceconstraints.c">
+      <Filter>src\libdap2</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libdap2\dcelex.c">
+      <Filter>src\libdap2</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libdap2\dceparse.c">
+      <Filter>src\libdap2</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libdap2\dcetab.c">
+      <Filter>src\libdap2</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libdap2\getvara.c">
+      <Filter>src\libdap2</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libdap2\main.c">
+      <Filter>src\libdap2</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libdap2\ncd2dispatch.c">
+      <Filter>src\libdap2</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libdap2\ncdap.c">
+      <Filter>src\libdap2</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libdap2\ncdapa.c">
+      <Filter>src\libdap2</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libdap2\ncdaperr.c">
+      <Filter>src\libdap2</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libdap4\d4bytes.c">
+      <Filter>src\libdap4</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libdap4\d4chunk.c">
+      <Filter>src\libdap4</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libdap4\d4curlflags.c">
+      <Filter>src\libdap4</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libdap4\d4curlfunctions.c">
+      <Filter>src\libdap4</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libdap4\d4cvt.c">
+      <Filter>src\libdap4</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libdap4\d4data.c">
+      <Filter>src\libdap4</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libdap4\d4debug.c">
+      <Filter>src\libdap4</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libdap4\d4dump.c">
+      <Filter>src\libdap4</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libdap4\d4file.c">
+      <Filter>src\libdap4</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libdap4\d4fix.c">
+      <Filter>src\libdap4</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libdap4\d4http.c">
+      <Filter>src\libdap4</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libdap4\d4mem.c">
+      <Filter>src\libdap4</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libdap4\d4meta.c">
+      <Filter>src\libdap4</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libdap4\d4odom.c">
+      <Filter>src\libdap4</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libdap4\d4parser.c">
+      <Filter>src\libdap4</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libdap4\d4printer.c">
+      <Filter>src\libdap4</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libdap4\d4read.c">
+      <Filter>src\libdap4</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libdap4\d4swap.c">
+      <Filter>src\libdap4</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libdap4\d4util.c">
+      <Filter>src\libdap4</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libdap4\d4varx.c">
+      <Filter>src\libdap4</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libdap4\ezxml.c">
+      <Filter>src\libdap4</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libdap4\ezxml_extra.c">
+      <Filter>src\libdap4</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libdap4\ncd4dispatch.c">
+      <Filter>src\libdap4</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libdispatch\datt.c">
+      <Filter>src\libdispatch</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libdispatch\dattget.c">
+      <Filter>src\libdispatch</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libdispatch\dattinq.c">
+      <Filter>src\libdispatch</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libdispatch\dattput.c">
+      <Filter>src\libdispatch</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libdispatch\dauth.c">
+      <Filter>src\libdispatch</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libdispatch\daux.c">
+      <Filter>src\libdispatch</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libdispatch\dcompound.c">
+      <Filter>src\libdispatch</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libdispatch\dcopy.c">
+      <Filter>src\libdispatch</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libdispatch\dcrc32.c">
+      <Filter>src\libdispatch</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libdispatch\dcrc64.c">
+      <Filter>src\libdispatch</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libdispatch\ddim.c">
+      <Filter>src\libdispatch</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libdispatch\ddispatch.c">
+      <Filter>src\libdispatch</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libdispatch\defcheck.c">
+      <Filter>src\libdispatch</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libdispatch\denum.c">
+      <Filter>src\libdispatch</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libdispatch\derror.c">
+      <Filter>src\libdispatch</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libdispatch\dfile.c">
+      <Filter>src\libdispatch</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libdispatch\dfilter.c">
+      <Filter>src\libdispatch</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libdispatch\dfilterx.c">
+      <Filter>src\libdispatch</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libdispatch\dgroup.c">
+      <Filter>src\libdispatch</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libdispatch\dhttp.c">
+      <Filter>src\libdispatch</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libdispatch\dinfermodel.c">
+      <Filter>src\libdispatch</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libdispatch\dinternal.c">
+      <Filter>src\libdispatch</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libdispatch\dnotnc3.c">
+      <Filter>src\libdispatch</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libdispatch\dnotnc4.c">
+      <Filter>src\libdispatch</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libdispatch\doffsets.c">
+      <Filter>src\libdispatch</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libdispatch\dopaque.c">
+      <Filter>src\libdispatch</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libdispatch\dparallel.c">
+      <Filter>src\libdispatch</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libdispatch\dpathmgr.c">
+      <Filter>src\libdispatch</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libdispatch\drc.c">
+      <Filter>src\libdispatch</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libdispatch\dreadonly.c">
+      <Filter>src\libdispatch</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libdispatch\dstring.c">
+      <Filter>src\libdispatch</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libdispatch\dtype.c">
+      <Filter>src\libdispatch</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libdispatch\durlmodel.c">
+      <Filter>src\libdispatch</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libdispatch\dutf8.c">
+      <Filter>src\libdispatch</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libdispatch\dutil.c">
+      <Filter>src\libdispatch</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libdispatch\dv2i.c">
+      <Filter>src\libdispatch</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libdispatch\dvar.c">
+      <Filter>src\libdispatch</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libdispatch\dvarget.c">
+      <Filter>src\libdispatch</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libdispatch\dvarinq.c">
+      <Filter>src\libdispatch</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libdispatch\dvarput.c">
+      <Filter>src\libdispatch</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libdispatch\dvlen.c">
+      <Filter>src\libdispatch</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libdispatch\json.c">
+      <Filter>src\libdispatch</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libdispatch\nc.c">
+      <Filter>src\libdispatch</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libdispatch\ncbytes.c">
+      <Filter>src\libdispatch</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libdispatch\ncexhash.c">
+      <Filter>src\libdispatch</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libdispatch\nchashmap.c">
+      <Filter>src\libdispatch</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libdispatch\ncjson.c">
+      <Filter>src\libdispatch</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libdispatch\nclist.c">
+      <Filter>src\libdispatch</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libdispatch\nclistmgr.c">
+      <Filter>src\libdispatch</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libdispatch\nclog.c">
+      <Filter>src\libdispatch</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libdispatch\nctime.c">
+      <Filter>src\libdispatch</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libdispatch\ncuri.c">
+      <Filter>src\libdispatch</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libdispatch\ncxcache.c">
+      <Filter>src\libdispatch</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libdispatch\stubdef.c">
+      <Filter>src\libdispatch</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libdispatch\u8.c">
+      <Filter>src\libdispatch</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libdispatch\utf8proc.c">
+      <Filter>src\libdispatch</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libdispatch\utf8proc_data.c">
+      <Filter>src\libdispatch</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libhdf4\hdf4dispatch.c">
+      <Filter>src\libhdf4</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libhdf4\hdf4file.c">
+      <Filter>src\libhdf4</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libhdf4\hdf4func.c">
+      <Filter>src\libhdf4</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libhdf4\hdf4var.c">
+      <Filter>src\libhdf4</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libhdf5\H5FDhttp.c">
+      <Filter>src\libhdf5</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libhdf5\hdf5attr.c">
+      <Filter>src\libhdf5</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libhdf5\hdf5create.c">
+      <Filter>src\libhdf5</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libhdf5\hdf5debug.c">
+      <Filter>src\libhdf5</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libhdf5\hdf5dim.c">
+      <Filter>src\libhdf5</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libhdf5\hdf5dispatch.c">
+      <Filter>src\libhdf5</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libhdf5\hdf5file.c">
+      <Filter>src\libhdf5</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libhdf5\hdf5filter.c">
+      <Filter>src\libhdf5</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libhdf5\hdf5grp.c">
+      <Filter>src\libhdf5</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libhdf5\hdf5internal.c">
+      <Filter>src\libhdf5</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libhdf5\hdf5open.c">
+      <Filter>src\libhdf5</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libhdf5\hdf5type.c">
+      <Filter>src\libhdf5</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libhdf5\hdf5var.c">
+      <Filter>src\libhdf5</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libhdf5\nc4hdf.c">
+      <Filter>src\libhdf5</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libhdf5\nc4info.c">
+      <Filter>src\libhdf5</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libhdf5\nc4mem.c">
+      <Filter>src\libhdf5</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libhdf5\nc4memcb.c">
+      <Filter>src\libhdf5</Filter>
+    </ClCompile>
+    <ClCompile Include="src\liblib\nc_initialize.c">
+      <Filter>src\liblib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libnczarr\obsolete\zcache.c">
+      <Filter>src\libnczarr\obsolete</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libnczarr\obsolete\zjson.c">
+      <Filter>src\libnczarr\obsolete</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libnczarr\obsolete\zmap_nz4.c">
+      <Filter>src\libnczarr\obsolete</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libnczarr\zarr.c">
+      <Filter>src\libnczarr</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libnczarr\zattr.c">
+      <Filter>src\libnczarr</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libnczarr\zchunking.c">
+      <Filter>src\libnczarr</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libnczarr\zclose.c">
+      <Filter>src\libnczarr</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libnczarr\zcreate.c">
+      <Filter>src\libnczarr</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libnczarr\zcvt.c">
+      <Filter>src\libnczarr</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libnczarr\zdebug.c">
+      <Filter>src\libnczarr</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libnczarr\zdim.c">
+      <Filter>src\libnczarr</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libnczarr\zdispatch.c">
+      <Filter>src\libnczarr</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libnczarr\zfile.c">
+      <Filter>src\libnczarr</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libnczarr\zfilter.c">
+      <Filter>src\libnczarr</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libnczarr\zgrp.c">
+      <Filter>src\libnczarr</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libnczarr\zinternal.c">
+      <Filter>src\libnczarr</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libnczarr\zmap.c">
+      <Filter>src\libnczarr</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libnczarr\zmap_file.c">
+      <Filter>src\libnczarr</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libnczarr\zmap_s3sdk.c">
+      <Filter>src\libnczarr</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libnczarr\zmap_zip.c">
+      <Filter>src\libnczarr</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libnczarr\zodom.c">
+      <Filter>src\libnczarr</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libnczarr\zopen.c">
+      <Filter>src\libnczarr</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libnczarr\zprov.c">
+      <Filter>src\libnczarr</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libnczarr\zs3sdk.cpp">
+      <Filter>src\libnczarr</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libnczarr\zsync.c">
+      <Filter>src\libnczarr</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libnczarr\ztype.c">
+      <Filter>src\libnczarr</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libnczarr\zutil.c">
+      <Filter>src\libnczarr</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libnczarr\zvar.c">
+      <Filter>src\libnczarr</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libnczarr\zwalk.c">
+      <Filter>src\libnczarr</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libnczarr\zxcache.c">
+      <Filter>src\libnczarr</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libsrc\attr.c">
+      <Filter>src\libsrc</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libsrc\dim.c">
+      <Filter>src\libsrc</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libsrc\ffio.c">
+      <Filter>src\libsrc</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libsrc\httpio.c">
+      <Filter>src\libsrc</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libsrc\lookup3.c">
+      <Filter>src\libsrc</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libsrc\memio.c">
+      <Filter>src\libsrc</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libsrc\mmapio.c">
+      <Filter>src\libsrc</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libsrc\nc3dispatch.c">
+      <Filter>src\libsrc</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libsrc\nc3internal.c">
+      <Filter>src\libsrc</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libsrc\ncFile.c">
+      <Filter>src\libsrc</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libsrc\ncio.c">
+      <Filter>src\libsrc</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libsrc\ncstdio.c">
+      <Filter>src\libsrc</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libsrc\ncx.c">
+      <Filter>src\libsrc</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libsrc\ncx_cray.c">
+      <Filter>src\libsrc</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libsrc\posixio.c">
+      <Filter>src\libsrc</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libsrc\putget.c">
+      <Filter>src\libsrc</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libsrc\t_ncio.c">
+      <Filter>src\libsrc</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libsrc\v1hpg.c">
+      <Filter>src\libsrc</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libsrc\var.c">
+      <Filter>src\libsrc</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libsrc\winceio.c">
+      <Filter>src\libsrc</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libsrc\XGetopt.c">
+      <Filter>src\libsrc</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libsrc4\error4.c">
+      <Filter>src\libsrc4</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libsrc4\nc4attr.c">
+      <Filter>src\libsrc4</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libsrc4\nc4cache.c">
+      <Filter>src\libsrc4</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libsrc4\nc4dim.c">
+      <Filter>src\libsrc4</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libsrc4\nc4dispatch.c">
+      <Filter>src\libsrc4</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libsrc4\nc4filters.c">
+      <Filter>src\libsrc4</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libsrc4\nc4grp.c">
+      <Filter>src\libsrc4</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libsrc4\nc4internal.c">
+      <Filter>src\libsrc4</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libsrc4\nc4type.c">
+      <Filter>src\libsrc4</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libsrc4\nc4var.c">
+      <Filter>src\libsrc4</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libsrc4\ncfunc.c">
+      <Filter>src\libsrc4</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libsrc4\ncindex.c">
+      <Filter>src\libsrc4</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libsrcp\ncpdispatch.c">
+      <Filter>src\libsrcp</Filter>
+    </ClCompile>
+    <ClCompile Include="src\oc2\daplex.c">
+      <Filter>src\oc2</Filter>
+    </ClCompile>
+    <ClCompile Include="src\oc2\dapparse.c">
+      <Filter>src\oc2</Filter>
+    </ClCompile>
+    <ClCompile Include="src\oc2\dapy.c">
+      <Filter>src\oc2</Filter>
+    </ClCompile>
+    <ClCompile Include="src\oc2\oc.c">
+      <Filter>src\oc2</Filter>
+    </ClCompile>
+    <ClCompile Include="src\oc2\occompile.c">
+      <Filter>src\oc2</Filter>
+    </ClCompile>
+    <ClCompile Include="src\oc2\occurlflags.c">
+      <Filter>src\oc2</Filter>
+    </ClCompile>
+    <ClCompile Include="src\oc2\occurlfunctions.c">
+      <Filter>src\oc2</Filter>
+    </ClCompile>
+    <ClCompile Include="src\oc2\ocdata.c">
+      <Filter>src\oc2</Filter>
+    </ClCompile>
+    <ClCompile Include="src\oc2\ocdebug.c">
+      <Filter>src\oc2</Filter>
+    </ClCompile>
+    <ClCompile Include="src\oc2\ocdump.c">
+      <Filter>src\oc2</Filter>
+    </ClCompile>
+    <ClCompile Include="src\oc2\ochttp.c">
+      <Filter>src\oc2</Filter>
+    </ClCompile>
+    <ClCompile Include="src\oc2\ocinternal.c">
+      <Filter>src\oc2</Filter>
+    </ClCompile>
+    <ClCompile Include="src\oc2\ocnode.c">
+      <Filter>src\oc2</Filter>
+    </ClCompile>
+    <ClCompile Include="src\oc2\ocread.c">
+      <Filter>src\oc2</Filter>
+    </ClCompile>
+    <ClCompile Include="src\oc2\ocutil.c">
+      <Filter>src\oc2</Filter>
+    </ClCompile>
+    <ClCompile Include="src\oc2\xxdr.c">
+      <Filter>src\oc2</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -119,6 +779,9 @@
     <ClInclude Include="include\netcdf\ncindex.h">
       <Filter>include\netcdf</Filter>
     </ClInclude>
+    <ClInclude Include="include\netcdf\ncjson.h">
+      <Filter>include\netcdf</Filter>
+    </ClInclude>
     <ClInclude Include="include\netcdf\nclist.h">
       <Filter>include\netcdf</Filter>
     </ClInclude>
@@ -170,6 +833,9 @@
     <ClInclude Include="include\netcdf\netcdf_filter.h">
       <Filter>include\netcdf</Filter>
     </ClInclude>
+    <ClInclude Include="include\netcdf\netcdf_filter_build.h">
+      <Filter>include\netcdf</Filter>
+    </ClInclude>
     <ClInclude Include="include\netcdf\netcdf_mem.h">
       <Filter>include\netcdf</Filter>
     </ClInclude>
@@ -187,6 +853,219 @@
     </ClInclude>
     <ClInclude Include="include\netcdf\XGetopt.h">
       <Filter>include\netcdf</Filter>
+    </ClInclude>
+    <ClInclude Include="src\config.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\libdap2\obsolete\constraints4.h">
+      <Filter>src\libdap2\obsolete</Filter>
+    </ClInclude>
+    <ClInclude Include="src\libdap2\obsolete\ncdap4.h">
+      <Filter>src\libdap2\obsolete</Filter>
+    </ClInclude>
+    <ClInclude Include="src\libdap2\constraints.h">
+      <Filter>src\libdap2</Filter>
+    </ClInclude>
+    <ClInclude Include="src\libdap2\dapdebug.h">
+      <Filter>src\libdap2</Filter>
+    </ClInclude>
+    <ClInclude Include="src\libdap2\dapdump.h">
+      <Filter>src\libdap2</Filter>
+    </ClInclude>
+    <ClInclude Include="src\libdap2\dapincludes.h">
+      <Filter>src\libdap2</Filter>
+    </ClInclude>
+    <ClInclude Include="src\libdap2\dapnc.h">
+      <Filter>src\libdap2</Filter>
+    </ClInclude>
+    <ClInclude Include="src\libdap2\dapodom.h">
+      <Filter>src\libdap2</Filter>
+    </ClInclude>
+    <ClInclude Include="src\libdap2\daputil.h">
+      <Filter>src\libdap2</Filter>
+    </ClInclude>
+    <ClInclude Include="src\libdap2\dceconstraints.h">
+      <Filter>src\libdap2</Filter>
+    </ClInclude>
+    <ClInclude Include="src\libdap2\dceparselex.h">
+      <Filter>src\libdap2</Filter>
+    </ClInclude>
+    <ClInclude Include="src\libdap2\dcetab.h">
+      <Filter>src\libdap2</Filter>
+    </ClInclude>
+    <ClInclude Include="src\libdap2\getvara.h">
+      <Filter>src\libdap2</Filter>
+    </ClInclude>
+    <ClInclude Include="src\libdap2\nccommon.h">
+      <Filter>src\libdap2</Filter>
+    </ClInclude>
+    <ClInclude Include="src\libdap2\ncd2dispatch.h">
+      <Filter>src\libdap2</Filter>
+    </ClInclude>
+    <ClInclude Include="src\libdap4\d4bytes.h">
+      <Filter>src\libdap4</Filter>
+    </ClInclude>
+    <ClInclude Include="src\libdap4\d4chunk.h">
+      <Filter>src\libdap4</Filter>
+    </ClInclude>
+    <ClInclude Include="src\libdap4\d4curlfunctions.h">
+      <Filter>src\libdap4</Filter>
+    </ClInclude>
+    <ClInclude Include="src\libdap4\d4debug.h">
+      <Filter>src\libdap4</Filter>
+    </ClInclude>
+    <ClInclude Include="src\libdap4\d4http.h">
+      <Filter>src\libdap4</Filter>
+    </ClInclude>
+    <ClInclude Include="src\libdap4\d4includes.h">
+      <Filter>src\libdap4</Filter>
+    </ClInclude>
+    <ClInclude Include="src\libdap4\d4odom.h">
+      <Filter>src\libdap4</Filter>
+    </ClInclude>
+    <ClInclude Include="src\libdap4\d4read.h">
+      <Filter>src\libdap4</Filter>
+    </ClInclude>
+    <ClInclude Include="src\libdap4\d4util.h">
+      <Filter>src\libdap4</Filter>
+    </ClInclude>
+    <ClInclude Include="src\libdap4\ezxml.h">
+      <Filter>src\libdap4</Filter>
+    </ClInclude>
+    <ClInclude Include="src\libdap4\ncd4.h">
+      <Filter>src\libdap4</Filter>
+    </ClInclude>
+    <ClInclude Include="src\libdap4\ncd4dispatch.h">
+      <Filter>src\libdap4</Filter>
+    </ClInclude>
+    <ClInclude Include="src\libdap4\ncd4types.h">
+      <Filter>src\libdap4</Filter>
+    </ClInclude>
+    <ClInclude Include="src\libdispatch\dcrc32.h">
+      <Filter>src\libdispatch</Filter>
+    </ClInclude>
+    <ClInclude Include="src\libdispatch\u8.h">
+      <Filter>src\libdispatch</Filter>
+    </ClInclude>
+    <ClInclude Include="src\libdispatch\utf8proc.h">
+      <Filter>src\libdispatch</Filter>
+    </ClInclude>
+    <ClInclude Include="src\libhdf5\H5FDhttp.h">
+      <Filter>src\libhdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="src\libhdf5\hdf5debug.h">
+      <Filter>src\libhdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="src\libhdf5\hdf5err.h">
+      <Filter>src\libhdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="src\libnczarr\obsolete\zjson.h">
+      <Filter>src\libnczarr\obsolete</Filter>
+    </ClInclude>
+    <ClInclude Include="src\libnczarr\awsincludes.h">
+      <Filter>src\libnczarr</Filter>
+    </ClInclude>
+    <ClInclude Include="src\libnczarr\SimpleBinStream.h">
+      <Filter>src\libnczarr</Filter>
+    </ClInclude>
+    <ClInclude Include="src\libnczarr\zarr.h">
+      <Filter>src\libnczarr</Filter>
+    </ClInclude>
+    <ClInclude Include="src\libnczarr\zcache.h">
+      <Filter>src\libnczarr</Filter>
+    </ClInclude>
+    <ClInclude Include="src\libnczarr\zchunking.h">
+      <Filter>src\libnczarr</Filter>
+    </ClInclude>
+    <ClInclude Include="src\libnczarr\zdebug.h">
+      <Filter>src\libnczarr</Filter>
+    </ClInclude>
+    <ClInclude Include="src\libnczarr\zdispatch.h">
+      <Filter>src\libnczarr</Filter>
+    </ClInclude>
+    <ClInclude Include="src\libnczarr\zincludes.h">
+      <Filter>src\libnczarr</Filter>
+    </ClInclude>
+    <ClInclude Include="src\libnczarr\zinternal.h">
+      <Filter>src\libnczarr</Filter>
+    </ClInclude>
+    <ClInclude Include="src\libnczarr\zmap.h">
+      <Filter>src\libnczarr</Filter>
+    </ClInclude>
+    <ClInclude Include="src\libnczarr\zodom.h">
+      <Filter>src\libnczarr</Filter>
+    </ClInclude>
+    <ClInclude Include="src\libnczarr\zprovenance.h">
+      <Filter>src\libnczarr</Filter>
+    </ClInclude>
+    <ClInclude Include="src\libnczarr\zs3sdk.h">
+      <Filter>src\libnczarr</Filter>
+    </ClInclude>
+    <ClInclude Include="src\libnczarr\ztracedispatch.h">
+      <Filter>src\libnczarr</Filter>
+    </ClInclude>
+    <ClInclude Include="src\libsrc\ncio.h">
+      <Filter>src\libsrc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\libsrc\ncstdio.h">
+      <Filter>src\libsrc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\libsrc\ncx.h">
+      <Filter>src\libsrc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\libsrc\pstdint.h">
+      <Filter>src\libsrc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\oc2\dapparselex.h">
+      <Filter>src\oc2</Filter>
+    </ClInclude>
+    <ClInclude Include="src\oc2\dapy.h">
+      <Filter>src\oc2</Filter>
+    </ClInclude>
+    <ClInclude Include="src\oc2\oc.h">
+      <Filter>src\oc2</Filter>
+    </ClInclude>
+    <ClInclude Include="src\oc2\occompile.h">
+      <Filter>src\oc2</Filter>
+    </ClInclude>
+    <ClInclude Include="src\oc2\occonstraints.h">
+      <Filter>src\oc2</Filter>
+    </ClInclude>
+    <ClInclude Include="src\oc2\occurlfunctions.h">
+      <Filter>src\oc2</Filter>
+    </ClInclude>
+    <ClInclude Include="src\oc2\ocdata.h">
+      <Filter>src\oc2</Filter>
+    </ClInclude>
+    <ClInclude Include="src\oc2\ocdatatypes.h">
+      <Filter>src\oc2</Filter>
+    </ClInclude>
+    <ClInclude Include="src\oc2\ocdebug.h">
+      <Filter>src\oc2</Filter>
+    </ClInclude>
+    <ClInclude Include="src\oc2\ocdump.h">
+      <Filter>src\oc2</Filter>
+    </ClInclude>
+    <ClInclude Include="src\oc2\ochttp.h">
+      <Filter>src\oc2</Filter>
+    </ClInclude>
+    <ClInclude Include="src\oc2\ocinternal.h">
+      <Filter>src\oc2</Filter>
+    </ClInclude>
+    <ClInclude Include="src\oc2\ocnode.h">
+      <Filter>src\oc2</Filter>
+    </ClInclude>
+    <ClInclude Include="src\oc2\ocread.h">
+      <Filter>src\oc2</Filter>
+    </ClInclude>
+    <ClInclude Include="src\oc2\ocutil.h">
+      <Filter>src\oc2</Filter>
+    </ClInclude>
+    <ClInclude Include="src\oc2\ocx.h">
+      <Filter>src\oc2</Filter>
+    </ClInclude>
+    <ClInclude Include="src\oc2\xxdr.h">
+      <Filter>src\oc2</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

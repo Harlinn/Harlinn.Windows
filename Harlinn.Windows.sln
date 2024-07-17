@@ -719,6 +719,11 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Harlinn.hdf4", "3rdParty\Ha
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Harlinn.netcdf-c", "3rdParty\Harlinn.netcdf-c\Harlinn.netcdf-c.vcxproj", "{80FCAC12-D231-4969-81ED-2C57DDC6F336}"
+	ProjectSection(ProjectDependencies) = postProject
+		{7A1D76A3-3400-46DD-871E-408848B5354A} = {7A1D76A3-3400-46DD-871E-408848B5354A}
+		{AB19AABF-6775-45F4-9660-30A94FAE37B9} = {AB19AABF-6775-45F4-9660-30A94FAE37B9}
+		{DE1CE45E-7F75-4231-A399-6BF75065577B} = {DE1CE45E-7F75-4231-A399-6BF75065577B}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Harlinn.libxml2", "3rdParty\Harlinn.libxml2\Harlinn.libxml2.vcxproj", "{0C15E000-21E9-4BD9-BF07-FF4B4643361E}"
 	ProjectSection(ProjectDependencies) = postProject

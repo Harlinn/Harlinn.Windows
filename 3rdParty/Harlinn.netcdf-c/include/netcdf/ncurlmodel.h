@@ -33,7 +33,7 @@ EXTERNL int NC_urlmodel(const char* path, int mode, char** newurl, NCmode* model
  * minus any extension into basenamep; caller frees.
  * Return 1 if it looks like a url, 0 otherwise.
  */
-EXTERNL int nc__testurl(const char* path, char** basenamep);
+EXTERNL int _nc__testurl(const char* path, char** basenamep);
 
 /* allow access url parse and params without exposing nc_url.h */
 EXTERNL int NCDAP_urlparse(const char* s, void** dapurl);

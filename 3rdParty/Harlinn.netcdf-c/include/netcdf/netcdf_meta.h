@@ -23,10 +23,10 @@
 #ifndef NETCDF_META_H
 #define NETCDF_META_H
 
-#define NC_VERSION_MAJOR @NC_VERSION_MAJOR@ /*!< netcdf-c major version. */
-#define NC_VERSION_MINOR @NC_VERSION_MINOR@ /*!< netcdf-c minor version. */
-#define NC_VERSION_PATCH @NC_VERSION_PATCH@ /*!< netcdf-c patch version. */
-#define NC_VERSION_NOTE  "@NC_VERSION_NOTE@" /*!< netcdf-c note. May be blank. */
+#define NC_VERSION_MAJOR 4 /*!< netcdf-c major version. */
+#define NC_VERSION_MINOR 8 /*!< netcdf-c minor version. */
+#define NC_VERSION_PATCH 1 /*!< netcdf-c patch version. */
+#define NC_VERSION_NOTE  "" /*!< netcdf-c note. May be blank. */
 
 /*! netcdf-c version string.
  *
@@ -37,30 +37,30 @@
  * Note that the trailing NC_VERSION_NOTE may be empty. It serves for
  * identifiers such as '-rc1', etc.
  */
-#define NC_VERSION       "@NC_VERSION@"
+#define NC_VERSION       "4.8.1"
 
-#define NC_HAS_NC2       @NC_HAS_NC2@ /*!< API version 2 support. */
-#define NC_HAS_NC4       @NC_HAS_NC4@ /*!< API version 4 support. */
-#define NC_HAS_HDF4      @NC_HAS_HDF4@ /*!< HDF4 support. */
-#define NC_HAS_HDF5      @NC_HAS_HDF5@ /*!< HDF5 support. */
-#define NC_HAS_SZIP      @NC_HAS_SZIP@ /*!< szip support (HDF5 only) */
-#define NC_HAS_SZIP_WRITE @NC_HAS_SZIP@ /*!< szip write support (HDF5 only) */
-#define NC_HAS_DAP2      @NC_HAS_DAP2@ /*!< DAP2 support. */
-#define NC_HAS_DAP4      @NC_HAS_DAP4@ /*!< DAP4 support. */
-#define NC_HAS_BYTERANGE @HAS_BYTERANGE@
-#define NC_HAS_DISKLESS  @NC_HAS_DISKLESS@ /*!< diskless support. */
-#define NC_HAS_MMAP      @NC_HAS_MMAP@ /*!< mmap support. */
-#define NC_HAS_JNA       @NC_HAS_JNA@ /*!< jna support. */
-#define NC_HAS_PNETCDF   @NC_HAS_PNETCDF@ /*!< PnetCDF support. */
-#define NC_HAS_PARALLEL4 @NC_HAS_PARALLEL4@ /*!< parallel IO support via HDF5 */
-#define NC_HAS_PARALLEL  @NC_HAS_PARALLEL@ /*!< parallel IO support via HDF5 and/or PnetCDF. */
+#define NC_HAS_NC2       1 /*!< API version 2 support. */
+#define NC_HAS_NC4       1 /*!< API version 4 support. */
+#define NC_HAS_HDF4      0 /*!< HDF4 support. */
+#define NC_HAS_HDF5      1 /*!< HDF5 support. */
+#define NC_HAS_SZIP      1 /*!< szip support (HDF5 only) */
+#define NC_HAS_SZIP_WRITE 1 /*!< szip write support (HDF5 only) */
+#define NC_HAS_DAP2      1 /*!< DAP2 support. */
+#define NC_HAS_DAP4      1 /*!< DAP4 support. */
+#define NC_HAS_BYTERANGE no
+#define NC_HAS_DISKLESS  1 /*!< diskless support. */
+#define NC_HAS_MMAP      0 /*!< mmap support. */
+#define NC_HAS_JNA       0 /*!< jna support. */
+#define NC_HAS_PNETCDF   0 /*!< PnetCDF support. */
+#define NC_HAS_PARALLEL4 0 /*!< parallel IO support via HDF5 */
+#define NC_HAS_PARALLEL  0 /*!< parallel IO support via HDF5 and/or PnetCDF. */
 
-#define NC_HAS_CDF5      @NC_HAS_CDF5@  /*!< CDF5 support. */
-#define NC_HAS_ERANGE_FILL @NC_HAS_ERANGE_FILL@ /*!< ERANGE_FILL Support */
+#define NC_HAS_CDF5      1  /*!< CDF5 support. */
+#define NC_HAS_ERANGE_FILL 1 /*!< ERANGE_FILL Support */
 #define NC_RELAX_COORD_BOUND 1 /*!< RELAX_COORD_BOUND */
-#define NC_DISPATCH_VERSION @NC_DISPATCH_VERSION@ /*!< Dispatch table version */
-#define NC_HAS_PAR_FILTERS @NC_HAS_PAR_FILTERS@ /* Parallel I/O with filter support. */
-#define NC_HAS_NCZARR      @NC_HAS_NCZARR@
-#define NC_HAS_MULTIFILTERS   @NC_HAS_MULTIFILTERS@
+#define NC_DISPATCH_VERSION 3 /*!< Dispatch table version */
+#define NC_HAS_PAR_FILTERS 1 /* Parallel I/O with filter support. */
+#define NC_HAS_NCZARR      1
+#define NC_HAS_MULTIFILTERS   1
 
 #endif

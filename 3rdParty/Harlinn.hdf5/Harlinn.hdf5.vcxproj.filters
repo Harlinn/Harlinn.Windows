@@ -622,6 +622,54 @@
     <ClInclude Include="include\hdf5\H5pubconf.h">
       <Filter>include\hdf5</Filter>
     </ClInclude>
+    <ClInclude Include="include\hdf5\hdf5_hl.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5DOpublic.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5DSpublic.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5LTpublic.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5IMpublic.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5TBpublic.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5PTpublic.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5LDpublic.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5DSprivate.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5HLprivate2.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5IMprivate.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5LDprivate.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5LTparse.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5LTprivate.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5PTprivate.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5TBprivate.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\H5FDsubfiling\mercury\src\util\mercury_thread.c">
@@ -1675,6 +1723,33 @@
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="src\H5build_settings.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5DO.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5DS.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5IM.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5LD.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5LT.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5LTanalyze.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5LTparse.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5PT.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\H5TB.c">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>

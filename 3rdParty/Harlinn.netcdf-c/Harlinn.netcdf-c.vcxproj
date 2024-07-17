@@ -91,13 +91,13 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_DEBUG;HARLINNNETCDFC_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>BUILDING_HARLINN_NETCDF_C=1;_CRT_SECURE_NO_WARNINGS=1;HAVE_CONFIG_H=1;WIN32;_DEBUG;HARLINNNETCDFC_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
-      <AdditionalIncludeDirectories>$(SolutionDir)\3rdParty\Harlinn.hdf5;$(SolutionDir)3rdParty\Harlinn.hdf4\include;$(ProjectDir)include\netcdf;$(ProjectDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)src;$(ProjectDir)src\oc2;$(ProjectDir)include\netcdf;$(ProjectDir)include;$(SolutionDir)\3rdParty\Harlinn.hdf5\include\hdf5;$(SolutionDir)\3rdParty\Harlinn.hdf5\include\hdf5\H5FDsubfiling;$(SolutionDir)3rdParty\Harlinn.hdf4\include;$(SolutionDir)3rdParty\Harlinn.hdf4\include\mfhdf;$(SolutionDir)3rdParty\Harlinn.hdf4\include\hdf4;$(SolutionDir)3rdParty\Harlinn.curl\include;$(SolutionDir)3rdParty\Harlinn.zlib;$(SolutionDir)3rdParty\Harlinn.minizip\include\minizip;$(SolutionDir)3rdParty\Harlinn.bzip2;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
     </ClCompile>
@@ -105,6 +105,8 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
+      <AdditionalLibraryDirectories>$(OutDir)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Harlinn.hdf5.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -112,7 +114,7 @@
       <WarningLevel>Level3</WarningLevel>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;NDEBUG;HARLINNNETCDFC_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>BUILDING_HARLINN_NETCDF_C=1;_CRT_SECURE_NO_WARNINGS=1;HAVE_CONFIG_H=1;WIN32;NDEBUG;HARLINNNETCDFC_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
@@ -120,7 +122,7 @@
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <BufferSecurityCheck>false</BufferSecurityCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)\3rdParty\Harlinn.hdf5;$(SolutionDir)3rdParty\Harlinn.hdf4\include;$(ProjectDir)include\netcdf;$(ProjectDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)src;$(ProjectDir)src\oc2;$(ProjectDir)include\netcdf;$(ProjectDir)include;$(SolutionDir)\3rdParty\Harlinn.hdf5\include\hdf5;$(SolutionDir)\3rdParty\Harlinn.hdf5\include\hdf5\H5FDsubfiling;$(SolutionDir)3rdParty\Harlinn.hdf4\include;$(SolutionDir)3rdParty\Harlinn.hdf4\include\mfhdf;$(SolutionDir)3rdParty\Harlinn.hdf4\include\hdf4;$(SolutionDir)3rdParty\Harlinn.curl\include;$(SolutionDir)3rdParty\Harlinn.zlib;$(SolutionDir)3rdParty\Harlinn.minizip\include\minizip;$(SolutionDir)3rdParty\Harlinn.bzip2;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
@@ -129,19 +131,21 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
+      <AdditionalLibraryDirectories>$(OutDir)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Harlinn.hdf5.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;HARLINNNETCDFC_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>BUILDING_HARLINN_NETCDF_C=1;_CRT_SECURE_NO_WARNINGS=1;HAVE_CONFIG_H=1;_DEBUG;HARLINNNETCDFC_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
-      <AdditionalIncludeDirectories>$(SolutionDir)\3rdParty\Harlinn.hdf5;$(SolutionDir)3rdParty\Harlinn.hdf4\include;$(ProjectDir)include\netcdf;$(ProjectDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)src;$(ProjectDir)src\oc2;$(ProjectDir)include\netcdf;$(ProjectDir)include;$(SolutionDir)\3rdParty\Harlinn.hdf5\include\hdf5;$(SolutionDir)\3rdParty\Harlinn.hdf5\include\hdf5\H5FDsubfiling;$(SolutionDir)3rdParty\Harlinn.hdf4\include;$(SolutionDir)3rdParty\Harlinn.hdf4\include\mfhdf;$(SolutionDir)3rdParty\Harlinn.hdf4\include\hdf4;$(SolutionDir)3rdParty\Harlinn.curl\include;$(SolutionDir)3rdParty\Harlinn.zlib;$(SolutionDir)3rdParty\Harlinn.minizip\include\minizip;$(SolutionDir)3rdParty\Harlinn.bzip2;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
     </ClCompile>
@@ -150,6 +154,8 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
       <OutputFile>$(OutDir)$(TargetName)-x64d$(TargetExt)</OutputFile>
+      <AdditionalLibraryDirectories>$(OutDir)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Harlinn.hdf5.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -157,7 +163,7 @@
       <WarningLevel>Level3</WarningLevel>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>NDEBUG;HARLINNNETCDFC_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>BUILDING_HARLINN_NETCDF_C=1;_CRT_SECURE_NO_WARNINGS=1;HAVE_CONFIG_H=1;NDEBUG;HARLINNNETCDFC_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
@@ -165,7 +171,7 @@
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <BufferSecurityCheck>false</BufferSecurityCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)\3rdParty\Harlinn.hdf5;$(SolutionDir)3rdParty\Harlinn.hdf4\include;$(ProjectDir)include\netcdf;$(ProjectDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)src;$(ProjectDir)src\oc2;$(ProjectDir)include\netcdf;$(ProjectDir)include;$(SolutionDir)\3rdParty\Harlinn.hdf5\include\hdf5;$(SolutionDir)\3rdParty\Harlinn.hdf5\include\hdf5\H5FDsubfiling;$(SolutionDir)3rdParty\Harlinn.hdf4\include;$(SolutionDir)3rdParty\Harlinn.hdf4\include\mfhdf;$(SolutionDir)3rdParty\Harlinn.hdf4\include\hdf4;$(SolutionDir)3rdParty\Harlinn.curl\include;$(SolutionDir)3rdParty\Harlinn.zlib;$(SolutionDir)3rdParty\Harlinn.minizip\include\minizip;$(SolutionDir)3rdParty\Harlinn.bzip2;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
@@ -175,10 +181,349 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
       <OutputFile>$(OutDir)$(TargetName)-x64r$(TargetExt)</OutputFile>
+      <AdditionalLibraryDirectories>$(OutDir)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Harlinn.hdf5.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="src\libdap2\cache.c" />
+    <ClCompile Include="src\libdap2\cdf.c" />
+    <ClCompile Include="src\libdap2\common.c" />
+    <ClCompile Include="src\libdap2\constraints.c" />
+    <ClCompile Include="src\libdap2\dapattr.c" />
+    <ClCompile Include="src\libdap2\dapcvt.c" />
+    <ClCompile Include="src\libdap2\dapdebug.c" />
+    <ClCompile Include="src\libdap2\dapdump.c" />
+    <ClCompile Include="src\libdap2\dapodom.c" />
+    <ClCompile Include="src\libdap2\daputil.c" />
+    <ClCompile Include="src\libdap2\dceconstraints.c" />
+    <ClCompile Include="src\libdap2\dcelex.c" />
+    <ClCompile Include="src\libdap2\dceparse.c" />
+    <ClCompile Include="src\libdap2\dcetab.c" />
+    <ClCompile Include="src\libdap2\getvara.c" />
+    <ClCompile Include="src\libdap2\main.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\libdap2\ncd2dispatch.c" />
+    <ClCompile Include="src\libdap2\ncdap.c" />
+    <ClCompile Include="src\libdap2\ncdapa.c" />
+    <ClCompile Include="src\libdap2\ncdaperr.c" />
+    <ClCompile Include="src\libdap2\obsolete\cdf4.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\libdap2\obsolete\constraints4.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\libdap2\obsolete\getvara4.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\libdap2\obsolete\ncdap4.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\libdap2\obsolete\stubdap4.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\libdap4\d4bytes.c" />
+    <ClCompile Include="src\libdap4\d4chunk.c" />
+    <ClCompile Include="src\libdap4\d4curlflags.c" />
+    <ClCompile Include="src\libdap4\d4curlfunctions.c" />
+    <ClCompile Include="src\libdap4\d4cvt.c" />
+    <ClCompile Include="src\libdap4\d4data.c" />
+    <ClCompile Include="src\libdap4\d4debug.c" />
+    <ClCompile Include="src\libdap4\d4dump.c" />
+    <ClCompile Include="src\libdap4\d4file.c" />
+    <ClCompile Include="src\libdap4\d4fix.c" />
+    <ClCompile Include="src\libdap4\d4http.c" />
+    <ClCompile Include="src\libdap4\d4mem.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\libdap4\d4meta.c" />
+    <ClCompile Include="src\libdap4\d4odom.c" />
+    <ClCompile Include="src\libdap4\d4parser.c" />
+    <ClCompile Include="src\libdap4\d4printer.c" />
+    <ClCompile Include="src\libdap4\d4read.c" />
+    <ClCompile Include="src\libdap4\d4swap.c" />
+    <ClCompile Include="src\libdap4\d4util.c" />
+    <ClCompile Include="src\libdap4\d4varx.c" />
+    <ClCompile Include="src\libdap4\ezxml.c" />
+    <ClCompile Include="src\libdap4\ezxml_extra.c" />
+    <ClCompile Include="src\libdap4\ncd4dispatch.c" />
+    <ClCompile Include="src\libdispatch\datt.c" />
+    <ClCompile Include="src\libdispatch\dattget.c" />
+    <ClCompile Include="src\libdispatch\dattinq.c" />
+    <ClCompile Include="src\libdispatch\dattput.c" />
+    <ClCompile Include="src\libdispatch\dauth.c" />
+    <ClCompile Include="src\libdispatch\daux.c" />
+    <ClCompile Include="src\libdispatch\dcompound.c" />
+    <ClCompile Include="src\libdispatch\dcopy.c" />
+    <ClCompile Include="src\libdispatch\dcrc32.c" />
+    <ClCompile Include="src\libdispatch\dcrc64.c" />
+    <ClCompile Include="src\libdispatch\ddim.c" />
+    <ClCompile Include="src\libdispatch\ddispatch.c" />
+    <ClCompile Include="src\libdispatch\defcheck.c" />
+    <ClCompile Include="src\libdispatch\denum.c" />
+    <ClCompile Include="src\libdispatch\derror.c" />
+    <ClCompile Include="src\libdispatch\dfile.c" />
+    <ClCompile Include="src\libdispatch\dfilter.c" />
+    <ClCompile Include="src\libdispatch\dfilterx.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\libdispatch\dgroup.c" />
+    <ClCompile Include="src\libdispatch\dhttp.c" />
+    <ClCompile Include="src\libdispatch\dinfermodel.c" />
+    <ClCompile Include="src\libdispatch\dinternal.c" />
+    <ClCompile Include="src\libdispatch\dnotnc3.c" />
+    <ClCompile Include="src\libdispatch\dnotnc4.c" />
+    <ClCompile Include="src\libdispatch\doffsets.c" />
+    <ClCompile Include="src\libdispatch\dopaque.c" />
+    <ClCompile Include="src\libdispatch\dparallel.c" />
+    <ClCompile Include="src\libdispatch\dpathmgr.c" />
+    <ClCompile Include="src\libdispatch\drc.c" />
+    <ClCompile Include="src\libdispatch\dreadonly.c" />
+    <ClCompile Include="src\libdispatch\dstring.c" />
+    <ClCompile Include="src\libdispatch\dtype.c" />
+    <ClCompile Include="src\libdispatch\durlmodel.c" />
+    <ClCompile Include="src\libdispatch\dutf8.c" />
+    <ClCompile Include="src\libdispatch\dutil.c" />
+    <ClCompile Include="src\libdispatch\dv2i.c" />
+    <ClCompile Include="src\libdispatch\dvar.c" />
+    <ClCompile Include="src\libdispatch\dvarget.c" />
+    <ClCompile Include="src\libdispatch\dvarinq.c" />
+    <ClCompile Include="src\libdispatch\dvarput.c" />
+    <ClCompile Include="src\libdispatch\dvlen.c" />
+    <ClCompile Include="src\libdispatch\json.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\libdispatch\nc.c" />
+    <ClCompile Include="src\libdispatch\ncbytes.c" />
+    <ClCompile Include="src\libdispatch\ncexhash.c" />
+    <ClCompile Include="src\libdispatch\nchashmap.c" />
+    <ClCompile Include="src\libdispatch\ncjson.c" />
+    <ClCompile Include="src\libdispatch\nclist.c" />
+    <ClCompile Include="src\libdispatch\nclistmgr.c" />
+    <ClCompile Include="src\libdispatch\nclog.c" />
+    <ClCompile Include="src\libdispatch\nctime.c" />
+    <ClCompile Include="src\libdispatch\ncuri.c" />
+    <ClCompile Include="src\libdispatch\ncxcache.c" />
+    <ClCompile Include="src\libdispatch\stubdef.c" />
+    <ClCompile Include="src\libdispatch\u8.c" />
+    <ClCompile Include="src\libdispatch\utf8proc.c" />
+    <ClCompile Include="src\libdispatch\utf8proc_data.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\libhdf4\hdf4dispatch.c" />
+    <ClCompile Include="src\libhdf4\hdf4file.c" />
+    <ClCompile Include="src\libhdf4\hdf4func.c" />
+    <ClCompile Include="src\libhdf4\hdf4var.c" />
+    <ClCompile Include="src\libhdf5\H5FDhttp.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\libhdf5\hdf5attr.c" />
+    <ClCompile Include="src\libhdf5\hdf5create.c" />
+    <ClCompile Include="src\libhdf5\hdf5debug.c" />
+    <ClCompile Include="src\libhdf5\hdf5dim.c" />
+    <ClCompile Include="src\libhdf5\hdf5dispatch.c" />
+    <ClCompile Include="src\libhdf5\hdf5file.c" />
+    <ClCompile Include="src\libhdf5\hdf5filter.c" />
+    <ClCompile Include="src\libhdf5\hdf5grp.c" />
+    <ClCompile Include="src\libhdf5\hdf5internal.c" />
+    <ClCompile Include="src\libhdf5\hdf5open.c" />
+    <ClCompile Include="src\libhdf5\hdf5type.c" />
+    <ClCompile Include="src\libhdf5\hdf5var.c" />
+    <ClCompile Include="src\libhdf5\nc4hdf.c" />
+    <ClCompile Include="src\libhdf5\nc4info.c" />
+    <ClCompile Include="src\libhdf5\nc4mem.c" />
+    <ClCompile Include="src\libhdf5\nc4memcb.c" />
+    <ClCompile Include="src\liblib\nc_initialize.c" />
+    <ClCompile Include="src\libnczarr\obsolete\zcache.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\libnczarr\obsolete\zjson.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\libnczarr\obsolete\zmap_nz4.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\libnczarr\zarr.c" />
+    <ClCompile Include="src\libnczarr\zattr.c" />
+    <ClCompile Include="src\libnczarr\zchunking.c" />
+    <ClCompile Include="src\libnczarr\zclose.c" />
+    <ClCompile Include="src\libnczarr\zcreate.c" />
+    <ClCompile Include="src\libnczarr\zcvt.c" />
+    <ClCompile Include="src\libnczarr\zdebug.c" />
+    <ClCompile Include="src\libnczarr\zdim.c" />
+    <ClCompile Include="src\libnczarr\zdispatch.c" />
+    <ClCompile Include="src\libnczarr\zfile.c" />
+    <ClCompile Include="src\libnczarr\zfilter.c" />
+    <ClCompile Include="src\libnczarr\zgrp.c" />
+    <ClCompile Include="src\libnczarr\zinternal.c" />
+    <ClCompile Include="src\libnczarr\zmap.c" />
+    <ClCompile Include="src\libnczarr\zmap_file.c" />
+    <ClCompile Include="src\libnczarr\zmap_s3sdk.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\libnczarr\zmap_zip.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\libnczarr\zodom.c" />
+    <ClCompile Include="src\libnczarr\zopen.c" />
+    <ClCompile Include="src\libnczarr\zprov.c" />
+    <ClCompile Include="src\libnczarr\zs3sdk.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\libnczarr\zsync.c" />
+    <ClCompile Include="src\libnczarr\ztype.c" />
+    <ClCompile Include="src\libnczarr\zutil.c" />
+    <ClCompile Include="src\libnczarr\zvar.c" />
+    <ClCompile Include="src\libnczarr\zwalk.c" />
+    <ClCompile Include="src\libnczarr\zxcache.c" />
+    <ClCompile Include="src\libsrc4\error4.c" />
+    <ClCompile Include="src\libsrc4\nc4attr.c" />
+    <ClCompile Include="src\libsrc4\nc4cache.c" />
+    <ClCompile Include="src\libsrc4\nc4dim.c" />
+    <ClCompile Include="src\libsrc4\nc4dispatch.c" />
+    <ClCompile Include="src\libsrc4\nc4filters.c" />
+    <ClCompile Include="src\libsrc4\nc4grp.c" />
+    <ClCompile Include="src\libsrc4\nc4internal.c" />
+    <ClCompile Include="src\libsrc4\nc4type.c" />
+    <ClCompile Include="src\libsrc4\nc4var.c" />
+    <ClCompile Include="src\libsrc4\ncfunc.c" />
+    <ClCompile Include="src\libsrc4\ncindex.c" />
+    <ClCompile Include="src\libsrcp\ncpdispatch.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\libsrc\attr.c" />
+    <ClCompile Include="src\libsrc\dim.c" />
+    <ClCompile Include="src\libsrc\ffio.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\libsrc\httpio.c" />
+    <ClCompile Include="src\libsrc\lookup3.c" />
+    <ClCompile Include="src\libsrc\memio.c" />
+    <ClCompile Include="src\libsrc\mmapio.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\libsrc\nc3dispatch.c" />
+    <ClCompile Include="src\libsrc\nc3internal.c" />
+    <ClCompile Include="src\libsrc\ncFile.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\libsrc\ncio.c" />
+    <ClCompile Include="src\libsrc\ncstdio.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\libsrc\ncx.c" />
+    <ClCompile Include="src\libsrc\ncx_cray.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\libsrc\posixio.c" />
+    <ClCompile Include="src\libsrc\putget.c" />
+    <ClCompile Include="src\libsrc\t_ncio.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\libsrc\v1hpg.c" />
+    <ClCompile Include="src\libsrc\var.c" />
+    <ClCompile Include="src\libsrc\winceio.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\libsrc\XGetopt.c" />
+    <ClCompile Include="src\oc2\daplex.c" />
+    <ClCompile Include="src\oc2\dapparse.c" />
+    <ClCompile Include="src\oc2\dapy.c" />
+    <ClCompile Include="src\oc2\oc.c" />
+    <ClCompile Include="src\oc2\occompile.c" />
+    <ClCompile Include="src\oc2\occurlflags.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\oc2\occurlfunctions.c" />
+    <ClCompile Include="src\oc2\ocdata.c" />
+    <ClCompile Include="src\oc2\ocdebug.c" />
+    <ClCompile Include="src\oc2\ocdump.c" />
+    <ClCompile Include="src\oc2\ochttp.c" />
+    <ClCompile Include="src\oc2\ocinternal.c" />
+    <ClCompile Include="src\oc2\ocnode.c" />
+    <ClCompile Include="src\oc2\ocread.c" />
+    <ClCompile Include="src\oc2\ocutil.c" />
+    <ClCompile Include="src\oc2\xxdr.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\netcdf\ceconstraints.h" />
@@ -206,6 +551,7 @@
     <ClInclude Include="include\netcdf\nchashmap.h" />
     <ClInclude Include="include\netcdf\nchttp.h" />
     <ClInclude Include="include\netcdf\ncindex.h" />
+    <ClInclude Include="include\netcdf\ncjson.h" />
     <ClInclude Include="include\netcdf\nclist.h" />
     <ClInclude Include="include\netcdf\nclog.h" />
     <ClInclude Include="include\netcdf\ncmodel.h" />
@@ -227,12 +573,84 @@
     <ClInclude Include="include\netcdf\netcdf_dispatch.h" />
     <ClInclude Include="include\netcdf\netcdf_f.h" />
     <ClInclude Include="include\netcdf\netcdf_filter.h" />
+    <ClInclude Include="include\netcdf\netcdf_filter_build.h" />
     <ClInclude Include="include\netcdf\netcdf_mem.h" />
     <ClInclude Include="include\netcdf\netcdf_meta.h" />
     <ClInclude Include="include\netcdf\netcdf_par.h" />
     <ClInclude Include="include\netcdf\onstack.h" />
     <ClInclude Include="include\netcdf\rnd.h" />
     <ClInclude Include="include\netcdf\XGetopt.h" />
+    <ClInclude Include="src\config.h" />
+    <ClInclude Include="src\libdap2\constraints.h" />
+    <ClInclude Include="src\libdap2\dapdebug.h" />
+    <ClInclude Include="src\libdap2\dapdump.h" />
+    <ClInclude Include="src\libdap2\dapincludes.h" />
+    <ClInclude Include="src\libdap2\dapnc.h" />
+    <ClInclude Include="src\libdap2\dapodom.h" />
+    <ClInclude Include="src\libdap2\daputil.h" />
+    <ClInclude Include="src\libdap2\dceconstraints.h" />
+    <ClInclude Include="src\libdap2\dceparselex.h" />
+    <ClInclude Include="src\libdap2\dcetab.h" />
+    <ClInclude Include="src\libdap2\getvara.h" />
+    <ClInclude Include="src\libdap2\nccommon.h" />
+    <ClInclude Include="src\libdap2\ncd2dispatch.h" />
+    <ClInclude Include="src\libdap2\obsolete\constraints4.h" />
+    <ClInclude Include="src\libdap2\obsolete\ncdap4.h" />
+    <ClInclude Include="src\libdap4\d4bytes.h" />
+    <ClInclude Include="src\libdap4\d4chunk.h" />
+    <ClInclude Include="src\libdap4\d4curlfunctions.h" />
+    <ClInclude Include="src\libdap4\d4debug.h" />
+    <ClInclude Include="src\libdap4\d4http.h" />
+    <ClInclude Include="src\libdap4\d4includes.h" />
+    <ClInclude Include="src\libdap4\d4odom.h" />
+    <ClInclude Include="src\libdap4\d4read.h" />
+    <ClInclude Include="src\libdap4\d4util.h" />
+    <ClInclude Include="src\libdap4\ezxml.h" />
+    <ClInclude Include="src\libdap4\ncd4.h" />
+    <ClInclude Include="src\libdap4\ncd4dispatch.h" />
+    <ClInclude Include="src\libdap4\ncd4types.h" />
+    <ClInclude Include="src\libdispatch\dcrc32.h" />
+    <ClInclude Include="src\libdispatch\u8.h" />
+    <ClInclude Include="src\libdispatch\utf8proc.h" />
+    <ClInclude Include="src\libhdf5\H5FDhttp.h" />
+    <ClInclude Include="src\libhdf5\hdf5debug.h" />
+    <ClInclude Include="src\libhdf5\hdf5err.h" />
+    <ClInclude Include="src\libnczarr\awsincludes.h" />
+    <ClInclude Include="src\libnczarr\obsolete\zjson.h" />
+    <ClInclude Include="src\libnczarr\SimpleBinStream.h" />
+    <ClInclude Include="src\libnczarr\zarr.h" />
+    <ClInclude Include="src\libnczarr\zcache.h" />
+    <ClInclude Include="src\libnczarr\zchunking.h" />
+    <ClInclude Include="src\libnczarr\zdebug.h" />
+    <ClInclude Include="src\libnczarr\zdispatch.h" />
+    <ClInclude Include="src\libnczarr\zincludes.h" />
+    <ClInclude Include="src\libnczarr\zinternal.h" />
+    <ClInclude Include="src\libnczarr\zmap.h" />
+    <ClInclude Include="src\libnczarr\zodom.h" />
+    <ClInclude Include="src\libnczarr\zprovenance.h" />
+    <ClInclude Include="src\libnczarr\zs3sdk.h" />
+    <ClInclude Include="src\libnczarr\ztracedispatch.h" />
+    <ClInclude Include="src\libsrc\ncio.h" />
+    <ClInclude Include="src\libsrc\ncstdio.h" />
+    <ClInclude Include="src\libsrc\ncx.h" />
+    <ClInclude Include="src\libsrc\pstdint.h" />
+    <ClInclude Include="src\oc2\dapparselex.h" />
+    <ClInclude Include="src\oc2\dapy.h" />
+    <ClInclude Include="src\oc2\oc.h" />
+    <ClInclude Include="src\oc2\occompile.h" />
+    <ClInclude Include="src\oc2\occonstraints.h" />
+    <ClInclude Include="src\oc2\occurlfunctions.h" />
+    <ClInclude Include="src\oc2\ocdata.h" />
+    <ClInclude Include="src\oc2\ocdatatypes.h" />
+    <ClInclude Include="src\oc2\ocdebug.h" />
+    <ClInclude Include="src\oc2\ocdump.h" />
+    <ClInclude Include="src\oc2\ochttp.h" />
+    <ClInclude Include="src\oc2\ocinternal.h" />
+    <ClInclude Include="src\oc2\ocnode.h" />
+    <ClInclude Include="src\oc2\ocread.h" />
+    <ClInclude Include="src\oc2\ocutil.h" />
+    <ClInclude Include="src\oc2\ocx.h" />
+    <ClInclude Include="src\oc2\xxdr.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
