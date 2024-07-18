@@ -150,7 +150,7 @@ namespace GenerateProject
 
         AnsiString TemplateMainSourceFileName( ) const
         {
-            std::vector<AnsiString> extensions{ {".cpp"},{".cxx"},{".cc"} };
+            std::vector<AnsiString> extensions{ {".cpp"},{".cxx"},{".cc"},{".c"} };
             std::vector<AnsiString> baseNames{ TemplateName( ), {"main"}};
             auto templateDirectory = TemplateDirectory( );
             for ( const auto& baseName : baseNames )

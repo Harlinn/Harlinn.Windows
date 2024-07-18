@@ -57,6 +57,7 @@
     <ClInclude Include="include\hdf5\H5DataSpace.h" />
     <ClInclude Include="include\hdf5\H5DataType.h" />
     <ClInclude Include="include\hdf5\H5DcreatProp.h" />
+    <ClInclude Include="include\hdf5\h5diff.h" />
     <ClInclude Include="include\hdf5\H5Dmodule.h" />
     <ClInclude Include="include\hdf5\H5DOpublic.h" />
     <ClInclude Include="include\hdf5\H5Dpkg.h" />
@@ -95,6 +96,8 @@
     <ClInclude Include="include\hdf5\H5FDdrvr_module.h" />
     <ClInclude Include="include\hdf5\H5FDfamily.h" />
     <ClInclude Include="include\hdf5\H5FDhdfs.h" />
+    <ClInclude Include="include\hdf5\H5FDioc.h" />
+    <ClInclude Include="include\hdf5\H5FDioc_priv.h" />
     <ClInclude Include="include\hdf5\H5FDlog.h" />
     <ClInclude Include="include\hdf5\H5FDmirror.h" />
     <ClInclude Include="include\hdf5\H5FDmirror_priv.h" />
@@ -115,12 +118,8 @@
     <ClInclude Include="include\hdf5\H5FDsec2.h" />
     <ClInclude Include="include\hdf5\H5FDsplitter.h" />
     <ClInclude Include="include\hdf5\H5FDstdio.h" />
-    <ClInclude Include="include\hdf5\H5FDsubfiling\H5FDioc.h" />
-    <ClInclude Include="include\hdf5\H5FDsubfiling\H5FDioc_priv.h" />
-    <ClInclude Include="include\hdf5\H5FDsubfiling\H5FDsubfiling.h" />
-    <ClInclude Include="include\hdf5\H5FDsubfiling\H5FDsubfiling_priv.h" />
-    <ClInclude Include="include\hdf5\H5FDsubfiling\H5subfiling_common.h" />
-    <ClInclude Include="include\hdf5\H5FDsubfiling\H5subfiling_err.h" />
+    <ClInclude Include="include\hdf5\H5FDsubfiling.h" />
+    <ClInclude Include="include\hdf5\H5FDsubfiling_priv.h" />
     <ClInclude Include="include\hdf5\H5FDwindows.h" />
     <ClInclude Include="include\hdf5\H5File.h" />
     <ClInclude Include="include\hdf5\H5FLmodule.h" />
@@ -227,13 +226,22 @@
     <ClInclude Include="include\hdf5\H5Sprivate.h" />
     <ClInclude Include="include\hdf5\H5Spublic.h" />
     <ClInclude Include="include\hdf5\H5StrType.h" />
+    <ClInclude Include="include\hdf5\H5subfiling_common.h" />
+    <ClInclude Include="include\hdf5\H5subfiling_err.h" />
     <ClInclude Include="include\hdf5\H5TBprivate.h" />
     <ClInclude Include="include\hdf5\H5TBpublic.h" />
     <ClInclude Include="include\hdf5\H5Tdevelop.h" />
     <ClInclude Include="include\hdf5\H5Tmodule.h" />
+    <ClInclude Include="include\hdf5\h5tools.h" />
+    <ClInclude Include="include\hdf5\h5tools_dump.h" />
+    <ClInclude Include="include\hdf5\h5tools_error.h" />
+    <ClInclude Include="include\hdf5\h5tools_ref.h" />
+    <ClInclude Include="include\hdf5\h5tools_str.h" />
+    <ClInclude Include="include\hdf5\h5tools_utils.h" />
     <ClInclude Include="include\hdf5\H5Tpkg.h" />
     <ClInclude Include="include\hdf5\H5Tprivate.h" />
     <ClInclude Include="include\hdf5\H5Tpublic.h" />
+    <ClInclude Include="include\hdf5\h5trav.h" />
     <ClInclude Include="include\hdf5\H5TSdevelop.h" />
     <ClInclude Include="include\hdf5\H5TSprivate.h" />
     <ClInclude Include="include\hdf5\H5UCprivate.h" />
@@ -258,6 +266,8 @@
     <ClInclude Include="include\hdf5\H5Zpublic.h" />
     <ClInclude Include="include\hdf5\hdf5.h" />
     <ClInclude Include="include\hdf5\hdf5_hl.h" />
+    <ClInclude Include="include\hdf5\io_timer.h" />
+    <ClInclude Include="include\hdf5\ph5diff.h" />
     <ClInclude Include="include\hdf5\uthash.h" />
     <ClInclude Include="src\H5FDsubfiling\mercury\src\util\mercury_compiler_attributes.h" />
     <ClInclude Include="src\H5FDsubfiling\mercury\src\util\mercury_queue.h" />
@@ -335,6 +345,11 @@
     <ClCompile Include="src\H5Defl.c" />
     <ClCompile Include="src\H5Dfarray.c" />
     <ClCompile Include="src\H5Dfill.c" />
+    <ClCompile Include="src\h5diff.c" />
+    <ClCompile Include="src\h5diff_array.c" />
+    <ClCompile Include="src\h5diff_attr.c" />
+    <ClCompile Include="src\h5diff_dset.c" />
+    <ClCompile Include="src\h5diff_util.c" />
     <ClCompile Include="src\H5Dint.c" />
     <ClCompile Include="src\H5Dio.c" />
     <ClCompile Include="src\H5Dlayout.c" />
@@ -653,11 +668,19 @@
     <ClCompile Include="src\H5Tnative.c" />
     <ClCompile Include="src\H5Toffset.c" />
     <ClCompile Include="src\H5Toh.c" />
+    <ClCompile Include="src\h5tools.c" />
+    <ClCompile Include="src\h5tools_dump.c" />
+    <ClCompile Include="src\h5tools_filters.c" />
+    <ClCompile Include="src\h5tools_ref.c" />
+    <ClCompile Include="src\h5tools_str.c" />
+    <ClCompile Include="src\h5tools_type.c" />
+    <ClCompile Include="src\h5tools_utils.c" />
     <ClCompile Include="src\H5Topaque.c" />
     <ClCompile Include="src\H5Torder.c" />
     <ClCompile Include="src\H5Tpad.c" />
     <ClCompile Include="src\H5Tprecis.c" />
     <ClCompile Include="src\H5trace.c" />
+    <ClCompile Include="src\h5trav.c" />
     <ClCompile Include="src\H5Tref.c" />
     <ClCompile Include="src\H5TS.c" />
     <ClCompile Include="src\H5Tstrpad.c" />
@@ -692,6 +715,7 @@
     <ClCompile Include="src\H5Zshuffle.c" />
     <ClCompile Include="src\H5Zszip.c" />
     <ClCompile Include="src\H5Ztrans.c" />
+    <ClCompile Include="src\io_timer.c" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="include\hdf5\H5err.txt" />

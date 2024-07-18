@@ -713,7 +713,7 @@ typedef off_t       h5_stat_size_t;
 #define HDfdopen(N, S) _fdopen(N, S)
 #endif
 #ifndef HDfileno
-#define HDfileno(F) fileno(F)
+#define HDfileno(F) _fileno(F)
 #endif
 
 /* Since flock is so prevalent, always build these functions

@@ -14,9 +14,6 @@
     <Filter Include="include\hdf5">
       <UniqueIdentifier>{e8ad5e6f-cd22-47ec-83d1-a09eaa4583b4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="include\hdf5\H5FDsubfiling">
-      <UniqueIdentifier>{d3434a3c-66c7-43c1-ae0c-fc48e069a235}</UniqueIdentifier>
-    </Filter>
     <Filter Include="src">
       <UniqueIdentifier>{a2710921-bd51-44ad-b0ff-6c739511f033}</UniqueIdentifier>
     </Filter>
@@ -60,24 +57,6 @@
     </ClInclude>
     <ClInclude Include="src\H5FDsubfiling\mercury\src\util\mercury_util_error.h">
       <Filter>src\H5FDsubfiling\mercury\src\util</Filter>
-    </ClInclude>
-    <ClInclude Include="include\hdf5\H5FDsubfiling\H5FDioc.h">
-      <Filter>include\hdf5\H5FDsubfiling</Filter>
-    </ClInclude>
-    <ClInclude Include="include\hdf5\H5FDsubfiling\H5FDioc_priv.h">
-      <Filter>include\hdf5\H5FDsubfiling</Filter>
-    </ClInclude>
-    <ClInclude Include="include\hdf5\H5FDsubfiling\H5FDsubfiling.h">
-      <Filter>include\hdf5\H5FDsubfiling</Filter>
-    </ClInclude>
-    <ClInclude Include="include\hdf5\H5FDsubfiling\H5FDsubfiling_priv.h">
-      <Filter>include\hdf5\H5FDsubfiling</Filter>
-    </ClInclude>
-    <ClInclude Include="include\hdf5\H5FDsubfiling\H5subfiling_common.h">
-      <Filter>include\hdf5\H5FDsubfiling</Filter>
-    </ClInclude>
-    <ClInclude Include="include\hdf5\H5FDsubfiling\H5subfiling_err.h">
-      <Filter>include\hdf5\H5FDsubfiling</Filter>
     </ClInclude>
     <ClInclude Include="include\hdf5\H5ACmodule.h">
       <Filter>include\hdf5</Filter>
@@ -779,6 +758,54 @@
       <Filter>include\hdf5</Filter>
     </ClInclude>
     <ClInclude Include="include\hdf5\H5PacketTable.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\h5diff.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\h5tools.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\h5tools_dump.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\h5tools_error.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\h5tools_ref.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\h5tools_str.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\h5tools_utils.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\h5trav.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\io_timer.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\ph5diff.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5FDioc.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5FDioc_priv.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5FDsubfiling.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5FDsubfiling_priv.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5subfiling_common.h">
+      <Filter>include\hdf5</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hdf5\H5subfiling_err.h">
       <Filter>include\hdf5</Filter>
     </ClInclude>
   </ItemGroup>
@@ -1957,6 +1984,48 @@
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="src\H5PacketTable.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\h5diff.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\h5diff_array.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\h5diff_attr.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\h5diff_dset.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\h5diff_util.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\h5tools.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\h5tools_dump.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\h5tools_filters.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\h5tools_ref.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\h5tools_str.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\h5tools_type.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\h5tools_utils.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\h5trav.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\io_timer.c">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
