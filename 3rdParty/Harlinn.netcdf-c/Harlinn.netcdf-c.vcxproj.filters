@@ -1019,9 +1019,6 @@
     <ClInclude Include="src\oc2\dapy.h">
       <Filter>src\oc2</Filter>
     </ClInclude>
-    <ClInclude Include="src\oc2\oc.h">
-      <Filter>src\oc2</Filter>
-    </ClInclude>
     <ClInclude Include="src\oc2\occompile.h">
       <Filter>src\oc2</Filter>
     </ClInclude>
@@ -1058,13 +1055,16 @@
     <ClInclude Include="src\oc2\ocutil.h">
       <Filter>src\oc2</Filter>
     </ClInclude>
-    <ClInclude Include="src\oc2\ocx.h">
-      <Filter>src\oc2</Filter>
-    </ClInclude>
     <ClInclude Include="src\oc2\xxdr.h">
       <Filter>src\oc2</Filter>
     </ClInclude>
     <ClInclude Include="include\netcdf\config.h">
+      <Filter>include\netcdf</Filter>
+    </ClInclude>
+    <ClInclude Include="include\netcdf\oc.h">
+      <Filter>include\netcdf</Filter>
+    </ClInclude>
+    <ClInclude Include="include\netcdf\ocx.h">
       <Filter>include\netcdf</Filter>
     </ClInclude>
   </ItemGroup>

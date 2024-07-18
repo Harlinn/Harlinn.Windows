@@ -206,7 +206,9 @@ typedef OCobject OClink;
 
 /**@}*/
 
+#ifndef DLL_NETCDF
 #define DLL_NETCDF 1
+#endif
 /**************************************************/
 /* extern API */
 /* Declaration modifiers for DLL support (MSC et al) */

@@ -9,6 +9,10 @@ Internal library debugging interface
 #ifndef OCX_H
 #define OCX_H
 
+#ifndef DLL_NETCDF
+#define DLL_NETCDF 1
+#endif
+
 /* Declaration modifiers for DLL support (MSC et al) */
 #if defined(DLL_NETCDF) /* define when library is a DLL */
 #  if defined(BUILDING_HARLINN_NETCDF_C) /* define when building the library */
@@ -37,7 +41,7 @@ typedef unsigned int OCDT;
 #define OCDT_ATOMIC    ((OCDT)(32)) /* is atomic leaf */
 
 /* Return mode for this data */
-extern OCerror oc_data_mode(OClink, OCdatanode, OCDT* modep);
+EXTERNL OCerror oc_data_mode(OClink, OCdatanode, OCDT* modep);
 
 EXTERNL OCerror oc_dds_dd(OClink, OCddsnode, int);
 EXTERNL OCerror oc_dds_ddnode(OClink, OCddsnode);

@@ -578,6 +578,8 @@
     <ClInclude Include="include\netcdf\netcdf_mem.h" />
     <ClInclude Include="include\netcdf\netcdf_meta.h" />
     <ClInclude Include="include\netcdf\netcdf_par.h" />
+    <ClInclude Include="include\netcdf\oc.h" />
+    <ClInclude Include="include\netcdf\ocx.h" />
     <ClInclude Include="include\netcdf\onstack.h" />
     <ClInclude Include="include\netcdf\rnd.h" />
     <ClInclude Include="include\netcdf\XGetopt.h" />
@@ -636,7 +638,6 @@
     <ClInclude Include="src\libsrc\pstdint.h" />
     <ClInclude Include="src\oc2\dapparselex.h" />
     <ClInclude Include="src\oc2\dapy.h" />
-    <ClInclude Include="src\oc2\oc.h" />
     <ClInclude Include="src\oc2\occompile.h" />
     <ClInclude Include="src\oc2\occonstraints.h" />
     <ClInclude Include="src\oc2\occurlfunctions.h" />
@@ -649,7 +650,6 @@
     <ClInclude Include="src\oc2\ocnode.h" />
     <ClInclude Include="src\oc2\ocread.h" />
     <ClInclude Include="src\oc2\ocutil.h" />
-    <ClInclude Include="src\oc2\ocx.h" />
     <ClInclude Include="src\oc2\xxdr.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

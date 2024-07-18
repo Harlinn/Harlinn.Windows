@@ -54,7 +54,7 @@ object is to be returned.
 \retval OC_EINVAL  One of the arguments (link, etc.) was invalid.
 */
 
-OCerror
+EXTERNL OCerror
 oc_open(const char* url, OCobject* linkp)
 {
 	OCerror ocerr = OC_NOERR;
@@ -79,7 +79,7 @@ that link.
 \retval OC_EINVAL  One of the arguments (link, etc.) was invalid.
 */
 
-OCerror
+EXTERNL OCerror
 oc_close(OCobject link)
 {
     OCstate* state;
@@ -116,7 +116,7 @@ the root node of the tree associated with the the request.
 \retval OC_EINVAL  One of the arguments (link, etc.) was invalid.
 */
 
-OCerror
+EXTERNL OCerror
 oc_fetch(OCobject link, const char* constraint,
                  OCdxd dxdkind, OCflags flags, OCobject* rootp)
 {
@@ -148,7 +148,7 @@ will be reclaimed as well.
 \retval OC_EINVAL  One of the arguments (link, etc.) was invalid.
 */
 
-OCerror
+EXTERNL OCerror
 oc_root_free(OCobject link, OCobject ddsroot)
 {
     OCnode* root;
@@ -170,7 +170,7 @@ a DAS, DDS, or DATADDS request exactly as sent by the server.
 \retval OC_EINVAL  One of the arguments (link, etc.) was invalid.
 */
 
-const char*
+EXTERNL const char*
 oc_tree_text(OCobject link, OCobject ddsroot)
 {
     OCnode* root = NULL;
@@ -218,7 +218,7 @@ of attributes associated with this object.
 \retval OC_EINVAL  One of the arguments (link, etc.) was invalid.
 */
 
-OCerror
+EXTERNL OCerror
 oc_dds_properties(OCobject link,
  	  OCobject ddsnode,
 	  char** namep,
@@ -261,7 +261,7 @@ when no longer needed.
 \retval OC_EINVAL  One of the arguments (link, etc.) was invalid.
 */
 
-OCerror
+EXTERNL OCerror
 oc_dds_name(OCobject link, OCobject ddsnode, char** namep)
 {
     OCstate* state;
@@ -287,7 +287,7 @@ is stored.
 \retval OC_EINVAL  One of the arguments (link, etc.) was invalid.
 */
 
-OCerror
+EXTERNL OCerror
 oc_dds_nsubnodes(OCobject link, OCobject ddsnode, size_t* nsubnodesp)
 {
     OCnode* node;
@@ -308,7 +308,7 @@ Specialized accessor function as an alternative to oc_dds_properties.
 \retval OC_EINVAL  One of the arguments (link, etc.) was invalid.
 */
 
-OCerror
+EXTERNL OCerror
 oc_dds_atomictype(OCobject link, OCobject ddsnode, OCtype* typep)
 {
     OCnode* node;
@@ -329,7 +329,7 @@ Specialized accessor function as an alternative to oc_dds_properties.
 \retval OC_EINVAL  One of the arguments (link, etc.) was invalid.
 */
 
-OCerror
+EXTERNL OCerror
 oc_dds_class(OCobject link, OCobject ddsnode, OCtype* typep)
 {
     OCnode* node;
@@ -350,7 +350,7 @@ Specialized accessor function as an alternative to oc_dds_properties.
 \retval OC_EINVAL  One of the arguments (link, etc.) was invalid.
 */
 
-OCerror
+EXTERNL OCerror
 oc_dds_rank(OCobject link, OCobject ddsnode, size_t* rankp)
 {
     OCnode* node;
@@ -371,7 +371,7 @@ Specialized accessor function as an alternative to oc_dds_properties.
 \retval OC_EINVAL  One of the arguments (link, etc.) was invalid.
 */
 
-OCerror
+EXTERNL OCerror
 oc_dds_attr_count(OCobject link, OCobject ddsnode, size_t* nattrp)
 {
     OCnode* node;
@@ -399,7 +399,7 @@ the node is stored.
 \retval OC_EINVAL  One of the arguments (link, etc.) was invalid.
 */
 
-OCerror
+EXTERNL OCerror
 oc_dds_root(OCobject link, OCobject ddsnode, OCobject* rootp)
 {
     OCnode* node;
@@ -421,7 +421,7 @@ container ddsnode is stored.
 \retval OC_EINVAL  One of the arguments (link, etc.) was invalid.
 */
 
-OCerror
+EXTERNL OCerror
 oc_dds_container(OCobject link, OCobject ddsnode, OCobject* containerp)
 {
     OCnode* node;
@@ -447,7 +447,7 @@ of a node that itself is a container (Dataset, Structure, Sequence, or Grid)
 \retval OC_EBADTYPE The dds node is not a container node.
 */
 
-OCerror
+EXTERNL OCerror
 oc_dds_ithfield(OCobject link, OCobject ddsnode, size_t index, OCobject* fieldnodep)
 {
     OCnode* node;
@@ -480,7 +480,7 @@ Alias for oc_dds_ithfield.
 \retval OC_EBADTYPE The dds node is not a container node.
 */
 
-OCerror
+EXTERNL OCerror
 oc_dds_ithsubnode(OCobject link, OCobject ddsnode, size_t index, OCobject* fieldnodep)
 {
     return OCTHROW(oc_dds_ithfield(link,ddsnode,index,fieldnodep));
@@ -498,7 +498,7 @@ Equivalent to oc_dds_ithfield(link,grid-container,0,arraynode).
 \retval OC_EINVAL  One of the arguments (link, etc.) was invalid.
 */
 
-OCerror
+EXTERNL OCerror
 oc_dds_gridarray(OCobject link, OCobject grid, OCobject* arraynodep)
 {
     return OCTHROW(oc_dds_ithfield(link,grid,0,arraynodep));
@@ -519,7 +519,7 @@ Note the map index starts at zero.
 \retval OC_EINVAL  One of the arguments (link, etc.) was invalid.
 */
 
-OCerror
+EXTERNL OCerror
 oc_dds_gridmap(OCobject link, OCobject grid, size_t index, OCobject* mapnodep)
 {
     return OCTHROW(oc_dds_ithfield(link,grid,index+1,mapnodep));
@@ -539,7 +539,7 @@ Obtain a dds node by name from a dds structure or dataset node.
 \retval OC_EINVAL  One of the arguments (link, etc.) was invalid.
 */
 
-OCerror
+EXTERNL OCerror
 oc_dds_fieldbyname(OCobject link, OCobject ddsnode, const char* name, OCobject* fieldp)
 {
     OCerror err = OC_NOERR;
@@ -589,7 +589,7 @@ are stored. The caller must allocate based on the rank of the node.
 \retval OC_EINVAL  One of the arguments (link, etc.) was invalid.
 */
 
-OCerror
+EXTERNL OCerror
 oc_dds_dimensions(OCobject link, OCobject ddsnode, OCobject* dims)
 {
     OCnode* node;
@@ -622,7 +622,7 @@ associated with the node of interest.
 \retval OC_EINVAL  One of the arguments (link, etc.) was invalid.
 */
 
-OCerror
+EXTERNL OCerror
 oc_dds_ithdimension(OCobject link, OCobject ddsnode, size_t index, OCobject* dimidp)
 {
     OCnode* node;
@@ -652,7 +652,7 @@ The caller must free the returned name.
 \retval OC_EINVAL  One of the arguments (link, etc.) was invalid.
 */
 
-OCerror
+EXTERNL OCerror
 oc_dimension_properties(OCobject link, OCobject ddsnode, size_t* sizep, char** namep)
 {
     OCnode* dim;
@@ -680,7 +680,7 @@ by the rank of the node and must be allocated and free'd by the caller.
 \retval OC_EINVAL  One of the arguments (link, etc.) was invalid.
 */
 
-OCerror
+EXTERNL OCerror
 oc_dds_dimensionsizes(OCobject link, OCobject ddsnode, size_t* dimsizes)
 {
     OCnode* node;
@@ -725,7 +725,7 @@ are stored. It must be allocated and free'd by the caller.
 \retval OC_EINVAL  One of the arguments (link, etc.) was invalid.
 */
 
-OCerror
+EXTERNL OCerror
 oc_dds_attr(OCobject link, OCobject ddsnode, size_t index,
 			   char** namep, OCtype* octypep,
 			   size_t* nvaluesp, char** strings)
@@ -760,7 +760,7 @@ BUT NOT THE VECTOR since that was allocated by the caller.
 \param[in] svec The node of interest.
 */
 
-void
+EXTERNL void
 oc_reclaim_strings(size_t n, char** svec)
 {
     int i;
@@ -780,7 +780,7 @@ is stored.
 \retval OC_EINVAL  One of the arguments (link, etc.) was invalid.
 */
 
-OCerror
+EXTERNL OCerror
 oc_das_attr_count(OCobject link, OCobject dasnode, size_t* nvaluesp)
 {
     OCnode* attr;
@@ -813,7 +813,7 @@ are stored. Caller must allocate and free.
 \retval OC_EINVAL  One of the arguments (link, etc.) was invalid.
 */
 
-OCerror
+EXTERNL OCerror
 oc_das_attr(OCobject link, OCobject dasnode, size_t index, OCtype* atomtypep, char** valuep)
 {
     OCnode* attr;
@@ -851,7 +851,7 @@ from a specified DAS node.
 \retval OC_EINVAL  One of the arguments (link, etc.) was invalid.
 */
 
-OCerror
+EXTERNL OCerror
 oc_merge_das(OCobject link, OCobject dasroot, OCobject ddsroot)
 {
     OCstate* state;
@@ -887,7 +887,7 @@ This procedure, given the DDS tree root, gets the data tree root.
 \retval OC_EINVAL  One of the arguments (link, etc.) was invalid.
 */
 
-OCerror
+EXTERNL OCerror
 oc_dds_getdataroot(OCobject link, OCobject ddsroot, OCobject* datarootp)
 {
     OCerror ocerr = OC_NOERR;
@@ -922,7 +922,7 @@ of a data node instance that itself is a container instance.
 \retval OC_EBADTYPE The data node is not a container node.
 */
 
-OCerror
+EXTERNL OCerror
 oc_data_ithfield(OCobject link, OCobject datanode, size_t index, OCobject* fieldp)
 {
     OCerror ocerr = OC_NOERR;
@@ -1009,7 +1009,7 @@ Equivalent to oc_data_ithfield(link,grid,0,arraydata).
 \retval OC_EINVAL  One of the arguments (link, etc.) was invalid.
 */
 
-OCerror
+EXTERNL OCerror
 oc_data_gridarray(OCobject link, OCobject grid, OCobject* arraydatap)
 {
     return OCTHROW(oc_data_ithfield(link,grid,0,arraydatap));
@@ -1030,7 +1030,7 @@ Note that Map indices start at zero.
 \retval OC_EINVAL  One of the arguments (link, etc.) was invalid.
 */
 
-OCerror
+EXTERNL OCerror
 oc_data_gridmap(OCobject link, OCobject grid, size_t index, OCobject* mapdatap)
 {
     return OCTHROW(oc_data_ithfield(link,grid,index+1,mapdatap));
@@ -1050,7 +1050,7 @@ of a specified instance object.
 \retval OC_EINVAL  One of the arguments (link, etc.) was invalid.
 */
 
-OCerror
+EXTERNL OCerror
 oc_data_container(OCobject link,  OCobject datanode, OCobject* containerp)
 {
     OCerror ocerr = OC_NOERR;
@@ -1083,7 +1083,7 @@ This procedure, given any node in a data tree, get the root of that tree.
 \retval OC_EINVAL  One of the arguments (link, etc.) was invalid.
 */
 
-OCerror
+EXTERNL OCerror
 oc_data_root(OCobject link, OCobject datanode, OCobject* rootp)
 {
     OCerror ocerr = OC_NOERR;
@@ -1119,7 +1119,7 @@ or was a scalar.
 \retval OC_EINVAL  One of the arguments (link, etc.) was invalid.
 */
 
-OCerror
+EXTERNL OCerror
 oc_data_ithelement(OCobject link, OCobject datanode, size_t* indices, OCobject* elementp)
 {
     OCerror ocerr = OC_NOERR;
@@ -1154,7 +1154,7 @@ of the Sequence.
 \retval OC_EINVAL  One of the arguments (link, etc.) was invalid.
 */
 
-extern OCerror oc_data_ithrecord(OCobject link, OCobject datanode, size_t index, OCobject* recordp)
+EXTERNL OCerror oc_data_ithrecord(OCobject link, OCobject datanode, size_t index, OCobject* recordp)
 {
     OCerror ocerr = OC_NOERR;
     OCstate* state;
@@ -1190,7 +1190,7 @@ or it was not a dimensioned instance of OC_Structure.
 \retval OC_EINVAL  One of the arguments (link, etc.) was invalid.
 */
 
-OCerror
+EXTERNL OCerror
 oc_data_position(OCobject link, OCobject datanode, size_t* indices)
 {
     OCstate* state;
@@ -1221,7 +1221,7 @@ or it was a record data instance.
 \retval OC_EINVAL  One of the arguments (link, etc.) was invalid.
 */
 
-OCerror
+EXTERNL OCerror
 oc_data_recordcount(OCobject link, OCobject datanode, size_t* countp)
 {
     OCstate* state;
@@ -1246,7 +1246,7 @@ for this data instance.
 \retval OC_EINVAL  One of the arguments (link, etc.) was invalid.
 */
 
-OCerror
+EXTERNL OCerror
 oc_data_ddsnode(OCobject link, OCobject datanode, OCobject* nodep)
 {
     OCerror ocerr = OC_NOERR;
@@ -1274,7 +1274,7 @@ API procedures.
 \retval OC_EINVAL  One of the arguments (link, etc.) was invalid.
 */
 
-OCerror
+EXTERNL OCerror
 oc_data_octype(OCobject link, OCobject datanode, OCtype* typep)
 {
     OCerror ocerr = OC_NOERR;
@@ -1301,7 +1301,7 @@ a record in a Sequence).
 \retval zero(0) otherwise.
 */
 
-int
+EXTERNL int
 oc_data_indexable(OCobject link, OCobject datanode)
 {
     OCdata* data;
@@ -1325,7 +1325,7 @@ oc_data_position() will succeed when applied to this data instance.
 \retval zero(0) otherwise.
 */
 
-int
+EXTERNL int
 oc_data_indexed(OCobject link, OCobject datanode)
 {
     OCdata* data;
@@ -1369,7 +1369,7 @@ and the read request cannot be completed.
 \retval OC_EINVAL  One of the arguments (link, etc.) was invalid.
 */
 
-OCerror
+EXTERNL OCerror
 oc_data_read(OCobject link, OCobject datanode,
                  size_t* start, size_t* edges,
 	         size_t memsize, void* memory)
@@ -1419,7 +1419,7 @@ and the read request cannot be completed.
 \retval OC_EINVAL  One of the arguments (link, etc.) was invalid.
 */
 
-OCerror
+EXTERNL OCerror
 oc_data_readscalar(OCobject link, OCobject datanode,
 	         size_t memsize, void* memory)
 {
@@ -1453,7 +1453,7 @@ and the read request cannot be completed.
 \retval OC_EINVAL  One of the arguments (link, etc.) was invalid.
 */
 
-OCerror
+EXTERNL OCerror
 oc_data_readn(OCobject link, OCobject datanode,
                  const size_t* start, size_t N,
 	         size_t memsize, void* memory)
@@ -1524,7 +1524,7 @@ and the read request cannot be completed.
 
 */
 
-OCerror
+EXTERNL OCerror
 oc_dds_read(OCobject link, OCobject ddsnode,
                  size_t* start, size_t* edges,
 	         size_t memsize, void* memory)
@@ -1567,7 +1567,7 @@ and the read request cannot be completed.
 \retval OC_EINVAL  One of the arguments (link, etc.) was invalid.
 */
 
-OCerror
+EXTERNL OCerror
 oc_dds_readscalar(OCobject link, OCobject ddsnode,
 	         size_t memsize, void* memory)
 {
@@ -1607,7 +1607,7 @@ and the read request cannot be completed.
 \retval OC_EINVAL  One of the arguments (link, etc.) was invalid.
 */
 
-OCerror
+EXTERNL OCerror
 oc_dds_readn(OCobject link, OCobject ddsnode,
                  size_t* start, size_t N,
 	         size_t memsize, void* memory)
@@ -1643,7 +1643,7 @@ Non-atomic types (e.g. OC_Structure) return zero.
 \return The C size of the atomic type.
 */
 
-size_t
+EXTERNL size_t
 oc_typesize(OCtype etype)
 {
     return octypesize(etype);
@@ -1662,7 +1662,7 @@ The caller MUST NOT free the returned string.
 \return The name, as a string, of that OCtype value.
 */
 
-const char*
+EXTERNL const char*
 oc_typetostring(OCtype octype)
 {
     return octypetoddsstring(octype);
@@ -1683,7 +1683,7 @@ value as a NULL terminated string.
 \retval OC_EINVAL  if one of the arguments is illegal.
 */
 
-OCerror
+EXTERNL OCerror
 oc_typeprint(OCtype etype, void* value, size_t bufsize, char* buffer)
 {
     return OCTHROW(octypeprint(etype,value,bufsize,buffer));
@@ -1709,7 +1709,7 @@ to a given OCerror value.
 \return The error message
 */
 
-const char*
+EXTERNL const char*
 oc_errstring(OCerror err)
 {
     return ocerrstring(err);
@@ -1743,7 +1743,7 @@ The error reply contains three pieces of information.
 values are meaningless.
 */
 
-OCerror
+EXTERNL OCerror
 oc_svcerrordata(OCobject link, char** codep,
                                char** msgp, long* httpp)
 {
@@ -1762,7 +1762,7 @@ fetch command.
 \retval the HTTP code
 */
 
-OCerror
+EXTERNL OCerror
 oc_httpcode(OCobject link)
 {
     OCstate* state;
@@ -1788,7 +1788,7 @@ data chunk returned by the server.
 \retval OC_EINVAL if an argument was invalid
 */
 
-OCerror
+EXTERNL OCerror
 oc_raw_xdrsize(OCobject link, OCobject ddsroot, off_t* xdrsizep)
 {
     OCnode* root;
@@ -1803,7 +1803,7 @@ oc_raw_xdrsize(OCobject link, OCobject ddsroot, off_t* xdrsizep)
 }
 
 /* Resend a url as a head request to check the Last-Modified time */
-OCerror
+EXTERNL OCerror
 oc_update_lastmodified_data(OCobject link, OCflags flags)
 {
     OCstate* state;
@@ -1812,7 +1812,7 @@ oc_update_lastmodified_data(OCobject link, OCflags flags)
     return OCTHROW(ocupdatelastmodifieddata(state,flags));
 }
 
-long
+EXTERNL long
 oc_get_lastmodified_data(OCobject link)
 {
     OCstate* state;
@@ -1822,7 +1822,7 @@ oc_get_lastmodified_data(OCobject link)
 }
 
 /* Given an arbitrary OCnode, return the connection of which it is a part */
-OCerror
+EXTERNL OCerror
 oc_get_connection(OCobject ddsnode, OCobject* linkp)
 {
     OCnode* node;
@@ -1843,7 +1843,7 @@ and using the DAP protocol.
 \retval OC_EINVAL if the request failed.
 */
 
-OCerror
+EXTERNL OCerror
 oc_ping(const char* url)
 {
     return OCTHROW(ocping(url));
@@ -1870,7 +1870,7 @@ oc_dumpnode(OCobject link, OCobject ddsroot)
 */
 
 
-OCerror
+EXTERNL OCerror
 oc_dds_dd(OCobject link, OCobject ddsroot, int level)
 {
     OCstate* state;
@@ -1884,7 +1884,7 @@ oc_dds_dd(OCobject link, OCobject ddsroot, int level)
     return OCTHROW(OC_NOERR);
 }
 
-OCerror
+EXTERNL OCerror
 oc_dds_ddnode(OCobject link, OCobject ddsroot)
 {
     OCnode* root;
@@ -1895,7 +1895,7 @@ oc_dds_ddnode(OCobject link, OCobject ddsroot)
     return OCTHROW(OC_NOERR);
 }
 
-OCerror
+EXTERNL OCerror
 oc_data_ddpath(OCobject link, OCobject datanode, char** resultp)
 {
     OCstate* state;
@@ -1914,7 +1914,7 @@ oc_data_ddpath(OCobject link, OCobject datanode, char** resultp)
     return OCTHROW(OC_NOERR);
 }
 
-OCerror
+EXTERNL OCerror
 oc_data_ddtree(OCobject link, OCobject ddsroot)
 {
     OCstate* state;
@@ -1932,7 +1932,7 @@ oc_data_ddtree(OCobject link, OCobject ddsroot)
     return OCTHROW(OC_NOERR);
 }
 
-OCerror
+EXTERNL OCerror
 oc_data_mode(OCobject link, OCobject datanode, OCDT* modep)
 {
     OCdata* data;
@@ -1957,7 +1957,7 @@ oc_data_free(OCobject link, OCobject datanode)
 /* Free up a ddsnode that is no longer being used;
    Currently does nothing
 */
-OCerror
+EXTERNL OCerror
 oc_dds_free(OCobject link, OCobject dds0)
 {
     return OCTHROW(OC_NOERR);
@@ -2011,7 +2011,7 @@ Set the absolute path to use for the .netrc file
                   because the path string is null or zero-length.
 */
 
-OCerror
+EXTERNL OCerror
 oc_set_netrc(OClink* link, const char* file)
 {
     OCstate* state;
@@ -2063,7 +2063,7 @@ Force the curl library to trace its actions.
 \retval OC_NOERR if the request succeeded.
 */
 
-OCerror
+EXTERNL OCerror
 oc_trace_curl(OCobject link)
 {
     OCstate* state;
