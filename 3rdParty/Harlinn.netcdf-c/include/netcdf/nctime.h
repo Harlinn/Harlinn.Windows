@@ -141,10 +141,12 @@ typedef struct timeinfo_t {
     cdCompTime origin;
 } timeinfo_t;
 
-
+#ifndef DLL_NETCDF
+#define DLL_NETCDF 1
+#endif
 
 #if defined(DLL_NETCDF) /* Defined when library is a DLL */
-# if defined(DLL_EXPORT) /* define when building the library. */
+# if defined(BUILDING_HARLINN_NETCDF_C) /* define when building the library. */
 #   define MSC_NCTIME_EXTRA __declspec(dllexport)
 # else
 #   define MSC_NCTIME_EXTRA __declspec(dllimport)

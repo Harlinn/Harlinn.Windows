@@ -190,7 +190,7 @@ CdDayOfYear(CdTime *date, int *doy)
  *
  * Derived from NRL Neons V3.6
  */
-void
+MSC_NCTIME_EXTRA void
 Cde2h(double etime, CdTimeType timeType, long baseYear, CdTime *htime)
 {
 	long 	ytemp;			/* temporary year holder */
@@ -310,7 +310,7 @@ CdAddDelTime(double begEtm, long nDel, CdDeltaTime delTime, CdTimeType timeType,
 
 /* Parse relative units, returning the unit and base component time. */
 /* Function returns 1 if error, 0 on success */
-int
+MSC_NCTIME_EXTRA int
 cdParseRelunits(cdCalenType timetype, char* relunits, cdUnitTime* unit, cdCompTime* base_comptime)
 {
 	char charunits[CD_MAX_RELUNITS];
@@ -620,7 +620,7 @@ cdToOldTimetype(cdCalenType newtype, CdTimeType* oldtype)
  *
  * Derived from NRL Neons V3.6
  */
-void
+MSC_NCTIME_EXTRA void
 Cdh2e(CdTime *htime, double *etime)
 {
 	long 	ytemp, year;			/* temporary year holder */
@@ -678,7 +678,7 @@ cdValidateTime(cdCalenType timetype, cdCompTime comptime)
 	return 0;
 }
 
-void
+MSC_NCTIME_EXTRA void
 cdChar2Comp(cdCalenType timetype, char* chartime, cdCompTime* comptime)
 {
 	double sec;
@@ -1170,7 +1170,7 @@ cdComp2Iso(cdCalenType timetype, int separator, cdCompTime comptime, char* time)
 }
 
 /* rkr: added for output closer to ISO 8601 */
-void
+MSC_NCTIME_EXTRA void
 cdRel2Iso(cdCalenType timetype, char* relunits, int separator, double reltime, char* chartime)
 {
 	cdCompTime comptime;
@@ -1181,7 +1181,7 @@ cdRel2Iso(cdCalenType timetype, char* relunits, int separator, double reltime, c
 	return;
 }
 
-int
+MSC_NCTIME_EXTRA int
 cdSetErrOpts(int opts)
 {
     int old = cuErrOpts;

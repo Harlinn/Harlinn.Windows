@@ -527,6 +527,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\netcdf\ceconstraints.h" />
+    <ClInclude Include="include\netcdf\config.h" />
     <ClInclude Include="include\netcdf\err_macros.h" />
     <ClInclude Include="include\netcdf\fbits.h" />
     <ClInclude Include="include\netcdf\hdf4dispatch.h" />
@@ -580,7 +581,6 @@
     <ClInclude Include="include\netcdf\onstack.h" />
     <ClInclude Include="include\netcdf\rnd.h" />
     <ClInclude Include="include\netcdf\XGetopt.h" />
-    <ClInclude Include="src\config.h" />
     <ClInclude Include="src\libdap2\constraints.h" />
     <ClInclude Include="src\libdap2\dapdebug.h" />
     <ClInclude Include="src\libdap2\dapdump.h" />

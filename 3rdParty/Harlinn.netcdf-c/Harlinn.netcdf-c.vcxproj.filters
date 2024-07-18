@@ -854,9 +854,6 @@
     <ClInclude Include="include\netcdf\XGetopt.h">
       <Filter>include\netcdf</Filter>
     </ClInclude>
-    <ClInclude Include="src\config.h">
-      <Filter>src</Filter>
-    </ClInclude>
     <ClInclude Include="src\libdap2\obsolete\constraints4.h">
       <Filter>src\libdap2\obsolete</Filter>
     </ClInclude>
@@ -1066,6 +1063,9 @@
     </ClInclude>
     <ClInclude Include="src\oc2\xxdr.h">
       <Filter>src\oc2</Filter>
+    </ClInclude>
+    <ClInclude Include="include\netcdf\config.h">
+      <Filter>include\netcdf</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
