@@ -376,18 +376,20 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="colamd.h" />
-    <ClInclude Include="html_mainpage.h" />
     <ClInclude Include="slu_cdefs.h" />
     <ClInclude Include="slu_Cnames.h" />
     <ClInclude Include="slu_dcomplex.h" />
     <ClInclude Include="slu_ddefs.h" />
-    <ClInclude Include="slu_def.h" />
     <ClInclude Include="slu_scomplex.h" />
     <ClInclude Include="slu_sdefs.h" />
     <ClInclude Include="slu_util.h" />
     <ClInclude Include="slu_zdefs.h" />
+    <ClInclude Include="superlu_config.h" />
     <ClInclude Include="superlu_enum_consts.h" />
     <ClInclude Include="supermatrix.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Makefile" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

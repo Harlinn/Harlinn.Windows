@@ -142,11 +142,11 @@ at the top-level directory.
 void
 cgssv(superlu_options_t *options, SuperMatrix *A, int *perm_c, int *perm_r,
       SuperMatrix *L, SuperMatrix *U, SuperMatrix *B,
-      SuperLUStat_t *stat, int *info )
+      SuperLUStat_t *stat, int_t *info )
 {
 
     DNformat *Bstore;
-    SuperMatrix *AA = NULL;/* A in SLU_NC format used by the factorization routine.*/
+    SuperMatrix *AA;/* A in SLU_NC format used by the factorization routine.*/
     SuperMatrix AC; /* Matrix postmultiplied by Pc */
     int      lwork = 0, *etree, i;
     GlobalLU_t Glu; /* Not needed on return. */
@@ -186,8 +186,14 @@ cgssv(superlu_options_t *options, SuperMatrix *A, int *perm_c, int *perm_r,
 			       Astore->nzval, Astore->colind, Astore->rowptr,
 			       SLU_NC, A->Dtype, A->Mtype);
 	trans = TRANS;
-    } else {
-        if ( A->Stype == SLU_NC ) AA = A;
+    } else if ( A->Stype == SLU_NC ) {
+        AA = A;
+    }
+    /* A is of unsupported matrix format. */
+    else {
+        AA = NULL;
+        *info = 1;
+        input_error("cgssv", &i);
     }
 
     t = SuperLU_timer_();
@@ -204,7 +210,7 @@ cgssv(superlu_options_t *options, SuperMatrix *A, int *perm_c, int *perm_r,
       get_perm_c(permc_spec, AA, perm_c);
     utime[COLPERM] = SuperLU_timer_() - t;
 
-    etree = intMalloc(A->ncol);
+    etree = int32Malloc(A->ncol);
 
     t = SuperLU_timer_();
     sp_preorder(options, AA, perm_c, etree, &AC);
@@ -224,8 +230,12 @@ cgssv(superlu_options_t *options, SuperMatrix *A, int *perm_c, int *perm_r,
     t = SuperLU_timer_();
     if ( *info == 0 ) {
         /* Solve the system A*X=B, overwriting B with X. */
-        cgstrs (trans, L, U, perm_c, perm_r, B, stat, info);
+	int info1;
+        cgstrs (trans, L, U, perm_c, perm_r, B, stat, &info1);
+    } else {
+        printf("cgstrf info %lld\n", (long long) *info); fflush(stdout);
     }
+    
     utime[SOLVE] = SuperLU_timer_() - t;
 
     SUPERLU_FREE (etree);

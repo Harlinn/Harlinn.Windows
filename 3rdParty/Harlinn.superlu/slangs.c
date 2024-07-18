@@ -68,7 +68,7 @@ at the top-level directory.
  * </pre>
  */
 
-SUPERLU_EXPORT float slangs(char *norm, SuperMatrix *A)
+float slangs(char *norm, SuperMatrix *A)
 {
     
     /* Local variables */

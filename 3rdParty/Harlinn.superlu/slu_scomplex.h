@@ -24,7 +24,6 @@ at the top-level directory.
 #ifndef __SUPERLU_SCOMPLEX /* allow multiple inclusions */
 #define __SUPERLU_SCOMPLEX
 
-#include "slu_def.h"
 
 #ifndef SCOMPLEX_INCLUDE
 #define SCOMPLEX_INCLUDE
@@ -69,14 +68,14 @@ extern "C" {
 #endif
 
 /* Prototypes for functions in scomplex.c */
-SUPERLU_EXPORT void c_div(complex *, complex *, complex *);
-SUPERLU_EXPORT double c_abs(complex *);     /* exact */
-SUPERLU_EXPORT double c_abs1(complex *);    /* approximate */
-SUPERLU_EXPORT void c_exp(complex *, complex *);
-SUPERLU_EXPORT void r_cnjg(complex *, complex *);
-SUPERLU_EXPORT double r_imag(complex *);
-SUPERLU_EXPORT complex c_sgn(complex *);
-SUPERLU_EXPORT complex c_sqrt(complex *);
+void c_div(complex *, complex *, complex *);
+double c_abs(complex *);     /* exact */
+double c_abs1(complex *);    /* approximate */
+void c_exp(complex *, complex *);
+void r_cnjg(complex *, complex *);
+double r_imag(complex *);
+complex c_sgn(complex *);
+complex c_sqrt(complex *);
 
 
 

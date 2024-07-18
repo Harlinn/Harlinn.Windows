@@ -24,7 +24,6 @@ at the top-level directory.
 #ifndef __SUPERLU_DCOMPLEX /* allow multiple inclusions */
 #define __SUPERLU_DCOMPLEX
 
-#include "slu_def.h"
 
 #ifndef DCOMPLEX_INCLUDE
 #define DCOMPLEX_INCLUDE
@@ -69,29 +68,13 @@ extern "C" {
 #endif
 
 /* Prototypes for functions in dcomplex.c */
-
-SUPERLU_EXPORT
 void z_div(doublecomplex *, doublecomplex *, doublecomplex *);
-
-SUPERLU_EXPORT
 double z_abs(doublecomplex *);     /* exact */
-
-SUPERLU_EXPORT
 double z_abs1(doublecomplex *);    /* approximate */
-
-SUPERLU_EXPORT
 void z_exp(doublecomplex *, doublecomplex *);
-
-SUPERLU_EXPORT
 void d_cnjg(doublecomplex *r, doublecomplex *z);
-
-SUPERLU_EXPORT
 double d_imag(doublecomplex *);
-
-SUPERLU_EXPORT
 doublecomplex z_sgn(doublecomplex *);
-
-SUPERLU_EXPORT
 doublecomplex z_sqrt(doublecomplex *);
 
 

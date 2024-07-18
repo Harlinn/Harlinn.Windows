@@ -59,12 +59,12 @@ csnode_bmod (
 #endif
 
     complex   comp_zero = {0.0, 0.0};
-    int            luptr, nsupc, nsupr, nrow;
-    int            isub, irow, i, iptr; 
-    register int   ufirst, nextlu;
-    int            *lsub, *xlsub;
-    complex         *lusup;
-    int            *xlusup;
+    int     nsupc, nsupr, nrow;
+    int_t   isub, irow;
+    int_t   ufirst, nextlu;
+    int_t   *lsub, *xlsub;
+    complex *lusup;
+    int_t   *xlusup, luptr;
     flops_t *ops = stat->ops;
 
     lsub    = Glu->lsub;
@@ -115,6 +115,7 @@ csnode_bmod (
 	cmatvec ( nsupr, nrow, nsupc, &lusup[luptr+nsupc], 
 			&lusup[ufirst], &tempv[0] );
 
+	int_t i, iptr; 
         /* Scatter tempv[*] into lusup[*] */
 	iptr = ufirst + nsupc;
 	for (i = 0; i < nrow; i++) {

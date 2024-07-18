@@ -1,6 +1,6 @@
 ﻿# Harlinn.Windows
 
-This repository contains a Visual Studio Solution currently containing 617 projects.
+This repository contains a Visual Studio Solution currently containing 619 projects.
 
 Most of the projects are open source projects that I have found useful at work, and a few are my own.
 
@@ -1248,7 +1248,7 @@ Skia Color Management
 **Project:** Harlinn.stb
 
 ### [SuperLU](https://portal.nersc.gov/project/sparse/superlu/)
-**Version:** 5.2.2
+**Version:** 6.0.1
 
 **Description:**
 > SuperLU is a general purpose library for the direct solution of large, sparse, nonsymmetric systems of linear equations.

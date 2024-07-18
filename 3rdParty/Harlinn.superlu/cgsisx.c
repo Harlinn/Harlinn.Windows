@@ -21,7 +21,8 @@ at the top-level directory.
  */
 #include "slu_cdefs.h"
 
-/*! \brief
+/*!
+ * Computes approximate solutions using the ILU factorization from cgsitrf()
  *
  * <pre>
  * Purpose
@@ -373,7 +374,7 @@ at the top-level directory.
  * mem_usage (output) mem_usage_t*
  *	   Record the memory usage statistics, consisting of following fields:
  *	   - for_lu (float)
- *	     The amount of space used in bytes for L\U data structures.
+ *	     The amount of space used in bytes for L\\U data structures.
  *	   - total_needed (float)
  *	     The amount of space needed in bytes to perform factorization.
  *	   - expansions (int)
@@ -403,10 +404,10 @@ at the top-level directory.
 void
 cgsisx(superlu_options_t *options, SuperMatrix *A, int *perm_c, int *perm_r,
        int *etree, char *equed, float *R, float *C,
-       SuperMatrix *L, SuperMatrix *U, void *work, int lwork,
+       SuperMatrix *L, SuperMatrix *U, void *work, int_t lwork,
        SuperMatrix *B, SuperMatrix *X,
        float *recip_pivot_growth, float *rcond,
-       GlobalLU_t *Glu, mem_usage_t *mem_usage, SuperLUStat_t *stat, int *info)
+       GlobalLU_t *Glu, mem_usage_t *mem_usage, SuperLUStat_t *stat, int_t *info)
 {
 
     DNformat  *Bstore, *Xstore;
@@ -417,10 +418,9 @@ cgsisx(superlu_options_t *options, SuperMatrix *A, int *perm_c, int *perm_r,
     int       colequ, equil, nofact, notran, rowequ, permc_spec, mc64;
     trans_t   trant;
     char      norm[1];
-    int       i, j, info1;
+    int_t     i, j;
     float    amax, anorm, bignum, smlnum, colcnd, rowcnd, rcmax, rcmin;
-    int       relax, panel_size;
-    float    diag_pivot_thresh;
+    int       relax, panel_size, info1;
     double    t0;      /* temporary time */
     double    *utime;
 
@@ -508,15 +508,14 @@ cgsisx(superlu_options_t *options, SuperMatrix *A, int *perm_c, int *perm_r,
 	}
     }
     if (*info != 0) {
-	i = -(*info);
-	input_error("cgsisx", &i);
+	int ii = -(*info);
+	input_error("cgsisx", &ii);
 	return;
     }
 
     /* Initialization for factor parameters */
     panel_size = sp_ienv(1);
     relax      = sp_ienv(2);
-    diag_pivot_thresh = options->DiagPivotThresh;
 
     utime = stat->utime;
 
@@ -542,14 +541,14 @@ cgsisx(superlu_options_t *options, SuperMatrix *A, int *perm_c, int *perm_r,
     if ( nofact ) {
 	register int i, j;
 	NCformat *Astore = AA->Store;
-	int nnz = Astore->nnz;
-	int *colptr = Astore->colptr;
-	int *rowind = Astore->rowind;
+	int_t nnz = Astore->nnz;
+	int_t *colptr = Astore->colptr;
+	int_t *rowind = Astore->rowind;
 	complex *nzval = (complex *)Astore->nzval;
 
 	if ( mc64 ) {
 	    t0 = SuperLU_timer_();
-	    if ((perm = intMalloc(n)) == NULL)
+	    if ((perm = int32Malloc(n)) == NULL)
 		ABORT("SUPERLU_MALLOC fails for perm[]");
 
 	    info1 = cldperm(5, n, nnz, colptr, rowind, nzval, perm, R, C);
@@ -585,7 +584,7 @@ cgsisx(superlu_options_t *options, SuperMatrix *A, int *perm_c, int *perm_r,
 	    utime[EQUIL] = SuperLU_timer_() - t0;
 	}
 
-	if ( !mc64 & equil ) { /* Only perform equilibration, no row perm */
+	if ( mc64==0 && equil ) { /* Only perform equilibration, no row perm */
 	    t0 = SuperLU_timer_();
 	    /* Compute row and column scalings to equilibrate the matrix A. */
 	    cgsequ(AA, R, C, &rowcnd, &colcnd, &amax, &info1);
@@ -634,9 +633,9 @@ cgsisx(superlu_options_t *options, SuperMatrix *A, int *perm_c, int *perm_r,
 
 	if ( mc64 ) { /* Fold MC64's perm[] into perm_r[]. */
 	    NCformat *Astore = AA->Store;
-	    int nnz = Astore->nnz, *rowind = Astore->rowind;
+	    int_t nnz = Astore->nnz, *rowind = Astore->rowind;
 	    int *perm_tmp, *iperm;
-	    if ((perm_tmp = intMalloc(2*n)) == NULL)
+	    if ((perm_tmp = int32Malloc(2*n)) == NULL)
 		ABORT("SUPERLU_MALLOC fails for perm_tmp[]");
 	    iperm = perm_tmp + n;
 	    for (i = 0; i < n; ++i) perm_tmp[i] = perm_r[perm[i]];
@@ -674,7 +673,6 @@ cgsisx(superlu_options_t *options, SuperMatrix *A, int *perm_c, int *perm_r,
     }
 
     if ( nrhs > 0 ) { /* Solve the system */
-        complex *rhs_work;
 
 	/* Scale and permute the right-hand side if equilibration
            and permutation from MC64 were performed. */

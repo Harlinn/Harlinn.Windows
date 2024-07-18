@@ -572,9 +572,6 @@
     <ClInclude Include="colamd.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="html_mainpage.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="slu_cdefs.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -599,14 +596,17 @@
     <ClInclude Include="slu_zdefs.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="superlu_config.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="superlu_enum_consts.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="supermatrix.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="slu_def.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Makefile" />
   </ItemGroup>
 </Project>

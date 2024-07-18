@@ -21,7 +21,9 @@ at the top-level directory.
  */
 #include "slu_cdefs.h"
 
-/*! \brief
+/*!
+ * Solves the system of linear equations using
+ * the LU factorization from cgstrf()
  *
  * <pre>
  * Purpose
@@ -324,7 +326,7 @@ at the top-level directory.
  * mem_usage (output) mem_usage_t*
  *         Record the memory usage statistics, consisting of following fields:
  *         - for_lu (float)
- *           The amount of space used in bytes for L\U data structures.
+ *           The amount of space used in bytes for L\\U data structures.
  *         - total_needed (float)
  *           The amount of space needed in bytes to perform factorization.
  *         - expansions (int)
@@ -356,10 +358,10 @@ at the top-level directory.
 void
 cgssvx(superlu_options_t *options, SuperMatrix *A, int *perm_c, int *perm_r,
        int *etree, char *equed, float *R, float *C,
-       SuperMatrix *L, SuperMatrix *U, void *work, int lwork,
+       SuperMatrix *L, SuperMatrix *U, void *work, int_t lwork,
        SuperMatrix *B, SuperMatrix *X, float *recip_pivot_growth, 
        float *rcond, float *ferr, float *berr, 
-       GlobalLU_t *Glu, mem_usage_t *mem_usage, SuperLUStat_t *stat, int *info )
+       GlobalLU_t *Glu, mem_usage_t *mem_usage, SuperLUStat_t *stat, int_t *info )
 {
 
 
@@ -374,7 +376,6 @@ cgssvx(superlu_options_t *options, SuperMatrix *A, int *perm_c, int *perm_r,
     int       i, j, info1;
     float    amax, anorm, bignum, smlnum, colcnd, rowcnd, rcmax, rcmin;
     int       relax, panel_size;
-    float    diag_pivot_thresh;
     double    t0;      /* temporary time */
     double    *utime;
 
@@ -477,7 +478,6 @@ printf("dgssvx: Fact=%4d, Trans=%4d, equed=%c\n",
     /* Initialization for factor parameters */
     panel_size = sp_ienv(1);
     relax      = sp_ienv(2);
-    diag_pivot_thresh = options->DiagPivotThresh;
 
     utime = stat->utime;
     

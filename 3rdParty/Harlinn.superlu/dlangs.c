@@ -68,7 +68,7 @@ at the top-level directory.
  * </pre>
  */
 
-SUPERLU_EXPORT double dlangs(char *norm, SuperMatrix *A)
+double dlangs(char *norm, SuperMatrix *A)
 {
     
     /* Local variables */

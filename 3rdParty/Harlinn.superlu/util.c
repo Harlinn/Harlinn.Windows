@@ -169,7 +169,7 @@ Destroy_Dense_Matrix(SuperMatrix *A)
 void
 resetrep_col (const int nseg, const int *segrep, int *repfnz)
 {
-    int i, irep;
+    int_t i, irep;
     
     for (i = 0; i < nseg; i++) {
 	irep = segrep[i];
@@ -181,17 +181,20 @@ resetrep_col (const int nseg, const int *segrep, int *repfnz)
 /*! \brief Count the total number of nonzeros in factors L and U,  and in the symmetrically reduced L. 
  */
 void
-countnz(const int n, int *xprune, int *nnzL, int *nnzU, GlobalLU_t *Glu)
+countnz(const int n, int_t *xprune, int_t *nnzL, int_t *nnzU, GlobalLU_t *Glu)
 {
     int          nsuper, fsupc, i, j;
-    int          nnzL0, jlen, irep;
-    int          *xsup, *xlsub;
+    int_t        jlen;
+#if ( DEBUGlevel>=1 )
+    int_t        irep = 0, nnzL0 = 0;
+#endif
+    int          *xsup;
+    int_t        *xlsub;
 
     xsup   = Glu->xsup;
     xlsub  = Glu->xlsub;
     *nnzL  = 0;
     *nnzU  = (Glu->xusub)[n];
-    nnzL0  = 0;
     nsuper = (Glu->supno)[n];
 
     if ( n <= 0 ) return;
@@ -208,21 +211,26 @@ countnz(const int n, int *xprune, int *nnzL, int *nnzU, GlobalLU_t *Glu)
 	    *nnzU += j - fsupc + 1;
 	    jlen--;
 	}
-	irep = xsup[i+1] - 1;
-	nnzL0 += xprune[irep] - xlsub[irep];
+#if ( DEBUGlevel>=1 )
+        irep = xsup[i+1] - 1;
+        nnzL0 += xprune[irep] - xlsub[irep];
+#endif
     }
-    
-    /* printf("\tNo of nonzeros in symm-reduced L = %d\n", nnzL0);*/
+
+#if ( DEBUGlevel>=1 )
+    printf("\tNo of nonzeros in symm-reduced L = %lld\n", (long long) nnzL0); fflush(stdout);
+#endif
 }
 
 /*! \brief Count the total number of nonzeros in factors L and U.
  */
 void
-ilu_countnz(const int n, int *nnzL, int *nnzU, GlobalLU_t *Glu)
+ilu_countnz(const int n, int_t *nnzL, int_t *nnzU, GlobalLU_t *Glu)
 {
     int          nsuper, fsupc, i, j;
-    int          jlen, irep;
-    int          *xsup, *xlsub;
+    int          jlen;
+    int          *xsup;
+    int_t        *xlsub;
 
     xsup   = Glu->xsup;
     xlsub  = Glu->xlsub;
@@ -244,7 +252,7 @@ ilu_countnz(const int n, int *nnzL, int *nnzU, GlobalLU_t *Glu)
 	    *nnzU += j - fsupc + 1;
 	    jlen--;
 	}
-	irep = xsup[i+1] - 1;
+	//irep = xsup[i+1] - 1;
     }
 }
 
@@ -254,8 +262,10 @@ ilu_countnz(const int n, int *nnzL, int *nnzU, GlobalLU_t *Glu)
 void
 fixupL(const int n, const int *perm_r, GlobalLU_t *Glu)
 {
-    register int nsuper, fsupc, nextl, i, j, k, jstrt;
-    int          *xsup, *lsub, *xlsub;
+    int nsuper, fsupc, i, k;
+    int_t nextl, j, jstrt;
+    int   *xsup;
+    int_t *lsub, *xlsub;
 
     if ( n <= 1 ) return;
 
@@ -310,7 +320,7 @@ StatInit(SuperLUStat_t *stat)
     panel_size = sp_ienv(1);
     relax = sp_ienv(2);
     w = SUPERLU_MAX(panel_size, relax);
-    stat->panel_histo = intCalloc(w+1);
+    stat->panel_histo = int32Calloc(w+1);
     stat->utime = (double *) SUPERLU_MALLOC(NPHASES * sizeof(double));
     if (!stat->utime) ABORT("SUPERLU_MALLOC fails for stat->utime");
     stat->ops = (flops_t *) SUPERLU_MALLOC(NPHASES * sizeof(flops_t));
@@ -500,4 +510,24 @@ int slu_PrintInt10(char *name, int len, int *x)
     return 0;
 }
 
+int check_perm(char *what, int n, int *perm)
+{
+    register int i;
+    int          *marker;
+    /*marker = (int *) calloc(n, sizeof(int));*/
+    marker = int32Malloc(n);
+    for (i = 0; i < n; ++i) marker[i] = 0;
 
+    for (i = 0; i < n; ++i) {
+	if ( marker[perm[i]] == 1 || perm[i] >= n ) {
+	    printf("%s: Not a valid PERM[%d] = %d\n", what, i, perm[i]);
+	    ABORT("check_perm");
+	} else {
+	    marker[perm[i]] = 1;
+	}
+    }
+
+    SUPERLU_FREE(marker);
+    printf("check_perm: %s: n %d\n", what, n);
+    return 0;
+}
