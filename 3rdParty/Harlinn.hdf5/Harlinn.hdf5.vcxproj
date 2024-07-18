@@ -19,29 +19,44 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\hdf5\H5AbstractDs.h" />
     <ClInclude Include="include\hdf5\H5ACmodule.h" />
     <ClInclude Include="include\hdf5\H5ACpkg.h" />
     <ClInclude Include="include\hdf5\H5ACprivate.h" />
     <ClInclude Include="include\hdf5\H5ACpublic.h" />
+    <ClInclude Include="include\hdf5\H5Alltypes.h" />
     <ClInclude Include="include\hdf5\H5Amodule.h" />
     <ClInclude Include="include\hdf5\H5api_adpt.h" />
     <ClInclude Include="include\hdf5\H5Apkg.h" />
     <ClInclude Include="include\hdf5\H5Aprivate.h" />
     <ClInclude Include="include\hdf5\H5Apublic.h" />
+    <ClInclude Include="include\hdf5\H5ArrayType.h" />
+    <ClInclude Include="include\hdf5\H5AtomType.h" />
+    <ClInclude Include="include\hdf5\H5Attribute.h" />
     <ClInclude Include="include\hdf5\H5B2module.h" />
     <ClInclude Include="include\hdf5\H5B2pkg.h" />
     <ClInclude Include="include\hdf5\H5B2private.h" />
     <ClInclude Include="include\hdf5\H5Bmodule.h" />
     <ClInclude Include="include\hdf5\H5Bpkg.h" />
     <ClInclude Include="include\hdf5\H5Bprivate.h" />
+    <ClInclude Include="include\hdf5\H5Classes.h" />
     <ClInclude Include="include\hdf5\H5Clog.h" />
     <ClInclude Include="include\hdf5\H5Cmodule.h" />
+    <ClInclude Include="include\hdf5\H5CommonFG.h" />
+    <ClInclude Include="include\hdf5\H5CompType.h" />
     <ClInclude Include="include\hdf5\H5Cpkg.h" />
+    <ClInclude Include="include\hdf5\H5Cpp.h" />
+    <ClInclude Include="include\hdf5\H5CppDoc.h" />
     <ClInclude Include="include\hdf5\H5Cprivate.h" />
     <ClInclude Include="include\hdf5\H5Cpublic.h" />
     <ClInclude Include="include\hdf5\H5CSprivate.h" />
     <ClInclude Include="include\hdf5\H5CXmodule.h" />
     <ClInclude Include="include\hdf5\H5CXprivate.h" />
+    <ClInclude Include="include\hdf5\H5DaccProp.h" />
+    <ClInclude Include="include\hdf5\H5DataSet.h" />
+    <ClInclude Include="include\hdf5\H5DataSpace.h" />
+    <ClInclude Include="include\hdf5\H5DataType.h" />
+    <ClInclude Include="include\hdf5\H5DcreatProp.h" />
     <ClInclude Include="include\hdf5\H5Dmodule.h" />
     <ClInclude Include="include\hdf5\H5DOpublic.h" />
     <ClInclude Include="include\hdf5\H5Dpkg.h" />
@@ -49,6 +64,7 @@
     <ClInclude Include="include\hdf5\H5Dpublic.h" />
     <ClInclude Include="include\hdf5\H5DSprivate.h" />
     <ClInclude Include="include\hdf5\H5DSpublic.h" />
+    <ClInclude Include="include\hdf5\H5DxferProp.h" />
     <ClInclude Include="include\hdf5\H5EAmodule.h" />
     <ClInclude Include="include\hdf5\H5EApkg.h" />
     <ClInclude Include="include\hdf5\H5EAprivate.h" />
@@ -56,6 +72,7 @@
     <ClInclude Include="include\hdf5\H5Einit.h" />
     <ClInclude Include="include\hdf5\H5Emodule.h" />
     <ClInclude Include="include\hdf5\H5encode.h" />
+    <ClInclude Include="include\hdf5\H5EnumType.h" />
     <ClInclude Include="include\hdf5\H5Epkg.h" />
     <ClInclude Include="include\hdf5\H5Eprivate.h" />
     <ClInclude Include="include\hdf5\H5Epubgen.h" />
@@ -66,9 +83,12 @@
     <ClInclude Include="include\hdf5\H5ESprivate.h" />
     <ClInclude Include="include\hdf5\H5ESpublic.h" />
     <ClInclude Include="include\hdf5\H5Eterm.h" />
+    <ClInclude Include="include\hdf5\H5Exception.h" />
+    <ClInclude Include="include\hdf5\H5FaccProp.h" />
     <ClInclude Include="include\hdf5\H5FAmodule.h" />
     <ClInclude Include="include\hdf5\H5FApkg.h" />
     <ClInclude Include="include\hdf5\H5FAprivate.h" />
+    <ClInclude Include="include\hdf5\H5FcreatProp.h" />
     <ClInclude Include="include\hdf5\H5FDcore.h" />
     <ClInclude Include="include\hdf5\H5FDdevelop.h" />
     <ClInclude Include="include\hdf5\H5FDdirect.h" />
@@ -102,7 +122,9 @@
     <ClInclude Include="include\hdf5\H5FDsubfiling\H5subfiling_common.h" />
     <ClInclude Include="include\hdf5\H5FDsubfiling\H5subfiling_err.h" />
     <ClInclude Include="include\hdf5\H5FDwindows.h" />
+    <ClInclude Include="include\hdf5\H5File.h" />
     <ClInclude Include="include\hdf5\H5FLmodule.h" />
+    <ClInclude Include="include\hdf5\H5FloatType.h" />
     <ClInclude Include="include\hdf5\H5FLprivate.h" />
     <ClInclude Include="include\hdf5\H5Fmodule.h" />
     <ClInclude Include="include\hdf5\H5FOprivate.h" />
@@ -116,6 +138,7 @@
     <ClInclude Include="include\hdf5\H5Gpkg.h" />
     <ClInclude Include="include\hdf5\H5Gprivate.h" />
     <ClInclude Include="include\hdf5\H5Gpublic.h" />
+    <ClInclude Include="include\hdf5\H5Group.h" />
     <ClInclude Include="include\hdf5\H5HFmodule.h" />
     <ClInclude Include="include\hdf5\H5HFpkg.h" />
     <ClInclude Include="include\hdf5\H5HFprivate.h" />
@@ -126,17 +149,24 @@
     <ClInclude Include="include\hdf5\H5HLpkg.h" />
     <ClInclude Include="include\hdf5\H5HLprivate.h" />
     <ClInclude Include="include\hdf5\H5HLprivate2.h" />
+    <ClInclude Include="include\hdf5\H5IdComponent.h" />
     <ClInclude Include="include\hdf5\H5Idevelop.h" />
     <ClInclude Include="include\hdf5\H5Imodule.h" />
     <ClInclude Include="include\hdf5\H5IMprivate.h" />
     <ClInclude Include="include\hdf5\H5IMpublic.h" />
+    <ClInclude Include="include\hdf5\H5Include.h" />
+    <ClInclude Include="include\hdf5\H5IntType.h" />
     <ClInclude Include="include\hdf5\H5Ipkg.h" />
     <ClInclude Include="include\hdf5\H5Iprivate.h" />
     <ClInclude Include="include\hdf5\H5Ipublic.h" />
+    <ClInclude Include="include\hdf5\H5LaccProp.h" />
+    <ClInclude Include="include\hdf5\H5LcreatProp.h" />
     <ClInclude Include="include\hdf5\H5Ldevelop.h" />
     <ClInclude Include="include\hdf5\H5LDprivate.h" />
     <ClInclude Include="include\hdf5\H5LDpublic.h" />
+    <ClInclude Include="include\hdf5\H5Library.h" />
     <ClInclude Include="include\hdf5\H5Lmodule.h" />
+    <ClInclude Include="include\hdf5\H5Location.h" />
     <ClInclude Include="include\hdf5\H5Lpkg.h" />
     <ClInclude Include="include\hdf5\H5Lprivate.h" />
     <ClInclude Include="include\hdf5\H5Lpublic.h" />
@@ -153,12 +183,15 @@
     <ClInclude Include="include\hdf5\H5Mpkg.h" />
     <ClInclude Include="include\hdf5\H5Mprivate.h" />
     <ClInclude Include="include\hdf5\H5Mpublic.h" />
+    <ClInclude Include="include\hdf5\H5Object.h" />
+    <ClInclude Include="include\hdf5\H5OcreatProp.h" />
     <ClInclude Include="include\hdf5\H5Omodule.h" />
     <ClInclude Include="include\hdf5\H5Opkg.h" />
     <ClInclude Include="include\hdf5\H5Oprivate.h" />
     <ClInclude Include="include\hdf5\H5Opublic.h" />
     <ClInclude Include="include\hdf5\H5Oshared.h" />
     <ClInclude Include="include\hdf5\H5overflow.h" />
+    <ClInclude Include="include\hdf5\H5PacketTable.h" />
     <ClInclude Include="include\hdf5\H5PBmodule.h" />
     <ClInclude Include="include\hdf5\H5PBpkg.h" />
     <ClInclude Include="include\hdf5\H5PBprivate.h" />
@@ -171,7 +204,9 @@
     <ClInclude Include="include\hdf5\H5Ppkg.h" />
     <ClInclude Include="include\hdf5\H5Pprivate.h" />
     <ClInclude Include="include\hdf5\H5Ppublic.h" />
+    <ClInclude Include="include\hdf5\H5PredType.h" />
     <ClInclude Include="include\hdf5\H5private.h" />
+    <ClInclude Include="include\hdf5\H5PropList.h" />
     <ClInclude Include="include\hdf5\H5PTprivate.h" />
     <ClInclude Include="include\hdf5\H5PTpublic.h" />
     <ClInclude Include="include\hdf5\H5pubconf.h" />
@@ -191,6 +226,7 @@
     <ClInclude Include="include\hdf5\H5Spkg.h" />
     <ClInclude Include="include\hdf5\H5Sprivate.h" />
     <ClInclude Include="include\hdf5\H5Spublic.h" />
+    <ClInclude Include="include\hdf5\H5StrType.h" />
     <ClInclude Include="include\hdf5\H5TBprivate.h" />
     <ClInclude Include="include\hdf5\H5TBpublic.h" />
     <ClInclude Include="include\hdf5\H5Tdevelop.h" />
@@ -201,6 +237,7 @@
     <ClInclude Include="include\hdf5\H5TSdevelop.h" />
     <ClInclude Include="include\hdf5\H5TSprivate.h" />
     <ClInclude Include="include\hdf5\H5UCprivate.h" />
+    <ClInclude Include="include\hdf5\H5VarLenType.h" />
     <ClInclude Include="include\hdf5\H5version.h" />
     <ClInclude Include="include\hdf5\H5VLconnector.h" />
     <ClInclude Include="include\hdf5\H5VLconnector_passthru.h" />
@@ -235,6 +272,7 @@
   <ItemGroup>
     <ClCompile Include="src\H5.c" />
     <ClCompile Include="src\H5A.c" />
+    <ClCompile Include="src\H5AbstractDs.cpp" />
     <ClCompile Include="src\H5Abtree2.c" />
     <ClCompile Include="src\H5AC.c" />
     <ClCompile Include="src\H5ACdbg.c" />
@@ -243,7 +281,10 @@
     <ClCompile Include="src\H5Adense.c" />
     <ClCompile Include="src\H5Adeprec.c" />
     <ClCompile Include="src\H5Aint.c" />
+    <ClCompile Include="src\H5ArrayType.cpp" />
     <ClCompile Include="src\H5Atest.c" />
+    <ClCompile Include="src\H5AtomType.cpp" />
+    <ClCompile Include="src\H5Attribute.cpp" />
     <ClCompile Include="src\H5B.c" />
     <ClCompile Include="src\H5B2.c" />
     <ClCompile Include="src\H5B2cache.c" />
@@ -268,6 +309,8 @@
     <ClCompile Include="src\H5Clog_json.c" />
     <ClCompile Include="src\H5Clog_trace.c" />
     <ClCompile Include="src\H5Cmpio.c" />
+    <ClCompile Include="src\H5CommonFG.cpp" />
+    <ClCompile Include="src\H5CompType.cpp" />
     <ClCompile Include="src\H5Cprefetched.c" />
     <ClCompile Include="src\H5Cquery.c" />
     <ClCompile Include="src\H5CS.c" />
@@ -275,12 +318,17 @@
     <ClCompile Include="src\H5Ctest.c" />
     <ClCompile Include="src\H5CX.c" />
     <ClCompile Include="src\H5D.c" />
+    <ClCompile Include="src\H5DaccProp.cpp" />
+    <ClCompile Include="src\H5DataSet.cpp" />
+    <ClCompile Include="src\H5DataSpace.cpp" />
+    <ClCompile Include="src\H5DataType.cpp" />
     <ClCompile Include="src\H5dbg.c" />
     <ClCompile Include="src\H5Dbtree.c" />
     <ClCompile Include="src\H5Dbtree2.c" />
     <ClCompile Include="src\H5Dchunk.c" />
     <ClCompile Include="src\H5Dcompact.c" />
     <ClCompile Include="src\H5Dcontig.c" />
+    <ClCompile Include="src\H5DcreatProp.cpp" />
     <ClCompile Include="src\H5Ddbg.c" />
     <ClCompile Include="src\H5Ddeprec.c" />
     <ClCompile Include="src\H5Dearray.c" />
@@ -300,6 +348,7 @@
     <ClCompile Include="src\H5Dsingle.c" />
     <ClCompile Include="src\H5Dtest.c" />
     <ClCompile Include="src\H5Dvirtual.c" />
+    <ClCompile Include="src\H5DxferProp.cpp" />
     <ClCompile Include="src\H5E.c" />
     <ClCompile Include="src\H5EA.c" />
     <ClCompile Include="src\H5EAcache.c" />
@@ -314,13 +363,16 @@
     <ClCompile Include="src\H5EAtest.c" />
     <ClCompile Include="src\H5Edeprec.c" />
     <ClCompile Include="src\H5Eint.c" />
+    <ClCompile Include="src\H5EnumType.cpp" />
     <ClCompile Include="src\H5ES.c" />
     <ClCompile Include="src\H5ESevent.c" />
     <ClCompile Include="src\H5ESint.c" />
     <ClCompile Include="src\H5ESlist.c" />
+    <ClCompile Include="src\H5Exception.cpp" />
     <ClCompile Include="src\H5F.c" />
     <ClCompile Include="src\H5FA.c" />
     <ClCompile Include="src\H5FAcache.c" />
+    <ClCompile Include="src\H5FaccProp.cpp" />
     <ClCompile Include="src\H5Faccum.c" />
     <ClCompile Include="src\H5FAdbg.c" />
     <ClCompile Include="src\H5FAdblkpage.c" />
@@ -329,6 +381,7 @@
     <ClCompile Include="src\H5FAint.c" />
     <ClCompile Include="src\H5FAstat.c" />
     <ClCompile Include="src\H5FAtest.c" />
+    <ClCompile Include="src\H5FcreatProp.cpp" />
     <ClCompile Include="src\H5Fcwfs.c" />
     <ClCompile Include="src\H5FD.c" />
     <ClCompile Include="src\H5Fdbg.c" />
@@ -398,9 +451,11 @@
     <ClCompile Include="src\H5FDwindows.c" />
     <ClCompile Include="src\H5Fefc.c" />
     <ClCompile Include="src\H5Ffake.c" />
+    <ClCompile Include="src\H5File.cpp" />
     <ClCompile Include="src\H5Fint.c" />
     <ClCompile Include="src\H5Fio.c" />
     <ClCompile Include="src\H5FL.c" />
+    <ClCompile Include="src\H5FloatType.cpp" />
     <ClCompile Include="src\H5Fmount.c" />
     <ClCompile Include="src\H5Fmpi.c" />
     <ClCompile Include="src\H5FO.c" />
@@ -432,6 +487,7 @@
     <ClCompile Include="src\H5Gobj.c" />
     <ClCompile Include="src\H5Goh.c" />
     <ClCompile Include="src\H5Groot.c" />
+    <ClCompile Include="src\H5Group.cpp" />
     <ClCompile Include="src\H5Gstab.c" />
     <ClCompile Include="src\H5Gtest.c" />
     <ClCompile Include="src\H5Gtraverse.c" />
@@ -463,14 +519,20 @@
     <ClCompile Include="src\H5HLprfx.c" />
     <ClCompile Include="src\H5I.c" />
     <ClCompile Include="src\H5Idbg.c" />
+    <ClCompile Include="src\H5IdComponent.cpp" />
     <ClCompile Include="src\H5Iint.c" />
     <ClCompile Include="src\H5IM.c" />
+    <ClCompile Include="src\H5IntType.cpp" />
     <ClCompile Include="src\H5Itest.c" />
     <ClCompile Include="src\H5L.c" />
+    <ClCompile Include="src\H5LaccProp.cpp" />
+    <ClCompile Include="src\H5LcreatProp.cpp" />
     <ClCompile Include="src\H5LD.c" />
     <ClCompile Include="src\H5Ldeprec.c" />
     <ClCompile Include="src\H5Lexternal.c" />
+    <ClCompile Include="src\H5Library.cpp" />
     <ClCompile Include="src\H5Lint.c" />
+    <ClCompile Include="src\H5Location.cpp" />
     <ClCompile Include="src\H5LT.c" />
     <ClCompile Include="src\H5LTanalyze.c" />
     <ClCompile Include="src\H5LTparse.c" />
@@ -486,6 +548,7 @@
     <ClCompile Include="src\H5Oalloc.c" />
     <ClCompile Include="src\H5Oattr.c" />
     <ClCompile Include="src\H5Oattribute.c" />
+    <ClCompile Include="src\H5Object.cpp" />
     <ClCompile Include="src\H5Obogus.c" />
     <ClCompile Include="src\H5Obtreek.c" />
     <ClCompile Include="src\H5Ocache.c" />
@@ -494,6 +557,7 @@
     <ClCompile Include="src\H5Ocont.c" />
     <ClCompile Include="src\H5Ocopy.c" />
     <ClCompile Include="src\H5Ocopy_ref.c" />
+    <ClCompile Include="src\H5OcreatProp.cpp" />
     <ClCompile Include="src\H5Odbg.c" />
     <ClCompile Include="src\H5Odeprec.c" />
     <ClCompile Include="src\H5Odrvinfo.c" />
@@ -520,6 +584,7 @@
     <ClCompile Include="src\H5Otest.c" />
     <ClCompile Include="src\H5Ounknown.c" />
     <ClCompile Include="src\H5P.c" />
+    <ClCompile Include="src\H5PacketTable.cpp" />
     <ClCompile Include="src\H5Pacpl.c" />
     <ClCompile Include="src\H5PB.c" />
     <ClCompile Include="src\H5Pdapl.c" />
@@ -542,6 +607,8 @@
     <ClCompile Include="src\H5Pmcpl.c" />
     <ClCompile Include="src\H5Pocpl.c" />
     <ClCompile Include="src\H5Pocpypl.c" />
+    <ClCompile Include="src\H5PredType.cpp" />
+    <ClCompile Include="src\H5PropList.cpp" />
     <ClCompile Include="src\H5Pstrcpl.c" />
     <ClCompile Include="src\H5PT.c" />
     <ClCompile Include="src\H5Ptest.c" />
@@ -565,6 +632,7 @@
     <ClCompile Include="src\H5Spoint.c" />
     <ClCompile Include="src\H5Sselect.c" />
     <ClCompile Include="src\H5Stest.c" />
+    <ClCompile Include="src\H5StrType.cpp" />
     <ClCompile Include="src\H5system.c" />
     <ClCompile Include="src\H5T.c" />
     <ClCompile Include="src\H5Tarray.c" />
@@ -596,6 +664,7 @@
     <ClCompile Include="src\H5Tvisit.c" />
     <ClCompile Include="src\H5Tvlen.c" />
     <ClCompile Include="src\H5UC.c" />
+    <ClCompile Include="src\H5VarLenType.cpp" />
     <ClCompile Include="src\H5VL.c" />
     <ClCompile Include="src\H5VLcallback.c" />
     <ClCompile Include="src\H5VLdyn_ops.c" />
@@ -702,7 +771,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>hdf5_shared_EXPORTS=1;hdf5_tools_shared_EXPORTS=1;hdf5_hl_shared_EXPORTS=1;_CRT_SECURE_NO_WARNINGS=1;WIN32;_DEBUG;HARLINNH5_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>hdf5_shared_EXPORTS=1;hdf5_cpp_shared_EXPORTS=1;hdf5_tools_shared_EXPORTS=1;hdf5_hl_shared_EXPORTS=1;hdf5_hl_cpp_shared_EXPORTS=1;_CRT_SECURE_NO_WARNINGS=1;WIN32;_DEBUG;HARLINNH5_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -728,7 +797,7 @@
       <WarningLevel>Level3</WarningLevel>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>hdf5_shared_EXPORTS=1;hdf5_tools_shared_EXPORTS=1;hdf5_hl_shared_EXPORTS=1;_CRT_SECURE_NO_WARNINGS=1;WIN32;NDEBUG;HARLINNH5_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>hdf5_shared_EXPORTS=1;hdf5_cpp_shared_EXPORTS=1;hdf5_tools_shared_EXPORTS=1;hdf5_hl_shared_EXPORTS=1;hdf5_hl_cpp_shared_EXPORTS=1;_CRT_SECURE_NO_WARNINGS=1;WIN32;NDEBUG;HARLINNH5_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -756,7 +825,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>hdf5_shared_EXPORTS=1;hdf5_tools_shared_EXPORTS=1;hdf5_hl_shared_EXPORTS=1;_CRT_SECURE_NO_WARNINGS=1;_DEBUG;HARLINNH5_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>hdf5_shared_EXPORTS=1;hdf5_cpp_shared_EXPORTS=1;hdf5_tools_shared_EXPORTS=1;hdf5_hl_shared_EXPORTS=1;hdf5_hl_cpp_shared_EXPORTS=1;_CRT_SECURE_NO_WARNINGS=1;_DEBUG;HARLINNH5_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -783,7 +852,7 @@
       <WarningLevel>Level3</WarningLevel>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>hdf5_shared_EXPORTS=1;hdf5_tools_shared_EXPORTS=1;hdf5_hl_shared_EXPORTS=1;_CRT_SECURE_NO_WARNINGS=1;NDEBUG;HARLINNH5_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>hdf5_shared_EXPORTS=1;hdf5_cpp_shared_EXPORTS=1;hdf5_tools_shared_EXPORTS=1;hdf5_hl_shared_EXPORTS=1;hdf5_hl_cpp_shared_EXPORTS=1;_CRT_SECURE_NO_WARNINGS=1;NDEBUG;HARLINNH5_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
