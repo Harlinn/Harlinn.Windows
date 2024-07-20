@@ -2,7 +2,7 @@
  * @file encode.c
  *
  * @section LICENSE
- * Copyright 2021 Mathis Rosenhauer, Moritz Hanke, Joerg Behrens, Luis Kornblueh
+ * Copyright 2024 Mathis Rosenhauer, Moritz Hanke, Joerg Behrens, Luis Kornblueh
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -337,7 +337,7 @@ static uint32_t assess_splitting_option(struct aec_stream *strm)
     struct internal_state *state = strm->state;
 
     /* Block size of current block */
-    int this_bs = strm->block_size - state->ref;
+    uint64_t this_bs = strm->block_size - state->ref;
 
     /* CDS length minimum so far */
     uint64_t len_min = UINT64_MAX;
@@ -411,6 +411,7 @@ static uint32_t assess_se_option(struct aec_stream *strm)
         if (len > state->uncomp_len)
             return UINT32_MAX;
     }
+
     return (uint32_t)len;
 }
 
@@ -477,11 +478,10 @@ static int m_flush_block(struct aec_stream *strm)
     struct internal_state *state = strm->state;
 
 #ifdef ENABLE_RSI_PADDING
-    if (state->blocks_avail == 0
-        && strm->flags & AEC_PAD_RSI
-        && state->block_nonzero == 0
-        )
-        emit(state, 0, state->bits % 8);
+    if (state->blocks_avail == 0 &&
+        strm->flags & AEC_PAD_RSI &&
+        state->block_nonzero == 0)
+            emit(state, 0, state->bits % 8);
 #endif
 
     if (state->direct_out) {
@@ -489,6 +489,14 @@ static int m_flush_block(struct aec_stream *strm)
         strm->next_out += n;
         strm->avail_out -= n;
         state->mode = m_get_block;
+
+        if (state->ready_to_capture_rsi &&
+            state->blocks_avail == 0 &&
+            state->offsets != NULL) {
+                vector_push_back(state->offsets, (strm->total_out - strm->avail_out) * 8 + (8 - state->bits));
+                state->ready_to_capture_rsi = 0;
+        }
+
         return M_CONTINUE;
     }
 
@@ -709,8 +717,8 @@ static int m_get_block(struct aec_stream *strm)
         state->blocks_avail = strm->rsi - 1;
         state->block = state->data_pp;
         state->blocks_dispensed = 1;
-
         if (strm->avail_in >= state->rsi_len) {
+            state->ready_to_capture_rsi = 1;
             state->get_rsi(strm);
             if (strm->flags & AEC_DATA_PREPROCESS)
                 state->preprocess(strm);
@@ -882,7 +890,7 @@ int aec_encode_init(struct aec_stream *strm)
     *state->cds = 0;
     state->bits = 8;
     state->mode = m_get_block;
-
+    state->ready_to_capture_rsi = 0;
     return AEC_OK;
 }
 
@@ -921,8 +929,49 @@ int aec_encode_end(struct aec_stream *strm)
     int status = AEC_OK;
     if (state->flush == AEC_FLUSH && state->flushed == 0)
         status = AEC_STREAM_ERROR;
+    if (state->offsets != NULL) {
+        vector_destroy(state->offsets);
+        state->offsets = NULL;
+    }
     cleanup(strm);
     return status;
+}
+
+int aec_encode_count_offsets(struct aec_stream *strm, size_t *count)
+{
+    struct internal_state *state = strm->state;
+    if (state->offsets == NULL) {
+        *count = 0;
+        return AEC_RSI_OFFSETS_ERROR;
+    } else {
+        *count = vector_size(state->offsets);
+    }
+    return AEC_OK;
+}
+
+int aec_encode_get_offsets(struct aec_stream *strm, size_t *offsets, size_t offsets_count)
+{
+    struct internal_state *state = strm->state;
+    if (state->offsets == NULL) {
+        return AEC_RSI_OFFSETS_ERROR;
+    }
+    if (offsets_count < vector_size(state->offsets)) {
+        return AEC_MEM_ERROR;
+    }
+    memcpy(offsets, vector_data(state->offsets), offsets_count * sizeof(size_t));
+    return AEC_OK;
+}
+
+int aec_encode_enable_offsets(struct aec_stream *strm)
+{
+    struct internal_state *state = strm->state;
+
+    if (state->offsets != NULL)
+        return AEC_RSI_OFFSETS_ERROR;
+
+    state->offsets = vector_create();
+    vector_push_back(state->offsets, 0);
+    return AEC_OK;
 }
 
 int aec_buffer_encode(struct aec_stream *strm)

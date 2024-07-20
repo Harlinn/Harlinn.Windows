@@ -31,8 +31,8 @@ All C++ code compiles using [/std:c++latest](https://docs.microsoft.com/en-us/cp
 
 The abseil_test contains the unit tests for the Harlinn.abseil project
 
-### [libaec - Adaptive Entropy Coding library](https://github.com/erget/libaec)
-**Version:** master as of 2021.08.26
+### [libaec - Adaptive Entropy Coding library](https://gitlab.dkrz.de/k202009/libaec)
+**Version:** 1.1.3
 
 **Description:**
 > Libaec provides fast lossless compression of 1 up to 32 bit wide signed or unsigned integers (samples). 

@@ -2,7 +2,7 @@
  * @file encode.h
  *
  * @section LICENSE
- * Copyright 2021 Mathis Rosenhauer, Moritz Hanke, Joerg Behrens, Luis Kornblueh
+ * Copyright 2024 Mathis Rosenhauer, Moritz Hanke, Joerg Behrens, Luis Kornblueh
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -39,6 +39,7 @@
 #ifndef ENCODE_H
 #define ENCODE_H 1
 
+#include "vector.h"
 #include "config.h"
 #include <stdint.h>
 
@@ -140,6 +141,12 @@ struct internal_state {
 
     /* length of uncompressed CDS */
     uint32_t uncomp_len;
+
+    /* RSI offsets container */
+    struct vector_t *offsets;
+
+    /* indicator if an RSI should be captured */
+    int ready_to_capture_rsi;
 };
 
 #endif /* ENCODE_H */

@@ -91,7 +91,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>BUILDING_HARLINN_AEC=1;_CRT_SECURE_NO_WARNINGS=1;WIN32;_DEBUG;HARLINNAEC_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>BUILDING_HARLINN_AEC=1;LIBAEC_BUILD=1;_CRT_SECURE_NO_WARNINGS=1;WIN32;_DEBUG;HARLINNAEC_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -114,7 +114,7 @@
       <WarningLevel>Level3</WarningLevel>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>BUILDING_HARLINN_AEC=1;_CRT_SECURE_NO_WARNINGS=1;WIN32;NDEBUG;HARLINNAEC_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>BUILDING_HARLINN_AEC=1;LIBAEC_BUILD=1;_CRT_SECURE_NO_WARNINGS=1;WIN32;NDEBUG;HARLINNAEC_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -139,7 +139,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>BUILDING_HARLINN_AEC=1;_CRT_SECURE_NO_WARNINGS=1;_DEBUG;HARLINNAEC_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>BUILDING_HARLINN_AEC=1;LIBAEC_BUILD=1;_CRT_SECURE_NO_WARNINGS=1;_DEBUG;HARLINNAEC_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -163,7 +163,7 @@
       <WarningLevel>Level3</WarningLevel>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>BUILDING_HARLINN_AEC=1;_CRT_SECURE_NO_WARNINGS=1;NDEBUG;HARLINNAEC_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>BUILDING_HARLINN_AEC=1;LIBAEC_BUILD=1;_CRT_SECURE_NO_WARNINGS=1;NDEBUG;HARLINNAEC_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -186,12 +186,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="aec.c" />
     <ClCompile Include="decode.c" />
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="encode.c" />
     <ClCompile Include="encode_accessors.c" />
     <ClCompile Include="sz_compat.c" />
+    <ClCompile Include="vector.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="config.h" />
@@ -201,6 +201,7 @@
     <ClInclude Include="include\aecdef.h" />
     <ClInclude Include="include\libaec.h" />
     <ClInclude Include="include\szlib.h" />
+    <ClInclude Include="vector.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Readme\AUTHORS" />

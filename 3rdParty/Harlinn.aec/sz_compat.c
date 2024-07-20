@@ -2,7 +2,7 @@
  * @file sz_compat.c
  *
  * @section LICENSE
- * Copyright 2021 Mathis Rosenhauer, Moritz Hanke, Joerg Behrens, Luis Kornblueh
+ * Copyright 2024 Mathis Rosenhauer, Moritz Hanke, Joerg Behrens, Luis Kornblueh
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -71,7 +71,7 @@ static int bits_to_bytes(int bit_length)
 }
 
 static void interleave_buffer(void *dest, const void *src,
-                              size_t n, int wordsize)
+                              size_t n, size_t wordsize)
 {
     const unsigned char *src8 = (unsigned char *)src;
     unsigned char *dest8 = (unsigned char *)dest;
@@ -82,7 +82,7 @@ static void interleave_buffer(void *dest, const void *src,
 }
 
 static void deinterleave_buffer(void *dest, const void *src,
-                                size_t n, int wordsize)
+                                size_t n, size_t wordsize)
 {
     const unsigned char *src8 = (unsigned char *)src;
     unsigned char *dest8 = (unsigned char *)dest;

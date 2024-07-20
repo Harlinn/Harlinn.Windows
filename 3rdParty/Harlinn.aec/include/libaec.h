@@ -2,7 +2,7 @@
  * @file libaec.h
  *
  * @section LICENSE
- * Copyright 2021 Mathis Rosenhauer, Moritz Hanke, Joerg Behrens, Luis Kornblueh
+ * Copyright 2024 Mathis Rosenhauer, Moritz Hanke, Joerg Behrens, Luis Kornblueh
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -38,20 +38,31 @@
 #ifndef LIBAEC_H
 #define LIBAEC_H 1
 
+#define AEC_VERSION_MAJOR 1
+#define AEC_VERSION_MINOR 1
+#define AEC_VERSION_PATCH 3
+#define AEC_VERSION_STR "1.1.3"
+
 #include <stddef.h>
 
-#include "aecdef.h"
 
 #ifdef __cplusplus
 extern "C"{
 #endif
 
-#ifndef LIBAEC_DLL_EXPORTED
-#if BUILDING_LIBAEC && HAVE_VISIBILITY
+#define LIBAEC_SHARED 1
+
+#if defined LIBAEC_BUILD && HAVE_VISIBILITY
 #  define LIBAEC_DLL_EXPORTED __attribute__((__visibility__("default")))
+#elif (defined _WIN32 && !defined __CYGWIN__) && defined LIBAEC_SHARED
+#  if defined LIBAEC_BUILD
+#    define LIBAEC_DLL_EXPORTED __declspec(dllexport)
+#  else
+#    define LIBAEC_DLL_EXPORTED __declspec(dllimport)
+#pragma comment(lib,"Harlinn.aec.lib")
+#  endif
 #else
 #  define LIBAEC_DLL_EXPORTED
-#endif
 #endif
 
 struct internal_state;
@@ -125,6 +136,7 @@ struct aec_stream {
 #define AEC_STREAM_ERROR (-2)
 #define AEC_DATA_ERROR (-3)
 #define AEC_MEM_ERROR (-4)
+#define AEC_RSI_OFFSETS_ERROR (-5)
 
 /************************/
 /* Options for flushing */
@@ -147,11 +159,19 @@ struct aec_stream {
 /* Streaming encoding and decoding functions */
 /*********************************************/
 LIBAEC_DLL_EXPORTED int aec_encode_init(struct aec_stream *strm);
+LIBAEC_DLL_EXPORTED int aec_encode_enable_offsets(struct aec_stream *strm);
+LIBAEC_DLL_EXPORTED int aec_encode_count_offsets(struct aec_stream *strm, size_t *rsi_offsets_count);
+LIBAEC_DLL_EXPORTED int aec_encode_get_offsets(struct aec_stream *strm, size_t *rsi_offsets, size_t rsi_offsets_count);
+LIBAEC_DLL_EXPORTED int aec_buffer_seek(struct aec_stream *strm, size_t offset);
 LIBAEC_DLL_EXPORTED int aec_encode(struct aec_stream *strm, int flush);
 LIBAEC_DLL_EXPORTED int aec_encode_end(struct aec_stream *strm);
 
 LIBAEC_DLL_EXPORTED int aec_decode_init(struct aec_stream *strm);
+LIBAEC_DLL_EXPORTED int aec_decode_enable_offsets(struct aec_stream *strm);
+LIBAEC_DLL_EXPORTED int aec_decode_count_offsets(struct aec_stream *strm, size_t *rsi_offsets_count);
+LIBAEC_DLL_EXPORTED int aec_decode_get_offsets(struct aec_stream *strm, size_t *rsi_offsets, size_t rsi_offsets_count);
 LIBAEC_DLL_EXPORTED int aec_decode(struct aec_stream *strm, int flush);
+LIBAEC_DLL_EXPORTED int aec_decode_range(struct aec_stream *strm, const size_t *rsi_offsets, size_t rsi_offsets_count, size_t pos, size_t size);
 LIBAEC_DLL_EXPORTED int aec_decode_end(struct aec_stream *strm);
 
 /***************************************************************/
