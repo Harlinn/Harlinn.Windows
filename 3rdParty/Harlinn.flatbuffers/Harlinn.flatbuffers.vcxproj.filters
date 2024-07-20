@@ -22,24 +22,182 @@
     <Filter Include="src">
       <UniqueIdentifier>{ff5938e4-51ff-4f11-9b16-b4a3293a3610}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\compiler">
-      <UniqueIdentifier>{6b47a7aa-81b5-4744-91f6-acecdab13106}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Readme">
       <UniqueIdentifier>{081ec396-4389-46d5-af71-8822787b2f01}</UniqueIdentifier>
     </Filter>
+    <Filter Include="include\flatbuffers\pch">
+      <UniqueIdentifier>{c9be484e-d516-4e6b-9852-425c3bf55a13}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\flatbuffers\compiler">
+      <UniqueIdentifier>{4b01b7ef-7949-41a1-bc59-7af5a9a7eafa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\compiler">
+      <UniqueIdentifier>{8a9c608f-748e-43a7-a842-5187b51803b9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="dllmain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\idl_parser.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\reflection.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\compiler\annotated_binary_text_gen.cpp">
+      <Filter>src\compiler</Filter>
+    </ClCompile>
+    <ClCompile Include="src\compiler\bfbs_gen_lua.cpp">
+      <Filter>src\compiler</Filter>
+    </ClCompile>
+    <ClCompile Include="src\compiler\bfbs_gen_nim.cpp">
+      <Filter>src\compiler</Filter>
+    </ClCompile>
+    <ClCompile Include="src\compiler\binary_annotator.cpp">
+      <Filter>src\compiler</Filter>
+    </ClCompile>
+    <ClCompile Include="src\compiler\code_generators.cpp">
+      <Filter>src\compiler</Filter>
+    </ClCompile>
+    <ClCompile Include="src\compiler\cpp_generator.cc">
+      <Filter>src\compiler</Filter>
+    </ClCompile>
+    <ClCompile Include="src\compiler\file_binary_writer.cpp">
+      <Filter>src\compiler</Filter>
+    </ClCompile>
+    <ClCompile Include="src\compiler\file_name_saving_file_manager.cpp">
+      <Filter>src\compiler</Filter>
+    </ClCompile>
+    <ClCompile Include="src\compiler\file_writer.cpp">
+      <Filter>src\compiler</Filter>
+    </ClCompile>
+    <ClCompile Include="src\compiler\flatc.cpp">
+      <Filter>src\compiler</Filter>
+    </ClCompile>
+    <ClCompile Include="src\compiler\go_generator.cc">
+      <Filter>src\compiler</Filter>
+    </ClCompile>
+    <ClCompile Include="src\compiler\idl_gen_binary.cpp">
+      <Filter>src\compiler</Filter>
+    </ClCompile>
+    <ClCompile Include="src\compiler\idl_gen_cpp.cpp">
+      <Filter>src\compiler</Filter>
+    </ClCompile>
+    <ClCompile Include="src\compiler\idl_gen_csharp.cpp">
+      <Filter>src\compiler</Filter>
+    </ClCompile>
+    <ClCompile Include="src\compiler\idl_gen_dart.cpp">
+      <Filter>src\compiler</Filter>
+    </ClCompile>
+    <ClCompile Include="src\compiler\idl_gen_fbs.cpp">
+      <Filter>src\compiler</Filter>
+    </ClCompile>
+    <ClCompile Include="src\compiler\idl_gen_go.cpp">
+      <Filter>src\compiler</Filter>
+    </ClCompile>
+    <ClCompile Include="src\compiler\idl_gen_grpc.cpp">
+      <Filter>src\compiler</Filter>
+    </ClCompile>
+    <ClCompile Include="src\compiler\idl_gen_java.cpp">
+      <Filter>src\compiler</Filter>
+    </ClCompile>
+    <ClCompile Include="src\compiler\idl_gen_json_schema.cpp">
+      <Filter>src\compiler</Filter>
+    </ClCompile>
+    <ClCompile Include="src\compiler\idl_gen_kotlin.cpp">
+      <Filter>src\compiler</Filter>
+    </ClCompile>
+    <ClCompile Include="src\compiler\idl_gen_kotlin_kmp.cpp">
+      <Filter>src\compiler</Filter>
+    </ClCompile>
+    <ClCompile Include="src\compiler\idl_gen_lobster.cpp">
+      <Filter>src\compiler</Filter>
+    </ClCompile>
+    <ClCompile Include="src\compiler\idl_gen_php.cpp">
+      <Filter>src\compiler</Filter>
+    </ClCompile>
+    <ClCompile Include="src\compiler\idl_gen_python.cpp">
+      <Filter>src\compiler</Filter>
+    </ClCompile>
+    <ClCompile Include="src\compiler\idl_gen_rust.cpp">
+      <Filter>src\compiler</Filter>
+    </ClCompile>
+    <ClCompile Include="src\compiler\idl_gen_swift.cpp">
+      <Filter>src\compiler</Filter>
+    </ClCompile>
+    <ClCompile Include="src\compiler\idl_gen_text.cpp">
+      <Filter>src\compiler</Filter>
+    </ClCompile>
+    <ClCompile Include="src\compiler\idl_gen_ts.cpp">
+      <Filter>src\compiler</Filter>
+    </ClCompile>
+    <ClCompile Include="src\compiler\java_generator.cc">
+      <Filter>src\compiler</Filter>
+    </ClCompile>
+    <ClCompile Include="src\compiler\python_generator.cc">
+      <Filter>src\compiler</Filter>
+    </ClCompile>
+    <ClCompile Include="src\compiler\swift_generator.cc">
+      <Filter>src\compiler</Filter>
+    </ClCompile>
+    <ClCompile Include="src\compiler\ts_generator.cc">
+      <Filter>src\compiler</Filter>
+    </ClCompile>
+    <ClCompile Include="src\compiler\flatc_main.cpp">
+      <Filter>src\compiler</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\flatbuffers\pch\flatc_pch.h">
+      <Filter>include\flatbuffers\pch</Filter>
+    </ClInclude>
+    <ClInclude Include="include\flatbuffers\pch\pch.h">
+      <Filter>include\flatbuffers\pch</Filter>
+    </ClInclude>
+    <ClInclude Include="include\flatbuffers\allocator.h">
+      <Filter>include\flatbuffers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\flatbuffers\array.h">
+      <Filter>include\flatbuffers</Filter>
+    </ClInclude>
     <ClInclude Include="include\flatbuffers\base.h">
       <Filter>include\flatbuffers</Filter>
     </ClInclude>
+    <ClInclude Include="include\flatbuffers\buffer.h">
+      <Filter>include\flatbuffers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\flatbuffers\buffer_ref.h">
+      <Filter>include\flatbuffers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\flatbuffers\code_generator.h">
+      <Filter>include\flatbuffers</Filter>
+    </ClInclude>
     <ClInclude Include="include\flatbuffers\code_generators.h">
+      <Filter>include\flatbuffers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\flatbuffers\default_allocator.h">
+      <Filter>include\flatbuffers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\flatbuffers\detached_buffer.h">
+      <Filter>include\flatbuffers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\flatbuffers\file_manager.h">
+      <Filter>include\flatbuffers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\flatbuffers\flatbuffer_builder.h">
       <Filter>include\flatbuffers</Filter>
     </ClInclude>
     <ClInclude Include="include\flatbuffers\flatbuffers.h">
       <Filter>include\flatbuffers</Filter>
     </ClInclude>
     <ClInclude Include="include\flatbuffers\flatc.h">
+      <Filter>include\flatbuffers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\flatbuffers\flex_flat_util.h">
       <Filter>include\flatbuffers</Filter>
     </ClInclude>
     <ClInclude Include="include\flatbuffers\flexbuffers.h">
@@ -69,136 +227,135 @@
     <ClInclude Include="include\flatbuffers\stl_emulation.h">
       <Filter>include\flatbuffers</Filter>
     </ClInclude>
+    <ClInclude Include="include\flatbuffers\string.h">
+      <Filter>include\flatbuffers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\flatbuffers\struct.h">
+      <Filter>include\flatbuffers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\flatbuffers\table.h">
+      <Filter>include\flatbuffers</Filter>
+    </ClInclude>
     <ClInclude Include="include\flatbuffers\util.h">
+      <Filter>include\flatbuffers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\flatbuffers\vector.h">
+      <Filter>include\flatbuffers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\flatbuffers\vector_downward.h">
+      <Filter>include\flatbuffers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\flatbuffers\verifier.h">
       <Filter>include\flatbuffers</Filter>
     </ClInclude>
     <ClInclude Include="include\flatbuffers\flatbuffers_export.h">
       <Filter>include\flatbuffers</Filter>
     </ClInclude>
-    <ClInclude Include="src\compiler\config.h">
-      <Filter>src\compiler</Filter>
+    <ClInclude Include="include\flatbuffers\compiler\annotated_binary_text_gen.h">
+      <Filter>include\flatbuffers\compiler</Filter>
     </ClInclude>
-    <ClInclude Include="src\compiler\cpp_generator.h">
-      <Filter>src\compiler</Filter>
+    <ClInclude Include="include\flatbuffers\compiler\bfbs_gen.h">
+      <Filter>include\flatbuffers\compiler</Filter>
     </ClInclude>
-    <ClInclude Include="src\compiler\go_generator.h">
-      <Filter>src\compiler</Filter>
+    <ClInclude Include="include\flatbuffers\compiler\bfbs_gen_lua.h">
+      <Filter>include\flatbuffers\compiler</Filter>
     </ClInclude>
-    <ClInclude Include="src\compiler\java_generator.h">
-      <Filter>src\compiler</Filter>
+    <ClInclude Include="include\flatbuffers\compiler\bfbs_gen_nim.h">
+      <Filter>include\flatbuffers\compiler</Filter>
     </ClInclude>
-    <ClInclude Include="src\compiler\python_generator.h">
-      <Filter>src\compiler</Filter>
+    <ClInclude Include="include\flatbuffers\compiler\bfbs_namer.h">
+      <Filter>include\flatbuffers\compiler</Filter>
     </ClInclude>
-    <ClInclude Include="src\compiler\schema_interface.h">
-      <Filter>src\compiler</Filter>
+    <ClInclude Include="include\flatbuffers\compiler\binary_annotator.h">
+      <Filter>include\flatbuffers\compiler</Filter>
     </ClInclude>
-    <ClInclude Include="src\compiler\swift_generator.h">
-      <Filter>src\compiler</Filter>
+    <ClInclude Include="include\flatbuffers\compiler\cpp_generator.h">
+      <Filter>include\flatbuffers\compiler</Filter>
     </ClInclude>
-    <ClInclude Include="src\compiler\ts_generator.h">
-      <Filter>src\compiler</Filter>
+    <ClInclude Include="include\flatbuffers\compiler\go_generator.h">
+      <Filter>include\flatbuffers\compiler</Filter>
+    </ClInclude>
+    <ClInclude Include="include\flatbuffers\compiler\idl_gen_binary.h">
+      <Filter>include\flatbuffers\compiler</Filter>
+    </ClInclude>
+    <ClInclude Include="include\flatbuffers\compiler\idl_gen_cpp.h">
+      <Filter>include\flatbuffers\compiler</Filter>
+    </ClInclude>
+    <ClInclude Include="include\flatbuffers\compiler\idl_gen_csharp.h">
+      <Filter>include\flatbuffers\compiler</Filter>
+    </ClInclude>
+    <ClInclude Include="include\flatbuffers\compiler\idl_gen_dart.h">
+      <Filter>include\flatbuffers\compiler</Filter>
+    </ClInclude>
+    <ClInclude Include="include\flatbuffers\compiler\idl_gen_fbs.h">
+      <Filter>include\flatbuffers\compiler</Filter>
+    </ClInclude>
+    <ClInclude Include="include\flatbuffers\compiler\idl_gen_go.h">
+      <Filter>include\flatbuffers\compiler</Filter>
+    </ClInclude>
+    <ClInclude Include="include\flatbuffers\compiler\idl_gen_java.h">
+      <Filter>include\flatbuffers\compiler</Filter>
+    </ClInclude>
+    <ClInclude Include="include\flatbuffers\compiler\idl_gen_json_schema.h">
+      <Filter>include\flatbuffers\compiler</Filter>
+    </ClInclude>
+    <ClInclude Include="include\flatbuffers\compiler\idl_gen_kotlin.h">
+      <Filter>include\flatbuffers\compiler</Filter>
+    </ClInclude>
+    <ClInclude Include="include\flatbuffers\compiler\idl_gen_lobster.h">
+      <Filter>include\flatbuffers\compiler</Filter>
+    </ClInclude>
+    <ClInclude Include="include\flatbuffers\compiler\idl_gen_php.h">
+      <Filter>include\flatbuffers\compiler</Filter>
+    </ClInclude>
+    <ClInclude Include="include\flatbuffers\compiler\idl_gen_python.h">
+      <Filter>include\flatbuffers\compiler</Filter>
+    </ClInclude>
+    <ClInclude Include="include\flatbuffers\compiler\idl_gen_rust.h">
+      <Filter>include\flatbuffers\compiler</Filter>
+    </ClInclude>
+    <ClInclude Include="include\flatbuffers\compiler\idl_gen_swift.h">
+      <Filter>include\flatbuffers\compiler</Filter>
+    </ClInclude>
+    <ClInclude Include="include\flatbuffers\compiler\idl_gen_text.h">
+      <Filter>include\flatbuffers\compiler</Filter>
+    </ClInclude>
+    <ClInclude Include="include\flatbuffers\compiler\idl_gen_ts.h">
+      <Filter>include\flatbuffers\compiler</Filter>
+    </ClInclude>
+    <ClInclude Include="include\flatbuffers\compiler\idl_namer.h">
+      <Filter>include\flatbuffers\compiler</Filter>
+    </ClInclude>
+    <ClInclude Include="include\flatbuffers\compiler\java_generator.h">
+      <Filter>include\flatbuffers\compiler</Filter>
+    </ClInclude>
+    <ClInclude Include="include\flatbuffers\compiler\namer.h">
+      <Filter>include\flatbuffers\compiler</Filter>
+    </ClInclude>
+    <ClInclude Include="include\flatbuffers\compiler\python_generator.h">
+      <Filter>include\flatbuffers\compiler</Filter>
+    </ClInclude>
+    <ClInclude Include="include\flatbuffers\compiler\schema_interface.h">
+      <Filter>include\flatbuffers\compiler</Filter>
+    </ClInclude>
+    <ClInclude Include="include\flatbuffers\compiler\swift_generator.h">
+      <Filter>include\flatbuffers\compiler</Filter>
+    </ClInclude>
+    <ClInclude Include="include\flatbuffers\compiler\ts_generator.h">
+      <Filter>include\flatbuffers\compiler</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="dllmain.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\code_generators.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\flatc.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\idl_gen_cpp.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\idl_gen_csharp.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\idl_gen_dart.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\idl_gen_fbs.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\idl_gen_go.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\idl_gen_grpc.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\idl_gen_java.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\idl_gen_json_schema.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\idl_gen_kotlin.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\idl_gen_lobster.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\idl_gen_lua.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\idl_gen_php.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\idl_gen_python.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\idl_gen_rust.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\idl_gen_swift.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\idl_gen_text.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\idl_gen_ts.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\idl_parser.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\reflection.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\util.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\compiler\cpp_generator.cc">
-      <Filter>src\compiler</Filter>
-    </ClCompile>
-    <ClCompile Include="src\compiler\go_generator.cc">
-      <Filter>src\compiler</Filter>
-    </ClCompile>
-    <ClCompile Include="src\compiler\java_generator.cc">
-      <Filter>src\compiler</Filter>
-    </ClCompile>
-    <ClCompile Include="src\compiler\python_generator.cc">
-      <Filter>src\compiler</Filter>
-    </ClCompile>
-    <ClCompile Include="src\compiler\swift_generator.cc">
-      <Filter>src\compiler</Filter>
-    </ClCompile>
-    <ClCompile Include="src\compiler\ts_generator.cc">
-      <Filter>src\compiler</Filter>
-    </ClCompile>
-    <ClCompile Include="src\log.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="Readme\LICENSE.txt">
+    <None Include="Readme\CHANGELOG.md">
       <Filter>Readme</Filter>
-    </Text>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Readme\readme.md">
+    </None>
+    <None Include="Readme\LICENSE">
+      <Filter>Readme</Filter>
+    </None>
+    <None Include="Readme\README.md">
+      <Filter>Readme</Filter>
+    </None>
+    <None Include="Readme\SECURITY.md">
       <Filter>Readme</Filter>
     </None>
   </ItemGroup>

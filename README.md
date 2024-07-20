@@ -313,8 +313,8 @@ The abseil_test contains the unit tests for the Harlinn.abseil project
 
 **Project:** Harlinn.fast_float
 
-### [FlatBuffers](https://google.github.io/flatbuffers/)
-**Version:** 2.0.0
+### [FlatBuffers](https://github.com/google/flatbuffers/tree/master)
+**Version:** 24.3.25
 
 **Description:**
 > FlatBuffers is an efficient cross platform serialization library for C++, 

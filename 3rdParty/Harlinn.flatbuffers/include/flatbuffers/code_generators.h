@@ -64,7 +64,7 @@ class CodeWriter {
   // character.  Any text within {{ and }} delimiters is replaced by values
   // previously stored in the CodeWriter by calling SetValue above.  The newline
   // will be suppressed if the text ends with the \\ character.
-  FB_EXPORT void operator+=(std::string text);
+  void operator+=(std::string text);
 
   // Returns the current contents of the CodeWriter as a std::string.
   std::string ToString() const { return stream_.str(); }
@@ -86,20 +86,18 @@ class CodeWriter {
   bool ignore_ident_;
 
   // Add ident padding (tab or space) based on ident level
-  FB_EXPORT void AppendIdent(std::stringstream &stream);
+  void AppendIdent(std::stringstream &stream);
 };
 
 class BaseGenerator {
  public:
   virtual bool generate() = 0;
 
-  FB_EXPORT static std::string NamespaceDir(const Parser &parser, const std::string &path,
+  static std::string NamespaceDir(const Parser &parser, const std::string &path,
                                   const Namespace &ns,
                                   const bool dasherize = false);
 
-  FB_EXPORT static std::string ToDasherizedCase(const std::string pascal_case);
-
-  FB_EXPORT std::string GeneratedFileName(const std::string &path,
+  std::string GeneratedFileName(const std::string &path,
                                 const std::string &file_name,
                                 const IDLOptions &options) const;
 
@@ -119,14 +117,14 @@ class BaseGenerator {
   BaseGenerator &operator=(const BaseGenerator &);
   BaseGenerator(const BaseGenerator &);
 
-  FB_EXPORT std::string NamespaceDir(const Namespace &ns,
+  std::string NamespaceDir(const Namespace &ns,
                            const bool dasherize = false) const;
 
-  FB_EXPORT static const char *FlatBuffersGeneratedWarning();
+  static const char *FlatBuffersGeneratedWarning();
 
-  FB_EXPORT static std::string FullNamespace(const char *separator, const Namespace &ns);
+  static std::string FullNamespace(const char *separator, const Namespace &ns);
 
-  FB_EXPORT static std::string LastNamespacePart(const Namespace &ns);
+  static std::string LastNamespacePart(const Namespace &ns);
 
   // tracks the current namespace for early exit in WrapInNameSpace
   // c++, java and csharp returns a different namespace from
@@ -137,12 +135,13 @@ class BaseGenerator {
   // Ensure that a type is prefixed with its namespace even within
   // its own namespace to avoid conflict between generated method
   // names and similarly named classes or structs
-  FB_EXPORT std::string WrapInNameSpace(const Namespace *ns,
+  std::string WrapInNameSpace(const Namespace *ns,
                               const std::string &name) const;
 
-  FB_EXPORT std::string WrapInNameSpace(const Definition &def) const;
+  std::string WrapInNameSpace(const Definition &def,
+                              const std::string &suffix = "") const;
 
-  FB_EXPORT std::string GetNameSpace(const Definition &def) const;
+  std::string GetNameSpace(const Definition &def) const;
 
   const Parser &parser_;
   const std::string &path_;
@@ -158,14 +157,14 @@ struct CommentConfig {
   const char *last_line;
 };
 
-FB_EXPORT extern void GenComment(const std::vector<std::string> &dc,
+extern void GenComment(const std::vector<std::string> &dc,
                        std::string *code_ptr, const CommentConfig *config,
                        const char *prefix = "");
 
 class FloatConstantGenerator {
  public:
   virtual ~FloatConstantGenerator() {}
-  FB_EXPORT std::string GenFloatConstant(const FieldDef &field) const;
+  std::string GenFloatConstant(const FieldDef &field) const;
 
  private:
   virtual std::string Value(double v, const std::string &src) const = 0;
@@ -176,31 +175,13 @@ class FloatConstantGenerator {
   virtual std::string Inf(float v) const = 0;
   virtual std::string NaN(float v) const = 0;
 
-
   template<typename T>
-  std::string GenFloatConstantImpl(
-      const FieldDef &field) const {
-    const auto &constant = field.value.constant;
-    T v;
-    auto done = StringToNumber(constant.c_str(), &v);
-    FLATBUFFERS_ASSERT(done);
-    if (done) {
-#if (!defined(_MSC_VER) || (_MSC_VER >= 1800))
-      if (std::isnan(v)) return NaN(v);
-      if (std::isinf(v)) return Inf(v);
-#endif
-      return Value(v, constant);
-    }
-    return "#";  // compile time error
-  }
-
-
-  
+  std::string GenFloatConstantImpl(const FieldDef &field) const;
 };
 
 class SimpleFloatConstantGenerator : public FloatConstantGenerator {
  public:
-  FB_EXPORT SimpleFloatConstantGenerator(const char *nan_number,
+  SimpleFloatConstantGenerator(const char *nan_number,
                                const char *pos_inf_number,
                                const char *neg_inf_number);
 
@@ -222,7 +203,7 @@ class SimpleFloatConstantGenerator : public FloatConstantGenerator {
 // C++, C#, Java like generator.
 class TypedFloatConstantGenerator : public FloatConstantGenerator {
  public:
-  FB_EXPORT TypedFloatConstantGenerator(const char *double_prefix,
+  TypedFloatConstantGenerator(const char *double_prefix,
                               const char *single_prefix, const char *nan_number,
                               const char *pos_inf_number,
                               const char *neg_inf_number = "");
@@ -247,6 +228,10 @@ class TypedFloatConstantGenerator : public FloatConstantGenerator {
   const std::string pos_inf_number_;
   const std::string neg_inf_number_;
 };
+
+std::string JavaCSharpMakeRule(const bool java, const Parser &parser,
+                               const std::string &path,
+                               const std::string &file_name);
 
 }  // namespace flatbuffers
 
