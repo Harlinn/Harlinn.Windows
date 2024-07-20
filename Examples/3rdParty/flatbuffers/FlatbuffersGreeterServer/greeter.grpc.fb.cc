@@ -19,7 +19,7 @@ static const char* Greeter_method_names[] = {
   "/Greeter/SayManyHellos",
 };
 
-std::unique_ptr< Greeter::Stub> Greeter::NewStub(const std::shared_ptr< ::grpc::ChannelInterface>& channel, const ::grpc::StubOptions& options) {
+std::unique_ptr< Greeter::Stub> Greeter::NewStub(const std::shared_ptr< ::grpc::ChannelInterface>& channel, const ::grpc::StubOptions& /*options*/) {
   std::unique_ptr< Greeter::Stub> stub(new Greeter::Stub(channel));
   return stub;
 }
@@ -69,17 +69,11 @@ Greeter::Service::Service() {
 Greeter::Service::~Service() {
 }
 
-::grpc::Status Greeter::Service::SayHello(::grpc::ServerContext* context, const flatbuffers::grpc::Message<HelloRequest>* request, flatbuffers::grpc::Message<HelloReply>* response) {
-  (void) context;
-  (void) request;
-  (void) response;
+::grpc::Status Greeter::Service::SayHello(::grpc::ServerContext* /*context*/, const flatbuffers::grpc::Message<HelloRequest>* /*request*/, flatbuffers::grpc::Message<HelloReply>* /*response*/) {
   return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
 }
 
-::grpc::Status Greeter::Service::SayManyHellos(::grpc::ServerContext* context, const flatbuffers::grpc::Message<ManyHellosRequest>* request, ::grpc::ServerWriter< flatbuffers::grpc::Message<HelloReply>>* writer) {
-  (void) context;
-  (void) request;
-  (void) writer;
+::grpc::Status Greeter::Service::SayManyHellos(::grpc::ServerContext* /*context*/, const flatbuffers::grpc::Message<ManyHellosRequest>* /*request*/, ::grpc::ServerWriter< flatbuffers::grpc::Message<HelloReply>>* /*writer*/) {
   return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
 }
 

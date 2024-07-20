@@ -6,6 +6,13 @@
 
 #include "flatbuffers/flatbuffers.h"
 
+// Ensure the included flatbuffers.h is the same version as when this file was
+// generated, otherwise it may not be compatible.
+static_assert(FLATBUFFERS_VERSION_MAJOR == 24 &&
+              FLATBUFFERS_VERSION_MINOR == 3 &&
+              FLATBUFFERS_VERSION_REVISION == 25,
+             "Non-compatible flatbuffers version included");
+
 struct HelloReply;
 struct HelloReplyBuilder;
 
@@ -15,15 +22,15 @@ struct HelloRequestBuilder;
 struct ManyHellosRequest;
 struct ManyHellosRequestBuilder;
 
-struct HelloReply FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
+struct HelloReply FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
   typedef HelloReplyBuilder Builder;
   enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
     VT_MESSAGE = 4
   };
-  const flatbuffers::String *message() const {
-    return GetPointer<const flatbuffers::String *>(VT_MESSAGE);
+  const ::flatbuffers::String *message() const {
+    return GetPointer<const ::flatbuffers::String *>(VT_MESSAGE);
   }
-  bool Verify(flatbuffers::Verifier &verifier) const {
+  bool Verify(::flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyOffset(verifier, VT_MESSAGE) &&
            verifier.VerifyString(message()) &&
@@ -33,32 +40,32 @@ struct HelloReply FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
 
 struct HelloReplyBuilder {
   typedef HelloReply Table;
-  flatbuffers::FlatBufferBuilder &fbb_;
-  flatbuffers::uoffset_t start_;
-  void add_message(flatbuffers::Offset<flatbuffers::String> message) {
+  ::flatbuffers::FlatBufferBuilder &fbb_;
+  ::flatbuffers::uoffset_t start_;
+  void add_message(::flatbuffers::Offset<::flatbuffers::String> message) {
     fbb_.AddOffset(HelloReply::VT_MESSAGE, message);
   }
-  explicit HelloReplyBuilder(flatbuffers::FlatBufferBuilder &_fbb)
+  explicit HelloReplyBuilder(::flatbuffers::FlatBufferBuilder &_fbb)
         : fbb_(_fbb) {
     start_ = fbb_.StartTable();
   }
-  flatbuffers::Offset<HelloReply> Finish() {
+  ::flatbuffers::Offset<HelloReply> Finish() {
     const auto end = fbb_.EndTable(start_);
-    auto o = flatbuffers::Offset<HelloReply>(end);
+    auto o = ::flatbuffers::Offset<HelloReply>(end);
     return o;
   }
 };
 
-inline flatbuffers::Offset<HelloReply> CreateHelloReply(
-    flatbuffers::FlatBufferBuilder &_fbb,
-    flatbuffers::Offset<flatbuffers::String> message = 0) {
+inline ::flatbuffers::Offset<HelloReply> CreateHelloReply(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
+    ::flatbuffers::Offset<::flatbuffers::String> message = 0) {
   HelloReplyBuilder builder_(_fbb);
   builder_.add_message(message);
   return builder_.Finish();
 }
 
-inline flatbuffers::Offset<HelloReply> CreateHelloReplyDirect(
-    flatbuffers::FlatBufferBuilder &_fbb,
+inline ::flatbuffers::Offset<HelloReply> CreateHelloReplyDirect(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
     const char *message = nullptr) {
   auto message__ = message ? _fbb.CreateString(message) : 0;
   return CreateHelloReply(
@@ -66,15 +73,15 @@ inline flatbuffers::Offset<HelloReply> CreateHelloReplyDirect(
       message__);
 }
 
-struct HelloRequest FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
+struct HelloRequest FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
   typedef HelloRequestBuilder Builder;
   enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
     VT_NAME = 4
   };
-  const flatbuffers::String *name() const {
-    return GetPointer<const flatbuffers::String *>(VT_NAME);
+  const ::flatbuffers::String *name() const {
+    return GetPointer<const ::flatbuffers::String *>(VT_NAME);
   }
-  bool Verify(flatbuffers::Verifier &verifier) const {
+  bool Verify(::flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyOffset(verifier, VT_NAME) &&
            verifier.VerifyString(name()) &&
@@ -84,32 +91,32 @@ struct HelloRequest FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
 
 struct HelloRequestBuilder {
   typedef HelloRequest Table;
-  flatbuffers::FlatBufferBuilder &fbb_;
-  flatbuffers::uoffset_t start_;
-  void add_name(flatbuffers::Offset<flatbuffers::String> name) {
+  ::flatbuffers::FlatBufferBuilder &fbb_;
+  ::flatbuffers::uoffset_t start_;
+  void add_name(::flatbuffers::Offset<::flatbuffers::String> name) {
     fbb_.AddOffset(HelloRequest::VT_NAME, name);
   }
-  explicit HelloRequestBuilder(flatbuffers::FlatBufferBuilder &_fbb)
+  explicit HelloRequestBuilder(::flatbuffers::FlatBufferBuilder &_fbb)
         : fbb_(_fbb) {
     start_ = fbb_.StartTable();
   }
-  flatbuffers::Offset<HelloRequest> Finish() {
+  ::flatbuffers::Offset<HelloRequest> Finish() {
     const auto end = fbb_.EndTable(start_);
-    auto o = flatbuffers::Offset<HelloRequest>(end);
+    auto o = ::flatbuffers::Offset<HelloRequest>(end);
     return o;
   }
 };
 
-inline flatbuffers::Offset<HelloRequest> CreateHelloRequest(
-    flatbuffers::FlatBufferBuilder &_fbb,
-    flatbuffers::Offset<flatbuffers::String> name = 0) {
+inline ::flatbuffers::Offset<HelloRequest> CreateHelloRequest(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
+    ::flatbuffers::Offset<::flatbuffers::String> name = 0) {
   HelloRequestBuilder builder_(_fbb);
   builder_.add_name(name);
   return builder_.Finish();
 }
 
-inline flatbuffers::Offset<HelloRequest> CreateHelloRequestDirect(
-    flatbuffers::FlatBufferBuilder &_fbb,
+inline ::flatbuffers::Offset<HelloRequest> CreateHelloRequestDirect(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
     const char *name = nullptr) {
   auto name__ = name ? _fbb.CreateString(name) : 0;
   return CreateHelloRequest(
@@ -117,51 +124,51 @@ inline flatbuffers::Offset<HelloRequest> CreateHelloRequestDirect(
       name__);
 }
 
-struct ManyHellosRequest FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
+struct ManyHellosRequest FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
   typedef ManyHellosRequestBuilder Builder;
   enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
     VT_NAME = 4,
     VT_NUM_GREETINGS = 6
   };
-  const flatbuffers::String *name() const {
-    return GetPointer<const flatbuffers::String *>(VT_NAME);
+  const ::flatbuffers::String *name() const {
+    return GetPointer<const ::flatbuffers::String *>(VT_NAME);
   }
   int32_t num_greetings() const {
     return GetField<int32_t>(VT_NUM_GREETINGS, 0);
   }
-  bool Verify(flatbuffers::Verifier &verifier) const {
+  bool Verify(::flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyOffset(verifier, VT_NAME) &&
            verifier.VerifyString(name()) &&
-           VerifyField<int32_t>(verifier, VT_NUM_GREETINGS) &&
+           VerifyField<int32_t>(verifier, VT_NUM_GREETINGS, 4) &&
            verifier.EndTable();
   }
 };
 
 struct ManyHellosRequestBuilder {
   typedef ManyHellosRequest Table;
-  flatbuffers::FlatBufferBuilder &fbb_;
-  flatbuffers::uoffset_t start_;
-  void add_name(flatbuffers::Offset<flatbuffers::String> name) {
+  ::flatbuffers::FlatBufferBuilder &fbb_;
+  ::flatbuffers::uoffset_t start_;
+  void add_name(::flatbuffers::Offset<::flatbuffers::String> name) {
     fbb_.AddOffset(ManyHellosRequest::VT_NAME, name);
   }
   void add_num_greetings(int32_t num_greetings) {
     fbb_.AddElement<int32_t>(ManyHellosRequest::VT_NUM_GREETINGS, num_greetings, 0);
   }
-  explicit ManyHellosRequestBuilder(flatbuffers::FlatBufferBuilder &_fbb)
+  explicit ManyHellosRequestBuilder(::flatbuffers::FlatBufferBuilder &_fbb)
         : fbb_(_fbb) {
     start_ = fbb_.StartTable();
   }
-  flatbuffers::Offset<ManyHellosRequest> Finish() {
+  ::flatbuffers::Offset<ManyHellosRequest> Finish() {
     const auto end = fbb_.EndTable(start_);
-    auto o = flatbuffers::Offset<ManyHellosRequest>(end);
+    auto o = ::flatbuffers::Offset<ManyHellosRequest>(end);
     return o;
   }
 };
 
-inline flatbuffers::Offset<ManyHellosRequest> CreateManyHellosRequest(
-    flatbuffers::FlatBufferBuilder &_fbb,
-    flatbuffers::Offset<flatbuffers::String> name = 0,
+inline ::flatbuffers::Offset<ManyHellosRequest> CreateManyHellosRequest(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
+    ::flatbuffers::Offset<::flatbuffers::String> name = 0,
     int32_t num_greetings = 0) {
   ManyHellosRequestBuilder builder_(_fbb);
   builder_.add_num_greetings(num_greetings);
@@ -169,8 +176,8 @@ inline flatbuffers::Offset<ManyHellosRequest> CreateManyHellosRequest(
   return builder_.Finish();
 }
 
-inline flatbuffers::Offset<ManyHellosRequest> CreateManyHellosRequestDirect(
-    flatbuffers::FlatBufferBuilder &_fbb,
+inline ::flatbuffers::Offset<ManyHellosRequest> CreateManyHellosRequestDirect(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
     const char *name = nullptr,
     int32_t num_greetings = 0) {
   auto name__ = name ? _fbb.CreateString(name) : 0;

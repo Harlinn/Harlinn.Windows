@@ -97,7 +97,7 @@ class Greeter final {
   template <class BaseClass>
   class WithAsyncMethod_SayHello : public BaseClass {
    private:
-    void BaseClassMustBeDerivedFromService(const Service *service) {}
+    void BaseClassMustBeDerivedFromService(const Service */*service*/) {}
    public:
     WithAsyncMethod_SayHello() {
       ::grpc::Service::MarkMethodAsync(0);
@@ -106,7 +106,7 @@ class Greeter final {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status SayHello(::grpc::ServerContext* context, const flatbuffers::grpc::Message<HelloRequest>* request, flatbuffers::grpc::Message<HelloReply>* response) final override {
+    ::grpc::Status SayHello(::grpc::ServerContext* /*context*/, const flatbuffers::grpc::Message<HelloRequest>* /*request*/, flatbuffers::grpc::Message<HelloReply>* /*response*/) final override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
@@ -117,7 +117,7 @@ class Greeter final {
   template <class BaseClass>
   class WithAsyncMethod_SayManyHellos : public BaseClass {
    private:
-    void BaseClassMustBeDerivedFromService(const Service *service) {}
+    void BaseClassMustBeDerivedFromService(const Service */*service*/) {}
    public:
     WithAsyncMethod_SayManyHellos() {
       ::grpc::Service::MarkMethodAsync(1);
@@ -126,7 +126,7 @@ class Greeter final {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status SayManyHellos(::grpc::ServerContext* context, const flatbuffers::grpc::Message<ManyHellosRequest>* request, ::grpc::ServerWriter< flatbuffers::grpc::Message<HelloReply>>* writer) final override {
+    ::grpc::Status SayManyHellos(::grpc::ServerContext* /*context*/, const flatbuffers::grpc::Message<ManyHellosRequest>* /*request*/, ::grpc::ServerWriter< flatbuffers::grpc::Message<HelloReply>>* /*writer*/) final override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
@@ -138,7 +138,7 @@ class Greeter final {
   template <class BaseClass>
   class WithGenericMethod_SayHello : public BaseClass {
    private:
-    void BaseClassMustBeDerivedFromService(const Service *service) {}
+    void BaseClassMustBeDerivedFromService(const Service */*service*/) {}
    public:
     WithGenericMethod_SayHello() {
       ::grpc::Service::MarkMethodGeneric(0);
@@ -147,7 +147,7 @@ class Greeter final {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status SayHello(::grpc::ServerContext* context, const flatbuffers::grpc::Message<HelloRequest>* request, flatbuffers::grpc::Message<HelloReply>* response) final override {
+    ::grpc::Status SayHello(::grpc::ServerContext* /*context*/, const flatbuffers::grpc::Message<HelloRequest>* /*request*/, flatbuffers::grpc::Message<HelloReply>* /*response*/) final override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
@@ -155,7 +155,7 @@ class Greeter final {
   template <class BaseClass>
   class WithGenericMethod_SayManyHellos : public BaseClass {
    private:
-    void BaseClassMustBeDerivedFromService(const Service *service) {}
+    void BaseClassMustBeDerivedFromService(const Service */*service*/) {}
    public:
     WithGenericMethod_SayManyHellos() {
       ::grpc::Service::MarkMethodGeneric(1);
@@ -164,7 +164,7 @@ class Greeter final {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status SayManyHellos(::grpc::ServerContext* context, const flatbuffers::grpc::Message<ManyHellosRequest>* request, ::grpc::ServerWriter< flatbuffers::grpc::Message<HelloReply>>* writer) final override {
+    ::grpc::Status SayManyHellos(::grpc::ServerContext* /*context*/, const flatbuffers::grpc::Message<ManyHellosRequest>* /*request*/, ::grpc::ServerWriter< flatbuffers::grpc::Message<HelloReply>>* /*writer*/) final override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
@@ -172,7 +172,7 @@ class Greeter final {
   template <class BaseClass>
   class WithStreamedUnaryMethod_SayHello : public BaseClass {
    private:
-    void BaseClassMustBeDerivedFromService(const Service *service) {}
+    void BaseClassMustBeDerivedFromService(const Service */*service*/) {}
    public:
     WithStreamedUnaryMethod_SayHello() {
       ::grpc::Service::MarkMethodStreamed(0,
@@ -182,7 +182,7 @@ class Greeter final {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable regular version of this method
-    ::grpc::Status SayHello(::grpc::ServerContext* context, const flatbuffers::grpc::Message<HelloRequest>* request, flatbuffers::grpc::Message<HelloReply>* response) final override {
+    ::grpc::Status SayHello(::grpc::ServerContext* /*context*/, const flatbuffers::grpc::Message<HelloRequest>* /*request*/, flatbuffers::grpc::Message<HelloReply>* /*response*/) final override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
@@ -193,7 +193,7 @@ class Greeter final {
   template <class BaseClass>
   class WithSplitStreamingMethod_SayManyHellos : public BaseClass {
    private:
-    void BaseClassMustBeDerivedFromService(const Service *service) {}
+    void BaseClassMustBeDerivedFromService(const Service */*service*/) { }
    public:
     WithSplitStreamingMethod_SayManyHellos() {
       ::grpc::Service::MarkMethodStreamed(1,
@@ -203,7 +203,7 @@ class Greeter final {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable regular version of this method
-    ::grpc::Status SayManyHellos(::grpc::ServerContext* context, const flatbuffers::grpc::Message<ManyHellosRequest>* request, ::grpc::ServerWriter< flatbuffers::grpc::Message<HelloReply>>* writer) final override {
+    ::grpc::Status SayManyHellos(::grpc::ServerContext* /*context*/, const flatbuffers::grpc::Message<ManyHellosRequest>* /*request*/, ::grpc::ServerWriter< flatbuffers::grpc::Message<HelloReply>>* /*writer*/) final override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
