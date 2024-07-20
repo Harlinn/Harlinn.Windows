@@ -77,7 +77,7 @@ The abseil_test contains the unit tests for the Harlinn.abseil project
 **Project:** Harlinn.armadillo
 
 ### [Open Asset Import Library (assimp)](https://github.com/assimp/assimp)
-**Version:** 5.2.5
+**Version:** 5.4.2
 
 **Description:**
 > Open Asset Import Library is a library to load various 3d file formats into a 

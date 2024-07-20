@@ -82,7 +82,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)code;$(ProjectDir)contrib\pugixml\src;$(SolutionDir)3rdParty\Harlinn.zlib;$(SolutionDir)3rdParty\Harlinn.RapidJSON\include;$(ProjectDir)contrib\unzip;$(ProjectDir)contrib\openddlparser\include;$(SolutionDir)3rdParty\Harlinn.stb\include;$(ProjectDir)code/AssetLib;$(ProjectDir)contrib;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)code;$(ProjectDir)contrib\pugixml\src;$(SolutionDir)3rdParty\Harlinn.zlib;$(SolutionDir)3rdParty\Harlinn.RapidJSON\include;$(ProjectDir)contrib\unzip;$(ProjectDir)contrib\openddlparser\include;$(SolutionDir)3rdParty\Harlinn.stb\include;$(SolutionDir)3rdParty\Harlinn.utfcpp\include;$(ProjectDir)code/AssetLib;$(ProjectDir)contrib;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
@@ -110,7 +110,7 @@
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)code;$(ProjectDir)contrib\pugixml\src;$(SolutionDir)3rdParty\Harlinn.zlib;$(SolutionDir)3rdParty\Harlinn.RapidJSON\include;$(ProjectDir)contrib\unzip;$(ProjectDir)contrib\openddlparser\include;$(SolutionDir)3rdParty\Harlinn.stb\include;$(ProjectDir)code/AssetLib;$(ProjectDir)contrib;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)code;$(ProjectDir)contrib\pugixml\src;$(SolutionDir)3rdParty\Harlinn.zlib;$(SolutionDir)3rdParty\Harlinn.RapidJSON\include;$(ProjectDir)contrib\unzip;$(ProjectDir)contrib\openddlparser\include;$(SolutionDir)3rdParty\Harlinn.stb\include;$(SolutionDir)3rdParty\Harlinn.utfcpp\include;$(ProjectDir)code/AssetLib;$(ProjectDir)contrib;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
@@ -136,7 +136,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)code;$(ProjectDir)contrib\pugixml\src;$(SolutionDir)3rdParty\Harlinn.zlib;$(SolutionDir)3rdParty\Harlinn.RapidJSON\include;$(ProjectDir)contrib\unzip;$(ProjectDir)contrib\openddlparser\include;$(SolutionDir)3rdParty\Harlinn.stb\include;$(ProjectDir)code/AssetLib;$(ProjectDir)contrib;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)code;$(ProjectDir)contrib\pugixml\src;$(SolutionDir)3rdParty\Harlinn.zlib;$(SolutionDir)3rdParty\Harlinn.RapidJSON\include;$(ProjectDir)contrib\unzip;$(ProjectDir)contrib\openddlparser\include;$(SolutionDir)3rdParty\Harlinn.stb\include;$(SolutionDir)3rdParty\Harlinn.utfcpp\include;$(ProjectDir)code/AssetLib;$(ProjectDir)contrib;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
@@ -165,7 +165,7 @@
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)code;$(ProjectDir)contrib\pugixml\src;$(SolutionDir)3rdParty\Harlinn.zlib;$(SolutionDir)3rdParty\Harlinn.RapidJSON\include;$(ProjectDir)contrib\unzip;$(ProjectDir)contrib\openddlparser\include;$(SolutionDir)3rdParty\Harlinn.stb\include;$(ProjectDir)code/AssetLib;$(ProjectDir)contrib;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)code;$(ProjectDir)contrib\pugixml\src;$(SolutionDir)3rdParty\Harlinn.zlib;$(SolutionDir)3rdParty\Harlinn.RapidJSON\include;$(ProjectDir)contrib\unzip;$(ProjectDir)contrib\openddlparser\include;$(SolutionDir)3rdParty\Harlinn.stb\include;$(SolutionDir)3rdParty\Harlinn.utfcpp\include;$(ProjectDir)code/AssetLib;$(ProjectDir)contrib;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
@@ -362,6 +362,7 @@
     <ClCompile Include="code\Common\Version.cpp" />
     <ClCompile Include="code\Common\VertexTriangleAdjacency.cpp" />
     <ClCompile Include="code\Common\ZipArchiveIOSystem.cpp" />
+    <ClCompile Include="code\Geometry\GeometryUtils.cpp" />
     <ClCompile Include="code\Material\MaterialSystem.cpp" />
     <ClCompile Include="code\Pbrt\PbrtExporter.cpp" />
     <ClCompile Include="code\PostProcessing\ArmaturePopulate.cpp" />
@@ -412,7 +413,6 @@
     <ClCompile Include="contrib\poly2tri\poly2tri\sweep\cdt.cc" />
     <ClCompile Include="contrib\poly2tri\poly2tri\sweep\sweep.cc" />
     <ClCompile Include="contrib\poly2tri\poly2tri\sweep\sweep_context.cc" />
-    <ClCompile Include="contrib\unzip\crypt.c" />
     <ClCompile Include="contrib\unzip\ioapi.c" />
     <ClCompile Include="contrib\unzip\unzip.c" />
     <ClCompile Include="contrib\zip\src\zip.c" />
@@ -581,7 +581,6 @@
     <ClInclude Include="code\AssetLib\X\XFileParser.h" />
     <ClInclude Include="code\CApi\CInterfaceIOWrapper.h" />
     <ClInclude Include="code\Common\assbin_chunks.h" />
-    <ClInclude Include="code\Common\AssertHandler.h" />
     <ClInclude Include="code\Common\BaseProcess.h" />
     <ClInclude Include="code\Common\Compression.h" />
     <ClInclude Include="code\Common\DefaultProgressHandler.h" />
@@ -593,11 +592,13 @@
     <ClInclude Include="code\Common\ScenePreprocessor.h" />
     <ClInclude Include="code\Common\ScenePrivate.h" />
     <ClInclude Include="code\Common\simd.h" />
+    <ClInclude Include="code\Common\StackAllocator.h" />
     <ClInclude Include="code\Common\StbCommon.h" />
     <ClInclude Include="code\Common\StdOStreamLogStream.h" />
     <ClInclude Include="code\Common\TargetAnimation.h" />
     <ClInclude Include="code\Common\VertexTriangleAdjacency.h" />
     <ClInclude Include="code\Common\Win32DebugLogStream.h" />
+    <ClInclude Include="code\Geometry\GeometryUtils.h" />
     <ClInclude Include="code\Material\MaterialSystem.h" />
     <ClInclude Include="code\Pbrt\PbrtExporter.h" />
     <ClInclude Include="code\PostProcessing\ArmaturePopulate.h" />
@@ -676,6 +677,7 @@
     <ClInclude Include="include\assimp\aabb.h" />
     <ClInclude Include="include\assimp\ai_assert.h" />
     <ClInclude Include="include\assimp\anim.h" />
+    <ClInclude Include="include\assimp\AssertHandler.h" />
     <ClInclude Include="include\assimp\Base64.hpp" />
     <ClInclude Include="include\assimp\BaseImporter.h" />
     <ClInclude Include="include\assimp\Bitmap.h" />
@@ -730,6 +732,7 @@
     <ClInclude Include="include\assimp\qnan.h" />
     <ClInclude Include="include\assimp\quaternion.h" />
     <ClInclude Include="include\assimp\RemoveComments.h" />
+    <ClInclude Include="include\assimp\revision.h" />
     <ClInclude Include="include\assimp\scene.h" />
     <ClInclude Include="include\assimp\SceneCombiner.h" />
     <ClInclude Include="include\assimp\SGSpatialSort.h" />
@@ -760,6 +763,7 @@
     <None Include="code\AssetLib\glTF2\glTF2AssetWriter.inl" />
     <None Include="code\AssetLib\glTF\glTFAsset.inl" />
     <None Include="code\AssetLib\glTF\glTFAssetWriter.inl" />
+    <None Include="code\Common\StackAllocator.inl" />
     <None Include="contrib\Open3DGC\o3dgcIndexedFaceSet.inl" />
     <None Include="contrib\Open3DGC\o3dgcSC3DMCDecoder.inl" />
     <None Include="contrib\Open3DGC\o3dgcSC3DMCEncoder.inl" />
@@ -776,7 +780,12 @@
     <None Include="include\assimp\vector3.inl" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="code\res\assimp.rc" />
+    <ResourceCompile Include="code\res\assimp.rc">
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ProjectDir)code;$(ProjectDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(ProjectDir)code;$(ProjectDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)code;$(ProjectDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ProjectDir)code;$(ProjectDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

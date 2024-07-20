@@ -259,6 +259,9 @@
     <Filter Include="contrib\zip\src">
       <UniqueIdentifier>{acff0ed6-f2ac-4acb-b208-f9b2ae6fc30d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="code\Geometry">
+      <UniqueIdentifier>{bee9f04d-0ac5-4148-9b8c-95d5d237d30a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -314,9 +317,6 @@
     </ClCompile>
     <ClCompile Include="contrib\poly2tri\poly2tri\sweep\sweep_context.cc">
       <Filter>contrib\Poly2Tri\poly2tri\sweep</Filter>
-    </ClCompile>
-    <ClCompile Include="contrib\unzip\crypt.c">
-      <Filter>contrib\Unzip</Filter>
     </ClCompile>
     <ClCompile Include="contrib\unzip\ioapi.c">
       <Filter>contrib\Unzip</Filter>
@@ -963,6 +963,9 @@
     <ClCompile Include="contrib\zip\src\zip.c">
       <Filter>contrib\zip\src</Filter>
     </ClCompile>
+    <ClCompile Include="code\Geometry\GeometryUtils.cpp">
+      <Filter>code\Geometry</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\assimp\Compiler\poppack1.h">
@@ -1326,9 +1329,6 @@
       <Filter>code\CApi</Filter>
     </ClInclude>
     <ClInclude Include="code\Common\assbin_chunks.h">
-      <Filter>code\Common</Filter>
-    </ClInclude>
-    <ClInclude Include="code\Common\AssertHandler.h">
       <Filter>code\Common</Filter>
     </ClInclude>
     <ClInclude Include="code\Common\BaseProcess.h">
@@ -1967,6 +1967,18 @@
     <ClInclude Include="contrib\zip\src\zip.h">
       <Filter>contrib\zip\src</Filter>
     </ClInclude>
+    <ClInclude Include="code\Common\StackAllocator.h">
+      <Filter>code\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="code\Geometry\GeometryUtils.h">
+      <Filter>code\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="include\assimp\AssertHandler.h">
+      <Filter>include\assimp</Filter>
+    </ClInclude>
+    <ClInclude Include="include\assimp\revision.h">
+      <Filter>include\assimp</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="include\assimp\color4.inl">
@@ -2025,6 +2037,9 @@
     </None>
     <None Include="code\AssetLib\glTF2\glTF2AssetWriter.inl">
       <Filter>code\AssetLib\glTF2</Filter>
+    </None>
+    <None Include="code\Common\StackAllocator.inl">
+      <Filter>code\Common</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
