@@ -1,6 +1,6 @@
 ﻿# Harlinn.Windows
 
-This repository contains a Visual Studio Solution currently containing 619 projects.
+This repository contains a Visual Studio Solution currently containing 620 projects.
 
 Most of the projects are open source projects that I have found useful at work, and a few are my own.
 
@@ -94,6 +94,14 @@ The abseil_test contains the unit tests for the Harlinn.abseil project
 > Base64 encoding and decoding with c++.
 
 **Project:** Harlinn.base64
+
+### [benchmark](https://github.com/google/benchmark)
+**Version:** 1.8.5
+
+**Description:**
+> A library to benchmark code snippets, similar to unit tests.
+
+**Project:** Harlinn.benchmark
 
 ### [binlog](https://github.com/morganstanley/binlog)
 **Version:** master/head as of 7th. of October 2023.
