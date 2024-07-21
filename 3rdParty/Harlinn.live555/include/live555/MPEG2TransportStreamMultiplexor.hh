@@ -14,7 +14,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 **********/
 // "liveMedia"
-// Copyright (c) 1996-2023 Live Networks, Inc.  All rights reserved.
+// Copyright (c) 1996-2024 Live Networks, Inc.  All rights reserved.
 // A class for generating MPEG-2 Transport Stream from one or more input
 // Elementary Stream data sources
 // C++ header
@@ -33,8 +33,9 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class MPEG2TransportStreamMultiplexor: public FramedSource {
 public:
-  typedef void (__cdecl onEndOfSegmentFunc)(void* clientData, double segmentDuration);
-  LIVE555_EXPORT void setTimedSegmentation(unsigned segmentationDuration,
+  typedef void (onEndOfSegmentFunc)(void* clientData, double segmentDuration);
+  LIVE555_EXPORT
+  void setTimedSegmentation(unsigned segmentationDuration,
 			    onEndOfSegmentFunc* onEndOfSegmentFunc = NULL,
 			    void* onEndOfSegmentClientData = NULL);
       // Specifies that PAT and PMT packets should be output every "segmentationDuration" seconds.
@@ -49,13 +50,17 @@ public:
       // will deliver data immediately).
 
 protected:
-  LIVE555_EXPORT MPEG2TransportStreamMultiplexor(UsageEnvironment& env);
-  LIVE555_EXPORT virtual ~MPEG2TransportStreamMultiplexor();
+  LIVE555_EXPORT 
+  MPEG2TransportStreamMultiplexor(UsageEnvironment& env);
+  LIVE555_EXPORT
+  virtual ~MPEG2TransportStreamMultiplexor();
 
+  LIVE555_EXPORT
   virtual void awaitNewBuffer(unsigned char* oldBuffer) = 0;
       // implemented by subclasses
 
-  LIVE555_EXPORT void handleNewBuffer(unsigned char* buffer, unsigned bufferSize,
+  LIVE555_EXPORT
+  void handleNewBuffer(unsigned char* buffer, unsigned bufferSize,
 		       int mpegVersion, MPEG1or2Demux::SCR scr, int16_t PID = -1);
       // called by "awaitNewBuffer()"
       // Note: For MPEG-4 video, set "mpegVersion" to 4; for H.264 video, set "mpegVersion" to 5;
@@ -67,17 +72,22 @@ protected:
 
 private:
   // Redefined virtual functions:
-  LIVE555_EXPORT virtual Boolean isMPEG2TransportStreamMultiplexor() const;
-  LIVE555_EXPORT virtual void doGetNextFrame();
+  LIVE555_EXPORT 
+  virtual Boolean isMPEG2TransportStreamMultiplexor() const;
+  LIVE555_EXPORT
+  virtual void doGetNextFrame();
 
 private:
-  LIVE555_EXPORT void deliverDataToClient(u_int16_t pid, unsigned char* buffer, unsigned bufferSize,
+  LIVE555_EXPORT 
+  void deliverDataToClient(u_int16_t pid, unsigned char* buffer, unsigned bufferSize,
 			   unsigned& startPositionInBuffer);
+  LIVE555_EXPORT
+  void deliverPATPacket();
+  LIVE555_EXPORT
+  void deliverPMTPacket(Boolean hasChanged);
 
-  LIVE555_EXPORT void deliverPATPacket();
-  LIVE555_EXPORT void deliverPMTPacket(Boolean hasChanged);
-
-  LIVE555_EXPORT void setProgramStreamMap(unsigned frameSize);
+  LIVE555_EXPORT
+  void setProgramStreamMap(unsigned frameSize);
 
 protected:
   Boolean fHaveVideoStreams;
@@ -115,6 +125,6 @@ private:
 
 // The CRC calculation function that Transport Streams use.  We make this function public
 // here in case it's useful elsewhere:
-LIVE555_EXPORT u_int32_t calculateCRC(u_int8_t const* data, unsigned dataLength, u_int32_t initialValue = 0xFFFFFFFF);
+u_int32_t calculateCRC(u_int8_t const* data, unsigned dataLength, u_int32_t initialValue = 0xFFFFFFFF);
 
 #endif

@@ -14,7 +14,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 **********/
 // "liveMedia"
-// Copyright (c) 1996-2023 Live Networks, Inc.  All rights reserved.
+// Copyright (c) 1996-2024 Live Networks, Inc.  All rights reserved.
 // A filter that breaks up an MPEG video elementary stream into
 //   headers and frames
 // C++ header
@@ -28,10 +28,13 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class TimeCode {
 public:
-  LIVE555_EXPORT TimeCode();
-  LIVE555_EXPORT virtual ~TimeCode();
+  LIVE555_EXPORT 
+  TimeCode();
+  LIVE555_EXPORT
+  virtual ~TimeCode();
 
-  LIVE555_EXPORT bool operator==( const TimeCode& arg2) const;
+  LIVE555_EXPORT
+  int operator==(TimeCode const& arg2) const;
   unsigned days, hours, minutes, seconds, pictures;
 };
 
@@ -40,29 +43,39 @@ public:
   Boolean& pictureEndMarker() { return fPictureEndMarker; }
       // a hack for implementing the RTP 'M' bit
 
-  LIVE555_EXPORT void flushInput(); // called if there is a discontinuity (seeking) in the input
+  LIVE555_EXPORT
+  void flushInput(); // called if there is a discontinuity (seeking) in the input
 
 protected:
-  LIVE555_EXPORT MPEGVideoStreamFramer(UsageEnvironment& env, FramedSource* inputSource);
+  LIVE555_EXPORT 
+  MPEGVideoStreamFramer(UsageEnvironment& env, FramedSource* inputSource);
       // we're an abstract base class
-  LIVE555_EXPORT virtual ~MPEGVideoStreamFramer();
+  LIVE555_EXPORT
+  virtual ~MPEGVideoStreamFramer();
 
-  LIVE555_EXPORT void computePresentationTime(unsigned numAdditionalPictures);
+  LIVE555_EXPORT
+  void computePresentationTime(unsigned numAdditionalPictures);
       // sets "fPresentationTime"
-  LIVE555_EXPORT void setTimeCode(unsigned hours, unsigned minutes, unsigned seconds,
+  LIVE555_EXPORT
+  void setTimeCode(unsigned hours, unsigned minutes, unsigned seconds,
 		   unsigned pictures, unsigned picturesSinceLastGOP);
 
 protected: // redefined virtual functions
-  LIVE555_EXPORT virtual void doGetNextFrame();
-  LIVE555_EXPORT virtual void doStopGettingFrames();
+  LIVE555_EXPORT 
+  virtual void doGetNextFrame();
+  LIVE555_EXPORT
+  virtual void doStopGettingFrames();
 
 private:
-  LIVE555_EXPORT void reset();
+  LIVE555_EXPORT 
+  void reset();
 
-  LIVE555_EXPORT static void continueReadProcessing(void* clientData,
+  LIVE555_EXPORT
+  static void continueReadProcessing(void* clientData,
 				     unsigned char* ptr, unsigned size,
 				     struct timeval presentationTime);
-  LIVE555_EXPORT void continueReadProcessing();
+  LIVE555_EXPORT
+  void continueReadProcessing();
 
 protected:
   double fFrameRate; // Note: For MPEG-4, this is really a 'tick rate'

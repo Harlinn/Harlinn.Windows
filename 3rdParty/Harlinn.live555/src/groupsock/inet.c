@@ -216,7 +216,9 @@ static long* end_ptr = &randtbl[DEG_3 + 1];
  * introduced by the L.C.R.N.G.  Note that the initialization of randtbl[]
  * for default usage relies on values produced by this routine.
  */
+LIVE555_EXPORT
 long our_random(void); /*forward*/
+LIVE555_EXPORT
 void
 our_srandom(unsigned int x)
 {
@@ -375,6 +377,7 @@ our_setstate(arg_state)
  *
  * Returns a 31-bit random number.
  */
+LIVE555_EXPORT
 long our_random() {
   long i;
 
@@ -410,6 +413,7 @@ long our_random() {
 }
 #endif
 
+LIVE555_EXPORT
 u_int32_t our_random32() {
   /* Return a 32-bit random number.
      Because "our_random()" returns a 31-bit random number, we call it a second

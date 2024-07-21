@@ -14,7 +14,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 **********/
 // "liveMedia"
-// Copyright (c) 1996-2023 Live Networks, Inc.  All rights reserved.
+// Copyright (c) 1996-2024 Live Networks, Inc.  All rights reserved.
 // A 'ServerMediaSubsession' object that creates new, unicast, "RTPSink"s
 // on demand, from an WAV audio file.
 // C++ header
@@ -28,30 +28,40 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class WAVAudioFileServerMediaSubsession: public FileServerMediaSubsession{
 public:
-  LIVE555_EXPORT static WAVAudioFileServerMediaSubsession*
+  LIVE555_EXPORT 
+  static WAVAudioFileServerMediaSubsession*
   createNew(UsageEnvironment& env, char const* fileName, Boolean reuseFirstSource,
 	    Boolean convertToULaw = False);
       // If "convertToULaw" is True, 16-bit audio streams are converted to
       // 8-bit u-law audio prior to streaming.
 
 protected:
-  LIVE555_EXPORT WAVAudioFileServerMediaSubsession(UsageEnvironment& env, char const* fileName,
+  LIVE555_EXPORT 
+  WAVAudioFileServerMediaSubsession(UsageEnvironment& env, char const* fileName,
 				    Boolean reuseFirstSource, Boolean convertToULaw);
       // called only by createNew();
-  LIVE555_EXPORT virtual ~WAVAudioFileServerMediaSubsession();
+  LIVE555_EXPORT
+  virtual ~WAVAudioFileServerMediaSubsession();
 
 protected: // redefined virtual functions
-  LIVE555_EXPORT virtual void seekStreamSource(FramedSource* inputSource, double& seekNPT, double streamDuration, u_int64_t& numBytes);
-  LIVE555_EXPORT virtual void setStreamSourceScale(FramedSource* inputSource, float scale);
-  LIVE555_EXPORT virtual void setStreamSourceDuration(FramedSource* inputSource, double streamDuration, u_int64_t& numBytes);
+  LIVE555_EXPORT 
+  virtual void seekStreamSource(FramedSource* inputSource, double& seekNPT, double streamDuration, u_int64_t& numBytes);
+  LIVE555_EXPORT
+  virtual void setStreamSourceScale(FramedSource* inputSource, float scale);
+  LIVE555_EXPORT
+  virtual void setStreamSourceDuration(FramedSource* inputSource, double streamDuration, u_int64_t& numBytes);
 
-  LIVE555_EXPORT virtual FramedSource* createNewStreamSource(unsigned clientSessionId,
+  LIVE555_EXPORT
+  virtual FramedSource* createNewStreamSource(unsigned clientSessionId,
 					      unsigned& estBitrate);
-  LIVE555_EXPORT virtual RTPSink* createNewRTPSink(Groupsock* rtpGroupsock,
+  LIVE555_EXPORT
+  virtual RTPSink* createNewRTPSink(Groupsock* rtpGroupsock,
                                     unsigned char rtpPayloadTypeIfDynamic,
 				    FramedSource* inputSource);
-  LIVE555_EXPORT virtual void testScaleFactor(float& scale);
-  LIVE555_EXPORT virtual float duration() const;
+  LIVE555_EXPORT
+  virtual void testScaleFactor(float& scale);
+  LIVE555_EXPORT
+  virtual float duration() const;
 
 protected:
   Boolean fConvertToULaw;

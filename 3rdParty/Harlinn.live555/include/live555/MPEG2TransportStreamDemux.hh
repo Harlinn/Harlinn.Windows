@@ -14,7 +14,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 **********/
 // "liveMedia"
-// Copyright (c) 1996-2023 Live Networks, Inc.  All rights reserved.
+// Copyright (c) 1996-2024 Live Networks, Inc.  All rights reserved.
 // Demultiplexer for a MPEG Transport Stream
 // C++ header
 
@@ -27,19 +27,24 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class MPEG2TransportStreamDemux: public Medium {
 public:
-  LIVE555_EXPORT static MPEG2TransportStreamDemux* createNew(UsageEnvironment& env,
+  LIVE555_EXPORT
+  static MPEG2TransportStreamDemux* createNew(UsageEnvironment& env,
 					      FramedSource* inputSource,
 					      FramedSource::onCloseFunc* onCloseFunc,
 					      void* onCloseClientData);
 
 private:
-  LIVE555_EXPORT MPEG2TransportStreamDemux(UsageEnvironment& env, FramedSource* inputSource,
+  LIVE555_EXPORT
+  MPEG2TransportStreamDemux(UsageEnvironment& env, FramedSource* inputSource,
 			    FramedSource::onCloseFunc* onCloseFunc, void* onCloseClientData);
       // called only by createNew()
-  LIVE555_EXPORT virtual ~MPEG2TransportStreamDemux();
+  LIVE555_EXPORT
+  virtual ~MPEG2TransportStreamDemux();
 
-  LIVE555_EXPORT static void handleEndOfFile(void* clientData);
-  LIVE555_EXPORT void handleEndOfFile();
+  LIVE555_EXPORT
+  static void handleEndOfFile(void* clientData);
+  LIVE555_EXPORT
+  void handleEndOfFile();
 
 private:
   class MPEG2TransportStreamParser* fParser;

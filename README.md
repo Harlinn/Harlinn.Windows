@@ -697,7 +697,7 @@ Packages Dear ImGui and ImPlot as a single dll.
 **Project:** Harlinn.jsoncpp
 
 ### [JPEG XL reference implementation](https://github.com/libjxl/libjxl)
-**Version:** 0.5
+**Version:** 0.10.3
 
 **Description:**
 > A reference implementation of JPEG XL (encoder and decoder), called libjxl.
@@ -865,7 +865,7 @@ Packages Dear ImGui and ImPlot as a single dll.
 **Project:** Harlinn.libzmq
 
 ### [LIVE555 Streaming Media](http://www.live555.com/liveMedia/)
-**Version:** 2023.06.20
+**Version:** 2024.06.26
 
 **Description:**
 > This code forms a set of C++ libraries for multimedia streaming, using open standard protocols (RTP/RTCP, RTSP, SIP).

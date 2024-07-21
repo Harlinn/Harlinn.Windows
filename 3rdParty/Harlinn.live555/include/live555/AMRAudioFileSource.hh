@@ -14,7 +14,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 **********/
 // "liveMedia"
-// Copyright (c) 1996-2023 Live Networks, Inc.  All rights reserved.
+// Copyright (c) 1996-2024 Live Networks, Inc.  All rights reserved.
 // A source object for AMR audio files (as defined in RFC 4867, section 5)
 // C++ header
 
@@ -27,19 +27,22 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class AMRAudioFileSource: public AMRAudioSource {
 public:
-  LIVE555_EXPORT static AMRAudioFileSource* createNew(UsageEnvironment& env,
+  LIVE555_EXPORT
+  static AMRAudioFileSource* createNew(UsageEnvironment& env,
 				       char const* fileName);
 
 private:
-  LIVE555_EXPORT AMRAudioFileSource(UsageEnvironment& env, FILE* fid,
+  LIVE555_EXPORT
+  AMRAudioFileSource(UsageEnvironment& env, FILE* fid,
 		     Boolean isWideband, unsigned numChannels);
 	// called only by createNew()
-
-  LIVE555_EXPORT virtual ~AMRAudioFileSource();
+  LIVE555_EXPORT
+  virtual ~AMRAudioFileSource();
 
 private:
   // redefined virtual functions:
-  LIVE555_EXPORT virtual void doGetNextFrame();
+  LIVE555_EXPORT
+  virtual void doGetNextFrame();
 
 private:
   FILE* fFid;

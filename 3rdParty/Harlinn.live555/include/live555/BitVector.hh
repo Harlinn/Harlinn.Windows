@@ -14,7 +14,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 **********/
 // "liveMedia"
-// Copyright (c) 1996-2023 Live Networks, Inc.  All rights reserved.
+// Copyright (c) 1996-2024 Live Networks, Inc.  All rights reserved.
 // Bit Vector data structure
 // C++ header
 
@@ -27,30 +27,37 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class BitVector {
 public:
-  LIVE555_EXPORT BitVector(unsigned char* baseBytePtr,
+  LIVE555_EXPORT 
+  BitVector(unsigned char* baseBytePtr,
 	    unsigned baseBitOffset,
 	    unsigned totNumBits);
-
-  LIVE555_EXPORT void setup(unsigned char* baseBytePtr,
+  LIVE555_EXPORT
+  void setup(unsigned char* baseBytePtr,
 	     unsigned baseBitOffset,
 	     unsigned totNumBits);
+  LIVE555_EXPORT
+  void putBits(unsigned from, unsigned numBits); // "numBits" <= 32
+  LIVE555_EXPORT
+  void put1Bit(unsigned bit);
 
-  LIVE555_EXPORT void putBits(unsigned from, unsigned numBits); // "numBits" <= 32
-  LIVE555_EXPORT void put1Bit(unsigned bit);
-
-  LIVE555_EXPORT unsigned getBits(unsigned numBits); // "numBits" <= 32
-  LIVE555_EXPORT unsigned get1Bit();
+  LIVE555_EXPORT
+  unsigned getBits(unsigned numBits); // "numBits" <= 32
+  LIVE555_EXPORT
+  unsigned get1Bit();
   Boolean get1BitBoolean() { return get1Bit() != 0; }
 
-  LIVE555_EXPORT void skipBits(unsigned numBits);
+  LIVE555_EXPORT
+  void skipBits(unsigned numBits);
 
   unsigned curBitIndex() const { return fCurBitIndex; }
   unsigned totNumBits() const { return fTotNumBits; }
   unsigned numBitsRemaining() const { return fTotNumBits - fCurBitIndex; }
 
-  LIVE555_EXPORT unsigned get_expGolomb();
+  LIVE555_EXPORT
+  unsigned get_expGolomb();
       // Returns the value of the next bits, assuming that they were encoded using an exponential-Golomb code of order 0
-  LIVE555_EXPORT int get_expGolombSigned(); // signed version of the above
+  LIVE555_EXPORT
+  int get_expGolombSigned(); // signed version of the above
 
 private:
   unsigned char* fBaseBytePtr;

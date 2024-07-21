@@ -14,7 +14,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 **********/
 // "liveMedia"
-// Copyright (c) 1996-2023 Live Networks, Inc.  All rights reserved.
+// Copyright (c) 1996-2024 Live Networks, Inc.  All rights reserved.
 // H.264 Video RTP Sources
 // C++ header
 
@@ -27,24 +27,28 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class H264VideoRTPSource: public MultiFramedRTPSource {
 public:
-  LIVE555_EXPORT static H264VideoRTPSource*
+  LIVE555_EXPORT 
+  static H264VideoRTPSource*
   createNew(UsageEnvironment& env, Groupsock* RTPgs,
 	    unsigned char rtpPayloadFormat,
 	    unsigned rtpTimestampFrequency = 90000);
 
 protected:
-  LIVE555_EXPORT H264VideoRTPSource(UsageEnvironment& env, Groupsock* RTPgs,
+  LIVE555_EXPORT 
+  H264VideoRTPSource(UsageEnvironment& env, Groupsock* RTPgs,
 			 unsigned char rtpPayloadFormat,
 			 unsigned rtpTimestampFrequency);
       // called only by createNew()
-
-  LIVE555_EXPORT virtual ~H264VideoRTPSource();
+  LIVE555_EXPORT
+  virtual ~H264VideoRTPSource();
 
 protected:
   // redefined virtual functions:
-  LIVE555_EXPORT virtual Boolean processSpecialHeader(BufferedPacket* packet,
+  LIVE555_EXPORT 
+  virtual Boolean processSpecialHeader(BufferedPacket* packet,
                                        unsigned& resultSpecialHeaderSize);
-  LIVE555_EXPORT virtual char const* MIMEtype() const;
+  LIVE555_EXPORT
+  virtual char const* MIMEtype() const;
 
 private:
   friend class H264BufferedPacket;
@@ -59,7 +63,8 @@ public:
   unsigned char* sPropBytes;
 };
 
-LIVE555_EXPORT SPropRecord* parseSPropParameterSets(char const* sPropParameterSetsStr,
+LIVE555_EXPORT
+SPropRecord* parseSPropParameterSets(char const* sPropParameterSetsStr,
 				     // result parameter:
 				     unsigned& numSPropRecords);
     // Returns the binary value of each 'parameter set' specified in a

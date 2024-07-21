@@ -14,7 +14,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 **********/
 // "liveMedia"
-// Copyright (c) 1996-2023 Live Networks, Inc.  All rights reserved.
+// Copyright (c) 1996-2024 Live Networks, Inc.  All rights reserved.
 // 'Ogg' File Sink (recording a single media track only)
 // C++ header
 
@@ -27,7 +27,8 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class OggFileSink: public FileSink {
 public:
-  LIVE555_EXPORT static OggFileSink* createNew(UsageEnvironment& env, char const* fileName,
+  LIVE555_EXPORT 
+  static OggFileSink* createNew(UsageEnvironment& env, char const* fileName,
 				unsigned samplingFrequency = 0, // used for granule_position
 				char const* configStr = NULL,
       // "configStr" is an optional 'SDP format' string (Base64-encoded)
@@ -38,21 +39,28 @@ public:
       // See "FileSink.hh" for a description of these parameters.
 
 protected:
-  LIVE555_EXPORT OggFileSink(UsageEnvironment& env, FILE* fid, unsigned samplingFrequency, char const* configStr,
+  LIVE555_EXPORT 
+  OggFileSink(UsageEnvironment& env, FILE* fid, unsigned samplingFrequency, char const* configStr,
 	      unsigned bufferSize, char const* perFrameFileNamePrefix);
       // called only by createNew()
-  LIVE555_EXPORT virtual ~OggFileSink();
+  LIVE555_EXPORT
+  virtual ~OggFileSink();
 
 protected: // redefined virtual functions:
-  LIVE555_EXPORT virtual Boolean continuePlaying();
-  LIVE555_EXPORT virtual void addData(unsigned char const* data, unsigned dataSize,
+  LIVE555_EXPORT 
+  virtual Boolean continuePlaying();
+  LIVE555_EXPORT
+  virtual void addData(unsigned char const* data, unsigned dataSize,
 		       struct timeval presentationTime);
-  LIVE555_EXPORT virtual void afterGettingFrame(unsigned frameSize, unsigned numTruncatedBytes,
+  LIVE555_EXPORT
+  virtual void afterGettingFrame(unsigned frameSize, unsigned numTruncatedBytes,
 				 struct timeval presentationTime);
 
 private:
-  LIVE555_EXPORT static void ourOnSourceClosure(void* clientData);
-  LIVE555_EXPORT void ourOnSourceClosure();
+  LIVE555_EXPORT 
+  static void ourOnSourceClosure(void* clientData);
+  LIVE555_EXPORT
+  void ourOnSourceClosure();
 
 private:
   unsigned fSamplingFrequency;

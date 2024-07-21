@@ -14,7 +14,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 **********/
 // "liveMedia"
-// Copyright (c) 1996-2023 Live Networks, Inc.  All rights reserved.
+// Copyright (c) 1996-2024 Live Networks, Inc.  All rights reserved.
 // JPEG video sources
 // C++ header
 
@@ -32,24 +32,29 @@ public:
   virtual u_int8_t width() = 0; // # pixels/8 (or 0 for 2048 pixels)
   virtual u_int8_t height() = 0; // # pixels/8 (or 0 for 2048 pixels)
 
-  LIVE555_EXPORT virtual u_int8_t const* quantizationTables(u_int8_t& precision,
+  LIVE555_EXPORT
+  virtual u_int8_t const* quantizationTables(u_int8_t& precision,
 					     u_int16_t& length);
     // If "qFactor()" returns a value >= 128, then this function is called
     // to tell us the quantization tables that are being used.
     // (The default implementation of this function just returns NULL.)
     // "precision" and "length" are as defined in RFC 2435, section 3.1.8.
 
-  LIVE555_EXPORT virtual u_int16_t restartInterval();
+  LIVE555_EXPORT
+  virtual u_int16_t restartInterval();
     // If restart intervals are being used (i.e., 64 <= type() <= 127), then this function must be
     // redefined - by a subclass - to return a non-zero value.
 
 protected:
-  LIVE555_EXPORT JPEGVideoSource(UsageEnvironment& env); // abstract base class
-  LIVE555_EXPORT virtual ~JPEGVideoSource();
+  LIVE555_EXPORT 
+  JPEGVideoSource(UsageEnvironment& env); // abstract base class
+  LIVE555_EXPORT
+  virtual ~JPEGVideoSource();
 
 private:
   // redefined virtual functions:
-  LIVE555_EXPORT virtual Boolean isJPEGVideoSource() const;
+  LIVE555_EXPORT 
+  virtual Boolean isJPEGVideoSource() const;
 };
 
 #endif

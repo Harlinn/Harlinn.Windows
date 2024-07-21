@@ -14,7 +14,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 **********/
 // "liveMedia"
-// Copyright (c) 1996-2023 Live Networks, Inc.  All rights reserved.
+// Copyright (c) 1996-2024 Live Networks, Inc.  All rights reserved.
 // A class that encapsulates a Matroska file.
 // C++ header
 
@@ -38,23 +38,27 @@ typedef void MatroskaDemuxOnDeletionFunc(void* objectToNotify, MatroskaDemux* de
 
 class MatroskaFile: public Medium {
 public:
-  typedef void (__cdecl onCreationFunc)(MatroskaFile* newFile, void* clientData);
-  LIVE555_EXPORT static void createNew(UsageEnvironment& env, char const* fileName, onCreationFunc* onCreation, void* onCreationClientData,
+  typedef void (onCreationFunc)(MatroskaFile* newFile, void* clientData);
+  LIVE555_EXPORT
+  static void createNew(UsageEnvironment& env, char const* fileName, onCreationFunc* onCreation, void* onCreationClientData,
 			char const* preferredLanguage = "eng");
     // Note: Unlike most "createNew()" functions, this one doesn't return a new object immediately.  Instead, because this class
     // requires file reading (to parse the Matroska 'Track' headers) before a new object can be initialized, the creation of a new
     // object is signalled by calling - from the event loop - an 'onCreationFunc' that is passed as a parameter to "createNew()".
 
-  LIVE555_EXPORT MatroskaTrack* lookup(unsigned trackNumber) const;
+  LIVE555_EXPORT
+  MatroskaTrack* lookup(unsigned trackNumber) const;
 
-  LIVE555_EXPORT MatroskaDemux* newDemux(MatroskaDemuxOnDeletionFunc* onDeletionFunc = NULL, void* objectToNotify = NULL);
+  LIVE555_EXPORT
+  MatroskaDemux* newDemux(MatroskaDemuxOnDeletionFunc* onDeletionFunc = NULL, void* objectToNotify = NULL);
       // Creates a demultiplexor for extracting tracks from this file.
       // (Separate clients will typically have separate demultiplexors.)
 
   // Parameters of the file ('Segment'); set when the file is parsed:
   unsigned timecodeScale() { return fTimecodeScale; } // in nanoseconds
   float segmentDuration() { return fSegmentDuration; } // in units of "timecodeScale()"
-  LIVE555_EXPORT float fileDuration(); // in seconds
+  LIVE555_EXPORT
+  float fileDuration(); // in seconds
   
   char const* fileName() const { return fFileName; }
 
@@ -62,51 +66,64 @@ public:
   unsigned chosenAudioTrackNumber() { return fChosenAudioTrackNumber; }
   unsigned chosenSubtitleTrackNumber() { return fChosenSubtitleTrackNumber; }
 
-  LIVE555_EXPORT FramedSource*
+  LIVE555_EXPORT
+  FramedSource*
   createSourceForStreaming(FramedSource* baseSource, unsigned trackNumber,
 			   unsigned& estBitrate, unsigned& numFiltersInFrontOfTrack);
     // Takes a data source (which must be a demultiplexed track from this file) and returns
     // a (possibly modified) data source that can be used for streaming.
-
-  LIVE555_EXPORT char const* trackMIMEType(unsigned trackNumber) const;
+  LIVE555_EXPORT
+  char const* trackMIMEType(unsigned trackNumber) const;
       // in the form "<medium-name>/<CODEC-NAME>", or NULL if no such track exists
 
-  LIVE555_EXPORT RTPSink* createRTPSinkForTrackNumber(unsigned trackNumber, Groupsock* rtpGroupsock,
+  LIVE555_EXPORT
+  RTPSink* createRTPSinkForTrackNumber(unsigned trackNumber, Groupsock* rtpGroupsock,
 				       unsigned char rtpPayloadTypeIfDynamic);
     // Creates a "RTPSink" object that would be appropriate for streaming the specified track,
     // or NULL if no appropriate "RTPSink" exists
-
-  LIVE555_EXPORT FileSink* createFileSinkForTrackNumber(unsigned trackNumber, char const* fileName);
+  LIVE555_EXPORT
+  FileSink* createFileSinkForTrackNumber(unsigned trackNumber, char const* fileName);
     // Creates a "FileSink" object that would be appropriate for recording the contents of
     // the specified track, or NULL if no appropriate "FileSink" exists.
 
 private:
-  LIVE555_EXPORT MatroskaFile(UsageEnvironment& env, char const* fileName, onCreationFunc* onCreation, void* onCreationClientData,
+  LIVE555_EXPORT 
+  MatroskaFile(UsageEnvironment& env, char const* fileName, onCreationFunc* onCreation, void* onCreationClientData,
 	       char const* preferredLanguage);
       // called only by createNew()
-  LIVE555_EXPORT virtual ~MatroskaFile();
+  LIVE555_EXPORT
+  virtual ~MatroskaFile();
 
-  LIVE555_EXPORT static void handleEndOfTrackHeaderParsing(void* clientData);
-  LIVE555_EXPORT void handleEndOfTrackHeaderParsing();
+  LIVE555_EXPORT
+  static void handleEndOfTrackHeaderParsing(void* clientData);
+  LIVE555_EXPORT
+  void handleEndOfTrackHeaderParsing();
 
-  LIVE555_EXPORT void addTrack(MatroskaTrack* newTrack, unsigned trackNumber);
-  LIVE555_EXPORT void addCuePoint(double cueTime, u_int64_t clusterOffsetInFile, unsigned blockNumWithinCluster);
-  LIVE555_EXPORT Boolean lookupCuePoint(double& cueTime, u_int64_t& resultClusterOffsetInFile, unsigned& resultBlockNumWithinCluster);
-  LIVE555_EXPORT void printCuePoints(FILE* fid);
+  LIVE555_EXPORT
+  void addTrack(MatroskaTrack* newTrack, unsigned trackNumber);
+  LIVE555_EXPORT
+  void addCuePoint(double cueTime, u_int64_t clusterOffsetInFile, unsigned blockNumWithinCluster);
+  LIVE555_EXPORT
+  Boolean lookupCuePoint(double& cueTime, u_int64_t& resultClusterOffsetInFile, unsigned& resultBlockNumWithinCluster);
+  LIVE555_EXPORT
+  void printCuePoints(FILE* fid);
 
-  LIVE555_EXPORT void removeDemux(MatroskaDemux* demux);
+  LIVE555_EXPORT
+  void removeDemux(MatroskaDemux* demux);
 
-  LIVE555_EXPORT void getH264ConfigData(MatroskaTrack const* track,
+  LIVE555_EXPORT
+  void getH264ConfigData(MatroskaTrack const* track,
 			 u_int8_t*& sps, unsigned& spsSize,
 			 u_int8_t*& pps, unsigned& ppsSize);
     // "sps","pps" are dynamically allocated by this function, and must be delete[]d afterwards
-  LIVE555_EXPORT void getH265ConfigData(MatroskaTrack const* track,
+  LIVE555_EXPORT
+  void getH265ConfigData(MatroskaTrack const* track,
 			 u_int8_t*& vps, unsigned& vpsSize,
 			 u_int8_t*& sps, unsigned& spsSize,
 			 u_int8_t*& pps, unsigned& ppsSize);
     // "vps","sps","pps" are dynamically allocated by this function, and must be delete[]d afterwards
-
-  LIVE555_EXPORT void getVorbisOrTheoraConfigData(MatroskaTrack const* track,
+  LIVE555_EXPORT
+  void getVorbisOrTheoraConfigData(MatroskaTrack const* track,
 				   u_int8_t*& identificationHeader, unsigned& identificationHeaderSize,
 				   u_int8_t*& commentHeader, unsigned& commentHeaderSize,
 				   u_int8_t*& setupHeader, unsigned& setupHeaderSize);
@@ -140,8 +157,10 @@ private:
 
 class MatroskaTrack {
 public:
-  LIVE555_EXPORT MatroskaTrack();
-  LIVE555_EXPORT virtual ~MatroskaTrack();
+  LIVE555_EXPORT 
+  MatroskaTrack();
+  LIVE555_EXPORT
+  virtual ~MatroskaTrack();
 
   // track parameters
   unsigned trackNumber;
@@ -171,14 +190,17 @@ public:
 
 class MatroskaDemux: public Medium {
 public:
-  LIVE555_EXPORT FramedSource* newDemuxedTrack();
-  LIVE555_EXPORT FramedSource* newDemuxedTrack(unsigned& resultTrackNumber);
+  LIVE555_EXPORT 
+  FramedSource* newDemuxedTrack();
+  LIVE555_EXPORT
+  FramedSource* newDemuxedTrack(unsigned& resultTrackNumber);
       // Returns a new stream ("FramedSource" subclass) that represents the next preferred media
       // track (video, audio, subtitle - in that order) from the file. (Preferred media tracks
       // are based on the file's language preference.)
       // This function returns NULL when no more media tracks exist.
 
-  LIVE555_EXPORT FramedSource* newDemuxedTrackByTrackNumber(unsigned trackNumber);
+  LIVE555_EXPORT
+  FramedSource* newDemuxedTrackByTrackNumber(unsigned trackNumber);
       // As above, but creates a new stream for a specific track number within the Matroska file.
       // (You should not call this function more than once with the same track number.)
 
@@ -189,22 +211,32 @@ public:
 protected:
   friend class MatroskaFile;
   friend class MatroskaFileParser;
-  LIVE555_EXPORT class MatroskaDemuxedTrack* lookupDemuxedTrack(unsigned trackNumber);
+  LIVE555_EXPORT
+  class MatroskaDemuxedTrack* lookupDemuxedTrack(unsigned trackNumber);
 
-  LIVE555_EXPORT MatroskaDemux(MatroskaFile& ourFile); // we're created only by a "MatroskaFile" (a friend)
-  LIVE555_EXPORT virtual ~MatroskaDemux();
+  LIVE555_EXPORT
+  MatroskaDemux(MatroskaFile& ourFile); // we're created only by a "MatroskaFile" (a friend)
+  LIVE555_EXPORT
+  virtual ~MatroskaDemux();
 
 private:
   friend class MatroskaDemuxedTrack;
-  LIVE555_EXPORT void removeTrack(unsigned trackNumber);
-  LIVE555_EXPORT void continueReading(); // called by a demuxed track to tell us that it has a pending read ("doGetNextFrame()")
-  LIVE555_EXPORT void seekToTime(double& seekNPT);
-  LIVE555_EXPORT void pause();
+  LIVE555_EXPORT
+  void removeTrack(unsigned trackNumber);
+  LIVE555_EXPORT
+  void continueReading(); // called by a demuxed track to tell us that it has a pending read ("doGetNextFrame()")
+  LIVE555_EXPORT
+  void seekToTime(double& seekNPT);
+  LIVE555_EXPORT
+  void pause();
 
-  LIVE555_EXPORT static void handleEndOfFile(void* clientData);
-  LIVE555_EXPORT void handleEndOfFile();
+  LIVE555_EXPORT
+  static void handleEndOfFile(void* clientData);
+  LIVE555_EXPORT
+  void handleEndOfFile();
 
-  LIVE555_EXPORT void resetState();
+  LIVE555_EXPORT
+  void resetState();
 
 private:
   MatroskaFile& fOurFile;

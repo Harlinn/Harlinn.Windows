@@ -14,7 +14,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 **********/
 // "liveMedia"
-// Copyright (c) 1996-2023 Live Networks, Inc.  All rights reserved.
+// Copyright (c) 1996-2024 Live Networks, Inc.  All rights reserved.
 // A template for a MediaSource encapsulating an audio/video input device
 // 
 // NOTE: Sections of this code labeled "%%% TO BE WRITTEN %%%" are incomplete, and needto be written by the programmer
@@ -35,28 +35,35 @@ class DeviceParameters {
 
 class DeviceSource: public FramedSource {
 public:
-  LIVE555_EXPORT static DeviceSource* createNew(UsageEnvironment& env,
+  LIVE555_EXPORT 
+  static DeviceSource* createNew(UsageEnvironment& env,
 				 DeviceParameters params);
 
 public:
-  LIVE555_EXPORT static EventTriggerId eventTriggerId;
+  LIVE555_EXPORT 
+  static EventTriggerId eventTriggerId;
   // Note that this is defined here to be a static class variable, because this code is intended to illustrate how to
   // encapsulate a *single* device - not a set of devices.
   // You can, however, redefine this to be a non-static member variable.
 
 protected:
-  LIVE555_EXPORT DeviceSource(UsageEnvironment& env, DeviceParameters params);
+  LIVE555_EXPORT 
+  DeviceSource(UsageEnvironment& env, DeviceParameters params);
   // called only by createNew(), or by subclass constructors
-  LIVE555_EXPORT virtual ~DeviceSource();
+  LIVE555_EXPORT
+  virtual ~DeviceSource();
 
 private:
   // redefined virtual functions:
-  LIVE555_EXPORT virtual void doGetNextFrame();
+  LIVE555_EXPORT 
+  virtual void doGetNextFrame();
   //virtual void doStopGettingFrames(); // optional
 
 private:
-  LIVE555_EXPORT static void deliverFrame0(void* clientData);
-  LIVE555_EXPORT void deliverFrame();
+  LIVE555_EXPORT 
+  static void deliverFrame0(void* clientData);
+  LIVE555_EXPORT
+  void deliverFrame();
 
 private:
   static unsigned referenceCount; // used to count how many instances of this class currently exist

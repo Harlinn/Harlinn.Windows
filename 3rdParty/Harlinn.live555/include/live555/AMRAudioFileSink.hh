@@ -14,7 +14,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 **********/
 // "liveMedia"
-// Copyright (c) 1996-2023 Live Networks, Inc.  All rights reserved.
+// Copyright (c) 1996-2024 Live Networks, Inc.  All rights reserved.
 // AMR Audio File Sinks
 // C++ header
 
@@ -27,20 +27,26 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class AMRAudioFileSink: public FileSink {
 public:
-  LIVE555_EXPORT static AMRAudioFileSink* createNew(UsageEnvironment& env, char const* fileName,
+  LIVE555_EXPORT
+  static AMRAudioFileSink* createNew(UsageEnvironment& env, char const* fileName,
 				     unsigned bufferSize = 10000,
 				     Boolean oneFilePerFrame = False);
   // (See "FileSink.hh" for a description of these parameters.)
 
 protected:
-  LIVE555_EXPORT AMRAudioFileSink(UsageEnvironment& env, FILE* fid, unsigned bufferSize,
+  LIVE555_EXPORT
+  AMRAudioFileSink(UsageEnvironment& env, FILE* fid, unsigned bufferSize,
 		   char const* perFrameFileNamePrefix);
       // called only by createNew()
-  LIVE555_EXPORT virtual ~AMRAudioFileSink();
+  LIVE555_EXPORT
+  virtual ~AMRAudioFileSink();
 
 protected: // redefined virtual functions:
-  LIVE555_EXPORT virtual Boolean sourceIsCompatibleWithUs(MediaSource& source);
-  LIVE555_EXPORT virtual void afterGettingFrame(unsigned frameSize,
+  LIVE555_EXPORT
+  virtual Boolean sourceIsCompatibleWithUs(MediaSource& source);
+
+  LIVE555_EXPORT
+  virtual void afterGettingFrame(unsigned frameSize,
 				 unsigned numTruncatedBytes,
 				 struct timeval presentationTime);
 

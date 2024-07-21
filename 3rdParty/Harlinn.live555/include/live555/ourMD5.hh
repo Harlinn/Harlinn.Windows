@@ -14,7 +14,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 **********/
 // "liveMedia"
-// Copyright (c) 1996-2023 Live Networks, Inc.  All rights reserved.
+// Copyright (c) 1996-2024 Live Networks, Inc.  All rights reserved.
 // Because MD5 may not be implemented (at least, with the same interface) on all systems,
 // we have our own implementation.
 // C++ header
@@ -24,14 +24,14 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 #include "live555Def.h"
 
-
-
-LIVE555_EXPORT extern char* our_MD5Data(unsigned char const* data, unsigned dataSize, char* outputDigest);
+LIVE555_EXPORT
+extern char* our_MD5Data(unsigned char const* data, unsigned dataSize, char* outputDigest);
     // "outputDigest" must be either NULL (in which case this function returns a heap-allocated
     // buffer, which should be later delete[]d by the caller), or else it must point to
     // a (>=)33-byte buffer (which this function will also return).
 
-LIVE555_EXPORT extern unsigned char* our_MD5DataRaw(unsigned char const* data, unsigned dataSize,
+LIVE555_EXPORT
+extern unsigned char* our_MD5DataRaw(unsigned char const* data, unsigned dataSize,
 				     unsigned char* outputDigest);
     // Like "ourMD5Data()", except that it returns the digest in 'raw' binary form, rather than
     // as an ASCII hex string.

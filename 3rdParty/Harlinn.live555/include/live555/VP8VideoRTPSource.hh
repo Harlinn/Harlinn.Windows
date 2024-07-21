@@ -14,7 +14,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 **********/
 // "liveMedia"
-// Copyright (c) 1996-2023 Live Networks, Inc.  All rights reserved.
+// Copyright (c) 1996-2024 Live Networks, Inc.  All rights reserved.
 // VP8 Video RTP Sources
 // C++ header
 
@@ -27,24 +27,29 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class VP8VideoRTPSource: public MultiFramedRTPSource {
 public:
-  LIVE555_EXPORT static VP8VideoRTPSource*
+  LIVE555_EXPORT 
+  static VP8VideoRTPSource*
   createNew(UsageEnvironment& env, Groupsock* RTPgs,
 	    unsigned char rtpPayloadFormat,
 	    unsigned rtpTimestampFrequency = 90000);
 
 protected:
-  LIVE555_EXPORT VP8VideoRTPSource(UsageEnvironment& env, Groupsock* RTPgs,
+  LIVE555_EXPORT 
+  VP8VideoRTPSource(UsageEnvironment& env, Groupsock* RTPgs,
 		    unsigned char rtpPayloadFormat,
 		    unsigned rtpTimestampFrequency);
       // called only by createNew()
 
-  LIVE555_EXPORT virtual ~VP8VideoRTPSource();
+  LIVE555_EXPORT
+  virtual ~VP8VideoRTPSource();
 
 protected:
   // redefined virtual functions:
-  LIVE555_EXPORT virtual Boolean processSpecialHeader(BufferedPacket* packet,
+  LIVE555_EXPORT 
+  virtual Boolean processSpecialHeader(BufferedPacket* packet,
                                        unsigned& resultSpecialHeaderSize);
-  LIVE555_EXPORT virtual char const* MIMEtype() const;
+  LIVE555_EXPORT 
+  virtual char const* MIMEtype() const;
 };
 
 #endif

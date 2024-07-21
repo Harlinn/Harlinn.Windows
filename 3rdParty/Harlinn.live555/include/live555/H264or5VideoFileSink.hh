@@ -14,7 +14,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 **********/
 // "liveMedia"
-// Copyright (c) 1996-2023 Live Networks, Inc.  All rights reserved.
+// Copyright (c) 1996-2024 Live Networks, Inc.  All rights reserved.
 // H.264 or H.265 Video File Sinks
 // C++ header
 
@@ -27,16 +27,19 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class H264or5VideoFileSink: public FileSink {
 protected:
-  LIVE555_EXPORT H264or5VideoFileSink(UsageEnvironment& env, FILE* fid,
+  LIVE555_EXPORT 
+  H264or5VideoFileSink(UsageEnvironment& env, FILE* fid,
 		       unsigned bufferSize, char const* perFrameFileNamePrefix,
 		       char const* sPropParameterSetsStr1,
 		       char const* sPropParameterSetsStr2 = NULL,
 		       char const* sPropParameterSetsStr3 = NULL);
       // we're an abstract base class
-  LIVE555_EXPORT virtual ~H264or5VideoFileSink();
+  LIVE555_EXPORT
+  virtual ~H264or5VideoFileSink();
 
 protected: // redefined virtual functions:
-  LIVE555_EXPORT virtual void afterGettingFrame(unsigned frameSize, unsigned numTruncatedBytes, struct timeval presentationTime);
+  LIVE555_EXPORT 
+  virtual void afterGettingFrame(unsigned frameSize, unsigned numTruncatedBytes, struct timeval presentationTime);
 
 private:
   char const* fSPropParameterSetsStr[3];

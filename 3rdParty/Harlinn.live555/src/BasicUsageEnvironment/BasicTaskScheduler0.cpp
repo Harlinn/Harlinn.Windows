@@ -13,7 +13,7 @@ You should have received a copy of the GNU Lesser General Public License
 along with this library; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 **********/
-// Copyright (c) 1996-2023 Live Networks, Inc.  All rights reserved.
+// Copyright (c) 1996-2024 Live Networks, Inc.  All rights reserved.
 // Basic Usage Environment: for a simple, non-scripted, console application
 // Implementation
 
@@ -95,7 +95,7 @@ EventTriggerId BasicTaskScheduler0::createEventTrigger(TaskFunc* eventHandlerPro
   do {
     i = (i+1)%MAX_NUM_EVENT_TRIGGERS;
     mask >>= 1;
-    if (mask == 0) mask = 0x80000000;
+    if (mask == 0) mask = EVENT_TRIGGER_ID_HIGH_BIT;
 
     if (fTriggeredEventHandlers[i] == NULL) {
       // This trigger number is free; use it:
@@ -117,15 +117,15 @@ EventTriggerId BasicTaskScheduler0::createEventTrigger(TaskFunc* eventHandlerPro
 void BasicTaskScheduler0::deleteEventTrigger(EventTriggerId eventTriggerId) {
   // "eventTriggerId" should have just one bit set.
   // However, we do the reasonable thing if the user happened to 'or' together two or more "EventTriggerId"s:
-  EventTriggerId mask = 0x80000000;
+  EventTriggerId mask = EVENT_TRIGGER_ID_HIGH_BIT;
   Boolean eventTriggersAreBeingUsed = False;
 
   for (unsigned i = 0; i < MAX_NUM_EVENT_TRIGGERS; ++i) {
     if ((eventTriggerId&mask) != 0) {
 #ifndef NO_STD_LIB
-      fTriggersAwaitingHandling[fLastUsedTriggerNum].clear();
+      fTriggersAwaitingHandling[i].clear();
 #else
-      fTriggersAwaitingHandling[fLastUsedTriggerNum] = False;
+      fTriggersAwaitingHandling[i] = False;
 #endif
       fTriggeredEventHandlers[i] = NULL;
       fTriggeredEventClientDatas[i] = NULL;
@@ -140,7 +140,7 @@ void BasicTaskScheduler0::deleteEventTrigger(EventTriggerId eventTriggerId) {
 
 void BasicTaskScheduler0::triggerEvent(EventTriggerId eventTriggerId, void* clientData) {
   // First, record the "clientData".  (Note that we allow "eventTriggerId" to be a combination of bits for multiple events.)
-  EventTriggerId mask = 0x80000000;
+  EventTriggerId mask = EVENT_TRIGGER_ID_HIGH_BIT;
   for (unsigned i = 0; i < MAX_NUM_EVENT_TRIGGERS; ++i) {
     if ((eventTriggerId&mask) != 0) {
       fTriggeredEventClientDatas[i] = clientData;

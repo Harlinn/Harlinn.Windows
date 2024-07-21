@@ -14,7 +14,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 **********/
 // "liveMedia"
-// Copyright (c) 1996-2023 Live Networks, Inc.  All rights reserved.
+// Copyright (c) 1996-2024 Live Networks, Inc.  All rights reserved.
 // H.261 Video RTP Sources
 // C++ header
 
@@ -27,7 +27,8 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class H261VideoRTPSource: public MultiFramedRTPSource {
 public:
-  LIVE555_EXPORT static H261VideoRTPSource*
+  LIVE555_EXPORT
+  static H261VideoRTPSource*
   createNew(UsageEnvironment& env, Groupsock* RTPgs,
 	    unsigned char rtpPayloadFormat = 31,
 	    unsigned rtpTimestampFrequency = 90000);
@@ -35,19 +36,23 @@ public:
   u_int32_t lastSpecialHeader() const {return fLastSpecialHeader;}
 
 protected:
-  LIVE555_EXPORT virtual ~H261VideoRTPSource();
+  LIVE555_EXPORT 
+  virtual ~H261VideoRTPSource();
 
 private:
-  LIVE555_EXPORT H261VideoRTPSource(UsageEnvironment& env, Groupsock* RTPgs,
+  LIVE555_EXPORT 
+  H261VideoRTPSource(UsageEnvironment& env, Groupsock* RTPgs,
 			 unsigned char rtpPayloadFormat,
 			 unsigned rtpTimestampFrequency);
       // called only by createNew()
 
 private:
   // redefined virtual functions:
-  LIVE555_EXPORT virtual Boolean processSpecialHeader(BufferedPacket* packet,
+  LIVE555_EXPORT 
+  virtual Boolean processSpecialHeader(BufferedPacket* packet,
                                        unsigned& resultSpecialHeaderSize);
-  LIVE555_EXPORT virtual char const* MIMEtype() const;
+  LIVE555_EXPORT
+  virtual char const* MIMEtype() const;
 
 private:
   u_int32_t fLastSpecialHeader;

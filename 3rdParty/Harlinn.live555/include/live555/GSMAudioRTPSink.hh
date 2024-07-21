@@ -14,7 +14,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 **********/
 // "liveMedia"
-// Copyright (c) 1996-2023 Live Networks, Inc.  All rights reserved.
+// Copyright (c) 1996-2024 Live Networks, Inc.  All rights reserved.
 // RTP sink for GSM audio
 // C++ header
 
@@ -27,16 +27,20 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class GSMAudioRTPSink: public AudioRTPSink {
 public:
-  LIVE555_EXPORT static GSMAudioRTPSink* createNew(UsageEnvironment& env, Groupsock* RTPgs);
+  LIVE555_EXPORT 
+  static GSMAudioRTPSink* createNew(UsageEnvironment& env, Groupsock* RTPgs);
 
 protected:
-  LIVE555_EXPORT GSMAudioRTPSink(UsageEnvironment& env, Groupsock* RTPgs);
+  LIVE555_EXPORT 
+  GSMAudioRTPSink(UsageEnvironment& env, Groupsock* RTPgs);
 	// called only by createNew()
 
-  LIVE555_EXPORT virtual ~GSMAudioRTPSink();
+  LIVE555_EXPORT
+  virtual ~GSMAudioRTPSink();
 
 private: // redefined virtual functions:
-  LIVE555_EXPORT virtual
+  LIVE555_EXPORT 
+  virtual
   Boolean frameCanAppearAfterPacketStart(unsigned char const* frameStart,
 					 unsigned numBytesInFrame) const;
 };

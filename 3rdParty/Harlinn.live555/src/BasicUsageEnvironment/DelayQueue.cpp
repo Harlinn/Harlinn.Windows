@@ -13,7 +13,7 @@ You should have received a copy of the GNU Lesser General Public License
 along with this library; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 **********/
-// Copyright (c) 1996-2023, Live Networks, Inc.  All rights reserved
+// Copyright (c) 1996-2024, Live Networks, Inc.  All rights reserved
 //	Help by Carlo Bonamico to get working for Windows
 // Delay queue
 // Implementation
@@ -25,7 +25,7 @@ static const int MILLION = 1000000;
 
 ///// Timeval /////
 
-bool Timeval::operator>=(const Timeval& arg2) const {
+int Timeval::operator>=(const Timeval& arg2) const {
   return seconds() > arg2.seconds()
     || (seconds() == arg2.seconds()
 	&& useconds() >= arg2.useconds());
@@ -219,7 +219,7 @@ void DelayQueue::synchronize() {
 
 ///// _EventTime /////
 
-LIVE555_EXPORT _EventTime TimeNow() {
+_EventTime TimeNow() {
   struct timeval tvNow;
 
   gettimeofday(&tvNow, NULL);
@@ -227,4 +227,4 @@ LIVE555_EXPORT _EventTime TimeNow() {
   return _EventTime(tvNow.tv_sec, tvNow.tv_usec);
 }
 
-LIVE555_EXPORT const _EventTime THE_END_OF_TIME(INT_MAX);
+const _EventTime THE_END_OF_TIME(INT_MAX);

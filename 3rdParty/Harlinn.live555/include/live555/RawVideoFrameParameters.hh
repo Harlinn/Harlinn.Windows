@@ -14,7 +14,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 **********/
 // "liveMedia"
-// Copyright (c) 1996-2023 Live Networks, Inc.  All rights reserved.
+// Copyright (c) 1996-2024 Live Networks, Inc.  All rights reserved.
 // Parameters used for streaming (transmitting and receiving) raw video frames over RTP
 // C++ header
 
@@ -23,8 +23,10 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class RawVideoFrameParameters {
 public:
-  LIVE555_EXPORT RawVideoFrameParameters(unsigned width, unsigned height, unsigned depth, char const* sampling);
-  LIVE555_EXPORT virtual ~RawVideoFrameParameters();
+  LIVE555_EXPORT 
+  RawVideoFrameParameters(unsigned width, unsigned height, unsigned depth, char const* sampling);
+  LIVE555_EXPORT
+  virtual ~RawVideoFrameParameters();
 
 public:
   u_int16_t pgroupSize; // in octets

@@ -14,7 +14,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 **********/
 // "liveMedia"
-// Copyright (c) 1996-2023 Live Networks, Inc.  All rights reserved.
+// Copyright (c) 1996-2024 Live Networks, Inc.  All rights reserved.
 // A 'ServerMediaSubsession' object that creates new, unicast, "RTPSink"s
 // on demand.
 // Implementation
@@ -330,7 +330,7 @@ FramedSource* OnDemandServerMediaSubsession::getStreamSource(void* streamToken) 
 
 void OnDemandServerMediaSubsession
 ::getRTPSinkandRTCP(void* streamToken,
-		    RTPSink const*& rtpSink, RTCPInstance const*& rtcp) {
+		    RTPSink*& rtpSink, RTCPInstance*& rtcp) {
   if (streamToken == NULL) {
     rtpSink = NULL;
     rtcp = NULL;
@@ -571,13 +571,17 @@ void StreamState
   }
 
   if (!fAreCurrentlyPlaying && fMediaSource != NULL) {
-    if (fRTPSink != NULL) {
-      fRTPSink->startPlaying(*fMediaSource, afterPlayingStreamState, this);
-      fAreCurrentlyPlaying = True;
-    } else if (fUDPSink != NULL) {
-      fUDPSink->startPlaying(*fMediaSource, afterPlayingStreamState, this);
-      fAreCurrentlyPlaying = True;
+    MediaSink* sink;
+    if (fRTPSink != NULL) { sink = fRTPSink; }
+    else if (fUDPSink != NULL) { sink = fUDPSink; }
+    else return;
+    
+    if (!sink->startPlaying(*fMediaSource, afterPlayingStreamState, this)) {
+      fMediaSource->envir() << "sink->startPlaying() failed: "
+			    << fMediaSource->envir().getResultMsg() << "\n";
+      return;
     }
+    fAreCurrentlyPlaying = True;
   }
 }
 

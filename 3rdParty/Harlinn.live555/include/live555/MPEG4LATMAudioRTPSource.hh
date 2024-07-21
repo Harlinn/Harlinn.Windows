@@ -14,7 +14,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 **********/
 // "liveMedia"
-// Copyright (c) 1996-2023 Live Networks, Inc.  All rights reserved.
+// Copyright (c) 1996-2024 Live Networks, Inc.  All rights reserved.
 // MPEG-4 audio, using LATM multiplexing
 // C++ header
 
@@ -27,30 +27,36 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class MPEG4LATMAudioRTPSource: public MultiFramedRTPSource {
 public:
-  LIVE555_EXPORT static MPEG4LATMAudioRTPSource*
+  LIVE555_EXPORT 
+  static MPEG4LATMAudioRTPSource*
   createNew(UsageEnvironment& env, Groupsock* RTPgs,
 	    unsigned char rtpPayloadFormat,
 	    unsigned rtpTimestampFrequency);
 
   // By default, the LATM data length field is included at the beginning of each
   // returned frame.  To omit this field, call the following:
-  LIVE555_EXPORT void omitLATMDataLengthField();
+  LIVE555_EXPORT
+  void omitLATMDataLengthField();
 
-  LIVE555_EXPORT Boolean returnedFrameIncludesLATMDataLengthField() const { return fIncludeLATMDataLengthField; }
+  Boolean returnedFrameIncludesLATMDataLengthField() const { return fIncludeLATMDataLengthField; }
 
 protected:
-  LIVE555_EXPORT virtual ~MPEG4LATMAudioRTPSource();
+  LIVE555_EXPORT 
+  virtual ~MPEG4LATMAudioRTPSource();
 
 private:
-  LIVE555_EXPORT MPEG4LATMAudioRTPSource(UsageEnvironment& env, Groupsock* RTPgs,
+  LIVE555_EXPORT 
+  MPEG4LATMAudioRTPSource(UsageEnvironment& env, Groupsock* RTPgs,
 			  unsigned char rtpPayloadFormat,
 			  unsigned rtpTimestampFrequency);
       // called only by createNew()
 
 private:
   // redefined virtual functions:
-  LIVE555_EXPORT virtual Boolean processSpecialHeader(BufferedPacket* packet,
+  LIVE555_EXPORT 
+  virtual Boolean processSpecialHeader(BufferedPacket* packet,
                                        unsigned& resultSpecialHeaderSize);
+  LIVE555_EXPORT
   virtual char const* MIMEtype() const;
 
 private:
@@ -59,7 +65,8 @@ private:
 
 
 // A utility for parsing a "StreamMuxConfig" string
-LIVE555_EXPORT Boolean
+LIVE555_EXPORT
+Boolean
 parseStreamMuxConfigStr(char const* configStr,
 			// result parameters:
 			Boolean& audioMuxVersion,
@@ -85,14 +92,16 @@ parseStreamMuxConfigStr(char const* configStr,
     // Also, any 'other data' or CRC info will be included at
     // the end of "audioSpecificConfig".
 
-LIVE555_EXPORT unsigned char* parseStreamMuxConfigStr(char const* configStr,
+LIVE555_EXPORT
+unsigned char* parseStreamMuxConfigStr(char const* configStr,
 				       // result parameter:
 				       unsigned& audioSpecificConfigSize);
     // A variant of the above that returns just the "AudioSpecificConfig" data
     // (or NULL) if the parsing failed, without bothering with the other
     // result parameters.
 
-LIVE555_EXPORT unsigned char* parseGeneralConfigStr(char const* configStr,
+LIVE555_EXPORT
+unsigned char* parseGeneralConfigStr(char const* configStr,
 				     // result parameter:
 				     unsigned& configSize);
     // A routine that parses an arbitrary config string, returning

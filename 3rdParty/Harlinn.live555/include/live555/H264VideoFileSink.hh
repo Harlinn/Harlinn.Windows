@@ -14,7 +14,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 **********/
 // "liveMedia"
-// Copyright (c) 1996-2023 Live Networks, Inc.  All rights reserved.
+// Copyright (c) 1996-2024 Live Networks, Inc.  All rights reserved.
 // H.264 Video File Sinks
 // C++ header
 
@@ -27,7 +27,8 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class H264VideoFileSink: public H264or5VideoFileSink {
 public:
-  LIVE555_EXPORT static H264VideoFileSink* createNew(UsageEnvironment& env, char const* fileName,
+  LIVE555_EXPORT 
+  static H264VideoFileSink* createNew(UsageEnvironment& env, char const* fileName,
 				      char const* sPropParameterSetsStr = NULL,
       // "sPropParameterSetsStr" is an optional 'SDP format' string
       // (comma-separated Base64-encoded) representing SPS and/or PPS NAL-units
@@ -37,11 +38,13 @@ public:
       // See "FileSink.hh" for a description of these parameters.
 
 protected:
-  LIVE555_EXPORT H264VideoFileSink(UsageEnvironment& env, FILE* fid,
+  LIVE555_EXPORT 
+  H264VideoFileSink(UsageEnvironment& env, FILE* fid,
 		    char const* sPropParameterSetsStr,
 		    unsigned bufferSize, char const* perFrameFileNamePrefix);
       // called only by createNew()
-  LIVE555_EXPORT virtual ~H264VideoFileSink();
+  LIVE555_EXPORT
+  virtual ~H264VideoFileSink();
 };
 
 #endif

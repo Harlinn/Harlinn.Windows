@@ -14,7 +14,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 **********/
 // "liveMedia"
-// Copyright (c) 1996-2023 Live Networks, Inc.  All rights reserved.
+// Copyright (c) 1996-2024 Live Networks, Inc.  All rights reserved.
 // A simplified version of "H264VideoStreamFramer" that takes only complete,
 // discrete frames (rather than an arbitrary byte stream) as input.
 // This avoids the parsing and data copying overhead of the full
@@ -30,19 +30,23 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class H264VideoStreamDiscreteFramer: public H264or5VideoStreamDiscreteFramer {
 public:
-  LIVE555_EXPORT static H264VideoStreamDiscreteFramer*
+  LIVE555_EXPORT 
+  static H264VideoStreamDiscreteFramer*
   createNew(UsageEnvironment& env, FramedSource* inputSource,
 	    Boolean includeStartCodeInOutput = False, Boolean insertAccessUnitDelimiters = False);
 
 protected:
-  LIVE555_EXPORT H264VideoStreamDiscreteFramer(UsageEnvironment& env, FramedSource* inputSource,
+  LIVE555_EXPORT 
+  H264VideoStreamDiscreteFramer(UsageEnvironment& env, FramedSource* inputSource,
 				Boolean includeStartCodeInOutput, Boolean insertAccessUnitDelimiters);
       // called only by createNew()
-  LIVE555_EXPORT virtual ~H264VideoStreamDiscreteFramer();
+  LIVE555_EXPORT
+  virtual ~H264VideoStreamDiscreteFramer();
 
 private:
   // redefined virtual functions:
-  LIVE555_EXPORT virtual Boolean isH264VideoStreamFramer() const;
+  LIVE555_EXPORT
+  virtual Boolean isH264VideoStreamFramer() const;
 };
 
 #endif

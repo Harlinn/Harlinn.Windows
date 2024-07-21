@@ -14,7 +14,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 **********/
 // "liveMedia"
-// Copyright (c) 1996-2023 Live Networks, Inc.  All rights reserved.
+// Copyright (c) 1996-2024 Live Networks, Inc.  All rights reserved.
 // A filter that breaks up a H.265 Video Elementary Stream into NAL units.
 // C++ header
 
@@ -27,19 +27,23 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class H265VideoStreamFramer: public H264or5VideoStreamFramer {
 public:
-  LIVE555_EXPORT static H265VideoStreamFramer* createNew(UsageEnvironment& env, FramedSource* inputSource,
+  LIVE555_EXPORT 
+  static H265VideoStreamFramer* createNew(UsageEnvironment& env, FramedSource* inputSource,
 					  Boolean includeStartCodeInOutput = False,
 					  Boolean insertAccessUnitDelimiters = False);
 
 protected:
-  LIVE555_EXPORT H265VideoStreamFramer(UsageEnvironment& env, FramedSource* inputSource,
+  LIVE555_EXPORT 
+  H265VideoStreamFramer(UsageEnvironment& env, FramedSource* inputSource,
 			Boolean createParser,
 			Boolean includeStartCodeInOutput, Boolean insertAccessUnitDelimiters);
       // called only by "createNew()"
-  LIVE555_EXPORT virtual ~H265VideoStreamFramer();
+  LIVE555_EXPORT
+  virtual ~H265VideoStreamFramer();
 
   // redefined virtual functions:
-  LIVE555_EXPORT virtual Boolean isH265VideoStreamFramer() const;
+  LIVE555_EXPORT
+  virtual Boolean isH265VideoStreamFramer() const;
 };
 
 #endif

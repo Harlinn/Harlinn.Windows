@@ -14,7 +14,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 **********/
 // "liveMedia"
-// Copyright (c) 1996-2023, Live Networks, Inc.  All rights reserved
+// Copyright (c) 1996-2024, Live Networks, Inc.  All rights reserved
 //
 // Generic HMA_HASH functions
 // Definition
@@ -26,10 +26,8 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 #include "NetCommon.h"
 #endif
 
-#include "live555Def.h"
-
 // All HMAC hash functions have the following signature:
-LIVE555_EXPORT typedef void HMAC_hash(u_int8_t const* key, unsigned keyLength,
+typedef void HMAC_hash(u_int8_t const* key, unsigned keyLength,
 		       u_int8_t const* text, unsigned textLength,
 		       u_int8_t* resultDigest);
     // "resultDigest" must point to an array of sufficient size to hold the digest

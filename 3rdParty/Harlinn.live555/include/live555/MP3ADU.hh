@@ -14,7 +14,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 **********/
 // "liveMedia"
-// Copyright (c) 1996-2023 Live Networks, Inc.  All rights reserved.
+// Copyright (c) 1996-2024 Live Networks, Inc.  All rights reserved.
 // 'ADU' MP3 streams (for improved loss-tolerance)
 // C++ header
 
@@ -27,32 +27,40 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class ADUFromMP3Source: public FramedFilter {
 public:
-  LIVE555_EXPORT static ADUFromMP3Source* createNew(UsageEnvironment& env,
+  LIVE555_EXPORT 
+  static ADUFromMP3Source* createNew(UsageEnvironment& env,
 				     FramedSource* inputSource,
 				     Boolean includeADUdescriptors = True);
 
-  LIVE555_EXPORT void resetInput();
+  LIVE555_EXPORT
+  void resetInput();
       // This is called whenever there's a discontinuity in the input MP3 source
       // (e.g., due to seeking within the source).  It causes any still-unprocessed
       // MP3 frame data within our queue to be discarded, so that it does not
       // erroneously get used by backpointers from the new MP3 frames.
 
-  LIVE555_EXPORT Boolean setScaleFactor(int scale);
+  LIVE555_EXPORT
+  Boolean setScaleFactor(int scale);
 
 protected:
-  LIVE555_EXPORT ADUFromMP3Source(UsageEnvironment& env,
+  LIVE555_EXPORT 
+  ADUFromMP3Source(UsageEnvironment& env,
 		   FramedSource* inputSource,
 		   Boolean includeADUdescriptors);
       // called only by createNew()
-  LIVE555_EXPORT virtual ~ADUFromMP3Source();
+  LIVE555_EXPORT
+  virtual ~ADUFromMP3Source();
 
 private:
   // Redefined virtual functions:
-  LIVE555_EXPORT virtual void doGetNextFrame();
-  LIVE555_EXPORT virtual char const* MIMEtype() const;
+  LIVE555_EXPORT 
+  virtual void doGetNextFrame();
+  LIVE555_EXPORT
+  virtual char const* MIMEtype() const;
 
 private:
-  LIVE555_EXPORT Boolean doGetNextFrame1();
+  LIVE555_EXPORT 
+  Boolean doGetNextFrame1();
 
 private:
   Boolean fAreEnqueueingMP3Frame;
@@ -65,26 +73,34 @@ private:
 
 class MP3FromADUSource: public FramedFilter {
 public:
-  LIVE555_EXPORT static MP3FromADUSource* createNew(UsageEnvironment& env,
+  LIVE555_EXPORT 
+  static MP3FromADUSource* createNew(UsageEnvironment& env,
 				     FramedSource* inputSource,
                                      Boolean includeADUdescriptors = True);
 
 protected:
-  LIVE555_EXPORT MP3FromADUSource(UsageEnvironment& env,
+  LIVE555_EXPORT 
+  MP3FromADUSource(UsageEnvironment& env,
 		   FramedSource* inputSource,
 		   Boolean includeADUdescriptors);
       // called only by createNew()
-  LIVE555_EXPORT virtual ~MP3FromADUSource();
+  LIVE555_EXPORT 
+  virtual ~MP3FromADUSource();
 
 private:
   // Redefined virtual functions:
-  LIVE555_EXPORT virtual void doGetNextFrame();
-  LIVE555_EXPORT virtual char const* MIMEtype() const;
+  LIVE555_EXPORT 
+  virtual void doGetNextFrame();
+  LIVE555_EXPORT
+  virtual char const* MIMEtype() const;
 
 private:
-  LIVE555_EXPORT Boolean needToGetAnADU();
-  LIVE555_EXPORT void insertDummyADUsIfNecessary();
-  LIVE555_EXPORT Boolean generateFrameFromHeadADU();
+  LIVE555_EXPORT 
+  Boolean needToGetAnADU();
+  LIVE555_EXPORT
+  void insertDummyADUsIfNecessary();
+  LIVE555_EXPORT
+  Boolean generateFrameFromHeadADU();
 
 private:
   Boolean fAreEnqueueingADU;

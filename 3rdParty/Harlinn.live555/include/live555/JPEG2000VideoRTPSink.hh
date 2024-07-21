@@ -14,7 +14,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 **********/
 // "liveMedia"
-// Copyright (c) 1996-2023 Live Networks, Inc.  All rights reserved.
+// Copyright (c) 1996-2024 Live Networks, Inc.  All rights reserved.
 
 
 #ifndef _JPEG2000_VIDEO_RTP_SINK_HH
@@ -26,21 +26,26 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class JPEG2000VideoRTPSink: public VideoRTPSink {
 public:
-  LIVE555_EXPORT static JPEG2000VideoRTPSink* createNew(UsageEnvironment& env, Groupsock* RTPgs);
+  LIVE555_EXPORT 
+  static JPEG2000VideoRTPSink* createNew(UsageEnvironment& env, Groupsock* RTPgs);
 
 protected:
-  LIVE555_EXPORT JPEG2000VideoRTPSink(UsageEnvironment& env, Groupsock* RTPgs);
+  LIVE555_EXPORT 
+  JPEG2000VideoRTPSink(UsageEnvironment& env, Groupsock* RTPgs);
 	// called only by createNew()
 
-  LIVE555_EXPORT virtual ~JPEG2000VideoRTPSink();
+  LIVE555_EXPORT
+  virtual ~JPEG2000VideoRTPSink();
 
 private: // redefined virtual functions:
-  LIVE555_EXPORT virtual void doSpecialFrameHandling(unsigned fragmentationOffset,
+  LIVE555_EXPORT 
+  virtual void doSpecialFrameHandling(unsigned fragmentationOffset,
                                       unsigned char* frameStart,
                                       unsigned numBytesInFrame,
                                       struct timeval framePresentationTime,
                                       unsigned numRemainingBytes);
-  LIVE555_EXPORT virtual unsigned specialHeaderSize() const;
+  LIVE555_EXPORT
+  virtual unsigned specialHeaderSize() const;
 };
 
 #endif

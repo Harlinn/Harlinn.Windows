@@ -14,7 +14,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 **********/
 // "liveMedia"
-// Copyright (c) 1996-2023 Live Networks, Inc.  All rights reserved.
+// Copyright (c) 1996-2024 Live Networks, Inc.  All rights reserved.
 // RTP Sources containing generic QuickTime stream data, as defined in
 //     <http://developer.apple.com/quicktime/icefloe/dispatch026.html>
 // C++ header
@@ -28,7 +28,8 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class QuickTimeGenericRTPSource: public MultiFramedRTPSource {
 public:
-  LIVE555_EXPORT static QuickTimeGenericRTPSource*
+  LIVE555_EXPORT 
+  static QuickTimeGenericRTPSource*
   createNew(UsageEnvironment& env, Groupsock* RTPgs,
 	    unsigned char rtpPayloadFormat, unsigned rtpTimestampFrequency,
 	    char const* mimeTypeString);
@@ -46,10 +47,12 @@ public:
   } qtState;
 
 protected:
-  LIVE555_EXPORT virtual ~QuickTimeGenericRTPSource();
+  LIVE555_EXPORT 
+  virtual ~QuickTimeGenericRTPSource();
 
 private:
-  LIVE555_EXPORT QuickTimeGenericRTPSource(UsageEnvironment& env, Groupsock* RTPgs,
+  LIVE555_EXPORT 
+  QuickTimeGenericRTPSource(UsageEnvironment& env, Groupsock* RTPgs,
 			    unsigned char rtpPayloadFormat,
 			    unsigned rtpTimestampFrequency,
 			    char const* mimeTypeString);
@@ -57,9 +60,11 @@ private:
 
 private:
   // redefined virtual functions:
-  LIVE555_EXPORT virtual Boolean processSpecialHeader(BufferedPacket* packet,
+  LIVE555_EXPORT 
+  virtual Boolean processSpecialHeader(BufferedPacket* packet,
                                        unsigned& resultSpecialHeaderSize);
-  LIVE555_EXPORT virtual char const* MIMEtype() const;
+  LIVE555_EXPORT
+  virtual char const* MIMEtype() const;
 
 private:
   char const* fMIMEtypeString;

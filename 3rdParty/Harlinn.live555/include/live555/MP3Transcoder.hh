@@ -14,7 +14,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 **********/
 // "liveMedia"
-// Copyright (c) 1996-2023 Live Networks, Inc.  All rights reserved.
+// Copyright (c) 1996-2024 Live Networks, Inc.  All rights reserved.
 // MP3 Transcoder
 // C++ header
 
@@ -30,15 +30,18 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class MP3Transcoder: public MP3FromADUSource {
 public:
-  LIVE555_EXPORT static MP3Transcoder* createNew(UsageEnvironment& env,
+  LIVE555_EXPORT 
+  static MP3Transcoder* createNew(UsageEnvironment& env,
 				  unsigned outBitrate /* in kbps */,
 				  FramedSource* inputSource);
 
 protected:
-  LIVE555_EXPORT MP3Transcoder(UsageEnvironment& env,
+  LIVE555_EXPORT 
+  MP3Transcoder(UsageEnvironment& env,
 		MP3ADUTranscoder* aduTranscoder);
       // called only by createNew()
-  LIVE555_EXPORT virtual ~MP3Transcoder();
+  LIVE555_EXPORT
+  virtual ~MP3Transcoder();
 };
 
 #endif

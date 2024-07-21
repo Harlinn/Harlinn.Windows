@@ -14,7 +14,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 **********/
 // "liveMedia"
-// Copyright (c) 1996-2023 Live Networks, Inc.  All rights reserved.
+// Copyright (c) 1996-2024 Live Networks, Inc.  All rights reserved.
 // A 'ServerMediaSubsession' object that creates new, unicast, "RTPSink"s
 // on demand, from a file.
 // C++ header
@@ -31,9 +31,11 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class FileServerMediaSubsession: public OnDemandServerMediaSubsession {
 protected: // we're a virtual base class
-  LIVE555_EXPORT FileServerMediaSubsession(UsageEnvironment& env, char const* fileName,
+  LIVE555_EXPORT 
+  FileServerMediaSubsession(UsageEnvironment& env, char const* fileName,
 			    Boolean reuseFirstSource);
-  LIVE555_EXPORT virtual ~FileServerMediaSubsession();
+  LIVE555_EXPORT
+  virtual ~FileServerMediaSubsession();
 
 protected:
   char const* fFileName;

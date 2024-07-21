@@ -14,7 +14,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 **********/
 // "liveMedia"
-// Copyright (c) 1996-2023 Live Networks, Inc.  All rights reserved.
+// Copyright (c) 1996-2024 Live Networks, Inc.  All rights reserved.
 // A 'ServerMediaSubsession' object that represents an existing
 // 'RTPSink', rather than one that creates new 'RTPSink's on demand.
 // C++ header
@@ -35,19 +35,25 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class PassiveServerMediaSubsession: public ServerMediaSubsession {
 public:
-  LIVE555_EXPORT static PassiveServerMediaSubsession* createNew(RTPSink& rtpSink,
+  LIVE555_EXPORT 
+  static PassiveServerMediaSubsession* createNew(RTPSink& rtpSink,
 						 RTCPInstance* rtcpInstance = NULL);
 
 protected:
-  LIVE555_EXPORT PassiveServerMediaSubsession(RTPSink& rtpSink, RTCPInstance* rtcpInstance);
+  LIVE555_EXPORT 
+  PassiveServerMediaSubsession(RTPSink& rtpSink, RTCPInstance* rtcpInstance);
       // called only by createNew();
-  LIVE555_EXPORT virtual ~PassiveServerMediaSubsession();
+  LIVE555_EXPORT
+  virtual ~PassiveServerMediaSubsession();
 
-  LIVE555_EXPORT virtual Boolean rtcpIsMuxed();
+  LIVE555_EXPORT
+  virtual Boolean rtcpIsMuxed();
 
 protected: // redefined virtual functions
-  LIVE555_EXPORT virtual char const* sdpLines(int addressFamily);
-  LIVE555_EXPORT virtual void getStreamParameters(unsigned clientSessionId,
+  LIVE555_EXPORT 
+  virtual char const* sdpLines(int addressFamily);
+  LIVE555_EXPORT
+  virtual void getStreamParameters(unsigned clientSessionId,
 				   struct sockaddr_storage const& clientAddress,
                                    Port const& clientRTPPort,
                                    Port const& clientRTCPPort,
@@ -61,17 +67,21 @@ protected: // redefined virtual functions
                                    Port& serverRTPPort,
                                    Port& serverRTCPPort,
                                    void*& streamToken);
-  LIVE555_EXPORT virtual void startStream(unsigned clientSessionId, void* streamToken,
+  LIVE555_EXPORT
+  virtual void startStream(unsigned clientSessionId, void* streamToken,
 			   TaskFunc* rtcpRRHandler,
 			   void* rtcpRRHandlerClientData,
                            unsigned short& rtpSeqNum,
                            unsigned& rtpTimestamp,
 			   ServerRequestAlternativeByteHandler* serverRequestAlternativeByteHandler,
                            void* serverRequestAlternativeByteHandlerClientData);
-  LIVE555_EXPORT virtual float getCurrentNPT(void* streamToken);
-  LIVE555_EXPORT virtual void getRTPSinkandRTCP(void* streamToken,
-				 RTPSink const*& rtpSink, RTCPInstance const*& rtcp);
-  LIVE555_EXPORT virtual void deleteStream(unsigned clientSessionId, void*& streamToken);
+  LIVE555_EXPORT
+  virtual float getCurrentNPT(void* streamToken);
+  LIVE555_EXPORT
+  virtual void getRTPSinkandRTCP(void* streamToken,
+				 RTPSink*& rtpSink, RTCPInstance*& rtcp);
+  LIVE555_EXPORT
+  virtual void deleteStream(unsigned clientSessionId, void*& streamToken);
 
 protected:
   char* fSDPLines;

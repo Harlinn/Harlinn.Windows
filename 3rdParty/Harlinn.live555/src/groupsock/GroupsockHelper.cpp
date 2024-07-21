@@ -14,7 +14,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 **********/
 // "groupsock"
-// Copyright (c) 1996-2023 Live Networks, Inc.  All rights reserved.
+// Copyright (c) 1996-2024 Live Networks, Inc.  All rights reserved.
 // Helper routines to implement 'group sockets'
 // Implementation
 
@@ -67,7 +67,7 @@ NoReuse::~NoReuse() {
   reclaimGroupsockPriv(fEnv);
 }
 
-
+LIVE555_EXPORT
 _groupsockPriv* groupsockPriv(UsageEnvironment& env) {
   if (env.groupsockPriv == NULL) { // We need to create it
     _groupsockPriv* result = new _groupsockPriv;
@@ -78,6 +78,7 @@ _groupsockPriv* groupsockPriv(UsageEnvironment& env) {
   return (_groupsockPriv*)(env.groupsockPriv);
 }
 
+LIVE555_EXPORT
 void reclaimGroupsockPriv(UsageEnvironment& env) {
   _groupsockPriv* priv = (_groupsockPriv*)(env.groupsockPriv);
   if (priv->socketTable == NULL && priv->reuseFlag == 1/*default value*/) {
@@ -108,6 +109,7 @@ static int createSocket(int domain, int type) {
   return sock;
 }
 
+LIVE555_EXPORT
 int setupDatagramSocket(UsageEnvironment& env, Port port, int domain) {
   if (!initializeWinsockIfNecessary()) {
     socketErr(env, "Failed to initialize 'winsock': ");
@@ -213,6 +215,7 @@ int setupDatagramSocket(UsageEnvironment& env, Port port, int domain) {
   return newSocket;
 }
 
+LIVE555_EXPORT
 Boolean makeSocketNonBlocking(int sock) {
 #if defined(__WIN32__) || defined(_WIN32)
   unsigned long arg = 1;
@@ -226,6 +229,7 @@ Boolean makeSocketNonBlocking(int sock) {
 #endif
 }
 
+LIVE555_EXPORT
 Boolean makeSocketBlocking(int sock, unsigned writeTimeoutInMilliseconds) {
   Boolean result;
 #if defined(__WIN32__) || defined(_WIN32)
@@ -256,6 +260,7 @@ Boolean makeSocketBlocking(int sock, unsigned writeTimeoutInMilliseconds) {
   return result;
 }
 
+LIVE555_EXPORT
 Boolean setSocketKeepAlive(int sock) {
 #if defined(__WIN32__) || defined(_WIN32)
   // How do we do this in Windows?  For now, just make this a no-op in Windows:
@@ -290,6 +295,7 @@ Boolean setSocketKeepAlive(int sock) {
   return True;
 }
 
+LIVE555_EXPORT
 int setupStreamSocket(UsageEnvironment& env, Port port, int domain,
 		      Boolean makeNonBlocking, Boolean setKeepAlive) {
   if (!initializeWinsockIfNecessary()) {
@@ -387,6 +393,7 @@ int setupStreamSocket(UsageEnvironment& env, Port port, int domain,
   return newSocket;
 }
 
+LIVE555_EXPORT
 int readSocket(UsageEnvironment& env,
 	       int socket, unsigned char* buffer, unsigned bufferSize,
 	       struct sockaddr_storage& fromAddress) {
@@ -422,6 +429,7 @@ int readSocket(UsageEnvironment& env,
   return bytesRead;
 }
 
+LIVE555_EXPORT
 Boolean writeSocket(UsageEnvironment& env,
 		    int socket, struct sockaddr_storage const& addressAndPort,
 		    u_int8_t ttlArg,
@@ -444,6 +452,7 @@ Boolean writeSocket(UsageEnvironment& env,
   return writeSocket(env, socket, addressAndPort, buffer, bufferSize);
 }
 
+LIVE555_EXPORT
 Boolean writeSocket(UsageEnvironment& env,
 		    int socket, struct sockaddr_storage const& addressAndPort,
 		    unsigned char* buffer, unsigned bufferSize) {
@@ -464,6 +473,7 @@ Boolean writeSocket(UsageEnvironment& env,
   return False;
 }
 
+LIVE555_EXPORT
 void ignoreSigPipeOnSocket(int socketNum) {
   #ifdef USE_SIGNALS
   #ifdef SO_NOSIGPIPE
@@ -487,9 +497,11 @@ static unsigned getBufferSize(UsageEnvironment& env, int bufOptName,
 
   return curSize;
 }
+LIVE555_EXPORT
 unsigned getSendBufferSize(UsageEnvironment& env, int socket) {
   return getBufferSize(env, SO_SNDBUF, socket);
 }
+LIVE555_EXPORT
 unsigned getReceiveBufferSize(UsageEnvironment& env, int socket) {
   return getBufferSize(env, SO_RCVBUF, socket);
 }
@@ -502,10 +514,12 @@ static unsigned setBufferTo(UsageEnvironment& env, int bufOptName,
   // Get and return the actual, resulting buffer size:
   return getBufferSize(env, bufOptName, socket);
 }
+LIVE555_EXPORT
 unsigned setSendBufferTo(UsageEnvironment& env,
 			 int socket, unsigned requestedSize) {
 	return setBufferTo(env, SO_SNDBUF, socket, requestedSize);
 }
+LIVE555_EXPORT
 unsigned setReceiveBufferTo(UsageEnvironment& env,
 			    int socket, unsigned requestedSize) {
 	return setBufferTo(env, SO_RCVBUF, socket, requestedSize);
@@ -531,10 +545,12 @@ static unsigned increaseBufferTo(UsageEnvironment& env, int bufOptName,
 
   return getBufferSize(env, bufOptName, socket);
 }
+LIVE555_EXPORT
 unsigned increaseSendBufferTo(UsageEnvironment& env,
 			      int socket, unsigned requestedSize) {
   return increaseBufferTo(env, SO_SNDBUF, socket, requestedSize);
 }
+LIVE555_EXPORT
 unsigned increaseReceiveBufferTo(UsageEnvironment& env,
 				 int socket, unsigned requestedSize) {
   return increaseBufferTo(env, SO_RCVBUF, socket, requestedSize);
@@ -554,6 +570,7 @@ static void clearMulticastAllSocketOption(int socket, int domain) {
 #endif
 }
 
+LIVE555_EXPORT
 Boolean socketJoinGroup(UsageEnvironment& env, int socket,
 			struct sockaddr_storage const& groupAddress){
   if (!IsMulticastAddress(groupAddress)) return True; // ignore this case
@@ -607,6 +624,7 @@ Boolean socketJoinGroup(UsageEnvironment& env, int socket,
   return True;
 }
 
+LIVE555_EXPORT
 Boolean socketLeaveGroup(UsageEnvironment&, int socket,
 			 struct sockaddr_storage const& groupAddress) {
   if (!IsMulticastAddress(groupAddress)) return True; // ignore this case
@@ -672,6 +690,7 @@ struct ip_mreq_source {
 
 #endif
 
+LIVE555_EXPORT
 Boolean socketJoinGroupSSM(UsageEnvironment& env, int socket,
 			   struct sockaddr_storage const& groupAddress,
 			   struct sockaddr_storage const& sourceFilterAddr) {
@@ -699,6 +718,7 @@ Boolean socketJoinGroupSSM(UsageEnvironment& env, int socket,
   return True;
 }
 
+LIVE555_EXPORT
 Boolean socketLeaveGroupSSM(UsageEnvironment& /*env*/, int socket,
 			    struct sockaddr_storage const& groupAddress,
 			    struct sockaddr_storage const& sourceFilterAddr) {
@@ -807,6 +827,7 @@ static void getOurIPAddresses(UsageEnvironment& env); // forward
 static ipv4AddressBits _ourIPv4Address = 0;
 #define _weHaveAnIPv4Address (_ourIPv4Address != 0)
 
+LIVE555_EXPORT
 ipv4AddressBits ourIPv4Address(UsageEnvironment& env) {
   if (ReceivingInterfaceAddr != INADDR_ANY) {
     // Hack: If we were told to receive on a specific interface address, then 
@@ -824,6 +845,7 @@ ipv4AddressBits ourIPv4Address(UsageEnvironment& env) {
 static ipv6AddressBits _ourIPv6Address;
 static Boolean _weHaveAnIPv6Address = False;
 
+LIVE555_EXPORT
 ipv6AddressBits const& ourIPv6Address(UsageEnvironment& env) {
   if (!_weHaveAnIPv6Address) {
     getOurIPAddresses(env);
@@ -832,6 +854,7 @@ ipv6AddressBits const& ourIPv6Address(UsageEnvironment& env) {
   return _ourIPv6Address;
 }
 
+LIVE555_EXPORT
 Boolean weHaveAnIPv4Address(UsageEnvironment& env) {
   if (_weHaveAnIPv4Address || _weHaveAnIPv6Address) return _weHaveAnIPv4Address;
 
@@ -839,13 +862,14 @@ Boolean weHaveAnIPv4Address(UsageEnvironment& env) {
   return _weHaveAnIPv4Address;
 }
 
+LIVE555_EXPORT
 Boolean weHaveAnIPv6Address(UsageEnvironment& env) {
   if (_weHaveAnIPv4Address || _weHaveAnIPv6Address) return _weHaveAnIPv6Address;
 
   getOurIPAddresses(env);
   return _weHaveAnIPv6Address;
 }
-
+LIVE555_EXPORT
 Boolean weHaveAnIPAddress(UsageEnvironment& env) {
   if (_weHaveAnIPv4Address || _weHaveAnIPv6Address) return True;
 
@@ -968,6 +992,7 @@ void getOurIPAddresses(UsageEnvironment& env) {
     our_srandom(seed);
 }
 
+LIVE555_EXPORT
 ipv4AddressBits chooseRandomIPv4SSMAddress(UsageEnvironment& env) {
   // First, a hack to ensure that our random number generator is seeded:
   (void)ourIPv4Address(env);
@@ -980,6 +1005,7 @@ ipv4AddressBits chooseRandomIPv4SSMAddress(UsageEnvironment& env) {
   return ntohl(first + ((ipv4AddressBits)our_random())%range);
 }
 
+LIVE555_EXPORT
 char const* timestampString() {
   struct timeval tvNow;
   gettimeofday(&tvNow, NULL);
@@ -1020,6 +1046,7 @@ static LONG initializeLock_gettimeofday = 0;
 #include <sys/timeb.h>
 #endif
 
+LIVE555_EXPORT
 int gettimeofday(struct timeval* tp, int* /*tz*/) {
   static LARGE_INTEGER tickFrequency, epochOffset;
 

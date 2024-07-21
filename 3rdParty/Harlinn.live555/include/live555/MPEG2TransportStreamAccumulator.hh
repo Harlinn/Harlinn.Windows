@@ -14,7 +14,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 **********/
 // "liveMedia"
-// Copyright (c) 1996-2023 Live Networks, Inc.  All rights reserved.
+// Copyright (c) 1996-2024 Live Networks, Inc.  All rights reserved.
 // Collects a stream of incoming MPEG Transport Stream packets into
 //  a chunk sufficiently large to send in a single outgoing (RTP or UDP) packet.
 // C++ header
@@ -28,26 +28,32 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class MPEG2TransportStreamAccumulator: public FramedFilter {
 public:
-  LIVE555_EXPORT static MPEG2TransportStreamAccumulator* createNew(UsageEnvironment& env,
+  LIVE555_EXPORT
+  static MPEG2TransportStreamAccumulator* createNew(UsageEnvironment& env,
 						    FramedSource* inputSource,
 						    unsigned maxPacketSize = 1456);
 
 protected:
-  LIVE555_EXPORT MPEG2TransportStreamAccumulator(UsageEnvironment& env,
+  LIVE555_EXPORT
+  MPEG2TransportStreamAccumulator(UsageEnvironment& env,
 				  FramedSource* inputSource, unsigned maxPacketSize);
       // called only by createNew()
-  LIVE555_EXPORT virtual ~MPEG2TransportStreamAccumulator();
+  LIVE555_EXPORT
+  virtual ~MPEG2TransportStreamAccumulator();
 
 private:
   // redefined virtual functions:
-  LIVE555_EXPORT virtual void doGetNextFrame();
+  LIVE555_EXPORT
+  virtual void doGetNextFrame();
 
 private:
-  LIVE555_EXPORT static void afterGettingFrame(void* clientData, unsigned frameSize,
+  LIVE555_EXPORT
+  static void afterGettingFrame(void* clientData, unsigned frameSize,
                                 unsigned numTruncatedBytes,
                                 struct timeval presentationTime,
                                 unsigned durationInMicroseconds);
-  LIVE555_EXPORT void afterGettingFrame1(unsigned frameSize,
+  LIVE555_EXPORT
+  void afterGettingFrame1(unsigned frameSize,
                           unsigned numTruncatedBytes,
                           struct timeval presentationTime,
                           unsigned durationInMicroseconds);

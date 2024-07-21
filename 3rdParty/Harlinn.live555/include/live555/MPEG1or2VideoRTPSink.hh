@@ -14,7 +14,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 **********/
 // "liveMedia"
-// Copyright (c) 1996-2023 Live Networks, Inc.  All rights reserved.
+// Copyright (c) 1996-2024 Live Networks, Inc.  All rights reserved.
 // RTP sink for MPEG video (RFC 2250)
 // C++ header
 
@@ -27,27 +27,35 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class MPEG1or2VideoRTPSink: public VideoRTPSink {
 public:
-  LIVE555_EXPORT static MPEG1or2VideoRTPSink* createNew(UsageEnvironment& env, Groupsock* RTPgs);
+  LIVE555_EXPORT
+  static MPEG1or2VideoRTPSink* createNew(UsageEnvironment& env, Groupsock* RTPgs);
 
 protected:
-  LIVE555_EXPORT MPEG1or2VideoRTPSink(UsageEnvironment& env, Groupsock* RTPgs);
+  LIVE555_EXPORT
+  MPEG1or2VideoRTPSink(UsageEnvironment& env, Groupsock* RTPgs);
 	// called only by createNew()
 
-  LIVE555_EXPORT virtual ~MPEG1or2VideoRTPSink();
+  LIVE555_EXPORT
+  virtual ~MPEG1or2VideoRTPSink();
 
 private: // redefined virtual functions:
-  LIVE555_EXPORT virtual Boolean sourceIsCompatibleWithUs(MediaSource& source);
+  LIVE555_EXPORT
+  virtual Boolean sourceIsCompatibleWithUs(MediaSource& source);
 
-  LIVE555_EXPORT virtual void doSpecialFrameHandling(unsigned fragmentationOffset,
+  LIVE555_EXPORT
+  virtual void doSpecialFrameHandling(unsigned fragmentationOffset,
                                       unsigned char* frameStart,
                                       unsigned numBytesInFrame,
                                       struct timeval framePresentationTime,
                                       unsigned numRemainingBytes);
-  LIVE555_EXPORT virtual Boolean allowFragmentationAfterStart() const;
-  LIVE555_EXPORT virtual
+  LIVE555_EXPORT
+  virtual Boolean allowFragmentationAfterStart() const;
+  LIVE555_EXPORT
+  virtual
   Boolean frameCanAppearAfterPacketStart(unsigned char const* frameStart,
 					 unsigned numBytesInFrame) const;
-  LIVE555_EXPORT virtual unsigned specialHeaderSize() const;
+  LIVE555_EXPORT
+  virtual unsigned specialHeaderSize() const;
 
 private:
   // MPEG video-specific state, used to decide how to fill out the

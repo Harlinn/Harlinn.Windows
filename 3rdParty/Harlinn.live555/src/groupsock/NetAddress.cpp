@@ -14,7 +14,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 **********/
 // "groupsock"
-// Copyright (c) 1996-2023 Live Networks, Inc.  All rights reserved.
+// Copyright (c) 1996-2024 Live Networks, Inc.  All rights reserved.
 // Network Addresses
 // Implementation
 
@@ -78,6 +78,7 @@ void NetAddress::clean() {
 }
 
 static struct sockaddr_storage _nullIPv4Address, _nullIPv6Address;
+LIVE555_EXPORT
 struct sockaddr_storage const& nullAddress(int addressFamily) {
   switch (addressFamily) {
     case AF_INET: {
@@ -97,6 +98,7 @@ struct sockaddr_storage const& nullAddress(int addressFamily) {
   }
 }
 
+LIVE555_EXPORT
 Boolean addressIsNull(sockaddr_storage const& address) {
   switch (address.ss_family) {
     case AF_INET: {
@@ -114,6 +116,7 @@ Boolean addressIsNull(sockaddr_storage const& address) {
   }
 }
 
+LIVE555_EXPORT
 SOCKLEN_T addressSize(sockaddr_storage const& address) {
   switch (address.ss_family) {
     case AF_INET: {
@@ -128,6 +131,7 @@ SOCKLEN_T addressSize(sockaddr_storage const& address) {
   }
 }
 
+LIVE555_EXPORT
 void copyAddress(struct sockaddr_storage& to, NetAddress const* from) {
   if (from == NULL) return;
 
@@ -149,6 +153,7 @@ void copyAddress(struct sockaddr_storage& to, NetAddress const* from) {
   }
 }
 
+LIVE555_EXPORT
 Boolean operator==(struct sockaddr_storage const& left, struct sockaddr_storage const& right) {
   if (left.ss_family != right.ss_family) return False;
 
@@ -421,6 +426,7 @@ void* AddressPortLookupTable::Iterator::next() {
 
 ////////// IsMulticastAddress() implementation //////////
 
+LIVE555_EXPORT
 Boolean IsMulticastAddress(struct sockaddr_storage const& address) {
   switch (address.ss_family) {
     case AF_INET: {
@@ -496,6 +502,7 @@ AddressString::~AddressString() {
   delete[] fVal;
 }
 
+LIVE555_EXPORT
 portNumBits portNum(struct sockaddr_storage const& address) {
   switch (address.ss_family) {
     case AF_INET: {
@@ -510,6 +517,7 @@ portNumBits portNum(struct sockaddr_storage const& address) {
   }
 }
 
+LIVE555_EXPORT
 void setPortNum(struct sockaddr_storage& address, portNumBits portNum/*in network order*/) {
   ((sockaddr_in&)address).sin_port = portNum; // position will be the same for "sockaddr_in6"
 }

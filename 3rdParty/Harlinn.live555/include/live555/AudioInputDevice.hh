@@ -13,7 +13,7 @@ You should have received a copy of the GNU Lesser General Public License
 along with this library; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 **********/
-// Copyright (c) 1996-2023 Live Networks, Inc.  All rights reserved.
+// Copyright (c) 1996-2024 Live Networks, Inc.  All rights reserved.
 // Generic audio input device (such as a microphone, or an input sound card)
 // C++ header
 
@@ -26,8 +26,10 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class AudioPortNames {
 public:
-  LIVE555_EXPORT AudioPortNames();
-  LIVE555_EXPORT virtual ~AudioPortNames();
+  LIVE555_EXPORT
+  AudioPortNames();
+  LIVE555_EXPORT
+  virtual ~AudioPortNames();
 
   unsigned numPorts;
   char** portName;
@@ -42,25 +44,30 @@ public:
   virtual Boolean setInputPort(int portIndex) = 0;
   virtual double getAverageLevel() const = 0;
 
-  LIVE555_EXPORT static AudioInputDevice*
+  LIVE555_EXPORT
+  static AudioInputDevice*
   createNew(UsageEnvironment& env, int inputPortNumber,
 	    unsigned char bitsPerSample, unsigned char numChannels,
 	    unsigned samplingFrequency, unsigned granularityInMS = 20);
-  LIVE555_EXPORT static AudioPortNames* getPortNames();
 
-  LIVE555_EXPORT static char** allowedDeviceNames;
+  LIVE555_EXPORT
+  static AudioPortNames* getPortNames();
+
+  LIVE555_EXPORT
+  static char** allowedDeviceNames;
   // If this is set to non-NULL, then it's a NULL-terminated array of strings
   // of device names that we are allowed to access.
 
 protected:
-  LIVE555_EXPORT AudioInputDevice(UsageEnvironment& env,
+  LIVE555_EXPORT
+  AudioInputDevice(UsageEnvironment& env,
 		   unsigned char bitsPerSample,
 		   unsigned char numChannels,
 		   unsigned samplingFrequency,
 		   unsigned granularityInMS);
 	// we're an abstract base class
-
-  LIVE555_EXPORT virtual ~AudioInputDevice();
+  LIVE555_EXPORT
+  virtual ~AudioInputDevice();
 
 protected:
   unsigned char fBitsPerSample, fNumChannels;

@@ -14,7 +14,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 **********/
 // "liveMedia"
-// Copyright (c) 1996-2023 Live Networks, Inc.  All rights reserved.
+// Copyright (c) 1996-2024 Live Networks, Inc.  All rights reserved.
 // MP3 File Sources
 // C++ header
 
@@ -29,34 +29,46 @@ class MP3StreamState; // forward
 
 class MP3FileSource: public FramedFileSource {
 public:
-  LIVE555_EXPORT static MP3FileSource* createNew(UsageEnvironment& env, char const* fileName);
+  LIVE555_EXPORT 
+  static MP3FileSource* createNew(UsageEnvironment& env, char const* fileName);
 
-  LIVE555_EXPORT float filePlayTime() const;
-  LIVE555_EXPORT unsigned fileSize() const;
-  LIVE555_EXPORT void setPresentationTimeScale(unsigned scale);
-  LIVE555_EXPORT void seekWithinFile(double seekNPT, double streamDuration);
+  LIVE555_EXPORT
+  float filePlayTime() const;
+  LIVE555_EXPORT
+  unsigned fileSize() const;
+  LIVE555_EXPORT
+  void setPresentationTimeScale(unsigned scale);
+  LIVE555_EXPORT
+  void seekWithinFile(double seekNPT, double streamDuration);
       // if "streamDuration" is >0.0, then we limit the stream to that duration, before treating it as EOF
 
 protected:
-  LIVE555_EXPORT MP3FileSource(UsageEnvironment& env, FILE* fid);
+  LIVE555_EXPORT 
+  MP3FileSource(UsageEnvironment& env, FILE* fid);
 	// called only by createNew()
-
-  LIVE555_EXPORT virtual ~MP3FileSource();
+  LIVE555_EXPORT
+  virtual ~MP3FileSource();
 
 protected:
-  LIVE555_EXPORT void assignStream(FILE* fid, unsigned filesize);
-  LIVE555_EXPORT Boolean initializeStream();
+  LIVE555_EXPORT 
+  void assignStream(FILE* fid, unsigned filesize);
+  LIVE555_EXPORT
+  Boolean initializeStream();
 
   MP3StreamState* streamState() {return fStreamState;}
 
 private:
   // redefined virtual functions:
-  LIVE555_EXPORT virtual void doGetNextFrame();
-  LIVE555_EXPORT virtual char const* MIMEtype() const;
-  LIVE555_EXPORT virtual void getAttributes() const;
+  LIVE555_EXPORT 
+  virtual void doGetNextFrame();
+  LIVE555_EXPORT
+  virtual char const* MIMEtype() const;
+  LIVE555_EXPORT
+  virtual void getAttributes() const;
 
 private:
-  LIVE555_EXPORT static void fileReadableHandler(MP3FileSource* source, int mask);
+  LIVE555_EXPORT 
+  static void fileReadableHandler(MP3FileSource* source, int mask);
 
 private:
   MP3StreamState* fStreamState;

@@ -14,7 +14,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 **********/
 // "liveMedia"
-// Copyright (c) 1996-2023 Live Networks, Inc.  All rights reserved.
+// Copyright (c) 1996-2024 Live Networks, Inc.  All rights reserved.
 // RTP source for 'ADUized' MP3 frames ("mpa-robust")
 // C++ header
 
@@ -27,23 +27,27 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class MP3ADURTPSource: public MultiFramedRTPSource {
 public:
-  LIVE555_EXPORT static MP3ADURTPSource*
+  LIVE555_EXPORT 
+  static MP3ADURTPSource*
   createNew(UsageEnvironment& env, Groupsock* RTPgs,
 	    unsigned char rtpPayloadFormat,
 	    unsigned rtpTimestampFrequency = 90000);
 
 protected:
-  LIVE555_EXPORT virtual ~MP3ADURTPSource();
+  LIVE555_EXPORT 
+  virtual ~MP3ADURTPSource();
 
 private:
-  LIVE555_EXPORT MP3ADURTPSource(UsageEnvironment& env, Groupsock* RTPgs,
+  LIVE555_EXPORT 
+  MP3ADURTPSource(UsageEnvironment& env, Groupsock* RTPgs,
 		  unsigned char rtpPayloadFormat,
 		  unsigned rtpTimestampFrequency);
       // called only by createNew()
 
 private:
   // redefined virtual functions:
-  LIVE555_EXPORT virtual char const* MIMEtype() const;
+  LIVE555_EXPORT 
+  virtual char const* MIMEtype() const;
 };
 
 #endif

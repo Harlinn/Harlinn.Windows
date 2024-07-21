@@ -14,7 +14,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 **********/
 // "liveMedia"
-// Copyright (c) 1996-2023 Live Networks, Inc.  All rights reserved.// A filter that converts a MPEG Transport Stream file - with corresponding index file
+// Copyright (c) 1996-2024 Live Networks, Inc.  All rights reserved.// A filter that converts a MPEG Transport Stream file - with corresponding index file
 // - to a corresponding Video Elementary Stream.  It also uses a "scale" parameter
 // to implement 'trick mode' (fast forward or reverse play, using I-frames) on
 // the video stream.
@@ -37,11 +37,13 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class MPEG2TransportStreamTrickModeFilter: public FramedFilter {
 public:
-  LIVE555_EXPORT static MPEG2TransportStreamTrickModeFilter*
+  LIVE555_EXPORT 
+  static MPEG2TransportStreamTrickModeFilter*
   createNew(UsageEnvironment& env, FramedSource* inputSource,
 	    MPEG2TransportStreamIndexFile* indexFile, int scale);
 
-  LIVE555_EXPORT Boolean seekTo(unsigned long tsPacketNumber, unsigned long indexRecordNumber);
+  LIVE555_EXPORT
+  Boolean seekTo(unsigned long tsPacketNumber, unsigned long indexRecordNumber);
 
   unsigned long nextIndexRecordNum() const { return fNextIndexRecordNum; }
 
@@ -49,29 +51,40 @@ public:
       // this lets us delete this without also deleting the input Transport Stream
 
 protected:
-  LIVE555_EXPORT MPEG2TransportStreamTrickModeFilter(UsageEnvironment& env, FramedSource* inputSource,
+  LIVE555_EXPORT 
+  MPEG2TransportStreamTrickModeFilter(UsageEnvironment& env, FramedSource* inputSource,
 				      MPEG2TransportStreamIndexFile* indexFile, int scale);
       // called only by createNew()
-  LIVE555_EXPORT virtual ~MPEG2TransportStreamTrickModeFilter();
+  LIVE555_EXPORT
+  virtual ~MPEG2TransportStreamTrickModeFilter();
 
 private:
   // Redefined virtual functions:
-  LIVE555_EXPORT virtual void doGetNextFrame();
-  LIVE555_EXPORT virtual void doStopGettingFrames();
+  LIVE555_EXPORT 
+  virtual void doGetNextFrame();
+  LIVE555_EXPORT
+  virtual void doStopGettingFrames();
 
 private:
-  LIVE555_EXPORT void attemptDeliveryToClient();
-  LIVE555_EXPORT void seekToTransportPacket(unsigned long tsPacketNum);
-  LIVE555_EXPORT void readTransportPacket(unsigned long tsPacketNum); // asynchronously
+  LIVE555_EXPORT 
+  void attemptDeliveryToClient();
+  LIVE555_EXPORT
+  void seekToTransportPacket(unsigned long tsPacketNum);
+  LIVE555_EXPORT
+  void readTransportPacket(unsigned long tsPacketNum); // asynchronously
 
-  LIVE555_EXPORT static void afterGettingFrame(void* clientData, unsigned frameSize,
+  LIVE555_EXPORT
+  static void afterGettingFrame(void* clientData, unsigned frameSize,
 				unsigned numTruncatedBytes,
 				struct timeval presentationTime,
 				unsigned durationInMicroseconds);
-  LIVE555_EXPORT void afterGettingFrame1(unsigned frameSize);
+  LIVE555_EXPORT
+  void afterGettingFrame1(unsigned frameSize);
 
-  LIVE555_EXPORT static void onSourceClosure(void* clientData);
-  LIVE555_EXPORT void onSourceClosure1();
+  LIVE555_EXPORT
+  static void onSourceClosure(void* clientData);
+  LIVE555_EXPORT
+  void onSourceClosure1();
 
 private:
   Boolean fHaveStarted;

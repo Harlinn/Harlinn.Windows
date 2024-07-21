@@ -14,7 +14,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 **********/
 // "liveMedia"
-// Copyright (c) 1996-2023 Live Networks, Inc.  All rights reserved.
+// Copyright (c) 1996-2024 Live Networks, Inc.  All rights reserved.
 // A simplified version of "MPEG1or2VideoStreamFramer" that takes only
 // complete, discrete frames (rather than an arbitrary byte stream) as input.
 // This avoids the parsing and data copying overhead of the full
@@ -32,29 +32,35 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class MPEG1or2VideoStreamDiscreteFramer: public MPEG1or2VideoStreamFramer {
 public:
-  LIVE555_EXPORT static MPEG1or2VideoStreamDiscreteFramer*
+  LIVE555_EXPORT
+  static MPEG1or2VideoStreamDiscreteFramer*
   createNew(UsageEnvironment& env, FramedSource* inputSource,
             Boolean iFramesOnly = False, // see MPEG1or2VideoStreamFramer.hh
             double vshPeriod = 5.0, // see MPEG1or2VideoStreamFramer.hh
 	    Boolean leavePresentationTimesUnmodified = False);
 
 protected:
-  LIVE555_EXPORT MPEG1or2VideoStreamDiscreteFramer(UsageEnvironment& env,
+  LIVE555_EXPORT
+  MPEG1or2VideoStreamDiscreteFramer(UsageEnvironment& env,
                                     FramedSource* inputSource,
                                     Boolean iFramesOnly, double vshPeriod, Boolean leavePresentationTimesUnmodified);
   // called only by createNew()
-  LIVE555_EXPORT virtual ~MPEG1or2VideoStreamDiscreteFramer();
+  LIVE555_EXPORT
+  virtual ~MPEG1or2VideoStreamDiscreteFramer();
 
 protected:
   // redefined virtual functions:
-  LIVE555_EXPORT virtual void doGetNextFrame();
+  LIVE555_EXPORT
+  virtual void doGetNextFrame();
 
 protected:
-  LIVE555_EXPORT static void afterGettingFrame(void* clientData, unsigned frameSize,
+  LIVE555_EXPORT
+  static void afterGettingFrame(void* clientData, unsigned frameSize,
                                 unsigned numTruncatedBytes,
                                 struct timeval presentationTime,
                                 unsigned durationInMicroseconds);
-  LIVE555_EXPORT void afterGettingFrame1(unsigned frameSize,
+  LIVE555_EXPORT
+  void afterGettingFrame1(unsigned frameSize,
                           unsigned numTruncatedBytes,
                           struct timeval presentationTime,
                           unsigned durationInMicroseconds);

@@ -14,7 +14,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 **********/
 // "liveMedia"
-// Copyright (c) 1996-2023 Live Networks, Inc.  All rights reserved.
+// Copyright (c) 1996-2024 Live Networks, Inc.  All rights reserved.
 // A 'ServerMediaSubsession' object that creates new, unicast, "RTPSink"s
 // on demand, from an incoming UDP (or RTP/UDP) MPEG-2 Transport Stream
 // C++ header
@@ -28,21 +28,26 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class MPEG2TransportUDPServerMediaSubsession: public OnDemandServerMediaSubsession {
 public:
-  LIVE555_EXPORT static MPEG2TransportUDPServerMediaSubsession*
+  LIVE555_EXPORT 
+  static MPEG2TransportUDPServerMediaSubsession*
   createNew(UsageEnvironment& env,
 	    char const* inputAddressStr, // An IP multicast address, or use "0.0.0.0" or NULL for unicast input
 	    Port const& inputPort,
 	    Boolean inputStreamIsRawUDP = False); // otherwise (default) the input stream is RTP/UDP
 protected:
-  LIVE555_EXPORT MPEG2TransportUDPServerMediaSubsession(UsageEnvironment& env,
+  LIVE555_EXPORT 
+  MPEG2TransportUDPServerMediaSubsession(UsageEnvironment& env,
 					 char const* inputAddressStr, Port const& inputPort, Boolean inputStreamIsRawUDP);
       // called only by createNew();
-  LIVE555_EXPORT virtual ~MPEG2TransportUDPServerMediaSubsession();
+  LIVE555_EXPORT
+  virtual ~MPEG2TransportUDPServerMediaSubsession();
 
 protected: // redefined virtual functions
-  LIVE555_EXPORT virtual FramedSource* createNewStreamSource(unsigned clientSessionId,
+  LIVE555_EXPORT 
+  virtual FramedSource* createNewStreamSource(unsigned clientSessionId,
 					      unsigned& estBitrate);
-  LIVE555_EXPORT virtual RTPSink* createNewRTPSink(Groupsock* rtpGroupsock,
+  LIVE555_EXPORT
+  virtual RTPSink* createNewRTPSink(Groupsock* rtpGroupsock,
 				    unsigned char rtpPayloadTypeIfDynamic,
 				    FramedSource* inputSource);
 protected:

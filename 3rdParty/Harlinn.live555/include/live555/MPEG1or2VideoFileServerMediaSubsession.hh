@@ -14,7 +14,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 **********/
 // "liveMedia"
-// Copyright (c) 1996-2023 Live Networks, Inc.  All rights reserved.
+// Copyright (c) 1996-2024 Live Networks, Inc.  All rights reserved.
 // A 'ServerMediaSubsession' object that creates new, unicast, "RTPSink"s
 // on demand, from a MPEG-1 or 2 Elementary Stream video file.
 // C++ header
@@ -28,7 +28,8 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class MPEG1or2VideoFileServerMediaSubsession: public FileServerMediaSubsession{
 public:
-  LIVE555_EXPORT static MPEG1or2VideoFileServerMediaSubsession*
+  LIVE555_EXPORT
+  static MPEG1or2VideoFileServerMediaSubsession*
   createNew(UsageEnvironment& env, char const* fileName, Boolean reuseFirstSource,
 	    Boolean iFramesOnly = False,
 	    double vshPeriod = 5.0
@@ -36,18 +37,22 @@ public:
 	       if one doesn't already appear in the stream */);
 
 private:
-  LIVE555_EXPORT MPEG1or2VideoFileServerMediaSubsession(UsageEnvironment& env,
+  LIVE555_EXPORT
+  MPEG1or2VideoFileServerMediaSubsession(UsageEnvironment& env,
 					 char const* fileName,
 					 Boolean reuseFirstSource,
 					 Boolean iFramesOnly,
 					 double vshPeriod);
       // called only by createNew();
-  LIVE555_EXPORT virtual ~MPEG1or2VideoFileServerMediaSubsession();
+  LIVE555_EXPORT
+  virtual ~MPEG1or2VideoFileServerMediaSubsession();
 
 private: // redefined virtual functions
-  LIVE555_EXPORT virtual FramedSource* createNewStreamSource(unsigned clientSessionId,
+  LIVE555_EXPORT
+  virtual FramedSource* createNewStreamSource(unsigned clientSessionId,
 					      unsigned& estBitrate);
-  LIVE555_EXPORT virtual RTPSink* createNewRTPSink(Groupsock* rtpGroupsock,
+  LIVE555_EXPORT
+  virtual RTPSink* createNewRTPSink(Groupsock* rtpGroupsock,
                                     unsigned char rtpPayloadTypeIfDynamic,
 				    FramedSource* inputSource);
 

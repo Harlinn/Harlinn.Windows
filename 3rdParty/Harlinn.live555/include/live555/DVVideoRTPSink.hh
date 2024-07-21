@@ -14,7 +14,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 **********/
 // "liveMedia"
-// Copyright (c) 1996-2023 Live Networks, Inc.  All rights reserved.
+// Copyright (c) 1996-2024 Live Networks, Inc.  All rights reserved.
 // RTP sink for DV video (RFC 3189)
 // (Thanks to Ben Hutchings for prototyping this.)
 // C++ header
@@ -31,24 +31,32 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class DVVideoRTPSink: public VideoRTPSink {
 public:
-  LIVE555_EXPORT static DVVideoRTPSink* createNew(UsageEnvironment& env, Groupsock* RTPgs, unsigned char rtpPayloadFormat);
-  LIVE555_EXPORT char const* auxSDPLineFromFramer(DVVideoStreamFramer* framerSource);
+  LIVE555_EXPORT 
+  static DVVideoRTPSink* createNew(UsageEnvironment& env, Groupsock* RTPgs, unsigned char rtpPayloadFormat);
+  LIVE555_EXPORT
+  char const* auxSDPLineFromFramer(DVVideoStreamFramer* framerSource);
 
 protected:
-  LIVE555_EXPORT DVVideoRTPSink(UsageEnvironment& env, Groupsock* RTPgs, unsigned char rtpPayloadFormat);
+  LIVE555_EXPORT 
+  DVVideoRTPSink(UsageEnvironment& env, Groupsock* RTPgs, unsigned char rtpPayloadFormat);
 	// called only by createNew()
 
-  LIVE555_EXPORT virtual ~DVVideoRTPSink();
+  LIVE555_EXPORT
+  virtual ~DVVideoRTPSink();
 
 private: // redefined virtual functions:
-  LIVE555_EXPORT virtual Boolean sourceIsCompatibleWithUs(MediaSource& source);
-  LIVE555_EXPORT virtual void doSpecialFrameHandling(unsigned fragmentationOffset,
+  LIVE555_EXPORT 
+  virtual Boolean sourceIsCompatibleWithUs(MediaSource& source);
+  LIVE555_EXPORT
+  virtual void doSpecialFrameHandling(unsigned fragmentationOffset,
                                       unsigned char* frameStart,
                                       unsigned numBytesInFrame,
                                       struct timeval framePresentationTime,
                                       unsigned numRemainingBytes);
-  LIVE555_EXPORT virtual unsigned computeOverflowForNewFrame(unsigned newFrameSize) const;
-  LIVE555_EXPORT virtual char const* auxSDPLine();
+  LIVE555_EXPORT
+  virtual unsigned computeOverflowForNewFrame(unsigned newFrameSize) const;
+  LIVE555_EXPORT
+  virtual char const* auxSDPLine();
 
 private:
   char* fFmtpSDPLine;

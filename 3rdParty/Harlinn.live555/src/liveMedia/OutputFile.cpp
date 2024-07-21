@@ -14,7 +14,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 **********/
 // "liveMedia"
-// Copyright (c) 1996-2023 Live Networks, Inc.  All rights reserved.
+// Copyright (c) 1996-2024 Live Networks, Inc.  All rights reserved.
 // Common routines for opening/closing named output files
 // Implementation
 
@@ -29,6 +29,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 #include "OutputFile.hh"
 
+LIVE555_EXPORT
 FILE* OpenOutputFile(UsageEnvironment& env, char const* fileName) {
   FILE* fid;
 
@@ -54,6 +55,7 @@ FILE* OpenOutputFile(UsageEnvironment& env, char const* fileName) {
   return fid;
 }
 
+LIVE555_EXPORT
 void CloseOutputFile(FILE* fid) {
   // Don't close 'stdout' or 'stderr', in case we want to use it again later.
   if (fid != NULL && fid != stdout && fid != stderr) fclose(fid);

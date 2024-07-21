@@ -14,7 +14,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 **********/
 // "liveMedia"
-// Copyright (c) 1996-2023 Live Networks, Inc.  All rights reserved.
+// Copyright (c) 1996-2024 Live Networks, Inc.  All rights reserved.
 // A source object for AMR audio sources
 // C++ header
 
@@ -34,14 +34,18 @@ public:
   // The frame header for the most recently read frame (RFC 4867, sec. 5.3)
 
 protected:
-  LIVE555_EXPORT AMRAudioSource(UsageEnvironment& env, Boolean isWideband, unsigned numChannels);
+  LIVE555_EXPORT
+  AMRAudioSource(UsageEnvironment& env, Boolean isWideband, unsigned numChannels);
 	// virtual base class
-  LIVE555_EXPORT virtual ~AMRAudioSource();
+  LIVE555_EXPORT
+  virtual ~AMRAudioSource();
 
 private:
   // redefined virtual functions:
-  LIVE555_EXPORT virtual char const* MIMEtype() const;
-  LIVE555_EXPORT virtual Boolean isAMRAudioSource() const;
+  LIVE555_EXPORT
+  virtual char const* MIMEtype() const;
+  LIVE555_EXPORT
+  virtual Boolean isAMRAudioSource() const;
 
 protected:
   Boolean fIsWideband;

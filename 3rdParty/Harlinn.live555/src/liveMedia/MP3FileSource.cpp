@@ -14,7 +14,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 **********/
 // "liveMedia"
-// Copyright (c) 1996-2023 Live Networks, Inc.  All rights reserved.
+// Copyright (c) 1996-2024 Live Networks, Inc.  All rights reserved.
 // MP3 File Sources
 // Implementation
 
@@ -60,7 +60,7 @@ MP3FileSource::MP3FileSource(UsageEnvironment& env, FILE* fid)
 }
 
 MP3FileSource::~MP3FileSource() {
-  if (fFid != NULL) envir().taskScheduler().turnOffBackgroundReadHandling(_fileno(fFid));
+  if (fFid != NULL) envir().taskScheduler().turnOffBackgroundReadHandling(fileno(fFid));
 
   delete fStreamState; // closes the input file
 }
@@ -125,7 +125,7 @@ void MP3FileSource::doGetNextFrame() {
 
   if (!fHaveStartedReading) {
     // Await readable data from the file:
-    envir().taskScheduler().turnOnBackgroundReadHandling(_fileno(fFid),
+    envir().taskScheduler().turnOnBackgroundReadHandling(fileno(fFid),
 		 (TaskScheduler::BackgroundHandlerProc*)&fileReadableHandler, this);
     fHaveStartedReading = True;
     return;

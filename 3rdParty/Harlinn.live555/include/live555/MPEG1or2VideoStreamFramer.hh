@@ -14,7 +14,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 **********/
 // "liveMedia"
-// Copyright (c) 1996-2023 Live Networks, Inc.  All rights reserved.
+// Copyright (c) 1996-2024 Live Networks, Inc.  All rights reserved.
 // A filter that breaks up an MPEG 1 or 2 video elementary stream into
 //   frames for: Video_Sequence_Header, GOP_Header, Picture_Header
 // C++ header
@@ -28,7 +28,8 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class MPEG1or2VideoStreamFramer: public MPEGVideoStreamFramer {
 public:
-  LIVE555_EXPORT static MPEG1or2VideoStreamFramer*
+  LIVE555_EXPORT
+  static MPEG1or2VideoStreamFramer*
       createNew(UsageEnvironment& env, FramedSource* inputSource,
 		Boolean iFramesOnly = False,
 		double vshPeriod = 5.0
@@ -36,19 +37,23 @@ public:
 		   if one doesn't already appear in the stream */);
 
 protected:
-  LIVE555_EXPORT MPEG1or2VideoStreamFramer(UsageEnvironment& env,
+  LIVE555_EXPORT
+  MPEG1or2VideoStreamFramer(UsageEnvironment& env,
 			    FramedSource* inputSource,
 			    Boolean iFramesOnly, double vshPeriod,
 			    Boolean createParser = True);
       // called only by createNew(), or by subclass constructors
-  LIVE555_EXPORT virtual ~MPEG1or2VideoStreamFramer();
+  LIVE555_EXPORT
+  virtual ~MPEG1or2VideoStreamFramer();
 
 private:
   // redefined virtual functions:
-  LIVE555_EXPORT virtual Boolean isMPEG1or2VideoStreamFramer() const;
+  LIVE555_EXPORT
+  virtual Boolean isMPEG1or2VideoStreamFramer() const;
 
 private:
-  LIVE555_EXPORT double getCurrentPTS() const;
+  LIVE555_EXPORT
+  double getCurrentPTS() const;
 
   friend class MPEG1or2VideoStreamParser; // hack
 };

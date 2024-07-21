@@ -14,7 +14,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 **********/
 // "liveMedia"
-// Copyright (c) 1996-2023 Live Networks, Inc.  All rights reserved.
+// Copyright (c) 1996-2024 Live Networks, Inc.  All rights reserved.
 // Media Sources
 // C++ header
 
@@ -27,33 +27,49 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class MediaSource: public Medium {
 public:
-  LIVE555_EXPORT static Boolean lookupByName(UsageEnvironment& env, char const* sourceName,
+  LIVE555_EXPORT 
+  static Boolean lookupByName(UsageEnvironment& env, char const* sourceName,
 			      MediaSource*& resultSource);
-  LIVE555_EXPORT virtual void getAttributes() const;
+  LIVE555_EXPORT
+  virtual void getAttributes() const;
       // attributes are returned in "env's" 'result message'
 
   // The MIME type of this source:
-  LIVE555_EXPORT virtual char const* MIMEtype() const;
+  LIVE555_EXPORT
+  virtual char const* MIMEtype() const;
 
   // Test for specific types of source:
-  LIVE555_EXPORT virtual Boolean isFramedSource() const;
-  LIVE555_EXPORT virtual Boolean isRTPSource() const;
-  LIVE555_EXPORT virtual Boolean isMPEG1or2VideoStreamFramer() const;
-  LIVE555_EXPORT virtual Boolean isMPEG4VideoStreamFramer() const;
-  LIVE555_EXPORT virtual Boolean isH264VideoStreamFramer() const;
-  LIVE555_EXPORT virtual Boolean isH265VideoStreamFramer() const;
-  LIVE555_EXPORT virtual Boolean isDVVideoStreamFramer() const;
-  LIVE555_EXPORT virtual Boolean isJPEGVideoSource() const;
-  LIVE555_EXPORT virtual Boolean isAMRAudioSource() const;
-  LIVE555_EXPORT virtual Boolean isMPEG2TransportStreamMultiplexor() const;
+  LIVE555_EXPORT
+  virtual Boolean isFramedSource() const;
+  LIVE555_EXPORT
+  virtual Boolean isRTPSource() const;
+  LIVE555_EXPORT
+  virtual Boolean isMPEG1or2VideoStreamFramer() const;
+  LIVE555_EXPORT
+  virtual Boolean isMPEG4VideoStreamFramer() const;
+  LIVE555_EXPORT
+  virtual Boolean isH264VideoStreamFramer() const;
+  LIVE555_EXPORT
+  virtual Boolean isH265VideoStreamFramer() const;
+  LIVE555_EXPORT
+  virtual Boolean isDVVideoStreamFramer() const;
+  LIVE555_EXPORT
+  virtual Boolean isJPEGVideoSource() const;
+  LIVE555_EXPORT
+  virtual Boolean isAMRAudioSource() const;
+  LIVE555_EXPORT
+  virtual Boolean isMPEG2TransportStreamMultiplexor() const;
 
 protected:
-  LIVE555_EXPORT MediaSource(UsageEnvironment& env); // abstract base class
-  LIVE555_EXPORT virtual ~MediaSource();
+  LIVE555_EXPORT 
+  MediaSource(UsageEnvironment& env); // abstract base class
+  LIVE555_EXPORT
+  virtual ~MediaSource();
 
 private:
   // redefined virtual functions:
-  LIVE555_EXPORT virtual Boolean isSource() const;
+  LIVE555_EXPORT 
+  virtual Boolean isSource() const;
 };
 
 #endif

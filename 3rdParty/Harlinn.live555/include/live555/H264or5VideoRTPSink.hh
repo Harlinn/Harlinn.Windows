@@ -14,7 +14,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 **********/
 // "liveMedia"
-// Copyright (c) 1996-2023 Live Networks, Inc.  All rights reserved.
+// Copyright (c) 1996-2024 Live Networks, Inc.  All rights reserved.
 // RTP sink for H.264 or H.265 video
 // C++ header
 
@@ -30,22 +30,27 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class H264or5VideoRTPSink: public VideoRTPSink {
 protected:
-  LIVE555_EXPORT H264or5VideoRTPSink(int hNumber, // 264 or 265
+  LIVE555_EXPORT 
+  H264or5VideoRTPSink(int hNumber, // 264 or 265
 		      UsageEnvironment& env, Groupsock* RTPgs, unsigned char rtpPayloadFormat,
 		      u_int8_t const* vps = NULL, unsigned vpsSize = 0,
 		      u_int8_t const* sps = NULL, unsigned spsSize = 0,
 		      u_int8_t const* pps = NULL, unsigned ppsSize = 0);
 	// we're an abstrace base class
-  LIVE555_EXPORT virtual ~H264or5VideoRTPSink();
+  LIVE555_EXPORT
+  virtual ~H264or5VideoRTPSink();
 
 private: // redefined virtual functions:
-  LIVE555_EXPORT virtual Boolean continuePlaying();
-  LIVE555_EXPORT virtual void doSpecialFrameHandling(unsigned fragmentationOffset,
+  LIVE555_EXPORT 
+  virtual Boolean continuePlaying();
+  LIVE555_EXPORT
+  virtual void doSpecialFrameHandling(unsigned fragmentationOffset,
                                       unsigned char* frameStart,
                                       unsigned numBytesInFrame,
                                       struct timeval framePresentationTime,
                                       unsigned numRemainingBytes);
-  LIVE555_EXPORT virtual Boolean frameCanAppearAfterPacketStart(unsigned char const* frameStart,
+  LIVE555_EXPORT
+  virtual Boolean frameCanAppearAfterPacketStart(unsigned char const* frameStart,
 						 unsigned numBytesInFrame) const;
 
 protected:

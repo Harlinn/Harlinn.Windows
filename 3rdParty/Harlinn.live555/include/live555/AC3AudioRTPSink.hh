@@ -14,7 +14,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 **********/
 // "liveMedia"
-// Copyright (c) 1996-2023 Live Networks, Inc.  All rights reserved.
+// Copyright (c) 1996-2024 Live Networks, Inc.  All rights reserved.
 // RTP sink for AC3 audio
 // C++ header
 
@@ -27,28 +27,33 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class AC3AudioRTPSink: public AudioRTPSink {
 public:
-  LIVE555_EXPORT static AC3AudioRTPSink* createNew(UsageEnvironment& env,
+  LIVE555_EXPORT 
+  static AC3AudioRTPSink* createNew(UsageEnvironment& env,
 				    Groupsock* RTPgs,
 				    u_int8_t rtpPayloadFormat,
 				    u_int32_t rtpTimestampFrequency);
 
 protected:
-  LIVE555_EXPORT AC3AudioRTPSink(UsageEnvironment& env, Groupsock* RTPgs,
+  LIVE555_EXPORT
+  AC3AudioRTPSink(UsageEnvironment& env, Groupsock* RTPgs,
 		  u_int8_t rtpPayloadFormat,
 		  u_int32_t rtpTimestampFrequency);
 	// called only by createNew()
-
-  LIVE555_EXPORT virtual ~AC3AudioRTPSink();
+  LIVE555_EXPORT
+  virtual ~AC3AudioRTPSink();
 
 private: // redefined virtual functions:
-  LIVE555_EXPORT virtual Boolean frameCanAppearAfterPacketStart(unsigned char const* frameStart,
+  LIVE555_EXPORT 
+  virtual Boolean frameCanAppearAfterPacketStart(unsigned char const* frameStart,
 						 unsigned numBytesInFrame) const;
-  LIVE555_EXPORT virtual void doSpecialFrameHandling(unsigned fragmentationOffset,
+  LIVE555_EXPORT
+  virtual void doSpecialFrameHandling(unsigned fragmentationOffset,
                                       unsigned char* frameStart,
                                       unsigned numBytesInFrame,
                                       struct timeval framePresentationTime,
                                       unsigned numRemainingBytes);
-  LIVE555_EXPORT virtual unsigned specialHeaderSize() const;
+  LIVE555_EXPORT
+  virtual unsigned specialHeaderSize() const;
 
 private:
   unsigned char fTotNumFragmentsUsed; // used only if a frame gets fragmented across multiple packets

@@ -14,7 +14,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 **********/
 // "liveMedia"
-// Copyright (c) 1996-2023 Live Networks, Inc.  All rights reserved.
+// Copyright (c) 1996-2024 Live Networks, Inc.  All rights reserved.
 // MPEG-4 audio, using LATM multiplexing
 // Implementation
 
@@ -161,6 +161,7 @@ static Boolean getByte(char const*& configStr, unsigned char& resultByte) {
   return True;
 }
 
+LIVE555_EXPORT
 Boolean
 parseStreamMuxConfigStr(char const* configStr,
                         // result parameters:
@@ -220,6 +221,7 @@ parseStreamMuxConfigStr(char const* configStr,
   return False; // parsing failed
 }
 
+LIVE555_EXPORT
 unsigned char* parseStreamMuxConfigStr(char const* configStr,
 				       // result parameter:
 				       unsigned& audioSpecificConfigSize) {
@@ -238,6 +240,7 @@ unsigned char* parseStreamMuxConfigStr(char const* configStr,
   return audioSpecificConfig;
 }
 
+LIVE555_EXPORT
 unsigned char* parseGeneralConfigStr(char const* configStr,
 				     // result parameter:
 				     unsigned& configSize) {

@@ -14,7 +14,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 **********/
 // "liveMedia"
-// Copyright (c) 1996-2023 Live Networks, Inc.  All rights reserved.
+// Copyright (c) 1996-2024 Live Networks, Inc.  All rights reserved.
 // A sink that generates an AVI file from a composite media session
 // C++ header
 
@@ -27,7 +27,8 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class AVIFileSink: public Medium {
 public:
-  LIVE555_EXPORT static AVIFileSink* createNew(UsageEnvironment& env,
+  LIVE555_EXPORT
+  static AVIFileSink* createNew(UsageEnvironment& env,
 				MediaSession& inputSession,
 				char const* outputFileName,
 				unsigned bufferSize = 20000,
@@ -37,29 +38,39 @@ public:
 				Boolean packetLossCompensate = False);
 
   typedef void (afterPlayingFunc)(void* clientData);
-  LIVE555_EXPORT Boolean startPlaying(afterPlayingFunc* afterFunc,
+  LIVE555_EXPORT
+  Boolean startPlaying(afterPlayingFunc* afterFunc,
                        void* afterClientData);
 
   unsigned numActiveSubsessions() const { return fNumSubsessions; }
 
 private:
-  LIVE555_EXPORT AVIFileSink(UsageEnvironment& env, MediaSession& inputSession,
+  LIVE555_EXPORT
+  AVIFileSink(UsageEnvironment& env, MediaSession& inputSession,
 	      char const* outputFileName, unsigned bufferSize,
 	      unsigned short movieWidth, unsigned short movieHeight,
 	      unsigned movieFPS, Boolean packetLossCompensate);
       // called only by createNew()
-  LIVE555_EXPORT virtual ~AVIFileSink();
+  LIVE555_EXPORT
+  virtual ~AVIFileSink();
 
-  LIVE555_EXPORT Boolean continuePlaying();
-  LIVE555_EXPORT static void afterGettingFrame(void* clientData, unsigned frameSize,
+  LIVE555_EXPORT
+  Boolean continuePlaying();
+  LIVE555_EXPORT
+  static void afterGettingFrame(void* clientData, unsigned frameSize,
 				unsigned numTruncatedBytes,
 				struct timeval presentationTime,
 				unsigned durationInMicroseconds);
-  LIVE555_EXPORT static void onSourceClosure(void* clientData);
-  LIVE555_EXPORT void onSourceClosure1();
-  LIVE555_EXPORT static void onRTCPBye(void* clientData);
-  LIVE555_EXPORT void addIndexRecord(class AVIIndexRecord* newIndexRecord);
-  LIVE555_EXPORT void completeOutputFile();
+  LIVE555_EXPORT
+  static void onSourceClosure(void* clientData);
+  LIVE555_EXPORT
+  void onSourceClosure1();
+  LIVE555_EXPORT
+  static void onRTCPBye(void* clientData);
+  LIVE555_EXPORT
+  void addIndexRecord(class AVIIndexRecord* newIndexRecord);
+  LIVE555_EXPORT
+  void completeOutputFile();
 
 private:
   friend class AVISubsessionIOState;
@@ -79,15 +90,19 @@ private:
 
 private:
   ///// Definitions specific to the AVI file format:
-
+  LIVE555_EXPORT
   unsigned addWord(unsigned word); // outputs "word" in little-endian order
+  LIVE555_EXPORT
   unsigned addHalfWord(unsigned short halfWord);
   unsigned addByte(unsigned char byte) {
     putc(byte, fOutFid);
     return 1;
   }
+  LIVE555_EXPORT
   unsigned addZeroWords(unsigned numWords);
+  LIVE555_EXPORT
   unsigned add4ByteString(char const* str);
+  LIVE555_EXPORT
   void setWord(unsigned filePosn, unsigned size);
 
   // Define member functions for outputting various types of file header:

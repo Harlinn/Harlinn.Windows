@@ -14,7 +14,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 **********/
 // "multikit" Multicast Application Shell
-// Copyright (c) 1996-2023, Live Networks, Inc.  All rights reserved
+// Copyright (c) 1996-2024, Live Networks, Inc.  All rights reserved
 // "Group Endpoint Id"
 // C++ header
 
@@ -31,26 +31,32 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class GroupEId {
 public:
-  LIVE555_EXPORT GroupEId(struct sockaddr_storage const& groupAddr,
+  LIVE555_EXPORT 
+  GroupEId(struct sockaddr_storage const& groupAddr,
 	   portNumBits portNum, u_int8_t ttl);
       // used for a 'source-independent multicast' group
-  LIVE555_EXPORT GroupEId(struct sockaddr_storage const& groupAddr,
+  LIVE555_EXPORT
+  GroupEId(struct sockaddr_storage const& groupAddr,
 	   struct sockaddr_storage const& sourceFilterAddr,
 	   portNumBits portNum);
       // used for a 'source-specific multicast' group
-  LIVE555_EXPORT GroupEId(); // tmp default constructor, until "Groupsock" interface uses "sockaddr_storage"
+  LIVE555_EXPORT
+  GroupEId(); // tmp default constructor, until "Groupsock" interface uses "sockaddr_storage"
 
   struct sockaddr_storage const& groupAddress() const { return fGroupAddress; }
   struct sockaddr_storage const& sourceFilterAddress() const { return fSourceFilterAddress; }
 
-  LIVE555_EXPORT Boolean isSSM() const;
+  LIVE555_EXPORT
+  Boolean isSSM() const;
 
-  LIVE555_EXPORT portNumBits portNum() const;
+  LIVE555_EXPORT
+  portNumBits portNum() const;
 
   u_int8_t ttl() const { return fTTL; }
 
 private:
-	LIVE555_EXPORT void init(struct sockaddr_storage const& groupAddr,
+  LIVE555_EXPORT 
+  void init(struct sockaddr_storage const& groupAddr,
 	    struct sockaddr_storage const& sourceFilterAddr,
 	    portNumBits portNum,
 	    u_int8_t ttl);

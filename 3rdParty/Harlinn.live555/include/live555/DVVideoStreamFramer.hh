@@ -14,7 +14,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 **********/
 // "liveMedia"
-// Copyright (c) 1996-2023 Live Networks, Inc.  All rights reserved.
+// Copyright (c) 1996-2024 Live Networks, Inc.  All rights reserved.
 // A filter that parses a DV input stream into DV frames to deliver to the downstream object
 // C++ header
 
@@ -32,33 +32,44 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class DVVideoStreamFramer: public FramedFilter {
 public:
-  LIVE555_EXPORT static DVVideoStreamFramer*
+  LIVE555_EXPORT 
+  static DVVideoStreamFramer*
   createNew(UsageEnvironment& env, FramedSource* inputSource,
 	    Boolean sourceIsSeekable = False, Boolean leavePresentationTimesUnmodified = False);
       // Set "sourceIsSeekable" to True if the input source is a seekable object (e.g. a file), and the server that uses us
       // does a seek-to-zero on the source before reading from it.  (Our RTSP server implementation does this.)
-  LIVE555_EXPORT char const* profileName();
-  LIVE555_EXPORT Boolean getFrameParameters(unsigned& frameSize/*bytes*/, double& frameDuration/*microseconds*/);
+  LIVE555_EXPORT
+  char const* profileName();
+  LIVE555_EXPORT
+  Boolean getFrameParameters(unsigned& frameSize/*bytes*/, double& frameDuration/*microseconds*/);
 
 protected:
-  LIVE555_EXPORT DVVideoStreamFramer(UsageEnvironment& env, FramedSource* inputSource,
+  LIVE555_EXPORT 
+  DVVideoStreamFramer(UsageEnvironment& env, FramedSource* inputSource,
 		      Boolean sourceIsSeekable, Boolean leavePresentationTimesUnmodified);
       // called only by createNew(), or by subclass constructors
-  LIVE555_EXPORT virtual ~DVVideoStreamFramer();
+  LIVE555_EXPORT
+  virtual ~DVVideoStreamFramer();
 
 protected:
   // redefined virtual functions:
-  LIVE555_EXPORT virtual Boolean isDVVideoStreamFramer() const;
-  LIVE555_EXPORT virtual void doGetNextFrame();
+  LIVE555_EXPORT 
+  virtual Boolean isDVVideoStreamFramer() const;
+  LIVE555_EXPORT
+  virtual void doGetNextFrame();
 
 protected:
-  LIVE555_EXPORT void getAndDeliverData(); // used to implement "doGetNextFrame()"
-  LIVE555_EXPORT static void afterGettingFrame(void* clientData, unsigned frameSize,
+  LIVE555_EXPORT 
+  void getAndDeliverData(); // used to implement "doGetNextFrame()"
+  LIVE555_EXPORT
+  static void afterGettingFrame(void* clientData, unsigned frameSize,
                                 unsigned numTruncatedBytes,
                                 struct timeval presentationTime,
                                 unsigned durationInMicroseconds);
-  LIVE555_EXPORT void afterGettingFrame(unsigned frameSize, unsigned numTruncatedBytes, struct timeval presentationTime);
-  LIVE555_EXPORT void getProfile();
+  LIVE555_EXPORT
+  void afterGettingFrame(unsigned frameSize, unsigned numTruncatedBytes, struct timeval presentationTime);
+  LIVE555_EXPORT
+  void getProfile();
 
 protected:
   Boolean fLeavePresentationTimesUnmodified;

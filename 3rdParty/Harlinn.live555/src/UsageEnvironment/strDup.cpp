@@ -13,13 +13,14 @@ You should have received a copy of the GNU Lesser General Public License
 along with this library; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 **********/
-// Copyright (c) 1996-2023 Live Networks, Inc.  All rights reserved.
+// Copyright (c) 1996-2024 Live Networks, Inc.  All rights reserved.
 // A C++ equivalent to the standard C routine "strdup()".
 // This generates a char* that can be deleted using "delete[]"
 // Implementation
 
 #include "strDup.hh"
 
+LIVE555_EXPORT
 char* strDup(char const* str) {
   if (str == NULL) return NULL;
   size_t len = strlen(str) + 1;
@@ -31,12 +32,14 @@ char* strDup(char const* str) {
   return copy;
 }
 
+LIVE555_EXPORT
 char* strDupSize(char const* str) {
   size_t dummy;
 
   return strDupSize(str, dummy);
 }
 
+LIVE555_EXPORT
 char* strDupSize(char const* str, size_t& resultBufSize) {
   if (str == NULL) {
     resultBufSize = 0;

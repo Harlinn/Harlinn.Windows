@@ -14,7 +14,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 **********/
 // "liveMedia"
-// Copyright (c) 1996-2023 Live Networks, Inc.  All rights reserved.
+// Copyright (c) 1996-2024 Live Networks, Inc.  All rights reserved.
 // A generic RTP sink for audio codecs (abstract base class)
 // C++ header
 
@@ -27,16 +27,19 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class AudioRTPSink: public MultiFramedRTPSink {
 protected:
-  LIVE555_EXPORT AudioRTPSink(UsageEnvironment& env,
+  LIVE555_EXPORT
+  AudioRTPSink(UsageEnvironment& env,
 	       Groupsock* rtpgs, unsigned char rtpPayloadType,
 	       unsigned rtpTimestampFrequency,
 	       char const* rtpPayloadFormatName,
 	       unsigned numChannels = 1);
   // (we're an abstract base class)
-  LIVE555_EXPORT virtual ~AudioRTPSink();
+  LIVE555_EXPORT
+  virtual ~AudioRTPSink();
 
 private: // redefined virtual functions:
-  LIVE555_EXPORT virtual char const* sdpMediaType() const;
+  LIVE555_EXPORT
+  virtual char const* sdpMediaType() const;
 };
 
 #endif

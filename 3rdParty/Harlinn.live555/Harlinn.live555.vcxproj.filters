@@ -37,6 +37,9 @@
     <Filter Include="src\UsageEnvironment">
       <UniqueIdentifier>{535dac83-15f0-4013-9ddf-0ac65cb20fec}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\WindowsAudioInputDevice">
+      <UniqueIdentifier>{d6989d00-bc6c-402c-a7b9-73ca32cc0b10}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -648,6 +651,15 @@
     <ClInclude Include="include\live555\live555Def.h">
       <Filter>include\live555</Filter>
     </ClInclude>
+    <ClInclude Include="include\live555\WindowsAudioInputDevice_common.hh">
+      <Filter>include\live555</Filter>
+    </ClInclude>
+    <ClInclude Include="include\live555\WindowsAudioInputDevice_mixer.hh">
+      <Filter>include\live555</Filter>
+    </ClInclude>
+    <ClInclude Include="include\live555\WindowsAudioInputDevice_noMixer.hh">
+      <Filter>include\live555</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -1246,6 +1258,15 @@
     </ClCompile>
     <ClCompile Include="src\UsageEnvironment\UsageEnvironment.cpp">
       <Filter>src\UsageEnvironment</Filter>
+    </ClCompile>
+    <ClCompile Include="src\WindowsAudioInputDevice\WindowsAudioInputDevice_common.cpp">
+      <Filter>src\WindowsAudioInputDevice</Filter>
+    </ClCompile>
+    <ClCompile Include="src\WindowsAudioInputDevice\WindowsAudioInputDevice_mixer.cpp">
+      <Filter>src\WindowsAudioInputDevice</Filter>
+    </ClCompile>
+    <ClCompile Include="src\WindowsAudioInputDevice\WindowsAudioInputDevice_noMixer.cpp">
+      <Filter>src\WindowsAudioInputDevice</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

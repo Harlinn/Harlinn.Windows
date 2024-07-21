@@ -14,7 +14,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 **********/
 // "liveMedia"
-// Copyright (c) 1996-2023 Live Networks, Inc.  All rights reserved.
+// Copyright (c) 1996-2024 Live Networks, Inc.  All rights reserved.
 // A server demultiplexer for a MPEG 1 or 2 Program Stream
 // C++ header
 
@@ -30,32 +30,41 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class MPEG1or2FileServerDemux: public Medium {
 public:
-  LIVE555_EXPORT static MPEG1or2FileServerDemux*
+  LIVE555_EXPORT
+  static MPEG1or2FileServerDemux*
   createNew(UsageEnvironment& env, char const* fileName, Boolean reuseFirstSource);
 
-  LIVE555_EXPORT ServerMediaSubsession* newAudioServerMediaSubsession(); // MPEG-1 or 2 audio
-  LIVE555_EXPORT ServerMediaSubsession* newVideoServerMediaSubsession(Boolean iFramesOnly = False,
+  LIVE555_EXPORT
+  ServerMediaSubsession* newAudioServerMediaSubsession(); // MPEG-1 or 2 audio
+  LIVE555_EXPORT
+  ServerMediaSubsession* newVideoServerMediaSubsession(Boolean iFramesOnly = False,
 						       double vshPeriod = 5.0
 		       /* how often (in seconds) to inject a Video_Sequence_Header,
 			  if one doesn't already appear in the stream */);
-  LIVE555_EXPORT ServerMediaSubsession* newAC3AudioServerMediaSubsession(); // AC-3 audio (from VOB)
+  LIVE555_EXPORT
+  ServerMediaSubsession* newAC3AudioServerMediaSubsession(); // AC-3 audio (from VOB)
 
   unsigned fileSize() const { return fFileSize; }
   float fileDuration() const { return fFileDuration; }
 
 private:
-  LIVE555_EXPORT MPEG1or2FileServerDemux(UsageEnvironment& env, char const* fileName,
+  LIVE555_EXPORT
+  MPEG1or2FileServerDemux(UsageEnvironment& env, char const* fileName,
 			  Boolean reuseFirstSource);
       // called only by createNew();
-  LIVE555_EXPORT virtual ~MPEG1or2FileServerDemux();
+  LIVE555_EXPORT
+  virtual ~MPEG1or2FileServerDemux();
 
 private:
   friend class MPEG1or2DemuxedServerMediaSubsession;
-  LIVE555_EXPORT MPEG1or2DemuxedElementaryStream* newElementaryStream(unsigned clientSessionId,
+  LIVE555_EXPORT
+  MPEG1or2DemuxedElementaryStream* newElementaryStream(unsigned clientSessionId,
 						       u_int8_t streamIdTag);
 
-  LIVE555_EXPORT static void onDemuxDeletion(void* clientData, MPEG1or2Demux* demuxBeingDeleted);
-  LIVE555_EXPORT void onDemuxDeletion(MPEG1or2Demux* demuxBeingDeleted);
+  LIVE555_EXPORT
+  static void onDemuxDeletion(void* clientData, MPEG1or2Demux* demuxBeingDeleted);
+  LIVE555_EXPORT
+  void onDemuxDeletion(MPEG1or2Demux* demuxBeingDeleted);
 
 private:
   char const* fFileName;

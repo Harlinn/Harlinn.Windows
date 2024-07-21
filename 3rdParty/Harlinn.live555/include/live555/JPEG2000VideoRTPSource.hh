@@ -14,7 +14,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 **********/
 // "liveMedia"
-// Copyright (c) 1996-2023 Live Networks, Inc.  All rights reserved.
+// Copyright (c) 1996-2024 Live Networks, Inc.  All rights reserved.
 
 #ifndef _JPEG2000_VIDEO_RTP_SOURCE_HH
 #define _JPEG2000_VIDEO_RTP_SOURCE_HH
@@ -25,16 +25,19 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class JPEG2000VideoRTPSource: public MultiFramedRTPSource {
 public:
-  LIVE555_EXPORT static JPEG2000VideoRTPSource* createNew(UsageEnvironment& env, Groupsock* RTPgs,
+  LIVE555_EXPORT 
+  static JPEG2000VideoRTPSource* createNew(UsageEnvironment& env, Groupsock* RTPgs,
 					   unsigned char rtpPayloadFormat,
 					   unsigned rtpTimestampFrequency,
 					   char const* sampling);
 
 protected:
-  LIVE555_EXPORT virtual ~JPEG2000VideoRTPSource();
+  LIVE555_EXPORT 
+  virtual ~JPEG2000VideoRTPSource();
 
 protected:
-  LIVE555_EXPORT JPEG2000VideoRTPSource(UsageEnvironment& env, Groupsock* RTPgs,
+  LIVE555_EXPORT 
+  JPEG2000VideoRTPSource(UsageEnvironment& env, Groupsock* RTPgs,
 			 unsigned char rtpPayloadFormat,
 			 unsigned rtpTimestampFrequency,
 			 char const* sampling);
@@ -42,9 +45,11 @@ protected:
 
 private:
   // redefined virtual functions:
-  LIVE555_EXPORT virtual Boolean processSpecialHeader(BufferedPacket* packet,
+  LIVE555_EXPORT 
+  virtual Boolean processSpecialHeader(BufferedPacket* packet,
                                        unsigned& resultSpecialHeaderSize);
-  LIVE555_EXPORT virtual char const* MIMEtype() const;
+  LIVE555_EXPORT
+  virtual char const* MIMEtype() const;
 
 private:
   char* fSampling;

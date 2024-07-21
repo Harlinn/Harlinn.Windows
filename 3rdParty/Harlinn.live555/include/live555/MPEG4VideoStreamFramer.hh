@@ -14,7 +14,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 **********/
 // "liveMedia"
-// Copyright (c) 1996-2023 Live Networks, Inc.  All rights reserved.
+// Copyright (c) 1996-2024 Live Networks, Inc.  All rights reserved.
 // A filter that breaks up an MPEG-4 video elementary stream into
 //   frames for:
 // - Visual Object Sequence (VS) Header + Visual Object (VO) Header
@@ -32,34 +32,43 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class MPEG4VideoStreamFramer: public MPEGVideoStreamFramer {
 public:
-  LIVE555_EXPORT static MPEG4VideoStreamFramer*
+  LIVE555_EXPORT 
+  static MPEG4VideoStreamFramer*
   createNew(UsageEnvironment& env, FramedSource* inputSource);
 
   u_int8_t profile_and_level_indication() const {
     return fProfileAndLevelIndication;
   }
 
-  LIVE555_EXPORT unsigned char* getConfigBytes(unsigned& numBytes) const;
+  LIVE555_EXPORT
+  unsigned char* getConfigBytes(unsigned& numBytes) const;
 
-  LIVE555_EXPORT void setConfigInfo(u_int8_t profileAndLevelIndication, char const* configStr);
+  LIVE555_EXPORT
+  void setConfigInfo(u_int8_t profileAndLevelIndication, char const* configStr);
     // Assigns the "profile_and_level_indication" number, and the 'config' bytes.
     // If this function is not called, then this data is only assigned later, when it appears in the input stream.
 
 protected:
-  LIVE555_EXPORT MPEG4VideoStreamFramer(UsageEnvironment& env,
+  LIVE555_EXPORT 
+  MPEG4VideoStreamFramer(UsageEnvironment& env,
 			 FramedSource* inputSource,
 			 Boolean createParser = True);
       // called only by createNew(), or by subclass constructors
-  LIVE555_EXPORT virtual ~MPEG4VideoStreamFramer();
+  LIVE555_EXPORT
+  virtual ~MPEG4VideoStreamFramer();
 
-  LIVE555_EXPORT void startNewConfig();
-  LIVE555_EXPORT void appendToNewConfig(unsigned char* newConfigBytes,
+  LIVE555_EXPORT
+  void startNewConfig();
+  LIVE555_EXPORT
+  void appendToNewConfig(unsigned char* newConfigBytes,
 			 unsigned numNewBytes);
-  LIVE555_EXPORT void completeNewConfig();
+  LIVE555_EXPORT
+  void completeNewConfig();
 
 private:
   // redefined virtual functions:
-  LIVE555_EXPORT virtual Boolean isMPEG4VideoStreamFramer() const;
+  LIVE555_EXPORT 
+  virtual Boolean isMPEG4VideoStreamFramer() const;
 
 protected:
   u_int8_t fProfileAndLevelIndication;

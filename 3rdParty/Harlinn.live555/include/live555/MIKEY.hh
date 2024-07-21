@@ -14,7 +14,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 **********/
 // "liveMedia"
-// Copyright (c) 1996-2023 Live Networks, Inc.  All rights reserved.
+// Copyright (c) 1996-2024 Live Networks, Inc.  All rights reserved.
 // A data structure that implements a MIKEY message (RFC 3830)
 // C++ header
 
@@ -30,14 +30,18 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class MIKEYState {
 public:
-  LIVE555_EXPORT MIKEYState(Boolean useEncryption = True); // initialize with default parameters
-  LIVE555_EXPORT virtual ~MIKEYState();
+  LIVE555_EXPORT 
+  MIKEYState(Boolean useEncryption = True); // initialize with default parameters
+  LIVE555_EXPORT
+  virtual ~MIKEYState();
 
-  LIVE555_EXPORT static MIKEYState* createNew(u_int8_t const* messageToParse, unsigned messageSize);
+  LIVE555_EXPORT
+  static MIKEYState* createNew(u_int8_t const* messageToParse, unsigned messageSize);
       // (Attempts to) parse a binary MIKEY message, returning a new "MIKEYState" if successful
       // (or NULL if unsuccessful).
 
-  LIVE555_EXPORT u_int8_t* generateMessage(unsigned& messageSize) const;
+  LIVE555_EXPORT
+  u_int8_t* generateMessage(unsigned& messageSize) const;
       // Returns a binary message representing the current MIKEY state, of size "messageSize" bytes.
       // This array is dynamically allocated by this routine, and must be delete[]d by the caller.
 
@@ -49,12 +53,16 @@ public:
   Boolean useAuthentication() const { return fUseAuthentication; }
 
 private:
-  LIVE555_EXPORT MIKEYState(u_int8_t const* messageToParse, unsigned messageSize, Boolean& parsedOK);
+  LIVE555_EXPORT 
+  MIKEYState(u_int8_t const* messageToParse, unsigned messageSize, Boolean& parsedOK);
       // called only by "createNew()"
 
-  LIVE555_EXPORT void addNewPayload(class MIKEYPayload* newPayload);
-  LIVE555_EXPORT Boolean parseHDRPayload(u_int8_t const*& ptr, u_int8_t const* endPtr, u_int8_t& nextPayloadType);
-  LIVE555_EXPORT Boolean parseNonHDRPayload(u_int8_t const*& ptr, u_int8_t const* endPtr, u_int8_t& nextPayloadType);
+  LIVE555_EXPORT
+  void addNewPayload(class MIKEYPayload* newPayload);
+  LIVE555_EXPORT
+  Boolean parseHDRPayload(u_int8_t const*& ptr, u_int8_t const* endPtr, u_int8_t& nextPayloadType);
+  LIVE555_EXPORT
+  Boolean parseNonHDRPayload(u_int8_t const*& ptr, u_int8_t const* endPtr, u_int8_t& nextPayloadType);
   
 private:
   // Encryption/authentication parameters, either set by default

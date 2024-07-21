@@ -14,7 +14,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 **********/
 // "liveMedia"
-// Copyright (c) 1996-2023 Live Networks, Inc.  All rights reserved.
+// Copyright (c) 1996-2024 Live Networks, Inc.  All rights reserved.
 // A filter that breaks up an AC3 audio elementary stream into frames
 // C++ header
 
@@ -27,36 +27,46 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class AC3AudioStreamFramer: public FramedFilter {
 public:
-  LIVE555_EXPORT static AC3AudioStreamFramer*
+  LIVE555_EXPORT 
+  static AC3AudioStreamFramer*
   createNew(UsageEnvironment& env, FramedSource* inputSource,
 	    unsigned char streamCode = 0);
   // If "streamCode" != 0, then we assume that there's a 1-byte code at the beginning of each chunk of data that we read from
   // our source.  If that code is not the value we want, we discard the chunk of data.
   // However, if "streamCode" == 0 (the default), then we don't expect this 1-byte code.
 
-  LIVE555_EXPORT unsigned samplingRate();
+  LIVE555_EXPORT
+  unsigned samplingRate();
 
-  LIVE555_EXPORT void flushInput(); // called if there is a discontinuity (seeking) in the input
+  LIVE555_EXPORT
+  void flushInput(); // called if there is a discontinuity (seeking) in the input
 
 private:
-  LIVE555_EXPORT AC3AudioStreamFramer(UsageEnvironment& env, FramedSource* inputSource,
+  LIVE555_EXPORT 
+  AC3AudioStreamFramer(UsageEnvironment& env, FramedSource* inputSource,
 		       unsigned char streamCode);
       // called only by createNew()
-  LIVE555_EXPORT virtual ~AC3AudioStreamFramer();
+  LIVE555_EXPORT
+  virtual ~AC3AudioStreamFramer();
 
-  LIVE555_EXPORT static void handleNewData(void* clientData,
+  LIVE555_EXPORT
+  static void handleNewData(void* clientData,
 			    unsigned char* ptr, unsigned size,
 			    struct timeval presentationTime);
-  LIVE555_EXPORT void handleNewData(unsigned char* ptr, unsigned size);
+  LIVE555_EXPORT
+  void handleNewData(unsigned char* ptr, unsigned size);
 
-  LIVE555_EXPORT void parseNextFrame();
+  LIVE555_EXPORT
+  void parseNextFrame();
 
 private:
   // redefined virtual functions:
-	LIVE555_EXPORT virtual void doGetNextFrame();
+  LIVE555_EXPORT 
+  virtual void doGetNextFrame();
 
 private:
-  LIVE555_EXPORT struct timeval currentFramePlayTime() const;
+  LIVE555_EXPORT 
+  struct timeval currentFramePlayTime() const;
 
 private:
   struct timeval fNextFramePresentationTime;

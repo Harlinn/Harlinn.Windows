@@ -14,7 +14,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 **********/
 // "liveMedia"
-// Copyright (c) 1996-2023 Live Networks, Inc.  All rights reserved.
+// Copyright (c) 1996-2024 Live Networks, Inc.  All rights reserved.
 // An class that can be used to create (possibly multiple) 'replicas' of an incoming stream.
 // C++ header
 
@@ -29,7 +29,8 @@ class StreamReplica; // forward
 
 class StreamReplicator: public Medium {
 public:
-  LIVE555_EXPORT static StreamReplicator* createNew(UsageEnvironment& env, FramedSource* inputSource, Boolean deleteWhenLastReplicaDies = True);
+  LIVE555_EXPORT 
+  static StreamReplicator* createNew(UsageEnvironment& env, FramedSource* inputSource, Boolean deleteWhenLastReplicaDies = True);
     // If "deleteWhenLastReplicaDies" is True (the default), then the "StreamReplicator" object is deleted when (and only when)
     //   all replicas have been deleted.  (In this case, you must *not* call "Medium::close()" on the "StreamReplicator" object,
     //   unless you never created any replicas from it to begin with.)
@@ -37,7 +38,8 @@ public:
     //   have been deleted.  (This allows you to create new replicas later, if you wish.)  In this case, you delete the
     //   "StreamReplicator" object by calling "Medium::close()" on it - but you must do so only when "numReplicas()" returns 0.
 
-  LIVE555_EXPORT FramedSource* createStreamReplica();
+  LIVE555_EXPORT
+  FramedSource* createStreamReplica();
 
   unsigned numReplicas() const { return fNumReplicas; }
 
@@ -47,29 +49,39 @@ public:
   void detachInputSource() { fInputSource = NULL; }
 
 protected:
-  LIVE555_EXPORT StreamReplicator(UsageEnvironment& env, FramedSource* inputSource, Boolean deleteWhenLastReplicaDies);
+  LIVE555_EXPORT 
+  StreamReplicator(UsageEnvironment& env, FramedSource* inputSource, Boolean deleteWhenLastReplicaDies);
     // called only by "createNew()"
-  LIVE555_EXPORT virtual ~StreamReplicator();
+  LIVE555_EXPORT
+  virtual ~StreamReplicator();
 
 private:
   // Routines called by replicas to implement frame delivery, and the stopping/restarting/deletion of replicas:
   friend class StreamReplica;
-  LIVE555_EXPORT void getNextFrame(StreamReplica* replica);
-  LIVE555_EXPORT void deactivateStreamReplica(StreamReplica* replica);
-  LIVE555_EXPORT void removeStreamReplica(StreamReplica* replica);
+  LIVE555_EXPORT
+  void getNextFrame(StreamReplica* replica);
+  LIVE555_EXPORT
+  void deactivateStreamReplica(StreamReplica* replica);
+  LIVE555_EXPORT
+  void removeStreamReplica(StreamReplica* replica);
 
 private:
-  LIVE555_EXPORT static void afterGettingFrame(void* clientData, unsigned frameSize,
+  LIVE555_EXPORT 
+  static void afterGettingFrame(void* clientData, unsigned frameSize,
                                 unsigned numTruncatedBytes,
                                 struct timeval presentationTime,
                                 unsigned durationInMicroseconds);
-  LIVE555_EXPORT void afterGettingFrame(unsigned frameSize, unsigned numTruncatedBytes,
+  LIVE555_EXPORT
+  void afterGettingFrame(unsigned frameSize, unsigned numTruncatedBytes,
 			 struct timeval presentationTime, unsigned durationInMicroseconds);
 
-  LIVE555_EXPORT static void onSourceClosure(void* clientData);
-  LIVE555_EXPORT void onSourceClosure();
+  LIVE555_EXPORT
+  static void onSourceClosure(void* clientData);
+  LIVE555_EXPORT
+  void onSourceClosure();
 
-  LIVE555_EXPORT void deliverReceivedFrame();
+  LIVE555_EXPORT
+  void deliverReceivedFrame();
 
 private:
   FramedSource* fInputSource;

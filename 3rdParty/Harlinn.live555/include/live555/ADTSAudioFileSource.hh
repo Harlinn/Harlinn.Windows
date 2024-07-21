@@ -14,7 +14,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 **********/
 // "liveMedia"
-// Copyright (c) 1996-2023 Live Networks, Inc.  All rights reserved.
+// Copyright (c) 1996-2024 Live Networks, Inc.  All rights reserved.
 // A source object for AAC audio files in ADTS format
 // C++ header
 
@@ -27,7 +27,8 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class ADTSAudioFileSource: public FramedFileSource {
 public:
-  LIVE555_EXPORT static ADTSAudioFileSource* createNew(UsageEnvironment& env,
+  LIVE555_EXPORT 
+  static ADTSAudioFileSource* createNew(UsageEnvironment& env,
 				       char const* fileName);
 
   unsigned samplingFrequency() const { return fSamplingFrequency; }
@@ -36,15 +37,17 @@ public:
       // returns the 'AudioSpecificConfig' for this stream (in ASCII form)
 
 private:
-  LIVE555_EXPORT ADTSAudioFileSource(UsageEnvironment& env, FILE* fid, u_int8_t profile,
+  LIVE555_EXPORT 
+  ADTSAudioFileSource(UsageEnvironment& env, FILE* fid, u_int8_t profile,
 		      u_int8_t samplingFrequencyIndex, u_int8_t channelConfiguration);
 	// called only by createNew()
-
-  LIVE555_EXPORT virtual ~ADTSAudioFileSource();
+  LIVE555_EXPORT
+  virtual ~ADTSAudioFileSource();
 
 private:
   // redefined virtual functions:
-  LIVE555_EXPORT virtual void doGetNextFrame();
+  LIVE555_EXPORT 
+  virtual void doGetNextFrame();
 
 private:
   unsigned fSamplingFrequency;

@@ -14,7 +14,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 **********/
 // "liveMedia"
-// Copyright (c) 1996-2023 Live Networks, Inc.  All rights reserved.
+// Copyright (c) 1996-2024 Live Networks, Inc.  All rights reserved.
 // A filter that breaks up a H.264 or H.265 Video Elementary Stream into NAL units.
 // C++ header
 
@@ -27,6 +27,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class H264or5VideoStreamFramer: public MPEGVideoStreamFramer {
 public:
+  LIVE555_EXPORT 
   void getVPSandSPSandPPS(u_int8_t*& vps, unsigned& vpsSize,
 			  u_int8_t*& sps, unsigned& spsSize,
 			  u_int8_t*& pps, unsigned& ppsSize) const {
@@ -38,6 +39,7 @@ public:
     pps = fLastSeenPPS; ppsSize = fLastSeenPPSSize;
   }
 
+  LIVE555_EXPORT
   void setVPSandSPSandPPS(u_int8_t* vps, unsigned vpsSize,
 			  u_int8_t* sps, unsigned spsSize,
 			  u_int8_t* pps, unsigned ppsSize) {
@@ -49,26 +51,37 @@ public:
   }
 
 protected:
-  LIVE555_EXPORT H264or5VideoStreamFramer(int hNumber, // 264 or 265
+  LIVE555_EXPORT 
+  H264or5VideoStreamFramer(int hNumber, // 264 or 265
 			   UsageEnvironment& env, FramedSource* inputSource,
 			   Boolean createParser,
 			   Boolean includeStartCodeInOutput, Boolean insertAccessUnitDelimiters);
       // We're an abstract base class.
-  LIVE555_EXPORT virtual ~H264or5VideoStreamFramer();
+  LIVE555_EXPORT
+  virtual ~H264or5VideoStreamFramer();
 
-  LIVE555_EXPORT void saveCopyOfVPS(u_int8_t* from, unsigned size);
-  LIVE555_EXPORT void saveCopyOfSPS(u_int8_t* from, unsigned size);
-  LIVE555_EXPORT void saveCopyOfPPS(u_int8_t* from, unsigned size);
+  LIVE555_EXPORT
+  void saveCopyOfVPS(u_int8_t* from, unsigned size);
+  LIVE555_EXPORT
+  void saveCopyOfSPS(u_int8_t* from, unsigned size);
+  LIVE555_EXPORT
+  void saveCopyOfPPS(u_int8_t* from, unsigned size);
 
-  LIVE555_EXPORT void setPresentationTime();
+  LIVE555_EXPORT
+  void setPresentationTime();
 
-  LIVE555_EXPORT Boolean isVPS(u_int8_t nal_unit_type);
-  LIVE555_EXPORT Boolean isSPS(u_int8_t nal_unit_type);
-  LIVE555_EXPORT Boolean isPPS(u_int8_t nal_unit_type);
-  LIVE555_EXPORT Boolean isVCL(u_int8_t nal_unit_type);
+  LIVE555_EXPORT
+  Boolean isVPS(u_int8_t nal_unit_type);
+  LIVE555_EXPORT
+  Boolean isSPS(u_int8_t nal_unit_type);
+  LIVE555_EXPORT
+  Boolean isPPS(u_int8_t nal_unit_type);
+  LIVE555_EXPORT
+  Boolean isVCL(u_int8_t nal_unit_type);
 
 protected: // redefined virtual functions
-  LIVE555_EXPORT virtual void doGetNextFrame();
+  LIVE555_EXPORT 
+  virtual void doGetNextFrame();
 
 protected:
   int fHNumber;
@@ -85,7 +98,8 @@ protected:
 
 // A general routine for making a copy of a (H.264 or H.265) NAL unit,
 // removing 'emulation' bytes from the copy:
-LIVE555_EXPORT unsigned removeH264or5EmulationBytes(u_int8_t* to, unsigned toMaxSize,
+LIVE555_EXPORT
+unsigned removeH264or5EmulationBytes(u_int8_t* to, unsigned toMaxSize,
 				     u_int8_t const* from, unsigned fromSize);
     // returns the size of the copy; it will be <= min(toMaxSize,fromSize)
 

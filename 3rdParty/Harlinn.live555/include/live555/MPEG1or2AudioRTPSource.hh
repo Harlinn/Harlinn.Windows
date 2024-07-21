@@ -14,7 +14,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 **********/
 // "liveMedia"
-// Copyright (c) 1996-2023 Live Networks, Inc.  All rights reserved.
+// Copyright (c) 1996-2024 Live Networks, Inc.  All rights reserved.
 // MPEG-1 or MPEG-2 Audio RTP Sources
 // C++ header
 
@@ -27,25 +27,30 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class MPEG1or2AudioRTPSource: public MultiFramedRTPSource {
 public:
-  LIVE555_EXPORT static MPEG1or2AudioRTPSource*
+  LIVE555_EXPORT 
+  static MPEG1or2AudioRTPSource*
   createNew(UsageEnvironment& env, Groupsock* RTPgs,
 	    unsigned char rtpPayloadFormat = 14,
 	    unsigned rtpTimestampFrequency = 90000);
 
 protected:
-  LIVE555_EXPORT virtual ~MPEG1or2AudioRTPSource();
+  LIVE555_EXPORT 
+  virtual ~MPEG1or2AudioRTPSource();
 
 private:
-  LIVE555_EXPORT MPEG1or2AudioRTPSource(UsageEnvironment& env, Groupsock* RTPgs,
+  LIVE555_EXPORT 
+  MPEG1or2AudioRTPSource(UsageEnvironment& env, Groupsock* RTPgs,
 		     unsigned char rtpPayloadFormat,
 		     unsigned rtpTimestampFrequency);
       // called only by createNew()
 
 private:
   // redefined virtual functions:
-  LIVE555_EXPORT virtual Boolean processSpecialHeader(BufferedPacket* packet,
+  LIVE555_EXPORT 
+  virtual Boolean processSpecialHeader(BufferedPacket* packet,
                                        unsigned& resultSpecialHeaderSize);
-  LIVE555_EXPORT virtual char const* MIMEtype() const;
+  LIVE555_EXPORT
+  virtual char const* MIMEtype() const;
 };
 
 #endif

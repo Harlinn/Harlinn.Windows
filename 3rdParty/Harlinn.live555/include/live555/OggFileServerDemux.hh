@@ -14,7 +14,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 **********/
 // "liveMedia"
-// Copyright (c) 1996-2023 Live Networks, Inc.  All rights reserved.
+// Copyright (c) 1996-2024 Live Networks, Inc.  All rights reserved.
 // A server demultiplexor for an Ogg file
 // C++ header
 
@@ -31,19 +31,23 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class OggFileServerDemux: public Medium {
 public:
-  typedef void (__cdecl onCreationFunc)(OggFileServerDemux* newDemux, void* clientData);
-  LIVE555_EXPORT static void createNew(UsageEnvironment& env, char const* fileName,
+  typedef void (onCreationFunc)(OggFileServerDemux* newDemux, void* clientData);
+  LIVE555_EXPORT
+  static void createNew(UsageEnvironment& env, char const* fileName,
 			onCreationFunc* onCreation, void* onCreationClientData);
     // Note: Unlike most "createNew()" functions, this one doesn't return a new object immediately.  Instead, because this class
     // requires file reading (to parse the Ogg 'Track' headers) before a new object can be initialized, the creation of a new
     // object is signalled by calling - from the event loop - an 'onCreationFunc' that is passed as a parameter to "createNew()". 
 
-  LIVE555_EXPORT ServerMediaSubsession* newServerMediaSubsession();
-  LIVE555_EXPORT ServerMediaSubsession* newServerMediaSubsession(u_int32_t& resultTrackNumber);
+  LIVE555_EXPORT
+  ServerMediaSubsession* newServerMediaSubsession();
+  LIVE555_EXPORT
+  ServerMediaSubsession* newServerMediaSubsession(u_int32_t& resultTrackNumber);
     // Returns a new "ServerMediaSubsession" object that represents the next media track
     // from the file.  This function returns NULL when no more media tracks exist.
 
-  LIVE555_EXPORT ServerMediaSubsession* newServerMediaSubsessionByTrackNumber(u_int32_t trackNumber);
+  LIVE555_EXPORT
+  ServerMediaSubsession* newServerMediaSubsessionByTrackNumber(u_int32_t trackNumber);
   // As above, but creates a new "ServerMediaSubsession" object for a specific track number
   // within the Ogg file.
   // (You should not call this function more than once with the same track number.)
@@ -53,20 +57,27 @@ public:
   OggFile* ourOggFile() { return fOurOggFile; }
   char const* fileName() const { return fFileName; }
 
-  LIVE555_EXPORT FramedSource* newDemuxedTrack(unsigned clientSessionId, u_int32_t trackNumber);
+  LIVE555_EXPORT
+  FramedSource* newDemuxedTrack(unsigned clientSessionId, u_int32_t trackNumber);
     // Used by the "ServerMediaSubsession" objects to implement their "createNewStreamSource()" virtual function.
 
 private:
-  LIVE555_EXPORT OggFileServerDemux(UsageEnvironment& env, char const* fileName,
+  LIVE555_EXPORT 
+  OggFileServerDemux(UsageEnvironment& env, char const* fileName,
 		     onCreationFunc* onCreation, void* onCreationClientData);
       // called only by createNew()
-  LIVE555_EXPORT virtual ~OggFileServerDemux();
+  LIVE555_EXPORT
+  virtual ~OggFileServerDemux();
 
-  LIVE555_EXPORT static void onOggFileCreation(OggFile* newFile, void* clientData);
-  LIVE555_EXPORT void onOggFileCreation(OggFile* newFile);
+  LIVE555_EXPORT
+  static void onOggFileCreation(OggFile* newFile, void* clientData);
+  LIVE555_EXPORT
+  void onOggFileCreation(OggFile* newFile);
 
-  LIVE555_EXPORT static void onDemuxDeletion(void* clientData, OggDemux* demuxBeingDeleted);
-  LIVE555_EXPORT void onDemuxDeletion(OggDemux* demuxBeingDeleted);
+  LIVE555_EXPORT
+  static void onDemuxDeletion(void* clientData, OggDemux* demuxBeingDeleted);
+  LIVE555_EXPORT
+  void onDemuxDeletion(OggDemux* demuxBeingDeleted);
   
 private:
   char const* fFileName; 

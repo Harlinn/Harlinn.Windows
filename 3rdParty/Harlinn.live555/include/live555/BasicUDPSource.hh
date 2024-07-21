@@ -14,7 +14,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 **********/
 // "liveMedia"
-// Copyright (c) 1996-2023 Live Networks, Inc.  All rights reserved.
+// Copyright (c) 1996-2024 Live Networks, Inc.  All rights reserved.
 // A simple UDP source, where every UDP payload is a complete frame
 // C++ header
 
@@ -30,22 +30,29 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class BasicUDPSource: public FramedSource {
 public:
-  LIVE555_EXPORT static BasicUDPSource* createNew(UsageEnvironment& env, Groupsock* inputGS);
+  LIVE555_EXPORT 
+  static BasicUDPSource* createNew(UsageEnvironment& env, Groupsock* inputGS);
 
-  LIVE555_EXPORT virtual ~BasicUDPSource();
+  LIVE555_EXPORT
+  virtual ~BasicUDPSource();
 
   Groupsock* gs() const { return fInputGS; }
 
 private:
+  LIVE555_EXPORT 
   BasicUDPSource(UsageEnvironment& env, Groupsock* inputGS);
       // called only by createNew()
-
+  LIVE555_EXPORT
   static void incomingPacketHandler(BasicUDPSource* source, int mask);
+  LIVE555_EXPORT
   void incomingPacketHandler1();
 
 private: // redefined virtual functions:
+  LIVE555_EXPORT 
   virtual unsigned maxFrameSize() const;
+  LIVE555_EXPORT
   virtual void doGetNextFrame();
+  LIVE555_EXPORT
   virtual void doStopGettingFrames();
 
 private:

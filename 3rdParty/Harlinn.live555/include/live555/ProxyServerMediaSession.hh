@@ -14,7 +14,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 **********/
 // "liveMedia"
-// Copyright (c) 1996-2023 Live Networks, Inc.  All rights reserved.
+// Copyright (c) 1996-2024 Live Networks, Inc.  All rights reserved.
 // A subclass of "ServerMediaSession" that can be used to create a (unicast) RTSP servers that acts as a 'proxy' for
 // another (unicast or multicast) RTSP/RTP stream.
 // C++ header
@@ -41,34 +41,52 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class ProxyRTSPClient: public RTSPClient {
 public:
-  LIVE555_EXPORT ProxyRTSPClient(class ProxyServerMediaSession& ourServerMediaSession, char const* rtspURL,
+  LIVE555_EXPORT 
+  ProxyRTSPClient(class ProxyServerMediaSession& ourServerMediaSession, char const* rtspURL,
                   char const* username, char const* password,
                   portNumBits tunnelOverHTTPPortNum, int verbosityLevel, int socketNumToServer);
-  LIVE555_EXPORT virtual ~ProxyRTSPClient();
+  LIVE555_EXPORT
+  virtual ~ProxyRTSPClient();
 
-  LIVE555_EXPORT void continueAfterDESCRIBE(char const* sdpDescription);
-  LIVE555_EXPORT void continueAfterLivenessCommand(int resultCode, Boolean serverSupportsGetParameter);
-  LIVE555_EXPORT void continueAfterSETUP(int resultCode);
-  LIVE555_EXPORT void continueAfterPLAY(int resultCode);
-  LIVE555_EXPORT void scheduleReset();
+  LIVE555_EXPORT
+  void continueAfterDESCRIBE(char const* sdpDescription);
+  LIVE555_EXPORT
+  void continueAfterLivenessCommand(int resultCode, Boolean serverSupportsGetParameter);
+  LIVE555_EXPORT
+  void continueAfterSETUP(int resultCode);
+  LIVE555_EXPORT
+  void continueAfterPLAY(int resultCode);
+  LIVE555_EXPORT
+  void scheduleReset();
 
 private:
-  LIVE555_EXPORT void reset();
-  LIVE555_EXPORT int connectToServer(int socketNum, portNumBits remotePortNum);
+  LIVE555_EXPORT 
+  void reset();
+  LIVE555_EXPORT
+  int connectToServer(int socketNum, portNumBits remotePortNum);
 
   Authenticator* auth() { return fOurAuthenticator; }
 
-  LIVE555_EXPORT void scheduleLivenessCommand();
-  LIVE555_EXPORT static void sendLivenessCommand(void* clientData);
-  LIVE555_EXPORT void doReset();
-  LIVE555_EXPORT static void doReset(void* clientData);
+  LIVE555_EXPORT
+  void scheduleLivenessCommand();
+  LIVE555_EXPORT
+  static void sendLivenessCommand(void* clientData);
+  LIVE555_EXPORT
+  void doReset();
+  LIVE555_EXPORT
+  static void doReset(void* clientData);
 
-  LIVE555_EXPORT void scheduleDESCRIBECommand();
-  LIVE555_EXPORT static void sendDESCRIBE(void* clientData);
-  LIVE555_EXPORT void sendDESCRIBE();
+  LIVE555_EXPORT
+  void scheduleDESCRIBECommand();
+  LIVE555_EXPORT
+  static void sendDESCRIBE(void* clientData);
+  LIVE555_EXPORT
+  void sendDESCRIBE();
 
-  LIVE555_EXPORT static void subsessionTimeout(void* clientData);
-  LIVE555_EXPORT void handleSubsessionTimeout();
+  LIVE555_EXPORT
+  static void subsessionTimeout(void* clientData);
+  LIVE555_EXPORT
+  void handleSubsessionTimeout();
 
 private:
   friend class ProxyServerMediaSession;
@@ -86,12 +104,13 @@ private:
 
 
 typedef ProxyRTSPClient*
-__cdecl createNewProxyRTSPClientFunc(ProxyServerMediaSession& ourServerMediaSession,
+createNewProxyRTSPClientFunc(ProxyServerMediaSession& ourServerMediaSession,
 			     char const* rtspURL,
 			     char const* username, char const* password,
 			     portNumBits tunnelOverHTTPPortNum, int verbosityLevel,
 			     int socketNumToServer);
-LIVE555_EXPORT ProxyRTSPClient*
+LIVE555_EXPORT
+ProxyRTSPClient*
 defaultCreateNewProxyRTSPClientFunc(ProxyServerMediaSession& ourServerMediaSession,
 				    char const* rtspURL,
 				    char const* username, char const* password,
@@ -100,7 +119,8 @@ defaultCreateNewProxyRTSPClientFunc(ProxyServerMediaSession& ourServerMediaSessi
 
 class ProxyServerMediaSession: public ServerMediaSession {
 public:
-  LIVE555_EXPORT static ProxyServerMediaSession* createNew(UsageEnvironment& env,
+  LIVE555_EXPORT
+  static ProxyServerMediaSession* createNew(UsageEnvironment& env,
 					    GenericMediaServer* ourMediaServer, // Note: We can be used by just one server
 					    char const* inputStreamURL, // the "rtsp://" URL of the stream we'll be proxying
 					    char const* streamName = NULL,
@@ -115,18 +135,21 @@ public:
       // If "socketNumToServer" is >= 0, then it is the socket number of an already-existing TCP connection to the server.
       //      (In this case, "inputStreamURL" must point to the socket's endpoint, so that it can be accessed via the socket.)
 
-  LIVE555_EXPORT virtual ~ProxyServerMediaSession();
+  LIVE555_EXPORT
+  virtual ~ProxyServerMediaSession();
 
-  LIVE555_EXPORT char const* url() const;
+  LIVE555_EXPORT
+  char const* url() const;
 
   char describeCompletedFlag;
     // initialized to 0; set to 1 when the back-end "DESCRIBE" completes.
     // (This can be used as a 'watch variable' in "doEventLoop()".)
-  LIVE555_EXPORT Boolean describeCompletedSuccessfully() const { return fClientMediaSession != NULL; }
+  Boolean describeCompletedSuccessfully() const { return fClientMediaSession != NULL; }
     // This can be used - along with "describeCompletedFlag" - to check whether the back-end "DESCRIBE" completed *successfully*.
 
 protected:
-  LIVE555_EXPORT ProxyServerMediaSession(UsageEnvironment& env, GenericMediaServer* ourMediaServer,
+  LIVE555_EXPORT
+  ProxyServerMediaSession(UsageEnvironment& env, GenericMediaServer* ourMediaServer,
 			  char const* inputStreamURL, char const* streamName,
 			  char const* username, char const* password,
 			  portNumBits tunnelOverHTTPPortNum, int verbosityLevel,
@@ -146,11 +169,14 @@ protected:
 
   // Subclasses may redefine the following functions, if they want "ProxyServerSubsession"s
   // to create subclassed "Groupsock" and/or "RTCPInstance" objects:
-  LIVE555_EXPORT virtual Groupsock* createGroupsock(struct sockaddr_storage const& addr, Port port);
-  LIVE555_EXPORT virtual RTCPInstance* createRTCP(Groupsock* RTCPgs, unsigned totSessionBW, /* in kbps */
+  LIVE555_EXPORT
+  virtual Groupsock* createGroupsock(struct sockaddr_storage const& addr, Port port);
+  LIVE555_EXPORT
+  virtual RTCPInstance* createRTCP(Groupsock* RTCPgs, unsigned totSessionBW, /* in kbps */
 				   unsigned char const* cname, RTPSink* sink);
 
-  LIVE555_EXPORT virtual Boolean allowProxyingForSubsession(MediaSubsession const& mss);
+  LIVE555_EXPORT
+  virtual Boolean allowProxyingForSubsession(MediaSubsession const& mss);
   // By default, this function always returns True.  However, a subclass may redefine this
   // if it wishes to restrict which subsessions of a stream get proxied - e.g., if it wishes
   // to proxy only video tracks, but not audio (or other) tracks.
@@ -163,8 +189,10 @@ protected:
 private:
   friend class ProxyRTSPClient;
   friend class ProxyServerMediaSubsession;
-  LIVE555_EXPORT void continueAfterDESCRIBE(char const* sdpDescription);
-  LIVE555_EXPORT void resetDESCRIBEState(); // undoes what was done by "contineAfterDESCRIBE()"
+  LIVE555_EXPORT
+  void continueAfterDESCRIBE(char const* sdpDescription);
+  LIVE555_EXPORT
+  void resetDESCRIBEState(); // undoes what was done by "contineAfterDESCRIBE()"
 
 private:
   int fVerbosityLevel;
@@ -185,26 +213,32 @@ private:
 
 class PresentationTimeSubsessionNormalizer: public FramedFilter {
 public:
+  LIVE555_EXPORT
   void setRTPSink(RTPSink* rtpSink) { fRTPSink = rtpSink; }
 
 private:
   friend class PresentationTimeSessionNormalizer;
-  LIVE555_EXPORT PresentationTimeSubsessionNormalizer(PresentationTimeSessionNormalizer& parent, FramedSource* inputSource, RTPSource* rtpSource,
+  LIVE555_EXPORT
+  PresentationTimeSubsessionNormalizer(PresentationTimeSessionNormalizer& parent, FramedSource* inputSource, RTPSource* rtpSource,
 				       char const* codecName, PresentationTimeSubsessionNormalizer* next);
       // called only from within "PresentationTimeSessionNormalizer"
-  LIVE555_EXPORT virtual ~PresentationTimeSubsessionNormalizer();
+  LIVE555_EXPORT
+  virtual ~PresentationTimeSubsessionNormalizer();
 
-  LIVE555_EXPORT static void afterGettingFrame(void* clientData, unsigned frameSize,
+  LIVE555_EXPORT
+  static void afterGettingFrame(void* clientData, unsigned frameSize,
                                 unsigned numTruncatedBytes,
                                 struct timeval presentationTime,
                                 unsigned durationInMicroseconds);
-  LIVE555_EXPORT void afterGettingFrame(unsigned frameSize,
+  LIVE555_EXPORT
+  void afterGettingFrame(unsigned frameSize,
 			 unsigned numTruncatedBytes,
 			 struct timeval presentationTime,
 			 unsigned durationInMicroseconds);
 
 private: // redefined virtual functions:
-	LIVE555_EXPORT virtual void doGetNextFrame();
+  LIVE555_EXPORT
+  virtual void doGetNextFrame();
 
 private:
   PresentationTimeSessionNormalizer& fParent;
@@ -216,17 +250,22 @@ private:
 
 class PresentationTimeSessionNormalizer: public Medium {
 public:
-  LIVE555_EXPORT PresentationTimeSessionNormalizer(UsageEnvironment& env);
-  LIVE555_EXPORT virtual ~PresentationTimeSessionNormalizer();
+  LIVE555_EXPORT
+  PresentationTimeSessionNormalizer(UsageEnvironment& env);
+  LIVE555_EXPORT
+  virtual ~PresentationTimeSessionNormalizer();
 
-  LIVE555_EXPORT PresentationTimeSubsessionNormalizer*
+  LIVE555_EXPORT
+  PresentationTimeSubsessionNormalizer*
   createNewPresentationTimeSubsessionNormalizer(FramedSource* inputSource, RTPSource* rtpSource, char const* codecName);
 
 private: // called only from within "~PresentationTimeSubsessionNormalizer":
   friend class PresentationTimeSubsessionNormalizer;
-  LIVE555_EXPORT void normalizePresentationTime(PresentationTimeSubsessionNormalizer* ssNormalizer,
+  LIVE555_EXPORT
+  void normalizePresentationTime(PresentationTimeSubsessionNormalizer* ssNormalizer,
 				 struct timeval& toPT, struct timeval const& fromPT);
-  LIVE555_EXPORT void removePresentationTimeSubsessionNormalizer(PresentationTimeSubsessionNormalizer* ssNormalizer);
+  LIVE555_EXPORT
+  void removePresentationTimeSubsessionNormalizer(PresentationTimeSubsessionNormalizer* ssNormalizer);
 
 private:
   PresentationTimeSubsessionNormalizer* fSubsessionNormalizers;

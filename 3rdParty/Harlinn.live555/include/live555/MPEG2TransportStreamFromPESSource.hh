@@ -14,7 +14,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 **********/
 // "liveMedia"
-// Copyright (c) 1996-2023 Live Networks, Inc.  All rights reserved.
+// Copyright (c) 1996-2024 Live Networks, Inc.  All rights reserved.
 // A filter for converting a stream of MPEG PES packets to a MPEG-2 Transport Stream
 // C++ header
 
@@ -30,26 +30,33 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class MPEG2TransportStreamFromPESSource: public MPEG2TransportStreamMultiplexor {
 public:
-  LIVE555_EXPORT static MPEG2TransportStreamFromPESSource*
+  LIVE555_EXPORT 
+  static MPEG2TransportStreamFromPESSource*
   createNew(UsageEnvironment& env, MPEG1or2DemuxedElementaryStream* inputSource);
 
 protected:
-  LIVE555_EXPORT MPEG2TransportStreamFromPESSource(UsageEnvironment& env,
+  LIVE555_EXPORT 
+  MPEG2TransportStreamFromPESSource(UsageEnvironment& env,
 				    MPEG1or2DemuxedElementaryStream* inputSource);
       // called only by createNew()
-  LIVE555_EXPORT virtual ~MPEG2TransportStreamFromPESSource();
+  LIVE555_EXPORT
+  virtual ~MPEG2TransportStreamFromPESSource();
 
 private:
   // Redefined virtual functions:
-  LIVE555_EXPORT virtual void doStopGettingFrames();
-  LIVE555_EXPORT virtual void awaitNewBuffer(unsigned char* oldBuffer);
+  LIVE555_EXPORT 
+  virtual void doStopGettingFrames();
+  LIVE555_EXPORT
+  virtual void awaitNewBuffer(unsigned char* oldBuffer);
 
 private:
-  LIVE555_EXPORT static void afterGettingFrame(void* clientData, unsigned frameSize,
+  LIVE555_EXPORT 
+  static void afterGettingFrame(void* clientData, unsigned frameSize,
 				unsigned numTruncatedBytes,
 				struct timeval presentationTime,
 				unsigned durationInMicroseconds);
-  LIVE555_EXPORT void afterGettingFrame1(unsigned frameSize,
+  LIVE555_EXPORT
+  void afterGettingFrame1(unsigned frameSize,
 			  unsigned numTruncatedBytes,
 			  struct timeval presentationTime,
 			  unsigned durationInMicroseconds);

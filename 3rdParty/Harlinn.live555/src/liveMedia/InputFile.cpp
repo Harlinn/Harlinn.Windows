@@ -14,13 +14,14 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 **********/
 // "liveMedia"
-// Copyright (c) 1996-2023 Live Networks, Inc.  All rights reserved.
+// Copyright (c) 1996-2024 Live Networks, Inc.  All rights reserved.
 // Common routines for opening/closing named input files
 // Implementation
 
 #include "InputFile.hh"
 #include <string.h>
 
+LIVE555_EXPORT
 FILE* OpenInputFile(UsageEnvironment& env, char const* fileName) {
   FILE* fid;
 
@@ -40,11 +41,13 @@ FILE* OpenInputFile(UsageEnvironment& env, char const* fileName) {
   return fid;
 }
 
+LIVE555_EXPORT
 void CloseInputFile(FILE* fid) {
   // Don't close 'stdin', in case we want to use it again later.
   if (fid != NULL && fid != stdin) fclose(fid);
 }
 
+LIVE555_EXPORT
 u_int64_t GetFileSize(char const* fileName, FILE* fid) {
   u_int64_t fileSize = 0; // by default
 
@@ -70,6 +73,7 @@ u_int64_t GetFileSize(char const* fileName, FILE* fid) {
   return fileSize;
 }
 
+LIVE555_EXPORT
 int64_t SeekFile64(FILE *fid, int64_t offset, int whence) {
   if (fid == NULL) return -1;
 
@@ -86,6 +90,7 @@ int64_t SeekFile64(FILE *fid, int64_t offset, int whence) {
 #endif
 }
 
+LIVE555_EXPORT
 int64_t TellFile64(FILE *fid) {
   if (fid == NULL) return -1;
 
@@ -102,6 +107,7 @@ int64_t TellFile64(FILE *fid) {
 #endif
 }
 
+LIVE555_EXPORT
 Boolean FileIsSeekable(FILE *fid) {
   if (SeekFile64(fid, 1, SEEK_CUR) < 0) {
     return False;

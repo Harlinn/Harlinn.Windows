@@ -14,7 +14,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 **********/
 // "liveMedia"
-// Copyright (c) 1996-2023 Live Networks, Inc.  All rights reserved.
+// Copyright (c) 1996-2024 Live Networks, Inc.  All rights reserved.
 // A MPEG 1 or 2 Elementary Stream, demultiplexed from a Program Stream
 // C++ header
 
@@ -34,25 +34,32 @@ public:
   MPEG1or2Demux& sourceDemux() const { return fOurSourceDemux; }
 
 private: // We are created only by a MPEG1or2Demux (a friend)
-  LIVE555_EXPORT MPEG1or2DemuxedElementaryStream(UsageEnvironment& env,
+  LIVE555_EXPORT 
+  MPEG1or2DemuxedElementaryStream(UsageEnvironment& env,
 			      u_int8_t streamIdTag,
 			      MPEG1or2Demux& sourceDemux);
-  LIVE555_EXPORT virtual ~MPEG1or2DemuxedElementaryStream();
+  LIVE555_EXPORT
+  virtual ~MPEG1or2DemuxedElementaryStream();
 
 private:
   // redefined virtual functions:
-  LIVE555_EXPORT virtual void doGetNextFrame();
-  LIVE555_EXPORT virtual void doStopGettingFrames();
-  LIVE555_EXPORT virtual char const* MIMEtype() const;
-  LIVE555_EXPORT virtual unsigned maxFrameSize() const;
+  LIVE555_EXPORT 
+  virtual void doGetNextFrame();
+  LIVE555_EXPORT
+  virtual void doStopGettingFrames();
+  LIVE555_EXPORT
+  virtual char const* MIMEtype() const;
+  LIVE555_EXPORT
+  virtual unsigned maxFrameSize() const;
 
 private:
-  LIVE555_EXPORT static void afterGettingFrame(void* clientData,
+  LIVE555_EXPORT
+  static void afterGettingFrame(void* clientData,
 				unsigned frameSize, unsigned numTruncatedBytes,
 				struct timeval presentationTime,
 				unsigned durationInMicroseconds);
-
-  LIVE555_EXPORT void afterGettingFrame1(unsigned frameSize, unsigned numTruncatedBytes,
+  LIVE555_EXPORT
+  void afterGettingFrame1(unsigned frameSize, unsigned numTruncatedBytes,
 			  struct timeval presentationTime,
 			  unsigned durationInMicroseconds);
 

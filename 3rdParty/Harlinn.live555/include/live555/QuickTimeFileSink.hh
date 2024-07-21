@@ -14,7 +14,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 **********/
 // "liveMedia"
-// Copyright (c) 1996-2023 Live Networks, Inc.  All rights reserved.
+// Copyright (c) 1996-2024 Live Networks, Inc.  All rights reserved.
 // A sink that generates a QuickTime file from a composite media session
 // C++ header
 
@@ -27,7 +27,8 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class QuickTimeFileSink: public Medium {
 public:
-  LIVE555_EXPORT static QuickTimeFileSink* createNew(UsageEnvironment& env,
+  LIVE555_EXPORT 
+  static QuickTimeFileSink* createNew(UsageEnvironment& env,
 				      MediaSession& inputSession,
 				      char const* outputFileName,
 				      unsigned bufferSize = 20000,
@@ -39,35 +40,45 @@ public:
 				      Boolean generateHintTracks = False,
 				      Boolean generateMP4Format = False);
 
-  typedef void (__cdecl afterPlayingFunc)(void* clientData);
-  LIVE555_EXPORT Boolean startPlaying(afterPlayingFunc* afterFunc,
+  typedef void (afterPlayingFunc)(void* clientData);
+  LIVE555_EXPORT
+  Boolean startPlaying(afterPlayingFunc* afterFunc,
                        void* afterClientData);
 
   unsigned numActiveSubsessions() const { return fNumSubsessions; }
 
 protected:
-  LIVE555_EXPORT QuickTimeFileSink(UsageEnvironment& env, MediaSession& inputSession,
+  LIVE555_EXPORT 
+  QuickTimeFileSink(UsageEnvironment& env, MediaSession& inputSession,
 		    char const* outputFileName, unsigned bufferSize,
 		    unsigned short movieWidth, unsigned short movieHeight,
 		    unsigned movieFPS, Boolean packetLossCompensate,
 		    Boolean syncStreams, Boolean generateHintTracks,
 		    Boolean generateMP4Format);
       // called only by createNew()
-  LIVE555_EXPORT virtual ~QuickTimeFileSink();
+  LIVE555_EXPORT
+  virtual ~QuickTimeFileSink();
 
-  LIVE555_EXPORT virtual void noteRecordedFrame(MediaSubsession& inputSubsession,
+  LIVE555_EXPORT
+  virtual void noteRecordedFrame(MediaSubsession& inputSubsession,
 				 unsigned packetDataSize, struct timeval const& presentationTime);
 
 private:
-  LIVE555_EXPORT Boolean continuePlaying();
-  LIVE555_EXPORT static void afterGettingFrame(void* clientData, unsigned frameSize,
+  LIVE555_EXPORT 
+  Boolean continuePlaying();
+  LIVE555_EXPORT
+  static void afterGettingFrame(void* clientData, unsigned frameSize,
 				unsigned numTruncatedBytes,
 				struct timeval presentationTime,
 				unsigned durationInMicroseconds);
-  LIVE555_EXPORT static void onSourceClosure(void* clientData);
-  LIVE555_EXPORT void onSourceClosure1();
-  LIVE555_EXPORT static void onRTCPBye(void* clientData);
-  LIVE555_EXPORT void completeOutputFile();
+  LIVE555_EXPORT
+  static void onSourceClosure(void* clientData);
+  LIVE555_EXPORT
+  void onSourceClosure1();
+  LIVE555_EXPORT
+  static void onRTCPBye(void* clientData);
+  LIVE555_EXPORT
+  void completeOutputFile();
 
 private:
   friend class SubsessionIOState;
@@ -89,21 +100,32 @@ private:
 private:
   ///// Definitions specific to the QuickTime file format:
 
+  LIVE555_EXPORT 
   unsigned addWord64(u_int64_t word);
+  LIVE555_EXPORT
   unsigned addWord(unsigned word);
+  LIVE555_EXPORT
   unsigned addHalfWord(unsigned short halfWord);
+  LIVE555_EXPORT
   unsigned addByte(unsigned char byte) {
     putc(byte, fOutFid);
     return 1;
   }
+  LIVE555_EXPORT
   unsigned addZeroWords(unsigned numWords);
+  LIVE555_EXPORT
   unsigned add4ByteString(char const* str);
+  LIVE555_EXPORT
   unsigned addArbitraryString(char const* str,
 			      Boolean oneByteLength = True);
+  LIVE555_EXPORT
   unsigned addAtomHeader(char const* atomName);
+  LIVE555_EXPORT
   unsigned addAtomHeader64(char const* atomName);
       // strlen(atomName) must be 4
+  LIVE555_EXPORT
   void setWord(int64_t filePosn, unsigned size);
+  LIVE555_EXPORT
   void setWord64(int64_t filePosn, u_int64_t size);
 
   unsigned movieTimeScale() const {return fLargestRTPtimestampFrequency;}
@@ -151,6 +173,8 @@ private:
                           _atom(h263);
                           _atom(avc1);
                               _atom(avcC);
+                          _atom(hvc1);
+                              _atom(hvcC);
                           _atom(mp4v);
                           _atom(rtp);
                               _atom(tims);

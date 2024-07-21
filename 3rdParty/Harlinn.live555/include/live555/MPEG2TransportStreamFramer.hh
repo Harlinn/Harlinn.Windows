@@ -14,7 +14,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 **********/
 // "liveMedia"
-// Copyright (c) 1996-2023 Live Networks, Inc.  All rights reserved.
+// Copyright (c) 1996-2024 Live Networks, Inc.  All rights reserved.
 // A filter that passes through (unchanged) chunks that contain an integral number
 // of MPEG-2 Transport Stream packets, but returning (in "fDurationInMicroseconds")
 // an updated estimate of the time gap between chunks.
@@ -33,36 +33,47 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class MPEG2TransportStreamFramer: public FramedFilter {
 public:
-  LIVE555_EXPORT static MPEG2TransportStreamFramer*
+  LIVE555_EXPORT
+  static MPEG2TransportStreamFramer*
   createNew(UsageEnvironment& env, FramedSource* inputSource);
 
   u_int64_t tsPacketCount() const { return fTSPacketCount; }
 
   void changeInputSource(FramedSource* newInputSource) { fInputSource = newInputSource; }
 
-  LIVE555_EXPORT void clearPIDStatusTable();
-  LIVE555_EXPORT void setNumTSPacketsToStream(unsigned long numTSRecordsToStream);
-  LIVE555_EXPORT void setPCRLimit(float pcrLimit);
+  LIVE555_EXPORT
+  void clearPIDStatusTable();
+  LIVE555_EXPORT
+  void setNumTSPacketsToStream(unsigned long numTSRecordsToStream);
+  LIVE555_EXPORT
+  void setPCRLimit(float pcrLimit);
 
 protected:
-  LIVE555_EXPORT MPEG2TransportStreamFramer(UsageEnvironment& env, FramedSource* inputSource);
+  LIVE555_EXPORT
+  MPEG2TransportStreamFramer(UsageEnvironment& env, FramedSource* inputSource);
       // called only by createNew()
-  LIVE555_EXPORT virtual ~MPEG2TransportStreamFramer();
+  LIVE555_EXPORT
+  virtual ~MPEG2TransportStreamFramer();
 
 private:
   // Redefined virtual functions:
-  LIVE555_EXPORT virtual void doGetNextFrame();
-  LIVE555_EXPORT virtual void doStopGettingFrames();
+  LIVE555_EXPORT
+  virtual void doGetNextFrame();
+  LIVE555_EXPORT
+  virtual void doStopGettingFrames();
 
 private:
-  LIVE555_EXPORT static void afterGettingFrame(void* clientData, unsigned frameSize,
+  LIVE555_EXPORT
+  static void afterGettingFrame(void* clientData, unsigned frameSize,
 				unsigned numTruncatedBytes,
 				struct timeval presentationTime,
 				unsigned durationInMicroseconds);
-  LIVE555_EXPORT void afterGettingFrame1(unsigned frameSize,
+  LIVE555_EXPORT
+  void afterGettingFrame1(unsigned frameSize,
 			  struct timeval presentationTime);
 
-  LIVE555_EXPORT Boolean updateTSPacketDurationEstimate(unsigned char* pkt, double timeNow);
+  LIVE555_EXPORT
+  Boolean updateTSPacketDurationEstimate(unsigned char* pkt, double timeNow);
 
 private:
   u_int64_t fTSPacketCount;

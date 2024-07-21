@@ -14,7 +14,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 **********/
 // "liveMedia"
-// Copyright (c) 1996-2023 Live Networks, Inc.  All rights reserved.
+// Copyright (c) 1996-2024 Live Networks, Inc.  All rights reserved.
 // MPEG4-GENERIC ("audio", "video", or "application") RTP stream sources
 // C++ header
 
@@ -27,7 +27,8 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class MPEG4GenericRTPSource: public MultiFramedRTPSource {
 public:
-  LIVE555_EXPORT static MPEG4GenericRTPSource*
+  LIVE555_EXPORT 
+  static MPEG4GenericRTPSource*
   createNew(UsageEnvironment& env, Groupsock* RTPgs,
 	    unsigned char rtpPayloadFormat,
 	    unsigned rtpTimestampFrequency,
@@ -40,7 +41,8 @@ public:
   // it *cannot* be NULL
 
 protected:
-  LIVE555_EXPORT MPEG4GenericRTPSource(UsageEnvironment& env, Groupsock* RTPgs,
+  LIVE555_EXPORT 
+  MPEG4GenericRTPSource(UsageEnvironment& env, Groupsock* RTPgs,
 			unsigned char rtpPayloadFormat,
 			unsigned rtpTimestampFrequency,
 			char const* mediumName,
@@ -49,13 +51,16 @@ protected:
 			unsigned indexDeltaLength
 			);
       // called only by createNew(), or by subclass constructors
-  LIVE555_EXPORT virtual ~MPEG4GenericRTPSource();
+  LIVE555_EXPORT
+  virtual ~MPEG4GenericRTPSource();
 
 protected:
   // redefined virtual functions:
-  LIVE555_EXPORT virtual Boolean processSpecialHeader(BufferedPacket* packet,
+  LIVE555_EXPORT 
+  virtual Boolean processSpecialHeader(BufferedPacket* packet,
                                        unsigned& resultSpecialHeaderSize);
-  LIVE555_EXPORT virtual char const* MIMEtype() const;
+  LIVE555_EXPORT
+  virtual char const* MIMEtype() const;
 
 private:
   char* fMIMEType;
@@ -73,6 +78,7 @@ private:
 
 // A function that looks up the sampling frequency from an
 // "AudioSpecificConfig" string.  (0 means 'unknown')
-LIVE555_EXPORT unsigned samplingFrequencyFromAudioSpecificConfig(char const* configStr);
+LIVE555_EXPORT
+unsigned samplingFrequencyFromAudioSpecificConfig(char const* configStr);
 
 #endif

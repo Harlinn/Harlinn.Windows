@@ -14,7 +14,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 **********/
 // "liveMedia"
-// Copyright (c) 1996-2023 Live Networks, Inc.  All rights reserved.
+// Copyright (c) 1996-2024 Live Networks, Inc.  All rights reserved.
 // Because MD5 may not be implemented (at least, with the same interface) on all systems,
 // we have our own implementation.
 // Implementation
@@ -50,7 +50,8 @@ private:
   unsigned char fWorkingBuffer[64];
 };
 
-LIVE555_EXPORT char* our_MD5Data(unsigned char const* data, unsigned dataSize, char* outputDigest) {
+LIVE555_EXPORT
+char* our_MD5Data(unsigned char const* data, unsigned dataSize, char* outputDigest) {
   MD5Context ctx;
 
   ctx.addData(data, dataSize);
@@ -61,7 +62,8 @@ LIVE555_EXPORT char* our_MD5Data(unsigned char const* data, unsigned dataSize, c
   return outputDigest;
 }
 
-LIVE555_EXPORT unsigned char* our_MD5DataRaw(unsigned char const* data, unsigned dataSize,
+LIVE555_EXPORT
+unsigned char* our_MD5DataRaw(unsigned char const* data, unsigned dataSize,
 			      unsigned char* outputDigest) {
   MD5Context ctx;
 

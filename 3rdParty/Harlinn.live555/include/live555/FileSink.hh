@@ -14,7 +14,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 **********/
 // "liveMedia"
-// Copyright (c) 1996-2023 Live Networks, Inc.  All rights reserved.
+// Copyright (c) 1996-2024 Live Networks, Inc.  All rights reserved.
 // File Sinks
 // C++ header
 
@@ -27,7 +27,8 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class FileSink: public MediaSink {
 public:
-  LIVE555_EXPORT static FileSink* createNew(UsageEnvironment& env, char const* fileName,
+  LIVE555_EXPORT 
+  static FileSink* createNew(UsageEnvironment& env, char const* fileName,
 			     unsigned bufferSize = 20000,
 			     Boolean oneFilePerFrame = False);
   // "bufferSize" should be at least as large as the largest expected
@@ -37,25 +38,31 @@ public:
   //   file name suffix).  The default behavior ("oneFilePerFrame" == False)
   //   is to output all incoming data into a single file.
 
-  LIVE555_EXPORT virtual void addData(unsigned char const* data, unsigned dataSize,
+  LIVE555_EXPORT
+  virtual void addData(unsigned char const* data, unsigned dataSize,
 		       struct timeval presentationTime);
   // (Available in case a client wants to add extra data to the output file)
 
 protected:
-  LIVE555_EXPORT FileSink(UsageEnvironment& env, FILE* fid, unsigned bufferSize,
+  LIVE555_EXPORT 
+  FileSink(UsageEnvironment& env, FILE* fid, unsigned bufferSize,
 	   char const* perFrameFileNamePrefix);
       // called only by createNew()
-  LIVE555_EXPORT virtual ~FileSink();
+  LIVE555_EXPORT
+  virtual ~FileSink();
 
 protected: // redefined virtual functions:
-  LIVE555_EXPORT virtual Boolean continuePlaying();
+  LIVE555_EXPORT 
+  virtual Boolean continuePlaying();
 
 protected:
-  LIVE555_EXPORT static void afterGettingFrame(void* clientData, unsigned frameSize,
+  LIVE555_EXPORT 
+  static void afterGettingFrame(void* clientData, unsigned frameSize,
 				unsigned numTruncatedBytes,
 				struct timeval presentationTime,
 				unsigned durationInMicroseconds);
-  LIVE555_EXPORT virtual void afterGettingFrame(unsigned frameSize,
+  LIVE555_EXPORT
+  virtual void afterGettingFrame(unsigned frameSize,
 				 unsigned numTruncatedBytes,
 				 struct timeval presentationTime);
 

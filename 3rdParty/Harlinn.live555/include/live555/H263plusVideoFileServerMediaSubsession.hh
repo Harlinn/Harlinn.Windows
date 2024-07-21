@@ -14,7 +14,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 **********/
 // "liveMedia"
-// Copyright (c) 1996-2023 Live Networks, Inc.  All rights reserved.
+// Copyright (c) 1996-2024 Live Networks, Inc.  All rights reserved.
 // A 'ServerMediaSubsession' object that creates new, unicast, "RTPSink"s
 // on demand, from a H.263 video file.
 // C++ header
@@ -28,19 +28,24 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class H263plusVideoFileServerMediaSubsession: public FileServerMediaSubsession{
 public:
-  LIVE555_EXPORT static H263plusVideoFileServerMediaSubsession*
+  LIVE555_EXPORT 
+  static H263plusVideoFileServerMediaSubsession*
   createNew(UsageEnvironment& env, char const* fileName, Boolean reuseFirstSource);
 
 private:
-  LIVE555_EXPORT H263plusVideoFileServerMediaSubsession(UsageEnvironment& env,
+  LIVE555_EXPORT 
+  H263plusVideoFileServerMediaSubsession(UsageEnvironment& env,
 					 char const* fileName, Boolean reuseFirstSource);
       // called only by createNew();
-  LIVE555_EXPORT virtual ~H263plusVideoFileServerMediaSubsession();
+  LIVE555_EXPORT
+  virtual ~H263plusVideoFileServerMediaSubsession();
 
 private: // redefined virtual functions
-  LIVE555_EXPORT virtual FramedSource* createNewStreamSource(unsigned clientSessionId,
+  LIVE555_EXPORT 
+  virtual FramedSource* createNewStreamSource(unsigned clientSessionId,
 					      unsigned& estBitrate);
-  LIVE555_EXPORT virtual RTPSink* createNewRTPSink(Groupsock* rtpGroupsock,
+  LIVE555_EXPORT
+  virtual RTPSink* createNewRTPSink(Groupsock* rtpGroupsock,
                                     unsigned char rtpPayloadTypeIfDynamic,
 				                    FramedSource* inputSource);
 };

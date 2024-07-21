@@ -14,7 +14,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 **********/
 // "liveMedia"
-// Copyright (c) 1996-2023 Live Networks, Inc.  All rights reserved.
+// Copyright (c) 1996-2024 Live Networks, Inc.  All rights reserved.
 // RTP sink for 'ADUized' MP3 frames ("mpa-robust")
 // C++ header
 
@@ -27,26 +27,31 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class MP3ADURTPSink: public AudioRTPSink {
 public:
-  LIVE555_EXPORT static MP3ADURTPSink* createNew(UsageEnvironment& env, Groupsock* RTPgs,
+  LIVE555_EXPORT 
+  static MP3ADURTPSink* createNew(UsageEnvironment& env, Groupsock* RTPgs,
 				  unsigned char RTPPayloadType);
 
 protected:
-  LIVE555_EXPORT virtual ~MP3ADURTPSink();
+  LIVE555_EXPORT 
+  virtual ~MP3ADURTPSink();
 
 private:
-  LIVE555_EXPORT MP3ADURTPSink(UsageEnvironment& env, Groupsock* RTPgs,
+  LIVE555_EXPORT 
+  MP3ADURTPSink(UsageEnvironment& env, Groupsock* RTPgs,
 		unsigned char RTPPayloadType);
 	// called only by createNew()
 
 
 private:
   // Redefined virtual functions:
-  LIVE555_EXPORT virtual void doSpecialFrameHandling(unsigned fragmentationOffset,
+  LIVE555_EXPORT 
+  virtual void doSpecialFrameHandling(unsigned fragmentationOffset,
                                       unsigned char* frameStart,
                                       unsigned numBytesInFrame,
                                       struct timeval framePresentationTime,
                                       unsigned numRemainingBytes);
-  LIVE555_EXPORT virtual unsigned specialHeaderSize() const;
+  LIVE555_EXPORT
+  virtual unsigned specialHeaderSize() const;
 
 private:
   unsigned fCurADUSize; // used when fragmenting over multiple RTP packets

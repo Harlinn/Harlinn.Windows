@@ -14,7 +14,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 **********/
 // "liveMedia"
-// Copyright (c) 1996-2023 Live Networks, Inc.  All rights reserved.
+// Copyright (c) 1996-2024 Live Networks, Inc.  All rights reserved.
 // A WAV audio file source
 // NOTE: Samples are returned in little-endian order (the same order in which
 // they were stored in the file).
@@ -38,33 +38,46 @@ typedef enum {
 
 class WAVAudioFileSource: public AudioInputDevice {
 public:
-
-  LIVE555_EXPORT static WAVAudioFileSource* createNew(UsageEnvironment& env,
+  LIVE555_EXPORT 
+  static WAVAudioFileSource* createNew(UsageEnvironment& env,
 					char const* fileName);
 
-  LIVE555_EXPORT unsigned numPCMBytes() const;
-  LIVE555_EXPORT void setScaleFactor(int scale);
-  LIVE555_EXPORT void seekToPCMByte(unsigned byteNumber);
-  LIVE555_EXPORT void limitNumBytesToStream(unsigned numBytesToStream);
+  LIVE555_EXPORT
+  unsigned numPCMBytes() const;
+  LIVE555_EXPORT
+  void setScaleFactor(int scale);
+  LIVE555_EXPORT
+  void seekToPCMByte(unsigned byteNumber);
+  LIVE555_EXPORT
+  void limitNumBytesToStream(unsigned numBytesToStream);
       // if "numBytesToStream" is >0, then we limit the stream to that number of bytes, before treating it as EOF
 
-  LIVE555_EXPORT unsigned char getAudioFormat();
+  LIVE555_EXPORT
+  unsigned char getAudioFormat();
 
 protected:
-  LIVE555_EXPORT WAVAudioFileSource(UsageEnvironment& env, FILE* fid);
+  LIVE555_EXPORT 
+  WAVAudioFileSource(UsageEnvironment& env, FILE* fid);
 	// called only by createNew()
 
-  LIVE555_EXPORT virtual ~WAVAudioFileSource();
+  LIVE555_EXPORT
+  virtual ~WAVAudioFileSource();
 
-  LIVE555_EXPORT static void fileReadableHandler(WAVAudioFileSource* source, int mask);
-  LIVE555_EXPORT void doReadFromFile();
+  LIVE555_EXPORT
+  static void fileReadableHandler(WAVAudioFileSource* source, int mask);
+  LIVE555_EXPORT
+  void doReadFromFile();
 
 private:
   // redefined virtual functions:
-  LIVE555_EXPORT virtual void doGetNextFrame();
-  LIVE555_EXPORT virtual void doStopGettingFrames();
-  LIVE555_EXPORT virtual Boolean setInputPort(int portIndex);
-  LIVE555_EXPORT virtual double getAverageLevel() const;
+  LIVE555_EXPORT 
+  virtual void doGetNextFrame();
+  LIVE555_EXPORT
+  virtual void doStopGettingFrames();
+  LIVE555_EXPORT
+  virtual Boolean setInputPort(int portIndex);
+  LIVE555_EXPORT
+  virtual double getAverageLevel() const;
 
 protected:
   unsigned fPreferredFrameSize;

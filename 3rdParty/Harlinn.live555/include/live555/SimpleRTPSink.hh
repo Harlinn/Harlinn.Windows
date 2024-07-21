@@ -14,7 +14,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 **********/
 // "liveMedia"
-// Copyright (c) 1996-2023 Live Networks, Inc.  All rights reserved.
+// Copyright (c) 1996-2024 Live Networks, Inc.  All rights reserved.
 // A simple RTP sink that packs frames into each outgoing
 //     packet, without any fragmentation or special headers.
 // C++ header
@@ -28,7 +28,8 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class SimpleRTPSink: public MultiFramedRTPSink {
 public:
-  LIVE555_EXPORT static SimpleRTPSink*
+  LIVE555_EXPORT 
+  static SimpleRTPSink*
   createNew(UsageEnvironment& env, Groupsock* RTPgs,
 	    unsigned char rtpPayloadFormat,
 	    unsigned rtpTimestampFrequency,
@@ -44,7 +45,8 @@ public:
   void setMBitOnNextPacket() { fSetMBitOnNextPacket = True; } // hack for optionally setting the RTP 'M' bit from outside the class
 
 protected:
-  LIVE555_EXPORT SimpleRTPSink(UsageEnvironment& env, Groupsock* RTPgs,
+  LIVE555_EXPORT 
+  SimpleRTPSink(UsageEnvironment& env, Groupsock* RTPgs,
 		unsigned char rtpPayloadFormat,
 		unsigned rtpTimestampFrequency,
 		char const* sdpMediaTypeString,
@@ -54,18 +56,22 @@ protected:
 		Boolean doNormalMBitRule);
 	// called only by createNew()
 
-  LIVE555_EXPORT virtual ~SimpleRTPSink();
+  LIVE555_EXPORT
+  virtual ~SimpleRTPSink();
 
 protected: // redefined virtual functions
-  LIVE555_EXPORT virtual void doSpecialFrameHandling(unsigned fragmentationOffset,
+  LIVE555_EXPORT 
+  virtual void doSpecialFrameHandling(unsigned fragmentationOffset,
                                       unsigned char* frameStart,
                                       unsigned numBytesInFrame,
                                       struct timeval framePresentationTime,
                                       unsigned numRemainingBytes);
-  LIVE555_EXPORT virtual
+  LIVE555_EXPORT
+  virtual
   Boolean frameCanAppearAfterPacketStart(unsigned char const* frameStart,
 					 unsigned numBytesInFrame) const;
-  LIVE555_EXPORT virtual char const* sdpMediaType() const;
+  LIVE555_EXPORT
+  virtual char const* sdpMediaType() const;
 
 private:
   char const* fSDPMediaTypeString;

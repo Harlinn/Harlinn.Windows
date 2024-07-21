@@ -14,7 +14,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 **********/
 // "liveMedia"
-// Copyright (c) 1996-2023 Live Networks, Inc.  All rights reserved.
+// Copyright (c) 1996-2024 Live Networks, Inc.  All rights reserved.
 // A class that encapsulates an Ogg file
 // C++ header
 
@@ -35,8 +35,9 @@ typedef void OggDemuxOnDeletionFunc(void* objectToNotify, OggDemux* demuxBeingDe
 
 class OggFile: public Medium {
 public:
-  typedef void (__cdecl onCreationFunc)(OggFile* newFile, void* clientData);
-  LIVE555_EXPORT static void createNew(UsageEnvironment& env, char const* fileName,
+  typedef void (onCreationFunc)(OggFile* newFile, void* clientData);
+  LIVE555_EXPORT
+  static void createNew(UsageEnvironment& env, char const* fileName,
 			onCreationFunc* onCreation, void* onCreationClientData);
       // Note: Unlike most "createNew()" functions, this one doesn't return a new object
       // immediately.  Instead, because this class requires file reading (to parse the
@@ -44,22 +45,27 @@ public:
       // is signalled by calling - from the event loop - an 'onCreationFunc' that is passed as
       // a parameter to "createNew()".
 
-  LIVE555_EXPORT OggTrack* lookup(u_int32_t trackNumber);
+  LIVE555_EXPORT
+  OggTrack* lookup(u_int32_t trackNumber);
 
-  LIVE555_EXPORT OggDemux* newDemux(OggDemuxOnDeletionFunc* onDeletionFunc = NULL, void* objectToNotify = NULL);
+  LIVE555_EXPORT
+  OggDemux* newDemux(OggDemuxOnDeletionFunc* onDeletionFunc = NULL, void* objectToNotify = NULL);
       // Creates a demultiplexor for extracting tracks from this file.
       // (Separate clients will typically have separate demultiplexors.)
 
   char const* fileName() const { return fFileName; }
-  LIVE555_EXPORT unsigned numTracks() const;
+  LIVE555_EXPORT
+  unsigned numTracks() const;
 
-  LIVE555_EXPORT FramedSource*
+  LIVE555_EXPORT
+  FramedSource*
   createSourceForStreaming(FramedSource* baseSource, u_int32_t trackNumber,
                            unsigned& estBitrate, unsigned& numFiltersInFrontOfTrack);
     // Takes a data source (which must be a demultiplexed track from this file) and returns
     // a (possibly modified) data source that can be used for streaming.
 
-  LIVE555_EXPORT RTPSink* createRTPSinkForTrackNumber(u_int32_t trackNumber, Groupsock* rtpGroupsock,
+  LIVE555_EXPORT
+  RTPSink* createRTPSinkForTrackNumber(u_int32_t trackNumber, Groupsock* rtpGroupsock,
                                        unsigned char rtpPayloadTypeIfDynamic);
     // Creates a "RTPSink" object that would be appropriate for streaming the specified track,
     // or NULL if no appropriate "RTPSink" exists
@@ -67,15 +73,21 @@ public:
   class OggTrackTable& trackTable() { return *fTrackTable; }
 
 private:
-  LIVE555_EXPORT OggFile(UsageEnvironment& env, char const* fileName, onCreationFunc* onCreation, void* onCreationClientData);
+  LIVE555_EXPORT 
+  OggFile(UsageEnvironment& env, char const* fileName, onCreationFunc* onCreation, void* onCreationClientData);
     // called only by createNew()
-  LIVE555_EXPORT virtual ~OggFile();
+  LIVE555_EXPORT
+  virtual ~OggFile();
 
-  LIVE555_EXPORT static void handleEndOfBosPageParsing(void* clientData);
-  LIVE555_EXPORT void handleEndOfBosPageParsing();
+  LIVE555_EXPORT
+  static void handleEndOfBosPageParsing(void* clientData);
+  LIVE555_EXPORT
+  void handleEndOfBosPageParsing();
 
-  LIVE555_EXPORT void addTrack(OggTrack* newTrack);
-  LIVE555_EXPORT void removeDemux(OggDemux* demux);
+  LIVE555_EXPORT
+  void addTrack(OggTrack* newTrack);
+  LIVE555_EXPORT
+  void removeDemux(OggDemux* demux);
 
 private:
   friend class OggFileParser;
@@ -91,8 +103,10 @@ private:
 
 class OggTrack {
 public:
-  LIVE555_EXPORT OggTrack();
-  LIVE555_EXPORT virtual ~OggTrack();
+  LIVE555_EXPORT 
+  OggTrack();
+  LIVE555_EXPORT
+  virtual ~OggTrack();
 
   // track parameters
   u_int32_t trackNumber; // bitstream serial number
@@ -130,10 +144,13 @@ public:
 
 class OggTrackTableIterator {
 public:
-  LIVE555_EXPORT OggTrackTableIterator(class OggTrackTable& ourTable);
-  LIVE555_EXPORT virtual ~OggTrackTableIterator();
+  LIVE555_EXPORT 
+  OggTrackTableIterator(class OggTrackTable& ourTable);
+  LIVE555_EXPORT
+  virtual ~OggTrackTableIterator();
 
-  LIVE555_EXPORT OggTrack* next();
+  LIVE555_EXPORT
+  OggTrack* next();
 
 private:
   HashTable::Iterator* fIter;
@@ -141,11 +158,13 @@ private:
 
 class OggDemux: public Medium {
 public:
-  LIVE555_EXPORT FramedSource* newDemuxedTrack(u_int32_t& resultTrackNumber);
+  LIVE555_EXPORT 
+  FramedSource* newDemuxedTrack(u_int32_t& resultTrackNumber);
     // Returns a new stream ("FramedSource" subclass) that represents the next media track
     // from the file.  This function returns NULL when no more media tracks exist.
 
-  LIVE555_EXPORT FramedSource* newDemuxedTrackByTrackNumber(unsigned trackNumber);
+  LIVE555_EXPORT
+  FramedSource* newDemuxedTrackByTrackNumber(unsigned trackNumber);
       // As above, but creates a new stream for a specific track number within the Matroska file.
       // (You should not call this function more than once with the same track number.)
 
@@ -156,18 +175,25 @@ public:
 protected:
   friend class OggFile;
   friend class OggFileParser;
-  LIVE555_EXPORT class OggDemuxedTrack* lookupDemuxedTrack(u_int32_t trackNumber);
+  LIVE555_EXPORT
+  class OggDemuxedTrack* lookupDemuxedTrack(u_int32_t trackNumber);
 
-  LIVE555_EXPORT OggDemux(OggFile& ourFile);
-  LIVE555_EXPORT virtual ~OggDemux();
+  LIVE555_EXPORT
+  OggDemux(OggFile& ourFile);
+  LIVE555_EXPORT
+  virtual ~OggDemux();
 
 private:
   friend class OggDemuxedTrack;
-  LIVE555_EXPORT void removeTrack(u_int32_t trackNumber);
-  LIVE555_EXPORT void continueReading(); // called by a demuxed track to tell us that it has a pending read ("doGetNextFrame()")
+  LIVE555_EXPORT
+  void removeTrack(u_int32_t trackNumber);
+  LIVE555_EXPORT
+  void continueReading(); // called by a demuxed track to tell us that it has a pending read ("doGetNextFrame()")
 
-  LIVE555_EXPORT static void handleEndOfFile(void* clientData);
-  LIVE555_EXPORT void handleEndOfFile();
+  LIVE555_EXPORT
+  static void handleEndOfFile(void* clientData);
+  LIVE555_EXPORT
+  void handleEndOfFile();
 
 private:
   OggFile& fOurFile;

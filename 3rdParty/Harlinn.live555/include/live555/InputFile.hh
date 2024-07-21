@@ -14,7 +14,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 **********/
 // "liveMedia"
-// Copyright (c) 1996-2023 Live Networks, Inc.  All rights reserved.
+// Copyright (c) 1996-2024 Live Networks, Inc.  All rights reserved.
 // Common routines for opening/closing named input files
 // C++ header
 
@@ -46,22 +46,28 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 #include <sys/stat.h>
 #endif
 
-LIVE555_EXPORT FILE* OpenInputFile(UsageEnvironment& env, char const* fileName);
+LIVE555_EXPORT
+FILE* OpenInputFile(UsageEnvironment& env, char const* fileName);
 
+LIVE555_EXPORT
 void CloseInputFile(FILE* fid);
 
 #undef GetFileSize // because some platforms already define this as a macro
-LIVE555_EXPORT u_int64_t GetFileSize(char const* fileName, FILE* fid);
+LIVE555_EXPORT
+u_int64_t GetFileSize(char const* fileName, FILE* fid);
     // 0 means zero-length, unbounded, or unknown
 
-LIVE555_EXPORT int64_t SeekFile64(FILE *fid, int64_t offset, int whence);
+LIVE555_EXPORT
+int64_t SeekFile64(FILE *fid, int64_t offset, int whence);
     // A platform-independent routine for seeking within (possibly) large files
 
-LIVE555_EXPORT int64_t TellFile64(FILE *fid);
+LIVE555_EXPORT
+int64_t TellFile64(FILE *fid);
     // A platform-independent routine for reporting the position within
     // (possibly) large files
 
-LIVE555_EXPORT Boolean FileIsSeekable(FILE *fid);
+LIVE555_EXPORT
+Boolean FileIsSeekable(FILE *fid);
     // Tests whether "fid" is seekable, by trying to seek within it.
 
 #endif

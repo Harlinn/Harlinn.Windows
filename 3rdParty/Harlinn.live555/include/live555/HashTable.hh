@@ -13,7 +13,7 @@ You should have received a copy of the GNU Lesser General Public License
 along with this library; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 **********/
-// Copyright (c) 1996-2023 Live Networks, Inc.  All rights reserved.
+// Copyright (c) 1996-2024 Live Networks, Inc.  All rights reserved.
 // Generic Hash Table
 // C++ header
 
@@ -26,11 +26,13 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class HashTable {
 public:
-  LIVE555_EXPORT virtual ~HashTable();
+  LIVE555_EXPORT 
+  virtual ~HashTable();
   
   // The following must be implemented by a particular
   // implementation (subclass):
-  LIVE555_EXPORT static HashTable* create(int keyType);
+  LIVE555_EXPORT
+  static HashTable* create(int keyType);
   
   virtual void* Add(char const* key, void* value) = 0;
   // Returns the old value if different, otherwise 0
@@ -45,32 +47,38 @@ public:
   public:
     // The following must be implemented by a particular
     // implementation (subclass):
-    LIVE555_EXPORT static Iterator* create(HashTable const& hashTable);
+    LIVE555_EXPORT 
+    static Iterator* create(HashTable const& hashTable);
     
-    LIVE555_EXPORT virtual ~Iterator();
+    LIVE555_EXPORT
+    virtual ~Iterator();
     
     virtual void* next(char const*& key) = 0; // returns 0 if none
     
   protected:
-    LIVE555_EXPORT Iterator(); // abstract base class
+    LIVE555_EXPORT 
+    Iterator(); // abstract base class
   };
   
   // A shortcut that can be used to successively remove each of
   // the entries in the table (e.g., so that their values can be
   // deleted, if they happen to be pointers to allocated memory).
-  LIVE555_EXPORT void* RemoveNext();
+  LIVE555_EXPORT
+  void* RemoveNext();
   
   // Returns the first entry in the table.
   // (This is useful for deleting each entry in the table, if the entry's destructor also removes itself from the table.)
-  LIVE555_EXPORT void* getFirst();
+  LIVE555_EXPORT
+  void* getFirst(); 
   
 protected:
-  LIVE555_EXPORT HashTable(); // abstract base class
+  LIVE555_EXPORT 
+  HashTable(); // abstract base class
 };
 
 // Warning: The following are deliberately the same as in
 // Tcl's hash table implementation
-int const STRING_HASH_KEYS = 0;
-int const ONE_WORD_HASH_KEYS = 1;
+constexpr int const STRING_HASH_KEYS = 0;
+constexpr int const ONE_WORD_HASH_KEYS = 1;
 
 #endif

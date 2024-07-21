@@ -14,7 +14,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 **********/
 // "liveMedia"
-// Copyright (c) 1996-2023 Live Networks, Inc.  All rights reserved.
+// Copyright (c) 1996-2024 Live Networks, Inc.  All rights reserved.
 // Special objects which, when created, sends a custom RTSP "REGISTER" (or "DEREGISTER") command
 // to a specified client.
 // C++ header
@@ -28,9 +28,11 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class RTSPRegisterOrDeregisterSender: public RTSPClient {
 public:
-  LIVE555_EXPORT virtual ~RTSPRegisterOrDeregisterSender();
+  LIVE555_EXPORT 
+  virtual ~RTSPRegisterOrDeregisterSender();
 protected: // we're a virtual base class
-  LIVE555_EXPORT RTSPRegisterOrDeregisterSender(UsageEnvironment& env,
+  LIVE555_EXPORT 
+  RTSPRegisterOrDeregisterSender(UsageEnvironment& env,
 				 char const* remoteClientNameOrAddress, portNumBits remoteClientPortNum,
 				 Authenticator* authenticator,
 				 int verbosityLevel, char const* applicationName);
@@ -39,8 +41,10 @@ public: // Some compilers complain if this is "protected:"
   // A subclass of "RTSPClient::RequestRecord", specific to our "REGISTER" and "DEREGISTER" commands:
   class RequestRecord_REGISTER_or_DEREGISTER: public RTSPClient::RequestRecord {
   public:
-    LIVE555_EXPORT RequestRecord_REGISTER_or_DEREGISTER(unsigned cseq, char const* cmdName, RTSPClient::responseHandler* rtspResponseHandler, char const* rtspURLToRegisterOrDeregister, char const* proxyURLSuffix);
-    LIVE555_EXPORT virtual ~RequestRecord_REGISTER_or_DEREGISTER();
+    LIVE555_EXPORT 
+    RequestRecord_REGISTER_or_DEREGISTER(unsigned cseq, char const* cmdName, RTSPClient::responseHandler* rtspResponseHandler, char const* rtspURLToRegisterOrDeregister, char const* proxyURLSuffix);
+    LIVE555_EXPORT
+    virtual ~RequestRecord_REGISTER_or_DEREGISTER();
 
     char const* proxyURLSuffix() const { return fProxyURLSuffix; }
 
@@ -57,26 +61,31 @@ protected:
 
 class RTSPRegisterSender: public RTSPRegisterOrDeregisterSender {
 public:
-  LIVE555_EXPORT static RTSPRegisterSender*
+  LIVE555_EXPORT 
+  static RTSPRegisterSender*
   createNew(UsageEnvironment& env,
 	    char const* remoteClientNameOrAddress, portNumBits remoteClientPortNum, char const* rtspURLToRegister,
 	    RTSPClient::responseHandler* rtspResponseHandler, Authenticator* authenticator = NULL,
 	    Boolean requestStreamingViaTCP = False, char const* proxyURLSuffix = NULL, Boolean reuseConnection = False,
 	    int verbosityLevel = 0, char const* applicationName = NULL);
 
-  LIVE555_EXPORT void grabConnection(int& sock, struct sockaddr_storage& remoteAddress); // so that the socket doesn't get closed when we're deleted
+  LIVE555_EXPORT
+  void grabConnection(int& sock, struct sockaddr_storage& remoteAddress); // so that the socket doesn't get closed when we're deleted
 
 protected:
-  LIVE555_EXPORT RTSPRegisterSender(UsageEnvironment& env,
+  LIVE555_EXPORT 
+  RTSPRegisterSender(UsageEnvironment& env,
 		     char const* remoteClientNameOrAddress, portNumBits remoteClientPortNum, char const* rtspURLToRegister,
 		     RTSPClient::responseHandler* rtspResponseHandler, Authenticator* authenticator,
 		     Boolean requestStreamingViaTCP, char const* proxyURLSuffix, Boolean reuseConnection,
 		     int verbosityLevel, char const* applicationName);
     // called only by "createNew()"
-  LIVE555_EXPORT virtual ~RTSPRegisterSender();
+  LIVE555_EXPORT
+  virtual ~RTSPRegisterSender();
 
   // Redefined virtual functions:
-  LIVE555_EXPORT virtual Boolean setRequestFields(RequestRecord* request,
+  LIVE555_EXPORT
+  virtual Boolean setRequestFields(RequestRecord* request,
                                    char*& cmdURL, Boolean& cmdURLWasAllocated,
                                    char const*& protocolStr,
                                    char*& extraHeaders, Boolean& extraHeadersWereAllocated);
@@ -85,9 +94,11 @@ public: // Some compilers complain if this is "protected:"
   // A subclass of "RequestRecord_REGISTER_or_DEREGISTER", specific to our "REGISTER" command:
   class RequestRecord_REGISTER: public RTSPRegisterOrDeregisterSender::RequestRecord_REGISTER_or_DEREGISTER {
   public:
-    LIVE555_EXPORT RequestRecord_REGISTER(unsigned cseq, RTSPClient::responseHandler* rtspResponseHandler, char const* rtspURLToRegister,
+    LIVE555_EXPORT 
+    RequestRecord_REGISTER(unsigned cseq, RTSPClient::responseHandler* rtspResponseHandler, char const* rtspURLToRegister,
 			   Boolean reuseConnection, Boolean requestStreamingViaTCP, char const* proxyURLSuffix);
-    LIVE555_EXPORT virtual ~RequestRecord_REGISTER();
+    LIVE555_EXPORT
+    virtual ~RequestRecord_REGISTER();
 
     char const* rtspURLToRegister() const { return fRTSPURLToRegisterOrDeregister; }
     Boolean reuseConnection() const { return fReuseConnection; }
@@ -102,7 +113,8 @@ public: // Some compilers complain if this is "protected:"
 
 class RTSPDeregisterSender: public RTSPRegisterOrDeregisterSender {
 public:
-  LIVE555_EXPORT static RTSPDeregisterSender*
+  LIVE555_EXPORT 
+  static RTSPDeregisterSender*
   createNew(UsageEnvironment& env,
 	    char const* remoteClientNameOrAddress, portNumBits remoteClientPortNum, char const* rtspURLToDeregister,
 	    RTSPClient::responseHandler* rtspResponseHandler, Authenticator* authenticator = NULL,
@@ -110,16 +122,19 @@ public:
 	    int verbosityLevel = 0, char const* applicationName = NULL);
 
 protected:
-  LIVE555_EXPORT RTSPDeregisterSender(UsageEnvironment& env,
+  LIVE555_EXPORT 
+  RTSPDeregisterSender(UsageEnvironment& env,
 		       char const* remoteClientNameOrAddress, portNumBits remoteClientPortNum, char const* rtspURLToDeregister,
 		     RTSPClient::responseHandler* rtspResponseHandler, Authenticator* authenticator,
 		     char const* proxyURLSuffix,
 		     int verbosityLevel, char const* applicationName);
     // called only by "createNew()"
-  LIVE555_EXPORT virtual ~RTSPDeregisterSender();
+  LIVE555_EXPORT
+  virtual ~RTSPDeregisterSender();
 
   // Redefined virtual functions:
-  LIVE555_EXPORT virtual Boolean setRequestFields(RequestRecord* request,
+  LIVE555_EXPORT
+  virtual Boolean setRequestFields(RequestRecord* request,
                                    char*& cmdURL, Boolean& cmdURLWasAllocated,
                                    char const*& protocolStr,
                                    char*& extraHeaders, Boolean& extraHeadersWereAllocated);
@@ -128,8 +143,10 @@ public: // Some compilers complain if this is "protected:"
   // A subclass of "RequestRecord_REGISTER_or_DEREGISTER", specific to our "DEREGISTER" command:
   class RequestRecord_DEREGISTER: public RTSPRegisterOrDeregisterSender::RequestRecord_REGISTER_or_DEREGISTER {
   public:
-    LIVE555_EXPORT RequestRecord_DEREGISTER(unsigned cseq, RTSPClient::responseHandler* rtspResponseHandler, char const* rtspURLToDeregister, char const* proxyURLSuffix);
-    LIVE555_EXPORT virtual ~RequestRecord_DEREGISTER();
+    LIVE555_EXPORT 
+    RequestRecord_DEREGISTER(unsigned cseq, RTSPClient::responseHandler* rtspResponseHandler, char const* rtspURLToDeregister, char const* proxyURLSuffix);
+    LIVE555_EXPORT
+    virtual ~RequestRecord_DEREGISTER();
 
     char const* rtspURLToDeregister() const { return fRTSPURLToRegisterOrDeregister; }
   };

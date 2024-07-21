@@ -14,7 +14,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 **********/
 // "liveMedia"
-// Copyright (c) 1996-2023 Live Networks, Inc.  All rights reserved.
+// Copyright (c) 1996-2024 Live Networks, Inc.  All rights reserved.
 // RTP sink for JPEG video (RFC 2435)
 // C++ header
 
@@ -27,26 +27,33 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class JPEGVideoRTPSink: public VideoRTPSink {
 public:
-  LIVE555_EXPORT static JPEGVideoRTPSink* createNew(UsageEnvironment& env, Groupsock* RTPgs);
+  LIVE555_EXPORT 
+  static JPEGVideoRTPSink* createNew(UsageEnvironment& env, Groupsock* RTPgs);
 
 protected:
-  LIVE555_EXPORT JPEGVideoRTPSink(UsageEnvironment& env, Groupsock* RTPgs);
+  LIVE555_EXPORT 
+  JPEGVideoRTPSink(UsageEnvironment& env, Groupsock* RTPgs);
 	// called only by createNew()
 
-  LIVE555_EXPORT virtual ~JPEGVideoRTPSink();
+  LIVE555_EXPORT
+  virtual ~JPEGVideoRTPSink();
 
 private: // redefined virtual functions:
-  LIVE555_EXPORT virtual Boolean sourceIsCompatibleWithUs(MediaSource& source);
+  LIVE555_EXPORT 
+  virtual Boolean sourceIsCompatibleWithUs(MediaSource& source);
 
-  LIVE555_EXPORT virtual void doSpecialFrameHandling(unsigned fragmentationOffset,
+  LIVE555_EXPORT
+  virtual void doSpecialFrameHandling(unsigned fragmentationOffset,
                                       unsigned char* frameStart,
                                       unsigned numBytesInFrame,
                                       struct timeval framePresentationTime,
                                       unsigned numRemainingBytes);
-  LIVE555_EXPORT virtual
+  LIVE555_EXPORT
+  virtual
   Boolean frameCanAppearAfterPacketStart(unsigned char const* frameStart,
 					 unsigned numBytesInFrame) const;
-  LIVE555_EXPORT virtual unsigned specialHeaderSize() const;
+  LIVE555_EXPORT
+  virtual unsigned specialHeaderSize() const;
 };
 
 #endif

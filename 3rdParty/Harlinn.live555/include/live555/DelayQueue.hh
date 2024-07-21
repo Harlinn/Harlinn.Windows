@@ -13,14 +13,12 @@ You should have received a copy of the GNU Lesser General Public License
 along with this library; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 **********/
- // Copyright (c) 1996-2023, Live Networks, Inc.  All rights reserved
+ // Copyright (c) 1996-2024, Live Networks, Inc.  All rights reserved
 // Delay queue
 // C++ header
 
 #ifndef _DELAY_QUEUE_HH
 #define _DELAY_QUEUE_HH
-
-#include "live555Def.h"
 
 #ifndef _NET_COMMON_H
 #include "NetCommon.h"
@@ -49,20 +47,20 @@ public:
     return fTv.tv_usec;
   }
 
-  LIVE555_EXPORT bool operator>=(const Timeval& arg2) const;
-  int operator<=( const Timeval& arg2) const {
+  LIVE555_EXPORT int operator>=(Timeval const& arg2) const;
+  int operator<=(Timeval const& arg2) const {
     return arg2 >= *this;
   }
-  bool operator<( const Timeval& arg2) const {
+  int operator<(Timeval const& arg2) const {
     return !(*this >= arg2);
   }
-  bool operator>( const Timeval& arg2) const {
+  int operator>(Timeval const& arg2) const {
     return arg2 < *this;
   }
-  bool operator==( const Timeval& arg2) const {
+  int operator==(Timeval const& arg2) const {
     return *this >= arg2 && arg2 >= *this;
   }
-  bool operator!=(Timeval const& arg2) const {
+  int operator!=(Timeval const& arg2) const {
     return !(*this == arg2);
   }
 
@@ -127,9 +125,9 @@ public:
     : Timeval(secondsSinceEpoch, usecondsSinceEpoch) {}
 };
 
-LIVE555_EXPORT _EventTime TimeNow();
+_EventTime TimeNow();
 
-LIVE555_EXPORT extern _EventTime const THE_END_OF_TIME;
+extern _EventTime const THE_END_OF_TIME;
 
 
 ///// DelayQueueEntry /////

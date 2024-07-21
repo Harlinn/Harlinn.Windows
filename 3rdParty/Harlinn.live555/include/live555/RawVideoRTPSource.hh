@@ -14,7 +14,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 **********/
 // "liveMedia"
-// Copyright (c) 1996-2023 Live Networks, Inc.  All rights reserved.
+// Copyright (c) 1996-2024 Live Networks, Inc.  All rights reserved.
 // Raw Video RTP Sources (RFC 4175)
 // C++ header
 
@@ -27,27 +27,33 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class RawVideoRTPSource: public MultiFramedRTPSource {
 public:
-  LIVE555_EXPORT static RawVideoRTPSource* createNew(UsageEnvironment& env, Groupsock* RTPgs,
+  LIVE555_EXPORT 
+  static RawVideoRTPSource* createNew(UsageEnvironment& env, Groupsock* RTPgs,
 				      unsigned char rtpPayloadFormat,
 				      unsigned rtpTimestampFrequency);
-
-  LIVE555_EXPORT u_int16_t currentLineNumber() const; // of the most recently-read/processed scan line
-  LIVE555_EXPORT u_int8_t currentLineFieldId() const; // of the most recently-read/processed scan line (0 or 1)
-  LIVE555_EXPORT u_int16_t currentOffsetWithinLine() const; // of the most recently-read/processed scan line
+  LIVE555_EXPORT
+  u_int16_t currentLineNumber() const; // of the most recently-read/processed scan line
+  LIVE555_EXPORT
+  u_int8_t currentLineFieldId() const; // of the most recently-read/processed scan line (0 or 1)
+  LIVE555_EXPORT
+  u_int16_t currentOffsetWithinLine() const; // of the most recently-read/processed scan line
 
 protected:
-  LIVE555_EXPORT RawVideoRTPSource(UsageEnvironment& env, Groupsock* RTPgs,
+  LIVE555_EXPORT 
+  RawVideoRTPSource(UsageEnvironment& env, Groupsock* RTPgs,
 		    unsigned char rtpPayloadFormat,
                     unsigned rtpTimestampFrequency = 90000);
       // called only by createNew()
-
-  LIVE555_EXPORT virtual ~RawVideoRTPSource();
+  LIVE555_EXPORT
+  virtual ~RawVideoRTPSource();
 
 protected:
   // redefined virtual functions:
-  LIVE555_EXPORT virtual Boolean processSpecialHeader(BufferedPacket* packet,
+    LIVE555_EXPORT
+  virtual Boolean processSpecialHeader(BufferedPacket* packet,
                                        unsigned& resultSpecialHeaderSize);
-  LIVE555_EXPORT virtual char const* MIMEtype() const;
+    LIVE555_EXPORT
+  virtual char const* MIMEtype() const;
 
 private:
   unsigned fNumLines; // in the most recently read packet

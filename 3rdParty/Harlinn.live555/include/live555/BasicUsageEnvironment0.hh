@@ -13,7 +13,7 @@ You should have received a copy of the GNU Lesser General Public License
 along with this library; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 **********/
-// Copyright (c) 1996-2023 Live Networks, Inc.  All rights reserved.
+// Copyright (c) 1996-2024 Live Networks, Inc.  All rights reserved.
 // Basic Usage Environment: for a simple, non-scripted, console application
 // C++ header
 
@@ -45,26 +45,36 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 class BasicUsageEnvironment0: public UsageEnvironment {
 public:
   // redefined virtual functions:
-  LIVE555_EXPORT virtual MsgString getResultMsg() const;
+  LIVE555_EXPORT 
+  virtual MsgString getResultMsg() const;
 
-  LIVE555_EXPORT virtual void setResultMsg(MsgString msg);
-  LIVE555_EXPORT virtual void setResultMsg(MsgString msg1,
+  LIVE555_EXPORT
+  virtual void setResultMsg(MsgString msg);
+  LIVE555_EXPORT
+  virtual void setResultMsg(MsgString msg1,
 		    MsgString msg2);
-  LIVE555_EXPORT virtual void setResultMsg(MsgString msg1,
+  LIVE555_EXPORT
+  virtual void setResultMsg(MsgString msg1,
 		    MsgString msg2,
 		    MsgString msg3);
-  LIVE555_EXPORT virtual void setResultErrMsg(MsgString msg, int err = 0);
+  LIVE555_EXPORT
+  virtual void setResultErrMsg(MsgString msg, int err = 0);
 
-  LIVE555_EXPORT virtual void appendToResultMsg(MsgString msg);
+  LIVE555_EXPORT
+  virtual void appendToResultMsg(MsgString msg);
 
-  LIVE555_EXPORT virtual void reportBackgroundError();
+  LIVE555_EXPORT
+  virtual void reportBackgroundError();
 
 protected:
-  LIVE555_EXPORT BasicUsageEnvironment0(TaskScheduler& taskScheduler);
-  LIVE555_EXPORT virtual ~BasicUsageEnvironment0();
+  LIVE555_EXPORT 
+  BasicUsageEnvironment0(TaskScheduler& taskScheduler);
+  LIVE555_EXPORT
+  virtual ~BasicUsageEnvironment0();
 
 private:
-  LIVE555_EXPORT void reset();
+  LIVE555_EXPORT 
+  void reset();
 
   char fResultMsgBuffer[RESULT_MSG_BUFFER_MAX];
   unsigned fCurBufferSize;
@@ -73,33 +83,47 @@ private:
 
 class HandlerSet; // forward
 
+// Note: You may redefine MAX_NUM_EVENT_TRIGGERS,
+// but it must be <= the number of bits in an "EventTriggerId"
+#ifndef MAX_NUM_EVENT_TRIGGERS
 #define MAX_NUM_EVENT_TRIGGERS 32
+#endif
+#define EVENT_TRIGGER_ID_HIGH_BIT (1 << (MAX_NUM_EVENT_TRIGGERS-1))
 
 // An abstract base class, useful for subclassing
 // (e.g., to redefine the implementation of socket event handling)
 class BasicTaskScheduler0: public TaskScheduler {
 public:
-  LIVE555_EXPORT virtual ~BasicTaskScheduler0();
+  LIVE555_EXPORT 
+  virtual ~BasicTaskScheduler0();
 
-  LIVE555_EXPORT virtual void SingleStep(unsigned maxDelayTime = 0) = 0;
+  LIVE555_EXPORT
+  virtual void SingleStep(unsigned maxDelayTime = 0) = 0;
       // "maxDelayTime" is in microseconds.  It allows a subclass to impose a limit
       // on how long "select()" can delay, in case it wants to also do polling.
       // 0 (the default value) means: There's no maximum; just look at the delay queue
 
 public:
   // Redefined virtual functions:
-  LIVE555_EXPORT virtual TaskToken scheduleDelayedTask(int64_t microseconds, TaskFunc* proc,
+  LIVE555_EXPORT 
+  virtual TaskToken scheduleDelayedTask(int64_t microseconds, TaskFunc* proc,
 				void* clientData);
-  LIVE555_EXPORT virtual void unscheduleDelayedTask(TaskToken& prevTask);
+  LIVE555_EXPORT
+  virtual void unscheduleDelayedTask(TaskToken& prevTask);
 
-  LIVE555_EXPORT virtual void doEventLoop(char volatile* watchVariable);
+  LIVE555_EXPORT
+  virtual void doEventLoop(char volatile* watchVariable);
 
-  LIVE555_EXPORT virtual EventTriggerId createEventTrigger(TaskFunc* eventHandlerProc);
-  LIVE555_EXPORT virtual void deleteEventTrigger(EventTriggerId eventTriggerId);
-  LIVE555_EXPORT virtual void triggerEvent(EventTriggerId eventTriggerId, void* clientData = NULL);
+  LIVE555_EXPORT
+  virtual EventTriggerId createEventTrigger(TaskFunc* eventHandlerProc);
+  LIVE555_EXPORT
+  virtual void deleteEventTrigger(EventTriggerId eventTriggerId);
+  LIVE555_EXPORT
+  virtual void triggerEvent(EventTriggerId eventTriggerId, void* clientData = NULL);
 
 protected:
-  LIVE555_EXPORT BasicTaskScheduler0();
+  LIVE555_EXPORT 
+  BasicTaskScheduler0();
 
 protected:
   // To implement delayed operations:

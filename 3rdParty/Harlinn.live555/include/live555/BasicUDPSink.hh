@@ -14,7 +14,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 **********/
 // "liveMedia"
-// Copyright (c) 1996-2023 Live Networks, Inc.  All rights reserved.
+// Copyright (c) 1996-2024 Live Networks, Inc.  All rights reserved.
 // A simple UDP sink (i.e., without RTP or other headers added); one frame per packet
 // C++ header
 
@@ -30,26 +30,33 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class BasicUDPSink: public MediaSink {
 public:
-  LIVE555_EXPORT static BasicUDPSink* createNew(UsageEnvironment& env, Groupsock* gs,
+  LIVE555_EXPORT 
+  static BasicUDPSink* createNew(UsageEnvironment& env, Groupsock* gs,
 				  unsigned maxPayloadSize = 1450);
 protected:
-  LIVE555_EXPORT BasicUDPSink(UsageEnvironment& env, Groupsock* gs, unsigned maxPayloadSize);
+  LIVE555_EXPORT 
+  BasicUDPSink(UsageEnvironment& env, Groupsock* gs, unsigned maxPayloadSize);
       // called only by createNew()
-  LIVE555_EXPORT virtual ~BasicUDPSink();
+  LIVE555_EXPORT
+  virtual ~BasicUDPSink();
 
 private: // redefined virtual functions:
-  LIVE555_EXPORT virtual Boolean continuePlaying();
+  LIVE555_EXPORT 
+  virtual Boolean continuePlaying();
 
 private:
+  LIVE555_EXPORT 
   void continuePlaying1();
 
+  LIVE555_EXPORT
   static void afterGettingFrame(void* clientData, unsigned frameSize,
 				unsigned numTruncatedBytes,
 				struct timeval presentationTime,
 				unsigned durationInMicroseconds);
+  LIVE555_EXPORT
   void afterGettingFrame1(unsigned frameSize, unsigned numTruncatedBytes,
 			  unsigned durationInMicroseconds);
-
+  LIVE555_EXPORT
   static void sendNext(void* firstArg);
 
 private:

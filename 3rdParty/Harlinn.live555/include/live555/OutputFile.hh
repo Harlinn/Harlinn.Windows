@@ -14,7 +14,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 **********/
 // "liveMedia"
-// Copyright (c) 1996-2023 Live Networks, Inc.  All rights reserved.
+// Copyright (c) 1996-2024 Live Networks, Inc.  All rights reserved.
 // Common routines for opening/closing named output files
 // C++ header
 
@@ -24,8 +24,10 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 #include <UsageEnvironment.hh>
 #include <stdio.h>
 
-LIVE555_EXPORT FILE* OpenOutputFile(UsageEnvironment& env, char const* fileName);
+LIVE555_EXPORT
+FILE* OpenOutputFile(UsageEnvironment& env, char const* fileName);
 
-LIVE555_EXPORT void CloseOutputFile(FILE* fid);
+LIVE555_EXPORT
+void CloseOutputFile(FILE* fid);
 
 #endif

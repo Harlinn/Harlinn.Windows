@@ -351,6 +351,9 @@
     <ClInclude Include="include\live555\VP9VideoRTPSource.hh" />
     <ClInclude Include="include\live555\WAVAudioFileServerMediaSubsession.hh" />
     <ClInclude Include="include\live555\WAVAudioFileSource.hh" />
+    <ClInclude Include="include\live555\WindowsAudioInputDevice_common.hh" />
+    <ClInclude Include="include\live555\WindowsAudioInputDevice_mixer.hh" />
+    <ClInclude Include="include\live555\WindowsAudioInputDevice_noMixer.hh" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="src\liveMedia\EBMLNumber.hh" />
     <ClInclude Include="src\liveMedia\H263plusVideoStreamParser.hh" />
@@ -576,6 +579,14 @@
     <ClCompile Include="src\UsageEnvironment\HashTable.cpp" />
     <ClCompile Include="src\UsageEnvironment\strDup.cpp" />
     <ClCompile Include="src\UsageEnvironment\UsageEnvironment.cpp" />
+    <ClCompile Include="src\WindowsAudioInputDevice\WindowsAudioInputDevice_common.cpp" />
+    <ClCompile Include="src\WindowsAudioInputDevice\WindowsAudioInputDevice_mixer.cpp" />
+    <ClCompile Include="src\WindowsAudioInputDevice\WindowsAudioInputDevice_noMixer.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Readme\COPYING" />

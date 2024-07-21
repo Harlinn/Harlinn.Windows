@@ -14,7 +14,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 **********/
 // "liveMedia"
-// Copyright (c) 1996-2023 Live Networks, Inc.  All rights reserved.
+// Copyright (c) 1996-2024 Live Networks, Inc.  All rights reserved.
 // A class for streaming data from a (static) memory buffer, as if it were a file.
 // C++ header
 
@@ -27,7 +27,8 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class ByteStreamMemoryBufferSource: public FramedSource {
 public:
-  LIVE555_EXPORT static ByteStreamMemoryBufferSource* createNew(UsageEnvironment& env,
+  LIVE555_EXPORT 
+  static ByteStreamMemoryBufferSource* createNew(UsageEnvironment& env,
 						 u_int8_t* buffer, u_int64_t bufferSize,
 						 Boolean deleteBufferOnClose = True,
 						 unsigned preferredFrameSize = 0,
@@ -37,23 +38,27 @@ public:
 
   u_int64_t bufferSize() const { return fBufferSize; }
 
-  LIVE555_EXPORT void seekToByteAbsolute(u_int64_t byteNumber, u_int64_t numBytesToStream = 0);
+  LIVE555_EXPORT
+  void seekToByteAbsolute(u_int64_t byteNumber, u_int64_t numBytesToStream = 0);
     // if "numBytesToStream" is >0, then we limit the stream to that number of bytes, before treating it as EOF
-  LIVE555_EXPORT void seekToByteRelative(int64_t offset, u_int64_t numBytesToStream = 0);
+  LIVE555_EXPORT
+  void seekToByteRelative(int64_t offset, u_int64_t numBytesToStream = 0);
 
 protected:
-  LIVE555_EXPORT ByteStreamMemoryBufferSource(UsageEnvironment& env,
+  LIVE555_EXPORT 
+  ByteStreamMemoryBufferSource(UsageEnvironment& env,
 			       u_int8_t* buffer, u_int64_t bufferSize,
 			       Boolean deleteBufferOnClose,
 			       unsigned preferredFrameSize,
 			       unsigned playTimePerFrame);
 	// called only by createNew()
-
-  LIVE555_EXPORT virtual ~ByteStreamMemoryBufferSource();
+  LIVE555_EXPORT
+  virtual ~ByteStreamMemoryBufferSource();
 
 private:
   // redefined virtual functions:
-  LIVE555_EXPORT virtual void doGetNextFrame();
+  LIVE555_EXPORT 
+  virtual void doGetNextFrame();
 
 private:
   u_int8_t* fBuffer;

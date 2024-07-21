@@ -14,7 +14,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 **********/
 // "liveMedia"
-// Copyright (c) 1996-2023 Live Networks, Inc.  All rights reserved.
+// Copyright (c) 1996-2024 Live Networks, Inc.  All rights reserved.
 // RTP sink for MPEG-4 audio, using LATM multiplexing (RFC 3016)
 // (Note that the initial 'size' field is assumed to be present at the start of
 //  each frame.)
@@ -29,7 +29,8 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class MPEG4LATMAudioRTPSink: public AudioRTPSink {
 public:
-  LIVE555_EXPORT static MPEG4LATMAudioRTPSink* createNew(UsageEnvironment& env,
+  LIVE555_EXPORT 
+  static MPEG4LATMAudioRTPSink* createNew(UsageEnvironment& env,
 					  Groupsock* RTPgs,
 					  unsigned char rtpPayloadFormat,
 					  u_int32_t rtpTimestampFrequency,
@@ -38,27 +39,31 @@ public:
 					  Boolean allowMultipleFramesPerPacket = False);
 
 protected:
-  LIVE555_EXPORT MPEG4LATMAudioRTPSink(UsageEnvironment& env, Groupsock* RTPgs,
+  LIVE555_EXPORT 
+  MPEG4LATMAudioRTPSink(UsageEnvironment& env, Groupsock* RTPgs,
 			unsigned char rtpPayloadFormat,
 			u_int32_t rtpTimestampFrequency,
 			char const* streamMuxConfigString,
 			unsigned numChannels,
 			Boolean allowMultipleFramesPerPacket);
 	// called only by createNew()
-
-  LIVE555_EXPORT virtual ~MPEG4LATMAudioRTPSink();
+  LIVE555_EXPORT
+  virtual ~MPEG4LATMAudioRTPSink();
 
 private: // redefined virtual functions:
-  LIVE555_EXPORT virtual void doSpecialFrameHandling(unsigned fragmentationOffset,
+  LIVE555_EXPORT 
+  virtual void doSpecialFrameHandling(unsigned fragmentationOffset,
                                       unsigned char* frameStart,
                                       unsigned numBytesInFrame,
                                       struct timeval framePresentationTime,
                                       unsigned numRemainingBytes);
-  LIVE555_EXPORT virtual Boolean
+  LIVE555_EXPORT
+  virtual Boolean
   frameCanAppearAfterPacketStart(unsigned char const* frameStart,
 				 unsigned numBytesInFrame) const;
 
-  LIVE555_EXPORT virtual char const* auxSDPLine(); // for the "a=fmtp:" SDP line
+  LIVE555_EXPORT
+  virtual char const* auxSDPLine(); // for the "a=fmtp:" SDP line
 
 private:
   char const* fStreamMuxConfigString;

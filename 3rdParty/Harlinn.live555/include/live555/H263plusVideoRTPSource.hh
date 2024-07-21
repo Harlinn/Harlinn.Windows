@@ -14,7 +14,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 **********/
 // "liveMedia"
-// Copyright (c) 1996-2023 Live Networks, Inc.  All rights reserved.
+// Copyright (c) 1996-2024 Live Networks, Inc.  All rights reserved.
 // H.263+ Video RTP Sources
 // C++ header
 
@@ -29,7 +29,8 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 class H263plusVideoRTPSource: public MultiFramedRTPSource {
 public:
-  LIVE555_EXPORT static H263plusVideoRTPSource*
+  LIVE555_EXPORT 
+  static H263plusVideoRTPSource*
   createNew(UsageEnvironment& env, Groupsock* RTPgs,
 	    unsigned char rtpPayloadFormat,
 	    unsigned rtpTimestampFrequency = 90000);
@@ -42,19 +43,23 @@ public:
   unsigned fPacketSizes[256];
 
 protected:
-  LIVE555_EXPORT virtual ~H263plusVideoRTPSource();
+  LIVE555_EXPORT 
+  virtual ~H263plusVideoRTPSource();
 
 private:
-  LIVE555_EXPORT H263plusVideoRTPSource(UsageEnvironment& env, Groupsock* RTPgs,
+  LIVE555_EXPORT 
+  H263plusVideoRTPSource(UsageEnvironment& env, Groupsock* RTPgs,
 			 unsigned char rtpPayloadFormat,
 			 unsigned rtpTimestampFrequency);
       // called only by createNew()
 
 private:
   // redefined virtual functions:
-  LIVE555_EXPORT virtual Boolean processSpecialHeader(BufferedPacket* packet,
+  LIVE555_EXPORT 
+  virtual Boolean processSpecialHeader(BufferedPacket* packet,
                                        unsigned& resultSpecialHeaderSize);
-  LIVE555_EXPORT virtual char const* MIMEtype() const;
+  LIVE555_EXPORT
+  virtual char const* MIMEtype() const;
 };
 
 #endif

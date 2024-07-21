@@ -13,7 +13,7 @@ You should have received a copy of the GNU Lesser General Public License
 along with this library; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 **********/
-// Copyright (c) 1996-2023 Live Networks, Inc.  All rights reserved.
+// Copyright (c) 1996-2024 Live Networks, Inc.  All rights reserved.
 // Basic Usage Environment: for a simple, non-scripted, console application
 // C++ header
 
@@ -27,8 +27,10 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 ////////// HandlerSet (etc.) definition //////////
 
 class HandlerDescriptor {
-  LIVE555_EXPORT HandlerDescriptor(HandlerDescriptor* nextHandler);
-  LIVE555_EXPORT virtual ~HandlerDescriptor();
+  LIVE555_EXPORT 
+  HandlerDescriptor(HandlerDescriptor* nextHandler);
+  LIVE555_EXPORT
+  virtual ~HandlerDescriptor();
 
 public:
   int socketNum;
@@ -46,15 +48,21 @@ private:
 
 class HandlerSet {
 public:
-  LIVE555_EXPORT HandlerSet();
-  LIVE555_EXPORT virtual ~HandlerSet();
+  LIVE555_EXPORT 
+  HandlerSet();
+  LIVE555_EXPORT
+  virtual ~HandlerSet();
 
-  LIVE555_EXPORT void assignHandler(int socketNum, int conditionSet, TaskScheduler::BackgroundHandlerProc* handlerProc, void* clientData);
-  LIVE555_EXPORT void clearHandler(int socketNum);
-  LIVE555_EXPORT void moveHandler(int oldSocketNum, int newSocketNum);
+  LIVE555_EXPORT
+  void assignHandler(int socketNum, int conditionSet, TaskScheduler::BackgroundHandlerProc* handlerProc, void* clientData);
+  LIVE555_EXPORT
+  void clearHandler(int socketNum);
+  LIVE555_EXPORT
+  void moveHandler(int oldSocketNum, int newSocketNum);
 
 private:
-  LIVE555_EXPORT HandlerDescriptor* lookupHandler(int socketNum);
+  LIVE555_EXPORT 
+  HandlerDescriptor* lookupHandler(int socketNum);
 
 private:
   friend class HandlerIterator;
@@ -63,11 +71,15 @@ private:
 
 class HandlerIterator {
 public:
-  LIVE555_EXPORT HandlerIterator(HandlerSet& handlerSet);
-  LIVE555_EXPORT virtual ~HandlerIterator();
+  LIVE555_EXPORT 
+  HandlerIterator(HandlerSet& handlerSet);
+  LIVE555_EXPORT
+  virtual ~HandlerIterator();
 
-  LIVE555_EXPORT HandlerDescriptor* next(); // returns NULL if none
-  LIVE555_EXPORT void reset();
+  LIVE555_EXPORT
+  HandlerDescriptor* next(); // returns NULL if none
+  LIVE555_EXPORT
+  void reset();
 
 private:
   HandlerSet& fOurSet;
