@@ -19,7 +19,7 @@
 #include "btSoftMultiBodyDynamicsWorld.h"
 #include "btDeformableLagrangianForce.h"
 #include "btDeformableMassSpringForce.h"
-#include "btDeformableBodySolver.h"
+// #include "btDeformableBodySolver.h"
 #include "btDeformableMultiBodyConstraintSolver.h"
 #include "btSoftBodyHelpers.h"
 #include "bullet/BulletCollision/CollisionDispatch/btSimulationIslandManager.h"
@@ -56,31 +56,31 @@ class btDeformableMultiBodyDynamicsWorld : public btMultiBodyDynamicsWorld
 	btSolverCallback m_solverCallback;
 
 protected:
-	BT_EXPORT virtual void internalSingleStepSimulation(btScalar timeStep);
+	virtual void internalSingleStepSimulation(btScalar timeStep);
 
-	BT_EXPORT virtual void integrateTransforms(btScalar timeStep);
+	virtual void integrateTransforms(btScalar timeStep);
 
-	BT_EXPORT void positionCorrection(btScalar timeStep);
+	void positionCorrection(btScalar timeStep);
 
-	BT_EXPORT void solveConstraints(btScalar timeStep);
+	void solveConstraints(btScalar timeStep);
 
-	BT_EXPORT void updateActivationState(btScalar timeStep);
+	void updateActivationState(btScalar timeStep);
 
-	BT_EXPORT void clearGravity();
+	void clearGravity();
 
 public:
-	BT_EXPORT btDeformableMultiBodyDynamicsWorld(btDispatcher* dispatcher, btBroadphaseInterface* pairCache, btDeformableMultiBodyConstraintSolver* constraintSolver, btCollisionConfiguration* collisionConfiguration, btDeformableBodySolver* deformableBodySolver = 0);
+	btDeformableMultiBodyDynamicsWorld(btDispatcher* dispatcher, btBroadphaseInterface* pairCache, btDeformableMultiBodyConstraintSolver* constraintSolver, btCollisionConfiguration* collisionConfiguration, btDeformableBodySolver* deformableBodySolver = 0);
 
-	BT_EXPORT virtual int stepSimulation(btScalar timeStep, int maxSubSteps = 1, btScalar fixedTimeStep = btScalar(1.) / btScalar(60.));
+	virtual int stepSimulation(btScalar timeStep, int maxSubSteps = 1, btScalar fixedTimeStep = btScalar(1.) / btScalar(60.));
 
-	BT_EXPORT virtual void debugDrawWorld();
+	virtual void debugDrawWorld();
 
 	void setSolverCallback(btSolverCallback cb)
 	{
 		m_solverCallback = cb;
 	}
 
-	BT_EXPORT virtual ~btDeformableMultiBodyDynamicsWorld();
+	virtual ~btDeformableMultiBodyDynamicsWorld();
 
 	virtual btMultiBodyDynamicsWorld* getMultiBodyDynamicsWorld()
 	{
@@ -97,9 +97,9 @@ public:
 		return BT_DEFORMABLE_MULTIBODY_DYNAMICS_WORLD;
 	}
 
-	BT_EXPORT virtual void predictUnconstraintMotion(btScalar timeStep);
+	virtual void predictUnconstraintMotion(btScalar timeStep);
 
-	BT_EXPORT virtual void addSoftBody(btSoftBody* body, int collisionFilterGroup = btBroadphaseProxy::DefaultFilter, int collisionFilterMask = btBroadphaseProxy::AllFilter);
+	virtual void addSoftBody(btSoftBody* body, int collisionFilterGroup = btBroadphaseProxy::DefaultFilter, int collisionFilterMask = btBroadphaseProxy::AllFilter);
 
 	btSoftBodyArray& getSoftBodyArray()
 	{
@@ -121,38 +121,40 @@ public:
 		return m_sbi;
 	}
 
-	BT_EXPORT void reinitialize(btScalar timeStep);
+	virtual void setGravity(const btVector3& gravity);
 
-	BT_EXPORT void applyRigidBodyGravity(btScalar timeStep);
+	void reinitialize(btScalar timeStep);
 
-	BT_EXPORT void beforeSolverCallbacks(btScalar timeStep);
+	void applyRigidBodyGravity(btScalar timeStep);
 
-	BT_EXPORT void afterSolverCallbacks(btScalar timeStep);
+	void beforeSolverCallbacks(btScalar timeStep);
 
-	BT_EXPORT void addForce(btSoftBody* psb, btDeformableLagrangianForce* force);
+	void afterSolverCallbacks(btScalar timeStep);
 
-	BT_EXPORT void removeForce(btSoftBody* psb, btDeformableLagrangianForce* force);
+	void addForce(btSoftBody* psb, btDeformableLagrangianForce* force);
 
-	BT_EXPORT void removeSoftBodyForce(btSoftBody* psb);
+	void removeForce(btSoftBody* psb, btDeformableLagrangianForce* force);
 
-	BT_EXPORT void removeSoftBody(btSoftBody* body);
+	void removeSoftBodyForce(btSoftBody* psb);
 
-	BT_EXPORT void removeCollisionObject(btCollisionObject* collisionObject);
+	void removeSoftBody(btSoftBody* body);
+
+	void removeCollisionObject(btCollisionObject* collisionObject);
 
 	int getDrawFlags() const { return (m_drawFlags); }
 	void setDrawFlags(int f) { m_drawFlags = f; }
 
-	BT_EXPORT void setupConstraints();
+	void setupConstraints();
 
-	BT_EXPORT void performDeformableCollisionDetection();
+	void performDeformableCollisionDetection();
 
-	BT_EXPORT void solveMultiBodyConstraints();
+	void solveMultiBodyConstraints();
 
-	BT_EXPORT void solveContactConstraints();
+	void solveContactConstraints();
 
-	BT_EXPORT void sortConstraints();
+	void sortConstraints();
 
-	BT_EXPORT void softBodySelfCollision();
+	void softBodySelfCollision();
 
 	void setImplicit(bool implicit)
 	{
@@ -169,9 +171,9 @@ public:
 		m_useProjection = useProjection;
 	}
 
-	BT_EXPORT void applyRepulsionForce(btScalar timeStep);
+	void applyRepulsionForce(btScalar timeStep);
 
-	BT_EXPORT void performGeometricCollisions(btScalar timeStep);
+	void performGeometricCollisions(btScalar timeStep);
 
 	struct btDeformableSingleRayCallback : public btBroadphaseRayCallback
 	{

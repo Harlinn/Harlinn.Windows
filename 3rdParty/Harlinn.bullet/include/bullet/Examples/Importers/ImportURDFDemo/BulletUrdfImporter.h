@@ -60,6 +60,7 @@ public:
 
 	virtual bool getJointInfo(int urdfLinkIndex, btTransform& parent2joint, btTransform& linkTransformInWorld, btVector3& jointAxisInJointSpace, int& jointType, btScalar& jointLowerLimit, btScalar& jointUpperLimit, btScalar& jointDamping, btScalar& jointFriction) const;
 	virtual bool getJointInfo2(int urdfLinkIndex, btTransform& parent2joint, btTransform& linkTransformInWorld, btVector3& jointAxisInJointSpace, int& jointType, btScalar& jointLowerLimit, btScalar& jointUpperLimit, btScalar& jointDamping, btScalar& jointFriction, btScalar& jointMaxForce, btScalar& jointMaxVelocity) const;
+	virtual bool getJointInfo3(int urdfLinkIndex, btTransform& parent2joint, btTransform& linkTransformInWorld, btVector3& jointAxisInJointSpace, int& jointType, btScalar& jointLowerLimit, btScalar& jointUpperLimit, btScalar& jointDamping, btScalar& jointFriction, btScalar& jointMaxForce, btScalar& jointMaxVelocity, btScalar& twistLimit) const;
 
 	virtual bool getRootTransformInWorld(btTransform& rootTransformInWorld) const;
 	virtual void setRootTransformInWorld(const btTransform& rootTransformInWorld);
@@ -92,6 +93,7 @@ public:
 	virtual void setEnableTinyRenderer(bool enable);
 	void convertURDFToVisualShapeInternal(const struct UrdfVisual* visual, const char* urdfPathPrefix, const class btTransform& visualTransform, btAlignedObjectArray<struct GLInstanceVertex>& verticesOut, btAlignedObjectArray<int>& indicesOut, btAlignedObjectArray<struct BulletURDFTexture>& texturesOut, struct b3ImportMeshData& meshData) const;
 	const struct UrdfDeformable& getDeformableModel() const;
+	const struct UrdfReducedDeformable& getReducedDeformableModel() const;
 };
 
 #endif  //BULLET_URDF_IMPORTER_H

@@ -50,41 +50,41 @@ struct fDrawFlags
 struct btSoftBodyHelpers
 {
 	/* Draw body															*/
-	BT_EXPORT static void Draw(btSoftBody* psb,
+	static void Draw(btSoftBody* psb,
 					 btIDebugDraw* idraw,
 					 int drawflags = fDrawFlags::Std);
 	/* Draw body infos														*/
-	BT_EXPORT static void DrawInfos(btSoftBody* psb,
+	static void DrawInfos(btSoftBody* psb,
 						  btIDebugDraw* idraw,
 						  bool masses,
 						  bool areas,
 						  bool stress);
 	/* Draw node tree														*/
-	BT_EXPORT static void DrawNodeTree(btSoftBody* psb,
+	static void DrawNodeTree(btSoftBody* psb,
 							 btIDebugDraw* idraw,
 							 int mindepth = 0,
 							 int maxdepth = -1);
 	/* Draw face tree														*/
-	BT_EXPORT static void DrawFaceTree(btSoftBody* psb,
+	static void DrawFaceTree(btSoftBody* psb,
 							 btIDebugDraw* idraw,
 							 int mindepth = 0,
 							 int maxdepth = -1);
 	/* Draw cluster tree													*/
-	BT_EXPORT static void DrawClusterTree(btSoftBody* psb,
+	static void DrawClusterTree(btSoftBody* psb,
 								btIDebugDraw* idraw,
 								int mindepth = 0,
 								int maxdepth = -1);
 	/* Draw rigid frame														*/
-	BT_EXPORT static void DrawFrame(btSoftBody* psb,
+	static void DrawFrame(btSoftBody* psb,
 						  btIDebugDraw* idraw);
 	/* Create a rope														*/
-	BT_EXPORT static btSoftBody* CreateRope(btSoftBodyWorldInfo& worldInfo,
+	static btSoftBody* CreateRope(btSoftBodyWorldInfo& worldInfo,
 								  const btVector3& from,
 								  const btVector3& to,
 								  int res,
 								  int fixeds);
 	/* Create a patch														*/
-	BT_EXPORT static btSoftBody* CreatePatch(btSoftBodyWorldInfo& worldInfo,
+	static btSoftBody* CreatePatch(btSoftBodyWorldInfo& worldInfo,
 								   const btVector3& corner00,
 								   const btVector3& corner10,
 								   const btVector3& corner01,
@@ -95,7 +95,7 @@ struct btSoftBodyHelpers
 								   bool gendiags,
 								   btScalar perturbation = 0.);
 	/* Create a patch with UV Texture Coordinates	*/
-	BT_EXPORT static btSoftBody* CreatePatchUV(btSoftBodyWorldInfo& worldInfo,
+	static btSoftBody* CreatePatchUV(btSoftBodyWorldInfo& worldInfo,
 									 const btVector3& corner00,
 									 const btVector3& corner10,
 									 const btVector3& corner01,
@@ -105,20 +105,20 @@ struct btSoftBodyHelpers
 									 int fixeds,
 									 bool gendiags,
 									 float* tex_coords = 0);
-	BT_EXPORT static float CalculateUV(int resx, int resy, int ix, int iy, int id);
+	static float CalculateUV(int resx, int resy, int ix, int iy, int id);
 	/* Create an ellipsoid													*/
-	BT_EXPORT static btSoftBody* CreateEllipsoid(btSoftBodyWorldInfo& worldInfo,
+	static btSoftBody* CreateEllipsoid(btSoftBodyWorldInfo& worldInfo,
 									   const btVector3& center,
 									   const btVector3& radius,
 									   int res);
 	/* Create from trimesh													*/
-	BT_EXPORT static btSoftBody* CreateFromTriMesh(btSoftBodyWorldInfo& worldInfo,
+	static btSoftBody* CreateFromTriMesh(btSoftBodyWorldInfo& worldInfo,
 										 const btScalar* vertices,
 										 const int* triangles,
 										 int ntriangles,
 										 bool randomizeConstraints = true);
 	/* Create from convex-hull												*/
-	BT_EXPORT static btSoftBody* CreateFromConvexHull(btSoftBodyWorldInfo& worldInfo,
+	static btSoftBody* CreateFromConvexHull(btSoftBodyWorldInfo& worldInfo,
 											const btVector3* vertices,
 											int nvertices,
 											bool randomizeConstraints = true);
@@ -135,33 +135,38 @@ struct btSoftBodyHelpers
 	//													bool btetralinks,
 	//													bool bfacesfromtetras);
 	/* Create from TetGen .ele, .face, .node data							*/
-	BT_EXPORT static btSoftBody* CreateFromTetGenData(btSoftBodyWorldInfo& worldInfo,
+	static btSoftBody* CreateFromTetGenData(btSoftBodyWorldInfo& worldInfo,
 											const char* ele,
 											const char* face,
 											const char* node,
 											bool bfacelinks,
 											bool btetralinks,
 											bool bfacesfromtetras);
-	BT_EXPORT static btSoftBody* CreateFromVtkFile(btSoftBodyWorldInfo& worldInfo, const char* vtk_file);
+	static btSoftBody* CreateFromVtkFile(btSoftBodyWorldInfo& worldInfo, const char* vtk_file);
 
-	BT_EXPORT static void writeObj(const char* file, const btSoftBody* psb);
+	static void writeObj(const char* file, const btSoftBody* psb);
 
-	BT_EXPORT static void getBarycentricWeights(const btVector3& a, const btVector3& b, const btVector3& c, const btVector3& d, const btVector3& p, btVector4& bary);
+	static void writeState(const char* file, const btSoftBody* psb);
 
-	BT_EXPORT static void getBarycentricWeights(const btVector3& a, const btVector3& b, const btVector3& c, const btVector3& p, btVector4& bary);
+  //this code cannot be here, dependency on example code are not allowed
+	//static std::string loadDeformableState(btAlignedObjectArray<btVector3>& qs, btAlignedObjectArray<btVector3>& vs, const char* filename, CommonFileIOInterface* fileIO);
 
-	BT_EXPORT static void interpolateBarycentricWeights(btSoftBody* psb);
+	static void getBarycentricWeights(const btVector3& a, const btVector3& b, const btVector3& c, const btVector3& d, const btVector3& p, btVector4& bary);
 
-	BT_EXPORT static void extrapolateBarycentricWeights(btSoftBody* psb);
+	static void getBarycentricWeights(const btVector3& a, const btVector3& b, const btVector3& c, const btVector3& p, btVector4& bary);
 
-	BT_EXPORT static void generateBoundaryFaces(btSoftBody* psb);
+	static void interpolateBarycentricWeights(btSoftBody* psb);
 
-	BT_EXPORT static void duplicateFaces(const char* filename, const btSoftBody* psb);
+	static void extrapolateBarycentricWeights(btSoftBody* psb);
+
+	static void generateBoundaryFaces(btSoftBody* psb);
+
+	static void duplicateFaces(const char* filename, const btSoftBody* psb);
 	/// Sort the list of links to move link calculations that are dependent upon earlier
 	/// ones as far as possible away from the calculation of those values
 	/// This tends to make adjacent loop iterations not dependent upon one another,
 	/// so out-of-order processors can execute instructions from multiple iterations at once
-	BT_EXPORT static void ReoptimizeLinkOrder(btSoftBody* psb);
+	static void ReoptimizeLinkOrder(btSoftBody* psb);
 };
 
 #endif  //BT_SOFT_BODY_HELPERS_H

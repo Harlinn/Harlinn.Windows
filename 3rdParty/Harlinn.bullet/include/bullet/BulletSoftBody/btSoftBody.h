@@ -223,12 +223,10 @@ public:
 	/* sCti is Softbody contact info	*/
 	struct sCti
 	{
-		const btCollisionObject* m_colObj; /* Rigid body			        */
-		btVector3 m_normal;                /* Outward normal		        */
-		mutable btVector3 m_impulse;	   /* Applied impulse        	    */
-		btScalar m_offset;                 /* Offset from origin	        */
+		const btCollisionObject* m_colObj; /* Rigid body			*/
+		btVector3 m_normal;                /* Outward normal		*/
+		btScalar m_offset;                 /* Offset from origin	*/
 		btVector3 m_bary;                  /* Barycentric weights for faces */
-		sCti() : m_impulse(0, 0, 0) {}
 	};
 
 	/* sMedium		*/
@@ -300,7 +298,7 @@ public:
 	};
 	struct RenderFace
 	{
-		RenderNode* m_n[3];          // Node pointers
+		RenderNode* m_n[3];  // Node pointers
 	};
 
 	/* Face			*/
@@ -409,6 +407,7 @@ public:
 		btScalar m_friction;  // Friction
 		btScalar m_imf;       // inverse mass of the face at contact point
 		btScalar m_c0;        // scale of the impulse matrix;
+		const btCollisionObject* m_colObj;  // Collision object to collide with.
 	};
 
 	/* SContact		*/
@@ -788,7 +787,7 @@ public:
 	typedef btAlignedObjectArray<Cluster*> tClusterArray;
 	typedef btAlignedObjectArray<Note> tNoteArray;
 	typedef btAlignedObjectArray<Node> tNodeArray;
-	typedef btAlignedObjectArray< RenderNode> tRenderNodeArray;
+	typedef btAlignedObjectArray<RenderNode> tRenderNodeArray;
 	typedef btAlignedObjectArray<btDbvtNode*> tLeafArray;
 	typedef btAlignedObjectArray<Link> tLinkArray;
 	typedef btAlignedObjectArray<Face> tFaceArray;
@@ -800,6 +799,7 @@ public:
 	typedef btAlignedObjectArray<Material*> tMaterialArray;
 	typedef btAlignedObjectArray<Joint*> tJointArray;
 	typedef btAlignedObjectArray<btSoftBody*> tSoftBodyArray;
+	typedef btAlignedObjectArray<btAlignedObjectArray<btScalar> > tDenseMatrix;
 
 	//
 	// Fields
@@ -815,7 +815,7 @@ public:
 	tRenderNodeArray m_renderNodes;    // Render Nodes
 	tLinkArray m_links;                // Links
 	tFaceArray m_faces;                // Faces
-	tRenderFaceArray m_renderFaces;          // Faces
+	tRenderFaceArray m_renderFaces;    // Faces
 	tTetraArray m_tetras;              // Tetras
 	btAlignedObjectArray<TetraScratch> m_tetraScratches;
 	btAlignedObjectArray<TetraScratch> m_tetraScratchesTn;
@@ -825,6 +825,7 @@ public:
 	btAlignedObjectArray<DeformableNodeRigidContact> m_nodeRigidContacts;
 	btAlignedObjectArray<DeformableFaceNodeContact> m_faceNodeContacts;
 	btAlignedObjectArray<DeformableFaceRigidContact> m_faceRigidContacts;
+	btAlignedObjectArray<DeformableFaceNodeContact> m_faceNodeContactsCCD;
 	tSContactArray m_scontacts;     // Soft contacts
 	tJointArray m_joints;           // Joints
 	tMaterialArray m_materials;     // Materials
@@ -857,20 +858,22 @@ public:
 
 	btScalar m_restLengthScale;
 
+	bool m_reducedModel;	// Reduced deformable model flag
+	
 	//
 	// Api
 	//
 
 	/* ctor																	*/
-	BT_EXPORT btSoftBody(btSoftBodyWorldInfo* worldInfo, int node_count, const btVector3* x, const btScalar* m);
+	btSoftBody(btSoftBodyWorldInfo* worldInfo, int node_count, const btVector3* x, const btScalar* m);
 
 	/* ctor																	*/
-	BT_EXPORT btSoftBody(btSoftBodyWorldInfo* worldInfo);
+	btSoftBody(btSoftBodyWorldInfo* worldInfo);
 
-	BT_EXPORT void initDefaults();
+	void initDefaults();
 
 	/* dtor																	*/
-	BT_EXPORT virtual ~btSoftBody();
+	virtual ~btSoftBody();
 	/* Check for existing link												*/
 
 	btAlignedObjectArray<int> m_userIndexMapping;
@@ -890,139 +893,139 @@ public:
 	{
 	}
 
-	BT_EXPORT bool checkLink(int node0,
+	bool checkLink(int node0,
 				   int node1) const;
-	BT_EXPORT bool checkLink(const Node* node0,
+	bool checkLink(const Node* node0,
 				   const Node* node1) const;
-	/* Check for existing face												*/
-	BT_EXPORT bool checkFace(int node0,
+	/* Check for existring face												*/
+	bool checkFace(int node0,
 				   int node1,
 				   int node2) const;
 	/* Append material														*/
-	BT_EXPORT Material* appendMaterial();
+	Material* appendMaterial();
 	/* Append note															*/
-	BT_EXPORT void appendNote(const char* text,
+	void appendNote(const char* text,
 					const btVector3& o,
 					const btVector4& c = btVector4(1, 0, 0, 0),
 					Node* n0 = 0,
 					Node* n1 = 0,
 					Node* n2 = 0,
 					Node* n3 = 0);
-	BT_EXPORT void appendNote(const char* text,
+	void appendNote(const char* text,
 					const btVector3& o,
 					Node* feature);
-	BT_EXPORT void appendNote(const char* text,
+	void appendNote(const char* text,
 					const btVector3& o,
 					Link* feature);
-	BT_EXPORT void appendNote(const char* text,
+	void appendNote(const char* text,
 					const btVector3& o,
 					Face* feature);
 	/* Append node															*/
-	BT_EXPORT void appendNode(const btVector3& x, btScalar m);
+	void appendNode(const btVector3& x, btScalar m);
 	/* Append link															*/
-	BT_EXPORT void appendLink(int model = -1, Material* mat = 0);
-	BT_EXPORT void appendLink(int node0,
+	void appendLink(int model = -1, Material* mat = 0);
+	void appendLink(int node0,
 					int node1,
 					Material* mat = 0,
 					bool bcheckexist = false);
-	BT_EXPORT void appendLink(Node* node0,
+	void appendLink(Node* node0,
 					Node* node1,
 					Material* mat = 0,
 					bool bcheckexist = false);
 	/* Append face															*/
-	BT_EXPORT void appendFace(int model = -1, Material* mat = 0);
-	BT_EXPORT void appendFace(int node0,
+	void appendFace(int model = -1, Material* mat = 0);
+	void appendFace(int node0,
 					int node1,
 					int node2,
 					Material* mat = 0);
-	BT_EXPORT void appendTetra(int model, Material* mat);
+	void appendTetra(int model, Material* mat);
 	//
-	BT_EXPORT void appendTetra(int node0,
+	void appendTetra(int node0,
 					 int node1,
 					 int node2,
 					 int node3,
 					 Material* mat = 0);
 
 	/* Append anchor														*/
-	BT_EXPORT void appendDeformableAnchor(int node, btRigidBody* body);
-	BT_EXPORT void appendDeformableAnchor(int node, btMultiBodyLinkCollider* link);
-	BT_EXPORT void appendAnchor(int node,
+	void appendDeformableAnchor(int node, btRigidBody* body);
+	void appendDeformableAnchor(int node, btMultiBodyLinkCollider* link);
+	void appendAnchor(int node,
 					  btRigidBody* body, bool disableCollisionBetweenLinkedBodies = false, btScalar influence = 1);
-	BT_EXPORT void appendAnchor(int node, btRigidBody* body, const btVector3& localPivot, bool disableCollisionBetweenLinkedBodies = false, btScalar influence = 1);
-	BT_EXPORT void removeAnchor(int node);
+	void appendAnchor(int node, btRigidBody* body, const btVector3& localPivot, bool disableCollisionBetweenLinkedBodies = false, btScalar influence = 1);
+	void removeAnchor(int node);
 	/* Append linear joint													*/
-	BT_EXPORT void appendLinearJoint(const LJoint::Specs& specs, Cluster* body0, Body body1);
-	BT_EXPORT void appendLinearJoint(const LJoint::Specs& specs, Body body = Body());
-	BT_EXPORT void appendLinearJoint(const LJoint::Specs& specs, btSoftBody* body);
+	void appendLinearJoint(const LJoint::Specs& specs, Cluster* body0, Body body1);
+	void appendLinearJoint(const LJoint::Specs& specs, Body body = Body());
+	void appendLinearJoint(const LJoint::Specs& specs, btSoftBody* body);
 	/* Append linear joint													*/
-	BT_EXPORT void appendAngularJoint(const AJoint::Specs& specs, Cluster* body0, Body body1);
-	BT_EXPORT void appendAngularJoint(const AJoint::Specs& specs, Body body = Body());
-	BT_EXPORT void appendAngularJoint(const AJoint::Specs& specs, btSoftBody* body);
+	void appendAngularJoint(const AJoint::Specs& specs, Cluster* body0, Body body1);
+	void appendAngularJoint(const AJoint::Specs& specs, Body body = Body());
+	void appendAngularJoint(const AJoint::Specs& specs, btSoftBody* body);
 	/* Add force (or gravity) to the entire body							*/
-	BT_EXPORT void addForce(const btVector3& force);
+	void addForce(const btVector3& force);
 	/* Add force (or gravity) to a node of the body							*/
-	BT_EXPORT void addForce(const btVector3& force,
+	void addForce(const btVector3& force,
 				  int node);
 	/* Add aero force to a node of the body */
-	BT_EXPORT void addAeroForceToNode(const btVector3& windVelocity, int nodeIndex);
+	void addAeroForceToNode(const btVector3& windVelocity, int nodeIndex);
 
 	/* Add aero force to a face of the body */
-	BT_EXPORT void addAeroForceToFace(const btVector3& windVelocity, int faceIndex);
+	void addAeroForceToFace(const btVector3& windVelocity, int faceIndex);
 
 	/* Add velocity to the entire body										*/
-	BT_EXPORT void addVelocity(const btVector3& velocity);
+	void addVelocity(const btVector3& velocity);
 
 	/* Set velocity for the entire body										*/
-	BT_EXPORT void setVelocity(const btVector3& velocity);
+	void setVelocity(const btVector3& velocity);
 
 	/* Add velocity to a node of the body									*/
-	BT_EXPORT void addVelocity(const btVector3& velocity,
+	void addVelocity(const btVector3& velocity,
 					 int node);
 	/* Set mass																*/
-	BT_EXPORT void setMass(int node,
+	void setMass(int node,
 				 btScalar mass);
 	/* Get mass																*/
-	BT_EXPORT btScalar getMass(int node) const;
+	btScalar getMass(int node) const;
 	/* Get total mass														*/
-	BT_EXPORT btScalar getTotalMass() const;
+	btScalar getTotalMass() const;
 	/* Set total mass (weighted by previous masses)							*/
-	BT_EXPORT void setTotalMass(btScalar mass,
+	void setTotalMass(btScalar mass,
 					  bool fromfaces = false);
 	/* Set total density													*/
-	BT_EXPORT void setTotalDensity(btScalar density);
+	void setTotalDensity(btScalar density);
 	/* Set volume mass (using tetrahedrons)									*/
-	BT_EXPORT void setVolumeMass(btScalar mass);
+	void setVolumeMass(btScalar mass);
 	/* Set volume density (using tetrahedrons)								*/
-	BT_EXPORT void setVolumeDensity(btScalar density);
+	void setVolumeDensity(btScalar density);
 	/* Get the linear velocity of the center of mass                        */
-	BT_EXPORT btVector3 getLinearVelocity();
+	btVector3 getLinearVelocity();
 	/* Set the linear velocity of the center of mass                        */
-	BT_EXPORT void setLinearVelocity(const btVector3& linVel);
+	void setLinearVelocity(const btVector3& linVel);
 	/* Set the angular velocity of the center of mass                       */
-	BT_EXPORT void setAngularVelocity(const btVector3& angVel);
+	void setAngularVelocity(const btVector3& angVel);
 	/* Get best fit rigid transform                                         */
-	BT_EXPORT btTransform getRigidTransform();
+	btTransform getRigidTransform();
 	/* Transform to given pose                                              */
-	BT_EXPORT void transformTo(const btTransform& trs);
+	virtual void transformTo(const btTransform& trs);
 	/* Transform															*/
-	BT_EXPORT void transform(const btTransform& trs);
+	virtual void transform(const btTransform& trs);
 	/* Translate															*/
-	BT_EXPORT void translate(const btVector3& trs);
+	virtual void translate(const btVector3& trs);
 	/* Rotate															*/
-	BT_EXPORT void rotate(const btQuaternion& rot);
+	virtual void rotate(const btQuaternion& rot);
 	/* Scale																*/
-	BT_EXPORT void scale(const btVector3& scl);
+	virtual void scale(const btVector3& scl);
 	/* Get link resting lengths scale										*/
-	BT_EXPORT btScalar getRestLengthScale();
+	btScalar getRestLengthScale();
 	/* Scale resting length of all springs									*/
-	BT_EXPORT void setRestLengthScale(btScalar restLength);
+	void setRestLengthScale(btScalar restLength);
 	/* Set current state as pose											*/
-	BT_EXPORT void setPose(bool bvolume,
+	void setPose(bool bvolume,
 				 bool bframe);
 	/* Set current link lengths as resting lengths							*/
-	BT_EXPORT void resetLinkRestLengths();
+	void resetLinkRestLengths();
 	/* Return the volume													*/
-	BT_EXPORT btScalar getVolume() const;
+	btScalar getVolume() const;
 	/* Cluster count														*/
 	btVector3 getCenterOfMass() const
 	{
@@ -1034,69 +1037,79 @@ public:
 		com /= this->getTotalMass();
 		return com;
 	}
-	BT_EXPORT int clusterCount() const;
+	int clusterCount() const;
 	/* Cluster center of mass												*/
-	BT_EXPORT static btVector3 clusterCom(const Cluster* cluster);
-	BT_EXPORT btVector3 clusterCom(int cluster) const;
+	static btVector3 clusterCom(const Cluster* cluster);
+	btVector3 clusterCom(int cluster) const;
 	/* Cluster velocity at rpos												*/
-	BT_EXPORT static btVector3 clusterVelocity(const Cluster* cluster, const btVector3& rpos);
+	static btVector3 clusterVelocity(const Cluster* cluster, const btVector3& rpos);
 	/* Cluster impulse														*/
-	BT_EXPORT static void clusterVImpulse(Cluster* cluster, const btVector3& rpos, const btVector3& impulse);
-	BT_EXPORT static void clusterDImpulse(Cluster* cluster, const btVector3& rpos, const btVector3& impulse);
-	BT_EXPORT static void clusterImpulse(Cluster* cluster, const btVector3& rpos, const Impulse& impulse);
-	BT_EXPORT static void clusterVAImpulse(Cluster* cluster, const btVector3& impulse);
-	BT_EXPORT static void clusterDAImpulse(Cluster* cluster, const btVector3& impulse);
-	BT_EXPORT static void clusterAImpulse(Cluster* cluster, const Impulse& impulse);
-	BT_EXPORT static void clusterDCImpulse(Cluster* cluster, const btVector3& impulse);
+	static void clusterVImpulse(Cluster* cluster, const btVector3& rpos, const btVector3& impulse);
+	static void clusterDImpulse(Cluster* cluster, const btVector3& rpos, const btVector3& impulse);
+	static void clusterImpulse(Cluster* cluster, const btVector3& rpos, const Impulse& impulse);
+	static void clusterVAImpulse(Cluster* cluster, const btVector3& impulse);
+	static void clusterDAImpulse(Cluster* cluster, const btVector3& impulse);
+	static void clusterAImpulse(Cluster* cluster, const Impulse& impulse);
+	static void clusterDCImpulse(Cluster* cluster, const btVector3& impulse);
 	/* Generate bending constraints based on distance in the adjency graph	*/
-	BT_EXPORT int generateBendingConstraints(int distance,
+	int generateBendingConstraints(int distance,
 								   Material* mat = 0);
 	/* Randomize constraints to reduce solver bias							*/
-	BT_EXPORT void randomizeConstraints();
+	void randomizeConstraints();
+
+	void updateState(const btAlignedObjectArray<btVector3>& qs, const btAlignedObjectArray<btVector3>& vs);
+
 	/* Release clusters														*/
-	BT_EXPORT void releaseCluster(int index);
-	BT_EXPORT void releaseClusters();
+	void releaseCluster(int index);
+	void releaseClusters();
 	/* Generate clusters (K-mean)											*/
 	///generateClusters with k=0 will create a convex cluster for each tetrahedron or triangle
 	///otherwise an approximation will be used (better performance)
-	BT_EXPORT int generateClusters(int k, int maxiterations = 8192);
+	int generateClusters(int k, int maxiterations = 8192);
 	/* Refine																*/
-	BT_EXPORT void refine(ImplicitFn* ifn, btScalar accurary, bool cut);
+	void refine(ImplicitFn* ifn, btScalar accurary, bool cut);
 	/* CutLink																*/
-	BT_EXPORT bool cutLink(int node0, int node1, btScalar position);
-	BT_EXPORT bool cutLink(const Node* node0, const Node* node1, btScalar position);
+	bool cutLink(int node0, int node1, btScalar position);
+	bool cutLink(const Node* node0, const Node* node1, btScalar position);
 
 	///Ray casting using rayFrom and rayTo in worldspace, (not direction!)
-	BT_EXPORT bool rayTest(const btVector3& rayFrom,
+	bool rayTest(const btVector3& rayFrom,
 				 const btVector3& rayTo,
 				 sRayCast& results);
-	BT_EXPORT bool rayFaceTest(const btVector3& rayFrom,
+	bool rayFaceTest(const btVector3& rayFrom,
 					 const btVector3& rayTo,
 					 sRayCast& results);
-	BT_EXPORT int rayFaceTest(const btVector3& rayFrom, const btVector3& rayTo,
+	int rayFaceTest(const btVector3& rayFrom, const btVector3& rayTo,
 					btScalar& mint, int& index) const;
 	/* Solver presets														*/
-	BT_EXPORT void setSolver(eSolverPresets::_ preset);
+	void setSolver(eSolverPresets::_ preset);
 	/* predictMotion														*/
-	BT_EXPORT void predictMotion(btScalar dt);
+	void predictMotion(btScalar dt);
 	/* solveConstraints														*/
-	BT_EXPORT void solveConstraints();
+	void solveConstraints();
 	/* staticSolve															*/
-	BT_EXPORT void staticSolve(int iterations);
+	void staticSolve(int iterations);
 	/* solveCommonConstraints												*/
-	BT_EXPORT static void solveCommonConstraints(btSoftBody** bodies, int count, int iterations);
+	static void solveCommonConstraints(btSoftBody** bodies, int count, int iterations);
 	/* solveClusters														*/
-	BT_EXPORT static void solveClusters(const btAlignedObjectArray<btSoftBody*>& bodies);
+	static void solveClusters(const btAlignedObjectArray<btSoftBody*>& bodies);
 	/* integrateMotion														*/
-	BT_EXPORT void integrateMotion();
+	void integrateMotion();
 	/* defaultCollisionHandlers												*/
-	BT_EXPORT void defaultCollisionHandler(const btCollisionObjectWrapper* pcoWrap);
-	BT_EXPORT void defaultCollisionHandler(btSoftBody* psb);
-	BT_EXPORT void setSelfCollision(bool useSelfCollision);
-	BT_EXPORT bool useSelfCollision();
-	BT_EXPORT void updateDeactivation(btScalar timeStep);
-	BT_EXPORT void setZeroVelocity();
-	BT_EXPORT bool wantsSleeping();
+	void defaultCollisionHandler(const btCollisionObjectWrapper* pcoWrap);
+	void defaultCollisionHandler(btSoftBody* psb);
+	void setSelfCollision(bool useSelfCollision);
+	bool useSelfCollision();
+	void updateDeactivation(btScalar timeStep);
+	void setZeroVelocity();
+	bool wantsSleeping();
+
+	virtual btMatrix3x3 getImpulseFactor(int n_node)
+	{
+		btMatrix3x3 tmp;
+		tmp.setIdentity();
+		return tmp;
+	}
 
 	//
 	// Functionality to deal with new accelerated solvers.
@@ -1105,12 +1118,12 @@ public:
 	/**
 	 * Set a wind velocity for interaction with the air.
 	 */
-	BT_EXPORT void setWindVelocity(const btVector3& velocity);
+	void setWindVelocity(const btVector3& velocity);
 
 	/**
 	 * Return the wind velocity for interaction with the air.
 	 */
-	BT_EXPORT const btVector3& getWindVelocity();
+	const btVector3& getWindVelocity();
 
 	//
 	// Set the solver that handles this soft body
@@ -1166,48 +1179,48 @@ public:
 	//
 	// Private
 	//
-	BT_EXPORT void pointersToIndices();
-	BT_EXPORT void indicesToPointers(const int* map = 0);
+	void pointersToIndices();
+	void indicesToPointers(const int* map = 0);
 
-	BT_EXPORT int rayTest(const btVector3& rayFrom, const btVector3& rayTo,
+	int rayTest(const btVector3& rayFrom, const btVector3& rayTo,
 				btScalar& mint, eFeature::_& feature, int& index, bool bcountonly) const;
-	BT_EXPORT void initializeFaceTree();
-	BT_EXPORT void rebuildNodeTree();
-	BT_EXPORT btVector3 evaluateCom() const;
-	BT_EXPORT bool checkDeformableContact(const btCollisionObjectWrapper* colObjWrap, const btVector3& x, btScalar margin, btSoftBody::sCti& cti, bool predict = false) const;
-	BT_EXPORT bool checkDeformableFaceContact(const btCollisionObjectWrapper* colObjWrap, Face& f, btVector3& contact_point, btVector3& bary, btScalar margin, btSoftBody::sCti& cti, bool predict = false) const;
-	BT_EXPORT bool checkContact(const btCollisionObjectWrapper* colObjWrap, const btVector3& x, btScalar margin, btSoftBody::sCti& cti) const;
-	BT_EXPORT void updateNormals();
-	BT_EXPORT void updateBounds();
-	BT_EXPORT void updatePose();
-	BT_EXPORT void updateConstants();
-	BT_EXPORT void updateLinkConstants();
-	BT_EXPORT void updateArea(bool averageArea = true);
-	BT_EXPORT void initializeClusters();
-	BT_EXPORT void updateClusters();
-	BT_EXPORT void cleanupClusters();
-	BT_EXPORT void prepareClusters(int iterations);
-	BT_EXPORT void solveClusters(btScalar sor);
-	BT_EXPORT void applyClusters(bool drift);
-	BT_EXPORT void dampClusters();
-	BT_EXPORT void setSpringStiffness(btScalar k);
-	BT_EXPORT void setGravityFactor(btScalar gravFactor);
-	BT_EXPORT void setCacheBarycenter(bool cacheBarycenter);
-	BT_EXPORT void initializeDmInverse();
-	BT_EXPORT void updateDeformation();
-	BT_EXPORT void advanceDeformation();
-	BT_EXPORT void applyForces();
-	BT_EXPORT void setMaxStress(btScalar maxStress);
-	BT_EXPORT void interpolateRenderMesh();
-	BT_EXPORT void setCollisionQuadrature(int N);
-	BT_EXPORT static void PSolve_Anchors(btSoftBody* psb, btScalar kst, btScalar ti);
-	BT_EXPORT static void PSolve_RContacts(btSoftBody* psb, btScalar kst, btScalar ti);
-	BT_EXPORT static void PSolve_SContacts(btSoftBody* psb, btScalar, btScalar ti);
-	BT_EXPORT static void PSolve_Links(btSoftBody* psb, btScalar kst, btScalar ti);
-	BT_EXPORT static void VSolve_Links(btSoftBody* psb, btScalar kst);
-	BT_EXPORT static psolver_t getSolver(ePSolver::_ solver);
-	BT_EXPORT static vsolver_t getSolver(eVSolver::_ solver);
-	BT_EXPORT void geometricCollisionHandler(btSoftBody* psb);
+	void initializeFaceTree();
+	void rebuildNodeTree();
+	btVector3 evaluateCom() const;
+	bool checkDeformableContact(const btCollisionObjectWrapper* colObjWrap, const btVector3& x, btScalar margin, btSoftBody::sCti& cti, bool predict = false) const;
+	bool checkDeformableFaceContact(const btCollisionObjectWrapper* colObjWrap, Face& f, btVector3& contact_point, btVector3& bary, btScalar margin, btSoftBody::sCti& cti, bool predict = false) const;
+	bool checkContact(const btCollisionObjectWrapper* colObjWrap, const btVector3& x, btScalar margin, btSoftBody::sCti& cti) const;
+	void updateNormals();
+	void updateBounds();
+	void updatePose();
+	void updateConstants();
+	void updateLinkConstants();
+	void updateArea(bool averageArea = true);
+	void initializeClusters();
+	void updateClusters();
+	void cleanupClusters();
+	void prepareClusters(int iterations);
+	void solveClusters(btScalar sor);
+	void applyClusters(bool drift);
+	void dampClusters();
+	void setSpringStiffness(btScalar k);
+	void setGravityFactor(btScalar gravFactor);
+	void setCacheBarycenter(bool cacheBarycenter);
+	void initializeDmInverse();
+	void updateDeformation();
+	void advanceDeformation();
+	void applyForces();
+	void setMaxStress(btScalar maxStress);
+	void interpolateRenderMesh();
+	void setCollisionQuadrature(int N);
+	static void PSolve_Anchors(btSoftBody* psb, btScalar kst, btScalar ti);
+	static void PSolve_RContacts(btSoftBody* psb, btScalar kst, btScalar ti);
+	static void PSolve_SContacts(btSoftBody* psb, btScalar, btScalar ti);
+	static void PSolve_Links(btSoftBody* psb, btScalar kst, btScalar ti);
+	static void VSolve_Links(btSoftBody* psb, btScalar kst);
+	static psolver_t getSolver(ePSolver::_ solver);
+	static vsolver_t getSolver(eVSolver::_ solver);
+	void geometricCollisionHandler(btSoftBody* psb);
 #define SAFE_EPSILON SIMD_EPSILON * 100.0
 	void updateNode(btDbvtNode* node, bool use_velocity, bool margin)
 	{
@@ -1387,10 +1400,10 @@ public:
 			}
 		}
 	}
-	BT_EXPORT virtual int calculateSerializeBufferSize() const;
+	virtual int calculateSerializeBufferSize() const;
 
 	///fills the dataBuffer and returns the struct name (and 0 on failure)
-	BT_EXPORT virtual const char* serialize(void* dataBuffer, class btSerializer* serializer) const;
+	virtual const char* serialize(void* dataBuffer, class btSerializer* serializer) const;
 };
 
 #endif  //_BT_SOFT_BODY_H

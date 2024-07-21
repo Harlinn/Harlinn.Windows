@@ -38,14 +38,17 @@ protected:
 	//    virtual btScalar solveGroupCacheFriendlyIterations(btCollisionObject** bodies,int numBodies,btPersistentManifold** manifoldPtr, int numManifolds,btTypedConstraint** constraints,int numConstraints,const btContactSolverInfo& infoGlobal,btIDebugDraw* debugDrawer);
 
 	// write the velocity of the the solver body to the underlying rigid body
-	BT_EXPORT void solverBodyWriteBack(const btContactSolverInfo& infoGlobal);
+	void solverBodyWriteBack(const btContactSolverInfo& infoGlobal);
 
 	// write the velocity of the underlying rigid body to the the the solver body
-	BT_EXPORT void writeToSolverBody(btCollisionObject * *bodies, int numBodies, const btContactSolverInfo& infoGlobal);
+	void writeToSolverBody(btCollisionObject * *bodies, int numBodies, const btContactSolverInfo& infoGlobal);
 
-	BT_EXPORT virtual void solveGroupCacheFriendlySplitImpulseIterations(btCollisionObject * *bodies, int numBodies, btCollisionObject** deformableBodies, int numDeformableBodies, btPersistentManifold** manifoldPtr, int numManifolds, btTypedConstraint** constraints, int numConstraints, const btContactSolverInfo& infoGlobal, btIDebugDraw* debugDrawer);
+	// let each deformable body knows which solver body is in constact
+	void pairDeformableAndSolverBody(btCollisionObject** bodies, int numBodies, int numDeformableBodies, const btContactSolverInfo& infoGlobal);
 
-	BT_EXPORT virtual btScalar solveDeformableGroupIterations(btCollisionObject * *bodies, int numBodies, btCollisionObject** deformableBodies, int numDeformableBodies, btPersistentManifold** manifoldPtr, int numManifolds, btTypedConstraint** constraints, int numConstraints, const btContactSolverInfo& infoGlobal, btIDebugDraw* debugDrawer);
+	virtual void solveGroupCacheFriendlySplitImpulseIterations(btCollisionObject * *bodies, int numBodies, btCollisionObject** deformableBodies, int numDeformableBodies, btPersistentManifold** manifoldPtr, int numManifolds, btTypedConstraint** constraints, int numConstraints, const btContactSolverInfo& infoGlobal, btIDebugDraw* debugDrawer);
+
+	virtual btScalar solveDeformableGroupIterations(btCollisionObject * *bodies, int numBodies, btCollisionObject** deformableBodies, int numDeformableBodies, btPersistentManifold** manifoldPtr, int numManifolds, btTypedConstraint** constraints, int numConstraints, const btContactSolverInfo& infoGlobal, btIDebugDraw* debugDrawer);
 
 public:
 	BT_DECLARE_ALIGNED_ALLOCATOR();
@@ -55,7 +58,7 @@ public:
 		m_deformableSolver = deformableSolver;
 	}
 
-	BT_EXPORT virtual void solveDeformableBodyGroup(btCollisionObject * *bodies, int numBodies, btCollisionObject** deformableBodies, int numDeformableBodies, btPersistentManifold** manifold, int numManifolds, btTypedConstraint** constraints, int numConstraints, btMultiBodyConstraint** multiBodyConstraints, int numMultiBodyConstraints, const btContactSolverInfo& info, btIDebugDraw* debugDrawer, btDispatcher* dispatcher);
+	virtual void solveDeformableBodyGroup(btCollisionObject * *bodies, int numBodies, btCollisionObject** deformableBodies, int numDeformableBodies, btPersistentManifold** manifold, int numManifolds, btTypedConstraint** constraints, int numConstraints, btMultiBodyConstraint** multiBodyConstraints, int numMultiBodyConstraints, const btContactSolverInfo& info, btIDebugDraw* debugDrawer, btDispatcher* dispatcher);
 };
 
 #endif /* BT_DEFORMABLE_MULTIBODY_CONSTRAINT_SOLVER_H */

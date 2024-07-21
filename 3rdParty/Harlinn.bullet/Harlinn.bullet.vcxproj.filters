@@ -433,6 +433,12 @@
     <Filter Include="src\ThirdPartyLibs\Wavefront">
       <UniqueIdentifier>{a98c1023-0b3f-4852-84a4-88ddcaabcf17}</UniqueIdentifier>
     </Filter>
+    <Filter Include="include\bullet\BulletSoftBody\BulletReducedDeformableBody">
+      <UniqueIdentifier>{74228a1c-8e3f-4857-b941-f7707d2f5705}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\BulletSoftBody\BulletReducedDeformableBody">
+      <UniqueIdentifier>{3c42f0e6-45a9-42fb-9ba4-ff12adf3e8a1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -1367,6 +1373,21 @@
     </ClCompile>
     <ClCompile Include="src\ThirdPartyLibs\Wavefront\tiny_obj_loader.cpp">
       <Filter>src\ThirdPartyLibs\Wavefront</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BulletDynamics\Featherstone\btMultiBodySphericalJointLimit.cpp">
+      <Filter>src\BulletDynamics\Featherstone</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BulletSoftBody\BulletReducedDeformableBody\btReducedDeformableBody.cpp">
+      <Filter>src\BulletSoftBody\BulletReducedDeformableBody</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BulletSoftBody\BulletReducedDeformableBody\btReducedDeformableBodyHelpers.cpp">
+      <Filter>src\BulletSoftBody\BulletReducedDeformableBody</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BulletSoftBody\BulletReducedDeformableBody\btReducedDeformableBodySolver.cpp">
+      <Filter>src\BulletSoftBody\BulletReducedDeformableBody</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BulletSoftBody\BulletReducedDeformableBody\btReducedDeformableContactConstraint.cpp">
+      <Filter>src\BulletSoftBody\BulletReducedDeformableBody</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -3088,6 +3109,21 @@
     </ClInclude>
     <ClInclude Include="src\ThirdPartyLibs\Wavefront\tiny_obj_loader.h">
       <Filter>src\ThirdPartyLibs\Wavefront</Filter>
+    </ClInclude>
+    <ClInclude Include="include\bullet\BulletDynamics\Featherstone\btMultiBodySphericalJointLimit.h">
+      <Filter>include\bullet\BulletDynamics\Featherstone</Filter>
+    </ClInclude>
+    <ClInclude Include="include\bullet\BulletSoftBody\BulletReducedDeformableBody\btReducedDeformableBody.h">
+      <Filter>include\bullet\BulletSoftBody\BulletReducedDeformableBody</Filter>
+    </ClInclude>
+    <ClInclude Include="include\bullet\BulletSoftBody\BulletReducedDeformableBody\btReducedDeformableBodyHelpers.h">
+      <Filter>include\bullet\BulletSoftBody\BulletReducedDeformableBody</Filter>
+    </ClInclude>
+    <ClInclude Include="include\bullet\BulletSoftBody\BulletReducedDeformableBody\btReducedDeformableBodySolver.h">
+      <Filter>include\bullet\BulletSoftBody\BulletReducedDeformableBody</Filter>
+    </ClInclude>
+    <ClInclude Include="include\bullet\BulletSoftBody\BulletReducedDeformableBody\btReducedDeformableContactConstraint.h">
+      <Filter>include\bullet\BulletSoftBody\BulletReducedDeformableBody</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

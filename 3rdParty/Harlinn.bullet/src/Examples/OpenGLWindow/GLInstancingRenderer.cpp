@@ -98,7 +98,10 @@ struct caster2
 #include "bullet/Examples/OpenGLWindow/Shaders/segmentationMaskInstancingPS.h"
 
 #include "bullet/Examples/OpenGLWindow/Shaders/linesPS.h"
+#include "bullet/Examples/OpenGLWindow/Shaders/pointsPS.h"
+
 #include "bullet/Examples/OpenGLWindow/Shaders/linesVS.h"
+#include "bullet/Examples/OpenGLWindow/Shaders/pointsVS.h"
 
 #include "bullet/Examples/OpenGLWindow/GLRenderToTexture.h"
 #include "stb/stb_image_write.h"
@@ -287,24 +290,42 @@ static GLuint triangleVertexBufferObject = 0;
 static GLuint triangleVertexArrayObject = 0;
 static GLuint triangleIndexVbo = 0;
 
-static GLuint linesShader;                        // The line renderer
+static GLuint linesShader;                      // The line renderer
+static GLuint pointsShader;						// The point renderer
+
 static GLuint useShadowMapInstancingShader;       // The shadow instancing renderer
 static GLuint createShadowMapInstancingShader;    // The shadow instancing renderer
 static GLuint projectiveTextureInstancingShader;  // The projective texture instancing renderer
 static GLuint segmentationMaskInstancingShader;   // The segmentation mask instancing renderer
+
 
 static GLuint instancingShader;             // The instancing renderer
 static GLuint instancingShaderPointSprite;  // The point sprite instancing renderer
 
 //static bool                 done = false;
 
+static GLint points_ModelViewMatrix = 0;
+static GLint points_ProjectionMatrix = 0;
+static GLint points_position = 0;
+static GLint points_colourIn = 0;
+static GLint points_colour = 0;
+GLuint pointsVertexBufferObject = 0;
+GLuint pointsVertexArrayObject = 0;
+GLuint pointsIndexVbo = 0;
+
 static GLint lines_ModelViewMatrix = 0;
 static GLint lines_ProjectionMatrix = 0;
 static GLint lines_position = 0;
 static GLint lines_colour = 0;
+
 GLuint lineVertexBufferObject = 0;
 GLuint lineVertexArrayObject = 0;
 GLuint lineIndexVbo = 0;
+
+
+
+
+
 
 GLuint linesVertexBufferObject = 0;
 GLuint linesVertexArrayObject = 0;
@@ -1242,6 +1263,33 @@ void GLInstancingRenderer::InitShaders()
 
 		glBindVertexArray(0);
 	}
+	{
+		pointsShader = gltLoadShaderPair(pointsVertexShader, pointsFragmentShader);
+		points_ModelViewMatrix = glGetUniformLocation(pointsShader, "ModelViewMatrix");
+		points_ProjectionMatrix = glGetUniformLocation(pointsShader, "ProjectionMatrix");
+		points_colour = glGetUniformLocation(pointsShader, "colour");
+		points_colourIn = glGetAttribLocation(pointsShader, "colourIn");
+		points_position = glGetAttribLocation(pointsShader, "position");
+		glLinkProgram(pointsShader);
+		glUseProgram(pointsShader);
+		int max_viewports=-1;
+		glGetIntegerv(GL_MAX_VIEWPORTS, &max_viewports);
+		{
+			glGenVertexArrays(1, &pointsVertexArrayObject);
+			glBindVertexArray(pointsVertexArrayObject);
+
+			glGenBuffers(1, &pointsVertexBufferObject);
+			glGenBuffers(1, &pointsIndexVbo);
+
+			int sz = MAX_POINTS_IN_BATCH * sizeof(b3Vector3);
+			glBindVertexArray(pointsVertexArrayObject);
+			glBindBuffer(GL_ARRAY_BUFFER, pointsVertexBufferObject);
+			glBufferData(GL_ARRAY_BUFFER, sz, 0, GL_DYNAMIC_DRAW);
+
+			glBindVertexArray(0);
+		}
+
+	}
 
 	linesShader = gltLoadShaderPair(linesVertexShader, linesFragmentShader);
 	lines_ModelViewMatrix = glGetUniformLocation(linesShader, "ModelViewMatrix");
@@ -1265,6 +1313,9 @@ void GLInstancingRenderer::InitShaders()
 
 		glBindVertexArray(0);
 	}
+	
+
+
 	{
 		glGenVertexArrays(1, &lineVertexArrayObject);
 		glBindVertexArray(lineVertexArrayObject);
@@ -1889,21 +1940,20 @@ void GLInstancingRenderer::drawPoint(const float* positions, const float color[4
 {
 	drawPoints(positions, color, 1, 3 * sizeof(float), pointDrawSize);
 }
-void GLInstancingRenderer::drawPoints(const float* positions, const float color[4], int numPoints, int pointStrideInBytes, float pointDrawSize)
+
+void GLInstancingRenderer::drawPoints(const float* positions, const float* colors, int numPoints, int pointStrideInBytes, float pointDrawSize)
 {
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, 0);
 
 	b3Assert(glGetError() == GL_NO_ERROR);
-	glUseProgram(linesShader);
-	glUniformMatrix4fv(lines_ProjectionMatrix, 1, false, &m_data->m_projectionMatrix[0]);
-	glUniformMatrix4fv(lines_ModelViewMatrix, 1, false, &m_data->m_viewMatrix[0]);
-	glUniform4f(lines_colour, color[0], color[1], color[2], color[3]);
+	glUseProgram(pointsShader);
+	glUniformMatrix4fv(points_ProjectionMatrix, 1, false, &m_data->m_projectionMatrix[0]);
+	glUniformMatrix4fv(points_ModelViewMatrix, 1, false, &m_data->m_viewMatrix[0]);
+	glUniform4f(points_colour, 0, 0, 0, -1);
 
 	glPointSize(pointDrawSize);
-	glBindVertexArray(lineVertexArrayObject);
-
-	glBindBuffer(GL_ARRAY_BUFFER, lineVertexBufferObject);
+	glBindVertexArray(pointsVertexArrayObject);
 
 	int maxPointsInBatch = MAX_POINTS_IN_BATCH;
 	int remainingPoints = numPoints;
@@ -1913,10 +1963,16 @@ void GLInstancingRenderer::drawPoints(const float* positions, const float color[
 		int curPointsInBatch = b3Min(maxPointsInBatch, remainingPoints);
 		if (curPointsInBatch)
 		{
-			glBufferSubData(GL_ARRAY_BUFFER, 0, curPointsInBatch * pointStrideInBytes, positions + offsetNumPoints * (pointStrideInBytes / sizeof(float)));
-			glEnableVertexAttribArray(0);
-			int numFloats = 3;  // pointStrideInBytes / sizeof(float);
-			glVertexAttribPointer(0, numFloats, GL_FLOAT, GL_FALSE, pointStrideInBytes, 0);
+			glBindBuffer(GL_ARRAY_BUFFER, pointsVertexBufferObject);
+			glBufferSubData(GL_ARRAY_BUFFER, 0, curPointsInBatch * pointStrideInBytes, positions + offsetNumPoints * 3);
+			glEnableVertexAttribArray(points_position);
+			glVertexAttribPointer(points_position, 3, GL_FLOAT, GL_FALSE, pointStrideInBytes, 0);
+
+			glBindBuffer(GL_ARRAY_BUFFER, pointsVertexArrayObject);
+			glBufferSubData(GL_ARRAY_BUFFER, 0, curPointsInBatch * 4 * sizeof(float), colors + offsetNumPoints * 4);
+			glEnableVertexAttribArray(points_colourIn);
+			glVertexAttribPointer(points_colourIn, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), 0);
+
 			glDrawArrays(GL_POINTS, 0, curPointsInBatch);
 			remainingPoints -= curPointsInBatch;
 			offsetNumPoints += curPointsInBatch;
@@ -1926,7 +1982,7 @@ void GLInstancingRenderer::drawPoints(const float* positions, const float color[
 			break;
 		}
 	}
-	
+
 	glBindVertexArray(0);
 	glPointSize(1);
 	glUseProgram(0);

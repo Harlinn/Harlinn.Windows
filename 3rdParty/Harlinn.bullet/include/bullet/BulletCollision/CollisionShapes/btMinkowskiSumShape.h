@@ -31,18 +31,21 @@ btMinkowskiSumShape : public btConvexInternalShape
 public:
 	BT_DECLARE_ALIGNED_ALLOCATOR();
 
-	BT_EXPORT btMinkowskiSumShape(const btConvexShape* shapeA, const btConvexShape* shapeB);
+	btMinkowskiSumShape(const btConvexShape* shapeA, const btConvexShape* shapeB);
 
-	BT_EXPORT virtual btVector3 localGetSupportingVertexWithoutMargin(const btVector3& vec) const;
+	virtual btVector3 localGetSupportingVertexWithoutMargin(const btVector3& vec) const;
 
-	BT_EXPORT virtual void batchedUnitVectorGetSupportingVertexWithoutMargin(const btVector3* vectors, btVector3* supportVerticesOut, int numVectors) const;
+	virtual void batchedUnitVectorGetSupportingVertexWithoutMargin(const btVector3* vectors, btVector3* supportVerticesOut, int numVectors) const;
 
-	BT_EXPORT virtual void calculateLocalInertia(btScalar mass, btVector3 & inertia) const;
+	virtual void calculateLocalInertia(btScalar mass, btVector3 & inertia) const;
 
 	void setTransformA(const btTransform& transA) { m_transA = transA; }
 	void setTransformB(const btTransform& transB) { m_transB = transB; }
 
 	const btTransform& getTransformA() const { return m_transA; }
+	const btTransform& getTransformB() const { return m_transB; }
+
+	// keep this for backward compatibility
 	const btTransform& GetTransformB() const { return m_transB; }
 
 	virtual btScalar getMargin() const;

@@ -368,6 +368,7 @@
     <ClCompile Include="src\BulletDynamics\Featherstone\btMultiBodyMLCPConstraintSolver.cpp" />
     <ClCompile Include="src\BulletDynamics\Featherstone\btMultiBodyPoint2Point.cpp" />
     <ClCompile Include="src\BulletDynamics\Featherstone\btMultiBodySliderConstraint.cpp" />
+    <ClCompile Include="src\BulletDynamics\Featherstone\btMultiBodySphericalJointLimit.cpp" />
     <ClCompile Include="src\BulletDynamics\Featherstone\btMultiBodySphericalJointMotor.cpp" />
     <ClCompile Include="src\BulletDynamics\MLCPSolvers\btDantzigLCP.cpp" />
     <ClCompile Include="src\BulletDynamics\MLCPSolvers\btLemkeAlgorithm.cpp" />
@@ -393,6 +394,10 @@
     <ClCompile Include="src\BulletSoftBody\btSoftRigidCollisionAlgorithm.cpp" />
     <ClCompile Include="src\BulletSoftBody\btSoftRigidDynamicsWorld.cpp" />
     <ClCompile Include="src\BulletSoftBody\btSoftSoftCollisionAlgorithm.cpp" />
+    <ClCompile Include="src\BulletSoftBody\BulletReducedDeformableBody\btReducedDeformableBody.cpp" />
+    <ClCompile Include="src\BulletSoftBody\BulletReducedDeformableBody\btReducedDeformableBodyHelpers.cpp" />
+    <ClCompile Include="src\BulletSoftBody\BulletReducedDeformableBody\btReducedDeformableBodySolver.cpp" />
+    <ClCompile Include="src\BulletSoftBody\BulletReducedDeformableBody\btReducedDeformableContactConstraint.cpp" />
     <ClCompile Include="src\BulletSoftBody\poly34.cpp" />
     <ClCompile Include="src\clew\clew.c" />
     <ClCompile Include="src\Examples\Importers\ImportBsp\BspConverter.cpp" />
@@ -832,6 +837,7 @@
     <ClInclude Include="include\bullet\BulletDynamics\Featherstone\btMultiBodyPoint2Point.h" />
     <ClInclude Include="include\bullet\BulletDynamics\Featherstone\btMultiBodySliderConstraint.h" />
     <ClInclude Include="include\bullet\BulletDynamics\Featherstone\btMultiBodySolverConstraint.h" />
+    <ClInclude Include="include\bullet\BulletDynamics\Featherstone\btMultiBodySphericalJointLimit.h" />
     <ClInclude Include="include\bullet\BulletDynamics\Featherstone\btMultiBodySphericalJointMotor.h" />
     <ClInclude Include="include\bullet\BulletDynamics\MLCPSolvers\btDantzigLCP.h" />
     <ClInclude Include="include\bullet\BulletDynamics\MLCPSolvers\btDantzigSolver.h" />
@@ -887,6 +893,10 @@
     <ClInclude Include="include\bullet\BulletSoftBody\btSoftRigidDynamicsWorld.h" />
     <ClInclude Include="include\bullet\BulletSoftBody\btSoftSoftCollisionAlgorithm.h" />
     <ClInclude Include="include\bullet\BulletSoftBody\btSparseSDF.h" />
+    <ClInclude Include="include\bullet\BulletSoftBody\BulletReducedDeformableBody\btReducedDeformableBody.h" />
+    <ClInclude Include="include\bullet\BulletSoftBody\BulletReducedDeformableBody\btReducedDeformableBodyHelpers.h" />
+    <ClInclude Include="include\bullet\BulletSoftBody\BulletReducedDeformableBody\btReducedDeformableBodySolver.h" />
+    <ClInclude Include="include\bullet\BulletSoftBody\BulletReducedDeformableBody\btReducedDeformableContactConstraint.h" />
     <ClInclude Include="include\bullet\BulletSoftBody\DeformableBodyInplaceSolverIslandCallback.h" />
     <ClInclude Include="include\bullet\BulletSoftBody\poly34.h" />
     <ClInclude Include="include\bullet\bullet_export.h" />

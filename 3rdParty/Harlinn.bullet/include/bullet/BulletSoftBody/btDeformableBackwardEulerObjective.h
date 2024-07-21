@@ -25,12 +25,18 @@
 #include "btDeformableNeoHookeanForce.h"
 #include "btDeformableContactProjection.h"
 #include "btPreconditioner.h"
-#include "btDeformableMultiBodyDynamicsWorld.h"
+// #include "btDeformableMultiBodyDynamicsWorld.h"
 #include "bullet/LinearMath/btQuickprof.h"
 
 class btDeformableBackwardEulerObjective
 {
 public:
+	enum _
+	{
+		Mass_preconditioner,
+		KKT_preconditioner
+	};
+
 	typedef btAlignedObjectArray<btVector3> TVStack;
 	btScalar m_dt;
 	btAlignedObjectArray<btDeformableLagrangianForce*> m_lf;
@@ -43,46 +49,46 @@ public:
 	MassPreconditioner* m_massPreconditioner;
 	KKTPreconditioner* m_KKTPreconditioner;
 
-	BT_EXPORT btDeformableBackwardEulerObjective(btAlignedObjectArray<btSoftBody*>& softBodies, const TVStack& backup_v);
+	btDeformableBackwardEulerObjective(btAlignedObjectArray<btSoftBody*>& softBodies, const TVStack& backup_v);
 
-	BT_EXPORT virtual ~btDeformableBackwardEulerObjective();
+	virtual ~btDeformableBackwardEulerObjective();
 
 	void initialize() {}
 
 	// compute the rhs for CG solve, i.e, add the dt scaled implicit force to residual
-	BT_EXPORT void computeResidual(btScalar dt, TVStack& residual);
+	void computeResidual(btScalar dt, TVStack& residual);
 
 	// add explicit force to the velocity
-	BT_EXPORT void applyExplicitForce(TVStack& force);
+	void applyExplicitForce(TVStack& force);
 
 	// apply force to velocity and optionally reset the force to zero
-	BT_EXPORT void applyForce(TVStack& force, bool setZero);
+	void applyForce(TVStack& force, bool setZero);
 
 	// compute the norm of the residual
-	BT_EXPORT btScalar computeNorm(const TVStack& residual) const;
+	btScalar computeNorm(const TVStack& residual) const;
 
 	// compute one step of the solve (there is only one solve if the system is linear)
-	BT_EXPORT void computeStep(TVStack& dv, const TVStack& residual, const btScalar& dt);
+	void computeStep(TVStack& dv, const TVStack& residual, const btScalar& dt);
 
 	// perform A*x = b
-	BT_EXPORT void multiply(const TVStack& x, TVStack& b) const;
+	void multiply(const TVStack& x, TVStack& b) const;
 
 	// set initial guess for CG solve
-	BT_EXPORT void initialGuess(TVStack& dv, const TVStack& residual);
+	void initialGuess(TVStack& dv, const TVStack& residual);
 
 	// reset data structure and reset dt
-	BT_EXPORT void reinitialize(bool nodeUpdated, btScalar dt);
+	void reinitialize(bool nodeUpdated, btScalar dt);
 
-	BT_EXPORT void setDt(btScalar dt);
+	void setDt(btScalar dt);
 
 	// add friction force to residual
-	BT_EXPORT void applyDynamicFriction(TVStack& r);
+	void applyDynamicFriction(TVStack& r);
 
 	// add dv to velocity
-	BT_EXPORT void updateVelocity(const TVStack& dv);
+	void updateVelocity(const TVStack& dv);
 
 	//set constraints as projections
-	BT_EXPORT void setConstraints(const btContactSolverInfo& infoGlobal);
+	void setConstraints(const btContactSolverInfo& infoGlobal);
 
 	// update the projections and project the residual
 	void project(TVStack& r)
@@ -131,7 +137,7 @@ public:
 	}
 
 	// Calculate the total potential energy in the system
-	BT_EXPORT btScalar totalEnergy(btScalar dt);
+	btScalar totalEnergy(btScalar dt);
 
 	void addLagrangeMultiplier(const TVStack& vec, TVStack& extended_vec)
 	{

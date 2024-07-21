@@ -134,7 +134,7 @@ The abseil_test contains the unit tests for the Harlinn.abseil project
 **Project:** Harlinn.brotli
 
 ### [Bullet Physics SDK](https://github.com/bulletphysics/bullet3)
-**Version:** 3.21
+**Version:** 3.25
 
 **Description:**
 > Real-time collision detection and multi-physics simulation for VR, games, visual effects, robotics, machine learning etc.

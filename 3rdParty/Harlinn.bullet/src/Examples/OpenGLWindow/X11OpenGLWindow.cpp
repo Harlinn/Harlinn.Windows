@@ -1,4 +1,5 @@
-#ifndef _WIN32
+
+#define B3_USE_GLFW
 #ifndef B3_USE_GLFW
 
 #include "bullet/Examples/OpenGLWindow/X11OpenGLWindow.h"
@@ -6,7 +7,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "glad/glad.h"
+#include "glad/gl.h"
 
 #ifdef GLEW_DYNAMIC_LOAD_ALL_GLX_FUNCTIONS
 #include "glad/glx.h"
@@ -566,7 +567,7 @@ void X11OpenGLWindow::enableOpenGL()
 	//Access pthreads as a workaround for a bug in Linux/Ubuntu
 	//See https://bugs.launchpad.net/ubuntu/+source/nvidia-graphics-drivers-319/+bug/1248642
 
-#if !defined(__NetBSD__)
+#if !defined(__NetBSD__) && !defined(__ANDROID__)
 	int i = pthread_getconcurrency();
 	printf("pthread_getconcurrency()=%d\n", i);
 #endif
@@ -1194,5 +1195,4 @@ int X11OpenGLWindow::fileOpenDialog(char* filename, int maxNameLength)
 	MyXRaiseWindow(m_data->m_dpy, m_data->m_win);
 	return len;
 }
-#endif
 #endif

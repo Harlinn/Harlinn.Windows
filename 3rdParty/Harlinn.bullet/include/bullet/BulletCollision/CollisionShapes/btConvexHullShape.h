@@ -16,7 +16,7 @@ subject to the following restrictions:
 #ifndef BT_CONVEX_HULL_SHAPE_H
 #define BT_CONVEX_HULL_SHAPE_H
 
-#include "btPolyhedralConvexShape.h"
+#include "bullet/BulletCollision/CollisionShapes/btPolyhedralConvexShape.h"
 #include "bullet/BulletCollision/BroadphaseCollision/btBroadphaseProxy.h"  // for the types
 #include "bullet/LinearMath/btAlignedObjectArray.h"
 
@@ -25,6 +25,7 @@ subject to the following restrictions:
 ATTRIBUTE_ALIGNED16(class)
 btConvexHullShape : public btPolyhedralConvexAabbCachingShape
 {
+protected:
 	btAlignedObjectArray<btVector3> m_unscaledPoints;
 
 public:
@@ -33,9 +34,9 @@ public:
 	///this constructor optionally takes in a pointer to points. Each point is assumed to be 3 consecutive btScalar (x,y,z), the striding defines the number of bytes between each point, in memory.
 	///It is easier to not pass any points in the constructor, and just add one point at a time, using addPoint.
 	///btConvexHullShape make an internal copy of the points.
-	BT_EXPORT btConvexHullShape(const btScalar* points = 0, int numPoints = 0, int stride = sizeof(btVector3));
+	btConvexHullShape(const btScalar* points = 0, int numPoints = 0, int stride = sizeof(btVector3));
 
-	BT_EXPORT void addPoint(const btVector3& point, bool recalculateLocalAabb = true);
+	void addPoint(const btVector3& point, bool recalculateLocalAabb = true);
 
 	btVector3* getUnscaledPoints()
 	{
@@ -53,7 +54,7 @@ public:
 		return getUnscaledPoints();
 	}
 
-	BT_EXPORT void optimizeConvexHull();
+	void optimizeConvexHull();
 
 	SIMD_FORCE_INLINE btVector3 getScaledPoint(int i) const
 	{
@@ -65,30 +66,30 @@ public:
 		return m_unscaledPoints.size();
 	}
 
-	BT_EXPORT virtual btVector3 localGetSupportingVertex(const btVector3& vec) const;
-	BT_EXPORT virtual btVector3 localGetSupportingVertexWithoutMargin(const btVector3& vec) const;
-	BT_EXPORT virtual void batchedUnitVectorGetSupportingVertexWithoutMargin(const btVector3* vectors, btVector3* supportVerticesOut, int numVectors) const;
+	virtual btVector3 localGetSupportingVertex(const btVector3& vec) const;
+	virtual btVector3 localGetSupportingVertexWithoutMargin(const btVector3& vec) const;
+	virtual void batchedUnitVectorGetSupportingVertexWithoutMargin(const btVector3* vectors, btVector3* supportVerticesOut, int numVectors) const;
 
-	BT_EXPORT virtual void project(const btTransform& trans, const btVector3& dir, btScalar& minProj, btScalar& maxProj, btVector3& witnesPtMin, btVector3& witnesPtMax) const;
+	virtual void project(const btTransform& trans, const btVector3& dir, btScalar& minProj, btScalar& maxProj, btVector3& witnesPtMin, btVector3& witnesPtMax) const;
 
 	//debugging
 	virtual const char* getName() const { return "Convex"; }
 
-	BT_EXPORT virtual int getNumVertices() const;
-	BT_EXPORT virtual int getNumEdges() const;
-	BT_EXPORT virtual void getEdge(int i, btVector3& pa, btVector3& pb) const;
-	BT_EXPORT virtual void getVertex(int i, btVector3& vtx) const;
-	BT_EXPORT virtual int getNumPlanes() const;
-	BT_EXPORT virtual void getPlane(btVector3 & planeNormal, btVector3 & planeSupport, int i) const;
-	BT_EXPORT virtual bool isInside(const btVector3& pt, btScalar tolerance) const;
+	virtual int getNumVertices() const;
+	virtual int getNumEdges() const;
+	virtual void getEdge(int i, btVector3& pa, btVector3& pb) const;
+	virtual void getVertex(int i, btVector3& vtx) const;
+	virtual int getNumPlanes() const;
+	virtual void getPlane(btVector3 & planeNormal, btVector3 & planeSupport, int i) const;
+	virtual bool isInside(const btVector3& pt, btScalar tolerance) const;
 
 	///in case we receive negative scaling
-	BT_EXPORT virtual void setLocalScaling(const btVector3& scaling);
+	virtual void setLocalScaling(const btVector3& scaling);
 
 	virtual int calculateSerializeBufferSize() const;
 
 	///fills the dataBuffer and returns the struct name (and 0 on failure)
-	BT_EXPORT virtual const char* serialize(void* dataBuffer, btSerializer* serializer) const;
+	virtual const char* serialize(void* dataBuffer, btSerializer* serializer) const;
 };
 
 // clang-format off

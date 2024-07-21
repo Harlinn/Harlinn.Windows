@@ -31,7 +31,7 @@ enum btTypedMultiBodyConstraintType
 	MULTIBODY_CONSTRAINT_SLIDER,
 	MULTIBODY_CONSTRAINT_SPHERICAL_MOTOR,
 	MULTIBODY_CONSTRAINT_FIXED,
-	
+	MULTIBODY_CONSTRAINT_SPHERICAL_LIMIT,
 	MAX_MULTIBODY_CONSTRAINT_TYPE,
 };
 
@@ -79,9 +79,9 @@ protected:
 	// positions. (one per row.)
 	btAlignedObjectArray<btScalar> m_data;
 
-	BT_EXPORT void applyDeltaVee(btMultiBodyJacobianData & data, btScalar * delta_vee, btScalar impulse, int velocityIndex, int ndof);
+	void applyDeltaVee(btMultiBodyJacobianData & data, btScalar * delta_vee, btScalar impulse, int velocityIndex, int ndof);
 
-	BT_EXPORT btScalar fillMultiBodyConstraint(btMultiBodySolverConstraint & solverConstraint,
+	btScalar fillMultiBodyConstraint(btMultiBodySolverConstraint & solverConstraint,
 									 btMultiBodyJacobianData & data,
 									 btScalar * jacOrgA, btScalar * jacOrgB,
 									 const btVector3& constraintNormalAng,
@@ -99,11 +99,11 @@ protected:
 public:
 	BT_DECLARE_ALIGNED_ALLOCATOR();
 
-	BT_EXPORT btMultiBodyConstraint(btMultiBody * bodyA, btMultiBody * bodyB, int linkA, int linkB, int numRows, bool isUnilateral, int type);
-	BT_EXPORT virtual ~btMultiBodyConstraint();
+	btMultiBodyConstraint(btMultiBody * bodyA, btMultiBody * bodyB, int linkA, int linkB, int numRows, bool isUnilateral, int type);
+	virtual ~btMultiBodyConstraint();
 
-	BT_EXPORT void updateJacobianSizes();
-	BT_EXPORT void allocateJacobiansMultiDof();
+	void updateJacobianSizes();
+	void allocateJacobiansMultiDof();
 
 	int getConstraintType() const
 	{

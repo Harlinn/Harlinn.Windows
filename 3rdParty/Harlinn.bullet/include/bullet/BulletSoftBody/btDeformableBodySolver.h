@@ -24,8 +24,8 @@
 #include "btConjugateResidual.h"
 #include "btConjugateGradient.h"
 struct btCollisionObjectWrapper;
-class btDeformableBackwardEulerObjective;
-class btDeformableMultiBodyDynamicsWorld;
+// class btDeformableBackwardEulerObjective;
+// class btDeformableMultiBodyDynamicsWorld;
 
 class btDeformableBodySolver : public btSoftBodySolver
 {
@@ -46,14 +46,15 @@ protected:
 	int m_maxNewtonIterations;                                     // max number of newton iterations
 	btScalar m_newtonTolerance;                                    // stop newton iterations if f(x) < m_newtonTolerance
 	bool m_lineSearch;                                             // If true, use newton's method with line search under implicit scheme
+	bool m_reducedSolver;																					 // flag for reduced soft body solver
 public:
 	// handles data related to objective function
 	btDeformableBackwardEulerObjective* m_objective;
 	bool m_useProjection;
 
-	BT_EXPORT btDeformableBodySolver();
+	btDeformableBodySolver();
 
-	BT_EXPORT virtual ~btDeformableBodySolver();
+	virtual ~btDeformableBodySolver();
 
 	virtual SolverTypes getSolverType() const
 	{
@@ -61,48 +62,55 @@ public:
 	}
 
 	// update soft body normals
-	BT_EXPORT virtual void updateSoftBodies();
+	virtual void updateSoftBodies();
 
-	BT_EXPORT virtual btScalar solveContactConstraints(btCollisionObject** deformableBodies, int numDeformableBodies, const btContactSolverInfo& infoGlobal);
+	virtual btScalar solveContactConstraints(btCollisionObject** deformableBodies, int numDeformableBodies, const btContactSolverInfo& infoGlobal);
 
 	// solve the momentum equation
-	BT_EXPORT virtual void solveDeformableConstraints(btScalar solverdt);
+	virtual void solveDeformableConstraints(btScalar solverdt);
+
+	// set gravity (get from deformable world)
+	virtual void setGravity(const btVector3& gravity)
+	{
+		// for full deformable object, we don't store gravity in the solver
+		// this function is overriden in the reduced deformable object
+	}
 
 	// resize/clear data structures
-	BT_EXPORT void reinitialize(const btAlignedObjectArray<btSoftBody*>& softBodies, btScalar dt);
+	virtual void reinitialize(const btAlignedObjectArray<btSoftBody*>& softBodies, btScalar dt);
 
 	// set up contact constraints
-	BT_EXPORT void setConstraints(const btContactSolverInfo& infoGlobal);
+	virtual void setConstraints(const btContactSolverInfo& infoGlobal);
 
 	// add in elastic forces and gravity to obtain v_{n+1}^* and calls predictDeformableMotion
-	BT_EXPORT virtual void predictMotion(btScalar solverdt);
+	virtual void predictMotion(btScalar solverdt);
 
 	// move to temporary position x_{n+1}^* = x_n + dt * v_{n+1}^*
 	// x_{n+1}^* is stored in m_q
-	BT_EXPORT void predictDeformableMotion(btSoftBody* psb, btScalar dt);
+	void predictDeformableMotion(btSoftBody* psb, btScalar dt);
 
 	// save the current velocity to m_backupVelocity
-	BT_EXPORT void backupVelocity();
+	void backupVelocity();
 
 	// set m_dv and m_backupVelocity to desired value to prepare for momentum solve
-	BT_EXPORT void setupDeformableSolve(bool implicit);
+	virtual void setupDeformableSolve(bool implicit);
 
 	// set the current velocity to that backed up in m_backupVelocity
-	BT_EXPORT void revertVelocity();
+	void revertVelocity();
 
 	// set velocity to m_dv + m_backupVelocity
-	BT_EXPORT void updateVelocity();
+	void updateVelocity();
 
 	// update the node count
-	BT_EXPORT bool updateNodes();
+	bool updateNodes();
 
 	// calculate the change in dv resulting from the momentum solve
-	BT_EXPORT void computeStep(TVStack& ddv, const TVStack& residual);
+	void computeStep(TVStack& ddv, const TVStack& residual);
 
 	// calculate the change in dv resulting from the momentum solve when line search is turned on
-	BT_EXPORT btScalar computeDescentStep(TVStack& ddv, const TVStack& residual, bool verbose = false);
+	btScalar computeDescentStep(TVStack& ddv, const TVStack& residual, bool verbose = false);
 
-	BT_EXPORT virtual void copySoftBodyToVertexBuffer(const btSoftBody* const softBody, btVertexBufferDescriptor* vertexBuffer) {}
+	virtual void copySoftBodyToVertexBuffer(const btSoftBody* const softBody, btVertexBufferDescriptor* vertexBuffer) {}
 
 	// process collision between deformable and rigid
 	virtual void processCollision(btSoftBody* softBody, const btCollisionObjectWrapper* collisionObjectWrap)
@@ -118,37 +126,93 @@ public:
 
 	// If true, implicit time stepping scheme is used.
 	// Otherwise, explicit time stepping scheme is used
-	BT_EXPORT void setImplicit(bool implicit);
+	void setImplicit(bool implicit);
 
 	// If true, newton's method with line search is used when implicit time stepping scheme is turned on
-	BT_EXPORT void setLineSearch(bool lineSearch);
+	void setLineSearch(bool lineSearch);
 
 	// set temporary position x^* = x_n + dt * v
 	// update the deformation gradient at position x^*
-	BT_EXPORT void updateState();
+	void updateState();
 
 	// set dv = dv + scale * ddv
-	BT_EXPORT void updateDv(btScalar scale = 1);
+	void updateDv(btScalar scale = 1);
 
 	// set temporary position x^* = x_n + dt * v^*
-	BT_EXPORT void updateTempPosition();
+	void updateTempPosition();
 
 	// save the current dv to m_backup_dv;
-	BT_EXPORT void backupDv();
+	void backupDv();
 
 	// set dv to the backed-up value
-	BT_EXPORT void revertDv();
+	void revertDv();
 
 	// set dv = dv + scale * ddv
 	// set v^* = v_n + dv
 	// set temporary position x^* = x_n + dt * v^*
 	// update the deformation gradient at position x^*
-	BT_EXPORT void updateEnergy(btScalar scale);
+	void updateEnergy(btScalar scale);
 
 	// calculates the appropriately scaled kinetic energy in the system, which is
 	// 1/2 * dv^T * M * dv
 	// used in line search
-	BT_EXPORT btScalar kineticEnergy();
+	btScalar kineticEnergy();
+
+	// add explicit force to the velocity in the objective class
+	virtual void applyExplicitForce();
+
+	// execute position/velocity update and apply anchor constraints in the integrateTransforms from the Dynamics world
+	virtual void applyTransforms(btScalar timeStep);
+
+	virtual void setStrainLimiting(bool opt)
+	{
+		m_objective->m_projection.m_useStrainLimiting = opt;
+	}
+
+	virtual void setPreconditioner(int opt)
+	{
+		switch (opt)
+		{
+			case btDeformableBackwardEulerObjective::Mass_preconditioner:
+				m_objective->m_preconditioner = m_objective->m_massPreconditioner;
+				break;
+
+			case btDeformableBackwardEulerObjective::KKT_preconditioner:
+				m_objective->m_preconditioner = m_objective->m_KKTPreconditioner;
+				break;
+			
+			default:
+				btAssert(false);
+				break;
+		}
+	}
+
+	virtual btAlignedObjectArray<btDeformableLagrangianForce*>* getLagrangianForceArray()
+	{
+		return &(m_objective->m_lf);
+	}
+
+	virtual const btAlignedObjectArray<btSoftBody::Node*>* getIndices()
+	{
+		return m_objective->getIndices();
+	}
+
+	virtual void setProjection()
+	{
+		m_objective->m_projection.setProjection();
+	}
+
+	virtual void setLagrangeMultiplier()
+	{
+		m_objective->m_projection.setLagrangeMultiplier();
+	}
+
+	virtual bool isReducedSolver()
+	{
+		return m_reducedSolver;
+	}
+	
+	virtual void deformableBodyInternalWriteBack() {}
 
 	// unused functions
 	virtual void optimize(btAlignedObjectArray<btSoftBody*>& softBodies, bool forceUpdate = false) {}

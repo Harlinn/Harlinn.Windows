@@ -64,18 +64,17 @@ public:
 	/**
    * \brief solve algorithm adapted from : Fast Implementation of Lemke’s Algorithm for Rigid Body Contact Simulation (John E. Lloyd)
    */
-	BT_EXPORT btVectorXu solve(unsigned int maxloops = 0);
+	btVectorXu solve(unsigned int maxloops = 0);
 
 	virtual ~btLemkeAlgorithm()
 	{
 	}
 
 protected:
-	BT_EXPORT int findLexicographicMinimum(const btMatrixXu& A, const int& pivotColIndex);
-	BT_EXPORT bool LexicographicPositive(const btVectorXu& v);
-	BT_EXPORT void GaussJordanEliminationStep(btMatrixXu& A, int pivotRowIndex, int pivotColumnIndex, const btAlignedObjectArray<int>& basis);
-	BT_EXPORT bool greaterZero(const btVectorXu& vector);
-	BT_EXPORT bool validBasis(const btAlignedObjectArray<int>& basis);
+	int findLexicographicMinimum(const btMatrixXu& A, const int& pivotColIndex, const int& z0Row, bool& isRayTermination);
+	void GaussJordanEliminationStep(btMatrixXu& A, int pivotRowIndex, int pivotColumnIndex, const btAlignedObjectArray<int>& basis);
+	bool greaterZero(const btVectorXu& vector);
+	bool validBasis(const btAlignedObjectArray<int>& basis);
 
 	btMatrixXu m_M;
 	btVectorXu m_q;
