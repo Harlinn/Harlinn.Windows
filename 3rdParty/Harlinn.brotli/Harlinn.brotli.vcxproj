@@ -268,6 +268,7 @@
     <ClInclude Include="enc\prefix.h" />
     <ClInclude Include="enc\quality.h" />
     <ClInclude Include="enc\ringbuffer.h" />
+    <ClInclude Include="enc\state.h" />
     <ClInclude Include="enc\static_dict.h" />
     <ClInclude Include="enc\static_dict_lut.h" />
     <ClInclude Include="enc\utf8_util.h" />

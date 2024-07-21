@@ -13,16 +13,18 @@
 #include <stdlib.h>  /* exit */
 #include <string.h>  /* memcmp, memset */
 
+#include <brotli/types.h>
+
 #include "../common/constants.h"
 #include "../common/dictionary.h"
 #include "../common/platform.h"
-#include <brotli/types.h>
-#include "./encoder_dict.h"
-#include "./fast_log.h"
-#include "./find_match_length.h"
-#include "./memory.h"
-#include "./quality.h"
-#include "./static_dict.h"
+#include "compound_dictionary.h"
+#include "encoder_dict.h"
+#include "fast_log.h"
+#include "find_match_length.h"
+#include "memory.h"
+#include "quality.h"
+#include "static_dict.h"
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
@@ -76,8 +78,7 @@ typedef struct HasherSearchResult {
      for this use.
    * The number has been tuned heuristically against compression benchmarks. */
 static const uint32_t kHashMul32 = 0x1E35A7BD;
-static const uint64_t kHashMul64 = BROTLI_MAKE_UINT64_T(0x1E35A7BD, 0x1E35A7BD);
-static const uint64_t kHashMul64Long =
+static const uint64_t kHashMul64 =
     BROTLI_MAKE_UINT64_T(0x1FE35A7Bu, 0xD3579BD3u);
 
 static BROTLI_INLINE uint32_t Hash14(const uint8_t* data) {
@@ -246,7 +247,7 @@ static BROTLI_INLINE size_t BackwardMatchLengthCode(const BackwardMatch* self) {
 #define BUCKET_BITS 17
 #define MAX_TREE_SEARCH_DEPTH 64
 #define MAX_TREE_COMP_LENGTH 128
-#include "./hash_to_binary_tree_inc.h"  /* NOLINT(build/include) */
+#include "hash_to_binary_tree_inc.h"  /* NOLINT(build/include) */
 #undef MAX_TREE_SEARCH_DEPTH
 #undef MAX_TREE_COMP_LENGTH
 #undef BUCKET_BITS
@@ -263,7 +264,7 @@ static BROTLI_INLINE size_t BackwardMatchLengthCode(const BackwardMatch* self) {
 #define BUCKET_SWEEP_BITS 0
 #define HASH_LEN 5
 #define USE_DICTIONARY 1
-#include "./hash_longest_match_quickly_inc.h"  /* NOLINT(build/include) */
+#include "hash_longest_match_quickly_inc.h"  /* NOLINT(build/include) */
 #undef BUCKET_SWEEP_BITS
 #undef USE_DICTIONARY
 #undef HASHER
@@ -271,7 +272,7 @@ static BROTLI_INLINE size_t BackwardMatchLengthCode(const BackwardMatch* self) {
 #define HASHER() H3
 #define BUCKET_SWEEP_BITS 1
 #define USE_DICTIONARY 0
-#include "./hash_longest_match_quickly_inc.h"  /* NOLINT(build/include) */
+#include "hash_longest_match_quickly_inc.h"  /* NOLINT(build/include) */
 #undef USE_DICTIONARY
 #undef BUCKET_SWEEP_BITS
 #undef BUCKET_BITS
@@ -281,7 +282,7 @@ static BROTLI_INLINE size_t BackwardMatchLengthCode(const BackwardMatch* self) {
 #define BUCKET_BITS 17
 #define BUCKET_SWEEP_BITS 2
 #define USE_DICTIONARY 1
-#include "./hash_longest_match_quickly_inc.h"  /* NOLINT(build/include) */
+#include "hash_longest_match_quickly_inc.h"  /* NOLINT(build/include) */
 #undef USE_DICTIONARY
 #undef HASH_LEN
 #undef BUCKET_SWEEP_BITS
@@ -289,11 +290,11 @@ static BROTLI_INLINE size_t BackwardMatchLengthCode(const BackwardMatch* self) {
 #undef HASHER
 
 #define HASHER() H5
-#include "./hash_longest_match_inc.h"  /* NOLINT(build/include) */
+#include "hash_longest_match_inc.h"  /* NOLINT(build/include) */
 #undef HASHER
 
 #define HASHER() H6
-#include "./hash_longest_match64_inc.h"  /* NOLINT(build/include) */
+#include "hash_longest_match64_inc.h"  /* NOLINT(build/include) */
 #undef HASHER
 
 #define BUCKET_BITS 15
@@ -302,13 +303,13 @@ static BROTLI_INLINE size_t BackwardMatchLengthCode(const BackwardMatch* self) {
 #define NUM_BANKS 1
 #define BANK_BITS 16
 #define HASHER() H40
-#include "./hash_forgetful_chain_inc.h"  /* NOLINT(build/include) */
+#include "hash_forgetful_chain_inc.h"  /* NOLINT(build/include) */
 #undef HASHER
 #undef NUM_LAST_DISTANCES_TO_CHECK
 
 #define NUM_LAST_DISTANCES_TO_CHECK 10
 #define HASHER() H41
-#include "./hash_forgetful_chain_inc.h"  /* NOLINT(build/include) */
+#include "hash_forgetful_chain_inc.h"  /* NOLINT(build/include) */
 #undef HASHER
 #undef NUM_LAST_DISTANCES_TO_CHECK
 #undef NUM_BANKS
@@ -318,7 +319,7 @@ static BROTLI_INLINE size_t BackwardMatchLengthCode(const BackwardMatch* self) {
 #define NUM_BANKS 512
 #define BANK_BITS 9
 #define HASHER() H42
-#include "./hash_forgetful_chain_inc.h"  /* NOLINT(build/include) */
+#include "hash_forgetful_chain_inc.h"  /* NOLINT(build/include) */
 #undef HASHER
 #undef NUM_LAST_DISTANCES_TO_CHECK
 #undef NUM_BANKS
@@ -331,7 +332,7 @@ static BROTLI_INLINE size_t BackwardMatchLengthCode(const BackwardMatch* self) {
 #define BUCKET_SWEEP_BITS 2
 #define HASH_LEN 7
 #define USE_DICTIONARY 0
-#include "./hash_longest_match_quickly_inc.h"  /* NOLINT(build/include) */
+#include "hash_longest_match_quickly_inc.h"  /* NOLINT(build/include) */
 #undef USE_DICTIONARY
 #undef HASH_LEN
 #undef BUCKET_SWEEP_BITS
@@ -345,14 +346,14 @@ static BROTLI_INLINE size_t BackwardMatchLengthCode(const BackwardMatch* self) {
 #define JUMP 4
 #define NUMBUCKETS 16777216
 #define MASK ((NUMBUCKETS * 64) - 1)
-#include "./hash_rolling_inc.h"  /* NOLINT(build/include) */
+#include "hash_rolling_inc.h"  /* NOLINT(build/include) */
 #undef JUMP
 #undef HASHER
 
 
 #define HASHER() HROLLING
 #define JUMP 1
-#include "./hash_rolling_inc.h"  /* NOLINT(build/include) */
+#include "hash_rolling_inc.h"  /* NOLINT(build/include) */
 #undef MASK
 #undef NUMBUCKETS
 #undef JUMP
@@ -362,7 +363,7 @@ static BROTLI_INLINE size_t BackwardMatchLengthCode(const BackwardMatch* self) {
 #define HASHER() H35
 #define HASHER_A H3
 #define HASHER_B HROLLING_FAST
-#include "./hash_composite_inc.h"  /* NOLINT(build/include) */
+#include "hash_composite_inc.h"  /* NOLINT(build/include) */
 #undef HASHER_A
 #undef HASHER_B
 #undef HASHER
@@ -370,7 +371,7 @@ static BROTLI_INLINE size_t BackwardMatchLengthCode(const BackwardMatch* self) {
 #define HASHER() H55
 #define HASHER_A H54
 #define HASHER_B HROLLING_FAST
-#include "./hash_composite_inc.h"  /* NOLINT(build/include) */
+#include "hash_composite_inc.h"  /* NOLINT(build/include) */
 #undef HASHER_A
 #undef HASHER_B
 #undef HASHER
@@ -378,7 +379,7 @@ static BROTLI_INLINE size_t BackwardMatchLengthCode(const BackwardMatch* self) {
 #define HASHER() H65
 #define HASHER_A H6
 #define HASHER_B HROLLING
-#include "./hash_composite_inc.h"  /* NOLINT(build/include) */
+#include "hash_composite_inc.h"  /* NOLINT(build/include) */
 #undef HASHER_A
 #undef HASHER_B
 #undef HASHER
@@ -511,7 +512,6 @@ static BROTLI_INLINE void FindCompoundDictionaryMatch(
     const size_t ring_buffer_mask, const int* BROTLI_RESTRICT distance_cache,
     const size_t cur_ix, const size_t max_length, const size_t distance_offset,
     const size_t max_distance, HasherSearchResult* BROTLI_RESTRICT out) {
-  const uint32_t source_offset = self->source_offset;
   const uint32_t source_size = self->source_size;
   const size_t boundary = distance_offset - source_size;
   const uint32_t hash_bits = self->hash_bits;
@@ -525,7 +525,7 @@ static BROTLI_INLINE void FindCompoundDictionaryMatch(
   const uint32_t* slot_offsets = (uint32_t*)(&self[1]);
   const uint16_t* heads = (uint16_t*)(&slot_offsets[1u << slot_bits]);
   const uint32_t* items = (uint32_t*)(&heads[1u << bucket_bits]);
-  const uint8_t* source = (uint8_t*)(&items[source_offset]);
+  const uint8_t* source = NULL;
 
   const size_t cur_ix_masked = cur_ix & ring_buffer_mask;
   score_t best_score = out->score;
@@ -539,6 +539,15 @@ static BROTLI_INLINE void FindCompoundDictionaryMatch(
   const uint32_t head = heads[key];
   const uint32_t* BROTLI_RESTRICT chain = &items[slot_offsets[slot] + head];
   uint32_t item = (head == 0xFFFF) ? 1 : 0;
+
+  const void* tail = (void*)&items[self->num_items];
+  if (self->magic == kPreparedDictionaryMagic) {
+    source = (const uint8_t*)tail;
+  } else {
+    /* kLeanPreparedDictionaryMagic */
+    source = (const uint8_t*)BROTLI_UNALIGNED_LOAD_PTR((const uint8_t**)tail);
+  }
+
   for (i = 0; i < 4; ++i) {
     const size_t distance = (size_t)distance_cache[i];
     size_t offset;
@@ -608,7 +617,6 @@ static BROTLI_INLINE size_t FindAllCompoundDictionaryMatches(
     const size_t ring_buffer_mask, const size_t cur_ix, const size_t min_length,
     const size_t max_length, const size_t distance_offset,
     const size_t max_distance, BackwardMatch* matches, size_t match_limit) {
-  const uint32_t source_offset = self->source_offset;
   const uint32_t source_size = self->source_size;
   const uint32_t hash_bits = self->hash_bits;
   const uint32_t bucket_bits = self->bucket_bits;
@@ -621,7 +629,7 @@ static BROTLI_INLINE size_t FindAllCompoundDictionaryMatches(
   const uint32_t* slot_offsets = (uint32_t*)(&self[1]);
   const uint16_t* heads = (uint16_t*)(&slot_offsets[1u << slot_bits]);
   const uint32_t* items = (uint32_t*)(&heads[1u << bucket_bits]);
-  const uint8_t* source = (uint8_t*)(&items[source_offset]);
+  const uint8_t* source = NULL;
 
   const size_t cur_ix_masked = cur_ix & ring_buffer_mask;
   size_t best_len = min_length;
@@ -634,6 +642,15 @@ static BROTLI_INLINE size_t FindAllCompoundDictionaryMatches(
   const uint32_t* BROTLI_RESTRICT chain = &items[slot_offsets[slot] + head];
   uint32_t item = (head == 0xFFFF) ? 1 : 0;
   size_t found = 0;
+
+  const void* tail = (void*)&items[self->num_items];
+  if (self->magic == kPreparedDictionaryMagic) {
+    source = (const uint8_t*)tail;
+  } else {
+    /* kLeanPreparedDictionaryMagic */
+    source = (const uint8_t*)BROTLI_UNALIGNED_LOAD_PTR((const uint8_t**)tail);
+  }
+
   while (item == 0) {
     size_t offset;
     size_t distance;

@@ -4,13 +4,13 @@
    See file LICENSE for detail or copy at https://opensource.org/licenses/MIT
 */
 
-#include "./static_dict.h"
+#include "static_dict.h"
 
 #include "../common/dictionary.h"
 #include "../common/platform.h"
 #include "../common/transform.h"
-#include "./encoder_dict.h"
-#include "./find_match_length.h"
+#include "encoder_dict.h"
+#include "find_match_length.h"
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
@@ -79,6 +79,7 @@ static BROTLI_BOOL BrotliFindAllStaticDictionaryMatchesFor(
     const BrotliEncoderDictionary* dictionary, const uint8_t* data,
     size_t min_length, size_t max_length, uint32_t* matches) {
   BROTLI_BOOL has_found_match = BROTLI_FALSE;
+#if defined(BROTLI_EXPERIMENTAL)
   if (dictionary->has_words_heavy) {
     const BrotliTrieNode* node = &dictionary->trie.root;
     size_t l = 0;
@@ -93,6 +94,7 @@ static BROTLI_BOOL BrotliFindAllStaticDictionaryMatchesFor(
     }
     return has_found_match;
   }
+#endif  /* BROTLI_EXPERIMENTAL */
   {
     size_t offset = dictionary->buckets[Hash(data)];
     BROTLI_BOOL end = !offset;
@@ -527,7 +529,7 @@ BROTLI_BOOL BrotliFindAllStaticDictionaryMatches(
         uint32_t skipdist = (uint32_t)((uint32_t)(1 << dictionary->words->
             size_bits_by_length[len_code]) & ~1u) *
             (uint32_t)dictionary->num_transforms;
-        /* TODO: check for dist overflow */
+        /* TODO(lode): check for dist overflow */
         dist += skipdist;
         AddMatch(dist, (size_t)l, len_code, matches);
       }

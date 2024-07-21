@@ -124,7 +124,7 @@ The abseil_test contains the unit tests for the Harlinn.abseil project
 - Tests\\3rdParty\\boringssl\\ssl_test
 
 ### [Brotli](https://github.com/google/brotli)
-**Version:** master as of 2021.08.04
+**Version:** 1.1.0
 
 **Description:**
 > Brotli is a generic-purpose lossless compression algorithm that compresses data using a combination of a modern variant 

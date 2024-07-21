@@ -12,13 +12,15 @@
 #include <stdlib.h>  /* malloc, free */
 #include <stdio.h>
 
-#include "./dictionary.h"
-#include "./platform.h"
-#include "./shared_dictionary_internal.h"
+#include "dictionary.h"
+#include "platform.h"
+#include "shared_dictionary_internal.h"
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
+
+#if defined(BROTLI_EXPERIMENTAL)
 
 #define BROTLI_NUM_ENCODED_LENGTHS (SHARED_BROTLI_MAX_DICTIONARY_WORD_LENGTH \
     - SHARED_BROTLI_MIN_DICTIONARY_WORD_LENGTH + 1)
@@ -416,7 +418,7 @@ static BROTLI_BOOL ParseDictionary(const uint8_t* encoded, size_t size,
    BrotliSharedDictionary already contains data, compound dictionaries
    will be appended, but an error will be returned if it already has
    custom words or transforms.
-   TODO: link to RFC for shared brotli once published. */
+   TODO(lode): link to RFC for shared brotli once published. */
 static BROTLI_BOOL DecodeSharedDictionary(
     const uint8_t* encoded, size_t size, BrotliSharedDictionary* dict) {
   uint32_t num_prefix = 0;
@@ -442,6 +444,8 @@ static BROTLI_BOOL DecodeSharedDictionary(
   return ParseDictionary(encoded, size, dict);
 }
 
+#endif  /* BROTLI_EXPERIMENTAL */
+
 void BrotliSharedDictionaryDestroyInstance(
     BrotliSharedDictionary* dict) {
   if (!dict) {
@@ -460,13 +464,16 @@ void BrotliSharedDictionaryDestroyInstance(
 
 BROTLI_BOOL BrotliSharedDictionaryAttach(
     BrotliSharedDictionary* dict, BrotliSharedDictionaryType type,
-    size_t data_size, const uint8_t* data) {
+    size_t data_size, const uint8_t data[BROTLI_ARRAY_PARAM(data_size)]) {
   if (!dict) {
     return BROTLI_FALSE;
   }
+#if defined(BROTLI_EXPERIMENTAL)
   if (type == BROTLI_SHARED_DICTIONARY_SERIALIZED) {
     return DecodeSharedDictionary(data, data_size, dict);
-  } else if (type == BROTLI_SHARED_DICTIONARY_RAW) {
+  }
+#endif  /* BROTLI_EXPERIMENTAL */
+  if (type == BROTLI_SHARED_DICTIONARY_RAW) {
     if (dict->num_prefix >= SHARED_BROTLI_MAX_COMPOUND_DICTS) {
       return BROTLI_FALSE;
     }
@@ -474,9 +481,8 @@ BROTLI_BOOL BrotliSharedDictionaryAttach(
     dict->prefix[dict->num_prefix] = data;
     dict->num_prefix++;
     return BROTLI_TRUE;
-  } else {
-    return BROTLI_FALSE;
   }
+  return BROTLI_FALSE;
 }
 
 BrotliSharedDictionary* BrotliSharedDictionaryCreateInstance(
@@ -492,7 +498,7 @@ BrotliSharedDictionary* BrotliSharedDictionaryCreateInstance(
     return 0;
   }
 
-  /* TODO: explicitly initialize all the fields? */
+  /* TODO(eustas): explicitly initialize all the fields? */
   memset(dict, 0, sizeof(BrotliSharedDictionary));
 
   dict->context_based = BROTLI_FALSE;

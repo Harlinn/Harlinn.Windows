@@ -311,5 +311,8 @@
     <ClInclude Include="include\brotli\brotlidef.h">
       <Filter>include\brotli</Filter>
     </ClInclude>
+    <ClInclude Include="enc\state.h">
+      <Filter>enc</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

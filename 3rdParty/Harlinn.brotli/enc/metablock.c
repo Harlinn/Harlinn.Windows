@@ -7,19 +7,20 @@
 /* Algorithms for distributing the literals and commands of a metablock between
    block types and contexts. */
 
-#include "./metablock.h"
+#include "metablock.h"
+
+#include <brotli/types.h>
 
 #include "../common/constants.h"
 #include "../common/context.h"
 #include "../common/platform.h"
-#include <brotli/types.h>
-#include "./bit_cost.h"
-#include "./block_splitter.h"
-#include "./cluster.h"
-#include "./entropy_encode.h"
-#include "./histogram.h"
-#include "./memory.h"
-#include "./quality.h"
+#include "bit_cost.h"
+#include "block_splitter.h"
+#include "cluster.h"
+#include "entropy_encode.h"
+#include "histogram.h"
+#include "memory.h"
+#include "quality.h"
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
@@ -286,15 +287,15 @@ void BrotliBuildMetaBlock(MemoryManager* m,
 }
 
 #define FN(X) X ## Literal
-#include "./metablock_inc.h"  /* NOLINT(build/include) */
+#include "metablock_inc.h"  /* NOLINT(build/include) */
 #undef FN
 
 #define FN(X) X ## Command
-#include "./metablock_inc.h"  /* NOLINT(build/include) */
+#include "metablock_inc.h"  /* NOLINT(build/include) */
 #undef FN
 
 #define FN(X) X ## Distance
-#include "./metablock_inc.h"  /* NOLINT(build/include) */
+#include "metablock_inc.h"  /* NOLINT(build/include) */
 #undef FN
 
 #define BROTLI_MAX_STATIC_CONTEXTS 13
