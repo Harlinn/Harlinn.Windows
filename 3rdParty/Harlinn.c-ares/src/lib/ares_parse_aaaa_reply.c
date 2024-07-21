@@ -1,22 +1,32 @@
-
-/* Copyright 1998 by the Massachusetts Institute of Technology.
- * Copyright 2005 Dominick Meglio
- * Copyright (C) 2019 by Andrew Selivanov
+/* MIT License
  *
- * Permission to use, copy, modify, and distribute this
- * software and its documentation for any purpose and without
- * fee is hereby granted, provided that the above copyright
- * notice appear in all copies and that both that copyright
- * notice and this permission notice appear in supporting
- * documentation, and that the name of M.I.T. not be used in
- * advertising or publicity pertaining to distribution of the
- * software without specific, written prior permission.
- * M.I.T. makes no representations about the suitability of
- * this software for any purpose.  It is provided "as is"
- * without express or implied warranty.
+ * Copyright (c) 1998 Massachusetts Institute of Technology
+ * Copyright (c) 2005 Dominick Meglio
+ * Copyright (c) 2019 Andrew Selivanov
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice (including the next
+ * paragraph) shall be included in all copies or substantial portions of the
+ * Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ *
+ * SPDX-License-Identifier: MIT
  */
 
-#include "ares_setup.h"
+#include "ares_private.h"
 
 #ifdef HAVE_NETINET_IN_H
 #  include <netinet/in.h>
@@ -28,8 +38,6 @@
 #  include <arpa/inet.h>
 #endif
 
-#include "ares_nameser.h"
-
 #ifdef HAVE_STRINGS_H
 #  include <strings.h>
 #endif
@@ -38,175 +46,63 @@
 #  include <limits.h>
 #endif
 
-#include "ares.h"
-#include "ares_dns.h"
 #include "ares_inet_net_pton.h"
-#include "ares_private.h"
 
 int ares_parse_aaaa_reply(const unsigned char *abuf, int alen,
                           struct hostent **host, struct ares_addr6ttl *addrttls,
                           int *naddrttls)
 {
   struct ares_addrinfo ai;
-  struct ares_addrinfo_node *next;
-  struct ares_addrinfo_cname *next_cname;
-  char **aliases = NULL;
-  char *question_hostname = NULL;
-  struct hostent *hostent = NULL;
-  struct ares_in6_addr *addrs = NULL;
-  int naliases = 0, naddrs = 0, alias = 0, i;
-  int cname_ttl = INT_MAX;
-  int status;
+  char                *question_hostname = NULL;
+  ares_status_t        status;
+  size_t               req_naddrttls = 0;
+  ares_dns_record_t   *dnsrec        = NULL;
+
+  if (alen < 0) {
+    return ARES_EBADRESP;
+  }
+
+  if (naddrttls) {
+    req_naddrttls = (size_t)*naddrttls;
+    *naddrttls    = 0;
+  }
 
   memset(&ai, 0, sizeof(ai));
 
-  status = ares__parse_into_addrinfo2(abuf, alen, &question_hostname, &ai);
-  if (status != ARES_SUCCESS)
-    {
-      ares_free(question_hostname);
+  status = ares_dns_parse(abuf, (size_t)alen, 0, &dnsrec);
+  if (status != ARES_SUCCESS) {
+    goto fail;
+  }
 
-      if (naddrttls)
-        {
-          *naddrttls = 0;
-        }
+  status = ares__parse_into_addrinfo(dnsrec, 0, 0, &ai);
+  if (status != ARES_SUCCESS && status != ARES_ENODATA) {
+    goto fail;
+  }
 
-      return status;
+  if (host != NULL) {
+    status = ares__addrinfo2hostent(&ai, AF_INET6, host);
+    if (status != ARES_SUCCESS && status != ARES_ENODATA) {
+      goto fail; /* LCOV_EXCL_LINE: DefensiveCoding */
     }
+  }
 
-  hostent = ares_malloc(sizeof(struct hostent));
-  if (!hostent)
-    {
-      goto enomem;
-    }
+  if (addrttls != NULL && req_naddrttls) {
+    size_t temp_naddrttls = 0;
+    ares__addrinfo2addrttl(&ai, AF_INET6, req_naddrttls, NULL, addrttls,
+                           &temp_naddrttls);
+    *naddrttls = (int)temp_naddrttls;
+  }
 
-  next = ai.nodes;
-  while (next)
-    {
-      if(next->ai_family == AF_INET6)
-        {
-          ++naddrs;
-        }
-      next = next->ai_next;
-    }
-
-  next_cname = ai.cnames;
-  while (next_cname)
-    {
-      if(next_cname->alias)
-        ++naliases;
-      next_cname = next_cname->next;
-    }
-
-  aliases = ares_malloc((naliases + 1) * sizeof(char *));
-  if (!aliases)
-    {
-      goto enomem;
-    }
-
-  if (naliases)
-    {
-      next_cname = ai.cnames;
-      while (next_cname)
-        {
-          if(next_cname->alias)
-            aliases[alias++] = ares_strdup(next_cname->alias);
-          if(next_cname->ttl < cname_ttl)
-            cname_ttl = next_cname->ttl;
-          next_cname = next_cname->next;
-        }
-    }
-
-  aliases[alias] = NULL;
-
-  hostent->h_addr_list = ares_malloc((naddrs + 1) * sizeof(char *));
-  if (!hostent->h_addr_list)
-    {
-      goto enomem;
-    }
-
-  for (i = 0; i < naddrs + 1; ++i)
-    {
-      hostent->h_addr_list[i] = NULL;
-    }
-
-  if (ai.cnames)
-    {
-      hostent->h_name = ares_strdup(ai.cnames->name);
-      ares_free(question_hostname);
-    }
-  else
-    {
-      hostent->h_name = question_hostname;
-    }
-
-  hostent->h_aliases = aliases;
-  hostent->h_addrtype = AF_INET6;
-  hostent->h_length = sizeof(struct ares_in6_addr);
-
-  if (naddrs)
-    {
-      addrs = ares_malloc(naddrs * sizeof(struct ares_in6_addr));
-      if (!addrs)
-        {
-          goto enomem;
-        }
-
-      i = 0;
-      next = ai.nodes;
-      while (next)
-        {
-          if(next->ai_family == AF_INET6)
-            {
-              hostent->h_addr_list[i] = (char*)&addrs[i];
-              memcpy(hostent->h_addr_list[i],
-                     &(CARES_INADDR_CAST(struct sockaddr_in6 *, next->ai_addr)->sin6_addr),
-                     sizeof(struct ares_in6_addr));
-              if (naddrttls && i < *naddrttls)
-                {
-                    if(next->ai_ttl > cname_ttl)
-                      addrttls[i].ttl = cname_ttl;
-                    else
-                      addrttls[i].ttl = next->ai_ttl;
-
-                    memcpy(&addrttls[i].ip6addr,
-                           &(CARES_INADDR_CAST(struct sockaddr_in6 *, next->ai_addr)->sin6_addr),
-                           sizeof(struct ares_in6_addr));
-                }
-              ++i;
-            }
-          next = next->ai_next;
-        }
-
-      if (i == 0)
-        {
-          ares_free(addrs);
-        }
-    }
-
-  if (host)
-    {
-      *host = hostent;
-    }
-  else
-    {
-      ares_free_hostent(hostent);
-    }
-
-  if (naddrttls)
-    {
-      /* Truncated to at most *naddrttls entries */
-      *naddrttls = (naddrs > *naddrttls)?*naddrttls:naddrs;
-    }
-
-  ares__freeaddrinfo_cnames(ai.cnames);
-  ares__freeaddrinfo_nodes(ai.nodes);
-  return ARES_SUCCESS;
-
-enomem:
-  ares_free(aliases);
-  ares_free(hostent);
+fail:
   ares__freeaddrinfo_cnames(ai.cnames);
   ares__freeaddrinfo_nodes(ai.nodes);
   ares_free(question_hostname);
-  return ARES_ENOMEM;
+  ares_free(ai.name);
+  ares_dns_record_destroy(dnsrec);
+
+  if (status == ARES_EBADNAME) {
+    status = ARES_EBADRESP;
+  }
+
+  return (int)status;
 }

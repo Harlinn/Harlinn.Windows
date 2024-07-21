@@ -142,7 +142,7 @@ The abseil_test contains the unit tests for the Harlinn.abseil project
 **Project:** Harlinn.bullet
 
 ### [Inverse Kinematics](http://www.math.ucsd.edu/~sbuss/ResearchWeb/ikmethods/index.html)
-**Version:** from bullet 3.21
+**Version:** from bullet 3.25
 
 **Description:**
 > Selectively Damped Least Squares for Inverse Kinematics.
@@ -160,7 +160,7 @@ The abseil_test contains the unit tests for the Harlinn.abseil project
 **Project:** Harlinn.bzip2
 
 ### [c-ares is a C library for asynchronous DNS requests (including name resolves)](https://c-ares.org/)
-**Version:** 1.17.0
+**Version:** 1.32.2
 
 **Description:**
 > c-ares is a C library for asynchronous DNS requests (including name resolves)
@@ -214,7 +214,7 @@ The abseil_test contains the unit tests for the Harlinn.abseil project
 **Project:** Harlinn.crossguid
 
 ### [libcurl - the multiprotocol file transfer library](https://curl.se/libcurl/)
-**Version:** 7.78.0
+**Version:** 8.8.0
 
 **Description:**
 > libcurl is a free and easy-to-use client-side URL transfer library, supporting DICT, FILE, FTP, FTPS, 

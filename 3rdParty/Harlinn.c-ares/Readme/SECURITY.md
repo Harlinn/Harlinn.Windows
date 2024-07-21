@@ -8,7 +8,7 @@ Publishing Information
 ----------------------
 
 All known and public c-ares vulnerabilities will be listed on [the c-ares web
-site](https://c-ares.haxx.se/vulns.html).
+site](https://c-ares.org/vulns.html).
 
 Security vulnerabilities should not be entered in the project's public bug
 tracker unless the necessary configuration is in place to limit access to the
@@ -43,7 +43,7 @@ announcement.
 
 - If the report is rejected, the team writes to the reporter to explain why.
 
-- If the report is accepted, the team writes to the reporter to let him/her
+- If the report is accepted, the team writes to the reporter to let them
   know it is accepted and that they are working on a fix.
 
 - The security team discusses the problem, works out a fix, considers the

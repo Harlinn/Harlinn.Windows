@@ -22,27 +22,63 @@
     <Filter Include="src\lib">
       <UniqueIdentifier>{d7999b72-52e3-4ced-969f-b7afe3c184e6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Readme">
+      <UniqueIdentifier>{bcac3bc7-ddc2-45dc-bc7e-b768e46f3aee}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\lib\ares__addrinfo_localhost.c">
+      <Filter>src\lib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lib\ares__addrinfo2hostent.c">
+      <Filter>src\lib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lib\ares__buf.c">
+      <Filter>src\lib</Filter>
+    </ClCompile>
     <ClCompile Include="src\lib\ares__close_sockets.c">
       <Filter>src\lib</Filter>
     </ClCompile>
-    <ClCompile Include="src\lib\ares__get_hostent.c">
+    <ClCompile Include="src\lib\ares__hosts_file.c">
+      <Filter>src\lib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lib\ares__htable.c">
+      <Filter>src\lib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lib\ares__htable_asvp.c">
+      <Filter>src\lib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lib\ares__htable_strvp.c">
+      <Filter>src\lib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lib\ares__htable_szvp.c">
+      <Filter>src\lib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lib\ares__htable_vpvp.c">
+      <Filter>src\lib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lib\ares__iface_ips.c">
+      <Filter>src\lib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lib\ares__llist.c">
       <Filter>src\lib</Filter>
     </ClCompile>
     <ClCompile Include="src\lib\ares__parse_into_addrinfo.c">
       <Filter>src\lib</Filter>
     </ClCompile>
-    <ClCompile Include="src\lib\ares__read_line.c">
+    <ClCompile Include="src\lib\ares__slist.c">
       <Filter>src\lib</Filter>
     </ClCompile>
-    <ClCompile Include="src\lib\ares__readaddrinfo.c">
+    <ClCompile Include="src\lib\ares__socket.c">
       <Filter>src\lib</Filter>
     </ClCompile>
     <ClCompile Include="src\lib\ares__sortaddrinfo.c">
+      <Filter>src\lib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lib\ares__threads.c">
       <Filter>src\lib</Filter>
     </ClCompile>
     <ClCompile Include="src\lib\ares__timeval.c">
@@ -61,6 +97,48 @@
       <Filter>src\lib</Filter>
     </ClCompile>
     <ClCompile Include="src\lib\ares_destroy.c">
+      <Filter>src\lib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lib\ares_dns_mapping.c">
+      <Filter>src\lib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lib\ares_dns_multistring.c">
+      <Filter>src\lib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lib\ares_dns_name.c">
+      <Filter>src\lib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lib\ares_dns_parse.c">
+      <Filter>src\lib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lib\ares_dns_record.c">
+      <Filter>src\lib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lib\ares_dns_write.c">
+      <Filter>src\lib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lib\ares_event_configchg.c">
+      <Filter>src\lib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lib\ares_event_epoll.c">
+      <Filter>src\lib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lib\ares_event_kqueue.c">
+      <Filter>src\lib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lib\ares_event_poll.c">
+      <Filter>src\lib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lib\ares_event_select.c">
+      <Filter>src\lib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lib\ares_event_thread.c">
+      <Filter>src\lib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lib\ares_event_wake_pipe.c">
+      <Filter>src\lib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lib\ares_event_win32.c">
       <Filter>src\lib</Filter>
     </ClCompile>
     <ClCompile Include="src\lib\ares_expand_name.c">
@@ -105,19 +183,19 @@
     <ClCompile Include="src\lib\ares_library_init.c">
       <Filter>src\lib</Filter>
     </ClCompile>
-    <ClCompile Include="src\lib\ares_llist.c">
+    <ClCompile Include="src\lib\ares_math.c">
       <Filter>src\lib</Filter>
     </ClCompile>
-    <ClCompile Include="src\lib\ares_mkquery.c">
-      <Filter>src\lib</Filter>
-    </ClCompile>
-    <ClCompile Include="src\lib\ares_nowarn.c">
+    <ClCompile Include="src\lib\ares_metrics.c">
       <Filter>src\lib</Filter>
     </ClCompile>
     <ClCompile Include="src\lib\ares_options.c">
       <Filter>src\lib</Filter>
     </ClCompile>
     <ClCompile Include="src\lib\ares_parse_a_reply.c">
+      <Filter>src\lib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lib\ares_parse_aaaa_reply.c">
       <Filter>src\lib</Filter>
     </ClCompile>
     <ClCompile Include="src\lib\ares_parse_caa_reply.c">
@@ -144,7 +222,7 @@
     <ClCompile Include="src\lib\ares_parse_txt_reply.c">
       <Filter>src\lib</Filter>
     </ClCompile>
-    <ClCompile Include="src\lib\ares_parse_aaaa_reply.c">
+    <ClCompile Include="src\lib\ares_parse_uri_reply.c">
       <Filter>src\lib</Filter>
     </ClCompile>
     <ClCompile Include="src\lib\ares_platform.c">
@@ -153,7 +231,13 @@
     <ClCompile Include="src\lib\ares_process.c">
       <Filter>src\lib</Filter>
     </ClCompile>
+    <ClCompile Include="src\lib\ares_qcache.c">
+      <Filter>src\lib</Filter>
+    </ClCompile>
     <ClCompile Include="src\lib\ares_query.c">
+      <Filter>src\lib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lib\ares_rand.c">
       <Filter>src\lib</Filter>
     </ClCompile>
     <ClCompile Include="src\lib\ares_search.c">
@@ -162,10 +246,10 @@
     <ClCompile Include="src\lib\ares_send.c">
       <Filter>src\lib</Filter>
     </ClCompile>
-    <ClCompile Include="src\lib\ares_strcasecmp.c">
+    <ClCompile Include="src\lib\ares_str.c">
       <Filter>src\lib</Filter>
     </ClCompile>
-    <ClCompile Include="src\lib\ares_strdup.c">
+    <ClCompile Include="src\lib\ares_strcasecmp.c">
       <Filter>src\lib</Filter>
     </ClCompile>
     <ClCompile Include="src\lib\ares_strerror.c">
@@ -174,16 +258,25 @@
     <ClCompile Include="src\lib\ares_strsplit.c">
       <Filter>src\lib</Filter>
     </ClCompile>
+    <ClCompile Include="src\lib\ares_sysconfig.c">
+      <Filter>src\lib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lib\ares_sysconfig_files.c">
+      <Filter>src\lib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lib\ares_sysconfig_mac.c">
+      <Filter>src\lib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lib\ares_sysconfig_win.c">
+      <Filter>src\lib</Filter>
+    </ClCompile>
     <ClCompile Include="src\lib\ares_timeout.c">
       <Filter>src\lib</Filter>
     </ClCompile>
+    <ClCompile Include="src\lib\ares_update_servers.c">
+      <Filter>src\lib</Filter>
+    </ClCompile>
     <ClCompile Include="src\lib\ares_version.c">
-      <Filter>src\lib</Filter>
-    </ClCompile>
-    <ClCompile Include="src\lib\ares_writev.c">
-      <Filter>src\lib</Filter>
-    </ClCompile>
-    <ClCompile Include="src\lib\bitncmp.c">
       <Filter>src\lib</Filter>
     </ClCompile>
     <ClCompile Include="src\lib\inet_net_pton.c">
@@ -206,11 +299,44 @@
     <ClInclude Include="include\ares_dns.h">
       <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="include\ares_rules.h">
+    <ClInclude Include="include\ares_dns_record.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ares_nameser.h">
       <Filter>include</Filter>
     </ClInclude>
     <ClInclude Include="include\ares_version.h">
       <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\ares__buf.h">
+      <Filter>src\lib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\ares__htable.h">
+      <Filter>src\lib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\ares__htable_asvp.h">
+      <Filter>src\lib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\ares__htable_strvp.h">
+      <Filter>src\lib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\ares__htable_szvp.h">
+      <Filter>src\lib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\ares__htable_vpvp.h">
+      <Filter>src\lib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\ares__iface_ips.h">
+      <Filter>src\lib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\ares__llist.h">
+      <Filter>src\lib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\ares__slist.h">
+      <Filter>src\lib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\ares__threads.h">
+      <Filter>src\lib</Filter>
     </ClInclude>
     <ClInclude Include="src\lib\ares_android.h">
       <Filter>src\lib</Filter>
@@ -221,28 +347,25 @@
     <ClInclude Include="src\lib\ares_data.h">
       <Filter>src\lib</Filter>
     </ClInclude>
+    <ClInclude Include="src\lib\ares_dns_multistring.h">
+      <Filter>src\lib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\ares_dns_private.h">
+      <Filter>src\lib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\ares_event.h">
+      <Filter>src\lib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\ares_event_win32.h">
+      <Filter>src\lib</Filter>
+    </ClInclude>
     <ClInclude Include="src\lib\ares_getenv.h">
       <Filter>src\lib</Filter>
     </ClInclude>
     <ClInclude Include="src\lib\ares_inet_net_pton.h">
       <Filter>src\lib</Filter>
     </ClInclude>
-    <ClInclude Include="src\lib\ares_iphlpapi.h">
-      <Filter>src\lib</Filter>
-    </ClInclude>
     <ClInclude Include="src\lib\ares_ipv6.h">
-      <Filter>src\lib</Filter>
-    </ClInclude>
-    <ClInclude Include="src\lib\ares_library_init.h">
-      <Filter>src\lib</Filter>
-    </ClInclude>
-    <ClInclude Include="src\lib\ares_llist.h">
-      <Filter>src\lib</Filter>
-    </ClInclude>
-    <ClInclude Include="src\lib\ares_nameser.h">
-      <Filter>src\lib</Filter>
-    </ClInclude>
-    <ClInclude Include="src\lib\ares_nowarn.h">
       <Filter>src\lib</Filter>
     </ClInclude>
     <ClInclude Include="src\lib\ares_platform.h">
@@ -254,19 +377,13 @@
     <ClInclude Include="src\lib\ares_setup.h">
       <Filter>src\lib</Filter>
     </ClInclude>
+    <ClInclude Include="src\lib\ares_str.h">
+      <Filter>src\lib</Filter>
+    </ClInclude>
     <ClInclude Include="src\lib\ares_strcasecmp.h">
       <Filter>src\lib</Filter>
     </ClInclude>
-    <ClInclude Include="src\lib\ares_strdup.h">
-      <Filter>src\lib</Filter>
-    </ClInclude>
     <ClInclude Include="src\lib\ares_strsplit.h">
-      <Filter>src\lib</Filter>
-    </ClInclude>
-    <ClInclude Include="src\lib\ares_writev.h">
-      <Filter>src\lib</Filter>
-    </ClInclude>
-    <ClInclude Include="src\lib\bitncmp.h">
       <Filter>src\lib</Filter>
     </ClInclude>
     <ClInclude Include="src\lib\config-dos.h">
@@ -275,9 +392,35 @@
     <ClInclude Include="src\lib\config-win32.h">
       <Filter>src\lib</Filter>
     </ClInclude>
-    <ClInclude Include="src\lib\setup_once.h">
-      <Filter>src\lib</Filter>
-    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Readme\AUTHORS">
+      <Filter>Readme</Filter>
+    </None>
+    <None Include="Readme\CONTRIBUTING.md">
+      <Filter>Readme</Filter>
+    </None>
+    <None Include="Readme\DEVELOPER-NOTES.md">
+      <Filter>Readme</Filter>
+    </None>
+    <None Include="Readme\INSTALL.md">
+      <Filter>Readme</Filter>
+    </None>
+    <None Include="Readme\LICENSE.md">
+      <Filter>Readme</Filter>
+    </None>
+    <None Include="Readme\README.md">
+      <Filter>Readme</Filter>
+    </None>
+    <None Include="Readme\README.msvc">
+      <Filter>Readme</Filter>
+    </None>
+    <None Include="Readme\RELEASE-NOTES.md">
+      <Filter>Readme</Filter>
+    </None>
+    <None Include="Readme\SECURITY.md">
+      <Filter>Readme</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="src\lib\cares.rc">
