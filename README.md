@@ -19,7 +19,8 @@ All C++ code compiles using [/std:c++latest](https://docs.microsoft.com/en-us/cp
 
 You should be able to use all the libraries commercially. Features that would pull inn libraries under [GPL](https://en.wikipedia.org/wiki/GNU_General_Public_License), or similarly restrictive licenses, 
 have been left out of the various projects. A few projects are published under [LGPL](https://en.wikipedia.org/wiki/GNU_Lesser_General_Public_License),
-and the existence of this repository should satisfy the obligation to publish any changes to code published under this license. 
+and the existence of this repository should satisfy the obligation to publish any changes I have made to code published under 
+this license. 
 
 ### [abseil](https://abseil.io/)
 **Version:** 20240116.2
