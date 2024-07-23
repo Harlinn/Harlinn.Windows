@@ -482,6 +482,28 @@ Vista
 /* Define to use Unix sockets. */
 #define USE_UNIX_SOCKETS
 
+/* to enable msh3 */
+#define USE_MSH3 1
+
+/* to enable SSPI support */
+#define USE_WINDOWS_SSPI 1
+
+/* to enable Windows SSL  */
+#define USE_SCHANNEL 1
+
+/* if zlib is available */
+#define HAVE_LIBZ 1
+
+/* if brotli is available */
+#define HAVE_BROTLI 1
+
+/* if zstd is available */
+#define HAVE_ZSTD 1
+
+/* Define if you want to enable c-ares support */
+#define USE_ARES 1
+
+
 /* ---------------------------------------------------------------- */
 /*                       ADDITIONAL DEFINITIONS                     */
 /* ---------------------------------------------------------------- */

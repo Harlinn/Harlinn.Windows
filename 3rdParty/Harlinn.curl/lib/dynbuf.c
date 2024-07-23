@@ -37,7 +37,7 @@
 /*
  * Init a dynbuf struct.
  */
-void Curl_dyn_init(struct dynbuf *s, size_t toobig)
+CURL_EXTERN void Curl_dyn_init(struct dynbuf *s, size_t toobig)
 {
   DEBUGASSERT(s);
   DEBUGASSERT(toobig);
@@ -50,15 +50,25 @@ void Curl_dyn_init(struct dynbuf *s, size_t toobig)
 #endif
 }
 
+CURL_EXTERN void curlx_dyn_init( struct dynbuf* s, size_t toobig )
+{
+    return Curl_dyn_init( s, toobig );
+}
+
 /*
  * free the buffer and re-init the necessary fields. It doesn't touch the
  * 'init' field and thus this buffer can be reused to add data to again.
  */
-void Curl_dyn_free(struct dynbuf *s)
+CURL_EXTERN void Curl_dyn_free(struct dynbuf *s)
 {
   DEBUGASSERT(s);
   Curl_safefree(s->bufr);
   s->leng = s->allc = 0;
+}
+
+CURL_EXTERN void curlx_dyn_free( struct dynbuf* s )
+{
+    Curl_dyn_free( s );
 }
 
 /*
@@ -124,7 +134,7 @@ static CURLcode dyn_nappend(struct dynbuf *s,
  * Clears the string, keeps the allocation. This can also be called on a
  * buffer that already was freed.
  */
-void Curl_dyn_reset(struct dynbuf *s)
+CURL_EXTERN void Curl_dyn_reset(struct dynbuf *s)
 {
   DEBUGASSERT(s);
   DEBUGASSERT(s->init == DYNINIT);
@@ -134,11 +144,16 @@ void Curl_dyn_reset(struct dynbuf *s)
   s->leng = 0;
 }
 
+CURL_EXTERN void curlx_dyn_reset( struct dynbuf* s )
+{
+    Curl_dyn_reset( s );
+}
+
 /*
  * Specify the size of the tail to keep (number of bytes from the end of the
  * buffer). The rest will be dropped.
  */
-CURLcode Curl_dyn_tail(struct dynbuf *s, size_t trail)
+CURL_EXTERN CURLcode Curl_dyn_tail(struct dynbuf *s, size_t trail)
 {
   DEBUGASSERT(s);
   DEBUGASSERT(s->init == DYNINIT);
@@ -159,10 +174,15 @@ CURLcode Curl_dyn_tail(struct dynbuf *s, size_t trail)
 
 }
 
+CURL_EXTERN CURLcode curlx_dyn_tail( struct dynbuf* s, size_t trail )
+{
+    return Curl_dyn_tail( s, trail );
+}
+
 /*
  * Appends a buffer with length.
  */
-CURLcode Curl_dyn_addn(struct dynbuf *s, const void *mem, size_t len)
+CURL_EXTERN CURLcode Curl_dyn_addn(struct dynbuf *s, const void *mem, size_t len)
 {
   DEBUGASSERT(s);
   DEBUGASSERT(s->init == DYNINIT);
@@ -170,10 +190,15 @@ CURLcode Curl_dyn_addn(struct dynbuf *s, const void *mem, size_t len)
   return dyn_nappend(s, mem, len);
 }
 
+CURL_EXTERN CURLcode curlx_dyn_addn( struct dynbuf* s, const void* mem, size_t len )
+{
+    return Curl_dyn_addn( s, mem, len );
+}
+
 /*
  * Append a null-terminated string at the end.
  */
-CURLcode Curl_dyn_add(struct dynbuf *s, const char *str)
+CURL_EXTERN CURLcode Curl_dyn_add(struct dynbuf *s, const char *str)
 {
   size_t n;
   DEBUGASSERT(str);
@@ -184,10 +209,16 @@ CURLcode Curl_dyn_add(struct dynbuf *s, const char *str)
   return dyn_nappend(s, (unsigned char *)str, n);
 }
 
+
+CURL_EXTERN CURLcode curlx_dyn_add( struct dynbuf* s, const char* str )
+{
+    return Curl_dyn_add( s, str );
+}
+
 /*
  * Append a string vprintf()-style
  */
-CURLcode Curl_dyn_vaddf(struct dynbuf *s, const char *fmt, va_list ap)
+CURL_EXTERN CURLcode Curl_dyn_vaddf(struct dynbuf *s, const char *fmt, va_list ap)
 {
 #ifdef BUILDING_LIBCURL
   int rc;
@@ -217,10 +248,15 @@ CURLcode Curl_dyn_vaddf(struct dynbuf *s, const char *fmt, va_list ap)
 #endif
 }
 
+CURL_EXTERN CURLcode curlx_dyn_vaddf( struct dynbuf* s, const char* fmt, va_list ap )
+{
+    return Curl_dyn_vaddf( s, fmt, ap );
+}
+
 /*
  * Append a string printf()-style
  */
-CURLcode Curl_dyn_addf(struct dynbuf *s, const char *fmt, ...)
+CURL_EXTERN CURLcode Curl_dyn_addf(struct dynbuf *s, const char *fmt, ...)
 {
   CURLcode result;
   va_list ap;
@@ -233,10 +269,25 @@ CURLcode Curl_dyn_addf(struct dynbuf *s, const char *fmt, ...)
   return result;
 }
 
+CURL_EXTERN CURLcode curlx_dyn_addf( struct dynbuf* s, const char* fmt, ... )
+{
+    CURLcode result;
+    va_list ap;
+    DEBUGASSERT( s );
+    DEBUGASSERT( s->init == DYNINIT );
+    DEBUGASSERT( !s->leng || s->bufr );
+    va_start( ap, fmt );
+    result = Curl_dyn_vaddf( s, fmt, ap );
+    va_end( ap );
+    return result;
+}
+
+
+
 /*
  * Returns a pointer to the buffer.
  */
-char *Curl_dyn_ptr(const struct dynbuf *s)
+CURL_EXTERN char *Curl_dyn_ptr(const struct dynbuf *s)
 {
   DEBUGASSERT(s);
   DEBUGASSERT(s->init == DYNINIT);
@@ -244,10 +295,19 @@ char *Curl_dyn_ptr(const struct dynbuf *s)
   return s->bufr;
 }
 
+CURL_EXTERN char* curlx_dyn_ptr( const struct dynbuf* s )
+{
+    DEBUGASSERT( s );
+    DEBUGASSERT( s->init == DYNINIT );
+    DEBUGASSERT( !s->leng || s->bufr );
+    return s->bufr;
+}
+
+
 /*
  * Returns an unsigned pointer to the buffer.
  */
-unsigned char *Curl_dyn_uptr(const struct dynbuf *s)
+CURL_EXTERN unsigned char *Curl_dyn_uptr(const struct dynbuf *s)
 {
   DEBUGASSERT(s);
   DEBUGASSERT(s->init == DYNINIT);
@@ -255,10 +315,18 @@ unsigned char *Curl_dyn_uptr(const struct dynbuf *s)
   return (unsigned char *)s->bufr;
 }
 
+CURL_EXTERN unsigned char* curlx_dyn_uptr( const struct dynbuf* s )
+{
+    DEBUGASSERT( s );
+    DEBUGASSERT( s->init == DYNINIT );
+    DEBUGASSERT( !s->leng || s->bufr );
+    return ( unsigned char* )s->bufr;
+}
+
 /*
  * Returns the length of the buffer.
  */
-size_t Curl_dyn_len(const struct dynbuf *s)
+CURL_EXTERN size_t Curl_dyn_len(const struct dynbuf *s)
 {
   DEBUGASSERT(s);
   DEBUGASSERT(s->init == DYNINIT);
@@ -266,10 +334,19 @@ size_t Curl_dyn_len(const struct dynbuf *s)
   return s->leng;
 }
 
+CURL_EXTERN size_t curlx_dyn_len( const struct dynbuf* s )
+{
+    DEBUGASSERT( s );
+    DEBUGASSERT( s->init == DYNINIT );
+    DEBUGASSERT( !s->leng || s->bufr );
+    return s->leng;
+}
+
+
 /*
  * Set a new (smaller) length.
  */
-CURLcode Curl_dyn_setlen(struct dynbuf *s, size_t set)
+CURL_EXTERN CURLcode Curl_dyn_setlen(struct dynbuf *s, size_t set)
 {
   DEBUGASSERT(s);
   DEBUGASSERT(s->init == DYNINIT);
@@ -279,4 +356,16 @@ CURLcode Curl_dyn_setlen(struct dynbuf *s, size_t set)
   s->leng = set;
   s->bufr[s->leng] = 0;
   return CURLE_OK;
+}
+
+CURL_EXTERN CURLcode curlx_dyn_setlen( struct dynbuf* s, size_t set )
+{
+    DEBUGASSERT( s );
+    DEBUGASSERT( s->init == DYNINIT );
+    DEBUGASSERT( !s->leng || s->bufr );
+    if ( set > s->leng )
+        return CURLE_BAD_FUNCTION_ARGUMENT;
+    s->leng = set;
+    s->bufr[ s->leng ] = 0;
+    return CURLE_OK;
 }

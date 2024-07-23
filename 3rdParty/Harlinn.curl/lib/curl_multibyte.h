@@ -25,14 +25,16 @@
  ***************************************************************************/
 #include "curl_setup.h"
 
+#include "curl/curl.h"
+
 #if defined(_WIN32)
 
  /*
   * MultiByte conversions using Windows kernel32 library.
   */
 
-wchar_t *curlx_convert_UTF8_to_wchar(const char *str_utf8);
-char *curlx_convert_wchar_to_UTF8(const wchar_t *str_w);
+CURL_EXTERN wchar_t *curlx_convert_UTF8_to_wchar(const char *str_utf8);
+CURL_EXTERN char *curlx_convert_wchar_to_UTF8(const wchar_t *str_w);
 #endif /* _WIN32 */
 
 /*

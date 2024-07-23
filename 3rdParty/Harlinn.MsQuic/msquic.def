@@ -1,0 +1,5 @@
+LIBRARY Harlinn.MsQuic
+
+EXPORTS
+    MsQuicOpenVersion
+    MsQuicClose

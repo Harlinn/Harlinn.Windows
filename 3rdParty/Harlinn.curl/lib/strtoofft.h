@@ -48,7 +48,7 @@ typedef enum {
   CURL_OFFT_INVAL  /* nothing was parsed */
 } CURLofft;
 
-CURLofft curlx_strtoofft(const char *str, char **endp, int base,
+CURL_EXPORT CURLofft curlx_strtoofft(const char *str, char **endp, int base,
                          curl_off_t *num);
 
 #endif /* HEADER_CURL_STRTOOFFT_H */

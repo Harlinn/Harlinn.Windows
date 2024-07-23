@@ -1,0 +1,74 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="include">
+      <UniqueIdentifier>{682554d7-fd27-4da0-ac48-828762e88cd0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\ls-qpack">
+      <UniqueIdentifier>{98e44b55-3ff6-4369-b891-1397bf6c7eae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{38615873-0aab-4660-bfff-9f6a2a3295b9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\deps">
+      <UniqueIdentifier>{e1849f13-c8a5-4348-b93b-1f0bf6b68452}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\deps\xxhash">
+      <UniqueIdentifier>{9d0dde13-eef5-4cc5-92bf-f921e6a8b163}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Readme">
+      <UniqueIdentifier>{11892693-bd42-4db8-94d4-a1a48e7ab772}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\ls-qpack\sys">
+      <UniqueIdentifier>{99b151ba-863b-4586-aa26-ea012ef9fc2a}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="dllmain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\deps\xxhash\xxhash.c">
+      <Filter>src\deps\xxhash</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lsqpack.c">
+      <Filter>src</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\ls-qpack\lsqpack.h">
+      <Filter>include\ls-qpack</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ls-qpack\lsxpack_header.h">
+      <Filter>include\ls-qpack</Filter>
+    </ClInclude>
+    <ClInclude Include="src\deps\xxhash\xxhash.h">
+      <Filter>src\deps\xxhash</Filter>
+    </ClInclude>
+    <ClInclude Include="src\huff-tables.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ls-qpack\sys\queue.h">
+      <Filter>include\ls-qpack\sys</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Readme\LICENSE">
+      <Filter>Readme</Filter>
+    </None>
+    <None Include="Readme\README.md">
+      <Filter>Readme</Filter>
+    </None>
+  </ItemGroup>
+</Project>

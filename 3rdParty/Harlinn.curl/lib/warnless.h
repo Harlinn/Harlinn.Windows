@@ -33,47 +33,47 @@
 #define CURLX_FUNCTION_CAST(target_type, func) \
   (target_type)(void (*) (void))(func)
 
-unsigned short curlx_ultous(unsigned long ulnum);
+CURL_EXPORT unsigned short curlx_ultous(unsigned long ulnum);
 
-unsigned char curlx_ultouc(unsigned long ulnum);
+CURL_EXPORT unsigned char curlx_ultouc(unsigned long ulnum);
 
-int curlx_uztosi(size_t uznum);
+CURL_EXPORT int curlx_uztosi(size_t uznum);
 
-curl_off_t curlx_uztoso(size_t uznum);
+CURL_EXPORT curl_off_t curlx_uztoso(size_t uznum);
 
-unsigned long curlx_uztoul(size_t uznum);
+CURL_EXPORT unsigned long curlx_uztoul(size_t uznum);
 
-unsigned int curlx_uztoui(size_t uznum);
+CURL_EXPORT unsigned int curlx_uztoui(size_t uznum);
 
-int curlx_sltosi(long slnum);
+CURL_EXPORT int curlx_sltosi(long slnum);
 
-unsigned int curlx_sltoui(long slnum);
+CURL_EXPORT unsigned int curlx_sltoui(long slnum);
 
-unsigned short curlx_sltous(long slnum);
+CURL_EXPORT unsigned short curlx_sltous(long slnum);
 
-ssize_t curlx_uztosz(size_t uznum);
+CURL_EXPORT ssize_t curlx_uztosz(size_t uznum);
 
-size_t curlx_sotouz(curl_off_t sonum);
+CURL_EXPORT size_t curlx_sotouz(curl_off_t sonum);
 
-int curlx_sztosi(ssize_t sznum);
+CURL_EXPORT int curlx_sztosi(ssize_t sznum);
 
-unsigned short curlx_uitous(unsigned int uinum);
+CURL_EXPORT unsigned short curlx_uitous(unsigned int uinum);
 
-size_t curlx_sitouz(int sinum);
+CURL_EXPORT size_t curlx_sitouz(int sinum);
 
 #ifdef USE_WINSOCK
 
-int curlx_sktosi(curl_socket_t s);
+CURL_EXPORT int curlx_sktosi(curl_socket_t s);
 
-curl_socket_t curlx_sitosk(int i);
+CURL_EXPORT curl_socket_t curlx_sitosk(int i);
 
 #endif /* USE_WINSOCK */
 
 #if defined(_WIN32)
 
-ssize_t curlx_read(int fd, void *buf, size_t count);
+CURL_EXTERN ssize_t curlx_read(int fd, void *buf, size_t count);
 
-ssize_t curlx_write(int fd, const void *buf, size_t count);
+CURL_EXTERN ssize_t curlx_write(int fd, const void *buf, size_t count);
 
 #endif /* _WIN32 */
 

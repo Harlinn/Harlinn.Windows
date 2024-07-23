@@ -43,6 +43,7 @@
  * mode based on the 'nonblock' boolean argument. This function is highly
  * portable.
  */
+CURL_EXPORT
 int curlx_nonblock(curl_socket_t sockfd,    /* operate on this */
                    int nonblock   /* TRUE or FALSE */)
 {

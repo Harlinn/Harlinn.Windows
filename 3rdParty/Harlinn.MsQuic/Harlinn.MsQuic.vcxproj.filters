@@ -1,0 +1,415 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="include">
+      <UniqueIdentifier>{1998f4ed-589c-413f-bff6-c0162f0852ac}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\msquic">
+      <UniqueIdentifier>{ab3eaf0c-4898-47d5-b44d-5c365f9ebae5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{a07e60a1-24f7-4216-a3f0-326f71191878}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\core">
+      <UniqueIdentifier>{cef92a8e-2605-4744-ae93-3d52d36a7443}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\platform">
+      <UniqueIdentifier>{c4e48e45-e3f8-4dc3-ad0d-bc088689ebae}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\core\api.c">
+      <Filter>src\core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\bbr.c">
+      <Filter>src\core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\binding.c">
+      <Filter>src\core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\configuration.c">
+      <Filter>src\core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\congestion_control.c">
+      <Filter>src\core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\connection.c">
+      <Filter>src\core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\crypto.c">
+      <Filter>src\core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\crypto_tls.c">
+      <Filter>src\core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\cubic.c">
+      <Filter>src\core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\datagram.c">
+      <Filter>src\core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\frame.c">
+      <Filter>src\core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\library.c">
+      <Filter>src\core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\listener.c">
+      <Filter>src\core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\lookup.c">
+      <Filter>src\core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\loss_detection.c">
+      <Filter>src\core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\mtu_discovery.c">
+      <Filter>src\core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\operation.c">
+      <Filter>src\core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\packet.c">
+      <Filter>src\core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\packet_builder.c">
+      <Filter>src\core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\packet_space.c">
+      <Filter>src\core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\path.c">
+      <Filter>src\core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\range.c">
+      <Filter>src\core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\recv_buffer.c">
+      <Filter>src\core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\registration.c">
+      <Filter>src\core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\send.c">
+      <Filter>src\core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\send_buffer.c">
+      <Filter>src\core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\sent_packet_metadata.c">
+      <Filter>src\core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\settings.c">
+      <Filter>src\core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\sliding_window_extremum.c">
+      <Filter>src\core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\stream.c">
+      <Filter>src\core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\stream_recv.c">
+      <Filter>src\core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\stream_send.c">
+      <Filter>src\core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\stream_set.c">
+      <Filter>src\core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\timer_wheel.c">
+      <Filter>src\core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\version_neg.c">
+      <Filter>src\core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\worker.c">
+      <Filter>src\core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\platform\cert_capi.c">
+      <Filter>src\platform</Filter>
+    </ClCompile>
+    <ClCompile Include="src\platform\crypt.c">
+      <Filter>src\platform</Filter>
+    </ClCompile>
+    <ClCompile Include="src\platform\crypt_bcrypt.c">
+      <Filter>src\platform</Filter>
+    </ClCompile>
+    <ClCompile Include="src\platform\datapath_raw_socket.c">
+      <Filter>src\platform</Filter>
+    </ClCompile>
+    <ClCompile Include="src\platform\datapath_raw_socket_win.c">
+      <Filter>src\platform</Filter>
+    </ClCompile>
+    <ClCompile Include="src\platform\datapath_raw_win.c">
+      <Filter>src\platform</Filter>
+    </ClCompile>
+    <ClCompile Include="src\platform\datapath_raw_xdp_win.c">
+      <Filter>src\platform</Filter>
+    </ClCompile>
+    <ClCompile Include="src\platform\datapath_win.c">
+      <Filter>src\platform</Filter>
+    </ClCompile>
+    <ClCompile Include="src\platform\datapath_winuser.c">
+      <Filter>src\platform</Filter>
+    </ClCompile>
+    <ClCompile Include="src\platform\hashtable.c">
+      <Filter>src\platform</Filter>
+    </ClCompile>
+    <ClCompile Include="src\platform\pcp.c">
+      <Filter>src\platform</Filter>
+    </ClCompile>
+    <ClCompile Include="src\platform\platform_winuser.c">
+      <Filter>src\platform</Filter>
+    </ClCompile>
+    <ClCompile Include="src\platform\platform_worker.c">
+      <Filter>src\platform</Filter>
+    </ClCompile>
+    <ClCompile Include="src\platform\selfsign_capi.c">
+      <Filter>src\platform</Filter>
+    </ClCompile>
+    <ClCompile Include="src\platform\storage_winuser.c">
+      <Filter>src\platform</Filter>
+    </ClCompile>
+    <ClCompile Include="src\platform\tls_schannel.c">
+      <Filter>src\platform</Filter>
+    </ClCompile>
+    <ClCompile Include="src\platform\toeplitz.c">
+      <Filter>src\platform</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\ack_tracker.c">
+      <Filter>src\core</Filter>
+    </ClCompile>
+    <ClCompile Include="dllmain.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\core\ack_tracker.h">
+      <Filter>src\core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\api.h">
+      <Filter>src\core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\bbr.h">
+      <Filter>src\core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\binding.h">
+      <Filter>src\core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\configuration.h">
+      <Filter>src\core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\congestion_control.h">
+      <Filter>src\core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\connection.h">
+      <Filter>src\core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\crypto.h">
+      <Filter>src\core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\cubic.h">
+      <Filter>src\core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\datagram.h">
+      <Filter>src\core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\frame.h">
+      <Filter>src\core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\library.h">
+      <Filter>src\core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\listener.h">
+      <Filter>src\core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\lookup.h">
+      <Filter>src\core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\loss_detection.h">
+      <Filter>src\core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\mtu_discovery.h">
+      <Filter>src\core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\operation.h">
+      <Filter>src\core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\packet.h">
+      <Filter>src\core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\packet_builder.h">
+      <Filter>src\core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\packet_space.h">
+      <Filter>src\core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\path.h">
+      <Filter>src\core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\quicdef.h">
+      <Filter>src\core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\range.h">
+      <Filter>src\core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\recv_buffer.h">
+      <Filter>src\core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\registration.h">
+      <Filter>src\core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\send.h">
+      <Filter>src\core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\send_buffer.h">
+      <Filter>src\core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\sent_packet_metadata.h">
+      <Filter>src\core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\settings.h">
+      <Filter>src\core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\sliding_window_extremum.h">
+      <Filter>src\core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\stream.h">
+      <Filter>src\core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\stream_set.h">
+      <Filter>src\core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\timer_wheel.h">
+      <Filter>src\core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\transport_params.h">
+      <Filter>src\core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\version_neg.h">
+      <Filter>src\core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\worker.h">
+      <Filter>src\core</Filter>
+    </ClInclude>
+    <ClInclude Include="include\msquic\msquic.h">
+      <Filter>include\msquic</Filter>
+    </ClInclude>
+    <ClInclude Include="include\msquic\msquic.hpp">
+      <Filter>include\msquic</Filter>
+    </ClInclude>
+    <ClInclude Include="include\msquic\msquic_fuzz.h">
+      <Filter>include\msquic</Filter>
+    </ClInclude>
+    <ClInclude Include="include\msquic\msquic_posix.h">
+      <Filter>include\msquic</Filter>
+    </ClInclude>
+    <ClInclude Include="include\msquic\msquic_winkernel.h">
+      <Filter>include\msquic</Filter>
+    </ClInclude>
+    <ClInclude Include="include\msquic\msquic_winuser.h">
+      <Filter>include\msquic</Filter>
+    </ClInclude>
+    <ClInclude Include="include\msquic\msquichelper.h">
+      <Filter>include\msquic</Filter>
+    </ClInclude>
+    <ClInclude Include="include\msquic\msquicp.h">
+      <Filter>include\msquic</Filter>
+    </ClInclude>
+    <ClInclude Include="include\msquic\quic_cert.h">
+      <Filter>include\msquic</Filter>
+    </ClInclude>
+    <ClInclude Include="include\msquic\quic_crypt.h">
+      <Filter>include\msquic</Filter>
+    </ClInclude>
+    <ClInclude Include="include\msquic\quic_datapath.h">
+      <Filter>include\msquic</Filter>
+    </ClInclude>
+    <ClInclude Include="include\msquic\quic_driver_helpers.h">
+      <Filter>include\msquic</Filter>
+    </ClInclude>
+    <ClInclude Include="include\msquic\quic_hashtable.h">
+      <Filter>include\msquic</Filter>
+    </ClInclude>
+    <ClInclude Include="include\msquic\quic_pcp.h">
+      <Filter>include\msquic</Filter>
+    </ClInclude>
+    <ClInclude Include="include\msquic\quic_platform.h">
+      <Filter>include\msquic</Filter>
+    </ClInclude>
+    <ClInclude Include="include\msquic\quic_platform_posix.h">
+      <Filter>include\msquic</Filter>
+    </ClInclude>
+    <ClInclude Include="include\msquic\quic_platform_winkernel.h">
+      <Filter>include\msquic</Filter>
+    </ClInclude>
+    <ClInclude Include="include\msquic\quic_platform_winuser.h">
+      <Filter>include\msquic</Filter>
+    </ClInclude>
+    <ClInclude Include="include\msquic\quic_sal_stub.h">
+      <Filter>include\msquic</Filter>
+    </ClInclude>
+    <ClInclude Include="include\msquic\quic_storage.h">
+      <Filter>include\msquic</Filter>
+    </ClInclude>
+    <ClInclude Include="include\msquic\quic_tls.h">
+      <Filter>include\msquic</Filter>
+    </ClInclude>
+    <ClInclude Include="include\msquic\quic_toeplitz.h">
+      <Filter>include\msquic</Filter>
+    </ClInclude>
+    <ClInclude Include="include\msquic\quic_trace.h">
+      <Filter>include\msquic</Filter>
+    </ClInclude>
+    <ClInclude Include="include\msquic\quic_trace_manifested_etw.h">
+      <Filter>include\msquic</Filter>
+    </ClInclude>
+    <ClInclude Include="include\msquic\quic_var_int.h">
+      <Filter>include\msquic</Filter>
+    </ClInclude>
+    <ClInclude Include="include\msquic\quic_versions.h">
+      <Filter>include\msquic</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\cid.h">
+      <Filter>src\core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\platform\platform_internal.h">
+      <Filter>src\platform</Filter>
+    </ClInclude>
+    <ClInclude Include="src\platform\datapath_raw.h">
+      <Filter>src\platform</Filter>
+    </ClInclude>
+    <ClInclude Include="src\platform\datapath_raw_win.h">
+      <Filter>src\platform</Filter>
+    </ClInclude>
+    <ClInclude Include="src\platform\datapath_raw_xdp.h">
+      <Filter>src\platform</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="msquic.def">
+      <Filter>Source Files</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="msquic.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Object Include="MsQuicEtw.res" />
+  </ItemGroup>
+</Project>

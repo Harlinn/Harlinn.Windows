@@ -1,6 +1,6 @@
 ﻿# Harlinn.Windows
 
-This repository contains a Visual Studio Solution currently containing 620 projects.
+This repository contains a Visual Studio Solution currently containing 624 projects.
 
 Most of the projects are open source projects that I have found useful at work, and a few are my own.
 
@@ -13,7 +13,13 @@ This solution contains many useful C and C++ libraries that are located under th
 
 Header only libraries are contained within ''Static library (.lib)'' or shared files projects, everything else creates a dll.
 
+Several of the libraries have been modified, sometimes extensively, to export the functions and variables, that are part of their APIs, from the dlls. 
+
 All C++ code compiles using [/std:c++latest](https://docs.microsoft.com/en-us/cpp/build/reference/std-specify-language-standard-version?view=msvc-170) and [/Zc:__cplusplus](https://docs.microsoft.com/en-us/cpp/build/reference/zc-cplusplus?view=msvc-170)
+
+You should be able to use all the libraries commercially. Features that would pull inn libraries under [GPL](https://en.wikipedia.org/wiki/GNU_General_Public_License), or similarly restrictive licenses, 
+have been left out of the various projects. A few projects are published under [LGPL](https://en.wikipedia.org/wiki/GNU_Lesser_General_Public_License),
+and the existence of this repository should satisfy the obligation to publish any changes to code published under this license. 
 
 ### [abseil](https://abseil.io/)
 **Version:** 20240116.2
@@ -891,6 +897,15 @@ Packages Dear ImGui and ImPlot as a single dll.
 
 **Project:** Harlinn.lodepng
 
+
+### [ls-qpack](https://github.com/litespeedtech/ls-qpack)
+**Version:** 2.5.3
+
+**Description:**
+> QPACK compression library for use with HTTP/3.
+
+**Project:** Harlinn.ls-qpack
+
 ### [Lua](https://www.lua.org/home.html)
 **Version:** 5.4.3
 
@@ -938,6 +953,24 @@ Packages Dear ImGui and ImPlot as a single dll.
 > This package enables to extract files from a .zip archive file.
 
 **Project:** Harlinn.minizip
+
+### [msh3](https://github.com/nibanks/msh3)
+**Version:** 0.6.0
+
+**Description:**
+> Minimal HTTP/3 library.
+
+**Project:** Harlinn.msh3
+
+### [MsQuic](https://github.com/microsoft/msquic)
+**Version:** 2.3.6
+
+**Description:**
+> MsQuic is a Microsoft implementation of the IETF QUIC protocol. It is cross-platform, written 
+> in C and designed to be a general purpose QUIC library.
+
+**Project:** Harlinn.MsQuic
+
 
 ### [Unidata NetCDF](https://github.com/Unidata/netcdf-c)
 **Version:** 4.8.1

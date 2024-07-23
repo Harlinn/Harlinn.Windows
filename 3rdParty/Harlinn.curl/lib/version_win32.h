@@ -45,7 +45,7 @@ typedef enum {
 } PlatformIdentifier;
 
 /* This is used to verify if we are running on a specific windows version */
-bool curlx_verify_windows_version(const unsigned int majorVersion,
+CURL_EXPORT bool curlx_verify_windows_version(const unsigned int majorVersion,
                                   const unsigned int minorVersion,
                                   const unsigned int buildVersion,
                                   const PlatformIdentifier platform,

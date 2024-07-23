@@ -28,6 +28,12 @@
 #define CURL_NO_OLDIES
 #endif
 
+#ifdef BUILDING_LIBCURL
+#define CURL_EXPORT __declspec(dllexport)
+#else
+#define CURL_EXPORT __declspec(dllimport)
+#endif
+
 /* FIXME: Delete this once the warnings have been fixed. */
 #if !defined(CURL_WARN_SIGN_CONVERSION)
 #ifdef __GNUC__
@@ -410,9 +416,9 @@
 #  define LSEEK_ERROR                (__int64)-1
 #  define open                       curlx_win32_open
 #  define fopen(fname,mode)          curlx_win32_fopen(fname, mode)
-   int curlx_win32_open(const char *filename, int oflag, ...);
-   int curlx_win32_stat(const char *path, struct_stat *buffer);
-   FILE *curlx_win32_fopen(const char *filename, const char *mode);
+CURL_EXPORT int curlx_win32_open(const char *filename, int oflag, ...);
+CURL_EXPORT int curlx_win32_stat(const char *path, struct_stat *buffer);
+CURL_EXPORT FILE *curlx_win32_fopen(const char *filename, const char *mode);
 #endif
 
 /*
@@ -431,9 +437,9 @@
 #    define struct_stat                struct _stat
 #    define open                       curlx_win32_open
 #    define fopen(fname,mode)          curlx_win32_fopen(fname, mode)
-     int curlx_win32_stat(const char *path, struct_stat *buffer);
-     int curlx_win32_open(const char *filename, int oflag, ...);
-     FILE *curlx_win32_fopen(const char *filename, const char *mode);
+CURL_EXPORT int curlx_win32_stat(const char *path, struct_stat *buffer);
+CURL_EXPORT int curlx_win32_open(const char *filename, int oflag, ...);
+CURL_EXPORT FILE *curlx_win32_fopen(const char *filename, const char *mode);
 #  endif
 #  define LSEEK_ERROR                (long)-1
 #endif

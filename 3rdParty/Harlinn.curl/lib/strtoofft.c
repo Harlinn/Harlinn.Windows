@@ -209,7 +209,7 @@ static int get_char(char c, int base)
 /*
  * Parse a *positive* up to 64 bit number written in ascii.
  */
-CURLofft curlx_strtoofft(const char *str, char **endp, int base,
+CURL_EXPORT CURLofft curlx_strtoofft(const char *str, char **endp, int base,
                          curl_off_t *num)
 {
   char *end = NULL;

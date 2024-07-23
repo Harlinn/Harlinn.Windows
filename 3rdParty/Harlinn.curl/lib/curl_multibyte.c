@@ -36,11 +36,13 @@
 
 #include "curl_multibyte.h"
 
+#include "curl/curl.h"
+
 /*
  * MultiByte conversions using Windows kernel32 library.
  */
 
-wchar_t *curlx_convert_UTF8_to_wchar(const char *str_utf8)
+CURL_EXTERN wchar_t *curlx_convert_UTF8_to_wchar(const char *str_utf8)
 {
   wchar_t *str_w = NULL;
 
@@ -62,7 +64,7 @@ wchar_t *curlx_convert_UTF8_to_wchar(const char *str_utf8)
   return str_w;
 }
 
-char *curlx_convert_wchar_to_UTF8(const wchar_t *str_w)
+CURL_EXTERN char *curlx_convert_wchar_to_UTF8(const wchar_t *str_w)
 {
   char *str_utf8 = NULL;
 
@@ -88,7 +90,7 @@ char *curlx_convert_wchar_to_UTF8(const wchar_t *str_w)
 
 #if defined(USE_WIN32_LARGE_FILES) || defined(USE_WIN32_SMALL_FILES)
 
-int curlx_win32_open(const char *filename, int oflag, ...)
+CURL_EXTERN int curlx_win32_open(const char *filename, int oflag, ...)
 {
   int pmode = 0;
 
@@ -116,7 +118,7 @@ int curlx_win32_open(const char *filename, int oflag, ...)
 #endif
 }
 
-FILE *curlx_win32_fopen(const char *filename, const char *mode)
+CURL_EXTERN FILE *curlx_win32_fopen(const char *filename, const char *mode)
 {
 #ifdef _UNICODE
   FILE *result = NULL;
@@ -134,7 +136,7 @@ FILE *curlx_win32_fopen(const char *filename, const char *mode)
 #endif
 }
 
-int curlx_win32_stat(const char *path, struct_stat *buffer)
+CURL_EXTERN int curlx_win32_stat(const char *path, struct_stat *buffer)
 {
 #ifdef _UNICODE
   int result = -1;

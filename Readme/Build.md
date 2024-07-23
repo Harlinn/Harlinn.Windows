@@ -20,6 +20,7 @@ To build the solution you need:
 - [nVidia CUDA toolkit](https://developer.nvidia.com/cuda-toolkit)
 - [VLC media player source code](https://www.videolan.org/vlc/download-sources.html) - Only needed to build `Harlinn.Media` and related projects.
 - [GStreamer](https://gstreamer.freedesktop.org/download/) - Only needed to build `Harlinn.Media` and related projects.
+- [XDP and XDP devkit](https://github.com/microsoft/xdp-for-windows)
 
 Make sure you install 64-bit binaries, libraries and headers.
 
@@ -42,6 +43,7 @@ Before building you need to set a few environment variables:
 - **INTEL_MKL_INCLUDE** must point to the directory containing the Intel Math Kernel Library include files
 - **INTEL_MKL_LIB** must point to the directory containing the Intel Math Kernel Library *.lib files
 - **PYTHON_HOME** must point to the root folder of your python installation.
+- **XDP_DEVKIT_HOME** must point to the root folder of your XDP Devkit installation.
 
 The PATH environment variable must be updated to reference:
 - **%BOOST_ROOT%**\stage\lib

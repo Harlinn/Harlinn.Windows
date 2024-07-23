@@ -66,7 +66,7 @@
 ** unsigned long to unsigned short
 */
 
-unsigned short curlx_ultous(unsigned long ulnum)
+CURL_EXPORT unsigned short curlx_ultous(unsigned long ulnum)
 {
 #ifdef __INTEL_COMPILER
 #  pragma warning(push)
@@ -85,7 +85,7 @@ unsigned short curlx_ultous(unsigned long ulnum)
 ** unsigned long to unsigned char
 */
 
-unsigned char curlx_ultouc(unsigned long ulnum)
+CURL_EXPORT unsigned char curlx_ultouc(unsigned long ulnum)
 {
 #ifdef __INTEL_COMPILER
 #  pragma warning(push)
@@ -104,7 +104,7 @@ unsigned char curlx_ultouc(unsigned long ulnum)
 ** unsigned size_t to signed curl_off_t
 */
 
-curl_off_t curlx_uztoso(size_t uznum)
+CURL_EXPORT curl_off_t curlx_uztoso(size_t uznum)
 {
 #ifdef __INTEL_COMPILER
 #  pragma warning(push)
@@ -126,7 +126,7 @@ curl_off_t curlx_uztoso(size_t uznum)
 ** unsigned size_t to signed int
 */
 
-int curlx_uztosi(size_t uznum)
+CURL_EXPORT int curlx_uztosi(size_t uznum)
 {
 #ifdef __INTEL_COMPILER
 #  pragma warning(push)
@@ -145,7 +145,7 @@ int curlx_uztosi(size_t uznum)
 ** unsigned size_t to unsigned long
 */
 
-unsigned long curlx_uztoul(size_t uznum)
+CURL_EXPORT unsigned long curlx_uztoul(size_t uznum)
 {
 #ifdef __INTEL_COMPILER
 # pragma warning(push)
@@ -166,7 +166,7 @@ unsigned long curlx_uztoul(size_t uznum)
 ** unsigned size_t to unsigned int
 */
 
-unsigned int curlx_uztoui(size_t uznum)
+CURL_EXPORT unsigned int curlx_uztoui(size_t uznum)
 {
 #ifdef __INTEL_COMPILER
 # pragma warning(push)
@@ -187,7 +187,7 @@ unsigned int curlx_uztoui(size_t uznum)
 ** signed long to signed int
 */
 
-int curlx_sltosi(long slnum)
+CURL_EXPORT int curlx_sltosi(long slnum)
 {
 #ifdef __INTEL_COMPILER
 #  pragma warning(push)
@@ -209,7 +209,7 @@ int curlx_sltosi(long slnum)
 ** signed long to unsigned int
 */
 
-unsigned int curlx_sltoui(long slnum)
+CURL_EXPORT unsigned int curlx_sltoui(long slnum)
 {
 #ifdef __INTEL_COMPILER
 #  pragma warning(push)
@@ -231,7 +231,7 @@ unsigned int curlx_sltoui(long slnum)
 ** signed long to unsigned short
 */
 
-unsigned short curlx_sltous(long slnum)
+CURL_EXPORT unsigned short curlx_sltous(long slnum)
 {
 #ifdef __INTEL_COMPILER
 #  pragma warning(push)
@@ -251,7 +251,7 @@ unsigned short curlx_sltous(long slnum)
 ** unsigned size_t to signed ssize_t
 */
 
-ssize_t curlx_uztosz(size_t uznum)
+CURL_EXPORT ssize_t curlx_uztosz(size_t uznum)
 {
 #ifdef __INTEL_COMPILER
 #  pragma warning(push)
@@ -270,7 +270,7 @@ ssize_t curlx_uztosz(size_t uznum)
 ** signed curl_off_t to unsigned size_t
 */
 
-size_t curlx_sotouz(curl_off_t sonum)
+CURL_EXPORT size_t curlx_sotouz(curl_off_t sonum)
 {
 #ifdef __INTEL_COMPILER
 #  pragma warning(push)
@@ -289,7 +289,7 @@ size_t curlx_sotouz(curl_off_t sonum)
 ** signed ssize_t to signed int
 */
 
-int curlx_sztosi(ssize_t sznum)
+CURL_EXPORT int curlx_sztosi(ssize_t sznum)
 {
 #ifdef __INTEL_COMPILER
 #  pragma warning(push)
@@ -311,7 +311,7 @@ int curlx_sztosi(ssize_t sznum)
 ** unsigned int to unsigned short
 */
 
-unsigned short curlx_uitous(unsigned int uinum)
+CURL_EXPORT unsigned short curlx_uitous(unsigned int uinum)
 {
 #ifdef __INTEL_COMPILER
 #  pragma warning(push)
@@ -330,7 +330,7 @@ unsigned short curlx_uitous(unsigned int uinum)
 ** signed int to unsigned size_t
 */
 
-size_t curlx_sitouz(int sinum)
+CURL_EXPORT size_t curlx_sitouz(int sinum)
 {
 #ifdef __INTEL_COMPILER
 #  pragma warning(push)
@@ -351,7 +351,7 @@ size_t curlx_sitouz(int sinum)
 ** curl_socket_t to signed int
 */
 
-int curlx_sktosi(curl_socket_t s)
+CURL_EXPORT int curlx_sktosi(curl_socket_t s)
 {
   return (int)((ssize_t) s);
 }
@@ -360,7 +360,7 @@ int curlx_sktosi(curl_socket_t s)
 ** signed int to curl_socket_t
 */
 
-curl_socket_t curlx_sitosk(int i)
+CURL_EXPORT curl_socket_t curlx_sitosk(int i)
 {
   return (curl_socket_t)((ssize_t) i);
 }
@@ -369,12 +369,12 @@ curl_socket_t curlx_sitosk(int i)
 
 #if defined(_WIN32)
 
-ssize_t curlx_read(int fd, void *buf, size_t count)
+CURL_EXTERN ssize_t curlx_read(int fd, void *buf, size_t count)
 {
   return (ssize_t)read(fd, buf, curlx_uztoui(count));
 }
 
-ssize_t curlx_write(int fd, const void *buf, size_t count)
+CURL_EXTERN ssize_t curlx_write(int fd, const void *buf, size_t count)
 {
   return (ssize_t)write(fd, buf, curlx_uztoui(count));
 }
