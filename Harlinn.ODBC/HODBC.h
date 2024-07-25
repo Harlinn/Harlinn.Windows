@@ -28,7 +28,7 @@ namespace Harlinn::ODBC
     class Connection;
     class Statement;
     class Descriptor;
-    class DataReaderBase;
+    class DataReader;
 
     enum class HandleType : SQLSMALLINT
     {
@@ -248,6 +248,7 @@ namespace Harlinn::ODBC
 
     namespace Internal
     {
+        HODBC_EXPORT void ThrowColumnNullException( SQLSMALLINT columnNumber, const wchar_t* function, const wchar_t* file, int line );
         HODBC_EXPORT void ThrowException( SQLRETURN sqlReturn, ODBC::HandleType handleType, SQLHANDLE sqlHandle, const wchar_t* function, const wchar_t* file, int line );
         HODBC_EXPORT void ThrowException( SQLRETURN sqlReturn, ODBC::HandleType handleType, SQLHANDLE sqlHandle );
         HODBC_EXPORT void ThrowExceptionNoDiagnostic( SQLRETURN sqlReturn, ODBC::HandleType handleType, SQLHANDLE sqlHandle, const wchar_t* function, const wchar_t* file, int line );
@@ -695,26 +696,27 @@ namespace Harlinn::ODBC
 
 
 
-    // Derived classes *must* implement:
-    // void BindColumns( ) 
-    class DataReaderBase
+    class DataReader
     {
         const Statement* statement_;
     public:
-        constexpr DataReaderBase( const Statement* statement ) noexcept
+        constexpr DataReader( const Statement* statement ) noexcept
             : statement_( statement )
         { }
 
-        DataReaderBase( const DataReaderBase& other ) = delete;
-        DataReaderBase( DataReaderBase&& other ) = delete;
-        DataReaderBase& operator = ( const DataReaderBase& other ) = delete;
-        DataReaderBase& operator = ( DataReaderBase&& other ) = delete;
+        DataReader( const DataReader& other ) = delete;
+        DataReader( DataReader&& other ) = delete;
+        DataReader& operator = ( const DataReader& other ) = delete;
+        DataReader& operator = ( DataReader&& other ) = delete;
 
         bool Read( ) const
         {
             auto rc = Fetch( );
             return rc != ODBC::Result::NoData;
         }
+
+        [[nodiscard]] SQLHANDLE Handle( ) const noexcept;
+        Result GetData( SQLUSMALLINT columnOrParameterNumber, SQLSMALLINT targetValueDataType, SQLPOINTER targetValue, SQLLEN targetValueMaxLength, SQLLEN* nullIndicatorOrTargetValueActualLength ) const;
 
     protected:
         Result Fetch( ) const;
@@ -776,6 +778,647 @@ namespace Harlinn::ODBC
         {
             return BindColumn( columnNumber, NativeType::TimeStamp, targetAddress, sizeof( ODBC::TimeStamp ), nullIndicatorOrActualLength );
         }
+
+        [[nodiscard]] 
+        std::optional<bool> GetNullableBoolean( SQLUSMALLINT columnNumber ) const
+        {
+            bool value;
+            SQLLEN indicator;
+            GetData( columnNumber, NativeType::Boolean, &value, sizeof( value ), &indicator );
+            if ( indicator == SQL_NULL_DATA )
+            {
+                return std::optional<bool>( );
+            }
+            return value;
+        }
+        [[nodiscard]] 
+        std::optional<Byte> GetNullableByte( SQLUSMALLINT columnNumber ) const
+        {
+            Byte value;
+            SQLLEN indicator;
+            GetData( columnNumber, NativeType::Byte, &value, sizeof( value ), &indicator );
+            if ( indicator == SQL_NULL_DATA )
+            {
+                return std::optional<Byte>( );
+            }
+            return value;
+        }
+
+        [[nodiscard]]
+        std::optional<SByte> GetNullableSByte( SQLUSMALLINT columnNumber ) const
+        {
+            SByte value;
+            SQLLEN indicator;
+            GetData( columnNumber, NativeType::SByte, &value, sizeof( value ), &indicator );
+            if ( indicator == SQL_NULL_DATA )
+            {
+                return std::optional<SByte>( );
+            }
+            return value;
+        }
+
+        [[nodiscard]]
+        std::optional<Int16> GetNullableInt16( SQLUSMALLINT columnNumber ) const
+        {
+            Int16 value;
+            SQLLEN indicator;
+            GetData( columnNumber, NativeType::Int16, &value, sizeof( value ), &indicator );
+            if ( indicator == SQL_NULL_DATA )
+            {
+                return std::optional<Int16>( );
+            }
+            return value;
+        }
+
+        [[nodiscard]]
+        std::optional<UInt16> GetNullableUInt16( SQLUSMALLINT columnNumber ) const
+        {
+            Int16 value;
+            SQLLEN indicator;
+            GetData( columnNumber, NativeType::UInt16, &value, sizeof( value ), &indicator );
+            if ( indicator == SQL_NULL_DATA )
+            {
+                return std::optional<UInt16>( );
+            }
+            return value;
+        }
+
+        [[nodiscard]]
+        std::optional<Int32> GetNullableInt32( SQLUSMALLINT columnNumber ) const
+        {
+            Int32 value;
+            SQLLEN indicator;
+            GetData( columnNumber, NativeType::Int32, &value, sizeof( value ), &indicator );
+            if ( indicator == SQL_NULL_DATA )
+            {
+                return std::optional<Int32>( );
+            }
+            return value;
+        }
+
+        [[nodiscard]]
+        std::optional<UInt32> GetNullableUInt32( SQLUSMALLINT columnNumber ) const
+        {
+            UInt32 value;
+            SQLLEN indicator;
+            GetData( columnNumber, NativeType::UInt32, &value, sizeof( value ), &indicator );
+            if ( indicator == SQL_NULL_DATA )
+            {
+                return std::optional<UInt32>( );
+            }
+            return value;
+        }
+
+        [[nodiscard]]
+        std::optional<Int64> GetNullableInt64( SQLUSMALLINT columnNumber ) const
+        {
+            Int64 value;
+            SQLLEN indicator;
+            GetData( columnNumber, NativeType::Int64, &value, sizeof( value ), &indicator );
+            if ( indicator == SQL_NULL_DATA )
+            {
+                return std::optional<Int64>( );
+            }
+            return value;
+        }
+
+        [[nodiscard]]
+        std::optional<UInt64> GetNullableUInt64( SQLUSMALLINT columnNumber ) const
+        {
+            UInt64 value;
+            SQLLEN indicator;
+            GetData( columnNumber, NativeType::UInt64, &value, sizeof( value ), &indicator );
+            if ( indicator == SQL_NULL_DATA )
+            {
+                return std::optional<UInt64>( );
+            }
+            return value;
+        }
+
+        [[nodiscard]]
+        std::optional<float> GetNullableSingle( SQLUSMALLINT columnNumber ) const
+        {
+            float value;
+            SQLLEN indicator;
+            GetData( columnNumber, NativeType::Single, &value, sizeof( value ), &indicator );
+            if ( indicator == SQL_NULL_DATA )
+            {
+                return std::optional<float>( );
+            }
+            return value;
+        }
+
+        [[nodiscard]]
+        std::optional<double> GetNullableDouble( SQLUSMALLINT columnNumber ) const
+        {
+            double value;
+            SQLLEN indicator;
+            GetData( columnNumber, NativeType::Double, &value, sizeof( value ), &indicator );
+            if ( indicator == SQL_NULL_DATA )
+            {
+                return std::optional<double>( );
+            }
+            return value;
+        }
+
+        [[nodiscard]]
+        std::optional<DateTime> GetNullableDateTime( SQLUSMALLINT columnNumber ) const
+        {
+            TimeStamp value;
+            SQLLEN indicator;
+            GetData( columnNumber, NativeType::TypeTimeStamp, &value, sizeof( value ), &indicator );
+            if ( indicator == SQL_NULL_DATA )
+            {
+                return std::optional<DateTime>( );
+            }
+            return value.ToDateTime();
+        }
+
+        [[nodiscard]]
+        std::optional<Date> GetNullableDate( SQLUSMALLINT columnNumber ) const
+        {
+            Date value;
+            SQLLEN indicator;
+            GetData( columnNumber, NativeType::Date, &value, sizeof( value ), &indicator );
+            if ( indicator == SQL_NULL_DATA )
+            {
+                return std::optional<Date>( );
+            }
+            return value;
+        }
+
+        [[nodiscard]]
+        std::optional<Time> GetNullableTime( SQLUSMALLINT columnNumber ) const
+        {
+            Time value;
+            SQLLEN indicator;
+            GetData( columnNumber, NativeType::Time, &value, sizeof( value ), &indicator );
+            if ( indicator == SQL_NULL_DATA )
+            {
+                return std::optional<Time>( );
+            }
+            return value;
+        }
+
+        [[nodiscard]]
+        std::optional<TimeSpan> GetNullableTimeSpan( SQLUSMALLINT columnNumber ) const
+        {
+            Time value;
+            SQLLEN indicator;
+            GetData( columnNumber, NativeType::Time, &value, sizeof( value ), &indicator );
+            if ( indicator == SQL_NULL_DATA )
+            {
+                return std::optional<TimeSpan>( );
+            }
+            return value.ToTimeSpan();
+        }
+
+        [[nodiscard]]
+        std::optional<WideString> GetNullableWideString( SQLUSMALLINT columnNumber ) const
+        {
+            SQLLEN indicator;
+            wchar_t buffer[4096];
+            GetData( columnNumber, NativeType::WideChar, &buffer, sizeof( buffer ), &indicator );
+            if ( indicator == SQL_NULL_DATA )
+            {
+                return std::optional<WideString>( );
+            }
+            if ( indicator == 0 )
+            {
+                return std::optional<WideString>( WideString( ) );
+            }
+            if ( indicator != SQL_NO_TOTAL )
+            {
+                WideString result( buffer, static_cast<size_t>( indicator/2 ) );
+                return result;
+            }
+            else
+            {
+                WideString result( buffer, sizeof( buffer )/2 );
+                for ( ;;)
+                {
+                    auto rc = GetData( columnNumber, NativeType::WideChar, &buffer, sizeof( buffer ), &indicator );
+
+                    size_t charCount = ( indicator == SQL_NO_TOTAL ) ? (sizeof( buffer ) / sizeof( wchar_t )) - 1 : indicator / 2;
+                    result.Append( buffer, charCount );
+                    if ( rc == Result::Success )
+                    {
+                        break;
+                    }
+                }
+                return result;
+            }
+        }
+
+        [[nodiscard]]
+        std::optional<AnsiString> GetNullableAnsiString( SQLUSMALLINT columnNumber ) const
+        {
+            SQLLEN indicator;
+            char buffer[ 8192 ];
+            GetData( columnNumber, NativeType::Char, &buffer, sizeof( buffer ), &indicator );
+            if ( indicator == SQL_NULL_DATA )
+            {
+                return std::optional<AnsiString>( );
+            }
+            if ( indicator == 0 )
+            {
+                return std::optional<AnsiString>( AnsiString( ) );
+            }
+            if ( indicator != SQL_NO_TOTAL )
+            {
+                AnsiString result( buffer, static_cast< size_t >( indicator ) );
+                return result;
+            }
+            else
+            {
+                AnsiString result( buffer, sizeof( buffer ) );
+                for ( ;;)
+                {
+                    auto rc = GetData( columnNumber, NativeType::Char, &buffer, sizeof( buffer ), &indicator );
+
+                    size_t charCount = ( indicator == SQL_NO_TOTAL ) ? sizeof( buffer ) - 1 : indicator;
+                    result.Append( buffer, charCount );
+                    if ( rc == Result::Success )
+                    {
+                        break;
+                    }
+                }
+                return result;
+            }
+        }
+
+        [[nodiscard]]
+        std::optional<std::vector<Byte>> GetNullableBinary( SQLUSMALLINT columnNumber ) const
+        {
+            SQLLEN indicator;
+            Byte buffer[ 8192 ];
+            GetData( columnNumber, NativeType::Binary, &buffer, sizeof( buffer ), &indicator );
+            if ( indicator == SQL_NULL_DATA )
+            {
+                return std::optional<std::vector<Byte>>( );
+            }
+            if ( indicator == 0 )
+            {
+                return std::optional<std::vector<Byte>>( std::vector<Byte>( ) );
+            }
+            if ( indicator != SQL_NO_TOTAL )
+            {
+                std::vector<Byte> result( buffer, buffer + static_cast< size_t >( indicator ) );
+                return result;
+            }
+            else
+            {
+                std::vector<Byte> result( buffer, buffer + sizeof( buffer ) );
+                for ( ;;)
+                {
+                    auto rc = GetData( columnNumber, NativeType::Binary, &buffer, sizeof( buffer ), &indicator );
+
+                    size_t byteCount = ( indicator == SQL_NO_TOTAL ) ? sizeof( buffer ) : indicator;
+                    result.insert( result.end(), buffer, buffer + byteCount );
+                    if ( rc == Result::Success )
+                    {
+                        break;
+                    }
+                }
+                return result;
+            }
+        }
+
+
+        [[nodiscard]]
+        std::optional<Guid> GetNullableGuid( SQLUSMALLINT columnNumber ) const
+        {
+            Guid value;
+            SQLLEN indicator;
+            GetData( columnNumber, NativeType::Guid, &value, sizeof( value ), &indicator );
+            if ( indicator == SQL_NULL_DATA )
+            {
+                return std::optional<Guid>( );
+            }
+            return value;
+        }
+
+        [[nodiscard]]
+        bool GetBoolean( SQLUSMALLINT columnNumber ) const
+        {
+            bool value;
+            SQLLEN indicator;
+            GetData( columnNumber, NativeType::Boolean, &value, sizeof( value ), &indicator );
+            if ( indicator == SQL_NULL_DATA )
+            {
+                Internal::ThrowColumnNullException( columnNumber, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
+            }
+            return value;
+        }
+        [[nodiscard]]
+        Byte GetByte( SQLUSMALLINT columnNumber ) const
+        {
+            Byte value;
+            SQLLEN indicator;
+            GetData( columnNumber, NativeType::Byte, &value, sizeof( value ), &indicator );
+            if ( indicator == SQL_NULL_DATA )
+            {
+                Internal::ThrowColumnNullException( columnNumber, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
+            }
+            return value;
+        }
+
+        [[nodiscard]]
+        SByte GetSByte( SQLUSMALLINT columnNumber ) const
+        {
+            SByte value;
+            SQLLEN indicator;
+            GetData( columnNumber, NativeType::SByte, &value, sizeof( value ), &indicator );
+            if ( indicator == SQL_NULL_DATA )
+            {
+                Internal::ThrowColumnNullException( columnNumber, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
+            }
+            return value;
+        }
+
+        [[nodiscard]]
+        Int16 GetInt16( SQLUSMALLINT columnNumber ) const
+        {
+            Int16 value;
+            SQLLEN indicator;
+            GetData( columnNumber, NativeType::Int16, &value, sizeof( value ), &indicator );
+            if ( indicator == SQL_NULL_DATA )
+            {
+                Internal::ThrowColumnNullException( columnNumber, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
+            }
+            return value;
+        }
+
+        [[nodiscard]]
+        UInt16 GetUInt16( SQLUSMALLINT columnNumber ) const
+        {
+            Int16 value;
+            SQLLEN indicator;
+            GetData( columnNumber, NativeType::UInt16, &value, sizeof( value ), &indicator );
+            if ( indicator == SQL_NULL_DATA )
+            {
+                Internal::ThrowColumnNullException( columnNumber, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
+            }
+            return value;
+        }
+
+        [[nodiscard]]
+        Int32 GetInt32( SQLUSMALLINT columnNumber ) const
+        {
+            Int32 value;
+            SQLLEN indicator;
+            GetData( columnNumber, NativeType::Int32, &value, sizeof( value ), &indicator );
+            if ( indicator == SQL_NULL_DATA )
+            {
+                Internal::ThrowColumnNullException( columnNumber, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
+            }
+            return value;
+        }
+
+        [[nodiscard]]
+        UInt32 GetUInt32( SQLUSMALLINT columnNumber ) const
+        {
+            UInt32 value;
+            SQLLEN indicator;
+            GetData( columnNumber, NativeType::UInt32, &value, sizeof( value ), &indicator );
+            if ( indicator == SQL_NULL_DATA )
+            {
+                Internal::ThrowColumnNullException( columnNumber, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
+            }
+            return value;
+        }
+
+        [[nodiscard]]
+        Int64 GetInt64( SQLUSMALLINT columnNumber ) const
+        {
+            Int64 value;
+            SQLLEN indicator;
+            GetData( columnNumber, NativeType::Int64, &value, sizeof( value ), &indicator );
+            if ( indicator == SQL_NULL_DATA )
+            {
+                Internal::ThrowColumnNullException( columnNumber, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
+            }
+            return value;
+        }
+
+        [[nodiscard]]
+        UInt64 GetUInt64( SQLUSMALLINT columnNumber ) const
+        {
+            UInt64 value;
+            SQLLEN indicator;
+            GetData( columnNumber, NativeType::UInt64, &value, sizeof( value ), &indicator );
+            if ( indicator == SQL_NULL_DATA )
+            {
+                Internal::ThrowColumnNullException( columnNumber, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
+            }
+            return value;
+        }
+
+        [[nodiscard]]
+        float GetSingle( SQLUSMALLINT columnNumber ) const
+        {
+            float value;
+            SQLLEN indicator;
+            GetData( columnNumber, NativeType::Single, &value, sizeof( value ), &indicator );
+            if ( indicator == SQL_NULL_DATA )
+            {
+                Internal::ThrowColumnNullException( columnNumber, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
+            }
+            return value;
+        }
+
+        [[nodiscard]]
+        double GetDouble( SQLUSMALLINT columnNumber ) const
+        {
+            double value;
+            SQLLEN indicator;
+            GetData( columnNumber, NativeType::Double, &value, sizeof( value ), &indicator );
+            if ( indicator == SQL_NULL_DATA )
+            {
+                Internal::ThrowColumnNullException( columnNumber, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
+            }
+            return value;
+        }
+
+        [[nodiscard]]
+        DateTime GetDateTime( SQLUSMALLINT columnNumber ) const
+        {
+            TimeStamp value;
+            SQLLEN indicator;
+            GetData( columnNumber, NativeType::TypeTimeStamp, &value, sizeof( value ), &indicator );
+            if ( indicator == SQL_NULL_DATA )
+            {
+                Internal::ThrowColumnNullException( columnNumber, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
+            }
+            return value.ToDateTime( );
+        }
+
+        [[nodiscard]]
+        Date GetDate( SQLUSMALLINT columnNumber ) const
+        {
+            Date value;
+            SQLLEN indicator;
+            GetData( columnNumber, NativeType::Date, &value, sizeof( value ), &indicator );
+            if ( indicator == SQL_NULL_DATA )
+            {
+                Internal::ThrowColumnNullException( columnNumber, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
+            }
+            return value;
+        }
+
+        [[nodiscard]]
+        Time GetTime( SQLUSMALLINT columnNumber ) const
+        {
+            Time value;
+            SQLLEN indicator;
+            GetData( columnNumber, NativeType::Time, &value, sizeof( value ), &indicator );
+            if ( indicator == SQL_NULL_DATA )
+            {
+                Internal::ThrowColumnNullException( columnNumber, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
+            }
+            return value;
+        }
+
+        [[nodiscard]]
+        TimeSpan GetTimeSpan( SQLUSMALLINT columnNumber ) const
+        {
+            Time value;
+            SQLLEN indicator;
+            GetData( columnNumber, NativeType::Time, &value, sizeof( value ), &indicator );
+            if ( indicator == SQL_NULL_DATA )
+            {
+                Internal::ThrowColumnNullException( columnNumber, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
+            }
+            return value.ToTimeSpan( );
+        }
+
+        [[nodiscard]]
+        WideString GetWideString( SQLUSMALLINT columnNumber ) const
+        {
+            SQLLEN indicator;
+            wchar_t buffer[ 4096 ];
+            GetData( columnNumber, NativeType::WideChar, &buffer, sizeof( buffer ), &indicator );
+            if ( indicator == SQL_NULL_DATA )
+            {
+                Internal::ThrowColumnNullException( columnNumber, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
+            }
+            if ( indicator == 0 )
+            {
+                return WideString( );
+            }
+            if ( indicator != SQL_NO_TOTAL )
+            {
+                WideString result( buffer, static_cast< size_t >( indicator / 2 ) );
+                return result;
+            }
+            else
+            {
+                WideString result( buffer, sizeof( buffer ) / 2 );
+                for ( ;;)
+                {
+                    auto rc = GetData( columnNumber, NativeType::WideChar, &buffer, sizeof( buffer ), &indicator );
+
+                    size_t charCount = ( indicator == SQL_NO_TOTAL ) ? ( sizeof( buffer ) / sizeof( wchar_t ) ) - 1 : indicator / 2;
+                    result.Append( buffer, charCount );
+                    if ( rc == Result::Success )
+                    {
+                        break;
+                    }
+                }
+                return result;
+            }
+        }
+
+        [[nodiscard]]
+        AnsiString GetAnsiString( SQLUSMALLINT columnNumber ) const
+        {
+            SQLLEN indicator;
+            char buffer[ 8192 ];
+            GetData( columnNumber, NativeType::Char, &buffer, sizeof( buffer ), &indicator );
+            if ( indicator == SQL_NULL_DATA )
+            {
+                Internal::ThrowColumnNullException( columnNumber, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
+            }
+            if ( indicator == 0 )
+            {
+                return AnsiString( );
+            }
+            if ( indicator != SQL_NO_TOTAL )
+            {
+                AnsiString result( buffer, static_cast< size_t >( indicator ) );
+                return result;
+            }
+            else
+            {
+                AnsiString result( buffer, sizeof( buffer ) );
+                for ( ;;)
+                {
+                    auto rc = GetData( columnNumber, NativeType::Char, &buffer, sizeof( buffer ), &indicator );
+
+                    size_t charCount = ( indicator == SQL_NO_TOTAL ) ? sizeof( buffer ) - 1 : indicator;
+                    result.Append( buffer, charCount );
+                    if ( rc == Result::Success )
+                    {
+                        break;
+                    }
+                }
+                return result;
+            }
+        }
+
+        [[nodiscard]]
+        std::vector<Byte> GetBinary( SQLUSMALLINT columnNumber ) const
+        {
+            SQLLEN indicator;
+            Byte buffer[ 8192 ];
+            GetData( columnNumber, NativeType::Binary, &buffer, sizeof( buffer ), &indicator );
+            if ( indicator == SQL_NULL_DATA )
+            {
+                Internal::ThrowColumnNullException( columnNumber, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
+            }
+            if ( indicator == 0 )
+            {
+                return std::vector<Byte>( );
+            }
+            if ( indicator != SQL_NO_TOTAL )
+            {
+                std::vector<Byte> result( buffer, buffer + static_cast< size_t >( indicator ) );
+                return result;
+            }
+            else
+            {
+                std::vector<Byte> result( buffer, buffer + sizeof( buffer ) );
+                for ( ;;)
+                {
+                    auto rc = GetData( columnNumber, NativeType::Binary, &buffer, sizeof( buffer ), &indicator );
+
+                    size_t byteCount = ( indicator == SQL_NO_TOTAL ) ? sizeof( buffer ) : indicator;
+                    result.insert( result.end( ), buffer, buffer + byteCount );
+                    if ( rc == Result::Success )
+                    {
+                        break;
+                    }
+                }
+                return result;
+            }
+        }
+
+
+        [[nodiscard]]
+        Guid GetGuid( SQLUSMALLINT columnNumber ) const
+        {
+            Guid value;
+            SQLLEN indicator;
+            GetData( columnNumber, NativeType::Guid, &value, sizeof( value ), &indicator );
+            if ( indicator == SQL_NULL_DATA )
+            {
+                Internal::ThrowColumnNullException( columnNumber, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
+            }
+            return value;
+        }
+
+
+
     };
 
 
@@ -1102,7 +1745,7 @@ namespace Harlinn::ODBC
         }
 
         template<typename ReaderType>
-        requires std::is_base_of_v<DataReaderBase, ReaderType>
+        requires std::is_base_of_v<DataReader, ReaderType>
             std::unique_ptr<ReaderType> CreateReader( ) const
         {
             auto result = std::make_unique<ReaderType>( this );
@@ -1111,7 +1754,7 @@ namespace Harlinn::ODBC
 
 
         template<typename ReaderType>
-        requires std::is_base_of_v<DataReaderBase, ReaderType>
+        requires std::is_base_of_v<DataReader, ReaderType>
             std::unique_ptr<ReaderType> ExecuteReader( ) const
         {
             auto result = CreateReader<ReaderType>( );
@@ -1119,7 +1762,7 @@ namespace Harlinn::ODBC
             return result;
         }
         template<typename ReaderType>
-        requires std::is_base_of_v<DataReaderBase, ReaderType>
+        requires std::is_base_of_v<DataReader, ReaderType>
             std::unique_ptr<ReaderType> ExecuteReader( const SQLWCHAR* statementText, SQLINTEGER statementTextLength = SQL_NTS ) const
         {
             auto result = CreateReader<ReaderType>( );
@@ -1127,7 +1770,7 @@ namespace Harlinn::ODBC
             return result;
         }
         template<typename ReaderType>
-        requires std::is_base_of_v<DataReaderBase, ReaderType>
+        requires std::is_base_of_v<DataReader, ReaderType>
             std::unique_ptr<ReaderType> ExecuteReader( const SQLCHAR* statementText, SQLINTEGER statementTextLength = SQL_NTS ) const
         {
             auto result = CreateReader<ReaderType>( );
@@ -1269,16 +1912,644 @@ namespace Harlinn::ODBC
         }
 
 
-        bool GetBoolean( SQLUSMALLINT columnOrParameterNumber ) const
+        [[nodiscard]]
+        std::optional<bool> GetNullableBoolean( SQLUSMALLINT columnNumber ) const
         {
-            Byte value = 0;
-            SQLLEN nullIndicator = 0;
-            GetData( columnOrParameterNumber, NativeType::Boolean, &value, sizeof( value ), &nullIndicator );
-            if ( nullIndicator != SQL_NULL_DATA )
+            bool value;
+            SQLLEN indicator;
+            GetData( columnNumber, NativeType::Boolean, &value, sizeof( value ), &indicator );
+            if ( indicator == SQL_NULL_DATA )
             {
-                return value != SQL_FALSE;
+                return std::optional<bool>( );
+            }
+            return value;
+        }
+        [[nodiscard]]
+        std::optional<Byte> GetNullableByte( SQLUSMALLINT columnNumber ) const
+        {
+            Byte value;
+            SQLLEN indicator;
+            GetData( columnNumber, NativeType::Byte, &value, sizeof( value ), &indicator );
+            if ( indicator == SQL_NULL_DATA )
+            {
+                return std::optional<Byte>( );
+            }
+            return value;
+        }
+
+        [[nodiscard]]
+        std::optional<SByte> GetNullableSByte( SQLUSMALLINT columnNumber ) const
+        {
+            SByte value;
+            SQLLEN indicator;
+            GetData( columnNumber, NativeType::SByte, &value, sizeof( value ), &indicator );
+            if ( indicator == SQL_NULL_DATA )
+            {
+                return std::optional<SByte>( );
+            }
+            return value;
+        }
+
+        [[nodiscard]]
+        std::optional<Int16> GetNullableInt16( SQLUSMALLINT columnNumber ) const
+        {
+            Int16 value;
+            SQLLEN indicator;
+            GetData( columnNumber, NativeType::Int16, &value, sizeof( value ), &indicator );
+            if ( indicator == SQL_NULL_DATA )
+            {
+                return std::optional<Int16>( );
+            }
+            return value;
+        }
+
+        [[nodiscard]]
+        std::optional<UInt16> GetNullableUInt16( SQLUSMALLINT columnNumber ) const
+        {
+            Int16 value;
+            SQLLEN indicator;
+            GetData( columnNumber, NativeType::UInt16, &value, sizeof( value ), &indicator );
+            if ( indicator == SQL_NULL_DATA )
+            {
+                return std::optional<UInt16>( );
+            }
+            return value;
+        }
+
+        [[nodiscard]]
+        std::optional<Int32> GetNullableInt32( SQLUSMALLINT columnNumber ) const
+        {
+            Int32 value;
+            SQLLEN indicator;
+            GetData( columnNumber, NativeType::Int32, &value, sizeof( value ), &indicator );
+            if ( indicator == SQL_NULL_DATA )
+            {
+                return std::optional<Int32>( );
+            }
+            return value;
+        }
+
+        [[nodiscard]]
+        std::optional<UInt32> GetNullableUInt32( SQLUSMALLINT columnNumber ) const
+        {
+            UInt32 value;
+            SQLLEN indicator;
+            GetData( columnNumber, NativeType::UInt32, &value, sizeof( value ), &indicator );
+            if ( indicator == SQL_NULL_DATA )
+            {
+                return std::optional<UInt32>( );
+            }
+            return value;
+        }
+
+        [[nodiscard]]
+        std::optional<Int64> GetNullableInt64( SQLUSMALLINT columnNumber ) const
+        {
+            Int64 value;
+            SQLLEN indicator;
+            GetData( columnNumber, NativeType::Int64, &value, sizeof( value ), &indicator );
+            if ( indicator == SQL_NULL_DATA )
+            {
+                return std::optional<Int64>( );
+            }
+            return value;
+        }
+
+        [[nodiscard]]
+        std::optional<UInt64> GetNullableUInt64( SQLUSMALLINT columnNumber ) const
+        {
+            UInt64 value;
+            SQLLEN indicator;
+            GetData( columnNumber, NativeType::UInt64, &value, sizeof( value ), &indicator );
+            if ( indicator == SQL_NULL_DATA )
+            {
+                return std::optional<UInt64>( );
+            }
+            return value;
+        }
+
+        [[nodiscard]]
+        std::optional<float> GetNullableSingle( SQLUSMALLINT columnNumber ) const
+        {
+            float value;
+            SQLLEN indicator;
+            GetData( columnNumber, NativeType::Single, &value, sizeof( value ), &indicator );
+            if ( indicator == SQL_NULL_DATA )
+            {
+                return std::optional<float>( );
+            }
+            return value;
+        }
+
+        [[nodiscard]]
+        std::optional<double> GetNullableDouble( SQLUSMALLINT columnNumber ) const
+        {
+            double value;
+            SQLLEN indicator;
+            GetData( columnNumber, NativeType::Double, &value, sizeof( value ), &indicator );
+            if ( indicator == SQL_NULL_DATA )
+            {
+                return std::optional<double>( );
+            }
+            return value;
+        }
+
+        [[nodiscard]]
+        std::optional<DateTime> GetNullableDateTime( SQLUSMALLINT columnNumber ) const
+        {
+            TimeStamp value;
+            SQLLEN indicator;
+            GetData( columnNumber, NativeType::TypeTimeStamp, &value, sizeof( value ), &indicator );
+            if ( indicator == SQL_NULL_DATA )
+            {
+                return std::optional<DateTime>( );
+            }
+            return value.ToDateTime( );
+        }
+
+        [[nodiscard]]
+        std::optional<Date> GetNullableDate( SQLUSMALLINT columnNumber ) const
+        {
+            Date value;
+            SQLLEN indicator;
+            GetData( columnNumber, NativeType::Date, &value, sizeof( value ), &indicator );
+            if ( indicator == SQL_NULL_DATA )
+            {
+                return std::optional<Date>( );
+            }
+            return value;
+        }
+
+        [[nodiscard]]
+        std::optional<Time> GetNullableTime( SQLUSMALLINT columnNumber ) const
+        {
+            Time value;
+            SQLLEN indicator;
+            GetData( columnNumber, NativeType::Time, &value, sizeof( value ), &indicator );
+            if ( indicator == SQL_NULL_DATA )
+            {
+                return std::optional<Time>( );
+            }
+            return value;
+        }
+
+        [[nodiscard]]
+        std::optional<TimeSpan> GetNullableTimeSpan( SQLUSMALLINT columnNumber ) const
+        {
+            Time value;
+            SQLLEN indicator;
+            GetData( columnNumber, NativeType::Time, &value, sizeof( value ), &indicator );
+            if ( indicator == SQL_NULL_DATA )
+            {
+                return std::optional<TimeSpan>( );
+            }
+            return value.ToTimeSpan( );
+        }
+
+        [[nodiscard]]
+        std::optional<WideString> GetNullableWideString( SQLUSMALLINT columnNumber ) const
+        {
+            SQLLEN indicator;
+            wchar_t buffer[ 4096 ];
+            GetData( columnNumber, NativeType::WideChar, &buffer, sizeof( buffer ), &indicator );
+            if ( indicator == SQL_NULL_DATA )
+            {
+                return std::optional<WideString>( );
+            }
+            if ( indicator == 0 )
+            {
+                return std::optional<WideString>( WideString( ) );
+            }
+            if ( indicator != SQL_NO_TOTAL )
+            {
+                WideString result( buffer, static_cast< size_t >( indicator / 2 ) );
+                return result;
+            }
+            else
+            {
+                WideString result( buffer, sizeof( buffer ) / 2 );
+                for ( ;;)
+                {
+                    auto rc = GetData( columnNumber, NativeType::WideChar, &buffer, sizeof( buffer ), &indicator );
+
+                    size_t charCount = ( indicator == SQL_NO_TOTAL ) ? ( sizeof( buffer ) / sizeof( wchar_t ) ) - 1 : indicator / 2;
+                    result.Append( buffer, charCount );
+                    if ( rc == Result::Success )
+                    {
+                        break;
+                    }
+                }
+                return result;
             }
         }
+
+        [[nodiscard]]
+        std::optional<AnsiString> GetNullableAnsiString( SQLUSMALLINT columnNumber ) const
+        {
+            SQLLEN indicator;
+            char buffer[ 8192 ];
+            GetData( columnNumber, NativeType::Char, &buffer, sizeof( buffer ), &indicator );
+            if ( indicator == SQL_NULL_DATA )
+            {
+                return std::optional<AnsiString>( );
+            }
+            if ( indicator == 0 )
+            {
+                return std::optional<AnsiString>( AnsiString( ) );
+            }
+            if ( indicator != SQL_NO_TOTAL )
+            {
+                AnsiString result( buffer, static_cast< size_t >( indicator ) );
+                return result;
+            }
+            else
+            {
+                AnsiString result( buffer, sizeof( buffer ) );
+                for ( ;;)
+                {
+                    auto rc = GetData( columnNumber, NativeType::Char, &buffer, sizeof( buffer ), &indicator );
+
+                    size_t charCount = ( indicator == SQL_NO_TOTAL ) ? sizeof( buffer ) - 1 : indicator;
+                    result.Append( buffer, charCount );
+                    if ( rc == Result::Success )
+                    {
+                        break;
+                    }
+                }
+                return result;
+            }
+        }
+
+        [[nodiscard]]
+        std::optional<std::vector<Byte>> GetNullableBinary( SQLUSMALLINT columnNumber ) const
+        {
+            SQLLEN indicator;
+            Byte buffer[ 8192 ];
+            GetData( columnNumber, NativeType::Binary, &buffer, sizeof( buffer ), &indicator );
+            if ( indicator == SQL_NULL_DATA )
+            {
+                return std::optional<std::vector<Byte>>( );
+            }
+            if ( indicator == 0 )
+            {
+                return std::optional<std::vector<Byte>>( std::vector<Byte>( ) );
+            }
+            if ( indicator != SQL_NO_TOTAL )
+            {
+                std::vector<Byte> result( buffer, buffer + static_cast< size_t >( indicator ) );
+                return result;
+            }
+            else
+            {
+                std::vector<Byte> result( buffer, buffer + sizeof( buffer ) );
+                for ( ;;)
+                {
+                    auto rc = GetData( columnNumber, NativeType::Binary, &buffer, sizeof( buffer ), &indicator );
+
+                    size_t byteCount = ( indicator == SQL_NO_TOTAL ) ? sizeof( buffer ) : indicator;
+                    result.insert( result.end( ), buffer, buffer + byteCount );
+                    if ( rc == Result::Success )
+                    {
+                        break;
+                    }
+                }
+                return result;
+            }
+        }
+
+
+        [[nodiscard]]
+        std::optional<Guid> GetNullableGuid( SQLUSMALLINT columnNumber ) const
+        {
+            Guid value;
+            SQLLEN indicator;
+            GetData( columnNumber, NativeType::Guid, &value, sizeof( value ), &indicator );
+            if ( indicator == SQL_NULL_DATA )
+            {
+                return std::optional<Guid>( );
+            }
+            return value;
+        }
+
+        [[nodiscard]]
+        bool GetBoolean( SQLUSMALLINT columnNumber ) const
+        {
+            bool value;
+            SQLLEN indicator;
+            GetData( columnNumber, NativeType::Boolean, &value, sizeof( value ), &indicator );
+            if ( indicator == SQL_NULL_DATA )
+            {
+                Internal::ThrowColumnNullException( columnNumber, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
+            }
+            return value;
+        }
+        [[nodiscard]]
+        Byte GetByte( SQLUSMALLINT columnNumber ) const
+        {
+            Byte value;
+            SQLLEN indicator;
+            GetData( columnNumber, NativeType::Byte, &value, sizeof( value ), &indicator );
+            if ( indicator == SQL_NULL_DATA )
+            {
+                Internal::ThrowColumnNullException( columnNumber, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
+            }
+            return value;
+        }
+
+        [[nodiscard]]
+        SByte GetSByte( SQLUSMALLINT columnNumber ) const
+        {
+            SByte value;
+            SQLLEN indicator;
+            GetData( columnNumber, NativeType::SByte, &value, sizeof( value ), &indicator );
+            if ( indicator == SQL_NULL_DATA )
+            {
+                Internal::ThrowColumnNullException( columnNumber, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
+            }
+            return value;
+        }
+
+        [[nodiscard]]
+        Int16 GetInt16( SQLUSMALLINT columnNumber ) const
+        {
+            Int16 value;
+            SQLLEN indicator;
+            GetData( columnNumber, NativeType::Int16, &value, sizeof( value ), &indicator );
+            if ( indicator == SQL_NULL_DATA )
+            {
+                Internal::ThrowColumnNullException( columnNumber, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
+            }
+            return value;
+        }
+
+        [[nodiscard]]
+        UInt16 GetUInt16( SQLUSMALLINT columnNumber ) const
+        {
+            Int16 value;
+            SQLLEN indicator;
+            GetData( columnNumber, NativeType::UInt16, &value, sizeof( value ), &indicator );
+            if ( indicator == SQL_NULL_DATA )
+            {
+                Internal::ThrowColumnNullException( columnNumber, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
+            }
+            return value;
+        }
+
+        [[nodiscard]]
+        Int32 GetInt32( SQLUSMALLINT columnNumber ) const
+        {
+            Int32 value;
+            SQLLEN indicator;
+            GetData( columnNumber, NativeType::Int32, &value, sizeof( value ), &indicator );
+            if ( indicator == SQL_NULL_DATA )
+            {
+                Internal::ThrowColumnNullException( columnNumber, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
+            }
+            return value;
+        }
+
+        [[nodiscard]]
+        UInt32 GetUInt32( SQLUSMALLINT columnNumber ) const
+        {
+            UInt32 value;
+            SQLLEN indicator;
+            GetData( columnNumber, NativeType::UInt32, &value, sizeof( value ), &indicator );
+            if ( indicator == SQL_NULL_DATA )
+            {
+                Internal::ThrowColumnNullException( columnNumber, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
+            }
+            return value;
+        }
+
+        [[nodiscard]]
+        Int64 GetInt64( SQLUSMALLINT columnNumber ) const
+        {
+            Int64 value;
+            SQLLEN indicator;
+            GetData( columnNumber, NativeType::Int64, &value, sizeof( value ), &indicator );
+            if ( indicator == SQL_NULL_DATA )
+            {
+                Internal::ThrowColumnNullException( columnNumber, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
+            }
+            return value;
+        }
+
+        [[nodiscard]]
+        UInt64 GetUInt64( SQLUSMALLINT columnNumber ) const
+        {
+            UInt64 value;
+            SQLLEN indicator;
+            GetData( columnNumber, NativeType::UInt64, &value, sizeof( value ), &indicator );
+            if ( indicator == SQL_NULL_DATA )
+            {
+                Internal::ThrowColumnNullException( columnNumber, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
+            }
+            return value;
+        }
+
+        [[nodiscard]]
+        float GetSingle( SQLUSMALLINT columnNumber ) const
+        {
+            float value;
+            SQLLEN indicator;
+            GetData( columnNumber, NativeType::Single, &value, sizeof( value ), &indicator );
+            if ( indicator == SQL_NULL_DATA )
+            {
+                Internal::ThrowColumnNullException( columnNumber, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
+            }
+            return value;
+        }
+
+        [[nodiscard]]
+        double GetDouble( SQLUSMALLINT columnNumber ) const
+        {
+            double value;
+            SQLLEN indicator;
+            GetData( columnNumber, NativeType::Double, &value, sizeof( value ), &indicator );
+            if ( indicator == SQL_NULL_DATA )
+            {
+                Internal::ThrowColumnNullException( columnNumber, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
+            }
+            return value;
+        }
+
+        [[nodiscard]]
+        DateTime GetDateTime( SQLUSMALLINT columnNumber ) const
+        {
+            TimeStamp value;
+            SQLLEN indicator;
+            GetData( columnNumber, NativeType::TypeTimeStamp, &value, sizeof( value ), &indicator );
+            if ( indicator == SQL_NULL_DATA )
+            {
+                Internal::ThrowColumnNullException( columnNumber, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
+            }
+            return value.ToDateTime( );
+        }
+
+        [[nodiscard]]
+        Date GetDate( SQLUSMALLINT columnNumber ) const
+        {
+            Date value;
+            SQLLEN indicator;
+            GetData( columnNumber, NativeType::Date, &value, sizeof( value ), &indicator );
+            if ( indicator == SQL_NULL_DATA )
+            {
+                Internal::ThrowColumnNullException( columnNumber, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
+            }
+            return value;
+        }
+
+        [[nodiscard]]
+        Time GetTime( SQLUSMALLINT columnNumber ) const
+        {
+            Time value;
+            SQLLEN indicator;
+            GetData( columnNumber, NativeType::Time, &value, sizeof( value ), &indicator );
+            if ( indicator == SQL_NULL_DATA )
+            {
+                Internal::ThrowColumnNullException( columnNumber, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
+            }
+            return value;
+        }
+
+        [[nodiscard]]
+        TimeSpan GetTimeSpan( SQLUSMALLINT columnNumber ) const
+        {
+            Time value;
+            SQLLEN indicator;
+            GetData( columnNumber, NativeType::Time, &value, sizeof( value ), &indicator );
+            if ( indicator == SQL_NULL_DATA )
+            {
+                Internal::ThrowColumnNullException( columnNumber, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
+            }
+            return value.ToTimeSpan( );
+        }
+
+        [[nodiscard]]
+        WideString GetWideString( SQLUSMALLINT columnNumber ) const
+        {
+            SQLLEN indicator;
+            wchar_t buffer[ 4096 ];
+            GetData( columnNumber, NativeType::WideChar, &buffer, sizeof( buffer ), &indicator );
+            if ( indicator == SQL_NULL_DATA )
+            {
+                Internal::ThrowColumnNullException( columnNumber, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
+            }
+            if ( indicator == 0 )
+            {
+                return WideString( );
+            }
+            if ( indicator != SQL_NO_TOTAL )
+            {
+                WideString result( buffer, static_cast< size_t >( indicator / 2 ) );
+                return result;
+            }
+            else
+            {
+                WideString result( buffer, sizeof( buffer ) / 2 );
+                for ( ;;)
+                {
+                    auto rc = GetData( columnNumber, NativeType::WideChar, &buffer, sizeof( buffer ), &indicator );
+
+                    size_t charCount = ( indicator == SQL_NO_TOTAL ) ? ( sizeof( buffer ) / sizeof( wchar_t ) ) - 1 : indicator / 2;
+                    result.Append( buffer, charCount );
+                    if ( rc == Result::Success )
+                    {
+                        break;
+                    }
+                }
+                return result;
+            }
+        }
+
+        [[nodiscard]]
+        AnsiString GetAnsiString( SQLUSMALLINT columnNumber ) const
+        {
+            SQLLEN indicator;
+            char buffer[ 8192 ];
+            GetData( columnNumber, NativeType::Char, &buffer, sizeof( buffer ), &indicator );
+            if ( indicator == SQL_NULL_DATA )
+            {
+                Internal::ThrowColumnNullException( columnNumber, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
+            }
+            if ( indicator == 0 )
+            {
+                return AnsiString( );
+            }
+            if ( indicator != SQL_NO_TOTAL )
+            {
+                AnsiString result( buffer, static_cast< size_t >( indicator ) );
+                return result;
+            }
+            else
+            {
+                AnsiString result( buffer, sizeof( buffer ) );
+                for ( ;;)
+                {
+                    auto rc = GetData( columnNumber, NativeType::Char, &buffer, sizeof( buffer ), &indicator );
+
+                    size_t charCount = ( indicator == SQL_NO_TOTAL ) ? sizeof( buffer ) - 1 : indicator;
+                    result.Append( buffer, charCount );
+                    if ( rc == Result::Success )
+                    {
+                        break;
+                    }
+                }
+                return result;
+            }
+        }
+
+        [[nodiscard]]
+        std::vector<Byte> GetBinary( SQLUSMALLINT columnNumber ) const
+        {
+            SQLLEN indicator;
+            Byte buffer[ 8192 ];
+            GetData( columnNumber, NativeType::Binary, &buffer, sizeof( buffer ), &indicator );
+            if ( indicator == SQL_NULL_DATA )
+            {
+                Internal::ThrowColumnNullException( columnNumber, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
+            }
+            if ( indicator == 0 )
+            {
+                return std::vector<Byte>( );
+            }
+            if ( indicator != SQL_NO_TOTAL )
+            {
+                std::vector<Byte> result( buffer, buffer + static_cast< size_t >( indicator ) );
+                return result;
+            }
+            else
+            {
+                std::vector<Byte> result( buffer, buffer + sizeof( buffer ) );
+                for ( ;;)
+                {
+                    auto rc = GetData( columnNumber, NativeType::Binary, &buffer, sizeof( buffer ), &indicator );
+
+                    size_t byteCount = ( indicator == SQL_NO_TOTAL ) ? sizeof( buffer ) : indicator;
+                    result.insert( result.end( ), buffer, buffer + byteCount );
+                    if ( rc == Result::Success )
+                    {
+                        break;
+                    }
+                }
+                return result;
+            }
+        }
+
+
+        [[nodiscard]]
+        Guid GetGuid( SQLUSMALLINT columnNumber ) const
+        {
+            Guid value;
+            SQLLEN indicator;
+            GetData( columnNumber, NativeType::Guid, &value, sizeof( value ), &indicator );
+            if ( indicator == SQL_NULL_DATA )
+            {
+                Internal::ThrowColumnNullException( columnNumber, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
+            }
+            return value;
+        }
+
 
 
 
@@ -1653,17 +2924,28 @@ namespace Harlinn::ODBC
 
 
 
-    inline Result DataReaderBase::Fetch( ) const
+    inline Result DataReader::Fetch( ) const
     {
         return statement_->Fetch( );
     }
-    inline Result DataReaderBase::FetchScroll( ODBC::Fetch fetchOrientation, SQLLEN fetchOffset ) const
+    inline Result DataReader::FetchScroll( ODBC::Fetch fetchOrientation, SQLLEN fetchOffset ) const
     {
         return statement_->FetchScroll( fetchOrientation, fetchOffset );
     }
-    inline Result DataReaderBase::BindColumn( SQLUSMALLINT columnNumber, SQLSMALLINT targetType, SQLPOINTER targetValue, SQLLEN targetValueMaxLength, SQLLEN* nullIndicatorOrLength ) const
+    inline Result DataReader::BindColumn( SQLUSMALLINT columnNumber, SQLSMALLINT targetType, SQLPOINTER targetValue, SQLLEN targetValueMaxLength, SQLLEN* nullIndicatorOrLength ) const
     {
         return statement_->BindColumn( columnNumber, targetType, targetValue, targetValueMaxLength, nullIndicatorOrLength );
+    }
+
+    [[nodiscard]] 
+    inline SQLHANDLE DataReader::Handle( ) const noexcept
+    {
+        return statement_->Handle( );
+    }
+
+    inline Result DataReader::GetData( SQLUSMALLINT columnOrParameterNumber, SQLSMALLINT targetValueDataType, SQLPOINTER targetValue, SQLLEN targetValueMaxLength, SQLLEN* nullIndicatorOrTargetValueActualLength ) const
+    {
+        return statement_->GetData( columnOrParameterNumber, targetValueDataType, targetValue, targetValueMaxLength, nullIndicatorOrTargetValueActualLength );
     }
 
 

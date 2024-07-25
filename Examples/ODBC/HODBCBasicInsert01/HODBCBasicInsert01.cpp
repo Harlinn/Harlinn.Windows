@@ -23,7 +23,7 @@ using namespace Harlinn::ODBC;
 using namespace Harlinn;
 
 
-class TimeseriesValue1DateReader : public DataReaderBase
+class TimeseriesValue1DateReader : public DataReader
 {
     Int64 id_ = 0;
     ODBC::TimeStamp ts_;
@@ -35,7 +35,7 @@ public:
     static constexpr SQLUSMALLINT FLAGS_ID = 3;
     static constexpr SQLUSMALLINT VALUE_ID = 4;
 
-    using Base = DataReaderBase;
+    using Base = DataReader;
 
     TimeseriesValue1DateReader( const Statement* statement )
         : Base( statement )
@@ -65,69 +65,6 @@ public:
 };
 
 
-/*
-class TimeseriesValue1DateReader : public DataReaderBase
-{
-    static constexpr SQLULEN RowsetSize = 100000;
-    mutable SQLULEN rowCount_;
-    mutable SQLULEN rowIndex_;
-    Int64 id_[RowsetSize] = {};
-    ODBC::TimeStamp ts_[RowsetSize];
-    Int32 flags_[RowsetSize] = {};
-    Double value_[RowsetSize] = {};
-public:
-    static constexpr SQLUSMALLINT ID_ID = 1;
-    static constexpr SQLUSMALLINT TS_ID = 2;
-    static constexpr SQLUSMALLINT FLAGS_ID = 3;
-    static constexpr SQLUSMALLINT VALUE_ID = 4;
-
-    using Base = DataReaderBase;
-
-    TimeseriesValue1DateReader( const Statement* statement )
-        : Base( statement ), rowCount_(0), rowIndex_(std::numeric_limits<SQLULEN>::max())
-    {
-        statement->SetRowArraySize( RowsetSize );
-        statement->SetRowsFetched( &rowCount_ );
-        Bind( ID_ID, id_ );
-        Bind( TS_ID, ts_ );
-        Bind( FLAGS_ID, flags_ );
-        Bind( VALUE_ID, value_ );
-        
-    }
-
-    bool Read( ) const
-    {
-        rowIndex_++;
-        if ( rowIndex_ < rowCount_ )
-        {
-            return true;
-        }
-        else
-        {
-            auto rc = Fetch( );
-            rowIndex_ = 0;
-            return rc != ODBC::Result::NoData;
-        }
-    }
-
-    constexpr Int64 Id( ) const noexcept
-    {
-        return id_[rowIndex_];
-    }
-    constexpr const ODBC::TimeStamp& Timestamp( ) const noexcept
-    {
-        return ts_[rowIndex_];
-    }
-    constexpr Int32 Flags( ) const noexcept
-    {
-        return flags_[rowIndex_];
-    }
-    constexpr Double Value( ) const noexcept
-    {
-        return value_[rowIndex_];
-    }
-};
-*/
 
 
 

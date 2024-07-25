@@ -23,7 +23,15 @@ namespace Harlinn::ODBC
 {
     namespace Internal
     {
-        void ThrowException( SQLRETURN sqlReturn, ODBC::HandleType handleType, SQLHANDLE sqlHandle, const wchar_t* function, const wchar_t* file, int line )
+        HODBC_EXPORT void ThrowColumnNullException( SQLSMALLINT columnNumber, const wchar_t* function, const wchar_t* file, int line )
+        {
+            ExceptionLocation location( function, file, line );
+            WideString msg = Format( L"Column {} is NULL", columnNumber );
+            Data::DbException exc( location, -1, msg );
+            throw exc;
+        }
+
+        HODBC_EXPORT void ThrowException( SQLRETURN sqlReturn, ODBC::HandleType handleType, SQLHANDLE sqlHandle, const wchar_t* function, const wchar_t* file, int line )
         {
             ExceptionLocation location( function, file, line );
             SQLWCHAR sqlState[6] = {};
@@ -36,7 +44,7 @@ namespace Harlinn::ODBC
             throw exc;
         }
 
-        void ThrowException( SQLRETURN sqlReturn, ODBC::HandleType handleType, SQLHANDLE sqlHandle )
+        HODBC_EXPORT void ThrowException( SQLRETURN sqlReturn, ODBC::HandleType handleType, SQLHANDLE sqlHandle )
         {
             SQLWCHAR sqlState[6] = {};
             SQLWCHAR message[2048] = {};
@@ -48,14 +56,14 @@ namespace Harlinn::ODBC
             throw exc;
         }
 
-        void ThrowExceptionNoDiagnostic( SQLRETURN sqlReturn, ODBC::HandleType handleType, SQLHANDLE sqlHandle, const wchar_t* function, const wchar_t* file, int line )
+        HODBC_EXPORT void ThrowExceptionNoDiagnostic( SQLRETURN sqlReturn, ODBC::HandleType handleType, SQLHANDLE sqlHandle, const wchar_t* function, const wchar_t* file, int line )
         {
             ExceptionLocation location( function, file, line );
             Data::DbException exc( location, sqlReturn, L"Unknown" );
             throw exc;
         }
 
-        void ThrowExceptionNoDiagnostic( SQLRETURN sqlReturn, ODBC::HandleType handleType, SQLHANDLE sqlHandle )
+        HODBC_EXPORT void ThrowExceptionNoDiagnostic( SQLRETURN sqlReturn, ODBC::HandleType handleType, SQLHANDLE sqlHandle )
         {
             Data::DbException exc( sqlReturn, L"Unknown" );
             throw exc;

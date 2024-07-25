@@ -23,7 +23,7 @@ using namespace Harlinn::ODBC;
 using namespace Harlinn;
 
 
-class TimeseriesValue2DateReader : public DataReaderBase
+class TimeseriesValue2DateReader : public DataReader
 {
     Int64 id_ = 0;
     Int64 ts_;
@@ -35,7 +35,7 @@ public:
     static constexpr SQLUSMALLINT FLAGS_ID = 3;
     static constexpr SQLUSMALLINT VALUE_ID = 4;
 
-    using Base = DataReaderBase;
+    using Base = DataReader;
 
     TimeseriesValue2DateReader( const Statement* statement )
         : Base( statement )

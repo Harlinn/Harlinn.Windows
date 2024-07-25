@@ -47,7 +47,7 @@ struct TrackValue
     double heading_ = 0.0;
 };
 
-class TrackDataReader : public DataReaderBase
+class TrackDataReader : public DataReader
 {
     Track track_;
 public:
@@ -57,7 +57,7 @@ public:
     static constexpr SQLUSMALLINT TRACKNUMBER_ID = 4;
     static constexpr SQLUSMALLINT TIMESTAMP_ID = 5;
 
-    using Base = DataReaderBase;
+    using Base = DataReader;
 
     static constexpr wchar_t sql_[ ] = L"SELECT [Id], [OptimisticLockField], [Tracker], [TrackNumber], [Timestamp] FROM [dbo].[Track]";
     static constexpr wchar_t lastUpdatedSql_[ ] = L"SELECT [Id], [OptimisticLockField], [Tracker], [TrackNumber], [Timestamp] FROM [dbo].[TrackViewEx]";
@@ -243,7 +243,7 @@ public:
 
 
 
-class TrackValueDataReader : public DataReaderBase
+class TrackValueDataReader : public DataReader
 {
     TrackValue trackValue_;
 public:
@@ -260,7 +260,7 @@ public:
     static constexpr SQLUSMALLINT COURSE_ID = 10;
     static constexpr SQLUSMALLINT HEADING_ID = 11;
 
-    using Base = DataReaderBase;
+    using Base = DataReader;
 
     static constexpr wchar_t sql_[] = L"SELECT [Id], [OptimisticLockField], [Track], [Timestamp], [Flags], [Status], [Latitude], [Longitude], [Speed], [Course], [Heading] FROM [dbo].[TrackValues]";
 
