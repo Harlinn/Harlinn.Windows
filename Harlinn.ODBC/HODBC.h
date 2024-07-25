@@ -394,9 +394,77 @@ namespace Harlinn::ODBC
             second = dateTime.Second( );
             return *this;
         }
+    };
+
+
+    enum class IntervalType
+    {
+        Year = SQL_IS_YEAR,
+        Month = SQL_IS_MONTH,
+        Day = SQL_IS_DAY,
+        Hour = SQL_IS_HOUR,
+        Minute = SQL_IS_MINUTE,
+        Second = SQL_IS_SECOND,
+        YearToMonth = SQL_IS_YEAR_TO_MONTH,
+        DayToHour = SQL_IS_DAY_TO_HOUR,
+        DayToMinute = SQL_IS_DAY_TO_MINUTE,
+        DayToSecond = SQL_IS_DAY_TO_SECOND,
+        HourToMinute = SQL_IS_HOUR_TO_MINUTE,
+        HourToSecond = SQL_IS_HOUR_TO_SECOND,
+        MinuteToSecond = SQL_IS_MINUTE_TO_SECOND
+    };
+
+
+    class Interval : public SQL_INTERVAL_STRUCT
+    {
+    public:
+        using Base = SQL_INTERVAL_STRUCT;
+
+        Interval()
+            : Base{}
+        {
+        }
+
+        bool IsNegative( ) const
+        {
+            return Base::interval_sign != 0;
+        }
+
+        IntervalType Type( ) const
+        {
+            return static_cast< IntervalType >( Base::interval_type );
+        }
+
+
+        TimeSpan ToTimeSpan( ) const
+        {
+            auto type = Type( );
+            switch ( type )
+            {
+                case IntervalType::DayToSecond:
+                {
+                    Int64 ticks = ( ( Base::intval.day_second.day * TimeSpan::TicksPerDay )
+                        + ( Base::intval.day_second.hour * TimeSpan::TicksPerHour )
+                        + ( Base::intval.day_second.minute * TimeSpan::TicksPerMinute )
+                        + ( Base::intval.day_second.second * TimeSpan::TicksPerSecond )
+                        + ( Base::intval.day_second.fraction / 100 ) );
+                    if ( IsNegative( ) )
+                    {
+                        return TimeSpan( -ticks );
+                    }
+                    else
+                    {
+                        return TimeSpan( ticks );
+                    }
+                }
+                break;
+            }
+
+        }
 
 
     };
+
 
 
     /// <summary>
@@ -963,9 +1031,9 @@ namespace Harlinn::ODBC
         [[nodiscard]]
         std::optional<TimeSpan> GetNullableTimeSpan( SQLUSMALLINT columnNumber ) const
         {
-            Time value;
+            Interval value;
             SQLLEN indicator;
-            GetData( columnNumber, NativeType::Time, &value, sizeof( value ), &indicator );
+            GetData( columnNumber, NativeType::IntervalDayToSecond, &value, sizeof( value ), &indicator );
             if ( indicator == SQL_NULL_DATA )
             {
                 return std::optional<TimeSpan>( );
@@ -1282,9 +1350,9 @@ namespace Harlinn::ODBC
         [[nodiscard]]
         TimeSpan GetTimeSpan( SQLUSMALLINT columnNumber ) const
         {
-            Time value;
+            Interval value;
             SQLLEN indicator;
-            GetData( columnNumber, NativeType::Time, &value, sizeof( value ), &indicator );
+            GetData( columnNumber, NativeType::IntervalDayToSecond, &value, sizeof( value ), &indicator );
             if ( indicator == SQL_NULL_DATA )
             {
                 Internal::ThrowColumnNullException( columnNumber, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
@@ -2096,9 +2164,9 @@ namespace Harlinn::ODBC
         [[nodiscard]]
         std::optional<TimeSpan> GetNullableTimeSpan( SQLUSMALLINT columnNumber ) const
         {
-            Time value;
+            Interval value;
             SQLLEN indicator;
-            GetData( columnNumber, NativeType::Time, &value, sizeof( value ), &indicator );
+            GetData( columnNumber, NativeType::IntervalDayToSecond, &value, sizeof( value ), &indicator );
             if ( indicator == SQL_NULL_DATA )
             {
                 return std::optional<TimeSpan>( );
@@ -2415,9 +2483,9 @@ namespace Harlinn::ODBC
         [[nodiscard]]
         TimeSpan GetTimeSpan( SQLUSMALLINT columnNumber ) const
         {
-            Time value;
+            Interval value;
             SQLLEN indicator;
-            GetData( columnNumber, NativeType::Time, &value, sizeof( value ), &indicator );
+            GetData( columnNumber, NativeType::IntervalDayToSecond, &value, sizeof( value ), &indicator );
             if ( indicator == SQL_NULL_DATA )
             {
                 Internal::ThrowColumnNullException( columnNumber, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
