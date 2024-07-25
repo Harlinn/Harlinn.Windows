@@ -51,9 +51,9 @@ namespace Harlinn::Common::Core
         }
 
         template<typename T>
-            requires ( std::is_arithmetic_v<T>&& std::is_nothrow_convertible_v<T, value_type> )
+            requires ( std::is_arithmetic_v<T> && std::is_nothrow_convertible_v<T, value_type> )
         constexpr Currency( T value ) noexcept
-            : value_( value * Scale )
+            : value_( static_cast< value_type >( value * Scale ) )
         {
         }
         constexpr explicit Currency( CY value ) noexcept

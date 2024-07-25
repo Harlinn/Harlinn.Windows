@@ -109,7 +109,7 @@ BOOST_AUTO_TEST_CASE( SetCurrentCatalogTest1 )
 }
 
 
-class DateReaderTest1DateReader : public DataReaderBase
+class DateReaderTest1DateReader : public DataReader
 {
     Int64 id_ = 0;
     ODBC::TimeStamp ts_;
@@ -121,7 +121,7 @@ public:
     static constexpr SQLUSMALLINT FLAGS_ID = 3;
     static constexpr SQLUSMALLINT VALUE_ID = 4;
 
-    using Base = DataReaderBase;
+    using Base = DataReader;
 
     DateReaderTest1DateReader(const Statement* statement)
         : Base( statement )

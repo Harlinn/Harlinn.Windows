@@ -21,6 +21,7 @@
 #include <HCCGuid.h>
 #include <HCCDateTime.h>
 #include <HCCString.h>
+#include <HCCCurrency.h>
 
 namespace Harlinn::ODBC
 {
@@ -254,7 +255,7 @@ namespace Harlinn::ODBC
         HODBC_EXPORT void ThrowExceptionNoDiagnostic( SQLRETURN sqlReturn, ODBC::HandleType handleType, SQLHANDLE sqlHandle, const wchar_t* function, const wchar_t* file, int line );
         HODBC_EXPORT void ThrowExceptionNoDiagnostic( SQLRETURN sqlReturn, ODBC::HandleType handleType, SQLHANDLE sqlHandle );
 
-        Result GetDiagnosticFieldW( ODBC::HandleType handleType, SQLHANDLE handle,
+        inline Result GetDiagnosticFieldW( ODBC::HandleType handleType, SQLHANDLE handle,
             SQLSMALLINT recordNumber,
             SQLSMALLINT diagnosticFieldId,
             SQLPOINTER  diagnosticInfo,
@@ -268,7 +269,7 @@ namespace Harlinn::ODBC
             }
             return static_cast<Result>( rc );
         }
-        Result GetDiagnosticFieldA( ODBC::HandleType handleType, SQLHANDLE handle,
+        inline Result GetDiagnosticFieldA( ODBC::HandleType handleType, SQLHANDLE handle,
             SQLSMALLINT recordNumber,
             SQLSMALLINT diagnosticFieldId,
             SQLPOINTER  diagnosticInfo,
@@ -283,7 +284,7 @@ namespace Harlinn::ODBC
             return static_cast<Result>( rc );
         }
 
-        Result GetDiagnosticRecord( ODBC::HandleType handleType, SQLHANDLE handle, SQLSMALLINT recordNumber, SQLWCHAR* sqlState, SQLINTEGER* nativeError, SQLWCHAR* message, SQLSMALLINT messageMaxLength, SQLSMALLINT* messageActualLength )
+        inline Result GetDiagnosticRecord( ODBC::HandleType handleType, SQLHANDLE handle, SQLSMALLINT recordNumber, SQLWCHAR* sqlState, SQLINTEGER* nativeError, SQLWCHAR* message, SQLSMALLINT messageMaxLength, SQLSMALLINT* messageActualLength )
         {
             auto rc = SQLGetDiagRecW( static_cast<SQLSMALLINT>( handleType ), handle, recordNumber, sqlState, nativeError, message, messageMaxLength, messageActualLength );
             if ( rc < SQL_SUCCESS )
@@ -292,7 +293,7 @@ namespace Harlinn::ODBC
             }
             return static_cast<Result>( rc );
         }
-        Result GetDiagnosticRecord( ODBC::HandleType handleType, SQLHANDLE handle, SQLSMALLINT recordNumber, SQLCHAR* sqlState, SQLINTEGER* nativeError, SQLCHAR* message, SQLSMALLINT messageMaxLength, SQLSMALLINT* messageActualLength )
+        inline Result GetDiagnosticRecord( ODBC::HandleType handleType, SQLHANDLE handle, SQLSMALLINT recordNumber, SQLCHAR* sqlState, SQLINTEGER* nativeError, SQLCHAR* message, SQLSMALLINT messageMaxLength, SQLSMALLINT* messageActualLength )
         {
             auto rc = SQLGetDiagRecA( static_cast<SQLSMALLINT>( handleType ), handle, recordNumber, sqlState, nativeError, message, messageMaxLength, messageActualLength );
             if ( rc < SQL_SUCCESS )
@@ -464,6 +465,38 @@ namespace Harlinn::ODBC
 
 
     };
+
+    struct TimestampOffset
+    {
+        SQLSMALLINT year = 0;
+        SQLUSMALLINT month = 0;
+        SQLUSMALLINT day = 0;
+        SQLUSMALLINT hour = 0;
+        SQLUSMALLINT minute = 0;
+        SQLUSMALLINT second = 0;
+        SQLUINTEGER fraction = 0;
+        SQLSMALLINT timezoneHour = 0;
+        SQLSMALLINT timezoneMinute = 0;
+    };
+
+
+    class Numeric : public SQL_NUMERIC_STRUCT
+    {
+    public:
+        using Base = SQL_NUMERIC_STRUCT;
+
+        Numeric( )
+            : Base{}
+        {
+        }
+    };
+
+    struct Money
+    {
+        LONG moneyHigh = 0;
+        ULONG moneyLow = 0;
+    };
+
 
 
 
@@ -846,7 +879,7 @@ namespace Harlinn::ODBC
         {
             return BindColumn( columnNumber, NativeType::TimeStamp, targetAddress, sizeof( ODBC::TimeStamp ), nullIndicatorOrActualLength );
         }
-
+    public:
         [[nodiscard]] 
         std::optional<bool> GetNullableBoolean( SQLUSMALLINT columnNumber ) const
         {
@@ -855,7 +888,7 @@ namespace Harlinn::ODBC
             GetData( columnNumber, NativeType::Boolean, &value, sizeof( value ), &indicator );
             if ( indicator == SQL_NULL_DATA )
             {
-                return std::optional<bool>( );
+                return {};
             }
             return value;
         }
@@ -867,7 +900,7 @@ namespace Harlinn::ODBC
             GetData( columnNumber, NativeType::Byte, &value, sizeof( value ), &indicator );
             if ( indicator == SQL_NULL_DATA )
             {
-                return std::optional<Byte>( );
+                return {};
             }
             return value;
         }
@@ -880,7 +913,7 @@ namespace Harlinn::ODBC
             GetData( columnNumber, NativeType::SByte, &value, sizeof( value ), &indicator );
             if ( indicator == SQL_NULL_DATA )
             {
-                return std::optional<SByte>( );
+                return {};
             }
             return value;
         }
@@ -893,7 +926,7 @@ namespace Harlinn::ODBC
             GetData( columnNumber, NativeType::Int16, &value, sizeof( value ), &indicator );
             if ( indicator == SQL_NULL_DATA )
             {
-                return std::optional<Int16>( );
+                return {};
             }
             return value;
         }
@@ -906,7 +939,7 @@ namespace Harlinn::ODBC
             GetData( columnNumber, NativeType::UInt16, &value, sizeof( value ), &indicator );
             if ( indicator == SQL_NULL_DATA )
             {
-                return std::optional<UInt16>( );
+                return {};
             }
             return value;
         }
@@ -919,7 +952,7 @@ namespace Harlinn::ODBC
             GetData( columnNumber, NativeType::Int32, &value, sizeof( value ), &indicator );
             if ( indicator == SQL_NULL_DATA )
             {
-                return std::optional<Int32>( );
+                return {};
             }
             return value;
         }
@@ -932,7 +965,7 @@ namespace Harlinn::ODBC
             GetData( columnNumber, NativeType::UInt32, &value, sizeof( value ), &indicator );
             if ( indicator == SQL_NULL_DATA )
             {
-                return std::optional<UInt32>( );
+                return {};
             }
             return value;
         }
@@ -945,7 +978,7 @@ namespace Harlinn::ODBC
             GetData( columnNumber, NativeType::Int64, &value, sizeof( value ), &indicator );
             if ( indicator == SQL_NULL_DATA )
             {
-                return std::optional<Int64>( );
+                return {};
             }
             return value;
         }
@@ -958,10 +991,30 @@ namespace Harlinn::ODBC
             GetData( columnNumber, NativeType::UInt64, &value, sizeof( value ), &indicator );
             if ( indicator == SQL_NULL_DATA )
             {
-                return std::optional<UInt64>( );
+                return {};
             }
             return value;
         }
+
+        [[nodiscard]]
+        std::optional<Numeric> GetNullableNumeric( SQLUSMALLINT columnNumber ) const
+        {
+            Numeric value;
+            SQLLEN indicator;
+            GetData( columnNumber, NativeType::Numeric, &value, sizeof( value ), &indicator );
+            if ( indicator == SQL_NULL_DATA )
+            {
+                return {};
+            }
+            return value;
+        }
+
+        [[nodiscard]]
+        std::optional<Numeric> GetNullableDecimal( SQLUSMALLINT columnNumber ) const
+        {
+            return GetNullableNumeric( columnNumber );
+        }
+
 
         [[nodiscard]]
         std::optional<float> GetNullableSingle( SQLUSMALLINT columnNumber ) const
@@ -971,7 +1024,7 @@ namespace Harlinn::ODBC
             GetData( columnNumber, NativeType::Single, &value, sizeof( value ), &indicator );
             if ( indicator == SQL_NULL_DATA )
             {
-                return std::optional<float>( );
+                return {};
             }
             return value;
         }
@@ -984,9 +1037,29 @@ namespace Harlinn::ODBC
             GetData( columnNumber, NativeType::Double, &value, sizeof( value ), &indicator );
             if ( indicator == SQL_NULL_DATA )
             {
-                return std::optional<double>( );
+                return {};
             }
             return value;
+        }
+
+        [[nodiscard]]
+        std::optional<Currency> GetNullableCurrency( SQLUSMALLINT columnNumber ) const
+        {
+            Money value;
+            SQLLEN indicator;
+            GetData( columnNumber, NativeType::Binary, &value, sizeof( value ), &indicator );
+            if ( indicator == SQL_NULL_DATA )
+            {
+                return {};
+            }
+            if ( indicator == 8 )
+            {
+                return std::bit_cast< Currency >( (static_cast<Int64>(value.moneyHigh) << 32) + static_cast< Int64 >( value.moneyLow ) );
+            }
+            else
+            {
+                return std::bit_cast< Currency >( static_cast< Int64 >( value.moneyHigh ) );
+            }
         }
 
         [[nodiscard]]
@@ -997,9 +1070,22 @@ namespace Harlinn::ODBC
             GetData( columnNumber, NativeType::TypeTimeStamp, &value, sizeof( value ), &indicator );
             if ( indicator == SQL_NULL_DATA )
             {
-                return std::optional<DateTime>( );
+                return {};
             }
             return value.ToDateTime();
+        }
+
+        [[nodiscard]]
+        std::optional<TimestampOffset> GetNullableTimestampOffset( SQLUSMALLINT columnNumber ) const
+        {
+            TimestampOffset value;
+            SQLLEN indicator;
+            GetData( columnNumber, NativeType::Binary, &value, sizeof( value ), &indicator );
+            if ( indicator == SQL_NULL_DATA )
+            {
+                return {};
+            }
+            return value;
         }
 
         [[nodiscard]]
@@ -1010,7 +1096,7 @@ namespace Harlinn::ODBC
             GetData( columnNumber, NativeType::Date, &value, sizeof( value ), &indicator );
             if ( indicator == SQL_NULL_DATA )
             {
-                return std::optional<Date>( );
+                return {};
             }
             return value;
         }
@@ -1023,7 +1109,7 @@ namespace Harlinn::ODBC
             GetData( columnNumber, NativeType::Time, &value, sizeof( value ), &indicator );
             if ( indicator == SQL_NULL_DATA )
             {
-                return std::optional<Time>( );
+                return {};
             }
             return value;
         }
@@ -1036,7 +1122,7 @@ namespace Harlinn::ODBC
             GetData( columnNumber, NativeType::IntervalDayToSecond, &value, sizeof( value ), &indicator );
             if ( indicator == SQL_NULL_DATA )
             {
-                return std::optional<TimeSpan>( );
+                return {};
             }
             return value.ToTimeSpan();
         }
@@ -1049,11 +1135,11 @@ namespace Harlinn::ODBC
             GetData( columnNumber, NativeType::WideChar, &buffer, sizeof( buffer ), &indicator );
             if ( indicator == SQL_NULL_DATA )
             {
-                return std::optional<WideString>( );
+                return {};
             }
             if ( indicator == 0 )
             {
-                return std::optional<WideString>( WideString( ) );
+                return WideString( );
             }
             if ( indicator != SQL_NO_TOTAL )
             {
@@ -1086,11 +1172,11 @@ namespace Harlinn::ODBC
             GetData( columnNumber, NativeType::Char, &buffer, sizeof( buffer ), &indicator );
             if ( indicator == SQL_NULL_DATA )
             {
-                return std::optional<AnsiString>( );
+                return {};
             }
             if ( indicator == 0 )
             {
-                return std::optional<AnsiString>( AnsiString( ) );
+                return AnsiString( );
             }
             if ( indicator != SQL_NO_TOTAL )
             {
@@ -1123,11 +1209,11 @@ namespace Harlinn::ODBC
             GetData( columnNumber, NativeType::Binary, &buffer, sizeof( buffer ), &indicator );
             if ( indicator == SQL_NULL_DATA )
             {
-                return std::optional<std::vector<Byte>>( );
+                return {};
             }
             if ( indicator == 0 )
             {
-                return std::optional<std::vector<Byte>>( std::vector<Byte>( ) );
+                return std::vector<Byte>( );
             }
             if ( indicator != SQL_NO_TOTAL )
             {
@@ -1161,7 +1247,7 @@ namespace Harlinn::ODBC
             GetData( columnNumber, NativeType::Guid, &value, sizeof( value ), &indicator );
             if ( indicator == SQL_NULL_DATA )
             {
-                return std::optional<Guid>( );
+                return {};
             }
             return value;
         }
@@ -1283,6 +1369,26 @@ namespace Harlinn::ODBC
         }
 
         [[nodiscard]]
+        Numeric GetNumeric( SQLUSMALLINT columnNumber ) const
+        {
+            Numeric value;
+            SQLLEN indicator;
+            GetData( columnNumber, NativeType::Numeric, &value, sizeof( value ), &indicator );
+            if ( indicator == SQL_NULL_DATA )
+            {
+                Internal::ThrowColumnNullException( columnNumber, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
+            }
+            return value;
+        }
+
+        [[nodiscard]]
+        Numeric GetDecimal( SQLUSMALLINT columnNumber ) const
+        {
+            return GetNumeric( columnNumber );
+        }
+
+
+        [[nodiscard]]
         float GetSingle( SQLUSMALLINT columnNumber ) const
         {
             float value;
@@ -1307,6 +1413,27 @@ namespace Harlinn::ODBC
             }
             return value;
         }
+    
+        [[nodiscard]]
+        Currency GetCurrency( SQLUSMALLINT columnNumber ) const
+        {
+            Money value;
+            SQLLEN indicator;
+            GetData( columnNumber, NativeType::Binary, &value, sizeof( value ), &indicator );
+            if ( indicator == SQL_NULL_DATA )
+            {
+                Internal::ThrowColumnNullException( columnNumber, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
+            }
+            if ( indicator == 8 )
+            {
+                return std::bit_cast< Currency >( ( static_cast< Int64 >( value.moneyHigh ) << 32 ) + static_cast< Int64 >( value.moneyLow ) );
+            }
+            else
+            {
+                return std::bit_cast< Currency >( static_cast< Int64 >( value.moneyHigh ) );
+            }
+        }
+
 
         [[nodiscard]]
         DateTime GetDateTime( SQLUSMALLINT columnNumber ) const
@@ -1320,6 +1447,21 @@ namespace Harlinn::ODBC
             }
             return value.ToDateTime( );
         }
+
+        [[nodiscard]]
+        TimestampOffset GetTimestampOffset( SQLUSMALLINT columnNumber ) const
+        {
+            TimestampOffset value;
+            SQLLEN indicator;
+            GetData( columnNumber, NativeType::Binary, &value, sizeof( value ), &indicator );
+            if ( indicator == SQL_NULL_DATA )
+            {
+                Internal::ThrowColumnNullException( columnNumber, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
+            }
+            return value;
+        }
+
+
 
         [[nodiscard]]
         Date GetDate( SQLUSMALLINT columnNumber ) const
@@ -1821,7 +1963,7 @@ namespace Harlinn::ODBC
         }
 
 
-        template<typename ReaderType>
+        template<typename ReaderType = DataReader>
         requires std::is_base_of_v<DataReader, ReaderType>
             std::unique_ptr<ReaderType> ExecuteReader( ) const
         {
@@ -1829,7 +1971,7 @@ namespace Harlinn::ODBC
             Execute( );
             return result;
         }
-        template<typename ReaderType>
+        template<typename ReaderType = DataReader>
         requires std::is_base_of_v<DataReader, ReaderType>
             std::unique_ptr<ReaderType> ExecuteReader( const SQLWCHAR* statementText, SQLINTEGER statementTextLength = SQL_NTS ) const
         {
@@ -1837,7 +1979,7 @@ namespace Harlinn::ODBC
             ExecDirect( statementText, statementTextLength );
             return result;
         }
-        template<typename ReaderType>
+        template<typename ReaderType = DataReader>
         requires std::is_base_of_v<DataReader, ReaderType>
             std::unique_ptr<ReaderType> ExecuteReader( const SQLCHAR* statementText, SQLINTEGER statementTextLength = SQL_NTS ) const
         {
@@ -2563,7 +2705,8 @@ namespace Harlinn::ODBC
                         break;
                     }
                 }
-                return result;
+                return result;                                                                                                            
+
             }
         }
 
