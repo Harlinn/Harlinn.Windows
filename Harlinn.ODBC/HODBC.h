@@ -514,17 +514,18 @@ namespace Harlinn::ODBC
     {
     public:
         static constexpr ODBC::HandleType HandleType = handleType;
+        
     private:
-        SQLHANDLE sqlHandle_;
+        SQLHANDLE sqlHandle_ = SQL_NULL_HANDLE;
+        bool destructorClosesHandle_ = true;
     public:
         constexpr SqlHandle() noexcept
-            : sqlHandle_( SQL_NULL_HANDLE )
         { 
 
         }
     protected:
-        constexpr SqlHandle( SQLHANDLE sqlHandle ) noexcept
-            : sqlHandle_( sqlHandle )
+        constexpr SqlHandle( SQLHANDLE sqlHandle, bool destructorClosesHandle ) noexcept
+            : sqlHandle_( sqlHandle ), destructorClosesHandle_( destructorClosesHandle )
         {
 
         }
@@ -532,9 +533,18 @@ namespace Harlinn::ODBC
 
         SqlHandle( const SqlHandle& other ) = delete;
         constexpr SqlHandle( SqlHandle&& other ) noexcept
-            : sqlHandle_( other.sqlHandle_ )
+            : sqlHandle_( other.sqlHandle_ ), destructorClosesHandle_( other.destructorClosesHandle_ )
         {
             other.sqlHandle_ = nullptr;
+            other.destructorClosesHandle_ = false;
+        }
+
+        ~SqlHandle( )
+        {
+            if ( destructorClosesHandle_ )
+            {
+                Close( );
+            }
         }
 
 
@@ -542,6 +552,7 @@ namespace Harlinn::ODBC
         constexpr SqlHandle& operator = ( SqlHandle&& other ) noexcept
         {
             std::swap( sqlHandle_, other.sqlHandle_ );
+            std::swap( destructorClosesHandle_, other.destructorClosesHandle_ );
             return *this;
         }
 
@@ -621,13 +632,12 @@ namespace Harlinn::ODBC
     public:
         using Base = SqlHandle<ODBC::HandleType::Descriptor>;
 
-        Descriptor( )
-            : Base( )
+        constexpr Descriptor( )
         {
         }
     private:
-        Descriptor( SQLHANDLE sqlHandle )
-            : Base( sqlHandle )
+        constexpr explicit Descriptor( SQLHANDLE sqlHandle, bool destructorClosesHandle = true )
+            : Base( sqlHandle, destructorClosesHandle )
         {
         }
     public:
@@ -1088,12 +1098,11 @@ namespace Harlinn::ODBC
         using Base = SqlHandle<ODBC::HandleType::Statement>;
 
         Statement( )
-            : Base( )
         {
         }
     private:
-        Statement( SQLHANDLE sqlHandle )
-            : Base( sqlHandle )
+        constexpr explicit Statement( SQLHANDLE sqlHandle, bool destructorClosesHandle = true )
+            : Base( sqlHandle, destructorClosesHandle )
         {
         }
     public:
@@ -3052,12 +3061,11 @@ namespace Harlinn::ODBC
         using Base = SqlHandle<ODBC::HandleType::Connection>;
 
         constexpr Connection( ) noexcept
-            : Base( )
         {
         }
     private:
-        constexpr Connection( SQLHANDLE sqlHandle ) noexcept
-            : Base( sqlHandle )
+        constexpr explicit Connection( SQLHANDLE sqlHandle, bool destructorClosesHandle = true ) noexcept
+            : Base( sqlHandle, destructorClosesHandle )
         {
         }
     public:
@@ -3409,12 +3417,11 @@ namespace Harlinn::ODBC
         using Base = SqlHandle<ODBC::HandleType::Environment>;
 
         constexpr Environment( ) noexcept
-            : Base( )
         {
         }
     private:
-        constexpr Environment( SQLHANDLE sqlHandle ) noexcept
-            : Base( sqlHandle )
+        constexpr explicit Environment( SQLHANDLE sqlHandle, bool destructorClosesHandle = true ) noexcept
+            : Base( sqlHandle, destructorClosesHandle )
         {
         }
     public:
