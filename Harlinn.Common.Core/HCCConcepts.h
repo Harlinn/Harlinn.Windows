@@ -108,7 +108,24 @@ namespace Harlinn::Common::Core
         { v.Release( ) } ->std::convertible_to<UInt32>;
     };
 
+
+    template<typename T>
+    concept SimpleStringViewLike = requires ( T t1 )
+    {
+        { t1[ 0 ] } ->std::convertible_to<typename T::value_type>;
+        { t1.begin( ) } ->std::same_as<typename T::iterator>;
+        { t1.end( ) } ->std::same_as<typename T::iterator>;
+        { t1.size( ) } ->std::same_as<typename T::size_type>;
+        { t1.data( ) } ->std::same_as<typename T::pointer>;
+    };
+
     
+    template<typename T>
+    concept SimpleWideStringViewLike = SimpleStringViewLike<T> && std::is_same_v<typename T::value_type, wchar_t>;
+
+    template<typename T>
+    concept SimpleAnsiStringViewLike = SimpleStringViewLike<T> && std::is_same_v<typename T::value_type, char>;
+
 
 }
 

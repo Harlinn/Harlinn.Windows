@@ -995,6 +995,32 @@ BOOST_AUTO_TEST_CASE( DateReaderGetBinaryTest1 )
     }
 }
 
+// --run_test=DataReaderTests/DateReaderGetNullableBinaryTest1
+BOOST_AUTO_TEST_CASE( DateReaderGetNullableBinaryTest1 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+    auto currentCatalog = connection.CurrentCatalog( );
+    bool areEqual = currentCatalog == DatabaseName;
+    BOOST_CHECK( areEqual );
+
+    auto statement = connection.CreateStatement( );
+    auto reader = statement.ExecuteReader( L"SELECT Id, BinaryValue FROM TestTable1" );
+    auto found = reader->Read( );
+    BOOST_CHECK( found );
+    if ( found )
+    {
+        auto nullableValue = reader->GetNullableBinary( 2 );
+        BOOST_CHECK( nullableValue.has_value( ) );
+        BOOST_CHECK( nullableValue.value( )[ 0 ] == 0x0F );
+        BOOST_CHECK( nullableValue.value( )[ 1 ] == 0x0F );
+        BOOST_CHECK( nullableValue.value( )[ 2 ] == 0x0F );
+        BOOST_CHECK( nullableValue.value()[ 3 ] == 0x0F );
+    }
+}
+
+
 
 // --run_test=DataReaderTests/DateReaderGetBinaryTest2
 BOOST_AUTO_TEST_CASE( DateReaderGetBinaryTest2 )
@@ -1024,6 +1050,36 @@ BOOST_AUTO_TEST_CASE( DateReaderGetBinaryTest2 )
     }
 }
 
+// --run_test=DataReaderTests/DateReaderGetNullableBinaryTest2
+BOOST_AUTO_TEST_CASE( DateReaderGetNullableBinaryTest2 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+    auto currentCatalog = connection.CurrentCatalog( );
+    bool areEqual = currentCatalog == DatabaseName;
+    BOOST_CHECK( areEqual );
+
+    auto statement = connection.CreateStatement( );
+    auto reader = statement.ExecuteReader( L"SELECT Id, VarBinaryValue FROM TestTable1" );
+    auto found = reader->Read( );
+    BOOST_CHECK( found );
+    if ( found )
+    {
+        auto nullableValue = reader->GetNullableBinary( 2 );
+        BOOST_CHECK( nullableValue.has_value( ) );
+        BOOST_CHECK( nullableValue.value( )[ 0 ] == 0x0F );
+        BOOST_CHECK( nullableValue.value( )[ 1 ] == 0xFF );
+        BOOST_CHECK( nullableValue.value( )[ 2 ] == 0xFF );
+        BOOST_CHECK( nullableValue.value( )[ 3 ] == 0xFF );
+        BOOST_CHECK( nullableValue.value( )[ 4 ] == 0x0F );
+        BOOST_CHECK( nullableValue.value( )[ 5 ] == 0xFF );
+        BOOST_CHECK( nullableValue.value( )[ 6 ] == 0xFF );
+        BOOST_CHECK( nullableValue.value()[ 7 ] == 0xFF );
+    }
+}
+
+
 // --run_test=DataReaderTests/DateReaderGetWideStringTest1
 BOOST_AUTO_TEST_CASE( DateReaderGetWideStringTest1 )
 {
@@ -1043,6 +1099,29 @@ BOOST_AUTO_TEST_CASE( DateReaderGetWideStringTest1 )
         WideString expected( L"abcd" );
         auto value = reader->GetWideString( 2 );
         BOOST_CHECK( value == expected );
+    }
+}
+
+// --run_test=DataReaderTests/DateReaderGetNullableWideStringTest1
+BOOST_AUTO_TEST_CASE( DateReaderGetNullableWideStringTest1 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+    auto currentCatalog = connection.CurrentCatalog( );
+    bool areEqual = currentCatalog == DatabaseName;
+    BOOST_CHECK( areEqual );
+
+    auto statement = connection.CreateStatement( );
+    auto reader = statement.ExecuteReader( L"SELECT Id, CharValue FROM TestTable1" );
+    auto found = reader->Read( );
+    BOOST_CHECK( found );
+    if ( found )
+    {
+        WideString expected( L"abcd" );
+        auto nullableValue = reader->GetNullableWideString( 2 );
+        BOOST_CHECK( nullableValue.has_value( ) );
+        BOOST_CHECK( nullableValue.value() == expected );
     }
 }
 
@@ -1069,6 +1148,32 @@ BOOST_AUTO_TEST_CASE( DateReaderGetWideStringTest2 )
     }
 }
 
+
+// --run_test=DataReaderTests/DateReaderGetNullableWideStringTest2
+BOOST_AUTO_TEST_CASE( DateReaderGetNullableWideStringTest2 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+    auto currentCatalog = connection.CurrentCatalog( );
+    bool areEqual = currentCatalog == DatabaseName;
+    BOOST_CHECK( areEqual );
+
+    auto statement = connection.CreateStatement( );
+    auto reader = statement.ExecuteReader( L"SELECT Id, VarCharValue FROM TestTable1" );
+    auto found = reader->Read( );
+    BOOST_CHECK( found );
+    if ( found )
+    {
+        WideString expected( L"abcdef" );
+        auto nullableValue = reader->GetNullableWideString( 2 );
+        BOOST_CHECK( nullableValue.has_value( ) );
+        BOOST_CHECK( nullableValue.value( ) == expected );
+    }
+}
+
+
+
 // --run_test=DataReaderTests/DateReaderGetWideStringTest3
 BOOST_AUTO_TEST_CASE( DateReaderGetWideStringTest3 )
 {
@@ -1091,6 +1196,30 @@ BOOST_AUTO_TEST_CASE( DateReaderGetWideStringTest3 )
     }
 }
 
+// --run_test=DataReaderTests/DateReaderGetNullableWideStringTest3
+BOOST_AUTO_TEST_CASE( DateReaderGetNullableWideStringTest3 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+    auto currentCatalog = connection.CurrentCatalog( );
+    bool areEqual = currentCatalog == DatabaseName;
+    BOOST_CHECK( areEqual );
+
+    auto statement = connection.CreateStatement( );
+    auto reader = statement.ExecuteReader( L"SELECT Id, NCharValue FROM TestTable1" );
+    auto found = reader->Read( );
+    BOOST_CHECK( found );
+    if ( found )
+    {
+        WideString expected( L"abcd" );
+        auto nullableValue = reader->GetNullableWideString( 2 );
+        BOOST_CHECK( nullableValue.has_value( ) );
+        BOOST_CHECK( nullableValue.value( ) == expected );
+    }
+}
+
+
 // --run_test=DataReaderTests/DateReaderGetWideStringTest4
 BOOST_AUTO_TEST_CASE( DateReaderGetWideStringTest4 )
 {
@@ -1110,6 +1239,29 @@ BOOST_AUTO_TEST_CASE( DateReaderGetWideStringTest4 )
         WideString expected( L"abcdef" );
         auto value = reader->GetWideString( 2 );
         BOOST_CHECK( value == expected );
+    }
+}
+
+// --run_test=DataReaderTests/DateReaderGetNullableWideStringTest4
+BOOST_AUTO_TEST_CASE( DateReaderGetNullableWideStringTest4 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+    auto currentCatalog = connection.CurrentCatalog( );
+    bool areEqual = currentCatalog == DatabaseName;
+    BOOST_CHECK( areEqual );
+
+    auto statement = connection.CreateStatement( );
+    auto reader = statement.ExecuteReader( L"SELECT Id, NVarCharValue FROM TestTable1" );
+    auto found = reader->Read( );
+    BOOST_CHECK( found );
+    if ( found )
+    {
+        WideString expected( L"abcdef" );
+        auto nullableValue = reader->GetNullableWideString( 2 );
+        BOOST_CHECK( nullableValue.has_value( ) );
+        BOOST_CHECK( nullableValue.value( ) == expected );
     }
 }
 
@@ -1135,6 +1287,31 @@ BOOST_AUTO_TEST_CASE( DateReaderGetWideStringTest5 )
     }
 }
 
+// --run_test=DataReaderTests/DateReaderGetNullableWideStringTest5
+BOOST_AUTO_TEST_CASE( DateReaderGetNullableWideStringTest5 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+    auto currentCatalog = connection.CurrentCatalog( );
+    bool areEqual = currentCatalog == DatabaseName;
+    BOOST_CHECK( areEqual );
+
+    auto statement = connection.CreateStatement( );
+    auto reader = statement.ExecuteReader( L"SELECT Id, TextValue FROM TestTable1" );
+    auto found = reader->Read( );
+    BOOST_CHECK( found );
+    if ( found )
+    {
+        WideString expected( L"Text" );
+        auto nullableValue = reader->GetNullableWideString( 2 );
+        BOOST_CHECK( nullableValue.has_value( ) );
+        BOOST_CHECK( nullableValue.value( ) == expected );
+    }
+}
+
+
+
 // --run_test=DataReaderTests/DateReaderGetWideStringTest6
 BOOST_AUTO_TEST_CASE( DateReaderGetWideStringTest6 )
 {
@@ -1154,6 +1331,30 @@ BOOST_AUTO_TEST_CASE( DateReaderGetWideStringTest6 )
         WideString expected( L"NText" );
         auto value = reader->GetWideString( 2 );
         BOOST_CHECK( value == expected );
+    }
+}
+
+
+// --run_test=DataReaderTests/DateReaderGetNullableWideStringTest6
+BOOST_AUTO_TEST_CASE( DateReaderGetNullableWideStringTest6 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+    auto currentCatalog = connection.CurrentCatalog( );
+    bool areEqual = currentCatalog == DatabaseName;
+    BOOST_CHECK( areEqual );
+
+    auto statement = connection.CreateStatement( );
+    auto reader = statement.ExecuteReader( L"SELECT Id, NTextValue FROM TestTable1" );
+    auto found = reader->Read( );
+    BOOST_CHECK( found );
+    if ( found )
+    {
+        WideString expected( L"NText" );
+        auto nullableValue = reader->GetNullableWideString( 2 );
+        BOOST_CHECK( nullableValue.has_value( ) );
+        BOOST_CHECK( nullableValue.value( ) == expected );
     }
 }
 

@@ -122,7 +122,7 @@
 #define USE_WIN32_FILEIO 1
 
 /* Support WEBP compression */
-#define WEBP_SUPPORT 1
+//#define WEBP_SUPPORT 1
 
 /* Support ZSTD compression */
 #define ZSTD_SUPPORT 1

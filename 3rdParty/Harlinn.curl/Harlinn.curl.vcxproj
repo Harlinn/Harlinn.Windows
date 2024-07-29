@@ -91,7 +91,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>BUILDING_LIBCURL=1;USE_WINDOWS_SSPI=1;USE_SCHANNEL=1;USE_IPV6=1;WIN32;_DEBUG;HARLINNCURL_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>BUILDING_LIBCURL=1;USE_WINDOWS_SSPI=1;USE_SCHANNEL=1;USE_IPV6=1;CARES_NO_DEPRECATED=1;WIN32;_DEBUG;HARLINNCURL_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -114,7 +114,7 @@
       <WarningLevel>Level3</WarningLevel>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>BUILDING_LIBCURL=1;USE_WINDOWS_SSPI=1;USE_SCHANNEL=1;USE_IPV6=1;WIN32;NDEBUG;HARLINNCURL_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>BUILDING_LIBCURL=1;USE_WINDOWS_SSPI=1;USE_SCHANNEL=1;USE_IPV6=1;CARES_NO_DEPRECATED=1;WIN32;NDEBUG;HARLINNCURL_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -139,7 +139,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>BUILDING_LIBCURL=1;USE_WINDOWS_SSPI=1;USE_SCHANNEL=1;USE_IPV6=1;_DEBUG;HARLINNCURL_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>BUILDING_LIBCURL=1;USE_WINDOWS_SSPI=1;USE_SCHANNEL=1;USE_IPV6=1;CARES_NO_DEPRECATED=1;_DEBUG;HARLINNCURL_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -163,7 +163,7 @@
       <WarningLevel>Level3</WarningLevel>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>BUILDING_LIBCURL=1;USE_WINDOWS_SSPI=1;USE_SCHANNEL=1;USE_IPV6=1;NDEBUG;HARLINNCURL_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>BUILDING_LIBCURL=1;USE_WINDOWS_SSPI=1;USE_SCHANNEL=1;USE_IPV6=1;CARES_NO_DEPRECATED=1;NDEBUG;HARLINNCURL_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
