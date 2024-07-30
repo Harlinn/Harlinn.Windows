@@ -32,21 +32,21 @@ BOOST_FIXTURE_TEST_SUITE( EnvironmentTests, LocalFixture )
 BOOST_AUTO_TEST_CASE( ConstructorTest1 )
 {
     ODBC::Environment environment;
-    BOOST_CHECK( environment.Handle( ) == nullptr );
+    BOOST_CHECK( environment.Handle( ) == ODBC::Environment::InvalidHandle );
 }
 
 // --run_test=EnvironmentTests/ConstructorTest2
 BOOST_AUTO_TEST_CASE( ConstructorTest2 )
 {
     ODBC::Environment environment = ODBC::Environment::Create( );
-    BOOST_CHECK( environment.Handle( ) != nullptr );
+    BOOST_CHECK( environment.Handle( ) != ODBC::Environment::InvalidHandle );
 }
 
 // --run_test=EnvironmentTests/DriversTest1
 BOOST_AUTO_TEST_CASE( DriversTest1 )
 {
     ODBC::Environment environment = ODBC::Environment::Create( );
-    BOOST_CHECK( environment.Handle( ) != nullptr );
+    BOOST_CHECK( environment.Handle( ) != ODBC::Environment::InvalidHandle );
 
     auto drivers = environment.Drivers( Fetch::First );
     BOOST_CHECK( drivers.size( ) > 0 );
@@ -56,7 +56,7 @@ BOOST_AUTO_TEST_CASE( DriversTest1 )
 BOOST_AUTO_TEST_CASE( DataSourcesTest1 )
 {
     ODBC::Environment environment = ODBC::Environment::Create( );
-    BOOST_CHECK( environment.Handle( ) != nullptr );
+    BOOST_CHECK( environment.Handle( ) != ODBC::Environment::InvalidHandle );
 
     auto dataSources = environment.DataSources( Fetch::First );
     BOOST_CHECK( dataSources.size( ) > 0 );
@@ -66,10 +66,10 @@ BOOST_AUTO_TEST_CASE( DataSourcesTest1 )
 BOOST_AUTO_TEST_CASE( ConnectToDataSourceTest1 )
 {
     ODBC::Environment environment = ODBC::Environment::Create( );
-    BOOST_CHECK( environment.Handle( ) != nullptr );
+    BOOST_CHECK( environment.Handle( ) != ODBC::Environment::InvalidHandle );
 
     auto connection = environment.Connect( DataSource );
-    BOOST_CHECK( connection.Handle( ) != nullptr );
+    BOOST_CHECK( connection.Handle( ) != ODBC::Connection::InvalidHandle );
 
 }
 
@@ -77,10 +77,10 @@ BOOST_AUTO_TEST_CASE( ConnectToDataSourceTest1 )
 BOOST_AUTO_TEST_CASE( ConnectionGetFunctionsTest1 )
 {
     ODBC::Environment environment = ODBC::Environment::Create( );
-    BOOST_CHECK( environment.Handle( ) != nullptr );
+    BOOST_CHECK( environment.Handle( ) != ODBC::Environment::InvalidHandle );
 
     auto connection = environment.Connect( DataSource );
-    BOOST_CHECK( connection.Handle( ) != nullptr );
+    BOOST_CHECK( connection.Handle( ) != ODBC::Connection::InvalidHandle );
 
     SQLUSMALLINT supportedFunctions[SQL_API_ODBC3_ALL_FUNCTIONS_SIZE];
     connection.GetFunctions( SQL_API_ODBC3_ALL_FUNCTIONS, supportedFunctions );
@@ -95,10 +95,10 @@ BOOST_AUTO_TEST_CASE( ConnectionGetFunctionsTest1 )
 BOOST_AUTO_TEST_CASE( SetCurrentCatalogTest1 )
 {
     ODBC::Environment environment = ODBC::Environment::Create( );
-    BOOST_CHECK( environment.Handle( ) != nullptr );
+    BOOST_CHECK( environment.Handle( ) != ODBC::Environment::InvalidHandle );
 
     auto connection = environment.Connect( DataSource );
-    BOOST_CHECK( connection.Handle( ) != nullptr );
+    BOOST_CHECK( connection.Handle( ) != ODBC::Connection::InvalidHandle );
 
     auto rc = connection.SetCurrentCatalog( DatabaseName );
     BOOST_CHECK( rc >= Result::Success );

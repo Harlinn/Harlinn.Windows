@@ -514,9 +514,9 @@ namespace Harlinn::ODBC
     {
     public:
         static constexpr ODBC::HandleType HandleType = handleType;
-        
+        static constexpr SQLHANDLE InvalidHandle = ( SQLHANDLE )SQL_INVALID_HANDLE;
     private:
-        SQLHANDLE sqlHandle_ = SQL_NULL_HANDLE;
+        SQLHANDLE sqlHandle_ = InvalidHandle;
         bool destructorClosesHandle_ = true;
     public:
         constexpr SqlHandle() noexcept
@@ -580,11 +580,11 @@ namespace Harlinn::ODBC
 
         static SQLHANDLE AllocateHandle( SQLHANDLE inputHandle = SQL_NULL_HANDLE )
         {
-            SQLHANDLE result = SQL_NULL_HANDLE;
+            SQLHANDLE result = InvalidHandle;
             auto rc = SQLAllocHandle( static_cast<SQLSMALLINT>(HandleType), inputHandle, &result );
             if ( rc != SQL_SUCCESS )
             {
-                Internal::ThrowException( rc, HandleType, result, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
+                Internal::ThrowException( rc, HandleType, inputHandle, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
             return result;
         }
@@ -593,10 +593,22 @@ namespace Harlinn::ODBC
     public:
         void Close( ) noexcept
         {
-            if ( sqlHandle_ )
+            if ( sqlHandle_ != InvalidHandle )
             {
-                SQLFreeHandle( static_cast<SQLSMALLINT>( HandleType ), sqlHandle_ );
-                sqlHandle_ = SQL_NULL_HANDLE;
+                if constexpr ( HandleType == ODBC::HandleType::Connection )
+                {
+                    auto rc = SQLDisconnect( sqlHandle_ );
+                    if ( rc != SQL_SUCCESS )
+                    {
+                        Internal::ThrowException( rc, HandleType, sqlHandle_, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
+                    }
+                }
+                auto rc = SQLFreeHandle( static_cast<SQLSMALLINT>( HandleType ), sqlHandle_ );
+                if ( rc != SQL_SUCCESS )
+                {
+                    Internal::ThrowException( rc, HandleType, sqlHandle_, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
+                }
+                sqlHandle_ = InvalidHandle;
             }
         }
 
@@ -629,8 +641,11 @@ namespace Harlinn::ODBC
     /// </summary>
     class Descriptor : public SqlHandle<ODBC::HandleType::Descriptor>
     {
+        friend class Statement;
     public:
         using Base = SqlHandle<ODBC::HandleType::Descriptor>;
+
+        
 
         constexpr Descriptor( )
         {
@@ -2376,6 +2391,32 @@ namespace Harlinn::ODBC
 #pragma pop_macro("SQLSetStmtAttr")
 #endif
         }
+
+        Result SetApplicationParameterDescriptor( const Descriptor& applicationParameterDescriptor ) const
+        {
+            auto rc = SetAttributeW( SQL_ATTR_APP_PARAM_DESC, applicationParameterDescriptor.Handle(), 0 );
+            return rc;
+        }
+        Descriptor ApplicationParameterDescriptor( ) const
+        {
+            SQLHANDLE applicationParameterDescriptor = nullptr;
+            GetAttributeW( SQL_ATTR_APP_PARAM_DESC, &applicationParameterDescriptor, SQL_IS_POINTER, nullptr );
+            return Descriptor( applicationParameterDescriptor, false );
+        }
+
+        Result SetApplicationRowDescriptor( const Descriptor& applicationRowDescriptor ) const
+        {
+            auto rc = SetAttributeW( SQL_ATTR_APP_ROW_DESC, applicationRowDescriptor.Handle( ), 0 );
+            return rc;
+        }
+        Descriptor ApplicationRowDescriptor( ) const
+        {
+            SQLHANDLE applicationRowDescriptor = nullptr;
+            GetAttributeW( SQL_ATTR_APP_ROW_DESC, &applicationRowDescriptor, SQL_IS_POINTER, nullptr );
+            return Descriptor( applicationRowDescriptor, false );
+        }
+
+
 
 
         Result SetBindByColumn( ) const
