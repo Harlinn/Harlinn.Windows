@@ -971,6 +971,94 @@ BOOST_AUTO_TEST_CASE( DateReaderGetNullableTimeTest1 )
 }
 
 
+// --run_test=DataReaderTests/DateReaderGetGuidTest1
+BOOST_AUTO_TEST_CASE( DateReaderGetGuidTest1 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+    auto currentCatalog = connection.CurrentCatalog( );
+    bool areEqual = currentCatalog == DatabaseName;
+    BOOST_CHECK( areEqual );
+
+    auto statement = connection.CreateStatement( );
+    auto reader = statement.ExecuteReader( L"SELECT Id, UniqueidentifierValue FROM TestTable1" );
+    auto found = reader->Read( );
+    BOOST_CHECK( found );
+    if ( found )
+    {
+        Guid expected( L"{0E984725-C51C-4BF4-9960-E1C80E27ABA0}" );
+        auto value = reader->GetGuid( 2 );
+        BOOST_CHECK( value == expected );
+    }
+}
+
+// --run_test=DataReaderTests/DateReaderGetNullableGuidTest1
+BOOST_AUTO_TEST_CASE( DateReaderGetNullableGuidTest1 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+    auto currentCatalog = connection.CurrentCatalog( );
+    bool areEqual = currentCatalog == DatabaseName;
+    BOOST_CHECK( areEqual );
+
+    auto statement = connection.CreateStatement( );
+    auto reader = statement.ExecuteReader( L"SELECT Id, UniqueidentifierValue FROM TestTable1" );
+    auto found = reader->Read( );
+    BOOST_CHECK( found );
+    if ( found )
+    {
+        Guid expected( L"{0E984725-C51C-4BF4-9960-E1C80E27ABA0}" );
+        auto nullableValue = reader->GetNullableGuid( 2 );
+        BOOST_CHECK( nullableValue.has_value( ) );
+        BOOST_CHECK( nullableValue.value() == expected );
+    }
+}
+
+// --run_test=DataReaderTests/DateReaderGetRowVersionTest1
+BOOST_AUTO_TEST_CASE( DateReaderGetRowVersionTest1 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+    auto currentCatalog = connection.CurrentCatalog( );
+    bool areEqual = currentCatalog == DatabaseName;
+    BOOST_CHECK( areEqual );
+
+    auto statement = connection.CreateStatement( );
+    auto reader = statement.ExecuteReader( L"SELECT Id, RowVersionValue FROM TestTable1" );
+    auto found = reader->Read( );
+    BOOST_CHECK( found );
+    if ( found )
+    {
+        auto value = reader->GetRowVersion( 2 );
+    }
+}
+
+// --run_test=DataReaderTests/DateReaderGetNullableRowVersionTest1
+BOOST_AUTO_TEST_CASE( DateReaderGetNullableRowVersionTest1 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+    auto currentCatalog = connection.CurrentCatalog( );
+    bool areEqual = currentCatalog == DatabaseName;
+    BOOST_CHECK( areEqual );
+
+    auto statement = connection.CreateStatement( );
+    auto reader = statement.ExecuteReader( L"SELECT Id, RowVersionValue FROM TestTable1" );
+    auto found = reader->Read( );
+    BOOST_CHECK( found );
+    if ( found )
+    {
+        auto nullableValue = reader->GetNullableRowVersion( 2 );
+        BOOST_CHECK( nullableValue.has_value( ) );
+    }
+}
+
+
+
 // --run_test=DataReaderTests/DateReaderGetBinaryTest1
 BOOST_AUTO_TEST_CASE( DateReaderGetBinaryTest1 )
 {

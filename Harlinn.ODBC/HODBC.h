@@ -247,6 +247,42 @@ namespace Harlinn::ODBC
     };
 
 
+    struct SqlState
+    {
+        SQLWCHAR Value[ 6 ] = {};
+
+        SqlState( )
+        { }
+
+        explicit SqlState( const SQLWCHAR* sqlState )
+        {
+            wmemcpy( Value, sqlState, 5 );
+        }
+
+
+        size_t size( ) const
+        {
+            return 5;
+        }
+
+        const wchar_t* c_str( ) const
+        {
+            return Value;
+        }
+
+    };
+
+    struct DiagnosticRecord
+    {
+        size_t RecordNumber = 0; 
+        SQLWCHAR SqlState[ 6 ] = {};
+        SQLINTEGER NativeError = 0; 
+        SQLWCHAR Message[ SQL_MAX_MESSAGE_LENGTH ] = {};
+        SQLSMALLINT MessageLength = 0;
+    };
+
+
+
 
     namespace Internal
     {
@@ -304,8 +340,33 @@ namespace Harlinn::ODBC
             return static_cast<Result>( rc );
         }
 
-        
 
+        inline DiagnosticRecord GetDiagnosticRecord( ODBC::HandleType handleType, SQLHANDLE handle, SQLSMALLINT recordNumber )
+        {
+            DiagnosticRecord result;
+            GetDiagnosticRecord( handleType, handle, recordNumber, result.SqlState, &result.NativeError, result.Message, SQL_MAX_MESSAGE_LENGTH, &result.MessageLength );
+            result.RecordNumber = recordNumber;
+            return result;
+        }
+
+        inline SQLLEN GetDiagnosticRecordRecordCount( ODBC::HandleType handleType, SQLHANDLE handle )
+        {
+            SQLLEN result = 0;
+            SQLGetDiagFieldW( static_cast<SQLSMALLINT>(handleType), handle, 0, SQL_DIAG_NUMBER, &result, 0, 0 );
+            return result;
+        }
+
+        
+        inline SqlState GetSqlState( ODBC::HandleType handleType, SQLHANDLE handle, SQLSMALLINT recordNumber = 1)
+        {
+            auto recordCount = GetDiagnosticRecordRecordCount( handleType, handle );
+            if ( recordNumber > 0 && recordNumber <= recordCount )
+            {
+                DiagnosticRecord diagnosticRecord = GetDiagnosticRecord( handleType, handle, recordNumber );
+                return SqlState(diagnosticRecord.SqlState);
+            }
+            return {};
+        }
 
     }
 
@@ -502,7 +563,20 @@ namespace Harlinn::ODBC
         ULONG moneyLow = 0;
     };
 
+    struct RowVersion
+    {
+        Byte value[ 8 ] = {};
 
+        bool operator==( const RowVersion& other ) const
+        {
+            return *reinterpret_cast< const Int64* >( &value[ 0 ] ) == *reinterpret_cast< const Int64* >( &other.value[ 0 ] );
+        }
+
+        bool operator!=( const RowVersion& other ) const
+        {
+            return *reinterpret_cast< const Int64* >( &value[ 0 ] ) != *reinterpret_cast< const Int64* >( &other.value[ 0 ] );
+        }
+    };
 
 
     /// <summary>
@@ -987,6 +1061,9 @@ namespace Harlinn::ODBC
         inline std::optional<Guid> GetNullableGuid( SQLUSMALLINT columnNumber ) const;
 
         [[nodiscard]]
+        inline std::optional<RowVersion> GetNullableRowVersion( SQLUSMALLINT columnNumber ) const;
+
+        [[nodiscard]]
         inline bool GetBoolean( SQLUSMALLINT columnNumber ) const;
         [[nodiscard]]
         inline Byte GetByte( SQLUSMALLINT columnNumber ) const;
@@ -1054,6 +1131,9 @@ namespace Harlinn::ODBC
 
         [[nodiscard]]
         inline Guid GetGuid( SQLUSMALLINT columnNumber ) const;
+
+        [[nodiscard]]
+        inline RowVersion GetRowVersion( SQLUSMALLINT columnNumber ) const;
     };
 
 
@@ -1968,6 +2048,20 @@ namespace Harlinn::ODBC
         }
 
         [[nodiscard]]
+        std::optional<RowVersion> GetNullableRowVersion( SQLUSMALLINT columnNumber ) const
+        {
+            RowVersion value;
+            SQLLEN indicator;
+            GetData( columnNumber, NativeType::Binary, &value, sizeof( value ), &indicator );
+            if ( indicator == SQL_NULL_DATA )
+            {
+                return {};
+            }
+            return value;
+        }
+
+
+        [[nodiscard]]
         bool GetBoolean( SQLUSMALLINT columnNumber ) const
         {
             bool value;
@@ -2342,7 +2436,18 @@ namespace Harlinn::ODBC
             return value;
         }
 
-
+        [[nodiscard]]
+        RowVersion GetRowVersion( SQLUSMALLINT columnNumber ) const
+        {
+            RowVersion value;
+            SQLLEN indicator;
+            GetData( columnNumber, NativeType::Binary, &value, sizeof( value ), &indicator );
+            if ( indicator == SQL_NULL_DATA )
+            {
+                Internal::ThrowColumnNullException( columnNumber, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
+            }
+            return value;
+        }
 
 
 
@@ -2906,6 +3011,12 @@ namespace Harlinn::ODBC
     }
 
     [[nodiscard]]
+    inline std::optional<RowVersion> DataReader::GetNullableRowVersion( SQLUSMALLINT columnNumber ) const
+    {
+        return statement_->GetNullableRowVersion( columnNumber );
+    }
+
+    [[nodiscard]]
     inline bool DataReader::GetBoolean( SQLUSMALLINT columnNumber ) const
     {
         return statement_->GetBoolean( columnNumber );
@@ -3047,7 +3158,11 @@ namespace Harlinn::ODBC
         return statement_->GetGuid( columnNumber );
     }
 
-
+    [[nodiscard]]
+    inline RowVersion DataReader::GetRowVersion( SQLUSMALLINT columnNumber ) const
+    {
+        return statement_->GetRowVersion( columnNumber );
+    }
 
 
 
