@@ -40,10 +40,10 @@ public:
     TimeseriesValue2DateReader( const Statement* statement )
         : Base( statement )
     {
-        Bind( ID_ID, &id_ );
-        Bind( TS_ID, &ts_ );
-        Bind( FLAGS_ID, &flags_ );
-        Bind( VALUE_ID, &value_ );
+        BindInt64( ID_ID, &id_ );
+        BindInt64( TS_ID, &ts_ );
+        BindInt32( FLAGS_ID, &flags_ );
+        BindDouble( VALUE_ID, &value_ );
     }
 
     constexpr Int64 Id( ) const noexcept
@@ -113,10 +113,10 @@ int main( )
     Int32 flags;
     double value;
 
-    insertStatement.BindParameter( 1, ParameterDirection::Input, &id );
-    insertStatement.BindParameter( 2, ParameterDirection::Input, &timestamp );
-    insertStatement.BindParameter( 3, ParameterDirection::Input, &flags );
-    insertStatement.BindParameter( 4, ParameterDirection::Input, &value );
+    insertStatement.BindInt64Parameter( 1, ParameterDirection::Input, &id );
+    insertStatement.BindInt64Parameter( 2, ParameterDirection::Input, &timestamp );
+    insertStatement.BindInt32Parameter( 3, ParameterDirection::Input, &flags );
+    insertStatement.BindDoubleParameter( 4, ParameterDirection::Input, &value );
 
 
     Stopwatch stopwatch;
@@ -145,7 +145,7 @@ int main( )
 #endif
     auto selectStatement = connection.CreateStatement( );
     id = 3;
-    selectStatement.BindParameter( 1, ParameterDirection::Input, &id );
+    selectStatement.BindInt64Parameter( 1, ParameterDirection::Input, &id );
 #ifndef SELECT_ONLY
     stopwatch.Restart( );
 #else

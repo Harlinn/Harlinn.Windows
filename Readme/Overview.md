@@ -50,10 +50,10 @@ In particular, I've included many of the unit tests, that can be expected to com
 
 I've also created a fair number of tests for my own projects:
 
-- **Harlinn.Common.Core.Tests:** 3126
+- **Harlinn.Common.Core.Tests:** 3192
 - **Harlinn.Windows.Tests:** 271
 - **Harlinn.OCI.Tests:** 49
-- **Harlinn.ODBC.Tests:** 9
+- **Harlinn.ODBC.Tests:** 71
 - **Harlinn.Timeseries.Tests:** 10
 - **Harlinn.Julia.Tests:** 11
  

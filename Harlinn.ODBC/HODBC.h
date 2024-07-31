@@ -54,9 +54,14 @@ namespace Harlinn::ODBC
     };
 
     // test for not Result::InvalidHandle and not Result::Error
-    constexpr bool Succeeded( Result result )
+    inline constexpr bool Succeeded( Result result )
     {
         return SQL_SUCCEEDED( static_cast<SQLRETURN>( result ) );
+    }
+
+    inline constexpr bool Failed( Result result )
+    {
+        return Succeeded( result ) == false;
     }
 
 
@@ -259,6 +264,23 @@ namespace Harlinn::ODBC
             wmemcpy( Value, sqlState, 5 );
         }
 
+        bool operator == ( const SQLWCHAR* sqlState )
+        {
+            return wmemcmp( Value, sqlState, 5 ) == 0;
+        }
+        bool operator != ( const SQLWCHAR* sqlState )
+        {
+            return wmemcmp( Value, sqlState, 5 ) != 0;
+        }
+        bool operator == ( const SqlState& other )
+        {
+            return wmemcmp( Value, other.Value, 5 ) == 0;
+        }
+        bool operator != ( const SqlState& other )
+        {
+            return wmemcmp( Value, other.Value, 5 ) != 0;
+        }
+
 
         size_t size( ) const
         {
@@ -300,7 +322,7 @@ namespace Harlinn::ODBC
             SQLSMALLINT* diagnosticInfoActualLength )
         {
             auto rc = SQLGetDiagFieldW( static_cast<SQLSMALLINT>( handleType ), handle, recordNumber, diagnosticFieldId, diagnosticInfo, diagnosticInfoMaxLength, diagnosticInfoActualLength );
-            if ( rc < SQL_SUCCESS )
+            if ( Failed(static_cast<Result>(rc)) )
             {
                 ThrowExceptionNoDiagnostic( rc, handleType, handle, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
@@ -314,7 +336,7 @@ namespace Harlinn::ODBC
             SQLSMALLINT* diagnosticInfoActualLength )
         {
             auto rc = SQLGetDiagFieldA( static_cast<SQLSMALLINT>( handleType ), handle, recordNumber, diagnosticFieldId, diagnosticInfo, diagnosticInfoMaxLength, diagnosticInfoActualLength );
-            if ( rc < SQL_SUCCESS )
+            if ( Failed(static_cast<Result>(rc)) )
             {
                 ThrowExceptionNoDiagnostic( rc, handleType, handle, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
@@ -324,7 +346,7 @@ namespace Harlinn::ODBC
         inline Result GetDiagnosticRecord( ODBC::HandleType handleType, SQLHANDLE handle, SQLSMALLINT recordNumber, SQLWCHAR* sqlState, SQLINTEGER* nativeError, SQLWCHAR* message, SQLSMALLINT messageMaxLength, SQLSMALLINT* messageActualLength )
         {
             auto rc = SQLGetDiagRecW( static_cast<SQLSMALLINT>( handleType ), handle, recordNumber, sqlState, nativeError, message, messageMaxLength, messageActualLength );
-            if ( rc < SQL_SUCCESS )
+            if ( Failed(static_cast<Result>(rc)) )
             {
                 ThrowExceptionNoDiagnostic( rc, handleType, handle, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
@@ -333,7 +355,7 @@ namespace Harlinn::ODBC
         inline Result GetDiagnosticRecord( ODBC::HandleType handleType, SQLHANDLE handle, SQLSMALLINT recordNumber, SQLCHAR* sqlState, SQLINTEGER* nativeError, SQLCHAR* message, SQLSMALLINT messageMaxLength, SQLSMALLINT* messageActualLength )
         {
             auto rc = SQLGetDiagRecA( static_cast<SQLSMALLINT>( handleType ), handle, recordNumber, sqlState, nativeError, message, messageMaxLength, messageActualLength );
-            if ( rc < SQL_SUCCESS )
+            if ( Failed(static_cast<Result>(rc)) )
             {
                 ThrowExceptionNoDiagnostic( rc, handleType, handle, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
@@ -672,13 +694,17 @@ namespace Harlinn::ODBC
                 if constexpr ( HandleType == ODBC::HandleType::Connection )
                 {
                     auto rc = SQLDisconnect( sqlHandle_ );
-                    if ( rc != SQL_SUCCESS )
+                    if ( Failed( static_cast<Result>( rc ) ) )
                     {
-                        Internal::ThrowException( rc, HandleType, sqlHandle_, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
+                        auto sqlState = Internal::GetSqlState( HandleType, sqlHandle_ );
+                        if ( sqlState != L"08003" )
+                        {
+                            Internal::ThrowException( rc, HandleType, sqlHandle_, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
+                        }
                     }
                 }
                 auto rc = SQLFreeHandle( static_cast<SQLSMALLINT>( HandleType ), sqlHandle_ );
-                if ( rc != SQL_SUCCESS )
+                if ( Failed( static_cast< Result >( rc ) ) )
                 {
                     Internal::ThrowException( rc, HandleType, sqlHandle_, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
                 }
@@ -689,7 +715,7 @@ namespace Harlinn::ODBC
         Result Cancel( ) const
         {
             auto rc = SQLCancelHandle( static_cast<SQLSMALLINT>( HandleType ), sqlHandle_ );
-            if ( rc < SQL_SUCCESS )
+            if ( Failed(static_cast<Result>(rc)) )
             {
                 Internal::ThrowException( rc, HandleType, Handle( ), CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
@@ -699,7 +725,7 @@ namespace Harlinn::ODBC
         Result CompleteAsync( RETCODE* asyncRetCode ) const
         {
             auto rc = SQLCompleteAsync( static_cast<SQLSMALLINT>( HandleType ), sqlHandle_, asyncRetCode );
-            if ( rc < SQL_SUCCESS )
+            if ( Failed(static_cast<Result>(rc)) )
             {
                 Internal::ThrowException( rc, HandleType, Handle( ), CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
@@ -738,7 +764,7 @@ namespace Harlinn::ODBC
         Result CopyTo( const Descriptor& other ) const
         {
             auto rc = SQLCopyDesc( Handle( ), other.Handle( ) );
-            if ( rc < SQL_SUCCESS )
+            if ( Failed(static_cast<Result>(rc)) )
             {
                 ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
@@ -752,7 +778,7 @@ namespace Harlinn::ODBC
         Result CopyFrom( const Descriptor& other ) const
         {
             auto rc = SQLCopyDesc( other.Handle( ), Handle( ) );
-            if ( rc < SQL_SUCCESS )
+            if ( Failed(static_cast<Result>(rc)) )
             {
                 ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
@@ -771,7 +797,7 @@ namespace Harlinn::ODBC
         Result GetFieldW( SQLSMALLINT recordNumber, SQLSMALLINT fieldIdentifier, SQLPOINTER value, SQLINTEGER valueMaxLength, SQLINTEGER* valueActualLength ) const
         {
             auto rc = SQLGetDescFieldW( Handle( ), recordNumber, fieldIdentifier, value, valueMaxLength, valueActualLength );
-            if ( rc < SQL_SUCCESS )
+            if ( Failed(static_cast<Result>(rc)) )
             {
                 ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
@@ -780,7 +806,7 @@ namespace Harlinn::ODBC
         Result GetFieldA( SQLSMALLINT recordNumber, SQLSMALLINT fieldIdentifier, SQLPOINTER value, SQLINTEGER valueMaxLength, SQLINTEGER* valueActualLength ) const
         {
             auto rc = SQLGetDescFieldA( Handle( ), recordNumber, fieldIdentifier, value, valueMaxLength, valueActualLength );
-            if ( rc < SQL_SUCCESS )
+            if ( Failed(static_cast<Result>(rc)) )
             {
                 ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
@@ -790,7 +816,7 @@ namespace Harlinn::ODBC
         Result GetRecord( SQLSMALLINT recordNumber, SQLWCHAR* name, SQLSMALLINT nameMaxLength, SQLSMALLINT* nameActualLength, SQLSMALLINT* type, SQLSMALLINT* subType, SQLLEN* length, SQLSMALLINT* precision, SQLSMALLINT* scale, SQLSMALLINT* nullable ) const
         {
             auto rc = SQLGetDescRecW( Handle( ), recordNumber, name, nameMaxLength, nameActualLength, type, subType, length, precision, scale, nullable );
-            if ( rc < SQL_SUCCESS )
+            if ( Failed(static_cast<Result>(rc)) )
             {
                 ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
@@ -800,7 +826,7 @@ namespace Harlinn::ODBC
         Result GetRecord( SQLSMALLINT recordNumber, SQLCHAR* name, SQLSMALLINT nameMaxLength, SQLSMALLINT* nameActualLength, SQLSMALLINT* type, SQLSMALLINT* subType, SQLLEN* length, SQLSMALLINT* precision, SQLSMALLINT* scale, SQLSMALLINT* nullable ) const
         {
             auto rc = SQLGetDescRecA( Handle( ), recordNumber, name, nameMaxLength, nameActualLength, type, subType, length, precision, scale, nullable );
-            if ( rc < SQL_SUCCESS )
+            if ( Failed(static_cast<Result>(rc)) )
             {
                 ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
@@ -810,7 +836,7 @@ namespace Harlinn::ODBC
         Result SetFieldW( SQLSMALLINT recordNumber, SQLSMALLINT fieldIdentifier, SQLPOINTER value, SQLINTEGER valueLength ) const
         {
             auto rc = SQLSetDescFieldW( Handle( ), recordNumber, fieldIdentifier, value, valueLength );
-            if ( rc < SQL_SUCCESS )
+            if ( Failed(static_cast<Result>(rc)) )
             {
                 ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
@@ -824,7 +850,7 @@ namespace Harlinn::ODBC
 #define SQLSetDescFieldUndeffed
 #endif
             auto rc = SQLSetDescField( Handle( ), recordNumber, fieldIdentifier, value, valueLength );
-            if ( rc < SQL_SUCCESS )
+            if ( Failed(static_cast<Result>(rc)) )
             {
                 ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
@@ -837,66 +863,13 @@ namespace Harlinn::ODBC
         Result SetRecord( SQLSMALLINT recordNumber, SQLSMALLINT type, SQLSMALLINT subType, SQLLEN length, SQLSMALLINT precision, SQLSMALLINT scale, SQLPOINTER data, SQLLEN* dataLength, SQLLEN* indicator ) const
         {
             auto rc = SQLSetDescRec( Handle( ), recordNumber, type, subType, length, precision, scale, data, dataLength, indicator );
-            if ( rc < SQL_SUCCESS )
+            if ( Failed(static_cast<Result>(rc)) )
             {
                 ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
             return static_cast<Result>( rc );
         }
     };
-
-
-    class ColumnBase
-    {
-    protected:
-        SQLLEN nullIndicatorOrLength_;
-    public:
-        constexpr ColumnBase( SQLLEN nullIndicatorOrLength = SQL_NULL_DATA ) noexcept
-            : nullIndicatorOrLength_( nullIndicatorOrLength )
-        { }
-    };
-
-    template<typename ValueT, SQLSMALLINT targetType>
-    class ColumnBaseT : public ColumnBase
-    {
-    public:
-        using Base = ColumnBase;
-        using ValueType = ValueT;
-        static constexpr SQLSMALLINT TargetType = targetType;
-    private:
-        ValueType value_{};
-    public:
-        constexpr ColumnBaseT( ) noexcept
-            : Base( ), value_{}
-        {
-        }
-
-        constexpr ColumnBaseT( ValueType value ) noexcept
-            : Base( ), value_( value )
-        {
-        }
-
-        constexpr ColumnBaseT( ValueType value, SQLLEN nullIndicatorOrLength ) noexcept
-            : Base( nullIndicatorOrLength ), value_( value )
-        {
-        }
-
-    };
-
-
-    template<>
-    class ColumnBaseT<bool,NativeType::Boolean> : public ColumnBase
-    {
-    public:
-        using Base = ColumnBase;
-        using ValueType = bool;
-        static constexpr SQLSMALLINT TargetType = NativeType::Boolean;
-
-    };
-
-
-
-
 
 
 
@@ -929,209 +902,494 @@ namespace Harlinn::ODBC
         }
 
         [[nodiscard]] SQLHANDLE Handle( ) const noexcept;
-        Result GetData( SQLUSMALLINT columnOrParameterNumber, SQLSMALLINT targetValueDataType, SQLPOINTER targetValue, SQLLEN targetValueMaxLength, SQLLEN* nullIndicatorOrTargetValueActualLength ) const;
+        inline Result GetData( SQLUSMALLINT columnOrParameterNumber, SQLSMALLINT targetValueDataType, SQLPOINTER targetValue, SQLLEN targetValueMaxLength, SQLLEN* nullIndicatorOrTargetValueActualLength ) const;
 
     protected:
-        Result Fetch( ) const;
-        Result FetchScroll( ODBC::Fetch fetchOrientation, SQLLEN fetchOffset ) const;
+        inline Result Fetch( ) const;
+        inline Result FetchScroll( ODBC::Fetch fetchOrientation, SQLLEN fetchOffset ) const;
         
-        Result BindColumn( SQLUSMALLINT columnNumber, SQLSMALLINT targetType, SQLPOINTER targetValue, SQLLEN targetValueMaxLength, SQLLEN* nullIndicatorOrLength ) const;
+        inline Result BindColumn( SQLUSMALLINT columnNumber, SQLSMALLINT targetType, SQLPOINTER targetValue, SQLLEN targetValueMaxLength, SQLLEN* nullIndicatorOrLength ) const;
 
 
-        Result Bind( SQLUSMALLINT columnNumber, SQLPOINTER targetAddress, SQLLEN targetAddressMaxLength, SQLLEN* nullIndicatorOrActualLength ) const
-        {
-            return BindColumn( columnNumber, NativeType::Char, targetAddress, targetAddressMaxLength, nullIndicatorOrActualLength );
-        }
-
-        Result Bind( SQLUSMALLINT columnNumber, Double* targetAddress, SQLLEN* nullIndicatorOrActualLength = nullptr ) const
-        {
-            return BindColumn( columnNumber, NativeType::Double, targetAddress, sizeof( Double ), nullIndicatorOrActualLength );
-        }
-        Result Bind( SQLUSMALLINT columnNumber, bool* targetAddress, SQLLEN* nullIndicatorOrActualLength = nullptr ) const
+        Result BindBoolean( SQLUSMALLINT columnNumber, bool* targetAddress, SQLLEN* nullIndicatorOrActualLength = nullptr ) const
         {
             return BindColumn( columnNumber, NativeType::Boolean, targetAddress, sizeof( bool ), nullIndicatorOrActualLength );
         }
-        Result Bind( SQLUSMALLINT columnNumber, Int64* targetAddress, SQLLEN* nullIndicatorOrActualLength = nullptr ) const
-        {
-            return BindColumn( columnNumber, NativeType::Int64, targetAddress, sizeof( Int64 ), nullIndicatorOrActualLength );
-        }
-        Result Bind( SQLUSMALLINT columnNumber, UInt64* targetAddress, SQLLEN* nullIndicatorOrActualLength = nullptr ) const
-        {
-            return BindColumn( columnNumber, NativeType::UInt64, targetAddress, sizeof( UInt64 ), nullIndicatorOrActualLength = nullptr );
-        }
-        Result Bind( SQLUSMALLINT columnNumber, Int32* targetAddress, SQLLEN* nullIndicatorOrActualLength = nullptr ) const
-        {
-            return BindColumn( columnNumber, NativeType::Int32, targetAddress, sizeof( Int32 ), nullIndicatorOrActualLength );
-        }
-        Result Bind( SQLUSMALLINT columnNumber, UInt32* targetAddress, SQLLEN* nullIndicatorOrActualLength = nullptr ) const
-        {
-            return BindColumn( columnNumber, NativeType::UInt32, targetAddress, sizeof( UInt32 ), nullIndicatorOrActualLength );
-        }
-        Result Bind( SQLUSMALLINT columnNumber, Int16* targetAddress, SQLLEN* nullIndicatorOrActualLength = nullptr ) const
-        {
-            return BindColumn( columnNumber, NativeType::Int16, targetAddress, sizeof( Int16 ), nullIndicatorOrActualLength );
-        }
-        Result Bind( SQLUSMALLINT columnNumber, UInt16* targetAddress, SQLLEN* nullIndicatorOrActualLength = nullptr ) const
-        {
-            return BindColumn( columnNumber, NativeType::UInt16, targetAddress, sizeof( UInt16 ), nullIndicatorOrActualLength );
-        }
-        Result Bind( SQLUSMALLINT columnNumber, SByte* targetAddress, SQLLEN* nullIndicatorOrActualLength = nullptr ) const
+
+        Result BindSByte( SQLUSMALLINT columnNumber, SByte* targetAddress, SQLLEN* nullIndicatorOrActualLength = nullptr ) const
         {
             return BindColumn( columnNumber, NativeType::SByte, targetAddress, sizeof( SByte ), nullIndicatorOrActualLength );
         }
-        Result Bind( SQLUSMALLINT columnNumber, Byte* targetAddress, SQLLEN* nullIndicatorOrActualLength = nullptr ) const
+        Result BindByte( SQLUSMALLINT columnNumber, Byte* targetAddress, SQLLEN* nullIndicatorOrActualLength = nullptr ) const
         {
             return BindColumn( columnNumber, NativeType::Byte, targetAddress, sizeof( Byte ), nullIndicatorOrActualLength );
         }
-        Result Bind( SQLUSMALLINT columnNumber, Guid* targetAddress, SQLLEN* nullIndicatorOrActualLength = nullptr ) const
+
+        Result BindInt16( SQLUSMALLINT columnNumber, Int16* targetAddress, SQLLEN* nullIndicatorOrActualLength = nullptr ) const
+        {
+            return BindColumn( columnNumber, NativeType::Int16, targetAddress, sizeof( Int16 ), nullIndicatorOrActualLength );
+        }
+        Result BindUInt16( SQLUSMALLINT columnNumber, UInt16* targetAddress, SQLLEN* nullIndicatorOrActualLength = nullptr ) const
+        {
+            return BindColumn( columnNumber, NativeType::UInt16, targetAddress, sizeof( UInt16 ), nullIndicatorOrActualLength );
+        }
+
+        Result BindInt32( SQLUSMALLINT columnNumber, Int32* targetAddress, SQLLEN* nullIndicatorOrActualLength = nullptr ) const
+        {
+            return BindColumn( columnNumber, NativeType::Int32, targetAddress, sizeof( Int32 ), nullIndicatorOrActualLength );
+        }
+        Result BindUInt32( SQLUSMALLINT columnNumber, UInt32* targetAddress, SQLLEN* nullIndicatorOrActualLength = nullptr ) const
+        {
+            return BindColumn( columnNumber, NativeType::UInt32, targetAddress, sizeof( UInt32 ), nullIndicatorOrActualLength );
+        }
+
+        Result BindInt64( SQLUSMALLINT columnNumber, Int64* targetAddress, SQLLEN* nullIndicatorOrActualLength = nullptr ) const
+        {
+            return BindColumn( columnNumber, NativeType::Int64, targetAddress, sizeof( Int64 ), nullIndicatorOrActualLength );
+        }
+        Result BindUInt64( SQLUSMALLINT columnNumber, UInt64* targetAddress, SQLLEN* nullIndicatorOrActualLength = nullptr ) const
+        {
+            return BindColumn( columnNumber, NativeType::UInt64, targetAddress, sizeof( UInt64 ), nullIndicatorOrActualLength = nullptr );
+        }
+
+        Result BindSingle( SQLUSMALLINT columnNumber, Double* targetAddress, SQLLEN* nullIndicatorOrActualLength = nullptr ) const
+        {
+            return BindColumn( columnNumber, NativeType::Single, targetAddress, sizeof( Double ), nullIndicatorOrActualLength );
+        }
+
+        Result BindDouble( SQLUSMALLINT columnNumber, Double* targetAddress, SQLLEN* nullIndicatorOrActualLength = nullptr ) const
+        {
+            return BindColumn( columnNumber, NativeType::Double, targetAddress, sizeof( Double ), nullIndicatorOrActualLength );
+        }
+
+        Result BindString( SQLUSMALLINT columnNumber, SQLPOINTER targetAddress, SQLLEN targetAddressMaxLength, SQLLEN* nullIndicatorOrActualLength ) const
+        {
+            return BindColumn( columnNumber, NativeType::Char, targetAddress, targetAddressMaxLength, nullIndicatorOrActualLength );
+        }
+        
+        
+        Result BindGuid( SQLUSMALLINT columnNumber, Guid* targetAddress, SQLLEN* nullIndicatorOrActualLength = nullptr ) const
         {
             return BindColumn( columnNumber, NativeType::Guid, targetAddress, sizeof( Guid ), nullIndicatorOrActualLength );
         }
-        Result Bind( SQLUSMALLINT columnNumber, ODBC::TimeStamp* targetAddress, SQLLEN* nullIndicatorOrActualLength = nullptr ) const
+        Result BindTimeStamp( SQLUSMALLINT columnNumber, ODBC::TimeStamp* targetAddress, SQLLEN* nullIndicatorOrActualLength = nullptr ) const
         {
             return BindColumn( columnNumber, NativeType::TimeStamp, targetAddress, sizeof( ODBC::TimeStamp ), nullIndicatorOrActualLength );
         }
     public:
+        /// <summary>
+        /// Gets the value of the specified column as a std::optional&lt;bool&gt;.
+        /// </summary>
+        /// <param name="columnNumber">The one-based column ordinal.</param>
+        /// <returns>The value of the column.</returns>
         [[nodiscard]] 
         inline std::optional<bool> GetNullableBoolean( SQLUSMALLINT columnNumber ) const;
+        /// <summary>
+        /// Gets the value of the specified column as a std::optional&lt;Byte&gt;.
+        /// </summary>
+        /// <param name="columnNumber">The one-based column ordinal.</param>
+        /// <returns>The value of the column.</returns>
         [[nodiscard]] 
         inline std::optional<Byte> GetNullableByte( SQLUSMALLINT columnNumber ) const;
+        /// <summary>
+        /// Gets the value of the specified column as a std::optional&lt;SByte&gt;.
+        /// </summary>
+        /// <param name="columnNumber">The one-based column ordinal.</param>
+        /// <returns>The value of the column.</returns>
         [[nodiscard]]
         inline std::optional<SByte> GetNullableSByte( SQLUSMALLINT columnNumber ) const;
-
+        /// <summary>
+        /// Gets the value of the specified column as a std::optional&lt;Int16&gt;.
+        /// </summary>
+        /// <param name="columnNumber">The one-based column ordinal.</param>
+        /// <returns>The value of the column.</returns>
         [[nodiscard]]
         inline std::optional<Int16> GetNullableInt16( SQLUSMALLINT columnNumber ) const;
-
+        /// <summary>
+        /// Gets the value of the specified column as a std::optional&lt;UInt16&gt;.
+        /// </summary>
+        /// <param name="columnNumber">The one-based column ordinal.</param>
+        /// <returns>The value of the column.</returns>
         [[nodiscard]]
         inline std::optional<UInt16> GetNullableUInt16( SQLUSMALLINT columnNumber ) const;
-
+        /// <summary>
+        /// Gets the value of the specified column as a std::optional&lt;Int32&gt;.
+        /// </summary>
+        /// <param name="columnNumber">The one-based column ordinal.</param>
+        /// <returns>The value of the column.</returns>
         [[nodiscard]]
         inline std::optional<Int32> GetNullableInt32( SQLUSMALLINT columnNumber ) const;
-
+        /// <summary>
+        /// Gets the value of the specified column as a std::optional&lt;UInt32&gt;.
+        /// </summary>
+        /// <param name="columnNumber">The one-based column ordinal.</param>
+        /// <returns>The value of the column.</returns>
         [[nodiscard]]
         inline std::optional<UInt32> GetNullableUInt32( SQLUSMALLINT columnNumber ) const;
-
+        /// <summary>
+        /// Gets the value of the specified column as a std::optional&lt;Int64&gt;.
+        /// </summary>
+        /// <param name="columnNumber">The one-based column ordinal.</param>
+        /// <returns>The value of the column.</returns>
         [[nodiscard]]
         inline std::optional<Int64> GetNullableInt64( SQLUSMALLINT columnNumber ) const;
-
+        /// <summary>
+        /// Gets the value of the specified column as a std::optional&lt;UInt64&gt;.
+        /// </summary>
+        /// <param name="columnNumber">The one-based column ordinal.</param>
+        /// <returns>The value of the column.</returns>
         [[nodiscard]]
         inline std::optional<UInt64> GetNullableUInt64( SQLUSMALLINT columnNumber ) const;
-
+        /// <summary>
+        /// Gets the value of the specified column as a std::optional&lt;Numeric&gt;.
+        /// </summary>
+        /// <param name="columnNumber">The one-based column ordinal.</param>
+        /// <returns>The value of the column.</returns>
         [[nodiscard]]
         inline std::optional<Numeric> GetNullableNumeric( SQLUSMALLINT columnNumber ) const;
-
+        /// <summary>
+        /// Gets the value of the specified column as a std::optional&lt;Numeric&gt;.
+        /// </summary>
+        /// <param name="columnNumber">The one-based column ordinal.</param>
+        /// <returns>The value of the column.</returns>
         [[nodiscard]]
         inline std::optional<Numeric> GetNullableDecimal( SQLUSMALLINT columnNumber ) const;
-
+        /// <summary>
+        /// Gets the value of the specified column as a std::optional&lt;float&gt;.
+        /// </summary>
+        /// <param name="columnNumber">The one-based column ordinal.</param>
+        /// <returns>The value of the column.</returns>
         [[nodiscard]]
         inline std::optional<float> GetNullableSingle( SQLUSMALLINT columnNumber ) const;
-
+        /// <summary>
+        /// Gets the value of the specified column as a std::optional&lt;double&gt;.
+        /// </summary>
+        /// <param name="columnNumber">The one-based column ordinal.</param>
+        /// <returns>The value of the column.</returns>
         [[nodiscard]]
         inline std::optional<double> GetNullableDouble( SQLUSMALLINT columnNumber ) const;
-
+        /// <summary>
+        /// Gets the value of the specified column as a std::optional&lt;Currency&gt;.
+        /// </summary>
+        /// <param name="columnNumber">The one-based column ordinal.</param>
+        /// <returns>The value of the column.</returns>
         [[nodiscard]]
         inline std::optional<Currency> GetNullableCurrency( SQLUSMALLINT columnNumber ) const;
-
+        /// <summary>
+        /// Gets the value of the specified column as a std::optional&lt;DateTime&gt;.
+        /// </summary>
+        /// <param name="columnNumber">The one-based column ordinal.</param>
+        /// <returns>The value of the column.</returns>
         [[nodiscard]]
         inline std::optional<DateTime> GetNullableDateTime( SQLUSMALLINT columnNumber ) const;
-
+        /// <summary>
+        /// Gets the value of the specified column as a std::optional&lt;TimestampOffset&gt;.
+        /// </summary>
+        /// <param name="columnNumber">The one-based column ordinal.</param>
+        /// <returns>The value of the column.</returns>
         [[nodiscard]]
         inline std::optional<TimestampOffset> GetNullableTimestampOffset( SQLUSMALLINT columnNumber ) const;
-
+        /// <summary>
+        /// Gets the value of the specified column as a std::optional&lt;Date&gt;.
+        /// </summary>
+        /// <param name="columnNumber">The one-based column ordinal.</param>
+        /// <returns>The value of the column.</returns>
         [[nodiscard]]
         inline std::optional<Date> GetNullableDate( SQLUSMALLINT columnNumber ) const;
-
+        /// <summary>
+        /// Gets the value of the specified column as a std::optional&lt;Time&gt;.
+        /// </summary>
+        /// <param name="columnNumber">The one-based column ordinal.</param>
+        /// <returns>The value of the column.</returns>
         [[nodiscard]]
         inline std::optional<Time> GetNullableTime( SQLUSMALLINT columnNumber ) const;
-
+        /// <summary>
+        /// Gets the value of the specified column as a std::optional&lt;TimeSpan&gt;.
+        /// </summary>
+        /// <param name="columnNumber">The one-based column ordinal.</param>
+        /// <returns>The value of the column.</returns>
         [[nodiscard]]
         inline std::optional<TimeSpan> GetNullableTimeSpan( SQLUSMALLINT columnNumber ) const;
-
+        /// <summary>
+        /// Gets the value of the specified column as a std::optional&lt;WideString&gt;.
+        /// </summary>
+        /// <param name="columnNumber">The one-based column ordinal.</param>
+        /// <returns>The value of the column.</returns>
         [[nodiscard]]
         inline std::optional<WideString> GetNullableWideString( SQLUSMALLINT columnNumber ) const;
-
+        /// <summary>
+        /// Gets the value of the specified column as a std::optional&lt;AnsiString&gt;.
+        /// </summary>
+        /// <param name="columnNumber">The one-based column ordinal.</param>
+        /// <returns>The value of the column.</returns>
         [[nodiscard]]
         inline std::optional<AnsiString> GetNullableAnsiString( SQLUSMALLINT columnNumber ) const;
-
+        /// <summary>
+        /// Gets the value of the specified column as a std::optional&lt;std::vector&ltByte&gt;&gt;.
+        /// </summary>
+        /// <param name="columnNumber">The one-based column ordinal.</param>
+        /// <returns>The value of the column.</returns>
         [[nodiscard]]
         inline std::optional<std::vector<Byte>> GetNullableBinary( SQLUSMALLINT columnNumber ) const;
 
-
+        /// <summary>
+        /// Gets the value of the specified column as a std::optional&lt;Guid&gt;.
+        /// </summary>
+        /// <param name="columnNumber">The one-based column ordinal.</param>
+        /// <returns>The value of the column.</returns>
         [[nodiscard]]
         inline std::optional<Guid> GetNullableGuid( SQLUSMALLINT columnNumber ) const;
-
+        /// <summary>
+        /// Gets the value of the specified column as a std::optional&lt;RowVersion&gt;.
+        /// </summary>
+        /// <param name="columnNumber">The one-based column ordinal.</param>
+        /// <returns>The value of the column.</returns>
         [[nodiscard]]
         inline std::optional<RowVersion> GetNullableRowVersion( SQLUSMALLINT columnNumber ) const;
 
+        /// <summary>
+        /// Gets the value of the specified column as a bool.
+        /// </summary>
+        /// <param name="columnNumber">The one-based column ordinal.</param>
+        /// <returns>The value of the column.</returns>
+        /// <remarks>
+        /// The implementation throws an exception if the column value is NULL.
+        /// </remarks>
         [[nodiscard]]
         inline bool GetBoolean( SQLUSMALLINT columnNumber ) const;
+        /// <summary>
+        /// Gets the value of the specified column as a Byte.
+        /// </summary>
+        /// <param name="columnNumber">The one-based column ordinal.</param>
+        /// <returns>The value of the column.</returns>
+        /// <remarks>
+        /// The implementation throws an exception if the column value is NULL.
+        /// </remarks>
         [[nodiscard]]
         inline Byte GetByte( SQLUSMALLINT columnNumber ) const;
-
+        /// <summary>
+        /// Gets the value of the specified column as a SByte.
+        /// </summary>
+        /// <param name="columnNumber">The one-based column ordinal.</param>
+        /// <returns>The value of the column.</returns>
+        /// <remarks>
+        /// The implementation throws an exception if the column value is NULL.
+        /// </remarks>
         [[nodiscard]]
         inline SByte GetSByte( SQLUSMALLINT columnNumber ) const;
-
+        /// <summary>
+        /// Gets the value of the specified column as an Int16.
+        /// </summary>
+        /// <param name="columnNumber">The one-based column ordinal.</param>
+        /// <returns>The value of the column.</returns>
+        /// <remarks>
+        /// The implementation throws an exception if the column value is NULL.
+        /// </remarks>
         [[nodiscard]]
         inline Int16 GetInt16( SQLUSMALLINT columnNumber ) const;
-
+        /// <summary>
+        /// Gets the value of the specified column as an UInt16.
+        /// </summary>
+        /// <param name="columnNumber">The one-based column ordinal.</param>
+        /// <returns>The value of the column.</returns>
+        /// <remarks>
+        /// The implementation throws an exception if the column value is NULL.
+        /// </remarks>
         [[nodiscard]]
         inline UInt16 GetUInt16( SQLUSMALLINT columnNumber ) const;
-
+        /// <summary>
+        /// Gets the value of the specified column as an Int32.
+        /// </summary>
+        /// <param name="columnNumber">The one-based column ordinal.</param>
+        /// <returns>The value of the column.</returns>
+        /// <remarks>
+        /// The implementation throws an exception if the column value is NULL.
+        /// </remarks>
         [[nodiscard]]
         inline Int32 GetInt32( SQLUSMALLINT columnNumber ) const;
-
+        /// <summary>
+        /// Gets the value of the specified column as an UInt32.
+        /// </summary>
+        /// <param name="columnNumber">The one-based column ordinal.</param>
+        /// <returns>The value of the column.</returns>
+        /// <remarks>
+        /// The implementation throws an exception if the column value is NULL.
+        /// </remarks>
         [[nodiscard]]
         inline UInt32 GetUInt32( SQLUSMALLINT columnNumber ) const;
-
+        /// <summary>
+        /// Gets the value of the specified column as an Int64.
+        /// </summary>
+        /// <param name="columnNumber">The one-based column ordinal.</param>
+        /// <returns>The value of the column.</returns>
+        /// <remarks>
+        /// The implementation throws an exception if the column value is NULL.
+        /// </remarks>
         [[nodiscard]]
         inline Int64 GetInt64( SQLUSMALLINT columnNumber ) const;
-
+        /// <summary>
+        /// Gets the value of the specified column as an UInt64.
+        /// </summary>
+        /// <param name="columnNumber">The one-based column ordinal.</param>
+        /// <returns>The value of the column.</returns>
+        /// <remarks>
+        /// The implementation throws an exception if the column value is NULL.
+        /// </remarks>
         [[nodiscard]]
         inline UInt64 GetUInt64( SQLUSMALLINT columnNumber ) const;
-
+        /// <summary>
+        /// Gets the value of the specified column as a Numeric.
+        /// </summary>
+        /// <param name="columnNumber">The one-based column ordinal.</param>
+        /// <returns>The value of the column.</returns>
+        /// <remarks>
+        /// The implementation throws an exception if the column value is NULL.
+        /// </remarks>
         [[nodiscard]]
         inline Numeric GetNumeric( SQLUSMALLINT columnNumber ) const;
-
+        /// <summary>
+        /// Gets the value of the specified column as a Numeric.
+        /// </summary>
+        /// <param name="columnNumber">The one-based column ordinal.</param>
+        /// <returns>The value of the column.</returns>
+        /// <remarks>
+        /// The implementation throws an exception if the column value is NULL.
+        /// </remarks>
         [[nodiscard]]
         inline Numeric GetDecimal( SQLUSMALLINT columnNumber ) const;
-
+        /// <summary>
+        /// Gets the value of the specified column as a float.
+        /// </summary>
+        /// <param name="columnNumber">The one-based column ordinal.</param>
+        /// <returns>The value of the column.</returns>
+        /// <remarks>
+        /// The implementation throws an exception if the column value is NULL.
+        /// </remarks>
         [[nodiscard]]
         inline float GetSingle( SQLUSMALLINT columnNumber ) const;
-
+        /// <summary>
+        /// Gets the value of the specified column as a double.
+        /// </summary>
+        /// <param name="columnNumber">The one-based column ordinal.</param>
+        /// <returns>The value of the column.</returns>
+        /// <remarks>
+        /// The implementation throws an exception if the column value is NULL.
+        /// </remarks>
         [[nodiscard]]
         inline double GetDouble( SQLUSMALLINT columnNumber ) const;
-    
+        /// <summary>
+        /// Gets the value of the specified column as a Currency.
+        /// </summary>
+        /// <param name="columnNumber">The one-based column ordinal.</param>
+        /// <returns>The value of the column.</returns>
+        /// <remarks>
+        /// The implementation throws an exception if the column value is NULL.
+        /// </remarks>
         [[nodiscard]]
         inline Currency GetCurrency( SQLUSMALLINT columnNumber ) const;
-
+        /// <summary>
+        /// Gets the value of the specified column as a DateTime.
+        /// </summary>
+        /// <param name="columnNumber">The one-based column ordinal.</param>
+        /// <returns>The value of the column.</returns>
+        /// <remarks>
+        /// The implementation throws an exception if the column value is NULL.
+        /// </remarks>
         [[nodiscard]]
         inline DateTime GetDateTime( SQLUSMALLINT columnNumber ) const;
-
+        /// <summary>
+        /// Gets the value of the specified column as a TimestampOffset.
+        /// </summary>
+        /// <param name="columnNumber">The one-based column ordinal.</param>
+        /// <returns>The value of the column.</returns>
+        /// <remarks>
+        /// The implementation throws an exception if the column value is NULL.
+        /// </remarks>
         [[nodiscard]]
         inline TimestampOffset GetTimestampOffset( SQLUSMALLINT columnNumber ) const;
 
-
+        /// <summary>
+        /// Gets the value of the specified column as a Date.
+        /// </summary>
+        /// <param name="columnNumber">The one-based column ordinal.</param>
+        /// <returns>The value of the column.</returns>
+        /// <remarks>
+        /// The implementation throws an exception if the column value is NULL.
+        /// </remarks>
         [[nodiscard]]
         inline Date GetDate( SQLUSMALLINT columnNumber ) const;
 
+        /// <summary>
+        /// Gets the value of the specified column as a Time.
+        /// </summary>
+        /// <param name="columnNumber">The one-based column ordinal.</param>
+        /// <returns>The value of the column.</returns>
+        /// <remarks>
+        /// The implementation throws an exception if the column value is NULL.
+        /// </remarks>
         [[nodiscard]]
         inline Time GetTime( SQLUSMALLINT columnNumber ) const;
-
+        /// <summary>
+        /// Gets the value of the specified column as a TimeSpan.
+        /// </summary>
+        /// <param name="columnNumber">The one-based column ordinal.</param>
+        /// <returns>The value of the column.</returns>
+        /// <remarks>
+        /// The implementation throws an exception if the column value is NULL.
+        /// </remarks>
         [[nodiscard]]
         inline TimeSpan GetTimeSpan( SQLUSMALLINT columnNumber ) const;
 
+        /// <summary>
+        /// Gets the value of the specified column as a WideString.
+        /// </summary>
+        /// <param name="columnNumber">The one-based column ordinal.</param>
+        /// <returns>The value of the column.</returns>
+        /// <remarks>
+        /// The implementation throws an exception if the column value is NULL.
+        /// </remarks>
         [[nodiscard]]
         inline WideString GetWideString( SQLUSMALLINT columnNumber ) const;
 
+        /// <summary>
+        /// Gets the value of the specified column as an AnsiString.
+        /// </summary>
+        /// <param name="columnNumber">The one-based column ordinal.</param>
+        /// <returns>The value of the column.</returns>
+        /// <remarks>
+        /// The implementation throws an exception if the column value is NULL.
+        /// </remarks>
         [[nodiscard]]
         inline AnsiString GetAnsiString( SQLUSMALLINT columnNumber ) const;
 
+        /// <summary>
+        /// Gets the value of the specified column as a std::vector&lt;Byte&gt;.
+        /// </summary>
+        /// <param name="columnNumber">The one-based column ordinal.</param>
+        /// <returns>The value of the column.</returns>
+        /// <remarks>
+        /// The implementation throws an exception if the column value is NULL.
+        /// </remarks>
         [[nodiscard]]
         inline std::vector<Byte> GetBinary( SQLUSMALLINT columnNumber ) const;
-
+        /// <summary>
+        /// Gets the value of the specified column as a Guid.
+        /// </summary>
+        /// <param name="columnNumber">The one-based column ordinal.</param>
+        /// <returns>The value of the column.</returns>
+        /// <remarks>
+        /// The implementation throws an exception if the column value is NULL.
+        /// </remarks>
         [[nodiscard]]
         inline Guid GetGuid( SQLUSMALLINT columnNumber ) const;
-
+        /// <summary>
+        /// Gets the value of the specified column as a RowVersion.
+        /// </summary>
+        /// <param name="columnNumber">The one-based column ordinal.</param>
+        /// <returns>The value of the column.</returns>
+        /// <remarks>
+        /// The implementation throws an exception if the column value is NULL.
+        /// </remarks>
         [[nodiscard]]
         inline RowVersion GetRowVersion( SQLUSMALLINT columnNumber ) const;
     };
@@ -1204,7 +1462,7 @@ namespace Harlinn::ODBC
         Result BindColumn( SQLUSMALLINT columnNumber, SQLSMALLINT targetType, SQLPOINTER targetValue, SQLLEN targetValueMaxLength, SQLLEN* nullIndicatorOrLength ) const
         {
             auto rc = SQLBindCol( Handle( ), columnNumber, targetType, targetValue, targetValueMaxLength, nullIndicatorOrLength );
-            if ( rc < SQL_SUCCESS )
+            if ( Failed(static_cast<Result>(rc)) )
             {
                 ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
@@ -1275,18 +1533,71 @@ namespace Harlinn::ODBC
         }
         Result BindTimeStampColumn( SQLUSMALLINT columnNumber, ODBC::TimeStamp* targetAddress, SQLLEN* nullIndicatorOrActualLength ) const
         {
-            return BindColumn( columnNumber, NativeType::TimeStamp, targetAddress, sizeof( ODBC::TimeStamp ), nullIndicatorOrActualLength );
+            return BindColumn( columnNumber, NativeType::TypeTimeStamp, targetAddress, sizeof( ODBC::TimeStamp ), nullIndicatorOrActualLength );
         }
 
 
         Result BindParameter( SQLUSMALLINT parameterNumber, ODBC::ParameterDirection parameterDirection, SQLSMALLINT valueType, SQLSMALLINT parameterType, SQLULEN columnSize, SQLSMALLINT decimalDigits, SQLPOINTER parameterValue, SQLLEN parameterValueBufferLength, SQLLEN* lengthOrIndicator ) const
         {
             auto rc = SQLBindParameter( Handle( ), parameterNumber, static_cast<SQLSMALLINT>( parameterDirection ), valueType, parameterType, columnSize, decimalDigits, parameterValue, parameterValueBufferLength, lengthOrIndicator );
-            if ( rc < SQL_SUCCESS )
+            if ( Failed(static_cast<Result>(rc)) )
             {
                 ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
             return static_cast<Result>( rc );
+        }
+
+        Result BindBooleanParameter( SQLUSMALLINT parameterNumber, ODBC::ParameterDirection parameterDirection, bool* parameterValue, SQLLEN* lengthOrIndicator = nullptr ) const
+        {
+            auto rc = BindParameter( parameterNumber, parameterDirection, NativeType::Boolean, SqlType::Bit, 0, 0, parameterValue, 0, lengthOrIndicator );
+            return rc;
+        }
+
+        Result BindSByteParameter( SQLUSMALLINT parameterNumber, ODBC::ParameterDirection parameterDirection, SByte* parameterValue, SQLLEN* lengthOrIndicator = nullptr ) const
+        {
+            auto rc = BindParameter( parameterNumber, parameterDirection, NativeType::SByte, SqlType::TinyInt, 0, 0, parameterValue, 0, lengthOrIndicator );
+            return rc;
+        }
+        Result BindByteParameter( SQLUSMALLINT parameterNumber, ODBC::ParameterDirection parameterDirection, Byte* parameterValue, SQLLEN* lengthOrIndicator = nullptr ) const
+        {
+            auto rc = BindParameter( parameterNumber, parameterDirection, NativeType::Byte, SqlType::TinyInt, 0, 0, parameterValue, 0, lengthOrIndicator );
+            return rc;
+        }
+
+        Result BindInt16Parameter( SQLUSMALLINT parameterNumber, ODBC::ParameterDirection parameterDirection, Int16* parameterValue, SQLLEN* lengthOrIndicator = nullptr ) const
+        {
+            auto rc = BindParameter( parameterNumber, parameterDirection, NativeType::Int16, SqlType::SmallInt, 0, 0, parameterValue, 0, lengthOrIndicator );
+            return rc;
+        }
+
+        Result BindUInt16Parameter( SQLUSMALLINT parameterNumber, ODBC::ParameterDirection parameterDirection, UInt16* parameterValue, SQLLEN* lengthOrIndicator = nullptr ) const
+        {
+            auto rc = BindParameter( parameterNumber, parameterDirection, NativeType::UInt16, SqlType::SmallInt, 0, 0, parameterValue, 0, lengthOrIndicator );
+            return rc;
+        }
+
+        Result BindInt32Parameter( SQLUSMALLINT parameterNumber, ODBC::ParameterDirection parameterDirection, Int32* parameterValue, SQLLEN* lengthOrIndicator = nullptr ) const
+        {
+            auto rc = BindParameter( parameterNumber, parameterDirection, NativeType::Int32, SqlType::Integer, 0, 0, parameterValue, 0, lengthOrIndicator );
+            return rc;
+        }
+
+        Result BindUInt32Parameter( SQLUSMALLINT parameterNumber, ODBC::ParameterDirection parameterDirection, UInt32* parameterValue, SQLLEN* lengthOrIndicator = nullptr ) const
+        {
+            auto rc = BindParameter( parameterNumber, parameterDirection, NativeType::UInt32, SqlType::Integer, 0, 0, parameterValue, 0, lengthOrIndicator );
+            return rc;
+        }
+
+        Result BindInt64Parameter( SQLUSMALLINT parameterNumber, ODBC::ParameterDirection parameterDirection, Int64* parameterValue, SQLLEN* lengthOrIndicator = nullptr ) const
+        {
+            auto rc = BindParameter( parameterNumber, parameterDirection, NativeType::Int64, SqlType::BigInt, 0, 0, parameterValue, 0, lengthOrIndicator );
+            return rc;
+        }
+
+        Result BindUInt64Parameter( SQLUSMALLINT parameterNumber, ODBC::ParameterDirection parameterDirection, UInt64* parameterValue, SQLLEN* lengthOrIndicator = nullptr ) const
+        {
+            auto rc = BindParameter( parameterNumber, parameterDirection, NativeType::UInt64, SqlType::BigInt, 0, 0, parameterValue, 0, lengthOrIndicator );
+            return rc;
         }
 
         Result BindParameter( SQLUSMALLINT parameterNumber, ODBC::ParameterDirection parameterDirection, SQLULEN columnSize, char* parameterValue, SQLLEN parameterValueBufferLength, SQLLEN* lengthOrIndicator ) const
@@ -1306,74 +1617,29 @@ namespace Harlinn::ODBC
             return rc;
         }
 
-        Result BindParameter( SQLUSMALLINT parameterNumber, ODBC::ParameterDirection parameterDirection, Double* parameterValue, SQLLEN* lengthOrIndicator = nullptr ) const
+        Result BindSingleParameter( SQLUSMALLINT parameterNumber, ODBC::ParameterDirection parameterDirection, Double* parameterValue, SQLLEN* lengthOrIndicator = nullptr ) const
+        {
+            auto rc = BindParameter( parameterNumber, parameterDirection, NativeType::Single, SqlType::Real, 0, 0, parameterValue, 0, lengthOrIndicator );
+            return rc;
+        }
+
+        Result BindDoubleParameter( SQLUSMALLINT parameterNumber, ODBC::ParameterDirection parameterDirection, Double* parameterValue, SQLLEN* lengthOrIndicator = nullptr ) const
         {
             auto rc = BindParameter( parameterNumber, parameterDirection, NativeType::Double, SqlType::Double, 0, 0, parameterValue, 0, lengthOrIndicator );
             return rc;
         }
 
-        Result BindBooleanParameter( SQLUSMALLINT parameterNumber, ODBC::ParameterDirection parameterDirection, Byte* parameterValue, SQLLEN* lengthOrIndicator = nullptr ) const
-        {
-            auto rc = BindParameter( parameterNumber, parameterDirection, NativeType::Boolean, SqlType::Bit, 0, 0, parameterValue, 0, lengthOrIndicator );
-            return rc;
-        }
-
-        Result BindParameter( SQLUSMALLINT parameterNumber, ODBC::ParameterDirection parameterDirection, Int64* parameterValue, SQLLEN* lengthOrIndicator = nullptr ) const
-        {
-            auto rc = BindParameter( parameterNumber, parameterDirection, NativeType::Int64, SqlType::BigInt, 0, 0, parameterValue, 0, lengthOrIndicator );
-            return rc;
-        }
-
-        Result BindParameter( SQLUSMALLINT parameterNumber, ODBC::ParameterDirection parameterDirection, UInt64* parameterValue, SQLLEN* lengthOrIndicator = nullptr ) const
-        {
-            auto rc = BindParameter( parameterNumber, parameterDirection, NativeType::UInt64, SqlType::BigInt, 0, 0, parameterValue, 0, lengthOrIndicator );
-            return rc;
-        }
-
-        Result BindParameter( SQLUSMALLINT parameterNumber, ODBC::ParameterDirection parameterDirection, Int32* parameterValue, SQLLEN* lengthOrIndicator = nullptr ) const
-        {
-            auto rc = BindParameter( parameterNumber, parameterDirection, NativeType::Int32, SqlType::Integer, 0, 0, parameterValue, 0, lengthOrIndicator );
-            return rc;
-        }
-
-        Result BindParameter( SQLUSMALLINT parameterNumber, ODBC::ParameterDirection parameterDirection, UInt32* parameterValue, SQLLEN* lengthOrIndicator = nullptr ) const
-        {
-            auto rc = BindParameter( parameterNumber, parameterDirection, NativeType::UInt32, SqlType::Integer, 0, 0, parameterValue, 0, lengthOrIndicator );
-            return rc;
-        }
-
-        Result BindParameter( SQLUSMALLINT parameterNumber, ODBC::ParameterDirection parameterDirection, Int16* parameterValue, SQLLEN* lengthOrIndicator = nullptr ) const
-        {
-            auto rc = BindParameter( parameterNumber, parameterDirection, NativeType::Int16, SqlType::SmallInt, 0, 0, parameterValue, 0, lengthOrIndicator );
-            return rc;
-        }
-
-        Result BindParameter( SQLUSMALLINT parameterNumber, ODBC::ParameterDirection parameterDirection, UInt16* parameterValue, SQLLEN* lengthOrIndicator = nullptr ) const
-        {
-            auto rc = BindParameter( parameterNumber, parameterDirection, NativeType::UInt16, SqlType::SmallInt, 0, 0, parameterValue, 0, lengthOrIndicator );
-            return rc;
-        }
-
-        Result BindParameter( SQLUSMALLINT parameterNumber, ODBC::ParameterDirection parameterDirection, SByte* parameterValue, SQLLEN* lengthOrIndicator = nullptr ) const
-        {
-            auto rc = BindParameter( parameterNumber, parameterDirection, NativeType::SByte, SqlType::TinyInt, 0, 0, parameterValue, 0, lengthOrIndicator );
-            return rc;
-        }
-        Result BindParameter( SQLUSMALLINT parameterNumber, ODBC::ParameterDirection parameterDirection, Byte* parameterValue, SQLLEN* lengthOrIndicator = nullptr ) const
-        {
-            auto rc = BindParameter( parameterNumber, parameterDirection, NativeType::Byte, SqlType::TinyInt, 0, 0, parameterValue, 0, lengthOrIndicator );
-            return rc;
-        }
-        Result BindParameter( SQLUSMALLINT parameterNumber, ODBC::ParameterDirection parameterDirection, Guid* parameterValue, SQLLEN* lengthOrIndicator = nullptr ) const
+        
+        Result BindGuidParameter( SQLUSMALLINT parameterNumber, ODBC::ParameterDirection parameterDirection, Guid* parameterValue, SQLLEN* lengthOrIndicator = nullptr ) const
         {
             auto rc = BindParameter( parameterNumber, parameterDirection, NativeType::Guid, SqlType::Guid, 0, 0, parameterValue, 0, lengthOrIndicator );
             return rc;
         }
 
-        Result BindParameter( SQLUSMALLINT parameterNumber, ODBC::ParameterDirection parameterDirection, SQLSMALLINT precisionOfFraction, ODBC::TimeStamp* parameterValue, SQLLEN* lengthOrIndicator = nullptr ) const
+        Result BindTimeStampParameter( SQLUSMALLINT parameterNumber, ODBC::ParameterDirection parameterDirection, SQLSMALLINT precisionOfFraction, ODBC::TimeStamp* parameterValue, SQLLEN* lengthOrIndicator = nullptr ) const
         {
             SQLSMALLINT columnSize = static_cast<SQLSMALLINT>( 20 ) + precisionOfFraction;
-            auto rc = BindParameter( parameterNumber, parameterDirection, NativeType::TimeStamp, SqlType::TimeStamp, columnSize, precisionOfFraction, parameterValue, 0, lengthOrIndicator );
+            auto rc = BindParameter( parameterNumber, parameterDirection, NativeType::TypeTimeStamp, SqlType::TimeStamp, columnSize, precisionOfFraction, parameterValue, 0, lengthOrIndicator );
             return rc;
         }
 
@@ -1381,7 +1647,7 @@ namespace Harlinn::ODBC
         Result BulkOperations( ODBC::BulkOperation bulkOperation ) const
         {
             auto rc = SQLBulkOperations( Handle( ), static_cast<SQLSMALLINT>( bulkOperation ) );
-            if ( rc < SQL_SUCCESS )
+            if ( Failed(static_cast<Result>(rc)) )
             {
                 ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
@@ -1391,7 +1657,7 @@ namespace Harlinn::ODBC
         Result CloseCursor( )
         {
             auto rc = SQLCloseCursor( Handle( ) );
-            if ( rc < SQL_SUCCESS )
+            if ( Failed(static_cast<Result>(rc)) )
             {
                 ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
@@ -1402,7 +1668,7 @@ namespace Harlinn::ODBC
         Result ColumnAttribute( SQLUSMALLINT columnNumber, SQLUSMALLINT fieldIdentifier, SQLPOINTER value, SQLSMALLINT valueMaxLength, SQLSMALLINT* valueActualLength, SQLLEN* numericAttributeValue ) const
         {
             auto rc = SQLColAttributeW( Handle( ), columnNumber, fieldIdentifier, value, valueMaxLength, valueActualLength, numericAttributeValue );
-            if ( rc < SQL_SUCCESS )
+            if ( Failed(static_cast<Result>(rc)) )
             {
                 ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
@@ -1413,7 +1679,7 @@ namespace Harlinn::ODBC
         Result ColumnPrivileges( const SQLWCHAR* catalogName, SQLSMALLINT catalogNameMaxLength, const SQLWCHAR* schemaName, SQLSMALLINT schemaNameMaxLength, const SQLWCHAR* tableName, SQLSMALLINT tableNameMaxLength, const SQLWCHAR* columnName, SQLSMALLINT columnNameMaxLength ) const
         {
             auto rc = SQLColumnPrivilegesW( Handle( ), const_cast<SQLWCHAR*>(catalogName), catalogNameMaxLength, const_cast<SQLWCHAR*>( schemaName ), schemaNameMaxLength, const_cast<SQLWCHAR*>( tableName ), tableNameMaxLength, const_cast<SQLWCHAR*>( columnName ), columnNameMaxLength );
-            if ( rc < SQL_SUCCESS )
+            if ( Failed(static_cast<Result>(rc)) )
             {
                 ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
@@ -1423,7 +1689,7 @@ namespace Harlinn::ODBC
         Result ColumnPrivileges( const SQLCHAR* catalogName, SQLSMALLINT catalogNameMaxLength, const SQLCHAR* schemaName, SQLSMALLINT schemaNameMaxLength, const SQLCHAR* tableName, SQLSMALLINT tableNameMaxLength, const SQLCHAR* columnName, SQLSMALLINT columnNameMaxLength ) const
         {
             auto rc = SQLColumnPrivilegesA( Handle( ), const_cast<SQLCHAR*>( catalogName ), catalogNameMaxLength, const_cast<SQLCHAR*>( schemaName ), schemaNameMaxLength, const_cast<SQLCHAR*>( tableName ), tableNameMaxLength, const_cast<SQLCHAR*>( columnName ), columnNameMaxLength );
-            if ( rc < SQL_SUCCESS )
+            if ( Failed(static_cast<Result>(rc)) )
             {
                 ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
@@ -1433,7 +1699,7 @@ namespace Harlinn::ODBC
         Result Columns( const SQLWCHAR* catalogName, SQLSMALLINT catalogNameMaxLength, const SQLWCHAR* schemaName, SQLSMALLINT schemaNameMaxLength, const SQLWCHAR* tableName, SQLSMALLINT tableNameMaxLength, const SQLWCHAR* columnName, SQLSMALLINT columnNameMaxLength ) const
         {
             auto rc = SQLColumnsW( Handle( ), const_cast<SQLWCHAR*>( catalogName ), catalogNameMaxLength, const_cast<SQLWCHAR*>( schemaName ), schemaNameMaxLength, const_cast<SQLWCHAR*>( tableName ), tableNameMaxLength, const_cast<SQLWCHAR*>( columnName ), columnNameMaxLength );
-            if ( rc < SQL_SUCCESS )
+            if ( Failed(static_cast<Result>(rc)) )
             {
                 ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
@@ -1442,7 +1708,7 @@ namespace Harlinn::ODBC
         Result Columns( const SQLCHAR* catalogName, SQLSMALLINT catalogNameMaxLength, const SQLCHAR* schemaName, SQLSMALLINT schemaNameMaxLength, const SQLCHAR* tableName, SQLSMALLINT tableNameMaxLength, const SQLCHAR* columnName, SQLSMALLINT columnNameMaxLength ) const
         {
             auto rc = SQLColumnsA( Handle( ), const_cast<SQLCHAR*>( catalogName ), catalogNameMaxLength, const_cast<SQLCHAR*>( schemaName ), schemaNameMaxLength, const_cast<SQLCHAR*>( tableName ), tableNameMaxLength, const_cast<SQLCHAR*>( columnName ), columnNameMaxLength );
-            if ( rc < SQL_SUCCESS )
+            if ( Failed(static_cast<Result>(rc)) )
             {
                 ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
@@ -1452,7 +1718,7 @@ namespace Harlinn::ODBC
         Result DescribeColumn( SQLUSMALLINT columnNumber, SQLWCHAR* columnName, SQLSMALLINT columnNameMaxLength, SQLSMALLINT* columnNameActualLength, SQLSMALLINT* dataType, SQLULEN* columnSize, SQLSMALLINT* decimalDigits, ODBC::Nullable* nullable ) const
         {
             auto rc = SQLDescribeColW( Handle( ), columnNumber, columnName, columnNameMaxLength, columnNameActualLength, dataType, columnSize, decimalDigits, (SQLSMALLINT*)nullable );
-            if ( rc < SQL_SUCCESS )
+            if ( Failed(static_cast<Result>(rc)) )
             {
                 ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
@@ -1461,7 +1727,7 @@ namespace Harlinn::ODBC
         Result DescribeColumn( SQLUSMALLINT columnNumber, SQLCHAR* columnName, SQLSMALLINT columnNameMaxLength, SQLSMALLINT* columnNameActualLength, SQLSMALLINT* dataType, SQLULEN* columnSize, SQLSMALLINT* decimalDigits, ODBC::Nullable* nullable ) const
         {
             auto rc = SQLDescribeColA( Handle( ), columnNumber, columnName, columnNameMaxLength, columnNameActualLength, dataType, columnSize, decimalDigits, (SQLSMALLINT*)nullable );
-            if ( rc < SQL_SUCCESS )
+            if ( Failed(static_cast<Result>(rc)) )
             {
                 ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
@@ -1471,7 +1737,7 @@ namespace Harlinn::ODBC
         Result DescribeParameter( SQLUSMALLINT parameterNumber, SQLSMALLINT* dataType, SQLULEN *parameterSize, SQLSMALLINT* decimalDigits, ODBC::Nullable* nullable ) const
         {
             auto rc = SQLDescribeParam( Handle( ), parameterNumber, dataType, parameterSize, decimalDigits, (SQLSMALLINT*)nullable );
-            if ( rc < SQL_SUCCESS )
+            if ( Failed(static_cast<Result>(rc)) )
             {
                 ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
@@ -1481,7 +1747,7 @@ namespace Harlinn::ODBC
         Result ExecDirect( const SQLWCHAR* statementText, SQLINTEGER statementTextLength = SQL_NTS ) const
         {
             auto rc = SQLExecDirectW( Handle( ), const_cast<SQLWCHAR*>( statementText ), statementTextLength );
-            if ( rc < SQL_SUCCESS )
+            if ( Failed(static_cast<Result>(rc)) )
             {
                 ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
@@ -1490,7 +1756,7 @@ namespace Harlinn::ODBC
         Result ExecDirect( const SQLCHAR* statementText, SQLINTEGER statementTextLength = SQL_NTS ) const
         {
             auto rc = SQLExecDirectA( Handle( ), const_cast<SQLCHAR*>( statementText ), statementTextLength );
-            if ( rc < SQL_SUCCESS )
+            if ( Failed(static_cast<Result>(rc)) )
             {
                 ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
@@ -1500,7 +1766,7 @@ namespace Harlinn::ODBC
         Result Execute( ) const
         {
             auto rc = SQLExecute( Handle( ) );
-            if ( rc < SQL_SUCCESS )
+            if ( Failed(static_cast<Result>(rc)) )
             {
                 ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
@@ -1546,7 +1812,7 @@ namespace Harlinn::ODBC
         Result Fetch( ) const
         {
             auto rc = SQLFetch( Handle( ) );
-            if ( rc < SQL_SUCCESS )
+            if ( Failed(static_cast<Result>(rc)) )
             {
                 ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
@@ -1556,7 +1822,7 @@ namespace Harlinn::ODBC
         Result FetchScroll( ODBC::Fetch fetchOrientation, SQLLEN fetchOffset ) const
         {
             auto rc = SQLFetchScroll( Handle( ), static_cast<SQLSMALLINT>( fetchOrientation ), fetchOffset );
-            if ( rc < SQL_SUCCESS )
+            if ( Failed(static_cast<Result>(rc)) )
             {
                 ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
@@ -1576,7 +1842,7 @@ namespace Harlinn::ODBC
                 const_cast<SQLWCHAR*>( foreignKeyCatalogName ), foreignKeyCatalogNameLength,
                 const_cast<SQLWCHAR*>( foreignKeySchemaName ), foreignKeySchemaNameLength,
                 const_cast<SQLWCHAR*>( foreignKeyTableName ), foreignKeyTableNameLength );
-            if ( rc < SQL_SUCCESS )
+            if ( Failed(static_cast<Result>(rc)) )
             {
                 ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
@@ -1596,7 +1862,7 @@ namespace Harlinn::ODBC
                 const_cast<SQLCHAR*>( foreignKeyCatalogName ), foreignKeyCatalogNameLength,
                 const_cast<SQLCHAR*>( foreignKeySchemaName ), foreignKeySchemaNameLength,
                 const_cast<SQLCHAR*>( foreignKeyTableName ), foreignKeyTableNameLength );
-            if ( rc < SQL_SUCCESS )
+            if ( Failed(static_cast<Result>(rc)) )
             {
                 ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
@@ -1607,7 +1873,7 @@ namespace Harlinn::ODBC
         Result FreeStmt( SQLUSMALLINT option ) const
         {
             auto rc = SQLFreeStmt( Handle( ), option );
-            if ( rc < SQL_SUCCESS )
+            if ( Failed(static_cast<Result>(rc)) )
             {
                 ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
@@ -1648,7 +1914,7 @@ namespace Harlinn::ODBC
         Result CursorName( SQLWCHAR* cursorName, SQLSMALLINT cursorNameMaxLength, SQLSMALLINT* cursorNameActualLength ) const
         {
             auto rc = SQLGetCursorNameW( Handle(), cursorName, cursorNameMaxLength, cursorNameActualLength );
-            if ( rc < SQL_SUCCESS )
+            if ( Failed(static_cast<Result>(rc)) )
             {
                 ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
@@ -1657,7 +1923,7 @@ namespace Harlinn::ODBC
         Result CursorName( SQLCHAR* cursorName, SQLSMALLINT cursorNameMaxLength, SQLSMALLINT* cursorNameActualLength ) const
         {
             auto rc = SQLGetCursorNameA( Handle( ), cursorName, cursorNameMaxLength, cursorNameActualLength );
-            if ( rc < SQL_SUCCESS )
+            if ( Failed(static_cast<Result>(rc)) )
             {
                 ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
@@ -1667,7 +1933,7 @@ namespace Harlinn::ODBC
         Result GetData( SQLUSMALLINT columnOrParameterNumber, SQLSMALLINT targetValueDataType, SQLPOINTER targetValue, SQLLEN targetValueMaxLength, SQLLEN* nullIndicatorOrTargetValueActualLength ) const
         {
             auto rc = SQLGetData( Handle( ), columnOrParameterNumber, targetValueDataType, targetValue, targetValueMaxLength, nullIndicatorOrTargetValueActualLength );
-            if ( rc < SQL_SUCCESS )
+            if ( Failed(static_cast<Result>(rc)) )
             {
                 ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
@@ -2454,7 +2720,7 @@ namespace Harlinn::ODBC
         Result GetAttributeW( SQLINTEGER attributeId, SQLPOINTER value, SQLINTEGER valueBufferLength, SQLINTEGER* valueActualLength ) const
         {
             auto rc = SQLGetStmtAttrW( Handle( ), attributeId, value, valueBufferLength, valueActualLength );
-            if ( rc < SQL_SUCCESS )
+            if ( Failed(static_cast<Result>(rc)) )
             {
                 ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
@@ -2463,7 +2729,7 @@ namespace Harlinn::ODBC
         Result GetAttributeA( SQLINTEGER attributeId, SQLPOINTER value, SQLINTEGER valueBufferLength, SQLINTEGER* valueActualLength ) const
         {
             auto rc = SQLGetStmtAttrA( Handle( ), attributeId, value, valueBufferLength, valueActualLength );
-            if ( rc < SQL_SUCCESS )
+            if ( Failed(static_cast<Result>(rc)) )
             {
                 ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
@@ -2473,7 +2739,7 @@ namespace Harlinn::ODBC
         Result SetAttributeW( SQLINTEGER attributeId, SQLPOINTER value, SQLINTEGER valueLength ) const
         {
             auto rc = SQLSetStmtAttrW( Handle( ), attributeId, value, valueLength );
-            if ( rc < SQL_SUCCESS )
+            if ( Failed(static_cast<Result>(rc)) )
             {
                 ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
@@ -2487,7 +2753,7 @@ namespace Harlinn::ODBC
 #undef SQLSetStmtAttr
 #endif
             auto rc = SQLSetStmtAttr( Handle( ), attributeId, value, valueLength );
-            if ( rc < SQL_SUCCESS )
+            if ( Failed(static_cast<Result>(rc)) )
             {
                 ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
@@ -2582,7 +2848,7 @@ namespace Harlinn::ODBC
         Result GetTypeInfoW( SQLSMALLINT dataType ) const
         {
             auto rc = SQLGetTypeInfoW( Handle( ), dataType );
-            if ( rc < SQL_SUCCESS )
+            if ( Failed(static_cast<Result>(rc)) )
             {
                 ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
@@ -2591,7 +2857,7 @@ namespace Harlinn::ODBC
         Result GetTypeInfoA( SQLSMALLINT dataType ) const
         {
             auto rc = SQLGetTypeInfoA( Handle( ), dataType );
-            if ( rc < SQL_SUCCESS )
+            if ( Failed(static_cast<Result>(rc)) )
             {
                 ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
@@ -2601,7 +2867,7 @@ namespace Harlinn::ODBC
         Result MoreResults( ) const
         {
             auto rc = SQLMoreResults( Handle( ) );
-            if ( rc < SQL_SUCCESS )
+            if ( Failed(static_cast<Result>(rc)) )
             {
                 ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
@@ -2611,7 +2877,7 @@ namespace Harlinn::ODBC
         Result NumParams( SQLSMALLINT* result ) const
         {
             auto rc = SQLNumParams( Handle( ), result );
-            if ( rc < SQL_SUCCESS )
+            if ( Failed(static_cast<Result>(rc)) )
             {
                 ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
@@ -2621,7 +2887,7 @@ namespace Harlinn::ODBC
         Result NumResultCols( SQLSMALLINT* result ) const
         {
             auto rc = SQLNumResultCols( Handle( ), result );
-            if ( rc < SQL_SUCCESS )
+            if ( Failed(static_cast<Result>(rc)) )
             {
                 ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
@@ -2631,7 +2897,7 @@ namespace Harlinn::ODBC
         Result ParamData( SQLPOINTER* valuePointer ) const
         {
             auto rc = SQLParamData( Handle( ), valuePointer );
-            if ( rc < SQL_SUCCESS )
+            if ( Failed(static_cast<Result>(rc)) )
             {
                 ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
@@ -2641,7 +2907,7 @@ namespace Harlinn::ODBC
         Result Prepare( const SQLWCHAR* statement, SQLINTEGER statementLength = SQL_NTS ) const
         {
             auto rc = SQLPrepareW( Handle( ), const_cast<SQLWCHAR*>( statement ), statementLength );
-            if ( rc < SQL_SUCCESS )
+            if ( Failed(static_cast<Result>(rc)) )
             {
                 ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
@@ -2651,7 +2917,7 @@ namespace Harlinn::ODBC
         Result Prepare( const SQLCHAR* statement, SQLINTEGER statementLength = SQL_NTS ) const
         {
             auto rc = SQLPrepareA( Handle( ), const_cast<SQLCHAR*>( statement ), statementLength );
-            if ( rc < SQL_SUCCESS )
+            if ( Failed(static_cast<Result>(rc)) )
             {
                 ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
@@ -2662,7 +2928,7 @@ namespace Harlinn::ODBC
         Result PrimaryKeys( const SQLWCHAR* catalogName, SQLSMALLINT catalogNameLength, const SQLWCHAR* schemaName, SQLSMALLINT schemaNameLength, const SQLWCHAR* tableName, SQLSMALLINT tableNameLength ) const
         {
             auto rc = SQLPrimaryKeysW( Handle( ), const_cast<SQLWCHAR*>( catalogName ), catalogNameLength, const_cast<SQLWCHAR*>( schemaName ), schemaNameLength, const_cast<SQLWCHAR*>( tableName ), tableNameLength );
-            if ( rc < SQL_SUCCESS )
+            if ( Failed(static_cast<Result>(rc)) )
             {
                 ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
@@ -2671,7 +2937,7 @@ namespace Harlinn::ODBC
         Result PrimaryKeys( const SQLCHAR* catalogName, SQLSMALLINT catalogNameLength, const SQLCHAR* schemaName, SQLSMALLINT schemaNameLength, const SQLCHAR* tableName, SQLSMALLINT tableNameLength ) const
         {
             auto rc = SQLPrimaryKeysA( Handle( ), const_cast<SQLCHAR*>( catalogName ), catalogNameLength, const_cast<SQLCHAR*>( schemaName ), schemaNameLength, const_cast<SQLCHAR*>( tableName ), tableNameLength );
-            if ( rc < SQL_SUCCESS )
+            if ( Failed(static_cast<Result>(rc)) )
             {
                 ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
@@ -2681,7 +2947,7 @@ namespace Harlinn::ODBC
         Result ProcedureColumns( const SQLWCHAR* catalogName, SQLSMALLINT catalogNameLength, const SQLWCHAR* schemaName, SQLSMALLINT schemaNameLength, const SQLWCHAR* procedureName, SQLSMALLINT procedureNameLength, const SQLWCHAR* columnName, SQLSMALLINT columnNameLength ) const
         {
             auto rc = SQLProcedureColumnsW( Handle( ), const_cast<SQLWCHAR*>( catalogName ), catalogNameLength, const_cast<SQLWCHAR*>( schemaName ), schemaNameLength, const_cast<SQLWCHAR*>( procedureName ), procedureNameLength, const_cast<SQLWCHAR*>( columnName ), columnNameLength );
-            if ( rc < SQL_SUCCESS )
+            if ( Failed(static_cast<Result>(rc)) )
             {
                 ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
@@ -2690,7 +2956,7 @@ namespace Harlinn::ODBC
         Result ProcedureColumns( const SQLCHAR* catalogName, SQLSMALLINT catalogNameLength, const SQLCHAR* schemaName, SQLSMALLINT schemaNameLength, const SQLCHAR* procedureName, SQLSMALLINT procedureNameLength, const SQLCHAR* columnName, SQLSMALLINT columnNameLength ) const
         {
             auto rc = SQLProcedureColumnsA( Handle( ), const_cast<SQLCHAR*>( catalogName ), catalogNameLength, const_cast<SQLCHAR*>( schemaName ), schemaNameLength, const_cast<SQLCHAR*>( procedureName ), procedureNameLength, const_cast<SQLCHAR*>( columnName ), columnNameLength );
-            if ( rc < SQL_SUCCESS )
+            if ( Failed(static_cast<Result>(rc)) )
             {
                 ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
@@ -2700,7 +2966,7 @@ namespace Harlinn::ODBC
         Result Procedures( const SQLWCHAR* catalogName, SQLSMALLINT catalogNameLength, const SQLWCHAR* schemaName, SQLSMALLINT schemaNameLength, const SQLWCHAR* procedureName, SQLSMALLINT procedureNameLength ) const
         {
             auto rc = SQLProceduresW( Handle(), const_cast<SQLWCHAR*>( catalogName ), catalogNameLength, const_cast<SQLWCHAR*>( schemaName ), schemaNameLength, const_cast<SQLWCHAR*>( procedureName ), procedureNameLength );
-            if ( rc < SQL_SUCCESS )
+            if ( Failed(static_cast<Result>(rc)) )
             {
                 ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
@@ -2709,7 +2975,7 @@ namespace Harlinn::ODBC
         Result Procedures( const SQLCHAR* catalogName, SQLSMALLINT catalogNameLength, const SQLCHAR* schemaName, SQLSMALLINT schemaNameLength, const SQLCHAR* procedureName, SQLSMALLINT procedureNameLength ) const
         {
             auto rc = SQLProceduresA( Handle( ), const_cast<SQLCHAR*>( catalogName ), catalogNameLength, const_cast<SQLCHAR*>( schemaName ), schemaNameLength, const_cast<SQLCHAR*>( procedureName ), procedureNameLength );
-            if ( rc < SQL_SUCCESS )
+            if ( Failed(static_cast<Result>(rc)) )
             {
                 ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
@@ -2719,7 +2985,7 @@ namespace Harlinn::ODBC
         Result PutData( SQLPOINTER data, SQLLEN nullIndicatorOrDataLength ) const
         {
             auto rc = SQLPutData( Handle(), data, nullIndicatorOrDataLength );
-            if ( rc < SQL_SUCCESS )
+            if ( Failed(static_cast<Result>(rc)) )
             {
                 ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
@@ -2730,7 +2996,7 @@ namespace Harlinn::ODBC
         Result RowCount( SQLLEN* result ) const
         {
             auto rc = SQLRowCount( Handle( ), result );
-            if ( rc < SQL_SUCCESS )
+            if ( Failed(static_cast<Result>(rc)) )
             {
                 ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
@@ -2740,7 +3006,7 @@ namespace Harlinn::ODBC
         Result SetCursorName( const SQLWCHAR* cursorName, SQLSMALLINT cursorNameLength ) const
         {
             auto rc = SQLSetCursorNameW( Handle( ), const_cast<SQLWCHAR*>( cursorName ), cursorNameLength );
-            if ( rc < SQL_SUCCESS )
+            if ( Failed(static_cast<Result>(rc)) )
             {
                 ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
@@ -2750,7 +3016,7 @@ namespace Harlinn::ODBC
         Result SetCursorName( const SQLCHAR* cursorName, SQLSMALLINT cursorNameLength ) const
         {
             auto rc = SQLSetCursorNameA( Handle( ), const_cast<SQLCHAR*>( cursorName ), cursorNameLength );
-            if ( rc < SQL_SUCCESS )
+            if ( Failed(static_cast<Result>(rc)) )
             {
                 ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
@@ -2760,7 +3026,7 @@ namespace Harlinn::ODBC
         Result SetPosition( SQLSETPOSIROW rowNumber, SQLUSMALLINT operation, SQLUSMALLINT lockType ) const
         {
             auto rc = SQLSetPos( Handle( ), rowNumber, operation, lockType );
-            if ( rc < SQL_SUCCESS )
+            if ( Failed(static_cast<Result>(rc)) )
             {
                 ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
@@ -2770,7 +3036,7 @@ namespace Harlinn::ODBC
         Result SpecialColumns( SQLSMALLINT identifierType, const SQLWCHAR* catalogName, SQLSMALLINT catalogNameLength, const SQLWCHAR* schemaName, SQLSMALLINT schemaNameLength, const SQLWCHAR* tableName, SQLSMALLINT tableNameLength, SQLSMALLINT scope, SQLSMALLINT nullable ) const
         {
             auto rc = SQLSpecialColumnsW( Handle( ), identifierType, const_cast<SQLWCHAR*>( catalogName ), catalogNameLength, const_cast<SQLWCHAR*>( schemaName ), schemaNameLength, const_cast<SQLWCHAR*>( tableName ), tableNameLength, scope, nullable );
-            if ( rc < SQL_SUCCESS )
+            if ( Failed(static_cast<Result>(rc)) )
             {
                 ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
@@ -2779,7 +3045,7 @@ namespace Harlinn::ODBC
         Result SpecialColumns( SQLSMALLINT identifierType, const SQLCHAR* catalogName, SQLSMALLINT catalogNameLength, const SQLCHAR* schemaName, SQLSMALLINT schemaNameLength, const SQLCHAR* tableName, SQLSMALLINT tableNameLength, SQLSMALLINT scope, SQLSMALLINT nullable ) const
         {
             auto rc = SQLSpecialColumnsA( Handle( ), identifierType, const_cast<SQLCHAR*>( catalogName ), catalogNameLength, const_cast<SQLCHAR*>( schemaName ), schemaNameLength, const_cast<SQLCHAR*>( tableName ), tableNameLength, scope, nullable );
-            if ( rc < SQL_SUCCESS )
+            if ( Failed(static_cast<Result>(rc)) )
             {
                 ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
@@ -2789,7 +3055,7 @@ namespace Harlinn::ODBC
         Result Statistics( const SQLWCHAR* catalogName, SQLSMALLINT catalogNameLength, const SQLWCHAR* schemaName, SQLSMALLINT schemaNameLength, const SQLWCHAR* tableName, SQLSMALLINT tableNameLength, SQLSMALLINT unique, SQLSMALLINT options ) const
         {
             auto rc = SQLStatisticsW( Handle( ), const_cast<SQLWCHAR*>( catalogName ), catalogNameLength, const_cast<SQLWCHAR*>( schemaName ), schemaNameLength, const_cast<SQLWCHAR*>( tableName ), tableNameLength, unique, options );
-            if ( rc < SQL_SUCCESS )
+            if ( Failed(static_cast<Result>(rc)) )
             {
                 ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
@@ -2798,7 +3064,7 @@ namespace Harlinn::ODBC
         Result Statistics( const SQLCHAR* catalogName, SQLSMALLINT catalogNameLength, const SQLCHAR* schemaName, SQLSMALLINT schemaNameLength, const SQLCHAR* tableName, SQLSMALLINT tableNameLength, SQLSMALLINT unique, SQLSMALLINT options ) const
         {
             auto rc = SQLStatisticsA( Handle( ), const_cast<SQLCHAR*>( catalogName ), catalogNameLength, const_cast<SQLCHAR*>( schemaName ), schemaNameLength, const_cast<SQLCHAR*>( tableName ), tableNameLength, unique, options );
-            if ( rc < SQL_SUCCESS )
+            if ( Failed(static_cast<Result>(rc)) )
             {
                 ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
@@ -2808,7 +3074,7 @@ namespace Harlinn::ODBC
         Result TablePrivileges( const SQLWCHAR* catalogName, SQLSMALLINT catalogNameLength, const SQLWCHAR* schemaName, SQLSMALLINT schemaNameLength, const SQLWCHAR* tableName, SQLSMALLINT tableNameLength ) const
         {
             auto rc = SQLTablePrivilegesW( Handle( ), const_cast<SQLWCHAR*>( catalogName ), catalogNameLength, const_cast<SQLWCHAR*>( schemaName ), schemaNameLength, const_cast<SQLWCHAR*>( tableName ), tableNameLength );
-            if ( rc < SQL_SUCCESS )
+            if ( Failed(static_cast<Result>(rc)) )
             {
                 ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
@@ -2818,7 +3084,7 @@ namespace Harlinn::ODBC
         Result TablePrivileges( const SQLCHAR* catalogName, SQLSMALLINT catalogNameLength, const SQLCHAR* schemaName, SQLSMALLINT schemaNameLength, const SQLCHAR* tableName, SQLSMALLINT tableNameLength ) const
         {
             auto rc = SQLTablePrivilegesA( Handle( ), const_cast<SQLCHAR*>( catalogName ), catalogNameLength, const_cast<SQLCHAR*>( schemaName ), schemaNameLength, const_cast<SQLCHAR*>( tableName ), tableNameLength );
-            if ( rc < SQL_SUCCESS )
+            if ( Failed(static_cast<Result>(rc)) )
             {
                 ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
@@ -2828,7 +3094,7 @@ namespace Harlinn::ODBC
         Result Tables( const SQLWCHAR* catalogName, SQLSMALLINT catalogNameLength, const SQLWCHAR* schemaName, SQLSMALLINT schemaNameLength, const SQLWCHAR* tableName, SQLSMALLINT tableNameLength, const SQLWCHAR* tableTypes, SQLSMALLINT tableTypesLength ) const
         {
             auto rc = SQLTablesW( Handle( ), const_cast<SQLWCHAR*>( catalogName ), catalogNameLength, const_cast<SQLWCHAR*>( schemaName ), schemaNameLength, const_cast<SQLWCHAR*>( tableName ), tableNameLength, const_cast<SQLWCHAR*>( tableTypes ), tableTypesLength );
-            if ( rc < SQL_SUCCESS )
+            if ( Failed(static_cast<Result>(rc)) )
             {
                 ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
@@ -2837,7 +3103,7 @@ namespace Harlinn::ODBC
         Result Tables( const SQLCHAR* catalogName, SQLSMALLINT catalogNameLength, const SQLCHAR* schemaName, SQLSMALLINT schemaNameLength, const SQLCHAR* tableName, SQLSMALLINT tableNameLength, const SQLCHAR* tableTypes, SQLSMALLINT tableTypesLength ) const
         {
             auto rc = SQLTablesA( Handle( ), const_cast<SQLCHAR*>( catalogName ), catalogNameLength, const_cast<SQLCHAR*>( schemaName ), schemaNameLength, const_cast<SQLCHAR*>( tableName ), tableNameLength, const_cast<SQLCHAR*>( tableTypes ), tableTypesLength );
-            if ( rc < SQL_SUCCESS )
+            if ( Failed(static_cast<Result>(rc)) )
             {
                 ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
@@ -3245,7 +3511,7 @@ namespace Harlinn::ODBC
         Result Connect( const SQLWCHAR* datasourceName, SQLSMALLINT datasourceNameLength, const SQLWCHAR* userName, SQLSMALLINT userNameLength, const SQLWCHAR* authenticationString, SQLSMALLINT authenticationStringLength ) const
         {
             auto rc = SQLConnectW( Handle( ), const_cast<SQLWCHAR*>( datasourceName ), datasourceNameLength, const_cast<SQLWCHAR*>( userName ), userNameLength, const_cast<SQLWCHAR*>( authenticationString ), authenticationStringLength );
-            if ( rc < SQL_SUCCESS )
+            if ( Failed(static_cast<Result>(rc)) )
             {
                 ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
@@ -3286,7 +3552,7 @@ namespace Harlinn::ODBC
         Result Connect( const SQLCHAR* datasourceName, SQLSMALLINT datasourceNameLength, const SQLCHAR* userName, SQLSMALLINT userNameLength, const SQLCHAR* authenticationString, SQLSMALLINT authenticationStringLength ) const
         {
             auto rc = SQLConnectA( Handle( ), const_cast<SQLCHAR*>( datasourceName ), datasourceNameLength, const_cast<SQLCHAR*>( userName ), userNameLength, const_cast<SQLCHAR*>( authenticationString ), authenticationStringLength );
-            if ( rc < SQL_SUCCESS )
+            if ( Failed(static_cast<Result>(rc)) )
             {
                 ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
@@ -3304,7 +3570,7 @@ namespace Harlinn::ODBC
         Result Disconnect( ) const
         {
             auto rc = SQLDisconnect( Handle() );
-            if ( rc < SQL_SUCCESS )
+            if ( Failed(static_cast<Result>(rc)) )
             {
                 ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
@@ -3314,7 +3580,7 @@ namespace Harlinn::ODBC
         Result DriverConnect( SQLHWND windowHandle, const SQLWCHAR* initialConnectionString, SQLSMALLINT initialConnectionStringLength, SQLWCHAR* resultConnectionString, SQLSMALLINT resultConnectionStringMaxLength, SQLSMALLINT* resultConnectionStringActualLength, ODBC::DriverCompletion driverCompletion ) const
         {
             auto rc = SQLDriverConnectW( Handle( ), windowHandle, const_cast<SQLWCHAR*>( initialConnectionString ), initialConnectionStringLength, resultConnectionString, resultConnectionStringMaxLength, resultConnectionStringActualLength, static_cast<SQLSMALLINT>( driverCompletion ) );
-            if ( rc < SQL_SUCCESS )
+            if ( Failed(static_cast<Result>(rc)) )
             {
                 ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
@@ -3323,7 +3589,7 @@ namespace Harlinn::ODBC
         Result DriverConnect( SQLHWND windowHandle, const SQLCHAR* initialConnectionString, SQLSMALLINT initialConnectionStringLength, SQLCHAR* resultConnectionString, SQLSMALLINT resultConnectionStringMaxLength, SQLSMALLINT* resultConnectionStringActualLength, ODBC::DriverCompletion driverCompletion ) const
         {
             auto rc = SQLDriverConnectA( Handle( ), windowHandle, const_cast<SQLCHAR*>( initialConnectionString ), initialConnectionStringLength, resultConnectionString, resultConnectionStringMaxLength, resultConnectionStringActualLength, static_cast<SQLSMALLINT>( driverCompletion ) );
-            if ( rc < SQL_SUCCESS )
+            if ( Failed(static_cast<Result>(rc)) )
             {
                 ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
@@ -3333,7 +3599,7 @@ namespace Harlinn::ODBC
         Result EndTransaction( ODBC::TransactionCompletionType completionType ) const
         {
             auto rc = SQLEndTran( static_cast<SQLSMALLINT>( Base::HandleType ), Handle( ), static_cast<SQLSMALLINT>( completionType ) );
-            if ( rc < SQL_SUCCESS )
+            if ( Failed(static_cast<Result>(rc)) )
             {
                 ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
@@ -3352,7 +3618,7 @@ namespace Harlinn::ODBC
         Result GetAttributeW( SQLINTEGER attributeId, SQLPOINTER value, SQLINTEGER valueBufferLength, SQLINTEGER* valueActualLength ) const
         {
             auto rc = SQLGetConnectAttrW( Handle( ), attributeId, value, valueBufferLength, valueActualLength );
-            if ( rc < SQL_SUCCESS )
+            if ( Failed(static_cast<Result>(rc)) )
             {
                 ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
@@ -3386,7 +3652,7 @@ namespace Harlinn::ODBC
         Result GetAttributeA( SQLINTEGER attributeId, SQLPOINTER value, SQLINTEGER valueBufferLength, SQLINTEGER* valueActualLength ) const
         {
             auto rc = SQLGetConnectAttrW( Handle( ), attributeId, value, valueBufferLength, valueActualLength );
-            if ( rc < SQL_SUCCESS )
+            if ( Failed(static_cast<Result>(rc)) )
             {
                 ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
@@ -3396,7 +3662,7 @@ namespace Harlinn::ODBC
         Result SetAttributeW( SQLINTEGER attributeId, SQLPOINTER value, SQLINTEGER valueLength ) const
         {
             auto rc = SQLSetConnectAttrW( Handle( ), attributeId, value, valueLength );
-            if ( rc < SQL_SUCCESS )
+            if ( Failed(static_cast<Result>(rc)) )
             {
                 ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
@@ -3425,7 +3691,7 @@ namespace Harlinn::ODBC
         Result SetAttributeA( SQLINTEGER attributeId, SQLPOINTER value, SQLINTEGER valueLength ) const
         {
             auto rc = SQLSetConnectAttrA( Handle( ), attributeId, value, valueLength );
-            if ( rc < SQL_SUCCESS )
+            if ( Failed(static_cast<Result>(rc)) )
             {
                 ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
@@ -3475,7 +3741,7 @@ namespace Harlinn::ODBC
         Result GetFunctions( SQLUSMALLINT functionId, SQLUSMALLINT* supported ) const
         {
             auto rc = SQLGetFunctions( Handle( ), functionId, supported );
-            if ( rc < SQL_SUCCESS )
+            if ( Failed(static_cast<Result>(rc)) )
             {
                 ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
@@ -3485,7 +3751,7 @@ namespace Harlinn::ODBC
         Result GetInfoW( SQLUSMALLINT infoType, SQLPOINTER infoValue, SQLSMALLINT infoValueMaxLength, SQLSMALLINT* infoValueActualLength ) const
         {
             auto rc = SQLGetInfoW( Handle( ), infoType, infoValue, infoValueMaxLength, infoValueActualLength );
-            if ( rc < SQL_SUCCESS )
+            if ( Failed(static_cast<Result>(rc)) )
             {
                 ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
@@ -3494,7 +3760,7 @@ namespace Harlinn::ODBC
         Result GetInfoA( SQLUSMALLINT infoType, SQLPOINTER infoValue, SQLSMALLINT infoValueMaxLength, SQLSMALLINT* infoValueActualLength ) const
         {
             auto rc = SQLGetInfoA( Handle( ), infoType, infoValue, infoValueMaxLength, infoValueActualLength );
-            if ( rc < SQL_SUCCESS )
+            if ( Failed(static_cast<Result>(rc)) )
             {
                 ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
@@ -3505,7 +3771,7 @@ namespace Harlinn::ODBC
         Result NativeSql( const SQLWCHAR* inStatement, SQLINTEGER inStatementLength, SQLWCHAR* outStatement, SQLINTEGER outStatementMaxLength, SQLINTEGER* outStatementActualLength ) const
         {
             auto rc = SQLNativeSqlW( Handle( ), const_cast<SQLWCHAR*>( inStatement ), inStatementLength, outStatement, outStatementMaxLength, outStatementActualLength );
-            if ( rc < SQL_SUCCESS )
+            if ( Failed(static_cast<Result>(rc)) )
             {
                 ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
@@ -3514,7 +3780,7 @@ namespace Harlinn::ODBC
         Result NativeSql( const SQLCHAR* inStatement, SQLINTEGER inStatementLength, SQLCHAR* outStatement, SQLINTEGER outStatementMaxLength, SQLINTEGER* outStatementActualLength ) const
         {
             auto rc = SQLNativeSqlA( Handle( ), const_cast<SQLCHAR*>( inStatement ), inStatementLength, outStatement, outStatementMaxLength, outStatementActualLength );
-            if ( rc < SQL_SUCCESS )
+            if ( Failed(static_cast<Result>(rc)) )
             {
                 ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
@@ -3623,7 +3889,7 @@ namespace Harlinn::ODBC
         static void SetGlobalAttribute( SQLINTEGER attributeId, SQLPOINTER value, SQLINTEGER valueLength )
         {
             auto rc = SQLSetEnvAttr( nullptr, attributeId, value, valueLength );
-            if ( rc < SQL_SUCCESS )
+            if ( Failed(static_cast<Result>(rc)) )
             {
                 Internal::ThrowException( rc, ODBC::HandleType::Environment, nullptr, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
@@ -3632,7 +3898,7 @@ namespace Harlinn::ODBC
         static void GetGlobalAttribute( SQLINTEGER attributeId, SQLPOINTER value, SQLINTEGER allocatedLength, SQLINTEGER* valueLength )
         {
             auto rc = SQLGetEnvAttr( nullptr, attributeId, value, allocatedLength, valueLength );
-            if ( rc < SQL_SUCCESS )
+            if ( Failed(static_cast<Result>(rc)) )
             {
                 Internal::ThrowException( rc, ODBC::HandleType::Environment, nullptr, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
@@ -3690,7 +3956,7 @@ namespace Harlinn::ODBC
         Result DataSources( ODBC::Fetch direction, SQLWCHAR* datasourceName, SQLSMALLINT datasourceNameMaxLength, SQLSMALLINT* datasourceNameActualLength, SQLWCHAR* datasourceDescription, SQLSMALLINT datasourceDescriptionMaxLength, SQLSMALLINT* datasourceDescriptionActualLength ) const
         {
             auto rc = SQLDataSourcesW( Handle( ), static_cast< SQLUSMALLINT >( direction ), datasourceName, datasourceNameMaxLength, datasourceNameActualLength, datasourceDescription, datasourceDescriptionMaxLength, datasourceDescriptionActualLength );
-            if ( rc < SQL_SUCCESS )
+            if ( Failed(static_cast<Result>(rc)) )
             {
                 ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
@@ -3701,7 +3967,7 @@ namespace Harlinn::ODBC
         Result DataSources( ODBC::Fetch direction, SQLCHAR* datasourceName, SQLSMALLINT datasourceNameMaxLength, SQLSMALLINT* datasourceNameActualLength, SQLCHAR* datasourceDescription, SQLSMALLINT datasourceDescriptionMaxLength, SQLSMALLINT* datasourceDescriptionActualLength ) const
         {
             auto rc = SQLDataSourcesA( Handle( ), static_cast<SQLUSMALLINT>( direction ), datasourceName, datasourceNameMaxLength, datasourceNameActualLength, datasourceDescription, datasourceDescriptionMaxLength, datasourceDescriptionActualLength );
-            if ( rc < SQL_SUCCESS )
+            if ( Failed(static_cast<Result>(rc)) )
             {
                 ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
@@ -3731,7 +3997,7 @@ namespace Harlinn::ODBC
         Result Drivers( ODBC::Fetch direction, SQLWCHAR* driverDescription, SQLSMALLINT driverDescriptionMaxLength, SQLSMALLINT* driverDescriptionActualLength, SQLWCHAR* driverAttributes, SQLSMALLINT driverAttributesMaxLength, SQLSMALLINT* driverAttributesActualLength ) const
         {
             auto rc = SQLDriversW( Handle( ), static_cast<SQLUSMALLINT>( direction ), driverDescription, driverDescriptionMaxLength, driverDescriptionActualLength, driverAttributes, driverAttributesMaxLength, driverAttributesActualLength );
-            if ( rc < SQL_SUCCESS )
+            if ( Failed(static_cast<Result>(rc)) )
             {
                 ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
@@ -3761,7 +4027,7 @@ namespace Harlinn::ODBC
         Result EndTransaction( ODBC::TransactionCompletionType completionType ) const
         {
             auto rc = SQLEndTran( static_cast<SQLSMALLINT>( Base::HandleType ), Handle( ), static_cast<SQLSMALLINT>( completionType ) );
-            if ( rc < SQL_SUCCESS )
+            if ( Failed(static_cast<Result>(rc)) )
             {
                 ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }

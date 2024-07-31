@@ -126,10 +126,10 @@ public:
     DateReaderTest1DateReader(const Statement* statement)
         : Base( statement )
     {
-        Bind( ID_ID, &id_, nullptr );
-        Bind( TS_ID, &ts_, nullptr );
-        Bind( FLAGS_ID, &flags_, nullptr );
-        Bind( VALUE_ID, &value_, nullptr );
+        BindInt64( ID_ID, &id_, nullptr );
+        BindTimeStamp( TS_ID, &ts_, nullptr );
+        BindInt32( FLAGS_ID, &flags_, nullptr );
+        BindDouble( VALUE_ID, &value_, nullptr );
     }
 
     constexpr Int64 Id( ) const noexcept
@@ -183,8 +183,7 @@ BOOST_AUTO_TEST_CASE( DateReaderTest2 )
 
     auto statement = connection.CreateStatement( );
     Int64 id = 2;
-    Int64 idIndicator = 0;
-    statement.BindParameter( 1, ParameterDirection::Input, &id );
+    statement.BindInt64Parameter( 1, ParameterDirection::Input, &id );
     auto reader = statement.ExecuteReader<DateReaderTest1DateReader>( L"select Id, Ts, Flags, val from TimeseriesValue1 where Id = ?" );
 
     while ( reader->Read( ) )
