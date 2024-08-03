@@ -177,6 +177,7 @@
     <ClCompile Include="DataReaderTests.cpp" />
     <ClCompile Include="EnvironmentTests.cpp" />
     <ClCompile Include="Harlinn.ODBC.Tests.cpp" />
+    <ClCompile Include="StatementTests.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ODBCTestFixture.h" />

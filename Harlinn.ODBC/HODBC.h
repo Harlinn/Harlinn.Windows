@@ -1036,6 +1036,10 @@ namespace Harlinn::ODBC
         constexpr SQLSMALLINT IntervalHourToSecond = SQL_INTERVAL_HOUR_TO_SECOND;
         constexpr SQLSMALLINT IntervalMinuteToSecond = SQL_INTERVAL_MINUTE_TO_SECOND;
         constexpr SQLSMALLINT Guid = SQL_GUID;
+
+        // Values specific to MS SQL Server:
+        constexpr SQLSMALLINT TimeStampOffset = MsSql::SQL_SS_TIMESTAMPOFFSET;
+        constexpr SQLSMALLINT Time2 = MsSql::SQL_SS_TIME2;
     }
     namespace NativeType
     {
@@ -2706,7 +2710,67 @@ namespace Harlinn::ODBC
         }
 
 
+        /// <summary>
+        /// Returns a numeric value that is either the maximum or actual character length of a character 
+        /// string or binary data type. It is the maximum character length for a fixed-length data type, 
+        /// or the actual character length for a variable-length data type. Its value always excludes 
+        /// the null-termination byte that ends the character string.
+        /// </summary>
+        /// <param name="columnNumber">The one-based column number.</param>
+        /// <returns>The length of the column value.</returns>
+        SQLLEN ColumnLength( SQLUSMALLINT columnNumber ) const
+        {
+            return GetInt64ColumnAttribute( columnNumber, SQL_DESC_LENGTH );
+        }
 
+
+        /// <summary>
+        /// Returns the character or characters that the driver recognizes as a prefix for a literal of 
+        /// this data type. This field contains an empty string for a data type for which a literal prefix 
+        /// is not applicable.
+        /// </summary>
+        /// <param name="columnNumber">The one-based column number.</param>
+        /// <returns>The literal prefix.</returns>
+        WideString ColumnLiteralPrefix( SQLUSMALLINT columnNumber ) const
+        {
+            return GetWideStringColumnAttribute( columnNumber, SQL_DESC_LITERAL_PREFIX );
+        }
+
+        /// <summary>
+        /// Returns the character or characters that the driver recognizes as a suffix for a 
+        /// literal of this data type. This field contains an empty string for a data type 
+        /// for which a literal suffix is not applicable.
+        /// </summary>
+        /// <param name="columnNumber">The one-based column number.</param>
+        /// <returns>The literal suffix.</returns>
+        WideString ColumnLiteralSuffix( SQLUSMALLINT columnNumber ) const
+        {
+            return GetWideStringColumnAttribute( columnNumber, SQL_DESC_LITERAL_SUFFIX );
+        }
+
+        /// <summary>
+        /// Returns the localized (native language) name for the data type that may be 
+        /// different from the regular name of the data type. If there is no localized name, 
+        /// then an empty string is returned. This field is for display purposes only. 
+        /// The character set of the string is locale-dependent and is typically the 
+        /// default character set of the server.
+        /// </summary>
+        /// <param name="columnNumber">The one-based column number.</param>
+        /// <returns>The localized (native language) name for the data type.</returns>
+        WideString ColumnLocalTypeName( SQLUSMALLINT columnNumber ) const
+        {
+            return GetWideStringColumnAttribute( columnNumber, SQL_DESC_LOCAL_TYPE_NAME );
+        }
+
+        /// <summary>
+        /// The column alias, if it applies. If the column alias does not apply, the column name is returned.
+        /// </summary>
+        /// <param name="columnNumber">The one-based column number.</param>
+        /// <returns>The column alias or name.</returns>
+        WideString ColumnName( SQLUSMALLINT columnNumber ) const
+        {
+            return GetWideStringColumnAttribute( columnNumber, SQL_DESC_NAME );
+        }
 
 
         Result ColumnPrivileges( const SQLWCHAR* catalogName, SQLSMALLINT catalogNameMaxLength, const SQLWCHAR* schemaName, SQLSMALLINT schemaNameMaxLength, const SQLWCHAR* tableName, SQLSMALLINT tableNameMaxLength, const SQLWCHAR* columnName, SQLSMALLINT columnNameMaxLength ) const
