@@ -1353,6 +1353,37 @@ namespace Harlinn::ODBC
     };
 
 
+    class Time2 : public MsSql::DBTIME2
+    {
+    public:
+        using Base = MsSql::DBTIME2;
+        Time2( )
+            : Base{}
+        {
+        }
+
+        DateTime ToDateTime( ) const
+        {
+            auto ticks = DateTime::TimeToTicks( hour, minute, second ) + ( fraction / 100 );
+            return DateTime( ticks );
+        }
+        TimeSpan ToTimeSpan( ) const
+        {
+            auto ticks = DateTime::TimeToTicks( hour, minute, second ) + ( fraction / 100 );
+            return TimeSpan( ticks );
+        }
+
+        Time2& operator = ( const DateTime& dateTime )
+        {
+            hour = dateTime.Hour( );
+            minute = dateTime.Minute( );
+            second = dateTime.Second( );
+            fraction = ( dateTime.Ticks( ) % DateTime::TicksPerSecond ) * 100;
+            return *this;
+        }
+    };
+
+
     enum class IntervalType
     {
         Year = SQL_IS_YEAR,
@@ -2711,10 +2742,19 @@ namespace Harlinn::ODBC
 
 
         /// <summary>
+        /// <para>
         /// Returns a numeric value that is either the maximum or actual character length of a character 
         /// string or binary data type. It is the maximum character length for a fixed-length data type, 
         /// or the actual character length for a variable-length data type. Its value always excludes 
         /// the null-termination byte that ends the character string.
+        /// </para>
+        /// <para>
+        /// For the decimal and numeric types, it returns the precision of the column.
+        /// </para>
+        /// <para>
+        /// The return values for other column types appears consistent, like the function returning 53 
+        /// for a nullable float column. What 53 means in this context is something I have yet to learn.
+        /// </para>
         /// </summary>
         /// <param name="columnNumber">The one-based column number.</param>
         /// <returns>The length of the column value.</returns>
@@ -2771,6 +2811,57 @@ namespace Harlinn::ODBC
         {
             return GetWideStringColumnAttribute( columnNumber, SQL_DESC_NAME );
         }
+
+        /// <summary>
+        /// Returns a std::optional&lt;bool&gt; object indicating whether the column accepts NULL values 
+        /// or not. If has_value() returns false, it is not known whether the column accepts NULL values 
+        /// or not. When has_value() returns true, value() returns true if the column accepts NULL values,
+        /// otherwise value() returns false, indicating that the column does not accept null values.
+        /// </summary>
+        /// <param name="columnNumber">The one-based column number.</param>
+        /// <returns>A std::optional&lt;bool&gt; object indicating whether the column accepts NULL values or not.</returns>
+        std::optional<bool> ColumnIsNullable( SQLUSMALLINT columnNumber ) const
+        {
+            auto value = GetInt64ColumnAttribute( columnNumber, SQL_DESC_NULLABLE );
+            if ( value == SQL_NULLABLE )
+            {
+                return true;
+            }
+            else if ( value == SQL_NO_NULLS )
+            {
+                return false;
+            }
+            else
+            {
+                return {};
+            }
+        }
+
+        /// <summary>
+        /// If the column is an approximate numeric this function returns the value 2,
+        /// if the column is an exact numeric data type, this field contains a value of 10,
+        /// for all other types this function returns 0.
+        /// </summary>
+        /// <param name="columnNumber">The one-based column number.</param>
+        /// <returns>A value indicating whether the column is an exact numeric type, an approximate numeric type, or something else.</returns>
+        Int64 ColumnNumericPrecisionRadix( SQLUSMALLINT columnNumber ) const
+        {
+            return GetInt64ColumnAttribute( columnNumber, SQL_DESC_NUM_PREC_RADIX );
+        }
+
+
+        /// <summary>
+        /// Returns the length, in bytes, of a character string or binary data type. For fixed-length 
+        /// character or binary types, this is the actual length in bytes. For variable-length character 
+        /// or binary types, this is the maximum length in bytes. This value does not include the null terminator.
+        /// </summary>
+        /// <param name="columnNumber">The one-based column number.</param>
+        /// <returns>The length, in bytes, of a character string or binary data type.</returns>
+        Int64 ColumnBinaryLength( SQLUSMALLINT columnNumber ) const
+        {
+            return GetInt64ColumnAttribute( columnNumber, SQL_DESC_OCTET_LENGTH );
+        }
+
 
 
         Result ColumnPrivileges( const SQLWCHAR* catalogName, SQLSMALLINT catalogNameMaxLength, const SQLWCHAR* schemaName, SQLSMALLINT schemaNameMaxLength, const SQLWCHAR* tableName, SQLSMALLINT tableNameMaxLength, const SQLWCHAR* columnName, SQLSMALLINT columnNameMaxLength ) const

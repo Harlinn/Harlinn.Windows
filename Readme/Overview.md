@@ -53,7 +53,7 @@ I've also created a fair number of tests for my own projects:
 - **Harlinn.Common.Core.Tests:** 3192
 - **Harlinn.Windows.Tests:** 271
 - **Harlinn.OCI.Tests:** 49
-- **Harlinn.ODBC.Tests:** 106
+- **Harlinn.ODBC.Tests:** 204
 - **Harlinn.Timeseries.Tests:** 10
 - **Harlinn.Julia.Tests:** 11
  
