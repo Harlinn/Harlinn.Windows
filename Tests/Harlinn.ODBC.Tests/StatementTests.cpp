@@ -1898,4 +1898,1432 @@ BOOST_AUTO_TEST_CASE( ColumnBinaryLengthTest28 )
     BOOST_CHECK( columnBinaryLength == 2147483647 );
 }
 
+// --run_test=StatementTests/ColumnPrecisionTest1
+BOOST_AUTO_TEST_CASE( ColumnPrecisionTest1 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+
+    auto statement = connection.CreateStatement( );
+    rc = statement.Prepare( L"SELECT Id, BitValue FROM TestTable1" );
+    BOOST_CHECK( rc == Result::Success );
+    auto columnPrecision = statement.ColumnPrecision( 2 );
+    BOOST_CHECK( columnPrecision == 1 );
+}
+
+// --run_test=StatementTests/ColumnPrecisionTest2
+BOOST_AUTO_TEST_CASE( ColumnPrecisionTest2 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+
+    auto statement = connection.CreateStatement( );
+    rc = statement.Prepare( L"SELECT Id, TinyIntValue FROM TestTable1" );
+    BOOST_CHECK( rc == Result::Success );
+    auto columnPrecision = statement.ColumnPrecision( 2 );
+    BOOST_CHECK( columnPrecision == 3 );
+}
+
+// --run_test=StatementTests/ColumnPrecisionTest3
+BOOST_AUTO_TEST_CASE( ColumnPrecisionTest3 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+
+    auto statement = connection.CreateStatement( );
+    rc = statement.Prepare( L"SELECT Id, SmallIntValue FROM TestTable1" );
+    BOOST_CHECK( rc == Result::Success );
+    auto columnPrecision = statement.ColumnPrecision( 2 );
+    BOOST_CHECK( columnPrecision == 5 );
+}
+
+// --run_test=StatementTests/ColumnPrecisionTest4
+BOOST_AUTO_TEST_CASE( ColumnPrecisionTest4 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+
+    auto statement = connection.CreateStatement( );
+    rc = statement.Prepare( L"SELECT Id, IntValue FROM TestTable1" );
+    BOOST_CHECK( rc == Result::Success );
+    auto columnPrecision = statement.ColumnPrecision( 2 );
+    BOOST_CHECK( columnPrecision == 10 );
+}
+
+// --run_test=StatementTests/ColumnPrecisionTest5
+BOOST_AUTO_TEST_CASE( ColumnPrecisionTest5 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+
+    auto statement = connection.CreateStatement( );
+    rc = statement.Prepare( L"SELECT Id, BigIntValue FROM TestTable1" );
+    BOOST_CHECK( rc == Result::Success );
+    auto columnPrecision = statement.ColumnPrecision( 2 );
+    BOOST_CHECK( columnPrecision == 19 );
+}
+
+// --run_test=StatementTests/ColumnPrecisionTest6
+BOOST_AUTO_TEST_CASE( ColumnPrecisionTest6 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+
+    auto statement = connection.CreateStatement( );
+    rc = statement.Prepare( L"SELECT Id, DecimalValue FROM TestTable1" );
+    BOOST_CHECK( rc == Result::Success );
+    auto columnPrecision = statement.ColumnPrecision( 2 );
+    BOOST_CHECK( columnPrecision == 38 );
+}
+
+// --run_test=StatementTests/ColumnPrecisionTest7
+BOOST_AUTO_TEST_CASE( ColumnPrecisionTest7 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+
+    auto statement = connection.CreateStatement( );
+    rc = statement.Prepare( L"SELECT Id, NumericValue FROM TestTable1" );
+    BOOST_CHECK( rc == Result::Success );
+    auto columnPrecision = statement.ColumnPrecision( 2 );
+    BOOST_CHECK( columnPrecision == 18 );
+}
+
+// --run_test=StatementTests/ColumnPrecisionTest8
+BOOST_AUTO_TEST_CASE( ColumnPrecisionTest8 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+
+    auto statement = connection.CreateStatement( );
+    rc = statement.Prepare( L"SELECT Id, RealValue FROM TestTable1" );
+    BOOST_CHECK( rc == Result::Success );
+    auto columnPrecision = statement.ColumnPrecision( 2 );
+    // 24-bit precision
+    BOOST_CHECK( columnPrecision == 24 );
+}
+
+// --run_test=StatementTests/ColumnPrecisionTest9
+BOOST_AUTO_TEST_CASE( ColumnPrecisionTest9 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+
+    auto statement = connection.CreateStatement( );
+    rc = statement.Prepare( L"SELECT Id, FloatValue FROM TestTable1" );
+    BOOST_CHECK( rc == Result::Success );
+    auto columnPrecision = statement.ColumnPrecision( 2 );
+    // 53-bit precision
+    BOOST_CHECK( columnPrecision == 53 );
+}
+
+// --run_test=StatementTests/ColumnPrecisionTest10
+BOOST_AUTO_TEST_CASE( ColumnPrecisionTest10 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+
+    auto statement = connection.CreateStatement( );
+    rc = statement.Prepare( L"SELECT Id, SmallMoneyValue FROM TestTable1" );
+    BOOST_CHECK( rc == Result::Success );
+    auto columnPrecision = statement.ColumnPrecision( 2 );
+    BOOST_CHECK( columnPrecision == 10 );
+}
+
+// --run_test=StatementTests/ColumnPrecisionTest11
+BOOST_AUTO_TEST_CASE( ColumnPrecisionTest11 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+
+    auto statement = connection.CreateStatement( );
+    rc = statement.Prepare( L"SELECT Id, MoneyValue FROM TestTable1" );
+    BOOST_CHECK( rc == Result::Success );
+    auto columnPrecision = statement.ColumnPrecision( 2 );
+    BOOST_CHECK( columnPrecision == 19 );
+}
+
+// --run_test=StatementTests/ColumnPrecisionTest12
+BOOST_AUTO_TEST_CASE( ColumnPrecisionTest12 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+
+    auto statement = connection.CreateStatement( );
+    rc = statement.Prepare( L"SELECT Id, DateValue FROM TestTable1" );
+    BOOST_CHECK( rc == Result::Success );
+    auto columnPrecision = statement.ColumnPrecision( 2 );
+    BOOST_CHECK( columnPrecision == 0 );
+}
+
+// --run_test=StatementTests/ColumnPrecisionTest13
+BOOST_AUTO_TEST_CASE( ColumnPrecisionTest13 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+
+    auto statement = connection.CreateStatement( );
+    rc = statement.Prepare( L"SELECT Id, DateTimeValue FROM TestTable1" );
+    BOOST_CHECK( rc == Result::Success );
+    auto columnPrecision = statement.ColumnPrecision( 2 );
+    BOOST_CHECK( columnPrecision == 3 );
+}
+
+// --run_test=StatementTests/ColumnPrecisionTest14
+BOOST_AUTO_TEST_CASE( ColumnPrecisionTest14 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+
+    auto statement = connection.CreateStatement( );
+    rc = statement.Prepare( L"SELECT Id, DateTime2Value FROM TestTable1" );
+    BOOST_CHECK( rc == Result::Success );
+    auto columnPrecision = statement.ColumnPrecision( 2 );
+    BOOST_CHECK( columnPrecision == 7 );
+}
+
+// --run_test=StatementTests/ColumnPrecisionTest15
+BOOST_AUTO_TEST_CASE( ColumnPrecisionTest15 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+
+    auto statement = connection.CreateStatement( );
+    rc = statement.Prepare( L"SELECT Id, DateTimeOffsetValue FROM TestTable1" );
+    BOOST_CHECK( rc == Result::Success );
+    auto columnPrecision = statement.ColumnPrecision( 2 );
+    BOOST_CHECK( columnPrecision == 7 );
+}
+
+// --run_test=StatementTests/ColumnPrecisionTest16
+BOOST_AUTO_TEST_CASE( ColumnPrecisionTest16 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+
+    auto statement = connection.CreateStatement( );
+    rc = statement.Prepare( L"SELECT Id, SmallDateTimeValue FROM TestTable1" );
+    BOOST_CHECK( rc == Result::Success );
+    auto columnPrecision = statement.ColumnPrecision( 2 );
+    BOOST_CHECK( columnPrecision == 0 );
+}
+
+// --run_test=StatementTests/ColumnPrecisionTest17
+BOOST_AUTO_TEST_CASE( ColumnPrecisionTest17 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+
+    auto statement = connection.CreateStatement( );
+    rc = statement.Prepare( L"SELECT Id, TimeValue FROM TestTable1" );
+    BOOST_CHECK( rc == Result::Success );
+    auto columnPrecision = statement.ColumnPrecision( 2 );
+    BOOST_CHECK( columnPrecision == 7 );
+}
+
+// --run_test=StatementTests/ColumnPrecisionTest18
+BOOST_AUTO_TEST_CASE( ColumnPrecisionTest18 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+
+    auto statement = connection.CreateStatement( );
+    rc = statement.Prepare( L"SELECT Id, UniqueidentifierValue FROM TestTable1" );
+    BOOST_CHECK( rc == Result::Success );
+    auto columnPrecision = statement.ColumnPrecision( 2 );
+    BOOST_CHECK( columnPrecision == 36 );
+}
+
+// --run_test=StatementTests/ColumnPrecisionTest19
+BOOST_AUTO_TEST_CASE( ColumnPrecisionTest19 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+
+    auto statement = connection.CreateStatement( );
+    rc = statement.Prepare( L"SELECT Id, RowVersionValue FROM TestTable1" );
+    BOOST_CHECK( rc == Result::Success );
+    auto columnPrecision = statement.ColumnPrecision( 2 );
+    BOOST_CHECK( columnPrecision == 8 );
+}
+
+// --run_test=StatementTests/ColumnPrecisionTest20
+BOOST_AUTO_TEST_CASE( ColumnPrecisionTest20 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+
+    auto statement = connection.CreateStatement( );
+    rc = statement.Prepare( L"SELECT Id, BinaryValue FROM TestTable1" );
+    BOOST_CHECK( rc == Result::Success );
+    auto columnPrecision = statement.ColumnPrecision( 2 );
+    BOOST_CHECK( columnPrecision == 4 );
+}
+
+// --run_test=StatementTests/ColumnPrecisionTest21
+BOOST_AUTO_TEST_CASE( ColumnPrecisionTest21 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+
+    auto statement = connection.CreateStatement( );
+    rc = statement.Prepare( L"SELECT Id, VarBinaryValue FROM TestTable1" );
+    BOOST_CHECK( rc == Result::Success );
+    auto columnPrecision = statement.ColumnPrecision( 2 );
+    BOOST_CHECK( columnPrecision == 0 );
+}
+
+
+// --run_test=StatementTests/ColumnPrecisionTest22
+BOOST_AUTO_TEST_CASE( ColumnPrecisionTest22 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+
+    auto statement = connection.CreateStatement( );
+    rc = statement.Prepare( L"SELECT Id, CharValue FROM TestTable1" );
+    BOOST_CHECK( rc == Result::Success );
+    auto columnPrecision = statement.ColumnPrecision( 2 );
+    BOOST_CHECK( columnPrecision == 4 );
+}
+
+// --run_test=StatementTests/ColumnPrecisionTest23
+BOOST_AUTO_TEST_CASE( ColumnPrecisionTest23 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+
+    auto statement = connection.CreateStatement( );
+    rc = statement.Prepare( L"SELECT Id, VarCharValue FROM TestTable1" );
+    BOOST_CHECK( rc == Result::Success );
+    auto columnPrecision = statement.ColumnPrecision( 2 );
+    BOOST_CHECK( columnPrecision == 0 );
+}
+
+// --run_test=StatementTests/ColumnPrecisionTest24
+BOOST_AUTO_TEST_CASE( ColumnPrecisionTest24 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+
+    auto statement = connection.CreateStatement( );
+    rc = statement.Prepare( L"SELECT Id, NCharValue FROM TestTable1" );
+    BOOST_CHECK( rc == Result::Success );
+    auto columnPrecision = statement.ColumnPrecision( 2 );
+    BOOST_CHECK( columnPrecision == 4 );
+}
+
+// --run_test=StatementTests/ColumnPrecisionTest25
+BOOST_AUTO_TEST_CASE( ColumnPrecisionTest25 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+
+    auto statement = connection.CreateStatement( );
+    rc = statement.Prepare( L"SELECT Id, NVarCharValue FROM TestTable1" );
+    BOOST_CHECK( rc == Result::Success );
+    auto columnPrecision = statement.ColumnPrecision( 2 );
+    BOOST_CHECK( columnPrecision == 0 );
+}
+
+// --run_test=StatementTests/ColumnPrecisionTest26
+BOOST_AUTO_TEST_CASE( ColumnPrecisionTest26 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+
+    auto statement = connection.CreateStatement( );
+    rc = statement.Prepare( L"SELECT Id, TextValue FROM TestTable1" );
+    BOOST_CHECK( rc == Result::Success );
+    auto columnPrecision = statement.ColumnPrecision( 2 );
+    BOOST_CHECK( columnPrecision == 2147483647 );
+}
+
+// --run_test=StatementTests/ColumnPrecisionTest27
+BOOST_AUTO_TEST_CASE( ColumnPrecisionTest27 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+
+    auto statement = connection.CreateStatement( );
+    rc = statement.Prepare( L"SELECT Id, NTextValue FROM TestTable1" );
+    BOOST_CHECK( rc == Result::Success );
+    auto columnPrecision = statement.ColumnPrecision( 2 );
+    BOOST_CHECK( columnPrecision == 1073741823 );
+}
+
+// --run_test=StatementTests/ColumnPrecisionTest28
+BOOST_AUTO_TEST_CASE( ColumnPrecisionTest28 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+
+    auto statement = connection.CreateStatement( );
+    rc = statement.Prepare( L"SELECT Id, ImageValue FROM TestTable1" );
+    BOOST_CHECK( rc == Result::Success );
+    auto columnPrecision = statement.ColumnPrecision( 2 );
+    BOOST_CHECK( columnPrecision == 2147483647 );
+}
+
+// --run_test=StatementTests/ColumnScaleTest1
+BOOST_AUTO_TEST_CASE( ColumnScaleTest1 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+
+    auto statement = connection.CreateStatement( );
+    rc = statement.Prepare( L"SELECT Id, DecimalValue FROM TestTable1" );
+    BOOST_CHECK( rc == Result::Success );
+    auto columnScale = statement.ColumnScale( 2 );
+    BOOST_CHECK( columnScale == 4 );
+}
+
+// --run_test=StatementTests/ColumnScaleTest2
+BOOST_AUTO_TEST_CASE( ColumnScaleTest2 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+
+    auto statement = connection.CreateStatement( );
+    rc = statement.Prepare( L"SELECT Id, NumericValue FROM TestTable1" );
+    BOOST_CHECK( rc == Result::Success );
+    auto columnScale = statement.ColumnScale( 2 );
+    BOOST_CHECK( columnScale == 6 );
+}
+
+// --run_test=StatementTests/ColumnScaleTest3
+BOOST_AUTO_TEST_CASE( ColumnScaleTest3 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+
+    auto statement = connection.CreateStatement( );
+    rc = statement.Prepare( L"SELECT Id, SmallMoneyValue FROM TestTable1" );
+    BOOST_CHECK( rc == Result::Success );
+    auto columnScale = statement.ColumnScale( 2 );
+    BOOST_CHECK( columnScale == 4 );
+}
+
+// --run_test=StatementTests/ColumnScaleTest4
+BOOST_AUTO_TEST_CASE( ColumnScaleTest4 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+
+    auto statement = connection.CreateStatement( );
+    rc = statement.Prepare( L"SELECT Id, MoneyValue FROM TestTable1" );
+    BOOST_CHECK( rc == Result::Success );
+    auto columnScale = statement.ColumnScale( 2 );
+    BOOST_CHECK( columnScale == 4 );
+}
+
+
+// --run_test=StatementTests/ColumnScaleTest5
+BOOST_AUTO_TEST_CASE( ColumnScaleTest5 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+
+    auto statement = connection.CreateStatement( );
+    rc = statement.Prepare( L"SELECT Id, DateTimeValue FROM TestTable1" );
+    BOOST_CHECK( rc == Result::Success );
+    auto columnScale = statement.ColumnScale( 2 );
+    BOOST_CHECK( columnScale == 3 );
+}
+
+
+// --run_test=StatementTests/ColumnScaleTest6
+BOOST_AUTO_TEST_CASE( ColumnScaleTest6 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+
+    auto statement = connection.CreateStatement( );
+    rc = statement.Prepare( L"SELECT Id, DateTime2Value FROM TestTable1" );
+    BOOST_CHECK( rc == Result::Success );
+    auto columnScale = statement.ColumnScale( 2 );
+    BOOST_CHECK( columnScale == 7 );
+}
+
+// --run_test=StatementTests/ColumnScaleTest7
+BOOST_AUTO_TEST_CASE( ColumnScaleTest7 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+
+    auto statement = connection.CreateStatement( );
+    rc = statement.Prepare( L"SELECT Id, DateTimeOffsetValue FROM TestTable1" );
+    BOOST_CHECK( rc == Result::Success );
+    auto columnScale = statement.ColumnScale( 2 );
+    BOOST_CHECK( columnScale == 7 );
+}
+
+// --run_test=StatementTests/ColumnScaleTest8
+BOOST_AUTO_TEST_CASE( ColumnScaleTest8 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+
+    auto statement = connection.CreateStatement( );
+    rc = statement.Prepare( L"SELECT Id, SmallDateTimeValue FROM TestTable1" );
+    BOOST_CHECK( rc == Result::Success );
+    auto columnScale = statement.ColumnScale( 2 );
+    BOOST_CHECK( columnScale == 0 );
+}
+
+
+// --run_test=StatementTests/ColumnScaleTest9
+BOOST_AUTO_TEST_CASE( ColumnScaleTest9 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+
+    auto statement = connection.CreateStatement( );
+    rc = statement.Prepare( L"SELECT Id, TimeValue FROM TestTable1" );
+    BOOST_CHECK( rc == Result::Success );
+    auto columnScale = statement.ColumnScale( 2 );
+    BOOST_CHECK( columnScale == 7 );
+}
+
+
+// --run_test=StatementTests/ColumnScaleTest10
+BOOST_AUTO_TEST_CASE( ColumnScaleTest10 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+
+    auto statement = connection.CreateStatement( );
+    rc = statement.Prepare( L"SELECT Id, FloatValue FROM TestTable1" );
+    BOOST_CHECK( rc == Result::Success );
+    auto columnScale = statement.ColumnScale( 2 );
+    BOOST_CHECK( columnScale == 0 );
+}
+
+// --run_test=StatementTests/ColumnSchemaNameTest1
+BOOST_AUTO_TEST_CASE( ColumnSchemaNameTest1 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+
+    auto statement = connection.CreateStatement( );
+    rc = statement.Prepare( L"SELECT Id, BitValue FROM TestTable1 FOR BROWSE" );
+    BOOST_CHECK( rc == Result::Success );
+    auto columnSchemaName = statement.ColumnSchemaName( 2 );
+    BOOST_CHECK( columnSchemaName.IsEmpty() );
+}
+
+
+// --run_test=StatementTests/ColumnSchemaNameTest2
+BOOST_AUTO_TEST_CASE( ColumnSchemaNameTest2 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+
+    auto statement = connection.CreateStatement( );
+    rc = statement.Prepare( L"SELECT Id, BitValue FROM TestSchema.TestTable3 FOR BROWSE" );
+    BOOST_CHECK( rc == Result::Success );
+    auto columnSchemaName = statement.ColumnSchemaName( 2 );
+    BOOST_CHECK( columnSchemaName == L"TestSchema" );
+}
+
+
+// --run_test=StatementTests/ColumnSearchPredicatesTest1
+BOOST_AUTO_TEST_CASE( ColumnSearchPredicatesTest1 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+
+    auto statement = connection.CreateStatement( );
+    rc = statement.Prepare( L"SELECT Id, BitValue FROM TestTable1" );
+    BOOST_CHECK( rc == Result::Success );
+    auto columnSearchPredicates = statement.ColumnSearchPredicates( 2 );
+    BOOST_CHECK( columnSearchPredicates == SearchPredicates::AllExceptLike );
+}
+
+// --run_test=StatementTests/ColumnSearchPredicatesTest2
+BOOST_AUTO_TEST_CASE( ColumnSearchPredicatesTest2 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+
+    auto statement = connection.CreateStatement( );
+    rc = statement.Prepare( L"SELECT Id, TinyIntValue FROM TestTable1" );
+    BOOST_CHECK( rc == Result::Success );
+    auto columnSearchPredicates = statement.ColumnSearchPredicates( 2 );
+    BOOST_CHECK( columnSearchPredicates == SearchPredicates::AllExceptLike );
+}
+
+// --run_test=StatementTests/ColumnSearchPredicatesTest3
+BOOST_AUTO_TEST_CASE( ColumnSearchPredicatesTest3 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+
+    auto statement = connection.CreateStatement( );
+    rc = statement.Prepare( L"SELECT Id, SmallIntValue FROM TestTable1" );
+    BOOST_CHECK( rc == Result::Success );
+    auto columnSearchPredicates = statement.ColumnSearchPredicates( 2 );
+    BOOST_CHECK( columnSearchPredicates == SearchPredicates::AllExceptLike );
+}
+
+// --run_test=StatementTests/ColumnSearchPredicatesTest4
+BOOST_AUTO_TEST_CASE( ColumnSearchPredicatesTest4 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+
+    auto statement = connection.CreateStatement( );
+    rc = statement.Prepare( L"SELECT Id, IntValue FROM TestTable1" );
+    BOOST_CHECK( rc == Result::Success );
+    auto columnSearchPredicates = statement.ColumnSearchPredicates( 2 );
+    BOOST_CHECK( columnSearchPredicates == SearchPredicates::AllExceptLike );
+}
+
+// --run_test=StatementTests/ColumnSearchPredicatesTest5
+BOOST_AUTO_TEST_CASE( ColumnSearchPredicatesTest5 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+
+    auto statement = connection.CreateStatement( );
+    rc = statement.Prepare( L"SELECT Id, BigIntValue FROM TestTable1" );
+    BOOST_CHECK( rc == Result::Success );
+    auto columnSearchPredicates = statement.ColumnSearchPredicates( 2 );
+    BOOST_CHECK( columnSearchPredicates == SearchPredicates::AllExceptLike );
+}
+
+// --run_test=StatementTests/ColumnSearchPredicatesTest6
+BOOST_AUTO_TEST_CASE( ColumnSearchPredicatesTest6 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+
+    auto statement = connection.CreateStatement( );
+    rc = statement.Prepare( L"SELECT Id, DecimalValue FROM TestTable1" );
+    BOOST_CHECK( rc == Result::Success );
+    auto columnSearchPredicates = statement.ColumnSearchPredicates( 2 );
+    BOOST_CHECK( columnSearchPredicates == SearchPredicates::AllExceptLike );
+}
+
+
+// --run_test=StatementTests/ColumnSearchPredicatesTest7
+BOOST_AUTO_TEST_CASE( ColumnSearchPredicatesTest7 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+
+    auto statement = connection.CreateStatement( );
+    rc = statement.Prepare( L"SELECT Id, NumericValue FROM TestTable1" );
+    BOOST_CHECK( rc == Result::Success );
+    auto columnSearchPredicates = statement.ColumnSearchPredicates( 2 );
+    BOOST_CHECK( columnSearchPredicates == SearchPredicates::AllExceptLike );
+}
+
+// --run_test=StatementTests/ColumnSearchPredicatesTest8
+BOOST_AUTO_TEST_CASE( ColumnSearchPredicatesTest8 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+
+    auto statement = connection.CreateStatement( );
+    rc = statement.Prepare( L"SELECT Id, RealValue FROM TestTable1" );
+    BOOST_CHECK( rc == Result::Success );
+    auto columnSearchPredicates = statement.ColumnSearchPredicates( 2 );
+    BOOST_CHECK( columnSearchPredicates == SearchPredicates::AllExceptLike );
+}
+
+// --run_test=StatementTests/ColumnSearchPredicatesTest9
+BOOST_AUTO_TEST_CASE( ColumnSearchPredicatesTest9 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+
+    auto statement = connection.CreateStatement( );
+    rc = statement.Prepare( L"SELECT Id, FloatValue FROM TestTable1" );
+    BOOST_CHECK( rc == Result::Success );
+    auto columnSearchPredicates = statement.ColumnSearchPredicates( 2 );
+    BOOST_CHECK( columnSearchPredicates == SearchPredicates::AllExceptLike );
+}
+
+// --run_test=StatementTests/ColumnSearchPredicatesTest10
+BOOST_AUTO_TEST_CASE( ColumnSearchPredicatesTest10 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+
+    auto statement = connection.CreateStatement( );
+    rc = statement.Prepare( L"SELECT Id, SmallMoneyValue FROM TestTable1" );
+    BOOST_CHECK( rc == Result::Success );
+    auto columnSearchPredicates = statement.ColumnSearchPredicates( 2 );
+    BOOST_CHECK( columnSearchPredicates == SearchPredicates::AllExceptLike );
+}
+
+// --run_test=StatementTests/ColumnSearchPredicatesTest11
+BOOST_AUTO_TEST_CASE( ColumnSearchPredicatesTest11 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+
+    auto statement = connection.CreateStatement( );
+    rc = statement.Prepare( L"SELECT Id, MoneyValue FROM TestTable1" );
+    BOOST_CHECK( rc == Result::Success );
+    auto columnSearchPredicates = statement.ColumnSearchPredicates( 2 );
+    BOOST_CHECK( columnSearchPredicates == SearchPredicates::AllExceptLike );
+}
+
+// --run_test=StatementTests/ColumnSearchPredicatesTest12
+BOOST_AUTO_TEST_CASE( ColumnSearchPredicatesTest12 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+
+    auto statement = connection.CreateStatement( );
+    rc = statement.Prepare( L"SELECT Id, DateValue FROM TestTable1" );
+    BOOST_CHECK( rc == Result::Success );
+    auto columnSearchPredicates = statement.ColumnSearchPredicates( 2 );
+    BOOST_CHECK( columnSearchPredicates == SearchPredicates::Searchable );
+}
+
+// --run_test=StatementTests/ColumnSearchPredicatesTest13
+BOOST_AUTO_TEST_CASE( ColumnSearchPredicatesTest13 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+
+    auto statement = connection.CreateStatement( );
+    rc = statement.Prepare( L"SELECT Id, DateTimeValue FROM TestTable1" );
+    BOOST_CHECK( rc == Result::Success );
+    auto columnSearchPredicates = statement.ColumnSearchPredicates( 2 );
+    BOOST_CHECK( columnSearchPredicates == SearchPredicates::Searchable );
+}
+
+// --run_test=StatementTests/ColumnSearchPredicatesTest14
+BOOST_AUTO_TEST_CASE( ColumnSearchPredicatesTest14 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+
+    auto statement = connection.CreateStatement( );
+    rc = statement.Prepare( L"SELECT Id, DateTime2Value FROM TestTable1" );
+    BOOST_CHECK( rc == Result::Success );
+    auto columnSearchPredicates = statement.ColumnSearchPredicates( 2 );
+    BOOST_CHECK( columnSearchPredicates == SearchPredicates::Searchable );
+}
+
+// --run_test=StatementTests/ColumnSearchPredicatesTest15
+BOOST_AUTO_TEST_CASE( ColumnSearchPredicatesTest15 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+
+    auto statement = connection.CreateStatement( );
+    rc = statement.Prepare( L"SELECT Id, DateTimeOffsetValue FROM TestTable1" );
+    BOOST_CHECK( rc == Result::Success );
+    auto columnSearchPredicates = statement.ColumnSearchPredicates( 2 );
+    BOOST_CHECK( columnSearchPredicates == SearchPredicates::Searchable );
+}
+
+// --run_test=StatementTests/ColumnSearchPredicatesTest16
+BOOST_AUTO_TEST_CASE( ColumnSearchPredicatesTest16 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+
+    auto statement = connection.CreateStatement( );
+    rc = statement.Prepare( L"SELECT Id, SmallDateTimeValue FROM TestTable1" );
+    BOOST_CHECK( rc == Result::Success );
+    auto columnSearchPredicates = statement.ColumnSearchPredicates( 2 );
+    BOOST_CHECK( columnSearchPredicates == SearchPredicates::Searchable );
+}
+
+// --run_test=StatementTests/ColumnSearchPredicatesTest17
+BOOST_AUTO_TEST_CASE( ColumnSearchPredicatesTest17 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+
+    auto statement = connection.CreateStatement( );
+    rc = statement.Prepare( L"SELECT Id, TimeValue FROM TestTable1" );
+    BOOST_CHECK( rc == Result::Success );
+    auto columnSearchPredicates = statement.ColumnSearchPredicates( 2 );
+    BOOST_CHECK( columnSearchPredicates == SearchPredicates::Searchable );
+}
+
+// --run_test=StatementTests/ColumnSearchPredicatesTest18
+BOOST_AUTO_TEST_CASE( ColumnSearchPredicatesTest18 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+
+    auto statement = connection.CreateStatement( );
+    rc = statement.Prepare( L"SELECT Id, UniqueidentifierValue FROM TestTable1" );
+    BOOST_CHECK( rc == Result::Success );
+    auto columnSearchPredicates = statement.ColumnSearchPredicates( 2 );
+    BOOST_CHECK( columnSearchPredicates == SearchPredicates::AllExceptLike );
+}
+
+// --run_test=StatementTests/ColumnSearchPredicatesTest19
+BOOST_AUTO_TEST_CASE( ColumnSearchPredicatesTest19 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+
+    auto statement = connection.CreateStatement( );
+    rc = statement.Prepare( L"SELECT Id, RowVersionValue FROM TestTable1" );
+    BOOST_CHECK( rc == Result::Success );
+    auto columnSearchPredicates = statement.ColumnSearchPredicates( 2 );
+    BOOST_CHECK( columnSearchPredicates == SearchPredicates::AllExceptLike );
+}
+
+// --run_test=StatementTests/ColumnSearchPredicatesTest20
+BOOST_AUTO_TEST_CASE( ColumnSearchPredicatesTest20 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+
+    auto statement = connection.CreateStatement( );
+    rc = statement.Prepare( L"SELECT Id, BinaryValue FROM TestTable1" );
+    BOOST_CHECK( rc == Result::Success );
+    auto columnSearchPredicates = statement.ColumnSearchPredicates( 2 );
+    BOOST_CHECK( columnSearchPredicates == SearchPredicates::AllExceptLike );
+}
+
+// --run_test=StatementTests/ColumnSearchPredicatesTest21
+BOOST_AUTO_TEST_CASE( ColumnSearchPredicatesTest21 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+
+    auto statement = connection.CreateStatement( );
+    rc = statement.Prepare( L"SELECT Id, VarBinaryValue FROM TestTable1" );
+    BOOST_CHECK( rc == Result::Success );
+    auto columnSearchPredicates = statement.ColumnSearchPredicates( 2 );
+    BOOST_CHECK( columnSearchPredicates == SearchPredicates::AllExceptLike );
+}
+
+// --run_test=StatementTests/ColumnSearchPredicatesTest22
+BOOST_AUTO_TEST_CASE( ColumnSearchPredicatesTest22 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+
+    auto statement = connection.CreateStatement( );
+    rc = statement.Prepare( L"SELECT Id, CharValue FROM TestTable1" );
+    BOOST_CHECK( rc == Result::Success );
+    auto columnSearchPredicates = statement.ColumnSearchPredicates( 2 );
+    BOOST_CHECK( columnSearchPredicates == SearchPredicates::Searchable );
+}
+
+// --run_test=StatementTests/ColumnSearchPredicatesTest23
+BOOST_AUTO_TEST_CASE( ColumnSearchPredicatesTest23 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+
+    auto statement = connection.CreateStatement( );
+    rc = statement.Prepare( L"SELECT Id, VarCharValue FROM TestTable1" );
+    BOOST_CHECK( rc == Result::Success );
+    auto columnSearchPredicates = statement.ColumnSearchPredicates( 2 );
+    BOOST_CHECK( columnSearchPredicates == SearchPredicates::Searchable );
+}
+
+
+// --run_test=StatementTests/ColumnSearchPredicatesTest24
+BOOST_AUTO_TEST_CASE( ColumnSearchPredicatesTest24 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+
+    auto statement = connection.CreateStatement( );
+    rc = statement.Prepare( L"SELECT Id, NCharValue FROM TestTable1" );
+    BOOST_CHECK( rc == Result::Success );
+    auto columnSearchPredicates = statement.ColumnSearchPredicates( 2 );
+    BOOST_CHECK( columnSearchPredicates == SearchPredicates::Searchable );
+}
+
+// --run_test=StatementTests/ColumnSearchPredicatesTest25
+BOOST_AUTO_TEST_CASE( ColumnSearchPredicatesTest25 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+
+    auto statement = connection.CreateStatement( );
+    rc = statement.Prepare( L"SELECT Id, NVarCharValue FROM TestTable1" );
+    BOOST_CHECK( rc == Result::Success );
+    auto columnSearchPredicates = statement.ColumnSearchPredicates( 2 );
+    BOOST_CHECK( columnSearchPredicates == SearchPredicates::Searchable );
+}
+
+// --run_test=StatementTests/ColumnSearchPredicatesTest26
+BOOST_AUTO_TEST_CASE( ColumnSearchPredicatesTest26 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+
+    auto statement = connection.CreateStatement( );
+    rc = statement.Prepare( L"SELECT Id, TextValue FROM TestTable1" );
+    BOOST_CHECK( rc == Result::Success );
+    auto columnSearchPredicates = statement.ColumnSearchPredicates( 2 );
+    BOOST_CHECK( columnSearchPredicates == SearchPredicates::LikeOnly );
+}
+
+// --run_test=StatementTests/ColumnSearchPredicatesTest27
+BOOST_AUTO_TEST_CASE( ColumnSearchPredicatesTest27 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+
+    auto statement = connection.CreateStatement( );
+    rc = statement.Prepare( L"SELECT Id, NTextValue FROM TestTable1" );
+    BOOST_CHECK( rc == Result::Success );
+    auto columnSearchPredicates = statement.ColumnSearchPredicates( 2 );
+    BOOST_CHECK( columnSearchPredicates == SearchPredicates::LikeOnly );
+}
+
+// --run_test=StatementTests/ColumnSearchPredicatesTest28
+BOOST_AUTO_TEST_CASE( ColumnSearchPredicatesTest28 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+
+    auto statement = connection.CreateStatement( );
+    rc = statement.Prepare( L"SELECT Id, ImageValue FROM TestTable1" );
+    BOOST_CHECK( rc == Result::Success );
+    auto columnSearchPredicates = statement.ColumnSearchPredicates( 2 );
+    BOOST_CHECK( columnSearchPredicates == SearchPredicates::None );
+}
+
+// --run_test=StatementTests/ColumnTableNameTest1
+BOOST_AUTO_TEST_CASE( ColumnTableNameTest1 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+
+    auto statement = connection.CreateStatement( );
+    rc = statement.Prepare( L"SELECT Id, BitValue FROM TestTable1 FOR BROWSE" );
+    BOOST_CHECK( rc == Result::Success );
+    auto columnTableName = statement.ColumnTableName( 2 );
+    BOOST_CHECK( columnTableName == L"TestTable1" );
+}
+
+// --run_test=StatementTests/ColumnTypeTest1
+BOOST_AUTO_TEST_CASE( ColumnTypeTest1 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+
+    auto statement = connection.CreateStatement( );
+    rc = statement.Prepare( L"SELECT Id, BitValue FROM TestTable1" );
+    BOOST_CHECK( rc == Result::Success );
+    auto columnType = statement.ColumnType( 2 );
+    BOOST_CHECK( columnType == SqlType::Bit );
+}
+
+// --run_test=StatementTests/ColumnTypeTest2
+BOOST_AUTO_TEST_CASE( ColumnTypeTest2 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+
+    auto statement = connection.CreateStatement( );
+    rc = statement.Prepare( L"SELECT Id, TinyIntValue FROM TestTable1" );
+    BOOST_CHECK( rc == Result::Success );
+    auto columnType = statement.ColumnType( 2 );
+    BOOST_CHECK( columnType == SqlType::TinyInt );
+}
+
+// --run_test=StatementTests/ColumnTypeTest3
+BOOST_AUTO_TEST_CASE( ColumnTypeTest3 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+
+    auto statement = connection.CreateStatement( );
+    rc = statement.Prepare( L"SELECT Id, SmallIntValue FROM TestTable1" );
+    BOOST_CHECK( rc == Result::Success );
+    auto columnType = statement.ColumnType( 2 );
+    BOOST_CHECK( columnType == SqlType::SmallInt );
+}
+
+// --run_test=StatementTests/ColumnTypeTest4
+BOOST_AUTO_TEST_CASE( ColumnTypeTest4 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+
+    auto statement = connection.CreateStatement( );
+    rc = statement.Prepare( L"SELECT Id, IntValue FROM TestTable1" );
+    BOOST_CHECK( rc == Result::Success );
+    auto columnType = statement.ColumnType( 2 );
+    BOOST_CHECK( columnType == SqlType::Integer );
+}
+
+// --run_test=StatementTests/ColumnTypeTest5
+BOOST_AUTO_TEST_CASE( ColumnTypeTest5 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+
+    auto statement = connection.CreateStatement( );
+    rc = statement.Prepare( L"SELECT Id, BigIntValue FROM TestTable1" );
+    BOOST_CHECK( rc == Result::Success );
+    auto columnType = statement.ColumnType( 2 );
+    BOOST_CHECK( columnType == SqlType::BigInt );
+}
+
+// --run_test=StatementTests/ColumnTypeTest6
+BOOST_AUTO_TEST_CASE( ColumnTypeTest6 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+
+    auto statement = connection.CreateStatement( );
+    rc = statement.Prepare( L"SELECT Id, DecimalValue FROM TestTable1" );
+    BOOST_CHECK( rc == Result::Success );
+    auto columnType = statement.ColumnType( 2 );
+    BOOST_CHECK( columnType == SqlType::Decimal );
+}
+
+// --run_test=StatementTests/ColumnTypeTest7
+BOOST_AUTO_TEST_CASE( ColumnTypeTest7 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+
+    auto statement = connection.CreateStatement( );
+    rc = statement.Prepare( L"SELECT Id, NumericValue FROM TestTable1" );
+    BOOST_CHECK( rc == Result::Success );
+    auto columnType = statement.ColumnType( 2 );
+    BOOST_CHECK( columnType == SqlType::Numeric );
+}
+
+// --run_test=StatementTests/ColumnTypeTest8
+BOOST_AUTO_TEST_CASE( ColumnTypeTest8 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+
+    auto statement = connection.CreateStatement( );
+    rc = statement.Prepare( L"SELECT Id, RealValue FROM TestTable1" );
+    BOOST_CHECK( rc == Result::Success );
+    auto columnType = statement.ColumnType( 2 );
+    BOOST_CHECK( columnType == SqlType::Real );
+}
+
+// --run_test=StatementTests/ColumnTypeTest9
+BOOST_AUTO_TEST_CASE( ColumnTypeTest9 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+
+    auto statement = connection.CreateStatement( );
+    rc = statement.Prepare( L"SELECT Id, FloatValue FROM TestTable1" );
+    BOOST_CHECK( rc == Result::Success );
+    auto columnType = statement.ColumnType( 2 );
+    BOOST_CHECK( columnType == SqlType::Float );
+}
+
+// --run_test=StatementTests/ColumnTypeTest10
+BOOST_AUTO_TEST_CASE( ColumnTypeTest10 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+
+    auto statement = connection.CreateStatement( );
+    rc = statement.Prepare( L"SELECT Id, SmallMoneyValue FROM TestTable1" );
+    BOOST_CHECK( rc == Result::Success );
+    auto columnType = statement.ColumnType( 2 );
+    BOOST_CHECK( columnType == SqlType::Decimal );
+}
+
+// --run_test=StatementTests/ColumnTypeTest11
+BOOST_AUTO_TEST_CASE( ColumnTypeTest11 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+
+    auto statement = connection.CreateStatement( );
+    rc = statement.Prepare( L"SELECT Id, MoneyValue FROM TestTable1" );
+    BOOST_CHECK( rc == Result::Success );
+    auto columnType = statement.ColumnType( 2 );
+    BOOST_CHECK( columnType == SqlType::Decimal );
+}
+
+// --run_test=StatementTests/ColumnTypeTest12
+BOOST_AUTO_TEST_CASE( ColumnTypeTest12 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+
+    auto statement = connection.CreateStatement( );
+    rc = statement.Prepare( L"SELECT Id, DateValue FROM TestTable1" );
+    BOOST_CHECK( rc == Result::Success );
+    auto columnType = statement.ColumnType( 2 );
+    BOOST_CHECK( columnType == SqlType::Date );
+}
+
+// --run_test=StatementTests/ColumnTypeTest13
+BOOST_AUTO_TEST_CASE( ColumnTypeTest13 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+
+    auto statement = connection.CreateStatement( );
+    rc = statement.Prepare( L"SELECT Id, DateTimeValue FROM TestTable1" );
+    BOOST_CHECK( rc == Result::Success );
+    auto columnType = statement.ColumnType( 2 );
+    BOOST_CHECK( columnType == SqlType::DateTime );
+}
+
+// --run_test=StatementTests/ColumnTypeTest14
+BOOST_AUTO_TEST_CASE( ColumnTypeTest14 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+
+    auto statement = connection.CreateStatement( );
+    rc = statement.Prepare( L"SELECT Id, DateTime2Value FROM TestTable1" );
+    BOOST_CHECK( rc == Result::Success );
+    auto columnType = statement.ColumnType( 2 );
+    BOOST_CHECK( columnType == SqlType::DateTime );
+}
+
+// --run_test=StatementTests/ColumnTypeTest15
+BOOST_AUTO_TEST_CASE( ColumnTypeTest15 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+
+    auto statement = connection.CreateStatement( );
+    rc = statement.Prepare( L"SELECT Id, DateTimeOffsetValue FROM TestTable1" );
+    BOOST_CHECK( rc == Result::Success );
+    auto columnType = statement.ColumnType( 2 );
+    BOOST_CHECK( columnType == SqlType::TimeStampOffset );
+}
+
+// --run_test=StatementTests/ColumnTypeTest16
+BOOST_AUTO_TEST_CASE( ColumnTypeTest16 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+
+    auto statement = connection.CreateStatement( );
+    rc = statement.Prepare( L"SELECT Id, SmallDateTimeValue FROM TestTable1" );
+    BOOST_CHECK( rc == Result::Success );
+    auto columnType = statement.ColumnType( 2 );
+    BOOST_CHECK( columnType == SqlType::DateTime );
+}
+
+// --run_test=StatementTests/ColumnTypeTest17
+BOOST_AUTO_TEST_CASE( ColumnTypeTest17 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+
+    auto statement = connection.CreateStatement( );
+    rc = statement.Prepare( L"SELECT Id, TimeValue FROM TestTable1" );
+    BOOST_CHECK( rc == Result::Success );
+    auto columnType = statement.ColumnType( 2 );
+    BOOST_CHECK( columnType == SqlType::Time2 );
+}
+
+// --run_test=StatementTests/ColumnTypeTest18
+BOOST_AUTO_TEST_CASE( ColumnTypeTest18 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+
+    auto statement = connection.CreateStatement( );
+    rc = statement.Prepare( L"SELECT Id, UniqueidentifierValue FROM TestTable1" );
+    BOOST_CHECK( rc == Result::Success );
+    auto columnType = statement.ColumnType( 2 );
+    BOOST_CHECK( columnType == SqlType::Guid );
+}
+
+// --run_test=StatementTests/ColumnTypeTest19
+BOOST_AUTO_TEST_CASE( ColumnTypeTest19 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+
+    auto statement = connection.CreateStatement( );
+    rc = statement.Prepare( L"SELECT Id, RowVersionValue FROM TestTable1" );
+    BOOST_CHECK( rc == Result::Success );
+    auto columnType = statement.ColumnType( 2 );
+    BOOST_CHECK( columnType == SqlType::Binary );
+}
+
+// --run_test=StatementTests/ColumnTypeTest20
+BOOST_AUTO_TEST_CASE( ColumnTypeTest20 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+
+    auto statement = connection.CreateStatement( );
+    rc = statement.Prepare( L"SELECT Id, BinaryValue FROM TestTable1" );
+    BOOST_CHECK( rc == Result::Success );
+    auto columnType = statement.ColumnType( 2 );
+    BOOST_CHECK( columnType == SqlType::Binary );
+}
+
+// --run_test=StatementTests/ColumnTypeTest21
+BOOST_AUTO_TEST_CASE( ColumnTypeTest21 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+
+    auto statement = connection.CreateStatement( );
+    rc = statement.Prepare( L"SELECT Id, VarBinaryValue FROM TestTable1" );
+    BOOST_CHECK( rc == Result::Success );
+    auto columnType = statement.ColumnType( 2 );
+    BOOST_CHECK( columnType == SqlType::VarBinary );
+}
+
+// --run_test=StatementTests/ColumnTypeTest22
+BOOST_AUTO_TEST_CASE( ColumnTypeTest22 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+
+    auto statement = connection.CreateStatement( );
+    rc = statement.Prepare( L"SELECT Id, CharValue FROM TestTable1" );
+    BOOST_CHECK( rc == Result::Success );
+    auto columnType = statement.ColumnType( 2 );
+    BOOST_CHECK( columnType == SqlType::Char );
+}
+
+// --run_test=StatementTests/ColumnTypeTest23
+BOOST_AUTO_TEST_CASE( ColumnTypeTest23 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+
+    auto statement = connection.CreateStatement( );
+    rc = statement.Prepare( L"SELECT Id, VarCharValue FROM TestTable1" );
+    BOOST_CHECK( rc == Result::Success );
+    auto columnType = statement.ColumnType( 2 );
+    BOOST_CHECK( columnType == SqlType::VarChar );
+}
+
+// --run_test=StatementTests/ColumnTypeTest24
+BOOST_AUTO_TEST_CASE( ColumnTypeTest24 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+
+    auto statement = connection.CreateStatement( );
+    rc = statement.Prepare( L"SELECT Id, NCharValue FROM TestTable1" );
+    BOOST_CHECK( rc == Result::Success );
+    auto columnType = statement.ColumnType( 2 );
+    BOOST_CHECK( columnType == SqlType::WChar );
+}
+
+// --run_test=StatementTests/ColumnTypeTest25
+BOOST_AUTO_TEST_CASE( ColumnTypeTest25 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+
+    auto statement = connection.CreateStatement( );
+    rc = statement.Prepare( L"SELECT Id, NVarCharValue FROM TestTable1" );
+    BOOST_CHECK( rc == Result::Success );
+    auto columnType = statement.ColumnType( 2 );
+    BOOST_CHECK( columnType == SqlType::WVarChar );
+}
+
+// --run_test=StatementTests/ColumnTypeTest26
+BOOST_AUTO_TEST_CASE( ColumnTypeTest26 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+
+    auto statement = connection.CreateStatement( );
+    rc = statement.Prepare( L"SELECT Id, TextValue FROM TestTable1" );
+    BOOST_CHECK( rc == Result::Success );
+    auto columnType = statement.ColumnType( 2 );
+    BOOST_CHECK( columnType == SqlType::LongVarChar );
+}
+
+// --run_test=StatementTests/ColumnTypeTest27
+BOOST_AUTO_TEST_CASE( ColumnTypeTest27 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+
+    auto statement = connection.CreateStatement( );
+    rc = statement.Prepare( L"SELECT Id, NTextValue FROM TestTable1" );
+    BOOST_CHECK( rc == Result::Success );
+    auto columnType = statement.ColumnType( 2 );
+    BOOST_CHECK( columnType == SqlType::WLongVarChar );
+}
+
+// --run_test=StatementTests/ColumnTypeTest28
+BOOST_AUTO_TEST_CASE( ColumnTypeTest28 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+
+    auto statement = connection.CreateStatement( );
+    rc = statement.Prepare( L"SELECT Id, ImageValue FROM TestTable1" );
+    BOOST_CHECK( rc == Result::Success );
+    auto columnType = statement.ColumnType( 2 );
+    BOOST_CHECK( columnType == SqlType::LongVarBinary );
+}
+
+// --run_test=StatementTests/ColumnTypeNameTest1
+BOOST_AUTO_TEST_CASE( ColumnTypeNameTest1 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+
+    auto statement = connection.CreateStatement( );
+    rc = statement.Prepare( L"SELECT Id, BitValue FROM TestTable1" );
+    BOOST_CHECK( rc == Result::Success );
+    auto columnTypeName = statement.ColumnTypeName( 2 );
+    BOOST_CHECK( columnTypeName == L"bit" );
+}
+
+// --run_test=StatementTests/ColumnIsUnnamedTest1
+BOOST_AUTO_TEST_CASE( ColumnIsUnnamedTest1 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+
+    auto statement = connection.CreateStatement( );
+    rc = statement.Prepare( L"SELECT Id, BitValue FROM TestTable1" );
+    BOOST_CHECK( rc == Result::Success );
+    auto columnIsUnnamed = statement.ColumnIsUnnamed( 2 );
+    BOOST_CHECK( columnIsUnnamed == false );
+}
+
+// --run_test=StatementTests/ColumnIsUnsignedTest1
+BOOST_AUTO_TEST_CASE( ColumnIsUnsignedTest1 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+
+    auto statement = connection.CreateStatement( );
+    rc = statement.Prepare( L"SELECT Id, IntValue FROM TestTable1" );
+    BOOST_CHECK( rc == Result::Success );
+    auto columnIsUnsigned = statement.ColumnIsUnsigned( 2 );
+    BOOST_CHECK( columnIsUnsigned == false );
+}
+
+
+// --run_test=StatementTests/ColumnIsUpdatableTest1
+BOOST_AUTO_TEST_CASE( ColumnIsUpdatableTest1 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+
+    auto statement = connection.CreateStatement( );
+    rc = statement.Prepare( L"SELECT Id, BitValue FROM TestTable1" );
+    BOOST_CHECK( rc == Result::Success );
+    auto columnIsUpdatable = statement.ColumnIsUpdatable( 2 );
+    BOOST_CHECK( columnIsUpdatable.has_value() == false );
+}
+
+
+
 BOOST_AUTO_TEST_SUITE_END( )

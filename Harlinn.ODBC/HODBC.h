@@ -991,7 +991,16 @@ namespace Harlinn::ODBC
         OutputStream = SQL_PARAM_OUTPUT_STREAM
     };
 
-    
+    enum class SearchPredicates : SQLSMALLINT
+    {
+        None = SQL_PRED_NONE,
+        Unsearchable = SQL_UNSEARCHABLE,
+        Char = SQL_PRED_CHAR,
+        LikeOnly = SQL_LIKE_ONLY,
+        Basic = SQL_PRED_BASIC,
+        AllExceptLike = SQL_ALL_EXCEPT_LIKE,
+        Searchable = SQL_PRED_SEARCHABLE
+    };
 
 
 
@@ -1018,6 +1027,7 @@ namespace Harlinn::ODBC
         constexpr SQLSMALLINT VarBinary = SQL_VARBINARY;
         constexpr SQLSMALLINT LongVarBinary = SQL_LONGVARBINARY;
         constexpr SQLSMALLINT Date = SQL_TYPE_DATE;
+        constexpr SQLSMALLINT DateTime = SQL_DATETIME;
         constexpr SQLSMALLINT Time = SQL_TYPE_TIME;
         constexpr SQLSMALLINT TimeStamp = SQL_TYPE_TIMESTAMP;
         //constexpr SQLSMALLINT UTCDateTime = SQL_TYPE_UTCDATETIME;
@@ -1040,6 +1050,7 @@ namespace Harlinn::ODBC
         // Values specific to MS SQL Server:
         constexpr SQLSMALLINT TimeStampOffset = MsSql::SQL_SS_TIMESTAMPOFFSET;
         constexpr SQLSMALLINT Time2 = MsSql::SQL_SS_TIME2;
+        //constexpr SQLSMALLINT SmallMoney = MsSql::SQL_SS_SM;
     }
     namespace NativeType
     {
@@ -2753,7 +2764,7 @@ namespace Harlinn::ODBC
         /// </para>
         /// <para>
         /// The return values for other column types appears consistent, like the function returning 53 
-        /// for a nullable float column. What 53 means in this context is something I have yet to learn.
+        /// for a nullable float column; which is the precision, in bits, for a 64-bit floating point value.  
         /// </para>
         /// </summary>
         /// <param name="columnNumber">The one-based column number.</param>
@@ -2862,8 +2873,163 @@ namespace Harlinn::ODBC
             return GetInt64ColumnAttribute( columnNumber, SQL_DESC_OCTET_LENGTH );
         }
 
+        /// <summary>
+        /// Returns a numeric value that for a numeric data type denotes the applicable precision. For data 
+        /// types SqlType::Time, SqlType::TimeStamp, and all the interval data types that represent a time 
+        /// interval, its value is the applicable precision of the fractional seconds component.
+        /// </summary>
+        /// <param name="columnNumber">The one-based column number.</param>
+        /// <returns>The precision of the column.</returns>
+        Int64 ColumnPrecision( SQLUSMALLINT columnNumber ) const
+        {
+            return GetInt64ColumnAttribute( columnNumber, SQL_DESC_PRECISION );
+        }
+
+        /// <summary>
+        /// Returns a numeric value that is the applicable scale for a numeric data type. 
+        /// For SqlType::Decimal and SqlType::Numeric data types, this is the defined scale. 
+        /// It is undefined for all other data types.
+        /// </summary>
+        /// <param name="columnNumber">The one-based column number.</param>
+        /// <returns>The scale of the column.</returns>
+        Int64 ColumnScale( SQLUSMALLINT columnNumber ) const
+        {
+            return GetInt64ColumnAttribute( columnNumber, SQL_DESC_SCALE );
+        }
+
+        /// <summary>
+        /// Returns the schema of the table that contains the column. The returned value is 
+        /// implementation-defined if the column is an expression or if the column is part 
+        /// of a view. If the data source does not support schemas or the schema name cannot 
+        /// be determined, an empty string is returned.
+        /// </summary>
+        /// <param name="columnNumber">The one-based column number.</param>
+        /// <returns>The schema of the table that contains the column.</returns>
+        WideString ColumnSchemaName( SQLUSMALLINT columnNumber ) const
+        {
+            return GetWideStringColumnAttribute( columnNumber, SQL_DESC_SCHEMA_NAME );
+        }
+
+        /// <summary>
+        /// <para>
+        /// Returns a value indicating the predicates that can be applied to the column in a WHERE clause.
+        /// </para>
+        /// <para>
+        /// Returns SearchPredicates::None if the column cannot be used in a WHERE clause.
+        /// </para>
+        /// <para>
+        /// Returns SearchPredicates::Char if the column can be used in a WHERE clause but only with the LIKE predicate.
+        /// </para>
+        /// <para>
+        /// Returns SearchPredicates::Basic if the column can be used in a WHERE clause with all the comparison operators except LIKE. 
+        /// </para>
+        /// <para>
+        /// Returns SearchPredicates::Searchable if the column can be used in a WHERE clause with any comparison operator.
+        /// </para>
+        /// </summary>
+        /// <param name="columnNumber">The one-based column number.</param>
+        /// <returns>A value indicating the predicates that can be applied to the column.</returns>
+        SearchPredicates ColumnSearchPredicates( SQLUSMALLINT columnNumber ) const
+        {
+            return static_cast< SearchPredicates >( GetInt64ColumnAttribute( columnNumber, SQL_DESC_SEARCHABLE ) );
+        }
+
+        /// <summary>
+        /// Returns the name of the table that contains the column. The returned value is 
+        /// implementation-defined if the column is an expression or if the column 
+        /// is part of a view.
+        /// </summary>
+        /// <param name="columnNumber">The one-based column number.</param>
+        /// <returns>The name of the table that contains the column.</returns>
+        WideString ColumnTableName( SQLUSMALLINT columnNumber ) const
+        {
+            return GetWideStringColumnAttribute( columnNumber, SQL_DESC_TABLE_NAME );
+        }
+
+        /// <summary>
+        /// Returns a numeric value that specifies the SQL data type.
+        /// </summary>
+        /// <param name="columnNumber">The one-based column number.</param>
+        /// <returns>A numeric value that specifies the SQL data type.</returns>
+        SQLSMALLINT ColumnType( SQLUSMALLINT columnNumber ) const
+        {
+            return static_cast< SQLSMALLINT >( GetInt64ColumnAttribute( columnNumber, SQL_DESC_TYPE ) );
+        }
+
+        /// <summary>
+        /// Returns the data source-dependent data type name.
+        /// </summary>
+        /// <param name="columnNumber">The one-based column number.</param>
+        /// <returns>The data source-dependent data type name.</returns>
+        WideString ColumnTypeName( SQLUSMALLINT columnNumber ) const
+        {
+            return GetWideStringColumnAttribute( columnNumber, SQL_DESC_TYPE_NAME );
+        }
+
+        /// <summary>
+        /// Returns true if the column is unnamed, otherwise false.
+        /// </summary>
+        /// <param name="columnNumber">The one-based column number.</param>
+        /// <returns>true if the column is unnamed, otherwise false.</returns>
+        bool ColumnIsUnnamed( SQLUSMALLINT columnNumber ) const
+        {
+            return GetBooleanColumnAttribute( columnNumber, SQL_DESC_UNNAMED );
+        }
+
+        /// <summary>
+        /// Returns true if the column is unsigned, or not numeric, otherwise false.
+        /// </summary>
+        /// <param name="columnNumber">The one-based column number.</param>
+        /// <returns>true if the column is unsigned, or not numeric, otherwise false.</returns>
+        bool ColumnIsUnsigned( SQLUSMALLINT columnNumber ) const
+        {
+            return GetBooleanColumnAttribute( columnNumber, SQL_DESC_UNSIGNED );
+        }
+
+        /// <summary>
+        /// Returns a std::optional&lt;bool&gt; object indicating whether the column can be updated or not.
+        /// </summary>
+        /// <param name="columnNumber">The one-based column number.</param>
+        /// <returns>A std::optional&lt;bool&gt; object indicating whether the column can be updated or not.</returns>
+        std::optional<bool> ColumnIsUpdatable( SQLUSMALLINT columnNumber ) const
+        {
+            auto value = GetInt64ColumnAttribute( columnNumber, SQL_DESC_UPDATABLE );
+            if ( value == SQL_ATTR_READONLY )
+            {
+                return true;
+            }
+            else if ( value == SQL_ATTR_WRITE )
+            {
+                return false;
+            }
+            else
+            {
+                return {};
+            }
+        }
 
 
+        /// <summary>
+        /// Returns a list of columns and associated privileges for the specified table. The driver 
+        /// returns the information as a result set on the Statement.
+        /// </summary>
+        /// <param name="catalogName">
+        /// </param>
+        /// <param name="catalogNameMaxLength">
+        /// </param>
+        /// <param name="schemaName">
+        /// </param>
+        /// <param name="schemaNameMaxLength">
+        /// </param>
+        /// <param name="tableName">
+        /// </param>
+        /// <param name="tableNameMaxLength">
+        /// </param>
+        /// <param name="columnName">
+        /// </param>
+        /// <param name="columnNameMaxLength">
+        /// </param>
+        /// <returns></returns>
         Result ColumnPrivileges( const SQLWCHAR* catalogName, SQLSMALLINT catalogNameMaxLength, const SQLWCHAR* schemaName, SQLSMALLINT schemaNameMaxLength, const SQLWCHAR* tableName, SQLSMALLINT tableNameMaxLength, const SQLWCHAR* columnName, SQLSMALLINT columnNameMaxLength ) const
         {
             auto rc = SQLColumnPrivilegesW( Handle( ), const_cast<SQLWCHAR*>(catalogName), catalogNameMaxLength, const_cast<SQLWCHAR*>( schemaName ), schemaNameMaxLength, const_cast<SQLWCHAR*>( tableName ), tableNameMaxLength, const_cast<SQLWCHAR*>( columnName ), columnNameMaxLength );
