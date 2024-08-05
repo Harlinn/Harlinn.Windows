@@ -18,11 +18,6 @@
 */
 
 #include <HODBCDef.h>
-#include <HCCGuid.h>
-#include <HCCDateTime.h>
-#include <HCCString.h>
-#include <HCCCurrency.h>
-#include <HCCConcepts.h>
 
 namespace Harlinn::ODBC
 {
@@ -1099,6 +1094,28 @@ namespace Harlinn::ODBC
         constexpr SQLSMALLINT Guid = SQL_C_GUID;
     }
 
+
+    enum class Concurrency
+    {
+        Unknown,
+        /// <summary>
+        /// Cursor is read-only. No updates are allowed.
+        /// </summary>
+        ReadOnly = SQL_CONCUR_READ_ONLY,
+        /// <summary>
+        /// Cursor uses the lowest level of locking sufficient to ensure that the row can be updated.
+        /// </summary>
+        Lock = SQL_CONCUR_LOCK,
+        /// <summary>
+        /// Cursor uses optimistic concurrency control, comparing row versions.
+        /// </summary>
+        RowVersion = SQL_CONCUR_ROWVER,
+        /// <summary>
+        /// Cursor uses optimistic concurrency control, comparing values.
+        /// </summary>
+        Values = SQL_CONCUR_VALUES,
+        Default = ReadOnly
+    };
 
 
     enum class DriverCompletion : SQLUSMALLINT
@@ -4117,11 +4134,34 @@ namespace Harlinn::ODBC
 #endif
         }
 
+        /// <summary>
+        /// <para>
+        /// Sets the handle to the APD for subsequent calls to SQLExecute and SQLExecDirect on 
+        /// the statement handle. The initial value of this attribute is the descriptor implicitly 
+        /// allocated when the statement was initially allocated. If the value of this attribute 
+        /// is set to SQL_NULL_DESC or the handle originally allocated for the descriptor, an 
+        /// explicitly allocated APD handle that was previously associated with the statement 
+        /// handle is dissociated from it and the statement handle reverts to the implicitly 
+        /// allocated APD handle.
+        /// </para>
+        /// <para>
+        /// This attribute cannot be set to a descriptor handle that was implicitly allocated for 
+        /// another statement or to another descriptor handle that was implicitly set on the same 
+        /// statement; implicitly allocated descriptor handles cannot be associated with more than 
+        /// one statement or descriptor handle.
+        /// </para>
+        /// </summary>
+        /// <param name="applicationParameterDescriptor">The application parameter descriptor</param>
+        /// <returns>Result::Success or Result::SuccessWithInfo</returns>
         Result SetApplicationParameterDescriptor( const Descriptor& applicationParameterDescriptor ) const
         {
             auto rc = SetAttributeW( SQL_ATTR_APP_PARAM_DESC, applicationParameterDescriptor.Handle(), 0 );
             return rc;
         }
+        /// <summary>
+        /// Retrieves the application parameter descriptor.
+        /// </summary>
+        /// <returns>The application parameter descriptor</returns>
         Descriptor ApplicationParameterDescriptor( ) const
         {
             SQLHANDLE applicationParameterDescriptor = nullptr;
@@ -4129,17 +4169,97 @@ namespace Harlinn::ODBC
             return Descriptor( applicationParameterDescriptor, false );
         }
 
+        /// <summary>
+        /// <para>
+        /// Sets the handle to the ARD for subsequent fetches on the statement handle. The 
+        /// initial value of this attribute is the descriptor implicitly allocated when the 
+        /// statement was initially allocated. If the value of this attribute is set to 
+        /// SQL_NULL_DESC or the handle originally allocated for the descriptor, an explicitly 
+        /// allocated ARD handle that was previously associated with the statement handle is 
+        /// dissociated from it and the statement handle reverts to the implicitly allocated 
+        /// ARD handle.
+        /// </para>
+        /// <para>
+        /// This attribute cannot be set to a descriptor handle that was implicitly allocated 
+        /// for another statement or to another descriptor handle that was implicitly set on 
+        /// the same statement; implicitly allocated descriptor handles cannot be associated 
+        /// with more than one statement or descriptor handle.
+        /// </para>
+        /// </summary>
+        /// <param name="applicationRowDescriptor">The application row descriptor</param>
+        /// <returns>Result::Success or Result::SuccessWithInfo</returns>
         Result SetApplicationRowDescriptor( const Descriptor& applicationRowDescriptor ) const
         {
             auto rc = SetAttributeW( SQL_ATTR_APP_ROW_DESC, applicationRowDescriptor.Handle( ), 0 );
             return rc;
         }
+        /// <summary>
+        /// Retrieves the application row descriptor.
+        /// </summary>
+        /// <returns>The application row descriptor.</returns>
         Descriptor ApplicationRowDescriptor( ) const
         {
             SQLHANDLE applicationRowDescriptor = nullptr;
             GetAttributeW( SQL_ATTR_APP_ROW_DESC, &applicationRowDescriptor, SQL_IS_POINTER, nullptr );
             return Descriptor( applicationRowDescriptor, false );
         }
+
+        /// <summary>
+        /// Enables or disables asynchronous statement execution.
+        /// </summary>
+        /// <param name="asyncEnable">true to enable asynchronous statement execution, otherwise false.</param>
+        /// <returns>Result::Success or Result::SuccessWithInfo</returns>
+        Result SetAsyncEnabled( bool asyncEnable ) const
+        {
+            auto rc = SetAttributeW( SQL_ATTR_ASYNC_ENABLE, ( SQLPOINTER )( asyncEnable? SQL_ASYNC_ENABLE_ON: SQL_ASYNC_ENABLE_OFF ), 0 );
+            return rc;
+        }
+
+        /// <summary>
+        /// Returns true if asynchronous statement execution is enabled, otherwise false.
+        /// </summary>
+        /// <returns></returns>
+        bool AsyncEnabled( ) const
+        {
+            SQLUINTEGER asyncEnabled = 0;
+            GetAttributeW( SQL_ATTR_APP_ROW_DESC, &asyncEnabled, SQL_IS_UINTEGER, nullptr );
+            return asyncEnabled == SQL_ASYNC_ENABLE_ON;
+        }
+
+
+        Result SetAsyncEventHandle( HANDLE asyncEventHandle ) const
+        {
+            auto rc = SetAttributeW( SQL_ATTR_ASYNC_STMT_EVENT, asyncEventHandle, 0 );
+            return rc;
+        }
+
+        Result SetAsyncEventHandle( const EventWaitHandle& asyncEventHandle ) const
+        {
+            auto rc = SetAttributeW( SQL_ATTR_ASYNC_STMT_EVENT, asyncEventHandle.GetHandle(), 0 );
+            return rc;
+        }
+
+        HANDLE AsyncEventHandle( ) const
+        {
+            HANDLE asyncEventHandle = 0;
+            GetAttributeW( SQL_ATTR_ASYNC_STMT_EVENT, &asyncEventHandle, SQL_IS_POINTER, nullptr );
+            return asyncEventHandle;
+        }
+
+
+        Result SetConcurrency( ODBC::Concurrency concurrency ) const
+        {
+            auto rc = SetAttributeW( SQL_ATTR_CONCURRENCY, reinterpret_cast<SQLPOINTER>( concurrency ), 0 );
+            return rc;
+        }
+        ODBC::Concurrency Concurrency( ) const
+        {
+            SQLULEN concurrency = 0;
+            GetAttributeW( SQL_ATTR_ASYNC_STMT_EVENT, &concurrency, SQL_IS_POINTER, nullptr );
+            return static_cast< ODBC::Concurrency >(concurrency);
+        }
+
+
 
 
 
