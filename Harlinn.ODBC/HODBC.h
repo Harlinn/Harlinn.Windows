@@ -997,6 +997,77 @@ namespace Harlinn::ODBC
         Searchable = SQL_PRED_SEARCHABLE
     };
 
+    enum class CursorSensitivity : SQLULEN
+    {
+        /// <summary>
+        /// It is unspecified what the cursor type is and whether cursors on the statement 
+        /// handle make visible the changes made to a result set by another cursor. Cursors 
+        /// on the statement handle may make visible none, some, or all such changes. 
+        /// 
+        /// This is the default.
+        /// </summary>
+        Unspecified = SQL_UNSPECIFIED,
+        /// <summary>
+        /// All cursors on the statement handle show the result set without reflecting any 
+        /// changes made to it by any other cursor. Insensitive cursors are read-only. 
+        /// This corresponds to a static cursor, which has a concurrency that is read-only.
+        /// </summary>
+        Insensitive = SQL_INSENSITIVE,
+        /// <summary>
+        /// All cursors on the statement handle make visible all changes made to a result 
+        /// set by another cursor.
+        /// </summary>
+        Sensitive = SQL_SENSITIVE
+    };
+
+    enum class CursorType : SQLULEN
+    {
+        /// <summary>
+        /// The cursor only scrolls forward.
+        /// </summary>
+        ForwardOnly = SQL_CURSOR_FORWARD_ONLY,
+        /// <summary>
+        /// The driver saves and uses the keys for the number of rows specified in the 
+        /// KeysetSize( ) (SQL_ATTR_KEYSET_SIZE) statement attribute.
+        /// </summary>
+        KeysetDriven = SQL_CURSOR_KEYSET_DRIVEN,
+        /// <summary>
+        /// The driver saves and uses only the keys for the rows in the rowset.
+        /// </summary>
+        Dynamic = SQL_CURSOR_DYNAMIC,
+        /// <summary>
+        /// The data in the result set is static.
+        /// </summary>
+        Static = SQL_CURSOR_STATIC,
+        /// <summary>
+        /// The default is ForwardOnly
+        /// </summary>
+        Default = ForwardOnly
+    };
+
+    enum class SimulateCursor : UInt64
+    {
+        /// <summary>
+        /// The driver does not guarantee that simulated positioned update or delete 
+        /// statements will affect only one row; it is the application's responsibility 
+        /// to do so.
+        /// </summary>
+        NonInique = SQL_SC_NON_UNIQUE,
+        /// <summary>
+        /// The driver attempts to guarantee that simulated positioned update or delete 
+        /// statements affect only one row. The driver always executes such statements, 
+        /// even if they might affect more than one row, such as when there is no unique key. 
+        /// </summary>
+        TryUnique = SQL_SC_TRY_UNIQUE,
+        /// <summary>
+        /// The driver guarantees that simulated positioned update or delete statements affect 
+        /// only one row.
+        /// </summary>
+        Unique = SQL_SC_UNIQUE,
+        Default = Unique
+    };
+
+
 
 
     namespace SqlType
@@ -4097,6 +4168,62 @@ namespace Harlinn::ODBC
             }
             return static_cast<Result>( rc );
         }
+
+        UInt64 GetUInt64Attribute( SQLINTEGER attributeId ) const
+        {
+            UInt64 value;
+            auto rc = SQLGetStmtAttrW( Handle( ), attributeId, &value, SQL_IS_UINTEGER, nullptr );
+            if ( Failed( static_cast< Result >( rc ) ) )
+            {
+                ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
+            }
+            return value;
+        }
+        Int64 GetInt64Attribute( SQLINTEGER attributeId ) const
+        {
+            Int64 value;
+            auto rc = SQLGetStmtAttrW( Handle( ), attributeId, &value, SQL_IS_INTEGER, nullptr );
+            if ( Failed( static_cast< Result >( rc ) ) )
+            {
+                ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
+            }
+            return value;
+        }
+        SQLPOINTER GetPointerAttribute( SQLINTEGER attributeId ) const
+        {
+            SQLPOINTER value;
+            auto rc = SQLGetStmtAttrW( Handle( ), attributeId, &value, SQL_IS_POINTER, nullptr );
+            if ( Failed( static_cast< Result >( rc ) ) )
+            {
+                ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
+            }
+            return value;
+        }
+        bool GetBooleanAttribute( SQLINTEGER attributeId ) const
+        {
+            return GetUInt64Attribute( attributeId ) != 0;
+        }
+        Descriptor GetDescriptorAttribute( SQLINTEGER attributeId ) const
+        {
+            SQLHANDLE descriptor = nullptr;
+            GetAttributeW( attributeId, &descriptor, SQL_IS_POINTER, nullptr );
+            return Descriptor( descriptor, false );
+        }
+        template<typename T>
+            requires std::is_enum_v<T>
+        T GetEnumAttribute( SQLINTEGER attributeId ) const
+        {
+            UInt64 value;
+            auto rc = SQLGetStmtAttrW( Handle( ), attributeId, &value, SQL_IS_UINTEGER, nullptr );
+            if ( Failed( static_cast< Result >( rc ) ) )
+            {
+                ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
+            }
+            return static_cast<T>(value);
+        }
+
+
+
         Result GetAttributeA( SQLINTEGER attributeId, SQLPOINTER value, SQLINTEGER valueBufferLength, SQLINTEGER* valueActualLength ) const
         {
             auto rc = SQLGetStmtAttrA( Handle( ), attributeId, value, valueBufferLength, valueActualLength );
@@ -4116,6 +4243,44 @@ namespace Harlinn::ODBC
             }
             return static_cast<Result>( rc );
         }
+
+
+        Result SetUInt64Attribute( SQLINTEGER attributeId, UInt64 value ) const
+        {
+            return SetAttributeW( attributeId, reinterpret_cast< SQLPOINTER >( value ), SQL_IS_UINTEGER );
+        }
+        Result SetInt64Attribute( SQLINTEGER attributeId, Int64 value ) const
+        {
+            return SetAttributeW( attributeId, reinterpret_cast< SQLPOINTER >( value ), SQL_IS_INTEGER );
+        }
+        Result SetBooleanAttribute( SQLINTEGER attributeId, bool value ) const
+        {
+            return SetAttributeW( attributeId, reinterpret_cast< SQLPOINTER >( value? 1ULL : 0ULL ), SQL_IS_UINTEGER );
+        }
+
+        Result SetPointerAttribute( SQLINTEGER attributeId, SQLPOINTER value ) const
+        {
+            return SetAttributeW( attributeId, value , SQL_IS_POINTER );
+        }
+
+        Result SetDescriptorAttribute( SQLINTEGER attributeId, SQLHANDLE value ) const
+        {
+            return SetAttributeW( attributeId, value, SQL_IS_POINTER );
+        }
+        Result SetDescriptorAttribute( SQLINTEGER attributeId, const Descriptor& value ) const
+        {
+            return SetAttributeW( attributeId, value.Handle(), SQL_IS_POINTER );
+        }
+
+        template<typename T> 
+            requires std::is_enum_v<T>
+        Result SetEnumAttribute( SQLINTEGER attributeId, T value ) const
+        {
+            return SetAttributeW( attributeId, reinterpret_cast< SQLPOINTER >( value ), SQL_IS_UINTEGER );
+        }
+
+
+
         Result SetAttributeA( SQLINTEGER attributeId, SQLPOINTER value, SQLINTEGER valueLength ) const
         {
 #ifdef SQLSetStmtAttr
@@ -4155,7 +4320,12 @@ namespace Harlinn::ODBC
         /// <returns>Result::Success or Result::SuccessWithInfo</returns>
         Result SetApplicationParameterDescriptor( const Descriptor& applicationParameterDescriptor ) const
         {
-            auto rc = SetAttributeW( SQL_ATTR_APP_PARAM_DESC, applicationParameterDescriptor.Handle(), 0 );
+            auto rc = SetDescriptorAttribute( SQL_ATTR_APP_PARAM_DESC, applicationParameterDescriptor.Handle() );
+            return rc;
+        }
+        Result SetApplicationParameterDescriptor( SQLHANDLE applicationParameterDescriptor ) const
+        {
+            auto rc = SetDescriptorAttribute( SQL_ATTR_APP_PARAM_DESC, applicationParameterDescriptor );
             return rc;
         }
         /// <summary>
@@ -4164,9 +4334,7 @@ namespace Harlinn::ODBC
         /// <returns>The application parameter descriptor</returns>
         Descriptor ApplicationParameterDescriptor( ) const
         {
-            SQLHANDLE applicationParameterDescriptor = nullptr;
-            GetAttributeW( SQL_ATTR_APP_PARAM_DESC, &applicationParameterDescriptor, SQL_IS_POINTER, nullptr );
-            return Descriptor( applicationParameterDescriptor, false );
+            return GetDescriptorAttribute( SQL_ATTR_APP_PARAM_DESC );
         }
 
         /// <summary>
@@ -4190,7 +4358,12 @@ namespace Harlinn::ODBC
         /// <returns>Result::Success or Result::SuccessWithInfo</returns>
         Result SetApplicationRowDescriptor( const Descriptor& applicationRowDescriptor ) const
         {
-            auto rc = SetAttributeW( SQL_ATTR_APP_ROW_DESC, applicationRowDescriptor.Handle( ), 0 );
+            auto rc = SetDescriptorAttribute( SQL_ATTR_APP_ROW_DESC, applicationRowDescriptor.Handle( ) );
+            return rc;
+        }
+        Result SetApplicationRowDescriptor( SQLHANDLE applicationRowDescriptor ) const
+        {
+            auto rc = SetDescriptorAttribute( SQL_ATTR_APP_ROW_DESC, applicationRowDescriptor );
             return rc;
         }
         /// <summary>
@@ -4199,9 +4372,7 @@ namespace Harlinn::ODBC
         /// <returns>The application row descriptor.</returns>
         Descriptor ApplicationRowDescriptor( ) const
         {
-            SQLHANDLE applicationRowDescriptor = nullptr;
-            GetAttributeW( SQL_ATTR_APP_ROW_DESC, &applicationRowDescriptor, SQL_IS_POINTER, nullptr );
-            return Descriptor( applicationRowDescriptor, false );
+            return GetDescriptorAttribute( SQL_ATTR_APP_ROW_DESC );
         }
 
         /// <summary>
@@ -4211,7 +4382,7 @@ namespace Harlinn::ODBC
         /// <returns>Result::Success or Result::SuccessWithInfo</returns>
         Result SetAsyncEnabled( bool asyncEnable ) const
         {
-            auto rc = SetAttributeW( SQL_ATTR_ASYNC_ENABLE, ( SQLPOINTER )( asyncEnable? SQL_ASYNC_ENABLE_ON: SQL_ASYNC_ENABLE_OFF ), 0 );
+            auto rc = SetBooleanAttribute( SQL_ATTR_ASYNC_ENABLE, asyncEnable );
             return rc;
         }
 
@@ -4221,101 +4392,331 @@ namespace Harlinn::ODBC
         /// <returns></returns>
         bool AsyncEnabled( ) const
         {
-            SQLUINTEGER asyncEnabled = 0;
-            GetAttributeW( SQL_ATTR_APP_ROW_DESC, &asyncEnabled, SQL_IS_UINTEGER, nullptr );
-            return asyncEnabled == SQL_ASYNC_ENABLE_ON;
+            return GetBooleanAttribute( SQL_ATTR_ASYNC_ENABLE );
         }
 
 
         Result SetAsyncEventHandle( HANDLE asyncEventHandle ) const
         {
-            auto rc = SetAttributeW( SQL_ATTR_ASYNC_STMT_EVENT, asyncEventHandle, 0 );
+            auto rc = SetPointerAttribute( SQL_ATTR_ASYNC_STMT_EVENT, asyncEventHandle );
             return rc;
         }
 
         Result SetAsyncEventHandle( const EventWaitHandle& asyncEventHandle ) const
         {
-            auto rc = SetAttributeW( SQL_ATTR_ASYNC_STMT_EVENT, asyncEventHandle.GetHandle(), 0 );
+            auto rc = SetPointerAttribute( SQL_ATTR_ASYNC_STMT_EVENT, asyncEventHandle.GetHandle() );
             return rc;
         }
 
         HANDLE AsyncEventHandle( ) const
         {
-            HANDLE asyncEventHandle = 0;
-            GetAttributeW( SQL_ATTR_ASYNC_STMT_EVENT, &asyncEventHandle, SQL_IS_POINTER, nullptr );
-            return asyncEventHandle;
+            return GetPointerAttribute( SQL_ATTR_ASYNC_STMT_EVENT );
         }
 
 
         Result SetConcurrency( ODBC::Concurrency concurrency ) const
         {
-            auto rc = SetAttributeW( SQL_ATTR_CONCURRENCY, reinterpret_cast<SQLPOINTER>( concurrency ), 0 );
+            auto rc = SetEnumAttribute( SQL_ATTR_CONCURRENCY, concurrency );
             return rc;
         }
         ODBC::Concurrency Concurrency( ) const
         {
-            SQLULEN concurrency = 0;
-            GetAttributeW( SQL_ATTR_ASYNC_STMT_EVENT, &concurrency, SQL_IS_POINTER, nullptr );
-            return static_cast< ODBC::Concurrency >(concurrency);
+            return GetEnumAttribute<ODBC::Concurrency>( SQL_ATTR_CONCURRENCY );
         }
 
-
-
-
-
-
-        Result SetBindByColumn( ) const
+        Result SetCursorScrollable( bool cursorScrollable ) const
         {
-            auto rc = SetAttributeW( SQL_ATTR_PARAM_BIND_TYPE, SQL_PARAM_BIND_BY_COLUMN, 0 );
-            return rc;
+            return SetBooleanAttribute( SQL_ATTR_CURSOR_SCROLLABLE, cursorScrollable );
         }
+        bool CursorScrollable( ) const
+        {
+            return GetBooleanAttribute( SQL_ATTR_CURSOR_SCROLLABLE );
+        }
+
+        Result SetCursorSensitivity( ODBC::CursorSensitivity cursorSensitivity ) const
+        {
+            return SetEnumAttribute( SQL_ATTR_CURSOR_SENSITIVITY, cursorSensitivity );
+        }
+
+        ODBC::CursorSensitivity CursorSensitivity( ) const
+        {
+            return GetEnumAttribute<ODBC::CursorSensitivity>( SQL_ATTR_CURSOR_SENSITIVITY );
+        }
+
+        Result SetCursorType( ODBC::CursorType cursorType ) const
+        {
+            return SetEnumAttribute( SQL_ATTR_CURSOR_TYPE, cursorType );
+        }
+
+        ODBC::CursorType CursorType( ) const
+        {
+            return GetEnumAttribute<ODBC::CursorType>( SQL_ATTR_CURSOR_TYPE );
+        }
+
+
+        Result SetAutoPopulateImplementationParameterDescriptor( bool autoPopulateImplementationParameterDescriptor ) const
+        {
+            return SetBooleanAttribute( SQL_ATTR_ENABLE_AUTO_IPD, autoPopulateImplementationParameterDescriptor );
+        }
+        bool AutoPopulateImplementationParameterDescriptor( ) const
+        {
+            return GetBooleanAttribute( SQL_ATTR_ENABLE_AUTO_IPD );
+        }
+
+        SQLULEN* FetchBookmarkPointer( ) const
+        {
+            SQLULEN* bookmarkPtr = reinterpret_cast< SQLULEN* >( GetPointerAttribute( SQL_ATTR_FETCH_BOOKMARK_PTR ) );
+            return bookmarkPtr;
+        }
+
+        ODBC::Descriptor ImplementationParameterDescriptor( ) const
+        {
+            return GetDescriptorAttribute( SQL_ATTR_IMP_PARAM_DESC );
+        }
+
+        ODBC::Descriptor ImplementationRowDescriptor( ) const
+        {
+            return GetDescriptorAttribute( SQL_ATTR_IMP_ROW_DESC );
+        }
+
+
+        Result SetKeysetSize( SQLULEN keysetSize ) const
+        {
+            return SetUInt64Attribute( SQL_ATTR_KEYSET_SIZE, keysetSize );
+        }
+        SQLULEN KeysetSize( ) const
+        {
+            return GetUInt64Attribute( SQL_ATTR_KEYSET_SIZE );
+        }
+
+        Result SetMaxColumnLength( SQLULEN maxColumnLength ) const
+        {
+            return SetUInt64Attribute( SQL_ATTR_MAX_LENGTH, maxColumnLength );
+        }
+        SQLULEN MaxColumnLength( ) const
+        {
+            return GetUInt64Attribute( SQL_ATTR_MAX_LENGTH );
+        }
+
+        Result SetMaxRows( SQLULEN maxRows ) const
+        {
+            return SetUInt64Attribute( SQL_ATTR_MAX_ROWS, maxRows );
+        }
+        SQLULEN MaxRows( ) const
+        {
+            return GetUInt64Attribute( SQL_ATTR_MAX_ROWS );
+        }
+
+        Result SetMetadataIdentifiers( bool metadataIdentifiers ) const
+        {
+            return SetBooleanAttribute( SQL_ATTR_METADATA_ID, metadataIdentifiers );
+        }
+        bool MetadataIdentifiers( ) const
+        {
+            return GetBooleanAttribute( SQL_ATTR_METADATA_ID );
+        }
+
+
+        Result SetNoScan( bool noScan ) const
+        {
+            return SetBooleanAttribute( SQL_ATTR_NOSCAN, noScan );
+        }
+        bool NoScan( ) const
+        {
+            return GetBooleanAttribute( SQL_ATTR_NOSCAN );
+        }
+
+
+        Result SetParameterBindOffsetPointer( SQLULEN* paramBindOffsetPointer ) const
+        {
+            return SetPointerAttribute( SQL_ATTR_PARAM_BIND_OFFSET_PTR, paramBindOffsetPointer );
+        }
+        SQLULEN* ParameterBindOffsetPointer( ) const
+        {
+            return static_cast< SQLULEN* >( GetPointerAttribute( SQL_ATTR_PARAM_BIND_OFFSET_PTR ) );
+        }
+
+
+        Result SetParameterBindByColumn( ) const
+        {
+            return SetUInt64Attribute( SQL_ATTR_PARAM_BIND_TYPE, SQL_PARAM_BIND_BY_COLUMN );
+        }
+        bool ParameterBindByColumn( ) const
+        {
+            return ParameterRowSize( ) == 0;
+        }
+
+        Result SetParameterRowSize( SQLULEN rowSize ) const
+        {
+            return SetUInt64Attribute( SQL_ATTR_PARAM_BIND_TYPE, rowSize );
+        }
+        bool ParameterRowSize( ) const
+        {
+            return GetUInt64Attribute( SQL_ATTR_PARAM_BIND_TYPE );
+        }
+
+        Result SetParameterOperationPointer( SQLULEN* paramOperationPointer ) const
+        {
+            return SetPointerAttribute( SQL_ATTR_PARAM_OPERATION_PTR, paramOperationPointer );
+        }
+        SQLULEN* ParameterOperationPointer( ) const
+        {
+            return static_cast< SQLULEN* >( GetPointerAttribute( SQL_ATTR_PARAM_OPERATION_PTR ) );
+        }
+
 
 
         Result SetParameterArraySize( UInt64 parameterArraySize ) const
         {
-            auto rc = SetAttributeW( SQL_ATTR_PARAMSET_SIZE, (SQLPOINTER)parameterArraySize, 0 );
-            return rc;
-        }
-
-        Result GetParameterArraySize( UInt64* parameterArraySize ) const
-        {
-            auto rc = GetAttributeW( SQL_ATTR_PARAMSET_SIZE, parameterArraySize, 0, nullptr );
-            return rc;
+            return SetUInt64Attribute( SQL_ATTR_PARAMSET_SIZE, parameterArraySize );
         }
 
         UInt64 ParameterArraySize( ) const
         {
-            UInt64 parameterArraySize;
-            GetParameterArraySize( &parameterArraySize );
-            return parameterArraySize;
+            return GetUInt64Attribute( SQL_ATTR_PARAMSET_SIZE );
         }
 
 
         Result SetParameterStatusArray( SQLUSMALLINT* parameterStatusArray ) const
         {
-            auto rc = SetAttributeW( SQL_ATTR_PARAM_STATUS_PTR, (SQLPOINTER)parameterStatusArray, 0 );
-            return rc;
+            return SetPointerAttribute( SQL_ATTR_PARAM_STATUS_PTR, parameterStatusArray );
         }
 
-        Result SetParametersProcessed( SQLULEN* parametersProcessed ) const
+        SQLUSMALLINT* ParameterStatusArray( ) const
         {
-            auto rc = SetAttributeW( SQL_ATTR_PARAMS_PROCESSED_PTR, (SQLPOINTER)parametersProcessed, 0 );
-            return rc;
+            return static_cast< SQLUSMALLINT* >( GetPointerAttribute( SQL_ATTR_PARAM_STATUS_PTR ) );
         }
-        
 
+        Result SetParametersProcessedPointer( SQLULEN* parametersProcessed ) const
+        {
+            return SetPointerAttribute( SQL_ATTR_PARAMS_PROCESSED_PTR, parametersProcessed );
+        }
+        SQLULEN* ParametersProcessedPointer( ) const
+        {
+            return static_cast< SQLULEN* >( GetPointerAttribute( SQL_ATTR_PARAMS_PROCESSED_PTR ) );
+        }
+
+        Result SetParameterSetSize( SQLULEN parameterSetSize ) const
+        {
+            return SetUInt64Attribute( SQL_ATTR_PARAMSET_SIZE, parameterSetSize );
+        }
+        SQLULEN ParameterSetSize( ) const
+        {
+            return GetUInt64Attribute( SQL_ATTR_PARAMSET_SIZE );
+        }
+
+        Result SetQueryTimeout( const TimeSpan& timeout ) const
+        {
+            return SetUInt64Attribute( SQL_ATTR_QUERY_TIMEOUT, static_cast< UInt64 >( timeout.Ticks( ) / TimeSpan::TicksPerSecond ) );
+        }
+        Result SetQueryTimeout( const UInt64 timeout ) const
+        {
+            return SetUInt64Attribute( SQL_ATTR_QUERY_TIMEOUT, timeout );
+        }
+
+        TimeSpan QueryTimeout( ) const
+        {
+            return TimeSpan( GetUInt64Attribute( SQL_ATTR_QUERY_TIMEOUT ) * TimeSpan::TicksPerSecond );
+        }
+
+        Result SetRetrieveData( bool retrieveData ) const
+        {
+            return SetBooleanAttribute( SQL_ATTR_QUERY_TIMEOUT, retrieveData );
+        }
+
+        bool RetrieveData( ) const
+        {
+            return GetBooleanAttribute( SQL_ATTR_RETRIEVE_DATA );
+        }
 
         Result SetRowArraySize( UInt64 rowArraySize ) const
         {
-            auto rc = SetAttributeW( SQL_ATTR_ROW_ARRAY_SIZE, (SQLPOINTER)rowArraySize, 0 );
-            return rc;
+            return SetUInt64Attribute( SQL_ATTR_ROW_ARRAY_SIZE, rowArraySize );
+        }
+        UInt64 RowArraySize( ) const
+        {
+            return GetUInt64Attribute( SQL_ATTR_ROW_ARRAY_SIZE );
         }
 
-        Result SetRowsFetched( SQLULEN* rowsFetched ) const
+        Result SetRowBindOffsetPointer( SQLULEN* rowBindOffsetPointer ) const
         {
-            auto rc = SetAttributeW( SQL_ATTR_ROWS_FETCHED_PTR, (SQLPOINTER)rowsFetched, 0 );
-            return rc;
+            return SetPointerAttribute( SQL_ATTR_ROW_BIND_OFFSET_PTR, rowBindOffsetPointer );
         }
+
+        SQLULEN* RowBindOffsetPointer( ) const
+        {
+            return static_cast< SQLULEN* >( GetPointerAttribute( SQL_ATTR_ROW_BIND_OFFSET_PTR ) );
+        }
+
+        Result SetRowBindByColumn( ) const
+        {
+            return SetUInt64Attribute( SQL_ATTR_ROW_BIND_TYPE, SQL_BIND_BY_COLUMN );
+        }
+        bool RowBindByColumn( ) const
+        {
+            return GetUInt64Attribute( SQL_ATTR_ROW_BIND_TYPE ) == SQL_BIND_BY_COLUMN;
+        }
+
+        Result SetRowSize( SQLULEN rowSize ) const
+        {
+            return SetUInt64Attribute( SQL_ATTR_ROW_BIND_TYPE, rowSize );
+        }
+        SQLULEN RowSize( ) const
+        {
+            return GetUInt64Attribute( SQL_ATTR_ROW_BIND_TYPE );
+        }
+
+        SQLULEN RowNumber( ) const
+        {
+            return GetUInt64Attribute( SQL_ATTR_ROW_NUMBER );
+        }
+
+        Result SetRowOperationPointer( SQLULEN* paramOperationPointer ) const
+        {
+            return SetPointerAttribute( SQL_ATTR_ROW_OPERATION_PTR, paramOperationPointer );
+        }
+        SQLULEN* RowOperationPointer( ) const
+        {
+            return static_cast< SQLULEN* >( GetPointerAttribute( SQL_ATTR_ROW_OPERATION_PTR ) );
+        }
+
+        Result SetRowStatusPointer( SQLUSMALLINT* rowStatusPointer ) const
+        {
+            return SetPointerAttribute( SQL_ATTR_ROW_STATUS_PTR, rowStatusPointer );
+        }
+        SQLUSMALLINT* RowStatusPointer( ) const
+        {
+            return static_cast< SQLUSMALLINT* >( GetPointerAttribute( SQL_ATTR_ROW_STATUS_PTR ) );
+        }
+
+
+        Result SetRowsFetchedPointer( SQLULEN* rowsFetched ) const
+        {
+            return SetPointerAttribute( SQL_ATTR_ROWS_FETCHED_PTR, rowsFetched );
+        }
+        SQLULEN* RowsFetchedPointer( ) const
+        {
+            return static_cast< SQLULEN* >( GetPointerAttribute( SQL_ATTR_ROWS_FETCHED_PTR ) );
+        }
+
+        Result SetSimulateCursor( ODBC::SimulateCursor simulateCursor ) const
+        {
+            return SetEnumAttribute( SQL_ATTR_SIMULATE_CURSOR, simulateCursor );
+        }
+        ODBC::SimulateCursor SimulateCursor( ) const
+        {
+            return GetEnumAttribute<ODBC::SimulateCursor>( SQL_ATTR_SIMULATE_CURSOR );
+        }
+
+        Result SetUseBookmarks( bool useBookmarks ) const
+        {
+            return SetBooleanAttribute( SQL_ATTR_USE_BOOKMARKS, useBookmarks );
+        }
+        bool UseBookmarks( ) const
+        {
+            return GetBooleanAttribute( SQL_ATTR_USE_BOOKMARKS );
+        }
+
 
 
 
@@ -5551,3 +5952,4 @@ namespace Harlinn::ODBC
 }
 
 #endif
+
