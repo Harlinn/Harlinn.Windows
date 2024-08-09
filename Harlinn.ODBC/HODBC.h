@@ -3384,6 +3384,11 @@ namespace Harlinn::ODBC
         }
 
 
+        /// <summary>
+        /// Gets the value of the specified column as a std::optional&lt;bool&gt;.
+        /// </summary>
+        /// <param name="columnNumber">The one-based column ordinal.</param>
+        /// <returns>The value of the column.</returns>
         [[nodiscard]]
         std::optional<bool> GetNullableBoolean( SQLUSMALLINT columnNumber ) const
         {
@@ -3396,6 +3401,11 @@ namespace Harlinn::ODBC
             }
             return value;
         }
+        /// <summary>
+        /// Gets the value of the specified column as a std::optional&lt;Byte&gt;.
+        /// </summary>
+        /// <param name="columnNumber">The one-based column ordinal.</param>
+        /// <returns>The value of the column.</returns>
         [[nodiscard]]
         std::optional<Byte> GetNullableByte( SQLUSMALLINT columnNumber ) const
         {
@@ -3408,7 +3418,11 @@ namespace Harlinn::ODBC
             }
             return value;
         }
-
+        /// <summary>
+        /// Gets the value of the specified column as a std::optional&lt;SByte&gt;.
+        /// </summary>
+        /// <param name="columnNumber">The one-based column ordinal.</param>
+        /// <returns>The value of the column.</returns>
         [[nodiscard]]
         std::optional<SByte> GetNullableSByte( SQLUSMALLINT columnNumber ) const
         {
@@ -3422,6 +3436,11 @@ namespace Harlinn::ODBC
             return value;
         }
 
+        /// <summary>
+        /// Gets the value of the specified column as a std::optional&lt;Int16&gt;.
+        /// </summary>
+        /// <param name="columnNumber">The one-based column ordinal.</param>
+        /// <returns>The value of the column.</returns>
         [[nodiscard]]
         std::optional<Int16> GetNullableInt16( SQLUSMALLINT columnNumber ) const
         {
@@ -3434,7 +3453,11 @@ namespace Harlinn::ODBC
             }
             return value;
         }
-
+        /// <summary>
+        /// Gets the value of the specified column as a std::optional&lt;UInt16&gt;.
+        /// </summary>
+        /// <param name="columnNumber">The one-based column ordinal.</param>
+        /// <returns>The value of the column.</returns>
         [[nodiscard]]
         std::optional<UInt16> GetNullableUInt16( SQLUSMALLINT columnNumber ) const
         {
@@ -3447,7 +3470,11 @@ namespace Harlinn::ODBC
             }
             return value;
         }
-
+        /// <summary>
+        /// Gets the value of the specified column as a std::optional&lt;Int32&gt;.
+        /// </summary>
+        /// <param name="columnNumber">The one-based column ordinal.</param>
+        /// <returns>The value of the column.</returns>
         [[nodiscard]]
         std::optional<Int32> GetNullableInt32( SQLUSMALLINT columnNumber ) const
         {
@@ -3460,7 +3487,11 @@ namespace Harlinn::ODBC
             }
             return value;
         }
-
+        /// <summary>
+        /// Gets the value of the specified column as a std::optional&lt;UInt32&gt;.
+        /// </summary>
+        /// <param name="columnNumber">The one-based column ordinal.</param>
+        /// <returns>The value of the column.</returns>
         [[nodiscard]]
         std::optional<UInt32> GetNullableUInt32( SQLUSMALLINT columnNumber ) const
         {
@@ -3473,7 +3504,11 @@ namespace Harlinn::ODBC
             }
             return value;
         }
-
+        /// <summary>
+        /// Gets the value of the specified column as a std::optional&lt;Int64&gt;.
+        /// </summary>
+        /// <param name="columnNumber">The one-based column ordinal.</param>
+        /// <returns>The value of the column.</returns>
         [[nodiscard]]
         std::optional<Int64> GetNullableInt64( SQLUSMALLINT columnNumber ) const
         {
@@ -3486,7 +3521,11 @@ namespace Harlinn::ODBC
             }
             return value;
         }
-
+        /// <summary>
+        /// Gets the value of the specified column as a std::optional&lt;UInt64&gt;.
+        /// </summary>
+        /// <param name="columnNumber">The one-based column ordinal.</param>
+        /// <returns>The value of the column.</returns>
         [[nodiscard]]
         std::optional<UInt64> GetNullableUInt64( SQLUSMALLINT columnNumber ) const
         {
@@ -3499,7 +3538,11 @@ namespace Harlinn::ODBC
             }
             return value;
         }
-
+        /// <summary>
+        /// Gets the value of the specified column as a std::optional&lt;Numeric&gt;.
+        /// </summary>
+        /// <param name="columnNumber">The one-based column ordinal.</param>
+        /// <returns>The value of the column.</returns>
         [[nodiscard]]
         std::optional<Numeric> GetNullableNumeric( SQLUSMALLINT columnNumber ) const
         {
@@ -3512,14 +3555,22 @@ namespace Harlinn::ODBC
             }
             return value;
         }
-
+        /// <summary>
+        /// Gets the value of the specified column as a std::optional&lt;Numeric&gt;.
+        /// </summary>
+        /// <param name="columnNumber">The one-based column ordinal.</param>
+        /// <returns>The value of the column.</returns>
         [[nodiscard]]
         std::optional<Numeric> GetNullableDecimal( SQLUSMALLINT columnNumber ) const
         {
             return GetNullableNumeric( columnNumber );
         }
 
-
+        /// <summary>
+        /// Gets the value of the specified column as a std::optional&lt;float&gt;.
+        /// </summary>
+        /// <param name="columnNumber">The one-based column ordinal.</param>
+        /// <returns>The value of the column.</returns>
         [[nodiscard]]
         std::optional<float> GetNullableSingle( SQLUSMALLINT columnNumber ) const
         {
@@ -3532,7 +3583,11 @@ namespace Harlinn::ODBC
             }
             return value;
         }
-
+        /// <summary>
+        /// Gets the value of the specified column as a std::optional&lt;double&gt;.
+        /// </summary>
+        /// <param name="columnNumber">The one-based column ordinal.</param>
+        /// <returns>The value of the column.</returns>
         [[nodiscard]]
         std::optional<double> GetNullableDouble( SQLUSMALLINT columnNumber ) const
         {
@@ -3546,6 +3601,11 @@ namespace Harlinn::ODBC
             return value;
         }
 
+        /// <summary>
+        /// Gets the value of the specified column as a std::optional&lt;Currency&gt;.
+        /// </summary>
+        /// <param name="columnNumber">The one-based column ordinal.</param>
+        /// <returns>The value of the column.</returns>
         [[nodiscard]]
         std::optional<Currency> GetNullableCurrency( SQLUSMALLINT columnNumber ) const
         {
@@ -3566,6 +3626,11 @@ namespace Harlinn::ODBC
             }
         }
 
+        /// <summary>
+        /// Gets the value of the specified column as a std::optional&lt;DateTime&gt;.
+        /// </summary>
+        /// <param name="columnNumber">The one-based column ordinal.</param>
+        /// <returns>The value of the column.</returns>
         [[nodiscard]]
         std::optional<DateTime> GetNullableDateTime( SQLUSMALLINT columnNumber ) const
         {
@@ -3579,6 +3644,11 @@ namespace Harlinn::ODBC
             return value.ToDateTime( );
         }
 
+        /// <summary>
+        /// Gets the value of the specified column as a std::optional&lt;TimestampOffset&gt;.
+        /// </summary>
+        /// <param name="columnNumber">The one-based column ordinal.</param>
+        /// <returns>The value of the column.</returns>
         [[nodiscard]]
         std::optional<TimestampOffset> GetNullableTimestampOffset( SQLUSMALLINT columnNumber ) const
         {
@@ -3591,7 +3661,11 @@ namespace Harlinn::ODBC
             }
             return value;
         }
-
+        /// <summary>
+        /// Gets the value of the specified column as a std::optional&lt;Date&gt;.
+        /// </summary>
+        /// <param name="columnNumber">The one-based column ordinal.</param>
+        /// <returns>The value of the column.</returns>
         [[nodiscard]]
         std::optional<Date> GetNullableDate( SQLUSMALLINT columnNumber ) const
         {
@@ -3604,7 +3678,11 @@ namespace Harlinn::ODBC
             }
             return value;
         }
-
+        /// <summary>
+        /// Gets the value of the specified column as a std::optional&lt;Time&gt;.
+        /// </summary>
+        /// <param name="columnNumber">The one-based column ordinal.</param>
+        /// <returns>The value of the column.</returns>
         [[nodiscard]]
         std::optional<Time> GetNullableTime( SQLUSMALLINT columnNumber ) const
         {
@@ -3617,7 +3695,11 @@ namespace Harlinn::ODBC
             }
             return value;
         }
-
+        /// <summary>
+        /// Gets the value of the specified column as a std::optional&lt;TimeSpan&gt;.
+        /// </summary>
+        /// <param name="columnNumber">The one-based column ordinal.</param>
+        /// <returns>The value of the column.</returns>
         [[nodiscard]]
         std::optional<TimeSpan> GetNullableTimeSpan( SQLUSMALLINT columnNumber ) const
         {
@@ -3630,7 +3712,11 @@ namespace Harlinn::ODBC
             }
             return value.ToTimeSpan( );
         }
-
+        /// <summary>
+        /// Gets the value of the specified column as a std::optional&lt;WideString&gt;.
+        /// </summary>
+        /// <param name="columnNumber">The one-based column ordinal.</param>
+        /// <returns>The value of the column.</returns>
         [[nodiscard]]
         std::optional<WideString> GetNullableWideString( SQLUSMALLINT columnNumber ) const
         {
@@ -3668,6 +3754,11 @@ namespace Harlinn::ODBC
             }
         }
 
+        /// <summary>
+        /// Gets the value of the specified column as a std::optional&lt;AnsiString&gt;.
+        /// </summary>
+        /// <param name="columnNumber">The one-based column ordinal.</param>
+        /// <returns>The value of the column.</returns>
         [[nodiscard]]
         std::optional<AnsiString> GetNullableAnsiString( SQLUSMALLINT columnNumber ) const
         {
@@ -3705,6 +3796,11 @@ namespace Harlinn::ODBC
             }
         }
 
+        /// <summary>
+        /// Gets the value of the specified column as a std::optional&lt;std::vector&ltByte&gt;&gt;.
+        /// </summary>
+        /// <param name="columnNumber">The one-based column ordinal.</param>
+        /// <returns>The value of the column.</returns>
         [[nodiscard]]
         std::optional<std::vector<Byte>> GetNullableBinary( SQLUSMALLINT columnNumber ) const
         {
@@ -3742,7 +3838,11 @@ namespace Harlinn::ODBC
             }
         }
 
-
+        /// <summary>
+        /// Gets the value of the specified column as a std::optional&lt;Guid&gt;.
+        /// </summary>
+        /// <param name="columnNumber">The one-based column ordinal.</param>
+        /// <returns>The value of the column.</returns>
         [[nodiscard]]
         std::optional<Guid> GetNullableGuid( SQLUSMALLINT columnNumber ) const
         {
@@ -3756,6 +3856,11 @@ namespace Harlinn::ODBC
             return value;
         }
 
+        /// <summary>
+        /// Gets the value of the specified column as a std::optional&lt;RowVersion&gt;.
+        /// </summary>
+        /// <param name="columnNumber">The one-based column ordinal.</param>
+        /// <returns>The value of the column.</returns>
         [[nodiscard]]
         std::optional<RowVersion> GetNullableRowVersion( SQLUSMALLINT columnNumber ) const
         {
@@ -3769,7 +3874,14 @@ namespace Harlinn::ODBC
             return value;
         }
 
-
+        /// <summary>
+        /// Gets the value of the specified column as a bool.
+        /// </summary>
+        /// <param name="columnNumber">The one-based column ordinal.</param>
+        /// <returns>The value of the column.</returns>
+        /// <remarks>
+        /// The implementation throws an exception if the column value is NULL.
+        /// </remarks>
         [[nodiscard]]
         bool GetBoolean( SQLUSMALLINT columnNumber ) const
         {
@@ -3782,6 +3894,14 @@ namespace Harlinn::ODBC
             }
             return value;
         }
+        /// <summary>
+        /// Gets the value of the specified column as a Byte.
+        /// </summary>
+        /// <param name="columnNumber">The one-based column ordinal.</param>
+        /// <returns>The value of the column.</returns>
+        /// <remarks>
+        /// The implementation throws an exception if the column value is NULL.
+        /// </remarks>
         [[nodiscard]]
         Byte GetByte( SQLUSMALLINT columnNumber ) const
         {
@@ -3794,7 +3914,14 @@ namespace Harlinn::ODBC
             }
             return value;
         }
-
+        /// <summary>
+        /// Gets the value of the specified column as a SByte.
+        /// </summary>
+        /// <param name="columnNumber">The one-based column ordinal.</param>
+        /// <returns>The value of the column.</returns>
+        /// <remarks>
+        /// The implementation throws an exception if the column value is NULL.
+        /// </remarks>
         [[nodiscard]]
         SByte GetSByte( SQLUSMALLINT columnNumber ) const
         {
@@ -3807,7 +3934,14 @@ namespace Harlinn::ODBC
             }
             return value;
         }
-
+        /// <summary>
+        /// Gets the value of the specified column as an Int16.
+        /// </summary>
+        /// <param name="columnNumber">The one-based column ordinal.</param>
+        /// <returns>The value of the column.</returns>
+        /// <remarks>
+        /// The implementation throws an exception if the column value is NULL.
+        /// </remarks>
         [[nodiscard]]
         Int16 GetInt16( SQLUSMALLINT columnNumber ) const
         {
@@ -3820,7 +3954,14 @@ namespace Harlinn::ODBC
             }
             return value;
         }
-
+        /// <summary>
+        /// Gets the value of the specified column as an UInt16.
+        /// </summary>
+        /// <param name="columnNumber">The one-based column ordinal.</param>
+        /// <returns>The value of the column.</returns>
+        /// <remarks>
+        /// The implementation throws an exception if the column value is NULL.
+        /// </remarks>
         [[nodiscard]]
         UInt16 GetUInt16( SQLUSMALLINT columnNumber ) const
         {
@@ -3833,7 +3974,14 @@ namespace Harlinn::ODBC
             }
             return value;
         }
-
+        /// <summary>
+        /// Gets the value of the specified column as an Int32.
+        /// </summary>
+        /// <param name="columnNumber">The one-based column ordinal.</param>
+        /// <returns>The value of the column.</returns>
+        /// <remarks>
+        /// The implementation throws an exception if the column value is NULL.
+        /// </remarks>
         [[nodiscard]]
         Int32 GetInt32( SQLUSMALLINT columnNumber ) const
         {
@@ -3846,7 +3994,14 @@ namespace Harlinn::ODBC
             }
             return value;
         }
-
+        /// <summary>
+        /// Gets the value of the specified column as an UInt32.
+        /// </summary>
+        /// <param name="columnNumber">The one-based column ordinal.</param>
+        /// <returns>The value of the column.</returns>
+        /// <remarks>
+        /// The implementation throws an exception if the column value is NULL.
+        /// </remarks>
         [[nodiscard]]
         UInt32 GetUInt32( SQLUSMALLINT columnNumber ) const
         {
@@ -3859,7 +4014,14 @@ namespace Harlinn::ODBC
             }
             return value;
         }
-
+        /// <summary>
+        /// Gets the value of the specified column as an Int64.
+        /// </summary>
+        /// <param name="columnNumber">The one-based column ordinal.</param>
+        /// <returns>The value of the column.</returns>
+        /// <remarks>
+        /// The implementation throws an exception if the column value is NULL.
+        /// </remarks>
         [[nodiscard]]
         Int64 GetInt64( SQLUSMALLINT columnNumber ) const
         {
@@ -3872,7 +4034,14 @@ namespace Harlinn::ODBC
             }
             return value;
         }
-
+        /// <summary>
+        /// Gets the value of the specified column as an UInt64.
+        /// </summary>
+        /// <param name="columnNumber">The one-based column ordinal.</param>
+        /// <returns>The value of the column.</returns>
+        /// <remarks>
+        /// The implementation throws an exception if the column value is NULL.
+        /// </remarks>
         [[nodiscard]]
         UInt64 GetUInt64( SQLUSMALLINT columnNumber ) const
         {
@@ -3885,7 +4054,14 @@ namespace Harlinn::ODBC
             }
             return value;
         }
-
+        /// <summary>
+        /// Gets the value of the specified column as a Numeric.
+        /// </summary>
+        /// <param name="columnNumber">The one-based column ordinal.</param>
+        /// <returns>The value of the column.</returns>
+        /// <remarks>
+        /// The implementation throws an exception if the column value is NULL.
+        /// </remarks>
         [[nodiscard]]
         Numeric GetNumeric( SQLUSMALLINT columnNumber ) const
         {
@@ -3898,14 +4074,28 @@ namespace Harlinn::ODBC
             }
             return value;
         }
-
+        /// <summary>
+        /// Gets the value of the specified column as a Numeric.
+        /// </summary>
+        /// <param name="columnNumber">The one-based column ordinal.</param>
+        /// <returns>The value of the column.</returns>
+        /// <remarks>
+        /// The implementation throws an exception if the column value is NULL.
+        /// </remarks>
         [[nodiscard]]
         Numeric GetDecimal( SQLUSMALLINT columnNumber ) const
         {
             return GetNumeric( columnNumber );
         }
 
-
+        /// <summary>
+        /// Gets the value of the specified column as a float.
+        /// </summary>
+        /// <param name="columnNumber">The one-based column ordinal.</param>
+        /// <returns>The value of the column.</returns>
+        /// <remarks>
+        /// The implementation throws an exception if the column value is NULL.
+        /// </remarks>
         [[nodiscard]]
         float GetSingle( SQLUSMALLINT columnNumber ) const
         {
@@ -3919,6 +4109,14 @@ namespace Harlinn::ODBC
             return value;
         }
 
+        /// <summary>
+        /// Gets the value of the specified column as a double.
+        /// </summary>
+        /// <param name="columnNumber">The one-based column ordinal.</param>
+        /// <returns>The value of the column.</returns>
+        /// <remarks>
+        /// The implementation throws an exception if the column value is NULL.
+        /// </remarks>
         [[nodiscard]]
         double GetDouble( SQLUSMALLINT columnNumber ) const
         {
@@ -3932,6 +4130,14 @@ namespace Harlinn::ODBC
             return value;
         }
 
+        /// <summary>
+        /// Gets the value of the specified column as a Currency.
+        /// </summary>
+        /// <param name="columnNumber">The one-based column ordinal.</param>
+        /// <returns>The value of the column.</returns>
+        /// <remarks>
+        /// The implementation throws an exception if the column value is NULL.
+        /// </remarks>
         [[nodiscard]]
         Currency GetCurrency( SQLUSMALLINT columnNumber ) const
         {
@@ -3952,7 +4158,14 @@ namespace Harlinn::ODBC
             }
         }
 
-
+        /// <summary>
+        /// Gets the value of the specified column as a DateTime.
+        /// </summary>
+        /// <param name="columnNumber">The one-based column ordinal.</param>
+        /// <returns>The value of the column.</returns>
+        /// <remarks>
+        /// The implementation throws an exception if the column value is NULL.
+        /// </remarks>
         [[nodiscard]]
         DateTime GetDateTime( SQLUSMALLINT columnNumber ) const
         {
@@ -3966,6 +4179,14 @@ namespace Harlinn::ODBC
             return value.ToDateTime( );
         }
 
+        /// <summary>
+        /// Gets the value of the specified column as a TimestampOffset.
+        /// </summary>
+        /// <param name="columnNumber">The one-based column ordinal.</param>
+        /// <returns>The value of the column.</returns>
+        /// <remarks>
+        /// The implementation throws an exception if the column value is NULL.
+        /// </remarks>
         [[nodiscard]]
         TimestampOffset GetTimestampOffset( SQLUSMALLINT columnNumber ) const
         {
@@ -3980,7 +4201,14 @@ namespace Harlinn::ODBC
         }
 
 
-
+        /// <summary>
+        /// Gets the value of the specified column as a Date.
+        /// </summary>
+        /// <param name="columnNumber">The one-based column ordinal.</param>
+        /// <returns>The value of the column.</returns>
+        /// <remarks>
+        /// The implementation throws an exception if the column value is NULL.
+        /// </remarks>
         [[nodiscard]]
         Date GetDate( SQLUSMALLINT columnNumber ) const
         {
@@ -3994,6 +4222,14 @@ namespace Harlinn::ODBC
             return value;
         }
 
+        /// <summary>
+        /// Gets the value of the specified column as a Time.
+        /// </summary>
+        /// <param name="columnNumber">The one-based column ordinal.</param>
+        /// <returns>The value of the column.</returns>
+        /// <remarks>
+        /// The implementation throws an exception if the column value is NULL.
+        /// </remarks>
         [[nodiscard]]
         Time GetTime( SQLUSMALLINT columnNumber ) const
         {
@@ -4006,7 +4242,14 @@ namespace Harlinn::ODBC
             }
             return value;
         }
-
+        /// <summary>
+        /// Gets the value of the specified column as a TimeSpan.
+        /// </summary>
+        /// <param name="columnNumber">The one-based column ordinal.</param>
+        /// <returns>The value of the column.</returns>
+        /// <remarks>
+        /// The implementation throws an exception if the column value is NULL.
+        /// </remarks>
         [[nodiscard]]
         TimeSpan GetTimeSpan( SQLUSMALLINT columnNumber ) const
         {
@@ -4020,6 +4263,14 @@ namespace Harlinn::ODBC
             return value.ToTimeSpan( );
         }
 
+        /// <summary>
+        /// Gets the value of the specified column as a WideString.
+        /// </summary>
+        /// <param name="columnNumber">The one-based column ordinal.</param>
+        /// <returns>The value of the column.</returns>
+        /// <remarks>
+        /// The implementation throws an exception if the column value is NULL.
+        /// </remarks>
         [[nodiscard]]
         WideString GetWideString( SQLUSMALLINT columnNumber ) const
         {
@@ -4057,6 +4308,14 @@ namespace Harlinn::ODBC
             }
         }
 
+        /// <summary>
+        /// Gets the value of the specified column as an AnsiString.
+        /// </summary>
+        /// <param name="columnNumber">The one-based column ordinal.</param>
+        /// <returns>The value of the column.</returns>
+        /// <remarks>
+        /// The implementation throws an exception if the column value is NULL.
+        /// </remarks>
         [[nodiscard]]
         AnsiString GetAnsiString( SQLUSMALLINT columnNumber ) const
         {
@@ -4093,7 +4352,14 @@ namespace Harlinn::ODBC
                 return result;
             }
         }
-
+        /// <summary>
+        /// Gets the value of the specified column as a std::vector&lt;Byte&gt;.
+        /// </summary>
+        /// <param name="columnNumber">The one-based column ordinal.</param>
+        /// <returns>The value of the column.</returns>
+        /// <remarks>
+        /// The implementation throws an exception if the column value is NULL.
+        /// </remarks>
         [[nodiscard]]
         std::vector<Byte> GetBinary( SQLUSMALLINT columnNumber ) const
         {
@@ -4131,7 +4397,14 @@ namespace Harlinn::ODBC
             }
         }
 
-
+        /// <summary>
+        /// Gets the value of the specified column as a Guid.
+        /// </summary>
+        /// <param name="columnNumber">The one-based column ordinal.</param>
+        /// <returns>The value of the column.</returns>
+        /// <remarks>
+        /// The implementation throws an exception if the column value is NULL.
+        /// </remarks>
         [[nodiscard]]
         Guid GetGuid( SQLUSMALLINT columnNumber ) const
         {
@@ -4144,7 +4417,14 @@ namespace Harlinn::ODBC
             }
             return value;
         }
-
+        /// <summary>
+        /// Gets the value of the specified column as a RowVersion.
+        /// </summary>
+        /// <param name="columnNumber">The one-based column ordinal.</param>
+        /// <returns>The value of the column.</returns>
+        /// <remarks>
+        /// The implementation throws an exception if the column value is NULL.
+        /// </remarks>
         [[nodiscard]]
         RowVersion GetRowVersion( SQLUSMALLINT columnNumber ) const
         {
@@ -4159,7 +4439,53 @@ namespace Harlinn::ODBC
         }
 
 
-
+        /// <summary>
+        /// Retrieves the current setting of a statement attribute.
+        /// </summary>
+        /// <param name="attributeId">Identifier of the attribute to retrieve.</param>
+        /// <param name="value">
+        /// <para>
+        /// Pointer to a buffer in which to return the value of the attribute specified in Attribute.
+        /// </para>
+        /// <para>
+        /// If value is nullptr, valueActualLength will still return the total number of bytes (excluding 
+        /// the null-termination character for character data) available to return in the buffer pointed to 
+        /// by value.
+        /// </para>
+        /// </param>
+        /// <param name="valueBufferLength">
+        /// <para>
+        /// If attributeId is an ODBC-defined attribute and value *points to a character string or a 
+        /// binary buffer, this argument should be the length of *value. If attributeId is an 
+        /// ODBC-defined attribute and *value is an integer, valueBufferLength is ignored. If the 
+        /// value returned in *value is a Unicode string, the valueBufferLength argument must be an even number.
+        /// </para>
+        /// <para>
+        /// If attributeId is a driver-defined attribute, the application indicates the nature of the 
+        /// attribute to the Driver Manager by setting the BufferLength argument. valueBufferLength can 
+        /// have the following values:
+        /// </para>
+        /// <list type="bullet">
+        /// <item>
+        /// If *value is a pointer to a character string, then valueBufferLength is the length of the string or SQL_NTS.
+        /// </item>
+        /// <item>
+        /// If *value is a pointer to a binary buffer, then the application places the result of the 
+        /// SQL_LEN_BINARY_ATTR(length) macro in valueBufferLength. This places a negative value in 
+        /// valueBufferLength.
+        /// </item>
+        /// <item>
+        /// If *value is a pointer to a value other than a character string or binary string, then 
+        /// valueBufferLength should have the value SQL_IS_POINTER.
+        /// </item>
+        /// <item>
+        /// If *value contains a fixed-length data type, then valueBufferLength is either SQL_IS_INTEGER or 
+        /// SQL_IS_UINTEGER, as appropriate.
+        /// </item>
+        /// </list>
+        /// </param>
+        /// <param name="valueActualLength"></param>
+        /// <returns></returns>
         Result GetAttributeW( SQLINTEGER attributeId, SQLPOINTER value, SQLINTEGER valueBufferLength, SQLINTEGER* valueActualLength ) const
         {
             auto rc = SQLGetStmtAttrW( Handle( ), attributeId, value, valueBufferLength, valueActualLength );
@@ -4170,6 +4496,11 @@ namespace Harlinn::ODBC
             return static_cast<Result>( rc );
         }
 
+        /// <summary>
+        /// Retrieves the current setting of a UInt64 valued statement attribute.
+        /// </summary>
+        /// <param name="attributeId">Identifier of the attribute to retrieve.</param>
+        /// <returns>The value of the attribute.</returns>
         UInt64 GetUInt64Attribute( SQLINTEGER attributeId ) const
         {
             UInt64 value;
@@ -4180,6 +4511,11 @@ namespace Harlinn::ODBC
             }
             return value;
         }
+        /// <summary>
+        /// Retrieves the current setting of a Int64 valued statement attribute.
+        /// </summary>
+        /// <param name="attributeId">Identifier of the attribute to retrieve.</param>
+        /// <returns>The value of the attribute.</returns>
         Int64 GetInt64Attribute( SQLINTEGER attributeId ) const
         {
             Int64 value;
@@ -4190,6 +4526,12 @@ namespace Harlinn::ODBC
             }
             return value;
         }
+
+        /// <summary>
+        /// Retrieves the current setting of a pointer valued statement attribute.
+        /// </summary>
+        /// <param name="attributeId">Identifier of the attribute to retrieve.</param>
+        /// <returns>The value of the attribute.</returns>
         SQLPOINTER GetPointerAttribute( SQLINTEGER attributeId ) const
         {
             SQLPOINTER value;
@@ -4200,16 +4542,34 @@ namespace Harlinn::ODBC
             }
             return value;
         }
+
+        /// <summary>
+        /// Retrieves the current setting of a boolean valued statement attribute.
+        /// </summary>
+        /// <param name="attributeId">Identifier of the attribute to retrieve.</param>
+        /// <returns>The value of the attribute.</returns>
         bool GetBooleanAttribute( SQLINTEGER attributeId ) const
         {
             return GetUInt64Attribute( attributeId ) != 0;
         }
+
+        /// <summary>
+        /// Retrieves the current setting of a descriptor valued statement attribute.
+        /// </summary>
+        /// <param name="attributeId">Identifier of the attribute to retrieve.</param>
+        /// <returns>The value of the attribute.</returns>
         Descriptor GetDescriptorAttribute( SQLINTEGER attributeId ) const
         {
             SQLHANDLE descriptor = nullptr;
             GetAttributeW( attributeId, &descriptor, SQL_IS_POINTER, nullptr );
             return Descriptor( descriptor, false );
         }
+
+        /// <summary>
+        /// Retrieves the current setting of a UInt64 valued statement attribute as an enum value.
+        /// </summary>
+        /// <param name="attributeId">Identifier of the attribute to retrieve.</param>
+        /// <returns>The value of the attribute.</returns>
         template<typename T>
             requires std::is_enum_v<T>
         T GetEnumAttribute( SQLINTEGER attributeId ) const
