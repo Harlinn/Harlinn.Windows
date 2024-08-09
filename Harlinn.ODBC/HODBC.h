@@ -1739,6 +1739,7 @@ namespace Harlinn::ODBC
     class Descriptor : public SqlHandle<ODBC::HandleType::Descriptor>
     {
         friend class Statement;
+        friend class Connection;
     public:
         using Base = SqlHandle<ODBC::HandleType::Descriptor>;
 
@@ -5500,29 +5501,71 @@ namespace Harlinn::ODBC
             return static_cast<Result>( rc );
         }
 
-        Result GetAttribute( SQLINTEGER attributeId, WideString& result ) const
+
+        UInt64 GetUInt64Attribute( SQLINTEGER attributeId ) const
+        {
+            UInt64 value;
+            auto rc = SQLGetConnectAttrW( Handle( ), attributeId, &value, SQL_IS_UINTEGER, nullptr );
+            if ( Failed( static_cast< Result >( rc ) ) )
+            {
+                ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
+            }
+            return value;
+        }
+        Int64 GetInt64Attribute( SQLINTEGER attributeId ) const
+        {
+            Int64 value;
+            auto rc = SQLGetConnectAttrW( Handle( ), attributeId, &value, SQL_IS_INTEGER, nullptr );
+            if ( Failed( static_cast< Result >( rc ) ) )
+            {
+                ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
+            }
+            return value;
+        }
+        SQLPOINTER GetPointerAttribute( SQLINTEGER attributeId ) const
+        {
+            SQLPOINTER value;
+            auto rc = SQLGetConnectAttrW( Handle( ), attributeId, &value, SQL_IS_POINTER, nullptr );
+            if ( Failed( static_cast< Result >( rc ) ) )
+            {
+                ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
+            }
+            return value;
+        }
+        bool GetBooleanAttribute( SQLINTEGER attributeId ) const
+        {
+            return GetUInt64Attribute( attributeId ) != 0;
+        }
+        ODBC::Descriptor GetDescriptorAttribute( SQLINTEGER attributeId ) const
+        {
+            SQLHANDLE descriptor = nullptr;
+            GetAttributeW( attributeId, &descriptor, SQL_IS_POINTER, nullptr );
+            return ODBC::Descriptor( descriptor, false );
+        }
+        template<typename T>
+            requires std::is_enum_v<T>
+        T GetEnumAttribute( SQLINTEGER attributeId ) const
+        {
+            UInt64 value;
+            auto rc = SQLGetConnectAttrW( Handle( ), attributeId, &value, SQL_IS_UINTEGER, nullptr );
+            if ( Failed( static_cast< Result >( rc ) ) )
+            {
+                ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
+            }
+            return static_cast< T >( value );
+        }
+
+
+        WideString GetWideStringAttribute( SQLINTEGER attributeId ) const
         {
             constexpr SQLINTEGER bufferSize = 1024;
             SQLINTEGER actualLength = 0;
             wchar_t buffer[bufferSize];
             auto rc = GetAttributeW( attributeId, buffer, bufferSize*sizeof(wchar_t), &actualLength );
+            WideString result;
             result.assign( buffer, static_cast<size_t>( actualLength/sizeof(wchar_t) ) );
-            return rc;
+            return result;
         }
-
-        Result GetAttribute( SQLINTEGER attributeId, SQLINTEGER& result ) const
-        {
-            SQLINTEGER actualLength = 0;
-            auto rc = GetAttributeW( attributeId, &result, SQL_IS_INTEGER, &actualLength );
-            return rc;
-        }
-        Result GetAttribute( SQLINTEGER attributeId, SQLUINTEGER& result ) const
-        {
-            SQLINTEGER actualLength = 0;
-            auto rc = GetAttributeW( attributeId, &result, SQL_IS_UINTEGER, &actualLength );
-            return rc;
-        }
-
 
         Result GetAttributeA( SQLINTEGER attributeId, SQLPOINTER value, SQLINTEGER valueBufferLength, SQLINTEGER* valueActualLength ) const
         {
@@ -5544,22 +5587,46 @@ namespace Harlinn::ODBC
             return static_cast<Result>( rc );
         }
 
-        Result SetAttribute( SQLINTEGER attributeId, const WideString& value ) const
+        Result SetUInt64Attribute( SQLINTEGER attributeId, UInt64 value ) const
+        {
+            return SetAttributeW( attributeId, reinterpret_cast< SQLPOINTER >( value ), SQL_IS_UINTEGER );
+        }
+        Result SetInt64Attribute( SQLINTEGER attributeId, Int64 value ) const
+        {
+            return SetAttributeW( attributeId, reinterpret_cast< SQLPOINTER >( value ), SQL_IS_INTEGER );
+        }
+        Result SetBooleanAttribute( SQLINTEGER attributeId, bool value ) const
+        {
+            return SetAttributeW( attributeId, reinterpret_cast< SQLPOINTER >( value ? 1ULL : 0ULL ), SQL_IS_UINTEGER );
+        }
+
+        Result SetPointerAttribute( SQLINTEGER attributeId, SQLPOINTER value ) const
+        {
+            return SetAttributeW( attributeId, value, SQL_IS_POINTER );
+        }
+
+        Result SetDescriptorAttribute( SQLINTEGER attributeId, SQLHANDLE value ) const
+        {
+            return SetAttributeW( attributeId, value, SQL_IS_POINTER );
+        }
+        Result SetDescriptorAttribute( SQLINTEGER attributeId, const Descriptor& value ) const
+        {
+            return SetAttributeW( attributeId, value.Handle( ), SQL_IS_POINTER );
+        }
+
+        template<typename T>
+            requires std::is_enum_v<T>
+        Result SetEnumAttribute( SQLINTEGER attributeId, T value ) const
+        {
+            return SetAttributeW( attributeId, reinterpret_cast< SQLPOINTER >( value ), SQL_IS_UINTEGER );
+        }
+
+        Result SetWideStringAttribute( SQLINTEGER attributeId, const WideString& value ) const
         {
             auto rc = SetAttributeW( attributeId, const_cast<wchar_t*>(value.c_str( )), static_cast<SQLINTEGER>( value.length( )*sizeof(wchar_t) ) );
             return rc;
         }
 
-        Result SetAttribute( SQLINTEGER attributeId, SQLINTEGER value ) const
-        {
-            auto rc = SetAttributeW( attributeId, ( SQLPOINTER )static_cast<ptrdiff_t>( value ), SQL_IS_INTEGER );
-            return rc;
-        }
-        Result SetAttribute( SQLINTEGER attributeId, SQLUINTEGER value ) const
-        {
-            auto rc = SetAttributeW( attributeId, ( SQLPOINTER )static_cast<size_t>( value ), SQL_IS_UINTEGER );
-            return rc;
-        }
 
 
 
@@ -5574,40 +5641,101 @@ namespace Harlinn::ODBC
         }
 
 
-
-
-        Result GetCurrentCatalog( WideString& result ) const
+        Result SetAccessMode( ODBC::AccessMode accessMode ) const
         {
-            auto rc = GetAttribute( SQL_ATTR_CURRENT_CATALOG, result );
+            return SetEnumAttribute( SQL_ATTR_ACCESS_MODE, accessMode );
+        }
+
+        ODBC::AccessMode AccessMode( ) const
+        {
+            return GetEnumAttribute<ODBC::AccessMode>( SQL_ATTR_ACCESS_MODE );
+        }
+
+        Result SetAsyncEvent( const EventWaitHandle& eventWaitHandle ) const
+        {
+            return SetPointerAttribute( SQL_ATTR_ASYNC_DBC_EVENT, eventWaitHandle.GetHandle() );
+        }
+        Result SetAsyncEvent( HANDLE eventWaitHandle ) const
+        {
+            return SetPointerAttribute( SQL_ATTR_ASYNC_DBC_EVENT, eventWaitHandle );
+        }
+        HANDLE AsyncEvent( ) const
+        {
+            return GetPointerAttribute( SQL_ATTR_ASYNC_DBC_EVENT );
+        }
+
+        Result SetAsyncConnectionFunctionsEnabled( bool asyncEnable ) const
+        {
+            auto rc = SetBooleanAttribute( SQL_ATTR_ASYNC_DBC_FUNCTIONS_ENABLE, asyncEnable );
+            return rc;
+        }
+
+        bool AsyncConnectionFunctionsEnabled( ) const
+        {
+            return GetBooleanAttribute( SQL_ATTR_ASYNC_DBC_FUNCTIONS_ENABLE );
+        }
+
+        Result SetAsyncEnabled( bool asyncEnable ) const
+        {
+            auto rc = SetBooleanAttribute( SQL_ATTR_ASYNC_ENABLE, asyncEnable );
+            return rc;
+        }
+
+        bool AsyncEnabled( ) const
+        {
+            return GetBooleanAttribute( SQL_ATTR_ASYNC_ENABLE );
+        }
+
+        bool SupportsAutoPopulateImplementationParameterDescriptor( ) const
+        {
+            return GetBooleanAttribute( SQL_ATTR_AUTO_IPD );
+        }
+
+        Result SetAutoCommit( bool autoCommit ) const
+        {
+            return SetBooleanAttribute( SQL_ATTR_AUTOCOMMIT, autoCommit );
+        }
+
+        bool AutoCommit( ) const
+        {
+            return GetBooleanAttribute( SQL_ATTR_AUTOCOMMIT );
+        }
+
+        bool ConnectionDead( ) const
+        {
+            return GetBooleanAttribute( SQL_ATTR_CONNECTION_DEAD );
+        }
+        bool Connected( ) const
+        {
+            return ConnectionDead( ) == false;
+        }
+
+        Result SetDTCTransaction( ITransaction* transaction ) const
+        {
+            return SetPointerAttribute( SQL_ATTR_ENLIST_IN_DTC, transaction );
+        }
+
+
+        Result SetCurrentCatalog( const WideString& currentCatalog ) const
+        {
+            auto rc = SetWideStringAttribute( SQL_ATTR_CURRENT_CATALOG, currentCatalog );
             return rc;
         }
 
         WideString CurrentCatalog( ) const
         {
-            WideString result;
-            GetCurrentCatalog( result );
-            return result;
-        }
-
-        Result SetCurrentCatalog( const WideString& currentCatalog ) const
-        {
-            auto rc = SetAttribute( SQL_ATTR_CURRENT_CATALOG, currentCatalog );
-            return rc;
+            return GetWideStringAttribute( SQL_ATTR_CURRENT_CATALOG );
         }
 
 
-        Result SetAutoCommitMode( bool enabled )
+        Result SetAutoCommitMode( bool enabled ) const
         {
-            Result rc = Result::Success;
-            if ( enabled )
-            {
-                rc = SetAttribute( SQL_ATTR_AUTOCOMMIT, SQL_AUTOCOMMIT_ON );
-            }
-            else
-            {
-                rc = SetAttribute( SQL_ATTR_AUTOCOMMIT, SQL_AUTOCOMMIT_OFF );
-            }
-            return rc;
+            return SetBooleanAttribute( SQL_ATTR_AUTOCOMMIT, enabled );
+        }
+
+        bool AutoCommitMode( bool enabled ) const
+        {
+            return GetBooleanAttribute( SQL_ATTR_AUTOCOMMIT );
         }
 
 
