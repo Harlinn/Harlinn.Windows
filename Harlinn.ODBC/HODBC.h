@@ -26,6 +26,7 @@ namespace Harlinn::ODBC
     class Statement;
     class Descriptor;
     class DataReader;
+    struct ParameterDescription;
 
     namespace MsSql
     {
@@ -948,7 +949,7 @@ namespace Harlinn::ODBC
     };
 
 
-    enum class Fetch : SQLUSMALLINT
+    enum class FetchOrientation : SQLUSMALLINT
     {
         Next = SQL_FETCH_NEXT,
         First = SQL_FETCH_FIRST,
@@ -1070,100 +1071,103 @@ namespace Harlinn::ODBC
 
 
 
-    namespace SqlType
+
+
+
+    enum class SqlType : SQLSMALLINT
     {
-        constexpr SQLSMALLINT Unknown = SQL_UNKNOWN_TYPE;
-        constexpr SQLSMALLINT Char = SQL_CHAR;
-        constexpr SQLSMALLINT Numeric = SQL_NUMERIC;
-        constexpr SQLSMALLINT Decimal = SQL_DECIMAL;
-        constexpr SQLSMALLINT Integer = SQL_INTEGER;
-        constexpr SQLSMALLINT SmallInt = SQL_SMALLINT;
-        constexpr SQLSMALLINT VarChar = SQL_VARCHAR;
-        constexpr SQLSMALLINT LongVarChar = SQL_LONGVARCHAR;
-        constexpr SQLSMALLINT WChar = SQL_WCHAR;
-        constexpr SQLSMALLINT WVarChar = SQL_WVARCHAR;
-        constexpr SQLSMALLINT WLongVarChar = SQL_WLONGVARCHAR;
-        constexpr SQLSMALLINT Real = SQL_REAL;
-        constexpr SQLSMALLINT Float = SQL_FLOAT;
-        constexpr SQLSMALLINT Double = SQL_DOUBLE;
-        constexpr SQLSMALLINT Bit = SQL_BIT;
-        constexpr SQLSMALLINT TinyInt = SQL_TINYINT;
-        constexpr SQLSMALLINT BigInt = SQL_BIGINT;
-        constexpr SQLSMALLINT Binary = SQL_BINARY;
-        constexpr SQLSMALLINT VarBinary = SQL_VARBINARY;
-        constexpr SQLSMALLINT LongVarBinary = SQL_LONGVARBINARY;
-        constexpr SQLSMALLINT Date = SQL_TYPE_DATE;
-        constexpr SQLSMALLINT DateTime = SQL_DATETIME;
-        constexpr SQLSMALLINT Time = SQL_TYPE_TIME;
-        constexpr SQLSMALLINT TimeStamp = SQL_TYPE_TIMESTAMP;
-        //constexpr SQLSMALLINT UTCDateTime = SQL_TYPE_UTCDATETIME;
-        //constexpr SQLSMALLINT UTCTime = SQL_TYPE_UTCTIME;
-        constexpr SQLSMALLINT IntervalMonth = SQL_INTERVAL_MONTH;
-        constexpr SQLSMALLINT IntervalYear = SQL_INTERVAL_YEAR;
-        constexpr SQLSMALLINT IntervalYearToMonth = SQL_INTERVAL_YEAR_TO_MONTH;
-        constexpr SQLSMALLINT IntervalDay = SQL_INTERVAL_DAY;
-        constexpr SQLSMALLINT IntervalHour = SQL_INTERVAL_HOUR;
-        constexpr SQLSMALLINT IntervalMinute = SQL_INTERVAL_MINUTE;
-        constexpr SQLSMALLINT IntervalSecond = SQL_INTERVAL_SECOND;
-        constexpr SQLSMALLINT IntervalDayToHour = SQL_INTERVAL_DAY_TO_HOUR;
-        constexpr SQLSMALLINT IntervalDayToMinute = SQL_INTERVAL_DAY_TO_MINUTE;
-        constexpr SQLSMALLINT IntervalDayToSecond = SQL_INTERVAL_DAY_TO_SECOND;
-        constexpr SQLSMALLINT IntervalHourToMinute = SQL_INTERVAL_HOUR_TO_MINUTE;
-        constexpr SQLSMALLINT IntervalHourToSecond = SQL_INTERVAL_HOUR_TO_SECOND;
-        constexpr SQLSMALLINT IntervalMinuteToSecond = SQL_INTERVAL_MINUTE_TO_SECOND;
-        constexpr SQLSMALLINT Guid = SQL_GUID;
+        Unknown = SQL_UNKNOWN_TYPE,
+        Char = SQL_CHAR,
+        Numeric = SQL_NUMERIC,
+        Decimal = SQL_DECIMAL,
+        Integer = SQL_INTEGER,
+        SmallInt = SQL_SMALLINT,
+        VarChar = SQL_VARCHAR,
+        LongVarChar = SQL_LONGVARCHAR,
+        WChar = SQL_WCHAR,
+        WVarChar = SQL_WVARCHAR,
+        WLongVarChar = SQL_WLONGVARCHAR,
+        Real = SQL_REAL,
+        Float = SQL_FLOAT,
+        Double = SQL_DOUBLE,
+        Bit = SQL_BIT,
+        TinyInt = SQL_TINYINT,
+        BigInt = SQL_BIGINT,
+        Binary = SQL_BINARY,
+        VarBinary = SQL_VARBINARY,
+        LongVarBinary = SQL_LONGVARBINARY,
+        Date = SQL_TYPE_DATE,
+        DateTime = SQL_DATETIME,
+        Time = SQL_TYPE_TIME,
+        TimeStamp = SQL_TYPE_TIMESTAMP,
+        //UTCDateTime = SQL_TYPE_UTCDATETIME,
+        //UTCTime = SQL_TYPE_UTCTIME,
+        IntervalMonth = SQL_INTERVAL_MONTH,
+        IntervalYear = SQL_INTERVAL_YEAR,
+        IntervalYearToMonth = SQL_INTERVAL_YEAR_TO_MONTH,
+        IntervalDay = SQL_INTERVAL_DAY,
+        IntervalHour = SQL_INTERVAL_HOUR,
+        IntervalMinute = SQL_INTERVAL_MINUTE,
+        IntervalSecond = SQL_INTERVAL_SECOND,
+        IntervalDayToHour = SQL_INTERVAL_DAY_TO_HOUR,
+        IntervalDayToMinute = SQL_INTERVAL_DAY_TO_MINUTE,
+        IntervalDayToSecond = SQL_INTERVAL_DAY_TO_SECOND,
+        IntervalHourToMinute = SQL_INTERVAL_HOUR_TO_MINUTE,
+        IntervalHourToSecond = SQL_INTERVAL_HOUR_TO_SECOND,
+        IntervalMinuteToSecond = SQL_INTERVAL_MINUTE_TO_SECOND,
+        Guid = SQL_GUID,
 
         // Values specific to MS SQL Server:
-        constexpr SQLSMALLINT TimeStampOffset = MsSql::SQL_SS_TIMESTAMPOFFSET;
-        constexpr SQLSMALLINT Time2 = MsSql::SQL_SS_TIME2;
-        //constexpr SQLSMALLINT SmallMoney = MsSql::SQL_SS_SM;
-    }
-    namespace NativeType
+        TimeStampOffset = MsSql::SQL_SS_TIMESTAMPOFFSET,
+        Time2 = MsSql::SQL_SS_TIME2,
+        //SmallMoney = MsSql::SQL_SS_SM;
+    };
+    enum class NativeType : SQLSMALLINT
     {
-        constexpr SQLSMALLINT Char = SQL_C_CHAR;
-        constexpr SQLSMALLINT WideChar = SQL_C_WCHAR;
-        constexpr SQLSMALLINT Long = SQL_C_LONG;
-        constexpr SQLSMALLINT Short = SQL_C_SHORT;
-        constexpr SQLSMALLINT Single = SQL_C_FLOAT;
-        constexpr SQLSMALLINT Double = SQL_C_DOUBLE;
-        constexpr SQLSMALLINT Numeric = SQL_C_NUMERIC;
-        constexpr SQLSMALLINT Default = SQL_C_DEFAULT;
-        constexpr SQLSMALLINT SignedOffset = SQL_SIGNED_OFFSET;
-        constexpr SQLSMALLINT UnsignedOffset = SQL_UNSIGNED_OFFSET;
-        constexpr SQLSMALLINT Date = SQL_C_DATE;
-        constexpr SQLSMALLINT Time = SQL_C_TIME;
-        constexpr SQLSMALLINT TimeStamp = SQL_C_TIMESTAMP;
-        constexpr SQLSMALLINT TypeDate = SQL_C_TYPE_DATE;
-        constexpr SQLSMALLINT TypeTime = SQL_C_TYPE_TIME;
-        constexpr SQLSMALLINT TypeTimeStamp = SQL_C_TYPE_TIMESTAMP;
-        constexpr SQLSMALLINT IntervalYear = SQL_C_INTERVAL_YEAR;
-        constexpr SQLSMALLINT IntervalMonth = SQL_C_INTERVAL_MONTH;
-        constexpr SQLSMALLINT IntervalDay = SQL_C_INTERVAL_DAY;
-        constexpr SQLSMALLINT IntervalHour = SQL_C_INTERVAL_HOUR;
-        constexpr SQLSMALLINT IntervalMinute = SQL_C_INTERVAL_MINUTE;
-        constexpr SQLSMALLINT IntervalSecond = SQL_C_INTERVAL_SECOND;
-        constexpr SQLSMALLINT IntervalYearToMonth = SQL_C_INTERVAL_YEAR_TO_MONTH;
-        constexpr SQLSMALLINT IntervalDayToHour = SQL_C_INTERVAL_DAY_TO_HOUR;
-        constexpr SQLSMALLINT IntervalDayToMinute = SQL_C_INTERVAL_DAY_TO_MINUTE;
-        constexpr SQLSMALLINT IntervalDayToSecond = SQL_C_INTERVAL_DAY_TO_SECOND;
-        constexpr SQLSMALLINT IntervalHourToMinute = SQL_C_INTERVAL_HOUR_TO_MINUTE;
-        constexpr SQLSMALLINT IntervalHourToSecond = SQL_C_INTERVAL_HOUR_TO_SECOND;
-        constexpr SQLSMALLINT IntervalMinuteToSecond = SQL_C_INTERVAL_MINUTE_TO_SECOND;
-        constexpr SQLSMALLINT Binary = SQL_C_BINARY;
-        constexpr SQLSMALLINT Bit = SQL_C_BIT;
-        constexpr SQLSMALLINT Boolean = SQL_C_BIT;
-        constexpr SQLSMALLINT Int64 = SQL_C_SBIGINT;
-        constexpr SQLSMALLINT UInt64 = SQL_C_UBIGINT;
-        constexpr SQLSMALLINT TinyInt = SQL_C_TINYINT;
-        constexpr SQLSMALLINT Int32 = SQL_C_SLONG;
-        constexpr SQLSMALLINT Int16 = SQL_C_SSHORT;
-        constexpr SQLSMALLINT SByte = SQL_C_STINYINT;
-        constexpr SQLSMALLINT UInt32 = SQL_C_ULONG;
-        constexpr SQLSMALLINT UInt16 = SQL_C_USHORT;
-        constexpr SQLSMALLINT Byte = SQL_C_UTINYINT;
-        constexpr SQLSMALLINT Bookmark = SQL_C_BOOKMARK;
-        constexpr SQLSMALLINT Guid = SQL_C_GUID;
-    }
+        Char = SQL_C_CHAR,
+        WideChar = SQL_C_WCHAR,
+        Long = SQL_C_LONG,
+        Short = SQL_C_SHORT,
+        Single = SQL_C_FLOAT,
+        Double = SQL_C_DOUBLE,
+        Numeric = SQL_C_NUMERIC,
+        Default = SQL_C_DEFAULT,
+        SignedOffset = SQL_SIGNED_OFFSET,
+        UnsignedOffset = SQL_UNSIGNED_OFFSET,
+        Date = SQL_C_DATE,
+        Time = SQL_C_TIME,
+        TimeStamp = SQL_C_TIMESTAMP,
+        TypeDate = SQL_C_TYPE_DATE,
+        TypeTime = SQL_C_TYPE_TIME,
+        TypeTimeStamp = SQL_C_TYPE_TIMESTAMP,
+        IntervalYear = SQL_C_INTERVAL_YEAR,
+        IntervalMonth = SQL_C_INTERVAL_MONTH,
+        IntervalDay = SQL_C_INTERVAL_DAY,
+        IntervalHour = SQL_C_INTERVAL_HOUR,
+        IntervalMinute = SQL_C_INTERVAL_MINUTE,
+        IntervalSecond = SQL_C_INTERVAL_SECOND,
+        IntervalYearToMonth = SQL_C_INTERVAL_YEAR_TO_MONTH,
+        IntervalDayToHour = SQL_C_INTERVAL_DAY_TO_HOUR,
+        IntervalDayToMinute = SQL_C_INTERVAL_DAY_TO_MINUTE,
+        IntervalDayToSecond = SQL_C_INTERVAL_DAY_TO_SECOND,
+        IntervalHourToMinute = SQL_C_INTERVAL_HOUR_TO_MINUTE,
+        IntervalHourToSecond = SQL_C_INTERVAL_HOUR_TO_SECOND,
+        IntervalMinuteToSecond = SQL_C_INTERVAL_MINUTE_TO_SECOND,
+        Binary = SQL_C_BINARY,
+        Bit = SQL_C_BIT,
+        Boolean = SQL_C_BIT,
+        Int64 = SQL_C_SBIGINT,
+        UInt64 = SQL_C_UBIGINT,
+        TinyInt = SQL_C_TINYINT,
+        Int32 = SQL_C_SLONG,
+        Int16 = SQL_C_SSHORT,
+        SByte = SQL_C_STINYINT,
+        UInt32 = SQL_C_ULONG,
+        UInt16 = SQL_C_USHORT,
+        Byte = SQL_C_UTINYINT,
+        Bookmark = SQL_C_BOOKMARK,
+        Guid = SQL_C_GUID,
+    };
 
 
     enum class Concurrency
@@ -1268,6 +1272,9 @@ namespace Harlinn::ODBC
         SQLWCHAR Message[ SQL_MAX_MESSAGE_LENGTH ] = {};
         SQLSMALLINT MessageLength = 0;
     };
+
+
+    
 
 
 
@@ -1671,10 +1678,10 @@ namespace Harlinn::ODBC
             }
         }
 
-        static SQLHANDLE AllocateHandle( SQLHANDLE inputHandle = SQL_NULL_HANDLE )
+        static SQLHANDLE AllocateHandle( SQLHANDLE inputHandle = SQL_NULL_HANDLE, ODBC::HandleType handleType = HandleType )
         {
             SQLHANDLE result = InvalidHandle;
-            auto rc = SQLAllocHandle( static_cast<SQLSMALLINT>(HandleType), inputHandle, &result );
+            auto rc = SQLAllocHandle( static_cast<SQLSMALLINT>( handleType ), inputHandle, &result );
             if ( rc != SQL_SUCCESS )
             {
                 Internal::ThrowException( rc, HandleType, inputHandle, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
@@ -1740,6 +1747,7 @@ namespace Harlinn::ODBC
     {
         friend class Statement;
         friend class Connection;
+        friend class Environment;
     public:
         using Base = SqlHandle<ODBC::HandleType::Descriptor>;
 
@@ -1801,6 +1809,60 @@ namespace Harlinn::ODBC
             }
             return static_cast<Result>( rc );
         }
+
+
+
+        UInt16 GetUInt16Field( SQLSMALLINT recordNumber, SQLSMALLINT fieldIdentifier ) const
+        {
+            UInt16 value = 0;
+            SQLINTEGER actualLength = 0;
+            GetFieldW( recordNumber, fieldIdentifier, &value, SQL_IS_USMALLINT, &actualLength );
+            return value;
+        }
+
+        Int16 GetInt16Field( SQLSMALLINT recordNumber, SQLSMALLINT fieldIdentifier ) const
+        {
+            Int16 value = 0;
+            SQLINTEGER actualLength = 0;
+            GetFieldW( recordNumber, fieldIdentifier, &value, SQL_IS_SMALLINT, &actualLength );
+            return value;
+        }
+
+        UInt64 GetUInt64Field( SQLSMALLINT recordNumber, SQLSMALLINT fieldIdentifier ) const
+        {
+            UInt64 value = 0;
+            SQLINTEGER actualLength = 0;
+            GetFieldW( recordNumber, fieldIdentifier, &value, SQL_IS_UINTEGER, &actualLength );
+            return value;
+        }
+
+        Int64 GetInt64Field( SQLSMALLINT recordNumber, SQLSMALLINT fieldIdentifier ) const
+        {
+            Int64 value = 0;
+            SQLINTEGER actualLength = 0;
+            GetFieldW( recordNumber, fieldIdentifier, &value, SQL_IS_INTEGER, &actualLength );
+            return value;
+        }
+
+        SQLPOINTER GetPointerField( SQLSMALLINT recordNumber, SQLSMALLINT fieldIdentifier ) const
+        {
+            SQLPOINTER value = nullptr;
+            SQLINTEGER actualLength = 0;
+            GetFieldW( recordNumber, fieldIdentifier, &value, SQL_IS_INTEGER, &actualLength );
+            return value;
+        }
+
+        WideString GetWideStringField( SQLSMALLINT recordNumber, SQLSMALLINT fieldIdentifier ) const
+        {
+            wchar_t value[ 1024 ] = {};
+            SQLINTEGER actualLength = 0;
+            GetFieldW( recordNumber, fieldIdentifier, &value, sizeof( value ), &actualLength );
+            WideString result( value, static_cast< size_t >( actualLength ) );
+            return result;
+        }
+
+
+
         Result GetFieldA( SQLSMALLINT recordNumber, SQLSMALLINT fieldIdentifier, SQLPOINTER value, SQLINTEGER valueMaxLength, SQLINTEGER* valueActualLength ) const
         {
             auto rc = SQLGetDescFieldA( Handle( ), recordNumber, fieldIdentifier, value, valueMaxLength, valueActualLength );
@@ -1840,6 +1902,30 @@ namespace Harlinn::ODBC
             }
             return static_cast<Result>( rc );
         }
+
+        Result SetUInt16Field( SQLSMALLINT recordNumber, SQLSMALLINT fieldIdentifier, UInt16 value ) const
+        {
+            return SetFieldW( recordNumber, fieldIdentifier, reinterpret_cast< SQLPOINTER >(value), SQL_IS_USMALLINT );
+        }
+        Result SetInt16Field( SQLSMALLINT recordNumber, SQLSMALLINT fieldIdentifier, Int16 value ) const
+        {
+            return SetFieldW( recordNumber, fieldIdentifier, reinterpret_cast< SQLPOINTER >( value ), SQL_IS_SMALLINT );
+        }
+        Result SetUInt64Field( SQLSMALLINT recordNumber, SQLSMALLINT fieldIdentifier, UInt64 value ) const
+        {
+            return SetFieldW( recordNumber, fieldIdentifier, reinterpret_cast< SQLPOINTER >( value ), SQL_IS_UINTEGER );
+        }
+        Result SetInt64Field( SQLSMALLINT recordNumber, SQLSMALLINT fieldIdentifier, Int64 value ) const
+        {
+            return SetFieldW( recordNumber, fieldIdentifier, reinterpret_cast< SQLPOINTER >( value ), SQL_IS_INTEGER );
+        }
+
+        Result SetPointerField( SQLSMALLINT recordNumber, SQLSMALLINT fieldIdentifier, SQLPOINTER value ) const
+        {
+            return SetFieldW( recordNumber, fieldIdentifier, value, SQL_IS_POINTER );
+        }
+
+
         Result SetFieldA( SQLSMALLINT recordNumber, SQLSMALLINT fieldIdentifier, SQLPOINTER value, SQLINTEGER valueLength ) const
         {
 #ifdef SQLSetDescField
@@ -1867,6 +1953,73 @@ namespace Harlinn::ODBC
             }
             return static_cast<Result>( rc );
         }
+
+        // Access to the header fields
+
+
+        bool UserAllocated( ) const
+        {
+            SQLSMALLINT userAllocated = GetUInt16Field( 0, SQL_DESC_ALLOC_TYPE );
+            return userAllocated == SQL_DESC_ALLOC_USER;
+        }
+
+
+        Result SetArraySize( size_t arraySize ) const
+        {
+            return SetUInt64Field( 0, SQL_DESC_ARRAY_SIZE, arraySize );
+        }
+
+        size_t ArraySize( ) const
+        {
+            return GetUInt64Field( 0, SQL_DESC_ARRAY_SIZE );
+        }
+
+        Result SetStatusArrayPointer( SQLUSMALLINT* statusArray ) const
+        {
+            return SetPointerField( 0, SQL_DESC_ARRAY_STATUS_PTR, statusArray );
+        }
+
+        SQLUSMALLINT* StatusArrayPointer( ) const
+        {
+            return static_cast< SQLUSMALLINT* >( GetPointerField( 0, SQL_DESC_ARRAY_STATUS_PTR) );
+        }
+
+        Result SetBindOffsetPointer( SQLLEN* bindOffsetPointer ) const
+        {
+            return SetPointerField( 0, SQL_DESC_BIND_OFFSET_PTR, bindOffsetPointer );
+        }
+
+        SQLLEN* BindOffsetPointer( ) const
+        {
+            return static_cast< SQLLEN* >( GetPointerField( 0, SQL_DESC_BIND_OFFSET_PTR ) );
+        }
+
+        Result SetBindByColumn( ) const
+        {
+            return SetUInt64Field( 0, SQL_DESC_BIND_TYPE, SQL_BIND_BY_COLUMN );
+        }
+        bool BindByColumn( ) const
+        {
+            return GetUInt64Field( 0, SQL_DESC_BIND_TYPE ) == SQL_BIND_BY_COLUMN;
+        }
+
+        Int16 RecordCount( ) const
+        {
+            return GetInt16Field( 0, SQL_DESC_COUNT );
+        }
+
+        Result SetRowsProcessedPointer( SQLULEN* bindOffsetPointer ) const
+        {
+            return SetPointerField( 0, SQL_DESC_ROWS_PROCESSED_PTR, bindOffsetPointer );
+        }
+
+        SQLULEN* RowsProcessedPointer( ) const
+        {
+            return static_cast< SQLULEN* >( GetPointerField( 0, SQL_DESC_ROWS_PROCESSED_PTR ) );
+        }
+
+
+
     };
 
 
@@ -1900,13 +2053,13 @@ namespace Harlinn::ODBC
         }
 
         [[nodiscard]] SQLHANDLE Handle( ) const noexcept;
-        inline Result GetData( SQLUSMALLINT columnOrParameterNumber, SQLSMALLINT targetValueDataType, SQLPOINTER targetValue, SQLLEN targetValueMaxLength, SQLLEN* nullIndicatorOrTargetValueActualLength ) const;
+        inline Result GetData( SQLUSMALLINT columnOrParameterNumber, NativeType targetValueDataType, SQLPOINTER targetValue, SQLLEN targetValueMaxLength, SQLLEN* nullIndicatorOrTargetValueActualLength ) const;
 
     protected:
         inline Result Fetch( ) const;
-        inline Result FetchScroll( ODBC::Fetch fetchOrientation, SQLLEN fetchOffset ) const;
+        inline Result FetchScroll( ODBC::FetchOrientation fetchOrientation, SQLLEN fetchOffset ) const;
         
-        inline Result BindColumn( SQLUSMALLINT columnNumber, SQLSMALLINT targetType, SQLPOINTER targetValue, SQLLEN targetValueMaxLength, SQLLEN* nullIndicatorOrLength ) const;
+        inline Result BindColumn( SQLUSMALLINT columnNumber, NativeType targetType, SQLPOINTER targetValue, SQLLEN targetValueMaxLength, SQLLEN* nullIndicatorOrLength ) const;
 
 
         Result BindBoolean( SQLUSMALLINT columnNumber, bool* targetAddress, SQLLEN* nullIndicatorOrActualLength = nullptr ) const
@@ -2457,9 +2610,9 @@ namespace Harlinn::ODBC
         {
         }
     public:
-        Result BindColumn( SQLUSMALLINT columnNumber, SQLSMALLINT targetType, SQLPOINTER targetValue, SQLLEN targetValueMaxLength, SQLLEN* nullIndicatorOrLength ) const
+        Result BindColumn( SQLUSMALLINT columnNumber, NativeType targetType, SQLPOINTER targetValue, SQLLEN targetValueMaxLength, SQLLEN* nullIndicatorOrLength ) const
         {
-            auto rc = SQLBindCol( Handle( ), columnNumber, targetType, targetValue, targetValueMaxLength, nullIndicatorOrLength );
+            auto rc = SQLBindCol( Handle( ), columnNumber, static_cast<SQLSMALLINT>(targetType), targetValue, targetValueMaxLength, nullIndicatorOrLength );
             if ( Failed(static_cast<Result>(rc)) )
             {
                 ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
@@ -2535,9 +2688,9 @@ namespace Harlinn::ODBC
         }
 
 
-        Result BindParameter( SQLUSMALLINT parameterNumber, ODBC::ParameterDirection parameterDirection, SQLSMALLINT valueType, SQLSMALLINT parameterType, SQLULEN columnSize, SQLSMALLINT decimalDigits, SQLPOINTER parameterValue, SQLLEN parameterValueBufferLength, SQLLEN* lengthOrIndicator ) const
+        Result BindParameter( SQLUSMALLINT parameterNumber, ODBC::ParameterDirection parameterDirection, NativeType valueType, SqlType parameterType, SQLULEN columnSize, SQLSMALLINT decimalDigits, SQLPOINTER parameterValue, SQLLEN parameterValueBufferLength, SQLLEN* lengthOrIndicator ) const
         {
-            auto rc = SQLBindParameter( Handle( ), parameterNumber, static_cast<SQLSMALLINT>( parameterDirection ), valueType, parameterType, columnSize, decimalDigits, parameterValue, parameterValueBufferLength, lengthOrIndicator );
+            auto rc = SQLBindParameter( Handle( ), parameterNumber, static_cast<SQLSMALLINT>( parameterDirection ), static_cast< SQLSMALLINT >(valueType), static_cast< SQLSMALLINT >( parameterType ), columnSize, decimalDigits, parameterValue, parameterValueBufferLength, lengthOrIndicator );
             if ( Failed(static_cast<Result>(rc)) )
             {
                 ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
@@ -2545,101 +2698,128 @@ namespace Harlinn::ODBC
             return static_cast<Result>( rc );
         }
 
-        Result BindBooleanParameter( SQLUSMALLINT parameterNumber, ODBC::ParameterDirection parameterDirection, bool* parameterValue, SQLLEN* lengthOrIndicator = nullptr ) const
+        Result BindBooleanParameter( SQLUSMALLINT parameterNumber, bool* parameterValue, SQLLEN* lengthOrIndicator = nullptr, ODBC::ParameterDirection parameterDirection = ODBC::ParameterDirection::Input) const
         {
             auto rc = BindParameter( parameterNumber, parameterDirection, NativeType::Boolean, SqlType::Bit, 0, 0, parameterValue, 0, lengthOrIndicator );
             return rc;
         }
 
-        Result BindSByteParameter( SQLUSMALLINT parameterNumber, ODBC::ParameterDirection parameterDirection, SByte* parameterValue, SQLLEN* lengthOrIndicator = nullptr ) const
+        Result BindSByteParameter( SQLUSMALLINT parameterNumber, SByte* parameterValue, SQLLEN* lengthOrIndicator = nullptr, ODBC::ParameterDirection parameterDirection = ODBC::ParameterDirection::Input ) const
         {
             auto rc = BindParameter( parameterNumber, parameterDirection, NativeType::SByte, SqlType::TinyInt, 0, 0, parameterValue, 0, lengthOrIndicator );
             return rc;
         }
-        Result BindByteParameter( SQLUSMALLINT parameterNumber, ODBC::ParameterDirection parameterDirection, Byte* parameterValue, SQLLEN* lengthOrIndicator = nullptr ) const
+        Result BindByteParameter( SQLUSMALLINT parameterNumber, Byte* parameterValue, SQLLEN* lengthOrIndicator = nullptr, ODBC::ParameterDirection parameterDirection = ODBC::ParameterDirection::Input ) const
         {
             auto rc = BindParameter( parameterNumber, parameterDirection, NativeType::Byte, SqlType::TinyInt, 0, 0, parameterValue, 0, lengthOrIndicator );
             return rc;
         }
 
-        Result BindInt16Parameter( SQLUSMALLINT parameterNumber, ODBC::ParameterDirection parameterDirection, Int16* parameterValue, SQLLEN* lengthOrIndicator = nullptr ) const
+        Result BindInt16Parameter( SQLUSMALLINT parameterNumber, Int16* parameterValue, SQLLEN* lengthOrIndicator = nullptr, ODBC::ParameterDirection parameterDirection = ODBC::ParameterDirection::Input ) const
         {
             auto rc = BindParameter( parameterNumber, parameterDirection, NativeType::Int16, SqlType::SmallInt, 0, 0, parameterValue, 0, lengthOrIndicator );
             return rc;
         }
 
-        Result BindUInt16Parameter( SQLUSMALLINT parameterNumber, ODBC::ParameterDirection parameterDirection, UInt16* parameterValue, SQLLEN* lengthOrIndicator = nullptr ) const
+        Result BindUInt16Parameter( SQLUSMALLINT parameterNumber, UInt16* parameterValue, SQLLEN* lengthOrIndicator = nullptr, ODBC::ParameterDirection parameterDirection = ODBC::ParameterDirection::Input ) const
         {
             auto rc = BindParameter( parameterNumber, parameterDirection, NativeType::UInt16, SqlType::SmallInt, 0, 0, parameterValue, 0, lengthOrIndicator );
             return rc;
         }
 
-        Result BindInt32Parameter( SQLUSMALLINT parameterNumber, ODBC::ParameterDirection parameterDirection, Int32* parameterValue, SQLLEN* lengthOrIndicator = nullptr ) const
+        Result BindInt32Parameter( SQLUSMALLINT parameterNumber, Int32* parameterValue, SQLLEN* lengthOrIndicator = nullptr, ODBC::ParameterDirection parameterDirection = ODBC::ParameterDirection::Input ) const
         {
             auto rc = BindParameter( parameterNumber, parameterDirection, NativeType::Int32, SqlType::Integer, 0, 0, parameterValue, 0, lengthOrIndicator );
             return rc;
         }
 
-        Result BindUInt32Parameter( SQLUSMALLINT parameterNumber, ODBC::ParameterDirection parameterDirection, UInt32* parameterValue, SQLLEN* lengthOrIndicator = nullptr ) const
+        Result BindUInt32Parameter( SQLUSMALLINT parameterNumber, UInt32* parameterValue, SQLLEN* lengthOrIndicator = nullptr, ODBC::ParameterDirection parameterDirection = ODBC::ParameterDirection::Input ) const
         {
             auto rc = BindParameter( parameterNumber, parameterDirection, NativeType::UInt32, SqlType::Integer, 0, 0, parameterValue, 0, lengthOrIndicator );
             return rc;
         }
 
-        Result BindInt64Parameter( SQLUSMALLINT parameterNumber, ODBC::ParameterDirection parameterDirection, Int64* parameterValue, SQLLEN* lengthOrIndicator = nullptr ) const
+        Result BindInt64Parameter( SQLUSMALLINT parameterNumber, Int64* parameterValue, SQLLEN* lengthOrIndicator = nullptr, ODBC::ParameterDirection parameterDirection = ODBC::ParameterDirection::Input ) const
         {
             auto rc = BindParameter( parameterNumber, parameterDirection, NativeType::Int64, SqlType::BigInt, 0, 0, parameterValue, 0, lengthOrIndicator );
             return rc;
         }
 
-        Result BindUInt64Parameter( SQLUSMALLINT parameterNumber, ODBC::ParameterDirection parameterDirection, UInt64* parameterValue, SQLLEN* lengthOrIndicator = nullptr ) const
+        Result BindUInt64Parameter( SQLUSMALLINT parameterNumber, UInt64* parameterValue, SQLLEN* lengthOrIndicator = nullptr, ODBC::ParameterDirection parameterDirection = ODBC::ParameterDirection::Input ) const
         {
             auto rc = BindParameter( parameterNumber, parameterDirection, NativeType::UInt64, SqlType::BigInt, 0, 0, parameterValue, 0, lengthOrIndicator );
             return rc;
         }
 
-        Result BindParameter( SQLUSMALLINT parameterNumber, ODBC::ParameterDirection parameterDirection, SQLULEN columnSize, char* parameterValue, SQLLEN parameterValueBufferLength, SQLLEN* lengthOrIndicator ) const
+        Result BindParameter( SQLUSMALLINT parameterNumber, SQLULEN columnSize, char* parameterValue, SQLLEN parameterValueBufferLength, SQLLEN* lengthOrIndicator, ODBC::ParameterDirection parameterDirection = ODBC::ParameterDirection::Input ) const
         {
             auto rc = BindParameter( parameterNumber, parameterDirection, NativeType::Char, SqlType::Char, columnSize, 0, parameterValue, parameterValueBufferLength, lengthOrIndicator );
             return rc;
         }
 
-        Result BindLongParameter( SQLUSMALLINT parameterNumber, ODBC::ParameterDirection parameterDirection, UInt32* parameterValue, SQLLEN* lengthOrIndicator = nullptr ) const
+        Result BindLongParameter( SQLUSMALLINT parameterNumber, UInt32* parameterValue, SQLLEN* lengthOrIndicator = nullptr, ODBC::ParameterDirection parameterDirection = ODBC::ParameterDirection::Input ) const
         {
             auto rc = BindParameter( parameterNumber, parameterDirection, NativeType::Long, SqlType::Integer, 0, 0, parameterValue, 0, lengthOrIndicator );
             return rc;
         }
-        Result BindShortParameter( SQLUSMALLINT parameterNumber, ODBC::ParameterDirection parameterDirection, UInt16* parameterValue, SQLLEN* lengthOrIndicator = nullptr ) const
+        Result BindShortParameter( SQLUSMALLINT parameterNumber, UInt16* parameterValue, SQLLEN* lengthOrIndicator = nullptr, ODBC::ParameterDirection parameterDirection = ODBC::ParameterDirection::Input ) const
         {
             auto rc = BindParameter( parameterNumber, parameterDirection, NativeType::Long, SqlType::Integer, 0, 0, parameterValue, 0, lengthOrIndicator );
             return rc;
         }
 
-        Result BindSingleParameter( SQLUSMALLINT parameterNumber, ODBC::ParameterDirection parameterDirection, Double* parameterValue, SQLLEN* lengthOrIndicator = nullptr ) const
+        Result BindSingleParameter( SQLUSMALLINT parameterNumber, Double* parameterValue, SQLLEN* lengthOrIndicator = nullptr, ODBC::ParameterDirection parameterDirection = ODBC::ParameterDirection::Input ) const
         {
             auto rc = BindParameter( parameterNumber, parameterDirection, NativeType::Single, SqlType::Real, 0, 0, parameterValue, 0, lengthOrIndicator );
             return rc;
         }
 
-        Result BindDoubleParameter( SQLUSMALLINT parameterNumber, ODBC::ParameterDirection parameterDirection, Double* parameterValue, SQLLEN* lengthOrIndicator = nullptr ) const
+        Result BindDoubleParameter( SQLUSMALLINT parameterNumber, Double* parameterValue, SQLLEN* lengthOrIndicator = nullptr, ODBC::ParameterDirection parameterDirection = ODBC::ParameterDirection::Input ) const
         {
             auto rc = BindParameter( parameterNumber, parameterDirection, NativeType::Double, SqlType::Double, 0, 0, parameterValue, 0, lengthOrIndicator );
             return rc;
         }
 
         
-        Result BindGuidParameter( SQLUSMALLINT parameterNumber, ODBC::ParameterDirection parameterDirection, Guid* parameterValue, SQLLEN* lengthOrIndicator = nullptr ) const
+        Result BindGuidParameter( SQLUSMALLINT parameterNumber, Guid* parameterValue, SQLLEN* lengthOrIndicator = nullptr, ODBC::ParameterDirection parameterDirection = ODBC::ParameterDirection::Input ) const
         {
             auto rc = BindParameter( parameterNumber, parameterDirection, NativeType::Guid, SqlType::Guid, 0, 0, parameterValue, 0, lengthOrIndicator );
             return rc;
         }
 
-        Result BindTimeStampParameter( SQLUSMALLINT parameterNumber, ODBC::ParameterDirection parameterDirection, SQLSMALLINT precisionOfFraction, ODBC::TimeStamp* parameterValue, SQLLEN* lengthOrIndicator = nullptr ) const
+        Result BindTimeStampParameter( SQLUSMALLINT parameterNumber, SQLSMALLINT precisionOfFraction, ODBC::TimeStamp* parameterValue, SQLLEN* lengthOrIndicator = nullptr, ODBC::ParameterDirection parameterDirection = ODBC::ParameterDirection::Input ) const
         {
             SQLSMALLINT columnSize = static_cast<SQLSMALLINT>( 20 ) + precisionOfFraction;
             auto rc = BindParameter( parameterNumber, parameterDirection, NativeType::TypeTimeStamp, SqlType::TimeStamp, columnSize, precisionOfFraction, parameterValue, 0, lengthOrIndicator );
             return rc;
         }
+
+        Result BindVarCharParameter( SQLUSMALLINT parameterNumber, SQLULEN columnSize, char* parameterValue, SQLLEN parameterValueBufferLength, SQLLEN* lengthOrIndicator, ODBC::ParameterDirection parameterDirection = ODBC::ParameterDirection::Input ) const
+        {
+            auto rc = BindParameter( parameterNumber, parameterDirection, NativeType::Char, SqlType::VarChar, columnSize, 0, parameterValue, parameterValueBufferLength, lengthOrIndicator );
+            return rc;
+        }
+        Result BindNVarCharParameter( SQLUSMALLINT parameterNumber, SQLULEN columnSize, wchar_t* parameterValue, SQLLEN parameterValueBufferLength, SQLLEN* lengthOrIndicator, ODBC::ParameterDirection parameterDirection = ODBC::ParameterDirection::Input ) const
+        {
+            auto rc = BindParameter( parameterNumber, parameterDirection, NativeType::WideChar, SqlType::WVarChar, columnSize, 0, parameterValue, parameterValueBufferLength, lengthOrIndicator );
+            return rc;
+        }
+        Result BindNVarCharParameter( SQLUSMALLINT parameterNumber, const WideString& parameterValue, SQLLEN* lengthOrIndicator, ODBC::ParameterDirection parameterDirection = ODBC::ParameterDirection::Input ) const
+        {
+            auto rc = BindParameter( parameterNumber, parameterDirection, NativeType::WideChar, SqlType::WVarChar, 0, 0, const_cast<wchar_t*>(parameterValue.data()), parameterValue.size(), lengthOrIndicator );
+            return rc;
+        }
+        Result BindVarBinaryParameter( SQLUSMALLINT parameterNumber, SQLULEN columnSize, Byte* parameterValue, SQLLEN parameterValueBufferLength, SQLLEN* lengthOrIndicator, ODBC::ParameterDirection parameterDirection = ODBC::ParameterDirection::Input ) const
+        {
+            auto rc = BindParameter( parameterNumber, parameterDirection, NativeType::Binary, SqlType::VarBinary, columnSize, 0, parameterValue, parameterValueBufferLength, lengthOrIndicator );
+            return rc;
+        }
+        Result BindVarBinaryParameter( SQLUSMALLINT parameterNumber, const std::vector<Byte>& parameterValue, SQLLEN* lengthOrIndicator, ODBC::ParameterDirection parameterDirection = ODBC::ParameterDirection::Input ) const
+        {
+            auto rc = BindParameter( parameterNumber, parameterDirection, NativeType::Binary, SqlType::VarBinary, 0, 0, const_cast<Byte*>(parameterValue.data()), parameterValue.size(), lengthOrIndicator );
+            return rc;
+        }
+
 
 
         Result BulkOperations( ODBC::BulkOperation bulkOperation ) const
@@ -2790,9 +2970,9 @@ namespace Harlinn::ODBC
         /// </summary>
         /// <param name="columnNumber">The one-based column number.</param>
         /// <returns>the concise data type.</returns>
-        SQLSMALLINT ColumnConciseType( SQLUSMALLINT columnNumber ) const
+        ODBC::SqlType ColumnConciseType( SQLUSMALLINT columnNumber ) const
         {
-            return static_cast< SQLSMALLINT >( GetInt64ColumnAttribute( columnNumber, SQL_DESC_CONCISE_TYPE ) );
+            return static_cast< ODBC::SqlType >( GetInt64ColumnAttribute( columnNumber, SQL_DESC_CONCISE_TYPE ) );
         }
 
         /// <summary>
@@ -3040,9 +3220,9 @@ namespace Harlinn::ODBC
         /// </summary>
         /// <param name="columnNumber">The one-based column number.</param>
         /// <returns>A numeric value that specifies the SQL data type.</returns>
-        SQLSMALLINT ColumnType( SQLUSMALLINT columnNumber ) const
+        ODBC::SqlType ColumnType( SQLUSMALLINT columnNumber ) const
         {
-            return static_cast< SQLSMALLINT >( GetInt64ColumnAttribute( columnNumber, SQL_DESC_TYPE ) );
+            return static_cast< ODBC::SqlType >( GetInt64ColumnAttribute( columnNumber, SQL_DESC_TYPE ) );
         }
 
         /// <summary>
@@ -3177,15 +3357,18 @@ namespace Harlinn::ODBC
             return static_cast<Result>( rc );
         }
 
-        Result DescribeParameter( SQLUSMALLINT parameterNumber, SQLSMALLINT* dataType, SQLULEN *parameterSize, SQLSMALLINT* decimalDigits, ODBC::Nullable* nullable ) const
+        Result DescribeParameter( SQLUSMALLINT parameterNumber, SqlType* dataType, SQLULEN *parameterSize, SQLSMALLINT* decimalDigits, ODBC::Nullable* nullable ) const
         {
-            auto rc = SQLDescribeParam( Handle( ), parameterNumber, dataType, parameterSize, decimalDigits, (SQLSMALLINT*)nullable );
+            auto rc = SQLDescribeParam( Handle( ), parameterNumber, reinterpret_cast< SQLSMALLINT *>( dataType ), parameterSize, decimalDigits, (SQLSMALLINT*)nullable );
             if ( Failed(static_cast<Result>(rc)) )
             {
                 ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
             }
             return static_cast<Result>( rc );
         }
+
+        inline ParameterDescription DescribeParameter( SQLUSMALLINT parameterNumber ) const;
+
 
         Result ExecDirect( const SQLWCHAR* statementText, SQLINTEGER statementTextLength = SQL_NTS ) const
         {
@@ -3262,7 +3445,7 @@ namespace Harlinn::ODBC
             return static_cast<Result>( rc );
         }
 
-        Result FetchScroll( ODBC::Fetch fetchOrientation, SQLLEN fetchOffset ) const
+        Result FetchScroll( ODBC::FetchOrientation fetchOrientation, SQLLEN fetchOffset ) const
         {
             auto rc = SQLFetchScroll( Handle( ), static_cast<SQLSMALLINT>( fetchOrientation ), fetchOffset );
             if ( Failed(static_cast<Result>(rc)) )
@@ -3373,9 +3556,9 @@ namespace Harlinn::ODBC
             return static_cast<Result>( rc );
         }
 
-        Result GetData( SQLUSMALLINT columnOrParameterNumber, SQLSMALLINT targetValueDataType, SQLPOINTER targetValue, SQLLEN targetValueMaxLength, SQLLEN* nullIndicatorOrTargetValueActualLength ) const
+        Result GetData( SQLUSMALLINT columnOrParameterNumber, NativeType targetValueDataType, SQLPOINTER targetValue, SQLLEN targetValueMaxLength, SQLLEN* nullIndicatorOrTargetValueActualLength ) const
         {
-            auto rc = SQLGetData( Handle( ), columnOrParameterNumber, targetValueDataType, targetValue, targetValueMaxLength, nullIndicatorOrTargetValueActualLength );
+            auto rc = SQLGetData( Handle( ), columnOrParameterNumber, static_cast< SQLSMALLINT >(targetValueDataType), targetValue, targetValueMaxLength, nullIndicatorOrTargetValueActualLength );
             if ( Failed(static_cast<Result>(rc)) )
             {
                 ThrowException( rc, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
@@ -3721,8 +3904,11 @@ namespace Harlinn::ODBC
         std::optional<WideString> GetNullableWideString( SQLUSMALLINT columnNumber ) const
         {
             SQLLEN indicator;
-            wchar_t buffer[ 4096 ];
-            GetData( columnNumber, NativeType::WideChar, &buffer, sizeof( buffer ), &indicator );
+            constexpr size_t BufferSize = 8192;
+            constexpr size_t MaxCharsInBuffer = ( BufferSize / sizeof( wchar_t ) ) - 1;
+            constexpr size_t MaxBytesInBuffer = MaxCharsInBuffer * sizeof( wchar_t );
+            wchar_t buffer[ MaxCharsInBuffer + 1 ];
+            GetData( columnNumber, NativeType::WideChar, &buffer, BufferSize, &indicator );
             if ( indicator == SQL_NULL_DATA )
             {
                 return {};
@@ -3733,17 +3919,31 @@ namespace Harlinn::ODBC
             }
             if ( indicator != SQL_NO_TOTAL )
             {
-                WideString result( buffer, static_cast< size_t >( indicator / 2 ) );
-                return result;
+                if ( indicator > MaxBytesInBuffer )
+                {
+                    size_t numberOfCharacters = indicator / sizeof( wchar_t );
+                    WideString result;
+                    result.SetLength( numberOfCharacters );
+                    wmemcpy_s( result.data( ), numberOfCharacters + 1, buffer, MaxCharsInBuffer );
+                    auto ptr = result.data( ) + MaxCharsInBuffer;
+                    size_t remaining = static_cast< size_t >( indicator ) - MaxBytesInBuffer + 2;
+                    GetData( columnNumber, NativeType::WideChar, ptr, remaining, &indicator );
+                    return result;
+                }
+                else
+                {
+                    WideString result( buffer, static_cast< size_t >( indicator / 2 ) );
+                    return result;
+                }
             }
             else
             {
-                WideString result( buffer, sizeof( buffer ) / 2 );
+                WideString result( buffer, MaxCharsInBuffer );
                 for ( ;;)
                 {
-                    auto rc = GetData( columnNumber, NativeType::WideChar, &buffer, sizeof( buffer ), &indicator );
+                    auto rc = GetData( columnNumber, NativeType::WideChar, &buffer, BufferSize, &indicator );
 
-                    size_t charCount = ( indicator == SQL_NO_TOTAL ) ? ( sizeof( buffer ) / sizeof( wchar_t ) ) - 1 : indicator / 2;
+                    size_t charCount = ( indicator == SQL_NO_TOTAL ) ? MaxCharsInBuffer : indicator / 2;
                     result.Append( buffer, charCount );
                     if ( rc == Result::Success )
                     {
@@ -3763,8 +3963,10 @@ namespace Harlinn::ODBC
         std::optional<AnsiString> GetNullableAnsiString( SQLUSMALLINT columnNumber ) const
         {
             SQLLEN indicator;
-            char buffer[ 8192 ];
-            GetData( columnNumber, NativeType::Char, &buffer, sizeof( buffer ), &indicator );
+            constexpr size_t BufferSize = 8192;
+            constexpr size_t MaxCharsInBuffer = BufferSize - 1;
+            char buffer[ BufferSize ];
+            GetData( columnNumber, NativeType::Char, &buffer, BufferSize, &indicator );
             if ( indicator == SQL_NULL_DATA )
             {
                 return {};
@@ -3780,12 +3982,12 @@ namespace Harlinn::ODBC
             }
             else
             {
-                AnsiString result( buffer, sizeof( buffer ) );
+                AnsiString result( buffer, MaxCharsInBuffer );
                 for ( ;;)
                 {
-                    auto rc = GetData( columnNumber, NativeType::Char, &buffer, sizeof( buffer ), &indicator );
+                    auto rc = GetData( columnNumber, NativeType::Char, &buffer, BufferSize, &indicator );
 
-                    size_t charCount = ( indicator == SQL_NO_TOTAL ) ? sizeof( buffer ) - 1 : indicator;
+                    size_t charCount = ( indicator == SQL_NO_TOTAL ) ? MaxCharsInBuffer : indicator;
                     result.Append( buffer, charCount );
                     if ( rc == Result::Success )
                     {
@@ -3805,8 +4007,9 @@ namespace Harlinn::ODBC
         std::optional<std::vector<Byte>> GetNullableBinary( SQLUSMALLINT columnNumber ) const
         {
             SQLLEN indicator;
-            Byte buffer[ 8192 ];
-            GetData( columnNumber, NativeType::Binary, &buffer, sizeof( buffer ), &indicator );
+            constexpr size_t BufferSize = 8192;
+            Byte buffer[ BufferSize ];
+            GetData( columnNumber, NativeType::Binary, &buffer, BufferSize, &indicator );
             if ( indicator == SQL_NULL_DATA )
             {
                 return {};
@@ -3817,8 +4020,21 @@ namespace Harlinn::ODBC
             }
             if ( indicator != SQL_NO_TOTAL )
             {
-                std::vector<Byte> result( buffer, buffer + static_cast< size_t >( indicator ) );
-                return result;
+                if ( indicator > BufferSize )
+                {
+                    std::vector<Byte> result;
+                    result.resize( indicator );
+                    memcpy_s( result.data( ), indicator, buffer, BufferSize );
+                    auto ptr = result.data( ) + BufferSize;
+                    size_t remaining = static_cast< size_t >( indicator ) - BufferSize;
+                    GetData( columnNumber, NativeType::Binary, ptr, remaining, &indicator );
+                    return result;
+                }
+                else
+                {
+                    std::vector<Byte> result( buffer, buffer + static_cast< size_t >( indicator ) );
+                    return result;
+                }
             }
             else
             {
@@ -4275,8 +4491,11 @@ namespace Harlinn::ODBC
         WideString GetWideString( SQLUSMALLINT columnNumber ) const
         {
             SQLLEN indicator;
-            wchar_t buffer[ 4096 ];
-            GetData( columnNumber, NativeType::WideChar, &buffer, sizeof( buffer ), &indicator );
+            constexpr size_t BufferSize = 8192;
+            constexpr size_t MaxCharsInBuffer = (BufferSize / sizeof( wchar_t )) - 1;
+            constexpr size_t MaxBytesInBuffer = MaxCharsInBuffer * sizeof( wchar_t );
+            wchar_t buffer[ MaxCharsInBuffer + 1 ];
+            GetData( columnNumber, NativeType::WideChar, &buffer, BufferSize, &indicator );
             if ( indicator == SQL_NULL_DATA )
             {
                 Internal::ThrowColumnNullException( columnNumber, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
@@ -4287,17 +4506,31 @@ namespace Harlinn::ODBC
             }
             if ( indicator != SQL_NO_TOTAL )
             {
-                WideString result( buffer, static_cast< size_t >( indicator / 2 ) );
-                return result;
+                if ( indicator > MaxBytesInBuffer )
+                {
+                    size_t numberOfCharacters = indicator / sizeof( wchar_t );
+                    WideString result;
+                    result.SetLength( numberOfCharacters );
+                    wmemcpy_s( result.data( ), numberOfCharacters + 1, buffer, MaxCharsInBuffer );
+                    auto ptr = result.data( ) + MaxCharsInBuffer;
+                    size_t remaining = static_cast< size_t >( indicator ) - MaxBytesInBuffer + 2;
+                    GetData( columnNumber, NativeType::WideChar, ptr, remaining, &indicator );
+                    return result;
+                }
+                else
+                {
+                    WideString result( buffer, static_cast< size_t >( indicator / 2 ) );
+                    return result;
+                }
             }
             else
             {
-                WideString result( buffer, sizeof( buffer ) / 2 );
+                WideString result( buffer, MaxCharsInBuffer );
                 for ( ;;)
                 {
-                    auto rc = GetData( columnNumber, NativeType::WideChar, &buffer, sizeof( buffer ), &indicator );
+                    auto rc = GetData( columnNumber, NativeType::WideChar, &buffer, BufferSize, &indicator );
 
-                    size_t charCount = ( indicator == SQL_NO_TOTAL ) ? ( sizeof( buffer ) / sizeof( wchar_t ) ) - 1 : indicator / 2;
+                    size_t charCount = ( indicator == SQL_NO_TOTAL ) ? MaxCharsInBuffer : indicator / 2;
                     result.Append( buffer, charCount );
                     if ( rc == Result::Success )
                     {
@@ -4320,8 +4553,10 @@ namespace Harlinn::ODBC
         AnsiString GetAnsiString( SQLUSMALLINT columnNumber ) const
         {
             SQLLEN indicator;
-            char buffer[ 8192 ];
-            GetData( columnNumber, NativeType::Char, &buffer, sizeof( buffer ), &indicator );
+            constexpr size_t BufferSize = 8192;
+            constexpr size_t MaxCharsInBuffer = BufferSize - 1;
+            char buffer[ BufferSize ];
+            GetData( columnNumber, NativeType::Char, &buffer, BufferSize, &indicator );
             if ( indicator == SQL_NULL_DATA )
             {
                 Internal::ThrowColumnNullException( columnNumber, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
@@ -4332,17 +4567,30 @@ namespace Harlinn::ODBC
             }
             if ( indicator != SQL_NO_TOTAL )
             {
-                AnsiString result( buffer, static_cast< size_t >( indicator ) );
-                return result;
+                if ( indicator > MaxCharsInBuffer )
+                {
+                    AnsiString result;
+                    result.SetLength( indicator );
+                    memcpy_s( result.data( ), indicator + 1, buffer, MaxCharsInBuffer );
+                    auto ptr = result.data( ) + MaxCharsInBuffer;
+                    size_t remaining = static_cast< size_t >( indicator ) - MaxCharsInBuffer + 1;
+                    GetData( columnNumber, NativeType::Char, ptr, remaining, &indicator );
+                    return result;
+                }
+                else
+                {
+                    AnsiString result( buffer, static_cast< size_t >( indicator ) );
+                    return result;
+                }
             }
             else
             {
-                AnsiString result( buffer, sizeof( buffer ) );
+                AnsiString result( buffer, MaxCharsInBuffer );
                 for ( ;;)
                 {
-                    auto rc = GetData( columnNumber, NativeType::Char, &buffer, sizeof( buffer ), &indicator );
+                    auto rc = GetData( columnNumber, NativeType::Char, &buffer, BufferSize, &indicator );
 
-                    size_t charCount = ( indicator == SQL_NO_TOTAL ) ? sizeof( buffer ) - 1 : indicator;
+                    size_t charCount = ( indicator == SQL_NO_TOTAL ) ? MaxCharsInBuffer : indicator;
                     result.Append( buffer, charCount );
                     if ( rc == Result::Success )
                     {
@@ -4364,8 +4612,9 @@ namespace Harlinn::ODBC
         std::vector<Byte> GetBinary( SQLUSMALLINT columnNumber ) const
         {
             SQLLEN indicator;
-            Byte buffer[ 8192 ];
-            GetData( columnNumber, NativeType::Binary, &buffer, sizeof( buffer ), &indicator );
+            constexpr size_t BufferSize = 8192;
+            Byte buffer[ BufferSize ];
+            GetData( columnNumber, NativeType::Binary, &buffer, BufferSize, &indicator );
             if ( indicator == SQL_NULL_DATA )
             {
                 Internal::ThrowColumnNullException( columnNumber, CURRENT_FUNCTION, CURRENT_FILE, __LINE__ );
@@ -4376,8 +4625,21 @@ namespace Harlinn::ODBC
             }
             if ( indicator != SQL_NO_TOTAL )
             {
-                std::vector<Byte> result( buffer, buffer + static_cast< size_t >( indicator ) );
-                return result;
+                if ( indicator > BufferSize )
+                {
+                    std::vector<Byte> result;
+                    result.resize( indicator );
+                    memcpy_s( result.data( ), indicator, buffer, BufferSize );
+                    auto ptr = result.data( ) + BufferSize;
+                    size_t remaining = static_cast< size_t >( indicator ) - BufferSize;
+                    GetData( columnNumber, NativeType::Binary, ptr, remaining, &indicator );
+                    return result;
+                }
+                else
+                {
+                    std::vector<Byte> result( buffer, buffer + static_cast< size_t >( indicator ) );
+                    return result;
+                }
             }
             else
             {
@@ -4584,7 +4846,53 @@ namespace Harlinn::ODBC
         }
 
 
-
+        /// <summary>
+        /// Retrieves the current setting of a statement attribute.
+        /// </summary>
+        /// <param name="attributeId">Identifier of the attribute to retrieve.</param>
+        /// <param name="value">
+        /// <para>
+        /// Pointer to a buffer in which to return the value of the attribute specified in Attribute.
+        /// </para>
+        /// <para>
+        /// If value is nullptr, valueActualLength will still return the total number of bytes (excluding 
+        /// the null-termination character for character data) available to return in the buffer pointed to 
+        /// by value.
+        /// </para>
+        /// </param>
+        /// <param name="valueBufferLength">
+        /// <para>
+        /// If attributeId is an ODBC-defined attribute and value *points to a character string or a 
+        /// binary buffer, this argument should be the length of *value. If attributeId is an 
+        /// ODBC-defined attribute and *value is an integer, valueBufferLength is ignored. If the 
+        /// value returned in *value is a Unicode string, the valueBufferLength argument must be an even number.
+        /// </para>
+        /// <para>
+        /// If attributeId is a driver-defined attribute, the application indicates the nature of the 
+        /// attribute to the Driver Manager by setting the BufferLength argument. valueBufferLength can 
+        /// have the following values:
+        /// </para>
+        /// <list type="bullet">
+        /// <item>
+        /// If *value is a pointer to a character string, then valueBufferLength is the length of the string or SQL_NTS.
+        /// </item>
+        /// <item>
+        /// If *value is a pointer to a binary buffer, then the application places the result of the 
+        /// SQL_LEN_BINARY_ATTR(length) macro in valueBufferLength. This places a negative value in 
+        /// valueBufferLength.
+        /// </item>
+        /// <item>
+        /// If *value is a pointer to a value other than a character string or binary string, then 
+        /// valueBufferLength should have the value SQL_IS_POINTER.
+        /// </item>
+        /// <item>
+        /// If *value contains a fixed-length data type, then valueBufferLength is either SQL_IS_INTEGER or 
+        /// SQL_IS_UINTEGER, as appropriate.
+        /// </item>
+        /// </list>
+        /// </param>
+        /// <param name="valueActualLength"></param>
+        /// <returns></returns>
         Result GetAttributeA( SQLINTEGER attributeId, SQLPOINTER value, SQLINTEGER valueBufferLength, SQLINTEGER* valueActualLength ) const
         {
             auto rc = SQLGetStmtAttrA( Handle( ), attributeId, value, valueBufferLength, valueActualLength );
@@ -4595,6 +4903,80 @@ namespace Harlinn::ODBC
             return static_cast<Result>( rc );
         }
 
+        /// <summary>
+        /// Sets attributes related to a statement.
+        /// </summary>
+        /// <param name="attributeId">
+        /// Identifier of the attribute to set.
+        /// </param>
+        /// <param name="value">
+        /// <para>
+        /// Value to be associated with the attribute. Depending on the value of attributeId, value will be one of the following:
+        /// </para>
+        /// <list type="bullet">
+        /// <item>
+        /// An ODBC descriptor handle.
+        /// </item>
+        /// <item>
+        /// A SQLUINTEGER value.
+        /// </item>
+        /// <item>
+        /// A SQLULEN value.
+        /// </item>
+        /// <item>
+        /// A pointer to one of the following:
+        /// <list type="bullet"> 
+        /// <item>
+        /// A null-terminated character string.
+        /// </item>
+        /// <item>
+        /// A binary buffer.
+        /// </item>
+        /// <item>
+        /// A value or array of type SQLLEN, SQLULEN, or SQLUSMALLINT.
+        /// </item>
+        /// <item>
+        /// A driver-defined value.
+        /// </item>
+        /// </list>
+        /// If the attribute is a driver-specific value, value may be a signed integer.
+        /// </item>
+        /// </list>
+        /// </param>
+        /// <param name="valueLength">
+        /// <para>
+        /// If attributeId is an ODBC-defined attribute and value points to a character string or 
+        /// a binary buffer, this argument should be the length of value. If attributeId is an 
+        /// ODBC-defined attribute and valuePtr is an integer, valueLength is ignored.
+        /// </para>
+        /// <para>
+        /// If attributeId is a driver-defined attribute, the application indicates the nature of 
+        /// the attribute to the Driver Manager by setting the valueLength argument. valueLength 
+        /// can have the following values:
+        /// </para>
+        /// <list type="bullet">
+        /// <item>
+        /// If value is a pointer to a character string, then valueLength is the length of the 
+        /// string or SQL_NTS.
+        /// </item>
+        /// <item>
+        /// If value is a pointer to a binary buffer, then the application places the result of 
+        /// the SQL_LEN_BINARY_ATTR(length) macro in valueLength. This places a negative 
+        /// value in valueLength.
+        /// </item>
+        /// <item>
+        /// If value is a pointer to a value other than a character string or a binary string, 
+        /// then valueLength should have the value SQL_IS_POINTER.
+        /// </item>
+        /// <item>
+        /// If value contains a fixed-length value, then valueLength is either SQL_IS_INTEGER or 
+        /// SQL_IS_UINTEGER, as appropriate.
+        /// </item>
+        /// </list>
+        /// </param>
+        /// <returns>
+        /// Result::Success or Result::SuccessWithInfo
+        /// </returns>
         Result SetAttributeW( SQLINTEGER attributeId, SQLPOINTER value, SQLINTEGER valueLength ) const
         {
             auto rc = SQLSetStmtAttrW( Handle( ), attributeId, value, valueLength );
@@ -4605,34 +4987,94 @@ namespace Harlinn::ODBC
             return static_cast<Result>( rc );
         }
 
-
+        /// <summary>
+        /// Sets an UInt64 valued attribute.
+        /// </summary>
+        /// <param name="attributeId">Identifier of the attribute to set.</param>
+        /// <param name="value">The value to assign to the attribute.</param>
+        /// <returns>
+        /// Result::Success or Result::SuccessWithInfo
+        /// </returns>
         Result SetUInt64Attribute( SQLINTEGER attributeId, UInt64 value ) const
         {
             return SetAttributeW( attributeId, reinterpret_cast< SQLPOINTER >( value ), SQL_IS_UINTEGER );
         }
+
+        /// <summary>
+        /// Sets an Int64 valued attribute.
+        /// </summary>
+        /// <param name="attributeId">Identifier of the attribute to set.</param>
+        /// <param name="value">The value to assign to the attribute.</param>
+        /// <returns>
+        /// Result::Success or Result::SuccessWithInfo
+        /// </returns>
         Result SetInt64Attribute( SQLINTEGER attributeId, Int64 value ) const
         {
             return SetAttributeW( attributeId, reinterpret_cast< SQLPOINTER >( value ), SQL_IS_INTEGER );
         }
+
+
+        /// <summary>
+        /// Sets an boolean valued attribute.
+        /// </summary>
+        /// <param name="attributeId">Identifier of the attribute to set.</param>
+        /// <param name="value">The value to assign to the attribute.</param>
+        /// <returns>
+        /// Result::Success or Result::SuccessWithInfo
+        /// </returns>
         Result SetBooleanAttribute( SQLINTEGER attributeId, bool value ) const
         {
             return SetAttributeW( attributeId, reinterpret_cast< SQLPOINTER >( value? 1ULL : 0ULL ), SQL_IS_UINTEGER );
         }
 
+
+        /// <summary>
+        /// Sets an pointer valued attribute.
+        /// </summary>
+        /// <param name="attributeId">Identifier of the attribute to set.</param>
+        /// <param name="value">The value to assign to the attribute.</param>
+        /// <returns>
+        /// Result::Success or Result::SuccessWithInfo
+        /// </returns>
         Result SetPointerAttribute( SQLINTEGER attributeId, SQLPOINTER value ) const
         {
             return SetAttributeW( attributeId, value , SQL_IS_POINTER );
         }
 
+
+        /// <summary>
+        /// Sets a descriptor valued attribute.
+        /// </summary>
+        /// <param name="attributeId">Identifier of the attribute to set.</param>
+        /// <param name="value">The value to assign to the attribute.</param>
+        /// <returns>
+        /// Result::Success or Result::SuccessWithInfo
+        /// </returns>
         Result SetDescriptorAttribute( SQLINTEGER attributeId, SQLHANDLE value ) const
         {
             return SetAttributeW( attributeId, value, SQL_IS_POINTER );
         }
+        /// <summary>
+        /// Sets a descriptor valued attribute.
+        /// </summary>
+        /// <param name="attributeId">Identifier of the attribute to set.</param>
+        /// <param name="value">The value to assign to the attribute.</param>
+        /// <returns>
+        /// Result::Success or Result::SuccessWithInfo
+        /// </returns>
         Result SetDescriptorAttribute( SQLINTEGER attributeId, const Descriptor& value ) const
         {
             return SetAttributeW( attributeId, value.Handle(), SQL_IS_POINTER );
         }
 
+        /// <summary>
+        /// Sets an UInt64 valued attribute valued attribute to the value from an enumeration.
+        /// </summary>
+        /// <param name="attributeId">Identifier of the attribute to set.</param>
+        /// <param name="value">The value to assign to the attribute.</param>
+        /// <returns>
+        /// Result::Success or Result::SuccessWithInfo
+        /// </returns>
         template<typename T> 
             requires std::is_enum_v<T>
         Result SetEnumAttribute( SQLINTEGER attributeId, T value ) const
@@ -4641,7 +5083,80 @@ namespace Harlinn::ODBC
         }
 
 
-
+        /// <summary>
+        /// Sets attributes related to a statement.
+        /// </summary>
+        /// <param name="attributeId">
+        /// Identifier of the attribute to set.
+        /// </param>
+        /// <param name="value">
+        /// <para>
+        /// Value to be associated with the attribute. Depending on the value of attributeId, value will be one of the following:
+        /// </para>
+        /// <list type="bullet">
+        /// <item>
+        /// An ODBC descriptor handle.
+        /// </item>
+        /// <item>
+        /// A SQLUINTEGER value.
+        /// </item>
+        /// <item>
+        /// A SQLULEN value.
+        /// </item>
+        /// <item>
+        /// A pointer to one of the following:
+        /// <list type="bullet"> 
+        /// <item>
+        /// A null-terminated character string.
+        /// </item>
+        /// <item>
+        /// A binary buffer.
+        /// </item>
+        /// <item>
+        /// A value or array of type SQLLEN, SQLULEN, or SQLUSMALLINT.
+        /// </item>
+        /// <item>
+        /// A driver-defined value.
+        /// </item>
+        /// </list>
+        /// If the attribute is a driver-specific value, value may be a signed integer.
+        /// </item>
+        /// </list>
+        /// </param>
+        /// <param name="valueLength">
+        /// <para>
+        /// If attributeId is an ODBC-defined attribute and value points to a character string or 
+        /// a binary buffer, this argument should be the length of value. If attributeId is an 
+        /// ODBC-defined attribute and valuePtr is an integer, valueLength is ignored.
+        /// </para>
+        /// <para>
+        /// If attributeId is a driver-defined attribute, the application indicates the nature of 
+        /// the attribute to the Driver Manager by setting the valueLength argument. valueLength 
+        /// can have the following values:
+        /// </para>
+        /// <list type="bullet">
+        /// <item>
+        /// If value is a pointer to a character string, then valueLength is the length of the 
+        /// string or SQL_NTS.
+        /// </item>
+        /// <item>
+        /// If value is a pointer to a binary buffer, then the application places the result of 
+        /// the SQL_LEN_BINARY_ATTR(length) macro in valueLength. This places a negative 
+        /// value in valueLength.
+        /// </item>
+        /// <item>
+        /// If value is a pointer to a value other than a character string or a binary string, 
+        /// then valueLength should have the value SQL_IS_POINTER.
+        /// </item>
+        /// <item>
+        /// If value contains a fixed-length value, then valueLength is either SQL_IS_INTEGER or 
+        /// SQL_IS_UINTEGER, as appropriate.
+        /// </item>
+        /// </list>
+        /// </param>
+        /// <returns>
+        /// Result::Success or Result::SuccessWithInfo
+        /// </returns>
         Result SetAttributeA( SQLINTEGER attributeId, SQLPOINTER value, SQLINTEGER valueLength ) const
         {
 #ifdef SQLSetStmtAttr
@@ -4756,35 +5271,73 @@ namespace Harlinn::ODBC
             return GetBooleanAttribute( SQL_ATTR_ASYNC_ENABLE );
         }
 
-
+        /// <summary>
+        /// Assigns the Windows event handle that will get notified on asynchronous completion.
+        /// </summary>
+        /// <param name="asyncEventHandle">A windows event handle.</param>
+        /// <returns>Result::Success or Result::SuccessWithInfo</returns>
         Result SetAsyncEventHandle( HANDLE asyncEventHandle ) const
         {
             auto rc = SetPointerAttribute( SQL_ATTR_ASYNC_STMT_EVENT, asyncEventHandle );
             return rc;
         }
 
+        /// <summary>
+        /// Assigns the Windows event handle that will get notified on asynchronous completion.
+        /// </summary>
+        /// <param name="asyncEventHandle">A windows event handle.</param>
+        /// <returns>Result::Success or Result::SuccessWithInfo</returns>
         Result SetAsyncEventHandle( const EventWaitHandle& asyncEventHandle ) const
         {
             auto rc = SetPointerAttribute( SQL_ATTR_ASYNC_STMT_EVENT, asyncEventHandle.GetHandle() );
             return rc;
         }
 
+        /// <summary>
+        /// Retrieves the Windows event handle assigned to the SQL_ATTR_ASYNC_STMT_EVENT attribute,
+        /// or nullptr if no event handle has previously been assigned to this attribute.
+        /// </summary>
+        /// <returns>The event handle, or nullptr if none has been set on the statement.</returns>
         HANDLE AsyncEventHandle( ) const
         {
             return GetPointerAttribute( SQL_ATTR_ASYNC_STMT_EVENT );
         }
 
-
+        /// <summary>
+        /// Assigns the cursor concurrency model to be used with the statement. 
+        /// </summary>
+        /// <param name="concurrency"></param>
+        /// <returns>Result::Success or Result::SuccessWithInfo</returns>
         Result SetConcurrency( ODBC::Concurrency concurrency ) const
         {
             auto rc = SetEnumAttribute( SQL_ATTR_CONCURRENCY, concurrency );
             return rc;
         }
+        /// <summary>
+        /// Retrieves the cursor concurrency model that will be used with this statement.
+        /// </summary>
+        /// <returns>A value from the ODBC::Concurrency enumeration</returns>
         ODBC::Concurrency Concurrency( ) const
         {
             return GetEnumAttribute<ODBC::Concurrency>( SQL_ATTR_CONCURRENCY );
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="cursorScrollable">
+        /// <para>
+        /// Set to true if scrollable cursors are required on the statement handle. When 
+        /// calling FetchScroll, the application may specify any valid value of FetchOrientation, 
+        /// achieving cursor positioning in modes other than the sequential mode.
+        /// </para>
+        /// <para>
+        /// Set to false if scrollable cursors are not required on the statement handle. If the 
+        /// application calls FetchScroll on this handle, the only valid value of FetchOrientation is FetchOrientation::Next. 
+        /// This is the default.
+        /// </para>
+        /// </param>
+        /// <returns></returns>
         Result SetCursorScrollable( bool cursorScrollable ) const
         {
             return SetBooleanAttribute( SQL_ATTR_CURSOR_SCROLLABLE, cursorScrollable );
@@ -5119,6 +5672,14 @@ namespace Harlinn::ODBC
             }
             return static_cast<Result>( rc );
         }
+        SQLSMALLINT NumParams( ) const
+        {
+            SQLSMALLINT result = 0;
+            NumParams( &result );
+            return result;
+        }
+
+
 
         Result NumResultCols( SQLSMALLINT* result ) const
         {
@@ -5347,17 +5908,19 @@ namespace Harlinn::ODBC
         }
     };
 
+    
+
 
 
     inline Result DataReader::Fetch( ) const
     {
         return statement_->Fetch( );
     }
-    inline Result DataReader::FetchScroll( ODBC::Fetch fetchOrientation, SQLLEN fetchOffset ) const
+    inline Result DataReader::FetchScroll( ODBC::FetchOrientation fetchOrientation, SQLLEN fetchOffset ) const
     {
         return statement_->FetchScroll( fetchOrientation, fetchOffset );
     }
-    inline Result DataReader::BindColumn( SQLUSMALLINT columnNumber, SQLSMALLINT targetType, SQLPOINTER targetValue, SQLLEN targetValueMaxLength, SQLLEN* nullIndicatorOrLength ) const
+    inline Result DataReader::BindColumn( SQLUSMALLINT columnNumber, NativeType targetType, SQLPOINTER targetValue, SQLLEN targetValueMaxLength, SQLLEN* nullIndicatorOrLength ) const
     {
         return statement_->BindColumn( columnNumber, targetType, targetValue, targetValueMaxLength, nullIndicatorOrLength );
     }
@@ -5368,7 +5931,7 @@ namespace Harlinn::ODBC
         return statement_->Handle( );
     }
 
-    inline Result DataReader::GetData( SQLUSMALLINT columnOrParameterNumber, SQLSMALLINT targetValueDataType, SQLPOINTER targetValue, SQLLEN targetValueMaxLength, SQLLEN* nullIndicatorOrTargetValueActualLength ) const
+    inline Result DataReader::GetData( SQLUSMALLINT columnOrParameterNumber, NativeType targetValueDataType, SQLPOINTER targetValue, SQLLEN targetValueMaxLength, SQLLEN* nullIndicatorOrTargetValueActualLength ) const
     {
         return statement_->GetData( columnOrParameterNumber, targetValueDataType, targetValue, targetValueMaxLength, nullIndicatorOrTargetValueActualLength );
     }
@@ -5667,6 +6230,35 @@ namespace Harlinn::ODBC
     }
 
 
+    struct ParameterDescription
+    {
+        const ODBC::Statement& Statement;
+        SQLUSMALLINT ParameterNumber;
+        ODBC::SqlType DataType;
+        SQLULEN ParameterSize;
+        SQLSMALLINT DecimalDigits;
+        ODBC::Nullable Nullable;
+
+        ParameterDescription( const ODBC::Statement& statement, SQLUSMALLINT parameterNumber, ODBC::SqlType dataType, SQLULEN parameterSize, SQLSMALLINT decimalDigits, ODBC::Nullable nullable )
+            : Statement( statement ), ParameterNumber( parameterNumber ), DataType( dataType ), ParameterSize( parameterSize ), DecimalDigits( decimalDigits ), Nullable( nullable )
+        {
+        }
+
+
+    };
+
+    inline ParameterDescription Statement::DescribeParameter( SQLUSMALLINT parameterNumber ) const
+    {
+        ODBC::SqlType dataType = {};
+        SQLULEN parameterSize = 0;
+        SQLSMALLINT decimalDigits = 0;
+        ODBC::Nullable nullable = ODBC::Nullable::Unknown;
+        DescribeParameter( parameterNumber, &dataType, &parameterSize, &decimalDigits, &nullable );
+
+        ParameterDescription result(*this, parameterNumber, dataType, parameterSize, decimalDigits, nullable );
+        return result;
+    }
+
 
     /// <summary>
     /// <para>
@@ -5727,6 +6319,12 @@ namespace Harlinn::ODBC
         {
         }
     public:
+        Descriptor CreateDescriptor( ) const
+        {
+            auto sqlHandle = AllocateHandle( Handle( ), ODBC::HandleType::Descriptor );
+            return Descriptor( sqlHandle );
+        }
+
         void BrowseConnect( const SQLWCHAR* inputConnectionString, SQLSMALLINT inputConnectionStringLength, SQLWCHAR* resultConnectionString, SQLSMALLINT resultConnectionStringMaxLength, SQLSMALLINT* resultConnectionStringActualLength ) const
         {
             auto rc = SQLBrowseConnectW( Handle( ), const_cast<SQLWCHAR*>(inputConnectionString), inputConnectionStringLength, resultConnectionString, resultConnectionStringMaxLength, resultConnectionStringActualLength );
@@ -6217,6 +6815,9 @@ namespace Harlinn::ODBC
             result.SetVersion( version );
             return result;
         }
+
+        
+
     protected:
         void SetAttribute( SQLINTEGER attributeId, SQLPOINTER value, SQLINTEGER valueLength ) const
         {
@@ -6316,7 +6917,7 @@ namespace Harlinn::ODBC
             SetUInt32Attribute( SQL_ATTR_CONNECTION_POOLING, static_cast< UInt32 >( connectionPooling ) );
         }
 
-        Result DataSources( ODBC::Fetch direction, SQLWCHAR* datasourceName, SQLSMALLINT datasourceNameMaxLength, SQLSMALLINT* datasourceNameActualLength, SQLWCHAR* datasourceDescription, SQLSMALLINT datasourceDescriptionMaxLength, SQLSMALLINT* datasourceDescriptionActualLength ) const
+        Result DataSources( ODBC::FetchOrientation direction, SQLWCHAR* datasourceName, SQLSMALLINT datasourceNameMaxLength, SQLSMALLINT* datasourceNameActualLength, SQLWCHAR* datasourceDescription, SQLSMALLINT datasourceDescriptionMaxLength, SQLSMALLINT* datasourceDescriptionActualLength ) const
         {
             auto rc = SQLDataSourcesW( Handle( ), static_cast< SQLUSMALLINT >( direction ), datasourceName, datasourceNameMaxLength, datasourceNameActualLength, datasourceDescription, datasourceDescriptionMaxLength, datasourceDescriptionActualLength );
             if ( Failed(static_cast<Result>(rc)) )
@@ -6327,7 +6928,7 @@ namespace Harlinn::ODBC
         }
 
 
-        Result DataSources( ODBC::Fetch direction, SQLCHAR* datasourceName, SQLSMALLINT datasourceNameMaxLength, SQLSMALLINT* datasourceNameActualLength, SQLCHAR* datasourceDescription, SQLSMALLINT datasourceDescriptionMaxLength, SQLSMALLINT* datasourceDescriptionActualLength ) const
+        Result DataSources( ODBC::FetchOrientation direction, SQLCHAR* datasourceName, SQLSMALLINT datasourceNameMaxLength, SQLSMALLINT* datasourceNameActualLength, SQLCHAR* datasourceDescription, SQLSMALLINT datasourceDescriptionMaxLength, SQLSMALLINT* datasourceDescriptionActualLength ) const
         {
             auto rc = SQLDataSourcesA( Handle( ), static_cast<SQLUSMALLINT>( direction ), datasourceName, datasourceNameMaxLength, datasourceNameActualLength, datasourceDescription, datasourceDescriptionMaxLength, datasourceDescriptionActualLength );
             if ( Failed(static_cast<Result>(rc)) )
@@ -6338,7 +6939,7 @@ namespace Harlinn::ODBC
         }
 
 
-        std::vector<ODBC::DataSource> DataSources( ODBC::Fetch direction = ODBC::Fetch::First )
+        std::vector<ODBC::DataSource> DataSources( ODBC::FetchOrientation direction = ODBC::FetchOrientation::First )
         {
             SQLWCHAR dataSourceName[1024];
             SQLSMALLINT dataSourceNameLength = 0;
@@ -6350,14 +6951,14 @@ namespace Harlinn::ODBC
             while ( rc == Result::Success )
             {
                 result.emplace_back( ODBC::DataSource{ WideString{dataSourceName,static_cast<size_t>( dataSourceNameLength )},WideString{dataSourceDescription,static_cast<size_t>( dataSourceDescriptionLength )} } );
-                rc = DataSources( ODBC::Fetch::Next, dataSourceName, 1024, &dataSourceNameLength, dataSourceDescription, 1024, &dataSourceDescriptionLength );
+                rc = DataSources( ODBC::FetchOrientation::Next, dataSourceName, 1024, &dataSourceNameLength, dataSourceDescription, 1024, &dataSourceDescriptionLength );
             }
 
             return result;
         }
 
 
-        Result Drivers( ODBC::Fetch direction, SQLWCHAR* driverDescription, SQLSMALLINT driverDescriptionMaxLength, SQLSMALLINT* driverDescriptionActualLength, SQLWCHAR* driverAttributes, SQLSMALLINT driverAttributesMaxLength, SQLSMALLINT* driverAttributesActualLength ) const
+        Result Drivers( ODBC::FetchOrientation direction, SQLWCHAR* driverDescription, SQLSMALLINT driverDescriptionMaxLength, SQLSMALLINT* driverDescriptionActualLength, SQLWCHAR* driverAttributes, SQLSMALLINT driverAttributesMaxLength, SQLSMALLINT* driverAttributesActualLength ) const
         {
             auto rc = SQLDriversW( Handle( ), static_cast<SQLUSMALLINT>( direction ), driverDescription, driverDescriptionMaxLength, driverDescriptionActualLength, driverAttributes, driverAttributesMaxLength, driverAttributesActualLength );
             if ( Failed(static_cast<Result>(rc)) )
@@ -6367,7 +6968,7 @@ namespace Harlinn::ODBC
             return static_cast<Result>( rc );
         }
 
-        std::vector<ODBC::Driver> Drivers( ODBC::Fetch direction )
+        std::vector<ODBC::Driver> Drivers( ODBC::FetchOrientation direction )
         {
             SQLWCHAR driverDescription[1024];
             SQLSMALLINT driverDescriptionLength = 0;
@@ -6379,7 +6980,7 @@ namespace Harlinn::ODBC
             while ( rc == Result::Success )
             {
                 result.emplace_back( ODBC::Driver{ WideString{driverDescription,static_cast<size_t>( driverDescriptionLength )},WideString{driverAttributes,static_cast<size_t>( driverAttributesLength )} } );
-                rc = Drivers( ODBC::Fetch::Next, driverDescription, 1024, &driverDescriptionLength, driverAttributes, 1024, &driverAttributesLength );
+                rc = Drivers( ODBC::FetchOrientation::Next, driverDescription, 1024, &driverDescriptionLength, driverAttributes, 1024, &driverAttributesLength );
             }
 
             return result;

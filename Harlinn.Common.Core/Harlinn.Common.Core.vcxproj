@@ -224,6 +224,7 @@
     <ClInclude Include="HCCFixedString.h" />
     <ClInclude Include="HCCFlags.h" />
     <ClInclude Include="HCCFormatStringParser.h" />
+    <ClInclude Include="HCCGenerators.h" />
     <ClInclude Include="HCCIOBufferStream.h" />
     <ClInclude Include="HCCCom.h" />
     <ClInclude Include="HCCConsole.h" />

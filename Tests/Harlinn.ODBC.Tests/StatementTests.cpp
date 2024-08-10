@@ -17,6 +17,7 @@ limitations under the License.
 #include <HODBC.h>
 #include <HCCXml.h>
 #include <HCCIO.h>
+#include <HCCGenerators.h>
 
 #define BOOST_TEST_DYN_LINK
 #include <boost/test/unit_test.hpp>
@@ -3323,6 +3324,141 @@ BOOST_AUTO_TEST_CASE( ColumnIsUpdatableTest1 )
     auto columnIsUpdatable = statement.ColumnIsUpdatable( 2 );
     BOOST_CHECK( columnIsUpdatable.has_value() == false );
 }
+
+
+// --run_test=StatementTests/NumParamsTest1
+BOOST_AUTO_TEST_CASE( NumParamsTest1 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+
+
+    auto statement = connection.CreateStatement( );
+    rc = statement.Prepare( L"{? = call TestFunction1(?,?)}" );
+    BOOST_CHECK( rc == Result::Success );
+    auto numParams = statement.NumParams( );
+    BOOST_CHECK( numParams == 3 );
+}
+
+// --run_test=StatementTests/BindInt32ParameterTest1
+BOOST_AUTO_TEST_CASE( BindInt32ParameterTest1 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+
+
+    auto statement = connection.CreateStatement( );
+    rc = statement.Prepare( L"{? = call TestFunction1(?,?)}" );
+    BOOST_CHECK( rc == Result::Success );
+
+    int result = 0;
+    int a = 1;
+    int b = 2;
+
+    statement.BindInt32Parameter( 1, &result, nullptr, ODBC::ParameterDirection::Output );
+    statement.BindInt32Parameter( 2, &a );
+    statement.BindInt32Parameter( 3, &b );
+    statement.Execute( );
+    BOOST_CHECK( result == 3 );
+
+}
+
+// --run_test=StatementTests/VarCharTest1
+BOOST_AUTO_TEST_CASE( VarCharTest1 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+
+    auto deleteStatement = connection.CreateStatement( );
+    deleteStatement.ExecDirect( L"DELETE FROM TestSchema.TestTable4" );
+
+
+    auto insertStatement = connection.CreateStatement( );
+    rc = insertStatement.Prepare( L"INSERT INTO TestSchema.TestTable4 VALUES(?,?)" );
+    BOOST_CHECK( rc == Result::Success );
+    Int64 id = 1;
+    auto text = Generators::Generate<AnsiString>( 1'000'000ULL, "abcdefghijklmnopqrstuvwxyz1234567890" );
+    
+    insertStatement.BindInt64Parameter( 1, &id );
+    insertStatement.BindVarCharParameter( 2, 0, text.data( ), text.size( ), nullptr );
+    insertStatement.Execute( );
+
+    auto selectStatement = connection.CreateStatement( );
+    auto reader = selectStatement.ExecuteReader( L"SELECT Id, [Value] FROM TestSchema.TestTable4" );
+    reader->Read( );
+    auto retrievedId = reader->GetInt64( 1 );
+    auto retrievedValue = reader->GetAnsiString( 2 );
+    bool equal = retrievedValue == text;
+    BOOST_CHECK( equal );
+
+}
+
+
+// --run_test=StatementTests/NVarCharTest1
+BOOST_AUTO_TEST_CASE( NVarCharTest1 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+
+    auto deleteStatement = connection.CreateStatement( );
+    deleteStatement.ExecDirect( L"DELETE FROM TestSchema.TestTable5" );
+
+
+    auto insertStatement = connection.CreateStatement( );
+    rc = insertStatement.Prepare( L"INSERT INTO TestSchema.TestTable5 VALUES(?,?)" );
+    BOOST_CHECK( rc == Result::Success );
+    Int64 id = 1;
+    auto text = Generators::Generate<WideString>( 1'000'000ULL, L"abcdefghijklmnopqrstuvwxyz1234567890" );
+    
+    insertStatement.BindInt64Parameter( 1, &id );
+    insertStatement.BindNVarCharParameter( 2, 0, text.data( ), text.size( ), nullptr );
+    insertStatement.Execute( );
+
+    auto selectStatement = connection.CreateStatement( );
+    auto reader = selectStatement.ExecuteReader( L"SELECT Id, [Value] FROM TestSchema.TestTable5" );
+    reader->Read( );
+    auto retrievedId = reader->GetInt64( 1 );
+    auto retrievedValue = reader->GetWideString( 2 );
+    bool equal = retrievedValue == text;
+    BOOST_CHECK( equal );
+
+}
+
+// --run_test=StatementTests/VarBinaryTest1
+BOOST_AUTO_TEST_CASE( VarBinaryTest1 )
+{
+    ODBC::Environment environment = ODBC::Environment::Create( );
+    auto connection = environment.Connect( DataSource );
+    auto rc = connection.SetCurrentCatalog( DatabaseName );
+
+    auto deleteStatement = connection.CreateStatement( );
+    deleteStatement.ExecDirect( L"DELETE FROM TestSchema.TestTable6" );
+
+
+    auto insertStatement = connection.CreateStatement( );
+    rc = insertStatement.Prepare( L"INSERT INTO TestSchema.TestTable6 VALUES(?,?)" );
+    BOOST_CHECK( rc == Result::Success );
+    Int64 id = 1;
+    auto text = Generators::Generate<std::vector<Byte>>( 1'000'000ULL, "abcdefghijklmnopqrstuvwxyz1234567890" );
+    
+    insertStatement.BindInt64Parameter( 1, &id );
+    insertStatement.BindVarBinaryParameter( 2, 0, text.data( ), text.size( ), nullptr );
+    insertStatement.Execute( );
+
+    auto selectStatement = connection.CreateStatement( );
+    auto reader = selectStatement.ExecuteReader( L"SELECT Id, [Value] FROM TestSchema.TestTable6" );
+    reader->Read( );
+    auto retrievedId = reader->GetInt64( 1 );
+    auto retrievedValue = reader->GetBinary( 2 );
+    bool equal = retrievedValue == text;
+    BOOST_CHECK( equal );
+
+}
+
 
 
 

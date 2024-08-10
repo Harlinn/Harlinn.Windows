@@ -48,7 +48,7 @@ BOOST_AUTO_TEST_CASE( DriversTest1 )
     ODBC::Environment environment = ODBC::Environment::Create( );
     BOOST_CHECK( environment.Handle( ) != ODBC::Environment::InvalidHandle );
 
-    auto drivers = environment.Drivers( Fetch::First );
+    auto drivers = environment.Drivers( FetchOrientation::First );
     BOOST_CHECK( drivers.size( ) > 0 );
 }
 
@@ -58,7 +58,7 @@ BOOST_AUTO_TEST_CASE( DataSourcesTest1 )
     ODBC::Environment environment = ODBC::Environment::Create( );
     BOOST_CHECK( environment.Handle( ) != ODBC::Environment::InvalidHandle );
 
-    auto dataSources = environment.DataSources( Fetch::First );
+    auto dataSources = environment.DataSources( FetchOrientation::First );
     BOOST_CHECK( dataSources.size( ) > 0 );
 }
 
@@ -183,7 +183,7 @@ BOOST_AUTO_TEST_CASE( DateReaderTest2 )
 
     auto statement = connection.CreateStatement( );
     Int64 id = 2;
-    statement.BindInt64Parameter( 1, ParameterDirection::Input, &id );
+    statement.BindInt64Parameter( 1, &id, nullptr, ParameterDirection::Input );
     auto reader = statement.ExecuteReader<DateReaderTest1DateReader>( L"select Id, Ts, Flags, val from TimeseriesValue1 where Id = ?" );
 
     while ( reader->Read( ) )
