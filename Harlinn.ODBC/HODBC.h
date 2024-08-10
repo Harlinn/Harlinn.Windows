@@ -2799,12 +2799,18 @@ namespace Harlinn::ODBC
             auto rc = BindParameter( parameterNumber, parameterDirection, NativeType::Char, SqlType::VarChar, columnSize, 0, parameterValue, parameterValueBufferLength, lengthOrIndicator );
             return rc;
         }
+        Result BindVarCharParameter( SQLUSMALLINT parameterNumber, const AnsiString& parameterValue, SQLLEN* lengthOrIndicator = nullptr, ODBC::ParameterDirection parameterDirection = ODBC::ParameterDirection::Input ) const
+        {
+            auto rc = BindParameter( parameterNumber, parameterDirection, NativeType::Char, SqlType::VarChar, 0, 0, const_cast< char* >( parameterValue.data() ), parameterValue.size(), lengthOrIndicator );
+            return rc;
+        }
+
         Result BindNVarCharParameter( SQLUSMALLINT parameterNumber, SQLULEN columnSize, wchar_t* parameterValue, SQLLEN parameterValueBufferLength, SQLLEN* lengthOrIndicator, ODBC::ParameterDirection parameterDirection = ODBC::ParameterDirection::Input ) const
         {
             auto rc = BindParameter( parameterNumber, parameterDirection, NativeType::WideChar, SqlType::WVarChar, columnSize, 0, parameterValue, parameterValueBufferLength, lengthOrIndicator );
             return rc;
         }
-        Result BindNVarCharParameter( SQLUSMALLINT parameterNumber, const WideString& parameterValue, SQLLEN* lengthOrIndicator, ODBC::ParameterDirection parameterDirection = ODBC::ParameterDirection::Input ) const
+        Result BindNVarCharParameter( SQLUSMALLINT parameterNumber, const WideString& parameterValue, SQLLEN* lengthOrIndicator = nullptr, ODBC::ParameterDirection parameterDirection = ODBC::ParameterDirection::Input ) const
         {
             auto rc = BindParameter( parameterNumber, parameterDirection, NativeType::WideChar, SqlType::WVarChar, 0, 0, const_cast<wchar_t*>(parameterValue.data()), parameterValue.size(), lengthOrIndicator );
             return rc;
@@ -2814,7 +2820,7 @@ namespace Harlinn::ODBC
             auto rc = BindParameter( parameterNumber, parameterDirection, NativeType::Binary, SqlType::VarBinary, columnSize, 0, parameterValue, parameterValueBufferLength, lengthOrIndicator );
             return rc;
         }
-        Result BindVarBinaryParameter( SQLUSMALLINT parameterNumber, const std::vector<Byte>& parameterValue, SQLLEN* lengthOrIndicator, ODBC::ParameterDirection parameterDirection = ODBC::ParameterDirection::Input ) const
+        Result BindVarBinaryParameter( SQLUSMALLINT parameterNumber, const std::vector<Byte>& parameterValue, SQLLEN* lengthOrIndicator = nullptr, ODBC::ParameterDirection parameterDirection = ODBC::ParameterDirection::Input ) const
         {
             auto rc = BindParameter( parameterNumber, parameterDirection, NativeType::Binary, SqlType::VarBinary, 0, 0, const_cast<Byte*>(parameterValue.data()), parameterValue.size(), lengthOrIndicator );
             return rc;

@@ -3383,7 +3383,7 @@ BOOST_AUTO_TEST_CASE( VarCharTest1 )
     auto text = Generators::Generate<AnsiString>( 1'000'000ULL, "abcdefghijklmnopqrstuvwxyz1234567890" );
     
     insertStatement.BindInt64Parameter( 1, &id );
-    insertStatement.BindVarCharParameter( 2, 0, text.data( ), text.size( ), nullptr );
+    insertStatement.BindVarCharParameter( 2, text );
     insertStatement.Execute( );
 
     auto selectStatement = connection.CreateStatement( );
@@ -3415,7 +3415,7 @@ BOOST_AUTO_TEST_CASE( NVarCharTest1 )
     auto text = Generators::Generate<WideString>( 1'000'000ULL, L"abcdefghijklmnopqrstuvwxyz1234567890" );
     
     insertStatement.BindInt64Parameter( 1, &id );
-    insertStatement.BindNVarCharParameter( 2, 0, text.data( ), text.size( ), nullptr );
+    insertStatement.BindNVarCharParameter( 2, text );
     insertStatement.Execute( );
 
     auto selectStatement = connection.CreateStatement( );
@@ -3446,7 +3446,7 @@ BOOST_AUTO_TEST_CASE( VarBinaryTest1 )
     auto text = Generators::Generate<std::vector<Byte>>( 1'000'000ULL, "abcdefghijklmnopqrstuvwxyz1234567890" );
     
     insertStatement.BindInt64Parameter( 1, &id );
-    insertStatement.BindVarBinaryParameter( 2, 0, text.data( ), text.size( ), nullptr );
+    insertStatement.BindVarBinaryParameter( 2, text );
     insertStatement.Execute( );
 
     auto selectStatement = connection.CreateStatement( );
