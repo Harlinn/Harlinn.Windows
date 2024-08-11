@@ -814,21 +814,25 @@ namespace Harlinn::Common::Core::Xml
                 auto pInterface = GetInterface();
                 IXMLDOMNode *result;
                 auto hr = pInterface->get_item(index,&result);
-                HCC_COM_CHECK_HRESULT2( hr, pInterface );
-                if constexpr ( std::is_same_v<std::remove_cvref_t<NodeT2>, Node> )
+                if ( hr != S_FALSE )
                 {
-                    return NodeT2( result );
+                    HCC_COM_CHECK_HRESULT2( hr, pInterface );
+                    if constexpr ( std::is_same_v<std::remove_cvref_t<NodeT2>, Node> )
+                    {
+                        return NodeT2( result );
+                    }
+                    else
+                    {
+                        using InterfaceType = typename NodeT::InterfaceType;
+                        InterfaceType* pNodeType = nullptr;
+                        hr = result->QueryInterface<InterfaceType>( &pNodeType );
+                        HCC_COM_CHECK_HRESULT2( hr, result );
+                        NodeT2 node( pNodeType );
+                        result->Release( );
+                        return node;
+                    }
                 }
-                else
-                {
-                    using InterfaceType = typename NodeT::InterfaceType;
-                    InterfaceType* pNodeType = nullptr;
-                    hr = result->QueryInterface<InterfaceType>( &pNodeType );
-                    HCC_COM_CHECK_HRESULT2( hr, result );
-                    NodeT2 node( pNodeType );
-                    result->Release( );
-                    return node;
-                }
+                return {};
             }
         
             long Length( ) const

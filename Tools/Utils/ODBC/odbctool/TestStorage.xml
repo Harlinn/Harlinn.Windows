@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<storage>
+  <enum name="E">
+    <value name="First" value="0"/>
+    <value name="Second"/>
+    <value name="Third"/>
+  </enum>
+  <class name="A" >
+    <members>
+      <guid name="Id" PrimaryKey="true"/>
+    </members>
+    <index name="IndexName" />
+  </class>
+  <class name="B" base="A">
+
+  </class>
+  <class name="C" base="A">
+
+  </class>
+  <class name="D">
+
+  </class>
+</storage>
+  
