@@ -62,12 +62,7 @@
   </enum>
   <enum Name="CameraControlProtocol">
     <value name="Unknown" value="0"/>
-    <value name="PelcoDSilentSentinel" value="1" description="Silent Sentinel Pelco D"/>
-    <value name="PelcoDInfinity" value="2" description="Infinity Pelco D"/>
-    <value name="ONVIFCoex" value="3" description="Synectics COEX ONVIF"/>
-    <value name="ONVIFHoneywell" value="4" description="Honeywell ONVIF"/>
-    <value name="ONVIF" value="5" description="Generic ONVIF"/>
-    <value name="PelcoD" value="6" description="Generic Pelco D"/>
+    <value name="ONVIF" value="1" description="Generic ONVIF"/>
   </enum>
   <enum Name="CameraFeatures" flags="true">
     <value name="None" value="0"/>
@@ -1283,7 +1278,7 @@
     <members>
       <guid name="Id" primarykey="true"/>
       <rowversion name="RowVersion"/>
-      <string name="Name" size="127" category="Parameters" description="The unique name of this `DeviceHost` element. This value must be specified in the SeaSurveillance.iSurvService.exe.options file for the `HostName` attribute of the `configuration` element before running the server."/>
+      <string name="Name" size="127" category="Parameters" description="The unique name of this `DeviceHost` element. This value must be specified in the &lt;application&gt;.exe.options file for the `HostName` attribute of the `configuration` element before running the server."/>
       <collection name="Devices" type="Device" member="Host" browsable="false"/>
       <collection name="Configuration" type="DeviceHostConfiguration" member="Host" browsable="false"/>
     </members>
@@ -1295,8 +1290,8 @@
       <rowversion name="RowVersion"/>
       <reference name="Host" type="DeviceHost" browsable="false"/>
       <datetime name="Timestamp"/>
-      <string name="Hostname" size="127" category="Parameters" description="The ip address, or hostname, of the computer running this instance of the iSurv Server."/>
-      <int32 name="Port" category="Parameters" description="The port number of this instance of the iSurv Server."/>
+      <string name="Hostname" size="127" category="Parameters" description="The ip address, or hostname, of the computer running this instance of the Server."/>
+      <int32 name="Port" category="Parameters" description="The port number of this instance of the Server."/>
       <string name="QueueName" size="100" browsable="false"/>
     </members>
     <index name="Host_Timestamp" fields="Host;Timestamp" range="true" unique="true"/>
@@ -1692,7 +1687,7 @@
     <index name="Type" fields="Type"/>
     <index name="GNSSDevice" fields="GNSSDevice"/>
   </class>
-  <class name="LineInputDevice" base="Device" description="A `LineInputDevice` device is a device that performs line oriented I/O on behalf of the SeaSurveillance.iSurvService.">
+  <class name="LineInputDevice" base="Device" description="A `LineInputDevice` device is a device that performs line oriented I/O on behalf of the server.">
     <members>
       <reference name="Type" type="LineInputDeviceType"/>
       <collection name="Commands" type="LineInputDeviceCommand" member="LineInputDevice"/>
@@ -2184,8 +2179,8 @@
       <guid name="Id" primarykey="true"/>
       <rowversion name="RowVersion"/>
       <datetime name="Timestamp"/>
-      <string name="IpAddress" size="127" category="Parameters" description="The ip address, or hostname, of the computer running the iSurv Map Server."/>
-      <int32 name="Port" category="Parameters" description="The port number of the iSurv Map Server."/>
+      <string name="IpAddress" size="127" category="Parameters" description="The ip address, or hostname, of the computer running the Map Server."/>
+      <int32 name="Port" category="Parameters" description="The port number of the Map Server."/>
       <double name="ImageScaleFactorX" category="Internal" description="This value must be set to 1.0."/>
       <double name="ImageOffsetX" category="Internal" description="This value must be set to 0.0."/>
       <double name="ImageScaleFactorY" category="Internal" description="This value must be set to 1.0."/>
