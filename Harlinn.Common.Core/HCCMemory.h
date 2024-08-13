@@ -566,6 +566,15 @@ namespace Harlinn::Common::Core
 #endif
             }
 
+            void AppendTo( std::vector<Byte>& destination ) const
+            {
+                auto viewSize = size( );
+                auto currentDestinationSize = destination.size( );
+                auto newDestinationSize = currentDestinationSize + viewSize;
+                destination.resize( newDestinationSize );
+                memcpy( destination.data( ) + currentDestinationSize, begin( ), viewSize );
+            }
+
 
         };
 

@@ -375,6 +375,40 @@ namespace Harlinn::Common::Core::Blocks
             return lastBlockSize_;
         }
 
+        std::vector<Byte> ToBytes( ) const
+        {
+            std::vector<Byte> result;
+            auto count = size( );
+            if ( count )
+            {
+                result.resize( count );
+                auto destPtr = result.data( );
+                size_t copied = 0;
+                auto head = blockManager_.Head( );
+                auto tail = blockManager_.Tail( );
+
+                while ( head != tail )
+                {
+                    memcpy( destPtr + copied, head->data( ), Block::DataSize );
+                    copied += Block::DataSize;
+                    head = head->Next( );
+                }
+                if ( lastBlockSize_ )
+                {
+                    memcpy( destPtr + copied, head->data( ), lastBlockSize_ );
+#ifdef _DEBUG
+                    copied += lastBlockSize_;
+#endif
+                }
+#ifdef _DEBUG
+                assert(copied == count);
+#endif
+            }
+
+            return result;
+        }
+
+
         constexpr size_t position( ) const noexcept
         {
             return ( currentNumber_ * BlockDataSize ) + currentOffset_;

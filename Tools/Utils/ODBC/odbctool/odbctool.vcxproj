@@ -81,6 +81,8 @@
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <AdditionalIncludeDirectories>$(SolutionDir)Harlinn.Common.Core;$(SolutionDir)Harlinn.ODBC;$(BOOST_ROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -99,6 +101,8 @@
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <AdditionalIncludeDirectories>$(SolutionDir)Harlinn.Common.Core;$(SolutionDir)Harlinn.ODBC;$(BOOST_ROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -117,6 +121,8 @@
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <AdditionalIncludeDirectories>$(SolutionDir)Harlinn.Common.Core;$(SolutionDir)Harlinn.ODBC;$(BOOST_ROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -135,6 +141,8 @@
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <AdditionalIncludeDirectories>$(SolutionDir)Harlinn.Common.Core;$(SolutionDir)Harlinn.ODBC;$(BOOST_ROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -145,18 +153,31 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="BinaryMemberInfo.cpp" />
+    <ClCompile Include="ClassInfo.cpp" />
+    <ClCompile Include="CollectionMemberInfo.cpp" />
+    <ClCompile Include="EnumMemberInfo.cpp" />
+    <ClCompile Include="IndexInfo.cpp" />
+    <ClCompile Include="MemberInfo.cpp" />
+    <ClCompile Include="ModelInfo.cpp" />
     <ClCompile Include="odbctool.cpp" />
+    <ClCompile Include="ReferenceMemberInfo.cpp" />
+    <ClCompile Include="StringMemberInfo.cpp" />
+    <ClCompile Include="TimeSeriesMemberInfo.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ClassInfo.h" />
+    <ClInclude Include="CodeStream.h" />
     <ClInclude Include="EnumInfo.h" />
+    <ClInclude Include="IndexInfo.h" />
     <ClInclude Include="MemberInfo.h" />
     <ClInclude Include="odbctool.h" />
     <ClInclude Include="ODBCToolOptions.h" />
-    <ClInclude Include="StorageInfo.h" />
+    <ClInclude Include="ModelInfo.h" />
   </ItemGroup>
   <ItemGroup>
-    <Xml Include="TestStorage.xml" />
+    <Xml Include="Model.xml" />
+    <Xml Include="TestModel.xml" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

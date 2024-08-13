@@ -2530,16 +2530,33 @@ namespace Harlinn::Common::Core::IO
         /// </summary>
         HCC_EXPORT static void ReadAllText( const AnsiString& filePath, AnsiString& destination );
 
-        static AnsiString ReadAllText( const AnsiString& filePath )
+        template<typename T>
+            requires IsBasicString<T>
+        static AnsiString ReadAllText( const T& filePath )
         {
             AnsiString result;
             ReadAndAppendAllTextTo( filePath, result );
             return result;
         }
 
+        template<typename T>
+            requires IsBasicString<T>
+        static std::vector<Byte> ReadAllBytes( const T& filePath )
+        {
+            std::vector<Byte> result;
+            ReadAndAppendAllBytesTo( filePath, result );
+            return result;
+        }
+
         HCC_EXPORT static void ReadAndAppendAllTextTo( const AnsiString& filePath, AnsiString& destination );
+        HCC_EXPORT static void ReadAndAppendAllTextTo( const WideString& filePath, AnsiString& destination );
+        HCC_EXPORT static void ReadAndAppendAllBytesTo( const AnsiString& filePath, std::vector<Byte> &destination );
+        HCC_EXPORT static void ReadAndAppendAllBytesTo( const WideString& filePath, std::vector<Byte>& destination );
 
         HCC_EXPORT static void WriteAllText( const AnsiString& filePath, const AnsiString& contents );
+        HCC_EXPORT static void WriteAllText( const WideString& filePath, const AnsiString& contents );
+        HCC_EXPORT static void WriteAllBytes( const AnsiString& filePath, const std::vector<Byte>& contents );
+        HCC_EXPORT static void WriteAllBytes( const WideString& filePath, const std::vector<Byte>& contents );
 
         HCC_EXPORT static WideString GetExecutableW( );
         HCC_EXPORT static AnsiString GetExecutableA( );
@@ -3205,9 +3222,13 @@ namespace Harlinn::Common::Core::IO
         /// </summary>
         HCC_EXPORT void ReadFile( AnsiString& destination ) const;
 
+        HCC_EXPORT void ReadFile( std::vector<Byte>& destination ) const;
+
         HCC_EXPORT void WriteFile( const std::vector<AnsiString>& contents ) const;
 
         HCC_EXPORT void WriteFile( const AnsiString& contents ) const;
+
+        HCC_EXPORT void WriteFile( const std::vector<Byte>& contents ) const;
 
 
     };

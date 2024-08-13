@@ -1,6 +1,21 @@
 #pragma once
 #ifndef MEMBERINFO_H_
 #define MEMBERINFO_H_
+/*
+   Copyright 2024 Espen Harlinn
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+*/
 
 #include <HODBC.h>
 #include <HCCXml.h>
@@ -30,13 +45,18 @@ namespace Harlinn::ODBC::Tool
         Guid,
         String,
         Binary,
-        OptimisticLock,
-        Reference
+        Type,
+        RowVersion,
+        Reference,
+        TimeSeries,
+        Collection
     };
 
-    class StorageInfo;
+    class ModelInfo;
     class EnumInfo;
+    
     class ClassInfo;
+    using TypeInfo = ClassInfo;
 
     class MemberInfo : public std::enable_shared_from_this<MemberInfo>
     {
@@ -48,6 +68,10 @@ namespace Harlinn::ODBC::Tool
         WideString nativeTypeName_;
         ODBC::SqlType sqlType_;
         WideString sqlTypeName_;
+        bool nullable_ = false;
+        bool primaryKey_ = false;
+        WideString displayName_;
+        WideString description_;
     protected:
         MemberInfo( const std::shared_ptr<Tool::ClassInfo>& owner, Tool::MemberInfoType type, const WideString& name, const WideString& typeName, ODBC::NativeType nativeType, const WideString& nativeTypeName, ODBC::SqlType sqlType, const WideString& sqlTypeName )
             : owner_( owner ), type_( type ), name_( name ), typeName_( typeName ), nativeType_( nativeType ), nativeTypeName_( nativeTypeName ), sqlType_( sqlType ), sqlTypeName_( sqlTypeName )
@@ -59,6 +83,9 @@ namespace Harlinn::ODBC::Tool
         {
             return owner_.lock();
         }
+
+        std::shared_ptr<Tool::ModelInfo> Model( ) const;
+
         Tool::MemberInfoType Type( ) const
         {
             return type_;
@@ -89,6 +116,22 @@ namespace Harlinn::ODBC::Tool
             return sqlTypeName_;
         }
 
+        bool Nullable( ) const
+        {
+            return nullable_;
+        }
+        bool PrimaryKey( ) const
+        {
+            return primaryKey_;
+        }
+
+        virtual bool Persistent( ) const
+        {
+            return true;
+        }
+
+
+        virtual void Load( const XmlElement& memberElement );
 
     };
 
@@ -190,12 +233,16 @@ namespace Harlinn::ODBC::Tool
 
     class EnumMemberInfo : public MemberInfo
     {
+        std::weak_ptr<EnumInfo> type_;
     public:
         using Base = MemberInfo;
         EnumMemberInfo( const std::shared_ptr<Tool::ClassInfo>& owner, const WideString& name )
             : Base( owner, Tool::MemberInfoType::UInt64, name, L"UInt64", ODBC::NativeType::UInt64, L"UInt64", ODBC::SqlType::BigInt, L"bigint" )
         {
         }
+
+        virtual void Load( const XmlElement& memberElement ) override;
+
     };
 
 
@@ -266,44 +313,92 @@ namespace Harlinn::ODBC::Tool
 
     class StringMemberInfo : public MemberInfo
     {
+        size_t size_ = 127;
     public:
         using Base = MemberInfo;
         StringMemberInfo( const std::shared_ptr<Tool::ClassInfo>& owner, const WideString& name )
             : Base( owner, Tool::MemberInfoType::String, name, L"String", ODBC::NativeType::WideChar, L"WideString", ODBC::SqlType::Guid, L"nvarchar" )
         {
         }
+
+        virtual void Load( const XmlElement& memberElement ) override;
     };
 
     class BinaryMemberInfo : public MemberInfo
     {
+        size_t size_ = 0;
     public:
         using Base = MemberInfo;
         BinaryMemberInfo( const std::shared_ptr<Tool::ClassInfo>& owner, const WideString& name )
             : Base( owner, Tool::MemberInfoType::Binary, name, L"Binary", ODBC::NativeType::Binary, L"std::vector<Byte>", ODBC::SqlType::VarBinary, L"varbinary" )
         {
         }
+
+        virtual void Load( const XmlElement& memberElement ) override;
+    };
+
+
+    class RowVersionMemberInfo : public Int64MemberInfo
+    {
+    public:
+        using Base = Int64MemberInfo;
+        RowVersionMemberInfo( const std::shared_ptr<Tool::ClassInfo>& owner, const WideString& name )
+            : Base( owner, Tool::MemberInfoType::RowVersion, name )
+        {
+        }
     };
 
     class ReferenceMemberInfo : public GuidMemberInfo
     {
+        std::weak_ptr<ClassInfo> type_;
     public:
         using Base = GuidMemberInfo;
         ReferenceMemberInfo( const std::shared_ptr<Tool::ClassInfo>& owner, const WideString& name )
             : Base( owner, Tool::MemberInfoType::Reference, name )
         {
         }
-    };
 
-    class OptimisticLockMemberInfo : public Int64MemberInfo
-    {
-    public:
-        using Base = Int64MemberInfo;
-        OptimisticLockMemberInfo( const std::shared_ptr<Tool::ClassInfo>& owner, const WideString& name )
-            : Base( owner, Tool::MemberInfoType::OptimisticLock, name )
+        virtual void Load( const XmlElement& memberElement ) override;
+    protected:
+        ReferenceMemberInfo( const std::shared_ptr<Tool::ClassInfo>& owner, Tool::MemberInfoType type, const WideString& name )
+            : Base( owner, type, name )
         {
         }
     };
 
+    class TimeSeriesMemberInfo : public ReferenceMemberInfo
+    {
+        WideString propertyName_;
+        WideString propertyTypeName_;
+        bool propertyNullable_;
+    public:
+        using Base = ReferenceMemberInfo;
+        TimeSeriesMemberInfo( const std::shared_ptr<Tool::ClassInfo>& owner, const WideString& name )
+            : Base( owner, Tool::MemberInfoType::TimeSeries, name )
+        {
+        }
+
+        virtual void Load( const XmlElement& memberElement ) override;
+    };
+
+
+    class CollectionMemberInfo : public MemberInfo
+    {
+        std::weak_ptr<ClassInfo> type_;
+        WideString referenceName_;
+    public:
+        using Base = MemberInfo;
+        CollectionMemberInfo( const std::shared_ptr<Tool::ClassInfo>& owner, const WideString& name )
+            : Base( owner, Tool::MemberInfoType::Collection, name, L"Guid", ODBC::NativeType::Guid, L"Guid", ODBC::SqlType::Guid, L"uniqueidentifier" )
+        {
+        }
+        virtual bool Persistent( ) const override
+        {
+            return false;
+        }
+
+        virtual void Load( const XmlElement& memberElement ) override;
+    };
 
 
 }

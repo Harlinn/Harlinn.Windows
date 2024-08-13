@@ -1,6 +1,3 @@
-#pragma once
-#ifndef ODBCTOOLOPTIONS_H_
-#define ODBCTOOLOPTIONS_H_
 /*
    Copyright 2024 Espen Harlinn
 
@@ -17,14 +14,23 @@
    limitations under the License.
 */
 
-#include <HODBC.h>
+#include "ClassInfo.h"
 
 namespace Harlinn::ODBC::Tool
 {
-    class Options
+    void IndexInfo::Load( const XmlElement& indexElement )
     {
-
-    };
+        if ( indexElement.HasAttribute( L"unique" ) )
+        {
+            unique_ = indexElement.Read<bool>( L"unique" );
+        }
+        if ( indexElement.HasAttribute( L"range" ) )
+        {
+            range_ = indexElement.Read<bool>( L"range" );
+        }
+        if ( indexElement.HasAttribute( L"fields" ) )
+        {
+            fieldNames_ = indexElement.Read<WideString>( L"fields" );
+        }
+    }
 }
-
-#endif

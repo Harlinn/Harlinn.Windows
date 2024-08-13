@@ -1,6 +1,3 @@
-#pragma once
-#ifndef ODBCTOOLOPTIONS_H_
-#define ODBCTOOLOPTIONS_H_
 /*
    Copyright 2024 Espen Harlinn
 
@@ -16,15 +13,19 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-
-#include <HODBC.h>
+#include "ModelInfo.h"
 
 namespace Harlinn::ODBC::Tool
 {
-    class Options
+    void ReferenceMemberInfo::Load( const XmlElement& memberElement )
     {
-
-    };
+        Base::Load( memberElement );
+        if ( memberElement.HasAttribute( L"type" ) )
+        {
+            auto typeName = memberElement.Read<WideString>( L"type" );
+            auto model = Model( );
+            auto type = model->FindClass( typeName );
+            type_ = type;
+        }
+    }
 }
-
-#endif
