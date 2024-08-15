@@ -3311,6 +3311,10 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ODBC", "ODBC", "{AB6B7E84-D9DD-4BF7-A8F2-1A3E19A45801}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "odbctool", "Tools\Utils\ODBC\odbctool\odbctool.vcxproj", "{5CA6C634-3492-4B59-A682-49E8A444C23F}"
+	ProjectSection(ProjectDependencies) = postProject
+		{7B1B08DE-246F-469E-A372-1462E164ED09} = {7B1B08DE-246F-469E-A372-1462E164ED09}
+		{B47470E4-2B24-4119-BAC1-4E8BC52FB19D} = {B47470E4-2B24-4119-BAC1-4E8BC52FB19D}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

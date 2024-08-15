@@ -19,6 +19,7 @@
 
 #include <HODBC.h>
 #include <HCCXml.h>
+#include <HCCEnvironment.h>
 
 namespace Harlinn::ODBC::Tool
 {
@@ -237,8 +238,13 @@ namespace Harlinn::ODBC::Tool
     public:
         using Base = MemberInfo;
         EnumMemberInfo( const std::shared_ptr<Tool::ClassInfo>& owner, const WideString& name )
-            : Base( owner, Tool::MemberInfoType::UInt64, name, L"UInt64", ODBC::NativeType::UInt64, L"UInt64", ODBC::SqlType::BigInt, L"bigint" )
+            : Base( owner, Tool::MemberInfoType::Enum, name, L"Int32", ODBC::NativeType::Int32, L"Int32", ODBC::SqlType::Integer, L"int" )
         {
+        }
+
+        std::shared_ptr<EnumInfo> EnumType( ) const
+        {
+            return type_.lock( );
         }
 
         virtual void Load( const XmlElement& memberElement ) override;
@@ -321,6 +327,11 @@ namespace Harlinn::ODBC::Tool
         {
         }
 
+        size_t Size( ) const
+        {
+            return size_;
+        }
+
         virtual void Load( const XmlElement& memberElement ) override;
     };
 
@@ -332,6 +343,11 @@ namespace Harlinn::ODBC::Tool
         BinaryMemberInfo( const std::shared_ptr<Tool::ClassInfo>& owner, const WideString& name )
             : Base( owner, Tool::MemberInfoType::Binary, name, L"Binary", ODBC::NativeType::Binary, L"std::vector<Byte>", ODBC::SqlType::VarBinary, L"varbinary" )
         {
+        }
+
+        size_t Size( ) const
+        {
+            return size_;
         }
 
         virtual void Load( const XmlElement& memberElement ) override;
@@ -356,6 +372,11 @@ namespace Harlinn::ODBC::Tool
         ReferenceMemberInfo( const std::shared_ptr<Tool::ClassInfo>& owner, const WideString& name )
             : Base( owner, Tool::MemberInfoType::Reference, name )
         {
+        }
+
+        std::shared_ptr<ClassInfo> ReferencedType( ) const
+        {
+            return type_.lock( );
         }
 
         virtual void Load( const XmlElement& memberElement ) override;

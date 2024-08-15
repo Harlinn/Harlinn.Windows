@@ -21,8 +21,13 @@ int main()
 {
     using namespace Harlinn::ODBC::Tool;
     Harlinn::Common::Core::ComInitialize comInitializer;
-    //auto storageInfo = ModelInfo::LoadFromFile( L"TestModel.xml" );
-    auto storageInfo = ModelInfo::LoadFromFile( L"Model.xml" );
+    //auto modelInfo = ModelInfo::LoadFromFile( L"TestModel.xml" );
+    auto modelInfo = ModelInfo::LoadFromFile( L"Model.xml" );
+    Options options;
+    Generator generator( options, *modelInfo );
+    generator.Run( );
+
+
     
 }
 

@@ -45,7 +45,23 @@ namespace Harlinn::ODBC::Tool
             return name_;
         }
 
+        bool Unique( ) const
+        {
+            return unique_;
+        }
+        bool Range( ) const
+        {
+            return range_;
+        }
+
+        const std::vector<std::shared_ptr<MemberInfo>>& Fields( ) const
+        {
+            return fields_;
+        }
+
+
         void Load( const XmlElement& indexElement );
+        void AfterLoad( );
 
     };
 

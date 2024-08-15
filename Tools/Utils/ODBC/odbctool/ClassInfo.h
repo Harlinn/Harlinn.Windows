@@ -99,20 +99,76 @@ namespace Harlinn::ODBC::Tool
             return true;
         }
 
+        const WideString& DisplayName( ) const
+        {
+            return displayName_;
+        }
+        const WideString& Description( ) const
+        {
+            return description_;
+        }
 
         const std::vector<std::shared_ptr<MemberInfo>>& Members( ) const
         {
             return members_;
         }
 
+        std::shared_ptr<MemberInfo> FindMember( const WideString& memberName ) const
+        {
+            auto it = membersByName_.find( memberName );
+            if ( it != membersByName_.end( ) )
+            {
+                return it->second;
+            }
+            return {};
+        }
+
+
+        const std::vector<std::shared_ptr<MemberInfo>>& PersistentMembers( ) const
+        {
+            return persistentMembers_;
+        }
+
+        std::shared_ptr<MemberInfo> FindPersistentMember( const WideString& memberName ) const
+        {
+            auto it = persistentMembersByName_.find( memberName );
+            if ( it != persistentMembersByName_.end( ) )
+            {
+                return it->second;
+            }
+            return {};
+        }
+
+
+
         const std::vector<std::shared_ptr<ClassInfo>>& DerivedClasses( ) const
         {
             return derivedClasses_;
         }
 
-        const std::shared_ptr<MemberInfo>& PrimaryKey( ) const
+        bool HasDescendants( ) const
         {
-            return primaryKey_;
+            return derivedClasses_.empty() == false;
+        }
+
+
+        const std::vector<std::shared_ptr<IndexInfo>>& Indexes( ) const
+        {
+            return indexes_;
+        }
+
+        const std::shared_ptr<MemberInfo> PrimaryKey( ) const
+        {
+            if ( primaryKey_ )
+            {
+                return primaryKey_;
+            }
+            auto baseClass = BaseClass( );
+            if ( baseClass )
+            {
+                return baseClass->PrimaryKey( );
+            }
+            return {};
         }
 
         const std::shared_ptr<RowVersionMemberInfo>& RowVersion( ) const

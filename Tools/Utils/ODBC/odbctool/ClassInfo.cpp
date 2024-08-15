@@ -236,6 +236,10 @@ namespace Harlinn::ODBC::Tool
     void ClassInfo::AfterLoad( )
     {
         std::sort( derivedClasses_.begin( ), derivedClasses_.end( ), []( const auto& first, const auto& second ) { return first->Name( ) < second->Name( ); } );
+        for ( auto& index : indexes_ )
+        {
+            index->AfterLoad( );
+        }
     }
 
     void ClassInfo::AddDerivedClassesToClassList( std::vector<std::shared_ptr<ClassInfo>>& classList ) const

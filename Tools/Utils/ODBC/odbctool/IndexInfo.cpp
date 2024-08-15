@@ -33,4 +33,16 @@ namespace Harlinn::ODBC::Tool
             fieldNames_ = indexElement.Read<WideString>( L"fields" );
         }
     }
+
+    void IndexInfo::AfterLoad( )
+    {
+        std::vector<WideString> fieldNames;
+        fieldNames_.Split( L';', fieldNames );
+        auto classInfo = Owner( );
+        for ( auto& fieldName : fieldNames )
+        {
+            auto memberInfo = classInfo->FindPersistentMember( fieldName );
+            fields_.emplace_back( memberInfo );
+        }
+    }
 }

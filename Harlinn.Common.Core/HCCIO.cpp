@@ -716,21 +716,33 @@ namespace Harlinn::Common::Core::IO
 
     void FileStream::ReadFile( std::vector<AnsiString>& destination ) const
     {
-        FileMapping fileMapping( Handle( ), PageFlags::Readonly, SectionFlags::None, 0 );
-        FileMapping::View view( fileMapping, FileMap::Read, 0, Size( ) );
-        view.AppendTo( destination );
+        auto fileSize = Size( );
+        if ( fileSize )
+        {
+            FileMapping fileMapping( Handle( ), PageFlags::Readonly, SectionFlags::None, 0 );
+            FileMapping::View view( fileMapping, FileMap::Read, 0, fileSize );
+            view.AppendTo( destination );
+        }
     }
     void FileStream::ReadFile( AnsiString& destination ) const
     {
-        FileMapping fileMapping( Handle( ), PageFlags::Readonly, SectionFlags::None, 0 );
-        FileMapping::View view( fileMapping, FileMap::Read, 0, Size( ) );
-        view.AppendTo( destination );
+        auto fileSize = Size( );
+        if ( fileSize )
+        {
+            FileMapping fileMapping( Handle( ), PageFlags::Readonly, SectionFlags::None, 0 );
+            FileMapping::View view( fileMapping, FileMap::Read, 0, fileSize );
+            view.AppendTo( destination );
+        }
     }
     void FileStream::ReadFile( std::vector<Byte>& destination ) const
     {
-        FileMapping fileMapping( Handle( ), PageFlags::Readonly, SectionFlags::None, 0 );
-        FileMapping::View view( fileMapping, FileMap::Read, 0, Size( ) );
-        view.AppendTo( destination );
+        auto fileSize = Size( );
+        if ( fileSize )
+        {
+            FileMapping fileMapping( Handle( ), PageFlags::Readonly, SectionFlags::None, 0 );
+            FileMapping::View view( fileMapping, FileMap::Read, 0, fileSize );
+            view.AppendTo( destination );
+        }
     }
 
     void FileStream::WriteFile( const std::vector<AnsiString>& contents ) const

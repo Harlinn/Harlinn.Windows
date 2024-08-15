@@ -38,6 +38,12 @@ namespace Harlinn::ODBC::Tool
         std::shared_ptr<TypeInfo> FindType( const WideString& typeName ) const;
         std::shared_ptr<ClassInfo> FindClass( const WideString& className ) const;
 
+        const std::vector<std::shared_ptr<ClassInfo>>& Classes( ) const
+        {
+            return classList_;
+        }
+
+
         void Load( const XmlElement& xmlElement );
 
         static std::shared_ptr<ModelInfo> LoadFromFile( const WideString& filename );

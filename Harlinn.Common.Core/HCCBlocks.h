@@ -375,13 +375,15 @@ namespace Harlinn::Common::Core::Blocks
             return lastBlockSize_;
         }
 
-        std::vector<Byte> ToBytes( ) const
+    private:
+        template<typename T>
+        T ConvertTo( ) const
         {
-            std::vector<Byte> result;
+            T result;
             auto count = size( );
             if ( count )
             {
-                result.resize( count );
+                result.resize( count / sizeof( typename T::value_type ) );
                 auto destPtr = result.data( );
                 size_t copied = 0;
                 auto head = blockManager_.Head( );
@@ -401,12 +403,28 @@ namespace Harlinn::Common::Core::Blocks
 #endif
                 }
 #ifdef _DEBUG
-                assert(copied == count);
+                assert( copied == count );
 #endif
             }
 
             return result;
         }
+    public:
+        std::vector<Byte> ToBytes( ) const
+        {
+            return ConvertTo<std::vector<Byte>>( );
+        }
+
+        AnsiString ToAnsiString( ) const
+        {
+            return ConvertTo<AnsiString>( );
+        }
+
+        WideString ToWideString( ) const
+        {
+            return ConvertTo<WideString>( );
+        }
+
 
 
         constexpr size_t position( ) const noexcept
@@ -418,84 +436,6 @@ namespace Harlinn::Common::Core::Blocks
         {
             return static_cast<long long>( position( ) );
         }
-        /*
-        void SetPosition( long long position )
-        {
-            if ( position <= 0 )
-            {
-                MoveBegin( );
-            }
-            auto siz = size( );
-            if ( static_cast<size_t>(position) == siz )
-            {
-                MoveEnd( );
-            }
-            else
-            {
-                const auto segment = static_cast<size_t>( position ) / BlockDataSize;
-                const auto offset = static_cast<size_t>( position ) % BlockDataSize;
-                const auto numberOfBlocks = blockManager_.size( );
-
-                if ( segment >= numberOfBlocks - 1 )
-                {
-                    for ( size_t i = numberOfBlocks - 1; i < segment; ++i )
-                    {
-                        blockManager_.Append( );
-                        lastBlockSize_ = 0;
-                    }
-                    currentNumber_ = blockManager_.size( ) - 1;
-                    currentOffset_ = offset;
-                    lastBlockSize_ = std::max( currentOffset_, lastBlockSize_ );
-                }
-                else if ( segment > currentNumber_ )
-                {
-                    auto distanceToEnd = numberOfBlocks - currentNumber_;
-                    auto distanceToSegment = segment - currentNumber_;
-                    if ( distanceToSegment <= ( distanceToEnd / 2 ) )
-                    {
-                        while ( currentNumber_ < segment )
-                        {
-                            MoveNext( );
-                        }
-                        currentOffset_ = offset;
-                    }
-                    else
-                    {
-                        MoveEnd( );
-                        while ( currentNumber_ > segment )
-                        {
-                            MoveNext( );
-                        }
-                        currentOffset_ = offset;
-                    }
-
-                }
-                else
-                {
-                    auto distanceToStart = currentNumber_;
-                    auto distanceToSegment = currentNumber_ - segment;
-                    if ( distanceToSegment <= distanceToStart / 2 )
-                    {
-                        while ( currentNumber_ > segment )
-                        {
-                            MovePrevious( );
-                        }
-                        currentOffset_ = offset;
-                    }
-                    else
-                    {
-                        MoveBegin( );
-                        while ( currentNumber_ < segment )
-                        {
-                            MoveNext( );
-                        }
-                        currentOffset_ = offset;
-                    }
-                }
-            }
-        }
-        */
-
         void SetPosition( long long position )
         {
             if ( position <= 0 )
@@ -605,53 +545,6 @@ namespace Harlinn::Common::Core::Blocks
         constexpr void Flush( ) const noexcept
         {
         }
-        /*
-        long long Read( void* buffer, size_t numberOfBytesToRead )
-        {
-            if ( currentBlock_ )
-            {
-                auto currentBlockRemaining = CurrentBlockRemaining( );
-                if ( numberOfBytesToRead <= currentBlockRemaining )
-                {
-                    auto* source = currentBlock_->data( ) + currentOffset_;
-                    memcpy( buffer, source, numberOfBytesToRead );
-                    currentOffset_ += numberOfBytesToRead;
-                    return numberOfBytesToRead;
-                }
-                else
-                {
-                    Byte* bytesBegin = (Byte*)buffer;
-                    Byte* bytes = bytesBegin;
-
-                    if ( currentBlockRemaining )
-                    {
-                        auto* source = currentBlock_->data( ) + currentOffset_;
-                        memcpy( bytes, source, currentBlockRemaining );
-                        currentOffset_ += currentBlockRemaining;
-                        bytes += currentBlockRemaining;
-                        numberOfBytesToRead -= currentBlockRemaining;
-                    }
-                    auto tail = blockManager_.Tail( );
-                    while ( currentBlock_ != tail && numberOfBytesToRead )
-                    {
-                        MoveNext( );
-
-                        size_t numberOfBytesToCopy = std::min( numberOfBytesToRead, BlockDataSize );
-                        auto* source = currentBlock_->data( );
-                        memcpy( bytes, source, numberOfBytesToCopy );
-                        currentOffset_ += numberOfBytesToCopy;
-                        bytes += numberOfBytesToCopy;
-                        numberOfBytesToRead -= numberOfBytesToCopy;
-                    }
-                    return bytes - bytesBegin;
-                }
-            }
-            else
-            {
-                return 0;
-            }
-        }
-        */
         long long Read( void* buffer, size_t numberOfBytesToRead )
         {
             if ( currentBlock_ )
@@ -723,7 +616,7 @@ namespace Harlinn::Common::Core::Blocks
                         lastBlockSize_ = std::max( lastBlockSize_, currentOffset_);
                         return numberOfBytesToWrite;
                     }
-                    else //if ( currentOffset_ < BlockDataSize )
+                    else 
                     {
                         auto remaining = BlockDataSize - currentOffset_;
                         const Byte* bytes = (const Byte*)buffer;
@@ -768,71 +661,6 @@ namespace Harlinn::Common::Core::Blocks
             }
         }
 
-        /*
-        long long Write( const void* buffer, size_t numberOfBytesToWrite )
-        {
-            const Byte* bytesBegin = (const Byte*)buffer;
-            const Byte* bytesEnd = bytesBegin + numberOfBytesToWrite;
-            if ( bytesBegin < bytesEnd )
-            {
-                auto tail = blockManager_.Tail( );
-                if ( tail )
-                {
-                    if ( currentBlock_ == tail && currentOffset_ == lastBlockSize_ )
-                    {
-                        auto remaining = BlockDataSize - currentOffset_;
-                        if ( numberOfBytesToWrite <= remaining )
-                        {
-                            auto* dest = currentBlock_->data( ) + currentOffset_;
-                            memcpy( dest, buffer, numberOfBytesToWrite );
-                            currentOffset_ += numberOfBytesToWrite;
-                            lastBlockSize_ = currentOffset_;
-                            return numberOfBytesToWrite;
-                        }
-                        else
-                        {
-                            const Byte* bytes = (const Byte*)buffer;
-                            auto* dest = currentBlock_->data( ) + currentOffset_;
-                            memcpy( dest, buffer, remaining );
-                            currentOffset_ = BlockDataSize;
-                            lastBlockSize_ = BlockDataSize;
-
-                            numberOfBytesToWrite -= remaining;
-                            bytes += remaining;
-
-                            bytes += AppendBlocks( bytes, numberOfBytesToWrite );
-
-                            return bytes - bytesBegin;
-                        }
-                    }
-                    else
-                    {
-                        auto pos = position( );
-                        auto sz = size( );
-                        auto overwriteMax = sz - pos;
-                        if ( numberOfBytesToWrite <= overwriteMax )
-                        {
-                            Overwrite( bytesBegin, numberOfBytesToWrite );
-                        }
-                        else
-                        {
-                            Overwrite( bytesBegin, overwriteMax );
-                            Write( bytesBegin + overwriteMax, numberOfBytesToWrite - overwriteMax );
-                        }
-                        return numberOfBytesToWrite;
-                    }
-                }
-                else
-                {
-                    return AppendBlocks( bytesBegin, numberOfBytesToWrite );
-                }
-            }
-            else
-            {
-                return 0;
-            }
-        }
-        */
         long long Seek( long long offset, SeekOrigin seekOrigin )
         {
             long long newPosition = 0;

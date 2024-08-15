@@ -300,6 +300,7 @@
     <ClInclude Include="HCCSocket.h" />
     <ClInclude Include="HCCSocketServer.h" />
     <ClInclude Include="HCCString.h" />
+    <ClInclude Include="HCCStringBuilder.h" />
     <ClInclude Include="HCCSync.h" />
     <ClInclude Include="HCCTcpClient.h" />
     <ClInclude Include="HCCTcpServer.h" />

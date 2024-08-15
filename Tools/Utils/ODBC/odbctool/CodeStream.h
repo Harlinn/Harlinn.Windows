@@ -32,7 +32,7 @@ namespace Harlinn::ODBC::Tool
     {
         WideString filename_;
         Blocks::Stream stream_;
-
+    public:
         CodeStream( const WideString& filename )
             : filename_( filename )
         {
@@ -52,7 +52,7 @@ namespace Harlinn::ODBC::Tool
             auto wstr = FormatV( fmt.get( ), std::make_wformat_args( args... ) );
             if ( wstr )
             {
-                auto str = AnsiSting::From( wstr );
+                auto str = AnsiString::From( wstr );
                 stream_.Write( str.c_str( ), str.Length( ) );
             }
         }
@@ -62,7 +62,7 @@ namespace Harlinn::ODBC::Tool
             auto wstr = FormatV( fmt.get( ), std::make_wformat_args( args... ) );
             if ( wstr )
             {
-                auto str = AnsiSting::From( wstr );
+                auto str = AnsiString::From( wstr );
                 stream_.Write( str.c_str( ), str.Length( ) );
             }
             stream_.Write( "\r\n", 2 );

@@ -162,6 +162,7 @@
     <ClCompile Include="ModelInfo.cpp" />
     <ClCompile Include="odbctool.cpp" />
     <ClCompile Include="ReferenceMemberInfo.cpp" />
+    <ClCompile Include="SqlServerCreateTablesGenerator.cpp" />
     <ClCompile Include="StringMemberInfo.cpp" />
     <ClCompile Include="TimeSeriesMemberInfo.cpp" />
   </ItemGroup>
@@ -169,11 +170,13 @@
     <ClInclude Include="ClassInfo.h" />
     <ClInclude Include="CodeStream.h" />
     <ClInclude Include="EnumInfo.h" />
+    <ClInclude Include="Generator.h" />
     <ClInclude Include="IndexInfo.h" />
     <ClInclude Include="MemberInfo.h" />
     <ClInclude Include="odbctool.h" />
-    <ClInclude Include="ODBCToolOptions.h" />
+    <ClInclude Include="Options.h" />
     <ClInclude Include="ModelInfo.h" />
+    <ClInclude Include="SqlServerUtils.h" />
   </ItemGroup>
   <ItemGroup>
     <Xml Include="Model.xml" />

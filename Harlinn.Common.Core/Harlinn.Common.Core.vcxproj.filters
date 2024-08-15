@@ -387,6 +387,9 @@
     <ClInclude Include="HCCGenerators.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="HCCStringBuilder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
