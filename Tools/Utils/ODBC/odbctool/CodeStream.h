@@ -46,6 +46,67 @@ namespace Harlinn::ODBC::Tool
             }
         }
 
+        void Write( const wchar_t* wstr )
+        {
+            if ( wstr )
+            {
+                auto str = AnsiString::From( wstr );
+                stream_.Write( str.c_str( ), str.Length( ) );
+            }
+        }
+
+        void Write( const char* str )
+        {
+            if ( str )
+            {
+                auto strLen = LengthOf( str );
+                stream_.Write( str, strLen );
+            }
+        }
+
+        void WriteLine( const wchar_t* wstr )
+        {
+            Write( wstr );
+            WriteLine( );
+        }
+
+        void WriteLine( const char* str )
+        {
+            Write( str );
+            WriteLine( );
+        }
+
+        void Write( const WideString& wstr )
+        {
+            if ( wstr )
+            {
+                auto str = AnsiString::From( wstr );
+                stream_.Write( str.c_str( ), str.Length( ) );
+            }
+        }
+
+        void Write( const AnsiString& str )
+        {
+            if ( str )
+            {
+                stream_.Write( str.c_str( ), str.Length( ) );
+            }
+        }
+
+        void WriteLine( const WideString& wstr )
+        {
+            Write( wstr );
+            WriteLine( );
+        }
+
+        void WriteLine( const AnsiString& str )
+        {
+            Write( str );
+            WriteLine( );
+        }
+
+
+
         template <class... Types>
         void Write( const std::wformat_string<Types...> fmt, Types&&... args )
         {

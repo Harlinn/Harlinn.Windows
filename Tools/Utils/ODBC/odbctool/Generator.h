@@ -63,15 +63,43 @@ namespace Harlinn::ODBC::Tool
         void WriteForeignKeys( const ClassInfo& classInfo );
         void WriteForeignKey( const ClassInfo& classInfo, const ReferenceMemberInfo& reference );
         void WriteEntityTypesTable( );
-
-
     };
+
+    class SqlServerCreateViewsGenerator : CodeStream
+    {
+        const SqlServerGenerator& owner_;
+        const Tool::SqlServerCreateViewsOptions options_;
+    public:
+        using Base = CodeStream;
+        SqlServerCreateViewsGenerator( const SqlServerGenerator& owner );
+
+        const SqlServerGenerator& Owner( ) const
+        {
+            return owner_;
+        }
+
+        const Tool::SqlServerCreateViewsOptions& Options( ) const
+        {
+            return options_;
+        }
+
+        const ModelInfo& Model( ) const;
+
+        void Run( );
+    private:
+        static WideString GetFieldNameForSelect( const MemberInfo& memberInfo );
+        void CreateTopLevelView( const ClassInfo& classInfo );
+        void CreateView( const ClassInfo& classInfo );
+    };
+
+
 
     class SqlServerGenerator
     {
         const DatabaseGenerator& owner_;
         const SqlServerOptions& options_;
         SqlServerCreateTablesGenerator createTables_;
+        SqlServerCreateViewsGenerator createViews_;
     public:
         SqlServerGenerator( DatabaseGenerator& owner );
 
@@ -91,6 +119,7 @@ namespace Harlinn::ODBC::Tool
         void Run( )
         {
             createTables_.Run( );
+            createViews_.Run( );
         }
 
     };
@@ -100,6 +129,16 @@ namespace Harlinn::ODBC::Tool
     { }
 
     inline const ModelInfo& SqlServerCreateTablesGenerator::Model( ) const
+    {
+        return Owner( ).Model( );
+    }
+
+    inline SqlServerCreateViewsGenerator::SqlServerCreateViewsGenerator( const SqlServerGenerator& owner )
+        : Base( owner.Options( ).CreateViews( ).Filename( ) ), owner_( owner ), options_( owner.Options( ).CreateViews( ) )
+    {
+    }
+
+    inline const ModelInfo& SqlServerCreateViewsGenerator::Model( ) const
     {
         return Owner( ).Model( );
     }
@@ -131,7 +170,7 @@ namespace Harlinn::ODBC::Tool
     };
 
     inline SqlServerGenerator::SqlServerGenerator( DatabaseGenerator& owner )
-        : owner_( owner ), options_( owner.Options().SqlServer() ), createTables_(*this)
+        : owner_( owner ), options_( owner.Options().SqlServer() ), createTables_(*this), createViews_( *this )
     { }
 
     inline const ModelInfo& SqlServerGenerator::Model( ) const

@@ -163,6 +163,7 @@
     <ClCompile Include="odbctool.cpp" />
     <ClCompile Include="ReferenceMemberInfo.cpp" />
     <ClCompile Include="SqlServerCreateTablesGenerator.cpp" />
+    <ClCompile Include="SqlServerCreateViewsGenerator.cpp" />
     <ClCompile Include="StringMemberInfo.cpp" />
     <ClCompile Include="TimeSeriesMemberInfo.cpp" />
   </ItemGroup>

@@ -216,6 +216,12 @@ namespace Harlinn::ODBC::Tool
             return classInfo.Name( );
         }
 
+        static WideString GetViewName( const ClassInfo& classInfo )
+        {
+            return classInfo.Name( ) + L"View";
+        }
+
+
         static WideString GetIndexName( const IndexInfo& indexInfo )
         {
             auto classInfo = indexInfo.Owner( );

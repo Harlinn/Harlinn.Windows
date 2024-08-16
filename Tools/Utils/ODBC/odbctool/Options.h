@@ -64,8 +64,29 @@ namespace Harlinn::ODBC::Tool
         {
             return IO::Path::Combine( OutputDirectory( ), filename_ );
         }
+    };
 
+    class SqlServerCreateViewsOptions
+    {
+        const SqlServerOptions& owner_;
+        WideString filename_ = L"MsSqlCreateViews.sql";
+    public:
+        SqlServerCreateViewsOptions( const SqlServerOptions& owner );
 
+        const SqlServerOptions& Owner( ) const
+        {
+            return owner_;
+        }
+
+        WideString OutputDirectory( ) const
+        {
+            return Internal::GetOutputDirectory( owner_ );
+        }
+
+        WideString Filename( ) const
+        {
+            return IO::Path::Combine( OutputDirectory( ), filename_ );
+        }
     };
 
     class SqlServerOptions
@@ -73,6 +94,7 @@ namespace Harlinn::ODBC::Tool
         const DatabaseOptions& owner_;
         WideString outputDirectory_ = L"MsSql";
         SqlServerCreateTablesOptions createTables_;
+        SqlServerCreateViewsOptions createViews_;
     public:
         SqlServerOptions( const DatabaseOptions& owner );
 
@@ -90,12 +112,21 @@ namespace Harlinn::ODBC::Tool
         {
             return createTables_;
         }
+        const SqlServerCreateViewsOptions& CreateViews( ) const
+        {
+            return createViews_;
+        }
 
     };
 
     inline SqlServerCreateTablesOptions::SqlServerCreateTablesOptions( const SqlServerOptions& owner )
         : owner_( owner )
     { }
+
+    inline SqlServerCreateViewsOptions::SqlServerCreateViewsOptions( const SqlServerOptions& owner )
+        : owner_( owner )
+    {
+    }
 
     
     class DatabaseOptions
@@ -124,7 +155,7 @@ namespace Harlinn::ODBC::Tool
     };
 
     inline SqlServerOptions::SqlServerOptions( const DatabaseOptions& owner )
-        : owner_( owner ), createTables_(*this)
+        : owner_( owner ), createTables_(*this), createViews_(*this)
     {
     }
 
