@@ -383,8 +383,9 @@ namespace Harlinn::Common::Core::Blocks
             auto count = size( );
             if ( count )
             {
-                result.resize( count / sizeof( typename T::value_type ) );
-                auto destPtr = result.data( );
+                auto elementCount = count / sizeof( typename T::value_type );
+                result.resize( elementCount );
+                auto destPtr = reinterpret_cast<Byte*>(result.data( ));
                 size_t copied = 0;
                 auto head = blockManager_.Head( );
                 auto tail = blockManager_.Tail( );

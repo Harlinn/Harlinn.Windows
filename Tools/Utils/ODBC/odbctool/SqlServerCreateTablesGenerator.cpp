@@ -149,7 +149,7 @@ namespace Harlinn::ODBC::Tool
                 WriteLine( L"  [EntityType] [int] NOT NULL," );
             }
         }
-        const auto& persistentMembers = classInfo.PersistentMembers();
+        const auto& persistentMembers = classInfo.OwnPersistentMembers();
         for( const auto & member : persistentMembers )
         {
             if ( member->PrimaryKey( ) == false )
@@ -189,7 +189,7 @@ namespace Harlinn::ODBC::Tool
     }
     void SqlServerCreateTablesGenerator::WriteForeignKeys( const ClassInfo& classInfo )
     {
-        const auto& persistentMembers = classInfo.PersistentMembers( );
+        const auto& persistentMembers = classInfo.OwnPersistentMembers( );
         for ( const auto& member : persistentMembers )
         {
             auto memberInfoType = member->Type( );

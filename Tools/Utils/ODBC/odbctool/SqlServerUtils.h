@@ -273,6 +273,24 @@ namespace Harlinn::ODBC::Tool
             return sb.ToString( );
         }
 
+        static WideString GetInsertProcedureName( const ClassInfo& classInfo )
+        {
+            return classInfo.Name() + L"Insert";
+        }
+        static WideString GetInsertTriggerName( const ClassInfo& classInfo )
+        {
+            return classInfo.Name( ) + L"InsertTrigger";
+        }
+
+        static WideString GetUpdateProcedureName( const ClassInfo& classInfo )
+        {
+            return classInfo.Name( ) + L"Update";
+        }
+        static WideString GetDeleteProcedureName( const ClassInfo& classInfo )
+        {
+            return classInfo.Name( ) + L"Delete";
+        }
+
 
 
     };

@@ -92,6 +92,95 @@ namespace Harlinn::ODBC::Tool
         void CreateView( const ClassInfo& classInfo );
     };
 
+    class SqlServerCreateInsertProceduresGenerator : CodeStream
+    {
+        const SqlServerGenerator& owner_;
+        const Tool::SqlServerCreateInsertProceduresOptions options_;
+    public:
+        using Base = CodeStream;
+        SqlServerCreateInsertProceduresGenerator( const SqlServerGenerator& owner );
+
+        const SqlServerGenerator& Owner( ) const
+        {
+            return owner_;
+        }
+
+        const Tool::SqlServerCreateInsertProceduresOptions& Options( ) const
+        {
+            return options_;
+        }
+
+        const ModelInfo& Model( ) const;
+
+        void Run( );
+    private:
+        static WideString GetProcedureParameters( const ClassInfo& classInfo );
+        static WideString GetInsertStatement( const ClassInfo& classInfo );
+        static WideString GetInsertProcedure( const ClassInfo& classInfo );
+        static WideString GetInsertTrigger( const ClassInfo& classInfo );
+        void CreateInsertProcedure( const ClassInfo& classInfo );
+        void CreateInsertTrigger( const ClassInfo& classInfo );
+    };
+
+
+    class SqlServerCreateUpdateProceduresGenerator : CodeStream
+    {
+        const SqlServerGenerator& owner_;
+        const Tool::SqlServerCreateUpdateProceduresOptions options_;
+    public:
+        using Base = CodeStream;
+        SqlServerCreateUpdateProceduresGenerator( const SqlServerGenerator& owner );
+
+        const SqlServerGenerator& Owner( ) const
+        {
+            return owner_;
+        }
+
+        const Tool::SqlServerCreateUpdateProceduresOptions& Options( ) const
+        {
+            return options_;
+        }
+
+        const ModelInfo& Model( ) const;
+
+        void Run( );
+    private:
+        static WideString GetProcedureParameters( const ClassInfo& classInfo );
+        static WideString GetTopLevelUpdateStatement( const ClassInfo& classInfo );
+        static WideString GetUpdateStatement( const ClassInfo& classInfo );
+        void CreateUpdateStatement( const ClassInfo& classInfo );
+
+    };
+
+    class SqlServerCreateDeleteProceduresGenerator : CodeStream
+    {
+        const SqlServerGenerator& owner_;
+        const Tool::SqlServerCreateDeleteProceduresOptions options_;
+    public:
+        using Base = CodeStream;
+        SqlServerCreateDeleteProceduresGenerator( const SqlServerGenerator& owner );
+
+        const SqlServerGenerator& Owner( ) const
+        {
+            return owner_;
+        }
+
+        const Tool::SqlServerCreateDeleteProceduresOptions& Options( ) const
+        {
+            return options_;
+        }
+
+        const ModelInfo& Model( ) const;
+
+        void Run( );
+    private:
+        static WideString GetDeleteStatement( const ClassInfo& classInfo );
+        void CreateDeleteProcedure( const ClassInfo& classInfo );
+    };
+
+
+    
+
 
 
     class SqlServerGenerator
@@ -100,6 +189,9 @@ namespace Harlinn::ODBC::Tool
         const SqlServerOptions& options_;
         SqlServerCreateTablesGenerator createTables_;
         SqlServerCreateViewsGenerator createViews_;
+        SqlServerCreateInsertProceduresGenerator createInsertProcedures_;
+        SqlServerCreateUpdateProceduresGenerator createUpdateProcedures_;
+        SqlServerCreateDeleteProceduresGenerator createDeleteProcedures_;
     public:
         SqlServerGenerator( DatabaseGenerator& owner );
 
@@ -120,6 +212,9 @@ namespace Harlinn::ODBC::Tool
         {
             createTables_.Run( );
             createViews_.Run( );
+            createInsertProcedures_.Run( );
+            createUpdateProcedures_.Run( );
+            createDeleteProcedures_.Run( );
         }
 
     };
@@ -142,6 +237,37 @@ namespace Harlinn::ODBC::Tool
     {
         return Owner( ).Model( );
     }
+
+    inline SqlServerCreateInsertProceduresGenerator::SqlServerCreateInsertProceduresGenerator( const SqlServerGenerator& owner )
+        : Base( owner.Options( ).CreateInsertProcedures( ).Filename( ) ), owner_( owner ), options_( owner.Options( ).CreateInsertProcedures( ) )
+    {
+    }
+
+    inline const ModelInfo& SqlServerCreateInsertProceduresGenerator::Model( ) const
+    {
+        return Owner( ).Model( );
+    }
+
+    inline SqlServerCreateUpdateProceduresGenerator::SqlServerCreateUpdateProceduresGenerator( const SqlServerGenerator& owner )
+        : Base( owner.Options( ).CreateUpdateProcedures( ).Filename( ) ), owner_( owner ), options_( owner.Options( ).CreateUpdateProcedures( ) )
+    {
+    }
+
+    inline const ModelInfo& SqlServerCreateUpdateProceduresGenerator::Model( ) const
+    {
+        return Owner( ).Model( );
+    }
+
+    inline SqlServerCreateDeleteProceduresGenerator::SqlServerCreateDeleteProceduresGenerator( const SqlServerGenerator& owner )
+        : Base( owner.Options( ).CreateDeleteProcedures( ).Filename( ) ), owner_( owner ), options_( owner.Options( ).CreateDeleteProcedures( ) )
+    {
+    }
+
+    inline const ModelInfo& SqlServerCreateDeleteProceduresGenerator::Model( ) const
+    {
+        return Owner( ).Model( );
+    }
+
 
     class DatabaseGenerator
     {
@@ -170,7 +296,7 @@ namespace Harlinn::ODBC::Tool
     };
 
     inline SqlServerGenerator::SqlServerGenerator( DatabaseGenerator& owner )
-        : owner_( owner ), options_( owner.Options().SqlServer() ), createTables_(*this), createViews_( *this )
+        : owner_( owner ), options_( owner.Options().SqlServer() ), createTables_(*this), createViews_( *this ), createInsertProcedures_(*this), createUpdateProcedures_( *this ), createDeleteProcedures_( *this )
     { }
 
     inline const ModelInfo& SqlServerGenerator::Model( ) const

@@ -33,10 +33,16 @@ namespace Harlinn::ODBC::Tool
         WideString displayName_;
         WideString description_;
         std::weak_ptr<ClassInfo> baseClass_;
+        std::vector<std::shared_ptr<MemberInfo>> ownMembers_;
+        std::unordered_map<WideString,std::shared_ptr<MemberInfo>> ownMembersByName_;
+        std::vector<std::shared_ptr<MemberInfo>> ownPersistentMembers_;
+        std::unordered_map<WideString, std::shared_ptr<MemberInfo>> ownPersistentMembersByName_;
+
         std::vector<std::shared_ptr<MemberInfo>> members_;
-        std::unordered_map<WideString,std::shared_ptr<MemberInfo>> membersByName_;
+        std::unordered_map<WideString, std::shared_ptr<MemberInfo>> membersByName_;
         std::vector<std::shared_ptr<MemberInfo>> persistentMembers_;
         std::unordered_map<WideString, std::shared_ptr<MemberInfo>> persistentMembersByName_;
+
         std::vector<std::shared_ptr<ClassInfo>> derivedClasses_;
         std::shared_ptr<MemberInfo> primaryKey_;
         std::shared_ptr<RowVersionMemberInfo> rowVersion_;
@@ -88,7 +94,7 @@ namespace Harlinn::ODBC::Tool
             {
                 return false;
             }
-            for ( const auto& member : members_ )
+            for ( const auto& member : ownMembers_ )
             {
                 auto type = member->Type( );
                 if ( type < MemberInfoType::Boolean || type > MemberInfoType::Type )
@@ -108,35 +114,53 @@ namespace Harlinn::ODBC::Tool
             return description_;
         }
 
+        const std::vector<std::shared_ptr<MemberInfo>>& OwnMembers( ) const
+        {
+            return ownMembers_;
+        }
+
+        std::shared_ptr<MemberInfo> FindOwnMember( const WideString& memberName ) const
+        {
+            auto it = ownMembersByName_.find( memberName );
+            if ( it != ownMembersByName_.end( ) )
+            {
+                return it->second;
+            }
+            return {};
+        }
+
+
+        const std::vector<std::shared_ptr<MemberInfo>>& OwnPersistentMembers( ) const
+        {
+            return ownPersistentMembers_;
+        }
+
+        std::shared_ptr<MemberInfo> FindOwnPersistentMember( const WideString& memberName ) const
+        {
+            auto it = ownPersistentMembersByName_.find( memberName );
+            if ( it != ownPersistentMembersByName_.end( ) )
+            {
+                return it->second;
+            }
+            return {};
+        }
+
+
         const std::vector<std::shared_ptr<MemberInfo>>& Members( ) const
         {
             return members_;
         }
-
-        std::shared_ptr<MemberInfo> FindMember( const WideString& memberName ) const
+        const std::unordered_map<WideString, std::shared_ptr<MemberInfo>>& MembersByName( ) const
         {
-            auto it = membersByName_.find( memberName );
-            if ( it != membersByName_.end( ) )
-            {
-                return it->second;
-            }
-            return {};
+            return membersByName_;
         }
-
-
         const std::vector<std::shared_ptr<MemberInfo>>& PersistentMembers( ) const
         {
             return persistentMembers_;
         }
-
-        std::shared_ptr<MemberInfo> FindPersistentMember( const WideString& memberName ) const
+        const std::unordered_map<WideString, std::shared_ptr<MemberInfo>>& PersistentMembersByName( ) const
         {
-            auto it = persistentMembersByName_.find( memberName );
-            if ( it != persistentMembersByName_.end( ) )
-            {
-                return it->second;
-            }
-            return {};
+            return persistentMembersByName_;
         }
 
 
@@ -171,11 +195,23 @@ namespace Harlinn::ODBC::Tool
             return {};
         }
 
-        const std::shared_ptr<RowVersionMemberInfo>& RowVersion( ) const
+        const std::shared_ptr<RowVersionMemberInfo> RowVersion( ) const
         {
-            return rowVersion_;
+            if ( rowVersion_ )
+            {
+                return rowVersion_;
+            }
+            auto baseClass = BaseClass( );
+            if ( baseClass )
+            {
+                return baseClass->RowVersion( );
+            }
+            return {};
         }
 
+
+        std::vector<std::shared_ptr<ClassInfo>> BaseClasses( ) const;
+        std::vector<std::shared_ptr<ClassInfo>> BaseClassesAndSelf( ) const;
 
         void Load( const XmlElement& classElement );
         void AfterLoad( );

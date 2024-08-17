@@ -107,10 +107,6 @@ namespace Harlinn::ODBC::Tool
             classInfo->Load( classElement );
         }
 
-        for ( auto& classInfo : classes_ )
-        {
-            classInfo.second->AfterLoad( );
-        }
         std::vector<std::shared_ptr<ClassInfo>> topLevelClassList;
         for ( auto& classInfo : classes_ )
         {
@@ -134,7 +130,10 @@ namespace Harlinn::ODBC::Tool
             classInfo->SetId( classId );
             classId += 100;
         }
-        
+        for ( auto& classInfo : classList_ )
+        {
+            classInfo->AfterLoad( );
+        }
     }
 
 

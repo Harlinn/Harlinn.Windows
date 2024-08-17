@@ -18,6 +18,28 @@
 
 namespace Harlinn::ODBC::Tool
 {
+    std::vector<std::shared_ptr<ClassInfo>> ClassInfo::BaseClasses( ) const
+    {
+        std::vector<std::shared_ptr<ClassInfo>> result;
+        auto baseClass = BaseClass( );
+        while ( baseClass )
+        {
+            result.emplace_back( baseClass );
+            baseClass = baseClass->BaseClass( );
+        }
+        std::reverse( result.begin( ), result.end( ) );
+        return result;
+    }
+    std::vector<std::shared_ptr<ClassInfo>> ClassInfo::BaseClassesAndSelf( ) const
+    {
+        std::vector<std::shared_ptr<ClassInfo>> result = BaseClasses( );
+
+        auto self = std::const_pointer_cast< ClassInfo >( shared_from_this( ) );
+
+        result.emplace_back( self );
+        return result;
+    }
+
     void ClassInfo::Load( const XmlElement& classElement )
     {
         
@@ -85,149 +107,153 @@ namespace Harlinn::ODBC::Tool
                 if ( typeName == L"boolean" )
                 {
                     auto member = std::make_shared<BooleanMemberInfo>( self, name );
-                    members_.emplace_back( member );
+                    ownMembers_.emplace_back( member );
                     member->Load( childElement );
                 }
                 else if ( typeName == L"sbyte" )
                 {
                     auto member = std::make_shared<SByteMemberInfo>( self, name );
-                    members_.emplace_back( member );
+                    ownMembers_.emplace_back( member );
                     member->Load( childElement );
                 }
                 else if ( typeName == L"byte" )
                 {
                     auto member = std::make_shared<ByteMemberInfo>( self, name );
-                    members_.emplace_back( member );
+                    ownMembers_.emplace_back( member );
                     member->Load( childElement );
                 }
                 else if ( typeName == L"int16" )
                 {
                     auto member = std::make_shared<Int16MemberInfo>( self, name );
-                    members_.emplace_back( member );
+                    ownMembers_.emplace_back( member );
                     member->Load( childElement );
                 }
                 else if ( typeName == L"uint16" )
                 {
                     auto member = std::make_shared<UInt16MemberInfo>( self, name );
-                    members_.emplace_back( member );
+                    ownMembers_.emplace_back( member );
                     member->Load( childElement );
                 }
                 else if ( typeName == L"int32" )
                 {
                     auto member = std::make_shared<Int32MemberInfo>( self, name );
-                    members_.emplace_back( member );
+                    ownMembers_.emplace_back( member );
                     member->Load( childElement );
                 }
                 else if ( typeName == L"uint32" )
                 {
                     auto member = std::make_shared<UInt32MemberInfo>( self, name );
-                    members_.emplace_back( member );
+                    ownMembers_.emplace_back( member );
                     member->Load( childElement );
                 }
                 else if ( typeName == L"int64" )
                 {
                     auto member = std::make_shared<Int64MemberInfo>( self, name );
-                    members_.emplace_back( member );
+                    ownMembers_.emplace_back( member );
                     member->Load( childElement );
                 }
                 else if ( typeName == L"uint64" )
                 {
                     auto member = std::make_shared<Int64MemberInfo>( self, name );
-                    members_.emplace_back( member );
+                    ownMembers_.emplace_back( member );
                     member->Load( childElement );
                 }
                 else if ( typeName == L"enum" )
                 {
                     auto member = std::make_shared<EnumMemberInfo>( self, name );
-                    members_.emplace_back( member );
+                    ownMembers_.emplace_back( member );
                     member->Load( childElement );
                 }
                 else if ( typeName == L"single" )
                 {
                     auto member = std::make_shared<SingleMemberInfo>( self, name );
-                    members_.emplace_back( member );
+                    ownMembers_.emplace_back( member );
                     member->Load( childElement );
                 }
                 else if ( typeName == L"double" )
                 {
                     auto member = std::make_shared<DoubleMemberInfo>( self, name );
-                    members_.emplace_back( member );
+                    ownMembers_.emplace_back( member );
                     member->Load( childElement );
                 }
                 else if ( typeName == L"currency" )
                 {
                     auto member = std::make_shared<CurrencyMemberInfo>( self, name );
-                    members_.emplace_back( member );
+                    ownMembers_.emplace_back( member );
                     member->Load( childElement );
                 }
                 else if ( typeName == L"datetime" )
                 {
                     auto member = std::make_shared<DateTimeMemberInfo>( self, name );
-                    members_.emplace_back( member );
+                    ownMembers_.emplace_back( member );
                     member->Load( childElement );
                 }
                 else if ( typeName == L"timespan" )
                 {
                     auto member = std::make_shared<TimeSpanMemberInfo>( self, name );
-                    members_.emplace_back( member );
+                    ownMembers_.emplace_back( member );
                     member->Load( childElement );
                 }
                 else if ( typeName == L"guid" )
                 {
                     auto member = std::make_shared<GuidMemberInfo>( self, name );
-                    members_.emplace_back( member );
+                    ownMembers_.emplace_back( member );
                     member->Load( childElement );
                 }
                 else if ( typeName == L"string" )
                 {
                     auto member = std::make_shared<StringMemberInfo>( self, name );
-                    members_.emplace_back( member );
+                    ownMembers_.emplace_back( member );
                     member->Load( childElement );
                 }
                 else if ( typeName == L"binary" )
                 {
                     auto member = std::make_shared<BinaryMemberInfo>( self, name );
-                    members_.emplace_back( member );
+                    ownMembers_.emplace_back( member );
                     member->Load( childElement );
                 }
                 else if ( typeName == L"rowversion" )
                 {
                     auto member = std::make_shared<RowVersionMemberInfo>( self, name );
-                    members_.emplace_back( member );
+                    ownMembers_.emplace_back( member );
                     rowVersion_ = member;
                     member->Load( childElement );
                 }
                 else if ( typeName == L"reference" )
                 {
                     auto member = std::make_shared<ReferenceMemberInfo>( self, name );
-                    members_.emplace_back( member );
+                    ownMembers_.emplace_back( member );
                     member->Load( childElement );
                 }
                 else if ( typeName == L"timeseries" )
                 {
                     auto member = std::make_shared<TimeSeriesMemberInfo>( self, name );
-                    members_.emplace_back( member );
+                    ownMembers_.emplace_back( member );
                     member->Load( childElement );
                 }
                 else if ( typeName == L"collection" )
                 {
                     auto member = std::make_shared<CollectionMemberInfo>( self, name );
-                    members_.emplace_back( member );
+                    ownMembers_.emplace_back( member );
                     member->Load( childElement );
                 }
             }
         }
 
-        for ( auto member : members_ )
+        for ( auto member : ownMembers_ )
         {
-            membersByName_.emplace( member->Name( ), member );
+            ownMembersByName_.emplace( member->Name( ), member );
             if ( member->Persistent( ) )
             {
-                persistentMembers_.emplace_back( member );
-                persistentMembersByName_.emplace( member->Name( ), member );
+                ownPersistentMembers_.emplace_back( member );
+                ownPersistentMembersByName_.emplace( member->Name( ), member );
                 if ( member->PrimaryKey( ) )
                 {
                     primaryKey_ = member;
+                }
+                if ( member->Type( ) == MemberInfoType::RowVersion )
+                {
+                    rowVersion_ = std::static_pointer_cast< RowVersionMemberInfo >( member );
                 }
             }
         }
@@ -240,6 +266,28 @@ namespace Harlinn::ODBC::Tool
         {
             index->AfterLoad( );
         }
+
+        if ( IsTopLevel( ) == false )
+        {
+            auto baseClass = BaseClass( );
+            members_ = baseClass->Members();
+            membersByName_ = baseClass->MembersByName( );
+            persistentMembers_ = baseClass->PersistentMembers( );
+            persistentMembersByName_ = baseClass->PersistentMembersByName( );
+        }
+        for ( auto member : ownMembers_ )
+        {
+            members_.emplace_back( member );
+            membersByName_.emplace( member->Name( ), member );
+            if ( member->Persistent( ) )
+            {
+                persistentMembers_.emplace_back( member );
+                persistentMembersByName_.emplace( member->Name( ), member );
+            }
+        }
+
+
+
     }
 
     void ClassInfo::AddDerivedClassesToClassList( std::vector<std::shared_ptr<ClassInfo>>& classList ) const

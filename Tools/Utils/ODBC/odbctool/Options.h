@@ -89,12 +89,88 @@ namespace Harlinn::ODBC::Tool
         }
     };
 
+
+    class SqlServerCreateInsertProceduresOptions
+    {
+        const SqlServerOptions& owner_;
+        WideString filename_ = L"MsSqlCreateInsertProcedures.sql";
+    public:
+        SqlServerCreateInsertProceduresOptions( const SqlServerOptions& owner );
+
+        const SqlServerOptions& Owner( ) const
+        {
+            return owner_;
+        }
+
+        WideString OutputDirectory( ) const
+        {
+            return Internal::GetOutputDirectory( owner_ );
+        }
+
+        WideString Filename( ) const
+        {
+            return IO::Path::Combine( OutputDirectory( ), filename_ );
+        }
+    };
+
+    class SqlServerCreateUpdateProceduresOptions
+    {
+        const SqlServerOptions& owner_;
+        WideString filename_ = L"MsSqlCreateUpdateProcedures.sql";
+    public:
+        SqlServerCreateUpdateProceduresOptions( const SqlServerOptions& owner );
+
+        const SqlServerOptions& Owner( ) const
+        {
+            return owner_;
+        }
+
+        WideString OutputDirectory( ) const
+        {
+            return Internal::GetOutputDirectory( owner_ );
+        }
+
+        WideString Filename( ) const
+        {
+            return IO::Path::Combine( OutputDirectory( ), filename_ );
+        }
+    };
+
+    class SqlServerCreateDeleteProceduresOptions
+    {
+        const SqlServerOptions& owner_;
+        WideString filename_ = L"MsSqlCreateDeleteProcedures.sql";
+    public:
+        SqlServerCreateDeleteProceduresOptions( const SqlServerOptions& owner );
+
+        const SqlServerOptions& Owner( ) const
+        {
+            return owner_;
+        }
+
+        WideString OutputDirectory( ) const
+        {
+            return Internal::GetOutputDirectory( owner_ );
+        }
+
+        WideString Filename( ) const
+        {
+            return IO::Path::Combine( OutputDirectory( ), filename_ );
+        }
+    };
+
+
+
+
     class SqlServerOptions
     {
         const DatabaseOptions& owner_;
         WideString outputDirectory_ = L"MsSql";
         SqlServerCreateTablesOptions createTables_;
         SqlServerCreateViewsOptions createViews_;
+        SqlServerCreateInsertProceduresOptions createInsertProcedures_;
+        SqlServerCreateUpdateProceduresOptions createUpdateProcedures_;
+        SqlServerCreateDeleteProceduresOptions createDeleteProcedures_;
     public:
         SqlServerOptions( const DatabaseOptions& owner );
 
@@ -117,6 +193,20 @@ namespace Harlinn::ODBC::Tool
             return createViews_;
         }
 
+
+        const SqlServerCreateInsertProceduresOptions& CreateInsertProcedures( ) const 
+        { 
+            return createInsertProcedures_; 
+        }
+        const SqlServerCreateUpdateProceduresOptions& CreateUpdateProcedures( ) const 
+        { 
+            return createUpdateProcedures_; 
+        }
+        const SqlServerCreateDeleteProceduresOptions& CreateDeleteProcedures( ) const 
+        { 
+            return createDeleteProcedures_; 
+        }
+
     };
 
     inline SqlServerCreateTablesOptions::SqlServerCreateTablesOptions( const SqlServerOptions& owner )
@@ -124,6 +214,21 @@ namespace Harlinn::ODBC::Tool
     { }
 
     inline SqlServerCreateViewsOptions::SqlServerCreateViewsOptions( const SqlServerOptions& owner )
+        : owner_( owner )
+    {
+    }
+
+    inline SqlServerCreateInsertProceduresOptions::SqlServerCreateInsertProceduresOptions( const SqlServerOptions& owner )
+        : owner_( owner )
+    {
+    }
+
+    inline SqlServerCreateUpdateProceduresOptions::SqlServerCreateUpdateProceduresOptions( const SqlServerOptions& owner )
+        : owner_( owner )
+    {
+    }
+
+    inline SqlServerCreateDeleteProceduresOptions::SqlServerCreateDeleteProceduresOptions( const SqlServerOptions& owner )
         : owner_( owner )
     {
     }
@@ -155,7 +260,7 @@ namespace Harlinn::ODBC::Tool
     };
 
     inline SqlServerOptions::SqlServerOptions( const DatabaseOptions& owner )
-        : owner_( owner ), createTables_(*this), createViews_(*this)
+        : owner_( owner ), createTables_(*this), createViews_(*this), createInsertProcedures_(*this), createUpdateProcedures_( *this ), createDeleteProcedures_( *this )
     {
     }
 

@@ -52,7 +52,7 @@ namespace Harlinn::ODBC::Tool
         auto primaryKey = classInfo.PrimaryKey( );
         auto primaryKeyFieldName = primaryKey->Name( );
 
-        const auto& members = classInfo.PersistentMembers( );
+        const auto& members = classInfo.OwnPersistentMembers( );
         size_t membersCount = members.size( );
 
         StringBuilder<wchar_t> statement;
@@ -103,7 +103,7 @@ namespace Harlinn::ODBC::Tool
 
 
 
-        const auto& members = classInfo.PersistentMembers( );
+        const auto& members = classInfo.OwnPersistentMembers( );
         size_t membersCount = members.size( );
 
         StringBuilder<wchar_t> statement;

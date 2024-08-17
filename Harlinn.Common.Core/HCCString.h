@@ -4192,6 +4192,48 @@ namespace Harlinn::Common::Core
             }
         }
 
+
+        [[nodiscard]] BasicString FirstToUpper( ) const
+        {
+            if ( data_ )
+            {
+                if ( IsLower( 0 ) )
+                {
+                    auto newData = Allocate( data_->size_ );
+                    MemCopy( newData->buffer_, data_->buffer_, data_->size_ );
+                    *newData->buffer_ = Core::ToUpper( *newData->buffer_ );
+                    return BasicString( newData );
+                }
+                return *this;
+            }
+            else
+            {
+                return BasicString( );
+            }
+        }
+
+        [[nodiscard]] BasicString FirstToLower( ) const
+        {
+            if ( data_ )
+            {
+                if ( IsUpper( 0 ) )
+                {
+                    auto newData = Allocate( data_->size_ );
+                    MemCopy( newData->buffer_, data_->buffer_, data_->size_ );
+                    *newData->buffer_ = Core::ToLower( *newData->buffer_ );
+                    return BasicString( newData );
+                }
+                return *this;
+            }
+            else
+            {
+                return BasicString( );
+            }
+        }
+
+
+
+
         void erase( )
         {
             ReleaseData( data_ );

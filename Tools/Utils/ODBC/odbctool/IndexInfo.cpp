@@ -41,7 +41,7 @@ namespace Harlinn::ODBC::Tool
         auto classInfo = Owner( );
         for ( auto& fieldName : fieldNames )
         {
-            auto memberInfo = classInfo->FindPersistentMember( fieldName );
+            auto memberInfo = classInfo->FindOwnPersistentMember( fieldName );
             fields_.emplace_back( memberInfo );
         }
     }
