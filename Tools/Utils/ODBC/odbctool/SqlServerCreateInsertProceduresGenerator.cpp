@@ -19,6 +19,11 @@
 
 namespace Harlinn::ODBC::Tool
 {
+    SqlServerCreateInsertProceduresGenerator::SqlServerCreateInsertProceduresGenerator( const SqlServerGenerator& owner )
+        : Base( owner, owner.Options( ).CreateInsertProcedures( ) )
+    {
+    }
+
     void SqlServerCreateInsertProceduresGenerator::Run( )
     {
         const auto& model = Model( );

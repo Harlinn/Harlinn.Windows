@@ -15,7 +15,7 @@
    limitations under the License.
 -->
 <model>
-  <enum Name="AisMessageType">
+  <enum name="AisMessageType">
     <value name="PositionReportClassA" value="1"/>
     <value name="PositionReportClassAAssignedSchedule" value="2"/>
     <value name="PositionReportClassAResponseToInterrogation" value="3"/>
@@ -44,13 +44,13 @@
     <value name="MultipleSlotBinaryMessageWithCommunicationsState" value="26"/>
     <value name="PositionReportForLongRangeApplications" value="27"/>
   </enum>
-  <enum Name="AisTransceiverConnectionType">
+  <enum name="AisTransceiverConnectionType">
     <value name="Unknown" value="0"/>
     <value name="TCP" value="1"/>
     <value name="UDP" value="2"/>
     <value name="SerialPort" value="3"/>
   </enum>
-  <enum Name="AlarmState">
+  <enum name="AlarmState">
     <value name="Unknown" value="0"/>
     <value name="Entering" value="1"/>
     <value name="Raised" value="2"/>
@@ -60,11 +60,11 @@
     <value name="Cleared" value="6"/>
     <value name="AutoCleared" value="7"/>
   </enum>
-  <enum Name="CameraControlProtocol">
+  <enum name="CameraControlProtocol">
     <value name="Unknown" value="0"/>
     <value name="ONVIF" value="1" description="Generic ONVIF"/>
   </enum>
-  <enum Name="CameraFeatures" flags="true">
+  <enum name="CameraFeatures" flags="true">
     <value name="None" value="0"/>
     <value name="ColorMode" value="1" description="Color Mode"/>
     <value name="Washer" value="2" description="Washer"/>
@@ -72,61 +72,61 @@
     <value name="IRLamp" value="8" description="Infrared Lamp"/>
     <value name="AutoFocusControl" value="16" description="Auto Focus"/>
   </enum>
-  <enum Name="CameraFocalLengthMode">
+  <enum name="CameraFocalLengthMode">
     <value name="Unknown" value="0"/>
     <value name="Normalized" value="1"/>
     <value name="Millimeter" value="2"/>
   </enum>
-  <enum Name="CameraFollowReason">
+  <enum name="CameraFollowReason">
     <value name="Alarm" value="0"/>
     <value name="User" value="1"/>
   </enum>
-  <enum Name="CameraMoveStatus">
+  <enum name="CameraMoveStatus">
     <value name="Unknown" value="0"/>
     <value name="Idle" value="1"/>
     <value name="Moving" value="2"/>
     <value name="MovingContinuously" value="3"/>
   </enum>
-  <enum Name="CameraPanTiltMode">
+  <enum name="CameraPanTiltMode">
     <value name="Unknown" value="0"/>
     <value name="Normalized" value="1"/>
     <value name="Angular" value="2"/>
   </enum>
-  <enum Name="DeviceCommandReplyStatus">
+  <enum name="DeviceCommandReplyStatus">
     <value name="Unknown" value="0"/>
     <value name="Ok" value="1"/>
     <value name="NotImplemented" value="2"/>
     <value name="Error" value="3"/>
   </enum>
-  <enum Name="DeviceCommandSourceType">
+  <enum name="DeviceCommandSourceType">
     <value name="Unknown" value="0"/>
     <value name="Session" value="1"/>
     <value name="Device" value="2"/>
     <value name="Source" value="3"/>
   </enum>
-  <enum Name="GnssPositionStatus">
+  <enum name="GnssPositionStatus">
     <value name="CurrentGnssPosition" value="0"/>
     <value name="NotGnssPosition" value="1"/>
   </enum>
-  <enum Name="Handshake">
+  <enum name="Handshake">
     <value name="None" value="0" description="No control is used for the handshake."/>
     <value name="XOnXOff" value="1" description="The XON/XOFF software control protocol is used."/>
     <value name="RequestToSend" value="2" description="Request-to-Send (RTS) hardware flow control is used."/>
     <value name="RequestToSendXOnXOff" value="3" description="Both the Request-to-Send (RTS) hardware control and the XON/XOFF software controls are used."/>
   </enum>
-  <enum Name="HeadingType">
+  <enum name="HeadingType">
     <value name="Unknown" value="0"/>
     <value name="TrueNorth" value="1"/>
     <value name="MagneticNorth" value="2"/>
     <value name="Relative" value="3"/>
   </enum>
-  <enum Name="LineInputDeviceConnectionType">
+  <enum name="LineInputDeviceConnectionType">
     <value name="Unknown" value="0"/>
     <value name="TCP" value="1"/>
     <value name="UDP" value="2"/>
     <value name="SerialPort" value="3"/>
   </enum>
-  <enum Name="LogLevel">
+  <enum name="LogLevel">
     <value name="Unknown" value="0"/>
     <value name="Finest" value="10000" description="The finest, verbose, debug log level"/>
     <value name="Finer" value="20000" description="The trace debug log level"/>
@@ -142,24 +142,24 @@
     <value name="Fatal" value="110000" description="Fatal state"/>
     <value name="Emergency" value="120000" description="Emergency state"/>
   </enum>
-  <enum Name="ManeuverIndicator">
+  <enum name="ManeuverIndicator">
     <value name="NotAvailable" value="0"/>
     <value name="NoSpecialManeuver" value="1"/>
     <value name="SpecialManeuver" value="2"/>
   </enum>
-  <enum Name="MapElementType">
+  <enum name="MapElementType">
     <value name="Unknown" value="0"/>
     <value name="Svg" value="1"/>
     <value name="Png" value="2"/>
     <value name="Jpeg" value="3"/>
   </enum>
-  <enum Name="MediaProxySessionMode">
+  <enum name="MediaProxySessionMode">
     <value name="Unknown" value="0"/>
     <value name="RTP" value="1"/>
     <value name="RTPOverTCP" value="2"/>
     <value name="RTPOverHTTP" value="3"/>
   </enum>
-  <enum Name="MediaProxySessionType">
+  <enum name="MediaProxySessionType">
     <value name="Unknown" value="0"/>
     <value name="ACCAudio" value="1"/>
     <value name="AMRAudio" value="2"/>
@@ -174,7 +174,7 @@
     <value name="MatroskaVideo" value="11"/>
     <value name="Oggvideo" value="12"/>
   </enum>
-  <enum Name="NavigationalAidType">
+  <enum name="NavigationalAidType">
     <value name="NotSpecified" value="0"/>
     <value name="ReferencePoint" value="1"/>
     <value name="Racon" value="2"/>
@@ -208,7 +208,7 @@
     <value name="SpecialMark" value="30"/>
     <value name="LightVessel" value="31"/>
   </enum>
-  <enum Name="NavigationStatus">
+  <enum name="NavigationStatus">
     <value name="UnderWayUsingEngine" value="0"/>
     <value name="AtAnchor" value="1"/>
     <value name="NotUnderCommand" value="2"/>
@@ -226,18 +226,18 @@
     <value name="AisSartIsActive" value="14"/>
     <value name="NotDefined" value="15"/>
   </enum>
-  <enum Name="Parity">
+  <enum name="Parity">
     <value name="None" value="0" description="No parity check occurs."/>
     <value name="Odd" value="1" description="Sets the parity bit so that the count of bits set is an odd number."/>
     <value name="Even" value="2" description="Sets the parity bit so that the count of bits set is an even number."/>
     <value name="Mark" value="3" description="Leaves the parity bit set to 1."/>
     <value name="Space" value="4" description="Leaves the parity bit set to 0."/>
   </enum>
-  <enum Name="PositionAccuracy">
+  <enum name="PositionAccuracy">
     <value name="Low" value="0"/>
     <value name="High" value="1"/>
   </enum>
-  <enum Name="PositionFixType">
+  <enum name="PositionFixType">
     <value name="Undefined1" value="0"/>
     <value name="Gps" value="1"/>
     <value name="Glonass" value="2"/>
@@ -249,7 +249,7 @@
     <value name="Galileo" value="8"/>
     <value name="Undefined2" value="15"/>
   </enum>
-  <enum Name="RadarImageType">
+  <enum name="RadarImageType">
     <value name="MaskedProcessed" value="0"/>
     <value name="FullRaw" value="1"/>
     <value name="MaskedRaw" value="2"/>
@@ -260,18 +260,18 @@
     <value name="RawUnscanConverted" value="7"/>
     <value name="NoTrackInitMask" value="8"/>
   </enum>
-  <enum Name="RadarPulse">
+  <enum name="RadarPulse">
     <value name="Short" value="2"/>
     <value name="Medium" value="1"/>
     <value name="Long" value="0"/>
   </enum>
-  <enum Name="RadarStatusType">
+  <enum name="RadarStatusType">
     <value name="Off" value="0"/>
     <value name="On" value="1"/>
     <value name="Error" value="2"/>
     <value name="NoData" value="3"/>
   </enum>
-  <enum Name="RadomeStatus" flags="true">
+  <enum name="RadomeStatus" flags="true">
     <value name="None" value="0"/>
     <value name="Overpressure" value="1"/>
     <value name="Overridden" value="2"/>
@@ -279,11 +279,11 @@
     <value name="NormalOperation" value="8"/>
     <value name="RadarPowerOff" value="16"/>
   </enum>
-  <enum Name="Raim">
+  <enum name="Raim">
     <value name="NotInUse" value="0"/>
     <value name="InUse" value="1"/>
   </enum>
-  <enum Name="ShipType">
+  <enum name="ShipType">
     <value name="NotAvailable" value="0"/>
     <value name="WingInGround" value="20"/>
     <value name="WingInGroundHazardousCategoryA" value="21"/>
@@ -366,18 +366,18 @@
     <value name="OtherTypeReserved4" value="98"/>
     <value name="OtherTypeNoAdditionalInformation" value="99"/>
   </enum>
-  <enum Name="StopBits">
+  <enum name="StopBits">
     <value name="None" value="0" description="No stop bits are used."/>
     <value name="One" value="1" description="One stop bit is used."/>
     <value name="Two" value="2" description="Two stop bits are used."/>
     <value name="OnePointFive" value="3" description="1.5 stop bits are used."/>
   </enum>
-  <enum Name="TrackerFilterModelType">
+  <enum name="TrackerFilterModelType">
     <value name="Unknown" value="0"/>
     <value name="Damp1" value="1"/>
     <value name="Damp2" value="2"/>
   </enum>
-  <enum Name="TrackFlags" flags="true" description="Indicates which fields holds valid data.">
+  <enum name="TrackFlags" flags="true" description="Indicates which fields holds valid data.">
     <value name="None" value="0"/>
     <value name="Status" value="1"/>
     <value name="Position" value="2"/>
@@ -385,7 +385,7 @@
     <value name="Course" value="8"/>
     <value name="Heading" value="16"/>
   </enum>
-  <enum Name="TrackFlags3D" flags="true" description="Indicates which fields holds valid data.">
+  <enum name="TrackFlags3D" flags="true" description="Indicates which fields holds valid data.">
     <value name="None" value="0"/>
     <value name="Status" value="1"/>
     <value name="Position" value="2"/>
@@ -393,7 +393,7 @@
     <value name="Course" value="8"/>
     <value name="RateOfClimb" value="16"/>
   </enum>
-  <enum Name="TrackStatus">
+  <enum name="TrackStatus">
     <value name="Unknown" value="0"/>
     <value name="New" value="1"/>
     <value name="Tracked" value="2"/>
@@ -419,14 +419,14 @@
     <value name="AisSartIsActive" value="22"/>
     <value name="NotDefined" value="23"/>
   </enum>
-  <enum Name="ZoneAlarmType">
+  <enum name="ZoneAlarmType">
     <value name="None" value="0"/>
     <value name="Intrusion" value="1"/>
     <value name="Speed" value="2"/>
     <value name="Entered" value="3"/>
     <value name="Exited" value="4"/>
   </enum>
-  <enum Name="ZoneType">
+  <enum name="ZoneType">
     <value name="None" value="0"/>
     <value name="Circular" value="1"/>
     <value name="Polygon" value="2"/>

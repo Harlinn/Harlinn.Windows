@@ -19,6 +19,11 @@
 
 namespace Harlinn::ODBC::Tool
 {
+    SqlServerCreateDeleteProceduresGenerator::SqlServerCreateDeleteProceduresGenerator( const SqlServerGenerator& owner )
+        : Base( owner, owner.Options( ).CreateDeleteProcedures( ) )
+    {
+    }
+
     void SqlServerCreateDeleteProceduresGenerator::Run( )
     {
         const auto& model = Model( );

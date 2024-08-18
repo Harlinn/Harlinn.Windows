@@ -60,7 +60,7 @@ namespace Harlinn::ODBC::Tool
             }
         }
         auto self = shared_from_this( );
-        auto enumList = xmlElement.ElementsByTagName( L"enum" );
+        auto enumList = xmlElement.SelectNodes<XmlElement>( L"//model/enum" );
         for ( auto enumElement : enumList )
         {
             auto name = enumElement.Read<WideString>( L"name" );
@@ -68,7 +68,7 @@ namespace Harlinn::ODBC::Tool
             enums_.emplace( name, enumInfo );
         }
 
-        auto typeList = xmlElement.ElementsByTagName( L"type" );
+        auto typeList = xmlElement.SelectNodes<XmlElement>( L"//model/type" );
         for ( auto typeElement : typeList )
         {
             auto name = typeElement.Read<WideString>( L"name" );
@@ -78,7 +78,7 @@ namespace Harlinn::ODBC::Tool
 
 
 
-        auto classList = xmlElement.ElementsByTagName( L"class" );
+        auto classList = xmlElement.SelectNodes<XmlElement>( L"//model/class" );
         for ( auto classElement : classList )
         {
             auto name = classElement.Read<WideString>( L"name" );

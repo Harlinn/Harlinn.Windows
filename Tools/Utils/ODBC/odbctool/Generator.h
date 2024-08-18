@@ -25,28 +25,80 @@ namespace Harlinn::ODBC::Tool
 {
     class SqlServerGenerator;
     class DatabaseGenerator;
+    class CppDatabaseReadersGenerator;
+    class CppDataGenerator;
+    class CppDatabaseGenerator;
+    class CppGenerator;
     class Generator;
-    
 
-    class SqlServerCreateTablesGenerator : CodeStream
+
+    template<typename OwnerT, typename OptionsT>
+    class GeneratorContainer
     {
-        const SqlServerGenerator& owner_;
-        const Tool::SqlServerCreateTablesOptions options_;
     public:
-        using Base = CodeStream;
-        SqlServerCreateTablesGenerator( const SqlServerGenerator& owner );
+        using OwnerType = OwnerT;
+        using OptionsType = OptionsT;
+    private:
+        const OwnerType& owner_;
+        const OptionsType& options_;
+    public:
+        GeneratorContainer( const OwnerType& owner, const OptionsType& options )
+            : owner_( owner ), options_( options )
+        { }
 
-        const SqlServerGenerator& Owner( ) const
+        const OwnerType& Owner( ) const
         {
             return owner_;
         }
-
-        const Tool::SqlServerCreateTablesOptions& Options( ) const
+        const OptionsType& Options( ) const
         {
             return options_;
         }
 
-        const ModelInfo& Model( ) const;
+        const ModelInfo& Model( ) const
+        {
+            return Owner( ).Model( );
+        }
+
+    };
+
+    template<typename OwnerT, typename OptionsT>
+    class CodeGenerator : protected CodeStream
+    {
+    public:
+        using Base = CodeStream;
+        using OwnerType = OwnerT;
+        using OptionsType = OptionsT;
+    private:
+        const OwnerType& owner_;
+        const OptionsType& options_;
+    public:
+        CodeGenerator( const OwnerType& owner, const OptionsType& options )
+            : Base( options.Filename() ), owner_( owner ), options_( options )
+        {
+        }
+
+        const OwnerType& Owner( ) const
+        {
+            return owner_;
+        }
+        const OptionsType& Options( ) const
+        {
+            return options_;
+        }
+
+        const ModelInfo& Model( ) const
+        {
+            return Owner( ).Model( );
+        }
+
+    };
+
+    class SqlServerCreateTablesGenerator : public CodeGenerator<SqlServerGenerator, SqlServerCreateTablesOptions>
+    {
+    public:
+        using Base = CodeGenerator<SqlServerGenerator, SqlServerCreateTablesOptions>;
+        SqlServerCreateTablesGenerator( const SqlServerGenerator& owner );
 
         void Run( );
     private:
@@ -65,25 +117,13 @@ namespace Harlinn::ODBC::Tool
         void WriteEntityTypesTable( );
     };
 
-    class SqlServerCreateViewsGenerator : CodeStream
+
+
+    class SqlServerCreateViewsGenerator : public CodeGenerator<SqlServerGenerator, SqlServerCreateViewsOptions>
     {
-        const SqlServerGenerator& owner_;
-        const Tool::SqlServerCreateViewsOptions options_;
     public:
-        using Base = CodeStream;
+        using Base = CodeGenerator<SqlServerGenerator, SqlServerCreateViewsOptions>;
         SqlServerCreateViewsGenerator( const SqlServerGenerator& owner );
-
-        const SqlServerGenerator& Owner( ) const
-        {
-            return owner_;
-        }
-
-        const Tool::SqlServerCreateViewsOptions& Options( ) const
-        {
-            return options_;
-        }
-
-        const ModelInfo& Model( ) const;
 
         void Run( );
     private:
@@ -92,25 +132,11 @@ namespace Harlinn::ODBC::Tool
         void CreateView( const ClassInfo& classInfo );
     };
 
-    class SqlServerCreateInsertProceduresGenerator : CodeStream
+    class SqlServerCreateInsertProceduresGenerator : public CodeGenerator<SqlServerGenerator, SqlServerCreateInsertProceduresOptions>
     {
-        const SqlServerGenerator& owner_;
-        const Tool::SqlServerCreateInsertProceduresOptions options_;
     public:
-        using Base = CodeStream;
+        using Base = CodeGenerator<SqlServerGenerator, SqlServerCreateInsertProceduresOptions>;
         SqlServerCreateInsertProceduresGenerator( const SqlServerGenerator& owner );
-
-        const SqlServerGenerator& Owner( ) const
-        {
-            return owner_;
-        }
-
-        const Tool::SqlServerCreateInsertProceduresOptions& Options( ) const
-        {
-            return options_;
-        }
-
-        const ModelInfo& Model( ) const;
 
         void Run( );
     private:
@@ -123,25 +149,11 @@ namespace Harlinn::ODBC::Tool
     };
 
 
-    class SqlServerCreateUpdateProceduresGenerator : CodeStream
+    class SqlServerCreateUpdateProceduresGenerator : public CodeGenerator<SqlServerGenerator, SqlServerCreateUpdateProceduresOptions>
     {
-        const SqlServerGenerator& owner_;
-        const Tool::SqlServerCreateUpdateProceduresOptions options_;
     public:
-        using Base = CodeStream;
+        using Base = CodeGenerator<SqlServerGenerator, SqlServerCreateUpdateProceduresOptions>;
         SqlServerCreateUpdateProceduresGenerator( const SqlServerGenerator& owner );
-
-        const SqlServerGenerator& Owner( ) const
-        {
-            return owner_;
-        }
-
-        const Tool::SqlServerCreateUpdateProceduresOptions& Options( ) const
-        {
-            return options_;
-        }
-
-        const ModelInfo& Model( ) const;
 
         void Run( );
     private:
@@ -152,25 +164,11 @@ namespace Harlinn::ODBC::Tool
 
     };
 
-    class SqlServerCreateDeleteProceduresGenerator : CodeStream
+    class SqlServerCreateDeleteProceduresGenerator : public CodeGenerator<SqlServerGenerator, SqlServerCreateDeleteProceduresOptions>
     {
-        const SqlServerGenerator& owner_;
-        const Tool::SqlServerCreateDeleteProceduresOptions options_;
     public:
-        using Base = CodeStream;
+        using Base = CodeGenerator<SqlServerGenerator, SqlServerCreateDeleteProceduresOptions>;
         SqlServerCreateDeleteProceduresGenerator( const SqlServerGenerator& owner );
-
-        const SqlServerGenerator& Owner( ) const
-        {
-            return owner_;
-        }
-
-        const Tool::SqlServerCreateDeleteProceduresOptions& Options( ) const
-        {
-            return options_;
-        }
-
-        const ModelInfo& Model( ) const;
 
         void Run( );
     private:
@@ -183,30 +181,16 @@ namespace Harlinn::ODBC::Tool
 
 
 
-    class SqlServerGenerator
+    class SqlServerGenerator : public GeneratorContainer<DatabaseGenerator, SqlServerOptions>
     {
-        const DatabaseGenerator& owner_;
-        const SqlServerOptions& options_;
         SqlServerCreateTablesGenerator createTables_;
         SqlServerCreateViewsGenerator createViews_;
         SqlServerCreateInsertProceduresGenerator createInsertProcedures_;
         SqlServerCreateUpdateProceduresGenerator createUpdateProcedures_;
         SqlServerCreateDeleteProceduresGenerator createDeleteProcedures_;
     public:
+        using Base = GeneratorContainer<DatabaseGenerator, SqlServerOptions>;
         SqlServerGenerator( DatabaseGenerator& owner );
-
-
-        const DatabaseGenerator& Owner( ) const
-        {
-            return owner_;
-        }
-
-        const SqlServerOptions& Options( ) const
-        {
-            return options_;
-        }
-
-        const ModelInfo& Model( ) const;
 
         void Run( )
         {
@@ -219,75 +203,14 @@ namespace Harlinn::ODBC::Tool
 
     };
 
-    inline SqlServerCreateTablesGenerator::SqlServerCreateTablesGenerator( const SqlServerGenerator& owner )
-        : Base( owner.Options( ).CreateTables( ).Filename() ), owner_( owner ), options_( owner.Options().CreateTables() )
-    { }
 
-    inline const ModelInfo& SqlServerCreateTablesGenerator::Model( ) const
+
+    class DatabaseGenerator : public GeneratorContainer<Generator, DatabaseOptions>
     {
-        return Owner( ).Model( );
-    }
-
-    inline SqlServerCreateViewsGenerator::SqlServerCreateViewsGenerator( const SqlServerGenerator& owner )
-        : Base( owner.Options( ).CreateViews( ).Filename( ) ), owner_( owner ), options_( owner.Options( ).CreateViews( ) )
-    {
-    }
-
-    inline const ModelInfo& SqlServerCreateViewsGenerator::Model( ) const
-    {
-        return Owner( ).Model( );
-    }
-
-    inline SqlServerCreateInsertProceduresGenerator::SqlServerCreateInsertProceduresGenerator( const SqlServerGenerator& owner )
-        : Base( owner.Options( ).CreateInsertProcedures( ).Filename( ) ), owner_( owner ), options_( owner.Options( ).CreateInsertProcedures( ) )
-    {
-    }
-
-    inline const ModelInfo& SqlServerCreateInsertProceduresGenerator::Model( ) const
-    {
-        return Owner( ).Model( );
-    }
-
-    inline SqlServerCreateUpdateProceduresGenerator::SqlServerCreateUpdateProceduresGenerator( const SqlServerGenerator& owner )
-        : Base( owner.Options( ).CreateUpdateProcedures( ).Filename( ) ), owner_( owner ), options_( owner.Options( ).CreateUpdateProcedures( ) )
-    {
-    }
-
-    inline const ModelInfo& SqlServerCreateUpdateProceduresGenerator::Model( ) const
-    {
-        return Owner( ).Model( );
-    }
-
-    inline SqlServerCreateDeleteProceduresGenerator::SqlServerCreateDeleteProceduresGenerator( const SqlServerGenerator& owner )
-        : Base( owner.Options( ).CreateDeleteProcedures( ).Filename( ) ), owner_( owner ), options_( owner.Options( ).CreateDeleteProcedures( ) )
-    {
-    }
-
-    inline const ModelInfo& SqlServerCreateDeleteProceduresGenerator::Model( ) const
-    {
-        return Owner( ).Model( );
-    }
-
-
-    class DatabaseGenerator
-    {
-        const Generator& owner_;
-        const Tool::DatabaseOptions& options_;
         SqlServerGenerator sqlServer_;
     public:
+        using Base = GeneratorContainer<Generator, DatabaseOptions>;
         DatabaseGenerator( const Generator& owner );
-
-        const Generator& Owner( ) const
-        {
-            return owner_;
-        }
-
-        const Tool::DatabaseOptions& Options( ) const
-        {
-            return options_;
-        }
-
-        const ModelInfo& Model( ) const;
 
         void Run( )
         {
@@ -296,13 +219,117 @@ namespace Harlinn::ODBC::Tool
     };
 
     inline SqlServerGenerator::SqlServerGenerator( DatabaseGenerator& owner )
-        : owner_( owner ), options_( owner.Options().SqlServer() ), createTables_(*this), createViews_( *this ), createInsertProcedures_(*this), createUpdateProcedures_( *this ), createDeleteProcedures_( *this )
+        : Base( owner, owner.Options().SqlServer() ),
+          createTables_( *this ),
+          createViews_( *this ),
+          createInsertProcedures_( *this ),
+          createUpdateProcedures_( *this ),
+          createDeleteProcedures_( *this )
     { }
 
-    inline const ModelInfo& SqlServerGenerator::Model( ) const
+    class CppEnumsGenerator : public CodeGenerator<CppDataGenerator, CppEnumsOptions>
     {
-        return Owner( ).Model( );
+    public:
+        using Base = CodeGenerator<CppDataGenerator, CppEnumsOptions>;
+        CppEnumsGenerator( const CppDataGenerator& owner );
+
+        void Run( );
+    private:
+        static WideString GetUnderlyingType( const EnumInfo& enumInfo );
+        void CreateEnum( const EnumInfo& enumInfo );
+        void CreateKind( );
+    };
+
+    class CppDataTypesGenerator : public CodeGenerator<CppDataGenerator, CppDataTypesOptions>
+    {
+    public:
+        using Base = CodeGenerator<CppDataGenerator, CppDataTypesOptions>;
+        CppDataTypesGenerator( const CppDataGenerator& owner );
+
+        void Run( )
+        {
+            Flush( );
+        }
+    private:
+
+    };
+
+
+
+    class CppDataGenerator : public GeneratorContainer<CppGenerator, CppDataOptions>
+    {
+        CppEnumsGenerator enums_;
+        CppDataTypesGenerator dataTypes_;
+    public:
+        using Base = GeneratorContainer<CppGenerator, CppDataOptions>;
+        CppDataGenerator( const CppGenerator& owner );
+
+        void Run( )
+        {
+            enums_.Run( );
+            dataTypes_.Run( );
+        }
+    };
+
+    inline CppEnumsGenerator::CppEnumsGenerator( const CppDataGenerator& owner )
+        : Base( owner, owner.Options().Enums() )
+    {
+
     }
+
+    inline CppDataTypesGenerator::CppDataTypesGenerator( const CppDataGenerator& owner )
+        : Base( owner, owner.Options( ).DataTypes( ) )
+    {
+
+    }
+
+
+    class CppDatabaseGenerator : public GeneratorContainer<CppGenerator, CppDatabaseOptions>
+    {
+    public:
+        using Base = GeneratorContainer<CppGenerator, CppDatabaseOptions>;
+        CppDatabaseGenerator( const CppGenerator& owner );
+
+        void Run( )
+        {
+
+        }
+    };
+
+
+    class CppGenerator : public GeneratorContainer<Generator, CppOptions>
+    {
+        CppDataGenerator data_;
+        CppDatabaseGenerator database_;
+    public:
+        using Base = GeneratorContainer<Generator, CppOptions>;
+        CppGenerator( const Generator& owner );
+
+        void Run( )
+        {
+            data_.Run( );
+            database_.Run( );
+        }
+
+        const CppDataGenerator& Data( ) const
+        {
+            return data_;
+        }
+        const CppDatabaseGenerator& Database( ) const
+        {
+            return database_;
+        }
+
+    };
+
+
+    inline CppDataGenerator::CppDataGenerator( const CppGenerator& owner )
+        : Base( owner, owner.Options().Data() ), enums_(*this), dataTypes_(*this)
+    { }
+
+    inline CppDatabaseGenerator::CppDatabaseGenerator( const CppGenerator& owner )
+        : Base( owner, owner.Options( ).Database( ) )
+    { }
 
 
     class Generator
@@ -310,9 +337,10 @@ namespace Harlinn::ODBC::Tool
         const Tool::Options& options_;
         const ModelInfo& model_;
         DatabaseGenerator database_;
+        CppGenerator cpp_;
     public:
         Generator( const Tool::Options& options, const ModelInfo& model )
-            : options_( options ), model_( model ), database_( *this )
+            : options_( options ), model_( model ), database_( *this ), cpp_(*this)
         { }
 
         const Tool::Options& Options( ) const
@@ -328,17 +356,19 @@ namespace Harlinn::ODBC::Tool
         void Run( )
         {
             database_.Run( );
+            cpp_.Run( );
         }
     };
 
     inline DatabaseGenerator::DatabaseGenerator( const Generator& owner )
-        : owner_( owner ), options_( owner.Options( ).Database() ) , sqlServer_( *this )
+        : Base( owner, owner.Options( ).Database() ), sqlServer_( *this )
     { }
 
-    inline const ModelInfo& DatabaseGenerator::Model( ) const
+    inline CppGenerator::CppGenerator( const Generator& owner )
+        : Base( owner, owner.Options( ).Cpp( ) ), data_(*this), database_(*this)
     {
-        return Owner( ).Model( );
     }
+
 
 
 }

@@ -19,6 +19,11 @@
 
 namespace Harlinn::ODBC::Tool
 {
+    SqlServerCreateViewsGenerator::SqlServerCreateViewsGenerator( const SqlServerGenerator& owner )
+        : Base( owner, owner.Options( ).CreateViews( ) )
+    {
+    }
+
     void SqlServerCreateViewsGenerator::Run( )
     {
         const auto& model = Model( );

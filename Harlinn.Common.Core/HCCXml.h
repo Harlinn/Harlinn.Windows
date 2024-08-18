@@ -539,6 +539,18 @@ namespace Harlinn::Common::Core::Xml
             NodeList<NodeT> SelectNodes( BSTR queryString ) const;
 
             template<typename NodeT = Node>
+            NodeList<NodeT> SelectNodes( const wchar_t* queryString ) const
+            {
+                return SelectNodes<NodeT>( (BSTR)queryString );
+            }
+            template<typename NodeT = Node>
+            NodeList<NodeT> SelectNodes( const WideString& queryString ) const
+            {
+                return SelectNodes<NodeT>( ( BSTR )queryString.c_str() );
+            }
+
+
+            template<typename NodeT = Node>
             NodeT SelectSingleNode( BSTR queryString ) const
             {
                 auto pInterface = GetInterface();

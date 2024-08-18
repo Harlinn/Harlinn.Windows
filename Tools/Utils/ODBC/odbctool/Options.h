@@ -24,6 +24,8 @@ namespace Harlinn::ODBC::Tool
     class SqlServerCreateTablesOptions;
     class SqlServerOptions;
     class DatabaseOptions;
+    class CppDatabaseOptions;
+    class CppOptions;
     class Options;
 
     
@@ -42,139 +44,20 @@ namespace Harlinn::ODBC::Tool
         }
     }
 
-
-    class SqlServerCreateTablesOptions
+    template<typename OwnerT>
+    class OptionsContainer
     {
-        const SqlServerOptions& owner_;
-        WideString filename_ = L"MsSqlCreateTables.sql";
     public:
-        SqlServerCreateTablesOptions( const SqlServerOptions& owner );
-
-        const SqlServerOptions& Owner( ) const
-        {
-            return owner_;
-        }
-
-        WideString OutputDirectory( ) const
-        {
-            return Internal::GetOutputDirectory( owner_ );
-        }
-
-        WideString Filename( ) const
-        {
-            return IO::Path::Combine( OutputDirectory( ), filename_ );
-        }
-    };
-
-    class SqlServerCreateViewsOptions
-    {
-        const SqlServerOptions& owner_;
-        WideString filename_ = L"MsSqlCreateViews.sql";
+        using OwnerType = OwnerT;
+    private:
+        const OwnerType& owner_;
+        WideString outputDirectory_;
     public:
-        SqlServerCreateViewsOptions( const SqlServerOptions& owner );
+        OptionsContainer( const OwnerType& owner, const WideString& outputDirectory )
+            : owner_( owner ), outputDirectory_( outputDirectory )
+        { }
 
-        const SqlServerOptions& Owner( ) const
-        {
-            return owner_;
-        }
-
-        WideString OutputDirectory( ) const
-        {
-            return Internal::GetOutputDirectory( owner_ );
-        }
-
-        WideString Filename( ) const
-        {
-            return IO::Path::Combine( OutputDirectory( ), filename_ );
-        }
-    };
-
-
-    class SqlServerCreateInsertProceduresOptions
-    {
-        const SqlServerOptions& owner_;
-        WideString filename_ = L"MsSqlCreateInsertProcedures.sql";
-    public:
-        SqlServerCreateInsertProceduresOptions( const SqlServerOptions& owner );
-
-        const SqlServerOptions& Owner( ) const
-        {
-            return owner_;
-        }
-
-        WideString OutputDirectory( ) const
-        {
-            return Internal::GetOutputDirectory( owner_ );
-        }
-
-        WideString Filename( ) const
-        {
-            return IO::Path::Combine( OutputDirectory( ), filename_ );
-        }
-    };
-
-    class SqlServerCreateUpdateProceduresOptions
-    {
-        const SqlServerOptions& owner_;
-        WideString filename_ = L"MsSqlCreateUpdateProcedures.sql";
-    public:
-        SqlServerCreateUpdateProceduresOptions( const SqlServerOptions& owner );
-
-        const SqlServerOptions& Owner( ) const
-        {
-            return owner_;
-        }
-
-        WideString OutputDirectory( ) const
-        {
-            return Internal::GetOutputDirectory( owner_ );
-        }
-
-        WideString Filename( ) const
-        {
-            return IO::Path::Combine( OutputDirectory( ), filename_ );
-        }
-    };
-
-    class SqlServerCreateDeleteProceduresOptions
-    {
-        const SqlServerOptions& owner_;
-        WideString filename_ = L"MsSqlCreateDeleteProcedures.sql";
-    public:
-        SqlServerCreateDeleteProceduresOptions( const SqlServerOptions& owner );
-
-        const SqlServerOptions& Owner( ) const
-        {
-            return owner_;
-        }
-
-        WideString OutputDirectory( ) const
-        {
-            return Internal::GetOutputDirectory( owner_ );
-        }
-
-        WideString Filename( ) const
-        {
-            return IO::Path::Combine( OutputDirectory( ), filename_ );
-        }
-    };
-
-
-
-
-    class SqlServerOptions
-    {
-        const DatabaseOptions& owner_;
-        WideString outputDirectory_ = L"MsSql";
-        SqlServerCreateTablesOptions createTables_;
-        SqlServerCreateViewsOptions createViews_;
-        SqlServerCreateInsertProceduresOptions createInsertProcedures_;
-        SqlServerCreateUpdateProceduresOptions createUpdateProcedures_;
-        SqlServerCreateDeleteProceduresOptions createDeleteProcedures_;
-    public:
-        SqlServerOptions( const DatabaseOptions& owner );
-
-        const DatabaseOptions& Owner( ) const
+        const OwnerType& Owner( ) const
         {
             return owner_;
         }
@@ -183,6 +66,103 @@ namespace Harlinn::ODBC::Tool
         {
             return Internal::GetOutputDirectory( owner_, outputDirectory_ );
         }
+
+    };
+
+    template<typename OwnerT>
+    class OptionsFile
+    {
+    public:
+        using OwnerType = OwnerT;
+    private:
+        const OwnerType& owner_;
+        WideString filename_;
+    public:
+        OptionsFile( const OwnerType& owner, const WideString& outputDirectory )
+            : owner_( owner ), filename_( outputDirectory )
+        {
+        }
+
+        const OwnerType& Owner( ) const
+        {
+            return owner_;
+        }
+
+        WideString OutputDirectory( ) const
+        {
+            return Internal::GetOutputDirectory( owner_ );
+        }
+
+        WideString Filename( ) const
+        {
+            return IO::Path::Combine( OutputDirectory( ), filename_ );
+        }
+    };
+
+
+
+
+    class SqlServerCreateTablesOptions : public OptionsFile<SqlServerOptions>
+    {
+    public:
+        using Base = OptionsFile<SqlServerOptions>;
+        SqlServerCreateTablesOptions( const SqlServerOptions& owner )
+            : Base( owner, L"MsSqlCreateTables.sql" )
+        { }
+    };
+
+    class SqlServerCreateViewsOptions : public OptionsFile<SqlServerOptions>
+    {
+    public:
+        using Base = OptionsFile<SqlServerOptions>;
+        SqlServerCreateViewsOptions( const SqlServerOptions& owner )
+            : Base( owner, L"MsSqlCreateViews.sql" )
+        { }
+    };
+
+    class SqlServerCreateInsertProceduresOptions : public OptionsFile<SqlServerOptions>
+    {
+    public:
+        using Base = OptionsFile<SqlServerOptions>;
+        SqlServerCreateInsertProceduresOptions( const SqlServerOptions& owner )
+            : Base( owner, L"MsSqlCreateInsertProcedures.sql" )
+        {
+        }
+    };
+
+    class SqlServerCreateUpdateProceduresOptions : public OptionsFile<SqlServerOptions>
+    {
+    public:
+        using Base = OptionsFile<SqlServerOptions>;
+        SqlServerCreateUpdateProceduresOptions( const SqlServerOptions& owner )
+            : Base( owner, L"MsSqlCreateUpdateProcedures.sql" )
+        {
+        }
+    };
+
+    class SqlServerCreateDeleteProceduresOptions : public OptionsFile<SqlServerOptions>
+    {
+    public:
+        using Base = OptionsFile<SqlServerOptions>;
+        SqlServerCreateDeleteProceduresOptions( const SqlServerOptions& owner )
+            : Base( owner, L"MsSqlCreateDeleteProcedures.sql" )
+        {
+        }
+    };
+
+
+    class SqlServerOptions : public OptionsContainer<DatabaseOptions>
+    {
+        SqlServerCreateTablesOptions createTables_;
+        SqlServerCreateViewsOptions createViews_;
+        SqlServerCreateInsertProceduresOptions createInsertProcedures_;
+        SqlServerCreateUpdateProceduresOptions createUpdateProcedures_;
+        SqlServerCreateDeleteProceduresOptions createDeleteProcedures_;
+    public:
+        using Base = OptionsContainer<DatabaseOptions>;
+        SqlServerOptions( const DatabaseOptions& owner )
+            : Base( owner, L"MsSql" ), createTables_(*this), createViews_(*this), createInsertProcedures_(*this), createUpdateProcedures_(*this), createDeleteProcedures_(*this)
+        { }
 
         const SqlServerCreateTablesOptions& CreateTables( ) const
         {
@@ -209,48 +189,16 @@ namespace Harlinn::ODBC::Tool
 
     };
 
-    inline SqlServerCreateTablesOptions::SqlServerCreateTablesOptions( const SqlServerOptions& owner )
-        : owner_( owner )
-    { }
-
-    inline SqlServerCreateViewsOptions::SqlServerCreateViewsOptions( const SqlServerOptions& owner )
-        : owner_( owner )
-    {
-    }
-
-    inline SqlServerCreateInsertProceduresOptions::SqlServerCreateInsertProceduresOptions( const SqlServerOptions& owner )
-        : owner_( owner )
-    {
-    }
-
-    inline SqlServerCreateUpdateProceduresOptions::SqlServerCreateUpdateProceduresOptions( const SqlServerOptions& owner )
-        : owner_( owner )
-    {
-    }
-
-    inline SqlServerCreateDeleteProceduresOptions::SqlServerCreateDeleteProceduresOptions( const SqlServerOptions& owner )
-        : owner_( owner )
-    {
-    }
 
     
-    class DatabaseOptions
+    class DatabaseOptions : public OptionsContainer<Options>
     {
-        const Options& owner_;
-        WideString outputDirectory_ = L"Database";
         SqlServerOptions sqlServer_;
     public:
-        DatabaseOptions( const Options& owner );
-
-        const Options& Owner( ) const
-        {
-            return owner_;
-        }
-
-        WideString OutputDirectory( ) const
-        {
-            return Internal::GetOutputDirectory( owner_, outputDirectory_ );
-        }
+        using Base = OptionsContainer<Options>;
+        DatabaseOptions( const Options& owner )
+            : Base(owner, L"Database" ), sqlServer_(*this)
+        { }
 
         const SqlServerOptions& SqlServer( ) const
         {
@@ -259,18 +207,107 @@ namespace Harlinn::ODBC::Tool
 
     };
 
-    inline SqlServerOptions::SqlServerOptions( const DatabaseOptions& owner )
-        : owner_( owner ), createTables_(*this), createViews_(*this), createInsertProcedures_(*this), createUpdateProcedures_( *this ), createDeleteProcedures_( *this )
+
+    class CppDatabaseReadersOptions : public OptionsFile<CppDatabaseOptions>
     {
-    }
+    public:
+        using Base = OptionsFile<CppDatabaseOptions>;
+        CppDatabaseReadersOptions( const CppDatabaseOptions& owner )
+            : Base( owner, L"DatabaseReaders.h" )
+        { }
+    };
+
+    class CppDatabaseOptions : public OptionsContainer<CppOptions>
+    {
+        CppDatabaseReadersOptions databaseReaders_;
+    public:
+        using Base = OptionsContainer<CppOptions>;
+        CppDatabaseOptions( const CppOptions& owner )
+            : Base( owner, L"Database" ), databaseReaders_(*this)
+        { }
+
+        const CppDatabaseReadersOptions& DatabaseReaders( ) const
+        {
+            return databaseReaders_;
+        }
+
+    };
+
+    class CppDataOptions;
+    class CppEnumsOptions : public OptionsFile<CppDataOptions>
+    {
+    public:
+        using Base = OptionsFile<CppDataOptions>;
+        CppEnumsOptions( const CppDataOptions& owner )
+            : Base( owner, L"Enums.h" )
+        {
+        }
+    };
+
+    class CppDataTypesOptions : public OptionsFile<CppDataOptions>
+    {
+    public:
+        using Base = OptionsFile<CppDataOptions>;
+        CppDataTypesOptions( const CppDataOptions& owner )
+            : Base( owner, L"DataTypes.h" )
+        {
+        }
+    };
+
+    class CppOptions;
+    class CppDataOptions : public OptionsContainer<CppOptions>
+    {
+        CppEnumsOptions enums_;
+        CppDataTypesOptions dataTypes_;
+    public:
+        using Base = OptionsContainer<CppOptions>;
+        CppDataOptions( const CppOptions& owner )
+            : Base( owner, L"Data" ), enums_(*this), dataTypes_(*this)
+        { }
+
+        const CppEnumsOptions& Enums( ) const
+        {
+            return enums_;
+        }
+        const CppDataTypesOptions& DataTypes( ) const
+        {
+            return dataTypes_;
+        }
+
+    };
+
+
+    class CppOptions : public OptionsContainer<Options>
+    {
+        CppDataOptions data_;
+        CppDatabaseOptions database_;
+    public:
+        using Base = OptionsContainer<Options>;
+        CppOptions( const Options& owner )
+            : Base( owner, L"Cpp" ), data_(*this), database_(*this)
+        { }
+
+        const CppDataOptions& Data( ) const
+        {
+            return data_;
+        }
+        const CppDatabaseOptions& Database( ) const
+        {
+            return database_;
+        }
+    };
+
+    
+
 
     class Options
     {
         WideString outputDirectory_ = L"%HCC_HOME%\\Tools\\Utils\\ODBC\\odbctool\\Generated Files";
         DatabaseOptions database_;
+        CppOptions cpp_;
     public:
         Options()
-            : database_(*this)
+            : database_(*this), cpp_(*this)
         { }
 
         WideString OutputDirectory( ) const
@@ -283,11 +320,14 @@ namespace Harlinn::ODBC::Tool
             return database_;
         }
 
+        const CppOptions& Cpp( ) const
+        {
+            return cpp_;
+        }
+
+
     };
 
-    inline DatabaseOptions::DatabaseOptions( const Options& owner )
-        : owner_( owner ), sqlServer_(*this)
-    { }
 
 }
 

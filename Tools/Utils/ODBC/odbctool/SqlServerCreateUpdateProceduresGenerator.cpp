@@ -19,6 +19,11 @@
 
 namespace Harlinn::ODBC::Tool
 {
+    SqlServerCreateUpdateProceduresGenerator::SqlServerCreateUpdateProceduresGenerator( const SqlServerGenerator& owner )
+        : Base( owner, owner.Options( ).CreateUpdateProcedures( ) )
+    {
+    }
+
     void SqlServerCreateUpdateProceduresGenerator::Run( )
     {
         const auto& model = Model( );

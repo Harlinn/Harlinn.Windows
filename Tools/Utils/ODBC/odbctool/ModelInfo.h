@@ -38,10 +38,21 @@ namespace Harlinn::ODBC::Tool
         std::shared_ptr<TypeInfo> FindType( const WideString& typeName ) const;
         std::shared_ptr<ClassInfo> FindClass( const WideString& className ) const;
 
+        const std::unordered_map<WideString, std::shared_ptr<EnumInfo>>& Enums( ) const
+        {
+            return enums_;
+        }
+        const std::unordered_map<WideString, std::shared_ptr<TypeInfo>>& Types( ) const
+        {
+            return types_;
+        }
+
         const std::vector<std::shared_ptr<ClassInfo>>& Classes( ) const
         {
             return classList_;
         }
+
+        
 
 
         void Load( const XmlElement& xmlElement );

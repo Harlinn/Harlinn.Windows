@@ -19,6 +19,11 @@
 
 namespace Harlinn::ODBC::Tool
 {
+    SqlServerCreateTablesGenerator::SqlServerCreateTablesGenerator( const SqlServerGenerator& owner )
+        : Base( owner, owner.Options( ).CreateTables( ) )
+    {
+    }
+
     void SqlServerCreateTablesGenerator::Run( )
     {
         WriteEntityTypesTable( );
