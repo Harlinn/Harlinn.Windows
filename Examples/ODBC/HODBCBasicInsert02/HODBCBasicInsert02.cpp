@@ -113,10 +113,10 @@ int main( )
     Int32 flags;
     double value;
 
-    insertStatement.BindInt64Parameter( 1, ParameterDirection::Input, &id );
-    insertStatement.BindInt64Parameter( 2, ParameterDirection::Input, &timestamp );
-    insertStatement.BindInt32Parameter( 3, ParameterDirection::Input, &flags );
-    insertStatement.BindDoubleParameter( 4, ParameterDirection::Input, &value );
+    insertStatement.BindInt64Parameter( 1, &id );
+    insertStatement.BindInt64Parameter( 2, &timestamp );
+    insertStatement.BindInt32Parameter( 3, &flags );
+    insertStatement.BindDoubleParameter( 4, &value );
 
 
     Stopwatch stopwatch;
@@ -145,7 +145,7 @@ int main( )
 #endif
     auto selectStatement = connection.CreateStatement( );
     id = 3;
-    selectStatement.BindInt64Parameter( 1, ParameterDirection::Input, &id );
+    selectStatement.BindInt64Parameter( 1, &id );
 #ifndef SELECT_ONLY
     stopwatch.Restart( );
 #else

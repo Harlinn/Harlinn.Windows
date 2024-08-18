@@ -131,11 +131,11 @@ public:
         insertStatement_ = connection.CreateStatement( );
         insertStatement_.Prepare( INSERT_ );
 
-        insertStatement_.BindGuidParameter(1, ParameterDirection::Input, &track_.id_);
-        insertStatement_.BindInt64Parameter(2, ParameterDirection::Input, &track_.optimisticLockField_);
-        insertStatement_.BindGuidParameter(3, ParameterDirection::Input, &track_.tracker_);
-        insertStatement_.BindInt64Parameter(4, ParameterDirection::Input, &track_.trackNumber_);
-        insertStatement_.BindInt64Parameter(5, ParameterDirection::Input, reinterpret_cast<Int64*>( &track_.timestamp_) );
+        insertStatement_.BindGuidParameter(1, &track_.id_);
+        insertStatement_.BindInt64Parameter(2, &track_.optimisticLockField_);
+        insertStatement_.BindGuidParameter(3, &track_.tracker_);
+        insertStatement_.BindInt64Parameter(4, &track_.trackNumber_);
+        insertStatement_.BindInt64Parameter(5, reinterpret_cast<Int64*>( &track_.timestamp_) );
 
     }
     void CreateAndBindUpdate( const Connection& connection )
@@ -143,11 +143,11 @@ public:
         updateStatement_ = connection.CreateStatement( );
         updateStatement_.Prepare( UPDATE_ );
         
-        updateStatement_.BindInt64Parameter( 1, ParameterDirection::Input, &track_.optimisticLockField_ );
-        updateStatement_.BindGuidParameter( 2, ParameterDirection::Input, &track_.tracker_ );
-        updateStatement_.BindInt64Parameter( 3, ParameterDirection::Input, &track_.trackNumber_ );
-        updateStatement_.BindInt64Parameter( 4, ParameterDirection::Input, reinterpret_cast< Int64* >( &track_.timestamp_ ) );
-        updateStatement_.BindGuidParameter( 5, ParameterDirection::Input, &track_.id_ );
+        updateStatement_.BindInt64Parameter( 1, &track_.optimisticLockField_ );
+        updateStatement_.BindGuidParameter( 2, &track_.tracker_ );
+        updateStatement_.BindInt64Parameter( 3, &track_.trackNumber_ );
+        updateStatement_.BindInt64Parameter( 4, reinterpret_cast< Int64* >( &track_.timestamp_ ) );
+        updateStatement_.BindGuidParameter( 5, &track_.id_ );
 
     }
     void CreateAndBindDelete( const Connection& connection )
@@ -155,7 +155,7 @@ public:
         deleteStatement_ = connection.CreateStatement( );
         deleteStatement_.Prepare( DELETE_ );
 
-        deleteStatement_.BindGuidParameter( 1, ParameterDirection::Input, &track_.id_ );
+        deleteStatement_.BindGuidParameter( 1, &track_.id_ );
     }
 
     ODBC::Result Insert( bool commit = true )
@@ -360,17 +360,17 @@ public:
         insertStatement_ = connection.CreateStatement( );
         insertStatement_.Prepare( INSERT_ );
 
-        insertStatement_.BindGuidParameter( 1, ParameterDirection::Input, &trackValue_.id_ );
-        insertStatement_.BindInt64Parameter( 2, ParameterDirection::Input, &trackValue_.optimisticLockField_ );
-        insertStatement_.BindGuidParameter( 3, ParameterDirection::Input, &trackValue_.track_ );
-        insertStatement_.BindInt64Parameter( 4, ParameterDirection::Input, reinterpret_cast< Int64* >( &trackValue_.timestamp_ ) );
-        insertStatement_.BindInt32Parameter( 5, ParameterDirection::Input, &trackValue_.flags_ );
-        insertStatement_.BindInt32Parameter( 6, ParameterDirection::Input, &trackValue_.status_ );
-        insertStatement_.BindDoubleParameter( 7, ParameterDirection::Input, &trackValue_.latitude_ );
-        insertStatement_.BindDoubleParameter( 8, ParameterDirection::Input, &trackValue_.longitude_ );
-        insertStatement_.BindDoubleParameter( 9, ParameterDirection::Input, &trackValue_.speed_ );
-        insertStatement_.BindDoubleParameter( 10, ParameterDirection::Input, &trackValue_.course_ );
-        insertStatement_.BindDoubleParameter( 11, ParameterDirection::Input, &trackValue_.heading_ );
+        insertStatement_.BindGuidParameter( 1, &trackValue_.id_ );
+        insertStatement_.BindInt64Parameter( 2, &trackValue_.optimisticLockField_ );
+        insertStatement_.BindGuidParameter( 3, &trackValue_.track_ );
+        insertStatement_.BindInt64Parameter( 4, reinterpret_cast< Int64* >( &trackValue_.timestamp_ ) );
+        insertStatement_.BindInt32Parameter( 5, &trackValue_.flags_ );
+        insertStatement_.BindInt32Parameter( 6, &trackValue_.status_ );
+        insertStatement_.BindDoubleParameter( 7, &trackValue_.latitude_ );
+        insertStatement_.BindDoubleParameter( 8, &trackValue_.longitude_ );
+        insertStatement_.BindDoubleParameter( 9, &trackValue_.speed_ );
+        insertStatement_.BindDoubleParameter( 10, &trackValue_.course_ );
+        insertStatement_.BindDoubleParameter( 11, &trackValue_.heading_ );
 
     }
     void CreateAndBindUpdate( const Connection & connection )
@@ -378,18 +378,18 @@ public:
         updateStatement_ = connection.CreateStatement( );
         updateStatement_.Prepare( UPDATE_ );
 
-        updateStatement_.BindInt64Parameter( 1, ParameterDirection::Input, &trackValue_.optimisticLockField_ );
-        updateStatement_.BindGuidParameter( 2, ParameterDirection::Input, &trackValue_.track_ );
-        updateStatement_.BindInt64Parameter( 3, ParameterDirection::Input, reinterpret_cast< Int64* >( &trackValue_.timestamp_ ) );
-        updateStatement_.BindInt32Parameter( 4, ParameterDirection::Input, &trackValue_.flags_ );
-        updateStatement_.BindInt32Parameter( 5, ParameterDirection::Input, &trackValue_.status_ );
-        updateStatement_.BindDoubleParameter( 6, ParameterDirection::Input, &trackValue_.latitude_ );
-        updateStatement_.BindDoubleParameter( 7, ParameterDirection::Input, &trackValue_.longitude_ );
-        updateStatement_.BindDoubleParameter( 8, ParameterDirection::Input, &trackValue_.speed_ );
-        updateStatement_.BindDoubleParameter( 9, ParameterDirection::Input, &trackValue_.course_ );
-        updateStatement_.BindDoubleParameter( 10, ParameterDirection::Input, &trackValue_.heading_ );
+        updateStatement_.BindInt64Parameter( 1, &trackValue_.optimisticLockField_ );
+        updateStatement_.BindGuidParameter( 2, &trackValue_.track_ );
+        updateStatement_.BindInt64Parameter( 3, reinterpret_cast< Int64* >( &trackValue_.timestamp_ ) );
+        updateStatement_.BindInt32Parameter( 4, &trackValue_.flags_ );
+        updateStatement_.BindInt32Parameter( 5, &trackValue_.status_ );
+        updateStatement_.BindDoubleParameter( 6, &trackValue_.latitude_ );
+        updateStatement_.BindDoubleParameter( 7, &trackValue_.longitude_ );
+        updateStatement_.BindDoubleParameter( 8, &trackValue_.speed_ );
+        updateStatement_.BindDoubleParameter( 9, &trackValue_.course_ );
+        updateStatement_.BindDoubleParameter( 10, &trackValue_.heading_ );
 
-        updateStatement_.BindGuidParameter( 11, ParameterDirection::Input, &trackValue_.id_ );
+        updateStatement_.BindGuidParameter( 11, &trackValue_.id_ );
 
     }
     void CreateAndBindDelete( const Connection & connection )
@@ -397,7 +397,7 @@ public:
         deleteStatement_ = connection.CreateStatement( );
         deleteStatement_.Prepare( DELETE_ );
 
-        deleteStatement_.BindGuidParameter( 1, ParameterDirection::Input, &trackValue_.id_ );
+        deleteStatement_.BindGuidParameter( 1, &trackValue_.id_ );
     }
 
     ODBC::Result Insert( bool commit = true )
@@ -610,11 +610,11 @@ public:
         statement.Prepare( sql.c_str( ) );
         Int64 timestampInTicks = timestamp.Ticks( );
 
-        statement.BindGuidParameter( 1, ParameterDirection::Input, &tracker );
-        statement.BindInt64Parameter( 2, ParameterDirection::Input, &trackNumber );
-        statement.BindGuidParameter( 3, ParameterDirection::Input, &tracker );
-        statement.BindInt64Parameter( 4, ParameterDirection::Input, &trackNumber );
-        statement.BindInt64Parameter( 5, ParameterDirection::Input, &timestampInTicks );
+        statement.BindGuidParameter( 1, &tracker );
+        statement.BindInt64Parameter( 2, &trackNumber );
+        statement.BindGuidParameter( 3, &tracker );
+        statement.BindInt64Parameter( 4, &trackNumber );
+        statement.BindInt64Parameter( 5, &timestampInTicks );
 
         auto reader = statement.ExecuteReader<TrackDataReader>( );
         if ( reader->Read( ) )
@@ -637,9 +637,9 @@ public:
         statement.Prepare( sql.c_str( ) );
         Int64 timestampInTicks = timestamp.Ticks( );
 
-        statement.BindGuidParameter( 1, ParameterDirection::Input, &track );
-        statement.BindGuidParameter( 2, ParameterDirection::Input, &track );
-        statement.BindInt64Parameter( 3, ParameterDirection::Input, &timestampInTicks );
+        statement.BindGuidParameter( 1, &track );
+        statement.BindGuidParameter( 2, &track );
+        statement.BindInt64Parameter( 3, &timestampInTicks );
 
         auto reader = statement.ExecuteReader<TrackValueDataReader>( );
         if ( reader->Read( ) )
@@ -700,7 +700,7 @@ public:
         auto statement = connection_.CreateStatement( );
         statement.Prepare( sql.c_str( ) );
 
-        statement.BindGuidParameter( 1, ParameterDirection::Input, &trackId );
+        statement.BindGuidParameter( 1, &trackId );
 
         auto reader = statement.ExecuteReader<TrackDataReader>( );
 

@@ -157,6 +157,7 @@
     <ClCompile Include="ClassInfo.cpp" />
     <ClCompile Include="CollectionMemberInfo.cpp" />
     <ClCompile Include="CppEnumsGenerator.cpp" />
+    <ClCompile Include="CppHelper.cpp" />
     <ClCompile Include="EnumMemberInfo.cpp" />
     <ClCompile Include="IndexInfo.cpp" />
     <ClCompile Include="MemberInfo.cpp" />
@@ -174,6 +175,7 @@
   <ItemGroup>
     <ClInclude Include="ClassInfo.h" />
     <ClInclude Include="CodeStream.h" />
+    <ClInclude Include="CppHelper.h" />
     <ClInclude Include="EnumInfo.h" />
     <ClInclude Include="Generator.h" />
     <ClInclude Include="IndexInfo.h" />
