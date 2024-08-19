@@ -2046,16 +2046,30 @@ namespace Harlinn::ODBC
         DataReader& operator = ( const DataReader& other ) = delete;
         DataReader& operator = ( DataReader&& other ) = delete;
 
-        bool Read( ) const
+        const Statement& Statement( ) const
+        {
+            return *statement_;
+        }
+
+        bool Read( )
         {
             auto rc = Fetch( );
-            return rc != ODBC::Result::NoData;
+            if ( rc != ODBC::Result::NoData )
+            {
+                this->AfterFetch( );
+                return true;
+            }
+            return false;
         }
 
         [[nodiscard]] SQLHANDLE Handle( ) const noexcept;
         inline Result GetData( SQLUSMALLINT columnOrParameterNumber, NativeType targetValueDataType, SQLPOINTER targetValue, SQLLEN targetValueMaxLength, SQLLEN* nullIndicatorOrTargetValueActualLength ) const;
 
     protected:
+        virtual void AfterFetch( )
+        {
+
+        }
         inline Result Fetch( ) const;
         inline Result FetchScroll( ODBC::FetchOrientation fetchOrientation, SQLLEN fetchOffset ) const;
         

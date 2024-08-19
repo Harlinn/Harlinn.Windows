@@ -253,8 +253,10 @@ namespace Harlinn::ODBC::Tool
         void CreateFieldNames( const ClassInfo& classInfo );
         void CreateFieldIds( const ClassInfo& classInfo );
         void CreateBindColumns( const ClassInfo& classInfo );
+        void CreateReadUnboundData( const ClassInfo& classInfo );
         void CreateAccessor( const ClassInfo& classInfo, const MemberInfo& member );
         void CreateSetter( const ClassInfo& classInfo, const MemberInfo& member );
+        void CreateWriteColumns( const ClassInfo& classInfo );
         
     };
 

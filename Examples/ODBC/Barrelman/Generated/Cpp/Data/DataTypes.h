@@ -4,6 +4,7 @@
 
 #include "Data/Enums.h"
 #include <HODBC.h>
+#include <HCCBinaryWriter.h>
 
 
 namespace Barrelman::Data
@@ -17,6 +18,9 @@ namespace Barrelman::Data
     public:
         virtual ~BaseColumnData( ) = default;
         virtual Kind GetKind() const = 0;
+        void ReadUnboundData( const ODBC::Statement& statement )
+        {
+        }
     protected:
         static void ThrowBoundsExceededException( )
         {
@@ -133,6 +137,92 @@ namespace Barrelman::Data
         {
             statement.BindColumn( fieldId, NativeType::Binary, value->data( ), static_cast< SQLLEN >( N ), lengthOrNullIndicator );
         }
+        template<IO::StreamWriter StreamT, typename T>
+            requires std::is_same_v<Currency, T> || std::is_same_v<DateTime, T> || std::is_same_v<TimeSpan, T> || std::is_same_v<Guid, T> || std::is_floating_point_v<T> || std::is_integral_v<T> || std::is_enum_v<T>
+        void WriteColumnValue( IO::BinaryWriter<StreamT>& destination, T value )
+        {
+            destination.Write( value );
+        }
+        template<IO::StreamWriter StreamT, typename T>
+            requires std::is_same_v<Currency, T> || std::is_same_v<DateTime, T> || std::is_same_v<TimeSpan, T> || std::is_same_v<Guid, T> || std::is_floating_point_v<T> || std::is_integral_v<T> || std::is_enum_v<T>
+        void WriteColumnValue( IO::BinaryWriter<StreamT>& destination, T value, SQLLEN nullIndicator )
+        {
+            if ( nullIndicator != SQL_NULL_DATA )
+            {
+                destination.Write( true );
+                destination.Write( value );
+            }
+            else
+            {
+                destination.Write( false );
+            }
+        }
+        template<IO::StreamWriter StreamT, typename T, size_t N>
+        void WriteNullableColumnValue( IO::BinaryWriter<StreamT>& destination, const std::array<T, N>& value, SQLLEN lengthOrNullIndicator )
+        {
+            if ( lengthOrNullIndicator != SQL_NULL_DATA )
+            {
+                destination.Write( true );
+
+                if constexpr ( std::is_same_v<T, Byte> )
+                {
+                    auto size = static_cast< size_t >( lengthOrNullIndicator ) * sizeof( wchar_t );
+                    destination.Write7BitEncoded( size );
+                    destination.Write( value.data( ), size );
+                }
+                else
+                {
+                    auto size = static_cast< size_t >( lengthOrNullIndicator );
+                    destination.WriteSize( size );
+                    destination.Write( value.data( ), size );
+                }
+
+            }
+            else
+            {
+                destination.Write( false );
+            }
+        }
+        template<IO::StreamWriter StreamT, typename T, size_t N>
+        void WriteColumnValue( IO::BinaryWriter<StreamT>& destination, const std::array<T, N>& value, SQLLEN length )
+        {
+            if constexpr ( std::is_same_v<T, wchar_t> )
+            {
+                auto size = static_cast< size_t >( length ) * sizeof( wchar_t );
+                destination.Write7BitEncoded( size );
+                destination.Write( value.data( ), size );
+            }
+            else
+            {
+                auto size = static_cast< size_t >( length );
+                destination.WriteSize( size );
+                destination.Write( value.data( ), size );
+            }
+        }
+        template<IO::StreamWriter StreamT, typename T>
+            requires std::is_same_v<WideString, T> || std::is_same_v<std::vector<Byte>, T> || std::is_same_v<std::optional<WideString>, T> || std::is_same_v<std::optional<std::vector<Byte>>, T>
+        void WriteColumnValue( IO::BinaryWriter<StreamT>& destination, const T& value )
+        {
+            destination.Write( value );
+        }
+    };
+
+    template<typename T>
+        requires std::is_base_of_v<BaseColumnData, T>
+    class SimpleColumnDataReader : public ODBC::DataReader, public T
+    {
+    public:
+        using Base = ODBC::DataReader;
+        SimpleColumnDataReader( const ODBC::Statement* statement )
+            : Base( statement )
+        {
+            T::BindColumns( *statement );
+        }
+    protected:
+        virtual void AfterFetch( ) override
+        {
+            T::ReadUnboundData( Base::Statement( ) );
+        }
     };
 
     class AircraftTypeColumnData : public BaseColumnData
@@ -193,7 +283,16 @@ namespace Barrelman::Data
             Bind(statement, NAME_FIELD_ID, &name_, &nameLengthOrNullIndicator_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, name_, nameLengthOrNullIndicator_);
+        }
     };
+
+    using SimpleAircraftTypeDataReader = SimpleColumnDataReader<AircraftTypeColumnData>;
 
     class AisMessageColumnData : public BaseColumnData
     {
@@ -292,7 +391,20 @@ namespace Barrelman::Data
             Bind(statement, MMSI_FIELD_ID, &mmsi_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, aisTransceiver_);
+            WriteColumnValue( destination, receivedTimestamp_);
+            WriteColumnValue( destination, messageSequenceNumber_);
+            WriteColumnValue( destination, repeat_);
+            WriteColumnValue( destination, mmsi_);
+        }
     };
+
+    using SimpleAisMessageDataReader = SimpleColumnDataReader<AisMessageColumnData>;
 
     class AidToNavigationReportMessageColumnData : public AisMessageColumnData
     {
@@ -524,7 +636,32 @@ namespace Barrelman::Data
             Bind(statement, NAMEEXTENSION_FIELD_ID, &nameExtension_, &nameExtensionLengthOrNullIndicator_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, navigationalAidType_);
+            WriteColumnValue( destination, name_, nameLengthOrNullIndicator_);
+            WriteColumnValue( destination, positionAccuracy_);
+            WriteColumnValue( destination, longitude_);
+            WriteColumnValue( destination, latitude_);
+            WriteColumnValue( destination, dimensionToBow_);
+            WriteColumnValue( destination, dimensionToStern_);
+            WriteColumnValue( destination, dimensionToPort_);
+            WriteColumnValue( destination, dimensionToStarboard_);
+            WriteColumnValue( destination, positionFixType_);
+            WriteColumnValue( destination, timestamp_);
+            WriteColumnValue( destination, offPosition_);
+            WriteColumnValue( destination, regionalReserved_);
+            WriteColumnValue( destination, raim_);
+            WriteColumnValue( destination, virtualAid_);
+            WriteColumnValue( destination, assigned_);
+            WriteColumnValue( destination, spare_);
+            WriteColumnValue( destination, nameExtension_, nameExtensionLengthOrNullIndicator_);
+        }
     };
+
+    using SimpleAidToNavigationReportMessageDataReader = SimpleColumnDataReader<AidToNavigationReportMessageColumnData>;
 
     class AisAddressedSafetyRelatedMessageColumnData : public AisMessageColumnData
     {
@@ -608,7 +745,19 @@ namespace Barrelman::Data
             Bind(statement, TEXT_FIELD_ID, &text_, &textLengthOrNullIndicator_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, sequenceNumber_);
+            WriteColumnValue( destination, destinationMmsi_);
+            WriteColumnValue( destination, retransmitFlag_);
+            WriteColumnValue( destination, spare_);
+            WriteColumnValue( destination, text_, textLengthOrNullIndicator_);
+        }
     };
+
+    using SimpleAisAddressedSafetyRelatedMessageDataReader = SimpleColumnDataReader<AisAddressedSafetyRelatedMessageColumnData>;
 
     class AisBaseStationReportMessageColumnData : public AisMessageColumnData
     {
@@ -720,7 +869,22 @@ namespace Barrelman::Data
             Bind(statement, RADIOSTATUS_FIELD_ID, &radioStatus_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, timestamp_);
+            WriteColumnValue( destination, positionAccuracy_);
+            WriteColumnValue( destination, longitude_);
+            WriteColumnValue( destination, latitude_);
+            WriteColumnValue( destination, positionFixType_);
+            WriteColumnValue( destination, spare_);
+            WriteColumnValue( destination, raim_);
+            WriteColumnValue( destination, radioStatus_);
+        }
     };
+
+    using SimpleAisBaseStationReportMessageDataReader = SimpleColumnDataReader<AisBaseStationReportMessageColumnData>;
 
     class AisBinaryAcknowledgeMessageColumnData : public AisMessageColumnData
     {
@@ -843,7 +1007,23 @@ namespace Barrelman::Data
             Bind(statement, MMSI4_FIELD_ID, &mmsi4_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, spare_);
+            WriteColumnValue( destination, sequenceNumber1_);
+            WriteColumnValue( destination, mmsi1_);
+            WriteColumnValue( destination, sequenceNumber2_);
+            WriteColumnValue( destination, mmsi2_);
+            WriteColumnValue( destination, sequenceNumber3_);
+            WriteColumnValue( destination, mmsi3_);
+            WriteColumnValue( destination, sequenceNumber4_);
+            WriteColumnValue( destination, mmsi4_);
+        }
     };
+
+    using SimpleAisBinaryAcknowledgeMessageDataReader = SimpleColumnDataReader<AisBinaryAcknowledgeMessageColumnData>;
 
     class AisBinaryAddressedMessageColumnData : public AisMessageColumnData
     {
@@ -944,7 +1124,27 @@ namespace Barrelman::Data
             Bind(statement, FUNCTIONALID_FIELD_ID, &functionalId_);
         }
 
+        void ReadUnboundData( const ODBC::Statement& statement )
+        {
+            Base::ReadUnboundData( statement );
+
+            data_ = statement.GetWideString(DATA_FIELD_ID);
+        }
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, sequenceNumber_);
+            WriteColumnValue( destination, destinationMmsi_);
+            WriteColumnValue( destination, retransmitFlag_);
+            WriteColumnValue( destination, spare_);
+            WriteColumnValue( destination, designatedAreaCode_);
+            WriteColumnValue( destination, functionalId_);
+            WriteColumnValue( destination, data_, dataLengthOrNullIndicator_);
+        }
     };
+
+    using SimpleAisBinaryAddressedMessageDataReader = SimpleColumnDataReader<AisBinaryAddressedMessageColumnData>;
 
     class AisBinaryBroadcastMessageColumnData : public AisMessageColumnData
     {
@@ -1012,7 +1212,24 @@ namespace Barrelman::Data
             Bind(statement, FUNCTIONALID_FIELD_ID, &functionalId_);
         }
 
+        void ReadUnboundData( const ODBC::Statement& statement )
+        {
+            Base::ReadUnboundData( statement );
+
+            data_ = statement.GetWideString(DATA_FIELD_ID);
+        }
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, spare_);
+            WriteColumnValue( destination, designatedAreaCode_);
+            WriteColumnValue( destination, functionalId_);
+            WriteColumnValue( destination, data_, dataLengthOrNullIndicator_);
+        }
     };
+
+    using SimpleAisBinaryBroadcastMessageDataReader = SimpleColumnDataReader<AisBinaryBroadcastMessageColumnData>;
 
     class AisDataLinkManagementMessageColumnData : public AisMessageColumnData
     {
@@ -1223,7 +1440,31 @@ namespace Barrelman::Data
             Bind(statement, INCREMENT4_FIELD_ID, &increment4_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, spare_);
+            WriteColumnValue( destination, offset1_);
+            WriteColumnValue( destination, reservedSlots1_);
+            WriteColumnValue( destination, timeout1_);
+            WriteColumnValue( destination, increment1_);
+            WriteColumnValue( destination, offset2_);
+            WriteColumnValue( destination, reservedSlots2_);
+            WriteColumnValue( destination, timeout2_);
+            WriteColumnValue( destination, increment2_);
+            WriteColumnValue( destination, offset3_);
+            WriteColumnValue( destination, reservedSlots3_);
+            WriteColumnValue( destination, timeout3_);
+            WriteColumnValue( destination, increment3_);
+            WriteColumnValue( destination, offset4_);
+            WriteColumnValue( destination, reservedSlots4_);
+            WriteColumnValue( destination, timeout4_);
+            WriteColumnValue( destination, increment4_);
+        }
     };
+
+    using SimpleAisDataLinkManagementMessageDataReader = SimpleColumnDataReader<AisDataLinkManagementMessageColumnData>;
 
     class AisExtendedClassBCsPositionReportMessageColumnData : public AisMessageColumnData
     {
@@ -1330,9 +1571,17 @@ namespace Barrelman::Data
         {
             courseOverGround_ = courseOverGround;
         }
-        Int32 TrueHeading( ) const
+        std::optional<Int32> TrueHeading( ) const
         {
-            return trueHeading_;
+            if(trueHeadingNullIndicator_ != SQL_NULL_DATA)
+            {
+                return trueHeading_;
+            }
+            return {};
+        }
+        bool IsTrueHeadingNull( ) const
+        {
+            return trueHeadingNullIndicator_ == SQL_NULL_DATA;
         }
         void SetTrueHeading( Int32 trueHeading )
         {
@@ -1468,7 +1717,34 @@ namespace Barrelman::Data
             Bind(statement, SPARE_FIELD_ID, &spare_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, reserved_);
+            WriteColumnValue( destination, speedOverGround_);
+            WriteColumnValue( destination, positionAccuracy_);
+            WriteColumnValue( destination, longitude_);
+            WriteColumnValue( destination, latitude_);
+            WriteColumnValue( destination, courseOverGround_);
+            WriteColumnValue( destination, trueHeading_, trueHeadingNullIndicator_);
+            WriteColumnValue( destination, timestamp_);
+            WriteColumnValue( destination, regionalReserved_);
+            WriteColumnValue( destination, name_);
+            WriteColumnValue( destination, shipType_);
+            WriteColumnValue( destination, dimensionToBow_);
+            WriteColumnValue( destination, dimensionToStern_);
+            WriteColumnValue( destination, dimensionToPort_);
+            WriteColumnValue( destination, dimensionToStarboard_);
+            WriteColumnValue( destination, positionFixType_);
+            WriteColumnValue( destination, raim_);
+            WriteColumnValue( destination, dataTerminalReady_);
+            WriteColumnValue( destination, assigned_);
+            WriteColumnValue( destination, spare_);
+        }
     };
+
+    using SimpleAisExtendedClassBCsPositionReportMessageDataReader = SimpleColumnDataReader<AisExtendedClassBCsPositionReportMessageColumnData>;
 
     class AisInterrogationMessageColumnData : public AisMessageColumnData
     {
@@ -1530,17 +1806,33 @@ namespace Barrelman::Data
         {
             firstSlotOffset_ = firstSlotOffset;
         }
-        Data::AisMessageType SecondMessageType( ) const
+        std::optional<Data::AisMessageType> SecondMessageType( ) const
         {
-            return secondMessageType_;
+            if(secondMessageTypeNullIndicator_ != SQL_NULL_DATA)
+            {
+                return secondMessageType_;
+            }
+            return {};
+        }
+        bool IsSecondMessageTypeNull( ) const
+        {
+            return secondMessageTypeNullIndicator_ == SQL_NULL_DATA;
         }
         void SetSecondMessageType( Data::AisMessageType secondMessageType )
         {
             secondMessageType_ = secondMessageType;
         }
-        Int32 SecondSlotOffset( ) const
+        std::optional<Int32> SecondSlotOffset( ) const
         {
-            return secondSlotOffset_;
+            if(secondSlotOffsetNullIndicator_ != SQL_NULL_DATA)
+            {
+                return secondSlotOffset_;
+            }
+            return {};
+        }
+        bool IsSecondSlotOffsetNull( ) const
+        {
+            return secondSlotOffsetNullIndicator_ == SQL_NULL_DATA;
         }
         void SetSecondSlotOffset( Int32 secondSlotOffset )
         {
@@ -1554,17 +1846,33 @@ namespace Barrelman::Data
         {
             secondStationInterrogationMmsi_ = secondStationInterrogationMmsi;
         }
-        Data::AisMessageType SecondStationFirstMessageType( ) const
+        std::optional<Data::AisMessageType> SecondStationFirstMessageType( ) const
         {
-            return secondStationFirstMessageType_;
+            if(secondStationFirstMessageTypeNullIndicator_ != SQL_NULL_DATA)
+            {
+                return secondStationFirstMessageType_;
+            }
+            return {};
+        }
+        bool IsSecondStationFirstMessageTypeNull( ) const
+        {
+            return secondStationFirstMessageTypeNullIndicator_ == SQL_NULL_DATA;
         }
         void SetSecondStationFirstMessageType( Data::AisMessageType secondStationFirstMessageType )
         {
             secondStationFirstMessageType_ = secondStationFirstMessageType;
         }
-        Int32 SecondStationFirstSlotOffset( ) const
+        std::optional<Int32> SecondStationFirstSlotOffset( ) const
         {
-            return secondStationFirstSlotOffset_;
+            if(secondStationFirstSlotOffsetNullIndicator_ != SQL_NULL_DATA)
+            {
+                return secondStationFirstSlotOffset_;
+            }
+            return {};
+        }
+        bool IsSecondStationFirstSlotOffsetNull( ) const
+        {
+            return secondStationFirstSlotOffsetNullIndicator_ == SQL_NULL_DATA;
         }
         void SetSecondStationFirstSlotOffset( Int32 secondStationFirstSlotOffset )
         {
@@ -1584,7 +1892,22 @@ namespace Barrelman::Data
             Bind(statement, SECONDSTATIONFIRSTSLOTOFFSET_FIELD_ID, &secondStationFirstSlotOffset_, &secondStationFirstSlotOffsetNullIndicator_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, interrogatedMmsi_);
+            WriteColumnValue( destination, firstMessageType_);
+            WriteColumnValue( destination, firstSlotOffset_);
+            WriteColumnValue( destination, secondMessageType_, secondMessageTypeNullIndicator_);
+            WriteColumnValue( destination, secondSlotOffset_, secondSlotOffsetNullIndicator_);
+            WriteColumnValue( destination, secondStationInterrogationMmsi_);
+            WriteColumnValue( destination, secondStationFirstMessageType_, secondStationFirstMessageTypeNullIndicator_);
+            WriteColumnValue( destination, secondStationFirstSlotOffset_, secondStationFirstSlotOffsetNullIndicator_);
+        }
     };
+
+    using SimpleAisInterrogationMessageDataReader = SimpleColumnDataReader<AisInterrogationMessageColumnData>;
 
     class AisPositionReportClassAMessageBaseColumnData : public AisMessageColumnData
     {
@@ -1638,9 +1961,17 @@ namespace Barrelman::Data
         {
             navigationStatus_ = navigationStatus;
         }
-        Int32 RateOfTurn( ) const
+        std::optional<Int32> RateOfTurn( ) const
         {
-            return rateOfTurn_;
+            if(rateOfTurnNullIndicator_ != SQL_NULL_DATA)
+            {
+                return rateOfTurn_;
+            }
+            return {};
+        }
+        bool IsRateOfTurnNull( ) const
+        {
+            return rateOfTurnNullIndicator_ == SQL_NULL_DATA;
         }
         void SetRateOfTurn( Int32 rateOfTurn )
         {
@@ -1686,9 +2017,17 @@ namespace Barrelman::Data
         {
             courseOverGround_ = courseOverGround;
         }
-        Int32 TrueHeading( ) const
+        std::optional<Int32> TrueHeading( ) const
         {
-            return trueHeading_;
+            if(trueHeadingNullIndicator_ != SQL_NULL_DATA)
+            {
+                return trueHeading_;
+            }
+            return {};
+        }
+        bool IsTrueHeadingNull( ) const
+        {
+            return trueHeadingNullIndicator_ == SQL_NULL_DATA;
         }
         void SetTrueHeading( Int32 trueHeading )
         {
@@ -1753,7 +2092,27 @@ namespace Barrelman::Data
             Bind(statement, RADIOSTATUS_FIELD_ID, &radioStatus_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, navigationStatus_);
+            WriteColumnValue( destination, rateOfTurn_, rateOfTurnNullIndicator_);
+            WriteColumnValue( destination, speedOverGround_);
+            WriteColumnValue( destination, positionAccuracy_);
+            WriteColumnValue( destination, longitude_);
+            WriteColumnValue( destination, latitude_);
+            WriteColumnValue( destination, courseOverGround_);
+            WriteColumnValue( destination, trueHeading_, trueHeadingNullIndicator_);
+            WriteColumnValue( destination, timestamp_);
+            WriteColumnValue( destination, maneuverIndicator_);
+            WriteColumnValue( destination, spare_);
+            WriteColumnValue( destination, raim_);
+            WriteColumnValue( destination, radioStatus_);
+        }
     };
+
+    using SimpleAisPositionReportClassAMessageBaseDataReader = SimpleColumnDataReader<AisPositionReportClassAMessageBaseColumnData>;
 
     class AisPositionReportClassAAssignedScheduleMessageColumnData : public AisPositionReportClassAMessageBaseColumnData
     {
@@ -1770,7 +2129,14 @@ namespace Barrelman::Data
             return Kind::AisPositionReportClassAAssignedScheduleMessage;
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+        }
     };
+
+    using SimpleAisPositionReportClassAAssignedScheduleMessageDataReader = SimpleColumnDataReader<AisPositionReportClassAAssignedScheduleMessageColumnData>;
 
     class AisPositionReportClassAMessageColumnData : public AisPositionReportClassAMessageBaseColumnData
     {
@@ -1787,7 +2153,14 @@ namespace Barrelman::Data
             return Kind::AisPositionReportClassAMessage;
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+        }
     };
+
+    using SimpleAisPositionReportClassAMessageDataReader = SimpleColumnDataReader<AisPositionReportClassAMessageColumnData>;
 
     class AisPositionReportClassAResponseToInterrogationMessageColumnData : public AisPositionReportClassAMessageBaseColumnData
     {
@@ -1804,7 +2177,14 @@ namespace Barrelman::Data
             return Kind::AisPositionReportClassAResponseToInterrogationMessage;
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+        }
     };
+
+    using SimpleAisPositionReportClassAResponseToInterrogationMessageDataReader = SimpleColumnDataReader<AisPositionReportClassAResponseToInterrogationMessageColumnData>;
 
     class AisPositionReportForLongRangeApplicationsMessageColumnData : public AisMessageColumnData
     {
@@ -1927,7 +2307,23 @@ namespace Barrelman::Data
             Bind(statement, SPARE_FIELD_ID, &spare_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, positionAccuracy_);
+            WriteColumnValue( destination, raim_);
+            WriteColumnValue( destination, navigationStatus_);
+            WriteColumnValue( destination, longitude_);
+            WriteColumnValue( destination, latitude_);
+            WriteColumnValue( destination, speedOverGround_);
+            WriteColumnValue( destination, courseOverGround_);
+            WriteColumnValue( destination, gnssPositionStatus_);
+            WriteColumnValue( destination, spare_);
+        }
     };
+
+    using SimpleAisPositionReportForLongRangeApplicationsMessageDataReader = SimpleColumnDataReader<AisPositionReportForLongRangeApplicationsMessageColumnData>;
 
     class AisSafetyRelatedAcknowledgmentMessageColumnData : public AisMessageColumnData
     {
@@ -2050,7 +2446,23 @@ namespace Barrelman::Data
             Bind(statement, MMSI4_FIELD_ID, &mmsi4_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, spare_);
+            WriteColumnValue( destination, sequenceNumber1_);
+            WriteColumnValue( destination, mmsi1_);
+            WriteColumnValue( destination, sequenceNumber2_);
+            WriteColumnValue( destination, mmsi2_);
+            WriteColumnValue( destination, sequenceNumber3_);
+            WriteColumnValue( destination, mmsi3_);
+            WriteColumnValue( destination, sequenceNumber4_);
+            WriteColumnValue( destination, mmsi4_);
+        }
     };
+
+    using SimpleAisSafetyRelatedAcknowledgmentMessageDataReader = SimpleColumnDataReader<AisSafetyRelatedAcknowledgmentMessageColumnData>;
 
     class AisStandardClassBCsPositionReportMessageColumnData : public AisMessageColumnData
     {
@@ -2151,9 +2563,17 @@ namespace Barrelman::Data
         {
             courseOverGround_ = courseOverGround;
         }
-        Int32 TrueHeading( ) const
+        std::optional<Int32> TrueHeading( ) const
         {
-            return trueHeading_;
+            if(trueHeadingNullIndicator_ != SQL_NULL_DATA)
+            {
+                return trueHeading_;
+            }
+            return {};
+        }
+        bool IsTrueHeadingNull( ) const
+        {
+            return trueHeadingNullIndicator_ == SQL_NULL_DATA;
         }
         void SetTrueHeading( Int32 trueHeading )
         {
@@ -2262,7 +2682,31 @@ namespace Barrelman::Data
             Bind(statement, RADIOSTATUS_FIELD_ID, &radioStatus_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, reserved_);
+            WriteColumnValue( destination, speedOverGround_);
+            WriteColumnValue( destination, positionAccuracy_);
+            WriteColumnValue( destination, longitude_);
+            WriteColumnValue( destination, latitude_);
+            WriteColumnValue( destination, courseOverGround_);
+            WriteColumnValue( destination, trueHeading_, trueHeadingNullIndicator_);
+            WriteColumnValue( destination, timestamp_);
+            WriteColumnValue( destination, regionalReserved_);
+            WriteColumnValue( destination, isCsUnit_);
+            WriteColumnValue( destination, hasDisplay_);
+            WriteColumnValue( destination, hasDscCapability_);
+            WriteColumnValue( destination, band_);
+            WriteColumnValue( destination, canAcceptMessage22_);
+            WriteColumnValue( destination, assigned_);
+            WriteColumnValue( destination, raim_);
+            WriteColumnValue( destination, radioStatus_);
+        }
     };
+
+    using SimpleAisStandardClassBCsPositionReportMessageDataReader = SimpleColumnDataReader<AisStandardClassBCsPositionReportMessageColumnData>;
 
     class AisStandardSarAircraftPositionReportMessageColumnData : public AisMessageColumnData
     {
@@ -2429,7 +2873,27 @@ namespace Barrelman::Data
             Bind(statement, RADIOSTATUS_FIELD_ID, &radioStatus_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, altitude_);
+            WriteColumnValue( destination, speedOverGround_);
+            WriteColumnValue( destination, positionAccuracy_);
+            WriteColumnValue( destination, longitude_);
+            WriteColumnValue( destination, latitude_);
+            WriteColumnValue( destination, courseOverGround_);
+            WriteColumnValue( destination, timestamp_);
+            WriteColumnValue( destination, reserved_);
+            WriteColumnValue( destination, dataTerminalReady_);
+            WriteColumnValue( destination, spare_);
+            WriteColumnValue( destination, assigned_);
+            WriteColumnValue( destination, raim_);
+            WriteColumnValue( destination, radioStatus_);
+        }
     };
+
+    using SimpleAisStandardSarAircraftPositionReportMessageDataReader = SimpleColumnDataReader<AisStandardSarAircraftPositionReportMessageColumnData>;
 
     class AisStaticAndVoyageRelatedDataMessageColumnData : public AisMessageColumnData
     {
@@ -2559,9 +3023,17 @@ namespace Barrelman::Data
         {
             positionFixType_ = positionFixType;
         }
-        DateTime EstimatedTimeOfArrival( ) const
+        std::optional<DateTime> EstimatedTimeOfArrival( ) const
         {
-            return estimatedTimeOfArrival_;
+            if(estimatedTimeOfArrivalNullIndicator_ != SQL_NULL_DATA)
+            {
+                return estimatedTimeOfArrival_;
+            }
+            return {};
+        }
+        bool IsEstimatedTimeOfArrivalNull( ) const
+        {
+            return estimatedTimeOfArrivalNullIndicator_ == SQL_NULL_DATA;
         }
         void SetEstimatedTimeOfArrival( const DateTime& estimatedTimeOfArrival )
         {
@@ -2624,7 +3096,29 @@ namespace Barrelman::Data
             Bind(statement, SPARE_FIELD_ID, &spare_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, aisVersion_);
+            WriteColumnValue( destination, imoNumber_);
+            WriteColumnValue( destination, callsign_);
+            WriteColumnValue( destination, shipName_);
+            WriteColumnValue( destination, shipType_);
+            WriteColumnValue( destination, dimensionToBow_);
+            WriteColumnValue( destination, dimensionToStern_);
+            WriteColumnValue( destination, dimensionToPort_);
+            WriteColumnValue( destination, dimensionToStarboard_);
+            WriteColumnValue( destination, positionFixType_);
+            WriteColumnValue( destination, estimatedTimeOfArrival_, estimatedTimeOfArrivalNullIndicator_);
+            WriteColumnValue( destination, draught_);
+            WriteColumnValue( destination, destination_, destinationLengthOrNullIndicator_);
+            WriteColumnValue( destination, dataTerminalReady_);
+            WriteColumnValue( destination, spare_);
+        }
     };
+
+    using SimpleAisStaticAndVoyageRelatedDataMessageDataReader = SimpleColumnDataReader<AisStaticAndVoyageRelatedDataMessageColumnData>;
 
     class AisStaticDataReportMessageColumnData : public AisMessageColumnData
     {
@@ -2659,7 +3153,15 @@ namespace Barrelman::Data
             Bind(statement, PARTNUMBER_FIELD_ID, &partNumber_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, partNumber_);
+        }
     };
+
+    using SimpleAisStaticDataReportMessageDataReader = SimpleColumnDataReader<AisStaticDataReportMessageColumnData>;
 
     class AisStaticDataReportPartAMessageColumnData : public AisStaticDataReportMessageColumnData
     {
@@ -2705,7 +3207,16 @@ namespace Barrelman::Data
             Bind(statement, SPARE_FIELD_ID, &spare_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, shipName_);
+            WriteColumnValue( destination, spare_);
+        }
     };
+
+    using SimpleAisStaticDataReportPartAMessageDataReader = SimpleColumnDataReader<AisStaticDataReportPartAMessageColumnData>;
 
     class AisStaticDataReportPartBMessageColumnData : public AisStaticDataReportMessageColumnData
     {
@@ -2866,7 +3377,26 @@ namespace Barrelman::Data
             Bind(statement, SPARE_FIELD_ID, &spare_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, shipType_);
+            WriteColumnValue( destination, vendorId_, vendorIdLengthOrNullIndicator_);
+            WriteColumnValue( destination, unitModelCode_);
+            WriteColumnValue( destination, serialNumber_);
+            WriteColumnValue( destination, callsign_);
+            WriteColumnValue( destination, dimensionToBow_);
+            WriteColumnValue( destination, dimensionToStern_);
+            WriteColumnValue( destination, dimensionToPort_);
+            WriteColumnValue( destination, dimensionToStarboard_);
+            WriteColumnValue( destination, mothershipMmsi_);
+            WriteColumnValue( destination, positionFixType_);
+            WriteColumnValue( destination, spare_);
+        }
     };
+
+    using SimpleAisStaticDataReportPartBMessageDataReader = SimpleColumnDataReader<AisStaticDataReportPartBMessageColumnData>;
 
     class AisUtcAndDateInquiryMessageColumnData : public AisMessageColumnData
     {
@@ -2923,7 +3453,17 @@ namespace Barrelman::Data
             Bind(statement, SPARE2_FIELD_ID, &spare2_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, spare1_);
+            WriteColumnValue( destination, destinationMmsi_);
+            WriteColumnValue( destination, spare2_);
+        }
     };
+
+    using SimpleAisUtcAndDateInquiryMessageDataReader = SimpleColumnDataReader<AisUtcAndDateInquiryMessageColumnData>;
 
     class AisUtcAndDateResponseMessageColumnData : public AisMessageColumnData
     {
@@ -3035,7 +3575,22 @@ namespace Barrelman::Data
             Bind(statement, RADIOSTATUS_FIELD_ID, &radioStatus_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, datetime_);
+            WriteColumnValue( destination, positionAccuracy_);
+            WriteColumnValue( destination, longitude_);
+            WriteColumnValue( destination, latitude_);
+            WriteColumnValue( destination, positionFixType_);
+            WriteColumnValue( destination, spare_);
+            WriteColumnValue( destination, raim_);
+            WriteColumnValue( destination, radioStatus_);
+        }
     };
+
+    using SimpleAisUtcAndDateResponseMessageDataReader = SimpleColumnDataReader<AisUtcAndDateResponseMessageColumnData>;
 
     class AisTransceiverCommandColumnData : public BaseColumnData
     {
@@ -3134,7 +3689,20 @@ namespace Barrelman::Data
             Bind(statement, REPLY_FIELD_ID, &reply_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, aisTransceiver_);
+            WriteColumnValue( destination, timestamp_);
+            WriteColumnValue( destination, deviceCommandSourceType_);
+            WriteColumnValue( destination, deviceCommandSourceId_);
+            WriteColumnValue( destination, reply_);
+        }
     };
+
+    using SimpleAisTransceiverCommandDataReader = SimpleColumnDataReader<AisTransceiverCommandColumnData>;
 
     class AisTransceiverCommandReplyColumnData : public BaseColumnData
     {
@@ -3233,7 +3801,26 @@ namespace Barrelman::Data
             Bind(statement, STATUS_FIELD_ID, &status_);
         }
 
+        void ReadUnboundData( const ODBC::Statement& statement )
+        {
+            Base::ReadUnboundData( statement );
+
+            message_ = statement.GetWideString(MESSAGE_FIELD_ID);
+        }
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, aisTransceiver_);
+            WriteColumnValue( destination, timestamp_);
+            WriteColumnValue( destination, command_);
+            WriteColumnValue( destination, status_);
+            WriteColumnValue( destination, message_, messageLengthOrNullIndicator_);
+        }
     };
+
+    using SimpleAisTransceiverCommandReplyDataReader = SimpleColumnDataReader<AisTransceiverCommandReplyColumnData>;
 
     class AisTransceiverConfigurationColumnData : public BaseColumnData
     {
@@ -3752,7 +4339,65 @@ namespace Barrelman::Data
             Bind(statement, STOREUNSENTMESSAGES_FIELD_ID, &storeUnsentMessages_);
         }
 
+        void ReadUnboundData( const ODBC::Statement& statement )
+        {
+            Base::ReadUnboundData( statement );
+
+            textMessageHeader_ = statement.GetWideString(TEXTMESSAGEHEADER_FIELD_ID);
+            urls_ = statement.GetWideString(URLS_FIELD_ID);
+            aidToNavigationHeader_ = statement.GetWideString(AIDTONAVIGATIONHEADER_FIELD_ID);
+            excludeSendAisBaseStation_ = statement.GetWideString(EXCLUDESENDAISBASESTATION_FIELD_ID);
+            excludeSendAisA_ = statement.GetWideString(EXCLUDESENDAISA_FIELD_ID);
+        }
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, aisTransceiver_);
+            WriteColumnValue( destination, timestamp_);
+            WriteColumnValue( destination, userName_, userNameLengthOrNullIndicator_);
+            WriteColumnValue( destination, password_, passwordLengthOrNullIndicator_);
+            WriteColumnValue( destination, latitude_);
+            WriteColumnValue( destination, longitude_);
+            WriteColumnValue( destination, aisProviderLoginURL_, aisProviderLoginURLLengthOrNullIndicator_);
+            WriteColumnValue( destination, comPort_, comPortLengthOrNullIndicator_);
+            WriteColumnValue( destination, baudRate_);
+            WriteColumnValue( destination, filterByArea_);
+            WriteColumnValue( destination, upperLeftCornerLatitude_);
+            WriteColumnValue( destination, upperLeftCornerLongitude_);
+            WriteColumnValue( destination, bottomRightCornerLatitude_);
+            WriteColumnValue( destination, bottomRightCornerLongitude_);
+            WriteColumnValue( destination, aisProviderIPAddress_, aisProviderIPAddressLengthOrNullIndicator_);
+            WriteColumnValue( destination, aisProviderPort_);
+            WriteColumnValue( destination, useLogin_);
+            WriteColumnValue( destination, aisProviderLoginPort_);
+            WriteColumnValue( destination, canSendAISMessage_);
+            WriteColumnValue( destination, textMessageHeader_, textMessageHeaderLengthOrNullIndicator_);
+            WriteColumnValue( destination, urls_, urlsLengthOrNullIndicator_);
+            WriteColumnValue( destination, udpPort_);
+            WriteColumnValue( destination, connectionType_);
+            WriteColumnValue( destination, enableRefreshAidToNavigationIn30sec_);
+            WriteColumnValue( destination, enableAidToNavigationFromFile_);
+            WriteColumnValue( destination, aidToNavigationHeader_, aidToNavigationHeaderLengthOrNullIndicator_);
+            WriteColumnValue( destination, sendingMMSI_);
+            WriteColumnValue( destination, sourceUpdateRate_);
+            WriteColumnValue( destination, enableRefreshStayingStillTargetIn30sec_);
+            WriteColumnValue( destination, excludeSendAisBaseStation_, excludeSendAisBaseStationLengthOrNullIndicator_);
+            WriteColumnValue( destination, excludeSendAisA_, excludeSendAisALengthOrNullIndicator_);
+            WriteColumnValue( destination, enableSendBaseStationAlarms_);
+            WriteColumnValue( destination, aisWebConfig_, aisWebConfigLengthOrNullIndicator_);
+            WriteColumnValue( destination, enableBaseStation600_);
+            WriteColumnValue( destination, baseStation600IPAddress_, baseStation600IPAddressLengthOrNullIndicator_);
+            WriteColumnValue( destination, baseStation600Port_);
+            WriteColumnValue( destination, esdInputCount_);
+            WriteColumnValue( destination, storeReceivedSentences_);
+            WriteColumnValue( destination, storeSentMessages_);
+            WriteColumnValue( destination, storeUnsentMessages_);
+        }
     };
+
+    using SimpleAisTransceiverConfigurationDataReader = SimpleColumnDataReader<AisTransceiverConfigurationColumnData>;
 
     class AisTransceiverRawMessageColumnData : public BaseColumnData
     {
@@ -3845,7 +4490,19 @@ namespace Barrelman::Data
             Bind(statement, MESSAGE_FIELD_ID, &message_, &messageLengthOrNullIndicator_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, aisTransceiver_);
+            WriteColumnValue( destination, timestamp_);
+            WriteColumnValue( destination, isSent_);
+            WriteColumnValue( destination, message_, messageLengthOrNullIndicator_);
+        }
     };
+
+    using SimpleAisTransceiverRawMessageDataReader = SimpleColumnDataReader<AisTransceiverRawMessageColumnData>;
 
     class AisTransceiverRawSentenceColumnData : public BaseColumnData
     {
@@ -3922,7 +4579,24 @@ namespace Barrelman::Data
             Bind(statement, TIMESTAMP_FIELD_ID, &timestamp_);
         }
 
+        void ReadUnboundData( const ODBC::Statement& statement )
+        {
+            Base::ReadUnboundData( statement );
+
+            sentence_ = statement.GetWideString(SENTENCE_FIELD_ID);
+        }
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, aisTransceiver_);
+            WriteColumnValue( destination, timestamp_);
+            WriteColumnValue( destination, sentence_, sentenceLengthOrNullIndicator_);
+        }
     };
+
+    using SimpleAisTransceiverRawSentenceDataReader = SimpleColumnDataReader<AisTransceiverRawSentenceColumnData>;
 
     class AlarmStateChangeColumnData : public BaseColumnData
     {
@@ -3999,7 +4673,18 @@ namespace Barrelman::Data
             Bind(statement, STATE_FIELD_ID, &state_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, alarm_);
+            WriteColumnValue( destination, timestamp_);
+            WriteColumnValue( destination, state_);
+        }
     };
+
+    using SimpleAlarmStateChangeDataReader = SimpleColumnDataReader<AlarmStateChangeColumnData>;
 
     class BaseStationTypeColumnData : public BaseColumnData
     {
@@ -4059,7 +4744,16 @@ namespace Barrelman::Data
             Bind(statement, NAME_FIELD_ID, &name_, &nameLengthOrNullIndicator_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, name_, nameLengthOrNullIndicator_);
+        }
     };
+
+    using SimpleBaseStationTypeDataReader = SimpleColumnDataReader<BaseStationTypeColumnData>;
 
     class BinaryTimeseriesValueColumnData : public BaseColumnData
     {
@@ -4136,7 +4830,24 @@ namespace Barrelman::Data
             Bind(statement, TIMESTAMP_FIELD_ID, &timestamp_);
         }
 
+        void ReadUnboundData( const ODBC::Statement& statement )
+        {
+            Base::ReadUnboundData( statement );
+
+            value_ = statement.GetBinary(VALUE_FIELD_ID);
+        }
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, timeseries_);
+            WriteColumnValue( destination, timestamp_);
+            WriteColumnValue( destination, value_, valueLengthOrNullIndicator_);
+        }
     };
+
+    using SimpleBinaryTimeseriesValueDataReader = SimpleColumnDataReader<BinaryTimeseriesValueColumnData>;
 
     class BookmarkColumnData : public BaseColumnData
     {
@@ -4208,9 +4919,17 @@ namespace Barrelman::Data
         {
             Assign(name, name_, nameLengthOrNullIndicator_);
         }
-        DateTime Timestamp( ) const
+        std::optional<DateTime> Timestamp( ) const
         {
-            return timestamp_;
+            if(timestampNullIndicator_ != SQL_NULL_DATA)
+            {
+                return timestamp_;
+            }
+            return {};
+        }
+        bool IsTimestampNull( ) const
+        {
+            return timestampNullIndicator_ == SQL_NULL_DATA;
         }
         void SetTimestamp( const DateTime& timestamp )
         {
@@ -4252,7 +4971,21 @@ namespace Barrelman::Data
             Bind(statement, ZOOMLEVEL_FIELD_ID, &zoomLevel_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, view_);
+            WriteColumnValue( destination, name_, nameLengthOrNullIndicator_);
+            WriteColumnValue( destination, timestamp_, timestampNullIndicator_);
+            WriteColumnValue( destination, latitude_);
+            WriteColumnValue( destination, longitude_);
+            WriteColumnValue( destination, zoomLevel_);
+        }
     };
+
+    using SimpleBookmarkDataReader = SimpleColumnDataReader<BookmarkColumnData>;
 
     class BooleanTimeseriesValueColumnData : public BaseColumnData
     {
@@ -4313,9 +5046,17 @@ namespace Barrelman::Data
         {
             timestamp_ = timestamp;
         }
-        bool Value( ) const
+        std::optional<bool> Value( ) const
         {
-            return value_;
+            if(valueNullIndicator_ != SQL_NULL_DATA)
+            {
+                return value_;
+            }
+            return {};
+        }
+        bool IsValueNull( ) const
+        {
+            return valueNullIndicator_ == SQL_NULL_DATA;
         }
         void SetValue( bool value )
         {
@@ -4330,7 +5071,18 @@ namespace Barrelman::Data
             Bind(statement, VALUE_FIELD_ID, &value_, &valueNullIndicator_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, timeseries_);
+            WriteColumnValue( destination, timestamp_);
+            WriteColumnValue( destination, value_, valueNullIndicator_);
+        }
     };
+
+    using SimpleBooleanTimeseriesValueDataReader = SimpleColumnDataReader<BooleanTimeseriesValueColumnData>;
 
     class ByteTimeseriesValueColumnData : public BaseColumnData
     {
@@ -4391,9 +5143,17 @@ namespace Barrelman::Data
         {
             timestamp_ = timestamp;
         }
-        Byte Value( ) const
+        std::optional<Byte> Value( ) const
         {
-            return value_;
+            if(valueNullIndicator_ != SQL_NULL_DATA)
+            {
+                return value_;
+            }
+            return {};
+        }
+        bool IsValueNull( ) const
+        {
+            return valueNullIndicator_ == SQL_NULL_DATA;
         }
         void SetValue( Byte value )
         {
@@ -4408,7 +5168,18 @@ namespace Barrelman::Data
             Bind(statement, VALUE_FIELD_ID, &value_, &valueNullIndicator_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, timeseries_);
+            WriteColumnValue( destination, timestamp_);
+            WriteColumnValue( destination, value_, valueNullIndicator_);
+        }
     };
+
+    using SimpleByteTimeseriesValueDataReader = SimpleColumnDataReader<ByteTimeseriesValueColumnData>;
 
     class CameraCommandColumnData : public BaseColumnData
     {
@@ -4507,7 +5278,20 @@ namespace Barrelman::Data
             Bind(statement, REPLY_FIELD_ID, &reply_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, camera_);
+            WriteColumnValue( destination, timestamp_);
+            WriteColumnValue( destination, deviceCommandSourceType_);
+            WriteColumnValue( destination, deviceCommandSourceId_);
+            WriteColumnValue( destination, reply_);
+        }
     };
+
+    using SimpleCameraCommandDataReader = SimpleColumnDataReader<CameraCommandColumnData>;
 
     class CameraCommandAbsoluteMoveColumnData : public CameraCommandColumnData
     {
@@ -4559,17 +5343,33 @@ namespace Barrelman::Data
         {
             positionPanTiltMode_ = positionPanTiltMode;
         }
-        double PanAngle( ) const
+        std::optional<double> PanAngle( ) const
         {
-            return panAngle_;
+            if(panAngleNullIndicator_ != SQL_NULL_DATA)
+            {
+                return panAngle_;
+            }
+            return {};
+        }
+        bool IsPanAngleNull( ) const
+        {
+            return panAngleNullIndicator_ == SQL_NULL_DATA;
         }
         void SetPanAngle( double panAngle )
         {
             panAngle_ = panAngle;
         }
-        double TiltAngle( ) const
+        std::optional<double> TiltAngle( ) const
         {
-            return tiltAngle_;
+            if(tiltAngleNullIndicator_ != SQL_NULL_DATA)
+            {
+                return tiltAngle_;
+            }
+            return {};
+        }
+        bool IsTiltAngleNull( ) const
+        {
+            return tiltAngleNullIndicator_ == SQL_NULL_DATA;
         }
         void SetTiltAngle( double tiltAngle )
         {
@@ -4583,9 +5383,17 @@ namespace Barrelman::Data
         {
             positionFocalLengthMode_ = positionFocalLengthMode;
         }
-        double FocalLength( ) const
+        std::optional<double> FocalLength( ) const
         {
-            return focalLength_;
+            if(focalLengthNullIndicator_ != SQL_NULL_DATA)
+            {
+                return focalLength_;
+            }
+            return {};
+        }
+        bool IsFocalLengthNull( ) const
+        {
+            return focalLengthNullIndicator_ == SQL_NULL_DATA;
         }
         void SetFocalLength( double focalLength )
         {
@@ -4599,17 +5407,33 @@ namespace Barrelman::Data
         {
             speedPanTiltMode_ = speedPanTiltMode;
         }
-        double PanSpeed( ) const
+        std::optional<double> PanSpeed( ) const
         {
-            return panSpeed_;
+            if(panSpeedNullIndicator_ != SQL_NULL_DATA)
+            {
+                return panSpeed_;
+            }
+            return {};
+        }
+        bool IsPanSpeedNull( ) const
+        {
+            return panSpeedNullIndicator_ == SQL_NULL_DATA;
         }
         void SetPanSpeed( double panSpeed )
         {
             panSpeed_ = panSpeed;
         }
-        double TiltSpeed( ) const
+        std::optional<double> TiltSpeed( ) const
         {
-            return tiltSpeed_;
+            if(tiltSpeedNullIndicator_ != SQL_NULL_DATA)
+            {
+                return tiltSpeed_;
+            }
+            return {};
+        }
+        bool IsTiltSpeedNull( ) const
+        {
+            return tiltSpeedNullIndicator_ == SQL_NULL_DATA;
         }
         void SetTiltSpeed( double tiltSpeed )
         {
@@ -4623,9 +5447,17 @@ namespace Barrelman::Data
         {
             speedFocalLengthMode_ = speedFocalLengthMode;
         }
-        double ZoomSpeed( ) const
+        std::optional<double> ZoomSpeed( ) const
         {
-            return zoomSpeed_;
+            if(zoomSpeedNullIndicator_ != SQL_NULL_DATA)
+            {
+                return zoomSpeed_;
+            }
+            return {};
+        }
+        bool IsZoomSpeedNull( ) const
+        {
+            return zoomSpeedNullIndicator_ == SQL_NULL_DATA;
         }
         void SetZoomSpeed( double zoomSpeed )
         {
@@ -4647,7 +5479,24 @@ namespace Barrelman::Data
             Bind(statement, ZOOMSPEED_FIELD_ID, &zoomSpeed_, &zoomSpeedNullIndicator_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, positionPanTiltMode_);
+            WriteColumnValue( destination, panAngle_, panAngleNullIndicator_);
+            WriteColumnValue( destination, tiltAngle_, tiltAngleNullIndicator_);
+            WriteColumnValue( destination, positionFocalLengthMode_);
+            WriteColumnValue( destination, focalLength_, focalLengthNullIndicator_);
+            WriteColumnValue( destination, speedPanTiltMode_);
+            WriteColumnValue( destination, panSpeed_, panSpeedNullIndicator_);
+            WriteColumnValue( destination, tiltSpeed_, tiltSpeedNullIndicator_);
+            WriteColumnValue( destination, speedFocalLengthMode_);
+            WriteColumnValue( destination, zoomSpeed_, zoomSpeedNullIndicator_);
+        }
     };
+
+    using SimpleCameraCommandAbsoluteMoveDataReader = SimpleColumnDataReader<CameraCommandAbsoluteMoveColumnData>;
 
     class CameraCommandAdjustPanTiltZoomColumnData : public CameraCommandColumnData
     {
@@ -4674,25 +5523,49 @@ namespace Barrelman::Data
             return Kind::CameraCommandAdjustPanTiltZoom;
         }
 
-        double X( ) const
+        std::optional<double> X( ) const
         {
-            return x_;
+            if(xNullIndicator_ != SQL_NULL_DATA)
+            {
+                return x_;
+            }
+            return {};
+        }
+        bool IsXNull( ) const
+        {
+            return xNullIndicator_ == SQL_NULL_DATA;
         }
         void SetX( double x )
         {
             x_ = x;
         }
-        double Y( ) const
+        std::optional<double> Y( ) const
         {
-            return y_;
+            if(yNullIndicator_ != SQL_NULL_DATA)
+            {
+                return y_;
+            }
+            return {};
+        }
+        bool IsYNull( ) const
+        {
+            return yNullIndicator_ == SQL_NULL_DATA;
         }
         void SetY( double y )
         {
             y_ = y;
         }
-        double Z( ) const
+        std::optional<double> Z( ) const
         {
-            return z_;
+            if(zNullIndicator_ != SQL_NULL_DATA)
+            {
+                return z_;
+            }
+            return {};
+        }
+        bool IsZNull( ) const
+        {
+            return zNullIndicator_ == SQL_NULL_DATA;
         }
         void SetZ( double z )
         {
@@ -4707,7 +5580,17 @@ namespace Barrelman::Data
             Bind(statement, Z_FIELD_ID, &z_, &zNullIndicator_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, x_, xNullIndicator_);
+            WriteColumnValue( destination, y_, yNullIndicator_);
+            WriteColumnValue( destination, z_, zNullIndicator_);
+        }
     };
+
+    using SimpleCameraCommandAdjustPanTiltZoomDataReader = SimpleColumnDataReader<CameraCommandAdjustPanTiltZoomColumnData>;
 
     class CameraCommandContinuousMoveColumnData : public CameraCommandColumnData
     {
@@ -4747,33 +5630,65 @@ namespace Barrelman::Data
         {
             normalized_ = normalized;
         }
-        double PanVelocity( ) const
+        std::optional<double> PanVelocity( ) const
         {
-            return panVelocity_;
+            if(panVelocityNullIndicator_ != SQL_NULL_DATA)
+            {
+                return panVelocity_;
+            }
+            return {};
+        }
+        bool IsPanVelocityNull( ) const
+        {
+            return panVelocityNullIndicator_ == SQL_NULL_DATA;
         }
         void SetPanVelocity( double panVelocity )
         {
             panVelocity_ = panVelocity;
         }
-        double TiltVelocity( ) const
+        std::optional<double> TiltVelocity( ) const
         {
-            return tiltVelocity_;
+            if(tiltVelocityNullIndicator_ != SQL_NULL_DATA)
+            {
+                return tiltVelocity_;
+            }
+            return {};
+        }
+        bool IsTiltVelocityNull( ) const
+        {
+            return tiltVelocityNullIndicator_ == SQL_NULL_DATA;
         }
         void SetTiltVelocity( double tiltVelocity )
         {
             tiltVelocity_ = tiltVelocity;
         }
-        double ZoomVelocity( ) const
+        std::optional<double> ZoomVelocity( ) const
         {
-            return zoomVelocity_;
+            if(zoomVelocityNullIndicator_ != SQL_NULL_DATA)
+            {
+                return zoomVelocity_;
+            }
+            return {};
+        }
+        bool IsZoomVelocityNull( ) const
+        {
+            return zoomVelocityNullIndicator_ == SQL_NULL_DATA;
         }
         void SetZoomVelocity( double zoomVelocity )
         {
             zoomVelocity_ = zoomVelocity;
         }
-        TimeSpan Duration( ) const
+        std::optional<TimeSpan> Duration( ) const
         {
-            return duration_;
+            if(durationNullIndicator_ != SQL_NULL_DATA)
+            {
+                return duration_;
+            }
+            return {};
+        }
+        bool IsDurationNull( ) const
+        {
+            return durationNullIndicator_ == SQL_NULL_DATA;
         }
         void SetDuration( const TimeSpan& duration )
         {
@@ -4790,7 +5705,19 @@ namespace Barrelman::Data
             Bind(statement, DURATION_FIELD_ID, &duration_, &durationNullIndicator_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, normalized_);
+            WriteColumnValue( destination, panVelocity_, panVelocityNullIndicator_);
+            WriteColumnValue( destination, tiltVelocity_, tiltVelocityNullIndicator_);
+            WriteColumnValue( destination, zoomVelocity_, zoomVelocityNullIndicator_);
+            WriteColumnValue( destination, duration_, durationNullIndicator_);
+        }
     };
+
+    using SimpleCameraCommandContinuousMoveDataReader = SimpleColumnDataReader<CameraCommandContinuousMoveColumnData>;
 
     class CameraCommandGeoMoveColumnData : public CameraCommandColumnData
     {
@@ -4837,25 +5764,49 @@ namespace Barrelman::Data
         {
             longitude_ = longitude;
         }
-        double Altitude( ) const
+        std::optional<double> Altitude( ) const
         {
-            return altitude_;
+            if(altitudeNullIndicator_ != SQL_NULL_DATA)
+            {
+                return altitude_;
+            }
+            return {};
+        }
+        bool IsAltitudeNull( ) const
+        {
+            return altitudeNullIndicator_ == SQL_NULL_DATA;
         }
         void SetAltitude( double altitude )
         {
             altitude_ = altitude;
         }
-        double ViewportWidth( ) const
+        std::optional<double> ViewportWidth( ) const
         {
-            return viewportWidth_;
+            if(viewportWidthNullIndicator_ != SQL_NULL_DATA)
+            {
+                return viewportWidth_;
+            }
+            return {};
+        }
+        bool IsViewportWidthNull( ) const
+        {
+            return viewportWidthNullIndicator_ == SQL_NULL_DATA;
         }
         void SetViewportWidth( double viewportWidth )
         {
             viewportWidth_ = viewportWidth;
         }
-        double ViewportHeight( ) const
+        std::optional<double> ViewportHeight( ) const
         {
-            return viewportHeight_;
+            if(viewportHeightNullIndicator_ != SQL_NULL_DATA)
+            {
+                return viewportHeight_;
+            }
+            return {};
+        }
+        bool IsViewportHeightNull( ) const
+        {
+            return viewportHeightNullIndicator_ == SQL_NULL_DATA;
         }
         void SetViewportHeight( double viewportHeight )
         {
@@ -4872,7 +5823,19 @@ namespace Barrelman::Data
             Bind(statement, VIEWPORTHEIGHT_FIELD_ID, &viewportHeight_, &viewportHeightNullIndicator_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, latitude_);
+            WriteColumnValue( destination, longitude_);
+            WriteColumnValue( destination, altitude_, altitudeNullIndicator_);
+            WriteColumnValue( destination, viewportWidth_, viewportWidthNullIndicator_);
+            WriteColumnValue( destination, viewportHeight_, viewportHeightNullIndicator_);
+        }
     };
+
+    using SimpleCameraCommandGeoMoveDataReader = SimpleColumnDataReader<CameraCommandGeoMoveColumnData>;
 
     class CameraCommandRelativeMoveColumnData : public CameraCommandColumnData
     {
@@ -4918,49 +5881,97 @@ namespace Barrelman::Data
         {
             normalized_ = normalized;
         }
-        double PanAngle( ) const
+        std::optional<double> PanAngle( ) const
         {
-            return panAngle_;
+            if(panAngleNullIndicator_ != SQL_NULL_DATA)
+            {
+                return panAngle_;
+            }
+            return {};
+        }
+        bool IsPanAngleNull( ) const
+        {
+            return panAngleNullIndicator_ == SQL_NULL_DATA;
         }
         void SetPanAngle( double panAngle )
         {
             panAngle_ = panAngle;
         }
-        double TiltAngle( ) const
+        std::optional<double> TiltAngle( ) const
         {
-            return tiltAngle_;
+            if(tiltAngleNullIndicator_ != SQL_NULL_DATA)
+            {
+                return tiltAngle_;
+            }
+            return {};
+        }
+        bool IsTiltAngleNull( ) const
+        {
+            return tiltAngleNullIndicator_ == SQL_NULL_DATA;
         }
         void SetTiltAngle( double tiltAngle )
         {
             tiltAngle_ = tiltAngle;
         }
-        double FocalLength( ) const
+        std::optional<double> FocalLength( ) const
         {
-            return focalLength_;
+            if(focalLengthNullIndicator_ != SQL_NULL_DATA)
+            {
+                return focalLength_;
+            }
+            return {};
+        }
+        bool IsFocalLengthNull( ) const
+        {
+            return focalLengthNullIndicator_ == SQL_NULL_DATA;
         }
         void SetFocalLength( double focalLength )
         {
             focalLength_ = focalLength;
         }
-        double PanSpeed( ) const
+        std::optional<double> PanSpeed( ) const
         {
-            return panSpeed_;
+            if(panSpeedNullIndicator_ != SQL_NULL_DATA)
+            {
+                return panSpeed_;
+            }
+            return {};
+        }
+        bool IsPanSpeedNull( ) const
+        {
+            return panSpeedNullIndicator_ == SQL_NULL_DATA;
         }
         void SetPanSpeed( double panSpeed )
         {
             panSpeed_ = panSpeed;
         }
-        double TiltSpeed( ) const
+        std::optional<double> TiltSpeed( ) const
         {
-            return tiltSpeed_;
+            if(tiltSpeedNullIndicator_ != SQL_NULL_DATA)
+            {
+                return tiltSpeed_;
+            }
+            return {};
+        }
+        bool IsTiltSpeedNull( ) const
+        {
+            return tiltSpeedNullIndicator_ == SQL_NULL_DATA;
         }
         void SetTiltSpeed( double tiltSpeed )
         {
             tiltSpeed_ = tiltSpeed;
         }
-        double ZoomSpeed( ) const
+        std::optional<double> ZoomSpeed( ) const
         {
-            return zoomSpeed_;
+            if(zoomSpeedNullIndicator_ != SQL_NULL_DATA)
+            {
+                return zoomSpeed_;
+            }
+            return {};
+        }
+        bool IsZoomSpeedNull( ) const
+        {
+            return zoomSpeedNullIndicator_ == SQL_NULL_DATA;
         }
         void SetZoomSpeed( double zoomSpeed )
         {
@@ -4979,7 +5990,21 @@ namespace Barrelman::Data
             Bind(statement, ZOOMSPEED_FIELD_ID, &zoomSpeed_, &zoomSpeedNullIndicator_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, normalized_);
+            WriteColumnValue( destination, panAngle_, panAngleNullIndicator_);
+            WriteColumnValue( destination, tiltAngle_, tiltAngleNullIndicator_);
+            WriteColumnValue( destination, focalLength_, focalLengthNullIndicator_);
+            WriteColumnValue( destination, panSpeed_, panSpeedNullIndicator_);
+            WriteColumnValue( destination, tiltSpeed_, tiltSpeedNullIndicator_);
+            WriteColumnValue( destination, zoomSpeed_, zoomSpeedNullIndicator_);
+        }
     };
+
+    using SimpleCameraCommandRelativeMoveDataReader = SimpleColumnDataReader<CameraCommandRelativeMoveColumnData>;
 
     class CameraCommandReleasePTZOwnershipColumnData : public CameraCommandColumnData
     {
@@ -4996,7 +6021,14 @@ namespace Barrelman::Data
             return Kind::CameraCommandReleasePTZOwnership;
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+        }
     };
+
+    using SimpleCameraCommandReleasePTZOwnershipDataReader = SimpleColumnDataReader<CameraCommandReleasePTZOwnershipColumnData>;
 
     class CameraCommandRequestPTZOwnershipColumnData : public CameraCommandColumnData
     {
@@ -5013,7 +6045,14 @@ namespace Barrelman::Data
             return Kind::CameraCommandRequestPTZOwnership;
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+        }
     };
+
+    using SimpleCameraCommandRequestPTZOwnershipDataReader = SimpleColumnDataReader<CameraCommandRequestPTZOwnershipColumnData>;
 
     class CameraCommandSetAutoFocusColumnData : public CameraCommandColumnData
     {
@@ -5048,7 +6087,15 @@ namespace Barrelman::Data
             Bind(statement, ENABLED_FIELD_ID, &enabled_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, enabled_);
+        }
     };
+
+    using SimpleCameraCommandSetAutoFocusDataReader = SimpleColumnDataReader<CameraCommandSetAutoFocusColumnData>;
 
     class CameraCommandSetBlackAndWhiteColumnData : public CameraCommandColumnData
     {
@@ -5083,7 +6130,15 @@ namespace Barrelman::Data
             Bind(statement, ENABLED_FIELD_ID, &enabled_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, enabled_);
+        }
     };
+
+    using SimpleCameraCommandSetBlackAndWhiteDataReader = SimpleColumnDataReader<CameraCommandSetBlackAndWhiteColumnData>;
 
     class CameraCommandSetFollowedColumnData : public CameraCommandColumnData
     {
@@ -5129,7 +6184,16 @@ namespace Barrelman::Data
             Bind(statement, REASON_FIELD_ID, &reason_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, trackId_);
+            WriteColumnValue( destination, reason_);
+        }
     };
+
+    using SimpleCameraCommandSetFollowedDataReader = SimpleColumnDataReader<CameraCommandSetFollowedColumnData>;
 
     class CameraCommandSetInfraRedLampColumnData : public CameraCommandColumnData
     {
@@ -5164,7 +6228,15 @@ namespace Barrelman::Data
             Bind(statement, ENABLED_FIELD_ID, &enabled_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, enabled_);
+        }
     };
+
+    using SimpleCameraCommandSetInfraRedLampDataReader = SimpleColumnDataReader<CameraCommandSetInfraRedLampColumnData>;
 
     class CameraCommandSetWasherColumnData : public CameraCommandColumnData
     {
@@ -5199,7 +6271,15 @@ namespace Barrelman::Data
             Bind(statement, ENABLED_FIELD_ID, &enabled_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, enabled_);
+        }
     };
+
+    using SimpleCameraCommandSetWasherDataReader = SimpleColumnDataReader<CameraCommandSetWasherColumnData>;
 
     class CameraCommandSetWiperColumnData : public CameraCommandColumnData
     {
@@ -5234,7 +6314,15 @@ namespace Barrelman::Data
             Bind(statement, ENABLED_FIELD_ID, &enabled_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, enabled_);
+        }
     };
+
+    using SimpleCameraCommandSetWiperDataReader = SimpleColumnDataReader<CameraCommandSetWiperColumnData>;
 
     class CameraCommandStopColumnData : public CameraCommandColumnData
     {
@@ -5280,7 +6368,16 @@ namespace Barrelman::Data
             Bind(statement, ZOOM_FIELD_ID, &zoom_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, panTilt_);
+            WriteColumnValue( destination, zoom_);
+        }
     };
+
+    using SimpleCameraCommandStopDataReader = SimpleColumnDataReader<CameraCommandStopColumnData>;
 
     class CameraCommandReplyColumnData : public BaseColumnData
     {
@@ -5412,7 +6509,29 @@ namespace Barrelman::Data
             Bind(statement, FOCALLENGTH_FIELD_ID, &focalLength_);
         }
 
+        void ReadUnboundData( const ODBC::Statement& statement )
+        {
+            Base::ReadUnboundData( statement );
+
+            message_ = statement.GetWideString(MESSAGE_FIELD_ID);
+        }
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, camera_);
+            WriteColumnValue( destination, timestamp_);
+            WriteColumnValue( destination, command_);
+            WriteColumnValue( destination, status_);
+            WriteColumnValue( destination, message_, messageLengthOrNullIndicator_);
+            WriteColumnValue( destination, panAngle_);
+            WriteColumnValue( destination, tiltAngle_);
+            WriteColumnValue( destination, focalLength_);
+        }
     };
+
+    using SimpleCameraCommandReplyDataReader = SimpleColumnDataReader<CameraCommandReplyColumnData>;
 
     class CameraConfigurationColumnData : public BaseColumnData
     {
@@ -6189,7 +7308,78 @@ namespace Barrelman::Data
             Bind(statement, VIDEOSOURCETOKEN_FIELD_ID, &videoSourceToken_, &videoSourceTokenLengthOrNullIndicator_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, camera_);
+            WriteColumnValue( destination, timestamp_);
+            WriteColumnValue( destination, cameraControlProtocol_);
+            WriteColumnValue( destination, cameraAddress_, cameraAddressLengthOrNullIndicator_);
+            WriteColumnValue( destination, cameraPort_);
+            WriteColumnValue( destination, cameraControlAddress_, cameraControlAddressLengthOrNullIndicator_);
+            WriteColumnValue( destination, cameraControlPort_);
+            WriteColumnValue( destination, cameraUserName_, cameraUserNameLengthOrNullIndicator_);
+            WriteColumnValue( destination, cameraPassword_, cameraPasswordLengthOrNullIndicator_);
+            WriteColumnValue( destination, useRtspUriOverride_);
+            WriteColumnValue( destination, rtspUriOverride_, rtspUriOverrideLengthOrNullIndicator_);
+            WriteColumnValue( destination, latitude_);
+            WriteColumnValue( destination, longitude_);
+            WriteColumnValue( destination, altitude_);
+            WriteColumnValue( destination, useRelativePosition_);
+            WriteColumnValue( destination, azimuthFromGPS_);
+            WriteColumnValue( destination, distanceFromGPS_);
+            WriteColumnValue( destination, panTiltMode_);
+            WriteColumnValue( destination, minTiltAngle_);
+            WriteColumnValue( destination, maxTiltAngle_);
+            WriteColumnValue( destination, minTiltScaleAngle_);
+            WriteColumnValue( destination, maxTiltScaleAngle_);
+            WriteColumnValue( destination, useReverseTiltAngle_);
+            WriteColumnValue( destination, useReverseNormalizedTiltAngle_);
+            WriteColumnValue( destination, minTiltVelocity_);
+            WriteColumnValue( destination, maxTiltVelocity_);
+            WriteColumnValue( destination, minTiltSpeed_);
+            WriteColumnValue( destination, maxTiltSpeed_);
+            WriteColumnValue( destination, minPanAngle_);
+            WriteColumnValue( destination, maxPanAngle_);
+            WriteColumnValue( destination, minPanScaleAngle_);
+            WriteColumnValue( destination, maxPanScaleAngle_);
+            WriteColumnValue( destination, useReversePanAngle_);
+            WriteColumnValue( destination, useReverseNormalizedPanAngle_);
+            WriteColumnValue( destination, minPanVelocity_);
+            WriteColumnValue( destination, maxPanVelocity_);
+            WriteColumnValue( destination, minPanSpeed_);
+            WriteColumnValue( destination, maxPanSpeed_);
+            WriteColumnValue( destination, focalLengthMode_);
+            WriteColumnValue( destination, minFocalLength_);
+            WriteColumnValue( destination, maxFocalLength_);
+            WriteColumnValue( destination, minFocalLengthScale_);
+            WriteColumnValue( destination, maxFocalLengthScale_);
+            WriteColumnValue( destination, minZoomVelocity_);
+            WriteColumnValue( destination, maxZoomVelocity_);
+            WriteColumnValue( destination, minZoomSpeed_);
+            WriteColumnValue( destination, maxZoomSpeed_);
+            WriteColumnValue( destination, imageSensorWidth_);
+            WriteColumnValue( destination, imageSensorHeight_);
+            WriteColumnValue( destination, homePanAngle_);
+            WriteColumnValue( destination, homeTiltAngle_);
+            WriteColumnValue( destination, homeFocalLength_);
+            WriteColumnValue( destination, panOffset_);
+            WriteColumnValue( destination, tiltOffset_);
+            WriteColumnValue( destination, aimAltitude_);
+            WriteColumnValue( destination, minimumTargetWidth_);
+            WriteColumnValue( destination, targetLockTimeout_);
+            WriteColumnValue( destination, updateStatusInterval_);
+            WriteColumnValue( destination, readTimeout_);
+            WriteColumnValue( destination, moveCommandStatusDelay_);
+            WriteColumnValue( destination, ptzProfileName_, ptzProfileNameLengthOrNullIndicator_);
+            WriteColumnValue( destination, ptzConfigurationToken_, ptzConfigurationTokenLengthOrNullIndicator_);
+            WriteColumnValue( destination, videoSourceToken_, videoSourceTokenLengthOrNullIndicator_);
+        }
     };
+
+    using SimpleCameraConfigurationDataReader = SimpleColumnDataReader<CameraConfigurationColumnData>;
 
     class CameraPanCalibrationColumnData : public BaseColumnData
     {
@@ -6255,7 +7445,17 @@ namespace Barrelman::Data
             Bind(statement, TIMESTAMP_FIELD_ID, &timestamp_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, camera_);
+            WriteColumnValue( destination, timestamp_);
+        }
     };
+
+    using SimpleCameraPanCalibrationDataReader = SimpleColumnDataReader<CameraPanCalibrationColumnData>;
 
     class CameraPanCalibrationValueColumnData : public BaseColumnData
     {
@@ -6332,7 +7532,18 @@ namespace Barrelman::Data
             Bind(statement, PANOFFSET_FIELD_ID, &panOffset_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, panCalibration_);
+            WriteColumnValue( destination, panAngle_);
+            WriteColumnValue( destination, panOffset_);
+        }
     };
+
+    using SimpleCameraPanCalibrationValueDataReader = SimpleColumnDataReader<CameraPanCalibrationValueColumnData>;
 
     class CameraStatusColumnData : public BaseColumnData
     {
@@ -6496,17 +7707,33 @@ namespace Barrelman::Data
         {
             velocityPanTiltMode_ = velocityPanTiltMode;
         }
-        double PanVelocity( ) const
+        std::optional<double> PanVelocity( ) const
         {
-            return panVelocity_;
+            if(panVelocityNullIndicator_ != SQL_NULL_DATA)
+            {
+                return panVelocity_;
+            }
+            return {};
+        }
+        bool IsPanVelocityNull( ) const
+        {
+            return panVelocityNullIndicator_ == SQL_NULL_DATA;
         }
         void SetPanVelocity( double panVelocity )
         {
             panVelocity_ = panVelocity;
         }
-        double TiltVelocity( ) const
+        std::optional<double> TiltVelocity( ) const
         {
-            return tiltVelocity_;
+            if(tiltVelocityNullIndicator_ != SQL_NULL_DATA)
+            {
+                return tiltVelocity_;
+            }
+            return {};
+        }
+        bool IsTiltVelocityNull( ) const
+        {
+            return tiltVelocityNullIndicator_ == SQL_NULL_DATA;
         }
         void SetTiltVelocity( double tiltVelocity )
         {
@@ -6520,9 +7747,17 @@ namespace Barrelman::Data
         {
             velocityFocalLengthMode_ = velocityFocalLengthMode;
         }
-        double ZoomVelocity( ) const
+        std::optional<double> ZoomVelocity( ) const
         {
-            return zoomVelocity_;
+            if(zoomVelocityNullIndicator_ != SQL_NULL_DATA)
+            {
+                return zoomVelocity_;
+            }
+            return {};
+        }
+        bool IsZoomVelocityNull( ) const
+        {
+            return zoomVelocityNullIndicator_ == SQL_NULL_DATA;
         }
         void SetZoomVelocity( double zoomVelocity )
         {
@@ -6566,7 +7801,38 @@ namespace Barrelman::Data
             Bind(statement, ACTIVEFEATURES_FIELD_ID, &activeFeatures_);
         }
 
+        void ReadUnboundData( const ODBC::Statement& statement )
+        {
+            Base::ReadUnboundData( statement );
+
+            error_ = statement.GetWideString(ERROR_FIELD_ID);
+        }
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, camera_);
+            WriteColumnValue( destination, track_);
+            WriteColumnValue( destination, timestamp_);
+            WriteColumnValue( destination, positionPanTiltMode_);
+            WriteColumnValue( destination, panAngle_);
+            WriteColumnValue( destination, tiltAngle_);
+            WriteColumnValue( destination, positionFocalLengthMode_);
+            WriteColumnValue( destination, focalLength_);
+            WriteColumnValue( destination, panTiltMoveStatus_);
+            WriteColumnValue( destination, zoomMoveStatus_);
+            WriteColumnValue( destination, velocityPanTiltMode_);
+            WriteColumnValue( destination, panVelocity_, panVelocityNullIndicator_);
+            WriteColumnValue( destination, tiltVelocity_, tiltVelocityNullIndicator_);
+            WriteColumnValue( destination, velocityFocalLengthMode_);
+            WriteColumnValue( destination, zoomVelocity_, zoomVelocityNullIndicator_);
+            WriteColumnValue( destination, activeFeatures_);
+            WriteColumnValue( destination, error_, errorLengthOrNullIndicator_);
+        }
     };
+
+    using SimpleCameraStatusDataReader = SimpleColumnDataReader<CameraStatusColumnData>;
 
     class CameraTiltCalibrationColumnData : public BaseColumnData
     {
@@ -6632,7 +7898,17 @@ namespace Barrelman::Data
             Bind(statement, TIMESTAMP_FIELD_ID, &timestamp_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, camera_);
+            WriteColumnValue( destination, timestamp_);
+        }
     };
+
+    using SimpleCameraTiltCalibrationDataReader = SimpleColumnDataReader<CameraTiltCalibrationColumnData>;
 
     class CameraTiltCalibrationValueColumnData : public BaseColumnData
     {
@@ -6709,7 +7985,18 @@ namespace Barrelman::Data
             Bind(statement, TILTOFFSET_FIELD_ID, &tiltOffset_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, tiltCalibration_);
+            WriteColumnValue( destination, panAngle_);
+            WriteColumnValue( destination, tiltOffset_);
+        }
     };
+
+    using SimpleCameraTiltCalibrationValueDataReader = SimpleColumnDataReader<CameraTiltCalibrationValueColumnData>;
 
     class CameraZoomCalibrationColumnData : public BaseColumnData
     {
@@ -6775,7 +8062,17 @@ namespace Barrelman::Data
             Bind(statement, TIMESTAMP_FIELD_ID, &timestamp_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, camera_);
+            WriteColumnValue( destination, timestamp_);
+        }
     };
+
+    using SimpleCameraZoomCalibrationDataReader = SimpleColumnDataReader<CameraZoomCalibrationColumnData>;
 
     class CameraZoomCalibrationValueColumnData : public BaseColumnData
     {
@@ -6852,7 +8149,18 @@ namespace Barrelman::Data
             Bind(statement, FOCALLENGTHOFFSET_FIELD_ID, &focalLengthOffset_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, zoomCalibration_);
+            WriteColumnValue( destination, focalLength_);
+            WriteColumnValue( destination, focalLengthOffset_);
+        }
     };
+
+    using SimpleCameraZoomCalibrationValueDataReader = SimpleColumnDataReader<CameraZoomCalibrationValueColumnData>;
 
     class CatalogElementColumnData : public BaseColumnData
     {
@@ -6923,7 +8231,17 @@ namespace Barrelman::Data
             Bind(statement, NAME_FIELD_ID, &name_, &nameLengthOrNullIndicator_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, catalog_);
+            WriteColumnValue( destination, name_, nameLengthOrNullIndicator_);
+        }
     };
+
+    using SimpleCatalogElementDataReader = SimpleColumnDataReader<CatalogElementColumnData>;
 
     class CatalogColumnData : public CatalogElementColumnData
     {
@@ -6940,7 +8258,14 @@ namespace Barrelman::Data
             return Kind::Catalog;
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+        }
     };
+
+    using SimpleCatalogDataReader = SimpleColumnDataReader<CatalogColumnData>;
 
     class ElementColumnData : public CatalogElementColumnData
     {
@@ -6975,7 +8300,15 @@ namespace Barrelman::Data
             Bind(statement, ELEMENTTYPE_FIELD_ID, &elementType_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, elementType_);
+        }
     };
+
+    using SimpleElementDataReader = SimpleColumnDataReader<ElementColumnData>;
 
     class CollectionInfoColumnData : public BaseColumnData
     {
@@ -7030,7 +8363,16 @@ namespace Barrelman::Data
             Bind(statement, COUNT_FIELD_ID, &count_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, count_);
+        }
     };
+
+    using SimpleCollectionInfoDataReader = SimpleColumnDataReader<CollectionInfoColumnData>;
 
     class CountryColumnData : public BaseColumnData
     {
@@ -7133,7 +8475,19 @@ namespace Barrelman::Data
             Bind(statement, ALPHA3_FIELD_ID, &alpha3_, &alpha3LengthOrNullIndicator_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, name_, nameLengthOrNullIndicator_);
+            WriteColumnValue( destination, code_);
+            WriteColumnValue( destination, alpha2_, alpha2LengthOrNullIndicator_);
+            WriteColumnValue( destination, alpha3_, alpha3LengthOrNullIndicator_);
+        }
     };
+
+    using SimpleCountryDataReader = SimpleColumnDataReader<CountryColumnData>;
 
     class CursorInfoColumnData : public BaseColumnData
     {
@@ -7188,7 +8542,16 @@ namespace Barrelman::Data
             Bind(statement, TYPECODE_FIELD_ID, &typeCode_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, typeCode_);
+        }
     };
+
+    using SimpleCursorInfoDataReader = SimpleColumnDataReader<CursorInfoColumnData>;
 
     class DateTimeTimeseriesValueColumnData : public BaseColumnData
     {
@@ -7249,9 +8612,17 @@ namespace Barrelman::Data
         {
             timestamp_ = timestamp;
         }
-        DateTime Value( ) const
+        std::optional<DateTime> Value( ) const
         {
-            return value_;
+            if(valueNullIndicator_ != SQL_NULL_DATA)
+            {
+                return value_;
+            }
+            return {};
+        }
+        bool IsValueNull( ) const
+        {
+            return valueNullIndicator_ == SQL_NULL_DATA;
         }
         void SetValue( const DateTime& value )
         {
@@ -7266,7 +8637,18 @@ namespace Barrelman::Data
             Bind(statement, VALUE_FIELD_ID, &value_, &valueNullIndicator_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, timeseries_);
+            WriteColumnValue( destination, timestamp_);
+            WriteColumnValue( destination, value_, valueNullIndicator_);
+        }
     };
+
+    using SimpleDateTimeTimeseriesValueDataReader = SimpleColumnDataReader<DateTimeTimeseriesValueColumnData>;
 
     class DeviceHostColumnData : public BaseColumnData
     {
@@ -7326,7 +8708,16 @@ namespace Barrelman::Data
             Bind(statement, NAME_FIELD_ID, &name_, &nameLengthOrNullIndicator_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, name_, nameLengthOrNullIndicator_);
+        }
     };
+
+    using SimpleDeviceHostDataReader = SimpleColumnDataReader<DeviceHostColumnData>;
 
     class DeviceHostConfigurationColumnData : public BaseColumnData
     {
@@ -7435,7 +8826,20 @@ namespace Barrelman::Data
             Bind(statement, QUEUENAME_FIELD_ID, &queueName_, &queueNameLengthOrNullIndicator_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, host_);
+            WriteColumnValue( destination, timestamp_);
+            WriteColumnValue( destination, hostname_, hostnameLengthOrNullIndicator_);
+            WriteColumnValue( destination, port_);
+            WriteColumnValue( destination, queueName_, queueNameLengthOrNullIndicator_);
+        }
     };
+
+    using SimpleDeviceHostConfigurationDataReader = SimpleColumnDataReader<DeviceHostConfigurationColumnData>;
 
     class DeviceTypeColumnData : public BaseColumnData
     {
@@ -7543,7 +8947,19 @@ namespace Barrelman::Data
             Bind(statement, PROXYCLASSNAME_FIELD_ID, &proxyClassName_, &proxyClassNameLengthOrNullIndicator_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, assemblyName_, assemblyNameLengthOrNullIndicator_);
+            WriteColumnValue( destination, className_, classNameLengthOrNullIndicator_);
+            WriteColumnValue( destination, proxyAssemblyName_, proxyAssemblyNameLengthOrNullIndicator_);
+            WriteColumnValue( destination, proxyClassName_, proxyClassNameLengthOrNullIndicator_);
+        }
     };
+
+    using SimpleDeviceTypeDataReader = SimpleColumnDataReader<DeviceTypeColumnData>;
 
     class AisTransceiverTypeColumnData : public DeviceTypeColumnData
     {
@@ -7583,7 +8999,15 @@ namespace Barrelman::Data
             Bind(statement, NAME_FIELD_ID, &name_, &nameLengthOrNullIndicator_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, name_, nameLengthOrNullIndicator_);
+        }
     };
+
+    using SimpleAisTransceiverTypeDataReader = SimpleColumnDataReader<AisTransceiverTypeColumnData>;
 
     class CameraTypeColumnData : public DeviceTypeColumnData
     {
@@ -7634,7 +9058,16 @@ namespace Barrelman::Data
             Bind(statement, CAMERAFEATURES_FIELD_ID, &cameraFeatures_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, name_, nameLengthOrNullIndicator_);
+            WriteColumnValue( destination, cameraFeatures_);
+        }
     };
+
+    using SimpleCameraTypeDataReader = SimpleColumnDataReader<CameraTypeColumnData>;
 
     class GNSSDeviceTypeColumnData : public DeviceTypeColumnData
     {
@@ -7674,7 +9107,15 @@ namespace Barrelman::Data
             Bind(statement, NAME_FIELD_ID, &name_, &nameLengthOrNullIndicator_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, name_, nameLengthOrNullIndicator_);
+        }
     };
+
+    using SimpleGNSSDeviceTypeDataReader = SimpleColumnDataReader<GNSSDeviceTypeColumnData>;
 
     class GyroDeviceTypeColumnData : public DeviceTypeColumnData
     {
@@ -7714,7 +9155,15 @@ namespace Barrelman::Data
             Bind(statement, NAME_FIELD_ID, &name_, &nameLengthOrNullIndicator_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, name_, nameLengthOrNullIndicator_);
+        }
     };
+
+    using SimpleGyroDeviceTypeDataReader = SimpleColumnDataReader<GyroDeviceTypeColumnData>;
 
     class LineInputDeviceTypeColumnData : public DeviceTypeColumnData
     {
@@ -7754,7 +9203,15 @@ namespace Barrelman::Data
             Bind(statement, NAME_FIELD_ID, &name_, &nameLengthOrNullIndicator_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, name_, nameLengthOrNullIndicator_);
+        }
     };
+
+    using SimpleLineInputDeviceTypeDataReader = SimpleColumnDataReader<LineInputDeviceTypeColumnData>;
 
     class OilspillDetectorTypeColumnData : public DeviceTypeColumnData
     {
@@ -7794,7 +9251,15 @@ namespace Barrelman::Data
             Bind(statement, NAME_FIELD_ID, &name_, &nameLengthOrNullIndicator_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, name_, nameLengthOrNullIndicator_);
+        }
     };
+
+    using SimpleOilspillDetectorTypeDataReader = SimpleColumnDataReader<OilspillDetectorTypeColumnData>;
 
     class RadarTypeColumnData : public DeviceTypeColumnData
     {
@@ -7881,9 +9346,17 @@ namespace Barrelman::Data
         {
             Assign(name, name_, nameLengthOrNullIndicator_);
         }
-        Int32 PulseShortMinusValue( ) const
+        std::optional<Int32> PulseShortMinusValue( ) const
         {
-            return pulseShortMinusValue_;
+            if(pulseShortMinusValueNullIndicator_ != SQL_NULL_DATA)
+            {
+                return pulseShortMinusValue_;
+            }
+            return {};
+        }
+        bool IsPulseShortMinusValueNull( ) const
+        {
+            return pulseShortMinusValueNullIndicator_ == SQL_NULL_DATA;
         }
         void SetPulseShortMinusValue( Int32 pulseShortMinusValue )
         {
@@ -7901,9 +9374,17 @@ namespace Barrelman::Data
         {
             Assign(pulseShortMinusDisplayText, pulseShortMinusDisplayText_, pulseShortMinusDisplayTextLengthOrNullIndicator_);
         }
-        Int32 PulseShortValue( ) const
+        std::optional<Int32> PulseShortValue( ) const
         {
-            return pulseShortValue_;
+            if(pulseShortValueNullIndicator_ != SQL_NULL_DATA)
+            {
+                return pulseShortValue_;
+            }
+            return {};
+        }
+        bool IsPulseShortValueNull( ) const
+        {
+            return pulseShortValueNullIndicator_ == SQL_NULL_DATA;
         }
         void SetPulseShortValue( Int32 pulseShortValue )
         {
@@ -7921,9 +9402,17 @@ namespace Barrelman::Data
         {
             Assign(pulseShortDisplayText, pulseShortDisplayText_, pulseShortDisplayTextLengthOrNullIndicator_);
         }
-        Int32 PulseShortPlusValue( ) const
+        std::optional<Int32> PulseShortPlusValue( ) const
         {
-            return pulseShortPlusValue_;
+            if(pulseShortPlusValueNullIndicator_ != SQL_NULL_DATA)
+            {
+                return pulseShortPlusValue_;
+            }
+            return {};
+        }
+        bool IsPulseShortPlusValueNull( ) const
+        {
+            return pulseShortPlusValueNullIndicator_ == SQL_NULL_DATA;
         }
         void SetPulseShortPlusValue( Int32 pulseShortPlusValue )
         {
@@ -7941,9 +9430,17 @@ namespace Barrelman::Data
         {
             Assign(pulseShortPlusDisplayText, pulseShortPlusDisplayText_, pulseShortPlusDisplayTextLengthOrNullIndicator_);
         }
-        Int32 PulseMediumMinusValue( ) const
+        std::optional<Int32> PulseMediumMinusValue( ) const
         {
-            return pulseMediumMinusValue_;
+            if(pulseMediumMinusValueNullIndicator_ != SQL_NULL_DATA)
+            {
+                return pulseMediumMinusValue_;
+            }
+            return {};
+        }
+        bool IsPulseMediumMinusValueNull( ) const
+        {
+            return pulseMediumMinusValueNullIndicator_ == SQL_NULL_DATA;
         }
         void SetPulseMediumMinusValue( Int32 pulseMediumMinusValue )
         {
@@ -7961,9 +9458,17 @@ namespace Barrelman::Data
         {
             Assign(pulseMediumMinusDisplayText, pulseMediumMinusDisplayText_, pulseMediumMinusDisplayTextLengthOrNullIndicator_);
         }
-        Int32 PulseMediumValue( ) const
+        std::optional<Int32> PulseMediumValue( ) const
         {
-            return pulseMediumValue_;
+            if(pulseMediumValueNullIndicator_ != SQL_NULL_DATA)
+            {
+                return pulseMediumValue_;
+            }
+            return {};
+        }
+        bool IsPulseMediumValueNull( ) const
+        {
+            return pulseMediumValueNullIndicator_ == SQL_NULL_DATA;
         }
         void SetPulseMediumValue( Int32 pulseMediumValue )
         {
@@ -7981,9 +9486,17 @@ namespace Barrelman::Data
         {
             Assign(pulseMediumDisplayText, pulseMediumDisplayText_, pulseMediumDisplayTextLengthOrNullIndicator_);
         }
-        Int32 PulseMediumPlusValue( ) const
+        std::optional<Int32> PulseMediumPlusValue( ) const
         {
-            return pulseMediumPlusValue_;
+            if(pulseMediumPlusValueNullIndicator_ != SQL_NULL_DATA)
+            {
+                return pulseMediumPlusValue_;
+            }
+            return {};
+        }
+        bool IsPulseMediumPlusValueNull( ) const
+        {
+            return pulseMediumPlusValueNullIndicator_ == SQL_NULL_DATA;
         }
         void SetPulseMediumPlusValue( Int32 pulseMediumPlusValue )
         {
@@ -8001,9 +9514,17 @@ namespace Barrelman::Data
         {
             Assign(pulseMediumPlusDisplayText, pulseMediumPlusDisplayText_, pulseMediumPlusDisplayTextLengthOrNullIndicator_);
         }
-        Int32 PulseLongMinusValue( ) const
+        std::optional<Int32> PulseLongMinusValue( ) const
         {
-            return pulseLongMinusValue_;
+            if(pulseLongMinusValueNullIndicator_ != SQL_NULL_DATA)
+            {
+                return pulseLongMinusValue_;
+            }
+            return {};
+        }
+        bool IsPulseLongMinusValueNull( ) const
+        {
+            return pulseLongMinusValueNullIndicator_ == SQL_NULL_DATA;
         }
         void SetPulseLongMinusValue( Int32 pulseLongMinusValue )
         {
@@ -8021,9 +9542,17 @@ namespace Barrelman::Data
         {
             Assign(pulseLongMinusDisplayText, pulseLongMinusDisplayText_, pulseLongMinusDisplayTextLengthOrNullIndicator_);
         }
-        Int32 PulseLongValue( ) const
+        std::optional<Int32> PulseLongValue( ) const
         {
-            return pulseLongValue_;
+            if(pulseLongValueNullIndicator_ != SQL_NULL_DATA)
+            {
+                return pulseLongValue_;
+            }
+            return {};
+        }
+        bool IsPulseLongValueNull( ) const
+        {
+            return pulseLongValueNullIndicator_ == SQL_NULL_DATA;
         }
         void SetPulseLongValue( Int32 pulseLongValue )
         {
@@ -8041,9 +9570,17 @@ namespace Barrelman::Data
         {
             Assign(pulseLongDisplayText, pulseLongDisplayText_, pulseLongDisplayTextLengthOrNullIndicator_);
         }
-        Int32 PulseLongPlusValue( ) const
+        std::optional<Int32> PulseLongPlusValue( ) const
         {
-            return pulseLongPlusValue_;
+            if(pulseLongPlusValueNullIndicator_ != SQL_NULL_DATA)
+            {
+                return pulseLongPlusValue_;
+            }
+            return {};
+        }
+        bool IsPulseLongPlusValueNull( ) const
+        {
+            return pulseLongPlusValueNullIndicator_ == SQL_NULL_DATA;
         }
         void SetPulseLongPlusValue( Int32 pulseLongPlusValue )
         {
@@ -8086,7 +9623,33 @@ namespace Barrelman::Data
             Bind(statement, PULSELONGPLUSDISPLAYTEXT_FIELD_ID, &pulseLongPlusDisplayText_, &pulseLongPlusDisplayTextLengthOrNullIndicator_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, name_, nameLengthOrNullIndicator_);
+            WriteColumnValue( destination, pulseShortMinusValue_, pulseShortMinusValueNullIndicator_);
+            WriteColumnValue( destination, pulseShortMinusDisplayText_, pulseShortMinusDisplayTextLengthOrNullIndicator_);
+            WriteColumnValue( destination, pulseShortValue_, pulseShortValueNullIndicator_);
+            WriteColumnValue( destination, pulseShortDisplayText_, pulseShortDisplayTextLengthOrNullIndicator_);
+            WriteColumnValue( destination, pulseShortPlusValue_, pulseShortPlusValueNullIndicator_);
+            WriteColumnValue( destination, pulseShortPlusDisplayText_, pulseShortPlusDisplayTextLengthOrNullIndicator_);
+            WriteColumnValue( destination, pulseMediumMinusValue_, pulseMediumMinusValueNullIndicator_);
+            WriteColumnValue( destination, pulseMediumMinusDisplayText_, pulseMediumMinusDisplayTextLengthOrNullIndicator_);
+            WriteColumnValue( destination, pulseMediumValue_, pulseMediumValueNullIndicator_);
+            WriteColumnValue( destination, pulseMediumDisplayText_, pulseMediumDisplayTextLengthOrNullIndicator_);
+            WriteColumnValue( destination, pulseMediumPlusValue_, pulseMediumPlusValueNullIndicator_);
+            WriteColumnValue( destination, pulseMediumPlusDisplayText_, pulseMediumPlusDisplayTextLengthOrNullIndicator_);
+            WriteColumnValue( destination, pulseLongMinusValue_, pulseLongMinusValueNullIndicator_);
+            WriteColumnValue( destination, pulseLongMinusDisplayText_, pulseLongMinusDisplayTextLengthOrNullIndicator_);
+            WriteColumnValue( destination, pulseLongValue_, pulseLongValueNullIndicator_);
+            WriteColumnValue( destination, pulseLongDisplayText_, pulseLongDisplayTextLengthOrNullIndicator_);
+            WriteColumnValue( destination, pulseLongPlusValue_, pulseLongPlusValueNullIndicator_);
+            WriteColumnValue( destination, pulseLongPlusDisplayText_, pulseLongPlusDisplayTextLengthOrNullIndicator_);
+        }
     };
+
+    using SimpleRadarTypeDataReader = SimpleColumnDataReader<RadarTypeColumnData>;
 
     class RadioTypeColumnData : public DeviceTypeColumnData
     {
@@ -8126,7 +9689,15 @@ namespace Barrelman::Data
             Bind(statement, NAME_FIELD_ID, &name_, &nameLengthOrNullIndicator_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, name_, nameLengthOrNullIndicator_);
+        }
     };
+
+    using SimpleRadioTypeDataReader = SimpleColumnDataReader<RadioTypeColumnData>;
 
     class RadomeTypeColumnData : public DeviceTypeColumnData
     {
@@ -8166,7 +9737,15 @@ namespace Barrelman::Data
             Bind(statement, NAME_FIELD_ID, &name_, &nameLengthOrNullIndicator_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, name_, nameLengthOrNullIndicator_);
+        }
     };
+
+    using SimpleRadomeTypeDataReader = SimpleColumnDataReader<RadomeTypeColumnData>;
 
     class WeatherStationTypeColumnData : public DeviceTypeColumnData
     {
@@ -8206,7 +9785,15 @@ namespace Barrelman::Data
             Bind(statement, NAME_FIELD_ID, &name_, &nameLengthOrNullIndicator_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, name_, nameLengthOrNullIndicator_);
+        }
     };
+
+    using SimpleWeatherStationTypeDataReader = SimpleColumnDataReader<WeatherStationTypeColumnData>;
 
     class DoubleTimeseriesValueColumnData : public BaseColumnData
     {
@@ -8267,9 +9854,17 @@ namespace Barrelman::Data
         {
             timestamp_ = timestamp;
         }
-        double Value( ) const
+        std::optional<double> Value( ) const
         {
-            return value_;
+            if(valueNullIndicator_ != SQL_NULL_DATA)
+            {
+                return value_;
+            }
+            return {};
+        }
+        bool IsValueNull( ) const
+        {
+            return valueNullIndicator_ == SQL_NULL_DATA;
         }
         void SetValue( double value )
         {
@@ -8284,7 +9879,18 @@ namespace Barrelman::Data
             Bind(statement, VALUE_FIELD_ID, &value_, &valueNullIndicator_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, timeseries_);
+            WriteColumnValue( destination, timestamp_);
+            WriteColumnValue( destination, value_, valueNullIndicator_);
+        }
     };
+
+    using SimpleDoubleTimeseriesValueDataReader = SimpleColumnDataReader<DoubleTimeseriesValueColumnData>;
 
     class FacilityTypeColumnData : public BaseColumnData
     {
@@ -8344,7 +9950,16 @@ namespace Barrelman::Data
             Bind(statement, NAME_FIELD_ID, &name_, &nameLengthOrNullIndicator_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, name_, nameLengthOrNullIndicator_);
+        }
     };
+
+    using SimpleFacilityTypeDataReader = SimpleColumnDataReader<FacilityTypeColumnData>;
 
     class GeoPosition2DTimeseriesValueColumnData : public BaseColumnData
     {
@@ -8408,17 +10023,33 @@ namespace Barrelman::Data
         {
             timestamp_ = timestamp;
         }
-        double Latitude( ) const
+        std::optional<double> Latitude( ) const
         {
-            return latitude_;
+            if(latitudeNullIndicator_ != SQL_NULL_DATA)
+            {
+                return latitude_;
+            }
+            return {};
+        }
+        bool IsLatitudeNull( ) const
+        {
+            return latitudeNullIndicator_ == SQL_NULL_DATA;
         }
         void SetLatitude( double latitude )
         {
             latitude_ = latitude;
         }
-        double Longitude( ) const
+        std::optional<double> Longitude( ) const
         {
-            return longitude_;
+            if(longitudeNullIndicator_ != SQL_NULL_DATA)
+            {
+                return longitude_;
+            }
+            return {};
+        }
+        bool IsLongitudeNull( ) const
+        {
+            return longitudeNullIndicator_ == SQL_NULL_DATA;
         }
         void SetLongitude( double longitude )
         {
@@ -8434,7 +10065,19 @@ namespace Barrelman::Data
             Bind(statement, LONGITUDE_FIELD_ID, &longitude_, &longitudeNullIndicator_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, timeseries_);
+            WriteColumnValue( destination, timestamp_);
+            WriteColumnValue( destination, latitude_, latitudeNullIndicator_);
+            WriteColumnValue( destination, longitude_, longitudeNullIndicator_);
+        }
     };
+
+    using SimpleGeoPosition2DTimeseriesValueDataReader = SimpleColumnDataReader<GeoPosition2DTimeseriesValueColumnData>;
 
     class GeoPosition3DTimeseriesValueColumnData : public BaseColumnData
     {
@@ -8501,25 +10144,49 @@ namespace Barrelman::Data
         {
             timestamp_ = timestamp;
         }
-        double Latitude( ) const
+        std::optional<double> Latitude( ) const
         {
-            return latitude_;
+            if(latitudeNullIndicator_ != SQL_NULL_DATA)
+            {
+                return latitude_;
+            }
+            return {};
+        }
+        bool IsLatitudeNull( ) const
+        {
+            return latitudeNullIndicator_ == SQL_NULL_DATA;
         }
         void SetLatitude( double latitude )
         {
             latitude_ = latitude;
         }
-        double Longitude( ) const
+        std::optional<double> Longitude( ) const
         {
-            return longitude_;
+            if(longitudeNullIndicator_ != SQL_NULL_DATA)
+            {
+                return longitude_;
+            }
+            return {};
+        }
+        bool IsLongitudeNull( ) const
+        {
+            return longitudeNullIndicator_ == SQL_NULL_DATA;
         }
         void SetLongitude( double longitude )
         {
             longitude_ = longitude;
         }
-        double Altitude( ) const
+        std::optional<double> Altitude( ) const
         {
-            return altitude_;
+            if(altitudeNullIndicator_ != SQL_NULL_DATA)
+            {
+                return altitude_;
+            }
+            return {};
+        }
+        bool IsAltitudeNull( ) const
+        {
+            return altitudeNullIndicator_ == SQL_NULL_DATA;
         }
         void SetAltitude( double altitude )
         {
@@ -8536,7 +10203,20 @@ namespace Barrelman::Data
             Bind(statement, ALTITUDE_FIELD_ID, &altitude_, &altitudeNullIndicator_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, timeseries_);
+            WriteColumnValue( destination, timestamp_);
+            WriteColumnValue( destination, latitude_, latitudeNullIndicator_);
+            WriteColumnValue( destination, longitude_, longitudeNullIndicator_);
+            WriteColumnValue( destination, altitude_, altitudeNullIndicator_);
+        }
     };
+
+    using SimpleGeoPosition3DTimeseriesValueDataReader = SimpleColumnDataReader<GeoPosition3DTimeseriesValueColumnData>;
 
     class GNSSDeviceCommandColumnData : public BaseColumnData
     {
@@ -8635,7 +10315,20 @@ namespace Barrelman::Data
             Bind(statement, REPLY_FIELD_ID, &reply_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, gNSSDevice_);
+            WriteColumnValue( destination, timestamp_);
+            WriteColumnValue( destination, deviceCommandSourceType_);
+            WriteColumnValue( destination, deviceCommandSourceId_);
+            WriteColumnValue( destination, reply_);
+        }
     };
+
+    using SimpleGNSSDeviceCommandDataReader = SimpleColumnDataReader<GNSSDeviceCommandColumnData>;
 
     class GNSSDeviceCommandReplyColumnData : public BaseColumnData
     {
@@ -8734,7 +10427,26 @@ namespace Barrelman::Data
             Bind(statement, STATUS_FIELD_ID, &status_);
         }
 
+        void ReadUnboundData( const ODBC::Statement& statement )
+        {
+            Base::ReadUnboundData( statement );
+
+            message_ = statement.GetWideString(MESSAGE_FIELD_ID);
+        }
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, gNSSDevice_);
+            WriteColumnValue( destination, timestamp_);
+            WriteColumnValue( destination, command_);
+            WriteColumnValue( destination, status_);
+            WriteColumnValue( destination, message_, messageLengthOrNullIndicator_);
+        }
     };
+
+    using SimpleGNSSDeviceCommandReplyDataReader = SimpleColumnDataReader<GNSSDeviceCommandReplyColumnData>;
 
     class GNSSDeviceConfigurationColumnData : public BaseColumnData
     {
@@ -8866,7 +10578,23 @@ namespace Barrelman::Data
             Bind(statement, ALTITUDEOFFSET_FIELD_ID, &altitudeOffset_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, gNSSDevice_);
+            WriteColumnValue( destination, timestamp_);
+            WriteColumnValue( destination, defaultLatitude_);
+            WriteColumnValue( destination, defaultLongitude_);
+            WriteColumnValue( destination, defaultAltitude_);
+            WriteColumnValue( destination, latitudeOffset_);
+            WriteColumnValue( destination, longitudeOffset_);
+            WriteColumnValue( destination, altitudeOffset_);
+        }
     };
+
+    using SimpleGNSSDeviceConfigurationDataReader = SimpleColumnDataReader<GNSSDeviceConfigurationColumnData>;
 
     class GuidTimeseriesValueColumnData : public BaseColumnData
     {
@@ -8927,9 +10655,17 @@ namespace Barrelman::Data
         {
             timestamp_ = timestamp;
         }
-        Guid Value( ) const
+        std::optional<Guid> Value( ) const
         {
-            return value_;
+            if(valueNullIndicator_ != SQL_NULL_DATA)
+            {
+                return value_;
+            }
+            return {};
+        }
+        bool IsValueNull( ) const
+        {
+            return valueNullIndicator_ == SQL_NULL_DATA;
         }
         void SetValue( const Guid& value )
         {
@@ -8944,7 +10680,18 @@ namespace Barrelman::Data
             Bind(statement, VALUE_FIELD_ID, &value_, &valueNullIndicator_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, timeseries_);
+            WriteColumnValue( destination, timestamp_);
+            WriteColumnValue( destination, value_, valueNullIndicator_);
+        }
     };
+
+    using SimpleGuidTimeseriesValueDataReader = SimpleColumnDataReader<GuidTimeseriesValueColumnData>;
 
     class GyroDeviceCommandColumnData : public BaseColumnData
     {
@@ -9043,7 +10790,20 @@ namespace Barrelman::Data
             Bind(statement, REPLY_FIELD_ID, &reply_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, gyroDevice_);
+            WriteColumnValue( destination, timestamp_);
+            WriteColumnValue( destination, deviceCommandSourceType_);
+            WriteColumnValue( destination, deviceCommandSourceId_);
+            WriteColumnValue( destination, reply_);
+        }
     };
+
+    using SimpleGyroDeviceCommandDataReader = SimpleColumnDataReader<GyroDeviceCommandColumnData>;
 
     class GyroDeviceCommandReplyColumnData : public BaseColumnData
     {
@@ -9142,7 +10902,26 @@ namespace Barrelman::Data
             Bind(statement, STATUS_FIELD_ID, &status_);
         }
 
+        void ReadUnboundData( const ODBC::Statement& statement )
+        {
+            Base::ReadUnboundData( statement );
+
+            message_ = statement.GetWideString(MESSAGE_FIELD_ID);
+        }
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, gyroDevice_);
+            WriteColumnValue( destination, timestamp_);
+            WriteColumnValue( destination, command_);
+            WriteColumnValue( destination, status_);
+            WriteColumnValue( destination, message_, messageLengthOrNullIndicator_);
+        }
     };
+
+    using SimpleGyroDeviceCommandReplyDataReader = SimpleColumnDataReader<GyroDeviceCommandReplyColumnData>;
 
     class GyroDeviceConfigurationColumnData : public BaseColumnData
     {
@@ -9284,7 +11063,23 @@ namespace Barrelman::Data
             Bind(statement, ROLLTRANSDUCERNAME_FIELD_ID, &rollTransducerName_, &rollTransducerNameLengthOrNullIndicator_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, gyroDevice_);
+            WriteColumnValue( destination, timestamp_);
+            WriteColumnValue( destination, defaultHeadingTrueNorth_);
+            WriteColumnValue( destination, defaultMagneticTrueNorth_);
+            WriteColumnValue( destination, headingTrueNorthOffset_);
+            WriteColumnValue( destination, headingMagneticNorthOffset_);
+            WriteColumnValue( destination, pitchTransducerName_, pitchTransducerNameLengthOrNullIndicator_);
+            WriteColumnValue( destination, rollTransducerName_, rollTransducerNameLengthOrNullIndicator_);
+        }
     };
+
+    using SimpleGyroDeviceConfigurationDataReader = SimpleColumnDataReader<GyroDeviceConfigurationColumnData>;
 
     class IdentityColumnData : public BaseColumnData
     {
@@ -9328,7 +11123,15 @@ namespace Barrelman::Data
             Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+        }
     };
+
+    using SimpleIdentityDataReader = SimpleColumnDataReader<IdentityColumnData>;
 
     class CallsignColumnData : public IdentityColumnData
     {
@@ -9368,7 +11171,15 @@ namespace Barrelman::Data
             Bind(statement, IDENTIFIER_FIELD_ID, &identifier_, &identifierLengthOrNullIndicator_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, identifier_, identifierLengthOrNullIndicator_);
+        }
     };
+
+    using SimpleCallsignDataReader = SimpleColumnDataReader<CallsignColumnData>;
 
     class InternationalMaritimeOrganizationNumberColumnData : public IdentityColumnData
     {
@@ -9403,7 +11214,15 @@ namespace Barrelman::Data
             Bind(statement, IDENTIFIER_FIELD_ID, &identifier_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, identifier_);
+        }
     };
+
+    using SimpleInternationalMaritimeOrganizationNumberDataReader = SimpleColumnDataReader<InternationalMaritimeOrganizationNumberColumnData>;
 
     class MaritimeMobileServiceIdentityColumnData : public IdentityColumnData
     {
@@ -9438,7 +11257,15 @@ namespace Barrelman::Data
             Bind(statement, IDENTIFIER_FIELD_ID, &identifier_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, identifier_);
+        }
     };
+
+    using SimpleMaritimeMobileServiceIdentityDataReader = SimpleColumnDataReader<MaritimeMobileServiceIdentityColumnData>;
 
     class NameColumnData : public IdentityColumnData
     {
@@ -9478,7 +11305,15 @@ namespace Barrelman::Data
             Bind(statement, TEXT_FIELD_ID, &text_, &textLengthOrNullIndicator_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, text_, textLengthOrNullIndicator_);
+        }
     };
+
+    using SimpleNameDataReader = SimpleColumnDataReader<NameColumnData>;
 
     class Int16TimeseriesValueColumnData : public BaseColumnData
     {
@@ -9539,9 +11374,17 @@ namespace Barrelman::Data
         {
             timestamp_ = timestamp;
         }
-        Int16 Value( ) const
+        std::optional<Int16> Value( ) const
         {
-            return value_;
+            if(valueNullIndicator_ != SQL_NULL_DATA)
+            {
+                return value_;
+            }
+            return {};
+        }
+        bool IsValueNull( ) const
+        {
+            return valueNullIndicator_ == SQL_NULL_DATA;
         }
         void SetValue( Int16 value )
         {
@@ -9556,7 +11399,18 @@ namespace Barrelman::Data
             Bind(statement, VALUE_FIELD_ID, &value_, &valueNullIndicator_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, timeseries_);
+            WriteColumnValue( destination, timestamp_);
+            WriteColumnValue( destination, value_, valueNullIndicator_);
+        }
     };
+
+    using SimpleInt16TimeseriesValueDataReader = SimpleColumnDataReader<Int16TimeseriesValueColumnData>;
 
     class Int32TimeseriesValueColumnData : public BaseColumnData
     {
@@ -9617,9 +11471,17 @@ namespace Barrelman::Data
         {
             timestamp_ = timestamp;
         }
-        Int32 Value( ) const
+        std::optional<Int32> Value( ) const
         {
-            return value_;
+            if(valueNullIndicator_ != SQL_NULL_DATA)
+            {
+                return value_;
+            }
+            return {};
+        }
+        bool IsValueNull( ) const
+        {
+            return valueNullIndicator_ == SQL_NULL_DATA;
         }
         void SetValue( Int32 value )
         {
@@ -9634,7 +11496,18 @@ namespace Barrelman::Data
             Bind(statement, VALUE_FIELD_ID, &value_, &valueNullIndicator_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, timeseries_);
+            WriteColumnValue( destination, timestamp_);
+            WriteColumnValue( destination, value_, valueNullIndicator_);
+        }
     };
+
+    using SimpleInt32TimeseriesValueDataReader = SimpleColumnDataReader<Int32TimeseriesValueColumnData>;
 
     class Int64TimeseriesValueColumnData : public BaseColumnData
     {
@@ -9695,9 +11568,17 @@ namespace Barrelman::Data
         {
             timestamp_ = timestamp;
         }
-        Int64 Value( ) const
+        std::optional<Int64> Value( ) const
         {
-            return value_;
+            if(valueNullIndicator_ != SQL_NULL_DATA)
+            {
+                return value_;
+            }
+            return {};
+        }
+        bool IsValueNull( ) const
+        {
+            return valueNullIndicator_ == SQL_NULL_DATA;
         }
         void SetValue( Int64 value )
         {
@@ -9712,7 +11593,18 @@ namespace Barrelman::Data
             Bind(statement, VALUE_FIELD_ID, &value_, &valueNullIndicator_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, timeseries_);
+            WriteColumnValue( destination, timestamp_);
+            WriteColumnValue( destination, value_, valueNullIndicator_);
+        }
     };
+
+    using SimpleInt64TimeseriesValueDataReader = SimpleColumnDataReader<Int64TimeseriesValueColumnData>;
 
     class ItemColumnData : public BaseColumnData
     {
@@ -9756,7 +11648,15 @@ namespace Barrelman::Data
             Bind(statement, ROWVERSION_FIELD_ID, &rowVersion_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+        }
     };
+
+    using SimpleItemDataReader = SimpleColumnDataReader<ItemColumnData>;
 
     class BaseStationColumnData : public ItemColumnData
     {
@@ -9807,7 +11707,16 @@ namespace Barrelman::Data
             Bind(statement, TYPE_FIELD_ID, &type_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, name_, nameLengthOrNullIndicator_);
+            WriteColumnValue( destination, type_);
+        }
     };
+
+    using SimpleBaseStationDataReader = SimpleColumnDataReader<BaseStationColumnData>;
 
     class DeviceColumnData : public ItemColumnData
     {
@@ -9880,7 +11789,24 @@ namespace Barrelman::Data
             Bind(statement, ENABLEDTIMESERIES_FIELD_ID, &enabledTimeseries_);
         }
 
+        void ReadUnboundData( const ODBC::Statement& statement )
+        {
+            Base::ReadUnboundData( statement );
+
+            description_ = statement.GetWideString(DESCRIPTION_FIELD_ID);
+        }
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, host_);
+            WriteColumnValue( destination, name_, nameLengthOrNullIndicator_);
+            WriteColumnValue( destination, description_, descriptionLengthOrNullIndicator_);
+            WriteColumnValue( destination, enabledTimeseries_);
+        }
     };
+
+    using SimpleDeviceDataReader = SimpleColumnDataReader<DeviceColumnData>;
 
     class CameraColumnData : public DeviceColumnData
     {
@@ -9915,7 +11841,15 @@ namespace Barrelman::Data
             Bind(statement, TYPE_FIELD_ID, &type_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, type_);
+        }
     };
+
+    using SimpleCameraDataReader = SimpleColumnDataReader<CameraColumnData>;
 
     class GNSSDeviceColumnData : public DeviceColumnData
     {
@@ -9983,7 +11917,18 @@ namespace Barrelman::Data
             Bind(statement, ALTITUDETIMESERIES_FIELD_ID, &altitudeTimeseries_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, type_);
+            WriteColumnValue( destination, latitudeTimeseries_);
+            WriteColumnValue( destination, longitudeTimeseries_);
+            WriteColumnValue( destination, altitudeTimeseries_);
+        }
     };
+
+    using SimpleGNSSDeviceDataReader = SimpleColumnDataReader<GNSSDeviceColumnData>;
 
     class GyroDeviceColumnData : public DeviceColumnData
     {
@@ -10106,7 +12051,23 @@ namespace Barrelman::Data
             Bind(statement, GNSSDEVICE_FIELD_ID, &gNSSDevice_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, type_);
+            WriteColumnValue( destination, headingTrueNorthTimeseries_);
+            WriteColumnValue( destination, headingMagneticNorthTimeseries_);
+            WriteColumnValue( destination, pitchTimeseries_);
+            WriteColumnValue( destination, rateOfTurnTimeseries_);
+            WriteColumnValue( destination, rollTimeseries_);
+            WriteColumnValue( destination, courseTimeseries_);
+            WriteColumnValue( destination, speedTimeseries_);
+            WriteColumnValue( destination, gNSSDevice_);
+        }
     };
+
+    using SimpleGyroDeviceDataReader = SimpleColumnDataReader<GyroDeviceColumnData>;
 
     class LineInputDeviceColumnData : public DeviceColumnData
     {
@@ -10141,7 +12102,15 @@ namespace Barrelman::Data
             Bind(statement, TYPE_FIELD_ID, &type_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, type_);
+        }
     };
+
+    using SimpleLineInputDeviceDataReader = SimpleColumnDataReader<LineInputDeviceColumnData>;
 
     class OilspillDetectorColumnData : public DeviceColumnData
     {
@@ -10176,7 +12145,15 @@ namespace Barrelman::Data
             Bind(statement, TYPE_FIELD_ID, &type_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, type_);
+        }
     };
+
+    using SimpleOilspillDetectorDataReader = SimpleColumnDataReader<OilspillDetectorColumnData>;
 
     class RadioColumnData : public DeviceColumnData
     {
@@ -10211,7 +12188,15 @@ namespace Barrelman::Data
             Bind(statement, TYPE_FIELD_ID, &type_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, type_);
+        }
     };
+
+    using SimpleRadioDataReader = SimpleColumnDataReader<RadioColumnData>;
 
     class RadomeColumnData : public DeviceColumnData
     {
@@ -10301,7 +12286,20 @@ namespace Barrelman::Data
             Bind(statement, STATUSTIMESERIES_FIELD_ID, &statusTimeseries_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, type_);
+            WriteColumnValue( destination, radar_);
+            WriteColumnValue( destination, pressureTimeseries_);
+            WriteColumnValue( destination, temperatureTimeseries_);
+            WriteColumnValue( destination, dewPointTimeseries_);
+            WriteColumnValue( destination, statusTimeseries_);
+        }
     };
+
+    using SimpleRadomeDataReader = SimpleColumnDataReader<RadomeColumnData>;
 
     class TrackerColumnData : public DeviceColumnData
     {
@@ -10318,7 +12316,14 @@ namespace Barrelman::Data
             return Kind::Tracker;
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+        }
     };
+
+    using SimpleTrackerDataReader = SimpleColumnDataReader<TrackerColumnData>;
 
     class AisTransceiverColumnData : public TrackerColumnData
     {
@@ -10353,7 +12358,15 @@ namespace Barrelman::Data
             Bind(statement, TYPE_FIELD_ID, &type_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, type_);
+        }
     };
+
+    using SimpleAisTransceiverDataReader = SimpleColumnDataReader<AisTransceiverColumnData>;
 
     class RadarColumnData : public TrackerColumnData
     {
@@ -10641,7 +12654,38 @@ namespace Barrelman::Data
             Bind(statement, GNSSDEVICE_FIELD_ID, &gNSSDevice_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, type_);
+            WriteColumnValue( destination, saveSettingsTimeseries_);
+            WriteColumnValue( destination, powerOnTimeseries_);
+            WriteColumnValue( destination, trackingOnTimeseries_);
+            WriteColumnValue( destination, radarPulseTimeseries_);
+            WriteColumnValue( destination, tuningTimeseries_);
+            WriteColumnValue( destination, blankSector1Timeseries_);
+            WriteColumnValue( destination, sector1StartTimeseries_);
+            WriteColumnValue( destination, sector1EndTimeseries_);
+            WriteColumnValue( destination, blankSector2Timeseries_);
+            WriteColumnValue( destination, sector2StartTimeseries_);
+            WriteColumnValue( destination, sector2EndTimeseries_);
+            WriteColumnValue( destination, enableAutomaticFrequencyControlTimeseries_);
+            WriteColumnValue( destination, azimuthOffsetTimeseries_);
+            WriteColumnValue( destination, enableSensitivityTimeControlTimeseries_);
+            WriteColumnValue( destination, automaticSensitivityTimeControlTimeseries_);
+            WriteColumnValue( destination, sensitivityTimeControlLevelTimeseries_);
+            WriteColumnValue( destination, enableFastTimeConstantTimeseries_);
+            WriteColumnValue( destination, fastTimeConstantLevelTimeseries_);
+            WriteColumnValue( destination, fastTimeConstantModeTimeseries_);
+            WriteColumnValue( destination, latitudeTimeseries_);
+            WriteColumnValue( destination, longitudeTimeseries_);
+            WriteColumnValue( destination, radome_);
+            WriteColumnValue( destination, gNSSDevice_);
+        }
     };
+
+    using SimpleRadarDataReader = SimpleColumnDataReader<RadarColumnData>;
 
     class WeatherStationColumnData : public DeviceColumnData
     {
@@ -10775,7 +12819,24 @@ namespace Barrelman::Data
             Bind(statement, GYRO_FIELD_ID, &gyro_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, type_);
+            WriteColumnValue( destination, barometricPressureTimeseries_);
+            WriteColumnValue( destination, airTemperatureTimeseries_);
+            WriteColumnValue( destination, waterTemperatureTimeseries_);
+            WriteColumnValue( destination, relativeHumidityTimeseries_);
+            WriteColumnValue( destination, absoluteHumidityTimeseries_);
+            WriteColumnValue( destination, dewPointTimeseries_);
+            WriteColumnValue( destination, windDirectionTimeseries_);
+            WriteColumnValue( destination, windSpeedTimeseries_);
+            WriteColumnValue( destination, gyro_);
+        }
     };
+
+    using SimpleWeatherStationDataReader = SimpleColumnDataReader<WeatherStationColumnData>;
 
     class FacilityColumnData : public ItemColumnData
     {
@@ -10859,7 +12920,19 @@ namespace Barrelman::Data
             Bind(statement, ALTITUDE_FIELD_ID, &altitude_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, name_, nameLengthOrNullIndicator_);
+            WriteColumnValue( destination, type_);
+            WriteColumnValue( destination, longitude_);
+            WriteColumnValue( destination, latitude_);
+            WriteColumnValue( destination, altitude_);
+        }
     };
+
+    using SimpleFacilityDataReader = SimpleColumnDataReader<FacilityColumnData>;
 
     class TrackableItemColumnData : public ItemColumnData
     {
@@ -10876,7 +12949,14 @@ namespace Barrelman::Data
             return Kind::TrackableItem;
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+        }
     };
+
+    using SimpleTrackableItemDataReader = SimpleColumnDataReader<TrackableItemColumnData>;
 
     class AircraftColumnData : public TrackableItemColumnData
     {
@@ -10927,7 +13007,16 @@ namespace Barrelman::Data
             Bind(statement, TYPE_FIELD_ID, &type_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, name_, nameLengthOrNullIndicator_);
+            WriteColumnValue( destination, type_);
+        }
     };
+
+    using SimpleAircraftDataReader = SimpleColumnDataReader<AircraftColumnData>;
 
     class AisAidToNavigationColumnData : public TrackableItemColumnData
     {
@@ -11066,7 +13155,24 @@ namespace Barrelman::Data
             Bind(statement, OFFPOSITIONTIMESERIES_FIELD_ID, &offPositionTimeseries_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, name_, nameLengthOrNullIndicator_);
+            WriteColumnValue( destination, mMSI_);
+            WriteColumnValue( destination, navigationalAidType_);
+            WriteColumnValue( destination, position_);
+            WriteColumnValue( destination, isVirtual_);
+            WriteColumnValue( destination, toBow_);
+            WriteColumnValue( destination, toStern_);
+            WriteColumnValue( destination, toPort_);
+            WriteColumnValue( destination, toStarboard_);
+            WriteColumnValue( destination, offPositionTimeseries_);
+        }
     };
+
+    using SimpleAisAidToNavigationDataReader = SimpleColumnDataReader<AisAidToNavigationColumnData>;
 
     class VehicleColumnData : public TrackableItemColumnData
     {
@@ -11117,7 +13223,16 @@ namespace Barrelman::Data
             Bind(statement, TYPE_FIELD_ID, &type_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, name_, nameLengthOrNullIndicator_);
+            WriteColumnValue( destination, type_);
+        }
     };
+
+    using SimpleVehicleDataReader = SimpleColumnDataReader<VehicleColumnData>;
 
     class VesselColumnData : public TrackableItemColumnData
     {
@@ -11234,7 +13349,22 @@ namespace Barrelman::Data
             Bind(statement, PERSONSONBOARDTIMESERIES_FIELD_ID, &personsOnBoardTimeseries_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, name_, nameLengthOrNullIndicator_);
+            WriteColumnValue( destination, type_);
+            WriteColumnValue( destination, toBow_);
+            WriteColumnValue( destination, toStern_);
+            WriteColumnValue( destination, toPort_);
+            WriteColumnValue( destination, toStarboard_);
+            WriteColumnValue( destination, draughtTimeseries_);
+            WriteColumnValue( destination, personsOnBoardTimeseries_);
+        }
     };
+
+    using SimpleVesselDataReader = SimpleColumnDataReader<VesselColumnData>;
 
     class ItemIdentityLinkColumnData : public BaseColumnData
     {
@@ -11305,9 +13435,17 @@ namespace Barrelman::Data
         {
             start_ = start;
         }
-        DateTime End( ) const
+        std::optional<DateTime> End( ) const
         {
-            return end_;
+            if(endNullIndicator_ != SQL_NULL_DATA)
+            {
+                return end_;
+            }
+            return {};
+        }
+        bool IsEndNull( ) const
+        {
+            return endNullIndicator_ == SQL_NULL_DATA;
         }
         void SetEnd( const DateTime& end )
         {
@@ -11323,7 +13461,19 @@ namespace Barrelman::Data
             Bind(statement, END_FIELD_ID, &end_, &endNullIndicator_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, item_);
+            WriteColumnValue( destination, identity_);
+            WriteColumnValue( destination, start_);
+            WriteColumnValue( destination, end_, endNullIndicator_);
+        }
     };
+
+    using SimpleItemIdentityLinkDataReader = SimpleColumnDataReader<ItemIdentityLinkColumnData>;
 
     class ItemParentChildLinkColumnData : public BaseColumnData
     {
@@ -11400,7 +13550,18 @@ namespace Barrelman::Data
             Bind(statement, TIMESTAMP_FIELD_ID, &timestamp_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, parent_);
+            WriteColumnValue( destination, child_);
+            WriteColumnValue( destination, timestamp_);
+        }
     };
+
+    using SimpleItemParentChildLinkDataReader = SimpleColumnDataReader<ItemParentChildLinkColumnData>;
 
     class LineInputDeviceCommandColumnData : public BaseColumnData
     {
@@ -11499,7 +13660,20 @@ namespace Barrelman::Data
             Bind(statement, REPLY_FIELD_ID, &reply_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, lineInputDevice_);
+            WriteColumnValue( destination, timestamp_);
+            WriteColumnValue( destination, deviceCommandSourceType_);
+            WriteColumnValue( destination, deviceCommandSourceId_);
+            WriteColumnValue( destination, reply_);
+        }
     };
+
+    using SimpleLineInputDeviceCommandDataReader = SimpleColumnDataReader<LineInputDeviceCommandColumnData>;
 
     class LineInputDeviceCommandReplyColumnData : public BaseColumnData
     {
@@ -11598,7 +13772,26 @@ namespace Barrelman::Data
             Bind(statement, STATUS_FIELD_ID, &status_);
         }
 
+        void ReadUnboundData( const ODBC::Statement& statement )
+        {
+            Base::ReadUnboundData( statement );
+
+            message_ = statement.GetWideString(MESSAGE_FIELD_ID);
+        }
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, lineInputDevice_);
+            WriteColumnValue( destination, timestamp_);
+            WriteColumnValue( destination, command_);
+            WriteColumnValue( destination, status_);
+            WriteColumnValue( destination, message_, messageLengthOrNullIndicator_);
+        }
     };
+
+    using SimpleLineInputDeviceCommandReplyDataReader = SimpleColumnDataReader<LineInputDeviceCommandReplyColumnData>;
 
     class LineInputDeviceConfigurationColumnData : public BaseColumnData
     {
@@ -12067,7 +14260,50 @@ namespace Barrelman::Data
             Bind(statement, PAIREDCOMPORT_FIELD_ID, &pairedComPort_, &pairedComPortLengthOrNullIndicator_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, lineInputDevice_);
+            WriteColumnValue( destination, timestamp_);
+            WriteColumnValue( destination, storeReceivedSentences_);
+            WriteColumnValue( destination, storeSentMessages_);
+            WriteColumnValue( destination, storeUnsentMessages_);
+            WriteColumnValue( destination, nMEA_);
+            WriteColumnValue( destination, strictNMEA_);
+            WriteColumnValue( destination, connectionType_);
+            WriteColumnValue( destination, udpReceivePort_);
+            WriteColumnValue( destination, udpSendHostname_, udpSendHostnameLengthOrNullIndicator_);
+            WriteColumnValue( destination, udpSendPort_);
+            WriteColumnValue( destination, tcpHostname_, tcpHostnameLengthOrNullIndicator_);
+            WriteColumnValue( destination, tcpPort_);
+            WriteColumnValue( destination, useHttpLogin_);
+            WriteColumnValue( destination, loginHostname_, loginHostnameLengthOrNullIndicator_);
+            WriteColumnValue( destination, loginPort_);
+            WriteColumnValue( destination, userName_, userNameLengthOrNullIndicator_);
+            WriteColumnValue( destination, password_, passwordLengthOrNullIndicator_);
+            WriteColumnValue( destination, comPort_, comPortLengthOrNullIndicator_);
+            WriteColumnValue( destination, baudRate_);
+            WriteColumnValue( destination, dataBits_);
+            WriteColumnValue( destination, discardNull_);
+            WriteColumnValue( destination, dtrEnable_);
+            WriteColumnValue( destination, handshake_);
+            WriteColumnValue( destination, newLine_, newLineLengthOrNullIndicator_);
+            WriteColumnValue( destination, parity_);
+            WriteColumnValue( destination, parityReplace_);
+            WriteColumnValue( destination, readBufferSize_);
+            WriteColumnValue( destination, readTimeout_);
+            WriteColumnValue( destination, receivedBytesThreshold_);
+            WriteColumnValue( destination, rtsEnable_);
+            WriteColumnValue( destination, stopBits_);
+            WriteColumnValue( destination, writeBufferSize_);
+            WriteColumnValue( destination, writeTimeout_);
+            WriteColumnValue( destination, pairedComPort_, pairedComPortLengthOrNullIndicator_);
+        }
     };
+
+    using SimpleLineInputDeviceConfigurationDataReader = SimpleColumnDataReader<LineInputDeviceConfigurationColumnData>;
 
     class LineInputMessageRoutingColumnData : public BaseColumnData
     {
@@ -12138,7 +14374,17 @@ namespace Barrelman::Data
             Bind(statement, TYPE_FIELD_ID, &type_, &typeLengthOrNullIndicator_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, lineInputDevice_);
+            WriteColumnValue( destination, type_, typeLengthOrNullIndicator_);
+        }
     };
+
+    using SimpleLineInputMessageRoutingDataReader = SimpleColumnDataReader<LineInputMessageRoutingColumnData>;
 
     class LineInputMessageRoutingDestinationColumnData : public BaseColumnData
     {
@@ -12204,7 +14450,17 @@ namespace Barrelman::Data
             Bind(statement, LISTENER_FIELD_ID, &listener_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, routing_);
+            WriteColumnValue( destination, listener_);
+        }
     };
+
+    using SimpleLineInputMessageRoutingDestinationDataReader = SimpleColumnDataReader<LineInputMessageRoutingDestinationColumnData>;
 
     class LineInputWhiteListEntryColumnData : public BaseColumnData
     {
@@ -12286,7 +14542,18 @@ namespace Barrelman::Data
             Bind(statement, PORT_FIELD_ID, &port_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, lineInputDevice_);
+            WriteColumnValue( destination, hostName_, hostNameLengthOrNullIndicator_);
+            WriteColumnValue( destination, port_);
+        }
     };
+
+    using SimpleLineInputWhiteListEntryDataReader = SimpleColumnDataReader<LineInputWhiteListEntryColumnData>;
 
     class LogApplicationColumnData : public BaseColumnData
     {
@@ -12357,7 +14624,23 @@ namespace Barrelman::Data
             Bind(statement, NAME_FIELD_ID, &name_, &nameLengthOrNullIndicator_);
         }
 
+        void ReadUnboundData( const ODBC::Statement& statement )
+        {
+            Base::ReadUnboundData( statement );
+
+            description_ = statement.GetWideString(DESCRIPTION_FIELD_ID);
+        }
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, name_, nameLengthOrNullIndicator_);
+            WriteColumnValue( destination, description_, descriptionLengthOrNullIndicator_);
+        }
     };
+
+    using SimpleLogApplicationDataReader = SimpleColumnDataReader<LogApplicationColumnData>;
 
     class LogApplicationConfigurationColumnData : public BaseColumnData
     {
@@ -12555,7 +14838,29 @@ namespace Barrelman::Data
             Bind(statement, EMERGENCY_FIELD_ID, &emergency_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, application_);
+            WriteColumnValue( destination, timestamp_);
+            WriteColumnValue( destination, finest_);
+            WriteColumnValue( destination, finer_);
+            WriteColumnValue( destination, fine_);
+            WriteColumnValue( destination, info_);
+            WriteColumnValue( destination, notice_);
+            WriteColumnValue( destination, warn_);
+            WriteColumnValue( destination, error_);
+            WriteColumnValue( destination, severe_);
+            WriteColumnValue( destination, critical_);
+            WriteColumnValue( destination, alert_);
+            WriteColumnValue( destination, fatal_);
+            WriteColumnValue( destination, emergency_);
+        }
     };
+
+    using SimpleLogApplicationConfigurationDataReader = SimpleColumnDataReader<LogApplicationConfigurationColumnData>;
 
     class LogHostColumnData : public BaseColumnData
     {
@@ -12626,7 +14931,23 @@ namespace Barrelman::Data
             Bind(statement, COMPUTERNAME_FIELD_ID, &computerName_, &computerNameLengthOrNullIndicator_);
         }
 
+        void ReadUnboundData( const ODBC::Statement& statement )
+        {
+            Base::ReadUnboundData( statement );
+
+            description_ = statement.GetWideString(DESCRIPTION_FIELD_ID);
+        }
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, computerName_, computerNameLengthOrNullIndicator_);
+            WriteColumnValue( destination, description_, descriptionLengthOrNullIndicator_);
+        }
     };
+
+    using SimpleLogHostDataReader = SimpleColumnDataReader<LogHostColumnData>;
 
     class LogHostConfigurationColumnData : public BaseColumnData
     {
@@ -12824,7 +15145,29 @@ namespace Barrelman::Data
             Bind(statement, EMERGENCY_FIELD_ID, &emergency_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, host_);
+            WriteColumnValue( destination, timestamp_);
+            WriteColumnValue( destination, finest_);
+            WriteColumnValue( destination, finer_);
+            WriteColumnValue( destination, fine_);
+            WriteColumnValue( destination, info_);
+            WriteColumnValue( destination, notice_);
+            WriteColumnValue( destination, warn_);
+            WriteColumnValue( destination, error_);
+            WriteColumnValue( destination, severe_);
+            WriteColumnValue( destination, critical_);
+            WriteColumnValue( destination, alert_);
+            WriteColumnValue( destination, fatal_);
+            WriteColumnValue( destination, emergency_);
+        }
     };
+
+    using SimpleLogHostConfigurationDataReader = SimpleColumnDataReader<LogHostConfigurationColumnData>;
 
     class LogLocationColumnData : public BaseColumnData
     {
@@ -12933,7 +15276,27 @@ namespace Barrelman::Data
             Bind(statement, METHODNAME_FIELD_ID, &methodName_, &methodNameLengthOrNullIndicator_);
         }
 
+        void ReadUnboundData( const ODBC::Statement& statement )
+        {
+            Base::ReadUnboundData( statement );
+
+            namespace_ = statement.GetWideString(NAMESPACE_FIELD_ID);
+            className_ = statement.GetWideString(CLASSNAME_FIELD_ID);
+        }
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, fileName_, fileNameLengthOrNullIndicator_);
+            WriteColumnValue( destination, lineNumber_);
+            WriteColumnValue( destination, namespace_, namespaceLengthOrNullIndicator_);
+            WriteColumnValue( destination, className_, classNameLengthOrNullIndicator_);
+            WriteColumnValue( destination, methodName_, methodNameLengthOrNullIndicator_);
+        }
     };
+
+    using SimpleLogLocationDataReader = SimpleColumnDataReader<LogLocationColumnData>;
 
     class LogProcessColumnData : public BaseColumnData
     {
@@ -13012,9 +15375,17 @@ namespace Barrelman::Data
         {
             started_ = started;
         }
-        DateTime Stopped( ) const
+        std::optional<DateTime> Stopped( ) const
         {
-            return stopped_;
+            if(stoppedNullIndicator_ != SQL_NULL_DATA)
+            {
+                return stopped_;
+            }
+            return {};
+        }
+        bool IsStoppedNull( ) const
+        {
+            return stoppedNullIndicator_ == SQL_NULL_DATA;
         }
         void SetStopped( const DateTime& stopped )
         {
@@ -13060,7 +15431,28 @@ namespace Barrelman::Data
             Bind(statement, IDENTITY_FIELD_ID, &identity_, &identityLengthOrNullIndicator_);
         }
 
+        void ReadUnboundData( const ODBC::Statement& statement )
+        {
+            Base::ReadUnboundData( statement );
+
+            path_ = statement.GetWideString(PATH_FIELD_ID);
+        }
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, application_);
+            WriteColumnValue( destination, host_);
+            WriteColumnValue( destination, started_);
+            WriteColumnValue( destination, stopped_, stoppedNullIndicator_);
+            WriteColumnValue( destination, processId_);
+            WriteColumnValue( destination, path_, pathLengthOrNullIndicator_);
+            WriteColumnValue( destination, identity_, identityLengthOrNullIndicator_);
+        }
     };
+
+    using SimpleLogProcessDataReader = SimpleColumnDataReader<LogProcessColumnData>;
 
     class LogRecordColumnData : public BaseColumnData
     {
@@ -13203,7 +15595,32 @@ namespace Barrelman::Data
             Bind(statement, LOCATION_FIELD_ID, &location_);
         }
 
+        void ReadUnboundData( const ODBC::Statement& statement )
+        {
+            Base::ReadUnboundData( statement );
+
+            message_ = statement.GetWideString(MESSAGE_FIELD_ID);
+            exceptionString_ = statement.GetWideString(EXCEPTIONSTRING_FIELD_ID);
+            propertiesData_ = statement.GetBinary(PROPERTIESDATA_FIELD_ID);
+        }
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, thread_);
+            WriteColumnValue( destination, sequenceNumber_);
+            WriteColumnValue( destination, level_);
+            WriteColumnValue( destination, timestamp_);
+            WriteColumnValue( destination, depth_);
+            WriteColumnValue( destination, location_);
+            WriteColumnValue( destination, message_, messageLengthOrNullIndicator_);
+            WriteColumnValue( destination, exceptionString_, exceptionStringLengthOrNullIndicator_);
+            WriteColumnValue( destination, propertiesData_, propertiesDataLengthOrNullIndicator_);
+        }
     };
+
+    using SimpleLogRecordDataReader = SimpleColumnDataReader<LogRecordColumnData>;
 
     class LogThreadColumnData : public BaseColumnData
     {
@@ -13269,9 +15686,17 @@ namespace Barrelman::Data
         {
             started_ = started;
         }
-        DateTime Stopped( ) const
+        std::optional<DateTime> Stopped( ) const
         {
-            return stopped_;
+            if(stoppedNullIndicator_ != SQL_NULL_DATA)
+            {
+                return stopped_;
+            }
+            return {};
+        }
+        bool IsStoppedNull( ) const
+        {
+            return stoppedNullIndicator_ == SQL_NULL_DATA;
         }
         void SetStopped( const DateTime& stopped )
         {
@@ -13308,7 +15733,20 @@ namespace Barrelman::Data
             Bind(statement, NAME_FIELD_ID, &name_, &nameLengthOrNullIndicator_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, process_);
+            WriteColumnValue( destination, started_);
+            WriteColumnValue( destination, stopped_, stoppedNullIndicator_);
+            WriteColumnValue( destination, threadId_);
+            WriteColumnValue( destination, name_, nameLengthOrNullIndicator_);
+        }
     };
+
+    using SimpleLogThreadDataReader = SimpleColumnDataReader<LogThreadColumnData>;
 
     class LogTraceEntryColumnData : public BaseColumnData
     {
@@ -13399,9 +15837,17 @@ namespace Barrelman::Data
         {
             entered_ = entered;
         }
-        DateTime Ended( ) const
+        std::optional<DateTime> Ended( ) const
         {
-            return ended_;
+            if(endedNullIndicator_ != SQL_NULL_DATA)
+            {
+                return ended_;
+            }
+            return {};
+        }
+        bool IsEndedNull( ) const
+        {
+            return endedNullIndicator_ == SQL_NULL_DATA;
         }
         void SetEnded( const DateTime& ended )
         {
@@ -13419,7 +15865,21 @@ namespace Barrelman::Data
             Bind(statement, ENDED_FIELD_ID, &ended_, &endedNullIndicator_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, thread_);
+            WriteColumnValue( destination, sequenceNumber_);
+            WriteColumnValue( destination, location_);
+            WriteColumnValue( destination, depth_);
+            WriteColumnValue( destination, entered_);
+            WriteColumnValue( destination, ended_, endedNullIndicator_);
+        }
     };
+
+    using SimpleLogTraceEntryDataReader = SimpleColumnDataReader<LogTraceEntryColumnData>;
 
     class MapElementColumnData : public BaseColumnData
     {
@@ -13589,7 +16049,32 @@ namespace Barrelman::Data
             Bind(statement, LABEL_FIELD_ID, &label_, &labelLengthOrNullIndicator_);
         }
 
+        void ReadUnboundData( const ODBC::Statement& statement )
+        {
+            Base::ReadUnboundData( statement );
+
+            data_ = statement.GetBinary(DATA_FIELD_ID);
+        }
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, item_);
+            WriteColumnValue( destination, elementType_);
+            WriteColumnValue( destination, latitude_);
+            WriteColumnValue( destination, longitude_);
+            WriteColumnValue( destination, angle_);
+            WriteColumnValue( destination, left_);
+            WriteColumnValue( destination, top_);
+            WriteColumnValue( destination, width_);
+            WriteColumnValue( destination, height_);
+            WriteColumnValue( destination, label_, labelLengthOrNullIndicator_);
+            WriteColumnValue( destination, data_, dataLengthOrNullIndicator_);
+        }
     };
+
+    using SimpleMapElementDataReader = SimpleColumnDataReader<MapElementColumnData>;
 
     class MapInfoColumnData : public BaseColumnData
     {
@@ -13721,7 +16206,29 @@ namespace Barrelman::Data
             Bind(statement, SOUTHEASTLONGITUDE_FIELD_ID, &southEastLongitude_);
         }
 
+        void ReadUnboundData( const ODBC::Statement& statement )
+        {
+            Base::ReadUnboundData( statement );
+
+            image_ = statement.GetBinary(IMAGE_FIELD_ID);
+        }
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, scale_);
+            WriteColumnValue( destination, latitude_);
+            WriteColumnValue( destination, longitude_);
+            WriteColumnValue( destination, northWestLatitude_);
+            WriteColumnValue( destination, northWestLongitude_);
+            WriteColumnValue( destination, southEastLatitude_);
+            WriteColumnValue( destination, southEastLongitude_);
+            WriteColumnValue( destination, image_, imageLengthOrNullIndicator_);
+        }
     };
+
+    using SimpleMapInfoDataReader = SimpleColumnDataReader<MapInfoColumnData>;
 
     class MapServiceOptionsColumnData : public BaseColumnData
     {
@@ -13847,7 +16354,22 @@ namespace Barrelman::Data
             Bind(statement, IMAGEOFFSETY_FIELD_ID, &imageOffsetY_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, timestamp_);
+            WriteColumnValue( destination, ipAddress_, ipAddressLengthOrNullIndicator_);
+            WriteColumnValue( destination, port_);
+            WriteColumnValue( destination, imageScaleFactorX_);
+            WriteColumnValue( destination, imageOffsetX_);
+            WriteColumnValue( destination, imageScaleFactorY_);
+            WriteColumnValue( destination, imageOffsetY_);
+        }
     };
+
+    using SimpleMapServiceOptionsDataReader = SimpleColumnDataReader<MapServiceOptionsColumnData>;
 
     class MaritimeIdentificationDigitsColumnData : public BaseColumnData
     {
@@ -13913,7 +16435,17 @@ namespace Barrelman::Data
             Bind(statement, COUNTRY_FIELD_ID, &country_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, code_);
+            WriteColumnValue( destination, country_);
+        }
     };
+
+    using SimpleMaritimeIdentificationDigitsDataReader = SimpleColumnDataReader<MaritimeIdentificationDigitsColumnData>;
 
     class MediaProxySessionColumnData : public BaseColumnData
     {
@@ -13995,7 +16527,18 @@ namespace Barrelman::Data
             Bind(statement, ENABLEDTIMESERIES_FIELD_ID, &enabledTimeseries_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, service_);
+            WriteColumnValue( destination, name_, nameLengthOrNullIndicator_);
+            WriteColumnValue( destination, enabledTimeseries_);
+        }
     };
+
+    using SimpleMediaProxySessionDataReader = SimpleColumnDataReader<MediaProxySessionColumnData>;
 
     class MediaProxySessionFileColumnData : public BaseColumnData
     {
@@ -14077,7 +16620,18 @@ namespace Barrelman::Data
             Bind(statement, STREAMNAME_FIELD_ID, &streamName_, &streamNameLengthOrNullIndicator_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, proxySession_);
+            WriteColumnValue( destination, timestamp_);
+            WriteColumnValue( destination, streamName_, streamNameLengthOrNullIndicator_);
+        }
     };
+
+    using SimpleMediaProxySessionFileDataReader = SimpleColumnDataReader<MediaProxySessionFileColumnData>;
 
     class MediaProxySessionOptionsColumnData : public BaseColumnData
     {
@@ -14289,7 +16843,28 @@ namespace Barrelman::Data
             Bind(statement, VIDEODIRECTORY_FIELD_ID, &videoDirectory_, &videoDirectoryLengthOrNullIndicator_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, proxySession_);
+            WriteColumnValue( destination, timestamp_);
+            WriteColumnValue( destination, sourceStreamUrl_, sourceStreamUrlLengthOrNullIndicator_);
+            WriteColumnValue( destination, streamName_, streamNameLengthOrNullIndicator_);
+            WriteColumnValue( destination, mode_);
+            WriteColumnValue( destination, tunnelOverHTTPPortNumber_);
+            WriteColumnValue( destination, username_, usernameLengthOrNullIndicator_);
+            WriteColumnValue( destination, password_, passwordLengthOrNullIndicator_);
+            WriteColumnValue( destination, recorderPortNumber_);
+            WriteColumnValue( destination, sessionType_);
+            WriteColumnValue( destination, maxFileTime_);
+            WriteColumnValue( destination, maxFileRetention_);
+            WriteColumnValue( destination, videoDirectory_, videoDirectoryLengthOrNullIndicator_);
+        }
     };
+
+    using SimpleMediaProxySessionOptionsDataReader = SimpleColumnDataReader<MediaProxySessionOptionsColumnData>;
 
     class MediaServiceColumnData : public BaseColumnData
     {
@@ -14344,7 +16919,16 @@ namespace Barrelman::Data
             Bind(statement, ENABLEDTIMESERIES_FIELD_ID, &enabledTimeseries_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, enabledTimeseries_);
+        }
     };
+
+    using SimpleMediaServiceDataReader = SimpleColumnDataReader<MediaServiceColumnData>;
 
     class MediaServiceOptionsColumnData : public BaseColumnData
     {
@@ -14432,7 +17016,19 @@ namespace Barrelman::Data
             Bind(statement, HTTPPORTNUMBER_FIELD_ID, &httpPortNumber_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, mediaService_);
+            WriteColumnValue( destination, timestamp_);
+            WriteColumnValue( destination, rtspPortNumber_);
+            WriteColumnValue( destination, httpPortNumber_);
+        }
     };
+
+    using SimpleMediaServiceOptionsDataReader = SimpleColumnDataReader<MediaServiceOptionsColumnData>;
 
     class NamespaceElementColumnData : public BaseColumnData
     {
@@ -14514,7 +17110,24 @@ namespace Barrelman::Data
             Bind(statement, NAME_FIELD_ID, &name_, &nameLengthOrNullIndicator_);
         }
 
+        void ReadUnboundData( const ODBC::Statement& statement )
+        {
+            Base::ReadUnboundData( statement );
+
+            description_ = statement.GetWideString(DESCRIPTION_FIELD_ID);
+        }
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, namespace_);
+            WriteColumnValue( destination, name_, nameLengthOrNullIndicator_);
+            WriteColumnValue( destination, description_, descriptionLengthOrNullIndicator_);
+        }
     };
+
+    using SimpleNamespaceElementDataReader = SimpleColumnDataReader<NamespaceElementColumnData>;
 
     class ElementTypeColumnData : public NamespaceElementColumnData
     {
@@ -14531,7 +17144,14 @@ namespace Barrelman::Data
             return Kind::ElementType;
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+        }
     };
+
+    using SimpleElementTypeDataReader = SimpleColumnDataReader<ElementTypeColumnData>;
 
     class NamespaceColumnData : public NamespaceElementColumnData
     {
@@ -14548,7 +17168,14 @@ namespace Barrelman::Data
             return Kind::Namespace;
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+        }
     };
+
+    using SimpleNamespaceDataReader = SimpleColumnDataReader<NamespaceColumnData>;
 
     class OilspillColumnData : public BaseColumnData
     {
@@ -14669,7 +17296,31 @@ namespace Barrelman::Data
             Bind(statement, OILAREA_FIELD_ID, &oilArea_);
         }
 
+        void ReadUnboundData( const ODBC::Statement& statement )
+        {
+            Base::ReadUnboundData( statement );
+
+            shape_ = statement.GetBinary(SHAPE_FIELD_ID);
+            bSI_ = statement.GetBinary(BSI_FIELD_ID);
+            oil_ = statement.GetBinary(OIL_FIELD_ID);
+            trace_ = statement.GetBinary(TRACE_FIELD_ID);
+        }
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, oilSpillDetector_);
+            WriteColumnValue( destination, timestamp_);
+            WriteColumnValue( destination, oilArea_);
+            WriteColumnValue( destination, shape_, shapeLengthOrNullIndicator_);
+            WriteColumnValue( destination, bSI_, bSILengthOrNullIndicator_);
+            WriteColumnValue( destination, oil_, oilLengthOrNullIndicator_);
+            WriteColumnValue( destination, trace_, traceLengthOrNullIndicator_);
+        }
     };
+
+    using SimpleOilspillDataReader = SimpleColumnDataReader<OilspillColumnData>;
 
     class OilspillDetectorCommandColumnData : public BaseColumnData
     {
@@ -14768,7 +17419,20 @@ namespace Barrelman::Data
             Bind(statement, REPLY_FIELD_ID, &reply_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, oilSpillDetector_);
+            WriteColumnValue( destination, timestamp_);
+            WriteColumnValue( destination, deviceCommandSourceType_);
+            WriteColumnValue( destination, deviceCommandSourceId_);
+            WriteColumnValue( destination, reply_);
+        }
     };
+
+    using SimpleOilspillDetectorCommandDataReader = SimpleColumnDataReader<OilspillDetectorCommandColumnData>;
 
     class OilspillDetectorCommandReplyColumnData : public BaseColumnData
     {
@@ -14867,7 +17531,26 @@ namespace Barrelman::Data
             Bind(statement, STATUS_FIELD_ID, &status_);
         }
 
+        void ReadUnboundData( const ODBC::Statement& statement )
+        {
+            Base::ReadUnboundData( statement );
+
+            message_ = statement.GetWideString(MESSAGE_FIELD_ID);
+        }
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, oilSpillDetector_);
+            WriteColumnValue( destination, timestamp_);
+            WriteColumnValue( destination, command_);
+            WriteColumnValue( destination, status_);
+            WriteColumnValue( destination, message_, messageLengthOrNullIndicator_);
+        }
     };
+
+    using SimpleOilspillDetectorCommandReplyDataReader = SimpleColumnDataReader<OilspillDetectorCommandReplyColumnData>;
 
     class OilspillDetectorConfigurationColumnData : public BaseColumnData
     {
@@ -15190,7 +17873,45 @@ namespace Barrelman::Data
             Bind(statement, USEPROXYSERVER_FIELD_ID, &useProxyServer_);
         }
 
+        void ReadUnboundData( const ODBC::Statement& statement )
+        {
+            Base::ReadUnboundData( statement );
+
+            colors_ = statement.GetBinary(COLORS_FIELD_ID);
+        }
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, oilSpillDetector_);
+            WriteColumnValue( destination, timestamp_);
+            WriteColumnValue( destination, range_);
+            WriteColumnValue( destination, startAngle_);
+            WriteColumnValue( destination, endAngle_);
+            WriteColumnValue( destination, startRange_);
+            WriteColumnValue( destination, endRange_);
+            WriteColumnValue( destination, updateRate_);
+            WriteColumnValue( destination, statusSendTime_);
+            WriteColumnValue( destination, drawBorder_);
+            WriteColumnValue( destination, colors_, colorsLengthOrNullIndicator_);
+            WriteColumnValue( destination, sendToServer_);
+            WriteColumnValue( destination, directory_, directoryLengthOrNullIndicator_);
+            WriteColumnValue( destination, transparentWater_);
+            WriteColumnValue( destination, savePictures_);
+            WriteColumnValue( destination, sendAsTarget_);
+            WriteColumnValue( destination, writeLog_);
+            WriteColumnValue( destination, targetFilePrefix_, targetFilePrefixLengthOrNullIndicator_);
+            WriteColumnValue( destination, targetMMSI_);
+            WriteColumnValue( destination, latitude_);
+            WriteColumnValue( destination, longitude_);
+            WriteColumnValue( destination, testSourceEnabled_);
+            WriteColumnValue( destination, proxyServer_, proxyServerLengthOrNullIndicator_);
+            WriteColumnValue( destination, useProxyServer_);
+        }
     };
+
+    using SimpleOilspillDetectorConfigurationDataReader = SimpleColumnDataReader<OilspillDetectorConfigurationColumnData>;
 
     class Position2DTimeseriesValueColumnData : public BaseColumnData
     {
@@ -15254,17 +17975,33 @@ namespace Barrelman::Data
         {
             timestamp_ = timestamp;
         }
-        double X( ) const
+        std::optional<double> X( ) const
         {
-            return x_;
+            if(xNullIndicator_ != SQL_NULL_DATA)
+            {
+                return x_;
+            }
+            return {};
+        }
+        bool IsXNull( ) const
+        {
+            return xNullIndicator_ == SQL_NULL_DATA;
         }
         void SetX( double x )
         {
             x_ = x;
         }
-        double Y( ) const
+        std::optional<double> Y( ) const
         {
-            return y_;
+            if(yNullIndicator_ != SQL_NULL_DATA)
+            {
+                return y_;
+            }
+            return {};
+        }
+        bool IsYNull( ) const
+        {
+            return yNullIndicator_ == SQL_NULL_DATA;
         }
         void SetY( double y )
         {
@@ -15280,7 +18017,19 @@ namespace Barrelman::Data
             Bind(statement, Y_FIELD_ID, &y_, &yNullIndicator_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, timeseries_);
+            WriteColumnValue( destination, timestamp_);
+            WriteColumnValue( destination, x_, xNullIndicator_);
+            WriteColumnValue( destination, y_, yNullIndicator_);
+        }
     };
+
+    using SimplePosition2DTimeseriesValueDataReader = SimpleColumnDataReader<Position2DTimeseriesValueColumnData>;
 
     class Position3DTimeseriesValueColumnData : public BaseColumnData
     {
@@ -15347,25 +18096,49 @@ namespace Barrelman::Data
         {
             timestamp_ = timestamp;
         }
-        double X( ) const
+        std::optional<double> X( ) const
         {
-            return x_;
+            if(xNullIndicator_ != SQL_NULL_DATA)
+            {
+                return x_;
+            }
+            return {};
+        }
+        bool IsXNull( ) const
+        {
+            return xNullIndicator_ == SQL_NULL_DATA;
         }
         void SetX( double x )
         {
             x_ = x;
         }
-        double Y( ) const
+        std::optional<double> Y( ) const
         {
-            return y_;
+            if(yNullIndicator_ != SQL_NULL_DATA)
+            {
+                return y_;
+            }
+            return {};
+        }
+        bool IsYNull( ) const
+        {
+            return yNullIndicator_ == SQL_NULL_DATA;
         }
         void SetY( double y )
         {
             y_ = y;
         }
-        double Z( ) const
+        std::optional<double> Z( ) const
         {
-            return z_;
+            if(zNullIndicator_ != SQL_NULL_DATA)
+            {
+                return z_;
+            }
+            return {};
+        }
+        bool IsZNull( ) const
+        {
+            return zNullIndicator_ == SQL_NULL_DATA;
         }
         void SetZ( double z )
         {
@@ -15382,7 +18155,20 @@ namespace Barrelman::Data
             Bind(statement, Z_FIELD_ID, &z_, &zNullIndicator_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, timeseries_);
+            WriteColumnValue( destination, timestamp_);
+            WriteColumnValue( destination, x_, xNullIndicator_);
+            WriteColumnValue( destination, y_, yNullIndicator_);
+            WriteColumnValue( destination, z_, zNullIndicator_);
+        }
     };
+
+    using SimplePosition3DTimeseriesValueDataReader = SimpleColumnDataReader<Position3DTimeseriesValueColumnData>;
 
     class ProcessTrackValueResultColumnData : public BaseColumnData
     {
@@ -15448,7 +18234,17 @@ namespace Barrelman::Data
             Bind(statement, TRACKID_FIELD_ID, &trackId_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, createdNewTrack_);
+            WriteColumnValue( destination, trackId_);
+        }
     };
+
+    using SimpleProcessTrackValueResultDataReader = SimpleColumnDataReader<ProcessTrackValueResultColumnData>;
 
     class PropertyColumnData : public BaseColumnData
     {
@@ -15514,7 +18310,17 @@ namespace Barrelman::Data
             Bind(statement, DEFINITION_FIELD_ID, &definition_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, element_);
+            WriteColumnValue( destination, definition_);
+        }
     };
+
+    using SimplePropertyDataReader = SimpleColumnDataReader<PropertyColumnData>;
 
     class BinaryPropertyColumnData : public PropertyColumnData
     {
@@ -15549,7 +18355,21 @@ namespace Barrelman::Data
 
         }
 
+        void ReadUnboundData( const ODBC::Statement& statement )
+        {
+            Base::ReadUnboundData( statement );
+
+            value_ = statement.GetBinary(VALUE_FIELD_ID);
+        }
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, value_, valueLengthOrNullIndicator_);
+        }
     };
+
+    using SimpleBinaryPropertyDataReader = SimpleColumnDataReader<BinaryPropertyColumnData>;
 
     class BooleanPropertyColumnData : public PropertyColumnData
     {
@@ -15584,7 +18404,15 @@ namespace Barrelman::Data
             Bind(statement, VALUE_FIELD_ID, &value_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, value_);
+        }
     };
+
+    using SimpleBooleanPropertyDataReader = SimpleColumnDataReader<BooleanPropertyColumnData>;
 
     class BytePropertyColumnData : public PropertyColumnData
     {
@@ -15619,7 +18447,15 @@ namespace Barrelman::Data
             Bind(statement, VALUE_FIELD_ID, &value_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, value_);
+        }
     };
+
+    using SimpleBytePropertyDataReader = SimpleColumnDataReader<BytePropertyColumnData>;
 
     class DateTimePropertyColumnData : public PropertyColumnData
     {
@@ -15654,7 +18490,15 @@ namespace Barrelman::Data
             Bind(statement, VALUE_FIELD_ID, &value_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, value_);
+        }
     };
+
+    using SimpleDateTimePropertyDataReader = SimpleColumnDataReader<DateTimePropertyColumnData>;
 
     class DoublePropertyColumnData : public PropertyColumnData
     {
@@ -15689,7 +18533,15 @@ namespace Barrelman::Data
             Bind(statement, VALUE_FIELD_ID, &value_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, value_);
+        }
     };
+
+    using SimpleDoublePropertyDataReader = SimpleColumnDataReader<DoublePropertyColumnData>;
 
     class GuidPropertyColumnData : public PropertyColumnData
     {
@@ -15724,7 +18576,15 @@ namespace Barrelman::Data
             Bind(statement, VALUE_FIELD_ID, &value_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, value_);
+        }
     };
+
+    using SimpleGuidPropertyDataReader = SimpleColumnDataReader<GuidPropertyColumnData>;
 
     class Int16PropertyColumnData : public PropertyColumnData
     {
@@ -15759,7 +18619,15 @@ namespace Barrelman::Data
             Bind(statement, VALUE_FIELD_ID, &value_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, value_);
+        }
     };
+
+    using SimpleInt16PropertyDataReader = SimpleColumnDataReader<Int16PropertyColumnData>;
 
     class Int32PropertyColumnData : public PropertyColumnData
     {
@@ -15794,7 +18662,15 @@ namespace Barrelman::Data
             Bind(statement, VALUE_FIELD_ID, &value_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, value_);
+        }
     };
+
+    using SimpleInt32PropertyDataReader = SimpleColumnDataReader<Int32PropertyColumnData>;
 
     class Int64PropertyColumnData : public PropertyColumnData
     {
@@ -15829,7 +18705,15 @@ namespace Barrelman::Data
             Bind(statement, VALUE_FIELD_ID, &value_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, value_);
+        }
     };
+
+    using SimpleInt64PropertyDataReader = SimpleColumnDataReader<Int64PropertyColumnData>;
 
     class ReferencePropertyColumnData : public PropertyColumnData
     {
@@ -15864,7 +18748,15 @@ namespace Barrelman::Data
             Bind(statement, VALUE_FIELD_ID, &value_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, value_);
+        }
     };
+
+    using SimpleReferencePropertyDataReader = SimpleColumnDataReader<ReferencePropertyColumnData>;
 
     class SBytePropertyColumnData : public PropertyColumnData
     {
@@ -15899,7 +18791,15 @@ namespace Barrelman::Data
             Bind(statement, VALUE_FIELD_ID, &value_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, value_);
+        }
     };
+
+    using SimpleSBytePropertyDataReader = SimpleColumnDataReader<SBytePropertyColumnData>;
 
     class SinglePropertyColumnData : public PropertyColumnData
     {
@@ -15934,7 +18834,15 @@ namespace Barrelman::Data
             Bind(statement, VALUE_FIELD_ID, &value_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, value_);
+        }
     };
+
+    using SimpleSinglePropertyDataReader = SimpleColumnDataReader<SinglePropertyColumnData>;
 
     class StringPropertyColumnData : public PropertyColumnData
     {
@@ -15974,7 +18882,15 @@ namespace Barrelman::Data
             Bind(statement, VALUE_FIELD_ID, &value_, &valueLengthOrNullIndicator_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, value_, valueLengthOrNullIndicator_);
+        }
     };
+
+    using SimpleStringPropertyDataReader = SimpleColumnDataReader<StringPropertyColumnData>;
 
     class TimeseriesPropertyColumnData : public PropertyColumnData
     {
@@ -15991,7 +18907,14 @@ namespace Barrelman::Data
             return Kind::TimeseriesProperty;
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+        }
     };
+
+    using SimpleTimeseriesPropertyDataReader = SimpleColumnDataReader<TimeseriesPropertyColumnData>;
 
     class BinaryTimeseriesPropertyColumnData : public TimeseriesPropertyColumnData
     {
@@ -16026,7 +18949,15 @@ namespace Barrelman::Data
             Bind(statement, TIMESERIES_FIELD_ID, &timeseries_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, timeseries_);
+        }
     };
+
+    using SimpleBinaryTimeseriesPropertyDataReader = SimpleColumnDataReader<BinaryTimeseriesPropertyColumnData>;
 
     class BooleanTimeseriesPropertyColumnData : public TimeseriesPropertyColumnData
     {
@@ -16061,7 +18992,15 @@ namespace Barrelman::Data
             Bind(statement, TIMESERIES_FIELD_ID, &timeseries_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, timeseries_);
+        }
     };
+
+    using SimpleBooleanTimeseriesPropertyDataReader = SimpleColumnDataReader<BooleanTimeseriesPropertyColumnData>;
 
     class ByteTimeseriesPropertyColumnData : public TimeseriesPropertyColumnData
     {
@@ -16096,7 +19035,15 @@ namespace Barrelman::Data
             Bind(statement, TIMESERIES_FIELD_ID, &timeseries_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, timeseries_);
+        }
     };
+
+    using SimpleByteTimeseriesPropertyDataReader = SimpleColumnDataReader<ByteTimeseriesPropertyColumnData>;
 
     class DateTimeTimeseriesPropertyColumnData : public TimeseriesPropertyColumnData
     {
@@ -16131,7 +19078,15 @@ namespace Barrelman::Data
             Bind(statement, TIMESERIES_FIELD_ID, &timeseries_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, timeseries_);
+        }
     };
+
+    using SimpleDateTimeTimeseriesPropertyDataReader = SimpleColumnDataReader<DateTimeTimeseriesPropertyColumnData>;
 
     class DoubleTimeseriesPropertyColumnData : public TimeseriesPropertyColumnData
     {
@@ -16166,7 +19121,15 @@ namespace Barrelman::Data
             Bind(statement, TIMESERIES_FIELD_ID, &timeseries_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, timeseries_);
+        }
     };
+
+    using SimpleDoubleTimeseriesPropertyDataReader = SimpleColumnDataReader<DoubleTimeseriesPropertyColumnData>;
 
     class GuidTimeseriesPropertyColumnData : public TimeseriesPropertyColumnData
     {
@@ -16201,7 +19164,15 @@ namespace Barrelman::Data
             Bind(statement, TIMESERIES_FIELD_ID, &timeseries_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, timeseries_);
+        }
     };
+
+    using SimpleGuidTimeseriesPropertyDataReader = SimpleColumnDataReader<GuidTimeseriesPropertyColumnData>;
 
     class Int16TimeseriesPropertyColumnData : public TimeseriesPropertyColumnData
     {
@@ -16236,7 +19207,15 @@ namespace Barrelman::Data
             Bind(statement, TIMESERIES_FIELD_ID, &timeseries_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, timeseries_);
+        }
     };
+
+    using SimpleInt16TimeseriesPropertyDataReader = SimpleColumnDataReader<Int16TimeseriesPropertyColumnData>;
 
     class Int32TimeseriesPropertyColumnData : public TimeseriesPropertyColumnData
     {
@@ -16271,7 +19250,15 @@ namespace Barrelman::Data
             Bind(statement, TIMESERIES_FIELD_ID, &timeseries_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, timeseries_);
+        }
     };
+
+    using SimpleInt32TimeseriesPropertyDataReader = SimpleColumnDataReader<Int32TimeseriesPropertyColumnData>;
 
     class Int64TimeseriesPropertyColumnData : public TimeseriesPropertyColumnData
     {
@@ -16306,7 +19293,15 @@ namespace Barrelman::Data
             Bind(statement, TIMESERIES_FIELD_ID, &timeseries_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, timeseries_);
+        }
     };
+
+    using SimpleInt64TimeseriesPropertyDataReader = SimpleColumnDataReader<Int64TimeseriesPropertyColumnData>;
 
     class ReferenceTimeseriesPropertyColumnData : public TimeseriesPropertyColumnData
     {
@@ -16341,7 +19336,15 @@ namespace Barrelman::Data
             Bind(statement, TIMESERIES_FIELD_ID, &timeseries_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, timeseries_);
+        }
     };
+
+    using SimpleReferenceTimeseriesPropertyDataReader = SimpleColumnDataReader<ReferenceTimeseriesPropertyColumnData>;
 
     class SByteTimeseriesPropertyColumnData : public TimeseriesPropertyColumnData
     {
@@ -16376,7 +19379,15 @@ namespace Barrelman::Data
             Bind(statement, TIMESERIES_FIELD_ID, &timeseries_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, timeseries_);
+        }
     };
+
+    using SimpleSByteTimeseriesPropertyDataReader = SimpleColumnDataReader<SByteTimeseriesPropertyColumnData>;
 
     class SingleTimeseriesPropertyColumnData : public TimeseriesPropertyColumnData
     {
@@ -16411,7 +19422,15 @@ namespace Barrelman::Data
             Bind(statement, TIMESERIES_FIELD_ID, &timeseries_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, timeseries_);
+        }
     };
+
+    using SimpleSingleTimeseriesPropertyDataReader = SimpleColumnDataReader<SingleTimeseriesPropertyColumnData>;
 
     class StringTimeseriesPropertyColumnData : public TimeseriesPropertyColumnData
     {
@@ -16446,7 +19465,15 @@ namespace Barrelman::Data
             Bind(statement, TIMESERIES_FIELD_ID, &timeseries_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, timeseries_);
+        }
     };
+
+    using SimpleStringTimeseriesPropertyDataReader = SimpleColumnDataReader<StringTimeseriesPropertyColumnData>;
 
     class TimeSpanTimeseriesPropertyColumnData : public TimeseriesPropertyColumnData
     {
@@ -16481,7 +19508,15 @@ namespace Barrelman::Data
             Bind(statement, TIMESERIES_FIELD_ID, &timeseries_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, timeseries_);
+        }
     };
+
+    using SimpleTimeSpanTimeseriesPropertyDataReader = SimpleColumnDataReader<TimeSpanTimeseriesPropertyColumnData>;
 
     class UInt16TimeseriesPropertyColumnData : public TimeseriesPropertyColumnData
     {
@@ -16516,7 +19551,15 @@ namespace Barrelman::Data
             Bind(statement, TIMESERIES_FIELD_ID, &timeseries_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, timeseries_);
+        }
     };
+
+    using SimpleUInt16TimeseriesPropertyDataReader = SimpleColumnDataReader<UInt16TimeseriesPropertyColumnData>;
 
     class UInt32TimeseriesPropertyColumnData : public TimeseriesPropertyColumnData
     {
@@ -16551,7 +19594,15 @@ namespace Barrelman::Data
             Bind(statement, TIMESERIES_FIELD_ID, &timeseries_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, timeseries_);
+        }
     };
+
+    using SimpleUInt32TimeseriesPropertyDataReader = SimpleColumnDataReader<UInt32TimeseriesPropertyColumnData>;
 
     class UInt64TimeseriesPropertyColumnData : public TimeseriesPropertyColumnData
     {
@@ -16586,7 +19637,15 @@ namespace Barrelman::Data
             Bind(statement, TIMESERIES_FIELD_ID, &timeseries_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, timeseries_);
+        }
     };
+
+    using SimpleUInt64TimeseriesPropertyDataReader = SimpleColumnDataReader<UInt64TimeseriesPropertyColumnData>;
 
     class TimeSpanPropertyColumnData : public PropertyColumnData
     {
@@ -16621,7 +19680,15 @@ namespace Barrelman::Data
             Bind(statement, VALUE_FIELD_ID, &value_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, value_);
+        }
     };
+
+    using SimpleTimeSpanPropertyDataReader = SimpleColumnDataReader<TimeSpanPropertyColumnData>;
 
     class UInt16PropertyColumnData : public PropertyColumnData
     {
@@ -16656,7 +19723,15 @@ namespace Barrelman::Data
             Bind(statement, VALUE_FIELD_ID, &value_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, value_);
+        }
     };
+
+    using SimpleUInt16PropertyDataReader = SimpleColumnDataReader<UInt16PropertyColumnData>;
 
     class UInt32PropertyColumnData : public PropertyColumnData
     {
@@ -16691,7 +19766,15 @@ namespace Barrelman::Data
             Bind(statement, VALUE_FIELD_ID, &value_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, value_);
+        }
     };
+
+    using SimpleUInt32PropertyDataReader = SimpleColumnDataReader<UInt32PropertyColumnData>;
 
     class UInt64PropertyColumnData : public PropertyColumnData
     {
@@ -16726,7 +19809,15 @@ namespace Barrelman::Data
             Bind(statement, VALUE_FIELD_ID, &value_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, value_);
+        }
     };
+
+    using SimpleUInt64PropertyDataReader = SimpleColumnDataReader<UInt64PropertyColumnData>;
 
     class PropertyDefinitionColumnData : public BaseColumnData
     {
@@ -16808,7 +19899,24 @@ namespace Barrelman::Data
             Bind(statement, NAME_FIELD_ID, &name_, &nameLengthOrNullIndicator_);
         }
 
+        void ReadUnboundData( const ODBC::Statement& statement )
+        {
+            Base::ReadUnboundData( statement );
+
+            description_ = statement.GetWideString(DESCRIPTION_FIELD_ID);
+        }
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, elementType_);
+            WriteColumnValue( destination, name_, nameLengthOrNullIndicator_);
+            WriteColumnValue( destination, description_, descriptionLengthOrNullIndicator_);
+        }
     };
+
+    using SimplePropertyDefinitionDataReader = SimpleColumnDataReader<PropertyDefinitionColumnData>;
 
     class BinaryPropertyDefinitionColumnData : public PropertyDefinitionColumnData
     {
@@ -16843,7 +19951,21 @@ namespace Barrelman::Data
 
         }
 
+        void ReadUnboundData( const ODBC::Statement& statement )
+        {
+            Base::ReadUnboundData( statement );
+
+            defaultValue_ = statement.GetBinary(DEFAULTVALUE_FIELD_ID);
+        }
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, defaultValue_, defaultValueLengthOrNullIndicator_);
+        }
     };
+
+    using SimpleBinaryPropertyDefinitionDataReader = SimpleColumnDataReader<BinaryPropertyDefinitionColumnData>;
 
     class BooleanPropertyDefinitionColumnData : public PropertyDefinitionColumnData
     {
@@ -16878,7 +20000,15 @@ namespace Barrelman::Data
             Bind(statement, DEFAULTVALUE_FIELD_ID, &defaultValue_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, defaultValue_);
+        }
     };
+
+    using SimpleBooleanPropertyDefinitionDataReader = SimpleColumnDataReader<BooleanPropertyDefinitionColumnData>;
 
     class BytePropertyDefinitionColumnData : public PropertyDefinitionColumnData
     {
@@ -16935,7 +20065,17 @@ namespace Barrelman::Data
             Bind(statement, MAXVALUE_FIELD_ID, &maxValue_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, defaultValue_);
+            WriteColumnValue( destination, minValue_);
+            WriteColumnValue( destination, maxValue_);
+        }
     };
+
+    using SimpleBytePropertyDefinitionDataReader = SimpleColumnDataReader<BytePropertyDefinitionColumnData>;
 
     class DateTimePropertyDefinitionColumnData : public PropertyDefinitionColumnData
     {
@@ -17007,7 +20147,17 @@ namespace Barrelman::Data
             Bind(statement, MAXVALUE_FIELD_ID, &maxValue_, &maxValueLengthOrNullIndicator_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, defaultValue_, defaultValueLengthOrNullIndicator_);
+            WriteColumnValue( destination, minValue_, minValueLengthOrNullIndicator_);
+            WriteColumnValue( destination, maxValue_, maxValueLengthOrNullIndicator_);
+        }
     };
+
+    using SimpleDateTimePropertyDefinitionDataReader = SimpleColumnDataReader<DateTimePropertyDefinitionColumnData>;
 
     class DoublePropertyDefinitionColumnData : public PropertyDefinitionColumnData
     {
@@ -17064,7 +20214,17 @@ namespace Barrelman::Data
             Bind(statement, MAXVALUE_FIELD_ID, &maxValue_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, defaultValue_);
+            WriteColumnValue( destination, minValue_);
+            WriteColumnValue( destination, maxValue_);
+        }
     };
+
+    using SimpleDoublePropertyDefinitionDataReader = SimpleColumnDataReader<DoublePropertyDefinitionColumnData>;
 
     class GuidPropertyDefinitionColumnData : public PropertyDefinitionColumnData
     {
@@ -17099,7 +20259,15 @@ namespace Barrelman::Data
             Bind(statement, DEFAULTVALUE_FIELD_ID, &defaultValue_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, defaultValue_);
+        }
     };
+
+    using SimpleGuidPropertyDefinitionDataReader = SimpleColumnDataReader<GuidPropertyDefinitionColumnData>;
 
     class Int16PropertyDefinitionColumnData : public PropertyDefinitionColumnData
     {
@@ -17156,7 +20324,17 @@ namespace Barrelman::Data
             Bind(statement, MAXVALUE_FIELD_ID, &maxValue_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, defaultValue_);
+            WriteColumnValue( destination, minValue_);
+            WriteColumnValue( destination, maxValue_);
+        }
     };
+
+    using SimpleInt16PropertyDefinitionDataReader = SimpleColumnDataReader<Int16PropertyDefinitionColumnData>;
 
     class Int32PropertyDefinitionColumnData : public PropertyDefinitionColumnData
     {
@@ -17213,7 +20391,17 @@ namespace Barrelman::Data
             Bind(statement, MAXVALUE_FIELD_ID, &maxValue_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, defaultValue_);
+            WriteColumnValue( destination, minValue_);
+            WriteColumnValue( destination, maxValue_);
+        }
     };
+
+    using SimpleInt32PropertyDefinitionDataReader = SimpleColumnDataReader<Int32PropertyDefinitionColumnData>;
 
     class Int64PropertyDefinitionColumnData : public PropertyDefinitionColumnData
     {
@@ -17270,7 +20458,17 @@ namespace Barrelman::Data
             Bind(statement, MAXVALUE_FIELD_ID, &maxValue_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, defaultValue_);
+            WriteColumnValue( destination, minValue_);
+            WriteColumnValue( destination, maxValue_);
+        }
     };
+
+    using SimpleInt64PropertyDefinitionDataReader = SimpleColumnDataReader<Int64PropertyDefinitionColumnData>;
 
     class ReferencePropertyDefinitionColumnData : public PropertyDefinitionColumnData
     {
@@ -17316,7 +20514,16 @@ namespace Barrelman::Data
             Bind(statement, REFERENCEDELEMENTTYPE_FIELD_ID, &referencedElementType_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, defaultValue_);
+            WriteColumnValue( destination, referencedElementType_);
+        }
     };
+
+    using SimpleReferencePropertyDefinitionDataReader = SimpleColumnDataReader<ReferencePropertyDefinitionColumnData>;
 
     class SBytePropertyDefinitionColumnData : public PropertyDefinitionColumnData
     {
@@ -17373,7 +20580,17 @@ namespace Barrelman::Data
             Bind(statement, MAXVALUE_FIELD_ID, &maxValue_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, defaultValue_);
+            WriteColumnValue( destination, minValue_);
+            WriteColumnValue( destination, maxValue_);
+        }
     };
+
+    using SimpleSBytePropertyDefinitionDataReader = SimpleColumnDataReader<SBytePropertyDefinitionColumnData>;
 
     class SinglePropertyDefinitionColumnData : public PropertyDefinitionColumnData
     {
@@ -17430,7 +20647,17 @@ namespace Barrelman::Data
             Bind(statement, MAXVALUE_FIELD_ID, &maxValue_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, defaultValue_);
+            WriteColumnValue( destination, minValue_);
+            WriteColumnValue( destination, maxValue_);
+        }
     };
+
+    using SimpleSinglePropertyDefinitionDataReader = SimpleColumnDataReader<SinglePropertyDefinitionColumnData>;
 
     class StringPropertyDefinitionColumnData : public PropertyDefinitionColumnData
     {
@@ -17486,7 +20713,16 @@ namespace Barrelman::Data
             Bind(statement, PATTERN_FIELD_ID, &pattern_, &patternLengthOrNullIndicator_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, defaultValue_, defaultValueLengthOrNullIndicator_);
+            WriteColumnValue( destination, pattern_, patternLengthOrNullIndicator_);
+        }
     };
+
+    using SimpleStringPropertyDefinitionDataReader = SimpleColumnDataReader<StringPropertyDefinitionColumnData>;
 
     class TimeseriesPropertyDefinitionColumnData : public PropertyDefinitionColumnData
     {
@@ -17503,7 +20739,14 @@ namespace Barrelman::Data
             return Kind::TimeseriesPropertyDefinition;
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+        }
     };
+
+    using SimpleTimeseriesPropertyDefinitionDataReader = SimpleColumnDataReader<TimeseriesPropertyDefinitionColumnData>;
 
     class BinaryTimeseriesPropertyDefinitionColumnData : public TimeseriesPropertyDefinitionColumnData
     {
@@ -17520,7 +20763,14 @@ namespace Barrelman::Data
             return Kind::BinaryTimeseriesPropertyDefinition;
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+        }
     };
+
+    using SimpleBinaryTimeseriesPropertyDefinitionDataReader = SimpleColumnDataReader<BinaryTimeseriesPropertyDefinitionColumnData>;
 
     class BooleanTimeseriesPropertyDefinitionColumnData : public TimeseriesPropertyDefinitionColumnData
     {
@@ -17537,7 +20787,14 @@ namespace Barrelman::Data
             return Kind::BooleanTimeseriesPropertyDefinition;
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+        }
     };
+
+    using SimpleBooleanTimeseriesPropertyDefinitionDataReader = SimpleColumnDataReader<BooleanTimeseriesPropertyDefinitionColumnData>;
 
     class ByteTimeseriesPropertyDefinitionColumnData : public TimeseriesPropertyDefinitionColumnData
     {
@@ -17583,7 +20840,16 @@ namespace Barrelman::Data
             Bind(statement, MAXVALUE_FIELD_ID, &maxValue_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, minValue_);
+            WriteColumnValue( destination, maxValue_);
+        }
     };
+
+    using SimpleByteTimeseriesPropertyDefinitionDataReader = SimpleColumnDataReader<ByteTimeseriesPropertyDefinitionColumnData>;
 
     class DateTimeTimeseriesPropertyDefinitionColumnData : public TimeseriesPropertyDefinitionColumnData
     {
@@ -17639,7 +20905,16 @@ namespace Barrelman::Data
             Bind(statement, MAXVALUE_FIELD_ID, &maxValue_, &maxValueLengthOrNullIndicator_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, minValue_, minValueLengthOrNullIndicator_);
+            WriteColumnValue( destination, maxValue_, maxValueLengthOrNullIndicator_);
+        }
     };
+
+    using SimpleDateTimeTimeseriesPropertyDefinitionDataReader = SimpleColumnDataReader<DateTimeTimeseriesPropertyDefinitionColumnData>;
 
     class DoubleTimeseriesPropertyDefinitionColumnData : public TimeseriesPropertyDefinitionColumnData
     {
@@ -17685,7 +20960,16 @@ namespace Barrelman::Data
             Bind(statement, MAXVALUE_FIELD_ID, &maxValue_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, minValue_);
+            WriteColumnValue( destination, maxValue_);
+        }
     };
+
+    using SimpleDoubleTimeseriesPropertyDefinitionDataReader = SimpleColumnDataReader<DoubleTimeseriesPropertyDefinitionColumnData>;
 
     class GuidTimeseriesPropertyDefinitionColumnData : public TimeseriesPropertyDefinitionColumnData
     {
@@ -17702,7 +20986,14 @@ namespace Barrelman::Data
             return Kind::GuidTimeseriesPropertyDefinition;
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+        }
     };
+
+    using SimpleGuidTimeseriesPropertyDefinitionDataReader = SimpleColumnDataReader<GuidTimeseriesPropertyDefinitionColumnData>;
 
     class Int16TimeseriesPropertyDefinitionColumnData : public TimeseriesPropertyDefinitionColumnData
     {
@@ -17748,7 +21039,16 @@ namespace Barrelman::Data
             Bind(statement, MAXVALUE_FIELD_ID, &maxValue_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, minValue_);
+            WriteColumnValue( destination, maxValue_);
+        }
     };
+
+    using SimpleInt16TimeseriesPropertyDefinitionDataReader = SimpleColumnDataReader<Int16TimeseriesPropertyDefinitionColumnData>;
 
     class Int32TimeseriesPropertyDefinitionColumnData : public TimeseriesPropertyDefinitionColumnData
     {
@@ -17794,7 +21094,16 @@ namespace Barrelman::Data
             Bind(statement, MAXVALUE_FIELD_ID, &maxValue_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, minValue_);
+            WriteColumnValue( destination, maxValue_);
+        }
     };
+
+    using SimpleInt32TimeseriesPropertyDefinitionDataReader = SimpleColumnDataReader<Int32TimeseriesPropertyDefinitionColumnData>;
 
     class Int64TimeseriesPropertyDefinitionColumnData : public TimeseriesPropertyDefinitionColumnData
     {
@@ -17840,7 +21149,16 @@ namespace Barrelman::Data
             Bind(statement, MAXVALUE_FIELD_ID, &maxValue_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, minValue_);
+            WriteColumnValue( destination, maxValue_);
+        }
     };
+
+    using SimpleInt64TimeseriesPropertyDefinitionDataReader = SimpleColumnDataReader<Int64TimeseriesPropertyDefinitionColumnData>;
 
     class ReferenceTimeseriesPropertyDefinitionColumnData : public TimeseriesPropertyDefinitionColumnData
     {
@@ -17875,7 +21193,15 @@ namespace Barrelman::Data
             Bind(statement, REFERENCEDELEMENTTYPE_FIELD_ID, &referencedElementType_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, referencedElementType_);
+        }
     };
+
+    using SimpleReferenceTimeseriesPropertyDefinitionDataReader = SimpleColumnDataReader<ReferenceTimeseriesPropertyDefinitionColumnData>;
 
     class SByteTimeseriesPropertyDefinitionColumnData : public TimeseriesPropertyDefinitionColumnData
     {
@@ -17921,7 +21247,16 @@ namespace Barrelman::Data
             Bind(statement, MAXVALUE_FIELD_ID, &maxValue_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, minValue_);
+            WriteColumnValue( destination, maxValue_);
+        }
     };
+
+    using SimpleSByteTimeseriesPropertyDefinitionDataReader = SimpleColumnDataReader<SByteTimeseriesPropertyDefinitionColumnData>;
 
     class SingleTimeseriesPropertyDefinitionColumnData : public TimeseriesPropertyDefinitionColumnData
     {
@@ -17967,7 +21302,16 @@ namespace Barrelman::Data
             Bind(statement, MAXVALUE_FIELD_ID, &maxValue_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, minValue_);
+            WriteColumnValue( destination, maxValue_);
+        }
     };
+
+    using SimpleSingleTimeseriesPropertyDefinitionDataReader = SimpleColumnDataReader<SingleTimeseriesPropertyDefinitionColumnData>;
 
     class StringTimeseriesPropertyDefinitionColumnData : public TimeseriesPropertyDefinitionColumnData
     {
@@ -18007,7 +21351,15 @@ namespace Barrelman::Data
             Bind(statement, PATTERN_FIELD_ID, &pattern_, &patternLengthOrNullIndicator_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, pattern_, patternLengthOrNullIndicator_);
+        }
     };
+
+    using SimpleStringTimeseriesPropertyDefinitionDataReader = SimpleColumnDataReader<StringTimeseriesPropertyDefinitionColumnData>;
 
     class TimeSpanTimeseriesPropertyDefinitionColumnData : public TimeseriesPropertyDefinitionColumnData
     {
@@ -18053,7 +21405,16 @@ namespace Barrelman::Data
             Bind(statement, MAXVALUE_FIELD_ID, &maxValue_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, minValue_);
+            WriteColumnValue( destination, maxValue_);
+        }
     };
+
+    using SimpleTimeSpanTimeseriesPropertyDefinitionDataReader = SimpleColumnDataReader<TimeSpanTimeseriesPropertyDefinitionColumnData>;
 
     class UInt16TimeseriesPropertyDefinitionColumnData : public TimeseriesPropertyDefinitionColumnData
     {
@@ -18099,7 +21460,16 @@ namespace Barrelman::Data
             Bind(statement, MAXVALUE_FIELD_ID, &maxValue_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, minValue_);
+            WriteColumnValue( destination, maxValue_);
+        }
     };
+
+    using SimpleUInt16TimeseriesPropertyDefinitionDataReader = SimpleColumnDataReader<UInt16TimeseriesPropertyDefinitionColumnData>;
 
     class UInt32TimeseriesPropertyDefinitionColumnData : public TimeseriesPropertyDefinitionColumnData
     {
@@ -18145,7 +21515,16 @@ namespace Barrelman::Data
             Bind(statement, MAXVALUE_FIELD_ID, &maxValue_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, minValue_);
+            WriteColumnValue( destination, maxValue_);
+        }
     };
+
+    using SimpleUInt32TimeseriesPropertyDefinitionDataReader = SimpleColumnDataReader<UInt32TimeseriesPropertyDefinitionColumnData>;
 
     class UInt64TimeseriesPropertyDefinitionColumnData : public TimeseriesPropertyDefinitionColumnData
     {
@@ -18191,7 +21570,16 @@ namespace Barrelman::Data
             Bind(statement, MAXVALUE_FIELD_ID, &maxValue_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, minValue_);
+            WriteColumnValue( destination, maxValue_);
+        }
     };
+
+    using SimpleUInt64TimeseriesPropertyDefinitionDataReader = SimpleColumnDataReader<UInt64TimeseriesPropertyDefinitionColumnData>;
 
     class TimeSpanPropertyDefinitionColumnData : public PropertyDefinitionColumnData
     {
@@ -18248,7 +21636,17 @@ namespace Barrelman::Data
             Bind(statement, MAXVALUE_FIELD_ID, &maxValue_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, defaultValue_);
+            WriteColumnValue( destination, minValue_);
+            WriteColumnValue( destination, maxValue_);
+        }
     };
+
+    using SimpleTimeSpanPropertyDefinitionDataReader = SimpleColumnDataReader<TimeSpanPropertyDefinitionColumnData>;
 
     class UInt16PropertyDefinitionColumnData : public PropertyDefinitionColumnData
     {
@@ -18305,7 +21703,17 @@ namespace Barrelman::Data
             Bind(statement, MAXVALUE_FIELD_ID, &maxValue_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, defaultValue_);
+            WriteColumnValue( destination, minValue_);
+            WriteColumnValue( destination, maxValue_);
+        }
     };
+
+    using SimpleUInt16PropertyDefinitionDataReader = SimpleColumnDataReader<UInt16PropertyDefinitionColumnData>;
 
     class UInt32PropertyDefinitionColumnData : public PropertyDefinitionColumnData
     {
@@ -18362,7 +21770,17 @@ namespace Barrelman::Data
             Bind(statement, MAXVALUE_FIELD_ID, &maxValue_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, defaultValue_);
+            WriteColumnValue( destination, minValue_);
+            WriteColumnValue( destination, maxValue_);
+        }
     };
+
+    using SimpleUInt32PropertyDefinitionDataReader = SimpleColumnDataReader<UInt32PropertyDefinitionColumnData>;
 
     class UInt64PropertyDefinitionColumnData : public PropertyDefinitionColumnData
     {
@@ -18419,7 +21837,17 @@ namespace Barrelman::Data
             Bind(statement, MAXVALUE_FIELD_ID, &maxValue_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, defaultValue_);
+            WriteColumnValue( destination, minValue_);
+            WriteColumnValue( destination, maxValue_);
+        }
     };
+
+    using SimpleUInt64PropertyDefinitionDataReader = SimpleColumnDataReader<UInt64PropertyDefinitionColumnData>;
 
     class RadarAlarmStatusColumnData : public BaseColumnData
     {
@@ -18496,7 +21924,18 @@ namespace Barrelman::Data
             Bind(statement, TYPE_FIELD_ID, &type_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, radar_);
+            WriteColumnValue( destination, timestamp_);
+            WriteColumnValue( destination, type_);
+        }
     };
+
+    using SimpleRadarAlarmStatusDataReader = SimpleColumnDataReader<RadarAlarmStatusColumnData>;
 
     class RadarCommandColumnData : public BaseColumnData
     {
@@ -18595,7 +22034,20 @@ namespace Barrelman::Data
             Bind(statement, REPLY_FIELD_ID, &reply_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, radar_);
+            WriteColumnValue( destination, timestamp_);
+            WriteColumnValue( destination, deviceCommandSourceType_);
+            WriteColumnValue( destination, deviceCommandSourceId_);
+            WriteColumnValue( destination, reply_);
+        }
     };
+
+    using SimpleRadarCommandDataReader = SimpleColumnDataReader<RadarCommandColumnData>;
 
     class RadarCommandGetStatusColumnData : public RadarCommandColumnData
     {
@@ -18612,7 +22064,14 @@ namespace Barrelman::Data
             return Kind::RadarCommandGetStatus;
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+        }
     };
+
+    using SimpleRadarCommandGetStatusDataReader = SimpleColumnDataReader<RadarCommandGetStatusColumnData>;
 
     class RadarCommandReplyColumnData : public BaseColumnData
     {
@@ -18711,7 +22170,26 @@ namespace Barrelman::Data
             Bind(statement, STATUS_FIELD_ID, &status_);
         }
 
+        void ReadUnboundData( const ODBC::Statement& statement )
+        {
+            Base::ReadUnboundData( statement );
+
+            message_ = statement.GetWideString(MESSAGE_FIELD_ID);
+        }
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, radar_);
+            WriteColumnValue( destination, timestamp_);
+            WriteColumnValue( destination, command_);
+            WriteColumnValue( destination, status_);
+            WriteColumnValue( destination, message_, messageLengthOrNullIndicator_);
+        }
     };
+
+    using SimpleRadarCommandReplyDataReader = SimpleColumnDataReader<RadarCommandReplyColumnData>;
 
     class RadarCommandReplyGetStatusColumnData : public RadarCommandReplyColumnData
     {
@@ -18790,7 +22268,19 @@ namespace Barrelman::Data
             Bind(statement, TX_FIELD_ID, &tx_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, azimuthCount_);
+            WriteColumnValue( destination, triggerCount_);
+            WriteColumnValue( destination, rotationCount_);
+            WriteColumnValue( destination, pulse_);
+            WriteColumnValue( destination, tx_);
+        }
     };
+
+    using SimpleRadarCommandReplyGetStatusDataReader = SimpleColumnDataReader<RadarCommandReplyGetStatusColumnData>;
 
     class RadarConfigurationColumnData : public BaseColumnData
     {
@@ -19002,9 +22492,17 @@ namespace Barrelman::Data
         {
             imageColor_ = imageColor;
         }
-        UInt32 ImageSubstitutionColor( ) const
+        std::optional<UInt32> ImageSubstitutionColor( ) const
         {
-            return imageSubstitutionColor_;
+            if(imageSubstitutionColorNullIndicator_ != SQL_NULL_DATA)
+            {
+                return imageSubstitutionColor_;
+            }
+            return {};
+        }
+        bool IsImageSubstitutionColorNull( ) const
+        {
+            return imageSubstitutionColorNullIndicator_ == SQL_NULL_DATA;
         }
         void SetImageSubstitutionColor( UInt32 imageSubstitutionColor )
         {
@@ -19147,7 +22645,42 @@ namespace Barrelman::Data
             Bind(statement, NMEARECEIVERSOURCEID_FIELD_ID, &nmeaReceiverSourceId_, &nmeaReceiverSourceIdLengthOrNullIndicator_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, radar_);
+            WriteColumnValue( destination, timestamp_);
+            WriteColumnValue( destination, radarProtocolVersion_);
+            WriteColumnValue( destination, radarIPAddress_, radarIPAddressLengthOrNullIndicator_);
+            WriteColumnValue( destination, radarPort_);
+            WriteColumnValue( destination, radarConfigurationPort_);
+            WriteColumnValue( destination, skipMagicTimeout_);
+            WriteColumnValue( destination, readTimeout_);
+            WriteColumnValue( destination, synchronizationInterval_);
+            WriteColumnValue( destination, targetsRefreshRate_);
+            WriteColumnValue( destination, range_);
+            WriteColumnValue( destination, sectorCount_);
+            WriteColumnValue( destination, sectorOffset_);
+            WriteColumnValue( destination, imageColor_);
+            WriteColumnValue( destination, imageSubstitutionColor_, imageSubstitutionColorNullIndicator_);
+            WriteColumnValue( destination, transparentColor_);
+            WriteColumnValue( destination, imageScaleFactorX_);
+            WriteColumnValue( destination, imageOffsetX_);
+            WriteColumnValue( destination, imageScaleFactorY_);
+            WriteColumnValue( destination, imageOffsetY_);
+            WriteColumnValue( destination, radarImageType_);
+            WriteColumnValue( destination, trackColor_);
+            WriteColumnValue( destination, vectorColor_);
+            WriteColumnValue( destination, enableNmea_);
+            WriteColumnValue( destination, nmeaReceiverIPAddress_, nmeaReceiverIPAddressLengthOrNullIndicator_);
+            WriteColumnValue( destination, nmeaReceiverPort_);
+            WriteColumnValue( destination, nmeaReceiverSourceId_, nmeaReceiverSourceIdLengthOrNullIndicator_);
+        }
     };
+
+    using SimpleRadarConfigurationDataReader = SimpleColumnDataReader<RadarConfigurationColumnData>;
 
     class RadarImageColumnData : public BaseColumnData
     {
@@ -19257,7 +22790,27 @@ namespace Barrelman::Data
             Bind(statement, RANGE_FIELD_ID, &range_);
         }
 
+        void ReadUnboundData( const ODBC::Statement& statement )
+        {
+            Base::ReadUnboundData( statement );
+
+            image_ = statement.GetBinary(IMAGE_FIELD_ID);
+        }
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, radar_);
+            WriteColumnValue( destination, timestamp_);
+            WriteColumnValue( destination, depth_);
+            WriteColumnValue( destination, resolution_);
+            WriteColumnValue( destination, range_);
+            WriteColumnValue( destination, image_, imageLengthOrNullIndicator_);
+        }
     };
+
+    using SimpleRadarImageDataReader = SimpleColumnDataReader<RadarImageColumnData>;
 
     class RadarRawTrackTableColumnData : public BaseColumnData
     {
@@ -19345,7 +22898,25 @@ namespace Barrelman::Data
             Bind(statement, COUNT_FIELD_ID, &count_);
         }
 
+        void ReadUnboundData( const ODBC::Statement& statement )
+        {
+            Base::ReadUnboundData( statement );
+
+            table_ = statement.GetBinary(TABLE_FIELD_ID);
+        }
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, radar_);
+            WriteColumnValue( destination, timestamp_);
+            WriteColumnValue( destination, count_);
+            WriteColumnValue( destination, table_, tableLengthOrNullIndicator_);
+        }
     };
+
+    using SimpleRadarRawTrackTableDataReader = SimpleColumnDataReader<RadarRawTrackTableColumnData>;
 
     class RadarStatusColumnData : public BaseColumnData
     {
@@ -19477,7 +23048,23 @@ namespace Barrelman::Data
             Bind(statement, TRACKING_FIELD_ID, &tracking_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, radar_);
+            WriteColumnValue( destination, timestamp_);
+            WriteColumnValue( destination, azimuthCount_);
+            WriteColumnValue( destination, triggerCount_);
+            WriteColumnValue( destination, rotationTime_);
+            WriteColumnValue( destination, pulse_);
+            WriteColumnValue( destination, tx_);
+            WriteColumnValue( destination, tracking_);
+        }
     };
+
+    using SimpleRadarStatusDataReader = SimpleColumnDataReader<RadarStatusColumnData>;
 
     class RadioCommandColumnData : public BaseColumnData
     {
@@ -19576,7 +23163,20 @@ namespace Barrelman::Data
             Bind(statement, REPLY_FIELD_ID, &reply_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, radio_);
+            WriteColumnValue( destination, timestamp_);
+            WriteColumnValue( destination, deviceCommandSourceType_);
+            WriteColumnValue( destination, deviceCommandSourceId_);
+            WriteColumnValue( destination, reply_);
+        }
     };
+
+    using SimpleRadioCommandDataReader = SimpleColumnDataReader<RadioCommandColumnData>;
 
     class RadioCommandReplyColumnData : public BaseColumnData
     {
@@ -19675,7 +23275,26 @@ namespace Barrelman::Data
             Bind(statement, STATUS_FIELD_ID, &status_);
         }
 
+        void ReadUnboundData( const ODBC::Statement& statement )
+        {
+            Base::ReadUnboundData( statement );
+
+            message_ = statement.GetWideString(MESSAGE_FIELD_ID);
+        }
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, radio_);
+            WriteColumnValue( destination, timestamp_);
+            WriteColumnValue( destination, command_);
+            WriteColumnValue( destination, status_);
+            WriteColumnValue( destination, message_, messageLengthOrNullIndicator_);
+        }
     };
+
+    using SimpleRadioCommandReplyDataReader = SimpleColumnDataReader<RadioCommandReplyColumnData>;
 
     class RadioConfigurationColumnData : public BaseColumnData
     {
@@ -19833,7 +23452,24 @@ namespace Barrelman::Data
             Bind(statement, ED137PORT_FIELD_ID, &ed137Port_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, radio_);
+            WriteColumnValue( destination, timestamp_);
+            WriteColumnValue( destination, longitude_);
+            WriteColumnValue( destination, latitude_);
+            WriteColumnValue( destination, playbackUrl_, playbackUrlLengthOrNullIndicator_);
+            WriteColumnValue( destination, radioIPAddress_, radioIPAddressLengthOrNullIndicator_);
+            WriteColumnValue( destination, radioPort_);
+            WriteColumnValue( destination, ed137IPAddress_, ed137IPAddressLengthOrNullIndicator_);
+            WriteColumnValue( destination, ed137Port_);
+        }
     };
+
+    using SimpleRadioConfigurationDataReader = SimpleColumnDataReader<RadioConfigurationColumnData>;
 
     class RadomeCommandColumnData : public BaseColumnData
     {
@@ -19932,7 +23568,20 @@ namespace Barrelman::Data
             Bind(statement, REPLY_FIELD_ID, &reply_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, radome_);
+            WriteColumnValue( destination, timestamp_);
+            WriteColumnValue( destination, deviceCommandSourceType_);
+            WriteColumnValue( destination, deviceCommandSourceId_);
+            WriteColumnValue( destination, reply_);
+        }
     };
+
+    using SimpleRadomeCommandDataReader = SimpleColumnDataReader<RadomeCommandColumnData>;
 
     class RadomeCommandReplyColumnData : public BaseColumnData
     {
@@ -20031,7 +23680,26 @@ namespace Barrelman::Data
             Bind(statement, STATUS_FIELD_ID, &status_);
         }
 
+        void ReadUnboundData( const ODBC::Statement& statement )
+        {
+            Base::ReadUnboundData( statement );
+
+            message_ = statement.GetWideString(MESSAGE_FIELD_ID);
+        }
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, radome_);
+            WriteColumnValue( destination, timestamp_);
+            WriteColumnValue( destination, command_);
+            WriteColumnValue( destination, status_);
+            WriteColumnValue( destination, message_, messageLengthOrNullIndicator_);
+        }
     };
+
+    using SimpleRadomeCommandReplyDataReader = SimpleColumnDataReader<RadomeCommandReplyColumnData>;
 
     class RadomeConfigurationColumnData : public BaseColumnData
     {
@@ -20152,7 +23820,22 @@ namespace Barrelman::Data
             Bind(statement, HIGHTEMPERATURELIMIT_FIELD_ID, &highTemperatureLimit_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, radome_);
+            WriteColumnValue( destination, timestamp_);
+            WriteColumnValue( destination, interval_);
+            WriteColumnValue( destination, lowPressureLimit_);
+            WriteColumnValue( destination, highPressureLimit_);
+            WriteColumnValue( destination, lowTemperatureLimit_);
+            WriteColumnValue( destination, highTemperatureLimit_);
+        }
     };
+
+    using SimpleRadomeConfigurationDataReader = SimpleColumnDataReader<RadomeConfigurationColumnData>;
 
     class ReferenceTimeseriesValueColumnData : public BaseColumnData
     {
@@ -20229,7 +23912,18 @@ namespace Barrelman::Data
             Bind(statement, VALUE_FIELD_ID, &value_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, timeseries_);
+            WriteColumnValue( destination, timestamp_);
+            WriteColumnValue( destination, value_);
+        }
     };
+
+    using SimpleReferenceTimeseriesValueDataReader = SimpleColumnDataReader<ReferenceTimeseriesValueColumnData>;
 
     class SByteTimeseriesValueColumnData : public BaseColumnData
     {
@@ -20290,9 +23984,17 @@ namespace Barrelman::Data
         {
             timestamp_ = timestamp;
         }
-        SByte Value( ) const
+        std::optional<SByte> Value( ) const
         {
-            return value_;
+            if(valueNullIndicator_ != SQL_NULL_DATA)
+            {
+                return value_;
+            }
+            return {};
+        }
+        bool IsValueNull( ) const
+        {
+            return valueNullIndicator_ == SQL_NULL_DATA;
         }
         void SetValue( SByte value )
         {
@@ -20307,7 +24009,18 @@ namespace Barrelman::Data
             Bind(statement, VALUE_FIELD_ID, &value_, &valueNullIndicator_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, timeseries_);
+            WriteColumnValue( destination, timestamp_);
+            WriteColumnValue( destination, value_, valueNullIndicator_);
+        }
     };
+
+    using SimpleSByteTimeseriesValueDataReader = SimpleColumnDataReader<SByteTimeseriesValueColumnData>;
 
     class SecurityDomainColumnData : public BaseColumnData
     {
@@ -20378,7 +24091,23 @@ namespace Barrelman::Data
             Bind(statement, NAME_FIELD_ID, &name_, &nameLengthOrNullIndicator_);
         }
 
+        void ReadUnboundData( const ODBC::Statement& statement )
+        {
+            Base::ReadUnboundData( statement );
+
+            description_ = statement.GetWideString(DESCRIPTION_FIELD_ID);
+        }
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, name_, nameLengthOrNullIndicator_);
+            WriteColumnValue( destination, description_, descriptionLengthOrNullIndicator_);
+        }
     };
+
+    using SimpleSecurityDomainDataReader = SimpleColumnDataReader<SecurityDomainColumnData>;
 
     class SecurityIdentifierColumnData : public BaseColumnData
     {
@@ -20460,7 +24189,24 @@ namespace Barrelman::Data
             Bind(statement, IDENTITY_FIELD_ID, &identity_, &identityLengthOrNullIndicator_);
         }
 
+        void ReadUnboundData( const ODBC::Statement& statement )
+        {
+            Base::ReadUnboundData( statement );
+
+            description_ = statement.GetWideString(DESCRIPTION_FIELD_ID);
+        }
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, domain_);
+            WriteColumnValue( destination, identity_, identityLengthOrNullIndicator_);
+            WriteColumnValue( destination, description_, descriptionLengthOrNullIndicator_);
+        }
     };
+
+    using SimpleSecurityIdentifierDataReader = SimpleColumnDataReader<SecurityIdentifierColumnData>;
 
     class SecurityLoginColumnData : public SecurityIdentifierColumnData
     {
@@ -20477,7 +24223,14 @@ namespace Barrelman::Data
             return Kind::SecurityLogin;
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+        }
     };
+
+    using SimpleSecurityLoginDataReader = SimpleColumnDataReader<SecurityLoginColumnData>;
 
     class SecurityRoleColumnData : public SecurityIdentifierColumnData
     {
@@ -20517,7 +24270,15 @@ namespace Barrelman::Data
             Bind(statement, NAME_FIELD_ID, &name_, &nameLengthOrNullIndicator_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, name_, nameLengthOrNullIndicator_);
+        }
     };
+
+    using SimpleSecurityRoleDataReader = SimpleColumnDataReader<SecurityRoleColumnData>;
 
     class SecurityIdentifierRoleLinkColumnData : public BaseColumnData
     {
@@ -20588,9 +24349,17 @@ namespace Barrelman::Data
         {
             start_ = start;
         }
-        DateTime End( ) const
+        std::optional<DateTime> End( ) const
         {
-            return end_;
+            if(endNullIndicator_ != SQL_NULL_DATA)
+            {
+                return end_;
+            }
+            return {};
+        }
+        bool IsEndNull( ) const
+        {
+            return endNullIndicator_ == SQL_NULL_DATA;
         }
         void SetEnd( const DateTime& end )
         {
@@ -20606,7 +24375,19 @@ namespace Barrelman::Data
             Bind(statement, END_FIELD_ID, &end_, &endNullIndicator_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, member_);
+            WriteColumnValue( destination, role_);
+            WriteColumnValue( destination, start_);
+            WriteColumnValue( destination, end_, endNullIndicator_);
+        }
     };
+
+    using SimpleSecurityIdentifierRoleLinkDataReader = SimpleColumnDataReader<SecurityIdentifierRoleLinkColumnData>;
 
     class SecurityLoginSessionColumnData : public BaseColumnData
     {
@@ -20675,9 +24456,17 @@ namespace Barrelman::Data
         {
             fromTime_ = fromTime;
         }
-        DateTime ThroughTime( ) const
+        std::optional<DateTime> ThroughTime( ) const
         {
-            return throughTime_;
+            if(throughTimeNullIndicator_ != SQL_NULL_DATA)
+            {
+                return throughTime_;
+            }
+            return {};
+        }
+        bool IsThroughTimeNull( ) const
+        {
+            return throughTimeNullIndicator_ == SQL_NULL_DATA;
         }
         void SetThroughTime( const DateTime& throughTime )
         {
@@ -20727,7 +24516,21 @@ namespace Barrelman::Data
             Bind(statement, MESSAGEQUEUENAME_FIELD_ID, &messageQueueName_, &messageQueueNameLengthOrNullIndicator_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, login_);
+            WriteColumnValue( destination, fromTime_);
+            WriteColumnValue( destination, throughTime_, throughTimeNullIndicator_);
+            WriteColumnValue( destination, clientSession_);
+            WriteColumnValue( destination, notificationQueueName_, notificationQueueNameLengthOrNullIndicator_);
+            WriteColumnValue( destination, messageQueueName_, messageQueueNameLengthOrNullIndicator_);
+        }
     };
+
+    using SimpleSecurityLoginSessionDataReader = SimpleColumnDataReader<SecurityLoginSessionColumnData>;
 
     class SecurityPermissionColumnData : public BaseColumnData
     {
@@ -20848,7 +24651,22 @@ namespace Barrelman::Data
             Bind(statement, CANDELETE_FIELD_ID, &canDelete_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, identifier_);
+            WriteColumnValue( destination, timestamp_);
+            WriteColumnValue( destination, typeCode_);
+            WriteColumnValue( destination, canCreate_);
+            WriteColumnValue( destination, canRead_);
+            WriteColumnValue( destination, canUpdate_);
+            WriteColumnValue( destination, canDelete_);
+        }
     };
+
+    using SimpleSecurityPermissionDataReader = SimpleColumnDataReader<SecurityPermissionColumnData>;
 
     class SingleTimeseriesValueColumnData : public BaseColumnData
     {
@@ -20909,9 +24727,17 @@ namespace Barrelman::Data
         {
             timestamp_ = timestamp;
         }
-        float Value( ) const
+        std::optional<float> Value( ) const
         {
-            return value_;
+            if(valueNullIndicator_ != SQL_NULL_DATA)
+            {
+                return value_;
+            }
+            return {};
+        }
+        bool IsValueNull( ) const
+        {
+            return valueNullIndicator_ == SQL_NULL_DATA;
         }
         void SetValue( float value )
         {
@@ -20926,7 +24752,18 @@ namespace Barrelman::Data
             Bind(statement, VALUE_FIELD_ID, &value_, &valueNullIndicator_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, timeseries_);
+            WriteColumnValue( destination, timestamp_);
+            WriteColumnValue( destination, value_, valueNullIndicator_);
+        }
     };
+
+    using SimpleSingleTimeseriesValueDataReader = SimpleColumnDataReader<SingleTimeseriesValueColumnData>;
 
     class StringTimeseriesValueColumnData : public BaseColumnData
     {
@@ -21003,7 +24840,24 @@ namespace Barrelman::Data
             Bind(statement, TIMESTAMP_FIELD_ID, &timestamp_);
         }
 
+        void ReadUnboundData( const ODBC::Statement& statement )
+        {
+            Base::ReadUnboundData( statement );
+
+            value_ = statement.GetWideString(VALUE_FIELD_ID);
+        }
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, timeseries_);
+            WriteColumnValue( destination, timestamp_);
+            WriteColumnValue( destination, value_, valueLengthOrNullIndicator_);
+        }
     };
+
+    using SimpleStringTimeseriesValueDataReader = SimpleColumnDataReader<StringTimeseriesValueColumnData>;
 
     class TimeseriesCatalogElementColumnData : public BaseColumnData
     {
@@ -21074,7 +24928,17 @@ namespace Barrelman::Data
             Bind(statement, NAME_FIELD_ID, &name_, &nameLengthOrNullIndicator_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, catalog_);
+            WriteColumnValue( destination, name_, nameLengthOrNullIndicator_);
+        }
     };
+
+    using SimpleTimeseriesCatalogElementDataReader = SimpleColumnDataReader<TimeseriesCatalogElementColumnData>;
 
     class TimeseriesColumnData : public TimeseriesCatalogElementColumnData
     {
@@ -21109,7 +24973,15 @@ namespace Barrelman::Data
             Bind(statement, MAXRETENTION_FIELD_ID, &maxRetention_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, maxRetention_);
+        }
     };
+
+    using SimpleTimeseriesDataReader = SimpleColumnDataReader<TimeseriesColumnData>;
 
     class BinaryTimeseriesColumnData : public TimeseriesColumnData
     {
@@ -21126,7 +24998,14 @@ namespace Barrelman::Data
             return Kind::BinaryTimeseries;
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+        }
     };
+
+    using SimpleBinaryTimeseriesDataReader = SimpleColumnDataReader<BinaryTimeseriesColumnData>;
 
     class BooleanTimeseriesColumnData : public TimeseriesColumnData
     {
@@ -21143,7 +25022,14 @@ namespace Barrelman::Data
             return Kind::BooleanTimeseries;
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+        }
     };
+
+    using SimpleBooleanTimeseriesDataReader = SimpleColumnDataReader<BooleanTimeseriesColumnData>;
 
     class AisAidToNavigationOffPositionTimeseriesColumnData : public BooleanTimeseriesColumnData
     {
@@ -21178,7 +25064,15 @@ namespace Barrelman::Data
             Bind(statement, AIDTONAVIGATION_FIELD_ID, &aidToNavigation_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, aidToNavigation_);
+        }
     };
+
+    using SimpleAisAidToNavigationOffPositionTimeseriesDataReader = SimpleColumnDataReader<AisAidToNavigationOffPositionTimeseriesColumnData>;
 
     class DeviceEnabledTimeseriesColumnData : public BooleanTimeseriesColumnData
     {
@@ -21213,7 +25107,15 @@ namespace Barrelman::Data
             Bind(statement, DEVICE_FIELD_ID, &device_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, device_);
+        }
     };
+
+    using SimpleDeviceEnabledTimeseriesDataReader = SimpleColumnDataReader<DeviceEnabledTimeseriesColumnData>;
 
     class RadarAutomaticSensitivityTimeControlTimeseriesColumnData : public BooleanTimeseriesColumnData
     {
@@ -21248,7 +25150,15 @@ namespace Barrelman::Data
             Bind(statement, RADAR_FIELD_ID, &radar_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, radar_);
+        }
     };
+
+    using SimpleRadarAutomaticSensitivityTimeControlTimeseriesDataReader = SimpleColumnDataReader<RadarAutomaticSensitivityTimeControlTimeseriesColumnData>;
 
     class RadarBlankSector1TimeseriesColumnData : public BooleanTimeseriesColumnData
     {
@@ -21283,7 +25193,15 @@ namespace Barrelman::Data
             Bind(statement, RADAR_FIELD_ID, &radar_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, radar_);
+        }
     };
+
+    using SimpleRadarBlankSector1TimeseriesDataReader = SimpleColumnDataReader<RadarBlankSector1TimeseriesColumnData>;
 
     class RadarBlankSector2TimeseriesColumnData : public BooleanTimeseriesColumnData
     {
@@ -21318,7 +25236,15 @@ namespace Barrelman::Data
             Bind(statement, RADAR_FIELD_ID, &radar_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, radar_);
+        }
     };
+
+    using SimpleRadarBlankSector2TimeseriesDataReader = SimpleColumnDataReader<RadarBlankSector2TimeseriesColumnData>;
 
     class RadarEnableAutomaticFrequencyControlTimeseriesColumnData : public BooleanTimeseriesColumnData
     {
@@ -21353,7 +25279,15 @@ namespace Barrelman::Data
             Bind(statement, RADAR_FIELD_ID, &radar_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, radar_);
+        }
     };
+
+    using SimpleRadarEnableAutomaticFrequencyControlTimeseriesDataReader = SimpleColumnDataReader<RadarEnableAutomaticFrequencyControlTimeseriesColumnData>;
 
     class RadarEnableFastTimeConstantTimeseriesColumnData : public BooleanTimeseriesColumnData
     {
@@ -21388,7 +25322,15 @@ namespace Barrelman::Data
             Bind(statement, RADAR_FIELD_ID, &radar_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, radar_);
+        }
     };
+
+    using SimpleRadarEnableFastTimeConstantTimeseriesDataReader = SimpleColumnDataReader<RadarEnableFastTimeConstantTimeseriesColumnData>;
 
     class RadarEnableSensitivityTimeControlTimeseriesColumnData : public BooleanTimeseriesColumnData
     {
@@ -21423,7 +25365,15 @@ namespace Barrelman::Data
             Bind(statement, RADAR_FIELD_ID, &radar_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, radar_);
+        }
     };
+
+    using SimpleRadarEnableSensitivityTimeControlTimeseriesDataReader = SimpleColumnDataReader<RadarEnableSensitivityTimeControlTimeseriesColumnData>;
 
     class RadarPowerOnTimeseriesColumnData : public BooleanTimeseriesColumnData
     {
@@ -21458,7 +25408,15 @@ namespace Barrelman::Data
             Bind(statement, RADAR_FIELD_ID, &radar_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, radar_);
+        }
     };
+
+    using SimpleRadarPowerOnTimeseriesDataReader = SimpleColumnDataReader<RadarPowerOnTimeseriesColumnData>;
 
     class RadarSaveSettingsTimeseriesColumnData : public BooleanTimeseriesColumnData
     {
@@ -21493,7 +25451,15 @@ namespace Barrelman::Data
             Bind(statement, RADAR_FIELD_ID, &radar_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, radar_);
+        }
     };
+
+    using SimpleRadarSaveSettingsTimeseriesDataReader = SimpleColumnDataReader<RadarSaveSettingsTimeseriesColumnData>;
 
     class RadarTrackingTimeseriesColumnData : public BooleanTimeseriesColumnData
     {
@@ -21528,7 +25494,15 @@ namespace Barrelman::Data
             Bind(statement, RADAR_FIELD_ID, &radar_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, radar_);
+        }
     };
+
+    using SimpleRadarTrackingTimeseriesDataReader = SimpleColumnDataReader<RadarTrackingTimeseriesColumnData>;
 
     class MediaProxySessionEnabledTimeseriesColumnData : public BooleanTimeseriesColumnData
     {
@@ -21563,7 +25537,15 @@ namespace Barrelman::Data
             Bind(statement, PROXYSESSION_FIELD_ID, &proxySession_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, proxySession_);
+        }
     };
+
+    using SimpleMediaProxySessionEnabledTimeseriesDataReader = SimpleColumnDataReader<MediaProxySessionEnabledTimeseriesColumnData>;
 
     class MediaServiceEnabledTimeseriesColumnData : public BooleanTimeseriesColumnData
     {
@@ -21598,7 +25580,15 @@ namespace Barrelman::Data
             Bind(statement, SERVICE_FIELD_ID, &service_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, service_);
+        }
     };
+
+    using SimpleMediaServiceEnabledTimeseriesDataReader = SimpleColumnDataReader<MediaServiceEnabledTimeseriesColumnData>;
 
     class ByteTimeseriesColumnData : public TimeseriesColumnData
     {
@@ -21615,7 +25605,14 @@ namespace Barrelman::Data
             return Kind::ByteTimeseries;
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+        }
     };
+
+    using SimpleByteTimeseriesDataReader = SimpleColumnDataReader<ByteTimeseriesColumnData>;
 
     class DateTimeTimeseriesColumnData : public TimeseriesColumnData
     {
@@ -21632,7 +25629,14 @@ namespace Barrelman::Data
             return Kind::DateTimeTimeseries;
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+        }
     };
+
+    using SimpleDateTimeTimeseriesDataReader = SimpleColumnDataReader<DateTimeTimeseriesColumnData>;
 
     class DoubleTimeseriesColumnData : public TimeseriesColumnData
     {
@@ -21649,7 +25653,14 @@ namespace Barrelman::Data
             return Kind::DoubleTimeseries;
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+        }
     };
+
+    using SimpleDoubleTimeseriesDataReader = SimpleColumnDataReader<DoubleTimeseriesColumnData>;
 
     class GNSSAltitudeTimeseriesColumnData : public DoubleTimeseriesColumnData
     {
@@ -21684,7 +25695,15 @@ namespace Barrelman::Data
             Bind(statement, GNSSDEVICE_FIELD_ID, &gNSSDevice_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, gNSSDevice_);
+        }
     };
+
+    using SimpleGNSSAltitudeTimeseriesDataReader = SimpleColumnDataReader<GNSSAltitudeTimeseriesColumnData>;
 
     class GNSSLatitudeTimeseriesColumnData : public DoubleTimeseriesColumnData
     {
@@ -21719,7 +25738,15 @@ namespace Barrelman::Data
             Bind(statement, GNSSDEVICE_FIELD_ID, &gNSSDevice_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, gNSSDevice_);
+        }
     };
+
+    using SimpleGNSSLatitudeTimeseriesDataReader = SimpleColumnDataReader<GNSSLatitudeTimeseriesColumnData>;
 
     class GNSSLongitudeTimeseriesColumnData : public DoubleTimeseriesColumnData
     {
@@ -21754,7 +25781,15 @@ namespace Barrelman::Data
             Bind(statement, GNSSDEVICE_FIELD_ID, &gNSSDevice_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, gNSSDevice_);
+        }
     };
+
+    using SimpleGNSSLongitudeTimeseriesDataReader = SimpleColumnDataReader<GNSSLongitudeTimeseriesColumnData>;
 
     class GyroCourseTimeseriesColumnData : public DoubleTimeseriesColumnData
     {
@@ -21789,7 +25824,15 @@ namespace Barrelman::Data
             Bind(statement, GYRODEVICE_FIELD_ID, &gyroDevice_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, gyroDevice_);
+        }
     };
+
+    using SimpleGyroCourseTimeseriesDataReader = SimpleColumnDataReader<GyroCourseTimeseriesColumnData>;
 
     class GyroHeadingMagneticNorthTimeseriesColumnData : public DoubleTimeseriesColumnData
     {
@@ -21824,7 +25867,15 @@ namespace Barrelman::Data
             Bind(statement, GYRODEVICE_FIELD_ID, &gyroDevice_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, gyroDevice_);
+        }
     };
+
+    using SimpleGyroHeadingMagneticNorthTimeseriesDataReader = SimpleColumnDataReader<GyroHeadingMagneticNorthTimeseriesColumnData>;
 
     class GyroHeadingTrueNorthTimeseriesColumnData : public DoubleTimeseriesColumnData
     {
@@ -21859,7 +25910,15 @@ namespace Barrelman::Data
             Bind(statement, GYRODEVICE_FIELD_ID, &gyroDevice_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, gyroDevice_);
+        }
     };
+
+    using SimpleGyroHeadingTrueNorthTimeseriesDataReader = SimpleColumnDataReader<GyroHeadingTrueNorthTimeseriesColumnData>;
 
     class GyroPitchTimeseriesColumnData : public DoubleTimeseriesColumnData
     {
@@ -21894,7 +25953,15 @@ namespace Barrelman::Data
             Bind(statement, GYRODEVICE_FIELD_ID, &gyroDevice_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, gyroDevice_);
+        }
     };
+
+    using SimpleGyroPitchTimeseriesDataReader = SimpleColumnDataReader<GyroPitchTimeseriesColumnData>;
 
     class GyroRateOfTurnTimeseriesColumnData : public DoubleTimeseriesColumnData
     {
@@ -21929,7 +25996,15 @@ namespace Barrelman::Data
             Bind(statement, GYRODEVICE_FIELD_ID, &gyroDevice_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, gyroDevice_);
+        }
     };
+
+    using SimpleGyroRateOfTurnTimeseriesDataReader = SimpleColumnDataReader<GyroRateOfTurnTimeseriesColumnData>;
 
     class GyroRollTimeseriesColumnData : public DoubleTimeseriesColumnData
     {
@@ -21964,7 +26039,15 @@ namespace Barrelman::Data
             Bind(statement, GYRODEVICE_FIELD_ID, &gyroDevice_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, gyroDevice_);
+        }
     };
+
+    using SimpleGyroRollTimeseriesDataReader = SimpleColumnDataReader<GyroRollTimeseriesColumnData>;
 
     class GyroSpeedTimeseriesColumnData : public DoubleTimeseriesColumnData
     {
@@ -21999,7 +26082,15 @@ namespace Barrelman::Data
             Bind(statement, GYRODEVICE_FIELD_ID, &gyroDevice_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, gyroDevice_);
+        }
     };
+
+    using SimpleGyroSpeedTimeseriesDataReader = SimpleColumnDataReader<GyroSpeedTimeseriesColumnData>;
 
     class RadarLatitudeTimeseriesColumnData : public DoubleTimeseriesColumnData
     {
@@ -22034,7 +26125,15 @@ namespace Barrelman::Data
             Bind(statement, RADAR_FIELD_ID, &radar_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, radar_);
+        }
     };
+
+    using SimpleRadarLatitudeTimeseriesDataReader = SimpleColumnDataReader<RadarLatitudeTimeseriesColumnData>;
 
     class RadarLongitudeTimeseriesColumnData : public DoubleTimeseriesColumnData
     {
@@ -22069,7 +26168,15 @@ namespace Barrelman::Data
             Bind(statement, RADAR_FIELD_ID, &radar_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, radar_);
+        }
     };
+
+    using SimpleRadarLongitudeTimeseriesDataReader = SimpleColumnDataReader<RadarLongitudeTimeseriesColumnData>;
 
     class RadomeDewPointTimeseriesColumnData : public DoubleTimeseriesColumnData
     {
@@ -22104,7 +26211,15 @@ namespace Barrelman::Data
             Bind(statement, RADOME_FIELD_ID, &radome_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, radome_);
+        }
     };
+
+    using SimpleRadomeDewPointTimeseriesDataReader = SimpleColumnDataReader<RadomeDewPointTimeseriesColumnData>;
 
     class RadomePressureTimeseriesColumnData : public DoubleTimeseriesColumnData
     {
@@ -22139,7 +26254,15 @@ namespace Barrelman::Data
             Bind(statement, RADOME_FIELD_ID, &radome_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, radome_);
+        }
     };
+
+    using SimpleRadomePressureTimeseriesDataReader = SimpleColumnDataReader<RadomePressureTimeseriesColumnData>;
 
     class RadomeTemperatureTimeseriesColumnData : public DoubleTimeseriesColumnData
     {
@@ -22174,7 +26297,15 @@ namespace Barrelman::Data
             Bind(statement, RADOME_FIELD_ID, &radome_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, radome_);
+        }
     };
+
+    using SimpleRadomeTemperatureTimeseriesDataReader = SimpleColumnDataReader<RadomeTemperatureTimeseriesColumnData>;
 
     class VesselDraughtTimeseriesColumnData : public DoubleTimeseriesColumnData
     {
@@ -22209,7 +26340,15 @@ namespace Barrelman::Data
             Bind(statement, VESSEL_FIELD_ID, &vessel_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, vessel_);
+        }
     };
+
+    using SimpleVesselDraughtTimeseriesDataReader = SimpleColumnDataReader<VesselDraughtTimeseriesColumnData>;
 
     class ViewLatitudeTimeseriesColumnData : public DoubleTimeseriesColumnData
     {
@@ -22244,7 +26383,15 @@ namespace Barrelman::Data
             Bind(statement, VIEW_FIELD_ID, &view_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, view_);
+        }
     };
+
+    using SimpleViewLatitudeTimeseriesDataReader = SimpleColumnDataReader<ViewLatitudeTimeseriesColumnData>;
 
     class ViewLongitudeTimeseriesColumnData : public DoubleTimeseriesColumnData
     {
@@ -22279,7 +26426,15 @@ namespace Barrelman::Data
             Bind(statement, VIEW_FIELD_ID, &view_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, view_);
+        }
     };
+
+    using SimpleViewLongitudeTimeseriesDataReader = SimpleColumnDataReader<ViewLongitudeTimeseriesColumnData>;
 
     class ViewZoomLevelTimeseriesColumnData : public DoubleTimeseriesColumnData
     {
@@ -22314,7 +26469,15 @@ namespace Barrelman::Data
             Bind(statement, VIEW_FIELD_ID, &view_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, view_);
+        }
     };
+
+    using SimpleViewZoomLevelTimeseriesDataReader = SimpleColumnDataReader<ViewZoomLevelTimeseriesColumnData>;
 
     class WeatherStationAbsoluteHumidityTimeseriesColumnData : public DoubleTimeseriesColumnData
     {
@@ -22349,7 +26512,15 @@ namespace Barrelman::Data
             Bind(statement, WEATHERSTATION_FIELD_ID, &weatherStation_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, weatherStation_);
+        }
     };
+
+    using SimpleWeatherStationAbsoluteHumidityTimeseriesDataReader = SimpleColumnDataReader<WeatherStationAbsoluteHumidityTimeseriesColumnData>;
 
     class WeatherStationAirTemperatureTimeseriesColumnData : public DoubleTimeseriesColumnData
     {
@@ -22384,7 +26555,15 @@ namespace Barrelman::Data
             Bind(statement, WEATHERSTATION_FIELD_ID, &weatherStation_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, weatherStation_);
+        }
     };
+
+    using SimpleWeatherStationAirTemperatureTimeseriesDataReader = SimpleColumnDataReader<WeatherStationAirTemperatureTimeseriesColumnData>;
 
     class WeatherStationBarometricPressureTimeseriesColumnData : public DoubleTimeseriesColumnData
     {
@@ -22419,7 +26598,15 @@ namespace Barrelman::Data
             Bind(statement, WEATHERSTATION_FIELD_ID, &weatherStation_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, weatherStation_);
+        }
     };
+
+    using SimpleWeatherStationBarometricPressureTimeseriesDataReader = SimpleColumnDataReader<WeatherStationBarometricPressureTimeseriesColumnData>;
 
     class WeatherStationDewPointTimeseriesColumnData : public DoubleTimeseriesColumnData
     {
@@ -22454,7 +26641,15 @@ namespace Barrelman::Data
             Bind(statement, WEATHERSTATION_FIELD_ID, &weatherStation_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, weatherStation_);
+        }
     };
+
+    using SimpleWeatherStationDewPointTimeseriesDataReader = SimpleColumnDataReader<WeatherStationDewPointTimeseriesColumnData>;
 
     class WeatherStationRelativeHumidityTimeseriesColumnData : public DoubleTimeseriesColumnData
     {
@@ -22489,7 +26684,15 @@ namespace Barrelman::Data
             Bind(statement, WEATHERSTATION_FIELD_ID, &weatherStation_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, weatherStation_);
+        }
     };
+
+    using SimpleWeatherStationRelativeHumidityTimeseriesDataReader = SimpleColumnDataReader<WeatherStationRelativeHumidityTimeseriesColumnData>;
 
     class WeatherStationWaterTemperatureTimeseriesColumnData : public DoubleTimeseriesColumnData
     {
@@ -22524,7 +26727,15 @@ namespace Barrelman::Data
             Bind(statement, WEATHERSTATION_FIELD_ID, &weatherStation_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, weatherStation_);
+        }
     };
+
+    using SimpleWeatherStationWaterTemperatureTimeseriesDataReader = SimpleColumnDataReader<WeatherStationWaterTemperatureTimeseriesColumnData>;
 
     class WeatherStationWindDirectionTimeseriesColumnData : public DoubleTimeseriesColumnData
     {
@@ -22559,7 +26770,15 @@ namespace Barrelman::Data
             Bind(statement, WEATHERSTATION_FIELD_ID, &weatherStation_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, weatherStation_);
+        }
     };
+
+    using SimpleWeatherStationWindDirectionTimeseriesDataReader = SimpleColumnDataReader<WeatherStationWindDirectionTimeseriesColumnData>;
 
     class WeatherStationWindSpeedTimeseriesColumnData : public DoubleTimeseriesColumnData
     {
@@ -22594,7 +26813,15 @@ namespace Barrelman::Data
             Bind(statement, WEATHERSTATION_FIELD_ID, &weatherStation_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, weatherStation_);
+        }
     };
+
+    using SimpleWeatherStationWindSpeedTimeseriesDataReader = SimpleColumnDataReader<WeatherStationWindSpeedTimeseriesColumnData>;
 
     class GeoPosition2DTimeseriesColumnData : public TimeseriesColumnData
     {
@@ -22611,7 +26838,14 @@ namespace Barrelman::Data
             return Kind::GeoPosition2DTimeseries;
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+        }
     };
+
+    using SimpleGeoPosition2DTimeseriesDataReader = SimpleColumnDataReader<GeoPosition2DTimeseriesColumnData>;
 
     class AisAidToNavigationPositionTimeseriesColumnData : public GeoPosition2DTimeseriesColumnData
     {
@@ -22646,7 +26880,15 @@ namespace Barrelman::Data
             Bind(statement, AIDTONAVIGATION_FIELD_ID, &aidToNavigation_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, aidToNavigation_);
+        }
     };
+
+    using SimpleAisAidToNavigationPositionTimeseriesDataReader = SimpleColumnDataReader<AisAidToNavigationPositionTimeseriesColumnData>;
 
     class GeoPosition3DTimeseriesColumnData : public TimeseriesColumnData
     {
@@ -22663,7 +26905,14 @@ namespace Barrelman::Data
             return Kind::GeoPosition3DTimeseries;
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+        }
     };
+
+    using SimpleGeoPosition3DTimeseriesDataReader = SimpleColumnDataReader<GeoPosition3DTimeseriesColumnData>;
 
     class GuidTimeseriesColumnData : public TimeseriesColumnData
     {
@@ -22680,7 +26929,14 @@ namespace Barrelman::Data
             return Kind::GuidTimeseries;
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+        }
     };
+
+    using SimpleGuidTimeseriesDataReader = SimpleColumnDataReader<GuidTimeseriesColumnData>;
 
     class Int16TimeseriesColumnData : public TimeseriesColumnData
     {
@@ -22697,7 +26953,14 @@ namespace Barrelman::Data
             return Kind::Int16Timeseries;
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+        }
     };
+
+    using SimpleInt16TimeseriesDataReader = SimpleColumnDataReader<Int16TimeseriesColumnData>;
 
     class Int32TimeseriesColumnData : public TimeseriesColumnData
     {
@@ -22714,7 +26977,14 @@ namespace Barrelman::Data
             return Kind::Int32Timeseries;
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+        }
     };
+
+    using SimpleInt32TimeseriesDataReader = SimpleColumnDataReader<Int32TimeseriesColumnData>;
 
     class RadarAzimuthOffsetTimeseriesColumnData : public Int32TimeseriesColumnData
     {
@@ -22749,7 +27019,15 @@ namespace Barrelman::Data
             Bind(statement, RADAR_FIELD_ID, &radar_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, radar_);
+        }
     };
+
+    using SimpleRadarAzimuthOffsetTimeseriesDataReader = SimpleColumnDataReader<RadarAzimuthOffsetTimeseriesColumnData>;
 
     class RadarFastTimeConstantLevelTimeseriesColumnData : public Int32TimeseriesColumnData
     {
@@ -22784,7 +27062,15 @@ namespace Barrelman::Data
             Bind(statement, RADAR_FIELD_ID, &radar_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, radar_);
+        }
     };
+
+    using SimpleRadarFastTimeConstantLevelTimeseriesDataReader = SimpleColumnDataReader<RadarFastTimeConstantLevelTimeseriesColumnData>;
 
     class RadarFastTimeConstantModeTimeseriesColumnData : public Int32TimeseriesColumnData
     {
@@ -22819,7 +27105,15 @@ namespace Barrelman::Data
             Bind(statement, RADAR_FIELD_ID, &radar_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, radar_);
+        }
     };
+
+    using SimpleRadarFastTimeConstantModeTimeseriesDataReader = SimpleColumnDataReader<RadarFastTimeConstantModeTimeseriesColumnData>;
 
     class RadarPulseTimeseriesColumnData : public Int32TimeseriesColumnData
     {
@@ -22854,7 +27148,15 @@ namespace Barrelman::Data
             Bind(statement, RADAR_FIELD_ID, &radar_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, radar_);
+        }
     };
+
+    using SimpleRadarPulseTimeseriesDataReader = SimpleColumnDataReader<RadarPulseTimeseriesColumnData>;
 
     class RadarSector1EndTimeseriesColumnData : public Int32TimeseriesColumnData
     {
@@ -22889,7 +27191,15 @@ namespace Barrelman::Data
             Bind(statement, RADAR_FIELD_ID, &radar_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, radar_);
+        }
     };
+
+    using SimpleRadarSector1EndTimeseriesDataReader = SimpleColumnDataReader<RadarSector1EndTimeseriesColumnData>;
 
     class RadarSector1StartTimeseriesColumnData : public Int32TimeseriesColumnData
     {
@@ -22924,7 +27234,15 @@ namespace Barrelman::Data
             Bind(statement, RADAR_FIELD_ID, &radar_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, radar_);
+        }
     };
+
+    using SimpleRadarSector1StartTimeseriesDataReader = SimpleColumnDataReader<RadarSector1StartTimeseriesColumnData>;
 
     class RadarSector2EndTimeseriesColumnData : public Int32TimeseriesColumnData
     {
@@ -22959,7 +27277,15 @@ namespace Barrelman::Data
             Bind(statement, RADAR_FIELD_ID, &radar_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, radar_);
+        }
     };
+
+    using SimpleRadarSector2EndTimeseriesDataReader = SimpleColumnDataReader<RadarSector2EndTimeseriesColumnData>;
 
     class RadarSector2StartTimeseriesColumnData : public Int32TimeseriesColumnData
     {
@@ -22994,7 +27320,15 @@ namespace Barrelman::Data
             Bind(statement, RADAR_FIELD_ID, &radar_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, radar_);
+        }
     };
+
+    using SimpleRadarSector2StartTimeseriesDataReader = SimpleColumnDataReader<RadarSector2StartTimeseriesColumnData>;
 
     class RadarSensitivityTimeControlLevelTimeseriesColumnData : public Int32TimeseriesColumnData
     {
@@ -23029,7 +27363,15 @@ namespace Barrelman::Data
             Bind(statement, RADAR_FIELD_ID, &radar_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, radar_);
+        }
     };
+
+    using SimpleRadarSensitivityTimeControlLevelTimeseriesDataReader = SimpleColumnDataReader<RadarSensitivityTimeControlLevelTimeseriesColumnData>;
 
     class RadarTuningTimeseriesColumnData : public Int32TimeseriesColumnData
     {
@@ -23064,7 +27406,15 @@ namespace Barrelman::Data
             Bind(statement, RADAR_FIELD_ID, &radar_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, radar_);
+        }
     };
+
+    using SimpleRadarTuningTimeseriesDataReader = SimpleColumnDataReader<RadarTuningTimeseriesColumnData>;
 
     class VesselPersonsOnBoardTimeseriesColumnData : public Int32TimeseriesColumnData
     {
@@ -23099,7 +27449,15 @@ namespace Barrelman::Data
             Bind(statement, VESSEL_FIELD_ID, &vessel_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, vessel_);
+        }
     };
+
+    using SimpleVesselPersonsOnBoardTimeseriesDataReader = SimpleColumnDataReader<VesselPersonsOnBoardTimeseriesColumnData>;
 
     class Int64TimeseriesColumnData : public TimeseriesColumnData
     {
@@ -23116,7 +27474,14 @@ namespace Barrelman::Data
             return Kind::Int64Timeseries;
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+        }
     };
+
+    using SimpleInt64TimeseriesDataReader = SimpleColumnDataReader<Int64TimeseriesColumnData>;
 
     class Position2DTimeseriesColumnData : public TimeseriesColumnData
     {
@@ -23133,7 +27498,14 @@ namespace Barrelman::Data
             return Kind::Position2DTimeseries;
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+        }
     };
+
+    using SimplePosition2DTimeseriesDataReader = SimpleColumnDataReader<Position2DTimeseriesColumnData>;
 
     class Position3DTimeseriesColumnData : public TimeseriesColumnData
     {
@@ -23150,7 +27522,14 @@ namespace Barrelman::Data
             return Kind::Position3DTimeseries;
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+        }
     };
+
+    using SimplePosition3DTimeseriesDataReader = SimpleColumnDataReader<Position3DTimeseriesColumnData>;
 
     class ReferenceTimeseriesColumnData : public TimeseriesColumnData
     {
@@ -23167,7 +27546,14 @@ namespace Barrelman::Data
             return Kind::ReferenceTimeseries;
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+        }
     };
+
+    using SimpleReferenceTimeseriesDataReader = SimpleColumnDataReader<ReferenceTimeseriesColumnData>;
 
     class SByteTimeseriesColumnData : public TimeseriesColumnData
     {
@@ -23184,7 +27570,14 @@ namespace Barrelman::Data
             return Kind::SByteTimeseries;
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+        }
     };
+
+    using SimpleSByteTimeseriesDataReader = SimpleColumnDataReader<SByteTimeseriesColumnData>;
 
     class SingleTimeseriesColumnData : public TimeseriesColumnData
     {
@@ -23201,7 +27594,14 @@ namespace Barrelman::Data
             return Kind::SingleTimeseries;
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+        }
     };
+
+    using SimpleSingleTimeseriesDataReader = SimpleColumnDataReader<SingleTimeseriesColumnData>;
 
     class StringTimeseriesColumnData : public TimeseriesColumnData
     {
@@ -23218,7 +27618,14 @@ namespace Barrelman::Data
             return Kind::StringTimeseries;
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+        }
     };
+
+    using SimpleStringTimeseriesDataReader = SimpleColumnDataReader<StringTimeseriesColumnData>;
 
     class TimeSpanTimeseriesColumnData : public TimeseriesColumnData
     {
@@ -23235,7 +27642,14 @@ namespace Barrelman::Data
             return Kind::TimeSpanTimeseries;
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+        }
     };
+
+    using SimpleTimeSpanTimeseriesDataReader = SimpleColumnDataReader<TimeSpanTimeseriesColumnData>;
 
     class UInt16TimeseriesColumnData : public TimeseriesColumnData
     {
@@ -23252,7 +27666,14 @@ namespace Barrelman::Data
             return Kind::UInt16Timeseries;
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+        }
     };
+
+    using SimpleUInt16TimeseriesDataReader = SimpleColumnDataReader<UInt16TimeseriesColumnData>;
 
     class UInt32TimeseriesColumnData : public TimeseriesColumnData
     {
@@ -23269,7 +27690,14 @@ namespace Barrelman::Data
             return Kind::UInt32Timeseries;
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+        }
     };
+
+    using SimpleUInt32TimeseriesDataReader = SimpleColumnDataReader<UInt32TimeseriesColumnData>;
 
     class RadomeStatusTimeseriesColumnData : public UInt32TimeseriesColumnData
     {
@@ -23304,7 +27732,15 @@ namespace Barrelman::Data
             Bind(statement, RADOME_FIELD_ID, &radome_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, radome_);
+        }
     };
+
+    using SimpleRadomeStatusTimeseriesDataReader = SimpleColumnDataReader<RadomeStatusTimeseriesColumnData>;
 
     class UInt64TimeseriesColumnData : public TimeseriesColumnData
     {
@@ -23321,7 +27757,14 @@ namespace Barrelman::Data
             return Kind::UInt64Timeseries;
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+        }
     };
+
+    using SimpleUInt64TimeseriesDataReader = SimpleColumnDataReader<UInt64TimeseriesColumnData>;
 
     class TimeseriesCatalogColumnData : public TimeseriesCatalogElementColumnData
     {
@@ -23338,7 +27781,14 @@ namespace Barrelman::Data
             return Kind::TimeseriesCatalog;
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+        }
     };
+
+    using SimpleTimeseriesCatalogDataReader = SimpleColumnDataReader<TimeseriesCatalogColumnData>;
 
     class TimeseriesInfoColumnData : public BaseColumnData
     {
@@ -23384,17 +27834,33 @@ namespace Barrelman::Data
         {
             rowVersion_ = rowVersion;
         }
-        DateTime FirstTimestamp( ) const
+        std::optional<DateTime> FirstTimestamp( ) const
         {
-            return firstTimestamp_;
+            if(firstTimestampNullIndicator_ != SQL_NULL_DATA)
+            {
+                return firstTimestamp_;
+            }
+            return {};
+        }
+        bool IsFirstTimestampNull( ) const
+        {
+            return firstTimestampNullIndicator_ == SQL_NULL_DATA;
         }
         void SetFirstTimestamp( const DateTime& firstTimestamp )
         {
             firstTimestamp_ = firstTimestamp;
         }
-        DateTime LastTimestamp( ) const
+        std::optional<DateTime> LastTimestamp( ) const
         {
-            return lastTimestamp_;
+            if(lastTimestampNullIndicator_ != SQL_NULL_DATA)
+            {
+                return lastTimestamp_;
+            }
+            return {};
+        }
+        bool IsLastTimestampNull( ) const
+        {
+            return lastTimestampNullIndicator_ == SQL_NULL_DATA;
         }
         void SetLastTimestamp( const DateTime& lastTimestamp )
         {
@@ -23417,7 +27883,18 @@ namespace Barrelman::Data
             Bind(statement, COUNT_FIELD_ID, &count_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, firstTimestamp_, firstTimestampNullIndicator_);
+            WriteColumnValue( destination, lastTimestamp_, lastTimestampNullIndicator_);
+            WriteColumnValue( destination, count_);
+        }
     };
+
+    using SimpleTimeseriesInfoDataReader = SimpleColumnDataReader<TimeseriesInfoColumnData>;
 
     class TimeSpanTimeseriesValueColumnData : public BaseColumnData
     {
@@ -23478,9 +27955,17 @@ namespace Barrelman::Data
         {
             timestamp_ = timestamp;
         }
-        TimeSpan Value( ) const
+        std::optional<TimeSpan> Value( ) const
         {
-            return value_;
+            if(valueNullIndicator_ != SQL_NULL_DATA)
+            {
+                return value_;
+            }
+            return {};
+        }
+        bool IsValueNull( ) const
+        {
+            return valueNullIndicator_ == SQL_NULL_DATA;
         }
         void SetValue( const TimeSpan& value )
         {
@@ -23495,7 +27980,18 @@ namespace Barrelman::Data
             Bind(statement, VALUE_FIELD_ID, &value_, &valueNullIndicator_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, timeseries_);
+            WriteColumnValue( destination, timestamp_);
+            WriteColumnValue( destination, value_, valueNullIndicator_);
+        }
     };
+
+    using SimpleTimeSpanTimeseriesValueDataReader = SimpleColumnDataReader<TimeSpanTimeseriesValueColumnData>;
 
     class TrackableItemTrackLinkColumnData : public BaseColumnData
     {
@@ -23566,9 +28062,17 @@ namespace Barrelman::Data
         {
             start_ = start;
         }
-        DateTime End( ) const
+        std::optional<DateTime> End( ) const
         {
-            return end_;
+            if(endNullIndicator_ != SQL_NULL_DATA)
+            {
+                return end_;
+            }
+            return {};
+        }
+        bool IsEndNull( ) const
+        {
+            return endNullIndicator_ == SQL_NULL_DATA;
         }
         void SetEnd( const DateTime& end )
         {
@@ -23584,7 +28088,19 @@ namespace Barrelman::Data
             Bind(statement, END_FIELD_ID, &end_, &endNullIndicator_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, item_);
+            WriteColumnValue( destination, track_);
+            WriteColumnValue( destination, start_);
+            WriteColumnValue( destination, end_, endNullIndicator_);
+        }
     };
+
+    using SimpleTrackableItemTrackLinkDataReader = SimpleColumnDataReader<TrackableItemTrackLinkColumnData>;
 
     class TrackBaseColumnData : public BaseColumnData
     {
@@ -23661,7 +28177,18 @@ namespace Barrelman::Data
             Bind(statement, TIMESTAMP_FIELD_ID, &timestamp_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, tracker_);
+            WriteColumnValue( destination, trackNumber_);
+            WriteColumnValue( destination, timestamp_);
+        }
     };
+
+    using SimpleTrackBaseDataReader = SimpleColumnDataReader<TrackBaseColumnData>;
 
     class TrackColumnData : public TrackBaseColumnData
     {
@@ -23678,7 +28205,14 @@ namespace Barrelman::Data
             return Kind::Track;
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+        }
     };
+
+    using SimpleTrackDataReader = SimpleColumnDataReader<TrackColumnData>;
 
     class Track3DColumnData : public TrackBaseColumnData
     {
@@ -23695,7 +28229,14 @@ namespace Barrelman::Data
             return Kind::Track3D;
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+        }
     };
+
+    using SimpleTrack3DDataReader = SimpleColumnDataReader<Track3DColumnData>;
 
     class TrackerFilterParametersColumnData : public BaseColumnData
     {
@@ -23766,7 +28307,17 @@ namespace Barrelman::Data
             Bind(statement, NAME_FIELD_ID, &name_, &nameLengthOrNullIndicator_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, tracker_);
+            WriteColumnValue( destination, name_, nameLengthOrNullIndicator_);
+        }
     };
+
+    using SimpleTrackerFilterParametersDataReader = SimpleColumnDataReader<TrackerFilterParametersColumnData>;
 
     class TrackerFilterParametersConfigurationColumnData : public BaseColumnData
     {
@@ -23975,7 +28526,30 @@ namespace Barrelman::Data
             Bind(statement, DELTAAMAX_FIELD_ID, &deltaAMax_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, parameters_);
+            WriteColumnValue( destination, timestamp_);
+            WriteColumnValue( destination, useNaivePredictor_);
+            WriteColumnValue( destination, numberOfPoints_);
+            WriteColumnValue( destination, windowSize_);
+            WriteColumnValue( destination, stabilizeCount_);
+            WriteColumnValue( destination, maxBadPoints_);
+            WriteColumnValue( destination, modelType_);
+            WriteColumnValue( destination, sigmaR_);
+            WriteColumnValue( destination, sigmaAcc_);
+            WriteColumnValue( destination, tauVel_);
+            WriteColumnValue( destination, tauAcc_);
+            WriteColumnValue( destination, deltaRMin_);
+            WriteColumnValue( destination, deltaVMax_);
+            WriteColumnValue( destination, deltaAMax_);
+        }
     };
+
+    using SimpleTrackerFilterParametersConfigurationDataReader = SimpleColumnDataReader<TrackerFilterParametersConfigurationColumnData>;
 
     class TrackInfoColumnData : public BaseColumnData
     {
@@ -24033,17 +28607,33 @@ namespace Barrelman::Data
         {
             rowVersion_ = rowVersion;
         }
-        DateTime FirstTimestamp( ) const
+        std::optional<DateTime> FirstTimestamp( ) const
         {
-            return firstTimestamp_;
+            if(firstTimestampNullIndicator_ != SQL_NULL_DATA)
+            {
+                return firstTimestamp_;
+            }
+            return {};
+        }
+        bool IsFirstTimestampNull( ) const
+        {
+            return firstTimestampNullIndicator_ == SQL_NULL_DATA;
         }
         void SetFirstTimestamp( const DateTime& firstTimestamp )
         {
             firstTimestamp_ = firstTimestamp;
         }
-        DateTime LastTimestamp( ) const
+        std::optional<DateTime> LastTimestamp( ) const
         {
-            return lastTimestamp_;
+            if(lastTimestampNullIndicator_ != SQL_NULL_DATA)
+            {
+                return lastTimestamp_;
+            }
+            return {};
+        }
+        bool IsLastTimestampNull( ) const
+        {
+            return lastTimestampNullIndicator_ == SQL_NULL_DATA;
         }
         void SetLastTimestamp( const DateTime& lastTimestamp )
         {
@@ -24057,33 +28647,65 @@ namespace Barrelman::Data
         {
             count_ = count;
         }
-        double NorthWestLatitude( ) const
+        std::optional<double> NorthWestLatitude( ) const
         {
-            return northWestLatitude_;
+            if(northWestLatitudeNullIndicator_ != SQL_NULL_DATA)
+            {
+                return northWestLatitude_;
+            }
+            return {};
+        }
+        bool IsNorthWestLatitudeNull( ) const
+        {
+            return northWestLatitudeNullIndicator_ == SQL_NULL_DATA;
         }
         void SetNorthWestLatitude( double northWestLatitude )
         {
             northWestLatitude_ = northWestLatitude;
         }
-        double NorthWestLongitude( ) const
+        std::optional<double> NorthWestLongitude( ) const
         {
-            return northWestLongitude_;
+            if(northWestLongitudeNullIndicator_ != SQL_NULL_DATA)
+            {
+                return northWestLongitude_;
+            }
+            return {};
+        }
+        bool IsNorthWestLongitudeNull( ) const
+        {
+            return northWestLongitudeNullIndicator_ == SQL_NULL_DATA;
         }
         void SetNorthWestLongitude( double northWestLongitude )
         {
             northWestLongitude_ = northWestLongitude;
         }
-        double SouthEastLatitude( ) const
+        std::optional<double> SouthEastLatitude( ) const
         {
-            return southEastLatitude_;
+            if(southEastLatitudeNullIndicator_ != SQL_NULL_DATA)
+            {
+                return southEastLatitude_;
+            }
+            return {};
+        }
+        bool IsSouthEastLatitudeNull( ) const
+        {
+            return southEastLatitudeNullIndicator_ == SQL_NULL_DATA;
         }
         void SetSouthEastLatitude( double southEastLatitude )
         {
             southEastLatitude_ = southEastLatitude;
         }
-        double SouthEastLongitude( ) const
+        std::optional<double> SouthEastLongitude( ) const
         {
-            return southEastLongitude_;
+            if(southEastLongitudeNullIndicator_ != SQL_NULL_DATA)
+            {
+                return southEastLongitude_;
+            }
+            return {};
+        }
+        bool IsSouthEastLongitudeNull( ) const
+        {
+            return southEastLongitudeNullIndicator_ == SQL_NULL_DATA;
         }
         void SetSouthEastLongitude( double southEastLongitude )
         {
@@ -24102,7 +28724,22 @@ namespace Barrelman::Data
             Bind(statement, SOUTHEASTLONGITUDE_FIELD_ID, &southEastLongitude_, &southEastLongitudeNullIndicator_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, firstTimestamp_, firstTimestampNullIndicator_);
+            WriteColumnValue( destination, lastTimestamp_, lastTimestampNullIndicator_);
+            WriteColumnValue( destination, count_);
+            WriteColumnValue( destination, northWestLatitude_, northWestLatitudeNullIndicator_);
+            WriteColumnValue( destination, northWestLongitude_, northWestLongitudeNullIndicator_);
+            WriteColumnValue( destination, southEastLatitude_, southEastLatitudeNullIndicator_);
+            WriteColumnValue( destination, southEastLongitude_, southEastLongitudeNullIndicator_);
+        }
     };
+
+    using SimpleTrackInfoDataReader = SimpleColumnDataReader<TrackInfoColumnData>;
 
     class TrackingServiceOptionsColumnData : public BaseColumnData
     {
@@ -24267,7 +28904,26 @@ namespace Barrelman::Data
             Bind(statement, MINIMUMSPEEDTHRESHOLD_FIELD_ID, &minimumSpeedThreshold_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, timestamp_);
+            WriteColumnValue( destination, timerInterval_);
+            WriteColumnValue( destination, maxAgeOfCurrentTrackValue_);
+            WriteColumnValue( destination, falseThreshold_);
+            WriteColumnValue( destination, distanceThreshold_);
+            WriteColumnValue( destination, distanceUnmergeThreshold_);
+            WriteColumnValue( destination, unmergeLatency_);
+            WriteColumnValue( destination, kalmanFiltering_);
+            WriteColumnValue( destination, maxCourseDeviation_);
+            WriteColumnValue( destination, maxSpeedDeviation_);
+            WriteColumnValue( destination, minimumSpeedThreshold_);
+        }
     };
+
+    using SimpleTrackingServiceOptionsDataReader = SimpleColumnDataReader<TrackingServiceOptionsColumnData>;
 
     class TrackLinkColumnData : public BaseColumnData
     {
@@ -24338,9 +28994,17 @@ namespace Barrelman::Data
         {
             start_ = start;
         }
-        DateTime End( ) const
+        std::optional<DateTime> End( ) const
         {
-            return end_;
+            if(endNullIndicator_ != SQL_NULL_DATA)
+            {
+                return end_;
+            }
+            return {};
+        }
+        bool IsEndNull( ) const
+        {
+            return endNullIndicator_ == SQL_NULL_DATA;
         }
         void SetEnd( const DateTime& end )
         {
@@ -24356,7 +29020,19 @@ namespace Barrelman::Data
             Bind(statement, END_FIELD_ID, &end_, &endNullIndicator_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, primary_);
+            WriteColumnValue( destination, secondary_);
+            WriteColumnValue( destination, start_);
+            WriteColumnValue( destination, end_, endNullIndicator_);
+        }
     };
+
+    using SimpleTrackLinkDataReader = SimpleColumnDataReader<TrackLinkColumnData>;
 
     class TrackValueColumnData : public BaseColumnData
     {
@@ -24499,7 +29175,24 @@ namespace Barrelman::Data
             Bind(statement, HEADING_FIELD_ID, &heading_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, track_);
+            WriteColumnValue( destination, timestamp_);
+            WriteColumnValue( destination, flags_);
+            WriteColumnValue( destination, status_);
+            WriteColumnValue( destination, latitude_);
+            WriteColumnValue( destination, longitude_);
+            WriteColumnValue( destination, speed_);
+            WriteColumnValue( destination, course_);
+            WriteColumnValue( destination, heading_);
+        }
     };
+
+    using SimpleTrackValueDataReader = SimpleColumnDataReader<TrackValueColumnData>;
 
     class TrackValue3DColumnData : public BaseColumnData
     {
@@ -24653,7 +29346,25 @@ namespace Barrelman::Data
             Bind(statement, RATEOFCLIMB_FIELD_ID, &rateOfClimb_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, track_);
+            WriteColumnValue( destination, timestamp_);
+            WriteColumnValue( destination, flags_);
+            WriteColumnValue( destination, status_);
+            WriteColumnValue( destination, latitude_);
+            WriteColumnValue( destination, longitude_);
+            WriteColumnValue( destination, altitude_);
+            WriteColumnValue( destination, speed_);
+            WriteColumnValue( destination, course_);
+            WriteColumnValue( destination, rateOfClimb_);
+        }
     };
+
+    using SimpleTrackValue3DDataReader = SimpleColumnDataReader<TrackValue3DColumnData>;
 
     class UInt16TimeseriesValueColumnData : public BaseColumnData
     {
@@ -24714,9 +29425,17 @@ namespace Barrelman::Data
         {
             timestamp_ = timestamp;
         }
-        UInt16 Value( ) const
+        std::optional<UInt16> Value( ) const
         {
-            return value_;
+            if(valueNullIndicator_ != SQL_NULL_DATA)
+            {
+                return value_;
+            }
+            return {};
+        }
+        bool IsValueNull( ) const
+        {
+            return valueNullIndicator_ == SQL_NULL_DATA;
         }
         void SetValue( UInt16 value )
         {
@@ -24731,7 +29450,18 @@ namespace Barrelman::Data
             Bind(statement, VALUE_FIELD_ID, &value_, &valueNullIndicator_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, timeseries_);
+            WriteColumnValue( destination, timestamp_);
+            WriteColumnValue( destination, value_, valueNullIndicator_);
+        }
     };
+
+    using SimpleUInt16TimeseriesValueDataReader = SimpleColumnDataReader<UInt16TimeseriesValueColumnData>;
 
     class UInt32TimeseriesValueColumnData : public BaseColumnData
     {
@@ -24792,9 +29522,17 @@ namespace Barrelman::Data
         {
             timestamp_ = timestamp;
         }
-        UInt32 Value( ) const
+        std::optional<UInt32> Value( ) const
         {
-            return value_;
+            if(valueNullIndicator_ != SQL_NULL_DATA)
+            {
+                return value_;
+            }
+            return {};
+        }
+        bool IsValueNull( ) const
+        {
+            return valueNullIndicator_ == SQL_NULL_DATA;
         }
         void SetValue( UInt32 value )
         {
@@ -24809,7 +29547,18 @@ namespace Barrelman::Data
             Bind(statement, VALUE_FIELD_ID, &value_, &valueNullIndicator_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, timeseries_);
+            WriteColumnValue( destination, timestamp_);
+            WriteColumnValue( destination, value_, valueNullIndicator_);
+        }
     };
+
+    using SimpleUInt32TimeseriesValueDataReader = SimpleColumnDataReader<UInt32TimeseriesValueColumnData>;
 
     class UInt64TimeseriesValueColumnData : public BaseColumnData
     {
@@ -24870,9 +29619,17 @@ namespace Barrelman::Data
         {
             timestamp_ = timestamp;
         }
-        Int64 Value( ) const
+        std::optional<Int64> Value( ) const
         {
-            return value_;
+            if(valueNullIndicator_ != SQL_NULL_DATA)
+            {
+                return value_;
+            }
+            return {};
+        }
+        bool IsValueNull( ) const
+        {
+            return valueNullIndicator_ == SQL_NULL_DATA;
         }
         void SetValue( Int64 value )
         {
@@ -24887,7 +29644,18 @@ namespace Barrelman::Data
             Bind(statement, VALUE_FIELD_ID, &value_, &valueNullIndicator_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, timeseries_);
+            WriteColumnValue( destination, timestamp_);
+            WriteColumnValue( destination, value_, valueNullIndicator_);
+        }
     };
+
+    using SimpleUInt64TimeseriesValueDataReader = SimpleColumnDataReader<UInt64TimeseriesValueColumnData>;
 
     class VehicleTypeColumnData : public BaseColumnData
     {
@@ -24947,7 +29715,16 @@ namespace Barrelman::Data
             Bind(statement, NAME_FIELD_ID, &name_, &nameLengthOrNullIndicator_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, name_, nameLengthOrNullIndicator_);
+        }
     };
+
+    using SimpleVehicleTypeDataReader = SimpleColumnDataReader<VehicleTypeColumnData>;
 
     class VesselTypeColumnData : public BaseColumnData
     {
@@ -25018,7 +29795,17 @@ namespace Barrelman::Data
             Bind(statement, CODE_FIELD_ID, &code_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, name_, nameLengthOrNullIndicator_);
+            WriteColumnValue( destination, code_);
+        }
     };
+
+    using SimpleVesselTypeDataReader = SimpleColumnDataReader<VesselTypeColumnData>;
 
     class ViewColumnData : public BaseColumnData
     {
@@ -25111,7 +29898,19 @@ namespace Barrelman::Data
             Bind(statement, ZOOMLEVELTIMESERIES_FIELD_ID, &zoomLevelTimeseries_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, name_, nameLengthOrNullIndicator_);
+            WriteColumnValue( destination, latitudeTimeseries_);
+            WriteColumnValue( destination, longitudeTimeseries_);
+            WriteColumnValue( destination, zoomLevelTimeseries_);
+        }
     };
+
+    using SimpleViewDataReader = SimpleColumnDataReader<ViewColumnData>;
 
     class ViewCameraLinkColumnData : public BaseColumnData
     {
@@ -25182,9 +29981,17 @@ namespace Barrelman::Data
         {
             start_ = start;
         }
-        DateTime End( ) const
+        std::optional<DateTime> End( ) const
         {
-            return end_;
+            if(endNullIndicator_ != SQL_NULL_DATA)
+            {
+                return end_;
+            }
+            return {};
+        }
+        bool IsEndNull( ) const
+        {
+            return endNullIndicator_ == SQL_NULL_DATA;
         }
         void SetEnd( const DateTime& end )
         {
@@ -25200,7 +30007,19 @@ namespace Barrelman::Data
             Bind(statement, END_FIELD_ID, &end_, &endNullIndicator_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, view_);
+            WriteColumnValue( destination, camera_);
+            WriteColumnValue( destination, start_);
+            WriteColumnValue( destination, end_, endNullIndicator_);
+        }
     };
+
+    using SimpleViewCameraLinkDataReader = SimpleColumnDataReader<ViewCameraLinkColumnData>;
 
     class ViewTrackerLinkColumnData : public BaseColumnData
     {
@@ -25271,9 +30090,17 @@ namespace Barrelman::Data
         {
             start_ = start;
         }
-        DateTime End( ) const
+        std::optional<DateTime> End( ) const
         {
-            return end_;
+            if(endNullIndicator_ != SQL_NULL_DATA)
+            {
+                return end_;
+            }
+            return {};
+        }
+        bool IsEndNull( ) const
+        {
+            return endNullIndicator_ == SQL_NULL_DATA;
         }
         void SetEnd( const DateTime& end )
         {
@@ -25289,7 +30116,19 @@ namespace Barrelman::Data
             Bind(statement, END_FIELD_ID, &end_, &endNullIndicator_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, view_);
+            WriteColumnValue( destination, tracker_);
+            WriteColumnValue( destination, start_);
+            WriteColumnValue( destination, end_, endNullIndicator_);
+        }
     };
+
+    using SimpleViewTrackerLinkDataReader = SimpleColumnDataReader<ViewTrackerLinkColumnData>;
 
     class WeatherStationCommandColumnData : public BaseColumnData
     {
@@ -25388,7 +30227,20 @@ namespace Barrelman::Data
             Bind(statement, REPLY_FIELD_ID, &reply_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, weatherStation_);
+            WriteColumnValue( destination, timestamp_);
+            WriteColumnValue( destination, deviceCommandSourceType_);
+            WriteColumnValue( destination, deviceCommandSourceId_);
+            WriteColumnValue( destination, reply_);
+        }
     };
+
+    using SimpleWeatherStationCommandDataReader = SimpleColumnDataReader<WeatherStationCommandColumnData>;
 
     class WeatherStationCommandReplyColumnData : public BaseColumnData
     {
@@ -25487,7 +30339,26 @@ namespace Barrelman::Data
             Bind(statement, STATUS_FIELD_ID, &status_);
         }
 
+        void ReadUnboundData( const ODBC::Statement& statement )
+        {
+            Base::ReadUnboundData( statement );
+
+            message_ = statement.GetWideString(MESSAGE_FIELD_ID);
+        }
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, weatherStation_);
+            WriteColumnValue( destination, timestamp_);
+            WriteColumnValue( destination, command_);
+            WriteColumnValue( destination, status_);
+            WriteColumnValue( destination, message_, messageLengthOrNullIndicator_);
+        }
     };
+
+    using SimpleWeatherStationCommandReplyDataReader = SimpleColumnDataReader<WeatherStationCommandReplyColumnData>;
 
     class WeatherStationConfigurationColumnData : public BaseColumnData
     {
@@ -25630,7 +30501,24 @@ namespace Barrelman::Data
             Bind(statement, AVERAGINGINTERVAL_FIELD_ID, &averagingInterval_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, weatherStation_);
+            WriteColumnValue( destination, timestamp_);
+            WriteColumnValue( destination, noDataTimeOut_);
+            WriteColumnValue( destination, sendInterval_);
+            WriteColumnValue( destination, latitude_);
+            WriteColumnValue( destination, longitude_);
+            WriteColumnValue( destination, gyroOffset_);
+            WriteColumnValue( destination, enableAveraging_);
+            WriteColumnValue( destination, averagingInterval_);
+        }
     };
+
+    using SimpleWeatherStationConfigurationDataReader = SimpleColumnDataReader<WeatherStationConfigurationColumnData>;
 
     class ZoneColumnData : public BaseColumnData
     {
@@ -25778,7 +30666,24 @@ namespace Barrelman::Data
             Bind(statement, FILLCOLOR_FIELD_ID, &fillColor_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, name_, nameLengthOrNullIndicator_);
+            WriteColumnValue( destination, longitude_);
+            WriteColumnValue( destination, latitude_);
+            WriteColumnValue( destination, alarmType_);
+            WriteColumnValue( destination, alarmTime_);
+            WriteColumnValue( destination, radarTrackMinimumLifetime_);
+            WriteColumnValue( destination, speed_);
+            WriteColumnValue( destination, strokeColor_);
+            WriteColumnValue( destination, fillColor_);
+        }
     };
+
+    using SimpleZoneDataReader = SimpleColumnDataReader<ZoneColumnData>;
 
     class CircularZoneColumnData : public ZoneColumnData
     {
@@ -25813,7 +30718,15 @@ namespace Barrelman::Data
             Bind(statement, RADIUS_FIELD_ID, &radius_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, radius_);
+        }
     };
+
+    using SimpleCircularZoneDataReader = SimpleColumnDataReader<CircularZoneColumnData>;
 
     class PolygonZoneColumnData : public ZoneColumnData
     {
@@ -25848,7 +30761,21 @@ namespace Barrelman::Data
 
         }
 
+        void ReadUnboundData( const ODBC::Statement& statement )
+        {
+            Base::ReadUnboundData( statement );
+
+            polygon_ = statement.GetBinary(POLYGON_FIELD_ID);
+        }
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            Base::WriteColumns( destination );
+            WriteColumnValue( destination, polygon_, polygonLengthOrNullIndicator_);
+        }
     };
+
+    using SimplePolygonZoneDataReader = SimpleColumnDataReader<PolygonZoneColumnData>;
 
     class ZoneExceptionsColumnData : public BaseColumnData
     {
@@ -25914,7 +30841,17 @@ namespace Barrelman::Data
             Bind(statement, TIMESTAMP_FIELD_ID, &timestamp_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, zone_);
+            WriteColumnValue( destination, timestamp_);
+        }
     };
+
+    using SimpleZoneExceptionsDataReader = SimpleColumnDataReader<ZoneExceptionsColumnData>;
 
     class ZoneExceptionsVesselLinkColumnData : public BaseColumnData
     {
@@ -25980,7 +30917,17 @@ namespace Barrelman::Data
             Bind(statement, VESSEL_FIELD_ID, &vessel_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, zoneExceptions_);
+            WriteColumnValue( destination, vessel_);
+        }
     };
+
+    using SimpleZoneExceptionsVesselLinkDataReader = SimpleColumnDataReader<ZoneExceptionsVesselLinkColumnData>;
 
     class ZoneTrackAlarmColumnData : public BaseColumnData
     {
@@ -26104,17 +31051,33 @@ namespace Barrelman::Data
         {
             speed_ = speed;
         }
-        double Course( ) const
+        std::optional<double> Course( ) const
         {
-            return course_;
+            if(courseNullIndicator_ != SQL_NULL_DATA)
+            {
+                return course_;
+            }
+            return {};
+        }
+        bool IsCourseNull( ) const
+        {
+            return courseNullIndicator_ == SQL_NULL_DATA;
         }
         void SetCourse( double course )
         {
             course_ = course;
         }
-        double Heading( ) const
+        std::optional<double> Heading( ) const
         {
-            return heading_;
+            if(headingNullIndicator_ != SQL_NULL_DATA)
+            {
+                return heading_;
+            }
+            return {};
+        }
+        bool IsHeadingNull( ) const
+        {
+            return headingNullIndicator_ == SQL_NULL_DATA;
         }
         void SetHeading( double heading )
         {
@@ -26136,17 +31099,33 @@ namespace Barrelman::Data
         {
             enterLongitude_ = enterLongitude;
         }
-        double LeaveLatitude( ) const
+        std::optional<double> LeaveLatitude( ) const
         {
-            return leaveLatitude_;
+            if(leaveLatitudeNullIndicator_ != SQL_NULL_DATA)
+            {
+                return leaveLatitude_;
+            }
+            return {};
+        }
+        bool IsLeaveLatitudeNull( ) const
+        {
+            return leaveLatitudeNullIndicator_ == SQL_NULL_DATA;
         }
         void SetLeaveLatitude( double leaveLatitude )
         {
             leaveLatitude_ = leaveLatitude;
         }
-        double LeaveLongitude( ) const
+        std::optional<double> LeaveLongitude( ) const
         {
-            return leaveLongitude_;
+            if(leaveLongitudeNullIndicator_ != SQL_NULL_DATA)
+            {
+                return leaveLongitude_;
+            }
+            return {};
+        }
+        bool IsLeaveLongitudeNull( ) const
+        {
+            return leaveLongitudeNullIndicator_ == SQL_NULL_DATA;
         }
         void SetLeaveLongitude( double leaveLongitude )
         {
@@ -26171,7 +31150,28 @@ namespace Barrelman::Data
             Bind(statement, LEAVELONGITUDE_FIELD_ID, &leaveLongitude_, &leaveLongitudeNullIndicator_);
         }
 
+        template<IO::StreamWriter StreamT>
+        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const
+        {
+            WriteColumnValue( destination, id_);
+            WriteColumnValue( destination, rowVersion_);
+            WriteColumnValue( destination, track_);
+            WriteColumnValue( destination, zone_);
+            WriteColumnValue( destination, radarTrack_);
+            WriteColumnValue( destination, timestamp_);
+            WriteColumnValue( destination, latitude_);
+            WriteColumnValue( destination, longitude_);
+            WriteColumnValue( destination, speed_);
+            WriteColumnValue( destination, course_, courseNullIndicator_);
+            WriteColumnValue( destination, heading_, headingNullIndicator_);
+            WriteColumnValue( destination, enterLatitude_);
+            WriteColumnValue( destination, enterLongitude_);
+            WriteColumnValue( destination, leaveLatitude_, leaveLatitudeNullIndicator_);
+            WriteColumnValue( destination, leaveLongitude_, leaveLongitudeNullIndicator_);
+        }
     };
+
+    using SimpleZoneTrackAlarmDataReader = SimpleColumnDataReader<ZoneTrackAlarmColumnData>;
 
 }
 #endif

@@ -308,6 +308,21 @@ namespace Harlinn::ODBC::Tool
         return result;
     }
 
+
+    std::vector<std::shared_ptr<MemberInfo>> SqlServerHelper::GetUnboundColumnsForSelect( const ClassInfo& classInfo )
+    {
+        std::vector<std::shared_ptr<MemberInfo>> result;
+        const auto& members = classInfo.PersistentMembers( );
+        for ( const auto& member : members )
+        {
+            if ( CppHelper::IsBindable( *member ) == false )
+            {
+                result.emplace_back( member );
+            }
+        }
+        return result;
+    }
+
     std::vector<std::shared_ptr<MemberInfo>> SqlServerHelper::GetOwnColumnsForSelect( const ClassInfo& classInfo )
     {
         std::vector<std::shared_ptr<MemberInfo>> result;
@@ -329,6 +344,21 @@ namespace Harlinn::ODBC::Tool
         }
         return result;
     }
+
+    std::vector<std::shared_ptr<MemberInfo>> SqlServerHelper::GetOwnUnboundColumnsForSelect( const ClassInfo& classInfo )
+    {
+        std::vector<std::shared_ptr<MemberInfo>> result;
+        const auto& members = classInfo.OwnPersistentMembers( );
+        for ( const auto& member : members )
+        {
+            if ( CppHelper::IsBindable( *member ) == false )
+            {
+                result.emplace_back( member );
+            }
+        }
+        return result;
+    }
+
 
     WideString SqlServerHelper::GetColumnNamesForSelect( const ClassInfo& classInfo )
     {

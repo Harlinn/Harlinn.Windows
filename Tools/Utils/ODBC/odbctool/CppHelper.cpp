@@ -510,7 +510,14 @@ namespace Harlinn::ODBC::Tool
                 }
                 else
                 {
-                    result = L"WideString";
+                    if ( member.Nullable( ) )
+                    {
+                        result = L"std::optional<WideString>";
+                    }
+                    else
+                    {
+                        result = L"WideString";
+                    }
                 }
             }
             break;
@@ -523,8 +530,14 @@ namespace Harlinn::ODBC::Tool
                 }
                 else
                 {
-                    
-                    result = L"std::vector<Byte>";
+                    if ( member.Nullable( ) )
+                    {
+                        result = L"std::optional<std::vector<Byte>>";
+                    }
+                    else
+                    {
+                        result = L"std::vector<Byte>";
+                    }
                 }
             }
             break;
@@ -560,7 +573,14 @@ namespace Harlinn::ODBC::Tool
                 }
                 else
                 {
-                    result = L"const WideString&";
+                    if ( member.Nullable( ) )
+                    {
+                        result = L"const std::optional<WideString>&";
+                    }
+                    else
+                    {
+                        result = L"const WideString&";
+                    }
                 }
             }
             break;
@@ -572,14 +592,24 @@ namespace Harlinn::ODBC::Tool
                 }
                 else
                 {
-
-                    result = L"const std::vector<Byte>&";
+                    if ( member.Nullable( ) )
+                    {
+                        result = L"const std::optional<std::vector<Byte>>&";
+                    }
+                    else
+                    {
+                        result = L"const std::vector<Byte>&";
+                    }
                 }
             }
             break;
             default:
             {
                 result = GetBaseType( member );
+                if ( member.Nullable( ) )
+                {
+                    result = Format( L"std::optional<{}>", result );
+                }
             }
             break;
         }

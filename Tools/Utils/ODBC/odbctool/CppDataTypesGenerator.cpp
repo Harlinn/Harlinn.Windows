@@ -34,6 +34,7 @@ namespace Harlinn::ODBC::Tool
         WriteLine( );
         WriteLine( "#include \"Data/Enums.h\"" );
         WriteLine( "#include <HODBC.h>" );
+        WriteLine( "#include <HCCBinaryWriter.h>" );
         WriteLine( );
 
         WriteLine( );
@@ -65,6 +66,9 @@ namespace Harlinn::ODBC::Tool
         WriteLine( L"    public:" );
         WriteLine( L"        virtual ~BaseColumnData( ) = default;" );
         WriteLine( L"        virtual Kind GetKind() const = 0;" );
+        WriteLine( L"        void ReadUnboundData( const ODBC::Statement& statement )" );
+        WriteLine( L"        {" );
+        WriteLine( L"        }" );
         WriteLine( L"    protected:" );
         WriteLine( L"        static void ThrowBoundsExceededException( )");
         WriteLine( L"        {");
@@ -181,7 +185,92 @@ namespace Harlinn::ODBC::Tool
         WriteLine( L"        {");
         WriteLine( L"            statement.BindColumn( fieldId, NativeType::Binary, value->data( ), static_cast< SQLLEN >( N ), lengthOrNullIndicator );");
         WriteLine( L"        }" );
-
+        WriteLine( L"        template<IO::StreamWriter StreamT, typename T>");
+        WriteLine( L"            requires std::is_same_v<Currency, T> || std::is_same_v<DateTime, T> || std::is_same_v<TimeSpan, T> || std::is_same_v<Guid, T> || std::is_floating_point_v<T> || std::is_integral_v<T> || std::is_enum_v<T>");
+        WriteLine( L"        void WriteColumnValue( IO::BinaryWriter<StreamT>& destination, T value )");
+        WriteLine( L"        {");
+        WriteLine( L"            destination.Write( value );");
+        WriteLine( L"        }");
+        WriteLine( L"        template<IO::StreamWriter StreamT, typename T>");
+        WriteLine( L"            requires std::is_same_v<Currency, T> || std::is_same_v<DateTime, T> || std::is_same_v<TimeSpan, T> || std::is_same_v<Guid, T> || std::is_floating_point_v<T> || std::is_integral_v<T> || std::is_enum_v<T>");
+        WriteLine( L"        void WriteColumnValue( IO::BinaryWriter<StreamT>& destination, T value, SQLLEN nullIndicator )");
+        WriteLine( L"        {");
+        WriteLine( L"            if ( nullIndicator != SQL_NULL_DATA )");
+        WriteLine( L"            {");
+        WriteLine( L"                destination.Write( true );");
+        WriteLine( L"                destination.Write( value );");
+        WriteLine( L"            }");
+        WriteLine( L"            else");
+        WriteLine( L"            {");
+        WriteLine( L"                destination.Write( false );");
+        WriteLine( L"            }");
+        WriteLine( L"        }" );
+        WriteLine( L"        template<IO::StreamWriter StreamT, typename T, size_t N>");
+        WriteLine( L"        void WriteNullableColumnValue( IO::BinaryWriter<StreamT>& destination, const std::array<T, N>& value, SQLLEN lengthOrNullIndicator )");
+        WriteLine( L"        {");
+        WriteLine( L"            if ( lengthOrNullIndicator != SQL_NULL_DATA )");
+        WriteLine( L"            {");
+        WriteLine( L"                destination.Write( true );");
+        WriteLine( );
+        WriteLine( L"                if constexpr ( std::is_same_v<T, Byte> )");
+        WriteLine( L"                {");
+        WriteLine( L"                    auto size = static_cast< size_t >( lengthOrNullIndicator ) * sizeof( wchar_t );");
+        WriteLine( L"                    destination.Write7BitEncoded( size );");
+        WriteLine( L"                    destination.Write( value.data( ), size );");
+        WriteLine( L"                }");
+        WriteLine( L"                else");
+        WriteLine( L"                {");
+        WriteLine( L"                    auto size = static_cast< size_t >( lengthOrNullIndicator );");
+        WriteLine( L"                    destination.WriteSize( size );");
+        WriteLine( L"                    destination.Write( value.data( ), size );");
+        WriteLine( L"                }");
+        WriteLine( );
+        WriteLine( L"            }");
+        WriteLine( L"            else");
+        WriteLine( L"            {");
+        WriteLine( L"                destination.Write( false );");
+        WriteLine( L"            }");
+        WriteLine( L"        }");
+        WriteLine( L"        template<IO::StreamWriter StreamT, typename T, size_t N>");
+        WriteLine( L"        void WriteColumnValue( IO::BinaryWriter<StreamT>& destination, const std::array<T, N>& value, SQLLEN length )");
+        WriteLine( L"        {");
+        WriteLine( L"            if constexpr ( std::is_same_v<T, wchar_t> )");
+        WriteLine( L"            {");
+        WriteLine( L"                auto size = static_cast< size_t >( length ) * sizeof( wchar_t );");
+        WriteLine( L"                destination.Write7BitEncoded( size );");
+        WriteLine( L"                destination.Write( value.data( ), size );");
+        WriteLine( L"            }");
+        WriteLine( L"            else");
+        WriteLine( L"            {");
+        WriteLine( L"                auto size = static_cast< size_t >( length );");
+        WriteLine( L"                destination.WriteSize( size );");
+        WriteLine( L"                destination.Write( value.data( ), size );");
+        WriteLine( L"            }");
+        WriteLine( L"        }" );
+        WriteLine( L"        template<IO::StreamWriter StreamT, typename T>");
+        WriteLine( L"            requires std::is_same_v<WideString, T> || std::is_same_v<std::vector<Byte>, T> || std::is_same_v<std::optional<WideString>, T> || std::is_same_v<std::optional<std::vector<Byte>>, T>");
+        WriteLine( L"        void WriteColumnValue( IO::BinaryWriter<StreamT>& destination, const T& value )");
+        WriteLine( L"        {");
+        WriteLine( L"            destination.Write( value );");
+        WriteLine( L"        }" );
+        WriteLine( L"    };" );
+        WriteLine( );
+        WriteLine( L"    template<typename T>");
+        WriteLine( L"        requires std::is_base_of_v<BaseColumnData, T>");
+        WriteLine( L"    class SimpleColumnDataReader : public ODBC::DataReader, public T");
+        WriteLine( L"    {");
+        WriteLine( L"    public:");
+        WriteLine( L"        using Base = ODBC::DataReader;");
+        WriteLine( L"        SimpleColumnDataReader( const ODBC::Statement* statement )");
+        WriteLine( L"            : Base( statement )");
+        WriteLine( L"        {");
+        WriteLine( L"            T::BindColumns( *statement );");
+        WriteLine( L"        }");
+        WriteLine( L"    protected:");
+        WriteLine( L"        virtual void AfterFetch( ) override");
+        WriteLine( L"        {");
+        WriteLine( L"            T::ReadUnboundData( Base::Statement( ) );");
+        WriteLine( L"        }");
         WriteLine( L"    };" );
         WriteLine( );
     }
@@ -270,10 +359,12 @@ namespace Harlinn::ODBC::Tool
             }
         }
         CreateBindColumns( classInfo );
-
+        CreateReadUnboundData( classInfo );
+        CreateWriteColumns( classInfo );
         WriteLine( L"    };" );
         WriteLine( );
-
+        WriteLine( L"    using Simple{}DataReader = SimpleColumnDataReader<{}ColumnData>;", classInfo.Name( ), classInfo.Name( ) );
+        WriteLine( );
     }
 
     void CppDataTypesGenerator::CreateFieldNames( const ClassInfo& classInfo )
@@ -348,12 +439,53 @@ namespace Harlinn::ODBC::Tool
                     }
                     
                 }
-
-                    
-                    
             }
             WriteLine( L"        }" );
             WriteLine( );
+        }
+    }
+
+    void CppDataTypesGenerator::CreateReadUnboundData( const ClassInfo& classInfo )
+    {
+        auto members = SqlServerHelper::GetOwnUnboundColumnsForSelect( classInfo );
+        if ( members.empty( ) == false )
+        {
+            WriteLine( L"        void ReadUnboundData( const ODBC::Statement& statement )" );
+            WriteLine( L"        {" );
+            WriteLine( L"            Base::ReadUnboundData( statement );" );
+            WriteLine( );
+            for ( const auto& member : members )
+            {
+                auto memberType = member->Type( );
+                if ( memberType == MemberInfoType::String || memberType == MemberInfoType::Binary )
+                {
+                    auto fieldName = CppHelper::GetMemberFieldName( *member );
+                    auto fieldId = Format( L"{}_FIELD_ID", member->Name( ).ToUpper( ) );
+                    if ( memberType == MemberInfoType::String )
+                    {
+                        if ( member->Nullable( ) )
+                        {
+                            WriteLine( L"            {} = statement.GetNullableWideString({});", fieldName, fieldId );
+                        }
+                        else
+                        {
+                            WriteLine( L"            {} = statement.GetWideString({});", fieldName, fieldId );
+                        }
+                    }
+                    else if ( memberType == MemberInfoType::Binary )
+                    {
+                        if ( member->Nullable( ) )
+                        {
+                            WriteLine( L"            {} = statement.GetNullableBinary({});", fieldName, fieldId );
+                        }
+                        else
+                        {
+                            WriteLine( L"            {} = statement.GetBinary({});", fieldName, fieldId );
+                        }
+                    }
+                }
+            }
+            WriteLine( L"        }" );
         }
     }
 
@@ -401,9 +533,29 @@ namespace Harlinn::ODBC::Tool
         }
         else
         {
-            WriteLine( L"            return {};", fieldName );
+            if ( member.Nullable( ) )
+            {
+                auto indicatorName = CppHelper::GetMemberIndicatorName( member );
+                WriteLine( L"            if({} != SQL_NULL_DATA)", indicatorName );
+                WriteLine( L"            {" );
+                WriteLine( L"                return {};", fieldName );
+                WriteLine( L"            }" );
+                WriteLine( L"            return {};" );
+            }
+            else
+            {
+                WriteLine( L"            return {};", fieldName );
+            }
         }
         WriteLine( L"        }" );
+        if ( member.Nullable( ) )
+        {
+            auto indicatorName = CppHelper::GetMemberIndicatorName( member );
+            WriteLine( L"        bool Is{}Null( ) const", accessorName );
+            WriteLine( L"        {" );
+            WriteLine( L"            return {} == SQL_NULL_DATA;", indicatorName );
+            WriteLine( L"        }" );
+        }
     }
     void CppDataTypesGenerator::CreateSetter( const ClassInfo& classInfo, const MemberInfo& member )
     {
@@ -423,6 +575,43 @@ namespace Harlinn::ODBC::Tool
         else
         {
             WriteLine( L"            {} = {};", fieldName, argumentName );
+        }
+        WriteLine( L"        }" );
+    }
+
+    void CppDataTypesGenerator::CreateWriteColumns( const ClassInfo& classInfo )
+    {
+        auto members = classInfo.OwnPersistentMembers( );
+        auto memberCount = members.size( );
+        WriteLine( L"        template<IO::StreamWriter StreamT>" );
+        WriteLine( L"        void WriteColumns( IO::BinaryWriter<StreamT>& destination ) const"  );
+        WriteLine( L"        {" );
+        if ( classInfo.IsTopLevel( ) == false )
+        {
+            WriteLine( L"            Base::WriteColumns( destination );" );
+        }
+        for ( size_t i = 0; i < memberCount; i++ )
+        {
+            const auto& member = *members[ i ];
+            auto fieldName = CppHelper::GetMemberFieldName( member );
+            auto memberType = member.Type( );
+            if ( member.Nullable( ) && ( memberType == MemberInfoType::String || memberType == MemberInfoType::Binary ) && CppHelper::IsBindable( member ) )
+            {
+                auto indicatorName = CppHelper::GetMemberIndicatorName( member );
+                WriteLine( L"            WriteNullableColumnValue( destination, {}, {});", fieldName, indicatorName );
+            }
+            else
+            {
+                if ( CppHelper::RequiresIndicator( member ) )
+                {
+                    auto indicatorName = CppHelper::GetMemberIndicatorName( member );
+                    WriteLine( L"            WriteColumnValue( destination, {}, {});", fieldName, indicatorName );
+                }
+                else
+                {
+                    WriteLine( L"            WriteColumnValue( destination, {});", fieldName );
+                }
+            }
         }
         WriteLine( L"        }" );
     }

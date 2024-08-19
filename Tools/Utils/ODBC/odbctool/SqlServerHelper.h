@@ -39,7 +39,9 @@ namespace Harlinn::ODBC::Tool
         static WideString GetColumnNames( const IndexInfo& indexInfo );
 
         static std::vector<std::shared_ptr<MemberInfo>> GetColumnsForSelect( const ClassInfo& classInfo );
+        static std::vector<std::shared_ptr<MemberInfo>> GetUnboundColumnsForSelect( const ClassInfo& classInfo );
         static std::vector<std::shared_ptr<MemberInfo>> GetOwnColumnsForSelect( const ClassInfo& classInfo );
+        static std::vector<std::shared_ptr<MemberInfo>> GetOwnUnboundColumnsForSelect( const ClassInfo& classInfo );
         static WideString GetColumnNamesForSelect( const ClassInfo& classInfo );
 
         static WideString GetInsertProcedureName( const ClassInfo& classInfo );
