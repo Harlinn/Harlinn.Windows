@@ -15,7 +15,8 @@
 */
 
 #include "Generator.h"
-#include "SqlServerUtils.h"
+#include "SqlServerHelper.h"
+#include <HCCStringBuilder.h>
 
 namespace Harlinn::ODBC::Tool
 {

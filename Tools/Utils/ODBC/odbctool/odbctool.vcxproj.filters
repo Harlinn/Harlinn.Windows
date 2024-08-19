@@ -69,6 +69,12 @@
     <ClCompile Include="CppHelper.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="CppDataTypesGenerator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SqlServerHelper.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Options.h">
@@ -98,7 +104,7 @@
     <ClInclude Include="Generator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SqlServerUtils.h">
+    <ClInclude Include="SqlServerHelper.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="CppHelper.h">

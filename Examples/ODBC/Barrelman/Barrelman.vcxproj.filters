@@ -1,0 +1,74 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Generated">
+      <UniqueIdentifier>{af120f66-8a80-40a5-9236-74047fd98176}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Generated\Cpp">
+      <UniqueIdentifier>{da67578d-57f8-44e4-8885-a6283b1b0d89}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Generated\Cpp\Data">
+      <UniqueIdentifier>{ff1b8b3b-3089-41f1-b2fe-7e8aa4129fa1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Generated\Database">
+      <UniqueIdentifier>{93000314-a070-4c57-b2eb-edad5246a1cb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Generated\Database\MsSql">
+      <UniqueIdentifier>{2e2f6732-330a-42c4-b46a-ad5fc47c4455}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="framework.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="pch.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Generated\Cpp\Data\DataTypes.h">
+      <Filter>Generated\Cpp\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="Generated\Cpp\Data\Enums.h">
+      <Filter>Generated\Cpp\Data</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="dllmain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="pch.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Generated\Cpp\Data\DataTypes.cpp">
+      <Filter>Generated\Cpp\Data</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Generated\Database\MsSql\MsSqlCreateDeleteProcedures.sql">
+      <Filter>Generated\Database\MsSql</Filter>
+    </None>
+    <None Include="Generated\Database\MsSql\MsSqlCreateInsertProcedures.sql">
+      <Filter>Generated\Database\MsSql</Filter>
+    </None>
+    <None Include="Generated\Database\MsSql\MsSqlCreateTables.sql">
+      <Filter>Generated\Database\MsSql</Filter>
+    </None>
+    <None Include="Generated\Database\MsSql\MsSqlCreateUpdateProcedures.sql">
+      <Filter>Generated\Database\MsSql</Filter>
+    </None>
+    <None Include="Generated\Database\MsSql\MsSqlCreateViews.sql">
+      <Filter>Generated\Database\MsSql</Filter>
+    </None>
+  </ItemGroup>
+</Project>

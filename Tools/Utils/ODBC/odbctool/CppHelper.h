@@ -24,7 +24,27 @@ namespace Harlinn::ODBC::Tool
 {
     class CppHelper
     {
-        static WideString GetColumnType( const MemberInfo& member );
+    public:
+        static WideString GetHeaderGuard( const WideString& filename );
+        static WideString GetNamespace( const ModelInfo& model, const WideString& filename );
+        static WideString GetBaseType( const MemberInfo& member );
+        static WideString GetDefaultValue( const MemberInfo& member );
+        static WideString GetInputArgumentType( const MemberInfo& member );
+        static WideString GetInputArgumentName( const MemberInfo& member );
+        static WideString GetMemberFieldType( const MemberInfo& member );
+        static WideString GetMemberFieldName( const MemberInfo& member );
+        static WideString GetMemberAccessorName( const MemberInfo& member );
+        static WideString GetMemberAccessorReturnType( const MemberInfo& member );
+        static WideString GetMemberSetterName( const MemberInfo& member );
+        static bool IsBindable( const MemberInfo& member );
+        static bool RequiresIndicator( const MemberInfo& member );
+        static WideString GetMemberIndicatorName( const MemberInfo& member );
+
+        static bool MemberFieldRequiresDefaultValue( const MemberInfo& member );
+
+
+        static WideString GetColumnDataType( const ClassInfo& classInfo );
+
     };
 
 }

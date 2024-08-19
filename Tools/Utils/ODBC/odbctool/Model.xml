@@ -14,7 +14,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 -->
-<model>
+<model name="Barrelman">
   <enum name="AisMessageType">
     <value name="PositionReportClassA" value="1"/>
     <value name="PositionReportClassAAssignedSchedule" value="2"/>

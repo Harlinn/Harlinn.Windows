@@ -246,12 +246,16 @@ namespace Harlinn::ODBC::Tool
         using Base = CodeGenerator<CppDataGenerator, CppDataTypesOptions>;
         CppDataTypesGenerator( const CppDataGenerator& owner );
 
-        void Run( )
-        {
-            Flush( );
-        }
+        void Run( );
     private:
-
+        void CreateBaseClass( );
+        void CreateDataType( const ClassInfo& classInfo );
+        void CreateFieldNames( const ClassInfo& classInfo );
+        void CreateFieldIds( const ClassInfo& classInfo );
+        void CreateBindColumns( const ClassInfo& classInfo );
+        void CreateAccessor( const ClassInfo& classInfo, const MemberInfo& member );
+        void CreateSetter( const ClassInfo& classInfo, const MemberInfo& member );
+        
     };
 
 

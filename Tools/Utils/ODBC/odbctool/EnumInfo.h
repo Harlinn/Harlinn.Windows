@@ -26,6 +26,7 @@ namespace Harlinn::ODBC::Tool
         std::weak_ptr<EnumInfo> owner_;
         WideString name_;
         Int64 value_ = 0;
+        bool default_ = false;
     public:
         EnumValue( const std::shared_ptr<EnumInfo>& owner, const WideString& name )
             : owner_( owner ), name_( name )
@@ -48,6 +49,11 @@ namespace Harlinn::ODBC::Tool
         void SetValue( Int64 value )
         {
             value_ = value;
+        }
+
+        bool Default( ) const
+        {
+            return default_;
         }
 
         inline void Load( const XmlElement& enumValueElement );
@@ -104,6 +110,30 @@ namespace Harlinn::ODBC::Tool
         {
             return values_;
         }
+
+        std::shared_ptr<EnumValue> Default( ) const
+        {
+            const auto valueCount = values_.size( );
+            if ( valueCount )
+            {
+                std::shared_ptr<EnumValue> result = values_[ 0 ];
+                for ( size_t i = 0; i < valueCount; i++ )
+                {
+                    const auto& value = values_[ i ];
+                    if ( value->Default( ) )
+                    {
+                        result = value;
+                        break;
+                    }
+                }
+                return result;
+            }
+            else
+            {
+                return {};
+            }
+        }
+
 
 
         void Load( const XmlElement& enumElement )
@@ -168,6 +198,11 @@ namespace Harlinn::ODBC::Tool
 
     inline void EnumValue::Load( const XmlElement& enumValueElement )
     {
+        if ( enumValueElement.HasAttribute( L"default" ) )
+        {
+            default_ = enumValueElement.Read<bool>( L"default" );
+        }
+
         if ( enumValueElement.HasAttribute( L"value" ) )
         {
             auto value = enumValueElement.Read<WideString>( L"value" );

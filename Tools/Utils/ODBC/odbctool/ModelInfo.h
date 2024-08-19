@@ -24,6 +24,7 @@ namespace Harlinn::ODBC::Tool
 {
     class ModelInfo : public std::enable_shared_from_this<ModelInfo>
     {
+        WideString name_ = L"Model";
         WideString discriminatorName_ = L"Kind";
         std::unordered_map<WideString, std::shared_ptr<EnumInfo>> enums_;
         std::unordered_map<WideString, std::shared_ptr<TypeInfo>> types_;
@@ -33,6 +34,11 @@ namespace Harlinn::ODBC::Tool
         ModelInfo()
         { }
 
+
+        const WideString& Name( ) const
+        {
+            return name_;
+        }
 
         std::shared_ptr<EnumInfo> FindEnum( const WideString& enumName ) const;
         std::shared_ptr<TypeInfo> FindType( const WideString& typeName ) const;

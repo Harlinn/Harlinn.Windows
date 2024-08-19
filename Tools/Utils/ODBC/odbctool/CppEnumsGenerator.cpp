@@ -15,15 +15,30 @@
 */
 
 #include "Generator.h"
-#include "SqlServerUtils.h"
+#include "SqlServerHelper.h"
+#include "CppHelper.h"
 
 namespace Harlinn::ODBC::Tool
 {
     void CppEnumsGenerator::Run( )
     {
-        CreateKind( );
         const auto& model = Model( );
         const auto& enumMap = model.Enums( );
+
+        auto headerGuard = CppHelper::GetHeaderGuard( Filename( ) );
+        auto nspace = CppHelper::GetNamespace( model, Filename( ) );
+        WriteLine( L"#pragma once" );
+        WriteLine( L"#ifndef {}", headerGuard );
+        WriteLine( L"#define {}", headerGuard );
+        WriteLine( );
+        WriteLine( L"#include <HCCDef.h>" );
+        WriteLine( );
+        WriteLine( L"namespace {}", nspace );
+        WriteLine( L"{" );
+        WriteLine( L"    using namespace Harlinn::Common::Core;" );
+        WriteLine( );
+        CreateKind( );
+        
         std::vector<std::shared_ptr<EnumInfo>> enums;
         for ( const auto& entry : enumMap )
         {
@@ -36,7 +51,8 @@ namespace Harlinn::ODBC::Tool
         {
             CreateEnum( *enumInfo );
         }
-
+        WriteLine( L"}" );
+        WriteLine( L"#endif" );
 
         Flush( );
     }
@@ -98,12 +114,12 @@ namespace Harlinn::ODBC::Tool
         const auto& enumValues = enumInfo.Values( );
         auto valueCount = enumValues.size( );
 
-        WriteLine( L"enum class {} : {}", enumName, underlyingType );
-        WriteLine( L"{" );
+        WriteLine( L"    enum class {} : {}", enumName, underlyingType );
+        WriteLine( L"    {" );
         for ( size_t i = 0; i < valueCount; i++ )
         {
             const auto& enumValue = *enumValues[ i ];
-            Write( L"    {} = {}", enumValue.Name( ), enumValue.Value( ) );
+            Write( L"        {} = {}", enumValue.Name( ), enumValue.Value( ) );
             if ( i < ( valueCount - 1 ) )
             {
                 WriteLine( L"," );
@@ -113,7 +129,7 @@ namespace Harlinn::ODBC::Tool
                 WriteLine( );
             }
         }
-        WriteLine( L"};" );
+        WriteLine( L"    };" );
         WriteLine( );
     }
 
@@ -125,14 +141,14 @@ namespace Harlinn::ODBC::Tool
         WideString enumName = L"Kind";
         
 
-        WriteLine( L"enum class {} : Int32", enumName );
-        WriteLine( L"{" );
-        WriteLine( L"    Unknown = 0," );
+        WriteLine( L"    enum class {} : Int32", enumName );
+        WriteLine( L"    {" );
+        WriteLine( L"        Unknown = 0," );
         auto classCount = classes.size( );
         for ( size_t i = 0; i < classCount; i++ )
         {
             const auto& classInfo = *classes[ i ];
-            Write( L"    {} = {}", classInfo.Name(), classInfo.Id() );
+            Write( L"        {} = {}", classInfo.Name(), classInfo.Id() );
             if ( i < ( classCount - 1 ) )
             {
                 WriteLine( L"," );
@@ -142,7 +158,7 @@ namespace Harlinn::ODBC::Tool
                 WriteLine( );
             }
         }
-        WriteLine( L"};" );
+        WriteLine( L"    };" );
         WriteLine( );
 
     }

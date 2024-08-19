@@ -302,7 +302,7 @@ namespace Harlinn::ODBC::Tool
 
     class Options
     {
-        WideString outputDirectory_ = L"%HCC_HOME%\\Tools\\Utils\\ODBC\\odbctool\\Generated Files";
+        WideString outputDirectory_ = L"%HCC_HOME%\\Examples\\ODBC\\Barrelman\\Generated";
         DatabaseOptions database_;
         CppOptions cpp_;
     public:

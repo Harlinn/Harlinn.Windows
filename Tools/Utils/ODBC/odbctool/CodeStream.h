@@ -46,6 +46,12 @@ namespace Harlinn::ODBC::Tool
             }
         }
 
+        const WideString& Filename( ) const
+        {
+            return filename_;
+        }
+
+
         void Write( const wchar_t* wstr )
         {
             if ( wstr )

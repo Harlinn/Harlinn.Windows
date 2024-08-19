@@ -2634,9 +2634,9 @@ namespace Harlinn::ODBC
         {
             return BindColumn( columnNumber, NativeType::Short, targetAddress, sizeof( Int16 ), nullIndicatorOrActualLength );
         }
-        Result BindSingleColumn( SQLUSMALLINT columnNumber, Double* targetAddress, SQLLEN* nullIndicatorOrActualLength ) const
+        Result BindSingleColumn( SQLUSMALLINT columnNumber, float* targetAddress, SQLLEN* nullIndicatorOrActualLength ) const
         {
-            return BindColumn( columnNumber, NativeType::Single, targetAddress, sizeof( Double ), nullIndicatorOrActualLength );
+            return BindColumn( columnNumber, NativeType::Single, targetAddress, sizeof( float ), nullIndicatorOrActualLength );
         }
         Result BindDoubleColumn( SQLUSMALLINT columnNumber, Double* targetAddress, SQLLEN* nullIndicatorOrActualLength ) const
         {

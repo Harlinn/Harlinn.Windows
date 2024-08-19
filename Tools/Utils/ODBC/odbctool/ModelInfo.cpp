@@ -51,6 +51,15 @@ namespace Harlinn::ODBC::Tool
 
     void ModelInfo::Load( const XmlElement& xmlElement )
     {
+        if ( xmlElement.HasAttribute( L"name" ) )
+        {
+            auto name = xmlElement.Read<WideString>( L"name" );
+            if ( name.Length( ) > 0 )
+            {
+                name_ = name;
+            }
+        }
+
         if ( xmlElement.HasAttribute( L"discriminator" ) )
         {
             auto discriminatorName = xmlElement.Read<WideString>( L"discriminator" );
